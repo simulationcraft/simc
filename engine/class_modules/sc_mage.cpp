@@ -6944,9 +6944,9 @@ void mage_t::create_buffs()
                                      ->set_chance( runeforge.sun_kings_blessing.ok() );
   buffs.sun_kings_blessing_ready = make_buff( this, "sun_kings_blessing_ready", find_spell( 333315 ) );
 
-  buffs.cold_front       = make_buff( this, "cold_front", find_spell( 327327 ) ) // TODO: now 382113, needs whitelisting
+  buffs.cold_front       = make_buff( this, "cold_front", find_spell( 382113 ) )
                              ->set_chance( talents.cold_front->ok() || runeforge.cold_front.ok() );
-  buffs.cold_front_ready = make_buff( this, "cold_front_ready", find_spell( 327330 ) ); // TODO: now 382114, needs whitelisting
+  buffs.cold_front_ready = make_buff( this, "cold_front_ready", find_spell( 382114 ) );
   buffs.freezing_winds   = make_buff( this, "freezing_winds", find_spell( 382106 ) )
                              ->set_tick_callback( [ this ] ( buff_t*, int, timespan_t )
                                { trigger_fof( 1.0, procs.fingers_of_frost_freezing_winds ); } )

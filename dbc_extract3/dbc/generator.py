@@ -1706,6 +1706,7 @@ class SpellDataGenerator(DataGenerator):
           ( 363685, 0 ),                            # Arcane Lucidity ready buff
           ( 203277, 0 ),                            # Flame Accelerant
           ( 384035, 0 ), ( 384038, 0 ),             # Firefall
+          ( 382113, 0 ), ( 382114, 0 ),             # Cold Front
         ),
 
         # Warlock:
