@@ -3972,7 +3972,7 @@ struct ferocious_bite_t : public cat_attack_t
       std::vector<player_t*>& tl = cat_attack_t::target_list();
 
       tl.erase( std::remove_if( tl.begin(), tl.end(), [ this ]( player_t* t ) {
-        return !td( t )->dots.rip->is_ticking();
+        return !td( t )->dots.rip->is_ticking() || t == target;
       } ), tl.end() );
 
       return tl;
@@ -4378,6 +4378,12 @@ struct rip_t : public cat_attack_t
     timespan_t t = cat_attack_t::composite_dot_duration( s );
 
     return t *= debug_cast<const rip_state_t*>( s )->combo_points + 1;
+  }
+
+  // Newly applied rip will not lower existing duration
+  timespan_t calculate_dot_refresh_duration( const dot_t* d, timespan_t dur ) const override
+  {
+    return std::max( cat_attack_t::calculate_dot_refresh_duration( d, dur ), d->remains() );
   }
 
   void trigger_dot( action_state_t* s ) override
