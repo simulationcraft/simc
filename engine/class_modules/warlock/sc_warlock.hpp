@@ -281,7 +281,8 @@ public:
     player_talent_t demonic_knowledge; // Demonic Core chance on Hand of Gul'dan cast
     player_talent_t summon_vilefiend;
     player_talent_t soul_strike;
-    const spell_data_t* bilescourge_bombers; // DF - Now a choice against Demonic Strength
+    player_talent_t bilescourge_bombers;
+    const spell_data_t* bilescourge_bombers_aoe; // Ground AoE data
     const spell_data_t* demonic_strength; // DF - Now a choice against Bilescourge Bombers
     const spell_data_t* from_the_shadows; // DF - Should be unchanged but due to Shadowflame effect, new abilities need checking against it
 
@@ -387,6 +388,7 @@ public:
   {
     action_t* soul_flame_proc;
     action_t* pandemic_invocation_proc;
+    action_t* bilescourge_bombers_aoe_tick;
   } proc_actions;
 
   // DF - This struct will be retired, need to determine if needed for pre-patch
