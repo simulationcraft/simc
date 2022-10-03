@@ -163,6 +163,7 @@ void frost( player_t* p )
 {
   action_priority_list_t* default_ = p->get_action_priority_list( "default" );
   action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
+  action_priority_list_t* aoe = p->get_action_priority_list( "aoe" );
   action_priority_list_t* breath_oblit = p->get_action_priority_list( "breath_oblit" );
   action_priority_list_t* breath = p->get_action_priority_list( "breath" );
   action_priority_list_t* cooldowns = p->get_action_priority_list( "cooldowns" );
@@ -203,7 +204,27 @@ void frost( player_t* p )
   default_->add_action( "run_action_list,name=breath_oblit,if=buff.breath_of_sindragosa.up&talent.obliteration&buff.pillar_of_frost.up" );
   default_->add_action( "run_action_list,name=breath,if=buff.breath_of_sindragosa.up&(!talent.obliteration|talent.obliteration&!buff.pillar_of_frost.up)" );
   default_->add_action( "run_action_list,name=obliteration,if=talent.obliteration&buff.pillar_of_frost.up&!buff.breath_of_sindragosa.up" );
+  default_->add_action( "run_action_list,name=aoe,if=active_enemies>=2" );
   default_->add_action( "run_action_list,name=single_target,if=active_enemies=1" );
+  
+  aoe->add_action( "remorseless_winter", "AoE Rotation" );
+  aoe->add_action( "glacial_advance,if=!variable.pooling_runic_power&!death_knight.runeforge.razorice&(debuff.razorice.stack<5|debuff.razorice.remains<gcd*4)" );
+  aoe->add_action( "chill_streak,if=!variable.pooling_runic_power&active_enemies>=2" );
+  aoe->add_action( "obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=!variable.pooling_runes&talent.cleaving_strikes&active_enemies<4&death_and_decay.ticking&buff.killing_machine.react" );
+  aoe->add_action( "frostscythe,if=!variable.pooling_runes&buff.killing_machine.react" );
+  aoe->add_action( "howling_blast,if=variable.rime_buffs" );
+  aoe->add_action( "glacial_advance,if=!variable.pooling_runic_power&!buff.rime.up&active_enemies<=3|active_enemies>3|cooldown.remorseless_winter.remains<=2*gcd&talent.gathering_storm" );
+  aoe->add_action( "frost_strike,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=!variable.pooling_runic_power&cooldown.remorseless_winter.remains<=2*gcd&talent.gathering_storm", "Formulaic approach to create a pseudo priority target list for applying razorice in aoe" );
+  aoe->add_action( "obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=!variable.pooling_runes&talent.cleaving_strikes&active_enemies<4&death_and_decay.ticking" );
+  aoe->add_action( "frostscythe,if=!variable.pooling_runes&talent.gathering_storm&buff.remorseless_winter.up&active_enemies>2" );
+  aoe->add_action( "obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=!variable.pooling_runes&talent.gathering_storm&buff.remorseless_winter.up" );
+  aoe->add_action( "frost_strike,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=!variable.pooling_runic_power&runic_power.deficit<(15+talent.runic_attenuation*5)" );
+  aoe->add_action( "frostscythe,if=!variable.pooling_runes" );
+  aoe->add_action( "obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=!variable.pooling_runes&runic_power.deficit>(25+talent.runic_attenuation*5)" );
+  aoe->add_action( "glacial_advance,if=!variable.pooling_runic_power" );
+  aoe->add_action( "frost_strike,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=!variable.pooling_runic_power" );
+  aoe->add_action( "horn_of_winter,if=rune<3&runic_power.deficit>25" );
+  aoe->add_action( "arcane_torrent" );
 
   breath_oblit->add_action( "frostscythe,if=buff.killing_machine.up&variable.frostscythe_priority", "Breath & Obliteration Active Rotation" );
   breath_oblit->add_action( "obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=buff.killing_machine.up" );
