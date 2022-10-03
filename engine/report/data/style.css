@@ -132,6 +132,9 @@ ol.float li {
 .nowrap {
     white-space: nowrap;
 }
+.filler {
+    background-color: #333;
+}
 .mono {
     font-family: "Lucida Console", Monaco, monospace;
     font-size: 0.9em;
@@ -609,9 +612,6 @@ table.sc tr.details .flex .flex {
 table.sc tr.details div.flex > div:not(.shrink) {
     padding-right: 1em;
     flex-shrink: 0;
-}
-table.sc td.filler {
-    background-color: #333;
 }
 tr.details td table.details {
     padding: 0px;
