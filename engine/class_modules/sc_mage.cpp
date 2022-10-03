@@ -275,12 +275,12 @@ public:
     action_t* agonizing_backlash;
     action_t* arcane_assault;
     action_t* arcane_echo;
+    action_t* cold_front_frozen_orb;
     action_t* conflagration_flare_up;
     action_t* frost_storm_comet_storm;
     action_t* glacial_assault;
     action_t* harmonic_echo;
     action_t* ignite;
-    action_t* legendary_frozen_orb;
     action_t* firefall_meteor;
     action_t* living_bomb_dot;
     action_t* living_bomb_dot_spread;
@@ -1844,12 +1844,16 @@ public:
     if ( s->result_total <= 0.0 )
       return;
 
-    // TODO: what happens if you have both
-    if ( triggers.icy_propulsion_conduit && s->result == RESULT_CRIT && p()->buffs.icy_veins->check() )
-      p()->cooldowns.icy_veins->adjust( -0.1 * p()->conduits.icy_propulsion.time_value( conduit_data_t::S ) );
-
-    if ( triggers.icy_propulsion && s->result == RESULT_CRIT )
-      p()->cooldowns.icy_veins->adjust( -p()->talents.icy_propulsion->effectN( 1 ).time_value() );
+    if ( p()->talents.icy_propulsion->ok() )
+    {
+      if ( triggers.icy_propulsion && s->result == RESULT_CRIT )
+        p()->cooldowns.icy_veins->adjust( -p()->talents.icy_propulsion->effectN( 1 ).time_value() );
+    }
+    else
+    {
+      if ( triggers.icy_propulsion_conduit && s->result == RESULT_CRIT && p()->buffs.icy_veins->check() )
+        p()->cooldowns.icy_veins->adjust( -0.1 * p()->conduits.icy_propulsion.time_value( conduit_data_t::S ) );
+    }
 
     if ( callbacks && p()->talents.overflowing_energy->ok() && s->result_type == result_amount_type::DMG_DIRECT )
     {
@@ -1932,7 +1936,7 @@ public:
       p()->buffs.ice_floes->decrement();
   }
 
-  void trigger_legendary_buff( buff_t* counter, buff_t* ready, int offset = 1 )
+  void trigger_tracking_buff( buff_t* counter, buff_t* ready, int offset = 1 )
   {
     if ( ready->check() )
       return;
@@ -2235,7 +2239,7 @@ struct fire_mage_spell_t : public mage_spell_t
 
   void trigger_molten_skyfall()
   {
-    trigger_legendary_buff( p()->buffs.molten_skyfall, p()->buffs.molten_skyfall_ready, 2 );
+    trigger_tracking_buff( p()->buffs.molten_skyfall, p()->buffs.molten_skyfall_ready, 2 );
   }
 
   bool consume_molten_skyfall( player_t* target )
@@ -2249,7 +2253,7 @@ struct fire_mage_spell_t : public mage_spell_t
 
   void trigger_firefall()
   {
-    trigger_legendary_buff( p()->buffs.firefall, p()->buffs.firefall_ready, 2 );
+    trigger_tracking_buff( p()->buffs.firefall, p()->buffs.firefall_ready, 2 );
   }
 
   bool consume_firefall( player_t* target )
@@ -2363,7 +2367,7 @@ struct hot_streak_spell_t : public fire_mage_spell_t
       p()->buffs.pyroclasm->trigger();
       p()->buffs.firemind->trigger();
 
-      trigger_legendary_buff( p()->buffs.sun_kings_blessing, p()->buffs.sun_kings_blessing_ready );
+      trigger_tracking_buff( p()->buffs.sun_kings_blessing, p()->buffs.sun_kings_blessing_ready );
 
       if ( rng().roll( p()->talents.pyromaniac->effectN( 1 ).percent() ) )
       {
@@ -2552,7 +2556,7 @@ struct frost_mage_spell_t : public mage_spell_t
 
   void trigger_cold_front()
   {
-    trigger_legendary_buff( p()->buffs.cold_front, p()->buffs.cold_front_ready, 2 );
+    trigger_tracking_buff( p()->buffs.cold_front, p()->buffs.cold_front_ready, 2 );
   }
 
   bool consume_cold_front( player_t* target )
@@ -2560,7 +2564,7 @@ struct frost_mage_spell_t : public mage_spell_t
     if ( !p()->buffs.cold_front_ready->check() )
       return false;
     p()->buffs.cold_front_ready->expire();
-    p()->action.legendary_frozen_orb->execute_on_target( target );
+    p()->action.cold_front_frozen_orb->execute_on_target( target );
     return true;
   }
 };
@@ -3206,8 +3210,11 @@ struct blink_t final : public mage_spell_t
     ignore_false_positive = true;
     base_teleport_distance = data().effectN( 1 ).radius_max();
     movement_directionality = movement_direction_type::OMNI;
-    cooldown->duration += p->conduits.flow_of_time.time_value();
-    cooldown->duration += p->talents.flow_of_time->effectN( 1 ).time_value();
+
+    if ( p->talents.flow_of_time->ok() )
+      cooldown->duration += p->talents.flow_of_time->effectN( 1 ).time_value();
+    else
+      cooldown->duration += p->conduits.flow_of_time.time_value();
 
     if ( p->talents.shimmer->ok() )
       background = true;
@@ -4207,15 +4214,15 @@ struct frozen_orb_t final : public frost_mage_spell_t
 {
   action_t* frozen_orb_bolt;
 
-  frozen_orb_t( std::string_view n, mage_t* p, std::string_view options_str, bool legendary = false ) :
-    frost_mage_spell_t( n, p, legendary ? p->find_spell( 84714 ) : p->talents.frozen_orb ),
-    frozen_orb_bolt( get_action<frozen_orb_bolt_t>( legendary ? "legendary_frozen_orb_bolt" : "frozen_orb_bolt", p ) )
+  frozen_orb_t( std::string_view n, mage_t* p, std::string_view options_str, bool cold_front = false ) :
+    frost_mage_spell_t( n, p, cold_front ? p->find_spell( 84714 ) : p->talents.frozen_orb ),
+    frozen_orb_bolt( get_action<frozen_orb_bolt_t>( cold_front ? "cold_front_frozen_orb_bolt" : "frozen_orb_bolt", p ) )
   {
     parse_options( options_str );
     may_miss = may_crit = affected_by.shatter = false;
     add_child( frozen_orb_bolt );
 
-    if ( legendary )
+    if ( cold_front )
     {
       background = true;
       cooldown->duration = 0_ms;
@@ -4952,8 +4959,8 @@ struct meteor_t final : public fire_mage_spell_t
 {
   timespan_t meteor_delay;
 
-  meteor_t( std::string_view n, mage_t* p, std::string_view options_str, bool legendary = false ) :
-    fire_mage_spell_t( n, p, legendary ? p->find_spell( 153561 ) : p->talents.meteor ),
+  meteor_t( std::string_view n, mage_t* p, std::string_view options_str, bool firefall = false ) :
+    fire_mage_spell_t( n, p, firefall ? p->find_spell( 153561 ) : p->talents.meteor ),
     meteor_delay( p->find_spell( 177345 )->duration() )
   {
     parse_options( options_str );
@@ -4961,13 +4968,13 @@ struct meteor_t final : public fire_mage_spell_t
     if ( !data().ok() )
       return;
 
-    action_t* meteor_burn = get_action<meteor_burn_t>( legendary ? "firefall_meteor_burn" : "meteor_burn", p );
-    impact_action = get_action<meteor_impact_t>( legendary ? "firefall_meteor_impact" : "meteor_impact", p, meteor_burn );
+    action_t* meteor_burn = get_action<meteor_burn_t>( firefall ? "firefall_meteor_burn" : "meteor_burn", p );
+    impact_action = get_action<meteor_impact_t>( firefall ? "firefall_meteor_impact" : "meteor_impact", p, meteor_burn );
 
     add_child( meteor_burn );
     add_child( impact_action );
 
-    if ( legendary )
+    if ( firefall )
     {
       background = true;
       cooldown->duration = 0_ms;
@@ -5409,7 +5416,7 @@ struct time_warp_t final : public mage_spell_t
     if ( player->buffs.exhaustion->check() )
       p()->buffs.temporal_warp->trigger();
     else if ( p()->talents.temporal_warp->ok() )
-      make_event( *sim, 0_ms, [ this ] { cooldown->reset( false ); } );
+      cooldown->reset( false );
 
     for ( player_t* p : sim->player_non_sleeping_list )
     {
@@ -5662,7 +5669,8 @@ struct shifting_power_pulse_t final : public mage_spell_t
     mage_spell_t::impact( s );
 
     // TODO: Check what happens if the spell misses.
-    p()->buffs.heart_of_the_fae->trigger();
+    if ( !p()->talents.shifting_power->ok() )
+      p()->buffs.heart_of_the_fae->trigger();
   }
 };
 
@@ -5674,7 +5682,7 @@ struct shifting_power_t final : public mage_spell_t
   shifting_power_t( std::string_view n, mage_t* p, std::string_view options_str ) :
     mage_spell_t( n, p, p->talents.shifting_power->ok() ? p->talents.shifting_power : p->find_covenant_spell( "Shifting Power" ) ),
     shifting_power_cooldowns(),
-    reduction( data().effectN( 2 ).time_value() + p->conduits.discipline_of_the_grove.time_value() )
+    reduction( data().effectN( 2 ).time_value() + ( p->talents.shifting_power->ok() ? 0_ms : p->conduits.discipline_of_the_grove.time_value() ) )
   {
     parse_options( options_str );
     channeled = affected_by.ice_floes = true;
@@ -5705,7 +5713,7 @@ struct shifting_power_t final : public mage_spell_t
 
   bool usable_moving() const override
   {
-    if ( p()->runeforge.heart_of_the_fae.ok() )
+    if ( !p()->talents.shifting_power->ok() && p()->runeforge.heart_of_the_fae.ok() )
       return true;
 
     return mage_spell_t::usable_moving();
@@ -6330,7 +6338,7 @@ void mage_t::create_actions()
     action.firefall_meteor = get_action<meteor_t>( "firefall_meteor", this, "", true );
 
   if ( talents.cold_front->ok() || runeforge.cold_front.ok() )
-    action.legendary_frozen_orb = get_action<frozen_orb_t>( "legendary_frozen_orb", this, "", true );
+    action.cold_front_frozen_orb = get_action<frozen_orb_t>( "cold_front_frozen_orb", this, "", true );
 
   if ( runeforge.harmonic_echo.ok() )
     action.harmonic_echo = get_action<harmonic_echo_t>( "harmonic_echo", this );
@@ -6926,7 +6934,7 @@ void mage_t::create_buffs()
                            ->set_default_value_from_effect( 1 )
                            ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT )
                            ->set_chance( runeforge.siphon_storm.ok() );
-  buffs.temporal_warp  = make_buff( this, "temporal_warp", find_spell( 386540 ) )
+  buffs.temporal_warp  = make_buff( this, "temporal_warp", find_spell( talents.temporal_warp->ok() ? 386540 : 327355 ) )
                            ->set_default_value_from_effect( 1 )
                            ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
                            ->set_chance( talents.temporal_warp->ok() || runeforge.temporal_warp.ok() );
@@ -6944,14 +6952,16 @@ void mage_t::create_buffs()
                                      ->set_chance( runeforge.sun_kings_blessing.ok() );
   buffs.sun_kings_blessing_ready = make_buff( this, "sun_kings_blessing_ready", find_spell( 333315 ) );
 
-  buffs.cold_front       = make_buff( this, "cold_front", find_spell( 382113 ) )
+  // TODO: some of the talent + legendary interactions are currently bugged
+  // casting Frozen Orb gives 2 different Freezing Winds buffs, casting Frostbolt during Icy Veins gives 2 different Slick Ice buffs
+  buffs.cold_front       = make_buff( this, "cold_front", find_spell( talents.cold_front->ok() ? 382113 : 327327 ) )
                              ->set_chance( talents.cold_front->ok() || runeforge.cold_front.ok() );
-  buffs.cold_front_ready = make_buff( this, "cold_front_ready", find_spell( 382114 ) );
-  buffs.freezing_winds   = make_buff( this, "freezing_winds", find_spell( 382106 ) )
+  buffs.cold_front_ready = make_buff( this, "cold_front_ready", find_spell( talents.cold_front->ok() ? 382114 : 327330 ) );
+  buffs.freezing_winds   = make_buff( this, "freezing_winds", find_spell( talents.freezing_winds->ok() ? 382106 : 327478 ) )
                              ->set_tick_callback( [ this ] ( buff_t*, int, timespan_t )
                                { trigger_fof( 1.0, procs.fingers_of_frost_freezing_winds ); } )
                              ->set_chance( talents.freezing_winds->ok() || runeforge.freezing_winds.ok() );
-  buffs.slick_ice        = make_buff( this, "slick_ice", find_spell( 382148 ) )
+  buffs.slick_ice        = make_buff( this, "slick_ice", find_spell( talents.slick_ice->ok() ? 382148 : 327509 ) )
                              ->set_default_value_from_effect( 1 )
                              ->set_chance( talents.slick_ice->ok() || runeforge.slick_ice.ok() );
 
