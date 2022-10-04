@@ -191,9 +191,9 @@ struct avengers_shield_t : public avengers_shield_base_t
         m *= 1.0 + p() -> talents.focused_enmity->effectN( 2 ).percent();
       } 
     //TODO Actually implement this properly, right now its a flat damage increase and will return bad values for aoe.
-    if ( p()->talents.ferren_marcuss_strength->ok() )
+    if ( p()->talents.ferren_marcuss_fervor->ok() )
         {
-          m *= 1.0 + p()->talents.ferren_marcuss_strength->effectN( 1 ).percent();
+          m *= 1.0 + p()->talents.ferren_marcuss_fervor->effectN( 1 ).percent();
         } 
     return m;
   } 
@@ -993,7 +993,7 @@ void paladin_t::init_spells_protection()
   talents.sentinel                       = find_talent_spell( talent_tree::SPECIALIZATION, "Sentinel" );
   talents.strength_of_conviction         = find_talent_spell( talent_tree::SPECIALIZATION, "Strength of Conviction" );
   talents.relentless_inquisitor          = find_talent_spell( talent_tree::SPECIALIZATION, "Relentless Inquisitor" );
-  talents.ferren_marcuss_strength        = find_talent_spell( talent_tree::SPECIALIZATION, "Ferren Marcus's Strength" );
+  talents.ferren_marcuss_fervor          = find_talent_spell( talent_tree::SPECIALIZATION, "Ferren Marcus's Fervor" );
   talents.tyrs_enforcer                  = find_talent_spell( talent_tree::SPECIALIZATION, "Tyr's Enforcer" );
   talents.guardian_of_ancient_kings      = find_talent_spell( talent_tree::SPECIALIZATION, "Guardian of Ancient Kings" );
   talents.sanctuary                      = find_talent_spell( talent_tree::SPECIALIZATION, "Sanctuary" );
@@ -1019,7 +1019,6 @@ void paladin_t::init_spells_protection()
   talents.consecrated_ground         = find_talent_spell( "Consecrated Ground" );
 
   talents.prot_sanctified_wrath      = find_talent_spell( "Sanctified Wrath", PALADIN_PROTECTION );
-  talents.righteous_protector        = find_talent_spell( "Righteous Protector" );
   talents.final_stand                = find_talent_spell( "Final Stand" );
 
   // Spec passives and useful spells

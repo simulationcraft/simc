@@ -416,7 +416,7 @@ public:
     const spell_data_t* sentinel;
     const spell_data_t* avenging_wrath_might;
     const spell_data_t* strength_of_conviction;
-    const spell_data_t* ferren_marcuss_strength;
+    const spell_data_t* ferren_marcuss_fervor;
     const spell_data_t* tyrs_enforcer;
     const spell_data_t* guardian_of_ancient_kings;
     const spell_data_t* sanctuary;
