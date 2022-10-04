@@ -338,6 +338,8 @@ public:
     buff_t* hot_streak;
     buff_t* pyroclasm;
     buff_t* pyrotechnics;
+    buff_t* sun_kings_blessing;
+    buff_t* sun_kings_blessing_ready;
     buff_t* wildfire;
 
 
@@ -370,8 +372,8 @@ public:
     buff_t* firestorm;
     buff_t* molten_skyfall;
     buff_t* molten_skyfall_ready;
-    buff_t* sun_kings_blessing;
-    buff_t* sun_kings_blessing_ready;
+    buff_t* runeforge_sun_kings_blessing;
+    buff_t* runeforge_sun_kings_blessing_ready;
 
     buff_t* cold_front;
     buff_t* cold_front_ready;
@@ -2365,6 +2367,12 @@ struct hot_streak_spell_t : public fire_mage_spell_t
     if ( !last_hot_streak && p()->buffs.sun_kings_blessing_ready->check() )
     {
       p()->buffs.sun_kings_blessing_ready->expire( p()->bugs ? 30_ms : 0_ms );
+      p()->buffs.combustion->extend_duration_or_trigger( 1000 * p()->talents.sun_kings_blessing->effectN( 2 ).time_value() );
+    }
+
+    if ( !last_hot_streak && p()->buffs.runeforge_sun_kings_blessing_ready->check() )
+    {
+      p()->buffs.runeforge_sun_kings_blessing_ready->expire( p()->bugs ? 30_ms : 0_ms );
       p()->buffs.combustion->extend_duration_or_trigger( 1000 * p()->runeforge.sun_kings_blessing->effectN( 2 ).time_value() );
     }
 
@@ -2377,6 +2385,7 @@ struct hot_streak_spell_t : public fire_mage_spell_t
       p()->buffs.firemind->trigger();
 
       trigger_tracking_buff( p()->buffs.sun_kings_blessing, p()->buffs.sun_kings_blessing_ready );
+      trigger_tracking_buff( p()->buffs.runeforge_sun_kings_blessing, p()->buffs.runeforge_sun_kings_blessing_ready );
 
       if ( rng().roll( p()->talents.pyromaniac->effectN( 1 ).percent() ) )
       {
@@ -6861,63 +6870,66 @@ void mage_t::create_buffs()
 
 
   // Fire
-  buffs.combustion           = make_buff<buffs::combustion_t>( this );
-  buffs.feel_the_burn        = make_buff( this, "feel_the_burn", find_spell( 383395 ) )
-                                 ->set_default_value( talents.feel_the_burn->effectN( 1 ).base_value() )
-                                 ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
-                                 ->set_chance( talents.feel_the_burn.ok() );
-  buffs.fevered_incantation  = make_buff( this, "fevered_incantation", find_spell( 383811 ) )
-                                 ->set_default_value( talents.fevered_incantation->effectN( 1 ).base_value()  )
-                                 ->set_chance( talents.fevered_incantation.ok() );
-  buffs.firefall             = make_buff( this, "firefall", find_spell( 384035 ) )
-                                       ->set_chance( talents.firefall.ok() );
-  buffs.firefall_ready       = make_buff( this, "firefall_ready", find_spell( 384038 ) );
+  buffs.combustion               = make_buff<buffs::combustion_t>( this );
+  buffs.feel_the_burn            = make_buff( this, "feel_the_burn", find_spell( 383395 ) )
+                                     ->set_default_value( talents.feel_the_burn->effectN( 1 ).base_value() )
+                                     ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
+                                     ->set_chance( talents.feel_the_burn.ok() );
+  buffs.fevered_incantation      = make_buff( this, "fevered_incantation", find_spell( 383811 ) )
+                                     ->set_default_value( talents.fevered_incantation->effectN( 1 ).base_value()  )
+                                     ->set_chance( talents.fevered_incantation.ok() );
+  buffs.firefall                 = make_buff( this, "firefall", find_spell( 384035 ) )
+                                           ->set_chance( talents.firefall.ok() );
+  buffs.firefall_ready           = make_buff( this, "firefall_ready", find_spell( 384038 ) );
   // TODO: 2022-10-02 Firemind currently affects base intellect and not current intellect.
   // This needs to be reimplemented if that bug is not fixed.
-  buffs.firemind             = make_buff( this, "firemind", find_spell( 383501 ) )
-                                 ->set_default_value( talents.firemind->effectN( 3 ).percent() )
-                                 ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT )
-                                 ->set_chance( talents.firemind.ok() );
+  buffs.firemind                 = make_buff( this, "firemind", find_spell( 383501 ) )
+                                     ->set_default_value( talents.firemind->effectN( 3 ).percent() )
+                                     ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT )
+                                     ->set_chance( talents.firemind.ok() );
   // TODO: 2022-10-02 Flame Accelerant has several bugs that are not implemented in simc.
   // 1. Casting a Fireball as the ICD is expiring can result in that Fireball gaining the
   // bonus damage without stopping the flame_accelerant buff from being applied just after.
   // 2. Fireball's base cast time without flame_accelerant is 4% too slow with 1 point of
   // the talent and is 22% too fast with 2 points of the talent.
-  buffs.flame_accelerant     = make_buff( this, "flame_accelerant", find_spell( 203277 ) )
-                                 ->set_can_cancel( false )
-                                 ->set_chance( talents.flame_accelerant->ok() )
-                                 ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
-  buffs.flame_accelerant_icd = make_buff( this, "flame_accelerant_icd", find_spell( 203278 ) )
-                                 ->set_can_cancel( false )
-                                 ->set_quiet( true )
-                                 ->set_stack_change_callback( [ this ] ( buff_t*, int, int cur )
-                                   {
-                                     if ( cur == 0 )
-                                       buffs.flame_accelerant->trigger();
-                                     else
-                                       buffs.flame_accelerant->expire();
-                                  } );
-  buffs.heating_up           = make_buff( this, "heating_up", find_spell( 48107 ) );
-  buffs.hot_streak           = make_buff<buffs::expanded_potential_buff_t>( this, "hot_streak", find_spell( 48108 ) )
-                                 ->set_stack_change_callback( [ this ] ( buff_t*, int old, int )
-                                   { if ( old == 0 ) buffs.firestorm->trigger(); } );
-  buffs.pyroclasm            = make_buff( this, "pyroclasm", find_spell( 269651 ) )
-                                 ->set_default_value_from_effect( 1 )
-                                 ->set_chance( talents.pyroclasm->effectN( 1 ).percent() );
-  buffs.pyrotechnics         = make_buff( this, "pyrotechnics", find_spell( 157644 ) )
-                                 ->set_chance( talents.pyrotechnics->ok() )
-                                 ->set_default_value_from_effect( 1 )
-                                 ->set_stack_change_callback( [ this ] ( buff_t*, int old, int cur )
-                                   {
-                                     if ( cur > old )
-                                       buffs.flame_accretion->trigger( cur - old );
-                                     else
-                                       buffs.flame_accretion->decrement( old - cur );
-                                   } );
-  buffs.wildfire             = make_buff( this, "wildfire", find_spell( 383492 ) )
-                                 ->set_default_value( talents.wildfire->effectN( 3 ).percent() )
-                                 ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
-                                 ->set_chance( talents.wildfire.ok() );
+  buffs.flame_accelerant         = make_buff( this, "flame_accelerant", find_spell( 203277 ) )
+                                     ->set_can_cancel( false )
+                                     ->set_chance( talents.flame_accelerant->ok() )
+                                     ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
+  buffs.flame_accelerant_icd     = make_buff( this, "flame_accelerant_icd", find_spell( 203278 ) )
+                                     ->set_can_cancel( false )
+                                     ->set_quiet( true )
+                                     ->set_stack_change_callback( [ this ] ( buff_t*, int, int cur )
+                                       {
+                                         if ( cur == 0 )
+                                           buffs.flame_accelerant->trigger();
+                                         else
+                                           buffs.flame_accelerant->expire();
+                                      } );
+  buffs.heating_up               = make_buff( this, "heating_up", find_spell( 48107 ) );
+  buffs.hot_streak               = make_buff<buffs::expanded_potential_buff_t>( this, "hot_streak", find_spell( 48108 ) )
+                                     ->set_stack_change_callback( [ this ] ( buff_t*, int old, int )
+                                       { if ( old == 0 ) buffs.firestorm->trigger(); } );
+  buffs.pyroclasm                = make_buff( this, "pyroclasm", find_spell( 269651 ) )
+                                     ->set_default_value_from_effect( 1 )
+                                     ->set_chance( talents.pyroclasm->effectN( 1 ).percent() );
+  buffs.pyrotechnics             = make_buff( this, "pyrotechnics", find_spell( 157644 ) )
+                                     ->set_chance( talents.pyrotechnics->ok() )
+                                     ->set_default_value_from_effect( 1 )
+                                     ->set_stack_change_callback( [ this ] ( buff_t*, int old, int cur )
+                                       {
+                                         if ( cur > old )
+                                           buffs.flame_accretion->trigger( cur - old );
+                                         else
+                                           buffs.flame_accretion->decrement( old - cur );
+                                       } );
+  buffs.sun_kings_blessing       = make_buff( this, "sun_kings_blessing", find_spell( 333314 ) )
+                                     ->set_chance( talents.sun_kings_blessing.ok() );
+  buffs.sun_kings_blessing_ready = make_buff( this, "sun_kings_blessing_ready", find_spell( 333315 ) );
+  buffs.wildfire                 = make_buff( this, "wildfire", find_spell( 383492 ) )
+                                     ->set_default_value( talents.wildfire->effectN( 3 ).percent() )
+                                     ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
+                                     ->set_chance( talents.wildfire.ok() );
 
 
   // Frost
@@ -6967,18 +6979,18 @@ void mage_t::create_buffs()
                            ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
                            ->set_chance( talents.temporal_warp->ok() || runeforge.temporal_warp.ok() );
 
-  buffs.runeforge_fevered_incantation = make_buff( this, "runeforge_fevered_incantation", find_spell( 333049 ) )
-                                          ->set_default_value_from_effect( 1 )
-                                          ->set_chance( runeforge.fevered_incantation.ok() && !talents.fevered_incantation.ok() );
-  buffs.firestorm                     = make_buff( this, "firestorm", find_spell( 333100 ) )
-                                          ->set_default_value_from_effect( 2 )
-                                          ->set_trigger_spell( runeforge.firestorm );
-  buffs.molten_skyfall                = make_buff( this, "molten_skyfall", find_spell( 333170 ) )
-                                          ->set_chance( runeforge.molten_skyfall.ok() && !talents.firefall.ok() );
-  buffs.molten_skyfall_ready          = make_buff( this, "molten_skyfall_ready", find_spell( 333182 ) );
-  buffs.sun_kings_blessing            = make_buff( this, "sun_kings_blessing", find_spell( 333314 ) )
-                                          ->set_chance( runeforge.sun_kings_blessing.ok() );
-  buffs.sun_kings_blessing_ready      = make_buff( this, "sun_kings_blessing_ready", find_spell( 333315 ) );
+  buffs.runeforge_fevered_incantation      = make_buff( this, "runeforge_fevered_incantation", find_spell( 333049 ) )
+                                               ->set_default_value_from_effect( 1 )
+                                               ->set_chance( runeforge.fevered_incantation.ok() && !talents.fevered_incantation.ok() );
+  buffs.firestorm                          = make_buff( this, "firestorm", find_spell( 333100 ) )
+                                               ->set_default_value_from_effect( 2 )
+                                               ->set_trigger_spell( runeforge.firestorm );
+  buffs.molten_skyfall                     = make_buff( this, "molten_skyfall", find_spell( 333170 ) )
+                                               ->set_chance( runeforge.molten_skyfall.ok() && !talents.firefall.ok() );
+  buffs.molten_skyfall_ready               = make_buff( this, "molten_skyfall_ready", find_spell( 333182 ) );
+  buffs.runeforge_sun_kings_blessing       = make_buff( this, "runeforge_sun_kings_blessing", find_spell( 333314 ) )
+                                               ->set_chance( runeforge.sun_kings_blessing.ok() && !talents.sun_kings_blessing.ok() );
+  buffs.runeforge_sun_kings_blessing_ready = make_buff( this, "runeforge_sun_kings_blessing_ready", find_spell( 333315 ) );
 
   // TODO: some of the talent + legendary interactions are currently bugged
   // casting Frozen Orb gives 2 different Freezing Winds buffs, casting Frostbolt during Icy Veins gives 2 different Slick Ice buffs
