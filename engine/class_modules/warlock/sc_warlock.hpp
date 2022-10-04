@@ -290,7 +290,8 @@ public:
 
     player_talent_t implosion;
     const spell_data_t* implosion_aoe; // Note: in combat logs this is attributed to the player, not the imploding pet
-    // DF - Shadow's Bite (Demonbolt damage increase after Dreadstalkers despawn)
+    player_talent_t shadows_bite; // Demonbolt damage increase after Dreadstalkers despawn
+    const spell_data_t* shadows_bite_buff;
     // DF - Carnivorous Stalkers (Formerly SL Conduit)
     // DF - Fel and Steel (Felstorm and Dreadbite damage increase)
     // DF - Fel Might (Shorter Felstorm CD)
@@ -515,7 +516,7 @@ public:
     propagate_const<buff_t*> eyes_of_guldan; //Buff for tracking if rare random summon is currently out
     propagate_const<buff_t*> dread_calling; // DF - Now comes from Demonology talent
     propagate_const<buff_t*> balespiders_burning_core; // DF - Now comes from Demonology talent
-    // DF - Shadow's Bite (Demonbolt damage buff on player)
+    propagate_const<buff_t*> shadows_bite;
     // DF - Stolen Power (stacking buff from Wild Imp casts) - Could actually be two buffs, currently broken
 
     // Destruction Buffs

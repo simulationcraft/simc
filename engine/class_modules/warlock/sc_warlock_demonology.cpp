@@ -270,6 +270,9 @@ struct demonbolt_t : public demonology_spell_t
 
     //m *= 1.0 + p()->buffs.balespiders_burning_core->check_stack_value();
 
+    if ( p()->talents.shadows_bite.ok() )
+      m *= 1.0 + p()->buffs.shadows_bite->check_value();
+
     return m;
   }
 };
@@ -1053,6 +1056,9 @@ void warlock_t::create_buffs_demonology()
                              ->set_duration( timespan_t::from_seconds( 15 ) )
                              ->set_max_stack( 40 )
                              ->set_refresh_behavior( buff_refresh_behavior::DURATION );
+
+  buffs.shadows_bite = make_buff( this, "shadows_bite", talents.shadows_bite_buff )
+                           ->set_default_value( talents.shadows_bite->effectN( 1 ).percent() );
 }
 
 void warlock_t::init_spells_demonology()
@@ -1089,6 +1095,9 @@ void warlock_t::init_spells_demonology()
 
   talents.implosion = find_talent_spell( talent_tree::SPECIALIZATION, "Implosion" ); // Should be ID 196277
   talents.implosion_aoe = find_spell( 196278 );
+
+  talents.shadows_bite = find_talent_spell( talent_tree::SPECIALIZATION, "Shadow's Bite" ); // Should be ID 387322
+  talents.shadows_bite_buff = find_spell( 272945 );
 
   talents.demonic_calling     = find_talent_spell( "Demonic Calling" );
   talents.power_siphon        = find_talent_spell( "Power Siphon" );
