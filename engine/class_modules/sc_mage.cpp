@@ -2632,8 +2632,10 @@ struct icicle_t final : public frost_mage_spell_t
   void impact( action_state_t* s ) override
   {
     frost_mage_spell_t::impact( s );
-    p()->trigger_fof( p()->talents.flash_freeze->effectN( 1 ).percent(), p()->procs.fingers_of_frost_flash_freeze );
-    // TODO: check if splitting ice doubles the procs
+
+    if ( result_is_hit( s->result ) )
+      p()->trigger_fof( p()->talents.flash_freeze->effectN( 1 ).percent(), p()->procs.fingers_of_frost_flash_freeze );
+      // TODO: check if splitting ice doubles the procs
   }
 
   double spell_direct_power_coefficient( const action_state_t* s ) const override
@@ -3298,7 +3300,7 @@ struct blizzard_shard_t final : public frost_mage_spell_t
     frost_mage_spell_t::impact( s );
 
     // TODO: should this be moved to execute?
-    if ( p()->cooldowns.snowstorm->up() && rng().roll( p()->talents.snowstorm->proc_chance() ) )
+    if ( result_is_hit( s->result ) && p()->cooldowns.snowstorm->up() && rng().roll( p()->talents.snowstorm->proc_chance() ) )
     {
       p()->cooldowns.snowstorm->start( p()->talents.snowstorm->internal_cooldown() );
       p()->buffs.snowstorm->trigger();
