@@ -315,6 +315,7 @@ public:
     // Arcane
     buff_t* arcane_charge;
     buff_t* arcane_familiar;
+    buff_t* arcane_tempo;
     buff_t* chrono_shift;
     buff_t* clearcasting;
     buff_t* clearcasting_channel; // Hidden buff which governs tick and channel time
@@ -2793,6 +2794,7 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
     double mana_pct = p()->buffs.arcane_charge->check() * 0.01 * p()->talents.mana_adept->effectN( 1 ).percent();
     p()->resource_gain( RESOURCE_MANA, p()->resources.max[ RESOURCE_MANA ] * mana_pct, p()->gains.arcane_barrage, this );
 
+    p()->buffs.arcane_tempo->trigger();
     p()->buffs.arcane_charge->expire();
     p()->buffs.arcane_harmony->expire();
   }
@@ -6872,6 +6874,10 @@ void mage_t::create_buffs()
                                    { action.arcane_assault->execute_on_target( target ); } )
                                  ->set_stack_change_callback( [ this ] ( buff_t*, int, int )
                                    { recalculate_resource_max( RESOURCE_MANA ); } );
+  buffs.arcane_tempo         = make_buff( this, "arcane_tempo", find_spell( 383997 ) )
+                                 ->set_default_value( talents.arcane_tempo->effectN( 1 ).percent() )
+                                 ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+                                 ->set_chance( talents.arcane_tempo->ok() );
   buffs.chrono_shift         = make_buff( this, "chrono_shift", find_spell( 236298 ) )
                                  ->set_default_value_from_effect( 1 )
                                  ->add_invalidate( CACHE_RUN_SPEED )
