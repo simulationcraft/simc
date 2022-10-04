@@ -109,6 +109,7 @@ public:
     const spell_data_t* hand_of_guldan;
     const spell_data_t* hog_impact; // Secondary spell responsible for impact damage
     const spell_data_t* wild_imp; // Data for pet summoning
+    const spell_data_t* fel_firebolt_2; // 2022-10-03 - This is still a separate spell learned automatically when switching spec?
     const spell_data_t* demonic_core; // The passive responsible for the proc chance
     const spell_data_t* demonic_core_buff; // Buff spell data
     const spell_data_t* master_demonologist; // Demonology Mastery - Increased demon damage
@@ -287,7 +288,8 @@ public:
     player_talent_t from_the_shadows;
     const spell_data_t* from_the_shadows_debuff; // Tooltip says "Shadowflame" but this contains an explicit whitelist (for the *warlock*, pets are unknown and we'll fall back to schools)
 
-    // DF - Implosion (presumably unchanged, double-check Wild Imp flight behavior)
+    player_talent_t implosion;
+    const spell_data_t* implosion_aoe; // Note: in combat logs this is attributed to the player, not the imploding pet
     // DF - Shadow's Bite (Demonbolt damage increase after Dreadstalkers despawn)
     // DF - Carnivorous Stalkers (Formerly SL Conduit)
     // DF - Fel and Steel (Felstorm and Dreadbite damage increase)

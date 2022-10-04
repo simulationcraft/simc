@@ -365,10 +365,10 @@ struct implosion_t : public demonology_spell_t
 {
   struct implosion_aoe_t : public demonology_spell_t
   {
-    double casts_left = 5.0;
+    double energy_remaining = 0.0;
     warlock_pet_t* next_imp;
 
-    implosion_aoe_t( warlock_t* p ) : demonology_spell_t( "implosion_aoe", p, p->find_spell( 196278 ) )
+    implosion_aoe_t( warlock_t* p ) : demonology_spell_t( "implosion_aoe", p, p->talents.implosion_aoe )
     {
       aoe                = -1;
       dual               = true;
@@ -382,7 +382,7 @@ struct implosion_t : public demonology_spell_t
 
       if ( t == this->target )
       {
-        m *= ( casts_left / 5.0 );
+        m *= ( energy_remaining / 100.0 ); // 2022-10-03 - Wild Imps deal 84% damage to primary after first cast, which costs 16 energy
       }
 
       return m;
@@ -439,7 +439,7 @@ struct implosion_t : public demonology_spell_t
         make_event( sim, 10_ms * launch_counter + imp_travel_time, [ ex, tar, imp ] {
           if ( imp && !imp->is_sleeping() )
           {
-            ex->casts_left = ( imp->resources.current[ RESOURCE_ENERGY ] / 20 );
+            ex->energy_remaining = ( imp->resources.current[ RESOURCE_ENERGY ] );
             ex->set_target( tar );
             ex->next_imp = imp;
             ex->execute();
@@ -1086,6 +1086,9 @@ void warlock_t::init_spells_demonology()
 
   talents.from_the_shadows = find_talent_spell( talent_tree::SPECIALIZATION, "From the Shadows" ); // Should be ID 267170
   talents.from_the_shadows_debuff = find_spell( 270569 );
+
+  talents.implosion = find_talent_spell( talent_tree::SPECIALIZATION, "Implosion" ); // Should be ID 196277
+  talents.implosion_aoe = find_spell( 196278 );
 
   talents.demonic_calling     = find_talent_spell( "Demonic Calling" );
   talents.power_siphon        = find_talent_spell( "Power Siphon" );
