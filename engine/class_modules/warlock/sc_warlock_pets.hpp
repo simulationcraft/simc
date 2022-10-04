@@ -367,6 +367,7 @@ struct felguard_pet_t : public warlock_pet_t
 {
   action_t* soul_strike;
   cooldown_t* felstorm_cd;
+  cooldown_t* dstr_cd;
   int demonic_strength_executes;
 
   // Energy thresholds to wake felguard up for something to do, minimum is the felstorm energy cost,

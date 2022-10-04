@@ -1082,7 +1082,7 @@ void warlock_t::init_spells_demonology()
   talents.bilescourge_bombers = find_talent_spell( talent_tree::SPECIALIZATION, "Bilescourge Bombers" ); // Should be ID 267211
   talents.bilescourge_bombers_aoe = find_spell( 267213 );
 
-  talents.demonic_strength    = find_talent_spell( "Demonic Strength" );
+  talents.demonic_strength = find_talent_spell( talent_tree::SPECIALIZATION, "Demonic Strength" ); // Should be ID 267171
 
   talents.demonic_calling     = find_talent_spell( "Demonic Calling" );
   talents.power_siphon        = find_talent_spell( "Power Siphon" );

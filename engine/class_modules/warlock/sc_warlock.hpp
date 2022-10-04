@@ -283,7 +283,7 @@ public:
     player_talent_t soul_strike;
     player_talent_t bilescourge_bombers;
     const spell_data_t* bilescourge_bombers_aoe; // Ground AoE data
-    const spell_data_t* demonic_strength; // DF - Now a choice against Bilescourge Bombers
+    player_talent_t demonic_strength;
     const spell_data_t* from_the_shadows; // DF - Should be unchanged but due to Shadowflame effect, new abilities need checking against it
 
     // DF - Implosion (presumably unchanged, double-check Wild Imp flight behavior)

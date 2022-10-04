@@ -37,8 +37,8 @@ void warlock_pet_t::create_buffs()
   pet_t::create_buffs();
 
   // Demonology
-  buffs.demonic_strength = make_buff( this, "demonic_strength", find_spell( 267171 ) )
-                               ->set_default_value( find_spell( 267171 )->effectN( 2 ).percent() )
+  buffs.demonic_strength = make_buff( this, "demonic_strength", o()->talents.demonic_strength )
+                               ->set_default_value( o()->talents.demonic_strength->effectN( 2 ).percent() )
                                ->set_cooldown( 0_ms );
 
   buffs.grimoire_of_service = make_buff( this, "grimoire_of_service", find_spell( 216187 ) )
@@ -411,6 +411,7 @@ felguard_pet_t::felguard_pet_t( warlock_t* owner, util::string_view name )
   action_list_str += "/legion_strike,if=energy>=" + util::to_string( max_energy_threshold );
 
   felstorm_cd = get_cooldown( "felstorm" );
+  dstr_cd = get_cooldown( "demonic_strength_felstorm" );
 
   owner_coeff.health = 0.75;
 
@@ -507,6 +508,12 @@ struct demonic_strength_t : public felstorm_t
     p()->buffs.demonic_strength->expire();
   }
 
+  // 2022-10-03 - Triggering Demonic Strength seems to ignore energy cost for Felstorm
+  double cost() const override
+  {
+    return 0.0;
+  }
+
   bool ready() override
   {
     if ( debug_cast< felguard_pet_t* >( p() )->demonic_strength_executes <= 0 )
@@ -527,17 +534,38 @@ timespan_t felguard_pet_t::available() const
 {
   double energy_threshold = max_energy_threshold;
   double time_to_felstorm = ( felstorm_cd->ready - sim->current_time() ).total_seconds();
+  double time_to_threshold = 0;
+  double time_to_next_event = 0;
+
   if ( time_to_felstorm <= 0 )
   {
     energy_threshold = min_energy_threshold;
   }
 
-  double deficit           = resources.current[ RESOURCE_ENERGY ] - energy_threshold;
-  double time_to_threshold = 0;
+  double deficit = resources.current[ RESOURCE_ENERGY ] - energy_threshold;
+
   // Not enough energy, figure out how many milliseconds it'll take to get
   if ( deficit < 0 )
   {
     time_to_threshold = util::ceil( std::fabs( deficit ) / resource_regen_per_second( RESOURCE_ENERGY ), 3 );
+  }
+
+  // Demonic Strength Felstorms do not have an energy requirement, so Felguard must be ready at any time it is up
+  // If Demonic Strength will be available before regular Felstorm but before energy threshold, we will check at that time
+  if ( o()->talents.demonic_strength.ok() )
+  {
+    double time_to_dstr = ( dstr_cd->ready - sim->current_time() ).total_seconds();
+    if ( time_to_dstr <= 0 )
+    {
+      return warlock_pet_t::available();
+    }
+    else if ( time_to_dstr <= time_to_felstorm && time_to_dstr <= time_to_threshold )
+    {
+      if ( time_to_dstr < 0.001 )
+        return warlock_pet_t::available();
+      else
+        return timespan_t::from_seconds( time_to_dstr );
+    }
   }
 
   // Fuzz regen by making the pet wait a bit extra if it's just below the resource threshold
@@ -548,7 +576,7 @@ timespan_t felguard_pet_t::available() const
 
   // Next event is either going to be the time to felstorm, or the time to gain enough energy for a
   // threshold value
-  double time_to_next_event = 0;
+
   if ( time_to_felstorm <= 0 )
   {
     time_to_next_event = time_to_threshold;
