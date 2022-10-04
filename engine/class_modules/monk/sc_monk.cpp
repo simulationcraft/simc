@@ -3181,13 +3181,16 @@ struct fists_of_fury_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::last_tick( dot );
 
-    if ( p()->legendary.xuens_battlegear->ok() )
-      p()->buff.pressure_point->trigger();
-    else if ( p()->talent.windwalker.xuens_battlegear->ok() )
+    // If Fists of Fury went the full duration
+    if (dot->current_tick == dot->num_ticks()) {
+      if ( p()->legendary.xuens_battlegear->ok() )
+        p()->buff.pressure_point->trigger();
+      else if ( p()->talent.windwalker.xuens_battlegear->ok() )
         p()->buff.pressure_point->trigger();
 
-    if ( p()->buff.t29_4p_ww_fof_hidden->up() )
-      p()->buff.t29_4p_ww_fof_hidden->expire();
+      if ( p()->buff.t29_4p_ww_fof_hidden->up() )
+        p()->buff.t29_4p_ww_fof_hidden->expire();
+    }
   }
 };
 
