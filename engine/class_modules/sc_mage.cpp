@@ -324,6 +324,7 @@ public:
     buff_t* evocation;
     buff_t* foresight;
     buff_t* foresight_icd;
+    buff_t* impetus;
     buff_t* presence_of_mind;
     buff_t* rule_of_threes;
 
@@ -2868,6 +2869,14 @@ struct arcane_blast_t final : public arcane_mage_spell_t
     arcane_mage_spell_t::execute();
 
     p()->trigger_arcane_charge();
+
+    if ( rng().roll( p()->talents.impetus->effectN( 1 ).percent()  ) )
+    {
+      if ( p()->buffs.arcane_charge->at_max_stacks() )
+        p()->buffs.impetus->trigger();
+      else
+        p()->trigger_arcane_charge();
+    }
 
     if ( p()->buffs.presence_of_mind->up() )
       p()->buffs.presence_of_mind->decrement();
@@ -6898,6 +6907,9 @@ void mage_t::create_buffs()
                                  ->set_can_cancel( false )
                                  ->set_stack_change_callback( [ this ] ( buff_t*, int, int cur )
                                    { if ( cur == 0 ) buffs.foresight->trigger(); } );
+  buffs.impetus              = make_buff( this, "impetus", find_spell( 393939 ) )
+                                 ->set_default_value_from_effect( 1 )
+                                 ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.rule_of_threes       = make_buff( this, "rule_of_threes", find_spell( 264774 ) )
                                  ->set_default_value_from_effect( 1 )
                                  ->set_chance( talents.rule_of_threes->ok() );
@@ -7392,6 +7404,8 @@ double mage_t::composite_player_multiplier( school_e school ) const
 
   if ( buffs.enlightened_damage->has_common_school( school ) )
     m *= 1.0 + buffs.enlightened_damage->check_value();
+  if ( buffs.impetus->has_common_school( school ) )
+    m *= 1.0 + buffs.impetus->check_value();
   if ( buffs.infernal_cascade->has_common_school( school ) )
     m *= 1.0 + buffs.infernal_cascade->check_stack_value();
 
