@@ -72,7 +72,7 @@ public:
 
     auto td = this->td( t );
 
-    if ( td->debuffs_from_the_shadows->check() && data().affected_by( td->debuffs_from_the_shadows->data().effectN( 1 ) ) )
+    if ( td->debuffs_from_the_shadows->check() && data().affected_by( p()->talents.from_the_shadows_debuff->effectN( 1 ) ) )
     {
       m *= 1.0 + td->debuffs_from_the_shadows->check_value();
     }
@@ -1084,10 +1084,13 @@ void warlock_t::init_spells_demonology()
 
   talents.demonic_strength = find_talent_spell( talent_tree::SPECIALIZATION, "Demonic Strength" ); // Should be ID 267171
 
+  talents.from_the_shadows = find_talent_spell( talent_tree::SPECIALIZATION, "From the Shadows" ); // Should be ID 267170
+  talents.from_the_shadows_debuff = find_spell( 270569 );
+
   talents.demonic_calling     = find_talent_spell( "Demonic Calling" );
   talents.power_siphon        = find_talent_spell( "Power Siphon" );
   talents.doom                = find_talent_spell( "Doom" );
-  talents.from_the_shadows    = find_talent_spell( "From the Shadows" );
+
 
 
   talents.inner_demons        = find_talent_spell( "Inner Demons" );
