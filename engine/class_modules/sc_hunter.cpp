@@ -3099,18 +3099,18 @@ struct wind_arrow_t final : public hunter_ranged_attack_t
 struct wailing_arrow_t: public hunter_ranged_attack_t
 {
   struct {
-    int st_count = 0;
-    int aoe_count = 0;
-    wind_arrow_t* action = nullptr;
+    int primary_arrows = 0;
+    int secondary_arrows = 0;
+    wind_arrow_t* wind_arrow = nullptr;
   } windrunners_barrage;
 
   struct damage_t final : hunter_ranged_attack_t
   {
-    int windrunners_barrage_count = 0;
-    wind_arrow_t* windrunners_barrage_action = nullptr;
+    int wind_arrows = 0;
+    wind_arrow_t* wind_arrow = nullptr;
 
-    damage_t( util::string_view n, hunter_t* p, wind_arrow_t* wind_arrow, int aoe_count ):
-      hunter_ranged_attack_t( n, p, p -> find_spell( 354831 ) ), windrunners_barrage_count( aoe_count ), windrunners_barrage_action( wind_arrow )
+    damage_t( util::string_view n, hunter_t* p, wind_arrow_t* wind_arrow, int arrows ):
+      hunter_ranged_attack_t( n, p, p -> find_spell( 354831 ) ), wind_arrows( arrows ), wind_arrow( wind_arrow )
     {
       aoe = -1;
       attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
@@ -3124,17 +3124,16 @@ struct wailing_arrow_t: public hunter_ranged_attack_t
     {
       hunter_ranged_attack_t::execute();
 
-      if ( windrunners_barrage_action && execute_state && execute_state -> chain_target > 0)
+      if ( wind_arrow && execute_state && execute_state -> chain_target > 0)
       {
-        // 19-9-22 TODO: splits arrows evenly among secondary targets but discards remainders
-        int per_target = std::max( windrunners_barrage_count / execute_state -> chain_target, 1 );
-        int targets = std::min( windrunners_barrage_count, execute_state -> chain_target );
+        int arrows = wind_arrows;
+        int target = 1;
         std::vector<player_t*>& tl = target_list();
-
-        for ( int t = 1; t <= targets; t++ )
+        while ( arrows-- > 0 )
         {
-          for ( int i = 0; i < per_target; i++)
-            windrunners_barrage_action -> execute_on_target( tl[ t ]);
+          wind_arrow -> execute_on_target( tl[ target++ ] );
+          if ( target > execute_state -> chain_target )
+            target = 1;
         }
       }
     }
@@ -3148,13 +3147,13 @@ struct wailing_arrow_t: public hunter_ranged_attack_t
 
     if ( p -> talents.windrunners_barrage.ok() )
     {
-      windrunners_barrage.st_count = as<int>( p -> talents.windrunners_barrage -> effectN( 1 ).base_value() );
-      windrunners_barrage.aoe_count = as<int>( p -> talents.windrunners_barrage -> effectN( 2 ).base_value() );
-      windrunners_barrage.action = p -> get_background_action<wind_arrow_t>( "windrunners_barrage" );
-      add_child(windrunners_barrage.action);
+      windrunners_barrage.primary_arrows = as<int>( p -> talents.windrunners_barrage -> effectN( 1 ).base_value() );
+      windrunners_barrage.secondary_arrows = as<int>( p -> talents.windrunners_barrage -> effectN( 2 ).base_value() );
+      windrunners_barrage.wind_arrow = p -> get_background_action<wind_arrow_t>( "windrunners_barrage" );
+      add_child(windrunners_barrage.wind_arrow);
     }
 
-    impact_action = p -> get_background_action<damage_t>( "wailing_arrow_damage", windrunners_barrage.action, windrunners_barrage.aoe_count );
+    impact_action = p -> get_background_action<damage_t>( "wailing_arrow_damage", windrunners_barrage.wind_arrow, windrunners_barrage.secondary_arrows );
     impact_action -> stats = stats;
     stats -> action_list.push_back( impact_action );
   }
@@ -3163,11 +3162,11 @@ struct wailing_arrow_t: public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::execute();
 
-    // 19-9-22 TODO: currently no arrows are fired at the main target
-    if ( windrunners_barrage.action )
+    // 04-10-22 TODO: currently no arrows are fired at the main target
+    if ( windrunners_barrage.wind_arrow && !p() -> bugs )
     {
-      for ( int i = 0; i < windrunners_barrage.st_count; i++ )
-        windrunners_barrage.action -> execute_on_target( target );
+      for ( int i = 0; i < windrunners_barrage.primary_arrows; i++ )
+        windrunners_barrage.wind_arrow -> execute_on_target( target );
     }
 
     if ( p() -> talents.readiness.ok() ) {
