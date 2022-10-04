@@ -2524,7 +2524,6 @@ void priest_t::trigger_shadowy_apparitions( action_state_t* s, proc_t* proc, boo
 
 // ==========================================================================
 // Trigger Psychic Link on any targets that weren't the original target and have Vampiric Touch ticking on them
-// TODO: consider adding reporting for Mind Spike vs. Mind Blast triggered damage
 // ==========================================================================
 void priest_t::trigger_psychic_link( action_state_t* s )
 {
