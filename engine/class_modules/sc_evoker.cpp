@@ -1422,7 +1422,9 @@ struct deep_breath_t : public evoker_spell_t
 
   timespan_t execute_time() const override
   {
-    return damage->travel_time();
+    // TODO: Work out a better solution for this.
+    //return damage->travel_time();
+    return 3_s;
   }
 
   void execute() override
