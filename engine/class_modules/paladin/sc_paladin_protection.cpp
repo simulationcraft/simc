@@ -234,6 +234,7 @@ struct moment_of_glory_t : public paladin_spell_t
     p()->buffs.moment_of_glory->trigger();
   }
 };
+
 // Tyrs Enforcer damage proc =================================================
 struct tyrs_enforcer_damage_t : public paladin_spell_t
 {
@@ -244,12 +245,23 @@ struct tyrs_enforcer_damage_t : public paladin_spell_t
      may_miss = false;
   }
 };
-// Blessed Hammer (Protection) ================================================
 
+// Inner Light damage proc =================================================
+struct inner_light_damage_t : public paladin_spell_t
+{
+  inner_light_damage_t( paladin_t* p )
+    : paladin_spell_t( "inner_light", p, p->talents.tyrs_enforcer->effectN( 1 ).trigger() )
+  {
+    background = proc = may_crit = true;
+    may_miss                     = false;
+  }
+};
+
+// Blessed Hammer (Protection) ================================================
 struct blessed_hammer_tick_t : public paladin_spell_t
 {
-  blessed_hammer_tick_t( paladin_t* p ) :
-    paladin_spell_t( "blessed_hammer_tick", p, p -> find_spell( 204301 ) )
+  blessed_hammer_tick_t( paladin_t* p )
+      : paladin_spell_t( "blessed_hammer_tick", p, p->find_spell( 204301 ) )
   {
     aoe = -1;
     background = dual = direct_tick = true;
@@ -382,7 +394,7 @@ struct guardian_of_ancient_kings_t : public paladin_spell_t
 struct hammer_of_the_righteous_aoe_t : public paladin_melee_attack_t
 {
   hammer_of_the_righteous_aoe_t( paladin_t* p ) :
-    paladin_melee_attack_t( "hammer_of_the_righteous_aoe", p, p -> find_spell( 88263 ) )
+      paladin_melee_attack_t( "hammer_of_the_righteous_aoe", p, p -> find_spell( 88263 ) )
   {
     // AoE effect always hits if single-target attack succeeds
     // Doesn't proc Grand Crusader
@@ -411,8 +423,8 @@ struct hammer_of_the_righteous_aoe_t : public paladin_melee_attack_t
 struct hammer_of_the_righteous_t : public paladin_melee_attack_t
 {
   hammer_of_the_righteous_aoe_t* hotr_aoe;
-  hammer_of_the_righteous_t( paladin_t* p, util::string_view options_str ) :
-    paladin_melee_attack_t( "hammer_of_the_righteous", p, p -> find_class_spell( "Hammer of the Righteous" ) )
+  hammer_of_the_righteous_t( paladin_t* p, util::string_view options_str )
+      : paladin_melee_attack_t( "hammer_of_the_righteous", p, p->find_talent_spell( talent_tree::SPECIALIZATION, "Hammer of the Righteous" ) )
   {
     parse_options( options_str );
 
@@ -839,6 +851,16 @@ void paladin_t::trigger_t28_4p_prot( action_state_t* s )
   cooldowns.t28_4p_prot_icd->start();
 }
 
+void paladin_t::trigger_inner_light( action_state_t* s )
+{
+  if ( !talents.inner_light->ok() && cooldowns.inner_light_icd -> up() )
+    return;
+
+  active.inner_light_damage->set_target( s -> action -> player );
+  active.inner_light_damage->execute();
+  cooldowns.inner_light_icd->start();
+}
+
 void paladin_t::trigger_tyrs_enforcer( action_state_t* s )
 {
   // escape if we don't have Tyrs Enforcer
@@ -847,6 +869,8 @@ void paladin_t::trigger_tyrs_enforcer( action_state_t* s )
 
   active.tyrs_enforcer_damage->set_target( s -> target);
   active.tyrs_enforcer_damage->execute();
+  active.inner_light_damage->set_target( s->target );
+  active.inner_light_damage->execute();
 }
 
 bool paladin_t::standing_in_consecration() const
@@ -883,6 +907,7 @@ void paladin_t::create_prot_actions()
   {
     active.t28_4p_prot = new t28_4p_prot_t( this );
     active.tyrs_enforcer_damage = new tyrs_enforcer_damage_t( this );
+    active.inner_light_damage   = new inner_light_damage_t( this );
   }
 }
 
@@ -950,8 +975,7 @@ void paladin_t::create_buffs_protection()
     legendary.reign_of_endless_kings -> effectN( 2 ).trigger() -> effectN( 2 ).trigger() );
 
   // Azerite traits
-  buffs.inner_light = make_buff( this, "inner_light", find_spell( 275481 ) )
-        -> set_default_value( azerite.inner_light.value( 1 ) );
+  buffs.inner_light = make_buff( this, "inner_light", find_spell( 386568 ) );
   buffs.inspiring_vanguard = make_buff<stat_buff_t>( this, "inspiring_vanguard", azerite.inspiring_vanguard.spell() -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() )
         -> add_stat( STAT_STRENGTH, azerite.inspiring_vanguard.value( 1 ) );
   buffs.soaring_shield = make_buff<stat_buff_t>( this, "soaring_shield", azerite.soaring_shield.spell() -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() )
@@ -1049,7 +1073,6 @@ void paladin_t::init_spells_protection()
 
   // Azerite traits
   azerite.inspiring_vanguard = find_azerite_spell( "Inspiring Vanguard" );
-  azerite.inner_light        = find_azerite_spell( "Inner Light"        );
   azerite.soaring_shield     = find_azerite_spell( "Soaring Shield"     );
 
   // Tier Sets

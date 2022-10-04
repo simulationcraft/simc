@@ -1056,10 +1056,11 @@ struct holy_shield_damage_t : public paladin_spell_t
 //TODO Check new spell id
 struct inner_light_damage_t : public paladin_spell_t
 {
-  inner_light_damage_t( paladin_t* p ) : paladin_spell_t( "inner_light", p, p->find_spell( 275483 ) )
+  inner_light_damage_t( paladin_t* p )
+      : paladin_spell_t( "inner_light", p, p->find_spell ( 386553 )  )
   {
-    background  = true;
-    base_dd_min = base_dd_max = p->azerite.inner_light.value( 2 );
+    background  = proc = may_crit = true;
+    may_miss                      = false;
   }
 };
 
@@ -1964,11 +1965,9 @@ void paladin_t::create_actions()
     {
       active.holy_shield_damage = new holy_shield_damage_t( this );
     }
-    //TODO Find new spell id
     if ( talents.inner_light -> ok() )
     {
-      active.inner_light_damage           = new inner_light_damage_t( this );
-      cooldowns.inner_light_icd->duration = find_spell( 275481 )->internal_cooldown();
+      active.inner_light_damage = new inner_light_damage_t( this );
     }
   }
   // Ret

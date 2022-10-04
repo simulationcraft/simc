@@ -652,6 +652,7 @@ public:
   void    trigger_grand_crusader();
   void    trigger_holy_shield( action_state_t* s );
   void    trigger_tyrs_enforcer( action_state_t* s );
+  void    trigger_inner_light( action_state_t* s );
   void    trigger_t28_4p_prot( action_state_t* s );
   void    trigger_forbearance( player_t* target );
   int     get_local_enemies( double distance ) const;
