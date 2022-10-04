@@ -3060,7 +3060,6 @@ struct arcane_shot_t: public hunter_ranged_attack_t
   {
     double c = hunter_ranged_attack_t::cost();
 
-    // 19-9-22 TODO: talent focus reduction is not properly affecting the buff values
     if ( p() -> buffs.eagletalons_true_focus -> check() )
       c *= 1 + p() -> talents.eagletalons_true_focus -> effectN( 3 ).percent();
 
@@ -3961,7 +3960,6 @@ struct chimaera_shot_mm_t: public hunter_ranged_attack_t
   {
     double c = hunter_ranged_attack_t::cost();
 
-    // 19-9-22 TODO: talent focus reduction is not properly affecting the buff values
     if ( p() -> buffs.eagletalons_true_focus -> check() )
       c *= 1 + p() -> talents.eagletalons_true_focus -> effectN( 3 ).percent();
 
@@ -4216,7 +4214,6 @@ struct aimed_shot_t : public aimed_shot_base_t
 
     double c = aimed_shot_base_t::cost();
 
-    // 19-9-22 TODO: talent focus reduction is not properly affecting the buff values
     if ( p() -> buffs.eagletalons_true_focus -> check() )
       c *= 1 + p() -> talents.eagletalons_true_focus -> effectN( 1 ).percent();
 
@@ -4648,7 +4645,6 @@ struct multishot_mm_t: public hunter_ranged_attack_t
   {
     double c = hunter_ranged_attack_t::cost();
 
-    // 19-9-22 TODO: talent focus reduction is not properly affecting the buff values
     if ( p() -> buffs.eagletalons_true_focus -> check() )
       c *= 1 + p() -> talents.eagletalons_true_focus -> effectN( 3 ).percent();
 
@@ -5811,7 +5807,12 @@ struct trueshot_t: public hunter_spell_t
   {
     hunter_spell_t::execute();
 
+    // Applying Trueshot directly does not extend an existing Trueshot and resets Unerring Vision stacks.
+    p() -> buffs.trueshot -> expire();
+
     p() -> buffs.trueshot -> trigger();
+    p() -> buffs.eagletalons_true_focus_runeforge -> trigger();
+    p() -> buffs.eagletalons_true_focus -> trigger();
   }
 };
 
@@ -6919,31 +6920,23 @@ void hunter_t::create_buffs()
     -> set_chance( talents.lone_wolf.ok() );
 
   buffs.trueshot =
-    make_buff( this, "trueshot", talents.trueshot )
+    make_buff( this, "trueshot", find_spell( 288613 ) )
       -> set_cooldown( 0_ms )
       -> set_default_value_from_effect( 4 )
+      -> set_refresh_behavior( buff_refresh_behavior::EXTEND )
       -> set_affects_regen( true )
       -> set_stack_change_callback(
         [ this ]( buff_t*, int old, int cur ) {
           cooldowns.aimed_shot -> adjust_recharge_multiplier();
           cooldowns.rapid_fire -> adjust_recharge_multiplier();
-
           if ( cur == 0 ) {
             buffs.eagletalons_true_focus -> expire();
             buffs.eagletalons_true_focus_runeforge -> expire();
-            
             buffs.unerring_vision_hidden -> expire();
             buffs.unerring_vision -> expire();
           }
-          else if ( old == 0 )
-          {
+          else if ( cur == 1 )
             buffs.unerring_vision_hidden -> trigger();
-
-            if ( legendary.eagletalons_true_focus.ok() )
-              buffs.eagletalons_true_focus_runeforge -> trigger();
-            if ( talents.eagletalons_true_focus.ok() )
-              buffs.eagletalons_true_focus -> trigger();
-          }
         } )
       -> apply_affecting_aura( legendary.eagletalons_true_focus )
       -> apply_affecting_aura( talents.eagletalons_true_focus )
@@ -6970,10 +6963,9 @@ void hunter_t::create_buffs()
     -> set_default_value_from_effect( 1 );
 
   buffs.unerring_vision_hidden =
-    make_buff( this, "unerring_vision_hidden", find_spell( 386876 ) )
+    make_buff( this, "unerring_vision_hidden", talents.unerring_vision -> effectN( 1 ).trigger() )
       -> set_quiet( true )
       -> set_tick_zero( true )
-      -> set_chance( talents.unerring_vision.ok() )
       -> set_tick_callback(
         [ this ]( buff_t*, int, const timespan_t& ) {
           buffs.unerring_vision -> trigger();
@@ -6984,13 +6976,13 @@ void hunter_t::create_buffs()
       -> add_invalidate( CACHE_CRIT_CHANCE );
 
   buffs.eagletalons_true_focus_runeforge =
-    make_buff( this, "eagletalons_true_focus_runeforge", find_spell( 336851 ) )
+    make_buff( this, "eagletalons_true_focus_runeforge", legendary.eagletalons_true_focus -> effectN( 1 ).trigger() )
       -> set_default_value_from_effect( 1 )
-      -> set_trigger_spell( find_spell( 336849 ) );
+      -> set_trigger_spell( legendary.eagletalons_true_focus );
 
   buffs.eagletalons_true_focus =
-    make_buff( this, "eagletalons_true_focus", find_spell( 389450 ) )
-    -> set_trigger_spell( find_spell( 389449 ) );
+    make_buff( this, "eagletalons_true_focus", talents.eagletalons_true_focus -> effectN( 4 ).trigger() )
+      -> set_trigger_spell( talents.eagletalons_true_focus );
 
   buffs.bulletstorm =
     make_buff( this, "bulletstorm", find_spell( 389020 ) )
