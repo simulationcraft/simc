@@ -3152,6 +3152,12 @@ struct fists_of_fury_t : public monk_melee_attack_t
 
   void execute() override
   {
+    if ( p()->buff.t29_4p_ww_fof->up() )
+    {
+      p()->buff.t29_4p_ww_fof_hidden->trigger( p()->buff.t29_4p_ww_fof->stack(), timespan_t::from_seconds( 4 ) );
+      p()->buff.t29_4p_ww_fof->expire();
+    }
+
     monk_melee_attack_t::execute();
 
     if ( p()->buff.fury_of_xuen_stacks->up() && rng().roll( p()->buff.fury_of_xuen_stacks->stack_value() ) )
@@ -3176,10 +3182,8 @@ struct fists_of_fury_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::last_tick( dot );
 
-        if ( p()->buff.t29_4p_ww_fof->up() )
-    {
-      p()->buff.t29_4p_ww_fof_hidden->trigger( p()->buff.t29_4p_ww_fof->stack(), timespan_t::from_seconds( 4 ) );
-      p()->buff.t29_4p_ww_fof->expire();
+    if (p()->buff.t29_4p_ww_fof_hidden->up()) {
+      p()->buff.t29_4p_ww_fof_hidden->expire();
     }
 
     // If Fists of Fury went the full duration
