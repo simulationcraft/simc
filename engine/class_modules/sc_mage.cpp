@@ -3017,6 +3017,7 @@ struct arcane_missiles_tick_t final : public arcane_mage_spell_t
   {
     background = true;
     affected_by.savant = triggers.radiant_spark = true;
+    base_multiplier *= 1.0 + p->talents.improved_arcane_missiles->effectN( 1 ).percent();
   }
 
   void impact( action_state_t* s ) override
