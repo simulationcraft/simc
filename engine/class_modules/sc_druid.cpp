@@ -2268,6 +2268,11 @@ public:
     }
   }
 
+  static std::string get_suffix( std::string_view name, std::string_view base )
+  {
+    return std::string( name.substr( std::min( name.size(), name.find( base ) + base.size() ) ) );
+  }
+
   dot_t* get_dot( player_t* t ) override
   {
     if ( !t )
@@ -3975,14 +3980,14 @@ struct ferocious_bite_t : public cat_attack_t
   {
     double fb_mul;
 
-    rampant_ferocity_t( druid_t* p )
-      : cat_attack_t( "rampant_ferocity", p, p->find_spell( 391710 ) ),
-        fb_mul( p->talent.rampant_ferocity->effectN( 1 ).percent() )
+    rampant_ferocity_t( druid_t* p, std::string_view n )
+      : cat_attack_t( n, p, p->find_spell( 391710 ) ), fb_mul( p->talent.rampant_ferocity->effectN( 1 ).percent() )
     {
       aoe = -1;
       reduced_aoe_targets = p->talent.rampant_ferocity->effectN( 2 ).base_value();
       background = true;
       round_base_dmg = false;
+      name_str_reporting = "rampant_ferocity";
     }
 
     action_state_t* new_state() override { return new ferocious_bite_state_t( this, target ); }
@@ -4010,7 +4015,6 @@ struct ferocious_bite_t : public cat_attack_t
   };
 
   action_t* rampant_ferocity;
-  cat_attack_t* rip_action;
   double excess_energy;
   double max_excess_energy;
   double combo_points;
@@ -4021,7 +4025,6 @@ struct ferocious_bite_t : public cat_attack_t
   ferocious_bite_t( druid_t* p, std::string_view n, std::string_view opt )
     : cat_attack_t( n, p, p->find_class_spell( "Ferocious Bite" ) ),
       rampant_ferocity( nullptr ),
-      rip_action( nullptr ),
       excess_energy( 0.0 ),
       max_excess_energy( p->query_aura_effect( &data(), A_NONE, 0, spell_data_t::nil(), E_POWER_BURN )->base_value() ),
       combo_points( 0.0 ),
@@ -4032,20 +4035,14 @@ struct ferocious_bite_t : public cat_attack_t
 
     if ( p->talent.rampant_ferocity.ok() )
     {
-      rampant_ferocity = p->get_secondary_action<rampant_ferocity_t>( "rampant_ferocity" );
+      auto suf = get_suffix( name_str, "ferocious_bite" );
+      rampant_ferocity = p->get_secondary_action_n<rampant_ferocity_t>( "rampant_ferocity" + suf );
       rampant_ferocity->background = true;
       add_child( rampant_ferocity );
     }
 
     if ( p->talent.relentless_predator.ok() )
       max_excess_energy *= 1.0 + p->talent.rampant_ferocity->effectN( 2 ).percent();
-  }
-
-  void init_finished() override
-  {
-    cat_attack_t::init_finished();
-
-    rip_action = dynamic_cast<cat_attack_t*>( p()->find_action( "rip" ) );
   }
 
   double maximum_energy() const
@@ -4099,7 +4096,7 @@ struct ferocious_bite_t : public cat_attack_t
     }
 
     // TODO: determine what's causing damage to be greater than expected
-    if ( rampant_ferocity && s->result_amount > 0 && rip_action && rip_action->get_dot_count() )
+    if ( rampant_ferocity && s->result_amount > 0 && !rampant_ferocity->target_list().empty() )
     {
       auto state = rampant_ferocity->get_state();
       state->target = s->target;
@@ -8045,13 +8042,8 @@ struct starsurge_t : public druid_spell_t
 
     if ( p->talent.power_of_goldrinn.ok() )
     {
-      if ( name_str.find( '_' ) != std::string::npos ) {
-        auto suf = name_str.substr( name_str.find_first_of( '_' ) );
-        goldrinn = p->get_secondary_action_n<goldrinns_fang_t>( "goldrinns_fang" + suf );
-      }
-      else {
-        goldrinn = p->get_secondary_action_n<goldrinns_fang_t>( "goldrinns_fang" );
-      }
+      auto suf = get_suffix( name_str, "starsurge" );
+      goldrinn = p->get_secondary_action_n<goldrinns_fang_t>( "goldrinns_fang" + suf );
       add_child( goldrinn );
     }
   }
