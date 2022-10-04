@@ -284,7 +284,8 @@ public:
     player_talent_t bilescourge_bombers;
     const spell_data_t* bilescourge_bombers_aoe; // Ground AoE data
     player_talent_t demonic_strength;
-    const spell_data_t* from_the_shadows; // DF - Should be unchanged but due to Shadowflame effect, new abilities need checking against it
+    player_talent_t from_the_shadows;
+    const spell_data_t* from_the_shadows_debuff; // Tooltip says "Shadowflame" but this contains an explicit whitelist (for the *warlock*, pets are unknown and we'll fall back to schools)
 
     // DF - Implosion (presumably unchanged, double-check Wild Imp flight behavior)
     // DF - Shadow's Bite (Demonbolt damage increase after Dreadstalkers despawn)

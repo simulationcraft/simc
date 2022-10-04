@@ -825,7 +825,7 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
   // Demo
   dots_doom         = target->get_dot( "doom", &p );
 
-  debuffs_from_the_shadows = make_buff( *this, "from_the_shadows", source->find_spell( 270569 ) )
+  debuffs_from_the_shadows = make_buff( *this, "from_the_shadows", p.talents.from_the_shadows_debuff )
                                  ->set_default_value_from_effect( 1 );
 
   target->register_on_demise_callback( &p, [ this ]( player_t* ) { target_demise(); } );
