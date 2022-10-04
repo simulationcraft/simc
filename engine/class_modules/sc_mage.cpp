@@ -336,6 +336,7 @@ public:
     buff_t* flame_accelerant_icd;
     buff_t* heating_up;
     buff_t* hot_streak;
+    buff_t* hyperthermia;
     buff_t* pyroclasm;
     buff_t* pyrotechnics;
     buff_t* sun_kings_blessing;
@@ -2326,7 +2327,7 @@ struct hot_streak_spell_t : public fire_mage_spell_t
 
   timespan_t execute_time() const override
   {
-    if ( p()->buffs.hot_streak->check() || p()->buffs.firestorm->check() )
+    if ( p()->buffs.hot_streak->check() || p()->buffs.hyperthermia->check() || p()->buffs.firestorm->check() )
       return 0_ms;
 
     return fire_mage_spell_t::execute_time();
@@ -2342,6 +2343,7 @@ struct hot_streak_spell_t : public fire_mage_spell_t
   {
     double c = fire_mage_spell_t::composite_crit_chance();
 
+    c += p()->buffs.hyperthermia->check_value();
     c += p()->buffs.firestorm->check_value();
 
     return c;
@@ -6909,7 +6911,17 @@ void mage_t::create_buffs()
   buffs.heating_up               = make_buff( this, "heating_up", find_spell( 48107 ) );
   buffs.hot_streak               = make_buff<buffs::expanded_potential_buff_t>( this, "hot_streak", find_spell( 48108 ) )
                                      ->set_stack_change_callback( [ this ] ( buff_t*, int old, int )
-                                       { if ( old == 0 ) buffs.firestorm->trigger(); } );
+                                       {
+                                         if ( old == 0 )
+                                         {
+                                           buffs.hyperthermia->trigger();
+                                           if ( !talents.hyperthermia.ok() )
+                                             buffs.firestorm->trigger();
+                                         }
+                                       } );
+  buffs.hyperthermia             = make_buff( this, "hyperthermia", find_spell( 383874 ) )
+                                    ->set_default_value_from_effect( 2 )
+                                    ->set_trigger_spell( talents.hyperthermia );
   buffs.pyroclasm                = make_buff( this, "pyroclasm", find_spell( 269651 ) )
                                      ->set_default_value_from_effect( 1 )
                                      ->set_chance( talents.pyroclasm->effectN( 1 ).percent() );
