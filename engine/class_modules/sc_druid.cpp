@@ -1269,15 +1269,26 @@ struct denizen_of_the_dream_t : public pet_t
   {
     fey_missile_t( pet_t* p ) : spell_t( "fey_missile", p, p->find_spell( 188046 ) )
     {
-      double dam = 0.0;
+      // From ExpectedStat.db2
+      double base_dam = 127552;  // @70
 
-      // TODO: figure out how these base damage amounts are calculated
-      if ( p->owner->true_level >= 70 )
-        dam = 1275;
-      else if ( p->owner->true_level >= 60 )
-        dam = 233;
+      switch( p->owner->true_level )
+      {
+        case 70: break;
+        case 69: base_dam = 122190; break;
+        case 68: base_dam = 114924; break;
+        case 67: base_dam = 104111; break;
+        case 66: base_dam = 89147;  break;
+        case 65: base_dam = 76320;  break;
+        case 64: base_dam = 65318;  break;
+        case 63: base_dam = 55870;  break;
+        case 62: base_dam = 47749;  break;
+        case 61: base_dam = 40760;  break;
+        default: base_dam = 23406;  break;
+      }
 
-      base_dd_min = base_dd_max = dam;
+      base_dd_min = base_dd_max = base_dam / 100;
+
       name_str_reporting = "fey_missile";
 
       auto proxy = debug_cast<druid_t*>( p->owner )->active.denizen_of_the_dream;
@@ -1383,7 +1394,26 @@ struct force_of_nature_t : public pet_t
   {
     // Treants have base weapon damage + ap from player's sp.
     owner_coeff.ap_from_sp = 0.6;
-    main_hand_weapon.min_dmg = main_hand_weapon.max_dmg = 6.0;
+
+    // From ExpectedStat.db2
+    double base_dps = 2834;  // @70
+
+    switch ( o()->true_level )
+    {
+      case 70: break;
+      case 69: base_dps = 2715; break;
+      case 68: base_dps = 2553; break;
+      case 67: base_dps = 2313; break;
+      case 66: base_dps = 1981; break;
+      case 65: base_dps = 1696; break;
+      case 64: base_dps = 1451; break;
+      case 63: base_dps = 1241; break;
+      case 62: base_dps = 1061; break;
+      case 61: base_dps = 905;  break;
+      default: base_dps = 520;  break;
+    }
+
+    main_hand_weapon.min_dmg = main_hand_weapon.max_dmg = base_dps * main_hand_weapon.swing_time.total_seconds() / 1000;
 
     resource_regeneration = regen_type::DISABLED;
     main_hand_weapon.type = WEAPON_BEAST;
