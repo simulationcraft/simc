@@ -328,6 +328,7 @@ public:
     // Fire
     buff_t* combustion;
     buff_t* feel_the_burn;
+    buff_t* fevered_incantation;
     buff_t* firefall;
     buff_t* firefall_ready;
     buff_t* firemind;
@@ -365,7 +366,7 @@ public:
     buff_t* siphon_storm;
     buff_t* temporal_warp;
 
-    buff_t* fevered_incantation;
+    buff_t* runeforge_fevered_incantation;
     buff_t* firestorm;
     buff_t* molten_skyfall;
     buff_t* molten_skyfall_ready;
@@ -1865,12 +1866,20 @@ public:
         p()->buffs.overflowing_energy->trigger();
     }
 
-    if ( p()->runeforge.fevered_incantation->ok() && s->result_type == result_amount_type::DMG_DIRECT )
+    if ( p()->talents.fevered_incantation->ok() && s->result_type == result_amount_type::DMG_DIRECT )
     {
       if ( s->result == RESULT_CRIT )
         make_event( *sim, [ this ] { p()->buffs.fevered_incantation->trigger(); } );
       else
         make_event( *sim, [ this ] { p()->buffs.fevered_incantation->expire(); } );
+    }
+
+    if ( p()->runeforge.fevered_incantation->ok() && !p()->talents.fevered_incantation->ok() && s->result_type == result_amount_type::DMG_DIRECT )
+    {
+      if ( s->result == RESULT_CRIT )
+        make_event( *sim, [ this ] { p()->buffs.runeforge_fevered_incantation->trigger(); } );
+      else
+        make_event( *sim, [ this ] { p()->buffs.runeforge_fevered_incantation->expire(); } );
     }
 
     if ( p()->action.frost_storm_comet_storm
@@ -6857,6 +6866,9 @@ void mage_t::create_buffs()
                                  ->set_default_value( talents.feel_the_burn->effectN( 1 ).base_value() )
                                  ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
                                  ->set_chance( talents.feel_the_burn.ok() );
+  buffs.fevered_incantation  = make_buff( this, "fevered_incantation", find_spell( 383811 ) )
+                                 ->set_default_value( talents.fevered_incantation->effectN( 1 ).base_value()  )
+                                 ->set_chance( talents.fevered_incantation.ok() );
   buffs.firefall             = make_buff( this, "firefall", find_spell( 384035 ) )
                                        ->set_chance( talents.firefall.ok() );
   buffs.firefall_ready       = make_buff( this, "firefall_ready", find_spell( 384038 ) );
@@ -6955,18 +6967,18 @@ void mage_t::create_buffs()
                            ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
                            ->set_chance( talents.temporal_warp->ok() || runeforge.temporal_warp.ok() );
 
-  buffs.fevered_incantation      = make_buff( this, "fevered_incantation", find_spell( 333049 ) )
-                                     ->set_default_value_from_effect( 1 )
-                                     ->set_chance( runeforge.fevered_incantation.ok() );
-  buffs.firestorm                = make_buff( this, "firestorm", find_spell( 333100 ) )
-                                     ->set_default_value_from_effect( 2 )
-                                     ->set_trigger_spell( runeforge.firestorm );
-  buffs.molten_skyfall           = make_buff( this, "molten_skyfall", find_spell( 333170 ) )
-                                     ->set_chance( runeforge.molten_skyfall.ok() && !talents.firefall.ok() );
-  buffs.molten_skyfall_ready     = make_buff( this, "molten_skyfall_ready", find_spell( 333182 ) );
-  buffs.sun_kings_blessing       = make_buff( this, "sun_kings_blessing", find_spell( 333314 ) )
-                                     ->set_chance( runeforge.sun_kings_blessing.ok() );
-  buffs.sun_kings_blessing_ready = make_buff( this, "sun_kings_blessing_ready", find_spell( 333315 ) );
+  buffs.runeforge_fevered_incantation = make_buff( this, "runeforge_fevered_incantation", find_spell( 333049 ) )
+                                          ->set_default_value_from_effect( 1 )
+                                          ->set_chance( runeforge.fevered_incantation.ok() && !talents.fevered_incantation.ok() );
+  buffs.firestorm                     = make_buff( this, "firestorm", find_spell( 333100 ) )
+                                          ->set_default_value_from_effect( 2 )
+                                          ->set_trigger_spell( runeforge.firestorm );
+  buffs.molten_skyfall                = make_buff( this, "molten_skyfall", find_spell( 333170 ) )
+                                          ->set_chance( runeforge.molten_skyfall.ok() && !talents.firefall.ok() );
+  buffs.molten_skyfall_ready          = make_buff( this, "molten_skyfall_ready", find_spell( 333182 ) );
+  buffs.sun_kings_blessing            = make_buff( this, "sun_kings_blessing", find_spell( 333314 ) )
+                                          ->set_chance( runeforge.sun_kings_blessing.ok() );
+  buffs.sun_kings_blessing_ready      = make_buff( this, "sun_kings_blessing_ready", find_spell( 333315 ) );
 
   // TODO: some of the talent + legendary interactions are currently bugged
   // casting Frozen Orb gives 2 different Freezing Winds buffs, casting Frostbolt during Icy Veins gives 2 different Slick Ice buffs
@@ -7284,6 +7296,8 @@ double mage_t::composite_player_critical_damage_multiplier( const action_state_t
 
   if ( buffs.fevered_incantation->has_common_school( school ) )
     m *= 1.0 + buffs.fevered_incantation->check_stack_value();
+  if ( buffs.runeforge_fevered_incantation->has_common_school( school ) )
+    m *= 1.0 + buffs.runeforge_fevered_incantation->check_stack_value();
   if ( buffs.disciplinary_command->has_common_school( school ) )
     m *= 1.0 + buffs.disciplinary_command->check_value();
 
