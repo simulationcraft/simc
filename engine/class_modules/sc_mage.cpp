@@ -640,7 +640,7 @@ public:
     player_talent_t arcane_tempo;
     player_talent_t improved_arcane_missiles;
     player_talent_t arcane_surge;
-    player_talent_t improved_arcane_explosion;
+    player_talent_t crackling_energy;
     player_talent_t impetus;
 
     // Row 5
@@ -2846,6 +2846,7 @@ struct arcane_blast_t final : public arcane_mage_spell_t
     cost_reductions = { p->buffs.rule_of_threes };
     triggers.radiant_spark = true;
     affected_by.deathborne_cleave = true;
+    base_multiplier *= 1.0 + p->talents.crackling_energy->effectN( 1 ).percent();
     reduced_aoe_targets = 1.0;
     full_amount_targets = 1;
   }
@@ -2929,7 +2930,7 @@ struct arcane_explosion_t final : public arcane_mage_spell_t
     aoe = -1;
     cost_reductions = { p->buffs.clearcasting };
     affected_by.savant = triggers.radiant_spark = true;
-    base_multiplier *= 1.0 + p->talents.improved_arcane_explosion->effectN( 1 ).percent();
+    base_multiplier *= 1.0 + p->talents.crackling_energy->effectN( 1 ).percent();
   }
 
   void execute() override
@@ -6619,7 +6620,7 @@ void mage_t::init_spells()
   talents.arcane_tempo               = find_talent_spell( talent_tree::SPECIALIZATION, "Arcane Tempo"               );
   talents.improved_arcane_missiles   = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Arcane Missiles"   );
   talents.arcane_surge               = find_talent_spell( talent_tree::SPECIALIZATION, "Arcane Surge"               );
-  talents.improved_arcane_explosion  = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Arcane Explosion"  );
+  talents.crackling_energy           = find_talent_spell( talent_tree::SPECIALIZATION, "Crackling Energy"           );
   talents.impetus                    = find_talent_spell( talent_tree::SPECIALIZATION, "Impetus"                    );
   // Row 5
   talents.arcane_familiar            = find_talent_spell( talent_tree::SPECIALIZATION, "Arcane Familiar"            );
