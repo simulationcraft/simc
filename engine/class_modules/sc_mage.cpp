@@ -1840,7 +1840,9 @@ public:
       // Mana spending required for 1% chance.
       double mana_step = p()->talents.clearcasting->cost( POWER_MANA ) * p()->resources.base[ RESOURCE_MANA ];
       mana_step /= p()->talents.clearcasting->effectN( 1 ).percent();
-      p()->trigger_delayed_buff( p()->buffs.clearcasting, 0.01 * last_resource_cost / mana_step );
+      double chance = 0.01 * last_resource_cost / mana_step;
+      chance *= 1.0 + p()->talents.illuminated_thoughts->effectN( 1 ).percent();
+      p()->trigger_delayed_buff( p()->buffs.clearcasting, chance );
     }
 
     if ( !background && affected_by.ice_floes && time_to_execute > 0_ms )
