@@ -7752,7 +7752,7 @@ struct starfall_t : public druid_spell_t
     double shrapnel_chance;
 
     starfall_driver_t( druid_t* p, std::string_view n )
-      : starfall_base_t( n, p, p->talent.starfall->effectN( 3 ).trigger() ), shrapnel_chance( 0.0 )
+      : starfall_base_t( n, p, p->buff.starfall->data().effectN( 3 ).trigger() ), shrapnel_chance( 0.0 )
     {
       background = dual = true;
 
@@ -10518,7 +10518,7 @@ void druid_t::create_buffs()
   buff.solstice = make_buff( this, "solstice", talent.solstice->effectN( 1 ).trigger() )
     ->set_default_value( talent.solstice->effectN( 1 ).percent() );
 
-  buff.starfall = make_buff( this, "starfall", talent.starfall )
+  buff.starfall = make_buff( this, "starfall", find_spell( 191034 ) )  // lookup via spellid for convoke
     ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
     ->set_tick_on_application( true )  // TODO: confirm true?
     ->set_freeze_stacks( true )
