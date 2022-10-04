@@ -91,6 +91,8 @@ struct evoker_t : public player_t
   {
     bool t29_2pc = false;
     bool t29_4pc = false;
+
+    bool post_empower_gcd = true;
   } option;
 
   // Action pointers
@@ -1029,7 +1031,7 @@ struct empowered_release_spell_t : public empowered_base_t
     dual = true;
 
     // TODO: Confirm this still applies, as of 09/Aug/2022 it would appear to be approximately a 1s gcd after a empower finishes
-    trigger_gcd = 1_s;
+    trigger_gcd = p->option.post_empower_gcd ? 1_s : 0_s;
     gcd_type = gcd_haste_type::NONE;
   }
 
@@ -2165,6 +2167,7 @@ void evoker_t::create_options()
   // TODO: REMOVE WHEN SPELL DATA
   add_option( opt_bool( "evoker.t29_2pc", option.t29_2pc ) );
   add_option( opt_bool( "evoker.t29_4pc", option.t29_4pc ) );
+  add_option( opt_bool( "evoker.post_empower_gcd", option.post_empower_gcd ) );
 }
 
 void evoker_t::analyze( sim_t& sim )
