@@ -329,6 +329,7 @@ public:
     buff_t* combustion;
     buff_t* feel_the_burn;
     buff_t* fevered_incantation;
+    buff_t* fiery_rush;
     buff_t* firefall;
     buff_t* firefall_ready;
     buff_t* firemind;
@@ -405,7 +406,7 @@ public:
     // Set Bonuses
     buff_t* arcane_lucidity;
 
-    buff_t* fiery_rush;
+    buff_t* t28_fiery_rush;
   } buffs;
 
   // Cooldowns
@@ -1196,12 +1197,14 @@ struct combustion_t final : public buff_t
       if ( old == 0 )
       {
         p->buffs.fiery_rush->trigger();
+        p->buffs.t28_fiery_rush->trigger();
       }
       else if ( cur == 0 )
       {
         player->stat_loss( STAT_MASTERY_RATING, current_amount );
         current_amount = 0.0;
         p->buffs.fiery_rush->expire();
+        p->buffs.t28_fiery_rush->expire();
       }
     } );
 
@@ -4804,7 +4807,10 @@ struct fire_blast_t final : public fire_mage_spell_t
     double m = fire_mage_spell_t::recharge_rate_multiplier( cd );
 
     if ( &cd == cooldown )
+    {
       m /= 1.0 + p()->buffs.fiery_rush->check_value();
+      m /= 1.0 + p()->buffs.t28_fiery_rush->check_value();
+    }
 
     return m;
   }
@@ -5159,7 +5165,10 @@ struct phoenix_flames_t final : public fire_mage_spell_t
     double m = fire_mage_spell_t::recharge_rate_multiplier( cd );
 
     if ( &cd == cooldown )
+    {
       m /= 1.0 + p()->buffs.fiery_rush->check_value();
+      m /= 1.0 + p()->buffs.t28_fiery_rush->check_value();
+    }
 
     return m;
   }
@@ -6880,6 +6889,14 @@ void mage_t::create_buffs()
   buffs.fevered_incantation      = make_buff( this, "fevered_incantation", find_spell( 383811 ) )
                                      ->set_default_value( talents.fevered_incantation->effectN( 1 ).base_value()  )
                                      ->set_chance( talents.fevered_incantation.ok() );
+  buffs.fiery_rush               = make_buff( this, "fiery_rush", find_spell( 383637 ) )
+                                     ->set_default_value_from_effect( 1 )
+                                     ->set_stack_change_callback( [ this ] ( buff_t*, int, int )
+                                       {
+                                         cooldowns.fire_blast->adjust_recharge_multiplier();
+                                         cooldowns.phoenix_flames->adjust_recharge_multiplier();
+                                       } )
+                                     ->set_chance( talents.fiery_rush.ok() );
   buffs.firefall                 = make_buff( this, "firefall", find_spell( 384035 ) )
                                            ->set_chance( talents.firefall.ok() );
   buffs.firefall_ready           = make_buff( this, "firefall_ready", find_spell( 384038 ) );
@@ -7072,14 +7089,14 @@ void mage_t::create_buffs()
                             ->set_default_value_from_effect( 1 )
                             ->set_chance( sets->has_set_bonus( MAGE_ARCANE, T28, B4 ) );
 
-  buffs.fiery_rush = make_buff( this, "fiery_rush", find_spell( 363508 ) )
-                       ->set_default_value_from_effect( 1 )
-                       ->set_stack_change_callback( [ this ] ( buff_t*, int, int )
-                         {
-                           cooldowns.fire_blast->adjust_recharge_multiplier();
-                           cooldowns.phoenix_flames->adjust_recharge_multiplier();
-                         } )
-                       ->set_chance( sets->has_set_bonus( MAGE_FIRE, T28, B4 ) );
+  buffs.t28_fiery_rush = make_buff( this, "t28_fiery_rush", find_spell( 363508 ) )
+                           ->set_default_value_from_effect( 1 )
+                           ->set_stack_change_callback( [ this ] ( buff_t*, int, int )
+                             {
+                               cooldowns.fire_blast->adjust_recharge_multiplier();
+                               cooldowns.phoenix_flames->adjust_recharge_multiplier();
+                             } )
+                           ->set_chance( sets->has_set_bonus( MAGE_FIRE, T28, B4 ) );
 }
 
 void mage_t::init_gains()
