@@ -199,6 +199,23 @@ struct avengers_shield_t : public avengers_shield_base_t
   } 
 };
 
+// Bastion of Light ===========================================================
+struct bastion_of_light_t : public paladin_spell_t
+{
+  bastion_of_light_t( paladin_t* p, util::string_view options_str ) : 
+      paladin_spell_t( "bastion_of_light", p, p -> find_talent_spell( talent_tree::SPECIALIZATION, "Bastion of Light" ))
+  {
+    parse_options( options_str );
+    harmful = false;
+  }
+
+  void execute() override
+  {
+    paladin_spell_t::execute();
+    
+    p()->buffs.bastion_of_light->trigger( 3 );
+  }
+};
 
 // Moment of Glory ============================================================
 struct moment_of_glory_t : public paladin_spell_t
@@ -524,6 +541,7 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
     }
 
     aoe = -1;
+    is_sotr = true;
 
     // no weapon multiplier
     weapon_multiplier = 0.0;
@@ -622,6 +640,16 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
         am *= 1.0 + p()->talents.strength_of_conviction->effectN( 1 ).percent();
     }
     return am;
+  }
+
+  double cost() const override
+  {
+    double c = holy_power_consumer_t::cost();
+
+    if ( p()->buffs.bastion_of_light->check() )
+      c *= 1.0 + p()->buffs.bastion_of_light->data().effectN( 1 ).percent();
+
+    return c;
   }
 };
 
@@ -868,6 +896,8 @@ action_t* paladin_t::create_action_protection( util::string_view name, util::str
   if ( name == "hammer_of_the_righteous"   ) return new hammer_of_the_righteous_t  ( this, options_str );
   if ( name == "shield_of_the_righteous"   ) return new shield_of_the_righteous_t  ( this, options_str );
   if ( name == "moment_of_glory"           ) return new moment_of_glory_t          ( this, options_str );
+  if ( name == "bastion_of_light"          ) return new bastion_of_light_t         ( this, options_str );
+
 
   if ( specialization() == PALADIN_PROTECTION )
   {
@@ -905,6 +935,7 @@ void paladin_t::create_buffs_protection()
   buffs.shield_of_the_righteous = new shield_of_the_righteous_buff_t( this );
   buffs.moment_of_glory = make_buff( this, "moment_of_glory", talents.moment_of_glory )
         -> set_default_value( talents.moment_of_glory -> effectN( 2 ).percent() );
+  buffs.bastion_of_light = make_buff( this, "bastion_of_light", talents.bastion_of_light);
   buffs.bulwark_of_righteous_fury = make_buff( this, "bulwark_of_righteous_fury", find_spell( 337848) )
         -> set_default_value( find_spell( 337848 ) -> effectN( 1 ).percent() );
   buffs.shielding_words = make_buff<absorb_buff_t>( this, "shielding_words", conduit.shielding_words )

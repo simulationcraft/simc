@@ -126,6 +126,7 @@ public:
     buff_t* shining_light_stacks;
     buff_t* shining_light_free;
     buff_t* royal_decree;
+    buff_t* bastion_of_light;
 
     buff_t* inner_light;
     buff_t* inspiring_vanguard;
@@ -836,7 +837,7 @@ public:
   // Damage increase whitelists
   struct affected_by_t
   {
-    bool avenging_wrath, judgment, blessing_of_dawn, the_magistrates_judgment, seal_of_reprisal, seal_of_order; // Shared
+    bool avenging_wrath, judgment, blessing_of_dawn, the_magistrates_judgment, seal_of_reprisal, seal_of_order, bastion_of_light; // Shared
     bool crusade, divine_purpose, divine_purpose_cost, hand_of_light, final_reckoning, reckoning; // Ret
     bool avenging_crusader; // Holy
   } affected_by;
@@ -876,6 +877,7 @@ public:
     this -> affected_by.blessing_of_dawn = this -> data().affected_by( p -> talents.of_dusk_and_dawn -> effectN( 1 ).trigger() -> effectN( 1 ) );
     this -> affected_by.the_magistrates_judgment = this -> data().affected_by( p -> buffs.the_magistrates_judgment -> data().effectN( 1 ) );
     this -> affected_by.seal_of_reprisal = this -> data().affected_by( p-> talents.seal_of_reprisal->effectN( 1 ) );
+    this -> affected_by.bastion_of_light = this -> data().affected_by( p->talents.bastion_of_light->effectN( 1 ) );
   }
 
   paladin_t* p()
@@ -1229,10 +1231,12 @@ struct holy_power_consumer_t : public Base
     typedef holy_power_consumer_t base_t;
   bool is_divine_storm;
   bool is_wog;
+  bool is_sotr;
   holy_power_consumer_t( util::string_view n, paladin_t* player, const spell_data_t* s ) :
     ab( n, player, s ),
     is_divine_storm ( false ),
-    is_wog( false )
+    is_wog( false ),
+    is_sotr( false )
   { }
 
   double cost() const override
@@ -1371,6 +1375,10 @@ struct holy_power_consumer_t : public Base
       }
     }
 
+    if ((is_wog | is_sotr) && p -> buffs.bastion_of_light -> check() )
+    {
+      p -> buffs.bastion_of_light->decrement();
+    }
     // For prot (2021-06-22). Magistrate's does not get consumed when DP or SL
     // are up, but does with RD.
     // (2021-06-26) Vanquisher's hammer's auto-sotr does not interact with magistrate's judgment
