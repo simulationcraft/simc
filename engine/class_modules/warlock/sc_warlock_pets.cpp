@@ -810,8 +810,8 @@ struct fel_firebolt_t : public warlock_pet_spell_t
   {
     double c = warlock_pet_spell_t::cost();
 
-    if ( p()->o()->spec.fel_firebolt_2->ok() )
-      c *= 1.0 + p()->o()->spec.fel_firebolt_2->effectN( 1 ).percent();
+    if ( p()->o()->warlock_base.fel_firebolt_2->ok() )
+      c *= 1.0 + p()->o()->warlock_base.fel_firebolt_2->effectN( 1 ).percent();
 
     if ( p()->o()->buffs.demonic_power->check() )
     {
