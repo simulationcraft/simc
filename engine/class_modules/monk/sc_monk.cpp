@@ -3170,16 +3170,17 @@ struct fists_of_fury_t : public monk_melee_attack_t
       p()->buff.t29_2p_ww->trigger();
     if ( p()->user_options.t29_4p == 1)
       p()->buff.t29_4p_ww_kick->trigger();
-
-    if (p()->buff.t29_4p_ww_fof->up()) {
-      p()->buff.t29_4p_ww_fof_hidden->trigger( p()->buff.t29_4p_ww_fof->stack(), timespan_t::from_seconds( 4 ) );
-      p()->buff.t29_4p_ww_fof->expire();
-    }
   }
 
   void last_tick( dot_t* dot ) override
   {
     monk_melee_attack_t::last_tick( dot );
+
+        if ( p()->buff.t29_4p_ww_fof->up() )
+    {
+      p()->buff.t29_4p_ww_fof_hidden->trigger( p()->buff.t29_4p_ww_fof->stack(), timespan_t::from_seconds( 4 ) );
+      p()->buff.t29_4p_ww_fof->expire();
+    }
 
     // If Fists of Fury went the full duration
     if (dot->current_tick == dot->num_ticks()) {
