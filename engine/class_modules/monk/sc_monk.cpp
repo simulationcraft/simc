@@ -3154,7 +3154,7 @@ struct fists_of_fury_t : public monk_melee_attack_t
   {
     if ( p()->buff.t29_4p_ww_fof->up() )
     {
-      p()->buff.t29_4p_ww_fof_hidden->trigger( p()->buff.t29_4p_ww_fof->stack(), timespan_t::from_seconds( 4 ) );
+      p()->buff.t29_4p_ww_fof_hidden->trigger( p()->buff.t29_4p_ww_fof->stack(), data().duration() );
       p()->buff.t29_4p_ww_fof->expire();
     }
 
