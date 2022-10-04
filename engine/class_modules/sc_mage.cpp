@@ -321,6 +321,8 @@ public:
     buff_t* enlightened_damage;
     buff_t* enlightened_mana;
     buff_t* evocation;
+    buff_t* foresight;
+    buff_t* foresight_icd;
     buff_t* presence_of_mind;
     buff_t* rule_of_threes;
 
@@ -1814,6 +1816,9 @@ public:
   bool usable_moving() const override
   {
     if ( p()->buffs.ice_floes->check() && affected_by.ice_floes )
+      return true;
+
+    if ( p()->buffs.foresight->check() )
       return true;
 
     return spell_t::usable_moving();
@@ -6875,6 +6880,14 @@ void mage_t::create_buffs()
   buffs.enlightened_mana     = make_buff( this, "enlightened_mana", find_spell( 321390 ) )
                                  ->set_default_value_from_effect( 1 )
                                  ->set_affects_regen( true );
+  buffs.foresight            = make_buff( this, "foresight", find_spell( 384865 ) )
+                                 ->set_stack_change_callback( [ this ] ( buff_t*, int, int cur )
+                                   { if ( cur == 0 && player_t::buffs.movement->check() ) moving(); } )
+                                 ->set_chance( talents.foresight->ok() );
+  buffs.foresight_icd        = make_buff( this, "foresight_icd", find_spell( 384863 ) )
+                                 ->set_can_cancel( false )
+                                 ->set_stack_change_callback( [ this ] ( buff_t*, int, int cur )
+                                   { if ( cur == 0 ) buffs.foresight->trigger(); } );
   buffs.rule_of_threes       = make_buff( this, "rule_of_threes", find_spell( 264774 ) )
                                  ->set_default_value_from_effect( 1 )
                                  ->set_chance( talents.rule_of_threes->ok() );
@@ -7097,6 +7110,24 @@ void mage_t::create_buffs()
                                cooldowns.phoenix_flames->adjust_recharge_multiplier();
                              } )
                            ->set_chance( sets->has_set_bonus( MAGE_FIRE, T28, B4 ) );
+
+  // Foresight support
+  if ( talents.foresight->ok() )
+  {
+    assert( !player_t::buffs.movement->stack_change_callback );
+    player_t::buffs.movement->set_stack_change_callback( [ this ] ( buff_t*, int, int cur )
+    {
+      if ( cur == 0 )
+      {
+        buffs.foresight_icd->trigger();
+      }
+      else
+      {
+        buffs.foresight_icd->trigger( 0_ms );
+        buffs.foresight->expire( buffs.foresight->data().effectN( 2 ).time_value() );
+      }
+    } );
+  }
 }
 
 void mage_t::init_gains()
@@ -7509,6 +7540,7 @@ void mage_t::arise()
   player_t::arise();
 
   buffs.flame_accelerant->trigger();
+  buffs.foresight->trigger();
   buffs.incanters_flow->trigger();
 
   if ( talents.enlightened->ok() )
