@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.45779 dragonflight-BETA (hotfix 2022-10-01/45779, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.45779 dragonflight-BETA (hotfix 2022-10-05/45779, no-networking)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -6055,6 +6055,7 @@ Effects          :
 Description      : Removes all Poison and Disease effects from the target.
 
 Name             : Mark of the Crane (id=220357) [Spell Family (53), Passive, Hidden] 
+Talent Entry     : Windwalker [tree=spec, row=4, col=1, max_rank=1, req_points=0]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -6230,7 +6231,6 @@ Effects          :
 Description      : $@spelldesc213116
 
 Name             : Mark of the Crane (id=228287) [Spell Family (53)] 
-Talent Entry     : Windwalker [tree=spec, row=4, col=1, max_rank=1, req_points=0]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -10222,6 +10222,7 @@ Description      : Fortifying Brew increases Stagger effectiveness by $s1% while
 Combines with other Fortifying Brew effects.
 
 Name             : Invoke Xuen, the White Tiger (desc=Rank 2) (id=323999) [Spell Family (53), Passive] 
+Talent Entry     : Windwalker [tree=spec, row=8, col=4, max_rank=1, req_points=20]
 Class            : Windwalker Monk
 School           : Physical
 Spell Type       : None
@@ -11192,7 +11193,6 @@ $high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}
 
 
 Name             : Empowered Tiger Lightning (id=335913) [Spell Family (53)] 
-Talent Entry     : Windwalker [tree=spec, row=8, col=4, max_rank=1, req_points=20]
 Class            : Monk
 School           : Nature
 Spell Type       : Magic

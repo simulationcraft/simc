@@ -1422,7 +1422,7 @@ class SpellDataGenerator(DataGenerator):
           ( 312365, 0 ), # Thrill of the Hunt
           ( 171457, 0 ), # Chimaera Shot - Nature
           ( 201594, 1 ), # Stampede
-          ( 118459, 5 ), # Beast Cleave
+          ( 118455, 5 ), # Beast Cleave
           ( 186254, 5 ), # Bestial Wrath
           ( 257622, 2 ), # Trick Shots buff
           ( 260395, 2 ), # Lethal Shots buff

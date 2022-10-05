@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.45779 dragonflight-BETA (hotfix 2022-10-01/45779, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.45779 dragonflight-BETA (hotfix 2022-10-05/45779, no-networking)
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow

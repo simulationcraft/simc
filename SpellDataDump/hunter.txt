@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.45779 dragonflight-BETA (hotfix 2022-10-01/45779, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.45779 dragonflight-BETA (hotfix 2022-10-05/45779, no-networking)
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -2431,7 +2431,7 @@ Effects          :
                    Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Misc Value: 2 | Target: Self (1)
 #2 (id=1021255)  : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 3000 | Scaled Value: 3000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
-                   Affected Spells: Beast Cleave (115939), Beast Cleave (118459)
+                   Affected Spells: Beast Cleave (115939), Beast Cleave (118455), Beast Cleave (118459)
                    Family Flags: 111
 Description      : After you Multi-Shot, your pet's melee attacks also strike all nearby enemies for $s1% of the damage $?s378207[and Kill Command strikes all nearby enemies for $378207s1% of the damage][] for the next ${$s2/1000}.1 sec. Deals reduced damage beyond $118459s2 targets.
 
@@ -2482,6 +2482,31 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Unknown(25)
 Description      : $@spelldesc117405
 Tooltip          : Stunned.
+
+Name             : Beast Cleave (id=118455) [Spell Family (9)] 
+Class            : Hunter
+School           : Physical
+Spell Type       : None
+Range            : 200 yards
+Proc Chance      : 100%
+Proc Flags       : ..x.x... ........ ........ ........ 
+                 : White Melee, Yellow Melee
+Affecting spells : Beast Cleave (115939 effect#2)
+Family Flags     : 111
+Attributes       : ....x... ........ ..x..... ........   ........ ..x..... ........ ........ 
+                 : ..x..... ........ ........ ........   ........ ........ ........ ..x...x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Is Ability (4), Do Not Sheath (18), No Threat (42), Ignore Line of Sight (66), Can Proc From Procs (122), Do Not Display Range (126), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=134935)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Friend (21)
+Description      : $@spelldesc115939
+Tooltip          : Melee attacks also strike all other nearby enemy targets.
 
 Name             : Beast Cleave (id=118459) [Spell Family (9)] 
 Class            : Hunter
