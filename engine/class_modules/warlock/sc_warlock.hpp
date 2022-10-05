@@ -294,7 +294,7 @@ public:
     const spell_data_t* shadows_bite_buff;
     player_talent_t carnivorous_stalkers; // Chance for Dreadstalkers to perform additional Dreadbites
     player_talent_t fel_and_steel; // Felstorm and Dreadbite damage increase
-    // DF - Fel Might (Shorter Felstorm CD)
+    player_talent_t fel_might; // Shorter Felstorm CD - main pet only!
 
     const spell_data_t* power_siphon;
     const spell_data_t* inner_demons; // DF - Now a 2 point talent
