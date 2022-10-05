@@ -1099,6 +1099,8 @@ void warlock_t::init_spells_demonology()
   talents.shadows_bite = find_talent_spell( talent_tree::SPECIALIZATION, "Shadow's Bite" ); // Should be ID 387322
   talents.shadows_bite_buff = find_spell( 272945 );
 
+  talents.carnivorous_stalkers = find_talent_spell( talent_tree::SPECIALIZATION, "Carnivorous Stalkers" ); // Should be ID 386194
+
   talents.demonic_calling     = find_talent_spell( "Demonic Calling" );
   talents.power_siphon        = find_talent_spell( "Power Siphon" );
   talents.doom                = find_talent_spell( "Doom" );
