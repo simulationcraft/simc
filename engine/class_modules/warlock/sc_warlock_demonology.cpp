@@ -247,8 +247,8 @@ struct demonbolt_t : public demonology_spell_t
     p()->buffs.demonic_core->up();  // benefit tracking
     p()->buffs.demonic_core->decrement();
 
-    //if ( p()->talents.power_siphon->ok() )
-    //  p()->buffs.power_siphon->decrement();
+    if ( p()->talents.power_siphon.ok() )
+      p()->buffs.power_siphon->decrement();
 
     //if ( p()->talents.demonic_calling->ok() )
     //  p()->buffs.demonic_calling->trigger();
@@ -263,10 +263,10 @@ struct demonbolt_t : public demonology_spell_t
     //  m *= 1.0 + p()->talents.sacrificed_souls->effectN( 1 ).percent() * p()->active_pets;
     //}
 
-    //if ( p()->talents.power_siphon->ok() && p()->buffs.power_siphon->check() )
-    //{
-    //  m *= 1.0 + p()->buffs.power_siphon->default_value;
-    //}
+    if ( p()->talents.power_siphon.ok() && p()->buffs.power_siphon->check() )
+    {
+      m *= 1.0 + p()->buffs.power_siphon->check_value();
+    }
 
     //m *= 1.0 + p()->buffs.balespiders_burning_core->check_stack_value();
 
@@ -999,8 +999,8 @@ void warlock_t::create_buffs_demonology()
 {
   buffs.demonic_core = make_buff( this, "demonic_core", warlock_base.demonic_core_buff );
 
-  buffs.power_siphon = make_buff( this, "power_siphon", find_spell( 334581 ) )
-                            ->set_default_value( find_spell( 334581 )->effectN( 1 ).percent() );
+  buffs.power_siphon = make_buff( this, "power_siphon", talents.power_siphon_buff )
+                           ->set_default_value_from_effect( 1 );
 
   buffs.demonic_power = make_buff( this, "demonic_power", find_spell( 265273 ) )
                             ->set_default_value( find_spell( 265273 )->effectN( 2 ).percent() )
@@ -1105,8 +1105,11 @@ void warlock_t::init_spells_demonology()
 
   talents.fel_might = find_talent_spell( talent_tree::SPECIALIZATION, "Fel Might" ); // Should be ID 387338
 
+  talents.power_siphon = find_talent_spell( talent_tree::SPECIALIZATION, "Power Siphon" ); // Should be ID 264130
+  talents.power_siphon_buff = find_spell( 334581 );
+
   talents.demonic_calling     = find_talent_spell( "Demonic Calling" );
-  talents.power_siphon        = find_talent_spell( "Power Siphon" );
+
   talents.doom                = find_talent_spell( "Doom" );
 
 

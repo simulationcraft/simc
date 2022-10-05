@@ -296,7 +296,8 @@ public:
     player_talent_t fel_and_steel; // Felstorm and Dreadbite damage increase
     player_talent_t fel_might; // Shorter Felstorm CD - main pet only!
 
-    const spell_data_t* power_siphon;
+    player_talent_t power_siphon; // NOTE: Power Siphon WILL consume Imp Gang Boss as if it were a regular imp (last checked 2022-10-04)
+    const spell_data_t* power_siphon_buff; // Semi-hidden aura that controls the bonus Demonbolt damage
     const spell_data_t* inner_demons; // DF - Now a 2 point talent
     const spell_data_t* demonic_calling; // DF - Now a 2 point talent
     const spell_data_t* grimoire_felguard;
