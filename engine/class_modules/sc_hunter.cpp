@@ -629,12 +629,12 @@ public:
 
     spell_data_ptr_t animal_companion;
     spell_data_ptr_t beast_cleave;
-    spell_data_ptr_t killer_command; // TODO: applying to all pet dmg in game
+    spell_data_ptr_t killer_command;
     spell_data_ptr_t flamewakers_cobra_sting;
 
     spell_data_ptr_t sharp_barbs;
     spell_data_ptr_t thrill_of_the_hunt;
-    spell_data_ptr_t kill_cleave; // TODO: beast cleave % or effect 1?
+    spell_data_ptr_t kill_cleave;
     spell_data_ptr_t dire_beast;
     spell_data_ptr_t cobra_senses; // TODO: baseline cobra shot still has cdr in game, this does not add to it
 
@@ -971,6 +971,7 @@ public:
     ab::apply_affecting_aura( p -> talents.dead_eye );
 
     // Beast Mastery Tree Passives
+    ab::apply_affecting_aura( p -> talents.killer_command );
     ab::apply_affecting_aura( p -> talents.loaded_quiver );
     ab::apply_affecting_aura( p -> talents.sharp_barbs );
     ab::apply_affecting_aura( p -> talents.qapla_eredun_war_order );
@@ -1569,8 +1570,9 @@ struct hunter_main_pet_base_t : public hunter_pet_t
 
     buffs.beast_cleave =
       make_buff( this, "beast_cleave", find_spell( 118455 ) )
+        -> set_chance( o() -> talents.beast_cleave.ok() )
         -> set_default_value( o() -> talents.beast_cleave -> effectN( 1 ).percent() )
-        -> set_chance( o() -> talents.beast_cleave.ok() );
+        -> apply_affecting_effect( o() -> talents.beast_cleave -> effectN( 2 ) );
 
     buffs.thrill_of_the_hunt =
       make_buff( this, "thrill_of_the_hunt", find_spell( 312365 ) )
@@ -2090,7 +2092,7 @@ struct beast_cleave_attack_t: public hunter_pet_action_t<hunter_main_pet_base_t,
   }
 };
 
-static void trigger_beast_cleave( const action_state_t* s )
+static void trigger_beast_cleave( const action_state_t* s, double multiplier = 0 )
 {
   if ( !s -> action -> result_is_hit( s -> result ) )
     return;
@@ -2103,7 +2105,8 @@ static void trigger_beast_cleave( const action_state_t* s )
   if ( !p -> buffs.beast_cleave -> check() )
     return;
 
-  const double multiplier = p -> buffs.beast_cleave -> check_value();
+  if ( multiplier == 0 )
+    multiplier = p -> buffs.beast_cleave -> check_value();
 
   // Target multipliers do not replicate to secondary targets
   const double target_da_multiplier = ( 1.0 / s -> target_da_multiplier );
@@ -2178,7 +2181,7 @@ struct kill_command_bm_mm_t: public kill_command_base_t
     }
 
     if ( o() -> talents.kill_cleave.ok() )
-      trigger_beast_cleave( s );
+      trigger_beast_cleave( s, o() -> talents.kill_cleave -> effectN( 1 ).percent() );
   }
 
   double composite_crit_chance() const override
@@ -3708,7 +3711,7 @@ struct multishot_bm_t: public hunter_ranged_attack_t
 
   multishot_bm_t( hunter_t* p, util::string_view options_str ):
     hunter_ranged_attack_t( "multishot", p, p -> talents.multishot_bm ),
-    beast_cleave_duration( p -> find_spell( 118455 ) -> duration() )
+    beast_cleave_duration( p -> talents.beast_cleave -> effectN( 2 ).time_value() )
   {
     parse_options( options_str );
 
