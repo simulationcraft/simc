@@ -7745,7 +7745,6 @@ struct starfall_t : public druid_spell_t
   struct starfall_driver_t : public starfall_base_t
   {
     starfall_damage_t* damage;
-    timespan_t delay;
     double shrapnel_chance;
 
     starfall_driver_t( druid_t* p, std::string_view n )
@@ -7755,7 +7754,6 @@ struct starfall_t : public druid_spell_t
 
       auto pre = name_str.substr( 0, name_str.find_last_of( '_' ) );
       damage = p->get_secondary_action_n<starfall_damage_t>( pre + "_damage" );
-      delay = p->talent.starfall->effectN( 3 ).period();
 
       // TODO: early estimate, test moar
       if ( p->talent.lunar_shrapnel.ok() )
@@ -7765,7 +7763,8 @@ struct starfall_t : public druid_spell_t
     // fake travel time to simulate execution delay for individual stars
     timespan_t travel_time() const override
     {
-      return rng().range( 0_ms, delay );
+      // seems to have random discrete intervals. guesstimating at 66ms.
+      return ( rng().range<int>( 14 ) + 1 ) * 66_ms;
     }
 
     void trigger_lunar_shrapnel( action_state_t* s )
