@@ -4353,26 +4353,12 @@ struct rip_t : public cat_attack_t
     }
   };
 
-  struct tear_t : public cat_attack_t
+  struct tear_t : public residual_action::residual_periodic_action_t<cat_attack_t>
   {
-    double rip_mul;
-
-    tear_t( druid_t* p, std::string_view n )
-      : cat_attack_t( n, p, p->find_spell( 391356 ) ), rip_mul( p->talent.rip_and_tear->effectN( 1 ).percent() )
+    tear_t( druid_t* p, std::string_view n ) : residual_action_t( n, p, p->find_spell( 391356 ) )
     {
-      background = true;
+      background = proc = true;
       name_str_reporting = "tear";
-    }
-
-    action_state_t* new_state() override { return new rip_state_t( p(), this, target ); }
-
-    double base_ta( const action_state_t* s ) const override
-    {
-      // TODO: ??? CONFIRM CONFIRM CONFIRM ???
-      auto amt = debug_cast<const rip_state_t*>( s )->total_damage * rip_mul;
-      auto tic = composite_dot_duration( s ) / tick_time( s );      
-
-      return amt / tic;
     }
   };
 
@@ -4422,19 +4408,15 @@ struct rip_t : public cat_attack_t
     return std::max( cat_attack_t::calculate_dot_refresh_duration( d, dur ), d->remains() );
   }
 
-  void trigger_dot( action_state_t* s ) override
+  void impact( action_state_t* s ) override
   {
-    cat_attack_t::trigger_dot( s );
+    cat_attack_t::impact( s );
 
-    if ( tear )
+    if ( tear && result_is_hit( s->result ) )
     {
-      auto state    = tear->get_state();
-      state->target = s->target;
-      tear->snapshot_state( state, tear->amount_type( state ) );
-      debug_cast<rip_state_t*>( state )->total_damage =
-          calculate_tick_amount( s, 1.0 ) * find_dot( s->target )->remains() / tick_time( s );
+      auto dot_total = calculate_tick_amount( s, 1.0 ) * find_dot( s->target )->remains() / tick_time( s );
 
-      tear->schedule_execute( state );
+      residual_action::trigger( tear, s->target, dot_total * p()->talent.rip_and_tear->effectN( 1 ).percent() );
     }
   }
 
