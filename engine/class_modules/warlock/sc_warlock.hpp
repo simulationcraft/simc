@@ -298,7 +298,7 @@ public:
 
     player_talent_t power_siphon; // NOTE: Power Siphon WILL consume Imp Gang Boss as if it were a regular imp (last checked 2022-10-04)
     const spell_data_t* power_siphon_buff; // Semi-hidden aura that controls the bonus Demonbolt damage
-    const spell_data_t* inner_demons; // DF - Now a 2 point talent
+    player_talent_t inner_demons; // DF - Now a 2 point talent
     const spell_data_t* demonic_calling; // DF - Now a 2 point talent
     const spell_data_t* grimoire_felguard;
 
@@ -394,6 +394,7 @@ public:
     action_t* soul_flame_proc;
     action_t* pandemic_invocation_proc;
     action_t* bilescourge_bombers_aoe_tick;
+    action_t* summon_random_demon; // Nether Portal and Inner Demons
   } proc_actions;
 
   // DF - This struct will be retired, need to determine if needed for pre-patch
