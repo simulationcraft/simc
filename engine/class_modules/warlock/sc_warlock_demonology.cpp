@@ -847,7 +847,7 @@ struct summon_random_demon_t : public demonology_spell_t
 
   timespan_t summon_duration;
   summon_random_demon_t( warlock_t* p, util::string_view options_str )
-    : demonology_spell_t( "summon_random_demon", p ), summon_duration( timespan_t::from_seconds( 15 ) )
+    : demonology_spell_t( "summon_random_demon", p ), summon_duration( timespan_t::from_seconds( p->talents.inner_demons->effectN( 2 ).base_value() ) )
   {
     parse_options( options_str );
     background = true;
@@ -1010,14 +1010,14 @@ void warlock_t::create_buffs_demonology()
   buffs.demonic_calling = make_buff( this, "demonic_calling", talents.demonic_calling->effectN( 1 ).trigger() )
                               ->set_chance( talents.demonic_calling->proc_chance() );
 
-  buffs.inner_demons = make_buff( this, "inner_demons", find_spell( 267216 ) )
+  buffs.inner_demons = make_buff( this, "inner_demons", talents.inner_demons )
                            ->set_period( talents.inner_demons->effectN( 1 ).period() )
                            ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED )
                            ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
                              warlock_pet_list.wild_imps.spawn();
                              if ( rng().roll( talents.inner_demons->effectN( 1 ).percent() ) )
                              {
-                               active.summon_random_demon->execute();
+                               proc_actions.summon_random_demon->execute();
                              }
                            } );
 
@@ -1108,13 +1108,15 @@ void warlock_t::init_spells_demonology()
   talents.power_siphon = find_talent_spell( talent_tree::SPECIALIZATION, "Power Siphon" ); // Should be ID 264130
   talents.power_siphon_buff = find_spell( 334581 );
 
+  talents.inner_demons = find_talent_spell( talent_tree::SPECIALIZATION, "Inner Demons" ); // Should be ID 267216
+
   talents.demonic_calling     = find_talent_spell( "Demonic Calling" );
 
   talents.doom                = find_talent_spell( "Doom" );
 
 
 
-  talents.inner_demons        = find_talent_spell( "Inner Demons" );
+
   talents.grimoire_felguard   = find_talent_spell( "Grimoire: Felguard" );
   talents.sacrificed_souls    = find_talent_spell( "Sacrificed Souls" );
   talents.demonic_consumption = find_talent_spell( "Demonic Consumption" );
@@ -1130,7 +1132,7 @@ void warlock_t::init_spells_demonology()
   conduit.carnivorous_stalkers = find_conduit_spell( "Carnivorous Stalkers" );
   conduit.fel_commando         = find_conduit_spell( "Fel Commando" );
 
-  active.summon_random_demon = new actions_demonology::summon_random_demon_t( this, "" );
+  proc_actions.summon_random_demon = new actions_demonology::summon_random_demon_t( this, "" );
 
   // Initialize some default values for pet spawners
   warlock_pet_list.wild_imps.set_default_duration( warlock_base.wild_imp->duration() );
