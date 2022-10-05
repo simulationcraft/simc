@@ -1768,6 +1768,7 @@ struct shadow_weaving_t final : public priest_spell_t
 
 // ==========================================================================
 // Shadow Crash
+// TODO: double check DoT target logic
 // ==========================================================================
 struct shadow_crash_damage_t final : public priest_spell_t
 {
@@ -1810,8 +1811,10 @@ struct shadow_crash_dots_t final : public priest_spell_t
       rng().shuffle( tl.begin(), tl.end() );
 
       // sort targets without Vampiric Touch to the front
-      std::sort( tl.begin(), tl.end(),
-                 [ this ]( player_t* a, player_t* b ) { return !find_td( a )->dots.vampiric_touch->is_ticking(); } );
+      std::sort( tl.begin(), tl.end(), [ this ]( player_t* a, player_t* b ) {
+        priest_td_t* td = priest().get_target_data( a );
+        return !td->dots.vampiric_touch->is_ticking();
+      } );
 
       // resize to dot target cap
       tl.resize( aoe );
