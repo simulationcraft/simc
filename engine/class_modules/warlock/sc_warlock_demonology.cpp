@@ -1101,6 +1101,8 @@ void warlock_t::init_spells_demonology()
 
   talents.carnivorous_stalkers = find_talent_spell( talent_tree::SPECIALIZATION, "Carnivorous Stalkers" ); // Should be ID 386194
 
+  talents.fel_and_steel = find_talent_spell( talent_tree::SPECIALIZATION, "Fel and Steel" ); // Should be ID 386200
+
   talents.demonic_calling     = find_talent_spell( "Demonic Calling" );
   talents.power_siphon        = find_talent_spell( "Power Siphon" );
   talents.doom                = find_talent_spell( "Doom" );
