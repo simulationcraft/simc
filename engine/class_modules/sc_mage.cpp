@@ -3168,7 +3168,7 @@ struct arcane_missiles_t final : public arcane_mage_spell_t
 
   bool usable_moving() const override
   {
-    if ( p()->talents.slipstream->ok() && p()->buffs.clearcasting->check() )
+    if ( p()->talents.slipstream->ok() && ( p()->buffs.clearcasting->check() || p()->buffs.clearcasting_channel->check() ) )
       return true;
 
     return arcane_mage_spell_t::usable_moving();
