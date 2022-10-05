@@ -426,10 +426,11 @@ public:
     // Beast Mastery Tree
     std::array<buff_t*, BARBED_SHOT_BUFFS_MAX> barbed_shot;
     buff_t* flamewakers_cobra_sting;
+    buff_t* cobra_sting;
     buff_t* thrill_of_the_hunt;
     buff_t* dire_beast;
     buff_t* bestial_wrath;
-    buff_t* in_for_the_kill;
+    buff_t* hunters_prey;
     buff_t* aspect_of_the_wild;
     buff_t* call_of_the_wild;
     buff_t* dire_pack;
@@ -616,48 +617,50 @@ public:
     spell_data_ptr_t windrunners_guidance;
 
     // Beast Mastery Tree
-    spell_data_ptr_t barbed_shot;
+    spell_data_ptr_t cobra_shot;
 
     spell_data_ptr_t pack_tactics;
     spell_data_ptr_t multishot_bm;
-    spell_data_ptr_t cobra_shot;
+    spell_data_ptr_t barbed_shot;
 
     spell_data_ptr_t aspect_of_the_beast;
-    spell_data_ptr_t loaded_quiver;
     spell_data_ptr_t kindred_spirits;
     spell_data_ptr_t training_expert;
 
     spell_data_ptr_t animal_companion;
     spell_data_ptr_t beast_cleave;
     spell_data_ptr_t killer_command;
-    spell_data_ptr_t flamewakers_cobra_sting;
-
     spell_data_ptr_t sharp_barbs;
+
+    spell_data_ptr_t cobra_sting;
     spell_data_ptr_t thrill_of_the_hunt;
     spell_data_ptr_t kill_cleave;
-    spell_data_ptr_t dire_beast;
-    spell_data_ptr_t cobra_senses; // TODO: baseline cobra shot still has cdr in game, this does not add to it
-
     spell_data_ptr_t a_murder_of_crows;
-    spell_data_ptr_t bestial_wrath;
-    spell_data_ptr_t wild_call;
+    spell_data_ptr_t bloodshed;
+    spell_data_ptr_t cobra_senses;
 
-    spell_data_ptr_t in_for_the_kill;
+    spell_data_ptr_t dire_beast;
+    spell_data_ptr_t bestial_wrath;
+    spell_data_ptr_t war_orders;
+
+    spell_data_ptr_t hunters_prey;
     spell_data_ptr_t stomp;
+    spell_data_ptr_t barbed_wrath;
+    spell_data_ptr_t wild_call;
     spell_data_ptr_t aspect_of_the_wild;
-    spell_data_ptr_t one_with_the_pack;
 
     spell_data_ptr_t dire_command; // TODO: how does overlap with runeforge work
     spell_data_ptr_t scent_of_blood;
-    spell_data_ptr_t barbed_wrath;
-    spell_data_ptr_t qapla_eredun_war_order; // TODO: spelldata looks goofed
+    spell_data_ptr_t one_with_the_pack;
+    spell_data_ptr_t master_handler;
+    spell_data_ptr_t snake_bite;
 
-    spell_data_ptr_t pack_resilience;
-    spell_data_ptr_t bloodshed;
+    spell_data_ptr_t dire_frenzy;
+    spell_data_ptr_t brutal_companion;
     spell_data_ptr_t call_of_the_wild;
 
     spell_data_ptr_t dire_pack;
-    spell_data_ptr_t rylakstalkers_piercing_fangs;
+    spell_data_ptr_t piercing_fangs;
     spell_data_ptr_t killer_cobra;
     spell_data_ptr_t bloody_frenzy;
     spell_data_ptr_t wild_instincts;
@@ -972,9 +975,8 @@ public:
 
     // Beast Mastery Tree Passives
     ab::apply_affecting_aura( p -> talents.killer_command );
-    ab::apply_affecting_aura( p -> talents.loaded_quiver );
     ab::apply_affecting_aura( p -> talents.sharp_barbs );
-    ab::apply_affecting_aura( p -> talents.qapla_eredun_war_order );
+    ab::apply_affecting_aura( p -> talents.war_orders );
 
     // Survival Tree Passives
     ab::apply_affecting_aura( p -> talents.terms_of_engagement );
@@ -1539,6 +1541,7 @@ struct hunter_main_pet_base_t : public hunter_pet_t
     buff_t* beast_cleave = nullptr;
     buff_t* thrill_of_the_hunt = nullptr;
     buff_t* bestial_wrath = nullptr;
+    buff_t* piercing_fangs = nullptr;
     buff_t* rylakstalkers_piercing_fangs = nullptr;
 
     buff_t* predator = nullptr;
@@ -1586,15 +1589,25 @@ struct hunter_main_pet_base_t : public hunter_pet_t
         -> set_cooldown( 0_ms )
         -> set_stack_change_callback( [ this ]( buff_t*, int old, int cur ) {
           if ( cur == 0 )
+          {
             buffs.rylakstalkers_piercing_fangs -> expire();
-          else if ( old == 0 )
+            buffs.piercing_fangs -> expire();
+          }
+          else if (old == 0) {
             buffs.rylakstalkers_piercing_fangs -> trigger();
+            buffs.piercing_fangs -> trigger();
+          }
         } );
 
     buffs.rylakstalkers_piercing_fangs =
       make_buff( this, "rylakstalkers_piercing_fangs", o() -> find_spell( 336845 ) )
         -> set_default_value_from_effect( 1 )
-        -> set_chance( o() -> talents.rylakstalkers_piercing_fangs.ok() || o() -> legendary.rylakstalkers_fangs.ok() );
+        -> set_chance( o() -> legendary.rylakstalkers_fangs.ok() );
+
+    buffs.piercing_fangs =
+      make_buff( this, "piercing_fangs", o() -> find_spell( 392054 ) )
+        -> set_default_value_from_effect( 1 )
+        -> set_chance( o() -> talents.piercing_fangs.ok() );
   }
 
   double composite_melee_speed() const override
@@ -1635,6 +1648,7 @@ struct hunter_main_pet_base_t : public hunter_pet_t
     double m = hunter_pet_t::composite_player_critical_damage_multiplier( s );
 
     m *= 1 + buffs.rylakstalkers_piercing_fangs -> check_value();
+    m *= 1 + buffs.piercing_fangs -> check_value();
 
     return m;
   }
@@ -1913,7 +1927,7 @@ struct dire_critter_t final : public hunter_pet_t
   {
     double m = hunter_pet_t::composite_player_multiplier( school );
 
-    m *= 1 + o() -> talents.pack_resilience -> effectN( 2 ).percent();
+    m *= 1 + o() -> talents.dire_frenzy -> effectN( 2 ).percent();
 
     return m;
   }
@@ -3762,8 +3776,7 @@ struct cobra_shot_t: public hunter_ranged_attack_t
     if ( rng().roll( p() -> legendary.flamewakers_cobra_sting -> proc_chance() ) )
       p() -> buffs.flamewakers_cobra_sting -> trigger();
 
-    if ( rng().roll( p() -> talents.flamewakers_cobra_sting -> effectN( 2 ).percent() ) )
-      p() -> buffs.flamewakers_cobra_sting -> trigger();
+    p() -> buffs.cobra_sting -> trigger();
 
     if ( p() -> rppm.arctic_bola -> trigger() )
       p() -> actions.arctic_bola -> execute_on_target( target );
@@ -3874,7 +3887,7 @@ struct barbed_shot_t: public hunter_ranged_attack_t
     p() -> cooldowns.bestial_wrath -> adjust( -bestial_wrath_reduction );
     p() -> cooldowns.aspect_of_the_wild -> adjust( -aspect_of_the_wild_reduction );
 
-    if ( rng().roll( p() -> talents.qapla_eredun_war_order -> effectN( 3 ).percent() ) )
+    if ( rng().roll( p() -> talents.war_orders -> effectN( 3 ).percent() ) )
       p() -> cooldowns.kill_command -> reset( true );
 
     for ( auto pet : pets::active<pets::hunter_main_pet_base_t>( p() -> pets.main, p() -> pets.animal_companion ) )
@@ -5495,7 +5508,10 @@ struct kill_command_t: public hunter_spell_t
     p() -> buffs.flamewakers_cobra_sting -> up(); // benefit tracking
     p() -> buffs.flamewakers_cobra_sting -> decrement();
 
-    if ( p() -> buffs.in_for_the_kill -> trigger() )
+    p() -> buffs.cobra_sting -> up(); // benefit tracking
+    p() -> buffs.cobra_sting -> decrement();
+
+    if ( p() -> buffs.hunters_prey -> trigger() )
       p() -> cooldowns.kill_shot -> reset( true );
   }
 
@@ -5504,6 +5520,7 @@ struct kill_command_t: public hunter_spell_t
     double c = hunter_spell_t::cost();
 
     c *= 1 + p() -> buffs.flamewakers_cobra_sting -> check_value();
+    c *= 1 + p() -> buffs.cobra_sting -> check_value();
     c *= 1 + p() -> buffs.dire_pack -> check_value();
 
     return c;
@@ -6649,48 +6666,52 @@ void hunter_t::init_spells()
   // Beast Mastery Tree
   if (specialization() == HUNTER_BEAST_MASTERY)
   {
-    talents.barbed_shot                       = find_talent_spell( talent_tree::SPECIALIZATION, "Barbed Shot", HUNTER_BEAST_MASTERY );
+    talents.cobra_shot                        = find_talent_spell( talent_tree::SPECIALIZATION, "Cobra Shot", HUNTER_BEAST_MASTERY );
 
     talents.pack_tactics                      = find_talent_spell( talent_tree::SPECIALIZATION, "Pack Tactics", HUNTER_BEAST_MASTERY );
     talents.multishot_bm                      = find_talent_spell( talent_tree::SPECIALIZATION, "Multi-Shot", HUNTER_BEAST_MASTERY );
-    talents.cobra_shot                        = find_talent_spell( talent_tree::SPECIALIZATION, "Cobra Shot", HUNTER_BEAST_MASTERY );
+    talents.barbed_shot                       = find_talent_spell( talent_tree::SPECIALIZATION, "Barbed Shot", HUNTER_BEAST_MASTERY );
 
     talents.aspect_of_the_beast               = find_talent_spell( talent_tree::SPECIALIZATION, "Aspect of the Beast", HUNTER_BEAST_MASTERY );
-    talents.loaded_quiver                     = find_talent_spell( talent_tree::SPECIALIZATION, "Loaded Quiver", HUNTER_BEAST_MASTERY);
     talents.kindred_spirits                   = find_talent_spell( talent_tree::SPECIALIZATION, "Kindred Spirits", HUNTER_BEAST_MASTERY);
     talents.training_expert                   = find_talent_spell( talent_tree::SPECIALIZATION, "Training Expert", HUNTER_BEAST_MASTERY);
 
     talents.animal_companion                  = find_talent_spell( talent_tree::SPECIALIZATION, "Animal Companion", HUNTER_BEAST_MASTERY);
     talents.beast_cleave                      = find_talent_spell( talent_tree::SPECIALIZATION, "Beast Cleave", HUNTER_BEAST_MASTERY);
     talents.killer_command                    = find_talent_spell( talent_tree::SPECIALIZATION, "Killer Command", HUNTER_BEAST_MASTERY);
-    talents.flamewakers_cobra_sting           = find_talent_spell( talent_tree::SPECIALIZATION, "Flamewaker's Cobra Sting", HUNTER_BEAST_MASTERY);
-
     talents.sharp_barbs                       = find_talent_spell( talent_tree::SPECIALIZATION, "Sharp Barbs", HUNTER_BEAST_MASTERY);
+
+    talents.cobra_sting                       = find_talent_spell( talent_tree::SPECIALIZATION, "Cobra Sting", HUNTER_BEAST_MASTERY);
     talents.thrill_of_the_hunt                = find_talent_spell( talent_tree::SPECIALIZATION, "Thrill of the Hunt", HUNTER_BEAST_MASTERY);
     talents.kill_cleave                       = find_talent_spell( talent_tree::SPECIALIZATION, "Kill Cleave", HUNTER_BEAST_MASTERY);
-    talents.dire_beast                        = find_talent_spell( talent_tree::SPECIALIZATION, "Dire Beast", HUNTER_BEAST_MASTERY);
-
     talents.a_murder_of_crows                 = find_talent_spell( talent_tree::SPECIALIZATION, "A Murder of Crows", HUNTER_BEAST_MASTERY);
-    talents.bestial_wrath                     = find_talent_spell( talent_tree::SPECIALIZATION, "Bestial Wrath", HUNTER_BEAST_MASTERY);
-    talents.wild_call                         = find_talent_spell( talent_tree::SPECIALIZATION, "Wild Call", HUNTER_BEAST_MASTERY);
+    talents.bloodshed                         = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodshed", HUNTER_BEAST_MASTERY);
+    talents.cobra_senses                      = find_talent_spell( talent_tree::SPECIALIZATION, "Cobra Senses", HUNTER_BEAST_MASTERY);
 
-    talents.in_for_the_kill                   = find_talent_spell( talent_tree::SPECIALIZATION, "In for the Kill", HUNTER_BEAST_MASTERY);
+    talents.dire_beast                        = find_talent_spell( talent_tree::SPECIALIZATION, "Dire Beast", HUNTER_BEAST_MASTERY);
+    talents.bestial_wrath                     = find_talent_spell( talent_tree::SPECIALIZATION, "Bestial Wrath", HUNTER_BEAST_MASTERY);
+    talents.war_orders                        = find_talent_spell( talent_tree::SPECIALIZATION, "War Orders", HUNTER_BEAST_MASTERY);
+
+    talents.hunters_prey                      = find_talent_spell( talent_tree::SPECIALIZATION, "Hunter's Prey", HUNTER_BEAST_MASTERY);
     talents.stomp                             = find_talent_spell( talent_tree::SPECIALIZATION, "Stomp", HUNTER_BEAST_MASTERY);
+    talents.barbed_wrath                      = find_talent_spell( talent_tree::SPECIALIZATION, "Barbed Wrath", HUNTER_BEAST_MASTERY);
+    talents.wild_call                         = find_talent_spell( talent_tree::SPECIALIZATION, "Wild Call", HUNTER_BEAST_MASTERY);
     talents.aspect_of_the_wild                = find_talent_spell( talent_tree::SPECIALIZATION, "Aspect of the Wild", HUNTER_BEAST_MASTERY);
-    talents.one_with_the_pack                 = find_talent_spell( talent_tree::SPECIALIZATION, "One with the Pack", HUNTER_BEAST_MASTERY);
+
 
     talents.dire_command                      = find_talent_spell( talent_tree::SPECIALIZATION, "Dire Command", HUNTER_BEAST_MASTERY);
     talents.scent_of_blood                    = find_talent_spell( talent_tree::SPECIALIZATION, "Scent of Blood", HUNTER_BEAST_MASTERY);
-    talents.barbed_wrath                      = find_talent_spell( talent_tree::SPECIALIZATION, "Barbed Wrath", HUNTER_BEAST_MASTERY);
-    talents.qapla_eredun_war_order            = find_talent_spell( talent_tree::SPECIALIZATION, "Qa'pla, Eredun War Order", HUNTER_BEAST_MASTERY);
+    talents.one_with_the_pack                 = find_talent_spell( talent_tree::SPECIALIZATION, "One with the Pack", HUNTER_BEAST_MASTERY);
+    talents.master_handler                    = find_talent_spell( talent_tree::SPECIALIZATION, "Master Handler", HUNTER_BEAST_MASTERY);
+    talents.snake_bite                        = find_talent_spell( talent_tree::SPECIALIZATION, "Snake Bite", HUNTER_BEAST_MASTERY);
 
-    talents.pack_resilience                   = find_talent_spell( talent_tree::SPECIALIZATION, "Pack Resilience", HUNTER_BEAST_MASTERY);
-    talents.bloodshed                         = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodshed", HUNTER_BEAST_MASTERY);
+    talents.dire_frenzy                       = find_talent_spell( talent_tree::SPECIALIZATION, "Dire Frenzy", HUNTER_BEAST_MASTERY);
     talents.wailing_arrow                     = find_talent_spell( talent_tree::SPECIALIZATION, "Wailing Arrow", HUNTER_BEAST_MASTERY );
+    talents.brutal_companion                  = find_talent_spell( talent_tree::SPECIALIZATION, "Brutal Companion", HUNTER_BEAST_MASTERY );
     talents.call_of_the_wild                  = find_talent_spell( talent_tree::SPECIALIZATION, "Call of the Wild", HUNTER_BEAST_MASTERY );
 
     talents.dire_pack                         = find_talent_spell( talent_tree::SPECIALIZATION, "Dire Pack", HUNTER_BEAST_MASTERY );
-    talents.rylakstalkers_piercing_fangs      = find_talent_spell( talent_tree::SPECIALIZATION, "Rylakstalker's Piercing Fangs", HUNTER_BEAST_MASTERY );
+    talents.piercing_fangs                    = find_talent_spell( talent_tree::SPECIALIZATION, "Piercing Fangs", HUNTER_BEAST_MASTERY );
     talents.killer_cobra                      = find_talent_spell( talent_tree::SPECIALIZATION, "Killer Cobra", HUNTER_BEAST_MASTERY );
     talents.bloody_frenzy                     = find_talent_spell( talent_tree::SPECIALIZATION, "Bloody Frenzy", HUNTER_BEAST_MASTERY );
     talents.wild_instincts                    = find_talent_spell( talent_tree::SPECIALIZATION, "Wild Instincts", HUNTER_BEAST_MASTERY );
@@ -7013,6 +7034,11 @@ void hunter_t::create_buffs()
     make_buff( this, "flamewakers_cobra_sting", find_spell( 336826 ) )
       -> set_default_value_from_effect( 1 );
 
+  buffs.cobra_sting =
+    make_buff( this, "cobra_sting", talents.cobra_sting -> effectN( 1 ).trigger() )
+      -> set_chance( talents.cobra_sting -> effectN( 2 ).percent() )
+      -> set_default_value_from_effect( 1 );
+
   buffs.thrill_of_the_hunt =
     make_buff( this, "thrill_of_the_hunt", talents.thrill_of_the_hunt -> effectN( 1 ).trigger() )
       -> set_default_value_from_effect( 1 )
@@ -7021,7 +7047,7 @@ void hunter_t::create_buffs()
 
   buffs.dire_beast =
     make_buff( this, "dire_beast", find_spell( 120679 ) -> effectN( 2 ).trigger() )
-      -> modify_duration( talents.pack_resilience -> effectN( 1 ).time_value() )
+      -> modify_duration( talents.dire_frenzy -> effectN( 1 ).time_value() )
       -> set_default_value_from_effect( 1 )
       -> set_pct_buff_type( STAT_PCT_BUFF_HASTE );
 
@@ -7031,9 +7057,9 @@ void hunter_t::create_buffs()
       -> set_default_value_from_effect( 1 )
       -> apply_affecting_conduit( conduits.one_with_the_beast );
 
-  buffs.in_for_the_kill =
-    make_buff( this, "in_for_the_kill", talents.in_for_the_kill -> effectN( 1 ).trigger() )
-      -> set_chance( talents.in_for_the_kill -> effectN( 1 ).percent() );
+  buffs.hunters_prey =
+    make_buff( this, "hunters_prey", talents.hunters_prey -> effectN( 1 ).trigger() )
+      -> set_chance( talents.hunters_prey -> effectN( 1 ).percent() );
 
   buffs.aspect_of_the_wild =
     make_buff( this, "aspect_of_the_wild", talents.aspect_of_the_wild )
