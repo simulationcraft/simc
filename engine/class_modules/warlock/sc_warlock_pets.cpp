@@ -463,6 +463,13 @@ struct felstorm_t : public warlock_pet_melee_attack_t
         m *= p()->buffs.demonic_strength->default_value;
       }
 
+      // 2022-10-04: NOTE there is a bug on beta where Demonic Strength's bonus is being canceled when
+      // Fel and Steel is talented. Not going to implement this right now as it is clearly a bug.
+      if ( p()->o()->talents.fel_and_steel.ok() )
+      {
+        m *= 1.0 + p()->o()->talents.fel_and_steel->effectN( 1 ).percent();
+      }
+
       return m;
     }
   };
@@ -947,6 +954,11 @@ struct dreadbite_t : public warlock_pet_melee_attack_t
     if ( p()->o()->talents.dreadlash->ok() )
     {
       m *= 1.0 + p()->o()->talents.dreadlash->effectN( 1 ).percent();
+    }
+
+    if ( p()->o()->talents.fel_and_steel->ok() )
+    {
+      m *= 1.0 + p()->o()->talents.fel_and_steel->effectN( 1 ).percent();
     }
 
     return m;

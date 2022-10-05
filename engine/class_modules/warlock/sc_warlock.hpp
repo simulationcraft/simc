@@ -293,7 +293,7 @@ public:
     player_talent_t shadows_bite; // Demonbolt damage increase after Dreadstalkers despawn
     const spell_data_t* shadows_bite_buff;
     player_talent_t carnivorous_stalkers; // Chance for Dreadstalkers to perform additional Dreadbites
-    // DF - Fel and Steel (Felstorm and Dreadbite damage increase)
+    player_talent_t fel_and_steel; // Felstorm and Dreadbite damage increase
     // DF - Fel Might (Shorter Felstorm CD)
 
     const spell_data_t* power_siphon;
