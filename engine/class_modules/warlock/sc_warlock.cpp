@@ -506,9 +506,9 @@ struct shadow_bolt_t : public warlock_spell_t
 
     if ( time_to_execute == 0_ms )
       p()->buffs.nightfall->decrement();
-    //
-    //if ( p()->talents.demonic_calling->ok() )
-    //  p()->buffs.demonic_calling->trigger();
+    
+    if ( p()->talents.demonic_calling.ok() )
+      p()->buffs.demonic_calling->trigger();
 
     //if ( p()->legendary.balespiders_burning_core->ok() )
     //  p()->buffs.balespiders_burning_core->trigger();
