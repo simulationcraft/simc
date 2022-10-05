@@ -2058,20 +2058,12 @@ struct arcane_mage_spell_t : public mage_spell_t
 
   double arcane_charge_multiplier( bool arcane_barrage = false ) const
   {
-    double per_ac_bonus = 0.0;
+    double base = p()->buffs.arcane_charge->data().effectN( arcane_barrage ? 2 : 1 ).percent();
 
-    if ( arcane_barrage )
-    {
-      per_ac_bonus = p()->buffs.arcane_charge->data().effectN( 2 ).percent()
-                   + p()->cache.mastery() * p()->spec.savant->effectN( 3 ).mastery_value();
-    }
-    else
-    {
-      per_ac_bonus = p()->buffs.arcane_charge->data().effectN( 1 ).percent()
-                   + p()->cache.mastery() * p()->spec.savant->effectN( 2 ).mastery_value();
-    }
+    double mastery = p()->cache.mastery() * p()->spec.savant->effectN( arcane_barrage ? 3 : 2 ).mastery_value();
+    mastery *= 1.0 + p()->talents.prodigious_savant->effectN( arcane_barrage ? 2 : 1 ).percent();
 
-    return 1.0 + p()->buffs.arcane_charge->check() * per_ac_bonus;
+    return 1.0 + p()->buffs.arcane_charge->check() * (base + mastery);
   }
 };
 
