@@ -3209,6 +3209,7 @@ struct arcane_orb_t final : public arcane_mage_spell_t
     parse_options( options_str );
     may_miss = may_crit = false;
     aoe = -1;
+    cooldown->charges += as<int>( p->talents.charged_orb->effectN( 1 ).base_value() );
 
     impact_action = get_action<arcane_orb_bolt_t>( "arcane_orb_bolt", p );
     add_child( impact_action );
