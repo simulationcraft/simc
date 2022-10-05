@@ -4357,10 +4357,11 @@ struct rip_t : public cat_attack_t
   {
     double rip_mul;
 
-    tear_t( druid_t* p )
-      : cat_attack_t( "tear", p, p->find_spell( 391356 ) ), rip_mul( p->talent.rip_and_tear->effectN( 1 ).percent() )
+    tear_t( druid_t* p, std::string_view n )
+      : cat_attack_t( n, p, p->find_spell( 391356 ) ), rip_mul( p->talent.rip_and_tear->effectN( 1 ).percent() )
     {
       background = true;
+      name_str_reporting = "tear";
     }
 
     action_state_t* new_state() override { return new rip_state_t( p(), this, target ); }
@@ -4386,7 +4387,8 @@ struct rip_t : public cat_attack_t
 
     if ( p->talent.rip_and_tear.ok() )
     {
-      tear = p->get_secondary_action<tear_t>( "tear" );
+      auto suf = get_suffix( name_str, "rip" );
+      tear = p->get_secondary_action_n<tear_t>( "tear" + suf );
       add_child( tear );
     }
   }
