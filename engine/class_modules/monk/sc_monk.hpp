@@ -642,7 +642,7 @@ public:
       player_talent_t crane_vortex;
       player_talent_t xuens_bond;
       player_talent_t fury_of_xuen;
-      player_talent_t empowered_tiger_lightning;
+      player_talent_t invoke_xuen_the_white_tiger_rank_2;
       player_talent_t rising_star;
       // Row 9
       player_talent_t bonedust_brew;
