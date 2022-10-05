@@ -4389,8 +4389,15 @@ struct rip_t : public cat_attack_t
     {
       auto suf = get_suffix( name_str, "rip" );
       tear = p->get_secondary_action_n<tear_t>( "tear" + suf );
-      add_child( tear );
     }
+  }
+
+  void init_finished() override
+  {
+    cat_attack_t::init_finished();
+
+    if ( tear )
+      add_child( tear );
   }
 
   action_state_t* new_state() override { return new rip_state_t( p(), this, target ); }
