@@ -292,7 +292,7 @@ public:
     const spell_data_t* implosion_aoe; // Note: in combat logs this is attributed to the player, not the imploding pet
     player_talent_t shadows_bite; // Demonbolt damage increase after Dreadstalkers despawn
     const spell_data_t* shadows_bite_buff;
-    // DF - Carnivorous Stalkers (Formerly SL Conduit)
+    player_talent_t carnivorous_stalkers; // Chance for Dreadstalkers to perform additional Dreadbites
     // DF - Fel and Steel (Felstorm and Dreadbite damage increase)
     // DF - Fel Might (Shorter Felstorm CD)
 

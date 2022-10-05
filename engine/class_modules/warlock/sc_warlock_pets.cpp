@@ -968,7 +968,7 @@ struct dreadbite_t : public warlock_pet_melee_attack_t
   }
 };
 
-// SL - Soulbind conduit (Carnivorous Stalkers) handling requires special version of melee attack
+// Carnivorous Stalkers talent handling requires special version of melee attack
 struct dreadstalker_melee_t : warlock_pet_melee_t
 {
   dreadstalker_melee_t( warlock_pet_t* p, double wm, const char* name = "melee" ) :
@@ -989,6 +989,17 @@ struct dreadstalker_melee_t : warlock_pet_melee_t
     //    p()->schedule_ready();
     //  }
     //}
+
+    if ( p()->o()->talents.carnivorous_stalkers.ok() && rng().roll( p()->o()->talents.carnivorous_stalkers->effectN( 1 ).percent() ) )
+    {
+      debug_cast<dreadstalker_t*>( p() )->dreadbite_executes++;
+      p()->o()->procs.carnivorous_stalkers->occur();
+      if ( p()->readying )
+      {
+        event_t::cancel( p()->readying );
+        p()->schedule_ready();
+      }
+    }
   }
 };
 
