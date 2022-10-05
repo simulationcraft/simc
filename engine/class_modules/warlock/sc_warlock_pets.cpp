@@ -488,6 +488,13 @@ struct felstorm_t : public warlock_pet_melee_attack_t
     tick_action         = new felstorm_tick_t( p, p->find_spell( 89753 ));
   }
 
+  felstorm_t( warlock_pet_t* p, util::string_view options_str, bool main_pet, const std::string n = "felstorm" )
+    : felstorm_t( p, options_str, n )
+  {
+    if ( main_pet && p->o()->talents.fel_might.ok() )
+      cooldown->duration += timespan_t::from_millis( p->o()->talents.fel_might->effectN( 1 ).base_value() );
+  }
+
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
     return s->action->tick_time( s ) * 5.0;
@@ -497,7 +504,7 @@ struct felstorm_t : public warlock_pet_melee_attack_t
 struct demonic_strength_t : public felstorm_t
 {
   demonic_strength_t( warlock_pet_t* p, util::string_view options_str )
-    : felstorm_t( p, options_str, "demonic_strength_felstorm" )
+    : felstorm_t( p, options_str, std::string( "demonic_strength_felstorm" ) )
   {
   }
 
@@ -635,7 +642,7 @@ action_t* felguard_pet_t::create_action( util::string_view name, util::string_vi
   if ( name == "legion_strike" )
     return new legion_strike_t( this, options_str );
   if ( name == "felstorm" )
-    return new felstorm_t( this, options_str );
+    return new felstorm_t( this, options_str, true );
   if ( name == "axe_toss" )
     return new axe_toss_t( this, options_str );
   if ( name == "demonic_strength_felstorm" )
