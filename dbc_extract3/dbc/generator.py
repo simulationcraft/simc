@@ -1424,6 +1424,7 @@ class SpellDataGenerator(DataGenerator):
           ( 201594, 1 ), # Stampede
           ( 118455, 5 ), # Beast Cleave
           ( 186254, 5 ), # Bestial Wrath
+          ( 392054, 5 ), # Piercing Fangs
           ( 257622, 2 ), # Trick Shots buff
           ( 260395, 2 ), # Lethal Shots buff
           ( 342076, 2 ), # Streamline buff
