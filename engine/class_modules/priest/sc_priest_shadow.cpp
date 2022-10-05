@@ -2237,7 +2237,8 @@ void priest_t::create_buffs_shadow()
 
   buffs.devoured_pride = make_buff( this, "devoured_pride", talents.shadow.devoured_pride )
                              ->set_duration( timespan_t::zero() )
-                             ->set_trigger_spell( talents.shadow.idol_of_yshaarj );
+                             ->set_trigger_spell( talents.shadow.idol_of_yshaarj )
+                             ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buffs.mind_melt = make_buff( this, "mind_melt", talents.shadow.mind_melt->effectN( 1 ).trigger() )
                         ->set_default_value_from_effect( 1 );
