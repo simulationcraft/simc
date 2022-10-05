@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.2.45779
-static const std::array<spelltext_data_t, 18813> __spelltext_data { {
+static const std::array<spelltext_data_t, 18814> __spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -18492,6 +18492,7 @@ static const std::array<spelltext_data_t, 18813> __spelltext_data { {
   { 391997, "Increases Stamina by $s1% and reduces the duration of movement impairing effects on you by ${$s4/10}.1%.", 0, 0 },
   { 392008, "Your harmful abilities and spells have a chance to summon Gruffy. When summoned, Gruffy will charge your target from a random direction dealing $s1 physical damage to any enemy he passes through, while knocking them back a short distance.", 0, 0 },
   { 392053, "While Bestial Wrath is active, your pet's critical damage dealt is increased by $3920545s1%.", 0, 0 },
+  { 392054, "$@spelldesc392053", "Critical damage dealt increased by $s1%.", 0 },
   { 392058, "$@spelldesc392060", 0, 0 },
   { 392060, "Fire an enchanted arrow, dealing $392058s1 Shadow damage to your target and an additional $392058s2 Shadow damage to all enemies within $392058A2 yds of your target. Non-Player targets struck by a Wailing Arrow are silenced for $392061d.$?s389865[\r\n\r\nWailing Arrow resets the cooldown of Rapid Fire and generates $389865s2 $Lcharge:charges; of Aimed Shot.][]$?s389866[\r\n\r\nWailing Arrow fires off $389866s1 Wind Arrows at your primary target, and $389866s2 Wind Arrows split among any secondary targets hit, each dealing $191043s1 Physical damage.][]", 0, 0 },
   { 392061, "$@spelldesc392060", "Silenced.", 0 },
