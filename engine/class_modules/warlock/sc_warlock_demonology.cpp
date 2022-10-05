@@ -250,8 +250,8 @@ struct demonbolt_t : public demonology_spell_t
     if ( p()->talents.power_siphon.ok() )
       p()->buffs.power_siphon->decrement();
 
-    //if ( p()->talents.demonic_calling->ok() )
-    //  p()->buffs.demonic_calling->trigger();
+    if ( p()->talents.demonic_calling.ok() )
+      p()->buffs.demonic_calling->trigger();
   }
 
   double action_multiplier() const override
@@ -298,20 +298,22 @@ struct call_dreadstalkers_t : public demonology_spell_t
   {
     double c = demonology_spell_t::cost();
 
-    //if ( p()->buffs.demonic_calling->check() )
-    //{
-    //  c -= p()->talents.demonic_calling->effectN( 1 ).base_value();
-    //}
+    if ( p()->buffs.demonic_calling->check() )
+    {
+      c *= 1.0 + p()->talents.demonic_calling_buff->effectN( 1 ).percent();
+    }
 
     return c;
   }
 
   timespan_t execute_time() const override
   {
-    //if ( p()->buffs.demonic_calling->check() )
-    //{
-    //  return timespan_t::zero();
-    //}
+    timespan_t t = demonology_spell_t::execute_time();
+
+    if ( p()->buffs.demonic_calling->check() )
+    {
+      t *= 1.0 + p()->talents.demonic_calling_buff->effectN( 2 ).percent();
+    }
 
     return demonology_spell_t::execute_time();
   }
@@ -323,11 +325,11 @@ struct call_dreadstalkers_t : public demonology_spell_t
     unsigned count = as<unsigned>( p()->talents.call_dreadstalkers->effectN( 1 ).base_value() );
     auto dogs = p()->warlock_pet_list.dreadstalkers.spawn( p()->talents.call_dreadstalkers_2->duration(), count );
 
-    //if ( p()->buffs.demonic_calling->up() )
-    //{  // benefit tracking
+    if ( p()->buffs.demonic_calling->up() )
+    {  // benefit tracking
 
-    //  //Despite having no cost when Demonic Calling is up, this spell will still proc effects based on shard spending (last checked 2021-03-11)
-    //  double base_cost = demonology_spell_t::cost();
+      //Despite having no cost when Demonic Calling is up, this spell will still proc effects based on shard spending (last checked 2022-10-04)
+      double base_cost = demonology_spell_t::cost();
 
     //  if ( p()->talents.grand_warlocks_design->ok() )
     //    p()->cooldowns.demonic_tyrant->adjust( -base_cost * p()->talents.grand_warlocks_design->effectN( 2 ).time_value(), false );
@@ -344,8 +346,8 @@ struct call_dreadstalkers_t : public demonology_spell_t
     //    make_event<sc_event_t>( *p()->sim, p(), as<int>( base_cost ) );
     //  }
 
-    //  p()->buffs.demonic_calling->decrement();
-    //}
+      p()->buffs.demonic_calling->decrement();
+    }
 
     ////TOCHECK: Verify only the new pair of dreadstalkers gets the buff
     //if ( p()->legendary.grim_inquisitors_dread_calling.ok() )
@@ -1007,8 +1009,8 @@ void warlock_t::create_buffs_demonology()
                             ->set_cooldown( timespan_t::zero() );
 
   // Talents
-  buffs.demonic_calling = make_buff( this, "demonic_calling", talents.demonic_calling->effectN( 1 ).trigger() )
-                              ->set_chance( talents.demonic_calling->proc_chance() );
+  buffs.demonic_calling = make_buff( this, "demonic_calling", talents.demonic_calling_buff )
+                              ->set_chance( talents.demonic_calling->effectN( 3 ).percent() );
 
   buffs.inner_demons = make_buff( this, "inner_demons", talents.inner_demons )
                            ->set_period( talents.inner_demons->effectN( 1 ).period() )
@@ -1110,7 +1112,8 @@ void warlock_t::init_spells_demonology()
 
   talents.inner_demons = find_talent_spell( talent_tree::SPECIALIZATION, "Inner Demons" ); // Should be ID 267216
 
-  talents.demonic_calling     = find_talent_spell( "Demonic Calling" );
+  talents.demonic_calling = find_talent_spell( talent_tree::SPECIALIZATION, "Demonic Calling" ); // Should be ID 205145
+  talents.demonic_calling_buff = find_spell( 205146 );
 
   talents.doom                = find_talent_spell( "Doom" );
 

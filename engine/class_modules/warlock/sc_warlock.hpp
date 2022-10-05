@@ -299,7 +299,8 @@ public:
     player_talent_t power_siphon; // NOTE: Power Siphon WILL consume Imp Gang Boss as if it were a regular imp (last checked 2022-10-04)
     const spell_data_t* power_siphon_buff; // Semi-hidden aura that controls the bonus Demonbolt damage
     player_talent_t inner_demons; // DF - Now a 2 point talent
-    const spell_data_t* demonic_calling; // DF - Now a 2 point talent
+    player_talent_t demonic_calling; // DF - Now a 2 point talent
+    const spell_data_t* demonic_calling_buff;
     const spell_data_t* grimoire_felguard;
 
     // DF - Bloodbound Imps (Increased Demonic Core proc chance from Wild Imps)
