@@ -538,6 +538,7 @@ public:
     buff_t* ghoulish_frenzy;
     buff_t* plaguebringer; 
     buff_t* ghoulish_infusion;
+    buff_t* commander_of_the_dead_window;
 
     // Conduits
     buff_t* meat_shield;
@@ -2489,7 +2490,7 @@ struct gargoyle_pet_t : public death_knight_pet_t
     spawn_travel_duration = 2.9;
     spawn_travel_stddev = 0.2;
     
-    if ( dk() -> talent.unholy.commander_of_the_dead.ok() && dk() -> buffs.dark_transformation -> up() )
+    if ( dk() -> talent.unholy.commander_of_the_dead.ok() && dk() -> buffs.commander_of_the_dead_window -> up() )
     {
       commander_of_the_dead -> trigger();
     }
@@ -2978,6 +2979,11 @@ struct magus_pet_t : public death_knight_pet_t
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.swing_time = 1.4_s;
     resource_regeneration = regen_type::DISABLED;
+
+    if ( dk() -> talent.unholy.commander_of_the_dead.ok() && dk() -> buffs.commander_of_the_dead_window -> up() )
+    {
+      commander_of_the_dead -> trigger();
+    }
   }
 
   void init_base_stats() override
@@ -2988,6 +2994,19 @@ struct magus_pet_t : public death_knight_pet_t
     // Looks like Magus' AP coefficient is the same as the pet ghouls'
     // Including the +6% buff applied before magus was even a thing
     owner_coeff.ap_from_ap *= 1.06;
+  }
+
+  
+  double composite_player_multiplier( school_e s ) const override
+  {
+    double m = death_knight_pet_t::composite_player_multiplier( s );
+
+    if ( commander_of_the_dead -> up() ) 
+    {
+      m *= 1.0 + commander_of_the_dead -> value();
+    }
+
+    return m;
   }
 
   // Magus of the dead Action Priority List:
@@ -4182,7 +4201,7 @@ struct apocalypse_t : public death_knight_melee_attack_t
       p() -> replenish_rune( rune_generation, p() -> gains.apocalypse );
     }
     
-    if ( p() -> talent.unholy.commander_of_the_dead.ok() && p() -> buffs.dark_transformation -> up() )
+    if ( p() -> talent.unholy.commander_of_the_dead.ok() && p() -> buffs.commander_of_the_dead_window -> up() )
     {
       for ( auto ghoul : p() -> pets.apoc_ghouls.active_pets() )
       { 
@@ -4334,7 +4353,7 @@ struct army_of_the_dead_t : public death_knight_spell_t
     if ( p() -> talent.unholy.magus_of_the_dead.ok() )
       p() -> pets.magus_of_the_dead.spawn( summon_duration - timespan_t::from_seconds( precombat_time ), 1 );
 
-    if ( p() -> talent.unholy.commander_of_the_dead.ok() && p() -> buffs.dark_transformation -> up() )
+    if ( p() -> talent.unholy.commander_of_the_dead.ok() && p() -> buffs.commander_of_the_dead_window -> up() )
     {
       for ( auto ghoul : p() -> pets.army_ghouls.active_pets() )
       { 
@@ -5168,6 +5187,11 @@ struct dark_transformation_t : public death_knight_spell_t
           ghoul -> commander_of_the_dead -> trigger();
         }
 
+        for (auto magus : p()->pets.magus_of_the_dead.active_pets())
+        {
+          magus -> commander_of_the_dead -> trigger();
+        }
+        p() -> buffs.commander_of_the_dead_window -> trigger();
       }
     }
   }
@@ -10863,6 +10887,9 @@ void death_knight_t::create_buffs()
            -> set_default_value_from_effect( 1 )
            -> add_invalidate( CACHE_ATTACK_SPEED )
            -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+
+  buffs.commander_of_the_dead_window = make_buff( this, "commander_of_the_dead_window" )
+           -> set_duration( 4_s );
 
   // Conduits
   buffs.eradicating_blow = make_buff( this, "eradicating_blow", find_spell( 337936 ) )
