@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.2.45969
-static const std::array<spelltext_data_t, 18964> __spelltext_data { {
+static const std::array<spelltext_data_t, 18966> __spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -17796,6 +17796,8 @@ static const std::array<spelltext_data_t, 18964> __spelltext_data { {
   { 387384, "Increases your critical strike chance by $s1%.\r\n\r\nPhysical attacks against you have a $s2% chance to make your next Incinerate instant cast. This effect can only occur once every $proccooldown sec.", 0, 0 },
   { 387385, "$@spelldesc387384", "Your next Incinerate is instant cast.", 0 },
   { 387391, "Each Soul Shard spent on Hand of Gul'dan increases the damage of your next Call Dreadstalkers by $s1%.", 0, 0 },
+  { 387392, "$@spelldesc387391", "Damage dealt increased by $w1%.", 0 },
+  { 387393, "$@spelldesc387391", "Your next Call Dreadstalkers will have their damage increased by $337141s1%.", 0 },
   { 387396, "Hand of Gul'dan deals $s1% additional damage and has a $s2% chance per Soul Shard spent of refunding a Soul Shard.", 0, 0 },
   { 387399, "Each time Felstorm deals damage, it increases the damage the target takes from you and your pets by $s1% for $387402d, up to ${$s1*$387402u}%.", 0, 0 },
   { 387400, "Chaos Bolt increases the damage of Chaos Bolt by $s1% and reduces the cast time of Chaos Bolt by $s2% for $337170d.\r\n\r\nRain of Fire increases the damage of Rain of Fire by $s1% for $337170d.\r\n\r\nShadowburn increases the damage of Shadowburn by $s1% for $337170d.", 0, 0 },

@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.45969 dragonflight-BETA (hotfix 2022-10-06/45969, git build dragonflight 44bc81c9be)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.45969 dragonflight-BETA (hotfix 2022-10-06/45969, no-networking)
 Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Orc (0x2)
