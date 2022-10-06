@@ -285,7 +285,6 @@ namespace pets
 struct animal_companion_t;
 struct hunter_main_pet_t;
 struct dire_critter_t;
-struct spitting_cobra_t;
 struct stable_pet_t;
 }
 
@@ -1518,6 +1517,16 @@ struct stable_pet_t final : public hunter_pet_t
 
     return ah;
   }
+
+  double composite_player_multiplier( school_e school ) const override
+  {
+    double m = hunter_pet_t::composite_player_multiplier( school );
+
+    m *= 1 + o() -> talents.beast_master -> effectN( 1 ).percent();
+    m *= 1 + o() -> talents.animal_companion -> effectN( 2 ).percent();
+
+    return m;
+  }
 };
 
 // Base class for main pet & Animal Companion
@@ -1628,6 +1637,9 @@ struct hunter_main_pet_base_t : public hunter_pet_t
     double m = hunter_pet_t::composite_player_multiplier( school );
 
     m *= 1 + buffs.bestial_wrath -> check_value();
+
+    m *= 1 + o() -> talents.beast_master -> effectN( 1 ).percent();
+    m *= 1 + o() -> talents.animal_companion -> effectN( 2 ).percent();
 
     return m;
   }
@@ -7632,10 +7644,7 @@ double hunter_t::composite_player_pet_damage_multiplier( const action_state_t* s
   m *= 1 + specs.survival_hunter -> effectN( 3 ).percent();
   m *= 1 + specs.marksmanship_hunter -> effectN( 3 ).percent();
 
-  m *= 1 + talents.beast_master -> effectN( 1 ).percent();
-
   m *= 1 + talents.training_expert -> effectN( 1 ).percent();
-  m *= 1 + talents.animal_companion -> effectN( 2 ).percent();
 
   m *= 1 + buffs.strength_of_the_pack -> check_value();
 
