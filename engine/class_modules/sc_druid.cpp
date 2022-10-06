@@ -8585,16 +8585,6 @@ struct wrath_t : public druid_spell_t
     return e;
   }
 
-  double composite_target_da_multiplier( player_t* t ) const override
-  {
-    double tdm = druid_spell_t::composite_target_da_multiplier( t );
-
-    if ( p()->buff.eclipse_solar->up() )
-      tdm *= 1.0 + p()->buff.eclipse_solar->value();
-
-    return tdm;
-  }
-
   timespan_t travel_time() const override
   {
     if ( !count )
