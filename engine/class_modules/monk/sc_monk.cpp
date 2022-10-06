@@ -3154,6 +3154,9 @@ struct fists_of_fury_t : public monk_melee_attack_t
 
   void execute() override
   {
+    if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T29, B2 ) )
+      p()->buff.kicks_of_flowing_momentum->trigger();
+
     if ( p()->buff.fists_of_flowing_momentum->up() )
     {
       p()->buff.fists_of_flowing_momentum_vers->trigger( 1, p()->buff.fists_of_flowing_momentum->stack_value(), -1,
@@ -3174,9 +3177,6 @@ struct fists_of_fury_t : public monk_melee_attack_t
         p()->buff.whirling_dragon_punch->set_duration( p()->cooldown.rising_sun_kick->remains() );
       p()->buff.whirling_dragon_punch->trigger();
     }
-
-    if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T29, B2 ) )
-      p()->buff.kicks_of_flowing_momentum->trigger();
   }
 
   void last_tick( dot_t* dot ) override
