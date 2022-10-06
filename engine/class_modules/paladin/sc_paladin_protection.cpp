@@ -460,6 +460,19 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
   }
 };
 
+// Eye of Tyr
+
+struct eye_of_tyr_t : public paladin_spell_t
+{
+  eye_of_tyr_t( paladin_t* p, util::string_view options_str ) :
+      paladin_spell_t( "eye_of_tyr", p, p->find_talent_spell( talent_tree::SPECIALIZATION, "Eye of Tyr") )
+  {
+    parse_options( options_str );
+    aoe      = -1;
+    may_crit = true;
+  }
+};
+
 // Judgment - Protection =================================================================
 
 struct judgment_prot_t : public judgment_t
@@ -922,6 +935,7 @@ action_t* paladin_t::create_action_protection( util::string_view name, util::str
   if ( name == "shield_of_the_righteous"   ) return new shield_of_the_righteous_t  ( this, options_str );
   if ( name == "moment_of_glory"           ) return new moment_of_glory_t          ( this, options_str );
   if ( name == "bastion_of_light"          ) return new bastion_of_light_t         ( this, options_str );
+  if ( name == "eye_of_tyr"                )     return new eye_of_tyr_t           ( this, options_str );
 
 
   if ( specialization() == PALADIN_PROTECTION )

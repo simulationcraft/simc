@@ -1376,7 +1376,7 @@ struct holy_power_consumer_t : public Base
       }
     }
 
-    if ((is_wog | is_sotr) && p -> buffs.bastion_of_light -> check() )
+    if ((is_wog || is_sotr) && p -> buffs.bastion_of_light -> check() )
     {
       p -> buffs.bastion_of_light->decrement();
     }
