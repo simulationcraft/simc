@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.45779 dragonflight-BETA (hotfix 2022-10-05/45779, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.45969 dragonflight-BETA (hotfix 2022-10-06/45969, no-networking)
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -1096,8 +1096,8 @@ Attributes       : ....x... ........ x.x..x.. ........   ........ .xx..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), No Threat (42), Require All Targets (58), Discount Power On Miss (59), No Aura Icon (60), Hide Channel Bar (109), Not an Attack (194), Taps immediately (215), Do Not Auto Select Target with Initiates Combat (220), Allow Class Ability Procs (416)
+                 : x....... ........ ........ ........   
+                 : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), No Threat (42), Require All Targets (58), Discount Power On Miss (59), No Aura Icon (60), Hide Channel Bar (109), Not an Attack (194), Taps immediately (215), Do Not Auto Select Target with Initiates Combat (220), Allow Class Ability Procs (416), Prevent Jumping During Precast (448)
 Effects          :
 #1 (id=23978)    : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Enemy (6)
@@ -1591,7 +1591,6 @@ Talent Entry     : Beast Mastery [tree=spec, row=3, col=2, max_rank=2, req_point
 Class            : Hunter
 School           : Physical
 Spell Type       : None
-Spell Level      : 28
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2415,7 +2414,6 @@ Talent Entry     : Beast Mastery [tree=spec, row=4, col=2, max_rank=2, req_point
 Class            : Hunter
 School           : Physical
 Spell Type       : None
-Spell Level      : 32
 Family Flags     : 111
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3085,8 +3083,8 @@ Attributes       : .x...... ........ x....... ........   ........ .x...... .x...
                  : ........ ........ ........ ........   ....x... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x..x.... ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Uses Ranged Slot (1), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), No AutoCast (AI) (49), Do Not Reset Combat Timers (81), Do Not Auto Select Target with Initiates Combat (220), Can Cause Interrupt (235), No Attack Miss (249), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416), Interrupts Current Cast (419)
+                 : x....... ........ ........ ........   
+                 : Uses Ranged Slot (1), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), No AutoCast (AI) (49), Do Not Reset Combat Timers (81), Do Not Auto Select Target with Initiates Combat (220), Can Cause Interrupt (235), No Attack Miss (249), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416), Interrupts Current Cast (419), Prevent Jumping During Precast (448)
 Effects          :
 #1 (id=199883)   : Interrupt Cast (68)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Interrupt | Target: Enemy (6)
@@ -3123,7 +3121,6 @@ Talent Entry     : Marksmanship [tree=spec, row=3, col=2, max_rank=1, req_points
 Class            : Hunter
 School           : Physical
 Spell Type       : None
-Spell Level      : 24
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3620,7 +3617,7 @@ Spell Level      : 1
 Range            : 40 yards
 Velocity         : 40 yards/sec
 Requires weapon  : Bow, Gun, Crossbow
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effect#1), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Precise Shots (260242 effect#2), Target Practice (321287 effect#1), Lunge (378934 effect#2), Eagletalon's True Focus (389450 effect#2)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effect#1), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Precise Shots (260242 effect#2), Target Practice (321287 effect#1), Lunge (378934 effect#2)
 Family Flags     : 39, 106, 121
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
@@ -3646,7 +3643,7 @@ Spell Level      : 1
 Range            : 40 yards
 Velocity         : 40 yards/sec
 Requires weapon  : Bow, Gun, Crossbow
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effect#1), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Precise Shots (260242 effect#2), Target Practice (321287 effect#1), Lunge (378934 effect#2), Eagletalon's True Focus (389450 effect#2)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effect#1), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Precise Shots (260242 effect#2), Target Practice (321287 effect#1), Lunge (378934 effect#2)
 Family Flags     : 39, 106, 121
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
@@ -3719,7 +3716,6 @@ Talent Entry     : Beast Mastery [tree=spec, row=7, col=4, max_rank=1, req_point
 Class            : Hunter
 School           : Physical
 Spell Type       : None
-Spell Level      : 24
 Proc Chance      : 100%
 Proc Flags       : ......x. ........ ........ ........ 
                  : White Ranged
@@ -4126,8 +4122,8 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x..x.... ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), No AutoCast (AI) (49), No Attack Miss (249), Allow Class Ability Procs (416), Interrupts Current Cast (419)
+                 : x....... ........ ........ ........   
+                 : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), No AutoCast (AI) (49), No Attack Miss (249), Allow Class Ability Procs (416), Interrupts Current Cast (419), Prevent Jumping During Precast (448)
 Effects          :
 #1 (id=273764)   : Interrupt Cast (68)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Interrupt | Target: Enemy (6)
@@ -4929,9 +4925,9 @@ Attributes       : ......x. ........ ........ .......x   ........ ........ .....
                  : ........ ..x..... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ .......x   x....... ........ ........ ........ 
+                 : .x...... ........ ........ .......x   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Passive (6), No Aura Cancel (31), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Only Proc From Class Abilities (415), Allow Class Ability Procs (416)
+                 : Passive (6), No Aura Cancel (31), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Can Proc from Suppressed Caster Procs (385), Only Proc From Class Abilities (415), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=301189)   : Apply Aura (6) | Proc Trigger Spell (42): Bullseye
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Trigger Spell: 204090 | Target: Self (1)
@@ -5472,7 +5468,6 @@ Talent Entry     : Beast Mastery [tree=spec, row=7, col=3, max_rank=1, req_point
 Class            : Hunter
 School           : Nature
 Spell Type       : None
-Spell Level      : 34
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5923,7 +5918,6 @@ Talent Entry     : Marksmanship [tree=spec, row=7, col=1, max_rank=1, req_points
 Class            : Hunter
 School           : Physical
 Spell Type       : None
-Spell Level      : 32
 Labels           : 1073: Deadly Chain (339973 effect#1), Deadly Chain (339973 effect#2)
 Affecting spells : Heavy Ammo (378910 effects: #1, #2, #3, #4), Light Ammo (378913 effects: #1, #2)
 Family Flags     : 59
@@ -6246,8 +6240,8 @@ Attributes       : ....x... ........ x.x..x.. ........   ........ .xx..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x......x ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), No Threat (42), Require All Targets (58), Discount Power On Miss (59), No Aura Icon (60), Hide Channel Bar (109), Not an Attack (194), Taps immediately (215), Do Not Auto Select Target with Initiates Combat (220), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
+                 : x....... ........ ........ ........   
+                 : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), No Threat (42), Require All Targets (58), Discount Power On Miss (59), No Aura Icon (60), Hide Channel Bar (109), Not an Attack (194), Taps immediately (215), Do Not Auto Select Target with Initiates Combat (220), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Prevent Jumping During Precast (448)
 Effects          :
 #1 (id=484009)   : Dummy (3)
                    Base Value: 95 | Scaled Value: 95 | PvP Coefficient: 0.83000 | Target: Enemy (6)
@@ -6376,7 +6370,6 @@ Talent Entry     : Marksmanship [tree=spec, row=2, col=3, max_rank=2, req_points
 Class            : Hunter
 School           : Physical
 Spell Type       : None
-Spell Level      : 38
 Proc Chance      : 101%
 Proc Flags       : ........ x....... ........ ........ 
                  : Yellow Ranged
@@ -11309,7 +11302,7 @@ Spell Level      : 48
 Range            : 100 yards
 Duration         : 10 seconds
 Labels           : 846: Enfeebled Mark (339018 effect#1), Enfeebled Mark (339018 effect#2)
-Affecting spells : Precise Shots (260242 effect#2), Target Practice (321287 effect#1), Eagletalon's True Focus (389450 effect#2)
+Affecting spells : Precise Shots (260242 effect#2), Target Practice (321287 effect#1)
 Family Flags     : 31, 39
 Attributes       : ........ ........ x.x....x x..x....   .....x.. ..x..... ........ ........ 
                  : ..x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ....x... 
@@ -11414,7 +11407,6 @@ Talent Entry     : Beast Mastery [tree=spec, row=2, col=1, max_rank=1, req_point
 Class            : Hunter
 School           : Nature
 Spell Type       : None
-Spell Level      : 11
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11434,7 +11426,6 @@ Talent Entry     : Marksmanship [tree=spec, row=2, col=2, max_rank=1, req_points
 Class            : Hunter
 School           : Nature
 Spell Type       : None
-Spell Level      : 11
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11456,7 +11447,6 @@ Talent Entry     : Marksmanship [tree=spec, row=5, col=3, max_rank=1, req_points
 Class            : Hunter
 School           : Nature
 Spell Type       : None
-Spell Level      : 49
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11480,7 +11470,6 @@ Talent Entry     : Survival [tree=spec, row=6, col=2, max_rank=2, req_points=8]
 Class            : Hunter
 School           : Nature
 Spell Type       : None
-Spell Level      : 49
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13129,7 +13118,6 @@ Talent Entry     : Generic [tree=class, row=3, col=1, max_rank=2, req_points=0]
 Class            : Hunter
 School           : Nature
 Spell Type       : None
-Spell Level      : 52
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13197,7 +13185,6 @@ Talent Entry     : Generic [tree=class, row=2, col=3, max_rank=1, req_points=0]
 Class            : Hunter
 School           : Nature
 Spell Type       : None
-Spell Level      : 58
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13222,7 +13209,7 @@ Spell Level      : 1
 Range            : 40 yards
 Velocity         : 40 yards/sec
 Requires weapon  : Bow, Gun, Crossbow
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effects: #1, #2, #4), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Precise Shots (260242 effect#2), Target Practice (321287 effect#1), Lunge (378934 effect#2), Eagletalon's True Focus (389450 effect#2)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effects: #1, #2, #4), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Precise Shots (260242 effect#2), Target Practice (321287 effect#1), Lunge (378934 effect#2)
 Family Flags     : 39, 74, 106, 121
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
@@ -13246,7 +13233,7 @@ Spell Level      : 1
 Range            : 40 yards
 Velocity         : 40 yards/sec
 Requires weapon  : Bow, Gun, Crossbow
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effects: #1, #2, #4), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Precise Shots (260242 effect#2), Target Practice (321287 effect#1), Lunge (378934 effect#2), Eagletalon's True Focus (389450 effect#2)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effects: #1, #2, #4), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Precise Shots (260242 effect#2), Target Practice (321287 effect#1), Lunge (378934 effect#2)
 Family Flags     : 39, 74, 106, 121
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
@@ -14568,7 +14555,6 @@ Talent Entry     : Beast Mastery [tree=spec, row=10, col=3, max_rank=1, req_poin
 Class            : Hunter
 School           : Nature
 Spell Type       : None
-Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 120 seconds
 Proc Chance      : 25%
@@ -15072,7 +15058,6 @@ Description      : Range of your melee attacks and abilities increased by $s1 yd
 
 Name             : Explosives Expert (id=378937) [Spell Family (9), Passive, Hidden] 
 Talent Entry     : Survival [tree=spec, row=9, col=4, max_rank=2, req_points=20]
-                 : Effect#1 [op=set, values=(-2000, -4000)]
                  : Effect#1 [op=set, values=(-1000, -2000)]
 Class            : Hunter
 School           : Physical
@@ -15822,7 +15807,6 @@ Effects          :
 Description      : Sentinel Owl now also grants unhindered vision to party members while active.
 
 Name             : Sentinel's Protection (id=388057) [Spell Family (9), Passive, Hidden] 
-Hotfixed         : Description
 Talent Entry     : Generic [tree=class, row=7, col=4, max_rank=1, req_points=8, select_idx=200]
 Class            : Hunter
 School           : Physical
@@ -15998,8 +15982,8 @@ Effects          :
                    Family Flags: 17
 #2 (id=1025715)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Multi-Shot (2643), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Multi-Shot (257620), Resonating Arrow (308498), Chimaera Shot (342049), Chimaera Shot (344120), Chimaera Shot (344121)
-                   Family Flags: 12, 39, 105
+                   Affected Spells: Multi-Shot (2643), Arcane Shot (185358), Multi-Shot (257620), Chimaera Shot (342049)
+                   Family Flags: 12, 105
 Description      : $@spelldesc389449
 Tooltip          : Focus cost of all Aimed Shot reduced by $s1%.
 Focus cost of Arcane Shot, Chimaera Shot, and Multi-Shot reduced by $s2%.
@@ -16191,7 +16175,7 @@ Effects          :
                    Affected Spells (Label): Arctic Bola (390232)
 #3 (id=1026940)  : Apply Aura (6) | Proc Trigger Spell (42): Arctic Bola
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 390232 | Target: Self (1)
-Description      : $?s137015[Cobra Shot]?s137016[Aimed Shot]?s259387[Mongoose Bite][Raptor Strike] has a chance to fling an Arctic Bola at your target, dealing $390232s1 Frost damage and snaring the target by $390232s2% for $390232d. The Arctic Bola strikes up to $s1 $Ltarget:targets;.
+Description      : $?s137015[Cobra Shot]?s137016[Aimed Shot]?s259387[Mongoose Bite][Raptor Strike] has a chance to fling an Arctic Bola at your target, dealing ${$@traitentryrank100514*$390232s1} Frost damage and snaring the target by $390232s2% for $390232d. The Arctic Bola strikes up to $s1 $Ltarget:targets;.
 
 Name             : Arctic Bola (id=390232) [Spell Family (9)] 
 Class            : Hunter
@@ -16209,9 +16193,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ x....... 
+                 : ........ ........ ........ ........   x....... ........ ........ x....... 
                  : ........ ........ ........ ........   
-                 : Bouncy Chain Missiles (146), Chain by Most Hit (440)
+                 : Bouncy Chain Missiles (146), Allow Class Ability Procs (416), Chain by Most Hit (440)
 Effects          :
 #1 (id=1026894)  : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.20000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
@@ -16448,7 +16432,7 @@ Effects          :
 Description      : $@spelldesc393344
 Tooltip          : Rooted.
 
-Name             : Sentinel (id=393505) [Spell Family (9), Passive] 
+Name             : Sentinel (id=393505) [Spell Family (9), Passive, Hidden] 
 Talent Entry     : Generic [tree=class, row=6, col=7, max_rank=1, req_points=8]
 Class            : Hunter
 School           : Physical
@@ -16457,7 +16441,7 @@ Range            : 40 yards
 Proc Chance      : 101%
 Proc Flags       : ....x... x...x... x....... ........ 
                  : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -16465,7 +16449,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Passive (6), Can Proc From Procs (122), Aura Points On Client (268), Allow Class Ability Procs (416)
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1032527)  : Apply Aura (6) | Periodic Dummy (226): every 10 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -16483,7 +16467,6 @@ Effects          :
                    Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000 | Target: Self (1)
 
 Name             : Sentinel's Protection (id=393777) [Spell Family (9)] 
-Hotfixed         : Tooltip
 Class            : Hunter
 School           : Physical
 Spell Type       : None
