@@ -2008,8 +2008,6 @@ class SpellDataGenerator(DataGenerator):
           ( 372019, 3 ), # Vicious Cycle mangle buff
           ( 279555, 3 ), # Layered Mane buff
           # Restoration
-          # Set
-          ( 393632, 1 ), ( 393633, 1 ), ( 393635, 2 ), ( 393636, 2 ), ( 393637, 3 ), ( 393638, 3 ), ( 393639, 4 ), ( 393641, 4 ),
         ),
         # Demon Hunter:
         (
@@ -3496,6 +3494,11 @@ class SetBonusListGenerator(DataGenerator):
             'name'   : 'ripped_secrets',
             'bonuses': [ 1508 ],
             'tier'   : 28
+        },
+        {
+            'name'   : 'tier29',
+            'bonuses': [ 1526, 1527, 1528, 1529, 1530, 1531, 1532, 1533, 1534, 1535, 1536, 1537, 1538 ],
+            'tier'   : 29
         }
     ]
 

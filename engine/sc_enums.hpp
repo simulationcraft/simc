@@ -842,6 +842,7 @@ enum set_bonus_type_e
   T26_HACK_AND_GORE,
   T28,
   T28_RIPPED_SECRETS,
+  T29,
   SET_BONUS_MAX
 };
 
