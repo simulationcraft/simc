@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.2.45969
-static const std::array<spelltext_data_t, 18959> __spelltext_data { {
+static const std::array<spelltext_data_t, 18962> __spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -16538,6 +16538,7 @@ static const std::array<spelltext_data_t, 18959> __spelltext_data { {
   { 377349, "Mind Flay and Mind Sear have a chance to spawn a Void Tendril or Void Lasher that channels at your target for $377355d, generating $s1 insanity every $193473t1 sec.", 0, 0 },
   { 377351, "Enemies suffer $377359s1% increased damage from Chill Streak each time they are struck by it.", 0, 0 },
   { 377355, "$@spelldesc377349", 0, 0 },
+  { 377358, "Your Void Tendril or Void Lasher Generates 3 Insanity periodically.", 0, 0 },
   { 377359, "$@spelldesc377351\r\n", "Damage taken from $@auracaster's Chill Streak increased by $s1%.", 0 },
   { 377376, "Chill Streak's bounce range is increased by $s2 yds and each time Chill Streak bounces it has a $s1% chance to increase the maximum number of bounces by $s3.", 0, 0 },
   { 377387, "Your Shadowfiend and Mindbender grant you Coalescing Shadows each time they deal damage.\r\n\r\nDamage from your Shadowy Apparitions has a $h% chance to grant you Coalescing Shadows.", 0, 0 },
@@ -18932,6 +18933,8 @@ static const std::array<spelltext_data_t, 18959> __spelltext_data { {
   { 394958, "$@spelldesc393631", "Damage dealt to $@auracaster reduced by $w1%.", 0 },
   { 394961, "$@spelldesc393684", "Damage of next Mind Sear or Devouring Plague increased by $s1%.", 0 },
   { 394963, "$@spelldesc393685", "Haste increased by $s1%.", 0 },
+  { 394976, "Corrosive shadow energy radiates from the target, dealing ${$49821s2*$s2} Shadow damage over $48045d to all enemies within $49821a2 yards of the target.$?s137033[\r\n\r\n|cFFFFFFFFGenerates ${$s2*$208232s1/100} Insanity over the duration per target hit.|r][]", "Causing Shadow damage to all targets within $49821a2 yards every $t1 sec.", 0 },
+  { 394979, "$@spelldesc336214", 0, 0 },
   { 394983, "Shiv has 1 additional charge.", 0, 0 },
   { 394985, "Place a Kyrian Sigil at the target location that activates after $d.\r\n\r\nDetonates to deal $307046s1 $@spelldesc395039 damage and shatter up to $s3 Lesser Soul Fragments from enemies affected by the sigil. Deals reduced damage beyond $s1 targets.", 0, 0 },
   { 394994, "$@spelldesc393658", "Damage dealt by Blizzard increased by $w1% and damage dealt by Frostbolt increased by $w2%.", 0 },

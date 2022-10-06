@@ -939,13 +939,14 @@ struct void_tendril_t final : public priest_pet_t
   action_t* create_action( util::string_view name, util::string_view options_str ) override;
 };
 
+// Insanity gain (legendary=336214, cthun=377358)
 struct void_tendril_mind_flay_t final : public priest_pet_spell_t
 {
   double void_tendril_insanity_gain;
 
   void_tendril_mind_flay_t( void_tendril_t& p, util::string_view options )
     : priest_pet_spell_t( "mind_flay", p, p.o().find_spell( 193473 ) ),
-      void_tendril_insanity_gain( p.o().find_spell( 336214 )->effectN( 1 ).base_value() )
+      void_tendril_insanity_gain( p.o().find_spell( 377358 )->effectN( 1 ).resource( RESOURCE_INSANITY ) )
   {
     parse_options( options );
     channeled                  = true;
@@ -1025,13 +1026,14 @@ struct void_lasher_t final : public priest_pet_t
   action_t* create_action( util::string_view name, util::string_view options_str ) override;
 };
 
+// Insanity gain (legendary=208232, cthun=377358)
 struct void_lasher_mind_sear_tick_t final : public priest_pet_spell_t
 {
   const double void_lasher_insanity_gain;
 
   void_lasher_mind_sear_tick_t( void_lasher_t& p, const spell_data_t* s )
     : priest_pet_spell_t( "mind_sear_tick", p, s ),
-      void_lasher_insanity_gain( p.o().find_spell( 208232 )->effectN( 1 ).resource( RESOURCE_INSANITY ) )
+      void_lasher_insanity_gain( p.o().find_spell( 377358 )->effectN( 1 ).resource( RESOURCE_INSANITY ) )
   {
     background = true;
     dual       = true;
@@ -1090,10 +1092,12 @@ struct void_lasher_mind_sear_tick_t final : public priest_pet_spell_t
   }
 };
 
+// Legendary: 344754 -> 344752
+// Idol of C'thun: 394976 -> 394979
 struct void_lasher_mind_sear_t final : public priest_pet_spell_t
 {
   void_lasher_mind_sear_t( void_lasher_t& p, util::string_view options )
-    : priest_pet_spell_t( "mind_sear", p, p.o().find_spell( 344754 ) )
+    : priest_pet_spell_t( "mind_sear", p, p.o().find_spell( 394976 ) )
   {
     parse_options( options );
     channeled    = true;
@@ -1320,14 +1324,12 @@ priest_t::priest_pets_t::priest_pets_t( priest_t& p )
     your_shadow_tier( "your_shadow_tier", &p, []( priest_t* priest ) { return new your_shadow_tier_t( priest ); } ),
     thing_from_beyond( "thing_from_beyond", &p, []( priest_t* priest ) { return new thing_from_beyond_t( priest ); } )
 {
-  // TODO: consider changing duration over to 377355
-  auto void_tendril_spell = p.find_spell( 193473 );
+  // Void Tendril: legendary=193473 | cthun=377355
+  // Void Lasher: legendary=336216 | cthun=377355
+  auto idol_of_cthun = p.find_spell( 377355 );
   // Add 1ms to ensure pet is dismissed after last dot tick.
-  void_tendril.set_default_duration( void_tendril_spell->duration() + timespan_t::from_millis( 1 ) );
-
-  auto void_lasher_spell = p.find_spell( 336216 );
-  // Add 1ms to ensure pet is dismissed after last dot tick.
-  void_lasher.set_default_duration( void_lasher_spell->duration() + timespan_t::from_millis( 1 ) );
+  void_tendril.set_default_duration( idol_of_cthun->duration() + timespan_t::from_millis( 1 ) );
+  void_lasher.set_default_duration( idol_of_cthun->duration() + timespan_t::from_millis( 1 ) );
 
   auto rigor_mortis_duration = p.find_spell( 356467 )->duration();
   rattling_mage.set_default_duration( rigor_mortis_duration );
