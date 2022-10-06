@@ -500,7 +500,6 @@ public:
     gain_t* trueshot;
 
     gain_t* barbed_shot;
-    gain_t* aspect_of_the_wild;
 
     gain_t* terms_of_engagement;
 
@@ -744,8 +743,6 @@ public:
     action_t* wild_spirits = nullptr;
     action_t* latent_poison = nullptr;
     action_t* arctic_bola = nullptr;
-    // Semi-random actions, needed *ONLY* for properly attributing focus gains
-    action_t* aspect_of_the_wild = nullptr;
   } actions;
 
   cdwaste::player_data_t cd_waste;
@@ -920,8 +917,6 @@ public:
     // bm
     bool thrill_of_the_hunt = false;
     damage_affected_by bestial_wrath;
-    bool aotw_crit_chance = false;
-    bool aotw_gcd_reduce = false;
     damage_affected_by master_of_beasts;
     // mm
     bool bullseye_crit_chance = false;
@@ -949,8 +944,6 @@ public:
 
     affected_by.thrill_of_the_hunt    = check_affected_by( this, p -> talents.thrill_of_the_hunt -> effectN( 1 ).trigger() -> effectN( 1 ) );
     affected_by.bestial_wrath         = parse_damage_affecting_aura( this, p -> talents.bestial_wrath );
-    affected_by.aotw_crit_chance      = check_affected_by( this, p -> talents.aspect_of_the_wild -> effectN( 1 ) );
-    affected_by.aotw_gcd_reduce       = check_affected_by( this, p -> talents.aspect_of_the_wild -> effectN( 3 ) );
     affected_by.master_of_beasts      = parse_damage_affecting_aura( this, p -> mastery.master_of_beasts );
 
     affected_by.mad_bombardier        = check_affected_by( this, p -> tier_set.mad_bombardier_4pc -> effectN( 1 ) );
@@ -1067,15 +1060,6 @@ public:
     if ( g == 0_ms )
       return g;
 
-    // recalculate the gcd while under the effect of AotW as it applies before haste reduction
-    if ( affected_by.aotw_gcd_reduce && p() -> buffs.aspect_of_the_wild -> check() )
-    {
-      g = ab::trigger_gcd;
-      g += p() -> talents.aspect_of_the_wild -> effectN( 3 ).time_value();
-      if ( ab::gcd_type != gcd_haste_type::NONE )
-        g *= ab::composite_haste();
-    }
-
     if ( g < ab::min_gcd )
       g = ab::min_gcd;
 
@@ -1156,9 +1140,6 @@ public:
   double composite_crit_chance() const override
   {
     double cc = ab::composite_crit_chance();
-
-    if ( affected_by.aotw_crit_chance )
-      cc += p() -> buffs.aspect_of_the_wild -> check_value();
 
     if ( affected_by.thrill_of_the_hunt )
       cc += p() -> buffs.thrill_of_the_hunt -> check_stack_value();
@@ -1701,11 +1682,6 @@ public:
 
 struct hunter_main_pet_t final : public hunter_main_pet_base_t
 {
-  struct gains_t
-  {
-    gain_t* aspect_of_the_wild = nullptr;
-  } gains;
-
   hunter_main_pet_t( hunter_t* owner, util::string_view pet_name, pet_e pt ):
     hunter_main_pet_base_t( owner, pet_name, pt )
   {
@@ -1758,13 +1734,6 @@ struct hunter_main_pet_t final : public hunter_main_pet_base_t
         -> add_invalidate( CACHE_ATTACK_SPEED );
   }
 
-  void init_gains() override
-  {
-    hunter_main_pet_base_t::init_gains();
-
-    gains.aspect_of_the_wild = get_gain( "aspect_of_the_wild" );
-  }
-
   void init_action_list() override
   {
     if ( action_list_str.empty() )
@@ -1775,16 +1744,6 @@ struct hunter_main_pet_t final : public hunter_main_pet_base_t
     }
 
     hunter_main_pet_base_t::init_action_list();
-  }
-
-  double composite_melee_crit_chance() const override
-  {
-    double ac = hunter_main_pet_base_t::composite_melee_crit_chance();
-
-    if ( o() -> buffs.aspect_of_the_wild -> check() )
-      ac += o() -> talents.aspect_of_the_wild -> effectN( 4 ).percent();
-
-    return ac;
   }
 
   double resource_regen_per_second( resource_e r ) const override
@@ -3776,9 +3735,9 @@ struct cobra_shot_t: public hunter_ranged_attack_t
     parse_options( options_str );
   }
 
-  void execute() override
+  void schedule_travel( action_state_t* s ) override
   {
-    hunter_ranged_attack_t::execute();
+    hunter_ranged_attack_t::schedule_travel( s );
 
     p() -> cooldowns.kill_command -> adjust( kill_command_reduction * ( 1 + p() -> buffs.killing_frenzy -> check_value() ) );
 
@@ -3795,6 +3754,23 @@ struct cobra_shot_t: public hunter_ranged_attack_t
 
     if ( p() -> rppm.arctic_bola -> trigger() )
       p() -> actions.arctic_bola -> execute_on_target( target );
+  }
+
+  double cost() const override
+  {
+    double c = hunter_ranged_attack_t::cost();
+
+    c += p() -> buffs.aspect_of_the_wild -> value();
+
+    return c;
+  }
+
+  int n_targets() const override
+  {
+    if ( p() -> buffs.aspect_of_the_wild -> check() )
+      return 1 + as<int>( p() -> talents.aspect_of_the_wild -> effectN( 1 ).base_value() );
+
+    return hunter_ranged_attack_t::n_targets();
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -5685,29 +5661,32 @@ struct bestial_wrath_t: public hunter_spell_t
 
 struct aspect_of_the_wild_t: public hunter_spell_t
 {
-  timespan_t precast_time = 0_ms;
+  struct cobra_shot_aotw_t final : public attacks::cobra_shot_t
+  {
+    cobra_shot_aotw_t( util::string_view n, hunter_t* p ):
+      cobra_shot_t( p, "" )
+    {
+      dual = true;
+      base_costs[ RESOURCE_FOCUS ] = 0;
+    }
+  };
+
+  cobra_shot_aotw_t* cobra_shot = nullptr;
 
   aspect_of_the_wild_t( hunter_t* p, util::string_view options_str ):
     hunter_spell_t( "aspect_of_the_wild", p, p -> talents.aspect_of_the_wild )
   {
-    add_option( opt_timespan( "precast_time", precast_time ) );
     parse_options( options_str );
 
-    harmful = false;
-    dot_duration = 0_ms;
-
-    precast_time = clamp( precast_time, 0_ms, data().duration() );
-
-    p -> actions.aspect_of_the_wild = this;
+    cobra_shot = p -> get_background_action<cobra_shot_aotw_t>( "cobra_shot_aotw" );
   }
 
   void execute() override
   {
     hunter_spell_t::execute();
 
-    trigger_buff( p() -> buffs.aspect_of_the_wild, precast_time );
-
-    adjust_precast_cooldown( precast_time );
+    p() -> buffs.aspect_of_the_wild -> trigger();
+    cobra_shot -> execute_on_target( target );
   }
 };
 
@@ -7079,13 +7058,7 @@ void hunter_t::create_buffs()
   buffs.aspect_of_the_wild =
     make_buff( this, "aspect_of_the_wild", talents.aspect_of_the_wild )
       -> set_cooldown( 0_ms )
-      -> set_default_value_from_effect( 1 )
-      -> set_tick_callback(
-        [ this ]( buff_t *b, int, timespan_t ) {
-          resource_gain( RESOURCE_FOCUS, b -> data().effectN( 2 ).resource( RESOURCE_FOCUS ), gains.aspect_of_the_wild, actions.aspect_of_the_wild );
-          if ( auto pet = pets.main )
-            pet -> resource_gain( RESOURCE_FOCUS, b -> data().effectN( 5 ).resource( RESOURCE_FOCUS ), pet -> gains.aspect_of_the_wild );
-        } );
+      -> set_default_value_from_effect( 2 );
 
   buffs.call_of_the_wild =
     make_buff( this, "call_of_the_wild", talents.call_of_the_wild )
@@ -7261,7 +7234,6 @@ void hunter_t::init_gains()
   gains.trueshot               = get_gain( "Trueshot" );
 
   gains.barbed_shot            = get_gain( "barbed_shot" );
-  gains.aspect_of_the_wild     = get_gain( "aspect_of_the_wild" );
 
   gains.terms_of_engagement    = get_gain( "terms_of_engagement" );
 

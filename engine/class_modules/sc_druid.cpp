@@ -932,6 +932,7 @@ public:
     // Balance
     const spell_data_t* balance;
     const spell_data_t* astral_power;
+    const spell_data_t* celestial_alignment;
     const spell_data_t* eclipse_lunar;
     const spell_data_t* eclipse_solar;
     const spell_data_t* full_moon;
@@ -1858,13 +1859,13 @@ struct eclipse_buff_t : public druid_buff_t<buff_t>
 // Fury of Elune AP =========================================================
 struct fury_of_elune_buff_t : public druid_buff_t<buff_t>
 {
-  fury_of_elune_buff_t( druid_t& p, std::string_view n, const spell_data_t* s, double mul = 1.0 ) : base_t( p, n, s )
+  fury_of_elune_buff_t( druid_t& p, std::string_view n, const spell_data_t* s ) : base_t( p, n, s )
   {
     set_cooldown( 0_ms );
     set_refresh_behavior( buff_refresh_behavior::DURATION );
 
     auto eff = p.query_aura_effect( &data(), A_PERIODIC_ENERGIZE, RESOURCE_ASTRAL_POWER );
-    auto ap = eff->resource( RESOURCE_ASTRAL_POWER ) * mul;
+    auto ap = eff->resource( RESOURCE_ASTRAL_POWER );
     set_default_value( ap / eff->period().total_seconds() );
 
     auto gain = p.get_gain( n );
@@ -6646,7 +6647,7 @@ struct celestial_alignment_base_t : public druid_spell_t
 struct celestial_alignment_t : public celestial_alignment_base_t
 {
   celestial_alignment_t( druid_t* p, std::string_view opt )
-    : celestial_alignment_base_t( "celestial_alignment", p, p->talent.celestial_alignment, opt )
+    : celestial_alignment_base_t( "celestial_alignment", p, p->spec.celestial_alignment, opt )
   {}
 
   bool ready() override
@@ -7797,11 +7798,13 @@ struct starfall_t : public druid_spell_t
   };
 
   starfall_driver_t* driver;
+  timespan_t max_ext;
 
   starfall_t( druid_t* p, std::string_view opt ) : starfall_t( p, "starfall", p->talent.starfall, opt ) {}
 
   starfall_t( druid_t* p, std::string_view n, const spell_data_t* s, std::string_view opt )
-    : druid_spell_t( n, p, s, opt )
+    : druid_spell_t( n, p, s, opt ),
+      max_ext( timespan_t::from_seconds( p->talent.aetherial_kindling->effectN( 2 ).base_value() ) )
   {
     may_miss = may_crit = false;
     queue_failed_proc = p->get_proc( "starfall queue failed" );
@@ -7837,8 +7840,8 @@ struct starfall_t : public druid_spell_t
 
       for ( const auto& t : tl )
       {
-        td( t )->dots.moonfire->adjust_duration( dur, 0_ms, -1, false );
-        td( t )->dots.sunfire->adjust_duration( dur, 0_ms, -1, false );
+        td( t )->dots.moonfire->adjust_duration( dur, max_ext, -1, false );
+        td( t )->dots.sunfire->adjust_duration( dur, max_ext, -1, false );
       }
     }
 
@@ -7924,12 +7927,15 @@ struct starfire_t : public druid_spell_t
       return;
     }
 
-    p()->buff.umbral_embrace->expire();
-
     if ( p()->buff.owlkin_frenzy->up() )
       p()->buff.owlkin_frenzy->expire();
     else if ( p()->buff.warrior_of_elune->up() )
       p()->buff.warrior_of_elune->decrement();
+
+    if ( is_free_proc() )
+      return;
+
+    p()->buff.umbral_embrace->expire();
 
     p()->eclipse_handler.cast_starfire();
   }
@@ -8543,7 +8549,7 @@ struct wrath_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    if ( is_free_proc() )  // TODO: does umbral embrace proc from free procs?
+    if ( is_free_proc() )
       return;
 
     p()->buff.umbral_embrace->expire();
@@ -10102,12 +10108,12 @@ void druid_t::init_spells()
   // Balance Abilities
   spec.balance                  = find_specialization_spell( "Balance Druid" );
   spec.astral_power             = find_specialization_spell( "Astral Power" );
+  spec.celestial_alignment      = check( talent.celestial_alignment.ok(), 194223 );
   spec.eclipse_lunar            = check( talent.eclipse.ok(), 48518 );
   spec.eclipse_solar            = check( talent.eclipse.ok(), 48517 );
   spec.full_moon                = check( talent.new_moon.ok(), 274283 );
   spec.half_moon                = check( talent.new_moon.ok(), 274282 );
-  spec.incarnation_moonkin      = check( talent.incarnation_moonkin.ok(),
-                                    as<int>( talent.incarnation_moonkin->effectN( 1 ).base_value() ) );
+  spec.incarnation_moonkin      = check( talent.incarnation_moonkin.ok(), 102560 );
   spec.shooting_stars_dmg       = check( talent.shooting_stars.ok(), 202497 );  // shooting stars damage
 
   // Feral Abilities
@@ -10441,7 +10447,7 @@ void druid_t::create_buffs()
     ->set_refresh_behavior( buff_refresh_behavior::DURATION );
 
   buff.celestial_alignment =
-      make_buff<celestial_alignment_buff_t>( *this, "celestial_alignment", talent.celestial_alignment );
+      make_buff<celestial_alignment_buff_t>( *this, "celestial_alignment", spec.celestial_alignment );
 
   buff.incarnation_moonkin =
       make_buff<celestial_alignment_buff_t>( *this, "incarnation_chosen_of_elune", spec.incarnation_moonkin, true );
@@ -10460,8 +10466,7 @@ void druid_t::create_buffs()
 
   buff.fury_of_elune = make_buff<fury_of_elune_buff_t>( *this, "fury_of_elune", talent.fury_of_elune );
 
-  buff.sundered_firmament = make_buff<fury_of_elune_buff_t>( *this, "sundered_firmament", find_spell( 394108 ),
-                                                             talent.sundered_firmament->effectN( 1 ).percent() )
+  buff.sundered_firmament = make_buff<fury_of_elune_buff_t>( *this, "sundered_firmament", find_spell( 394108 ) )
     ->set_refresh_behavior( buff_refresh_behavior::EXTEND );
 
   buff.natures_balance = make_buff( this, "natures_balance", talent.natures_balance );

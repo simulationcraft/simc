@@ -406,6 +406,7 @@ struct wild_imp_pet_t : public warlock_pet_t
 {
   action_t* firebolt;
   bool power_siphon;
+  bool imploded;
   bool demonic_consumption;
 
   wild_imp_pet_t( warlock_t* );
