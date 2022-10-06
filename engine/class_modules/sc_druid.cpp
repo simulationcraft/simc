@@ -4101,8 +4101,8 @@ struct ferocious_bite_t : public cat_attack_t
     double _max_used = max_excess_energy * ( 1.0 + p()->buff.incarnation_cat->check_value() );
 
     excess_energy = std::min( _max_used, ( p()->resources.current[ RESOURCE_ENERGY ] - cat_attack_t::cost() ) );
-    combo_points  = p()->resources.current[ RESOURCE_COMBO_POINT ];
-
+    combo_points  = (free_spell == CONVOKE) ? 4. : p()->resources.current[ RESOURCE_COMBO_POINT ];
+    
     cat_attack_t::execute();
   }
 
@@ -4183,9 +4183,11 @@ struct ferocious_bite_t : public cat_attack_t
     // ferocious_bite_max.damage expr calls action_t::calculate_direct_amount, so we must have a separate check for
     // buff.apex_predators_craving, as the free FB from apex is redirected upon execute() which would not have happened
     // when the expr is evaluated
-    if ( p()->buff.apex_predators_craving->up() || is_free() )
+    if ( p()->buff.apex_predators_craving->up() || is_free() ) {
+      if (free_spell == CONVOKE) am *= 4./p()->resources.max[ RESOURCE_COMBO_POINT ];
       return am * 2.0;
-
+    }
+    
     am *= p()->resources.current[ RESOURCE_COMBO_POINT ] / p()->resources.max[ RESOURCE_COMBO_POINT ];
     am *= 1.0 + excess_energy / max_excess_energy;
 
