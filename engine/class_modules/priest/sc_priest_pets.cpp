@@ -1071,6 +1071,12 @@ struct void_lasher_mind_sear_tick_t final : public priest_pet_spell_t
   {
     priest_pet_spell_t::impact( s );
 
+    // You only get the Insanity on your main target
+    if ( s->target != parent_dot->target )
+    {
+      return;
+    }
+
     // TODO: remove after launch
     if ( p().o().talents.shadow.idol_of_cthun.enabled() )
     {

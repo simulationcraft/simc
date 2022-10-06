@@ -1433,7 +1433,7 @@ struct void_eruption_t final : public priest_spell_t
 // ==========================================================================
 // Dark Void
 // Currently only hits targets that it will DoT
-// TODO: adjust targeting logic to be more accurate above 8 targets
+// TODO: adjust targeting logic to be more accurate above 16 targets
 // ==========================================================================
 struct dark_void_t final : public priest_spell_t
 {
@@ -1447,9 +1447,8 @@ struct dark_void_t final : public priest_spell_t
   {
     parse_options( options_str );
 
-    may_miss         = false;
-    radius           = data().effectN( 1 ).radius_max();
-    cooldown->hasted = true;
+    may_miss = false;
+    radius   = data().effectN( 1 ).radius_max();
 
     // BUG: Currently does not scale with Mastery
     // https://github.com/SimCMinMax/WoW-BugTracker/issues/931

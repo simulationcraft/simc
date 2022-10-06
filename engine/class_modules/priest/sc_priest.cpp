@@ -33,7 +33,7 @@ private:
 public:
   mind_blast_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "mind_blast", p, p.specs.mind_blast ),
-      mind_blast_insanity( p.specs.shadow_priest->effectN( 12 ).resource( RESOURCE_INSANITY ) ),
+      mind_blast_insanity( p.specs.shadow_priest->effectN( 9 ).resource( RESOURCE_INSANITY ) ),
       manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() / 2 ) )
   {
     parse_options( options_str );
