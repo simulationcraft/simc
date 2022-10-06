@@ -2400,6 +2400,23 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
     base_ghoul_pet_t( owner, name, true )
   { }
 
+  void arise() override
+  {
+    base_ghoul_pet_t::arise();
+    if ( dk() -> talent.unholy.commander_of_the_dead.ok() && dk() -> buffs.commander_of_the_dead_window -> up() )
+    {
+      for ( auto ghoul : dk() -> pets.army_ghouls.active_pets() )
+      {
+        ghoul -> commander_of_the_dead -> trigger();
+      }
+
+      for ( auto ghoul : dk() -> pets.apoc_ghouls.active_pets() )
+      {
+        ghoul -> commander_of_the_dead -> trigger();
+      }
+    }
+  }
+
   void init_base_stats() override
   {
     base_ghoul_pet_t::init_base_stats();
@@ -2489,7 +2506,11 @@ struct gargoyle_pet_t : public death_knight_pet_t
 
     spawn_travel_duration = 2.9;
     spawn_travel_stddev = 0.2;
-    
+  }
+  
+  void arise() override
+  {
+    death_knight_pet_t::arise();
     if ( dk() -> talent.unholy.commander_of_the_dead.ok() && dk() -> buffs.commander_of_the_dead_window -> up() )
     {
       commander_of_the_dead -> trigger();
@@ -2979,7 +3000,11 @@ struct magus_pet_t : public death_knight_pet_t
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.swing_time = 1.4_s;
     resource_regeneration = regen_type::DISABLED;
+  }
 
+  void arise() override
+  {
+    death_knight_pet_t::arise();
     if ( dk() -> talent.unholy.commander_of_the_dead.ok() && dk() -> buffs.commander_of_the_dead_window -> up() )
     {
       commander_of_the_dead -> trigger();
@@ -4200,14 +4225,6 @@ struct apocalypse_t : public death_knight_melee_attack_t
     {
       p() -> replenish_rune( rune_generation, p() -> gains.apocalypse );
     }
-    
-    if ( p() -> talent.unholy.commander_of_the_dead.ok() && p() -> buffs.commander_of_the_dead_window -> up() )
-    {
-      for ( auto ghoul : p() -> pets.apoc_ghouls.active_pets() )
-      { 
-        ghoul -> commander_of_the_dead -> trigger();
-      }
-    }
   }
 
   bool target_ready( player_t* candidate_target ) override
@@ -4353,13 +4370,6 @@ struct army_of_the_dead_t : public death_knight_spell_t
     if ( p() -> talent.unholy.magus_of_the_dead.ok() )
       p() -> pets.magus_of_the_dead.spawn( summon_duration - timespan_t::from_seconds( precombat_time ), 1 );
 
-    if ( p() -> talent.unholy.commander_of_the_dead.ok() && p() -> buffs.commander_of_the_dead_window -> up() )
-    {
-      for ( auto ghoul : p() -> pets.army_ghouls.active_pets() )
-      { 
-        ghoul -> commander_of_the_dead -> trigger();
-      }
-    }
   }
 };
 
