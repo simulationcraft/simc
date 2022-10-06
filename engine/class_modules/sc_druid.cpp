@@ -3397,6 +3397,32 @@ namespace cat_attacks
 // ==========================================================================
 // Druid Cat Attack
 // ==========================================================================
+struct cat_finisher_state_t : public druid_residual_state_t
+{
+  int combo_points;
+
+  cat_finisher_state_t( action_t* a, player_t* t ) : druid_residual_state_t( a, t ), combo_points( 0 ) {}
+
+  void initialize() override
+  {
+    druid_residual_state_t::initialize();
+    combo_points = 0;
+  }
+
+  void copy_state( const action_state_t* state ) override
+  {
+    druid_residual_state_t::copy_state( state );
+    combo_points = debug_cast<const cat_finisher_state_t*>( state )->combo_points;
+  }
+
+  std::ostringstream& debug_str( std::ostringstream& s ) override
+  {
+    druid_residual_state_t::debug_str( s );
+    s << " combo_points=" << combo_points;
+    return s;
+  }
+};
+
 struct cat_attack_t : public druid_attack_t<melee_attack_t>
 {
 protected:
@@ -3788,6 +3814,44 @@ public:
   }
 };  // end druid_cat_attack_t
 
+struct cat_finisher_t : public cat_attack_t
+{
+  cat_finisher_t( std::string_view n, druid_t* p, const spell_data_t* s, std::string_view opt = {} )
+    : cat_attack_t( n, p, s, opt )
+  {}
+
+  action_state_t* new_state() override
+  {
+    return new cat_finisher_state_t( this, target );
+  }
+
+  cat_finisher_state_t* cast_state( action_state_t* s )
+  {
+    return debug_cast<cat_finisher_state_t*>( s );
+  }
+
+  const cat_finisher_state_t* cast_state( const action_state_t* s ) const
+  {
+    return debug_cast<const cat_finisher_state_t*>( s );
+  }
+
+  virtual int _combo_points() const
+  {
+    if ( is_free() )
+      return as<int>( p()->resources.max[ RESOURCE_COMBO_POINT ] );
+    else
+      return as<int>( p()->resources.current[ RESOURCE_COMBO_POINT ] );
+  }
+
+  void snapshot_state( action_state_t* s, result_amount_type rt ) override
+  {
+    // snapshot the combo point first so composite_X calculations can correctly refer to it
+    cast_state( s )->combo_points = _combo_points();
+
+    cat_attack_t::snapshot_state( s, rt );
+  }
+};
+
 // Berserk (Cat) ==============================================================
 struct berserk_cat_base_t : public cat_attack_t
 {
@@ -4022,9 +4086,9 @@ struct feral_frenzy_t : public cat_attack_t
 };
 
 // Ferocious Bite ===========================================================
-struct ferocious_bite_t : public cat_attack_t
+struct ferocious_bite_t : public cat_finisher_t
 {
-  struct rampant_ferocity_t : public druid_residual_action_t<cat_attack_t>
+  struct rampant_ferocity_t : public druid_residual_action_t<cat_attack_t, cat_finisher_state_t>
   {
     rampant_ferocity_t( druid_t* p, std::string_view n ) : base_t( n, p, p->find_spell( 391710 ) )
     {
@@ -4055,17 +4119,15 @@ struct ferocious_bite_t : public cat_attack_t
   rampant_ferocity_t* rampant_ferocity;
   double excess_energy;
   double max_excess_energy;
-  double combo_points;
   bool max_energy;
 
   ferocious_bite_t( druid_t* p, std::string_view opt ) : ferocious_bite_t( p, "ferocious_bite", opt ) {}
 
   ferocious_bite_t( druid_t* p, std::string_view n, std::string_view opt )
-    : cat_attack_t( n, p, p->find_class_spell( "Ferocious Bite" ) ),
+    : cat_finisher_t( n, p, p->find_class_spell( "Ferocious Bite" ) ),
       rampant_ferocity( nullptr ),
       excess_energy( 0.0 ),
       max_excess_energy( p->query_aura_effect( &data(), A_NONE, 0, spell_data_t::nil(), E_POWER_BURN )->base_value() ),
-      combo_points( 0.0 ),
       max_energy( false )
   {
     add_option( opt_bool( "max_energy", max_energy ) );
@@ -4095,12 +4157,21 @@ struct ferocious_bite_t : public cat_attack_t
     return req;
   }
 
+  int _combo_points() const override
+  {
+    // special handling for convoke FB
+    if ( free_spell == free_spell_e::CONVOKE )
+      return 4;
+    else
+      return cat_finisher_t::_combo_points();
+  }
+
   bool ready() override
   {
     if ( max_energy && p()->resources.current[ RESOURCE_ENERGY ] < maximum_energy() )
       return false;
 
-    return cat_attack_t::ready();
+    return cat_finisher_t::ready();
   }
 
   void execute() override
@@ -4114,15 +4185,14 @@ struct ferocious_bite_t : public cat_attack_t
     // Incarn does affect the additional energy consumption.
     double _max_used = max_excess_energy * ( 1.0 + p()->buff.incarnation_cat->check_value() );
 
-    excess_energy = std::min( _max_used, ( p()->resources.current[ RESOURCE_ENERGY ] - cat_attack_t::cost() ) );
-    combo_points  = (free_spell == CONVOKE) ? 4. : p()->resources.current[ RESOURCE_COMBO_POINT ];
+    excess_energy = std::min( _max_used, ( p()->resources.current[ RESOURCE_ENERGY ] - cat_finisher_t::cost() ) );
     
-    cat_attack_t::execute();
+    cat_finisher_t::execute();
   }
 
   void impact( action_state_t* s ) override
   {
-    cat_attack_t::impact( s );
+    cat_finisher_t::impact( s );
 
     if ( !result_is_hit( s->result ) )
       return;
@@ -4130,14 +4200,7 @@ struct ferocious_bite_t : public cat_attack_t
     if ( p()->talent.sabertooth.ok() )
     {
       p()->buff.sabertooth->expire();  // existing buff is replaced with new buff, regardless of CP
-
-      auto cp_ = combo_points;
-      if ( free_spell == free_spell_e::CONVOKE )
-        cp_ = 4;
-      else if ( is_free() )
-        cp_ = p()->resources.max[ RESOURCE_COMBO_POINT ];
-
-      p()->buff.sabertooth->trigger( as<int>( cp_ ) );
+      p()->buff.sabertooth->trigger( cast_state( s )->combo_points );
     }
 
     if ( rampant_ferocity && s->result_amount > 0 && !rampant_ferocity->target_list().empty() )
@@ -4160,7 +4223,7 @@ struct ferocious_bite_t : public cat_attack_t
       stats->consume_resource( current_resource(), excess_energy );
     }
 
-    cat_attack_t::consume_resource();
+    cat_finisher_t::consume_resource();
 
     if ( hit_any_target && free_spell == free_spell_e::APEX )
       p()->buff.apex_predators_craving->expire();
@@ -4168,7 +4231,7 @@ struct ferocious_bite_t : public cat_attack_t
 
   double composite_target_multiplier( player_t* t ) const override
   {
-    double tm = cat_attack_t::composite_target_multiplier( t );
+    double tm = cat_finisher_t::composite_target_multiplier( t );
 
     if ( p()->talent.taste_for_blood.ok() )
     {
@@ -4188,22 +4251,23 @@ struct ferocious_bite_t : public cat_attack_t
     return tm;
   }
 
-  double action_multiplier() const override
+  double composite_da_multiplier( const action_state_t* s ) const override
   {
-    double am = cat_attack_t::action_multiplier();
+    auto dam = cat_finisher_t::composite_da_multiplier( s );
+    auto energy_mul = is_free() ? 2.0 : 1.0 + excess_energy / max_excess_energy;
+    // base spell coeff is for 5CP, so we reduce if lower than 5.
+    auto combo_mul = cast_state( s )->combo_points / p()->resources.max[ RESOURCE_COMBO_POINT ];
 
     // ferocious_bite_max.damage expr calls action_t::calculate_direct_amount, so we must have a separate check for
     // buff.apex_predators_craving, as the free FB from apex is redirected upon execute() which would not have happened
     // when the expr is evaluated
-    if ( p()->buff.apex_predators_craving->up() || is_free() ) {
-      if (free_spell == CONVOKE) am *= 4./p()->resources.max[ RESOURCE_COMBO_POINT ];
-      return am * 2.0;
+    if ( p()->buff.apex_predators_craving->check() )
+    {
+      energy_mul = 2.0;
+      combo_mul = 1.0;
     }
-    
-    am *= p()->resources.current[ RESOURCE_COMBO_POINT ] / p()->resources.max[ RESOURCE_COMBO_POINT ];
-    am *= 1.0 + excess_energy / max_excess_energy;
 
-    return am;
+    return dam * energy_mul * combo_mul;
   }
 };
 
@@ -4359,48 +4423,20 @@ struct rake_t : public cat_attack_t
 };
 
 // Rip ======================================================================
-struct rip_t : public cat_attack_t
+struct rip_t : public cat_finisher_t
 {
-  struct rip_state_t : public druid_residual_state_t
-  {
-    int combo_points;
-
-    rip_state_t( action_t* a, player_t* t ) : druid_residual_state_t( a, t ), combo_points( 0 ) {}
-
-    void initialize() override
-    {
-      druid_residual_state_t::initialize();
-      combo_points = 0;
-    }
-
-    void copy_state( const action_state_t* state ) override
-    {
-      druid_residual_state_t::copy_state( state );
-      combo_points = debug_cast<const rip_state_t*>( state )->combo_points;
-    }
-
-    std::ostringstream& debug_str( std::ostringstream& s ) override
-    {
-      druid_residual_state_t::debug_str( s );
-      s << " combo_points=" << combo_points;
-      return s;
-    }
-  };
-
-  struct tear_t : public druid_residual_action_t<cat_attack_t, rip_state_t>
+  struct tear_t : public druid_residual_action_t<cat_attack_t, cat_finisher_state_t>
   {
     tear_t( druid_t* p, std::string_view n ) : base_t( n, p, p->find_spell( 391356 ) )
     {
+      may_crit = false;
       name_str_reporting = "tear";
 
       residual_mul = p->talent.rip_and_tear->effectN( 1 ).percent();
     }
 
     // TODO: currently bugged to be 6% per tick, rather than 6% over the entire dot
-    double base_ta( const action_state_t* s ) const override
-    {
-      return get_amount( s );
-    }
+    double base_ta( const action_state_t* s ) const override { return get_amount( s ); }
   };
 
   tear_t* tear;
@@ -4408,7 +4444,7 @@ struct rip_t : public cat_attack_t
   rip_t( druid_t* p, std::string_view opt ) : rip_t( p, "rip", p->talent.rip, opt ) {}
 
   rip_t( druid_t* p, std::string_view n, const spell_data_t* s, std::string_view opt )
-    : cat_attack_t( n, p, s, opt ), tear( nullptr )
+    : cat_finisher_t( n, p, s, opt ), tear( nullptr )
   {
     dot_name = "rip";
 
@@ -4421,37 +4457,28 @@ struct rip_t : public cat_attack_t
 
   void init_finished() override
   {
-    cat_attack_t::init_finished();
+    cat_finisher_t::init_finished();
 
     if ( tear )
       add_child( tear );
   }
 
-  action_state_t* new_state() override { return new rip_state_t( this, target ); }
-
-  void snapshot_state( action_state_t* s, result_amount_type rt ) override
-  {
-    cat_attack_t::snapshot_state( s, rt );
-
-    debug_cast<rip_state_t*>( s )->combo_points = as<int>( p()->resources.current[ RESOURCE_COMBO_POINT ] );
-  }
-
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
-    timespan_t t = cat_attack_t::composite_dot_duration( s );
+    timespan_t t = cat_finisher_t::composite_dot_duration( s );
 
-    return t *= debug_cast<const rip_state_t*>( s )->combo_points + 1;
+    return t *= cast_state( s )->combo_points + 1;
   }
 
   // Newly applied rip will not lower existing duration
   timespan_t calculate_dot_refresh_duration( const dot_t* d, timespan_t dur ) const override
   {
-    return std::max( cat_attack_t::calculate_dot_refresh_duration( d, dur ), d->remains() );
+    return std::max( cat_finisher_t::calculate_dot_refresh_duration( d, dur ), d->remains() );
   }
 
   void impact( action_state_t* s ) override
   {
-    cat_attack_t::impact( s );
+    cat_finisher_t::impact( s );
 
     if ( tear && result_is_hit( s->result ) )
     {
@@ -4470,7 +4497,7 @@ struct rip_t : public cat_attack_t
 
   void tick( dot_t* d ) override
   {
-    cat_attack_t::tick( d );
+    cat_finisher_t::tick( d );
 
     p()->buff.apex_predators_craving->trigger();
 
@@ -4485,7 +4512,7 @@ struct rip_t : public cat_attack_t
 
 // Primal Wrath =============================================================
 // NOTE: must be defined AFTER rip_T
-struct primal_wrath_t : public cat_attack_t
+struct primal_wrath_t : public cat_finisher_t
 {
   struct tear_open_wounds_t : public cat_attack_t
   {
@@ -4525,19 +4552,16 @@ struct primal_wrath_t : public cat_attack_t
   rip_t* rip;
   action_t* wounds;
   timespan_t base_dur;
-  int combo_points;
 
   primal_wrath_t( druid_t* p, std::string_view opt ) : primal_wrath_t( p, "primal_wrath", p->talent.primal_wrath, opt )
-  {} // TODO: remove ctor overload when no longer needed
+  {}  // TODO: remove ctor overload when no longer needed
 
   primal_wrath_t( druid_t* p, std::string_view n, const spell_data_t* s, std::string_view opt )
-    : cat_attack_t( n, p, s, opt ),
+    : cat_finisher_t( n, p, s, opt ),
       wounds( nullptr ),
-      base_dur( timespan_t::from_seconds( data().effectN( 2 ).base_value() ) ),
-      combo_points( 0 )
+      base_dur( timespan_t::from_seconds( data().effectN( 2 ).base_value() ) )
   {
-    special = true;
-    aoe     = -1;
+    aoe = -1;
 
     dot_name = "rip";
     // Manually set true so bloodtalons is decremented and we get proper snapshot reporting
@@ -4567,11 +4591,11 @@ struct primal_wrath_t : public cat_attack_t
     }
   }
 
-  double attack_direct_power_coefficient( const action_state_t* s ) const override
+  double composite_da_multiplier( const action_state_t* s ) const override
   {
-    double adpc = cat_attack_t::attack_direct_power_coefficient( s );
+    double adpc = cat_attack_t::composite_da_multiplier( s );
 
-    adpc *= ( 1LL + combo_points );
+    adpc *= 1.0 + cast_state( s )->combo_points;
 
     return adpc;
   }
@@ -4586,17 +4610,7 @@ struct primal_wrath_t : public cat_attack_t
     rip->snapshot_state( state, rip->amount_type( state ) );
     rip->schedule_execute( state );
 
-    cat_attack_t::impact( s );
-  }
-
-  void execute() override
-  {
-    if ( is_free() )
-      combo_points = as<int>( p()->resources.max[ RESOURCE_COMBO_POINT ] );
-    else
-      combo_points = as<int>( p()->resources.current[ RESOURCE_COMBO_POINT ] );
-
-    cat_attack_t::execute();
+    cat_finisher_t::impact( s );
   }
 };
 
@@ -7238,7 +7252,7 @@ struct moonfire_t : public druid_spell_t
       }
     }
 
-    double composite_da_multiplier( const action_state_t* s  ) const override
+    double composite_da_multiplier( const action_state_t* s ) const override
     {
       double dam = druid_spell_t::composite_da_multiplier( s );
 
@@ -8468,6 +8482,8 @@ struct wild_mushroom_t : public druid_spell_t
   {
     fungal_growth_t( druid_t* p ) : base_t( "fungal_growth", p, p->find_spell( 81281 ) )
     {
+      may_crit = false;
+
       residual_mul = p->talent.fungal_growth->effectN( 1 ).percent();
     }
 
