@@ -2741,6 +2741,7 @@ public:
     parse_buff_effects( p()->buff.incarnation_cat );
     parse_buff_effects( p()->buff.predatory_swiftness );
     parse_buff_effects( p()->buff.sabertooth, true, true );
+    parse_buff_effects( p()->buff.sharpened_claws_bloodied_fangs );
 
     // Guardian
     parse_buff_effects( p()->buff.bear_form );
@@ -3496,6 +3497,9 @@ public:
 
       if ( free_spell == free_spell_e::CONVOKE )  // further effects are not processed for convoke fb
         return;
+
+      if ( p()->sets->has_set_bonus( DRUID_FERAL, T29, B4 ) )
+        p()->buff.sharpened_claws_bloodied_fangs->trigger( consumed );
 
       if ( p()->buff.tigers_tenacity->check() )
       {
@@ -10676,6 +10680,8 @@ void druid_t::create_buffs()
     ->set_default_value( talent.sabertooth->effectN( 2 ).percent() )
     ->set_max_stack( as<int>( resources.base[ RESOURCE_COMBO_POINT ] ) );
 
+  buff.sharpened_claws_bloodied_fangs = make_buff( this, "sharpened_claws_bloodied_fangs", find_spell( 394465 ) );
+
   buff.sudden_ambush = make_buff( this, "sudden_ambush", talent.sudden_ambush->effectN( 1 ).trigger() );
 
   buff.tigers_fury = make_buff( this, "tigers_fury", talent.tigers_fury )
@@ -13259,6 +13265,7 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.relentless_predator );
   action.apply_affecting_aura( talent.veinripper );
   action.apply_affecting_aura( talent.wild_slashes );
+  action.apply_affecting_aura( sets->set( DRUID_FERAL, T29, B2 ) );
 
   // Guardian
   action.apply_affecting_aura( talent.improved_survival_instincts );
