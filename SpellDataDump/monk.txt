@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.45969 dragonflight-BETA (hotfix 2022-10-06/45969)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.45969 dragonflight-BETA (hotfix 2022-10-06/45969, git build dragonflight 44bc81c9be)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -17229,6 +17229,26 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc393668
 Tooltip          : Your gain $w1% Versatility during your next Fists of Fury.
+
+Name             : Fists of Flowing Momentum (id=394951) [Spell Family (53)] 
+Class            : Monk
+School           : Nature
+Spell Type       : None
+Duration         : Aura (infinite)
+Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Do Not Sheath (18), No Threat (42), Do Not Display Range (126), Aura Points On Client (268)
+Effects          :
+#1 (id=1035028)  : Apply Aura (6) | Modify Versatility% (471)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : $@spelldesc393668
+Tooltip          : Versatility increased by $w1% during Fists of Fury.
 
 Name             : Strike of the Windlord (id=395519) [Spell Family (53)] 
 Class            : Monk

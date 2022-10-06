@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.2.45969
-static const std::array<spelltext_data_t, 18967> __spelltext_data { {
+static const std::array<spelltext_data_t, 18964> __spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -18328,7 +18328,6 @@ static const std::array<spelltext_data_t, 18967> __spelltext_data { {
   { 390947, "Circle of Healing heals $s1 additional ally and its cooldown is reduced by ${$s2/-1000} sec.", 0, 0 },
   { 390951, "Temporarily imbues shoulders with a fiery illusion for $ecd.", 0, 0 },
   { 390954, "Increases the critical strike chance of Flash Heal and Heal by $s1%.", 0, 0 },
-  { 390961, "$@spelldesc390990", 0, 0 },
   { 390967, "Increases the healing done by your Mastery: Echo of Light by $s1%.", 0, 0 },
   { 390972, "After damaging or healing a target below $s3% health, gain $s1% increased damage and healing for $390978d.", 0, 0 },
   { 390975, "Perform an elemental invocation, transforming into the elemental summoned for ${$s1/60} min.", 0, 0 },
@@ -18336,12 +18335,10 @@ static const std::array<spelltext_data_t, 18967> __spelltext_data { {
   { 390978, "$@spelldesc390972", "Increases damage and healing by $w1%.", 0 },
   { 390980, "Critical heals from Flash Heal and Heal increase your healing done by your next Holy Word spell by $390989s1%, stacking up to $390989U times.", 0, 0 },
   { 390989, "$@spelldesc390980", "The healing of your next Holy Word spell is increased by $w1%.", 0 },
-  { 390990, "Causes the earth at the target location to tremble and break, dealing Nature damage every $t1 sec to enemies in $r yard radius. Lasts $d.\r\n\r\nUsable in the Obsidian Citadel and adjacent lava fields.", "Suffering Nature damage every $t2 sec.", 0 },
   { 390992, "Flash Heal reduces the cast time of your next Heal within $390993d by $390993s2% and increases its healing done by $390993s1%.\r\n\r\nStacks up to $390993U times.", 0, 0 },
   { 390993, "$@spelldesc390992", "The cast time of your next Heal is reduced by $w2% and its healing is increased by $w1%.", 0 },
   { 390994, "Circle of Healing reduces the cooldown of Holy Word: Sanctify, Prayer of Mending reduces the cooldown of Holy Word: Serenity, and Holy Fire reduces the cooldown of Holy Word: Chastise by $s1 sec.", 0, 0 },
   { 390996, "Your $?a137033[Mind Blast and Mind Spike]?a137031[Smite and Holy Fire][Smite and Penance] casts reduce the cooldown of Mindgames by ${$s1/2}.1 sec.", 0, 0 },
-  { 390997, "Causes the earth at the target location to tremble and break, dealing Nature damage every $t1 sec to enemies in $a1 yard radius. Lasts $d.", "Suffering Nature damage every $t2 sec.", 0 },
   { 391023, "Summons an arcana orb outside of the Cobalt Assembly.", "Summons an arcana orb outside of the Cobalt Assembly.", 0 },
   { 391037, "Your combo point generating abilities have a $s1% chance to generate $s2 extra combo $Lpoint:points;.", 0, 0 },
   { 391045, "Rip damage increased by $s1%.", 0, 0 },
