@@ -1873,7 +1873,8 @@ struct tiger_palm_t : public monk_melee_attack_t
 
       if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T29, B2 ) && p()->cooldown.brewmasters_rhythm->up() ) {
         p()->buff.brewmasters_rhythm->trigger();
-        p()->cooldown.brewmasters_rhythm->start( p()->sets->set( MONK_BREWMASTER, T29, B2 )->internal_cooldown() );
+        // ICD on the set bonus is set to 0.1 seconds but in-game testing shows to be a 1 second ICD
+        p()->cooldown.brewmasters_rhythm->start( timespan_t::from_seconds( 1 ) );
       }
 
     }
@@ -2839,7 +2840,8 @@ struct sck_tick_action_t : public monk_melee_attack_t
 
       if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T29, B2 ) && p()->cooldown.brewmasters_rhythm->up() ) {
         p()->buff.brewmasters_rhythm->trigger();
-        p()->cooldown.brewmasters_rhythm->start( p()->sets->set( MONK_BREWMASTER, T29, B2 )->internal_cooldown() );
+        // ICD on the set bonus is set to 0.1 seconds but in-game testing shows to be a 1 second ICD
+        p()->cooldown.brewmasters_rhythm->start( timespan_t::from_seconds( 1 ) );
       }
     }
   }
