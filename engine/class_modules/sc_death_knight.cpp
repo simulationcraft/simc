@@ -5662,6 +5662,11 @@ struct death_coil_t : public death_knight_spell_t
         timespan_t::from_seconds( p() -> talent.unholy.eternal_agony -> effectN( 1 ).base_value() ) );
     }
 
+    if ( p() -> talent.unholy.rotten_touch.ok() && p() -> buffs.sudden_doom -> check() )
+    {
+      get_td( target ) -> debuff.rotten_touch -> trigger();
+    }
+
     p() -> buffs.sudden_doom -> decrement();
   }
 
@@ -5679,11 +5684,13 @@ struct death_coil_t : public death_knight_spell_t
       }
     }
 
+    /*
     if ( p() -> talent.unholy.rotten_touch.ok() && p() -> buffs.sudden_doom -> check() && 
          result_is_hit( state -> result ) )
     {
       get_td( state -> target ) -> debuff.rotten_touch -> trigger();
     }
+    */
   }
 
 };
