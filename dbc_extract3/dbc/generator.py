@@ -1557,6 +1557,8 @@ class SpellDataGenerator(DataGenerator):
             ( 376891, 5 ),          # Living Shadow Shadow Spike Volley
             ( 373387, 5 ),          # Living Shadow Shadow Sear
             ( 376915, 5 ),          # Living Shadow Shadow Nova
+            ( 394961, 0 ),          # Gathering Shadows T29 2-set
+            ( 394963, 0 ),          # Dark Reveries T29 4-set
             # Holy Priest
             ( 196809, 5 ),          # Healing Light (Divine Image legendary pet spell)
             ( 196810, 5 ),          # Dazzling Light (Divine Image legendary pet spell)
