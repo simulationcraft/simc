@@ -11551,7 +11551,7 @@ double death_knight_t::composite_melee_speed() const
 
   if ( buffs.ghoulish_infusion -> up() )
   {
-    haste *= 1.0 / ( 1.0 + spell.ghoulish_infusion -> effectN( 2 ).percent() );
+    haste *= 1.0 / ( 1.0 + buffs.ghoulish_infusion -> value() );
   }
 
   return haste;
