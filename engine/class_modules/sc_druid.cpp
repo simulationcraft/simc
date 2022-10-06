@@ -7742,8 +7742,8 @@ struct starfall_t : public druid_spell_t
 
     starfall_damage_t( druid_t* p, std::string_view n )
       : starfall_base_t( n, p, p->find_spell( 191037 ) ),
-      shrapnel( nullptr ),
-      cosmos_mul( p->sets->set( DRUID_BALANCE, T29, B4 )->effectN( 1 ).trigger()->effectN( 2 ).percent() )
+        shrapnel( nullptr ),
+        cosmos_mul( p->sets->set( DRUID_BALANCE, T29, B4 )->effectN( 1 ).trigger()->effectN( 2 ).percent() )
     {
       background = dual = true;
       if ( p->talent.lunar_shrapnel.ok() )
@@ -7869,7 +7869,7 @@ struct starfall_t : public druid_spell_t
 
   void execute() override
   {
-    if ( !is_free() )
+    if ( !is_free() && ( p()->buff.touch_the_cosmos->up() || p()->buff.starweavers_weft->up() ) )
     {
       if ( p()->buff.touch_the_cosmos->up() )
         p()->active.starsurge_cosmos->execute_on_target( target );
