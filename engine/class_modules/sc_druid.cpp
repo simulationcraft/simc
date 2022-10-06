@@ -13107,7 +13107,7 @@ void eclipse_handler_t::advance_eclipse()
 
 void eclipse_handler_t::trigger_both( timespan_t d = 0_ms )
 {
-  if ( p->legendary.balance_of_all_things.ok() )
+  if ( p->talent.balance_of_all_things.ok() )
   {
     p->buff.balance_of_all_things_arcane->trigger();
     p->buff.balance_of_all_things_nature->trigger();
