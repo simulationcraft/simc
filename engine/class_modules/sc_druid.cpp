@@ -274,7 +274,6 @@ public:
   // !!! Runtime variables NOTE: these MUST be properly reset in druid_t::reset() !!!
   // !!!==========================================================================!!!
   moon_stage_e moon_stage;
-  bool sundered_firmament_track;
   double after_the_wildfire_counter;
   std::vector<event_t*> persistent_event_delay;
   event_t* lycaras_event;
@@ -457,6 +456,7 @@ public:
     buff_t* natures_grace;
     buff_t* orbit_breaker;
     buff_t* owlkin_frenzy;
+    buff_t* parting_skies;  // sundered firmament tracker
     buff_t* starweavers_warp;  // free starfall
     buff_t* starweavers_weft;  // free starsurge
     buff_t* primordial_arcanic_pulsar;
@@ -1826,11 +1826,15 @@ struct eclipse_buff_t : public druid_buff_t<buff_t>
 
   void trigger_sundered_firmament()
   {
-    if ( p().active.sundered_firmament && p().sundered_firmament_track )
+    if ( p().active.sundered_firmament && p().buff.parting_skies->check() )
+    {
       p().active.sundered_firmament->execute_on_target( p().target );
-
-    // TODO: check how this works for CA/INC
-    p().sundered_firmament_track = !p().sundered_firmament_track;
+      p().buff.parting_skies->expire();
+    }
+    else
+    {
+      p().buff.parting_skies->trigger();
+    }
   }
 
   void execute( int s, double v, timespan_t d ) override
@@ -10569,6 +10573,8 @@ void druid_t::create_buffs()
   buff.owlkin_frenzy = make_buff( this, "owlkin_frenzy", find_spell( 157228 ) )
     ->set_chance( find_specialization_spell( "Owlkin Frenzy" )->effectN( 1 ).percent() );
 
+  buff.parting_skies = make_buff( this, "parting_skies", find_spell( 395110 ) );
+
   buff.primordial_arcanic_pulsar = make_buff( this, "primordial_arcanic_pulsar", find_spell( 393961 ) ) 
     ->set_default_value( options.initial_pulsar_value );
 
@@ -11505,7 +11511,6 @@ void druid_t::reset()
 
   // Reset runtime variables
   moon_stage = static_cast<moon_stage_e>( options.initial_moon_stage );
-  sundered_firmament_track = false;
   after_the_wildfire_counter = 0.0;
   persistent_event_delay.clear();
   lycaras_event = nullptr;
