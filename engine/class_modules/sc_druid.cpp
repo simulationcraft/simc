@@ -8002,8 +8002,6 @@ struct starfire_t : public druid_spell_t
     if ( is_free_proc() )
       return;
 
-    p()->buff.umbral_embrace->expire();
-
     p()->eclipse_handler.cast_starfire();
   }
 
@@ -8019,6 +8017,8 @@ struct starfire_t : public druid_spell_t
 
     if ( is_free_proc() )
       return;
+
+    p()->buff.umbral_embrace->expire();
 
     p()->buff.gathering_starstuff->expire();
   }
@@ -11111,7 +11111,7 @@ std::string druid_t::default_rune() const
 
 std::string druid_t::default_temporary_enchant() const
 {
-  if ( true_level < 60 ) return "disabled";
+  if ( true_level != 60 ) return "disabled";
 
   switch ( specialization() )
   {
