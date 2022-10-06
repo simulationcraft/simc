@@ -1560,16 +1560,27 @@ class SpellDataGenerator(DataGenerator):
             ( 376891, 5 ),          # Living Shadow Shadow Spike Volley
             ( 373387, 5 ),          # Living Shadow Shadow Sear
             ( 376915, 5 ),          # Living Shadow Shadow Nova
-            ( 394961, 0 ),          # Gathering Shadows T29 2-set
-            ( 394963, 0 ),          # Dark Reveries T29 4-set
+            ( 393684, 0 ),          # Priest Shadow Class Set 2-set
+            ( 394961, 0 ),          # Gathering Shadows T29 2-set buff
+            ( 393685, 0 ),          # Priest Shadow Class Set 4-set
+            ( 394963, 0 ),          # Dark Reveries T29 4-set buff
             # Holy Priest
             ( 196809, 5 ),          # Healing Light (Divine Image legendary pet spell)
             ( 196810, 5 ),          # Dazzling Light (Divine Image legendary pet spell)
             ( 196810, 5 ),          # Searing Light (Divine Image legendary pet spell)
+            ( 196811, 5 ),          # Searing Light (Divine Image talent pet spell)
             ( 196812, 5 ),          # Light Eruption (Divine Image legendary pet spell)
             ( 196813, 5 ),          # Blessed Light (Divine Image legendary pet spell)
             ( 196816, 5 ),          # Tranquil Light (Divine Image legendary pet spell)
             ( 325315, 0 ),          # Ascended Blast heal
+            ( 394729, 0 ),          # Prayer Focus T29 2-set
+            ( 393682, 0 ),          # Priest Holy Class Set 2-set
+            ( 393683, 0 ),          # Priest Holy Class Set 4-set
+            ( 394745, 0 ),          # Priest Holy Class Set 4-set buff
+            # Discipline Priest
+            ( 393679, 0 ),          # Priest Discipline Class Set 2-set
+            ( 394609, 0 ),          # Light Weaving 2-set buff
+            ( 393681, 0 ),          # Priest Discipline Class Set 4-set
         ),
 
         # Death Knight:
