@@ -1398,11 +1398,14 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
                            -> set_default_value_from_effect( 1 );
 
   // Apocalypse Death Knight Runeforge Debuffs
-  debuff.apocalypse_death  = make_buff( *this, "death", p -> find_spell( 327095 ) );  // Effect not implemented
+  debuff.apocalypse_death  = make_buff( *this, "death", p -> find_spell( 327095 ) )  // Effect not implemented
+                            -> apply_affecting_aura( p -> talent.unholy_bond );
   debuff.apocalypse_famine = make_buff( *this, "famine", p -> find_spell( 327092 ) )
-                            -> set_default_value_from_effect( 1 );
+                            -> set_default_value_from_effect( 1 )
+                            -> apply_affecting_aura( p -> talent.unholy_bond );
   debuff.apocalypse_war    = make_buff( *this, "war", p -> find_spell( 327096 ) )
-                            -> set_default_value_from_effect( 1 );
+                            -> set_default_value_from_effect( 1 )
+                            -> apply_affecting_aura( p -> talent.unholy_bond );
 
   // Conduits
   debuff.debilitating_malady = make_buff( *this, "debilitating_malady", p -> find_spell( 338523 ) )
@@ -7441,6 +7444,17 @@ struct outbreak_t : public death_knight_spell_t
   }
 };
 
+// Rune of Apocalpyse - Pestilence ==========================================
+struct runeforge_apocalypse_pestilence_t : public death_knight_spell_t
+{
+  runeforge_apocalypse_pestilence_t( util::string_view name, death_knight_t* p ) :
+    death_knight_spell_t( name, p, p -> find_spell( 327093 ) )
+    {
+      base_dd_multiplier *= 1.0 + p ->spell.exacting_preparation->effectN( 4 ).percent();
+      base_dd_multiplier *= 1.0 + p -> talent.unholy_bond -> effectN( 1 ).percent();
+    }
+};
+
 // Pillar of Frost ==========================================================
 
 struct frostwhelps_aid_t : public death_knight_spell_t
@@ -8888,7 +8902,7 @@ void runeforge::apocalypse( special_effect_t& effect )
   // Triggering the effects is handled in pet_melee_attack_t::impact()
   p -> runeforge.rune_of_apocalypse = true;
   // Even though a pet procs it, the damage from Pestilence belongs directly to the player in logs
-  p -> active_spells.runeforge_pestilence = new death_knight_spell_t( "Pestilence", p, p -> find_spell( 327093 ) );
+  p -> active_spells.runeforge_pestilence = new runeforge_apocalypse_pestilence_t( "Pestilence", p );
 }
 
 void runeforge::hysteria( special_effect_t& effect )
