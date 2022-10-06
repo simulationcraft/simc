@@ -7930,7 +7930,7 @@ struct starfall_t : public druid_spell_t
     if ( is_free_proc() )
       return;
 
-    if ( p()->sets->has_set_bonus( DRUID_BALANCE, T28, B2 ) )
+    if ( p()->sets->has_set_bonus( DRUID_BALANCE, T29, B2 ) )
       p()->buff.gathering_starstuff->trigger();
   }
 };
@@ -8201,7 +8201,7 @@ struct starsurge_t : public druid_spell_t
     if ( is_free_proc() || !result_is_hit( s->result ) )
       return;
 
-    if ( p()->sets->has_set_bonus( DRUID_BALANCE, T28, B2 ) )
+    if ( p()->sets->has_set_bonus( DRUID_BALANCE, T29, B2 ) )
       p()->buff.gathering_starstuff->trigger();
 
     p()->buff.touch_the_cosmos->expire();
