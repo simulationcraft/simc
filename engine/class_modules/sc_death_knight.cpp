@@ -2185,7 +2185,7 @@ struct ghoul_pet_t : public base_ghoul_pet_t
           chance *= 1.0 + 1.0;
         }
 
-        if ( dk() -> options.t29_4pc && dk() -> rng().roll( chance ) )
+        if ( dk() -> sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T29, B4 ) && dk() -> rng().roll( chance ) )
         {
           dk() -> buffs.ghoulish_infusion -> trigger();
         }
@@ -2359,8 +2359,11 @@ struct ghoul_pet_t : public base_ghoul_pet_t
       -> set_duration( 0_s );
 
     vile_infusion = make_buff( this, "vile_infusion", dk() -> pet_spell.vile_infusion )
-      -> set_default_value( dk() -> pet_spell.vile_infusion -> effectN(1).percent() )
-      -> set_duration( dk() -> pet_spell.vile_infusion -> duration() );
+      -> set_default_value( dk() -> pet_spell.vile_infusion -> effectN( 1 ).percent() )
+      -> set_duration( dk() -> pet_spell.vile_infusion -> duration() )
+      -> set_cooldown( dk() -> sets -> set(DEATH_KNIGHT_UNHOLY, T29, B2 ) -> internal_cooldown() )
+      -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+      -> add_invalidate( CACHE_ATTACK_SPEED );
   }
 };
 
@@ -9258,9 +9261,9 @@ void death_knight_t::trigger_festering_wound_death( player_t* target )
     buffs.festermight->trigger( n_wounds );
   }
 
-  if ( options.t29_2pc )
+  if ( sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T29, B2 ) )
   {
-      pets.ghoul_pet -> vile_infusion -> trigger( n_wounds );
+      pets.ghoul_pet -> vile_infusion -> trigger();
   }
 }
 
@@ -9494,9 +9497,9 @@ void death_knight_t::burst_festering_wound( player_t* target, unsigned n )
         dk->buffs.festermight->trigger( n_executes );
       }
       
-      if ( dk -> options.t29_2pc )
+      if ( dk -> sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T29, B2 ) )
       {
-        dk -> pets.ghoul_pet -> vile_infusion -> trigger( n_executes );
+        dk -> pets.ghoul_pet -> vile_infusion -> trigger();
       }
 
       td -> debuff.festering_wound -> decrement( n_executes ); 
