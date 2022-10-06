@@ -6623,6 +6623,8 @@ struct astral_smolder_t : public druid_residual_action_t<druid_spell_t>
 {
   astral_smolder_t( druid_t* p ) : base_t( "astral_smolder", p, p->find_spell( 394061 ) )
   {
+    may_crit = false;
+
     residual_mul = p->talent.astral_smolder->effectN( 1 ).percent();
   }
 
@@ -8025,10 +8027,14 @@ struct starfire_t : public druid_spell_t
   {
     druid_spell_t::impact( s );
 
-    if ( p()->active.astral_smolder && result_is_hit( s->result ) && s->result == RESULT_CRIT )
+    if ( p()->active.astral_smolder && s->result_amount > 0 && result_is_hit( s->result ) && s->result == RESULT_CRIT )
     {
-      residual_action::trigger( p()->active.astral_smolder, s->target,
-                                s->result_amount * p()->talent.astral_smolder->effectN( 1 ).percent() );
+      auto smolder = debug_cast<astral_smolder_t*>( p()->active.astral_smolder );
+      auto state = smolder->get_state();
+      state->target = s->target;
+      smolder->snapshot_state( state, smolder->amount_type( state ) );
+      smolder->set_amount( state, s->result_amount );
+      smolder->schedule_execute( state );
     }
 
     if ( is_free_proc() )
@@ -8666,10 +8672,14 @@ struct wrath_t : public druid_spell_t
   {
     druid_spell_t::impact( s );
 
-    if ( p()->active.astral_smolder && result_is_hit( s->result ) && s->result == RESULT_CRIT )
+    if ( p()->active.astral_smolder && s->result_amount > 0 && result_is_hit( s->result ) && s->result == RESULT_CRIT )
     {
-      residual_action::trigger( p()->active.astral_smolder, s->target,
-                                s->result_amount * p()->talent.astral_smolder->effectN( 1 ).percent() );
+      auto smolder = debug_cast<astral_smolder_t*>( p()->active.astral_smolder );
+      auto state = smolder->get_state();
+      state->target = s->target;
+      smolder->snapshot_state( state, smolder->amount_type( state ) );
+      smolder->set_amount( state, s->result_amount );
+      smolder->schedule_execute( state );
     }
 
     if ( is_free_proc() )
