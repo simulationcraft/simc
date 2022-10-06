@@ -8019,7 +8019,6 @@ struct starfire_t : public druid_spell_t
       return;
 
     p()->buff.umbral_embrace->expire();
-
     p()->buff.gathering_starstuff->expire();
   }
 
@@ -8641,8 +8640,6 @@ struct wrath_t : public druid_spell_t
     if ( is_free_proc() )
       return;
 
-    p()->buff.umbral_embrace->expire();
-
     // in druid_t::init_finished(), we set the final wrath of the precombat to have energize type of NONE, so that
     // we can handle the delayed enerigze & eclipse stack triggering here.
     if ( is_precombat && energize_resource_() == RESOURCE_ASTRAL_POWER && energize_type == action_energize::NONE )
@@ -8672,6 +8669,7 @@ struct wrath_t : public druid_spell_t
     if ( is_free_proc() )
       return;
 
+    p()->buff.umbral_embrace->expire();
     p()->buff.gathering_starstuff->expire();
   }
 };
