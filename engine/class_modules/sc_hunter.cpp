@@ -2990,6 +2990,8 @@ struct kill_shot_t : hunter_ranged_attack_t
     p() -> buffs.flayers_mark -> decrement();
     p() -> buffs.empowered_release -> decrement();
 
+    p() -> buffs.hunters_prey -> decrement();
+
     p() -> cooldowns.wildfire_bomb -> adjust( -p() -> talents.explosives_expert -> effectN( 1 ).time_value() );
   }
 
@@ -3032,7 +3034,8 @@ struct kill_shot_t : hunter_ranged_attack_t
   {
     return hunter_ranged_attack_t::target_ready( candidate_target ) &&
       ( candidate_target -> health_percentage() <= health_threshold_pct
-        || p() -> buffs.flayers_mark -> check() || p() -> buffs.deathblow -> check() );
+        || p() -> buffs.flayers_mark -> check() || p() -> buffs.deathblow -> check()
+        || p() -> buffs.hunters_prey -> check() );
   }
 
   double action_multiplier() const override
@@ -3768,7 +3771,7 @@ struct cobra_shot_t: public hunter_ranged_attack_t
 
   cobra_shot_t( hunter_t* p, util::string_view options_str ):
     hunter_ranged_attack_t( "cobra_shot", p, p -> talents.cobra_shot ),
-    kill_command_reduction( timespan_t::from_seconds( data().effectN( 3 ).base_value() ) )
+    kill_command_reduction( -timespan_t::from_seconds( data().effectN( 3 ).base_value() ) + p -> talents.cobra_senses -> effectN( 1 ).time_value() )
   {
     parse_options( options_str );
   }
@@ -3777,7 +3780,7 @@ struct cobra_shot_t: public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::execute();
 
-    p() -> cooldowns.kill_command -> adjust( -kill_command_reduction * ( 1 + p() -> buffs.killing_frenzy -> check_value() ) );
+    p() -> cooldowns.kill_command -> adjust( kill_command_reduction * ( 1 + p() -> buffs.killing_frenzy -> check_value() ) );
 
     if ( p() -> talents.killer_cobra.ok() && p() -> buffs.bestial_wrath -> check() )
       p() -> cooldowns.kill_command -> reset( true );
