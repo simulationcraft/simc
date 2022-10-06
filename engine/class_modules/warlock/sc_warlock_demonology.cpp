@@ -403,7 +403,7 @@ struct implosion_t : public demonology_spell_t
   implosion_aoe_t* explosion;
 
   implosion_t( warlock_t* p, util::string_view options_str )
-    : demonology_spell_t( "implosion", p ), explosion( new implosion_aoe_t( p ) )
+    : demonology_spell_t( "implosion", p, p->talents.implosion ), explosion( new implosion_aoe_t( p ) )
   {
     parse_options( options_str );
     add_child( explosion );
@@ -436,6 +436,7 @@ struct implosion_t : public demonology_spell_t
 
         imp->trigger_movement( dist, movement_direction_type::TOWARDS );
         imp->interrupt();
+        imp->imploded = true;
 
         // Imps launched with Implosion appear to be staggered and snapshot when they impact
         // 2020-12-04: Implosion may have been made quicker in Shadowlands, too fast to easily discern with combat log
@@ -1116,6 +1117,8 @@ void warlock_t::init_spells_demonology()
   talents.demonic_calling_buff = find_spell( 205146 );
 
   talents.grimoire_felguard = find_talent_spell( talent_tree::SPECIALIZATION, "Grimoire: Felguard" ); // Should be ID 111898
+
+  talents.bloodbound_imps = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodbound Imps" ); // Should be ID 387349
 
   talents.doom                = find_talent_spell( "Doom" );
 
