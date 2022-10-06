@@ -8031,16 +8031,6 @@ struct starfire_t : public druid_spell_t
 
     return cam;
   }
-
-  double composite_crit_chance() const override
-  {
-    double cc = druid_spell_t::composite_crit_chance();
-
-    if ( p()->buff.eclipse_lunar->up() )
-      cc += p()->buff.eclipse_lunar->value();
-
-    return cc;
-  }
 };
 
 // Stellar Flare ============================================================
