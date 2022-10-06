@@ -5012,12 +5012,15 @@ struct ironfur_t : public bear_attack_t
 // Mangle ===================================================================
 struct mangle_t : public bear_attack_t
 {
+  double gore_mul;
   int inc_targets;
 
   mangle_t( druid_t* p, std::string_view opt ) : mangle_t( p, "mangle", opt ) {}
 
   mangle_t( druid_t* p, std::string_view n, std::string_view opt )
-    : bear_attack_t( n, p, p->find_class_spell( "Mangle" ), opt ), inc_targets( 0 )
+    : bear_attack_t( n, p, p->find_class_spell( "Mangle" ), opt ),
+      gore_mul( p->sets->set( DRUID_GUARDIAN, T29, B2 )->effectN( 2 ).percent() ),
+      inc_targets( 0 )
   {
     if ( p->talent.mangle.ok() )
       bleed_mul = data().effectN( 3 ).percent();
@@ -5048,6 +5051,11 @@ struct mangle_t : public bear_attack_t
       n += inc_targets;
 
     return n;
+  }
+
+  double action_multiplier() const override
+  {
+    return bear_attack_t::action_multiplier() * ( 1.0 + gore_mul * p()->buff.gore->check() );
   }
 
   void impact( action_state_t* s ) override
@@ -10711,7 +10719,7 @@ void druid_t::create_buffs()
     ->set_default_value_from_effect( 1, 0.1 /*RESOURCE_RAGE*/ );
 
   buff.gore = make_buff( this, "gore", find_spell( 93622 ) )
-    ->set_chance( talent.gore->effectN( 1 ).percent() )
+    ->set_chance( talent.gore->effectN( 1 ).percent() + sets->set( DRUID_GUARDIAN, T29, B2 )->effectN( 1 ).percent() )
     ->set_default_value_from_effect( 1, 0.1 /*RESOURCE_RAGE*/ );
 
   buff.gory_fur = make_buff( this, "gory_fur", talent.gory_fur->effectN( 1 ).trigger() )
@@ -13277,6 +13285,7 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.untamed_savagery );
   action.apply_affecting_aura( talent.ursocs_guidance );
   action.apply_affecting_aura( talent.vulnerable_flesh );
+  action.apply_affecting_aura( sets->set( DRUID_GUARDIAN, T29, B4 ) );
 
   // Restoration
   action.apply_affecting_aura( talent.germination );
