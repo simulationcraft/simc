@@ -3100,6 +3100,7 @@ struct death_knight_action_t : public Base
     bool brittle;
     bool tightening_grasp;
     bool death_rot;
+    bool ghoulish_infusion;
   } affected_by;
 
   bool may_proc_bron;
@@ -3143,6 +3144,7 @@ struct death_knight_action_t : public Base
     this -> affected_by.brittle = this -> data().affected_by( p -> spell.brittle_debuff -> effectN( 1 ) );
     this -> affected_by.tightening_grasp = this -> data().affected_by( p -> spell.tightening_grasp_debuff -> effectN( 1 ) );
     this -> affected_by.death_rot = this -> data().affected_by( p -> spell.death_rot_debuff -> effectN( 1 ) );
+    this -> affected_by.ghoulish_infusion = this -> data().affected_by( p -> spell.ghoulish_infusion -> effectN( 1 ) );
 
     // TODO July 19 2022
     // Spelldata for Might of the frozen wastes is still all sorts of jank.
@@ -3195,6 +3197,11 @@ struct death_knight_action_t : public Base
       m *= 1.0 + p() -> cache.mastery_value();
     }
 
+    if ( this -> affected_by.ghoulish_infusion && p() -> sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T29, B4 ) && p() -> buffs.ghoulish_infusion -> up() )
+    {
+      m *= 1.0 + p() -> buffs.ghoulish_infusion -> value();
+    }
+
     return m;
   }
 
@@ -3205,6 +3212,11 @@ struct death_knight_action_t : public Base
     if ( this -> affected_by.frozen_heart || this -> affected_by.dreadblade )
     {
       m *= 1.0 + p() -> cache.mastery_value();
+    }
+
+    if ( this -> affected_by.ghoulish_infusion && p() -> sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T29, B4 ) && p() -> buffs.ghoulish_infusion -> up() )
+    {
+      m *= 1.0 + p() -> buffs.ghoulish_infusion -> value();
     }
 
     return m;
@@ -11419,11 +11431,6 @@ double death_knight_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + talent.blood.bloodshot -> effectN( 1 ).percent();
   }
 
-  if ( buffs.ghoulish_infusion->up() )
-  {
-    m *= 1.0 + spell.ghoulish_infusion -> effectN(1).base_value();
-  }
-
   return m;
 }
 
@@ -11544,7 +11551,7 @@ double death_knight_t::composite_melee_speed() const
 
   if ( buffs.ghoulish_infusion -> up() )
   {
-    haste *= 1.0 / ( 1.0 + spell.ghoulish_infusion -> effectN(2).percent() );
+    haste *= 1.0 / ( 1.0 + spell.ghoulish_infusion -> effectN( 2 ).percent() );
   }
 
   return haste;
