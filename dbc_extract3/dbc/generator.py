@@ -1916,6 +1916,9 @@ class SpellDataGenerator(DataGenerator):
           ( 366793, 1 ), # BrM 4-piece Keg of the Heavens Heal
           ( 363911, 3 ), # WW 4-piece Primordial Potential
           ( 363924, 3 ), # WW 4-piece Primordial Power
+
+          # Tier 29
+          ( 394951, 3 ) # WW 4-piece Versatility buff
         ),
 
         # Druid:
