@@ -2405,15 +2405,7 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
     base_ghoul_pet_t::arise();
     if ( dk() -> talent.unholy.commander_of_the_dead.ok() && dk() -> buffs.commander_of_the_dead_window -> up() )
     {
-      for ( auto ghoul : dk() -> pets.army_ghouls.active_pets() )
-      {
-        ghoul -> commander_of_the_dead -> trigger();
-      }
-
-      for ( auto ghoul : dk() -> pets.apoc_ghouls.active_pets() )
-      {
-        ghoul -> commander_of_the_dead -> trigger();
-      }
+      commander_of_the_dead -> trigger();
     }
   }
 
