@@ -1957,8 +1957,8 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
         am *= 1 + p()->talent.windwalker.rising_star->effectN( 1 ).percent();
     }
 
-    if ( p()->buff.t29_2p_ww->check() )
-      am *= 1 + p()->buff.t29_2p_ww->check_value();
+    if ( p()->buff.fists_of_flowing_momentum->check() )
+      am *= 1 + p()->buff.fists_of_flowing_momentum->check_value();
 
     return am;
   }
@@ -2035,14 +2035,13 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
       if ( p()->talent.windwalker.mark_of_the_crane->ok() )
         p()->trigger_mark_of_the_crane( s );
 
-      if ( p()->buff.t29_2p_ww->up() )
-        p()->buff.t29_2p_ww->decrement();
+      if (p()->buff.kicks_of_flowing_momentum->up()) {
+        p()->buff.kicks_of_flowing_momentum->decrement();
 
-      if (p()->buff.t29_4p_ww_kick->up()) {
-        p()->buff.t29_4p_ww_fof->trigger();
-        p()->buff.t29_4p_ww_kick->decrement();
+        if ( p()->sets->has_set_bonus(MONK_WINDWALKER, T29, B4) || p()->user_options.t29_4p == 1) {
+          p()->buff.fists_of_flowing_momentum->trigger();
+        }
       }
-        
     }
   }
 };
@@ -2766,8 +2765,8 @@ struct sck_tick_action_t : public monk_melee_attack_t
       if ( p()->talent.windwalker.crane_vortex->ok() )
         am *= 1 + p()->talent.windwalker.crane_vortex->effectN( 1 ).percent();
 
-      if ( p()->buff.t29_2p_ww->check() )
-        am *= 1 + p()->buff.t29_2p_ww->check_value();
+      if ( p()->buff.kicks_of_flowing_momentum->check() )
+        am *= 1 + p()->buff.kicks_of_flowing_momentum->check_value();
     }
     else if ( p()->specialization() == MONK_BREWMASTER )
     {
@@ -2788,14 +2787,13 @@ struct sck_tick_action_t : public monk_melee_attack_t
     if ( p()->spec.spinning_crane_kick_2_brm->ok() )
       trigger_shuffle( p()->spec.spinning_crane_kick_2_brm->effectN( 1 ).base_value() );
 
-    if ( p()->buff.t29_2p_ww->up() )
-      p()->buff.t29_2p_ww->decrement();
+    if ( p()->buff.kicks_of_flowing_momentum->up() ) {
+      p()->buff.kicks_of_flowing_momentum->decrement();
 
-    if ( p()->buff.t29_4p_ww_kick->up() )
-    {
-      p()->buff.t29_4p_ww_fof->trigger();
-      p()->buff.t29_4p_ww_kick->decrement();
+      if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T29, B4 ) || p()->user_options.t29_4p == 1 )
+        p()->buff.fists_of_flowing_momentum->trigger();
     }
+
   }
 
   void impact( action_state_t* s ) override
@@ -3152,10 +3150,11 @@ struct fists_of_fury_t : public monk_melee_attack_t
 
   void execute() override
   {
-    if ( p()->buff.t29_4p_ww_fof->up() )
+    if ( p()->buff.fists_of_flowing_momentum->up() )
     {
-      p()->buff.t29_4p_ww_fof_hidden->trigger( p()->buff.t29_4p_ww_fof->stack(), data().duration() );
-      p()->buff.t29_4p_ww_fof->expire();
+      p()->buff.fists_of_flowing_momentum_vers->trigger( 1, p()->buff.fists_of_flowing_momentum->stack_value(), -1,
+                                                         data().duration() );
+      p()->buff.fists_of_flowing_momentum->expire();
     }
 
     monk_melee_attack_t::execute();
@@ -3172,18 +3171,16 @@ struct fists_of_fury_t : public monk_melee_attack_t
       p()->buff.whirling_dragon_punch->trigger();
     }
 
-    if (p()->user_options.t29_2p == 1)
-      p()->buff.t29_2p_ww->trigger();
-    if ( p()->user_options.t29_4p == 1)
-      p()->buff.t29_4p_ww_kick->trigger();
+    if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T29, B2 ) || p()->user_options.t29_2p == 1 )
+      p()->buff.kicks_of_flowing_momentum->trigger();
   }
 
   void last_tick( dot_t* dot ) override
   {
     monk_melee_attack_t::last_tick( dot );
 
-    if (p()->buff.t29_4p_ww_fof_hidden->up()) {
-      p()->buff.t29_4p_ww_fof_hidden->expire();
+    if ( p()->buff.fists_of_flowing_momentum_vers->up() ) {
+      p()->buff.fists_of_flowing_momentum_vers->expire();
     }
 
     // If Fists of Fury went the full duration
@@ -3192,9 +3189,6 @@ struct fists_of_fury_t : public monk_melee_attack_t
         p()->buff.pressure_point->trigger();
       else if ( p()->talent.windwalker.xuens_battlegear->ok() )
         p()->buff.pressure_point->trigger();
-
-      if ( p()->buff.t29_4p_ww_fof_hidden->up() )
-        p()->buff.t29_4p_ww_fof_hidden->expire();
     }
   }
 };
@@ -8614,6 +8608,10 @@ void monk_t::init_spells()
   passives.primordial_potential    = find_spell( 363911 );
   passives.primordial_power        = find_spell( 363924 );
 
+  // Tier 29
+  passives.kicks_of_flowing_momentum = find_spell( 394944 );
+  passives.fists_of_flowing_momentum = find_spell( 394949 );
+
   // Mastery spells =========================================
   mastery.combo_strikes   = find_mastery_spell( MONK_WINDWALKER );
   mastery.elusive_brawler = find_mastery_spell( MONK_BREWMASTER );
@@ -9069,23 +9067,16 @@ void monk_t::create_buffs ()
                                              ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   // Tier 29 Set Bonus
-  buff.t29_2p_ww = make_buff( this, "t29_2p_ww", spell_data_t::nil() )
-                       ->set_duration( timespan_t::from_seconds( 30 ) )
-                       ->set_default_value( 0.3 ) 
-                       ->set_reverse( true )
-                       ->set_reverse_stack_count( 2 );
-  buff.t29_4p_ww_kick = make_buff( this, "t29_4p_ww_kick", spell_data_t::nil() )
-                            ->set_duration( timespan_t::from_seconds( 30 ) )
-                            ->set_reverse( true )
-                            ->set_reverse_stack_count( 3 );
-  buff.t29_4p_ww_fof = make_buff( this, "t29_4p_ww_fof", spell_data_t::nil() )
-                           ->set_duration( timespan_t::from_seconds( 30 ) )
-                           ->set_max_stack( 3 );
-  buff.t29_4p_ww_fof_hidden = make_buff( this, "t29_4p_ww_fof_hidden", spell_data_t::nil() )
-                                  ->set_duration( timespan_t::from_seconds( 4 ) )
-                                  ->set_default_value( 0.05 )
-                                  ->set_max_stack( 3 )
-                                  ->set_quiet( true )
+  buff.kicks_of_flowing_momentum = make_buff( this, "kicks_of_flowing_momentum", passives.kicks_of_flowing_momentum )
+                                       ->set_default_value_from_effect( 1 )
+                                       ->set_reverse( true )
+                                       ->set_max_stack( sets->has_set_bonus( MONK_WINDWALKER, T29, B2 ) || user_options.t29_4p == 1
+                                         ? passives.kicks_of_flowing_momentum->max_stacks() : 2 )
+                                       ->set_reverse_stack_count( sets->has_set_bonus( MONK_WINDWALKER, T29, B2 ) || user_options.t29_4p == 1
+                                         ? passives.kicks_of_flowing_momentum->max_stacks() : 2 );
+  buff.fists_of_flowing_momentum = make_buff( this, "fists_of_flowing_momentum", passives.fists_of_flowing_momentum )
+                                       ->set_default_value_from_effect( 1 );
+  buff.fists_of_flowing_momentum_vers = make_buff( this, "fists_of_flowing_momentum_vers", find_spell( 394951 ) )
                                   ->add_invalidate(CACHE_DAMAGE_VERSATILITY);
   buff.brewmasters_rhythm = make_buff( this, "brewmasters_rhythm", spell_data_t::nil() )
                                 ->set_duration( timespan_t::from_seconds( 10 ) )
@@ -9777,8 +9768,8 @@ double monk_t::composite_damage_versatility() const
 {
   double m = player_t::composite_damage_versatility();
 
-  if ( buff.t29_4p_ww_fof_hidden->check() )
-    m += buff.t29_4p_ww_fof_hidden->check_stack_value();
+  if ( buff.fists_of_flowing_momentum_vers->check() )
+    m += buff.fists_of_flowing_momentum_vers->check_value();
 
   return m;
 }

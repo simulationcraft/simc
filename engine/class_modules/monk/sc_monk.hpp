@@ -320,10 +320,9 @@ public:
     propagate_const<buff_t*> primordial_power_hidden_channel;
 
     // T29 Set Bonus
-    propagate_const<buff_t*> t29_2p_ww;
-    propagate_const<buff_t*> t29_4p_ww_kick;
-    propagate_const<buff_t*> t29_4p_ww_fof;
-    propagate_const<buff_t*> t29_4p_ww_fof_hidden;
+    propagate_const<buff_t*> kicks_of_flowing_momentum;
+    propagate_const<buff_t*> fists_of_flowing_momentum;
+    propagate_const<buff_t*> fists_of_flowing_momentum_vers;
     propagate_const<buff_t*> brewmasters_rhythm;
   } buff;
 
@@ -927,6 +926,10 @@ public:
     const spell_data_t* keg_of_the_heavens_heal;
     const spell_data_t* primordial_potential;
     const spell_data_t* primordial_power;
+
+    // Tier 29
+    const spell_data_t* kicks_of_flowing_momentum;
+    const spell_data_t* fists_of_flowing_momentum;
   } passives;
 
   // RPPM objects
