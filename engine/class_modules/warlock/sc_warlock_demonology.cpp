@@ -810,7 +810,7 @@ struct grimoire_felguard_t : public demonology_spell_t
   {
     demonology_spell_t::execute();
     
-    p()->warlock_pet_list.grimoire_felguards.spawn( data().duration() );
+    p()->warlock_pet_list.grimoire_felguards.spawn( p()->talents.grimoire_felguard->duration() );
     p()->buffs.grimoire_felguard->trigger();
   }
 };
@@ -1115,12 +1115,14 @@ void warlock_t::init_spells_demonology()
   talents.demonic_calling = find_talent_spell( talent_tree::SPECIALIZATION, "Demonic Calling" ); // Should be ID 205145
   talents.demonic_calling_buff = find_spell( 205146 );
 
+  talents.grimoire_felguard = find_talent_spell( talent_tree::SPECIALIZATION, "Grimoire: Felguard" ); // Should be ID 111898
+
   talents.doom                = find_talent_spell( "Doom" );
 
 
 
 
-  talents.grimoire_felguard   = find_talent_spell( "Grimoire: Felguard" );
+
   talents.sacrificed_souls    = find_talent_spell( "Sacrificed Souls" );
   talents.demonic_consumption = find_talent_spell( "Demonic Consumption" );
   talents.nether_portal       = find_talent_spell( "Nether Portal" );

@@ -703,6 +703,7 @@ grimoire_felguard_pet_t::grimoire_felguard_pet_t( warlock_t* owner )
    buffs.grimoire_of_service->trigger();
  }
 
+ // TOCHECK: Does Grimoire: Felguard only due a single Felstorm at most, rendering some of this unnecessary?
 timespan_t grimoire_felguard_pet_t::available() const
 {
   double energy_threshold = max_energy_threshold;
