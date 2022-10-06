@@ -510,6 +510,49 @@ struct priest_pet_spell_t : public spell_t
     return static_cast<priest_pet_t&>( *player );
   }
 
+  double cost() const override
+  {
+    double c = action_t::cost() * std::max( 0.0, get_buff_effects_value( cost_buffeffects, false, false ) );
+    return c;
+  }
+
+  double composite_ta_multiplier( const action_state_t* s ) const override
+  {
+    double ta = action_t::composite_ta_multiplier( s ) * get_buff_effects_value( ta_multiplier_buffeffects );
+    return ta;
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double da = action_t::composite_da_multiplier( s ) * get_buff_effects_value( da_multiplier_buffeffects );
+    return da;
+  }
+
+  double composite_crit_chance() const override
+  {
+    double cc = action_t::composite_crit_chance() + get_buff_effects_value( crit_chance_buffeffects, true );
+    return cc;
+  }
+
+  timespan_t execute_time() const override
+  {
+    timespan_t et = action_t::execute_time() * get_buff_effects_value( execute_time_buffeffects );
+    return et;
+  }
+
+  timespan_t composite_dot_duration( const action_state_t* s ) const override
+  {
+    timespan_t dd = action_t::composite_dot_duration( s ) * get_buff_effects_value( dot_duration_buffeffects );
+    return dd;
+  }
+
+  double recharge_multiplier( const cooldown_t& cd ) const override
+  {
+    double rm =
+        action_t::recharge_multiplier( cd ) * get_buff_effects_value( recharge_multiplier_buffeffects, false, false );
+    return rm;
+  }
+
   double composite_target_da_multiplier( player_t* t ) const override
   {
     double tdm = action_t::composite_target_da_multiplier( t );
@@ -900,6 +943,9 @@ struct inescapable_torment_t final : public priest_pet_spell_t
 
     impact_action = new inescapable_torment_damage_t( p );
     add_child( impact_action );
+
+    // Base spell also has damage values
+    base_dd_min = base_dd_max = spell_power_mod.direct = 0.0;
   }
 
   void execute() override
