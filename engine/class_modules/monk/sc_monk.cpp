@@ -1015,7 +1015,7 @@ struct monk_spell_t : public monk_action_t<spell_t>
         pm *= 1 + p()->cache.mastery_value();
     }
 
-    if ( p()->buff.brewmasters_rhythm->check() )
+    if ( p()->buff.brewmasters_rhythm->check() && base_t::data().affected_by( p()->buff.brewmasters_rhythm->data().effectN( 1 ) ) )
       pm *= 1 + p()->buff.brewmasters_rhythm->check_stack_value();
 
     return pm;
@@ -1871,8 +1871,11 @@ struct tiger_palm_t : public monk_melee_attack_t
       if ( get_td( s->target )->debuff.bonedust_brew->up() )
         brew_cooldown_reduction( p()->covenant.necrolord->effectN( 3 ).base_value() );
 
-       if ( p()->user_options.t29_2p == 1 )
+      if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T29, B2 ) && p()->cooldown.brewmasters_rhythm->up() ) {
         p()->buff.brewmasters_rhythm->trigger();
+        p()->cooldown.brewmasters_rhythm->start( p()->sets->set( MONK_BREWMASTER, T29, B2 )->internal_cooldown() );
+      }
+
     }
 
     p()->trigger_keefers_skyreach( s );
@@ -2038,7 +2041,7 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
       if (p()->buff.kicks_of_flowing_momentum->up()) {
         p()->buff.kicks_of_flowing_momentum->decrement();
 
-        if ( p()->sets->has_set_bonus(MONK_WINDWALKER, T29, B4) || p()->user_options.t29_4p == 1) {
+        if ( p()->sets->has_set_bonus(MONK_WINDWALKER, T29, B4) ) {
           p()->buff.fists_of_flowing_momentum->trigger();
         }
       }
@@ -2790,7 +2793,7 @@ struct sck_tick_action_t : public monk_melee_attack_t
     if ( p()->buff.kicks_of_flowing_momentum->up() ) {
       p()->buff.kicks_of_flowing_momentum->decrement();
 
-      if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T29, B4 ) || p()->user_options.t29_4p == 1 )
+      if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T29, B4 ) )
         p()->buff.fists_of_flowing_momentum->trigger();
     }
 
@@ -2834,8 +2837,9 @@ struct sck_tick_action_t : public monk_melee_attack_t
         }
       }
 
-      if (p()->user_options.t29_2p == 1) {
+      if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T29, B2 ) && p()->cooldown.brewmasters_rhythm->up() ) {
         p()->buff.brewmasters_rhythm->trigger();
+        p()->cooldown.brewmasters_rhythm->start( p()->sets->set( MONK_BREWMASTER, T29, B2 )->internal_cooldown() );
       }
     }
   }
@@ -3171,7 +3175,7 @@ struct fists_of_fury_t : public monk_melee_attack_t
       p()->buff.whirling_dragon_punch->trigger();
     }
 
-    if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T29, B2 ) || p()->user_options.t29_2p == 1 )
+    if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T29, B2 ) )
       p()->buff.kicks_of_flowing_momentum->trigger();
   }
 
@@ -4929,8 +4933,9 @@ struct purifying_brew_t : public monk_spell_t
 
     // Reduce stagger damage
     auto purifying_percent = data().effectN( 1 ).percent();
-    if ( p()->buff.brewmasters_rhythm->up() )
-      purifying_percent += p()->buff.brewmasters_rhythm->stack() * 0.03;
+    if ( p()->buff.brewmasters_rhythm->up() && p()->sets->has_set_bonus( MONK_BREWMASTER, T29, B4 ) )
+      purifying_percent +=
+          p()->buff.brewmasters_rhythm->stack() * p()->sets->set( MONK_BREWMASTER, T29, B4 )->effectN( 1 ).percent();
 
     auto amount_cleared =
         p()->active_actions.stagger_self_damage->clear_partial_damage_pct( purifying_percent );
@@ -9070,18 +9075,16 @@ void monk_t::create_buffs ()
   buff.kicks_of_flowing_momentum = make_buff( this, "kicks_of_flowing_momentum", passives.kicks_of_flowing_momentum )
                                        ->set_default_value_from_effect( 1 )
                                        ->set_reverse( true )
-                                       ->set_max_stack( sets->has_set_bonus( MONK_WINDWALKER, T29, B2 ) || user_options.t29_4p == 1
+                                       ->set_max_stack( sets->has_set_bonus( MONK_WINDWALKER, T29, B2 )
                                          ? passives.kicks_of_flowing_momentum->max_stacks() : 2 )
-                                       ->set_reverse_stack_count( sets->has_set_bonus( MONK_WINDWALKER, T29, B2 ) || user_options.t29_4p == 1
+                                       ->set_reverse_stack_count( sets->has_set_bonus( MONK_WINDWALKER, T29, B2 )
                                          ? passives.kicks_of_flowing_momentum->max_stacks() : 2 );
   buff.fists_of_flowing_momentum = make_buff( this, "fists_of_flowing_momentum", passives.fists_of_flowing_momentum )
                                        ->set_default_value_from_effect( 1 );
   buff.fists_of_flowing_momentum_vers = make_buff( this, "fists_of_flowing_momentum_vers", find_spell( 394951 ) )
                                   ->add_invalidate(CACHE_DAMAGE_VERSATILITY);
-  buff.brewmasters_rhythm = make_buff( this, "brewmasters_rhythm", spell_data_t::nil() )
-                                ->set_duration( timespan_t::from_seconds( 10 ) )
-                                ->set_default_value( 0.01 )
-                                ->set_max_stack( 4 )
+  buff.brewmasters_rhythm = make_buff( this, "brewmasters_rhythm", find_spell( 394797 ) )
+                                ->set_default_value_from_effect( 1 )
                                 ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 }
 
@@ -9947,8 +9950,6 @@ void monk_t::create_options()
   add_option( opt_float( "monk.faeline_stomp_uptime", user_options.faeline_stomp_uptime, 0.0, 1.0 ) );
   add_option( opt_int( "monk.chi_burst_healing_targets", user_options.chi_burst_healing_targets, 0, 30 ) );
   add_option( opt_int( "monk.motc_override", user_options.motc_override, 0, 5 ) );
-  add_option( opt_int( "monk.t29_2p", user_options.t29_2p, 0, 1 ) );
-  add_option( opt_int( "monk.t29_4p", user_options.t29_4p, 0, 1 ) );
 }
 
 // monk_t::copy_from =========================================================
@@ -10280,6 +10281,13 @@ void monk_t::target_mitigation( school_e school, result_amount_type dt, action_s
       reduction -= 0.05;
 
     s->result_amount *= ( 1.0 + reduction );
+  }
+
+  if ( buff.brewmasters_rhythm->up() )
+  {
+    auto damage_reduction = 1 + ( buff.brewmasters_rhythm->stack() *
+                                  buff.brewmasters_rhythm->data().effectN( 2 ).percent() );  // Saved as -1
+    s->result_amount *= damage_reduction;
   }
 
   // Touch of Karma Absorbtion

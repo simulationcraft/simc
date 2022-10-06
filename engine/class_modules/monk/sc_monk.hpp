@@ -822,6 +822,9 @@ public:
     propagate_const<cooldown_t*> charred_passions;
     propagate_const<cooldown_t*> bountiful_brew;
     propagate_const<cooldown_t*> sinister_teachings;
+
+    // T29
+    propagate_const<cooldown_t*> brewmasters_rhythm;
   } cooldown;
 
   struct passives_t
@@ -1076,8 +1079,6 @@ public:
     double faeline_stomp_uptime;
     int chi_burst_healing_targets;
     int motc_override;
-    int t29_2p;
-    int t29_4p;
   } user_options;
 
   // Blizzard rounds it's stagger damage; anything higher than half a percent beyond
