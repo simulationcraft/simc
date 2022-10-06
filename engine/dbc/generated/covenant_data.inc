@@ -1,4 +1,4 @@
-// Covenant abilities, wow build 10.0.2.45779
+// Covenant abilities, wow build 10.0.2.45969
 static const std::array<covenant_ability_entry_t, 68> __covenant_ability_data { {
   {  6, 4, 0, 315443, "Abomination Limb"                   },
   { 11, 4, 0, 325727, "Adaptive Swarm"                     },
@@ -70,7 +70,7 @@ static const std::array<covenant_ability_entry_t, 68> __covenant_ability_data { 
   {  3, 3, 0, 328231, "Wild Spirits"                       },
 } };
 
-// Soulbind abilities, wow build 10.0.2.45779
+// Soulbind abilities, wow build 10.0.2.45969
 static const std::array<soulbind_ability_entry_t, 128> __soulbind_ability_data { {
   { 319191, 3,  824, "Field of Blossoms"                  },
   { 319210, 3,  826, "Social Butterfly"                   },
@@ -202,7 +202,7 @@ static const std::array<soulbind_ability_entry_t, 128> __soulbind_ability_data {
   { 352806, 3, 1851, "Hunt's Exhilaration"                },
 } };
 
-// Conduits, wow build 10.0.2.45779
+// Conduits, wow build 10.0.2.45969
 static const std::array<conduit_entry_t, 286> __conduit_data { {
   {   5, 334993, "Stalwart Guardian"                  },
   {   7, 335010, "Brutal Vitality"                    },
@@ -531,7 +531,7 @@ static const std::array<uint16_t, 286> __conduit_spell_id_index { {
     281,   280,   279,   277,   278,   276,
 } };
 
-// Conduit ranks, wow build 10.0.2.45779
+// Conduit ranks, wow build 10.0.2.45969
 static const std::array<conduit_rank_entry_t, 4290> __conduit_rank_data { {
   {   5,  0, 334993, -20000.000000 },
   {   5,  1, 334993, -22000.000000 },
@@ -653,21 +653,21 @@ static const std::array<conduit_rank_entry_t, 4290> __conduit_rank_data { {
   {  13, 12, 335250, 200.000000 },
   {  13, 13, 335250, 210.000000 },
   {  13, 14, 335250, 220.000000 },
-  {  14,  0, 335260, 100.000000 },
-  {  14,  1, 335260, 110.000000 },
-  {  14,  2, 335260, 120.000000 },
-  {  14,  3, 335260, 130.000000 },
-  {  14,  4, 335260, 140.000000 },
-  {  14,  5, 335260, 150.000000 },
-  {  14,  6, 335260, 160.000000 },
-  {  14,  7, 335260, 170.000000 },
-  {  14,  8, 335260, 180.000000 },
-  {  14,  9, 335260, 190.000000 },
-  {  14, 10, 335260, 200.000000 },
-  {  14, 11, 335260, 210.000000 },
-  {  14, 12, 335260, 220.000000 },
-  {  14, 13, 335260, 230.000000 },
-  {  14, 14, 335260, 240.000000 },
+  {  14,  0, 335260, 32.000000 },
+  {  14,  1, 335260, 34.000000 },
+  {  14,  2, 335260, 36.000000 },
+  {  14,  3, 335260, 38.000000 },
+  {  14,  4, 335260, 40.000000 },
+  {  14,  5, 335260, 42.000000 },
+  {  14,  6, 335260, 44.000000 },
+  {  14,  7, 335260, 46.000000 },
+  {  14,  8, 335260, 48.000000 },
+  {  14,  9, 335260, 50.000000 },
+  {  14, 10, 335260, 52.000000 },
+  {  14, 11, 335260, 54.000000 },
+  {  14, 12, 335260, 56.000000 },
+  {  14, 13, 335260, 58.000000 },
+  {  14, 14, 335260, 60.000000 },
   {  15,  0, 336379, 25.000000 },
   {  15,  1, 336379, 27.500000 },
   {  15,  2, 336379, 30.000000 },
@@ -4825,7 +4825,7 @@ static const std::array<conduit_rank_entry_t, 4290> __conduit_rank_data { {
   { 294, 14, 387198, 2.600000 },
 } };
 
-// Renown reward abilities, wow build 10.0.2.45779
+// Renown reward abilities, wow build 10.0.2.45969
 static const std::array<renown_reward_entry_t, 20> __renown_reward_ability_data { {
   { 1,   2, 344087, "Deepening Bond"                     }, // Kyrian
   { 1,  19, 344089, "Deepening Bond"                     }, // Kyrian
@@ -4849,7 +4849,7 @@ static const std::array<renown_reward_entry_t, 20> __renown_reward_ability_data 
   { 4,  59, 354129, "Deepening Bond"                     }, // Necrolord
 } };
 
-// Enhanced conduit renown levels, wow build 10.0.2.45779
+// Enhanced conduit renown levels, wow build 10.0.2.45969
 static const std::array<enhanced_conduit_entry_t, 120> __enhanced_conduit_data { {
   {  1,  1, 0,  63 }, // Niya
   {  1,  1, 2,  63 }, // Niya

@@ -1,4 +1,4 @@
-// 526 talents, wow build 10.0.2.45779
+// 526 talents, wow build 10.0.2.45969
 static std::array<talent_data_t, 526> __talent_data { {
   { "Second Wind"                       , 15757, 0x00, 0x0001,   71,   0,   3,   29838,       0,  0 },
   { "Punish"                            , 15759, 0x00, 0x0001,   73,   1,   0,  275334,       0,  0 },
@@ -112,7 +112,7 @@ static std::array<talent_data_t, 526> __talent_data { {
   { "Ravager"                           , 21667, 0x00, 0x0001,   71,   2,   6,  152277,  227847,  0 },
   { "Beacon of Faith"                   , 21671, 0x00, 0x0002,   65,   1,   6,  156910,       0,  0 },
   { "Ascendance"                        , 21675, 0x00, 0x0040,  262,   2,   6,  114050,       0,  0 },
-  { "Incarnation: Chosen of Elune"      , 21702, 0x00, 0x0400,  102,   2,   4,  102560,       0,  0 },
+  { "Incarnation: Chosen of Elune"      , 21702, 0x00, 0x0400,  102,   2,   4,  102560,  194223,  0 },
   { "Incarnation: Avatar of Ashamane"   , 21704, 0x00, 0x0400,  103,   2,   4,  102543,       0,  0 },
   { "Cultivation"                       , 21705, 0x00, 0x0400,  105,   1,   4,  200390,       0,  0 },
   { "Starlord"                          , 21706, 0x00, 0x0400,  102,   1,   4,  202345,       0,  0 },

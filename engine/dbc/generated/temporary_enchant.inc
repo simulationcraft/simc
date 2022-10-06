@@ -1,5 +1,5 @@
-// Temporary item enchants, wow build 10.0.2.45779
-static const std::array<temporary_enchant_entry_t, 68> __temporary_enchant_data { {
+// Temporary item enchants, wow build 10.0.2.45969
+static const std::array<temporary_enchant_entry_t, 67> __temporary_enchant_data { {
   {  2713,  29453, "adamantite_sharpening_stone"  },
   {  2955,  34340, "adamantite_weightstone"       },
   {  3265,  45395, "blessed_weapon_coating"       },
@@ -37,7 +37,6 @@ static const std::array<temporary_enchant_entry_t, 68> __temporary_enchant_data 
   {  6516, 385575, "howling_rune"                 },
   {  6517, 385576, "howling_rune"                 },
   {  6518, 385577, "howling_rune"                 },
-  {  6671, 393457, "illusory_adornment_fire"      },
   {  2625,  25120, "lesser_mana_oil"              },
   {  2718,  32274, "lesser_rune_of_warding"       },
   {  2626,  25119, "lesser_wizard_oil"            },
