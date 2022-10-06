@@ -1581,6 +1581,7 @@ class SpellDataGenerator(DataGenerator):
             ( 393679, 0 ),          # Priest Discipline Class Set 2-set
             ( 394609, 0 ),          # Light Weaving 2-set buff
             ( 393681, 0 ),          # Priest Discipline Class Set 4-set
+            ( 394624, 0 ),          # Shield of Absolution 4-set buff
         ),
 
         # Death Knight:
