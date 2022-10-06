@@ -1379,6 +1379,14 @@ struct void_eruption_damage_t final : public priest_spell_t
   {
     priest_spell_t::impact( s );
     priest_spell_t::impact( s );
+
+    // BUG: on beta this is hitting 4 times instead of 2 on your main target, not sure why
+    // https://github.com/SimCMinMax/WoW-BugTracker/issues/963
+    if ( priest().bugs && s->target == parent_dot->target )
+    {
+      priest_spell_t::impact( s );
+      priest_spell_t::impact( s );
+    }
   }
 };
 
