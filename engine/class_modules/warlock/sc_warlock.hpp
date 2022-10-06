@@ -303,7 +303,7 @@ public:
     const spell_data_t* demonic_calling_buff;
     player_talent_t grimoire_felguard;
 
-    // DF - Bloodbound Imps (Increased Demonic Core proc chance from Wild Imps)
+    player_talent_t bloodbound_imps; // Increased Demonic Core proc chance from Wild Imps
     // DF - Grim Inquisitor's Dread Calling (Formerly SL Legendary)
     const spell_data_t* doom; // DF - Base functionality presumably unchanged but requires double checking due to new talents
     // DF - Demonic Meteor (Chance to proc Hand of Gul'dan off Hand of Gul'dan)

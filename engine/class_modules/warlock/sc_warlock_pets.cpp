@@ -785,7 +785,7 @@ action_t* grimoire_felguard_pet_t::create_action( util::string_view name, util::
 /// Wild Imp Begin
 
 wild_imp_pet_t::wild_imp_pet_t( warlock_t* owner )
-  : warlock_pet_t( owner, "wild_imp", PET_WILD_IMP ), firebolt( nullptr ), power_siphon( false )
+  : warlock_pet_t( owner, "wild_imp", PET_WILD_IMP ), firebolt( nullptr ), power_siphon( false ), imploded( false )
 {
   resource_regeneration = regen_type::DISABLED;
   owner_coeff.health    = 0.15;
@@ -891,6 +891,7 @@ void wild_imp_pet_t::arise()
   warlock_pet_t::arise();
 
   power_siphon = false;
+  imploded = false;
   o()->buffs.wild_imps->increment();
 
   // Start casting fel firebolts
@@ -906,7 +907,12 @@ void wild_imp_pet_t::demise()
 
     if ( !power_siphon )
     {
-      o()->buffs.demonic_core->trigger( 1, buff_t::DEFAULT_VALUE(), o()->warlock_base.demonic_core->effectN( 1 ).percent() );
+      double core_chance = o()->warlock_base.demonic_core->effectN( 1 ).percent();
+
+      if ( o()->talents.bloodbound_imps.ok() )
+        core_chance += o()->talents.bloodbound_imps->effectN( imploded ? 2 : 1 ).percent();
+
+      o()->buffs.demonic_core->trigger( 1, buff_t::DEFAULT_VALUE(), core_chance );
     }
 
     if ( expiration )
