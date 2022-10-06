@@ -972,8 +972,6 @@ public:
     const spell_data_t* rage_of_the_frozen_champion; // RP generation spell
     const spell_data_t* piercing_chill_debuff;
     const spell_data_t* runic_empowerment_chance;
-    const spell_data_t* t29_2pc_frost;
-    const spell_data_t* t29_4pc_frost;
 
     // Unholy
     const spell_data_t* runic_corruption; // buff
@@ -1079,6 +1077,7 @@ public:
     proc_t* km_from_obliteration_fs;   // Frost Strike during Obliteration
     proc_t* km_from_obliteration_hb;   // Howling Blast during Obliteration
     proc_t* km_from_obliteration_ga;   // Glacial Advance during Obliteration
+    proc_t* km_from_t29_4pc;           // T29 Frost 4PC
 
     // Killing machine refreshed by
     proc_t* km_from_crit_aa_wasted;
@@ -1086,6 +1085,7 @@ public:
     proc_t* km_from_obliteration_fs_wasted;   // Frost Strike during Obliteration
     proc_t* km_from_obliteration_hb_wasted;   // Howling Blast during Obliteration
     proc_t* km_from_obliteration_ga_wasted;   // Glacial Advance during Obliteration
+    proc_t* km_from_t29_4pc_wasted;           // T29 Frost 4PC
 
     // Runic corruption triggered by
     proc_t* pp_runic_corruption; // from pestilent pustules
@@ -1187,8 +1187,6 @@ public:
     bool disable_aotd = false;
     bool split_ghoul_regen = false;
     bool split_obliterate_schools = true;
-    bool t29_2pc = false;
-    bool t29_4pc = false;
   } options;
 
   // Runes
@@ -6324,9 +6322,9 @@ struct frostscythe_t : public death_knight_melee_attack_t
   {
     double m = death_knight_melee_attack_t::calculate_crit_damage_bonus( s );
 
-    if ( p() -> options.t29_2pc )
+    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T29, B2 ) )
     {
-      m *= 1.0 + p() -> spell.t29_2pc_frost -> effectN(1).percent();
+      m *= 1.0 + p() -> sets -> set( DEATH_KNIGHT_FROST, T29, B2 ) -> effectN(1).percent();
     }
 
     return m;
@@ -6346,11 +6344,13 @@ struct frostscythe_t : public death_knight_melee_attack_t
       }
     }
 
-    if ( p() -> options.t29_4pc && p() -> buffs.killing_machine -> up() && p() -> rng().roll( 0.15 ) )
+    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T29, B4 ) &&
+          p() -> buffs.killing_machine -> up() )
     {
-      p() -> buffs.killing_machine -> trigger();
+      p() -> consume_killing_machine( p() -> procs.killing_machine_fsc );
+      p() -> trigger_killing_machine( p() -> sets -> set( DEATH_KNIGHT_FROST, T29, B4 ) -> effectN( 1 ).percent(),
+                                      p() -> procs.km_from_t29_4pc, p() -> procs.km_from_t29_4pc_wasted );
     }
-
     else
     {
       p() -> consume_killing_machine( p() -> procs.killing_machine_fsc );
@@ -7198,9 +7198,9 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
   {
     double m = death_knight_melee_attack_t::calculate_crit_damage_bonus( s );
 
-    if ( p() -> options.t29_2pc )
+    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T29, B2 ) )
     {
-      m *= 1.0 + p() -> spell.t29_2pc_frost -> effectN(1).percent();
+      m *= 1.0 + p() -> sets -> set(DEATH_KNIGHT_FROST, T29, B2 ) -> effectN( 1 ).percent();
     }
 
     return m;
@@ -7372,11 +7372,13 @@ struct obliterate_t : public death_knight_melee_attack_t
     }
 
 
-    if ( p() -> options.t29_4pc && p() -> buffs.killing_machine -> up() && p() -> rng().roll( 0.15 ) )
+    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T29, B4 ) &&
+          p() -> buffs.killing_machine -> up() )
     {
-      p() -> buffs.killing_machine -> trigger();
+      p() -> consume_killing_machine( p() -> procs.killing_machine_oblit );
+      p() -> trigger_killing_machine( p() -> sets -> set( DEATH_KNIGHT_FROST, T29, B4 ) -> effectN( 1 ).percent(),
+                                      p() -> procs.km_from_t29_4pc, p() -> procs.km_from_t29_4pc_wasted );
     }
-
     else
     {
       p() -> consume_killing_machine( p() -> procs.killing_machine_oblit );
@@ -9167,8 +9169,6 @@ void death_knight_t::create_options()
   add_option( opt_bool( "disable_aotd", options.disable_aotd ) );
   add_option( opt_bool( "split_ghoul_regen", options.split_ghoul_regen ) );
   add_option( opt_bool( "split_obliterate_schools", options.split_obliterate_schools ) );
-  add_option( opt_bool( "death_knight.t29_2pc", options.t29_2pc ) );
-  add_option( opt_bool( "death_knight.t29_4pc", options.t29_4pc ) );
 }
 
 void death_knight_t::copy_from( player_t* source )
@@ -10400,8 +10400,6 @@ void death_knight_t::init_spells()
   spell.rage_of_the_frozen_champion = find_spell( 341725 );
   spell.piercing_chill_debuff       = find_spell( 377359 );
   spell.runic_empowerment_chance    = find_spell( 81229 );
-  spell.t29_2pc_frost               = find_spell( 393623 );
-  spell.t29_4pc_frost               = find_spell( 393624 );
 
   // Unholy
   spell.runic_corruption           = find_spell( 51460 );
@@ -10991,12 +10989,14 @@ void death_knight_t::init_procs()
   procs.km_from_obliteration_fs   = get_proc( "Killing Machine: Frost Strike" );
   procs.km_from_obliteration_hb   = get_proc( "Killing Machine: Howling Blast" );
   procs.km_from_obliteration_ga   = get_proc( "Killing Machine: Glacial Advance" );
+  procs.km_from_t29_4pc           = get_proc( "Killing Machine: T29 4pc" );
 
   procs.km_from_crit_aa_wasted           = get_proc( "Killing Machine wasted: Critical auto attacks" );
   procs.km_from_cold_blooded_rage_wasted = get_proc( "Killing Machine wasted: Cold-Blooded Rage" );
   procs.km_from_obliteration_fs_wasted   = get_proc( "Killing Machine wasted: Frost Strike" );
   procs.km_from_obliteration_hb_wasted   = get_proc( "Killing Machine wasted: Howling Blast" );
   procs.km_from_obliteration_ga_wasted   = get_proc( "Killing Machine wasted: Glacial Advance" );
+  procs.km_from_t29_4pc_wasted           = get_proc( "Killing Machine wasted: T29 4pc" );
 
   procs.ready_rune            = get_proc( "Rune ready" );
 
