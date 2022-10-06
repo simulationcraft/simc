@@ -3011,6 +3011,56 @@ public:
   }
 };
 
+// Templates for child actions that do damage based on % of parent action
+struct druid_residual_state_t : public action_state_t
+{
+  double total_amount;
+
+  druid_residual_state_t( action_t* a, player_t* t ) : action_state_t( a, t ), total_amount( 0.0 ) {}
+
+  void initialize() override
+  {
+    action_state_t::initialize();
+    total_amount = 0.0;
+  }
+
+  void copy_state( const action_state_t* s ) override
+  {
+    action_state_t::copy_state( s );
+    total_amount = debug_cast<const druid_residual_state_t*>( s )->total_amount;
+  }
+
+  std::ostringstream& debug_str( std::ostringstream& s ) override
+  {
+    action_state_t::debug_str( s );
+    s << " total_amount=" << total_amount;
+    return s;
+  }
+};
+
+template <class Base, class State = druid_residual_state_t>
+struct druid_residual_action_t : public Base
+{
+  static_assert( std::is_base_of_v<action_state_t, State> );
+  using base_t = druid_residual_action_t<Base, State>;
+
+  double residual_mul;
+
+  druid_residual_action_t( std::string_view n, druid_t* p, const spell_data_t* s )
+    : Base( n, p, s ), residual_mul( 0.0 )
+  {
+    Base::background = true;
+    Base::round_base_dmg = false;
+  }
+
+  action_state_t* new_state() override { return new State( this, Base::target ); }
+  State* cast_state( action_state_t* s ) { return debug_cast<State*>( s ); }
+  const State* cast_state( const action_state_t* s ) const { return debug_cast<const State*>( s ); }
+
+  void set_amount( action_state_t* s, double v ) { cast_state( s )->total_amount = v; }
+  virtual double get_amount( const action_state_t* s ) const { return cast_state( s )->total_amount * residual_mul; }
+};
+
 namespace spells
 {
 /* druid_spell_t ============================================================
@@ -3974,55 +4024,19 @@ struct feral_frenzy_t : public cat_attack_t
 // Ferocious Bite ===========================================================
 struct ferocious_bite_t : public cat_attack_t
 {
-  struct ferocious_bite_state_t : public action_state_t
+  struct rampant_ferocity_t : public druid_residual_action_t<cat_attack_t>
   {
-    double fb_amount;
-
-    ferocious_bite_state_t( action_t* a, player_t* t ) : action_state_t( a, t ), fb_amount( 0.0 ) {}
-
-    void initialize() override
-    {
-      action_state_t::initialize();
-      fb_amount = 0.0;
-    }
-
-    void copy_state( const action_state_t* s ) override
-    {
-      action_state_t::copy_state( s );
-      fb_amount = debug_cast<const ferocious_bite_state_t*>( s )->fb_amount;
-    }
-
-    std::ostringstream& debug_str( std::ostringstream& s ) override
-    {
-      action_state_t::debug_str( s );
-      s << " fb_amount=" << fb_amount;
-      return s;
-    }
-  };
-
-  struct rampant_ferocity_t : public cat_attack_t
-  {
-    double fb_mul;
-
-    rampant_ferocity_t( druid_t* p, std::string_view n )
-      : cat_attack_t( n, p, p->find_spell( 391710 ) ), fb_mul( p->talent.rampant_ferocity->effectN( 1 ).percent() )
+    rampant_ferocity_t( druid_t* p, std::string_view n ) : base_t( n, p, p->find_spell( 391710 ) )
     {
       aoe = -1;
       reduced_aoe_targets = p->talent.rampant_ferocity->effectN( 2 ).base_value();
-      background = true;
-      round_base_dmg = false;
       name_str_reporting = "rampant_ferocity";
+
+      residual_mul = p->talent.rampant_ferocity->effectN( 1 ).percent();
     }
 
-    action_state_t* new_state() override { return new ferocious_bite_state_t( this, target ); }
-
-    double _get_amount( const action_state_t* s ) const
-    {
-      return debug_cast<const ferocious_bite_state_t*>( s )->fb_amount * fb_mul;
-    }
-
-    double base_da_min( const action_state_t* s ) const override { return _get_amount( s ); }
-    double base_da_max( const action_state_t* s ) const override { return _get_amount( s ); }
+    double base_da_min( const action_state_t* s ) const override { return get_amount( s ); }
+    double base_da_max( const action_state_t* s ) const override { return get_amount( s ); }
 
     std::vector<player_t*>& target_list() const override
     {
@@ -4038,7 +4052,7 @@ struct ferocious_bite_t : public cat_attack_t
     }
   };
 
-  action_t* rampant_ferocity;
+  rampant_ferocity_t* rampant_ferocity;
   double excess_energy;
   double max_excess_energy;
   double combo_points;
@@ -4126,14 +4140,12 @@ struct ferocious_bite_t : public cat_attack_t
       p()->buff.sabertooth->trigger( as<int>( cp_ ) );
     }
 
-    // TODO: determine what's causing damage to be greater than expected
     if ( rampant_ferocity && s->result_amount > 0 && !rampant_ferocity->target_list().empty() )
     {
       auto state = rampant_ferocity->get_state();
       state->target = s->target;
       rampant_ferocity->snapshot_state( state, rampant_ferocity->amount_type( state ) );
-      debug_cast<ferocious_bite_state_t*>( state )->fb_amount = s->result_amount;
-
+      rampant_ferocity->set_amount( state, s->result_amount );
       rampant_ferocity->schedule_execute( state );
     }
   }
@@ -4349,53 +4361,49 @@ struct rake_t : public cat_attack_t
 // Rip ======================================================================
 struct rip_t : public cat_attack_t
 {
-  struct rip_state_t : public action_state_t
+  struct rip_state_t : public druid_residual_state_t
   {
-    druid_t* druid;
-    double total_damage;
     int combo_points;
 
-    rip_state_t( druid_t* p, action_t* a, player_t* t )
-      : action_state_t( a, t ), druid( p ), total_damage( 0.0 ), combo_points( 0 )
-    {}
+    rip_state_t( action_t* a, player_t* t ) : druid_residual_state_t( a, t ), combo_points( 0 ) {}
 
     void initialize() override
     {
-      action_state_t::initialize();
-
-      total_damage = 0.0;
-      combo_points = as<int>( druid->resources.current[ RESOURCE_COMBO_POINT ] );
+      druid_residual_state_t::initialize();
+      combo_points = 0;
     }
 
     void copy_state( const action_state_t* state ) override
     {
-      action_state_t::copy_state( state );
-      auto rip_state = debug_cast<const rip_state_t*>( state );
-
-      total_damage = rip_state->total_damage;
-      combo_points = rip_state->combo_points;
+      druid_residual_state_t::copy_state( state );
+      combo_points = debug_cast<const rip_state_t*>( state )->combo_points;
     }
 
     std::ostringstream& debug_str( std::ostringstream& s ) override
     {
-      action_state_t::debug_str( s );
-
-      s << " total_damage=" << total_damage << " combo_points=" << combo_points;
-
+      druid_residual_state_t::debug_str( s );
+      s << " combo_points=" << combo_points;
       return s;
     }
   };
 
-  struct tear_t : public residual_action::residual_periodic_action_t<cat_attack_t>
+  struct tear_t : public druid_residual_action_t<cat_attack_t, rip_state_t>
   {
-    tear_t( druid_t* p, std::string_view n ) : residual_action_t( n, p, p->find_spell( 391356 ) )
+    tear_t( druid_t* p, std::string_view n ) : base_t( n, p, p->find_spell( 391356 ) )
     {
-      background = proc = true;
       name_str_reporting = "tear";
+
+      residual_mul = p->talent.rip_and_tear->effectN( 1 ).percent();
+    }
+
+    // TODO: currently bugged to be 6% per tick, rather than 6% over the entire dot
+    double base_ta( const action_state_t* s ) const override
+    {
+      return get_amount( s );
     }
   };
 
-  action_t* tear;
+  tear_t* tear;
 
   rip_t( druid_t* p, std::string_view opt ) : rip_t( p, "rip", p->talent.rip, opt ) {}
 
@@ -4419,7 +4427,7 @@ struct rip_t : public cat_attack_t
       add_child( tear );
   }
 
-  action_state_t* new_state() override { return new rip_state_t( p(), this, target ); }
+  action_state_t* new_state() override { return new rip_state_t( this, target ); }
 
   void snapshot_state( action_state_t* s, result_amount_type rt ) override
   {
@@ -4449,7 +4457,14 @@ struct rip_t : public cat_attack_t
     {
       auto dot_total = calculate_tick_amount( s, 1.0 ) * find_dot( s->target )->remains() / tick_time( s );
 
-      residual_action::trigger( tear, s->target, dot_total * p()->talent.rip_and_tear->effectN( 1 ).percent() );
+      if ( p()->talent.sabertooth.ok() )
+        dot_total /= 1.0 + p()->buff.sabertooth->check_value();
+
+      auto state = tear->get_state();
+      state->target = s->target;
+      tear->snapshot_state( state, tear->amount_type( state ) );
+      tear->set_amount( state, dot_total );
+      tear->schedule_execute( state );
     }
   }
 
@@ -4488,7 +4503,6 @@ struct primal_wrath_t : public cat_attack_t
 
     double _get_amount( const action_state_t* s ) const
     {
-      // TODO: ??? CONFIRM CONFIRM CONFIRM ???
       auto rip = td( s->target )->dots.rip;
       auto dur = std::min( rip_dur, rip->remains() );
       auto tic = dur / rip->current_action->tick_time( rip->state );
@@ -6591,11 +6605,16 @@ struct astral_communion_t : public druid_spell_t
 };
 
 // Astral Smolder ===========================================================
-struct astral_smolder_t : public residual_action::residual_periodic_action_t<druid_spell_t>
+struct astral_smolder_t : public druid_residual_action_t<druid_spell_t>
 {
-  astral_smolder_t( druid_t* p ) : residual_action_t( "astral_smolder", p, p->find_spell( 394061 ) )
+  astral_smolder_t( druid_t* p ) : base_t( "astral_smolder", p, p->find_spell( 394061 ) )
   {
-    background = proc = true;
+    residual_mul = p->talent.astral_smolder->effectN( 1 ).percent();
+  }
+
+  double base_ta( const action_state_t* s ) const override
+  {
+    return get_amount( s ) * tick_time( s ) / composite_dot_duration( s );
   }
 };
 
@@ -7677,62 +7696,46 @@ struct stampeding_roar_t : public druid_spell_t
 // Starfall Spell ===========================================================
 struct starfall_t : public druid_spell_t
 {
-  struct starfall_state_t : public action_state_t
+  struct starfall_state_t : public druid_residual_state_t
   {
     player_t* shrapnel_target;
-    double amount;
 
-    starfall_state_t( action_t* a, player_t* t ) : action_state_t( a, t ), shrapnel_target( nullptr ), amount( 0.0 ) {}
+    starfall_state_t( action_t* a, player_t* t ) : druid_residual_state_t( a, t ), shrapnel_target( nullptr ) {}
 
     void initialize() override
     {
-      action_state_t::initialize();
+      druid_residual_state_t::initialize();
       shrapnel_target = nullptr;
-      amount = 0.0;
     }
 
     void copy_state( const action_state_t* s ) override
     {
-      action_state_t::copy_state( s );
+      druid_residual_state_t::copy_state( s );
       shrapnel_target = debug_cast<const starfall_state_t*>( s )->shrapnel_target;
-      amount = debug_cast<const starfall_state_t*>( s )->amount;
     }
 
     std::ostringstream& debug_str( std::ostringstream& s ) override
     {
-      action_state_t::debug_str( s );
-      s << " amount=" << amount << " shrapnel=" << ( shrapnel_target ? shrapnel_target->name() : "none" );
+      druid_residual_state_t::debug_str( s );
+      s << " shrapnel=" << ( shrapnel_target ? shrapnel_target->name() : "none" );
       return s;
     }
   };
 
-  struct starfall_base_t : public druid_spell_t
-  {
-    starfall_base_t( std::string_view n, druid_t* p, const spell_data_t* s ) : druid_spell_t( n, p, s ) {}
-
-    action_state_t* new_state() override { return new starfall_state_t( this, target ); }
-    starfall_state_t* cast_state( action_state_t* s ) { return debug_cast<starfall_state_t*>( s ); }
-    const starfall_state_t* cast_state( const action_state_t* s ) const { return debug_cast<const starfall_state_t*>( s ); }
-
-  };
+  using starfall_base_t = druid_residual_action_t<druid_spell_t, starfall_state_t>;
 
   struct lunar_shrapnel_t : public starfall_base_t
   {
-    double mul;
-
-    lunar_shrapnel_t( druid_t* p, std::string_view n )
-      : starfall_base_t( n, p, p->find_spell( 393869 ) ), mul( p->talent.lunar_shrapnel->effectN( 1 ).percent() )
+    lunar_shrapnel_t( druid_t* p, std::string_view n ) : base_t( n, p, p->find_spell( 393869 ) )
     {
       aoe = -1;
       reduced_aoe_targets = p->talent.lunar_shrapnel->effectN( 2 ).base_value();
-      background = true;
-      round_base_dmg = false;
       name_str_reporting = "lunar_shrapnel";
-    }
 
-    double _get_amount( const action_state_t* s ) const { return cast_state( s )->amount * mul; }
-    double base_da_min( const action_state_t* s ) const override { return _get_amount( s ); }
-    double base_da_max( const action_state_t* s ) const override { return _get_amount( s ); }
+      residual_mul = p->talent.lunar_shrapnel->effectN( 1 ).percent();
+    }
+    double base_da_min( const action_state_t* s ) const override { return get_amount( s ); }
+    double base_da_max( const action_state_t* s ) const override { return get_amount( s ); }
   };
 
   struct starfall_damage_t : public starfall_base_t
@@ -7746,6 +7749,7 @@ struct starfall_t : public druid_spell_t
         cosmos_mul( p->sets->set( DRUID_BALANCE, T29, B4 )->effectN( 1 ).trigger()->effectN( 2 ).percent() )
     {
       background = dual = true;
+
       if ( p->talent.lunar_shrapnel.ok() )
       {
         auto first = name_str.find_first_of( '_' );
@@ -7774,8 +7778,7 @@ struct starfall_t : public druid_spell_t
         auto state = shrapnel->get_state();
         state->target = s->target;
         shrapnel->snapshot_state( state, shrapnel->amount_type( state ) );
-        cast_state( state )->amount = s->result_amount;
-
+        shrapnel->set_amount( state, s->result_amount );
         shrapnel->schedule_execute( state );
       }
     }
@@ -7839,7 +7842,6 @@ struct starfall_t : public druid_spell_t
       auto state = damage->get_state();
       state->copy_state( s );
       damage->snapshot_state( state, damage->amount_type( state ) );
-
       damage->schedule_execute( state );
     }
   };
@@ -8462,18 +8464,23 @@ struct wild_charge_t : public druid_spell_t
 // Wild Mushroom ============================================================
 struct wild_mushroom_t : public druid_spell_t
 {
-  struct fungal_growth_t : public residual_action::residual_periodic_action_t<druid_spell_t>
+  struct fungal_growth_t : public druid_residual_action_t<druid_spell_t>
   {
-    fungal_growth_t( druid_t* p ) : residual_action_t( "fungal_growth", p, p->find_spell( 81281 ) )
+    fungal_growth_t( druid_t* p ) : base_t( "fungal_growth", p, p->find_spell( 81281 ) )
     {
-      background = proc = true;
+      residual_mul = p->talent.fungal_growth->effectN( 1 ).percent();
+    }
+
+    double base_ta( const action_state_t* s ) const override
+    {
+      return get_amount( s ) * tick_time( s ) / composite_dot_duration( s );
     }
   };
 
   struct wild_mushroom_damage_t : public druid_spell_t
   {
     action_t* driver;
-    action_t* fungal;
+    fungal_growth_t* fungal;
     double ap_per;
     double ap_max;
 
@@ -8506,10 +8513,13 @@ struct wild_mushroom_t : public druid_spell_t
     {
       druid_spell_t::impact( s );
 
-      if ( fungal && result_is_hit( s->result ) )
+      if ( fungal && s->result_amount > 0 && result_is_hit( s->result ) )
       {
-        residual_action::trigger( fungal, s->target,
-                                  s->result_amount * p()->talent.fungal_growth->effectN( 1 ).percent() );
+        auto state = fungal->get_state();
+        state->target = s->target;
+        fungal->snapshot_state( state, fungal->amount_type( state ) );
+        fungal->set_amount( state, s->result_amount );
+        fungal->schedule_execute( state );
       }
     }
   };
