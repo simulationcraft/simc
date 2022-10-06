@@ -2282,46 +2282,46 @@ void priest_t::init_spells_shadow()
   auto ST = [ this ]( std::string_view n ) { return find_talent_spell( talent_tree::SPECIALIZATION, n ); };
 
   // Row 2
-  talents.shadow.silence             = ST( "Silence" );
   talents.shadow.dispersion          = ST( "Dispersion" );
   talents.shadow.shadowy_apparition  = find_spell( 148859 );
   talents.shadow.shadowy_apparitions = ST( "Shadowy Apparitions" );
+  talents.shadow.silence             = ST( "Silence" );
   // Row 3
-  talents.shadow.psychic_horror     = ST( "Psychic Horror" );
-  talents.shadow.last_word          = ST( "Last Word" );
+  talents.shadow.intangibility      = ST( "Intangibility" );
+  talents.shadow.mental_fortitude   = ST( "Mental Fortitude" );
   talents.shadow.misery             = ST( "Misery" );
   talents.shadow.dark_void          = ST( "Dark Void" );
   talents.shadow.dark_void_insanity = find_spell( 391450 );  // Not linked to Dark Void except in tooltip
-  talents.shadow.intangibility      = ST( "Intangibility" );
-  talents.shadow.mental_fortitude   = ST( "Mental Fortitude" );
-  talents.shadow.auspicious_spirits = ST( "Auspicious Spirits" );
-  talents.shadow.tormented_spirits  = ST( "Tormented Spirits" );
+  talents.shadow.last_word          = ST( "Last Word" );
+  talents.shadow.psychic_horror     = ST( "Psychic Horror" );
   // Row 4
   talents.shadow.coalescing_shadows          = ST( "Coalescing Shadows" );
   talents.shadow.coalescing_shadows_buff     = find_spell( 391243 );
   talents.shadow.coalescing_shadows_dot_buff = find_spell( 391244 );
   talents.shadow.mind_sear                   = ST( "Mind Sear" );
-  talents.shadow.void_eruption               = ST( "Void Eruption" );  // TODO: confirm CD is 2m
-  talents.shadow.void_eruption_damage        = find_spell( 228360 );
-  talents.shadow.dark_ascension              = ST( "Dark Ascension" );
-  talents.shadow.psychic_link                = ST( "Psychic Link" );
   talents.shadow.mind_spike                  = ST( "Mind Spike" );
   // Row 5
   talents.shadow.puppet_master          = ST( "Puppet Master" );
   talents.shadow.mental_decay           = ST( "Mental Decay" );
-  talents.shadow.ancient_madness        = ST( "Ancient Madness" );  // TODO: add point scaling
-  talents.shadow.shadowy_insight        = ST( "Shadowy Insight" );
+  talents.shadow.void_eruption          = ST( "Void Eruption" );  // TODO: confirm CD is 2m
+  talents.shadow.void_eruption_damage   = find_spell( 228360 );
+  talents.shadow.dark_ascension         = ST( "Dark Ascension" );
+  talents.shadow.unfurling_darkness     = ST( "Unfurling Darkness" );
   talents.shadow.surge_of_darkness      = ST( "Surge of Darkness" );
   talents.shadow.surge_of_darkness_buff = find_spell( 87160 );
   // Row 6
-  talents.shadow.harnessed_shadows  = ST( "Harnessed Shadows" );
-  talents.shadow.unfurling_darkness = ST( "Unfurling Darkness" );
-  talents.shadow.shadow_crash       = ST( "Shadow Crash" );
-  talents.shadow.mind_melt          = ST( "Mind Melt" );
+  talents.shadow.harnessed_shadows = ST( "Harnessed Shadows" );
+  talents.shadow.shadowy_insight   = ST( "Shadowy Insight" );
+  talents.shadow.ancient_madness   = ST( "Ancient Madness" );  // TODO: add point scaling
+  talents.shadow.shadow_crash      = ST( "Shadow Crash" );
+  talents.shadow.mind_melt         = ST( "Mind Melt" );
   // Row 7
   talents.shadow.maddening_touch          = ST( "Maddening Touch" );
   talents.shadow.maddening_touch_insanity = find_spell( 391232 );
   talents.shadow.dark_evangelism          = ST( "Dark Evangelism" );
+  talents.shadow.auspicious_spirits       = ST( "Auspicious Spirits" );
+  talents.shadow.tormented_spirits        = ST( "Tormented Spirits" );
+  talents.shadow.psychic_link             = ST( "Psychic Link" );
   talents.shadow.whispers_of_the_damned   = ST( "Whispers of the Damned" );
   // Row 8
   talents.shadow.mindbender               = ST( "Mindbender" );
@@ -2346,7 +2346,6 @@ void priest_t::init_spells_shadow()
   talents.shadow.devoured_anger    = find_spell( 373318 );  // Haste - Enrage - NYI
   talents.shadow.devoured_fear     = find_spell( 373319 );  // Big Personal Damage - Feared - NYI
   talents.shadow.devoured_violence = find_spell( 373320 );  // Pet Extension - Default
-
   talents.shadow.idol_of_cthun     = ST( "Idol of C'Thun" );
   talents.shadow.idol_of_yoggsaron = ST( "Idol of Yogg-Saron" );
   talents.shadow.idol_of_nzoth     = ST( "Idol of N'Zoth" );

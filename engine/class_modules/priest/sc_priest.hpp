@@ -248,46 +248,46 @@ public:
     {
       // Shadow Tree
       // Row 2
-      player_talent_t silence;
       player_talent_t dispersion;
       const spell_data_t* shadowy_apparition;  // Damage event
       player_talent_t shadowy_apparitions;     // Passive effect
+      player_talent_t silence;
       // Row 3
-      player_talent_t psychic_horror;
-      player_talent_t last_word;
+      player_talent_t intangibility;
+      player_talent_t mental_fortitude;
       player_talent_t misery;
       player_talent_t dark_void;
       const spell_data_t* dark_void_insanity;
-      player_talent_t intangibility;
-      player_talent_t mental_fortitude;
-      player_talent_t auspicious_spirits;
-      player_talent_t tormented_spirits;
+      player_talent_t last_word;
+      player_talent_t psychic_horror;
       // Row 4
       player_talent_t coalescing_shadows;
       const spell_data_t* coalescing_shadows_buff;
       const spell_data_t* coalescing_shadows_dot_buff;
       player_talent_t mind_sear;
-      player_talent_t void_eruption;
-      const spell_data_t* void_eruption_damage;
-      player_talent_t dark_ascension;
-      player_talent_t psychic_link;
       player_talent_t mind_spike;
       // Row 5
       player_talent_t puppet_master;
       player_talent_t mental_decay;
-      player_talent_t ancient_madness;
-      player_talent_t shadowy_insight;
+      player_talent_t void_eruption;
+      const spell_data_t* void_eruption_damage;
+      player_talent_t dark_ascension;
+      player_talent_t unfurling_darkness;
       player_talent_t surge_of_darkness;
       const spell_data_t* surge_of_darkness_buff;
       // Row 6
       player_talent_t harnessed_shadows;
-      player_talent_t unfurling_darkness;
+      player_talent_t shadowy_insight;
+      player_talent_t ancient_madness;
       player_talent_t shadow_crash;
       player_talent_t mind_melt;
       // Row 7
       player_talent_t maddening_touch;
       const spell_data_t* maddening_touch_insanity;
       player_talent_t dark_evangelism;
+      player_talent_t auspicious_spirits;
+      player_talent_t tormented_spirits;
+      player_talent_t psychic_link;
       player_talent_t whispers_of_the_damned;
       // Row 8
       player_talent_t mindbender;
@@ -1267,7 +1267,7 @@ public:
 
 struct priest_heal_t : public priest_action_t<heal_t>
 {
-  bool affected_by_shadow_weaving; // adding this in so that template code for Divine Star/Halo doesn't scream
+  bool affected_by_shadow_weaving;  // adding this in so that template code for Divine Star/Halo doesn't scream
 
   priest_heal_t( util::string_view name, priest_t& player, const spell_data_t* s = spell_data_t::nil() )
     : base_t( name, player, s ), affected_by_shadow_weaving( false )
