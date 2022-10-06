@@ -4112,7 +4112,14 @@ struct ferocious_bite_t : public cat_attack_t
     if ( p()->talent.sabertooth.ok() )
     {
       p()->buff.sabertooth->expire();  // existing buff is replaced with new buff, regardless of CP
-      p()->buff.sabertooth->trigger( as<int>( is_free() ? p()->resources.max[ RESOURCE_COMBO_POINT ] : combo_points ) );
+
+      auto cp_ = combo_points;
+      if ( free_spell == free_spell_e::CONVOKE )
+        cp_ = 4;
+      else if ( is_free() )
+        cp_ = p()->resources.max[ RESOURCE_COMBO_POINT ];
+
+      p()->buff.sabertooth->trigger( as<int>( cp_ ) );
     }
 
     // TODO: determine what's causing damage to be greater than expected
