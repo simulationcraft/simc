@@ -2485,7 +2485,6 @@ struct gargoyle_pet_t : public death_knight_pet_t
 
     spawn_travel_duration = 2.9;
     spawn_travel_stddev = 0.2;
-
     
     if ( dk() -> talent.unholy.commander_of_the_dead.ok() && dk() -> buffs.dark_transformation -> up() )
     {
@@ -3478,7 +3477,12 @@ struct blood_plague_t : public death_knight_disease_t
     // The "reduced effectiveness" mentionned in the tooltip is handled server side
     // Value calculated from testing, may change without notice
     if ( superstrain )
-      base_multiplier *= 1;
+    {
+      base_multiplier *= 1 + (p -> talent.unholy.superstrain -> effectN( 2 ).percent());
+      // It looks like the legendary modifier from superstrain is still being applied to blood plague, but not frost fever.
+      if ( p -> bugs )
+        base_multiplier *= 0.75;
+    }
     // Create superstrain-triggered spells if needed
     else if ( p -> legendary.superstrain -> ok() )
     {
