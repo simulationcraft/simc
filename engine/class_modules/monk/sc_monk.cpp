@@ -1957,8 +1957,8 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
         am *= 1 + p()->talent.windwalker.rising_star->effectN( 1 ).percent();
     }
 
-    if ( p()->buff.fists_of_flowing_momentum->check() )
-      am *= 1 + p()->buff.fists_of_flowing_momentum->check_value();
+    if ( p()->buff.kicks_of_flowing_momentum->check() )
+      am *= 1 + p()->buff.kicks_of_flowing_momentum->check_value();
 
     return am;
   }
