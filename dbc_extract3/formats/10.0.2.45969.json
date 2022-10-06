@@ -1374,7 +1374,7 @@
     "parent": "SpellName",
     "fields": [
       { "data_type": "i", "field": "id",                  "formats": { "cpp": "%5u" } },
-      { "data_type": "B", "field": "unk_2",     "formats": { "cpp": "%4u" } },
+      { "data_type": "B", "field": "unk_2",               "formats": { "cpp": "%4u" } },
       { "data_type": "i", "field": "cost",                "formats": { "cpp": "%5u" } },
       { "data_type": "i", "field": "unk_4" },
       { "data_type": "i", "field": "cost_per_second" },
@@ -1382,8 +1382,8 @@
       { "data_type": "i", "field": "unk_7" },
       { "data_type": "f", "field": "pct_cost",            "formats": { "cpp": "%7.3f" } },
       { "data_type": "f", "field": "pct_cost_max",        "formats": { "cpp": "%7.3f" } },
+      { "data_type": "f", "field": "unk_10" },
       { "data_type": "f", "field": "pct_cost_per_second", "formats": { "cpp": "%7.3f" } },
-      { "data_type": "f", "field": "unk_11" },
       { "data_type": "b", "field": "type_power",          "formats": { "cpp": "%3u" } },
       { "data_type": "i", "field": "aura_id",             "formats": { "cpp": "%7u" }, "ref": "SpellName" },
       { "data_type": "I", "field": "cost_max",            "formats": { "cpp": "%4u" } }
