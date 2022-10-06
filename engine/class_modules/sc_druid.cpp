@@ -63,6 +63,7 @@ enum free_spell_e
   ORBIT,       // orbit breaker talent
   // free casts
   APEX,        // apex predators's craving
+  COSMOS,      // touch the cosmos 4t29
   STARWEAVER,  // starweaver talent
 };
 
@@ -359,6 +360,8 @@ public:
     action_t* denizen_of_the_dream;      // placeholder action
     action_t* orbit_breaker;
     action_t* shooting_stars;
+    action_t* starfall_cosmos;           // free starfall from 4t29
+    action_t* starsurge_cosmos;          // free starsurge fromm 4t29
     action_t* starfall_starweaver;       // free starfall from starweaver's warp
     action_t* starsurge_starweaver;      // free starsurge from starweaver's weft
     action_t* sundered_firmament;
@@ -448,6 +451,7 @@ public:
     buff_t* eclipse_solar;
     buff_t* friend_of_the_fae;
     buff_t* fury_of_elune;  // AP ticks
+    buff_t* gathering_starstuff;  // 2t29
     buff_t* incarnation_moonkin;
     buff_t* natures_balance;
     buff_t* natures_grace;
@@ -460,6 +464,8 @@ public:
     buff_t* starfall;
     buff_t* starlord;  // talent
     buff_t* sundered_firmament;  // AP ticks
+    buff_t* touch_the_cosmos;  // 4t29
+    buff_t* touch_the_cosmos_starfall;  // hidden buff to track buffed starfall
     buff_t* rattled_stars;
     buff_t* umbral_embrace;
     buff_t* warrior_of_elune;
@@ -481,6 +487,7 @@ public:
     buff_t* predatory_swiftness;
     buff_t* protective_growth;
     buff_t* sabertooth;
+    buff_t* sharpened_claws_bloodied_fangs;  // 4t29
     buff_t* sudden_ambush;
     buff_t* tigers_fury;
     buff_t* tigers_tenacity;
@@ -508,6 +515,7 @@ public:
     buff_t* abundance;
     buff_t* cenarion_ward;
     buff_t* clearcasting_tree;
+    buff_t* critical_growth;  // 4t29
     buff_t* flourish;
     buff_t* incarnation_tree;
     buff_t* natures_swiftness;
@@ -1832,7 +1840,12 @@ struct eclipse_buff_t : public druid_buff_t<buff_t>
     base_t::execute( s, v, d );
 
     if ( !was_active)
+    {
       trigger_sundered_firmament();
+
+      if ( p().sets->has_set_bonus( DRUID_BALANCE, T29, B4 ) )
+        p().buff.touch_the_cosmos->trigger();
+    }
   }
 
   /* TODO: re-enable if this comes back, otherwise remove by launch
@@ -1842,8 +1855,6 @@ struct eclipse_buff_t : public druid_buff_t<buff_t>
 
     trigger_sundered_firmament();
   }*/
-
-
 
   void expire_override( int s, timespan_t d ) override
   {
@@ -2249,6 +2260,7 @@ public:
     switch ( free_spell )
     {
       case free_spell_e::APEX:
+      case free_spell_e::COSMOS:
       case free_spell_e::STARWEAVER:
       case free_spell_e::NONE:
         return false;
@@ -2262,6 +2274,7 @@ public:
     switch ( free_spell )
     {
       case free_spell_e::APEX:
+      case free_spell_e::COSMOS:
       case free_spell_e::STARWEAVER:
         return true;
       default:
@@ -2383,7 +2396,7 @@ public:
       return;
 
     // trigger on non-free_cast or free_cast that requires you to actually cast (or UFR)
-    if ( !f || f == free_spell_e::APEX || f == free_spell_e::STARWEAVER || f == free_spell_e::FLASHING )
+    if ( !f || is_free_cast() || f == free_spell_e::FLASHING )
       p()->buff.ravenous_frenzy->trigger();
   }
 
@@ -2709,11 +2722,13 @@ public:
     parse_buff_effects<S>( p()->buff.balance_of_all_things_nature, p()->talent.balance_of_all_things );
     parse_buff_effects<S>( p()->buff.eclipse_lunar, p()->talent.umbral_intensity );
     parse_buff_effects<S>( p()->buff.eclipse_solar, p()->talent.umbral_intensity );
+    parse_buff_effects( p()->buff.gathering_starstuff );
     parse_buff_effects<S>( p()->buff.incarnation_moonkin, p()->talent.elunes_guidance );
     parse_buff_effects( p()->buff.owlkin_frenzy );
     parse_buff_effects( p()->buff.rattled_stars );
     parse_buff_effects( p()->buff.starweavers_warp );
     parse_buff_effects( p()->buff.starweavers_weft );
+    parse_buff_effects( p()->buff.touch_the_cosmos );
     parse_buff_effects<S>( p()->buff.umbral_embrace, p()->talent.umbral_embrace );
     parse_buff_effects( p()->buff.warrior_of_elune, false );
 
@@ -7698,9 +7713,12 @@ struct starfall_t : public druid_spell_t
   struct starfall_damage_t : public starfall_base_t
   {
     lunar_shrapnel_t* shrapnel;
+    double cosmos_mul;
 
     starfall_damage_t( druid_t* p, std::string_view n )
-      : starfall_base_t( n, p, p->find_spell( 191037 ) ), shrapnel( nullptr )
+      : starfall_base_t( n, p, p->find_spell( 191037 ) ),
+        shrapnel( nullptr ),
+        cosmos_mul( p->sets->set( DRUID_BALANCE, T29, B4 )->effectN( 2 ).percent() )
     {
       background = dual = true;
 
@@ -7715,7 +7733,12 @@ struct starfall_t : public druid_spell_t
 
     double action_multiplier() const override
     {
-      return starfall_base_t::action_multiplier() * std::max( 1, p()->buff.starfall->check() );
+      auto stack = as<double>( p()->buff.starfall->check() );
+
+      if ( p()->buff.touch_the_cosmos_starfall->check() )
+        stack += cosmos_mul;
+
+      return starfall_base_t::action_multiplier() * std::max( 1.0, stack );
     }
 
     void impact( action_state_t* s ) override
@@ -7822,9 +7845,13 @@ struct starfall_t : public druid_spell_t
 
   void execute() override
   {
-    if ( !is_free() && p()->buff.starweavers_warp->up() )
+    if ( !is_free() )
     {
-      p()->active.starfall_starweaver->execute_on_target( target );
+      if ( p()->buff.touch_the_cosmos->up() )
+        p()->active.starsurge_cosmos->execute_on_target( target );
+      else if ( p()->buff.starweavers_weft->up() )
+        p()->active.starsurge_starweaver->execute_on_target( target );
+
       return;
     }
 
@@ -7854,6 +7881,9 @@ struct starfall_t : public druid_spell_t
 
     p()->buff.starfall->trigger();
 
+    if ( p()->buff.touch_the_cosmos->check() )
+      p()->buff.touch_the_cosmos_starfall->trigger();
+
     if ( free_spell == free_spell_e::CONVOKE || free_spell == free_spell_e::LYCARAS )
       return;  // convoke/lycaras doesn't process any further
 
@@ -7867,6 +7897,19 @@ struct starfall_t : public druid_spell_t
 
     if ( p()->talent.starweaver.ok() )
       p()->buff.starweavers_weft->trigger();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    druid_spell_t::impact( s );
+
+    p()->buff.touch_the_cosmos->expire();
+
+    if ( is_free_proc() )
+      return;
+
+    if ( p()->sets->has_set_bonus( DRUID_BALANCE, T28, B2 ) )
+      p()->buff.gathering_starstuff->trigger();
   }
 };
 
@@ -7949,6 +7992,11 @@ struct starfire_t : public druid_spell_t
       residual_action::trigger( p()->active.astral_smolder, s->target,
                                 s->result_amount * p()->talent.astral_smolder->effectN( 1 ).percent() );
     }
+
+    if ( is_free_proc() )
+      return;
+
+    p()->buff.gathering_starstuff->expire();
   }
 
   double composite_aoe_multiplier( const action_state_t* state ) const override
@@ -8094,9 +8142,13 @@ struct starsurge_t : public druid_spell_t
 
   void execute() override
   {
-    if ( !is_free() && p()->buff.starweavers_weft->up() )
+    if ( !is_free() )
     {
-      p()->active.starsurge_starweaver->execute_on_target( target );
+      if ( p()->buff.touch_the_cosmos->up() )
+        p()->active.starsurge_cosmos->execute_on_target( target );
+      else if ( p()->buff.starweavers_weft->up() )
+        p()->active.starsurge_starweaver->execute_on_target( target );
+
       return;
     }
 
@@ -8118,6 +8170,19 @@ struct starsurge_t : public druid_spell_t
 
     if ( p()->talent.starweaver.ok() )
       p()->buff.starweavers_warp->trigger();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    druid_spell_t::impact( s );
+
+    if ( is_free_proc() || !result_is_hit( s->result ) )
+      return;
+
+    if ( p()->sets->has_set_bonus( DRUID_BALANCE, T28, B2 ) )
+      p()->buff.gathering_starstuff->trigger();
+
+    p()->buff.touch_the_cosmos->expire();
   }
 };
 
@@ -8579,6 +8644,11 @@ struct wrath_t : public druid_spell_t
       residual_action::trigger( p()->active.astral_smolder, s->target,
                                 s->result_amount * p()->talent.astral_smolder->effectN( 1 ).percent() );
     }
+
+    if ( is_free_proc() )
+      return;
+
+    p()->buff.gathering_starstuff->expire();
   }
 };
 
@@ -10466,6 +10536,9 @@ void druid_t::create_buffs()
 
   buff.fury_of_elune = make_buff<fury_of_elune_buff_t>( *this, "fury_of_elune", talent.fury_of_elune );
 
+  buff.gathering_starstuff =
+      make_buff( this, "gathering_starstuff", sets->set( DRUID_BALANCE, T29, B2 )->effectN( 1 ).trigger() );
+
   buff.sundered_firmament = make_buff<fury_of_elune_buff_t>( *this, "sundered_firmament", find_spell( 394108 ) )
     ->set_refresh_behavior( buff_refresh_behavior::EXTEND );
 
@@ -10522,6 +10595,15 @@ void druid_t::create_buffs()
 
   buff.starweavers_weft = make_buff( this, "starweavers_weft", find_spell( 393944 ) )
     ->set_chance( talent.starweaver->effectN( 2 ).percent() );
+
+  buff.touch_the_cosmos =
+      make_buff( this, "touch_the_cosmos", sets->set( DRUID_BALANCE, T29, B4 )->effectN( 1 ).trigger() );
+
+  buff.touch_the_cosmos_starfall = make_buff( this, "touch_the_cosmos_starfall" )
+    ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+    ->set_duration( buff.starfall->buff_duration() )
+    ->set_max_stack( buff.starfall->max_stack() )
+    ->set_quiet( true );
 
   buff.umbral_embrace = make_buff( this, "umbral_embrace", talent.umbral_embrace->effectN( 2 ).trigger() );
 
@@ -10797,14 +10879,31 @@ void druid_t::create_actions()
   if ( talent.shooting_stars.ok() )
     active.shooting_stars = get_secondary_action<shooting_stars_t>( "shooting_stars" );
 
+  if ( sets->has_set_bonus( DRUID_BALANCE, T29, B4 ) )
+  {
+    auto ss = get_secondary_action_n<starsurge_t>( "starsurge_cosmos", talent.starsurge, "" );
+    ss->name_str_reporting = "touch_the_cosmos";
+    ss->s_data_reporting = &buff.touch_the_cosmos->data();
+    ss->set_free_cast( free_spell_e::COSMOS );
+    active.starsurge_cosmos = ss;
+
+    auto sf = get_secondary_action_n<starfall_t>( "starfall_cosmos", talent.starfall, "" );
+    sf->name_str_reporting = "touch_the_cosmos";
+    sf->s_data_reporting = &buff.touch_the_cosmos->data();
+    sf->set_free_cast( free_spell_e::COSMOS );
+    active.starfall_cosmos = sf;
+  }
+
   if ( talent.starweaver.ok() )
   {
-    auto ss = get_secondary_action_n<starsurge_t>( "starweavers_weft", talent.starsurge, "" );
+    auto ss = get_secondary_action_n<starsurge_t>( "starsurge_starweaver", talent.starsurge, "" );
+    ss->name_str_reporting = "starweavers_weft";
     ss->s_data_reporting = &buff.starweavers_weft->data();
     ss->set_free_cast( free_spell_e::STARWEAVER );
     active.starsurge_starweaver = ss;
 
-    auto sf = get_secondary_action_n<starfall_t>( "starweavers_warp", talent.starfall, "" );
+    auto sf = get_secondary_action_n<starfall_t>( "starfall_starweaver", talent.starfall, "" );
+    sf->name_str_reporting = "starweavers_warp";
     sf->s_data_reporting = &buff.starweavers_warp->data();
     sf->set_free_cast( free_spell_e::STARWEAVER );
     active.starfall_starweaver = sf;
@@ -10911,6 +11010,8 @@ void druid_t::create_actions()
   find_parent( active.ferocious_bite_apex, "ferocious_bite" );
   find_parent( active.galactic_guardian, "moonfire" );
   find_parent( active.orbit_breaker, "full_moon" );
+  find_parent( active.starsurge_cosmos, "starsurge" );
+  find_parent( active.starfall_cosmos, "starfall" );
   find_parent( active.starsurge_starweaver, "starsurge" );
   find_parent( active.starfall_starweaver, "starfall" );
   find_parent( active.thrash_bear_flashing, "thrash_bear" );

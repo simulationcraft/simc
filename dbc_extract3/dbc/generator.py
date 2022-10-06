@@ -1996,6 +1996,7 @@ class SpellDataGenerator(DataGenerator):
           # Dragonflight
           ( 340546, 0 ), # Tireless Pursuit buff
           ( 378989, 0 ), ( 378990, 0 ), ( 378991, 0 ), ( 378992, 0 ), # Lycara's Teachings buffs
+          ( 395336, 0 ), ( 378987, 0 ), # Protector of the Pack
           # Balance
           ( 188046, 1 ), # Denizen of the Dream pet attack
           ( 394049, 1 ), ( 394050, 1 ), # Balance of All Things
@@ -2003,8 +2004,8 @@ class SpellDataGenerator(DataGenerator):
           ( 395022, 1 ), # Incarnation unknown spell
           ( 393961, 1 ), # Primordial Arcanic Pulsar counter buff
           ( 394103, 1 ), ( 394106, 1 ), ( 394108, 1 ), ( 394111, 1 ), # Sundered Firmament
+          ( 395110, 1 ), # Parting Skies Sundered Firmament tracker buff
           ( 393869, 1 ), # Lunar Shrapnel damage
-          ( 395336, 0 ), ( 378987, 0 ), # Protector of the Pack
           # Feral
           ( 391710, 2 ), # Ferocious Frenzy damage
           ( 391786, 2 ), # Tear Open Wounds damage
