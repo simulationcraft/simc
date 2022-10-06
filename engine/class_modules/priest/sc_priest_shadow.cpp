@@ -417,7 +417,7 @@ struct vampiric_embrace_t final : public priest_spell_t
 
   vampiric_embrace_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "vampiric_embrace", p, p.talents.vampiric_embrace ),
-      insanity( priest().specs.hallucinations->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_INSANITY ) )
+      insanity( priest().specs.hallucinations->effectN( 1 ).base_value() )
   {
     parse_options( options_str );
 
