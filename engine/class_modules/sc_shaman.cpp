@@ -5188,6 +5188,11 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
     {
       p()->cooldown.primordial_wave->adjust( p()->talent.rolling_magma->effectN( 1 ).time_value() );
     }
+
+    if ( p()->options.t29_2pc )
+    {
+      p()->buff.t29_2pc->trigger();
+    }
   }
  };
 
@@ -5714,6 +5719,15 @@ struct lightning_bolt_overload_t : public elemental_overload_spell_t
     // Stormkeeper affected by flagging is applied to the Energize spell ...
     affected_by_stormkeeper_damage = ( p->talent.stormkeeper.ok() || p->talent.stormkeeper2.ok() ) &&
       p->specialization() == SHAMAN_ELEMENTAL;
+  }
+
+  void execute() override
+  {
+    shaman_spell_t::execute();
+    if ( p()->options.t29_2pc )
+    {
+      p()->buff.t29_2pc->trigger();
+    }
   }
 };
 
@@ -10482,7 +10496,7 @@ void shaman_t::create_buffs()
     ->set_cooldown( timespan_t::zero() )  // Handled by the action
     ->set_default_value_from_effect( 2 ); // Damage bonus as default value
 
-  buff.t29_2pc = make_buff( this, "t29_2pc" )->set_max_stack( 10 )->set_default_value( 0.02 )->set_duration( 10_s );
+  buff.t29_2pc = make_buff( this, "t29_2pc" )->set_max_stack( 10 )->set_default_value( 0.025 )->set_duration( 10_s );
   buff.t29_4pc = make_buff<buff_t>( this, "t29_4pc" )
                      // 10% divided by our mastery-point multiplier
                      ->set_default_value( 10.0 / 1.875 )
