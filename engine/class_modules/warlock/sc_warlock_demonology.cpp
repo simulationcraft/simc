@@ -771,12 +771,59 @@ struct doom_t : public demonology_spell_t
     return s->action->tick_time( s ); //Doom is a case where dot duration scales with haste so use the tick time to get the current correct value
   }
 
+  double composite_ta_multiplier( const action_state_t* s ) const override
+  {
+    double m = demonology_spell_t::composite_ta_multiplier( s );
+
+    if ( p()->talents.kazaaks_final_curse.ok() )
+      m *= 1.0 + td( s->target )->debuffs_kazaaks_final_curse->check_value();
+
+    return m;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    demonology_spell_t::impact( s );
+
+    if ( p()->talents.kazaaks_final_curse.ok() )
+    {
+      // Count demons
+      int count = pet_counter();
+      td( s->target )->debuffs_kazaaks_final_curse->trigger( 1, count * p()->talents.kazaaks_final_curse->effectN( 1 ).percent() );
+    }
+  }
+
   void last_tick( dot_t* d ) override
   {
     if ( d->time_to_next_full_tick() > 0_ms )
       gain_energize_resource( RESOURCE_SOUL_SHARD, energize_amount, p()->gains.doom ); // 2022-10-06: Doom appears to always give a full shard on its partial tick
 
     demonology_spell_t::last_tick( d );
+
+    td( d->target )->debuffs_kazaaks_final_curse->expire();
+  }
+
+private:
+  int pet_counter()
+  {
+    int count = 0;
+
+    for ( auto& pet : p()->pet_list )
+    {
+      auto lock_pet = dynamic_cast<warlock_pet_t*>( pet );
+
+      if ( lock_pet == nullptr )
+        continue;
+      if ( lock_pet->is_sleeping() )
+        continue;
+
+      // 2022-10-07: Kazaak's currently has bugs where not all pets are counted, assuming this will be fixed
+      // Can use if ( lock_pet->pet_type == [enum value] ) to skip if we need to implement this
+
+      count++;
+    }
+
+    return count;
   }
 };
 
@@ -1165,6 +1212,8 @@ void warlock_t::init_spells_demonology()
   talents.fel_covenant_buff = find_spell( 387437 );
 
   talents.imp_gang_boss = find_talent_spell( talent_tree::SPECIALIZATION, "Imp Gang Boss" ); // Should be ID 387445
+
+  talents.kazaaks_final_curse = find_talent_spell( talent_tree::SPECIALIZATION, "Kazaak's Final Curse" ); // Should be ID 387483
 
   talents.sacrificed_souls    = find_talent_spell( "Sacrificed Souls" );
   talents.demonic_consumption = find_talent_spell( "Demonic Consumption" );
