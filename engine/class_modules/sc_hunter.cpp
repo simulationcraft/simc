@@ -1518,6 +1518,7 @@ struct hunter_main_pet_base_t : public hunter_pet_t
   struct actives_t
   {
     action_t* basic_attack = nullptr;
+    action_t* brutal_companion_ba = nullptr;
     action_t* kill_command = nullptr;
     action_t* beast_cleave = nullptr;
     action_t* bestial_wrath = nullptr;
@@ -2294,6 +2295,29 @@ struct basic_attack_t : public hunter_main_pet_attack_t
   }
 };
 
+struct brutal_companion_ba_t : public basic_attack_t
+{
+  brutal_companion_ba_t( hunter_main_pet_t* p, util::string_view n ):
+    basic_attack_t( p, n, "" )
+  {
+    background = dual = true;
+  }
+
+  double action_multiplier() const override
+  {
+    double am = hunter_main_pet_attack_t::action_multiplier();
+
+    am *= 1 + o() -> talents.brutal_companion -> effectN( 2 ).percent();
+
+    return am;
+  }
+
+  double cost() const override
+  {
+    return 0;
+  }
+};
+
 // Flanking Strike (pet) ===================================================
 
 struct flanking_strike_t: public hunter_main_pet_attack_t
@@ -2426,6 +2450,9 @@ void hunter_main_pet_t::init_spells()
 
   if ( o() -> talents.bloodshed.ok() )
     active.bloodshed = new actions::bloodshed_t( this );
+
+  if ( o() -> talents.brutal_companion.ok() )
+    active.brutal_companion_ba = new actions::brutal_companion_ba_t( this, "Claw" );
 }
 
 void dire_critter_t::init_spells()
@@ -3849,6 +3876,12 @@ struct barbed_shot_t: public hunter_ranged_attack_t
     {
       for ( auto pet : p() -> pets.cotw_stable_pet.active_pets() )
         pet -> buffs.frenzy -> trigger();
+    }
+
+    auto pet = p() -> pets.main;
+    if ( pet && pet -> buffs.frenzy -> check() == as<int>( p() -> talents.brutal_companion -> effectN( 1 ).base_value() ) )
+    {
+      pet -> active.brutal_companion_ba -> execute_on_target( target );
     }
   }
 
