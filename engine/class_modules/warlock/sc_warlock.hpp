@@ -311,7 +311,8 @@ public:
     player_talent_t fel_sunder; // Increase damage taken debuff when hit by main pet Felstorm
     const spell_data_t* fel_sunder_debuff;
 
-    // DF - Balespider's Burning Core (Formerly SL Legendary, now a 2 point talent)
+    player_talent_t fel_covenant; // Stacking Demonbolt buff when casting Shadow Bolt, not consumed after cast
+    const spell_data_t* fel_covenant_buff;
     // DF - Imp Gang Boss (2 point talent, Wild Imp has chance to be this pet instead)
     // DF - Kazaak's Final Curse (2 point talent, Doom deals increased damage based on active demon count)
     // DF - Ripped Through the Portal (Formerly SL Tier Bonus, now a 2 point talent)
@@ -522,6 +523,7 @@ public:
     propagate_const<buff_t*> dread_calling; // DF - Now comes from Demonology talent
     propagate_const<buff_t*> balespiders_burning_core; // DF - Now comes from Demonology talent
     propagate_const<buff_t*> shadows_bite;
+    propagate_const<buff_t*> fel_covenant;
     // DF - Stolen Power (stacking buff from Wild Imp casts) - Could actually be two buffs, currently broken
 
     // Destruction Buffs

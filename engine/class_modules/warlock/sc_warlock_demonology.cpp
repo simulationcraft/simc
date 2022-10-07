@@ -284,6 +284,9 @@ struct demonbolt_t : public demonology_spell_t
     if ( p()->talents.shadows_bite.ok() )
       m *= 1.0 + p()->buffs.shadows_bite->check_value();
 
+    if ( p()->talents.fel_covenant.ok() )
+      m *= 1.0 + p()->buffs.fel_covenant->check_stack_value();
+
     return m;
   }
 };
@@ -1087,6 +1090,9 @@ void warlock_t::create_buffs_demonology()
 
   buffs.shadows_bite = make_buff( this, "shadows_bite", talents.shadows_bite_buff )
                            ->set_default_value( talents.shadows_bite->effectN( 1 ).percent() );
+
+  buffs.fel_covenant = make_buff( this, "fel_covenant", talents.fel_covenant_buff )
+                           ->set_default_value( talents.fel_covenant->effectN( 2 ).percent() );
 }
 
 void warlock_t::init_spells_demonology()
@@ -1154,6 +1160,9 @@ void warlock_t::init_spells_demonology()
 
   talents.fel_sunder = find_talent_spell( talent_tree::SPECIALIZATION, "Fel Sunder" ); // Should be ID 387399
   talents.fel_sunder_debuff = find_spell( 387402 );
+
+  talents.fel_covenant = find_talent_spell( talent_tree::SPECIALIZATION, "Fel Covenant" ); // Should be ID 387432
+  talents.fel_covenant_buff = find_spell( 387437 );
 
   talents.sacrificed_souls    = find_talent_spell( "Sacrificed Souls" );
   talents.demonic_consumption = find_talent_spell( "Demonic Consumption" );
