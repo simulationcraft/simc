@@ -512,6 +512,9 @@ struct shadow_bolt_t : public warlock_spell_t
 
     //if ( p()->legendary.balespiders_burning_core->ok() )
     //  p()->buffs.balespiders_burning_core->trigger();
+
+    if ( p()->talents.fel_covenant.ok() )
+      p()->buffs.fel_covenant->increment();
   }
 
   void impact( action_state_t* s ) override
