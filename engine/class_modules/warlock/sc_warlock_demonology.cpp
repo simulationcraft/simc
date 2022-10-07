@@ -1164,6 +1164,8 @@ void warlock_t::init_spells_demonology()
   talents.fel_covenant = find_talent_spell( talent_tree::SPECIALIZATION, "Fel Covenant" ); // Should be ID 387432
   talents.fel_covenant_buff = find_spell( 387437 );
 
+  talents.imp_gang_boss = find_talent_spell( talent_tree::SPECIALIZATION, "Imp Gang Boss" ); // Should be ID 387445
+
   talents.sacrificed_souls    = find_talent_spell( "Sacrificed Souls" );
   talents.demonic_consumption = find_talent_spell( "Demonic Consumption" );
   talents.nether_portal       = find_talent_spell( "Nether Portal" );
@@ -1202,6 +1204,7 @@ void warlock_t::init_procs_demonology()
   procs.summon_random_demon = get_proc( "summon_random_demon" );
   procs.demonic_knowledge = get_proc( "demonic_knowledge" );
   procs.demonic_meteor = get_proc( "demonic_meteor" );
+  procs.imp_gang_boss = get_proc( "imp_gang_boss" );
 }
 
 }  // namespace warlock
