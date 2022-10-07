@@ -450,6 +450,8 @@ struct felstorm_t : public warlock_pet_melee_attack_t
 {
   struct felstorm_tick_t : public warlock_pet_melee_attack_t
   {
+    bool applies_fel_sunder; // Fel Sunder is applied only by primary pet using Felstorm
+
     felstorm_tick_t( warlock_pet_t* p, const spell_data_t *s )
       : warlock_pet_melee_attack_t( "felstorm_tick", p, s )
     {
@@ -457,6 +459,7 @@ struct felstorm_t : public warlock_pet_melee_attack_t
       reduced_aoe_targets = data().effectN( 3 ).base_value();
       background = true;
       weapon     = &( p->main_hand_weapon );
+      applies_fel_sunder = false;
     }
 
     double action_multiplier() const override
@@ -476,6 +479,14 @@ struct felstorm_t : public warlock_pet_melee_attack_t
       }
 
       return m;
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      warlock_pet_melee_attack_t::impact( s );
+
+      if ( applies_fel_sunder )
+        owner_td( s->target )->debuffs_fel_sunder->trigger();
     }
   };
 
@@ -498,6 +509,10 @@ struct felstorm_t : public warlock_pet_melee_attack_t
   {
     if ( main_pet && p->o()->talents.fel_might.ok() )
       cooldown->duration += timespan_t::from_millis( p->o()->talents.fel_might->effectN( 1 ).base_value() );
+
+    if ( main_pet && p->o()->talents.fel_sunder.ok() )
+      debug_cast<felstorm_tick_t*>( tick_action )->applies_fel_sunder = true;
+
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
@@ -511,6 +526,8 @@ struct demonic_strength_t : public felstorm_t
   demonic_strength_t( warlock_pet_t* p, util::string_view options_str )
     : felstorm_t( p, options_str, std::string( "demonic_strength_felstorm" ) )
   {
+    if ( p->o()->talents.fel_sunder.ok() )
+      debug_cast<felstorm_tick_t*>( tick_action )->applies_fel_sunder = true;
   }
 
   void execute() override

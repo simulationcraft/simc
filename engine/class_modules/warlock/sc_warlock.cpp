@@ -828,6 +828,9 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
   debuffs_from_the_shadows = make_buff( *this, "from_the_shadows", p.talents.from_the_shadows_debuff )
                                  ->set_default_value_from_effect( 1 );
 
+  debuffs_fel_sunder = make_buff( *this, "fel_sunder", p.talents.fel_sunder_debuff )
+                           ->set_default_value( p.talents.fel_sunder->effectN( 1 ).percent() );
+
   target->register_on_demise_callback( &p, [ this ]( player_t* ) { target_demise(); } );
 }
 
@@ -1017,6 +1020,12 @@ double warlock_t::composite_player_target_multiplier( player_t* target, school_e
       m *= 1.0 + td->debuffs_eradication->check_value();
   }
 
+  if ( specialization() == WARLOCK_DEMONOLOGY )
+  {
+    if ( td->debuffs_fel_sunder->check() )
+      m *= 1.0 + td->debuffs_fel_sunder->check_stack_value();
+  }
+
   return m;
 }
 
@@ -1075,6 +1084,13 @@ double warlock_t::composite_player_target_pet_damage_multiplier( player_t* targe
     {
       m *= 1.0 + td->debuffs_eradication->data().effectN( guardian ? 3 : 2 ).percent();
     }
+  }
+
+  if ( specialization() == WARLOCK_DEMONOLOGY )
+  {
+    // 2022-10-06: Fel Sunder currently lacks guardian effect, so only main pet is benefitting
+    if ( td->debuffs_fel_sunder->check() && !guardian )
+      m *= 1.0 + td->debuffs_fel_sunder->check_stack_value();
   }
 
   return m;
