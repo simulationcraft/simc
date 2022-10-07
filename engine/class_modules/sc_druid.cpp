@@ -2324,6 +2324,24 @@ public:
     return ab::ready();
   }
 
+  void snapshot_and_execute( const action_state_t* s, bool is_dot,
+                             std::function<void( action_state_t* )> pre = nullptr,
+                             std::function<void( action_state_t* )> post = nullptr )
+  {
+    auto state = this->get_state();
+    state->target = s->target;
+
+    if ( pre )
+      pre( state );
+
+    this->snapshot_state( state, this->amount_type( state, is_dot ) );
+
+    if ( post )
+      post( state );
+
+    this->schedule_execute( state );
+  }
+
   void schedule_execute( action_state_t* s = nullptr ) override
   {
     check_autoshift();
@@ -4205,11 +4223,9 @@ struct ferocious_bite_t : public cat_finisher_t
 
     if ( rampant_ferocity && s->result_amount > 0 && !rampant_ferocity->target_list().empty() )
     {
-      auto state = rampant_ferocity->get_state();
-      state->target = s->target;
-      rampant_ferocity->snapshot_state( state, rampant_ferocity->amount_type( state ) );
-      rampant_ferocity->set_amount( state, s->result_amount );
-      rampant_ferocity->schedule_execute( state );
+      rampant_ferocity->snapshot_and_execute( s, false, [ this, s ]( action_state_t* new_ ) {
+        rampant_ferocity->set_amount( new_, s->result_amount );
+      } );
     }
   }
 
@@ -4400,12 +4416,10 @@ struct rake_t : public cat_attack_t
   {
     cat_attack_t::impact( s );
 
-    action_state_t* b_state = bleed->get_state();
-    b_state->target         = s->target;
-    bleed->snapshot_state( b_state, result_amount_type::DMG_OVER_TIME );
-    // Copy persistent multipliers from the direct attack.
-    b_state->persistent_multiplier = s->persistent_multiplier;
-    bleed->schedule_execute( b_state );
+    bleed->snapshot_and_execute( s, true, nullptr, [ s ]( action_state_t* new_ ) {
+      // Copy persistent multipliers from the direct attack.
+      new_->persistent_multiplier = s->persistent_multiplier;
+    } );
   }
 
   void execute() override
@@ -4487,11 +4501,9 @@ struct rip_t : public cat_finisher_t
       if ( p()->talent.sabertooth.ok() )
         dot_total /= 1.0 + p()->buff.sabertooth->check_value();
 
-      auto state = tear->get_state();
-      state->target = s->target;
-      tear->snapshot_state( state, tear->amount_type( state ) );
-      tear->set_amount( state, dot_total );
-      tear->schedule_execute( state );
+      tear->snapshot_and_execute( s, true, [ this, dot_total ]( action_state_t* new_ ) {
+        tear->set_amount( new_, dot_total );
+      } );
     }
   }
 
@@ -4593,11 +4605,11 @@ struct primal_wrath_t : public cat_finisher_t
 
   double composite_da_multiplier( const action_state_t* s ) const override
   {
-    double adpc = cat_attack_t::composite_da_multiplier( s );
+    double dam = cat_attack_t::composite_da_multiplier( s );
 
-    adpc *= 1.0 + cast_state( s )->combo_points;
+    dam *= 1.0 + cast_state( s )->combo_points;
 
-    return adpc;
+    return dam;
   }
 
   void impact( action_state_t* s ) override
@@ -4605,10 +4617,7 @@ struct primal_wrath_t : public cat_finisher_t
     if ( wounds && td( s->target )->dots.rip->is_ticking() )
       wounds->execute_on_target( s->target );
 
-    auto state = rip->get_state();
-    state->target = s->target;
-    rip->snapshot_state( state, rip->amount_type( state ) );
-    rip->schedule_execute( state );
+    rip->snapshot_and_execute( s, true );
 
     cat_finisher_t::impact( s );
   }
@@ -7791,11 +7800,9 @@ struct starfall_t : public druid_spell_t
 
       if ( cast_state( s )->shrapnel_target && cast_state( s )->shrapnel_target == s->target )
       {
-        auto state = shrapnel->get_state();
-        state->target = s->target;
-        shrapnel->snapshot_state( state, shrapnel->amount_type( state ) );
-        shrapnel->set_amount( state, s->result_amount );
-        shrapnel->schedule_execute( state );
+        shrapnel->snapshot_and_execute( s, false, [ this, s ]( action_state_t* new_ ) {
+          shrapnel->set_amount( new_, s->result_amount );
+        } );
       }
     }
   };
@@ -7855,10 +7862,9 @@ struct starfall_t : public druid_spell_t
     {
       starfall_base_t::impact( s );
 
-      auto state = damage->get_state();
-      state->copy_state( s );
-      damage->snapshot_state( state, damage->amount_type( state ) );
-      damage->schedule_execute( state );
+      damage->snapshot_and_execute( s, false, [ s ]( action_state_t* new_ ) {
+        new_->copy_state( s );
+      } );
     }
   };
 
@@ -8030,11 +8036,10 @@ struct starfire_t : public druid_spell_t
     if ( p()->active.astral_smolder && s->result_amount > 0 && result_is_hit( s->result ) && s->result == RESULT_CRIT )
     {
       auto smolder = debug_cast<astral_smolder_t*>( p()->active.astral_smolder );
-      auto state = smolder->get_state();
-      state->target = s->target;
-      smolder->snapshot_state( state, smolder->amount_type( state ) );
-      smolder->set_amount( state, s->result_amount );
-      smolder->schedule_execute( state );
+
+      smolder->snapshot_and_execute( s, true, [ smolder, s ]( action_state_t* new_ ) {
+        smolder->set_amount( new_, s->result_amount );
+      } );
     }
 
     if ( is_free_proc() )
@@ -8044,11 +8049,11 @@ struct starfire_t : public druid_spell_t
     p()->buff.gathering_starstuff->expire();
   }
 
-  double composite_aoe_multiplier( const action_state_t* state ) const override
+  double composite_aoe_multiplier( const action_state_t* s ) const override
   {
-    double cam = druid_spell_t::composite_aoe_multiplier( state );
+    double cam = druid_spell_t::composite_aoe_multiplier( s );
 
-    if ( state->target != target && sotf_mul && p()->buff.eclipse_lunar->check() )
+    if ( s->target != target && sotf_mul && p()->buff.eclipse_lunar->check() )
       cam *= 1.0 + sotf_mul;
 
     return cam;
@@ -8537,11 +8542,9 @@ struct wild_mushroom_t : public druid_spell_t
 
       if ( fungal && s->result_amount > 0 && result_is_hit( s->result ) )
       {
-        auto state = fungal->get_state();
-        state->target = s->target;
-        fungal->snapshot_state( state, fungal->amount_type( state ) );
-        fungal->set_amount( state, s->result_amount );
-        fungal->schedule_execute( state );
+        fungal->snapshot_and_execute( s, true, [ this, s ]( action_state_t* new_ ) {
+          fungal->set_amount( new_, s->result_amount );
+        } );
       }
     }
   };
@@ -8675,11 +8678,10 @@ struct wrath_t : public druid_spell_t
     if ( p()->active.astral_smolder && s->result_amount > 0 && result_is_hit( s->result ) && s->result == RESULT_CRIT )
     {
       auto smolder = debug_cast<astral_smolder_t*>( p()->active.astral_smolder );
-      auto state = smolder->get_state();
-      state->target = s->target;
-      smolder->snapshot_state( state, smolder->amount_type( state ) );
-      smolder->set_amount( state, s->result_amount );
-      smolder->schedule_execute( state );
+
+      smolder->snapshot_and_execute( s, false, [ smolder, s ]( action_state_t* new_ ) {
+        smolder->set_amount( new_, s->result_amount );
+      } );
     }
 
     if ( is_free_proc() )
