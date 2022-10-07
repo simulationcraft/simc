@@ -140,7 +140,7 @@ struct player_t : public actor_t
   bool        initialized;
   bool        potion_used;
 
-  std::string talents_str, tree_nodes_str, id_str, target_str;
+  std::string talents_str, id_str, target_str;
   std::string region_str, server_str, origin_str;
   std::string race_str, professions_str, position_str;
   std::string class_talents_str, spec_talents_str;
