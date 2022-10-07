@@ -304,7 +304,8 @@ public:
     player_talent_t grimoire_felguard;
 
     player_talent_t bloodbound_imps; // Increased Demonic Core proc chance from Wild Imps
-    // DF - Grim Inquisitor's Dread Calling (Formerly SL Legendary)
+    player_talent_t dread_calling; // Stacking buff to next Dreadstalkers damage (Formerly SL Legendary)
+    const spell_data_t* dread_calling_buff; // This buffs stacks on the warlock, a different one applies to the pet
     const spell_data_t* doom; // DF - Base functionality presumably unchanged but requires double checking due to new talents
     // DF - Demonic Meteor (Chance to proc Hand of Gul'dan off Hand of Gul'dan)
     // DF - Fel Sunder (Increase damage taken debuff when hit by Felstorm)    
