@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.45969 dragonflight-BETA (hotfix 2022-10-06/45969, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.45969 dragonflight-BETA (hotfix 2022-10-07/45969, no-networking)
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=8, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
@@ -2651,7 +2651,7 @@ Talent Entry     : Balance [free=(Balance), tree=class, row=2, col=4, max_rank=1
 Class            : Druid
 School           : Astral
 Spell Type       : Magic
-Resource         : 30 Eclipse (8) (id=10676)
+Resource         : 40 Eclipse (8) (id=10676)[Hotfixed: Cost (300 -> 400)]
 Spell Level      : 12
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -2670,7 +2670,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Allow Class Ability Procs (416), Prevent Jumping During Precast (448)
 Effects          :
 #1 (id=68268)    : School Damage (2): astral
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 2.07000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.34550 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : SP Coefficient (2.07 -> 1.3455)
 #2 (id=816907)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=845292)   : Dummy (3)
@@ -6043,7 +6044,8 @@ Attributes       : ........ ........ .......x x..x....   .....x.x ........ .....
                  : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Reflection (39), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Active Threat (94), PvP Enabling (96), Not a Proc (105), Allow Aura While Dead (116), Treat As Periodic (121), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Stunned (163), Treat as Area Effect (175), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Allow While Riding Vehicle (204), Allow While Charmed (261), Missile Speed is Delay (in sec) (292), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=280158)   : School Damage (2): astral
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.22700 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.14755 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : SP Coefficient (0.227 -> 0.14755)
 Description      : $@spelldesc191034
 
 Name             : Ironfur (id=192081) [Spell Family (7)] 
@@ -7136,7 +7138,8 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : No Threat (42), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=298311)   : Energize Power (30)
-                   Base Value: 750 | Scaled Value: 750 | PvP Coefficient: 1.00000 | Misc Value: astral_power | Target: Self (1)
+                   Base Value: 600 | Scaled Value: 600 | PvP Coefficient: 1.00000 | Misc Value: astral_power | Target: Self (1)
+Hotfixed         : Base Value (750 -> 600)
 Description      : Generates ${$m1/10} Astral Power.
 
 Name             : Warrior of Elune (id=202425) [Spell Family (7)] 
@@ -7242,9 +7245,11 @@ Attributes       : ........ ........ ........ ...x....   .......x ..x..... .....
                  : Allow While Sitting (27), No Reflection (39), No Threat (42), Ignore Line of Sight (66), No Initial Threat (86), PvP Enabling (96), Not a Proc (105), Casting Cancels Autorepeat (Mainline: Do Not Trigger Target Stand) (118), Treat As Periodic (121), Do Not Display Range (126), No Harmful Threat (132), Not In Spellbook (143), Always AOE Line of Sight (186), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=298525)   : School Damage (2): astral
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.36000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.18000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : SP Coefficient (0.36 -> 0.18)
 #2 (id=298537)   : Energize Power (30)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.50000 | Misc Value: astral_power | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.50000 | Misc Value: astral_power | Target: Self (1)
+Hotfixed         : Base Value (30 -> 20)
 Description      : $@spelldesc202342
 
 Name             : Half Moon (desc=Artifact) (id=202768) [Spell Family (7)] 
@@ -16213,7 +16218,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Can Proc From Procs (122)
 Effects          :
 #1 (id=1014959)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (20 -> 30)
 #2 (id=1033069)  : None (0)
                    Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 1.00000
 Description      : Every $s1th Shooting Star calls down a Full Moon at $s2% power upon its target.
@@ -18599,9 +18605,10 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Include In Advanced Combat Log (72), Aura Points On Client (268)
 Effects          :
 #1 (id=1033219)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
-                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
+                   Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Starfall (50286), Starsurge (78674), Starfall (191034), Starfall (191037), Starsurge (197626)
                    Family Flags: 55, 89
+Hotfixed         : Base Value (-10 -> -5)
 #2 (id=1033220)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Starfall (50286), Starsurge (78674), Starfall (191034), Starfall (191037), Starsurge (197626)
@@ -18694,17 +18701,19 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=1033228)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 300 | Scaled Value: 300 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 600 | Scaled Value: 600 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (300 -> 600)
 #2 (id=1033229)  : Apply Aura (6) | Dummy (4)
                    Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
 Description      : Every $s1 Astral Power spent grants Celestial Alignment for $s2 sec.
 
 Name             : Primordial Arcanic Pulsar (id=393961) [Spell Family (7)] 
+Hotfixed         : Max stacks (10 -> 15)
 Class            : Druid
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
-Stacks           : 10 maximum
+Stacks           : 15 maximum
 Proc Chance      : 101%
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -18751,11 +18760,13 @@ Effects          :
 #4 (id=1033286)  : Apply Aura (6) | Dummy (4)
                    Base Value: -60000 | Scaled Value: -60000 | PvP Coefficient: 1.00000 | Target: Self (1)
 #5 (id=1033287)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 3 (23)
-                   Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 23 | Misc Value 2: 2330 (Label) | Target: Self (1)
+                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Misc Value: 23 | Misc Value 2: 2330 (Label) | Target: Self (1)
                    Affected Spells (Label): Incarnation: Chosen of Elune (102560)
+Hotfixed         : Base Value (-100 -> -50)
 #6 (id=1033288)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 4 (32)
-                   Base Value: -150 | Scaled Value: -150 | PvP Coefficient: 1.00000 | Misc Value: 32 | Misc Value 2: 2330 (Label) | Target: Self (1)
+                   Base Value: -80 | Scaled Value: -80 | PvP Coefficient: 1.00000 | Misc Value: 32 | Misc Value 2: 2330 (Label) | Target: Self (1)
                    Affected Spells (Label): Incarnation: Chosen of Elune (102560)
+Hotfixed         : Base Value (-150 -> -80)
 Description      : Incarnation: Chosen of Elune reduces the Astral Power cost of Starsurge by ${$s5*-1/10}, and the Astral Power cost of Starfall by ${$s6*-1/10}.
 
 Convoke the Spirits' cooldown is reduced by ${($abs($s4)/120000)*100}% and its duration and number of spells cast is reduced by $s1%. Convoke the Spirits has an increased chance to use an exceptional spell or ability.
@@ -19039,7 +19050,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=1033467)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (25 -> 20)
 #2 (id=1033493)  : None (0)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000
 Description      : Every other Eclipse creates a Fury of Elune at $s1% effectiveness that follows your current target for $s2 sec.
@@ -19101,7 +19113,8 @@ Attributes       : ........ ........ ........ ...x....   .....x.. ........ .....
                  : Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Always Hit (114), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Confused (178), Allow While Charmed (261), Allow Cast While Channeling (308)
 Effects          :
 #1 (id=1033501)  : Apply Aura (6) | Periodic Energize Power (24): every 0.5 seconds
-                   Base Value: 6.25 | Scaled Value: 6.25 | PvP Coefficient: 1.00000 | Misc Value: 8 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 8 | Target: Self (1)
+Hotfixed         : Base Value (6.25 -> 5)
 Description      : $@spelldesc394094
 Tooltip          : Generating ${($o1/10)*($394094s1/100)} Astral Power over $d.
 

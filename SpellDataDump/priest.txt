@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.45969 dragonflight-BETA (hotfix 2022-10-06/45969, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.45969 dragonflight-BETA (hotfix 2022-10-07/45969, no-networking)
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy

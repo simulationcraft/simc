@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.45969 dragonflight-BETA (hotfix 2022-10-06/45969, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.45969 dragonflight-BETA (hotfix 2022-10-07/45969, no-networking)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -223,7 +223,7 @@ Name             : Metamorphosis (id=162264) [Spell Family (107)]
 Class            : Demon Hunter
 School           : Chaos
 Spell Type       : None
-Duration         : 25 seconds
+Duration         : 24 seconds
 Labels           : 2309: First of the Illidari (235893 effect#2)
 Proc Flags       : ..x.x... x...x... x....... ........ 
                  : White Melee, Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
@@ -2323,7 +2323,7 @@ Tooltip          : Movement slowed by $s1%.
 Name             : Soul Rending (id=204909) [Spell Family (107), Passive] 
 Talent Entry     : Generic [tree=class, row=6, col=2, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(5, 10)]
-                 : Effect#2 [op=set, values=(10, 20)]
+                 : Effect#2 [op=set, values=(5, 10)]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -2340,9 +2340,10 @@ Effects          :
 #1 (id=302487)   : Apply Aura (6) | Modify Leech% (443)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=483201)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Metamorphosis (162264), Metamorphosis (187827), Metamorphosis (191427)
                    Family Flags: 15, 28
+Hotfixed         : Base Value (10 -> 5)
 Description      : Leech increased by $s1%.
 
 Gain an additional $s2% Leech while Metamorphosis is active.
@@ -2436,7 +2437,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Can Proc From Procs (122), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=305361)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (12 -> 8)
 Description      : Fel Rush, The Hunt, and Vengeful Retreat increase your damage done by $208628s1% for $208628d.
 
 Name             : Unleashed Power (id=206477) [Spell Family (107), Passive] 
@@ -2976,15 +2978,18 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Aura Expires Offline (130), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=308737)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Demon Blades (203796), Sigil of Flame (204598), Death Sweep (210153), Death Sweep (210155), Felblade (213243), Chaos Strike (222031), Annihilation (227518), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), The Hunt (323802), Fel Devastation (333110), Throw Glaive (337819), Elysian Decree (339893), Elysian Decree (339894), Glaive Tempest (342857), The Hunt (345335), Fel Devastation (346503), The Hunt (370966), The Hunt (370969), Elysian Decree (389860), Burning Wound (391191), Fel Devastation (393834)
                    Family Flags: 16
+Hotfixed         : Base Value (10 -> 8)
 #2 (id=479917)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Demon Blades (203796), Sigil of Flame (204598), Death Sweep (210153), Death Sweep (210155), Felblade (213243), Chaos Strike (222031), Annihilation (227518), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), The Hunt (323802), Fel Devastation (333110), Throw Glaive (337819), Elysian Decree (339893), Elysian Decree (339894), Glaive Tempest (342857), The Hunt (345335), Fel Devastation (346503), The Hunt (370966), The Hunt (370969), Elysian Decree (389860), Burning Wound (391191), Fel Devastation (393834)
                    Family Flags: 16
+Hotfixed         : Base Value (10 -> 8)
 #3 (id=479918)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (10 -> 8)
 Description      : $@spelldesc206476
 Tooltip          : Damage done increased by $w1%.
 
@@ -4756,7 +4761,7 @@ Internal Cooldown: 0.5 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.. ........ ........ ........ 
                  : White Melee Taken, Yellow Melee Taken
-Affecting spells : Aura of Pain (207347 effect#1), Agonizing Flames (207548 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Havoc Demon Hunter (212612 effects: #3, #4), Vengeance Demon Hunter (212613 effects: #3, #4), Infernal Armor (320331 effect#1), Immolation Aura (320377 effect#1), Immolation Aura (320378 effect#1), Burning Wound (346278 effect#2), Felfire Heart (388109 effect#1), Any Means Necessary (388114 effects: #1, #2, #3), Burning Wound (391191 effect#2)
+Affecting spells : Aura of Pain (207347 effect#1), Agonizing Flames (207548 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Havoc Demon Hunter (212612 effects: #3, #4), Vengeance Demon Hunter (212613 effects: #3, #4), Infernal Armor (320331 effect#1), Immolation Aura (320377 effect#1), Immolation Aura (320378 effect#1), Burning Wound (346278 effect#2), Felfire Heart (388109 effect#1), Any Means Necessary (388114 effects: #1, #2, #3)
 Family Flags     : 11, 32, 85
 Attributes       : ....x... ........ x.x..... .......x   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -7441,9 +7446,10 @@ Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), DoT Stacking Rule (103), Requires Main-Hand Weapon (106), Suppress Caster Procs (112), Always Hit (114), Do Not Display Range (126), No Cast Log (128), No Caster Aura Icon (187), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Do Not Enforce Shapeshift Requirements (434)
 Effects          :
 #1 (id=807359)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 1.00000 | Target: Enemy (6)
                    Affected Spells: Blade Dance (188499), Chaos Strike (199547), Blade Dance (199552), Blade Dance (200685), Annihilation (201428), Death Sweep (210152), Death Sweep (210153), Death Sweep (210155), Chaos Strike (222031), Annihilation (227518)
                    Family Flags: 6, 14, 25, 37, 50, 127
+Hotfixed         : Base Value (100 -> 80)
 Description      : $@spelldesc258860
 Tooltip          : The Demon Hunter's Chaos Strike and Blade Dance inflict $s2% additional damage.
 
@@ -9488,9 +9494,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=844538)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Fel Rush (192611)
                    Family Flags: 18
+Hotfixed         : Base Value (25 -> 20)
 Description      : Fel Rush damage increased by $s1%.
 
 Name             : Improved Chaos Strike (id=343206) [Spell Family (107), Passive] 
@@ -9509,9 +9516,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=844832)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Chaos Strike (199547), Annihilation (201428), Chaos Strike (222031), Annihilation (227518)
                    Family Flags: 6, 14, 50, 127
+Hotfixed         : Base Value (15 -> 10)
 Description      : Chaos Strike damage increased by $s1%.
 
 Name             : Focused Cleave (id=343207) [Spell Family (107), Passive] 
@@ -9557,7 +9565,7 @@ Name             : Furious Gaze (id=343312)
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
-Duration         : 12 seconds
+Duration         : 10 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10722,7 +10730,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Can Proc From Procs (122), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1023597)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (50 -> 40)
 #2 (id=1032987)  : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Each time Immolation Aura deals damage, $s1% of the damage dealt by up to $s2 critical strikes is gathered as Ragefire.
@@ -10748,7 +10757,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Can Proc From Procs (122), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1023598)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (15 -> 12)
 Description      : Damaging an enemy before they damage you increases your critical strike chance by $391215s1% for $391215d.
 
 Using Vengeful Retreat refreshes your potential to activate this effect on any enemies you are in combat with.
@@ -10914,7 +10924,8 @@ Effects          :
 #1 (id=1023611)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1026897)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 7 | Scaled Value: 7 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (7 -> 8)
 Description      : The duration of your active demon form is extended by ${$s1/1000}.1 sec per $s2 Fury spent.
 
 Name             : Know Your Enemy (id=388118) [Spell Family (107), Passive] 
@@ -11871,7 +11882,7 @@ Description      : Chaos Strike has a $s1% chance to trigger a second Chaos Stri
 
 Name             : Dancing with Fate (id=389978) [Spell Family (107), Passive] 
 Talent Entry     : Havoc [tree=spec, row=4, col=3, max_rank=2, req_points=0]
-                 : Effect#1 [op=set, values=(25, 50)]
+                 : Effect#1 [op=set, values=(20, 40)]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -11887,9 +11898,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1026569)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Blade Dance (200685), Death Sweep (210155)
                    Family Flags: 12, 38
+Hotfixed         : Base Value (50 -> 20)
 Description      : The final slash of Blade Dance deals an additional $s1% damage.
 
 Name             : Soulcrush (id=389985) [Spell Family (107), Passive] 
@@ -12046,7 +12058,7 @@ Tooltip          : Damage taken from Eye Beam increased by $w1%.
 
 Name             : Growing Inferno (id=390158) [Spell Family (107), Passive] 
 Talent Entry     : Havoc [tree=spec, row=6, col=5, max_rank=2, req_points=8]
-                 : Effect#1 [op=set, values=(8, 15)]
+                 : Effect#1 [op=set, values=(5, 10)]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -12062,7 +12074,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1026774)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (8 -> 5)
 Description      : Immolation Aura's damage increases by $s1% each time it deals damage.
 
 Name             : Elysian Decree (id=390163) [Spell Family (107)] 
@@ -12461,11 +12474,13 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : DoT Stacking Rule (103), Limit N (165), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=1028531)  : Apply Aura (6) | Periodic Damage (3): chromatic every 3 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.16200 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.13000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (0.162 -> 0.13)
 #2 (id=1028532)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
-                   Base Value: 45 | Scaled Value: 45 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-                   Affected Spells: Immolation Aura (258920), Immolation Aura (258921), Immolation Aura (258922)
-                   Family Flags: 11, 49, 61
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Affected Spells: Immolation Aura (258921), Immolation Aura (258922)
+                   Family Flags: 49, 61
+Hotfixed         : Base Value (45 -> 50), Affects Spells
 Description      : $@spelldesc391189
 Tooltip          : Taking $w1 Chaos damage every $t1 seconds.
 Damage taken from $@auracaster's Immolation Aura increased by $s2%.
@@ -12486,7 +12501,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1028567)  : Apply Aura (6) | Modify Critical Strike% (290)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (15 -> 12)
 Description      : $@spelldesc388108
 Tooltip          : Critical strike chance increased by $s1%.
 
