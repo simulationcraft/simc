@@ -258,7 +258,6 @@ struct mind_flay_t final : public priest_spell_t
     parse_options( options_str );
 
     add_child( _base_spell );
-    add_child( _insanity_spell );
   }
 
   void execute() override
