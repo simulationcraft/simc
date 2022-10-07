@@ -1152,7 +1152,8 @@ void warlock_t::init_spells_demonology()
 
   talents.demonic_meteor = find_talent_spell( talent_tree::SPECIALIZATION, "Demonic Meteor" ); // Should be ID 387396
 
-
+  talents.fel_sunder = find_talent_spell( talent_tree::SPECIALIZATION, "Fel Sunder" ); // Should be ID 387399
+  talents.fel_sunder_debuff = find_spell( 387402 );
 
   talents.sacrificed_souls    = find_talent_spell( "Sacrificed Souls" );
   talents.demonic_consumption = find_talent_spell( "Demonic Consumption" );

@@ -61,7 +61,7 @@ struct warlock_td_t : public actor_target_data_t
   propagate_const<dot_t*> dots_doom;
 
   propagate_const<buff_t*> debuffs_from_the_shadows;
-  // DF - Fel Sunder? (Felstorm increases target's damage taken; could be in pet module instead)
+  propagate_const<buff_t*> debuffs_fel_sunder; // Done in owner target data for easier handling
 
   double soc_threshold; //Aff - Seed of Corruption counts damage from cross-spec spells such as Drain Life
 
@@ -308,7 +308,8 @@ public:
     const spell_data_t* dread_calling_buff; // This buffs stacks on the warlock, a different one applies to the pet
     player_talent_t doom;
     player_talent_t demonic_meteor; // Increased Hand of Gul'dan damage and chance to refund soul shard
-    // DF - Fel Sunder (Increase damage taken debuff when hit by Felstorm)    
+    player_talent_t fel_sunder; // Increase damage taken debuff when hit by main pet Felstorm
+    const spell_data_t* fel_sunder_debuff;
 
     // DF - Balespider's Burning Core (Formerly SL Legendary, now a 2 point talent)
     // DF - Imp Gang Boss (2 point talent, Wild Imp has chance to be this pet instead)
