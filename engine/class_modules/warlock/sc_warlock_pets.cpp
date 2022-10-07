@@ -55,6 +55,9 @@ void warlock_pet_t::create_buffs()
 
   buffs.dread_calling = make_buff( this, "dread_calling", find_spell( 387392 ) );
 
+  buffs.imp_gang_boss = make_buff( this, "imp_gang_boss", find_spell( 387458 ) )
+                            ->set_default_value_from_effect( 2 );
+
   // Destruction
   buffs.embers = make_buff( this, "embers", find_spell( 264364 ) )
                      ->set_period( 500_ms )
@@ -916,6 +919,11 @@ void wild_imp_pet_t::arise()
   imploded = false;
   o()->buffs.wild_imps->increment();
 
+  if ( o()->talents.imp_gang_boss.ok() && rng().roll( o()->talents.imp_gang_boss->effectN( 1 ).percent() ) )
+  { 
+    buffs.imp_gang_boss->trigger();
+    o()->procs.imp_gang_boss->occur();
+  }
   // Start casting fel firebolts
   firebolt->set_target( o()->target );
   firebolt->schedule_execute();
@@ -935,6 +943,11 @@ void wild_imp_pet_t::demise()
         core_chance += o()->talents.bloodbound_imps->effectN( imploded ? 2 : 1 ).percent();
 
       o()->buffs.demonic_core->trigger( 1, buff_t::DEFAULT_VALUE(), core_chance );
+
+      if ( imploded && buffs.imp_gang_boss->check() )
+      {
+        o()->warlock_pet_list.wild_imps.spawn();
+      }
     }
 
     if ( expiration )
@@ -944,6 +957,16 @@ void wild_imp_pet_t::demise()
   }
 
   warlock_pet_t::demise();
+}
+
+double wild_imp_pet_t::composite_player_multiplier( school_e school ) const
+{
+  double m = warlock_pet_t::composite_player_multiplier( school );
+
+  if ( buffs.imp_gang_boss->check() )
+    m *= 1.0 + buffs.imp_gang_boss->check_value();
+
+  return m;
 }
 
 /// Wild Imp End

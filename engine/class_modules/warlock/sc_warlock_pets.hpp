@@ -41,6 +41,7 @@ struct warlock_pet_t : public pet_t
     propagate_const<buff_t*> demonic_synergy; // DF - Now comes from Class talent
     propagate_const<buff_t*> annihilan_training; // Permanent aura when talented, 10% increased damage to all abilities
     propagate_const<buff_t*> dread_calling;
+    propagate_const<buff_t*> imp_gang_boss; // Aura applied to some Wild Imps for increased damage (and size)
     // DF - Demonic Inspiration
     // DF - Wrathful Minion
     // DF - The Expendables
@@ -417,6 +418,7 @@ struct wild_imp_pet_t : public warlock_pet_t
   void arise() override;
   void demise() override;
   void finish_moving() override;
+  double composite_player_multiplier( school_e ) const override;
 
 private:
   void reschedule_firebolt();
@@ -442,7 +444,7 @@ private:
   void reschedule_firebolt();
 };
 
-// DF - Imp Gang Boss
+// DF - Imp Gang Boss is treated as buffed Wild Imp for now
 
 struct dreadstalker_t : public warlock_pet_t
 {

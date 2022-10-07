@@ -313,7 +313,7 @@ public:
 
     player_talent_t fel_covenant; // Stacking Demonbolt buff when casting Shadow Bolt, not consumed after cast
     const spell_data_t* fel_covenant_buff;
-    // DF - Imp Gang Boss (2 point talent, Wild Imp has chance to be this pet instead)
+    player_talent_t imp_gang_boss; // DF - Imp Gang Boss (2 point talent, Wild Imp has chance to be this pet instead)
     // DF - Kazaak's Final Curse (2 point talent, Doom deals increased damage based on active demon count)
     // DF - Ripped Through the Portal (Formerly SL Tier Bonus, now a 2 point talent)
     // DF - Houndmaster's Gambit (2 point talent, Shadow Bolt and Demonbolt have a chance to reset Call Dreadstalkers)
@@ -600,6 +600,7 @@ public:
     proc_t* carnivorous_stalkers; // DF - Now a Demonology talent
     proc_t* horned_nightmare; // DF - Now a Demonology talent
     proc_t* demonic_meteor;
+    proc_t* imp_gang_boss;
 
     // destro
     proc_t* reverse_entropy;
