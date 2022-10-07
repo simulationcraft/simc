@@ -2451,21 +2451,28 @@ static void parse_traits(
 }
 
 // Blizzard in-game talent tree export hash
+static bool generate_tree_nodes( player_t* player, std::map<unsigned, std::vector<const trait_data_t*>>& tree_nodes )
+{
+  specialization_e spec = player->specialization();
+
+  uint32_t class_idx, spec_idx;
+  if ( !player->dbc->spec_idx( spec, class_idx, spec_idx ) )
+    return false;
+
+  auto class_data = trait_data_t::data( class_idx, talent_tree::CLASS, maybe_ptr( player->dbc->ptr ) );
+  auto spec_data = trait_data_t::data( class_idx, talent_tree::SPECIALIZATION, maybe_ptr( player->dbc->ptr ) );
+
+  for ( const auto& trait : class_data )
+    tree_nodes[ trait.id_node ].push_back( &trait );
+
+  for ( const auto& trait : spec_data )
+    tree_nodes[ trait.id_node ].push_back( &trait );
+
+  return true;
+}
+
 static void parse_traits_hash( const std::string& talents_str, player_t* player )
 {
-  // Temporary workaround, you can get this string via the simc addon
-  if ( player->tree_nodes_str.empty() )
-  {
-    player->sim->error( "Player {} trying to parse Blizzard talent export hash without tree_node_str.", player->name() );
-    return;
-  }
-
-  if ( player->tree_nodes_str.find_first_not_of( "0123456789/" ) != std::string::npos )
-  {
-    player->sim->error( "Player {} has invalid tree_node_str.", player->name() );
-    return;
-  }
-
   static const std::string char_array = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
   auto do_error = [ player, &talents_str ]( std::string_view msg = {} ) {
@@ -2512,7 +2519,7 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
 
   if ( version_id != 1 )
   {
-    do_error( "Invalid hash version" );
+    do_error( "Invalid serialization version" );
     return;
   }
 
@@ -2532,42 +2539,26 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
   */
   get_bit( tree_bits, head );
 
-  auto nodes_str = util::string_split<std::string_view>( player->tree_nodes_str, "/" );
-  auto _data = trait_data_t::data( maybe_ptr( player->dbc->ptr ) );
+  std::map<unsigned, std::vector<const trait_data_t*>> tree_nodes;
 
-  for ( auto node_str : nodes_str )
+  generate_tree_nodes( player, tree_nodes );
+
+  for ( auto& [ id, node ] : tree_nodes )
   {
     if ( get_bit( 1, head ) )  // selected
     {
-      std::vector<const trait_data_t*> traits;
-      auto node = util::to_unsigned( node_str );
-
-      auto _it = _data.begin();
-      while ( _it != _data.end() )
-      {
-        _it = std::find_if( _it, _data.end(), [ node ]( const trait_data_t& t ) { return t.id_node == node; } );
-        if ( _it != _data.end() )
-          traits.push_back( _it++ );
-      }
-
-      if ( traits.empty() )
-      {
-        player->sim->error( "Player {} has invalid tree_node_str, node {} not found.", player->name(), node_str );
-        return;
-      }
-
-      range::sort( traits, []( const trait_data_t* a, const trait_data_t* b ) {
+      range::sort( node, []( const trait_data_t* a, const trait_data_t* b ) {
         return a->selection_index < b->selection_index;
       } );
 
-      const trait_data_t* trait = traits.front();
+      auto trait = node.front();
       size_t rank = trait->max_ranks;
 
       if ( get_bit( 1, head ) )  // partially ranked normal trait
       {
-        if ( traits.size() > 1 )
+        if ( node.size() > 1 )
         {
-          do_error( fmt::format( "non-choice node {} has multiple entries.", node_str ) );
+          do_error( fmt::format( "non-choice node {} has multiple entries.", id ) );
           return;
         }
 
@@ -2577,13 +2568,13 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
       if ( get_bit( 1, head ) )  // choice trait
       {
         size_t index = get_bit( choice_bits, head );
-        if ( index >= traits.size() )
+        if ( index >= node.size() )
         {
-          do_error( fmt::format( "index {} for choice node {} out of bounds.", index, node_str ) );
+          do_error( fmt::format( "index {} for choice node {} out of bounds.", index, id ) );
           return;
         }
 
-        trait = traits[ index ];
+        trait = node[ index ];
       }
 
       player->player_traits.emplace_back( static_cast<talent_tree>( trait->tree_index ), trait->id_trait_node_entry,
@@ -11926,11 +11917,6 @@ std::string player_t::create_profile( save_e stype )
     {
       recreate_talent_str( sim->talent_input_format );
       profile_str += "talents=" + talents_str + term;
-
-      if ( !tree_nodes_str.empty() )
-      {
-        profile_str += "tree_nodes=" + tree_nodes_str + term;
-      }
     }
 
     if ( !class_talents_str.empty() )
@@ -12235,7 +12221,6 @@ void player_t::copy_from( player_t* source )
   professions_str   = source->professions_str;
   source->recreate_talent_str(talent_format::UNCHANGED );
   parse_talent_url( sim, "talents", source->talents_str );
-  tree_nodes_str    = source->tree_nodes_str;
   class_talents_str = source->class_talents_str;
   spec_talents_str  = source->spec_talents_str;
 
@@ -12305,7 +12290,6 @@ void player_t::create_options()
   add_option( opt_string( "thumbnail", report_information.thumbnail_url ) );
   add_option( opt_string( "id", id_str ) );
   add_option( opt_func( "talents", parse_talent_url ) );
-  add_option( opt_string( "tree_nodes", tree_nodes_str ) );
   add_option( opt_func( "talent_override", parse_talent_override ) );
   add_option( opt_string( "race", race_str ) );
   add_option( opt_func( "timeofday", parse_timeofday ) );
