@@ -823,7 +823,7 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
                       } );
 
   // Demo
-  dots_doom         = target->get_dot( "doom", &p );
+  dots_doom = target->get_dot( "doom", &p );
 
   debuffs_from_the_shadows = make_buff( *this, "from_the_shadows", p.talents.from_the_shadows_debuff )
                                  ->set_default_value_from_effect( 1 );

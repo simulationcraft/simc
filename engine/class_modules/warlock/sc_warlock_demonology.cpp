@@ -752,7 +752,7 @@ struct doom_t : public demonology_spell_t
     energize_resource = RESOURCE_SOUL_SHARD;
     energize_amount   = 1;
 
-    //TODO: Verify haste and refresh behaviors with changing stats while dot is already applied 
+    hasted_ticks = true;
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
@@ -762,9 +762,10 @@ struct doom_t : public demonology_spell_t
 
   void last_tick( dot_t* d ) override
   {
-    demonology_spell_t::last_tick( d );
+    if ( d->time_to_next_full_tick() > 0_ms )
+      gain_energize_resource( RESOURCE_SOUL_SHARD, energize_amount, p()->gains.doom ); // 2022-10-06: Doom appears to always give a full shard on its partial tick
 
-    gain_energize_resource( RESOURCE_SOUL_SHARD, energize_amount, p()->gains.doom ); // 2022-02-17: Doom appears to always give a full shard on its partial tick
+    demonology_spell_t::last_tick( d );
   }
 };
 
@@ -1139,7 +1140,7 @@ void warlock_t::init_spells_demonology()
   talents.dread_calling = find_talent_spell( talent_tree::SPECIALIZATION, "Dread Calling" ); // Should be ID 387391
   talents.dread_calling_buff = find_spell( 387393 );
 
-  talents.doom                = find_talent_spell( "Doom" );
+  talents.doom = find_talent_spell( talent_tree::SPECIALIZATION, "Doom" ); // Should be ID 603
 
 
 
