@@ -2206,11 +2206,11 @@ void priest_t::create_buffs_shadow()
   buffs.thing_from_beyond = make_buff( this, "thing_from_beyond", find_spell( 373277 ) );
 
   buffs.idol_of_yoggsaron =
-      make_buff( this, "idol_of_yogg-saron", talents.shadow.idol_of_yoggsaron->effectN( 2 ).trigger() )
+      make_buff( this, "idol_of_yoggsaron", talents.shadow.idol_of_yoggsaron->effectN( 2 ).trigger() )
           ->set_stack_change_callback( ( [ this ]( buff_t* b, int, int cur ) {
             if ( cur == b->max_stack() )
             {
-              b->expire();
+              make_event( b->sim, [ this, b ] { b->cancel(); } );
               procs.thing_from_beyond->occur();
               spawn_thing_from_beyond();
             }

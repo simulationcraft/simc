@@ -2172,7 +2172,7 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) : actor_target_data_t(
             buffs.echoing_void->decrement();
             if ( !buffs.echoing_void->check() )
             {
-              make_event( b->sim, timespan_t::from_millis( 1 ), [ this ] { buffs.echoing_void_collapse->cancel(); } );
+              make_event( b->sim, [ this, b ] { b->cancel(); } );
             }
           } );
   buffs.apathy =
