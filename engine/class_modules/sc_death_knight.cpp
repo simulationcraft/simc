@@ -537,7 +537,8 @@ public:
     buff_t* festermight;
     buff_t* ghoulish_frenzy;
     buff_t* plaguebringer; 
-    buff_t* t29_4pc_unholy;
+    buff_t* ghoulish_infusion;
+    buff_t* commander_of_the_dead_window;
 
     // Conduits
     buff_t* meat_shield;
@@ -984,6 +985,7 @@ public:
     const spell_data_t* ghoulish_frenzy_player;
     const spell_data_t* plaguebringer_buff;
     const spell_data_t* festermight_buff;
+    const spell_data_t* ghoulish_infusion;
 
     // T28 Blood 4pc
     const spell_data_t* endless_rune_waltz_4pc; // parry % chance and ICD
@@ -1013,6 +1015,8 @@ public:
     const spell_data_t* ruptured_viscera;
     // Ghoulish Frenzy
     const spell_data_t* ghoulish_frenzy;
+    // Vile Infusion
+    const spell_data_t* vile_infusion;
   } pet_spell;
 
   // RPPM
@@ -1074,6 +1078,7 @@ public:
     proc_t* km_from_obliteration_fs;   // Frost Strike during Obliteration
     proc_t* km_from_obliteration_hb;   // Howling Blast during Obliteration
     proc_t* km_from_obliteration_ga;   // Glacial Advance during Obliteration
+    proc_t* km_from_t29_4pc;           // T29 Frost 4PC
 
     // Killing machine refreshed by
     proc_t* km_from_crit_aa_wasted;
@@ -1081,6 +1086,7 @@ public:
     proc_t* km_from_obliteration_fs_wasted;   // Frost Strike during Obliteration
     proc_t* km_from_obliteration_hb_wasted;   // Howling Blast during Obliteration
     proc_t* km_from_obliteration_ga_wasted;   // Glacial Advance during Obliteration
+    proc_t* km_from_t29_4pc_wasted;           // T29 Frost 4PC
 
     // Runic corruption triggered by
     proc_t* pp_runic_corruption; // from pestilent pustules
@@ -1182,8 +1188,6 @@ public:
     bool disable_aotd = false;
     bool split_ghoul_regen = false;
     bool split_obliterate_schools = true;
-    bool t29_2pc = false;
-    bool t29_4pc = false;
   } options;
 
   // Runes
@@ -1395,11 +1399,14 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
                            -> set_default_value_from_effect( 1 );
 
   // Apocalypse Death Knight Runeforge Debuffs
-  debuff.apocalypse_death  = make_buff( *this, "death", p -> find_spell( 327095 ) );  // Effect not implemented
+  debuff.apocalypse_death  = make_buff( *this, "death", p -> find_spell( 327095 ) )  // Effect not implemented
+                            -> apply_affecting_aura( p -> talent.unholy_bond );
   debuff.apocalypse_famine = make_buff( *this, "famine", p -> find_spell( 327092 ) )
-                            -> set_default_value_from_effect( 1 );
+                            -> set_default_value_from_effect( 1 )
+                            -> apply_affecting_aura( p -> talent.unholy_bond );
   debuff.apocalypse_war    = make_buff( *this, "war", p -> find_spell( 327096 ) )
-                            -> set_default_value_from_effect( 1 );
+                            -> set_default_value_from_effect( 1 )
+                            -> apply_affecting_aura( p -> talent.unholy_bond );
 
   // Conduits
   debuff.debilitating_malady = make_buff( *this, "debilitating_malady", p -> find_spell( 338523 ) )
@@ -2148,11 +2155,11 @@ struct ghoul_pet_t : public base_ghoul_pet_t
     bool usable_in_dt;
     bool triggers_infected_claws;
 
-    dt_melee_ability_t( ghoul_pet_t* p, util::string_view name, const spell_data_t* spell = spell_data_t::nil(),
-                        bool usable_in_dt = true ) :
-      pet_melee_attack_t( p, name, spell ),
-      usable_in_dt( usable_in_dt ),
-      triggers_infected_claws( false )
+    dt_melee_ability_t(ghoul_pet_t* p, util::string_view name, const spell_data_t* spell = spell_data_t::nil(),
+        bool usable_in_dt = true) :
+        pet_melee_attack_t(p, name, spell),
+        usable_in_dt(usable_in_dt),
+        triggers_infected_claws(false)
     { }
 
     void impact( action_state_t* state ) override
@@ -2163,16 +2170,6 @@ struct ghoul_pet_t : public base_ghoul_pet_t
            rng().roll( dk() -> talent.unholy.infected_claws -> effectN( 1 ).percent() ) )
       {
         dk() -> trigger_festering_wound( state, 1, dk() -> procs.fw_infected_claws );
-      }
-    }
-    
-    void execute() override
-    {
-      pet_melee_attack_t::execute();
-
-      if ( dk() -> specialization() == DEATH_KNIGHT_UNHOLY && dk() -> options.t29_4pc && dk() -> rng().roll( 0.15 ) )
-      {
-        dk() -> buffs.t29_4pc_unholy -> trigger();
       }
     }
 
@@ -2228,6 +2225,37 @@ struct ghoul_pet_t : public base_ghoul_pet_t
     }
   };
 
+  struct ghoul_melee_t : public auto_attack_melee_t<ghoul_pet_t>
+  {
+    ghoul_melee_t( ghoul_pet_t* p, util::string_view name = "main_hand" ) :
+      auto_attack_melee_t<ghoul_pet_t>( p, name )
+    { }
+
+    void impact( action_state_t* state ) override
+    {
+      auto_attack_melee_t::impact( state );
+
+      if ( result_is_hit( state -> result ) )
+      {
+        // Ghoulish Infusion proc chance not listed in spell data, using hard coded 15% for now
+        if ( dk() -> sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T29, B4 ) )
+        {
+          double chance = 0.15;
+
+          if ( dk() -> pets.ghoul_pet -> vile_infusion -> up() )
+          {
+            chance *= 1.0 + 2.0;
+          }
+
+          if ( dk() -> sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T29, B4 ) && dk() -> rng().roll( chance ) )
+          {
+            dk() -> buffs.ghoulish_infusion -> trigger();
+          }
+        }
+      }
+    }
+  };
+
   ghoul_pet_t( death_knight_t* owner, bool guardian ) :
     base_ghoul_pet_t( owner, "ghoul" , guardian )
   {
@@ -2240,7 +2268,7 @@ struct ghoul_pet_t : public base_ghoul_pet_t
   }
 
   attack_t* create_auto_attack() override
-  { return new auto_attack_melee_t<ghoul_pet_t>( this ); }
+  { return new ghoul_melee_t( this ); }
 
   double composite_player_multiplier( school_e school ) const override
   {
@@ -2294,7 +2322,7 @@ struct ghoul_pet_t : public base_ghoul_pet_t
 
     // Note: for some dumb reason, WCL has the ghoul's AP and SP swapped
     // Running a script ingame shows the correct values
-    owner_coeff.ap_from_ap = 0.6;
+    owner_coeff.ap_from_ap = 0.54;
   }
 
   void init_gains() override
@@ -2342,9 +2370,12 @@ struct ghoul_pet_t : public base_ghoul_pet_t
       -> set_default_value_from_effect( 1 )
       -> set_duration( 0_s );
 
-    vile_infusion = make_buff( this, "vile_infusion" )
-        -> set_default_value( 0.1 )
-        -> set_duration( 10_s );
+    vile_infusion = make_buff( this, "vile_infusion", dk() -> pet_spell.vile_infusion )
+      -> set_default_value( dk() -> pet_spell.vile_infusion -> effectN( 1 ).percent() )
+      -> set_duration( dk() -> pet_spell.vile_infusion -> duration() )
+      -> set_cooldown( dk() -> sets -> set(DEATH_KNIGHT_UNHOLY, T29, B2 ) -> internal_cooldown() )
+      -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+      -> add_invalidate( CACHE_ATTACK_SPEED );
   }
 };
 
@@ -2378,6 +2409,15 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
   army_ghoul_pet_t( death_knight_t* owner, util::string_view name = "army_ghoul" ) :
     base_ghoul_pet_t( owner, name, true )
   { }
+
+  void arise() override
+  {
+    base_ghoul_pet_t::arise();
+    if ( dk() -> talent.unholy.commander_of_the_dead.ok() && dk() -> buffs.commander_of_the_dead_window -> up() )
+    {
+      commander_of_the_dead -> trigger();
+    }
+  }
 
   void init_base_stats() override
   {
@@ -2468,6 +2508,15 @@ struct gargoyle_pet_t : public death_knight_pet_t
 
     spawn_travel_duration = 2.9;
     spawn_travel_stddev = 0.2;
+  }
+  
+  void arise() override
+  {
+    death_knight_pet_t::arise();
+    if ( dk() -> talent.unholy.commander_of_the_dead.ok() && dk() -> buffs.commander_of_the_dead_window -> up() )
+    {
+      commander_of_the_dead -> trigger();
+    }
   }
 
   void init_base_stats() override
@@ -2955,6 +3004,15 @@ struct magus_pet_t : public death_knight_pet_t
     resource_regeneration = regen_type::DISABLED;
   }
 
+  void arise() override
+  {
+    death_knight_pet_t::arise();
+    if ( dk() -> talent.unholy.commander_of_the_dead.ok() && dk() -> buffs.commander_of_the_dead_window -> up() )
+    {
+      commander_of_the_dead -> trigger();
+    }
+  }
+
   void init_base_stats() override
   {
     death_knight_pet_t::init_base_stats();
@@ -2963,6 +3021,19 @@ struct magus_pet_t : public death_knight_pet_t
     // Looks like Magus' AP coefficient is the same as the pet ghouls'
     // Including the +6% buff applied before magus was even a thing
     owner_coeff.ap_from_ap *= 1.06;
+  }
+
+  
+  double composite_player_multiplier( school_e s ) const override
+  {
+    double m = death_knight_pet_t::composite_player_multiplier( s );
+
+    if ( commander_of_the_dead -> up() ) 
+    {
+      m *= 1.0 + commander_of_the_dead -> value();
+    }
+
+    return m;
   }
 
   // Magus of the dead Action Priority List:
@@ -3075,6 +3146,7 @@ struct death_knight_action_t : public Base
     bool brittle;
     bool tightening_grasp;
     bool death_rot;
+    bool ghoulish_infusion;
   } affected_by;
 
   bool may_proc_bron;
@@ -3118,6 +3190,7 @@ struct death_knight_action_t : public Base
     this -> affected_by.brittle = this -> data().affected_by( p -> spell.brittle_debuff -> effectN( 1 ) );
     this -> affected_by.tightening_grasp = this -> data().affected_by( p -> spell.tightening_grasp_debuff -> effectN( 1 ) );
     this -> affected_by.death_rot = this -> data().affected_by( p -> spell.death_rot_debuff -> effectN( 1 ) );
+    this -> affected_by.ghoulish_infusion = this -> data().affected_by( p -> spell.ghoulish_infusion -> effectN( 1 ) );
 
     // TODO July 19 2022
     // Spelldata for Might of the frozen wastes is still all sorts of jank.
@@ -3170,6 +3243,11 @@ struct death_knight_action_t : public Base
       m *= 1.0 + p() -> cache.mastery_value();
     }
 
+    if ( this -> affected_by.ghoulish_infusion && p() -> sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T29, B4 ) && p() -> buffs.ghoulish_infusion -> up() )
+    {
+      m *= 1.0 + p() -> buffs.ghoulish_infusion -> value();
+    }
+
     return m;
   }
 
@@ -3180,6 +3258,11 @@ struct death_knight_action_t : public Base
     if ( this -> affected_by.frozen_heart || this -> affected_by.dreadblade )
     {
       m *= 1.0 + p() -> cache.mastery_value();
+    }
+
+    if ( this -> affected_by.ghoulish_infusion && p() -> sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T29, B4 ) && p() -> buffs.ghoulish_infusion -> up() )
+    {
+      m *= 1.0 + p() -> buffs.ghoulish_infusion -> value();
     }
 
     return m;
@@ -3443,7 +3526,12 @@ struct blood_plague_t : public death_knight_disease_t
     // The "reduced effectiveness" mentionned in the tooltip is handled server side
     // Value calculated from testing, may change without notice
     if ( superstrain )
-      base_multiplier *= 1;
+    {
+      base_multiplier *= 1 + (p -> talent.unholy.superstrain -> effectN( 2 ).percent());
+      // It looks like the legendary modifier from superstrain is still being applied to blood plague, but not frost fever.
+      if ( p -> bugs )
+        base_multiplier *= 0.75;
+    }
     // Create superstrain-triggered spells if needed
     else if ( p -> legendary.superstrain -> ok() )
     {
@@ -3518,7 +3606,7 @@ struct frost_fever_t : public death_knight_disease_t
   frost_fever_t( util::string_view name, death_knight_t* p, bool superstrain = false ) :
     death_knight_disease_t( name, p, p -> spell.frost_fever ),
     rp_generation( ( as<int>( p -> spec.frost_fever -> effectN( 1 ).trigger()
-                     -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) ) ) )
+                     -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) + ( p -> talent.unholy.superstrain -> effectN(3).base_value() / 10 ) ) ) ) 
   {
     ap_type = attack_power_type::WEAPON_BOTH;
 
@@ -3535,7 +3623,7 @@ struct frost_fever_t : public death_knight_disease_t
     // The "reduced effectiveness" mentioned in the tooltip is handled server side
     // Value calculated from testing, may change without notice
     if ( superstrain )
-      base_multiplier *= 1;
+      base_multiplier *= 1 + (p -> talent.unholy.superstrain -> effectN( 2 ).percent());
     // Create superstrain-triggered spells if needed
     else if ( p -> legendary.superstrain -> ok() )
     {
@@ -4283,6 +4371,7 @@ struct army_of_the_dead_t : public death_knight_spell_t
 
     if ( p() -> talent.unholy.magus_of_the_dead.ok() )
       p() -> pets.magus_of_the_dead.spawn( summon_duration - timespan_t::from_seconds( precombat_time ), 1 );
+
   }
 };
 
@@ -4952,8 +5041,6 @@ struct unholy_pact_buff_t : public buff_t
       p -> talent.unholy.unholy_pact -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() ),
     damage( get_action<unholy_pact_damage_t>( "unholy_pact", p ) )
   {
-    set_default_value( data().effectN( 4 ).trigger() -> effectN( 1 ).percent() );
-    add_invalidate( CACHE_STRENGTH );
     tick_zero = true;
     buff_period = 1.0_s;
     set_tick_behavior( buff_tick_behavior::CLIP );
@@ -5112,6 +5199,11 @@ struct dark_transformation_t : public death_knight_spell_t
           ghoul -> commander_of_the_dead -> trigger();
         }
 
+        for (auto magus : p()->pets.magus_of_the_dead.active_pets())
+        {
+          magus -> commander_of_the_dead -> trigger();
+        }
+        p() -> buffs.commander_of_the_dead_window -> trigger();
       }
     }
   }
@@ -5609,18 +5701,6 @@ struct death_coil_t : public death_knight_spell_t
         timespan_t::from_seconds( p() -> talent.unholy.eternal_agony -> effectN( 1 ).base_value() ) );
     }
 
-    // Currently Death Rot only triggers on the main target
-    if ( p() -> talent.unholy.death_rot.ok() )
-    {
-      get_td( target ) -> debuff.death_rot -> trigger();
-      
-      if ( p() -> buffs.sudden_doom -> check() )
-      {
-        get_td( target ) -> debuff.death_rot -> trigger();
-      }
-    }
-
-    // Currently Rotten Touch only triggers on the main target
     if ( p() -> talent.unholy.rotten_touch.ok() && p() -> buffs.sudden_doom -> check() )
     {
       get_td( target ) -> debuff.rotten_touch -> trigger();
@@ -5628,9 +5708,6 @@ struct death_coil_t : public death_knight_spell_t
 
     p() -> buffs.sudden_doom -> decrement();
   }
-
-  /* 
-  Currently Death Rot and Rotten Touch only trigger on the main target, not all targets hit. 
 
   void impact( action_state_t* state ) override
   {
@@ -5646,13 +5723,15 @@ struct death_coil_t : public death_knight_spell_t
       }
     }
 
+    /*
     if ( p() -> talent.unholy.rotten_touch.ok() && p() -> buffs.sudden_doom -> check() && 
          result_is_hit( state -> result ) )
     {
       get_td( state -> target ) -> debuff.rotten_touch -> trigger();
     }
+    */
   }
-  */
+
 };
 
 // Death Strike =============================================================
@@ -6099,18 +6178,22 @@ struct epidemic_t : public death_knight_spell_t
         timespan_t::from_seconds( p() -> talent.unholy.eternal_agony -> effectN( 1 ).base_value() ) );
     }
 
-    // Currently Death Rot only triggers on the main target
-    if ( p() -> talent.unholy.death_rot.ok() )
+    p() -> buffs.sudden_doom -> decrement();
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    death_knight_spell_t::impact( state );
+
+    if ( p() -> talent.unholy.death_rot.ok() && result_is_hit( state -> result ) )
     {
-      get_td( target ) -> debuff.death_rot -> trigger();
+      get_td( state -> target ) -> debuff.death_rot -> trigger();
       
       if ( p() -> buffs.sudden_doom -> check() )
       {
-        get_td( target ) -> debuff.death_rot -> trigger();
+        get_td( state -> target ) -> debuff.death_rot -> trigger();
       }
     }
-
-    p() -> buffs.sudden_doom -> decrement();
   }
 };
 
@@ -6289,9 +6372,9 @@ struct frostscythe_t : public death_knight_melee_attack_t
   {
     double m = death_knight_melee_attack_t::calculate_crit_damage_bonus( s );
 
-    if ( p() -> options.t29_2pc )
+    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T29, B2 ) )
     {
-      m *= 1.0 + 0.15;
+      m *= 1.0 + p() -> sets -> set( DEATH_KNIGHT_FROST, T29, B2 ) -> effectN(1).percent();
     }
 
     return m;
@@ -6311,11 +6394,13 @@ struct frostscythe_t : public death_knight_melee_attack_t
       }
     }
 
-    if ( p() -> options.t29_4pc && p() -> buffs.killing_machine -> up() && p() -> rng().roll( 0.15 ) )
+    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T29, B4 ) &&
+          p() -> buffs.killing_machine -> up() )
     {
-      p() -> buffs.killing_machine -> trigger();
+      p() -> consume_killing_machine( p() -> procs.killing_machine_fsc );
+      p() -> trigger_killing_machine( p() -> sets -> set( DEATH_KNIGHT_FROST, T29, B4 ) -> effectN( 1 ).percent(),
+                                      p() -> procs.km_from_t29_4pc, p() -> procs.km_from_t29_4pc_wasted );
     }
-
     else
     {
       p() -> consume_killing_machine( p() -> procs.killing_machine_fsc );
@@ -7163,9 +7248,9 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
   {
     double m = death_knight_melee_attack_t::calculate_crit_damage_bonus( s );
 
-    if ( p() -> options.t29_2pc )
+    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T29, B2 ) )
     {
-      m *= 1.0 + 0.15;
+      m *= 1.0 + p() -> sets -> set(DEATH_KNIGHT_FROST, T29, B2 ) -> effectN( 1 ).percent();
     }
 
     return m;
@@ -7337,11 +7422,13 @@ struct obliterate_t : public death_knight_melee_attack_t
     }
 
 
-    if ( p() -> options.t29_4pc && p() -> buffs.killing_machine -> up() && p() -> rng().roll( 0.15 ) )
+    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T29, B4 ) &&
+          p() -> buffs.killing_machine -> up() )
     {
-      p() -> buffs.killing_machine -> trigger();
+      p() -> consume_killing_machine( p() -> procs.killing_machine_oblit );
+      p() -> trigger_killing_machine( p() -> sets -> set( DEATH_KNIGHT_FROST, T29, B4 ) -> effectN( 1 ).percent(),
+                                      p() -> procs.km_from_t29_4pc, p() -> procs.km_from_t29_4pc_wasted );
     }
-
     else
     {
       p() -> consume_killing_machine( p() -> procs.killing_machine_oblit );
@@ -7391,6 +7478,17 @@ struct outbreak_t : public death_knight_spell_t
     death_knight_spell_t::init();
     may_proc_bron = true;
   }
+};
+
+// Rune of Apocalpyse - Pestilence ==========================================
+struct runeforge_apocalypse_pestilence_t : public death_knight_spell_t
+{
+  runeforge_apocalypse_pestilence_t( util::string_view name, death_knight_t* p ) :
+    death_knight_spell_t( name, p, p -> find_spell( 327093 ) )
+    {
+      base_dd_multiplier *= 1.0 + p ->spell.exacting_preparation->effectN( 4 ).percent();
+      base_dd_multiplier *= 1.0 + p -> talent.unholy_bond -> effectN( 1 ).percent();
+    }
 };
 
 // Pillar of Frost ==========================================================
@@ -8840,7 +8938,7 @@ void runeforge::apocalypse( special_effect_t& effect )
   // Triggering the effects is handled in pet_melee_attack_t::impact()
   p -> runeforge.rune_of_apocalypse = true;
   // Even though a pet procs it, the damage from Pestilence belongs directly to the player in logs
-  p -> active_spells.runeforge_pestilence = new death_knight_spell_t( "Pestilence", p, p -> find_spell( 327093 ) );
+  p -> active_spells.runeforge_pestilence = new runeforge_apocalypse_pestilence_t( "Pestilence", p );
 }
 
 void runeforge::hysteria( special_effect_t& effect )
@@ -9132,8 +9230,6 @@ void death_knight_t::create_options()
   add_option( opt_bool( "disable_aotd", options.disable_aotd ) );
   add_option( opt_bool( "split_ghoul_regen", options.split_ghoul_regen ) );
   add_option( opt_bool( "split_obliterate_schools", options.split_obliterate_schools ) );
-  add_option( opt_bool( "death_knight.t29_2pc", options.t29_2pc ) );
-  add_option( opt_bool( "death_knight.t29_4pc", options.t29_4pc ) );
 }
 
 void death_knight_t::copy_from( player_t* source )
@@ -9238,9 +9334,9 @@ void death_knight_t::trigger_festering_wound_death( player_t* target )
     buffs.festermight->trigger( n_wounds );
   }
 
-  if ( options.t29_2pc )
+  if ( sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T29, B2 ) )
   {
-      pets.ghoul_pet -> vile_infusion -> trigger( n_wounds );
+      pets.ghoul_pet -> vile_infusion -> trigger();
   }
 }
 
@@ -9473,13 +9569,13 @@ void death_knight_t::burst_festering_wound( player_t* target, unsigned n )
       {
         dk->buffs.festermight->trigger( n_executes );
       }
+      
+      if ( dk -> sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T29, B2 ) )
+      {
+        dk -> pets.ghoul_pet -> vile_infusion -> trigger();
+      }
 
       td -> debuff.festering_wound -> decrement( n_executes ); 
-
-      if ( dk -> options.t29_2pc )
-      {
-        dk -> pets.ghoul_pet -> vile_infusion -> trigger( n_executes );
-      }
     }
   };
 
@@ -10377,6 +10473,7 @@ void death_knight_t::init_spells()
   spell.ghoulish_frenzy_player     = find_spell( 377587 );
   spell.plaguebringer_buff         = find_spell( 390178 );
   spell.festermight_buff           = find_spell( 377591 );
+  spell.ghoulish_infusion          = find_spell( 394899 );
 
   // Pet abilities
   // Raise Dead abilities, used for both rank 1 and rank 2
@@ -10400,6 +10497,8 @@ void death_knight_t::init_spells()
   pet_spell.ruptured_viscera = find_spell( 390220 );
   // Ghoulish Frenzy
   pet_spell.ghoulish_frenzy = find_spell ( 377587 );
+  // Vile Infusion
+  pet_spell.vile_infusion = find_spell ( 394863 );
 
   // Shadowlands specific - Commented out = NYI
 
@@ -10795,12 +10894,14 @@ void death_knight_t::create_buffs()
                           ->set_default_value( talent.unholy.festermight->effectN( 1 ).percent() )
                           ->set_refresh_behavior( buff_refresh_behavior::DISABLED );
 
-  buffs.t29_4pc_unholy = make_buff( this, "t29_4pc_unholy" )
-           -> set_duration ( 8_s )
-           -> set_default_value( 0.1 )
-           -> set_pct_buff_type( STAT_PCT_BUFF_HASTE )
-           -> add_invalidate( CACHE_HASTE )
+  buffs.ghoulish_infusion = make_buff( this, "ghoulish_infusion", spell.ghoulish_infusion )
+           -> set_duration( spell.ghoulish_infusion -> duration() )
+           -> set_default_value_from_effect( 1 )
+           -> add_invalidate( CACHE_ATTACK_SPEED )
            -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+
+  buffs.commander_of_the_dead_window = make_buff( this, "commander_of_the_dead_window" )
+           -> set_duration( 4_s );
 
   // Conduits
   buffs.eradicating_blow = make_buff( this, "eradicating_blow", find_spell( 337936 ) )
@@ -10952,12 +11053,14 @@ void death_knight_t::init_procs()
   procs.km_from_obliteration_fs   = get_proc( "Killing Machine: Frost Strike" );
   procs.km_from_obliteration_hb   = get_proc( "Killing Machine: Howling Blast" );
   procs.km_from_obliteration_ga   = get_proc( "Killing Machine: Glacial Advance" );
+  procs.km_from_t29_4pc           = get_proc( "Killing Machine: T29 4pc" );
 
   procs.km_from_crit_aa_wasted           = get_proc( "Killing Machine wasted: Critical auto attacks" );
   procs.km_from_cold_blooded_rage_wasted = get_proc( "Killing Machine wasted: Cold-Blooded Rage" );
   procs.km_from_obliteration_fs_wasted   = get_proc( "Killing Machine wasted: Frost Strike" );
   procs.km_from_obliteration_hb_wasted   = get_proc( "Killing Machine wasted: Howling Blast" );
   procs.km_from_obliteration_ga_wasted   = get_proc( "Killing Machine wasted: Glacial Advance" );
+  procs.km_from_t29_4pc_wasted           = get_proc( "Killing Machine wasted: T29 4pc" );
 
   procs.ready_rune            = get_proc( "Rune ready" );
 
@@ -11392,11 +11495,6 @@ double death_knight_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + talent.blood.bloodshot -> effectN( 1 ).percent();
   }
 
-  if ( buffs.t29_4pc_unholy->up() )
-  {
-    m *= 1.0 + buffs.t29_4pc_unholy -> value();
-  }
-
   return m;
 }
 
@@ -11513,6 +11611,11 @@ double death_knight_t::composite_melee_speed() const
   if ( buffs.ghoulish_frenzy -> up() )
   {
     haste *= 1.0 / ( 1.0 + talent.unholy.ghoulish_frenzy -> effectN( 1 ).percent() );
+  }
+
+  if ( buffs.ghoulish_infusion -> up() )
+  {
+    haste *= 1.0 / ( 1.0 + buffs.ghoulish_infusion -> value() );
   }
 
   return haste;
