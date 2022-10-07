@@ -2529,6 +2529,9 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
     return;
   }
 
+  // Clear all existing traits
+  player->player_traits.clear();
+
   // As per Interface/AddOns/Blizzard_ClassTalentUI/Blizzard_ClassTalentImportExport.lua: treeHash is a 128bit hash,
   // passed as an array of 16, 8-bit values. For SimC purposes we can ignore it, as invalid/outdated strings can error
   // in later checks
