@@ -317,7 +317,7 @@ public:
     player_talent_t imp_gang_boss; // DF - Imp Gang Boss (2 point talent, Wild Imp has chance to be this pet instead)
     player_talent_t kazaaks_final_curse; // Doom deals increased damage based on active demon count
     player_talent_t ripped_through_the_portal; // Increased Dreadstalker count chance (Formerly SL Tier bonus)
-    // DF - Houndmaster's Gambit (2 point talent, Shadow Bolt and Demonbolt have a chance to reset Call Dreadstalkers)
+    player_talent_t hounds_of_war; // Shadow Bolt and Demonbolt have a chance to reset Call Dreadstalkers
     
     const spell_data_t* nether_portal; // DF - Cooldown may be reverted, will require constant checking until launch
     // DF - Summon Demonic Tyrant - Presumably unchanged, but new talents require checking against this summon
@@ -458,6 +458,7 @@ public:
     propagate_const<cooldown_t*> infernal;
     propagate_const<cooldown_t*> shadowburn;
     propagate_const<cooldown_t*> soul_rot;
+    propagate_const<cooldown_t*> call_dreadstalkers;
   } cooldowns;
 
   // DF - Retire this section, combine remnants with the mastery_spells struct above in a "core" or "base" spells section
@@ -602,6 +603,7 @@ public:
     proc_t* horned_nightmare; // DF - Now a Demonology talent
     proc_t* demonic_meteor;
     proc_t* imp_gang_boss;
+    proc_t* hounds_of_war;
 
     // destro
     proc_t* reverse_entropy;

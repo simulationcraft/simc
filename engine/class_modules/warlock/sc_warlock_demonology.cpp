@@ -263,6 +263,12 @@ struct demonbolt_t : public demonology_spell_t
 
     if ( p()->talents.demonic_calling.ok() )
       p()->buffs.demonic_calling->trigger();
+
+    if ( p()->talents.hounds_of_war.ok() && rng().roll( p()->talents.hounds_of_war->effectN( 1 ).percent() ) )
+    {
+      p()->cooldowns.call_dreadstalkers->reset( true );
+      p()->procs.hounds_of_war->occur();
+    }
   }
 
   double action_multiplier() const override
@@ -1221,6 +1227,8 @@ void warlock_t::init_spells_demonology()
 
   talents.ripped_through_the_portal = find_talent_spell( talent_tree::SPECIALIZATION, "Ripped Through the Portal" ); // Should be ID 387485
 
+  talents.hounds_of_war = find_talent_spell( talent_tree::SPECIALIZATION, "Hounds of War" ); // Should be ID 387488
+
   talents.sacrificed_souls    = find_talent_spell( "Sacrificed Souls" );
   talents.demonic_consumption = find_talent_spell( "Demonic Consumption" );
   talents.nether_portal       = find_talent_spell( "Nether Portal" );
@@ -1260,6 +1268,7 @@ void warlock_t::init_procs_demonology()
   procs.demonic_knowledge = get_proc( "demonic_knowledge" );
   procs.demonic_meteor = get_proc( "demonic_meteor" );
   procs.imp_gang_boss = get_proc( "imp_gang_boss" );
+  procs.hounds_of_war = get_proc( "hounds_of_war" );
 }
 
 }  // namespace warlock

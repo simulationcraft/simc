@@ -515,6 +515,12 @@ struct shadow_bolt_t : public warlock_spell_t
 
     if ( p()->talents.fel_covenant.ok() )
       p()->buffs.fel_covenant->increment();
+
+    if ( p()->talents.hounds_of_war.ok() && rng().roll( p()->talents.hounds_of_war->effectN( 1 ).percent() ) )
+    {
+      p()->cooldowns.call_dreadstalkers->reset( true );
+      p()->procs.hounds_of_war->occur();
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -982,6 +988,7 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
   cooldowns.infernal            = get_cooldown( "summon_infernal" );
   cooldowns.shadowburn          = get_cooldown( "shadowburn" );
   cooldowns.soul_rot = get_cooldown( "soul_rot" );
+  cooldowns.call_dreadstalkers = get_cooldown( "call_dreadstalkers" );
 
   resource_regeneration             = regen_type::DYNAMIC;
   regen_caches[ CACHE_HASTE ]       = true;
