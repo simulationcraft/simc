@@ -447,8 +447,8 @@ public:
 
     buff_t* fireheart;
 
-    buff_t* t29_2pc;
-    buff_t* t29_4pc;
+    buff_t* t29_2pc_ele;
+    buff_t* t29_4pc_ele;
 
     // Enhancement
     buff_t* maelstrom_weapon;
@@ -488,8 +488,8 @@ public:
   {
     rotation_type_e rotation = ROTATION_STANDARD;
 
-    bool t29_2pc = false;
-    bool t29_4pc = false;
+    bool t29_2pc_ele = false;
+    bool t29_4pc_ele = false;
   } options;
 
   // Cooldowns
@@ -646,11 +646,6 @@ public:
     proc_t* t29_2pc_ele_3;
     proc_t* t29_2pc_ele_4;
     proc_t* t29_2pc_ele_5;
-    proc_t* t29_2pc_ele_6;
-    proc_t* t29_2pc_ele_7;
-    proc_t* t29_2pc_ele_8;
-    proc_t* t29_2pc_ele_9;
-    proc_t* t29_2pc_ele_10;
 
     proc_t* pyroclastic_shock;
 
@@ -4695,6 +4690,16 @@ struct chain_lightning_overload_t : public chained_overload_base_t
 
     return t;
   }
+
+  void execute() override
+  {
+    chained_overload_base_t::execute();
+
+    if ( p()->options.t29_2pc_ele )
+    {
+      p()->buff.t29_2pc_ele->trigger();
+    }
+  }
 };
 
 struct lava_beam_overload_t : public chained_overload_base_t
@@ -4958,9 +4963,9 @@ struct chain_lightning_t : public chained_base_t
       p()->action.ti_trigger = p()->action.chain_lightning_ti;
     }
 
-    if ( p()->options.t29_2pc )
+    if ( p()->options.t29_2pc_ele )
     {
-      p()->buff.t29_2pc->trigger();
+      p()->buff.t29_2pc_ele->trigger();
     }
   }
 
@@ -5189,9 +5194,9 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
       p()->cooldown.primordial_wave->adjust( p()->talent.rolling_magma->effectN( 1 ).time_value() );
     }
 
-    if ( p()->options.t29_2pc )
+    if ( p()->options.t29_2pc_ele )
     {
-      p()->buff.t29_2pc->trigger();
+      p()->buff.t29_2pc_ele->trigger();
     }
   }
  };
@@ -5674,9 +5679,9 @@ struct lava_burst_t : public shaman_spell_t
       p()->cooldown.primordial_wave->adjust( p()->talent.rolling_magma->effectN( 1 ).time_value() );
     }
 
-    if ( p()->options.t29_2pc )
+    if ( p()->options.t29_2pc_ele )
     {
-      p()->buff.t29_2pc->trigger();
+      p()->buff.t29_2pc_ele->trigger();
     }
   }
 
@@ -5723,10 +5728,10 @@ struct lightning_bolt_overload_t : public elemental_overload_spell_t
 
   void execute() override
   {
-    shaman_spell_t::execute();
-    if ( p()->options.t29_2pc )
+    elemental_overload_spell_t::execute();
+    if ( p()->options.t29_2pc_ele )
     {
-      p()->buff.t29_2pc->trigger();
+      p()->buff.t29_2pc_ele->trigger();
     }
   }
 };
@@ -5933,9 +5938,9 @@ struct lightning_bolt_t : public shaman_spell_t
       p()->action.ti_trigger = p()->action.lightning_bolt_ti;
     }
 
-    if ( p()->options.t29_2pc )
+    if ( p()->options.t29_2pc_ele )
     {
-      p()->buff.t29_2pc->trigger();
+      p()->buff.t29_2pc_ele->trigger();
     }
 
   }
@@ -6003,9 +6008,9 @@ struct elemental_blast_overload_t : public elemental_overload_spell_t
   {
     double m = shaman_spell_t::action_multiplier();
 
-    if ( p()->options.t29_2pc && p()->buff.t29_2pc->check() )
+    if ( p()->options.t29_2pc_ele && p()->buff.t29_2pc_ele->check() )
     {
-      m *= 1.0 + p()->buff.t29_2pc->check_stack_value();
+      m *= 1.0 + p()->buff.t29_2pc_ele->check_stack_value();
     }
 
     m *= 1.0 + p()->buff.magma_chamber->stack_value();
@@ -6059,9 +6064,9 @@ struct elemental_blast_t : public shaman_spell_t
   {
     double m = shaman_spell_t::action_multiplier();
 
-    if ( p()->options.t29_2pc && p()->buff.t29_2pc->check() )
+    if ( p()->options.t29_2pc_ele && p()->buff.t29_2pc_ele->check() )
     {
-      m *= 1.0 + p()->buff.t29_2pc->stack_value();
+      m *= 1.0 + p()->buff.t29_2pc_ele->stack_value();
     }
 
     m *= 1.0 + p()->buff.magma_chamber->stack_value();
@@ -6116,15 +6121,15 @@ struct elemental_blast_t : public shaman_spell_t
       p()->buff.lava_surge->trigger();
     }
 
-    if ( p()->buff.t29_2pc->up() )
+    if ( p()->buff.t29_2pc_ele->up() )
     {
       p()->track_t29_2pc_ele();
-      p()->buff.t29_2pc->expire();
+      p()->buff.t29_2pc_ele->expire();
     }
 
-    if ( p()->options.t29_4pc )
+    if ( p()->options.t29_4pc_ele )
     {
-      p()->buff.t29_4pc->trigger();
+      p()->buff.t29_4pc_ele->trigger();
     }
   }
 
@@ -6275,9 +6280,9 @@ struct earthquake_damage_base_t : public shaman_spell_t
       m *= 1.0 + p()->buff.magma_chamber->stack_value();
     }
 
-    if ( p()->options.t29_2pc && p()->buff.t29_2pc->up() )
+    if ( p()->options.t29_2pc_ele && p()->buff.t29_2pc_ele->up() )
     {
-      m *= 1 + p()->buff.t29_2pc->stack_value();
+      m *= 1 + p()->buff.t29_2pc_ele->stack_value();
     }
 
     return m;
@@ -6406,9 +6411,9 @@ struct earthquake_damage_t : public earthquake_damage_base_t
 
     m *= 1.0 + p()->buff.magma_chamber->stack_value();
 
-    if ( p()->options.t29_2pc && p()->buff.t29_2pc->check() )
+    if ( p()->options.t29_2pc_ele && p()->buff.t29_2pc_ele->check() )
     {
-      m *= 1 + p()->buff.t29_2pc->check_stack_value();
+      m *= 1 + p()->buff.t29_2pc_ele->check_stack_value();
     }
 
     return m;
@@ -6484,15 +6489,15 @@ struct earthquake_t : public earthquake_base_t
       p()->buff.magma_chamber->expire();
     }
 
-    if ( p()->buff.t29_2pc->up() )
+    if ( p()->buff.t29_2pc_ele->up() )
     {
       p()->track_t29_2pc_ele();
-      p()->buff.t29_2pc->expire();
+      p()->buff.t29_2pc_ele->expire();
     }
 
-    if ( p()->options.t29_4pc )
+    if ( p()->options.t29_4pc_ele )
     {
-      p()->buff.t29_4pc->trigger();
+      p()->buff.t29_4pc_ele->trigger();
     }
   }
 };
@@ -6627,9 +6632,9 @@ struct earth_shock_overload_t : public elemental_overload_spell_t
 
     m *= 1.0 + p()->buff.magma_chamber->stack_value();
 
-    if ( p()->options.t29_2pc && p()->buff.t29_2pc->check() )
+    if ( p()->options.t29_2pc_ele && p()->buff.t29_2pc_ele->check() )
     {
-      m *= 1 + p()->buff.t29_2pc->check_stack_value();
+      m *= 1 + p()->buff.t29_2pc_ele->check_stack_value();
     }
 
     return m;
@@ -6656,9 +6661,9 @@ struct earth_shock_t : public shaman_spell_t
   {
     double m = shaman_spell_t::action_multiplier();
 
-    if ( p()->options.t29_2pc && p()->buff.t29_2pc->up() )
+    if ( p()->options.t29_2pc_ele && p()->buff.t29_2pc_ele->up() )
     {
-      m *= 1.0 + p()->buff.t29_2pc->stack_value();
+      m *= 1.0 + p()->buff.t29_2pc_ele->stack_value();
     }
 
     m *= 1.0 + p()->buff.magma_chamber->stack_value();
@@ -6723,15 +6728,15 @@ struct earth_shock_t : public shaman_spell_t
       p()->buff.magma_chamber->expire();
     }
 
-    if ( p()->buff.t29_2pc->up() )
+    if ( p()->buff.t29_2pc_ele->up() )
     {
       p()->track_t29_2pc_ele();
-      p()->buff.t29_2pc->expire();    
+      p()->buff.t29_2pc_ele->expire();    
     }
 
-    if ( p()->options.t29_4pc )
+    if ( p()->options.t29_4pc_ele )
     {
-      p()->buff.t29_4pc->trigger();
+      p()->buff.t29_4pc_ele->trigger();
     }
   }
 
@@ -9181,8 +9186,8 @@ void shaman_t::create_options()
 {
   player_t::create_options();
   add_option( opt_bool( "raptor_glyph", raptor_glyph ) );
-  add_option( opt_bool( "shaman.t29_2pc", options.t29_2pc ) );
-  add_option( opt_bool( "shaman.t29_4pc", options.t29_4pc ) );
+  add_option( opt_bool( "shaman.t29_2pc_ele", options.t29_2pc_ele ) );
+  add_option( opt_bool( "shaman.t29_4pc_ele", options.t29_4pc_ele ) );
   // option allows Elemental Shamans to switch to a different APL
   add_option( opt_func( "rotation", [ this ]( sim_t*, util::string_view, util::string_view val ) {
     if ( util::str_compare_ci( val, "standard" ) )
@@ -9795,7 +9800,7 @@ void shaman_t::track_magma_chamber()
 
 void shaman_t::track_t29_2pc_ele()
 {
-  switch ( buff.t29_2pc->check() )
+  switch ( buff.t29_2pc_ele->check() )
   {
     case 1:
       proc.t29_2pc_ele_1->occur();
@@ -9811,21 +9816,6 @@ void shaman_t::track_t29_2pc_ele()
       break;
     case 5:
       proc.t29_2pc_ele_5->occur();
-      break;
-    case 6:
-      proc.t29_2pc_ele_6->occur();
-      break;
-    case 7:
-      proc.t29_2pc_ele_7->occur();
-      break;
-    case 8:
-      proc.t29_2pc_ele_8->occur();
-      break;
-    case 9:
-      proc.t29_2pc_ele_9->occur();
-      break;
-    case 10:
-      proc.t29_2pc_ele_10->occur();
       break;
     default:
       break;
@@ -10496,11 +10486,11 @@ void shaman_t::create_buffs()
     ->set_cooldown( timespan_t::zero() )  // Handled by the action
     ->set_default_value_from_effect( 2 ); // Damage bonus as default value
 
-  buff.t29_2pc = make_buff( this, "t29_2pc" )->set_max_stack( 10 )->set_default_value( 0.025 )->set_duration( 10_s );
-  buff.t29_4pc = make_buff<buff_t>( this, "t29_4pc" )
+  buff.t29_2pc_ele = make_buff( this, "t29_2pc_ele" )->set_max_stack( 5 )->set_default_value( 0.05 )->set_duration( 10_s );
+  buff.t29_4pc_ele = make_buff<buff_t>( this, "t29_4pc_ele" )
                      // 10% divided by our mastery-point multiplier
-                     ->set_default_value( 10.0 / 1.875 )
-                     ->set_duration( 10_s )
+                     ->set_default_value( 8.0 / 1.875 )
+                     ->set_duration( 5_s )
                      ->set_max_stack(1)
                      ->set_default_value_from_effect_type(A_MOD_MASTERY_PCT)
                      ->set_pct_buff_type(STAT_PCT_BUFF_MASTERY);
@@ -10823,11 +10813,6 @@ void shaman_t::init_procs()
   proc.t29_2pc_ele_3 = get_proc( "Set Bonus: Tier29 2PC Elemental spender empowerement, stack 3" );
   proc.t29_2pc_ele_4 = get_proc( "Set Bonus: Tier29 2PC Elemental spender empowerement, stack 4" );
   proc.t29_2pc_ele_5 = get_proc( "Set Bonus: Tier29 2PC Elemental spender empowerement, stack 5" );
-  proc.t29_2pc_ele_6 = get_proc( "Set Bonus: Tier29 2PC Elemental spender empowerement, stack 6" );
-  proc.t29_2pc_ele_7 = get_proc( "Set Bonus: Tier29 2PC Elemental spender empowerement, stack 7" );
-  proc.t29_2pc_ele_8 = get_proc( "Set Bonus: Tier29 2PC Elemental spender empowerement, stack 8" );
-  proc.t29_2pc_ele_9 = get_proc( "Set Bonus: Tier29 2PC Elemental spender empowerement, stack 9" );
-  proc.t29_2pc_ele_10 = get_proc( "Set Bonus: Tier29 2PC Elemental spender empowerement, stack 10" );
 }
 
 // shaman_t::init_uptimes ====================================================
