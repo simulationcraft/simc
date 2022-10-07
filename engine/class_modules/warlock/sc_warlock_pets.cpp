@@ -53,6 +53,8 @@ void warlock_pet_t::create_buffs()
   buffs.annihilan_training = make_buff( this, "annihilan_training", o()->talents.annihilan_training_buff )
                                  ->set_default_value( o()->talents.annihilan_training_buff->effectN( 1 ).percent() );
 
+  buffs.dread_calling = make_buff( this, "dread_calling", find_spell( 387392 ) );
+
   // Destruction
   buffs.embers = make_buff( this, "embers", find_spell( 264364 ) )
                      ->set_period( 500_ms )
@@ -146,6 +148,9 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
 
   if ( pet_type == PET_DREADSTALKER && o()->legendary.grim_inquisitors_dread_calling->ok() )
     m *= 1.0 + buffs.grim_inquisitors_dread_calling->check_value();
+
+  if ( pet_type == PET_DREADSTALKER && o()->talents.dread_calling.ok() )
+    m *= 1.0 + buffs.dread_calling->check_value();
 
   m *= 1.0 + buffs.demonic_synergy->check_stack_value();
 

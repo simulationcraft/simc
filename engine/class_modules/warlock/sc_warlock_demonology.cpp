@@ -188,6 +188,9 @@ struct hand_of_guldan_t : public demonology_spell_t
 
     //if ( p()->legendary.grim_inquisitors_dread_calling.ok() )
     //  p()->buffs.dread_calling->increment( shards_used, p()->buffs.dread_calling->default_value );
+
+    if ( p()->talents.dread_calling.ok() )
+      p()->buffs.dread_calling->increment( shards_used );
   }
 
   void consume_resource() override
@@ -363,6 +366,19 @@ struct call_dreadstalkers_t : public demonology_spell_t
 
     //  p()->buffs.dread_calling->expire();
     //}
+
+    if ( p()->talents.dread_calling.ok() )
+    {
+      for ( auto d : dogs )
+      {
+        if ( d->is_active() && !d->buffs.dread_calling->check() )
+        {
+          d->buffs.dread_calling->trigger( 1, p()->buffs.dread_calling->check_stack_value() );
+        }
+      }
+
+      p()->buffs.dread_calling->expire();
+    }
   }
 };
 
@@ -1033,8 +1049,8 @@ void warlock_t::create_buffs_demonology()
           ->set_trigger_spell( legendary.balespiders_burning_core )
           ->set_default_value( legendary.balespiders_burning_core->effectN( 1 ).trigger()->effectN( 1 ).percent() );
 
-  buffs.dread_calling = make_buff<buff_t>( this, "dread_calling", find_spell( 342997 ) )
-                            ->set_default_value( legendary.grim_inquisitors_dread_calling->effectN( 1 ).percent() );
+  buffs.dread_calling = make_buff<buff_t>( this, "dread_calling", talents.dread_calling_buff )
+                            ->set_default_value( talents.dread_calling->effectN( 1 ).percent() );
 
   // to track pets
   buffs.wild_imps = make_buff( this, "wild_imps" )->set_max_stack( 40 );
@@ -1119,6 +1135,9 @@ void warlock_t::init_spells_demonology()
   talents.grimoire_felguard = find_talent_spell( talent_tree::SPECIALIZATION, "Grimoire: Felguard" ); // Should be ID 111898
 
   talents.bloodbound_imps = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodbound Imps" ); // Should be ID 387349
+
+  talents.dread_calling = find_talent_spell( talent_tree::SPECIALIZATION, "Dread Calling" ); // Should be ID 387391
+  talents.dread_calling_buff = find_spell( 387393 );
 
   talents.doom                = find_talent_spell( "Doom" );
 

@@ -67,9 +67,9 @@ public:
       priest().buffs.mind_melt->expire();
     }
 
-    if ( priest().options.t29_2pc )
+    if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T29, B2 ) )
     {
-      priest().buffs.t29_2pc->trigger();
+      priest().buffs.gathering_shadows->trigger();
     }
   }
 
@@ -1747,7 +1747,7 @@ struct power_word_shield_t final : public priest_absorb_t
 
   power_word_shield_t( priest_t& p, util::string_view options_str )
     : priest_absorb_t( "power_word_shield", p, p.find_class_spell( "Power Word: Shield" ) ),
-      insanity( priest().specs.hallucinations->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_INSANITY ) )
+      insanity( priest().specs.hallucinations->effectN( 1 ).base_value() )
   {
     parse_options( options_str );
     spell_power_mod.direct = 2.8;  // hardcoded into tooltip, last checked 2022-09-04
@@ -2426,9 +2426,9 @@ double priest_t::composite_spell_haste() const
 {
   double h = player_t::composite_spell_haste();
 
-  if ( options.t29_4pc && buffs.t29_4pc->check() )
+  if ( sets->has_set_bonus( PRIEST_SHADOW, T29, B4 ) && buffs.dark_reveries->check() )
   {
-    h *= 1.0 / ( 1.0 + buffs.t29_4pc->current_value );
+    h *= 1.0 / ( 1.0 + buffs.dark_reveries->current_value );
   }
 
   return h;
@@ -3176,10 +3176,6 @@ void priest_t::create_options()
                        options.shadow_word_manipulation_seconds_remaining, 0, 8 ) );
   add_option( opt_int( "priest.pallid_command_allies", options.pallid_command_allies, 0, 50 ) );
   add_option( opt_bool( "priest.power_infusion_fiend", options.power_infusion_fiend ) );
-
-  // TEMP options
-  add_option( opt_bool( "priest.t29_2pc", options.t29_2pc ) );
-  add_option( opt_bool( "priest.t29_4pc", options.t29_4pc ) );
 }
 
 std::string priest_t::create_profile( save_e type )

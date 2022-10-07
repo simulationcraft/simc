@@ -167,8 +167,8 @@ public:
 
     // Tier Sets
     propagate_const<buff_t*> living_shadow_tier;
-    propagate_const<buff_t*> t29_2pc;
-    propagate_const<buff_t*> t29_4pc;
+    propagate_const<buff_t*> gathering_shadows;
+    propagate_const<buff_t*> dark_reveries;
   } buffs;
 
   // Talents
@@ -576,10 +576,6 @@ public:
     int pallid_command_allies = 50;
 
     bool power_infusion_fiend = false;
-
-    // Temp options till we get tier set data
-    bool t29_2pc = false;
-    bool t29_4pc = false;
   } options;
 
   // Legendaries
@@ -1123,7 +1119,8 @@ public:
     parse_buff_effects( p().buffs.dark_ascension, true );  // Buffs corresponding non-periodic spells
     parse_buff_effects( p().buffs.coalescing_shadows );
     parse_buff_effects( p().buffs.coalescing_shadows_dot );
-    parse_buff_effects( p().buffs.words_of_the_pious );  // Spell Direct amount for Smite and Holy Nova
+    parse_buff_effects( p().buffs.words_of_the_pious );       // Spell Direct amount for Smite and Holy Nova
+    parse_buff_effects( p().buffs.gathering_shadows, true );  // Spell Direct amount for Mind Sear (NOT DP)
   }
 
   template <typename... Ts>

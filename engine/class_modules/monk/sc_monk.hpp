@@ -320,10 +320,9 @@ public:
     propagate_const<buff_t*> primordial_power_hidden_channel;
 
     // T29 Set Bonus
-    propagate_const<buff_t*> t29_2p_ww;
-    propagate_const<buff_t*> t29_4p_ww_kick;
-    propagate_const<buff_t*> t29_4p_ww_fof;
-    propagate_const<buff_t*> t29_4p_ww_fof_hidden;
+    propagate_const<buff_t*> kicks_of_flowing_momentum;
+    propagate_const<buff_t*> fists_of_flowing_momentum;
+    propagate_const<buff_t*> fists_of_flowing_momentum_vers;
     propagate_const<buff_t*> brewmasters_rhythm;
   } buff;
 
@@ -823,6 +822,9 @@ public:
     propagate_const<cooldown_t*> charred_passions;
     propagate_const<cooldown_t*> bountiful_brew;
     propagate_const<cooldown_t*> sinister_teachings;
+
+    // T29
+    propagate_const<cooldown_t*> brewmasters_rhythm;
   } cooldown;
 
   struct passives_t
@@ -927,6 +929,10 @@ public:
     const spell_data_t* keg_of_the_heavens_heal;
     const spell_data_t* primordial_potential;
     const spell_data_t* primordial_power;
+
+    // Tier 29
+    const spell_data_t* kicks_of_flowing_momentum;
+    const spell_data_t* fists_of_flowing_momentum;
   } passives;
 
   // RPPM objects
@@ -1073,8 +1079,6 @@ public:
     double faeline_stomp_uptime;
     int chi_burst_healing_targets;
     int motc_override;
-    int t29_2p;
-    int t29_4p;
   } user_options;
 
   // Blizzard rounds it's stagger damage; anything higher than half a percent beyond

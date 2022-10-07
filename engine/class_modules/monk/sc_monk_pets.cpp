@@ -979,10 +979,19 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
       may_dodge = may_parry = may_block = may_miss = true;
       dual                                         = true;
       aoe                                          = -1;
-      reduced_aoe_targets                          = 1;
-      radius                                       = data().effectN( 2 ).base_value();
 
       energize_type = action_energize::NONE;
+    }
+
+    // Damage must be divided on non-main target by the number of targets
+    double composite_aoe_multiplier( const action_state_t* state ) const override
+    {
+      if ( state->target != target )
+      {
+        return 1.0 / state->n_targets;
+      }
+
+      return 1.0;
     }
 
     void execute() override
@@ -1002,8 +1011,17 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
       may_dodge = may_parry = may_block = may_miss = true;
       dual                                         = true;
       aoe                                          = -1;
-      reduced_aoe_targets                          = 1;
-      radius                                       = data().effectN( 2 ).base_value();
+    }
+
+    // Damage must be divided on non-main target by the number of targets
+    double composite_aoe_multiplier( const action_state_t* state ) const override
+    {
+      if ( state->target != target )
+      {
+        return 1.0 / state->n_targets;
+      }
+
+      return 1.0;
     }
 
     void execute() override

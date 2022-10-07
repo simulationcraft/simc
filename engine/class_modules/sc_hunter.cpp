@@ -1480,6 +1480,8 @@ struct stable_pet_t final : public hunter_pet_t
 
     if ( main_hand_attack )
       main_hand_attack -> execute();
+
+    o() -> cooldowns.aspect_of_the_wild -> adjust( -o() -> talents.master_handler -> effectN( 1 ).time_value() );
   }
 
   void init_spells() override
@@ -1892,6 +1894,8 @@ struct dire_critter_t final : public hunter_pet_t
 
     if ( main_hand_attack )
       main_hand_attack -> execute();
+
+    o() -> cooldowns.aspect_of_the_wild -> adjust( -o() -> talents.master_handler -> effectN( 1 ).time_value() );
   }
 
   double composite_player_multiplier( school_e school ) const override
@@ -3779,59 +3783,10 @@ struct cobra_shot_t: public hunter_ranged_attack_t
 
     am *= 1 + p() -> buffs.killing_frenzy -> check_value();
 
+    if ( p() -> buffs.aspect_of_the_wild -> check() )
+      am *= 1 + p() -> talents.snake_bite -> effectN( 1 ).percent();
+
     return am;
-  }
-};
-
-// Chimaera Shot =============================================================
-
-struct chimaera_shot_bm_t: public hunter_ranged_attack_t
-{
-  struct impact_t final : public hunter_ranged_attack_t
-  {
-    impact_t( util::string_view n, hunter_t* p, const spell_data_t* s ):
-      hunter_ranged_attack_t( n, p, s )
-    {
-      dual = true;
-      // Beast Mastery focus gain
-      parse_effect_data( p -> find_spell( 204304 ) -> effectN( 1 ) );
-    }
-  };
-
-  std::array<impact_t*, 2> damage;
-  unsigned current_damage_action = 0;
-
-  chimaera_shot_bm_t( hunter_t* p, util::string_view options_str ):
-    hunter_ranged_attack_t( "chimaera_shot", p, p -> talents.chimaera_shot )
-  {
-    parse_options( options_str );
-
-    aoe = 2;
-    radius = 5;
-
-    damage[ 0 ] = p -> get_background_action<impact_t>( "chimaera_shot_frost", p -> find_spell( 171454 ) );
-    damage[ 1 ] = p -> get_background_action<impact_t>( "chimaera_shot_nature", p -> find_spell( 171457 ) );
-    for ( auto a : damage )
-      add_child( a );
-
-    school = SCHOOL_FROSTSTRIKE; // Just so the report shows a mixture of the two colors.
-  }
-
-  void schedule_travel( action_state_t* s ) override
-  {
-    damage[ current_damage_action ] -> execute_on_target( s -> target );
-    current_damage_action = ( current_damage_action + 1 ) % damage.size();
-    action_state_t::release( s );
-  }
-
-  // Don't bother, the results will be discarded anyway.
-  result_e calculate_result( action_state_t* ) const override { return RESULT_NONE; }
-  double calculate_direct_amount( action_state_t* ) const override { return 0.0; }
-
-  double energize_cast_regen( const action_state_t* ) const override
-  {
-    const size_t targets_hit = std::min( target_list().size(), as<size_t>( aoe ) );
-    return targets_hit * damage[ 0 ] -> composite_energize_amount( nullptr );
   }
 };
 
@@ -3911,7 +3866,7 @@ struct barbed_shot_t: public hunter_ranged_attack_t
 
 // Chimaera Shot ======================================================================
 
-struct chimaera_shot_mm_t: public hunter_ranged_attack_t
+struct chimaera_shot_t: public hunter_ranged_attack_t
 {
   struct impact_t final : public hunter_ranged_attack_t
   {
@@ -3936,7 +3891,7 @@ struct chimaera_shot_mm_t: public hunter_ranged_attack_t
   impact_t* nature;
   impact_t* frost;
 
-  chimaera_shot_mm_t( hunter_t* p, util::string_view options_str ):
+  chimaera_shot_t( hunter_t* p, util::string_view options_str ):
     hunter_ranged_attack_t( "chimaera_shot", p, p -> talents.chimaera_shot ),
     nature( p -> get_background_action<impact_t>( "chimaera_shot_nature", p -> find_spell( 344120 ) ) ),
     frost( p -> get_background_action<impact_t>( "chimaera_shot_frost", p -> find_spell( 344121 ) ) )
@@ -6450,6 +6405,7 @@ action_t* hunter_t::create_action( util::string_view name,
   if ( name == "butchery"              ) return new               butchery_t( this, options_str );
   if ( name == "call_of_the_wild"      ) return new       call_of_the_wild_t( this, options_str );
   if ( name == "carve"                 ) return new                  carve_t( this, options_str );
+  if ( name == "chimaera_shot"         ) return new          chimaera_shot_t( this, options_str );
   if ( name == "cobra_shot"            ) return new             cobra_shot_t( this, options_str );
   if ( name == "coordinated_assault"   ) return new    coordinated_assault_t( this, options_str );
   if ( name == "counter_shot"          ) return new           counter_shot_t( this, options_str );
@@ -6490,14 +6446,6 @@ action_t* hunter_t::create_action( util::string_view name,
       return new multishot_mm_t( this, options_str );
     if ( specialization() == HUNTER_BEAST_MASTERY )
       return new multishot_bm_t( this, options_str );
-  }
-
-  if ( name == "chimaera_shot" )
-  {
-    if ( specialization() == HUNTER_MARKSMANSHIP )
-      return new chimaera_shot_mm_t( this, options_str );
-    if ( specialization() == HUNTER_BEAST_MASTERY )
-      return new chimaera_shot_bm_t( this, options_str );
   }
 
   return player_t::create_action( name, options_str );
@@ -7572,7 +7520,7 @@ double hunter_t::composite_player_critical_damage_multiplier( const action_state
 
   m *= 1.0 + talents.sharpshooter -> effectN( 1 ).percent();
   m *= 1.0 + talents.sharp_edges -> effectN( 1 ).percent();
-  m += 1.0 + buffs.unerring_vision -> stack() * buffs.unerring_vision -> data().effectN( 2 ).percent();
+  m *= 1.0 + buffs.unerring_vision -> stack() * buffs.unerring_vision -> data().effectN( 2 ).percent();
 
   return m;
 }

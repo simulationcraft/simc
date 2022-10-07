@@ -43,26 +43,14 @@ struct mind_sear_tick_t final : public priest_spell_t
     }
   }
 
-  double composite_da_multiplier( const action_state_t* s ) const override
-  {
-    double m = priest_spell_t::composite_da_multiplier( s );
-
-    if ( priest().options.t29_2pc && priest().buffs.t29_2pc->check() )
-    {
-      m *= 1 + priest().buffs.t29_2pc->check_stack_value();
-    }
-
-    return m;
-  }
-
   void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
 
     // Benefit Tracking
-    if ( priest().options.t29_2pc )
+    if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T29, B2 ) )
     {
-      priest().buffs.t29_2pc->up();
+      priest().buffs.gathering_shadows->up();
     }
 
     priest().trigger_eternal_call_to_the_void( s );
@@ -145,9 +133,9 @@ struct mind_sear_t final : public priest_spell_t
   {
     priest_spell_t::execute();
 
-    if ( priest().options.t29_4pc )
+    if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T29, B4 ) )
     {
-      priest().buffs.t29_4pc->trigger();
+      priest().buffs.dark_reveries->trigger();
     }
   }
 
@@ -157,7 +145,7 @@ struct mind_sear_t final : public priest_spell_t
 
     priest().buffs.mind_devourer->expire();
 
-    priest().buffs.t29_2pc->expire();
+    priest().buffs.gathering_shadows->expire();
   }
 };
 
@@ -417,7 +405,7 @@ struct vampiric_embrace_t final : public priest_spell_t
 
   vampiric_embrace_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "vampiric_embrace", p, p.talents.vampiric_embrace ),
-      insanity( priest().specs.hallucinations->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_INSANITY ) )
+      insanity( priest().specs.hallucinations->effectN( 1 ).base_value() )
   {
     parse_options( options_str );
 
@@ -1065,9 +1053,10 @@ struct devouring_plague_t final : public priest_spell_t
   {
     double m = priest_spell_t::composite_persistent_multiplier( s );
 
-    if ( priest().options.t29_2pc && priest().buffs.t29_2pc->check() )
+    // Spelldata does not have data for Devouring Plague so apply_buff_effects does not work with DP
+    if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T29, B2 ) && priest().buffs.gathering_shadows->check() )
     {
-      m *= 1 + priest().buffs.t29_2pc->check_stack_value();
+      m *= 1 + priest().buffs.gathering_shadows->check_stack_value();
     }
 
     return m;
@@ -1092,9 +1081,9 @@ struct devouring_plague_t final : public priest_spell_t
     priest_spell_t::impact( s );
 
     // Benefit Tracking
-    if ( priest().options.t29_2pc )
+    if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T29, B2 ) )
     {
-      priest().buffs.t29_2pc->up();
+      priest().buffs.gathering_shadows->up();
     }
 
     // Damnation does not trigger a SA - 2022-10-01
@@ -1150,14 +1139,14 @@ struct devouring_plague_t final : public priest_spell_t
       priest().procs.dark_thoughts_devouring_plague->occur();
     }
 
-    if ( priest().options.t29_2pc )
+    if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T29, B2 ) )
     {
-      priest().buffs.t29_2pc->expire();
+      priest().buffs.gathering_shadows->expire();
     }
 
-    if ( priest().options.t29_4pc )
+    if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T29, B4 ) )
     {
-      priest().buffs.t29_4pc->trigger();
+      priest().buffs.dark_reveries->trigger();
     }
   }
 
@@ -1390,6 +1379,14 @@ struct void_eruption_damage_t final : public priest_spell_t
   {
     priest_spell_t::impact( s );
     priest_spell_t::impact( s );
+
+    // BUG: on beta this is hitting 4 times instead of 2 on your main target, not sure why
+    // https://github.com/SimCMinMax/WoW-BugTracker/issues/963
+    if ( priest().bugs && s->target == parent_dot->target )
+    {
+      priest_spell_t::impact( s );
+      priest_spell_t::impact( s );
+    }
   }
 };
 
@@ -2262,11 +2259,15 @@ void priest_t::create_buffs_shadow()
   // Tier Sets
   buffs.living_shadow_tier =
       make_buff( this, "living_shadow_tier", find_spell( 363574 ) )->set_duration( timespan_t::zero() );
-  buffs.t29_2pc = make_buff( this, "t29_2pc" )->set_max_stack( 3 )->set_default_value( 0.2 )->set_duration( 10_s );
-  buffs.t29_4pc = make_buff<stat_buff_t>( this, "t29_4pc" )
-                      ->add_invalidate( CACHE_HASTE )
-                      ->set_default_value( 0.05 )
-                      ->set_duration( 8_s );
+  // 393684 -> 394961
+  buffs.gathering_shadows =
+      make_buff( this, "gathering_shadows", sets->set( PRIEST_SHADOW, T29, B2 )->effectN( 1 ).trigger() )
+          ->set_default_value_from_effect( 1 );
+  // 393685 -> 394963
+  buffs.dark_reveries =
+      make_buff<stat_buff_t>( this, "dark_reveries", sets->set( PRIEST_SHADOW, T29, B4 )->effectN( 1 ).trigger() )
+          ->add_invalidate( CACHE_HASTE )
+          ->set_default_value_from_effect( 1 );
 }
 
 void priest_t::init_rng_shadow()
