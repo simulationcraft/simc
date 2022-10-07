@@ -2244,7 +2244,7 @@ struct ghoul_pet_t : public base_ghoul_pet_t
 
           if ( dk() -> pets.ghoul_pet -> vile_infusion -> up() )
           {
-            chance *= 1.0 + 1.0;
+            chance *= 1.0 + 2.0;
           }
 
           if ( dk() -> sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T29, B4 ) && dk() -> rng().roll( chance ) )
