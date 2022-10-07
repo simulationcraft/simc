@@ -121,6 +121,9 @@ struct hand_of_guldan_t : public demonology_spell_t
 
       m *= shards_used;
 
+      if ( p()->talents.demonic_meteor.ok() )
+        m *= 1.0 + p()->talents.demonic_meteor->effectN( 1 ).percent();
+
       return m;
     }
 
@@ -203,6 +206,12 @@ struct hand_of_guldan_t : public demonology_spell_t
       p()->procs.two_shard_hog->occur();
     if ( last_resource_cost == 3.0 )
       p()->procs.three_shard_hog->occur();
+
+    //if ( p()->talents.demonic_meteor.ok() && rng().roll( last_resource_cost * p()->talents.demonic_meteor->effectN( 2 ).percent() ) )
+    //{
+    //  p()->resource_gain( RESOURCE_SOUL_SHARD, 1, p()->gains.demonic_meteor );
+    //  p()->procs.demonic_meteor->occur();
+    //}
   }
 
   void impact( action_state_t* s ) override
@@ -218,7 +227,6 @@ struct hand_of_guldan_t : public demonology_spell_t
     //  make_event( *sim, 400_ms, [ this, t = target ] { impact_spell->execute_on_target( t ); } );
     //}
   }
-
 };
 
 struct demonbolt_t : public demonology_spell_t
@@ -1142,7 +1150,7 @@ void warlock_t::init_spells_demonology()
 
   talents.doom = find_talent_spell( talent_tree::SPECIALIZATION, "Doom" ); // Should be ID 603
 
-
+  talents.demonic_meteor = find_talent_spell( talent_tree::SPECIALIZATION, "Demonic Meteor" ); // Should be ID 387396
 
 
 
@@ -1172,6 +1180,7 @@ void warlock_t::init_gains_demonology()
 {
   gains.summon_demonic_tyrant = get_gain( "summon_demonic_tyrant" );
   gains.doom = get_gain( "doom" );
+  gains.demonic_meteor = get_gain( "demonic_meteor" );
 }
 
 void warlock_t::init_rng_demonology()
@@ -1182,6 +1191,7 @@ void warlock_t::init_procs_demonology()
 {
   procs.summon_random_demon = get_proc( "summon_random_demon" );
   procs.demonic_knowledge = get_proc( "demonic_knowledge" );
+  procs.demonic_meteor = get_proc( "demonic_meteor" );
 }
 
 }  // namespace warlock
