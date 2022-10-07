@@ -2467,11 +2467,17 @@ void action_t::init()
     snapshot_flags |= STATE_MUL_PET | STATE_TGT_MUL_PET;
   }
 
+  if ( school == SCHOOL_PHYSICAL )
+    snapshot_flags |= STATE_TGT_ARMOR;
+
   if ( data().flags( spell_attribute::SX_DISABLE_PLAYER_MULT ) )
     snapshot_flags &= ~( STATE_MUL_TA | STATE_MUL_DA | STATE_MUL_PERSISTENT | STATE_VERSATILITY );
 
-  if ( school == SCHOOL_PHYSICAL )
-    snapshot_flags |= STATE_TGT_ARMOR;
+  if ( data().flags( spell_attribute::SX_DISABLE_TARGET_MULT ) )
+  {
+    snapshot_flags &= ~( STATE_TGT_MUL_TA | STATE_TGT_MUL_DA | STATE_TGT_ARMOR );
+    update_flags &= ~( STATE_TGT_MUL_TA | STATE_TGT_MUL_DA | STATE_TGT_ARMOR );
+  }
 
   if ( ( spell_power_mod.direct > 0 || spell_power_mod.tick > 0 ) )
   {
