@@ -2172,27 +2172,6 @@ struct ghoul_pet_t : public base_ghoul_pet_t
         dk() -> trigger_festering_wound( state, 1, dk() -> procs.fw_infected_claws );
       }
     }
-    
-    void execute() override
-    {
-      pet_melee_attack_t::execute();
-      // Ghoulish Infusion proc chance not listed in spell data, using hard coded 15% for now
-      if ( dk() -> specialization() == DEATH_KNIGHT_UNHOLY )
-      {
-
-        double chance = 0.15;
-        
-        if ( dk() -> pets.ghoul_pet -> vile_infusion -> up() )
-        {
-          chance *= 1.0 + 1.0;
-        }
-
-        if ( dk() -> sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T29, B4 ) && dk() -> rng().roll( chance ) )
-        {
-          dk() -> buffs.ghoulish_infusion -> trigger();
-        }
-      }
-    }
 
     bool ready() override
     {
@@ -2246,6 +2225,37 @@ struct ghoul_pet_t : public base_ghoul_pet_t
     }
   };
 
+  struct ghoul_melee_t : public auto_attack_melee_t<ghoul_pet_t>
+  {
+    ghoul_melee_t( ghoul_pet_t* p, util::string_view name = "main_hand" ) :
+      auto_attack_melee_t<ghoul_pet_t>( p, name )
+    { }
+
+    void impact( action_state_t* state ) override
+    {
+      auto_attack_melee_t::impact( state );
+
+      if ( result_is_hit( state -> result ) )
+      {
+        // Ghoulish Infusion proc chance not listed in spell data, using hard coded 15% for now
+        if ( dk() -> sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T29, B4 ) )
+        {
+          double chance = 0.15;
+
+          if ( dk() -> pets.ghoul_pet -> vile_infusion -> up() )
+          {
+            chance *= 1.0 + 1.0;
+          }
+
+          if ( dk() -> sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T29, B4 ) && dk() -> rng().roll( chance ) )
+          {
+            dk() -> buffs.ghoulish_infusion -> trigger();
+          }
+        }
+      }
+    }
+  };
+
   ghoul_pet_t( death_knight_t* owner, bool guardian ) :
     base_ghoul_pet_t( owner, "ghoul" , guardian )
   {
@@ -2258,7 +2268,7 @@ struct ghoul_pet_t : public base_ghoul_pet_t
   }
 
   attack_t* create_auto_attack() override
-  { return new auto_attack_melee_t<ghoul_pet_t>( this ); }
+  { return new ghoul_melee_t( this ); }
 
   double composite_player_multiplier( school_e school ) const override
   {
