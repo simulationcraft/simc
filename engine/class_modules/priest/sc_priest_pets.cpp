@@ -512,37 +512,37 @@ struct priest_pet_spell_t : public spell_t
 
   double cost() const override
   {
-    double c = action_t::cost() * std::max( 0.0, get_buff_effects_value( cost_buffeffects, false, false ) );
+    double c = spell_t::cost() * std::max( 0.0, get_buff_effects_value( cost_buffeffects, false, false ) );
     return c;
   }
 
   double composite_ta_multiplier( const action_state_t* s ) const override
   {
-    double ta = action_t::composite_ta_multiplier( s ) * get_buff_effects_value( ta_multiplier_buffeffects );
+    double ta = spell_t::composite_ta_multiplier( s ) * get_buff_effects_value( ta_multiplier_buffeffects );
     return ta;
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
   {
-    double da = action_t::composite_da_multiplier( s ) * get_buff_effects_value( da_multiplier_buffeffects );
+    double da = spell_t::composite_da_multiplier( s ) * get_buff_effects_value( da_multiplier_buffeffects );
     return da;
   }
 
   double composite_crit_chance() const override
   {
-    double cc = action_t::composite_crit_chance() + get_buff_effects_value( crit_chance_buffeffects, true );
+    double cc = spell_t::composite_crit_chance() + get_buff_effects_value( crit_chance_buffeffects, true );
     return cc;
   }
 
   timespan_t execute_time() const override
   {
-    timespan_t et = action_t::execute_time() * get_buff_effects_value( execute_time_buffeffects );
+    timespan_t et = spell_t::execute_time() * get_buff_effects_value( execute_time_buffeffects );
     return et;
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
-    timespan_t dd = action_t::composite_dot_duration( s ) * get_buff_effects_value( dot_duration_buffeffects );
+    timespan_t dd = spell_t::composite_dot_duration( s ) * get_buff_effects_value( dot_duration_buffeffects );
     return dd;
   }
 
@@ -567,7 +567,7 @@ struct priest_pet_spell_t : public spell_t
 
   double composite_target_ta_multiplier( player_t* t ) const override
   {
-    double ttm = action_t::composite_target_ta_multiplier( t );
+    double ttm = spell_t::composite_target_ta_multiplier( t );
 
     if ( affected_by_shadow_weaving )
     {
@@ -1457,6 +1457,8 @@ struct void_spike_t final : public priest_pet_spell_t
     : priest_pet_spell_t( "void_spike", p, p.o().find_spell( 373279 ) )
   {
     parse_options( options );
+
+    gcd_type = gcd_haste_type::SPELL_HASTE;
 
     // BUG: Does not scale with Mastery
     // https://github.com/SimCMinMax/WoW-BugTracker/issues/931

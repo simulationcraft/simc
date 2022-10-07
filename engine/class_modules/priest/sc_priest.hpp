@@ -1321,7 +1321,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
       }
     }
 
-    return action_t::ready();
+    return base_t::ready();
   }
 
   void consume_resource() override
@@ -1392,7 +1392,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
   double composite_target_da_multiplier( player_t* t ) const override
   {
-    double tdm = action_t::composite_target_da_multiplier( t );
+    double tdm = base_t::composite_target_da_multiplier( t );
 
     if ( affected_by_shadow_weaving )
     {
@@ -1412,7 +1412,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
   double composite_target_ta_multiplier( player_t* t ) const override
   {
-    double ttm = action_t::composite_target_ta_multiplier( t );
+    double ttm = base_t::composite_target_ta_multiplier( t );
 
     if ( affected_by_shadow_weaving )
     {
