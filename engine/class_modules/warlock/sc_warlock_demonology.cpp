@@ -337,6 +337,10 @@ struct call_dreadstalkers_t : public demonology_spell_t
     demonology_spell_t::execute();
 
     unsigned count = as<unsigned>( p()->talents.call_dreadstalkers->effectN( 1 ).base_value() );
+
+    if ( p()->talents.ripped_through_the_portal.ok() && rng().roll( p()->talents.ripped_through_the_portal->effectN( 1 ).percent() ) )
+      count++;
+
     auto dogs = p()->warlock_pet_list.dreadstalkers.spawn( p()->talents.call_dreadstalkers_2->duration(), count );
 
     if ( p()->buffs.demonic_calling->up() )
@@ -1214,6 +1218,8 @@ void warlock_t::init_spells_demonology()
   talents.imp_gang_boss = find_talent_spell( talent_tree::SPECIALIZATION, "Imp Gang Boss" ); // Should be ID 387445
 
   talents.kazaaks_final_curse = find_talent_spell( talent_tree::SPECIALIZATION, "Kazaak's Final Curse" ); // Should be ID 387483
+
+  talents.ripped_through_the_portal = find_talent_spell( talent_tree::SPECIALIZATION, "Ripped Through the Portal" ); // Should be ID 387485
 
   talents.sacrificed_souls    = find_talent_spell( "Sacrificed Souls" );
   talents.demonic_consumption = find_talent_spell( "Demonic Consumption" );

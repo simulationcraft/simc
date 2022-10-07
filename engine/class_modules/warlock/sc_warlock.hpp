@@ -316,7 +316,7 @@ public:
     const spell_data_t* fel_covenant_buff;
     player_talent_t imp_gang_boss; // DF - Imp Gang Boss (2 point talent, Wild Imp has chance to be this pet instead)
     player_talent_t kazaaks_final_curse; // Doom deals increased damage based on active demon count
-    // DF - Ripped Through the Portal (Formerly SL Tier Bonus, now a 2 point talent)
+    player_talent_t ripped_through_the_portal; // Increased Dreadstalker count chance (Formerly SL Tier bonus)
     // DF - Houndmaster's Gambit (2 point talent, Shadow Bolt and Demonbolt have a chance to reset Call Dreadstalkers)
     
     const spell_data_t* nether_portal; // DF - Cooldown may be reverted, will require constant checking until launch
