@@ -307,7 +307,7 @@ public:
     player_talent_t dread_calling; // Stacking buff to next Dreadstalkers damage (Formerly SL Legendary)
     const spell_data_t* dread_calling_buff; // This buffs stacks on the warlock, a different one applies to the pet
     player_talent_t doom;
-    // DF - Demonic Meteor (Chance to proc Hand of Gul'dan off Hand of Gul'dan)
+    player_talent_t demonic_meteor; // Increased Hand of Gul'dan damage and chance to refund soul shard
     // DF - Fel Sunder (Increase damage taken debuff when hit by Felstorm)    
 
     // DF - Balespider's Burning Core (Formerly SL Legendary, now a 2 point talent)
@@ -569,6 +569,7 @@ public:
     gain_t* shadow_bolt;
     gain_t* doom;
     gain_t* summon_demonic_tyrant;
+    gain_t* demonic_meteor;
   } gains;
 
   // Procs
@@ -595,6 +596,7 @@ public:
     proc_t* portal_summon;
     proc_t* carnivorous_stalkers; // DF - Now a Demonology talent
     proc_t* horned_nightmare; // DF - Now a Demonology talent
+    proc_t* demonic_meteor;
 
     // destro
     proc_t* reverse_entropy;
