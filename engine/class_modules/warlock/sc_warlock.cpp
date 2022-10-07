@@ -834,6 +834,9 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
   debuffs_fel_sunder = make_buff( *this, "fel_sunder", p.talents.fel_sunder_debuff )
                            ->set_default_value( p.talents.fel_sunder->effectN( 1 ).percent() );
 
+  debuffs_kazaaks_final_curse = make_buff( *this, "kazaaks_final_curse", p.talents.kazaaks_final_curse )
+                                    ->set_default_value( 0 );
+
   target->register_on_demise_callback( &p, [ this ]( player_t* ) { target_demise(); } );
 }
 

@@ -62,6 +62,7 @@ struct warlock_td_t : public actor_target_data_t
 
   propagate_const<buff_t*> debuffs_from_the_shadows;
   propagate_const<buff_t*> debuffs_fel_sunder; // Done in owner target data for easier handling
+  propagate_const<buff_t*> debuffs_kazaaks_final_curse; // Not an actual debuff in-game, but useful as a utility feature for Doom
 
   double soc_threshold; //Aff - Seed of Corruption counts damage from cross-spec spells such as Drain Life
 
@@ -314,7 +315,7 @@ public:
     player_talent_t fel_covenant; // Stacking Demonbolt buff when casting Shadow Bolt, not consumed after cast
     const spell_data_t* fel_covenant_buff;
     player_talent_t imp_gang_boss; // DF - Imp Gang Boss (2 point talent, Wild Imp has chance to be this pet instead)
-    // DF - Kazaak's Final Curse (2 point talent, Doom deals increased damage based on active demon count)
+    player_talent_t kazaaks_final_curse; // Doom deals increased damage based on active demon count
     // DF - Ripped Through the Portal (Formerly SL Tier Bonus, now a 2 point talent)
     // DF - Houndmaster's Gambit (2 point talent, Shadow Bolt and Demonbolt have a chance to reset Call Dreadstalkers)
     
