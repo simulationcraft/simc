@@ -6830,9 +6830,9 @@ struct force_of_nature_t : public druid_spell_t
 
   void init_finished() override
   {
-    for ( const auto& treant : p()->pets.force_of_nature )
+    if ( p()->talent.force_of_nature.ok() )
     {
-      if ( treant )
+      for ( const auto& treant : p()->pets.force_of_nature )
       {
         for ( auto a : treant->action_list )
         {
