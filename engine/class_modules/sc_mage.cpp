@@ -325,6 +325,7 @@ public:
     buff_t* foresight;
     buff_t* foresight_icd;
     buff_t* impetus;
+    buff_t* invigorating_powder;
     buff_t* presence_of_mind;
     buff_t* rule_of_threes;
 
@@ -1557,6 +1558,7 @@ struct mage_spell_t : public spell_t
     // Temporary damage increase
     bool bone_chilling = true;
     bool incanters_flow = true;
+    bool invigorating_powder = true;
     bool rune_of_power = true;
     bool savant = false;
 
@@ -1714,6 +1716,9 @@ public:
 
     if ( affected_by.incanters_flow )
       m *= 1.0 + p()->buffs.incanters_flow->check_stack_value();
+
+    if ( affected_by.invigorating_powder )
+      m *= 1.0 + p()->buffs.invigorating_powder->check_value();
 
     if ( affected_by.rune_of_power )
       m *= 1.0 + p()->buffs.rune_of_power->check_value();
@@ -3558,7 +3563,10 @@ struct use_mana_gem_t final : public action_t
     action_t::execute();
 
     mage_t* p = debug_cast<mage_t*>( player );
+
     p->resource_gain( RESOURCE_MANA, p->resources.max[ RESOURCE_MANA ] * data().effectN( 1 ).percent(), p->gains.mana_gem, this );
+    p->buffs.invigorating_powder->trigger();
+
     p->state.mana_gem_charges--;
     assert( p->state.mana_gem_charges >= 0 );
   }
@@ -6858,20 +6866,6 @@ void mage_t::create_buffs()
   // Arcane
   buffs.arcane_charge        = make_buff( this, "arcane_charge", find_spell( 36032 ) )
                                  ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
-  buffs.clearcasting         = make_buff<buffs::expanded_potential_buff_t>( this, "clearcasting", find_spell( 263725 ) )
-                                 ->set_default_value_from_effect( 1 )
-                                 ->modify_max_stack( as<int>( talents.improved_clearcasting->effectN( 1 ).base_value() ) );
-  buffs.clearcasting_channel = make_buff( this, "clearcasting_channel", find_spell( 277726 ) )
-                                 ->set_quiet( true );
-  buffs.evocation            = make_buff( this, "evocation", find_spell( 12051 ) )
-                                 ->set_default_value_from_effect( 1 )
-                                 ->set_cooldown( 0_ms )
-                                 ->set_affects_regen( true );
-  buffs.presence_of_mind     = make_buff( this, "presence_of_mind", find_spell( 205025 ) )
-                                 ->set_cooldown( 0_ms )
-                                 ->set_stack_change_callback( [ this ] ( buff_t*, int, int cur )
-                                   { if ( cur == 0 ) cooldowns.presence_of_mind->start( cooldowns.presence_of_mind->action ); } );
-
   buffs.arcane_familiar      = make_buff( this, "arcane_familiar", find_spell( 210126 ) )
                                  ->set_default_value_from_effect( 1 )
                                  ->set_period( 3.0_s )
@@ -6888,11 +6882,20 @@ void mage_t::create_buffs()
                                  ->set_default_value_from_effect( 1 )
                                  ->add_invalidate( CACHE_RUN_SPEED )
                                  ->set_chance( talents.chrono_shift.ok() );
+  buffs.clearcasting         = make_buff<buffs::expanded_potential_buff_t>( this, "clearcasting", find_spell( 263725 ) )
+                                 ->set_default_value_from_effect( 1 )
+                                 ->modify_max_stack( as<int>( talents.improved_clearcasting->effectN( 1 ).base_value() ) );
+  buffs.clearcasting_channel = make_buff( this, "clearcasting_channel", find_spell( 277726 ) )
+                                 ->set_quiet( true );
   buffs.enlightened_damage   = make_buff( this, "enlightened_damage", find_spell( 321388 ) )
                                  ->set_default_value_from_effect( 1 )
                                  ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.enlightened_mana     = make_buff( this, "enlightened_mana", find_spell( 321390 ) )
                                  ->set_default_value_from_effect( 1 )
+                                 ->set_affects_regen( true );
+  buffs.evocation            = make_buff( this, "evocation", find_spell( 12051 ) )
+                                 ->set_default_value_from_effect( 1 )
+                                 ->set_cooldown( 0_ms )
                                  ->set_affects_regen( true );
   buffs.foresight            = make_buff( this, "foresight", find_spell( 384865 ) )
                                  ->set_stack_change_callback( [ this ] ( buff_t*, int, int cur )
@@ -6905,6 +6908,12 @@ void mage_t::create_buffs()
   buffs.impetus              = make_buff( this, "impetus", find_spell( 393939 ) )
                                  ->set_default_value_from_effect( 1 )
                                  ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  buffs.invigorating_powder  = make_buff( this, "invigorating_powder", find_spell( 384280 ) )
+                                 ->set_default_value_from_effect( 1 );
+  buffs.presence_of_mind     = make_buff( this, "presence_of_mind", find_spell( 205025 ) )
+                                 ->set_cooldown( 0_ms )
+                                 ->set_stack_change_callback( [ this ] ( buff_t*, int, int cur )
+                                   { if ( cur == 0 ) cooldowns.presence_of_mind->start( cooldowns.presence_of_mind->action ); } );
   buffs.rule_of_threes       = make_buff( this, "rule_of_threes", find_spell( 264774 ) )
                                  ->set_default_value_from_effect( 1 )
                                  ->set_chance( talents.rule_of_threes.ok() );
@@ -8115,7 +8124,7 @@ void mage_t::trigger_evocation( timespan_t duration_override, bool hasted )
 
 void mage_t::trigger_arcane_charge( int stacks )
 {
-  if ( !spec.arcane_charge->ok() )
+  if ( !spec.arcane_charge->ok() || stacks <= 0 )
     return;
 
   int before = buffs.arcane_charge->check();
