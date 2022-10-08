@@ -58,6 +58,9 @@ void warlock_pet_t::create_buffs()
   buffs.imp_gang_boss = make_buff( this, "imp_gang_boss", find_spell( 387458 ) )
                             ->set_default_value_from_effect( 2 );
 
+  buffs.antoran_armaments = make_buff( this, "antoran_armaments", find_spell( 387496 ) )
+                                ->set_default_value( o()->talents.antoran_armaments->effectN( 1 ).percent() );
+
   // Destruction
   buffs.embers = make_buff( this, "embers", find_spell( 264364 ) )
                      ->set_period( 500_ms )
@@ -563,9 +566,48 @@ struct demonic_strength_t : public felstorm_t
 
 struct soul_strike_t : public warlock_pet_melee_attack_t
 {
+  struct soul_cleave_t : public warlock_pet_melee_attack_t
+  {
+    soul_cleave_t( warlock_pet_t* p ) : warlock_pet_melee_attack_t( "Soul Cleave", p, p->find_spell( 387502 ) )
+    {
+      background = dual = true;
+      aoe = -1;
+      base_multiplier *= p->o()->talents.antoran_armaments->effectN( 2 ).percent(); // Can only proc Soul Cleave with this talent, so this should be fine
+    }
+
+    size_t available_targets( std::vector<player_t*>& tl ) const override
+    {
+      warlock_pet_melee_attack_t::available_targets( tl );
+
+      // Does not hit the main target
+      auto it = range::find( tl, target );
+      if ( it != tl.end() )
+      {
+        tl.erase( it );
+      }
+
+      return tl.size();
+    }
+  };
+
+  soul_cleave_t* soul_cleave;
+
   soul_strike_t( warlock_pet_t* p ) : warlock_pet_melee_attack_t( "Soul Strike", p, p->find_spell( 267964 ) )
   {
     background = true;
+
+    soul_cleave = new soul_cleave_t( p );
+    add_child( soul_cleave );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    auto amount = s->result_raw;
+
+    warlock_pet_melee_attack_t::impact( s );
+    
+    if ( p()->o()->talents.antoran_armaments.ok() )
+      soul_cleave->execute_on_target( s->target, amount );
   }
 };
 
@@ -692,6 +734,9 @@ void felguard_pet_t::arise()
 
   if ( o()->talents.annihilan_training.ok() )
     buffs.annihilan_training->trigger();
+
+  if ( o()->talents.antoran_armaments.ok() )
+    buffs.antoran_armaments->trigger();
 }
 
 double felguard_pet_t::composite_player_multiplier( school_e school ) const
@@ -699,7 +744,10 @@ double felguard_pet_t::composite_player_multiplier( school_e school ) const
   double m = warlock_pet_t::composite_player_multiplier( school );
 
   if ( buffs.annihilan_training->check() )
-    m *= 1.0 + buffs.annihilan_training->check_stack_value();
+    m *= 1.0 + buffs.annihilan_training->check_value();
+
+  if ( buffs.antoran_armaments->check() )
+    m *= 1.0 + buffs.antoran_armaments->check_value();
 
   return m;
 }
