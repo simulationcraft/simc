@@ -325,7 +325,7 @@ public:
     const spell_data_t* demonic_power_buff; // Buff on player when Tyrant is summoned, should grant 15% damage to pets (TOCHECK: 2022-10-07 - buff is missing guardian aura, only main pet working)
     player_talent_t antoran_armaments; // Increased Felguard damage and Soul Strike cleave (TOCHECK: 2022-10-08 - this is applying to Grimoire: Felguard erratically)
 
-    // DF - Ner'zhul's Volition (2 point talent, chance to summon additional demons from Nether Portal)
+    player_talent_t nerzhuls_volition; // Chance to summon additional demon from Nether Portal summons (TOCHECK: It is currently assumed this cannot proc itself)
     // DF - Stolen Power (Stacking buff from Wild Imps, at max get increased Shadow Bolt or Demonbolt damage)
     const spell_data_t* sacrificed_souls; // DF - Now a 2 point talent, needs checking against new pets for compatibility
     // DF - Soulbound Tyrant (2 point talent, formerly a Rank 2 effect on Summon Demonic Tyrant)
@@ -605,6 +605,7 @@ public:
     proc_t* demonic_meteor;
     proc_t* imp_gang_boss;
     proc_t* hounds_of_war;
+    proc_t* nerzhuls_volition;
 
     // destro
     proc_t* reverse_entropy;

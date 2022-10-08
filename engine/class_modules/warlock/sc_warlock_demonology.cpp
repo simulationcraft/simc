@@ -56,6 +56,12 @@ public:
       {
         p()->proc_actions.summon_random_demon->execute();
         p()->procs.portal_summon->occur();
+
+        if ( p()->talents.nerzhuls_volition.ok() && rng().roll( p()->talents.nerzhuls_volition->effectN( 1 ).percent() ) )
+        {
+          p()->proc_actions.summon_random_demon->execute();
+          p()->procs.nerzhuls_volition->occur();
+        }
       }
     }
   }
@@ -1199,6 +1205,8 @@ void warlock_t::init_spells_demonology()
 
   talents.antoran_armaments = find_talent_spell( talent_tree::SPECIALIZATION, "Antoran Armaments" ); // Should be ID 387494
 
+  talents.nerzhuls_volition = find_talent_spell( talent_tree::SPECIALIZATION, "Ner'zhul's Volition" ); // Should be ID 387526
+
   talents.sacrificed_souls    = find_talent_spell( "Sacrificed Souls" );
   talents.demonic_consumption = find_talent_spell( "Demonic Consumption" );
 
@@ -1239,6 +1247,7 @@ void warlock_t::init_procs_demonology()
   procs.demonic_meteor = get_proc( "demonic_meteor" );
   procs.imp_gang_boss = get_proc( "imp_gang_boss" );
   procs.hounds_of_war = get_proc( "hounds_of_war" );
+  procs.nerzhuls_volition = get_proc( "nerzhuls_volition" );
 }
 
 }  // namespace warlock
