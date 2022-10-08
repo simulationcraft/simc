@@ -1811,7 +1811,8 @@ class SpellDataGenerator(DataGenerator):
           ( 387310, 0 ),    # Haunted Soul buff
           ( 390097, 0 ),    # Darkglare - Grim Reach
           ( 387392, 0 ),    # Dread Calling Buff
-          ( 387393, 0 )     # Dread Calling Buff 2
+          ( 387393, 0 ),    # Dread Calling Buff 2
+          ( 267218, 0 )    # Nether Portal aura
         ),
 
         # Monk:
