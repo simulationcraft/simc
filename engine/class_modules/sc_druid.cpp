@@ -1354,7 +1354,7 @@ struct denizen_of_the_dream_t : public pet_t
     action_list_str = "fey_missile";
   }
 
-  action_t* create_action( std::string_view n, std::string_view opt )
+  action_t* create_action( std::string_view n, std::string_view opt ) override
   {
     if ( n == "fey_missile" ) return new fey_missile_t( this );
 
@@ -3963,7 +3963,7 @@ struct feral_frenzy_t : public cat_attack_t
   struct feral_frenzy_data_t
   {
     double tick_amount = 0.0;
-    double tick_mul = 0.0;
+    double tick_mul = 1.0;
 
     friend void sc_format_to( const feral_frenzy_data_t& data, fmt::format_context::iterator out )
     {
@@ -4045,7 +4045,7 @@ struct feral_frenzy_t : public cat_attack_t
 
       auto ff_s = cast_state( s );
 
-      return ff_s->tick_amount * ( 1.0 + ff_s->tick_mul );
+      return ff_s->tick_amount * ff_s->tick_mul;
     }
 
     // dot damage is entirely overwritten by feral_frenzy_tick_t::base_ta()
@@ -4088,7 +4088,7 @@ struct feral_frenzy_t : public cat_attack_t
       ff_s->tick_amount = tick_amount;
 
       // the multiplier on the latest hit overwrites multipliers from previous hits and applies to the entire dot
-      ff_s->tick_mul = ( ff_s->base_composite_ta_multiplier() - 1.0 );
+      ff_s->tick_mul = ff_s->base_composite_ta_multiplier();
     }
   };
 
@@ -5757,47 +5757,22 @@ struct nourish_t : public druid_heal_t
 // Regrowth =================================================================
 struct regrowth_t : public druid_heal_t
 {
-  struct regrowth_data_t
-  {
-    double bonus_crit = 0.0;
-
-    friend void sc_format_to( const regrowth_data_t& data, fmt::format_context::iterator out )
-    {
-      fmt::format_to( out, "bonus_crit={}", data.bonus_crit );
-    }
-  };
-
-  struct regrowth_state_t : public action_state_t
-  {
-    regrowth_state_t( action_t* a, player_t* t ) : action_state_t( a, t ) {}
-
-    /* TODO: fix later
-    double composite_crit_chance() const override
-    {
-      return action_state_t::composite_crit_chance() + bonus_crit;
-    }
-    */
-  };
-
   timespan_t gcd_add;
   double bonus_crit;
   double sotf_mul;
+  bool is_direct;
 
   regrowth_t( druid_t* p, std::string_view opt )
     : druid_heal_t( "regrowth", p, p->find_class_spell( "Regrowth" ), opt ),
       gcd_add( p->query_aura_effect( p->spec.cat_form_passive, A_ADD_FLAT_MODIFIER, P_GCD, &data() )->time_value() ),
       bonus_crit( p->talent.improved_regrowth->effectN( 1 ).percent() ),
-      sotf_mul( p->buff.soul_of_the_forest_tree->data().effectN( 1 ).percent() )
+      sotf_mul( p->buff.soul_of_the_forest_tree->data().effectN( 1 ).percent() ),
+      is_direct( false )
   {
     form_mask = NO_FORM | MOONKIN_FORM;
     may_autounshift = true;
 
     affected_by.soul_of_the_forest = true;
-  }
-
-  action_state_t* new_state() override
-  {
-    return new regrowth_state_t( this, target );
   }
 
   timespan_t gcd() const override
@@ -5816,6 +5791,16 @@ struct regrowth_t : public druid_heal_t
       return 0_ms;
 
     return druid_heal_t::execute_time();
+  }
+
+  double composite_target_crit_chance( player_t* t ) const override
+  {
+    double tcc = druid_heal_t::composite_target_crit_chance( t );
+
+    if ( is_direct && td( t )->hots.regrowth->is_ticking() )
+      tcc += bonus_crit;
+
+    return tcc;
   }
 
   double composite_persistent_multiplier( const action_state_t* s ) const override
@@ -5848,14 +5833,9 @@ struct regrowth_t : public druid_heal_t
 
   void execute() override
   {
-    if ( td( target )->hots.regrowth->is_ticking() )
-    {
-      pre_execute_state = get_state();
-      snapshot_state( pre_execute_state, amount_type( pre_execute_state ) );
-      // debug_cast<regrowth_state_t*>( pre_execute_state )->bonus_crit = bonus_crit;
-    }
-
+    is_direct = true;
     druid_heal_t::execute();
+    is_direct = false;
 
     p()->buff.predatory_swiftness->expire();
 
@@ -7123,7 +7103,7 @@ struct full_moon_t : public moon_base_t
     return p()->moon_stage >= stage;
   }
 
-  void advance_stage()
+  void advance_stage() override
   {
     auto max_stage = p()->talent.radiant_moonlight.ok() ? moon_stage_e::MAX_MOON : moon_stage_e::FULL_MOON;
 
