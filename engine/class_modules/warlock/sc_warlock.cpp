@@ -569,6 +569,9 @@ struct shadow_bolt_t : public warlock_spell_t
     //  m *= 1.0 + p()->talents.sacrificed_souls->effectN( 1 ).percent() * p()->active_pets;
     //}
 
+    if ( p()->talents.stolen_power.ok() && p()->buffs.stolen_power_final->check() )
+      m *= 1.0 + p()->talents.stolen_power_final_buff->effectN( 1 ).percent();
+
     return m;
   }
 

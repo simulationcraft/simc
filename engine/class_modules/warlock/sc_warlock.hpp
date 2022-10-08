@@ -326,7 +326,9 @@ public:
     player_talent_t antoran_armaments; // Increased Felguard damage and Soul Strike cleave (TOCHECK: 2022-10-08 - this is applying to Grimoire: Felguard erratically)
 
     player_talent_t nerzhuls_volition; // Chance to summon additional demon from Nether Portal summons (TOCHECK: It is currently assumed this cannot proc itself)
-    // DF - Stolen Power (Stacking buff from Wild Imps, at max get increased Shadow Bolt or Demonbolt damage)
+    player_talent_t stolen_power; // Stacking buff from Wild Imps, at max get increased Shadow Bolt or Demonbolt damage
+    const spell_data_t* stolen_power_stacking_buff; // Triggers final buff when reaching max stacks
+    const spell_data_t* stolen_power_final_buff;
     const spell_data_t* sacrificed_souls; // DF - Now a 2 point talent, needs checking against new pets for compatibility
     // DF - Soulbound Tyrant (2 point talent, formerly a Rank 2 effect on Summon Demonic Tyrant)
     // DF - Forces of the Horned Nightmare (Formerly SL Legendary, now a 2 point talent)
@@ -527,7 +529,8 @@ public:
     propagate_const<buff_t*> balespiders_burning_core; // DF - Now comes from Demonology talent
     propagate_const<buff_t*> shadows_bite;
     propagate_const<buff_t*> fel_covenant;
-    // DF - Stolen Power (stacking buff from Wild Imp casts) - Could actually be two buffs, currently broken
+    propagate_const<buff_t*> stolen_power_building; // Stacking buff, triggers final buff as a separate buff at max stacks
+    propagate_const<buff_t*> stolen_power_final;
 
     // Destruction Buffs
     propagate_const<buff_t*> backdraft; // DF - Max 2 stacks
