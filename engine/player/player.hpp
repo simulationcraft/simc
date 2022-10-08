@@ -439,7 +439,6 @@ struct player_t : public actor_t
     std::array<buff_t*, 4> ancestral_call;
     buff_t* fireblood;
     buff_t* embrace_of_paku;
-    buff_t* forced_bloodlust;
 
     buff_t* berserking;
     buff_t* bloodlust;
@@ -618,7 +617,6 @@ struct player_t : public actor_t
     std::vector<timespan_t> kindred_affinity;
     std::vector<timespan_t> boon_of_azeroth;
     std::vector<timespan_t> boon_of_azeroth_mythic;
-    std::vector<timespan_t> forced_bloodlust;
     int soleahs_secret_technique;
     std::string elegy_of_the_eternals;
   } external_buffs;
