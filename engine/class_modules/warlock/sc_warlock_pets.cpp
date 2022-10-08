@@ -856,7 +856,7 @@ struct fel_firebolt_t : public warlock_pet_spell_t
     if ( p()->o()->buffs.demonic_power->check() )
     {
       // 2022-02-16 - At some point, Wild Imps stopped despawning if Demonic Tyrant is summoned during their final cast
-      c *= 1.0 + p()->o()->buffs.demonic_power->data().effectN( 4 ).percent();
+      c *= 1.0 + p()->o()->talents.demonic_power_buff->effectN( 4 ).percent();
     }
 
     return c;

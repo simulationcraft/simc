@@ -1063,7 +1063,7 @@ double warlock_t::composite_player_pet_damage_multiplier( const action_state_t* 
     m *= 1.0 + cache.mastery_value();
 
     if ( buffs.demonic_power->check() )
-      m *= 1.0 + buffs.demonic_power->default_value;
+      m *= 1.0 + buffs.demonic_power->check_value();
   }
   if ( specialization() == WARLOCK_AFFLICTION )
   {

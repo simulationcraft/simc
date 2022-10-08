@@ -522,18 +522,11 @@ struct implosion_t : public demonology_spell_t
 
 struct summon_demonic_tyrant_t : public demonology_spell_t
 {
-  double demonic_consumption_added_damage;
-  double demonic_consumption_health_percentage;
-
   summon_demonic_tyrant_t( warlock_t* p, util::string_view options_str )
-    : demonology_spell_t( "summon_demonic_tyrant", p, p->find_spell( 265187 ) ),
-      demonic_consumption_added_damage( 0 ),
-      demonic_consumption_health_percentage( 0 )
+    : demonology_spell_t( "summon_demonic_tyrant", p, p->talents.summon_demonic_tyrant )
   {
     parse_options( options_str );
     harmful = may_crit = false;
-
-    demonic_consumption_health_percentage = p->find_spell( 267971 )->effectN( 1 ).percent();
   }
 
   void execute() override
@@ -548,11 +541,11 @@ struct summon_demonic_tyrant_t : public demonology_spell_t
 
     p()->buffs.demonic_power->trigger();
 
-    if ( p()->spec.summon_demonic_tyrant_2->ok() )
-      p()->resource_gain( RESOURCE_SOUL_SHARD, p()->spec.summon_demonic_tyrant_2->effectN( 1 ).base_value() / 10.0,
-                          p()->gains.summon_demonic_tyrant );
+    //if ( p()->spec.summon_demonic_tyrant_2->ok() )
+    //  p()->resource_gain( RESOURCE_SOUL_SHARD, p()->spec.summon_demonic_tyrant_2->effectN( 1 ).base_value() / 10.0,
+    //                      p()->gains.summon_demonic_tyrant );
 
-    demonic_consumption_added_damage = 0;
+    timespan_t extension_time = p()->talents.demonic_power_buff->effectN( 3 ).time_value();
 
     for ( auto& pet : p()->pet_list )
     {
@@ -568,46 +561,23 @@ struct summon_demonic_tyrant_t : public demonology_spell_t
 
       if ( lock_pet->expiration )
       {
-        timespan_t new_time = lock_pet->expiration->time + p()->buffs.demonic_power->data().effectN( 3 ).time_value();
-        lock_pet->expiration->reschedule_time = new_time;
-      }
-
-      if ( p()->talents.demonic_consumption->ok() )
-      {
-        //This is a hack to get around the fact we are not currently updating pet HP dynamically
-        //TODO: Pet stats (especially HP) need more reliable modeling of caching/updating
-        double available = p()->max_health() * pet->owner_coeff.health;
-
-        // There is no spelldata for how health is converted into damage, current testing indicates the 15% of hp taken
-        // from pets is divided by 10 and added to base damage 09-05-2020.
-        // TODO - make it properly remove the health.
-        demonic_consumption_added_damage += available * demonic_consumption_health_percentage / 10.0;
-      }
-    }
-
-    if ( p()->talents.demonic_consumption->ok() )
-    {
-      for ( auto dt : p()->warlock_pet_list.demonic_tyrants )
-      {
-        if ( !dt->is_sleeping() )
-        {
-          dt->buffs.demonic_consumption->trigger( 1, demonic_consumption_added_damage );
-        }
+        lock_pet->expiration->reschedule_time = lock_pet->expiration->time + extension_time;
       }
     }
 
     p()->buffs.tyrant->trigger();
+
     if ( p()->buffs.dreadstalkers->check() )
     {
-      p()->buffs.dreadstalkers->extend_duration( p(), p()->buffs.demonic_power->data().effectN( 3 ).time_value() );
+      p()->buffs.dreadstalkers->extend_duration( p(), extension_time );
     }
     if ( p()->buffs.grimoire_felguard->check() )
     {
-      p()->buffs.grimoire_felguard->extend_duration( p(), p()->buffs.demonic_power->data().effectN( 3 ).time_value() );
+      p()->buffs.grimoire_felguard->extend_duration( p(), extension_time );
     }
     if ( p()->buffs.vilefiend->check() )
     {
-      p()->buffs.vilefiend->extend_duration( p(), p()->buffs.demonic_power->data().effectN( 3 ).time_value() );
+      p()->buffs.vilefiend->extend_duration( p(), extension_time );
     }
   }
 };
@@ -1089,9 +1059,8 @@ void warlock_t::create_buffs_demonology()
   buffs.power_siphon = make_buff( this, "power_siphon", talents.power_siphon_buff )
                            ->set_default_value_from_effect( 1 );
 
-  buffs.demonic_power = make_buff( this, "demonic_power", find_spell( 265273 ) )
-                            ->set_default_value( find_spell( 265273 )->effectN( 2 ).percent() )
-                            ->set_cooldown( timespan_t::zero() );
+  buffs.demonic_power = make_buff( this, "demonic_power", talents.demonic_power_buff )
+                            ->set_default_value_from_effect( 2 );
 
   // Talents
   buffs.demonic_calling = make_buff( this, "demonic_calling", talents.demonic_calling_buff )
@@ -1224,6 +1193,9 @@ void warlock_t::init_spells_demonology()
 
   talents.nether_portal = find_talent_spell( talent_tree::SPECIALIZATION, "Nether Portal" ); // Should be ID 267217
   talents.nether_portal_buff = find_spell( 267218 );
+
+  talents.summon_demonic_tyrant = find_talent_spell( talent_tree::SPECIALIZATION, "Summon Demonic Tyrant" ); // Should be ID 265187
+  talents.demonic_power_buff = find_spell( 265273 );
 
   talents.sacrificed_souls    = find_talent_spell( "Sacrificed Souls" );
   talents.demonic_consumption = find_talent_spell( "Demonic Consumption" );
