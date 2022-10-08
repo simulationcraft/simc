@@ -302,6 +302,7 @@ struct hunter_td_t: public actor_target_data_t
     buff_t* latent_poison;
     buff_t* latent_poison_injectors;
     buff_t* death_chakram;
+    buff_t* stampede;
   } debuffs;
 
   struct dots_t
@@ -1345,7 +1346,8 @@ struct hunter_pet_t: public pet_t
   {
     double crit = pet_t::composite_player_target_crit_chance( target );
 
-    crit += o()->buffs.resonating_arrow->check_value();
+    crit += o() -> buffs.resonating_arrow -> check_value();
+    crit += o() -> get_target_data( target ) -> debuffs.stampede -> check_value();
 
     return crit;
   }
@@ -5719,6 +5721,8 @@ struct stampede_t: public hunter_spell_t
       // XXX: Wild Spirits kludge
       if ( s -> chain_target == 0 && p() -> buffs.wild_spirits -> check() )
         triggers_wild_spirits = false;
+
+      p() -> get_target_data( s -> target ) -> debuffs.stampede -> trigger();
     }
   };
 
@@ -6316,6 +6320,9 @@ hunter_td_t::hunter_td_t( player_t* target, hunter_t* p ):
     make_buff( *this, "death_chakram", p -> find_spell( 325037 ) )
       -> set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER )
       -> set_cooldown( 0_s );
+
+  debuffs.stampede = make_buff( *this, "stampede", p -> find_spell( 201594 ) )
+    -> set_default_value_from_effect( 3 );
 
   dots.serpent_sting = target -> get_dot( "serpent_sting", p );
   dots.a_murder_of_crows = target -> get_dot( "a_murder_of_crows", p );
@@ -7541,6 +7548,7 @@ double hunter_t::composite_player_target_crit_chance( player_t* target ) const
   double crit = player_t::composite_player_target_crit_chance( target );
 
   crit += buffs.resonating_arrow -> check_value();
+  crit += get_target_data( target ) -> debuffs.stampede -> check_value();
 
   return crit;
 }
