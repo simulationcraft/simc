@@ -1812,7 +1812,9 @@ class SpellDataGenerator(DataGenerator):
           ( 390097, 0 ),    # Darkglare - Grim Reach
           ( 387392, 0 ),    # Dread Calling Buff
           ( 387393, 0 ),    # Dread Calling Buff 2
-          ( 267218, 0 )    # Nether Portal aura
+          ( 267218, 0 ),    # Nether Portal aura
+          ( 387496, 0 ),    # Antoran Armaments buff
+          ( 387502, 0 ),    # Soul Cleave
         ),
 
         # Monk:

@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.2.45969
-static const std::array<spelltext_data_t, 18967> __spelltext_data { {
+static const std::array<spelltext_data_t, 18969> __spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -17818,6 +17818,8 @@ static const std::array<spelltext_data_t, 18967> __spelltext_data { {
   { 387485, "Call Dreadstalkers has a $s1% chance to summon an additional Dreadstalker.", 0, 0 },
   { 387488, "Shadow Bolt and Demonbolt have a $s1% chance to reset the cooldown of Call Dreadstalkers.", 0, 0 },
   { 387494, "Your Felguard deals $s1% additional damage. Soul Strike now deals $s2% of its damage to nearby enemies.", 0, 0 },
+  { 387496, "$@spelldesc387494", "Damage done increased by $w1%. Soul Strike deals $w2% of its damage to nearby enemies.", 0 },
+  { 387502, "$@spelldesc387494", 0, 0 },
   { 387506, "Your single target spells have a $s1% chance to apply Havoc to a nearby enemy for ${$s3/1000}.1 sec.\r\n\r\n$@spellicon80240 $@spellname80240\r\nMarks a target with Havoc for ${$s3/1000}.1 sec, causing your single target spells to also strike the Havoc victim for $80240s1% of normal initial damage.", 0, 0 },
   { 387509, "Increases the base duration of Havoc by ${$s1/1000} sec.\r\n\r\nMayhem has an additional $s2% chance to trigger.\r\n\r\n", 0, 0 },
   { 387522, "When Chaos Bolt damages a target afflicted by Havoc, it explodes, dealing $387547s2 damage to enemies within $387547A2 yards.", 0, 0 },
