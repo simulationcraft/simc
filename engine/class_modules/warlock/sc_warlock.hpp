@@ -330,7 +330,7 @@ public:
     const spell_data_t* stolen_power_stacking_buff; // Triggers final buff when reaching max stacks
     const spell_data_t* stolen_power_final_buff;
     player_talent_t sacrificed_souls;
-    // DF - Soulbound Tyrant (2 point talent, formerly a Rank 2 effect on Summon Demonic Tyrant)
+    player_talent_t soulbound_tyrant; // Soul Shards on Tyrant summons
     // DF - Forces of the Horned Nightmare (Formerly SL Legendary, now a 2 point talent)
     // DF - The Expendables (Per-pet stacking buff to damage when a Wild Imp expires)
     // DF - Command Aura (2 point talent, increased Wild Imp and Dreadstalker damage while Felguard active)
@@ -577,7 +577,7 @@ public:
 
     gain_t* shadow_bolt;
     gain_t* doom;
-    gain_t* summon_demonic_tyrant;
+    gain_t* soulbound_tyrant;
     gain_t* demonic_meteor;
   } gains;
 
