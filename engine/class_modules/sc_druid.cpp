@@ -5767,16 +5767,14 @@ struct regrowth_t : public druid_heal_t
     }
   };
 
-  struct regrowth_state_t : public action_state_t
+  struct regrowth_state_t : public druid_action_state_t<regrowth_data_t>
   {
-    regrowth_state_t( action_t* a, player_t* t ) : action_state_t( a, t ) {}
+    regrowth_state_t( action_t* a, player_t* t ) : druid_action_state_t<regrowth_data_t>( a, t ) {}
 
-    /* TODO: fix later
     double composite_crit_chance() const override
     {
-      return action_state_t::composite_crit_chance() + bonus_crit;
+      return druid_action_state_t<regrowth_data_t>::composite_crit_chance() + bonus_crit;
     }
-    */
   };
 
   timespan_t gcd_add;
