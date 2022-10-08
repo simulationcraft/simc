@@ -554,6 +554,9 @@ struct summon_demonic_tyrant_t : public demonology_spell_t
     //  p()->resource_gain( RESOURCE_SOUL_SHARD, p()->spec.summon_demonic_tyrant_2->effectN( 1 ).base_value() / 10.0,
     //                      p()->gains.summon_demonic_tyrant );
 
+    if ( p()->talents.soulbound_tyrant.ok() )
+      p()->resource_gain( RESOURCE_SOUL_SHARD, p()->talents.soulbound_tyrant->effectN( 1 ).base_value() / 10.0, p()->gains.soulbound_tyrant );
+
     timespan_t extension_time = p()->talents.demonic_power_buff->effectN( 3 ).time_value();
 
     for ( auto& pet : p()->pet_list )
@@ -1230,6 +1233,8 @@ void warlock_t::init_spells_demonology()
 
   talents.sacrificed_souls = find_talent_spell( talent_tree::SPECIALIZATION, "Sacrificed Souls" ); // Should be ID 267214
 
+  talents.soulbound_tyrant = find_talent_spell( talent_tree::SPECIALIZATION, "Soulbound Tyrant" ); // Should be ID 334585
+
   talents.demonic_consumption = find_talent_spell( "Demonic Consumption" );
 
 
@@ -1253,7 +1258,7 @@ void warlock_t::init_spells_demonology()
 
 void warlock_t::init_gains_demonology()
 {
-  gains.summon_demonic_tyrant = get_gain( "summon_demonic_tyrant" );
+  gains.soulbound_tyrant = get_gain( "soulbound_tyrant" );
   gains.doom = get_gain( "doom" );
   gains.demonic_meteor = get_gain( "demonic_meteor" );
 }
