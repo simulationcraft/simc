@@ -1258,6 +1258,7 @@ struct fire_breath_t : public empowered_charge_spell_t
     fire_breath_damage_t( evoker_t* p ) : base_t( "fire_breath_damage", p, p->find_spell( 357209 ) )
     {
       aoe = -1;  // TODO: actually a cone so we need to model it if possible
+      reduced_aoe_targets = 5.0;
     }
 
     timespan_t composite_dot_duration( const action_state_t* s ) const override
