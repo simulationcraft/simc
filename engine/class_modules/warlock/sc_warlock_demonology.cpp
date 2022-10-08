@@ -54,8 +54,7 @@ public:
     {
       if ( p()->buffs.nether_portal->up() )
       {
-        p()->active.summon_random_demon->execute();
-        p()->buffs.portal_summons->trigger();
+        p()->proc_actions.summon_random_demon->execute();
         p()->procs.portal_summon->occur();
       }
     }
@@ -1109,8 +1108,7 @@ void warlock_t::create_buffs_demonology()
                              }
                            } );
 
-  buffs.nether_portal =
-      make_buff( this, "nether_portal", talents.nether_portal )->set_duration( talents.nether_portal->duration() );
+  buffs.nether_portal = make_buff( this, "nether_portal", talents.nether_portal_buff );
 
   // Legendaries
   buffs.balespiders_burning_core =
@@ -1139,11 +1137,6 @@ void warlock_t::create_buffs_demonology()
   buffs.prince_malchezaar = make_buff( this, "prince_malchezaar" )->set_max_stack( 1 );
 
   buffs.eyes_of_guldan = make_buff( this, "eyes_of_guldan" )->set_max_stack( 4 );
-
-  buffs.portal_summons = make_buff( this, "portal_summons" )
-                             ->set_duration( timespan_t::from_seconds( 15 ) )
-                             ->set_max_stack( 40 )
-                             ->set_refresh_behavior( buff_refresh_behavior::DURATION );
 
   buffs.shadows_bite = make_buff( this, "shadows_bite", talents.shadows_bite_buff )
                            ->set_default_value( talents.shadows_bite->effectN( 1 ).percent() );
@@ -1229,9 +1222,12 @@ void warlock_t::init_spells_demonology()
 
   talents.hounds_of_war = find_talent_spell( talent_tree::SPECIALIZATION, "Hounds of War" ); // Should be ID 387488
 
+  talents.nether_portal = find_talent_spell( talent_tree::SPECIALIZATION, "Nether Portal" ); // Should be ID 267217
+  talents.nether_portal_buff = find_spell( 267218 );
+
   talents.sacrificed_souls    = find_talent_spell( "Sacrificed Souls" );
   talents.demonic_consumption = find_talent_spell( "Demonic Consumption" );
-  talents.nether_portal       = find_talent_spell( "Nether Portal" );
+
 
   // Legendaries
   legendary.balespiders_burning_core       = find_runeforge_legendary( "Balespider's Burning Core" );
