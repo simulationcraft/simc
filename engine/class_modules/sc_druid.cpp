@@ -259,6 +259,36 @@ struct eclipse_handler_t
   void merge( const eclipse_handler_t& );
 };
 
+template <typename Data, typename Base = action_state_t>
+struct druid_action_state_t : public Base, public Data
+{
+  static_assert( std::is_base_of_v<action_state_t, Base> );
+  static_assert( std::is_default_constructible_v<Data> );  // required for initialize
+  static_assert( std::is_copy_assignable_v<Data> );  // required for copy_state
+
+  using Base::Base;
+
+  void initialize() override
+  {
+    Base::initialize();
+    *static_cast<Data*>( this ) = Data{};
+  }
+
+  std::ostringstream& debug_str( std::ostringstream& s ) override
+  {
+    Base::debug_str( s );
+    if constexpr ( fmt::is_formattable<Data>::value )
+      fmt::print( s, " {}", *static_cast<const Data*>( this ) );
+    return s;
+  }
+
+  void copy_state( const action_state_t* o ) override
+  {
+    Base::copy_state( o );
+    *static_cast<Data*>( this ) = *static_cast<const Data*>( debug_cast<const druid_action_state_t*>( o ) );
+  }
+};
+
 struct druid_t : public player_t
 {
 private:
@@ -3029,38 +3059,21 @@ public:
   }
 };
 
-// Templates for child actions that do damage based on % of parent action
-struct druid_residual_state_t : public action_state_t
+// for child actions that do damage based on % of parent action
+struct druid_residual_data_t
 {
-  double total_amount;
+  double total_amount = 0.0;
 
-  druid_residual_state_t( action_t* a, player_t* t ) : action_state_t( a, t ), total_amount( 0.0 ) {}
-
-  void initialize() override
-  {
-    action_state_t::initialize();
-    total_amount = 0.0;
-  }
-
-  void copy_state( const action_state_t* s ) override
-  {
-    action_state_t::copy_state( s );
-    total_amount = debug_cast<const druid_residual_state_t*>( s )->total_amount;
-  }
-
-  std::ostringstream& debug_str( std::ostringstream& s ) override
-  {
-    action_state_t::debug_str( s );
-    s << " total_amount=" << total_amount;
-    return s;
+  friend void sc_format_to( const druid_residual_data_t& data, fmt::format_context::iterator out ) {
+    fmt::format_to( out, "total_amount={}", data.total_amount );
   }
 };
 
-template <class Base, class State = druid_residual_state_t>
+template <class Base, class Data = druid_residual_data_t>
 struct druid_residual_action_t : public Base
 {
-  static_assert( std::is_base_of_v<action_state_t, State> );
-  using base_t = druid_residual_action_t<Base, State>;
+  using base_t = druid_residual_action_t<Base, Data>;
+  using state_t = druid_action_state_t<Data>;
 
   double residual_mul;
 
@@ -3071,12 +3084,30 @@ struct druid_residual_action_t : public Base
     Base::round_base_dmg = false;
   }
 
-  action_state_t* new_state() override { return new State( this, Base::target ); }
-  State* cast_state( action_state_t* s ) { return debug_cast<State*>( s ); }
-  const State* cast_state( const action_state_t* s ) const { return debug_cast<const State*>( s ); }
+  action_state_t* new_state() override
+  {
+    return new state_t( this, Base::target );
+  }
 
-  void set_amount( action_state_t* s, double v ) { cast_state( s )->total_amount = v; }
-  virtual double get_amount( const action_state_t* s ) const { return cast_state( s )->total_amount * residual_mul; }
+  state_t* cast_state( action_state_t* s )
+  {
+    return debug_cast<state_t*>( s );
+  }
+
+  const state_t* cast_state( const action_state_t* s ) const
+  {
+    return debug_cast<const state_t*>( s );
+  }
+
+  void set_amount( action_state_t* s, double v )
+  {
+    cast_state( s )->total_amount = v;
+  }
+
+  virtual double get_amount( const action_state_t* s ) const
+  {
+    return cast_state( s )->total_amount * residual_mul;
+  }
 };
 
 namespace spells
@@ -3415,32 +3446,6 @@ namespace cat_attacks
 // ==========================================================================
 // Druid Cat Attack
 // ==========================================================================
-struct cat_finisher_state_t : public druid_residual_state_t
-{
-  int combo_points;
-
-  cat_finisher_state_t( action_t* a, player_t* t ) : druid_residual_state_t( a, t ), combo_points( 0 ) {}
-
-  void initialize() override
-  {
-    druid_residual_state_t::initialize();
-    combo_points = 0;
-  }
-
-  void copy_state( const action_state_t* state ) override
-  {
-    druid_residual_state_t::copy_state( state );
-    combo_points = debug_cast<const cat_finisher_state_t*>( state )->combo_points;
-  }
-
-  std::ostringstream& debug_str( std::ostringstream& s ) override
-  {
-    druid_residual_state_t::debug_str( s );
-    s << " combo_points=" << combo_points;
-    return s;
-  }
-};
-
 struct cat_attack_t : public druid_attack_t<melee_attack_t>
 {
 protected:
@@ -3832,25 +3837,37 @@ public:
   }
 };  // end druid_cat_attack_t
 
+struct cat_finisher_data_t
+{
+  int combo_points = 0;
+
+  friend void sc_format_to( const cat_finisher_data_t& data, fmt::format_context::iterator out ) {
+    fmt::format_to( out, "combo_points={}", data.combo_points );
+  }
+};
+
+template <class Data = cat_finisher_data_t>
 struct cat_finisher_t : public cat_attack_t
 {
+  using state_t = druid_action_state_t<Data>;
+
   cat_finisher_t( std::string_view n, druid_t* p, const spell_data_t* s, std::string_view opt = {} )
     : cat_attack_t( n, p, s, opt )
   {}
 
   action_state_t* new_state() override
   {
-    return new cat_finisher_state_t( this, target );
+    return new state_t( this, target );
   }
 
-  cat_finisher_state_t* cast_state( action_state_t* s )
+  state_t* cast_state( action_state_t* s )
   {
-    return debug_cast<cat_finisher_state_t*>( s );
+    return debug_cast<state_t*>( s );
   }
 
-  const cat_finisher_state_t* cast_state( const action_state_t* s ) const
+  const state_t* cast_state( const action_state_t* s ) const
   {
-    return debug_cast<const cat_finisher_state_t*>( s );
+    return debug_cast<const state_t*>( s );
   }
 
   virtual int _combo_points() const
@@ -3943,40 +3960,20 @@ struct brutal_slash_t : public cat_attack_t
 // Feral Frenzy =============================================================
 struct feral_frenzy_t : public cat_attack_t
 {
-  struct feral_frenzy_state_t : public action_state_t
+  struct feral_frenzy_data_t
   {
-    double tick_amount;
-    double tick_mult;
+    double tick_amount = 0.0;
+    double tick_mul = 1.0;
 
-    feral_frenzy_state_t( action_t* a, player_t* t )
-      : action_state_t( a, t ), tick_amount( 0.0 ), tick_mult( 1.0 )
-    {}
-
-    void initialize() override
+    friend void sc_format_to( const feral_frenzy_data_t& data, fmt::format_context::iterator out )
     {
-      action_state_t::initialize();
-
-      tick_amount = 0.0;
-      tick_mult = 1.0;
+      fmt::format_to( out, "tick_amount={} tick_mul={}", data.tick_amount, data.tick_mul );
     }
+  };
 
-    void copy_state( const action_state_t* s ) override
-    {
-      action_state_t::copy_state( s );
-
-      auto ff_s = debug_cast<const feral_frenzy_state_t*>( s );
-      tick_amount = ff_s->tick_amount;
-      tick_mult = ff_s->tick_mult;
-    }
-
-    std::ostringstream& debug_str( std::ostringstream& s ) override
-    {
-      action_state_t::debug_str( s );
-
-      s << " tick_amount=" << tick_amount << " tick_mult=" << tick_mult;
-
-      return s;
-    }
+  struct feral_frenzy_state_t : public druid_action_state_t<feral_frenzy_data_t>
+  {
+    feral_frenzy_state_t( action_t* a, player_t* t ) : druid_action_state_t( a, t ) {}
 
     // dot damage is entirely overwritten by feral_frenzy_tick_t::base_ta()
     double composite_ta_multiplier() const override
@@ -3987,7 +3984,7 @@ struct feral_frenzy_t : public cat_attack_t
     // what the multiplier would have been
     double base_composite_ta_multiplier() const
     {
-      return action_state_t::composite_ta_multiplier();
+      return druid_action_state_t::composite_ta_multiplier();
     }
   };
 
@@ -4005,15 +4002,28 @@ struct feral_frenzy_t : public cat_attack_t
       dot_name = "feral_frenzy_tick";
     }
 
-    action_state_t* new_state() override { return new feral_frenzy_state_t( this, target ); }
+    action_state_t* new_state() override
+    {
+      return new feral_frenzy_state_t( this, target );
+    }
+
+    feral_frenzy_state_t* cast_state( action_state_t* s )
+    {
+      return debug_cast<feral_frenzy_state_t*>( s );
+    }
+
+    const feral_frenzy_state_t* cast_state( const action_state_t* s ) const
+    {
+      return debug_cast<const feral_frenzy_state_t*>( s );
+    }
 
     // Small hack to properly distinguish instant ticks from the driver, from actual periodic ticks from the bleed
-    result_amount_type report_amount_type( const action_state_t* state ) const override
+    result_amount_type report_amount_type( const action_state_t* s ) const override
     {
       if ( is_direct_damage )
         return result_amount_type::DMG_DIRECT;
 
-      return state->result_type;
+      return s->result_type;
     }
 
     void execute() override
@@ -4031,9 +4041,9 @@ struct feral_frenzy_t : public cat_attack_t
       if ( is_direct_damage )
         return cat_attack_t::base_ta( s );
 
-      auto ff_s = debug_cast<const feral_frenzy_state_t*>( s );
+      auto ff_s = cast_state( s );
 
-      return ff_s->tick_amount * ff_s->tick_mult;
+      return ff_s->tick_amount * ff_s->tick_mul;
     }
 
     // dot damage is entirely overwritten by feral_frenzy_tick_t::base_ta()
@@ -4052,7 +4062,7 @@ struct feral_frenzy_t : public cat_attack_t
       // calculate the expected total dot amount from the existing state before the state is replaced in trigger_dot()
       auto stored_amount = 0.0;
       auto ff_d = get_dot( target );
-      auto ff_s = debug_cast<feral_frenzy_state_t*>( ff_d->state );
+      auto ff_s = cast_state( ff_d->state );
 
       if ( ff_s )
         stored_amount = ff_s->tick_amount * ff_d->ticks_left_fractional();
@@ -4076,7 +4086,7 @@ struct feral_frenzy_t : public cat_attack_t
       ff_s->tick_amount = tick_amount;
 
       // the multiplier on the latest hit overwrites multipliers from previous hits and applies to the entire dot
-      ff_s->tick_mult = ff_s->base_composite_ta_multiplier();
+      ff_s->tick_mul = ff_s->base_composite_ta_multiplier();
     }
   };
 
@@ -4104,9 +4114,9 @@ struct feral_frenzy_t : public cat_attack_t
 };
 
 // Ferocious Bite ===========================================================
-struct ferocious_bite_t : public cat_finisher_t
+struct ferocious_bite_t : public cat_finisher_t<>
 {
-  struct rampant_ferocity_t : public druid_residual_action_t<cat_attack_t, cat_finisher_state_t>
+  struct rampant_ferocity_t : public druid_residual_action_t<cat_attack_t>
   {
     rampant_ferocity_t( druid_t* p, std::string_view n ) : base_t( n, p, p->find_spell( 391710 ) )
     {
@@ -4437,9 +4447,9 @@ struct rake_t : public cat_attack_t
 };
 
 // Rip ======================================================================
-struct rip_t : public cat_finisher_t
+struct rip_t : public cat_finisher_t<>
 {
-  struct tear_t : public druid_residual_action_t<cat_attack_t, cat_finisher_state_t>
+  struct tear_t : public druid_residual_action_t<cat_attack_t>
   {
     tear_t( druid_t* p, std::string_view n ) : base_t( n, p, p->find_spell( 391356 ) )
     {
@@ -4524,7 +4534,7 @@ struct rip_t : public cat_finisher_t
 
 // Primal Wrath =============================================================
 // NOTE: must be defined AFTER rip_T
-struct primal_wrath_t : public cat_finisher_t
+struct primal_wrath_t : public cat_finisher_t<>
 {
   struct tear_open_wounds_t : public cat_attack_t
   {
@@ -5745,25 +5755,19 @@ struct nourish_t : public druid_heal_t
 // Regrowth =================================================================
 struct regrowth_t : public druid_heal_t
 {
-  struct regrowth_state_t : public action_state_t
+  struct regrowth_data_t
   {
-    double bonus_crit;
+    double bonus_crit = 0.0;
 
-    regrowth_state_t( action_t* a, player_t* t ) : action_state_t( a, t ), bonus_crit( 0.0 ) {}
-
-    void initialize() override
+    friend void sc_format_to( const regrowth_data_t& data, fmt::format_context::iterator out )
     {
-      action_state_t::initialize();
-
-      bonus_crit = 0.0;
+      fmt::format_to( out, "bonus_crit={}", data.bonus_crit );
     }
+  };
 
-    void copy_state( const action_state_t* s ) override
-    {
-      action_state_t::copy_state( s );
-
-      bonus_crit = debug_cast<const regrowth_state_t*>( s )->bonus_crit;
-    }
+  struct regrowth_state_t : public druid_action_state_t<regrowth_data_t>
+  {
+    regrowth_state_t( action_t* a, player_t* t ) : druid_action_state_t( a, t ) {}
 
     double composite_crit_chance() const override
     {
@@ -7721,33 +7725,19 @@ struct stampeding_roar_t : public druid_spell_t
 // Starfall Spell ===========================================================
 struct starfall_t : public druid_spell_t
 {
-  struct starfall_state_t : public druid_residual_state_t
+  struct starfall_data_t
   {
-    player_t* shrapnel_target;
+    player_t* shrapnel_target = nullptr;
+    double total_amount = 0.0;
 
-    starfall_state_t( action_t* a, player_t* t ) : druid_residual_state_t( a, t ), shrapnel_target( nullptr ) {}
-
-    void initialize() override
+    friend void sc_format_to( const starfall_data_t& data, fmt::format_context::iterator out )
     {
-      druid_residual_state_t::initialize();
-      shrapnel_target = nullptr;
-    }
-
-    void copy_state( const action_state_t* s ) override
-    {
-      druid_residual_state_t::copy_state( s );
-      shrapnel_target = debug_cast<const starfall_state_t*>( s )->shrapnel_target;
-    }
-
-    std::ostringstream& debug_str( std::ostringstream& s ) override
-    {
-      druid_residual_state_t::debug_str( s );
-      s << " shrapnel=" << ( shrapnel_target ? shrapnel_target->name() : "none" );
-      return s;
+      fmt::format_to( out, "total_amount={} shrapnel_target={}", data.total_amount,
+                      data.shrapnel_target ? data.shrapnel_target->name() : "none" );
     }
   };
 
-  using starfall_base_t = druid_residual_action_t<druid_spell_t, starfall_state_t>;
+  using starfall_base_t = druid_residual_action_t<druid_spell_t, starfall_data_t>;
 
   struct lunar_shrapnel_t : public starfall_base_t
   {
