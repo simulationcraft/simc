@@ -280,10 +280,10 @@ struct demonbolt_t : public demonology_spell_t
   {
     double m = demonology_spell_t::action_multiplier();
 
-    //if ( p()->talents.sacrificed_souls->ok() )
-    //{
-    //  m *= 1.0 + p()->talents.sacrificed_souls->effectN( 1 ).percent() * p()->active_pets;
-    //}
+    if ( p()->talents.sacrificed_souls->ok() )
+    {
+      m *= 1.0 + p()->talents.sacrificed_souls->effectN( 1 ).percent() * p()->active_demon_count();
+    }
 
     if ( p()->talents.power_siphon.ok() && p()->buffs.power_siphon->check() )
     {
@@ -1228,7 +1228,8 @@ void warlock_t::init_spells_demonology()
   talents.stolen_power_stacking_buff = find_spell( 387603 );
   talents.stolen_power_final_buff = find_spell( 387604 );
 
-  talents.sacrificed_souls    = find_talent_spell( "Sacrificed Souls" );
+  talents.sacrificed_souls = find_talent_spell( talent_tree::SPECIALIZATION, "Sacrificed Souls" ); // Should be ID 267214
+
   talents.demonic_consumption = find_talent_spell( "Demonic Consumption" );
 
 

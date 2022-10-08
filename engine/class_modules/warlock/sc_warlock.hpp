@@ -329,7 +329,7 @@ public:
     player_talent_t stolen_power; // Stacking buff from Wild Imps, at max get increased Shadow Bolt or Demonbolt damage
     const spell_data_t* stolen_power_stacking_buff; // Triggers final buff when reaching max stacks
     const spell_data_t* stolen_power_final_buff;
-    const spell_data_t* sacrificed_souls; // DF - Now a 2 point talent, needs checking against new pets for compatibility
+    player_talent_t sacrificed_souls;
     // DF - Soulbound Tyrant (2 point talent, formerly a Rank 2 effect on Summon Demonic Tyrant)
     // DF - Forces of the Horned Nightmare (Formerly SL Legendary, now a 2 point talent)
     // DF - The Expendables (Per-pet stacking buff to damage when a Wild Imp expires)
@@ -641,6 +641,7 @@ public:
   timespan_t time_to_imps( int count );
   int imps_spawned_during( timespan_t period );
   void darkglare_extension_helper( warlock_t* p, timespan_t darkglare_extension );
+  int active_demon_count() const;
   bool min_version_check( version_check_e version ) const;
   action_t* pass_corruption_action( warlock_t* p ); // Horrible, horrible hack for getting Corruption in Aff module until things are re-merged
   bool crescendo_check( warlock_t* p ); 
