@@ -3963,7 +3963,7 @@ struct feral_frenzy_t : public cat_attack_t
   struct feral_frenzy_data_t
   {
     double tick_amount = 0.0;
-    double tick_mul = 1.0;
+    double tick_mul = 0.0;
 
     friend void sc_format_to( const feral_frenzy_data_t& data, fmt::format_context::iterator out )
     {
@@ -4043,7 +4043,7 @@ struct feral_frenzy_t : public cat_attack_t
 
       auto ff_s = cast_state( s );
 
-      return ff_s->tick_amount * ff_s->tick_mul;
+      return ff_s->tick_amount * ( 1.0 + ff_s->tick_mul );
     }
 
     // dot damage is entirely overwritten by feral_frenzy_tick_t::base_ta()
@@ -4086,7 +4086,7 @@ struct feral_frenzy_t : public cat_attack_t
       ff_s->tick_amount = tick_amount;
 
       // the multiplier on the latest hit overwrites multipliers from previous hits and applies to the entire dot
-      ff_s->tick_mul = ff_s->base_composite_ta_multiplier();
+      ff_s->tick_mul = ( ff_s->base_composite_ta_multiplier() - 1.0 );
     }
   };
 
