@@ -319,7 +319,8 @@ public:
     player_talent_t ripped_through_the_portal; // Increased Dreadstalker count chance (Formerly SL Tier bonus)
     player_talent_t hounds_of_war; // Shadow Bolt and Demonbolt have a chance to reset Call Dreadstalkers
     
-    const spell_data_t* nether_portal; // DF - Cooldown may be reverted, will require constant checking until launch
+    player_talent_t nether_portal; // TOCHECK: 2022-10-07 Portal summon damage is possibly slightly above current in-game values (~1% max), full audit needed closer to release
+    const spell_data_t* nether_portal_buff; // Aura on player while the portal is active
     // DF - Summon Demonic Tyrant - Presumably unchanged, but new talents require checking against this summon
     // DF - Antoran Armaments (Increased Felguard damage and Soul Strike cleave)
 
@@ -518,7 +519,6 @@ public:
     propagate_const<buff_t*> dreadstalkers; //Buff for tracking number of Dreadstalkers currently out
     propagate_const<buff_t*> vilefiend; //Buff for tracking if Vilefiend is currently out
     propagate_const<buff_t*> tyrant; //Buff for tracking if Demonic Tyrant is currently out
-    propagate_const<buff_t*> portal_summons; // DF - This dummy buff may be unused for any practical purpose and could be removed
     propagate_const<buff_t*> grimoire_felguard; //Buff for tracking if GFG pet is currently out
     propagate_const<buff_t*> prince_malchezaar; //Buff for tracking Malchezaar (who is currently disabled in sims)
     propagate_const<buff_t*> eyes_of_guldan; //Buff for tracking if rare random summon is currently out
