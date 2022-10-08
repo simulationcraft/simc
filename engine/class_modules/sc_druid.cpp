@@ -3971,9 +3971,9 @@ struct feral_frenzy_t : public cat_attack_t
     }
   };
 
-  struct feral_frenzy_state_t : public druid_action_state_t<feral_frenzy_data_t>
+  struct feral_frenzy_state_t : public action_state_t
   {
-    feral_frenzy_state_t( action_t* a, player_t* t ) : druid_action_state_t( a, t ) {}
+    feral_frenzy_state_t( action_t* a, player_t* t ) : action_state_t( a, t ) {}
 
     // dot damage is entirely overwritten by feral_frenzy_tick_t::base_ta()
     double composite_ta_multiplier() const override
@@ -3984,9 +3984,11 @@ struct feral_frenzy_t : public cat_attack_t
     // what the multiplier would have been
     double base_composite_ta_multiplier() const
     {
-      return druid_action_state_t::composite_ta_multiplier();
+      return action_state_t::composite_ta_multiplier();
     }
   };
+
+  using state_t = druid_action_state_t<feral_frenzy_data_t, feral_frenzy_state_t>;
 
   struct feral_frenzy_tick_t : public cat_attack_t
   {
@@ -4004,17 +4006,17 @@ struct feral_frenzy_t : public cat_attack_t
 
     action_state_t* new_state() override
     {
-      return new feral_frenzy_state_t( this, target );
+      return new state_t( this, target );
     }
 
-    feral_frenzy_state_t* cast_state( action_state_t* s )
+    state_t* cast_state( action_state_t* s )
     {
-      return debug_cast<feral_frenzy_state_t*>( s );
+      return debug_cast<state_t*>( s );
     }
 
-    const feral_frenzy_state_t* cast_state( const action_state_t* s ) const
+    const state_t* cast_state( const action_state_t* s ) const
     {
-      return debug_cast<const feral_frenzy_state_t*>( s );
+      return debug_cast<const state_t*>( s );
     }
 
     // Small hack to properly distinguish instant ticks from the driver, from actual periodic ticks from the bleed
@@ -4069,7 +4071,7 @@ struct feral_frenzy_t : public cat_attack_t
 
       cat_attack_t::trigger_dot( s );
 
-      ff_s = debug_cast<feral_frenzy_state_t*>( ff_d->state );
+      ff_s = cast_state( ff_d->state );
 
       // calculate base per tick damage: ap * coeff
       auto tick_damage = ff_s->composite_attack_power() * base_attack_tick_power_coefficient( ff_s );
@@ -5765,14 +5767,16 @@ struct regrowth_t : public druid_heal_t
     }
   };
 
-  struct regrowth_state_t : public druid_action_state_t<regrowth_data_t>
+  struct regrowth_state_t : public action_state_t
   {
-    regrowth_state_t( action_t* a, player_t* t ) : druid_action_state_t( a, t ) {}
+    regrowth_state_t( action_t* a, player_t* t ) : action_state_t( a, t ) {}
 
+    /* TODO: fix later
     double composite_crit_chance() const override
     {
       return action_state_t::composite_crit_chance() + bonus_crit;
     }
+    */
   };
 
   timespan_t gcd_add;
@@ -5848,7 +5852,7 @@ struct regrowth_t : public druid_heal_t
     {
       pre_execute_state = get_state();
       snapshot_state( pre_execute_state, amount_type( pre_execute_state ) );
-      debug_cast<regrowth_state_t*>( pre_execute_state )->bonus_crit = bonus_crit;
+      // debug_cast<regrowth_state_t*>( pre_execute_state )->bonus_crit = bonus_crit;
     }
 
     druid_heal_t::execute();
