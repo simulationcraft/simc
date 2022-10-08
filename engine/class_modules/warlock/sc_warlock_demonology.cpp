@@ -298,6 +298,9 @@ struct demonbolt_t : public demonology_spell_t
     if ( p()->talents.fel_covenant.ok() )
       m *= 1.0 + p()->buffs.fel_covenant->check_stack_value();
 
+    if ( p()->talents.stolen_power.ok() && p()->buffs.stolen_power_final->check() )
+      m *= 1.0 + p()->talents.stolen_power_final_buff->effectN( 2 ).percent();
+
     return m;
   }
 };
@@ -1118,6 +1121,20 @@ void warlock_t::create_buffs_demonology()
 
   buffs.fel_covenant = make_buff( this, "fel_covenant", talents.fel_covenant_buff )
                            ->set_default_value( talents.fel_covenant->effectN( 2 ).percent() );
+
+  buffs.stolen_power_building = make_buff( this, "stolen_power_building", talents.stolen_power_stacking_buff )
+                                    ->set_stack_change_callback( [ this ]( buff_t* b, int, int cur )
+                                    {
+                                      if ( cur == b->max_stack() )
+                                      {
+                                        make_event( sim, 0_ms, [ this, b ] { 
+                                          buffs.stolen_power_final->trigger();
+                                          b->expire();
+                                        } );
+                                      };
+                                    } );
+
+  buffs.stolen_power_final = make_buff( this, "stolen_power_final", talents.stolen_power_final_buff );
 }
 
 void warlock_t::init_spells_demonology()
@@ -1206,6 +1223,10 @@ void warlock_t::init_spells_demonology()
   talents.antoran_armaments = find_talent_spell( talent_tree::SPECIALIZATION, "Antoran Armaments" ); // Should be ID 387494
 
   talents.nerzhuls_volition = find_talent_spell( talent_tree::SPECIALIZATION, "Ner'zhul's Volition" ); // Should be ID 387526
+
+  talents.stolen_power = find_talent_spell( talent_tree::SPECIALIZATION, "Stolen Power" ); // Should be ID 387602
+  talents.stolen_power_stacking_buff = find_spell( 387603 );
+  talents.stolen_power_final_buff = find_spell( 387604 );
 
   talents.sacrificed_souls    = find_talent_spell( "Sacrificed Souls" );
   talents.demonic_consumption = find_talent_spell( "Demonic Consumption" );
