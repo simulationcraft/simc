@@ -265,7 +265,6 @@ public:
     const spell_data_t* charge_rank_2;
     const spell_data_t* colossus_smash_debuff;
     const spell_data_t* hamstring;
-    const spell_data_t* ignore_pain;
     const spell_data_t* warrior_aura;
     const spell_data_t* heroic_leap;
     const spell_data_t* intervene;
@@ -309,7 +308,6 @@ public:
     const spell_data_t* colossus_smash_rank_2;
     const spell_data_t* deep_wounds_ARMS;
     const spell_data_t* deep_wounds_PROT;
-    const spell_data_t* demoralizing_shout;
     const spell_data_t* devastate;
     const spell_data_t* die_by_the_sword;
     const spell_data_t* enrage;
@@ -320,7 +318,6 @@ public:
     const spell_data_t* execute_rank_4;
     const spell_data_t* ignore_pain_2;
     const spell_data_t* intercept;
-    const spell_data_t* last_stand;
     const spell_data_t* mortal_strike;
     const spell_data_t* mortal_strike_rank_2;
     const spell_data_t* overpower;
@@ -334,7 +331,6 @@ public:
     const spell_data_t* rampage_rank_3;
     const spell_data_t* recklessness;
     const spell_data_t* recklessness_rank_2;
-    const spell_data_t* revenge;
     const spell_data_t* seasoned_soldier;
     const spell_data_t* shield_block_2;
     const spell_data_t* shield_slam_2;
@@ -424,21 +420,46 @@ public:
     const spell_data_t* siegebreaker;
 
     // Protection
+    const spell_data_t* ignore_pain;
+    const spell_data_t* revenge;
+
+    const spell_data_t* demoralizing_shout;
+    const spell_data_t* devastator;
+    const spell_data_t* last_stand;
+
+    const spell_data_t* improved_heroic_throw;
+    const spell_data_t* best_served_cold;
+    const spell_data_t* strategist;
+    const spell_data_t* brace_for_impact;
+    const spell_data_t* unnerving_focus;
+
+    const spell_data_t* instigate;
+
+    const spell_data_t* show_of_force;
+    const spell_data_t* thunderlord;
+    const spell_data_t* bolster;
+    const spell_data_t* tough_as_nails;
+
     const spell_data_t* into_the_fray;
+    const spell_data_t* heavy_repercussions;
+    const spell_data_t* enduring_defenses;
+    const spell_data_t* impenetrable_wall;
     const spell_data_t* punish;
+
+    const spell_data_t* focused_vigor;
+    const spell_data_t* shield_specialization;
+    const spell_data_t* enduring_alacrity;
     // const spell_data_t* impending_victory; see arms
 
     const spell_data_t* crackling_thunder;
     // const spell_data_t* bounding_stride; see arms
     const spell_data_t* safeguard; // NYI
 
-    const spell_data_t* best_served_cold;
     const spell_data_t* unstoppable_force;
     // const spell_data_t* dragon_roar; see fury
 
     const spell_data_t* indomitable;
     const spell_data_t* never_surrender;  // SORTA NYI
-    const spell_data_t* bolster;
 
     const spell_data_t* menace; // NYI
     const spell_data_t* rumbling_earth;
@@ -446,10 +467,8 @@ public:
 
     const spell_data_t* booming_voice;
     const spell_data_t* vengeance;
-    const spell_data_t* devastator;
 
     // const spell_data_t* anger_management; see arms
-    const spell_data_t* heavy_repercussions;
     // const spell_data_t* ravager; see arms
   } talents;
 
@@ -459,7 +478,7 @@ public:
     const spell_data_t* frenzied_destruction_4p;
     const spell_data_t* pile_on_2p;
     const spell_data_t* pile_on_4p;
-    const spell_data_t* outburst_4p;
+
   } tier_set;
 
   struct legendary_t
@@ -474,8 +493,6 @@ public:
     const spell_data_t* ayalas_stone_heart;
     const spell_data_t* raging_fury;
     const spell_data_t* the_great_storms_eye;
-    const spell_data_t* the_wall;
-    const spell_data_t* thunderlord;
     const spell_data_t* reprisal;
 
     legendary_t()
@@ -543,8 +560,6 @@ public:
     conduit_data_t piercing_verdict;
     conduit_data_t veterans_repute;
     conduit_data_t vicious_contempt;
-    conduit_data_t show_of_force;
-    conduit_data_t unnerving_focus;
   } conduit;
 
   // Azerite traits
@@ -558,7 +573,6 @@ public:
     azerite_power_t iron_fortress;
     azerite_power_t deafening_crash;
     azerite_power_t callous_reprisal;
-    azerite_power_t brace_for_impact;
     azerite_power_t bloodsport;
     azerite_power_t bastion_of_might;
     // Arms
@@ -906,7 +920,7 @@ public:
     affected_by.fury_mastery_direct = ab::data().affected_by( p()->mastery.unshackled_fury->effectN( 1 ) );
     affected_by.fury_mastery_dot    = ab::data().affected_by( p()->mastery.unshackled_fury->effectN( 2 ) );
     affected_by.arms_mastery = ab::data().affected_by( p()->mastery.deep_wounds_ARMS -> effectN( 3 ).trigger()->effectN( 2 ) );
-    affected_by.booming_voice       = ab::data().affected_by( p()->spec.demoralizing_shout->effectN( 3 ) );
+    affected_by.booming_voice       = ab::data().affected_by( p()->talents.demoralizing_shout->effectN( 3 ) );
     affected_by.colossus_smash      = ab::data().affected_by( p()->spell.colossus_smash_debuff->effectN( 1 ) );
     affected_by.rend                = ab::data().affected_by( p()->talents.rend->effectN( 3 ) );
     affected_by.siegebreaker        = ab::data().affected_by( p()->spell.siegebreaker_debuff->effectN( 1 ) );
@@ -1041,7 +1055,7 @@ public:
 
       if ( p()->specialization() == WARRIOR_PROTECTION && p()->sets->has_set_bonus( WARRIOR_PROTECTION, T28, B4 ) )
       {
-        percent_increase += p()->tier_set.outburst_4p->effectN( 1 ).percent();
+        percent_increase += p()->talents.violent_outburst->effectN( 1 ).percent();
       }
 
       dm *= 1.0 + percent_increase;
@@ -2715,7 +2729,7 @@ struct demoralizing_shout : public warrior_attack_t
 {
   double rage_gain;
   demoralizing_shout( warrior_t* p, util::string_view options_str )
-    : warrior_attack_t( "demoralizing_shout", p, p->spec.demoralizing_shout ), rage_gain( 0 )
+    : warrior_attack_t( "demoralizing_shout", p, p->talents.demoralizing_shout ), rage_gain( 0 )
   {
     parse_options( options_str );
     usable_while_channeling = true;
@@ -2736,7 +2750,7 @@ struct demoralizing_shout : public warrior_attack_t
   {
     warrior_attack_t::impact( s );
     td( s->target ) -> debuffs_demoralizing_shout -> trigger(
-      1, data().effectN( 1 ).percent(), 1.0, p()->spec.demoralizing_shout->duration()  );
+      1, data().effectN( 1 ).percent(), 1.0, p()->talents.demoralizing_shout->duration()  );
   }
 };
 
@@ -4285,7 +4299,7 @@ struct revenge_t : public warrior_attack_t
   double shield_slam_reset;
   action_t* seismic_action;
   revenge_t( warrior_t* p, util::string_view options_str, bool seismic = false )
-    : warrior_attack_t( seismic ? "revenge_seismic_reverberation" : "revenge", p, p->spec.revenge ),
+    : warrior_attack_t( seismic ? "revenge_seismic_reverberation" : "revenge", p, p->talents.revenge ),
       shield_slam_reset( p->spec.shield_slam_3->effectN( 1 ).percent() ),
       seismic_action( nullptr )
     {
@@ -4330,7 +4344,7 @@ struct revenge_t : public warrior_attack_t
     if ( rng().roll( shield_slam_reset ) )
       p()->cooldown.shield_slam->reset( true );
 
-    if ( p()->conduit.show_of_force->ok() )
+    if ( p()->talents.show_of_force->ok() )
     {
       p()->buff.show_of_force->trigger();
     }
@@ -4423,7 +4437,7 @@ struct shield_slam_t : public warrior_attack_t
     void init() override
   {
     warrior_attack_t::init();
-    rage_gain += p()->legendary.the_wall->effectN( 2 ).resource( RESOURCE_RAGE );
+    rage_gain += p()->talents.impenetrable_wall->effectN( 2 ).resource( RESOURCE_RAGE );
   }
 
   double action_multiplier() const override
@@ -4454,7 +4468,7 @@ struct shield_slam_t : public warrior_attack_t
   {
     double da = warrior_attack_t::bonus_da( state );
 
-    da += p() -> buff.brace_for_impact -> check() * p()->azerite.brace_for_impact.value(2);
+    da += p() -> buff.brace_for_impact -> check() * p()->talents.brace_for_impact.value(2);
 
     return da;
   }
@@ -4471,7 +4485,7 @@ struct shield_slam_t : public warrior_attack_t
 
     p()->resource_gain( RESOURCE_RAGE, rage_gain, p() -> gain.shield_slam );
 
-    if ( p() -> azerite.brace_for_impact.enabled() )
+    if ( p() -> talents.brace_for_impact.enabled() )
     {
       p() -> buff.brace_for_impact -> trigger();
     }
@@ -4676,10 +4690,10 @@ struct thunder_clap_t : public warrior_attack_t
       p()->cooldown.shield_slam->reset( true );
     }
 
-    if ( p()->legendary.thunderlord->ok() )
+    if ( p()->talents.thunderlord->ok() )
     {
-     p() -> cooldown.demoralizing_shout -> adjust( - p() -> legendary.thunderlord -> effectN( 1 ).time_value() *
-          std::min( execute_state->n_targets, as<unsigned int>( p()->legendary.thunderlord->effectN( 2 ).base_value() ) ) );
+     p() -> cooldown.demoralizing_shout -> adjust( - p() -> talents.thunderlord -> effectN( 1 ).time_value() *
+          std::min( execute_state->n_targets, as<unsigned int>( p()->talents.thunderlord->effectN( 2 ).base_value() ) ) );
     }
 
     if ( p()->buff.outburst->check() )
@@ -5817,7 +5831,7 @@ struct in_for_the_kill_t : public buff_t
 
 struct last_stand_t : public warrior_spell_t
 {
-  last_stand_t( warrior_t* p, util::string_view options_str ) : warrior_spell_t( "last_stand", p, p->spec.last_stand )
+  last_stand_t( warrior_t* p, util::string_view options_str ) : warrior_spell_t( "last_stand", p, p->talents.last_stand )
   {
     parse_options( options_str );
     range              = -1;
@@ -5829,7 +5843,7 @@ struct last_stand_t : public warrior_spell_t
   {
     warrior_spell_t::execute();
 
-    if ( p()->conduit.unnerving_focus->ok() )
+    if ( p()->talents.unnerving_focus->ok() )
     {
       p()->buff.unnerving_focus->trigger();
     }
@@ -5945,7 +5959,7 @@ struct recklessness_t : public warrior_spell_t
 
 struct ignore_pain_buff_t : public absorb_buff_t
 {
-  ignore_pain_buff_t( warrior_t* player ) : absorb_buff_t( player, "ignore_pain", player->spell.ignore_pain )
+  ignore_pain_buff_t( warrior_t* player ) : absorb_buff_t( player, "ignore_pain", player->talents.ignore_pain )
   {
     cooldown->duration = 0_ms;
     set_absorb_source( player->get_stats( "ignore_pain" ) );
@@ -5956,7 +5970,7 @@ struct ignore_pain_buff_t : public absorb_buff_t
   double consume( double amount ) override
   {
     // IP only absorbs up to 50% of the damage taken
-    amount *= debug_cast< warrior_t* >( player ) -> spell.ignore_pain -> effectN( 2 ).percent();
+    amount *= debug_cast< warrior_t* >( player ) -> talents.ignore_pain -> effectN( 2 ).percent();
     double absorbed = absorb_buff_t::consume( amount );
 
     return absorbed;
@@ -5966,7 +5980,7 @@ struct ignore_pain_buff_t : public absorb_buff_t
 struct ignore_pain_t : public warrior_spell_t
 {
   ignore_pain_t( warrior_t* p, util::string_view options_str )
-    : warrior_spell_t( "ignore_pain", p, p->spell.ignore_pain )
+    : warrior_spell_t( "ignore_pain", p, p->talents.ignore_pain )
   {
     parse_options( options_str );
     may_crit     = false;
@@ -6344,7 +6358,6 @@ void warrior_t::init_spells()
   spec.colossus_smash_rank_2 = find_specialization_spell( 316411 );
   spec.deep_wounds_ARMS     = find_specialization_spell( "Mastery: Deep Wounds", WARRIOR_ARMS );
   spec.deep_wounds_PROT     = find_specialization_spell( "Deep Wounds", WARRIOR_PROTECTION );
-  spec.demoralizing_shout   = find_specialization_spell( "Demoralizing Shout" );
   spec.devastate            = find_specialization_spell( "Devastate" );
   spec.die_by_the_sword     = find_specialization_spell( "Die By the Sword" );
   spec.enrage               = find_specialization_spell( "Enrage" );
@@ -6363,7 +6376,7 @@ void warrior_t::init_spells()
     spec.execute_rank_3 = find_specialization_spell( 231830 );
   }
   spec.intercept        = find_specialization_spell( "Intercept" );
-  spec.last_stand       = find_specialization_spell( "Last Stand" );
+
   spec.mortal_strike    = find_specialization_spell( "Mortal Strike" );
   spec.mortal_strike_rank_2 = find_specialization_spell( 261900 );
   spec.overpower        = find_specialization_spell( "Overpower" );
@@ -6377,7 +6390,6 @@ void warrior_t::init_spells()
   spec.rallying_cry     = find_specialization_spell( "Rallying Cry" );
   spec.recklessness     = find_spell( "Recklessness" );
   spec.recklessness_rank_2 = find_specialization_spell( 316828 );
-  spec.revenge          = find_specialization_spell( "Revenge" );
   spec.revenge_trigger  = find_specialization_spell( "Revenge Trigger" );
   spec.seasoned_soldier = find_specialization_spell( "Seasoned Soldier" );
   spec.single_minded_fury = find_specialization_spell( "Single-Minded Fury" );
@@ -6420,13 +6432,55 @@ void warrior_t::init_spells()
   spec.prot_warrior = find_specialization_spell( "Protection Warrior" );
 
   // Talents
+
+  //Talents Protection
+
+  //Row 1
+  talents.ignore_pain         = find_talent_spell( talent_tree::SPECIALIZATION, "Ignore Pain" );
+  // Row 2
+  talents.revenge             = find_talent_spell( talent_tree::SPECIALIZATION, "Revenge" );
+  // Row 3
+  talents.demoralizing_shout  = find_talent_spell( talent_tree::SPECIALIZATION, "Demoralizing Shout" );
+  talents.devastator          = find_talent_spell( talent_tree::SPECIALIZATION, "Devastator" );
+  talents.last_stand          = find_talent_spell( talent_tree::SPECIALIZATION, "Last Stand" );
+  // Row 4
+  talents.improved_heroic_throw = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Heroic Throw" );
+  talents.best_served_cold    = find_talent_spell( talent_tree::SPECIALIZATION, "Best Served Cold" );
+  talents.strategist          = find_talent_spell( talent_tree::SPECIALIZATION, "Strategist" );
+  talents.brace_for_impact    = find_talent_spell( talent_tree::SPECIALIZATION, "Brace for Impact" );
+  talents.unnerving_focus     = find_talent_spell( talent_tree::SPECIALIZATION, "Unnerving Focus" );
+  // Row 5
+  talents.instigate           = find_talent_spell( talent_tree::SPECIALIZATION, "Instigate" );
+  // Row 6
+  talents.show_of_force       = find_talent_spell( talent_tree::SPECIALIZATION, "Show of Force" );
+  talents.thunderlord         = find_talent_spell( talent_tree::SPECIALIZATION, "Thunderlord" );
+  talents.bolster             = find_talent_spell( talent_tree::SPECIALIZATION, "Bolster" );
+  talents.tough_as_nails      = find_talent_spell( talent_tree::SPECIALIZATION, "Tough as Nails" );
+  // Row 7
+  talents.into_the_fray       = find_talent_spell( talent_tree::SPECIALIZATION, "Into the Fray" );
+  talents.heavy_repercussions = find_talent_spell( talent_tree::SPECIALIZATION, "Heavy Repercussions" );
+  talents.enduring_defenses   = find_talent_spell( talent_tree::SPECIALIZATION, "Enduring Defenses" );
+  talents.impenetrable_wall   = find_talent_spell( talent_tree::SPECIALIZATION, "Impenetrable Wall" );
+  talents.punish              = find_talent_spell( talent_tree::SPECIALIZATION, "Punish" );
+  //Row 8
+  talents.focused_vigor       = find_talent_spell( talent_tree::SPECIALIZATION, "Focused Vigor" );
+  talents.shield_specialization = find_talent_spell( talent_tree::SPECIALIZATION, "Shield Specialization" );
+  talents.enduring_alacrity   = find_talent_spell( talent_tree::SPECIALIZATION, "Enduring Alacrity" );
+  // Row 9
+  talents.shield_charge       = find_talent_spell( talent_tree::SPECIALIZATION, "Shield Charge" );
+  talents.booming_voice       = find_talent_spell( talent_tree::SPECIALIZATION, "Booming Voice" );
+  talents.violent_outburst    = find_talent_spell( talent_tree::SPECIALIZATION, "Violent Outburst" );
+  //Row 10
+  talents.battering_ram       = find_talent_spell( talent_tree::SPECIALIZATION, "Battering Ram" );
+  talents.champions_bulwark   = find_talent_spell( talent_tree::SPECIALIZATION, "Champion's Bulwark" );
+
   talents.anger_management    = find_talent_spell( "Anger Management" );
   // Only for Arms, the Protection baseline spell is under spec.avatar
   talents.avatar              = find_talent_spell( "Avatar" );
-  talents.best_served_cold    = find_talent_spell( "Best Served Cold" );
+
   talents.bladestorm          = find_talent_spell( "Bladestorm" );
-  talents.bolster             = find_talent_spell( "Bolster" );
-  talents.booming_voice       = find_talent_spell( "Booming Voice" );
+
+
   talents.bounding_stride     = find_talent_spell( "Bounding Stride" );
   talents.cleave              = find_talent_spell( "Cleave" );
   talents.collateral_damage   = find_talent_spell( "Collateral Damage" );
@@ -6434,7 +6488,7 @@ void warrior_t::init_spells()
   talents.cruelty             = find_talent_spell( "Cruelty");
   talents.deadly_calm         = find_talent_spell( "Deadly Calm" );
   talents.defensive_stance    = find_talent_spell( "Defensive Stance" );
-  talents.devastator          = find_talent_spell( "Devastator" );
+
   talents.double_time         = find_talent_spell( "Double Time" );
   talents.dragon_roar         = find_talent_spell( "Dragon Roar" );
   talents.dreadnaught         = find_talent_spell( "Dreadnaught" );
@@ -6443,17 +6497,14 @@ void warrior_t::init_spells()
   talents.fresh_meat          = find_talent_spell( "Fresh Meat" );
   talents.frothing_berserker  = find_talent_spell( "Frothing Berserker" );
   talents.furious_charge      = find_talent_spell( "Furious Charge" );
-  talents.heavy_repercussions = find_talent_spell( "Heavy Repercussions" );
   talents.impending_victory   = find_talent_spell( "Impending Victory" );
   talents.in_for_the_kill     = find_talent_spell( "In For The Kill" );
   talents.indomitable         = find_talent_spell( "Indomitable" );
-  talents.into_the_fray       = find_talent_spell( "Into the Fray" );
   talents.massacre            = find_talent_spell( "Massacre" );
   talents.meat_cleaver        = find_talent_spell( "Meat Cleaver" );
   talents.menace              = find_talent_spell( "Menace" );
   talents.never_surrender     = find_talent_spell( "Never Surrender" );
   talents.onslaught           = find_talent_spell( "Onslaught" );
-  talents.punish              = find_talent_spell( "Punish" );
   talents.ravager             = find_talent_spell( "Ravager" );
   talents.reckless_abandon    = find_talent_spell( "Reckless Abandon" );
   talents.rend                = find_talent_spell( "Rend" );
@@ -6479,7 +6530,6 @@ void warrior_t::init_spells()
   azerite.iron_fortress      = find_azerite_spell( "Iron Fortress" );
   azerite.deafening_crash    = find_azerite_spell( "Deafening Crash" );
   azerite.callous_reprisal   = find_azerite_spell( "Callous Reprisal" );
-  azerite.brace_for_impact   = find_azerite_spell( "Brace for Impact" );
   azerite.bloodsport         = find_azerite_spell( "Bloodsport" );
   azerite.bastion_of_might   = find_azerite_spell( "Bastion of Might" );
   // Arms
@@ -6533,19 +6583,14 @@ void warrior_t::init_spells()
   conduit.harrowing_punishment        = find_conduit_spell( "Harrowing Punishment" );
   conduit.piercing_verdict            = find_conduit_spell( "Piercing Verdict" );
   conduit.veterans_repute             = find_conduit_spell( "Veteran's Repute" );
-  conduit.show_of_force               = find_conduit_spell( "Show of Force" );
-  conduit.unnerving_focus             = find_conduit_spell( "Unnerving Focus" );
 
   // Tier Sets
   tier_set.frenzied_destruction_2p    = sets -> set( WARRIOR_FURY, T28, B2 );
   tier_set.frenzied_destruction_4p    = sets -> set( WARRIOR_FURY, T28, B4 );
   tier_set.pile_on_2p                 = sets -> set( WARRIOR_ARMS, T28, B2 );
   tier_set.pile_on_4p                 = sets -> set( WARRIOR_ARMS, T28, B4 );
-  tier_set.outburst_4p                = find_spell( 364639 );
-
 
   // Generic spells
-  spell.ignore_pain           = find_class_spell( "Ignore Pain" );
   spell.battle_shout          = find_class_spell( "Battle Shout" );
   spell.charge                = find_class_spell( "Charge" );
   spell.charge_rank_2         = find_spell( 319157 );
@@ -6592,9 +6637,6 @@ void warrior_t::init_spells()
   legendary.deathmaker                = find_runeforge_legendary( "Deathmaker" );
   legendary.reckless_defense          = find_runeforge_legendary( "Reckless Defense" );
   legendary.will_of_the_berserker     = find_runeforge_legendary( "Will of the Berserker" );
-
-  legendary.the_wall                  = find_runeforge_legendary( "The Wall" );
-  legendary.thunderlord               = find_runeforge_legendary( "Thunderlord" );
   legendary.reprisal                  = find_runeforge_legendary( "Reprisal" );
 
   if ( specialization() == WARRIOR_FURY )
@@ -7499,8 +7541,7 @@ void warrior_t::create_buffs()
     ->set_default_value( find_spell( 202602 )->effectN( 1 ).percent() )
     ->add_invalidate( CACHE_HASTE );
 
-  buff.last_stand = new buffs::last_stand_buff_t( *this, "last_stand", spec.last_stand );
-
+  buff.last_stand = new buffs::last_stand_buff_t( *this, "last_stand", talents.last_stand );
   buff.meat_cleaver = make_buff( this, "meat_cleaver", spell.whirlwind_buff );
   buff.meat_cleaver->set_max_stack(buff.meat_cleaver->max_stack() + as<int>( talents.meat_cleaver->effectN( 2 ).base_value() ) );
 
@@ -7618,9 +7659,9 @@ void warrior_t::create_buffs()
                               ->set_trigger_spell( trample_the_weak_trigger );
   buff.bloodsport = make_buff<stat_buff_t>( this, "bloodsport", azerite.bloodsport.spell() -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() )
                    -> add_stat( STAT_LEECH_RATING, azerite.bloodsport.value( 2 ) );
-  buff.brace_for_impact = make_buff( this, "brace_for_impact", azerite.brace_for_impact.spell() -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() )
+  buff.brace_for_impact = make_buff( this, "brace_for_impact", talents.brace_for_impact.spell() -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() )
                          -> set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
-                         -> set_default_value( azerite.brace_for_impact.value( 1 ) );
+                         -> set_default_value( talents.brace_for_impact.value( 1 ) );
   buff.striking_the_anvil = make_buff( this, "striking_the_anvil", find_spell( 288452 ) )
                                ->set_trigger_spell( azerite.striking_the_anvil.spell_ref().effectN( 1 ).trigger() )
                                ->set_default_value( azerite.striking_the_anvil.value() );
@@ -7669,10 +7710,10 @@ void warrior_t::create_buffs()
                           ->set_duration( covenant.conquerors_banner->duration() );
 
   buff.show_of_force = make_buff( this, "show_of_force", find_spell( 339825 ) )
-                           ->set_default_value( conduit.show_of_force.percent() );
+                           ->set_default_value( talents.show_of_force.percent() );
 
   buff.unnerving_focus = make_buff( this, "unnerving_focus", find_spell( 337155 ) )
-                           ->set_default_value( conduit.unnerving_focus.percent() );
+                           ->set_default_value( talents.unnerving_focus.percent() );
   // Runeforged Legendary Powers============================================================================================
 
   buff.battlelord = make_buff( this, "battlelord", find_spell( 346369 ) );
