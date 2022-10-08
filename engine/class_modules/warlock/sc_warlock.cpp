@@ -564,10 +564,10 @@ struct shadow_bolt_t : public warlock_spell_t
     if ( time_to_execute == 0_ms && p()->buffs.nightfall->check() )
       m *= 1.0 + p()->talents.nightfall_buff->effectN( 2 ).percent();
 
-    //if ( p()->talents.sacrificed_souls->ok() )
-    //{
-    //  m *= 1.0 + p()->talents.sacrificed_souls->effectN( 1 ).percent() * p()->active_pets;
-    //}
+    if ( p()->talents.sacrificed_souls->ok() )
+    {
+      m *= 1.0 + p()->talents.sacrificed_souls->effectN( 1 ).percent() * p()->active_demon_count();
+    }
 
     if ( p()->talents.stolen_power.ok() && p()->buffs.stolen_power_final->check() )
       m *= 1.0 + p()->talents.stolen_power_final_buff->effectN( 1 ).percent();
@@ -1680,6 +1680,25 @@ void warlock_t::darkglare_extension_helper( warlock_t* p, timespan_t darkglare_e
     td->dots_unstable_affliction->adjust_duration( darkglare_extension );
     td->dots_soul_rot->adjust_duration( darkglare_extension );
   }
+}
+
+int warlock_t::active_demon_count() const
+{
+  int count = 0;
+
+  for ( auto& pet : this->pet_list )
+  {
+    auto lock_pet = dynamic_cast<warlock_pet_t*>( pet );
+    
+    if ( lock_pet == nullptr )
+      continue;
+    if ( lock_pet->is_sleeping() )
+      continue;
+    
+    count++;
+  }
+
+  return count;
 }
 
 bool warlock_t::crescendo_check( warlock_t* p )
