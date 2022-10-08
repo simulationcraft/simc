@@ -1255,15 +1255,35 @@ struct fire_breath_t : public empowered_charge_spell_t
 {
   struct fire_breath_damage_t : public empowered_release_spell_t
   {
-    fire_breath_damage_t( evoker_t* p ) : base_t( "fire_breath_damage", p, p->find_spell( 357209 ) )
+    timespan_t dot_dur_per_emp;
+
+    fire_breath_damage_t( evoker_t* p )
+      : base_t( "fire_breath_damage", p, p->find_spell( 357209 ) ), dot_dur_per_emp( 6_s )
     {
       aoe = -1;  // TODO: actually a cone so we need to model it if possible
       reduced_aoe_targets = 5.0;
+
+      dot_duration = 20_s;  // base * 10? or hardcoded to 20s?
+      dot_duration += timespan_t::from_seconds( p->talent.blast_furnace->effectN( 1 ).base_value() );
+    }
+
+    timespan_t reduction_from_empower( const action_state_t* s ) const
+    {
+      return std::max( 0, empower_value( s ) - 1 ) * dot_dur_per_emp;
     }
 
     timespan_t composite_dot_duration( const action_state_t* s ) const override
     {
-      return base_t::composite_dot_duration( s ) * empower_value( s ) / 3.0;
+      return base_t::composite_dot_duration( s ) - reduction_from_empower( s );
+    }
+
+    double bonus_da( const action_state_t* s ) const override
+    {
+      auto da = base_t::bonus_da( s );
+      auto ticks = reduction_from_empower( s ) / tick_time( s );
+      auto tick_damage = s->composite_spell_power() * spell_tick_power_coefficient( s );
+
+      return da + ticks * tick_damage;
     }
 
     void trigger_everburning_flame( action_state_t* ) override
@@ -2253,7 +2273,6 @@ void evoker_t::apply_affecting_auras( action_t& action )
   // Class Traits
   action.apply_affecting_aura( talent.aerial_mastery );
   action.apply_affecting_aura( talent.attuned_to_the_dream );
-  action.apply_affecting_aura( talent.blast_furnace );
   action.apply_affecting_aura( talent.bountiful_bloom );
   action.apply_affecting_aura( talent.enkindled );
   action.apply_affecting_aura( talent.extended_flight );
