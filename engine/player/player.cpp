@@ -11841,8 +11841,6 @@ void player_t::recreate_talent_str( talent_format format )
 {
   switch ( format )
   {
-    case talent_format::UNCHANGED:
-      break;
     case talent_format::ARMORY:
       create_talents_armory();
       break;
@@ -11850,7 +11848,6 @@ void player_t::recreate_talent_str( talent_format format )
       create_talents_wowhead();
       break;
     default:
-      create_talents_numbers();
       break;
   }
 }
@@ -12222,7 +12219,7 @@ void player_t::copy_from( player_t* source )
   base.distance     = source->base.distance;
   position_str      = source->position_str;
   professions_str   = source->professions_str;
-  source->recreate_talent_str(talent_format::UNCHANGED );
+  source->recreate_talent_str( talent_format::UNCHANGED );
   parse_talent_url( sim, "talents", source->talents_str );
   class_talents_str = source->class_talents_str;
   spec_talents_str  = source->spec_talents_str;
