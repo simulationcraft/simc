@@ -7350,8 +7350,7 @@ struct moonfire_t : public druid_spell_t
 
       if ( hit_any_target )
       {
-        if ( free_spell != free_spell_e::GALACTIC )
-          trigger_gore();
+        trigger_gore();
 
         p()->buff.protector_of_the_pack_moonfire->expire();
 
