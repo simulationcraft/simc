@@ -2818,6 +2818,10 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
 
     m *= 1.0 + s->n_targets * p()->talents.resonance->effectN( 1 ).percent();
 
+    // TODO: check what happens when you have both the talent and the legendary
+    // the legendary is missing from the SpellReplacement table, so presumably you get both
+    if ( s->target->health_percentage() < p()->talents.arcane_bombardment->effectN( 1 ).base_value() )
+      m *= 1.0 + p()->talents.arcane_bombardment->effectN( 2 ).percent();
     if ( s->target->health_percentage() < p()->runeforge.arcane_bombardment->effectN( 1 ).base_value() )
       m *= 1.0 + p()->runeforge.arcane_bombardment->effectN( 2 ).percent();
 
