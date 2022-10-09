@@ -10523,11 +10523,13 @@ void druid_t::create_buffs()
   // Balance buffs
   buff.balance_of_all_things_arcane = make_buff( this, "balance_of_all_things_arcane", find_spell( 394050 ) )
     ->set_reverse( true )
-    ->set_refresh_behavior( buff_refresh_behavior::DURATION);
+    ->set_refresh_behavior( buff_refresh_behavior::DURATION )
+    ->set_name_reporting( "Arcane" );
 
   buff.balance_of_all_things_nature = make_buff( this, "balance_of_all_things_nature", find_spell( 394049 ) )
     ->set_reverse( true )
-    ->set_refresh_behavior( buff_refresh_behavior::DURATION );
+    ->set_refresh_behavior( buff_refresh_behavior::DURATION )
+    ->set_name_reporting( "Nature" );
 
   buff.celestial_alignment =
       make_buff<celestial_alignment_buff_t>( *this, "celestial_alignment", spec.celestial_alignment );
