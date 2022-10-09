@@ -10171,7 +10171,7 @@ void druid_t::init_spells()
   // Balance Abilities
   spec.balance                  = find_specialization_spell( "Balance Druid" );
   spec.astral_power             = find_specialization_spell( "Astral Power" );
-  spec.celestial_alignment      = check( talent.celestial_alignment.ok(), 194223 );
+  spec.celestial_alignment      = talent.celestial_alignment.find_override_spell();
   spec.eclipse_lunar            = check( talent.eclipse.ok(), 48518 );
   spec.eclipse_solar            = check( talent.eclipse.ok(), 48517 );
   spec.full_moon                = check( talent.new_moon.ok(), 274283 );
@@ -10183,7 +10183,7 @@ void druid_t::init_spells()
   spec.feral                    = find_specialization_spell( "Feral Druid" );
   spec.feral_overrides          = find_specialization_spell( "Feral Overrides Passive" );
   spec.ashamanes_guidance       = check( talent.ashamanes_guidance.ok(), talent.convoke_the_spirits.ok() ? 391538 : 391475 );
-  spec.berserk_cat              = check( talent.berserk.ok(), 106951 );
+  spec.berserk_cat              = talent.berserk.find_override_spell();
 
   // Guardian Abilities
   spec.guardian                 = find_specialization_spell( "Guardian Druid" );
