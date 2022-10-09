@@ -3685,13 +3685,11 @@ struct dragons_breath_t final : public fire_mage_spell_t
     parse_options( options_str );
     aoe = -1;
     triggers.from_the_ashes = triggers.radiant_spark = affected_by.time_manipulation = true;
+    base_crit += p->talents.alexstraszas_fury->effectN( 1 ).percent();
     crit_bonus_multiplier *= 1.0 + p->talents.alexstraszas_fury->effectN( 2 ).percent();
 
     if ( p->talents.alexstraszas_fury.ok() )
-    {
-      base_crit = 1.0;
       triggers.hot_streak = TT_MAIN_TARGET;
-    }
   }
 
   void impact( action_state_t* s ) override
@@ -5228,12 +5226,8 @@ struct phoenix_flames_splash_t final : public fire_mage_spell_t
     triggers.hot_streak = triggers.kindling = TT_MAIN_TARGET;
     triggers.ignite = triggers.radiant_spark = true;
     base_multiplier *= 1.0 + p->sets->set( MAGE_FIRE, T29, B4 )->effectN( 1 ).percent();
+    base_crit += p->talents.alexstraszas_fury->effectN( 3 ).percent();
     base_crit += p->sets->set( MAGE_FIRE, T29, B4 )->effectN( 3 ).percent();
-
-    if ( p->talents.alexstraszas_fury.ok() )
-    {
-      base_crit = 1.0;
-    }
   }
 };
 
