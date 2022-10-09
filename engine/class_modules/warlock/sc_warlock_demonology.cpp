@@ -57,10 +57,16 @@ public:
         p()->proc_actions.summon_random_demon->execute();
         p()->procs.portal_summon->occur();
 
+        if ( p()->talents.guldans_ambition.ok() )
+          p()->buffs.nether_portal_total->increment();
+
         if ( p()->talents.nerzhuls_volition.ok() && rng().roll( p()->talents.nerzhuls_volition->effectN( 1 ).percent() ) )
         {
           p()->proc_actions.summon_random_demon->execute();
           p()->procs.nerzhuls_volition->occur();
+
+          if ( p()->talents.guldans_ambition.ok() )
+            p()->buffs.nether_portal_total->increment();
         }
       }
     }
@@ -1097,7 +1103,13 @@ void warlock_t::create_buffs_demonology()
                              }
                            } );
 
-  buffs.nether_portal = make_buff( this, "nether_portal", talents.nether_portal_buff );
+  buffs.nether_portal = make_buff( this, "nether_portal", talents.nether_portal_buff )
+                            ->set_stack_change_callback( [ this ]( buff_t* b, int, int cur ) {
+                              if ( cur == 0 && talents.guldans_ambition.ok() )
+                              {
+                                warlock_pet_list.pit_lords.spawn( talents.soul_glutton->duration(), 1u );
+                              };
+                            } );;
 
   // Legendaries
   buffs.balespiders_burning_core =
@@ -1146,6 +1158,10 @@ void warlock_t::create_buffs_demonology()
                                     } );
 
   buffs.stolen_power_final = make_buff( this, "stolen_power_final", talents.stolen_power_final_buff );
+
+  buffs.nether_portal_total = make_buff( this, "nether_portal_total" )
+                                  ->set_max_stack( talents.soul_glutton->max_stacks() )
+                                  ->set_refresh_behavior( buff_refresh_behavior::NONE );
 }
 
 void warlock_t::init_spells_demonology()
@@ -1248,6 +1264,9 @@ void warlock_t::init_spells_demonology()
   talents.the_expendables = find_talent_spell( talent_tree::SPECIALIZATION, "The Expendables" ); // Should be ID 387600
 
   talents.infernal_command = find_talent_spell( talent_tree::SPECIALIZATION, "Infernal Command" ); // Should be ID 387549
+
+  talents.guldans_ambition = find_talent_spell( talent_tree::SPECIALIZATION, "Gul'dan's Ambition" ); // Should be ID 387578
+  talents.soul_glutton = find_spell( 387595 );
 
   talents.demonic_consumption = find_talent_spell( "Demonic Consumption" );
 

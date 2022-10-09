@@ -2093,7 +2093,8 @@ warlock::warlock_t::pets_t::pets_t( warlock_t* w )
     vicious_hellhounds( "vicious_hellhound", w ),
     illidari_satyrs( "illidari_satyr", w ),
     eyes_of_guldan( "eye_of_guldan", w ),
-    prince_malchezaar( "prince_malchezaar", w )
+    prince_malchezaar( "prince_malchezaar", w ),
+    pit_lords( "pit_lord", w )
 {
 }
 }  // namespace warlock

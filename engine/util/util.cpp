@@ -716,6 +716,7 @@ const char* util::pet_type_string( pet_e type )
     case PET_DOOMGUARD:           return "doomguard";
     case PET_WILD_IMP:            return "wild_imp";
     case PET_DREADSTALKER:        return "dreadstalker";
+    case PET_PIT_LORD:            return "pit_lord";
     case PET_SERVICE_IMP:         return "service_imp";
     case PET_SERVICE_FELHUNTER:   return "service_felhunter";
     case PET_OBSERVER:            return "observer";
