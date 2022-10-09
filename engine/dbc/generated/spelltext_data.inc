@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.2.45969
-static const std::array<spelltext_data_t, 18969> __spelltext_data { {
+static const std::array<spelltext_data_t, 18970> __spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -17827,6 +17827,7 @@ static const std::array<spelltext_data_t, 18969> __spelltext_data { {
   { 387541, "Hand of Gul'dan has a $s1% chance to cast a second time on your target for free.", 0, 0 },
   { 387547, "$@spelldesc387522", 0, 0 },
   { 387549, "While your Felguard is active, your Wild Imps and Dreadstalkers deal $s1% additional damage.", 0, 0 },
+  { 387552, "$@spelldesc387549", "Damage done increased by $w1%.", 0 },
   { 387569, "Each time your spells duplicate from Havoc, gain $s1% increased damage for $387570d. Stacks up to $387570U times.", 0, 0 },
   { 387570, "$@spelldesc387569", "Damage increased by $W1%.", 0 },
   { 387578, "When Nether Portal ends, you summon a Pit Lord that gains power based on how many demons you summoned, up to $387595u demons, while Nether Portal was active. The Pit Lord lasts for $387590d.", 0, 0 },
