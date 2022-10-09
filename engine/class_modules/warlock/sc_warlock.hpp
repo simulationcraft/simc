@@ -337,7 +337,8 @@ public:
 
     player_talent_t guldans_ambition; // Summons a Pit Lord at end of Nether Portal
     const spell_data_t* soul_glutton; // Buff on Pit Lord based on demons summoned
-    const spell_data_t* demonic_consumption; // DF - HEAVILY REWORKED, RENAMED "Reign of Tyranny", now a choice against Wilfred's
+    player_talent_t reign_of_tyranny; // Each summoned active gives stacks of Demonic Servitude (Wild Imps give 1, others 2). Tyrant snapshots this buff on summon for more damage
+    const spell_data_t* demonic_servitude; // TOCHECK: 2022-10-09 - In addition to aura stack bugs, Nether Portal demons are not currently giving stacks in beta (not implemented)
     // DF - Wilfred's Sigil of Superior Summoning (Choice against Reign of Tyranny, formerly SL Legendary, NOTE: SHARES NAME WITH OTHER SPEC TALENTS)
     // DF - Guillotine (Felguard AoE plus autoattack cleave cooldown)
 
@@ -533,6 +534,7 @@ public:
     propagate_const<buff_t*> stolen_power_building; // Stacking buff, triggers final buff as a separate buff at max stacks
     propagate_const<buff_t*> stolen_power_final;
     propagate_const<buff_t*> nether_portal_total; // Dummy buff. Used for Gul'dan's Ambition as the counter to trigger Soul Gluttony
+    propagate_const<buff_t*> demonic_servitude; // From Reign of Tyranny talent
 
     // Destruction Buffs
     propagate_const<buff_t*> backdraft; // DF - Max 2 stacks

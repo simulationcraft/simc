@@ -1162,6 +1162,9 @@ void warlock_t::create_buffs_demonology()
   buffs.nether_portal_total = make_buff( this, "nether_portal_total" )
                                   ->set_max_stack( talents.soul_glutton->max_stacks() )
                                   ->set_refresh_behavior( buff_refresh_behavior::NONE );
+
+  buffs.demonic_servitude = make_buff( this, "demonic_servitude", talents.demonic_servitude )
+                                ->set_default_value( talents.reign_of_tyranny->effectN( 3 ).percent() );
 }
 
 void warlock_t::init_spells_demonology()
@@ -1268,8 +1271,8 @@ void warlock_t::init_spells_demonology()
   talents.guldans_ambition = find_talent_spell( talent_tree::SPECIALIZATION, "Gul'dan's Ambition" ); // Should be ID 387578
   talents.soul_glutton = find_spell( 387595 );
 
-  talents.demonic_consumption = find_talent_spell( "Demonic Consumption" );
-
+  talents.reign_of_tyranny = find_talent_spell( talent_tree::SPECIALIZATION, "Reign of Tyranny" ); // Should be ID 390173
+  talents.demonic_servitude = find_spell( 390193 );
 
   // Legendaries
   legendary.balespiders_burning_core       = find_runeforge_legendary( "Balespider's Burning Core" );
