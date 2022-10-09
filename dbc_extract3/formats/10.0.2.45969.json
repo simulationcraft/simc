@@ -1533,7 +1533,7 @@
       { "data_type": "i", "field": "id" },
       { "data_type": "i", "field": "id_spell", "ref": "SpellName", "formats": { "cpp": "%6d" } },
       { "data_type": "i", "field": "id_override_icon" },
-      { "data_type": "i", "field": "id_override_spell", "ref": "SpellName", "formats": { "cpp": "%6d" } },
+      { "data_type": "i", "field": "id_replace_spell", "ref": "SpellName", "formats": { "cpp": "%6d" } },
       { "data_type": "i", "field": "unk_1" }
     ]
   },

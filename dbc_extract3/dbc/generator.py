@@ -4456,7 +4456,7 @@ class TraitGenerator(DataGenerator):
             fields.append(f'{entry["req_points"]:2d}')
             fields += entry['definition'].field('id')
             fields += entry['spell'].field('id')
-            fields += entry['definition'].field('id_override_spell')
+            fields += entry['definition'].field('id_replace_spell')
             fields += [f'{entry["row"]:2d}', f'{entry["col"]:2d}']
             fields.append(f'{entry["selection_index"]:3d}')
             if entry['definition'].override_name:
@@ -4517,7 +4517,7 @@ class TraitGenerator(DataGenerator):
             f'groups=[{", ".join([str(x.id) for x in sorted(entry["groups"], key=lambda v:v.id)])}] '
             f'tree={entry["tree"]} node_id={entry["node"].id} node_type={entry["node"].type} '
             f'entry={entry["entry"].id} '
-            f'override={entry["definition"].id_override_spell} '
+            f'replace={entry["definition"].id_replace_spell} '
             f'spell={entry["spell"].name} ({entry["spell"].id}) ({util.tokenize(entry["spell"].name)})'
         )
         """

@@ -1679,11 +1679,11 @@ static std::string trait_data_to_str( const dbc_t&                            db
       nibbles.emplace_back( fmt::format( "name=\"{}\"", trait->name ) );
     }
 
-    if ( trait->id_override_spell > 0 )
+    if ( trait->id_replace_spell > 0 )
     {
-      const auto override_spell = dbc.spell( trait->id_override_spell );
-      nibbles.emplace_back( fmt::format( "override=\"{}\" (id={})",
-            override_spell->name_cstr(), trait->id_override_spell ) );
+      const auto replace_spell = dbc.spell( trait->id_replace_spell );
+      nibbles.emplace_back( fmt::format( "replace=\"{}\" (id={})",
+            replace_spell->name_cstr(), trait->id_replace_spell ) );
     }
 
     spec_idx = 0U;
@@ -2398,9 +2398,9 @@ std::string spell_info::talent_to_str( const dbc_t& /* dbc */, const trait_data_
   s << "Row          : " << talent->row << std::endl;
   s << "Max Rank     : " << talent->max_ranks << std::endl;
   s << "Spell        : " << talent->id_spell << std::endl;
-  if ( talent->id_override_spell > 0 )
+  if ( talent->id_replace_spell > 0 )
   {
-    s << "Replaces     : " << talent->id_override_spell << std::endl;
+    s << "Replaces     : " << talent->id_replace_spell << std::endl;
   }
   //s << "Spec         : " << util::specialization_string( talent -> specialization() ) << std::endl;
   s << std::endl;
@@ -2807,9 +2807,9 @@ void spell_info::talent_to_xml( const dbc_t& /* dbc */, const trait_data_t* tale
   node->add_parm( "row", talent->row );
   node->add_parm( "max_rank", talent->max_ranks );
   node->add_parm( "spell", talent->id_spell );
-  if ( talent->id_override_spell > 0 )
+  if ( talent->id_replace_spell > 0 )
   {
-    node->add_parm( "replaces", talent->id_override_spell );
+    node->add_parm( "replaces", talent->id_replace_spell );
   }
 }
 
