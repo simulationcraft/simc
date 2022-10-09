@@ -331,7 +331,7 @@ public:
     const spell_data_t* stolen_power_final_buff;
     player_talent_t sacrificed_souls;
     player_talent_t soulbound_tyrant; // Soul Shards on Tyrant summons
-    // DF - Forces of the Horned Nightmare (Formerly SL Legendary, now a 2 point talent)
+    player_talent_t pact_of_the_imp_mother; // Chance for Hand of Gul'dan to proc a second time on execute (Formerly SL Legendary)
     // DF - The Expendables (Per-pet stacking buff to damage when a Wild Imp expires)
     // DF - Command Aura (2 point talent, increased Wild Imp and Dreadstalker damage while Felguard active)
 
@@ -609,6 +609,7 @@ public:
     proc_t* imp_gang_boss;
     proc_t* hounds_of_war;
     proc_t* nerzhuls_volition;
+    proc_t* pact_of_the_imp_mother;
 
     // destro
     proc_t* reverse_entropy;
