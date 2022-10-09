@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.2.45969
-static const std::array<spelltext_data_t, 18970> __spelltext_data { {
+static const std::array<spelltext_data_t, 18971> __spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -18209,6 +18209,7 @@ static const std::array<spelltext_data_t, 18970> __spelltext_data { {
   { 390181, "$@spelldesc388106", "Suffering $w1 Chaos damage every $t1 sec.", 0 },
   { 390183, "$@spelldesc389540", 0, 0 },
   { 390190, "$@spelldesc389540", 0, 0 },
+  { 390193, "$@spelldesc390173", "$@spelldesc390173", 0 },
   { 390195, "$@spelldesc389687", "Chaos Strike critical strike chance increased by $w1% and will always refund Fury.", 0 },
   { 390196, "Apocalypse and Army of the Dead also summon a Magus of the Dead who hurls Frostbolts and Shadow Bolts at your foes.", 0, 0 },
   { 390197, "$@spelldesc388107", 0, 0 },
