@@ -71,6 +71,8 @@ void warlock_pet_t::create_buffs()
                            ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
                            ->set_default_value( o()->talents.soul_glutton->effectN( 2 ).percent() );
 
+  buffs.demonic_servitude = make_buff( this, "demonic_servitude" );
+
   // Destruction
   buffs.embers = make_buff( this, "embers", find_spell( 264364 ) )
                      ->set_period( 500_ms )
@@ -195,6 +197,44 @@ double warlock_pet_t::composite_player_target_multiplier( player_t* target, scho
   }
 
   return m;
+}
+
+void warlock_pet_t::arise()
+{
+  if ( melee_attack )
+    melee_attack->reset();
+
+  pet_t::arise();
+
+  if ( o()->talents.reign_of_tyranny.ok() )
+  {
+    if ( pet_type == PET_WILD_IMP )
+    {
+      o()->buffs.demonic_servitude->increment( as<int>( o()->talents.reign_of_tyranny->effectN( 1 ).base_value() ) );
+    }
+    else if ( pet_type != PET_DEMONIC_TYRANT )
+    {
+      // Exclusion for Nether Portal summons can also be added to this block if needed
+      o()->buffs.demonic_servitude->increment( as<int>( o()->talents.reign_of_tyranny->effectN( 2 ).base_value() ) );
+    }
+  }
+}
+
+void warlock_pet_t::demise()
+{
+  pet_t::demise();
+
+  if ( o()->talents.reign_of_tyranny.ok() )
+  {
+    if ( pet_type == PET_WILD_IMP )
+    {
+      o()->buffs.demonic_servitude->decrement( as<int>( o()->talents.reign_of_tyranny->effectN( 1 ).base_value() ) );
+    }
+    else if ( pet_type != PET_DEMONIC_TYRANT )
+    {
+      o()->buffs.demonic_servitude->decrement( as<int>( o()->talents.reign_of_tyranny->effectN( 2 ).base_value() ) );
+    }
+  }
 }
 
 warlock_pet_td_t::warlock_pet_td_t( player_t* target, warlock_pet_t& p ) :
@@ -1300,18 +1340,6 @@ struct demonfire_t : public warlock_pet_spell_t
   {
     parse_options( options_str );
   }
-
-  double bonus_da( const action_state_t* s ) const override
-  {
-    double da = warlock_pet_spell_t::bonus_da( s );
-
-    if ( p()->buffs.demonic_consumption->check() )
-    {
-      da += p()->buffs.demonic_consumption->check_value();
-    }
-
-    return da;
-  }
 };
 
 action_t* demonic_tyrant_t::create_action( util::string_view name, util::string_view options_str )
@@ -1320,6 +1348,26 @@ action_t* demonic_tyrant_t::create_action( util::string_view name, util::string_
     return new demonfire_t( this, options_str );
 
   return warlock_pet_t::create_action( name, options_str );
+}
+
+void demonic_tyrant_t::arise()
+{
+  warlock_pet_t::arise();
+
+  if ( o()->talents.reign_of_tyranny.ok() )
+  {
+    buffs.demonic_servitude->trigger( 1, o()->buffs.demonic_servitude->check_stack_value() );
+  }
+}
+
+double demonic_tyrant_t::composite_player_multiplier( school_e school ) const
+{
+  double m = warlock_pet_t::composite_player_multiplier( school );
+
+  if ( buffs.demonic_servitude->check() )
+    m *= 1.0 + buffs.demonic_servitude->check_value();
+
+  return m;
 }
 
 /// Demonic Tyrant End

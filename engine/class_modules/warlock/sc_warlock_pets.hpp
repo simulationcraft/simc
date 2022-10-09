@@ -46,9 +46,9 @@ struct warlock_pet_t : public pet_t
     propagate_const<buff_t*> the_expendables;
     propagate_const<buff_t*> infernal_command;
     propagate_const<buff_t*> soul_glutton;
+    propagate_const<buff_t*> demonic_servitude; // Dummy buff for Tyrant that holds snapshot of Warlock's buff value
     // DF - Demonic Inspiration
     // DF - Wrathful Minion
-    // DF - Pit Lord buff (Soul Gluttony)
     // DF - Guillotine + Fiendish Wrath (Guillotine talent)
     // DF - Review permanent passive pet buffs and determine if they should be implemented or just assumed based on presence of talents
   } buffs;
@@ -63,6 +63,8 @@ struct warlock_pet_t : public pet_t
   double composite_player_multiplier( school_e ) const override;
   double composite_player_target_multiplier( player_t*, school_e ) const override;
   void init_special_effects() override;
+  void arise() override;
+  void demise() override;
 
   target_specific_t<warlock_pet_td_t> target_data;
 
@@ -88,13 +90,6 @@ struct warlock_pet_t : public pet_t
 
   warlock_t* o();
   const warlock_t* o() const;
-
-  virtual void arise() override
-  {
-    if ( melee_attack )
-      melee_attack->reset();
-    pet_t::arise();
-  }
 
   // Pet action to simulate travel time. Places actor at distance 1.0.
   // "Executes" for a length of time it would take to travel from current distance to 1.0 at 33 yds/sec
@@ -474,6 +469,8 @@ struct demonic_tyrant_t : public warlock_pet_t
 {
   demonic_tyrant_t( warlock_t*, util::string_view = "demonic_tyrant" );
   action_t* create_action( util::string_view, util::string_view ) override;
+  void arise() override;
+  double composite_player_multiplier( school_e ) const override;
 };
 
 
