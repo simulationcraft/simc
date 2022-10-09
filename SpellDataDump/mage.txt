@@ -2291,7 +2291,7 @@ Description      : Suppresses movement slowing effects and increases your moveme
 Tooltip          : $s1% increased movement speed and unaffected by movement speed slowing effects.
 
 Name             : Fire Blast (id=108853) [Spell Family (3)] 
-Talent Entry     : Fire [tree=spec, row=2, col=1, max_rank=1, req_points=0, override="Fire Blast" (id=319836)]
+Talent Entry     : Fire [tree=spec, row=2, col=1, max_rank=1, req_points=0, replace="Fire Blast" (id=319836)]
 Class            : Mage
 School           : Fire
 Spell Type       : Magic
@@ -5035,7 +5035,7 @@ Description      : Deals $s1 Arcane damage to enemies within $A1 yds.
 
 Name             : Shimmer (id=212653) [Spell Family (3)] 
 Replaces         : Blink (id=1953)
-Talent Entry     : Generic [tree=class, row=5, col=3, max_rank=1, req_points=8, select_idx=100, override="Blink" (id=1953)]
+Talent Entry     : Generic [tree=class, row=5, col=3, max_rank=1, req_points=8, select_idx=100, replace="Blink" (id=1953)]
 Class            : Mage, Evoker
 School           : Arcane
 Spell Type       : Magic

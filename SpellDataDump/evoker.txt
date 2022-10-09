@@ -42,7 +42,7 @@ Tooltip          : Cannot benefit from Heroism or other similar effects.
 
 Name             : Chi Torpedo (id=115008) [Spell Family (53)] 
 Replaces         : Roll (id=109132)
-Talent Entry     : Generic [tree=class, row=6, col=5, max_rank=1, req_points=8, select_idx=200, override="Roll" (id=109132)]
+Talent Entry     : Generic [tree=class, row=6, col=5, max_rank=1, req_points=8, select_idx=200, replace="Roll" (id=109132)]
 Class            : Monk, Evoker
 School           : Physical
 Spell Type       : None
@@ -129,7 +129,7 @@ Tooltip          : Switch to your Primary Talent Specialization.
 
 Name             : Shimmer (id=212653) [Spell Family (3)] 
 Replaces         : Blink (id=1953)
-Talent Entry     : Generic [tree=class, row=5, col=3, max_rank=1, req_points=8, select_idx=100, override="Blink" (id=1953)]
+Talent Entry     : Generic [tree=class, row=5, col=3, max_rank=1, req_points=8, select_idx=100, replace="Blink" (id=1953)]
 Class            : Mage, Evoker
 School           : Arcane
 Spell Type       : Magic
@@ -182,7 +182,7 @@ Effects          :
 Description      : Unlock powers at the Vindicaar's Matrix Core to use while on Argus. 
 
 Name             : Tiger Dash (id=252216) [Spell Family (7)] 
-Talent Entry     : Generic [tree=class, row=5, col=4, max_rank=1, req_points=8, select_idx=200, override="Dash" (id=1850)]
+Talent Entry     : Generic [tree=class, row=5, col=4, max_rank=1, req_points=8, select_idx=200, replace="Dash" (id=1850)]
 Class            : Druid, Evoker
 School           : Physical
 Spell Type       : Magic

@@ -389,7 +389,7 @@ Description      : $@spelldesc187650
 Tooltip          : Incapacitated.
 
 Name             : Concussive Shot (id=5116) [Spell Family (9)] 
-Talent Entry     : Generic [tree=class, row=1, col=2, max_rank=1, req_points=0, override="Wing Clip" (id=195645)]
+Talent Entry     : Generic [tree=class, row=1, col=2, max_rank=1, req_points=0, replace="Wing Clip" (id=195645)]
 Class            : Hunter
 School           : Physical
 Spell Type       : Ranged
@@ -4306,7 +4306,7 @@ Description      : Increases the damage and healing of your pet's abilities by $
 Increases the effectiveness of your pet's Predator's Thirst, Endurance Training, and Pathfinding passives by $s3%.
 
 Name             : Cobra Shot (id=193455) [Spell Family (9)] 
-Talent Entry     : Beast Mastery [tree=spec, row=1, col=1, max_rank=1, req_points=0, override="Steady Shot" (id=56641)]
+Talent Entry     : Beast Mastery [tree=spec, row=1, col=1, max_rank=1, req_points=0, replace="Steady Shot" (id=56641)]
 Class            : Hunter
 School           : Physical
 Spell Type       : Ranged
@@ -6086,7 +6086,7 @@ Effects          :
 
 Name             : Mongoose Bite (id=259387) [Spell Family (9)] 
 Replaces         : Raptor Strike (id=186270)
-Talent Entry     : Survival [tree=spec, row=5, col=4, max_rank=1, req_points=8, override="Raptor Strike" (id=186270)]
+Talent Entry     : Survival [tree=spec, row=5, col=4, max_rank=1, req_points=8, replace="Raptor Strike" (id=186270)]
 Class            : Hunter
 School           : Physical
 Spell Type       : Melee
@@ -13035,7 +13035,7 @@ Description      : Barbed Shot's recharge time is reduced by ${-$s2/1000} sec, a
 
 Name             : Chimaera Shot (id=342049) [Spell Family (9)] 
 Replaces         : Arcane Shot (id=185358)
-Talent Entry     : Marksmanship [tree=spec, row=3, col=3, max_rank=1, req_points=0, override="Arcane Shot" (id=185358)]
+Talent Entry     : Marksmanship [tree=spec, row=3, col=3, max_rank=1, req_points=0, replace="Arcane Shot" (id=185358)]
 Class            : Hunter
 School           : Nature
 Spell Type       : Ranged
@@ -16433,7 +16433,7 @@ Description      : $@spelldesc393344
 Tooltip          : Rooted.
 
 Name             : Sentinel (id=393505) [Spell Family (9), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=6, col=7, max_rank=1, req_points=8]
+Talent Entry     : Generic [tree=class, row=6, col=7, max_rank=1, req_points=8, override="" (id=388045)]
 Class            : Hunter
 School           : Physical
 Spell Type       : None

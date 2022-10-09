@@ -3444,7 +3444,7 @@ Effects          :
 Description      : Leap forward $s2 yards.
 
 Name             : Incarnation: Avatar of Ashamane (desc=Shapeshift) (id=102543) [Spell Family (7)] 
-Talent Entry     : Feral [tree=spec, row=9, col=3, max_rank=1, req_points=20, select_idx=100, override="Berserk" (id=106951)]
+Talent Entry     : Feral [tree=spec, row=9, col=3, max_rank=1, req_points=20, select_idx=100, replace="Berserk" (id=106951)]
 Class            : Druid
 School           : Physical
 Spell Type       : Melee
@@ -6849,7 +6849,7 @@ Effects          :
 Description      : The cooldown on Tiger's Fury resets when a target dies with one of your Bleed effects active, and Tiger's Fury lasts ${$s1/1000} additional seconds.
 
 Name             : Brutal Slash (id=202028) [Spell Family (7)] 
-Talent Entry     : Feral [tree=spec, row=7, col=5, max_rank=1, req_points=8, select_idx=100, override="Swipe" (id=213764)]
+Talent Entry     : Feral [tree=spec, row=7, col=5, max_rank=1, req_points=8, select_idx=100, replace="Swipe" (id=213764)]
 Class            : Druid
 School           : Physical
 Spell Type       : Melee
@@ -8860,7 +8860,7 @@ Description      : $@spelldesc384671
 Tooltip          : Allows the use of Prowl even while in combat.
 
 Name             : Tiger Dash (id=252216) [Spell Family (7)] 
-Talent Entry     : Generic [tree=class, row=5, col=4, max_rank=1, req_points=8, select_idx=200, override="Dash" (id=1850)]
+Talent Entry     : Generic [tree=class, row=5, col=4, max_rank=1, req_points=8, select_idx=200, replace="Dash" (id=1850)]
 Class            : Druid, Evoker
 School           : Physical
 Spell Type       : Magic
@@ -14550,7 +14550,7 @@ Effects          :
 Description      : $@spelldesc106951
 
 Name             : Berserk (id=343223) [Spell Family (7), Passive] 
-Talent Entry     : Feral [tree=spec, row=5, col=3, max_rank=1, req_points=8]
+Talent Entry     : Feral [tree=spec, row=5, col=3, max_rank=1, req_points=8, override="Berserk" (id=106951)]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -19308,7 +19308,7 @@ Description      : $@spelldesc102558
 
 
 Name             : Celestial Alignment (id=395022) [Spell Family (7), Passive, Hidden] 
-Talent Entry     : Balance [tree=spec, row=6, col=2, max_rank=1, req_points=8]
+Talent Entry     : Balance [tree=spec, row=6, col=2, max_rank=1, req_points=8, override="Celestial Alignment" (id=194223)]
 Class            : Druid
 School           : Nature
 Spell Type       : None

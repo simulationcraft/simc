@@ -1729,7 +1729,7 @@ Description      : Reduces the cooldown of Vengeful Retreat by 10 sec, and gener
 
 Name             : Demon Blades (id=203555) [Spell Family (107), Passive] 
 Replaces         : Demon's Bite (id=162243)
-Talent Entry     : Havoc [tree=spec, row=2, col=2, max_rank=1, req_points=0, select_idx=200, override="Demon's Bite" (id=162243)]
+Talent Entry     : Havoc [tree=spec, row=2, col=2, max_rank=1, req_points=0, select_idx=200, replace="Demon's Bite" (id=162243)]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -4920,7 +4920,7 @@ Effects          :
 Tooltip          : Increases haste by $s1.
 
 Name             : Fracture (id=263642) [Spell Family (107)] 
-Talent Entry     : Vengeance [tree=spec, row=4, col=1, max_rank=1, req_points=0, select_idx=200, override="Shear" (id=203782)]
+Talent Entry     : Vengeance [tree=spec, row=4, col=1, max_rank=1, req_points=0, select_idx=200, replace="Shear" (id=203782)]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : Melee

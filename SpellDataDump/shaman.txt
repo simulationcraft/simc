@@ -581,7 +581,7 @@ Effects          :
 Description      : Your direct heal criticals refund a percentage of your maximum mana: ${$m1/100}.2% from Healing Wave, ${$m1/100*0.6}.2% from Healing Surge$?s73685[, Unleash Life,][] or Riptide, and ${$m1/100*0.25}.2% from Chain Heal.
 
 Name             : Stormstrike (id=17364) [Spell Family (11)] 
-Talent Entry     : Enhancement [tree=spec, row=1, col=1, max_rank=1, req_points=0, override="Primal Strike" (id=73899)]
+Talent Entry     : Enhancement [tree=spec, row=1, col=1, max_rank=1, req_points=0, replace="Primal Strike" (id=73899)]
 Class            : Shaman
 School           : Physical
 Spell Type       : Melee
@@ -3084,7 +3084,7 @@ Effects          :
 Description      : Your Earth, Fire, and Storm Elementals are drawn from primal elementals $s1% more powerful than regular elementals, with additional abilities, and you gain direct control over them.
 
 Name             : Elemental Blast (id=117014) [Spell Family (11)] 
-Talent Entry     : Elemental [tree=spec, row=8, col=1, max_rank=1, req_points=20, override="Earth Shock" (id=8042)]
+Talent Entry     : Elemental [tree=spec, row=8, col=1, max_rank=1, req_points=20, replace="Earth Shock" (id=8042)]
 Class            : Shaman
 School           : Elemental
 Spell Type       : Magic
@@ -3703,7 +3703,7 @@ Effects          :
 Description      : Increases all damage done by your pet by $s2%.
 
 Name             : Cloudburst Totem (id=157153) [Spell Family (11)] 
-Talent Entry     : Restoration [tree=spec, row=5, col=4, max_rank=1, req_points=8, select_idx=200, override="Healing Stream Totem" (id=5394)]
+Talent Entry     : Restoration [tree=spec, row=5, col=4, max_rank=1, req_points=8, select_idx=200, replace="Healing Stream Totem" (id=5394)]
 Class            : Shaman
 School           : Nature
 Spell Type       : None
@@ -16850,7 +16850,7 @@ Description      : $@spelldesc262624
 Tooltip          : Increases physical damage dealt from your abilities by $s1%.
 
 Name             : Stormkeeper (id=392714) [Spell Family (11), Passive] 
-Talent Entry     : Elemental [tree=spec, row=6, col=1, max_rank=1, req_points=8]
+Talent Entry     : Elemental [tree=spec, row=6, col=1, max_rank=1, req_points=8, override="Stormkeeper" (id=191634)]
 Class            : Death Knight, Shaman
 School           : Nature
 Spell Type       : None
@@ -16870,7 +16870,7 @@ Effects          :
 Description      : $@spelltooltip191634
 
 Name             : Stormkeeper (id=392763) [Spell Family (11), Passive] 
-Talent Entry     : Elemental [tree=spec, row=10, col=1, max_rank=1, req_points=20, select_idx=200]
+Talent Entry     : Elemental [tree=spec, row=10, col=1, max_rank=1, req_points=20, select_idx=200, override="Stormkeeper" (id=191634)]
 Class            : Shaman
 School           : Nature
 Spell Type       : None
@@ -16890,7 +16890,7 @@ Effects          :
 Description      : $@spelltooltip191634
 
 Name             : Healing Stream Totem (id=392915) [Spell Family (11), Passive] 
-Talent Entry     : Generic [tree=class, row=7, col=1, max_rank=1, req_points=8]
+Talent Entry     : Generic [tree=class, row=7, col=1, max_rank=1, req_points=8, override="Healing Stream Totem" (id=5394)]
 Class            : Shaman
 School           : Nature
 Spell Type       : Magic
@@ -16915,7 +16915,7 @@ Effects          :
 Description      : $@spelltooltip5394
 
 Name             : Healing Stream Totem (id=392916) [Spell Family (11), Passive] 
-Talent Entry     : Restoration [tree=spec, row=2, col=3, max_rank=1, req_points=0]
+Talent Entry     : Restoration [tree=spec, row=2, col=3, max_rank=1, req_points=0, override="Healing Stream Totem" (id=5394)]
 Class            : Shaman
 School           : Nature
 Spell Type       : Magic
@@ -17081,7 +17081,7 @@ Description      : Your Healing Surge is $s1% more effective on yourself.
 
 
 Name             : Elemental Blast (id=394150) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Enhancement [tree=spec, row=7, col=1, max_rank=1, req_points=8]
+Talent Entry     : Enhancement [tree=spec, row=7, col=1, max_rank=1, req_points=8, override="Elemental Blast" (id=117014)]
 Class            : Shaman
 School           : Physical
 Spell Type       : None

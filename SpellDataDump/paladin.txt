@@ -1195,7 +1195,7 @@ Effects          :
 Description      : Your critical Holy Shocks reduce the cost of your next Flash of Light by $54149s1% or cause your next Holy Light to generate $54149s2 Holy Power.
 
 Name             : Hammer of the Righteous (id=53595) [Spell Family (10)] 
-Talent Entry     : Protection [free=(Protection), tree=spec, row=2, col=1, max_rank=1, req_points=0, select_idx=100, override="Crusader Strike" (id=35395)]
+Talent Entry     : Protection [free=(Protection), tree=spec, row=2, col=1, max_rank=1, req_points=0, select_idx=100, replace="Crusader Strike" (id=35395)]
 Class            : Paladin
 School           : Physical
 Spell Type       : Melee
@@ -3986,7 +3986,7 @@ Effects          :
 Description      : Blessing of Freedom also increases movement speed by $m1%.
 
 Name             : Beacon of Virtue (id=200025) [Spell Family (10)] 
-Talent Entry     : Holy [tree=spec, row=8, col=2, max_rank=1, req_points=20, select_idx=200, override="Beacon of Light" (id=53563)]
+Talent Entry     : Holy [tree=spec, row=8, col=2, max_rank=1, req_points=20, select_idx=200, replace="Beacon of Light" (id=53563)]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -4335,7 +4335,7 @@ Tooltip          : Immune to magical damage and harmful effects.
 
 Name             : Blessed Hammer (id=204019) [Spell Family (10)] 
 Replaces         : Crusader Strike (id=35395)
-Talent Entry     : Protection [free=(Protection), tree=spec, row=2, col=1, max_rank=1, req_points=0, select_idx=200, override="Crusader Strike" (id=35395)]
+Talent Entry     : Protection [free=(Protection), tree=spec, row=2, col=1, max_rank=1, req_points=0, select_idx=200, replace="Crusader Strike" (id=35395)]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -5045,7 +5045,7 @@ Effects          :
 Description      : $@spelldesc205273
 
 Name             : Light of the Martyr (id=219562) [Spell Family (10), Passive, Hidden] 
-Talent Entry     : Holy [tree=spec, row=6, col=6, max_rank=1, req_points=8]
+Talent Entry     : Holy [tree=spec, row=6, col=6, max_rank=1, req_points=8, override="Light of the Martyr" (id=183998)]
 Class            : Paladin
 School           : Holy
 Spell Type       : Magic
@@ -14088,7 +14088,7 @@ Effects          :
 Description      : Speed and Avoidance increased by $s3%.
 
 Name             : Sentinel (id=385438) [Spell Family (10), Passive, Hidden] 
-Talent Entry     : Protection [free=(Protection), tree=spec, row=6, col=3, max_rank=1, req_points=8, select_idx=200, override="Avenging Wrath" (id=31884)]
+Talent Entry     : Protection [free=(Protection), tree=spec, row=6, col=3, max_rank=1, req_points=8, select_idx=200, replace="Avenging Wrath" (id=31884), override="Sentinel" (id=385438)]
 Class            : Paladin
 School           : Physical
 Spell Type       : None

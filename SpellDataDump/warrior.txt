@@ -4198,7 +4198,7 @@ Description      : $@spelldesc202168
 
 Name             : Impending Victory (id=202168) [Spell Family (4)] 
 Replaces         : Victory Rush (id=34428)
-Talent Entry     : Generic [tree=class, row=2, col=2, max_rank=1, req_points=0, override="Victory Rush" (id=34428)]
+Talent Entry     : Generic [tree=class, row=2, col=2, max_rank=1, req_points=0, replace="Victory Rush" (id=34428)]
 Class            : Warrior
 School           : Physical
 Spell Type       : Melee
@@ -5264,7 +5264,7 @@ Description      : Shield Block has ${$s1+1} charges.
 
 Name             : Devastator (id=236279) [Passive] 
 Replaces         : Devastate (id=20243)
-Talent Entry     : Protection [tree=spec, row=3, col=2, max_rank=1, req_points=0, override="Devastate" (id=20243)]
+Talent Entry     : Protection [tree=spec, row=3, col=2, max_rank=1, req_points=0, replace="Devastate" (id=20243)]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -5845,7 +5845,7 @@ Effects          :
 Description      : Overpower has ${1+$s1} charges and causes a seismic wave, dealing $315961s1 damage to all enemies in a $315961A1 yd line. Deals reduced damage beyond $315961s2 targets.
 
 Name             : Warbreaker (id=262161) [Spell Family (4)] 
-Talent Entry     : Arms [tree=spec, row=7, col=5, max_rank=1, req_points=8, select_idx=100, override="Colossus Smash" (id=167105)]
+Talent Entry     : Arms [tree=spec, row=7, col=5, max_rank=1, req_points=8, select_idx=100, replace="Colossus Smash" (id=167105)]
 Class            : Warrior
 School           : Physical
 Spell Type       : Melee
@@ -13209,7 +13209,7 @@ Description      : $@spelldesc383916
 Tooltip          : Every strike of your next Rampage will deal an additional $w3% damage.
 
 Name             : Annihilator (id=383916) [Spell Family (4), Passive] 
-Talent Entry     : Fury [tree=spec, row=10, col=1, max_rank=1, req_points=20, override="Raging Blow" (id=85288)]
+Talent Entry     : Fury [tree=spec, row=10, col=1, max_rank=1, req_points=20, replace="Raging Blow" (id=85288)]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -13541,7 +13541,7 @@ Effects          :
 Description      : Shield Wall gains $s2 additional charge, and grants $s1% of its effect to all party members.
 
 Name             : Titanic Throw (id=384090) [Spell Family (4)] 
-Talent Entry     : Generic [tree=class, row=7, col=4, max_rank=1, req_points=8, override="Heroic Throw" (id=57755)]
+Talent Entry     : Generic [tree=class, row=7, col=4, max_rank=1, req_points=8, replace="Heroic Throw" (id=57755)]
 Class            : Warrior
 School           : Physical
 Spell Type       : Melee
@@ -13571,7 +13571,7 @@ Description      : Throws your weapon at the enemy, causing $s1 Physical damage 
 Generates high threat.
 
 Name             : Berserker Shout (id=384100) [Spell Family (4)] 
-Talent Entry     : Generic [tree=class, row=3, col=1, max_rank=1, req_points=0, select_idx=100, override="Berserker Rage" (id=18499)]
+Talent Entry     : Generic [tree=class, row=3, col=1, max_rank=1, req_points=0, select_idx=100, replace="Berserker Rage" (id=18499)]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -14564,7 +14564,7 @@ Effects          :
 Description      : Damage of Raging Blow increased by $s1%.
 
 Name             : Disrupting Shout (id=386071) [Spell Family (4)] 
-Talent Entry     : Protection [tree=spec, row=6, col=1, max_rank=1, req_points=8, override="Challenging Shout" (id=1161)]
+Talent Entry     : Protection [tree=spec, row=6, col=1, max_rank=1, req_points=8, replace="Challenging Shout" (id=1161)]
 Class            : Warrior
 School           : Physical
 Spell Type       : Melee

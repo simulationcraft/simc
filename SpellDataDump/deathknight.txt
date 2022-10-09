@@ -361,7 +361,7 @@ Description      : Shackles the target $?a373930[and $373930s1 nearby enemy ][]w
 Tooltip          : Movement slowed $w1% $?$w5!=0[and Haste reduced $w5% ][]by frozen chains.
 
 Name             : Raise Dead (id=46584) [Spell Family (15)] 
-Talent Entry     : Unholy [tree=spec, row=2, col=2, max_rank=1, req_points=0, override="Raise Dead" (id=46585)]
+Talent Entry     : Unholy [tree=spec, row=2, col=2, max_rank=1, req_points=0, replace="Raise Dead" (id=46585)]
 Class            : Death Knight
 School           : Physical
 Spell Type       : Magic
@@ -838,7 +838,7 @@ Tooltip          : Damage taken reduced by $w3%.
 Immune to Stun effects.
 
 Name             : Obliterate (id=49020) [Spell Family (15)] 
-Talent Entry     : Frost [tree=spec, row=2, col=1, max_rank=1, req_points=0, override="Rune Strike" (id=316239)]
+Talent Entry     : Frost [tree=spec, row=2, col=1, max_rank=1, req_points=0, replace="Rune Strike" (id=316239)]
 Class            : Death Knight
 School           : Physical
 Spell Type       : Melee
@@ -2654,7 +2654,7 @@ Effects          :
 Description      : Gives a chance to parry enemy melee attacks.
 
 Name             : Festering Strike (id=85948) [Spell Family (15)] 
-Talent Entry     : Unholy [tree=spec, row=1, col=1, max_rank=1, req_points=0, override="Rune Strike" (id=316239)]
+Talent Entry     : Unholy [tree=spec, row=1, col=1, max_rank=1, req_points=0, replace="Rune Strike" (id=316239)]
 Class            : Death Knight
 School           : Physical
 Spell Type       : Melee
@@ -3690,7 +3690,7 @@ Variables        : $CAP=$?$OWB==0[${$AP*0.98}][${($AP+$OAP)*2/3}]--2H, DW
 
 Name             : Defile (id=152280) [Spell Family (15)] 
 Replaces         : Death and Decay (id=43265)
-Talent Entry     : Unholy [tree=spec, row=6, col=7, max_rank=1, req_points=8, select_idx=200, override="Death and Decay" (id=43265)]
+Talent Entry     : Unholy [tree=spec, row=6, col=7, max_rank=1, req_points=8, select_idx=200, replace="Death and Decay" (id=43265)]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : Magic
@@ -5156,7 +5156,7 @@ Effects          :
 Description      : Reduces the cooldown of Anti-Magic Shell by ${$s1/-1000} sec and increases its duration and amount absorbed by $s2%.
 
 Name             : Heart Strike (id=206930) [Spell Family (15)] 
-Talent Entry     : Blood [tree=spec, row=1, col=1, max_rank=1, req_points=0, override="Rune Strike" (id=316239)]
+Talent Entry     : Blood [tree=spec, row=1, col=1, max_rank=1, req_points=0, replace="Rune Strike" (id=316239)]
 Class            : Death Knight
 School           : Physical
 Spell Type       : Melee
@@ -5764,7 +5764,7 @@ Tooltip          : Haste increased by $s1%.
 
 Name             : Clawing Shadows (id=207311) [Spell Family (15)] 
 Replaces         : Scourge Strike (id=55090)
-Talent Entry     : Unholy [tree=spec, row=5, col=5, max_rank=1, req_points=8, select_idx=200, override="Scourge Strike" (id=55090)]
+Talent Entry     : Unholy [tree=spec, row=5, col=5, max_rank=1, req_points=8, select_idx=200, replace="Scourge Strike" (id=55090)]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : Melee
@@ -16218,7 +16218,7 @@ Effects          :
 Description      : Your ghoul's attacks have a chance to apply Enfeeble, reducing the enemies movement speed by $392490s1% and the damage they deal to you by $392490s2% for $392490d.
 
 Name             : Stormkeeper (id=392714) [Spell Family (11), Passive] 
-Talent Entry     : Elemental [tree=spec, row=6, col=1, max_rank=1, req_points=8]
+Talent Entry     : Elemental [tree=spec, row=6, col=1, max_rank=1, req_points=8, override="Stormkeeper" (id=191634)]
 Class            : Death Knight, Shaman
 School           : Nature
 Spell Type       : None
@@ -16258,7 +16258,7 @@ Effects          :
 Description      : When empowered by Rime, Howling Blast deals $s1% increased damage to your primary target.
 
 Name             : Empower Rune Weapon (id=392962) [Spell Family (15), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=10, col=1, max_rank=1, req_points=20]
+Talent Entry     : Generic [tree=class, row=10, col=1, max_rank=1, req_points=20, override="Empower Rune Weapon" (id=47568)]
 Class            : Death Knight
 School           : Frost
 Spell Type       : Magic
@@ -16278,7 +16278,7 @@ Effects          :
 Description      : $@spelltooltip47568
 
 Name             : Empower Rune Weapon (id=392963) [Spell Family (15), Passive, Hidden] 
-Talent Entry     : Frost [tree=spec, row=7, col=4, max_rank=1, req_points=8]
+Talent Entry     : Frost [tree=spec, row=7, col=4, max_rank=1, req_points=8, override="Empower Rune Weapon" (id=47568)]
 Class            : Death Knight
 School           : Frost
 Spell Type       : Magic

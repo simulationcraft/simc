@@ -3153,7 +3153,7 @@ Effects          :
 Description      : $@spelldesc110744
 
 Name             : Mindbender (id=123040) [Spell Family (6)] 
-Talent Entry     : Discipline [tree=spec, row=8, col=4, max_rank=1, req_points=20, override="Shadowfiend" (id=34433)]
+Talent Entry     : Discipline [tree=spec, row=8, col=4, max_rank=1, req_points=20, replace="Shadowfiend" (id=34433)]
 Class            : Priest
 School           : Shadow
 Spell Type       : Magic
@@ -4838,7 +4838,7 @@ Effects          :
 Description      : When you cast Heal or Flash Heal, $s1% of the healing is replicated to the previous target you healed with Heal or Flash Heal.
 
 Name             : Mindbender (id=200174) [Spell Family (6)] 
-Talent Entry     : Shadow [tree=spec, row=8, col=1, max_rank=1, req_points=20, override="Shadowfiend" (id=34433)]
+Talent Entry     : Shadow [tree=spec, row=8, col=1, max_rank=1, req_points=20, replace="Shadowfiend" (id=34433)]
 Class            : Priest
 School           : Shadow
 Spell Type       : Magic
@@ -4873,7 +4873,7 @@ Description      : Summons a Mindbender to attack the target for $d.
 |cFFFFFFFFGenerates ${$200010s1/100} Insanity each time the Mindbender attacks.|r
 
 Name             : Apotheosis (id=200183) [Spell Family (6)] 
-Talent Entry     : Holy [tree=spec, row=8, col=2, max_rank=1, req_points=20, select_idx=100, override="Apotheosis" (id=392941)]
+Talent Entry     : Holy [tree=spec, row=8, col=2, max_rank=1, req_points=20, select_idx=100, replace="Apotheosis" (id=392941)]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -5025,7 +5025,7 @@ Description      : Switch to your Primary Talent Specialization.
 Tooltip          : Switch to your Primary Talent Specialization.
 
 Name             : Purge the Wicked (id=204197) [Spell Family (6)] 
-Talent Entry     : Discipline [tree=spec, row=5, col=1, max_rank=1, req_points=8, override="Shadow Word: Pain" (id=589)]
+Talent Entry     : Discipline [tree=spec, row=5, col=1, max_rank=1, req_points=8, replace="Shadow Word: Pain" (id=589)]
 Class            : Priest
 School           : Holyfire
 Spell Type       : Magic
@@ -6624,7 +6624,7 @@ Description      : $@spelldesc64901
 Tooltip          : Rapidly recovering a major defensive ability, and regaining $64901s2% missing mana every $64901t1 sec.
 
 Name             : Holy Word: Salvation (id=265202) [Spell Family (6)] 
-Talent Entry     : Holy [tree=spec, row=8, col=2, max_rank=1, req_points=20, select_idx=200, override="Apotheosis" (id=392941)]
+Talent Entry     : Holy [tree=spec, row=8, col=2, max_rank=1, req_points=20, select_idx=200, replace="Apotheosis" (id=392941)]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic

@@ -4728,7 +4728,7 @@ Tooltip          : Switch to your Primary Talent Specialization.
 
 Name             : Gloomblade (id=200758) [Spell Family (8)] 
 Replaces         : Backstab (id=53)
-Talent Entry     : Subtlety [tree=spec, row=4, col=1, max_rank=1, req_points=8, override="Backstab" (id=53)]
+Talent Entry     : Subtlety [tree=spec, row=4, col=1, max_rank=1, req_points=8, replace="Backstab" (id=53)]
 Class            : Rogue
 School           : Shadow
 Spell Type       : Melee
@@ -15087,7 +15087,7 @@ Effects          :
                    Affected Spells (Category): Shadow Dance (185313)
 
 Name             : Shadow Dance (id=394930) [Spell Family (8), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=10, col=3, max_rank=1, req_points=20]
+Talent Entry     : Generic [tree=class, row=10, col=3, max_rank=1, req_points=20, override="Shadow Dance" (id=185313)]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -15107,7 +15107,7 @@ Effects          :
                    Affected Spells (Category): Shadow Dance (185313)
 
 Name             : Shadowstep (id=394931) [Spell Family (8), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=4, col=6, max_rank=1, req_points=8]
+Talent Entry     : Generic [tree=class, row=4, col=6, max_rank=1, req_points=8, override="" (id=36554)]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -15125,7 +15125,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1206 | Target: Self (1)
 
 Name             : Shadowstep (id=394932) [Spell Family (8), Passive, Hidden] 
-Talent Entry     : Assassination [tree=spec, row=2, col=3, max_rank=1, req_points=0]
+Talent Entry     : Assassination [tree=spec, row=2, col=3, max_rank=1, req_points=0, override="" (id=36554)]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -15143,7 +15143,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1206 | Target: Self (1)
 
 Name             : Shadowstep (id=394935) [Spell Family (8), Passive, Hidden] 
-Talent Entry     : Subtlety [tree=spec, row=1, col=2, max_rank=1, req_points=0]
+Talent Entry     : Subtlety [tree=spec, row=1, col=2, max_rank=1, req_points=0, override="" (id=36554)]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
