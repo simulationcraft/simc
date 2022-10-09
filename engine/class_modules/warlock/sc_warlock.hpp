@@ -164,7 +164,7 @@ public:
     spawner::pet_spawner_t<pets::demonology::random_demons::eyes_of_guldan_t, warlock_t> eyes_of_guldan;
     spawner::pet_spawner_t<pets::demonology::random_demons::prince_malchezaar_t, warlock_t> prince_malchezaar;
 
-    // DF - New post-NP summon: Pit Lord
+    spawner::pet_spawner_t<pets::demonology::pit_lord_t, warlock_t> pit_lords;
 
     pets_t( warlock_t* w );
   } warlock_pet_list;
@@ -335,7 +335,8 @@ public:
     player_talent_t the_expendables; // Per-pet stacking buff to damage when a Wild Imp expires
     player_talent_t infernal_command; // Increased Wild Imp and Dreadstalker damage while Felguard active (TOCHECK: 2022-10-08 - this is behaving very buggily on beta)
 
-    // DF - Gul'dan's Ambition (Summon Pit Lord at end of Nether Portal)
+    player_talent_t guldans_ambition; // Summons a Pit Lord at end of Nether Portal
+    const spell_data_t* soul_glutton; // Buff on Pit Lord based on demons summoned
     const spell_data_t* demonic_consumption; // DF - HEAVILY REWORKED, RENAMED "Reign of Tyranny", now a choice against Wilfred's
     // DF - Wilfred's Sigil of Superior Summoning (Choice against Reign of Tyranny, formerly SL Legendary, NOTE: SHARES NAME WITH OTHER SPEC TALENTS)
     // DF - Guillotine (Felguard AoE plus autoattack cleave cooldown)
@@ -531,6 +532,7 @@ public:
     propagate_const<buff_t*> fel_covenant;
     propagate_const<buff_t*> stolen_power_building; // Stacking buff, triggers final buff as a separate buff at max stacks
     propagate_const<buff_t*> stolen_power_final;
+    propagate_const<buff_t*> nether_portal_total; // Dummy buff. Used for Gul'dan's Ambition as the counter to trigger Soul Gluttony
 
     // Destruction Buffs
     propagate_const<buff_t*> backdraft; // DF - Max 2 stacks

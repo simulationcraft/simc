@@ -67,6 +67,10 @@ void warlock_pet_t::create_buffs()
   buffs.infernal_command = make_buff( this, "infernal_command", find_spell( 387552 ) )
                                ->set_default_value( o()->talents.infernal_command->effectN( 1 ).percent() );
 
+  buffs.soul_glutton = make_buff( this, "soul_glutton", o()->talents.soul_glutton )
+                           ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+                           ->set_default_value( o()->talents.soul_glutton->effectN( 2 ).percent() );
+
   // Destruction
   buffs.embers = make_buff( this, "embers", find_spell( 264364 ) )
                      ->set_period( 500_ms )
@@ -1319,6 +1323,51 @@ action_t* demonic_tyrant_t::create_action( util::string_view name, util::string_
 }
 
 /// Demonic Tyrant End
+
+/// Pit Lord Begin
+
+pit_lord_t::pit_lord_t( warlock_t* owner, util::string_view name ) : warlock_pet_t( owner, name, PET_PIT_LORD, name != "pit_lord" )
+{
+  owner_coeff.ap_from_sp = 1.0;
+  owner_coeff.sp_from_sp = 1.0;
+
+  soul_glutton_damage_bonus = owner->talents.soul_glutton->effectN( 1 ).percent();
+}
+
+void pit_lord_t::init_base_stats()
+{
+  warlock_pet_t::init_base_stats();
+
+  melee_attack = new warlock_pet_melee_t( this, 1.087 );
+}
+
+void pit_lord_t::arise()
+{
+  warlock_pet_t::arise();
+
+  if ( o()->buffs.nether_portal_total->check() )
+  {
+    buffs.soul_glutton->increment( o()->buffs.nether_portal_total->current_stack );
+    o()->buffs.nether_portal_total->expire();
+  }
+
+  melee_attack->set_target( target );
+  melee_attack->schedule_execute();
+}
+
+double pit_lord_t::composite_player_multiplier( school_e school ) const
+{
+  double m = warlock_pet_t::composite_player_multiplier( school );
+
+  if ( buffs.soul_glutton->check() )
+  {
+    m *= 1.0 + soul_glutton_damage_bonus * buffs.soul_glutton->current_stack;
+  }
+
+  return m;
+}
+
+/// Pit Lord End
 
 namespace random_demons
 {
