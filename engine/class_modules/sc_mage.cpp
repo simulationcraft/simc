@@ -2607,7 +2607,7 @@ struct frost_mage_spell_t : public mage_spell_t
     // TODO: double check if frostbite and bone chilling trigger from the same spells
     p()->buffs.bone_chilling->trigger();
     if ( p()->rng().roll( p()->talents.frostbite->proc_chance() ) )
-      p()->trigger_crowd_control( s, MECHANIC_ROOT );
+      p()->trigger_crowd_control( s, MECHANIC_ROOT, 0.5_s ); // Frostbite only has the initial grace period
   }
 
   void trigger_cold_front()
@@ -3553,7 +3553,7 @@ struct cone_of_cold_t final : public frost_mage_spell_t
     frost_mage_spell_t::impact( s );
 
     if ( p()->talents.freezing_cold.ok() )
-      p()->trigger_crowd_control( s, MECHANIC_ROOT );
+      p()->trigger_crowd_control( s, MECHANIC_ROOT, 0.5_s ); // Freezing Cold only has the initial grace period
   }
 };
 
