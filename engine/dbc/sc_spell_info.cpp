@@ -1686,6 +1686,13 @@ static std::string trait_data_to_str( const dbc_t&                            db
             replace_spell->name_cstr(), trait->id_replace_spell ) );
     }
 
+    if ( trait->id_override_spell > 0 )
+    {
+      const auto override_spell = dbc.spell( trait->id_override_spell );
+      nibbles.emplace_back( fmt::format( "override=\"{}\" (id={})",
+            override_spell->name_cstr(), trait->id_override_spell ) );
+    }
+
     spec_idx = 0U;
     std::vector<std::string> spec_strs;
     while ( trait->id_spec[ spec_idx ] != 0 && spec_idx < trait->id_spec.size() )
@@ -2402,6 +2409,10 @@ std::string spell_info::talent_to_str( const dbc_t& /* dbc */, const trait_data_
   {
     s << "Replaces     : " << talent->id_replace_spell << std::endl;
   }
+  if ( talent->id_override_spell > 0 )
+  {
+    s << "Overriden by : " << talent->id_override_spell << std::endl;
+  }
   //s << "Spec         : " << util::specialization_string( talent -> specialization() ) << std::endl;
   s << std::endl;
 
@@ -2810,6 +2821,10 @@ void spell_info::talent_to_xml( const dbc_t& /* dbc */, const trait_data_t* tale
   if ( talent->id_replace_spell > 0 )
   {
     node->add_parm( "replaces", talent->id_replace_spell );
+  }
+  if ( talent->id_override_spell > 0 )
+  {
+    node->add_parm( "overridden", talent->id_override_spell );
   }
 }
 
