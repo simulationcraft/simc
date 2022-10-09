@@ -1460,26 +1460,6 @@ struct force_of_nature_t : public pet_t
     action_list_str = "auto_attack";
   }
 
-  double composite_player_multiplier( school_e school ) const override
-  {
-    return owner->cache.player_multiplier( school );
-  }
-
-  double composite_melee_crit_chance() const override
-  {
-    return owner->cache.spell_crit_chance();
-  }
-
-  double composite_spell_haste() const override
-  {
-    return owner->cache.spell_haste();
-  }
-
-  double composite_damage_versatility() const override
-  {
-    return owner->cache.damage_versatility();
-  }
-
   void init_base_stats() override
   {
     pet_t::init_base_stats();
