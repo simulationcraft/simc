@@ -670,8 +670,8 @@ public:
     spell_data_ptr_t wildfire_bomb;
     spell_data_ptr_t tip_of_the_spear;
 
-    spell_data_ptr_t ferocity; // TODO: broken in game
-    spell_data_ptr_t predator;
+    spell_data_ptr_t ferocity;
+    spell_data_ptr_t flankers_advantage;
     spell_data_ptr_t harpoon;
 
     spell_data_ptr_t energetic_ally;
@@ -698,19 +698,20 @@ public:
     spell_data_ptr_t bloody_claws;
 
     spell_data_ptr_t wildfire_infusion;
-    spell_data_ptr_t deadly_duo; // TODO: pending changes (now Quick Shot)
-    spell_data_ptr_t coordinated_assault; // TODO: pending changes
+    spell_data_ptr_t quick_shot;
+    spell_data_ptr_t coordinated_assault; // TODO: implement
     spell_data_ptr_t killer_companion;
 
     spell_data_ptr_t fury_of_the_eagle; // TODO: implement
     spell_data_ptr_t ranger;
-    spell_data_ptr_t bonded_companion; // TODO: pending changes (now Deadly Duo)
+    spell_data_ptr_t coordinated_kill; // TODO: implement
     spell_data_ptr_t explosives_expert;
-    spell_data_ptr_t spearhead; // TODO: pending changes
+    spell_data_ptr_t spearhead; // TODO: implement
 
     spell_data_ptr_t ruthless_marauder; // TODO: implement
     spell_data_ptr_t birds_of_prey; // TODO: pending changes
-    spell_data_ptr_t coordinated_kill; // TODO: pending changes
+    spell_data_ptr_t bombardier; // TODO
+    spell_data_ptr_t deadly_duo; // TODO
   } talents;
 
   // Specialization Spells
@@ -955,6 +956,7 @@ public:
     ab::apply_affecting_aura( p -> talents.improved_traps );
     ab::apply_affecting_aura( p -> talents.born_to_be_wild );
     ab::apply_affecting_aura( p -> talents.arctic_bola );
+    ab::apply_affecting_aura( p -> talents.hydras_bite );
 
     // Marksmanship Tree passives
     ab::apply_affecting_aura( p -> talents.crack_shot );
@@ -980,8 +982,7 @@ public:
     ab::apply_affecting_aura( p -> talents.sweeping_spear );
     ab::apply_affecting_aura( p -> talents.tactical_advantage );
     ab::apply_affecting_aura( p -> talents.ranger );
-
-    ab::apply_affecting_aura( p -> talents.hydras_bite );
+    ab::apply_affecting_aura( p -> talents.explosives_expert );
 
     // passive legendary effects
     ab::apply_affecting_aura( p -> legendary.call_of_the_wild );
@@ -1626,6 +1627,8 @@ struct hunter_main_pet_base_t : public hunter_pet_t
 
     m *= 1 + o() -> talents.beast_master -> effectN( 1 ).percent();
     m *= 1 + o() -> talents.animal_companion -> effectN( 2 ).percent();
+    
+    m *= 1 + o() -> talents.ferocity -> effectN( 1 ).percent();
 
     return m;
   }
@@ -2983,8 +2986,6 @@ struct kill_shot_t : hunter_ranged_attack_t
     p() -> buffs.empowered_release -> decrement();
 
     p() -> buffs.hunters_prey -> decrement();
-
-    p() -> cooldowns.wildfire_bomb -> adjust( -p() -> talents.explosives_expert -> effectN( 1 ).time_value() );
   }
 
   void impact( action_state_t* s ) override
@@ -3060,7 +3061,7 @@ struct kill_shot_t : hunter_ranged_attack_t
 
 struct arcane_shot_t: public hunter_ranged_attack_t
 {
-  arcane_shot_t( hunter_t* p, util::string_view options_str ):
+  arcane_shot_t( hunter_t* p, util::string_view options_str ) :
     hunter_ranged_attack_t( "arcane_shot", p, p -> specs.arcane_shot )
   {
     parse_options( options_str );
@@ -3253,17 +3254,14 @@ struct explosive_shot_background_t : public explosive_shot_t
 
 // Serpent Sting =====================================================================
 
-struct serpent_sting_t: public hunter_ranged_attack_t
+struct serpent_sting_base_t: public hunter_ranged_attack_t
 {
-  serpent_sting_t( hunter_t* p, util::string_view options_str ):
-    hunter_ranged_attack_t( "serpent_sting", p, p -> talents.serpent_sting )
+  serpent_sting_base_t( hunter_t* p, util::string_view options_str, const spell_data_t* s ) :
+    hunter_ranged_attack_t( "serpent_sting", p, s )
   {
     parse_options( options_str );
 
     affected_by.serrated_shots = true;
-
-    if ( p -> talents.hydras_bite.ok() )
-      aoe = 1 + static_cast<int>( p -> talents.hydras_bite -> effectN( 1 ).base_value() );
   }
 
   void init() override
@@ -3277,15 +3275,6 @@ struct serpent_sting_t: public hunter_ranged_attack_t
       add_child( lp );
   }
 
-  void execute() override
-  {
-    // have to always reset target_cache because of smart targeting
-    if ( is_aoe() )
-      target_cache.is_valid = false;
-
-    hunter_ranged_attack_t::execute();
-  }
-
   void assess_damage( result_amount_type type, action_state_t* s ) override
   {
     hunter_ranged_attack_t::assess_damage( type, s );
@@ -3295,6 +3284,25 @@ struct serpent_sting_t: public hunter_ranged_attack_t
 
     if ( s -> result_amount > 0 && p() -> legendary.latent_poison_injectors.ok() )
       td( s -> target ) -> debuffs.latent_poison_injectors -> trigger();
+  }
+};
+
+struct serpent_sting_t final : public serpent_sting_base_t
+{
+  serpent_sting_t( hunter_t* p, util::string_view options_str ):
+    serpent_sting_base_t( p, options_str, p -> talents.serpent_sting )
+  {
+    if ( p -> talents.hydras_bite.ok() )
+      aoe = 1 + static_cast<int>( p -> talents.hydras_bite -> effectN( 1 ).base_value() );
+  }
+
+  void execute() override
+  {
+    // have to always reset target_cache because of smart targeting
+    if ( is_aoe() )
+      target_cache.is_valid = false;
+
+    hunter_ranged_attack_t::execute();
   }
 
   size_t available_targets( std::vector< player_t* >& tl ) const override
@@ -4133,15 +4141,14 @@ struct aimed_shot_t : public aimed_shot_base_t
     }
   };
 
-  struct serpent_sting_sst_t final : public hunter_ranged_attack_t
+  struct serpent_sting_sst_t final : public serpent_sting_base_t
   {
     serpent_sting_sst_t( util::string_view n, hunter_t* p ):
-      hunter_ranged_attack_t( n, p, p -> find_spell( 271788 ) )
+      serpent_sting_base_t( p, "", p -> find_spell( 271788 ) )
     {
       dual = true;
       base_costs[ RESOURCE_FOCUS ] = 0;
       triggers_wild_spirits = false;
-      affected_by.serrated_shots = true;
     }
   };
 
@@ -4737,21 +4744,25 @@ struct melee_focus_spender_t: hunter_melee_attack_t
     }
   };
 
-  struct serpent_sting_vv_t final : public hunter_ranged_attack_t
+  struct serpent_sting_vv_t final : public serpent_sting_base_t
   {
     serpent_sting_vv_t( util::string_view n, hunter_t* p ):
-      hunter_ranged_attack_t( n, p, p -> find_spell( 271788 ) )
+      serpent_sting_base_t( p, "", p -> find_spell( 271788 ) )
     {
       dual = true;
       base_costs[ RESOURCE_FOCUS ] = 0;
       triggers_wild_spirits = false;
-      affected_by.serrated_shots = true;
     }
   };
 
   internal_bleeding_t internal_bleeding;
   latent_poison_injectors_t* latent_poison_injectors = nullptr;
-  serpent_sting_vv_t* serpent_sting_vv = nullptr;
+
+  struct {
+    double chance = 0;
+    serpent_sting_vv_t* action;
+  } vipers_venom;
+
   struct {
     double chance = 0;
     proc_t* proc;
@@ -4765,7 +4776,10 @@ struct melee_focus_spender_t: hunter_melee_attack_t
       latent_poison_injectors = p -> get_background_action<latent_poison_injectors_t>( "latent_poison_injectors" );
 
     if ( p -> talents.vipers_venom.ok() )
-      serpent_sting_vv = p -> get_background_action<serpent_sting_vv_t>( "serpent_sting" );
+    {
+      vipers_venom.chance = p -> talents.vipers_venom -> effectN( 1 ).percent();
+      vipers_venom.action = p -> get_background_action<serpent_sting_vv_t>( "serpent_sting" );
+    }
 
     if ( p -> legendary.rylakstalkers_strikes.ok() )
     {
@@ -4778,8 +4792,8 @@ struct melee_focus_spender_t: hunter_melee_attack_t
   {
     hunter_melee_attack_t::execute();
 
-    if ( rng().roll( p() -> talents.vipers_venom -> effectN( 1 ).percent() ) )
-      serpent_sting_vv -> execute_on_target( target );
+    if ( rng().roll( vipers_venom.chance ) )
+      vipers_venom.action -> execute_on_target( target );
 
     p() -> buffs.butchers_bone_fragments -> trigger();
 
@@ -5429,10 +5443,26 @@ struct flare_t : hunter_spell_t
 
 struct kill_command_t: public hunter_spell_t
 {
+  struct arcane_shot_qs_t final : public attacks::arcane_shot_t
+  {
+    arcane_shot_qs_t( util::string_view n, hunter_t* p ):
+      arcane_shot_t( p, "" )
+    {
+      dual = true;
+      base_costs[ RESOURCE_FOCUS ] = 0;
+      triggers_wild_spirits = false;
+    }
+  };
+
   struct {
     double chance = 0;
     proc_t* proc = nullptr;
-  } predator;
+  } reset;
+
+  struct {
+    double chance = 0;
+    arcane_shot_qs_t* action = nullptr;
+  } quick_shot;
 
   kill_command_t( hunter_t* p, util::string_view options_str ):
     hunter_spell_t( "kill_command", p, p -> talents.kill_command )
@@ -5441,13 +5471,19 @@ struct kill_command_t: public hunter_spell_t
 
     cooldown -> charges += as<int>( p -> talents.alpha_predator -> effectN( 1 ).base_value() );
 
-    if ( p -> talents.predator.ok() )
+    if ( p -> specialization() == HUNTER_SURVIVAL )
     {
-      predator.chance = p -> talents.predator -> effectN( 1 ).percent();
-      predator.proc = p -> get_proc( "Predator Kill Command Reset" );
-    }
+      reset.chance = data().effectN( 2 ).percent() + p -> talents.flankers_advantage -> effectN( 1 ).percent();
+      reset.proc = p -> get_proc( "Kill Command Reset" );
 
-    energize_amount += p -> talents.intense_focus -> effectN( 1 ).base_value();
+      energize_amount += data().effectN( 3 ).base_value() + p -> talents.intense_focus -> effectN( 1 ).base_value();
+
+      if ( p -> talents.quick_shot.ok() )
+      {
+        quick_shot.chance = p -> talents.quick_shot -> effectN( 1 ).percent();
+        quick_shot.action = p -> get_background_action<arcane_shot_qs_t>( "arcane_shot" );
+      }
+    }
   }
 
   void init_finished() override
@@ -5467,9 +5503,9 @@ struct kill_command_t: public hunter_spell_t
 
     p() -> buffs.tip_of_the_spear -> trigger();
 
-    if ( predator.chance != 0 )
+    if ( reset.chance != 0 )
     {
-      double chance = predator.chance;
+      double chance = reset.chance;
 
       if ( td( target ) -> dots.pheromone_bomb -> is_ticking() )
         chance += p() -> find_spell( 270323 ) -> effectN( 2 ).percent();
@@ -5479,10 +5515,13 @@ struct kill_command_t: public hunter_spell_t
 
       if ( rng().roll( chance ) )
       {
-        predator.proc -> occur();
+        reset.proc -> occur();
         cooldown -> reset( true );
         p() -> buffs.strength_of_the_pack -> trigger();
         p() -> buffs.mad_bombardier -> trigger();
+
+        if ( rng().roll( quick_shot.chance ) )
+          quick_shot.action -> execute_on_target( target );
       }
     }
 
@@ -6708,7 +6747,7 @@ void hunter_t::init_spells()
     talents.tip_of_the_spear                  = find_talent_spell( talent_tree::SPECIALIZATION, "Tip of the Spear", HUNTER_SURVIVAL );
 
     talents.ferocity                          = find_talent_spell( talent_tree::SPECIALIZATION, "Ferocity", HUNTER_SURVIVAL );
-    talents.predator                          = find_talent_spell( talent_tree::SPECIALIZATION, "Predator", HUNTER_SURVIVAL );
+    talents.flankers_advantage                = find_talent_spell( talent_tree::SPECIALIZATION, "Flanker's Advantage", HUNTER_SURVIVAL );
     talents.harpoon                           = find_talent_spell( talent_tree::SPECIALIZATION, "Harpoon", HUNTER_SURVIVAL );
 
     talents.energetic_ally                    = find_talent_spell( talent_tree::SPECIALIZATION, "Energetic Ally", HUNTER_SURVIVAL );
@@ -6735,11 +6774,20 @@ void hunter_t::init_spells()
     talents.bloody_claws                      = find_talent_spell( talent_tree::SPECIALIZATION, "Bloody Claws", HUNTER_SURVIVAL );
 
     talents.wildfire_infusion                 = find_talent_spell( talent_tree::SPECIALIZATION, "Wildfire Infusion", HUNTER_SURVIVAL );
+    talents.quick_shot                        = find_talent_spell( talent_tree::SPECIALIZATION, "Quick Shot", HUNTER_SURVIVAL );
     talents.coordinated_assault               = find_talent_spell( talent_tree::SPECIALIZATION, "Coordinated Assault", HUNTER_SURVIVAL );
     talents.killer_companion                  = find_talent_spell( talent_tree::SPECIALIZATION, "Killer Companion", HUNTER_SURVIVAL );
 
+    talents.fury_of_the_eagle                 = find_talent_spell( talent_tree::SPECIALIZATION, "Fury of the Eagle", HUNTER_SURVIVAL );
     talents.ranger                            = find_talent_spell( talent_tree::SPECIALIZATION, "Ranger", HUNTER_SURVIVAL );
+    talents.coordinated_kill                  = find_talent_spell( talent_tree::SPECIALIZATION, "Coordinated Kill", HUNTER_SURVIVAL );
     talents.explosives_expert                 = find_talent_spell( talent_tree::SPECIALIZATION, "Explosives Expert", HUNTER_SURVIVAL );
+    talents.spearhead                         = find_talent_spell( talent_tree::SPECIALIZATION, "Spearhead", HUNTER_SURVIVAL );
+
+    talents.ruthless_marauder                 = find_talent_spell( talent_tree::SPECIALIZATION, "Ruthless Marauder", HUNTER_SURVIVAL );
+    talents.birds_of_prey                     = find_talent_spell( talent_tree::SPECIALIZATION, "Birds of Prey", HUNTER_SURVIVAL );
+    talents.bombardier                        = find_talent_spell( talent_tree::SPECIALIZATION, "Bombardier", HUNTER_SURVIVAL );
+    talents.deadly_duo                        = find_talent_spell( talent_tree::SPECIALIZATION, "Deadly Duo", HUNTER_SURVIVAL );
   }
 
   // Mastery
