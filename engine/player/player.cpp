@@ -10452,9 +10452,9 @@ void player_t::replace_spells()
       continue;
     }
 
-    if ( talent_obj.trait()->id_override_spell )
+    if ( talent_obj.trait()->id_replace_spell )
     {
-      dbc->replace_id( talent_obj.trait()->id_override_spell,
+      dbc->replace_id( talent_obj.trait()->id_replace_spell,
           talent_obj.trait()->id_spell );
     }
   }
