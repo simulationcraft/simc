@@ -2917,6 +2917,15 @@ struct arcane_blast_t final : public arcane_mage_spell_t
     return am;
   }
 
+  double composite_crit_chance() const override
+  {
+    double c = arcane_mage_spell_t::composite_crit_chance();
+
+    c += p()->buffs.arcane_charge->check() * p()->sets->set( MAGE_ARCANE, T29, B2 )->effectN( 1 ).percent();
+
+    return c;
+  }
+
   timespan_t execute_time() const override
   {
     if ( p()->buffs.presence_of_mind->check() )
@@ -2957,6 +2966,15 @@ struct arcane_explosion_t final : public arcane_mage_spell_t
     {
       p()->trigger_arcane_charge();
     }
+  }
+
+  double composite_crit_chance() const override
+  {
+    double c = arcane_mage_spell_t::composite_crit_chance();
+
+    c += p()->buffs.arcane_charge->check() * p()->sets->set( MAGE_ARCANE, T29, B2 )->effectN( 2 ).percent();
+
+    return c;
   }
 };
 
