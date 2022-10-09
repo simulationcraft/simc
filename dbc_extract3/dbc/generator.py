@@ -1815,6 +1815,7 @@ class SpellDataGenerator(DataGenerator):
           ( 267218, 0 ),    # Nether Portal aura
           ( 387496, 0 ),    # Antoran Armaments buff
           ( 387502, 0 ),    # Soul Cleave
+		  ( 387552, 0 ),    # Infernal Command pet aura
         ),
 
         # Monk:
