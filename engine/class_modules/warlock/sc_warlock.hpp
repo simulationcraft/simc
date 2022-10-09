@@ -333,7 +333,7 @@ public:
     player_talent_t soulbound_tyrant; // Soul Shards on Tyrant summons
     player_talent_t pact_of_the_imp_mother; // Chance for Hand of Gul'dan to proc a second time on execute (Formerly SL Legendary)
     player_talent_t the_expendables; // Per-pet stacking buff to damage when a Wild Imp expires
-    // DF - Command Aura (2 point talent, increased Wild Imp and Dreadstalker damage while Felguard active)
+    player_talent_t infernal_command; // Increased Wild Imp and Dreadstalker damage while Felguard active (TOCHECK: 2022-10-08 - this is behaving very buggily on beta)
 
     // DF - Gul'dan's Ambition (Summon Pit Lord at end of Nether Portal)
     const spell_data_t* demonic_consumption; // DF - HEAVILY REWORKED, RENAMED "Reign of Tyranny", now a choice against Wilfred's

@@ -1247,6 +1247,8 @@ void warlock_t::init_spells_demonology()
 
   talents.the_expendables = find_talent_spell( talent_tree::SPECIALIZATION, "The Expendables" ); // Should be ID 387600
 
+  talents.infernal_command = find_talent_spell( talent_tree::SPECIALIZATION, "Infernal Command" ); // Should be ID 387549
+
   talents.demonic_consumption = find_talent_spell( "Demonic Consumption" );
 
 
