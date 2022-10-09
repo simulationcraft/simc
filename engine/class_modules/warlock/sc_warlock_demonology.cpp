@@ -1245,6 +1245,8 @@ void warlock_t::init_spells_demonology()
 
   talents.pact_of_the_imp_mother = find_talent_spell( talent_tree::SPECIALIZATION, "Pact of the Imp Mother" ); // Should be ID 387541
 
+  talents.the_expendables = find_talent_spell( talent_tree::SPECIALIZATION, "The Expendables" ); // Should be ID 387600
+
   talents.demonic_consumption = find_talent_spell( "Demonic Consumption" );
 
 

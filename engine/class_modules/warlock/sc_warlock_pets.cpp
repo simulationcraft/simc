@@ -61,6 +61,9 @@ void warlock_pet_t::create_buffs()
   buffs.antoran_armaments = make_buff( this, "antoran_armaments", find_spell( 387496 ) )
                                 ->set_default_value( o()->talents.antoran_armaments->effectN( 1 ).percent() );
 
+  buffs.the_expendables = make_buff( this, "the_expendables", find_spell( 387601 ) )
+                              ->set_default_value_from_effect( 1 );
+
   // Destruction
   buffs.embers = make_buff( this, "embers", find_spell( 264364 ) )
                      ->set_period( 500_ms )
@@ -159,6 +162,9 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + buffs.dread_calling->check_value();
 
   m *= 1.0 + buffs.demonic_synergy->check_stack_value();
+
+  if ( buffs.the_expendables->check() )
+    m *= 1.0 + buffs.the_expendables->check_stack_value();
 
   return m;
 }
@@ -1010,6 +1016,9 @@ void wild_imp_pet_t::demise()
     {
       event_t::cancel( expiration );
     }
+
+    if ( o()->talents.the_expendables.ok() )
+      o()->expendables_trigger_helper( this );
   }
 
   warlock_pet_t::demise();
