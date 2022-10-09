@@ -377,20 +377,31 @@ struct call_dreadstalkers_t : public demonology_spell_t
       //Despite having no cost when Demonic Calling is up, this spell will still proc effects based on shard spending (last checked 2022-10-04)
       double base_cost = demonology_spell_t::cost();
 
-    //  if ( p()->talents.grand_warlocks_design->ok() )
-    //    p()->cooldowns.demonic_tyrant->adjust( -base_cost * p()->talents.grand_warlocks_design->effectN( 2 ).time_value(), false );
+      if ( p()->talents.grand_warlocks_design->ok() )
+        p()->cooldowns.demonic_tyrant->adjust( -base_cost * p()->talents.grand_warlocks_design->effectN( 2 ).time_value(), false );
 
-    //  if ( p()->buffs.nether_portal->up() )
-    //  {
-    //    p()->active.summon_random_demon->execute();
-    //    p()->buffs.portal_summons->trigger();
-    //    p()->procs.portal_summon->occur();
-    //  }
+      if ( p()->buffs.nether_portal->up() )
+      {
+        p()->proc_actions.summon_random_demon->execute();
+        p()->procs.portal_summon->occur();
 
-    //  if ( p()->talents.soul_conduit->ok() )
-    //  {
-    //    make_event<sc_event_t>( *p()->sim, p(), as<int>( base_cost ) );
-    //  }
+        if ( p()->talents.guldans_ambition.ok() )
+          p()->buffs.nether_portal_total->increment();
+
+        if ( p()->talents.nerzhuls_volition.ok() && rng().roll( p()->talents.nerzhuls_volition->effectN( 1 ).percent() ) )
+        {
+          p()->proc_actions.summon_random_demon->execute();
+          p()->procs.nerzhuls_volition->occur();
+
+          if ( p()->talents.guldans_ambition.ok() )
+            p()->buffs.nether_portal_total->increment();
+        }
+      }
+
+      if ( p()->talents.soul_conduit->ok() )
+      {
+        make_event<sc_event_t>( *p()->sim, p(), as<int>( base_cost ) );
+      }
 
       p()->buffs.demonic_calling->decrement();
     }
