@@ -23,5 +23,5 @@ player_talent_t::player_talent_t( const player_t* player, const trait_data_t* tr
 
 const spell_data_t* player_talent_t::find_override_spell() const
 {
-  return m_player->find_spell( m_trait->id_override_spell );
+  return enabled() ? m_player->find_spell( m_trait->id_override_spell ) : spell_data_t::not_found();
 }
