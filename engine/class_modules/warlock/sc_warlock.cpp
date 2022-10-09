@@ -1701,6 +1701,24 @@ int warlock_t::active_demon_count() const
   return count;
 }
 
+void warlock_t::expendables_trigger_helper( warlock_pet_t* source )
+{
+  for ( auto& pet : this->pet_list )
+  {
+    auto lock_pet = dynamic_cast<warlock_pet_t*>( pet );
+
+    if ( lock_pet == nullptr )
+      continue;
+    if ( lock_pet->is_sleeping() )
+      continue;
+
+    if ( lock_pet == source )
+      continue;
+
+    lock_pet->buffs.the_expendables->increment();
+  }
+}
+
 bool warlock_t::crescendo_check( warlock_t* p )
 {
   bool agony = false;

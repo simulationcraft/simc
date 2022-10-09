@@ -332,7 +332,7 @@ public:
     player_talent_t sacrificed_souls;
     player_talent_t soulbound_tyrant; // Soul Shards on Tyrant summons
     player_talent_t pact_of_the_imp_mother; // Chance for Hand of Gul'dan to proc a second time on execute (Formerly SL Legendary)
-    // DF - The Expendables (Per-pet stacking buff to damage when a Wild Imp expires)
+    player_talent_t the_expendables; // Per-pet stacking buff to damage when a Wild Imp expires
     // DF - Command Aura (2 point talent, increased Wild Imp and Dreadstalker damage while Felguard active)
 
     // DF - Gul'dan's Ambition (Summon Pit Lord at end of Nether Portal)
@@ -643,6 +643,7 @@ public:
   int imps_spawned_during( timespan_t period );
   void darkglare_extension_helper( warlock_t* p, timespan_t darkglare_extension );
   int active_demon_count() const;
+  void expendables_trigger_helper( warlock_pet_t* source );
   bool min_version_check( version_check_e version ) const;
   action_t* pass_corruption_action( warlock_t* p ); // Horrible, horrible hack for getting Corruption in Aff module until things are re-merged
   bool crescendo_check( warlock_t* p ); 
