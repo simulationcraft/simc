@@ -410,6 +410,7 @@ public:
 
     // Set Bonuses
     buff_t* arcane_lucidity;
+    buff_t* bursting_energy;
 
     buff_t* t28_fiery_rush;
   } buffs;
@@ -2028,10 +2029,26 @@ struct arcane_mage_spell_t : public mage_spell_t
 {
   std::vector<buff_t*> cost_reductions;
 
+  // Tier 29 4pc support
+  int num_targets_crit;
+
   arcane_mage_spell_t( std::string_view n, mage_t* p, const spell_data_t* s = spell_data_t::nil() ) :
     mage_spell_t( n, p, s ),
-    cost_reductions()
+    cost_reductions(),
+    num_targets_crit()
   { }
+
+  void execute() override
+  {
+    num_targets_crit = 0;
+    mage_spell_t::execute();
+  }
+
+  void schedule_travel( action_state_t* s ) override
+  {
+    mage_spell_t::schedule_travel( s );
+    if ( s->result == RESULT_CRIT ) num_targets_crit++;
+  }
 
   void consume_cost_reductions() override
   {
@@ -2797,6 +2814,7 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
     p()->buffs.arcane_tempo->trigger();
     p()->buffs.arcane_charge->expire();
     p()->buffs.arcane_harmony->expire();
+    p()->buffs.bursting_energy->expire();
   }
 
   void impact( action_state_t* s ) override
@@ -2836,6 +2854,15 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
     am *= 1.0 + p()->buffs.arcane_harmony->check_stack_value();
 
     return am;
+  }
+
+  double composite_crit_chance() const override
+  {
+    double c = arcane_mage_spell_t::composite_crit_chance();
+
+    c += p()->buffs.bursting_energy->check_stack_value();
+
+    return c;
   }
 };
 
@@ -2885,6 +2912,9 @@ struct arcane_blast_t final : public arcane_mage_spell_t
       p()->buffs.presence_of_mind->decrement();
 
     p()->buffs.expanded_potential->trigger();
+
+    if ( num_targets_crit > 0 )
+      p()->buffs.bursting_energy->trigger();
   }
 
   void impact( action_state_t* s ) override
@@ -2966,6 +2996,9 @@ struct arcane_explosion_t final : public arcane_mage_spell_t
     {
       p()->trigger_arcane_charge();
     }
+
+    if ( num_targets_crit > 0 )
+      p()->buffs.bursting_energy->trigger();
   }
 
   double composite_crit_chance() const override
@@ -7150,6 +7183,9 @@ void mage_t::create_buffs()
                             ->set_affects_regen( true )
                             ->set_default_value_from_effect( 1 )
                             ->set_chance( sets->has_set_bonus( MAGE_ARCANE, T28, B4 ) );
+  buffs.bursting_energy = make_buff( this, "bursting_energy", find_spell( 395006 ) )
+                            ->set_default_value_from_effect( 1 )
+                            ->set_chance( sets->has_set_bonus( MAGE_ARCANE, T29, B4 ) );
 
   buffs.t28_fiery_rush = make_buff( this, "t28_fiery_rush", find_spell( 363508 ) )
                            ->set_default_value_from_effect( 1 )
