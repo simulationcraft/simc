@@ -64,6 +64,9 @@ void warlock_pet_t::create_buffs()
   buffs.the_expendables = make_buff( this, "the_expendables", find_spell( 387601 ) )
                               ->set_default_value_from_effect( 1 );
 
+  buffs.infernal_command = make_buff( this, "infernal_command", find_spell( 387552 ) )
+                               ->set_default_value( o()->talents.infernal_command->effectN( 1 ).percent() );
+
   // Destruction
   buffs.embers = make_buff( this, "embers", find_spell( 264364 ) )
                      ->set_period( 500_ms )
@@ -165,6 +168,9 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
 
   if ( buffs.the_expendables->check() )
     m *= 1.0 + buffs.the_expendables->check_stack_value();
+
+  if ( buffs.infernal_command->check() )
+    m *= 1.0 + buffs.infernal_command->check_value();
 
   return m;
 }
@@ -986,6 +992,13 @@ void wild_imp_pet_t::arise()
     buffs.imp_gang_boss->trigger();
     o()->procs.imp_gang_boss->occur();
   }
+
+  // TODO: Should we handle cases where the Felguard is summoned while pets are already active?
+  if ( o()->talents.infernal_command.ok() && o()->warlock_pet_list.active && o()->warlock_pet_list.active->pet_type == PET_FELGUARD )
+  {
+    buffs.infernal_command->trigger();
+  }
+
   // Start casting fel firebolts
   firebolt->set_target( o()->target );
   firebolt->schedule_execute();
@@ -1152,6 +1165,12 @@ void dreadstalker_t::arise()
   warlock_pet_t::arise();
 
   o()->buffs.dreadstalkers->trigger();
+
+  // TODO: Should we handle cases where the Felguard is summoned while pets are already active?
+  if ( o()->talents.infernal_command.ok() && o()->warlock_pet_list.active && o()->warlock_pet_list.active->pet_type == PET_FELGUARD )
+  {
+    buffs.infernal_command->trigger();
+  }
 
   dreadbite_executes = 1;
 }
