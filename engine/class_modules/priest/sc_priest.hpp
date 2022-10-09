@@ -136,6 +136,7 @@ public:
     propagate_const<buff_t*> ancient_madness;
     propagate_const<buff_t*> dark_thought;
     propagate_const<buff_t*> mind_devourer;
+    propagate_const<buff_t*> mind_devourer_ms_active; // Tracking buff only
     propagate_const<buff_t*> shadowy_insight;
     propagate_const<absorb_buff_t*> mental_fortitude;
     propagate_const<buff_t*> insidious_ire;

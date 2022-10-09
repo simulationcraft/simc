@@ -119,7 +119,7 @@ struct mind_sear_t final : public priest_spell_t
   // TODO: parse_buff_effects doesn't support tick based resource cost modifications
   bool consume_cost_per_tick( const dot_t& dot ) override
   {
-    if ( priest().buffs.mind_devourer->up() )
+    if ( priest().buffs.mind_devourer_ms_active->check() )
     {
       player->sim->print_debug( "{} {} consumes ticking cost 0 insanity (current={}).", priest(), *this,
                                 player->resources.current[ RESOURCE_INSANITY ] );
@@ -131,6 +131,21 @@ struct mind_sear_t final : public priest_spell_t
 
   void execute() override
   {
+    // Consume Mind Devourer right away and use a tracking buff to handle the free ticks
+    if ( priest().talents.shadow.mind_devourer.enabled() )
+    {
+      // If somehow you get to this execute block again with this active get rid of the buff
+      if ( priest().buffs.mind_devourer_ms_active->check() )
+      {
+        priest().buffs.mind_devourer_ms_active->expire();
+      }
+      else
+      {
+        priest().buffs.mind_devourer->expire();
+        priest().buffs.mind_devourer_ms_active->trigger();
+      }
+    }
+
     priest_spell_t::execute();
 
     if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T29, B4 ) )
@@ -143,7 +158,7 @@ struct mind_sear_t final : public priest_spell_t
   {
     priest_spell_t::last_tick( d );
 
-    priest().buffs.mind_devourer->expire();
+    priest().buffs.mind_devourer_ms_active->expire();
 
     priest().buffs.gathering_shadows->expire();
   }
@@ -2187,6 +2202,8 @@ void priest_t::create_buffs_shadow()
     buffs.mind_devourer = make_buff( this, "mind_devourer", find_spell( 373204 ) )
                               ->set_trigger_spell( talents.shadow.mind_devourer )
                               ->set_chance( talents.shadow.mind_devourer->effectN( 1 ).percent() );
+    buffs.mind_devourer_ms_active =
+        make_buff( this, "mind_devourer_ms_active" )->set_quiet( true )->set_duration( 0_s );
   }
   else
   {
