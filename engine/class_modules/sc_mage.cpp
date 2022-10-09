@@ -2375,6 +2375,16 @@ struct hot_streak_spell_t : public fire_mage_spell_t
     return c;
   }
 
+  double action_multiplier() const override
+  {
+    double am = fire_mage_spell_t::action_multiplier();
+
+    if ( last_hot_streak )
+      am *= 1.0 + p()->sets->set( MAGE_FIRE, T29, B2 )->effectN( 1 ).percent();
+
+    return am;
+  }
+
   double composite_ignite_multiplier( const action_state_t* s ) const override
   {
     double m = fire_mage_spell_t::composite_ignite_multiplier( s );
