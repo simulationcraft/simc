@@ -231,6 +231,14 @@ struct hand_of_guldan_t : public demonology_spell_t
     //  p()->procs.horned_nightmare->occur();
     //  make_event( *sim, 400_ms, [ this, t = target ] { impact_spell->execute_on_target( t ); } );
     //}
+
+    // TOCHECK: Does this extra HoG proc itself, resource consumption, or trigger other procs? Currently implemented as NO.
+    if ( p()->talents.pact_of_the_imp_mother.ok() && rng().roll( p()->talents.pact_of_the_imp_mother->effectN( 1 ).percent() ) )
+    {
+      // Event seems near-instant, without separate travel time
+      make_event( *sim, 0_ms, [this, t = target ] { impact_spell->execute_on_target( t ); } );
+      p()->procs.pact_of_the_imp_mother->occur();
+    }
   }
 };
 
@@ -1235,6 +1243,8 @@ void warlock_t::init_spells_demonology()
 
   talents.soulbound_tyrant = find_talent_spell( talent_tree::SPECIALIZATION, "Soulbound Tyrant" ); // Should be ID 334585
 
+  talents.pact_of_the_imp_mother = find_talent_spell( talent_tree::SPECIALIZATION, "Pact of the Imp Mother" ); // Should be ID 387541
+
   talents.demonic_consumption = find_talent_spell( "Demonic Consumption" );
 
 
@@ -1275,6 +1285,7 @@ void warlock_t::init_procs_demonology()
   procs.imp_gang_boss = get_proc( "imp_gang_boss" );
   procs.hounds_of_war = get_proc( "hounds_of_war" );
   procs.nerzhuls_volition = get_proc( "nerzhuls_volition" );
+  procs.pact_of_the_imp_mother = get_proc( "pact_of_the_imp_mother" );
 }
 
 }  // namespace warlock
