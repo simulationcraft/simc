@@ -10529,6 +10529,8 @@ void druid_t::create_buffs()
   buff.eclipse_solar = make_buff<eclipse_buff_t>( *this, "eclipse_solar", spec.eclipse_solar );
 
   buff.friend_of_the_fae = make_buff( this, "friend_of_the_fae", find_spell( 394083 ) )
+    ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+    ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_DONE )
     ->set_stack_change_callback( [ this ]( buff_t*, int old_, int new_ ) {
       if ( !old_ )
         uptime.friend_of_the_fae->update( true, sim->current_time() );
@@ -11954,6 +11956,9 @@ double druid_t::composite_player_multiplier( school_e school ) const
   
   if ( buff.eclipse_solar->check() && buff.eclipse_solar->has_common_school( school ) )
     cpm *= 1.0 + buff.eclipse_solar->value();
+
+  if ( buff.friend_of_the_fae->check() && buff.friend_of_the_fae->has_common_school( school ) )
+    cpm *= 1.0 + buff.friend_of_the_fae->value();
 
   return cpm;
 }
