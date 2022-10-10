@@ -2663,7 +2663,6 @@ struct icicle_t final : public frost_mage_spell_t
 
     if ( result_is_hit( s->result ) )
       p()->trigger_fof( p()->talents.flash_freeze->effectN( 1 ).percent(), p()->procs.fingers_of_frost_flash_freeze );
-      // TODO: check if splitting ice doubles the procs
   }
 
   double spell_direct_power_coefficient( const action_state_t* s ) const override
@@ -4381,7 +4380,6 @@ struct frozen_orb_t final : public frost_mage_spell_t
 
     adjust_orb_count( travel_time(), false );
 
-    // TODO: check cold front interactions
     p()->buffs.freezing_winds->trigger();
     if ( !background ) p()->buffs.freezing_rain->trigger();
   }
@@ -4393,7 +4391,6 @@ struct frozen_orb_t final : public frost_mage_spell_t
 
     int pulse_count = 20;
     timespan_t pulse_time = 0.5_s;
-    // TODO: Double check Freezing Winds and Cold Front interactions
     pulse_count += as<int>( p()->talents.everlasting_frost->effectN( 2 ).time_value() / pulse_time );
     timespan_t duration = ( pulse_count - 1 ) * pulse_time;
     p()->ground_aoe_expiration[ AOE_FROZEN_ORB ] = sim->current_time() + duration;
