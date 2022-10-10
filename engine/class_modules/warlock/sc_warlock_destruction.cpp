@@ -450,55 +450,48 @@ struct incinerate_t : public destruction_spell_t
   }
 };
 
-
-
 struct chaos_bolt_t : public destruction_spell_t
 {
   double backdraft_gcd;
   double backdraft_cast_time;
-  double refund;
   internal_combustion_t* internal_combustion;
 
   chaos_bolt_t( warlock_t* p, util::string_view options_str )
-    : destruction_spell_t( p, "Chaos Bolt" ), refund( 0 ), internal_combustion( new internal_combustion_t( p ) )
+    : destruction_spell_t( "Chaos Bolt", p, p->talents.chaos_bolt )
   {
     parse_options( options_str );
     can_havoc = true;
 
-    backdraft_cast_time = 1.0 + p->buffs.backdraft->data().effectN( 1 ).percent();
-    backdraft_gcd       = 1.0 + p->buffs.backdraft->data().effectN( 2 ).percent();
+    //backdraft_cast_time = 1.0 + p->buffs.backdraft->data().effectN( 1 ).percent();
+    //backdraft_gcd       = 1.0 + p->buffs.backdraft->data().effectN( 2 ).percent();
 
-    add_child( internal_combustion );
+    //internal_combustion = new internal_combustion_t( p );
+    //add_child( internal_combustion );
   }
 
   double cost() const override
   {
     double c = destruction_spell_t::cost();
 
-    if ( p()->buffs.ritual_of_ruin->check() )
-      c *= 1 + p()->buffs.ritual_of_ruin->data().effectN( 2 ).percent();
+    //if ( p()->buffs.ritual_of_ruin->check() )
+    //  c *= 1 + p()->buffs.ritual_of_ruin->data().effectN( 2 ).percent();
 
     return c;      
-  }
-
-  void schedule_execute( action_state_t* state = nullptr ) override
-  {
-    destruction_spell_t::schedule_execute( state );
   }
 
   timespan_t execute_time() const override
   {
     timespan_t h = destruction_spell_t::execute_time();
     
-    if ( p()->buffs.ritual_of_ruin->check() )
-      h *= 1.0 + p()->buffs.ritual_of_ruin->data().effectN( 3 ).percent();
+    //if ( p()->buffs.ritual_of_ruin->check() )
+    //  h *= 1.0 + p()->buffs.ritual_of_ruin->data().effectN( 3 ).percent();
 
-    if ( p()->buffs.backdraft->check() )
-      h *= backdraft_cast_time;
+    //if ( p()->buffs.backdraft->check() )
+    //  h *= backdraft_cast_time;
 
-    // SL - Legendary
-    if ( p()->buffs.madness_of_the_azjaqir->check() )
-      h *= 1.0 + p()->buffs.madness_of_the_azjaqir->data().effectN( 2 ).percent();
+    //// SL - Legendary
+    //if ( p()->buffs.madness_of_the_azjaqir->check() )
+    //  h *= 1.0 + p()->buffs.madness_of_the_azjaqir->data().effectN( 2 ).percent();
 
     return h;
   }
@@ -507,11 +500,11 @@ struct chaos_bolt_t : public destruction_spell_t
   {
     double m = destruction_spell_t::action_multiplier();
 
-    // SL - Legendary
-    if ( p()->buffs.madness_of_the_azjaqir->check() )
-    {
-      m *= 1.0 + p()->buffs.madness_of_the_azjaqir->data().effectN( 1 ).percent();
-    }
+    //// SL - Legendary
+    //if ( p()->buffs.madness_of_the_azjaqir->check() )
+    //{
+    //  m *= 1.0 + p()->buffs.madness_of_the_azjaqir->data().effectN( 1 ).percent();
+    //}
 
     return m;
   }
@@ -522,10 +515,10 @@ struct chaos_bolt_t : public destruction_spell_t
 
     auto td = this->td( t );
 
-    // SL - Conduit
-    // TOCHECK - Couldn't find affected_by spelldata to reference the spells 08-24-2020.
-    if ( td->dots_immolate->is_ticking() && p()->conduit.ashen_remains->ok() )
-      m *= 1.0 + p()->conduit.ashen_remains.percent();
+    //// SL - Conduit
+    //// TOCHECK - Couldn't find affected_by spelldata to reference the spells 08-24-2020.
+    //if ( td->dots_immolate->is_ticking() && p()->conduit.ashen_remains->ok() )
+    //  m *= 1.0 + p()->conduit.ashen_remains.percent();
 
     return m;
   }
@@ -537,9 +530,9 @@ struct chaos_bolt_t : public destruction_spell_t
     if ( t == 0_ms )
       return t;
 
-    // PTR 2022-02-16: Backdraft is no longer consumed when using T28 free Chaos Bolt cast, but GCD is still shortened
-    if ( p()->buffs.backdraft->check() )
-      t *= backdraft_gcd;
+    //// PTR 2022-02-16: Backdraft is no longer consumed when using T28 free Chaos Bolt cast, but GCD is still shortened
+    //if ( p()->buffs.backdraft->check() )
+    //  t *= backdraft_gcd;
 
     if ( t < min_gcd )
       t = min_gcd;
@@ -551,10 +544,10 @@ struct chaos_bolt_t : public destruction_spell_t
   {
     destruction_spell_t::impact( s );
 
-    trigger_internal_combustion( s );
+    //trigger_internal_combustion( s );
 
-    if ( p()->talents.eradication->ok() && result_is_hit( s->result ) )
-      td( s->target )->debuffs_eradication->trigger();
+    //if ( p()->talents.eradication->ok() && result_is_hit( s->result ) )
+    //  td( s->target )->debuffs_eradication->trigger();
   }
 
   void trigger_internal_combustion( action_state_t* s )
@@ -578,55 +571,55 @@ struct chaos_bolt_t : public destruction_spell_t
     int shards_used = as<int>( cost() );
     destruction_spell_t::execute();
 
-    // PTR 2022-02-16: Backdraft is no longer consumed for T28 free Chaos Bolts
-    if ( !p()->buffs.ritual_of_ruin->check() )
-      p()->buffs.backdraft->decrement();
+    //// PTR 2022-02-16: Backdraft is no longer consumed for T28 free Chaos Bolts
+    //if ( !p()->buffs.ritual_of_ruin->check() )
+    //  p()->buffs.backdraft->decrement();
 
-    // SL - Legendary
-    if ( p()->legendary.madness_of_the_azjaqir->ok() )
-      p()->buffs.madness_of_the_azjaqir->trigger();
+    //// SL - Legendary
+    //if ( p()->legendary.madness_of_the_azjaqir->ok() )
+    //  p()->buffs.madness_of_the_azjaqir->trigger();
 
-    if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T28, B2 ) )
-    {
-      if ( p()->buffs.ritual_of_ruin->check() )
-      {
-        if (p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T28, B4 ))
-        {
-          // Note: Tier set spell (363950) has duration in Effect 1, but there is also a duration adjustment in Ritual of Ruin buff data Effect 4
-          // Unsure which is being used at this time
-          timespan_t duration = p()->sets->set( WARLOCK_DESTRUCTION, T28, B4 )->effectN( 1 ).time_value() * 1000;
-          if ( p()->warlock_pet_list.blasphemy.active_pet() )
-          {
-            p()->warlock_pet_list.blasphemy.active_pet()->adjust_duration( duration );
-          }
-          else
-          {
-            p()->warlock_pet_list.blasphemy.spawn( duration + 1000_ms, 1U ); // 2022-06-29 Animation has 2 second pad at end of lifetime, but safety window for actions is smaller. TOCHECK
-          }
+    //if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T28, B2 ) )
+    //{
+    //  if ( p()->buffs.ritual_of_ruin->check() )
+    //  {
+    //    if (p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T28, B4 ))
+    //    {
+    //      // Note: Tier set spell (363950) has duration in Effect 1, but there is also a duration adjustment in Ritual of Ruin buff data Effect 4
+    //      // Unsure which is being used at this time
+    //      timespan_t duration = p()->sets->set( WARLOCK_DESTRUCTION, T28, B4 )->effectN( 1 ).time_value() * 1000;
+    //      if ( p()->warlock_pet_list.blasphemy.active_pet() )
+    //      {
+    //        p()->warlock_pet_list.blasphemy.active_pet()->adjust_duration( duration );
+    //      }
+    //      else
+    //      {
+    //        p()->warlock_pet_list.blasphemy.spawn( duration + 1000_ms, 1U ); // 2022-06-29 Animation has 2 second pad at end of lifetime, but safety window for actions is smaller. TOCHECK
+    //      }
 
-          if ( p()->talents.rain_of_chaos->ok() )
-          {
-            p()->buffs.rain_of_chaos->extend_duration_or_trigger( duration );
-          }
+    //      if ( p()->talents.rain_of_chaos->ok() )
+    //      {
+    //        p()->buffs.rain_of_chaos->extend_duration_or_trigger( duration );
+    //      }
 
-          // TOFIX: As of 2022-02-03 PTR, Blasphemy appears to trigger Infernal Awakening on spawn, and Blasphemous Existence if already out
-          // This will require first fixing Infernal Awakening to properly be on Infernal pet
-          p()->warlock_pet_list.blasphemy.active_pet()->blasphemous_existence->execute();
-          p()->procs.avatar_of_destruction->occur();
-        }
+    //      // TOFIX: As of 2022-02-03 PTR, Blasphemy appears to trigger Infernal Awakening on spawn, and Blasphemous Existence if already out
+    //      // This will require first fixing Infernal Awakening to properly be on Infernal pet
+    //      p()->warlock_pet_list.blasphemy.active_pet()->blasphemous_existence->execute();
+    //      p()->procs.avatar_of_destruction->occur();
+    //    }
 
-        p()->buffs.ritual_of_ruin->expire();
-      }
+    //    p()->buffs.ritual_of_ruin->expire();
+    //  }
 
-      // Any changes to Impending Ruin must also be made in rain_of_fire_t!
-      if ( shards_used > 0 )
-      {
-        int overflow = p()->buffs.impending_ruin->check() + shards_used - p()->buffs.impending_ruin->max_stack();
-        p()->buffs.impending_ruin->trigger( shards_used ); //Stack change callback should switch Impending Ruin to Ritual of Ruin if max stacks reached
-        if ( overflow > 0 )
-          make_event( sim, 1_ms, [ this, overflow ] { p()->buffs.impending_ruin->trigger( overflow ); } );
-      }
-    }
+    //  // Any changes to Impending Ruin must also be made in rain_of_fire_t!
+    //  if ( shards_used > 0 )
+    //  {
+    //    int overflow = p()->buffs.impending_ruin->check() + shards_used - p()->buffs.impending_ruin->max_stack();
+    //    p()->buffs.impending_ruin->trigger( shards_used ); //Stack change callback should switch Impending Ruin to Ritual of Ruin if max stacks reached
+    //    if ( overflow > 0 )
+    //      make_event( sim, 1_ms, [ this, overflow ] { p()->buffs.impending_ruin->trigger( overflow ); } );
+    //  }
+    //}
   }
 
   // Force spell to always crit
@@ -1062,6 +1055,8 @@ void warlock_t::init_spells_destruction()
   spec.summon_infernal_2 = find_specialization_spell( 335175 );
 
   // Talents
+  talents.chaos_bolt = find_talent_spell( talent_tree::SPECIALIZATION, "Chaos Bolt" ); // Should be ID 116858
+
   talents.eradication = find_talent_spell( "Eradication" );
   talents.soul_fire   = find_talent_spell( "Soul Fire" );
 
