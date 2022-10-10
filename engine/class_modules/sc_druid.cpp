@@ -4435,6 +4435,9 @@ struct rake_t : public cat_attack_t
 
   void execute() override
   {
+    // Force invalidate target cache so that it will impact on the correct targets.
+    target_cache.is_valid = false;
+
     cat_attack_t::execute();
 
     if ( hit_any_target )
