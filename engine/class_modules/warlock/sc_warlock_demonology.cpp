@@ -977,7 +977,7 @@ struct guillotine_t : public demonology_spell_t
     {
       p()->warlock_pet_list.active->buffs.fiendish_wrath->trigger();
 
-      // Trigger Felguard to spawn Ground AoE event 
+      debug_cast<pets::demonology::felguard_pet_t*>( p()->warlock_pet_list.active )->felguard_guillotine->execute_on_target( execute_state->target );
     }
   }
 };
