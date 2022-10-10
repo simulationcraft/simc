@@ -413,6 +413,8 @@ public:
     buff_t* bursting_energy;
 
     buff_t* t28_fiery_rush;
+
+    buff_t* touch_of_ice;
   } buffs;
 
   // Cooldowns
@@ -1729,6 +1731,8 @@ public:
 
     if ( affected_by.siphoned_malice )
       m *= 1.0 + p()->buffs.siphoned_malice->check_stack_value();
+
+    m *= 1.0 + p()->buffs.touch_of_ice->check_value();
 
     return m;
   }
@@ -4295,6 +4299,7 @@ struct frozen_orb_bolt_t final : public frost_mage_spell_t
     reduced_aoe_targets = data().effectN( 2 ).base_value();
     base_multiplier *= 1.0 + p->talents.everlasting_frost->effectN( 1 ).percent();
     base_multiplier *= 1.0 + p->conduits.unrelenting_cold.percent();
+    base_multiplier *= 1.0 + p->sets->set( MAGE_FROST, T29, B2 )->effectN( 1 ).percent();
     background = triggers.chill = true;
   }
 
@@ -4557,6 +4562,7 @@ struct ice_lance_t final : public frost_mage_spell_t
     parse_effect_data( p->find_spell( 228598 )->effectN( 1 ) );
     calculate_on_impact = track_shatter = consumes_winters_chill = triggers.radiant_spark = true;
     base_multiplier *= 1.0 + p->talents.lonely_winter->effectN( 1 ).percent();
+    base_multiplier *= 1.0 + p->sets->set( MAGE_FROST, T29, B2 )->effectN( 1 ).percent();
 
     // TODO: Cleave distance for SI seems to be 8 + hitbox size.
     if ( p->talents.splitting_ice.ok() )
@@ -4639,6 +4645,9 @@ struct ice_lance_t final : public frost_mage_spell_t
     p()->state.fingers_of_frost_active = p()->buffs.fingers_of_frost->up();
 
     frost_mage_spell_t::execute();
+
+    if ( p()->buffs.fingers_of_frost->check() )
+      p()->buffs.touch_of_ice->trigger();
 
     p()->buffs.fingers_of_frost->decrement();
 
@@ -7205,6 +7214,11 @@ void mage_t::create_buffs()
                                cooldowns.phoenix_flames->adjust_recharge_multiplier();
                              } )
                            ->set_chance( sets->has_set_bonus( MAGE_FIRE, T28, B4 ) );
+
+  buffs.touch_of_ice   = make_buff( this, "touch_of_ice" ) // TODO: Use spell data when it is available.
+                           ->set_default_value( 0.08 )
+                           ->set_duration( 6_s )
+                           ->set_chance( sets->has_set_bonus( MAGE_FROST, T29, B4 ) );
 
   // Foresight support
   if ( talents.foresight.ok() )
