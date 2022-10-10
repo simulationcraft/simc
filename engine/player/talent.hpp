@@ -43,7 +43,7 @@ public:
   operator const spell_data_t*() const
   { return m_spell; }
 
-  const spell_data_t* find_override_spell() const;
+  const spell_data_t* find_override_spell( bool require_talent = true ) const;
 };
 
 #endif /* TALENT_HPP */
