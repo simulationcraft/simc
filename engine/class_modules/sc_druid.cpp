@@ -4409,14 +4409,28 @@ struct rake_t : public cat_attack_t
   
   bool has_amount_result() const override { return bleed->has_amount_result(); }
 
-  void impact( action_state_t* s ) override
+  std::vector<player_t*>& target_list() const override
   {
-    cat_attack_t::impact( s );
+    auto& tl = cat_attack_t::target_list();
 
-    bleed->snapshot_and_execute( s, true, nullptr, [ s ]( action_state_t* new_ ) {
-      // Copy persistent multipliers from the direct attack.
-      new_->persistent_multiplier = s->persistent_multiplier;
-    } );
+    // When Double-Clawed Rake is active, this is an AoE action meaning it will impact onto the first 2 targets in the
+    // target list. Instead, we want it to impact on the target of the action and 1 additional, so we'll override the
+    // target_list to make it so.
+    if ( is_aoe() && as<int>( tl.size() ) > aoe )
+    {
+      // always hit the target, so if it exists make sure it's first
+      auto start_it = tl.begin() + ( tl[ 0 ] == target ? 1 : 0 );
+
+      // randomize remaining targets
+      rng().shuffle( start_it, tl.end() );
+
+      // sort by remaining duration
+      std::sort( start_it, tl.end(), [ this ]( player_t* a, player_t* b ) {
+        return td( a )->dots.rake->remains() < td( b )->dots.rake->remains();
+      } );
+    }
+
+    return tl;    
   }
 
   void execute() override
@@ -4430,6 +4444,16 @@ struct rake_t : public cat_attack_t
       if ( !stealthed() )
       	p()->buff.sudden_ambush->expire();
     }
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    cat_attack_t::impact( s );
+
+    bleed->snapshot_and_execute( s, true, nullptr, [ s ]( action_state_t* new_ ) {
+      // Copy persistent multipliers from the direct attack.
+      new_->persistent_multiplier = s->persistent_multiplier;
+    } );
   }
 };
 
@@ -7283,7 +7307,7 @@ struct moonfire_t : public druid_spell_t
       // When Twin Moons is active, this is an AoE action meaning it will impact onto the first 2 targets in the target
       // list. Instead, we want it to impact on the target of the action and 1 additional, so we'll override the
       // target_list to make it so.
-      if ( is_aoe() && as<int>( tl.size( )) > aoe )
+      if ( is_aoe() && as<int>( tl.size() ) > aoe )
       {
         // always hit the target, so if it exists make sure it's first
         auto start_it = tl.begin() + ( tl[ 0 ] == target ? 1 : 0 );
