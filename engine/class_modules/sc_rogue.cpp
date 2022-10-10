@@ -8800,7 +8800,7 @@ void rogue_t::init_spells()
     active.weaponmaster.backstab = get_secondary_trigger_action<actions::backstab_t>(
       secondary_trigger::WEAPONMASTER, "backstab_weaponmaster" );
     active.weaponmaster.gloomblade = get_secondary_trigger_action<actions::gloomblade_t>(
-      secondary_trigger::WEAPONMASTER, "backstab_weaponmaster" );
+      secondary_trigger::WEAPONMASTER, "gloomblade_weaponmaster" );
     active.weaponmaster.shadowstrike = get_secondary_trigger_action<actions::shadowstrike_t>(
       secondary_trigger::WEAPONMASTER, "shadowstrike_weaponmaster" );
     active.weaponmaster.akaaris_shadowstrike = get_secondary_trigger_action<actions::akaaris_shadowstrike_t>(
