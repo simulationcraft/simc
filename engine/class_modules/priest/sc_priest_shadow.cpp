@@ -119,6 +119,8 @@ struct mind_sear_t final : public priest_spell_t
   // TODO: parse_buff_effects doesn't support tick based resource cost modifications
   bool consume_cost_per_tick( const dot_t& dot ) override
   {
+    extend_vf( cost_per_tick( RESOURCE_INSANITY ) );
+
     if ( priest().buffs.mind_devourer_ms_active->check() )
     {
       player->sim->print_debug( "{} {} consumes ticking cost 0 insanity (current={}).", priest(), *this,

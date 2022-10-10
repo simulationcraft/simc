@@ -1300,10 +1300,11 @@ struct priest_spell_t : public priest_action_t<spell_t>
     : base_t( name, player, s ), affected_by_shadow_weaving( false ), ignores_automatic_mastery( false )
   {
     weapon_multiplier = 0.0;
-    if ( priest().talents.shadow.void_eruption.enabled() && resource_current == RESOURCE_INSANITY )
+
+    if ( priest().talents.shadow.void_eruption.enabled() )
     {
-      vf_extension = base_cost() / priest().talents.shadow.void_eruption->effectN( 4 ).base_value() *
-                     timespan_t::from_millis( priest().talents.shadow.void_eruption->effectN( 3 ).base_value() );
+        vf_extension = timespan_t::from_millis( priest().talents.shadow.void_eruption->effectN( 3 ).base_value() ) /
+                        priest().talents.shadow.void_eruption->effectN( 4 ).base_value();
     }
   }
 
@@ -1327,13 +1328,19 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
   void consume_resource() override
   {
-    if ( priest().specialization() == PRIEST_SHADOW && priest().talents.shadow.void_eruption.enabled() &&
-         priest().buffs.voidform->up() && vf_extension > 0_s )
-    {
-      priest().buffs.voidform->extend_duration( &priest(), vf_extension );
-    }
-
+    if ( current_resource() == RESOURCE_INSANITY )
+        extend_vf( base_cost() );
     base_t::consume_resource();
+  }
+
+  void extend_vf( double insanity ) 
+  {
+    if ( priest().specialization() == PRIEST_SHADOW && priest().talents.shadow.void_eruption.enabled() &&
+         priest().buffs.voidform->up() )
+    {
+      priest().buffs.voidform->extend_duration( &priest(), vf_extension * insanity);
+    }
+  
   }
 
   void last_tick( dot_t* d ) override
