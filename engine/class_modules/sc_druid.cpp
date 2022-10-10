@@ -7264,9 +7264,12 @@ struct moonfire_t : public druid_spell_t
       // Moonfire damage is supressed while lunar inspiration is also on the target. Note that it is not cancelled and
       // continues to tick down it's duration. If there is any duration remaining after lunar inspiration expires,
       // moonfire will resume ticking for damage.
-      // TODO: check if moonfire can still proc effects while in its supressed state
+      // Note that moonfire CAN still proc shooting stars while suppressed
       if ( td( d->target )->dots.lunar_inspiration->is_ticking() )
+      {
+        trigger_shooting_stars( d->target );
         return;
+      }
 
       druid_spell_t::tick( d );
 
