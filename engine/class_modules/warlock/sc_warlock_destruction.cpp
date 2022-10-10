@@ -233,50 +233,41 @@ struct immolate_t : public destruction_spell_t
 
 struct conflagrate_t : public destruction_spell_t
 {
-  timespan_t total_duration;
-  timespan_t base_duration;
-
   conflagrate_t( warlock_t* p, util::string_view options_str )
-    : destruction_spell_t( "Conflagrate", p, p->find_spell( 17962 ) ), total_duration(), base_duration()
+    : destruction_spell_t( "Conflagrate", p, p->talents.conflagrate )
   {
     parse_options( options_str );
     can_havoc = true;
 
     energize_type     = action_energize::PER_HIT;
     energize_resource = RESOURCE_SOUL_SHARD;
-    energize_amount   = ( p->find_spell( 245330 )->effectN( 1 ).base_value() ) / 10.0;
-
-    cooldown->charges += as<int>( p->spec.conflagrate_2->effectN( 1 ).base_value() );
-
-    if ( p->legendary.cinders_of_the_azjaqir->ok() )
-    {
-      cooldown->charges += as<int>( p->legendary.cinders_of_the_azjaqir->effectN( 1 ).base_value() );
-      cooldown->duration += p->legendary.cinders_of_the_azjaqir->effectN( 2 ).time_value();
-    }
-  }
-
-  void init() override
-  {
-    destruction_spell_t::init();
+    energize_amount   = ( p->talents.conflagrate_2->effectN( 1 ).base_value() ) / 10.0;
 
     cooldown->hasted = true;
+    //cooldown->charges += as<int>( p->spec.conflagrate_2->effectN( 1 ).base_value() );
+
+    //if ( p->legendary.cinders_of_the_azjaqir->ok() )
+    //{
+    //  cooldown->charges += as<int>( p->legendary.cinders_of_the_azjaqir->effectN( 1 ).base_value() );
+    //  cooldown->duration += p->legendary.cinders_of_the_azjaqir->effectN( 2 ).time_value();
+    //}
   }
 
   void impact( action_state_t* s ) override
   {
     destruction_spell_t::impact( s );
 
-    if ( p()->talents.roaring_blaze->ok() && result_is_hit( s->result ) )
-      td( s->target )->debuffs_roaring_blaze->trigger();
+    //if ( p()->talents.roaring_blaze->ok() && result_is_hit( s->result ) )
+    //  td( s->target )->debuffs_roaring_blaze->trigger();
   }
 
   void execute() override
   {
     destruction_spell_t::execute();
 
-    p()->buffs.backdraft->trigger();
+    //p()->buffs.backdraft->trigger();
 
-    sim->print_log( "{}: Action {} {} charges remain", player->name(), name(), this->cooldown->current_charge );
+    //sim->print_log( "{}: Action {} {} charges remain", player->name(), name(), this->cooldown->current_charge );
   }
 };
 
@@ -1056,6 +1047,9 @@ void warlock_t::init_spells_destruction()
 
   // Talents
   talents.chaos_bolt = find_talent_spell( talent_tree::SPECIALIZATION, "Chaos Bolt" ); // Should be ID 116858
+
+  talents.conflagrate = find_talent_spell( talent_tree::SPECIALIZATION, "Conflagrate" ); // Should be ID 17962
+  talents.conflagrate_2 = find_spell( 245330 );
 
   talents.eradication = find_talent_spell( "Eradication" );
   talents.soul_fire   = find_talent_spell( "Soul Fire" );
