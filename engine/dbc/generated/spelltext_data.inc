@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.2.45969
-static const std::array<spelltext_data_t, 18974> __spelltext_data { {
+static const std::array<spelltext_data_t, 18976> __spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -1283,6 +1283,7 @@ static const std::array<spelltext_data_t, 18974> __spelltext_data { {
   {  36482, "Increases Physical damage taken by the target by $s1% for $d. This effect stacks.", "Physical damage taken increased by $s1%.", 0 },
   {  36483, "Reduces damage taken by Fire and Shadow spells by $s1% for $D.", "Damage taken by Fire and Shadow spells reduced by $s1%.", 0 },
   {  36488, "Friendly targets of the caster's heals gain an effect that reduces the damage taken by Fire and Shadow spells by $36483s1% for $36483d.", 0, 0 },
+  {  36554, "Step through the shadows to appear behind your target and gain $s2% increased movement speed for $d.$?s137035|s137037[\r\n\r\nIf you already know $@spellname36554, instead gain $394931s1 additional $Lcharge:charges; of $@spellname36554.][]", "Movement speed increased by $s2%.", 0 },
   {  37173, "Your special attacks have a chance to give you $37174s1 critical strike for $37174d.", 0, 0 },
   {  37174, "You gain an additional $s1 critical strike.", "$s1 critical strike.", 0 },
   {  37197, "Each time you cast a spell, there is chance you will gain $37198s1 spell power.", 0, 0 },
@@ -17912,6 +17913,7 @@ static const std::array<spelltext_data_t, 18974> __spelltext_data { {
   { 388040, "$@spelldesc388038", 0, 0 },
   { 388042, "Survival of the Fittest reduces damage taken by an additional ${$m1*-1}%.", 0, 0 },
   { 388044, "$@spelldesc388038", 0, 0 },
+  { 388045, "Call forth a Sentinel Owl to the target location, granting you unhindered vision. $?s388056[You and your party's][Your] attacks ignore line of sight against any target in this area.$?s388057[\r\n\r\nWhile the Sentinel Owl is active, your party gains $393777s1% Leech.][]\r\n\r\nEvery $?a137015[$393505s5]?a137016[$393505s6][$393505s7] Focus spent grants you $393505s2 sec of the Sentinel Owl when cast, up to a maximum of $393505s3 sec. The Sentinel Owl can only be summoned when it will last at least $393505s4 sec.", "Ignoring line of sight to enemies in the targeted area.", 0 },
   { 388047, "Healing with Enveloping Mists or Vivify while channeling Soothing Mists increases their healing done by $388048m1% and reduces their mana cost by $388048m2%. Stacks up to $388048u times.\r\n\r\nWhen your Soothing Mists channel ends, this effect is cancelled.", 0, 0 },
   { 388048, "$@spelldesc388047", "Healing done by your Enveloping Mists and Vivify increased by $w1%, and mana cost reduced by $w2%.", 0 },
   { 388049, "Raging Blow gains an extra charge.", 0, 0 },

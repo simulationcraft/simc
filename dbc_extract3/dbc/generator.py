@@ -2824,6 +2824,12 @@ class SpellDataGenerator(DataGenerator):
 
             self.process_spell(data['spell'].id, ids, class_mask, 0, False)
 
+            if data['definition'].id_replace_spell > 0:
+                self.process_spell(data['definition'].id_replace_spell, ids, class_mask, 0, False)
+
+            if data['definition'].id_override_spell > 0:
+                self.process_spell(data['definition'].id_override_spell, ids, class_mask, 0, False)
+
         # Temporary item enchants
         for item, spell, enchant_id in TemporaryEnchantItemSet(self._options).get():
             enchant = self.db('SpellItemEnchantment')[enchant_id]

@@ -15787,6 +15787,35 @@ Effects          :
                    Family Flags: 44
 Description      : Survival of the Fittest reduces damage taken by an additional ${$m1*-1}%.
 
+Name             : Sentinel Owl (id=388045) [Spell Family (9)] 
+Class            : Hunter
+School           : Physical
+Spell Type       : None
+Range            : 40 yards
+Duration         : 12 seconds
+Attributes       : ....x... ........ x.x..... ........   ........ ..x..... .x...... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), No AutoCast (AI) (49), Do Not Display Range (126), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1023504)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 10 yards | Target: Unknown(87)
+#2 (id=1023505)  : Create Area Trigger (179)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 27005 | Radius: 0 - 10 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+#3 (id=1032907)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Call forth a Sentinel Owl to the target location, granting you unhindered vision. $?s388056[You and your party's][Your] attacks ignore line of sight against any target in this area.$?s388057[
+
+While the Sentinel Owl is active, your party gains $393777s1% Leech.][]
+
+Every $?a137015[$393505s5]?a137016[$393505s6][$393505s7] Focus spent grants you $393505s2 sec of the Sentinel Owl when cast, up to a maximum of $393505s3 sec. The Sentinel Owl can only be summoned when it will last at least $393505s4 sec.
+Tooltip          : Ignoring line of sight to enemies in the targeted area.
+
 Name             : Sentinel's Perception (id=388056) [Spell Family (9), Passive, Hidden] 
 Talent Entry     : Generic [tree=class, row=7, col=4, max_rank=1, req_points=8, select_idx=100]
 Class            : Hunter
@@ -16433,7 +16462,7 @@ Description      : $@spelldesc393344
 Tooltip          : Rooted.
 
 Name             : Sentinel (id=393505) [Spell Family (9), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=6, col=7, max_rank=1, req_points=8, override="" (id=388045)]
+Talent Entry     : Generic [tree=class, row=6, col=7, max_rank=1, req_points=8, override="Sentinel Owl" (id=388045)]
 Class            : Hunter
 School           : Physical
 Spell Type       : None

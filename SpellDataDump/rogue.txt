@@ -1752,6 +1752,39 @@ Effects          :
 Hotfixed         : Base Value (75 -> 60)
 Description      : Your off-hand attacks have a $s1% chance to generate $35546s1 Energy.
 
+Name             : Shadowstep (id=36554) [Spell Family (8)] 
+Class            : Rogue
+School           : Physical
+Spell Type       : None
+Spell Level      : 18
+Range            : 25 yards
+Duration         : 2 seconds
+Cooldown         : 1 seconds
+Charges          : 0 (30 seconds cooldown)
+Category         : 1206: Subtlety Rogue (137035 effect#5), Quick Decisions (341531 effect#3), Quick Decisions (382503 effect#3), Shadowstep (394931 effect#1), Shadowstep (394932 effect#1), Shadowstep (394935 effect#1)
+Affecting spells : Quick Decisions (341531 effect#1), Quick Decisions (382503 effect#1)
+Family Flags     : 41
+Attributes       : ....x... ........ x....... .....x..   .....x.. ..x..... ........ ........ 
+                 : ........ ........ ........ ....x...   ........ ........ xx...... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ......x. ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Is Ability (4), Not Shapeshifted (16), No Immunities (29), Allow While Stealthed (37), No Threat (42), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Not an Attack (194), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416), Always Require PvP Target Match (430)
+Effects          :
+#1 (id=26920)    : Trigger Spell (64): (36563)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 36563 | Target: Unknown(25)
+#2 (id=283909)   : Apply Aura (6) | Increase Speed% (31)
+                   Base Value: 70 | Scaled Value: 70 | PvP Coefficient: 1.00000 | Target: Self (1)
+#3 (id=337812)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Unknown(63)
+Description      : Step through the shadows to appear behind your target and gain $s2% increased movement speed for $d.$?s137035|s137037[
+
+If you already know $@spellname36554, instead gain $394931s1 additional $Lcharge:charges; of $@spellname36554.][]
+Tooltip          : Movement speed increased by $s2%.
+
 Name             : Agility 20 (id=41695) [Passive, Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
@@ -3103,6 +3136,7 @@ Hotfixed         : Base Value (21 -> 0)
                    Family Flags: 122
 #5 (id=191063)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1206 | Target: Self (1)
+                   Affected Spells (Category): Shadowstep (36554)
 #6 (id=260977)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
                    Base Value: -30000 | Scaled Value: -30000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Marked for Death (137619)
@@ -10417,7 +10451,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=841994)   : Apply Aura (6) | Add Percent Modifier (108): Spell Range (5)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 5 | Target: Self (1)
-                   Affected Spells: Grappling Hook (195457)
+                   Affected Spells: Shadowstep (36554), Grappling Hook (195457)
                    Family Flags: 41, 102
 #2 (id=841995)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cooldown (11)
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 11 | Trigger Spell: 195457 | Target: Self (1)
@@ -10425,6 +10459,7 @@ Effects          :
                    Family Flags: 102
 #3 (id=869683)   : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 1206 | Target: Self (1)
+                   Affected Spells (Category): Shadowstep (36554)
 Description      : $?s195457[Grappling Hook][Shadowstep]'s cooldown is reduced by $s2%, and its maximum range is increased by |cFFFFFFFF$s1%|r.
 
 Name             : Fade to Nothing (id=341532) [Spell Family (8), Passive, Hidden] 
@@ -13138,12 +13173,13 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1013869)  : Apply Aura (6) | Add Percent Modifier (108): Spell Range (5)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 5 | Target: Self (1)
-                   Affected Spells: Grappling Hook (195457)
+                   Affected Spells: Shadowstep (36554), Grappling Hook (195457)
                    Family Flags: 41, 102
 #2 (id=1013870)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=1013871)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 1206 | Target: Self (1)
+                   Affected Spells (Category): Shadowstep (36554)
 Description      : Shadowstep's cooldown is reduced by $s3%, and its maximum range is increased by $s1%.
 
 Name             : Dark Brew (id=382504) [Spell Family (8), Passive] 
@@ -15107,7 +15143,7 @@ Effects          :
                    Affected Spells (Category): Shadow Dance (185313)
 
 Name             : Shadowstep (id=394931) [Spell Family (8), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=4, col=6, max_rank=1, req_points=8, override="" (id=36554)]
+Talent Entry     : Generic [tree=class, row=4, col=6, max_rank=1, req_points=8, override="Shadowstep" (id=36554)]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -15123,9 +15159,10 @@ Attributes       : ......xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1034994)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1206 | Target: Self (1)
+                   Affected Spells (Category): Shadowstep (36554)
 
 Name             : Shadowstep (id=394932) [Spell Family (8), Passive, Hidden] 
-Talent Entry     : Assassination [tree=spec, row=2, col=3, max_rank=1, req_points=0, override="" (id=36554)]
+Talent Entry     : Assassination [tree=spec, row=2, col=3, max_rank=1, req_points=0, override="Shadowstep" (id=36554)]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -15141,9 +15178,10 @@ Attributes       : ......xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1034995)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1206 | Target: Self (1)
+                   Affected Spells (Category): Shadowstep (36554)
 
 Name             : Shadowstep (id=394935) [Spell Family (8), Passive, Hidden] 
-Talent Entry     : Subtlety [tree=spec, row=1, col=2, max_rank=1, req_points=0, override="" (id=36554)]
+Talent Entry     : Subtlety [tree=spec, row=1, col=2, max_rank=1, req_points=0, override="Shadowstep" (id=36554)]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -15159,6 +15197,7 @@ Attributes       : ......xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1034999)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1206 | Target: Self (1)
+                   Affected Spells (Category): Shadowstep (36554)
 
 Name             : Lightweight Shiv (id=394983) [Spell Family (8), Passive] 
 Talent Entry     : Assassination [tree=spec, row=4, col=2, max_rank=1, req_points=8]
