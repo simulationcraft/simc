@@ -53,20 +53,6 @@ public:
     }
   }
 
-  void impact( action_state_t* s ) override
-  {
-    warlock_spell_t::impact( s );
-
-    if ( p()->talents.reverse_entropy->ok() )
-    {
-      auto success = p()->buffs.reverse_entropy->trigger();
-      if ( success )
-      {
-        p()->procs.reverse_entropy->occur();
-      }
-    }
-  }
-
   double composite_target_multiplier( player_t* t ) const override
   {
     double m = warlock_spell_t::composite_target_multiplier( t );
@@ -1002,12 +988,11 @@ void warlock_t::create_buffs_destruction()
       make_buff( this, "backdraft", find_spell( 117828 ) )
           ->set_refresh_behavior( buff_refresh_behavior::DURATION );
 
-  buffs.reverse_entropy = make_buff( this, "reverse_entropy", talents.reverse_entropy )
-                              ->set_default_value( find_spell( 266030 )->effectN( 1 ).percent() )
-                              ->set_duration( find_spell( 266030 )->duration() )
-                              ->set_refresh_behavior( buff_refresh_behavior::DURATION )
+  buffs.reverse_entropy = make_buff( this, "reverse_entropy", talents.reverse_entropy_buff )
+                              ->set_default_value_from_effect( 1 )
+                              ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
                               ->set_trigger_spell( talents.reverse_entropy )
-                              ->add_invalidate( CACHE_HASTE );
+                              ->set_rppm( RPPM_NONE, talents.reverse_entropy->real_ppm() );
 
   // Spell 335236 holds the duration of the proc'd infernal's duration, storing it in default value of the buff for use
   // later
@@ -1051,10 +1036,12 @@ void warlock_t::init_spells_destruction()
   talents.conflagrate = find_talent_spell( talent_tree::SPECIALIZATION, "Conflagrate" ); // Should be ID 17962
   talents.conflagrate_2 = find_spell( 245330 );
 
+  talents.reverse_entropy = find_talent_spell( talent_tree::SPECIALIZATION, "Reverse Entropy" ); // Should be ID 205148
+  talents.reverse_entropy_buff = find_spell( 266030 );
+
   talents.eradication = find_talent_spell( "Eradication" );
   talents.soul_fire   = find_talent_spell( "Soul Fire" );
 
-  talents.reverse_entropy     = find_talent_spell( "Reverse Entropy" );
   talents.internal_combustion = find_talent_spell( "Internal Combustion" );
   talents.shadowburn          = find_talent_spell( "Shadowburn" );
 
