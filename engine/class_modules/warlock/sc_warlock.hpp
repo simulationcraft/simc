@@ -345,7 +345,8 @@ public:
     // DESTRO
     player_talent_t chaos_bolt;
 
-    // DF - Conflagrate (base 2 charges)
+    player_talent_t conflagrate; // Base 2 charges
+    const spell_data_t* conflagrate_2; // Contains Soul Shard information
     const spell_data_t* reverse_entropy; // DF - Now a choice against Internal Combustion, make sure to find correct RPPM location in data with new talent structure
     const spell_data_t* internal_combustion; // DF - Now a choice against Reverse Entropy
     // DF - Rain of Fire
