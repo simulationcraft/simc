@@ -374,6 +374,15 @@ namespace enchants
 namespace items
 {
 // Trinkets
+void the_cartographers_calipers( special_effect_t& effect )
+{
+  auto damage = create_proc_action<generic_proc_t>( "precision_blast", effect, "precision_blast", 384114 );
+  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
+
+  effect.execute_action = damage;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
 // Weapons
 // Armor
 }
@@ -397,6 +406,7 @@ void register_special_effects()
 
   // Enchants
   // Trinkets
+  register_special_effect( 384112, items::the_cartographers_calipers );
   // Weapons
   // Armor
   // Disabled
