@@ -1509,11 +1509,12 @@ class SpellDataGenerator(DataGenerator):
             ( 364668, 0 ),          # T28 Assassination debuff
             ( 385897, 0 ),          # Hidden Opportunity Ambush
             ( 386270, 0 ),          # Audacity buff
+            ( 395424, 0 ),          # Improved Adrenaline Rush energize
             ( 385794, 0 ), ( 385802, 0 ), ( 385806, 0 ), # Vicious Venoms Ambush/Mutilate variant spells
             ( 360826, 0 ), ( 360830, 0 ), # Deathmark Cloned Bleeds
             ( 394324, 0 ), ( 394325, 0 ), ( 394326, 0 ), ( 394327, 0 ), ( 394328, 0 ), # Deathmark Cloned Poisons
             ( 393724, 0 ), ( 393725, 0 ), # T29 Assassination Set Bonus Spells
-            ( 393727, 0 ), ( 393728, 0 ), # T29 Outlaw Set Bonus Spells
+            ( 393727, 0 ), ( 393728, 0 ), ( 394879, 0 ), ( 394888, 0 ), # T29 Outlaw Set Bonus Spells
             ( 393729, 0 ), ( 393730, 0 ), # T29 Subtlety Set Bonus Spells
         ),
 
