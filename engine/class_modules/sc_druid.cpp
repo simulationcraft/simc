@@ -2775,6 +2775,7 @@ public:
     parse_buff_effects( p()->buff.bear_form );
     unsigned berserk_ignore_mask = p()->talent.berserk_persistence.ok() ? 0b11111100000U
                                                                         : 0b11111100110U;
+                                                                          //10987654321
     parse_buff_effects<S, S>( p()->buff.berserk_bear, berserk_ignore_mask,
                               p()->talent.berserk_ravage,
                               p()->talent.berserk_unchecked_aggression );
@@ -3524,84 +3525,6 @@ public:
 
       p()->gain.clearcasting->add( RESOURCE_ENERGY, eff_cost );
     }
-
-    if ( consumes_combo_points && hit_any_target )
-    {
-      int consumed = as<int>( is_free() ? p()->resources.max[ RESOURCE_COMBO_POINT ]
-                                        : p()->resources.current[ RESOURCE_COMBO_POINT ] );
-
-      if ( p()->talent.berserk_heart_of_the_lion.ok() )
-      {
-        auto dur_ = timespan_t::from_seconds( p()->talent.berserk_heart_of_the_lion->effectN( 1 ).base_value() *
-                                              consumed * -0.1 );
-
-        if ( p()->talent.incarnation_cat.ok() )
-          p()->cooldown.incarnation->adjust( dur_ );
-        else
-          p()->cooldown.berserk_cat->adjust( dur_ );
-      }
-
-      if ( p()->talent.frantic_momentum.ok() )
-      {
-        p()->buff.frantic_momentum->trigger( 1, buff_t::DEFAULT_VALUE(),
-                                             consumed * p()->talent.frantic_momentum->effectN( 1 ).percent() );
-      }
-
-      if ( p()->talent.predatory_swiftness.ok() )
-      {
-        p()->buff.predatory_swiftness->trigger( 1, buff_t::DEFAULT_VALUE(),
-                                                consumed * p()->talent.predatory_swiftness->effectN( 3 ).percent() );
-      }
-
-      // TODO: implement 0.1s ICD
-      if ( p()->talent.raging_fury.ok() )
-      {
-        auto dur_ = timespan_t::from_seconds( p()->talent.raging_fury->effectN( 1 ).base_value() * consumed * 0.1 );
-
-        p()->buff.tigers_fury->extend_duration( p(), dur_ );
-      }
-
-      if ( p()->talent.soul_of_the_forest_cat.ok() )
-      {
-        p()->resource_gain( RESOURCE_ENERGY,
-                            consumed * p()->talent.soul_of_the_forest_cat->effectN( 1 ).resource( RESOURCE_ENERGY ),
-                            p()->gain.soul_of_the_forest );
-      }
-
-      if ( p()->talent.sudden_ambush.ok() )
-      {
-        p()->buff.sudden_ambush->trigger( 1, buff_t::DEFAULT_VALUE(),
-                                          consumed * p()->talent.sudden_ambush->effectN( 1 ).percent() );
-      }
-
-      if ( free_spell == free_spell_e::CONVOKE )  // further effects are not processed for convoke fb
-        return;
-
-      if ( p()->sets->has_set_bonus( DRUID_FERAL, T29, B4 ) )
-        p()->buff.sharpened_claws_bloodied_fangs->trigger( consumed );
-
-      if ( p()->buff.tigers_tenacity->check() )
-      {
-        p()->resource_gain( RESOURCE_COMBO_POINT, p()->buff.tigers_tenacity->value(), p()->gain.tigers_tenacity );
-        p()->buff.tigers_tenacity->decrement();
-      }
-
-      if ( is_free() )  // rest requires actual CP consumption
-        return;
-
-      p()->resource_loss( RESOURCE_COMBO_POINT, consumed, nullptr, this );
-
-      sim->print_log( "{} consumes {} {} for {} (0)", player->name(), consumed,
-                      util::resource_type_string( RESOURCE_COMBO_POINT ), name() );
-
-      stats->consume_resource( RESOURCE_COMBO_POINT, consumed );
-
-      if ( ( p()->buff.berserk_cat->check() || p()->buff.incarnation_cat->check() ) && berserk_cp &&
-           rng().roll( consumed * p()->talent.berserk->effectN( 1 ).percent() ) )
-      {
-        p()->resource_gain( RESOURCE_COMBO_POINT, berserk_cp, p()->gain.berserk );
-      }
-    }
   }
 
   template <typename... Ts>
@@ -3864,6 +3787,88 @@ struct cat_finisher_t : public cat_attack_t
     cast_state( s )->combo_points = _combo_points();
 
     cat_attack_t::snapshot_state( s, rt );
+  }
+
+  void consume_resource() override
+  {
+    cat_attack_t::consume_resource();
+
+    if ( background || !hit_any_target )
+      return;
+
+    auto consumed = _combo_points();
+
+    if ( p()->talent.berserk_heart_of_the_lion.ok() )
+    {
+      auto dur_ = timespan_t::from_seconds( p()->talent.berserk_heart_of_the_lion->effectN( 1 ).base_value() *
+                                            consumed * -0.1 );
+
+      if ( p()->talent.incarnation_cat.ok() )
+        p()->cooldown.incarnation->adjust( dur_ );
+      else
+        p()->cooldown.berserk_cat->adjust( dur_ );
+    }
+
+    if ( p()->talent.frantic_momentum.ok() )
+    {
+      p()->buff.frantic_momentum->trigger( 1, buff_t::DEFAULT_VALUE(),
+                                           consumed * p()->talent.frantic_momentum->effectN( 1 ).percent() );
+    }
+
+    if ( p()->talent.predatory_swiftness.ok() )
+    {
+      p()->buff.predatory_swiftness->trigger( 1, buff_t::DEFAULT_VALUE(),
+                                              consumed * p()->talent.predatory_swiftness->effectN( 3 ).percent() );
+    }
+
+    // TODO: implement 0.1s ICD
+    if ( p()->talent.raging_fury.ok() )
+    {
+      auto dur_ = timespan_t::from_seconds( p()->talent.raging_fury->effectN( 1 ).base_value() * consumed * 0.1 );
+
+      p()->buff.tigers_fury->extend_duration( p(), dur_ );
+    }
+
+    if ( p()->talent.soul_of_the_forest_cat.ok() )
+    {
+      p()->resource_gain( RESOURCE_ENERGY,
+                          consumed * p()->talent.soul_of_the_forest_cat->effectN( 1 ).resource( RESOURCE_ENERGY ),
+                          p()->gain.soul_of_the_forest );
+    }
+
+    if ( p()->talent.sudden_ambush.ok() )
+    {
+      p()->buff.sudden_ambush->trigger( 1, buff_t::DEFAULT_VALUE(),
+                                        consumed * p()->talent.sudden_ambush->effectN( 1 ).percent() );
+    }
+
+    if ( free_spell == free_spell_e::CONVOKE )  // further effects are not processed for convoke fb
+      return;
+
+    if ( p()->sets->has_set_bonus( DRUID_FERAL, T29, B4 ) )
+      p()->buff.sharpened_claws_bloodied_fangs->trigger( consumed );
+
+    if ( p()->buff.tigers_tenacity->check() )
+    {
+      p()->resource_gain( RESOURCE_COMBO_POINT, p()->buff.tigers_tenacity->value(), p()->gain.tigers_tenacity );
+      p()->buff.tigers_tenacity->decrement();
+    }
+
+    if ( is_free() )  // rest requires actual CP consumption
+      return;
+
+    p()->resource_loss( RESOURCE_COMBO_POINT, consumed, nullptr, this );
+
+    sim->print_log( "{} consumes {} {} for {} (0)", player->name(), consumed,
+                    util::resource_type_string( RESOURCE_COMBO_POINT ), name() );
+
+    stats->consume_resource( RESOURCE_COMBO_POINT, consumed );
+
+    if ( ( p()->buff.berserk_cat->check() || p()->buff.incarnation_cat->check() ) && berserk_cp &&
+         rng().roll( consumed * p()->talent.berserk->effectN( 1 ).percent() ) )
+    {
+      p()->resource_gain( RESOURCE_COMBO_POINT, berserk_cp, p()->gain.berserk );
+    }
   }
 };
 
