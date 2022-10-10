@@ -5112,14 +5112,13 @@ struct mangle_t : public bear_attack_t
     if ( !hit_any_target )
       return;
 
-    if ( p()->buff.gore->up() && free_spell != free_spell_e::CONVOKE )
+    if ( free_spell != free_spell_e::CONVOKE )
       p()->buff.gore->expire();
+
+    p()->buff.vicious_cycle_mangle->expire();
 
     if ( p()->talent.gory_fur.ok() )
       p()->buff.gory_fur->trigger();
-
-    if ( p()->buff.vicious_cycle_mangle->up() && free_spell != free_spell_e::CONVOKE )  // TODO: check this
-      p()->buff.vicious_cycle_mangle->expire();
 
     if ( p()->talent.vicious_cycle.ok() )
       p()->buff.vicious_cycle_maul->trigger();
