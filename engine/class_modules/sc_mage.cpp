@@ -7368,7 +7368,7 @@ void mage_t::add_precombat_buff_state( buff_t* buff, int stacks, double value, t
       stacks = 1;
 
     int max_icicles = as<int>( spec.icicles->effectN( 2 ).base_value() );
-    register_combat_begin( [ this, stacks, duration, max_icicles ] ( player_t* )
+    register_precombat_begin( [ this, stacks, duration, max_icicles ] ( player_t* )
     {
       int new_icicles = std::min( stacks, max_icicles ) - buffs.icicles->check();
       for ( int i = 0; i < new_icicles; i++ )
