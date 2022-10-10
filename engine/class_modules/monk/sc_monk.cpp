@@ -3416,13 +3416,6 @@ struct strike_of_the_windlord_t : public monk_melee_attack_t
     // Off-hand attack hits first
     oh_attack->execute();
 
-    // The first charge is spent instantly on execute, consecutive charges are spent on white hits
-    if ( p()->buff.thunderfist->up() )
-    {
-      p()->passive_actions.thunderfist->target = target;
-      p()->passive_actions.thunderfist->schedule_execute();
-    }
-
     if ( result_is_hit( oh_attack->execute_state->result ) )
       mh_attack->execute();
   }
