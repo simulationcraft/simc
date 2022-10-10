@@ -3986,7 +3986,7 @@ struct flamestrike_t final : public hot_streak_spell_t
 
 // Flurry Spell =============================================================
 
-struct glacial_assault_t : public frost_mage_spell_t
+struct glacial_assault_t final : public frost_mage_spell_t
 {
   glacial_assault_t( std::string_view n, mage_t* p ) :
     frost_mage_spell_t( n, p, p->find_spell( 379029 ) )
