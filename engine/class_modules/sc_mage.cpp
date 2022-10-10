@@ -1308,6 +1308,7 @@ struct incanters_flow_t final : public buff_t
     set_period( p->talents.incanters_flow->effectN( 1 ).period() );
     set_chance( p->talents.incanters_flow.ok() );
     set_default_value_from_effect( 1 );
+    set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
 
     // The hidden "Flowing Thoughts" buff counts as an actual Arcane spell for DC.
     set_stack_change_callback( [ p ] ( buff_t*, int old, int cur )
@@ -7095,8 +7096,7 @@ void mage_t::create_buffs()
 
   // Shared
   buffs.ice_floes          = make_buff<buffs::ice_floes_t>( this );
-  buffs.incanters_flow     = make_buff<buffs::incanters_flow_t>( this )
-                               ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
+  buffs.incanters_flow     = make_buff<buffs::incanters_flow_t>( this );
   buffs.overflowing_energy = make_buff( this, "overflowing_energy", find_spell( 394195 ) )
                                ->set_default_value_from_effect( 1 )
                                ->set_chance( talents.overflowing_energy.ok() );
