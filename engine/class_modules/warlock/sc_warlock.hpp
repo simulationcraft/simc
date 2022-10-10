@@ -343,7 +343,7 @@ public:
     player_talent_t guillotine;
 
     // DESTRO
-    // DF - Chaos Bolt
+    player_talent_t chaos_bolt;
 
     // DF - Conflagrate (base 2 charges)
     const spell_data_t* reverse_entropy; // DF - Now a choice against Internal Combustion, make sure to find correct RPPM location in data with new talent structure
