@@ -2260,6 +2260,9 @@ struct blackout_kick_totm_proc : public monk_melee_attack_t
 
       case MONK_WINDWALKER:
 
+        if ( p()->talent.windwalker.transfer_the_power->ok() )
+          p()->buff.transfer_the_power->trigger();
+
         break;
 
       default:
