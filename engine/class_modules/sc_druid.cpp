@@ -11937,7 +11937,12 @@ double druid_t::composite_player_multiplier( school_e school ) const
 {
   auto cpm = player_t::composite_player_multiplier( school );
 
-  // TODO: confirm these are school based
+  // TODO: currently these school based effects do not stack and only the highest applies.
+  // confirm which scenario is correct:
+  // 1) they all stack multiplcatively
+  // 2) they all stack additively
+  // 3) they don't stack and only the highest applies
+
   if ( dbc::has_common_school( school, SCHOOL_ARCANE ) && get_form() == BEAR_FORM )
   {
     cpm *= 1.0 + talent.elunes_favored->effectN( 1 ).percent();
@@ -12536,10 +12541,7 @@ stat_e druid_t::convert_hybrid_stat( stat_e s ) const
         return STAT_INTELLECT;
       else
         return STAT_AGILITY;
-    // This is a guess at how AGI/STR gear will work for Balance/Resto, TODO: confirm
     case STAT_STR_AGI: return STAT_AGILITY;
-    // This is a guess at how STR/INT gear will work for Feral/Guardian, TODO: confirm
-    // This should probably never come up since druids can't equip plate, but....
     case STAT_STR_INT: return STAT_INTELLECT;
     case STAT_SPIRIT:
       if ( specialization() == DRUID_RESTORATION )
@@ -12669,7 +12671,7 @@ void druid_t::assess_damage_imminent_pre_absorb( school_e school, result_amount_
     if ( buff.bristling_fur->up() )  // 1 rage per 1% of maximum health taken
       resource_gain( RESOURCE_RAGE, s->result_amount / expected_max_health * 100, gain.bristling_fur );
 
-    if ( talent.dream_of_cenarius.ok() && rng().roll( cache.attack_crit_chance() ) )  // TODO: confirm form restrictions
+    if ( talent.dream_of_cenarius.ok() && rng().roll( cache.attack_crit_chance() ) )
       buff.dream_of_cenarius->trigger();
   }
 }
