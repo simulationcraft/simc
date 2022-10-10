@@ -490,6 +490,7 @@ public:
     cooldown_t* wildfire_bomb;
     cooldown_t* harpoon;
     cooldown_t* flanking_strike;
+    cooldown_t* fury_of_the_eagle;
   } cooldowns;
 
   // Gains
@@ -793,6 +794,7 @@ public:
     cooldowns.wildfire_bomb         = get_cooldown( "wildfire_bomb" );
     cooldowns.harpoon               = get_cooldown( "harpoon" );
     cooldowns.flanking_strike       = get_cooldown( "flanking_strike");
+    cooldowns.fury_of_the_eagle     = get_cooldown( "fury_of_the_eagle" );
 
     base_gcd = 1.5_s;
 
@@ -5173,6 +5175,47 @@ struct harpoon_t: public hunter_melee_attack_t
   }
 };
 
+struct fury_of_the_eagle_t: public hunter_melee_attack_t
+{
+  struct fury_of_the_eagle_tick_t: public hunter_melee_attack_t
+  {
+    double health_threshold;
+    double crit_chance_bonus;
+
+    fury_of_the_eagle_tick_t( hunter_t* p, int aoe_cap ):
+      hunter_melee_attack_t( "fury_of_the_eagle_tick", p, p -> talents.fury_of_the_eagle -> effectN( 1 ).trigger() )
+    {
+      aoe = -1;
+      background = true;
+      may_crit = true;
+      radius = data().max_range();
+      reduced_aoe_targets = aoe_cap;
+      health_threshold = p -> talents.fury_of_the_eagle -> effectN( 4 ).base_value();
+      crit_chance_bonus = p -> talents.fury_of_the_eagle -> effectN( 3 ).percent();
+    }
+
+    double composite_target_crit_chance( player_t* target ) const override
+    {
+      double c = hunter_melee_attack_t::composite_target_crit_chance( target );
+
+      if ( target -> health_percentage() < health_threshold )
+        c += crit_chance_bonus;
+
+      return c;
+    }
+  };
+
+  fury_of_the_eagle_t( hunter_t* p, util::string_view options_str ):
+    hunter_melee_attack_t( "fury_of_the_eagle", p, p -> talents.fury_of_the_eagle )
+  {
+    parse_options( options_str );
+
+    channeled = true;
+    tick_zero = true;
+    tick_action = new fury_of_the_eagle_tick_t( p, as<int>( data().effectN( 5 ).base_value() ) );
+  }
+};
+
 // Coordinated Assault ==============================================================
 
 struct coordinated_assault_t: public hunter_melee_attack_t
@@ -5628,6 +5671,8 @@ struct kill_command_t: public hunter_spell_t
 
         if ( rng().roll( quick_shot.chance ) )
           quick_shot.action -> execute_on_target( target );
+
+        p() -> cooldowns.fury_of_the_eagle -> adjust( - p() -> talents.fury_of_the_eagle -> effectN( 2 ).time_value() );
       }
     }
 
@@ -6585,6 +6630,7 @@ action_t* hunter_t::create_action( util::string_view name,
   if ( name == "flare"                 ) return new                  flare_t( this, options_str );
   if ( name == "flayed_shot"           ) return new            flayed_shot_t( this, options_str );
   if ( name == "freezing_trap"         ) return new          freezing_trap_t( this, options_str );
+  if ( name == "fury_of_the_eagle"     ) return new      fury_of_the_eagle_t( this, options_str );
   if ( name == "harpoon"               ) return new                harpoon_t( this, options_str );
   if ( name == "high_explosive_trap"   ) return new    high_explosive_trap_t( this, options_str );
   if ( name == "kill_command"          ) return new           kill_command_t( this, options_str );
