@@ -471,6 +471,7 @@ namespace demonology
 felguard_pet_t::felguard_pet_t( warlock_t* owner, util::string_view name )
   : warlock_pet_t( owner, name, PET_FELGUARD, name != "felguard" ),
     soul_strike( nullptr ),
+    felguard_guillotine( nullptr ),
     demonic_strength_executes( 0 ),
     min_energy_threshold( find_spell( 89751 )->cost( POWER_ENERGY ) ),
     max_energy_threshold( 100 )
@@ -715,6 +716,45 @@ struct soul_strike_t : public warlock_pet_melee_attack_t
   }
 };
 
+struct fel_explosion_t : public warlock_pet_spell_t
+{
+  fel_explosion_t( warlock_pet_t* p ) : warlock_pet_spell_t( "Fel Explosion", p, p->find_spell( 386609 ) )
+  {
+    background = dual = true;
+    callbacks = false;
+    aoe = -1;
+  }
+};
+
+struct felguard_guillotine_t : public warlock_pet_spell_t
+{
+  fel_explosion_t* fel_explosion;
+
+  felguard_guillotine_t( warlock_pet_t* p ) : warlock_pet_spell_t( "Guillotine", p, p->find_spell( 386542 ) )
+  {
+    background = true;
+    may_miss = may_crit = false;
+    base_tick_time = 1_s;
+
+    fel_explosion = new fel_explosion_t( p );
+  }
+
+  void execute() override
+  {
+    warlock_pet_spell_t::execute();
+
+    make_event<ground_aoe_event_t>( *sim, p(),
+                                ground_aoe_params_t()
+                                    .target( execute_state->target )
+                                    .x( execute_state->target->x_position )
+                                    .y( execute_state->target->y_position )
+                                    .pulse_time( base_tick_time )
+                                    .duration( data().duration() )
+                                    .start_time( sim->current_time() )
+                                    .action( fel_explosion ) );
+  }
+};
+
 timespan_t felguard_pet_t::available() const
 {
   double energy_threshold = max_energy_threshold;
@@ -805,6 +845,11 @@ void felguard_pet_t::init_base_stats()
   if ( o()->talents.soul_strike.ok() )
   {
     soul_strike = new soul_strike_t( this );
+  }
+
+  if ( o()->talents.guillotine.ok() )
+  {
+    felguard_guillotine = new felguard_guillotine_t( this );
   }
 }
 
