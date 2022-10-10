@@ -47,6 +47,7 @@ struct warlock_pet_t : public pet_t
     propagate_const<buff_t*> infernal_command;
     propagate_const<buff_t*> soul_glutton;
     propagate_const<buff_t*> demonic_servitude; // Dummy buff for Tyrant that holds snapshot of Warlock's buff value
+    propagate_const<buff_t*> fiendish_wrath; // Guillotine talent buff, causes AoE melee attacks and prevents Felstorm
     // DF - Demonic Inspiration
     // DF - Wrathful Minion
     // DF - Guillotine + Fiendish Wrath (Guillotine talent)
@@ -380,6 +381,8 @@ struct felguard_pet_t : public warlock_pet_t
   timespan_t available() const override;
   void arise() override;
   double composite_player_multiplier( school_e ) const override;
+  double composite_melee_haste() const override;
+  double composite_melee_speed() const override;
 
   void queue_ds_felstorm();
 };

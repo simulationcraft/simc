@@ -73,6 +73,9 @@ void warlock_pet_t::create_buffs()
 
   buffs.demonic_servitude = make_buff( this, "demonic_servitude" );
 
+  buffs.fiendish_wrath = make_buff( this, "fiendish_wrath", find_spell( 386601 ) )
+                             ->set_default_value_from_effect( 1 );
+
   // Destruction
   buffs.embers = make_buff( this, "embers", find_spell( 264364 ) )
                      ->set_period( 500_ms )
@@ -807,6 +810,27 @@ double felguard_pet_t::composite_player_multiplier( school_e school ) const
 
   return m;
 }
+
+double felguard_pet_t::composite_melee_haste() const
+{
+  double m = warlock_pet_t::composite_melee_haste();
+
+  if ( buffs.fiendish_wrath->check() )
+    m *= 1.0 + buffs.fiendish_wrath->check_value();
+
+  return m;
+}
+
+double felguard_pet_t::composite_melee_speed() const
+{
+  double m = warlock_pet_t::composite_melee_speed();
+
+  if ( buffs.fiendish_wrath->check() )
+     m /= 1.0 + buffs.fiendish_wrath->check_value();
+
+  return m;
+}
+
 /// Felguard End
 
 /// Grimoire: Felguard Begin

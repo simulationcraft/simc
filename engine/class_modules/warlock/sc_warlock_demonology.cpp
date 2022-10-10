@@ -628,6 +628,15 @@ struct demonic_strength_t : public demonology_spell_t
     parse_options( options_str );
   }
 
+  // 2022-10-09: Technically, you can activate Demonic Strength during Guillotine, but
+  // it will only apply the buff and will fail to trigger the DS Felstorm. A Felstorm
+  // triggered once Guillotine is over will appropriately utilize the DS buff, but this
+  // will not be considered a "free" Felstorm and will put the ability on cooldown.
+  //
+  // As this is currently beta, we will not implement this for now as it would require
+  // significant changes to the way these spells are built. Instead, we will simply say
+  // Demonic Strength is not ready while the Fiendish Wrath buff is active.
+  // TOCHECK near release to implement final behavior.
   bool ready() override
   {
     auto active_pet = p()->warlock_pet_list.active;
@@ -640,6 +649,8 @@ struct demonic_strength_t : public demonology_spell_t
     if ( active_pet->find_action( "felstorm" )->get_dot()->is_ticking() )
       return false;
     if ( active_pet->find_action( "demonic_strength_felstorm" )->get_dot()->is_ticking() )
+      return false;
+    if ( active_pet->buffs.fiendish_wrath->check() )
       return false;
     return spell_t::ready();
   }
@@ -923,6 +934,54 @@ struct nether_portal_t : public demonology_spell_t
   }
 };
 
+struct guillotine_t : public demonology_spell_t
+{
+  guillotine_t( warlock_t* p, util::string_view options_str )
+    : demonology_spell_t( "guillotine", p, p->talents.guillotine )
+  {
+    parse_options( options_str );
+    may_crit = false;
+  }
+
+  // Guillotine takes priority over any other actions, so the only requirement is to have a Felguard
+  bool ready() override
+  {
+    auto active_pet = p()->warlock_pet_list.active;
+
+    if ( !active_pet )
+      return false;
+
+    if ( active_pet->pet_type != PET_FELGUARD )
+      return false;
+    
+    return spell_t::ready();
+  }
+
+  void execute() override
+  {
+    auto active_pet = p()->warlock_pet_list.active;
+
+    // 2022-10-09: Activating Guillotine will cancel any active Felstorm
+    if ( active_pet->find_action( "felstorm" )->get_dot()->is_ticking() )
+    {
+      active_pet->find_action( "felstorm" )->cancel();
+    }
+    else if ( active_pet->find_action( "demonic_strength_felstorm" )->get_dot()->is_ticking() )
+    {
+      active_pet->find_action( "demonic_strength_felstorm" )->cancel();
+    }
+
+    demonology_spell_t::execute();
+
+    if ( p()->warlock_pet_list.active->pet_type == PET_FELGUARD )
+    {
+      p()->warlock_pet_list.active->buffs.fiendish_wrath->trigger();
+
+      // Trigger Felguard to spawn Ground AoE event 
+    }
+  }
+};
+
 struct summon_random_demon_t : public demonology_spell_t
 {
   enum class random_pet_type : int
@@ -1085,6 +1144,8 @@ action_t* warlock_t::create_action_demonology( util::string_view action_name, ut
     return new summon_vilefiend_t( this, options_str );
   if ( action_name == "grimoire_felguard" )
     return new grimoire_felguard_t( this, options_str );
+  if ( action_name == "guillotine" )
+    return new guillotine_t( this, options_str );
 
   return nullptr;
 }
@@ -1284,6 +1345,8 @@ void warlock_t::init_spells_demonology()
 
   talents.reign_of_tyranny = find_talent_spell( talent_tree::SPECIALIZATION, "Reign of Tyranny" ); // Should be ID 390173
   talents.demonic_servitude = find_spell( 390193 );
+
+  talents.guillotine = find_talent_spell( talent_tree::SPECIALIZATION, "Guillotine" ); // Should be ID 386833
 
   // Legendaries
   legendary.balespiders_burning_core       = find_runeforge_legendary( "Balespider's Burning Core" );
