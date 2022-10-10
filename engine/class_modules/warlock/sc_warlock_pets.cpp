@@ -488,6 +488,51 @@ felguard_pet_t::felguard_pet_t( warlock_t* owner, util::string_view name )
   is_main_pet = true;
 }
 
+struct felguard_melee_t : public warlock_pet_melee_t
+{
+  struct fiendish_wrath_t : public warlock_pet_melee_attack_t
+  {
+    fiendish_wrath_t( warlock_pet_t* p ) : warlock_pet_melee_attack_t( "Fiendish Wrath", p, p->find_spell( 386601 ) )
+    {
+      background = dual = true;
+      aoe = -1;
+    }
+
+    size_t available_targets( std::vector<player_t*>& tl ) const override
+    {
+      warlock_pet_melee_attack_t::available_targets( tl );
+
+      // Does not hit the main target
+      auto it = range::find( tl, target );
+      if ( it != tl.end() )
+      {
+        tl.erase( it );
+      }
+
+      return tl.size();
+    }
+  };
+
+  fiendish_wrath_t* fiendish_wrath;
+
+  felguard_melee_t( warlock_pet_t* p, double wm, const char* name = "melee" ) :
+    warlock_pet_melee_t ( p, wm, name )
+  {
+    fiendish_wrath = new fiendish_wrath_t( p );
+    add_child( fiendish_wrath );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    auto amount = s->result_raw;
+
+    warlock_pet_melee_t::impact( s );
+
+    if ( p()->buffs.fiendish_wrath->check() )
+      fiendish_wrath->execute_on_target( s->target, amount );
+  }
+};
+
 struct axe_toss_t : public warlock_pet_spell_t
 {
   axe_toss_t( warlock_pet_t* p, util::string_view options_str )
@@ -748,7 +793,7 @@ void felguard_pet_t::init_base_stats()
 
   // Felguard is the only warlock pet type to use an actual weapon.
   main_hand_weapon.type = WEAPON_AXE_2H;
-  melee_attack          = new warlock_pet_melee_t( this );
+  melee_attack = new felguard_melee_t( this, 1.0, "melee" );
 
   owner_coeff.ap_from_sp = 0.575;
   owner_coeff.sp_from_sp = 1.15;
