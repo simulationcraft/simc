@@ -339,8 +339,8 @@ public:
     const spell_data_t* soul_glutton; // Buff on Pit Lord based on demons summoned
     player_talent_t reign_of_tyranny; // Each summoned active gives stacks of Demonic Servitude (Wild Imps give 1, others 2). Tyrant snapshots this buff on summon for more damage
     const spell_data_t* demonic_servitude; // TOCHECK: 2022-10-09 - In addition to aura stack bugs, Nether Portal demons are not currently giving stacks in beta (not implemented)
-    // DF - Wilfred's Sigil of Superior Summoning (Choice against Reign of Tyranny, formerly SL Legendary, NOTE: SHARES NAME WITH OTHER SPEC TALENTS)
-    // DF - Guillotine (Felguard AoE plus autoattack cleave cooldown)
+    // Grand Warlock's Design (formerly Wilfred's). Shared across all 3 specs
+    player_talent_t guillotine;
 
     // DESTRO
     // DF - Chaos Bolt
