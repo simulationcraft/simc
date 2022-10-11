@@ -442,6 +442,7 @@ public:
     buff_t* terms_of_engagement;
     buff_t* mongoose_fury;
     buff_t* coordinated_assault;
+    buff_t* spearhead;
 
     // Pet family buffs
     buff_t* endurance_training;
@@ -894,7 +895,6 @@ public:
   }
 
   void trigger_wild_spirits( const action_state_t* s );
-  void trigger_birds_of_prey( player_t* t );
   void trigger_bloodseeker_update();
   void trigger_lethal_shots();
   void trigger_calling_the_shots( action_t* action, double cost );
@@ -1542,6 +1542,7 @@ struct hunter_main_pet_base_t : public hunter_pet_t
 
     action_t* flanking_strike = nullptr;
     action_t* coordinated_assault = nullptr;
+    action_t* spearhead = nullptr;
   } active;
 
   struct buffs_t
@@ -1643,6 +1644,7 @@ struct hunter_main_pet_base_t : public hunter_pet_t
     m *= 1 + o() -> talents.animal_companion -> effectN( 2 ).percent();
     
     m *= 1 + o() -> talents.ferocity -> effectN( 1 ).percent();
+    m *= 1 + o() -> buffs.spearhead -> check_value();
 
     return m;
   }
@@ -2387,6 +2389,17 @@ struct coordinated_assault_t: public hunter_main_pet_attack_t
   }
 };
 
+// Spearhead ====================================================
+
+struct spearhead_t: public hunter_main_pet_attack_t
+{
+  spearhead_t( hunter_main_pet_t* p ):
+    hunter_main_pet_attack_t( "spearhead", p, p -> find_spell( 378957 ) )
+  {
+    background = true;
+  }
+};
+
 // Stomp ===================================================================
 
 struct stomp_t : public hunter_pet_action_t<hunter_pet_t, attack_t>
@@ -2506,6 +2519,9 @@ void hunter_main_pet_t::init_spells()
 
   if ( o() -> talents.coordinated_assault.ok() )
     active.coordinated_assault = new actions::coordinated_assault_t( this );
+
+  if ( o() -> talents.spearhead.ok() )
+    active.spearhead = new actions::spearhead_t( this );
 
   if ( o() -> talents.brutal_companion.ok() )
     active.brutal_companion_ba = new actions::brutal_companion_ba_t( this, "Claw" );
@@ -2644,18 +2660,6 @@ void hunter_t::trigger_wild_spirits( const action_state_t* s )
     actions.wild_spirits -> execute();
   }
 
-}
-
-void hunter_t::trigger_birds_of_prey( player_t* t )
-{
-  if ( !talents.birds_of_prey.ok() )
-    return;
-
-  if ( !pets.main )
-    return;
-
-  if ( t == pets.main -> target )
-    buffs.coordinated_assault -> extend_duration( this, talents.birds_of_prey -> effectN( 1 ).time_value() );
 }
 
 void hunter_t::trigger_bloodseeker_update()
@@ -2931,14 +2935,6 @@ struct residual_bleed_base_t : public residual_action::residual_periodic_action_
   {
   }
 
-  void init() override
-  {
-    residual_periodic_action_t::init();
-
-    snapshot_flags |= STATE_TGT_MUL_TA;
-    update_flags |= STATE_TGT_MUL_TA;
-  }
-
   double base_ta(const action_state_t* s) const override
   {
     double ta = residual_periodic_action_t::base_ta( s );
@@ -2978,24 +2974,40 @@ struct kill_shot_t : hunter_ranged_attack_t
       result_mod = p -> find_spell( 388998 ) -> effectN( 3 ).percent();
       aoe = as<int>( p -> find_spell( 388998 ) -> effectN( 2 ).base_value() );
     }
+
+    void init() override
+    {
+      residual_periodic_action_t::init();
+
+      snapshot_flags |= STATE_TGT_MUL_TA;
+      update_flags |= STATE_TGT_MUL_TA;
+    }
   };
 
   // Pouch of Razor Fragments (Runeforge)
-  struct pouch_of_razor_fragments_t : public residual_action::residual_periodic_action_t<hunter_ranged_attack_t>
+  struct pouch_of_razor_fragments_t : residual_bleed_base_t
   {
     pouch_of_razor_fragments_t( util::string_view n, hunter_t* p )
-      : residual_periodic_action_t( n, p, p -> find_spell( 356620 ) )
+      : residual_bleed_base_t( n, p, p -> find_spell( 356620 ) )
     {
+    }
+
+    void init() override
+    {
+      residual_periodic_action_t::init();
+
+      snapshot_flags |= STATE_TGT_MUL_TA;
+      update_flags |= STATE_TGT_MUL_TA;
     }
   };
 
   // Coordinated Assault
-  struct bleeding_gash_t : public residual_action::residual_periodic_action_t<hunter_ranged_attack_t>
+  struct bleeding_gash_t : residual_bleed_base_t
   {
     double result_mod;
 
     bleeding_gash_t( util::string_view n, hunter_t* p )
-      : residual_periodic_action_t( n, p, p -> find_spell( 361049 ) )
+      : residual_bleed_base_t( n, p, p -> find_spell( 361049 ) )
     {
       result_mod = p -> find_spell( 361738 ) -> effectN( 1 ).percent();
     }
@@ -3077,9 +3089,7 @@ struct kill_shot_t : hunter_ranged_attack_t
       p() -> buffs.coordinated_assault -> expire();
       double amount = s -> result_amount * bleeding_gash -> result_mod;
       if ( amount > 0 )
-      {
         residual_action::trigger( bleeding_gash, s -> target, amount );
-      }
     }
   }
 
@@ -3440,10 +3450,10 @@ struct latent_poison_t final : hunter_spell_t
 
 // Master Marksman ====================================================================
 
-struct master_marksman_t : public residual_action::residual_periodic_action_t<hunter_ranged_attack_t>
+struct master_marksman_t : residual_bleed_base_t
 {
   master_marksman_t( hunter_t* p ):
-    residual_periodic_action_t( "master_marksman", p, p -> find_spell( 269576 ) )
+    residual_bleed_base_t( "master_marksman", p, p -> find_spell( 269576 ) )
   { }
 
   void init() override
@@ -3452,18 +3462,6 @@ struct master_marksman_t : public residual_action::residual_periodic_action_t<hu
 
     snapshot_flags |= STATE_TGT_MUL_TA;
     update_flags   |= STATE_TGT_MUL_TA;
-  }
-
-  double base_ta(const action_state_t* s) const override
-  {
-    double ta = residual_periodic_action_t::base_ta( s );
-
-    if ( s -> target -> health_percentage() < p() -> talents.serrated_shots -> effectN( 3 ).base_value() )
-      ta *= 1 + p() -> talents.serrated_shots -> effectN( 2 ).percent();
-    else
-      ta *= 1 + p() -> talents.serrated_shots -> effectN( 1 ).percent();
-
-    return ta;
   }
 };
 
@@ -4794,6 +4792,17 @@ struct internal_bleeding_t
 
 struct melee_focus_spender_t: hunter_melee_attack_t
 {
+  struct spearhead_bleed_t : residual_bleed_base_t
+  {
+    double result_mod;
+
+    spearhead_bleed_t( util::string_view n, hunter_t* p)
+      : residual_bleed_base_t( n, p, p -> find_spell( 389881 ) )
+    {
+      result_mod = p -> talents.spearhead -> effectN( 2 ).percent();
+    }
+  };
+
   struct latent_poison_injectors_t final : hunter_spell_t
   {
     latent_poison_injectors_t( util::string_view n, hunter_t* p ):
@@ -4836,6 +4845,7 @@ struct melee_focus_spender_t: hunter_melee_attack_t
 
   internal_bleeding_t internal_bleeding;
   latent_poison_injectors_t* latent_poison_injectors = nullptr;
+  spearhead_bleed_t* spearhead = nullptr;
 
   struct {
     double chance = 0;
@@ -4865,6 +4875,12 @@ struct melee_focus_spender_t: hunter_melee_attack_t
       rylakstalkers_strikes.chance = p -> legendary.rylakstalkers_strikes -> proc_chance();
       rylakstalkers_strikes.proc = p -> get_proc( "Rylakstalker's Confounding Strikes" );
     }
+
+    if ( s -> ok() && p -> talents.spearhead.ok() )
+    {
+      spearhead = p -> get_background_action<spearhead_bleed_t>( "spearhead_bleed" );
+      add_child( spearhead );
+    }
   }
 
   void execute() override
@@ -4875,8 +4891,6 @@ struct melee_focus_spender_t: hunter_melee_attack_t
       vipers_venom.action -> execute_on_target( target );
 
     p() -> buffs.butchers_bone_fragments -> trigger();
-
-    p() -> trigger_birds_of_prey( target );
 
     if ( rng().roll( rylakstalkers_strikes.chance ) )
     {
@@ -4900,6 +4914,13 @@ struct melee_focus_spender_t: hunter_melee_attack_t
       latent_poison_injectors -> trigger( s -> target );
 
     p() -> trigger_latent_poison( s );
+
+    if ( spearhead && p() -> buffs.spearhead -> up() )
+    {
+      double amount = s -> result_amount * spearhead -> result_mod;
+      if ( amount > 0 )
+        residual_action::trigger( spearhead, s -> target, amount );
+    }
   }
 
   double action_multiplier() const override
@@ -5057,7 +5078,6 @@ struct carve_base_t: public hunter_melee_attack_t
   {
     hunter_melee_attack_t::impact( s );
 
-    p() -> trigger_birds_of_prey( s -> target );
     p() -> buffs.flame_infusion -> trigger();
     internal_bleeding.trigger( s );
   }
@@ -5281,6 +5301,55 @@ struct coordinated_assault_t: public hunter_melee_attack_t
     if ( auto pet = p() -> pets.main ) {
       pet -> active.coordinated_assault -> execute_on_target( target );
       pet -> buffs.coordinated_assault -> trigger();
+    }
+  }
+};
+
+// Spearhead ==============================================================
+
+struct spearhead_t: public hunter_melee_attack_t
+{
+  struct damage_t final : hunter_melee_attack_t
+  {
+    damage_t( util::string_view n, hunter_t* p ):
+      hunter_melee_attack_t( n, p, p -> find_spell( 378957 ) )
+    {
+      dual = true;
+    }
+  };
+  damage_t* damage;
+
+  spearhead_t( hunter_t* p, util::string_view options_str ):
+    hunter_melee_attack_t( "spearhead", p, p -> talents.spearhead )
+  {
+    parse_options( options_str );
+
+    base_teleport_distance  = data().max_range();
+    movement_directionality = movement_direction_type::OMNI;
+    triggers_wild_spirits = false;
+
+    damage = p -> get_background_action<damage_t>( "spearhead_damage" );
+    add_child( damage );
+  }
+
+  void init_finished() override
+  {
+    for ( auto pet : p() -> pet_list )
+      add_pet_stats( pet, { "spearhead" } );
+
+    hunter_melee_attack_t::init_finished();
+  }
+
+  void execute() override
+  {
+    hunter_melee_attack_t::execute();
+
+    if ( p() -> main_hand_weapon.group() == WEAPON_2H )
+      damage -> execute_on_target( target );
+
+    if ( auto pet = p() -> pets.main ) {
+      p() -> buffs.spearhead -> trigger();
+      pet -> active.spearhead -> execute_on_target( target );
     }
   }
 };
@@ -5681,6 +5750,9 @@ struct kill_command_t: public hunter_spell_t
 
       chance += p() -> talents.bloody_claws -> effectN( 1 ).percent()
         * p() -> buffs.mongoose_fury -> check();
+
+      if ( p() -> buffs.spearhead -> check() )
+        chance += p() -> talents.spearhead -> effectN( 3 ).percent();
 
       if ( rng().roll( chance ) )
       {
@@ -6686,6 +6758,7 @@ action_t* hunter_t::create_action( util::string_view name,
   if ( name == "raptor_strike_eagle"   ) return new    raptor_strike_eagle_t( this, options_str );
   if ( name == "resonating_arrow"      ) return new       resonating_arrow_t( this, options_str );
   if ( name == "serpent_sting"         ) return new          serpent_sting_t( this, options_str );
+  if ( name == "spearhead"             ) return new              spearhead_t( this, options_str );
   if ( name == "stampede"              ) return new               stampede_t( this, options_str );
   if ( name == "steady_shot"           ) return new            steady_shot_t( this, options_str );
   if ( name == "steel_trap"            ) return new             steel_trap_t( this, options_str );
@@ -7320,6 +7393,10 @@ void hunter_t::create_buffs()
   buffs.coordinated_assault =
     make_buff( this, "coordinated_assault", find_spell( 361738 ) )
       -> set_default_value_from_effect( 2 );
+
+  buffs.spearhead =
+    make_buff( this, "spearhead", talents.spearhead )
+    -> set_default_value_from_effect( 1 );
 
   // Pet family buffs
 
