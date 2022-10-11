@@ -492,6 +492,7 @@ public:
     cooldown_t* harpoon;
     cooldown_t* flanking_strike;
     cooldown_t* fury_of_the_eagle;
+    cooldown_t* ruthless_marauder;
   } cooldowns;
 
   // Gains
@@ -797,6 +798,7 @@ public:
     cooldowns.harpoon               = get_cooldown( "harpoon" );
     cooldowns.flanking_strike       = get_cooldown( "flanking_strike");
     cooldowns.fury_of_the_eagle     = get_cooldown( "fury_of_the_eagle" );
+    cooldowns.ruthless_marauder     = get_cooldown( "ruthless_marauder" );
 
     base_gcd = 1.5_s;
 
@@ -5219,8 +5221,9 @@ struct fury_of_the_eagle_t: public hunter_melee_attack_t
 {
   struct fury_of_the_eagle_tick_t: public hunter_melee_attack_t
   {
-    double health_threshold;
-    double crit_chance_bonus;
+    double health_threshold = 0;
+    double crit_chance_bonus = 0;
+    timespan_t ruthless_marauder_adjust = 0_ms;
 
     fury_of_the_eagle_tick_t( hunter_t* p, int aoe_cap ):
       hunter_melee_attack_t( "fury_of_the_eagle_tick", p, p -> talents.fury_of_the_eagle -> effectN( 1 ).trigger() )
@@ -5230,8 +5233,11 @@ struct fury_of_the_eagle_t: public hunter_melee_attack_t
       may_crit = true;
       radius = data().max_range();
       reduced_aoe_targets = aoe_cap;
-      health_threshold = p -> talents.fury_of_the_eagle -> effectN( 4 ).base_value();
+      health_threshold = p -> talents.fury_of_the_eagle -> effectN( 4 ).base_value() + p -> talents.ruthless_marauder -> effectN( 1 ).base_value();
       crit_chance_bonus = p -> talents.fury_of_the_eagle -> effectN( 3 ).percent();
+
+      if ( p -> talents.ruthless_marauder )
+        ruthless_marauder_adjust = p -> talents.ruthless_marauder -> effectN( 3 ).time_value();
     }
 
     double composite_target_crit_chance( player_t* target ) const override
@@ -5242,6 +5248,18 @@ struct fury_of_the_eagle_t: public hunter_melee_attack_t
         c += crit_chance_bonus;
 
       return c;
+    }
+
+    void impact( action_state_t* state ) override
+    {
+      hunter_melee_attack_t::impact( state );
+
+      if ( ruthless_marauder_adjust > 0_ms && state -> result == RESULT_CRIT && p() -> cooldowns.ruthless_marauder -> is_ready() )
+      {
+        p() -> cooldowns.wildfire_bomb -> adjust( -ruthless_marauder_adjust );
+        p() -> cooldowns.flanking_strike -> adjust( -ruthless_marauder_adjust );
+        p() -> cooldowns.ruthless_marauder -> start();
+      }
     }
   };
 
@@ -5347,10 +5365,10 @@ struct spearhead_t: public hunter_melee_attack_t
     if ( p() -> main_hand_weapon.group() == WEAPON_2H )
       damage -> execute_on_target( target );
 
-    if ( auto pet = p() -> pets.main ) {
-      p() -> buffs.spearhead -> trigger();
+    p() -> buffs.spearhead -> trigger();
+
+    if ( auto pet = p() -> pets.main )
       pet -> active.spearhead -> execute_on_target( target );
-    }
   }
 };
 
@@ -7124,6 +7142,9 @@ void hunter_t::init_spells()
   tier_set.killing_frenzy_4pc   = sets -> set( HUNTER_BEAST_MASTERY, T28, B4 );
   tier_set.mad_bombardier_2pc   = sets -> set( HUNTER_SURVIVAL,      T28, B2 );
   tier_set.mad_bombardier_4pc   = sets -> set( HUNTER_SURVIVAL,      T28, B4 );
+
+  // Cooldowns
+  cooldowns.ruthless_marauder -> duration = talents.ruthless_marauder -> internal_cooldown();
 }
 
 // hunter_t::init_base ======================================================
