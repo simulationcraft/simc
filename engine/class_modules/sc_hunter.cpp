@@ -935,6 +935,7 @@ public:
     bool mad_bombardier = false;
     damage_affected_by spirit_bond;
     bool coordinated_assault = false;
+    bool spearhead = false;
   } affected_by;
 
   cdwaste::action_data_t* cd_waste = nullptr;
@@ -962,6 +963,7 @@ public:
     affected_by.mad_bombardier        = check_affected_by( this, p -> tier_set.mad_bombardier_4pc -> effectN( 1 ) );
     affected_by.spirit_bond           = parse_damage_affecting_aura( this, p -> mastery.spirit_bond );
     affected_by.coordinated_assault   = check_affected_by( this, p -> find_spell( 361738 ) -> effectN( 2 ) );
+    affected_by.spearhead             = check_affected_by( this, p -> talents.spearhead -> effectN( 4 ) );
 
     // Hunter Tree passives
     ab::apply_affecting_aura( p -> talents.improved_kill_shot );
@@ -1173,6 +1175,9 @@ public:
 
     if ( p() -> buffs.eagletalons_true_focus_runeforge -> check() )
       c *= 1 + p() -> buffs.eagletalons_true_focus_runeforge -> check_value();
+
+    if ( affected_by.spearhead && p() -> buffs.spearhead -> check() )
+      c += p() -> talents.deadly_duo -> effectN( 1 ).base_value();
 
     return ceil( c );
   }
@@ -5780,6 +5785,7 @@ struct kill_command_t: public hunter_spell_t
           quick_shot.action -> execute_on_target( target );
 
         p() -> cooldowns.fury_of_the_eagle -> adjust( - p() -> talents.fury_of_the_eagle -> effectN( 2 ).time_value() );
+        p() -> buffs.spearhead -> extend_duration( p(), p() -> talents.deadly_duo -> effectN( 2 ).time_value() );
       }
     }
 
