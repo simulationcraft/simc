@@ -291,6 +291,7 @@ public:
     // Covenant Abilities
     propagate_const<buff_t*> bonedust_brew;
     propagate_const<buff_t*> bonedust_brew_hidden;
+    propagate_const<buff_t*> bonedust_brew_attenuation_hidden;
     propagate_const<buff_t*> weapons_of_order;
     propagate_const<buff_t*> weapons_of_order_ww;
     propagate_const<buff_t*> faeline_stomp;

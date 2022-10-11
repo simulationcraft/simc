@@ -3157,6 +3157,11 @@ struct fists_of_fury_t : public monk_melee_attack_t
     }
   }
 
+  bool usable_moving() const override
+  {
+    return true;
+  }
+
   void execute() override
   {
     if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T29, B2 ) )
@@ -5363,7 +5368,11 @@ struct bountiful_brew_t : public monk_spell_t
 
   void execute() override
   {
-    p()->buff.bonedust_brew_hidden->trigger();
+    if ( p()->talent.brewmaster.attenuation->ok() || p()->talent.mistweaver.attenuation->ok() ||
+         p()->talent.windwalker.attenuation->ok() )
+      p()->buff.bonedust_brew_attenuation_hidden->trigger();
+    else
+        p()->buff.bonedust_brew_hidden->trigger();
     monk_spell_t::execute();
 
     if ( p()->legendary.bountiful_brew->ok() )
@@ -5428,7 +5437,11 @@ struct bonedust_brew_t : public monk_spell_t
 
   void execute() override
   {
-    p()->buff.bonedust_brew_hidden->trigger();
+    if ( p()->talent.brewmaster.attenuation->ok() || p()->talent.mistweaver.attenuation->ok() ||
+         p()->talent.windwalker.attenuation->ok() )
+      p()->buff.bonedust_brew_attenuation_hidden->trigger();
+    else
+      p()->buff.bonedust_brew_hidden->trigger();
     monk_spell_t::execute();
 
     p()->buff.bonedust_brew->trigger();
@@ -5468,6 +5481,17 @@ struct bonedust_brew_damage_t : public monk_spell_t
         p()->proc.bonedust_brew_reduction->occur();
       }
     }
+    else if ( p()->buff.bonedust_brew_attenuation_hidden->up() )
+    {
+      if ( p()->conduit.bone_marrow_hops->ok() )
+      {
+        // Saved at -500
+        p()->cooldown.bonedust_brew->adjust( p()->conduit.bone_marrow_hops->effectN( 2 ).time_value(), true );
+
+        p()->buff.bonedust_brew_attenuation_hidden->decrement();
+        p()->proc.bonedust_brew_reduction->occur();
+      }
+    }
   }
 };
 
@@ -5494,6 +5518,17 @@ struct bonedust_brew_heal_t : public monk_heal_t
         p()->cooldown.bonedust_brew->adjust( p()->conduit.bone_marrow_hops->effectN( 2 ).time_value(), true );
 
         p()->buff.bonedust_brew_hidden->decrement();
+        p()->proc.bonedust_brew_reduction->occur();
+      }
+    }
+    else if ( p()->buff.bonedust_brew_attenuation_hidden->up() )
+    {
+      if ( p()->conduit.bone_marrow_hops->ok() )
+      {
+        // Saved at -500
+        p()->cooldown.bonedust_brew->adjust( p()->conduit.bone_marrow_hops->effectN( 2 ).time_value(), true );
+
+        p()->buff.bonedust_brew_attenuation_hidden->decrement();
         p()->proc.bonedust_brew_reduction->occur();
       }
     }
@@ -9031,6 +9066,12 @@ void monk_t::create_buffs ()
     ->set_max_stack( 5 )
     ->set_reverse( true )
     ->set_reverse_stack_count( 5 );
+  buff.bonedust_brew_attenuation_hidden= make_buff( this, "bonedust_brew_attenuation_hidden" )
+    ->set_quiet( true )
+    ->set_duration( timespan_t::from_seconds( 10 ) )
+    ->set_max_stack( 10 )
+    ->set_reverse( true )
+    ->set_reverse_stack_count( 10 );
 
   buff.weapons_of_order =
     make_buff( this, "weapons_of_order", find_spell( 310454 ) )
