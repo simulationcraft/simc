@@ -2471,28 +2471,31 @@ static bool generate_tree_nodes( player_t* player, std::map<unsigned, std::vecto
   return true;
 }
 
+namespace
+{
+const std::string base64_char = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+// hardcoded values from Interface/AddOns/Blizzard_ClassTalentUI/Blizzard_ClassTalentImportExport.lua
+constexpr size_t version_bits = 8;    // serialization version
+constexpr size_t spec_bits    = 16;   // specialization id
+constexpr size_t tree_bits    = 128;  // C_Traits.GetTreeHash(), optionally can be 0-filled
+constexpr size_t rank_bits    = 6;    // ranks purchased if node is partially filled
+constexpr size_t choice_bits  = 2;    // choice index, 0-based
+// hardcoded value from Interface/SharedXML/ExportUtil.lua
+constexpr size_t byte_size    = 6;
+constexpr unsigned LOADOUT_SERIALIZATION_VERSION = 1;
+}
+
 static void parse_traits_hash( const std::string& talents_str, player_t* player )
 {
-  static const std::string char_array = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-
   auto do_error = [ player, &talents_str ]( std::string_view msg = {} ) {
     player->sim->error( "Player {} has invalid talent tree hash {}{}{}", player->name(), talents_str, msg.empty() ? "" : ": ", msg );
   };
 
-  if ( player->talents_str.find_first_not_of( char_array ) != std::string::npos )
+  if ( player->talents_str.find_first_not_of( base64_char ) != std::string::npos )
   {
     do_error();
     return;
   }
-
-  // hardcoded values from Interface/AddOns/Blizzard_ClassTalentUI/Blizzard_ClassTalentImportExport.lua
-  static constexpr size_t version_bits = 8;    // serialization version
-  static constexpr size_t spec_bits    = 16;   // specialization id
-  static constexpr size_t tree_bits    = 128;  // C_Traits.GetTreeHash(), optionally can be 0-filled
-  static constexpr size_t rank_bits    = 6;    // ranks purchased if node is partially filled
-  static constexpr size_t choice_bits  = 2;    // choice index, 0-based
-  // hardcoded value from Interface/SharedXML/ExportUtil.lua
-  static constexpr size_t byte_size    = 6;
 
   if ( version_bits + spec_bits + tree_bits > talents_str.size() * byte_size )
   {
@@ -2500,11 +2503,12 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
     return;
   }
 
-  auto get_bit = [ &talents_str ]( size_t bits, size_t& head ) -> size_t {
+  size_t head = 0;
+  auto get_bit = [ &talents_str, &head ]( size_t bits ) {
     size_t val = 0;
     for ( size_t i = 0; i < bits; i++ )
     {
-      size_t byte = char_array.find( talents_str[ head / byte_size ] );
+      size_t byte = base64_char.find( talents_str[ head / byte_size ] );
       size_t bit  = head % byte_size;
       head++;
       val += ( byte >> bit & 0b1 ) << i;
@@ -2512,12 +2516,10 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
     return val;
   };
 
-  size_t head = 0;
+  auto version_id = get_bit( version_bits );
+  auto spec_id    = get_bit( spec_bits );
 
-  auto version_id = get_bit( version_bits, head );
-  auto spec_id    = get_bit( spec_bits, head );
-
-  if ( version_id != 1 )
+  if ( version_id != LOADOUT_SERIALIZATION_VERSION )
   {
     do_error( "Invalid serialization version" );
     return;
@@ -2535,12 +2537,7 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
   // As per Interface/AddOns/Blizzard_ClassTalentUI/Blizzard_ClassTalentImportExport.lua: treeHash is a 128bit hash,
   // passed as an array of 16, 8-bit values. For SimC purposes we can ignore it, as invalid/outdated strings can error
   // in later checks
-  /*
-  int8_t tree_hash[ 16 ];
-  for ( size_t i = 0; i < 16; i++ )
-    tree_hash[ i ] = static_cast<int8_t>( get_bit( 8, head ) );
-  */
-  get_bit( tree_bits, head );
+  get_bit( tree_bits );
 
   std::map<unsigned, std::vector<const trait_data_t*>> tree_nodes;
 
@@ -2548,7 +2545,7 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
 
   for ( auto& [ id, node ] : tree_nodes )
   {
-    if ( get_bit( 1, head ) )  // selected
+    if ( get_bit( 1 ) )  // selected
     {
       range::sort( node, []( const trait_data_t* a, const trait_data_t* b ) {
         return a->selection_index < b->selection_index;
@@ -2557,7 +2554,14 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
       auto trait = node.front();
       size_t rank = trait->max_ranks;
 
-      if ( get_bit( 1, head ) )  // partially ranked normal trait
+      if ( !std::all_of( trait->id_spec.begin(), trait->id_spec.end(), []( unsigned i ) { return i == 0; } ) &&
+           !range::contains( trait->id_spec, player->specialization() ) )
+      {
+        do_error( fmt::format( "selected node {} is not available to player's spec.", id ) );
+        return;
+      }
+
+      if ( get_bit( 1 ) )  // partially ranked normal trait
       {
         if ( node.size() > 1 )
         {
@@ -2565,12 +2569,24 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
           return;
         }
 
-        rank = get_bit( rank_bits, head );
+        rank = get_bit( rank_bits );
+
+        if ( rank > trait->max_ranks )
+        {
+          do_error( fmt::format( "{} ranks selected for node {} which has {} ranks max.", rank, id, trait->max_ranks ) );
+          return;
+        }
+
+        if ( rank == trait->max_ranks )
+        {
+          do_error( fmt::format( "partial rank indicated for node {} but all {} ranks are allocated.", id, rank ) );
+          return;
+        }
       }
 
-      if ( get_bit( 1, head ) )  // choice trait
+      if ( get_bit( 1 ) )  // choice trait
       {
-        size_t index = get_bit( choice_bits, head );
+        size_t index = get_bit( choice_bits );
         if ( index >= node.size() )
         {
           do_error( fmt::format( "index {} for choice node {} out of bounds.", index, id ) );
