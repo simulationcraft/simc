@@ -349,7 +349,7 @@ public:
     const spell_data_t* conflagrate_2; // Contains Soul Shard information
     player_talent_t reverse_entropy;
     const spell_data_t* reverse_entropy_buff;
-    const spell_data_t* internal_combustion; // DF - Now a choice against Reverse Entropy
+    player_talent_t internal_combustion;
     // DF - Rain of Fire
 
     // DF - Backdraft (max 2 stacks, also now affects Soul Fire)
@@ -898,6 +898,8 @@ public:
 
   void tick( dot_t* d ) override
   {
+    spell_t::tick( d );
+
     if ( p()->specialization() == WARLOCK_DESTRUCTION && p()->talents.reverse_entropy.ok() )
     {
       bool success = p()->buffs.reverse_entropy->trigger();
