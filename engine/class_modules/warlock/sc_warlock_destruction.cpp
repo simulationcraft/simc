@@ -387,7 +387,7 @@ struct incinerate_t : public destruction_spell_t
       return t;
 
     if ( p()->buffs.backdraft->check() )
-      t *= p()->talents.backdraft_buff->effectN( 2 ).percent();
+      t *= 1.0 + p()->talents.backdraft_buff->effectN( 2 ).percent();
 
     if ( t < min_gcd )
       t = min_gcd;
