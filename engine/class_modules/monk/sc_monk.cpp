@@ -843,19 +843,10 @@ public:
     // Don't want to cause the buff to be cast and then used up immediately.
     if ( current_resource() == RESOURCE_CHI )
     {
-      // Bug: Dance of Chi-Ji cannot proc during Serenity
-      if ( !p()->bugs )
-      {
-        // Dance of Chi-Ji talent triggers from spending chi
-        if ( p()->talent.windwalker.dance_of_chiji->ok() )
-          p()->buff.dance_of_chiji->trigger();
-      }
-      else if ( !p()->buff.serenity->up() )
-      {
-        // Dance of Chi-Ji talent triggers from spending chi
-        if ( p()->talent.windwalker.dance_of_chiji->ok() )
-          p()->buff.dance_of_chiji->trigger();
-      }
+      // Dance of Chi-Ji talent triggers from spending chi
+      if ( p()->talent.windwalker.dance_of_chiji->ok() )
+        p()->buff.dance_of_chiji->trigger();
+
     }
 
     ab::impact( s );
@@ -2260,8 +2251,12 @@ struct blackout_kick_totm_proc : public monk_melee_attack_t
 
       case MONK_WINDWALKER:
 
-        if ( p()->talent.windwalker.transfer_the_power->ok() )
-          p()->buff.transfer_the_power->trigger();
+        // Transfer the power triggers from ToTM hits but only on the primary target
+        if ( s->target == target )
+        {
+          if ( p()->talent.windwalker.transfer_the_power->ok() )
+            p()->buff.transfer_the_power->trigger();
+        }
 
         break;
 
@@ -3415,6 +3410,13 @@ struct strike_of_the_windlord_t : public monk_melee_attack_t
 
     // Off-hand attack hits first
     oh_attack->execute();
+
+    // The first charge is spent instantly on execute, consecutive charges are spent on white hits
+    if ( p()->buff.thunderfist->up() )
+    {
+      p()->passive_actions.thunderfist->target = target;
+      p()->passive_actions.thunderfist->schedule_execute();
+    }
 
     if ( result_is_hit( oh_attack->execute_state->result ) )
       mh_attack->execute();
