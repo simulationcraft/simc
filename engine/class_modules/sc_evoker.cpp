@@ -1215,11 +1215,16 @@ struct empowered_charge_spell_t : public empowered_base_t
     auto emp_state = release_spell->get_state();
     emp_state->target = d->state->target;
     release_spell->snapshot_state( emp_state, release_spell->amount_type( emp_state ) );
-    debug_cast<empowered_state_t*>( emp_state )->empower = empower_level( d );
+
+    if ( p()->buff.tip_the_scales->up() )
+    {
+      p()->buff.tip_the_scales->expire();
+      debug_cast<empowered_state_t*>( emp_state )->empower = max_empower;
+    }
+    else
+      debug_cast<empowered_state_t*>( emp_state )->empower = empower_level( d );
 
     release_spell->schedule_execute( emp_state );
-
-    p()->buff.tip_the_scales->expire();
 
     // hack to prevent dot_t::last_tick() from schedule_ready()'ing the player
     d->current_action = release_spell;
