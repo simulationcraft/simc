@@ -197,23 +197,33 @@ struct havoc_t : public destruction_spell_t
 
 struct immolate_t : public destruction_spell_t
 {
-  immolate_t( warlock_t* p, util::string_view options_str ) : destruction_spell_t( "immolate", p, p->warlock_base.immolate )
+  struct immolate_dot_t : public destruction_spell_t
+  {
+    immolate_dot_t( warlock_t* p ) : destruction_spell_t( "immolate", p, p->warlock_base.immolate_dot )
+    {
+      background = dual = true;
+      spell_power_mod.tick = p->warlock_base.immolate_dot->effectN( 1 ).sp_coeff();
+    }
+
+    void tick( dot_t* d ) override
+    {
+      destruction_spell_t::tick( d );
+
+      if ( d->state->result == RESULT_CRIT && rng().roll( data().effectN( 2 ).percent() ) )
+        p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.immolate_crits );
+
+      p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.immolate );
+    }
+  };
+
+  immolate_t( warlock_t* p, util::string_view options_str ) : destruction_spell_t( "immolate_direct", p, p->warlock_base.immolate )
   {
     parse_options( options_str );
 
     can_havoc = true;
 
-    parse_effect_data( p->warlock_base.immolate_dot->effectN( 1 ) );
-  }
-
-  void tick( dot_t* d ) override
-  {
-    destruction_spell_t::tick( d );
-
-    if ( d->state->result == RESULT_CRIT && rng().roll( data().effectN( 2 ).percent() ) )
-      p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.immolate_crits );
-
-    p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.immolate );
+    impact_action = new immolate_dot_t( p );
+    add_child( impact_action );
   }
 };
 

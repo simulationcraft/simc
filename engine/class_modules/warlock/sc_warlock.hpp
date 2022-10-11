@@ -898,6 +898,8 @@ public:
 
   void tick( dot_t* d ) override
   {
+    spell_t::tick( d );
+
     if ( p()->specialization() == WARLOCK_DESTRUCTION && p()->talents.reverse_entropy.ok() )
     {
       bool success = p()->buffs.reverse_entropy->trigger();
