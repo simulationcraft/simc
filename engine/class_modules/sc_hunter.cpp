@@ -442,6 +442,7 @@ public:
     buff_t* terms_of_engagement;
     buff_t* mongoose_fury;
     buff_t* coordinated_assault;
+    buff_t* coordinated_assault_empower;
     buff_t* spearhead;
 
     // Pet family buffs
@@ -1121,7 +1122,7 @@ public:
       am *= 1 + p() -> buffs.mad_bombardier -> check_value();
 
     if ( affected_by.coordinated_assault )
-      am *= 1 + p() -> buffs.coordinated_assault -> check_value();
+      am *= 1 + p() -> buffs.coordinated_assault_empower -> check_value();
 
     return am;
   }
@@ -1557,7 +1558,6 @@ struct hunter_main_pet_base_t : public hunter_pet_t
     buff_t* rylakstalkers_piercing_fangs = nullptr;
 
     buff_t* bloodseeker = nullptr;
-    buff_t* coordinated_assault = nullptr;
   } buffs;
 
   struct {
@@ -1758,19 +1758,6 @@ struct hunter_main_pet_t final : public hunter_main_pet_base_t
       make_buff( this, "bloodseeker", o() -> find_spell( 260249 ) )
         -> set_default_value_from_effect( 1 )
         -> add_invalidate( CACHE_ATTACK_SPEED );
-
-    buffs.coordinated_assault =
-      make_buff( this, "coordinated_assault", o() -> talents.coordinated_assault )
-      -> set_cooldown( 0_ms )
-      -> apply_affecting_conduit( o() -> conduits.deadly_tandem );
-
-    if ( o() -> talents.coordinated_kill.ok() ) {
-      buffs.coordinated_assault -> set_stack_change_callback(
-        [ this ]( buff_t*, int old, int cur ) {
-          o() -> cooldowns.wildfire_bomb -> adjust_recharge_multiplier();
-          o() -> cooldowns.kill_shot -> adjust_recharge_multiplier();
-        } );
-    }
   }
 
   void init_action_list() override
@@ -2334,8 +2321,8 @@ struct basic_attack_t : public hunter_main_pet_attack_t
   {
     hunter_main_pet_attack_t::execute();
 
-    if ( p() -> buffs.coordinated_assault -> check() )
-      o() -> buffs.coordinated_assault -> trigger();
+    if ( o() -> buffs.coordinated_assault -> check() )
+      o() -> buffs.coordinated_assault_empower -> trigger();
   }
 };
 
@@ -2958,9 +2945,10 @@ struct kill_shot_t : hunter_ranged_attack_t
   {
     bool razor_fragments_up = false;
     bool flayers_mark_up = false;
+    bool coordinated_assault_empower_up = false;
 
     friend void sc_format_to( const state_data_t& data, fmt::format_context::iterator out ) {
-      fmt::format_to( out, "razor_fragments_up={:d} flayers_mark_up={:d}", data.razor_fragments_up, data.flayers_mark_up );
+      fmt::format_to( out, "razor_fragments_up={:d} flayers_mark_up={:d} coordinated_assault_empower_up={:d}", data.razor_fragments_up, data.flayers_mark_up, data.coordinated_assault_empower_up );
     }
   };
   using state_t = hunter_action_state_t<state_data_t>;
@@ -3086,13 +3074,21 @@ struct kill_shot_t : hunter_ranged_attack_t
       }
     }
 
-    if ( bleeding_gash && p() -> buffs.coordinated_assault -> up() )
+    p() -> buffs.coordinated_assault_empower -> expire();
+    if ( bleeding_gash && debug_cast<state_t*>( s ) -> coordinated_assault_empower_up )
     {
-      p() -> buffs.coordinated_assault -> expire();
       double amount = s -> result_amount * bleeding_gash -> result_mod;
       if ( amount > 0 )
         residual_action::trigger( bleeding_gash, s -> target, amount );
     }
+  }
+
+  int n_targets() const override
+  {
+    if ( p() -> talents.birds_of_prey.ok() && p() -> buffs.coordinated_assault -> check() )
+      return 1 + as<int>( p() -> talents.birds_of_prey -> effectN( 1 ).base_value() );
+
+    return hunter_ranged_attack_t::n_targets();
   }
 
   double cost() const override
@@ -3109,7 +3105,7 @@ struct kill_shot_t : hunter_ranged_attack_t
       ( candidate_target -> health_percentage() <= health_threshold_pct
         || p() -> buffs.flayers_mark -> check() || p() -> buffs.deathblow -> check()
         || p() -> buffs.hunters_prey -> check()
-        || p() -> talents.coordinated_kill.ok() && p() -> pets.main && p() -> pets.main -> buffs.coordinated_assault -> check() );
+        || p() -> talents.coordinated_kill.ok() && p() -> buffs.coordinated_assault -> check() );
   }
 
   double action_multiplier() const override
@@ -3128,7 +3124,7 @@ struct kill_shot_t : hunter_ranged_attack_t
   {
     double m = hunter_spell_t::recharge_rate_multiplier( cd );
 
-    if ( p() -> pets.main && p() -> pets.main -> buffs.coordinated_assault -> check() )
+    if ( p() -> buffs.coordinated_assault -> check() )
       m *= 1 + p() -> talents.coordinated_kill -> effectN( 3 ).percent();
 
     return m;
@@ -3145,6 +3141,7 @@ struct kill_shot_t : hunter_ranged_attack_t
     debug_cast<state_t*>( s ) -> razor_fragments_up = p() -> buffs.razor_fragments -> check();
     // TODO seems to be a bit more complicated but basically only one triggers at once and the talent seems to take precedent over rungeforge
     debug_cast<state_t*>( s ) -> flayers_mark_up = p() -> buffs.flayers_mark -> check() && !p() -> buffs.razor_fragments -> check();
+    debug_cast<state_t*>( s ) -> coordinated_assault_empower_up = p() -> buffs.coordinated_assault_empower -> check();
   }
 };
 
@@ -5316,10 +5313,10 @@ struct coordinated_assault_t: public hunter_melee_attack_t
     if ( p() -> main_hand_weapon.group() == WEAPON_2H )
       damage -> execute_on_target( target );
 
-    if ( auto pet = p() -> pets.main ) {
+    p() -> buffs.coordinated_assault -> trigger();
+
+    if ( auto pet = p() -> pets.main )
       pet -> active.coordinated_assault -> execute_on_target( target );
-      pet -> buffs.coordinated_assault -> trigger();
-    }
   }
 };
 
@@ -6346,15 +6343,15 @@ struct wildfire_bomb_t: public hunter_spell_t
       p() -> buffs.flame_infusion -> up(); // benefit tracking
       p() -> buffs.flame_infusion -> expire();
 
-      p() -> buffs.coordinated_assault -> up();
-      p() -> buffs.coordinated_assault -> expire();
+      p() -> buffs.coordinated_assault_empower -> up();
+      p() -> buffs.coordinated_assault_empower -> expire();
     }
 
     double energize_cast_regen( const action_state_t* s ) const override
     {
       double r = hunter_spell_t::energize_cast_regen( s );
 
-      if ( p() -> talents.coordinated_kill.ok() && p() -> pets.main && p() -> pets.main -> buffs.coordinated_assault -> check() )
+      if ( p() -> talents.coordinated_kill.ok() && p() -> buffs.coordinated_assault -> check() )
         r += p() -> talents.coordinated_kill -> effectN( 2 ).base_value();
 
       return r;
@@ -6480,7 +6477,7 @@ struct wildfire_bomb_t: public hunter_spell_t
       p() -> state.next_wi_bomb = static_cast<wildfire_infusion_e>( slot );
     }
 
-    if ( p() -> talents.coordinated_kill.ok() && p() -> pets.main && p() -> pets.main -> buffs.coordinated_assault -> check() )
+    if ( p() -> talents.coordinated_kill.ok() && p() -> buffs.coordinated_assault -> check() )
       p() -> resource_gain( RESOURCE_FOCUS, p() -> talents.coordinated_kill -> effectN( 2 ).base_value(), p() -> gains.coordinated_kill, this);
   }
 
@@ -6512,7 +6509,7 @@ struct wildfire_bomb_t: public hunter_spell_t
   {
     double m = hunter_spell_t::recharge_rate_multiplier( cd );
 
-    if ( p() -> pets.main && p() -> pets.main -> buffs.coordinated_assault -> check() )
+    if ( p() -> buffs.coordinated_assault -> check() )
       m *= 1 + p() -> talents.coordinated_kill -> effectN( 1 ).percent();
 
     return m;
@@ -7412,7 +7409,23 @@ void hunter_t::create_buffs()
       -> set_refresh_behavior( buff_refresh_behavior::DISABLED );
 
   buffs.coordinated_assault =
-    make_buff( this, "coordinated_assault", find_spell( 361738 ) )
+    make_buff( this, "coordinated_assault", talents.coordinated_assault )
+    -> set_cooldown( 0_ms )
+    -> apply_affecting_conduit( conduits.deadly_tandem );
+
+  if ( talents.coordinated_kill.ok() ) {
+    buffs.coordinated_assault -> set_stack_change_callback(
+      [ this ]( buff_t*, int old, int cur ) {
+        if ( talents.bombardier.ok() )
+          cooldowns.wildfire_bomb -> reset( true );
+
+        cooldowns.wildfire_bomb -> adjust_recharge_multiplier();
+        cooldowns.kill_shot -> adjust_recharge_multiplier();
+      } );
+  }
+
+  buffs.coordinated_assault_empower =
+    make_buff( this, "coordinated_assault_empower", find_spell( 361738 ) )
       -> set_default_value_from_effect( 2 );
 
   buffs.spearhead =
