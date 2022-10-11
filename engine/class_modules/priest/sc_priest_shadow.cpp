@@ -102,7 +102,7 @@ struct mind_sear_t final : public priest_spell_t
 
   bool ready() override
   {
-    if ( priest().buffs.mind_devourer->check() )
+    if ( priest().buffs.mind_devourer->may_react() )
     {
       return true;
     }
@@ -141,7 +141,8 @@ struct mind_sear_t final : public priest_spell_t
       {
         priest().buffs.mind_devourer_ms_active->expire();
       }
-      else
+
+      if ( priest().buffs.mind_devourer->check() )
       {
         priest().buffs.mind_devourer->expire();
         priest().buffs.mind_devourer_ms_active->trigger();
