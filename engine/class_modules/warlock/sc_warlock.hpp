@@ -353,7 +353,8 @@ public:
     player_talent_t rain_of_fire;
     const spell_data_t* rain_of_fire_tick;
 
-    // DF - Backdraft (max 2 stacks, also now affects Soul Fire)
+    player_talent_t backdraft;
+    const spell_data_t* backdraft_buff; // DF - Now affects Soul Fire
     // DF - Mayhem (Choice against Havoc, single target spells have a chance to cleave)
     // DF - Havoc (Choice against Mayhem, core functionality unchanged)
     // DF - Pyrogenics (Enemies affected by Rain of Fire take increased Fire damage)

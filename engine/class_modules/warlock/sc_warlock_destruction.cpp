@@ -261,9 +261,8 @@ struct conflagrate_t : public destruction_spell_t
   {
     destruction_spell_t::execute();
 
-    //p()->buffs.backdraft->trigger();
-
-    //sim->print_log( "{}: Action {} {} charges remain", player->name(), name(), this->cooldown->current_charge );
+    if ( p()->talents.backdraft.ok() )
+      p()->buffs.backdraft->trigger();
   }
 };
 
@@ -350,8 +349,6 @@ struct incinerate_fnb_t : public destruction_spell_t
 
 struct incinerate_t : public destruction_spell_t
 {
-  double backdraft_gcd_mult;
-  double backdraft_cast_mult;
   double energize_mult;
   incinerate_fnb_t* fnb_action;
 
@@ -363,9 +360,6 @@ struct incinerate_t : public destruction_spell_t
     //add_child( fnb_action );
 
     can_havoc = true;
-
-    //backdraft_cast_mult = 1.0 + p->buffs.backdraft->data().effectN( 1 ).percent();
-    //backdraft_gcd_mult = 1.0 + p->buffs.backdraft->data().effectN( 2 ).percent();
 
     parse_effect_data( p->warlock_base.incinerate_energize->effectN( 1 ) );
 
@@ -379,8 +373,8 @@ struct incinerate_t : public destruction_spell_t
   {
     timespan_t h = spell_t::execute_time();
 
-    //if ( p()->buffs.backdraft->check() )
-    //  h *= backdraft_cast_mult;
+    if ( p()->buffs.backdraft->check() )
+      h *= 1.0 + p()->talents.backdraft_buff->effectN( 1 ).percent();
 
     return h;
   }
@@ -392,8 +386,8 @@ struct incinerate_t : public destruction_spell_t
     if ( t == 0_ms )
       return t;
 
-    //if ( p()->buffs.backdraft->check() )
-    //  t *= backdraft_gcd_mult;
+    if ( p()->buffs.backdraft->check() )
+      t *= p()->talents.backdraft_buff->effectN( 2 ).percent();
 
     if ( t < min_gcd )
       t = min_gcd;
@@ -405,7 +399,7 @@ struct incinerate_t : public destruction_spell_t
   {
     destruction_spell_t::execute();
 
-    //p()->buffs.backdraft->decrement();
+    p()->buffs.backdraft->decrement();
 
     //if ( p()->talents.fire_and_brimstone->ok() )
     //{
@@ -439,8 +433,6 @@ struct incinerate_t : public destruction_spell_t
 
 struct chaos_bolt_t : public destruction_spell_t
 {
-  double backdraft_gcd;
-  double backdraft_cast_time;
   internal_combustion_t* internal_combustion;
 
   chaos_bolt_t( warlock_t* p, util::string_view options_str )
@@ -448,9 +440,6 @@ struct chaos_bolt_t : public destruction_spell_t
   {
     parse_options( options_str );
     can_havoc = true;
-
-    //backdraft_cast_time = 1.0 + p->buffs.backdraft->data().effectN( 1 ).percent();
-    //backdraft_gcd       = 1.0 + p->buffs.backdraft->data().effectN( 2 ).percent();
 
     internal_combustion = new internal_combustion_t( p );
     add_child( internal_combustion );
@@ -473,8 +462,8 @@ struct chaos_bolt_t : public destruction_spell_t
     //if ( p()->buffs.ritual_of_ruin->check() )
     //  h *= 1.0 + p()->buffs.ritual_of_ruin->data().effectN( 3 ).percent();
 
-    //if ( p()->buffs.backdraft->check() )
-    //  h *= backdraft_cast_time;
+    if ( p()->buffs.backdraft->check() )
+      h *= 1.0 + p()->talents.backdraft_buff->effectN( 1 ).percent();
 
     //// SL - Legendary
     //if ( p()->buffs.madness_of_the_azjaqir->check() )
@@ -517,9 +506,9 @@ struct chaos_bolt_t : public destruction_spell_t
     if ( t == 0_ms )
       return t;
 
-    //// PTR 2022-02-16: Backdraft is no longer consumed when using T28 free Chaos Bolt cast, but GCD is still shortened
-    //if ( p()->buffs.backdraft->check() )
-    //  t *= backdraft_gcd;
+    // PTR 2022-02-16: Backdraft is no longer consumed when using T28 free Chaos Bolt cast, but GCD is still shortened
+    if ( p()->buffs.backdraft->check() )
+      t *= 1.0 + p()->talents.backdraft_buff->effectN( 2 ).percent();
 
     if ( t < min_gcd )
       t = min_gcd;
@@ -548,6 +537,8 @@ struct chaos_bolt_t : public destruction_spell_t
     //// PTR 2022-02-16: Backdraft is no longer consumed for T28 free Chaos Bolts
     //if ( !p()->buffs.ritual_of_ruin->check() )
     //  p()->buffs.backdraft->decrement();
+
+    p()->buffs.backdraft->decrement();
 
     //// SL - Legendary
     //if ( p()->legendary.madness_of_the_azjaqir->ok() )
@@ -972,9 +963,7 @@ action_t* warlock_t::create_action_destruction( util::string_view action_name, u
 void warlock_t::create_buffs_destruction()
 {
   // destruction buffs
-  buffs.backdraft =
-      make_buff( this, "backdraft", find_spell( 117828 ) )
-          ->set_refresh_behavior( buff_refresh_behavior::DURATION );
+  buffs.backdraft = make_buff( this, "backdraft", talents.backdraft_buff );
 
   buffs.reverse_entropy = make_buff( this, "reverse_entropy", talents.reverse_entropy_buff )
                               ->set_default_value_from_effect( 1 )
@@ -1031,6 +1020,9 @@ void warlock_t::init_spells_destruction()
 
   talents.rain_of_fire = find_talent_spell( talent_tree::SPECIALIZATION, "Rain of Fire" ); // Should be ID 5740
   talents.rain_of_fire_tick = find_spell( 42223 );
+
+  talents.backdraft = find_talent_spell( talent_tree::SPECIALIZATION, "Backdraft" ); // Should be ID 196406
+  talents.backdraft_buff = find_spell( 117828 );
 
   talents.eradication = find_talent_spell( "Eradication" );
   talents.soul_fire   = find_talent_spell( "Soul Fire" );
