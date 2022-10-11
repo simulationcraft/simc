@@ -315,6 +315,7 @@ public:
     // Arcane
     buff_t* arcane_charge;
     buff_t* arcane_familiar;
+    buff_t* arcane_surge;
     buff_t* arcane_tempo;
     buff_t* chrono_shift;
     buff_t* clearcasting;
@@ -441,7 +442,7 @@ public:
   // Gains
   struct gains_t
   {
-    gain_t* evocation;
+    gain_t* arcane_surge;
     gain_t* mana_gem;
     gain_t* arcane_barrage;
   } gains;
@@ -1560,6 +1561,7 @@ struct mage_spell_t : public spell_t
     bool frost_mage = true;
 
     // Temporary damage increase
+    bool arcane_surge = true;
     bool bone_chilling = true;
     bool incanters_flow = true;
     bool invigorating_powder = true;
@@ -1714,6 +1716,9 @@ public:
   double action_multiplier() const override
   {
     double m = spell_t::action_multiplier();
+
+    if ( affected_by.arcane_surge && p()->buffs.arcane_surge->check() )
+      m *= 1.0 + p()->buffs.arcane_surge->data().effectN( 1 ).percent();
 
     if ( affected_by.bone_chilling )
       m *= 1.0 + p()->buffs.bone_chilling->check_stack_value();
@@ -3293,6 +3298,41 @@ struct arcane_orb_t final : public arcane_mage_spell_t
   {
     arcane_mage_spell_t::execute();
     p()->trigger_arcane_charge();
+  }
+};
+
+// Arcane Surge Spell =======================================================
+
+struct arcane_surge_t final : public arcane_mage_spell_t
+{
+  double energize_pct;
+
+  arcane_surge_t( std::string_view n, mage_t* p, std::string_view options_str ) :
+    arcane_mage_spell_t( n, p, p->talents.arcane_surge )
+  {
+    parse_options( options_str );
+    triggers.radiant_spark = true;
+    aoe = -1;
+    reduced_aoe_targets = as<double>( data().max_targets() );
+    energize_pct = p->find_spell( 365362 )->effectN( 4 ).percent();
+  }
+
+  double action_multiplier() const override
+  {
+    double am = arcane_mage_spell_t::action_multiplier();
+
+    am *= 1.0 + ( data().effectN( 2 ).base_value() - 1.0 ) * ( cost() / p()->resources.max[ RESOURCE_MANA ] );
+
+    return am;
+  }
+
+  void execute() override
+  {
+    arcane_mage_spell_t::execute();
+
+    p()->resource_gain( RESOURCE_MANA, p()->resources.max[ RESOURCE_MANA ] * energize_pct, p()->gains.arcane_surge, this );
+    p()->buffs.arcane_surge->trigger();
+    p()->buffs.rune_of_power->trigger();
   }
 };
 
@@ -6186,6 +6226,7 @@ struct time_anomaly_tick_event_t final : public event_t
         switch ( proc )
         {
           case TA_ARCANE_SURGE:
+            mage->buffs.arcane_surge->trigger( 1000 * mage->talents.time_anomaly->effectN( 1 ).time_value() );
             break;
           case TA_CLEARCASTING:
             mage->buffs.clearcasting->trigger(); // TODO: does this need delayed trigger?
@@ -6368,6 +6409,7 @@ action_t* mage_t::create_action( std::string_view name, std::string_view options
   if ( name == "arcane_familiar"        ) return new        arcane_familiar_t( name, this, options_str );
   if ( name == "arcane_missiles"        ) return new        arcane_missiles_t( name, this, options_str );
   if ( name == "arcane_orb"             ) return new             arcane_orb_t( name, this, options_str );
+  if ( name == "arcane_surge"           ) return new           arcane_surge_t( name, this, options_str );
   if ( name == "conjure_mana_gem"       ) return new       conjure_mana_gem_t( name, this, options_str );
   if ( name == "evocation"              ) return new              evocation_t( name, this, options_str );
   if ( name == "nether_tempest"         ) return new         nether_tempest_t( name, this, options_str );
@@ -6585,15 +6627,14 @@ void mage_t::regen( timespan_t periodicity )
 {
   player_t::regen( periodicity );
 
-  if ( resources.is_active( RESOURCE_MANA ) && buffs.evocation->check() )
+  if ( resources.is_active( RESOURCE_MANA ) && buffs.arcane_surge->check() )
   {
     double base = resource_regen_per_second( RESOURCE_MANA );
     if ( base )
     {
-      // Base regen was already done, subtract 1.0 from Evocation's mana regen multiplier to make
-      // sure we don't apply it twice.
-      double amount = ( buffs.evocation->check_value() - 1.0 ) * base * periodicity.total_seconds();
-      resource_gain( RESOURCE_MANA, amount, gains.evocation );
+      // Base regen was already done, so we don't need to add 1.0 to Arcane Surge's mana regen multiplier.
+      double amount = buffs.arcane_surge->check_value() * base * periodicity.total_seconds();
+      resource_gain( RESOURCE_MANA, amount, gains.arcane_surge );
     }
   }
 }
@@ -6947,6 +6988,9 @@ void mage_t::create_buffs()
                                    { action.arcane_assault->execute_on_target( target ); } )
                                  ->set_stack_change_callback( [ this ] ( buff_t*, int, int )
                                    { recalculate_resource_max( RESOURCE_MANA ); } );
+  buffs.arcane_surge         = make_buff( this, "arcane_surge", find_spell( 365362 ) )
+                                 ->set_default_value_from_effect( 3 )
+                                 ->set_affects_regen( true );
   buffs.arcane_tempo         = make_buff( this, "arcane_tempo", find_spell( 383997 ) )
                                  ->set_default_value( talents.arcane_tempo->effectN( 1 ).percent() )
                                  ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
@@ -7240,7 +7284,7 @@ void mage_t::init_gains()
 {
   player_t::init_gains();
 
-  gains.evocation      = get_gain( "Evocation"      );
+  gains.arcane_surge   = get_gain( "Arcane Surge"   );
   gains.mana_gem       = get_gain( "Mana Gem"       );
   gains.arcane_barrage = get_gain( "Arcane Barrage" );
 }
@@ -7418,6 +7462,7 @@ double mage_t::resource_regen_per_second( resource_e rt ) const
     reg *= 1.0 + cache.mastery() * spec.savant->effectN( 1 ).mastery_value();
     reg *= 1.0 + buffs.enlightened_mana->check_value();
     reg *= 1.0 + buffs.arcane_lucidity->check_value();
+    reg *= 1.0 + buffs.evocation->check_value();
   }
 
   return reg;
@@ -8199,7 +8244,7 @@ void mage_t::trigger_evocation( timespan_t duration_override, bool hasted )
     duration *= cache.spell_speed();
   }
 
-  buffs.evocation->trigger( 1, mana_regen_multiplier, -1.0, duration );
+  buffs.evocation->trigger( 1, mana_regen_multiplier - 1.0, -1.0, duration );
 }
 
 void mage_t::trigger_arcane_charge( int stacks )
