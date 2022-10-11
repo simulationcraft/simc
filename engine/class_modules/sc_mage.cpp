@@ -6205,6 +6205,8 @@ struct time_anomaly_tick_event_t final : public event_t
       auto spec = mage->specialization();
 
       // TODO: these conditions haven't been tested
+      if ( spec == MAGE_ARCANE && !mage->buffs.arcane_surge->check() )
+        possible_procs.push_back( TA_ARCANE_SURGE );
       if ( spec == MAGE_ARCANE && !mage->buffs.clearcasting->at_max_stacks() )
         possible_procs.push_back( TA_CLEARCASTING );
       if ( spec == MAGE_FIRE && !mage->buffs.combustion->check() )
