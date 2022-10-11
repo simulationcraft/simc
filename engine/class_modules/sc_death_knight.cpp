@@ -11545,6 +11545,11 @@ double death_knight_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + talent.blood.bloodshot -> effectN( 1 ).percent();
   }
 
+  if ( buffs.sanguine_ground -> up() )
+  {
+    m *= 1.0 + buffs.sanguine_ground -> value();
+  }
+
   return m;
 }
 
