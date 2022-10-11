@@ -3305,8 +3305,6 @@ struct arcane_orb_t final : public arcane_mage_spell_t
 
 struct arcane_surge_t final : public arcane_mage_spell_t
 {
-  double energize_pct;
-
   arcane_surge_t( std::string_view n, mage_t* p, std::string_view options_str ) :
     arcane_mage_spell_t( n, p, p->talents.arcane_surge )
   {
@@ -3314,7 +3312,6 @@ struct arcane_surge_t final : public arcane_mage_spell_t
     triggers.radiant_spark = true;
     aoe = -1;
     reduced_aoe_targets = as<double>( data().max_targets() );
-    energize_pct = p->find_spell( 365362 )->effectN( 4 ).percent();
   }
 
   double action_multiplier() const override
@@ -3330,7 +3327,7 @@ struct arcane_surge_t final : public arcane_mage_spell_t
   {
     arcane_mage_spell_t::execute();
 
-    p()->resource_gain( RESOURCE_MANA, p()->resources.max[ RESOURCE_MANA ] * energize_pct, p()->gains.arcane_surge, this );
+    p()->resource_gain( RESOURCE_MANA, p()->resources.max[ RESOURCE_MANA ] * p()->buffs.arcane_surge->data().effectN( 4 ).percent(), p()->gains.arcane_surge, this );
     p()->buffs.arcane_surge->trigger();
     p()->buffs.rune_of_power->trigger();
   }
@@ -6226,6 +6223,7 @@ struct time_anomaly_tick_event_t final : public event_t
         switch ( proc )
         {
           case TA_ARCANE_SURGE:
+            mage->resource_gain( RESOURCE_MANA, mage->resources.max[ RESOURCE_MANA ] * mage->buffs.arcane_surge->data().effectN( 4 ).percent(), mage->gains.arcane_surge );
             mage->buffs.arcane_surge->trigger( 1000 * mage->talents.time_anomaly->effectN( 1 ).time_value() );
             break;
           case TA_CLEARCASTING:
