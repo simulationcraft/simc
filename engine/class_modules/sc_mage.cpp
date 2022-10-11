@@ -1676,10 +1676,6 @@ public:
       update_flags   |= STATE_FROZEN | STATE_FROZEN_MUL;
     }
 
-    // TODO: this is just an approximation for now, test all spells
-    if ( harmful && aoe != -1 )
-      triggers.overflowing_energy = true;
-
     if ( affected_by.time_manipulation
       && range::find( p()->time_manipulation_cooldowns, cooldown ) == p()->time_manipulation_cooldowns.end() )
     {
@@ -1884,7 +1880,7 @@ public:
 
     if ( callbacks && p()->talents.overflowing_energy.ok() && s->result_type == result_amount_type::DMG_DIRECT )
     {
-      // TODO: should we use events here just like with Fevered Incantation? OF doesn't trigger from AoE spells
+      // TODO: should we use events here just like with Fevered Incantation? OE doesn't trigger from AoE spells
       // so multiple simultaneous triggers happen rather rarely
       if ( s->result == RESULT_CRIT )
         p()->buffs.overflowing_energy->expire();
@@ -2705,6 +2701,7 @@ struct phoenix_reborn_t final : public spell_t
     spell_t( n, p, p->find_spell( 383479 ) )
   {
     background = true;
+    callbacks = false;
   }
 };
 
@@ -2806,7 +2803,7 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
     parse_options( options_str );
     cooldown->hasted = true;
     base_aoe_multiplier *= data().effectN( 2 ).percent();
-    triggers.radiant_spark = true;
+    triggers.radiant_spark = triggers.overflowing_energy = true;
     artifice_of_the_archmage_charges = as<int>( p->find_spell( 337244 )->effectN( 1 ).base_value() );
   }
 
@@ -2889,7 +2886,7 @@ struct arcane_blast_t final : public arcane_mage_spell_t
   {
     parse_options( options_str );
     cost_reductions = { p->buffs.rule_of_threes };
-    triggers.radiant_spark = true;
+    triggers.radiant_spark = triggers.overflowing_energy = true;
     affected_by.deathborne_cleave = true;
     base_multiplier *= 1.0 + p->talents.crackling_energy->effectN( 1 ).percent();
     reduced_aoe_targets = 1.0;
@@ -3033,7 +3030,7 @@ struct arcane_assault_t final : public arcane_mage_spell_t
     arcane_mage_spell_t( n, p, p->find_spell( 225119 ) )
   {
     background = true;
-    affected_by.radiant_spark = false;
+    affected_by.radiant_spark = callbacks = false;
   }
 };
 
@@ -3094,7 +3091,7 @@ struct arcane_missiles_tick_t final : public arcane_mage_spell_t
     arcane_mage_spell_t( n, p, p->find_spell( 7268 ) )
   {
     background = true;
-    affected_by.savant = triggers.radiant_spark = true;
+    affected_by.savant = triggers.radiant_spark = triggers.overflowing_energy = true;
     base_multiplier *= 1.0 + p->talents.improved_arcane_missiles->effectN( 1 ).percent();
   }
 
@@ -3615,7 +3612,7 @@ struct conflagration_flare_up_t final : public fire_mage_spell_t
     fire_mage_spell_t( n, p, p->find_spell( 205345 ) )
   {
     background = true;
-    affected_by.radiant_spark = false;
+    affected_by.radiant_spark = callbacks = false;
     aoe = -1;
   }
 };
@@ -3848,7 +3845,7 @@ struct fireball_t final : public fire_mage_spell_t
   {
     parse_options( options_str );
     triggers.hot_streak = triggers.kindling = TT_ALL_TARGETS;
-    triggers.ignite = triggers.from_the_ashes = triggers.radiant_spark = true;
+    triggers.ignite = triggers.from_the_ashes = triggers.radiant_spark = triggers.overflowing_energy = true;
     affected_by.deathborne_cleave = true;
     base_multiplier *= 1.0 + p->sets->set( MAGE_FIRE, T29, B4 )->effectN( 1 ).percent();
     base_crit += p->sets->set( MAGE_FIRE, T29, B4 )->effectN( 3 ).percent();
@@ -4027,8 +4024,7 @@ struct glacial_assault_t final : public frost_mage_spell_t
   glacial_assault_t( std::string_view n, mage_t* p ) :
     frost_mage_spell_t( n, p, p->find_spell( 379029 ) )
   {
-    // TODO: check interactions with other effects (radiant spark, overflowing energy, etc)
-    background  = true;
+    background = true;
     aoe = -1;
   }
 };
@@ -4038,7 +4034,7 @@ struct flurry_bolt_t final : public frost_mage_spell_t
   flurry_bolt_t( std::string_view n, mage_t* p ) :
     frost_mage_spell_t( n, p, p->find_spell( 228354 ) )
   {
-    background = triggers.chill = triggers.radiant_spark = triggers.icy_propulsion = true;
+    background = triggers.chill = triggers.radiant_spark = triggers.icy_propulsion = triggers.overflowing_energy = true;
     base_multiplier *= 1.0 + p->talents.lonely_winter->effectN( 1 ).percent();
   }
 
@@ -4149,7 +4145,8 @@ struct frostbolt_t final : public frost_mage_spell_t
   {
     parse_options( options_str );
     parse_effect_data( p->find_spell( 228597 )->effectN( 1 ) );
-    triggers.chill = calculate_on_impact = track_shatter = consumes_winters_chill = triggers.radiant_spark = affected_by.deathborne_cleave = triggers.icy_propulsion = true;
+    calculate_on_impact = track_shatter = consumes_winters_chill = affected_by.deathborne_cleave = true;
+    triggers.chill = triggers.radiant_spark = triggers.icy_propulsion = triggers.overflowing_energy = true;
     base_multiplier *= 1.0 + p->talents.lonely_winter->effectN( 1 ).percent();
     base_multiplier *= 1.0 + p->talents.wintertide->effectN( 1 ).percent();
     crit_bonus_multiplier *= 1.0 + p->talents.piercing_cold->effectN( 1 ).percent();
@@ -4451,7 +4448,8 @@ struct glacial_spike_t final : public frost_mage_spell_t
   {
     parse_options( options_str );
     parse_effect_data( p->find_spell( 228600 )->effectN( 1 ) );
-    calculate_on_impact = track_shatter = consumes_winters_chill = triggers.radiant_spark = triggers.icy_propulsion = true;
+    calculate_on_impact = track_shatter = consumes_winters_chill = true;
+    triggers.radiant_spark = triggers.icy_propulsion = triggers.overflowing_energy = true;
     base_multiplier *= 1.0 + p->talents.flash_freeze->effectN( 2 ).percent();
     crit_bonus_multiplier *= 1.0 + p->talents.piercing_cold->effectN( 1 ).percent();
 
@@ -4594,7 +4592,8 @@ struct ice_lance_t final : public frost_mage_spell_t
   {
     parse_options( options_str );
     parse_effect_data( p->find_spell( 228598 )->effectN( 1 ) );
-    calculate_on_impact = track_shatter = consumes_winters_chill = triggers.radiant_spark = triggers.icy_propulsion = true;
+    calculate_on_impact = track_shatter = consumes_winters_chill = true;
+    triggers.radiant_spark = triggers.icy_propulsion = triggers.overflowing_energy = true;
     base_multiplier *= 1.0 + p->talents.lonely_winter->effectN( 1 ).percent();
     base_multiplier *= 1.0 + p->sets->set( MAGE_FROST, T29, B2 )->effectN( 1 ).percent();
 
@@ -4830,7 +4829,7 @@ struct fire_blast_t final : public fire_mage_spell_t
   {
     parse_options( options_str );
     triggers.hot_streak = triggers.kindling = TT_MAIN_TARGET;
-    triggers.ignite = triggers.from_the_ashes = triggers.radiant_spark = triggers.icy_propulsion = true;
+    triggers.ignite = triggers.from_the_ashes = triggers.radiant_spark = triggers.icy_propulsion = triggers.overflowing_energy = true;
     base_multiplier *= 1.0 + p->sets->set( MAGE_FIRE, T29, B4 )->effectN( 1 ).percent();
     base_crit += p->sets->set( MAGE_FIRE, T29, B4 )->effectN( 3 ).percent();
 
@@ -5023,7 +5022,7 @@ struct living_bomb_explosion_t final : public fire_mage_spell_t
     reduced_aoe_targets = 1.0;
     full_amount_targets = 1;
     background = true;
-    affected_by.radiant_spark = false;
+    affected_by.radiant_spark = callbacks = false;
   }
 };
 
@@ -5315,7 +5314,7 @@ struct pyroblast_t final : public hot_streak_spell_t
   {
     parse_options( options_str );
     triggers.hot_streak = triggers.kindling = TT_MAIN_TARGET;
-    triggers.ignite = triggers.from_the_ashes = triggers.radiant_spark = true;
+    triggers.ignite = triggers.from_the_ashes = triggers.radiant_spark = triggers.overflowing_energy = true;
     base_execute_time *= 1.0 + p->talents.tempered_flames->effectN( 1 ).percent();
     base_crit += p->talents.tempered_flames->effectN( 2 ).percent();
 
@@ -5458,7 +5457,7 @@ struct scorch_t final : public fire_mage_spell_t
   {
     parse_options( options_str );
     triggers.hot_streak = TT_MAIN_TARGET;
-    triggers.ignite = triggers.from_the_ashes = triggers.radiant_spark = true;
+    triggers.ignite = triggers.from_the_ashes = triggers.radiant_spark = triggers.overflowing_energy = true;
     // There is a tiny delay between Scorch dealing damage and Hot Streak
     // state being updated. Here we model it as a tiny travel time.
     travel_delay = p->options.scorch_delay.total_seconds();
