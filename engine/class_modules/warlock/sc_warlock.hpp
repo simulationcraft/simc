@@ -350,7 +350,8 @@ public:
     player_talent_t reverse_entropy;
     const spell_data_t* reverse_entropy_buff;
     player_talent_t internal_combustion;
-    // DF - Rain of Fire
+    player_talent_t rain_of_fire;
+    const spell_data_t* rain_of_fire_tick;
 
     // DF - Backdraft (max 2 stacks, also now affects Soul Fire)
     // DF - Mayhem (Choice against Havoc, single target spells have a chance to cleave)
@@ -408,6 +409,7 @@ public:
     action_t* pandemic_invocation_proc;
     action_t* bilescourge_bombers_aoe_tick;
     action_t* summon_random_demon; // Nether Portal and Inner Demons
+    action_t* rain_of_fire_tick;
   } proc_actions;
 
   // DF - This struct will be retired, need to determine if needed for pre-patch
