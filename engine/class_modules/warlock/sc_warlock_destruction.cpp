@@ -101,21 +101,21 @@ struct internal_combustion_t : public destruction_spell_t
 
   void execute() override
   {
-    warlock_td_t* td = this->td( target );
+    warlock_td_t* td = p()->get_target_data( target );
     dot_t* dot       = td->dots_immolate;
 
     assert( dot->current_action );
     action_state_t* state = dot->current_action->get_state( dot->state );
     dot->current_action->calculate_tick_amount( state, 1.0 );
     double tick_base_damage  = state->result_raw;
-    timespan_t remaining     = std::min( dot->remains(), timespan_t::from_seconds( data().effectN( 1 ).base_value() ) );
+    timespan_t remaining     = std::min( dot->remains(), timespan_t::from_seconds( p()->talents.internal_combustion->effectN( 1 ).base_value() ) );
     timespan_t dot_tick_time = dot->current_action->tick_time( state );
     double ticks_left        = remaining / dot_tick_time;
 
     double total_damage = ticks_left * tick_base_damage;
 
     action_state_t::release( state );
-    this->base_dd_min = this->base_dd_max = total_damage;
+    base_dd_min = base_dd_max = total_damage;
 
     destruction_spell_t::execute();
     td->dots_immolate->adjust_duration( -remaining );
@@ -442,8 +442,8 @@ struct chaos_bolt_t : public destruction_spell_t
     //backdraft_cast_time = 1.0 + p->buffs.backdraft->data().effectN( 1 ).percent();
     //backdraft_gcd       = 1.0 + p->buffs.backdraft->data().effectN( 2 ).percent();
 
-    //internal_combustion = new internal_combustion_t( p );
-    //add_child( internal_combustion );
+    internal_combustion = new internal_combustion_t( p );
+    add_child( internal_combustion );
   }
 
   double cost() const override
@@ -521,26 +521,13 @@ struct chaos_bolt_t : public destruction_spell_t
   {
     destruction_spell_t::impact( s );
 
-    //trigger_internal_combustion( s );
+    if ( p()->talents.internal_combustion.ok() && result_is_hit( s->result ) && p()->get_target_data( s->target )->dots_immolate->is_ticking() )
+    {
+      internal_combustion->execute_on_target( s->target );
+    }
 
     //if ( p()->talents.eradication->ok() && result_is_hit( s->result ) )
     //  td( s->target )->debuffs_eradication->trigger();
-  }
-
-  void trigger_internal_combustion( action_state_t* s )
-  {
-    if ( !p()->talents.internal_combustion->ok() )
-      return;
-
-    if ( !result_is_hit( s->result ) )
-      return;
-
-    auto td = this->td( s->target );
-    if ( !td->dots_immolate->is_ticking() )
-      return;
-
-    internal_combustion->set_target( s->target );
-    internal_combustion->execute();
   }
 
   void execute() override
@@ -1039,10 +1026,12 @@ void warlock_t::init_spells_destruction()
   talents.reverse_entropy = find_talent_spell( talent_tree::SPECIALIZATION, "Reverse Entropy" ); // Should be ID 205148
   talents.reverse_entropy_buff = find_spell( 266030 );
 
+  talents.internal_combustion = find_talent_spell( talent_tree::SPECIALIZATION, "Internal Combustion" ); // Should be ID 266134
+
   talents.eradication = find_talent_spell( "Eradication" );
   talents.soul_fire   = find_talent_spell( "Soul Fire" );
 
-  talents.internal_combustion = find_talent_spell( "Internal Combustion" );
+
   talents.shadowburn          = find_talent_spell( "Shadowburn" );
 
   talents.inferno            = find_talent_spell( "Inferno" );
