@@ -3848,26 +3848,26 @@ struct cat_finisher_t : public cat_attack_t
     if ( p()->sets->has_set_bonus( DRUID_FERAL, T29, B4 ) )
       p()->buff.sharpened_claws_bloodied_fangs->trigger( consumed );
 
+    if ( !is_free() )
+    {
+      p()->resource_loss( RESOURCE_COMBO_POINT, consumed, nullptr, this );
+
+      sim->print_log( "{} consumes {} {} for {} (0)", player->name(), consumed,
+                      util::resource_type_string( RESOURCE_COMBO_POINT ), name() );
+
+      stats->consume_resource( RESOURCE_COMBO_POINT, consumed );
+
+      if ( ( p()->buff.berserk_cat->check() || p()->buff.incarnation_cat->check() ) && berserk_cp &&
+           rng().roll( consumed * p()->talent.berserk->effectN( 1 ).percent() ) )
+      {
+        p()->resource_gain( RESOURCE_COMBO_POINT, berserk_cp, p()->gain.berserk );
+      }
+    }
+
     if ( p()->buff.tigers_tenacity->check() )
     {
       p()->resource_gain( RESOURCE_COMBO_POINT, p()->buff.tigers_tenacity->value(), p()->gain.tigers_tenacity );
       p()->buff.tigers_tenacity->decrement();
-    }
-
-    if ( is_free() )  // rest requires actual CP consumption
-      return;
-
-    p()->resource_loss( RESOURCE_COMBO_POINT, consumed, nullptr, this );
-
-    sim->print_log( "{} consumes {} {} for {} (0)", player->name(), consumed,
-                    util::resource_type_string( RESOURCE_COMBO_POINT ), name() );
-
-    stats->consume_resource( RESOURCE_COMBO_POINT, consumed );
-
-    if ( ( p()->buff.berserk_cat->check() || p()->buff.incarnation_cat->check() ) && berserk_cp &&
-         rng().roll( consumed * p()->talent.berserk->effectN( 1 ).percent() ) )
-    {
-      p()->resource_gain( RESOURCE_COMBO_POINT, berserk_cp, p()->gain.berserk );
     }
   }
 };
