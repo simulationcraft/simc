@@ -1033,7 +1033,9 @@
       { "data_type": "I", "field": "id_parent_skill_line" },
       { "data_type": "I", "field": "parent_tier_index" },
       { "data_type": "H", "field": "flags" },
-      { "data_type": "i", "field": "id_spell_book_spell" }
+      { "data_type": "i", "field": "id_spell_book_spell" },
+      { "data_type": "i", "field": "unk_1" },
+      { "data_type": "i", "field": "unk_2" }
     ]
   },
   "SkillLineAbility": {
