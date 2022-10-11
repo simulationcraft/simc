@@ -114,6 +114,10 @@ struct weapon_info_t
 
 class rogue_td_t : public actor_target_data_t
 {
+  std::vector<dot_t*> bleeds;
+  std::vector<dot_t*> poison_dots;
+  std::vector<buff_t*> poison_debuffs;
+
 public:
   struct dots_t
   {
@@ -121,9 +125,11 @@ public:
     dot_t* deadly_poison_deathmark;
     dot_t* deathmark;
     dot_t* garrote;
+    dot_t* garrote_deathmark;
     dot_t* internal_bleeding;
     dot_t* killing_spree; // Strictly speaking, this should probably be on player
     dot_t* rupture;
+    dot_t* rupture_deathmark;
     dot_t* crimson_tempest;
     dot_t* sepsis;
     dot_t* serrated_bone_spike;
@@ -192,8 +198,25 @@ public:
 
   bool is_bleeding() const
   {
-    return dots.garrote->is_ticking() || dots.rupture->is_ticking() ||
-      dots.crimson_tempest->is_ticking() || dots.internal_bleeding->is_ticking();
+    for ( auto b : bleeds )
+    {
+      if ( b->is_ticking() )
+        return true;
+    }
+    return false;
+  }
+
+  int total_bleeds() const
+  {
+    // TOCHECK -- Confirm all these things count as intended
+    return as<int>( range::count_if( bleeds, []( dot_t* dot ) { return dot->is_ticking(); } ) );
+  }
+
+  int total_poisons() const
+  {
+    // TOCHECK -- Confirm all these things count as intended
+    return as<int>( range::count_if( poison_dots, []( dot_t* d ) { return d->is_ticking(); } ) +
+                    range::count_if( poison_debuffs, []( buff_t* b ) { return b->check(); } ) );
   }
 };
 
@@ -648,7 +671,7 @@ public:
 
       player_talent_t flying_daggers;
       player_talent_t vicious_venoms;
-      player_talent_t lethal_dose;              // NYI
+      player_talent_t lethal_dose;
       player_talent_t iron_wire;                // No implementation
 
       player_talent_t systemic_failure;
@@ -1427,6 +1450,7 @@ public:
     bool elaborate_planning = false;    // Trigger
     bool improved_ambush = false;
     bool improved_shiv = false;
+    bool lethal_dose = false;
     bool maim_mangle = false;           // Renamed Systemic Failure for DF talent
     bool master_assassin = false;
     bool nightstalker = false;
@@ -1551,6 +1575,13 @@ public:
     if ( p->talent.rogue.improved_ambush->ok() )
     {
       affected_by.improved_ambush = ab::data().affected_by( p->talent.rogue.improved_ambush->effectN( 1 ) );
+    }
+
+    if ( p->talent.assassination.lethal_dose->ok() )
+    {
+      // TOCHECK -- Not in spell data. Using the mastery whitelist as a baseline, most seem to apply
+      affected_by.lethal_dose = ab::data().affected_by( p->mastery.potent_assassin->effectN( 1 ) ) ||
+                                ab::data().affected_by( p->mastery.potent_assassin->effectN( 2 ) );
     }
 
     if ( p->set_bonuses.t29_assassination_2pc->ok() )
@@ -2006,27 +2037,35 @@ public:
   {
     double m = ab::composite_target_multiplier( target );
 
+    auto tdata = td( target );
+
     if ( affected_by.improved_shiv )
     {
-      m *= td( target )->debuffs.shiv->value_direct();
+      m *= tdata->debuffs.shiv->value_direct();
     }
 
-    if ( p()->legendary.zoldyck_insignia->ok() && affected_by.zoldyck_insignia
-         && target->health_percentage() < p()->legendary.zoldyck_insignia->effectN( 2 ).base_value() )
+    if ( p()->legendary.zoldyck_insignia->ok() && affected_by.zoldyck_insignia &&
+         target->health_percentage() < p()->legendary.zoldyck_insignia->effectN( 2 ).base_value() )
     {
       m *= 1.0 + p()->legendary.zoldyck_insignia->effectN( 1 ).percent();
     }
 
     if ( affected_by.t28_assassination_2pc )
     {
-      m *= td( target )->debuffs.grudge_match->value_direct();
+      m *= tdata->debuffs.grudge_match->value_direct();
     }
 
-    if ( affected_by.maim_mangle && td( target )->dots.garrote->is_ticking() )
+    if ( affected_by.maim_mangle && tdata->dots.garrote->is_ticking() )
     {
       m *= 1.0 + ( p()->talent.assassination.systemic_failure->ok() ?
                    p()->talent.assassination.systemic_failure->effectN( 1 ).percent() :
                    p()->conduit.maim_mangle.percent() );
+    }
+
+    if ( affected_by.lethal_dose )
+    {
+      int lethal_dose_count = tdata->total_bleeds() + tdata->total_poisons();
+      m *= 1.0 + ( p()->talent.assassination.lethal_dose->effectN( 1 ).percent() * lethal_dose_count );
     }
 
     return m;
@@ -3186,16 +3225,16 @@ struct crimson_tempest_t : public rogue_attack_t
 
 // Deathmark ================================================================
 
-struct deathmark_t : public rogue_spell_t
+struct deathmark_t : public rogue_attack_t
 {
   deathmark_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
-    rogue_spell_t( name, p, p->talent.assassination.deathmark )
+    rogue_attack_t( name, p, p->talent.assassination.deathmark )
   {
   }
 
   void init() override
   {
-    rogue_spell_t::init();
+    rogue_attack_t::init();
 
     add_child( p()->active.deathmark.garrote );
     add_child( p()->active.deathmark.rupture );
@@ -3203,15 +3242,21 @@ struct deathmark_t : public rogue_spell_t
     add_child( p()->active.deathmark.deadly_poison_instant );
   }
 
-  void execute() override
-  {
-    rogue_spell_t::execute();
-  }
-
   void impact( action_state_t* state ) override
   {
-    rogue_spell_t::impact( state );
+    rogue_attack_t::impact( state );
     td( state->target )->debuffs.deathmark->trigger();
+  }
+
+  void last_tick( dot_t* d ) override
+  {
+    rogue_attack_t::last_tick( d );
+
+    // Debuffs triggered by Deathmark currently expire immediately when Deathmark fades
+    auto tdata = td( d->target );
+    tdata->dots.deadly_poison_deathmark->cancel();
+    tdata->dots.garrote_deathmark->cancel();
+    tdata->dots.rupture_deathmark->cancel();
   }
 };
 
@@ -3290,6 +3335,7 @@ struct envenom_t : public rogue_attack_t
     rogue_attack_t( name, p, p->spec.envenom, options_str )
   {
     dot_duration = timespan_t::zero();
+    affected_by.lethal_dose = false;
     affected_by.zoldyck_insignia = false;
   }
 
@@ -7235,8 +7281,10 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   dots.deadly_poison_deathmark  = target->get_dot( "deadly_poison_dot_deathmark", source );
   dots.deathmark                = target->get_dot( "deathmark", source );
   dots.garrote                  = target->get_dot( "garrote", source );
+  dots.garrote_deathmark        = target->get_dot( "garrote_deathmark", source );
   dots.internal_bleeding        = target->get_dot( "internal_bleeding", source );
   dots.rupture                  = target->get_dot( "rupture", source );
+  dots.rupture_deathmark        = target->get_dot( "rupture_deathmark", source );
   dots.crimson_tempest          = target->get_dot( "crimson_tempest", source );
   dots.sepsis                   = target->get_dot( "sepsis", source );
   dots.serrated_bone_spike      = target->get_dot( "serrated_bone_spike_dot", source );
@@ -7300,6 +7348,15 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   {
     // DFALPHA Deathmark?
   }
+
+  // Type-Based Tracking for Accumulators
+  bleeds = { dots.deathmark, dots.garrote, dots.garrote_deathmark, dots.internal_bleeding,
+             dots.rupture, dots.rupture_deathmark, dots.crimson_tempest, dots.mutilated_flesh,
+             dots.serrated_bone_spike };
+  poison_dots = { dots.deadly_poison, dots.deadly_poison_deathmark, dots.sepsis };
+  poison_debuffs = { debuffs.crippling_poison, debuffs.numbing_poison, debuffs.wound_poison };
+
+  // Callbacks ================================================================
 
   // Marked for Death Reset
   if ( source->talent.rogue.marked_for_death->ok() )
