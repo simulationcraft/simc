@@ -398,6 +398,13 @@ public:
     spell_data_ptr_t killing_frenzy_4pc;
     spell_data_ptr_t mad_bombardier_2pc;
     spell_data_ptr_t mad_bombardier_4pc;
+
+    spell_data_ptr_t df_mm_2pc;
+    spell_data_ptr_t df_mm_4pc;
+    spell_data_ptr_t df_bm_2pc;
+    spell_data_ptr_t df_bm_4pc;
+    spell_data_ptr_t df_sv_2pc;
+    spell_data_ptr_t df_sv_4pc;
   } tier_set;
 
   // Buffs
@@ -460,6 +467,11 @@ public:
     // Tier Set Bonuses
     buff_t* killing_frenzy;
     buff_t* mad_bombardier;
+
+    buff_t* find_the_mark;
+    buff_t* focusing_aim;
+    buff_t* if_it_bleeds_we_can_kill_it;
+    buff_t* bestial_barrage;
 
     // Conduits
     buff_t* brutal_projectiles;
@@ -931,11 +943,14 @@ public:
     damage_affected_by lone_wolf;
     bool precise_shots = false;
     damage_affected_by sniper_training;
+    bool df_mm_4pc = false;
     // surv
     bool mad_bombardier = false;
     damage_affected_by spirit_bond;
     bool coordinated_assault = false;
     bool spearhead = false;
+    bool df_sv_2pc = false;
+    bool df_sv_4pc = false;
   } affected_by;
 
   cdwaste::action_data_t* cd_waste = nullptr;
@@ -955,6 +970,7 @@ public:
     affected_by.bullseye_crit_chance  = check_affected_by( this, p -> talents.bullseye -> effectN( 1 ).trigger() -> effectN( 1 ));
     affected_by.lone_wolf             = parse_damage_affecting_aura( this, p -> talents.lone_wolf );
     affected_by.sniper_training       = parse_damage_affecting_aura( this, p -> mastery.sniper_training );
+    affected_by.df_mm_4pc             = check_affected_by( this, p -> tier_set.df_mm_4pc -> effectN( 1 ).trigger() -> effectN( 1 ) );
 
     affected_by.thrill_of_the_hunt    = check_affected_by( this, p -> talents.thrill_of_the_hunt -> effectN( 1 ).trigger() -> effectN( 1 ) );
     affected_by.bestial_wrath         = parse_damage_affecting_aura( this, p -> talents.bestial_wrath );
@@ -964,6 +980,8 @@ public:
     affected_by.spirit_bond           = parse_damage_affecting_aura( this, p -> mastery.spirit_bond );
     affected_by.coordinated_assault   = check_affected_by( this, p -> find_spell( 361738 ) -> effectN( 2 ) );
     affected_by.spearhead             = check_affected_by( this, p -> talents.spearhead -> effectN( 4 ) );
+    affected_by.df_sv_2pc             = check_affected_by( this, p -> tier_set.df_sv_2pc -> effectN( 1 ) );
+    affected_by.df_sv_4pc             = check_affected_by( this, p -> find_spell( 394388 ) -> effectN( 1 ) );
 
     // Hunter Tree passives
     ab::apply_affecting_aura( p -> talents.improved_kill_shot );
@@ -1091,6 +1109,12 @@ public:
 
     if ( triggers_calling_the_shots )
       p() -> trigger_calling_the_shots( this, ab::cost() );
+
+    if ( affected_by.df_mm_4pc )
+      p() -> buffs.focusing_aim -> expire();
+
+    if ( affected_by.df_sv_4pc )
+      p() -> buffs.bestial_barrage -> expire();
   }
 
   void impact( action_state_t* s ) override
@@ -1125,6 +1149,13 @@ public:
 
     if ( affected_by.coordinated_assault )
       am *= 1 + p() -> buffs.coordinated_assault_empower -> check_value();
+
+    // TODO use spelldata after new build
+    if ( affected_by.df_sv_2pc )
+      am *= 1 + 0.15;
+
+    if ( affected_by.df_sv_4pc && p() -> buffs.bestial_barrage -> check() )
+      am *= 1.5;
 
     return am;
   }
@@ -1166,6 +1197,9 @@ public:
     if ( affected_by.bullseye_crit_chance )
       cc += p() -> buffs.bullseye -> check_stack_value();
 
+    if ( affected_by.df_mm_4pc )
+      cc += p() -> buffs.focusing_aim -> check_value();
+
     return cc;
   }
 
@@ -1178,6 +1212,12 @@ public:
 
     if ( affected_by.spearhead && p() -> buffs.spearhead -> check() )
       c += p() -> talents.deadly_duo -> effectN( 1 ).base_value();
+
+    if ( affected_by.df_sv_4pc )
+      c *= 1 + p() -> buffs.bestial_barrage -> check_value();
+
+    if ( c < 0 )
+      return 0;
 
     return ceil( c );
   }
@@ -1398,8 +1438,7 @@ public:
   hunter_pet_action_t( util::string_view n, T_PET* p, const spell_data_t* s = spell_data_t::nil() ):
     ab( n, p, s )
   {
-    // If pets are not reported separately, create single stats_t objects for the various pet
-    // abilities.
+    // If pets are not reported separately, create single stats_t objects for the various pet abilities.
     if ( ! ab::sim -> report_pets_separately )
     {
       auto first_pet = p -> owner -> find_pet( p -> name_str );
@@ -1416,6 +1455,8 @@ public:
     }
 
     ab::apply_affecting_aura( o() -> talents.killer_companion );
+    ab::apply_affecting_aura( o() -> talents.improved_kill_command );
+    ab::apply_affecting_aura( o() -> tier_set.df_bm_2pc );
   }
 
   T_PET* p()             { return static_cast<T_PET*>( ab::player ); }
@@ -2039,7 +2080,6 @@ struct kill_command_base_t: public hunter_pet_action_t<hunter_main_pet_base_t, m
     background = true;
     proc = true;
 
-    base_dd_multiplier *= 1 + o() -> talents.improved_kill_command -> effectN( 1 ).percent();
     base_dd_multiplier *= 1 + o() -> talents.alpha_predator -> effectN( 2 ).percent();
 
     if ( o() -> talents.killer_instinct.ok() )
@@ -2184,6 +2224,8 @@ struct kill_command_bm_mm_t: public kill_command_base_t
       o() -> pets.dc_dire_beast.spawn( pets::dire_beast_duration( o() ).first );
       dire_command_runeforge.proc -> occur();
     }
+
+    o() -> buffs.if_it_bleeds_we_can_kill_it -> expire();
   }
 
   void impact( action_state_t* s ) override
@@ -2210,6 +2252,15 @@ struct kill_command_bm_mm_t: public kill_command_base_t
       cc += o() -> tier_set.killing_frenzy_2pc -> effectN( 1 ).percent() * p() -> buffs.frenzy -> check();
 
     return cc;
+  }
+
+  double action_multiplier() const override
+  {
+    double am = kill_command_base_t::action_multiplier();
+
+    am *= 1 + o() -> buffs.if_it_bleeds_we_can_kill_it -> value();
+
+    return am;
   }
 };
 
@@ -2868,6 +2919,8 @@ struct auto_shot_t : public auto_attack_base_t<ranged_attack_t>
     }
 
     p() -> buffs.brutal_projectiles -> trigger();
+
+    p() -> buffs.focusing_aim -> trigger();
   }
 };
 
@@ -3182,6 +3235,14 @@ struct arcane_shot_t: public hunter_ranged_attack_t
       c *= 1 + p() -> talents.eagletalons_true_focus -> effectN( 3 ).percent();
 
     return c;
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    hunter_ranged_attack_t::impact( state );
+
+    if ( state -> result == RESULT_CRIT )
+      p() -> buffs.find_the_mark -> trigger();
   }
 };
 
@@ -3922,6 +3983,13 @@ struct barbed_shot_t: public hunter_ranged_attack_t
     bestial_wrath_reduction = p -> talents.barbed_wrath -> effectN( 1 ).time_value();
     aspect_of_the_wild_reduction = p -> talents.barbed_wrath -> effectN( 2 ).time_value();
 
+    // TODO user spelldata after new build
+    if ( p -> tier_set.df_bm_4pc.ok() )
+    {
+      base_dd_multiplier *= 1.05;
+      base_td_multiplier *= 1.05;
+    }
+
     p -> actions.barbed_shot = this;
   }
 
@@ -3973,6 +4041,8 @@ struct barbed_shot_t: public hunter_ranged_attack_t
     {
       pet -> active.brutal_companion_ba -> execute_on_target( target );
     }
+
+    p() -> buffs.if_it_bleeds_we_can_kill_it -> trigger();
   }
 
   void impact( action_state_t* s ) override
@@ -4232,6 +4302,17 @@ struct aimed_shot_t : public aimed_shot_base_t
     }
   };
 
+  struct hit_the_mark_t : residual_bleed_base_t
+  {
+    double result_mod;
+
+    hit_the_mark_t( util::string_view n, hunter_t* p)
+      : residual_bleed_base_t( n, p, p -> find_spell( 394371 ) )
+    {
+      result_mod = p -> talents.spearhead -> effectN( 2 ).percent();
+    }
+  };
+
   bool lock_and_loaded = false;
   bool secrets_of_the_vigil_up = false;
   struct {
@@ -4251,6 +4332,7 @@ struct aimed_shot_t : public aimed_shot_base_t
     double chance = 0;
     wind_arrow_t* action = nullptr;
   } legacy_of_the_windrunners;
+  hit_the_mark_t* hit_the_mark = nullptr;
 
   aimed_shot_t( hunter_t* p, util::string_view options_str ) :
     aimed_shot_base_t( "aimed_shot", p )
@@ -4288,6 +4370,13 @@ struct aimed_shot_t : public aimed_shot_base_t
       legacy_of_the_windrunners.action = p -> get_background_action<wind_arrow_t>( "legacy_of_the_windrunners" );
       add_child( legacy_of_the_windrunners.action );
     }
+
+    if ( p -> tier_set.df_mm_2pc.ok() )
+    {
+      hit_the_mark = p -> get_background_action<hit_the_mark_t>( "hit_the_mark" );
+      add_child( hit_the_mark );
+    }
+
   }
 
   double cost() const override
@@ -4398,9 +4487,18 @@ struct aimed_shot_t : public aimed_shot_base_t
     if ( debug_cast<state_t*>( s ) -> secrets_of_the_vigil_up && !debug_cast<state_t*>( s ) -> focused_trickery_vigil )
       p() -> buffs.secrets_of_the_vigil -> decrement();
 
-    // 10-10-22 TODO: only main target hit is triggering Latent Poison
-    if ( s -> chain_target == 0 )
+    // 10-10-22 TODO: only main target hit is triggering Latent Poison and MM 2pc
+    if ( s -> chain_target == 0 ) {
       p() -> trigger_latent_poison( s );
+
+      if ( hit_the_mark )
+      {
+        double amount = s -> result_amount * p() -> buffs.find_the_mark -> check_value();
+        if ( amount > 0 )
+          residual_action::trigger( hit_the_mark, s -> target, amount );
+        p() -> buffs.find_the_mark -> expire();
+      }
+    }
   }
 
   double recharge_rate_multiplier( const cooldown_t& cd ) const override
@@ -4744,6 +4842,14 @@ struct multishot_mm_t: public hunter_ranged_attack_t
 
     return m;
   }
+
+  void impact( action_state_t* state ) override
+  {
+    hunter_ranged_attack_t::impact( state );
+
+    if ( state -> result == RESULT_CRIT )
+      p() -> buffs.find_the_mark -> trigger();
+  }
 };
 
 //==============================
@@ -4906,6 +5012,8 @@ struct melee_focus_spender_t: hunter_melee_attack_t
 
     if ( p() -> rppm.arctic_bola -> trigger() )
       p() -> actions.arctic_bola -> execute_on_target( target );
+
+    p() -> buffs.bestial_barrage -> trigger();
   }
 
   void impact( action_state_t* s ) override
@@ -5076,6 +5184,8 @@ struct carve_base_t: public hunter_melee_attack_t
 
     p() -> buffs.butchers_bone_fragments -> up(); // benefit tracking
     p() -> buffs.butchers_bone_fragments -> expire();
+
+    p() -> buffs.bestial_barrage -> trigger();
   }
 
   void impact( action_state_t* s ) override
@@ -5722,6 +5832,8 @@ struct kill_command_t: public hunter_spell_t
     arcane_shot_qs_t* action = nullptr;
   } quick_shot;
 
+  double df_bm_2pc_chance = 0;
+
   kill_command_t( hunter_t* p, util::string_view options_str ):
     hunter_spell_t( "kill_command", p, p -> talents.kill_command )
   {
@@ -5797,6 +5909,9 @@ struct kill_command_t: public hunter_spell_t
 
     if ( p() -> buffs.hunters_prey -> trigger() )
       p() -> cooldowns.kill_shot -> reset( true );
+
+    if ( rng().roll( p() -> tier_set.df_bm_2pc -> proc_chance() ) )
+      p() -> cooldowns.barbed_shot -> reset( true );
   }
 
   double cost() const override
@@ -7146,6 +7261,13 @@ void hunter_t::init_spells()
   tier_set.mad_bombardier_2pc   = sets -> set( HUNTER_SURVIVAL,      T28, B2 );
   tier_set.mad_bombardier_4pc   = sets -> set( HUNTER_SURVIVAL,      T28, B4 );
 
+  tier_set.df_mm_2pc = sets -> set( HUNTER_MARKSMANSHIP, T29, B2 );
+  tier_set.df_mm_4pc = sets -> set( HUNTER_MARKSMANSHIP, T29, B4 );
+  tier_set.df_bm_2pc = sets -> set( HUNTER_BEAST_MASTERY, T29, B2 );
+  tier_set.df_bm_4pc = sets -> set( HUNTER_BEAST_MASTERY, T29, B4 );
+  tier_set.df_sv_2pc = sets -> set( HUNTER_SURVIVAL, T29, B2 );
+  tier_set.df_sv_4pc = sets -> set( HUNTER_SURVIVAL, T29, B4 );
+
   // Cooldowns
   cooldowns.ruthless_marauder -> duration = talents.ruthless_marauder -> internal_cooldown();
 }
@@ -7485,6 +7607,24 @@ void hunter_t::create_buffs()
     const double mad_bombardier_2pc = buffs.mad_bombardier -> data().effectN( 1 ).percent();
     buffs.mad_bombardier -> set_default_value( mad_bombardier_2pc / ( mad_bombardier_4pc + 1 ) );
   }
+
+  buffs.find_the_mark =
+    make_buff( this, "find_the_mark", tier_set.df_mm_2pc -> effectN( 1 ).trigger() )
+      -> set_default_value( 0.4 ); // TODO use spelldata after new build
+
+  buffs.focusing_aim =
+    make_buff( this, "focusing_aim", tier_set.df_mm_4pc -> effectN( 1 ).trigger() )
+    -> set_chance( tier_set.df_mm_4pc.ok() ? 0.15 : 0 ) // TODO use spelldata after new build
+    -> set_default_value_from_effect( 1 );
+
+  buffs.if_it_bleeds_we_can_kill_it =
+    make_buff( this, "if_it_bleeds_we_can_kill_it", tier_set.df_bm_4pc -> effectN( 1 ).trigger() )
+      -> set_default_value( 0.2 ); // TODO use spelldata after new build
+
+  buffs.bestial_barrage =
+    make_buff( this, "bestial_barrage", find_spell( 394388 ) )
+    -> set_chance( tier_set.df_sv_4pc.ok() ? 0.2 : 0 ) // TODO is 20% in spelldata anywhere
+    -> set_default_value_from_effect( 1 );
 
   // Conduits
 
