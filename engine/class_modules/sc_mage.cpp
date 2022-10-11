@@ -1718,7 +1718,7 @@ public:
     double m = spell_t::action_multiplier();
 
     if ( affected_by.arcane_surge && p()->buffs.arcane_surge->check() )
-      m *= 1.0 + p()->buffs.arcane_surge->data().effectN( 1 ).percent();
+      m *= 1.0 + p()->buffs.arcane_surge->data().effectN( 1 ).percent() + p()->talents.arcane_power->effectN( 2 ).percent();
 
     if ( affected_by.bone_chilling )
       m *= 1.0 + p()->buffs.bone_chilling->check_stack_value();
@@ -6990,7 +6990,8 @@ void mage_t::create_buffs()
                                    { recalculate_resource_max( RESOURCE_MANA ); } );
   buffs.arcane_surge         = make_buff( this, "arcane_surge", find_spell( 365362 ) )
                                  ->set_default_value_from_effect( 3 )
-                                 ->set_affects_regen( true );
+                                 ->set_affects_regen( true )
+                                 ->modify_duration( talents.arcane_power->effectN( 1 ).time_value() );
   buffs.arcane_tempo         = make_buff( this, "arcane_tempo", find_spell( 383997 ) )
                                  ->set_default_value( talents.arcane_tempo->effectN( 1 ).percent() )
                                  ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
