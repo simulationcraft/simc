@@ -1349,8 +1349,6 @@ struct rune_of_power_t final : public buff_t
     // Rune of Power has a tiny application delay in game. However, the delay
     // would add quite a lot of complexity to the APLs. It also rarely matters
     // in terms of modeling, so we treat Rune of Power as a normal activated buff.
-
-    // TODO: Add Rune of Power to Arcane Surge
   }
 
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override
@@ -3310,8 +3308,12 @@ struct arcane_surge_t final : public arcane_mage_spell_t
   {
     parse_options( options_str );
     triggers.radiant_spark = true;
-    aoe = -1;
-    reduced_aoe_targets = as<double>( data().max_targets() );
+    // TODO: Arcane Surge is currently fully capped at 5 targets instead of dealing reduced damage beyond 5 targets like the tooltip says.
+    if ( !p->bugs )
+    {
+      aoe = -1;
+      reduced_aoe_targets = as<double>( data().max_targets() );
+    }
   }
 
   double action_multiplier() const override
@@ -6203,7 +6205,6 @@ struct time_anomaly_tick_event_t final : public event_t
       auto spec = mage->specialization();
 
       // TODO: these conditions haven't been tested
-      // TODO: arcane surge
       if ( spec == MAGE_ARCANE && !mage->buffs.clearcasting->at_max_stacks() )
         possible_procs.push_back( TA_CLEARCASTING );
       if ( spec == MAGE_FIRE && !mage->buffs.combustion->check() )
