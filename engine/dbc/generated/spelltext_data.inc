@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.2.45969
-static const std::array<spelltext_data_t, 18976> __spelltext_data { {
+static const std::array<spelltext_data_t, 18975> __spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -17297,7 +17297,7 @@ static const std::array<spelltext_data_t, 18976> __spelltext_data { {
   { 384266, "Guarantees the next slotted Tinker use to succeed. The cooldown of this effect is reduced at higher qualities.", "Your next slotted tinker usage is guaranteed to succeed.", 0 },
   { 384267, "$@spelldesc384187", "Intellect increased by $s1%", 0 },
   { 384276, "Consuming a Mana Gem grants up to $s1 Clearcasting stacks.", 0, 0 },
-  { 384277, "Increases the damage of Thunderclap by $s1% and whenever you Thunder Clap a target affected by your Rend, you also affect $s3 nearby targets target with Rend.", 0, 0 },
+  { 384277, "Thunderclap deals $s1% increased damage, costs $s2 more Rage and if you have Rend, Thunder Clap also affects $s3 nearby targets with Rend.", 0, 0 },
   { 384280, 0, "Spell damage increased by $w1%.", 0 },
   { 384290, "$@spelldesc382119", "Deal ${$382119w3*($d/$t1)*(1+$@versadmg)} Nature over $d.", 0 },
   { 384294, "$@spelldesc382119", "$?e2[Critical Strike]?e3[Haste]?e4[Mastery]?e5[Versatility][Highest secondary stat] increased by $382119w1.", 0 },
@@ -18337,7 +18337,6 @@ static const std::array<spelltext_data_t, 18976> __spelltext_data { {
   { 390947, "Circle of Healing heals $s1 additional ally and its cooldown is reduced by ${$s2/-1000} sec.", 0, 0 },
   { 390951, "Temporarily imbues shoulders with a fiery illusion for $ecd.", 0, 0 },
   { 390954, "Increases the critical strike chance of Flash Heal and Heal by $s1%.", 0, 0 },
-  { 390961, "$@spelldesc390990", 0, 0 },
   { 390967, "Increases the healing done by your Mastery: Echo of Light by $s1%.", 0, 0 },
   { 390972, "After damaging or healing a target below $s3% health, gain $s1% increased damage and healing for $390978d.", 0, 0 },
   { 390975, "Perform an elemental invocation, transforming into the elemental summoned for ${$s1/60} min.", 0, 0 },
@@ -18345,12 +18344,10 @@ static const std::array<spelltext_data_t, 18976> __spelltext_data { {
   { 390978, "$@spelldesc390972", "Increases damage and healing by $w1%.", 0 },
   { 390980, "Critical heals from Flash Heal and Heal increase your healing done by your next Holy Word spell by $390989s1%, stacking up to $390989U times.", 0, 0 },
   { 390989, "$@spelldesc390980", "The healing of your next Holy Word spell is increased by $w1%.", 0 },
-  { 390990, "Causes the earth at the target location to tremble and break, dealing Nature damage every $t1 sec to enemies in $r yard radius. Lasts $d.\r\n\r\nUsable in the Obsidian Citadel and adjacent lava fields.", "Suffering Nature damage every $t2 sec.", 0 },
   { 390992, "Flash Heal reduces the cast time of your next Heal within $390993d by $390993s2% and increases its healing done by $390993s1%.\r\n\r\nStacks up to $390993U times.", 0, 0 },
   { 390993, "$@spelldesc390992", "The cast time of your next Heal is reduced by $w2% and its healing is increased by $w1%.", 0 },
   { 390994, "Circle of Healing reduces the cooldown of Holy Word: Sanctify, Prayer of Mending reduces the cooldown of Holy Word: Serenity, and Holy Fire reduces the cooldown of Holy Word: Chastise by $s1 sec.", 0, 0 },
   { 390996, "Your $?a137033[Mind Blast and Mind Spike]?a137031[Smite and Holy Fire][Smite and Penance] casts reduce the cooldown of Mindgames by ${$s1/2}.1 sec.", 0, 0 },
-  { 390997, "Causes the earth at the target location to tremble and break, dealing Nature damage every $t1 sec to enemies in $a1 yard radius. Lasts $d.", "Suffering Nature damage every $t2 sec.", 0 },
   { 391023, "Summons an arcana orb outside of the Cobalt Assembly.", "Summons an arcana orb outside of the Cobalt Assembly.", 0 },
   { 391037, "Your combo point generating abilities have a $s1% chance to generate $s2 extra combo $Lpoint:points;.", 0, 0 },
   { 391045, "Rip damage increased by $s1%.", 0, 0 },
@@ -18897,6 +18894,7 @@ static const std::array<spelltext_data_t, 18976> __spelltext_data { {
   { 394366, "$@spelldesc393648", "Aimed Shot casting time reduced by $s1% and Aimed Shot causes the target to bleed for $s2% of the damage dealt.", 0 },
   { 394371, "$@spelldesc393648", "Bleeding for $w1 damage every $t1 sec.", 0 },
   { 394384, "$@spelldesc393649", "Critical strike chance of Arcane Shot and Multi-Shot increased by $s1%.", 0 },
+  { 394388, 0, "$?s259387[Mongoose Bite][Raptor Strike], Carve, and Butchery cost no Focus.", 0 },
   { 394402, "$@spelldesc394400", "Chance to critically strike increased by $s1%.", 0 },
   { 394412, "$@spellaura393632", "Wrath and Starfire damage increased by $w1%.", 0 },
   { 394414, "$@spelldesc393633", "Starsurge and Starfall cost no Astral Power and deal $s2% increased damage.", 0 },
@@ -18966,6 +18964,7 @@ static const std::array<spelltext_data_t, 18976> __spelltext_data { {
   { 395349, "$@spelldesc192222", 0, 0 },
   { 395388, "Add the Thundering affix to a Mythic Keystone.", 0, 0 },
   { 395422, "Generate full combo points when you gain Adrenaline Rush, and again when it ends.", 0, 0 },
+  { 395424, "$@spelldesc395422", 0, 0 },
   { 395446, "Afflicting an enemy with a Sigil generates $m1 Lesser Soul $LFragment:Fragments;. ", 0, 0 },
   { 395519, "$@spelldesc392983", 0, 0 },
   { 395521, "$@spelldesc392983", 0, 0 },
@@ -18979,7 +18978,8 @@ static const std::array<spelltext_data_t, 18976> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 10.0.2.45969
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelltext_hotfix_data { {
+  {  384277,  0, "Increases the damage of Thunderclap by $s1% and whenever you Thunder Clap a target affected by your Rend, you also affect $s3 nearby targets target with Rend.", "Thunderclap deals $s1% increased damage, costs $s2 more Rage and if you have Rend, Thunder Clap also affects $s3 nearby targets with Rend." },
 } };
 
 // Spell description variables, wow build 10.0.2.45969
