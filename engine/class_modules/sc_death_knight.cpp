@@ -473,6 +473,7 @@ public:
   unsigned int km_proc_attempts; // critical auto attacks since the last KM proc
   unsigned int festering_wounds_target_count; // cached value of the current number of enemies affected by FW
   double insatiable_hunger_spent_rp_accumulator; // Counts how much RP you spend during swarming mist, used for insatiable hunger explosion
+  unsigned int bone_shield_charges_consumed; // Counts how many bone shield charges have been consumed for T29 4pc blood
 
   stats_t* antimagic_shell;
 
@@ -507,6 +508,7 @@ public:
     buff_t* sanguine_ground;
     buff_t* tombstone;
     buff_t* vampiric_blood;
+    buff_t* vigorous_lifeblood_4pc;  // T29 4pc
     buff_t* voracious;
 
     // Frost
@@ -660,6 +662,7 @@ public:
     gain_t* drw_heart_strike; // Blood Strike, Blizzard's hack to replicate HS rank 2 with DRW
     gain_t* heartbreaker;
     gain_t* tombstone;
+    gain_t* vigorous_lifeblood_2pc; // T29 2pc
 
     // Frost
     gain_t* breath_of_sindragosa;
@@ -990,6 +993,9 @@ public:
     // T28 Blood 4pc
     const spell_data_t* endless_rune_waltz_4pc; // parry % chance and ICD
     const spell_data_t* endless_rune_waltz_energize; // RP gain on heart strike
+    // T29 Blood
+    const spell_data_t* vigorous_lifeblood_4pc; // Damage and haste buff
+    const spell_data_t* vigorous_lifeblood_energize; // Rune refund
   } spell;
 
   // Unholy Pet Abilities
@@ -1201,6 +1207,7 @@ public:
     km_proc_attempts( 0 ),
     festering_wounds_target_count( 0 ),
     insatiable_hunger_spent_rp_accumulator( 0 ),
+    bone_shield_charges_consumed( 0 ),
     antimagic_shell( nullptr ),
     buffs(),
     runeforge(),
@@ -3144,9 +3151,11 @@ struct death_knight_action_t : public Base
     // Other whitelists
     bool razorice;
     bool brittle;
-    bool tightening_grasp;
     bool death_rot;
+    bool tightening_grasp;
+    // Tier 29
     bool ghoulish_infusion;
+    bool vigorous_lifeblood_4pc;
   } affected_by;
 
   bool may_proc_bron;
@@ -3191,6 +3200,7 @@ struct death_knight_action_t : public Base
     this -> affected_by.tightening_grasp = this -> data().affected_by( p -> spell.tightening_grasp_debuff -> effectN( 1 ) );
     this -> affected_by.death_rot = this -> data().affected_by( p -> spell.death_rot_debuff -> effectN( 1 ) );
     this -> affected_by.ghoulish_infusion = this -> data().affected_by( p -> spell.ghoulish_infusion -> effectN( 1 ) );
+    this -> affected_by.vigorous_lifeblood_4pc = this -> data().affected_by( p -> spell.vigorous_lifeblood_4pc -> effectN( 1 ) );
 
     // TODO July 19 2022
     // Spelldata for Might of the frozen wastes is still all sorts of jank.
@@ -3248,6 +3258,11 @@ struct death_knight_action_t : public Base
       m *= 1.0 + p() -> buffs.ghoulish_infusion -> value();
     }
 
+    if ( this -> affected_by.vigorous_lifeblood_4pc && p() -> buffs.vigorous_lifeblood_4pc -> up() )
+    {
+      m *= 1.0 + p() -> buffs.vigorous_lifeblood_4pc -> value();
+    }
+
     return m;
   }
 
@@ -3263,6 +3278,11 @@ struct death_knight_action_t : public Base
     if ( this -> affected_by.ghoulish_infusion && p() -> sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T29, B4 ) && p() -> buffs.ghoulish_infusion -> up() )
     {
       m *= 1.0 + p() -> buffs.ghoulish_infusion -> value();
+    }
+
+    if ( this -> affected_by.vigorous_lifeblood_4pc && p() -> buffs.vigorous_lifeblood_4pc -> up() )
+    {
+      m *= 1.0 + p() -> buffs.vigorous_lifeblood_4pc -> value();
     }
 
     return m;
@@ -10455,6 +10475,9 @@ void death_knight_t::init_spells()
   // T28 Blood
   spell.endless_rune_waltz_energize = find_spell( 368938 );
   spell.endless_rune_waltz_4pc      = find_spell( 363590 );
+  // T29 Blood
+  spell.vigorous_lifeblood_4pc      = find_spell( 394570 );
+  spell.vigorous_lifeblood_energize = find_spell( 394559 );
 
   // Frost
   spell.murderous_efficiency_gain   = find_spell( 207062 );
@@ -10777,8 +10800,9 @@ void death_knight_t::create_buffs()
         -> set_default_value_from_effect( 1 );
 
   buffs.perseverance_of_the_ebon_blade = make_buff( this, "perseverance_of_the_ebon_blade", find_spell( 374748 ) )
-        ->set_default_value( talent.blood.perseverance_of_the_ebon_blade->effectN( 1 ).percent() )
-        ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY );
+        -> set_default_value( talent.blood.perseverance_of_the_ebon_blade->effectN( 1 ).percent() )
+        -> set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY )
+        -> add_invalidate( CACHE_VERSATILITY );
 
   buffs.rune_tap = make_buff( this, "rune_tap", talent.blood.rune_tap )
         -> set_cooldown( 0_ms ); // Handled by the action
@@ -10792,6 +10816,11 @@ void death_knight_t::create_buffs()
         -> set_cooldown( 0_ms ); // Handled by the action
 
   buffs.vampiric_blood = new vampiric_blood_buff_t( this );
+
+  buffs.vigorous_lifeblood_4pc = make_buff( this, "vigorous_lifeblood", spell.vigorous_lifeblood_4pc )
+        -> set_default_value_from_effect_type( A_HASTE_ALL )
+        -> set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+        -> add_invalidate( CACHE_HASTE );
 
   buffs.voracious = make_buff( this, "voracious", find_spell( 274009 ) )
         -> set_trigger_spell( talent.blood.voracious )
@@ -11009,8 +11038,8 @@ void death_knight_t::init_gains()
   gains.drw_heart_strike                 = get_gain( "Rune Weapon Heart Strike" );
   gains.heartbreaker                     = get_gain( "Heartbreaker" );
   gains.tombstone                        = get_gain( "Tombstone" );
-
   gains.bryndaors_might                  = get_gain( "Bryndaor's Might" );
+  gains.vigorous_lifeblood_2pc           = get_gain( "Vigorous Lifeblood T29 2pc" );
 
   // Frost
   gains.breath_of_sindragosa             = get_gain( "Breath of Sindragosa" );
@@ -11148,6 +11177,7 @@ void death_knight_t::reset()
   active_dnd = nullptr;
   km_proc_attempts = 0;
   insatiable_hunger_spent_rp_accumulator = 0;
+  bone_shield_charges_consumed = 0;
 }
 
 // death_knight_t::assess_heal ==============================================
@@ -11199,6 +11229,26 @@ void death_knight_t::bone_shield_handler( const action_state_t* state ) const
 
   cooldown.dancing_rune_weapon -> adjust( legendary.crimson_rune_weapon -> effectN( 1 ).time_value() );
   cooldown.dancing_rune_weapon -> adjust( talent.blood.insatiable_blade -> effectN( 1 ).time_value() );
+
+  // T29 Blood tier set
+  death_knight_t* dk = debug_cast<death_knight_t*>(state -> action -> target);
+  if ( sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T29, B2 ) )
+  {
+    if ( rng().roll( 0.20 ) ) // 20% chance to proc, only mentioned in tooltip
+    {
+      dk -> replenish_rune( as<unsigned int>( spell.vigorous_lifeblood_energize -> effectN( 1 ).base_value() ), gains.vigorous_lifeblood_2pc );
+    }
+  }
+
+  if ( sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T29, B4 ) )
+  {
+    dk -> bone_shield_charges_consumed++;
+    if ( dk -> bone_shield_charges_consumed >= 10 )
+    {
+      dk -> bone_shield_charges_consumed = 0;
+      buffs.vigorous_lifeblood_4pc -> trigger();
+    }
+  }
 }
 
 void death_knight_t::assess_damage_imminent( school_e school, result_amount_type, action_state_t* s )
