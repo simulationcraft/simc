@@ -29,6 +29,8 @@ enum class secondary_trigger
   IMMORTAL_TECHNIQUE,
   TORNADO_TRIGGER,
   MAIN_GAUCHE,
+  DEATHMARK,
+  VICIOUS_VENOMS,
 };
 
 enum stealth_type_e
@@ -116,6 +118,7 @@ public:
   struct dots_t
   {
     dot_t* deadly_poison;
+    dot_t* deadly_poison_deathmark;
     dot_t* deathmark;
     dot_t* garrote;
     dot_t* internal_bleeding;
@@ -152,6 +155,9 @@ public:
     if ( dots.deadly_poison->is_ticking() )
       return dots.deadly_poison->remains();
 
+    if ( dots.deadly_poison_deathmark->is_ticking() )
+      return dots.deadly_poison_deathmark->remains();
+
     if ( debuffs.wound_poison->check() )
       return debuffs.wound_poison->remains();
 
@@ -171,7 +177,7 @@ public:
 
   bool is_lethal_poisoned() const
   {
-    return dots.deadly_poison->is_ticking() || debuffs.wound_poison->check();
+    return dots.deadly_poison->is_ticking() || dots.deadly_poison_deathmark->is_ticking() || debuffs.wound_poison->check();
   }
 
   bool is_non_lethal_poisoned() const
@@ -228,6 +234,22 @@ public:
       actions::rogue_attack_t* akaaris_shadowstrike = nullptr;
       actions::rogue_attack_t* immortal_technique_shadowstrike = nullptr;
     } weaponmaster;
+    struct
+    {
+      actions::rogue_attack_t* amplifying_poison = nullptr;
+      actions::rogue_attack_t* deadly_poison_dot = nullptr;
+      actions::rogue_attack_t* deadly_poison_instant = nullptr;
+      actions::rogue_attack_t* garrote = nullptr;
+      actions::rogue_attack_t* instant_poison = nullptr;
+      actions::rogue_attack_t* rupture = nullptr;
+      actions::rogue_attack_t* wound_poison = nullptr;
+    } deathmark;
+    struct
+    {
+      actions::rogue_attack_t* mutilate_mh = nullptr;
+      actions::rogue_attack_t* mutilate_oh = nullptr;
+      actions::rogue_attack_t* ambush = nullptr;
+    } vicious_venoms;
   } active;
 
   // Autoattacks
@@ -443,6 +465,7 @@ public:
     const spell_data_t* vanish_buff;
 
     // Cross-Expansion Override Spells
+    const spell_data_t* doomblade_debuff;
     const spell_data_t* echoing_reprimand;
 
   } spell;
@@ -460,13 +483,24 @@ public:
 
     const spell_data_t* blindside_buff;
     const spell_data_t* deadly_poison_instant;
-    const spell_data_t* deathmark_debuff;
     const spell_data_t* improved_garrote_buff;
     const spell_data_t* improved_shiv_debuff;
     const spell_data_t* internal_bleeding_debuff;
     const spell_data_t* master_assassin_buff;
     const spell_data_t* poison_bomb_driver;
     const spell_data_t* poison_bomb_damage;
+    const spell_data_t* vicious_venoms_ambush;
+    const spell_data_t* vicious_venoms_mutilate_mh;
+    const spell_data_t* vicious_venoms_mutilate_oh;
+
+    const spell_data_t* deathmark_debuff;
+    const spell_data_t* deathmark_amplifying_poison;
+    const spell_data_t* deathmark_deadly_poison_dot;
+    const spell_data_t* deathmark_deadly_poison_instant;
+    const spell_data_t* deathmark_garrote;
+    const spell_data_t* deathmark_instant_poison;
+    const spell_data_t* deathmark_rupture;
+    const spell_data_t* deathmark_wound_poison;
 
     // Outlaw Spells
     const spell_data_t* outlaw_rogue;
@@ -604,23 +638,23 @@ public:
       player_talent_t lightweight_shiv;
       player_talent_t fatal_concoction;
       player_talent_t improved_garrote;
-      player_talent_t intent_to_kill;           // NYI
+      player_talent_t intent_to_kill;
 
       player_talent_t crimson_tempest;
       player_talent_t venom_rush;
-      player_talent_t deathmark;                // NYI
+      player_talent_t deathmark;                // Partial NYI -- Need Amp/Wound/Instant poison set up
       player_talent_t master_assassin;
       player_talent_t exsanguinate;
 
       player_talent_t flying_daggers;
-      player_talent_t vicious_venoms;           // NYI
+      player_talent_t vicious_venoms;
       player_talent_t lethal_dose;              // NYI
       player_talent_t iron_wire;                // No implementation
 
       player_talent_t systemic_failure;
       player_talent_t amplifying_poison;        // NYI
       player_talent_t twist_the_knife;
-      player_talent_t doomblade;                // NYI, merge with legendary?
+      player_talent_t doomblade;
 
       player_talent_t blindside;
       player_talent_t tiny_toxic_blade;
@@ -1990,9 +2024,9 @@ public:
 
     if ( affected_by.maim_mangle && td( target )->dots.garrote->is_ticking() )
     {
-      m *= 1.0 + p()->talent.assassination.systemic_failure->ok() ?
-        p()->talent.assassination.systemic_failure->effectN( 1 ).percent() :
-        p()->conduit.maim_mangle.percent();
+      m *= 1.0 + ( p()->talent.assassination.systemic_failure->ok() ?
+                   p()->talent.assassination.systemic_failure->effectN( 1 ).percent() :
+                   p()->conduit.maim_mangle.percent() );
     }
 
     return m;
@@ -2359,30 +2393,32 @@ struct deadly_poison_t : public rogue_poison_t
 {
   struct deadly_poison_dd_t : public rogue_poison_t
   {
-    deadly_poison_dd_t( util::string_view name, rogue_t* p ) :
-      rogue_poison_t( name, p, p->spec.deadly_poison_instant, true )
+    deadly_poison_dd_t( util::string_view name, rogue_t* p, const spell_data_t* s ) :
+      rogue_poison_t( name, p, s, true )
     {
     }
   };
 
   struct deadly_poison_dot_t : public rogue_poison_t
   {
-    deadly_poison_dot_t( util::string_view name, rogue_t* p ) :
-      rogue_poison_t( name, p, p->talent.assassination.deadly_poison->effectN( 1 ).trigger(), true )
+    deadly_poison_dot_t( util::string_view name, rogue_t* p, const spell_data_t* s ) :
+      rogue_poison_t( name, p, s, true )
     {
       affected_by.t28_assassination_4pc = true;
     }
   };
 
-  deadly_poison_dd_t*  proc_instant;
+  deadly_poison_dd_t* proc_instant;
   deadly_poison_dot_t* proc_dot;
 
   deadly_poison_t( util::string_view name, rogue_t* p ) :
     rogue_poison_t( name, p, p->talent.assassination.deadly_poison ),
     proc_instant( nullptr ), proc_dot( nullptr )
   {
-    proc_instant = p->get_background_action<deadly_poison_dd_t>( "deadly_poison_instant" );
-    proc_dot  = p->get_background_action<deadly_poison_dot_t>( "deadly_poison_dot" );
+    proc_instant = p->get_background_action<deadly_poison_dd_t>(
+      "deadly_poison_instant", p->spec.deadly_poison_instant );
+    proc_dot = p->get_background_action<deadly_poison_dot_t>(
+      "deadly_poison_dot", p->talent.assassination.deadly_poison->effectN( 1 ).trigger() );
 
     add_child( proc_instant );
     add_child( proc_dot );
@@ -2392,13 +2428,23 @@ struct deadly_poison_t : public rogue_poison_t
   {
     rogue_poison_t::impact( state );
 
-    if ( td( state->target )->dots.deadly_poison->is_ticking() )
+    rogue_td_t* tdata = td( state->target );
+    if ( tdata->dots.deadly_poison->is_ticking() )
     {
       proc_instant->set_target( state->target );
       proc_instant->execute();
     }
     proc_dot->set_target( state->target );
     proc_dot->execute();
+
+    if ( tdata->dots.deathmark->is_ticking() )
+    {
+      if ( tdata->dots.deadly_poison_deathmark->is_ticking() )
+      {
+        p()->active.deathmark.deadly_poison_instant->trigger_secondary_action( state->target );
+      }
+      p()->active.deathmark.deadly_poison_dot->trigger_secondary_action( state->target );
+    }
   }
 };
 
@@ -2800,6 +2846,10 @@ struct ambush_t : public rogue_attack_t
   ambush_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
     rogue_attack_t( name, p, p->spell.ambush, options_str )
   {
+    if ( p->talent.assassination.vicious_venoms->ok() )
+    {
+      add_child( p->active.vicious_venoms.ambush );
+    }
   }
 
   void execute() override
@@ -2814,6 +2864,11 @@ struct ambush_t : public rogue_attack_t
   {
     rogue_attack_t::impact( state );
     trigger_find_weakness( state );
+
+    if ( p()->talent.assassination.vicious_venoms->ok() )
+    {
+      p()->active.vicious_venoms.ambush->trigger_secondary_action( state->target );
+    }
   }
 
   bool procs_blade_flurry() const override
@@ -3138,6 +3193,16 @@ struct deathmark_t : public rogue_spell_t
   {
   }
 
+  void init() override
+  {
+    rogue_spell_t::init();
+
+    add_child( p()->active.deathmark.garrote );
+    add_child( p()->active.deathmark.rupture );
+    add_child( p()->active.deathmark.deadly_poison_dot );
+    add_child( p()->active.deathmark.deadly_poison_instant );
+  }
+
   void execute() override
   {
     rogue_spell_t::execute();
@@ -3405,8 +3470,8 @@ struct feint_t : public rogue_attack_t
 
 struct garrote_t : public rogue_attack_t
 {
-  garrote_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
-    rogue_attack_t( name, p, p->spec.garrote, options_str )
+  garrote_t( util::string_view name, rogue_t* p, const spell_data_t* s, util::string_view options_str = {} ) :
+    rogue_attack_t( name, p, s, options_str )
   {
     affected_by.t28_assassination_4pc = true;
   }
@@ -3445,6 +3510,16 @@ struct garrote_t : public rogue_attack_t
     {
       trigger_combo_point_gain( as<int>( p()->talent.assassination.shrouded_suffocation->effectN( 2 ).base_value() ),
                                 p()->gains.shrouded_suffocation );
+    }
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    rogue_attack_t::impact( state );
+
+    if ( !is_secondary_action() && td( state->target )->dots.deathmark->is_ticking() )
+    {
+      p()->active.deathmark.garrote->trigger_secondary_action( state->target );
     }
   }
 
@@ -3850,7 +3925,7 @@ struct mutilate_t : public rogue_attack_t
       rogue_t* rogue;
 
       doomblade_t( util::string_view name, rogue_t* p ) :
-        base_t( name, p, p->find_spell( 340431 ) ), rogue( p )
+        base_t( name, p, p->spell.doomblade_debuff ), rogue( p )
       {
         dual = true;
       }
@@ -3862,10 +3937,23 @@ struct mutilate_t : public rogue_attack_t
       rogue_attack_t( name, p, s ),
       doomblade_dot( nullptr )
     {
-      if ( p->legendary.doomblade.ok() )
+      if ( p->spell.doomblade_debuff->ok() )
       {
         doomblade_dot = p->get_background_action<doomblade_t>( "mutilated_flesh" );
       }
+    }
+
+    double action_multiplier() const override
+    {
+      double m = rogue_attack_t::action_multiplier();
+
+      // Appears to be overridden by a scripted multiplier even though the base damage is identical
+      if ( secondary_trigger_type == secondary_trigger::VICIOUS_VENOMS )
+      {
+        m *= p()->talent.assassination.vicious_venoms->effectN( 1 ).percent();
+      }
+
+      return m;
     }
 
     void impact( action_state_t* state ) override
@@ -3875,7 +3963,9 @@ struct mutilate_t : public rogue_attack_t
 
       if ( doomblade_dot && result_is_hit( state->result ) )
       {
-        const double dot_damage = state->result_amount * p()->legendary.doomblade->effectN( 1 ).percent();
+        const double dot_damage = state->result_amount * ( p()->talent.assassination.doomblade->ok() ?
+                                                           p()->talent.assassination.doomblade->effectN( 1 ).percent() :
+                                                           p()->legendary.doomblade->effectN( 1 ).percent() );
         residual_action::trigger( doomblade_dot, state->target, dot_damage );
       }
     }
@@ -3903,6 +3993,12 @@ struct mutilate_t : public rogue_attack_t
     add_child( mh_strike );
     add_child( oh_strike );
 
+    if ( p->talent.assassination.vicious_venoms->ok() )
+    {
+      add_child( p->active.vicious_venoms.mutilate_mh );
+      add_child( p->active.vicious_venoms.mutilate_oh );
+    }
+
     if ( mh_strike->doomblade_dot )
     {
       add_child( mh_strike->doomblade_dot );
@@ -3920,6 +4016,12 @@ struct mutilate_t : public rogue_attack_t
 
       oh_strike->set_target( execute_state->target );
       oh_strike->execute();
+
+      if ( p()->talent.assassination.vicious_venoms->ok() )
+      {
+        p()->active.vicious_venoms.mutilate_mh->trigger_secondary_action( execute_state->target );
+        p()->active.vicious_venoms.mutilate_oh->trigger_secondary_action( execute_state->target );
+      }
 
       trigger_blindside( execute_state );
       trigger_venom_rush( execute_state );
@@ -3963,8 +4065,8 @@ struct roll_the_bones_t : public rogue_spell_t
 
 struct rupture_t : public rogue_attack_t
 {
-  rupture_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
-    rogue_attack_t( name, p, p->spec.rupture, options_str )
+  rupture_t( util::string_view name, rogue_t* p, const spell_data_t* s, util::string_view options_str = {} ) :
+    rogue_attack_t( name, p, s, options_str )
   {
     affected_by.t28_assassination_4pc = true;
   }
@@ -3997,6 +4099,17 @@ struct rupture_t : public rogue_attack_t
         p()->buffs.finality_rupture->expire();
       else
         p()->buffs.finality_rupture->trigger();
+    }
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    rogue_attack_t::impact( state );
+
+    if ( !is_secondary_action() && td( state->target )->dots.deathmark->is_ticking() )
+    {
+      p()->active.deathmark.rupture->trigger_secondary_action( state->target,
+                                                               cast_state( state )->get_combo_points() );
     }
   }
 
@@ -4213,6 +4326,24 @@ struct shadowstep_t : public rogue_spell_t
   {
     rogue_spell_t::execute();
     p()->buffs.shadowstep->trigger();
+  }
+
+  void update_ready( timespan_t cd_duration ) override
+  {
+    if ( p()->talent.assassination.intent_to_kill->ok() )
+    {
+      if ( td( target )->dots.garrote->is_ticking() )
+      {
+        if ( cd_duration < 0_ms )
+        {
+          cd_duration = cooldown->duration;
+        }
+          
+        cd_duration *= ( 1.0 - p()->talent.assassination.intent_to_kill->effectN( 1 ).percent() );
+      }
+    }
+
+    rogue_spell_t::update_ready( cd_duration );
   }
 };
 
@@ -4957,6 +5088,26 @@ struct poison_bomb_t : public rogue_attack_t
     rogue_attack_t( name, p, p->spec.poison_bomb_damage )
   {
     aoe = -1;
+  }
+};
+
+// Vicious Venoms ===========================================================
+
+struct vicious_venoms_t : public rogue_attack_t
+{
+  vicious_venoms_t( util::string_view name, rogue_t* p, const spell_data_t* s ) :
+    rogue_attack_t( name, p, s )
+  {
+  }
+
+  double action_multiplier() const override
+  {
+    double m = rogue_attack_t::action_multiplier();
+
+    // Appears to be overridden by a scripted multiplier even though the base damage is identical
+    m *= p()->talent.assassination.vicious_venoms->effectN( 1 ).percent();
+
+    return m;
   }
 };
 
@@ -5934,9 +6085,9 @@ struct slice_and_dice_t : public buff_t
       direct_tick = true;
       may_crit = false;
       dot_duration = timespan_t::zero();
-      base_pct_heal = p->talent.rogue.recuperator->ok() ?
-        p->talent.rogue.recuperator->effectN( 1 ).percent() :
-        p->conduit.recuperator.percent();
+      base_pct_heal = ( p->talent.rogue.recuperator->ok() ?
+                        p->talent.rogue.recuperator->effectN( 1 ).percent() :
+                        p->conduit.recuperator.percent() );
       base_dd_min = base_dd_max = 1; // HAX: Make it always heal at least one even without conduit, to allow procing herbs.
       base_costs.fill( 0 );
     }
@@ -7080,19 +7231,20 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   dots( dots_t() ),
   debuffs( debuffs_t() )
 {
-  dots.deadly_poison        = target->get_dot( "deadly_poison_dot", source );
-  dots.deathmark            = target->get_dot( "deathmark", source );
-  dots.garrote              = target->get_dot( "garrote", source );
-  dots.internal_bleeding    = target->get_dot( "internal_bleeding", source );
-  dots.rupture              = target->get_dot( "rupture", source );
-  dots.crimson_tempest      = target->get_dot( "crimson_tempest", source );
-  dots.sepsis               = target->get_dot( "sepsis", source );
-  dots.serrated_bone_spike  = target->get_dot( "serrated_bone_spike_dot", source );
-  dots.mutilated_flesh      = target->get_dot( "mutilated_flesh", source );
+  dots.deadly_poison            = target->get_dot( "deadly_poison_dot", source );
+  dots.deadly_poison_deathmark  = target->get_dot( "deadly_poison_dot_deathmark", source );
+  dots.deathmark                = target->get_dot( "deathmark", source );
+  dots.garrote                  = target->get_dot( "garrote", source );
+  dots.internal_bleeding        = target->get_dot( "internal_bleeding", source );
+  dots.rupture                  = target->get_dot( "rupture", source );
+  dots.crimson_tempest          = target->get_dot( "crimson_tempest", source );
+  dots.sepsis                   = target->get_dot( "sepsis", source );
+  dots.serrated_bone_spike      = target->get_dot( "serrated_bone_spike_dot", source );
+  dots.mutilated_flesh          = target->get_dot( "mutilated_flesh", source );
 
-  debuffs.wound_poison      = new buffs::wound_poison_t( *this );
-  debuffs.crippling_poison  = new buffs::crippling_poison_t( *this );
-  debuffs.numbing_poison    = new buffs::numbing_poison_t( *this );
+  debuffs.wound_poison          = new buffs::wound_poison_t( *this );
+  debuffs.crippling_poison      = new buffs::crippling_poison_t( *this );
+  debuffs.numbing_poison        = new buffs::numbing_poison_t( *this );
 
   debuffs.deathmark = make_buff<damage_buff_t>( *this, "deathmark", source->spec.deathmark_debuff )
     ->set_cooldown( timespan_t::zero() );
@@ -7921,7 +8073,7 @@ action_t* rogue_t::create_action( util::string_view name, util::string_view opti
   if ( name == "fan_of_knives"       ) return new fan_of_knives_t       ( name, this, options_str );
   if ( name == "feint"               ) return new feint_t               ( name, this, options_str );
   if ( name == "flagellation"        ) return new flagellation_t        ( name, this, options_str );
-  if ( name == "garrote"             ) return new garrote_t             ( name, this, options_str );
+  if ( name == "garrote"             ) return new garrote_t             ( name, this, spec.garrote, options_str );
   if ( name == "gouge"               ) return new gouge_t               ( name, this, options_str );
   if ( name == "ghostly_strike"      ) return new ghostly_strike_t      ( name, this, options_str );
   if ( name == "gloomblade"          ) return new gloomblade_t          ( name, this, options_str );
@@ -7933,7 +8085,7 @@ action_t* rogue_t::create_action( util::string_view name, util::string_view opti
   if ( name == "pistol_shot"         ) return new pistol_shot_t         ( name, this, options_str );
   if ( name == "poisoned_knife"      ) return new poisoned_knife_t      ( name, this, options_str );
   if ( name == "roll_the_bones"      ) return new roll_the_bones_t      ( name, this, options_str );
-  if ( name == "rupture"             ) return new rupture_t             ( name, this, options_str );
+  if ( name == "rupture"             ) return new rupture_t             ( name, this, spec.rupture, options_str );
   if ( name == "secret_technique"    ) return new secret_technique_t    ( name, this, options_str );
   if ( name == "sepsis"              ) return new sepsis_t              ( name, this, options_str );
   if ( name == "serrated_bone_spike" ) return new serrated_bone_spike_t ( name, this, options_str );
@@ -8761,13 +8913,24 @@ void rogue_t::init_spells()
   // Spec Background Spells
   spec.blindside_buff = talent.assassination.blindside->ok() ? find_spell( 121153 ) : spell_data_t::not_found();
   spec.deadly_poison_instant = talent.assassination.deadly_poison->ok() ? find_spell( 113780 ) : spell_data_t::not_found();
-  spec.deathmark_debuff = talent.assassination.deathmark->effectN( 2 ).trigger();
   spec.improved_garrote_buff = talent.assassination.improved_garrote->ok() ? find_spell( 392401 ) : spell_data_t::not_found();
   spec.improved_shiv_debuff = talent.assassination.improved_shiv->ok() ? find_spell( 319504 ) : spell_data_t::not_found();
   spec.internal_bleeding_debuff = talent.assassination.internal_bleeding->ok() ? find_spell( 154953 ) : spell_data_t::not_found();
   spec.master_assassin_buff = talent.assassination.master_assassin->ok() ? find_spell( 256735 ) : spell_data_t::not_found();
   spec.poison_bomb_driver = talent.assassination.poison_bomb->ok() ? find_spell( 255545 ) : spell_data_t::not_found();
   spec.poison_bomb_damage = talent.assassination.poison_bomb->ok() ? find_spell( 255546 ) : spell_data_t::not_found();
+  spec.vicious_venoms_ambush = talent.assassination.vicious_venoms->ok() ? find_spell( 385794 ) : spell_data_t::not_found();
+  spec.vicious_venoms_mutilate_mh = talent.assassination.vicious_venoms->ok() ? find_spell( 385802 ) : spell_data_t::not_found();
+  spec.vicious_venoms_mutilate_oh = talent.assassination.vicious_venoms->ok() ? find_spell( 385806 ) : spell_data_t::not_found();
+
+  spec.deathmark_debuff = talent.assassination.deathmark->effectN( 2 ).trigger();
+  spec.deathmark_amplifying_poison = talent.assassination.deathmark->ok() ? find_spell( 394328 ) : spell_data_t::not_found();
+  spec.deathmark_deadly_poison_dot = talent.assassination.deathmark->ok() ? find_spell( 394324 ) : spell_data_t::not_found();
+  spec.deathmark_deadly_poison_instant = talent.assassination.deathmark->ok() ? find_spell( 394325 ) : spell_data_t::not_found();
+  spec.deathmark_garrote = talent.assassination.deathmark->ok() ? find_spell( 360830 ) : spell_data_t::not_found();
+  spec.deathmark_instant_poison = talent.assassination.deathmark->ok() ? find_spell( 394326 ) : spell_data_t::not_found();
+  spec.deathmark_rupture = talent.assassination.deathmark->ok() ? find_spell( 360826 ) : spell_data_t::not_found();
+  spec.deathmark_wound_poison = talent.assassination.deathmark->ok() ? find_spell( 394327 ) : spell_data_t::not_found();
 
   spec.blade_flurry_attack = talent.outlaw.blade_flurry->ok() ? find_spell( 22482 ) : spell_data_t::not_found();
   spec.blade_flurry_instant_attack = talent.outlaw.blade_flurry->ok() ? find_spell( 331850 ) : spell_data_t::not_found();
@@ -8906,6 +9069,13 @@ void rogue_t::init_spells()
 
   // Cross-Expansion Spell Overrides ========================================
 
+  if ( talent.assassination.doomblade->ok() )
+    spell.doomblade_debuff = find_spell( 381672 );
+  else if ( legendary.doomblade->ok() )
+    spell.doomblade_debuff = find_spell( 340431 );
+  else
+    spell.doomblade_debuff = spell_data_t::not_found();
+
   spell.echoing_reprimand = talent.rogue.echoing_reprimand->ok() ? talent.rogue.echoing_reprimand : covenant.echoing_reprimand;
 
   // Active Spells ==========================================================
@@ -8921,6 +9091,30 @@ void rogue_t::init_spells()
   if ( spec.blade_flurry_attack->ok() )
   {
     active.blade_flurry = get_background_action<actions::blade_flurry_attack_t>( "blade_flurry_attack" );
+  }
+
+  if ( talent.assassination.deathmark->ok() )
+  {
+    active.deathmark.garrote = get_secondary_trigger_action<actions::garrote_t>(
+      secondary_trigger::DEATHMARK, "garrote_deathmark", spec.deathmark_garrote );
+    active.deathmark.rupture = get_secondary_trigger_action<actions::rupture_t>(
+      secondary_trigger::DEATHMARK, "rupture_deathmark", spec.deathmark_rupture );
+
+    active.deathmark.deadly_poison_dot = get_secondary_trigger_action<actions::deadly_poison_t::deadly_poison_dot_t>(
+      secondary_trigger::DEATHMARK, "deadly_poison_dot_deathmark", spec.deathmark_deadly_poison_dot );
+    active.deathmark.deadly_poison_instant = get_secondary_trigger_action<actions::deadly_poison_t::deadly_poison_dd_t>(
+      secondary_trigger::DEATHMARK, "deadly_poison_instant_deathmark", spec.deathmark_deadly_poison_instant );
+  }
+
+  if ( talent.assassination.vicious_venoms->ok() )
+  {
+    active.vicious_venoms.ambush = get_secondary_trigger_action<actions::vicious_venoms_t>(
+      secondary_trigger::VICIOUS_VENOMS, "ambush_vicious_venoms", spec.vicious_venoms_ambush );
+    active.vicious_venoms.mutilate_mh = get_secondary_trigger_action<actions::vicious_venoms_t>(
+      secondary_trigger::VICIOUS_VENOMS, "mutilate_mh_vicious_venoms", spec.vicious_venoms_mutilate_mh );
+    // TOCHECK -- Appears to use MH weapon in spell data but possibly reduced in-game somehow
+    active.vicious_venoms.mutilate_oh = get_secondary_trigger_action<actions::vicious_venoms_t>(
+      secondary_trigger::VICIOUS_VENOMS, "mutilate_oh_vicious_venoms", spec.vicious_venoms_mutilate_oh );
   }
 
   if ( talent.assassination.poison_bomb->ok() )
@@ -9251,6 +9445,7 @@ void rogue_t::create_buffs()
     ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
     ->set_duration( sim->max_time / 2 );
 
+  // DFALPHA -- This still seems very messed up and still appears to have a 50% value
   buffs.nightstalker = make_buff<damage_buff_t>( this, "nightstalker", spell.nightstalker_buff )
     ->set_periodic_mod( spell.nightstalker_buff, 2 ) // Dummy Value
     ->apply_affecting_aura( spec.subtlety_rogue ); // DFALPHA -- Seems messed up
