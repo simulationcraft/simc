@@ -504,6 +504,7 @@ public:
     gain_t* barbed_shot;
 
     gain_t* terms_of_engagement;
+    gain_t* coordinated_kill;
 
     gain_t* reversal_of_fortune;
   } gains;
@@ -1758,6 +1759,14 @@ struct hunter_main_pet_t final : public hunter_main_pet_base_t
       make_buff( this, "coordinated_assault", o() -> talents.coordinated_assault )
       -> set_cooldown( 0_ms )
       -> apply_affecting_conduit( o() -> conduits.deadly_tandem );
+
+    if ( o() -> talents.coordinated_kill.ok() ) {
+      buffs.coordinated_assault -> set_stack_change_callback(
+        [ this ]( buff_t*, int old, int cur ) {
+          o() -> cooldowns.wildfire_bomb -> adjust_recharge_multiplier();
+          o() -> cooldowns.kill_shot -> adjust_recharge_multiplier();
+        } );
+    }
   }
 
   void init_action_list() override
@@ -3087,7 +3096,8 @@ struct kill_shot_t : hunter_ranged_attack_t
     return hunter_ranged_attack_t::target_ready( candidate_target ) &&
       ( candidate_target -> health_percentage() <= health_threshold_pct
         || p() -> buffs.flayers_mark -> check() || p() -> buffs.deathblow -> check()
-        || p() -> buffs.hunters_prey -> check() );
+        || p() -> buffs.hunters_prey -> check()
+        || p() -> talents.coordinated_kill.ok() && p() -> pets.main && p() -> pets.main -> buffs.coordinated_assault -> check() );
   }
 
   double action_multiplier() const override
@@ -3100,6 +3110,16 @@ struct kill_shot_t : hunter_ranged_attack_t
     am *= 1 + p() -> buffs.razor_fragments -> check_value();
 
     return am;
+  }
+
+  double recharge_rate_multiplier( const cooldown_t& cd ) const override
+  {
+    double m = hunter_spell_t::recharge_rate_multiplier( cd );
+
+    if ( p() -> pets.main && p() -> pets.main -> buffs.coordinated_assault -> check() )
+      m *= 1 + p() -> talents.coordinated_kill -> effectN( 3 ).percent();
+
+    return m;
   }
 
   action_state_t* new_state() override
@@ -5625,7 +5645,7 @@ struct kill_command_t: public hunter_spell_t
       reset.chance = data().effectN( 2 ).percent() + p -> talents.flankers_advantage -> effectN( 1 ).percent();
       reset.proc = p -> get_proc( "Kill Command Reset" );
 
-      energize_amount += data().effectN( 3 ).base_value() + p -> talents.intense_focus -> effectN( 1 ).base_value();
+      energize_amount += p -> talents.intense_focus -> effectN( 1 ).base_value();
 
       if ( p -> talents.quick_shot.ok() )
       {
@@ -6240,6 +6260,16 @@ struct wildfire_bomb_t: public hunter_spell_t
       p() -> buffs.coordinated_assault -> expire();
     }
 
+    double energize_cast_regen( const action_state_t* s ) const override
+    {
+      double r = hunter_spell_t::energize_cast_regen( s );
+
+      if ( p() -> talents.coordinated_kill.ok() && p() -> pets.main && p() -> pets.main -> buffs.coordinated_assault -> check() )
+        r += p() -> talents.coordinated_kill -> effectN( 2 ).base_value();
+
+      return r;
+    }
+
     double composite_da_multiplier( const action_state_t* s ) const override
     {
       double am = hunter_spell_t::composite_da_multiplier( s );
@@ -6359,6 +6389,9 @@ struct wildfire_bomb_t: public hunter_spell_t
         slot += 2 - p() -> state.next_wi_bomb;
       p() -> state.next_wi_bomb = static_cast<wildfire_infusion_e>( slot );
     }
+
+    if ( p() -> talents.coordinated_kill.ok() && p() -> pets.main && p() -> pets.main -> buffs.coordinated_assault -> check() )
+      p() -> resource_gain( RESOURCE_FOCUS, p() -> talents.coordinated_kill -> effectN( 2 ).base_value(), p() -> gains.coordinated_kill, this);
   }
 
   void impact( action_state_t* s ) override
@@ -6383,6 +6416,16 @@ struct wildfire_bomb_t: public hunter_spell_t
       cooldown->reset( true );
       p() -> buffs.mad_bombardier -> expire();
     }
+  }
+
+  double recharge_rate_multiplier( const cooldown_t& cd ) const override
+  {
+    double m = hunter_spell_t::recharge_rate_multiplier( cd );
+
+    if ( p() -> pets.main && p() -> pets.main -> buffs.coordinated_assault -> check() )
+      m *= 1 + p() -> talents.coordinated_kill -> effectN( 1 ).percent();
+
+    return m;
   }
 
   action_state_t* new_state() override
@@ -7403,9 +7446,10 @@ void hunter_t::init_gains()
 
   gains.trueshot               = get_gain( "Trueshot" );
 
-  gains.barbed_shot            = get_gain( "barbed_shot" );
+  gains.barbed_shot            = get_gain( "Barbed Shot" );
 
-  gains.terms_of_engagement    = get_gain( "terms_of_engagement" );
+  gains.terms_of_engagement    = get_gain( "Terms of Engagement" );
+  gains.coordinated_kill       = get_gain( "Coordinated Kill" );
 
   gains.nesingwarys_trapping_apparatus_direct = get_gain( "Nesingwary's Trapping Apparatus (Direct)" );
   gains.nesingwarys_trapping_apparatus_buff   = get_gain( "Nesingwary's Trapping Apparatus (Buff)" );
