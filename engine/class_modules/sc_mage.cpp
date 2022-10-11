@@ -5507,8 +5507,11 @@ struct shimmer_t final : public mage_spell_t
     ignore_false_positive = usable_while_casting = true;
     base_teleport_distance = data().effectN( 1 ).radius_max();
     movement_directionality = movement_direction_type::OMNI;
-    cooldown->duration += p->conduits.flow_of_time.time_value();
-    cooldown->duration += p->talents.flow_of_time->effectN( 2 ).time_value();
+
+    if ( p->talents.flow_of_time.ok() )
+      cooldown->duration += p->talents.flow_of_time->effectN( 2 ).time_value();
+    else
+      cooldown->duration += p->conduits.flow_of_time.time_value();
   }
 };
 
