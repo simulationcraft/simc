@@ -11,7 +11,7 @@ precombat->add_action( "moonkin_form" );
 precombat->add_action( "wrath" );
 precombat->add_action( "wrath" );
 
-def->add_action( "variable,name=is_aoe,value=spell_targets.starfall>1&(!talent.starlord.enabled|talent.stellar_drift.enabled)|spell_targets.starfall>2" );
+def->add_action( "variable,name=is_aoe,value=spell_targets.starfall>1" );
 def->add_action( "variable,name=is_cleave,value=spell_targets.starfire>1" );
 def->add_action( "variable,name=passive_asp,value=(4+talent.orbit_breaker*dot.moonfire.ticking*(buff.orbit_breaker.stack>15)*40)%spell_haste" );
 def->add_action( "berserking,if=buff.ca_inc.up|fight_remains<15" );
