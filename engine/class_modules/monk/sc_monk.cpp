@@ -3166,6 +3166,9 @@ struct fists_of_fury_t : public monk_melee_attack_t
 
     monk_melee_attack_t::execute();
 
+    if ( p()->buff.transfer_the_power->up() )
+      p()->buff.transfer_the_power->expire();
+
     if ( p()->buff.fury_of_xuen_stacks->up() && rng().roll( p()->buff.fury_of_xuen_stacks->stack_value() ) )
         p()->buff.fury_of_xuen_stacks->expire();
 
@@ -8967,7 +8970,7 @@ void monk_t::create_buffs ()
     buff.touch_of_karma = new buffs::touch_of_karma_buff_t ( *this, "touch_of_karma", find_spell ( 125174 ) );
 
     buff.transfer_the_power = make_buff ( this, "transfer_the_power", find_spell ( 195321 ) )
-      ->set_default_value ( 1 );
+      ->set_default_value_from_effect ( 1 );
 
     buff.whirling_dragon_punch = make_buff ( this, "whirling_dragon_punch", find_spell ( 196742 ) )
       ->set_refresh_behavior ( buff_refresh_behavior::NONE );
