@@ -653,7 +653,7 @@ public:
     spell_data_ptr_t wild_call;
     spell_data_ptr_t aspect_of_the_wild;
 
-    spell_data_ptr_t dire_command; // TODO: how does overlap with runeforge work
+    spell_data_ptr_t dire_command;
     spell_data_ptr_t scent_of_blood;
     spell_data_ptr_t one_with_the_pack;
     spell_data_ptr_t master_handler;
@@ -704,19 +704,19 @@ public:
 
     spell_data_ptr_t wildfire_infusion;
     spell_data_ptr_t quick_shot;
-    spell_data_ptr_t coordinated_assault; // TODO: implement
+    spell_data_ptr_t coordinated_assault;
     spell_data_ptr_t killer_companion;
 
-    spell_data_ptr_t fury_of_the_eagle; // TODO: implement
+    spell_data_ptr_t fury_of_the_eagle;
     spell_data_ptr_t ranger;
-    spell_data_ptr_t coordinated_kill; // TODO: implement
+    spell_data_ptr_t coordinated_kill;
     spell_data_ptr_t explosives_expert;
-    spell_data_ptr_t spearhead; // TODO: implement
+    spell_data_ptr_t spearhead;
 
-    spell_data_ptr_t ruthless_marauder; // TODO: implement
-    spell_data_ptr_t birds_of_prey; // TODO: pending changes
-    spell_data_ptr_t bombardier; // TODO
-    spell_data_ptr_t deadly_duo; // TODO
+    spell_data_ptr_t ruthless_marauder;
+    spell_data_ptr_t birds_of_prey;
+    spell_data_ptr_t bombardier;
+    spell_data_ptr_t deadly_duo;
   } talents;
 
   // Specialization Spells
@@ -3279,8 +3279,7 @@ struct wailing_arrow_t: public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::execute();
 
-    // 04-10-22 TODO: currently no arrows are fired at the main target
-    if ( windrunners_barrage.wind_arrow && !p() -> bugs )
+    if ( windrunners_barrage.wind_arrow )
     {
       for ( int i = 0; i < windrunners_barrage.primary_arrows; i++ )
         windrunners_barrage.wind_arrow -> execute_on_target( target );
@@ -4399,8 +4398,9 @@ struct aimed_shot_t : public aimed_shot_base_t
     if ( debug_cast<state_t*>( s ) -> secrets_of_the_vigil_up && !debug_cast<state_t*>( s ) -> focused_trickery_vigil )
       p() -> buffs.secrets_of_the_vigil -> decrement();
 
-    // TODO: check exact trigger conditions (TrS AiSes etc)
-    p() -> trigger_latent_poison( s );
+    // 10-10-22 TODO: only main target hit is triggering Latent Poison
+    if ( s -> chain_target == 0 )
+      p() -> trigger_latent_poison( s );
   }
 
   double recharge_rate_multiplier( const cooldown_t& cd ) const override
