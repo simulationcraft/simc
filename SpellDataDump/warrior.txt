@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.45969 dragonflight-BETA (hotfix 2022-10-09/45969, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.45969 dragonflight-BETA (hotfix 2022-10-11/45969, no-networking)
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -13675,6 +13675,7 @@ Effects          :
 Description      : Gain Strength equal to $s2% of your Armor.
 
 Name             : Blood and Thunder (id=384277) [Spell Family (4), Passive] 
+Hotfixed         : Description
 Talent Entry     : Generic [tree=class, row=6, col=3, max_rank=1, req_points=8, select_idx=100]
 Class            : Warrior
 School           : Physical
@@ -13700,7 +13701,7 @@ Effects          :
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Trigger Spell: 772 | Target: Self (1)
 #3 (id=1018272)  : None (0)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
-Description      : Increases the damage of Thunderclap by $s1% and whenever you Thunder Clap a target affected by your Rend, you also affect $s3 nearby targets target with Rend.
+Description      : Thunderclap deals $s1% increased damage, costs $s2 more Rage and if you have Rend, Thunder Clap also affects $s3 nearby targets with Rend.
 
 Name             : Thunderous Roar (id=384318) [Spell Family (4)] 
 Talent Entry     : Generic [tree=class, row=9, col=2, max_rank=1, req_points=20]

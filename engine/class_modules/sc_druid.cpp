@@ -2775,6 +2775,7 @@ public:
     parse_buff_effects( p()->buff.bear_form );
     unsigned berserk_ignore_mask = p()->talent.berserk_persistence.ok() ? 0b11111100000U
                                                                         : 0b11111100110U;
+                                                                          //10987654321
     parse_buff_effects<S, S>( p()->buff.berserk_bear, berserk_ignore_mask,
                               p()->talent.berserk_ravage,
                               p()->talent.berserk_unchecked_aggression );
@@ -3524,84 +3525,6 @@ public:
 
       p()->gain.clearcasting->add( RESOURCE_ENERGY, eff_cost );
     }
-
-    if ( consumes_combo_points && hit_any_target )
-    {
-      int consumed = as<int>( is_free() ? p()->resources.max[ RESOURCE_COMBO_POINT ]
-                                        : p()->resources.current[ RESOURCE_COMBO_POINT ] );
-
-      if ( p()->talent.berserk_heart_of_the_lion.ok() )
-      {
-        auto dur_ = timespan_t::from_seconds( p()->talent.berserk_heart_of_the_lion->effectN( 1 ).base_value() *
-                                              consumed * -0.1 );
-
-        if ( p()->talent.incarnation_cat.ok() )
-          p()->cooldown.incarnation->adjust( dur_ );
-        else
-          p()->cooldown.berserk_cat->adjust( dur_ );
-      }
-
-      if ( p()->talent.frantic_momentum.ok() )
-      {
-        p()->buff.frantic_momentum->trigger( 1, buff_t::DEFAULT_VALUE(),
-                                             consumed * p()->talent.frantic_momentum->effectN( 1 ).percent() );
-      }
-
-      if ( p()->talent.predatory_swiftness.ok() )
-      {
-        p()->buff.predatory_swiftness->trigger( 1, buff_t::DEFAULT_VALUE(),
-                                                consumed * p()->talent.predatory_swiftness->effectN( 3 ).percent() );
-      }
-
-      // TODO: implement 0.1s ICD
-      if ( p()->talent.raging_fury.ok() )
-      {
-        auto dur_ = timespan_t::from_seconds( p()->talent.raging_fury->effectN( 1 ).base_value() * consumed * 0.1 );
-
-        p()->buff.tigers_fury->extend_duration( p(), dur_ );
-      }
-
-      if ( p()->talent.soul_of_the_forest_cat.ok() )
-      {
-        p()->resource_gain( RESOURCE_ENERGY,
-                            consumed * p()->talent.soul_of_the_forest_cat->effectN( 1 ).resource( RESOURCE_ENERGY ),
-                            p()->gain.soul_of_the_forest );
-      }
-
-      if ( p()->talent.sudden_ambush.ok() )
-      {
-        p()->buff.sudden_ambush->trigger( 1, buff_t::DEFAULT_VALUE(),
-                                          consumed * p()->talent.sudden_ambush->effectN( 1 ).percent() );
-      }
-
-      if ( free_spell == free_spell_e::CONVOKE )  // further effects are not processed for convoke fb
-        return;
-
-      if ( p()->sets->has_set_bonus( DRUID_FERAL, T29, B4 ) )
-        p()->buff.sharpened_claws_bloodied_fangs->trigger( consumed );
-
-      if ( p()->buff.tigers_tenacity->check() )
-      {
-        p()->resource_gain( RESOURCE_COMBO_POINT, p()->buff.tigers_tenacity->value(), p()->gain.tigers_tenacity );
-        p()->buff.tigers_tenacity->decrement();
-      }
-
-      if ( is_free() )  // rest requires actual CP consumption
-        return;
-
-      p()->resource_loss( RESOURCE_COMBO_POINT, consumed, nullptr, this );
-
-      sim->print_log( "{} consumes {} {} for {} (0)", player->name(), consumed,
-                      util::resource_type_string( RESOURCE_COMBO_POINT ), name() );
-
-      stats->consume_resource( RESOURCE_COMBO_POINT, consumed );
-
-      if ( ( p()->buff.berserk_cat->check() || p()->buff.incarnation_cat->check() ) && berserk_cp &&
-           rng().roll( consumed * p()->talent.berserk->effectN( 1 ).percent() ) )
-      {
-        p()->resource_gain( RESOURCE_COMBO_POINT, berserk_cp, p()->gain.berserk );
-      }
-    }
   }
 
   template <typename... Ts>
@@ -3864,6 +3787,88 @@ struct cat_finisher_t : public cat_attack_t
     cast_state( s )->combo_points = _combo_points();
 
     cat_attack_t::snapshot_state( s, rt );
+  }
+
+  void consume_resource() override
+  {
+    cat_attack_t::consume_resource();
+
+    if ( background || !hit_any_target )
+      return;
+
+    auto consumed = _combo_points();
+
+    if ( p()->talent.berserk_heart_of_the_lion.ok() )
+    {
+      auto dur_ = timespan_t::from_seconds( p()->talent.berserk_heart_of_the_lion->effectN( 1 ).base_value() *
+                                            consumed * -0.1 );
+
+      if ( p()->talent.incarnation_cat.ok() )
+        p()->cooldown.incarnation->adjust( dur_ );
+      else
+        p()->cooldown.berserk_cat->adjust( dur_ );
+    }
+
+    if ( p()->talent.frantic_momentum.ok() )
+    {
+      p()->buff.frantic_momentum->trigger( 1, buff_t::DEFAULT_VALUE(),
+                                           consumed * p()->talent.frantic_momentum->effectN( 1 ).percent() );
+    }
+
+    if ( p()->talent.predatory_swiftness.ok() )
+    {
+      p()->buff.predatory_swiftness->trigger( 1, buff_t::DEFAULT_VALUE(),
+                                              consumed * p()->talent.predatory_swiftness->effectN( 3 ).percent() );
+    }
+
+    // TODO: implement 0.1s ICD
+    if ( p()->talent.raging_fury.ok() )
+    {
+      auto dur_ = timespan_t::from_seconds( p()->talent.raging_fury->effectN( 1 ).base_value() * consumed * 0.1 );
+
+      p()->buff.tigers_fury->extend_duration( p(), dur_ );
+    }
+
+    if ( p()->talent.soul_of_the_forest_cat.ok() )
+    {
+      p()->resource_gain( RESOURCE_ENERGY,
+                          consumed * p()->talent.soul_of_the_forest_cat->effectN( 1 ).resource( RESOURCE_ENERGY ),
+                          p()->gain.soul_of_the_forest );
+    }
+
+    if ( p()->talent.sudden_ambush.ok() )
+    {
+      p()->buff.sudden_ambush->trigger( 1, buff_t::DEFAULT_VALUE(),
+                                        consumed * p()->talent.sudden_ambush->effectN( 1 ).percent() );
+    }
+
+    if ( free_spell == free_spell_e::CONVOKE )  // further effects are not processed for convoke fb
+      return;
+
+    if ( p()->sets->has_set_bonus( DRUID_FERAL, T29, B4 ) )
+      p()->buff.sharpened_claws_bloodied_fangs->trigger( consumed );
+
+    if ( !is_free() )
+    {
+      p()->resource_loss( RESOURCE_COMBO_POINT, consumed, nullptr, this );
+
+      sim->print_log( "{} consumes {} {} for {} (0)", player->name(), consumed,
+                      util::resource_type_string( RESOURCE_COMBO_POINT ), name() );
+
+      stats->consume_resource( RESOURCE_COMBO_POINT, consumed );
+
+      if ( ( p()->buff.berserk_cat->check() || p()->buff.incarnation_cat->check() ) && berserk_cp &&
+           rng().roll( consumed * p()->talent.berserk->effectN( 1 ).percent() ) )
+      {
+        p()->resource_gain( RESOURCE_COMBO_POINT, berserk_cp, p()->gain.berserk );
+      }
+    }
+
+    if ( p()->buff.tigers_tenacity->check() )
+    {
+      p()->resource_gain( RESOURCE_COMBO_POINT, p()->buff.tigers_tenacity->value(), p()->gain.tigers_tenacity );
+      p()->buff.tigers_tenacity->decrement();
+    }
   }
 };
 
@@ -4404,18 +4409,35 @@ struct rake_t : public cat_attack_t
   
   bool has_amount_result() const override { return bleed->has_amount_result(); }
 
-  void impact( action_state_t* s ) override
+  std::vector<player_t*>& target_list() const override
   {
-    cat_attack_t::impact( s );
+    auto& tl = cat_attack_t::target_list();
 
-    bleed->snapshot_and_execute( s, true, nullptr, [ s ]( action_state_t* new_ ) {
-      // Copy persistent multipliers from the direct attack.
-      new_->persistent_multiplier = s->persistent_multiplier;
-    } );
+    // When Double-Clawed Rake is active, this is an AoE action meaning it will impact onto the first 2 targets in the
+    // target list. Instead, we want it to impact on the target of the action and 1 additional, so we'll override the
+    // target_list to make it so.
+    if ( is_aoe() && as<int>( tl.size() ) > aoe )
+    {
+      // always hit the target, so if it exists make sure it's first
+      auto start_it = tl.begin() + ( tl[ 0 ] == target ? 1 : 0 );
+
+      // randomize remaining targets
+      rng().shuffle( start_it, tl.end() );
+
+      // sort by remaining duration
+      std::sort( start_it, tl.end(), [ this ]( player_t* a, player_t* b ) {
+        return td( a )->dots.rake->remains() < td( b )->dots.rake->remains();
+      } );
+    }
+
+    return tl;    
   }
 
   void execute() override
   {
+    // Force invalidate target cache so that it will impact on the correct targets.
+    target_cache.is_valid = false;
+
     cat_attack_t::execute();
 
     if ( hit_any_target )
@@ -4425,6 +4447,16 @@ struct rake_t : public cat_attack_t
       if ( !stealthed() )
       	p()->buff.sudden_ambush->expire();
     }
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    cat_attack_t::impact( s );
+
+    bleed->snapshot_and_execute( s, true, nullptr, [ s ]( action_state_t* new_ ) {
+      // Copy persistent multipliers from the direct attack.
+      new_->persistent_multiplier = s->persistent_multiplier;
+    } );
   }
 };
 
@@ -5107,14 +5139,13 @@ struct mangle_t : public bear_attack_t
     if ( !hit_any_target )
       return;
 
-    if ( p()->buff.gore->up() && free_spell != free_spell_e::CONVOKE )
+    if ( free_spell != free_spell_e::CONVOKE )
       p()->buff.gore->expire();
+
+    p()->buff.vicious_cycle_mangle->expire();
 
     if ( p()->talent.gory_fur.ok() )
       p()->buff.gory_fur->trigger();
-
-    if ( p()->buff.vicious_cycle_mangle->up() && free_spell != free_spell_e::CONVOKE )  // TODO: check this
-      p()->buff.vicious_cycle_mangle->expire();
 
     if ( p()->talent.vicious_cycle.ok() )
       p()->buff.vicious_cycle_maul->trigger();
@@ -7260,9 +7291,12 @@ struct moonfire_t : public druid_spell_t
       // Moonfire damage is supressed while lunar inspiration is also on the target. Note that it is not cancelled and
       // continues to tick down it's duration. If there is any duration remaining after lunar inspiration expires,
       // moonfire will resume ticking for damage.
-      // TODO: check if moonfire can still proc effects while in its supressed state
+      // Note that moonfire CAN still proc shooting stars while suppressed
       if ( td( d->target )->dots.lunar_inspiration->is_ticking() )
+      {
+        trigger_shooting_stars( d->target );
         return;
+      }
 
       druid_spell_t::tick( d );
 
@@ -7276,7 +7310,7 @@ struct moonfire_t : public druid_spell_t
       // When Twin Moons is active, this is an AoE action meaning it will impact onto the first 2 targets in the target
       // list. Instead, we want it to impact on the target of the action and 1 additional, so we'll override the
       // target_list to make it so.
-      if ( is_aoe() && as<int>( tl.size( )) > aoe )
+      if ( is_aoe() && as<int>( tl.size() ) > aoe )
       {
         // always hit the target, so if it exists make sure it's first
         auto start_it = tl.begin() + ( tl[ 0 ] == target ? 1 : 0 );
@@ -7976,6 +8010,12 @@ struct starfire_t : public druid_spell_t
     else if ( p()->buff.warrior_of_elune->up() )
       p()->buff.warrior_of_elune->decrement();
 
+    if ( !p()->bugs )
+    {
+      p()->buff.umbral_embrace->expire();
+      p()->buff.gathering_starstuff->expire();
+    }
+
     if ( is_free_proc() )
       return;
 
@@ -7998,8 +8038,11 @@ struct starfire_t : public druid_spell_t
     if ( is_free_proc() )
       return;
 
-    p()->buff.umbral_embrace->expire();
-    p()->buff.gathering_starstuff->expire();
+    if ( p()->bugs )
+    {
+      p()->buff.umbral_embrace->expire();
+      p()->buff.gathering_starstuff->expire();
+    }
   }
 
   double composite_aoe_multiplier( const action_state_t* s ) const override
@@ -8605,6 +8648,12 @@ struct wrath_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
+    if ( !p()->bugs )
+    {
+      p()->buff.umbral_embrace->expire();
+      p()->buff.gathering_starstuff->expire();
+    }
+
     if ( is_free_proc() )
       return;
 
@@ -8640,8 +8689,11 @@ struct wrath_t : public druid_spell_t
     if ( is_free_proc() )
       return;
 
-    p()->buff.umbral_embrace->expire();
-    p()->buff.gathering_starstuff->expire();
+    if ( p()->bugs )
+    {
+      p()->buff.umbral_embrace->expire();
+      p()->buff.gathering_starstuff->expire();
+    }
   }
 };
 
@@ -10522,6 +10574,8 @@ void druid_t::create_buffs()
   buff.eclipse_solar = make_buff<eclipse_buff_t>( *this, "eclipse_solar", spec.eclipse_solar );
 
   buff.friend_of_the_fae = make_buff( this, "friend_of_the_fae", find_spell( 394083 ) )
+    ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+    ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_DONE )
     ->set_stack_change_callback( [ this ]( buff_t*, int old_, int new_ ) {
       if ( !old_ )
         uptime.friend_of_the_fae->update( true, sim->current_time() );
@@ -11930,7 +11984,12 @@ double druid_t::composite_player_multiplier( school_e school ) const
 {
   auto cpm = player_t::composite_player_multiplier( school );
 
-  // TODO: confirm these are school based
+  // TODO: currently these school based effects do not stack and only the highest applies.
+  // confirm which scenario is correct:
+  // 1) they all stack multiplcatively
+  // 2) they all stack additively
+  // 3) they don't stack and only the highest applies
+
   if ( dbc::has_common_school( school, SCHOOL_ARCANE ) && get_form() == BEAR_FORM )
   {
     cpm *= 1.0 + talent.elunes_favored->effectN( 1 ).percent();
@@ -11942,6 +12001,9 @@ double druid_t::composite_player_multiplier( school_e school ) const
   
   if ( buff.eclipse_solar->check() && buff.eclipse_solar->has_common_school( school ) )
     cpm *= 1.0 + buff.eclipse_solar->value();
+
+  if ( buff.friend_of_the_fae->check() && buff.friend_of_the_fae->has_common_school( school ) )
+    cpm *= 1.0 + buff.friend_of_the_fae->value();
 
   return cpm;
 }
@@ -12529,10 +12591,7 @@ stat_e druid_t::convert_hybrid_stat( stat_e s ) const
         return STAT_INTELLECT;
       else
         return STAT_AGILITY;
-    // This is a guess at how AGI/STR gear will work for Balance/Resto, TODO: confirm
     case STAT_STR_AGI: return STAT_AGILITY;
-    // This is a guess at how STR/INT gear will work for Feral/Guardian, TODO: confirm
-    // This should probably never come up since druids can't equip plate, but....
     case STAT_STR_INT: return STAT_INTELLECT;
     case STAT_SPIRIT:
       if ( specialization() == DRUID_RESTORATION )
@@ -12662,7 +12721,7 @@ void druid_t::assess_damage_imminent_pre_absorb( school_e school, result_amount_
     if ( buff.bristling_fur->up() )  // 1 rage per 1% of maximum health taken
       resource_gain( RESOURCE_RAGE, s->result_amount / expected_max_health * 100, gain.bristling_fur );
 
-    if ( talent.dream_of_cenarius.ok() && rng().roll( cache.attack_crit_chance() ) )  // TODO: confirm form restrictions
+    if ( talent.dream_of_cenarius.ok() && rng().roll( cache.attack_crit_chance() ) )
       buff.dream_of_cenarius->trigger();
   }
 }

@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.45969 dragonflight-BETA (hotfix 2022-10-09/45969, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.45969 dragonflight-BETA (hotfix 2022-10-11/45969, no-networking)
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -12511,7 +12511,7 @@ Talent Entry     : Holy [tree=spec, row=4, col=6, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy
 Spell Type       : None
-Resource         : 500% Base Mana (0) (id=264580)
+Resource         : 500 Base Mana (0) (id=264580)
 GCD              : 1.5 seconds
 Cooldown         : 30 seconds
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 

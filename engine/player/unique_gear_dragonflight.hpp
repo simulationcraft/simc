@@ -33,6 +33,7 @@ namespace enchants
 namespace items
 {
 // Trinkets
+void the_cartographers_calipers( special_effect_t& );
 // Weapons
 // Armor
 }

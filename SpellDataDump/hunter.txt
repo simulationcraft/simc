@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.45969 dragonflight-BETA (hotfix 2022-10-09/45969, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.45969 dragonflight-BETA (hotfix 2022-10-11/45969, no-networking)
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -3917,7 +3917,7 @@ Spell Level      : 10
 Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Aspect of the Eagle (186289 effect#1), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Tip of the Spear (260286 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Wilderness Survival (278532 effect#3), Stinging Strike (341246 effect#1), Spearhead (360966 effect#4), Lunge (378934 effect#2), Sweeping Spear (378950 effect#1), Spear Focus (378953 effect#1), Hunter Survival Class Set 2pc (393650 effect#1)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Aspect of the Eagle (186289 effect#1), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Tip of the Spear (260286 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Wilderness Survival (278532 effect#3), Stinging Strike (341246 effect#1), Spearhead (360966 effect#4), Lunge (378934 effect#2), Sweeping Spear (378950 effect#1), Spear Focus (378953 effect#1), Hunter Survival Class Set 2pc (393650 effect#1), Bestial Barrage (394388 effect#1)
 Family Flags     : 1, 55, 80, 106
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -4140,7 +4140,7 @@ Range            : 8 yards
 GCD              : 1.5 seconds
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
 Cooldown         : 6 seconds
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Hunter (137014 effects: #2, #3), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Butcher's Bone Apron (236446 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Frizzo's Fingertrap (281262 effect#1), Butcher's Bone Fragments (336908 effect#1), Lunge (378934 effect#2), Sweeping Spear (378950 effect#1), Hunter Survival Class Set 2pc (393650 effect#1)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Hunter (137014 effects: #2, #3), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Butcher's Bone Apron (236446 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Frizzo's Fingertrap (281262 effect#1), Butcher's Bone Fragments (336908 effect#1), Lunge (378934 effect#2), Sweeping Spear (378950 effect#1), Hunter Survival Class Set 2pc (393650 effect#1), Bestial Barrage (394388 effect#1)
 Family Flags     : 1, 2, 55, 71, 106
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -5276,7 +5276,7 @@ GCD              : 1.5 seconds
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
 Charges          : 3 (9 seconds cooldown)
 Category         : 1616: Hunter (137014 effect#5)
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Butcher's Bone Apron (236446 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Frizzo's Fingertrap (281262 effect#1), Butcher's Bone Fragments (336908 effect#1), Lunge (378934 effect#2), Sweeping Spear (378950 effect#1), Hunter Survival Class Set 2pc (393650 effect#1)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Butcher's Bone Apron (236446 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Frizzo's Fingertrap (281262 effect#1), Butcher's Bone Fragments (336908 effect#1), Lunge (378934 effect#2), Sweeping Spear (378950 effect#1), Hunter Survival Class Set 2pc (393650 effect#1), Bestial Barrage (394388 effect#1)
 Family Flags     : 1, 38, 55, 106
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6095,7 +6095,7 @@ Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Blackness (184902 effect#1), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mongoose Fury (259388 effect#1), Tip of the Spear (260286 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Wilderness Survival (278532 effect#2), Stinging Strike (341246 effect#1), Spearhead (360966 effect#4), Lunge (378934 effect#2), Sweeping Spear (378950 effect#1), Spear Focus (378953 effect#1), Hunter Survival Class Set 2pc (393650 effect#1)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Blackness (184902 effect#1), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mongoose Fury (259388 effect#1), Tip of the Spear (260286 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Wilderness Survival (278532 effect#2), Stinging Strike (341246 effect#1), Spearhead (360966 effect#4), Lunge (378934 effect#2), Sweeping Spear (378950 effect#1), Spear Focus (378953 effect#1), Hunter Survival Class Set 2pc (393650 effect#1), Bestial Barrage (394388 effect#1)
 Family Flags     : 1, 55, 96, 106
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -7875,7 +7875,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Aspect of the Eagle (186289 effect#1), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Tip of the Spear (260286 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Wilderness Survival (278532 effect#3), Stinging Strike (341246 effect#1), Spearhead (360966 effect#4), Lunge (378934 effect#2), Sweeping Spear (378950 effect#1), Spear Focus (378953 effect#1), Hunter Survival Class Set 2pc (393650 effect#1)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Aspect of the Eagle (186289 effect#1), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Tip of the Spear (260286 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Wilderness Survival (278532 effect#3), Stinging Strike (341246 effect#1), Spearhead (360966 effect#4), Lunge (378934 effect#2), Sweeping Spear (378950 effect#1), Spear Focus (378953 effect#1), Hunter Survival Class Set 2pc (393650 effect#1), Bestial Barrage (394388 effect#1)
 Family Flags     : 1, 55, 80, 106
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -7901,7 +7901,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Blackness (184902 effect#1), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mongoose Fury (259388 effect#1), Tip of the Spear (260286 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Wilderness Survival (278532 effect#2), Stinging Strike (341246 effect#1), Spearhead (360966 effect#4), Lunge (378934 effect#2), Sweeping Spear (378950 effect#1), Spear Focus (378953 effect#1), Hunter Survival Class Set 2pc (393650 effect#1)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Blackness (184902 effect#1), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mongoose Fury (259388 effect#1), Tip of the Spear (260286 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Wilderness Survival (278532 effect#2), Stinging Strike (341246 effect#1), Spearhead (360966 effect#4), Lunge (378934 effect#2), Sweeping Spear (378950 effect#1), Spear Focus (378953 effect#1), Hunter Survival Class Set 2pc (393650 effect#1), Bestial Barrage (394388 effect#1)
 Family Flags     : 1, 55, 96, 106
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -16819,5 +16819,29 @@ Effects          :
                    Family Flags: 12, 105
 Description      : $@spelldesc393649
 Tooltip          : Critical strike chance of Arcane Shot and Multi-Shot increased by $s1%.
+
+Name             : Bestial Barrage (id=394388) [Spell Family (9)] 
+Class            : Hunter
+School           : Physical
+Spell Type       : None
+Duration         : 15 seconds
+Stacks           : 1 initial, 1 maximum
+Proc Chance      : 101%
+Proc Flags       : ....x... ........ ........ ........ 
+                 : Yellow Melee
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=1033979)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
+                   Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
+                   Affected Spells: Raptor Strike (186270), Carve (187708), Butchery (212436), Mongoose Bite (259387), Raptor Strike (265189), Mongoose Bite (265888)
+                   Family Flags: 38, 71, 80, 96
+Tooltip          : $?s259387[Mongoose Bite][Raptor Strike], Carve, and Butchery cost no Focus.
 
 

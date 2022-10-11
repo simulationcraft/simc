@@ -843,19 +843,10 @@ public:
     // Don't want to cause the buff to be cast and then used up immediately.
     if ( current_resource() == RESOURCE_CHI )
     {
-      // Bug: Dance of Chi-Ji cannot proc during Serenity
-      if ( !p()->bugs )
-      {
-        // Dance of Chi-Ji talent triggers from spending chi
-        if ( p()->talent.windwalker.dance_of_chiji->ok() )
-          p()->buff.dance_of_chiji->trigger();
-      }
-      else if ( !p()->buff.serenity->up() )
-      {
-        // Dance of Chi-Ji talent triggers from spending chi
-        if ( p()->talent.windwalker.dance_of_chiji->ok() )
-          p()->buff.dance_of_chiji->trigger();
-      }
+      // Dance of Chi-Ji talent triggers from spending chi
+      if ( p()->talent.windwalker.dance_of_chiji->ok() )
+        p()->buff.dance_of_chiji->trigger();
+
     }
 
     ab::impact( s );
@@ -2260,8 +2251,12 @@ struct blackout_kick_totm_proc : public monk_melee_attack_t
 
       case MONK_WINDWALKER:
 
-        if ( p()->talent.windwalker.transfer_the_power->ok() )
-          p()->buff.transfer_the_power->trigger();
+        // Transfer the power triggers from ToTM hits but only on the primary target
+        if ( s->target == target )
+        {
+          if ( p()->talent.windwalker.transfer_the_power->ok() )
+            p()->buff.transfer_the_power->trigger();
+        }
 
         break;
 
@@ -3175,6 +3170,9 @@ struct fists_of_fury_t : public monk_melee_attack_t
     }
 
     monk_melee_attack_t::execute();
+
+    if ( p()->buff.transfer_the_power->up() )
+      p()->buff.transfer_the_power->expire();
 
     if ( p()->buff.fury_of_xuen_stacks->up() && rng().roll( p()->buff.fury_of_xuen_stacks->stack_value() ) )
         p()->buff.fury_of_xuen_stacks->expire();
@@ -9007,7 +9005,7 @@ void monk_t::create_buffs ()
     buff.touch_of_karma = new buffs::touch_of_karma_buff_t ( *this, "touch_of_karma", find_spell ( 125174 ) );
 
     buff.transfer_the_power = make_buff ( this, "transfer_the_power", find_spell ( 195321 ) )
-      ->set_default_value ( 1 );
+      ->set_default_value_from_effect ( 1 );
 
     buff.whirling_dragon_punch = make_buff ( this, "whirling_dragon_punch", find_spell ( 196742 ) )
       ->set_refresh_behavior ( buff_refresh_behavior::NONE );

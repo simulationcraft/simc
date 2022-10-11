@@ -53,20 +53,6 @@ public:
     }
   }
 
-  void impact( action_state_t* s ) override
-  {
-    warlock_spell_t::impact( s );
-
-    if ( p()->talents.reverse_entropy->ok() )
-    {
-      auto success = p()->buffs.reverse_entropy->trigger();
-      if ( success )
-      {
-        p()->procs.reverse_entropy->occur();
-      }
-    }
-  }
-
   double composite_target_multiplier( player_t* t ) const override
   {
     double m = warlock_spell_t::composite_target_multiplier( t );
@@ -115,21 +101,21 @@ struct internal_combustion_t : public destruction_spell_t
 
   void execute() override
   {
-    warlock_td_t* td = this->td( target );
+    warlock_td_t* td = p()->get_target_data( target );
     dot_t* dot       = td->dots_immolate;
 
     assert( dot->current_action );
     action_state_t* state = dot->current_action->get_state( dot->state );
     dot->current_action->calculate_tick_amount( state, 1.0 );
     double tick_base_damage  = state->result_raw;
-    timespan_t remaining     = std::min( dot->remains(), timespan_t::from_seconds( data().effectN( 1 ).base_value() ) );
+    timespan_t remaining     = std::min( dot->remains(), timespan_t::from_seconds( p()->talents.internal_combustion->effectN( 1 ).base_value() ) );
     timespan_t dot_tick_time = dot->current_action->tick_time( state );
     double ticks_left        = remaining / dot_tick_time;
 
     double total_damage = ticks_left * tick_base_damage;
 
     action_state_t::release( state );
-    this->base_dd_min = this->base_dd_max = total_damage;
+    base_dd_min = base_dd_max = total_damage;
 
     destruction_spell_t::execute();
     td->dots_immolate->adjust_duration( -remaining );
@@ -211,23 +197,33 @@ struct havoc_t : public destruction_spell_t
 
 struct immolate_t : public destruction_spell_t
 {
-  immolate_t( warlock_t* p, util::string_view options_str ) : destruction_spell_t( "immolate", p, p->warlock_base.immolate )
+  struct immolate_dot_t : public destruction_spell_t
+  {
+    immolate_dot_t( warlock_t* p ) : destruction_spell_t( "immolate", p, p->warlock_base.immolate_dot )
+    {
+      background = dual = true;
+      spell_power_mod.tick = p->warlock_base.immolate_dot->effectN( 1 ).sp_coeff();
+    }
+
+    void tick( dot_t* d ) override
+    {
+      destruction_spell_t::tick( d );
+
+      if ( d->state->result == RESULT_CRIT && rng().roll( data().effectN( 2 ).percent() ) )
+        p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.immolate_crits );
+
+      p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.immolate );
+    }
+  };
+
+  immolate_t( warlock_t* p, util::string_view options_str ) : destruction_spell_t( "immolate_direct", p, p->warlock_base.immolate )
   {
     parse_options( options_str );
 
     can_havoc = true;
 
-    parse_effect_data( p->warlock_base.immolate_dot->effectN( 1 ) );
-  }
-
-  void tick( dot_t* d ) override
-  {
-    destruction_spell_t::tick( d );
-
-    if ( d->state->result == RESULT_CRIT && rng().roll( data().effectN( 2 ).percent() ) )
-      p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.immolate_crits );
-
-    p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.immolate );
+    impact_action = new immolate_dot_t( p );
+    add_child( impact_action );
   }
 };
 
@@ -265,9 +261,8 @@ struct conflagrate_t : public destruction_spell_t
   {
     destruction_spell_t::execute();
 
-    //p()->buffs.backdraft->trigger();
-
-    //sim->print_log( "{}: Action {} {} charges remain", player->name(), name(), this->cooldown->current_charge );
+    if ( p()->talents.backdraft.ok() )
+      p()->buffs.backdraft->trigger();
   }
 };
 
@@ -354,8 +349,6 @@ struct incinerate_fnb_t : public destruction_spell_t
 
 struct incinerate_t : public destruction_spell_t
 {
-  double backdraft_gcd_mult;
-  double backdraft_cast_mult;
   double energize_mult;
   incinerate_fnb_t* fnb_action;
 
@@ -367,9 +360,6 @@ struct incinerate_t : public destruction_spell_t
     //add_child( fnb_action );
 
     can_havoc = true;
-
-    //backdraft_cast_mult = 1.0 + p->buffs.backdraft->data().effectN( 1 ).percent();
-    //backdraft_gcd_mult = 1.0 + p->buffs.backdraft->data().effectN( 2 ).percent();
 
     parse_effect_data( p->warlock_base.incinerate_energize->effectN( 1 ) );
 
@@ -383,8 +373,8 @@ struct incinerate_t : public destruction_spell_t
   {
     timespan_t h = spell_t::execute_time();
 
-    //if ( p()->buffs.backdraft->check() )
-    //  h *= backdraft_cast_mult;
+    if ( p()->buffs.backdraft->check() )
+      h *= 1.0 + p()->talents.backdraft_buff->effectN( 1 ).percent();
 
     return h;
   }
@@ -396,8 +386,8 @@ struct incinerate_t : public destruction_spell_t
     if ( t == 0_ms )
       return t;
 
-    //if ( p()->buffs.backdraft->check() )
-    //  t *= backdraft_gcd_mult;
+    if ( p()->buffs.backdraft->check() )
+      t *= 1.0 + p()->talents.backdraft_buff->effectN( 2 ).percent();
 
     if ( t < min_gcd )
       t = min_gcd;
@@ -409,7 +399,7 @@ struct incinerate_t : public destruction_spell_t
   {
     destruction_spell_t::execute();
 
-    //p()->buffs.backdraft->decrement();
+    p()->buffs.backdraft->decrement();
 
     //if ( p()->talents.fire_and_brimstone->ok() )
     //{
@@ -443,8 +433,6 @@ struct incinerate_t : public destruction_spell_t
 
 struct chaos_bolt_t : public destruction_spell_t
 {
-  double backdraft_gcd;
-  double backdraft_cast_time;
   internal_combustion_t* internal_combustion;
 
   chaos_bolt_t( warlock_t* p, util::string_view options_str )
@@ -453,11 +441,8 @@ struct chaos_bolt_t : public destruction_spell_t
     parse_options( options_str );
     can_havoc = true;
 
-    //backdraft_cast_time = 1.0 + p->buffs.backdraft->data().effectN( 1 ).percent();
-    //backdraft_gcd       = 1.0 + p->buffs.backdraft->data().effectN( 2 ).percent();
-
-    //internal_combustion = new internal_combustion_t( p );
-    //add_child( internal_combustion );
+    internal_combustion = new internal_combustion_t( p );
+    add_child( internal_combustion );
   }
 
   double cost() const override
@@ -477,8 +462,8 @@ struct chaos_bolt_t : public destruction_spell_t
     //if ( p()->buffs.ritual_of_ruin->check() )
     //  h *= 1.0 + p()->buffs.ritual_of_ruin->data().effectN( 3 ).percent();
 
-    //if ( p()->buffs.backdraft->check() )
-    //  h *= backdraft_cast_time;
+    if ( p()->buffs.backdraft->check() )
+      h *= 1.0 + p()->talents.backdraft_buff->effectN( 1 ).percent();
 
     //// SL - Legendary
     //if ( p()->buffs.madness_of_the_azjaqir->check() )
@@ -521,9 +506,9 @@ struct chaos_bolt_t : public destruction_spell_t
     if ( t == 0_ms )
       return t;
 
-    //// PTR 2022-02-16: Backdraft is no longer consumed when using T28 free Chaos Bolt cast, but GCD is still shortened
-    //if ( p()->buffs.backdraft->check() )
-    //  t *= backdraft_gcd;
+    // PTR 2022-02-16: Backdraft is no longer consumed when using T28 free Chaos Bolt cast, but GCD is still shortened
+    if ( p()->buffs.backdraft->check() )
+      t *= 1.0 + p()->talents.backdraft_buff->effectN( 2 ).percent();
 
     if ( t < min_gcd )
       t = min_gcd;
@@ -535,26 +520,13 @@ struct chaos_bolt_t : public destruction_spell_t
   {
     destruction_spell_t::impact( s );
 
-    //trigger_internal_combustion( s );
+    if ( p()->talents.internal_combustion.ok() && result_is_hit( s->result ) && p()->get_target_data( s->target )->dots_immolate->is_ticking() )
+    {
+      internal_combustion->execute_on_target( s->target );
+    }
 
     //if ( p()->talents.eradication->ok() && result_is_hit( s->result ) )
     //  td( s->target )->debuffs_eradication->trigger();
-  }
-
-  void trigger_internal_combustion( action_state_t* s )
-  {
-    if ( !p()->talents.internal_combustion->ok() )
-      return;
-
-    if ( !result_is_hit( s->result ) )
-      return;
-
-    auto td = this->td( s->target );
-    if ( !td->dots_immolate->is_ticking() )
-      return;
-
-    internal_combustion->set_target( s->target );
-    internal_combustion->execute();
   }
 
   void execute() override
@@ -565,6 +537,8 @@ struct chaos_bolt_t : public destruction_spell_t
     //// PTR 2022-02-16: Backdraft is no longer consumed for T28 free Chaos Bolts
     //if ( !p()->buffs.ritual_of_ruin->check() )
     //  p()->buffs.backdraft->decrement();
+
+    p()->buffs.backdraft->decrement();
 
     //// SL - Legendary
     //if ( p()->legendary.madness_of_the_azjaqir->ok() )
@@ -696,49 +670,40 @@ struct rain_of_fire_t : public destruction_spell_t
 {
   struct rain_of_fire_tick_t : public destruction_spell_t
   {
-    rain_of_fire_tick_t( warlock_t* p ) : destruction_spell_t( "rain_of_fire_tick", p, p->find_spell( 42223 ) )
+    rain_of_fire_tick_t( warlock_t* p ) : destruction_spell_t( "rain_of_fire_tick", p, p->talents.rain_of_fire_tick )
     {
       aoe        = -1;
-      background = dual = direct_tick = true;  // Legion TOCHECK
-      callbacks                       = false;
-      radius                          = p->find_spell( 5740 )->effectN( 1 ).radius();
-      base_multiplier *= 1.0 + p->spec.rain_of_fire_2->effectN( 1 ).percent();
-      base_multiplier *= 1.0 + p->talents.inferno->effectN( 2 ).percent();
+      background = dual = direct_tick = true;
+      radius = p->talents.rain_of_fire->effectN( 1 ).radius();
+      //base_multiplier *= 1.0 + p->talents.inferno->effectN( 2 ).percent();
     }
 
     void impact( action_state_t* s ) override
     {
       destruction_spell_t::impact( s );
 
-      if ( p()->talents.inferno && result_is_hit( s->result ) )
-      {
-        if ( rng().roll( p()->talents.inferno->effectN( 1 ).percent() * ( 5.0 / std::max(5u, s->n_targets ) ) ) )
-        {
-          p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.inferno );
-        }
-      }
-    }
-
-    void execute() override
-    {
-      destruction_spell_t::execute();
+      //if ( p()->talents.inferno && result_is_hit( s->result ) )
+      //{
+      //  if ( rng().roll( p()->talents.inferno->effectN( 1 ).percent() * ( 5.0 / std::max(5u, s->n_targets ) ) ) )
+      //  {
+      //    p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.inferno );
+      //  }
+      //}
     }
   };
 
   rain_of_fire_t( warlock_t* p, util::string_view options_str )
-    : destruction_spell_t( "rain_of_fire", p, p->find_spell( 5740 ) )
+    : destruction_spell_t( "rain_of_fire", p, p->talents.rain_of_fire )
   {
     parse_options( options_str );
-    aoe          = -1;
-    dot_duration = 0_ms;
     may_miss = may_crit = false;
-    base_tick_time      = data().duration() / 8.0;  // ticks 8 times (missing from spell data)
-    base_execute_time   = 0_ms;                     // HOTFIX
+    base_tick_time = 1_s;
+    dot_duration = 0_s;
 
-    if ( !p->active.rain_of_fire )
+    if ( !p->proc_actions.rain_of_fire_tick )
     {
-      p->active.rain_of_fire        = new rain_of_fire_tick_t( p );
-      p->active.rain_of_fire->stats = stats;
+      p->proc_actions.rain_of_fire_tick = new rain_of_fire_tick_t( p );
+      p->proc_actions.rain_of_fire_tick->stats = stats;
     }
   }
 
@@ -746,8 +711,8 @@ struct rain_of_fire_t : public destruction_spell_t
   {
     double c = destruction_spell_t::cost();
 
-    if ( p()->buffs.ritual_of_ruin->check() )
-      c *= 1 + p()->buffs.ritual_of_ruin->data().effectN( 2 ).percent();
+    //if ( p()->buffs.ritual_of_ruin->check() )
+    //  c *= 1 + p()->buffs.ritual_of_ruin->data().effectN( 2 ).percent();
 
     return c;        
   }
@@ -757,46 +722,46 @@ struct rain_of_fire_t : public destruction_spell_t
     int shards_used = as<int>( cost() );
     destruction_spell_t::execute();
 
-    if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T28, B2 ) )
-    {
-      if ( p()->buffs.ritual_of_ruin->check() )
-      {
-        if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T28, B4 ) )
-        {
-          // Note: Tier set spell (363950) has duration in Effect 1, but there is also a duration adjustment in Ritual of Ruin buff data Effect 4
-          // Unsure which is being used at this time
-          timespan_t duration = p()->sets->set( WARLOCK_DESTRUCTION, T28, B4 )->effectN( 1 ).time_value() * 1000; 
-          if ( p()->warlock_pet_list.blasphemy.active_pet() )
-          {
-            p()->warlock_pet_list.blasphemy.active_pet()->adjust_duration( duration );
-          }
-          else
-          {
-            p()->warlock_pet_list.blasphemy.spawn( duration + 1000_ms, 1U ); // 2022-06-29 Animation has 2 second pad at end of lifetime, but safety window for actions is smaller. TOCHECK
-          }
+    //if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T28, B2 ) )
+    //{
+    //  if ( p()->buffs.ritual_of_ruin->check() )
+    //  {
+    //    if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T28, B4 ) )
+    //    {
+    //      // Note: Tier set spell (363950) has duration in Effect 1, but there is also a duration adjustment in Ritual of Ruin buff data Effect 4
+    //      // Unsure which is being used at this time
+    //      timespan_t duration = p()->sets->set( WARLOCK_DESTRUCTION, T28, B4 )->effectN( 1 ).time_value() * 1000; 
+    //      if ( p()->warlock_pet_list.blasphemy.active_pet() )
+    //      {
+    //        p()->warlock_pet_list.blasphemy.active_pet()->adjust_duration( duration );
+    //      }
+    //      else
+    //      {
+    //        p()->warlock_pet_list.blasphemy.spawn( duration + 1000_ms, 1U ); // 2022-06-29 Animation has 2 second pad at end of lifetime, but safety window for actions is smaller. TOCHECK
+    //      }
 
-          if ( p()->talents.rain_of_chaos->ok() )
-          {
-            p()->buffs.rain_of_chaos->extend_duration_or_trigger( duration );
-          }
+    //      if ( p()->talents.rain_of_chaos->ok() )
+    //      {
+    //        p()->buffs.rain_of_chaos->extend_duration_or_trigger( duration );
+    //      }
 
-          // TOFIX: As of 2022-02-03 PTR, Blasphemy appears to trigger Infernal Awakening on spawn, and Blasphemous Existence if already out
-          // This will require first fixing Infernal Awakening to properly be on Infernal pet
-          p()->warlock_pet_list.blasphemy.active_pet()->blasphemous_existence->execute();
-          p()->procs.avatar_of_destruction->occur();
-        }
-        p()->buffs.ritual_of_ruin->expire();
-      }
+    //      // TOFIX: As of 2022-02-03 PTR, Blasphemy appears to trigger Infernal Awakening on spawn, and Blasphemous Existence if already out
+    //      // This will require first fixing Infernal Awakening to properly be on Infernal pet
+    //      p()->warlock_pet_list.blasphemy.active_pet()->blasphemous_existence->execute();
+    //      p()->procs.avatar_of_destruction->occur();
+    //    }
+    //    p()->buffs.ritual_of_ruin->expire();
+    //  }
 
-      // Any changes to Impending Ruin must also be made in chaos_bolt_t!
-      if ( shards_used > 0 )
-      {
-        int overflow = p()->buffs.impending_ruin->check() + shards_used - p()->buffs.impending_ruin->max_stack();
-        p()->buffs.impending_ruin->trigger( shards_used ); //Stack change callback should switch Impending Ruin to Ritual of Ruin if max stacks reached
-        if ( overflow > 0 )
-          make_event( sim, 1_ms, [ this, overflow ] { p()->buffs.impending_ruin->trigger( overflow ); } );
-      }
-    }
+    //  // Any changes to Impending Ruin must also be made in chaos_bolt_t!
+    //  if ( shards_used > 0 )
+    //  {
+    //    int overflow = p()->buffs.impending_ruin->check() + shards_used - p()->buffs.impending_ruin->max_stack();
+    //    p()->buffs.impending_ruin->trigger( shards_used ); //Stack change callback should switch Impending Ruin to Ritual of Ruin if max stacks reached
+    //    if ( overflow > 0 )
+    //      make_event( sim, 1_ms, [ this, overflow ] { p()->buffs.impending_ruin->trigger( overflow ); } );
+    //  }
+    //}
 
     make_event<ground_aoe_event_t>( *sim, p(),
                                     ground_aoe_params_t()
@@ -804,9 +769,9 @@ struct rain_of_fire_t : public destruction_spell_t
                                         .x( execute_state->target->x_position )
                                         .y( execute_state->target->y_position )
                                         .pulse_time( base_tick_time * player->cache.spell_haste() )
-                                        .duration( data().duration() * player->cache.spell_haste() )
+                                        .duration( p()->talents.rain_of_fire->duration() * player->cache.spell_haste() )
                                         .start_time( sim->current_time() )
-                                        .action( p()->active.rain_of_fire ) );
+                                        .action( p()->proc_actions.rain_of_fire_tick ) );
   }
 };
 
@@ -998,16 +963,13 @@ action_t* warlock_t::create_action_destruction( util::string_view action_name, u
 void warlock_t::create_buffs_destruction()
 {
   // destruction buffs
-  buffs.backdraft =
-      make_buff( this, "backdraft", find_spell( 117828 ) )
-          ->set_refresh_behavior( buff_refresh_behavior::DURATION );
+  buffs.backdraft = make_buff( this, "backdraft", talents.backdraft_buff );
 
-  buffs.reverse_entropy = make_buff( this, "reverse_entropy", talents.reverse_entropy )
-                              ->set_default_value( find_spell( 266030 )->effectN( 1 ).percent() )
-                              ->set_duration( find_spell( 266030 )->duration() )
-                              ->set_refresh_behavior( buff_refresh_behavior::DURATION )
+  buffs.reverse_entropy = make_buff( this, "reverse_entropy", talents.reverse_entropy_buff )
+                              ->set_default_value_from_effect( 1 )
+                              ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
                               ->set_trigger_spell( talents.reverse_entropy )
-                              ->add_invalidate( CACHE_HASTE );
+                              ->set_rppm( RPPM_NONE, talents.reverse_entropy->real_ppm() );
 
   // Spell 335236 holds the duration of the proc'd infernal's duration, storing it in default value of the buff for use
   // later
@@ -1051,11 +1013,21 @@ void warlock_t::init_spells_destruction()
   talents.conflagrate = find_talent_spell( talent_tree::SPECIALIZATION, "Conflagrate" ); // Should be ID 17962
   talents.conflagrate_2 = find_spell( 245330 );
 
+  talents.reverse_entropy = find_talent_spell( talent_tree::SPECIALIZATION, "Reverse Entropy" ); // Should be ID 205148
+  talents.reverse_entropy_buff = find_spell( 266030 );
+
+  talents.internal_combustion = find_talent_spell( talent_tree::SPECIALIZATION, "Internal Combustion" ); // Should be ID 266134
+
+  talents.rain_of_fire = find_talent_spell( talent_tree::SPECIALIZATION, "Rain of Fire" ); // Should be ID 5740
+  talents.rain_of_fire_tick = find_spell( 42223 );
+
+  talents.backdraft = find_talent_spell( talent_tree::SPECIALIZATION, "Backdraft" ); // Should be ID 196406
+  talents.backdraft_buff = find_spell( 117828 );
+
   talents.eradication = find_talent_spell( "Eradication" );
   talents.soul_fire   = find_talent_spell( "Soul Fire" );
 
-  talents.reverse_entropy     = find_talent_spell( "Reverse Entropy" );
-  talents.internal_combustion = find_talent_spell( "Internal Combustion" );
+
   talents.shadowburn          = find_talent_spell( "Shadowburn" );
 
   talents.inferno            = find_talent_spell( "Inferno" );

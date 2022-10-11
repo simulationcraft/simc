@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.45969 dragonflight-BETA (hotfix 2022-10-09/45969, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.45969 dragonflight-BETA (hotfix 2022-10-11/45969, no-networking)
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -15268,5 +15268,23 @@ Effects          :
 #1 (id=1035886)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Generate full combo points when you gain Adrenaline Rush, and again when it ends.
+
+Name             : Improved Adrenaline Rush (id=395424) [Spell Family (8)] 
+Class            : Rogue
+School           : Physical
+Spell Type       : None
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1035888)  : Energize Power (30)
+                   Base Value: 7 | Scaled Value: 7 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
+Description      : $@spelldesc395422
 
 

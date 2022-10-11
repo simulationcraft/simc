@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.45969 dragonflight-BETA (hotfix 2022-10-09/45969, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.45969 dragonflight-BETA (hotfix 2022-10-11/45969, no-networking)
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -1442,7 +1442,7 @@ Name             : Fire Blast (id=57984) [Spell Family (11)]
 Class            : Shaman
 School           : Fire
 Spell Type       : Magic
-Resource         : 4% Base Mana (0) (id=2612)
+Resource         : 4 Base Mana (0) (id=2612)
 Spell Level      : 14
 Range            : 40 yards
 Cast Time        : 3 seconds
@@ -3142,7 +3142,7 @@ Name             : Immolate (id=118297)
 Class            : Shaman
 School           : Fire
 Spell Type       : Magic
-Resource         : 10% Base Mana (0) (id=6152)
+Resource         : 10 Base Mana (0) (id=6152)
 Range            : 40 yards
 Cast Time        : 2 seconds
 Duration         : 21 seconds
@@ -4512,7 +4512,7 @@ Name             : Lightning Blast (id=191726) [Spell Family (11)]
 Class            : Shaman
 School           : Nature
 Spell Type       : Magic
-Resource         : 40% Base Mana (0) (id=10367)
+Resource         : 40 Base Mana (0) (id=10367)
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 Category         : 19
@@ -4534,7 +4534,7 @@ Name             : Chain Lightning (id=191732)
 Class            : Shaman
 School           : Nature
 Spell Type       : Magic
-Resource         : 30% Base Mana (0) (id=10368)
+Resource         : 30 Base Mana (0) (id=10368)
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 

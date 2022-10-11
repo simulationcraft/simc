@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.45969 dragonflight-BETA (hotfix 2022-10-09/45969, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.45969 dragonflight-BETA (hotfix 2022-10-11/45969, no-networking)
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Talent Entry     : Generic [tree=class, row=1, col=3, max_rank=1, req_points=0]
 Class            : Paladin, Mage
@@ -11917,7 +11917,7 @@ Talent Entry     : Arcane [tree=spec, row=4, col=3, max_rank=1, req_points=0]
 Class            : Mage
 School           : Arcane
 Spell Type       : Magic
-Resource         : 1% - 350001% Base Mana (0) (id=232593)
+Resource         : 1 - 350001 Base Mana (0) (id=232593)
 Spell Level      : 10
 Range            : 40 yards
 Max Targets      : 5

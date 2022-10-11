@@ -1880,7 +1880,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
   {
     s << "Resource         : ";
 
-    if ( pd.type() == POWER_MANA )
+    if ( pd.type() == POWER_MANA && pd._cost == 0 )
       s << pd.cost() * 100.0 << "%";
     else
       s << pd.cost();
@@ -1890,7 +1890,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     if ( pd.max_cost() != 0 )
     {
       s << "- ";
-      if ( pd.type() == POWER_MANA )
+      if ( pd.type() == POWER_MANA && pd._cost_max == 0  )
         s << ( pd.cost() + pd.max_cost() ) * 100.0 << "%";
       else
         s << ( pd.cost() + pd.max_cost() );

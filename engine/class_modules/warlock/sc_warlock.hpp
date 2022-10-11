@@ -347,11 +347,14 @@ public:
 
     player_talent_t conflagrate; // Base 2 charges
     const spell_data_t* conflagrate_2; // Contains Soul Shard information
-    const spell_data_t* reverse_entropy; // DF - Now a choice against Internal Combustion, make sure to find correct RPPM location in data with new talent structure
-    const spell_data_t* internal_combustion; // DF - Now a choice against Reverse Entropy
-    // DF - Rain of Fire
+    player_talent_t reverse_entropy;
+    const spell_data_t* reverse_entropy_buff;
+    player_talent_t internal_combustion;
+    player_talent_t rain_of_fire;
+    const spell_data_t* rain_of_fire_tick;
 
-    // DF - Backdraft (max 2 stacks, also now affects Soul Fire)
+    player_talent_t backdraft;
+    const spell_data_t* backdraft_buff; // DF - Now affects Soul Fire
     // DF - Mayhem (Choice against Havoc, single target spells have a chance to cleave)
     // DF - Havoc (Choice against Mayhem, core functionality unchanged)
     // DF - Pyrogenics (Enemies affected by Rain of Fire take increased Fire damage)
@@ -407,6 +410,7 @@ public:
     action_t* pandemic_invocation_proc;
     action_t* bilescourge_bombers_aoe_tick;
     action_t* summon_random_demon; // Nether Portal and Inner Demons
+    action_t* rain_of_fire_tick;
   } proc_actions;
 
   // DF - This struct will be retired, need to determine if needed for pre-patch
@@ -674,8 +678,6 @@ public:
   double composite_player_target_pet_damage_multiplier( player_t* target, bool guardian ) const override;
   double composite_rating_multiplier( rating_e rating ) const override;
   void invalidate_cache( cache_e ) override;
-  double composite_spell_haste() const override;
-  double composite_melee_haste() const override;
   double composite_mastery() const override;
   double resource_regen_per_second( resource_e ) const override;
   double composite_attribute_multiplier( attribute_e attr ) const override;
@@ -886,6 +888,29 @@ public:
   void impact( action_state_t* s ) override
   {
     spell_t::impact( s );
+
+    if ( p()->specialization() == WARLOCK_DESTRUCTION && p()->talents.reverse_entropy.ok() )
+    {
+      bool success = p()->buffs.reverse_entropy->trigger();
+      if ( success )
+      {
+        p()->procs.reverse_entropy->occur();
+      }
+    }
+  }
+
+  void tick( dot_t* d ) override
+  {
+    spell_t::tick( d );
+
+    if ( p()->specialization() == WARLOCK_DESTRUCTION && p()->talents.reverse_entropy.ok() )
+    {
+      bool success = p()->buffs.reverse_entropy->trigger();
+      if ( success )
+      {
+        p()->procs.reverse_entropy->occur();
+      }
+    }
   }
 
   double composite_target_multiplier( player_t* t ) const override

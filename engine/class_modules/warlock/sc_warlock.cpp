@@ -1112,26 +1112,6 @@ double warlock_t::composite_player_target_pet_damage_multiplier( player_t* targe
   return m;
 }
 
-double warlock_t::composite_spell_haste() const
-{
-  double h = player_t::composite_spell_haste();
-
-  if ( buffs.reverse_entropy->check() )
-    h *= 1.0 / ( 1.0 + buffs.reverse_entropy->check_value() );
-
-  return h;
-}
-
-double warlock_t::composite_melee_haste() const
-{
-  double h = player_t::composite_melee_haste();
-
-  if ( buffs.reverse_entropy->check() )
-    h *= 1.0 / ( 1.0 + buffs.reverse_entropy->check_value() );
-
-  return h;
-}
-
 double warlock_t::composite_mastery() const
 {
   double m = player_t::composite_mastery();
