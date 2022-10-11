@@ -1678,10 +1678,7 @@ public:
 
     // TODO: this is just an approximation for now, test all spells
     if ( harmful && aoe != -1 )
-    {
-      triggers.icy_propulsion = true;
       triggers.overflowing_energy = true;
-    }
 
     if ( affected_by.time_manipulation
       && range::find( p()->time_manipulation_cooldowns, cooldown ) == p()->time_manipulation_cooldowns.end() )
@@ -2640,7 +2637,7 @@ struct icicle_t final : public frost_mage_spell_t
   icicle_t( std::string_view n, mage_t* p ) :
     frost_mage_spell_t( n, p, p->find_spell( 148022 ) )
   {
-    background = track_shatter = true;
+    background = track_shatter = triggers.icy_propulsion = true;
     callbacks = false;
     // TODO: This base damage may have been removed, but this should be verified not just using tooltip values.
     base_dd_min = base_dd_max = 1.0;
@@ -3820,7 +3817,7 @@ struct ebonbolt_t final : public frost_mage_spell_t
     parse_options( options_str );
     parse_effect_data( p->find_spell( 257538 )->effectN( 1 ) );
     calculate_on_impact = track_shatter = consumes_winters_chill = triggers.radiant_spark = true;
-    triggers.icy_propulsion_conduit = !p->bugs;
+    triggers.icy_propulsion_conduit = triggers.icy_propulsion = !p->bugs;
 
     if ( p->talents.splitting_ice.ok() )
     {
@@ -4041,7 +4038,7 @@ struct flurry_bolt_t final : public frost_mage_spell_t
   flurry_bolt_t( std::string_view n, mage_t* p ) :
     frost_mage_spell_t( n, p, p->find_spell( 228354 ) )
   {
-    background = triggers.chill = triggers.radiant_spark = true;
+    background = triggers.chill = triggers.radiant_spark = triggers.icy_propulsion = true;
     base_multiplier *= 1.0 + p->talents.lonely_winter->effectN( 1 ).percent();
   }
 
@@ -4152,7 +4149,7 @@ struct frostbolt_t final : public frost_mage_spell_t
   {
     parse_options( options_str );
     parse_effect_data( p->find_spell( 228597 )->effectN( 1 ) );
-    triggers.chill = calculate_on_impact = track_shatter = consumes_winters_chill = triggers.radiant_spark = affected_by.deathborne_cleave = true;
+    triggers.chill = calculate_on_impact = track_shatter = consumes_winters_chill = triggers.radiant_spark = affected_by.deathborne_cleave = triggers.icy_propulsion = true;
     base_multiplier *= 1.0 + p->talents.lonely_winter->effectN( 1 ).percent();
     base_multiplier *= 1.0 + p->talents.wintertide->effectN( 1 ).percent();
     crit_bonus_multiplier *= 1.0 + p->talents.piercing_cold->effectN( 1 ).percent();
@@ -4454,7 +4451,7 @@ struct glacial_spike_t final : public frost_mage_spell_t
   {
     parse_options( options_str );
     parse_effect_data( p->find_spell( 228600 )->effectN( 1 ) );
-    calculate_on_impact = track_shatter = consumes_winters_chill = triggers.radiant_spark = true;
+    calculate_on_impact = track_shatter = consumes_winters_chill = triggers.radiant_spark = triggers.icy_propulsion = true;
     base_multiplier *= 1.0 + p->talents.flash_freeze->effectN( 2 ).percent();
     crit_bonus_multiplier *= 1.0 + p->talents.piercing_cold->effectN( 1 ).percent();
 
@@ -4597,7 +4594,7 @@ struct ice_lance_t final : public frost_mage_spell_t
   {
     parse_options( options_str );
     parse_effect_data( p->find_spell( 228598 )->effectN( 1 ) );
-    calculate_on_impact = track_shatter = consumes_winters_chill = triggers.radiant_spark = true;
+    calculate_on_impact = track_shatter = consumes_winters_chill = triggers.radiant_spark = triggers.icy_propulsion = true;
     base_multiplier *= 1.0 + p->talents.lonely_winter->effectN( 1 ).percent();
     base_multiplier *= 1.0 + p->sets->set( MAGE_FROST, T29, B2 )->effectN( 1 ).percent();
 
@@ -4833,7 +4830,7 @@ struct fire_blast_t final : public fire_mage_spell_t
   {
     parse_options( options_str );
     triggers.hot_streak = triggers.kindling = TT_MAIN_TARGET;
-    triggers.ignite = triggers.from_the_ashes = triggers.radiant_spark = true;
+    triggers.ignite = triggers.from_the_ashes = triggers.radiant_spark = triggers.icy_propulsion = true;
     base_multiplier *= 1.0 + p->sets->set( MAGE_FIRE, T29, B4 )->effectN( 1 ).percent();
     base_crit += p->sets->set( MAGE_FIRE, T29, B4 )->effectN( 3 ).percent();
 
