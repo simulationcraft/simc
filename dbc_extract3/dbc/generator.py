@@ -1523,15 +1523,12 @@ class SpellDataGenerator(DataGenerator):
         (   (  63619, 5 ), 			# Shadowfiend "Shadowcrawl"
             (  94472, 0 ), 			# Atonement Crit
             ( 114908, 0, False ), 	# Spirit Shell absorb
-            ( 190714, 3, False ), 	# Shadow Word: Death - Insanity gain
             ( 193473, 5 ),			# Void Tendril "Mind Flay"
             ( 217676, 3 ),			# Mind Spike Detonation
             ( 194249, 3, False ),   # Voidform extra data
             ( 212570, 3, False ),   # Surrendered Soul (Surrender To Madness Death)
             ( 269555, 3 ),          # Azerite Trait Torment of Torments
             ( 280398, 1, False ),   # Sins of the Many buff
-            ( 275725, 0 ),          # Whispers of the Damned trigger effect
-            ( 275726, 0 ),          # Whispers of the damned insanity gain
             ( 288342, 0 ),          # Thought Harvester trigger buff for Mind Sear
             ( 336142, 5 ),          # Shadowflame Prism legendary effect DMG Component
             ( 343144, 0 ),          # Dissonant Echoes free Void Bolt proc
@@ -1553,15 +1550,10 @@ class SpellDataGenerator(DataGenerator):
             (  32409, 0 ),          # Shadow Word: Death self-damage id
             ( 356968, 0 ),          # Haunted Mask from Bwonsamdi's Pact Legendary
             ( 373442, 5 ),          # Shadowflame Prism Talent damage spell Shadowflame Fissure
-            ( 373375, 0 ),          # Void Touched talent buff
             ( 375981, 0 ),          # Vampiric Insight talent buff
             ( 375904, 0 ),          # Mindgames Damage reversal healing spell
             # Shadow Priest
             ( 373204, 0 ),          # Mind Devourer Talent buff
-            ( 376914, 5 ),          # Living Shadow Shadow Spike
-            ( 376891, 5 ),          # Living Shadow Shadow Spike Volley
-            ( 373387, 5 ),          # Living Shadow Shadow Sear
-            ( 376915, 5 ),          # Living Shadow Shadow Nova
             ( 393684, 0 ),          # Priest Shadow Class Set 2-set
             ( 394961, 0 ),          # Gathering Shadows T29 2-set buff
             ( 393685, 0 ),          # Priest Shadow Class Set 4-set
@@ -1583,6 +1575,8 @@ class SpellDataGenerator(DataGenerator):
             ( 393682, 0 ),          # Priest Holy Class Set 2-set
             ( 393683, 0 ),          # Priest Holy Class Set 4-set
             ( 394745, 0 ),          # Priest Holy Class Set 4-set buff
+            ( 234946, 0 ),          # Trail of Light heal
+            ( 368276, 0 ),          # Binding Heals heal
             # Discipline Priest
             ( 393679, 0 ),          # Priest Discipline Class Set 2-set
             ( 394609, 0 ),          # Light Weaving 2-set buff
