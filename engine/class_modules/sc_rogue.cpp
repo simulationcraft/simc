@@ -731,7 +731,7 @@ public:
       player_talent_t grappling_hook;           // No implementation
       player_talent_t weaponmaster;
       player_talent_t combat_potency;
-      player_talent_t ambidexterity;            // NYI, merge with conduit?
+      player_talent_t ambidexterity;
       player_talent_t hit_and_run;
 
       player_talent_t retractable_hook;         // No implementation
@@ -2311,7 +2311,7 @@ public:
 
     if ( ab::result_is_hit( state->result ) )
     {
-      auto trigger_lethal_poison = [ this, state ]( rogue_poison_t* poison ) {
+      auto trigger_lethal_poison = [ this, state ]( actions::rogue_poison_t* poison ) {
         if ( poison )
         {
           // 2021-06-29-- For reasons unknown, Deadly Poison has its own proc logic than Wound or Instant Poison
@@ -7071,8 +7071,12 @@ void actions::rogue_action_t<Base>::trigger_main_gauche( const action_state_t* s
   double proc_chance = p()->mastery.main_gauche->proc_chance() +
                        p()->talent.outlaw.improved_main_gauche->effectN( 1 ).percent();
 
-  if ( p()->conduit.ambidexterity.ok() && p()->buffs.blade_flurry->check() )
-    proc_chance += p()->conduit.ambidexterity.percent();
+  if ( p()->buffs.blade_flurry->check() )
+  {
+    proc_chance += ( p()->talent.outlaw.ambidexterity->ok() ?
+                     p()->talent.outlaw.ambidexterity->effectN( 1 ).percent() :
+                     p()->conduit.ambidexterity.percent() );
+  }
 
   if ( !p()->rng().roll( proc_chance ) )
     return;
