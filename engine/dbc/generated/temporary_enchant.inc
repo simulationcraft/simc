@@ -1,5 +1,5 @@
-// Temporary item enchants, wow build 10.0.2.45969
-static const std::array<temporary_enchant_entry_t, 67> __temporary_enchant_data { {
+// Temporary item enchants, wow build 10.0.2.46091
+static const std::array<temporary_enchant_entry_t, 70> __temporary_enchant_data { {
   {  2713,  29453, "adamantite_sharpening_stone"  },
   {  2955,  34340, "adamantite_weightstone"       },
   {  3265,  45395, "blessed_weapon_coating"       },
@@ -10,6 +10,9 @@ static const std::array<temporary_enchant_entry_t, 67> __temporary_enchant_data 
   {  6512, 385325, "buzzing_rune"                 },
   {  6513, 385326, "buzzing_rune"                 },
   {  6514, 385327, "buzzing_rune"                 },
+  {  6515, 385330, "chirping_rune"                },
+  {  6694, 396147, "chirping_rune"                },
+  {  6695, 396148, "chirping_rune"                },
   {    13,   2829, "coarse_sharpening_stone"      },
   {    20,   3113, "coarse_weightstone"           },
   {  2795,  32426, "comfortable_insoles"          },
