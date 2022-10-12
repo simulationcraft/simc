@@ -818,8 +818,9 @@ struct vampiric_touch_t final : public priest_spell_t
   bool casted;
   double surge_of_darkness_proc_rate;
   bool insanity;
+  bool ud;
 
-  vampiric_touch_t( priest_t& p, bool _casted = false, bool _insanity = true )
+  vampiric_touch_t( priest_t& p, bool _casted = false, bool _insanity = true, bool _ud = true )
     : priest_spell_t( "vampiric_touch", p, p.dot_spells.vampiric_touch ),
       vampiric_touch_heal( new vampiric_touch_heal_t( p ) ),
       child_swp( nullptr ),
@@ -828,6 +829,7 @@ struct vampiric_touch_t final : public priest_spell_t
   {
     casted                     = _casted;
     insanity                   = _insanity;
+    ud = _ud;
     may_crit                   = false;
     affected_by_shadow_weaving = true;
 
@@ -846,7 +848,7 @@ struct vampiric_touch_t final : public priest_spell_t
       child_swp->background = true;
     }
 
-    if ( priest().talents.shadow.unfurling_darkness.enabled() )
+    if ( priest().talents.shadow.unfurling_darkness.enabled() && ud )
     {
       child_ud = new unfurling_darkness_t( priest() );
       add_child( child_ud );
@@ -860,7 +862,7 @@ struct vampiric_touch_t final : public priest_spell_t
 
   void impact( action_state_t* s ) override
   {
-    if ( priest().buffs.unfurling_darkness->check() )
+    if ( priest().buffs.unfurling_darkness->check() && ud )
     {
       child_ud->target = s->target;
       child_ud->execute();
@@ -868,7 +870,7 @@ struct vampiric_touch_t final : public priest_spell_t
     }
     else
     {
-      if ( priest().talents.shadow.unfurling_darkness.enabled() && !priest().buffs.unfurling_darkness_cd->check() )
+      if ( priest().talents.shadow.unfurling_darkness.enabled()  && ud && !priest().buffs.unfurling_darkness_cd->check() )
       {
         priest().buffs.unfurling_darkness->trigger();
         // The CD Starts as soon as the buff is applied
@@ -1784,6 +1786,9 @@ struct shadow_crash_damage_t final : public priest_spell_t
   }
 };
 
+// Shadow Crash DoT interactions:
+// Triggers SWP with Misery enabled
+// Does not interact with Unfurling Darkness (procs or consumption)
 struct shadow_crash_dots_t final : public priest_spell_t
 {
   propagate_const<vampiric_touch_t*> child_vt;
@@ -1791,7 +1796,7 @@ struct shadow_crash_dots_t final : public priest_spell_t
 
   shadow_crash_dots_t( priest_t& p, double _missile_speed )
     : priest_spell_t( "shadow_crash_dots", p, p.talents.shadow.shadow_crash->effectN( 3 ).trigger() ),
-      child_vt( new vampiric_touch_t( priest(), true, false ) ),
+      child_vt( new vampiric_touch_t( priest(), true, false, false ) ),
       missile_speed( _missile_speed )
   {
     may_miss   = false;
