@@ -1874,6 +1874,7 @@ class SpellDataGenerator(DataGenerator):
           ( 325217, 0 ), # Necrolord Bonedust Brew damage
           ( 325218, 0 ), # Necrolord Bonedust Brew heal
           ( 328296, 0 ), # Necrolord Bonedust Chi Refund
+          ( 394514, 0 ), # Necrolord Bonedust Brew Attenuation Buff
           ( 327257, 0 ), # Ardenweald Faeline Stomp debuff
           ( 327264, 0 ), # Ardenweald Faeline Stomp damage
           ( 327276, 0 ), # Ardenweald Faeline Stomp reset buff notification
