@@ -1794,7 +1794,7 @@ public:
   {
     double fm = 1.0;
 
-    if ( cast_state( s )->frozen & FF_ROOT )
+    if ( get_school() == SCHOOL_FROST && cast_state( s )->frozen & FF_ROOT )
       fm *= 1.0 + p()->talents.subzero->effectN( 1 ).percent();
 
     return fm;
