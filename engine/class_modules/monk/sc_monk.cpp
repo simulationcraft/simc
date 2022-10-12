@@ -3080,7 +3080,7 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
       am *= 1 + p()->talent.windwalker.open_palm_strikes->effectN( 4 ).percent();
 
     if ( p()->buff.fists_of_flowing_momentum_fof->check() )
-      am *= 1 + p()->buff.fists_of_flowing_momentum_fof->data().effectN( 1 ).percent();
+      am *= 1 + p()->buff.fists_of_flowing_momentum_fof->check_value();
 
     return am;
   }
@@ -3194,12 +3194,11 @@ struct fists_of_fury_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::last_tick( dot );
 
-    if ( p()->buff.fists_of_flowing_momentum_fof->up() ) {
+    if ( p()->buff.fists_of_flowing_momentum_fof->up() )
       p()->buff.fists_of_flowing_momentum_fof->expire();
-    }
 
     // If Fists of Fury went the full duration
-    if (dot->current_tick == dot->num_ticks()) {
+    if ( dot->current_tick == dot->num_ticks() ) {
       if ( p()->legendary.xuens_battlegear->ok() )
         p()->buff.pressure_point->trigger();
       else if ( p()->talent.windwalker.xuens_battlegear->ok() )
