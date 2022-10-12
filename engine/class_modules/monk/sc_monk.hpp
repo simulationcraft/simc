@@ -290,7 +290,7 @@ public:
 
     // Covenant Abilities
     propagate_const<buff_t*> bonedust_brew;
-    propagate_const<buff_t*> bonedust_brew_hidden;
+    propagate_const<buff_t*> bonedust_brew_grounding_breath_hidden;
     propagate_const<buff_t*> bonedust_brew_attenuation_hidden;
     propagate_const<buff_t*> weapons_of_order;
     propagate_const<buff_t*> weapons_of_order_ww;
@@ -323,7 +323,7 @@ public:
     // T29 Set Bonus
     propagate_const<buff_t*> kicks_of_flowing_momentum;
     propagate_const<buff_t*> fists_of_flowing_momentum;
-    propagate_const<buff_t*> fists_of_flowing_momentum_vers;
+    propagate_const<buff_t*> fists_of_flowing_momentum_fof;
     propagate_const<buff_t*> brewmasters_rhythm;
   } buff;
 
@@ -892,6 +892,8 @@ public:
     const spell_data_t* bonedust_brew_dmg;
     const spell_data_t* bonedust_brew_heal;
     const spell_data_t* bonedust_brew_chi;
+    const spell_data_t* bonedust_brew_grounding_breath;
+    const spell_data_t* bonedust_brew_attenuation;
     const spell_data_t* faeline_stomp_damage;
     const spell_data_t* faeline_stomp_ww_damage;
     const spell_data_t* faeline_stomp_brm;

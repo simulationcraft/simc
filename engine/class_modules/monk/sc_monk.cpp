@@ -3079,6 +3079,9 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
     if ( p()->talent.windwalker.open_palm_strikes->ok() )
       am *= 1 + p()->talent.windwalker.open_palm_strikes->effectN( 4 ).percent();
 
+    if ( p()->buff.fists_of_flowing_momentum_fof->check() )
+      am *= 1 + p()->buff.fists_of_flowing_momentum_fof->data().effectN( 1 ).percent();
+
     return am;
   }
 
@@ -3164,7 +3167,7 @@ struct fists_of_fury_t : public monk_melee_attack_t
 
     if ( p()->buff.fists_of_flowing_momentum->up() )
     {
-      p()->buff.fists_of_flowing_momentum_vers->trigger( 1, p()->buff.fists_of_flowing_momentum->stack_value(), -1,
+      p()->buff.fists_of_flowing_momentum_fof->trigger( 1, p()->buff.fists_of_flowing_momentum->stack_value(), -1,
                                                          data().duration() );
       p()->buff.fists_of_flowing_momentum->expire();
     }
@@ -3191,8 +3194,8 @@ struct fists_of_fury_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::last_tick( dot );
 
-    if ( p()->buff.fists_of_flowing_momentum_vers->up() ) {
-      p()->buff.fists_of_flowing_momentum_vers->expire();
+    if ( p()->buff.fists_of_flowing_momentum_fof->up() ) {
+      p()->buff.fists_of_flowing_momentum_fof->expire();
     }
 
     // If Fists of Fury went the full duration
@@ -5370,7 +5373,7 @@ struct bountiful_brew_t : public monk_spell_t
          p()->talent.windwalker.attenuation->ok() )
       p()->buff.bonedust_brew_attenuation_hidden->trigger();
     else
-        p()->buff.bonedust_brew_hidden->trigger();
+      p()->buff.bonedust_brew_grounding_breath_hidden->trigger();
     monk_spell_t::execute();
 
     if ( p()->legendary.bountiful_brew->ok() )
@@ -5439,7 +5442,7 @@ struct bonedust_brew_t : public monk_spell_t
          p()->talent.windwalker.attenuation->ok() )
       p()->buff.bonedust_brew_attenuation_hidden->trigger();
     else
-      p()->buff.bonedust_brew_hidden->trigger();
+      p()->buff.bonedust_brew_grounding_breath_hidden->trigger();
     monk_spell_t::execute();
 
     p()->buff.bonedust_brew->trigger();
@@ -5468,14 +5471,14 @@ struct bonedust_brew_damage_t : public monk_spell_t
   {
     monk_spell_t::execute();
 
-    if ( p()->buff.bonedust_brew_hidden->up() )
+    if ( p()->buff.bonedust_brew_grounding_breath_hidden->up() )
     {
       if ( p()->conduit.bone_marrow_hops->ok() )
       {
         // Saved at -500
         p()->cooldown.bonedust_brew->adjust( p()->conduit.bone_marrow_hops->effectN( 2 ).time_value(), true );
 
-        p()->buff.bonedust_brew_hidden->decrement();
+        p()->buff.bonedust_brew_grounding_breath_hidden->decrement();
         p()->proc.bonedust_brew_reduction->occur();
       }
     }
@@ -5508,14 +5511,14 @@ struct bonedust_brew_heal_t : public monk_heal_t
   {
     monk_heal_t::execute();
 
-    if ( p()->buff.bonedust_brew_hidden->up() )
+    if ( p()->buff.bonedust_brew_grounding_breath_hidden->up() )
     {
       if ( p()->conduit.bone_marrow_hops->ok() )
       {
         // Saved at -500
         p()->cooldown.bonedust_brew->adjust( p()->conduit.bone_marrow_hops->effectN( 2 ).time_value(), true );
 
-        p()->buff.bonedust_brew_hidden->decrement();
+        p()->buff.bonedust_brew_grounding_breath_hidden->decrement();
         p()->proc.bonedust_brew_reduction->occur();
       }
     }
@@ -8612,6 +8615,8 @@ void monk_t::init_spells()
   passives.bonedust_brew_dmg                    = find_spell( 325217 );
   passives.bonedust_brew_heal                   = find_spell( 325218 );
   passives.bonedust_brew_chi                    = find_spell( 328296 );
+  passives.bonedust_brew_grounding_breath       = find_spell( 342330 );
+  passives.bonedust_brew_attenuation            = find_spell( 394514 );
   passives.faeline_stomp_damage                 = find_spell( 345727 );
   passives.faeline_stomp_ww_damage              = find_spell( 327264 );
   passives.faeline_stomp_brm                    = find_spell( 347480 );
@@ -9058,18 +9063,17 @@ void monk_t::create_buffs ()
     ->set_cooldown( timespan_t::zero() )
     ->set_chance( covenant.necrolord->ok() ? 1 : 0 )
     ->set_default_value_from_effect( 3 );
-  buff.bonedust_brew_hidden = make_buff( this, "bonedust_brew_hidden" )
+  buff.bonedust_brew_grounding_breath_hidden = make_buff( this, "bonedust_brew_hidden" /*, passives.bonedust_brew_grounding_breath */ )
     ->set_quiet( true )
-    ->set_duration( timespan_t::from_seconds( 10 ) )
+    ->set_duration( timespan_t::from_seconds( 15 ) )
+    ->set_cooldown( timespan_t::from_seconds( 1.5 ) )
     ->set_max_stack( 5 )
     ->set_reverse( true )
     ->set_reverse_stack_count( 5 );
-  buff.bonedust_brew_attenuation_hidden= make_buff( this, "bonedust_brew_attenuation_hidden" )
+  buff.bonedust_brew_attenuation_hidden = make_buff( this, "bonedust_brew_attenuation_hidden", passives.bonedust_brew_attenuation )
     ->set_quiet( true )
-    ->set_duration( timespan_t::from_seconds( 10 ) )
-    ->set_max_stack( 10 )
     ->set_reverse( true )
-    ->set_reverse_stack_count( 10 );
+    ->set_reverse_stack_count( passives.bonedust_brew_attenuation->max_stacks() );
 
   buff.weapons_of_order =
     make_buff( this, "weapons_of_order", find_spell( 310454 ) )
@@ -9125,8 +9129,7 @@ void monk_t::create_buffs ()
                                          ? passives.kicks_of_flowing_momentum->max_stacks() : 2 );
   buff.fists_of_flowing_momentum = make_buff( this, "fists_of_flowing_momentum", passives.fists_of_flowing_momentum )
                                        ->set_default_value_from_effect( 1 );
-  buff.fists_of_flowing_momentum_vers = make_buff( this, "fists_of_flowing_momentum_vers", find_spell( 394951 ) )
-                                  ->add_invalidate(CACHE_DAMAGE_VERSATILITY);
+  buff.fists_of_flowing_momentum_fof = make_buff( this, "fists_of_flowing_momentum_fof", find_spell( 394951 ) );
   buff.brewmasters_rhythm = make_buff( this, "brewmasters_rhythm", find_spell( 394797 ) )
                                 ->set_default_value_from_effect( 1 )
                                 ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
@@ -9814,9 +9817,6 @@ double monk_t::composite_mastery_rating() const
 double monk_t::composite_damage_versatility() const
 {
   double m = player_t::composite_damage_versatility();
-
-  if ( buff.fists_of_flowing_momentum_vers->check() )
-    m += buff.fists_of_flowing_momentum_vers->check_value();
 
   return m;
 }
