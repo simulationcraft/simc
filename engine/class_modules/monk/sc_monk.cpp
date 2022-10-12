@@ -8600,7 +8600,7 @@ void monk_t::init_spells()
   passives.flying_serpent_kick_damage       = find_spell( 123586 );
   passives.focus_of_xuen                    = find_spell( 252768 );
   passives.fury_of_xuen_stacking_buff       = find_spell( 287062 );
-  passives.fury_of_xuen_haste_buff          = find_spell( 287063 );
+  passives.fury_of_xuen_haste_buff          = find_spell( 287063);
   passives.glory_of_the_dawn_damage         = find_spell( 392959 );
   passives.hidden_masters_forbidden_touch   = find_spell( 213114 );
   passives.hit_combo                        = find_spell( 196741 );
@@ -8973,12 +8973,12 @@ void monk_t::create_buffs ()
 
     buff.fury_of_xuen_stacks = new buffs::fury_of_xuen_stacking_buff_t ( *this, "fury_of_xuen_stacks", passives.fury_of_xuen_stacking_buff );
 
-    // TODO: This is using BFA Azerite formula (Scaling Class -7) in Spell Data still
-    // Currently on Alpha it increases haste rating by 170 at level 70, 109 at level 60, and 12 at level 10.
-    // HOWEVER: The haste % on the character sheet does NOT increase
-    // I believe this will be replaced with a modern % haste buff in a future build
-    buff.fury_of_xuen_haste = make_buff<stat_buff_t> ( this, "fury_of_xuen_haste", passives.fury_of_xuen_haste_buff )
-      ->add_stat ( STAT_HASTE_RATING, 0 );  // Placeholder
+    buff.fury_of_xuen_haste = make_buff ( this, "fury_of_xuen_haste", passives.fury_of_xuen_haste_buff )
+      ->set_default_value_from_effect_type( A_HASTE_ALL )
+      ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+      ->add_invalidate( CACHE_ATTACK_HASTE )
+      ->add_invalidate( CACHE_HASTE )
+      ->add_invalidate( CACHE_SPELL_HASTE );
 
     buff.hidden_masters_forbidden_touch = new buffs::hidden_masters_forbidden_touch_t (
       *this, "hidden_masters_forbidden_touch", passives.hidden_masters_forbidden_touch );
