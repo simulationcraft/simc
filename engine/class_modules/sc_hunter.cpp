@@ -399,12 +399,13 @@ public:
     spell_data_ptr_t mad_bombardier_2pc;
     spell_data_ptr_t mad_bombardier_4pc;
 
-    spell_data_ptr_t df_mm_2pc;
-    spell_data_ptr_t df_mm_4pc;
-    spell_data_ptr_t df_bm_2pc;
-    spell_data_ptr_t df_bm_4pc;
-    spell_data_ptr_t df_sv_2pc;
-    spell_data_ptr_t df_sv_4pc;
+    spell_data_ptr_t t29_mm_2pc;
+    spell_data_ptr_t t29_mm_4pc;
+    spell_data_ptr_t t29_bm_2pc;
+    spell_data_ptr_t t29_bm_4pc;
+    spell_data_ptr_t t29_sv_2pc;
+    spell_data_ptr_t t29_sv_4pc;
+    spell_data_ptr_t t29_sv_4pc_buff;
   } tier_set;
 
   // Buffs
@@ -943,14 +944,14 @@ public:
     damage_affected_by lone_wolf;
     bool precise_shots = false;
     damage_affected_by sniper_training;
-    bool df_mm_4pc = false;
+    bool t29_mm_4pc = false;
     // surv
     bool mad_bombardier = false;
     damage_affected_by spirit_bond;
     bool coordinated_assault = false;
     bool spearhead = false;
-    bool df_sv_2pc = false;
-    bool df_sv_4pc = false;
+    bool t29_sv_4pc_cost = false;
+    damage_affected_by t29_sv_4pc_dmg;
   } affected_by;
 
   cdwaste::action_data_t* cd_waste = nullptr;
@@ -970,7 +971,7 @@ public:
     affected_by.bullseye_crit_chance  = check_affected_by( this, p -> talents.bullseye -> effectN( 1 ).trigger() -> effectN( 1 ));
     affected_by.lone_wolf             = parse_damage_affecting_aura( this, p -> talents.lone_wolf );
     affected_by.sniper_training       = parse_damage_affecting_aura( this, p -> mastery.sniper_training );
-    affected_by.df_mm_4pc             = check_affected_by( this, p -> tier_set.df_mm_4pc -> effectN( 1 ).trigger() -> effectN( 1 ) );
+    affected_by.t29_mm_4pc            = check_affected_by( this, p -> tier_set.t29_mm_4pc -> effectN( 1 ).trigger() -> effectN( 1 ) );
 
     affected_by.thrill_of_the_hunt    = check_affected_by( this, p -> talents.thrill_of_the_hunt -> effectN( 1 ).trigger() -> effectN( 1 ) );
     affected_by.bestial_wrath         = parse_damage_affecting_aura( this, p -> talents.bestial_wrath );
@@ -980,8 +981,8 @@ public:
     affected_by.spirit_bond           = parse_damage_affecting_aura( this, p -> mastery.spirit_bond );
     affected_by.coordinated_assault   = check_affected_by( this, p -> find_spell( 361738 ) -> effectN( 2 ) );
     affected_by.spearhead             = check_affected_by( this, p -> talents.spearhead -> effectN( 4 ) );
-    affected_by.df_sv_2pc             = check_affected_by( this, p -> tier_set.df_sv_2pc -> effectN( 1 ) );
-    affected_by.df_sv_4pc             = check_affected_by( this, p -> find_spell( 394388 ) -> effectN( 1 ) );
+    affected_by.t29_sv_4pc_cost       = check_affected_by( this, p -> tier_set.t29_sv_4pc_buff -> effectN( 1 ) );
+    affected_by.t29_sv_4pc_dmg        = parse_damage_affecting_aura( this, p -> tier_set.t29_sv_4pc_buff );
 
     // Hunter Tree passives
     ab::apply_affecting_aura( p -> talents.improved_kill_shot );
@@ -1021,6 +1022,8 @@ public:
 
     // passive set bonuses
     ab::apply_affecting_aura( p -> tier_set.mad_bombardier_4pc );
+    ab::apply_affecting_aura( p -> tier_set.t29_bm_4pc );
+    ab::apply_affecting_aura( p -> tier_set.t29_sv_2pc );
 
     // passive conduits
     ab::apply_affecting_conduit( p -> conduits.bloodletting );
@@ -1110,10 +1113,7 @@ public:
     if ( triggers_calling_the_shots )
       p() -> trigger_calling_the_shots( this, ab::cost() );
 
-    if ( affected_by.df_mm_4pc )
-      p() -> buffs.focusing_aim -> expire();
-
-    if ( affected_by.df_sv_4pc )
+    if ( affected_by.t29_sv_4pc_cost )
       p() -> buffs.bestial_barrage -> expire();
   }
 
@@ -1150,12 +1150,8 @@ public:
     if ( affected_by.coordinated_assault )
       am *= 1 + p() -> buffs.coordinated_assault_empower -> check_value();
 
-    // TODO use spelldata after new build
-    if ( affected_by.df_sv_2pc )
-      am *= 1 + 0.15;
-
-    if ( affected_by.df_sv_4pc && p() -> buffs.bestial_barrage -> check() )
-      am *= 1.5;
+    if ( affected_by.t29_sv_4pc_dmg.direct && p() -> buffs.bestial_barrage -> check() )
+      am *= 1 + p() -> tier_set.t29_sv_4pc_buff -> effectN( affected_by.t29_sv_4pc_dmg.direct ).percent();
 
     return am;
   }
@@ -1184,6 +1180,9 @@ public:
         am *= 1 + p() -> talents.serrated_shots -> effectN( 1 ).percent();
     }
 
+    if ( affected_by.t29_sv_4pc_dmg.tick && p() -> buffs.bestial_barrage -> check() )
+      am *= 1 + p() -> tier_set.t29_sv_4pc_buff -> effectN( affected_by.t29_sv_4pc_dmg.tick ).percent();
+
     return am;
   }
 
@@ -1197,7 +1196,7 @@ public:
     if ( affected_by.bullseye_crit_chance )
       cc += p() -> buffs.bullseye -> check_stack_value();
 
-    if ( affected_by.df_mm_4pc )
+    if ( affected_by.t29_mm_4pc )
       cc += p() -> buffs.focusing_aim -> check_value();
 
     return cc;
@@ -1213,8 +1212,8 @@ public:
     if ( affected_by.spearhead && p() -> buffs.spearhead -> check() )
       c += p() -> talents.deadly_duo -> effectN( 1 ).base_value();
 
-    if ( affected_by.df_sv_4pc )
-      c *= 1 + p() -> buffs.bestial_barrage -> check_value();
+    if ( affected_by.t29_sv_4pc_cost )
+      c *= 1 + p() -> tier_set.t29_sv_4pc_buff -> effectN( 1 ).percent();
 
     if ( c < 0 )
       return 0;
@@ -1456,7 +1455,7 @@ public:
 
     ab::apply_affecting_aura( o() -> talents.killer_companion );
     ab::apply_affecting_aura( o() -> talents.improved_kill_command );
-    ab::apply_affecting_aura( o() -> tier_set.df_bm_2pc );
+    ab::apply_affecting_aura( o() -> tier_set.t29_bm_2pc );
   }
 
   T_PET* p()             { return static_cast<T_PET*>( ab::player ); }
@@ -3225,6 +3224,8 @@ struct arcane_shot_t: public hunter_ranged_attack_t
 
     p() -> buffs.precise_shots -> up(); // benefit tracking
     p() -> buffs.precise_shots -> decrement();
+
+    p() -> buffs.focusing_aim -> expire();
   }
 
   double cost() const override
@@ -3983,13 +3984,6 @@ struct barbed_shot_t: public hunter_ranged_attack_t
     bestial_wrath_reduction = p -> talents.barbed_wrath -> effectN( 1 ).time_value();
     aspect_of_the_wild_reduction = p -> talents.barbed_wrath -> effectN( 2 ).time_value();
 
-    // TODO user spelldata after new build
-    if ( p -> tier_set.df_bm_4pc.ok() )
-    {
-      base_dd_multiplier *= 1.05;
-      base_td_multiplier *= 1.05;
-    }
-
     p -> actions.barbed_shot = this;
   }
 
@@ -4109,6 +4103,8 @@ struct chimaera_shot_t: public hunter_ranged_attack_t
 
     p() -> buffs.precise_shots -> up(); // benefit tracking
     p() -> buffs.precise_shots -> decrement();
+
+    p() -> buffs.focusing_aim -> expire();
   }
 
   double cost() const override
@@ -4371,7 +4367,7 @@ struct aimed_shot_t : public aimed_shot_base_t
       add_child( legacy_of_the_windrunners.action );
     }
 
-    if ( p -> tier_set.df_mm_2pc.ok() )
+    if ( p -> tier_set.t29_mm_2pc.ok() )
     {
       hit_the_mark = p -> get_background_action<hit_the_mark_t>( "hit_the_mark" );
       add_child( hit_the_mark );
@@ -4822,6 +4818,8 @@ struct multishot_mm_t: public hunter_ranged_attack_t
         explosive -> execute_on_target( tl[ t ] );
       p() -> buffs.salvo -> trigger();
     }
+
+    p() -> buffs.focusing_aim -> expire();
   }
 
   double cost() const override
@@ -5910,7 +5908,7 @@ struct kill_command_t: public hunter_spell_t
     if ( p() -> buffs.hunters_prey -> trigger() )
       p() -> cooldowns.kill_shot -> reset( true );
 
-    if ( rng().roll( p() -> tier_set.df_bm_2pc -> proc_chance() ) )
+    if ( rng().roll( p() -> tier_set.t29_bm_2pc -> proc_chance() ) )
       p() -> cooldowns.barbed_shot -> reset( true );
   }
 
@@ -7261,12 +7259,13 @@ void hunter_t::init_spells()
   tier_set.mad_bombardier_2pc   = sets -> set( HUNTER_SURVIVAL,      T28, B2 );
   tier_set.mad_bombardier_4pc   = sets -> set( HUNTER_SURVIVAL,      T28, B4 );
 
-  tier_set.df_mm_2pc = sets -> set( HUNTER_MARKSMANSHIP, T29, B2 );
-  tier_set.df_mm_4pc = sets -> set( HUNTER_MARKSMANSHIP, T29, B4 );
-  tier_set.df_bm_2pc = sets -> set( HUNTER_BEAST_MASTERY, T29, B2 );
-  tier_set.df_bm_4pc = sets -> set( HUNTER_BEAST_MASTERY, T29, B4 );
-  tier_set.df_sv_2pc = sets -> set( HUNTER_SURVIVAL, T29, B2 );
-  tier_set.df_sv_4pc = sets -> set( HUNTER_SURVIVAL, T29, B4 );
+  tier_set.t29_mm_2pc = sets -> set( HUNTER_MARKSMANSHIP, T29, B2 );
+  tier_set.t29_mm_4pc = sets -> set( HUNTER_MARKSMANSHIP, T29, B4 );
+  tier_set.t29_bm_2pc = sets -> set( HUNTER_BEAST_MASTERY, T29, B2 );
+  tier_set.t29_bm_4pc = sets -> set( HUNTER_BEAST_MASTERY, T29, B4 );
+  tier_set.t29_sv_2pc = sets -> set( HUNTER_SURVIVAL, T29, B2 );
+  tier_set.t29_sv_4pc = sets -> set( HUNTER_SURVIVAL, T29, B4 );
+  tier_set.t29_sv_4pc_buff = find_spell( 394388 );
 
   // Cooldowns
   cooldowns.ruthless_marauder -> duration = talents.ruthless_marauder -> internal_cooldown();
@@ -7609,22 +7608,21 @@ void hunter_t::create_buffs()
   }
 
   buffs.find_the_mark =
-    make_buff( this, "find_the_mark", tier_set.df_mm_2pc -> effectN( 1 ).trigger() )
-      -> set_default_value( 0.4 ); // TODO use spelldata after new build
+    make_buff( this, "find_the_mark", tier_set.t29_mm_2pc -> effectN( 1 ).trigger() )
+      -> set_default_value_from_effect( 1 );
 
   buffs.focusing_aim =
-    make_buff( this, "focusing_aim", tier_set.df_mm_4pc -> effectN( 1 ).trigger() )
-    -> set_chance( tier_set.df_mm_4pc.ok() ? 0.15 : 0 ) // TODO use spelldata after new build
+    make_buff( this, "focusing_aim", tier_set.t29_mm_4pc -> effectN( 1 ).trigger() )
+    -> set_chance( tier_set.t29_mm_4pc -> effectN( 1 ).percent() )
     -> set_default_value_from_effect( 1 );
 
   buffs.if_it_bleeds_we_can_kill_it =
-    make_buff( this, "if_it_bleeds_we_can_kill_it", tier_set.df_bm_4pc -> effectN( 1 ).trigger() )
-      -> set_default_value( 0.2 ); // TODO use spelldata after new build
+    make_buff( this, "if_it_bleeds_we_can_kill_it", tier_set.t29_bm_4pc -> effectN( 3 ).trigger() )
+      -> set_default_value_from_effect( 1 );
 
   buffs.bestial_barrage =
-    make_buff( this, "bestial_barrage", find_spell( 394388 ) )
-    -> set_chance( tier_set.df_sv_4pc.ok() ? 0.2 : 0 ) // TODO is 20% in spelldata anywhere
-    -> set_default_value_from_effect( 1 );
+    make_buff( this, "bestial_barrage", tier_set.t29_sv_4pc_buff )
+    -> set_chance( tier_set.t29_sv_4pc.ok() ? 0.2 : 0 ); // TODO is 20% in spelldata anywhere
 
   // Conduits
 
