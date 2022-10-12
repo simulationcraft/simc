@@ -325,8 +325,8 @@ struct divine_star_t final : public priest_spell_t
 {
   divine_star_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "divine_star", p, p.talents.divine_star ),
-      _heal_spell( new divine_star_base_t<priest_heal_t>( "divine_star_heal", p, p.find_spell( 110745 ) ) ),
-      _dmg_spell( new divine_star_base_t<priest_spell_t>( "divine_star_damage", p, p.find_spell( 122128 ) ) )
+      _heal_spell( new divine_star_base_t<priest_heal_t>( "divine_star_heal", p, p.talents.divine_star_heal ) ),
+      _dmg_spell( new divine_star_base_t<priest_spell_t>( "divine_star_damage", p, p.talents.divine_star_dmg ) )
   {
     parse_options( options_str );
 
@@ -373,8 +373,8 @@ struct halo_t final : public priest_spell_t
 {
   halo_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "halo", p, p.talents.halo ),
-      _heal_spell( new halo_base_t<priest_heal_t>( "halo_heal", p, p.find_spell( 120692 ) ) ),
-      _dmg_spell( new halo_base_t<priest_spell_t>( "halo_damage", p, p.find_spell( 120696 ) ) )
+      _heal_spell( new halo_base_t<priest_heal_t>( "halo_heal", p, p.talents.halo_heal ) ),
+      _dmg_spell( new halo_base_t<priest_spell_t>( "halo_damage", p, p.talents.halo_dmg ) )
   {
     parse_options( options_str );
 
@@ -2859,7 +2859,11 @@ void priest_t::init_spells()
   talents.angels_mercy      = CT( "Angel's Mercy" );  // NYI
   talents.binding_heals     = CT( "Binding Heals" );  // NYI
   talents.halo              = CT( "Halo" );
+  talents.halo_heal         = specialization() == PRIEST_SHADOW ? find_spell( 390971 ) : find_spell( 120692 );
+  talents.halo_dmg          = specialization() == PRIEST_SHADOW ? find_spell( 390964 ) : find_spell( 120696 );
   talents.divine_star       = CT( "Divine Star" );
+  talents.divine_star_heal  = specialization() == PRIEST_SHADOW ? find_spell( 390981 ) : find_spell( 110745 );
+  talents.divine_star_dmg   = specialization() == PRIEST_SHADOW ? find_spell( 390845 ) : find_spell( 122128 );
   talents.translucent_image = CT( "Translucent Image" );
   talents.mindgames         = CT( "Mindgames" );
   // Row 9
