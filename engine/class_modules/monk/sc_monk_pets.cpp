@@ -3136,6 +3136,14 @@ private:
         {
             return 0.0;
         }
+
+        void impact( action_state_t* s ) override
+        {
+          auto owner = o();
+          owner->trigger_empowered_tiger_lightning( s, true, false );
+
+          pet_spell_t::impact( s );
+        }
     };
 
     struct auto_attack_t : public pet_auto_attack_t

@@ -3080,7 +3080,7 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
       am *= 1 + p()->talent.windwalker.open_palm_strikes->effectN( 4 ).percent();
 
     if ( p()->buff.fists_of_flowing_momentum_fof->check() )
-      am *= 1 + p()->buff.fists_of_flowing_momentum_fof->data().effectN( 1 ).percent();
+      am *= 1 + p()->buff.fists_of_flowing_momentum_fof->check_value();
 
     return am;
   }
@@ -3194,12 +3194,11 @@ struct fists_of_fury_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::last_tick( dot );
 
-    if ( p()->buff.fists_of_flowing_momentum_fof->up() ) {
+    if ( p()->buff.fists_of_flowing_momentum_fof->up() )
       p()->buff.fists_of_flowing_momentum_fof->expire();
-    }
 
     // If Fists of Fury went the full duration
-    if (dot->current_tick == dot->num_ticks()) {
+    if ( dot->current_tick == dot->num_ticks() ) {
       if ( p()->legendary.xuens_battlegear->ok() )
         p()->buff.pressure_point->trigger();
       else if ( p()->talent.windwalker.xuens_battlegear->ok() )
@@ -8974,12 +8973,13 @@ void monk_t::create_buffs ()
 
     buff.fury_of_xuen_stacks = new buffs::fury_of_xuen_stacking_buff_t ( *this, "fury_of_xuen_stacks", passives.fury_of_xuen_stacking_buff );
 
-    // TODO: This is using BFA Azerite formula (Scaling Class -7) in Spell Data still
-    // Currently on Alpha it increases haste rating by 170 at level 70, 109 at level 60, and 12 at level 10.
-    // HOWEVER: The haste % on the character sheet does NOT increase
-    // I believe this will be replaced with a modern % haste buff in a future build
-    buff.fury_of_xuen_haste = make_buff<stat_buff_t> ( this, "fury_of_xuen_haste", passives.fury_of_xuen_haste_buff )
-      ->add_stat ( STAT_HASTE_RATING, 0 );  // Placeholder
+    buff.fury_of_xuen_haste = make_buff ( this, "fury_of_xuen_haste", passives.fury_of_xuen_haste_buff )
+      ->set_default_value( 0.1 ) // PLACEHOLDER
+      //->set_default_value_from_effect_type( A_HASTE_ALL )
+      ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+      ->add_invalidate( CACHE_ATTACK_HASTE )
+      ->add_invalidate( CACHE_HASTE )
+      ->add_invalidate( CACHE_SPELL_HASTE );
 
     buff.hidden_masters_forbidden_touch = new buffs::hidden_masters_forbidden_touch_t (
       *this, "hidden_masters_forbidden_touch", passives.hidden_masters_forbidden_touch );
