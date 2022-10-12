@@ -8599,8 +8599,8 @@ void monk_t::init_spells()
   passives.fists_of_fury_tick               = find_spell( 117418 );
   passives.flying_serpent_kick_damage       = find_spell( 123586 );
   passives.focus_of_xuen                    = find_spell( 252768 );
-  passives.fury_of_xuen_stacking_buff       = find_spell( 287062 );
-  passives.fury_of_xuen_haste_buff          = find_spell( 287063 );
+  passives.fury_of_xuen_stacking_buff       = find_spell( 287062 ); // 396167
+  passives.fury_of_xuen_haste_buff          = find_spell( 287063 ); // 396168
   passives.glory_of_the_dawn_damage         = find_spell( 392959 );
   passives.hidden_masters_forbidden_touch   = find_spell( 213114 );
   passives.hit_combo                        = find_spell( 196741 );
