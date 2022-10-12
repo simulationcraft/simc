@@ -8010,11 +8010,10 @@ struct starfire_t : public druid_spell_t
     else if ( p()->buff.warrior_of_elune->up() )
       p()->buff.warrior_of_elune->decrement();
 
+    p()->buff.umbral_embrace->expire();
+
     if ( !p()->bugs )
-    {
-      p()->buff.umbral_embrace->expire();
       p()->buff.gathering_starstuff->expire();
-    }
 
     if ( is_free_proc() )
       return;
@@ -8039,10 +8038,7 @@ struct starfire_t : public druid_spell_t
       return;
 
     if ( p()->bugs )
-    {
-      p()->buff.umbral_embrace->expire();
       p()->buff.gathering_starstuff->expire();
-    }
   }
 
   double composite_aoe_multiplier( const action_state_t* s ) const override
@@ -8648,11 +8644,10 @@ struct wrath_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
+    p()->buff.umbral_embrace->expire();
+
     if ( !p()->bugs )
-    {
-      p()->buff.umbral_embrace->expire();
       p()->buff.gathering_starstuff->expire();
-    }
 
     if ( is_free_proc() )
       return;
@@ -8690,10 +8685,7 @@ struct wrath_t : public druid_spell_t
       return;
 
     if ( p()->bugs )
-    {
-      p()->buff.umbral_embrace->expire();
       p()->buff.gathering_starstuff->expire();
-    }
   }
 };
 

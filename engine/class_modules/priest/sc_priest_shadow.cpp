@@ -226,10 +226,7 @@ struct mind_flay_base_t final : public priest_spell_t
       td.dots.vampiric_touch->adjust_duration( dot_extension, true );
     }
 
-    // BUG: MF:I does not proc Coalescing Shadows
-    // https://github.com/SimCMinMax/WoW-BugTracker/issues/941
-    if ( priest().talents.shadow.coalescing_shadows.enabled() && rng().roll( coalescing_shadows_chance ) &&
-         ( !priest().bugs || this->id != 391403 ) )
+    if ( priest().talents.shadow.coalescing_shadows.enabled() && rng().roll( coalescing_shadows_chance ) )
     {
       priest().buffs.coalescing_shadows->trigger();
       priest().procs.coalescing_shadows_mind_flay->occur();
@@ -1461,15 +1458,9 @@ struct dark_void_t final : public priest_spell_t
   {
     parse_options( options_str );
 
-    may_miss = false;
-    radius   = data().effectN( 1 ).radius_max();
-
-    // BUG: Currently does not scale with Mastery
-    // https://github.com/SimCMinMax/WoW-BugTracker/issues/931
-    if ( !priest().bugs )
-    {
-      affected_by_shadow_weaving = true;
-    }
+    may_miss                   = false;
+    radius                     = data().effectN( 1 ).radius_max();
+    affected_by_shadow_weaving = true;
   }
 
   void execute() override
@@ -2596,15 +2587,9 @@ bool priest_t::is_screams_of_the_void_up( player_t* target ) const
   {
     priest_td_t* td = get_target_data( target );
     if ( td->dots.mind_flay->is_ticking() || td->dots.void_torrent->is_ticking() ||
-         talents.shadow.mind_sear.enabled() && channeling != nullptr &&
-             channeling->id == talents.shadow.mind_sear->id() )
-    {
-      return true;
-    }
-
-    // MF:I does not proc Screams of the Void
-    // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/939
-    if ( !bugs && td->dots.mind_flay_insanity->is_ticking() )
+         td->dots.mind_flay_insanity->is_ticking() ||
+         ( talents.shadow.mind_sear.enabled() && channeling != nullptr &&
+           channeling->id == talents.shadow.mind_sear->id() ) )
     {
       return true;
     }

@@ -294,14 +294,8 @@ public:
   {
     ab::aoe = -1;
 
-    ab::proc = ab::background = true;
-
-    // BUG: Currently does not scale with Mastery
-    // https://github.com/SimCMinMax/WoW-BugTracker/issues/931
-    if ( !p.bugs )
-    {
-      ab::affected_by_shadow_weaving = true;
-    }
+    ab::proc = ab::background      = true;
+    ab::affected_by_shadow_weaving = true;
   }
 
   // Divine Star will damage and heal targets twice, once on the way out and again on the way back. This is determined
@@ -366,18 +360,12 @@ struct halo_base_t : public Base
 public:
   halo_base_t( util::string_view n, priest_t& p, const spell_data_t* s ) : Base( n, p, s )
   {
-    Base::aoe          = -1;
-    Base::background   = true;
-    Base::radius       = Base::data().max_range();
-    Base::range        = 0;
-    Base::travel_speed = 15;  // Rough estimate, 2021-01-03
-
-    // BUG: Currently does not scale with Mastery
-    // https://github.com/SimCMinMax/WoW-BugTracker/issues/931
-    if ( !p.bugs )
-    {
-      Base::affected_by_shadow_weaving = true;
-    }
+    Base::aoe                        = -1;
+    Base::background                 = true;
+    Base::radius                     = Base::data().max_range();
+    Base::range                      = 0;
+    Base::travel_speed               = 15;  // Rough estimate, 2021-01-03
+    Base::affected_by_shadow_weaving = true;
   }
 };
 
@@ -2162,19 +2150,18 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) : actor_target_data_t(
                                       ->set_cooldown( timespan_t::zero() )
                                       ->set_duration( priest().conduits.fae_fermata.time_value() );
   buffs.echoing_void = make_buff( *this, "echoing_void", p.talents.shadow.idol_of_nzoth->effectN( 1 ).trigger() );
-  buffs.echoing_void_collapse =
-      make_buff( *this, "echoing_void_collapse" )
-          ->set_tick_behavior( buff_tick_behavior::REFRESH )
-          ->set_period( timespan_t::from_seconds( 1.0 ) )
-          ->set_tick_callback( [ this, &p, target ]( buff_t* b, int, timespan_t ) {
-            if ( buffs.echoing_void->check() )
-              p.background_actions.echoing_void->execute_on_target( target );
-            buffs.echoing_void->decrement();
-            if ( !buffs.echoing_void->check() )
-            {
-              make_event( b->sim, [ this, b ] { b->cancel(); } );
-            }
-          } );
+  buffs.echoing_void_collapse = make_buff( *this, "echoing_void_collapse" )
+                                    ->set_tick_behavior( buff_tick_behavior::REFRESH )
+                                    ->set_period( timespan_t::from_seconds( 1.0 ) )
+                                    ->set_tick_callback( [ this, &p, target ]( buff_t* b, int, timespan_t ) {
+                                      if ( buffs.echoing_void->check() )
+                                        p.background_actions.echoing_void->execute_on_target( target );
+                                      buffs.echoing_void->decrement();
+                                      if ( !buffs.echoing_void->check() )
+                                      {
+                                        make_event( b->sim, [ this, b ] { b->cancel(); } );
+                                      }
+                                    } );
   buffs.apathy =
       make_buff( *this, "apathy", p.talents.apathy->effectN( 1 ).trigger() )->set_default_value_from_effect( 1 );
 
