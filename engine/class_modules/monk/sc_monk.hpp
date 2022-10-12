@@ -275,7 +275,7 @@ public:
     propagate_const<buff_t*> dizzying_kicks;
     propagate_const<buff_t*> flying_serpent_kick_movement;
     propagate_const<buff_t*> fury_of_xuen_stacks;
-    propagate_const<stat_buff_t*> fury_of_xuen_haste;
+    propagate_const<buff_t*> fury_of_xuen_haste;
     propagate_const<buff_t*> hidden_masters_forbidden_touch;
     propagate_const<buff_t*> hit_combo;
     propagate_const<buff_t*> invoke_xuen;
