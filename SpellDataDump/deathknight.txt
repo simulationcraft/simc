@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.45969 dragonflight-BETA (hotfix 2022-10-11/45969, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46091 dragonflight-BETA (hotfix 2022-10-12/46091, no-networking)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -437,8 +437,8 @@ Description      : Claw the enemy, dealing $<damage> Physical damage.$?s63560[
 
 |CFFE55BB0Dark Transformation: Rakes with deformed claws, dealing $<sweepingclaw> Shadow damage to all enemies nearby the monstrosity.|R][]
 Variables        : $mastery=$?s77515[${((100+$77515m1)/100)}][${1.00}]
-$sweepingclaw= ${0.6*($AP*0.15)*(1+$@versadmg)*3*$<mastery>}
-$damage=${0.6*($AP*0.3)*(1+$@versadmg)*$<mastery>}
+$sweepingclaw= ${0.54*($AP*0.15)*(1+$@versadmg)*3*$<mastery>}
+$damage=${0.54*($AP*0.3)*(1+$@versadmg)*$<mastery>}
 
 Name             : Gnaw (id=47481) [Spell Family (15)] 
 Class            : Death Knight
@@ -463,7 +463,8 @@ Effects          :
 Description      : Bite and tear at a target's limbs, dealing light damage and stunning for $91800d.$?s63560[
 
 |CFFE55BB0Dark Transformation: Strike an enemy with a smashing attack, dealing $<monstrousblow> Physical damage and stunning for $91797d.|R][]
-Variables        : $monstrousblow= ${0.6*($AP*0.111384)*(1+$@versadmg)*3}
+Variables        : $mastery=$?s77515[${((100+$77515m1)/100)}][${1.00}]
+$monstrousblow= ${0.54*($AP*0.111384)*(1+$@versadmg)*3*$<mastery>}
 
 Name             : Leap (id=47482) 
 Class            : Death Knight
@@ -2135,6 +2136,12 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=56865)    : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000
+#3 (id=1037286)  : Dummy (3)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : NEW EFFECT
+#4 (id=1037287)  : Dummy (3)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : NEW EFFECT
 Description      : When your pet is at or above 50 Focus, your pet's Basic Attacks will deal $s1% more damage, but cost $s2% additional focus.
 
 Name             : Dark Transformation (id=63560) [Spell Family (15)] 
@@ -2765,8 +2772,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.30000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Claw the enemy, dealing $<damage> Physical damage.
 Variables        : $mastery=$?s77515[${((100+$77515m1)/100)}][${1.00}]
-$sweepingclaw= ${0.6*($AP*0.15)*(1+$@versadmg)*3*$<mastery>}
-$damage=${0.6*($AP*0.3)*(1+$@versadmg)*$<mastery>}
+$sweepingclaw= ${0.54*($AP*0.15)*(1+$@versadmg)*3*$<mastery>}
+$damage=${0.54*($AP*0.3)*(1+$@versadmg)*$<mastery>}
 
 Name             : Sweeping Claws (id=91778) [Spell Family (15)] 
 Class            : Death Knight
@@ -2793,8 +2800,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.15000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Enemy (6) -> AOE enemy (15)
 Description      : Rakes an enemy with deformed claws, dealing $<sweepingclaw> Shadow damage to the target and nearby enemies.
 Variables        : $mastery=$?s77515[${((100+$77515m1)/100)}][${1.00}]
-$sweepingclaw= ${0.6*($AP*0.15)*(1+$@versadmg)*3*$<mastery>}
-$damage=${0.6*($AP*0.3)*(1+$@versadmg)*$<mastery>}
+$sweepingclaw= ${0.54*($AP*0.15)*(1+$@versadmg)*3*$<mastery>}
+$damage=${0.54*($AP*0.3)*(1+$@versadmg)*$<mastery>}
 
 Name             : Monstrous Blow (id=91797) [Spell Family (15)] 
 Class            : Death Knight
@@ -3497,11 +3504,11 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179724)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Shield (192109), Liquid Magma (192231), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Icefury (210714), Feral Lunge (215802), Icefury Overload (219271), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst Overload (285466), Earthquake Overload (298765), Echoing Shock (320125), Chain Harvest (320752), Fae Transfusion (328928), Fire Nova (333974), Fire Nova (333977), Lashing Flames (334046), Hailstorm (334195), Hailstorm (334196), Ice Strike (342240), Stormflurry (344357), Ascendance (344548), Earth Shock Overload (381725), Magma Eruption (383061), Magma Eruption (395349)
+                   Affected Spells: Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Shield (192109), Liquid Magma (192231), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Icefury (210714), Feral Lunge (215802), Icefury Overload (219271), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst Overload (285466), Earthquake Overload (298765), Echoing Shock (320125), Chain Harvest (320752), Fae Transfusion (328928), Fire Nova (333974), Fire Nova (333977), Lashing Flames (334046), Hailstorm (334195), Hailstorm (334196), Ice Strike (342240), Stormflurry (344357), Ascendance (344548), Earth Shock Overload (381725), Magma Eruption (383061), Doom Winds (384352), Magma Eruption (395349)
                    Family Flags: 39
 #2 (id=191042)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Shield (192109), Liquid Magma (192231), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Icefury (210714), Feral Lunge (215802), Icefury Overload (219271), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst Overload (285466), Earthquake Overload (298765), Echoing Shock (320125), Chain Harvest (320752), Fae Transfusion (328928), Fire Nova (333974), Fire Nova (333977), Lashing Flames (334046), Hailstorm (334195), Hailstorm (334196), Ice Strike (342240), Stormflurry (344357), Ascendance (344548), Earth Shock Overload (381725), Magma Eruption (383061), Magma Eruption (395349)
+                   Affected Spells: Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Shield (192109), Liquid Magma (192231), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Icefury (210714), Feral Lunge (215802), Icefury Overload (219271), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst Overload (285466), Earthquake Overload (298765), Echoing Shock (320125), Chain Harvest (320752), Fae Transfusion (328928), Fire Nova (333974), Fire Nova (333977), Lashing Flames (334046), Hailstorm (334195), Hailstorm (334196), Ice Strike (342240), Stormflurry (344357), Ascendance (344548), Earth Shock Overload (381725), Magma Eruption (383061), Doom Winds (384352), Magma Eruption (395349)
                    Family Flags: 39
 #3 (id=191043)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -3915,14 +3922,14 @@ Duration         : 10 seconds
 Affecting spells : Death's Due (315442 effect#2), Death and Decay (316664 effect#1), Cleaving Strikes (316916 effects: #2, #3), Essence of Ardenweald (331119 effect#3), Rampant Transference (353882 effect#3)
 Family Flags     : 118
 Attributes       : ........ ........ .......x x..x....   .....x.. ..x..... ........ ........ 
-                 : ..x..... ......x. ...x.... ........   ........ ........ ........ ........ 
+                 : ..x..... ......x. ...x.... ........   ........ ........ ........ ......x. 
                  : .......x ........ ........ ........   ...x.... ........ .xx..... ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : .....x.. ........ ........ ........   ........ ...x.... ....x... ........ 
+                 : .....x.. ........ ........ ........   ...x.... ...x.... ....x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
+                 : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Do Not Log Aura Refresh (291), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=274813)   : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 17 | Target: Self (1)
@@ -10221,7 +10228,8 @@ Talent Entry     : Frost [tree=spec, row=6, col=8, max_rank=1, req_points=8]
 Class            : Death Knight
 School           : Frost
 Spell Type       : Magic
-Resource         : 40 Runic Power (6) (id=265395)
+Resource         : 1 Rune (5) (id=265395)
+Resource         : -10 Runic Power (6) (id=265689)
 Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 45 seconds
@@ -14213,7 +14221,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1004447)  : Apply Aura (6) | Trigger Spell with Value (231)
-                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Trigger Spell: 376974 | Target: Self (1)
+                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Trigger Spell: 376974 | Target: Self (1)
 Description      : Remorseless Winter deals $s1% increased damage to enemies it hits, stacking up to $376974u times.
 
 Name             : Everfrost (id=376974) [Spell Family (15)] 
@@ -14303,11 +14311,11 @@ Effects          :
 #1 (id=1004694)  : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1004695)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Remorseless Winter (196771), Remorseless Winter (211793)
                    Family Flags: 126
 #3 (id=1004696)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Remorseless Winter (196771), Remorseless Winter (211793)
                    Family Flags: 126
 Description      : Remorseless Winter damage is increased by $s2%. The first time Remorseless Winter deals damage to $s1 different enemies, you gain Rime.
@@ -15146,7 +15154,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value 2: 1621 (Label) | Target: Self (1)
                    Affected Spells (Label): Shattering Bone (377642)
 #3 (id=1032487)  : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.10000 | PvP Coefficient: 1.00000
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.06000 | PvP Coefficient: 1.00000
 Description      : When Bone Shield is consumed it shatters dealing $s3 shadow damage to nearby enemies. This damage is tripled while you are within your Death and Decay.
 
 Name             : Shattering Bone (id=377642) [Spell Family (15)] 
@@ -15167,7 +15175,7 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : Is Ability (4), Do Not Display Range (126), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1005595)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.10000 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.06000 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
 Description      : $@spelldesc377640
 
 Name             : Heartrend (id=377655) [Spell Family (15), Passive] 
@@ -15745,9 +15753,6 @@ Talent Entry     : Unholy [tree=spec, row=6, col=6, max_rank=1, req_points=8]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
-Proc Chance      : 101%
-Proc Flags       : ........ x....... x....... ........ 
-                 : Yellow Ranged, Magic Hostile Spell
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -16124,9 +16129,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ..x..... ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Always Hit (114), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+                 : Always Hit (114), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1029156)  : Apply Aura (6) | Modify Ranged and Melee Attack Speed% (342)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
@@ -16217,12 +16222,12 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Your ghoul's attacks have a chance to apply Enfeeble, reducing the enemies movement speed by $392490s1% and the damage they deal to you by $392490s2% for $392490d.
 
-Name             : Stormkeeper (id=392714) [Spell Family (11), Passive] 
+Name             : Stormkeeper (id=392714) [Spell Family (11), Passive, Hidden] 
 Talent Entry     : Elemental [tree=spec, row=6, col=1, max_rank=1, req_points=8, override="Stormkeeper" (id=191634)]
 Class            : Death Knight, Shaman
 School           : Nature
 Spell Type       : None
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -16230,7 +16235,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Passive (6)
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1031134)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 2074 | Target: Self (1)
