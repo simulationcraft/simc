@@ -1012,8 +1012,8 @@ public:
     buffs( buffs_t() ),
     cooldowns( cooldowns_t() ),
     gains( gains_t() ),
-    spec( spec_t() ),
     spell( spells_t() ),
+    spec( spec_t() ),
     talent( talents_t() ),
     mastery( masteries_t() ),
     covenant( covenant_t() ),
@@ -1947,6 +1947,7 @@ public:
   // Ability triggers
   void spend_combo_points( const action_state_t* );
   void trigger_auto_attack( const action_state_t* );
+  void trigger_poisons( const action_state_t* );
   void trigger_seal_fate( const action_state_t* );
   void trigger_main_gauche( const action_state_t* );
   void trigger_fatal_flourish( const action_state_t* );
@@ -2307,35 +2308,11 @@ public:
     ab::schedule_travel( state );
 
     if ( ab::energize_type != action_energize::NONE && ab::energize_resource == RESOURCE_COMBO_POINT )
-      trigger_seal_fate( state );
-
-    if ( ab::result_is_hit( state->result ) )
     {
-      auto trigger_lethal_poison = [ this, state ]( actions::rogue_poison_t* poison ) {
-        if ( poison )
-        {
-          // 2021-06-29-- For reasons unknown, Deadly Poison has its own proc logic than Wound or Instant Poison
-          bool procs_lethal_poison = p()->specialization() == ROGUE_ASSASSINATION &&
-            poison->data().id() == p()->talent.assassination.deadly_poison->id() ?
-            procs_deadly_poison() : procs_poison();
-
-          if ( procs_lethal_poison )
-            poison->trigger( state );
-        }
-      };
-
-      trigger_lethal_poison( p()->active.lethal_poison );
-      trigger_lethal_poison( p()->active.lethal_poison_dtb );
-
-      if ( procs_poison() )
-      {
-        if( p()->active.nonlethal_poison )
-          p()->active.nonlethal_poison->trigger( state );
-
-        if ( p()->active.nonlethal_poison_dtb )
-          p()->active.nonlethal_poison_dtb->trigger( state );
-      }
+      trigger_seal_fate( state );
     }
+
+    trigger_poisons( state );
   }
 
   bool ready() override
@@ -3431,7 +3408,7 @@ struct crimson_tempest_t : public rogue_attack_t
 struct deathmark_t : public rogue_attack_t
 {
   deathmark_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
-    rogue_attack_t( name, p, p->talent.assassination.deathmark )
+    rogue_attack_t( name, p, p->talent.assassination.deathmark, options_str )
   {
   }
 
@@ -6951,14 +6928,16 @@ void rogue_t::trigger_toxic_onslaught( player_t* target )
   }
   else if ( specialization() == ROGUE_OUTLAW )
   {
+    /* DFALPHA Deathmark?
     make_event( *sim, [this, target, trigger_duration] {
-      /* DFALPHA Deathmark? */ } );
+       } ); */
     buffs.shadow_blades->extend_duration_or_trigger( trigger_duration );
   }
   else if ( specialization() == ROGUE_SUBTLETY )
   {
+    /* DFALPHA Deathmark?
     make_event( *sim, [this, target, trigger_duration] {
-      /* DFALPHA Deathmark? */ } );
+       } ); */
     buffs.adrenaline_rush->extend_duration_or_trigger( trigger_duration );
   }
 }
@@ -7036,6 +7015,38 @@ void actions::rogue_action_t<Base>::trigger_auto_attack( const action_state_t* /
     return;
 
   p()->auto_attack->execute();
+}
+
+template <typename Base>
+void actions::rogue_action_t<Base>::trigger_poisons( const action_state_t* state )
+{
+  if ( !ab::result_is_hit( state->result ) )
+    return;
+
+  auto trigger_lethal_poison = [this, state]( rogue_poison_t* poison ) {
+    if ( poison )
+    {
+      // 2021-06-29-- For reasons unknown, Deadly Poison has its own proc logic than Wound or Instant Poison
+      bool procs_lethal_poison = p()->specialization() == ROGUE_ASSASSINATION &&
+        poison->data().id() == p()->talent.assassination.deadly_poison->id() ?
+        procs_deadly_poison() : procs_poison();
+
+      if ( procs_lethal_poison )
+        poison->trigger( state );
+    }
+  };
+
+  trigger_lethal_poison( p()->active.lethal_poison );
+  trigger_lethal_poison( p()->active.lethal_poison_dtb );
+
+  if ( procs_poison() )
+  {
+    if ( p()->active.nonlethal_poison )
+      p()->active.nonlethal_poison->trigger( state );
+
+    if ( p()->active.nonlethal_poison_dtb )
+      p()->active.nonlethal_poison_dtb->trigger( state );
+  }
 }
 
 template <typename Base>
