@@ -2500,7 +2500,7 @@ static std::string generate_traits_hash( player_t* player )
     {
       size_t bit = head % byte_size;
       byte += ( value >> i & 0b1 ) << bit;
-      if ( head && bit == byte_size - 1 )
+      if ( bit == byte_size - 1 )
       {
         export_str += base64_char[ byte ];
         byte = 0;

@@ -3920,6 +3920,9 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
                  p.origin_str, util::encode_html( p.origin_str ) );
     }
 
+    // Talent Hash
+    os.format( "<tr class=\"left\"><th>Talent String</th><td>{}</td></tr>\n", p.talents_str );
+
     // Set Bonuses
     if ( p.sets )
     {
