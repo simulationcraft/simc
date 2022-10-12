@@ -1,4 +1,4 @@
-// Spell text, wow build 10.0.2.46091
+// Spell text, wow build 10.0.2.46092
 static const std::array<spelltext_data_t, 18988> __spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
@@ -18990,12 +18990,12 @@ static const std::array<spelltext_data_t, 18988> __spelltext_data { {
   { 396148, "Imbue your weapon with the energy of an Ohuna. Your healing spells have a high chance to heal your target for an additional $385582s1 healing for 2 hours.", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.0.2.46091
+// spelltext hotfix entries, wow build 10.0.2.46092
 static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelltext_hotfix_data { {
   {  384277,  0, "Increases the damage of Thunderclap by $s1% and whenever you Thunder Clap a target affected by your Rend, you also affect $s3 nearby targets target with Rend.", "Thunderclap deals $s1% increased damage, costs $s2 more Rage and if you have Rend, Thunder Clap also affects $s3 nearby targets with Rend." },
 } };
 
-// Spell description variables, wow build 10.0.2.46091
+// Spell description variables, wow build 10.0.2.46092
 static const std::array<spelldesc_vars_data_t, 359> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$pvp=$?a134735[${1.1}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*2.8*(1+$@versadmg)*$<rapture>*$<shadow>*$<pvp>*$<weal>}\r\n" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -19358,7 +19358,7 @@ static const std::array<spelldesc_vars_data_t, 359> __spelldesc_vars_data { {
   {  394354, "$damage=${($AP*1.0)*(1+$@versadmg)}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.0.2.46091
+// spelldesc_vars hotfix entries, wow build 10.0.2.46092
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 
