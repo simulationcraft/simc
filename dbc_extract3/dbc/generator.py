@@ -1870,6 +1870,7 @@ class SpellDataGenerator(DataGenerator):
           ( 285594, 3 ), # Good Karma Healing Spell
           ( 290461, 3 ), # Reverse Harm Damage
           ( 335913, 3 ), # Empowered Tiger Lightning Damage spell
+          ( 396168, 3 ), # Fury of Xuen Haste Buff
 
           # Covenant
           ( 325217, 0 ), # Necrolord Bonedust Brew damage
