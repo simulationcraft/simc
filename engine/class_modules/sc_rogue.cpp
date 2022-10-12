@@ -347,6 +347,7 @@ public:
     buff_t* master_assassin_aura;
     buff_t* scent_of_blood;
     // Outlaw
+    buff_t* audacity;
     buff_t* dreadblades;
     buff_t* killing_spree;
     buff_t* loaded_dice;
@@ -403,6 +404,8 @@ public:
     cooldown_t* cold_blood;
     cooldown_t* dreadblades;
     cooldown_t* echoing_reprimand;
+    cooldown_t* evasion;
+    cooldown_t* feint;
     cooldown_t* flagellation;
     cooldown_t* fleshcraft;
     cooldown_t* garrote;
@@ -552,6 +555,7 @@ public:
     const spell_data_t* pistol_shot;
     const spell_data_t* sinister_strike;
 
+    const spell_data_t* audacity_buff;
     const spell_data_t* blade_flurry_attack;
     const spell_data_t* blade_flurry_instant_attack;
     const spell_data_t* blade_rush_attack;
@@ -738,11 +742,11 @@ public:
       player_talent_t combat_stamina;
       player_talent_t adrenaline_rush;
       player_talent_t riposte;                  // No implementation
-      player_talent_t deft_maneuvers;           // NYI
+      player_talent_t deft_maneuvers;           // No implementation (no dynamic range functionality)
 
       player_talent_t blinding_powder;          // No implementation
       player_talent_t ruthlessness;
-      player_talent_t swift_slasher;            // NYI
+      player_talent_t swift_slasher;
       player_talent_t restless_blades;
       player_talent_t fatal_flourish;
       player_talent_t improved_between_the_eyes;
@@ -754,10 +758,10 @@ public:
       player_talent_t quick_draw;
       player_talent_t ace_up_your_sleeve;
 
-      player_talent_t audacity;                 // NYI
+      player_talent_t audacity;
       player_talent_t loaded_dice;
-      player_talent_t float_like_a_butterfly;   // NYI
-      player_talent_t sleight_of_hand;          // NYI, merge with conduit?
+      player_talent_t float_like_a_butterfly;
+      player_talent_t sleight_of_hand;
       player_talent_t dancing_steel;
 
       player_talent_t triple_threat;            // NYI, merge with conduit?
@@ -1033,6 +1037,8 @@ public:
     cooldowns.cold_blood                = get_cooldown( "cold_blood" );
     cooldowns.dreadblades               = get_cooldown( "dreadblades" );
     cooldowns.echoing_reprimand         = get_cooldown( "echoing_reprimand" );
+    cooldowns.evasion                   = get_cooldown( "evasion" );
+    cooldowns.feint                     = get_cooldown( "feint" );
     cooldowns.flagellation              = get_cooldown( "flagellation" );
     cooldowns.fleshcraft                = get_cooldown( "fleshcraft" );
     cooldowns.garrote                   = get_cooldown( "garrote" );
@@ -1459,7 +1465,7 @@ public:
     bool master_assassins_mark = false;
     bool dashing_scoundrel = false;
     bool zoldyck_insignia = false;
-    bool sepsis = false;
+    bool sepsis = false;                // Stance Mask
     bool t28_assassination_2pc = false;
     bool t28_assassination_4pc = false;
     bool deeper_daggers = false;
@@ -1467,6 +1473,7 @@ public:
     // Dragonflight
     bool adrenaline_rush_gcd = false;
     bool alacrity = false;
+    bool audacity = false;              // Stance Mask
     bool blindside = false;             // Stance Mask
     bool broadside_cp = false;
     bool cold_blood = false;
@@ -1610,7 +1617,8 @@ public:
     }
 
     // Dragonflight
-    affected_by.blindside = ab::data().affected_by( p->spec.blindside_buff );
+    affected_by.audacity = ab::data().affected_by( p->spec.audacity_buff->effectN( 1 ) );
+    affected_by.blindside = ab::data().affected_by( p->spec.blindside_buff->effectN( 1 ) );
     affected_by.improved_shiv = ab::data().affected_by( p->spec.improved_shiv_debuff->effectN( 1 ) );
     affected_by.master_assassin = ab::data().affected_by( p->spec.master_assassin_buff->effectN( 1 ) );
 
@@ -1926,6 +1934,9 @@ public:
   // Overridable wrapper for checking stealth requirement
   virtual bool requires_stealth() const
   {
+    if ( affected_by.audacity && p()->buffs.audacity->check() )
+      return false;
+
     if ( affected_by.blindside && p()->buffs.blindside->check() )
       return false;
 
@@ -2285,6 +2296,12 @@ public:
     if ( affected_by.cold_blood )
     {
       p()->buffs.cold_blood->expire();
+    }
+
+    if ( affected_by.audacity )
+    {
+      // TOCHECK DFALPHA -- If this gets expired when in stealth
+      p()->buffs.audacity->expire();
     }
 
     if ( affected_by.blindside )
@@ -4059,6 +4076,12 @@ struct pistol_shot_t : public rogue_attack_t
       trigger_combo_point_gain( cp_gain, p()->gains.quick_draw );
     }
 
+    // TOCHECK DFALPHA -- If Fan the Hammer can trigger this
+    if ( p()->buffs.opportunity->check() )
+    {
+      p()->buffs.audacity->trigger( 1, buff_t::DEFAULT_VALUE(), audacity_proc_chance() );
+    }
+
     if ( secondary_trigger_type != secondary_trigger::TORNADO_TRIGGER )
     {
       p()->buffs.opportunity->expire();
@@ -4092,6 +4115,14 @@ struct pistol_shot_t : public rogue_attack_t
         p()->buffs.tornado_trigger_loading->trigger();
       }
     }
+  }
+
+  double audacity_proc_chance() const
+  {
+    double proc_chance = p()->spec.sinister_strike->effectN( 3 ).percent();
+    proc_chance += p()->talent.outlaw.weaponmaster->effectN( 1 ).percent();
+    proc_chance += p()->buffs.skull_and_crossbones->stack_value();
+    return proc_chance;
   }
 
   // TOCHECK: On beta as of 8/28/2020, Blunderbuss procs don't trigger. Possibly only "on cast".
@@ -5059,10 +5090,10 @@ struct sinister_strike_t : public rogue_attack_t
 
   double extra_attack_proc_chance() const
   {
-    double opportunity_proc_chance = data().effectN( 3 ).percent();
-    opportunity_proc_chance += p()->talent.outlaw.weaponmaster->effectN( 1 ).percent();
-    opportunity_proc_chance += p()->buffs.skull_and_crossbones->stack_value();
-    return opportunity_proc_chance;
+    double proc_chance = data().effectN( 3 ).percent();
+    proc_chance += p()->talent.outlaw.weaponmaster->effectN( 1 ).percent();
+    proc_chance += p()->buffs.skull_and_crossbones->stack_value();
+    return proc_chance;
   }
 
   void execute() override
@@ -5126,7 +5157,16 @@ struct slice_and_dice_t : public rogue_spell_t
     if ( precombat_seconds > 0_s && !p()->in_combat )
       snd_duration -= precombat_seconds;
 
-    p()->buffs.slice_and_dice->trigger( snd_duration );
+    if ( p()->talent.outlaw.swift_slasher->ok() )
+    {
+      const double buffed_value = ( p()->buffs.slice_and_dice->default_value +
+                                    p()->talent.outlaw.swift_slasher->effectN( 1 ).percent() * cp );
+      p()->buffs.slice_and_dice->trigger( -1, buffed_value, -1.0, snd_duration );
+    }
+    else
+    {
+      p()->buffs.slice_and_dice->trigger( snd_duration );
+    }
 
     // Grand melee extension goes on top of SnD buff application.
     trigger_grand_melee( execute_state );
@@ -6778,7 +6818,12 @@ struct roll_the_bones_t : public buff_t
       // Odds double checked on 2020-03-09.
       rogue->options.fixed_rtb_odds = { 79.0, 20.0, 0.0, 0.0, 1.0, 0.0 };
 
-      if ( rogue->conduit.sleight_of_hand->ok() )
+      if ( rogue->talent.outlaw.sleight_of_hand->ok() )
+      {
+        rogue->options.fixed_rtb_odds[ 0 ] -= rogue->talent.outlaw.sleight_of_hand->effectN( 1 ).base_value();
+        rogue->options.fixed_rtb_odds[ 1 ] += rogue->talent.outlaw.sleight_of_hand->effectN( 1 ).base_value();
+      }
+      else if ( rogue->conduit.sleight_of_hand->ok() )
       {
         rogue->options.fixed_rtb_odds[ 0 ] -= rogue->conduit.sleight_of_hand.value();
         rogue->options.fixed_rtb_odds[ 1 ] += rogue->conduit.sleight_of_hand.value();
@@ -7380,6 +7425,12 @@ void actions::rogue_action_t<Base>::trigger_restless_blades( const action_state_
   p()->cooldowns.sepsis->adjust( v, false );
   p()->cooldowns.sprint->adjust( v, false );
   p()->cooldowns.vanish->adjust( v, false ); // DFALPHA -- Appears bugged
+
+  if ( p()->talent.outlaw.float_like_a_butterfly->ok() )
+  {
+    p()->cooldowns.evasion->adjust( v, false );
+    p()->cooldowns.feint->adjust( v, false );
+  }
 }
 
 template <typename Base>
@@ -8445,7 +8496,7 @@ void rogue_t::init_action_list()
     // Finishers
     action_priority_list_t* finish = get_action_priority_list( "finish", "Finishers" );
     finish->add_action( this, "Between the Eyes", "if=target.time_to_die>3&(debuff.between_the_eyes.remains<4|runeforge.greenskins_wickers&!buff.greenskins_wickers.up|!runeforge.greenskins_wickers&buff.ruthless_precision.up)", "BtE to keep the Crit debuff up, if RP is up, or for Greenskins, unless the target is about to die." );
-    finish->add_action( this, "Slice and Dice", "if=buff.slice_and_dice.remains<fight_remains&refreshable" );
+    finish->add_action( this, "Slice and Dice", "if=buff.slice_and_dice.remains<fight_remains&refreshable&(!talent.swift_slasher|combo_points>=cp_max_spend)" );
     finish->add_action( this, "Dispatch" );
 
     // Builders
@@ -8454,11 +8505,13 @@ void rogue_t::init_action_list()
     build->add_talent( this, "Ghostly Strike", "if=debuff.ghostly_strike.remains<=3" );
     build->add_action( this, "Shiv", "if=runeforge.tiny_toxic_blade" );
     build->add_action( "echoing_reprimand,if=!soulbind.effusive_anima_accelerator|variable.blade_flurry_sync" );
+    build->add_action( "pool_resource,for_next=1" );
+    build->add_action( this, "Ambush" );
     build->add_action( this, "Pistol Shot", "if=buff.opportunity.up&(buff.greenskins_wickers.up|buff.concealed_blunderbuss.up|buff.tornado_trigger.up)|buff.greenskins_wickers.up&buff.greenskins_wickers.remains<1.5", "Use Pistol Shot when buffed by bonuses as a priority");
     build->add_action( "serrated_bone_spike,if=!dot.serrated_bone_spike_dot.ticking", "Apply SBS to all targets without a debuff as priority, preferring targets dying sooner after the primary target" );
     build->add_action( "serrated_bone_spike,target_if=min:target.time_to_die+(dot.serrated_bone_spike_dot.ticking*600),if=!dot.serrated_bone_spike_dot.ticking" );
     build->add_action( "serrated_bone_spike,if=fight_remains<=5|cooldown.serrated_bone_spike.max_charges-charges_fractional<=0.25|combo_points.deficit=cp_gain&!buff.skull_and_crossbones.up&energy.base_time_to_max>1", "Attempt to use when it will cap combo points and SnD is down, otherwise keep from capping charges" );
-    build->add_action( this, "Pistol Shot", "if=buff.opportunity.up&(energy.base_deficit>energy.regen*1.5|!talent.weaponmaster&combo_points.deficit<=1+buff.broadside.up|talent.quick_draw.enabled)", "Use Pistol Shot with Opportunity if Combat Potency won't overcap energy, when it will exactly cap CP, or when using Quick Draw" );
+    build->add_action( this, "Pistol Shot", "if=buff.opportunity.up&(energy.base_deficit>energy.regen*1.5|!talent.weaponmaster&combo_points.deficit<=1+buff.broadside.up|talent.quick_draw.enabled|talent.audacity.enabled&!buff.audacity.up)", "Use Pistol Shot with Opportunity if Combat Potency won't overcap energy, when it will exactly cap CP, or when using Quick Draw" );
     build->add_action( this, "Sinister Strike", "target_if=min:dot.vicious_wound.remains,if=buff.acquired_axe_driver.up", "Use Sinister Strike on targets without the Cache DoT if the trinket is up" );
     build->add_action( this, "Sinister Strike" );
   }
@@ -9497,6 +9550,7 @@ void rogue_t::init_spells()
   spec.deathmark_rupture = talent.assassination.deathmark->ok() ? find_spell( 360826 ) : spell_data_t::not_found();
   spec.deathmark_wound_poison = talent.assassination.deathmark->ok() ? find_spell( 394327 ) : spell_data_t::not_found();
 
+  spec.audacity_buff = talent.outlaw.audacity->ok() ? find_spell( 386270 ) : spell_data_t::not_found();
   spec.blade_flurry_attack = talent.outlaw.blade_flurry->ok() ? find_spell( 22482 ) : spell_data_t::not_found();
   spec.blade_flurry_instant_attack = talent.outlaw.blade_flurry->ok() ? find_spell( 331850 ) : spell_data_t::not_found();
   spec.blade_rush_attack = talent.outlaw.blade_rush->ok() ? find_spell( 271881 ) : spell_data_t::not_found();
@@ -10101,6 +10155,8 @@ void rogue_t::create_buffs()
     ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY );
 
   // Outlaw
+
+  buffs.audacity = make_buff( this, "audacity", spec.audacity_buff );
 
   buffs.dreadblades = make_buff( this, "dreadblades", talent.outlaw.dreadblades )
     ->set_cooldown( timespan_t::zero() )
