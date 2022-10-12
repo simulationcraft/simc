@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.2.46092
-static const std::array<spelltext_data_t, 18988> __spelltext_data { {
+static const std::array<spelltext_data_t, 18992> __spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -17290,7 +17290,7 @@ static const std::array<spelltext_data_t, 18988> __spelltext_data { {
   { 384266, "Guarantees the next slotted Tinker use to succeed. The cooldown of this effect is reduced at higher qualities.", "Your next slotted tinker usage is guaranteed to succeed.", 0 },
   { 384267, "$@spelldesc384187", "Intellect increased by $s1%", 0 },
   { 384276, "Consuming a Mana Gem grants up to $s1 Clearcasting stacks.", 0, 0 },
-  { 384277, "Thunderclap deals $s1% increased damage, costs $s2 more Rage and if you have Rend, Thunder Clap also affects $s3 nearby targets with Rend.", 0, 0 },
+  { 384277, "Thunderclap deals $s1% increased damage$?(s137048)[ and if you have Rend, Thunder Clap affects $s3 nearby targets with Rend.][, costs ${$s2/10} more Rage and if you have Rend, Thunder Clap affects $s3 nearby targets with Rend.]", 0, 0 },
   { 384280, 0, "Spell damage increased by $w1%.", 0 },
   { 384290, "$@spelldesc382119", "Deal ${$382119w3*($d/$t1)*(1+$@versadmg)} Nature over $d.", 0 },
   { 384294, "$@spelldesc382119", "$?e2[Critical Strike]?e3[Haste]?e4[Mastery]?e5[Versatility][Highest secondary stat] increased by $382119w1.", 0 },
@@ -18315,6 +18315,7 @@ static const std::array<spelltext_data_t, 18988> __spelltext_data { {
   { 390787, "$@spelldesc390786", "The damage of your next Smite is increased by $w1% or the absorb of your next Power Word: Shield is increased by $w2%.", 0 },
   { 390808, "Immolation Aura generates $m-$M Fury when it deals critical damage.\r\n\r\nThis effect may only occur once per ${$proccooldown+0.1}.1 sec.", 0, 0 },
   { 390832, "Increases the damage of Mind Blast and Shadow Word: Death by $s1%.\r\n\r\nMind Blast and Shadow Word: Death consume $s2 sec of Shadow Word: Pain or Purge the Wicked, instantly dealing that damage.", 0, 0 },
+  { 390845, "$@spelldesc110744", 0, 0 },
   { 390864, "Swipe and Thrash damage is increased by $s1%.", 0, 0 },
   { 390881, "Your Renew healing increases the healing done by your next Circle of Healing by $390885s1%, stacking up to $390885U times.", 0, 0 },
   { 390885, "$@spelldesc390881", "The healing of your next Circle of Healing is increased by $w1%.", 0 },
@@ -18324,12 +18325,15 @@ static const std::array<spelltext_data_t, 18988> __spelltext_data { {
   { 390947, "Circle of Healing heals $s1 additional ally and its cooldown is reduced by ${$s2/-1000} sec.", 0, 0 },
   { 390951, "Temporarily imbues shoulders with a fiery illusion for $ecd.", 0, 0 },
   { 390954, "Increases the critical strike chance of Flash Heal and Heal by $s1%.", 0, 0 },
+  { 390964, "$@spelldesc120517", 0, 0 },
   { 390967, "Increases the healing done by your Mastery: Echo of Light by $s1%.", 0, 0 },
+  { 390971, "$@spelldesc120517", 0, 0 },
   { 390972, "After damaging or healing a target below $s3% health, gain $s1% increased damage and healing for $390978d.", 0, 0 },
   { 390975, "Perform an elemental invocation, transforming into the elemental summoned for ${$s1/60} min.", 0, 0 },
   { 390977, "Prayer of Mending jumps $s1 additional $Ltime:times;.", 0, 0 },
   { 390978, "$@spelldesc390972", "Increases damage and healing by $w1%.", 0 },
   { 390980, "Critical heals from Flash Heal and Heal increase your healing done by your next Holy Word spell by $390989s1%, stacking up to $390989U times.", 0, 0 },
+  { 390981, "$@spelldesc110744", 0, 0 },
   { 390989, "$@spelldesc390980", "The healing of your next Holy Word spell is increased by $w1%.", 0 },
   { 390992, "Flash Heal reduces the cast time of your next Heal within $390993d by $390993s2% and increases its healing done by $390993s1%.\r\n\r\nStacks up to $390993U times.", 0, 0 },
   { 390993, "$@spelldesc390992", "The cast time of your next Heal is reduced by $w2% and its healing is increased by $w1%.", 0 },
@@ -18992,7 +18996,7 @@ static const std::array<spelltext_data_t, 18988> __spelltext_data { {
 
 // spelltext hotfix entries, wow build 10.0.2.46092
 static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelltext_hotfix_data { {
-  {  384277,  0, "Increases the damage of Thunderclap by $s1% and whenever you Thunder Clap a target affected by your Rend, you also affect $s3 nearby targets target with Rend.", "Thunderclap deals $s1% increased damage, costs $s2 more Rage and if you have Rend, Thunder Clap also affects $s3 nearby targets with Rend." },
+  {  384277,  0, "Thunderclap deals $s1% increased damage, costs $s2 more Rage and if you have Rend, Thunder Clap also affects $s3 nearby targets with Rend.", "Thunderclap deals $s1% increased damage$?(s137048)[ and if you have Rend, Thunder Clap affects $s3 nearby targets with Rend.][, costs ${$s2/10} more Rage and if you have Rend, Thunder Clap affects $s3 nearby targets with Rend.]" },
 } };
 
 // Spell description variables, wow build 10.0.2.46092
