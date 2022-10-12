@@ -1569,6 +1569,7 @@ class SpellDataGenerator(DataGenerator):
             ( 377358, 5 ),          # Idol of C'thun Insanity values
             ( 394976, 5 ),          # Idol of C'thun Void Lasher Mind Sear
             ( 394979, 5 ),          # Idol of C'thun Void Lasher Mind Sear Tick
+            ( 393919, 0 ),          # Screams of the Void extra data
             # Holy Priest
             ( 196809, 5 ),          # Healing Light (Divine Image legendary pet spell)
             ( 196810, 5 ),          # Dazzling Light (Divine Image legendary pet spell)
