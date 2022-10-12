@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46091 dragonflight-BETA (hotfix 2022-10-12/46091, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46091 dragonflight-BETA (hotfix 2022-10-12/46091)
 Name             : Frostbolt of Ages (id=11) 
 Class            : Paladin
 School           : Frost

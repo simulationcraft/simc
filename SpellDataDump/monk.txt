@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46091 dragonflight-BETA (hotfix 2022-10-12/46091, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46091 dragonflight-BETA (hotfix 2022-10-12/46091)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -12193,6 +12193,29 @@ Effects          :
                    Base Value: 33 | Scaled Value: 33 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc337298
 Tooltip          : Haste increased by $w1%.
+
+Name             : Grounding Breath (id=342330) [Spell Family (53), Hidden] 
+Class            : Monk
+School           : Physical
+Spell Type       : None
+Spell Level      : 60
+Duration         : 15 seconds
+Cooldown         : 1.5 seconds
+Stacks           : 5 maximum
+Proc Chance      : 101%
+Attributes       : ....x..x ........ ..x..... ........   .....x.. ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....xx.. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Is Ability (4), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Sheath (18), Allow While Stealthed (37), No Threat (42), Floating Combat Text On Cast (198), Aura Points On Client (268), Not In Spellbook Until Learned (269), Scales with Casting Item's Level (354), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=843353)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : $spelldesc337295
 
 Name             : Reverse Harm (id=342928) [Spell Family (53), Passive, Hidden] 
 Class            : Monk
