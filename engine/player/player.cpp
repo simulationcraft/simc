@@ -2451,7 +2451,8 @@ static void parse_traits(
 }
 
 // Blizzard in-game talent tree export hash
-static bool generate_tree_nodes( player_t* player, std::map<unsigned, std::vector<const trait_data_t*>>& tree_nodes )
+static bool generate_tree_nodes( player_t* player,
+                                 std::map<unsigned, std::vector<std::pair<const trait_data_t*, unsigned>>>& tree_nodes )
 {
   specialization_e spec = player->specialization();
 
@@ -2463,10 +2464,10 @@ static bool generate_tree_nodes( player_t* player, std::map<unsigned, std::vecto
   auto spec_data = trait_data_t::data( class_idx, talent_tree::SPECIALIZATION, maybe_ptr( player->dbc->ptr ) );
 
   for ( const auto& trait : class_data )
-    tree_nodes[ trait.id_node ].push_back( &trait );
+    tree_nodes[ trait.id_node ].emplace_back( &trait, 0 );
 
   for ( const auto& trait : spec_data )
-    tree_nodes[ trait.id_node ].push_back( &trait );
+    tree_nodes[ trait.id_node ].emplace_back( &trait, 0 );
 
   return true;
 }
@@ -2475,6 +2476,7 @@ namespace
 {
 const std::string base64_char = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 // hardcoded values from Interface/AddOns/Blizzard_ClassTalentUI/Blizzard_ClassTalentImportExport.lua
+constexpr unsigned LOADOUT_SERIALIZATION_VERSION = 1;
 constexpr size_t version_bits = 8;    // serialization version
 constexpr size_t spec_bits    = 16;   // specialization id
 constexpr size_t tree_bits    = 128;  // C_Traits.GetTreeHash(), optionally can be 0-filled
@@ -2482,7 +2484,114 @@ constexpr size_t rank_bits    = 6;    // ranks purchased if node is partially fi
 constexpr size_t choice_bits  = 2;    // choice index, 0-based
 // hardcoded value from Interface/SharedXML/ExportUtil.lua
 constexpr size_t byte_size    = 6;
-constexpr unsigned LOADOUT_SERIALIZATION_VERSION = 1;
+}
+
+static std::string generate_traits_hash( player_t* player )
+{
+  std::string export_str;
+
+  if ( player->player_traits.empty() )
+    return export_str;
+
+  size_t head = 0;
+  size_t byte = 0;
+  auto put_bit = [ &export_str, &head, &byte ]( size_t bits, unsigned value ) {
+    for ( size_t i = 0; i < bits; i++ )
+    {
+      size_t bit = head % byte_size;
+      byte += ( value >> i & 0b1 ) << bit;
+      if ( head && bit == byte_size - 1 )
+      {
+        export_str += base64_char[ byte ];
+        byte = 0;
+      }
+      head++;
+    }
+  };
+
+  put_bit( version_bits, LOADOUT_SERIALIZATION_VERSION );
+  put_bit( spec_bits, static_cast<unsigned>( player->specialization() ) );
+  put_bit( tree_bits, 0 );  // 0-filled to bypass validation, as GetTreeHash() is unavailable externally
+
+  std::map<unsigned, std::vector<std::pair<const trait_data_t*, unsigned>>> tree_nodes;
+
+  generate_tree_nodes( player, tree_nodes );
+
+  // populate tree_nodes with rank info from player_traits
+  for ( const auto& trait : player->player_traits )
+  {
+    auto id_entry = std::get<1>( trait );
+    auto ranks = std::get<2>( trait );
+
+    if ( !ranks )
+      continue;
+
+    auto trait_data = trait_data_t::find( id_entry, maybe_ptr( player->dbc->ptr ) );
+    auto tree_entry = &tree_nodes[ trait_data->id_node ];
+
+    for ( auto& entry : *tree_entry )
+    {
+      if ( entry.first->id_trait_node_entry == id_entry )
+      {
+        entry.second = ranks;
+        break;
+      }
+    }
+  }
+
+  for ( auto& [ id, node ] : tree_nodes )
+  {
+    range::sort( node, []( std::pair<const trait_data_t*, unsigned> a, std::pair<const trait_data_t*, unsigned> b ) {
+      return a.first->selection_index < b.first->selection_index;
+    } );
+
+    const trait_data_t* trait = nullptr;
+    unsigned rank = 0;
+    unsigned index = 0;
+
+    for ( size_t i = 0; i < node.size(); i++ )
+    {
+      rank = node[ i ].second;
+      if ( rank )
+      {
+        trait = node[ i ].first;
+        index = as<unsigned>( i );
+        break;
+      }
+    }
+
+    if ( !rank )  // is node selected?
+    {
+      put_bit( 1, 0 );
+      continue;
+    }
+    else
+    {
+      put_bit( 1, 1 );
+    }
+
+    if ( rank == trait->max_ranks )  // is node partially ranked?
+    {
+      put_bit( 1, 0 );
+    }
+    else
+    {
+      put_bit( 1, 1 );
+      put_bit( rank_bits, rank );
+    }
+
+    if ( node.size() == 1 )  // is choice nodes?
+    {
+      put_bit( 1, 0 );
+    }
+    else
+    {
+      put_bit( 1, 1 );
+      put_bit( choice_bits, index );
+    }
+  }
+
+  return export_str;
 }
 
 static void parse_traits_hash( const std::string& talents_str, player_t* player )
@@ -2539,7 +2648,7 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
   // in later checks
   get_bit( tree_bits );
 
-  std::map<unsigned, std::vector<const trait_data_t*>> tree_nodes;
+  std::map<unsigned, std::vector<std::pair<const trait_data_t*, unsigned>>> tree_nodes;
 
   generate_tree_nodes( player, tree_nodes );
 
@@ -2547,11 +2656,11 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
   {
     if ( get_bit( 1 ) )  // selected
     {
-      range::sort( node, []( const trait_data_t* a, const trait_data_t* b ) {
-        return a->selection_index < b->selection_index;
+      range::sort( node, []( std::pair<const trait_data_t*, unsigned> a, std::pair<const trait_data_t*, unsigned> b ) {
+        return a.first->selection_index < b.first->selection_index;
       } );
 
-      auto trait = node.front();
+      auto trait = node.front().first;
       size_t rank = trait->max_ranks;
 
       if ( !std::all_of( trait->id_spec.begin(), trait->id_spec.end(), []( unsigned i ) { return i == 0; } ) &&
@@ -2593,7 +2702,7 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
           return;
         }
 
-        trait = node[ index ];
+        trait = node[ index ].first;
       }
 
       player->player_traits.emplace_back( static_cast<talent_tree>( trait->tree_index ), trait->id_trait_node_entry,
@@ -10167,6 +10276,12 @@ bool player_t::parse_talents_wowhead( std::string_view talent_url )
   return true;
 }
 
+void player_t::create_talents_blizzard()
+{
+  talents_str.clear();
+  talents_str = generate_traits_hash( this );
+}
+
 void player_t::create_talents_wowhead()
 {
   // The Wowhead talent scheme encodes three talent selections per character
@@ -11852,6 +11967,7 @@ void player_t::recreate_talent_str( talent_format format )
       create_talents_wowhead();
       break;
     default:
+      create_talents_blizzard();
       break;
   }
 }

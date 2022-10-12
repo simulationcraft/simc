@@ -753,9 +753,6 @@ private:
   std::unique_ptr<dbc_override_t> dbc_override_;
 
 public:
-
-
-
   player_t( sim_t* sim, player_e type, util::string_view name, race_e race_e );
   ~player_t() override;
 
@@ -764,11 +761,9 @@ public:
   static bool _is_enemy( player_e t ) { return t == ENEMY || t == ENEMY_ADD || t == ENEMY_ADD_BOSS || t == TANK_DUMMY; }
   static bool _is_sleeping( const player_t* t ) { return t -> current.sleeping; }
 
-
   // Overrides
   const char* name() const override
   { return name_str.c_str(); }
-
 
   // Normal methods
   void init_character_properties();
@@ -778,6 +773,7 @@ public:
   void create_talents_numbers();
   void create_talents_armory();
   void create_talents_wowhead();
+  void create_talents_blizzard();
   void clear_action_priority_lists() const;
   void copy_action_priority_list( util::string_view old_list, util::string_view new_list );
   void change_position( position_e );
