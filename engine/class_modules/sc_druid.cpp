@@ -3565,7 +3565,7 @@ public:
 
     parse_buff_effects( buff, ignore_mask, use_stacks, false, mods... );
 
-    // Feral 4T28 is affected by Tiger's Fury but does not snapshot
+    // TODO: remove in DF. Feral 4T28 is affected by Tiger's Fury but does not snapshot
     if ( data().id() == 363830 && buff == p()->buff.tigers_fury )
       return false;
 
@@ -3574,12 +3574,6 @@ public:
     {
       double ta_val = ta_multiplier_buffeffects.back().value;
       double da_val = 0;
-
-      persistent_multiplier_buffeffects.push_back( ta_multiplier_buffeffects.back() );
-      ta_multiplier_buffeffects.pop_back();
-
-      p()->sim->print_debug( "persistent-buffs: {} ({}) damage modified by {}% with buff {} ({}), tick table has {} entries.", name(), id,
-                             ta_val * 100.0, buff->name(), buff->data().id(), ta_multiplier_buffeffects.size() );
 
       // Any corresponding increases in the da_mul table can be removed as pers_mul covers da_mul & ta_mul
       if ( da_multiplier_buffeffects.size() > da_old )
@@ -3594,6 +3588,17 @@ public:
               buff->data().id(), this->name() );
         }
       }
+
+      // snapshotting is done via custom scripting, so data can have different da/ta_mul values but the highest will apply
+      if ( da_val > ta_val )
+        ta_val = da_val;
+
+      persistent_multiplier_buffeffects.push_back( ta_multiplier_buffeffects.back() );
+      ta_multiplier_buffeffects.pop_back();
+
+      p()->sim->print_debug( "persistent-buffs: {} ({}) damage modified by {}% with buff {} ({}), tick table has {} entries.", name(), id,
+                             ta_val * 100.0, buff->name(), buff->data().id(), ta_multiplier_buffeffects.size() );
+
 
       return true;
     }
