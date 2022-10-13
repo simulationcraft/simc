@@ -2220,9 +2220,7 @@ struct fire_mage_spell_t : public mage_spell_t
   {
     double m = 1.0;
 
-    // TODO: Wildfire is currently bugged and does not increase Ignite damage.
-    if ( !p()->bugs )
-      m *= 1.0 + p()->talents.wildfire->effectN( 2 ).percent();
+    m *= 1.0 + p()->talents.wildfire->effectN( 2 ).percent();
 
     if ( !p()->buffs.combustion->check() )
       m *= 1.0 + p()->talents.master_of_flame->effectN( 1 ).percent();
