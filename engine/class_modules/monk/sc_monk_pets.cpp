@@ -996,9 +996,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
 
     void execute() override
     {
-      // Currently in game SEF clones do not copy SotWL
-      if ( !p()->o()->bugs )
-        sef_melee_attack_t::execute();
+      sef_melee_attack_t::execute();
     }
   };
 
@@ -1026,9 +1024,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
 
     void execute() override
     {
-      // Currently in game SEF clones do not copy SotWL
-      if ( !p()->o()->bugs )
-        sef_melee_attack_t::execute();
+      sef_melee_attack_t::execute();
     }
   };
 
