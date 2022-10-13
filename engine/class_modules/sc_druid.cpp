@@ -4512,7 +4512,13 @@ struct rip_t : public cat_finisher_t<>
     }
 
     // TODO: currently bugged to be 6% per tick, rather than 6% over the entire dot
-    double base_ta( const action_state_t* s ) const override { return get_amount( s ); }
+    double base_ta( const action_state_t* s ) const override
+    {
+      if ( p()->bugs )
+        return get_amount( s );
+      else
+        return get_amount( s ) * tick_time( s ) / composite_dot_duration( s );
+    }
   };
 
   tear_t* tear;
