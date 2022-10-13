@@ -4707,7 +4707,7 @@ struct multishot_mm_t: public hunter_ranged_attack_t
     if ( p() -> talents.salvo.ok() && !p() -> buffs.salvo -> check() )
     {
       std::vector<player_t*>& tl = target_list();
-      size_t targets = std::max<size_t>( tl.size(), as<size_t>( p() -> talents.salvo -> effectN( 1 ).base_value() ) );
+      size_t targets = std::min<size_t>( tl.size(), as<size_t>( p() -> talents.salvo -> effectN( 1 ).base_value() ) );
       for ( size_t t = 0; t < targets; t++ )
         explosive -> execute_on_target( tl[ t ] );
       p() -> buffs.salvo -> trigger();
@@ -6187,7 +6187,7 @@ struct volley_t : public hunter_spell_t
       if ( p() -> talents.salvo.ok() && !p() -> buffs.salvo -> check() )
       {
         std::vector<player_t*>& tl = target_list();
-        size_t targets = std::max<size_t>( tl.size(), as<size_t>( p() -> talents.salvo -> effectN( 1 ).base_value() ) );
+        size_t targets = std::min<size_t>( tl.size(), as<size_t>( p() -> talents.salvo -> effectN( 1 ).base_value() ) );
         for ( size_t t = 0; t < targets; t++ )
           explosive -> execute_on_target( tl[ t ] );
         p() -> buffs.salvo -> trigger();
