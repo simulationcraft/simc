@@ -7213,6 +7213,18 @@ struct full_moon_t : public moon_base_t
     else
       moon_base_t::advance_stage();
   }
+
+  void execute() override
+  {
+    moon_base_t::execute();
+
+    // if the extra charge of FM from RM is available, orbit breaker will eat it
+    if ( p()->bugs && free_spell == free_spell_e::ORBIT && p()->talent.radiant_moonlight.ok() &&
+         p()->moon_stage == moon_stage_e::FULL_MOON )
+    {
+      p()->moon_stage = moon_stage_e::MAX_MOON;
+    }
+  }
 };
 
 // Proxy Moon Spell =========================================================
