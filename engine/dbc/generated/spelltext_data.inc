@@ -17290,7 +17290,7 @@ static const std::array<spelltext_data_t, 18988> __spelltext_data { {
   { 384266, "Guarantees the next slotted Tinker use to succeed. The cooldown of this effect is reduced at higher qualities.", "Your next slotted tinker usage is guaranteed to succeed.", 0 },
   { 384267, "$@spelldesc384187", "Intellect increased by $s1%", 0 },
   { 384276, "Consuming a Mana Gem grants up to $s1 Clearcasting stacks.", 0, 0 },
-  { 384277, "Thunderclap deals $s1% increased damage, costs $s2 more Rage and if you have Rend, Thunder Clap also affects $s3 nearby targets with Rend.", 0, 0 },
+  { 384277, "Thunderclap deals $s1% increased damage$?(s137048)[ and if you have Rend, Thunder Clap affects $s3 nearby targets with Rend.][, costs ${$s2/10} more Rage and if you have Rend, Thunder Clap affects $s3 nearby targets with Rend.]", 0, 0 },
   { 384280, 0, "Spell damage increased by $w1%.", 0 },
   { 384290, "$@spelldesc382119", "Deal ${$382119w3*($d/$t1)*(1+$@versadmg)} Nature over $d.", 0 },
   { 384294, "$@spelldesc382119", "$?e2[Critical Strike]?e3[Haste]?e4[Mastery]?e5[Versatility][Highest secondary stat] increased by $382119w1.", 0 },
@@ -18992,7 +18992,7 @@ static const std::array<spelltext_data_t, 18988> __spelltext_data { {
 
 // spelltext hotfix entries, wow build 10.0.2.46092
 static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelltext_hotfix_data { {
-  {  384277,  0, "Increases the damage of Thunderclap by $s1% and whenever you Thunder Clap a target affected by your Rend, you also affect $s3 nearby targets target with Rend.", "Thunderclap deals $s1% increased damage, costs $s2 more Rage and if you have Rend, Thunder Clap also affects $s3 nearby targets with Rend." },
+  {  384277,  0, "Increases the damage of Thunderclap by $s1% and whenever you Thunder Clap a target affected by your Rend, you also affect $s3 nearby targets target with Rend.", "Thunderclap deals $s1% increased damage$?(s137048)[ and if you have Rend, Thunder Clap affects $s3 nearby targets with Rend.][, costs ${$s2/10} more Rage and if you have Rend, Thunder Clap affects $s3 nearby targets with Rend.]" },
 } };
 
 // Spell description variables, wow build 10.0.2.46092
