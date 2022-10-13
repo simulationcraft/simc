@@ -12013,12 +12013,7 @@ double druid_t::composite_player_multiplier( school_e school ) const
 {
   auto cpm = player_t::composite_player_multiplier( school );
 
-  // TODO: currently these school based effects do not stack and only the highest applies.
-  // confirm which scenario is correct:
-  // 1) they all stack multiplcatively
-  // 2) they all stack additively
-  // 3) they don't stack and only the highest applies
-
+  // TODO: bugged so that they don't stack, but in-game other instances of multiple buffs of the same school do stack
   if ( dbc::has_common_school( school, SCHOOL_ARCANE ) && get_form() == BEAR_FORM )
   {
     if ( bugs )
@@ -12035,26 +12030,13 @@ double druid_t::composite_player_multiplier( school_e school ) const
     }
   }
 
-  if ( bugs )
-  {
-    auto lunar = 0.0;
-    if ( buff.eclipse_lunar->check() && buff.eclipse_lunar->has_common_school( school ) )
-      lunar = buff.eclipse_lunar->value();
+  // NOTE: working as intended that multi school spells only take the highest buff and don't stack.
+  // TODO: check if workaround for this is created
+  if ( buff.eclipse_lunar->check() && buff.eclipse_lunar->has_common_school( school ) )
+    cpm *= 1.0 + buff.eclipse_lunar->value();
 
-    auto solar = 0.0;
-    if ( buff.eclipse_solar->check() && buff.eclipse_solar->has_common_school( school ) )
-      solar = buff.eclipse_solar->value();
-
-    cpm *= 1.0 + std::max( lunar, solar );
-  }
-  else
-  {
-    if ( buff.eclipse_lunar->check() && buff.eclipse_lunar->has_common_school( school ) )
-      cpm *= 1.0 + buff.eclipse_lunar->value();
-
-    if ( buff.eclipse_solar->check() && buff.eclipse_solar->has_common_school( school ) )
-      cpm *= 1.0 + buff.eclipse_solar->value();
-  }
+  if ( buff.eclipse_solar->check() && buff.eclipse_solar->has_common_school( school ) )
+    cpm *= 1.0 + buff.eclipse_solar->value();
 
   if ( buff.friend_of_the_fae->check() && buff.friend_of_the_fae->has_common_school( school ) )
     cpm *= 1.0 + buff.friend_of_the_fae->value();
