@@ -8016,7 +8016,7 @@ struct starfall_t : public druid_spell_t
 
   void execute() override
   {
-    if ( p()->buff.touch_the_cosmos->up() )
+    if ( p()->buff.touch_the_cosmos->up() && !is_free_cast() )
     {
       p()->active.starfall_cosmos->execute_on_target( target );
       p()->buff.touch_the_cosmos->expire();
@@ -8265,7 +8265,7 @@ struct starsurge_t : public druid_spell_t
 
   void execute() override
   {
-    if ( p()->buff.touch_the_cosmos->up() )
+    if ( p()->buff.touch_the_cosmos->up() && !is_free_cast() )
     {
       p()->active.starsurge_cosmos->execute_on_target( target );
       p()->buff.touch_the_cosmos->expire();
