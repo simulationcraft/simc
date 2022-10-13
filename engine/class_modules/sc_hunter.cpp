@@ -1515,7 +1515,7 @@ struct stable_pet_t final : public hunter_pet_t
   };
 
   stable_pet_t( hunter_t* owner ):
-    hunter_pet_t( owner, "stable_pet_(cotw)", PET_HUNTER, true /* GUARDIAN */, true /* dynamic */ )
+    hunter_pet_t( owner, "stable_pet_(cotw)", PET_HUNTER, false /* GUARDIAN */, true /* dynamic */ )
   {
     stamina_per_owner = 0.7;
     owner_coeff.ap_from_ap = 0.6;
@@ -1570,6 +1570,7 @@ struct stable_pet_t final : public hunter_pet_t
 
     m *= 1 + o() -> talents.beast_master -> effectN( 1 ).percent();
     m *= 1 + o() -> talents.animal_companion -> effectN( 2 ).percent();
+    m *= 1 + o() -> talents.training_expert -> effectN( 1 ).percent();
 
     return m;
   }
@@ -1684,12 +1685,14 @@ struct hunter_main_pet_base_t : public hunter_pet_t
   double composite_player_multiplier( school_e school ) const override
   {
     double m = hunter_pet_t::composite_player_multiplier( school );
+    
+    m *= 1 + o() -> talents.beast_master -> effectN( 1 ).percent();
 
     m *= 1 + buffs.bestial_wrath -> check_value();
-
-    m *= 1 + o() -> talents.beast_master -> effectN( 1 ).percent();
     m *= 1 + o() -> talents.animal_companion -> effectN( 2 ).percent();
+    m *= 1 + o() -> talents.training_expert -> effectN( 1 ).percent();
     
+    m *= 1 + o() -> buffs.strength_of_the_pack -> check_value();
     m *= 1 + o() -> talents.ferocity -> effectN( 1 ).percent();
     m *= 1 + o() -> buffs.spearhead -> check_value();
 
@@ -8088,10 +8091,6 @@ double hunter_t::composite_player_pet_damage_multiplier( const action_state_t* s
   m *= 1 + specs.beast_mastery_hunter -> effectN( 3 ).percent();
   m *= 1 + specs.survival_hunter -> effectN( 3 ).percent();
   m *= 1 + specs.marksmanship_hunter -> effectN( 3 ).percent();
-
-  m *= 1 + talents.training_expert -> effectN( 1 ).percent();
-
-  m *= 1 + buffs.strength_of_the_pack -> check_value();
 
   return m;
 }
