@@ -4,6 +4,7 @@ action_priority_list_t* st = get_action_priority_list( "st" );
 action_priority_list_t* aoe = get_action_priority_list( "aoe" );
 action_priority_list_t* fallthru = get_action_priority_list( "fallthru" );
 
+precombat->add_action( "variable,name=no_cd_talent,value=!talent.celestial_alignment&!talent.incarnation_chosen_of_elune" );
 precombat->add_action( "variable,name=on_use_trinket,value=0" );
 precombat->add_action( "variable,name=on_use_trinket,op=add,value=trinket.1.has_proc.any&trinket.1.cooldown.duration" );
 precombat->add_action( "variable,name=on_use_trinket,op=add,value=(trinket.2.has_proc.any&trinket.2.cooldown.duration)*2" );
@@ -13,11 +14,11 @@ precombat->add_action( "wrath" );
 
 def->add_action( "variable,name=is_aoe,value=spell_targets.starfall>1" );
 def->add_action( "variable,name=is_cleave,value=spell_targets.starfire>1" );
-def->add_action( "variable,name=passive_asp,value=(4+talent.orbit_breaker*dot.moonfire.ticking*(buff.orbit_breaker.stack>15)*40)%spell_haste" );
-def->add_action( "berserking,if=buff.ca_inc.up|fight_remains<15" );
-def->add_action( "potion,if=buff.ca_inc.up|fight_remains<25" );
-def->add_action( "use_items,slots=trinket1,if=variable.on_use_trinket!=1&!trinket.2.ready_cooldown|(variable.on_use_trinket=1|variable.on_use_trinket=3)&buff.ca_inc.up|fight_remains<20|variable.on_use_trinket=0" );
-def->add_action( "use_items,slots=trinket2,if=variable.on_use_trinket!=2&!trinket.1.ready_cooldown|variable.on_use_trinket=2&buff.ca_inc.up|fight_remains<20|variable.on_use_trinket=0" );
+def->add_action( "variable,name=passive_asp,value=(6+talent.orbit_breaker.enabled*dot.moonfire.ticking*(buff.orbit_breaker.stack>15)*40)%spell_haste" );
+def->add_action( "berserking,if=buff.ca_inc.up|variable.no_cd_talent|fight_remains<15" );
+def->add_action( "potion,if=buff.ca_inc.up|variable.no_cd_talent|fight_remains<25" );
+def->add_action( "use_items,slots=trinket1,if=variable.on_use_trinket!=1&!trinket.2.ready_cooldown|(variable.on_use_trinket=1|variable.on_use_trinket=3)&buff.ca_inc.up|variable.no_cd_talent|fight_remains<20|variable.on_use_trinket=0" );
+def->add_action( "use_items,slots=trinket2,if=variable.on_use_trinket!=2&!trinket.1.ready_cooldown|variable.on_use_trinket=2&buff.ca_inc.up|variable.no_cd_talent|fight_remains<20|variable.on_use_trinket=0" );
 def->add_action( "use_items" );
 def->add_action( "run_action_list,name=aoe,if=variable.is_aoe" );
 def->add_action( "run_action_list,name=st" );
@@ -28,7 +29,7 @@ st->add_action( "moonfire,target_if=refreshable&astral_power.deficit>variable.pa
 st->add_action( "stellar_flare,target_if=refreshable&astral_power.deficit>variable.passive_asp+8" );
 st->add_action( "celestial_alignment" );
 st->add_action( "incarnation" );
-st->add_action( "convoke_the_spirits,if=buff.ca_inc.remains>4|!talent.primordial_arcanic_pulsar&cooldown.ca_inc.remains>30&(buff.eclipse_lunar.remains>4|buff.eclipse_solar.remains>4)" );
+st->add_action( "convoke_the_spirits,if=buff.ca_inc.remains>4|(!talent.primordial_arcanic_pulsar&cooldown.ca_inc.remains>30|variable.no_cd_talent)&(buff.eclipse_lunar.remains>4|buff.eclipse_solar.remains>4)" );
 st->add_action( "warrior_of_elune" );
 st->add_action( "force_of_nature,if=astral_power.deficit>variable.passive_asp+20" );
 st->add_action( "astral_communion,if=astral_power.deficit>variable.passive_asp+75" );
@@ -53,7 +54,7 @@ aoe->add_action( "moonfire,target_if=refreshable&astral_power.deficit>variable.p
 aoe->add_action( "stellar_flare,target_if=refreshable&astral_power.deficit>variable.passive_asp+8&time_to_die>8" );
 aoe->add_action( "celestial_alignment" );
 aoe->add_action( "incarnation" );
-aoe->add_action( "convoke_the_spirits,if=buff.ca_inc.up" );
+aoe->add_action( "convoke_the_spirits,if=buff.ca_inc.remains>4|(!talent.primordial_arcanic_pulsar&cooldown.ca_inc.remains>30|variable.no_cd_talent)&(buff.eclipse_lunar.remains>4|buff.eclipse_solar.remains>4)" );
 aoe->add_action( "warrior_of_elune" );
 aoe->add_action( "fury_of_elune,if=astral_power.deficit>variable.passive_asp+8" );
 aoe->add_action( "force_of_nature,if=astral_power.deficit>variable.passive_asp+20" );
