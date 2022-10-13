@@ -103,6 +103,8 @@ struct druid_td_t : public actor_target_data_t
 
   struct debuffs_t
   {
+    buff_t* moonfire;
+    buff_t* sunfire;
     buff_t* pulverize;
     buff_t* tooth_and_claw;
   } debuff;
@@ -533,6 +535,7 @@ public:
     buff_t* gory_fur;
     buff_t* guardian_of_elune;
     buff_t* incarnation_bear;
+    buff_t* overpowering_aura;  // 2t29
     buff_t* rage_of_the_sleeper;
     buff_t* tooth_and_claw;
     buff_t* ursocs_fury;
@@ -731,7 +734,6 @@ public:
     player_talent_t force_of_nature;
 
     player_talent_t orbit_breaker;  // Row 5
-    player_talent_t stellar_inspiration;
     player_talent_t light_of_the_sun;
     player_talent_t natures_balance;
     player_talent_t rattle_the_stars;
@@ -2008,6 +2010,37 @@ struct tiger_dash_buff_t : public druid_buff_t<buff_t>
   }
 };
 
+// Umbral Embrace ===========================================================
+struct umbral_embrace_buff_t : public druid_buff_t<buff_t>
+{
+  std::vector<std::pair<action_t*, school_e>> spell_list;
+
+  umbral_embrace_buff_t( druid_t& p ) : base_t( p, "umbral_embrace", p.talent.umbral_embrace->effectN( 2 ).trigger() )
+  {
+    set_stack_change_callback( [ this ]( buff_t*, int old_, int new_ ) {
+      if ( !old_ )
+      {
+        for ( auto spell : spell_list )
+        {
+          spell.first->school = SCHOOL_ASTRAL;
+          spell.first->base_schools.clear();
+          spell.first->base_schools.push_back( SCHOOL_ARCANE );
+          spell.first->base_schools.push_back( SCHOOL_NATURE );
+        }
+      }
+      else if ( !new_ )
+      {
+        for ( auto spell : spell_list )
+        {
+          spell.first->school = spell.second;
+          spell.first->base_schools.clear();
+          spell.first->base_schools.push_back( spell.second );
+        }
+      }
+    } );
+  }
+};
+
 // Ursine Vigor =============================================================
 struct ursine_vigor_buff_t : public druid_buff_t<buff_t>
 {
@@ -2238,8 +2271,7 @@ public:
       is_auto_attack( false ),
       break_stealth( !ab::data().flags( spell_attribute::SX_NO_STEALTH_BREAK ) )
   {
-    ab::may_crit      = true;
-    ab::tick_may_crit = true;
+    ab::may_crit = true;
 
     // WARNING: auto attacks will NOT get processed here since they have no spell data
     if ( ab::data().ok() )
@@ -2783,6 +2815,7 @@ public:
                               p()->talent.berserk_ravage,
                               p()->talent.berserk_unchecked_aggression );
     parse_buff_effects( p()->buff.gory_fur );
+    parse_buff_effects( p()->buff.overpowering_aura );
     parse_passive_effects( p()->talent.reinvigoration, p()->talent.innate_resolve.ok() ? 0b01U : 0b10U );
     parse_buff_effects( p()->buff.tooth_and_claw, false );
     parse_buff_effects( p()->buff.vicious_cycle_mangle, false, true );
@@ -3088,6 +3121,12 @@ struct druid_residual_action_t : public Base
   virtual double get_amount( const action_state_t* s ) const
   {
     return cast_state( s )->total_amount * residual_mul;
+  }
+
+  void init() override
+  {
+    Base::init();
+    Base::update_flags &= ~( STATE_MUL_TA );
   }
 };
 
@@ -4383,7 +4422,6 @@ struct rake_t : public cat_attack_t
     if ( p->talent.pouncing_strikes.ok() || p->spec.improved_prowl->ok() )
       stealth_mul = data().effectN( 4 ).percent();
 
-    // TODO: determine how targetting is handled
     aoe = std::max( aoe, 1 ) + as<int>( p->talent.doubleclawed_rake->effectN( 1 ).base_value() );
 
     bleed = p->get_secondary_action_n<rake_bleed_t>( name_str + "_bleed", &data() );
@@ -5075,14 +5113,49 @@ struct ironfur_t : public bear_attack_t
 // Mangle ===================================================================
 struct mangle_t : public bear_attack_t
 {
-  double gore_mul;
+  struct swiping_mangle_t : public druid_residual_action_t<bear_attack_t>
+  {
+    swiping_mangle_t( druid_t* p, std::string_view n ) : base_t( n, p, p->find_spell( 395942 ) )
+    {
+      auto set_ = p->sets->set( DRUID_GUARDIAN, T29, B2 );
+
+      aoe = -1;
+      reduced_aoe_targets = set_->effectN( 2 ).base_value();
+      name_str_reporting = "swiping_mangle";
+
+      residual_mul = set_->effectN( 1 ).percent();
+    }
+
+    double base_da_min( const action_state_t* s ) const override { return get_amount( s ); }
+    double base_da_max( const action_state_t* s ) const override { return get_amount( s ); }
+
+    std::vector<player_t*>& target_list() const override
+    {
+      target_cache.is_valid = false;
+
+      std::vector<player_t*>& tl = base_t::target_list();
+
+      tl.erase( std::remove( tl.begin(), tl.end(), target ), tl.end() );
+
+      return tl;
+    }
+  };
+
+  struct bloody_healing_t : public heals::druid_heal_t
+  {
+    bloody_healing_t( druid_t* p ) : heals::druid_heal_t( "bloody_healing", p, p->find_spell( 394504 ) ) {}
+  };
+
+  swiping_mangle_t* swiping;
+  action_t* healing;
   int inc_targets;
 
   mangle_t( druid_t* p, std::string_view opt ) : mangle_t( p, "mangle", opt ) {}
 
   mangle_t( druid_t* p, std::string_view n, std::string_view opt )
     : bear_attack_t( n, p, p->find_class_spell( "Mangle" ), opt ),
-      gore_mul( p->sets->set( DRUID_GUARDIAN, T29, B2 )->effectN( 2 ).percent() ),
+      swiping( nullptr ),
+      healing( nullptr ),
       inc_targets( 0 )
   {
     if ( p->talent.mangle.ok() )
@@ -5095,6 +5168,17 @@ struct mangle_t : public bear_attack_t
       inc_targets = as<int>(
           p->query_aura_effect( p->spec.incarnation_bear, A_ADD_FLAT_MODIFIER, P_TARGET, s_data )->base_value() );
     }
+
+    if ( p->sets->has_set_bonus( DRUID_GUARDIAN, T29, B2 ) )
+    {
+      auto suf = get_suffix( name_str, "mangle" );
+      swiping = p->get_secondary_action_n<swiping_mangle_t>( "swiping_mangle" + suf );
+      swiping->background = true;
+      add_child( swiping );
+    }
+
+    if ( p->sets->has_set_bonus( DRUID_GUARDIAN, T29, B4 ) )
+      healing = p->get_secondary_action<bloody_healing_t>( "bloody_healing" );
   }
 
   double composite_energize_amount( const action_state_t* s ) const override
@@ -5116,11 +5200,6 @@ struct mangle_t : public bear_attack_t
     return n;
   }
 
-  double action_multiplier() const override
-  {
-    return bear_attack_t::action_multiplier() * ( 1.0 + gore_mul * p()->buff.gore->check() );
-  }
-
   void impact( action_state_t* s ) override
   {
     bear_attack_t::impact( s );
@@ -5128,18 +5207,33 @@ struct mangle_t : public bear_attack_t
     if ( !result_is_hit( s->result ) )
       return;
 
-    if ( p()->talent.ursocs_fury.ok() )
-      p()->buff.ursocs_fury->trigger( 1, s->result_amount * p()->talent.ursocs_fury->effectN( 1 ).percent() );
+    if ( is_free_proc() )
+      return;
+
+    if ( swiping && p()->buff.gore->check() && s->result_amount > 0 && s->chain_target == 0 &&
+         !swiping->target_list().empty() )
+    {
+      swiping->snapshot_and_execute( s, false, [ this, s ]( action_state_t* new_ ) {
+        swiping->set_amount( new_, s->result_amount );
+      } );
+    }
   }
 
   void execute() override
   {
+    // this is proc'd before the cast and thus benefits the cast
+    if ( p()->sets->has_set_bonus( DRUID_GUARDIAN, T29, B2 ) )
+      p()->buff.overpowering_aura->trigger();
+
+    if ( p()->sets->has_set_bonus( DRUID_GUARDIAN, T29, B4 ) )
+      healing->execute();
+
     bear_attack_t::execute();
 
     if ( !hit_any_target )
       return;
 
-    if ( free_spell != free_spell_e::CONVOKE )
+    if ( !is_free_proc() )
       p()->buff.gore->expire();
 
     p()->buff.vicious_cycle_mangle->expire();
@@ -7286,23 +7380,6 @@ struct moonfire_t : public druid_spell_t
       return tam;
     }
 
-    void tick( dot_t* d ) override
-    {
-      // Moonfire damage is supressed while lunar inspiration is also on the target. Note that it is not cancelled and
-      // continues to tick down it's duration. If there is any duration remaining after lunar inspiration expires,
-      // moonfire will resume ticking for damage.
-      // Note that moonfire CAN still proc shooting stars while suppressed
-      if ( td( d->target )->dots.lunar_inspiration->is_ticking() )
-      {
-        trigger_shooting_stars( d->target );
-        return;
-      }
-
-      druid_spell_t::tick( d );
-
-      trigger_shooting_stars( d->target );
-    }
-
     std::vector<player_t*>& target_list() const override
     {
       auto& tl = druid_spell_t::target_list();
@@ -7364,11 +7441,37 @@ struct moonfire_t : public druid_spell_t
     {
       druid_spell_t::trigger_dot( s );
 
+      td( s->target )->debuff.moonfire->trigger( -1, p()->cache.mastery_value(), -1.0, timespan_t::min() );
+
       // moonfire will completely replace lunar inspiration if the new moonfire duration is greater
       auto li_dot = td( s->target )->dots.lunar_inspiration;
 
       if ( get_dot( s->target )->remains() > li_dot->remains() )
         li_dot->cancel();
+    }
+
+    void tick( dot_t* d ) override
+    {
+      // Moonfire damage is supressed while lunar inspiration is also on the target. Note that it is not cancelled and
+      // continues to tick down it's duration. If there is any duration remaining after lunar inspiration expires,
+      // moonfire will resume ticking for damage.
+      // Note that moonfire CAN still proc shooting stars while suppressed
+      if ( td( d->target )->dots.lunar_inspiration->is_ticking() )
+      {
+        trigger_shooting_stars( d->target );
+        return;
+      }
+
+      druid_spell_t::tick( d );
+
+      trigger_shooting_stars( d->target );
+    }
+
+    void last_tick( dot_t* d ) override
+    {
+      druid_spell_t::last_tick( d );
+
+      td( d->target )->debuff.moonfire->expire();
     }
   };
 
@@ -7894,9 +7997,6 @@ struct starfall_t : public druid_spell_t
     {
       auto ext = p()->talent.aetherial_kindling->effectN( 1 ).base_value();
 
-      if ( rng().roll( p()->talent.stellar_inspiration->effectN( 2 ).percent() ) )
-        ext += p()->talent.stellar_inspiration->effectN( 3 ).base_value();
-
       std::vector<player_t*>& tl = target_list();
       auto dur = timespan_t::from_seconds( ext );
 
@@ -7952,16 +8052,21 @@ struct starfall_t : public druid_spell_t
 struct starfire_t : public druid_spell_t
 {
   double sotf_mul;
-  school_e umbral_school;
 
   starfire_t( druid_t* p, std::string_view opt )
     : druid_spell_t( "starfire", p, p->talent.starfire, opt ),
-      sotf_mul( p->talent.soul_of_the_forest_moonkin->effectN( 2 ).percent() ),
-      umbral_school(
-          p->query_aura_effect( &p->buff.umbral_embrace->data(), A_MODIFY_SCHOOL, 0, &data() )->school_type() )
+      sotf_mul( p->talent.soul_of_the_forest_moonkin->effectN( 2 ).percent() )
   {
     aoe = -1;
-    base_aoe_multiplier = data().effectN( 3 ).percent();
+    base_aoe_multiplier = data().effectN( p->specialization() == DRUID_BALANCE ? 3 : 2 ).percent();
+  }
+
+  void init() override
+  {
+    druid_spell_t::init();
+
+    if ( p()->talent.umbral_embrace.ok() )
+      debug_cast<buffs::umbral_embrace_buff_t*>( p()->buff.umbral_embrace )->spell_list.emplace_back( this, school );
   }
 
   void init_finished() override
@@ -7981,11 +8086,6 @@ struct starfire_t : public druid_spell_t
       e *= 1.0 + p()->talent.warrior_of_elune->effectN( 2 ).percent();
 
     return e;
-  }
-
-  school_e get_school() const override
-  {
-    return p()->buff.umbral_embrace->check() ? umbral_school : druid_spell_t::get_school();
   }
 
   void execute() override
@@ -8089,7 +8189,6 @@ struct starsurge_t : public druid_spell_t
     }
   };
 
-  action_t* flare;
   action_t* goldrinn;
 
   bool moonkin_form_in_precombat;
@@ -8097,16 +8196,9 @@ struct starsurge_t : public druid_spell_t
   starsurge_t( druid_t* p, std::string_view opt ) : starsurge_t( p, "starsurge", p->talent.starsurge, opt ) {}
 
   starsurge_t( druid_t* p, std::string_view n, const spell_data_t* s, std::string_view opt )
-    : druid_spell_t( n, p, s, opt ), flare( nullptr ), goldrinn( nullptr ), moonkin_form_in_precombat( false )
+    : druid_spell_t( n, p, s, opt ), goldrinn( nullptr ), moonkin_form_in_precombat( false )
   {
     form_mask |= NO_FORM; // spec version can be cast with no form despite spell data form mask
-
-    if ( p->talent.stellar_inspiration.ok() )
-    {
-      flare = p->get_secondary_action_n<stellar_flare_t>( "stellar_flare_inspiration", p->find_spell( 202347 ), "" );
-      flare->name_str_reporting = "stellar_flare";
-      flare->energize_type = action_energize::NONE;
-    }
 
     if ( p->talent.power_of_goldrinn.ok() )
     {
@@ -8225,11 +8317,25 @@ struct sunfire_t : public druid_spell_t
       dot_name = "sunfire";
     }
 
+    void trigger_dot( action_state_t* s ) override
+    {
+      druid_spell_t::trigger_dot( s );
+
+      td( s->target )->debuff.sunfire->trigger( -1, p()->cache.mastery_value(), -1.0, timespan_t::min() );
+    }
+
     void tick( dot_t* d ) override
     {
       druid_spell_t::tick( d );
 
       trigger_shooting_stars( d->target );
+    }
+
+    void last_tick( dot_t* d ) override
+    {
+      druid_spell_t::last_tick( d );
+
+      td( d->target )->debuff.sunfire->expire();
     }
   };
 
@@ -8565,7 +8671,6 @@ struct wrath_t : public druid_spell_t
   double gcd_mul;
   double sotf_mul;
   unsigned count;
-  school_e umbral_school;
 
   wrath_t( druid_t* p, std::string_view opt ) : wrath_t( p, "wrath", opt ) {}
 
@@ -8573,15 +8678,20 @@ struct wrath_t : public druid_spell_t
     : druid_spell_t( n, p, p->spec.wrath, opt ),
       gcd_mul( p->query_aura_effect( p->spec.eclipse_solar, A_ADD_PCT_MODIFIER, P_GCD, &data() )->percent() ),
       sotf_mul( p->talent.soul_of_the_forest_moonkin->effectN( 1 ).percent() ),
-      count( 0 ),
-      umbral_school(
-          p->query_aura_effect( &p->buff.umbral_embrace->data(), A_MODIFY_SCHOOL, 0, &data() )->school_type() )
-
+      count( 0 )
   {
     form_mask = NO_FORM | MOONKIN_FORM;
 
     if ( energize_resource_() == RESOURCE_ASTRAL_POWER )
       energize_amount = p->spec.astral_power->effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
+  }
+
+  void init() override
+  {
+    druid_spell_t::init();
+
+    if ( p()->talent.umbral_embrace.ok() )
+      debug_cast<buffs::umbral_embrace_buff_t*>( p()->buff.umbral_embrace )->spell_list.emplace_back( this, school );
   }
 
   double composite_energize_amount( const action_state_t* s ) const override
@@ -8625,11 +8735,6 @@ struct wrath_t : public druid_spell_t
       return false;
 
     return druid_spell_t::target_ready( t );
-  }
-
-  school_e get_school() const override
-  {
-    return p()->buff.umbral_embrace->check() ? umbral_school : druid_spell_t::get_school();
   }
 
   void execute() override
@@ -9945,7 +10050,6 @@ void druid_t::init_spells()
   talent.starweaver                     = ST( "Starweaver" );
   talent.stellar_flare                  = ST( "Stellar Flare" );
   talent.stellar_innervation            = ST( "Stellar Innervation" );
-  talent.stellar_inspiration            = ST( "Stellar Inspiration" );
   talent.sundered_firmament             = ST( "Sundered Firmament" );
   talent.syzygy                         = ST( "Syzygy" );
   talent.twin_moons                     = ST( "Twin Moons" );
@@ -10632,7 +10736,7 @@ void druid_t::create_buffs()
     ->set_max_stack( buff.starfall->max_stack() )
     ->set_quiet( true );
 
-  buff.umbral_embrace = make_buff( this, "umbral_embrace", talent.umbral_embrace->effectN( 2 ).trigger() );
+  buff.umbral_embrace = make_buff<umbral_embrace_buff_t>( *this );
 
   buff.warrior_of_elune = make_buff( this, "warrior_of_elune", talent.warrior_of_elune )
     ->set_cooldown( 0_ms )
@@ -10721,13 +10825,17 @@ void druid_t::create_buffs()
     ->set_default_value_from_effect( 1, 0.1 /*RESOURCE_RAGE*/ );
 
   buff.gore = make_buff( this, "gore", find_spell( 93622 ) )
-    ->set_chance( talent.gore->effectN( 1 ).percent() + sets->set( DRUID_GUARDIAN, T29, B2 )->effectN( 1 ).percent() )
+    ->set_chance( talent.gore->effectN( 1 ).percent() + sets->set( DRUID_GUARDIAN, T29, B4 )->effectN( 1 ).percent() )
+    ->set_cooldown( talent.gore->internal_cooldown() )
     ->set_default_value_from_effect( 1, 0.1 /*RESOURCE_RAGE*/ );
 
   buff.gory_fur = make_buff( this, "gory_fur", talent.gory_fur->effectN( 1 ).trigger() )
     ->set_chance( talent.gory_fur->proc_chance() );
 
   buff.guardian_of_elune = make_buff( this, "guardian_of_elune", talent.guardian_of_elune->effectN( 1 ).trigger() );
+
+  buff.overpowering_aura = make_buff( this, "overpowering_aura", find_spell( 395944 ) )
+    ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN );
 
   buff.rage_of_the_sleeper = make_buff( this, "rage_of_the_sleeper", talent.rage_of_the_sleeper )
     ->set_default_value_from_effect( 4, 0.01 );
@@ -11960,21 +12068,28 @@ double druid_t::composite_player_multiplier( school_e school ) const
 {
   auto cpm = player_t::composite_player_multiplier( school );
 
-  // TODO: currently these school based effects do not stack and only the highest applies.
-  // confirm which scenario is correct:
-  // 1) they all stack multiplcatively
-  // 2) they all stack additively
-  // 3) they don't stack and only the highest applies
-
+  // TODO: bugged so that they don't stack, but in-game other instances of multiple buffs of the same school do stack
   if ( dbc::has_common_school( school, SCHOOL_ARCANE ) && get_form() == BEAR_FORM )
   {
-    cpm *= 1.0 + talent.elunes_favored->effectN( 1 ).percent();
-    cpm *= 1.0 + talent.fury_of_nature->effectN( 1 ).percent();
+    if ( bugs )
+    {
+      auto ef = talent.elunes_favored->effectN( 1 ).percent();
+      auto fn = talent.fury_of_nature->effectN( 1 ).percent();
+
+      cpm *= 1.0 + std::max( ef, fn );
+    }
+    else
+    {
+      cpm *= 1.0 + talent.elunes_favored->effectN( 1 ).percent();
+      cpm *= 1.0 + talent.fury_of_nature->effectN( 1 ).percent();
+    }
   }
 
+  // NOTE: working as intended that multi school spells only take the highest buff and don't stack.
+  // TODO: check if workaround for this is created
   if ( buff.eclipse_lunar->check() && buff.eclipse_lunar->has_common_school( school ) )
     cpm *= 1.0 + buff.eclipse_lunar->value();
-  
+
   if ( buff.eclipse_solar->check() && buff.eclipse_solar->has_common_school( school ) )
     cpm *= 1.0 + buff.eclipse_solar->value();
 
@@ -11992,11 +12107,22 @@ double druid_t::composite_player_target_multiplier( player_t* target, school_e s
   {
     auto td = get_target_data( target );
 
-    if ( dbc::has_common_school( school, SCHOOL_ARCANE ) && td->dots.moonfire->is_ticking() )
-      cptm *= 1.0 + cache.mastery_value();
+    if ( bugs )
+    {
+      if ( dbc::has_common_school( school, SCHOOL_ARCANE ) )
+        cptm *= 1.0 + td->debuff.moonfire->check_value();
 
-    if ( dbc::has_common_school( school, SCHOOL_NATURE ) && td->dots.sunfire->is_ticking() )
-      cptm *= 1.0 + cache.mastery_value();
+      if ( dbc::has_common_school( school, SCHOOL_NATURE ) )
+        cptm *= 1.0 + td->debuff.sunfire->check_value();
+    }
+    else
+    {
+      if ( dbc::has_common_school( school, SCHOOL_ARCANE ) && td->dots.moonfire->is_ticking() )
+        cptm *= 1.0 + cache.mastery_value();
+
+      if ( dbc::has_common_school( school, SCHOOL_NATURE ) && td->dots.sunfire->is_ticking() )
+        cptm *= 1.0 + cache.mastery_value();
+    }
 
     if ( talent.waning_twilight.ok() &&
          td->dots_ticking() >= as<int>( talent.waning_twilight->effectN( 3 ).base_value() ) )
@@ -12643,6 +12769,9 @@ void druid_t::target_mitigation( school_e school, result_amount_type type, actio
 
   s->result_amount *= 1.0 + talent.thick_hide->effectN( 1 ).percent();
 
+  if ( sets->has_set_bonus( DRUID_GUARDIAN, T29, B2 ) )
+    s->result_amount *= 1.0 + buff.overpowering_aura->check_value();
+
   if ( talent.protective_growth.ok() )
     s->result_amount *= 1.0 + buff.protective_growth->value();
 
@@ -12759,6 +12888,10 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
   hots.rejuvenation          = target.get_dot( "rejuvenation", &source );
   hots.spring_blossoms       = target.get_dot( "spring_blossoms", &source );
   hots.wild_growth           = target.get_dot( "wild_growth", &source );
+
+  // proxy debuffs for balance mastery
+  debuff.moonfire = make_buff( *this, "moonfire_debuff" )->set_quiet( true );
+  debuff.sunfire  = make_buff( *this, "sunfire_debuff" )->set_quiet( true );
 
   debuff.pulverize = make_buff( *this, "pulverize_debuff", source.talent.pulverize )
     ->set_cooldown( 0_ms )

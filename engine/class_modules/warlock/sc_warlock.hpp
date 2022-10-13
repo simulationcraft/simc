@@ -355,8 +355,9 @@ public:
 
     player_talent_t backdraft;
     const spell_data_t* backdraft_buff; // DF - Now affects Soul Fire
-    // DF - Mayhem (Choice against Havoc, single target spells have a chance to cleave)
-    // DF - Havoc (Choice against Mayhem, core functionality unchanged)
+    player_talent_t mayhem; // It appears that the only spells that can proc Mayhem are ones that can be Havoc'd
+    player_talent_t havoc; // Talent data for Havoc is both the debuff and the action
+    const spell_data_t* havoc_debuff; // This is a second copy of the talent data for use in places that are shared by Havoc and Mayhem
     // DF - Pyrogenics (Enemies affected by Rain of Fire take increased Fire damage)
 
     const spell_data_t* roaring_blaze; // DF - Now a choice against Improved Conflagrate
@@ -625,6 +626,7 @@ public:
     proc_t* rain_of_chaos;
     proc_t* ritual_of_ruin;
     proc_t* avatar_of_destruction;
+    proc_t* mayhem;
   } procs;
 
   int initial_soul_shards;
@@ -897,6 +899,20 @@ public:
         p()->procs.reverse_entropy->occur();
       }
     }
+
+    if ( can_havoc && p()->specialization() == WARLOCK_DESTRUCTION && p()->talents.mayhem.ok() )
+    {
+      // Attempt a Havoc trigger here. The debuff has an ICD so we do not need to worry about checking if it is already up
+      auto tl = target_list();
+      auto n = available_targets( tl );
+      
+      if ( n > 1u )
+      {
+        player_t* trigger_target = tl.at( 1u + rng().range( n - 1u ) );
+        if ( td( trigger_target )->debuffs_havoc->trigger() )
+          p()->procs.mayhem->occur();
+      }
+    }
   }
 
   void tick( dot_t* d ) override
@@ -953,7 +969,7 @@ public:
     }
   }
 
-  //Destruction specific things for Havoc that unfortunately need to be in main module
+  //Destruction specific things for Havoc/Mayhem
 
   bool use_havoc() const
   {
@@ -999,8 +1015,7 @@ public:
 
     if ( p()->specialization() == WARLOCK_DESTRUCTION && can_havoc )
     {
-        // SL - Conduit
-        base_aoe_multiplier *= p()->spec.havoc->effectN(1).percent();
+        base_aoe_multiplier *= p()->talents.havoc_debuff->effectN( 1 ).percent();
         p()->havoc_spells.push_back(this);
     }
   }

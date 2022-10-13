@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46092 dragonflight-BETA (hotfix 2022-10-12/46092, git build dragonflight 44bc81c9be)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46092 dragonflight-BETA (hotfix 2022-10-13/46092)
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Talent Entry     : Generic [tree=class, row=1, col=3, max_rank=1, req_points=0]
 Class            : Paladin, Mage
@@ -552,7 +552,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=4785)     : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.42607 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.28346 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : SP Coefficient (1.42607 -> 1.28346)
 Description      : Hurls an immense fiery boulder that causes $s1 Fire damage$?a321711[ and an additional $321712o2 Fire damage over $321712d][].$?a383669[
 
 Pyroblast's initial damage is increased by $383669s1% when the target is above $383669s3% health or below $383669s2% health.][]
@@ -7130,7 +7131,8 @@ Attributes       : ........ ........ ........ x..x....   ........ ........ .....
                  : Allow While Mounted (24), Allow While Sitting (27), Include In Advanced Combat Log (72), Allow While Invisible (78), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Charmed (261), Allow Cast While Channeling (308), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=718057)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 240 | Scaled Value: 240 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
+                   Base Value: 230 | Scaled Value: 230 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
+Hotfixed         : Base Value (240 -> 230)
 Description      : $@spelldesc269650
 Tooltip          : Damage done by your next non-instant Pyroblast increased by $s1%.
 
@@ -13192,7 +13194,7 @@ Description      : At any moment, you have a chance to gain $?c1[Arcane Surge fo
 
 Name             : Feel the Burn (id=383391) [Spell Family (3), Passive, Hidden] 
 Talent Entry     : Fire [tree=spec, row=7, col=4, max_rank=2, req_points=8]
-                 : Effect#1 [op=set, values=(4, 8)]
+                 : Effect#1 [op=set, values=(2.664, 5.328)]
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -13304,7 +13306,7 @@ Tooltip          : Deals $s1 Fire damage and reduces the cooldown of Phoenix Fla
 
 Name             : Wildfire (id=383489) [Spell Family (3), Passive] 
 Talent Entry     : Fire [tree=spec, row=8, col=5, max_rank=2, req_points=20]
-                 : Effect#2 [op=set, values=(5, 10)]
+                 : Effect#2 [op=set, values=(3.99652, 6)]
                  : Effect#3 [op=set, values=(4, 8)]
                  : Effect#4 [op=set, values=(1, 2)]
 Class            : Mage
@@ -13322,10 +13324,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1015478)  : Apply Aura (6) | Unknown(285)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Trigger Spell: 383490 | Target: Self (1)
-#2 (id=1015479)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=1015479)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Ignite (12654)
                    Family Flags: 27
+Hotfixed         : Misc Value (0 -> 22)
 #3 (id=1017924)  : Apply Aura (6) | Dummy (4)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=1017925)  : Apply Aura (6) | Dummy (4)
@@ -13480,6 +13483,7 @@ Description      : Casting Scorch on targets below $s2% health increase the targ
 Additionally, Scorch critical strikes increase your movement speed by $236060s1% for $236060d.
 
 Name             : Improved Scorch (id=383608) [Spell Family (3)] 
+Hotfixed         : Attributes
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -13488,14 +13492,14 @@ Duration         : 8 seconds
 Stacks           : 3 maximum
 Proc Chance      : 101%
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ..x...x. 
+                 : ........ ........ ........ ........   .......x ........ ........ ..x...x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x......x ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Can Proc From Procs (122), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
+                 : DoT Stacking Rule (103), Can Proc From Procs (122), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=1015643)  : Apply Aura (6) | Modify Damage Taken% from Caster (270)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x5c | Target: Enemy (6)
@@ -13566,17 +13570,20 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1015715)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
-                   Base Value: -40 | Scaled Value: -40 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
+                   Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Pyroblast (11366)
                    Family Flags: 22
+Hotfixed         : Base Value (-40 -> -30)
 #2 (id=1015716)  : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Pyroblast (11366)
                    Family Flags: 22
+Hotfixed         : Base Value (15 -> 10)
 #3 (id=1015717)  : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1)
-                   Base Value: -40 | Scaled Value: -40 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Combustion (190319)
                    Family Flags: 58
+Hotfixed         : Base Value (-40 -> -50)
 Description      : Pyroblast has a $s1% reduced cast time and a $s2% increased critical strike chance. The duration of Combustion is reduced by $s3%. 
 
 Name             : Improved Arcane Missiles (id=383661) [Spell Family (3), Passive] 
@@ -13628,7 +13635,7 @@ Description      : Enemies damaged by Flame Patch have an $h% chance to erupt in
 
 Name             : Controlled Destruction (id=383669) [Spell Family (3), Passive] 
 Talent Entry     : Fire [tree=spec, row=9, col=1, max_rank=2, req_points=20]
-                 : Effect#1 [op=set, values=(5, 10)]
+                 : Effect#1 [op=set, values=(4, 8)]
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -14005,7 +14012,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143)
 Effects          :
 #1 (id=1016589)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 18 | Scaled Value: 18 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (25 -> 18)
 #2 (id=1016595)  : Apply Aura (6) | Dummy (4)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Ignite deals $s1% more damage while Combustion is not active. Fire Blast spreads Ignite to $s2 additional nearby targets during Combustion.

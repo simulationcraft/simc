@@ -818,9 +818,11 @@ struct vampiric_touch_t final : public priest_spell_t
   bool casted;
   double surge_of_darkness_proc_rate;
   bool insanity;
-  bool ud;
+  bool ud_proc;
+  bool ud_execute;
 
-  vampiric_touch_t( priest_t& p, bool _casted = false, bool _insanity = true, bool _ud = true )
+  vampiric_touch_t( priest_t& p, bool _casted = false, bool _insanity = true, bool _ud_proc = true,
+                    bool _ud_execute = true )
     : priest_spell_t( "vampiric_touch", p, p.dot_spells.vampiric_touch ),
       vampiric_touch_heal( new vampiric_touch_heal_t( p ) ),
       child_swp( nullptr ),
@@ -829,7 +831,8 @@ struct vampiric_touch_t final : public priest_spell_t
   {
     casted                     = _casted;
     insanity                   = _insanity;
-    ud = _ud;
+    ud_proc                    = _ud_proc;
+    ud_execute                 = _ud_execute;
     may_crit                   = false;
     affected_by_shadow_weaving = true;
 
@@ -848,7 +851,7 @@ struct vampiric_touch_t final : public priest_spell_t
       child_swp->background = true;
     }
 
-    if ( priest().talents.shadow.unfurling_darkness.enabled() && ud )
+    if ( priest().talents.shadow.unfurling_darkness.enabled() && ud_execute )
     {
       child_ud = new unfurling_darkness_t( priest() );
       add_child( child_ud );
@@ -862,7 +865,7 @@ struct vampiric_touch_t final : public priest_spell_t
 
   void impact( action_state_t* s ) override
   {
-    if ( priest().buffs.unfurling_darkness->check() && ud )
+    if ( priest().buffs.unfurling_darkness->check() && ud_execute )
     {
       child_ud->target = s->target;
       child_ud->execute();
@@ -870,7 +873,8 @@ struct vampiric_touch_t final : public priest_spell_t
     }
     else
     {
-      if ( priest().talents.shadow.unfurling_darkness.enabled()  && ud && !priest().buffs.unfurling_darkness_cd->check() )
+      if ( priest().talents.shadow.unfurling_darkness.enabled() && ud_proc &&
+           !priest().buffs.unfurling_darkness_cd->check() )
       {
         priest().buffs.unfurling_darkness->trigger();
         // The CD Starts as soon as the buff is applied
@@ -1796,7 +1800,7 @@ struct shadow_crash_dots_t final : public priest_spell_t
 
   shadow_crash_dots_t( priest_t& p, double _missile_speed )
     : priest_spell_t( "shadow_crash_dots", p, p.talents.shadow.shadow_crash->effectN( 3 ).trigger() ),
-      child_vt( new vampiric_touch_t( priest(), true, false, false ) ),
+      child_vt( new vampiric_touch_t( priest(), true, false, false, false ) ),
       missile_speed( _missile_speed )
   {
     may_miss   = false;
@@ -1886,6 +1890,11 @@ struct shadow_crash_t final : public priest_spell_t
 
 // ==========================================================================
 // Damnation
+// Triggers :
+//  - SW:P as if it was hard casted
+//  - SW:P twice if Misery is talented making it pandemic duration
+//  - Unfurling Darkness proc but cannot consume it
+//  - Gives 7 Insanity from VT + SWP
 // ==========================================================================
 struct damnation_t final : public priest_spell_t
 {
@@ -1895,8 +1904,8 @@ struct damnation_t final : public priest_spell_t
 
   damnation_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "damnation", p, p.talents.shadow.damnation ),
-      child_swp( new shadow_word_pain_t( priest(), true ) ),  // Damnation still triggers SW:P as if it was hard casted
-      child_vt( new vampiric_touch_t( priest(), false, true ) ),
+      child_swp( new shadow_word_pain_t( priest(), true ) ),  
+      child_vt( new vampiric_touch_t( priest(), true, true, true, false ) ),
       child_dp( new devouring_plague_t( priest(), false ) )
   {
     parse_options( options_str );

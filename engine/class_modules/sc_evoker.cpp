@@ -1007,6 +1007,8 @@ struct empowered_release_spell_t : public empowered_base_t
 {
   using base_t = empowered_release_spell_t;
 
+  timespan_t extend_4pc;
+
   empowered_release_spell_t( std::string_view name, evoker_t* p, const spell_data_t* spell )
     : empowered_base_t( name, p, spell )
   {
@@ -1015,6 +1017,8 @@ struct empowered_release_spell_t : public empowered_base_t
     // TODO: Confirm this still applies, as of 09/Aug/2022 it would appear to be approximately a 1s gcd after a empower finishes
     trigger_gcd = p->option.post_empower_gcd ? 1_s : 0_s;
     gcd_type = gcd_haste_type::NONE;
+
+    extend_4pc = timespan_t::from_seconds( p->sets->set( EVOKER_DEVASTATION, T29, B4 )->effectN( 1 ).base_value() );
   }
 
   empower_e empower_level( const action_state_t* s ) const
@@ -1027,12 +1031,16 @@ struct empowered_release_spell_t : public empowered_base_t
   {
     empowered_base_t::execute();
 
+    // Scint Procs currently trigger 2pc
+    if ( p()->sets->has_set_bonus( EVOKER_DEVASTATION, T29, B2 ) )
+      p()->buff.limitless_potential->trigger();
+
     if ( background )
       return;
 
     if ( p()->talent.animosity.ok() )
     {
-      p()->buff.dragonrage->extend_duration(p(), p()->talent.animosity->effectN( 1 ).time_value() );
+      p()->buff.dragonrage->extend_duration( p(), p()->talent.animosity->effectN( 1 ).time_value() );
     }
 
     if ( p()->talent.power_swell.ok() )
@@ -1046,13 +1054,24 @@ struct empowered_release_spell_t : public empowered_base_t
         p()->buff.iridescence_red->trigger();
     }
 
-    if ( p()->sets->has_set_bonus( EVOKER_DEVASTATION, T29, B2 ) )
-      p()->buff.limitless_potential->trigger();
-
     if ( rng().roll( p()->sets->set( EVOKER_DEVASTATION, T29, B4 )->effectN( 2 ).percent() ) )
     {
-      p()->buff.fury_of_the_aspects->extend_duration_or_trigger(
-          timespan_t::from_seconds( p()->sets->set( EVOKER_DEVASTATION, T29, B4 )->effectN( 1 ).base_value() ) );
+      if ( p()->buffs.bloodlust->check() )
+      {
+        timespan_t d = std::min( 40_s, p()->buffs.bloodlust->remains() + extend_4pc );
+
+        if ( d > p()->buffs.bloodlust->remains() )
+          p()->buffs.bloodlust->extend_duration( p(), d - p()->buffs.bloodlust->remains() );
+      }
+      else if ( p()->buff.fury_of_the_aspects->check() )
+      {
+        timespan_t d = std::min( 40_s, p()->buff.fury_of_the_aspects->remains() + extend_4pc );
+
+        if ( d > p()->buff.fury_of_the_aspects->remains() )
+          p()->buff.fury_of_the_aspects->extend_duration( p(), d - p()->buff.fury_of_the_aspects->remains() );
+      }
+      else
+        p()->buff.fury_of_the_aspects->trigger( extend_4pc );
     }
   }
 };
@@ -1862,11 +1881,8 @@ struct dragonrage_t : public evoker_spell_t
   {
     damage = p->get_secondary_action<dragonrage_damage_t>( "dragonrage_pyre" );
     add_child( damage );
-  }
 
-  school_e get_school() const override
-  {
-    return damage->school;
+    school = damage->school;
   }
 
   void execute() override

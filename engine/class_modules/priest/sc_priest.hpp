@@ -136,7 +136,7 @@ public:
     propagate_const<buff_t*> ancient_madness;
     propagate_const<buff_t*> dark_thought;
     propagate_const<buff_t*> mind_devourer;
-    propagate_const<buff_t*> mind_devourer_ms_active; // Tracking buff only
+    propagate_const<buff_t*> mind_devourer_ms_active;  // Tracking buff only
     propagate_const<buff_t*> shadowy_insight;
     propagate_const<absorb_buff_t*> mental_fortitude;
     propagate_const<buff_t*> insidious_ire;
@@ -230,7 +230,11 @@ public:
     player_talent_t angels_mercy;
     player_talent_t binding_heals;
     player_talent_t halo;
+    const spell_data_t* halo_heal;
+    const spell_data_t* halo_dmg;
     player_talent_t divine_star;
+    const spell_data_t* divine_star_heal;
+    const spell_data_t* divine_star_dmg;
     player_talent_t translucent_image;
     player_talent_t mindgames;
     // Row 9
@@ -1303,8 +1307,8 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
     if ( priest().talents.shadow.void_eruption.enabled() )
     {
-        vf_extension = timespan_t::from_millis( priest().talents.shadow.void_eruption->effectN( 3 ).base_value() ) /
-                        priest().talents.shadow.void_eruption->effectN( 4 ).base_value();
+      vf_extension = timespan_t::from_millis( priest().talents.shadow.void_eruption->effectN( 3 ).base_value() ) /
+                     priest().talents.shadow.void_eruption->effectN( 4 ).base_value();
     }
   }
 
@@ -1329,18 +1333,17 @@ struct priest_spell_t : public priest_action_t<spell_t>
   void consume_resource() override
   {
     if ( current_resource() == RESOURCE_INSANITY )
-        extend_vf( base_cost() );
+      extend_vf( base_cost() );
     base_t::consume_resource();
   }
 
-  void extend_vf( double insanity ) 
+  void extend_vf( double insanity )
   {
     if ( priest().specialization() == PRIEST_SHADOW && priest().talents.shadow.void_eruption.enabled() &&
          priest().buffs.voidform->up() )
     {
-      priest().buffs.voidform->extend_duration( &priest(), vf_extension * insanity);
+      priest().buffs.voidform->extend_duration( &priest(), vf_extension * insanity );
     }
-  
   }
 
   void last_tick( dot_t* d ) override

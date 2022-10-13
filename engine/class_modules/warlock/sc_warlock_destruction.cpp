@@ -181,7 +181,7 @@ struct shadowburn_t : public destruction_spell_t
 // Spells
 struct havoc_t : public destruction_spell_t
 {
-  havoc_t( warlock_t* p, util::string_view options_str ) : destruction_spell_t( p, "Havoc" )
+  havoc_t( warlock_t* p, util::string_view options_str ) : destruction_spell_t( "Havoc", p, p->talents.havoc )
   {
     parse_options( options_str );
     may_crit = false;
@@ -1024,8 +1024,11 @@ void warlock_t::init_spells_destruction()
   talents.backdraft = find_talent_spell( talent_tree::SPECIALIZATION, "Backdraft" ); // Should be ID 196406
   talents.backdraft_buff = find_spell( 117828 );
 
+  talents.mayhem = find_talent_spell( talent_tree::SPECIALIZATION, "Mayhem" ); // Should be ID 387506
+
   talents.eradication = find_talent_spell( "Eradication" );
   talents.soul_fire   = find_talent_spell( "Soul Fire" );
+
 
 
   talents.shadowburn          = find_talent_spell( "Shadowburn" );

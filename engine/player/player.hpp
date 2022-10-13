@@ -772,7 +772,6 @@ public:
   void stat_loss( stat_e stat, double amount, gain_t* g = nullptr, action_t* a = nullptr, bool temporary = false );
   void create_talents_numbers();
   void create_talents_armory();
-  void create_talents_wowhead();
   void create_talents_blizzard();
   void clear_action_priority_lists() const;
   void copy_action_priority_list( util::string_view old_list, util::string_view new_list );
@@ -785,7 +784,6 @@ public:
   void parse_talents_numbers( util::string_view talent_string );
   bool parse_talents_armory( util::string_view talent_string );
   bool parse_talents_armory2( util::string_view talent_url );
-  bool parse_talents_wowhead( std::string_view talent_url );
   void parse_temporary_enchants();
 
   bool is_moving() const;
