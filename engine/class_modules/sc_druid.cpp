@@ -382,10 +382,6 @@ public:
     action_t* shift_to_moonkin;
     action_t* lycaras_fleeting_glimpse;  // fake holder action for reporting
 
-    // Class
-    action_t* natures_vigil_damage;
-    action_t* natures_vigil_heal;
-
     // Balance
     action_t* astral_smolder;
     action_t* denizen_of_the_dream;      // placeholder action
@@ -2425,15 +2421,11 @@ public:
     if ( !s->result_amount || !( t == result_amount_type::DMG_DIRECT || t == result_amount_type::DMG_OVER_TIME ) )
       return;
 
-    // TODO: add batching
     if ( p()->buff.natures_vigil->check() && s->n_targets == 1 )
-    {
-      p()->active.natures_vigil_heal->execute_on_target(
-          p(), p()->buff.natures_vigil->check_value() * s->result_amount );
-    }
+      p()->buff.natures_vigil->current_value += s->result_amount;
 
-    if ( p()->get_form() == BEAR_FORM && dbc::has_common_school( s->action->get_school(), SCHOOL_ARCANE ) &&
-         p()->talent.elunes_favored.ok() )
+    if ( p()->active.elunes_favored_heal && p()->get_form() == BEAR_FORM &&
+         dbc::has_common_school( s->action->get_school(), SCHOOL_ARCANE ) )
     {
       p()->active.elunes_favored_heal->execute_on_target(
           p(), p()->talent.elunes_favored->effectN( 1 ).percent() * s->result_amount );
@@ -7512,30 +7504,54 @@ struct moonfire_t : public druid_spell_t
   }
 };
 
-// Nature's Vigil ===========================================================
-struct natures_vigil_damage_t : public druid_spell_t
+// Nature's Vigil =============================================================
+template <class Base>
+struct natures_vigil_t : public Base
 {
-  natures_vigil_damage_t( druid_t* p ) : druid_spell_t( "natures_vigil_damage", p, p->find_spell( 124991 ) ) {}
-};
-
-struct natures_vigil_heal_t : public heals::druid_heal_t
-{
-  natures_vigil_heal_t( druid_t* p ) : heals::druid_heal_t( "natures_vigil_heal", p, p->find_spell( 124988 ) ) {}
-};
-
-struct natures_vigil_t : public druid_spell_t
-{
-  natures_vigil_t( druid_t* p, std::string_view opt )
-    : druid_spell_t( "natures_vigil", p, p->talent.natures_vigil, opt )
+  struct natures_vigil_tick_t : public Base
   {
-    harmful = may_crit = may_miss = reset_melee_swing = false;
+    double mul;
+
+    natures_vigil_tick_t( druid_t* p )
+      : Base( "natures_vigil_tick", p, p->find_spell( p->specialization() == DRUID_RESTORATION ? 124988 : 124991 ) ),
+        mul( p->talent.natures_vigil->effectN( 3 ).percent() )
+    {
+      Base::background = Base::dual = true;
+    }
+
+    double get_amount() const { return Base::p()->buff.natures_vigil->check_value() * mul; }
+    double base_da_min( const action_state_t* ) const override { return get_amount(); }
+    double base_da_max( const action_state_t* ) const override { return get_amount(); }
+
+    void impact( action_state_t* s ) override
+    {
+      Base::impact( s );
+
+      Base::p()->buff.natures_vigil->current_value = 0;
+    }
+  };
+
+  natures_vigil_t( druid_t* p, std::string_view opt ) : Base( "natures_vigil", p, p->talent.natures_vigil, opt )
+  {
+    Base::reset_melee_swing = false;
+
+    if ( p->talent.natures_vigil.ok() )
+    {
+      auto tick = p->get_secondary_action<natures_vigil_tick_t>( "natures_vigil_tick" );
+      tick->stats = Base::stats;
+
+      p->buff.natures_vigil->set_tick_callback( [ tick ]( buff_t* b, int, timespan_t ) {
+        if ( b->check_value() )
+          tick->execute();
+      } );
+    }
   }
 
   void execute() override
   {
-    druid_spell_t::execute();
+    Base::execute();
 
-    p()->buff.natures_vigil->trigger();
+    Base::p()->buff.natures_vigil->trigger();
   }
 };
 
@@ -9812,7 +9828,13 @@ action_t* druid_t::create_action( std::string_view name, std::string_view option
   if ( name == "ironfur"               ) return new               ironfur_t( this, options_str );
   if ( name == "maim"                  ) return new                  maim_t( this, options_str );
   if ( name == "moonkin_form"          ) return new          moonkin_form_t( this, options_str );
-  if ( name == "natures_vigil"         ) return new          natures_vigil_t( this, options_str );
+  if ( name == "natures_vigil"         )
+  {
+    if ( specialization() == DRUID_RESTORATION )
+      return new natures_vigil_t<druid_spell_t>( this, options_str );
+    else
+      return new natures_vigil_t<druid_heal_t>( this, options_str );
+  }
   if ( name == "rake"                  ) return new                  rake_t( this, options_str );
   if ( name == "rejuvenation"          ) return new          rejuvenation_t( this, options_str );
   if ( name == "remove_corruption"     ) return new     remove_corruption_t( this, options_str );
@@ -9823,8 +9845,10 @@ action_t* druid_t::create_action( std::string_view name, std::string_view option
   if ( name == "starfire"              ) return new              starfire_t( this, options_str );
   if ( name == "starsurge"             )
   {
-    if ( specialization() == DRUID_BALANCE ) return new         starsurge_t( this, options_str );
-    else                                     return new starsurge_offspec_t( this, options_str );
+    if ( specialization() == DRUID_BALANCE )
+      return new starsurge_t( this, options_str );
+    else
+      return new starsurge_offspec_t( this, options_str );
   }
   if ( name == "sunfire"               ) return new               sunfire_t( this, options_str );
   if ( name == "swipe"                 ) return new           swipe_proxy_t( this, options_str );
@@ -9840,8 +9864,10 @@ action_t* druid_t::create_action( std::string_view name, std::string_view option
   if ( name == "adaptive_swarm"        ) return new        adaptive_swarm_t( this, options_str );
   if ( name == "berserk" )
   {
-    if ( specialization() == DRUID_GUARDIAN )   return new   berserk_bear_t( this, options_str );
-    else if ( specialization() == DRUID_FERAL ) return new    berserk_cat_t( this, options_str );
+    if ( specialization() == DRUID_GUARDIAN )
+      return new berserk_bear_t( this, options_str );
+    else if ( specialization() == DRUID_FERAL )
+      return new berserk_cat_t( this, options_str );
   }
   if ( name == "convoke_the_spirits"   ) return new   convoke_the_spirits_t( this, options_str );
   if ( name == "incarnation"           )
@@ -10615,7 +10641,10 @@ void druid_t::create_buffs()
 
   buff.natures_vigil = make_buff( this, "natures_vigil", talent.natures_vigil )
     ->set_cooldown( 0_ms )
-    ->set_default_value_from_effect( 3, 0.01 );
+    ->set_freeze_stacks( true )
+    ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
+
+    } );
 
   buff.protector_of_the_pack_moonfire =
       make_buff<protector_of_the_pack_buff_t>( *this, "protector_of_the_pack_moonfire", find_spell( 378987 ) );
@@ -10964,6 +10993,7 @@ void druid_t::create_actions()
   using namespace cat_attacks;
   using namespace bear_attacks;
   using namespace spells;
+  using namespace heals;
   using namespace auto_attacks;
 
   // Melee Attacks
@@ -10995,13 +11025,6 @@ void druid_t::create_actions()
 
   if ( legendary.lycaras_fleeting_glimpse->ok() )
     active.lycaras_fleeting_glimpse = new lycaras_fleeting_glimpse_t( this );
-
-  // Class
-  if ( talent.natures_vigil.ok() )
-  {
-    active.natures_vigil_damage = get_secondary_action<natures_vigil_damage_t>( "natures_vigil_damage" );
-    active.natures_vigil_heal = get_secondary_action<natures_vigil_heal_t>( "natures_vigil_heal" );
-  }
 
   // Balance
   if ( talent.astral_smolder.ok() )
@@ -11082,7 +11105,7 @@ void druid_t::create_actions()
 
   // Guardian
   if ( talent.after_the_wildfire.ok() )
-    active.after_the_wildfire_heal = get_secondary_action<heals::after_the_wildfire_heal_t>( "after_the_wildfire" );
+    active.after_the_wildfire_heal = get_secondary_action<after_the_wildfire_heal_t>( "after_the_wildfire" );
 
   if ( sets->has_set_bonus( DRUID_GUARDIAN, T28, B4 ) )
     active.architects_aligner = get_secondary_action<architects_aligner_t>( "architects_aligner" );
@@ -11091,7 +11114,7 @@ void druid_t::create_actions()
     active.brambles = get_secondary_action<brambles_t>( "brambles" );
 
   if ( talent.elunes_favored.ok() )
-    active.elunes_favored_heal = get_secondary_action<heals::elunes_favored_heal_t>( "elunes_favored" );
+    active.elunes_favored_heal = get_secondary_action<elunes_favored_heal_t>( "elunes_favored" );
 
   if ( talent.galactic_guardian.ok() )
   {
@@ -11103,7 +11126,7 @@ void druid_t::create_actions()
   }
 
   if ( mastery.natures_guardian->ok() )
-    active.natures_guardian = new heals::natures_guardian_t( this );
+    active.natures_guardian = new natures_guardian_t( this );
 
   if ( legendary.the_natural_orders_will->ok() )
     active.the_natural_orders_will = new the_natural_orders_will_t( this );
@@ -11128,7 +11151,7 @@ void druid_t::create_actions()
 
   // Restoration
   if ( talent.yseras_gift.ok() )
-    active.yseras_gift = new heals::yseras_gift_t( this );
+    active.yseras_gift = new yseras_gift_t( this );
 
   player_t::create_actions();
 
