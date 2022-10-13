@@ -4389,7 +4389,6 @@ struct rake_t : public cat_attack_t
     if ( p->talent.pouncing_strikes.ok() || p->spec.improved_prowl->ok() )
       stealth_mul = data().effectN( 4 ).percent();
 
-    // TODO: determine how targetting is handled
     aoe = std::max( aoe, 1 ) + as<int>( p->talent.doubleclawed_rake->effectN( 1 ).base_value() );
 
     bleed = p->get_secondary_action_n<rake_bleed_t>( name_str + "_bleed", &data() );
@@ -12022,15 +12021,40 @@ double druid_t::composite_player_multiplier( school_e school ) const
 
   if ( dbc::has_common_school( school, SCHOOL_ARCANE ) && get_form() == BEAR_FORM )
   {
-    cpm *= 1.0 + talent.elunes_favored->effectN( 1 ).percent();
-    cpm *= 1.0 + talent.fury_of_nature->effectN( 1 ).percent();
+    if ( bugs )
+    {
+      auto ef = talent.elunes_favored->effectN( 1 ).percent();
+      auto fn = talent.fury_of_nature->effectN( 1 ).percent();
+
+      cpm *= 1.0 + std::max( ef, fn );
+    }
+    else
+    {
+      cpm *= 1.0 + talent.elunes_favored->effectN( 1 ).percent();
+      cpm *= 1.0 + talent.fury_of_nature->effectN( 1 ).percent();
+    }
   }
 
-  if ( buff.eclipse_lunar->check() && buff.eclipse_lunar->has_common_school( school ) )
-    cpm *= 1.0 + buff.eclipse_lunar->value();
-  
-  if ( buff.eclipse_solar->check() && buff.eclipse_solar->has_common_school( school ) )
-    cpm *= 1.0 + buff.eclipse_solar->value();
+  if ( bugs )
+  {
+    auto lunar = 0.0;
+    if ( buff.eclipse_lunar->check() && buff.eclipse_lunar->has_common_school( school ) )
+      lunar = buff.eclipse_lunar->value();
+
+    auto solar = 0.0;
+    if ( buff.eclipse_solar->check() && buff.eclipse_solar->has_common_school( school ) )
+      solar = buff.eclipse_solar->value();
+
+    cpm *= 1.0 + std::max( lunar, solar );
+  }
+  else
+  {
+    if ( buff.eclipse_lunar->check() && buff.eclipse_lunar->has_common_school( school ) )
+      cpm *= 1.0 + buff.eclipse_lunar->value();
+
+    if ( buff.eclipse_solar->check() && buff.eclipse_solar->has_common_school( school ) )
+      cpm *= 1.0 + buff.eclipse_solar->value();
+  }
 
   if ( buff.friend_of_the_fae->check() && buff.friend_of_the_fae->has_common_school( school ) )
     cpm *= 1.0 + buff.friend_of_the_fae->value();
