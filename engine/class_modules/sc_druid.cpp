@@ -80,7 +80,6 @@ struct druid_td_t : public actor_target_data_t
     dot_t* moonfire;
     dot_t* rake;
     dot_t* rip;
-    dot_t* sickle_of_the_lion;
     dot_t* stellar_flare;
     dot_t* sunfire;
     dot_t* tear;
@@ -397,11 +396,9 @@ public:
     // Feral
     action_t* ferocious_bite_apex;       // free bite from apex predator's crazing
     action_t* frenzied_assault;
-    action_t* sickle_of_the_lion;        // Feral T28 4pc Set Bonus
 
     // Guardian
     action_t* after_the_wildfire_heal;
-    action_t* architects_aligner;        // Guardian T28 4pc Set Bonus
     action_t* brambles;
     action_t* elunes_favored_heal;
     action_t* galactic_guardian;
@@ -522,7 +519,6 @@ public:
 
     // Guardian
     buff_t* berserk_bear;
-    buff_t* architects_aligner;
     buff_t* bristling_fur;
     buff_t* dream_of_cenarius;
     buff_t* earthwarden;
@@ -627,7 +623,6 @@ public:
   {
     // Balance
     proc_t* pulsar;
-    proc_t* bugged_umbral_infusion;
 
     // Feral
     proc_t* clearcasting;
@@ -1608,32 +1603,6 @@ struct moonkin_form_buff_t : public druid_buff_t<buff_t>
 
 // Druid Buffs ==============================================================
 
-// Architect's Aligner (Guardian Tier 28 4 Set) =============================
-struct architects_aligner_buff_t : public druid_buff_t<buff_t>
-{
-  architects_aligner_buff_t( druid_t& p )
-    : base_t( p, "architects_aligner", p.sets->set( DRUID_GUARDIAN, T28, B4 )->effectN( 1 ).trigger() )
-  {
-    set_duration( 0_ms );
-    set_tick_callback( [ & ]( buff_t*, int, timespan_t ) {
-      p.active.architects_aligner->execute();
-    } );
-  }
-
-  void expire( timespan_t d ) override
-  {
-    // Buff ticks seem to occur at 150 frames per second, so if the buff expires within 1/150 second (6.67ms) of a tic,
-    // both events happen in the same frame and you do not get a partial tick. Note that simc truncates down to
-    // millisecond, so while in game the breakpoint required to get 6th tick is 832 haste rating, in simc it is 831
-    // haste rating.
-
-    if ( tick_event && tick_time() - tick_time_remains() > 6_ms )
-      p().active.architects_aligner->execute();
-
-    base_t::expire( d );
-  }
-};
-
 // Berserk (Guardian) / Incarn Buff =========================================
 struct berserk_bear_buff_t : public druid_buff_t<buff_t>
 {
@@ -1661,16 +1630,6 @@ struct berserk_bear_buff_t : public druid_buff_t<buff_t>
 
     if ( inc )
       hp_mul += p.query_aura_effect( s, A_MOD_INCREASE_HEALTH_PERCENT )->percent();
-
-    if ( p.sets->has_set_bonus( DRUID_GUARDIAN, T28, B4 ) )
-    {
-      set_stack_change_callback( [ &p ]( buff_t*, int, int new_ ) {
-        if ( new_ )
-          p.buff.architects_aligner->trigger();
-        else
-          make_event( p.sim, [ &p ]() { p.buff.architects_aligner->expire(); } );  // schedule as event to ensure last tick happens
-      } );
-    }
   }
 
   void start( int s, double v, timespan_t d ) override
@@ -1712,14 +1671,6 @@ struct berserk_cat_buff_t : public druid_buff_t<buff_t>
 
     if ( inc )
       set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_RESOURCE_COST );
-
-    if ( p.sets->has_set_bonus( DRUID_FERAL, T28, B4 ) )
-    {
-      set_stack_change_callback( [ &p ]( buff_t*, int, int new_ ) {
-        if ( new_ )
-          p.active.sickle_of_the_lion->execute_on_target( p.target );
-      } );
-    }
   }
 };
 
@@ -3565,10 +3516,6 @@ public:
 
     parse_buff_effects( buff, ignore_mask, use_stacks, false, mods... );
 
-    // TODO: remove in DF. Feral 4T28 is affected by Tiger's Fury but does not snapshot
-    if ( data().id() == 363830 && buff == p()->buff.tigers_fury )
-      return false;
-
     // If there is a new entry in the ta_mul table, move it to the pers_mul table.
     if ( ta_multiplier_buffeffects.size() > ta_old )
     {
@@ -4289,7 +4236,6 @@ struct ferocious_bite_t : public cat_finisher_t<>
                    t_td->dots.thrash_cat->is_ticking() +
                    t_td->dots.frenzied_assault->is_ticking() +
                    t_td->dots.feral_frenzy->is_ticking() +
-                   t_td->dots.sickle_of_the_lion->is_ticking() +
                    t_td->dots.tear->is_ticking();
 
       tm *= 1.0 + p()->talent.taste_for_blood->effectN( 1 ).percent() * bleeds;
@@ -4868,33 +4814,6 @@ struct thrash_cat_t : public cat_attack_t
   }
 };
 
-// Set Abilities =============================================================
-
-// Sickle of the Lion (Feral T28 4pc)=========================================
-struct sickle_of_the_lion_t : public cat_attack_t
-{
-  double as_mul;
-
-  sickle_of_the_lion_t( druid_t* p )
-    : cat_attack_t( "sickle_of_the_lion", p, p->sets->set( DRUID_FERAL, T28, B4 )->effectN( 1 ).trigger() ),
-      as_mul( p->spec.adaptive_swarm_damage->effectN( 2 ).percent() + p->conduit.evolved_swarm.percent() )
-  {
-    background = true;
-    may_miss = may_glance = may_dodge = may_block = may_parry = false;
-    aoe = -1;
-    reduced_aoe_targets = p->sets->set( DRUID_FERAL, T28, B4 )->effectN( 1 ).base_value();
-  }
-
-  double composite_target_ta_multiplier( player_t* t ) const override
-  {
-    double ttm = cat_attack_t::composite_target_ta_multiplier( t );
-
-    if ( td( t )->dots.adaptive_swarm_damage->is_ticking() )
-      ttm *= 1.0 + as_mul;
-
-    return ttm;
-  }
-};
 }  // end namespace cat_attacks
 
 namespace bear_attacks
@@ -5445,42 +5364,6 @@ struct thrash_bear_t : public bear_attack_t
 
     if ( p()->talent.earthwarden.ok() && result_is_hit( s->result ) )
       p()->buff.earthwarden->trigger();
-  }
-};
-
-// Set Abilities ============================================================
-
-// Architect's Aligner (Guardian T28 4set bonus )============================
-struct architects_aligner_t : public bear_attack_t
-{
-  struct architects_aligner_heal_t : public heals::druid_heal_t
-  {
-    architects_aligner_heal_t( druid_t* p )
-      : heals::druid_heal_t( "architects_aligner_heal", p, p->find_spell( 363789 ) )
-    {
-      background = true;
-    }
-  };
-
-  // the heal is always self-targetted, so we don't want to use execute_target
-  action_t* heal;
-
-  architects_aligner_t( druid_t* p ) : bear_attack_t( "architects_aligner", p, p->find_spell( 363789 ) )
-  {
-    background = proc = true;
-    may_miss = may_glance = may_dodge = may_block = may_parry = false;
-    aoe = -1;
-    reduced_aoe_targets = 5.0;
-
-    heal = p->get_secondary_action<architects_aligner_heal_t>( "architects_aligner_heal" );
-    heal->name_str_reporting = "architects_aligner";
-  }
-
-  void execute() override
-  {
-    bear_attack_t::execute();
-
-    heal->execute();
   }
 };
 } // end namespace bear_attacks
@@ -6752,12 +6635,6 @@ struct barkskin_t : public druid_spell_t
       name_str += "+brambles";
       brambles->stats = stats;
     }
-
-    if ( p->sets->has_set_bonus( DRUID_GUARDIAN, T28, B2 ) )
-    {
-      form_mask = BEAR_FORM;
-      autoshift = p->active.shift_to_bear;
-    }
   }
 
   void init() override
@@ -6770,7 +6647,7 @@ struct barkskin_t : public druid_spell_t
 
   void execute() override
   {
-    // since barkskin can be used off gcd, it can bypass schedule_execute() so we check for autoshift with 4t28 here
+    // since barkskin can be used off gcd, it can bypass schedule_execute() so we check for autoshift here
     check_autoshift();
 
     druid_spell_t::execute();
@@ -6786,13 +6663,6 @@ struct barkskin_t : public druid_spell_t
 
     if ( p()->talent.matted_fur.ok() )
       p()->buff.matted_fur->trigger();
-
-    if ( p()->sets->has_set_bonus( DRUID_GUARDIAN, T28, B2 ) )
-    {
-      auto dur_ = timespan_t::from_seconds( p()->sets->set( DRUID_GUARDIAN, T28, B2 )->effectN( 1 ).base_value() );
-
-      p()->buff.b_inc_bear->extend_duration_or_trigger( dur_ );
-    }
   }
 };
 
@@ -10841,8 +10711,6 @@ void druid_t::create_buffs()
   buff.incarnation_bear =
       make_buff<berserk_bear_buff_t>( *this, "incarnation_guardian_of_ursoc", spec.incarnation_bear, true );
 
-  buff.architects_aligner = make_buff<architects_aligner_buff_t>( *this );
-
   buff.bristling_fur = make_buff( this, "bristling_fur", talent.bristling_fur )
     ->set_cooldown( 0_ms );
 
@@ -11076,8 +10944,8 @@ void druid_t::create_actions()
   {
     auto firmament = get_secondary_action_n<fury_of_elune_t>( "sundered_firmament", find_spell( 394106 ),
                                                            find_spell( 394111 ), buff.sundered_firmament, "" );
-    firmament->s_data_reporting = sets->set( DRUID_BALANCE, T28, B2 );
-    firmament->damage->base_multiplier = sets->set( DRUID_BALANCE, T28, B2 )->effectN( 1 ).percent();
+    firmament->damage->base_multiplier = talent.sundered_firmament->effectN( 1 ).percent();
+    firmament->s_data_reporting = talent.sundered_firmament;
     firmament->set_free_cast( free_spell_e::FIRMAMENT );
     active.sundered_firmament = firmament;
   }
@@ -11097,15 +10965,9 @@ void druid_t::create_actions()
   if ( talent.berserk_frenzy.ok() )
     active.frenzied_assault = get_secondary_action<frenzied_assault_t>( "frenzied_assault" );
 
-  if ( sets->has_set_bonus( DRUID_FERAL, T28, B4 ) )
-    active.sickle_of_the_lion = get_secondary_action<sickle_of_the_lion_t>( "sickle_of_the_lion" );
-
   // Guardian
   if ( talent.after_the_wildfire.ok() )
     active.after_the_wildfire_heal = get_secondary_action<after_the_wildfire_heal_t>( "after_the_wildfire" );
-
-  if ( sets->has_set_bonus( DRUID_GUARDIAN, T28, B4 ) )
-    active.architects_aligner = get_secondary_action<architects_aligner_t>( "architects_aligner" );
 
   if ( talent.brambles.ok() )
     active.brambles = get_secondary_action<brambles_t>( "brambles" );
@@ -11470,7 +11332,6 @@ void druid_t::init_procs()
 
   // Balance
   proc.pulsar                 = get_proc( "Primordial Arcanic Pulsar" )->collect_interval();
-  proc.bugged_umbral_infusion = get_proc( "Bugged Umbral Infusion" )->collect_count();
 
   // Feral
   proc.predator               = get_proc( "Predator" );
@@ -12898,7 +12759,6 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
   dots.moonfire              = target.get_dot( "moonfire", &source );
   dots.rake                  = target.get_dot( "rake", &source );
   dots.rip                   = target.get_dot( "rip", &source );
-  dots.sickle_of_the_lion    = target.get_dot( "sickle_of_the_lion", &source );
   dots.stellar_flare         = target.get_dot( "stellar_flare", &source );
   dots.sunfire               = target.get_dot( "sunfire", &source );
   dots.tear                  = target.get_dot( "tear", &source );
@@ -13115,7 +12975,7 @@ void eclipse_handler_t::init()
   wrath_counter_base = starfire_counter_base = as<unsigned>( p->talent.eclipse->effectN( 1 ).base_value() );
 
   size_t res = 4;
-  bool foe = p->talent.fury_of_elune.ok() || p->sets->has_set_bonus( DRUID_BALANCE, T28, B2 );
+  bool foe = p->talent.fury_of_elune.ok();
   bool nm = p->talent.new_moon.ok();
   bool hm = nm;
   bool fm = nm || p->talent.convoke_the_spirits.ok();
