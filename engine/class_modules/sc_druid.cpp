@@ -2267,8 +2267,6 @@ public:
       is_auto_attack( false ),
       break_stealth( !ab::data().flags( spell_attribute::SX_NO_STEALTH_BREAK ) )
   {
-    ab::may_crit = true;
-
     // WARNING: auto attacks will NOT get processed here since they have no spell data
     if ( ab::data().ok() )
     {
@@ -3220,7 +3218,7 @@ struct druid_interrupt_t : public druid_spell_t
   druid_interrupt_t( std::string_view n, druid_t* p, const spell_data_t* s, std::string_view options_str )
     : druid_spell_t( n, p, s, options_str )
   {
-    may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = harmful = false;
+    may_miss = may_glance = may_block = may_dodge = may_parry = harmful = false;
     ignore_false_positive = use_off_gcd = is_interrupt = true;
   }
 
@@ -4395,7 +4393,7 @@ struct rake_t : public cat_attack_t
     rake_bleed_t( druid_t* p, std::string_view n, const spell_data_t* s ) : cat_attack_t( n, p, s->effectN( 3 ).trigger() )
     {
       background = dual = hasted_ticks = true;
-      may_miss = may_parry = may_dodge = may_crit = false;
+      may_miss = may_parry = may_dodge = false;
       // override for convoke. since this is only ever executed from rake_t, form checking is unnecessary.
       form_mask = 0;
 
@@ -4497,7 +4495,6 @@ struct rip_t : public cat_finisher_t<>
   {
     tear_t( druid_t* p, std::string_view n ) : base_t( n, p, p->find_spell( 391356 ) )
     {
-      may_crit = false;
       name_str_reporting = "tear";
 
       residual_mul = p->talent.rip_and_tear->effectN( 1 ).percent();
@@ -5008,7 +5005,7 @@ struct brambles_t : public bear_attack_t
   {
     // Ensure reflect scales with damage multipliers
     snapshot_flags |= STATE_VERSATILITY | STATE_TGT_MUL_DA | STATE_MUL_DA;
-    background = may_crit = proc = may_miss = true;
+    background = proc = may_miss = true;
   }
 };
 
@@ -5046,7 +5043,7 @@ struct growl_t : public bear_attack_t
     : bear_attack_t( "growl", player, player->find_class_spell( "Growl" ), opt )
   {
     ignore_false_positive = use_off_gcd = true;
-    may_miss = may_parry = may_dodge = may_block = may_crit = false;
+    may_miss = may_parry = may_dodge = may_block = false;
   }
 
   void impact( action_state_t* s ) override
@@ -5080,7 +5077,7 @@ struct ironfur_t : public bear_attack_t
     : bear_attack_t( n, p, s, opt )
   {
     use_off_gcd = true;
-    harmful = may_miss = may_parry = may_dodge = may_crit = false;
+    harmful = may_miss = may_parry = may_dodge = false;
   }
 
   timespan_t composite_buff_duration()
@@ -5337,8 +5334,7 @@ struct rage_of_the_sleeper_t : public bear_attack_t
   rage_of_the_sleeper_t( druid_t* p, std::string_view opt )
     : bear_attack_t( "rage_of_the_sleeper", p, p->talent.rage_of_the_sleeper, opt )
   {
-    harmful = may_miss = may_parry = may_dodge = may_crit = false;
-    base_dd_min = base_dd_max = 0.0;  // effect#2 is parsed as 100000000 damage
+    harmful = may_miss = may_parry = may_dodge = false;
 
     if ( p->active.rage_of_the_sleeper_reflect )
       p->active.rage_of_the_sleeper_reflect->stats = stats;
@@ -5805,7 +5801,6 @@ struct natures_guardian_t : public druid_heal_t
   natures_guardian_t( druid_t* p ) : druid_heal_t( "natures_guardian", p, p->find_spell( 227034 ) )
   {
     background = true;
-    may_crit = false;
     target = p;
   }
 
@@ -6600,7 +6595,7 @@ struct adaptive_swarm_t : public druid_spell_t
     adaptive_swarm_heal_t( druid_t* p ) : adaptive_swarm_base_t( p, "adaptive_swarm_heal", p->spec.adaptive_swarm_heal )
     {
       quiet = heal = true;
-      harmful = may_miss = may_crit = false;
+      harmful = may_miss = false;
       base_td = base_td_multiplier = 0.0;
 
       parse_effect_period( data().effectN( 1 ) );
@@ -6672,7 +6667,7 @@ struct adaptive_swarm_t : public druid_spell_t
     if ( !p->talent.adaptive_swarm.ok() )
       return;
 
-    may_miss = may_crit = harmful = false;
+    may_miss = harmful = false;
     base_costs[ RESOURCE_MANA ] = 0.0;  // remove mana cost so we don't need to enable mana regen
 
     damage->other = heal;
@@ -6723,8 +6718,6 @@ struct astral_smolder_t : public druid_residual_action_t<druid_spell_t>
 {
   astral_smolder_t( druid_t* p ) : base_t( "astral_smolder", p, p->find_spell( 394061 ) )
   {
-    may_crit = false;
-
     residual_mul = p->talent.astral_smolder->effectN( 1 ).percent();
   }
 
@@ -6853,7 +6846,7 @@ struct dash_t : public druid_spell_t
       buff_on_cast( p->talent.tiger_dash.ok() ? p->buff.tiger_dash : p->buff.dash ),
       gcd_mul( p->query_aura_effect( &p->buff.cat_form->data(), A_ADD_PCT_MODIFIER, P_GCD, &data() )->percent() )
   {
-    harmful = may_crit = may_miss = false;
+    harmful = may_miss = false;
     ignore_false_positive = true;
 
     form_mask = CAT_FORM;
@@ -6928,7 +6921,7 @@ struct force_of_nature_t : public druid_spell_t
     : druid_spell_t( "force_of_nature", p, p->talent.force_of_nature, opt ),
       summon_duration( p->talent.force_of_nature->effectN( 2 ).trigger()->duration() + 1_ms )
   {
-    harmful = may_crit = false;
+    harmful = false;
   }
 
   void init_finished() override
@@ -7027,7 +7020,7 @@ struct heart_of_the_wild_t : public druid_spell_t
   heart_of_the_wild_t( druid_t* p, std::string_view opt )
     : druid_spell_t( "heart_of_the_wild", p, p->talent.heart_of_the_wild, opt )
   {
-    harmful = may_crit = may_miss = reset_melee_swing = false;
+    harmful = may_miss = reset_melee_swing = false;
 
     // Although the effect is coded as modify cooldown time (341) which takes a flat value in milliseconds, the actual
     // effect in-game works as a percent reduction.
@@ -7480,7 +7473,7 @@ struct moonfire_t : public druid_spell_t
   moonfire_t( druid_t* p, std::string_view n, std::string_view opt )
     : druid_spell_t( n, p, p->find_class_spell( "Moonfire" ), opt )
   {
-    may_miss = may_crit = triggers_galactic_guardian = reset_melee_swing = false;
+    may_miss = triggers_galactic_guardian = reset_melee_swing = false;
 
     damage = p->get_secondary_action_n<moonfire_damage_t>( name_str + "_dmg" );
     damage->stats = stats;
@@ -7989,7 +7982,7 @@ struct starfall_t : public druid_spell_t
     : druid_spell_t( n, p, s, opt ),
       max_ext( timespan_t::from_seconds( p->talent.aetherial_kindling->effectN( 2 ).base_value() ) )
   {
-    may_miss = may_crit = false;
+    may_miss = false;
     queue_failed_proc = p->get_proc( "starfall queue failed" );
     dot_duration = 0_ms;
     form_mask |= NO_FORM;
@@ -8365,7 +8358,7 @@ struct sunfire_t : public druid_spell_t
 
   sunfire_t( druid_t* p, std::string_view options_str ) : druid_spell_t( "sunfire", p, p->talent.sunfire, options_str )
   {
-    may_miss = may_crit = false;
+    may_miss = false;
 
     damage = p->get_secondary_action<sunfire_damage_t>( "sunfire_dmg" );
     damage->stats = stats;
@@ -8529,7 +8522,7 @@ struct warrior_of_elune_t : public druid_spell_t
   warrior_of_elune_t( druid_t* p, std::string_view opt )
     : druid_spell_t( "warrior_of_elune", p, p->talent.warrior_of_elune, opt )
   {
-    harmful = may_crit = may_miss = false;
+    harmful = may_miss = false;
   }
 
   timespan_t cooldown_duration() const override
@@ -8561,11 +8554,11 @@ struct wild_charge_t : public druid_spell_t
   wild_charge_t( druid_t* p, std::string_view opt )
     : druid_spell_t( "wild_charge", p, p->talent.wild_charge, opt ), movement_speed_increase( 5.0 )
   {
-    harmful = may_crit = may_miss = false;
-    ignore_false_positive         = true;
-    range                         = data().max_range();
-    movement_directionality       = movement_direction_type::OMNI;
-    trigger_gcd                   = timespan_t::zero();
+    harmful = may_miss = false;
+    ignore_false_positive = true;
+    range = data().max_range();
+    movement_directionality = movement_direction_type::OMNI;
+    trigger_gcd = 0_ms;
   }
 
   void schedule_execute( action_state_t* execute_state ) override
@@ -8605,8 +8598,6 @@ struct wild_mushroom_t : public druid_spell_t
   {
     fungal_growth_t( druid_t* p ) : base_t( "fungal_growth", p, p->find_spell( 81281 ) )
     {
-      may_crit = false;
-
       residual_mul = p->talent.fungal_growth->effectN( 1 ).percent();
     }
 
@@ -8879,7 +8870,7 @@ struct convoke_the_spirits_t : public druid_spell_t
       return;
 
     channeled = true;
-    harmful = may_miss = may_crit = false;
+    harmful = may_miss = false;
 
     max_ticks = as<int>( util::floor( dot_duration / base_tick_time ) );
 
@@ -9280,7 +9271,7 @@ struct kindred_empowerment_t : public druid_spell_t
     : druid_spell_t( n, p, p->cov.kindred_empowerment_damage )
   {
     background = dual = true;
-    may_miss = may_crit = callbacks = false;
+    may_miss = callbacks = false;
   }
 };
 
@@ -9368,7 +9359,7 @@ struct druid_melee_t : public Base
 
   druid_melee_t( std::string_view n, druid_t* p ) : Base( n, p ), ooc_chance( 0.0 )
   {
-    ab::may_glance = ab::background = ab::repeating = ab::is_auto_attack = true;
+    ab::may_crit = ab::may_glance = ab::background = ab::repeating = ab::is_auto_attack = true;
     ab::allow_class_ability_procs = ab::not_a_proc = true;
 
     ab::school = SCHOOL_PHYSICAL;
