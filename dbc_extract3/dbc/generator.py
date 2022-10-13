@@ -2027,6 +2027,7 @@ class SpellDataGenerator(DataGenerator):
           ( 372505, 3 ), # Ursoc's Fury absorb
           ( 372019, 3 ), # Vicious Cycle mangle buff
           ( 279555, 3 ), # Layered Mane buff
+          ( 395942, 3 ), # 2t29 Mangle AoE
           # Restoration
         ),
         # Demon Hunter:

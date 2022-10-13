@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.2.46092
-static const std::array<spelltext_data_t, 18992> __spelltext_data { {
+static const std::array<spelltext_data_t, 18997> __spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -18325,6 +18325,7 @@ static const std::array<spelltext_data_t, 18992> __spelltext_data { {
   { 390947, "Circle of Healing heals $s1 additional ally and its cooldown is reduced by ${$s2/-1000} sec.", 0, 0 },
   { 390951, "Temporarily imbues shoulders with a fiery illusion for $ecd.", 0, 0 },
   { 390954, "Increases the critical strike chance of Flash Heal and Heal by $s1%.", 0, 0 },
+  { 390961, "$@spelldesc390990", 0, 0 },
   { 390964, "$@spelldesc120517", 0, 0 },
   { 390967, "Increases the healing done by your Mastery: Echo of Light by $s1%.", 0, 0 },
   { 390971, "$@spelldesc120517", 0, 0 },
@@ -18335,10 +18336,12 @@ static const std::array<spelltext_data_t, 18992> __spelltext_data { {
   { 390980, "Critical heals from Flash Heal and Heal increase your healing done by your next Holy Word spell by $390989s1%, stacking up to $390989U times.", 0, 0 },
   { 390981, "$@spelldesc110744", 0, 0 },
   { 390989, "$@spelldesc390980", "The healing of your next Holy Word spell is increased by $w1%.", 0 },
+  { 390990, "Causes the earth at the target location to tremble and break, dealing Nature damage every $t1 sec to enemies in $r yard radius. Lasts $d.\r\n\r\nUsable in the Obsidian Citadel and adjacent lava fields.", "Suffering Nature damage every $t2 sec.", 0 },
   { 390992, "Flash Heal reduces the cast time of your next Heal within $390993d by $390993s2% and increases its healing done by $390993s1%.\r\n\r\nStacks up to $390993U times.", 0, 0 },
   { 390993, "$@spelldesc390992", "The cast time of your next Heal is reduced by $w2% and its healing is increased by $w1%.", 0 },
   { 390994, "Circle of Healing reduces the cooldown of Holy Word: Sanctify, Prayer of Mending reduces the cooldown of Holy Word: Serenity, and Holy Fire reduces the cooldown of Holy Word: Chastise by $s1 sec.", 0, 0 },
   { 390996, "Your $?a137033[Mind Blast and Mind Spike]?a137031[Smite and Holy Fire][Smite and Penance] casts reduce the cooldown of Mindgames by ${$s1/2}.1 sec.", 0, 0 },
+  { 390997, "Causes the earth at the target location to tremble and break, dealing Nature damage every $t1 sec to enemies in $a1 yard radius. Lasts $d.", "Suffering Nature damage every $t2 sec.", 0 },
   { 391023, "Summons an arcana orb outside of the Cobalt Assembly.", "Summons an arcana orb outside of the Cobalt Assembly.", 0 },
   { 391037, "Your combo point generating abilities have a $s1% chance to generate $s2 extra combo $Lpoint:points;.", 0, 0 },
   { 391045, "Rip damage increased by $s1%.", 0, 0 },
@@ -18981,6 +18984,7 @@ static const std::array<spelltext_data_t, 18992> __spelltext_data { {
   { 395803, "$@spelldesc371458", 0, 0 },
   { 395804, "$@spelldesc371454", 0, 0 },
   { 395805, "$@spelldesc371457", 0, 0 },
+  { 395942, "$@spelldesc393637", 0, 0 },
   { 395944, "$@spelldesc393637", "Damage dealt increased by $s1% and damage taken reduced by $s1%.", 0 },
   { 395959, "Gain $395965s1 Versatility for every ally within 30 yards, stacking up to 5 times.", 0, 0 },
   { 395965, "Grants $s1 Versatility for every ally in a $395959d radius, stacking up to 5 times.", "Versatility increased by $w1.", 0 },
@@ -18992,11 +18996,12 @@ static const std::array<spelltext_data_t, 18992> __spelltext_data { {
   { 396144, "Imbue your weapon with the energy of an Ohuna. Your healing spells have a high chance to heal your target for an additional $396144s1 healing.", 0, 0 },
   { 396147, "Imbue your weapon with the energy of an Ohuna. Your healing spells have a high chance to heal your target for an additional $396144s1 healing for 2 hours.", 0, 0 },
   { 396148, "Imbue your weapon with the energy of an Ohuna. Your healing spells have a high chance to heal your target for an additional $385582s1 healing for 2 hours.", 0, 0 },
+  { 396484, "$@spelldesc387474", 0, 0 },
 } };
 
 // spelltext hotfix entries, wow build 10.0.2.46092
 static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelltext_hotfix_data { {
-  {  384277,  0, "Thunderclap deals $s1% increased damage, costs $s2 more Rage and if you have Rend, Thunder Clap also affects $s3 nearby targets with Rend.", "Thunderclap deals $s1% increased damage$?(s137048)[ and if you have Rend, Thunder Clap affects $s3 nearby targets with Rend.][, costs ${$s2/10} more Rage and if you have Rend, Thunder Clap affects $s3 nearby targets with Rend.]" },
+  {  384277,  0, "Increases the damage of Thunderclap by $s1% and whenever you Thunder Clap a target affected by your Rend, you also affect $s3 nearby targets target with Rend.", "Thunderclap deals $s1% increased damage$?(s137048)[ and if you have Rend, Thunder Clap affects $s3 nearby targets with Rend.][, costs ${$s2/10} more Rage and if you have Rend, Thunder Clap affects $s3 nearby targets with Rend.]" },
 } };
 
 // Spell description variables, wow build 10.0.2.46092
