@@ -815,10 +815,13 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
   debuffs_roaring_blaze = make_buff( *this, "roaring_blaze", source->find_spell( 265931 ) );
   debuffs_shadowburn    = make_buff( *this, "shadowburn", source->find_spell( 17877 ) )
                               ->set_default_value( source->find_spell( 245731 )->effectN( 1 ).base_value() );
-  debuffs_havoc         = make_buff( *this, "havoc", source->find_specialization_spell( 80240 ) )
-                      ->set_duration( source->find_specialization_spell( 80240 )->duration() +
+
+  // We must use find_spell() for Havoc since the spell data is also the talent data, which we won't have in p.talents every time
+  debuffs_havoc         = make_buff( *this, "havoc", source->find_spell( 80240 ) )
+                      ->set_duration( p.talents.mayhem.ok() ? p.talents.mayhem->effectN( 3 ).time_value() : source->find_specialization_spell( 80240 )->duration() +
                                       source->find_specialization_spell( 335174 )->effectN( 1 ).time_value() )
-                      ->set_cooldown( 0_ms )
+                      ->set_cooldown( p.talents.mayhem.ok() ? p.talents.mayhem->internal_cooldown() : 0_ms )
+                      ->set_chance( p.talents.mayhem.ok() ? p.talents.mayhem->effectN( 1 ).percent() : 1.0 )
                       ->set_stack_change_callback( [ &p ]( buff_t* b, int, int cur ) {
                         if ( cur == 0 )
                         {
@@ -1425,6 +1428,7 @@ void warlock_t::init_procs()
   procs.horned_nightmare = get_proc( "horned_nightmare" );
   procs.ritual_of_ruin       = get_proc( "ritual_of_ruin" );
   procs.avatar_of_destruction = get_proc( "avatar_of_destruction" );
+  procs.mayhem = get_proc( "mayhem" );
 }
 
 void warlock_t::init_base_stats()
