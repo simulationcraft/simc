@@ -2453,6 +2453,11 @@ struct shaman_pet_t : public pet_t
   {
     return o()->cache.attack_haste();
   }
+
+  void apply_affecting_auras( action_t& action ) override
+  {
+    o()->apply_affecting_auras( action );
+  }
 };
 
 // ==========================================================================
@@ -11022,6 +11027,7 @@ void shaman_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.stormkeeper );
   action.apply_affecting_aura( talent.stormkeeper2 );
   action.apply_affecting_aura( talent.oath_of_the_far_seer );
+  action.apply_affecting_aura( talent.fire_and_ice );
 }
 
 // shaman_t::generate_bloodlust_options =====================================
@@ -12032,12 +12038,6 @@ double shaman_t::composite_player_multiplier( school_e school ) const
   double m = player_t::composite_player_multiplier( school );
 
   m *= 1.0 + buff.elemental_equilibrium->value();
-
-  if ( talent.fire_and_ice.ok() &&
-       ( dbc::is_school( school, SCHOOL_FROST ) || dbc::is_school( school, SCHOOL_FIRE ) ) )
-  {
-    m *= 1.0 + talent.fire_and_ice->effectN( 1 ).percent();
-  }
 
   if ( talent.elemental_weapons.ok() &&
        ( dbc::is_school( school, SCHOOL_FROST ) || dbc::is_school( school, SCHOOL_FIRE ) ||
