@@ -4703,19 +4703,21 @@ double player_t::composite_total_corruption() const
   return cache.corruption() - cache.corruption_resistance();
 }
 
-double player_t::composite_player_pet_damage_multiplier( const action_state_t*, bool ) const
+double player_t::composite_player_pet_damage_multiplier( const action_state_t*, bool guardian ) const
 {
   double m = 1.0;
 
-  m *= 1.0 + racials.command->effectN( 1 ).percent();
+  if (!guardian)
+  {
+    m *= 1.0 + racials.command->effectN(1).percent();
 
-  if ( buffs.coldhearted && buffs.coldhearted->check() )
-    m *= 1.0 + buffs.coldhearted->check_value();
+    if (buffs.coldhearted && buffs.coldhearted->check())
+      m *= 1.0 + buffs.coldhearted->check_value();
 
-  // By default effect 1 is used for the player modifier, effect 2 is for the pet modifier
-  if ( buffs.battlefield_presence && buffs.battlefield_presence->check() )
-    m *=
-        1.0 + ( buffs.battlefield_presence->data().effectN( 2 ).percent() * buffs.battlefield_presence->current_stack );
+    // By default effect 1 is used for the player modifier, effect 2 is for the pet modifier
+    if (buffs.battlefield_presence && buffs.battlefield_presence->check())
+      m *= 1.0 + (buffs.battlefield_presence->data().effectN(2).percent() * buffs.battlefield_presence->current_stack);
+  }
 
   return m;
 }
