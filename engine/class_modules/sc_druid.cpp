@@ -2008,6 +2008,37 @@ struct tiger_dash_buff_t : public druid_buff_t<buff_t>
   }
 };
 
+// Umbral Embrace ===========================================================
+struct umbral_embrace_buff_t : public druid_buff_t<buff_t>
+{
+  std::vector<std::pair<action_t*, school_e>> spell_list;
+
+  umbral_embrace_buff_t( druid_t& p ) : base_t( p, "umbral_embrace", p.talent.umbral_embrace->effectN( 2 ).trigger() )
+  {
+    set_stack_change_callback( [ this ]( buff_t*, int old_, int new_ ) {
+      if ( !old_ )
+      {
+        for ( auto spell : spell_list )
+        {
+          spell.first->school = SCHOOL_ASTRAL;
+          spell.first->base_schools.clear();
+          spell.first->base_schools.push_back( SCHOOL_ARCANE );
+          spell.first->base_schools.push_back( SCHOOL_NATURE );
+        }
+      }
+      else if ( !new_ )
+      {
+        for ( auto spell : spell_list )
+        {
+          spell.first->school = spell.second;
+          spell.first->base_schools.clear();
+          spell.first->base_schools.push_back( spell.second );
+        }
+      }
+    } );
+  }
+};
+
 // Ursine Vigor =============================================================
 struct ursine_vigor_buff_t : public druid_buff_t<buff_t>
 {
@@ -8010,16 +8041,21 @@ struct starfall_t : public druid_spell_t
 struct starfire_t : public druid_spell_t
 {
   double sotf_mul;
-  school_e umbral_school;
 
   starfire_t( druid_t* p, std::string_view opt )
     : druid_spell_t( "starfire", p, p->talent.starfire, opt ),
-      sotf_mul( p->talent.soul_of_the_forest_moonkin->effectN( 2 ).percent() ),
-      umbral_school(
-          p->query_aura_effect( &p->buff.umbral_embrace->data(), A_MODIFY_SCHOOL, 0, &data() )->school_type() )
+      sotf_mul( p->talent.soul_of_the_forest_moonkin->effectN( 2 ).percent() )
   {
     aoe = -1;
     base_aoe_multiplier = data().effectN( p->specialization() == DRUID_BALANCE ? 3 : 2 ).percent();
+  }
+
+  void init() override
+  {
+    druid_spell_t::init();
+
+    if ( p()->talent.umbral_embrace.ok() )
+      debug_cast<buffs::umbral_embrace_buff_t*>( p()->buff.umbral_embrace )->spell_list.emplace_back( this, school );
   }
 
   void init_finished() override
@@ -8039,11 +8075,6 @@ struct starfire_t : public druid_spell_t
       e *= 1.0 + p()->talent.warrior_of_elune->effectN( 2 ).percent();
 
     return e;
-  }
-
-  school_e get_school() const override
-  {
-    return p()->buff.umbral_embrace->check() ? umbral_school : druid_spell_t::get_school();
   }
 
   void execute() override
@@ -8615,7 +8646,6 @@ struct wrath_t : public druid_spell_t
   double gcd_mul;
   double sotf_mul;
   unsigned count;
-  school_e umbral_school;
 
   wrath_t( druid_t* p, std::string_view opt ) : wrath_t( p, "wrath", opt ) {}
 
@@ -8623,15 +8653,20 @@ struct wrath_t : public druid_spell_t
     : druid_spell_t( n, p, p->spec.wrath, opt ),
       gcd_mul( p->query_aura_effect( p->spec.eclipse_solar, A_ADD_PCT_MODIFIER, P_GCD, &data() )->percent() ),
       sotf_mul( p->talent.soul_of_the_forest_moonkin->effectN( 1 ).percent() ),
-      count( 0 ),
-      umbral_school(
-          p->query_aura_effect( &p->buff.umbral_embrace->data(), A_MODIFY_SCHOOL, 0, &data() )->school_type() )
-
+      count( 0 )
   {
     form_mask = NO_FORM | MOONKIN_FORM;
 
     if ( energize_resource_() == RESOURCE_ASTRAL_POWER )
       energize_amount = p->spec.astral_power->effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
+  }
+
+  void init() override
+  {
+    druid_spell_t::init();
+
+    if ( p()->talent.umbral_embrace.ok() )
+      debug_cast<buffs::umbral_embrace_buff_t*>( p()->buff.umbral_embrace )->spell_list.emplace_back( this, school );
   }
 
   double composite_energize_amount( const action_state_t* s ) const override
@@ -8675,11 +8710,6 @@ struct wrath_t : public druid_spell_t
       return false;
 
     return druid_spell_t::target_ready( t );
-  }
-
-  school_e get_school() const override
-  {
-    return p()->buff.umbral_embrace->check() ? umbral_school : druid_spell_t::get_school();
   }
 
   void execute() override
@@ -10681,7 +10711,7 @@ void druid_t::create_buffs()
     ->set_max_stack( buff.starfall->max_stack() )
     ->set_quiet( true );
 
-  buff.umbral_embrace = make_buff( this, "umbral_embrace", talent.umbral_embrace->effectN( 2 ).trigger() );
+  buff.umbral_embrace = make_buff<umbral_embrace_buff_t>( *this );
 
   buff.warrior_of_elune = make_buff( this, "warrior_of_elune", talent.warrior_of_elune )
     ->set_cooldown( 0_ms )
