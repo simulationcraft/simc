@@ -3295,8 +3295,11 @@ struct arcane_orb_t final : public arcane_mage_spell_t
 
 struct arcane_surge_t final : public arcane_mage_spell_t
 {
+  double energize_pct;
+
   arcane_surge_t( std::string_view n, mage_t* p, std::string_view options_str ) :
-    arcane_mage_spell_t( n, p, p->talents.arcane_surge )
+    arcane_mage_spell_t( n, p, p->talents.arcane_surge ),
+    energize_pct( p->find_spell( 365265 )->effectN( 1 ).percent() )
   {
     parse_options( options_str );
     triggers.radiant_spark = true;
@@ -3319,11 +3322,12 @@ struct arcane_surge_t final : public arcane_mage_spell_t
 
   void execute() override
   {
-    arcane_mage_spell_t::execute();
-
-    p()->resource_gain( RESOURCE_MANA, p()->resources.max[ RESOURCE_MANA ] * p()->buffs.arcane_surge->data().effectN( 4 ).percent(), p()->gains.arcane_surge, this );
     p()->buffs.arcane_surge->trigger();
     p()->buffs.rune_of_power->trigger();
+
+    arcane_mage_spell_t::execute();
+
+    p()->resource_gain( RESOURCE_MANA, p()->resources.max[ RESOURCE_MANA ] * energize_pct, p()->gains.arcane_surge, this );
   }
 };
 
@@ -3636,13 +3640,14 @@ struct conjure_mana_gem_t final : public arcane_mage_spell_t
   }
 };
 
-struct use_mana_gem_t final : public action_t
+struct use_mana_gem_t final : public mage_spell_t
 {
   use_mana_gem_t( std::string_view n, mage_t* p, std::string_view options_str ) :
-    action_t( ACTION_USE, n, p, p->find_spell( 5405 ) )
+    mage_spell_t( n, p, p->find_spell( 5405 ) )
   {
     parse_options( options_str );
     harmful = callbacks = may_crit = may_miss = false;
+    affected_by.shifting_power = true;
     target = player;
 
     if ( p->specialization() != MAGE_ARCANE )
@@ -3651,25 +3656,22 @@ struct use_mana_gem_t final : public action_t
 
   bool ready() override
   {
-    mage_t* p = debug_cast<mage_t*>( player );
-    if ( p->state.mana_gem_charges <= 0 || p->resources.pct( RESOURCE_MANA ) >= 1.0 )
+    if ( p()->state.mana_gem_charges <= 0 || p()->resources.pct( RESOURCE_MANA ) >= 1.0 )
       return false;
 
-    return action_t::ready();
+    return mage_spell_t::ready();
   }
 
   void execute() override
   {
-    action_t::execute();
+    mage_spell_t::execute();
 
-    mage_t* p = debug_cast<mage_t*>( player );
+    p()->resource_gain( RESOURCE_MANA, p()->resources.max[ RESOURCE_MANA ] * data().effectN( 1 ).percent(), p()->gains.mana_gem, this );
+    p()->buffs.invigorating_powder->trigger();
+    p()->trigger_arcane_charge( as<int>( p()->talents.cascading_power->effectN( 1 ).base_value() ) );
 
-    p->resource_gain( RESOURCE_MANA, p->resources.max[ RESOURCE_MANA ] * data().effectN( 1 ).percent(), p->gains.mana_gem, this );
-    p->buffs.invigorating_powder->trigger();
-    p->trigger_arcane_charge( as<int>( p->talents.cascading_power->effectN( 1 ).base_value() ) );
-
-    p->state.mana_gem_charges--;
-    assert( p->state.mana_gem_charges >= 0 );
+    p()->state.mana_gem_charges--;
+    assert( p()->state.mana_gem_charges >= 0 );
   }
 
   // Needed to satisfy normal execute conditions
@@ -5692,7 +5694,7 @@ struct arcane_echo_t final : public arcane_mage_spell_t
   {
     aoe = -1;
     reduced_aoe_targets = p->talents.arcane_echo->effectN( 1 ).base_value();
-    background = true;
+    background = affected_by.savant = true;
     callbacks = affected_by.radiant_spark = false;
   }
 };
@@ -6223,7 +6225,6 @@ struct time_anomaly_tick_event_t final : public event_t
         switch ( proc )
         {
           case TA_ARCANE_SURGE:
-            mage->resource_gain( RESOURCE_MANA, mage->resources.max[ RESOURCE_MANA ] * mage->buffs.arcane_surge->data().effectN( 4 ).percent(), mage->gains.arcane_surge );
             mage->buffs.arcane_surge->trigger( 1000 * mage->talents.time_anomaly->effectN( 1 ).time_value() );
             break;
           case TA_CLEARCASTING:
