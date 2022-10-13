@@ -1116,108 +1116,6 @@ action_t* priest_pallid_command_t::create_action( util::string_view name, util::
 
   return priest_pet_t::create_action( name, options_str );
 }
-// ==========================================================================
-// Living Shadow T28 4-set (Your Shadow)
-// ==========================================================================
-struct your_shadow_tier_t final : public priest_pet_t
-{
-  your_shadow_tier_t( priest_t* owner ) : priest_pet_t( owner->sim, *owner, "your_shadow_tier", true )
-  {
-  }
-
-  void init_action_list() override
-  {
-    priest_pet_t::init_action_list();
-
-    action_priority_list_t* def = get_action_priority_list( "default" );
-    def->add_action( "torment_mind" );
-  }
-
-  // Tracking buff to easily get pet uptime (especially in AoE this is easier)
-  virtual void arise() override
-  {
-    pet_t::arise();
-
-    o().buffs.living_shadow_tier->trigger();
-  }
-
-  virtual void demise() override
-  {
-    pet_t::demise();
-
-    o().buffs.living_shadow_tier->expire();
-  }
-
-  action_t* create_action( util::string_view name, util::string_view options_str ) override;
-};
-
-struct your_shadow_torment_mind_tick_t final : public priest_pet_spell_t
-{
-  your_shadow_torment_mind_tick_t( your_shadow_tier_t& p, const spell_data_t* s )
-    : priest_pet_spell_t( "torment_mind_tick", p, s )
-  {
-    background                 = true;
-    dual                       = true;
-    affected_by_shadow_weaving = true;
-    aoe                        = -1;
-    radius                     = data().effectN( 2 ).radius();
-    spell_power_mod.tick       = data().effectN( 2 ).sp_coeff();
-  }
-
-  void init() override
-  {
-    priest_pet_spell_t::init();
-
-    merge_pet_stats( p().o(), p(), *this );
-  }
-};
-
-struct your_shadow_torment_mind_t final : public priest_pet_spell_t
-{
-  const spell_data_t* torment_mind_tick_spell;
-
-  your_shadow_torment_mind_t( your_shadow_tier_t& p, util::string_view options )
-    : priest_pet_spell_t( "torment_mind", p, p.o().find_spell( 363656 ) ),
-      torment_mind_tick_spell( p.o().find_spell( 366971 ) )
-  {
-    parse_options( options );
-    channeled   = true;
-    tick_zero   = true;
-    tick_action = new your_shadow_torment_mind_tick_t( p, torment_mind_tick_spell );
-  }
-
-  void init() override
-  {
-    priest_pet_spell_t::init();
-
-    merge_pet_stats( p().o(), p(), *this );
-  }
-
-  timespan_t execute_time() const override
-  {
-    // Right now there is a delay between channels and on spawn time
-    // There is a delay between the last tick of channel 1 and the first tick of channel 2
-    // https://github.com/WarcraftPriests/sl-shadow-priest/issues/229
-    if ( p().o().bugs )
-    {
-      return timespan_t::from_millis( 500 );
-    }
-    else
-    {
-      return priest_pet_spell_t::execute_time();
-    }
-  }
-};
-
-action_t* your_shadow_tier_t::create_action( util::string_view name, util::string_view options_str )
-{
-  if ( name == "torment_mind" )
-  {
-    return new your_shadow_torment_mind_t( *this, options_str );
-  }
-
-  return priest_pet_t::create_action( name, options_str );
-}
 
 // ==========================================================================
 // Eternal Call to the Void and Idol of C'Thun
@@ -1623,7 +1521,6 @@ priest_t::priest_pets_t::priest_pets_t( priest_t& p )
     void_lasher( "void_lasher", &p, []( priest_t* priest ) { return new void_lasher_t( priest ); } ),
     rattling_mage( "rattling_mage", &p, []( priest_t* priest ) { return new rattling_mage_t( priest ); } ),
     cackling_chemist( "cackling_chemist", &p, []( priest_t* priest ) { return new cackling_chemist_t( priest ); } ),
-    your_shadow_tier( "your_shadow_tier", &p, []( priest_t* priest ) { return new your_shadow_tier_t( priest ); } ),
     thing_from_beyond( "thing_from_beyond", &p, []( priest_t* priest ) { return new thing_from_beyond_t( priest ); } )
 {
   // Void Tendril: legendary=193473 | cthun=377355
@@ -1637,11 +1534,6 @@ priest_t::priest_pets_t::priest_pets_t( priest_t& p )
   rattling_mage.set_default_duration( rigor_mortis_duration );
   cackling_chemist.set_default_duration( rigor_mortis_duration );
 
-  // Add 1ms to ensure pet is dismissed after last dot tick.
-  // Note: this is overriden in mind_blast_t when spawning the pet
-  auto your_shadow_spell = p.find_spell( 363469 );
-  your_shadow_tier.set_default_duration( timespan_t::from_seconds( your_shadow_spell->effectN( 2 ).base_value() ) +
-                                         timespan_t::from_millis( 1 ) );
   auto thing_from_beyond_spell = p.find_spell( 373277 );
   thing_from_beyond.set_default_duration( thing_from_beyond_spell->duration() );
 }

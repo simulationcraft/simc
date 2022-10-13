@@ -26,8 +26,6 @@ struct mind_blast_t final : public priest_spell_t
 {
 private:
   double mind_blast_insanity;
-  timespan_t your_shadow_duration_tier;
-  bool T28_4PC;
   timespan_t manipulation_cdr;
 
 public:
@@ -48,9 +46,6 @@ public:
     {
       base_dd_multiplier *= ( 1.0 + priest().conduits.mind_devourer.percent() );
     }
-
-    your_shadow_duration_tier = timespan_t::from_seconds( p.find_spell( 363469 )->effectN( 2 ).base_value() );
-    T28_4PC                   = priest().sets->has_set_bonus( PRIEST_SHADOW, T28, B4 );
   }
 
   void execute() override
@@ -161,7 +156,7 @@ public:
 
   timespan_t execute_time() const override
   {
-    if ( priest().buffs.dark_thought->check() || priest().buffs.shadowy_insight->check() )
+    if ( priest().buffs.shadowy_insight->check() )
     {
       return timespan_t::zero();
     }
@@ -183,50 +178,9 @@ public:
   void update_ready( timespan_t cd_duration ) override
   {
     priest().buffs.voidform->up();  // Benefit tracking
-    // Decrementing a stack of dark thoughts will consume a max charge. Consuming a max charge loses you a current
+    // Decrementing a stack of shadowy insight will consume a max charge. Consuming a max charge loses you a current
     // charge. Therefore update_ready needs to not be called in that case.
-    if ( priest().buffs.dark_thought->up() )
-    {
-      priest().buffs.dark_thought->decrement();
-      priest().buffs.shadowy_insight->decrement();  // TODO: Check Pre-patch Using a Dark Thought also uses your
-                                                    // Shadowy Insight Proc 03/09/2022
-      if ( T28_4PC )
-      {
-        priest().procs.living_shadow_tier->occur();
-
-        auto pet = priest().pets.your_shadow_tier.active_pet();
-
-        if ( pet )
-        {
-          pet->adjust_duration( your_shadow_duration_tier );
-        }
-        else if ( priest().t28_4pc_summon_event )
-        {
-          timespan_t new_duration = priest().t28_4pc_summon_duration + your_shadow_duration_tier;
-          sim->print_debug( "{} extends future your_shadow by {} seconds for a new total of {}. Spawns in {} seconds.",
-                            priest(), your_shadow_duration_tier, new_duration,
-                            priest().t28_4pc_summon_event->remains() );
-          priest().t28_4pc_summon_duration = new_duration;
-        }
-        else
-        {
-          // There is a ~1.5s delay between consuming the Dark Thought, and the Shadow Spawning
-          // There is an additional .5s delay between the spawn and the first tick, that is also matched between
-          // channels This is intentional due to the way the pet spawns attached to the player
-          double spawn_delay = 1.5;
-          sim->print_debug( "{} consumes Dark Thought, delaying your_shadow spawn by {} seconds.", priest(),
-                            spawn_delay );
-          // Add 1ms to ensure pet is dismissed after last dot tick.
-          priest().t28_4pc_summon_duration = your_shadow_duration_tier + timespan_t::from_millis( 1 );
-          priest().t28_4pc_summon_event    = make_event( *sim, timespan_t::from_seconds( spawn_delay ), [ this ] {
-            priest().pets.your_shadow_tier.spawn( priest().t28_4pc_summon_duration );
-            priest().t28_4pc_summon_event    = nullptr;
-            priest().t28_4pc_summon_duration = timespan_t::from_seconds( 0 );
-          } );
-        }
-      }
-    }
-    else if ( priest().buffs.shadowy_insight->up() )
+    if ( priest().buffs.shadowy_insight->up() )
     {
       if ( priest().buffs.mind_melt->check() )
       {
@@ -2217,8 +2171,7 @@ priest_t::priest_t( sim_t* sim, util::string_view name, race_e r )
     options(),
     legendary(),
     conduits(),
-    covenant(),
-    t28_4pc_summon_event( nullptr )
+    covenant()
 {
   create_cooldowns();
   create_gains();
@@ -2303,14 +2256,9 @@ void priest_t::create_procs()
   procs.inescapable_torment_missed_mb  = get_proc( "Inescapable Torment expired when Mind Blast was ready" );
   procs.inescapable_torment_missed_swd = get_proc( "Inescapable Torment expired when Shadow Word: Death was ready" );
   // Shadowlands
-  procs.dissonant_echoes               = get_proc( "Void Bolt resets from Dissonant Echoes" );
-  procs.void_tendril_ecttv             = get_proc( "Void Tendril proc from Eternal Call to the Void" );
-  procs.void_lasher_ecttv              = get_proc( "Void Lasher proc from Eternal Call to the Void" );
-  procs.dark_thoughts_flay             = get_proc( "Dark Thoughts proc from Mind Flay" );
-  procs.dark_thoughts_sear             = get_proc( "Dark Thoughts proc from Mind Sear" );
-  procs.dark_thoughts_devouring_plague = get_proc( "Dark Thoughts proc from T28 2-set Devouring Plague" );
-  procs.dark_thoughts_missed           = get_proc( "Dark Thoughts proc not consumed" );
-  procs.living_shadow_tier             = get_proc( "Living Shadow T28 4-set procs" );
+  procs.dissonant_echoes   = get_proc( "Void Bolt resets from Dissonant Echoes" );
+  procs.void_tendril_ecttv = get_proc( "Void Tendril proc from Eternal Call to the Void" );
+  procs.void_lasher_ecttv  = get_proc( "Void Lasher proc from Eternal Call to the Void" );
 }
 
 /** Construct priest benefits */
@@ -3110,13 +3058,6 @@ void priest_t::reset()
       td->reset();
     }
   }
-
-  // Reset T28 pet delay variables
-  t28_4pc_summon_event    = nullptr;
-  t28_4pc_summon_duration = timespan_t::from_seconds( 0 );
-
-  living_shadow_summon_event    = nullptr;
-  living_shadow_summon_duration = timespan_t::from_seconds( 0 );
 }
 
 void priest_t::target_mitigation( school_e school, result_amount_type dt, action_state_t* s )

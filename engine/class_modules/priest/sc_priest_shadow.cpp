@@ -1152,13 +1152,6 @@ struct devouring_plague_t final : public priest_spell_t
       priest().buffs.mind_flay_insanity->trigger();
     }
 
-    if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T28, B2 ) &&
-         rng().roll( priest().sets->set( PRIEST_SHADOW, T28, B2 )->effectN( 1 ).percent() ) )
-    {
-      priest().buffs.dark_thought->trigger();
-      priest().procs.dark_thoughts_devouring_plague->occur();
-    }
-
     if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T29, B2 ) )
     {
       priest().buffs.gathering_shadows->expire();
@@ -1904,7 +1897,7 @@ struct damnation_t final : public priest_spell_t
 
   damnation_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "damnation", p, p.talents.shadow.damnation ),
-      child_swp( new shadow_word_pain_t( priest(), true ) ),  
+      child_swp( new shadow_word_pain_t( priest(), true ) ),
       child_vt( new vampiric_touch_t( priest(), true, true, true, false ) ),
       child_dp( new devouring_plague_t( priest(), false ) )
   {
@@ -2010,35 +2003,6 @@ struct shadowform_state_t final : public priest_buff_t<buff_t>
   {
     set_chance( 1.0 );
     set_quiet( true );
-  }
-};
-
-// ==========================================================================
-// Dark Thoughts
-// ==========================================================================
-struct dark_thought_t final : public priest_buff_t<buff_t>
-{
-  dark_thought_t( priest_t& p ) : base_t( p, "dark_thought", p.specs.dark_thought )
-  {
-    // Allow player to react to the buff being applied so they can cast Mind Blast.
-    this->reactable = true;
-
-    // Create a stack change callback to adjust the number of Mind Blast charges.
-    set_stack_change_callback(
-        [ this ]( buff_t*, int old, int cur ) { priest().cooldowns.mind_blast->adjust_max_charges( cur - old ); } );
-  }
-
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-  {
-    if ( remaining_duration == timespan_t::zero() )
-    {
-      for ( int i = 0; i < expiration_stacks; i++ )
-      {
-        priest().procs.dark_thoughts_missed->occur();
-      }
-    }
-
-    base_t::expire_override( expiration_stacks, remaining_duration );
   }
 };
 
@@ -2185,7 +2149,6 @@ void priest_t::generate_insanity( double num_amount, gain_t* g, action_t* action
 void priest_t::create_buffs_shadow()
 {
   // Baseline
-  buffs.dark_thought     = make_buff<buffs::dark_thought_t>( *this );
   buffs.shadowform       = make_buff<buffs::shadowform_t>( *this );
   buffs.shadowform_state = make_buff<buffs::shadowform_state_t>( *this );
   buffs.vampiric_embrace = make_buff( this, "vampiric_embrace", talents.vampiric_embrace );
@@ -2281,8 +2244,6 @@ void priest_t::create_buffs_shadow()
                                   ->set_refresh_behavior( buff_refresh_behavior::DURATION );
 
   // Tier Sets
-  buffs.living_shadow_tier =
-      make_buff( this, "living_shadow_tier", find_spell( 363574 ) )->set_duration( timespan_t::zero() );
   // 393684 -> 394961
   buffs.gathering_shadows =
       make_buff( this, "gathering_shadows", sets->set( PRIEST_SHADOW, T29, B2 )->effectN( 1 ).trigger() )
@@ -2380,10 +2341,6 @@ void priest_t::init_spells_shadow()
   specs.void_bolt      = find_spell( 205448 );
   specs.voidform       = find_spell( 194249 );
   specs.hallucinations = find_spell( 280752 );
-
-  // Still need these for pre-patch since 2p/4p still works with DT and not SI
-  specs.dark_thought  = find_specialization_spell( "Dark Thought" );
-  specs.dark_thoughts = find_specialization_spell( "Dark Thoughts" );
 
   // Legendary Effects
   specs.cauterizing_shadows_health = find_spell( 336373 );
