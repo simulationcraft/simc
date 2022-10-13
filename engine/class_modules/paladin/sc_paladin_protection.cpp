@@ -566,7 +566,7 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
     }
 
     aoe = -1;
-    is_sotr = true;
+    use_off_gcd = is_sotr = true;
 
     // no weapon multiplier
     weapon_multiplier = 0.0;
