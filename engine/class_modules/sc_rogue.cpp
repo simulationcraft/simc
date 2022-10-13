@@ -4163,7 +4163,7 @@ struct pistol_shot_t : public rogue_attack_t
     }
 
     // Audacity -- Currently on beta this can also trigger from Fan the Hammer procs
-    if ( p()->buffs.opportunity->check() )
+    if ( p()->talent.outlaw.audacity->ok() && p()->buffs.opportunity->check() )
     {
       p()->buffs.audacity->trigger( 1, buff_t::DEFAULT_VALUE(), p()->extra_attack_proc_chance() );
     }
