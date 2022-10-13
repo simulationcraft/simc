@@ -250,7 +250,7 @@ struct tyrs_enforcer_damage_t : public paladin_spell_t
 struct inner_light_damage_t : public paladin_spell_t
 {
   inner_light_damage_t( paladin_t* p )
-    : paladin_spell_t( "inner_light", p, p->talents.tyrs_enforcer->effectN( 1 ).trigger() )
+    : paladin_spell_t( "inner_light", p, p->talents.inner_light->effectN( 1 ).trigger() )
   {
     background = proc = may_crit = true;
     may_miss                     = false;
@@ -989,7 +989,7 @@ void paladin_t::create_buffs_protection()
     legendary.reign_of_endless_kings -> effectN( 2 ).trigger() -> effectN( 2 ).trigger() );
 
   // Azerite traits
-  buffs.inner_light = make_buff( this, "inner_light", find_spell( 386568 ) );
+  buffs.inner_light = make_buff( this, "inner_light", find_spell( 386556 ) );
   buffs.inspiring_vanguard = make_buff<stat_buff_t>( this, "inspiring_vanguard", azerite.inspiring_vanguard.spell() -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() )
         -> add_stat( STAT_STRENGTH, azerite.inspiring_vanguard.value( 1 ) );
   buffs.soaring_shield = make_buff<stat_buff_t>( this, "soaring_shield", azerite.soaring_shield.spell() -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() )
