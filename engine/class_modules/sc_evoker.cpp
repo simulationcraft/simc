@@ -1881,11 +1881,8 @@ struct dragonrage_t : public evoker_spell_t
   {
     damage = p->get_secondary_action<dragonrage_damage_t>( "dragonrage_pyre" );
     add_child( damage );
-  }
 
-  school_e get_school() const override
-  {
-    return damage->school;
+    school = damage->school;
   }
 
   void execute() override
