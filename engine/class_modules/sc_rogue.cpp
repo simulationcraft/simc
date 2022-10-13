@@ -26,8 +26,6 @@ enum class secondary_trigger
   TRIPLE_THREAT,
   CONCEALED_BLUNDERBUSS,
   FLAGELLATION,
-  IMMORTAL_TECHNIQUE,
-  TORNADO_TRIGGER,
   MAIN_GAUCHE,
   DEATHMARK,
   VICIOUS_VENOMS,
@@ -156,7 +154,6 @@ public:
     damage_buff_t* shiv;
     buff_t* wound_poison;
     buff_t* banshees_blight; // Slyvanas Dagger
-    damage_buff_t* grudge_match; // T28 Assassination 2pc
   } debuffs;
 
   rogue_td_t( player_t* target, rogue_t* source );
@@ -264,9 +261,6 @@ public:
 
     // Shadowlands
     actions::rogue_attack_t* concealed_blunderbuss = nullptr;
-    actions::rogue_attack_t* immortal_technique_shadowstrike = nullptr;
-    actions::rogue_attack_t* tornado_trigger_pistol_shot = nullptr;
-    actions::rogue_attack_t* tornado_trigger_between_the_eyes = nullptr;
     action_t* banshees_blight = nullptr; // Slyvanas Dagger
     
     struct
@@ -275,7 +269,6 @@ public:
       actions::rogue_attack_t* gloomblade = nullptr;
       actions::rogue_attack_t* shadowstrike = nullptr;
       actions::rogue_attack_t* akaaris_shadowstrike = nullptr;
-      actions::rogue_attack_t* immortal_technique_shadowstrike = nullptr;
     } weaponmaster;
     struct
     {
@@ -395,8 +388,7 @@ public:
     damage_buff_t* perforated_veins;
 
     // Set Bonuses
-    buff_t* tornado_trigger_loading;
-    buff_t* tornado_trigger;
+
   } buffs;
 
   // Cooldowns
@@ -988,18 +980,12 @@ public:
     proc_t* duskwalker_patch;
 
     // Set Bonus
-    proc_t* t28_subtlety_4pc;
+
   } procs;
 
   // Set Bonus effects
   struct set_bonuses_t
   {
-    const spell_data_t* t28_assassination_2pc;
-    const spell_data_t* t28_assassination_4pc;
-    const spell_data_t* t28_outlaw_2pc;
-    const spell_data_t* t28_outlaw_4pc;
-    const spell_data_t* t28_subtlety_2pc;
-    const spell_data_t* t28_subtlety_4pc;
     const spell_data_t* t29_assassination_2pc;
     const spell_data_t* t29_assassination_4pc;  // NYI
     const spell_data_t* t29_outlaw_2pc;         // NYI
@@ -1142,7 +1128,6 @@ public:
   void trigger_venomous_wounds_death( player_t* ); // On-death trigger for Venomous Wounds energy replenish
   void trigger_toxic_onslaught( player_t* );
   void trigger_exsanguinate( player_t* );
-  void trigger_t28_assassination_4pc( player_t* );
 
   double consume_cp_max() const
   {
@@ -1488,8 +1473,6 @@ public:
     bool dashing_scoundrel = false;
     bool zoldyck_insignia = false;
     bool sepsis = false;                // Stance Mask
-    bool t28_assassination_2pc = false;
-    bool t28_assassination_4pc = false;
     bool deeper_daggers = false;
 
     // Dragonflight
@@ -1606,11 +1589,6 @@ public:
     affected_by.ruthless_precision = ab::data().affected_by( p->spec.ruthless_precision->effectN( 1 ) );
 
     // Shadowlands
-    if ( p->set_bonuses.t28_assassination_2pc->ok() )
-    {
-      affected_by.t28_assassination_2pc = ab::data().affected_by( p->find_spell( 364668 )->effectN( 1 ) );
-    }
-
     if ( p->legendary.master_assassins_mark.ok() )
     {
       affected_by.master_assassins_mark = ab::data().affected_by( p->find_spell( 340094 )->effectN( 1 ) );
@@ -1858,17 +1836,7 @@ public:
 
     auto rs = cast_state( state );
     rs->set_combo_points( consume_cp, effective_cp );
-
-    // Apply Assassination T28 4pc on Cast if Vendetta is up
-    if ( p()->set_bonuses.t28_assassination_4pc->ok() && rs->get_action()->affected_by.t28_assassination_4pc &&
-         false /* DFALPHA Deathmark? */ )
-    {
-      rs->set_exsanguinated_rate( 1.0 + p()->set_bonuses.t28_assassination_4pc->effectN( 1 ).percent() );
-    }
-    else
-    {
-      rs->clear_exsanguinated();
-    }
+    rs->clear_exsanguinated();
 
     ab::snapshot_state( state, rt );
   }
@@ -2124,11 +2092,6 @@ public:
       m *= 1.0 + p()->spec.zoldyck_insignia->effectN( 1 ).percent();
     }
 
-    if ( affected_by.t28_assassination_2pc )
-    {
-      m *= tdata->debuffs.grudge_match->value_direct();
-    }
-
     if ( affected_by.maim_mangle && tdata->dots.garrote->is_ticking() )
     {
       m *= 1.0 + ( p()->talent.assassination.systemic_failure->ok() ?
@@ -2340,7 +2303,7 @@ public:
       p()->buffs.blindside->expire();
     }
 
-    // Debugging for Assassination T28 4pc
+    // Debugging
     if ( p()->sim->log )
     {
       const auto rs = cast_state( ab::execute_state );
@@ -2537,7 +2500,6 @@ struct deadly_poison_t : public rogue_poison_t
     deadly_poison_dot_t( util::string_view name, rogue_t* p, const spell_data_t* s ) :
       rogue_poison_t( name, p, s, true, true )
     {
-      affected_by.t28_assassination_4pc = true;
     }
   };
 
@@ -3477,7 +3439,6 @@ struct crimson_tempest_t : public rogue_attack_t
   {
     aoe = -1;
     reduced_aoe_targets = data().effectN( 3 ).base_value();
-    affected_by.t28_assassination_4pc = true;
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
@@ -3850,7 +3811,6 @@ struct garrote_t : public rogue_attack_t
   garrote_t( util::string_view name, rogue_t* p, const spell_data_t* s, util::string_view options_str = {} ) :
     rogue_attack_t( name, p, s, options_str )
   {
-    affected_by.t28_assassination_4pc = true;
   }
 
   double composite_persistent_multiplier( const action_state_t* state ) const override
@@ -4138,12 +4098,8 @@ struct pistol_shot_t : public rogue_attack_t
   {
     double m = rogue_attack_t::action_multiplier();
 
-    // 2022-02-16 -- As of latest 9.2 build 2pc proc damage does not benefit from or consume procs
-    if ( secondary_trigger_type != secondary_trigger::TORNADO_TRIGGER )
-    {
-      m *= 1.0 + p()->buffs.opportunity->value();
-      m *= 1.0 + p()->buffs.greenskins_wickers->value();
-    }
+    m *= 1.0 + p()->buffs.opportunity->value();
+    m *= 1.0 + p()->buffs.greenskins_wickers->value();
 
     return m;
   }
@@ -4180,12 +4136,9 @@ struct pistol_shot_t : public rogue_attack_t
       p()->buffs.audacity->trigger( 1, buff_t::DEFAULT_VALUE(), p()->extra_attack_proc_chance() );
     }
 
-    // Opportunity is not consumed by T28 4pc however it is consumed by Fan the Hammer procs
-    if ( secondary_trigger_type != secondary_trigger::TORNADO_TRIGGER )
-    {
-      p()->buffs.opportunity->decrement();
-      p()->buffs.greenskins_wickers->expire();
-    }
+
+    p()->buffs.opportunity->decrement();
+    p()->buffs.greenskins_wickers->expire();
 
     // Concealed Blunderbuss Legendary
     if ( p()->active.concealed_blunderbuss && !is_secondary_action() )
@@ -4208,23 +4161,6 @@ struct pistol_shot_t : public rogue_attack_t
         p()->active.fan_the_hammer->trigger_secondary_action( execute_state->target, 0.1_s * ( 1 + i ) );
       }
     }
-
-    // T28 Outlaw 4pc Procs
-    if ( p()->set_bonuses.t28_outlaw_4pc->ok() )
-    {
-      if ( p()->buffs.tornado_trigger->check() )
-      {
-        if ( secondary_trigger_type != secondary_trigger::TORNADO_TRIGGER )
-        {
-          p()->active.tornado_trigger_between_the_eyes->trigger_secondary_action( execute_state->target, 6 );
-          p()->buffs.tornado_trigger->expire();
-        }
-      }
-      else
-      {
-        p()->buffs.tornado_trigger_loading->trigger();
-      }
-    }
   }
 
   // As of DF Beta neither Blunderbuss or Fan the Hammer trigger this
@@ -4245,16 +4181,6 @@ struct main_gauche_t : public rogue_attack_t
   {
   }
 
-  void init() override
-  {
-    rogue_attack_t::init();
-
-    if ( p()->active.tornado_trigger_pistol_shot )
-    {
-      add_child( p()->active.tornado_trigger_pistol_shot );
-    }
-  }
-
   double attack_direct_power_coefficient( const action_state_t* s ) const override
   {
     double ap = rogue_attack_t::attack_direct_power_coefficient( s );
@@ -4264,17 +4190,6 @@ struct main_gauche_t : public rogue_attack_t
     ap += p()->cache.mastery() * p()->mastery.main_gauche->effectN( 2 ).sp_coeff();
 
     return ap;
-  }
-
-  void impact( action_state_t* state ) override
-  {
-    rogue_attack_t::impact( state );
-
-    if ( p()->active.tornado_trigger_pistol_shot &&
-         p()->rng().roll( p()->set_bonuses.t28_outlaw_2pc->effectN( 1 ).percent() ) )
-    {
-      p()->active.tornado_trigger_pistol_shot->trigger_secondary_action( state->target );
-    }
   }
 
   bool procs_fatal_flourish() const override
@@ -4476,7 +4391,6 @@ struct rupture_t : public rogue_attack_t
   rupture_t( util::string_view name, rogue_t* p, const spell_data_t* s, util::string_view options_str = {} ) :
     rogue_attack_t( name, p, s, options_str )
   {
-    affected_by.t28_assassination_4pc = true;
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
@@ -4835,11 +4749,6 @@ struct shadowstrike_t : public rogue_attack_t
       if ( p()->active.akaaris_shadowstrike )
         add_child( p()->active.akaaris_shadowstrike );
     }
-    else if ( secondary_trigger_type == secondary_trigger::IMMORTAL_TECHNIQUE )
-    {
-      if ( p()->active.weaponmaster.immortal_technique_shadowstrike )
-        add_child( p()->active.weaponmaster.immortal_technique_shadowstrike );
-    }
   }
 
   void execute() override
@@ -4869,14 +4778,6 @@ struct shadowstrike_t : public rogue_attack_t
       trigger_combo_point_gain( as<int>( p()->buffs.the_rotten->check_value() ), p()->gains.the_rotten );
       p()->buffs.the_rotten->expire( 1_ms );
     }
-
-    // 2022-02-07 -- 2pc procs can trigger this as they are fake direct casts, does not work on WM
-    if ( ( !is_secondary_action() || secondary_trigger_type == secondary_trigger::IMMORTAL_TECHNIQUE ) &&
-      p()->set_bonuses.t28_subtlety_2pc->ok() &&
-      p()->rng().roll( p()->set_bonuses.t28_subtlety_2pc->effectN( 1 ).percent() ) )
-    {
-      p()->buffs.shadow_blades->extend_duration_or_trigger( p()->set_bonuses.t28_subtlety_2pc->effectN( 3 ).time_value() );
-    }
   }
 
   void impact( action_state_t* state ) override
@@ -4884,10 +4785,7 @@ struct shadowstrike_t : public rogue_attack_t
     rogue_attack_t::impact( state );
 
     trigger_perforated_veins( state );
-    if ( secondary_trigger_type == secondary_trigger::IMMORTAL_TECHNIQUE )
-      trigger_weaponmaster( state, p()->active.weaponmaster.immortal_technique_shadowstrike );
-    else
-      trigger_weaponmaster( state, p()->active.weaponmaster.shadowstrike );
+    trigger_weaponmaster( state, p()->active.weaponmaster.shadowstrike );
 
     // Appears to be applied after weaponmastered attacks.
     trigger_find_weakness( state );
@@ -5335,32 +5233,9 @@ struct symbols_of_death_t : public rogue_spell_t
 
 struct shiv_t : public rogue_attack_t
 {
-  struct grudge_match_t : public rogue_attack_t
-  {
-    // Applied via scripted effect, use a placeholder AoE spell trigger with the correct radius
-    grudge_match_t( util::string_view name, rogue_t* p ) :
-      rogue_attack_t( name, p, p->find_spell( 364667 ) )
-    {
-      dual = true;
-      callbacks = false;
-      aoe = -1;
-      radius = data().effectN( 3 ).base_value();
-    }
-
-    void impact( action_state_t* s ) override
-    {
-      rogue_attack_t::impact( s );
-      td( s->target )->debuffs.grudge_match->trigger();
-    }
-  };
-
   shiv_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
     rogue_attack_t( name, p, p->talent.rogue.shiv, options_str )
   {
-    if ( p->set_bonuses.t28_assassination_2pc->ok() )
-    {
-      impact_action = p->get_background_action<grudge_match_t>( "grudge_match_driver" );
-    }
   }
 
   void impact( action_state_t* s ) override
@@ -5456,7 +5331,6 @@ struct kidney_shot_t : public rogue_attack_t
     internal_bleeding_t( util::string_view name, rogue_t* p ) :
       rogue_attack_t( name, p, p->spec.internal_bleeding_debuff ) // DFALPHA -- Check scaling with talent points
     {
-      affected_by.t28_assassination_4pc = true; // TOCHECK
     }
 
     timespan_t composite_dot_duration( const action_state_t* s ) const override
@@ -5780,7 +5654,6 @@ struct sepsis_covenant_t : public rogue_attack_t
     rogue_attack_t( name, p, p->covenant.sepsis, options_str )
   {
     affected_by.broadside_cp = true; // 2021-04-22 -- Not in the whitelist but confirmed as working in-game
-    affected_by.t28_assassination_4pc = true; // 2022-01-26 -- TOCHECK: confirmed on PTR, needs live testing
     sepsis_expire_damage = p->get_background_action<sepsis_expire_damage_t>( "sepsis_expire_damage" );
     sepsis_expire_damage->stats = stats;
   }
@@ -5853,7 +5726,6 @@ struct sepsis_t : public rogue_attack_t
     rogue_attack_t( name, p, p->talent.shared.sepsis, options_str )
   {
     affected_by.broadside_cp = true; // TOCHECK DFALPHA 2021-04-22 -- Not in the whitelist but confirmed as working in-game
-    affected_by.t28_assassination_4pc = true; // TOCHECK DFALPHA 2022-01-26 -- TOCHECK: confirmed on PTR, needs live testing
     sepsis_expire_damage = p->get_background_action<sepsis_expire_damage_t>( "sepsis_expire_damage" );
     sepsis_expire_damage->stats = stats;
   }
@@ -5923,7 +5795,6 @@ struct serrated_bone_spike_covenant_t : public rogue_attack_t
       aoe = 0; // Technically affected by Deathspike, but interferes with our triggering logic
       hasted_ticks = true; // 2021-03-12 - Bone spike dot is hasted, despite not being flagged as such
       affected_by.zoldyck_insignia = true; // 2021-02-13 - Logs show that the SBS DoT is affected by Zoldyck
-      affected_by.t28_assassination_4pc = true;
       dot_duration = timespan_t::from_seconds( sim->expected_max_time() * 3 );
 
       if ( p->conduit.sudden_fractures.ok() )
@@ -6056,7 +5927,6 @@ struct serrated_bone_spike_t : public rogue_attack_t
       aoe = 0; // Technically affected by Deathspike, but interferes with our triggering logic
       hasted_ticks = true; // TOCHECK DFALPHA -- 2021-03-12 - Bone spike dot is hasted, despite not being flagged as such
       affected_by.zoldyck_insignia = true; // TOCHECK DFALPHA -- 2021-02-13 - Logs show that the SBS DoT is affected by Zoldyck
-      affected_by.t28_assassination_4pc = true; // TOCHECK DFALPHA
       dot_duration = timespan_t::from_seconds( sim->expected_max_time() * 3 );
     }
 
@@ -6356,11 +6226,6 @@ std::unique_ptr<expr_t> actions::rogue_action_t<Base>::create_expression( util::
     return make_fn_expr( name_str, [ this ]() {
       dot_t* d = ab::get_dot( ab::target );
       double refresh_rate = 1.0;
-      if ( affected_by.t28_assassination_4pc && p()->set_bonuses.t28_assassination_4pc->ok() &&
-           false /* DFALPHA Deathmark? */ )
-      {
-        refresh_rate += p()->set_bonuses.t28_assassination_4pc->effectN( 1 ).percent();
-      }
       return d->is_ticking() && cast_state( d->state )->get_exsanguinated_rate() > refresh_rate;
     } );
   }
@@ -7157,37 +7022,6 @@ void rogue_t::trigger_exsanguinate( player_t* target )
   do_exsanguinate( td->dots.crimson_tempest, rate );
 }
 
-void rogue_t::trigger_t28_assassination_4pc( player_t* target )
-{
-  if ( !set_bonuses.t28_assassination_4pc->ok() )
-    return;
-
-  rogue_td_t* td = get_target_data( target );
-
-  // 2022-02-14 -- As of 9.2 Vendetta reverses the modifier of SBS when fading
-  //               Haste snapshot is maintained however, so don't need to update the snapshot flags
-  double rate = 1.0 + set_bonuses.t28_assassination_4pc->effectN( 1 ).percent();
-  bool is_reversed = false /* DFALPHA Deathmark? */;
-
-  std::vector<dot_t*> candidate_dots;
-  if ( is_reversed )
-  {
-    candidate_dots = { td->dots.serrated_bone_spike };
-    rate = 1.0 / rate;
-  }
-  else
-  {
-    candidate_dots = { td->dots.crimson_tempest, td->dots.deadly_poison, td->dots.garrote,
-    td->dots.internal_bleeding, td->dots.rupture, td->dots.sepsis, td->dots.serrated_bone_spike };
-  }
-
-  for ( auto dot : candidate_dots )
-  {
-    if ( dot->current_action && cast_attack( dot->current_action )->affected_by.t28_assassination_4pc )
-      do_exsanguinate( dot, rate );
-  }
-}
-
 template <typename Base>
 void actions::rogue_action_t<Base>::trigger_auto_attack( const action_state_t* /* state */ )
 {
@@ -7524,10 +7358,6 @@ void actions::rogue_action_t<Base>::trigger_alacrity( const action_state_t* stat
   if ( !p()->talent.rogue.alacrity->ok() || !affected_by.alacrity )
     return;
 
-  // 2022-02-06 -- Current testing shows this does not trigger from 4pc procs
-  if ( secondary_trigger_type == secondary_trigger::TORNADO_TRIGGER )
-    return;
-
   // TOCHECK -- Double check stack overflow for 5+ CP works correctly
   // DFALPHA -- This appears very bugged on PTR as the chance seems to be scaling with the Points Per Combo Point value
   double chance = p()->talent.rogue.alacrity->effectN( 2 ).percent() * cast_state( state )->get_combo_points();
@@ -7685,29 +7515,6 @@ void actions::rogue_action_t<Base>::spend_combo_points( const action_state_t* st
       animacharged_cp_proc->occur();
     }
   }
-
-  // T28 Subtlety 4pc -- Triggers as a "cast" individually as each can generate CP
-  if ( p()->set_bonuses.t28_subtlety_4pc->ok() )
-  {
-    if ( p()->rng().roll( rs->get_combo_points() * p()->set_bonuses.t28_subtlety_4pc->effectN( 2 ).percent() ) )
-    {
-      p()->procs.t28_subtlety_4pc->occur();
-      int num_shadowstrike_targets = as<int>( p()->set_bonuses.t28_subtlety_4pc->effectN( 3 ).base_value() );
-      for ( auto candidate_target : p()->sim->target_non_sleeping_list )
-      {
-        if ( num_shadowstrike_targets <= 0 )
-          break;
-
-        // 2022-02-05 -- Tooltip updated to include 15y range, not in spell data
-        if ( p()->get_player_distance( *candidate_target ) <= 15.0 )
-        {
-          p()->active.immortal_technique_shadowstrike->set_target( candidate_target );
-          p()->active.immortal_technique_shadowstrike->execute();
-          --num_shadowstrike_targets;
-        }
-      }
-    }
-  }
 }
 
 template <typename Base>
@@ -7776,8 +7583,8 @@ void actions::rogue_action_t<Base>::trigger_akaaris_soul_fragment( const action_
   if ( !ab::result_is_hit( state->result ) || !p()->legendary.akaaris_soul_fragment->ok() )
     return;
 
-  // 2022-02-07 -- 4pc procs can trigger this as they are fake direct casts, does not work on WM
-  if ( is_secondary_action() && secondary_trigger_type != secondary_trigger::IMMORTAL_TECHNIQUE )
+  // 2022-02-07 -- Does not work on Weaponmaster
+  if ( is_secondary_action() )
     return;
 
   td( state->target )->debuffs.akaaris_soul_fragment->trigger();
@@ -8043,22 +7850,6 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
     debuffs.banshees_blight = make_buff( *this, "banshees_blight", source->find_spell( 358090 ) );
   else
     debuffs.banshees_blight = make_buff( *this, "banshees_blight" )->set_quiet( true );
-
-  // T28 Assassination 2pc 
-  if ( source->set_bonuses.t28_assassination_2pc->ok() )
-    debuffs.grudge_match = make_buff<damage_buff_t>( *this, "grudge_match", source->find_spell( 364668 ) );
-  else
-  {
-    debuffs.grudge_match = make_buff<damage_buff_t>( *this, "grudge_match" );
-    debuffs.grudge_match->set_chance( 0.0 );
-    debuffs.grudge_match->set_quiet( true );
-  }
-
-  // T28 Assassination 4pc
-  if ( source->set_bonuses.t28_assassination_4pc->ok() )
-  {
-    // DFALPHA Deathmark?
-  }
 
   // Type-Based Tracking for Accumulators
   bleeds = { dots.deathmark, dots.garrote, dots.garrote_deathmark, dots.internal_bleeding,
@@ -8533,7 +8324,7 @@ void rogue_t::init_action_list()
     cds->add_action( "use_item,name=ring_of_collapsing_futures,if=buff.temptation.down|fight_remains<30" );
     cds->add_action( "use_items,slots=trinket1,if=(!variable.use_trinket_1_pre_deathmark|variable.deathmark_condition&(cooldown.deathmark.remains<2|variable.deathmark_cooldown_remains>trinket.1.cooldown.duration%2)|fight_remains<=20)&(variable.trinket_sync_slot=1&(debuff.deathmark.up|variable.use_trinket_1_pre_deathmark|fight_remains<=20)|(variable.trinket_sync_slot=2&(!trinket.2.cooldown.ready|variable.deathmark_cooldown_remains>20))|!variable.trinket_sync_slot)", "Sync the priority stat buff trinket with Deathmark, otherwise use on cooldown" );
     cds->add_action( "use_items,slots=trinket2,if=(!variable.use_trinket_2_pre_deathmark|variable.deathmark_condition&(cooldown.deathmark.remains<2|variable.deathmark_cooldown_remains>trinket.2.cooldown.duration%2)|fight_remains<=20)&(variable.trinket_sync_slot=2&(debuff.deathmark.up|variable.use_trinket_2_pre_deathmark|fight_remains<=20)|(variable.trinket_sync_slot=1&(!trinket.1.cooldown.ready|variable.deathmark_cooldown_remains>20))|!variable.trinket_sync_slot)" );
-    cds->add_action( "deathmark,if=variable.deathmark_condition&(!set_bonus.tier28_4pc|(dot.garrote.haste_pct>=(dot.garrote.haste_pct_next_tick-3))&(dot.rupture.haste_pct>=(dot.rupture.haste_pct_next_tick-3)))", "If using T28 4pc, delay until the next DoT tick if we can gain more than a 3% haste snapshot compared to the current tick value");
+    cds->add_action( "deathmark,if=variable.deathmark_condition" );
     cds->add_action( "kingsbane,if=(debuff.shiv.up|cooldown.shiv.ready)&buff.envenom.up" );
     cds->add_action( "exsanguinate,if=!stealthed.rogue&(!dot.garrote.refreshable&dot.rupture.remains*(1+set_bonus.tier28_4pc*debuff.deathmark.up)>4+4*cp_max_spend|dot.rupture.remains*0.5>target.time_to_die)&target.time_to_die>4", "Exsanguinate when not stealthed and both Rupture and Garrote are up for long enough." );
     cds->add_action( "shiv,if=!covenant.night_fae&!debuff.shiv.up&dot.garrote.ticking&dot.rupture.ticking&(!talent.crimson_tempest.enabled|!set_bonus.tier28_2pc&variable.single_target|dot.crimson_tempest.ticking)", "Shiv if DoTs are up; if Night Fae attempt to sync with Sepsis or Deathmark if we won't waste more than half Shiv's cooldown" );
@@ -8588,7 +8379,7 @@ void rogue_t::init_action_list()
     dot->add_action( "rupture,if=set_bonus.tier28_4pc&effective_combo_points>=4&debuff.deathmark.up&debuff.deathmark.remains<3&remains<8&target.time_to_die-remains>(4+(runeforge.dashing_scoundrel*5)+(runeforge.doomblade*5)+(variable.regen_saturated*6))%2", "Early refresh Rupture if it is at low duration (but not yet pandemic) at the end of Deathmark with 4pc" );
     dot->add_action( "rupture,cycle_targets=1,if=!variable.skip_cycle_rupture&!variable.skip_rupture&target!=self.target&effective_combo_points>=4&refreshable&(pmultiplier<=1|remains<=tick_time&spell_targets.fan_of_knives>=3)&(!will_lose_exsanguinate|remains<=tick_time*2&spell_targets.fan_of_knives>=3)&target.time_to_die-remains>(4+(runeforge.dashing_scoundrel*5)+(runeforge.doomblade*5)+(variable.regen_saturated*6))" );
     dot->add_action( "crimson_tempest,if=spell_targets>=2&effective_combo_points>=4&remains<2+3*(spell_targets>=4)", "Fallback AoE Crimson Tempest with the same logic as above, but ignoring the energy conditions if we aren't using Rupture" );
-    dot->add_action( "crimson_tempest,if=spell_targets=1&(!runeforge.dashing_scoundrel|rune_word.frost.enabled)&effective_combo_points>=(cp_max_spend-1)&refreshable&!will_lose_exsanguinate&(!debuff.shiv.up|debuff.grudge_match.remains>2)&target.time_to_die-remains>4", "Crimson Tempest on ST if in pandemic and nearly max energy and if Envenom won't do more damage due to TB/MA" );
+    dot->add_action( "crimson_tempest,if=spell_targets=1&(!runeforge.dashing_scoundrel|rune_word.frost.enabled)&effective_combo_points>=(cp_max_spend-1)&refreshable&!will_lose_exsanguinate&!debuff.shiv.up&target.time_to_die-remains>4", "Crimson Tempest on ST if in pandemic and nearly max energy and if Envenom won't do more damage due to TB/MA" );
 
     // Direct damage abilities
     action_priority_list_t* direct = get_action_priority_list( "direct", "Direct damage abilities" );
@@ -8597,8 +8388,7 @@ void rogue_t::init_action_list()
     direct->add_action( "serrated_bone_spike,if=variable.use_filler&!dot.serrated_bone_spike_dot.ticking", "Apply SBS to all targets without a debuff as priority, preferring targets dying sooner after the primary target" );
     direct->add_action( "serrated_bone_spike,target_if=min:target.time_to_die+(dot.serrated_bone_spike_dot.ticking*600),if=variable.use_filler&!dot.serrated_bone_spike_dot.ticking" );
     direct->add_action( "serrated_bone_spike,if=variable.use_filler&master_assassin_remains<0.8&(fight_remains<=5|cooldown.serrated_bone_spike.max_charges-charges_fractional<=0.25)", "Keep from capping charges or burn at the end of fights" );
-    direct->add_action( "serrated_bone_spike,if=!set_bonus.tier28_2pc&variable.use_filler&master_assassin_remains<0.8&(soulbind.lead_by_example.enabled&!buff.lead_by_example.up&debuff.deathmark.up|buff.marrowed_gemstone_enhancement.up|!variable.single_target&debuff.shiv.up)", "When MA is not at high duration, sync with damage buffs without overwriting Lead by Example" );
-    direct->add_action( "serrated_bone_spike,if=set_bonus.tier28_2pc&variable.use_filler&master_assassin_remains<0.8&debuff.grudge_match.up&!buff.lead_by_example.up&raid_event.adds.in>5" );
+    direct->add_action( "serrated_bone_spike,if=variable.use_filler&master_assassin_remains<0.8&(soulbind.lead_by_example.enabled&!buff.lead_by_example.up&debuff.deathmark.up|buff.marrowed_gemstone_enhancement.up|!variable.single_target&debuff.shiv.up)", "When MA is not at high duration, sync with damage buffs without overwriting Lead by Example" );
     direct->add_action( "fan_of_knives,if=variable.use_filler&(!priority_rotation&spell_targets.fan_of_knives>=3+stealthed.rogue)", "Fan of Knives at 19+ stacks of Hidden Blades or against 4+ targets." );
     direct->add_action( "fan_of_knives,target_if=!dot.deadly_poison_dot.ticking&(!priority_rotation|dot.garrote.ticking|dot.rupture.ticking),if=variable.use_filler&spell_targets.fan_of_knives>=3", "Fan of Knives to apply poisons if inactive on any target (or any bleeding targets with priority rotation) at 3T" );
     direct->add_action( "echoing_reprimand,if=variable.use_filler&variable.deathmark_cooldown_remains>10" );
@@ -8691,7 +8481,7 @@ void rogue_t::init_action_list()
     build->add_action( "pool_resource,for_next=1" );
     build->add_action( "ambush" );
     build->add_action( "cold_blood,if=buff.opportunity.up&buff.greenskins_wickers.up|buff.greenskins_wickers.up&buff.greenskins_wickers.remains<1.5", "Use Pistol Shot when buffed by bonuses as a priority" );
-    build->add_action( "pistol_shot,if=buff.opportunity.up&(buff.greenskins_wickers.up|buff.concealed_blunderbuss.up|buff.tornado_trigger.up|talent.fan_the_hammer)|buff.greenskins_wickers.up&buff.greenskins_wickers.remains<1.5" );
+    build->add_action( "pistol_shot,if=buff.opportunity.up&(buff.greenskins_wickers.up|buff.concealed_blunderbuss.up|talent.fan_the_hammer)|buff.greenskins_wickers.up&buff.greenskins_wickers.remains<1.5" );
     build->add_action( "serrated_bone_spike,if=!dot.serrated_bone_spike_dot.ticking", "Apply SBS to all targets without a debuff as priority, preferring targets dying sooner after the primary target" );
     build->add_action( "serrated_bone_spike,target_if=min:target.time_to_die+(dot.serrated_bone_spike_dot.ticking*600),if=!dot.serrated_bone_spike_dot.ticking" );
     build->add_action( "serrated_bone_spike,if=fight_remains<=5|cooldown.serrated_bone_spike.max_charges-charges_fractional<=0.25|combo_points.deficit=cp_gain&!buff.skull_and_crossbones.up&energy.base_time_to_max>1", "Attempt to use when it will cap combo points and SnD is down, otherwise keep from capping charges" );
@@ -9803,13 +9593,6 @@ void rogue_t::init_spells()
 
   // Set Bonus Items ========================================================
 
-  set_bonuses.t28_assassination_2pc = sets->set( ROGUE_ASSASSINATION, T28, B2 );
-  set_bonuses.t28_assassination_4pc = sets->set( ROGUE_ASSASSINATION, T28, B4 );
-  set_bonuses.t28_outlaw_2pc        = sets->set( ROGUE_OUTLAW, T28, B2 );
-  set_bonuses.t28_outlaw_4pc        = sets->set( ROGUE_OUTLAW, T28, B4 );
-  set_bonuses.t28_subtlety_2pc      = sets->set( ROGUE_SUBTLETY, T28, B2 );
-  set_bonuses.t28_subtlety_4pc      = sets->set( ROGUE_SUBTLETY, T28, B4 );
-
   set_bonuses.t29_assassination_2pc = sets->set( ROGUE_ASSASSINATION, T29, B2 );
   set_bonuses.t29_assassination_4pc = sets->set( ROGUE_ASSASSINATION, T29, B4 );
   set_bonuses.t29_outlaw_2pc        = sets->set( ROGUE_OUTLAW, T29, B2 );
@@ -10012,32 +9795,6 @@ void rogue_t::init_spells()
     active.akaaris_shadowstrike = get_secondary_trigger_action<actions::akaaris_shadowstrike_t>(
       secondary_trigger::AKAARIS_SOUL_FRAGMENT, "shadowstrike_akaaris" );
   }
-
-  if ( set_bonuses.t28_subtlety_4pc->ok() )
-  {
-    // 2022-04-12 -- Testing shows 4pc procs don't consume or benefit from the SoD crit buff
-    active.immortal_technique_shadowstrike = get_secondary_trigger_action<actions::shadowstrike_t>(
-      secondary_trigger::IMMORTAL_TECHNIQUE, "shadowstrike_t28" );
-    if ( talent.subtlety.weaponmaster->ok() )
-    {
-      active.weaponmaster.immortal_technique_shadowstrike = get_secondary_trigger_action<actions::shadowstrike_t>(
-        secondary_trigger::WEAPONMASTER, "shadowstrike_t28_weaponmaster" );
-      active.immortal_technique_shadowstrike->add_child( active.weaponmaster.immortal_technique_shadowstrike );
-    }
-  }
-
-  if ( set_bonuses.t28_outlaw_2pc->ok() )
-  {
-    active.tornado_trigger_pistol_shot = get_secondary_trigger_action<actions::pistol_shot_t>(
-        secondary_trigger::TORNADO_TRIGGER, "pistol_shot_tornado_trigger" );
-  }
-
-  if ( set_bonuses.t28_outlaw_4pc->ok() )
-  {
-    active.tornado_trigger_between_the_eyes = get_secondary_trigger_action<actions::between_the_eyes_t>(
-        secondary_trigger::TORNADO_TRIGGER, "between_the_eyes_tornado_trigger" );
-    active.tornado_trigger_between_the_eyes->cooldown->duration = 0_s;
-  }
 }
 
 // rogue_t::init_gains ======================================================
@@ -10115,8 +9872,6 @@ void rogue_t::init_procs()
   procs.roll_the_bones_wasted   = get_proc( "Roll the Bones Wasted" );
 
   procs.duskwalker_patch    = get_proc( "Duskwalker Patch"             );
-
-  procs.t28_subtlety_4pc    = get_proc( "Immortal Technique (T28 4pc)" );
 
   procs.amplifying_poison_consumed           = get_proc( "Amplifying Poison Consumed" );
   procs.amplifying_poison_deathmark_consumed = get_proc( "Amplifying Poison (Deathmark) Consumed" );
@@ -10471,23 +10226,6 @@ void rogue_t::create_buffs()
 
   // Set Bonus Items ========================================================
   
-  buffs.tornado_trigger = make_buff( this, "tornado_trigger", set_bonuses.t28_outlaw_4pc->ok() ?
-                                     find_spell( 364556 ) : spell_data_t::not_found() )
-    ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
-
-  buffs.tornado_trigger_loading = make_buff( this, "tornado_trigger_loading", set_bonuses.t28_outlaw_4pc->ok() ?
-                                             find_spell( 364234 ) : spell_data_t::not_found() )
-    ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
-    ->set_chance( set_bonuses.t28_outlaw_4pc->effectN( 1 ).percent() );
-  if ( set_bonuses.t28_outlaw_4pc->ok() )
-  {
-    buffs.tornado_trigger_loading->set_expire_at_max_stack( true )
-      ->set_stack_change_callback( [this]( buff_t* b, int, int ) {
-      if ( b->at_max_stacks() )
-        buffs.tornado_trigger->trigger();
-    } );
-  }
-
   // Legendary Items ========================================================
 
   // 2021-02-18-- Sub-specific Deathly Shadows buff added in 9.0.5
