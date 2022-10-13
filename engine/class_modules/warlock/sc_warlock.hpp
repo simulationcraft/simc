@@ -356,7 +356,8 @@ public:
     player_talent_t backdraft;
     const spell_data_t* backdraft_buff; // DF - Now affects Soul Fire
     player_talent_t mayhem; // It appears that the only spells that can proc Mayhem are ones that can be Havoc'd
-    // DF - Havoc (Choice against Mayhem, core functionality unchanged)
+    player_talent_t havoc; // Talent data for Havoc is both the debuff and the action
+    const spell_data_t* havoc_debuff; // This is a second copy of the talent data for use in places that are shared by Havoc and Mayhem
     // DF - Pyrogenics (Enemies affected by Rain of Fire take increased Fire damage)
 
     const spell_data_t* roaring_blaze; // DF - Now a choice against Improved Conflagrate
@@ -1014,8 +1015,7 @@ public:
 
     if ( p()->specialization() == WARLOCK_DESTRUCTION && can_havoc )
     {
-        // SL - Conduit
-        base_aoe_multiplier *= p()->spec.havoc->effectN(1).percent();
+        base_aoe_multiplier *= p()->talents.havoc_debuff->effectN( 1 ).percent();
         p()->havoc_spells.push_back(this);
     }
   }
