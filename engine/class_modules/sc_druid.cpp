@@ -8016,13 +8016,21 @@ struct starfall_t : public druid_spell_t
 
   void execute() override
   {
-    if ( !is_free() && ( p()->buff.touch_the_cosmos->up() || p()->buff.starweavers_weft->up() ) )
+    if ( p()->buff.touch_the_cosmos->up() )
     {
-      if ( p()->buff.touch_the_cosmos->up() )
-        p()->active.starsurge_cosmos->execute_on_target( target );
-      else if ( p()->buff.starweavers_weft->up() )
-        p()->active.starsurge_starweaver->execute_on_target( target );
+      p()->active.starfall_cosmos->execute_on_target( target );
+      p()->buff.touch_the_cosmos->expire();
 
+      if ( p()->bugs && !is_free_proc() )
+        p()->buff.starweavers_warp->expire();
+
+      return;
+    }
+
+    if ( !is_free() && p()->buff.starweavers_warp->up() )
+    {
+      p()->active.starfall_starweaver->execute_on_target( target );
+      p()->buff.starweavers_warp->expire();
       return;
     }
 
@@ -8052,10 +8060,11 @@ struct starfall_t : public druid_spell_t
     if ( p()->buff.touch_the_cosmos->check() )
       p()->buff.touch_the_cosmos_starfall->trigger();
 
-    if ( free_spell == free_spell_e::CONVOKE || free_spell == free_spell_e::LYCARAS )
-      return;  // convoke/lycaras doesn't process any further
+    if ( p()->sets->has_set_bonus( DRUID_BALANCE, T29, B2 ) )
+      p()->buff.gathering_starstuff->trigger();
 
-    p()->buff.starweavers_warp->expire();
+    if ( is_free_proc() )
+      return;
 
     if ( p()->talent.starlord.ok() )
       p()->buff.starlord->trigger();
@@ -8065,19 +8074,6 @@ struct starfall_t : public druid_spell_t
 
     if ( p()->talent.starweaver.ok() )
       p()->buff.starweavers_weft->trigger();
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    druid_spell_t::impact( s );
-
-    p()->buff.touch_the_cosmos->expire();
-
-    if ( is_free_proc() )
-      return;
-
-    if ( p()->sets->has_set_bonus( DRUID_BALANCE, T29, B2 ) )
-      p()->buff.gathering_starstuff->trigger();
   }
 };
 
@@ -8177,28 +8173,6 @@ struct starfire_t : public druid_spell_t
   }
 };
 
-// Stellar Flare ============================================================
-// must come before starsurge_t due to stellar inspiration
-struct stellar_flare_t : public druid_spell_t
-{
-  stellar_flare_t( druid_t* p, std::string_view opt )
-    : stellar_flare_t( p, "stellar_flare", p->talent.stellar_flare, opt )
-  {}
-
-  stellar_flare_t( druid_t* p, std::string_view n, const spell_data_t* s, std::string_view opt )
-    : druid_spell_t( n, p, s, opt )
-  {
-    dot_name = "stellar_flare";
-  }
-
-  void tick( dot_t* d ) override
-  {
-    druid_spell_t::tick( d );
-
-    trigger_shooting_stars( d->target );
-  }
-};
-
 // Starsurge Spell ==========================================================
 struct starsurge_offspec_t : public druid_spell_t
 {
@@ -8291,13 +8265,21 @@ struct starsurge_t : public druid_spell_t
 
   void execute() override
   {
-    if ( !is_free() && ( p()->buff.touch_the_cosmos->up() || p()->buff.starweavers_weft->up() ) )
+    if ( p()->buff.touch_the_cosmos->up() )
     {
-      if ( p()->buff.touch_the_cosmos->up() )
-        p()->active.starsurge_cosmos->execute_on_target( target );
-      else if ( p()->buff.starweavers_weft->up() )
-        p()->active.starsurge_starweaver->execute_on_target( target );
+      p()->active.starsurge_cosmos->execute_on_target( target );
+      p()->buff.touch_the_cosmos->expire();
 
+      if ( p()->bugs && !is_free_proc() )
+        p()->buff.starweavers_weft->expire();
+
+      return;
+    }
+
+    if ( !is_free() && p()->buff.starweavers_weft->up() )
+    {
+      p()->active.starsurge_starweaver->execute_on_target( target );
+      p()->buff.starweavers_weft->expire();
       return;
     }
 
@@ -8306,10 +8288,11 @@ struct starsurge_t : public druid_spell_t
     if ( goldrinn && rng().roll( p()->talent.power_of_goldrinn->proc_chance() ) )
       goldrinn->execute_on_target( target );
 
-    if ( free_spell == free_spell_e::CONVOKE )
-      return;  // convoke doesn't process any further
+    if ( p()->sets->has_set_bonus( DRUID_BALANCE, T29, B2 ) )
+      p()->buff.gathering_starstuff->trigger();
 
-    p()->buff.starweavers_weft->expire();
+    if ( is_free_proc() )
+      return;
 
     if ( p()->talent.starlord.ok() )
       p()->buff.starlord->trigger();
@@ -8320,18 +8303,26 @@ struct starsurge_t : public druid_spell_t
     if ( p()->talent.starweaver.ok() )
       p()->buff.starweavers_warp->trigger();
   }
+};
 
-  void impact( action_state_t* s ) override
+// Stellar Flare ============================================================
+struct stellar_flare_t : public druid_spell_t
+{
+  stellar_flare_t( druid_t* p, std::string_view opt )
+    : stellar_flare_t( p, "stellar_flare", p->talent.stellar_flare, opt )
+  {}
+
+  stellar_flare_t( druid_t* p, std::string_view n, const spell_data_t* s, std::string_view opt )
+    : druid_spell_t( n, p, s, opt )
   {
-    druid_spell_t::impact( s );
+    dot_name = "stellar_flare";
+  }
 
-    if ( is_free_proc() || !result_is_hit( s->result ) )
-      return;
+  void tick( dot_t* d ) override
+  {
+    druid_spell_t::tick( d );
 
-    if ( p()->sets->has_set_bonus( DRUID_BALANCE, T29, B2 ) )
-      p()->buff.gathering_starstuff->trigger();
-
-    p()->buff.touch_the_cosmos->expire();
+    trigger_shooting_stars( d->target );
   }
 };
 
