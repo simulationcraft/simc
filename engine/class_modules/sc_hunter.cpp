@@ -1212,7 +1212,7 @@ public:
     if ( affected_by.spearhead && p() -> buffs.spearhead -> check() )
       c += p() -> talents.deadly_duo -> effectN( 1 ).base_value();
 
-    if ( affected_by.t29_sv_4pc_cost )
+    if ( affected_by.t29_sv_4pc_cost && p() -> buffs.bestial_barrage -> check() )
       c *= 1 + p() -> tier_set.t29_sv_4pc_buff -> effectN( 1 ).percent();
 
     if ( c < 0 )
