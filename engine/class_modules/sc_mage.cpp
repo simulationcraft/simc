@@ -146,9 +146,6 @@ struct mage_td_t final : public actor_target_data_t
     // Covenant Abilities
     buff_t* mirrors_of_torment;
     buff_t* radiant_spark_vulnerability;
-
-    // Set Bonuses
-    buff_t* frost_storm;
   } debuffs;
 
   mage_td_t( player_t* target, mage_t* mage );
@@ -277,7 +274,6 @@ public:
     action_t* arcane_echo;
     action_t* cold_front_frozen_orb;
     action_t* conflagration_flare_up;
-    action_t* frost_storm_comet_storm;
     action_t* glacial_assault;
     action_t* harmonic_echo;
     action_t* ignite;
@@ -410,10 +406,7 @@ public:
     buff_t* siphoned_malice;
 
     // Set Bonuses
-    buff_t* arcane_lucidity;
     buff_t* bursting_energy;
-
-    buff_t* t28_fiery_rush;
 
     buff_t* touch_of_ice;
   } buffs;
@@ -428,7 +421,6 @@ public:
     cooldown_t* flurry;
     cooldown_t* from_the_ashes;
     cooldown_t* frost_nova;
-    cooldown_t* frost_storm;
     cooldown_t* frozen_orb;
     cooldown_t* icy_veins;
     cooldown_t* incendiary_eruptions;
@@ -922,7 +914,6 @@ public:
   double composite_player_critical_damage_multiplier( const action_state_t* ) const override;
   double composite_player_multiplier( school_e ) const override;
   double composite_player_pet_damage_multiplier( const action_state_t*, bool ) const override;
-  double composite_player_target_pet_damage_multiplier( player_t*, bool ) const override;
   double composite_player_target_multiplier( player_t*, school_e ) const override;
   double composite_melee_crit_chance() const override;
   double composite_spell_crit_chance() const override;
@@ -1169,8 +1160,6 @@ struct touch_of_the_magi_t final : public buff_t
     buff_t( *td, "touch_of_the_magi", td->source->find_spell( 210824 ) )
   {
     set_default_value( 0.0 );
-    modify_duration( td->source->sets->set( MAGE_ARCANE, T28, B4 )->effectN( 1 ).time_value() );
-    set_schools_from_effect( 2 );
   }
 
   void expire_override( int stacks, timespan_t duration ) override
@@ -1198,7 +1187,6 @@ struct combustion_t final : public buff_t
     set_default_value_from_effect( 1 );
     set_refresh_behavior( buff_refresh_behavior::DURATION );
     modify_duration( p->talents.improved_combustion->effectN( 1 ).time_value() );
-    modify_duration( p->sets->set( MAGE_FIRE, T28, B2 )->effectN( 1 ).time_value() );
     modify_duration( base_buff_duration * p->talents.tempered_flames->effectN( 3 ).percent() );
 
     set_stack_change_callback( [ this, p ] ( buff_t*, int old, int cur )
@@ -1206,14 +1194,12 @@ struct combustion_t final : public buff_t
       if ( old == 0 )
       {
         p->buffs.fiery_rush->trigger();
-        p->buffs.t28_fiery_rush->trigger();
       }
       else if ( cur == 0 )
       {
         player->stat_loss( STAT_MASTERY_RATING, current_amount );
         current_amount = 0.0;
         p->buffs.fiery_rush->expire();
-        p->buffs.t28_fiery_rush->expire();
       }
     } );
 
@@ -1904,14 +1890,6 @@ public:
         make_event( *sim, [ this ] { p()->buffs.runeforge_fevered_incantation->trigger(); } );
       else
         make_event( *sim, [ this ] { p()->buffs.runeforge_fevered_incantation->expire(); } );
-    }
-
-    if ( p()->action.frost_storm_comet_storm
-      && p()->cooldowns.frost_storm->up()
-      && rng().roll( p()->sets->set( MAGE_FROST, T28, B2 )->proc_chance() ) )
-    {
-      p()->cooldowns.frost_storm->start( p()->sets->set( MAGE_FROST, T28, B2 )->internal_cooldown() );
-      p()->action.frost_storm_comet_storm->execute_on_target( s->target );
     }
   }
 
@@ -3512,14 +3490,6 @@ struct comet_storm_projectile_t final : public frost_mage_spell_t
     aoe = -1;
     background = triggers.radiant_spark = true;
   }
-
-  void impact( action_state_t* s ) override
-  {
-    frost_mage_spell_t::impact( s );
-
-    if ( result_is_hit( s->result ) )
-      get_td( s->target )->debuffs.frost_storm->trigger();
-  }
 };
 
 struct comet_storm_t final : public frost_mage_spell_t
@@ -3529,21 +3499,14 @@ struct comet_storm_t final : public frost_mage_spell_t
 
   action_t* projectile;
 
-  comet_storm_t( std::string_view n, mage_t* p, std::string_view options_str, bool set_bonus = false ) :
-    frost_mage_spell_t( n, p, set_bonus ? p->find_spell( 153595 ) : p->talents.comet_storm ),
-    projectile( get_action<comet_storm_projectile_t>( set_bonus ? "frost_storm_comet_storm_projectile" : "comet_storm_projectile", p ) )
+  comet_storm_t( std::string_view n, mage_t* p, std::string_view options_str ) :
+    frost_mage_spell_t( n, p, p->talents.comet_storm ),
+    projectile( get_action<comet_storm_projectile_t>( "comet_storm_projectile", p ) )
   {
     parse_options( options_str );
     may_miss = may_crit = affected_by.shatter = false;
     add_child( projectile );
     travel_delay = p->find_spell( 228601 )->missile_speed();
-
-    if ( set_bonus )
-    {
-      background = true;
-      cooldown->duration = 0_ms;
-      base_costs[ RESOURCE_MANA ] = 0.0;
-    }
   }
 
   void impact( action_state_t* s ) override
@@ -4942,10 +4905,7 @@ struct fire_blast_t final : public fire_mage_spell_t
     double m = fire_mage_spell_t::recharge_rate_multiplier( cd );
 
     if ( &cd == cooldown )
-    {
       m /= 1.0 + p()->buffs.fiery_rush->check_value();
-      m /= 1.0 + p()->buffs.t28_fiery_rush->check_value();
-    }
 
     return m;
   }
@@ -5298,10 +5258,7 @@ struct phoenix_flames_t final : public fire_mage_spell_t
     double m = fire_mage_spell_t::recharge_rate_multiplier( cd );
 
     if ( &cd == cooldown )
-    {
       m /= 1.0 + p()->buffs.fiery_rush->check_value();
-      m /= 1.0 + p()->buffs.t28_fiery_rush->check_value();
-    }
 
     return m;
   }
@@ -5634,9 +5591,7 @@ struct touch_of_the_magi_t final : public arcane_mage_spell_t
   void execute() override
   {
     arcane_mage_spell_t::execute();
-
     p()->trigger_arcane_charge( as<int>( data().effectN( 2 ).base_value() ) );
-    p()->buffs.arcane_lucidity->trigger();
   }
 
   void impact( action_state_t* s ) override
@@ -6294,11 +6249,6 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
                                           ->set_default_value_from_effect( 1 )
                                           ->modify_default_value( mage->conduits.ire_of_the_ascended.percent() )
                                           ->set_refresh_behavior( buff_refresh_behavior::DISABLED );
-
-  // Set Bonuses
-  debuffs.frost_storm = make_buff( *this, "frost_storm", mage->find_spell( 363544 ) )
-                          ->set_default_value_from_effect( 1 )
-                          ->set_chance( mage->sets->has_set_bonus( MAGE_FROST, T28, B4 ) );
 }
 
 mage_t::mage_t( sim_t* sim, std::string_view name, race_e r ) :
@@ -6332,7 +6282,6 @@ mage_t::mage_t( sim_t* sim, std::string_view name, race_e r ) :
   cooldowns.flurry               = get_cooldown( "flurry"               );
   cooldowns.from_the_ashes       = get_cooldown( "from_the_ashes"       );
   cooldowns.frost_nova           = get_cooldown( "frost_nova"           );
-  cooldowns.frost_storm          = get_cooldown( "frost_storm"          );
   cooldowns.frozen_orb           = get_cooldown( "frozen_orb"           );
   cooldowns.icy_veins            = get_cooldown( "icy_veins"            );
   cooldowns.incendiary_eruptions = get_cooldown( "incendiary_eruptions" );
@@ -6532,9 +6481,6 @@ void mage_t::create_actions()
     action.agonizing_backlash  = get_action<agonizing_backlash_t>( "agonizing_backlash", this );
     action.tormenting_backlash = get_action<tormenting_backlash_t>( "tormenting_backlash", this );
   }
-
-  if ( sets->has_set_bonus( MAGE_FROST, T28, B2 ) )
-    action.frost_storm_comet_storm = get_action<comet_storm_t>( "frost_storm_comet_storm", this, "", true );
 
   player_t::create_actions();
 
@@ -7241,26 +7187,13 @@ void mage_t::create_buffs()
                              ->set_chance( conduits.siphoned_malice.ok() );
 
   // Set Bonuses
-  buffs.arcane_lucidity = make_buff( this, "arcane_lucidity", find_spell( 363685 ) )
-                            ->set_affects_regen( true )
-                            ->set_default_value_from_effect( 1 )
-                            ->set_chance( sets->has_set_bonus( MAGE_ARCANE, T28, B4 ) );
   buffs.bursting_energy = make_buff( this, "bursting_energy", find_spell( 395006 ) )
                             ->set_default_value_from_effect( 1 )
                             ->set_chance( sets->has_set_bonus( MAGE_ARCANE, T29, B4 ) );
 
-  buffs.t28_fiery_rush = make_buff( this, "t28_fiery_rush", find_spell( 363508 ) )
-                           ->set_default_value_from_effect( 1 )
-                           ->set_stack_change_callback( [ this ] ( buff_t*, int, int )
-                             {
-                               cooldowns.fire_blast->adjust_recharge_multiplier();
-                               cooldowns.phoenix_flames->adjust_recharge_multiplier();
-                             } )
-                           ->set_chance( sets->has_set_bonus( MAGE_FIRE, T28, B4 ) );
-
-  buffs.touch_of_ice   = make_buff( this, "touch_of_ice", find_spell( 394994 ) )
-                           ->set_default_value_from_effect( 1 )
-                           ->set_chance( sets->has_set_bonus( MAGE_FROST, T29, B4 ) );
+  buffs.touch_of_ice = make_buff( this, "touch_of_ice", find_spell( 394994 ) )
+                         ->set_default_value_from_effect( 1 )
+                         ->set_chance( sets->has_set_bonus( MAGE_FROST, T29, B4 ) );
 
   // Foresight support
   if ( talents.foresight.ok() )
@@ -7462,7 +7395,6 @@ double mage_t::resource_regen_per_second( resource_e rt ) const
     reg *= 1.0 + 0.01 * spec.arcane_mage->effectN( 4 ).average( this );
     reg *= 1.0 + cache.mastery() * spec.savant->effectN( 1 ).mastery_value();
     reg *= 1.0 + buffs.enlightened_mana->check_value();
-    reg *= 1.0 + buffs.arcane_lucidity->check_value();
     reg *= 1.0 + buffs.evocation->check_value();
   }
 
@@ -7557,19 +7489,6 @@ double mage_t::composite_player_pet_damage_multiplier( const action_state_t* s, 
   return m;
 }
 
-double mage_t::composite_player_target_pet_damage_multiplier( player_t* target, bool guardian ) const
-{
-  double m = player_t::composite_player_target_pet_damage_multiplier( target, guardian );
-
-  if ( auto td = find_target_data( target ) )
-  {
-    if ( !guardian )
-      m *= 1.0 + td->debuffs.frost_storm->check_stack_value();
-  }
-
-  return m;
-}
-
 double mage_t::composite_player_target_multiplier( player_t* target, school_e school ) const
 {
   double m = player_t::composite_player_target_multiplier( target, school );
@@ -7579,15 +7498,8 @@ double mage_t::composite_player_target_multiplier( player_t* target, school_e sc
     if ( td->debuffs.grisly_icicle->has_common_school( school ) )
       m *= 1.0 + td->debuffs.grisly_icicle->check_value();
 
-    if ( td->debuffs.frost_storm->has_common_school( school ) )
-      m *= 1.0 + td->debuffs.frost_storm->check_stack_value();
-
     if ( td->debuffs.improved_scorch->has_common_school( school ) )
       m *= 1.0 + td->debuffs.improved_scorch->check_stack_value();
-
-    auto totm = td->debuffs.touch_of_the_magi;
-    if ( totm->check() && totm->has_common_school( school ) )
-      m *= 1.0 + sets->set( MAGE_ARCANE, T28, B2 )->effectN( 1 ).percent();
   }
 
   return m;
