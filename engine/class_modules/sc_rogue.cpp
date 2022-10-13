@@ -708,7 +708,7 @@ public:
 
       player_talent_t crimson_tempest;
       player_talent_t venom_rush;
-      player_talent_t deathmark;                // Partial NYI -- Need non-lethal debuffs
+      player_talent_t deathmark;                // Partial NYI -- Need non-lethal debuffs and Crimson Tempest
       player_talent_t master_assassin;
       player_talent_t exsanguinate;             // Partial NYI -- Needs Deathmark support
 
@@ -9723,8 +9723,8 @@ void rogue_t::init_spells()
   spec.poison_bomb_damage = talent.assassination.poison_bomb->ok() ? find_spell( 255546 ) : spell_data_t::not_found();
   spec.scent_of_blood_buff = talent.assassination.scent_of_blood->ok() ? find_spell( 394080 ) : spell_data_t::not_found();
   spec.vicious_venoms_ambush = talent.assassination.vicious_venoms->ok() ? find_spell( 385794 ) : spell_data_t::not_found();
-  spec.vicious_venoms_mutilate_mh = talent.assassination.vicious_venoms->ok() ? find_spell( 385802 ) : spell_data_t::not_found();
-  spec.vicious_venoms_mutilate_oh = talent.assassination.vicious_venoms->ok() ? find_spell( 385806 ) : spell_data_t::not_found();
+  spec.vicious_venoms_mutilate_mh = talent.assassination.vicious_venoms->ok() ? find_spell( 385806 ) : spell_data_t::not_found();
+  spec.vicious_venoms_mutilate_oh = talent.assassination.vicious_venoms->ok() ? find_spell( 385802 ) : spell_data_t::not_found();
 
   spec.deathmark_debuff = talent.assassination.deathmark->effectN( 2 ).trigger();
   spec.deathmark_amplifying_poison = talent.assassination.deathmark->ok() ? find_spell( 394328 ) : spell_data_t::not_found();
@@ -9935,9 +9935,9 @@ void rogue_t::init_spells()
       secondary_trigger::VICIOUS_VENOMS, "ambush_vicious_venoms", spec.vicious_venoms_ambush );
     active.vicious_venoms.mutilate_mh = get_secondary_trigger_action<actions::vicious_venoms_t>(
       secondary_trigger::VICIOUS_VENOMS, "mutilate_mh_vicious_venoms", spec.vicious_venoms_mutilate_mh );
-    // TOCHECK -- Appears to use MH weapon in spell data but possibly reduced in-game somehow
     active.vicious_venoms.mutilate_oh = get_secondary_trigger_action<actions::vicious_venoms_t>(
       secondary_trigger::VICIOUS_VENOMS, "mutilate_oh_vicious_venoms", spec.vicious_venoms_mutilate_oh );
+    active.vicious_venoms.mutilate_oh->weapon = &( off_hand_weapon ); // TOCHECK -- Not in spell data
   }
 
   if ( talent.assassination.poison_bomb->ok() )
