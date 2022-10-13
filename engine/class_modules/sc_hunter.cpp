@@ -392,13 +392,6 @@ public:
   } legendary;
 
   struct tier_sets_t {
-    spell_data_ptr_t focused_trickery_2pc;
-    spell_data_ptr_t focused_trickery_4pc;
-    spell_data_ptr_t killing_frenzy_2pc;
-    spell_data_ptr_t killing_frenzy_4pc;
-    spell_data_ptr_t mad_bombardier_2pc;
-    spell_data_ptr_t mad_bombardier_4pc;
-
     spell_data_ptr_t t29_mm_2pc;
     spell_data_ptr_t t29_mm_4pc;
     spell_data_ptr_t t29_bm_2pc;
@@ -466,9 +459,6 @@ public:
     buff_t* eagletalons_true_focus_runeforge;
 
     // Tier Set Bonuses
-    buff_t* killing_frenzy;
-    buff_t* mad_bombardier;
-
     buff_t* find_the_mark;
     buff_t* focusing_aim;
     buff_t* if_it_bleeds_we_can_kill_it;
@@ -535,7 +525,6 @@ public:
     proc_t* wild_call;
     proc_t* wild_instincts;
 
-    proc_t* focused_trickery_trick_shots;
     proc_t* secrets_of_the_vigil_ais_reset;
   } procs;
 
@@ -771,8 +760,6 @@ public:
     events::tar_trap_aoe_t* tar_trap_aoe = nullptr;
     wildfire_infusion_e next_wi_bomb = WILDFIRE_INFUSION_SHRAPNEL;
     unsigned steady_focus_counter = 0;
-    // Focus used for Focused Trickery (363666)
-    double focus_used_FT = 0;
     // Focus used for Calling the Shots (260404)
     double focus_used_CTS = 0;
     unsigned dire_pack_counter = 0;
@@ -914,7 +901,6 @@ public:
   void trigger_bloodseeker_update();
   void trigger_lethal_shots();
   void trigger_calling_the_shots( action_t* action, double cost );
-  bool trigger_focused_trickery( action_t* action, double cost );
   void trigger_latent_poison( const action_state_t* s );
   void trigger_bombardment();
   void consume_trick_shots();
@@ -930,7 +916,6 @@ public:
 
   bool track_cd_waste;
   maybe_bool triggers_wild_spirits;
-  maybe_bool triggers_focused_trickery; // 4pc
   maybe_bool triggers_calling_the_shots;
 
   struct {
@@ -946,7 +931,6 @@ public:
     damage_affected_by sniper_training;
     bool t29_mm_4pc = false;
     // surv
-    bool mad_bombardier = false;
     damage_affected_by spirit_bond;
     bool coordinated_assault = false;
     bool spearhead = false;
@@ -977,7 +961,6 @@ public:
     affected_by.bestial_wrath         = parse_damage_affecting_aura( this, p -> talents.bestial_wrath );
     affected_by.master_of_beasts      = parse_damage_affecting_aura( this, p -> mastery.master_of_beasts );
 
-    affected_by.mad_bombardier        = check_affected_by( this, p -> tier_set.mad_bombardier_4pc -> effectN( 1 ) );
     affected_by.spirit_bond           = parse_damage_affecting_aura( this, p -> mastery.spirit_bond );
     affected_by.coordinated_assault   = check_affected_by( this, p -> find_spell( 361738 ) -> effectN( 2 ) );
     affected_by.spearhead             = check_affected_by( this, p -> talents.spearhead -> effectN( 4 ) );
@@ -1021,7 +1004,6 @@ public:
     ab::apply_affecting_aura( p -> legendary.call_of_the_wild );
 
     // passive set bonuses
-    ab::apply_affecting_aura( p -> tier_set.mad_bombardier_4pc );
     ab::apply_affecting_aura( p -> tier_set.t29_bm_4pc );
     ab::apply_affecting_aura( p -> tier_set.t29_sv_2pc );
 
@@ -1062,16 +1044,6 @@ public:
       triggers_wild_spirits = false;
     }
 
-    if ( p() -> tier_set.focused_trickery_4pc.ok() )
-    {
-      if ( triggers_focused_trickery.is_none() )
-        triggers_focused_trickery = !ab::background && !ab::proc && ab::base_cost() > 0;
-    }
-    else
-    {
-      triggers_focused_trickery = false;
-    }
-
     if ( p() -> talents.calling_the_shots.ok() )
     {
       if ( triggers_calling_the_shots.is_none() )
@@ -1084,8 +1056,6 @@ public:
 
     if ( triggers_wild_spirits )
       ab::sim -> print_debug( "{} action {} set to proc Wild Spirits", ab::player -> name(), ab::name() );
-    if ( triggers_focused_trickery )
-      ab::sim -> print_debug( "{} action {} set to proc Focused Trickery 4pc", ab::player -> name(), ab::name() );
     if ( triggers_calling_the_shots )
       ab::sim -> print_debug( "{} action {} set to proc Calling the Shots", ab::player -> name(), ab::name() );
   }
@@ -1106,9 +1076,6 @@ public:
   void execute() override
   {
     ab::execute();
-
-    if ( triggers_focused_trickery )
-      p() -> trigger_focused_trickery( this, ab::base_cost() );
 
     if ( triggers_calling_the_shots )
       p() -> trigger_calling_the_shots( this, ab::cost() );
@@ -1143,9 +1110,6 @@ public:
 
     if ( affected_by.spirit_bond.direct )
       am *= 1 + p() -> cache.mastery() * p() -> mastery.spirit_bond -> effectN( affected_by.spirit_bond.direct ).mastery_value();
-
-    if ( affected_by.mad_bombardier )
-      am *= 1 + p() -> buffs.mad_bombardier -> check_value();
 
     if ( affected_by.coordinated_assault )
       am *= 1 + p() -> buffs.coordinated_assault_empower -> check_value();
@@ -2234,22 +2198,10 @@ struct kill_command_bm_mm_t: public kill_command_base_t
     {
       if ( ferocious_appetite_reduction != 0_s )
         o() -> cooldowns.aspect_of_the_wild -> adjust( -ferocious_appetite_reduction );
-
-      o() -> buffs.killing_frenzy -> trigger();
     }
 
     if ( o() -> talents.kill_cleave.ok() )
       trigger_beast_cleave( s, o() -> talents.kill_cleave -> effectN( 1 ).percent() );
-  }
-
-  double composite_crit_chance() const override
-  {
-    double cc = kill_command_base_t::composite_crit_chance();
-
-    if ( o() -> tier_set.killing_frenzy_2pc.ok() )
-      cc += o() -> tier_set.killing_frenzy_2pc -> effectN( 1 ).percent() * p() -> buffs.frenzy -> check();
-
-    return cc;
   }
 
   double action_multiplier() const override
@@ -2766,26 +2718,6 @@ void hunter_t::consume_trick_shots()
     return;
 
   buffs.trick_shots -> decrement();
-}
-
-bool hunter_t::trigger_focused_trickery( action_t* action, double cost )
-{
-  if ( !tier_set.focused_trickery_4pc.ok() )
-    return false;
-
-  bool triggered = false;
-  state.focus_used_FT += cost;
-  sim -> print_debug( "{} action {} spent {} focus, focused trickery now at {}", name(), action->name(), cost, state.focus_used_FT );
-
-  const double focused_trickery_value = tier_set.focused_trickery_4pc -> effectN( 1 ).base_value();
-  while ( state.focus_used_FT >= focused_trickery_value )
-  {
-    triggered = true;
-    state.focus_used_FT -= focused_trickery_value;
-    buffs.trick_shots -> trigger();
-    procs.focused_trickery_trick_shots -> occur();
-  }
-  return triggered;
 }
 
 void hunter_t::trigger_latent_poison( const action_state_t* s )
@@ -3890,14 +3822,8 @@ struct multishot_bm_t: public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::execute();
 
-    timespan_t duration = beast_cleave_duration;
-    if ( p() -> buffs.killing_frenzy -> up() )
-      duration += p() -> tier_set.killing_frenzy_4pc -> effectN( 3 ).time_value();
-
     for ( auto pet : pets::active<pets::hunter_main_pet_base_t>( p() -> pets.main, p() -> pets.animal_companion ) )
-      pet -> buffs.beast_cleave -> trigger( duration );
-
-    p() -> buffs.killing_frenzy -> expire();
+      pet -> buffs.beast_cleave -> trigger( beast_cleave_duration );
   }
 };
 
@@ -3918,13 +3844,10 @@ struct cobra_shot_t: public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::schedule_travel( s );
 
-    p() -> cooldowns.kill_command -> adjust( kill_command_reduction * ( 1 + p() -> buffs.killing_frenzy -> check_value() ) );
+    p() -> cooldowns.kill_command -> adjust( kill_command_reduction );
 
     if ( p() -> talents.killer_cobra.ok() && p() -> buffs.bestial_wrath -> check() )
       p() -> cooldowns.kill_command -> reset( true );
-
-    p() -> buffs.killing_frenzy -> up(); // benefit tracking
-    p() -> buffs.killing_frenzy -> expire();
 
     if ( rng().roll( p() -> legendary.flamewakers_cobra_sting -> proc_chance() ) )
       p() -> buffs.flamewakers_cobra_sting -> trigger();
@@ -3955,8 +3878,6 @@ struct cobra_shot_t: public hunter_ranged_attack_t
   double composite_da_multiplier( const action_state_t* s ) const override
   {
     double am = hunter_ranged_attack_t::composite_da_multiplier( s );
-
-    am *= 1 + p() -> buffs.killing_frenzy -> check_value();
 
     if ( p() -> buffs.aspect_of_the_wild -> check() )
       am *= 1 + p() -> talents.snake_bite -> effectN( 1 ).percent();
@@ -4173,7 +4094,6 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
       + p -> talents.light_ammo -> effectN( 1 ).base_value()
       + p -> talents.heavy_ammo -> effectN( 1 ).base_value() );
 
-    triggers_focused_trickery = false; // manually triggered where required
     triggers_calling_the_shots = false;
 
     if ( p -> talents.careful_aim.ok() )
@@ -4205,18 +4125,6 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
     return hunter_ranged_attack_t::n_targets();
   }
 
-  double composite_da_multiplier( const action_state_t* s ) const override
-  {
-    double m = hunter_ranged_attack_t::composite_da_multiplier( s );
-
-    // XXX: 2022-02-28 Now both cleave capability and the damage modifier from
-    // Focused Trickery are based on the original cast's Trick Shots snapshot.
-    if ( p()->tier_set.focused_trickery_2pc.ok() && trick_shots_up() )
-      m *= 1 + p()->tier_set.focused_trickery_2pc->effectN( 1 ).percent();
-
-    return m;
-  }
-
   double composite_target_da_multiplier( player_t* t ) const override
   {
     double m = hunter_ranged_attack_t::composite_target_da_multiplier( t );
@@ -4239,11 +4147,9 @@ struct aimed_shot_t : public aimed_shot_base_t
   struct state_data_t
   {
     bool secrets_of_the_vigil_up = false;
-    bool focused_trickery_vigil  = false;
 
     friend void sc_format_to( const state_data_t& data, fmt::format_context::iterator out ) {
-      fmt::format_to( out, "secrets_of_the_vigil_up={:d}, focused_trickery_vigil={:d}",
-          data.secrets_of_the_vigil_up, data.focused_trickery_vigil );
+      fmt::format_to( out, "secrets_of_the_vigil_up={:d}", data.secrets_of_the_vigil_up );
     }
   };
   using state_t = hunter_action_state_t<state_data_t>;
@@ -4405,8 +4311,6 @@ struct aimed_shot_t : public aimed_shot_base_t
     if ( ! lock_and_loaded )
       p() -> buffs.secrets_of_the_vigil -> decrement();
 
-    // XXX: 2022-02-28 All triggers now happen before the cast.
-    p() -> trigger_focused_trickery( this, base_cost() );
     p() -> trigger_calling_the_shots( this, cost() );
 
     aimed_shot_base_t::execute();
@@ -4474,9 +4378,8 @@ struct aimed_shot_t : public aimed_shot_base_t
   {
     aimed_shot_base_t::impact( s );
 
-    // XXX 2022-02-28 AiS consumes Vigil buffs on impact if they were up on cast with
-    // the exception of Vigil buffs that were applied by a Focused Trickery Trick Shots.
-    if ( debug_cast<state_t*>( s ) -> secrets_of_the_vigil_up && !debug_cast<state_t*>( s ) -> focused_trickery_vigil )
+    // XXX 2022-02-28 AiS consumes Vigil buffs on impact if they were up on cast.
+    if ( debug_cast<state_t*>( s ) -> secrets_of_the_vigil_up )
       p() -> buffs.secrets_of_the_vigil -> decrement();
 
     // 10-10-22 TODO: only main target hit is triggering Latent Poison and MM 2pc
@@ -4520,8 +4423,6 @@ struct aimed_shot_t : public aimed_shot_base_t
   {
     aimed_shot_base_t::snapshot_state( s, type );
     debug_cast<state_t*>( s ) -> secrets_of_the_vigil_up = secrets_of_the_vigil_up;
-    // XXX 2022-02-28 If a new Vigil is applied after the original is consumed, we protect this new one on impact.
-    debug_cast<state_t*>( s ) -> focused_trickery_vigil  = p() -> buffs.secrets_of_the_vigil -> check();
   }
 };
 
@@ -4634,9 +4535,6 @@ struct rapid_fire_t: public hunter_spell_t
       double m = hunter_ranged_attack_t::composite_da_multiplier( s );
 
       m *= 1 + p() -> buffs.brutal_projectiles_hidden -> check_stack_value();
-
-      if ( p() -> tier_set.focused_trickery_2pc.ok() && p() -> buffs.trick_shots -> check() )
-        m *= 1 + p() -> tier_set.focused_trickery_2pc -> effectN( 1 ).percent();
 
       return m;
     }
@@ -5544,7 +5442,6 @@ struct a_murder_of_crows_t : public hunter_spell_t
     parse_options( options_str );
 
     triggers_wild_spirits = false;
-    triggers_focused_trickery = !p -> bugs;  // XXX: 2022-01-22 manually triggered
 
     tick_action = p -> get_background_action<peck_t>( "crow_peck" );
     starved_proc = p -> get_proc( "starved: a_murder_of_crows" );
@@ -5556,11 +5453,6 @@ struct a_murder_of_crows_t : public hunter_spell_t
     static_cast<peck_t*>( tick_action ) -> triggers_wild_spirits = true;
 
     hunter_spell_t::execute();
-
-    // XXX: 2022-01-22 Focused Trickery uses the "base base" cost before passive aura reductions
-    if ( p() -> bugs ) {
-      p() -> trigger_focused_trickery( this, data().cost( POWER_FOCUS ) );
-    }
   }
 };
 
@@ -5885,7 +5777,6 @@ struct kill_command_t: public hunter_spell_t
         reset.proc -> occur();
         cooldown -> reset( true );
         p() -> buffs.strength_of_the_pack -> trigger();
-        p() -> buffs.mad_bombardier -> trigger();
 
         if ( rng().roll( quick_shot.chance ) )
           quick_shot.action -> execute_on_target( target );
@@ -6398,16 +6289,6 @@ struct wildfire_bomb_t: public hunter_spell_t
         dual = true;
         triggers_wild_spirits = false;
       }
-
-      double composite_persistent_multiplier( const action_state_t* s ) const override
-      {
-        double m = hunter_spell_t::composite_persistent_multiplier( s );
-
-        // XXX 2022-02-19 All bombs dots snapshot the empowered state from 4pc
-        m *= 1 + p() -> buffs.mad_bombardier -> check_value();
-
-        return m;
-      }
     };
     dot_action_t* dot_action;
 
@@ -6609,15 +6490,6 @@ struct wildfire_bomb_t: public hunter_spell_t
       for ( int i = 0; i < 3; i++ )
         wildfire_cluster -> execute();
     }
-
-    if ( p() -> buffs.mad_bombardier -> up() )
-    {
-      sim -> print_debug( "{} {} cooldown reset due to {}",
-                          p() -> name(), name(), p() -> buffs.mad_bombardier -> name() );
-
-      cooldown->reset( true );
-      p() -> buffs.mad_bombardier -> expire();
-    }
   }
 
   double recharge_rate_multiplier( const cooldown_t& cd ) const override
@@ -6801,11 +6673,7 @@ std::unique_ptr<expr_t> hunter_t::create_expression( util::string_view expressio
 {
   auto splits = util::string_split<util::string_view>( expression_str, "." );
 
-  if ( splits.size() == 1 && splits[ 0 ] == "focused_trickery_count" )
-  {
-    return make_fn_expr( expression_str, [ this ] { return state.focus_used_FT; } );
-  }
-  else if ( splits.size() == 2 && splits[ 0 ] == "next_wi_bomb" )
+  if ( splits.size() == 2 && splits[ 0 ] == "next_wi_bomb" )
   {
     if ( splits[ 1 ] == "shrapnel" )
       return make_fn_expr( expression_str, [ this ] { return talents.wildfire_infusion.ok() && state.next_wi_bomb == WILDFIRE_INFUSION_SHRAPNEL; } );
@@ -7248,13 +7116,6 @@ void hunter_t::init_spells()
   legendary.pouch_of_razor_fragments = find_runeforge_legendary( "Pouch of Razor Fragments" );
 
   // Tier Sets
-  tier_set.focused_trickery_2pc = sets -> set( HUNTER_MARKSMANSHIP,  T28, B2 );
-  tier_set.focused_trickery_4pc = sets -> set( HUNTER_MARKSMANSHIP,  T28, B4 );
-  tier_set.killing_frenzy_2pc   = sets -> set( HUNTER_BEAST_MASTERY, T28, B2 );
-  tier_set.killing_frenzy_4pc   = sets -> set( HUNTER_BEAST_MASTERY, T28, B4 );
-  tier_set.mad_bombardier_2pc   = sets -> set( HUNTER_SURVIVAL,      T28, B2 );
-  tier_set.mad_bombardier_4pc   = sets -> set( HUNTER_SURVIVAL,      T28, B4 );
-
   tier_set.t29_mm_2pc = sets -> set( HUNTER_MARKSMANSHIP, T29, B2 );
   tier_set.t29_mm_4pc = sets -> set( HUNTER_MARKSMANSHIP, T29, B4 );
   tier_set.t29_bm_2pc = sets -> set( HUNTER_BEAST_MASTERY, T29, B2 );
@@ -7585,24 +7446,6 @@ void hunter_t::create_buffs()
 
   // Tier Set Bonuses
 
-  buffs.killing_frenzy =
-    make_buff( this, "killing_frenzy", find_spell( 363760 ) )
-      -> set_default_value_from_effect( 1 )
-      -> set_chance( tier_set.killing_frenzy_4pc.ok() );
-
-  buffs.mad_bombardier =
-    make_buff( this, "mad_bombardier", find_spell( 363805 ) )
-      -> set_chance( tier_set.mad_bombardier_2pc -> effectN( 1 ).percent() );
-
-  if ( tier_set.mad_bombardier_4pc.ok() )
-  {
-    // Mad Bombardier 2pc buff adjusts the passive part of the 4pc, so we have
-    // to do some maths here to come up with a proper multiplier
-    const double mad_bombardier_4pc = tier_set.mad_bombardier_4pc -> effectN( 1 ).percent();
-    const double mad_bombardier_2pc = buffs.mad_bombardier -> data().effectN( 1 ).percent();
-    buffs.mad_bombardier -> set_default_value( mad_bombardier_2pc / ( mad_bombardier_4pc + 1 ) );
-  }
-
   buffs.find_the_mark =
     make_buff( this, "find_the_mark", tier_set.t29_mm_2pc -> effectN( 1 ).trigger() )
       -> set_default_value_from_effect( 1 );
@@ -7753,9 +7596,6 @@ void hunter_t::init_procs()
 
   procs.wild_call           = get_proc( "Wild Call" );
   procs.wild_instincts      = get_proc( "Wild Instincts");
-
-  if ( tier_set.focused_trickery_4pc.ok() )
-    procs.focused_trickery_trick_shots = get_proc( "Focused Trickery Trick Shots" );
 
   if ( legendary.secrets_of_the_vigil.ok() )
     procs.secrets_of_the_vigil_ais_reset = get_proc( "Secrets of the Unblinking Vigil AiS reset" );
