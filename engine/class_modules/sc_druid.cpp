@@ -103,6 +103,8 @@ struct druid_td_t : public actor_target_data_t
 
   struct debuffs_t
   {
+    buff_t* moonfire;
+    buff_t* sunfire;
     buff_t* pulverize;
     buff_t* tooth_and_claw;
   } debuff;
@@ -7378,23 +7380,6 @@ struct moonfire_t : public druid_spell_t
       return tam;
     }
 
-    void tick( dot_t* d ) override
-    {
-      // Moonfire damage is supressed while lunar inspiration is also on the target. Note that it is not cancelled and
-      // continues to tick down it's duration. If there is any duration remaining after lunar inspiration expires,
-      // moonfire will resume ticking for damage.
-      // Note that moonfire CAN still proc shooting stars while suppressed
-      if ( td( d->target )->dots.lunar_inspiration->is_ticking() )
-      {
-        trigger_shooting_stars( d->target );
-        return;
-      }
-
-      druid_spell_t::tick( d );
-
-      trigger_shooting_stars( d->target );
-    }
-
     std::vector<player_t*>& target_list() const override
     {
       auto& tl = druid_spell_t::target_list();
@@ -7456,11 +7441,37 @@ struct moonfire_t : public druid_spell_t
     {
       druid_spell_t::trigger_dot( s );
 
+      td( s->target )->debuff.moonfire->trigger( -1, p()->cache.mastery_value(), -1.0, timespan_t::min() );
+
       // moonfire will completely replace lunar inspiration if the new moonfire duration is greater
       auto li_dot = td( s->target )->dots.lunar_inspiration;
 
       if ( get_dot( s->target )->remains() > li_dot->remains() )
         li_dot->cancel();
+    }
+
+    void tick( dot_t* d ) override
+    {
+      // Moonfire damage is supressed while lunar inspiration is also on the target. Note that it is not cancelled and
+      // continues to tick down it's duration. If there is any duration remaining after lunar inspiration expires,
+      // moonfire will resume ticking for damage.
+      // Note that moonfire CAN still proc shooting stars while suppressed
+      if ( td( d->target )->dots.lunar_inspiration->is_ticking() )
+      {
+        trigger_shooting_stars( d->target );
+        return;
+      }
+
+      druid_spell_t::tick( d );
+
+      trigger_shooting_stars( d->target );
+    }
+
+    void last_tick( dot_t* d ) override
+    {
+      druid_spell_t::last_tick( d );
+
+      td( d->target )->debuff.moonfire->expire();
     }
   };
 
@@ -8306,11 +8317,25 @@ struct sunfire_t : public druid_spell_t
       dot_name = "sunfire";
     }
 
+    void trigger_dot( action_state_t* s ) override
+    {
+      druid_spell_t::trigger_dot( s );
+
+      td( s->target )->debuff.sunfire->trigger( -1, p()->cache.mastery_value(), -1.0, timespan_t::min() );
+    }
+
     void tick( dot_t* d ) override
     {
       druid_spell_t::tick( d );
 
       trigger_shooting_stars( d->target );
+    }
+
+    void last_tick( dot_t* d ) override
+    {
+      druid_spell_t::last_tick( d );
+
+      td( d->target )->debuff.sunfire->expire();
     }
   };
 
@@ -12082,11 +12107,22 @@ double druid_t::composite_player_target_multiplier( player_t* target, school_e s
   {
     auto td = get_target_data( target );
 
-    if ( dbc::has_common_school( school, SCHOOL_ARCANE ) && td->dots.moonfire->is_ticking() )
-      cptm *= 1.0 + cache.mastery_value();
+    if ( bugs )
+    {
+      if ( dbc::has_common_school( school, SCHOOL_ARCANE ) )
+        cptm *= 1.0 + td->debuff.moonfire->check_value();
 
-    if ( dbc::has_common_school( school, SCHOOL_NATURE ) && td->dots.sunfire->is_ticking() )
-      cptm *= 1.0 + cache.mastery_value();
+      if ( dbc::has_common_school( school, SCHOOL_NATURE ) )
+        cptm *= 1.0 + td->debuff.sunfire->check_value();
+    }
+    else
+    {
+      if ( dbc::has_common_school( school, SCHOOL_ARCANE ) && td->dots.moonfire->is_ticking() )
+        cptm *= 1.0 + cache.mastery_value();
+
+      if ( dbc::has_common_school( school, SCHOOL_NATURE ) && td->dots.sunfire->is_ticking() )
+        cptm *= 1.0 + cache.mastery_value();
+    }
 
     if ( talent.waning_twilight.ok() &&
          td->dots_ticking() >= as<int>( talent.waning_twilight->effectN( 3 ).base_value() ) )
@@ -12852,6 +12888,10 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
   hots.rejuvenation          = target.get_dot( "rejuvenation", &source );
   hots.spring_blossoms       = target.get_dot( "spring_blossoms", &source );
   hots.wild_growth           = target.get_dot( "wild_growth", &source );
+
+  // proxy debuffs for balance mastery
+  debuff.moonfire = make_buff( *this, "moonfire_debuff" )->set_quiet( true );
+  debuff.sunfire  = make_buff( *this, "sunfire_debuff" )->set_quiet( true );
 
   debuff.pulverize = make_buff( *this, "pulverize_debuff", source.talent.pulverize )
     ->set_cooldown( 0_ms )
