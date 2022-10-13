@@ -8110,12 +8110,14 @@ struct shackle_the_unworthy_t : public death_knight_spell_t
 
 struct shattering_bone_t : public death_knight_spell_t
 {
+  double boneshield_charges_consumed;
   shattering_bone_t( death_knight_t* p ) :
     death_knight_spell_t( "shattering bone", p, p -> find_spell( 377642 ) )
     {
       background = true;
       aoe = -1;
       base_multiplier *= 1.0 + p -> talent.blood.shattering_bone -> effectN( 2 ).percent();
+      boneshield_charges_consumed = 1.0;
     }
 
   double composite_da_multiplier( const action_state_t* state ) const override
@@ -8127,7 +8129,17 @@ struct shattering_bone_t : public death_knight_spell_t
       m *= p() -> talent.blood.shattering_bone -> effectN( 1 ).base_value();
     }
 
+    m *= boneshield_charges_consumed;
+
     return m;
+  }
+
+  void execute() override
+  {
+    death_knight_spell_t::execute();
+
+    // Reset charges consumed to default
+    boneshield_charges_consumed = 1.0;
   }
 };
 
@@ -8404,12 +8416,41 @@ struct tombstone_t : public death_knight_spell_t
     p() -> buffs.bone_shield -> decrement( charges );
     p() -> cooldown.dancing_rune_weapon -> adjust( p() -> legendary.crimson_rune_weapon -> effectN( 1 ).time_value() * charges );
     p() -> cooldown.dancing_rune_weapon -> adjust( p() -> talent.blood.insatiable_blade -> effectN( 1 ).time_value() * charges );
+
     if ( p() -> talent.blood.blood_tap.ok() )
     {
       p() -> cooldown.blood_tap -> adjust( -1.0 * timespan_t::from_seconds( p() -> talent.blood.blood_tap -> effectN( 2 ).base_value() ) * charges );
     }
+
+    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T29, B2 ) )
+    {
+      double chance = 0.20 * charges;  // 20% chance is not in spelldata for T29 2PC.  Tombstone gives 20% chance per boneshield stack consumed
+      if ( rng().roll( chance ) )
+      {
+        p() -> replenish_rune( as<unsigned int>( p() -> spell.vigorous_lifeblood_energize -> effectN( 1 ).base_value() ), p() -> gains.vigorous_lifeblood_2pc );
+      }
+    }
+
+    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T29, B4 ) )
+    {
+      // Perform this update in a loop, as we do allow overflow into the next stacks
+      for ( int i = 0; i < charges; i++ )
+      {
+        p() -> bone_shield_charges_consumed++;
+        if ( p() -> bone_shield_charges_consumed >= 10 )
+        {
+          p() -> bone_shield_charges_consumed = 0;
+          p() -> buffs.vigorous_lifeblood_4pc -> trigger();
+        }
+      }
+    }
+
     if ( charges > 0 && p() -> talent.blood.shattering_bone.ok() )
+    {
+      // Set the number of charges of BS consumed, as it's used as a multiplier in shattering bone
+      debug_cast<shattering_bone_t*>(p() -> active_spells.shattering_bone) -> boneshield_charges_consumed = charges;
       p() -> active_spells.shattering_bone -> execute_on_target( target );
+    }
   }
 };
 
