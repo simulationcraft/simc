@@ -3414,6 +3414,9 @@ struct blade_rush_t : public rogue_attack_t
     execute_action = p->get_background_action<blade_rush_attack_t>( "blade_rush_attack" );
     execute_action->stats = stats;
   }
+
+  bool procs_main_gauche() const override
+  { return true; }
 };
 
 // Bloodfang Legendary ======================================================
@@ -3565,12 +3568,23 @@ struct dispatch_t: public rogue_attack_t
   {
     rogue_attack_t::execute();
 
-    p()->buffs.summarily_dispatched->trigger();
+    // TOCHECK DFALPHA -- Verify Echoing Reprimand works correctly
+    if ( p()->talent.outlaw.summarily_dispatched->ok() )
+    {
+      int cp = cast_state( execute_state )->get_combo_points();
+      if ( cp >= p()->talent.outlaw.summarily_dispatched->effectN( 2 ).base_value() )
+      {
+        p()->buffs.summarily_dispatched->trigger();
+      }
+    }
 
     trigger_restless_blades( execute_state );
     trigger_grand_melee( execute_state );
     trigger_count_the_odds( execute_state );
   }
+
+  bool procs_main_gauche() const override
+  { return true; }
 
   bool procs_blade_flurry() const override
   { return true; }
@@ -3589,6 +3603,9 @@ struct dreadblades_t : public rogue_attack_t
     rogue_attack_t::execute();
     p()->buffs.dreadblades->trigger();
   }
+
+  bool procs_main_gauche() const override
+  { return true; }
 
   bool procs_blade_flurry() const override
   { return true; }
@@ -3921,6 +3938,9 @@ struct ghostly_strike_t : public rogue_attack_t
       td( state->target )->debuffs.ghostly_strike->trigger();
     }
   }
+
+  bool procs_main_gauche() const override
+  { return true; }
 
   bool procs_blade_flurry() const override
   { return true; }
