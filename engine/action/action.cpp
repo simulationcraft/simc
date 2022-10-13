@@ -5044,7 +5044,7 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
 
       case P_RESOURCE_COST:
         base_costs[ resource_current ] *= 1.0 + effect.percent();
-        sim->print_debug( "{} base resource cost for resource {} modified by {}", *this,
+        sim->print_debug( "{} base resource cost for resource {} modified by {}%", *this,
                           resource_current, effect.base_value() );
         break;
 

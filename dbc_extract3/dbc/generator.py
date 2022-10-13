@@ -1729,6 +1729,7 @@ class SpellDataGenerator(DataGenerator):
           ( 203277, 0 ),                            # Flame Accelerant
           ( 384035, 0 ), ( 384038, 0 ),             # Firefall
           ( 382113, 0 ), ( 382114, 0 ),             # Cold Front
+          ( 365265, 0 ),                            # Arcane Surge energize
         ),
 
         # Warlock:

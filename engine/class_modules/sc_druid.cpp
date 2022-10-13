@@ -382,10 +382,6 @@ public:
     action_t* shift_to_moonkin;
     action_t* lycaras_fleeting_glimpse;  // fake holder action for reporting
 
-    // Class
-    action_t* natures_vigil_damage;
-    action_t* natures_vigil_heal;
-
     // Balance
     action_t* astral_smolder;
     action_t* denizen_of_the_dream;      // placeholder action
@@ -2271,8 +2267,6 @@ public:
       is_auto_attack( false ),
       break_stealth( !ab::data().flags( spell_attribute::SX_NO_STEALTH_BREAK ) )
   {
-    ab::may_crit = true;
-
     // WARNING: auto attacks will NOT get processed here since they have no spell data
     if ( ab::data().ok() )
     {
@@ -2425,15 +2419,11 @@ public:
     if ( !s->result_amount || !( t == result_amount_type::DMG_DIRECT || t == result_amount_type::DMG_OVER_TIME ) )
       return;
 
-    // TODO: add batching
     if ( p()->buff.natures_vigil->check() && s->n_targets == 1 )
-    {
-      p()->active.natures_vigil_heal->execute_on_target(
-          p(), p()->buff.natures_vigil->check_value() * s->result_amount );
-    }
+      p()->buff.natures_vigil->current_value += s->result_amount;
 
-    if ( p()->get_form() == BEAR_FORM && dbc::has_common_school( s->action->get_school(), SCHOOL_ARCANE ) &&
-         p()->talent.elunes_favored.ok() )
+    if ( p()->active.elunes_favored_heal && p()->get_form() == BEAR_FORM &&
+         dbc::has_common_school( s->action->get_school(), SCHOOL_ARCANE ) )
     {
       p()->active.elunes_favored_heal->execute_on_target(
           p(), p()->talent.elunes_favored->effectN( 1 ).percent() * s->result_amount );
@@ -3228,7 +3218,7 @@ struct druid_interrupt_t : public druid_spell_t
   druid_interrupt_t( std::string_view n, druid_t* p, const spell_data_t* s, std::string_view options_str )
     : druid_spell_t( n, p, s, options_str )
   {
-    may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = harmful = false;
+    may_miss = may_glance = may_block = may_dodge = may_parry = harmful = false;
     ignore_false_positive = use_off_gcd = is_interrupt = true;
   }
 
@@ -3575,7 +3565,7 @@ public:
 
     parse_buff_effects( buff, ignore_mask, use_stacks, false, mods... );
 
-    // Feral 4T28 is affected by Tiger's Fury but does not snapshot
+    // TODO: remove in DF. Feral 4T28 is affected by Tiger's Fury but does not snapshot
     if ( data().id() == 363830 && buff == p()->buff.tigers_fury )
       return false;
 
@@ -3584,12 +3574,6 @@ public:
     {
       double ta_val = ta_multiplier_buffeffects.back().value;
       double da_val = 0;
-
-      persistent_multiplier_buffeffects.push_back( ta_multiplier_buffeffects.back() );
-      ta_multiplier_buffeffects.pop_back();
-
-      p()->sim->print_debug( "persistent-buffs: {} ({}) damage modified by {}% with buff {} ({}), tick table has {} entries.", name(), id,
-                             ta_val * 100.0, buff->name(), buff->data().id(), ta_multiplier_buffeffects.size() );
 
       // Any corresponding increases in the da_mul table can be removed as pers_mul covers da_mul & ta_mul
       if ( da_multiplier_buffeffects.size() > da_old )
@@ -3604,6 +3588,17 @@ public:
               buff->data().id(), this->name() );
         }
       }
+
+      // snapshotting is done via custom scripting, so data can have different da/ta_mul values but the highest will apply
+      if ( da_val > ta_val )
+        ta_val = da_val;
+
+      persistent_multiplier_buffeffects.push_back( ta_multiplier_buffeffects.back() );
+      ta_multiplier_buffeffects.pop_back();
+
+      p()->sim->print_debug( "persistent-buffs: {} ({}) damage modified by {}% with buff {} ({}), tick table has {} entries.", name(), id,
+                             ta_val * 100.0, buff->name(), buff->data().id(), ta_multiplier_buffeffects.size() );
+
 
       return true;
     }
@@ -4403,7 +4398,7 @@ struct rake_t : public cat_attack_t
     rake_bleed_t( druid_t* p, std::string_view n, const spell_data_t* s ) : cat_attack_t( n, p, s->effectN( 3 ).trigger() )
     {
       background = dual = hasted_ticks = true;
-      may_miss = may_parry = may_dodge = may_crit = false;
+      may_miss = may_parry = may_dodge = false;
       // override for convoke. since this is only ever executed from rake_t, form checking is unnecessary.
       form_mask = 0;
 
@@ -4505,14 +4500,19 @@ struct rip_t : public cat_finisher_t<>
   {
     tear_t( druid_t* p, std::string_view n ) : base_t( n, p, p->find_spell( 391356 ) )
     {
-      may_crit = false;
       name_str_reporting = "tear";
 
       residual_mul = p->talent.rip_and_tear->effectN( 1 ).percent();
     }
 
     // TODO: currently bugged to be 6% per tick, rather than 6% over the entire dot
-    double base_ta( const action_state_t* s ) const override { return get_amount( s ); }
+    double base_ta( const action_state_t* s ) const override
+    {
+      if ( p()->bugs )
+        return get_amount( s );
+      else
+        return get_amount( s ) * tick_time( s ) / composite_dot_duration( s );
+    }
   };
 
   tear_t* tear;
@@ -5010,7 +5010,7 @@ struct brambles_t : public bear_attack_t
   {
     // Ensure reflect scales with damage multipliers
     snapshot_flags |= STATE_VERSATILITY | STATE_TGT_MUL_DA | STATE_MUL_DA;
-    background = may_crit = proc = may_miss = true;
+    background = proc = may_miss = true;
   }
 };
 
@@ -5048,7 +5048,7 @@ struct growl_t : public bear_attack_t
     : bear_attack_t( "growl", player, player->find_class_spell( "Growl" ), opt )
   {
     ignore_false_positive = use_off_gcd = true;
-    may_miss = may_parry = may_dodge = may_block = may_crit = false;
+    may_miss = may_parry = may_dodge = may_block = false;
   }
 
   void impact( action_state_t* s ) override
@@ -5082,7 +5082,7 @@ struct ironfur_t : public bear_attack_t
     : bear_attack_t( n, p, s, opt )
   {
     use_off_gcd = true;
-    harmful = may_miss = may_parry = may_dodge = may_crit = false;
+    harmful = may_miss = may_parry = may_dodge = false;
   }
 
   timespan_t composite_buff_duration()
@@ -5339,8 +5339,7 @@ struct rage_of_the_sleeper_t : public bear_attack_t
   rage_of_the_sleeper_t( druid_t* p, std::string_view opt )
     : bear_attack_t( "rage_of_the_sleeper", p, p->talent.rage_of_the_sleeper, opt )
   {
-    harmful = may_miss = may_parry = may_dodge = may_crit = false;
-    base_dd_min = base_dd_max = 0.0;  // effect#2 is parsed as 100000000 damage
+    harmful = may_miss = may_parry = may_dodge = false;
 
     if ( p->active.rage_of_the_sleeper_reflect )
       p->active.rage_of_the_sleeper_reflect->stats = stats;
@@ -5807,7 +5806,6 @@ struct natures_guardian_t : public druid_heal_t
   natures_guardian_t( druid_t* p ) : druid_heal_t( "natures_guardian", p, p->find_spell( 227034 ) )
   {
     background = true;
-    may_crit = false;
     target = p;
   }
 
@@ -6602,7 +6600,7 @@ struct adaptive_swarm_t : public druid_spell_t
     adaptive_swarm_heal_t( druid_t* p ) : adaptive_swarm_base_t( p, "adaptive_swarm_heal", p->spec.adaptive_swarm_heal )
     {
       quiet = heal = true;
-      harmful = may_miss = may_crit = false;
+      harmful = may_miss = false;
       base_td = base_td_multiplier = 0.0;
 
       parse_effect_period( data().effectN( 1 ) );
@@ -6674,7 +6672,7 @@ struct adaptive_swarm_t : public druid_spell_t
     if ( !p->talent.adaptive_swarm.ok() )
       return;
 
-    may_miss = may_crit = harmful = false;
+    may_miss = harmful = false;
     base_costs[ RESOURCE_MANA ] = 0.0;  // remove mana cost so we don't need to enable mana regen
 
     damage->other = heal;
@@ -6725,8 +6723,6 @@ struct astral_smolder_t : public druid_residual_action_t<druid_spell_t>
 {
   astral_smolder_t( druid_t* p ) : base_t( "astral_smolder", p, p->find_spell( 394061 ) )
   {
-    may_crit = false;
-
     residual_mul = p->talent.astral_smolder->effectN( 1 ).percent();
   }
 
@@ -6855,7 +6851,7 @@ struct dash_t : public druid_spell_t
       buff_on_cast( p->talent.tiger_dash.ok() ? p->buff.tiger_dash : p->buff.dash ),
       gcd_mul( p->query_aura_effect( &p->buff.cat_form->data(), A_ADD_PCT_MODIFIER, P_GCD, &data() )->percent() )
   {
-    harmful = may_crit = may_miss = false;
+    harmful = may_miss = false;
     ignore_false_positive = true;
 
     form_mask = CAT_FORM;
@@ -6930,7 +6926,7 @@ struct force_of_nature_t : public druid_spell_t
     : druid_spell_t( "force_of_nature", p, p->talent.force_of_nature, opt ),
       summon_duration( p->talent.force_of_nature->effectN( 2 ).trigger()->duration() + 1_ms )
   {
-    harmful = may_crit = false;
+    harmful = false;
   }
 
   void init_finished() override
@@ -7029,7 +7025,7 @@ struct heart_of_the_wild_t : public druid_spell_t
   heart_of_the_wild_t( druid_t* p, std::string_view opt )
     : druid_spell_t( "heart_of_the_wild", p, p->talent.heart_of_the_wild, opt )
   {
-    harmful = may_crit = may_miss = reset_melee_swing = false;
+    harmful = may_miss = reset_melee_swing = false;
 
     // Although the effect is coded as modify cooldown time (341) which takes a flat value in milliseconds, the actual
     // effect in-game works as a percent reduction.
@@ -7482,7 +7478,7 @@ struct moonfire_t : public druid_spell_t
   moonfire_t( druid_t* p, std::string_view n, std::string_view opt )
     : druid_spell_t( n, p, p->find_class_spell( "Moonfire" ), opt )
   {
-    may_miss = may_crit = triggers_galactic_guardian = reset_melee_swing = false;
+    may_miss = triggers_galactic_guardian = reset_melee_swing = false;
 
     damage = p->get_secondary_action_n<moonfire_damage_t>( name_str + "_dmg" );
     damage->stats = stats;
@@ -7506,30 +7502,55 @@ struct moonfire_t : public druid_spell_t
   }
 };
 
-// Nature's Vigil ===========================================================
-struct natures_vigil_damage_t : public druid_spell_t
+// Nature's Vigil =============================================================
+template <class Base>
+struct natures_vigil_t : public Base
 {
-  natures_vigil_damage_t( druid_t* p ) : druid_spell_t( "natures_vigil_damage", p, p->find_spell( 124991 ) ) {}
-};
-
-struct natures_vigil_heal_t : public heals::druid_heal_t
-{
-  natures_vigil_heal_t( druid_t* p ) : heals::druid_heal_t( "natures_vigil_heal", p, p->find_spell( 124988 ) ) {}
-};
-
-struct natures_vigil_t : public druid_spell_t
-{
-  natures_vigil_t( druid_t* p, std::string_view opt )
-    : druid_spell_t( "natures_vigil", p, p->talent.natures_vigil, opt )
+  struct natures_vigil_tick_t : public Base
   {
-    harmful = may_crit = may_miss = reset_melee_swing = false;
+    double mul;
+
+    natures_vigil_tick_t( druid_t* p )
+      : Base( "natures_vigil_tick", p, p->find_spell( p->specialization() == DRUID_RESTORATION ? 124988 : 124991 ) ),
+        mul( p->talent.natures_vigil->effectN( 3 ).percent() )
+    {
+      Base::background = Base::dual = true;
+    }
+
+    double get_amount() const { return Base::p()->buff.natures_vigil->check_value() * mul; }
+    double base_da_min( const action_state_t* ) const override { return get_amount(); }
+    double base_da_max( const action_state_t* ) const override { return get_amount(); }
+
+    void impact( action_state_t* s ) override
+    {
+      Base::impact( s );
+
+      Base::p()->buff.natures_vigil->current_value = 0;
+    }
+  };
+
+  natures_vigil_t( druid_t* p, std::string_view opt ) : Base( "natures_vigil", p, p->talent.natures_vigil, opt )
+  {
+    Base::dot_duration = 0_ms;
+    Base::reset_melee_swing = false;
+
+    if ( p->talent.natures_vigil.ok() )
+    {
+      auto tick = p->get_secondary_action<natures_vigil_tick_t>( "natures_vigil_tick" );
+      tick->stats = Base::stats;
+
+      p->buff.natures_vigil->set_tick_callback( [ tick ]( buff_t* b, int, timespan_t ) {
+        if ( b->check_value() )
+          tick->execute();
+      } );
+    }
   }
 
   void execute() override
   {
-    druid_spell_t::execute();
+    Base::execute();
 
-    p()->buff.natures_vigil->trigger();
+    Base::p()->buff.natures_vigil->trigger();
   }
 };
 
@@ -7967,7 +7988,7 @@ struct starfall_t : public druid_spell_t
     : druid_spell_t( n, p, s, opt ),
       max_ext( timespan_t::from_seconds( p->talent.aetherial_kindling->effectN( 2 ).base_value() ) )
   {
-    may_miss = may_crit = false;
+    may_miss = false;
     queue_failed_proc = p->get_proc( "starfall queue failed" );
     dot_duration = 0_ms;
     form_mask |= NO_FORM;
@@ -8343,7 +8364,7 @@ struct sunfire_t : public druid_spell_t
 
   sunfire_t( druid_t* p, std::string_view options_str ) : druid_spell_t( "sunfire", p, p->talent.sunfire, options_str )
   {
-    may_miss = may_crit = false;
+    may_miss = false;
 
     damage = p->get_secondary_action<sunfire_damage_t>( "sunfire_dmg" );
     damage->stats = stats;
@@ -8507,7 +8528,7 @@ struct warrior_of_elune_t : public druid_spell_t
   warrior_of_elune_t( druid_t* p, std::string_view opt )
     : druid_spell_t( "warrior_of_elune", p, p->talent.warrior_of_elune, opt )
   {
-    harmful = may_crit = may_miss = false;
+    harmful = may_miss = false;
   }
 
   timespan_t cooldown_duration() const override
@@ -8539,11 +8560,11 @@ struct wild_charge_t : public druid_spell_t
   wild_charge_t( druid_t* p, std::string_view opt )
     : druid_spell_t( "wild_charge", p, p->talent.wild_charge, opt ), movement_speed_increase( 5.0 )
   {
-    harmful = may_crit = may_miss = false;
-    ignore_false_positive         = true;
-    range                         = data().max_range();
-    movement_directionality       = movement_direction_type::OMNI;
-    trigger_gcd                   = timespan_t::zero();
+    harmful = may_miss = false;
+    ignore_false_positive = true;
+    range = data().max_range();
+    movement_directionality = movement_direction_type::OMNI;
+    trigger_gcd = 0_ms;
   }
 
   void schedule_execute( action_state_t* execute_state ) override
@@ -8583,8 +8604,6 @@ struct wild_mushroom_t : public druid_spell_t
   {
     fungal_growth_t( druid_t* p ) : base_t( "fungal_growth", p, p->find_spell( 81281 ) )
     {
-      may_crit = false;
-
       residual_mul = p->talent.fungal_growth->effectN( 1 ).percent();
     }
 
@@ -8857,7 +8876,7 @@ struct convoke_the_spirits_t : public druid_spell_t
       return;
 
     channeled = true;
-    harmful = may_miss = may_crit = false;
+    harmful = may_miss = false;
 
     max_ticks = as<int>( util::floor( dot_duration / base_tick_time ) );
 
@@ -9258,7 +9277,7 @@ struct kindred_empowerment_t : public druid_spell_t
     : druid_spell_t( n, p, p->cov.kindred_empowerment_damage )
   {
     background = dual = true;
-    may_miss = may_crit = callbacks = false;
+    may_miss = callbacks = false;
   }
 };
 
@@ -9346,7 +9365,7 @@ struct druid_melee_t : public Base
 
   druid_melee_t( std::string_view n, druid_t* p ) : Base( n, p ), ooc_chance( 0.0 )
   {
-    ab::may_glance = ab::background = ab::repeating = ab::is_auto_attack = true;
+    ab::may_crit = ab::may_glance = ab::background = ab::repeating = ab::is_auto_attack = true;
     ab::allow_class_ability_procs = ab::not_a_proc = true;
 
     ab::school = SCHOOL_PHYSICAL;
@@ -9806,7 +9825,13 @@ action_t* druid_t::create_action( std::string_view name, std::string_view option
   if ( name == "ironfur"               ) return new               ironfur_t( this, options_str );
   if ( name == "maim"                  ) return new                  maim_t( this, options_str );
   if ( name == "moonkin_form"          ) return new          moonkin_form_t( this, options_str );
-  if ( name == "natures_vigil"         ) return new          natures_vigil_t( this, options_str );
+  if ( name == "natures_vigil"         )
+  {
+    if ( specialization() == DRUID_RESTORATION )
+      return new natures_vigil_t<druid_spell_t>( this, options_str );
+    else
+      return new natures_vigil_t<druid_heal_t>( this, options_str );
+  }
   if ( name == "rake"                  ) return new                  rake_t( this, options_str );
   if ( name == "rejuvenation"          ) return new          rejuvenation_t( this, options_str );
   if ( name == "remove_corruption"     ) return new     remove_corruption_t( this, options_str );
@@ -9817,8 +9842,10 @@ action_t* druid_t::create_action( std::string_view name, std::string_view option
   if ( name == "starfire"              ) return new              starfire_t( this, options_str );
   if ( name == "starsurge"             )
   {
-    if ( specialization() == DRUID_BALANCE ) return new         starsurge_t( this, options_str );
-    else                                     return new starsurge_offspec_t( this, options_str );
+    if ( specialization() == DRUID_BALANCE )
+      return new starsurge_t( this, options_str );
+    else
+      return new starsurge_offspec_t( this, options_str );
   }
   if ( name == "sunfire"               ) return new               sunfire_t( this, options_str );
   if ( name == "swipe"                 ) return new           swipe_proxy_t( this, options_str );
@@ -9834,8 +9861,10 @@ action_t* druid_t::create_action( std::string_view name, std::string_view option
   if ( name == "adaptive_swarm"        ) return new        adaptive_swarm_t( this, options_str );
   if ( name == "berserk" )
   {
-    if ( specialization() == DRUID_GUARDIAN )   return new   berserk_bear_t( this, options_str );
-    else if ( specialization() == DRUID_FERAL ) return new    berserk_cat_t( this, options_str );
+    if ( specialization() == DRUID_GUARDIAN )
+      return new berserk_bear_t( this, options_str );
+    else if ( specialization() == DRUID_FERAL )
+      return new berserk_cat_t( this, options_str );
   }
   if ( name == "convoke_the_spirits"   ) return new   convoke_the_spirits_t( this, options_str );
   if ( name == "incarnation"           )
@@ -10609,7 +10638,7 @@ void druid_t::create_buffs()
 
   buff.natures_vigil = make_buff( this, "natures_vigil", talent.natures_vigil )
     ->set_cooldown( 0_ms )
-    ->set_default_value_from_effect( 3, 0.01 );
+    ->set_freeze_stacks( true );
 
   buff.protector_of_the_pack_moonfire =
       make_buff<protector_of_the_pack_buff_t>( *this, "protector_of_the_pack_moonfire", find_spell( 378987 ) );
@@ -10958,6 +10987,7 @@ void druid_t::create_actions()
   using namespace cat_attacks;
   using namespace bear_attacks;
   using namespace spells;
+  using namespace heals;
   using namespace auto_attacks;
 
   // Melee Attacks
@@ -10989,13 +11019,6 @@ void druid_t::create_actions()
 
   if ( legendary.lycaras_fleeting_glimpse->ok() )
     active.lycaras_fleeting_glimpse = new lycaras_fleeting_glimpse_t( this );
-
-  // Class
-  if ( talent.natures_vigil.ok() )
-  {
-    active.natures_vigil_damage = get_secondary_action<natures_vigil_damage_t>( "natures_vigil_damage" );
-    active.natures_vigil_heal = get_secondary_action<natures_vigil_heal_t>( "natures_vigil_heal" );
-  }
 
   // Balance
   if ( talent.astral_smolder.ok() )
@@ -11076,7 +11099,7 @@ void druid_t::create_actions()
 
   // Guardian
   if ( talent.after_the_wildfire.ok() )
-    active.after_the_wildfire_heal = get_secondary_action<heals::after_the_wildfire_heal_t>( "after_the_wildfire" );
+    active.after_the_wildfire_heal = get_secondary_action<after_the_wildfire_heal_t>( "after_the_wildfire" );
 
   if ( sets->has_set_bonus( DRUID_GUARDIAN, T28, B4 ) )
     active.architects_aligner = get_secondary_action<architects_aligner_t>( "architects_aligner" );
@@ -11085,7 +11108,7 @@ void druid_t::create_actions()
     active.brambles = get_secondary_action<brambles_t>( "brambles" );
 
   if ( talent.elunes_favored.ok() )
-    active.elunes_favored_heal = get_secondary_action<heals::elunes_favored_heal_t>( "elunes_favored" );
+    active.elunes_favored_heal = get_secondary_action<elunes_favored_heal_t>( "elunes_favored" );
 
   if ( talent.galactic_guardian.ok() )
   {
@@ -11097,7 +11120,7 @@ void druid_t::create_actions()
   }
 
   if ( mastery.natures_guardian->ok() )
-    active.natures_guardian = new heals::natures_guardian_t( this );
+    active.natures_guardian = new natures_guardian_t( this );
 
   if ( legendary.the_natural_orders_will->ok() )
     active.the_natural_orders_will = new the_natural_orders_will_t( this );
@@ -11122,7 +11145,7 @@ void druid_t::create_actions()
 
   // Restoration
   if ( talent.yseras_gift.ok() )
-    active.yseras_gift = new heals::yseras_gift_t( this );
+    active.yseras_gift = new yseras_gift_t( this );
 
   player_t::create_actions();
 
