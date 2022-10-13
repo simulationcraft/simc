@@ -1568,6 +1568,7 @@ struct mage_spell_t : public spell_t
 
     bool deathborne = true;
     bool siphoned_malice = true;
+    bool touch_of_ice = true;
 
     // Misc
     bool combustion = true;
@@ -1729,7 +1730,8 @@ public:
     if ( affected_by.siphoned_malice )
       m *= 1.0 + p()->buffs.siphoned_malice->check_stack_value();
 
-    m *= 1.0 + p()->buffs.touch_of_ice->check_value();
+    if ( affected_by.touch_of_ice )
+      m *= 1.0 + p()->buffs.touch_of_ice->check_value();
 
     return m;
   }
@@ -4679,7 +4681,7 @@ struct ice_lance_t final : public frost_mage_spell_t
 
     frost_mage_spell_t::execute();
 
-    if ( p()->buffs.fingers_of_frost->check() )
+    if ( p()->state.fingers_of_frost_active )
       p()->buffs.touch_of_ice->trigger();
 
     p()->buffs.fingers_of_frost->decrement();
@@ -7256,9 +7258,8 @@ void mage_t::create_buffs()
                              } )
                            ->set_chance( sets->has_set_bonus( MAGE_FIRE, T28, B4 ) );
 
-  buffs.touch_of_ice   = make_buff( this, "touch_of_ice" ) // TODO: Use spell data when it is available.
-                           ->set_default_value( 0.08 )
-                           ->set_duration( 6_s )
+  buffs.touch_of_ice   = make_buff( this, "touch_of_ice", find_spell( 394994 ) )
+                           ->set_default_value_from_effect( 1 )
                            ->set_chance( sets->has_set_bonus( MAGE_FROST, T29, B4 ) );
 
   // Foresight support
