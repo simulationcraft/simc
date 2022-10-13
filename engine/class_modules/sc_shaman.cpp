@@ -6244,23 +6244,36 @@ struct earthquake_damage_base_t : public shaman_spell_t
   // Earthquake can use the persistent multiplier below
   bool mote_buffed;
 
-  earthquake_damage_base_t( shaman_t* player, util::string_view name, const spell_data_t* spell ) :
-    shaman_spell_t( name, player, spell ), mote_buffed( false )
+  action_t* parent;
+
+  earthquake_damage_base_t( shaman_t* player, util::string_view name, const spell_data_t* spell, action_t* p = nullptr ) :
+    shaman_spell_t( name, player, spell ), mote_buffed( false ), parent( p )
   {
     aoe        = -1;
     ground_aoe = background = true;
   }
 
-  void init() override
+  // Snapshot base state from the parent to grab proper persistent multiplier for all damage
+  // (normal, overload)
+  //
+  // Note, in-game Earthquake Overload does not snapshot EoGS. Simc presumes this is a bug.
+  void snapshot_state( action_state_t* s, unsigned flags, result_amount_type rt ) override
   {
-    shaman_spell_t::init();
-
-    snapshot_flags |= STATE_MUL_PERSISTENT;
+    if ( parent && ( !p()->bugs || ( p()->bugs && id == 298762 ) ) )
+    {
+      s->copy_state( parent->execute_state );
+    }
+    else
+    {
+      shaman_spell_t::snapshot_state( s, flags, rt );
+    }
   }
 
   double composite_target_armor( player_t* ) const override
   { return 0; }
 
+  // Persistent multiplier handling is also here to support Deeptremor Totem, since it will not have
+  // a parent defined
   double composite_persistent_multiplier( const action_state_t* state ) const override
   {
     double m = shaman_spell_t::composite_persistent_multiplier( state );
@@ -6319,6 +6332,32 @@ struct earthquake_base_t : public shaman_spell_t
     }
   }
 
+  void init_finished() override
+  {
+    shaman_spell_t::init_finished();
+
+    // Copy state flagging from the damage spell so we an inherit snapshot state in the damage spell
+    // properly when the ground aoe event below is executed. This ensures proper inheritance of
+    // persistent multipliers to the base earthquake, as well as the overload.
+    snapshot_flags = rumble->snapshot_flags;
+    update_flags = rumble->update_flags;
+  }
+
+  double composite_persistent_multiplier( const action_state_t* state ) const override
+  {
+    double m = shaman_spell_t::composite_persistent_multiplier( state );
+
+    if ( p()->buff.master_of_the_elements->up() )
+    {
+      m *= 1.0 + p()->buff.master_of_the_elements->default_value;
+    }
+
+    m *= 1.0 + p()->buff.echoes_of_great_sundering->stack_value();
+    m *= 1.0 + p()->buff.magma_chamber->stack_value();
+
+    return m;
+  }
+
   void execute() override
   {
     shaman_spell_t::execute();
@@ -6364,11 +6403,11 @@ struct earthquake_base_t : public shaman_spell_t
 
 struct earthquake_overload_damage_t : public earthquake_damage_base_t
 {
-  earthquake_overload_damage_t( shaman_t* player ) :
-    earthquake_damage_base_t( player, "earthquake_overload_damage", player->find_spell( 298765 ) )
+  earthquake_overload_damage_t( shaman_t* player, earthquake_base_t* parent ) :
+    earthquake_damage_base_t( player, "earthquake_overload_damage", player->find_spell( 298765 ), parent )
   {
     // Earthquake modifier is hardcoded rather than using effects, so we set the modifier here
-    spell_power_mod.direct = 0.176 * player->talent.mountains_will_fall->effectN( 1 ).percent();
+    spell_power_mod.direct = 0.391 * player->talent.mountains_will_fall->effectN( 1 ).percent();
   }
 };
 
@@ -6384,7 +6423,7 @@ struct earthquake_overload_t : public earthquake_base_t
     callbacks = false;
     base_execute_time = 0_s;
 
-    rumble = new earthquake_overload_damage_t( player );
+    rumble = new earthquake_overload_damage_t( player, this );
     add_child( rumble );
   }
 
@@ -6398,8 +6437,8 @@ struct earthquake_overload_t : public earthquake_base_t
 
 struct earthquake_damage_t : public earthquake_damage_base_t
 {
-  earthquake_damage_t( shaman_t* player ) :
-    earthquake_damage_base_t( player, "earthquake_damage", player->find_spell( 77478 ) )
+  earthquake_damage_t( shaman_t* player, earthquake_base_t* parent = nullptr ) :
+    earthquake_damage_base_t( player, "earthquake_damage", player->find_spell( 77478 ), parent )
   {
     // Earthquake modifier is hardcoded rather than using effects, so we set the modifier here
     spell_power_mod.direct = 0.176;
@@ -6427,7 +6466,7 @@ struct earthquake_t : public earthquake_base_t
   {
     parse_options( options_str );
 
-    rumble = new earthquake_damage_t( player );
+    rumble = new earthquake_damage_t( player, this );
     add_child( rumble );
 
     if ( player->talent.mountains_will_fall.ok() )
