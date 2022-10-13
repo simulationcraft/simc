@@ -3385,6 +3385,11 @@ struct strike_of_the_windlord_off_hand_t : public monk_melee_attack_t
 
     if ( p()->talent.windwalker.thunderfist->ok() )
       p()->buff.thunderfist->trigger();
+
+    // Apply Mark of the Crane
+    if ( p()->specialization() == MONK_WINDWALKER && result_is_hit( s->result ) &&
+         p()->talent.windwalker.mark_of_the_crane->ok() )
+      p()->trigger_mark_of_the_crane( s );
   }
 };
 
@@ -8599,8 +8604,8 @@ void monk_t::init_spells()
   passives.fists_of_fury_tick               = find_spell( 117418 );
   passives.flying_serpent_kick_damage       = find_spell( 123586 );
   passives.focus_of_xuen                    = find_spell( 252768 );
-  passives.fury_of_xuen_stacking_buff       = find_spell( 287062 ); // 396167
-  passives.fury_of_xuen_haste_buff          = find_spell( 287063 ); // 396168
+  passives.fury_of_xuen_stacking_buff       = find_spell( 396167 );
+  passives.fury_of_xuen_haste_buff          = find_spell( 396168 );
   passives.glory_of_the_dawn_damage         = find_spell( 392959 );
   passives.hidden_masters_forbidden_touch   = find_spell( 213114 );
   passives.hit_combo                        = find_spell( 196741 );
@@ -8974,8 +8979,7 @@ void monk_t::create_buffs ()
     buff.fury_of_xuen_stacks = new buffs::fury_of_xuen_stacking_buff_t ( *this, "fury_of_xuen_stacks", passives.fury_of_xuen_stacking_buff );
 
     buff.fury_of_xuen_haste = make_buff ( this, "fury_of_xuen_haste", passives.fury_of_xuen_haste_buff )
-      ->set_default_value( 0.1 ) // PLACEHOLDER
-      //->set_default_value_from_effect_type( A_HASTE_ALL )
+      ->set_default_value_from_effect( 1 )
       ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
       ->add_invalidate( CACHE_ATTACK_HASTE )
       ->add_invalidate( CACHE_HASTE )
