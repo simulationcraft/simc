@@ -181,7 +181,7 @@ struct shadowburn_t : public destruction_spell_t
 // Spells
 struct havoc_t : public destruction_spell_t
 {
-  havoc_t( warlock_t* p, util::string_view options_str ) : destruction_spell_t( p, "Havoc" )
+  havoc_t( warlock_t* p, util::string_view options_str ) : destruction_spell_t( "Havoc", p, p->talents.havoc )
   {
     parse_options( options_str );
     may_crit = false;
