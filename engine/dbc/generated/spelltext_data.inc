@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.2.46092
-static const std::array<spelltext_data_t, 18997> __spelltext_data { {
+static const std::array<spelltext_data_t, 19001> __spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -15788,6 +15788,7 @@ static const std::array<spelltext_data_t, 18997> __spelltext_data { {
   { 365080, 0, "Movement speed increased by $s1%.", 0 },
   { 365199, "$@spelldesc363500", "Burning for $s1% of your maximum health every $t sec. While burning your Fire Blast and Phoenix Flames recharge $363508s1% faster.", 0 },
   { 365262, "Emerald Blossom costs $s2 Essence, but no longer has a cooldown.", 0, 0 },
+  { 365265, "$@spelldesc334166", 0, 0 },
   { 365332, "Increases the duration of powers from Enhancement Consoles to 30 min.", 0, 0 },
   { 365335, "Increases the duration of powers from Enhancement Consoles to 45 min.", 0, 0 },
   { 365350, "Expend all of your current mana to annihilate your enemy target and nearby enemies for up to ${$s1*$s2} Arcane damage based on Mana spent. Deals reduced damage beyond $i targets.\r\n\r\nFor the next $365362d, your Mana Regeneration is increased by $365362s3% and Spell Damage is increased by $365362s1%.", 0, 0 },
@@ -18996,6 +18997,9 @@ static const std::array<spelltext_data_t, 18997> __spelltext_data { {
   { 396144, "Imbue your weapon with the energy of an Ohuna. Your healing spells have a high chance to heal your target for an additional $396144s1 healing.", 0, 0 },
   { 396147, "Imbue your weapon with the energy of an Ohuna. Your healing spells have a high chance to heal your target for an additional $396144s1 healing for 2 hours.", 0, 0 },
   { 396148, "Imbue your weapon with the energy of an Ohuna. Your healing spells have a high chance to heal your target for an additional $385582s1 healing for 2 hours.", 0, 0 },
+  { 396166, "Your Combo Strikes grant a stacking ${$396167s3/100}.1% chance for your next Fists of Fury to grant $s1% Haste and invoke Xuen, The White Tiger for $396168d.", 0, 0 },
+  { 396167, "$@spelldesc396166", "Your next Fists of Fury has a ${$w3/100}.1% chance to grant $w1% Haste and invoke Xuen, The White Tiger for $396168d.", 0 },
+  { 396168, "$@spelldesc396166", "Haste increased by $w1%.", 0 },
   { 396484, "$@spelldesc387474", 0, 0 },
 } };
 
@@ -19116,13 +19120,13 @@ static const std::array<spelldesc_vars_data_t, 359> __spelldesc_vars_data { {
   {  187615, "$WarlordsTrinketNerf=${$cond($gt($pl,109),0.01,$cond($lt($pl,100),1,(110-$PL)/10))}" },
   {  187708, "$cdr=${$s2/1000}" },
   {  187874, "$CAP=$?$OWB==0[${$AP*0.98}][${($AP+$OAP)*2/3}]--2H, DW" },
-  {  188499, "$baseDmg=${3*$199552sw2+$200685sw2} \r\n$firstbloodDmg=${(3*$199552sw2+$200685sw2)*(100+$206416s1)/100}" },
+  {  188499, "$mastery=$?s185164[${((100+$185164m1)/100)}][${1.00}]\r\n$baseDmg=${3*$199552sw2+$200685sw2} \r\n$firstbloodDmg=${(3*$199552sw2+$200685sw2)*(100+$206416s1)/100*$<mastery>}" },
   {  190411, "$damage=${$199667s1+$44949s1+(2*($199852s1+$199851s1))}\r\n$maxRage=${$190411s1+($190411s2*$190411s3)}" },
   {  190456, "$absorb=${($s1+$AP*3.5)*(1+$@versadmg)}" },
   {  191034, "$damage=$?s202354[${9*$191037s1}][${9*$191037s1}]" },
   {  192376, "$agonizingratio = ${2}" },
   {  193315, "$mult=${($max(0,$min($pl-10,10))*8+195)/275}" },
-  {  193359, "$cdr=${$s1/10}" },
+  {  193359, "$cdr=${$s1/10}.1" },
   {  193455, "$mult=${($min($pl-1,19)*12+112)/340}" },
   {  194913, "$CAP=$?$OWB==0[${$AP*0.98}][${($AP+$OAP)*2/3}]--2H, DW" },
   {  196730, "$stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]\r\n$dwm=$?a108561|a115697[${1}][${0.857143}]\r\n$offm=$?a108561|a115697[${0}][${1}]\r\n\r\n$offlow=$?s121278[${$mwb/2/$mws}][${$owb/2/$ows}]\r\n$offhigh=$?s121278[${$MWB/2/$mws}][${$OWB/2/$ows}]\r\n\r\n$low=${$<stnc>*($<dwm>*(($mwb)/($MWS)+$<offm>*$<offlow>)+$AP/3.5-1)}\r\n$high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}\r\n" },
@@ -19142,7 +19146,7 @@ static const std::array<spelldesc_vars_data_t, 359> __spelldesc_vars_data { {
   {  204019, "$shield=${$AP*$s1/100}" },
   {  204074, "$reduction=${$m1/10}.1" },
   {  205448, "$ext=${$231688s1/1000} sec" },
-  {  206416, "$baseDmg=${3*$199552sw2+$200685sw2} \r\n$firstbloodDmg=${(3*$199552sw2+$200685sw2)*(100+$206416s1)/100}" },
+  {  206416, "$mastery=$?s185164[${((100+$185164m1)/100)}][${1.00}]\r\n$baseDmg=${3*$199552sw2+$200685sw2} \r\n$firstbloodDmg=${(3*$199552sw2+$200685sw2)*(100+$206416s1)/100*$<mastery>}" },
   {  206974, "$increase=${$s1}" },
   {  207068, "$bmMastery=$?s76657[${1+0.01*$76657m1}][${1}]\r\n$lowNerf=${0.5+$min($pl,20)*0.025}\r\n$damage=${$ap*($s2/100)*$<bmMastery>*(1+$@versadmg)*(1+($137015s1/100))}" },
   {  207126, "$cd=${$m1/10}" },
@@ -19368,6 +19372,9 @@ static const std::array<spelldesc_vars_data_t, 359> __spelldesc_vars_data { {
 } };
 
 // spelldesc_vars hotfix entries, wow build 10.0.2.46092
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 3> __spelldesc_vars_hotfix_data { {
+  {  188499,  0, "$baseDmg=${3*$199552sw2+$200685sw2} \r\n$firstbloodDmg=${(3*$199552sw2+$200685sw2)*(100+$206416s1)/100}", "$mastery=$?s185164[${((100+$185164m1)/100)}][${1.00}]\r\n$baseDmg=${3*$199552sw2+$200685sw2} \r\n$firstbloodDmg=${(3*$199552sw2+$200685sw2)*(100+$206416s1)/100*$<mastery>}" },
+  {  193359,  0, "$cdr=${$s1/10}", "$cdr=${$s1/10}.1" },
+  {  206416,  0, "$baseDmg=${3*$199552sw2+$200685sw2} \r\n$firstbloodDmg=${(3*$199552sw2+$200685sw2)*(100+$206416s1)/100}", "$mastery=$?s185164[${((100+$185164m1)/100)}][${1.00}]\r\n$baseDmg=${3*$199552sw2+$200685sw2} \r\n$firstbloodDmg=${(3*$199552sw2+$200685sw2)*(100+$206416s1)/100*$<mastery>}" },
 } };
 

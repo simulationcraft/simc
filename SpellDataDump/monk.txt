@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46092 dragonflight-BETA (hotfix 2022-10-13/46092)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46092 dragonflight-BETA (hotfix 2022-10-13/46092, no-networking)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -6423,7 +6423,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=368049)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 5.00000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 3.50000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (5 -> 3.5)
 Description      : $@spelldesc238131
 
 Name             : Spitfire (id=242580) [Spell Family (53), Passive] 
@@ -9035,14 +9036,13 @@ Effects          :
 Description      : Spending Chi has a chance to make your next Spinning Crane Kick free and deal $s1 additional damage.
 
 Name             : Fury of Xuen (id=287055) [Spell Family (53), Passive] 
-Talent Entry     : Windwalker [tree=spec, row=8, col=3, max_rank=1, req_points=20]
 Class            : Monk
 School           : Physical
 Spell Type       : None
 Internal Cooldown: 0.5 seconds
 Proc Chance      : 101%
 Azerite Power Id : 117
-Triggered by     : Fury of Xuen (287062), Fury of Xuen (287063)
+Triggered by     : Fury of Xuen (287062), Fury of Xuen (287063), Fury of Xuen (396167)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -17353,5 +17353,85 @@ Effects          :
 #1 (id=1036052)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.50000 | PvP Coefficient: 1.00000 | Radius: 12 yards | Target: Unknown(129)
 Description      : $@spelldesc392983
+
+Name             : Fury of Xuen (id=396166) [Spell Family (53), Passive] 
+Hotfixed         : NEW SPELL
+Talent Entry     : Windwalker [tree=spec, row=8, col=3, max_rank=1, req_points=20]
+Class            : Monk
+School           : Physical
+Spell Type       : None
+Internal Cooldown: 0.5 seconds
+Proc Chance      : 101%
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=1037154)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.00000 | Target: Self (1)
+Hotfixed         : NEW EFFECT
+Description      : Your Combo Strikes grant a stacking ${$396167s3/100}.1% chance for your next Fists of Fury to grant $s1% Haste and invoke Xuen, The White Tiger for $396168d.
+
+Name             : Fury of Xuen (id=396167) [Spell Family (53)] 
+Hotfixed         : NEW SPELL
+Class            : Monk
+School           : Physical
+Spell Type       : None
+Range            : 100 yards
+Duration         : 20 seconds
+Stacks           : 100 maximum
+Proc Chance      : 101%
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Do Not Display Range (126), Aura Points On Client (268), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=1037155)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
+Hotfixed         : NEW EFFECT
+#2 (id=1037156)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 287055
+Hotfixed         : NEW EFFECT
+#3 (id=1037157)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : NEW EFFECT
+Description      : $@spelldesc396166
+Tooltip          : Your next Fists of Fury has a ${$w3/100}.1% chance to grant $w1% Haste and invoke Xuen, The White Tiger for $396168d.
+
+Name             : Fury of Xuen (id=396168) [Spell Family (53)] 
+Hotfixed         : NEW SPELL
+Class            : Monk
+School           : Physical
+Spell Type       : None
+Range            : 100 yards
+Duration         : 8 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Do Not Display Range (126), Aura Points On Client (268)
+Effects          :
+#1 (id=1037158)  : Apply Aura (6) | Modify All Haste% (193)
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Radius: 50000 yards | Target: Unknown(120)
+Hotfixed         : NEW EFFECT
+#2 (id=1037159)  : Summon (28)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 63508 | Misc Value 2: 0x11e4 | Target: At Enemy (53)
+Hotfixed         : NEW EFFECT
+Description      : $@spelldesc396166
+Tooltip          : Haste increased by $w1%.
 
 
