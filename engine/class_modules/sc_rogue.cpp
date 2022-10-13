@@ -7829,13 +7829,13 @@ void actions::rogue_action_t<Base>::trigger_count_the_odds( const action_state_t
   if ( !p()->bugs && p()->specialization() != ROGUE_OUTLAW )
     return;
 
-  // 1/8/2020 - Confirmed via logs this works with Shadowmeld
+  // Confirmed via logs this works with Shadowmeld and Shadow Dance
   double stealth_bonus = 1.0;
-  if ( p()->stealthed( STEALTH_BASIC | STEALTH_SHADOWMELD ) )
+  if ( p()->stealthed( STEALTH_BASIC | STEALTH_SHADOWMELD | STEALTH_SHADOWDANCE ) )
   {
-    stealth_bonus = ( p()->talent.outlaw.count_the_odds->ok() ?
-                      p()->talent.outlaw.count_the_odds->effectN( 3 ).percent() :
-                      p()->conduit.count_the_odds->effectN( 3 ).percent() );
+    stealth_bonus += ( p()->talent.outlaw.count_the_odds->ok() ?
+                       p()->talent.outlaw.count_the_odds->effectN( 3 ).percent() :
+                       p()->conduit.count_the_odds->effectN( 3 ).percent() );
   }
 
   double trigger_chance = 0.0;
@@ -8603,6 +8603,7 @@ void rogue_t::init_action_list()
     cds->add_action( "roll_the_bones,if=master_assassin_remains=0&buff.dreadblades.down&(!buff.roll_the_bones.up|variable.rtb_reroll)");
     cds->add_action( "keep_it_rolling,if=!variable.rtb_reroll&(buff.broadside.up+buff.true_bearing.up+buff.skull_and_crossbones.up+buff.ruthless_precision.up)>2" );
     cds->add_action( "flagellation,target_if=max:target.time_to_die,if=!stealthed.all&(variable.finish_condition&target.time_to_die>10|fight_remains<13)" );
+    cds->add_action( "shadow_dance,if=!runeforge.mark_of_the_master_assassin&!runeforge.invigorating_shadowdust&!runeforge.deathly_shadows&!stealthed.all&(variable.finish_condition&buff.slice_and_dice.up|variable.ambush_condition&!buff.slice_and_dice.up)" );
     cds->add_action( "vanish,if=!runeforge.mark_of_the_master_assassin&!runeforge.invigorating_shadowdust&!runeforge.deathly_shadows&!stealthed.all&(variable.finish_condition&buff.slice_and_dice.up|variable.ambush_condition&!buff.slice_and_dice.up)" );
     cds->add_action( "vanish,if=runeforge.deathly_shadows&!stealthed.all&buff.deathly_shadows.down&combo_points<=2&variable.ambush_condition", "With Deathly Shadows, optimize for combo point generation when the buff is down");
     cds->add_action( "variable,name=vanish_ma_condition,if=runeforge.mark_of_the_master_assassin&!talent.marked_for_death.enabled,value=(!cooldown.between_the_eyes.ready&variable.finish_condition)|(cooldown.between_the_eyes.ready&variable.ambush_condition)", "With Master Asssassin, sync Vanish with a finisher or Ambush depending on BtE cooldown, or always a finisher with MfD" );
