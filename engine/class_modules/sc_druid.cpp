@@ -7526,6 +7526,7 @@ struct natures_vigil_t : public Base
 
   natures_vigil_t( druid_t* p, std::string_view opt ) : Base( "natures_vigil", p, p->talent.natures_vigil, opt )
   {
+    Base::dot_duration = 0_ms;
     Base::reset_melee_swing = false;
 
     if ( p->talent.natures_vigil.ok() )
@@ -10632,10 +10633,7 @@ void druid_t::create_buffs()
 
   buff.natures_vigil = make_buff( this, "natures_vigil", talent.natures_vigil )
     ->set_cooldown( 0_ms )
-    ->set_freeze_stacks( true )
-    ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
-
-    } );
+    ->set_freeze_stacks( true );
 
   buff.protector_of_the_pack_moonfire =
       make_buff<protector_of_the_pack_buff_t>( *this, "protector_of_the_pack_moonfire", find_spell( 378987 ) );
