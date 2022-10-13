@@ -3511,13 +3511,16 @@ struct deathmark_t : public rogue_attack_t
   {
     rogue_attack_t::init();
 
-    add_child( p()->active.deathmark.garrote );
-    add_child( p()->active.deathmark.rupture );
-    add_child( p()->active.deathmark.amplifying_poison );
-    add_child( p()->active.deathmark.deadly_poison_dot );
-    add_child( p()->active.deathmark.deadly_poison_instant );
-    add_child( p()->active.deathmark.instant_poison );
-    add_child( p()->active.deathmark.wound_poison );
+    if ( data().ok() )
+    {
+      add_child( p()->active.deathmark.garrote );
+      add_child( p()->active.deathmark.rupture );
+      add_child( p()->active.deathmark.amplifying_poison );
+      add_child( p()->active.deathmark.deadly_poison_dot );
+      add_child( p()->active.deathmark.deadly_poison_instant );
+      add_child( p()->active.deathmark.instant_poison );
+      add_child( p()->active.deathmark.wound_poison );
+    }
   }
 
   void impact( action_state_t* state ) override
