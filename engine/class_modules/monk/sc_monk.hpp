@@ -795,6 +795,7 @@ public:
     propagate_const<cooldown_t*> fists_of_fury;
     propagate_const<cooldown_t*> flying_serpent_kick;
     propagate_const<cooldown_t*> fortifying_brew;
+    propagate_const<cooldown_t*> fury_of_xuen;
     propagate_const<cooldown_t*> healing_elixir;
     propagate_const<cooldown_t*> invoke_niuzao;
     propagate_const<cooldown_t*> invoke_xuen;

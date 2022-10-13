@@ -390,8 +390,11 @@ public:
       if ( p()->talent.windwalker.meridian_strikes->ok() )
           p()->cooldown.touch_of_death->adjust( -10 * p()->talent.windwalker.meridian_strikes->effectN( 2 ).time_value(), true ); // Saved as 35
 
-      if ( p()->talent.windwalker.fury_of_xuen->ok() )
-          p()->buff.fury_of_xuen_stacks->trigger();
+      if ( p()->talent.windwalker.fury_of_xuen->ok() && p()->cooldown.fury_of_xuen->up() )
+      {
+        p()->cooldown.fury_of_xuen->start( p()->talent.windwalker.fury_of_xuen->internal_cooldown() );
+        p()->buff.fury_of_xuen_stacks->trigger();
+      }
     }
     else
     {
@@ -9067,13 +9070,10 @@ void monk_t::create_buffs ()
     ->set_cooldown( timespan_t::zero() )
     ->set_chance( covenant.necrolord->ok() ? 1 : 0 )
     ->set_default_value_from_effect( 3 );
-  buff.bonedust_brew_grounding_breath_hidden = make_buff( this, "bonedust_brew_hidden" /*, passives.bonedust_brew_grounding_breath */ )
+  buff.bonedust_brew_grounding_breath_hidden = make_buff( this, "bonedust_brew_hidden", passives.bonedust_brew_grounding_breath )
     ->set_quiet( true )
-    ->set_duration( timespan_t::from_seconds( 15 ) )
-    ->set_cooldown( timespan_t::from_seconds( 1.5 ) )
-    ->set_max_stack( 5 )
     ->set_reverse( true )
-    ->set_reverse_stack_count( 5 );
+    ->set_reverse_stack_count( passives.bonedust_brew_grounding_breath->max_stacks() );
   buff.bonedust_brew_attenuation_hidden = make_buff( this, "bonedust_brew_attenuation_hidden", passives.bonedust_brew_attenuation )
     ->set_quiet( true )
     ->set_reverse( true )
