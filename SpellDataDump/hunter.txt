@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46092 dragonflight-BETA (hotfix 2022-10-12/46092)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46092 dragonflight-BETA (hotfix 2022-10-13/46092)
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -14509,6 +14509,7 @@ Effects          :
 Description      : Cobra Shot reduces the cooldown of Kill Command by an additional ${$m1/-1000}.1 sec.
 
 Name             : Wild Instincts (id=378442) [Spell Family (9), Passive, Hidden] 
+Hotfixed         : Attributes
 Talent Entry     : Beast Mastery [tree=spec, row=10, col=3, max_rank=1, req_points=20, select_idx=100]
 Class            : Hunter
 School           : Nature
@@ -14519,14 +14520,14 @@ Proc Chance      : 25%
 Proc Flags       : ....x... x.x.x.x. x....... ........ 
                  : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ...x.... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log on Learn (355)
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1006844)  : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -15530,7 +15531,7 @@ Description      : While Coordinated Assault is active, the cooldown of Wildfire
 Name             : Dire Frenzy (id=385810) [Spell Family (9), Passive, Hidden] 
 Talent Entry     : Beast Mastery [tree=spec, row=9, col=1, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(1000, 2000)]
-                 : Effect#2 [op=set, values=(20, 40)]
+                 : Effect#2 [op=set, values=(30, 60)]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -16142,7 +16143,7 @@ School           : Physical
 Spell Type       : Melee
 Spell Level      : 1
 Proc Chance      : 101%
-Real PPM         : 2 (Haste multiplier)
+Real PPM         : 4 (Haste multiplier)
 Proc Flags       : ....x... x....... ........ ........ 
                  : Yellow Melee, Yellow Ranged
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -16186,7 +16187,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Bouncy Chain Missiles (146), Allow Class Ability Procs (416), Chain by Most Hit (440)
 Effects          :
 #1 (id=1026894)  : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.20000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.40000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (0.2 -> 0.4)
 #2 (id=1026895)  : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc390231
