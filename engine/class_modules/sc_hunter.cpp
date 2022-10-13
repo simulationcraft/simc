@@ -1931,11 +1931,6 @@ struct dire_critter_t final : public hunter_pet_t
     { }
   };
 
-  struct actives_t
-  {
-    action_t* stomp;
-  } active;
-
   dire_critter_t( hunter_t* owner, util::string_view n = "dire_beast" ):
     hunter_pet_t( owner, n, PET_HUNTER, true /* GUARDIAN */, true /* dynamic */ )
   {
@@ -1961,9 +1956,6 @@ struct dire_critter_t final : public hunter_pet_t
       o() -> buffs.dire_pack -> trigger();
     }
 
-    if ( o() -> talents.stomp.ok() )
-      active.stomp -> execute();
-
     if ( main_hand_attack )
       main_hand_attack -> execute();
 
@@ -1975,6 +1967,10 @@ struct dire_critter_t final : public hunter_pet_t
     double m = hunter_pet_t::composite_player_multiplier( school );
 
     m *= 1 + o() -> talents.dire_frenzy -> effectN( 2 ).percent();
+
+    // 11-10-22 Dire Beast - Damage increased by 400%.
+    // 13-10-22 Dire Beast damage increased by 50%.
+    m *= 6;
 
     return m;
   }
@@ -2579,9 +2575,6 @@ void dire_critter_t::init_spells()
   hunter_pet_t::init_spells();
 
   main_hand_attack = new dire_beast_melee_t( this );
-
-  if ( o() -> talents.stomp.ok() )
-    active.stomp = new actions::stomp_t( this );
 }
 
 template <typename Pet, size_t N>
