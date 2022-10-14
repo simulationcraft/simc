@@ -29,6 +29,10 @@ void shocking_disclosure( special_effect_t& );
 namespace enchants
 {
 std::function<void( special_effect_t& )> writ_enchant( stat_e, bool cr = true );
+void earthen_devotion( special_effect_t& );
+void frozen_devotion( special_effect_t& );
+void titanic_devotion( special_effect_t& );
+void wafting_devotion( special_effect_t& );
 }
 
 namespace items

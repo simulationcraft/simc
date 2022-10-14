@@ -4517,6 +4517,13 @@ void unique_gear::register_special_effect( unsigned spell_id, custom_cb_t init_c
   add_effect( dbitem );
 }
 
+void unique_gear::register_special_effect( std::initializer_list<unsigned> spell_ids, custom_cb_t init_callback,
+                                           bool fallback )
+{
+  for ( auto id : spell_ids )
+    register_special_effect( id, init_callback, fallback );
+}
+
 void unique_gear::register_special_effect( unsigned spell_id, const char* encoded_str )
 {
   special_effect_db_item_t dbitem;
