@@ -9208,12 +9208,8 @@ bool monk_t::affected_by_sef( spell_data_t data ) const
   // Storm, Earth, and Fire (monk_spell_t)
   bool affected = data.affected_by( talent.windwalker.storm_earth_and_fire->effectN( 1 ) );
 
-  // Currently SotWL is not affected by SEF and the pets do not copy the spell
-  if ( data.id() == 205414 || data.id() == 222029 )
-    affected = !bugs;
-
   // Chi Explosion IS affected by SEF but needs to be overriden here manually
-  else if ( data.id() == 337342 )
+  if ( data.id() == 337342 )
     affected = true;
 
   return affected;
