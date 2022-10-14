@@ -239,6 +239,7 @@ struct conflagrate_t : public destruction_spell_t
 
     cooldown->hasted = true;
     cooldown->charges += as<int>( p->talents.improved_conflagrate->effectN( 1 ).base_value() );
+    cooldown->duration += p->talents.explosive_potential->effectN( 1 ).time_value();
 
     //if ( p->legendary.cinders_of_the_azjaqir->ok() )
     //{
@@ -1044,6 +1045,8 @@ void warlock_t::init_spells_destruction()
   talents.conflagrate_debuff = find_spell( 265931 );
 
   talents.improved_conflagrate = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Conflagrate" ); // Should be ID 231793
+
+  talents.explosive_potential = find_talent_spell( talent_tree::SPECIALIZATION, "Explosive Potential" ); // Should be ID 388827
 
   talents.eradication = find_talent_spell( "Eradication" );
   talents.soul_fire   = find_talent_spell( "Soul Fire" );
