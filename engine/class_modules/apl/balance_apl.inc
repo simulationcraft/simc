@@ -23,6 +23,7 @@ def->add_action( "use_items" );
 def->add_action( "run_action_list,name=aoe,if=variable.is_aoe" );
 def->add_action( "run_action_list,name=st" );
 
+st->add_action( "starfall,if=talent.rattle_the_stars&variable.touch_starfall_st&buff.touch_the_cosmos.up&buff.rattled_stars.up&buff.rattled_stars.remains<gcd.max" );
 st->add_action( "starsurge,if=talent.rattle_the_stars&buff.rattled_stars.up&buff.rattled_stars.remains<gcd.max" );
 st->add_action( "sunfire,target_if=refreshable&astral_power.deficit>variable.passive_asp+3" );
 st->add_action( "moonfire,target_if=refreshable&astral_power.deficit>variable.passive_asp+3" );
@@ -40,7 +41,7 @@ st->add_action( "fury_of_elune,if=astral_power.deficit>variable.passive_asp+8" )
 st->add_action( "new_moon,if=astral_power.deficit>variable.passive_asp+10&(charges=2&recharge_time<5|charges=3)" );
 st->add_action( "half_moon,if=astral_power.deficit>variable.passive_asp+20" );
 st->add_action( "full_moon,if=astral_power.deficit>variable.passive_asp+40" );
-st->add_action( "starfall,if=buff.starweavers_warp.up" );
+st->add_action( "starfall,if=buff.starweavers_warp.up|variable.touch_starfall_st&buff.touch_the_cosmos.up" );
 st->add_action( "wrath,if=buff.gathering_starstuff.stack=3&!prev_gcd.2.wrath&astral_power.deficit>variable.passive_asp+6+3*talent.soul_of_the_forest" );
 st->add_action( "starsurge,if=buff.ca_inc.remains<5&buff.ca_inc.up|astral_power.deficit<variable.passive_asp|buff.starweavers_weft.up|(buff.eclipse_lunar.remains<4&buff.eclipse_lunar.up|buff.eclipse_solar.remains<4&buff.eclipse_solar.up)&astral_power>70|talent.starlord&buff.starlord.stack<3|talent.balance_of_all_things&(buff.balance_of_all_things_arcane.stack>5|buff.balance_of_all_things_nature.stack>5)" );
 st->add_action( "new_moon,if=astral_power.deficit>variable.passive_asp+10" );
