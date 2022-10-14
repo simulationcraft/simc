@@ -1912,13 +1912,18 @@ struct mortal_strike_t : public warrior_attack_t
 {
   mortal_strike_t* mortal_combo_strike;
   bool from_mortal_combo;
+  double cost_rage;
   double enduring_blow_chance;
   double mortal_combo_chance;
+  double frothing_berserker_chance;
+  double rage_from_frothing_berserker;
   mortal_strike_t( warrior_t* p, util::string_view options_str, bool mortal_combo = false )
     : warrior_attack_t( "mortal_strike", p, p->talents.arms.mortal_strike ), mortal_combo_strike( nullptr ),
       from_mortal_combo( mortal_combo ),
       enduring_blow_chance( p->legendary.enduring_blow->proc_chance() ),
-      mortal_combo_chance( mortal_combo ? 0.0 : p->conduit.mortal_combo.percent() )
+      mortal_combo_chance( mortal_combo ? 0.0 : p->conduit.mortal_combo.percent() ),
+      frothing_berserker_chance( p->talents.warrior.frothing_berserker->proc_chance() ),
+      rage_from_frothing_berserker( p->talents.warrior.frothing_berserker->effectN( 1 ).base_value() / 100.0 )
   {
     parse_options( options_str );
 
@@ -1981,6 +1986,11 @@ struct mortal_strike_t : public warrior_attack_t
   {
     warrior_attack_t::execute();
 
+    cost_rage = last_resource_cost;
+    if ( p()->talents.warrior.frothing_berserker->ok() && rng().roll( frothing_berserker_chance ) )
+    {
+      p()->resource_gain(RESOURCE_RAGE, last_resource_cost * rage_from_frothing_berserker, p()->gain.frothing_berserker);
+    }
     if ( result_is_hit( execute_state->result ) )
     {
       if ( !sim->overrides.mortal_wounds && execute_state->target->debuffs.mortal_wounds )
@@ -2626,7 +2636,13 @@ struct charge_t : public warrior_attack_t
 
 struct cleave_t : public warrior_attack_t
 {
-  cleave_t( warrior_t* p, util::string_view options_str ) : warrior_attack_t( "cleave", p, p->talents.arms.cleave )
+  double cost_rage;
+  double frothing_berserker_chance;
+  double rage_from_frothing_berserker;
+  cleave_t( warrior_t* p, util::string_view options_str ) 
+    : warrior_attack_t( "cleave", p, p->talents.arms.cleave ),
+    frothing_berserker_chance( p->talents.warrior.frothing_berserker->proc_chance() ),
+    rage_from_frothing_berserker( p->talents.warrior.frothing_berserker->effectN( 1 ).base_value() / 100.0 )
   {
     parse_options( options_str );
     weapon = &( player->main_hand_weapon );
@@ -2657,6 +2673,11 @@ struct cleave_t : public warrior_attack_t
   {
     warrior_attack_t::execute();
 
+    cost_rage = last_resource_cost;
+    if ( p()->talents.warrior.frothing_berserker->ok() && rng().roll( frothing_berserker_chance ) )
+    {
+      p()->resource_gain(RESOURCE_RAGE, last_resource_cost * rage_from_frothing_berserker, p()->gain.frothing_berserker);
+    }
     if ( result_is_hit( execute_state->result ) )
     {
     p()->buff.martial_prowess->expire();
@@ -4029,6 +4050,7 @@ struct rampage_event_t : public event_t
 
 struct rampage_parent_t : public warrior_attack_t
 {
+  double cost_rage;
   double deathmaker_chance;
   double unbridled_chance;  // unbridled ferocity azerite trait
   double frothing_berserker_chance;
@@ -4040,7 +4062,7 @@ struct rampage_parent_t : public warrior_attack_t
     unbridled_chance( p->find_spell( 288060 )->proc_chance() ),
     frothing_berserker_chance( p->talents.warrior.frothing_berserker->proc_chance() ),
     hack_and_slash_chance( p->conduit.hack_and_slash.percent() / 10.0 ),
-    rage_from_frothing_berserker( p->find_spell( 215572 )->effectN( 1 ).base_value() / 10.0 )
+    rage_from_frothing_berserker( p->talents.warrior.frothing_berserker->effectN( 1 ).base_value() / 100.0 )
   {
     parse_options( options_str );
     for ( auto* rampage_attack : p->rampage_attacks )
@@ -4054,9 +4076,11 @@ struct rampage_parent_t : public warrior_attack_t
   void execute() override
   {
     warrior_attack_t::execute();
+
+    cost_rage = last_resource_cost;
     if ( p()->talents.warrior.frothing_berserker->ok() && rng().roll( frothing_berserker_chance ) )
     {
-      p()->resource_gain(RESOURCE_RAGE, rage_from_frothing_berserker, p()->gain.frothing_berserker);
+      p()->resource_gain(RESOURCE_RAGE, last_resource_cost * rage_from_frothing_berserker, p()->gain.frothing_berserker);
     }
     if ( p()->azerite.trample_the_weak.ok() )
     {
@@ -4840,13 +4864,15 @@ struct fury_whirlwind_parent_t : public warrior_attack_t
   {
     warrior_attack_t::last_tick( d );
 
-    if ( p()->talents.fury.meat_cleaver->ok() )
+    if ( p()->talents.fury.improved_whirlwind->ok() )
+    {
+      p()->buff.meat_cleaver->trigger( p()->buff.meat_cleaver->data().max_stacks() );
+    }
+    else if ( p()->talents.fury.improved_whirlwind->ok() && p()->talents.fury.meat_cleaver->ok() )
     {
       p()->buff.meat_cleaver->trigger( as<int>( p()->buff.meat_cleaver->data().max_stacks() +
       p()->talents.fury.meat_cleaver->effectN( 2 ).base_value() ) );
     }
-    else
-      p()->buff.meat_cleaver->trigger( p()->buff.meat_cleaver->data().max_stacks() );
   }
 
   void execute() override
@@ -4854,8 +4880,11 @@ struct fury_whirlwind_parent_t : public warrior_attack_t
     warrior_attack_t::execute();
     const int num_available_targets = std::min( 5, as<int>( target_list().size() ));  // Capped to 5 targets 
 
-    p()->resource_gain( RESOURCE_RAGE, ( base_rage_gain + additional_rage_gain_per_target * num_available_targets ),
+    if ( p()->talents.fury.improved_whirlwind->ok() )
+    {
+      p()->resource_gain( RESOURCE_RAGE, ( base_rage_gain + additional_rage_gain_per_target * num_available_targets ),
                         p()->gain.whirlwind );
+    }
   }
 
   bool ready() override
@@ -6258,28 +6287,38 @@ void warrior_t::init_spells()
   spell.shield_block            = find_class_spell( "Shield Block" );
   spell.shield_slam             = find_class_spell( "Shield Slam" );
   spell.slam                    = find_class_spell( "Slam" );
-  //spec.slam                   = find_spell( 1464 );
   spell.taunt                   = find_class_spell( "Taunt" );
   spell.victory_rush            = find_class_spell( "Victory Rush" );
   spell.whirlwind               = find_class_spell( "Whirlwind" );
+  spell.shield_block_buff       = find_spell( 132404 );
 
   // Class Passives
   spell.warrior_aura            = find_spell( 137047 );
 
   // Arms Spells
+  mastery.deep_wounds_ARMS      = find_mastery_spell( WARRIOR_ARMS );
   spec.arms_warrior             = find_specialization_spell( "Arms Warrior" );
   spec.seasoned_soldier         = find_specialization_spell( "Seasoned Soldier" );
   spec.deep_wounds_ARMS         = find_specialization_spell("Mastery: Deep Wounds", WARRIOR_ARMS);
+  spell.colossus_smash_debuff   = find_spell( 208086 );
+  // spec.execute                = find_spell( 163201 );
+  // spec.whirlwind              = find_spell( 1680 );
 
   // Fury Spells
+  mastery.unshackled_fury       = find_mastery_spell( WARRIOR_FURY );
   spec.fury_warrior             = find_specialization_spell( "Fury Warrior" );
   spec.enrage                   = find_specialization_spell( "Enrage" );
   spec.execute                  = find_specialization_spell( "Execute" );
   spec.whirlwind                = find_specialization_spell( "Whirlwind" );
   spec.bloodbath                = find_spell(335096);
   spec.crushing_blow            = find_spell(335097);
+  spell.whirlwind_buff          = find_spell( 85739, WARRIOR_FURY );  // Used to be called Meat Cleaver
+  spell.siegebreaker_debuff     = find_spell( 280773 );
+  // spec.execute                = find_specialization_spell( 5308 );
+  // spec.whirlwind              = find_specialization_spell( 190411 );
 
   // Protection Spells
+  mastery.critical_block        = find_mastery_spell( WARRIOR_PROTECTION );
   spec.protection_warrior       = find_specialization_spell( "Protection Warrior" );
   spec.devastate                = find_specialization_spell( "Devastate" );
   spec.riposte                  = find_specialization_spell( "Riposte" );
@@ -6290,28 +6329,10 @@ void warrior_t::init_spells()
   spec.shield_block_2           = find_specialization_spell( 231847 ); // extra charge
 
 
-  if (specialization() == WARRIOR_FURY)
-  {
-    //spec.execute                = find_specialization_spell( 5308 );
-    //spec.whirlwind              = find_specialization_spell( 190411 );
-  }
-
-  else
-  {
-    //spec.execute                = find_spell( 163201 );
-    //spec.whirlwind              = find_spell( 1680 );
-  }
-
-  // Spec Passives
   // Only for Protection, the arms talent is under talents.avatar
   //spec.avatar           = find_specialization_spell( "Avatar" );
   // Makes the buff spec agnostic
   //spec.avatar_buff = find_spell(107574); not needed anymore?
-
-  // Mastery
-  mastery.critical_block        = find_mastery_spell( WARRIOR_PROTECTION );
-  mastery.deep_wounds_ARMS      = find_mastery_spell( WARRIOR_ARMS );
-  mastery.unshackled_fury       = find_mastery_spell( WARRIOR_FURY );
 
   // Class Talents
   talents.warrior.battle_stance                    = find_talent_spell( talent_tree::CLASS, "Battle Stance" );
@@ -6319,6 +6340,11 @@ void warrior_t::init_spells()
   talents.warrior.defensive_stance                 = find_talent_spell( talent_tree::CLASS, "Defensive Stance" );
 
   talents.warrior.berserker_rage                   = find_talent_spell( talent_tree::CLASS, "Berserker Rage" );
+  talents.warrior.impending_victory                = find_talent_spell( talent_tree::CLASS, "Impending Victory" );
+  talents.warrior.war_machine                      = find_talent_spell( talent_tree::CLASS, "War Machine" );
+  talents.warrior.intervene                        = find_talent_spell( talent_tree::CLASS, "Intervene" );
+  talents.warrior.rallying_cry                     = find_talent_spell( talent_tree::CLASS, "Rallying Cry" );
+
   talents.warrior.piercing_howl                    = find_talent_spell( talent_tree::CLASS, "Piercing Howl" );
   talents.warrior.fast_footwork                    = find_talent_spell( talent_tree::CLASS, "Fast Footwork" );
   talents.warrior.spell_reflection                 = find_talent_spell( talent_tree::CLASS, "Spell Reflection" );
@@ -6380,7 +6406,6 @@ void warrior_t::init_spells()
   talents.warrior.elysian_might                    = find_talent_spell( talent_tree::CLASS, "Elysian Might" );
   talents.warrior.rumbling_earth                   = find_talent_spell( talent_tree::CLASS, "Rumbling Earth" );
   talents.warrior.sonic_boom                       = find_talent_spell( talent_tree::CLASS, "Sonic Boom" );
-  
 
   // Arms Talents
   talents.arms.mortal_strike                       = find_talent_spell( talent_tree::SPECIALIZATION, "Mortal Strike" );
@@ -6440,7 +6465,7 @@ void warrior_t::init_spells()
   talents.arms.juggernaught                        = find_talent_spell( talent_tree::SPECIALIZATION, "Juggernaught" );
 
   // Fury Talents
-  talents.fury.bloodthirst          = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodhtirst" );
+  talents.fury.bloodthirst          = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodthirst" );
 
   talents.fury.raging_blow          = find_talent_spell( talent_tree::SPECIALIZATION, "Raging Blow" );
 
@@ -6593,6 +6618,7 @@ void warrior_t::init_spells()
 
   // Convenant Abilities
   covenant.ancient_aftershock    = find_covenant_spell( "Ancient Aftershock" );
+  spell.aftershock_duration      = find_spell( 343607 );
   covenant.condemn_driver        = find_covenant_spell( "Condemn" );
   if ( specialization() == WARRIOR_FURY )
   covenant.condemn               = find_spell( as<unsigned>( covenant.condemn_driver->effectN( 2 ).base_value() ) );
@@ -6625,24 +6651,6 @@ void warrior_t::init_spells()
   tier_set.pile_on_2p                 = sets -> set( WARRIOR_ARMS, T28, B2 );
   tier_set.pile_on_4p                 = sets -> set( WARRIOR_ARMS, T28, B4 );
   tier_set.outburst_4p                = find_spell( 364639 );
-
-
-  // Generic spells
-  spell.ignore_pain           = find_class_spell( "Ignore Pain" );
-  spell.battle_shout          = find_class_spell( "Battle Shout" );
-  spell.charge                = find_class_spell( "Charge" );
-  spell.colossus_smash_debuff = find_spell( 208086 );
-  spell.intervene             = find_spell( 3411 );
-  spell.hamstring             = find_class_spell( "Hamstring" );
-  spell.heroic_leap           = find_class_spell( "Heroic Leap" );
-  spell.pummel                = find_class_spell( "Pummel" );
-  spell.shattering_throw      = find_class_spell( "Shattering Throw" );
-  spell.shield_block          = find_class_spell( "Shield Block" );
-  spell.shield_slam           = find_class_spell( "Shield Slam" );
-  spell.siegebreaker_debuff   = find_spell( 280773 );
-  spell.whirlwind_buff        = find_spell( 85739, WARRIOR_FURY );  // Used to be called Meat Cleaver
-  spell.shield_block_buff     = find_spell( 132404 );
-  spell.aftershock_duration   = find_spell( 343607 );
 
 
   // Active spells
