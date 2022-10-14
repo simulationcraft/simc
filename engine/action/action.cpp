@@ -3132,6 +3132,42 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
     return std::make_unique<tick_multiplier_expr_t>( *this );
   }
 
+  if ( name_str == "energize_amount" )
+  {
+    struct energize_amount_expr_t : public action_state_expr_t
+    {
+      energize_amount_expr_t( action_t& a ) : action_state_expr_t( "energize_amount", a )
+      {
+        state->n_targets = 1;
+        state->chain_target = 0;
+      }
+
+      double evaluate() override
+      {
+        action.snapshot_state( state, result_amount_type::NONE );
+        state->target = action.target;
+
+        auto num_targets = state->n_targets;
+
+        if ( action.energize_type_() == action_energize::PER_HIT )
+        {
+          num_targets = action.n_targets();
+          if ( num_targets == -1 || num_targets > 0 )
+          {
+            action.target_cache.is_valid = false;
+            auto max_targets = as<unsigned>( action.target_list().size() );
+            num_targets = ( num_targets < 0 ) ? max_targets : std::min( max_targets, num_targets );
+          }
+
+          state->n_targets = std::max( 1U, num_targets );
+        }
+
+        return action.composite_energize_amount( state ) * state->n_targets;
+      }
+    };
+    return std::make_unique<energize_amount_expr_t>( *this );
+  }
+
   if ( name_str == "persistent_multiplier" )
   {
     struct persistent_multiplier_expr_t : public action_state_expr_t
