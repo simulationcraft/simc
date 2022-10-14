@@ -849,7 +849,7 @@ public:
 
       player_talent_t the_rotten;               // NYI, merge with legendary?
       player_talent_t danse_macabre;            // NYI
-      player_talent_t dark_brew;                // Partial NYI - Needs school change
+      player_talent_t dark_brew;
 
     } subtlety;
 
@@ -1979,6 +1979,7 @@ public:
   void trigger_deepening_shadows( const action_state_t* );
   void trigger_shadow_techniques( const action_state_t* );
   void trigger_weaponmaster( const action_state_t*, rogue_attack_t* action );
+  void trigger_opportunity( const action_state_t*, rogue_attack_t* action );
   void trigger_restless_blades( const action_state_t* );
   void trigger_dreadblades( const action_state_t* );
   void trigger_relentless_strikes( const action_state_t* );
@@ -3137,16 +3138,12 @@ struct ambush_t : public rogue_attack_t
   void impact( action_state_t* state ) override
   {
     rogue_attack_t::impact( state );
-    trigger_find_weakness( state );
 
+    trigger_find_weakness( state );
+    trigger_opportunity( state, extra_attack );
     if ( p()->talent.assassination.vicious_venoms->ok() )
     {
       p()->active.vicious_venoms.ambush->trigger_secondary_action( state->target );
-    }
-
-    if ( extra_attack && p()->rng().roll( p()->extra_attack_proc_chance() ) )
-    {
-      extra_attack->trigger_secondary_action( state->target, 300_ms );
     }
   }
 
@@ -5132,20 +5129,7 @@ struct sinister_strike_t : public rogue_attack_t
   {
     rogue_attack_t::execute();
     trigger_guile_charm( execute_state );
-
-    if ( !result_is_hit( execute_state->result ) )
-      return;
-
-    // Only trigger secondary hits on initial casts of Sinister Strike
-    if ( p()->talent.outlaw.opportunity->ok() )
-    {
-      const int stacks = 1 + as<int>( p()->talent.outlaw.fan_the_hammer->effectN( 1 ).base_value() );
-      if ( p()->buffs.opportunity->trigger( stacks, buff_t::DEFAULT_VALUE(), p()->extra_attack_proc_chance() ) )
-      {
-        extra_attack->trigger_secondary_action( execute_state->target, 300_ms );
-        p()->buffs.concealed_blunderbuss->trigger();
-      }
-    }
+    trigger_opportunity( execute_state, extra_attack );
   }
 
   bool procs_main_gauche() const override
@@ -7392,6 +7376,20 @@ void actions::rogue_action_t<Base>::trigger_weaponmaster( const action_state_t* 
 }
 
 template <typename Base>
+void actions::rogue_action_t<Base>::trigger_opportunity( const action_state_t* state, actions::rogue_attack_t* action )
+{
+  if ( !p()->talent.outlaw.opportunity->ok() || !ab::result_is_hit( state->result ) || !action )
+    return;
+
+  const int stacks = 1 + as<int>( p()->talent.outlaw.fan_the_hammer->effectN( 1 ).base_value() );
+  if ( p()->buffs.opportunity->trigger( stacks, buff_t::DEFAULT_VALUE(), p()->extra_attack_proc_chance() ) )
+  {
+    action->trigger_secondary_action( state->target, 300_ms );
+    p()->buffs.concealed_blunderbuss->trigger();
+  }
+}
+
+template <typename Base>
 void actions::rogue_action_t<Base>::trigger_elaborate_planning( const action_state_t* /* state */ )
 {
   if ( !p()->talent.assassination.elaborate_planning->ok() || !affected_by.elaborate_planning || ab::background )
@@ -8490,8 +8488,8 @@ void rogue_t::init_action_list()
     cds->add_action( "roll_the_bones,if=master_assassin_remains=0&buff.dreadblades.down&(!buff.roll_the_bones.up|variable.rtb_reroll)");
     cds->add_action( "keep_it_rolling,if=!variable.rtb_reroll&(buff.broadside.up+buff.true_bearing.up+buff.skull_and_crossbones.up+buff.ruthless_precision.up)>2" );
     cds->add_action( "flagellation,target_if=max:target.time_to_die,if=!stealthed.all&(variable.finish_condition&target.time_to_die>10|fight_remains<13)" );
-    cds->add_action( "shadow_dance,if=!runeforge.mark_of_the_master_assassin&!runeforge.invigorating_shadowdust&!runeforge.deathly_shadows&!stealthed.all&(variable.finish_condition&buff.slice_and_dice.up|variable.ambush_condition&!buff.slice_and_dice.up)" );
-    cds->add_action( "vanish,if=!runeforge.mark_of_the_master_assassin&!runeforge.invigorating_shadowdust&!runeforge.deathly_shadows&!stealthed.all&(variable.finish_condition&buff.slice_and_dice.up|variable.ambush_condition&!buff.slice_and_dice.up)" );
+    cds->add_action( "shadow_dance,if=!runeforge.mark_of_the_master_assassin&!runeforge.invigorating_shadowdust&!runeforge.deathly_shadows&!stealthed.all&!buff.take_em_by_surprise.up&(variable.finish_condition&buff.slice_and_dice.up|variable.ambush_condition&!buff.slice_and_dice.up)" );
+    cds->add_action( "vanish,if=!runeforge.mark_of_the_master_assassin&!runeforge.invigorating_shadowdust&!runeforge.deathly_shadows&!stealthed.all&!buff.take_em_by_surprise.up&(variable.finish_condition&buff.slice_and_dice.up|variable.ambush_condition&!buff.slice_and_dice.up)" );
     cds->add_action( "vanish,if=runeforge.deathly_shadows&!stealthed.all&buff.deathly_shadows.down&combo_points<=2&variable.ambush_condition", "With Deathly Shadows, optimize for combo point generation when the buff is down");
     cds->add_action( "variable,name=vanish_ma_condition,if=runeforge.mark_of_the_master_assassin&!talent.marked_for_death.enabled,value=(!cooldown.between_the_eyes.ready&variable.finish_condition)|(cooldown.between_the_eyes.ready&variable.ambush_condition)", "With Master Asssassin, sync Vanish with a finisher or Ambush depending on BtE cooldown, or always a finisher with MfD" );
     cds->add_action( "variable,name=vanish_ma_condition,if=runeforge.mark_of_the_master_assassin&talent.marked_for_death.enabled,value=variable.finish_condition" );
@@ -8543,10 +8541,11 @@ void rogue_t::init_action_list()
     build->add_action( "ghostly_strike,if=debuff.ghostly_strike.remains<=3" );
     build->add_action( "shiv,if=runeforge.tiny_toxic_blade" );
     build->add_action( "echoing_reprimand,if=!soulbind.effusive_anima_accelerator|variable.blade_flurry_sync" );
-    build->add_action( "pool_resource,for_next=1" );
     build->add_action( "ambush" );
     build->add_action( "cold_blood,if=buff.opportunity.up&buff.greenskins_wickers.up|buff.greenskins_wickers.up&buff.greenskins_wickers.remains<1.5", "Use Pistol Shot when buffed by bonuses as a priority" );
     build->add_action( "pistol_shot,if=buff.opportunity.up&(buff.greenskins_wickers.up|buff.concealed_blunderbuss.up|talent.fan_the_hammer)|buff.greenskins_wickers.up&buff.greenskins_wickers.remains<1.5" );
+    build->add_action( "pool_resource,for_next=1" );
+    build->add_action( "ambush" );
     build->add_action( "serrated_bone_spike,if=!dot.serrated_bone_spike_dot.ticking", "Apply SBS to all targets without a debuff as priority, preferring targets dying sooner after the primary target" );
     build->add_action( "serrated_bone_spike,target_if=min:target.time_to_die+(dot.serrated_bone_spike_dot.ticking*600),if=!dot.serrated_bone_spike_dot.ticking" );
     build->add_action( "serrated_bone_spike,if=fight_remains<=5|cooldown.serrated_bone_spike.max_charges-charges_fractional<=0.25|combo_points.deficit=cp_gain&!buff.skull_and_crossbones.up&energy.base_time_to_max>1", "Attempt to use when it will cap combo points and SnD is down, otherwise keep from capping charges" );
