@@ -1819,6 +1819,7 @@ class SpellDataGenerator(DataGenerator):
           ( 387502, 0 ),    # Soul Cleave
           ( 387552, 0 ),    # Infernal Command pet aura
           ( 390193, 0 ),    # Demonic Servitude aura
+          ( 387096, 0 ),    # Pyrogenics aura
         ),
 
         # Monk:

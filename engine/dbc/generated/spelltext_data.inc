@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.2.46092
-static const std::array<spelltext_data_t, 19001> __spelltext_data { {
+static const std::array<spelltext_data_t, 19000> __spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -14831,6 +14831,7 @@ static const std::array<spelltext_data_t, 19001> __spelltext_data { {
   { 344402, "$@spelldesc310143", "Armor increased by $w2%.\r\nStamina increased by $w1%.", "Night Fae" },
   { 344414, "$@spelldesc343393", 0, 0 },
   { 344432, "$@spelldesc327439", "Your steward is eager to please, but has to depart in a few minutes!", 0 },
+  { 344487, "Reduces the cooldown of Flying Serpent Kick by ${$abs($s0/1000)} sec.", 0, "Rank 2" },
   { 344548, "$@spelldesc114051", 0, 0 },
   { 344572, "$@spelldesc19574", 0, 0 },
   { 344646, "Jump in the dredger's wheelbarrow. Requires at least Journeyman Riding.", "Racing in a dredger's wheelbarrow!", 0 },
@@ -17703,6 +17704,7 @@ static const std::array<spelltext_data_t, 19001> __spelltext_data { {
   { 387084, "Every Soul Shard you spend reduces the cooldown of $?a137043[Summon Darkglare]?a137044[Summon Demonic Tyrant][Summon Infernal] by $?a137043[${$m1/1000}.1]?a137044[${$m2/1000}.1][${$m3/1000}.1] sec.", 0, 0 },
   { 387093, "Increases the duration of Immolate by ${$s1/1000} sec.", 0, 0 },
   { 387095, "Enemies affected by your Rain of Fire take $s1% increased damage from your Fire spells.", 0, 0 },
+  { 387096, "$@spelldesc387095", "Fire damage taken increased by $s1%.", 0 },
   { 387103, "Increases the damage of Conflagrate, Channel Demonfire, Shadowburn, and Soulfire by $s1%.", 0, 0 },
   { 387108, "Conflagrate and Shadowburn have a $s1% chance to guarantee your next cast of the ability to critically strike, and increase its damage by your critical strike chance.", 0, 0 },
   { 387113, "$@spelldesc343527", 0, 0 },
@@ -18326,7 +18328,6 @@ static const std::array<spelltext_data_t, 19001> __spelltext_data { {
   { 390947, "Circle of Healing heals $s1 additional ally and its cooldown is reduced by ${$s2/-1000} sec.", 0, 0 },
   { 390951, "Temporarily imbues shoulders with a fiery illusion for $ecd.", 0, 0 },
   { 390954, "Increases the critical strike chance of Flash Heal and Heal by $s1%.", 0, 0 },
-  { 390961, "$@spelldesc390990", 0, 0 },
   { 390964, "$@spelldesc120517", 0, 0 },
   { 390967, "Increases the healing done by your Mastery: Echo of Light by $s1%.", 0, 0 },
   { 390971, "$@spelldesc120517", 0, 0 },
@@ -18337,12 +18338,10 @@ static const std::array<spelltext_data_t, 19001> __spelltext_data { {
   { 390980, "Critical heals from Flash Heal and Heal increase your healing done by your next Holy Word spell by $390989s1%, stacking up to $390989U times.", 0, 0 },
   { 390981, "$@spelldesc110744", 0, 0 },
   { 390989, "$@spelldesc390980", "The healing of your next Holy Word spell is increased by $w1%.", 0 },
-  { 390990, "Causes the earth at the target location to tremble and break, dealing Nature damage every $t1 sec to enemies in $r yard radius. Lasts $d.\r\n\r\nUsable in the Obsidian Citadel and adjacent lava fields.", "Suffering Nature damage every $t2 sec.", 0 },
   { 390992, "Flash Heal reduces the cast time of your next Heal within $390993d by $390993s2% and increases its healing done by $390993s1%.\r\n\r\nStacks up to $390993U times.", 0, 0 },
   { 390993, "$@spelldesc390992", "The cast time of your next Heal is reduced by $w2% and its healing is increased by $w1%.", 0 },
   { 390994, "Circle of Healing reduces the cooldown of Holy Word: Sanctify, Prayer of Mending reduces the cooldown of Holy Word: Serenity, and Holy Fire reduces the cooldown of Holy Word: Chastise by $s1 sec.", 0, 0 },
   { 390996, "Your $?a137033[Mind Blast and Mind Spike]?a137031[Smite and Holy Fire][Smite and Penance] casts reduce the cooldown of Mindgames by ${$s1/2}.1 sec.", 0, 0 },
-  { 390997, "Causes the earth at the target location to tremble and break, dealing Nature damage every $t1 sec to enemies in $a1 yard radius. Lasts $d.", "Suffering Nature damage every $t2 sec.", 0 },
   { 391023, "Summons an arcana orb outside of the Cobalt Assembly.", "Summons an arcana orb outside of the Cobalt Assembly.", 0 },
   { 391037, "Your combo point generating abilities have a $s1% chance to generate $s2 extra combo $Lpoint:points;.", 0, 0 },
   { 391045, "Rip damage increased by $s1%.", 0, 0 },
