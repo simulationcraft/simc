@@ -102,6 +102,16 @@ struct avengers_shield_base_t : public paladin_spell_t
     if ( p()->talents.bulwark_of_righteous_fury->ok() )
       p()->buffs.bulwark_of_righteous_fury->trigger();
   }
+
+double recharge_multiplier( const cooldown_t& cd ) const override
+  {
+    double rm = paladin_spell_t::recharge_multiplier( cd );
+
+    if ( p()->buffs.moment_of_glory->check() && p()->talents.moment_of_glory->ok() )
+      rm *= 1.0 + p()->talents.moment_of_glory->effectN( 1 ).percent();
+
+    return rm;
+  }
 };
 
 struct avengers_shield_dt_t : public avengers_shield_base_t
@@ -126,8 +136,8 @@ struct avengers_shield_dr_t : public avengers_shield_base_t
     // 2021-06-26 Divine resonance damage is increased by Moment of Glory, but
     // does not consume the buff.
     double m = avengers_shield_base_t::action_multiplier();
-    if( p() -> bugs && p() -> buffs.moment_of_glory -> up() )
-      m *= 1.0 + p() -> buffs.moment_of_glory -> value();
+    if ( p()->bugs && p()->buffs.moment_of_glory->up() )
+      m *= 1.0 + p()->talents.moment_of_glory->effectN( 2 ).percent();
     return m;
   }
 };
@@ -147,22 +157,6 @@ struct avengers_shield_t : public avengers_shield_base_t
     avengers_shield_base_t::execute();
 
     bool wasted_reset = false;
-
-    // Moment of Glory (MoG) will be consumed regardless of Holy Avengers Engraved Sigil (HAES) proc
-    // If they happen at the same time, HAES proc will be considered wasted over MoG as its cost is higher
-    // Assuming Legendary > Talents > Baseline
-    // Feel free to swap around these parts if the stance on the above changes
-    if ( p() -> buffs.moment_of_glory -> up() )
-    {
-      if ( ! wasted_reset )
-      {
-        p() -> cooldowns.avengers_shield -> reset( false );
-        p() -> procs.as_moment_of_glory -> occur();
-        wasted_reset = true;
-      }
-      else
-        p() -> procs.as_moment_of_glory_wasted -> occur();
-    }
 
     if ( p() -> legendary.holy_avengers_engraved_sigil -> ok() &&
       rng().roll( p() -> legendary.holy_avengers_engraved_sigil -> proc_chance() ) )
@@ -184,7 +178,7 @@ struct avengers_shield_t : public avengers_shield_base_t
     double m = avengers_shield_base_t::action_multiplier();
     if ( p()->buffs.moment_of_glory->up() )
     {
-      m *= 1.0 + p()->buffs.moment_of_glory->value();
+      m *= 1.0 + p()->talents.moment_of_glory->effectN( 2 ).percent();
     }
       if ( p() -> talents.focused_enmity->ok() )
        {
@@ -232,7 +226,10 @@ struct moment_of_glory_t : public paladin_spell_t
     paladin_spell_t::execute();
 
     p()->buffs.moment_of_glory->trigger();
+
+
   }
+
 };
 
 // Tyrs Enforcer damage proc =================================================
@@ -866,7 +863,7 @@ void paladin_t::trigger_t28_4p_prot( action_state_t* s )
 
 void paladin_t::trigger_inner_light( action_state_t* s )
 {
-  if ( !talents.inner_light->ok() && cooldowns.inner_light_icd -> up() )
+  if ( !talents.inner_light->ok() && cooldowns.inner_light_icd -> up() && !buffs.inner_light->check() )
     return;
 
   active.inner_light_damage->set_target( s -> action -> player );
@@ -882,8 +879,7 @@ void paladin_t::trigger_tyrs_enforcer( action_state_t* s )
 
   active.tyrs_enforcer_damage->set_target( s -> target);
   active.tyrs_enforcer_damage->execute();
-  active.inner_light_damage->set_target( s->target );
-  active.inner_light_damage->execute();
+
 }
 
 bool paladin_t::standing_in_consecration() const
@@ -972,8 +968,8 @@ void paladin_t::create_buffs_protection()
         -> add_invalidate( CACHE_STRENGTH )
         -> add_invalidate( CACHE_STAMINA );
   buffs.shield_of_the_righteous = new shield_of_the_righteous_buff_t( this );
-  buffs.moment_of_glory = make_buff( this, "moment_of_glory", talents.moment_of_glory )
-        -> set_default_value( talents.moment_of_glory -> effectN( 2 ).percent() );
+  buffs.moment_of_glory         = make_buff( this, "moment_of_glory", talents.moment_of_glory );
+        //-> set_default_value( talents.moment_of_glory -> effectN( 2 ).percent() );
   buffs.bastion_of_light = make_buff( this, "bastion_of_light", talents.bastion_of_light);
   buffs.bulwark_of_righteous_fury = make_buff( this, "bulwark_of_righteous_fury", find_spell( 337848) )
         -> set_default_value( find_spell( 337848 ) -> effectN( 1 ).percent() );
