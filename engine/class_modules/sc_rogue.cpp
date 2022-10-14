@@ -356,12 +356,13 @@ public:
     buff_t* take_em_by_surprise_aura;
     damage_buff_t* summarily_dispatched;
     // Subtlety
-    buff_t* premeditation;
-    buff_t* shot_in_the_dark;
     buff_t* master_of_shadows;
+    buff_t* premeditation;
     buff_t* secret_technique;   // Only to simplify APL tracking
     buff_t* shadow_techniques;  // Internal tracking buff
+    buff_t* shot_in_the_dark;
     buff_t* shuriken_tornado;
+    buff_t* silent_storm;
 
     // Legendary
     damage_buff_t* deathly_shadows;
@@ -592,22 +593,26 @@ public:
     const spell_data_t* shadow_dance;         // Baseline charge increase passive
     const spell_data_t* shadow_techniques;
     const spell_data_t* shadowstrike;
-    const spell_data_t* shadowstrike_2;       // DFALPHA: Still works on the R2 despite not showing anywhere
     const spell_data_t* shuriken_storm;    
     const spell_data_t* shuriken_toss;
     const spell_data_t* symbols_of_death;
 
     const spell_data_t* black_powder_shadow_attack;
+    const spell_data_t* deeper_daggers_buff;
     const spell_data_t* eviscerate_shadow_attack;
     const spell_data_t* master_of_shadows_buff;
+    const spell_data_t* perforated_veins_buff;
     const spell_data_t* premeditation_buff;
     const spell_data_t* relentless_strikes_energize;
+    const spell_data_t* invigorating_shadowdust_cdr;
     const spell_data_t* secret_technique_attack;
     const spell_data_t* secret_technique_clone_attack;
     const spell_data_t* shadow_blades_attack;
     const spell_data_t* shadow_focus_buff;
     const spell_data_t* shadow_techniques_energize;
+    const spell_data_t* shadowstrike_stealth_buff;
     const spell_data_t* shot_in_the_dark_buff;
+    const spell_data_t* silent_storm_buff;
 
     // Multi-Spec
     const spell_data_t* rupture; // Assassination + Subtlety
@@ -805,13 +810,13 @@ public:
       player_talent_t shot_in_the_dark;
       player_talent_t premeditation;
       player_talent_t shadow_blades;
-      player_talent_t silent_storm;             // NYI
+      player_talent_t silent_storm;
       player_talent_t night_terrors;            // No implementation
 
       player_talent_t gloomblade;
       player_talent_t improved_shadow_techniques;
-      player_talent_t stiletto_staccato;        // NYI, merge with conduit?
-      player_talent_t veiltouched;              // NYI
+      player_talent_t stiletto_staccato;
+      player_talent_t veiltouched;
       player_talent_t secret_technique;
 
       player_talent_t swift_death;
@@ -828,23 +833,23 @@ public:
 
       player_talent_t inevitability;            // NYI - scaling?
       player_talent_t without_a_trace;
-      player_talent_t fade_to_nothing;          // NYI
+      player_talent_t fade_to_nothing;          // No implementation
       player_talent_t cloaked_in_shadow;        // No implementation
       player_talent_t secret_stratagem;
       
       player_talent_t sepsis;
-      player_talent_t perforated_veins;         // NYI, merge with conduit?
+      player_talent_t perforated_veins;
       player_talent_t dark_shadow;
-      player_talent_t deeper_daggers;           // NYI, merge with conduit?
+      player_talent_t deeper_daggers;
       player_talent_t flagellation;             // NYI
 
-      player_talent_t invigorating_shadowdust;  // NYI, merge with legendary?
+      player_talent_t invigorating_shadowdust;
       player_talent_t lingering_shadow;         // NYI
       player_talent_t finality;                 // NYI, merge with legendary?
 
       player_talent_t the_rotten;               // NYI, merge with legendary?
       player_talent_t danse_macabre;            // NYI
-      player_talent_t dark_brew;                // NYI
+      player_talent_t dark_brew;                // Partial NYI - Needs school change
 
     } subtlety;
 
@@ -1473,7 +1478,6 @@ public:
     bool dashing_scoundrel = false;
     bool zoldyck_insignia = false;
     bool sepsis = false;                // Stance Mask
-    bool deeper_daggers = false;
 
     // Dragonflight
     bool adrenaline_rush_gcd = false;
@@ -1699,12 +1703,16 @@ public:
     register_damage_buff( p()->buffs.symbols_of_death );
     register_damage_buff( p()->buffs.the_rotten );
 
-    // 2022-08-04 -- S4 hotfixed whitelist data is incomplete, manually add R2 spells
-    //               Shadow Blades also works but this is handled elsewhere
-    register_damage_buff( p()->buffs.deeper_daggers );
-    if ( ab::data().id() == 328082 || ab::data().id() == 319190 )
+    // Dragonflight version of Deeper Daggers is not a whitelisted buff and still a school buff
+    if ( !p()->talent.subtlety.deeper_daggers->ok() && p()->conduit.deeper_daggers.ok() )
     {
-      direct_damage_buffs.push_back( p()->buffs.deeper_daggers );
+      // 2022-08-04 -- S4 hotfixed whitelist data is incomplete, manually add R2 spells
+      //               Shadow Blades also works but this is handled elsewhere
+      register_damage_buff( p()->buffs.deeper_daggers );
+      if ( ab::data().id() == 328082 || ab::data().id() == 319190 )
+      {
+        direct_damage_buffs.push_back( p()->buffs.deeper_daggers );
+      }
     }
 
     if ( p()->talent.rogue.nightstalker->ok() )
@@ -4053,6 +4061,12 @@ struct kingsbane_t : public rogue_attack_t
     rogue_attack_t( name, p, p->talent.assassination.kingsbane, options_str )
   {
   }
+
+  void last_tick( dot_t* d ) override
+  {
+    rogue_attack_t::last_tick( d );
+    p()->buffs.kingsbane->expire();
+  }
 };
 
 // Pistol Shot ==============================================================
@@ -4798,7 +4812,7 @@ struct shadowstrike_t : public rogue_attack_t
 
     if ( p()->stealthed( STEALTH_BASIC ) )
     {
-      m *= 1.0 + p()->spec.shadowstrike_2->effectN( 2 ).percent();
+      m *= 1.0 + p()->spec.shadowstrike_stealth_buff->effectN( 2 ).percent();
     }
 
     return m;
@@ -4815,7 +4829,7 @@ struct shadowstrike_t : public rogue_attack_t
 
     if ( p()->stealthed( STEALTH_BASIC ) )
     {
-      return range + p()->spec.shadowstrike_2->effectN( 1 ).base_value();
+      return range + p()->spec.shadowstrike_stealth_buff->effectN( 1 ).base_value();
     }
 
     return 0;
@@ -4952,6 +4966,19 @@ struct shuriken_storm_t: public rogue_attack_t
 
     aoe = -1;
     reduced_aoe_targets = data().effectN( 4 ).base_value();
+  }
+
+  double composite_crit_chance() const override
+  {
+    double c = rogue_attack_t::composite_crit_chance();    
+    c += p()->buffs.silent_storm->stack_value();
+    return c;
+  }
+
+  void execute() override
+  {
+    rogue_attack_t::execute();
+    p()->buffs.silent_storm->expire();
   }
 
   void impact(action_state_t* state) override
@@ -6457,11 +6484,17 @@ struct stealth_like_buff_t : public BuffBase
         rogue->buffs.master_assassins_mark_aura->trigger();
     }
 
-    if ( rogue->talent.subtlety.premeditation->ok() && rogue->stealthed( STEALTH_BASIC | STEALTH_SHADOWDANCE ) )
-      rogue->buffs.premeditation->trigger();
+    if ( rogue->stealthed( STEALTH_BASIC | STEALTH_SHADOWDANCE ) )
+    {
+      if ( rogue->talent.subtlety.premeditation->ok() )
+        rogue->buffs.premeditation->trigger();
 
-    if ( rogue->talent.subtlety.shot_in_the_dark->ok() && rogue->stealthed( STEALTH_BASIC | STEALTH_SHADOWDANCE ) )
-      rogue->buffs.shot_in_the_dark->trigger();
+      if ( rogue->talent.subtlety.shot_in_the_dark->ok() )
+        rogue->buffs.shot_in_the_dark->trigger();
+
+      if ( rogue->talent.subtlety.silent_storm->ok() )
+        rogue->buffs.silent_storm->trigger();
+    }
 
     // TOCHECK -- All different stealth trigger conditions
     rogue->buffs.improved_garrote_aura->trigger();
@@ -6513,9 +6546,10 @@ struct vanish_t : public stealth_like_buff_t<buff_t>
 
   vanish_t( rogue_t* r ) :
     base_t( r, "vanish", r->spell.vanish_buff ),
-    shadowdust_reduction( timespan_t::from_seconds( r->find_spell( 340080 )->effectN( 1 ).base_value() ) )
+    shadowdust_reduction( timespan_t::from_seconds( r->spec.invigorating_shadowdust_cdr->effectN( 1 ).base_value() ) )
   {
-    if ( r->legendary.invigorating_shadowdust.ok() || r->options.prepull_shadowdust )
+    // TOCHECK DFALPHA -- Make sure this list is updated for Sub
+    if ( r->talent.subtlety.invigorating_shadowdust || r->legendary.invigorating_shadowdust.ok() || r->options.prepull_shadowdust )
     {
       shadowdust_cooldowns = { r->cooldowns.adrenaline_rush, r->cooldowns.between_the_eyes, r->cooldowns.blade_flurry,
         r->cooldowns.blade_rush, r->cooldowns.blind, r->cooldowns.cloak_of_shadows, r->cooldowns.dreadblades,
@@ -6533,7 +6567,8 @@ struct vanish_t : public stealth_like_buff_t<buff_t>
     rogue->cancel_auto_attacks();
 
     // Confirmed on early beta that Invigorating Shadowdust triggers from Vanish buff (via old Sepsis), not just Vanish casts
-    if ( rogue->legendary.invigorating_shadowdust.ok() || ( rogue->options.prepull_shadowdust && rogue->sim->current_time() == 0_s ) )
+    if ( rogue->talent.subtlety.invigorating_shadowdust || rogue->legendary.invigorating_shadowdust.ok() ||
+         ( rogue->options.prepull_shadowdust && rogue->sim->current_time() == 0_s ) )
     {
       for ( cooldown_t* c : shadowdust_cooldowns )
       {
@@ -7315,8 +7350,15 @@ void actions::rogue_action_t<Base>::trigger_shadow_techniques( const action_stat
                          p()->talent.subtlety.improved_shadow_techniques->effectN( 1 ).base_value();
     p()->resource_gain( RESOURCE_ENERGY, energy_gain, p()->gains.shadow_techniques, state->action );
     trigger_combo_point_gain( as<int>( p()->spec.shadow_techniques_energize->effectN( 1 ).base_value() ), p()->gains.shadow_techniques );
-    if ( p()->conduit.stiletto_staccato.ok() )
+
+    if ( p()->talent.subtlety.stiletto_staccato->ok() )
+    {
+      p()->cooldowns.shadow_blades->adjust( -p()->talent.subtlety.stiletto_staccato->effectN( 1 ).time_value(), true );
+    }
+    else if ( p()->conduit.stiletto_staccato.ok() )
+    {
       p()->cooldowns.shadow_blades->adjust( -p()->conduit.stiletto_staccato.time_value( conduit_data_t::time_type::S ), true );
+    }
   }
 }
 
@@ -7742,7 +7784,7 @@ void actions::rogue_action_t<Base>::trigger_flagellation( const action_state_t* 
 template <typename Base>
 void actions::rogue_action_t<Base>::trigger_perforated_veins( const action_state_t* state )
 {
-  if ( !p()->conduit.perforated_veins->ok() || !ab::result_is_hit( state->result ) )
+  if ( !p()->spec.perforated_veins_buff->ok() || !ab::result_is_hit(state->result) )
     return;
 
   // 2022-02-24 -- 9.2 now allows this to trigger from procs with a per-target ICD
@@ -8133,6 +8175,23 @@ double rogue_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + legendary.celerity->effectN( 1 ).percent();
   }
 
+  if ( talent.subtlety.veiltouched->effectN( 1 ).has_common_school( school ) )
+  {
+    m *= 1.0 + talent.subtlety.veiltouched->effectN( 1 ).percent();
+  }
+
+  if ( talent.subtlety.dark_brew->effectN( 2 ).has_common_school( school ) )
+  {
+    m *= 1.0 + talent.subtlety.dark_brew->effectN( 2 ).percent();
+  }
+
+  // Dragonflight version of Deeper Daggers is not a whitelisted buff and still a school buff
+  if ( talent.subtlety.deeper_daggers->ok() &&
+       spec.deeper_daggers_buff->effectN( 1 ).has_common_school( school ) )
+  {
+    m *= buffs.deeper_daggers->value_direct();
+  }
+
   return m;
 }
 
@@ -8492,10 +8551,10 @@ void rogue_t::init_action_list()
   else if ( specialization() == ROGUE_SUBTLETY )
   {
     // Pre-Combat
-    precombat->add_action( this, "Stealth" );
-    precombat->add_action( this, "Marked for Death", "precombat_seconds=15" );
-    precombat->add_action( this, "Slice and Dice", "precombat_seconds=1" );
-    precombat->add_action( this, "Shadow Blades", "if=runeforge.mark_of_the_master_assassin" );
+    precombat->add_action( "stealth" );
+    precombat->add_action( "marked_for_death,precombat_seconds=15" );
+    precombat->add_action( "slice_and_dice,precombat_seconds=1" );
+    precombat->add_action( "shadow_blades,if=runeforge.mark_of_the_master_assassin" );
 
     // Main Rotation
     def->add_action( "variable,name=snd_condition,value=buff.slice_and_dice.up|spell_targets.shuriken_storm>=6", "Used to determine whether cooldowns wait for SnD based on targets." );
@@ -8503,7 +8562,7 @@ void rogue_t::init_action_list()
     def->add_action( "variable,name=effective_combo_points,value=effective_combo_points", "Account for ShT reaction time by ignoring low-CP animacharged matches in the 0.5s preceeding a potential ShT proc" );
     def->add_action( "variable,name=effective_combo_points,if=covenant.kyrian&effective_combo_points>combo_points&combo_points.deficit>2&time_to_sht.4.plus<0.5&!variable.is_next_cp_animacharged,value=combo_points" );
     def->add_action( "call_action_list,name=cds", "Check CDs at first" );
-    def->add_action( this, "Slice and Dice", "if=spell_targets.shuriken_storm<6&fight_remains>6&buff.slice_and_dice.remains<gcd.max&combo_points>=4-(time<10)*2", "Apply Slice and Dice at 2+ CP during the first 10 seconds, after that 4+ CP if it expires within the next GCD or is not up" );
+    def->add_action( "slice_and_dice,if=spell_targets.shuriken_storm<6&fight_remains>6&buff.slice_and_dice.remains<gcd.max&combo_points>=4-(time<10)*2", "Apply Slice and Dice at 2+ CP during the first 10 seconds, after that 4+ CP if it expires within the next GCD or is not up" );
     def->add_action( "run_action_list,name=stealthed,if=stealthed.all", "Run fully switches to the Stealthed Rotation (by doing so, it forces pooling if nothing is available)." );
     def->add_action( "variable,name=use_priority_rotation,value=priority_rotation&spell_targets.shuriken_storm>=2", "Only change rotation if we have priority_rotation set and multiple targets up." );
     def->add_action( "call_action_list,name=stealth_cds,if=variable.use_priority_rotation", "Priority Rotation? Let's give a crap about energy for the stealth CDs (builder still respect it). Yup, it can be that simple." );
@@ -8520,21 +8579,21 @@ void rogue_t::init_action_list()
 
     // Cooldowns
     action_priority_list_t* cds = get_action_priority_list( "cds", "Cooldowns" );
-    cds->add_action( this, "Shadow Dance", "use_off_gcd=1,if=!buff.shadow_dance.up&buff.shuriken_tornado.up&buff.shuriken_tornado.remains<=3.5", "Use Dance off-gcd before the first Shuriken Storm from Tornado comes in." );
-    cds->add_action( this, "Symbols of Death", "use_off_gcd=1,if=buff.shuriken_tornado.up&buff.shuriken_tornado.remains<=3.5", "(Unless already up because we took Shadow Focus) use Symbols off-gcd before the first Shuriken Storm from Tornado comes in." );
+    cds->add_action( "shadow_dance,use_off_gcd=1,if=!buff.shadow_dance.up&buff.shuriken_tornado.up&buff.shuriken_tornado.remains<=3.5", "Use Dance off-gcd before the first Shuriken Storm from Tornado comes in.");
+    cds->add_action( "symbols_of_death,use_off_gcd=1,if=buff.shuriken_tornado.up&buff.shuriken_tornado.remains<=3.5", "(Unless already up because we took Shadow Focus) use Symbols off-gcd before the first Shuriken Storm from Tornado comes in." );
     cds->add_action( "flagellation,target_if=max:target.time_to_die,if=variable.snd_condition&!stealthed.mantle&(spell_targets.shuriken_storm<=1&cooldown.symbols_of_death.up&!talent.shadow_focus.enabled|buff.symbols_of_death.up)&combo_points>=5&target.time_to_die>10" );
-    cds->add_action( this, "Vanish", "if=(runeforge.mark_of_the_master_assassin&combo_points.deficit<=1-talent.deeper_strategem.enabled|runeforge.deathly_shadows&combo_points<1)&buff.symbols_of_death.up&buff.shadow_dance.up&master_assassin_remains=0&buff.deathly_shadows.down" );
+    cds->add_action( "vanish,if=(runeforge.mark_of_the_master_assassin&combo_points.deficit<=1-talent.deeper_strategem.enabled|runeforge.deathly_shadows&combo_points<1)&buff.symbols_of_death.up&buff.shadow_dance.up&master_assassin_remains=0&buff.deathly_shadows.down" );
     cds->add_action( "pool_resource,for_next=1,if=talent.shuriken_tornado.enabled&!talent.shadow_focus.enabled", "Pool for Tornado pre-SoD with ShD ready when not running SF." );
-    cds->add_action( this, "Shuriken Tornado", "if=spell_targets.shuriken_storm<=1&energy>=60&variable.snd_condition&cooldown.symbols_of_death.up&cooldown.shadow_dance.charges>=1&(!runeforge.obedience|buff.flagellation_buff.up|spell_targets.shuriken_storm>=(1+4*(!talent.nightstalker.enabled&!talent.dark_shadow.enabled)))&combo_points<=2&!buff.premeditation.up&(!covenant.venthyr|!cooldown.flagellation.up)", "Use Tornado pre SoD when we have the energy whether from pooling without SF or just generally." );
+    cds->add_action( "shuriken_tornado,if=spell_targets.shuriken_storm<=1&energy>=60&variable.snd_condition&cooldown.symbols_of_death.up&cooldown.shadow_dance.charges>=1&(!runeforge.obedience|buff.flagellation_buff.up|spell_targets.shuriken_storm>=(1+4*(!talent.nightstalker.enabled&!talent.dark_shadow.enabled)))&combo_points<=2&!buff.premeditation.up&(!covenant.venthyr|!cooldown.flagellation.up)", "Use Tornado pre SoD when we have the energy whether from pooling without SF or just generally.");
     cds->add_action( "serrated_bone_spike,cycle_targets=1,if=variable.snd_condition&!dot.serrated_bone_spike_dot.ticking&target.time_to_die>=21&(combo_points.deficit>=(cp_gain>?4))&!buff.shuriken_tornado.up&(!buff.premeditation.up|spell_targets.shuriken_storm>4)|fight_remains<=5&spell_targets.shuriken_storm<3" );
     cds->add_action( "sepsis,if=variable.snd_condition&combo_points.deficit>=1&target.time_to_die>=16" );
-    cds->add_action( this, "Symbols of Death", "if=variable.snd_condition&(!stealthed.all|buff.perforated_veins.stack<4|spell_targets.shuriken_storm>4&!variable.use_priority_rotation)&(!talent.shuriken_tornado.enabled|talent.shadow_focus.enabled|spell_targets.shuriken_storm>=2|cooldown.shuriken_tornado.remains>2)&(!covenant.venthyr|cooldown.flagellation.remains>10|cooldown.flagellation.up&combo_points>=5)", "Use Symbols on cooldown (after first SnD) unless we are going to pop Tornado and do not have Shadow Focus." );
-    cds->add_action( this, "Marked for Death", "line_cd=1.5,target_if=min:target.time_to_die,if=raid_event.adds.up&(target.time_to_die<combo_points.deficit|!stealthed.all&combo_points.deficit>=cp_max_spend)", "If adds are up, snipe the one with lowest TTD. Use when dying faster than CP deficit or not stealthed without any CP." );
-    cds->add_action( this, "Marked for Death", "if=raid_event.adds.in>30-raid_event.adds.duration&combo_points.deficit>=cp_max_spend", "If no adds will die within the next 30s, use MfD on boss without any CP." );
-    cds->add_action( this, "Shadow Blades", "if=variable.snd_condition&combo_points.deficit>=2&(buff.symbols_of_death.up|fight_remains<=20|!buff.shadow_blades.up&set_bonus.tier28_2pc)" );
+    cds->add_action( "symbols_of_death,if=variable.snd_condition&(!stealthed.all|buff.perforated_veins.stack<4|spell_targets.shuriken_storm>4&!variable.use_priority_rotation)&(!talent.shuriken_tornado.enabled|talent.shadow_focus.enabled|spell_targets.shuriken_storm>=2|cooldown.shuriken_tornado.remains>2)&(!covenant.venthyr|cooldown.flagellation.remains>10|cooldown.flagellation.up&combo_points>=5)", "Use Symbols on cooldown (after first SnD) unless we are going to pop Tornado and do not have Shadow Focus.");
+    cds->add_action( "marked_for_death,line_cd=1.5,target_if=min:target.time_to_die,if=raid_event.adds.up&(target.time_to_die<combo_points.deficit|!stealthed.all&combo_points.deficit>=cp_max_spend)", "If adds are up, snipe the one with lowest TTD. Use when dying faster than CP deficit or not stealthed without any CP.");
+    cds->add_action( "marked_for_death,if=raid_event.adds.in>30-raid_event.adds.duration&combo_points.deficit>=cp_max_spend", "If no adds will die within the next 30s, use MfD on boss without any CP." );
+    cds->add_action( "shadow_blades,if=variable.snd_condition&combo_points.deficit>=2&(buff.symbols_of_death.up|fight_remains<=20|!buff.shadow_blades.up&set_bonus.tier28_2pc)");
     cds->add_action( "echoing_reprimand,if=(!talent.shadow_focus.enabled|!stealthed.all|spell_targets.shuriken_storm>=4)&variable.snd_condition&combo_points.deficit>=2&(variable.use_priority_rotation|spell_targets.shuriken_storm<=4|runeforge.resounding_clarity|talent.resounding_clarity)" );
-    cds->add_action( this, "Shuriken Tornado", "if=(talent.shadow_focus.enabled|spell_targets.shuriken_storm>=2)&variable.snd_condition&buff.symbols_of_death.up&combo_points<=2&(!buff.premeditation.up|spell_targets.shuriken_storm>4)", "With SF, if not already done, use Tornado with SoD up." );
-    cds->add_action( this, "Shadow Dance", "if=!buff.shadow_dance.up&fight_remains<=8+talent.subterfuge.enabled" );
+    cds->add_action( "shuriken_tornado,if=(talent.shadow_focus.enabled|spell_targets.shuriken_storm>=2)&variable.snd_condition&buff.symbols_of_death.up&combo_points<=2&(!buff.premeditation.up|spell_targets.shuriken_storm>4)", "With SF, if not already done, use Tornado with SoD up.");
+    cds->add_action( "shadow_dance,if=!buff.shadow_dance.up&fight_remains<=8+talent.subterfuge.enabled" );
     cds->add_action( "fleshcraft,if=(soulbind.pustule_eruption|soulbind.volatile_solvent)&energy.deficit>=30&!stealthed.all&buff.symbols_of_death.down" );
 
     // Non-spec stuff with lower prio
@@ -8555,54 +8614,54 @@ void rogue_t::init_action_list()
     action_priority_list_t* stealth_cds = get_action_priority_list( "stealth_cds", "Stealth Cooldowns" );
     stealth_cds->add_action( "variable,name=shd_threshold,value=cooldown.shadow_dance.charges_fractional>=(1.75-0.75*(covenant.kyrian&set_bonus.tier28_2pc&cooldown.symbols_of_death.remains>=8))", "Helper Variable" );
     stealth_cds->add_action( "variable,name=shd_threshold,if=runeforge.the_rotten,value=cooldown.shadow_dance.charges_fractional>=1.75|cooldown.symbols_of_death.remains>=16" );
-    stealth_cds->add_action( this, "Vanish", "if=(!variable.shd_threshold|!talent.nightstalker.enabled&talent.dark_shadow.enabled)&combo_points.deficit>1&!runeforge.mark_of_the_master_assassin", "Vanish if we are capping on Dance charges. Early before first dance if we have no Nightstalker but Dark Shadow in order to get Rupture up (no Master Assassin)." );
+    stealth_cds->add_action( "vanish,if=(!variable.shd_threshold|!talent.nightstalker.enabled&talent.dark_shadow.enabled)&combo_points.deficit>1&!runeforge.mark_of_the_master_assassin", "Vanish if we are capping on Dance charges. Early before first dance if we have no Nightstalker but Dark Shadow in order to get Rupture up (no Master Assassin).");
     stealth_cds->add_action( "pool_resource,for_next=1,extra_amount=40,if=race.night_elf", "Pool for Shadowmeld + Shadowstrike unless we are about to cap on Dance charges. Only when Find Weakness is about to run out." );
     stealth_cds->add_action( "shadowmeld,if=energy>=40&energy.deficit>=10&!variable.shd_threshold&combo_points.deficit>1" );
     stealth_cds->add_action( "variable,name=shd_combo_points,value=combo_points.deficit>=2+buff.shadow_blades.up", "CP thresholds for entering Shadow Dance" );
     stealth_cds->add_action( "variable,name=shd_combo_points,value=combo_points.deficit>=3,if=covenant.kyrian" );
     stealth_cds->add_action( "variable,name=shd_combo_points,value=combo_points.deficit<=1,if=variable.use_priority_rotation&spell_targets.shuriken_storm>=4" );
     stealth_cds->add_action( "variable,name=shd_combo_points,value=combo_points.deficit<=1,if=spell_targets.shuriken_storm=4" );
-    stealth_cds->add_action( this, "Shadow Dance", "if=(runeforge.the_rotten&cooldown.symbols_of_death.remains<=8|variable.shd_combo_points&(buff.symbols_of_death.remains>=1.2|variable.shd_threshold)|buff.chaos_bane.up|spell_targets.shuriken_storm>=4&cooldown.symbols_of_death.remains>10)&(buff.perforated_veins.stack<4|spell_targets.shuriken_storm>3)", "Dance during Symbols or above threshold." );
-    stealth_cds->add_action( this, "Shadow Dance", "if=variable.shd_combo_points&fight_remains<cooldown.symbols_of_death.remains|!talent.enveloping_shadows.enabled", "Burn Dances charges if you play Dark Shadows/Alacrity or before the fight ends if SoD won't be ready in time." );
+    stealth_cds->add_action( "shadow_dance,if=(runeforge.the_rotten&cooldown.symbols_of_death.remains<=8|variable.shd_combo_points&(buff.symbols_of_death.remains>=1.2|variable.shd_threshold)|buff.chaos_bane.up|spell_targets.shuriken_storm>=4&cooldown.symbols_of_death.remains>10)&(buff.perforated_veins.stack<4|spell_targets.shuriken_storm>3)", "Dance during Symbols or above threshold." );
+    stealth_cds->add_action( "shadow_dance,if=variable.shd_combo_points&fight_remains<cooldown.symbols_of_death.remains|!talent.enveloping_shadows.enabled", "Burn Dances charges if you play Dark Shadows/Alacrity or before the fight ends if SoD won't be ready in time." );
 
     // Stealthed Rotation
     action_priority_list_t* stealthed = get_action_priority_list( "stealthed", "Stealthed Rotation" );
-    stealthed->add_action( this, "Shadowstrike", "if=(buff.stealth.up|buff.vanish.up)&(spell_targets.shuriken_storm<4|variable.use_priority_rotation)&master_assassin_remains=0", "If Stealth/vanish are up, use Shadowstrike to benefit from the passive bonus and Find Weakness, even if we are at max CP (unless using Master Assassin)" );
+    stealthed->add_action( "shadowstrike,if=(buff.stealth.up|buff.vanish.up)&(spell_targets.shuriken_storm<4|variable.use_priority_rotation)&master_assassin_remains=0", "If Stealth/vanish are up, use Shadowstrike to benefit from the passive bonus and Find Weakness, even if we are at max CP (unless using Master Assassin)");
     stealthed->add_action( "call_action_list,name=finish,if=variable.effective_combo_points>=cp_max_spend" );
     stealthed->add_action( "call_action_list,name=finish,if=buff.shuriken_tornado.up&combo_points.deficit<=2", "Finish at 3+ CP without DS / 4+ with DS with Shuriken Tornado buff up to avoid some CP waste situations." );
     stealthed->add_action( "call_action_list,name=finish,if=spell_targets.shuriken_storm>=4&variable.effective_combo_points>=4", "Also safe to finish at 4+ CP with exactly 4 targets. (Same as outside stealth.)" );
     stealthed->add_action( "call_action_list,name=finish,if=combo_points.deficit<=1-(talent.deeper_stratagem.enabled&buff.vanish.up)", "Finish at 4+ CP without DS, 5+ with DS, and 6 with DS after Vanish" );
-    stealthed->add_action( this, "Shadowstrike", "if=stealthed.sepsis&spell_targets.shuriken_storm<4" );
-    stealthed->add_action( this, "Backstab", "if=conduit.perforated_veins.rank>=8&buff.perforated_veins.stack>=5&buff.shadow_dance.remains>=3&buff.shadow_blades.up&(spell_targets.shuriken_storm<=3|variable.use_priority_rotation)&(buff.shadow_blades.remains<=buff.shadow_dance.remains+2|!covenant.venthyr)", "Backstab during Shadow Dance when on high PV stacks and Shadow Blades is up." );
-    stealthed->add_action( this, "Shiv", "if=talent.nightstalker.enabled&runeforge.tiny_toxic_blade&spell_targets.shuriken_storm<5" );
-    stealthed->add_action( this, "Shadowstrike", "cycle_targets=1,if=!variable.use_priority_rotation&debuff.find_weakness.remains<1&spell_targets.shuriken_storm<=3&target.time_to_die-remains>6", "Up to 3 targets (no prio) keep up Find Weakness by cycling Shadowstrike." );
-    stealthed->add_action( this, "Shadowstrike", "if=variable.use_priority_rotation&(debuff.find_weakness.remains<1|talent.weaponmaster.enabled&spell_targets.shuriken_storm<=4)", "For priority rotation, use Shadowstrike over Storm with WM against up to 4 targets or if FW is running off (on any amount of targets)" );
-    stealthed->add_action( this, "Shuriken Storm", "if=spell_targets>=3+(buff.the_rotten.up|runeforge.akaaris_soul_fragment|set_bonus.tier28_2pc&talent.shadow_focus.enabled)&(!buff.premeditation.up|spell_targets>=5)" );
-    stealthed->add_action( this, "Shadowstrike", "if=debuff.find_weakness.remains<=1|cooldown.symbols_of_death.remains<18&debuff.find_weakness.remains<cooldown.symbols_of_death.remains", "Shadowstrike to refresh Find Weakness and to ensure we can carry over a full FW into the next SoD if possible." );
-    stealthed->add_action( this, "Gloomblade", "if=buff.perforated_veins.stack>=5&conduit.perforated_veins.rank>=13" );
-    stealthed->add_action( this, "Shadowstrike" );
-    stealthed->add_action( this, "Cheap Shot", "if=!target.is_boss&combo_points.deficit>=1&buff.shot_in_the_dark.up&energy.time_to_40>gcd.max" );
+    stealthed->add_action( "shadowstrike,if=stealthed.sepsis&spell_targets.shuriken_storm<4" );
+    stealthed->add_action( "backstab,if=conduit.perforated_veins.rank>=8&buff.perforated_veins.stack>=5&buff.shadow_dance.remains>=3&buff.shadow_blades.up&(spell_targets.shuriken_storm<=3|variable.use_priority_rotation)&(buff.shadow_blades.remains<=buff.shadow_dance.remains+2|!covenant.venthyr)", "Backstab during Shadow Dance when on high PV stacks and Shadow Blades is up.");
+    stealthed->add_action( "shiv,if=talent.nightstalker.enabled&runeforge.tiny_toxic_blade&spell_targets.shuriken_storm<5");
+    stealthed->add_action( "shadowstrike,cycle_targets=1,if=!variable.use_priority_rotation&debuff.find_weakness.remains<1&spell_targets.shuriken_storm<=3&target.time_to_die-remains>6", "Up to 3 targets (no prio) keep up Find Weakness by cycling Shadowstrike." );
+    stealthed->add_action( "shadowstrike,if=variable.use_priority_rotation&(debuff.find_weakness.remains<1|talent.weaponmaster.enabled&spell_targets.shuriken_storm<=4)", "For priority rotation, use Shadowstrike over Storm with WM against up to 4 targets or if FW is running off (on any amount of targets)" );
+    stealthed->add_action( "shuriken_storm,if=spell_targets>=3+(buff.the_rotten.up|runeforge.akaaris_soul_fragment|set_bonus.tier28_2pc&talent.shadow_focus.enabled)&(!buff.premeditation.up|spell_targets>=5)");
+    stealthed->add_action( "shadowstrike,if=debuff.find_weakness.remains<=1|cooldown.symbols_of_death.remains<18&debuff.find_weakness.remains<cooldown.symbols_of_death.remains", "Shadowstrike to refresh Find Weakness and to ensure we can carry over a full FW into the next SoD if possible." );
+    stealthed->add_action( "gloomblade,if=buff.perforated_veins.stack>=5&conduit.perforated_veins.rank>=13" );
+    stealthed->add_action( "shadowstrike" );
+    stealthed->add_action( "cheap_shot,if=!target.is_boss&combo_points.deficit>=1&buff.shot_in_the_dark.up&energy.time_to_40>gcd.max");
 
     // Finishers
     action_priority_list_t* finish = get_action_priority_list( "finish", "Finishers" );
     finish->add_action( "variable,name=premed_snd_condition,value=talent.premeditation.enabled&spell_targets.shuriken_storm<(5-covenant.necrolord)&!covenant.kyrian", "While using Premeditation, avoid casting Slice and Dice when Shadow Dance is soon to be used, except for Kyrian" );
-    finish->add_action( this, "Slice and Dice", "if=!variable.premed_snd_condition&spell_targets.shuriken_storm<6&!buff.shadow_dance.up&buff.slice_and_dice.remains<fight_remains&refreshable" );
-    finish->add_action( this, "Slice and Dice", "if=variable.premed_snd_condition&cooldown.shadow_dance.charges_fractional<1.75&buff.slice_and_dice.remains<cooldown.symbols_of_death.remains&(cooldown.shadow_dance.ready&buff.symbols_of_death.remains-buff.shadow_dance.remains<1.2)" );
+    finish->add_action( "slice_and_dice,if=!variable.premed_snd_condition&spell_targets.shuriken_storm<6&!buff.shadow_dance.up&buff.slice_and_dice.remains<fight_remains&refreshable");
+    finish->add_action( "slice_and_dice,if=variable.premed_snd_condition&cooldown.shadow_dance.charges_fractional<1.75&buff.slice_and_dice.remains<cooldown.symbols_of_death.remains&(cooldown.shadow_dance.ready&buff.symbols_of_death.remains-buff.shadow_dance.remains<1.2)" );
     finish->add_action( "variable,name=skip_rupture,value=master_assassin_remains>0|!talent.nightstalker.enabled&talent.dark_shadow.enabled&buff.shadow_dance.up|spell_targets.shuriken_storm>=(4-stealthed.all*talent.shadow_focus.enabled)", "Helper Variable for Rupture. Skip during Master Assassin or during Dance with Dark and no Nightstalker." );
-    finish->add_action( this, "Rupture", "if=!stealthed.all&(!variable.skip_rupture|variable.use_priority_rotation)&target.time_to_die-remains>6&refreshable", "Keep up Rupture if it is about to run out." );
-    finish->add_action( this, "Secret Technique" );
-    finish->add_action( this, "Rupture", "cycle_targets=1,if=!variable.skip_rupture&!variable.use_priority_rotation&spell_targets.shuriken_storm>=2&target.time_to_die>=(5+(2*combo_points))&refreshable", "Multidotting targets that will live for the duration of Rupture, refresh during pandemic." );
-    finish->add_action( this, "Rupture", "if=!variable.skip_rupture&remains<cooldown.symbols_of_death.remains+10&cooldown.symbols_of_death.remains<=5&target.time_to_die-remains>cooldown.symbols_of_death.remains+5", "Refresh Rupture early if it will expire during Symbols. Do that refresh if SoD gets ready in the next 5s." );
-    finish->add_action( this, "Black Powder", "if=!variable.use_priority_rotation&spell_targets>=3" );
-    finish->add_action( this, "Eviscerate" );
+    finish->add_action( "rupture,if=!stealthed.all&(!variable.skip_rupture|variable.use_priority_rotation)&target.time_to_die-remains>6&refreshable", "Keep up Rupture if it is about to run out.");
+    finish->add_action( "secret_technique");
+    finish->add_action( "rupture,cycle_targets=1,if=!variable.skip_rupture&!variable.use_priority_rotation&spell_targets.shuriken_storm>=2&target.time_to_die>=(5+(2*combo_points))&refreshable", "Multidotting targets that will live for the duration of Rupture, refresh during pandemic." );
+    finish->add_action( "rupture,if=!variable.skip_rupture&remains<cooldown.symbols_of_death.remains+10&cooldown.symbols_of_death.remains<=5&target.time_to_die-remains>cooldown.symbols_of_death.remains+5", "Refresh Rupture early if it will expire during Symbols. Do that refresh if SoD gets ready in the next 5s." );
+    finish->add_action( "black_powder,if=!variable.use_priority_rotation&spell_targets>=3");
+    finish->add_action( "eviscerate" );
 
     // Builders
     action_priority_list_t* build = get_action_priority_list( "build", "Builders" );
-    build->add_action( this, "Shiv", "if=!talent.nightstalker.enabled&runeforge.tiny_toxic_blade&spell_targets.shuriken_storm<5" );
-    build->add_action( this, "Shuriken Storm", "if=spell_targets>=2&(!covenant.necrolord|cooldown.serrated_bone_spike.max_charges-charges_fractional>=0.25|spell_targets.shuriken_storm>4)&(buff.perforated_veins.stack<=4|spell_targets.shuriken_storm>4&!variable.use_priority_rotation)" );
+    build->add_action( "shiv,if=!talent.nightstalker.enabled&runeforge.tiny_toxic_blade&spell_targets.shuriken_storm<5" );
+    build->add_action( "shuriken_storm,if=spell_targets>=2&(!covenant.necrolord|cooldown.serrated_bone_spike.max_charges-charges_fractional>=0.25|spell_targets.shuriken_storm>4)&(buff.perforated_veins.stack<=4|spell_targets.shuriken_storm>4&!variable.use_priority_rotation)" );
     build->add_action( "serrated_bone_spike,if=buff.perforated_veins.stack<=2&(cooldown.serrated_bone_spike.max_charges-charges_fractional<=0.25|soulbind.lead_by_example.enabled&!buff.lead_by_example.up|soulbind.kevins_oozeling.enabled&!debuff.kevins_wrath.up)" );
-    build->add_action( this, "Gloomblade" );
-    build->add_action( this, "Backstab", "if=!covenant.kyrian|!(variable.is_next_cp_animacharged&(time_to_sht.3.plus<0.5|time_to_sht.4.plus<1)&energy<60)", "Backstab immediately unless the next CP is Animacharged and we won't cap energy waiting for it.");
+    build->add_action( "gloomblade" );
+    build->add_action( "backstab,if=!covenant.kyrian|!(variable.is_next_cp_animacharged&(time_to_sht.3.plus<0.5|time_to_sht.4.plus<1)&energy<60)", "Backstab immediately unless the next CP is Animacharged and we won't cap energy waiting for it.");
   }
 
   use_default_action_list = true;
@@ -9236,11 +9295,10 @@ void rogue_t::init_spells()
   // Subtlety Spells
   spec.subtlety_rogue = find_specialization_spell( "Subtlety Rogue" );
   spec.backstab = find_specialization_spell( "Backstab" );
-  spec.eviscerate = find_specialization_spell( "Eviscerate" );
+  spec.eviscerate = find_class_spell( "Eviscerate" ); // Baseline spell for early leveling
   spec.shadow_dance = find_specialization_spell( "Shadow Dance" );
   spec.shadow_techniques = find_specialization_spell( "Shadow Techniques" );
   spec.shadowstrike = find_specialization_spell( "Shadowstrike" );
-  spec.shadowstrike_2 = find_rank_spell( "Shadowstrike", "Rank 2" );
   spec.shuriken_toss = find_specialization_spell( "Shuriken Toss" );
   spec.shuriken_storm = find_specialization_spell( "Shuriken Storm" );
   spec.symbols_of_death = find_specialization_spell( "Symbols of Death" );
@@ -9556,7 +9614,8 @@ void rogue_t::init_spells()
   spec.shadow_blades_attack = talent.subtlety.shadow_blades->ok() ? find_spell( 279043 ) : spell_data_t::not_found();
   spec.shadow_focus_buff = talent.subtlety.shadow_focus->ok() ? find_spell( 112942 ) : spell_data_t::not_found();
   spec.shot_in_the_dark_buff = talent.subtlety.shot_in_the_dark->ok() ? find_spell( 257506 ) : spell_data_t::not_found();
-
+  spec.silent_storm_buff = talent.subtlety.silent_storm->ok() ? find_spell( 385722 ) : spell_data_t::not_found();
+  spec.shadowstrike_stealth_buff = spec.shadowstrike->ok() ? find_spell( 196911 ) : spell_data_t::not_found();
   spec.shadow_techniques_energize = spec.shadow_techniques->ok() ? find_spell( 196911 ) : spell_data_t::not_found();
 
   // Covenant Abilities =====================================================
@@ -9673,6 +9732,29 @@ void rogue_t::init_spells()
     spec.greenskins_wickers_buff = find_spell( 340573 );
   else
     spec.greenskins_wickers_buff = spell_data_t::not_found();
+
+  // Subtlety
+
+  if ( talent.subtlety.deeper_daggers->ok() )
+    spec.deeper_daggers_buff = talent.subtlety.deeper_daggers->effectN( 1 ).trigger();
+  else if ( conduit.perforated_veins.ok() )
+    spec.deeper_daggers_buff = conduit.deeper_daggers->effectN( 1 ).trigger();
+  else
+    spec.deeper_daggers_buff = spell_data_t::not_found();
+
+  if ( talent.subtlety.invigorating_shadowdust->ok() )
+    spec.invigorating_shadowdust_cdr = talent.subtlety.invigorating_shadowdust;
+  else if ( legendary.invigorating_shadowdust->ok() )
+    spec.invigorating_shadowdust_cdr = find_spell( 340080 );
+  else
+    spec.invigorating_shadowdust_cdr = spell_data_t::not_found();
+
+  if ( talent.subtlety.perforated_veins->ok() )
+    spec.perforated_veins_buff = talent.subtlety.perforated_veins->effectN( 1 ).trigger();
+  else if ( conduit.perforated_veins.ok() )
+    spec.perforated_veins_buff = conduit.perforated_veins->effectN( 1 ).trigger();
+  else
+    spec.perforated_veins_buff = spell_data_t::not_found();
 
   // Generic
   spell.echoing_reprimand = ( talent.rogue.echoing_reprimand->ok() ?
@@ -10161,6 +10243,12 @@ void rogue_t::create_buffs()
 
   buffs.shot_in_the_dark = make_buff( this, "shot_in_the_dark", spec.shot_in_the_dark_buff );
 
+  buffs.silent_storm = make_buff( this, "silent_storm", spec.silent_storm_buff )
+    ->set_default_value_from_effect_type( A_ADD_FLAT_MODIFIER, P_CRIT )
+    ->add_invalidate( CACHE_CRIT_CHANCE )
+    ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
+    ->set_duration( sim->max_time / 2 );
+
   buffs.secret_technique = make_buff( this, "secret_technique", talent.subtlety.secret_technique )
     ->set_cooldown( timespan_t::zero() )
     ->set_quiet( true );
@@ -10214,15 +10302,32 @@ void rogue_t::create_buffs()
 
   // Conduits ===============================================================
 
-  buffs.deeper_daggers = make_buff<damage_buff_t>( this, "deeper_daggers",
-                                                   conduit.deeper_daggers->effectN( 1 ).trigger(),
-                                                   conduit.deeper_daggers );
+  if ( talent.subtlety.deeper_daggers->ok() )
+  {
+    buffs.deeper_daggers = make_buff<damage_buff_t>( this, "deeper_daggers", spec.deeper_daggers_buff )
+      ->set_direct_mod( talent.subtlety.deeper_daggers->effectN( 1 ).percent() );
+  }
+  else
+  {
+    buffs.deeper_daggers = make_buff<damage_buff_t>( this, "deeper_daggers",
+                                                     spec.deeper_daggers_buff, conduit.deeper_daggers );
+  }
 
-  buffs.perforated_veins = make_buff<damage_buff_t>( this, "perforated_veins",
-                                                     conduit.perforated_veins->effectN( 1 ).trigger(),
-                                                     conduit.perforated_veins );
-  buffs.perforated_veins->set_cooldown( timespan_t::zero() );
-  cooldowns.perforated_veins->base_duration = conduit.perforated_veins->internal_cooldown();
+  if ( talent.subtlety.perforated_veins->ok() )
+  {
+    buffs.perforated_veins = make_buff<damage_buff_t>( this, "perforated_veins",
+                                                       spec.perforated_veins_buff );
+    buffs.perforated_veins->set_cooldown( timespan_t::zero() );
+    cooldowns.perforated_veins->base_duration = talent.subtlety.perforated_veins->internal_cooldown();
+  }
+  else
+  {
+    buffs.perforated_veins = make_buff<damage_buff_t>( this, "perforated_veins",
+                                                       spec.perforated_veins_buff,
+                                                       conduit.perforated_veins );
+    buffs.perforated_veins->set_cooldown( timespan_t::zero() );
+    cooldowns.perforated_veins->base_duration = conduit.perforated_veins->internal_cooldown();
+  }
 
   // Set Bonus Items ========================================================
   
