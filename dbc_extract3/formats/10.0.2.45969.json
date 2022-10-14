@@ -256,7 +256,9 @@
       { "data_type": "i", "field": "unk_2" },
       { "data_type": "i", "field": "unk_3" },
       { "data_type": "i", "field": "unk_4" },
-      { "data_type": "i", "field": "unk_5", "elements": 2 }
+      { "data_type": "i", "field": "unk_5", "elements": 2 },
+      { "data_type": "i", "field": "unk_6" },
+      { "data_type": "i", "field": "unk_7" }
     ]
   },
   "Curve": {
