@@ -1569,6 +1569,7 @@ public:
     ab::apply_affecting_aura( p->talent.subtlety.swift_death );
     ab::apply_affecting_aura( p->talent.subtlety.without_a_trace );
     ab::apply_affecting_aura( p->talent.subtlety.secret_stratagem );
+    ab::apply_affecting_aura( p->talent.subtlety.dark_brew );
 
     // Affecting Passive Auras
     // Put ability specific ones here; class/spec wide ones with labels that can effect things like trinkets in rogue_t::apply_affecting_auras.
@@ -4978,7 +4979,12 @@ struct shuriken_storm_t: public rogue_attack_t
   void execute() override
   {
     rogue_attack_t::execute();
-    p()->buffs.silent_storm->expire();
+
+    // TOCHECK DFALPHA -- Shuriken Tornado secondary actions do not expire this on beta
+    if ( !is_secondary_action() )
+    {
+      p()->buffs.silent_storm->expire();
+    }
   }
 
   void impact(action_state_t* state) override
@@ -10306,6 +10312,7 @@ void rogue_t::create_buffs()
   {
     buffs.deeper_daggers = make_buff<damage_buff_t>( this, "deeper_daggers", spec.deeper_daggers_buff )
       ->set_direct_mod( talent.subtlety.deeper_daggers->effectN( 1 ).percent() );
+    buffs.deeper_daggers->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
   else
   {
