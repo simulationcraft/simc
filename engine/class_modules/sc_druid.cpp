@@ -1974,7 +1974,7 @@ struct umbral_embrace_buff_t : public druid_buff_t<buff_t>
       else if ( !new_ )
       {
         for ( auto a : actions )
-          a->clear_school_override()
+          a->clear_school_override();
       }
     } );
   }
