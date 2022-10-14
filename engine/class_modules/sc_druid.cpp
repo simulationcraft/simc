@@ -1961,29 +1961,20 @@ struct tiger_dash_buff_t : public druid_buff_t<buff_t>
 // Umbral Embrace ===========================================================
 struct umbral_embrace_buff_t : public druid_buff_t<buff_t>
 {
-  std::vector<std::pair<action_t*, school_e>> spell_list;
+  std::vector<action_t*> actions;
 
   umbral_embrace_buff_t( druid_t& p ) : base_t( p, "umbral_embrace", p.talent.umbral_embrace->effectN( 2 ).trigger() )
   {
     set_stack_change_callback( [ this ]( buff_t*, int old_, int new_ ) {
       if ( !old_ )
       {
-        for ( auto spell : spell_list )
-        {
-          spell.first->school = SCHOOL_ASTRAL;
-          spell.first->base_schools.clear();
-          spell.first->base_schools.push_back( SCHOOL_ARCANE );
-          spell.first->base_schools.push_back( SCHOOL_NATURE );
-        }
+        for ( auto a : actions )
+          a->set_school_override( SCHOOL_ASTRAL );
       }
       else if ( !new_ )
       {
-        for ( auto spell : spell_list )
-        {
-          spell.first->school = spell.second;
-          spell.first->base_schools.clear();
-          spell.first->base_schools.push_back( spell.second );
-        }
+        for ( auto a : actions )
+          a->clear_school_override()
       }
     } );
   }
@@ -7966,7 +7957,7 @@ struct starfire_t : public druid_spell_t
     druid_spell_t::init();
 
     if ( p()->talent.umbral_embrace.ok() )
-      debug_cast<buffs::umbral_embrace_buff_t*>( p()->buff.umbral_embrace )->spell_list.emplace_back( this, school );
+      debug_cast<buffs::umbral_embrace_buff_t*>( p()->buff.umbral_embrace )->actions.push_back( this );
   }
 
   void init_finished() override
@@ -8584,7 +8575,7 @@ struct wrath_t : public druid_spell_t
     druid_spell_t::init();
 
     if ( p()->talent.umbral_embrace.ok() )
-      debug_cast<buffs::umbral_embrace_buff_t*>( p()->buff.umbral_embrace )->spell_list.emplace_back( this, school );
+      debug_cast<buffs::umbral_embrace_buff_t*>( p()->buff.umbral_embrace )->actions.push_back( this );
   }
 
   double composite_energize_amount( const action_state_t* s ) const override
