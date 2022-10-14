@@ -1804,7 +1804,8 @@ struct eclipse_buff_t : public druid_buff_t<buff_t>
 
     if ( !was_active)
     {
-      trigger_sundered_firmament();
+      if ( p().talent.sundered_firmament.ok() )
+        trigger_sundered_firmament();
 
       if ( p().sets->has_set_bonus( DRUID_BALANCE, T29, B4 ) )
         p().buff.touch_the_cosmos->trigger();
