@@ -201,6 +201,8 @@ struct immolate_t : public destruction_spell_t
     {
       background = dual = true;
       spell_power_mod.tick = p->warlock_base.immolate_dot->effectN( 1 ).sp_coeff();
+
+      dot_duration += p->talents.improved_immolate->effectN( 1 ).time_value();
     }
 
     void tick( dot_t* d ) override
@@ -1069,6 +1071,8 @@ void warlock_t::init_spells_destruction()
 
   talents.cry_havoc = find_talent_spell( talent_tree::SPECIALIZATION, "Cry Havoc" ); // Should be ID 387522
   talents.cry_havoc_proc = find_spell( 387547 );
+
+  talents.improved_immolate = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Immolate" ); // Should be ID 387093
 
   talents.eradication = find_talent_spell( "Eradication" );
   talents.soul_fire   = find_talent_spell( "Soul Fire" );

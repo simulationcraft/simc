@@ -371,7 +371,7 @@ public:
     player_talent_t pandemonium; // Additional trigger chance for Mayhem or debuff duration for Havoc (talent)
     player_talent_t cry_havoc; // Chaos Bolts on Havoc'd target proc AoE
     const spell_data_t* cry_havoc_proc; // AoE damage (includes target hit)
-    // DF - Improved Immolate (2 point talent, duration increase)
+    player_talent_t improved_immolate; // Duration increase
     const spell_data_t* inferno; // DF - Now a choice against Cataclysm, check that target cap nerfs remain
     const spell_data_t* cataclysm; // DF - Now a choice against Inferno
 
