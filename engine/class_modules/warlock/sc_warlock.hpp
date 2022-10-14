@@ -368,7 +368,7 @@ public:
     player_talent_t explosive_potential; // Reduces base Conflagrate cooldown by 2 seconds
     player_talent_t channel_demonfire;
     const spell_data_t* channel_demonfire_tick;
-    // DF - Pandemonium (Choice against Cry Havoc, additional effects for Mayhem/Havoc)
+    player_talent_t pandemonium; // Additional trigger chance for Mayhem or debuff duration for Havoc (talent)
     // DF - Cry Havoc (Choice against Pandemonium, duplicated Chaos Bolts deal AoE damage)
     // DF - Improved Immolate (2 point talent, duration increase)
     const spell_data_t* inferno; // DF - Now a choice against Cataclysm, check that target cap nerfs remain

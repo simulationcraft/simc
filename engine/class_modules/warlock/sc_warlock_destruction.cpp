@@ -1041,6 +1041,8 @@ void warlock_t::init_spells_destruction()
   talents.channel_demonfire = find_talent_spell( talent_tree::SPECIALIZATION, "Channel Demonfire" ); // Should be ID 196447
   talents.channel_demonfire_tick = find_spell( 196448 ); // Includes both direct and splash damage values
 
+  talents.pandemonium = find_talent_spell( talent_tree::SPECIALIZATION, "Pandemonium" ); // Should be ID 387509
+
   talents.eradication = find_talent_spell( "Eradication" );
   talents.soul_fire   = find_talent_spell( "Soul Fire" );
 
