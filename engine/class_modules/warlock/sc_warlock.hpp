@@ -56,6 +56,7 @@ struct warlock_td_t : public actor_target_data_t
   propagate_const<buff_t*> debuffs_roaring_blaze;
   propagate_const<buff_t*> debuffs_havoc;
   propagate_const<buff_t*> debuffs_pyrogenics;
+  propagate_const<buff_t*> debuffs_conflagrate; // Artist formerly known as debuffs_roaring_blaze
 
   // Demo
   propagate_const<dot_t*> dots_doom;
@@ -361,7 +362,8 @@ public:
     player_talent_t pyrogenics; // Enemies affected by Rain of Fire receive debuff for increased Fire damage
     const spell_data_t* pyrogenics_debuff;
 
-    const spell_data_t* roaring_blaze; // DF - Now a choice against Improved Conflagrate
+    player_talent_t roaring_blaze;
+    const spell_data_t* conflagrate_debuff; // Formerly called Roaring Blaze
     // DF - Improved Conflagrate (Choice against Roaring Blaze, 1 additional charge for Conflagrate)
     // DF - Explosive Potential (Reduces Conflagrate cooldown)
     const spell_data_t* channel_demonfire;
