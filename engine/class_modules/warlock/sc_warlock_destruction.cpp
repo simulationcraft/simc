@@ -432,7 +432,20 @@ struct incinerate_t : public destruction_spell_t
 
 struct chaos_bolt_t : public destruction_spell_t
 {
+  struct cry_havoc_t : public destruction_spell_t
+  {
+    cry_havoc_t( warlock_t* p ) : destruction_spell_t( "Cry Havoc", p, p->talents.cry_havoc_proc )
+    {
+      background = dual = true;
+      aoe = -1;
+      destro_mastery = false;
+
+      base_multiplier *= 1.0 + p->talents.cry_havoc->effectN( 1 ).percent(); // Unclear why, but the base talent is doubling the actual spell coeff
+    }
+  };
+
   internal_combustion_t* internal_combustion;
+  cry_havoc_t* cry_havoc;
 
   chaos_bolt_t( warlock_t* p, util::string_view options_str )
     : destruction_spell_t( "Chaos Bolt", p, p->talents.chaos_bolt )
@@ -442,6 +455,12 @@ struct chaos_bolt_t : public destruction_spell_t
 
     internal_combustion = new internal_combustion_t( p );
     add_child( internal_combustion );
+
+    if ( p->talents.cry_havoc.ok() )
+    {
+      cry_havoc = new cry_havoc_t( p );
+      add_child( cry_havoc );
+    }
   }
 
   double cost() const override
@@ -522,6 +541,11 @@ struct chaos_bolt_t : public destruction_spell_t
     if ( p()->talents.internal_combustion.ok() && result_is_hit( s->result ) && p()->get_target_data( s->target )->dots_immolate->is_ticking() )
     {
       internal_combustion->execute_on_target( s->target );
+    }
+
+    if ( p()->talents.cry_havoc.ok() && td( s->target )->debuffs_havoc->check() )
+    {
+      cry_havoc->execute_on_target( s->target );
     }
 
     //if ( p()->talents.eradication->ok() && result_is_hit( s->result ) )
@@ -1042,6 +1066,9 @@ void warlock_t::init_spells_destruction()
   talents.channel_demonfire_tick = find_spell( 196448 ); // Includes both direct and splash damage values
 
   talents.pandemonium = find_talent_spell( talent_tree::SPECIALIZATION, "Pandemonium" ); // Should be ID 387509
+
+  talents.cry_havoc = find_talent_spell( talent_tree::SPECIALIZATION, "Cry Havoc" ); // Should be ID 387522
+  talents.cry_havoc_proc = find_spell( 387547 );
 
   talents.eradication = find_talent_spell( "Eradication" );
   talents.soul_fire   = find_talent_spell( "Soul Fire" );

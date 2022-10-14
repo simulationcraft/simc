@@ -369,7 +369,8 @@ public:
     player_talent_t channel_demonfire;
     const spell_data_t* channel_demonfire_tick;
     player_talent_t pandemonium; // Additional trigger chance for Mayhem or debuff duration for Havoc (talent)
-    // DF - Cry Havoc (Choice against Pandemonium, duplicated Chaos Bolts deal AoE damage)
+    player_talent_t cry_havoc; // Chaos Bolts on Havoc'd target proc AoE
+    const spell_data_t* cry_havoc_proc; // AoE damage (includes target hit)
     // DF - Improved Immolate (2 point talent, duration increase)
     const spell_data_t* inferno; // DF - Now a choice against Cataclysm, check that target cap nerfs remain
     const spell_data_t* cataclysm; // DF - Now a choice against Inferno
