@@ -389,6 +389,8 @@ public:
     damage_buff_t* perforated_veins;
 
     // Set Bonuses
+    damage_buff_t* t29_outlaw_2pc;
+    damage_buff_t* t29_outlaw_4pc;
 
   } buffs;
 
@@ -993,8 +995,8 @@ public:
   {
     const spell_data_t* t29_assassination_2pc;
     const spell_data_t* t29_assassination_4pc;  // NYI
-    const spell_data_t* t29_outlaw_2pc;         // NYI
-    const spell_data_t* t29_outlaw_4pc;         // NYI
+    const spell_data_t* t29_outlaw_2pc;
+    const spell_data_t* t29_outlaw_4pc;
     const spell_data_t* t29_subtlety_2pc;       // NYI
     const spell_data_t* t29_subtlety_4pc;       // NYI
   } set_bonuses;
@@ -1500,6 +1502,8 @@ public:
     bool ruthlessness = false;          // Trigger
     bool shadow_blades_cp = false;
     bool t29_assassination_2pc = false;
+    bool t29_outlaw_2pc = false;
+    bool t29_outlaw_4pc = false;
 
     damage_affect_data mastery_executioner;
     damage_affect_data mastery_potent_assassin;
@@ -1703,6 +1707,8 @@ public:
     register_damage_buff( p()->buffs.summarily_dispatched );
     register_damage_buff( p()->buffs.symbols_of_death );
     register_damage_buff( p()->buffs.the_rotten );
+    register_damage_buff( p()->buffs.t29_outlaw_2pc );
+    register_damage_buff( p()->buffs.t29_outlaw_4pc );
 
     // Dragonflight version of Deeper Daggers is not a whitelisted buff and still a school buff
     if ( !p()->talent.subtlety.deeper_daggers->ok() && p()->conduit.deeper_daggers.ok() )
@@ -1729,6 +1735,16 @@ public:
       affected_by.flagellation = true;
       affected_by.relentless_strikes = true;
       affected_by.ruthlessness = true;
+    }
+
+    if ( p()->set_bonuses.t29_outlaw_2pc->ok() )
+    {
+      affected_by.t29_outlaw_2pc = p()->buffs.t29_outlaw_2pc->is_affecting_direct( &ab::data() );
+    }
+
+    if ( p()->set_bonuses.t29_outlaw_4pc->ok() )
+    {
+      affected_by.t29_outlaw_4pc = p()->buffs.t29_outlaw_4pc->is_affecting_direct( &ab::data() );
     }
   }
 
@@ -2296,6 +2312,7 @@ public:
       p()->break_stealth();
     }
 
+    // Expire On-Cast Fading Buffs
     if ( affected_by.cold_blood && p()->buffs.cold_blood->check() )
     {
       p()->buffs.cold_blood->expire();
@@ -2303,15 +2320,16 @@ public:
     }
 
     if ( affected_by.audacity )
-    {
-      // TOCHECK DFALPHA -- If this gets expired when in stealth
-      p()->buffs.audacity->expire();
-    }
+      p()->buffs.audacity->expire(); // TOCHECK DFALPHA -- If this gets expired when in stealth
 
     if ( affected_by.blindside )
-    {
       p()->buffs.blindside->expire();
-    }
+
+    if ( affected_by.t29_outlaw_2pc )
+      p()->buffs.t29_outlaw_2pc->expire();
+
+    if ( affected_by.t29_outlaw_4pc )
+      p()->buffs.t29_outlaw_4pc->expire();
 
     // Debugging
     if ( p()->sim->log )
@@ -3557,6 +3575,12 @@ struct dispatch_t: public rogue_attack_t
       }
     }
 
+    if ( p()->set_bonuses.t29_outlaw_2pc->ok() )
+    {
+      p()->buffs.t29_outlaw_2pc->expire();
+      p()->buffs.t29_outlaw_2pc->trigger( cast_state( execute_state )->get_combo_points() );
+    }
+
     trigger_restless_blades( execute_state );
     trigger_grand_melee( execute_state );
     trigger_count_the_odds( execute_state );
@@ -4134,20 +4158,28 @@ struct pistol_shot_t : public rogue_attack_t
   {
     rogue_attack_t::execute();
 
-    // 2022-02-16 -- As of latest 9.2 build 2pc proc damage does not benefit from or consume procs
-    //               However, they still appear to benefit from the CP gain modifier
-    if ( generate_cp() > 0 && p()->talent.outlaw.quick_draw->ok() && p()->buffs.opportunity->check() )
+    // Opportunity-Triggered Mechanics
+    if ( p()->buffs.opportunity->check() )
     {
-      const int cp_gain = as<int>( p()->talent.outlaw.quick_draw->effectN( 2 ).base_value() );
-      trigger_combo_point_gain( cp_gain, p()->gains.quick_draw );
-    }
+      // 2022-02-16 -- As of latest 9.2 build 2pc proc damage does not benefit from or consume procs
+      //               However, they still appear to benefit from the CP gain modifier
+      if ( generate_cp() > 0 && p()->talent.outlaw.quick_draw->ok() )
+      {
+        const int cp_gain = as<int>( p()->talent.outlaw.quick_draw->effectN( 2 ).base_value() );
+        trigger_combo_point_gain( cp_gain, p()->gains.quick_draw );
+      }
 
-    // Audacity -- Currently on beta this can also trigger from Fan the Hammer procs
-    if ( p()->talent.outlaw.audacity->ok() && p()->buffs.opportunity->check() )
-    {
-      p()->buffs.audacity->trigger( 1, buff_t::DEFAULT_VALUE(), p()->extra_attack_proc_chance() );
-    }
+      // Audacity -- Currently on beta this can also trigger from Fan the Hammer procs
+      if ( p()->talent.outlaw.audacity->ok() )
+      {
+        p()->buffs.audacity->trigger( 1, buff_t::DEFAULT_VALUE(), p()->extra_attack_proc_chance() );
+      }
 
+      if ( p()->set_bonuses.t29_outlaw_4pc->ok() )
+      {
+        p()->buffs.t29_outlaw_4pc->trigger();
+      }
+    }
 
     p()->buffs.opportunity->decrement();
     p()->buffs.greenskins_wickers->expire();
@@ -10337,6 +10369,13 @@ void rogue_t::create_buffs()
 
   // Set Bonus Items ========================================================
   
+  buffs.t29_outlaw_2pc = make_buff<damage_buff_t>( this, "vicious_followup", set_bonuses.t29_outlaw_2pc->ok() ?
+                                                   find_spell( 394879 ) : spell_data_t::not_found() );
+  buffs.t29_outlaw_2pc->set_max_stack( consume_cp_max() );
+
+  buffs.t29_outlaw_4pc = make_buff<damage_buff_t>( this, "brutal_opportunist", set_bonuses.t29_outlaw_4pc->ok() ?
+                                                   find_spell( 394888 ) : spell_data_t::not_found() );
+
   // Legendary Items ========================================================
 
   // 2021-02-18-- Sub-specific Deathly Shadows buff added in 9.0.5
