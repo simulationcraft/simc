@@ -1451,6 +1451,7 @@ class SpellDataGenerator(DataGenerator):
           ( 394388, 3 ), # Bestial Barrage (T29 SV 4pc)
           ( 378016, 0 ), # Latent Poison Injectors (talent dd action)
           ( 386875, 2 ), # Bombardment
+          ( 164273, 2 ), # Lone Wolf buff
         ),
 
         # Rogue:
