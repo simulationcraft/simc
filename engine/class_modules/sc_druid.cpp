@@ -3511,7 +3511,7 @@ public:
     // If there is a new entry in the ta_mul table, move it to the pers_mul table.
     if ( ta_multiplier_buffeffects.size() > ta_old )
     {
-      double ta_val = ta_multiplier_buffeffects.back().value;
+      double &ta_val = ta_multiplier_buffeffects.back().value;
       double da_val = 0;
 
       // Any corresponding increases in the da_mul table can be removed as pers_mul covers da_mul & ta_mul
