@@ -3147,7 +3147,7 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
         action.snapshot_state( state, result_amount_type::NONE );
         state->target = action.target;
 
-        auto num_targets = state->n_targets;
+        int num_targets = state->n_targets;
 
         if ( action.energize_type_() == action_energize::PER_HIT )
         {
@@ -3155,11 +3155,11 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
           if ( num_targets == -1 || num_targets > 0 )
           {
             action.target_cache.is_valid = false;
-            auto max_targets = as<unsigned>( action.target_list().size() );
+            auto max_targets = as<int>( action.target_list().size() );
             num_targets = ( num_targets < 0 ) ? max_targets : std::min( max_targets, num_targets );
           }
 
-          state->n_targets = std::max( 1U, num_targets );
+          state->n_targets = std::max( 1, num_targets );
         }
 
         return action.composite_energize_amount( state ) * state->n_targets;

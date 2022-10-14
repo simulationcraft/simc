@@ -274,7 +274,7 @@ void phial_of_static_empowerment( special_effect_t& effect )
 
     if ( effect.player->buffs.movement )
     {
-      effect.player->buffs.movement->set_stack_change_callback( [ primary, speed, buff ]( buff_t*, int, int new_ ) {
+      effect.player->buffs.movement->set_stack_change_callback( [ primary, buff ]( buff_t*, int, int new_ ) {
         if ( new_ && buff->check() )
           primary->expire();
       } );
