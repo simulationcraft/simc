@@ -9,6 +9,7 @@
 #include "actor_target_data.hpp"
 #include "buff/buff.hpp"
 #include "darkmoon_deck.hpp"
+#include "dbc/item_database.hpp"
 #include "ground_aoe.hpp"
 #include "item/item.hpp"
 #include "sim/sim.hpp"
@@ -369,7 +370,24 @@ void shocking_disclosure( special_effect_t& effect )
 
 namespace enchants
 {
+std::function<void( special_effect_t& )> writ_enchant( stat_e stat, bool cr )
+{
+  return [ stat, cr ]( special_effect_t& effect ) {
+    auto amount = effect.driver()->effectN( 1 ).average( effect.player );
+
+    if ( cr )
+    {
+      amount = item_database::apply_combat_rating_multiplier( effect.player, CR_MULTIPLIER_WEAPON,
+                                                              effect.player->level(), amount );
+    }
+
+    effect.stat_amount = amount;
+    effect.stat = stat;
+
+    new dbc_proc_callback_t( effect.player, effect );
+  };
 }
+}  // namespace enchants
 
 namespace items
 {
@@ -405,6 +423,22 @@ void register_special_effects()
   register_special_effect( 370816, consumables::shocking_disclosure );
 
   // Enchants
+  register_special_effect( 390164, enchants::writ_enchant( STAT_CRIT_RATING ) );
+  register_special_effect( 390167, enchants::writ_enchant( STAT_CRIT_RATING ) );
+  register_special_effect( 390168, enchants::writ_enchant( STAT_CRIT_RATING ) );
+  register_special_effect( 390172, enchants::writ_enchant( STAT_MASTERY_RATING ) );
+  register_special_effect( 390183, enchants::writ_enchant( STAT_MASTERY_RATING ) );
+  register_special_effect( 390190, enchants::writ_enchant( STAT_MASTERY_RATING ) );
+  register_special_effect( 390243, enchants::writ_enchant( STAT_VERSATILITY_RATING ) );
+  register_special_effect( 390244, enchants::writ_enchant( STAT_VERSATILITY_RATING ) );
+  register_special_effect( 390246, enchants::writ_enchant( STAT_VERSATILITY_RATING ) );
+  register_special_effect( 390248, enchants::writ_enchant( STAT_HASTE_RATING ) );
+  register_special_effect( 390249, enchants::writ_enchant( STAT_HASTE_RATING ) );
+  register_special_effect( 390251, enchants::writ_enchant( STAT_HASTE_RATING ) );
+  register_special_effect( 390215, enchants::writ_enchant( STAT_STR_AGI_INT, false ) );
+  register_special_effect( 390217, enchants::writ_enchant( STAT_STR_AGI_INT, false ) );
+  register_special_effect( 390219, enchants::writ_enchant( STAT_STR_AGI_INT, false ) );
+
   // Trinkets
   register_special_effect( 384112, items::the_cartographers_calipers );
   // Weapons
