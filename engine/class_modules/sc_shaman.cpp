@@ -477,6 +477,10 @@ public:
     buff_t* spirit_walk;
     buff_t* spiritwalkers_grace;
     buff_t* tidal_waves;
+    
+    //Tier 29
+    buff_t* t29_2pc_enh;
+    buff_t* t29_4pc_enh;
 
     // PvP
     buff_t* thundercharge;
@@ -1215,6 +1219,23 @@ struct hot_hand_buff_t : public buff_t
   }
 };
 
+struct cl_crash_lightning_buff_t : public buff_t
+{
+  shaman_t* shaman;
+  cl_crash_lightning_buff_t( shaman_t* p ) : buff_t( p, "cl_crash_lightning", p->find_spell(333964) ), 
+      shaman( p )
+  {
+    int max_stack = data().max_stacks(); 
+    if (p->talent.crashing_storms->ok())
+    {
+      max_stack += p->talent.crashing_storms.spell()->effectN( 3 ).base_value();
+    }
+
+    set_max_stack( max_stack );
+    set_default_value_from_effect_type( A_ADD_PCT_LABEL_MODIFIER, P_GENERIC );
+  }
+};
+
 // Changed behavior from in-game single buff to a stacking buff per extra LB so that the haste "stack"
 // uptimes can be analyzed in the report and interacted with in APLs
 struct splintered_elements_buff_t : public buff_t
@@ -1294,6 +1315,7 @@ public:
   bool affected_by_ns_cast_time;
   bool affected_by_enh_mastery_da;
   bool affected_by_enh_mastery_ta;
+  bool affected_by_enh_t29_2pc;
   bool affected_by_lotfw_da;
   bool affected_by_lotfw_ta;
 
@@ -1321,6 +1343,7 @@ public:
       affected_by_ns_cast_time( false ),
       affected_by_enh_mastery_da( false ),
       affected_by_enh_mastery_ta( false ),
+      affected_by_enh_t29_2pc( false ),
       affected_by_lotfw_da( false ),
       affected_by_lotfw_ta( false ),
       may_proc_bron( false ), bron_proc( nullptr )
@@ -1372,6 +1395,9 @@ public:
     affected_by_enh_mastery_ta = ab::data().affected_by( player->mastery.enhanced_elements->effectN( 5 ) );
     affected_by_lotfw_da = ab::data().affected_by( player->find_spell( 384451 )->effectN( 1 ) );
     affected_by_lotfw_ta = ab::data().affected_by( player->find_spell( 384451 )->effectN( 2 ) );
+
+    //T29 Enhance 2pc
+    affected_by_enh_t29_2pc = ab::data().affected_by( player->find_spell( 394677 )->effectN( 1 ) );
   }
 
   std::string full_name() const
@@ -1491,6 +1517,11 @@ public:
       {
         m *= 1.0 + p()->buff.earthen_weapon->value();
       }
+    }
+
+    if ( affected_by_enh_t29_2pc && p()->buff.t29_2pc_enh->up() )
+    {
+      m *= 1.0 + p()->buff.t29_2pc_enh->value();
     }
 
     return m;
@@ -1640,6 +1671,12 @@ public:
     {
       p()->buff.natures_swiftness->decrement();
     }
+
+    if ( this->p()->buff.t29_2pc_enh->up() && affected_by_enh_t29_2pc )
+    {
+      this->p()->buff.maelstrom_weapon->increment( 1 );
+      this->p()->buff.t29_2pc_enh->expire();
+    } 
 
     // TODO: wire up enh MW gains
     // I ended up coding MW gains inside attack since it only procs off melee attacks
@@ -2013,6 +2050,18 @@ public:
 
     ab::execute();
 
+    // Main hand swing timer resets if the MW-affected spell is not instant cast
+    // Need to check this before spending the MW or autos will be lost.
+    if ( affected_by_maelstrom_weapon && execute_time() > 0_ms )
+    {
+      if ( this->p()->main_hand_attack && this->p()->main_hand_attack->execute_event )
+      {
+        event_t::cancel( this->p()->main_hand_attack->execute_event );
+        this->p()->main_hand_attack->schedule_execute();
+        auto time4 = execute_time();
+      }
+    }
+
     // for benefit tracking purpose
     this->p()->buff.spiritwalkers_grace->up();
 
@@ -2051,15 +2100,11 @@ public:
               1,
               true );
       }
-    }
 
-    // Main hand swing timer resets if the MW-affected spell is not instant cast
-    if ( affected_by_maelstrom_weapon && execute_time() > 0_ms )
-    {
-      if ( this->p()->main_hand_attack && this->p()->main_hand_attack->execute_event )
+      if ( this->p()->sets->has_set_bonus( SHAMAN_ENHANCEMENT, T29, B4 ) )
       {
-        event_t::cancel( this->p()->main_hand_attack->execute_event );
-        this->p()->main_hand_attack->schedule_execute();
+        this->p()->buff.t29_4pc_enh->expire();
+        this->p()->buff.t29_4pc_enh->trigger( stacks );
       }
     }
   }
@@ -3134,10 +3179,9 @@ struct storm_elemental_t : public primal_elemental_t
 // Shaman Secondary Spells / Attacks
 // ==========================================================================
 
-struct stormblast_t : public spell_t
+struct stormblast_t : public shaman_spell_t
 {
-  stormblast_t( shaman_t* p, util::string_view name ) :
-    spell_t( name, p, p->find_spell( 390287 ) )
+  stormblast_t( shaman_t* p, util::string_view name ) : shaman_spell_t( name, p, p->find_spell( 390287 ) )
   {
     background = may_crit = callbacks = false;
     snapshot_flags = update_flags = 0;
@@ -3351,7 +3395,7 @@ struct stormstrike_attack_t : public shaman_attack_t
 
     if ( p()->buff.gathering_storms->up() )
     {
-      m *= p()->buff.gathering_storms->check_value();
+      m *= 1.0 + p()->buff.gathering_storms->check_stack_value();
     }
 
     if ( stormflurry )
@@ -3393,8 +3437,12 @@ struct stormstrike_attack_t : public shaman_attack_t
 
     if ( state->stormbringer && p()->talent.stormblast.ok() && result_is_hit( state->result ) )
     {
-      stormblast->base_dd_min = stormblast->base_dd_max =
-        p()->talent.stormblast->effectN( 1 ).percent() * state->result_amount;
+      auto dmg = p()->talent.stormblast->effectN( 1 ).percent() * state->result_amount;
+      dmg *= stormblast->action_da_multiplier();
+      dmg *= 1.0 + p()->cache.mastery_value(); //Temporary until Stormblast gets added to mastery white-list.
+      dmg *= p()->composite_player_multiplier( SCHOOL_NATURE ); // I don't know why this is being skipped when executing stormblast in this way, but it is.
+      stormblast->base_dd_min = stormblast->base_dd_max = dmg;
+
       stormblast->set_target( state->target );
       stormblast->execute();
     }
@@ -4075,7 +4123,7 @@ struct stormstrike_base_t : public shaman_attack_t
       stormflurry = false;
     }
 
-    p()->buff.gathering_storms->decrement();
+    p()->buff.gathering_storms->expire();
 
     if ( p()->talent.elemental_assault.ok() && !stormflurry &&
         p()->rng().roll( p()->talent.elemental_assault->effectN( 3 ).percent() ) )
@@ -4095,6 +4143,11 @@ struct stormstrike_base_t : public shaman_attack_t
     if ( p()->specialization() == SHAMAN_ENHANCEMENT )
     {
       p()->trigger_deeply_rooted_elements( execute_state );
+    }
+    
+    if ( p()->sets->has_set_bonus( SHAMAN_ENHANCEMENT, T29, B2 ) )
+    {
+      p()->buff.t29_2pc_enh->trigger();
     }
   }
 
@@ -4417,8 +4470,7 @@ struct crash_lightning_t : public shaman_attack_t
 
       if ( p()->talent.gathering_storms->ok() )
       {
-        double v = 1.0 + p()->buff.gathering_storms->default_value * num_targets_hit;
-        p()->buff.gathering_storms->trigger( 1, v );
+        p()->buff.gathering_storms->trigger( num_targets_hit );
       }
     }
 
@@ -5861,6 +5913,11 @@ struct lightning_bolt_t : public shaman_spell_t
 
     t *= 1.0 + p()->buff.wind_gust->stack_value();
 
+    if ( type == execute_type::THORIMS_INVOCATION )
+    {
+      t = timespan_t::from_seconds( 0 );
+    }
+
     return t;
   }
 
@@ -7119,10 +7176,12 @@ struct frost_shock_t : public shaman_spell_t
 
     if ( p()->buff.hailstorm->check() )
     {
-      // TODO: Note, buff max stack in client data is still 5, so this will be 2 for now. The bonus
-      // targets is now hardcoded into the tooltip instead of being extractable from client data
-      // directly.
-      t += p()->buff.hailstorm->check() / 2;
+      // sure would be nice to have good looking client data
+      //auto additionalMaxTargets = p()->talent.hailstorm->effectN( 1 ).base_value() * 100; 
+      int additionalMaxTargets = 5;
+      auto targets = p()->buff.hailstorm->check() > additionalMaxTargets
+                         ? additionalMaxTargets : p()->buff.hailstorm->check();
+      t += targets;
     }
 
     if ( p() ->buff.icefury->up() && p()->talent.electrified_shocks->ok() )
@@ -10688,7 +10747,7 @@ void shaman_t::create_buffs()
     ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
     ->set_default_value_from_effect( 1 );
   buff.gathering_storms = make_buff( this, "gathering_storms", find_spell( 198300 ) )
-      ->set_default_value( talent.gathering_storms->effectN( 1 ).percent() );
+      ->set_default_value_from_effect( 1 );
   buff.ashen_catalyst = make_buff( this, "ashen_catalyst", find_spell( 390371 ) )
     ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC )
     ->set_trigger_spell( talent.ashen_catalyst );
@@ -10696,11 +10755,24 @@ void shaman_t::create_buffs()
       talent.witch_doctors_ancestry )
     ->set_default_value_from_effect_type( A_ADD_FLAT_MODIFIER, P_PROC_CHANCE );
 
+  //NYI in game - spell data is lacking.
+  buff.t29_4pc_enh = make_buff<buff_t>( this, "t29_4pc_enh" )  //, find_spell( 393693 ) )
+                         ->set_default_value( 0.01f )
+                         ->set_max_stack( 10 )
+                         ->set_duration( timespan_t::from_seconds( 4 ) )
+                         ->set_default_value_from_effect_type( A_HASTE_ALL )
+                         ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+
+  buff.t29_2pc_enh = make_buff<buff_t>( this, "t29_2pc_enh", find_spell( 394677 ) )
+                   ->set_default_value_from_effect( 1 )
+                   ->set_max_stack( 1 );
+                   
+
   // Buffs stormstrike and lava lash after using crash lightning
   buff.crash_lightning = make_buff( this, "crash_lightning", find_spell( 187878 ) );
   // Buffs crash lightning with extra damage, after using chain lightning
-  buff.cl_crash_lightning = make_buff( this, "cl_crash_lightning", find_spell( 333964 ) )
-    ->set_default_value_from_effect_type( A_ADD_PCT_LABEL_MODIFIER, P_GENERIC );
+  buff.cl_crash_lightning = new cl_crash_lightning_buff_t( this );
+
   buff.hot_hand = new hot_hand_buff_t( this );
   /*buff.hot_hand = make_buff( this, "hot_hand", talent.hot_hand->effectN( 1 ).trigger() )
     ->set_trigger_spell( talent.hot_hand )
