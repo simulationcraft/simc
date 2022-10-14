@@ -134,7 +134,6 @@ public:
     propagate_const<buff_t*> unfurling_darkness;
     propagate_const<buff_t*> unfurling_darkness_cd;  // Blizzard uses a buff to track the ICD
     propagate_const<buff_t*> ancient_madness;
-    propagate_const<buff_t*> dark_thought;
     propagate_const<buff_t*> mind_devourer;
     propagate_const<buff_t*> mind_devourer_ms_active;  // Tracking buff only
     propagate_const<buff_t*> shadowy_insight;
@@ -167,7 +166,6 @@ public:
     propagate_const<buff_t*> boon_of_the_ascended;
 
     // Tier Sets
-    propagate_const<buff_t*> living_shadow_tier;
     propagate_const<buff_t*> gathering_shadows;
     propagate_const<buff_t*> dark_reveries;
   } buffs;
@@ -370,8 +368,6 @@ public:
 
     // Shadow
     const spell_data_t* mind_flay;
-    const spell_data_t* dark_thought;   // Actual buff, holds proc rate
-    const spell_data_t* dark_thoughts;  // Passive effect
     const spell_data_t* shadow_priest;  // General shadow data
     const spell_data_t* shadowform;
     const spell_data_t* void_bolt;
@@ -470,11 +466,6 @@ public:
     propagate_const<proc_t*> void_lasher;
     propagate_const<proc_t*> void_tendril_ecttv;
     propagate_const<proc_t*> void_lasher_ecttv;
-    propagate_const<proc_t*> dark_thoughts_flay;
-    propagate_const<proc_t*> dark_thoughts_sear;
-    propagate_const<proc_t*> dark_thoughts_devouring_plague;
-    propagate_const<proc_t*> dark_thoughts_missed;
-    propagate_const<proc_t*> living_shadow_tier;
     propagate_const<proc_t*> shadowy_insight;
     propagate_const<proc_t*> shadowy_insight_overflow;
     propagate_const<proc_t*> shadowy_insight_missed;
@@ -532,7 +523,6 @@ public:
     spawner::pet_spawner_t<pet_t, priest_t> void_lasher;
     spawner::pet_spawner_t<pet_t, priest_t> rattling_mage;
     spawner::pet_spawner_t<pet_t, priest_t> cackling_chemist;
-    spawner::pet_spawner_t<pet_t, priest_t> your_shadow_tier;
     spawner::pet_spawner_t<pet_t, priest_t> thing_from_beyond;
 
     priest_pets_t( priest_t& p );
@@ -746,10 +736,6 @@ public:
   int shadow_weaving_active_dots( const player_t* target, const unsigned int spell_id ) const;
   double shadow_weaving_multiplier( const player_t* target, const unsigned int spell_id ) const;
   void trigger_unholy_transfusion_healing();
-  event_t* t28_4pc_summon_event;
-  timespan_t t28_4pc_summon_duration;
-  event_t* living_shadow_summon_event;
-  timespan_t living_shadow_summon_duration;
 
   std::string default_potion() const override;
   std::string default_flask() const override;

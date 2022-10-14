@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46092 dragonflight-BETA (hotfix 2022-10-13/46092, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46092 dragonflight-BETA (hotfix 2022-10-14/46092, no-networking)
 Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Orc (0x2)
@@ -6375,10 +6375,11 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
-#1 (id=1032727)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Chance (7)
+#1 (id=1032727)  : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Fire Breath (357209), Eternity Surge (359077), Full Belly (377087)
                    Family Flags: 18, 35
+Hotfixed         : Sub Type (108 -> 107)
 #2 (id=1034003)  : Apply Aura (6) | Proc Trigger Spell (42): Limitless Potential
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Trigger Spell: 394402 | Target: Self (1)
 Description      : Empower spells have a $s1% increased chance to critically strike and also increase your critical strike chance by $394402s1% for $394402d.

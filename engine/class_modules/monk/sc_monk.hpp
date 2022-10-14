@@ -313,13 +313,6 @@ public:
     propagate_const<buff_t*> the_emperors_capacitor;
     propagate_const<buff_t*> invoke_xuen_call_to_arms;
 
-    // T28 Set Bonus
-    propagate_const<buff_t*> keg_of_the_heavens;
-    propagate_const<buff_t*> primordial_potential;
-    propagate_const<buff_t*> primordial_power;
-    propagate_const<buff_t*> primordial_power_hidden_gcd;
-    propagate_const<buff_t*> primordial_power_hidden_channel;
-
     // T29 Set Bonus
     propagate_const<buff_t*> kicks_of_flowing_momentum;
     propagate_const<buff_t*> fists_of_flowing_momentum;
@@ -928,12 +921,6 @@ public:
     const spell_data_t* call_to_arms_invoke_chiji;
     const spell_data_t* call_to_arms_empowered_tiger_lightning;
 
-    // Tier 28
-    const spell_data_t* keg_of_the_heavens_buff;
-    const spell_data_t* keg_of_the_heavens_heal;
-    const spell_data_t* primordial_potential;
-    const spell_data_t* primordial_power;
-
     // Tier 29
     const spell_data_t* kicks_of_flowing_momentum;
     const spell_data_t* fists_of_flowing_momentum;
@@ -1219,8 +1206,6 @@ public:
   void trigger_storm_earth_and_fire( const action_t* a, sef_ability_e sef_ability );
   void storm_earth_and_fire_fixate( player_t* target );
   bool storm_earth_and_fire_fixate_ready( player_t* target );
-  // Trigger Windwalker Tier 28 4-piece Primordial Power Buff
-  void storm_earth_and_fire_trigger_primordial_power(); 
   player_t* storm_earth_and_fire_fixate_target( sef_pet_e sef_pet );
   void trigger_storm_earth_and_fire_bok_proc( sef_pet_e sef_pet );
 };

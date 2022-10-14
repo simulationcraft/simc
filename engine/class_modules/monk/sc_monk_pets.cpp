@@ -1235,9 +1235,6 @@ public:
                                        else
                                          d->expire( timespan_t::from_millis( 1 ) );
                                      } );
-
-    buff.primordial_power =
-        new buffs::primordial_power_buff_t( *this, "sef_primordial_power", o()->passives.primordial_power );
   }
 
   void trigger_attack( sef_ability_e ability, const action_t* source_action )
@@ -1871,9 +1868,6 @@ public:
   void create_buffs() override
   {
     monk_pet_t::create_buffs();
-
-    buff.primordial_potential =
-        make_buff( this, "fallen_order_primordial_potential", o()->passives.primordial_potential );
   }
 
   double composite_player_multiplier( school_e school ) const override
@@ -3320,16 +3314,6 @@ bool monk_t::storm_earth_and_fire_fixate_ready( player_t* target )
       return true;
   }
   return false;
-}
-
-// monk_t::storm_earth_and_fire_trigger_primordial_power ==============================
-void monk_t::storm_earth_and_fire_trigger_primordial_power()
-{
-  if ( buff.storm_earth_and_fire->check() )
-  {
-    pets.sef[ (int)sef_pet_e::SEF_EARTH ]->buff.primordial_power->trigger();
-    pets.sef[ (int)sef_pet_e::SEF_FIRE ]->buff.primordial_power->trigger();
-  }
 }
 
 // monk_t::summon_storm_earth_and_fire ================================================

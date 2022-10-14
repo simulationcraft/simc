@@ -816,6 +816,14 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
   debuffs_shadowburn    = make_buff( *this, "shadowburn", source->find_spell( 17877 ) )
                               ->set_default_value( source->find_spell( 245731 )->effectN( 1 ).base_value() );
 
+  debuffs_pyrogenics = make_buff( *this, "pyrogenics", p.talents.pyrogenics_debuff )
+                           ->set_default_value( p.talents.pyrogenics->effectN( 1 ).percent() )
+                           ->set_schools_from_effect( 1 )
+                           ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+
+  debuffs_conflagrate = make_buff( *this, "conflagrate", p.talents.conflagrate_debuff )
+                            ->set_default_value_from_effect( 1 );
+
   // Use havoc_debuff where we need the data but don't have the active talent
   debuffs_havoc = make_buff( *this, "havoc", p.talents.havoc_debuff )
                       ->set_duration( p.talents.mayhem.ok() ? p.talents.mayhem->effectN( 3 ).time_value() : p.talents.havoc->duration() )
@@ -1036,6 +1044,9 @@ double warlock_t::composite_player_target_multiplier( player_t* target, school_e
   {
     if ( td->debuffs_eradication->check() )
       m *= 1.0 + td->debuffs_eradication->check_value();
+
+    if ( td->debuffs_pyrogenics->check() && td->debuffs_pyrogenics->has_common_school( school ) )
+      m *= 1.0 + td->debuffs_pyrogenics->check_value();
   }
 
   if ( specialization() == WARLOCK_DEMONOLOGY )

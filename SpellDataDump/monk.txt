@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46092 dragonflight-BETA (hotfix 2022-10-13/46092, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46092 dragonflight-BETA (hotfix 2022-10-14/46092, no-networking)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -528,6 +528,7 @@ Spell Level      : 21
 GCD              : 1 seconds
 Duration         : 1.5 seconds
 Cooldown         : 25 seconds
+Affecting spells : Flying Serpent Kick (344487 effect#1)
 Family Flags     : 6
 Attributes       : ....x... ........ x.x..... .....x..   ........ ........ .x...... ....x... 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
@@ -4332,6 +4333,7 @@ Effects          :
 Description      : You have a $m1% chance when you Tiger Palm to cause your next Blackout Kick to cost no Chi within $116768d.
 
 Name             : Storm, Earth, and Fire (id=137639) [Spell Family (53)] 
+Hotfixed         : Charges (1 -> 2)
 Talent Entry     : Windwalker [tree=spec, row=5, col=3, max_rank=1, req_points=8, select_idx=100]
 Class            : Monk
 School           : Nature
@@ -4339,7 +4341,7 @@ Spell Type       : None
 Spell Level      : 27
 Duration         : 15 seconds
 Cooldown         : 16 seconds
-Charges          : 1 (90 seconds cooldown)
+Charges          : 2 (90 seconds cooldown)
 Category         : 1592: Strive for Perfection (296320 effect#4), Strive for Perfection (299367 effect#4), Strive for Perfection (299369 effect#4), Benevolent Faerie (327710 effect#3), Haunted Mask (356968 effect#3)
 Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
 Stacks           : 2 maximum
@@ -9792,20 +9794,20 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Expel Harm benefits from Mastery: Gust of Mists.
 
-Name             : Expel Harm (desc=Rank 2) (id=322106) [Spell Family (53), Passive] 
-Class            : Monk
+Name             : Expel Harm (desc=Rank 2) (id=322106) [Spell Family (53), Passive, Hidden] 
+Hotfixed         : Attributes, Required Level (43 -> 0)
+Class            : Windwalker Monk
 School           : Physical
 Spell Type       : None
-Spell Level      : 43
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ x....... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Passive (6), Only In Spellbook Until Learned (240), Cooldown Shared With AI Group (418)
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=810246)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
@@ -12370,20 +12372,20 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Spinning Crane Kick's damage is increased by $220358s1% for each unique target you've struck in the last $220358d with Tiger Palm, Blackout Kick, or Rising Sun Kick.
 
-Name             : Disable (desc=Rank 2) (id=343731) [Spell Family (53), Passive] 
-Class            : Monk
+Name             : Disable (desc=Rank 2) (id=343731) [Spell Family (53), Passive, Hidden] 
+Hotfixed         : Attributes, Required Level (41 -> 0)
+Class            : Windwalker Monk
 School           : Physical
 Spell Type       : None
-Spell Level      : 41
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ x....... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Passive (6), Only In Spellbook Until Learned (240), Cooldown Shared With AI Group (418)
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=845785)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -12689,6 +12691,27 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 0x1 | Target: Self (1)
                    Affected School(s): Physical
 Tooltip          : Physical damage increased by $w1%.
+
+Name             : Flying Serpent Kick (desc=Rank 2) (id=344487) [Spell Family (53), Passive, Hidden] 
+Hotfixed         : Attributes, Required Level (54 -> 0)
+Class            : Windwalker Monk
+School           : Physical
+Spell Type       : None
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
+Effects          :
+#1 (id=868858)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
+                   Base Value: -5000 | Scaled Value: -5000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
+                   Affected Spells: Flying Serpent Kick (101545)
+                   Family Flags: 6
+Description      : Reduces the cooldown of Flying Serpent Kick by ${$abs($s0/1000)} sec.
 
 Name             : Fists of Fury (id=345714) [Spell Family (53)] 
 Class            : Monk

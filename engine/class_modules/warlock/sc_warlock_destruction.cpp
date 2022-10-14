@@ -57,10 +57,8 @@ public:
   {
     double m = warlock_spell_t::composite_target_multiplier( t );
 
-    auto td = this->td( t );
-
-    if ( td->debuffs_roaring_blaze->check() && data().affected_by( td->debuffs_roaring_blaze->data().effectN( 1 ) ) )
-      m *= 1.0 + td->debuffs_roaring_blaze->data().effectN( 1 ).percent();
+    if ( p()->talents.roaring_blaze.ok() && td( t )->debuffs_conflagrate->check() && data().affected_by( p()->talents.conflagrate_debuff->effectN( 1 ) ) )
+      m *= 1.0 + td( t )->debuffs_conflagrate->check_value();
 
     return m;
   }
@@ -240,7 +238,8 @@ struct conflagrate_t : public destruction_spell_t
     energize_amount   = ( p->talents.conflagrate_2->effectN( 1 ).base_value() ) / 10.0;
 
     cooldown->hasted = true;
-    //cooldown->charges += as<int>( p->spec.conflagrate_2->effectN( 1 ).base_value() );
+    cooldown->charges += as<int>( p->talents.improved_conflagrate->effectN( 1 ).base_value() );
+    cooldown->duration += p->talents.explosive_potential->effectN( 1 ).time_value();
 
     //if ( p->legendary.cinders_of_the_azjaqir->ok() )
     //{
@@ -253,8 +252,8 @@ struct conflagrate_t : public destruction_spell_t
   {
     destruction_spell_t::impact( s );
 
-    //if ( p()->talents.roaring_blaze->ok() && result_is_hit( s->result ) )
-    //  td( s->target )->debuffs_roaring_blaze->trigger();
+    if ( p()->talents.roaring_blaze.ok() && result_is_hit( s->result ) )
+      td( s->target )->debuffs_conflagrate->trigger();
   }
 
   void execute() override
@@ -689,6 +688,9 @@ struct rain_of_fire_t : public destruction_spell_t
       //    p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.inferno );
       //  }
       //}
+
+      if ( p()->talents.pyrogenics.ok() )
+        td( s->target )->debuffs_pyrogenics->trigger();
     }
   };
 
@@ -699,6 +701,8 @@ struct rain_of_fire_t : public destruction_spell_t
     may_miss = may_crit = false;
     base_tick_time = 1_s;
     dot_duration = 0_s;
+
+    aoe = -1; // Needed to apply Pyrogenics on cast
 
     if ( !p->proc_actions.rain_of_fire_tick )
     {
@@ -773,21 +777,27 @@ struct rain_of_fire_t : public destruction_spell_t
                                         .start_time( sim->current_time() )
                                         .action( p()->proc_actions.rain_of_fire_tick ) );
   }
+
+  void impact( action_state_t* s ) override
+  {
+    destruction_spell_t::impact( s );
+
+    if ( p()->talents.pyrogenics.ok() )
+      td( s->target )->debuffs_pyrogenics->trigger();
+  }
 };
 
-// Talents which need initialization after baseline spells
 struct channel_demonfire_tick_t : public destruction_spell_t
 {
-  channel_demonfire_tick_t( warlock_t* p ) : destruction_spell_t( "channel_demonfire_tick", p, p->find_spell( 196448 ) )
+  channel_demonfire_tick_t( warlock_t* p ) : destruction_spell_t( "channel_demonfire_tick", p, p->talents.channel_demonfire_tick )
   {
-    background = true;
-    may_miss   = false;
-    dual       = true;
+    background = dual = true;
+    may_miss = false;
 
-    spell_power_mod.direct = data().effectN( 1 ).sp_coeff();
+    spell_power_mod.direct = p->talents.channel_demonfire_tick->effectN( 1 ).sp_coeff();
 
-    aoe                 = -1;
-    base_aoe_multiplier = data().effectN( 2 ).sp_coeff() / data().effectN( 1 ).sp_coeff();
+    aoe = -1;
+    base_aoe_multiplier = p->talents.channel_demonfire_tick->effectN( 2 ).sp_coeff() / p->talents.channel_demonfire_tick->effectN( 1 ).sp_coeff();
   }
 };
 
@@ -817,7 +827,6 @@ struct channel_demonfire_t : public destruction_spell_t
     immolate_action_id = p()->find_action_id( "immolate" );
   }
 
-  // TODO: This is suboptimal, can this be changed to available_targets() in some way?
   std::vector<player_t*>& target_list() const override
   {
     target_cache.list = destruction_spell_t::target_list();
@@ -826,10 +835,8 @@ struct channel_demonfire_t : public destruction_spell_t
     while ( i > 0 )
     {
       i--;
-      player_t* current_target = target_cache.list[ i ];
 
-      auto td = this->td( current_target );
-      if ( !td->dots_immolate->is_ticking() )
+      if ( !td( target_cache.list[ i ] )->dots_immolate->is_ticking() )
         target_cache.list.erase( target_cache.list.begin() + i );
     }
     return target_cache.list;
@@ -849,11 +856,6 @@ struct channel_demonfire_t : public destruction_spell_t
     }
 
     destruction_spell_t::tick( d );
-  }
-
-  timespan_t composite_dot_duration( const action_state_t* s ) const override
-  {
-    return s->action->tick_time( s ) * 15.0;
   }
 
   bool ready() override
@@ -1026,6 +1028,19 @@ void warlock_t::init_spells_destruction()
 
   talents.mayhem = find_talent_spell( talent_tree::SPECIALIZATION, "Mayhem" ); // Should be ID 387506
 
+  talents.pyrogenics = find_talent_spell( talent_tree::SPECIALIZATION, "Pyrogenics" ); // Should be ID 387095
+  talents.pyrogenics_debuff = find_spell( 387096 );
+
+  talents.roaring_blaze = find_talent_spell( talent_tree::SPECIALIZATION, "Roaring Blaze" ); // Should be ID 205184
+  talents.conflagrate_debuff = find_spell( 265931 );
+
+  talents.improved_conflagrate = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Conflagrate" ); // Should be ID 231793
+
+  talents.explosive_potential = find_talent_spell( talent_tree::SPECIALIZATION, "Explosive Potential" ); // Should be ID 388827
+
+  talents.channel_demonfire = find_talent_spell( talent_tree::SPECIALIZATION, "Channel Demonfire" ); // Should be ID 196447
+  talents.channel_demonfire_tick = find_spell( 196448 ); // Includes both direct and splash damage values
+
   talents.eradication = find_talent_spell( "Eradication" );
   talents.soul_fire   = find_talent_spell( "Soul Fire" );
 
@@ -1037,10 +1052,10 @@ void warlock_t::init_spells_destruction()
   talents.fire_and_brimstone = find_talent_spell( "Fire and Brimstone" );
   talents.cataclysm          = find_talent_spell( "Cataclysm" );
 
-  talents.roaring_blaze = find_talent_spell( "Roaring Blaze" );
+
   talents.rain_of_chaos = find_talent_spell( "Rain of Chaos" );
 
-  talents.channel_demonfire     = find_talent_spell( "Channel Demonfire" );
+
 
   // Legendaries
   legendary.cinders_of_the_azjaqir         = find_runeforge_legendary( "Cinders of the Azj'Aqir" );
