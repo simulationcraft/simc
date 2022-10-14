@@ -689,6 +689,9 @@ struct rain_of_fire_t : public destruction_spell_t
       //    p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.inferno );
       //  }
       //}
+
+      if ( p()->talents.pyrogenics.ok() )
+        td( s->target )->debuffs_pyrogenics->trigger();
     }
   };
 
@@ -699,6 +702,8 @@ struct rain_of_fire_t : public destruction_spell_t
     may_miss = may_crit = false;
     base_tick_time = 1_s;
     dot_duration = 0_s;
+
+    aoe = -1; // Needed to apply Pyrogenics on cast
 
     if ( !p->proc_actions.rain_of_fire_tick )
     {
@@ -772,6 +777,14 @@ struct rain_of_fire_t : public destruction_spell_t
                                         .duration( p()->talents.rain_of_fire->duration() * player->cache.spell_haste() )
                                         .start_time( sim->current_time() )
                                         .action( p()->proc_actions.rain_of_fire_tick ) );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    destruction_spell_t::impact( s );
+
+    if ( p()->talents.pyrogenics.ok() )
+      td( s->target )->debuffs_pyrogenics->trigger();
   }
 };
 
@@ -1025,6 +1038,9 @@ void warlock_t::init_spells_destruction()
   talents.backdraft_buff = find_spell( 117828 );
 
   talents.mayhem = find_talent_spell( talent_tree::SPECIALIZATION, "Mayhem" ); // Should be ID 387506
+
+  talents.pyrogenics = find_talent_spell( talent_tree::SPECIALIZATION, "Pyrogenics" ); // Should be ID 387095
+  talents.pyrogenics_debuff = find_spell( 387096 );
 
   talents.eradication = find_talent_spell( "Eradication" );
   talents.soul_fire   = find_talent_spell( "Soul Fire" );

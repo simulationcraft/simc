@@ -55,7 +55,7 @@ struct warlock_td_t : public actor_target_data_t
   propagate_const<buff_t*> debuffs_eradication;
   propagate_const<buff_t*> debuffs_roaring_blaze;
   propagate_const<buff_t*> debuffs_havoc;
-  // DF - Pyrogenics (Rain of Fire increases Fire damage taken)
+  propagate_const<buff_t*> debuffs_pyrogenics;
 
   // Demo
   propagate_const<dot_t*> dots_doom;
@@ -358,7 +358,8 @@ public:
     player_talent_t mayhem; // It appears that the only spells that can proc Mayhem are ones that can be Havoc'd
     player_talent_t havoc; // Talent data for Havoc is both the debuff and the action
     const spell_data_t* havoc_debuff; // This is a second copy of the talent data for use in places that are shared by Havoc and Mayhem
-    // DF - Pyrogenics (Enemies affected by Rain of Fire take increased Fire damage)
+    player_talent_t pyrogenics; // Enemies affected by Rain of Fire receive debuff for increased Fire damage
+    const spell_data_t* pyrogenics_debuff;
 
     const spell_data_t* roaring_blaze; // DF - Now a choice against Improved Conflagrate
     // DF - Improved Conflagrate (Choice against Roaring Blaze, 1 additional charge for Conflagrate)
