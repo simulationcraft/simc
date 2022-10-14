@@ -364,7 +364,7 @@ public:
 
     player_talent_t roaring_blaze;
     const spell_data_t* conflagrate_debuff; // Formerly called Roaring Blaze
-    // DF - Improved Conflagrate (Choice against Roaring Blaze, 1 additional charge for Conflagrate)
+    player_talent_t improved_conflagrate; // +1 charge for Conflagrate
     // DF - Explosive Potential (Reduces Conflagrate cooldown)
     const spell_data_t* channel_demonfire;
     // DF - Pandemonium (Choice against Cry Havoc, additional effects for Mayhem/Havoc)
