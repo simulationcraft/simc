@@ -821,6 +821,9 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
                            ->set_schools_from_effect( 1 )
                            ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
+  debuffs_conflagrate = make_buff( *this, "conflagrate", p.talents.conflagrate_debuff )
+                            ->set_default_value_from_effect( 1 );
+
   // Use havoc_debuff where we need the data but don't have the active talent
   debuffs_havoc = make_buff( *this, "havoc", p.talents.havoc_debuff )
                       ->set_duration( p.talents.mayhem.ok() ? p.talents.mayhem->effectN( 3 ).time_value() : p.talents.havoc->duration() )

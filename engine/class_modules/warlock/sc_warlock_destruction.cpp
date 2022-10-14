@@ -57,10 +57,8 @@ public:
   {
     double m = warlock_spell_t::composite_target_multiplier( t );
 
-    auto td = this->td( t );
-
-    if ( td->debuffs_roaring_blaze->check() && data().affected_by( td->debuffs_roaring_blaze->data().effectN( 1 ) ) )
-      m *= 1.0 + td->debuffs_roaring_blaze->data().effectN( 1 ).percent();
+    if ( p()->talents.roaring_blaze.ok() && td( t )->debuffs_conflagrate->check() && data().affected_by( p()->talents.conflagrate_debuff->effectN( 1 ) ) )
+      m *= 1.0 + td( t )->debuffs_conflagrate->check_value();
 
     return m;
   }
@@ -253,8 +251,8 @@ struct conflagrate_t : public destruction_spell_t
   {
     destruction_spell_t::impact( s );
 
-    //if ( p()->talents.roaring_blaze->ok() && result_is_hit( s->result ) )
-    //  td( s->target )->debuffs_roaring_blaze->trigger();
+    if ( p()->talents.roaring_blaze.ok() && result_is_hit( s->result ) )
+      td( s->target )->debuffs_conflagrate->trigger();
   }
 
   void execute() override
@@ -1042,6 +1040,9 @@ void warlock_t::init_spells_destruction()
   talents.pyrogenics = find_talent_spell( talent_tree::SPECIALIZATION, "Pyrogenics" ); // Should be ID 387095
   talents.pyrogenics_debuff = find_spell( 387096 );
 
+  talents.roaring_blaze = find_talent_spell( talent_tree::SPECIALIZATION, "Roaring Blaze" ); // Should be ID 205184
+  talents.conflagrate_debuff = find_spell( 265931 );
+
   talents.eradication = find_talent_spell( "Eradication" );
   talents.soul_fire   = find_talent_spell( "Soul Fire" );
 
@@ -1053,7 +1054,7 @@ void warlock_t::init_spells_destruction()
   talents.fire_and_brimstone = find_talent_spell( "Fire and Brimstone" );
   talents.cataclysm          = find_talent_spell( "Cataclysm" );
 
-  talents.roaring_blaze = find_talent_spell( "Roaring Blaze" );
+
   talents.rain_of_chaos = find_talent_spell( "Rain of Chaos" );
 
   talents.channel_demonfire     = find_talent_spell( "Channel Demonfire" );
