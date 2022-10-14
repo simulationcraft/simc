@@ -366,7 +366,8 @@ public:
     const spell_data_t* conflagrate_debuff; // Formerly called Roaring Blaze
     player_talent_t improved_conflagrate; // +1 charge for Conflagrate
     player_talent_t explosive_potential; // Reduces base Conflagrate cooldown by 2 seconds
-    const spell_data_t* channel_demonfire;
+    player_talent_t channel_demonfire;
+    const spell_data_t* channel_demonfire_tick;
     // DF - Pandemonium (Choice against Cry Havoc, additional effects for Mayhem/Havoc)
     // DF - Cry Havoc (Choice against Pandemonium, duplicated Chaos Bolts deal AoE damage)
     // DF - Improved Immolate (2 point talent, duration increase)

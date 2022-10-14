@@ -787,19 +787,17 @@ struct rain_of_fire_t : public destruction_spell_t
   }
 };
 
-// Talents which need initialization after baseline spells
 struct channel_demonfire_tick_t : public destruction_spell_t
 {
-  channel_demonfire_tick_t( warlock_t* p ) : destruction_spell_t( "channel_demonfire_tick", p, p->find_spell( 196448 ) )
+  channel_demonfire_tick_t( warlock_t* p ) : destruction_spell_t( "channel_demonfire_tick", p, p->talents.channel_demonfire_tick )
   {
-    background = true;
-    may_miss   = false;
-    dual       = true;
+    background = dual = true;
+    may_miss = false;
 
-    spell_power_mod.direct = data().effectN( 1 ).sp_coeff();
+    spell_power_mod.direct = p->talents.channel_demonfire_tick->effectN( 1 ).sp_coeff();
 
-    aoe                 = -1;
-    base_aoe_multiplier = data().effectN( 2 ).sp_coeff() / data().effectN( 1 ).sp_coeff();
+    aoe = -1;
+    base_aoe_multiplier = p->talents.channel_demonfire_tick->effectN( 2 ).sp_coeff() / p->talents.channel_demonfire_tick->effectN( 1 ).sp_coeff();
   }
 };
 
@@ -829,7 +827,6 @@ struct channel_demonfire_t : public destruction_spell_t
     immolate_action_id = p()->find_action_id( "immolate" );
   }
 
-  // TODO: This is suboptimal, can this be changed to available_targets() in some way?
   std::vector<player_t*>& target_list() const override
   {
     target_cache.list = destruction_spell_t::target_list();
@@ -838,10 +835,8 @@ struct channel_demonfire_t : public destruction_spell_t
     while ( i > 0 )
     {
       i--;
-      player_t* current_target = target_cache.list[ i ];
 
-      auto td = this->td( current_target );
-      if ( !td->dots_immolate->is_ticking() )
+      if ( !td( target_cache.list[ i ] )->dots_immolate->is_ticking() )
         target_cache.list.erase( target_cache.list.begin() + i );
     }
     return target_cache.list;
@@ -861,11 +856,6 @@ struct channel_demonfire_t : public destruction_spell_t
     }
 
     destruction_spell_t::tick( d );
-  }
-
-  timespan_t composite_dot_duration( const action_state_t* s ) const override
-  {
-    return s->action->tick_time( s ) * 15.0;
   }
 
   bool ready() override
@@ -1048,6 +1038,9 @@ void warlock_t::init_spells_destruction()
 
   talents.explosive_potential = find_talent_spell( talent_tree::SPECIALIZATION, "Explosive Potential" ); // Should be ID 388827
 
+  talents.channel_demonfire = find_talent_spell( talent_tree::SPECIALIZATION, "Channel Demonfire" ); // Should be ID 196447
+  talents.channel_demonfire_tick = find_spell( 196448 ); // Includes both direct and splash damage values
+
   talents.eradication = find_talent_spell( "Eradication" );
   talents.soul_fire   = find_talent_spell( "Soul Fire" );
 
@@ -1062,7 +1055,7 @@ void warlock_t::init_spells_destruction()
 
   talents.rain_of_chaos = find_talent_spell( "Rain of Chaos" );
 
-  talents.channel_demonfire     = find_talent_spell( "Channel Demonfire" );
+
 
   // Legendaries
   legendary.cinders_of_the_azjaqir         = find_runeforge_legendary( "Cinders of the Azj'Aqir" );
