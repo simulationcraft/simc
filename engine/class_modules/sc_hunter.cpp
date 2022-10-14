@@ -589,7 +589,7 @@ public:
     spell_data_ptr_t lethal_shots;
     spell_data_ptr_t surging_shots;
     spell_data_ptr_t deathblow;
-    spell_data_ptr_t true_aim;
+    spell_data_ptr_t target_practice;
     spell_data_ptr_t focused_aim;
 
     spell_data_ptr_t multishot_mm;
@@ -980,7 +980,7 @@ public:
     ab::apply_affecting_aura( p -> talents.killing_blow );
     ab::apply_affecting_aura( p -> talents.hunters_knowledge );
     ab::apply_affecting_aura( p -> talents.surging_shots );
-    ab::apply_affecting_aura( p -> talents.true_aim );
+    ab::apply_affecting_aura( p -> talents.target_practice );
     ab::apply_affecting_aura( p -> talents.focused_aim );
     ab::apply_affecting_aura( p -> talents.dead_eye );
 
@@ -6898,7 +6898,7 @@ void hunter_t::init_spells()
     talents.lethal_shots                      = find_talent_spell( talent_tree::SPECIALIZATION, "Lethal Shots", HUNTER_MARKSMANSHIP );
     talents.surging_shots                     = find_talent_spell( talent_tree::SPECIALIZATION, "Surging Shots", HUNTER_MARKSMANSHIP );
     talents.deathblow                         = find_talent_spell( talent_tree::SPECIALIZATION, "Deathblow", HUNTER_MARKSMANSHIP );
-    talents.true_aim                          = find_talent_spell( talent_tree::SPECIALIZATION, "True Aim", HUNTER_MARKSMANSHIP );
+    talents.target_practice                   = find_talent_spell( talent_tree::SPECIALIZATION, "Target Practice", HUNTER_MARKSMANSHIP );
     talents.focused_aim                       = find_talent_spell( talent_tree::SPECIALIZATION, "Focused Aim", HUNTER_MARKSMANSHIP );
 
     talents.multishot_mm                      = find_talent_spell( talent_tree::SPECIALIZATION, "Multi-Shot", HUNTER_MARKSMANSHIP );
