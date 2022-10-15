@@ -318,76 +318,24 @@ void DISABLED_EFFECT( special_effect_t& effect )
 }
 
 // Trinkets
-
-struct SL_darkmoon_deck_t : public darkmoon_deck_t
-{
-  std::vector<unsigned> card_ids;
-  std::vector<const spell_data_t*> cards;
-  const spell_data_t* top;
-
-  SL_darkmoon_deck_t( const special_effect_t& e, std::vector<unsigned> c )
-    : darkmoon_deck_t( e ), card_ids( std::move( c ) ), top( spell_data_t::nil() )
-  {}
-
-  void initialize() override
-  {
-    for ( auto c : card_ids )
-    {
-      auto s = player->find_spell( c );
-      if ( s->ok () )
-        cards.push_back( s );
-    }
-
-    top = cards[ player->rng().range( cards.size() ) ];
-
-    player->register_combat_begin( [this]( player_t* ) {
-      make_event<shuffle_event_t>( *player->sim, this, true );
-    } );
-  }
-
-  void shuffle() override
-  {
-    top = cards[ player->rng().range( cards.size() ) ];
-
-    player->sim->print_debug( "{} top card is now {} ({})", player->name(), top->name_cstr(), top->id() );
-  }
-};
-
-struct SL_darkmoon_deck_proc_t : public proc_spell_t
-{
-  std::unique_ptr<SL_darkmoon_deck_t> deck;
-
-  SL_darkmoon_deck_proc_t( const special_effect_t& e, util::string_view n, unsigned shuffle_id,
-                           std::initializer_list<unsigned> card_list )
-    : proc_spell_t( n, e.player, e.trigger(), e.item ), deck()
-  {
-    auto shuffle = unique_gear::find_special_effect( player, shuffle_id );
-    if ( !shuffle )
-      return;
-
-    deck = std::make_unique<SL_darkmoon_deck_t>( *shuffle, card_list );
-    deck->initialize();
-  }
-};
-
 void darkmoon_deck_putrescence( special_effect_t& effect )
 {
-  struct putrid_burst_t : public SL_darkmoon_deck_proc_t
+  struct putrid_burst_t : public darkmoon_deck_proc_t<>
   {
     putrid_burst_t( const special_effect_t& e )
-      : SL_darkmoon_deck_proc_t( e, "putrid_burst", 333885,
-                                 {311464, 311465, 311466, 311467, 311468, 311469, 311470, 311471} )
+      : darkmoon_deck_proc_t( e, "putrid_burst", 333885,
+                              { 311464, 311465, 311466, 311467, 311468, 311469, 311470, 311471 } )
     {
       split_aoe_damage = true;
     }
 
     void impact( action_state_t* s ) override
     {
-      SL_darkmoon_deck_proc_t::impact( s );
+      darkmoon_deck_proc_t::impact( s );
 
       auto td = player->get_target_data( s->target );
       // Crit debuff value is hard coded into each card
-      td->debuff.putrid_burst->trigger( 1, deck->top->effectN( 1 ).base_value() * 0.0001 );
+      td->debuff.putrid_burst->trigger( 1, deck->top_card->effectN( 1 ).base_value() * 0.0001 );
     }
   };
 
@@ -398,13 +346,13 @@ void darkmoon_deck_putrescence( special_effect_t& effect )
 
 void darkmoon_deck_voracity( special_effect_t& effect )
 {
-  struct voracious_hunger_t : public SL_darkmoon_deck_proc_t
+  struct voracious_hunger_t : public darkmoon_deck_proc_t<>
   {
     stat_buff_t* buff;
 
     voracious_hunger_t( const special_effect_t& e )
-      : SL_darkmoon_deck_proc_t( e, "voracious_hunger", 329446,
-                                 {311483, 311484, 311485, 311486, 311487, 311488, 311489, 311490} )
+      : darkmoon_deck_proc_t( e, "voracious_hunger", 329446,
+                              { 311483, 311484, 311485, 311486, 311487, 311488, 311489, 311490 } )
     {
       may_crit = false;
 
@@ -418,9 +366,9 @@ void darkmoon_deck_voracity( special_effect_t& effect )
 
     void execute() override
     {
-      SL_darkmoon_deck_proc_t::execute();
+      darkmoon_deck_proc_t::execute();
 
-      buff->stats[ 0 ].amount = deck->top->effectN( 1 ).average( item );
+      buff->stats[ 0 ].amount = deck->top_card->effectN( 1 ).average( item );
       buff->trigger();
     }
   };

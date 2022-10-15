@@ -136,6 +136,36 @@ struct special_effect_t;
     }
   };
 
+  // Generic deck to hold spell_data_t objects
+  struct darkmoon_spell_deck_t : public darkmoon_deck_t
+  {
+    std::vector<unsigned> card_ids;
+    std::vector<const spell_data_t*> cards;
+    const spell_data_t* top_card;
+
+    darkmoon_spell_deck_t( const special_effect_t& e, std::vector<unsigned> c )
+      : darkmoon_deck_t( e ), card_ids( std::move( c ) ), top_card( spell_data_t::nil() )
+    {}
+
+    void initialize() override
+    {
+      for ( auto c : card_ids )
+      {
+        auto s = player->find_spell( c );
+        assert( s->ok() );
+        cards.push_back( s );
+      }
+
+      shuffle();
+    }
+
+    void shuffle() override
+    {
+      top_card = cards[ player->rng().range( cards.size() ) ];
+      player->sim->print_debug( "{} top card is now {} ({})", player->name(), top_card->name_cstr(), top_card->id() );
+    }
+  };
+
   struct shuffle_event_t : public event_t
   {
     darkmoon_deck_t* deck;
@@ -161,13 +191,13 @@ struct special_effect_t;
     }
   };
 
-  // Generic BFA darkmoon card template class to reduce copypasta
+  // Generic darkmoon card callback template class
   template <typename T>
-  struct bfa_darkmoon_deck_cb_t : public dbc_proc_callback_t
+  struct darkmoon_deck_cb_t : public dbc_proc_callback_t
   {
     std::unique_ptr<darkmoon_action_deck_t<T>> deck;
 
-    bfa_darkmoon_deck_cb_t(const special_effect_t& effect, std::vector<unsigned> cards) :
+    darkmoon_deck_cb_t(const special_effect_t& effect, std::vector<unsigned> cards) :
       dbc_proc_callback_t(effect.player, effect),
       deck(std::make_unique<darkmoon_action_deck_t<T>>(effect, std::move( cards )))
     {
@@ -182,5 +212,28 @@ struct special_effect_t;
     {
       deck->top_card->set_target(state->target);
       deck->top_card->schedule_execute();
+    }
+  };
+
+  // Generic darkmoon card on-use template class
+  template <typename T = darkmoon_spell_deck_t, typename = std::enable_if_t<std::is_base_of_v<darkmoon_deck_t, T>>>
+  struct darkmoon_deck_proc_t : public unique_gear::proc_spell_t
+  {
+    std::unique_ptr<T> deck;
+
+    darkmoon_deck_proc_t( const special_effect_t& e, std::string_view n, unsigned shuffle_id,
+                          std::vector<unsigned> cards )
+      : proc_spell_t( n, e.player, e.trigger(), e.item )
+    {
+      auto shuffle = unique_gear::find_special_effect( player, shuffle_id );
+      if ( !shuffle )
+        return;
+
+      deck = std::make_unique<T>( *shuffle, std::move( cards ) );
+      deck->initialize();
+
+      player->register_combat_begin( [ this ]( player_t* ) {
+        make_event<shuffle_event_t>( *player->sim, deck.get(), true );
+      } );
     }
   };

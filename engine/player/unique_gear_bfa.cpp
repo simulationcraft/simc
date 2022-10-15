@@ -1905,8 +1905,7 @@ void items::darkmoon_deck_squalls( special_effect_t& effect )
     }
   };
 
-  new bfa_darkmoon_deck_cb_t<squall_damage_t>( effect,
-                                               {276124, 276125, 276126, 276127, 276128, 276129, 276130, 276131} );
+  new darkmoon_deck_cb_t<squall_damage_t>( effect, { 276124, 276125, 276126, 276127, 276128, 276129, 276130, 276131 } );
 }
 
 void items::darkmoon_deck_fathoms( special_effect_t& effect )
@@ -1920,8 +1919,7 @@ void items::darkmoon_deck_fathoms( special_effect_t& effect )
     }
   };
 
-  new bfa_darkmoon_deck_cb_t<fathoms_damage_t>( effect,
-                                                {276187, 276188, 276189, 276190, 276191, 276192, 276193, 276194} );
+  new darkmoon_deck_cb_t<fathoms_damage_t>( effect, { 276187, 276188, 276189, 276190, 276191, 276192, 276193, 276194 } );
 }
 
 // Endless Tincture of Fractional Power =====================================
