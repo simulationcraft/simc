@@ -2735,26 +2735,27 @@ struct ignite_t final : public residual_action_t
   void impact( action_state_t* s ) override
   {
     // Residual periodic actions + tick_zero does not work
-    assert( !mage_spell_t::tick_zero );
+    assert( !tick_zero );
 
-    dot_t* dot = mage_spell_t::get_dot( s->target );
-    double current_amount = 0, old_amount = 0;
-    double ticks_left = 0;
-    residual_action::residual_periodic_state_t* dot_state = debug_cast<residual_action::residual_periodic_state_t*>( dot->state );
+    dot_t* dot = get_dot( s->target );
+    double current_amount = 0.0;
+    double old_amount = 0.0;
+    double ticks_left = 0.0;
+    auto dot_state = debug_cast<residual_action::residual_periodic_state_t*>( dot->state );
 
     // If dot is ticking get current residual pool before we overwrite it
-    if (dot->is_ticking())
+    if ( dot->is_ticking() )
     {
       old_amount = dot_state->tick_amount;
       ticks_left = dot->ticks_left_fractional();
-      current_amount = old_amount * dot->ticks_left_fractional();
+      current_amount = old_amount * ticks_left;
     }
 
     // Add new amount to residual pool
     current_amount += s->result_amount;
 
-    // Trigger the dot, refreshing it's duration or starting it
-    mage_spell_t::trigger_dot( s );
+    // Trigger the dot, refreshing its duration or starting it
+    trigger_dot( s );
 
     if ( !dot_state )
       dot_state = debug_cast<residual_action::residual_periodic_state_t*>( dot->state );
