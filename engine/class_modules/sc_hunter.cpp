@@ -1114,6 +1114,14 @@ public:
     if ( affected_by.coordinated_assault )
       am *= 1 + p() -> buffs.coordinated_assault_empower -> check_value();
 
+    if ( affected_by.serrated_shots )
+    {
+      if ( s -> target -> health_percentage() < p() -> talents.serrated_shots -> effectN( 3 ).base_value() )
+        am *= 1 + p() -> talents.serrated_shots -> effectN( 2 ).percent();
+      else
+        am *= 1 + p() -> talents.serrated_shots -> effectN( 1 ).percent();
+    }
+
     if ( affected_by.t29_sv_4pc_dmg.direct && p() -> buffs.bestial_barrage -> check() )
       am *= 1 + p() -> tier_set.t29_sv_4pc_buff -> effectN( affected_by.t29_sv_4pc_dmg.direct ).percent();
 
