@@ -393,7 +393,7 @@ public:
     const spell_data_t* flashpoint_buff;
     player_talent_t scalding_flames; // Increased Immolate damage
 
-    // DF - Ruin (2 point talent, damage increase to several spells)
+    player_talent_t ruin; // Damage increase to several spells
     const spell_data_t* eradication; // DF - Now a 2 point talent
     // DF - Ashen Remains (2 point talent, formerly SL Conduit)
     // Grimoire of Sacrifice (shared with Affliction)
