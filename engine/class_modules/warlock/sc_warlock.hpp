@@ -375,7 +375,8 @@ public:
     player_talent_t inferno; // TOCHECK: Do SL target caps remain in effect?
     player_talent_t cataclysm;
 
-    const spell_data_t* soul_fire;
+    player_talent_t soul_fire;
+    const spell_data_t* soul_fire_2; // Contains Soul Shard energize data
     const spell_data_t* shadowburn;
     // DF - Raging Demonfire (2 point talent, additional Demonfire bolts and bolts extend Immolate)
     // DF - Rolling Havoc (2 point talent, increased damage buff when spells are duplicated by Mayhem/Havoc)
