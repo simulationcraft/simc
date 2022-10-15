@@ -89,8 +89,7 @@ struct evoker_t : public player_t
   // Options
   struct options_t
   {
-    bool t29_2pc = false;
-    bool t29_4pc = false;
+    bool post_empower_gcd = true;
   } option;
 
   // Action pointers
@@ -114,18 +113,18 @@ struct evoker_t : public player_t
     propagate_const<buff_t*> scarlet_adaptation;
     propagate_const<buff_t*> tip_the_scales;
 
-    // Devastation Traits
+    // Devastation
     propagate_const<buff_t*> burnout;
     propagate_const<buff_t*> charged_blast;
     propagate_const<buff_t*> dragonrage;
     propagate_const<buff_t*> iridescence_blue;
     propagate_const<buff_t*> iridescence_red;
+    propagate_const<buff_t*> limitless_potential;
     propagate_const<buff_t*> power_swell;
     propagate_const<buff_t*> snapfire;
     propagate_const<buff_t*> fury_of_the_aspects;
-    propagate_const<buff_t*> scales_of_the_awakened_2pc;
     
-    // Preservation Traits
+    // Preservation
   } buff;
 
   // Specialization Spell Data
@@ -791,10 +790,6 @@ public:
   {
     double cc = ab::composite_crit_chance() + get_buff_effects_value( crit_chance_buffeffects, true );
     
-    // TODO: CHANGE TO ACTUAL SET BONUS
-    if ( p()->option.t29_2pc && p()->buff.scales_of_the_awakened_2pc->check() )
-      cc += p()->buff.scales_of_the_awakened_2pc->check_value();
-
     return cc;
   }
 
@@ -1006,22 +1001,13 @@ struct empowered_base_t : public evoker_spell_t
 
   action_state_t* new_state() override
   { return new empowered_state_t( this, target ); }
-
-  double composite_crit_chance() const override
-  {
-    double cc = evoker_spell_t::composite_crit_chance();
-
-    // TODO: CHANGE TO ACTUAL SET BONUS
-    if ( p()->option.t29_2pc )
-      cc += 0.05;
-
-    return cc;
-  }
 };
 
 struct empowered_release_spell_t : public empowered_base_t
 {
   using base_t = empowered_release_spell_t;
+
+  timespan_t extend_4pc;
 
   empowered_release_spell_t( std::string_view name, evoker_t* p, const spell_data_t* spell )
     : empowered_base_t( name, p, spell )
@@ -1029,8 +1015,10 @@ struct empowered_release_spell_t : public empowered_base_t
     dual = true;
 
     // TODO: Confirm this still applies, as of 09/Aug/2022 it would appear to be approximately a 1s gcd after a empower finishes
-    trigger_gcd = 1_s;
+    trigger_gcd = p->option.post_empower_gcd ? 1_s : 0_s;
     gcd_type = gcd_haste_type::NONE;
+
+    extend_4pc = timespan_t::from_seconds( p->sets->set( EVOKER_DEVASTATION, T29, B4 )->effectN( 1 ).base_value() );
   }
 
   empower_e empower_level( const action_state_t* s ) const
@@ -1043,13 +1031,20 @@ struct empowered_release_spell_t : public empowered_base_t
   {
     empowered_base_t::execute();
 
+    // Scint Procs currently trigger 2pc
+    if ( p()->sets->has_set_bonus( EVOKER_DEVASTATION, T29, B2 ) )
+      p()->buff.limitless_potential->trigger();
+
     if ( background )
       return;
 
     if ( p()->talent.animosity.ok() )
     {
-      p()->buff.dragonrage->extend_duration(p(), p()->talent.animosity->effectN( 1 ).time_value() );
+      p()->buff.dragonrage->extend_duration( p(), p()->talent.animosity->effectN( 1 ).time_value() );
     }
+
+    if ( p()->talent.power_swell.ok() )
+      p()->buff.power_swell->trigger();
 
     if ( p()->talent.iridescence.ok() )
     {
@@ -1059,20 +1054,25 @@ struct empowered_release_spell_t : public empowered_base_t
         p()->buff.iridescence_red->trigger();
     }
 
-    // TODO: USE REAL SET BONUS
-    if ( p()->option.t29_2pc )
+    if ( rng().roll( p()->sets->set( EVOKER_DEVASTATION, T29, B4 )->effectN( 2 ).percent() ) )
     {
-      p()->buff.scales_of_the_awakened_2pc->extend_duration_or_trigger();
-    }
-    
-    // TODO: USE REAL SET BONUS
-    if ( p()->option.t29_4pc && rng().roll(0.25) )
-    {
-      p()->buff.fury_of_the_aspects->extend_duration_or_trigger( 6_s );
-    }
+      if ( p()->buffs.bloodlust->check() )
+      {
+        timespan_t d = std::min( 40_s, p()->buffs.bloodlust->remains() + extend_4pc );
 
-    if ( p()->talent.power_swell.ok() )
-      p()->buff.power_swell->trigger();
+        if ( d > p()->buffs.bloodlust->remains() )
+          p()->buffs.bloodlust->extend_duration( p(), d - p()->buffs.bloodlust->remains() );
+      }
+      else if ( p()->buff.fury_of_the_aspects->check() )
+      {
+        timespan_t d = std::min( 40_s, p()->buff.fury_of_the_aspects->remains() + extend_4pc );
+
+        if ( d > p()->buff.fury_of_the_aspects->remains() )
+          p()->buff.fury_of_the_aspects->extend_duration( p(), d - p()->buff.fury_of_the_aspects->remains() );
+      }
+      else
+        p()->buff.fury_of_the_aspects->trigger( extend_4pc );
+    }
   }
 };
 
@@ -1234,11 +1234,16 @@ struct empowered_charge_spell_t : public empowered_base_t
     auto emp_state = release_spell->get_state();
     emp_state->target = d->state->target;
     release_spell->snapshot_state( emp_state, release_spell->amount_type( emp_state ) );
-    debug_cast<empowered_state_t*>( emp_state )->empower = empower_level( d );
+
+    if ( p()->buff.tip_the_scales->up() )
+    {
+      p()->buff.tip_the_scales->expire();
+      debug_cast<empowered_state_t*>( emp_state )->empower = max_empower;
+    }
+    else
+      debug_cast<empowered_state_t*>( emp_state )->empower = empower_level( d );
 
     release_spell->schedule_execute( emp_state );
-
-    p()->buff.tip_the_scales->expire();
 
     // hack to prevent dot_t::last_tick() from schedule_ready()'ing the player
     d->current_action = release_spell;
@@ -1253,14 +1258,35 @@ struct fire_breath_t : public empowered_charge_spell_t
 {
   struct fire_breath_damage_t : public empowered_release_spell_t
   {
-    fire_breath_damage_t( evoker_t* p ) : base_t( "fire_breath_damage", p, p->find_spell( 357209 ) )
+    timespan_t dot_dur_per_emp;
+
+    fire_breath_damage_t( evoker_t* p )
+      : base_t( "fire_breath_damage", p, p->find_spell( 357209 ) ), dot_dur_per_emp( 6_s )
     {
       aoe = -1;  // TODO: actually a cone so we need to model it if possible
+      reduced_aoe_targets = 5.0;
+
+      dot_duration = 20_s;  // base * 10? or hardcoded to 20s?
+      dot_duration += timespan_t::from_seconds( p->talent.blast_furnace->effectN( 1 ).base_value() );
+    }
+
+    timespan_t reduction_from_empower( const action_state_t* s ) const
+    {
+      return std::max( 0, empower_value( s ) - 1 ) * dot_dur_per_emp;
     }
 
     timespan_t composite_dot_duration( const action_state_t* s ) const override
     {
-      return base_t::composite_dot_duration( s ) * empower_value( s ) / 3.0;
+      return base_t::composite_dot_duration( s ) - reduction_from_empower( s );
+    }
+
+    double bonus_da( const action_state_t* s ) const override
+    {
+      auto da = base_t::bonus_da( s );
+      auto ticks = reduction_from_empower( s ) / tick_time( s );
+      auto tick_damage = s->composite_spell_power() * spell_tick_power_coefficient( s );
+
+      return da + ticks * tick_damage;
     }
 
     void trigger_everburning_flame( action_state_t* ) override
@@ -1422,7 +1448,9 @@ struct deep_breath_t : public evoker_spell_t
 
   timespan_t execute_time() const override
   {
-    return damage->travel_time();
+    // TODO: Work out a better solution for this.
+    //return damage->travel_time();
+    return 3_s;
   }
 
   void execute() override
@@ -1853,11 +1881,8 @@ struct dragonrage_t : public evoker_spell_t
   {
     damage = p->get_secondary_action<dragonrage_damage_t>( "dragonrage_pyre" );
     add_child( damage );
-  }
 
-  school_e get_school() const override
-  {
-    return damage->school;
+    school = damage->school;
   }
 
   void execute() override
@@ -2111,7 +2136,7 @@ void evoker_t::create_buffs()
   buff.tip_the_scales = make_buff( this, "tip_the_scales", talent.tip_the_scales )
     ->set_cooldown( 0_ms );
 
-  // Devastation Traits
+  // Devastation
   buff.burnout = make_buff( this, "burnout", find_spell( 375802 ) )
                      ->set_cooldown( talent.burnout->internal_cooldown() )
                      ->set_chance( talent.burnout->effectN( 1 ).percent() );
@@ -2128,6 +2153,11 @@ void evoker_t::create_buffs()
   buff.iridescence_red = make_buff( this, "iridescence_red", find_spell( 386353 ) )
     ->set_default_value_from_effect( 1 );
   buff.iridescence_red->set_initial_stack( buff.iridescence_red->max_stack() );
+
+  buff.limitless_potential =
+      make_buff( this, "limitless_potential", sets->set( EVOKER_DEVASTATION, T29, B2 )->effectN( 2 ).trigger() )
+          ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
+          ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
 
   buff.power_swell = make_buff( this, "power_swell", find_spell( 376850 ) )
     ->set_affects_regen( true )
@@ -2147,22 +2177,13 @@ void evoker_t::create_buffs()
                                  ->set_cooldown( 0_s )
                                  ->add_invalidate( CACHE_HASTE );
 
-  // TODO: USE 2PC DATA RATHER THAN HARD CODE
-  buff.scales_of_the_awakened_2pc = make_buff<buff_t>( this, "scales_of_the_awakened_2pc" )
-                                        ->add_invalidate( CACHE_CRIT_CHANCE )
-                                        ->add_invalidate( CACHE_SPELL_CRIT_CHANCE )
-                                        ->set_default_value( 0.05 )
-                                        ->set_duration( 6_s );
-
-  // Preservation Traits
+  // Preservation
 }
 
 void evoker_t::create_options()
 {
   player_t::create_options();
-  // TODO: REMOVE WHEN SPELL DATA
-  add_option( opt_bool( "evoker.t29_2pc", option.t29_2pc ) );
-  add_option( opt_bool( "evoker.t29_4pc", option.t29_4pc ) );
+  add_option( opt_bool( "evoker.post_empower_gcd", option.post_empower_gcd ) );
 }
 
 void evoker_t::analyze( sim_t& sim )
@@ -2247,7 +2268,6 @@ void evoker_t::apply_affecting_auras( action_t& action )
   // Class Traits
   action.apply_affecting_aura( talent.aerial_mastery );
   action.apply_affecting_aura( talent.attuned_to_the_dream );
-  action.apply_affecting_aura( talent.blast_furnace );
   action.apply_affecting_aura( talent.bountiful_bloom );
   action.apply_affecting_aura( talent.enkindled );
   action.apply_affecting_aura( talent.extended_flight );
@@ -2256,7 +2276,7 @@ void evoker_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.natural_convergence );
   action.apply_affecting_aura( talent.obsidian_bulwark );
 
-  // Devastaion Traits
+  // Devastaion
   action.apply_affecting_aura( talent.arcane_intensity );
   action.apply_affecting_aura( talent.dense_energy );
   action.apply_affecting_aura( talent.engulfing_blaze );
@@ -2266,8 +2286,9 @@ void evoker_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.lay_waste );
   action.apply_affecting_aura( talent.onyx_legacy );
   action.apply_affecting_aura( talent.spellweavers_dominance );
+  action.apply_affecting_aura( sets->set( EVOKER_DEVASTATION, T29, B2 ) );
 
-  // Preservation Traits
+  // Preservation
 }
 
 action_t* evoker_t::create_action( std::string_view name, std::string_view options_str )

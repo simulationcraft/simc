@@ -1,5 +1,5 @@
-// Active class spells, wow build 10.0.2.45779
-static const std::array<active_class_spell_t, 265> __active_spells_data { {
+// Active class spells, wow build 10.0.2.46157
+static const std::array<active_class_spell_t, 266> __active_spells_data { {
   {  1,    0,    100,      0, "Charge"                             },
   {  1,    0,    355,      0, "Taunt"                              },
   {  1,    0,   1464,      0, "Slam"                               },
@@ -95,6 +95,7 @@ static const std::array<active_class_spell_t, 265> __active_spells_data { {
   {  4,  260, 185763,      0, "Pistol Shot"                        },
   {  4,  260, 193315,   1752, "Sinister Strike"                    },
   {  4,  260, 199736,      0, "Find Treasure"                      },
+  {  4,  260, 315341,      0, "Between the Eyes"                   },
   {  4,  261,     53,   1752, "Backstab"                           },
   {  4,  261,   1943,      0, "Rupture"                            },
   {  4,  261, 114014,      0, "Shuriken Toss"                      },
@@ -267,7 +268,7 @@ static const std::array<active_class_spell_t, 265> __active_spells_data { {
   { 13, 1468, 361178,      0, "Mass Return"                        },
 } };
 
-// Pet active spells, wow build 10.0.2.45779
+// Pet active spells, wow build 10.0.2.46157
 static const std::array<active_pet_spell_t, 134> __active_pet_spells_data { {
   {  3,   2649, "Growl"                              },
   {  3,  16827, "Claw"                               },

@@ -979,17 +979,24 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
       may_dodge = may_parry = may_block = may_miss = true;
       dual                                         = true;
       aoe                                          = -1;
-      reduced_aoe_targets                          = 1;
-      radius                                       = data().effectN( 2 ).base_value();
 
       energize_type = action_energize::NONE;
     }
 
+    // Damage must be divided on non-main target by the number of targets
+    double composite_aoe_multiplier( const action_state_t* state ) const override
+    {
+      if ( state->target != target )
+      {
+        return 1.0 / state->n_targets;
+      }
+
+      return 1.0;
+    }
+
     void execute() override
     {
-      // Currently in game SEF clones do not copy SotWL
-      if ( !p()->o()->bugs )
-        sef_melee_attack_t::execute();
+      sef_melee_attack_t::execute();
     }
   };
 
@@ -1002,15 +1009,22 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
       may_dodge = may_parry = may_block = may_miss = true;
       dual                                         = true;
       aoe                                          = -1;
-      reduced_aoe_targets                          = 1;
-      radius                                       = data().effectN( 2 ).base_value();
+    }
+
+    // Damage must be divided on non-main target by the number of targets
+    double composite_aoe_multiplier( const action_state_t* state ) const override
+    {
+      if ( state->target != target )
+      {
+        return 1.0 / state->n_targets;
+      }
+
+      return 1.0;
     }
 
     void execute() override
     {
-      // Currently in game SEF clones do not copy SotWL
-      if ( !p()->o()->bugs )
-        sef_melee_attack_t::execute();
+      sef_melee_attack_t::execute();
     }
   };
 
@@ -1221,9 +1235,6 @@ public:
                                        else
                                          d->expire( timespan_t::from_millis( 1 ) );
                                      } );
-
-    buff.primordial_power =
-        new buffs::primordial_power_buff_t( *this, "sef_primordial_power", o()->passives.primordial_power );
   }
 
   void trigger_attack( sef_ability_e ability, const action_t* source_action )
@@ -1857,9 +1868,6 @@ public:
   void create_buffs() override
   {
     monk_pet_t::create_buffs();
-
-    buff.primordial_potential =
-        make_buff( this, "fallen_order_primordial_potential", o()->passives.primordial_potential );
   }
 
   double composite_player_multiplier( school_e school ) const override
@@ -3118,6 +3126,14 @@ private:
         {
             return 0.0;
         }
+
+        void impact( action_state_t* s ) override
+        {
+          auto owner = o();
+          owner->trigger_empowered_tiger_lightning( s, true, false );
+
+          pet_spell_t::impact( s );
+        }
     };
 
     struct auto_attack_t : public pet_auto_attack_t
@@ -3134,6 +3150,7 @@ private:
 public:
     fury_of_xuen_pet_t(monk_t* owner) : monk_pet_t(owner, "fury_of_xuen_tiger", PET_XUEN, false, true)
     {
+        //npc_id                      = o()->passives.fury_of_xuen_haste_buff->effectN( 2 ).misc_value1();
         main_hand_weapon.type       = WEAPON_BEAST;
         main_hand_weapon.min_dmg    = dbc->spell_scaling(o()->type, level());
         main_hand_weapon.max_dmg    = dbc->spell_scaling(o()->type, level());
@@ -3297,16 +3314,6 @@ bool monk_t::storm_earth_and_fire_fixate_ready( player_t* target )
       return true;
   }
   return false;
-}
-
-// monk_t::storm_earth_and_fire_trigger_primordial_power ==============================
-void monk_t::storm_earth_and_fire_trigger_primordial_power()
-{
-  if ( buff.storm_earth_and_fire->check() )
-  {
-    pets.sef[ (int)sef_pet_e::SEF_EARTH ]->buff.primordial_power->trigger();
-    pets.sef[ (int)sef_pet_e::SEF_FIRE ]->buff.primordial_power->trigger();
-  }
 }
 
 // monk_t::summon_storm_earth_and_fire ================================================

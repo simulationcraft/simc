@@ -580,12 +580,6 @@ bool parse_talent_url( sim_t* sim, util::string_view name, util::string_view url
       return p->parse_talents_armory2( url );
     }
   }
-  else if ( url.find( "wowhead.com/beta/talent-calc" ) != url.npos )  // TODO: remove /beta/ when DF goes live
-  {
-    if ( sim->talent_input_format == talent_format::UNCHANGED )
-      sim->talent_input_format = talent_format::WOWHEAD;
-    return p->parse_talents_wowhead( url );
-  }
   else
   {
     if ( sim->talent_input_format == talent_format::UNCHANGED )
@@ -2451,41 +2445,160 @@ static void parse_traits(
 }
 
 // Blizzard in-game talent tree export hash
+static bool generate_tree_nodes( player_t* player,
+                                 std::map<unsigned, std::vector<std::pair<const trait_data_t*, unsigned>>>& tree_nodes )
+{
+  specialization_e spec = player->specialization();
+
+  uint32_t class_idx, spec_idx;
+  if ( !player->dbc->spec_idx( spec, class_idx, spec_idx ) )
+    return false;
+
+  auto class_data = trait_data_t::data( class_idx, talent_tree::CLASS, maybe_ptr( player->dbc->ptr ) );
+  auto spec_data = trait_data_t::data( class_idx, talent_tree::SPECIALIZATION, maybe_ptr( player->dbc->ptr ) );
+
+  for ( const auto& trait : class_data )
+    tree_nodes[ trait.id_node ].emplace_back( &trait, 0 );
+
+  for ( const auto& trait : spec_data )
+    tree_nodes[ trait.id_node ].emplace_back( &trait, 0 );
+
+  return true;
+}
+
+namespace
+{
+const std::string base64_char = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+// hardcoded values from Interface/AddOns/Blizzard_ClassTalentUI/Blizzard_ClassTalentImportExport.lua
+constexpr unsigned LOADOUT_SERIALIZATION_VERSION = 1;
+constexpr size_t version_bits = 8;    // serialization version
+constexpr size_t spec_bits    = 16;   // specialization id
+constexpr size_t tree_bits    = 128;  // C_Traits.GetTreeHash(), optionally can be 0-filled
+constexpr size_t rank_bits    = 6;    // ranks purchased if node is partially filled
+constexpr size_t choice_bits  = 2;    // choice index, 0-based
+// hardcoded value from Interface/SharedXML/ExportUtil.lua
+constexpr size_t byte_size    = 6;
+}
+
+static std::string generate_traits_hash( player_t* player )
+{
+  std::string export_str;
+
+  if ( player->player_traits.empty() )
+    return export_str;
+
+  size_t head = 0;
+  size_t byte = 0;
+  auto put_bit = [ &export_str, &head, &byte ]( size_t bits, unsigned value ) {
+    for ( size_t i = 0; i < bits; i++ )
+    {
+      size_t bit = head % byte_size;
+      byte += ( value >> i & 0b1 ) << bit;
+      if ( bit == byte_size - 1 )
+      {
+        export_str += base64_char[ byte ];
+        byte = 0;
+      }
+      head++;
+    }
+  };
+
+  put_bit( version_bits, LOADOUT_SERIALIZATION_VERSION );
+  put_bit( spec_bits, static_cast<unsigned>( player->specialization() ) );
+  put_bit( tree_bits, 0 );  // 0-filled to bypass validation, as GetTreeHash() is unavailable externally
+
+  std::map<unsigned, std::vector<std::pair<const trait_data_t*, unsigned>>> tree_nodes;
+
+  generate_tree_nodes( player, tree_nodes );
+
+  // populate tree_nodes with rank info from player_traits
+  for ( const auto& trait : player->player_traits )
+  {
+    auto id_entry = std::get<1>( trait );
+    auto ranks = std::get<2>( trait );
+
+    if ( !ranks )
+      continue;
+
+    auto trait_data = trait_data_t::find( id_entry, maybe_ptr( player->dbc->ptr ) );
+    auto tree_entry = &tree_nodes[ trait_data->id_node ];
+
+    for ( auto& entry : *tree_entry )
+    {
+      if ( entry.first->id_trait_node_entry == id_entry )
+      {
+        entry.second = ranks;
+        break;
+      }
+    }
+  }
+
+  for ( auto& [ id, node ] : tree_nodes )
+  {
+    range::sort( node, []( std::pair<const trait_data_t*, unsigned> a, std::pair<const trait_data_t*, unsigned> b ) {
+      return a.first->selection_index < b.first->selection_index;
+    } );
+
+    const trait_data_t* trait = nullptr;
+    unsigned rank = 0;
+    unsigned index = 0;
+
+    for ( size_t i = 0; i < node.size(); i++ )
+    {
+      rank = node[ i ].second;
+      if ( rank )
+      {
+        trait = node[ i ].first;
+        index = as<unsigned>( i );
+        break;
+      }
+    }
+
+    if ( !rank )  // is node selected?
+    {
+      put_bit( 1, 0 );
+      continue;
+    }
+    else
+    {
+      put_bit( 1, 1 );
+    }
+
+    if ( rank == trait->max_ranks )  // is node partially ranked?
+    {
+      put_bit( 1, 0 );
+    }
+    else
+    {
+      put_bit( 1, 1 );
+      put_bit( rank_bits, rank );
+    }
+
+    if ( node.size() == 1 )  // is choice nodes?
+    {
+      put_bit( 1, 0 );
+    }
+    else
+    {
+      put_bit( 1, 1 );
+      put_bit( choice_bits, index );
+    }
+  }
+
+  return export_str;
+}
+
 static void parse_traits_hash( const std::string& talents_str, player_t* player )
 {
-  // Temporary workaround, you can get this string via the simc addon
-  if ( player->tree_nodes_str.empty() )
-  {
-    player->sim->error( "Player {} trying to parse Blizzard talent export hash without tree_node_str.", player->name() );
-    return;
-  }
-
-  if ( player->tree_nodes_str.find_first_not_of( "0123456789/" ) != std::string::npos )
-  {
-    player->sim->error( "Player {} has invalid tree_node_str.", player->name() );
-    return;
-  }
-
-  static const std::string char_array = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-
   auto do_error = [ player, &talents_str ]( std::string_view msg = {} ) {
     player->sim->error( "Player {} has invalid talent tree hash {}{}{}", player->name(), talents_str, msg.empty() ? "" : ": ", msg );
   };
 
-  if ( player->talents_str.find_first_not_of( char_array ) != std::string::npos )
+  if ( player->talents_str.find_first_not_of( base64_char ) != std::string::npos )
   {
     do_error();
     return;
   }
-
-  // hardcoded values from Interface/AddOns/Blizzard_ClassTalentUI/Blizzard_ClassTalentImportExport.lua
-  static constexpr size_t version_bits = 8;    // serialization version
-  static constexpr size_t spec_bits    = 16;   // specialization id
-  static constexpr size_t tree_bits    = 128;  // C_Traits.GetTreeHash(), optionally can be 0-filled
-  static constexpr size_t rank_bits    = 6;    // ranks purchased if node is partially filled
-  static constexpr size_t choice_bits  = 2;    // choice index, 0-based
-  // hardcoded value from Interface/SharedXML/ExportUtil.lua
-  static constexpr size_t byte_size    = 6;
 
   if ( version_bits + spec_bits + tree_bits > talents_str.size() * byte_size )
   {
@@ -2493,11 +2606,12 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
     return;
   }
 
-  auto get_bit = [ &talents_str ]( size_t bits, size_t& head ) -> size_t {
+  size_t head = 0;
+  auto get_bit = [ &talents_str, &head ]( size_t bits ) {
     size_t val = 0;
     for ( size_t i = 0; i < bits; i++ )
     {
-      size_t byte = char_array.find( talents_str[ head / byte_size ] );
+      size_t byte = base64_char.find( talents_str[ head / byte_size ] );
       size_t bit  = head % byte_size;
       head++;
       val += ( byte >> bit & 0b1 ) << i;
@@ -2505,14 +2619,12 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
     return val;
   };
 
-  size_t head = 0;
+  auto version_id = get_bit( version_bits );
+  auto spec_id    = get_bit( spec_bits );
 
-  auto version_id = get_bit( version_bits, head );
-  auto spec_id    = get_bit( spec_bits, head );
-
-  if ( version_id != 1 )
+  if ( version_id != LOADOUT_SERIALIZATION_VERSION )
   {
-    do_error( "Invalid hash version" );
+    do_error( "Invalid serialization version" );
     return;
   }
 
@@ -2522,68 +2634,69 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
     return;
   }
 
+  // Clear all existing traits
+  player->player_traits.clear();
+
   // As per Interface/AddOns/Blizzard_ClassTalentUI/Blizzard_ClassTalentImportExport.lua: treeHash is a 128bit hash,
   // passed as an array of 16, 8-bit values. For SimC purposes we can ignore it, as invalid/outdated strings can error
   // in later checks
-  /*
-  int8_t tree_hash[ 16 ];
-  for ( size_t i = 0; i < 16; i++ )
-    tree_hash[ i ] = static_cast<int8_t>( get_bit( 8, head ) );
-  */
-  get_bit( tree_bits, head );
+  get_bit( tree_bits );
 
-  auto nodes_str = util::string_split<std::string_view>( player->tree_nodes_str, "/" );
-  auto _data = trait_data_t::data( maybe_ptr( player->dbc->ptr ) );
+  std::map<unsigned, std::vector<std::pair<const trait_data_t*, unsigned>>> tree_nodes;
 
-  for ( auto node_str : nodes_str )
+  generate_tree_nodes( player, tree_nodes );
+
+  for ( auto& [ id, node ] : tree_nodes )
   {
-    if ( get_bit( 1, head ) )  // selected
+    if ( get_bit( 1 ) )  // selected
     {
-      std::vector<const trait_data_t*> traits;
-      auto node = util::to_unsigned( node_str );
+      range::sort( node, []( std::pair<const trait_data_t*, unsigned> a, std::pair<const trait_data_t*, unsigned> b ) {
+        return a.first->selection_index < b.first->selection_index;
+      } );
 
-      auto _it = _data.begin();
-      while ( _it != _data.end() )
-      {
-        _it = std::find_if( _it, _data.end(), [ node ]( const trait_data_t& t ) { return t.id_node == node; } );
-        if ( _it != _data.end() )
-          traits.push_back( _it++ );
-      }
+      auto trait = node.front().first;
+      size_t rank = trait->max_ranks;
 
-      if ( traits.empty() )
+      if ( !std::all_of( trait->id_spec.begin(), trait->id_spec.end(), []( unsigned i ) { return i == 0; } ) &&
+           !range::contains( trait->id_spec, player->specialization() ) )
       {
-        player->sim->error( "Player {} has invalid tree_node_str, node {} not found.", player->name(), node_str );
+        do_error( fmt::format( "selected node {} is not available to player's spec.", id ) );
         return;
       }
 
-      range::sort( traits, []( const trait_data_t* a, const trait_data_t* b ) {
-        return a->selection_index < b->selection_index;
-      } );
-
-      const trait_data_t* trait = traits.front();
-      size_t rank = trait->max_ranks;
-
-      if ( get_bit( 1, head ) )  // partially ranked normal trait
+      if ( get_bit( 1 ) )  // partially ranked normal trait
       {
-        if ( traits.size() > 1 )
+        if ( node.size() > 1 )
         {
-          do_error( fmt::format( "non-choice node {} has multiple entries.", node_str ) );
+          do_error( fmt::format( "non-choice node {} has multiple entries.", id ) );
           return;
         }
 
-        rank = get_bit( rank_bits, head );
+        rank = get_bit( rank_bits );
+
+        if ( rank > trait->max_ranks )
+        {
+          do_error( fmt::format( "{} ranks selected for node {} which has {} ranks max.", rank, id, trait->max_ranks ) );
+          return;
+        }
+
+        if ( rank == trait->max_ranks )
+        {
+          do_error( fmt::format( "partial rank indicated for node {} but all {} ranks are allocated.", id, rank ) );
+          return;
+        }
       }
 
-      if ( get_bit( 1, head ) )  // choice trait
+      if ( get_bit( 1 ) )  // choice trait
       {
-        size_t index = get_bit( choice_bits, head );
-        if ( index >= traits.size() )
+        size_t index = get_bit( choice_bits );
+        if ( index >= node.size() )
         {
-          do_error( fmt::format( "index {} for choice node {} out of bounds.", index, node_str ) );
+          do_error( fmt::format( "index {} for choice node {} out of bounds.", index, id ) );
           return;
         }
 
-        trait = traits[ index ];
+        trait = node[ index ].first;
       }
 
       player->player_traits.emplace_back( static_cast<talent_tree>( trait->tree_index ), trait->id_trait_node_entry,
@@ -3814,11 +3927,6 @@ void player_t::create_buffs()
         ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY )
         ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
 
-      buffs.forced_bloodlust  = make_buff( this, "forced_bloodlust", find_spell( 2825 ) )
-          ->set_max_stack( 1 )
-          ->set_default_value_from_effect_type( A_HASTE_ALL )
-          ->add_invalidate( CACHE_HASTE );
-
       // 9.2 Encrypted Affix Buffs
       auto urh_restoration = find_spell( 368494 );
       buffs.decrypted_urh_cypher = make_buff( this, "decrypted_urh_cypher", find_spell( 368239 ) );
@@ -4010,9 +4118,6 @@ double player_t::composite_melee_haste() const
 
     if ( buffs.bloodlust->check() )
       h *= 1.0 / ( 1.0 + buffs.bloodlust->check_stack_value() );
-
-    if ( buffs.forced_bloodlust->check() )
-      h *= 1.0 / ( 1.0 + buffs.forced_bloodlust->check_stack_value() );
 
     if ( buffs.mongoose_mh && buffs.mongoose_mh->check() )
       h *= 1.0 / ( 1.0 + 30 / current.rating.attack_haste );
@@ -4360,9 +4465,6 @@ double player_t::composite_spell_haste() const
     if ( buffs.bloodlust->check() )
       h *= 1.0 / ( 1.0 + buffs.bloodlust->check_stack_value() );
 
-    if ( buffs.forced_bloodlust->check() )
-      h *= 1.0 / ( 1.0 + buffs.forced_bloodlust->check_stack_value() );
-
     if ( buffs.berserking->check() )
       h *= 1.0 / ( 1.0 + buffs.berserking->data().effectN( 1 ).percent() );
 
@@ -4601,19 +4703,21 @@ double player_t::composite_total_corruption() const
   return cache.corruption() - cache.corruption_resistance();
 }
 
-double player_t::composite_player_pet_damage_multiplier( const action_state_t*, bool ) const
+double player_t::composite_player_pet_damage_multiplier( const action_state_t*, bool guardian ) const
 {
   double m = 1.0;
 
-  m *= 1.0 + racials.command->effectN( 1 ).percent();
+  m *= 1.0 + racials.command->effectN(1).percent();
 
-  if ( buffs.coldhearted && buffs.coldhearted->check() )
-    m *= 1.0 + buffs.coldhearted->check_value();
+  if (!guardian)
+  {
+    if (buffs.coldhearted && buffs.coldhearted->check())
+      m *= 1.0 + buffs.coldhearted->check_value();
 
-  // By default effect 1 is used for the player modifier, effect 2 is for the pet modifier
-  if ( buffs.battlefield_presence && buffs.battlefield_presence->check() )
-    m *=
-        1.0 + ( buffs.battlefield_presence->data().effectN( 2 ).percent() * buffs.battlefield_presence->current_stack );
+    // By default effect 1 is used for the player modifier, effect 2 is for the pet modifier
+    if (buffs.battlefield_presence && buffs.battlefield_presence->check())
+      m *= 1.0 + (buffs.battlefield_presence->data().effectN(2).percent() * buffs.battlefield_presence->current_stack);
+  }
 
   return m;
 }
@@ -5336,7 +5440,6 @@ void player_t::combat_begin()
   add_timed_buff_triggers( external_buffs.pact_of_the_soulstalkers, buffs.pact_of_the_soulstalkers );
   add_timed_buff_triggers( external_buffs.boon_of_azeroth, buffs.boon_of_azeroth );
   add_timed_buff_triggers( external_buffs.boon_of_azeroth_mythic, buffs.boon_of_azeroth_mythic );
-  add_timed_buff_triggers( external_buffs.forced_bloodlust, buffs.forced_bloodlust );
 
   auto add_timed_blessing_triggers = [ this, add_timed_buff_triggers ] ( const std::vector<timespan_t>& times, buff_t* buff, timespan_t duration = timespan_t::min() )
   {
@@ -9977,321 +10080,10 @@ bool player_t::parse_talents_armory2( util::string_view talent_url )
   return true;
 }
 
-// Wowhead talent calculator link hash
-//
-// Hash uses 6-bit 'bytes' which are used as index values for base64URL encoding
-// Each trait node uses 2 bits to represent ranks spent on node
-// Each selection node uses 2 bits to represent the choice made with 0 = lower index, 1 = higher index
-//
-// 1st byte seems to always be 1
-// * 1 byte for the number of bytes used for class nodes
-// * 0-X bytes for class nodes, with each node using 2 bits, grouped into 6-bit bytes with 0 padding at the end
-// * 1 byte for the number of bytes used for class selection node choices
-// * 0-x bytes for class selections, with each choice using 1 bit, ordered by selection nodes taken as per class node bytes
-// * 1 byte for the number of bytes used for spec nodes
-// * 0-x bytes for spec nodes, with each ndoe using 2 bits, grouped into 6-bit bytes with 0 padding at the end
-// * 1 byte for the number of bytes used for spec selection node choices
-// * 0-x bytes for spec selections, with each choice using 1 bit, ordered by selection nodes taken as per spec node bytes
-namespace
+void player_t::create_talents_blizzard()
 {
-// Generate sorted list of traits by node position, starting with upper left and ascending by column then row
-// Generate list of selection traits mapped to node position.
-// There is no need to strictly sort this list other than to ensure the lower selection_index comes before the higher.
-bool generate_trait_map( player_t* player, talent_tree tree,
-                         std::vector<std::pair<int, const trait_data_t*>>& trait_map,
-                         std::vector<std::pair<int, const trait_data_t*>>& selection_map )
-{
-  specialization_e spec = player->specialization();
-
-  uint32_t class_idx, spec_idx;
-  if ( !player->dbc->spec_idx( spec, class_idx, spec_idx ) )
-    return false;
-
-  auto trait_data = trait_data_t::data( class_idx, tree, maybe_ptr( player->dbc->ptr ) );
-  range::for_each( trait_data, [ spec, &trait_map, &selection_map ]( const trait_data_t& entry ) {
-    if ( entry.id_spec[ 0 ] == 0 || range::contains( entry.id_spec, spec ) )
-    {
-      int key = entry.row * 10 + entry.col;
-
-      if ( entry.selection_index != -1 )
-      {
-        auto it = range::find_if( selection_map, [ key ]( std::pair<int, const trait_data_t*>& tup ) {
-          return tup.first == key;
-        } );
-
-        if ( it != selection_map.end() )
-        {
-          if ( entry.selection_index < it->second->selection_index )
-            selection_map.emplace( selection_map.begin(), key, &entry );
-          else
-            selection_map.emplace_back( key, &entry );
-        }
-        else
-        {
-          selection_map.emplace_back( key, &entry );
-          trait_map.emplace_back( key, nullptr );
-        }
-      }
-      else
-        trait_map.emplace_back( key, &entry );
-    }
-  } );
-
-  range::sort( trait_map, []( std::pair<int, const trait_data_t*> a, std::pair<int, const trait_data_t*> b ) {
-    return a.first < b.first;
-  } );
-
-  return true;
-}
-}  // namespace
-
-bool player_t::parse_talents_wowhead( std::string_view talent_url )
-{
-  sim->error( "Wowhead talent parsing is temporarily disabled until the new algorithm can be implemented." );
-  return false;
-
-  static const std::string char_array = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
-
-  auto split = util::string_split<std::string_view>( talent_url, "/" );
-  auto hash  = split.back();
-
-  auto do_error = [ talent_url, hash, this ]() {
-    sim->error( "Player {} has invalid wowhead talent url {} with hash {}", name(), talent_url, hash );
-    return false;
-  };
-
-  if ( hash.find_first_not_of( char_array ) != std::string::npos || hash.length() < 6 )
-    do_error();
-
-  std::vector<std::pair<int, const trait_data_t*>> class_map;
-  std::vector<std::pair<int, const trait_data_t*>> spec_map;
-  std::vector<std::pair<int, const trait_data_t*>> class_selections;
-  std::vector<std::pair<int, const trait_data_t*>> spec_selections;
-
-  if ( !generate_trait_map( this, talent_tree::CLASS, class_map, class_selections ) ||
-       !generate_trait_map( this, talent_tree::SPECIALIZATION, spec_map, spec_selections ) )
-  {
-    sim->error( "Player {} trying to parse wowhead talent url without previously defined specialization", name() );
-    return false;
-  }
-
-  // Clear all existing traits
-  player_traits.clear();
-
-  // hash[ 0 ] is always 'B'  TODO: confirm
-  auto class_trait_offset  = 1;
-  auto class_trait_bytes   = char_array.find( hash[ class_trait_offset ] );
-  auto class_select_offset = class_trait_offset + 1 + class_trait_bytes;
-  auto class_select_bytes  = char_array.find( hash[ class_select_offset ] );
-  auto spec_trait_offset   = class_select_offset + 1 + class_select_bytes;
-  auto spec_trait_bytes    = char_array.find( hash[ spec_trait_offset ] );
-  auto spec_select_offset  = spec_trait_offset + 1 + spec_trait_bytes;
-  // auto spec_select_bytes   = char_array.find( hash[ spec_select_offset ] );
-
-  auto get_next_bit = [ hash ]( size_t idx, size_t offset ) -> size_t {
-    size_t byte = char_array.find( hash[ offset + 1 + idx / 3 ] );
-    size_t bit  = idx % 3;
-
-    if ( bit == 0 )
-      return byte >> 4;
-    else if ( bit == 1 )
-      return byte >> 2 & 0b11;
-    else if ( bit == 2 )
-      return byte & 0b11;
-
-    return 0;
-  };
-
-  auto get_select_trait = []( auto begin, auto end, int key ) -> const trait_data_t* {
-    auto it = std::find_if( begin, end, [ key ]( std::pair<int, const trait_data_t*> entry ) {
-      return entry.first == key;
-    } );
-    if ( it == end )
-      return nullptr;
-
-    return it->second;
-  };
-
-  // Parse class traits
-  for ( size_t i = 0, j = 0; i < class_trait_bytes * 3; i++ )
-  {
-    auto bit = get_next_bit( i, class_trait_offset );
-    if ( bit )
-    {
-      auto key   = class_map[ i ].first;
-      auto trait = class_map[ i ].second;
-
-      if ( !trait )
-      {
-        auto sel_bit = get_next_bit( j++, class_select_offset );
-        if ( sel_bit == 0 )
-          trait = get_select_trait( class_selections.begin(), class_selections.end(), key );
-        else if ( sel_bit == 1 )
-          trait = get_select_trait( class_selections.rbegin(), class_selections.rend(), key );
-        else
-          do_error();
-      }
-
-      if ( !trait )
-        do_error();
-
-      player_traits.emplace_back( talent_tree::CLASS, trait->id_trait_node_entry, as<unsigned>( bit ) );
-    }
-  }
-
-  // Parse spec traits
-  for ( size_t i = 0, j = 0; i < spec_trait_bytes * 3; i++ )
-  {
-    auto bit = get_next_bit( i, spec_trait_offset );
-    if ( bit )
-    {
-      auto key   = spec_map[ i ].first;
-      auto trait = spec_map[ i ].second;
-
-      if ( !trait )
-      {
-        auto sel_bit = get_next_bit( j++, spec_select_offset );
-        if ( sel_bit == 0 )
-          trait = get_select_trait( spec_selections.begin(), spec_selections.end(), key );
-        else if ( sel_bit == 1 )
-          trait = get_select_trait( spec_selections.rbegin(), spec_selections.rend(), key );
-        else
-          do_error();
-      }
-
-      if ( !trait )
-        do_error();
-
-      player_traits.emplace_back( talent_tree::SPECIALIZATION, trait->id_trait_node_entry, as<unsigned>( bit ) );
-    }
-  }
-
-  return true;
-}
-
-void player_t::create_talents_wowhead()
-{
-  // The Wowhead talent scheme encodes three talent selections per character
-  // in at most two characters to represent all six talent choices. Basically,
-  // each "row" of choices is numbered from 0 (no choice) to 3 (rightmost
-  // talent). For each set of 3 rows, total together
-  //   <first row choice> + (4 * <second row>) + (16 * <third row>)
-  // If that total is zero, the encoding character is omitted. If non-zero,
-  // add the total to the ascii code for '/' to obtain the encoding
-  // character.
-  //
-  // Decoding is pretty simple, subtract '/' from the encoded character to
-  // obtain the original total, the row choices are then total % 4,
-  // (total / 4) % 4, and (total / 16) % 4 respectively.
-
   talents_str.clear();
-  std::string result = "https://www.wowhead.com/talent#";
-
-  // Class Type
-  {
-    char c;
-    switch ( type )
-    {
-      case DEATH_KNIGHT:
-        c = 'k';
-        break;
-      case DRUID:
-        c = 'd';
-        break;
-      case HUNTER:
-        c = 'h';
-        break;
-      case MAGE:
-        c = 'm';
-        break;
-      case MONK:
-        c = 'n';
-        break;
-      case PALADIN:
-        c = 'l';
-        break;
-      case PRIEST:
-        c = 'p';
-        break;
-      case ROGUE:
-        c = 'r';
-        break;
-      case SHAMAN:
-        c = 's';
-        break;
-      case WARLOCK:
-        c = 'o';
-        break;
-      case WARRIOR:
-        c = 'w';
-        break;
-      default:
-        return;
-    }
-    result += c;
-  }
-
-  // Spec if specified
-  {
-    uint32_t idx = 0;
-    uint32_t cid = 0;
-    if ( dbc->spec_idx( _spec, cid, idx ) && ( (int)cid == util::class_id( type ) ) )
-    {
-      switch ( idx )
-      {
-        case 0:
-          result += '!';
-          break;
-        case 1:
-          result += 'x';
-          break;
-        case 2:
-          result += 'y';
-          break;
-        case 3:
-          result += 'z';
-          break;
-        default:
-          break;
-      }
-    }
-  }
-
-  int encoding[ 2 ] = {0, 0};
-
-  for ( int tier = 0; tier < 2; ++tier )
-  {
-    for ( int row = 0, multiplier = 1; row < 3; ++row, multiplier *= 4 )
-    {
-      for ( int col = 0; col < MAX_TALENT_COLS; ++col )
-      {
-        if ( talent_points->has_row_col( ( tier * 3 ) + row, col ) )
-        {
-          encoding[ tier ] += ( col + 1 ) * multiplier;
-          break;
-        }
-      }
-    }
-  }
-
-  if ( encoding[ 0 ] == 0 )
-  {
-    if ( encoding[ 1 ] == 0 )
-      return;
-    // The representation for NO talent selected in all 3 rows is to omit the
-    // character; astute observers will see right away that talent specs with
-    // no selections in the first three rows but with talents in the second 3
-    // rows will break the encoding scheme.
-    //
-    // Select the first talent in the first tier as a workaround.
-    encoding[ 0 ] = 1;
-  }
-
-  result += fmt::format("{}/", encoding[ 0 ] );
-  if ( encoding[ 1 ] != 0 )
-    result += fmt::format("{}/", encoding[ 1 ] );
-
-  talents_str = result;
+  talents_str = generate_traits_hash( this );
 }
 
 /**
@@ -10470,9 +10262,9 @@ void player_t::replace_spells()
       continue;
     }
 
-    if ( talent_obj.trait()->id_override_spell )
+    if ( talent_obj.trait()->id_replace_spell )
     {
-      dbc->replace_id( talent_obj.trait()->id_override_spell,
+      dbc->replace_id( talent_obj.trait()->id_replace_spell,
           talent_obj.trait()->id_spell );
     }
   }
@@ -11635,7 +11427,7 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
     return covenant->create_expression( splits );
   }
 
-  if ( splits[ 0 ] == "rune_word" )
+  if ( splits[ 0 ] == "rune_word" || splits[ 0 ] == "hyperthread_wristwraps" )
   {
     return unique_gear::create_expression( *this, expression_str );
   }
@@ -11847,16 +11639,13 @@ void player_t::recreate_talent_str( talent_format format )
 {
   switch ( format )
   {
-    case talent_format::UNCHANGED:
-      break;
     case talent_format::ARMORY:
       create_talents_armory();
       break;
     case talent_format::WOWHEAD:
-      create_talents_wowhead();
       break;
     default:
-      create_talents_numbers();
+      create_talents_blizzard();
       break;
   }
 }
@@ -11926,11 +11715,6 @@ std::string player_t::create_profile( save_e stype )
     {
       recreate_talent_str( sim->talent_input_format );
       profile_str += "talents=" + talents_str + term;
-
-      if ( !tree_nodes_str.empty() )
-      {
-        profile_str += "tree_nodes=" + tree_nodes_str + term;
-      }
     }
 
     if ( !class_talents_str.empty() )
@@ -12233,9 +12017,8 @@ void player_t::copy_from( player_t* source )
   base.distance     = source->base.distance;
   position_str      = source->position_str;
   professions_str   = source->professions_str;
-  source->recreate_talent_str(talent_format::UNCHANGED );
+  this->recreate_talent_str( talent_format::UNCHANGED );
   parse_talent_url( sim, "talents", source->talents_str );
-  tree_nodes_str    = source->tree_nodes_str;
   class_talents_str = source->class_talents_str;
   spec_talents_str  = source->spec_talents_str;
 
@@ -12305,7 +12088,6 @@ void player_t::create_options()
   add_option( opt_string( "thumbnail", report_information.thumbnail_url ) );
   add_option( opt_string( "id", id_str ) );
   add_option( opt_func( "talents", parse_talent_url ) );
-  add_option( opt_string( "tree_nodes", tree_nodes_str ) );
   add_option( opt_func( "talent_override", parse_talent_override ) );
   add_option( opt_string( "race", race_str ) );
   add_option( opt_func( "timeofday", parse_timeofday ) );
@@ -12530,7 +12312,6 @@ void player_t::create_options()
   add_option( opt_external_buff_times( "external_buffs.kindred_affinity", external_buffs.kindred_affinity ) ) ;
   add_option( opt_external_buff_times( "external_buffs.boon_of_azeroth", external_buffs.boon_of_azeroth ) );
   add_option( opt_external_buff_times( "external_buffs.boon_of_azeroth_mythic", external_buffs.boon_of_azeroth_mythic ) );
-  add_option( opt_external_buff_times( "external_buffs.forced_bloodlust", external_buffs.forced_bloodlust ) );
 
   // Additional Options for Timed External Buffs
   add_option( opt_bool( "external_buffs.seasons_of_plenty", external_buffs.seasons_of_plenty ) );

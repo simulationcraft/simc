@@ -819,6 +819,7 @@ static constexpr auto _property_type_strings = util::make_static_map<int, util::
   { 32, "Spell Effect 4"            },
   { 33, "Spell Effect 5"            },
   { 34, "Spell Resource Generation" },
+  { 35, "Spell Chain Target Range"  },
   { 37, "Spell Max Stacks"          },
 } );
 
@@ -1679,6 +1680,13 @@ static std::string trait_data_to_str( const dbc_t&                            db
       nibbles.emplace_back( fmt::format( "name=\"{}\"", trait->name ) );
     }
 
+    if ( trait->id_replace_spell > 0 )
+    {
+      const auto replace_spell = dbc.spell( trait->id_replace_spell );
+      nibbles.emplace_back( fmt::format( "replace=\"{}\" (id={})",
+            replace_spell->name_cstr(), trait->id_replace_spell ) );
+    }
+
     if ( trait->id_override_spell > 0 )
     {
       const auto override_spell = dbc.spell( trait->id_override_spell );
@@ -1873,7 +1881,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
   {
     s << "Resource         : ";
 
-    if ( pd.type() == POWER_MANA )
+    if ( pd.type() == POWER_MANA && pd._cost == 0 )
       s << pd.cost() * 100.0 << "%";
     else
       s << pd.cost();
@@ -1883,7 +1891,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     if ( pd.max_cost() != 0 )
     {
       s << "- ";
-      if ( pd.type() == POWER_MANA )
+      if ( pd.type() == POWER_MANA && pd._cost_max == 0  )
         s << ( pd.cost() + pd.max_cost() ) * 100.0 << "%";
       else
         s << ( pd.cost() + pd.max_cost() );
@@ -2398,9 +2406,13 @@ std::string spell_info::talent_to_str( const dbc_t& /* dbc */, const trait_data_
   s << "Row          : " << talent->row << std::endl;
   s << "Max Rank     : " << talent->max_ranks << std::endl;
   s << "Spell        : " << talent->id_spell << std::endl;
+  if ( talent->id_replace_spell > 0 )
+  {
+    s << "Replaces     : " << talent->id_replace_spell << std::endl;
+  }
   if ( talent->id_override_spell > 0 )
   {
-    s << "Replaces     : " << talent->id_override_spell << std::endl;
+    s << "Overriden by : " << talent->id_override_spell << std::endl;
   }
   //s << "Spec         : " << util::specialization_string( talent -> specialization() ) << std::endl;
   s << std::endl;
@@ -2807,9 +2819,13 @@ void spell_info::talent_to_xml( const dbc_t& /* dbc */, const trait_data_t* tale
   node->add_parm( "row", talent->row );
   node->add_parm( "max_rank", talent->max_ranks );
   node->add_parm( "spell", talent->id_spell );
+  if ( talent->id_replace_spell > 0 )
+  {
+    node->add_parm( "replaces", talent->id_replace_spell );
+  }
   if ( talent->id_override_spell > 0 )
   {
-    node->add_parm( "replaces", talent->id_override_spell );
+    node->add_parm( "overridden", talent->id_override_spell );
   }
 }
 

@@ -275,7 +275,7 @@ public:
     propagate_const<buff_t*> dizzying_kicks;
     propagate_const<buff_t*> flying_serpent_kick_movement;
     propagate_const<buff_t*> fury_of_xuen_stacks;
-    propagate_const<stat_buff_t*> fury_of_xuen_haste;
+    propagate_const<buff_t*> fury_of_xuen_haste;
     propagate_const<buff_t*> hidden_masters_forbidden_touch;
     propagate_const<buff_t*> hit_combo;
     propagate_const<buff_t*> invoke_xuen;
@@ -290,7 +290,8 @@ public:
 
     // Covenant Abilities
     propagate_const<buff_t*> bonedust_brew;
-    propagate_const<buff_t*> bonedust_brew_hidden;
+    propagate_const<buff_t*> bonedust_brew_grounding_breath_hidden;
+    propagate_const<buff_t*> bonedust_brew_attenuation_hidden;
     propagate_const<buff_t*> weapons_of_order;
     propagate_const<buff_t*> weapons_of_order_ww;
     propagate_const<buff_t*> faeline_stomp;
@@ -312,18 +313,10 @@ public:
     propagate_const<buff_t*> the_emperors_capacitor;
     propagate_const<buff_t*> invoke_xuen_call_to_arms;
 
-    // T28 Set Bonus
-    propagate_const<buff_t*> keg_of_the_heavens;
-    propagate_const<buff_t*> primordial_potential;
-    propagate_const<buff_t*> primordial_power;
-    propagate_const<buff_t*> primordial_power_hidden_gcd;
-    propagate_const<buff_t*> primordial_power_hidden_channel;
-
     // T29 Set Bonus
-    propagate_const<buff_t*> t29_2p_ww;
-    propagate_const<buff_t*> t29_4p_ww_kick;
-    propagate_const<buff_t*> t29_4p_ww_fof;
-    propagate_const<buff_t*> t29_4p_ww_fof_hidden;
+    propagate_const<buff_t*> kicks_of_flowing_momentum;
+    propagate_const<buff_t*> fists_of_flowing_momentum;
+    propagate_const<buff_t*> fists_of_flowing_momentum_fof;
     propagate_const<buff_t*> brewmasters_rhythm;
   } buff;
 
@@ -642,7 +635,7 @@ public:
       player_talent_t crane_vortex;
       player_talent_t xuens_bond;
       player_talent_t fury_of_xuen;
-      player_talent_t empowered_tiger_lightning;
+      player_talent_t invoke_xuen_the_white_tiger_rank_2;
       player_talent_t rising_star;
       // Row 9
       player_talent_t bonedust_brew;
@@ -795,6 +788,7 @@ public:
     propagate_const<cooldown_t*> fists_of_fury;
     propagate_const<cooldown_t*> flying_serpent_kick;
     propagate_const<cooldown_t*> fortifying_brew;
+    propagate_const<cooldown_t*> fury_of_xuen;
     propagate_const<cooldown_t*> healing_elixir;
     propagate_const<cooldown_t*> invoke_niuzao;
     propagate_const<cooldown_t*> invoke_xuen;
@@ -823,6 +817,9 @@ public:
     propagate_const<cooldown_t*> charred_passions;
     propagate_const<cooldown_t*> bountiful_brew;
     propagate_const<cooldown_t*> sinister_teachings;
+
+    // T29
+    propagate_const<cooldown_t*> brewmasters_rhythm;
   } cooldown;
 
   struct passives_t
@@ -889,6 +886,8 @@ public:
     const spell_data_t* bonedust_brew_dmg;
     const spell_data_t* bonedust_brew_heal;
     const spell_data_t* bonedust_brew_chi;
+    const spell_data_t* bonedust_brew_grounding_breath;
+    const spell_data_t* bonedust_brew_attenuation;
     const spell_data_t* faeline_stomp_damage;
     const spell_data_t* faeline_stomp_ww_damage;
     const spell_data_t* faeline_stomp_brm;
@@ -922,11 +921,9 @@ public:
     const spell_data_t* call_to_arms_invoke_chiji;
     const spell_data_t* call_to_arms_empowered_tiger_lightning;
 
-    // Tier 28
-    const spell_data_t* keg_of_the_heavens_buff;
-    const spell_data_t* keg_of_the_heavens_heal;
-    const spell_data_t* primordial_potential;
-    const spell_data_t* primordial_power;
+    // Tier 29
+    const spell_data_t* kicks_of_flowing_momentum;
+    const spell_data_t* fists_of_flowing_momentum;
   } passives;
 
   // RPPM objects
@@ -1073,8 +1070,6 @@ public:
     double faeline_stomp_uptime;
     int chi_burst_healing_targets;
     int motc_override;
-    int t29_2p;
-    int t29_4p;
   } user_options;
 
   // Blizzard rounds it's stagger damage; anything higher than half a percent beyond
@@ -1211,8 +1206,6 @@ public:
   void trigger_storm_earth_and_fire( const action_t* a, sef_ability_e sef_ability );
   void storm_earth_and_fire_fixate( player_t* target );
   bool storm_earth_and_fire_fixate_ready( player_t* target );
-  // Trigger Windwalker Tier 28 4-piece Primordial Power Buff
-  void storm_earth_and_fire_trigger_primordial_power(); 
   player_t* storm_earth_and_fire_fixate_target( sef_pet_e sef_pet );
   void trigger_storm_earth_and_fire_bok_proc( sef_pet_e sef_pet );
 };

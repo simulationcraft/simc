@@ -1,5 +1,5 @@
-// Item name descriptions, wow build 10.0.2.45779
-static const std::array<item_name_description_t, 723> __item_name_description_data { {
+// Item name descriptions, wow build 10.0.2.46157
+static const std::array<item_name_description_t, 725> __item_name_description_data { {
   {     2, "Now with extra description"                  },
   {    20, "Season 10"                                   },
   {   226, "Season 10 Elite"                             },
@@ -723,5 +723,7 @@ static const std::array<item_name_description_t, 723> __item_name_description_da
   { 13992, "World Drop"                                  },
   { 13993, "Crafted"                                     },
   { 13994, "Tinker Module"                               },
+  { 13995, "Shadowlands Season 3, 4"                     },
+  { 13996, "Shadowlands Season 1"                        },
 } };
 

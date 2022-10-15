@@ -37,14 +37,19 @@ struct warlock_pet_t : public pet_t
     propagate_const<buff_t*> demonic_strength; // Talent that buffs Felguard
     propagate_const<buff_t*> demonic_consumption; // DF - REMOVED (Replace with Reign of Tyranny buffs)
     propagate_const<buff_t*> grimoire_of_service; // Buff used by Grimoire: Felguard talent
-    propagate_const<buff_t*> grim_inquisitors_dread_calling; // DF - Now comes from Demonology talent
+    propagate_const<buff_t*> grim_inquisitors_dread_calling; // DF - REMOVED (talent is new spell IDs)
     propagate_const<buff_t*> demonic_synergy; // DF - Now comes from Class talent
     propagate_const<buff_t*> annihilan_training; // Permanent aura when talented, 10% increased damage to all abilities
+    propagate_const<buff_t*> dread_calling;
+    propagate_const<buff_t*> imp_gang_boss; // Aura applied to some Wild Imps for increased damage (and size)
+    propagate_const<buff_t*> antoran_armaments; // Permanent aura when talented, 20% increased damage to all abilities plus Soul Strike cleave
+    propagate_const<buff_t*> the_expendables;
+    propagate_const<buff_t*> infernal_command;
+    propagate_const<buff_t*> soul_glutton;
+    propagate_const<buff_t*> demonic_servitude; // Dummy buff for Tyrant that holds snapshot of Warlock's buff value
+    propagate_const<buff_t*> fiendish_wrath; // Guillotine talent buff, causes AoE melee attacks and prevents Felstorm
     // DF - Demonic Inspiration
     // DF - Wrathful Minion
-    // DF - The Expendables
-    // DF - Command Aura
-    // DF - Pit Lord buff (Soul Gluttony)
     // DF - Guillotine + Fiendish Wrath (Guillotine talent)
     // DF - Review permanent passive pet buffs and determine if they should be implemented or just assumed based on presence of talents
   } buffs;
@@ -59,6 +64,8 @@ struct warlock_pet_t : public pet_t
   double composite_player_multiplier( school_e ) const override;
   double composite_player_target_multiplier( player_t*, school_e ) const override;
   void init_special_effects() override;
+  void arise() override;
+  void demise() override;
 
   target_specific_t<warlock_pet_td_t> target_data;
 
@@ -84,13 +91,6 @@ struct warlock_pet_t : public pet_t
 
   warlock_t* o();
   const warlock_t* o() const;
-
-  virtual void arise() override
-  {
-    if ( melee_attack )
-      melee_attack->reset();
-    pet_t::arise();
-  }
 
   // Pet action to simulate travel time. Places actor at distance 1.0.
   // "Executes" for a length of time it would take to travel from current distance to 1.0 at 33 yds/sec
@@ -366,6 +366,7 @@ namespace demonology
 struct felguard_pet_t : public warlock_pet_t
 {
   action_t* soul_strike;
+  action_t* felguard_guillotine;
   cooldown_t* felstorm_cd;
   cooldown_t* dstr_cd;
   int demonic_strength_executes;
@@ -381,6 +382,8 @@ struct felguard_pet_t : public warlock_pet_t
   timespan_t available() const override;
   void arise() override;
   double composite_player_multiplier( school_e ) const override;
+  double composite_melee_haste() const override;
+  double composite_melee_speed() const override;
 
   void queue_ds_felstorm();
 };
@@ -406,6 +409,7 @@ struct wild_imp_pet_t : public warlock_pet_t
 {
   action_t* firebolt;
   bool power_siphon;
+  bool imploded;
   bool demonic_consumption;
 
   wild_imp_pet_t( warlock_t* );
@@ -415,6 +419,7 @@ struct wild_imp_pet_t : public warlock_pet_t
   void arise() override;
   void demise() override;
   void finish_moving() override;
+  double composite_player_multiplier( school_e ) const override;
 
 private:
   void reschedule_firebolt();
@@ -440,7 +445,7 @@ private:
   void reschedule_firebolt();
 };
 
-// DF - Imp Gang Boss
+// DF - Imp Gang Boss is treated as buffed Wild Imp for now
 
 struct dreadstalker_t : public warlock_pet_t
 {
@@ -468,9 +473,19 @@ struct demonic_tyrant_t : public warlock_pet_t
 {
   demonic_tyrant_t( warlock_t*, util::string_view = "demonic_tyrant" );
   action_t* create_action( util::string_view, util::string_view ) override;
+  void arise() override;
+  double composite_player_multiplier( school_e ) const override;
 };
 
-// DF - Pit Lord
+
+struct pit_lord_t : public warlock_pet_t
+{
+  double soul_glutton_damage_bonus;
+  pit_lord_t( warlock_t*, util::string_view = "pit_lord" );
+  void init_base_stats() override;
+  void arise() override;
+  double composite_player_multiplier( school_e ) const override;
+};
 
 namespace random_demons
 {

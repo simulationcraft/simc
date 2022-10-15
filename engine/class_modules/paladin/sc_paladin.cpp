@@ -269,6 +269,13 @@ struct golden_path_t : public paladin_heal_t
   }
 };
 
+const double SANCTIFICATION_PROC_CHANCE_BY_TARGET_COUNT[4] = {
+  0.03,
+  0.05,
+  0.07,
+  0.08
+};
+
 struct consecration_tick_t : public paladin_spell_t
 {
   golden_path_t* heal_tick;
@@ -289,6 +296,20 @@ struct consecration_tick_t : public paladin_spell_t
     paladin_spell_t::execute();
     if ( p()->conduit.golden_path->ok() && p()->standing_in_consecration() )
       heal_tick->execute();
+
+    if ( p()->talents.sanctification->ok() )
+    {
+      size_t target_count = target_list().size();
+      if ( target_count - 1 > 3 )
+        target_count = 4;
+
+      double proc_chance = SANCTIFICATION_PROC_CHANCE_BY_TARGET_COUNT[target_count - 1];
+      if ( rng().roll( proc_chance ) )
+      {
+        p()->resource_gain( RESOURCE_HOLY_POWER, p()->talents.sanctification->effectN( 1 ).base_value(),
+                            p()->gains.hp_sanctification );
+      }
+    }
   }
 
   double action_multiplier() const override
@@ -818,10 +839,18 @@ struct melee_t : public paladin_melee_attack_t
         }
       }
 
+      if ( p()->buffs.virtuous_command_conduit->up() && p()->active.virtuous_command_conduit )
+      {
+        action_t* vc    = p()->active.virtuous_command_conduit;
+        vc->base_dd_min = vc->base_dd_max = execute_state->result_amount * p()->conduit.virtuous_command.percent();
+        vc->set_target( execute_state->target );
+        vc->schedule_execute();
+      }
+
       if ( p()->buffs.virtuous_command->up() && p()->active.virtuous_command )
       {
         action_t* vc    = p()->active.virtuous_command;
-        vc->base_dd_min = vc->base_dd_max = execute_state->result_amount * p()->conduit.virtuous_command.percent();
+        vc->base_dd_min = vc->base_dd_max = execute_state->result_amount * p()->talents.virtuous_command->effectN( 1 ).percent();
         vc->set_target( execute_state->target );
         vc->schedule_execute();
       }
@@ -911,10 +940,18 @@ struct crusader_strike_t : public paladin_melee_attack_t
         }
       }
 
+      if ( p()->buffs.virtuous_command_conduit->up() && p()->active.virtuous_command_conduit )
+      {
+        action_t* vc    = p()->active.virtuous_command_conduit;
+        vc->base_dd_min = vc->base_dd_max = s->result_amount * p()->conduit.virtuous_command.percent();
+        vc->set_target( s->target );
+        vc->schedule_execute();
+      }
+
       if ( p()->buffs.virtuous_command->up() && p()->active.virtuous_command )
       {
         action_t* vc    = p()->active.virtuous_command;
-        vc->base_dd_min = vc->base_dd_max = s->result_amount * p()->conduit.virtuous_command.percent();
+        vc->base_dd_min = vc->base_dd_max = s->result_amount * p()->talents.virtuous_command->effectN( 1 ).percent();
         vc->set_target( s->target );
         vc->schedule_execute();
       }
@@ -1748,7 +1785,7 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
 
 struct virtuous_command_t : public paladin_spell_t
 {
-  virtuous_command_t( paladin_t* p ) : paladin_spell_t( "virtuous_command", p, p->find_spell( 339669 ) )
+  virtuous_command_t( paladin_t* p, int spell_id ) : paladin_spell_t( "virtuous_command", p, p->find_spell( spell_id ) )
   {
     background = true;
   }
@@ -1998,7 +2035,16 @@ void paladin_t::create_actions()
 
   if ( conduit.virtuous_command->ok() )
   {
-    active.virtuous_command = new virtuous_command_t( this );
+    active.virtuous_command_conduit = new virtuous_command_t( this, 339669 );
+  }
+  else
+  {
+    active.virtuous_command_conduit = nullptr;
+  }
+
+  if ( talents.virtuous_command->ok() )
+  {
+    active.virtuous_command = new virtuous_command_t( this, 383305 );
   }
   else
   {
@@ -2243,6 +2289,7 @@ void paladin_t::init_gains()
   gains.judgment                   = get_gain( "judgment" );
   gains.hp_cs                      = get_gain( "crusader_strike" );
   gains.hp_memory_of_lucid_dreams  = get_gain( "memory_of_lucid_dreams" );
+  gains.hp_sanctification          = get_gain( "sanctification" );
 }
 
 // paladin_t::init_procs ====================================================
@@ -2343,8 +2390,10 @@ void paladin_t::create_buffs()
   buffs.the_magistrates_judgment = make_buff( this, "the_magistrates_judgment", find_spell( 337682 ) )
                                        ->set_default_value( find_spell( 337682 )->effectN( 1 ).base_value() );
   buffs.final_verdict = make_buff( this, "final_verdict", find_spell( 337228 ) );
+  buffs.virtuous_command_conduit =
+      make_buff( this, "virtuous_command_conduit", find_spell( 339664 ) );
   buffs.virtuous_command =
-      make_buff( this, "virtuous_command", find_spell( 339664 ) );
+      make_buff( this, "virtuous_command", find_spell( 383307 ) );
   buffs.divine_resonance = make_buff( this, "divine_resonance", find_spell( 355455 ) )
           ->set_tick_callback( [ this ]( buff_t* /* b */, int /* stacks */, timespan_t /* tick_time */ ) {
               this->active.divine_resonance->set_target( this->target );
@@ -2835,7 +2884,7 @@ double paladin_t::composite_mastery() const
     m += buffs.seraphim->data().effectN( 4 ).base_value();
 
   if ( talents.holy_crusader->ok() )
-    m += talents.holy_crusader->effectN( 1 ).percent();
+    m += talents.holy_crusader->effectN( 1 ).base_value();
 
   return m;
 }
@@ -3359,6 +3408,11 @@ void paladin_t::combat_begin()
 
   // evidently it resets to summer on combat start
   next_season = SUMMER;
+
+  if ( talents.inner_grace->ok() )
+  {
+    buffs.inner_grace->trigger();
+  }
 }
 
 // paladin_t::standing_in_hallow ============================================

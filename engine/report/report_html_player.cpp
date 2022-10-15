@@ -3920,6 +3920,9 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
                  p.origin_str, util::encode_html( p.origin_str ) );
     }
 
+    // Talent Hash
+    os.format( "<tr class=\"left\"><th>Talent String</th><td>{}</td></tr>\n", p.talents_str );
+
     // Set Bonuses
     if ( p.sets )
     {
@@ -4381,7 +4384,7 @@ void print_html_proc_table( report::sc_html_stream& os, const player_t& p )
       bool show_count    = !proc->count.simple;
       bool show_interval = !proc->interval_sum.simple;
 
-      std::string name  = util::encode_html( proc->name_str );
+      std::string name  = find_matching_decorator( p, proc->name_str );
       std::string span  = name;
       std::string token = util::tokenize_fn( highchart::build_id( p, "_" + util::remove_special_chars( name ) + "_proc" ) );
 

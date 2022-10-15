@@ -76,6 +76,9 @@ public:
   /// What base school components this spell has
   std::vector<school_e> base_schools;
 
+  /// Spell school prior to set_school_override()
+  school_e original_school;
+
   /// Spell id if available, 0 otherwise
   unsigned id;
 
@@ -727,10 +730,6 @@ public:
 
   virtual result_amount_type report_amount_type( const action_state_t* state ) const;
 
-  /// Use when damage schools change during runtime.
-  virtual school_e get_school() const
-  { return school; }
-
   virtual double miss_chance( double /* hit */, player_t* /* target */ ) const
   { return 0; }
 
@@ -922,6 +921,20 @@ public:
   // ==========================
   // mutating virtual functions
   // ==========================
+
+  /// Use when damage schools change during runtime.
+  virtual school_e get_school() const
+  { return school; }
+
+  /// Use to set damage school at runtime and fully update the base_schools list to reflect the new school
+  virtual void set_school( school_e );
+
+  /// Use to temporarily override damage school at runtime, which can be restored with clear_school_override()
+  virtual void set_school_override( school_e );
+  virtual void clear_school_override();
+
+  virtual bool has_school_override() const
+  { return original_school != SCHOOL_NONE; }
 
   virtual void parse_options( util::string_view options_str );
 

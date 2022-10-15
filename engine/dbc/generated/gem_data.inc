@@ -1,5 +1,5 @@
-// Gem properties, wow build 10.0.2.45779
-static const std::array<gem_property_data_t, 2050> __gem_property_data { {
+// Gem properties, wow build 10.0.2.46157
+static const std::array<gem_property_data_t, 2052> __gem_property_data { {
   {    2,  2686, 0x00000002 }, // +$k1 Strength
   {    3,  2687, 0x00000008 }, // +$k1 Agility
   {    4,  2688, 0x00000004 }, // +$k1 Stamina
@@ -2050,5 +2050,7 @@ static const std::array<gem_property_data_t, 2050> __gem_property_data { {
   { 4024,  6519, 0x01000000 }, // This device always malfunctions.
   { 4025,  6535, 0x01000000 }, // $spell@spelldesc386674 |n$spell@spelldesc386681
   { 4026,  6691, 0x01000000 }, // $spell@spelldesc393795
+  { 4027,  6692, 0x01000000 }, // $spell@spelldesc384266
+  { 4028,  6693, 0x01000000 }, // $spell@spelldesc384266
 } };
 
