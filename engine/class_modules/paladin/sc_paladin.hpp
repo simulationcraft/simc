@@ -182,6 +182,7 @@ public:
     gain_t* judgment;
     gain_t* hp_cs;
     gain_t* hp_memory_of_lucid_dreams;
+    gain_t* hp_sanctification;
   } gains;
 
   // Spec Passives

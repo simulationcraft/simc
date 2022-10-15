@@ -269,6 +269,13 @@ struct golden_path_t : public paladin_heal_t
   }
 };
 
+const double SANCTIFICATION_PROC_CHANCE_BY_TARGET_COUNT[4] = {
+  0.03,
+  0.05,
+  0.07,
+  0.08
+};
+
 struct consecration_tick_t : public paladin_spell_t
 {
   golden_path_t* heal_tick;
@@ -289,6 +296,17 @@ struct consecration_tick_t : public paladin_spell_t
     paladin_spell_t::execute();
     if ( p()->conduit.golden_path->ok() && p()->standing_in_consecration() )
       heal_tick->execute();
+
+    if ( p()->talents.sanctification->ok() )
+    {
+      size_t target_count = target_list().size();
+      double proc_chance = SANCTIFICATION_PROC_CHANCE_BY_TARGET_COUNT[std::min(target_count - 1, 3ul)];
+      if ( rng().roll( proc_chance ) )
+      {
+        p()->resource_gain( RESOURCE_HOLY_POWER, p()->talents.sanctification->effectN( 1 ).base_value(),
+                            p()->gains.hp_sanctification );
+      }
+    }
   }
 
   double action_multiplier() const override
@@ -2269,6 +2287,7 @@ void paladin_t::init_gains()
   gains.judgment                   = get_gain( "judgment" );
   gains.hp_cs                      = get_gain( "crusader_strike" );
   gains.hp_memory_of_lucid_dreams  = get_gain( "memory_of_lucid_dreams" );
+  gains.hp_sanctification          = get_gain( "sanctification" );
 }
 
 // paladin_t::init_procs ====================================================
