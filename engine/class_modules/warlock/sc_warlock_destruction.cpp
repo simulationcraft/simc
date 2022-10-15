@@ -605,8 +605,8 @@ struct chaos_bolt_t : public destruction_spell_t
       cry_havoc->execute_on_target( s->target );
     }
 
-    //if ( p()->talents.eradication->ok() && result_is_hit( s->result ) )
-    //  td( s->target )->debuffs_eradication->trigger();
+    if ( p()->talents.eradication->ok() && result_is_hit( s->result ) )
+      td( s->target )->debuffs_eradication->trigger();
   }
 
   void execute() override
@@ -1220,7 +1220,8 @@ void warlock_t::init_spells_destruction()
 
   talents.ruin = find_talent_spell( talent_tree::SPECIALIZATION, "Ruin" ); // Should be ID 387103
 
-  talents.eradication = find_talent_spell( "Eradication" );
+  talents.eradication = find_talent_spell( talent_tree::SPECIALIZATION, "Eradication" ); // Should be ID 196412
+  talents.eradication_debuff = find_spell( 196414 );
 
 
 
