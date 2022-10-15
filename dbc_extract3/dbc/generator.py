@@ -1418,6 +1418,7 @@ class SpellDataGenerator(DataGenerator):
             ( 387643, 0 ),          # Sealed Verdict buff
             ( 382522, 0 ),          # Consecrated Blade buff
             ( 383305, 0 ),          # Virtuous Command damage
+            ( 387178, 0 ),          # Empyrean Legacy buff
         ),
 
         # Hunter:

@@ -1306,7 +1306,7 @@ void paladin_t::init_spells_retribution()
   talents.ashes_to_ashes              = find_talent_spell( talent_tree::SPECIALIZATION, "Ashes to Ashes" );
   talents.templars_vindication        = find_talent_spell( talent_tree::SPECIALIZATION, "Templar's Vindication" );
   talents.execution_sentence          = find_talent_spell( talent_tree::SPECIALIZATION, "Execution Sentence" );
-  talents.empyrean_endowment          = find_talent_spell( talent_tree::SPECIALIZATION, "Empyrean Endowment" );
+  talents.empyrean_legacy             = find_talent_spell( talent_tree::SPECIALIZATION, "Empyrean Legacy" );
   talents.virtuous_command            = find_talent_spell( talent_tree::SPECIALIZATION, "Virtuous Command" );
   talents.final_verdict               = find_talent_spell( talent_tree::SPECIALIZATION, "Final Verdict" );
   talents.executioners_will           = find_talent_spell( talent_tree::SPECIALIZATION, "Executioner's Will" );

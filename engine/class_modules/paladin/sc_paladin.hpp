@@ -482,9 +482,9 @@ public:
 
     // 20
     const spell_data_t* ashes_to_ashes;
-    const spell_data_t* templars_vindication; // NYI
+    const spell_data_t* templars_vindication; // ?
     const spell_data_t* execution_sentence; // ?
-    const spell_data_t* empyrean_endowment; // NYI
+    const spell_data_t* empyrean_legacy; // NYI
     const spell_data_t* virtuous_command;
     const spell_data_t* final_verdict; // sort of implemented
     const spell_data_t* executioners_will; // ?
