@@ -36,7 +36,7 @@ namespace buffs {
   struct shield_of_vengeance_buff_t : public absorb_buff_t
   {
     shield_of_vengeance_buff_t( player_t* p ):
-      absorb_buff_t( p, "shield_of_vengeance", p -> find_talent_spell( "Shield of Vengeance" ) )
+      absorb_buff_t( p, "shield_of_vengeance", p -> find_talent_spell( talent_tree::SPECIALIZATION, "Shield of Vengeance" ) )
     {
       cooldown -> duration = 0_ms;
     }
