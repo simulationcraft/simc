@@ -72,6 +72,7 @@ public:
     action_t* inner_light_damage;
     action_t* lights_decree;
     action_t* sanctified_wrath;
+    action_t* virtuous_command;
 
     // Required for seraphim
     action_t* sotr;
@@ -89,7 +90,7 @@ public:
     action_t* background_cons;
 
     // Conduit stuff
-    action_t* virtuous_command;
+    action_t* virtuous_command_conduit;
   } active;
 
   // Buffs
@@ -135,12 +136,14 @@ public:
     // Ret
     buffs::crusade_buff_t* crusade;
     buffs::shield_of_vengeance_buff_t* shield_of_vengeance;
+    buff_t* inner_grace;
     buff_t* blade_of_wrath;
     buff_t* fires_of_justice;
     buff_t* righteous_verdict;
     buff_t* zeal;
     buff_t* sealed_verdict;
     buff_t* consecrated_blade;
+    buff_t* virtuous_command;
 
     buff_t* empyrean_power;
     buff_t* empyrean_power_azerite;
@@ -158,7 +161,7 @@ public:
     buff_t* relentless_inquisitor;
     buff_t* the_magistrates_judgment;
     buff_t* final_verdict;
-    buff_t* virtuous_command;
+    buff_t* virtuous_command_conduit;
     buff_t* reign_of_ancient_kings;
     buff_t* equinox;
     buff_t* divine_resonance;
@@ -180,6 +183,8 @@ public:
     gain_t* judgment;
     gain_t* hp_cs;
     gain_t* hp_memory_of_lucid_dreams;
+    gain_t* hp_sanctification;
+    gain_t* hp_inner_grace;
   } gains;
 
   // Spec Passives
@@ -459,8 +464,8 @@ public:
     const spell_data_t* seal_of_wrath;
     const spell_data_t* expurgation;
     const spell_data_t* boundless_judgment; // NYI
-    const spell_data_t* sanctification; // NYI
-    const spell_data_t* inner_power; // NYI
+    const spell_data_t* sanctification;
+    const spell_data_t* inner_grace;
     const spell_data_t* ashes_to_dust;
     const spell_data_t* radiant_decree;
     const spell_data_t* crusade;
@@ -480,11 +485,11 @@ public:
 
     // 20
     const spell_data_t* ashes_to_ashes;
-    const spell_data_t* templars_vindication; // NYI
+    const spell_data_t* templars_vindication; // ?
     const spell_data_t* execution_sentence; // ?
-    const spell_data_t* empyrean_endowment; // NYI
-    const spell_data_t* virtuous_command; // NYI
-    const spell_data_t* final_verdict; // NYI
+    const spell_data_t* empyrean_legacy; // NYI
+    const spell_data_t* virtuous_command;
+    const spell_data_t* final_verdict; // sort of implemented
     const spell_data_t* executioners_will; // ?
     const spell_data_t* executioners_wrath; // ?
     const spell_data_t* final_reckoning;

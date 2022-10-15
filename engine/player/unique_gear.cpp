@@ -4254,6 +4254,15 @@ std::unique_ptr<expr_t> unique_gear::create_expression( player_t& player, util::
     return shadowlands::items::shards_of_domination::create_expression( player, name_str );
   }
 
+  // Hyperthread Wristwraps
+  if ( splits[ 0 ] == "hyperthread_wristwraps" )
+  {
+    if ( auto a = player.find_action( "hyperthread_wristwraps" ) )
+    {
+      return a->create_expression( name_str );
+    }
+  }
+
   if ( splits.size() < 2 )
   {
     return nullptr;
@@ -4506,6 +4515,13 @@ void unique_gear::register_special_effect( unsigned spell_id, custom_cb_t init_c
   dbitem.fallback = fallback;
 
   add_effect( dbitem );
+}
+
+void unique_gear::register_special_effect( std::initializer_list<unsigned> spell_ids, custom_cb_t init_callback,
+                                           bool fallback )
+{
+  for ( auto id : spell_ids )
+    register_special_effect( id, init_callback, fallback );
 }
 
 void unique_gear::register_special_effect( unsigned spell_id, const char* encoded_str )

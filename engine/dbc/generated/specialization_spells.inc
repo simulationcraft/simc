@@ -1,5 +1,5 @@
-// Talent tree specialization abilities, wow build 10.0.2.45969
-static const std::array<specialization_spell_entry_t, 343> __specialization_spell_data { {
+// Talent tree specialization abilities, wow build 10.0.2.46157
+static const std::array<specialization_spell_entry_t, 346> __specialization_spell_data { {
   {  0,  535, 264656,      0, "Pathfinding"                       , 0 },
   {  0,  535, 264662,      0, "Endurance Training"                , 0 },
   {  0,  535, 264663,      0, "Predator's Thirst"                 , 0 },
@@ -250,9 +250,12 @@ static const std::array<specialization_spell_entry_t, 343> __specialization_spel
   { 10,  269, 162697,      0, "Stat Negation Aura - Agility DPS"  , 0 },
   { 10,  269, 261916,      0, "Blackout Kick"                     , "Rank 2" },
   { 10,  269, 261917,      0, "Blackout Kick"                     , "Rank 3" },
+  { 10,  269, 322106,      0, "Expel Harm"                        , "Rank 2" },
   { 10,  269, 322719,      0, "Afterlife"                         , "Rank 2" },
   { 10,  269, 325215,      0, "Touch of Death"                    , "Rank 3" },
   { 10,  269, 343730,      0, "Spinning Crane Kick"               , "Rank 2" },
+  { 10,  269, 343731,      0, "Disable"                           , "Rank 2" },
+  { 10,  269, 344487,      0, "Flying Serpent Kick"               , "Rank 2" },
   { 10,  269, 346104,      0, "Windwalker Monk Two-Hand Adjustment", 0 },
   { 10, 1450, 362170,      0, "Initial Monk"                      , 0 },
   { 11,  102,  86104,      0, "Leather Specialization"            , 0 },

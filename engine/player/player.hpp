@@ -140,7 +140,7 @@ struct player_t : public actor_t
   bool        initialized;
   bool        potion_used;
 
-  std::string talents_str, tree_nodes_str, id_str, target_str;
+  std::string talents_str, id_str, target_str;
   std::string region_str, server_str, origin_str;
   std::string race_str, professions_str, position_str;
   std::string class_talents_str, spec_talents_str;
@@ -439,7 +439,6 @@ struct player_t : public actor_t
     std::array<buff_t*, 4> ancestral_call;
     buff_t* fireblood;
     buff_t* embrace_of_paku;
-    buff_t* forced_bloodlust;
 
     buff_t* berserking;
     buff_t* bloodlust;
@@ -618,7 +617,6 @@ struct player_t : public actor_t
     std::vector<timespan_t> kindred_affinity;
     std::vector<timespan_t> boon_of_azeroth;
     std::vector<timespan_t> boon_of_azeroth_mythic;
-    std::vector<timespan_t> forced_bloodlust;
     int soleahs_secret_technique;
     std::string elegy_of_the_eternals;
   } external_buffs;
@@ -755,9 +753,6 @@ private:
   std::unique_ptr<dbc_override_t> dbc_override_;
 
 public:
-
-
-
   player_t( sim_t* sim, player_e type, util::string_view name, race_e race_e );
   ~player_t() override;
 
@@ -766,11 +761,9 @@ public:
   static bool _is_enemy( player_e t ) { return t == ENEMY || t == ENEMY_ADD || t == ENEMY_ADD_BOSS || t == TANK_DUMMY; }
   static bool _is_sleeping( const player_t* t ) { return t -> current.sleeping; }
 
-
   // Overrides
   const char* name() const override
   { return name_str.c_str(); }
-
 
   // Normal methods
   void init_character_properties();
@@ -779,7 +772,7 @@ public:
   void stat_loss( stat_e stat, double amount, gain_t* g = nullptr, action_t* a = nullptr, bool temporary = false );
   void create_talents_numbers();
   void create_talents_armory();
-  void create_talents_wowhead();
+  void create_talents_blizzard();
   void clear_action_priority_lists() const;
   void copy_action_priority_list( util::string_view old_list, util::string_view new_list );
   void change_position( position_e );
@@ -791,7 +784,6 @@ public:
   void parse_talents_numbers( util::string_view talent_string );
   bool parse_talents_armory( util::string_view talent_string );
   bool parse_talents_armory2( util::string_view talent_url );
-  bool parse_talents_wowhead( std::string_view talent_url );
   void parse_temporary_enchants();
 
   bool is_moving() const;

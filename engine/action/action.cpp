@@ -326,6 +326,7 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     weapon(),
     default_target( p->target ),
     school( SCHOOL_NONE ),
+    original_school( SCHOOL_NONE ),
     id(),
     internal_id( p->get_action_id( name_str ) ),
     resource_current( RESOURCE_NONE ),
@@ -871,7 +872,46 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
   }
 }
 
-// action_t::parse_options ==================================================
+// action_t::set_school =====================================================
+
+void action_t::set_school( school_e new_school )
+{
+  if ( school != new_school )
+  {
+    sim->print_debug( "{} changing school for {} from {} to {}", *player, *this, school, new_school );
+    school = new_school;
+  }
+
+  // Decompose school into base types. Note that if get_school() is overridden (e.g., to dynamically
+  // alter spell school), then base_schools must be manually updated, to cover the dynamic case.
+  base_schools.clear();
+  for ( school_e target_school = SCHOOL_ARCANE; target_school < SCHOOL_MAX_PRIMARY; ++target_school )
+  {
+    if ( dbc::is_school( new_school, target_school ) )
+    {
+      base_schools.push_back( target_school );
+    }
+  }
+}
+
+void action_t::set_school_override( school_e new_school )
+{
+  assert( original_school == SCHOOL_NONE && "Cannot override a school that is already overridden." );
+  sim->print_debug( "{} adding school override for {} of {}", *player, *this, new_school );
+  original_school = get_school();
+  set_school( new_school );
+}
+
+void action_t::clear_school_override()
+{
+  assert( original_school != SCHOOL_NONE && "No school override currently exists" );
+  sim->print_debug( "{} clearing school override for {} of {}", *player, *this, get_school() );
+  set_school( original_school );
+  original_school = SCHOOL_NONE;
+}
+
+// action_t::parse_target_str ===============================================
+
 void action_t::parse_target_str()
 {
   // FIXME: Move into constructor when parse_action is called from there.
@@ -2467,11 +2507,17 @@ void action_t::init()
     snapshot_flags |= STATE_MUL_PET | STATE_TGT_MUL_PET;
   }
 
-  if ( data().flags( spell_attribute::SX_DISABLE_PLAYER_MULT ) )
-    snapshot_flags &= ~( STATE_MUL_TA | STATE_MUL_DA | STATE_MUL_PERSISTENT | STATE_VERSATILITY );
-
   if ( school == SCHOOL_PHYSICAL )
     snapshot_flags |= STATE_TGT_ARMOR;
+
+  if ( data().flags( spell_attribute::SX_DISABLE_PLAYER_MULT ) )
+    snapshot_flags &= ~( STATE_VERSATILITY );
+
+  if ( data().flags( spell_attribute::SX_DISABLE_TARGET_MULT ) )
+  {
+    snapshot_flags &= ~( STATE_TGT_MUL_TA | STATE_TGT_MUL_DA | STATE_TGT_ARMOR );
+    update_flags &= ~( STATE_TGT_MUL_TA | STATE_TGT_MUL_DA | STATE_TGT_ARMOR );
+  }
 
   if ( ( spell_power_mod.direct > 0 || spell_power_mod.tick > 0 ) )
   {
@@ -2571,16 +2617,8 @@ void action_t::init()
   // Setup default target in init
   default_target = target;
 
-  // Decompose school into base types. Note that if get_school() is overridden (e.g., to dynamically
-  // alter spell school), then base_schools must be manually updated, to cover the dynamic case.
-  for ( school_e target_school = SCHOOL_ARCANE, action_school = get_school(); target_school < SCHOOL_MAX_PRIMARY;
-        ++target_school )
-  {
-    if ( dbc::is_school( action_school, target_school ) )
-    {
-      base_schools.push_back( target_school );
-    }
-  }
+  // Re-initialize base schools as modules often set schools directly in their constructors
+  set_school( get_school() );
 
   // Initialize dot - so we can access it from expressions
   if ( dot_duration /*composite_dot_duration( nullptr )*/ > timespan_t::zero() ||
@@ -3092,6 +3130,42 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
       }
     };
     return std::make_unique<tick_multiplier_expr_t>( *this );
+  }
+
+  if ( name_str == "energize_amount" )
+  {
+    struct energize_amount_expr_t : public action_state_expr_t
+    {
+      energize_amount_expr_t( action_t& a ) : action_state_expr_t( "energize_amount", a )
+      {
+        state->n_targets = 1;
+        state->chain_target = 0;
+      }
+
+      double evaluate() override
+      {
+        action.snapshot_state( state, result_amount_type::NONE );
+        state->target = action.target;
+
+        int num_targets = state->n_targets;
+
+        if ( action.energize_type_() == action_energize::PER_HIT )
+        {
+          num_targets = action.n_targets();
+          if ( num_targets == -1 || num_targets > 0 )
+          {
+            action.target_cache.is_valid = false;
+            auto max_targets = as<int>( action.target_list().size() );
+            num_targets = ( num_targets < 0 ) ? max_targets : std::min( max_targets, num_targets );
+          }
+
+          state->n_targets = std::max( 1, num_targets );
+        }
+
+        return action.composite_energize_amount( state ) * state->n_targets;
+      }
+    };
+    return std::make_unique<energize_amount_expr_t>( *this );
   }
 
   if ( name_str == "persistent_multiplier" )
@@ -5038,7 +5112,7 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
 
       case P_RESOURCE_COST:
         base_costs[ resource_current ] *= 1.0 + effect.percent();
-        sim->print_debug( "{} base resource cost for resource {} modified by {}", *this,
+        sim->print_debug( "{} base resource cost for resource {} modified by {}%", *this,
                           resource_current, effect.base_value() );
         break;
 
@@ -5085,6 +5159,10 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
       case A_HASTED_COOLDOWN:
         cooldown->hasted = true;
         sim->print_debug( "{} cooldown set to hasted", *this );
+        break;
+
+      case A_MODIFY_SCHOOL:
+        set_school( effect.school_type() );
         break;
 
       case A_ADD_FLAT_MODIFIER:

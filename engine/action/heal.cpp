@@ -30,8 +30,6 @@ heal_t::heal_t( util::string_view name, player_t* p, const spell_data_t* s )
     target = p;
 
   weapon_multiplier = 0.0;
-  may_crit = true;
-  tick_may_crit = true;
 
   stats->type = STATS_HEAL;
 

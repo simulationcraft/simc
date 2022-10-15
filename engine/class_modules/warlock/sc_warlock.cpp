@@ -512,6 +512,15 @@ struct shadow_bolt_t : public warlock_spell_t
 
     //if ( p()->legendary.balespiders_burning_core->ok() )
     //  p()->buffs.balespiders_burning_core->trigger();
+
+    if ( p()->talents.fel_covenant.ok() )
+      p()->buffs.fel_covenant->increment();
+
+    if ( p()->talents.hounds_of_war.ok() && rng().roll( p()->talents.hounds_of_war->effectN( 1 ).percent() ) )
+    {
+      p()->cooldowns.call_dreadstalkers->reset( true );
+      p()->procs.hounds_of_war->occur();
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -555,10 +564,13 @@ struct shadow_bolt_t : public warlock_spell_t
     if ( time_to_execute == 0_ms && p()->buffs.nightfall->check() )
       m *= 1.0 + p()->talents.nightfall_buff->effectN( 2 ).percent();
 
-    //if ( p()->talents.sacrificed_souls->ok() )
-    //{
-    //  m *= 1.0 + p()->talents.sacrificed_souls->effectN( 1 ).percent() * p()->active_pets;
-    //}
+    if ( p()->talents.sacrificed_souls->ok() )
+    {
+      m *= 1.0 + p()->talents.sacrificed_souls->effectN( 1 ).percent() * p()->active_demon_count();
+    }
+
+    if ( p()->talents.stolen_power.ok() && p()->buffs.stolen_power_final->check() )
+      m *= 1.0 + p()->talents.stolen_power_final_buff->effectN( 1 ).percent();
 
     return m;
   }
@@ -801,12 +813,23 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
                             ->set_refresh_behavior( buff_refresh_behavior::DURATION )
                             ->set_default_value_from_effect( 1 );
   debuffs_roaring_blaze = make_buff( *this, "roaring_blaze", source->find_spell( 265931 ) );
-  debuffs_shadowburn    = make_buff( *this, "shadowburn", source->find_spell( 17877 ) )
-                              ->set_default_value( source->find_spell( 245731 )->effectN( 1 ).base_value() );
-  debuffs_havoc         = make_buff( *this, "havoc", source->find_specialization_spell( 80240 ) )
-                      ->set_duration( source->find_specialization_spell( 80240 )->duration() +
-                                      source->find_specialization_spell( 335174 )->effectN( 1 ).time_value() )
-                      ->set_cooldown( 0_ms )
+
+  debuffs_shadowburn    = make_buff( *this, "shadowburn", p.talents.shadowburn )
+                              ->set_default_value( p.talents.shadowburn_2->effectN( 1 ).base_value() / 10 );
+
+  debuffs_pyrogenics = make_buff( *this, "pyrogenics", p.talents.pyrogenics_debuff )
+                           ->set_default_value( p.talents.pyrogenics->effectN( 1 ).percent() )
+                           ->set_schools_from_effect( 1 )
+                           ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+
+  debuffs_conflagrate = make_buff( *this, "conflagrate", p.talents.conflagrate_debuff )
+                            ->set_default_value_from_effect( 1 );
+
+  // Use havoc_debuff where we need the data but don't have the active talent
+  debuffs_havoc = make_buff( *this, "havoc", p.talents.havoc_debuff )
+                      ->set_duration( p.talents.mayhem.ok() ? p.talents.mayhem->effectN( 3 ).time_value() : p.talents.havoc->duration() + p.talents.pandemonium->effectN( 1 ).time_value() )
+                      ->set_cooldown( p.talents.mayhem.ok() ? p.talents.mayhem->internal_cooldown() : 0_ms )
+                      ->set_chance( p.talents.mayhem.ok() ? p.talents.mayhem->effectN( 1 ).percent() + p.talents.pandemonium->effectN( 2 ).percent() : p.talents.havoc->proc_chance() )
                       ->set_stack_change_callback( [ &p ]( buff_t* b, int, int cur ) {
                         if ( cur == 0 )
                         {
@@ -823,10 +846,16 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
                       } );
 
   // Demo
-  dots_doom         = target->get_dot( "doom", &p );
+  dots_doom = target->get_dot( "doom", &p );
 
   debuffs_from_the_shadows = make_buff( *this, "from_the_shadows", p.talents.from_the_shadows_debuff )
                                  ->set_default_value_from_effect( 1 );
+
+  debuffs_fel_sunder = make_buff( *this, "fel_sunder", p.talents.fel_sunder_debuff )
+                           ->set_default_value( p.talents.fel_sunder->effectN( 1 ).percent() );
+
+  debuffs_kazaaks_final_curse = make_buff( *this, "kazaaks_final_curse", p.talents.kazaaks_final_curse )
+                                    ->set_default_value( 0 );
 
   target->register_on_demise_callback( &p, [ this ]( player_t* ) { target_demise(); } );
 }
@@ -871,8 +900,7 @@ void warlock_td_t::target_demise()
    
     warlock.sim->print_log( "Player {} demised. Warlock {} gains 1 shard from Shadowburn.", target->name(), warlock.name() );
 
-    warlock.resource_gain( RESOURCE_SOUL_SHARD, debuffs_shadowburn->check_value() / 10,
-                           warlock.gains.shadowburn_refund );
+    warlock.resource_gain( RESOURCE_SOUL_SHARD, debuffs_shadowburn->check_value(), warlock.gains.shadowburn_refund );
   }
 
   if ( dots_agony->is_ticking() && warlock.talents.wrath_of_consumption.ok() )
@@ -971,8 +999,9 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
   cooldowns.darkglare           = get_cooldown( "summon_darkglare" );
   cooldowns.demonic_tyrant      = get_cooldown( "summon_demonic_tyrant" );
   cooldowns.infernal            = get_cooldown( "summon_infernal" );
-  cooldowns.shadowburn          = get_cooldown( "shadowburn" );
+  cooldowns.shadowburn = get_cooldown( "shadowburn" );
   cooldowns.soul_rot = get_cooldown( "soul_rot" );
+  cooldowns.call_dreadstalkers = get_cooldown( "call_dreadstalkers" );
 
   resource_regeneration             = regen_type::DYNAMIC;
   regen_caches[ CACHE_HASTE ]       = true;
@@ -1015,6 +1044,15 @@ double warlock_t::composite_player_target_multiplier( player_t* target, school_e
   {
     if ( td->debuffs_eradication->check() )
       m *= 1.0 + td->debuffs_eradication->check_value();
+
+    if ( td->debuffs_pyrogenics->check() && td->debuffs_pyrogenics->has_common_school( school ) )
+      m *= 1.0 + td->debuffs_pyrogenics->check_value();
+  }
+
+  if ( specialization() == WARLOCK_DEMONOLOGY )
+  {
+    if ( td->debuffs_fel_sunder->check() )
+      m *= 1.0 + td->debuffs_fel_sunder->check_stack_value();
   }
 
   return m;
@@ -1041,7 +1079,7 @@ double warlock_t::composite_player_pet_damage_multiplier( const action_state_t* 
     m *= 1.0 + cache.mastery_value();
 
     if ( buffs.demonic_power->check() )
-      m *= 1.0 + buffs.demonic_power->default_value;
+      m *= 1.0 + buffs.demonic_power->check_value();
   }
   if ( specialization() == WARLOCK_AFFLICTION )
   {
@@ -1077,27 +1115,14 @@ double warlock_t::composite_player_target_pet_damage_multiplier( player_t* targe
     }
   }
 
+  if ( specialization() == WARLOCK_DEMONOLOGY )
+  {
+    // 2022-10-06: Fel Sunder currently lacks guardian effect, so only main pet is benefitting
+    if ( td->debuffs_fel_sunder->check() && !guardian )
+      m *= 1.0 + td->debuffs_fel_sunder->check_stack_value();
+  }
+
   return m;
-}
-
-double warlock_t::composite_spell_haste() const
-{
-  double h = player_t::composite_spell_haste();
-
-  if ( buffs.reverse_entropy->check() )
-    h *= 1.0 / ( 1.0 + buffs.reverse_entropy->check_value() );
-
-  return h;
-}
-
-double warlock_t::composite_melee_haste() const
-{
-  double h = player_t::composite_melee_haste();
-
-  if ( buffs.reverse_entropy->check() )
-    h *= 1.0 / ( 1.0 + buffs.reverse_entropy->check_value() );
-
-  return h;
 }
 
 double warlock_t::composite_mastery() const
@@ -1347,6 +1372,9 @@ void warlock_t::init_spells()
 
   talents.grand_warlocks_design = find_talent_spell( talent_tree::SPECIALIZATION, "Grand Warlock's Design" ); // All 3 specs. Should be ID 387084
 
+  talents.havoc = find_talent_spell( talent_tree::SPECIALIZATION, "Havoc" ); // Should be spell 80240
+  talents.havoc_debuff = find_spell( 80240 );
+
   talents.soul_conduit              = find_talent_spell( "Soul Conduit" );
 
   // Legendaries
@@ -1413,6 +1441,7 @@ void warlock_t::init_procs()
   procs.horned_nightmare = get_proc( "horned_nightmare" );
   procs.ritual_of_ruin       = get_proc( "ritual_of_ruin" );
   procs.avatar_of_destruction = get_proc( "avatar_of_destruction" );
+  procs.mayhem = get_proc( "mayhem" );
 }
 
 void warlock_t::init_base_stats()
@@ -1647,6 +1676,43 @@ void warlock_t::darkglare_extension_helper( warlock_t* p, timespan_t darkglare_e
     td->dots_vile_taint->adjust_duration( darkglare_extension );
     td->dots_unstable_affliction->adjust_duration( darkglare_extension );
     td->dots_soul_rot->adjust_duration( darkglare_extension );
+  }
+}
+
+int warlock_t::active_demon_count() const
+{
+  int count = 0;
+
+  for ( auto& pet : this->pet_list )
+  {
+    auto lock_pet = dynamic_cast<warlock_pet_t*>( pet );
+    
+    if ( lock_pet == nullptr )
+      continue;
+    if ( lock_pet->is_sleeping() )
+      continue;
+    
+    count++;
+  }
+
+  return count;
+}
+
+void warlock_t::expendables_trigger_helper( warlock_pet_t* source )
+{
+  for ( auto& pet : this->pet_list )
+  {
+    auto lock_pet = dynamic_cast<warlock_pet_t*>( pet );
+
+    if ( lock_pet == nullptr )
+      continue;
+    if ( lock_pet->is_sleeping() )
+      continue;
+
+    if ( lock_pet == source )
+      continue;
+
+    lock_pet->buffs.the_expendables->increment();
   }
 }
 
@@ -2024,7 +2090,8 @@ warlock::warlock_t::pets_t::pets_t( warlock_t* w )
     vicious_hellhounds( "vicious_hellhound", w ),
     illidari_satyrs( "illidari_satyr", w ),
     eyes_of_guldan( "eye_of_guldan", w ),
-    prince_malchezaar( "prince_malchezaar", w )
+    prince_malchezaar( "prince_malchezaar", w ),
+    pit_lords( "pit_lord", w )
 {
 }
 }  // namespace warlock

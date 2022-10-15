@@ -256,7 +256,9 @@
       { "data_type": "i", "field": "unk_2" },
       { "data_type": "i", "field": "unk_3" },
       { "data_type": "i", "field": "unk_4" },
-      { "data_type": "i", "field": "unk_5", "elements": 2 }
+      { "data_type": "i", "field": "unk_5", "elements": 2 },
+      { "data_type": "i", "field": "unk_6" },
+      { "data_type": "i", "field": "unk_7" }
     ]
   },
   "Curve": {
@@ -1033,7 +1035,9 @@
       { "data_type": "I", "field": "id_parent_skill_line" },
       { "data_type": "I", "field": "parent_tier_index" },
       { "data_type": "H", "field": "flags" },
-      { "data_type": "i", "field": "id_spell_book_spell" }
+      { "data_type": "i", "field": "id_spell_book_spell" },
+      { "data_type": "i", "field": "unk_1" },
+      { "data_type": "i", "field": "unk_2" }
     ]
   },
   "SkillLineAbility": {
@@ -1533,8 +1537,8 @@
       { "data_type": "i", "field": "id" },
       { "data_type": "i", "field": "id_spell", "ref": "SpellName", "formats": { "cpp": "%6d" } },
       { "data_type": "i", "field": "id_override_icon" },
-      { "data_type": "i", "field": "id_override_spell", "ref": "SpellName", "formats": { "cpp": "%6d" } },
-      { "data_type": "i", "field": "unk_1" }
+      { "data_type": "i", "field": "id_replace_spell", "ref": "SpellName", "formats": { "cpp": "%6d" } },
+      { "data_type": "i", "field": "id_override_spell", "ref": "SpellName", "formats": { "cpp": "%6d" } }
     ]
   },
   "TraitDefinitionEffectPoints": {

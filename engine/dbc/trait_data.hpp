@@ -24,7 +24,8 @@ struct trait_data_t
   unsigned    req_points;
   unsigned    id_trait_definition;
   unsigned    id_spell;
-  unsigned    id_override_spell;
+  unsigned    id_replace_spell;   // id_spell replaces id_replace_spell
+  unsigned    id_override_spell;  // id_spell is overriden by id_override_spell for display/activation in-game
   short       row;
   short       col;
   short       selection_index;

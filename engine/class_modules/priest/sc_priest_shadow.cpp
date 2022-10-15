@@ -43,26 +43,14 @@ struct mind_sear_tick_t final : public priest_spell_t
     }
   }
 
-  double composite_da_multiplier( const action_state_t* s ) const override
-  {
-    double m = priest_spell_t::composite_da_multiplier( s );
-
-    if ( priest().options.t29_2pc && priest().buffs.t29_2pc->check() )
-    {
-      m *= 1 + priest().buffs.t29_2pc->check_stack_value();
-    }
-
-    return m;
-  }
-
   void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
 
     // Benefit Tracking
-    if ( priest().options.t29_2pc )
+    if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T29, B2 ) )
     {
-      priest().buffs.t29_2pc->up();
+      priest().buffs.gathering_shadows->up();
     }
 
     priest().trigger_eternal_call_to_the_void( s );
@@ -114,7 +102,7 @@ struct mind_sear_t final : public priest_spell_t
 
   bool ready() override
   {
-    if ( priest().buffs.mind_devourer->check() )
+    if ( priest().buffs.mind_devourer->may_react() )
     {
       return true;
     }
@@ -131,7 +119,9 @@ struct mind_sear_t final : public priest_spell_t
   // TODO: parse_buff_effects doesn't support tick based resource cost modifications
   bool consume_cost_per_tick( const dot_t& dot ) override
   {
-    if ( priest().buffs.mind_devourer->up() )
+    extend_vf( cost_per_tick( RESOURCE_INSANITY ) );
+
+    if ( priest().buffs.mind_devourer_ms_active->check() )
     {
       player->sim->print_debug( "{} {} consumes ticking cost 0 insanity (current={}).", priest(), *this,
                                 player->resources.current[ RESOURCE_INSANITY ] );
@@ -143,11 +133,27 @@ struct mind_sear_t final : public priest_spell_t
 
   void execute() override
   {
+    // Consume Mind Devourer right away and use a tracking buff to handle the free ticks
+    if ( priest().talents.shadow.mind_devourer.enabled() )
+    {
+      // If somehow you get to this execute block again with this active get rid of the buff
+      if ( priest().buffs.mind_devourer_ms_active->check() )
+      {
+        priest().buffs.mind_devourer_ms_active->expire();
+      }
+
+      if ( priest().buffs.mind_devourer->check() )
+      {
+        priest().buffs.mind_devourer->expire();
+        priest().buffs.mind_devourer_ms_active->trigger();
+      }
+    }
+
     priest_spell_t::execute();
 
-    if ( priest().options.t29_4pc )
+    if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T29, B4 ) )
     {
-      priest().buffs.t29_4pc->trigger();
+      priest().buffs.dark_reveries->trigger();
     }
   }
 
@@ -155,9 +161,9 @@ struct mind_sear_t final : public priest_spell_t
   {
     priest_spell_t::last_tick( d );
 
-    priest().buffs.mind_devourer->expire();
+    priest().buffs.mind_devourer_ms_active->expire();
 
-    priest().buffs.t29_2pc->expire();
+    priest().buffs.gathering_shadows->expire();
   }
 };
 
@@ -220,10 +226,7 @@ struct mind_flay_base_t final : public priest_spell_t
       td.dots.vampiric_touch->adjust_duration( dot_extension, true );
     }
 
-    // BUG: MF:I does not proc Coalescing Shadows
-    // https://github.com/SimCMinMax/WoW-BugTracker/issues/941
-    if ( priest().talents.shadow.coalescing_shadows.enabled() && rng().roll( coalescing_shadows_chance ) &&
-         ( !priest().bugs || this->id != 391403 ) )
+    if ( priest().talents.shadow.coalescing_shadows.enabled() && rng().roll( coalescing_shadows_chance ) )
     {
       priest().buffs.coalescing_shadows->trigger();
       priest().procs.coalescing_shadows_mind_flay->occur();
@@ -270,7 +273,6 @@ struct mind_flay_t final : public priest_spell_t
     parse_options( options_str );
 
     add_child( _base_spell );
-    add_child( _insanity_spell );
   }
 
   void execute() override
@@ -417,7 +419,7 @@ struct vampiric_embrace_t final : public priest_spell_t
 
   vampiric_embrace_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "vampiric_embrace", p, p.talents.vampiric_embrace ),
-      insanity( priest().specs.hallucinations->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_INSANITY ) )
+      insanity( priest().specs.hallucinations->effectN( 1 ).base_value() )
   {
     parse_options( options_str );
 
@@ -816,8 +818,11 @@ struct vampiric_touch_t final : public priest_spell_t
   bool casted;
   double surge_of_darkness_proc_rate;
   bool insanity;
+  bool ud_proc;
+  bool ud_execute;
 
-  vampiric_touch_t( priest_t& p, bool _casted = false, bool _insanity = true )
+  vampiric_touch_t( priest_t& p, bool _casted = false, bool _insanity = true, bool _ud_proc = true,
+                    bool _ud_execute = true )
     : priest_spell_t( "vampiric_touch", p, p.dot_spells.vampiric_touch ),
       vampiric_touch_heal( new vampiric_touch_heal_t( p ) ),
       child_swp( nullptr ),
@@ -826,6 +831,8 @@ struct vampiric_touch_t final : public priest_spell_t
   {
     casted                     = _casted;
     insanity                   = _insanity;
+    ud_proc                    = _ud_proc;
+    ud_execute                 = _ud_execute;
     may_crit                   = false;
     affected_by_shadow_weaving = true;
 
@@ -844,7 +851,7 @@ struct vampiric_touch_t final : public priest_spell_t
       child_swp->background = true;
     }
 
-    if ( priest().talents.shadow.unfurling_darkness.enabled() )
+    if ( priest().talents.shadow.unfurling_darkness.enabled() && ud_execute )
     {
       child_ud = new unfurling_darkness_t( priest() );
       add_child( child_ud );
@@ -858,7 +865,7 @@ struct vampiric_touch_t final : public priest_spell_t
 
   void impact( action_state_t* s ) override
   {
-    if ( priest().buffs.unfurling_darkness->check() )
+    if ( priest().buffs.unfurling_darkness->check() && ud_execute )
     {
       child_ud->target = s->target;
       child_ud->execute();
@@ -866,7 +873,8 @@ struct vampiric_touch_t final : public priest_spell_t
     }
     else
     {
-      if ( priest().talents.shadow.unfurling_darkness.enabled() && !priest().buffs.unfurling_darkness_cd->check() )
+      if ( priest().talents.shadow.unfurling_darkness.enabled() && ud_proc &&
+           !priest().buffs.unfurling_darkness_cd->check() )
       {
         priest().buffs.unfurling_darkness->trigger();
         // The CD Starts as soon as the buff is applied
@@ -1065,9 +1073,10 @@ struct devouring_plague_t final : public priest_spell_t
   {
     double m = priest_spell_t::composite_persistent_multiplier( s );
 
-    if ( priest().options.t29_2pc && priest().buffs.t29_2pc->check() )
+    // Spelldata does not have data for Devouring Plague so apply_buff_effects does not work with DP
+    if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T29, B2 ) && priest().buffs.gathering_shadows->check() )
     {
-      m *= 1 + priest().buffs.t29_2pc->check_stack_value();
+      m *= 1 + priest().buffs.gathering_shadows->check_stack_value();
     }
 
     return m;
@@ -1092,9 +1101,9 @@ struct devouring_plague_t final : public priest_spell_t
     priest_spell_t::impact( s );
 
     // Benefit Tracking
-    if ( priest().options.t29_2pc )
+    if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T29, B2 ) )
     {
-      priest().buffs.t29_2pc->up();
+      priest().buffs.gathering_shadows->up();
     }
 
     // Damnation does not trigger a SA - 2022-10-01
@@ -1143,21 +1152,14 @@ struct devouring_plague_t final : public priest_spell_t
       priest().buffs.mind_flay_insanity->trigger();
     }
 
-    if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T28, B2 ) &&
-         rng().roll( priest().sets->set( PRIEST_SHADOW, T28, B2 )->effectN( 1 ).percent() ) )
+    if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T29, B2 ) )
     {
-      priest().buffs.dark_thought->trigger();
-      priest().procs.dark_thoughts_devouring_plague->occur();
+      priest().buffs.gathering_shadows->expire();
     }
 
-    if ( priest().options.t29_2pc )
+    if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T29, B4 ) )
     {
-      priest().buffs.t29_2pc->expire();
-    }
-
-    if ( priest().options.t29_4pc )
-    {
-      priest().buffs.t29_4pc->trigger();
+      priest().buffs.dark_reveries->trigger();
     }
   }
 
@@ -1390,6 +1392,14 @@ struct void_eruption_damage_t final : public priest_spell_t
   {
     priest_spell_t::impact( s );
     priest_spell_t::impact( s );
+
+    // BUG: on beta this is hitting 4 times instead of 2 on your main target, not sure why
+    // https://github.com/SimCMinMax/WoW-BugTracker/issues/963
+    if ( priest().bugs && s->target == parent_dot->target )
+    {
+      priest_spell_t::impact( s );
+      priest_spell_t::impact( s );
+    }
   }
 };
 
@@ -1447,15 +1457,9 @@ struct dark_void_t final : public priest_spell_t
   {
     parse_options( options_str );
 
-    may_miss = false;
-    radius   = data().effectN( 1 ).radius_max();
-
-    // BUG: Currently does not scale with Mastery
-    // https://github.com/SimCMinMax/WoW-BugTracker/issues/931
-    if ( !priest().bugs )
-    {
-      affected_by_shadow_weaving = true;
-    }
+    may_miss                   = false;
+    radius                     = data().effectN( 1 ).radius_max();
+    affected_by_shadow_weaving = true;
   }
 
   void execute() override
@@ -1779,6 +1783,9 @@ struct shadow_crash_damage_t final : public priest_spell_t
   }
 };
 
+// Shadow Crash DoT interactions:
+// Triggers SWP with Misery enabled
+// Does not interact with Unfurling Darkness (procs or consumption)
 struct shadow_crash_dots_t final : public priest_spell_t
 {
   propagate_const<vampiric_touch_t*> child_vt;
@@ -1786,7 +1793,7 @@ struct shadow_crash_dots_t final : public priest_spell_t
 
   shadow_crash_dots_t( priest_t& p, double _missile_speed )
     : priest_spell_t( "shadow_crash_dots", p, p.talents.shadow.shadow_crash->effectN( 3 ).trigger() ),
-      child_vt( new vampiric_touch_t( priest(), true, false ) ),
+      child_vt( new vampiric_touch_t( priest(), true, false, false, false ) ),
       missile_speed( _missile_speed )
   {
     may_miss   = false;
@@ -1876,6 +1883,11 @@ struct shadow_crash_t final : public priest_spell_t
 
 // ==========================================================================
 // Damnation
+// Triggers :
+//  - SW:P as if it was hard casted
+//  - SW:P twice if Misery is talented making it pandemic duration
+//  - Unfurling Darkness proc but cannot consume it
+//  - Gives 7 Insanity from VT + SWP
 // ==========================================================================
 struct damnation_t final : public priest_spell_t
 {
@@ -1885,8 +1897,8 @@ struct damnation_t final : public priest_spell_t
 
   damnation_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "damnation", p, p.talents.shadow.damnation ),
-      child_swp( new shadow_word_pain_t( priest(), true ) ),  // Damnation still triggers SW:P as if it was hard casted
-      child_vt( new vampiric_touch_t( priest(), false, true ) ),
+      child_swp( new shadow_word_pain_t( priest(), true ) ),
+      child_vt( new vampiric_touch_t( priest(), true, true, true, false ) ),
       child_dp( new devouring_plague_t( priest(), false ) )
   {
     parse_options( options_str );
@@ -1991,35 +2003,6 @@ struct shadowform_state_t final : public priest_buff_t<buff_t>
   {
     set_chance( 1.0 );
     set_quiet( true );
-  }
-};
-
-// ==========================================================================
-// Dark Thoughts
-// ==========================================================================
-struct dark_thought_t final : public priest_buff_t<buff_t>
-{
-  dark_thought_t( priest_t& p ) : base_t( p, "dark_thought", p.specs.dark_thought )
-  {
-    // Allow player to react to the buff being applied so they can cast Mind Blast.
-    this->reactable = true;
-
-    // Create a stack change callback to adjust the number of Mind Blast charges.
-    set_stack_change_callback(
-        [ this ]( buff_t*, int old, int cur ) { priest().cooldowns.mind_blast->adjust_max_charges( cur - old ); } );
-  }
-
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-  {
-    if ( remaining_duration == timespan_t::zero() )
-    {
-      for ( int i = 0; i < expiration_stacks; i++ )
-      {
-        priest().procs.dark_thoughts_missed->occur();
-      }
-    }
-
-    base_t::expire_override( expiration_stacks, remaining_duration );
   }
 };
 
@@ -2166,7 +2149,6 @@ void priest_t::generate_insanity( double num_amount, gain_t* g, action_t* action
 void priest_t::create_buffs_shadow()
 {
   // Baseline
-  buffs.dark_thought     = make_buff<buffs::dark_thought_t>( *this );
   buffs.shadowform       = make_buff<buffs::shadowform_t>( *this );
   buffs.shadowform_state = make_buff<buffs::shadowform_state_t>( *this );
   buffs.vampiric_embrace = make_buff( this, "vampiric_embrace", talents.vampiric_embrace );
@@ -2191,6 +2173,8 @@ void priest_t::create_buffs_shadow()
     buffs.mind_devourer = make_buff( this, "mind_devourer", find_spell( 373204 ) )
                               ->set_trigger_spell( talents.shadow.mind_devourer )
                               ->set_chance( talents.shadow.mind_devourer->effectN( 1 ).percent() );
+    buffs.mind_devourer_ms_active =
+        make_buff( this, "mind_devourer_ms_active" )->set_quiet( true )->set_duration( 0_s );
   }
   else
   {
@@ -2210,11 +2194,11 @@ void priest_t::create_buffs_shadow()
   buffs.thing_from_beyond = make_buff( this, "thing_from_beyond", find_spell( 373277 ) );
 
   buffs.idol_of_yoggsaron =
-      make_buff( this, "idol_of_yogg-saron", talents.shadow.idol_of_yoggsaron->effectN( 2 ).trigger() )
+      make_buff( this, "idol_of_yoggsaron", talents.shadow.idol_of_yoggsaron->effectN( 2 ).trigger() )
           ->set_stack_change_callback( ( [ this ]( buff_t* b, int, int cur ) {
             if ( cur == b->max_stack() )
             {
-              b->expire();
+              make_event( b->sim, [ this, b ] { b->cancel(); } );
               procs.thing_from_beyond->occur();
               spawn_thing_from_beyond();
             }
@@ -2260,13 +2244,15 @@ void priest_t::create_buffs_shadow()
                                   ->set_refresh_behavior( buff_refresh_behavior::DURATION );
 
   // Tier Sets
-  buffs.living_shadow_tier =
-      make_buff( this, "living_shadow_tier", find_spell( 363574 ) )->set_duration( timespan_t::zero() );
-  buffs.t29_2pc = make_buff( this, "t29_2pc" )->set_max_stack( 3 )->set_default_value( 0.2 )->set_duration( 10_s );
-  buffs.t29_4pc = make_buff<stat_buff_t>( this, "t29_4pc" )
-                      ->add_invalidate( CACHE_HASTE )
-                      ->set_default_value( 0.05 )
-                      ->set_duration( 8_s );
+  // 393684 -> 394961
+  buffs.gathering_shadows =
+      make_buff( this, "gathering_shadows", sets->set( PRIEST_SHADOW, T29, B2 )->effectN( 1 ).trigger() )
+          ->set_default_value_from_effect( 1 );
+  // 393685 -> 394963
+  buffs.dark_reveries =
+      make_buff<stat_buff_t>( this, "dark_reveries", sets->set( PRIEST_SHADOW, T29, B4 )->effectN( 1 ).trigger() )
+          ->add_invalidate( CACHE_HASTE )
+          ->set_default_value_from_effect( 1 );
 }
 
 void priest_t::init_rng_shadow()
@@ -2355,10 +2341,6 @@ void priest_t::init_spells_shadow()
   specs.void_bolt      = find_spell( 205448 );
   specs.voidform       = find_spell( 194249 );
   specs.hallucinations = find_spell( 280752 );
-
-  // Still need these for pre-patch since 2p/4p still works with DT and not SI
-  specs.dark_thought  = find_specialization_spell( "Dark Thought" );
-  specs.dark_thoughts = find_specialization_spell( "Dark Thoughts" );
 
   // Legendary Effects
   specs.cauterizing_shadows_health = find_spell( 336373 );
@@ -2576,15 +2558,9 @@ bool priest_t::is_screams_of_the_void_up( player_t* target ) const
   {
     priest_td_t* td = get_target_data( target );
     if ( td->dots.mind_flay->is_ticking() || td->dots.void_torrent->is_ticking() ||
-         talents.shadow.mind_sear.enabled() && channeling != nullptr &&
-             channeling->id == talents.shadow.mind_sear->id() )
-    {
-      return true;
-    }
-
-    // MF:I does not proc Screams of the Void
-    // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/939
-    if ( !bugs && td->dots.mind_flay_insanity->is_ticking() )
+         td->dots.mind_flay_insanity->is_ticking() ||
+         ( talents.shadow.mind_sear.enabled() && channeling != nullptr &&
+           channeling->id == talents.shadow.mind_sear->id() ) )
     {
       return true;
     }

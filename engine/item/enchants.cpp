@@ -69,6 +69,23 @@ std::string enchant::find_enchant_name( unsigned enchant_id )
 
 namespace
 {
+// With the new profession revamp in Dragonflight, enchants have the quality icon present in their name string
+// indicating which of the 3 quality tiers the enchant is.
+void _new_encoded_enchant_name( std::string& name, std::string& rank )
+{
+  static const std::string prof_icon_str = " |A:Professions-Icon-Quality-Tier";
+
+  auto it = name.find( prof_icon_str );
+  if ( it == std::string::npos )
+    return;
+
+  auto r_pos = it + prof_icon_str.size();
+  if ( r_pos != std::string::npos )
+    rank = name.substr( r_pos, 1 );
+
+  name = name.substr( 0, it );
+}
+
 /**
  * Return a "simc-encoded" enchant name for a given DBC item enchantment.
  *
@@ -95,8 +112,12 @@ std::string _encoded_enchant_name( const dbc_t& dbc, const item_enchantment_data
   const spell_data_t* enchant_source = dbc.spell( enchant.id_spell );
   if ( enchant_source->id() > 0 )
   {
-    enchant_name                              = enchant_source->name_cstr();
-    std::string::size_type enchant_pos        = enchant_name.find( "Enchant " );
+    enchant_name = enchant_source->name_cstr();
+
+    // Parse out new enchants that follow the 3-tiered naming from professions revamp
+    _new_encoded_enchant_name( enchant_name, enchant_rank_str );
+
+    std::string::size_type enchant_pos = enchant_name.find( "Enchant " );
     std::string::size_type enchant_hyphen_pos = enchant_name.find( '-' );
 
     // Cut out "Enchant XXX -" from the string, if it exists, also remove any
@@ -123,6 +144,10 @@ std::string _encoded_enchant_name( const dbc_t& dbc, const item_enchantment_data
   else
   {
     enchant_name = enchant.name ? enchant.name : "unknown";
+
+    // Parse out new enchants that follow the 3-tiered naming from professions revamp
+    _new_encoded_enchant_name( enchant_name, enchant_rank_str );
+
     util::tokenize( enchant_name );
 
     for ( size_t i = 0; i < std::size( enchant.ench_prop ); i++ )
