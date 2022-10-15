@@ -7465,6 +7465,7 @@ monk_t::monk_t( sim_t* sim, util::string_view name, race_e r )
   cooldown.charred_passions   = get_cooldown( "charred_passions" );
   cooldown.bountiful_brew     = get_cooldown( "bountiful_brew" );
   cooldown.sinister_teachings = get_cooldown( "sinister_teachings" );
+  cooldown.brewmasters_rhythm = get_cooldown( "brewmasters_rhythm" );
 
   resource_regeneration = regen_type::DYNAMIC;
   if ( specialization() != MONK_MISTWEAVER )
