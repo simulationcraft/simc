@@ -1343,7 +1343,7 @@ void paladin_t::init_spells_retribution()
   talents.blade_of_justice            = find_talent_spell( talent_tree::SPECIALIZATION, "Blade of Justice" );
   talents.divine_storm                = find_talent_spell( talent_tree::SPECIALIZATION, "Divine Storm" );
   talents.art_of_war                  = find_talent_spell( talent_tree::SPECIALIZATION, "Art of War" );
-  talents.timely_judgment             = find_talent_spell( talent_tree::SPECIALIZATION, "Timely Judgment" );
+  talents.timely_judgment             = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Judgment" );
   talents.improved_crusader_strike    = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Crusader Strike" );
   talents.holy_crusader               = find_talent_spell( talent_tree::SPECIALIZATION, "Holy Crusader" );
   talents.holy_blade                  = find_talent_spell( talent_tree::SPECIALIZATION, "Holy Blade" );
