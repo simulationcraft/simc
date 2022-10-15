@@ -621,11 +621,11 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
 
   templars_verdict_t( paladin_t* p, util::string_view options_str ) :
     holy_power_consumer_t(
-      p -> legendary.final_verdict -> ok() ? "final_verdict" : "templars_verdict",
+      ( p -> legendary.final_verdict -> ok() || p -> talents.final_verdict -> ok() ) ? "final_verdict" : "templars_verdict",
       p,
-      p -> legendary.final_verdict -> ok() ? ( p -> find_spell( 336872 ) ) : ( p -> find_specialization_spell( "Templar's Verdict" ) ) ),
+      ( p -> talents.final_verdict -> ok() ) ? ( p -> find_spell( 383328 ) ) : ( p -> legendary.final_verdict -> ok() ? ( p -> find_spell( 336872 ) ) : ( p -> find_specialization_spell( "Templar's Verdict" ) ) ) ),
     echo( nullptr ),
-    is_fv( p -> legendary.final_verdict -> ok() )
+    is_fv( p -> legendary.final_verdict -> ok() || p -> talents.final_verdict -> ok() )
   {
     parse_options( options_str );
 
@@ -681,9 +681,10 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
     }
 
     // TODO(mserrano): figure out the actionbar override thing instead of this hack.
-    if ( p() -> legendary.final_verdict -> ok() )
+    if ( is_fv )
     {
-      if ( rng().roll( p() -> legendary.final_verdict -> effectN( 2 ).percent() ) )
+      double proc_chance = ( p() -> talents.final_verdict -> ok() ) ? data().effectN( 2 ).percent() : p() -> legendary.final_verdict -> effectN( 2 ).percent();
+      if ( rng().roll( proc_chance ) )
       {
         p() -> cooldowns.hammer_of_wrath -> reset( true );
         p() -> buffs.final_verdict -> trigger();
