@@ -121,6 +121,7 @@ public:
     //buff_t* vengeance_revenge;
     //buff_t* vengeance_ignore_pain;
     buff_t* whirlwind;
+    buff_t* wild_strikes;
     buff_t* tornados_eye;
 
     // Legion Legendary
@@ -1022,6 +1023,9 @@ public:
     // passive set bonuses
     ab::apply_affecting_aura( p()->tier_set.frenzied_destruction_2p );
 
+    // passive talents
+    //ab::apply_affecting_aura( p()->talents.warrior.furious_blows );
+
     affected_by.ashen_juggernaut    = ab::data().affected_by( p()->conduit.ashen_juggernaut->effectN( 1 ).trigger()->effectN( 1 ) );
     affected_by.sweeping_strikes    = ab::data().affected_by( p()->talents.arms.sweeping_strikes->effectN( 1 ) );
     affected_by.fury_mastery_direct = ab::data().affected_by( p()->mastery.unshackled_fury->effectN( 1 ) );
@@ -1709,6 +1713,11 @@ struct melee_t : public warrior_attack_t
     {
       reckless_flurry->set_target( s->target );
       reckless_flurry->execute();
+    }
+
+    if ( p()->talents.warrior.wild_strikes->ok() && s->result == RESULT_CRIT )
+    {
+      p()->buff.wild_strikes->trigger();
     }
   }
 
@@ -4390,13 +4399,34 @@ struct enraged_regeneration_t : public warrior_heal_t
 
 // Rend ==============================================================
 
+struct rend_dot_t : public warrior_attack_t
+{
+  //bool from_thunder_clap;
+  rend_dot_t( warrior_t* p ) : warrior_attack_t( "rend", p, p->find_spell( 388539 ) )//,   from_thunder_clap( false )
+  {
+    background = tick_may_crit = true;
+    hasted_ticks               = true;
+  }
+};
+
 struct rend_t : public warrior_attack_t
 {
-  rend_t( warrior_t* p, util::string_view options_str ) : warrior_attack_t( "rend", p, p->talents.arms.rend )
+  warrior_attack_t* rend_dot;
+  rend_t( warrior_t* p, util::string_view options_str ) : warrior_attack_t( "rend", p, p->talents.arms.rend ),
+  rend_dot( nullptr )
   {
     parse_options( options_str );
     tick_may_crit = true;
     hasted_ticks  = true;
+    rend_dot = new rend_dot_t( p );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    warrior_attack_t::impact( s );
+
+      rend_dot->set_target( s->target );
+      rend_dot->execute();
   }
 
   bool ready() override
@@ -4613,10 +4643,12 @@ struct thunder_clap_t : public warrior_attack_t
 {
   double rage_gain;
   double shield_slam_reset;
+  warrior_attack_t* blood_and_thunder;
   thunder_clap_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "thunder_clap", p, p->talents.warrior.thunder_clap ),
       rage_gain( data().effectN( 4 ).resource( RESOURCE_RAGE ) ),
-      shield_slam_reset( p->talents.protection.strategist->effectN( 1 ).percent() )
+      shield_slam_reset( p->talents.protection.strategist->effectN( 1 ).percent() ),
+      blood_and_thunder( nullptr )
   {
     parse_options( options_str );
     aoe       = -1;
@@ -4624,6 +4656,12 @@ struct thunder_clap_t : public warrior_attack_t
 
     radius *= 1.0 + p->talents.warrior.crackling_thunder->effectN( 1 ).percent();
     energize_type = action_energize::NONE;
+    base_costs[ RESOURCE_RAGE ] += p->talents.warrior.blood_and_thunder->effectN( 2 ).resource( RESOURCE_RAGE );
+
+    if ( p->talents.arms.rend->ok() && p->talents.warrior.blood_and_thunder.ok() )
+    {
+      blood_and_thunder = new rend_dot_t( p );
+    }
   }
 
   double action_multiplier() const override
@@ -4643,6 +4681,11 @@ struct thunder_clap_t : public warrior_attack_t
     if ( p()->buff.outburst->check() )
     {
       am *= 1.0 + p()->buff.outburst->data().effectN( 1 ).percent();
+    }
+
+    if ( p()->talents.warrior.blood_and_thunder.ok() )
+    {
+      am *= 1.0 + p()->talents.warrior.blood_and_thunder->effectN( 1 ).percent();
     }
 
     return am;
@@ -4707,6 +4750,10 @@ struct thunder_clap_t : public warrior_attack_t
     if ( p() -> azerite.deafening_crash.enabled() && td( state -> target ) -> debuffs_demoralizing_shout -> up() )
     {
       td( state -> target ) -> debuffs_demoralizing_shout -> extend_duration( p(), timespan_t::from_millis( p() -> azerite.deafening_crash.spell() -> effectN( 1 ).base_value() ) );
+    }
+    if ( p()->talents.arms.rend->ok() && p()->talents.warrior.blood_and_thunder.ok() )
+    {
+      blood_and_thunder->execute();
     }
   }
 };
@@ -7521,6 +7568,10 @@ void warrior_t::create_buffs()
       ->set_chance(1)
       ->set_cooldown( timespan_t::zero() );
 
+  buff.wild_strikes = make_buff( this, "wild_strikes", talents.warrior.wild_strikes )
+      ->set_default_value( talents.warrior.wild_strikes->effectN( 2 ).base_value() / 100.0 )
+      ->add_invalidate( CACHE_ATTACK_SPEED );
+
   if ( talents.warrior.unstoppable_force -> ok() )
     buff.avatar -> set_stack_change_callback( [ this ] ( buff_t*, int, int )
     { cooldown.thunder_clap -> adjust_recharge_multiplier(); } );
@@ -7745,7 +7796,7 @@ void warrior_t::create_buffs()
                                ->set_default_value( find_spell( 335597 )->effectN( 1 ).percent() )
                                ->add_invalidate( CACHE_CRIT_CHANCE );
 
-  // Pile On ===============================================================================================================
+  // T28 Effects ===============================================================================================================
 
   buff.pile_on_ready = make_buff( this, "pile_on_ready" )
                       ->set_duration(find_spell( 363917 )->duration() );
@@ -8181,6 +8232,13 @@ double warrior_t::composite_melee_speed() const
 {
   double s = player_t::composite_melee_speed();
 
+  if ( talents.warrior.furious_blows->ok() )
+  {
+    s *= 1.0 / ( 1.0 + talents.warrior.furious_blows->effectN( 1 ).percent() );
+  }
+
+  s *= 1.0 / ( 1.0 + buff.wild_strikes->check_value () );
+
   return s;
 }
 
@@ -8211,7 +8269,7 @@ double warrior_t::composite_melee_expertise( const weapon_t* ) const
 {
   double e = player_t::composite_melee_expertise();
 
-  e += spec.protection_warrior->effectN( 8 ).percent();
+  e += spec.protection_warrior->effectN( 7 ).percent();
 
   return e;
 }
