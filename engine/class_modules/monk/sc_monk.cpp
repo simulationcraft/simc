@@ -8116,7 +8116,7 @@ void monk_t::init_spells()
   spec.blackout_kick             = find_class_spell( "Blackout Kick" );
   spec.blackout_kick_2           = find_rank_spell( "Blackout Kick", "Rank 2", MONK_WINDWALKER );
   spec.blackout_kick_3           = find_rank_spell( "Blackout Kick", "Rank 3", MONK_WINDWALKER );
-  spec.blackout_kick_brm         = find_specialization_spell( "Blackout Kick" );
+  spec.blackout_kick_brm         = find_spell( 205523 );
   spec.crackling_jade_lightning  = find_class_spell( "Crackling Jade Lightning" );
   spec.critical_strikes          = find_specialization_spell( "Critical Strikes" );
   //spec.detox                     = find_specialization_spell( "Detox" ); // talent.general.detox
