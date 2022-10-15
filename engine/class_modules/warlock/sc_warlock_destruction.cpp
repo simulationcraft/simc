@@ -258,6 +258,11 @@ struct conflagrate_t : public destruction_spell_t
 
     if ( p()->talents.backdraft.ok() )
       p()->buffs.backdraft->trigger();
+
+    if ( p()->talents.decimation.ok() && target->health_percentage() <= p()->talents.decimation->effectN( 2 ).base_value() )
+    {
+      p()->cooldowns.soul_fire->adjust( p()->talents.decimation->effectN( 1 ).time_value() );
+    }
   }
 };
 
@@ -378,6 +383,11 @@ struct incinerate_t : public destruction_spell_t
     if ( p()->talents.fire_and_brimstone->ok() )
     {
       fnb_action->execute_on_target( target );
+    }
+
+    if ( p()->talents.decimation.ok() && target->health_percentage() <= p()->talents.decimation->effectN( 2 ).base_value() )
+    {
+      p()->cooldowns.soul_fire->adjust( p()->talents.decimation->effectN( 1 ).time_value() );
     }
   }
 
@@ -1094,12 +1104,12 @@ void warlock_t::init_spells_destruction()
 
   talents.inferno = find_talent_spell( talent_tree::SPECIALIZATION, "Inferno" ); // Should be ID 270545
 
-  talents.cataclysm = find_talent_spell( talent_tree::SPECIALIZATION, "Cataclysm"); // Should be ID 152108
+  talents.cataclysm = find_talent_spell( talent_tree::SPECIALIZATION, "Cataclysm" ); // Should be ID 152108
 
   talents.soul_fire = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Fire" ); // Should be ID 6353
   talents.soul_fire_2 = find_spell( 281490 );
   
-  talents.shadowburn = find_talent_spell( talent_tree::SPECIALIZATION, "Shadowburn"); // Should be ID 17877
+  talents.shadowburn = find_talent_spell( talent_tree::SPECIALIZATION, "Shadowburn" ); // Should be ID 17877
   talents.shadowburn_2 = find_spell( 245731 );
 
   talents.raging_demonfire = find_talent_spell( talent_tree::SPECIALIZATION, "Raging Demonfire" ); // Should be ID 387166
@@ -1109,7 +1119,9 @@ void warlock_t::init_spells_destruction()
 
   talents.backlash = find_talent_spell( talent_tree::SPECIALIZATION, "Backlash" ); // Should be ID 387384
 
-  talents.fire_and_brimstone = find_talent_spell( talent_tree::SPECIALIZATION, "Fire and Brimstone"); // Should be ID 196408
+  talents.fire_and_brimstone = find_talent_spell( talent_tree::SPECIALIZATION, "Fire and Brimstone" ); // Should be ID 196408
+
+  talents.decimation = find_talent_spell( talent_tree::SPECIALIZATION, "Decimation" ); // Should be ID 387176
 
   talents.eradication = find_talent_spell( "Eradication" );
 
