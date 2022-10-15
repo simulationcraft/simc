@@ -322,7 +322,7 @@ public:
     buff_t* buried_treasure;
     buff_t* grand_melee;
     buff_t* skull_and_crossbones;
-    buff_t* ruthless_precision;
+    damage_buff_t* ruthless_precision;
     buff_t* true_bearing;
     // Subtlety
     buff_t* shadow_blades;
@@ -332,7 +332,7 @@ public:
     // Talents
     // Shared
     buff_t* alacrity;
-    buff_t* cold_blood;
+    damage_buff_t* cold_blood;
     damage_buff_t* nightstalker;
     buff_t* subterfuge;
     buff_t* thistle_tea;
@@ -343,8 +343,8 @@ public:
     buff_t* improved_garrote;
     buff_t* improved_garrote_aura;
     damage_buff_t* kingsbane;
-    buff_t* master_assassin;
-    buff_t* master_assassin_aura;
+    damage_buff_t* master_assassin;
+    damage_buff_t* master_assassin_aura;
     buff_t* scent_of_blood;
     // Outlaw
     buff_t* audacity;
@@ -374,8 +374,8 @@ public:
     buff_t* guile_charm_insight_1;
     buff_t* guile_charm_insight_2;
     buff_t* guile_charm_insight_3;
-    buff_t* master_assassins_mark;
-    buff_t* master_assassins_mark_aura;
+    damage_buff_t* master_assassins_mark;
+    damage_buff_t* master_assassins_mark_aura;
     damage_buff_t* the_rotten;
 
     // Covenant
@@ -861,6 +861,7 @@ public:
     struct shared_talents_t
     {
       player_talent_t sepsis;
+      player_talent_t shadowstep;
 
     } shared;
 
@@ -1501,15 +1502,11 @@ public:
     bool master_assassin = false;
     bool nightstalker = false;
     bool relentless_strikes = false;    // Trigger
-    bool ruthless_precision = false;
     bool ruthlessness = false;          // Trigger
     bool shadow_blades_cp = false;
     bool the_rotten = false;            // Crit Bonus
 
     bool t29_assassination_2pc = false;
-    bool t29_outlaw_2pc = false;
-    bool t29_outlaw_4pc = false;
-    bool t29_subtlety_2pc = false;
 
     damage_affect_data mastery_executioner;
     damage_affect_data mastery_potent_assassin;
@@ -1518,6 +1515,9 @@ public:
   std::vector<damage_buff_t*> direct_damage_buffs;
   std::vector<damage_buff_t*> periodic_damage_buffs;
   std::vector<damage_buff_t*> auto_attack_damage_buffs;
+  std::vector<damage_buff_t*> crit_chance_buffs;
+  
+  std::vector<std::pair<buff_t*,proc_t*>> consume_buffs;
 
   // Init =====================================================================
 
@@ -1556,7 +1556,6 @@ public:
     ab::apply_affecting_aura( p->talent.rogue.reverberation );
     ab::apply_affecting_aura( p->talent.rogue.shadow_dance );
 
-    ab::apply_affecting_aura( p->talent.assassination.shadowstep );
     ab::apply_affecting_aura( p->talent.assassination.bloody_mess );
     ab::apply_affecting_aura( p->talent.assassination.thrown_precision );
     ab::apply_affecting_aura( p->talent.assassination.lightweight_shiv );
@@ -1572,7 +1571,6 @@ public:
     ab::apply_affecting_aura( p->talent.outlaw.heavy_hitter );
     ab::apply_affecting_aura( p->talent.outlaw.devious_stratagem );
 
-    ab::apply_affecting_aura( p->talent.subtlety.shadowstep );
     ab::apply_affecting_aura( p->talent.subtlety.improved_backstab );
     ab::apply_affecting_aura( p->talent.subtlety.improved_shuriken_storm );
     ab::apply_affecting_aura( p->talent.subtlety.quick_decisions );
@@ -1581,6 +1579,8 @@ public:
     ab::apply_affecting_aura( p->talent.subtlety.without_a_trace );
     ab::apply_affecting_aura( p->talent.subtlety.secret_stratagem );
     ab::apply_affecting_aura( p->talent.subtlety.dark_brew );
+
+    ab::apply_affecting_aura( p->talent.shared.shadowstep );
 
     // Affecting Passive Auras
     // Put ability specific ones here; class/spec wide ones with labels that can effect things like trinkets in rogue_t::apply_affecting_auras.
@@ -1602,7 +1602,6 @@ public:
     affected_by.broadside_cp = ab::data().affected_by( p->spec.broadside->effectN( 1 ) ) ||
       ab::data().affected_by( p->spec.broadside->effectN( 2 ) ) ||
       ab::data().affected_by( p->spec.broadside->effectN( 3 ) );
-    affected_by.ruthless_precision = ab::data().affected_by( p->spec.ruthless_precision->effectN( 1 ) );
 
     // Shadowlands
     if ( p->legendary.master_assassins_mark.ok() )
@@ -1639,11 +1638,6 @@ public:
     affected_by.improved_shiv = ab::data().affected_by( p->spec.improved_shiv_debuff->effectN( 1 ) );
     affected_by.master_assassin = ab::data().affected_by( p->spec.master_assassin_buff->effectN( 1 ) );
 
-    if ( p->talent.rogue.cold_blood->ok() )
-    {
-      affected_by.cold_blood = ab::data().affected_by( p->talent.rogue.cold_blood->effectN( 1 ) );
-    }
-
     if ( p->talent.rogue.improved_ambush->ok() )
     {
       affected_by.improved_ambush = ab::data().affected_by( p->talent.rogue.improved_ambush->effectN( 1 ) );
@@ -1677,12 +1671,6 @@ public:
     // Still requires manual impl below but removes need to hardcode effect numbers.
     parse_damage_affecting_spell( p->mastery.executioner, affected_by.mastery_executioner );
     parse_damage_affecting_spell( p->mastery.potent_assassin, affected_by.mastery_potent_assassin );
-
-    // Action-Based Procs
-    if ( affected_by.cold_blood )
-    {
-      cold_blood_consumed_proc = p->get_proc( "Cold Blood Consumed by " + ab::name_str );
-    }
   }
 
   void init() override
@@ -1703,23 +1691,34 @@ public:
 
       if ( ab::repeating && !ab::special && !ab::s_data->ok() && buff->auto_attack_mod.multiplier != 1.0 )
         auto_attack_damage_buffs.push_back( buff );
+
+      if ( buff->is_affecting_crit_chance( ab::s_data ) )
+        crit_chance_buffs.push_back( buff );
     };
 
     direct_damage_buffs.clear();
     periodic_damage_buffs.clear();
     auto_attack_damage_buffs.clear();
+    crit_chance_buffs.clear();
 
     register_damage_buff( p()->buffs.broadside );
+    register_damage_buff( p()->buffs.cold_blood );
     register_damage_buff( p()->buffs.deathly_shadows );
     register_damage_buff( p()->buffs.elaborate_planning );
     register_damage_buff( p()->buffs.finality_eviscerate );
     register_damage_buff( p()->buffs.finality_black_powder );
     register_damage_buff( p()->buffs.kingsbane );
+    register_damage_buff( p()->buffs.master_assassin );
+    register_damage_buff( p()->buffs.master_assassin_aura );
+    register_damage_buff( p()->buffs.master_assassins_mark );
+    register_damage_buff( p()->buffs.master_assassins_mark_aura );
     register_damage_buff( p()->buffs.perforated_veins );
+    register_damage_buff( p()->buffs.ruthless_precision );
     register_damage_buff( p()->buffs.shadow_dance );
     register_damage_buff( p()->buffs.summarily_dispatched );
     register_damage_buff( p()->buffs.symbols_of_death );
     register_damage_buff( p()->buffs.the_rotten );
+
     register_damage_buff( p()->buffs.t29_outlaw_2pc );
     register_damage_buff( p()->buffs.t29_outlaw_4pc );
     register_damage_buff( p()->buffs.t29_subtlety_2pc );
@@ -1751,20 +1750,21 @@ public:
       affected_by.ruthlessness = true;
     }
 
-    if ( p()->set_bonuses.t29_outlaw_2pc->ok() )
-    {
-      affected_by.t29_outlaw_2pc = p()->buffs.t29_outlaw_2pc->is_affecting_direct( &ab::data() );
-    }
+    // Auto-Consume Buffs on Execute
+    auto register_consume_buff = [this]( buff_t* buff, bool condition, proc_t* proc = nullptr ) {
+      if ( condition )
+      {
+        consume_buffs.emplace_back( buff, proc );
+      }
+    };
 
-    if ( p()->set_bonuses.t29_outlaw_4pc->ok() )
-    {
-      affected_by.t29_outlaw_4pc = p()->buffs.t29_outlaw_4pc->is_affecting_direct( &ab::data() );
-    }
-
-    if ( p()->set_bonuses.t29_subtlety_2pc->ok() )
-    {
-      affected_by.t29_subtlety_2pc = p()->buffs.t29_subtlety_2pc->is_affecting_direct( &ab::data() );
-    }
+    register_consume_buff( p()->buffs.audacity, affected_by.audacity );
+    register_consume_buff( p()->buffs.blindside, affected_by.blindside );
+    register_consume_buff( p()->buffs.cold_blood,
+                           p()->buffs.cold_blood->is_affecting( &ab::data() ), cold_blood_consumed_proc );
+    register_consume_buff( p()->buffs.t29_outlaw_2pc, p()->buffs.t29_outlaw_2pc->is_affecting( &ab::data() ) );
+    register_consume_buff( p()->buffs.t29_outlaw_4pc, p()->buffs.t29_outlaw_4pc->is_affecting( &ab::data() ) );
+    register_consume_buff( p()->buffs.t29_subtlety_2pc, p()->buffs.t29_subtlety_2pc->is_affecting( &ab::data() ) );
   }
 
   // Type Wrappers ============================================================
@@ -2177,41 +2177,13 @@ public:
   {
     double c = ab::composite_crit_chance();
 
-    if ( affected_by.cold_blood )
-    {
-      c += p()->buffs.cold_blood->stack_value();
-    }
-
-    if ( affected_by.master_assassin )
-    {
-      c += p()->buffs.master_assassin->stack_value();
-      c += p()->buffs.master_assassin_aura->stack_value();
-    }
-
-    if ( affected_by.master_assassins_mark )
-    {
-      c += p()->buffs.master_assassins_mark->stack_value();
-      c += p()->buffs.master_assassins_mark_aura->stack_value();
-    }
-
-    if ( affected_by.ruthless_precision )
-    {
-      c += p()->buffs.ruthless_precision->stack_value();
-    }
+    // Registered Damage Buffs
+    for ( auto crit_chance_buff : crit_chance_buffs )
+      c += crit_chance_buff->stack_value_crit_chance();
 
     if ( affected_by.dashing_scoundrel && p()->buffs.envenom->check() )
     {
       c += p()->spec.dashing_scoundrel->effectN( 1 ).percent();
-    }
-
-    if ( affected_by.the_rotten && p()->buffs.the_rotten->check() )
-    {
-      c += p()->buffs.the_rotten->data().effectN( 4 ).percent();
-    }
-
-    if ( affected_by.t29_subtlety_2pc && p()->buffs.t29_subtlety_2pc->check() )
-    {
-      c += p()->buffs.t29_subtlety_2pc->check_stack_value();
     }
 
     return c;
@@ -2342,26 +2314,12 @@ public:
     }
 
     // Expire On-Cast Fading Buffs
-    if ( affected_by.cold_blood && p()->buffs.cold_blood->check() )
+    for ( auto consume_buff : consume_buffs )
     {
-      p()->buffs.cold_blood->expire();
-      cold_blood_consumed_proc->occur();
+      consume_buff.first->expire();
+      if ( consume_buff.second )
+        consume_buff.second->occur();
     }
-
-    if ( affected_by.audacity )
-      p()->buffs.audacity->expire(); // TOCHECK DFALPHA -- If this gets expired when in stealth
-
-    if ( affected_by.blindside )
-      p()->buffs.blindside->expire();
-
-    if ( affected_by.t29_outlaw_2pc )
-      p()->buffs.t29_outlaw_2pc->expire();
-
-    if ( affected_by.t29_outlaw_4pc )
-      p()->buffs.t29_outlaw_4pc->expire();
-
-    if ( affected_by.t29_subtlety_2pc )
-      p()->buffs.t29_subtlety_2pc->expire();
 
     // Debugging
     if ( p()->sim->log )
@@ -2861,7 +2819,12 @@ struct apply_poison_t : public action_t
   {
     if ( p->active.nonlethal_poison && p->active.nonlethal_poison->data().id() == p->spell.crippling_poison->id() )
     {
-      return p->talent.rogue.numbing_poison->ok() ? "numbing" : "atrophic";
+      if ( p->talent.rogue.numbing_poison->ok() )
+        return "numbing";
+      else if ( p->talent.rogue.atrophic_poison->ok() )
+        return "atrophic";
+      
+      return "none";
     }
     else
     {
@@ -2871,7 +2834,9 @@ struct apply_poison_t : public action_t
 
   rogue_poison_t* get_poison( rogue_t* p, util::string_view poison_name )
   {
-    if ( poison_name == "deadly" )
+    if ( poison_name == "none" || poison_name.empty() )
+      return nullptr;
+    else if ( poison_name == "deadly" )
       return p->get_background_action<deadly_poison_t>( "deadly_poison_driver" );
     else if ( poison_name == "instant" )
       return p->get_background_action<instant_poison_t>( "instant_poison_driver" );
@@ -3284,7 +3249,7 @@ struct between_the_eyes_t : public rogue_attack_t
   {
     double c = rogue_attack_t::composite_crit_chance();
 
-    if ( p()->buffs.ruthless_precision->up() )
+    if ( p()->buffs.ruthless_precision->check() )
     {
       c += p()->buffs.ruthless_precision->data().effectN( 2 ).percent();
     }
@@ -4935,8 +4900,7 @@ struct shadowstrike_t : public rogue_attack_t
     return m;
   }
 
-  // TODO: Distance movement support, should teleport up to 30 yards, with distance targeting, next
-  // to the target
+  // TODO: Distance movement support with distance targeting, next to the target
   double composite_teleport_distance( const action_state_t* ) const override
   {
     if ( is_secondary_action() )
@@ -5112,6 +5076,16 @@ struct shuriken_storm_t: public rogue_attack_t
     c += p()->buffs.silent_storm->stack_value();
     return c;
   }
+
+  /* DFALPHA -- This is currently bugged in-game and is a crit multiplier as below
+  *             Likely not intended but leaving this code just in case it makes live
+  double composite_crit_chance_multiplier() const override
+  {
+    double cm = rogue_attack_t::composite_crit_chance_multiplier();
+    cm *= 1.0 + p()->buffs.silent_storm->stack_value();
+    return cm;
+  }
+  */
 
   void execute() override
   {
@@ -6646,6 +6620,7 @@ struct stealth_like_buff_t : public BuffBase
       rogue->buffs.master_assassin_aura->expire();
       rogue->buffs.master_assassins_mark_aura->expire();
       rogue->buffs.improved_garrote_aura->expire();
+      rogue->buffs.take_em_by_surprise_aura->expire();
     }
   }
 
@@ -9030,12 +9005,12 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
 
     return make_fn_expr( name_str, [ this ]() {
       double n_buffs = 0;
-      n_buffs += buffs.skull_and_crossbones -> check() != 0;
-      n_buffs += buffs.grand_melee -> check() != 0;
-      n_buffs += buffs.ruthless_precision -> check() != 0;
-      n_buffs += buffs.true_bearing -> check() != 0;
-      n_buffs += buffs.broadside -> check() != 0;
-      n_buffs += buffs.buried_treasure -> check() != 0;
+      n_buffs += buffs.skull_and_crossbones->check() != 0;
+      n_buffs += buffs.grand_melee->check() != 0;
+      n_buffs += buffs.ruthless_precision->check() != 0;
+      n_buffs += buffs.true_bearing->check() != 0;
+      n_buffs += buffs.broadside->check() != 0;
+      n_buffs += buffs.buried_treasure->check() != 0;
       return n_buffs;
     } );
   }
@@ -9681,7 +9656,7 @@ void rogue_t::init_spells()
   spell.shadow_dance = talent.rogue.shadow_dance.find_override_spell( false );
   spell.shadowstep = talent.rogue.shadowstep.find_override_spell( false );
 
-  auto find_shared_talent = [this]( std::vector<player_talent_t*> talents ) {
+  auto find_shared_talent = [ this ]( std::vector<player_talent_t*> talents ) {
     for ( const auto t : talents )
     {
       if ( t->ok() )
@@ -9689,10 +9664,11 @@ void rogue_t::init_spells()
         return *t;
       }
     }
-    return *talents[0];
+    return *talents[ 0 ];
   };
 
   talent.shared.sepsis = find_shared_talent( { &talent.assassination.sepsis, &talent.outlaw.sepsis, &talent.subtlety.sepsis } );
+  talent.shared.shadowstep = find_shared_talent( { &talent.assassination.shadowstep, &talent.subtlety.shadowstep } );
 
   // Class Background Spells
   spell.alacrity_buff = talent.rogue.alacrity->ok() ? find_spell( 193538 ) : spell_data_t::not_found();
@@ -10252,9 +10228,8 @@ void rogue_t::create_buffs()
   buffs.skull_and_crossbones = make_buff( this, "skull_and_crossbones", spec.skull_and_crossbones )
     ->set_default_value_from_effect( 1, 0.01 ); // Flat Modifier to Proc%
 
-  buffs.ruthless_precision = make_buff( this, "ruthless_precision", spec.ruthless_precision )
-    ->set_default_value_from_effect( 1 )        // Non-BtE Crit% Modifier
-    ->add_invalidate( CACHE_CRIT_CHANCE );
+  buffs.ruthless_precision = make_buff<damage_buff_t>( this, "ruthless_precision", spec.ruthless_precision, false )
+    ->set_crit_chance_mod( spec.ruthless_precision, 1 ); // Non-BtE Crit% Modifier
 
   buffs.true_bearing = make_buff( this, "true_bearing", spec.true_bearing )
     ->set_default_value_from_effect( 1, 0.1 );  // CDR Seconds
@@ -10284,10 +10259,9 @@ void rogue_t::create_buffs()
     ->set_chance( talent.rogue.alacrity->ok() ) // DFALPHA -- Being redesigned
     ->add_invalidate( CACHE_HASTE );
 
-  buffs.cold_blood = make_buff( this, "cold_blood", talent.rogue.cold_blood )
+  buffs.cold_blood = make_buff<damage_buff_t>( this, "cold_blood", talent.rogue.cold_blood );
+  buffs.cold_blood
     ->set_cooldown( timespan_t::zero() )
-    ->set_default_value_from_effect_type( A_ADD_FLAT_MODIFIER, P_CRIT )
-    ->add_invalidate( CACHE_CRIT_CHANCE )
     ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
     ->set_duration( sim->max_time / 2 );
 
@@ -10331,13 +10305,11 @@ void rogue_t::create_buffs()
   buffs.kingsbane = make_buff<damage_buff_t>( this, "kingsbane", spec.kingsbane_buff );
   buffs.kingsbane->set_refresh_behavior( buff_refresh_behavior::NONE );
 
-  buffs.master_assassin = make_buff( this, "master_assassin", spec.master_assassin_buff )
-    ->set_default_value_from_effect_type( A_ADD_FLAT_MODIFIER, P_CRIT )
-    ->add_invalidate( CACHE_CRIT_CHANCE )
+  buffs.master_assassin = make_buff<damage_buff_t>( this, "master_assassin", spec.master_assassin_buff );
+  buffs.master_assassin
     ->set_duration( timespan_t::from_seconds( talent.assassination.master_assassin->effectN( 1 ).base_value() ) );
-  buffs.master_assassin_aura = make_buff( this, "master_assassin_aura", spec.master_assassin_buff )
-    ->set_default_value_from_effect_type( A_ADD_FLAT_MODIFIER, P_CRIT )
-    ->add_invalidate( CACHE_CRIT_CHANCE )
+  buffs.master_assassin_aura = make_buff<damage_buff_t>( this, "master_assassin_aura", spec.master_assassin_buff );
+  buffs.master_assassin_aura
     ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
     ->set_duration( sim->max_time / 2 ) // So it appears in sample sequence table
     ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
@@ -10488,7 +10460,6 @@ void rogue_t::create_buffs()
   buffs.t29_subtlety_2pc = make_buff<damage_buff_t>( this, "honed_blades", set_bonuses.t29_subtlety_2pc->ok() ?
                                                      find_spell( 394894 ) : spell_data_t::not_found() );
   buffs.t29_subtlety_2pc
-    ->set_default_value_from_effect_type( A_ADD_FLAT_MODIFIER, P_CRIT )
     ->set_max_stack( consume_cp_max() );    
 
   // Cannot parse as a single damage_buff_t since it has different benefit for Eviscerate and Black Powder
@@ -10506,13 +10477,11 @@ void rogue_t::create_buffs()
 
   // 2021-02-18-- Master Assassin's Mark is whitelisted since 9.0.5
   const spell_data_t* master_assassins_mark = legendary.master_assassins_mark->ok() ? find_spell( 340094 ) : spell_data_t::not_found();
-  buffs.master_assassins_mark = make_buff( this, "master_assassins_mark", master_assassins_mark )
-    ->set_default_value_from_effect_type( A_ADD_FLAT_MODIFIER, P_CRIT )
-    ->add_invalidate( CACHE_CRIT_CHANCE )
+  buffs.master_assassins_mark = make_buff<damage_buff_t>( this, "master_assassins_mark", master_assassins_mark );
+  buffs.master_assassins_mark
     ->set_duration( timespan_t::from_seconds( legendary.master_assassins_mark->effectN( 1 ).base_value() ) );
-  buffs.master_assassins_mark_aura = make_buff( this, "master_assassins_mark_aura", master_assassins_mark )
-    ->set_default_value_from_effect_type( A_ADD_FLAT_MODIFIER, P_CRIT )
-    ->add_invalidate( CACHE_CRIT_CHANCE )
+  buffs.master_assassins_mark_aura = make_buff<damage_buff_t>( this, "master_assassins_mark_aura", master_assassins_mark );
+  buffs.master_assassins_mark_aura
     ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
     ->set_duration( sim->max_time / 2 ) // So it appears in sample sequence table
     ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
