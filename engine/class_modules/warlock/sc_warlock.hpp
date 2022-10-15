@@ -379,7 +379,7 @@ public:
     const spell_data_t* soul_fire_2; // Contains Soul Shard energize data
     player_talent_t shadowburn;
     const spell_data_t* shadowburn_2; // Contains Soul Shard energize data
-    // DF - Raging Demonfire (2 point talent, additional Demonfire bolts and bolts extend Immolate)
+    player_talent_t raging_demonfire; // Additional Demonfire bolts and bolts extend Immolate
     // DF - Rolling Havoc (2 point talent, increased damage buff when spells are duplicated by Mayhem/Havoc)
     // DF - Backlash (Crit chance increase, damage proc when physically attacked)
     const spell_data_t* fire_and_brimstone; // DF - Now a 2 point talent
