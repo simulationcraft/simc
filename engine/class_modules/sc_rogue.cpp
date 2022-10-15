@@ -391,6 +391,8 @@ public:
     // Set Bonuses
     damage_buff_t* t29_outlaw_2pc;
     damage_buff_t* t29_outlaw_4pc;
+    damage_buff_t* t29_subtlety_2pc;
+    buff_t* t29_subtlety_4pc;
 
   } buffs;
 
@@ -606,6 +608,7 @@ public:
     const spell_data_t* perforated_veins_buff;
     const spell_data_t* premeditation_buff;
     const spell_data_t* relentless_strikes_energize;
+    const spell_data_t* replicating_shadows_tick;
     const spell_data_t* invigorating_shadowdust_cdr;
     const spell_data_t* secret_technique_attack;
     const spell_data_t* secret_technique_clone_attack;
@@ -825,7 +828,7 @@ public:
       player_talent_t the_first_dance;
       player_talent_t master_of_shadows;
       player_talent_t deepening_shadows;
-      player_talent_t replicating_shadows;      // NYI
+      player_talent_t replicating_shadows;
 
       player_talent_t shrouded_in_darkness;     // No implementation
       player_talent_t planned_execution;
@@ -849,7 +852,7 @@ public:
       player_talent_t lingering_shadow;         // NYI
       player_talent_t finality;                 // NYI, merge with legendary?
 
-      player_talent_t the_rotten;               // NYI, merge with legendary?
+      player_talent_t the_rotten;
       player_talent_t danse_macabre;            // NYI
       player_talent_t dark_brew;
 
@@ -1501,9 +1504,12 @@ public:
     bool ruthless_precision = false;
     bool ruthlessness = false;          // Trigger
     bool shadow_blades_cp = false;
+    bool the_rotten = false;            // Crit Bonus
+
     bool t29_assassination_2pc = false;
     bool t29_outlaw_2pc = false;
     bool t29_outlaw_4pc = false;
+    bool t29_subtlety_2pc = false;
 
     damage_affect_data mastery_executioner;
     damage_affect_data mastery_potent_assassin;
@@ -1571,6 +1577,7 @@ public:
     ab::apply_affecting_aura( p->talent.subtlety.improved_shuriken_storm );
     ab::apply_affecting_aura( p->talent.subtlety.quick_decisions );
     ab::apply_affecting_aura( p->talent.subtlety.swift_death );
+    ab::apply_affecting_aura( p->talent.subtlety.replicating_shadows );
     ab::apply_affecting_aura( p->talent.subtlety.without_a_trace );
     ab::apply_affecting_aura( p->talent.subtlety.secret_stratagem );
     ab::apply_affecting_aura( p->talent.subtlety.dark_brew );
@@ -1655,6 +1662,12 @@ public:
                               ab::data().affected_by( p->spec.deathmark_debuff->effectN( 2 ) );
     }
 
+    if ( p->talent.subtlety.the_rotten->ok() )
+    {
+      affected_by.the_rotten = ab::data().affected_by( p->talent.subtlety.the_rotten->effectN( 1 ).trigger()
+                                                       ->effectN( 4 ) );
+    }
+
     if ( p->set_bonuses.t29_assassination_2pc->ok() )
     {
       affected_by.t29_assassination_2pc = ab::data().affected_by( p->spec.envenom->effectN( 7 ) );
@@ -1709,6 +1722,7 @@ public:
     register_damage_buff( p()->buffs.the_rotten );
     register_damage_buff( p()->buffs.t29_outlaw_2pc );
     register_damage_buff( p()->buffs.t29_outlaw_4pc );
+    register_damage_buff( p()->buffs.t29_subtlety_2pc );
 
     // Dragonflight version of Deeper Daggers is not a whitelisted buff and still a school buff
     if ( !p()->talent.subtlety.deeper_daggers->ok() && p()->conduit.deeper_daggers.ok() )
@@ -1745,6 +1759,11 @@ public:
     if ( p()->set_bonuses.t29_outlaw_4pc->ok() )
     {
       affected_by.t29_outlaw_4pc = p()->buffs.t29_outlaw_4pc->is_affecting_direct( &ab::data() );
+    }
+
+    if ( p()->set_bonuses.t29_subtlety_2pc->ok() )
+    {
+      affected_by.t29_subtlety_2pc = p()->buffs.t29_subtlety_2pc->is_affecting_direct( &ab::data() );
     }
   }
 
@@ -2185,6 +2204,16 @@ public:
       c += p()->spec.dashing_scoundrel->effectN( 1 ).percent();
     }
 
+    if ( affected_by.the_rotten && p()->buffs.the_rotten->check() )
+    {
+      c += p()->buffs.the_rotten->data().effectN( 4 ).percent();
+    }
+
+    if ( affected_by.t29_subtlety_2pc && p()->buffs.t29_subtlety_2pc->check() )
+    {
+      c += p()->buffs.t29_subtlety_2pc->check_stack_value();
+    }
+
     return c;
   }
 
@@ -2330,6 +2359,9 @@ public:
 
     if ( affected_by.t29_outlaw_4pc )
       p()->buffs.t29_outlaw_4pc->expire();
+
+    if ( affected_by.t29_subtlety_2pc )
+      p()->buffs.t29_subtlety_2pc->expire();
 
     // Debugging
     if ( p()->sim->log )
@@ -3222,6 +3254,11 @@ struct backstab_t : public rogue_attack_t
       timespan_t duration = timespan_t::from_seconds( p()->talent.subtlety.improved_backstab->effectN( 1 ).base_value() );
       trigger_find_weakness( state, duration );
     }
+
+    if ( state->result == RESULT_CRIT && p()->set_bonuses.t29_subtlety_4pc->ok() )
+    {
+      p()->buffs.t29_subtlety_4pc->trigger();
+    }
   }
 
   bool verify_actor_spec() const override
@@ -3270,7 +3307,6 @@ struct between_the_eyes_t : public rogue_attack_t
       // There is nothing about the debuff duration in spell data, so we have to hardcode the 3s base.
       td( execute_state->target )->debuffs.between_the_eyes->trigger( 3_s * cp_spend );
 
-      // 2022-02-06 -- 4pc procs are triggering this in the current PTR build
       if ( p()->spec.greenskins_wickers->ok() )
       {
         // 2022-05-28 -- Greenskins ignores animacharged CP values for calculating proc chance
@@ -3278,7 +3314,6 @@ struct between_the_eyes_t : public rogue_attack_t
           p()->buffs.greenskins_wickers->trigger();
       }
 
-      // DFALPHA TOCHECK 4pc?
       if ( p()->talent.outlaw.ace_up_your_sleeve->ok() )
       {
         if ( rng().roll( p()->talent.outlaw.ace_up_your_sleeve->effectN( 1 ).percent() * cp_spend ) )
@@ -3742,6 +3777,18 @@ struct eviscerate_t : public rogue_attack_t
     }
   }
 
+  double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    double m = rogue_attack_t::composite_da_multiplier( state );
+
+    if ( p()->buffs.t29_subtlety_4pc->up() )
+    {
+      m *= 1.0 + p()->buffs.t29_subtlety_4pc->check() * p()->buffs.t29_subtlety_4pc->data().effectN( 1 ).percent();
+    }
+
+    return m;
+  }
+
   void execute() override
   {
     rogue_attack_t::execute();
@@ -3761,6 +3808,15 @@ struct eviscerate_t : public rogue_attack_t
       else
         p()->buffs.finality_eviscerate->trigger();
     }
+
+    if ( p()->set_bonuses.t29_subtlety_2pc->ok() )
+    {
+      p()->buffs.t29_subtlety_2pc->expire();
+      p()->buffs.t29_subtlety_2pc->trigger( cast_state( execute_state )->get_combo_points() );
+    }
+
+    // TOCHECK DFALPHA if this works on Shadow damage bonus or not
+    p()->buffs.t29_subtlety_4pc->expire();
   }
 };
 
@@ -3983,6 +4039,12 @@ struct gloomblade_t : public rogue_attack_t
       timespan_t duration = timespan_t::from_seconds( p()->talent.subtlety.improved_backstab->effectN( 1 ).base_value() );
       trigger_find_weakness( state, duration );
     }
+
+    // TOCHECK DFALPHA -- Not in tooltip, need to test
+    if ( state->result == RESULT_CRIT && p()->set_bonuses.t29_subtlety_4pc->ok() )
+    {
+      p()->buffs.t29_subtlety_4pc->trigger();
+    }
   }
 };
 
@@ -4161,8 +4223,6 @@ struct pistol_shot_t : public rogue_attack_t
     // Opportunity-Triggered Mechanics
     if ( p()->buffs.opportunity->check() )
     {
-      // 2022-02-16 -- As of latest 9.2 build 2pc proc damage does not benefit from or consume procs
-      //               However, they still appear to benefit from the CP gain modifier
       if ( generate_cp() > 0 && p()->talent.outlaw.quick_draw->ok() )
       {
         const int cp_gain = as<int>( p()->talent.outlaw.quick_draw->effectN( 2 ).base_value() );
@@ -4432,9 +4492,28 @@ struct roll_the_bones_t : public rogue_spell_t
 
 struct rupture_t : public rogue_attack_t
 {
-  rupture_t( util::string_view name, rogue_t* p, const spell_data_t* s, util::string_view options_str = {} ) :
-    rogue_attack_t( name, p, s, options_str )
+  struct replicating_shadows_tick_t : public rogue_attack_t
   {
+    replicating_shadows_tick_t( util::string_view name, rogue_t* p ) :
+      rogue_attack_t( name, p, p->spec.replicating_shadows_tick )
+    {
+    }
+
+    bool procs_poison() const override
+    { return false; }
+  };
+
+  replicating_shadows_tick_t* replicating_shadows_tick;
+  
+  rupture_t( util::string_view name, rogue_t* p, const spell_data_t* s, util::string_view options_str = {} ) :
+    rogue_attack_t( name, p, s, options_str ),
+    replicating_shadows_tick( nullptr )
+  {
+    if ( p->talent.subtlety.replicating_shadows->ok() )
+    {
+      replicating_shadows_tick = p->get_background_action<replicating_shadows_tick_t>( "rupture_replicating_shadows" );
+      add_child( replicating_shadows_tick );
+    }
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
@@ -4442,7 +4521,6 @@ struct rupture_t : public rogue_attack_t
     const auto rs = cast_state( s );
     timespan_t duration = data().duration() * ( 1 + rs->get_combo_points() );
     duration *= 1.0 / rs->get_exsanguinated_rate();
-
     return duration;
   }
 
@@ -4484,6 +4562,11 @@ struct rupture_t : public rogue_attack_t
   {
     rogue_attack_t::tick( d );
     trigger_venomous_wounds( d->state );
+
+    if ( replicating_shadows_tick )
+    {
+      replicating_shadows_tick->execute_on_target( d->target );
+    }
   }
 
   void last_tick( dot_t* d ) override
@@ -4816,7 +4899,6 @@ struct shadowstrike_t : public rogue_attack_t
     }
 
     // 2021-08-30 -- Logs appear to show updated behavior of PV and The Rotten benefitting WM procs
-    // 2022-02-07 -- Logs also confirm this delay applies to all AoE 4pc procs in the same cast
     if ( p()->buffs.the_rotten->up() )
     {
       trigger_combo_point_gain( as<int>( p()->buffs.the_rotten->check_value() ), p()->gains.the_rotten );
@@ -4834,6 +4916,11 @@ struct shadowstrike_t : public rogue_attack_t
     // Appears to be applied after weaponmastered attacks.
     trigger_find_weakness( state );
     trigger_akaaris_soul_fragment( state );
+
+    if ( state->result == RESULT_CRIT && p()->set_bonuses.t29_subtlety_4pc->ok() )
+    {
+      p()->buffs.t29_subtlety_4pc->trigger();
+    }
   }
 
   double action_multiplier() const override
@@ -4933,6 +5020,18 @@ struct black_powder_t: public rogue_attack_t
     }
   }
 
+  double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    double m = rogue_attack_t::composite_da_multiplier( state );
+
+    if ( p()->buffs.t29_subtlety_4pc->up() )
+    {
+      m *= 1.0 + p()->buffs.t29_subtlety_4pc->check() * p()->buffs.t29_subtlety_4pc->data().effectN( 2 ).percent();
+    }
+
+    return m;
+  }
+
   void execute() override
   {
     rogue_attack_t::execute();
@@ -4959,6 +5058,15 @@ struct black_powder_t: public rogue_attack_t
     // See bug above.
     if ( !triggered_finality )
       p()->buffs.finality_black_powder->expire();
+
+    if ( p()->set_bonuses.t29_subtlety_2pc->ok() )
+    {
+      p()->buffs.t29_subtlety_2pc->expire();
+      p()->buffs.t29_subtlety_2pc->trigger( cast_state( execute_state )->get_combo_points() );
+    }
+
+    // TOCHECK DFALPHA if this works on Shadow damage bonus or not
+    p()->buffs.t29_subtlety_4pc->expire();
   }
 
   bool procs_poison() const override
@@ -5024,6 +5132,11 @@ struct shuriken_storm_t: public rogue_attack_t
     {
       timespan_t duration = timespan_t::from_seconds( p()->talent.subtlety.improved_shuriken_storm->effectN( 1 ).base_value() );
       trigger_find_weakness( state, duration );
+    }
+
+    if ( state->result == RESULT_CRIT && p()->set_bonuses.t29_subtlety_4pc->ok() )
+    {
+      p()->buffs.t29_subtlety_4pc->trigger();
     }
   }
 
@@ -8375,12 +8488,10 @@ void rogue_t::init_action_list()
   if ( specialization() == ROGUE_ASSASSINATION )
   {
     // Pre-Combat
-    precombat->add_action( "variable,name=deathmark_cdr,value=1-(runeforge.duskwalkers_patch*(0.45+(set_bonus.tier28_4pc*0.1)))" );
+    precombat->add_action( "variable,name=deathmark_cdr,value=1-(runeforge.duskwalkers_patch*0.45)" );
     precombat->add_action( "variable,name=flagellation_cdr,value=1-(runeforge.obedience*0.44)", "The average CDR is 0.22 but due to the RNG nature of CP gen, 2x this value is optimal for syncing logic" );
     precombat->add_action( "variable,name=trinket_sync_slot,value=1,if=trinket.1.has_stat.any_dps&(!trinket.2.has_stat.any_dps|trinket.1.cooldown.duration>=trinket.2.cooldown.duration)|trinket.1.is.inscrutable_quantum_device|(covenant.venthyr&!trinket.2.has_stat.any_dps&trinket.1.is.shadowgrasp_totem)", "Determine which (if any) stat buff trinket we want to attempt to sync with Deathmark." );
     precombat->add_action( "variable,name=trinket_sync_slot,value=2,if=trinket.2.has_stat.any_dps&(!trinket.1.has_stat.any_dps|trinket.2.cooldown.duration>trinket.1.cooldown.duration)|trinket.2.is.inscrutable_quantum_device|(covenant.venthyr&!trinket.1.has_stat.any_dps&trinket.2.is.shadowgrasp_totem)" );
-    precombat->add_action( "variable,name=use_trinket_1_pre_deathmark,value=set_bonus.tier28_4pc&(trinket.1.has_stat.haste_rating|trinket.1.is.inscrutable_quantum_device)" );
-    precombat->add_action( "variable,name=use_trinket_2_pre_deathmark,value=set_bonus.tier28_4pc&(trinket.2.has_stat.haste_rating|trinket.2.is.inscrutable_quantum_device)" );
     precombat->add_action( "stealth" );
     precombat->add_action( "slice_and_dice,precombat_seconds=1,if=!talent.nightstalker.enabled");
 
@@ -8421,8 +8532,8 @@ void rogue_t::init_action_list()
     cds->add_action( "use_items,slots=trinket2,if=(!variable.use_trinket_2_pre_deathmark|variable.deathmark_condition&(cooldown.deathmark.remains<2|variable.deathmark_cooldown_remains>trinket.2.cooldown.duration%2)|fight_remains<=20)&(variable.trinket_sync_slot=2&(debuff.deathmark.up|variable.use_trinket_2_pre_deathmark|fight_remains<=20)|(variable.trinket_sync_slot=1&(!trinket.1.cooldown.ready|variable.deathmark_cooldown_remains>20))|!variable.trinket_sync_slot)" );
     cds->add_action( "deathmark,if=variable.deathmark_condition" );
     cds->add_action( "kingsbane,if=(debuff.shiv.up|cooldown.shiv.ready)&buff.envenom.up" );
-    cds->add_action( "exsanguinate,if=!stealthed.rogue&(!dot.garrote.refreshable&dot.rupture.remains*(1+set_bonus.tier28_4pc*debuff.deathmark.up)>4+4*cp_max_spend|dot.rupture.remains*0.5>target.time_to_die)&target.time_to_die>4", "Exsanguinate when not stealthed and both Rupture and Garrote are up for long enough." );
-    cds->add_action( "shiv,if=!covenant.night_fae&!debuff.shiv.up&dot.garrote.ticking&dot.rupture.ticking&(!talent.crimson_tempest.enabled|!set_bonus.tier28_2pc&variable.single_target|dot.crimson_tempest.ticking)", "Shiv if DoTs are up; if Night Fae attempt to sync with Sepsis or Deathmark if we won't waste more than half Shiv's cooldown" );
+    cds->add_action( "exsanguinate,if=!stealthed.rogue&(!dot.garrote.refreshable&dot.rupture.remains>4+4*cp_max_spend|dot.rupture.remains*0.5>target.time_to_die)&target.time_to_die>4", "Exsanguinate when not stealthed and both Rupture and Garrote are up for long enough." );
+    cds->add_action( "shiv,if=!covenant.night_fae&!debuff.shiv.up&dot.garrote.ticking&dot.rupture.ticking&(!talent.crimson_tempest.enabled|variable.single_target|dot.crimson_tempest.ticking)", "Shiv if DoTs are up; if Night Fae attempt to sync with Sepsis or Deathmark if we won't waste more than half Shiv's cooldown" );
     cds->add_action( "shiv,if=covenant.night_fae&!debuff.shiv.up&dot.garrote.ticking&dot.rupture.ticking&((cooldown.sepsis.ready|cooldown.sepsis.remains>12)+(cooldown.deathmark.ready|variable.deathmark_cooldown_remains>12)=2)");
     cds->add_action( "thistle_tea,if=energy.deficit>=100&!buff.thistle_tea.up&(charges=3|debuff.deathmark.up|fight_remains<cooldown.deathmark.remains)");
 
@@ -8465,13 +8576,10 @@ void rogue_t::init_action_list()
     dot->add_action( "rupture,if=talent.exsanguinate.enabled&!will_lose_exsanguinate&dot.rupture.pmultiplier<=1&(effective_combo_points>=cp_max_spend&cooldown.exsanguinate.remains<1&dot.rupture.remains*0.5<target.time_to_die)");
     dot->add_action( "pool_resource,for_next=1", "Garrote upkeep, also tries to use it as a special generator for the last CP before a finisher" );
     dot->add_action( "garrote,if=refreshable&combo_points.deficit>=1&(pmultiplier<=1|remains<=tick_time&spell_targets.fan_of_knives>=3)&(!will_lose_exsanguinate|remains<=tick_time*2&spell_targets.fan_of_knives>=3)&(target.time_to_die-remains)>4&master_assassin_remains=0" );
-    dot->add_action( "pool_resource,for_next=1", "Early refresh Garrote if it is at low duration (but not yet pandemic) at the end of Deathmark with 4pc" );
-    dot->add_action( "garrote,if=set_bonus.tier28_4pc&debuff.deathmark.up&debuff.deathmark.remains<3&remains<7&combo_points.deficit>=1&(pmultiplier<=1|remains<=tick_time&spell_targets.fan_of_knives>=3)&(target.time_to_die-remains)>2" );
     dot->add_action( "pool_resource,for_next=1" );
     dot->add_action( "garrote,cycle_targets=1,if=!variable.skip_cycle_garrote&target!=self.target&refreshable&combo_points.deficit>=1&(pmultiplier<=1|remains<=tick_time&spell_targets.fan_of_knives>=3)&(!will_lose_exsanguinate|remains<=tick_time*2&spell_targets.fan_of_knives>=3)&(target.time_to_die-remains)>12&master_assassin_remains=0" );
-    dot->add_action( "crimson_tempest,target_if=min:remains,if=spell_targets>=2&effective_combo_points>=4&energy.regen_combined>20&(!cooldown.deathmark.ready|dot.rupture.ticking)&remains<(2+3*(spell_targets>=4))*(1-(set_bonus.tier28_4pc*debuff.deathmark.up*0.5))", "Crimson Tempest on multiple targets at 4+ CP when running out in 2-5s as long as we have enough regen and aren't setting up for Deathmark");
+    dot->add_action( "crimson_tempest,target_if=min:remains,if=spell_targets>=2&effective_combo_points>=4&energy.regen_combined>20&(!cooldown.deathmark.ready|dot.rupture.ticking)&remains<(2+3*(spell_targets>=4))", "Crimson Tempest on multiple targets at 4+ CP when running out in 2-5s as long as we have enough regen and aren't setting up for Deathmark");
     dot->add_action( "rupture,if=!variable.skip_rupture&effective_combo_points>=4&refreshable&(pmultiplier<=1|remains<=tick_time&spell_targets.fan_of_knives>=3)&(!will_lose_exsanguinate|remains<=tick_time*2&spell_targets.fan_of_knives>=3)&target.time_to_die-remains>(4+(runeforge.dashing_scoundrel*5)+(runeforge.doomblade*5)+(variable.regen_saturated*6))", "Keep up Rupture at 4+ on all targets (when living long enough and not snapshot)" );
-    dot->add_action( "rupture,if=set_bonus.tier28_4pc&effective_combo_points>=4&debuff.deathmark.up&debuff.deathmark.remains<3&remains<8&target.time_to_die-remains>(4+(runeforge.dashing_scoundrel*5)+(runeforge.doomblade*5)+(variable.regen_saturated*6))%2", "Early refresh Rupture if it is at low duration (but not yet pandemic) at the end of Deathmark with 4pc" );
     dot->add_action( "rupture,cycle_targets=1,if=!variable.skip_cycle_rupture&!variable.skip_rupture&target!=self.target&effective_combo_points>=4&refreshable&(pmultiplier<=1|remains<=tick_time&spell_targets.fan_of_knives>=3)&(!will_lose_exsanguinate|remains<=tick_time*2&spell_targets.fan_of_knives>=3)&target.time_to_die-remains>(4+(runeforge.dashing_scoundrel*5)+(runeforge.doomblade*5)+(variable.regen_saturated*6))" );
     dot->add_action( "crimson_tempest,if=spell_targets>=2&effective_combo_points>=4&remains<2+3*(spell_targets>=4)", "Fallback AoE Crimson Tempest with the same logic as above, but ignoring the energy conditions if we aren't using Rupture" );
     dot->add_action( "crimson_tempest,if=spell_targets=1&(!runeforge.dashing_scoundrel|rune_word.frost.enabled)&effective_combo_points>=(cp_max_spend-1)&refreshable&!will_lose_exsanguinate&!debuff.shiv.up&target.time_to_die-remains>4", "Crimson Tempest on ST if in pandemic and nearly max energy and if Envenom won't do more damage due to TB/MA" );
@@ -8627,7 +8735,7 @@ void rogue_t::init_action_list()
     cds->add_action( "symbols_of_death,if=variable.snd_condition&(!stealthed.all|buff.perforated_veins.stack<4|spell_targets.shuriken_storm>4&!variable.use_priority_rotation)&(!talent.shuriken_tornado.enabled|talent.shadow_focus.enabled|spell_targets.shuriken_storm>=2|cooldown.shuriken_tornado.remains>2)&(!covenant.venthyr|cooldown.flagellation.remains>10|cooldown.flagellation.up&combo_points>=5)", "Use Symbols on cooldown (after first SnD) unless we are going to pop Tornado and do not have Shadow Focus.");
     cds->add_action( "marked_for_death,line_cd=1.5,target_if=min:target.time_to_die,if=raid_event.adds.up&(target.time_to_die<combo_points.deficit|!stealthed.all&combo_points.deficit>=cp_max_spend)", "If adds are up, snipe the one with lowest TTD. Use when dying faster than CP deficit or not stealthed without any CP.");
     cds->add_action( "marked_for_death,if=raid_event.adds.in>30-raid_event.adds.duration&combo_points.deficit>=cp_max_spend", "If no adds will die within the next 30s, use MfD on boss without any CP." );
-    cds->add_action( "shadow_blades,if=variable.snd_condition&combo_points.deficit>=2&(buff.symbols_of_death.up|fight_remains<=20|!buff.shadow_blades.up&set_bonus.tier28_2pc)");
+    cds->add_action( "shadow_blades,if=variable.snd_condition&combo_points.deficit>=2&(buff.symbols_of_death.up|fight_remains<=20)");
     cds->add_action( "echoing_reprimand,if=(!talent.shadow_focus.enabled|!stealthed.all|spell_targets.shuriken_storm>=4)&variable.snd_condition&combo_points.deficit>=2&(variable.use_priority_rotation|spell_targets.shuriken_storm<=4|runeforge.resounding_clarity|talent.resounding_clarity)" );
     cds->add_action( "shuriken_tornado,if=(talent.shadow_focus.enabled|spell_targets.shuriken_storm>=2)&variable.snd_condition&buff.symbols_of_death.up&combo_points<=2&(!buff.premeditation.up|spell_targets.shuriken_storm>4)", "With SF, if not already done, use Tornado with SoD up.");
     cds->add_action( "shadow_dance,if=!buff.shadow_dance.up&fight_remains<=8+talent.subterfuge.enabled" );
@@ -8649,8 +8757,8 @@ void rogue_t::init_action_list()
 
     // Stealth Cooldowns
     action_priority_list_t* stealth_cds = get_action_priority_list( "stealth_cds", "Stealth Cooldowns" );
-    stealth_cds->add_action( "variable,name=shd_threshold,value=cooldown.shadow_dance.charges_fractional>=(1.75-0.75*(covenant.kyrian&set_bonus.tier28_2pc&cooldown.symbols_of_death.remains>=8))", "Helper Variable" );
-    stealth_cds->add_action( "variable,name=shd_threshold,if=runeforge.the_rotten,value=cooldown.shadow_dance.charges_fractional>=1.75|cooldown.symbols_of_death.remains>=16" );
+    stealth_cds->add_action( "variable,name=shd_threshold,value=cooldown.shadow_dance.charges_fractional>=1.75", "Helper Variable" );
+    stealth_cds->add_action( "variable,name=shd_threshold,if=runeforge.the_rotten|talent.the_rotten,value=cooldown.shadow_dance.charges_fractional>=1.75|cooldown.symbols_of_death.remains>=16" );
     stealth_cds->add_action( "vanish,if=(!variable.shd_threshold|!talent.nightstalker.enabled&talent.dark_shadow.enabled)&combo_points.deficit>1&!runeforge.mark_of_the_master_assassin", "Vanish if we are capping on Dance charges. Early before first dance if we have no Nightstalker but Dark Shadow in order to get Rupture up (no Master Assassin).");
     stealth_cds->add_action( "pool_resource,for_next=1,extra_amount=40,if=race.night_elf", "Pool for Shadowmeld + Shadowstrike unless we are about to cap on Dance charges. Only when Find Weakness is about to run out." );
     stealth_cds->add_action( "shadowmeld,if=energy>=40&energy.deficit>=10&!variable.shd_threshold&combo_points.deficit>1" );
@@ -8658,7 +8766,7 @@ void rogue_t::init_action_list()
     stealth_cds->add_action( "variable,name=shd_combo_points,value=combo_points.deficit>=3,if=covenant.kyrian" );
     stealth_cds->add_action( "variable,name=shd_combo_points,value=combo_points.deficit<=1,if=variable.use_priority_rotation&spell_targets.shuriken_storm>=4" );
     stealth_cds->add_action( "variable,name=shd_combo_points,value=combo_points.deficit<=1,if=spell_targets.shuriken_storm=4" );
-    stealth_cds->add_action( "shadow_dance,if=(runeforge.the_rotten&cooldown.symbols_of_death.remains<=8|variable.shd_combo_points&(buff.symbols_of_death.remains>=1.2|variable.shd_threshold)|buff.chaos_bane.up|spell_targets.shuriken_storm>=4&cooldown.symbols_of_death.remains>10)&(buff.perforated_veins.stack<4|spell_targets.shuriken_storm>3)", "Dance during Symbols or above threshold." );
+    stealth_cds->add_action( "shadow_dance,if=((runeforge.the_rotten|talent.the_rotten)&cooldown.symbols_of_death.remains<=8|variable.shd_combo_points&(buff.symbols_of_death.remains>=1.2|variable.shd_threshold)|buff.chaos_bane.up|spell_targets.shuriken_storm>=4&cooldown.symbols_of_death.remains>10)&(buff.perforated_veins.stack<4|spell_targets.shuriken_storm>3)", "Dance during Symbols or above threshold." );
     stealth_cds->add_action( "shadow_dance,if=variable.shd_combo_points&fight_remains<cooldown.symbols_of_death.remains|!talent.enveloping_shadows.enabled", "Burn Dances charges if you play Dark Shadows/Alacrity or before the fight ends if SoD won't be ready in time." );
 
     // Stealthed Rotation
@@ -8673,7 +8781,7 @@ void rogue_t::init_action_list()
     stealthed->add_action( "shiv,if=talent.nightstalker.enabled&runeforge.tiny_toxic_blade&spell_targets.shuriken_storm<5");
     stealthed->add_action( "shadowstrike,cycle_targets=1,if=!variable.use_priority_rotation&debuff.find_weakness.remains<1&spell_targets.shuriken_storm<=3&target.time_to_die-remains>6", "Up to 3 targets (no prio) keep up Find Weakness by cycling Shadowstrike." );
     stealthed->add_action( "shadowstrike,if=variable.use_priority_rotation&(debuff.find_weakness.remains<1|talent.weaponmaster.enabled&spell_targets.shuriken_storm<=4)", "For priority rotation, use Shadowstrike over Storm with WM against up to 4 targets or if FW is running off (on any amount of targets)" );
-    stealthed->add_action( "shuriken_storm,if=spell_targets>=3+(buff.the_rotten.up|runeforge.akaaris_soul_fragment|set_bonus.tier28_2pc&talent.shadow_focus.enabled)&(!buff.premeditation.up|spell_targets>=5)");
+    stealthed->add_action( "shuriken_storm,if=spell_targets>=3+(buff.the_rotten.up|runeforge.akaaris_soul_fragment)&(!buff.premeditation.up|spell_targets>=5)");
     stealthed->add_action( "shadowstrike,if=debuff.find_weakness.remains<=1|cooldown.symbols_of_death.remains<18&debuff.find_weakness.remains<cooldown.symbols_of_death.remains", "Shadowstrike to refresh Find Weakness and to ensure we can carry over a full FW into the next SoD if possible." );
     stealthed->add_action( "gloomblade,if=buff.perforated_veins.stack>=5&conduit.perforated_veins.rank>=13" );
     stealthed->add_action( "shadowstrike" );
@@ -9648,6 +9756,7 @@ void rogue_t::init_spells()
   spec.secret_technique_attack = talent.subtlety.secret_technique->ok() ? find_spell( 280720 ) : spell_data_t::not_found();
   spec.secret_technique_clone_attack = talent.subtlety.secret_technique->ok() ? find_spell( 282449 ) : spell_data_t::not_found();
   spec.relentless_strikes_energize = talent.subtlety.relentless_strikes->ok() ? find_spell( 98440 ) : spell_data_t::not_found();
+  spec.replicating_shadows_tick = talent.subtlety.replicating_shadows->ok() ? find_spell( 394031 ) : spell_data_t::not_found();
   spec.shadow_blades_attack = talent.subtlety.shadow_blades->ok() ? find_spell( 279043 ) : spell_data_t::not_found();
   spec.shadow_focus_buff = talent.subtlety.shadow_focus->ok() ? find_spell( 112942 ) : spell_data_t::not_found();
   spec.shot_in_the_dark_buff = talent.subtlety.shot_in_the_dark->ok() ? find_spell( 257506 ) : spell_data_t::not_found();
@@ -10376,6 +10485,16 @@ void rogue_t::create_buffs()
   buffs.t29_outlaw_4pc = make_buff<damage_buff_t>( this, "brutal_opportunist", set_bonuses.t29_outlaw_4pc->ok() ?
                                                    find_spell( 394888 ) : spell_data_t::not_found() );
 
+  buffs.t29_subtlety_2pc = make_buff<damage_buff_t>( this, "honed_blades", set_bonuses.t29_subtlety_2pc->ok() ?
+                                                     find_spell( 394894 ) : spell_data_t::not_found() );
+  buffs.t29_subtlety_2pc
+    ->set_default_value_from_effect_type( A_ADD_FLAT_MODIFIER, P_CRIT )
+    ->set_max_stack( consume_cp_max() );    
+
+  // Cannot parse as a single damage_buff_t since it has different benefit for Eviscerate and Black Powder
+  buffs.t29_subtlety_4pc = make_buff( this, "masterful_finish", set_bonuses.t29_subtlety_4pc->ok() ?
+                                      find_spell( 395003 ) : spell_data_t::not_found() );
+
   // Legendary Items ========================================================
 
   // 2021-02-18-- Sub-specific Deathly Shadows buff added in 9.0.5
@@ -10403,7 +10522,9 @@ void rogue_t::create_buffs()
         buffs.master_assassins_mark->expire();
   } );
 
-  buffs.the_rotten = make_buff<damage_buff_t>( this, "the_rotten", legendary.the_rotten->effectN( 1 ).trigger() );
+  buffs.the_rotten = make_buff<damage_buff_t>( this, "the_rotten", ( talent.subtlety.the_rotten->ok() ?
+                                                                     talent.subtlety.the_rotten->effectN( 1 ).trigger() :
+                                                                     legendary.the_rotten->effectN( 1 ).trigger() ) );
   buffs.the_rotten->set_default_value_from_effect( 1 ); // Combo Point Gain
 
   buffs.guile_charm_insight_1 = make_buff( this, "shallow_insight", find_spell( 340582 ) )
