@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46092 dragonflight-BETA (hotfix 2022-10-14/46092, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46157 dragonflight-BETA (hotfix 2022-10-15/46157, no-networking)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -174,6 +174,9 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=12247)    : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=1038628)  : Apply Aura (6) | Unknown(531)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : NEW EFFECT
 Description      : Damage dealt by pets increased by $s1%.
 
 Name             : Intimidation (id=24394) 
@@ -1154,6 +1157,7 @@ Description      : Breathe fire on targets in front of you, causing $s1 Fire dam
 Targets affected by Keg Smash will also burn, taking $123725o1 Fire damage and dealing $123725s2% reduced damage to you for $123725d.
 
 Name             : Fortifying Brew (id=115203) [Spell Family (53)] 
+Hotfixed         : Variables
 Class            : Monk
 School           : Physical
 Spell Type       : Magic
@@ -1179,7 +1183,7 @@ Effects          :
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc120954
 Variables        : $health=$?s322960[${20}][${15}]
-$damage=$?s322960[${20}][${15}]
+$damage=$?c1[${20}][${20}]
 
 Name             : Energizing Elixir (id=115288) [Spell Family (53)] 
 Class            : Monk
@@ -2303,6 +2307,7 @@ Effects          :
 Description      : Increases your Agility by $s1% while wearing only Leather armor.
 
 Name             : Fortifying Brew (id=120954) [Spell Family (53)] 
+Hotfixed         : Variables
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -2344,7 +2349,7 @@ $?$w6>0[Effectiveness of Stagger increased by $115203s1%.
 
 $?$w8>0[Armor increased by $w8%. Dodge increased by $w7%.][]
 Variables        : $health=$?s322960[${20}][${15}]
-$damage=$?s322960[${20}][${15}]
+$damage=$?c1[${20}][${20}]
 
 Name             : Gift of the Naaru (desc=Racial) (id=121093) 
 Class            : Monk
@@ -15912,6 +15917,7 @@ Effects          :
 Description      : Detox additionally removes all Poison and Disease effects.
 
 Name             : Fortifying Brew (id=388917) [Spell Family (53), Passive, Hidden] 
+Hotfixed         : Variables
 Talent Entry     : Generic [tree=class, row=5, col=4, max_rank=1, req_points=8]
 Class            : Monk
 School           : Physical
@@ -15936,7 +15942,7 @@ Description      : Turns your skin to stone for $120954d, increasing your curren
 
 Combines with other Fortifying Brew effects.
 Variables        : $health=$?s322960[${20}][${15}]
-$damage=$?s322960[${20}][${15}]
+$damage=$?c1[${20}][${20}]
 
 Name             : Claw of the White Tiger (id=389541) [Spell Family (53)] 
 Class            : Monk

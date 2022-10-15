@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46092 dragonflight-BETA (hotfix 2022-10-14/46092, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46157 dragonflight-BETA (hotfix 2022-10-15/46157, no-networking)
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -1413,6 +1413,9 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=12247)    : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=1038628)  : Apply Aura (6) | Unknown(531)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : NEW EFFECT
 Description      : Damage dealt by pets increased by $s1%.
 
 Name             : Blade Flurry (id=22482) [Spell Family (8)] 
@@ -14597,7 +14600,7 @@ Attributes       : ........ ........ x....... ........   ........ .x...... .....
 Effects          :
 #1 (id=1033358)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.04131 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (0.0306 -> 0.04131)
+Hotfixed         : AP Coefficient (0.0459 -> 0.04131)
 Description      : $@spelldesc382506
 
 Name             : Serrated Bone Spike (id=394036) [Spell Family (8)] 
