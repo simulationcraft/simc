@@ -12878,6 +12878,25 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Judgment grants you Virtuous Command for $383307d, which causes your Templar's Verdict, Crusader Strike, Blade of Justice, and auto attacks to deal $s1% additional Holy damage.
 
+Name             : Virtuous Command (id=383305) [Spell Family (10)] 
+Class            : Paladin
+School           : Holy
+Spell Type       : Melee
+Range            : 8 yards
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
+                 : ........ ....xx.. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Can't Crit (93), Ignore Damage Taken Modifiers (136), Ignore Caster Damage Modifiers (221), Aura Points On Client (268), Not In Spellbook Until Learned (269)
+Effects          :
+#1 (id=1015135)  : School Damage (2): holy
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Description      : $@spelldesc383304
+
 Name             : Virtuous Command (id=383307) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
@@ -14708,6 +14727,30 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 25 yards | Target: At Caster (22) -> AOE enemy (instant) (7)
 Description      : Releases a blinding flash from your shield, causing $s2 Holy damage to all nearby enemies within $A1 yds and reducing all damage they deal to you by $s1% for $d.
 Tooltip          : Dealing $s1% less damage to the Paladin.
+
+Name             : Empyrean Legacy (id=387178) [Spell Family (10)] 
+Class            : Paladin
+School           : Holy
+Spell Type       : None
+Duration         : 20 seconds
+Stacks           : 1 initial, 1 maximum
+Proc Chance      : 101%
+Proc Flags       : ....x... ......x. ........ ........ 
+                 : Yellow Melee, Magic Heal
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Not In Spellbook (143)
+Effects          :
+#1 (id=1021800)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : $@spelldesc387170
+Tooltip          : Your next $?s383327[Final Verdict automatically triggers Divine Storm]?c3[Templar's Verdict automatically triggers Divine Storm][Word of Glory automatically triggers Light of Dawn] with $387170s2% increased effectiveness.
 
 Name             : Executioner's Wrath (id=387196) [Spell Family (10), Passive] 
 Talent Entry     : Retribution [tree=spec, row=10, col=1, max_rank=1, req_points=20, select_idx=200]

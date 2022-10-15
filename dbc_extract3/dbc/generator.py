@@ -1830,6 +1830,8 @@ class SpellDataGenerator(DataGenerator):
           ( 387552, 0 ),    # Infernal Command pet aura
           ( 390193, 0 ),    # Demonic Servitude aura
           ( 387096, 0 ),    # Pyrogenics aura
+          ( 387109, 0 ),    # Conflagration of Chaos aura 1
+          ( 387110, 0 ),    # Conflagration of Chaos aura 2
         ),
 
         # Monk:

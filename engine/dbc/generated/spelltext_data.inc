@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.2.46157
-static const std::array<spelltext_data_t, 19034> __spelltext_data { {
+static const std::array<spelltext_data_t, 19040> __spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -17154,6 +17154,7 @@ static const std::array<spelltext_data_t, 19034> __spelltext_data { {
   { 383300, "Art of War has a $s1% chance to reset the cooldown of Wake of Ashes instead of Blade of Justice.", 0, 0 },
   { 383303, "Maelstrom Weapon now increases the damage or healing of spells it affects by $s1% per stack.", 0, 0 },
   { 383304, "Judgment grants you Virtuous Command for $383307d, which causes your Templar's Verdict, Crusader Strike, Blade of Justice, and auto attacks to deal $s1% additional Holy damage.", 0, 0 },
+  { 383305, "$@spelldesc383304", 0, 0 },
   { 383307, "$@spelldesc383304", "Templar's Verdict, Crusader Strike, Blade of Justice, and weapon attack deals $383304s1% additional Holy damage.", 0 },
   { 383311, "$@spelldesc383314", "Holy Damage increased by $w1%.", 0 },
   { 383312, "$@spelldesc383269", "Recently pulled  by Abomination Limb and can't be pulled again.", 0 },
@@ -17532,6 +17533,7 @@ static const std::array<spelltext_data_t, 19034> __spelltext_data { {
   { 385942, 0, "$?$W1>0[Critical strike increased by $w1.\r\n][]$?$W2>0[Versatility increased by $w2.\r\n][]$?$W3>0[Haste increased by $w3.\r\n][]$?$W4>0[Mastery increased by $w4.][]", 0 },
   { 385952, "Charge to an enemy with your shield, dealing $385954s1 Physical damage to it and $385954s2 Physical damage to all enemies within 10 yards.\r\n\r\nAlso stuns the primary target for $385954d.\r\n\r\n|cFFFFFFFFGenerates ${$385954s4/10} Rage.|r", 0, 0 },
   { 385954, "$@spelldesc385952", "Stunned.", 0 },
+  { 385960, "$@spelldesc382524", "$?s200758[Gloomblade][Backstab] deals an additional $s1% damage as Shadow.", 0 },
   { 385968, "Place a friendly mechanical construct on the ground nearby which will offer moral support as your companions fall around you. It will resurrect all party or raid members within a reasonable distance after combat has ended. Cast time is reduced by quality.\r\n\r\nDoes not work on players whose spirits have been released, are level $ctrmax2424 or higher, or have angered the robot.", 0, 0 },
   { 385969, "Place a friendly mechanical construct on the ground nearby which will offer moral support as your companions fall around you. It will resurrect all party or raid members within a reasonable distance after combat has ended. Cast time is reduced by quality.\r\n\r\nDoes not work on players whose spirits have been released, are level $ctrmax2424 or higher, or have angered the robot.", 0, 0 },
   { 386000, "Falling below $s1% health activates the defense matrix for $386001d, which has a high chance to react to your damage taken, counterattacking for $s2 Fire damage and absorbing the next ${$mhp*0.35} damage you take.\r\n\r\nThis may only occur once every $386092d.", 0, 0 },
@@ -17543,6 +17545,7 @@ static const std::array<spelltext_data_t, 19034> __spelltext_data { {
   { 386034, "Heroic Throw deals $s2% increased damage and inflicts Deep Wounds.", 0, 0 },
   { 386045, "Damage of Raging Blow increased by $s1%.", 0, 0 },
   { 386071, "Taunts all enemies within $A1 yds to attack you for $d, interrupts all spellcasting within $A1 yds and prevents any spell in that school from being cast for $d.\r\n", "Taunted.", 0 },
+  { 386081, "$@spelldesc382524", 0, 0 },
   { 386105, "Grants access to the following abilities:\r\n\r\n$@spellicon1714$@spellname1714:\r\n$@spelldesc1714\r\n\r\n$@spellicon334275$@spellname334275:\r\n$@spelldesc334275", 0, 0 },
   { 386110, "Reduces the damage dealt by Burning Rush by ${$abs($s1)}%. Burning Rush increases your movement speed by an additional $s2%.", 0, 0 },
   { 386113, "Reduces the cooldown of Fel Domination by ${$s1/-1000} sec.", 0, 0 },
@@ -17739,6 +17742,8 @@ static const std::array<spelltext_data_t, 19034> __spelltext_data { {
   { 387096, "$@spelldesc387095", "Fire damage taken increased by $s1%.", 0 },
   { 387103, "Increases the damage of Conflagrate, Channel Demonfire, Shadowburn, and Soulfire by $s1%.", 0, 0 },
   { 387108, "Conflagrate and Shadowburn have a $s1% chance to guarantee your next cast of the ability to critically strike, and increase its damage by your critical strike chance.", 0, 0 },
+  { 387109, "$@spelldesc387108", "Your next Conflagrate will critically strike and your critical strike chance will increase its critical strike damage.", 0 },
+  { 387110, "$@spelldesc387108", "Your next Shadowburn will critically strike and your critical strike chance will increase its critical strike damage.", 0 },
   { 387113, "$@spelldesc343527", 0, 0 },
   { 387134, "Duration of incoming Interrupt and Silence effects reduced by $s1%.", 0, "PvP Talent" },
   { 387136, "Salvage what you can from the Rimefin Tuna.", 0, 0 },
@@ -17761,6 +17766,7 @@ static const std::array<spelltext_data_t, 19034> __spelltext_data { {
   { 387173, "Incinerate now generates $s1% additional Soul Shard Fragments.", 0, 0 },
   { 387174, "Releases a blinding flash from your shield, causing $s2 Holy damage to all nearby enemies within $A1 yds and reducing all damage they deal to you by $s1% for $d.", "Dealing $s1% less damage to the Paladin.", 0 },
   { 387176, "Your Incinerate and Conflagrate casts on targets that have $s2% or less health reduce the cooldown of Soulfire by ${$s1/-1000} sec.", 0, 0 },
+  { 387178, "$@spelldesc387170", "Your next $?s383327[Final Verdict automatically triggers Divine Storm]?c3[Templar's Verdict automatically triggers Divine Storm][Word of Glory automatically triggers Light of Dawn] with $387170s2% increased effectiveness.", 0 },
   { 387184, "For the next $d, your Mastery is increased by $?c1[${$117906bc1*$s1}]?c2[${$117907bc1*$s1}][${$115636bc1*$s1}.1]%. Additionally, $?a137025[Rising Sun Kick reduces Chi costs by $311054s1 for $311054d, and Blackout Kick reduces the cooldown of affected abilities by an additional ${$s8/1000} sec.][]$?a137023 [Keg Smash cooldown is reset instantly and enemies hit by Keg Smash take $312106s1% increased damage from you for $312106d, stacking up to $312106u times.][]$?a137024[Essence Font cooldown is reset instantly and heals up to $311123s2 nearby allies for $311123s1 health on channel start and end.][]", "Increases your Mastery by $?c1[${$117906bc1*$w1}]?c2[${$117907bc1*$w1}][${$115636bc1*$w1}]%$?a137025[, Rising Sun Kick reduces Chi costs by $311054s1 for $311054d, and Blackout Kick reduces the cooldown of affected abilities by an additional ${$s8/1000} sec.]?a137023 [ and your Keg Smash increases the damage you deal to those enemies by $312106s1%, up to ${$312106s1*$312106u}% for $312106d.]?a137024[ and your Essence Font heals nearby allies for $311123s1 health on channel start and end.][ and your abilities are enhanced.]", 0 },
   { 387196, "When Execution Sentence expires, $s1% of damage done during its duration is also dealt to nearby enemies within $s3 yards.", 0, 0 },
   { 387198, "Boon of the Covenants passively increases your damage and healing by an additional |cFFFFFFFF${$s1}.1%|r.", 0, 0 },
