@@ -806,6 +806,7 @@ public:
   void arise() override;
   void combat_begin() override;
   void init_rng() override;
+  double composite_attribute( attribute_e attr ) const override;
   double composite_attribute_multiplier( attribute_e attr ) const override;
   double composite_rating_multiplier( rating_e rating ) const override;
   double composite_player_multiplier( school_e school ) const override;
@@ -813,7 +814,7 @@ public:
   double matching_gear_multiplier( attribute_e attr ) const override;
   double composite_melee_speed() const override;
   double composite_melee_haste() const override;
-  // double composite_armor_multiplier() const override;
+  double composite_armor_multiplier() const override;
   double composite_bonus_armor() const override;
   double composite_block() const override;
   double composite_block_reduction( action_state_t* s ) const override;
@@ -823,6 +824,7 @@ public:
   double composite_attack_power_multiplier() const override;
   // double composite_melee_attack_power() const override;
   double composite_mastery() const override;
+  double composite_damage_versatility() const override;
   double composite_crit_block() const override;
   double composite_crit_avoidance() const override;
   // double composite_melee_speed() const override;
@@ -975,7 +977,15 @@ public:
       initialized( false )
   {
     ab::may_crit = true;
+    if ( p()->talents.arms.deft_experience->ok() )
+    {
+      tactician_per_rage += ( ( player->talents.arms.tactician->effectN( 1 ).percent() +
+                                player->talents.arms.deft_experience->effectN( 2 ).percent() ) / 100 );
+    }
+    else
+    {
     tactician_per_rage += ( player->talents.arms.tactician->effectN( 1 ).percent() / 100 );
+    }
   }
 
   void init() override
@@ -1024,7 +1034,12 @@ public:
     ab::apply_affecting_aura( p()->tier_set.frenzied_destruction_2p );
 
     // passive talents
-    //ab::apply_affecting_aura( p()->talents.warrior.furious_blows );
+    ab::apply_affecting_aura( p()->talents.warrior.cruel_strikes );
+    ab::apply_affecting_aura( p()->talents.arms.valor_in_victory );
+    ab::apply_affecting_aura( p()->talents.fury.critical_thinking );
+    ab::apply_affecting_aura( p()->talents.fury.deft_experience );
+
+
 
     affected_by.ashen_juggernaut    = ab::data().affected_by( p()->conduit.ashen_juggernaut->effectN( 1 ).trigger()->effectN( 1 ) );
     affected_by.sweeping_strikes    = ab::data().affected_by( p()->talents.arms.sweeping_strikes->effectN( 1 ) );
@@ -2820,7 +2835,7 @@ struct execute_damage_t : public warrior_attack_t
   double max_rage;
   double cost_rage;
   execute_damage_t( warrior_t* p, util::string_view options_str )
-    : warrior_attack_t( "execute", p, p->spec.execute->effectN( 1 ).trigger() ), max_rage( 40 )
+    : warrior_attack_t( "execute", p, p->spell.execute->effectN( 1 ).trigger() ), max_rage( 40 )
   {
     parse_options( options_str );
     weapon = &( p->main_hand_weapon );
@@ -2845,7 +2860,7 @@ struct execute_arms_t : public warrior_attack_t
   double max_rage;
   double execute_pct;
   execute_arms_t( warrior_t* p, util::string_view options_str )
-    : warrior_attack_t( "execute", p, p->spec.execute ), max_rage( 40 ), execute_pct( 20 )
+    : warrior_attack_t( "execute", p, p->spell.execute ), max_rage( 40 ), execute_pct( 20 )
   {
     parse_options( options_str );
     weapon        = &( p->main_hand_weapon );
@@ -2901,9 +2916,16 @@ struct execute_arms_t : public warrior_attack_t
 
     trigger_attack->cost_rage = last_resource_cost;
     trigger_attack->execute();
+    if ( p()->talents.arms.improved_execute->ok() && !p()->talents.arms.critical_thinking->ok() )
+    {
     p()->resource_gain( RESOURCE_RAGE, last_resource_cost * 0.2,
                         p()->gain.execute_refund );  // Not worth the trouble to check if the target died.
-
+    }
+    if ( p()->talents.arms.improved_execute->ok() && p()->talents.arms.critical_thinking->ok() )
+    {
+    p()->resource_gain( RESOURCE_RAGE, last_resource_cost * ( p()->talents.arms.critical_thinking->effectN( 2 ).percent() + 0.2 ),
+                        p()->gain.execute_refund );  // Not worth the trouble to check if the target died.
+    }
 
     if (p()->buff.sudden_death->up())
     {
@@ -3486,6 +3508,10 @@ struct raging_blow_t : public warrior_attack_t
     add_child( mh_attack );
     cooldown->reset( false );
     track_cd_waste = true;
+    if ( p->talents.fury.swift_strikes->ok() )
+    {
+      energize_amount += p->talents.fury.swift_strikes->effectN( 2 ).resource( RESOURCE_RAGE );
+    }
   }
 
   void init() override
@@ -3627,6 +3653,11 @@ struct crushing_blow_t : public warrior_attack_t
     cooldown->reset( false );
     cooldown = p -> cooldown.raging_blow;
     track_cd_waste = true;
+
+    if ( p->talents.fury.swift_strikes->ok() )
+    {
+      energize_amount += p->talents.fury.swift_strikes->effectN( 2 ).resource( RESOURCE_RAGE );
+    }
 
     if (p->talents.fury.wrath_and_fury->ok() && p->buff.enrage->check() )
     {
@@ -5007,11 +5038,11 @@ struct arms_whirlwind_parent_t : public warrior_attack_t
   arms_whirlwind_mh_t* mh_attack;
   timespan_t spin_time;
   arms_whirlwind_parent_t( warrior_t* p, util::string_view options_str )
-    : warrior_attack_t( "whirlwind", p, p->spec.whirlwind ),
+    : warrior_attack_t( "whirlwind", p, p->spell.whirlwind ),
       fervor_slam( nullptr ),
       first_mh_attack( nullptr ),
       mh_attack( nullptr ),
-      spin_time( timespan_t::from_millis( p->spec.whirlwind->effectN( 2 ).misc_value1() ) )
+      spin_time( timespan_t::from_millis( p->spell.whirlwind->effectN( 2 ).misc_value1() ) )
   {
     parse_options( options_str );
     radius = data().effectN( 1 ).trigger()->effectN( 1 ).radius_max();
@@ -5281,8 +5312,16 @@ struct condemn_arms_t : public warrior_attack_t
 
     trigger_attack->cost_rage = last_resource_cost;
     trigger_attack->execute();
+    if ( p()->talents.arms.improved_execute->ok() && !p()->talents.arms.critical_thinking->ok() )
+    {
     p()->resource_gain( RESOURCE_RAGE, last_resource_cost * 0.2,
                         p()->gain.execute_refund );  // Not worth the trouble to check if the target died.
+    }
+    if ( p()->talents.arms.improved_execute->ok() && p()->talents.arms.critical_thinking->ok() )
+    {
+    p()->resource_gain( RESOURCE_RAGE, last_resource_cost * ( p()->talents.arms.critical_thinking->effectN( 2 ).percent() + 0.2 ),
+                        p()->gain.execute_refund );  // Not worth the trouble to check if the target died.
+    }
 
     if (p()->buff.sudden_death->up())
     {
@@ -6464,13 +6503,13 @@ void warrior_t::init_spells()
 
   talents.arms.martial_prowess                     = find_talent_spell( talent_tree::SPECIALIZATION, "Martial Prowess" );
   talents.arms.die_by_the_sword                    = find_talent_spell( talent_tree::SPECIALIZATION, "Die by the Sword" );
-  talents.arms.improved_execute                    = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Execute" );
+  talents.arms.improved_execute                    = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Execute", WARRIOR_ARMS );
 
   talents.arms.improved_overpower                  = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Overpower" );
-  talents.arms.bloodsurge                          = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodsurge" );
-  talents.arms.fueled_by_violence                  = find_talent_spell( talent_tree::SPECIALIZATION, "Fueled by Violence" );
+  talents.arms.bloodsurge                          = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodsurge", WARRIOR_ARMS );
+  talents.arms.fueled_by_violence                  = find_talent_spell( talent_tree::SPECIALIZATION, "Fueled by Violence", WARRIOR_ARMS );
   talents.arms.storm_wall                          = find_talent_spell( talent_tree::SPECIALIZATION, "Storm Wall" );
-  talents.arms.sudden_death                        = find_talent_spell( talent_tree::SPECIALIZATION, "Sudden Death" );
+  talents.arms.sudden_death                        = find_talent_spell( talent_tree::SPECIALIZATION, "Sudden Death", WARRIOR_ARMS );
   talents.arms.fervor_of_battle                    = find_talent_spell( talent_tree::SPECIALIZATION, "Fervor of Battle" );
 
   talents.arms.tactician                            = find_talent_spell( talent_tree::SPECIALIZATION, "Tactician" );
@@ -6478,28 +6517,28 @@ void warrior_t::init_spells()
   talents.arms.impale                              = find_talent_spell( talent_tree::SPECIALIZATION, "Impale" );
 
   talents.arms.skullsplitter                       = find_talent_spell( talent_tree::SPECIALIZATION, "Skullsplitter" );
-  talents.arms.rend                                = find_talent_spell( talent_tree::SPECIALIZATION, "Rend" );
+  talents.arms.rend                                = find_talent_spell( talent_tree::SPECIALIZATION, "Rend", WARRIOR_ARMS );
   talents.arms.exhilarating_blows                  = find_talent_spell( talent_tree::SPECIALIZATION, "Exhilarating Blows" );
   talents.arms.anger_management                    = find_talent_spell( talent_tree::SPECIALIZATION, "Anger Management" );
-  talents.arms.massacre                            = find_talent_spell( talent_tree::SPECIALIZATION, "Massacre" );
+  talents.arms.massacre                            = find_talent_spell( talent_tree::SPECIALIZATION, "Massacre", WARRIOR_ARMS );
   talents.arms.sweeping_strikes                    = find_talent_spell( talent_tree::SPECIALIZATION, "Sweeping Strikes" );
   talents.arms.cleave                              = find_talent_spell( talent_tree::SPECIALIZATION, "Cleave" );
 
   talents.arms.tide_of_blood                       = find_talent_spell( talent_tree::SPECIALIZATION, "Tide of Blood" );
-  talents.arms.bloodborne                          = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodborne" );
+  talents.arms.bloodborne                          = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodborne", WARRIOR_ARMS );
   talents.arms.dreadnaught                         = find_talent_spell( talent_tree::SPECIALIZATION, "Dreadnaught" );
   talents.arms.in_for_the_kill                     = find_talent_spell( talent_tree::SPECIALIZATION, "In for the Kill" );
   talents.arms.test_of_might                       = find_talent_spell( talent_tree::SPECIALIZATION, "Test of Might" );
   talents.arms.blunt_instruments                   = find_talent_spell( talent_tree::SPECIALIZATION, "Blunt Instruments" );
   talents.arms.warbreaker                          = find_talent_spell( talent_tree::SPECIALIZATION, "Warbreaker" );
   talents.arms.improved_mortal_strike              = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Mortal Strike" );
-  talents.arms.storm_of_swords                     = find_talent_spell( talent_tree::SPECIALIZATION, "Storm of Swords" );
+  talents.arms.storm_of_swords                     = find_talent_spell( talent_tree::SPECIALIZATION, "Storm of Swords", WARRIOR_ARMS );
   talents.arms.collateral_damage                   = find_talent_spell( talent_tree::SPECIALIZATION, "Collateral Damage" );
   talents.arms.reaping_swings                      = find_talent_spell( talent_tree::SPECIALIZATION, "Reaping Swings" );
 
-  talents.arms.deft_experience                     = find_talent_spell( talent_tree::SPECIALIZATION, "Deft Experience" );
+  talents.arms.deft_experience                     = find_talent_spell( talent_tree::SPECIALIZATION, "Deft Experience", WARRIOR_ARMS );
   talents.arms.valor_in_victory                    = find_talent_spell( talent_tree::SPECIALIZATION, "Valor in Victory" );
-  talents.arms.critical_thinking                   = find_talent_spell( talent_tree::SPECIALIZATION, "Critical Thinking" );
+  talents.arms.critical_thinking                   = find_talent_spell( talent_tree::SPECIALIZATION, "Critical Thinking", WARRIOR_ARMS );
 
   talents.arms.bloodletting                        = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodletting" );
   talents.arms.battlelord                          = find_talent_spell( talent_tree::SPECIALIZATION, "Battlelord" );
@@ -6508,11 +6547,11 @@ void warrior_t::init_spells()
   talents.arms.executioners_precision              = find_talent_spell( talent_tree::SPECIALIZATION, "Executioner's Precision" );
 
   talents.arms.fatality                            = find_talent_spell( talent_tree::SPECIALIZATION, "Fatality" );
-  talents.arms.dance_of_death                      = find_talent_spell( talent_tree::SPECIALIZATION, "Dance of Death" );
+  talents.arms.dance_of_death                      = find_talent_spell( talent_tree::SPECIALIZATION, "Dance of Death", WARRIOR_ARMS );
   talents.arms.unhinged                            = find_talent_spell( talent_tree::SPECIALIZATION, "Unhinged" );
-  talents.arms.hurricane                           = find_talent_spell( talent_tree::SPECIALIZATION, "Hurricane" );
+  talents.arms.hurricane                           = find_talent_spell( talent_tree::SPECIALIZATION, "Hurricane", WARRIOR_ARMS );
   talents.arms.merciless_bonegrinder               = find_talent_spell( talent_tree::SPECIALIZATION, "Merciless Bonegrinder" );
-  talents.arms.juggernaught                        = find_talent_spell( talent_tree::SPECIALIZATION, "Juggernaught" );
+  talents.arms.juggernaught                        = find_talent_spell( talent_tree::SPECIALIZATION, "Juggernaught", WARRIOR_ARMS );
 
   // Fury Talents
   talents.fury.bloodthirst          = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodthirst" );
@@ -6521,13 +6560,13 @@ void warrior_t::init_spells()
 
   talents.fury.improved_enrage      = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Enrage" );
   talents.fury.enraged_regeneration = find_talent_spell( talent_tree::SPECIALIZATION, "Enraged Regeneration" );
-  talents.fury.improved_execute     = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Execute" );
+  talents.fury.improved_execute     = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Execute", WARRIOR_FURY );
 
   talents.fury.improved_bloodthirst = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Bloodthirst" );
   talents.fury.fresh_meat           = find_talent_spell( talent_tree::SPECIALIZATION, "Fresh Meat" );
   talents.fury.warpaint             = find_talent_spell( talent_tree::SPECIALIZATION, "Warpaint" );
   talents.fury.invigorating_fury    = find_talent_spell( talent_tree::SPECIALIZATION, "Invigorating Fury" );
-  talents.fury.sudden_death         = find_talent_spell( talent_tree::SPECIALIZATION, "Sudden Death" );
+  talents.fury.sudden_death         = find_talent_spell( talent_tree::SPECIALIZATION, "Sudden Death", WARRIOR_FURY );
   talents.fury.improved_raging_blow = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Raging Blow" );
 
   talents.fury.focus_in_chaos       = find_talent_spell( talent_tree::SPECIALIZATION, "Focus in Chaos" );
@@ -6545,17 +6584,17 @@ void warrior_t::init_spells()
   talents.fury.wrath_and_fury       = find_talent_spell( talent_tree::SPECIALIZATION, "Wrath and Fury" );
 
   talents.fury.frenzied_flurry      = find_talent_spell( talent_tree::SPECIALIZATION, "Frenzied Flurry" );
-  talents.fury.bloodborne           = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodborne" );
+  talents.fury.bloodborne           = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodborne", WARRIOR_FURY );
   talents.fury.bloodcraze           = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodcraze" );
   talents.fury.recklessness         = find_talent_spell( talent_tree::SPECIALIZATION, "Recklessness" );
-  talents.fury.massacre             = find_talent_spell( talent_tree::SPECIALIZATION, "Massacre" );
+  talents.fury.massacre             = find_talent_spell( talent_tree::SPECIALIZATION, "Massacre", WARRIOR_FURY );
   talents.fury.meat_cleaver         = find_talent_spell( talent_tree::SPECIALIZATION, "Meat Cleaver" );
   talents.fury.raging_armaments     = find_talent_spell( talent_tree::SPECIALIZATION, "Raging Armaments" );
 
-  talents.fury.deft_experience      = find_talent_spell( talent_tree::SPECIALIZATION, "Deft Experience" );
+  talents.fury.deft_experience      = find_talent_spell( talent_tree::SPECIALIZATION, "Deft Experience", WARRIOR_FURY );
   talents.fury.swift_strikes        = find_talent_spell( talent_tree::SPECIALIZATION, "Swift Strikes" );
-  talents.fury.critical_thinking    = find_talent_spell( talent_tree::SPECIALIZATION, "Critical Thinking" );
-  talents.fury.storm_of_swords      = find_talent_spell( talent_tree::SPECIALIZATION, "Storm of Swords" );
+  talents.fury.critical_thinking    = find_talent_spell( talent_tree::SPECIALIZATION, "Critical Thinking", WARRIOR_FURY );
+  talents.fury.storm_of_swords      = find_talent_spell( talent_tree::SPECIALIZATION, "Storm of Swords", WARRIOR_FURY );
   talents.fury.odyns_fury           = find_talent_spell( talent_tree::SPECIALIZATION, "Odyn's Fury" );
   talents.fury.anger_management     = find_talent_spell( talent_tree::SPECIALIZATION, "Anger Management" );
   talents.fury.reckless_abandon     = find_talent_spell( talent_tree::SPECIALIZATION, "Reckless Abandon" );
@@ -6568,8 +6607,8 @@ void warrior_t::init_spells()
   talents.fury.unbridled_ferocity   = find_talent_spell( talent_tree::SPECIALIZATION, "Unbridled Ferocity" );
   talents.fury.depths_of_insanity   = find_talent_spell( talent_tree::SPECIALIZATION, "Depths of Insanity" );
   talents.fury.tenderize            = find_talent_spell( talent_tree::SPECIALIZATION, "Tenderize" );
-  talents.fury.storm_of_steel       = find_talent_spell( talent_tree::SPECIALIZATION, "Storm of Steel" );
-  talents.fury.hurricane            = find_talent_spell( talent_tree::SPECIALIZATION, "Hurricane" ); 
+  talents.fury.storm_of_steel       = find_talent_spell( talent_tree::SPECIALIZATION, "Storm of Steel", WARRIOR_FURY );
+  talents.fury.hurricane            = find_talent_spell( talent_tree::SPECIALIZATION, "Hurricane", WARRIOR_FURY ); 
 
   // Protection Talents
   talents.protection.ignore_pain            = find_talent_spell( talent_tree::SPECIALIZATION, "Ignore Pain" );
@@ -6588,30 +6627,30 @@ void warrior_t::init_spells()
 
   talents.protection.challenging_shout      = find_talent_spell( talent_tree::SPECIALIZATION, "Challenging Shout" );
   talents.protection.instigate              = find_talent_spell( talent_tree::SPECIALIZATION, "Instigate" );
-  talents.protection.rend                   = find_talent_spell( talent_tree::SPECIALIZATION, "Rend" );
-  talents.protection.bloodsurge             = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodsurge" );
-  talents.protection.fueled_by_violence     = find_talent_spell( talent_tree::SPECIALIZATION, "Fueled by Violence" );
+  talents.protection.rend                   = find_talent_spell( talent_tree::SPECIALIZATION, "Rend", WARRIOR_PROTECTION );
+  talents.protection.bloodsurge             = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodsurge", WARRIOR_PROTECTION );
+  talents.protection.fueled_by_violence     = find_talent_spell( talent_tree::SPECIALIZATION, "Fueled by Violence", WARRIOR_PROTECTION );
   talents.protection.brutal_vitality        = find_talent_spell( talent_tree::SPECIALIZATION, "Brutal Vitality" );
 
   talents.protection.disrupting_shout       = find_talent_spell( talent_tree::SPECIALIZATION, "Disrupting Shout" );
   talents.protection.show_of_force          = find_talent_spell( talent_tree::SPECIALIZATION, "Show of Force" );
-  talents.protection.sudden_death           = find_talent_spell( talent_tree::SPECIALIZATION, "Sudden Death" );
+  talents.protection.sudden_death           = find_talent_spell( talent_tree::SPECIALIZATION, "Sudden Death", WARRIOR_PROTECTION );
   talents.protection.thunderlord            = find_talent_spell( talent_tree::SPECIALIZATION, "Thunderlord" );
   talents.protection.shield_wall            = find_talent_spell( talent_tree::SPECIALIZATION, "Shield Wall" );
   talents.protection.bolster                = find_talent_spell( talent_tree::SPECIALIZATION, "Bolster" );
   talents.protection.tough_as_nails         = find_talent_spell( talent_tree::SPECIALIZATION, "Tough as Nails" );
   talents.protection.spell_block            = find_talent_spell( talent_tree::SPECIALIZATION, "Spell Block" );
-  talents.protection.bloodborne             = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodborne" );
+  talents.protection.bloodborne             = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodborne", WARRIOR_PROTECTION );
 
   talents.protection.heavy_repercussions    = find_talent_spell( talent_tree::SPECIALIZATION, "Heavy Repercussions" );
   talents.protection.into_the_fray          = find_talent_spell( talent_tree::SPECIALIZATION, "Into the Fray" );
   talents.protection.enduring_defenses      = find_talent_spell( talent_tree::SPECIALIZATION, "Enduring Defenses" );
-  talents.protection.massacre               = find_talent_spell( talent_tree::SPECIALIZATION, "Massacre" );
+  talents.protection.massacre               = find_talent_spell( talent_tree::SPECIALIZATION, "Massacre", WARRIOR_PROTECTION );
   talents.protection.anger_management       = find_talent_spell( talent_tree::SPECIALIZATION, "Anger Management" );
   talents.protection.unbreakable_will       = find_talent_spell( talent_tree::SPECIALIZATION, "Unbreakable Will" );
   talents.protection.impenetrable_wall      = find_talent_spell( talent_tree::SPECIALIZATION, "Impenetrable Wall" );
   talents.protection.punish                 = find_talent_spell( talent_tree::SPECIALIZATION, "Punish" );
-  talents.protection.juggernaught           = find_talent_spell( talent_tree::SPECIALIZATION, "Juggernaught" );
+  talents.protection.juggernaught           = find_talent_spell( talent_tree::SPECIALIZATION, "Juggernaught", WARRIOR_PROTECTION );
 
   talents.protection.focused_vigor          = find_talent_spell( talent_tree::SPECIALIZATION, "Focused Vigor" );
   talents.protection.shield_specialization  = find_talent_spell( talent_tree::SPECIALIZATION, "Shield Specialization" );
@@ -6621,13 +6660,13 @@ void warrior_t::init_spells()
   talents.protection.booming_voice          = find_talent_spell( talent_tree::SPECIALIZATION, "Booming Voice" );
   talents.protection.indomitable            = find_talent_spell( talent_tree::SPECIALIZATION, "Indomitable" );
   talents.protection.violent_outburst       = find_talent_spell( talent_tree::SPECIALIZATION, "Violent Outburst" );
-  talents.protection.ravager                = find_talent_spell( talent_tree::SPECIALIZATION, "Ravager" );
+  talents.protection.ravager                = find_talent_spell( talent_tree::SPECIALIZATION, "Ravager", WARRIOR_PROTECTION );
 
   talents.protection.battering_ram          = find_talent_spell( talent_tree::SPECIALIZATION, "Battering Ram" );
   talents.protection.champions_bulwark      = find_talent_spell( talent_tree::SPECIALIZATION, "Champion's Bulwark" );
   talents.protection.battle_scarred_veteran = find_talent_spell( talent_tree::SPECIALIZATION, "Battle-Scarred Veteran" );
-  talents.protection.dance_of_death         = find_talent_spell( talent_tree::SPECIALIZATION, "Dance of Death" );
-  talents.protection.storm_of_steel         = find_talent_spell( talent_tree::SPECIALIZATION, "Storm of Steel" );
+  talents.protection.dance_of_death         = find_talent_spell( talent_tree::SPECIALIZATION, "Dance of Death", WARRIOR_PROTECTION );
+  talents.protection.storm_of_steel         = find_talent_spell( talent_tree::SPECIALIZATION, "Storm of Steel", WARRIOR_PROTECTION );
 
   // All
   azerite.breach           = find_azerite_spell( "Breach" );
@@ -6732,14 +6771,31 @@ void warrior_t::init_spells()
   legendary.thunderlord               = find_runeforge_legendary( "Thunderlord" );
   legendary.reprisal                  = find_runeforge_legendary( "Reprisal" );
 
+  // AA Mods Not Handled by affecting_aura
   if ( specialization() == WARRIOR_FURY )
   {
   auto_attack_multiplier *= 1.0 + spec.fury_warrior->effectN( 4 ).percent();
+  }
+  if ( specialization() == WARRIOR_ARMS )
+  {
+    auto_attack_multiplier *= 1.0 + spec.arms_warrior->effectN( 6 ).percent();
   }
   if ( specialization() == WARRIOR_FURY && main_hand_weapon.group() == WEAPON_1H &&
              off_hand_weapon.group() == WEAPON_1H && talents.fury.single_minded_fury->ok() )
   {
     auto_attack_multiplier *= 1.0 + talents.fury.single_minded_fury->effectN( 4 ).percent();
+  }
+  if ( specialization() == WARRIOR_FURY && talents.warrior.dual_wield_specialization->ok() )
+  {
+  auto_attack_multiplier *= 1.0 + talents.warrior.dual_wield_specialization->effectN( 3 ).percent();
+  }
+  if ( specialization() == WARRIOR_ARMS && talents.warrior.two_handed_weapon_specialization->ok() ) 
+  {
+    auto_attack_multiplier *= 1.0 + talents.warrior.two_handed_weapon_specialization->effectN( 3 ).percent();
+  }
+  if ( specialization() == WARRIOR_PROTECTION && talents.warrior.one_handed_weapon_specialization->ok() )
+  {
+    auto_attack_multiplier *= 1.0 + talents.warrior.one_handed_weapon_specialization->effectN( 3 ).percent();
   }
 
   if ( legendary.natures_fury->ok() )
@@ -8263,6 +8319,10 @@ double warrior_t::composite_melee_haste() const
 
   a *= 1.0 / ( 1.0 + buff.in_for_the_kill->check_value() );
 
+  a *= 1.0 / ( 1.0 + talents.warrior.wild_strikes->effectN( 1 ).percent() );
+
+  a *= 1.0 / ( 1.0 + talents.fury.swift_strikes->effectN( 1 ).percent() );
+
   return a;
 }
 
@@ -8281,7 +8341,43 @@ double warrior_t::composite_melee_expertise( const weapon_t* ) const
 
 double warrior_t::composite_mastery() const
 {
-  return player_t::composite_mastery();
+  double y = player_t::composite_mastery();
+
+  if ( specialization() == WARRIOR_ARMS )
+  {
+    y += talents.arms.deft_experience->effectN( 1 ).base_value();
+  }
+  else
+  {
+    y += talents.fury.deft_experience->effectN( 1 ).base_value();
+  }
+
+  return y;
+}
+
+// warrior_t::composite_damage_versatility =============================================
+
+double warrior_t::composite_damage_versatility() const
+{
+  double cdv = player_t::composite_damage_versatility();
+
+  cdv += talents.arms.valor_in_victory->effectN( 1 ).percent();
+
+  return cdv;
+}
+
+// warrior_t::composite_attribute ================================
+
+double warrior_t::composite_attribute( attribute_e attr ) const
+{
+  double p = player_t::composite_attribute( attr );
+
+  if ( attr == ATTR_STRENGTH )
+  {
+    p += ( talents.warrior.armored_to_the_teeth->effectN( 2 ).percent() * cache.armor() );
+  }
+
+  return p;
 }
 
 // warrior_t::composite_attribute_multiplier ================================
@@ -8295,6 +8391,7 @@ double warrior_t::composite_attribute_multiplier( attribute_e attr ) const
     m *= 1.0 + buff.veterans_repute->value();
 
     m *= 1.0 + buff.pile_on_str->check_stack_value();
+
   }
 
   // Protection has increased stamina from vanguard
@@ -8328,6 +8425,17 @@ double warrior_t::matching_gear_multiplier( attribute_e attr ) const
   }
 
   return 0.0;
+}
+
+// warrior_t::composite_armor_multiplier ==========================================
+
+double warrior_t::composite_armor_multiplier() const
+{
+  double ar = player_t::composite_armor_multiplier();
+
+  ar *= 1.0 + talents.warrior.reinforced_plates->effectN( 1 ).percent();
+
+  return ar;
 }
 
 // warrior_t::composite_bonus_armor ==========================================
@@ -8460,6 +8568,16 @@ double warrior_t::composite_melee_crit_chance() const
   //c += buff.recklessness->check_value(); removed in favor of composite_crit_chance (line 1015)
   c += buff.will_of_the_berserker->check_value();
   c += buff.conquerors_frenzy->check_value();
+  c += talents.warrior.cruel_strikes->effectN( 1 ).percent();
+
+  if ( specialization() == WARRIOR_ARMS )
+  {
+    c += talents.arms.critical_thinking->effectN( 1 ).percent();
+  }
+  else
+  {
+    c += talents.fury.critical_thinking->effectN( 1 ).percent();
+  }
 
   return c;
 }
@@ -8836,6 +8954,18 @@ void warrior_t::apply_affecting_auras( action_t& action )
              off_hand_weapon.group() == WEAPON_1H && talents.fury.single_minded_fury->ok() )
   {
   action.apply_affecting_aura( talents.fury.single_minded_fury );
+  }
+  if ( specialization() == WARRIOR_FURY && talents.warrior.dual_wield_specialization->ok() )
+  {
+    action.apply_affecting_aura( talents.warrior.dual_wield_specialization );
+  }
+  if ( specialization() == WARRIOR_ARMS && talents.warrior.two_handed_weapon_specialization->ok() )
+  {
+    action.apply_affecting_aura( talents.warrior.two_handed_weapon_specialization );
+  }
+  if ( specialization() == WARRIOR_PROTECTION && talents.warrior.one_handed_weapon_specialization->ok() )
+  {
+    action.apply_affecting_aura( talents.warrior.one_handed_weapon_specialization );
   }
 }
 
