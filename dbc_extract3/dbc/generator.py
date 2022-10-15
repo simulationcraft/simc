@@ -1419,6 +1419,7 @@ class SpellDataGenerator(DataGenerator):
             ( 382522, 0 ),          # Consecrated Blade buff
             ( 383305, 0 ),          # Virtuous Command damage
             ( 387178, 0 ),          # Empyrean Legacy buff
+            ( 224239, 0 ),          # Tempest divine storm
         ),
 
         # Hunter:

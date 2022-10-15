@@ -479,7 +479,7 @@ public:
     const spell_data_t* hand_of_hindrance; // NYI
     const spell_data_t* selfless_healer; // NYI
     const spell_data_t* healing_hands; // NYI
-    const spell_data_t* tempest_of_the_lightbringer; // NYI
+    const spell_data_t* tempest_of_the_lightbringer;
     const spell_data_t* justicars_vengeance;
     const spell_data_t* eye_for_an_eye; // NYI
 

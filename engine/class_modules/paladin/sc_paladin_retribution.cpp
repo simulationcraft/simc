@@ -449,10 +449,25 @@ struct blade_of_justice_t : public paladin_melee_attack_t
 
 // Divine Storm =============================================================
 
+struct divine_storm_tempest_t : public paladin_melee_attack_t
+{
+  divine_storm_tempest_t( paladin_t* p ) :
+    paladin_melee_attack_t( "divine_storm_tempest", p, p -> find_spell( 224239 ) )
+  {
+    background = true;
+
+    aoe = -1;
+    base_multiplier *= p -> talents.tempest_of_the_lightbringer -> effectN( 1 ).percent();
+  }
+}
+
 struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
 {
+  divine_storm_tempest_t* tempest;
+
   divine_storm_t( paladin_t* p, util::string_view options_str ) :
-    holy_power_consumer_t( "divine_storm", p, p -> find_specialization_spell( "Divine Storm" ) )
+    holy_power_consumer_t( "divine_storm", p, p -> find_specialization_spell( "Divine Storm" ) ),
+    tempest( nullptr )
   {
     parse_options( options_str );
 
@@ -465,10 +480,17 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
 
     if ( p -> legendary.tempest_of_the_lightbringer -> ok() )
       base_multiplier *= 1.0 + p -> legendary.tempest_of_the_lightbringer -> effectN( 2 ).percent();
+
+    if ( p -> talents.tempest_of_the_lightbringer -> ok() )
+    {
+      tempest = new divine_storm_tempest_t( p );
+      add_child( tempest );
+    }
   }
 
   divine_storm_t( paladin_t* p, bool is_free, double mul ) :
-    holy_power_consumer_t( "divine_storm", p, p -> find_specialization_spell( "Divine Storm" ) )
+    holy_power_consumer_t( "divine_storm", p, p -> find_specialization_spell( "Divine Storm" ) ),
+    tempest( nullptr )
   {
     is_divine_storm = true;
     aoe = as<int>( data().effectN( 2 ).base_value() );
@@ -478,6 +500,12 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
 
     if ( p -> legendary.tempest_of_the_lightbringer -> ok() )
       base_multiplier *= 1.0 + p -> legendary.tempest_of_the_lightbringer -> effectN( 2 ).percent();
+
+    if ( p -> talents.tempest_of_the_lightbringer -> ok() )
+    {
+      tempest = new divine_storm_tempest_t( p );
+      add_child( tempest );
+    }
   }
 
   double bonus_da( const action_state_t* s ) const override
@@ -500,6 +528,16 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
       am *= 1.0 + p() -> buffs.empyrean_power -> data().effectN( 1 ).percent();
 
     return am;
+  }
+
+  void execute() override
+  {
+    holy_power_consumer_t::execute();
+
+    if ( p() -> talents.tempest_of_the_lightbringer -> ok() )
+    {
+      tempest -> schedule_execute();
+    }
   }
 
   void impact( action_state_t* s ) override
