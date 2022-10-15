@@ -1139,6 +1139,26 @@ double warlock_t::composite_mastery() const
   return m;
 }
 
+double warlock_t::composite_spell_crit_chance() const
+{
+  double m = player_t::composite_spell_crit_chance();
+
+  if ( specialization() == WARLOCK_DESTRUCTION && talents.backlash.ok() )
+    m += talents.backlash->effectN( 1 ).percent();
+
+  return m;
+}
+
+double warlock_t::composite_melee_crit_chance() const
+{
+  double m = player_t::composite_melee_crit_chance();
+
+  if ( specialization() == WARLOCK_DESTRUCTION && talents.backlash.ok() )
+    m += talents.backlash->effectN( 1 ).percent();
+
+  return m;
+}
+
 double warlock_t::composite_rating_multiplier( rating_e rating ) const
 {
   double m = player_t::composite_rating_multiplier( rating );

@@ -382,7 +382,7 @@ public:
     player_talent_t raging_demonfire; // Additional Demonfire bolts and bolts extend Immolate
     player_talent_t rolling_havoc; // Increased damage buff when spells are duplicated by Mayhem/Havoc
     const spell_data_t* rolling_havoc_buff;
-    // DF - Backlash (Crit chance increase, damage proc when physically attacked)
+    player_talent_t backlash; // Crit chance increase. NOT IMPLEMENTED: Damage proc when physically attacked
     const spell_data_t* fire_and_brimstone; // DF - Now a 2 point talent
 
     // DF - Decimation (Incinerate and Conflagrate casts reduce Soul Fire cooldown)
@@ -688,6 +688,8 @@ public:
   double composite_rating_multiplier( rating_e rating ) const override;
   void invalidate_cache( cache_e ) override;
   double composite_mastery() const override;
+  double composite_spell_crit_chance() const override;
+  double composite_melee_crit_chance() const override;
   double resource_regen_per_second( resource_e ) const override;
   double composite_attribute_multiplier( attribute_e attr ) const override;
   void combat_begin() override;

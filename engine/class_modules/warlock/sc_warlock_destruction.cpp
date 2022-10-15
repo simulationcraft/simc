@@ -1129,6 +1129,8 @@ void warlock_t::init_spells_destruction()
   talents.rolling_havoc = find_talent_spell( talent_tree::SPECIALIZATION, "Rolling Havoc" ); // Should be ID 387569
   talents.rolling_havoc_buff = find_spell( 387570 );
 
+  talents.backlash = find_talent_spell( talent_tree::SPECIALIZATION, "Backlash" ); // Should be ID 387384
+
   talents.eradication = find_talent_spell( "Eradication" );
 
 
