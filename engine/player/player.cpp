@@ -4707,10 +4707,10 @@ double player_t::composite_player_pet_damage_multiplier( const action_state_t*, 
 {
   double m = 1.0;
 
+  m *= 1.0 + racials.command->effectN(1).percent();
+
   if (!guardian)
   {
-    m *= 1.0 + racials.command->effectN(1).percent();
-
     if (buffs.coldhearted && buffs.coldhearted->check())
       m *= 1.0 + buffs.coldhearted->check_value();
 
