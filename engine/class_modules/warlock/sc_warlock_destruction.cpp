@@ -145,6 +145,15 @@ struct shadowburn_t : public destruction_spell_t
     int shards_used = as<int>( cost() );
     destruction_spell_t::execute();
 
+    // 2022-10-15 - Conflagration of Chaos can proc from a spell that consumes it
+    p()->buffs.conflagration_of_chaos_sb->expire();
+
+    if ( p()->talents.conflagration_of_chaos.ok() && rng().roll( p()->talents.conflagration_of_chaos->effectN( 1 ).percent() ) )
+    {
+      p()->buffs.conflagration_of_chaos_sb->trigger();
+      p()->procs.conflagration_of_chaos_sb->occur();
+    }
+
     //if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T28, B2 ) )
     //{
     //  // Shadowburn is an offensive spell that consumes Soul Shards, so it can trigger Impending Ruin
@@ -167,6 +176,28 @@ struct shadowburn_t : public destruction_spell_t
       m += p()->talents.shadowburn->effectN( 3 ).percent();
 
     return m;
+  }
+
+  // The critical strike behavior for Conflagration of Chaos is based off of Chaos Bolt handling
+  double composite_crit_chance() const override
+  {
+    if ( p()->buffs.conflagration_of_chaos_sb->check() )
+      return 1.0;
+
+    return destruction_spell_t::composite_crit_chance();
+  }
+
+  double calculate_direct_amount( action_state_t* state ) const override
+  {
+    double amt = destruction_spell_t::calculate_direct_amount( state );
+    
+    if ( p()->buffs.conflagration_of_chaos_sb->check() )
+    {
+      state->result_total *= 1.0 + player->cache.spell_crit_chance();
+      return state->result_total;
+    }
+
+    return amt;
   }
 };
 
@@ -256,6 +287,15 @@ struct conflagrate_t : public destruction_spell_t
   {
     destruction_spell_t::execute();
 
+    // 2022-10-15 - Conflagration of Chaos can proc from a spell that consumes it
+    p()->buffs.conflagration_of_chaos_cf->expire();
+
+    if ( p()->talents.conflagration_of_chaos.ok() && rng().roll( p()->talents.conflagration_of_chaos->effectN( 1 ).percent() ) )
+    {
+      p()->buffs.conflagration_of_chaos_cf->trigger();
+      p()->procs.conflagration_of_chaos_cf->occur();
+    }
+
     if ( p()->talents.backdraft.ok() )
       p()->buffs.backdraft->trigger();
 
@@ -263,6 +303,28 @@ struct conflagrate_t : public destruction_spell_t
     {
       p()->cooldowns.soul_fire->adjust( p()->talents.decimation->effectN( 1 ).time_value() );
     }
+  }
+
+  // The critical strike behavior for Conflagration of Chaos is based off of Chaos Bolt handling
+  double composite_crit_chance() const override
+  {
+    if ( p()->buffs.conflagration_of_chaos_cf->check() )
+      return 1.0;
+
+    return destruction_spell_t::composite_crit_chance();
+  }
+
+  double calculate_direct_amount( action_state_t* state ) const override
+  {
+    double amt = destruction_spell_t::calculate_direct_amount( state );
+    
+    if ( p()->buffs.conflagration_of_chaos_cf->check() )
+    {
+      state->result_total *= 1.0 + player->cache.spell_crit_chance();
+      return state->result_total;
+    }
+
+    return amt;
   }
 };
 
@@ -1051,6 +1113,12 @@ void warlock_t::create_buffs_destruction()
                                });
 
   buffs.ritual_of_ruin = make_buff ( this, "ritual_of_ruin", find_spell ( 364349 ) );
+
+  buffs.conflagration_of_chaos_cf = make_buff( this, "conflagration_of_chaos_cf", talents.conflagration_of_chaos_cf )
+                                        ->set_default_value_from_effect( 1 );
+
+  buffs.conflagration_of_chaos_sb = make_buff( this, "conflagration_of_chaos_sb", talents.conflagration_of_chaos_sb )
+                                        ->set_default_value_from_effect( 1 );
 }
 void warlock_t::init_spells_destruction()
 {
@@ -1122,6 +1190,10 @@ void warlock_t::init_spells_destruction()
   talents.fire_and_brimstone = find_talent_spell( talent_tree::SPECIALIZATION, "Fire and Brimstone" ); // Should be ID 196408
 
   talents.decimation = find_talent_spell( talent_tree::SPECIALIZATION, "Decimation" ); // Should be ID 387176
+
+  talents.conflagration_of_chaos = find_talent_spell( talent_tree::SPECIALIZATION, "Conflagration of Chaos" ); // Should be ID 387108
+  talents.conflagration_of_chaos_cf = find_spell( 387109 );
+  talents.conflagration_of_chaos_sb = find_spell( 387110 );
 
   talents.eradication = find_talent_spell( "Eradication" );
 

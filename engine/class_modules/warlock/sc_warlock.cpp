@@ -1475,6 +1475,8 @@ void warlock_t::init_procs()
   procs.ritual_of_ruin       = get_proc( "ritual_of_ruin" );
   procs.avatar_of_destruction = get_proc( "avatar_of_destruction" );
   procs.mayhem = get_proc( "mayhem" );
+  procs.conflagration_of_chaos_cf = get_proc( "conflagration_of_chaos_cf" );
+  procs.conflagration_of_chaos_sb = get_proc( "conflagration_of_chaos_sb" );
 }
 
 void warlock_t::init_base_stats()
