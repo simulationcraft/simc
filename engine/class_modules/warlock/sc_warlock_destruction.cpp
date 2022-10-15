@@ -819,6 +819,17 @@ struct channel_demonfire_tick_t : public destruction_spell_t
     aoe = -1;
     base_aoe_multiplier = p->talents.channel_demonfire_tick->effectN( 2 ).sp_coeff() / p->talents.channel_demonfire_tick->effectN( 1 ).sp_coeff();
   }
+
+  void impact( action_state_t* s ) override
+  {
+    destruction_spell_t::impact( s );
+
+    // Raging Demonfire will adjust the time remaining on all targets hit by an AoE pulse
+    if ( p()->talents.raging_demonfire.ok() && td( s->target )->dots_immolate->is_ticking() )
+    {
+      td( s->target )->dots_immolate->adjust_duration( p()->talents.raging_demonfire->effectN( 2 ).time_value() );
+    }
+  }
 };
 
 struct channel_demonfire_t : public destruction_spell_t
@@ -837,6 +848,14 @@ struct channel_demonfire_t : public destruction_spell_t
     may_crit     = false;
 
     add_child( channel_demonfire );
+
+    // We need to fudge the duration to ensure the right number of ticks occur
+    if ( p->talents.raging_demonfire.ok() )
+    {
+      int num_ticks = as<int>( dot_duration / base_tick_time + p->talents.raging_demonfire->effectN( 1 ).base_value() );
+      base_tick_time *= 1.0 + p->talents.raging_demonfire->effectN( 3 ).percent();
+      dot_duration = num_ticks * base_tick_time;
+    }
   }
 
   void init() override
@@ -1104,6 +1123,8 @@ void warlock_t::init_spells_destruction()
   
   talents.shadowburn = find_talent_spell( talent_tree::SPECIALIZATION, "Shadowburn"); // Should be ID 17877
   talents.shadowburn_2 = find_spell( 245731 );
+
+  talents.raging_demonfire = find_talent_spell( talent_tree::SPECIALIZATION, "Raging Demonfire" ); // Should be ID 387166
 
   talents.eradication = find_talent_spell( "Eradication" );
 
