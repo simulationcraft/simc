@@ -108,8 +108,7 @@ double recharge_multiplier( const cooldown_t& cd ) const override
     double rm = paladin_spell_t::recharge_multiplier( cd );
 
     if ( p()->buffs.moment_of_glory->check() && p()->talents.moment_of_glory->ok() )
-      rm *= 1.0 + p()->talents.moment_of_glory->effectN( 1 ).percent();
-
+       rm *= 1.0 + p()->talents.moment_of_glory->effectN( 1 ).percent();
     return rm;
   }
 };
@@ -1021,7 +1020,7 @@ void paladin_t::init_spells_protection()
   talents.bastion_of_light               = find_talent_spell( talent_tree::SPECIALIZATION, "Bastion of Light" );
   talents.bulwark_of_order               = find_talent_spell( talent_tree::SPECIALIZATION, "Bulwark of Order" );
   talents.light_of_the_titans            = find_talent_spell( talent_tree::SPECIALIZATION, "Light of the Titans" );
-  talents.uthers_guard                   = find_talent_spell( talent_tree::SPECIALIZATION, "Uther's Guard" );
+  talents.uthers_counsel                 = find_talent_spell( talent_tree::SPECIALIZATION, "Uther's Counsel" );
   talents.hand_of_the_protector          = find_talent_spell( talent_tree::SPECIALIZATION, "Hand of the Protector" );
   talents.resolute_defender              = find_talent_spell( talent_tree::SPECIALIZATION, "Resolute Defender" );
   talents.sentinel                       = find_talent_spell( talent_tree::SPECIALIZATION, "Sentinel" );
@@ -1031,7 +1030,7 @@ void paladin_t::init_spells_protection()
   talents.tyrs_enforcer                  = find_talent_spell( talent_tree::SPECIALIZATION, "Tyr's Enforcer" );
   talents.guardian_of_ancient_kings      = find_talent_spell( talent_tree::SPECIALIZATION, "Guardian of Ancient Kings" );
   talents.sanctuary                      = find_talent_spell( talent_tree::SPECIALIZATION, "Sanctuary" );
-  talents.faith_barricade                = find_talent_spell( talent_tree::SPECIALIZATION, "Faith Barricade" );
+  talents.barricade_of_faith             = find_talent_spell( talent_tree::SPECIALIZATION, "Barricade of Faith" );
   talents.soaring_shield                 = find_talent_spell( talent_tree::SPECIALIZATION, "Soaring Shield" );
   talents.focused_enmity                 = find_talent_spell( talent_tree::SPECIALIZATION, "Focused Enmity" );
   talents.faiths_armor                   = find_talent_spell( talent_tree::SPECIALIZATION, "Faith's Armor" );
@@ -1044,11 +1043,10 @@ void paladin_t::init_spells_protection()
   talents.bulwark_of_righteous_fury      = find_talent_spell( talent_tree::SPECIALIZATION, "Bulwark of Righteous Fury" );
   talents.moment_of_glory                = find_talent_spell( talent_tree::SPECIALIZATION, "Moment of Glory" );
   talents.eye_of_tyr                     = find_talent_spell( talent_tree::SPECIALIZATION, "Eye of Tyr" );
-  talents.improved_sera_and_dt           = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Sera & DT" );
+  talents.quickened_invocations           = find_talent_spell( talent_tree::SPECIALIZATION, "Quickened Invocations" );
   talents.divine_resonance               = find_talent_spell( talent_tree::SPECIALIZATION, "Divine Resonance" );
   talents.avenging_wrath_might           = find_talent_spell( talent_tree::SPECIALIZATION, "Avenging Wrath: Might" );
-
-  talents.blessing_of_spellwarding   = find_talent_spell( "Blessing of Spellwarding" );
+  talents.blessing_of_spellwarding       = find_talent_spell( talent_tree::SPECIALIZATION, "Blessing of Spellwarding" );
 
   talents.consecrated_ground         = find_talent_spell( "Consecrated Ground" );
 

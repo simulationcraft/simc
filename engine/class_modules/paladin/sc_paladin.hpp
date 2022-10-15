@@ -350,14 +350,13 @@ public:
     
     // 20
     const spell_data_t* seal_of_clarity;
-    const spell_data_t* aspirations_of_divinity;
-    const spell_data_t* avenging_wrath_2; //Cdr
+    const spell_data_t* aspiration_of_divinity;
     const spell_data_t* touch_of_light;
     const spell_data_t* incandescence;
     const spell_data_t* hallowed_ground;
     const spell_data_t* of_dusk_and_dawn;
     const spell_data_t* unbreakable_spirit;
-    const spell_data_t* judgment;
+    const spell_data_t* greater_judgment;
     const spell_data_t* seal_of_might;
     const spell_data_t* blessing_of_spellwarding;
     const spell_data_t* improved_blessing_of_protection;
@@ -367,7 +366,7 @@ public:
     const spell_data_t* prot_sanctified_wrath;
     const spell_data_t* ret_sanctified_wrath;
     const spell_data_t* seraphim;
-    const spell_data_t* the_mad_paragon;
+    const spell_data_t* zealots_paragon;
 
 
     // Shared
@@ -415,7 +414,7 @@ public:
     const spell_data_t* bastion_of_light;
     const spell_data_t* bulwark_of_order;
     const spell_data_t* light_of_the_titans;
-    const spell_data_t* uthers_guard;
+    const spell_data_t* uthers_counsel;
     const spell_data_t* hand_of_the_protector;
     const spell_data_t* resolute_defender;
     const spell_data_t* sentinel;
@@ -425,7 +424,7 @@ public:
     const spell_data_t* tyrs_enforcer;
     const spell_data_t* guardian_of_ancient_kings;
     const spell_data_t* sanctuary;
-    const spell_data_t* faith_barricade;
+    const spell_data_t* barricade_of_faith;
     
     // 20
     const spell_data_t* soaring_shield;
@@ -439,7 +438,7 @@ public:
     const spell_data_t* bulwark_of_righteous_fury;
     const spell_data_t* moment_of_glory;
     const spell_data_t* eye_of_tyr;
-    const spell_data_t* improved_sera_and_dt;
+    const spell_data_t* quickened_invocations;
 
     // Retribution
     // 0

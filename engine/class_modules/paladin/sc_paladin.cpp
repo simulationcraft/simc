@@ -197,8 +197,8 @@ struct avenging_wrath_t : public paladin_spell_t
     // link needed for Righteous Protector / SotR cooldown reduction
     cooldown = p->cooldowns.avenging_wrath;
 
-    if ( p->talents.avenging_wrath_2->ok() )
-      cooldown->duration += timespan_t::from_millis( p->talents.avenging_wrath_2->effectN( 1 ).base_value() );
+    //if ( p->talents.avenging_wrath_2->ok() )
+    //  cooldown->duration += timespan_t::from_millis( p->talents.avenging_wrath_2->effectN( 1 ).base_value() );
 
     cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( p->azerite_essence.vision_of_perfection );
   }
@@ -1126,7 +1126,7 @@ void judgment_t::impact( action_state_t* s )
 {
   if ( result_is_hit( s->result ) )
   {
-      if ( p()->talents.judgment->ok() )
+      if ( p()->talents.greater_judgment->ok() )
         td( s->target )->debuff.judgment->trigger();
 
     if ( p()->talents.judgment_of_light->ok() )
@@ -1747,17 +1747,17 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
       }
     }
 
-    if ( p()->talents.the_mad_paragon->ok() )
+    if ( p()->talents.zealots_paragon->ok() )
     {
       if ( p()->buffs.avenging_wrath->up() )
       {
         p()->buffs.avenging_wrath->extend_duration(
-            p(), timespan_t::from_seconds( p()->talents.the_mad_paragon->effectN( 1 ).base_value() ) );
+            p(), timespan_t::from_seconds( p()->talents.zealots_paragon->effectN( 1 ).base_value() ) );
       }
       else if ( p()->buffs.crusade->up() )
       {
         p()->buffs.crusade->extend_duration(
-            p(), timespan_t::from_seconds( p()->talents.the_mad_paragon->effectN( 1 ).base_value() ) );
+            p(), timespan_t::from_seconds( p()->talents.zealots_paragon->effectN( 1 ).base_value() ) );
       }
     }
 
@@ -2613,7 +2613,7 @@ void paladin_t::init_spells()
   talents.cleanse_toxins                  = find_talent_spell( talent_tree::CLASS, "Cleanse Toxins" );
   talents.blessing_of_sacrifice           = find_talent_spell( talent_tree::CLASS, "Blessing of Sacrifice" );
   //Judgment causes the target to take 25% more damage from your next holy power spending ability
-  talents.judgment                        = find_talent_spell( talent_tree::CLASS, "Judgment" );
+  talents.greater_judgment                = find_talent_spell( talent_tree::CLASS, "Greater Judgment" );
   talents.seal_of_reprisal                = find_talent_spell( talent_tree::CLASS, "Seal of Reprisal" );
   talents.afterimage                      = find_talent_spell( talent_tree::CLASS, "Afterimage" );
   talents.recompense                      = find_talent_spell( talent_tree::CLASS, "Recompense" );
@@ -2623,16 +2623,13 @@ void paladin_t::init_spells()
   talents.divine_purpose                  = find_talent_spell( talent_tree::CLASS, "Divine Purpose" );
   talents.obduracy                        = find_talent_spell( talent_tree::CLASS, "Obduracy" );
   talents.seal_of_clarity                 = find_talent_spell( talent_tree::CLASS, "Seal of Clarity" );
-  talents.aspirations_of_divinity         = find_talent_spell( talent_tree::CLASS, "Aspirations of Divinity" );
-  //Avenging Wrath CDR
-  talents.avenging_wrath_2                = find_talent_spell( talent_tree::CLASS, 317872 );
+  talents.aspiration_of_divinity          = find_talent_spell( talent_tree::CLASS, "Aspiration of Divinity" );
   talents.touch_of_light                  = find_talent_spell( talent_tree::CLASS, "Touch of Light" );
   talents.incandescence                   = find_talent_spell( talent_tree::CLASS, "Incandescence" );
   talents.hallowed_ground                 = find_talent_spell( talent_tree::CLASS, "Hallowed Ground" );
   talents.of_dusk_and_dawn                = find_talent_spell( talent_tree::CLASS, "Of Dusk and Dawn" );
   talents.unbreakable_spirit              = find_talent_spell( talent_tree::CLASS, "Unbreakable Spirit" );
   talents.seal_of_might                   = find_talent_spell( talent_tree::CLASS, "Seal of Might" );
-  talents.blessing_of_spellwarding        = find_talent_spell( talent_tree::CLASS, "Blessing of Spellwarding" );
   talents.improved_blessing_of_protection = find_talent_spell( talent_tree::CLASS, "Improved Blessing of Protection" );
   talents.seal_of_the_crusader            = find_talent_spell( talent_tree::CLASS, "Seal of the Crusader" );
   talents.seal_of_order                   = find_talent_spell( talent_tree::CLASS, "Seal of Order" );
@@ -2640,7 +2637,7 @@ void paladin_t::init_spells()
   talents.prot_sanctified_wrath           = find_talent_spell( talent_tree::CLASS, "Sanctified Wrath", PALADIN_PROTECTION );
   talents.ret_sanctified_wrath            = find_talent_spell( talent_tree::CLASS, "Sanctified Wrath", PALADIN_RETRIBUTION );
   talents.seraphim                        = find_talent_spell( talent_tree::CLASS, "Seraphim" );
-  talents.the_mad_paragon                 = find_talent_spell( talent_tree::CLASS, "The Mad Paragon" );
+  talents.zealots_paragon                 = find_talent_spell( talent_tree::CLASS, "Zealot's Paragon" );
 
 
 
