@@ -383,7 +383,7 @@ public:
     player_talent_t rolling_havoc; // Increased damage buff when spells are duplicated by Mayhem/Havoc
     const spell_data_t* rolling_havoc_buff;
     player_talent_t backlash; // Crit chance increase. NOT IMPLEMENTED: Damage proc when physically attacked
-    const spell_data_t* fire_and_brimstone; // DF - Now a 2 point talent
+    player_talent_t fire_and_brimstone;
 
     // DF - Decimation (Incinerate and Conflagrate casts reduce Soul Fire cooldown)
     // DF - Conflagration of Chaos (2 point talent, Conflagrate/Shadowburn has chance to make next cast of it a guaranteed crit)
