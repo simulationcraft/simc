@@ -670,11 +670,7 @@ public:
     const spell_data_t* expel_harm_2_brm;
     const spell_data_t* expel_harm_2_mw;
     const spell_data_t* expel_harm_2_ww;
-    const spell_data_t* fortifying_brew_brm;
-    const spell_data_t* fortifying_brew_2_brm;
-    const spell_data_t* fortifying_brew_mw_ww;
-    const spell_data_t* fortifying_brew_2_mw;
-    const spell_data_t* fortifying_brew_2_ww;
+    const spell_data_t* fortifying_brew;
     const spell_data_t* leather_specialization;
     const spell_data_t* leg_sweep;
     const spell_data_t* mystic_touch;

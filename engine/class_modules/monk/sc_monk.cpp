@@ -4395,7 +4395,7 @@ struct fortifying_brew_t : public monk_spell_t
   fortifying_ingredients_t* fortifying_ingredients;
 
   fortifying_brew_t( monk_t& p, util::string_view options_str )
-    : monk_spell_t( "fortifying_brew", &p, p.talent.general.fortifying_brew ),
+    : monk_spell_t( "fortifying_brew", &p, p.find_spell( 115203 ) ),
       delivery( new special_delivery_t( p ) ),
       fortifying_ingredients( new fortifying_ingredients_t( p ) )
   {
@@ -4407,6 +4407,14 @@ struct fortifying_brew_t : public monk_spell_t
 
     if ( p.talent.general.expeditious_fortification )
       cooldown->duration += p.talent.general.expeditious_fortification->effectN( 1 ).time_value();
+  }
+
+  bool ready() override
+  {
+    if ( !p()->talent.general.fortifying_brew->ok() )
+      return false;
+
+    return monk_spell_t::ready();
   }
 
   void execute() override
@@ -6778,7 +6786,7 @@ struct fortifying_brew_t : public monk_buff_t<buff_t>
 
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override
   {
-    double health_multiplier = p().spec.fortifying_brew_mw_ww->effectN( 1 ).percent();
+    double health_multiplier = ( p().bugs ? 0.2 : 0.15 );  // p().spec.fortifying_brew_mw_ww->effectN( 1 ).percent();
 
     if ( p().talent.brewmaster.fortifying_brew_stagger->ok() )
     {
@@ -6787,7 +6795,7 @@ struct fortifying_brew_t : public monk_buff_t<buff_t>
       // The intended calculation is:
       // health_multiplier = ( 1 + health_multiplier ) * p().passives.fortifying_brew->effectN( 5 ).percent() * ( 1 / (
       // 1 + health_multiplier ) );
-      health_multiplier = p().passives.fortifying_brew->effectN( 5 ).percent() * ( 1 / ( 1 + health_multiplier ) );
+      health_multiplier = ( p().bugs ? 0.1739 : 0.2);  // p().passives.fortifying_brew->effectN( 5 ).percent() * ( 1 / ( 1 + health_multiplier ) );
     }
 
     // Extra Health is set by current max_health, doesn't change when max_health changes.
@@ -7465,6 +7473,8 @@ monk_t::monk_t( sim_t* sim, util::string_view name, race_e r )
   cooldown.charred_passions   = get_cooldown( "charred_passions" );
   cooldown.bountiful_brew     = get_cooldown( "bountiful_brew" );
   cooldown.sinister_teachings = get_cooldown( "sinister_teachings" );
+
+  // T29 Set Bonus
   cooldown.brewmasters_rhythm = get_cooldown( "brewmasters_rhythm" );
 
   resource_regeneration = regen_type::DYNAMIC;
@@ -8114,11 +8124,7 @@ void monk_t::init_spells()
   spec.expel_harm_2_brm          = find_rank_spell( "Expel Harm", "Rank 2", MONK_BREWMASTER );
   spec.expel_harm_2_mw           = find_rank_spell( "Expel Harm", "Rank 2", MONK_MISTWEAVER );
   spec.expel_harm_2_ww           = find_rank_spell( "Expel Harm", "Rank 2", MONK_WINDWALKER );
-  spec.fortifying_brew_brm       = find_spell( 115203 );
-  spec.fortifying_brew_2_brm     = find_rank_spell( "Fortifying Brew", "Rank 2", MONK_BREWMASTER );
-  spec.fortifying_brew_mw_ww     = find_spell( 243435 );
-  spec.fortifying_brew_2_mw      = find_rank_spell( "Fortifying Brew", "Rank 2", MONK_MISTWEAVER );
-  spec.fortifying_brew_2_ww      = find_rank_spell( "Fortifying Brew", "Rank 2", MONK_WINDWALKER );
+  spec.fortifying_brew           = find_spell( 115203 );
   spec.leather_specialization    = find_specialization_spell( "Leather Specialization" );
   spec.leg_sweep                 = find_class_spell( "Leg Sweep" );
   spec.mystic_touch              = find_class_spell( "Mystic Touch" );
@@ -8563,9 +8569,7 @@ void monk_t::create_buffs ()
 
   buff.close_to_heart_driver = new buffs::close_to_heart_driver_t( *this, "close_to_heart_aura_driver", find_spell( 389684 ) );
 
-  buff.fortifying_brew    = new buffs::fortifying_brew_t(
-    *this, "fortifying_brew",
-    ( specialization () == MONK_BREWMASTER ? passives.fortifying_brew : talent.general.fortifying_brew ) );
+  buff.fortifying_brew    = new buffs::fortifying_brew_t( *this, "fortifying_brew", passives.fortifying_brew );
 
   buff.generous_pour_driver = new buffs::generous_pour_driver_t( *this, "generous_pour_aura_driver", find_spell( 389685 ) );
 
@@ -10027,9 +10031,7 @@ void monk_t::target_mitigation( school_e school, result_amount_type dt, action_s
   // Damage Reduction Cooldowns
   if ( talent.general.fortifying_brew->ok() && buff.fortifying_brew->up() )
   {
-    double reduction = spec.fortifying_brew_mw_ww->effectN( 2 ).percent();  // Saved as -15%
-    if ( talent.brewmaster.fortifying_brew_stagger->ok() )
-      reduction -= 0.05;
+    double reduction = spec.fortifying_brew->effectN( 2 ).percent();  // Saved as -20%
 
     s->result_amount *= ( 1.0 + reduction );
   }
