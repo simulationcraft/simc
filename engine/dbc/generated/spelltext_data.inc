@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.2.46157
-static const std::array<spelltext_data_t, 19040> __spelltext_data { {
+static const std::array<spelltext_data_t, 19042> __spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -6839,6 +6839,7 @@ static const std::array<spelltext_data_t, 19040> __spelltext_data { {
   { 205473, "$@spelldesc76613", "$w1 |4Icicle:Icicles; stored.", 0 },
   { 205477, "Dominate Mind can now be used on players.", 0, 0 },
   { 205495, "Raises |cFFFFCC99The Fist of Ra-den|r to the sky and absorbs all nearby electric energy, causing your next $n casts of Lightning Bolt or Chain Lightning to be instant and deal $s1% increased damage.", "Your next Lightning Bolt or Chain Lightning will be instant and deal $w1% additional damage.", "Artifact" },
+  { 205523, "Strike with a blast of Chi energy, dealing $s1 Physical damage$?s117906[ and granting Shuffle for $s2 sec][].", 0, 0 },
   { 205545, "Unleashes the fiery power Odyn bestowed the |cFFFFCC99Warswords|r, dealing ${$205546sw2+$205547sw2} Fire damage and an additional $205546o3 Fire damage over $205546d to all enemies within $205546A2 yards.", 0, "Artifact" },
   { 205546, "$@spelldesc205545", "Suffering $o3 Fire damage over $d.", 0 },
   { 205547, "$@spelldesc205545", 0, 0 },
@@ -7721,6 +7722,7 @@ static const std::array<spelltext_data_t, 19040> __spelltext_data { {
   { 224167, "$@spelldesc224164", "Strength increased by $s1.", 0 },
   { 224169, "Your spells and abilities have a chance to increase your Critical Strike, Haste, or Mastery by $s2 for $224170d, whichever is highest.", 0, 0 },
   { 224170, "$@spelldesc224169", "Critical Strike increased by $w1.", 0 },
+  { 224239, "$@spelldesc53385", 0, 0 },
   { 224266, "A powerful weapon strike that deals $s1 Holy damage.", 0, 0 },
   { 224301, "Combine the Seed of Solar Fire with a Pure Drop of Shaladrassil's Sap to create a rare Sunbloom.\r\n", 0, 0 },
   { 224310, "Combine the Crest of the Lightborn with the Rod of the Ascended to create the Staff of the Lightborn.\r\n", 0, 0 },
@@ -19048,7 +19050,7 @@ static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelltext_hotfix
 } };
 
 // Spell description variables, wow build 10.0.2.46157
-static const std::array<spelldesc_vars_data_t, 359> __spelldesc_vars_data { {
+static const std::array<spelldesc_vars_data_t, 360> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$pvp=$?a134735[${1.1}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*2.8*(1+$@versadmg)*$<rapture>*$<shadow>*$<pvp>*$<weal>}\r\n" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -19185,6 +19187,7 @@ static const std::array<spelldesc_vars_data_t, 359> __spelldesc_vars_data { {
   {  204019, "$shield=${$AP*$s1/100}" },
   {  204074, "$reduction=${$m1/10}.1" },
   {  205448, "$ext=${$231688s1/1000} sec" },
+  {  205523, "$stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]\r\n$dwm=$?a108561|a115697[${1}][${0.857143}]\r\n$offm=$?a108561|a115697[${0}][${1}]\r\n\r\n$offlow=$?s121278[${$mwb/2/$mws}][${$owb/2/$ows}]\r\n$offhigh=$?s121278[${$MWB/2/$mws}][${$OWB/2/$ows}]\r\n\r\n$low=${$<stnc>*($<dwm>*(($mwb)/($MWS)+$<offm>*$<offlow>)+$AP/3.5-1)}\r\n$high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}\r\n" },
   {  206416, "$mastery=$?s185164[${((100+$185164m1)/100)}][${1.00}]\r\n$baseDmg=${3*$199552sw2+$200685sw2} \r\n$firstbloodDmg=${(3*$199552sw2+$200685sw2)*(100+$206416s1)/100*$<mastery>}" },
   {  206974, "$increase=${$s1}" },
   {  207068, "$bmMastery=$?s76657[${1+0.01*$76657m1}][${1}]\r\n$lowNerf=${0.5+$min($pl,20)*0.025}\r\n$damage=${$ap*($s2/100)*$<bmMastery>*(1+$@versadmg)*(1+($137015s1/100))}" },
