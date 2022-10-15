@@ -228,6 +228,8 @@ struct immolate_t : public destruction_spell_t
       spell_power_mod.tick = p->warlock_base.immolate_dot->effectN( 1 ).sp_coeff();
 
       dot_duration += p->talents.improved_immolate->effectN( 1 ).time_value();
+
+      base_multiplier *= 1.0 + p->talents.scalding_flames->effectN( 2 ).percent();
     }
 
     void tick( dot_t* d ) override
@@ -252,6 +254,8 @@ struct immolate_t : public destruction_spell_t
 
     impact_action = new immolate_dot_t( p );
     add_child( impact_action );
+
+    base_multiplier *= 1.0 + p->talents.scalding_flames->effectN( 1 ).percent();
   }
 };
 
@@ -1204,6 +1208,8 @@ void warlock_t::init_spells_destruction()
 
   talents.flashpoint = find_talent_spell( talent_tree::SPECIALIZATION, "Flashpoint" ); // Should be 387259
   talents.flashpoint_buff = find_spell( 387263 );
+
+  talents.scalding_flames = find_talent_spell( talent_tree::SPECIALIZATION, "Scalding Flames" ); // Should be ID 388832
 
   talents.eradication = find_talent_spell( "Eradication" );
 

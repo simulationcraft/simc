@@ -391,7 +391,7 @@ public:
     const spell_data_t* conflagration_of_chaos_sb; // Player buff which affects next Shadowburn
     player_talent_t flashpoint; // Stacking haste buff from Immolate ticks on high-health targets
     const spell_data_t* flashpoint_buff;
-    // DF - Scalding Flames (2 point talent, increased Immolate damage)
+    player_talent_t scalding_flames; // Increased Immolate damage
 
     // DF - Ruin (2 point talent, damage increase to several spells)
     const spell_data_t* eradication; // DF - Now a 2 point talent
