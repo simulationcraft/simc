@@ -464,8 +464,8 @@ public:
     const spell_data_t* seal_of_wrath;
     const spell_data_t* expurgation;
     const spell_data_t* boundless_judgment; // NYI
-    const spell_data_t* sanctification; // NYI
-    const spell_data_t* inner_grace; // NYI
+    const spell_data_t* sanctification;
+    const spell_data_t* inner_grace;
     const spell_data_t* ashes_to_dust;
     const spell_data_t* radiant_decree;
     const spell_data_t* crusade;
