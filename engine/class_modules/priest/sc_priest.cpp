@@ -1289,12 +1289,7 @@ struct echoing_void_t final : public priest_spell_t
     aoe        = -1;
     range      = 10.0;
 
-    // BUG: Does not scale with Mastery
-    // https://github.com/SimCMinMax/WoW-BugTracker/issues/931
-    if ( !priest().bugs )
-    {
-      affected_by_shadow_weaving = true;
-    }
+    affected_by_shadow_weaving = true;
   }
 };
 
