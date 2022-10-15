@@ -1970,9 +1970,12 @@ struct rising_sun_kick_t : public monk_melee_attack_t
     trigger_attack        = new rising_sun_kick_dmg_t( p, "rising_sun_kick_dmg" );
     trigger_attack->stats = stats;
 
-    gotd        = new glory_of_the_dawn_t( p, "glory_of_the_dawn" );
+    if ( p->talent.windwalker.glory_of_the_dawn->ok() )
+    {
+      gotd = new glory_of_the_dawn_t( p, "glory_of_the_dawn" );
 
-    add_child( gotd );
+      add_child( gotd );
+    }
   }
 
   double cost() const override
