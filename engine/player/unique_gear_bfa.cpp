@@ -5493,6 +5493,58 @@ void items::hyperthread_wristwraps( special_effect_t& effect )
         a->cooldown->adjust( -reduction );
       }
     }
+
+    // returns the number of occurrences of an action in the recently used spells of the tracker
+    unsigned tracked_count( action_t* a )
+    {
+      unsigned count = 0;
+      for ( auto tracked_action : tracker->last_used )
+      {
+        if ( tracked_action->id == a->id )
+        {
+          count++;
+        }
+      }
+      return count;
+    }
+
+    // returns the number of spells required to push the oldest occurrence of an action out of the tracker
+    unsigned tracked_first_remains( action_t* a )
+    {
+      for ( unsigned i = 0; i < tracker->last_used.size(); i++ )
+      {
+        if ( tracker->last_used[ i ]->id == a->id )
+        {
+          return i + 1;
+        }
+      }
+      return 0;
+    }
+
+    // This is somewhat of a misuse of action_t::create_expression, but for an item that
+    // is probably going away in a few months it is not worth significantly restructuring
+    // things to make spell_tracker_cb_t and hyperthread_reduction_t accessible elsewhere.
+    std::unique_ptr<expr_t> create_expression( std::string_view name_str ) override
+    {
+      auto splits = ::util::string_split<std::string_view>( name_str, "." );
+
+      if ( splits[ 0 ] == "hyperthread_wristwraps" )
+      {
+        if ( action_t* a = player->find_action( splits[ 1 ] ) )
+        {
+          if ( splits.size() == 2 || splits.size() == 3 && splits[ 2 ] == "count" )
+          {
+            return make_fn_expr( name_str, [ this, a ] { return tracked_count( a ); } );
+          }
+          else if ( splits.size() == 3 && splits[ 2 ] == "first_remains" )
+          {
+            return make_fn_expr( name_str, [ this, a ] { return tracked_first_remains( a ); } );
+          }
+        }
+      }
+
+      return proc_spell_t::create_expression( name_str );
+    }
   };
 
   auto cb = new spell_tracker_cb_t( *spell_tracker, as<size_t>( effect.driver()->effectN( 1 ).base_value() ) );

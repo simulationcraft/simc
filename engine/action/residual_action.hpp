@@ -65,6 +65,11 @@ namespace residual_action
       ab::spell_power_mod.tick = 0;
       ab::dot_behavior = dot_behavior_e::DOT_REFRESH_DURATION;
       ab::callbacks = false;
+
+      // As residual actions have no base damage in the spell data, they do not get caster damage multiplier state flags
+      // properly set. By default rolling periodics scale with multipliers unless they also have the Ignore X multiplier
+      // flags, which is handled by action_t::init()
+      ab::snapshot_flags |= STATE_MUL_TA | STATE_MUL_DA | STATE_VERSATILITY;
     }
 
     action_state_t* new_state() override
@@ -145,7 +150,11 @@ namespace residual_action
     {
       ab::init();
 
-      ab::update_flags = ab::snapshot_flags = 0;
+      // The rolling periodic flag (334) is not sufficient to ignore player & target multipliers. They separately
+      // require the Ignore Damage Take Modifiers (136) and the Ignore Caster Damage Modifiers (221) flags. As these
+      // flags are parsed and the snapshot_flags/update_flags set in action_t:init(), we don't further override them
+      // here.
+      // ab::update_flags = ab::snapshot_flags = 0;
     }
   };
 

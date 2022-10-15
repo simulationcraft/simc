@@ -1356,7 +1356,6 @@ void inscrutable_quantum_device ( special_effect_t& effect )
       bonus_buffs.clear();
 
       bonus_buffs.push_back( player->buffs.bloodlust );
-      bonus_buffs.push_back( player->buffs.forced_bloodlust );
 
       if ( player->type == MAGE )
       {

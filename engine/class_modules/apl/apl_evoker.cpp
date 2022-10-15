@@ -33,38 +33,42 @@ std::string temporary_enchant( const player_t* p )
   return ( p->true_level >= 60 ) ? "main_hand:shadowcore_oil" : "disabled";
 }
 
+//devastation_apl_start
 void devastation( player_t* p )
 {
-  action_priority_list_t* precombat    = p->get_action_priority_list( "precombat" );
-  action_priority_list_t* default_list = p->get_action_priority_list( "default" );
+  action_priority_list_t* default_ = p->get_action_priority_list( "default" );
+  action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
 
-  // Snapshot stats
   precombat->add_action( "flask" );
   precombat->add_action( "food" );
   precombat->add_action( "augmentation" );
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
+  precombat->add_action( "use_item,name=shadowed_orb_of_torment" );
+  precombat->add_action( "firestorm,if=talent.firestorm" );
+  precombat->add_action( "living_flame,if=!talent.firestorm" );
 
-  // Professions
-  for ( const auto& profession_action : p->get_profession_actions() )
-  {
-    default_list->add_action( profession_action );
-  }
-
-  // Potions
-  default_list->add_action( "potion" );
-  default_list->add_action( "disintegrate,if=cooldown.dragonrage.remains<=3*gcd.max" );
-  default_list->add_action( "dragonrage" );
-  default_list->add_action( "shattering_star" );
-  default_list->add_action( "eternity_surge,empower_to=1" );
-  default_list->add_action( "tip_the_scales,if=buff.dragonrage.up" );
-  default_list->add_action( "fire_breath" );
-  default_list->add_action( "pyre,if=spell_targets.pyre>2" );
-  default_list->add_action( "living_flame,if=buff.burnout.up&buff.essence_burst.stack<buff.essence_burst.max_stack" );
-  default_list->add_action( "disintegrate" );
-  default_list->add_action( "azure_strike,if=spell_targets.azure_strike>2" );
-  default_list->add_action( "living_flame" );
-  
+  default_->add_action( "potion,if=buff.dragonrage.up|time>=300&fight_remains<35" );
+  default_->add_action( "use_item,name=shadowed_orb_of_torment" );
+  default_->add_action( "use_items,if=buff.dragonrage.up" );
+  default_->add_action( "deep_breath,if=spell_targets.deep_breath>1" );
+  default_->add_action( "dragonrage,if=cooldown.eternity_surge.remains<=2*gcd.max&cooldown.fire_breath.remains<=3*gcd.max|!talent.feed_the_flames|!talent.causality" );
+  default_->add_action( "tip_the_scales,if=buff.dragonrage.up&cooldown.fire_breath.up" );
+  default_->add_action( "fire_breath,if=cooldown.dragonrage.remains>=10|!talent.feed_the_flames" );
+  default_->add_action( "firestorm,if=!cooldown.fire_breath.up&dot.fire_breath_damage.remains>=cast_time&dot.fire_breath_damage.remains<cooldown.fire_breath.remains" );
+  default_->add_action( "shattering_star,if=!talent.arcane_vigor|essence+1<essence.max|buff.dragonrage.up" );
+  default_->add_action( "eternity_surge,empower_to=4,if=spell_targets.pyre>3*(1+talent.eternitys_span)" );
+  default_->add_action( "eternity_surge,empower_to=3,if=spell_targets.pyre>2*(1+talent.eternitys_span)" );
+  default_->add_action( "eternity_surge,empower_to=2,if=spell_targets.pyre>(1+talent.eternitys_span)" );
+  default_->add_action( "eternity_surge,empower_to=1,if=cooldown.dragonrage.remains>=15|!talent.causality" );
+  default_->add_action( "azure_strike,if=!buff.burnout.up&spell_targets.azure_strike>(2-buff.dragonrage.up)&buff.essence_burst.stack<buff.essence_burst.max_stack&(!talent.ruby_embers|spell_targets.azure_strike>2)" );
+  default_->add_action( "pyre,if=spell_targets.pyre>(2+talent.scintillation*talent.eternitys_span)|buff.charged_blast.stack=buff.charged_blast.max_stack&cooldown.dragonrage.remains>20&spell_targets.pyre>2" );
+  default_->add_action( "living_flame,if=buff.essence_burst.stack<buff.essence_burst.max_stack&(buff.burnout.up|!talent.shattering_star&buff.dragonrage.up&target.health.pct>80)" );
+  default_->add_action( "disintegrate,early_chain_if=ticks>=2&dot.disintegrate.pmultiplier>=action.disintegrate.persistent_multiplier,if=buff.dragonrage.up,interrupt_if=buff.dragonrage.up&ticks>=2,interrupt_immediate=1" );
+  default_->add_action( "disintegrate,early_chain_if=ticks>=2&dot.disintegrate.pmultiplier>=action.disintegrate.persistent_multiplier,if=essence=essence.max|buff.essence_burst.stack=buff.essence_burst.max_stack|debuff.shattering_star_debuff.up|cooldown.shattering_star.remains>=3*gcd.max|!talent.shattering_star" );
+  default_->add_action( "azure_strike,if=spell_targets.azure_strike>2|talent.engulfing_blaze&buff.dragonrage.up" );
+  default_->add_action( "living_flame" );
 }
+//devastation_apl_end
 
 void preservation( player_t* /*p*/ )
 {

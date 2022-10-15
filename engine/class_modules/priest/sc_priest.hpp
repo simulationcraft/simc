@@ -134,8 +134,8 @@ public:
     propagate_const<buff_t*> unfurling_darkness;
     propagate_const<buff_t*> unfurling_darkness_cd;  // Blizzard uses a buff to track the ICD
     propagate_const<buff_t*> ancient_madness;
-    propagate_const<buff_t*> dark_thought;
     propagate_const<buff_t*> mind_devourer;
+    propagate_const<buff_t*> mind_devourer_ms_active;  // Tracking buff only
     propagate_const<buff_t*> shadowy_insight;
     propagate_const<absorb_buff_t*> mental_fortitude;
     propagate_const<buff_t*> insidious_ire;
@@ -166,9 +166,8 @@ public:
     propagate_const<buff_t*> boon_of_the_ascended;
 
     // Tier Sets
-    propagate_const<buff_t*> living_shadow_tier;
-    propagate_const<buff_t*> t29_2pc;
-    propagate_const<buff_t*> t29_4pc;
+    propagate_const<buff_t*> gathering_shadows;
+    propagate_const<buff_t*> dark_reveries;
   } buffs;
 
   // Talents
@@ -229,7 +228,11 @@ public:
     player_talent_t angels_mercy;
     player_talent_t binding_heals;
     player_talent_t halo;
+    const spell_data_t* halo_heal;
+    const spell_data_t* halo_dmg;
     player_talent_t divine_star;
+    const spell_data_t* divine_star_heal;
+    const spell_data_t* divine_star_dmg;
     player_talent_t translucent_image;
     player_talent_t mindgames;
     // Row 9
@@ -248,46 +251,46 @@ public:
     {
       // Shadow Tree
       // Row 2
-      player_talent_t silence;
       player_talent_t dispersion;
       const spell_data_t* shadowy_apparition;  // Damage event
       player_talent_t shadowy_apparitions;     // Passive effect
+      player_talent_t silence;
       // Row 3
-      player_talent_t psychic_horror;
-      player_talent_t last_word;
+      player_talent_t intangibility;
+      player_talent_t mental_fortitude;
       player_talent_t misery;
       player_talent_t dark_void;
       const spell_data_t* dark_void_insanity;
-      player_talent_t intangibility;
-      player_talent_t mental_fortitude;
-      player_talent_t auspicious_spirits;
-      player_talent_t tormented_spirits;
+      player_talent_t last_word;
+      player_talent_t psychic_horror;
       // Row 4
       player_talent_t coalescing_shadows;
       const spell_data_t* coalescing_shadows_buff;
       const spell_data_t* coalescing_shadows_dot_buff;
       player_talent_t mind_sear;
-      player_talent_t void_eruption;
-      const spell_data_t* void_eruption_damage;
-      player_talent_t dark_ascension;
-      player_talent_t psychic_link;
       player_talent_t mind_spike;
       // Row 5
       player_talent_t puppet_master;
       player_talent_t mental_decay;
-      player_talent_t ancient_madness;
-      player_talent_t shadowy_insight;
+      player_talent_t void_eruption;
+      const spell_data_t* void_eruption_damage;
+      player_talent_t dark_ascension;
+      player_talent_t unfurling_darkness;
       player_talent_t surge_of_darkness;
       const spell_data_t* surge_of_darkness_buff;
       // Row 6
       player_talent_t harnessed_shadows;
-      player_talent_t unfurling_darkness;
+      player_talent_t shadowy_insight;
+      player_talent_t ancient_madness;
       player_talent_t shadow_crash;
       player_talent_t mind_melt;
       // Row 7
       player_talent_t maddening_touch;
       const spell_data_t* maddening_touch_insanity;
       player_talent_t dark_evangelism;
+      player_talent_t auspicious_spirits;
+      player_talent_t tormented_spirits;
+      player_talent_t psychic_link;
       player_talent_t whispers_of_the_damned;
       // Row 8
       player_talent_t mindbender;
@@ -365,8 +368,6 @@ public:
 
     // Shadow
     const spell_data_t* mind_flay;
-    const spell_data_t* dark_thought;   // Actual buff, holds proc rate
-    const spell_data_t* dark_thoughts;  // Passive effect
     const spell_data_t* shadow_priest;  // General shadow data
     const spell_data_t* shadowform;
     const spell_data_t* void_bolt;
@@ -465,11 +466,6 @@ public:
     propagate_const<proc_t*> void_lasher;
     propagate_const<proc_t*> void_tendril_ecttv;
     propagate_const<proc_t*> void_lasher_ecttv;
-    propagate_const<proc_t*> dark_thoughts_flay;
-    propagate_const<proc_t*> dark_thoughts_sear;
-    propagate_const<proc_t*> dark_thoughts_devouring_plague;
-    propagate_const<proc_t*> dark_thoughts_missed;
-    propagate_const<proc_t*> living_shadow_tier;
     propagate_const<proc_t*> shadowy_insight;
     propagate_const<proc_t*> shadowy_insight_overflow;
     propagate_const<proc_t*> shadowy_insight_missed;
@@ -527,7 +523,6 @@ public:
     spawner::pet_spawner_t<pet_t, priest_t> void_lasher;
     spawner::pet_spawner_t<pet_t, priest_t> rattling_mage;
     spawner::pet_spawner_t<pet_t, priest_t> cackling_chemist;
-    spawner::pet_spawner_t<pet_t, priest_t> your_shadow_tier;
     spawner::pet_spawner_t<pet_t, priest_t> thing_from_beyond;
 
     priest_pets_t( priest_t& p );
@@ -576,10 +571,6 @@ public:
     int pallid_command_allies = 50;
 
     bool power_infusion_fiend = false;
-
-    // Temp options till we get tier set data
-    bool t29_2pc = false;
-    bool t29_4pc = false;
   } options;
 
   // Legendaries
@@ -745,10 +736,6 @@ public:
   int shadow_weaving_active_dots( const player_t* target, const unsigned int spell_id ) const;
   double shadow_weaving_multiplier( const player_t* target, const unsigned int spell_id ) const;
   void trigger_unholy_transfusion_healing();
-  event_t* t28_4pc_summon_event;
-  timespan_t t28_4pc_summon_duration;
-  event_t* living_shadow_summon_event;
-  timespan_t living_shadow_summon_duration;
 
   std::string default_potion() const override;
   std::string default_flask() const override;
@@ -1123,7 +1110,8 @@ public:
     parse_buff_effects( p().buffs.dark_ascension, true );  // Buffs corresponding non-periodic spells
     parse_buff_effects( p().buffs.coalescing_shadows );
     parse_buff_effects( p().buffs.coalescing_shadows_dot );
-    parse_buff_effects( p().buffs.words_of_the_pious );  // Spell Direct amount for Smite and Holy Nova
+    parse_buff_effects( p().buffs.words_of_the_pious );       // Spell Direct amount for Smite and Holy Nova
+    parse_buff_effects( p().buffs.gathering_shadows, true );  // Spell Direct amount for Mind Sear (NOT DP)
   }
 
   template <typename... Ts>
@@ -1267,7 +1255,7 @@ public:
 
 struct priest_heal_t : public priest_action_t<heal_t>
 {
-  bool affected_by_shadow_weaving; // adding this in so that template code for Divine Star/Halo doesn't scream
+  bool affected_by_shadow_weaving;  // adding this in so that template code for Divine Star/Halo doesn't scream
 
   priest_heal_t( util::string_view name, priest_t& player, const spell_data_t* s = spell_data_t::nil() )
     : base_t( name, player, s ), affected_by_shadow_weaving( false )
@@ -1302,10 +1290,11 @@ struct priest_spell_t : public priest_action_t<spell_t>
     : base_t( name, player, s ), affected_by_shadow_weaving( false ), ignores_automatic_mastery( false )
   {
     weapon_multiplier = 0.0;
-    if ( priest().talents.shadow.void_eruption.enabled() && resource_current == RESOURCE_INSANITY )
+
+    if ( priest().talents.shadow.void_eruption.enabled() )
     {
-      vf_extension = base_cost() / priest().talents.shadow.void_eruption->effectN( 4 ).base_value() *
-                     timespan_t::from_millis( priest().talents.shadow.void_eruption->effectN( 3 ).base_value() );
+      vf_extension = timespan_t::from_millis( priest().talents.shadow.void_eruption->effectN( 3 ).base_value() ) /
+                     priest().talents.shadow.void_eruption->effectN( 4 ).base_value();
     }
   }
 
@@ -1324,18 +1313,23 @@ struct priest_spell_t : public priest_action_t<spell_t>
       }
     }
 
-    return action_t::ready();
+    return base_t::ready();
   }
 
   void consume_resource() override
   {
-    if ( priest().specialization() == PRIEST_SHADOW && priest().talents.shadow.void_eruption.enabled() &&
-         priest().buffs.voidform->up() && vf_extension > 0_s )
-    {
-      priest().buffs.voidform->extend_duration( &priest(), vf_extension );
-    }
-
+    if ( current_resource() == RESOURCE_INSANITY )
+      extend_vf( base_cost() );
     base_t::consume_resource();
+  }
+
+  void extend_vf( double insanity )
+  {
+    if ( priest().specialization() == PRIEST_SHADOW && priest().talents.shadow.void_eruption.enabled() &&
+         priest().buffs.voidform->up() )
+    {
+      priest().buffs.voidform->extend_duration( &priest(), vf_extension * insanity );
+    }
   }
 
   void last_tick( dot_t* d ) override
@@ -1395,7 +1389,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
   double composite_target_da_multiplier( player_t* t ) const override
   {
-    double tdm = action_t::composite_target_da_multiplier( t );
+    double tdm = base_t::composite_target_da_multiplier( t );
 
     if ( affected_by_shadow_weaving )
     {
@@ -1415,7 +1409,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
   double composite_target_ta_multiplier( player_t* t ) const override
   {
-    double ttm = action_t::composite_target_ta_multiplier( t );
+    double ttm = base_t::composite_target_ta_multiplier( t );
 
     if ( affected_by_shadow_weaving )
     {

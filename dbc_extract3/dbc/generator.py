@@ -1348,6 +1348,10 @@ class SpellDataGenerator(DataGenerator):
          370772, 370773, # Phial of Static Empowerment
          374002, 374037, # Iced Phial of Corrupting Rage
          371387, # Phial of Charged Isolation
+         382835, 382837, 382838, 382839, 382840, 382841, 382841, 382841, # Darkmoon Deck: Inferno
+         382852, 382853, 382854, 382855, 382856, 382857, 382858, 382859, # Darkmoon Deck: Watcher
+         382844, 382845, 382846, 382847, 382848, 382849, 382850, 382851, # Darkmoon Deck: Rime
+         382860, 382861, 382862, 382863, 382864, 382865, 382866, 382867, # Darkmoon Deck: Dance
         ),
 
         # Warrior:
@@ -1413,6 +1417,8 @@ class SpellDataGenerator(DataGenerator):
             ( 355455, 0 ),          # Divine Resonance
             ( 387643, 0 ),          # Sealed Verdict buff
             ( 382522, 0 ),          # Consecrated Blade buff
+            ( 383305, 0 ),          # Virtuous Command damage
+            ( 387178, 0 ),          # Empyrean Legacy buff
         ),
 
         # Hunter:
@@ -1422,8 +1428,9 @@ class SpellDataGenerator(DataGenerator):
           ( 312365, 0 ), # Thrill of the Hunt
           ( 171457, 0 ), # Chimaera Shot - Nature
           ( 201594, 1 ), # Stampede
-          ( 118459, 5 ), # Beast Cleave
+          ( 118455, 5 ), # Beast Cleave
           ( 186254, 5 ), # Bestial Wrath
+          ( 392054, 5 ), # Piercing Fangs
           ( 257622, 2 ), # Trick Shots buff
           ( 260395, 2 ), # Lethal Shots buff
           ( 342076, 2 ), # Streamline buff
@@ -1447,8 +1454,10 @@ class SpellDataGenerator(DataGenerator):
           ( 339061, 0 ), # Empowered Release (Conduit)
           ( 363760, 1 ), # Killing Frenzy (T28 BM 4pc)
           ( 363805, 3 ), # Mad Bombardier (T28 SV 4pc)
+          ( 394388, 3 ), # Bestial Barrage (T29 SV 4pc)
           ( 378016, 0 ), # Latent Poison Injectors (talent dd action)
           ( 386875, 2 ), # Bombardment
+          ( 164273, 2 ), # Lone Wolf buff
         ),
 
         # Rogue:
@@ -1508,24 +1517,28 @@ class SpellDataGenerator(DataGenerator):
             ( 364668, 0 ),          # T28 Assassination debuff
             ( 385897, 0 ),          # Hidden Opportunity Ambush
             ( 386270, 0 ),          # Audacity buff
+            ( 395424, 0 ),          # Improved Adrenaline Rush energize
+            ( 385907, 0 ),          # Take 'em By Surprise buff
             ( 385794, 0 ), ( 385802, 0 ), ( 385806, 0 ), # Vicious Venoms Ambush/Mutilate variant spells
             ( 360826, 0 ), ( 360830, 0 ), # Deathmark Cloned Bleeds
             ( 394324, 0 ), ( 394325, 0 ), ( 394326, 0 ), ( 394327, 0 ), ( 394328, 0 ), # Deathmark Cloned Poisons
+            ( 394031, 0 ),          # Replicating Shadows fake Rupture Shadow tick spell
+            ( 385960, 0 ), ( 386081, 0 ), # Lingering Shadow talent background spells 
+            ( 393724, 0 ), ( 393725, 0 ), # T29 Assassination Set Bonus Spells
+            ( 393727, 0 ), ( 393728, 0 ), ( 394879, 0 ), ( 394888, 0 ), # T29 Outlaw Set Bonus Spells
+            ( 393729, 0 ), ( 393730, 0 ), # T29 Subtlety Set Bonus Spells
         ),
 
         # Priest:
         (   (  63619, 5 ), 			# Shadowfiend "Shadowcrawl"
             (  94472, 0 ), 			# Atonement Crit
             ( 114908, 0, False ), 	# Spirit Shell absorb
-            ( 190714, 3, False ), 	# Shadow Word: Death - Insanity gain
             ( 193473, 5 ),			# Void Tendril "Mind Flay"
             ( 217676, 3 ),			# Mind Spike Detonation
             ( 194249, 3, False ),   # Voidform extra data
             ( 212570, 3, False ),   # Surrendered Soul (Surrender To Madness Death)
             ( 269555, 3 ),          # Azerite Trait Torment of Torments
             ( 280398, 1, False ),   # Sins of the Many buff
-            ( 275725, 0 ),          # Whispers of the Damned trigger effect
-            ( 275726, 0 ),          # Whispers of the damned insanity gain
             ( 288342, 0 ),          # Thought Harvester trigger buff for Mind Sear
             ( 336142, 5 ),          # Shadowflame Prism legendary effect DMG Component
             ( 343144, 0 ),          # Dissonant Echoes free Void Bolt proc
@@ -1547,23 +1560,42 @@ class SpellDataGenerator(DataGenerator):
             (  32409, 0 ),          # Shadow Word: Death self-damage id
             ( 356968, 0 ),          # Haunted Mask from Bwonsamdi's Pact Legendary
             ( 373442, 5 ),          # Shadowflame Prism Talent damage spell Shadowflame Fissure
-            ( 373375, 0 ),          # Void Touched talent buff
             ( 375981, 0 ),          # Vampiric Insight talent buff
             ( 375904, 0 ),          # Mindgames Damage reversal healing spell
             # Shadow Priest
             ( 373204, 0 ),          # Mind Devourer Talent buff
-            ( 376914, 5 ),          # Living Shadow Shadow Spike
-            ( 376891, 5 ),          # Living Shadow Shadow Spike Volley
-            ( 373387, 5 ),          # Living Shadow Shadow Sear
-            ( 376915, 5 ),          # Living Shadow Shadow Nova
+            ( 393684, 0 ),          # Priest Shadow Class Set 2-set
+            ( 394961, 0 ),          # Gathering Shadows T29 2-set buff
+            ( 393685, 0 ),          # Priest Shadow Class Set 4-set
+            ( 394963, 0 ),          # Dark Reveries T29 4-set buff
+            ( 377358, 5 ),          # Idol of C'thun Insanity values
+            ( 394976, 5 ),          # Idol of C'thun Void Lasher Mind Sear
+            ( 394979, 5 ),          # Idol of C'thun Void Lasher Mind Sear Tick
+            ( 393919, 0 ),          # Screams of the Void extra data
+            ( 390964, 0 ),          # Halo Damage Spell
+            ( 390971, 0 ),          # Halo Heal Spell
+            ( 390845, 0 ),          # Divine Star Damage Spell
+            ( 390981, 0 ),          # Divine Star Heal Spell
             # Holy Priest
             ( 196809, 5 ),          # Healing Light (Divine Image legendary pet spell)
             ( 196810, 5 ),          # Dazzling Light (Divine Image legendary pet spell)
             ( 196810, 5 ),          # Searing Light (Divine Image legendary pet spell)
+            ( 196811, 5 ),          # Searing Light (Divine Image talent pet spell)
             ( 196812, 5 ),          # Light Eruption (Divine Image legendary pet spell)
             ( 196813, 5 ),          # Blessed Light (Divine Image legendary pet spell)
             ( 196816, 5 ),          # Tranquil Light (Divine Image legendary pet spell)
             ( 325315, 0 ),          # Ascended Blast heal
+            ( 394729, 0 ),          # Prayer Focus T29 2-set
+            ( 393682, 0 ),          # Priest Holy Class Set 2-set
+            ( 393683, 0 ),          # Priest Holy Class Set 4-set
+            ( 394745, 0 ),          # Priest Holy Class Set 4-set buff
+            ( 234946, 0 ),          # Trail of Light heal
+            ( 368276, 0 ),          # Binding Heals heal
+            # Discipline Priest
+            ( 393679, 0 ),          # Priest Discipline Class Set 2-set
+            ( 394609, 0 ),          # Light Weaving 2-set buff
+            ( 393681, 0 ),          # Priest Discipline Class Set 4-set
+            ( 394624, 0 ),          # Shield of Absolution 4-set buff
         ),
 
         # Death Knight:
@@ -1707,6 +1739,7 @@ class SpellDataGenerator(DataGenerator):
           ( 203277, 0 ),                            # Flame Accelerant
           ( 384035, 0 ), ( 384038, 0 ),             # Firefall
           ( 382113, 0 ), ( 382114, 0 ),             # Cold Front
+          ( 365265, 0 ),                            # Arcane Surge energize
         ),
 
         # Warlock:
@@ -1788,7 +1821,17 @@ class SpellDataGenerator(DataGenerator):
           ( 367831, 0 ),    # T28 - Deliberate Corruption
           ( 387079, 0 ),    # Tormented Crescendo buff
           ( 387310, 0 ),    # Haunted Soul buff
-          ( 390097, 0 )     # Darkglare - Grim Reach
+          ( 390097, 0 ),    # Darkglare - Grim Reach
+          ( 387392, 0 ),    # Dread Calling Buff
+          ( 387393, 0 ),    # Dread Calling Buff 2
+          ( 267218, 0 ),    # Nether Portal aura
+          ( 387496, 0 ),    # Antoran Armaments buff
+          ( 387502, 0 ),    # Soul Cleave
+          ( 387552, 0 ),    # Infernal Command pet aura
+          ( 390193, 0 ),    # Demonic Servitude aura
+          ( 387096, 0 ),    # Pyrogenics aura
+          ( 387109, 0 ),    # Conflagration of Chaos aura 1
+          ( 387110, 0 ),    # Conflagration of Chaos aura 2
         ),
 
         # Monk:
@@ -1839,11 +1882,15 @@ class SpellDataGenerator(DataGenerator):
           ( 285594, 3 ), # Good Karma Healing Spell
           ( 290461, 3 ), # Reverse Harm Damage
           ( 335913, 3 ), # Empowered Tiger Lightning Damage spell
+          ( 396167, 3 ), # Fury of Xuen Stacking Buff
+          ( 396168, 3 ), # Fury of Xuen Haste Buff
 
           # Covenant
           ( 325217, 0 ), # Necrolord Bonedust Brew damage
           ( 325218, 0 ), # Necrolord Bonedust Brew heal
           ( 328296, 0 ), # Necrolord Bonedust Chi Refund
+          ( 342330, 0 ), # Necrolord Bonedust Brew Grounding Breath Buff
+          ( 394514, 0 ), # Necrolord Bonedust Brew Attenuation Buff
           ( 327257, 0 ), # Ardenweald Faeline Stomp debuff
           ( 327264, 0 ), # Ardenweald Faeline Stomp damage
           ( 327276, 0 ), # Ardenweald Faeline Stomp reset buff notification
@@ -1895,6 +1942,9 @@ class SpellDataGenerator(DataGenerator):
           ( 366793, 1 ), # BrM 4-piece Keg of the Heavens Heal
           ( 363911, 3 ), # WW 4-piece Primordial Potential
           ( 363924, 3 ), # WW 4-piece Primordial Power
+
+          # Tier 29
+          ( 394951, 3 ) # WW 4-piece Versatility buff
         ),
 
         # Druid:
@@ -1972,6 +2022,7 @@ class SpellDataGenerator(DataGenerator):
           # Dragonflight
           ( 340546, 0 ), # Tireless Pursuit buff
           ( 378989, 0 ), ( 378990, 0 ), ( 378991, 0 ), ( 378992, 0 ), # Lycara's Teachings buffs
+          ( 395336, 0 ), ( 378987, 0 ), # Protector of the Pack
           # Balance
           ( 188046, 1 ), # Denizen of the Dream pet attack
           ( 394049, 1 ), ( 394050, 1 ), # Balance of All Things
@@ -1979,8 +2030,8 @@ class SpellDataGenerator(DataGenerator):
           ( 395022, 1 ), # Incarnation unknown spell
           ( 393961, 1 ), # Primordial Arcanic Pulsar counter buff
           ( 394103, 1 ), ( 394106, 1 ), ( 394108, 1 ), ( 394111, 1 ), # Sundered Firmament
+          ( 395110, 1 ), # Parting Skies Sundered Firmament tracker buff
           ( 393869, 1 ), # Lunar Shrapnel damage
-          ( 395336, 0 ), ( 378987, 0 ), # Protector of the Pack
           # Feral
           ( 391710, 2 ), # Ferocious Frenzy damage
           ( 391786, 2 ), # Tear Open Wounds damage
@@ -1990,6 +2041,7 @@ class SpellDataGenerator(DataGenerator):
           ( 372505, 3 ), # Ursoc's Fury absorb
           ( 372019, 3 ), # Vicious Cycle mangle buff
           ( 279555, 3 ), # Layered Mane buff
+          ( 395942, 3 ), # 2t29 Mangle AoE
           # Restoration
         ),
         # Demon Hunter:
@@ -2021,6 +2073,7 @@ class SpellDataGenerator(DataGenerator):
           ( 337567, 1 ), # Chaotic Blades legendary buff
           ( 390197, 1 ), # Ragefire talent damage spell
           ( 390195, 1 ), # Chaos Theory talent buff
+          ( 393628, 0 ), ( 393629, 0 ), # T29 Set Bonus Spells
 
           # Vengeance
           ( 203557, 2 ), # Felblade proc rate
@@ -2791,6 +2844,12 @@ class SpellDataGenerator(DataGenerator):
 
             self.process_spell(data['spell'].id, ids, class_mask, 0, False)
 
+            if data['definition'].id_replace_spell > 0:
+                self.process_spell(data['definition'].id_replace_spell, ids, class_mask, 0, False)
+
+            if data['definition'].id_override_spell > 0:
+                self.process_spell(data['definition'].id_override_spell, ids, class_mask, 0, False)
+
         # Temporary item enchants
         for item, spell, enchant_id in TemporaryEnchantItemSet(self._options).get():
             enchant = self.db('SpellItemEnchantment')[enchant_id]
@@ -3476,6 +3535,11 @@ class SetBonusListGenerator(DataGenerator):
             'name'   : 'ripped_secrets',
             'bonuses': [ 1508 ],
             'tier'   : 28
+        },
+        {
+            'name'   : 'tier29',
+            'bonuses': [ 1526, 1527, 1528, 1529, 1530, 1531, 1532, 1533, 1534, 1535, 1536, 1537, 1538 ],
+            'tier'   : 29
         }
     ]
 
@@ -4418,6 +4482,7 @@ class TraitGenerator(DataGenerator):
             fields.append(f'{entry["req_points"]:2d}')
             fields += entry['definition'].field('id')
             fields += entry['spell'].field('id')
+            fields += entry['definition'].field('id_replace_spell')
             fields += entry['definition'].field('id_override_spell')
             fields += [f'{entry["row"]:2d}', f'{entry["col"]:2d}']
             fields.append(f'{entry["selection_index"]:3d}')
@@ -4479,6 +4544,7 @@ class TraitGenerator(DataGenerator):
             f'groups=[{", ".join([str(x.id) for x in sorted(entry["groups"], key=lambda v:v.id)])}] '
             f'tree={entry["tree"]} node_id={entry["node"].id} node_type={entry["node"].type} '
             f'entry={entry["entry"].id} '
+            f'replace={entry["definition"].id_replace_spell} '
             f'override={entry["definition"].id_override_spell} '
             f'spell={entry["spell"].name} ({entry["spell"].id}) ({util.tokenize(entry["spell"].name)})'
         )

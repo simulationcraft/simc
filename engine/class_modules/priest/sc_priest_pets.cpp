@@ -76,17 +76,8 @@ struct shadow_nova_t;
  */
 struct priest_pet_t : public pet_t
 {
-  propagate_const<actions::shadow_spike_t*> shadow_spike;
-  propagate_const<actions::shadow_spike_volley_t*> shadow_spike_volley;
-  propagate_const<actions::shadow_sear_t*> shadow_sear;
-  propagate_const<actions::shadow_nova_t*> shadow_nova;
-
   priest_pet_t( sim_t* sim, priest_t& owner, util::string_view pet_name, bool guardian = false )
-    : pet_t( sim, &owner, pet_name, PET_NONE, guardian ),
-      shadow_spike( nullptr ),
-      shadow_spike_volley( nullptr ),
-      shadow_sear( nullptr ),
-      shadow_nova( nullptr )
+    : pet_t( sim, &owner, pet_name, PET_NONE, guardian )
   {
   }
 
@@ -237,11 +228,277 @@ struct priest_pet_melee_t : public melee_attack_t
 struct priest_pet_spell_t : public spell_t
 {
   bool affected_by_shadow_weaving;
+  // auto parsed dynamic effects
+  using bfun = std::function<bool()>;
+  struct buff_effect_t
+  {
+    buff_t* buff;
+    double value;
+    bool use_stacks;
+    bfun func;
+
+    buff_effect_t( buff_t* b, double v, bool s = true, bfun f = nullptr )
+      : buff( b ), value( v ), use_stacks( s ), func( std::move( f ) )
+    {
+    }
+  };
+
+  std::vector<buff_effect_t> ta_multiplier_buffeffects;
+  std::vector<buff_effect_t> da_multiplier_buffeffects;
+  std::vector<buff_effect_t> execute_time_buffeffects;
+  std::vector<buff_effect_t> dot_duration_buffeffects;
+  std::vector<buff_effect_t> recharge_multiplier_buffeffects;
+  std::vector<buff_effect_t> cost_buffeffects;
+  std::vector<buff_effect_t> crit_chance_buffeffects;
 
   priest_pet_spell_t( util::string_view token, priest_pet_t& p, const spell_data_t* s )
     : spell_t( token, &p, s ), affected_by_shadow_weaving( false )
   {
     may_crit = true;
+
+    if ( data().ok() )
+    {
+      apply_buff_effects();
+    }
+  }
+
+  template <typename T>
+  void parse_spell_effects_mods( double& val, const spell_data_t* base, size_t idx, T mod )
+  {
+    for ( size_t i = 1; i <= mod->effect_count(); i++ )
+    {
+      const auto& eff = mod->effectN( i );
+
+      if ( eff.type() != E_APPLY_AURA )
+        continue;
+
+      if ( ( base->affected_by_all( eff ) &&
+             ( ( eff.misc_value1() == P_EFFECT_1 && idx == 1 ) || ( eff.misc_value1() == P_EFFECT_2 && idx == 2 ) ||
+               ( eff.misc_value1() == P_EFFECT_3 && idx == 3 ) || ( eff.misc_value1() == P_EFFECT_4 && idx == 4 ) ||
+               ( eff.misc_value1() == P_EFFECT_5 && idx == 5 ) ) ) ||
+           ( eff.subtype() == A_PROC_TRIGGER_SPELL_WITH_VALUE && eff.trigger_spell_id() == base->id() && idx == 1 ) )
+      {
+        double pct = eff.percent();
+
+        if ( eff.subtype() == A_ADD_FLAT_MODIFIER || eff.subtype() == A_ADD_FLAT_LABEL_MODIFIER )
+          val += pct;
+        else if ( eff.subtype() == A_ADD_PCT_MODIFIER || eff.subtype() == A_ADD_PCT_LABEL_MODIFIER )
+          val *= 1.0 + pct;
+        else if ( eff.subtype() == A_PROC_TRIGGER_SPELL_WITH_VALUE )
+          val = pct;
+        else
+          continue;
+      }
+    }
+  }
+
+  void parse_spell_effects_mods( double&, const spell_data_t*, size_t )
+  {
+  }
+
+  template <typename T, typename... Ts>
+  void parse_spell_effects_mods( double& val, const spell_data_t* base, size_t idx, T mod, Ts... mods )
+  {
+    parse_spell_effects_mods( val, base, idx, mod );
+    parse_spell_effects_mods( val, base, idx, mods... );
+  }
+
+  // Will parse simple buffs that ONLY target the caster and DO NOT have multiple ranks
+  // 1: Add Percent Modifier to Spell Direct Amount
+  // 2: Add Percent Modifier to Spell Periodic Amount
+  // 3: Add Percent Modifier to Spell Cast Time
+  // 4: Add Percent Modifier to Spell Cooldown
+  // 5: Add Percent Modifier to Spell Resource Cost
+  // 6: Add Flat Modifier to Spell Critical Chance
+  template <typename... Ts>
+  void parse_buff_effect( buff_t* buff, bfun f, const spell_data_t* s_data, size_t i, bool use_stacks, bool use_default,
+                          Ts... mods )
+  {
+    const auto& eff = s_data->effectN( i );
+    double val      = eff.percent();
+
+    auto debug_message = [ & ]( std::string_view type ) {
+      if ( buff )
+      {
+        p().sim->print_debug( "buff-effects: {} ({}) {} modified by {}% with buff {} ({}#{})", name(), id, type,
+                              val * 100.0, buff->name(), buff->data().id(), i );
+      }
+      else if ( f )
+      {
+        p().sim->print_debug( "conditional-effects: {} ({}) {} modified by {}% with condition from {} ({}#{})", name(),
+                              id, type, val * 100.0, s_data->name_cstr(), s_data->id(), i );
+      }
+      else
+      {
+        p().sim->print_debug( "passive-effects: {} ({}) {} modified by {}% from {} ({}#{})", name(), id, type,
+                              val * 100.0, s_data->name_cstr(), s_data->id(), i );
+      }
+    };
+
+    // TODO: more robust logic around 'party' buffs with radius
+    if ( !( eff.type() == E_APPLY_AURA || eff.type() == E_APPLY_AREA_AURA_PARTY ) || eff.radius() )
+      return;
+
+    if ( i <= 5 )
+      parse_spell_effects_mods( val, s_data, i, mods... );
+
+    if ( !data().affected_by_all( eff ) )
+      return;
+
+    if ( use_default && buff )
+      val = buff->default_value;
+
+    if ( !val )
+      return;
+
+    if ( eff.subtype() == A_ADD_PCT_MODIFIER || eff.subtype() == A_ADD_PCT_LABEL_MODIFIER )
+    {
+      switch ( eff.misc_value1() )
+      {
+        case P_GENERIC:
+          da_multiplier_buffeffects.emplace_back( buff, val, use_stacks, f );
+          debug_message( "direct damage" );
+          break;
+        case P_DURATION:
+          dot_duration_buffeffects.emplace_back( buff, val, use_stacks, f );
+          debug_message( "duration" );
+          break;
+        case P_TICK_DAMAGE:
+          ta_multiplier_buffeffects.emplace_back( buff, val, use_stacks, f );
+          debug_message( "tick damage" );
+          break;
+        case P_CAST_TIME:
+          execute_time_buffeffects.emplace_back( buff, val, use_stacks, f );
+          debug_message( "cast time" );
+          break;
+        case P_COOLDOWN:
+          recharge_multiplier_buffeffects.emplace_back( buff, val, use_stacks, f );
+          debug_message( "cooldown" );
+          break;
+        case P_RESOURCE_COST:
+          cost_buffeffects.emplace_back( buff, val, use_stacks, f );
+          debug_message( "cost" );
+          break;
+        default:
+          return;
+      }
+    }
+    else if ( eff.subtype() == A_ADD_FLAT_MODIFIER && eff.misc_value1() == P_CRIT )
+    {
+      crit_chance_buffeffects.emplace_back( buff, val, use_stacks, f );
+      debug_message( "crit chance" );
+    }
+    else
+    {
+      return;
+    }
+  }
+
+  template <typename... Ts>
+  void parse_buff_effects( buff_t* buff, unsigned ignore_mask, bool use_stacks, bool use_default, Ts... mods )
+  {
+    if ( !buff )
+      return;
+
+    const spell_data_t* s_data = &buff->data();
+    for ( size_t i = 1; i <= s_data->effect_count(); i++ )
+    {
+      if ( ignore_mask & 1 << ( i - 1 ) )
+        continue;
+
+      parse_buff_effect( buff, nullptr, s_data, i, use_stacks, use_default, mods... );
+    }
+  }
+
+  template <typename... Ts>
+  void parse_buff_effects( buff_t* buff, unsigned ignore_mask, Ts... mods )
+  {
+    parse_buff_effects<Ts...>( buff, ignore_mask, true, false, mods... );
+  }
+
+  template <typename... Ts>
+  void parse_buff_effects( buff_t* buff, bool stack, bool use_default, Ts... mods )
+  {
+    parse_buff_effects<Ts...>( buff, 0U, stack, use_default, mods... );
+  }
+
+  template <typename... Ts>
+  void parse_buff_effects( buff_t* buff, bool stack, Ts... mods )
+  {
+    parse_buff_effects<Ts...>( buff, 0U, stack, false, mods... );
+  }
+
+  template <typename... Ts>
+  void parse_buff_effects( buff_t* buff, Ts... mods )
+  {
+    parse_buff_effects<Ts...>( buff, 0U, true, false, mods... );
+  }
+
+  void parse_conditional_effects( const spell_data_t* spell, bfun f, unsigned ignore_mask = 0U )
+  {
+    if ( !spell || !spell->ok() )
+      return;
+
+    for ( size_t i = 1; i <= spell->effect_count(); i++ )
+    {
+      if ( ignore_mask & 1 << ( i - 1 ) )
+        continue;
+
+      parse_buff_effect( nullptr, f, spell, i, false, false );
+    }
+  }
+
+  void parse_passive_effects( const spell_data_t* spell, unsigned ignore_mask = 0U )
+  {
+    parse_conditional_effects( spell, nullptr, ignore_mask );
+  }
+
+  double get_buff_effects_value( const std::vector<buff_effect_t>& buffeffects, bool flat = false,
+                                 bool benefit = true ) const
+  {
+    double return_value = flat ? 0.0 : 1.0;
+
+    for ( const auto& i : buffeffects )
+    {
+      double eff_val = i.value;
+      int mod        = 1;
+
+      if ( i.func && !i.func() )
+        continue;  // continue to next effect if conditional effect function is false
+
+      if ( i.buff )
+      {
+        auto stack = benefit ? i.buff->stack() : i.buff->check();
+
+        if ( !stack )
+          continue;  // continue to next effect if stacks == 0 (buff is down)
+
+        mod = i.use_stacks ? stack : 1;
+      }
+
+      if ( flat )
+        return_value += eff_val * mod;
+      else
+        return_value *= 1.0 + eff_val * mod;
+    }
+
+    return return_value;
+  }
+
+  // Syntax: parse_buff_effects[<S[,S...]>]( buff[, ignore_mask|use_stacks[, use_default]][, spell1[,spell2...] )
+  //  buff = buff to be checked for to see if effect applies
+  //  ignore_mask = optional bitmask to skip effect# n corresponding to the n'th bit
+  //  use_stacks = optional, default true, whether to multiply value by stacks
+  //  use_default = optional, default false, whether to use buff's default value over effect's value
+  //  S = optional list of template parameter(s) to indicate spell(s) with redirect effects
+  //  spell = optional list of spell(s) with redirect effects that modify the effects on the buff
+  void apply_buff_effects()
+  {
+    // using S = const spell_data_t*;
+
+    parse_buff_effects( p().o().buffs.voidform );
+    parse_buff_effects( p().o().buffs.shadowform );
+    parse_buff_effects( p().o().buffs.twist_of_fate, p().o().talents.twist_of_fate );
   }
 
   priest_pet_t& p()
@@ -251,6 +508,49 @@ struct priest_pet_spell_t : public spell_t
   const priest_pet_t& p() const
   {
     return static_cast<priest_pet_t&>( *player );
+  }
+
+  double cost() const override
+  {
+    double c = spell_t::cost() * std::max( 0.0, get_buff_effects_value( cost_buffeffects, false, false ) );
+    return c;
+  }
+
+  double composite_ta_multiplier( const action_state_t* s ) const override
+  {
+    double ta = spell_t::composite_ta_multiplier( s ) * get_buff_effects_value( ta_multiplier_buffeffects );
+    return ta;
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double da = spell_t::composite_da_multiplier( s ) * get_buff_effects_value( da_multiplier_buffeffects );
+    return da;
+  }
+
+  double composite_crit_chance() const override
+  {
+    double cc = spell_t::composite_crit_chance() + get_buff_effects_value( crit_chance_buffeffects, true );
+    return cc;
+  }
+
+  timespan_t execute_time() const override
+  {
+    timespan_t et = spell_t::execute_time() * get_buff_effects_value( execute_time_buffeffects );
+    return et;
+  }
+
+  timespan_t composite_dot_duration( const action_state_t* s ) const override
+  {
+    timespan_t dd = spell_t::composite_dot_duration( s ) * get_buff_effects_value( dot_duration_buffeffects );
+    return dd;
+  }
+
+  double recharge_multiplier( const cooldown_t& cd ) const override
+  {
+    double rm =
+        action_t::recharge_multiplier( cd ) * get_buff_effects_value( recharge_multiplier_buffeffects, false, false );
+    return rm;
   }
 
   double composite_target_da_multiplier( player_t* t ) const override
@@ -267,7 +567,7 @@ struct priest_pet_spell_t : public spell_t
 
   double composite_target_ta_multiplier( player_t* t ) const override
   {
-    double ttm = action_t::composite_target_ta_multiplier( t );
+    double ttm = spell_t::composite_target_ta_multiplier( t );
 
     if ( affected_by_shadow_weaving )
     {
@@ -570,6 +870,8 @@ struct shadowflame_rift_t final : public priest_pet_spell_t
 
 // ==========================================================================
 // Inescapable Torment Damage
+// talent=373427
+// ?     =373442
 // ==========================================================================
 struct inescapable_torment_damage_t final : public priest_pet_spell_t
 {
@@ -580,19 +882,14 @@ struct inescapable_torment_damage_t final : public priest_pet_spell_t
     affected_by_shadow_weaving = true;
 
     // This is hard coded in the spell
-    // Depending on Mindbender or Shadowfiend this hits differently
-    switch ( p.fiend_type )
+    // spcoeff * $?a137032[${0.326139}][${0.442}]
+    if ( p.fiend_type == base_fiend_pet_t::fiend_type::Mindbender )
     {
-      case base_fiend_pet_t::fiend_type::Mindbender:
-      {
-        spell_power_mod.direct *= 0.442;
-      }
-      break;
-      default:
-        spell_power_mod.direct *= 0.408;
-        break;
+      spell_power_mod.direct *= 0.442;
     }
 
+    // Negative modifier used for point scaling
+    // Effect#4 [op=set, values=(-50, 0)]
     spell_power_mod.direct *= ( 1 + p.o().talents.shadow.inescapable_torment->effectN( 4 ).percent() );
   }
 };
@@ -646,6 +943,9 @@ struct inescapable_torment_t final : public priest_pet_spell_t
 
     impact_action = new inescapable_torment_damage_t( p );
     add_child( impact_action );
+
+    // Base spell also has damage values
+    base_dd_min = base_dd_max = spell_power_mod.direct = 0.0;
   }
 
   void execute() override
@@ -816,108 +1116,6 @@ action_t* priest_pallid_command_t::create_action( util::string_view name, util::
 
   return priest_pet_t::create_action( name, options_str );
 }
-// ==========================================================================
-// Living Shadow T28 4-set (Your Shadow)
-// ==========================================================================
-struct your_shadow_tier_t final : public priest_pet_t
-{
-  your_shadow_tier_t( priest_t* owner ) : priest_pet_t( owner->sim, *owner, "your_shadow_tier", true )
-  {
-  }
-
-  void init_action_list() override
-  {
-    priest_pet_t::init_action_list();
-
-    action_priority_list_t* def = get_action_priority_list( "default" );
-    def->add_action( "torment_mind" );
-  }
-
-  // Tracking buff to easily get pet uptime (especially in AoE this is easier)
-  virtual void arise() override
-  {
-    pet_t::arise();
-
-    o().buffs.living_shadow_tier->trigger();
-  }
-
-  virtual void demise() override
-  {
-    pet_t::demise();
-
-    o().buffs.living_shadow_tier->expire();
-  }
-
-  action_t* create_action( util::string_view name, util::string_view options_str ) override;
-};
-
-struct your_shadow_torment_mind_tick_t final : public priest_pet_spell_t
-{
-  your_shadow_torment_mind_tick_t( your_shadow_tier_t& p, const spell_data_t* s )
-    : priest_pet_spell_t( "torment_mind_tick", p, s )
-  {
-    background                 = true;
-    dual                       = true;
-    affected_by_shadow_weaving = true;
-    aoe                        = -1;
-    radius                     = data().effectN( 2 ).radius();
-    spell_power_mod.tick       = data().effectN( 2 ).sp_coeff();
-  }
-
-  void init() override
-  {
-    priest_pet_spell_t::init();
-
-    merge_pet_stats( p().o(), p(), *this );
-  }
-};
-
-struct your_shadow_torment_mind_t final : public priest_pet_spell_t
-{
-  const spell_data_t* torment_mind_tick_spell;
-
-  your_shadow_torment_mind_t( your_shadow_tier_t& p, util::string_view options )
-    : priest_pet_spell_t( "torment_mind", p, p.o().find_spell( 363656 ) ),
-      torment_mind_tick_spell( p.o().find_spell( 366971 ) )
-  {
-    parse_options( options );
-    channeled   = true;
-    tick_zero   = true;
-    tick_action = new your_shadow_torment_mind_tick_t( p, torment_mind_tick_spell );
-  }
-
-  void init() override
-  {
-    priest_pet_spell_t::init();
-
-    merge_pet_stats( p().o(), p(), *this );
-  }
-
-  timespan_t execute_time() const override
-  {
-    // Right now there is a delay between channels and on spawn time
-    // There is a delay between the last tick of channel 1 and the first tick of channel 2
-    // https://github.com/WarcraftPriests/sl-shadow-priest/issues/229
-    if ( p().o().bugs )
-    {
-      return timespan_t::from_millis( 500 );
-    }
-    else
-    {
-      return priest_pet_spell_t::execute_time();
-    }
-  }
-};
-
-action_t* your_shadow_tier_t::create_action( util::string_view name, util::string_view options_str )
-{
-  if ( name == "torment_mind" )
-  {
-    return new your_shadow_torment_mind_t( *this, options_str );
-  }
-
-  return priest_pet_t::create_action( name, options_str );
-}
 
 // ==========================================================================
 // Eternal Call to the Void and Idol of C'Thun
@@ -939,13 +1137,14 @@ struct void_tendril_t final : public priest_pet_t
   action_t* create_action( util::string_view name, util::string_view options_str ) override;
 };
 
+// Insanity gain (legendary=336214, cthun=377358)
 struct void_tendril_mind_flay_t final : public priest_pet_spell_t
 {
   double void_tendril_insanity_gain;
 
   void_tendril_mind_flay_t( void_tendril_t& p, util::string_view options )
     : priest_pet_spell_t( "mind_flay", p, p.o().find_spell( 193473 ) ),
-      void_tendril_insanity_gain( p.o().find_spell( 336214 )->effectN( 1 ).base_value() )
+      void_tendril_insanity_gain( p.o().find_spell( 377358 )->effectN( 1 ).resource( RESOURCE_INSANITY ) )
   {
     parse_options( options );
     channeled                  = true;
@@ -1025,13 +1224,14 @@ struct void_lasher_t final : public priest_pet_t
   action_t* create_action( util::string_view name, util::string_view options_str ) override;
 };
 
+// Insanity gain (legendary=208232, cthun=377358)
 struct void_lasher_mind_sear_tick_t final : public priest_pet_spell_t
 {
   const double void_lasher_insanity_gain;
 
   void_lasher_mind_sear_tick_t( void_lasher_t& p, const spell_data_t* s )
     : priest_pet_spell_t( "mind_sear_tick", p, s ),
-      void_lasher_insanity_gain( p.o().find_spell( 208232 )->effectN( 1 ).resource( RESOURCE_INSANITY ) )
+      void_lasher_insanity_gain( p.o().find_spell( 377358 )->effectN( 1 ).resource( RESOURCE_INSANITY ) )
   {
     background = true;
     dual       = true;
@@ -1071,6 +1271,12 @@ struct void_lasher_mind_sear_tick_t final : public priest_pet_spell_t
   {
     priest_pet_spell_t::impact( s );
 
+    // You only get the Insanity on your main target
+    if ( s->target != parent_dot->target )
+    {
+      return;
+    }
+
     // TODO: remove after launch
     if ( p().o().talents.shadow.idol_of_cthun.enabled() )
     {
@@ -1084,10 +1290,12 @@ struct void_lasher_mind_sear_tick_t final : public priest_pet_spell_t
   }
 };
 
+// Legendary: 344754 -> 344752
+// Idol of C'thun: 394976 -> 394979
 struct void_lasher_mind_sear_t final : public priest_pet_spell_t
 {
   void_lasher_mind_sear_t( void_lasher_t& p, util::string_view options )
-    : priest_pet_spell_t( "mind_sear", p, p.o().find_spell( 344754 ) )
+    : priest_pet_spell_t( "mind_sear", p, p.o().find_spell( 394976 ) )
   {
     parse_options( options );
     channeled    = true;
@@ -1147,6 +1355,8 @@ struct void_spike_t final : public priest_pet_spell_t
     : priest_pet_spell_t( "void_spike", p, p.o().find_spell( 373279 ) )
   {
     parse_options( options );
+
+    gcd_type = gcd_haste_type::SPELL_HASTE;
 
     // BUG: Does not scale with Mastery
     // https://github.com/SimCMinMax/WoW-BugTracker/issues/931
@@ -1311,27 +1521,19 @@ priest_t::priest_pets_t::priest_pets_t( priest_t& p )
     void_lasher( "void_lasher", &p, []( priest_t* priest ) { return new void_lasher_t( priest ); } ),
     rattling_mage( "rattling_mage", &p, []( priest_t* priest ) { return new rattling_mage_t( priest ); } ),
     cackling_chemist( "cackling_chemist", &p, []( priest_t* priest ) { return new cackling_chemist_t( priest ); } ),
-    your_shadow_tier( "your_shadow_tier", &p, []( priest_t* priest ) { return new your_shadow_tier_t( priest ); } ),
     thing_from_beyond( "thing_from_beyond", &p, []( priest_t* priest ) { return new thing_from_beyond_t( priest ); } )
 {
-  // TODO: consider changing duration over to 377355
-  auto void_tendril_spell = p.find_spell( 193473 );
+  // Void Tendril: legendary=193473 | cthun=377355
+  // Void Lasher: legendary=336216 | cthun=377355
+  auto idol_of_cthun = p.find_spell( 377355 );
   // Add 1ms to ensure pet is dismissed after last dot tick.
-  void_tendril.set_default_duration( void_tendril_spell->duration() + timespan_t::from_millis( 1 ) );
-
-  auto void_lasher_spell = p.find_spell( 336216 );
-  // Add 1ms to ensure pet is dismissed after last dot tick.
-  void_lasher.set_default_duration( void_lasher_spell->duration() + timespan_t::from_millis( 1 ) );
+  void_tendril.set_default_duration( idol_of_cthun->duration() + timespan_t::from_millis( 1 ) );
+  void_lasher.set_default_duration( idol_of_cthun->duration() + timespan_t::from_millis( 1 ) );
 
   auto rigor_mortis_duration = p.find_spell( 356467 )->duration();
   rattling_mage.set_default_duration( rigor_mortis_duration );
   cackling_chemist.set_default_duration( rigor_mortis_duration );
 
-  // Add 1ms to ensure pet is dismissed after last dot tick.
-  // Note: this is overriden in mind_blast_t when spawning the pet
-  auto your_shadow_spell = p.find_spell( 363469 );
-  your_shadow_tier.set_default_duration( timespan_t::from_seconds( your_shadow_spell->effectN( 2 ).base_value() ) +
-                                         timespan_t::from_millis( 1 ) );
   auto thing_from_beyond_spell = p.find_spell( 373277 );
   thing_from_beyond.set_default_duration( thing_from_beyond_spell->duration() );
 }

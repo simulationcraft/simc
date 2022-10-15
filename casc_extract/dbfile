@@ -959,6 +959,8 @@
 4677533, DBFilesClient\ItemLogicalCost.db2
 4677534, DBFilesClient\ItemLogicalCostGroup.db2
 4682325, DBFilesClient\GlideEventBlendTimes.db2
+4688652, DBFilesClient\CraftingOrderHouse.db2
 4699082, DBFilesClient\PvpRating.db2
 4724136, DBFilesClient\ChrCustomizationVisReq.db2
 4737221, DBFilesClient\UiWeeklyReward.db2
+4756178, DBFilesClient\SoundWaterfallEmitter.db2

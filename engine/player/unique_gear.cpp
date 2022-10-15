@@ -3522,21 +3522,27 @@ void generic::windfury_totem( special_effect_t& effect )
 {
   struct wft_proc_callback_t : public dbc_proc_callback_t
   {
-    proc_t* proc;
+    proc_t* proc_mh, *proc_oh;
 
     wft_proc_callback_t( const special_effect_t& effect ) :
-      dbc_proc_callback_t( effect.player, effect ), proc( nullptr )
-    { 
-      if ( effect.player->main_hand_attack && effect.player->main_hand_attack->weapon->group() != WEAPON_RANGED )
+      dbc_proc_callback_t( effect.player, effect ), proc_mh( nullptr ), proc_oh( nullptr )
+    {
+      if ( effect.player->items[ SLOT_MAIN_HAND ].active() &&
+           effect.player->items[ SLOT_MAIN_HAND ].inv_type() != INVTYPE_RANGED )
       {
-        proc = effect.player->get_proc( "windfury_totem_extra_attack" );
+        proc_mh = effect.player->get_proc( "windfury_totem_extra_attack_mh" );
+      }
+
+      if ( effect.player->items[ SLOT_OFF_HAND ].active() &&
+           effect.player->items[ SLOT_OFF_HAND ].inv_type() != INVTYPE_RANGED )
+      {
+        proc_oh = effect.player->get_proc( "windfury_totem_extra_attack_oh" );
       }
     }
 
     void trigger( action_t* a, action_state_t* s ) override
     {
-      // Windfury totem cannot proc from off-hand hits, apparently
-      if ( s->action->weapon && s->action->weapon->slot != SLOT_MAIN_HAND )
+      if ( !s->action->weapon )
       {
         return;
       }
@@ -3547,9 +3553,12 @@ void generic::windfury_totem( special_effect_t& effect )
         return;
       }
 
-      // If for some reason there's no auto attack action that would initialize the main
-      // hand attack, bail out
-      if ( !s->action->player->main_hand_attack )
+      auto action = s->action->weapon->slot == SLOT_MAIN_HAND
+        ? s->action->player->main_hand_attack
+        : s->action->player->off_hand_attack;
+
+      // If for some reason there's no auto attack action that would initialize the attack, bail out
+      if ( !action )
       {
         return;
       }
@@ -3559,7 +3568,13 @@ void generic::windfury_totem( special_effect_t& effect )
 
     void execute( action_t*, action_state_t* state ) override
     {
-      auto atk = listener->main_hand_attack;
+      auto atk = state->action->weapon->slot == SLOT_MAIN_HAND
+        ? state->action->player->main_hand_attack
+        : state->action->player->off_hand_attack;
+      auto proc = state->action->weapon->slot == SLOT_MAIN_HAND
+        ? proc_mh
+        : proc_oh;
+
       auto old_target = atk->target;
 
       listener->sim->print_log( "{} windfury_totem repeats {}", *listener, *atk );
@@ -3568,11 +3583,15 @@ void generic::windfury_totem( special_effect_t& effect )
         proc->occur();
       }
 
+      auto old_may_miss = atk->may_miss;
+
+      atk->may_miss = false;
       atk->repeating = false;
       atk->set_target( state->target );
       atk->execute();
 
       atk->repeating = true;
+      atk->may_miss = old_may_miss;
       atk->set_target( old_target );
     }
   };
@@ -4235,6 +4254,15 @@ std::unique_ptr<expr_t> unique_gear::create_expression( player_t& player, util::
     return shadowlands::items::shards_of_domination::create_expression( player, name_str );
   }
 
+  // Hyperthread Wristwraps
+  if ( splits[ 0 ] == "hyperthread_wristwraps" )
+  {
+    if ( auto a = player.find_action( "hyperthread_wristwraps" ) )
+    {
+      return a->create_expression( name_str );
+    }
+  }
+
   if ( splits.size() < 2 )
   {
     return nullptr;
@@ -4487,6 +4515,13 @@ void unique_gear::register_special_effect( unsigned spell_id, custom_cb_t init_c
   dbitem.fallback = fallback;
 
   add_effect( dbitem );
+}
+
+void unique_gear::register_special_effect( std::initializer_list<unsigned> spell_ids, custom_cb_t init_callback,
+                                           bool fallback )
+{
+  for ( auto id : spell_ids )
+    register_special_effect( id, init_callback, fallback );
 }
 
 void unique_gear::register_special_effect( unsigned spell_id, const char* encoded_str )

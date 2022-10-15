@@ -55,13 +55,15 @@ struct warlock_td_t : public actor_target_data_t
   propagate_const<buff_t*> debuffs_eradication;
   propagate_const<buff_t*> debuffs_roaring_blaze;
   propagate_const<buff_t*> debuffs_havoc;
-  // DF - Pyrogenics (Rain of Fire increases Fire damage taken)
+  propagate_const<buff_t*> debuffs_pyrogenics;
+  propagate_const<buff_t*> debuffs_conflagrate; // Artist formerly known as debuffs_roaring_blaze
 
   // Demo
   propagate_const<dot_t*> dots_doom;
 
   propagate_const<buff_t*> debuffs_from_the_shadows;
-  // DF - Fel Sunder? (Felstorm increases target's damage taken; could be in pet module instead)
+  propagate_const<buff_t*> debuffs_fel_sunder; // Done in owner target data for easier handling
+  propagate_const<buff_t*> debuffs_kazaaks_final_curse; // Not an actual debuff in-game, but useful as a utility feature for Doom
 
   double soc_threshold; //Aff - Seed of Corruption counts damage from cross-spec spells such as Drain Life
 
@@ -109,6 +111,7 @@ public:
     const spell_data_t* hand_of_guldan;
     const spell_data_t* hog_impact; // Secondary spell responsible for impact damage
     const spell_data_t* wild_imp; // Data for pet summoning
+    const spell_data_t* fel_firebolt_2; // 2022-10-03 - This is still a separate spell learned automatically when switching spec?
     const spell_data_t* demonic_core; // The passive responsible for the proc chance
     const spell_data_t* demonic_core_buff; // Buff spell data
     const spell_data_t* master_demonologist; // Demonology Mastery - Increased demon damage
@@ -162,7 +165,7 @@ public:
     spawner::pet_spawner_t<pets::demonology::random_demons::eyes_of_guldan_t, warlock_t> eyes_of_guldan;
     spawner::pet_spawner_t<pets::demonology::random_demons::prince_malchezaar_t, warlock_t> prince_malchezaar;
 
-    // DF - New post-NP summon: Pit Lord
+    spawner::pet_spawner_t<pets::demonology::pit_lord_t, warlock_t> pit_lords;
 
     pets_t( warlock_t* w );
   } warlock_pet_list;
@@ -284,80 +287,108 @@ public:
     player_talent_t bilescourge_bombers;
     const spell_data_t* bilescourge_bombers_aoe; // Ground AoE data
     player_talent_t demonic_strength;
-    const spell_data_t* from_the_shadows; // DF - Should be unchanged but due to Shadowflame effect, new abilities need checking against it
+    player_talent_t from_the_shadows;
+    const spell_data_t* from_the_shadows_debuff; // Tooltip says "Shadowflame" but this contains an explicit whitelist (for the *warlock*, pets are unknown and we'll fall back to schools)
 
-    // DF - Implosion (presumably unchanged, double-check Wild Imp flight behavior)
-    // DF - Shadow's Bite (Demonbolt damage increase after Dreadstalkers despawn)
-    // DF - Carnivorous Stalkers (Formerly SL Conduit)
-    // DF - Fel and Steel (Felstorm and Dreadbite damage increase)
-    // DF - Fel Might (Shorter Felstorm CD)
+    player_talent_t implosion;
+    const spell_data_t* implosion_aoe; // Note: in combat logs this is attributed to the player, not the imploding pet
+    player_talent_t shadows_bite; // Demonbolt damage increase after Dreadstalkers despawn
+    const spell_data_t* shadows_bite_buff;
+    player_talent_t carnivorous_stalkers; // Chance for Dreadstalkers to perform additional Dreadbites
+    player_talent_t fel_and_steel; // Felstorm and Dreadbite damage increase
+    player_talent_t fel_might; // Shorter Felstorm CD - main pet only!
 
-    const spell_data_t* power_siphon;
-    const spell_data_t* inner_demons; // DF - Now a 2 point talent
-    const spell_data_t* demonic_calling; // DF - Now a 2 point talent
-    const spell_data_t* grimoire_felguard;
+    player_talent_t power_siphon; // NOTE: Power Siphon WILL consume Imp Gang Boss as if it were a regular imp (last checked 2022-10-04)
+    const spell_data_t* power_siphon_buff; // Semi-hidden aura that controls the bonus Demonbolt damage
+    player_talent_t inner_demons; // DF - Now a 2 point talent
+    player_talent_t demonic_calling; // DF - Now a 2 point talent
+    const spell_data_t* demonic_calling_buff;
+    player_talent_t grimoire_felguard;
 
-    // DF - Bloodbound Imps (Increased Demonic Core proc chance from Wild Imps)
-    // DF - Grim Inquisitor's Dread Calling (Formerly SL Legendary)
-    const spell_data_t* doom; // DF - Base functionality presumably unchanged but requires double checking due to new talents
-    // DF - Demonic Meteor (Chance to proc Hand of Gul'dan off Hand of Gul'dan)
-    // DF - Fel Sunder (Increase damage taken debuff when hit by Felstorm)    
+    player_talent_t bloodbound_imps; // Increased Demonic Core proc chance from Wild Imps
+    player_talent_t dread_calling; // Stacking buff to next Dreadstalkers damage (Formerly SL Legendary)
+    const spell_data_t* dread_calling_buff; // This buffs stacks on the warlock, a different one applies to the pet
+    player_talent_t doom;
+    player_talent_t demonic_meteor; // Increased Hand of Gul'dan damage and chance to refund soul shard
+    player_talent_t fel_sunder; // Increase damage taken debuff when hit by main pet Felstorm
+    const spell_data_t* fel_sunder_debuff;
 
-    // DF - Balespider's Burning Core (Formerly SL Legendary, now a 2 point talent)
-    // DF - Imp Gang Boss (2 point talent, Wild Imp has chance to be this pet instead)
-    // DF - Kazaak's Final Curse (2 point talent, Doom deals increased damage based on active demon count)
-    // DF - Ripped Through the Portal (Formerly SL Tier Bonus, now a 2 point talent)
-    // DF - Houndmaster's Gambit (2 point talent, Shadow Bolt and Demonbolt have a chance to reset Call Dreadstalkers)
+    player_talent_t fel_covenant; // Stacking Demonbolt buff when casting Shadow Bolt, not consumed after cast
+    const spell_data_t* fel_covenant_buff;
+    player_talent_t imp_gang_boss; // DF - Imp Gang Boss (2 point talent, Wild Imp has chance to be this pet instead)
+    player_talent_t kazaaks_final_curse; // Doom deals increased damage based on active demon count
+    player_talent_t ripped_through_the_portal; // Increased Dreadstalker count chance (Formerly SL Tier bonus)
+    player_talent_t hounds_of_war; // Shadow Bolt and Demonbolt have a chance to reset Call Dreadstalkers
     
-    const spell_data_t* nether_portal; // DF - Cooldown may be reverted, will require constant checking until launch
-    // DF - Summon Demonic Tyrant - Presumably unchanged, but new talents require checking against this summon
-    // DF - Antoran Armaments (Increased Felguard damage and Soul Strike cleave)
+    player_talent_t nether_portal; // TOCHECK: 2022-10-07 Portal summon damage is possibly slightly above current in-game values (~1% max), full audit needed closer to release
+    const spell_data_t* nether_portal_buff; // Aura on player while the portal is active
+    player_talent_t summon_demonic_tyrant; // TOCHECK: 2022-10-07 Pit Lord is not currently extendable by Tyrant
+    const spell_data_t* demonic_power_buff; // Buff on player when Tyrant is summoned, should grant 15% damage to pets (TOCHECK: 2022-10-07 - buff is missing guardian aura, only main pet working)
+    player_talent_t antoran_armaments; // Increased Felguard damage and Soul Strike cleave (TOCHECK: 2022-10-08 - this is applying to Grimoire: Felguard erratically)
 
-    // DF - Ner'zhul's Volition (2 point talent, chance to summon additional demons from Nether Portal)
-    // DF - Stolen Power (Stacking buff from Wild Imps, at max get increased Shadow Bolt or Demonbolt damage)
-    const spell_data_t* sacrificed_souls; // DF - Now a 2 point talent, needs checking against new pets for compatibility
-    // DF - Soulbound Tyrant (2 point talent, formerly a Rank 2 effect on Summon Demonic Tyrant)
-    // DF - Forces of the Horned Nightmare (Formerly SL Legendary, now a 2 point talent)
-    // DF - The Expendables (Per-pet stacking buff to damage when a Wild Imp expires)
-    // DF - Command Aura (2 point talent, increased Wild Imp and Dreadstalker damage while Felguard active)
+    player_talent_t nerzhuls_volition; // Chance to summon additional demon from Nether Portal summons (TOCHECK: It is currently assumed this cannot proc itself)
+    player_talent_t stolen_power; // Stacking buff from Wild Imps, at max get increased Shadow Bolt or Demonbolt damage
+    const spell_data_t* stolen_power_stacking_buff; // Triggers final buff when reaching max stacks
+    const spell_data_t* stolen_power_final_buff;
+    player_talent_t sacrificed_souls;
+    player_talent_t soulbound_tyrant; // Soul Shards on Tyrant summons
+    player_talent_t pact_of_the_imp_mother; // Chance for Hand of Gul'dan to proc a second time on execute (Formerly SL Legendary)
+    player_talent_t the_expendables; // Per-pet stacking buff to damage when a Wild Imp expires
+    player_talent_t infernal_command; // Increased Wild Imp and Dreadstalker damage while Felguard active (TOCHECK: 2022-10-08 - this is behaving very buggily on beta)
 
-    // DF - Gul'dan's Ambition (Summon Pit Lord at end of Nether Portal)
-    const spell_data_t* demonic_consumption; // DF - HEAVILY REWORKED, RENAMED "Reign of Tyranny", now a choice against Wilfred's
-    // DF - Wilfred's Sigil of Superior Summoning (Choice against Reign of Tyranny, formerly SL Legendary, NOTE: SHARES NAME WITH OTHER SPEC TALENTS)
-    // DF - Guillotine (Felguard AoE plus autoattack cleave cooldown)
+    player_talent_t guldans_ambition; // Summons a Pit Lord at end of Nether Portal
+    const spell_data_t* soul_glutton; // Buff on Pit Lord based on demons summoned
+    player_talent_t reign_of_tyranny; // Each summoned active gives stacks of Demonic Servitude (Wild Imps give 1, others 2). Tyrant snapshots this buff on summon for more damage
+    const spell_data_t* demonic_servitude; // TOCHECK: 2022-10-09 - In addition to aura stack bugs, Nether Portal demons are not currently giving stacks in beta (not implemented)
+    // Grand Warlock's Design (formerly Wilfred's). Shared across all 3 specs
+    player_talent_t guillotine;
 
     // DESTRO
-    // DF - Chaos Bolt
+    player_talent_t chaos_bolt;
 
-    // DF - Conflagrate (base 2 charges)
-    const spell_data_t* reverse_entropy; // DF - Now a choice against Internal Combustion, make sure to find correct RPPM location in data with new talent structure
-    const spell_data_t* internal_combustion; // DF - Now a choice against Reverse Entropy
-    // DF - Rain of Fire
+    player_talent_t conflagrate; // Base 2 charges
+    const spell_data_t* conflagrate_2; // Contains Soul Shard information
+    player_talent_t reverse_entropy;
+    const spell_data_t* reverse_entropy_buff;
+    player_talent_t internal_combustion;
+    player_talent_t rain_of_fire;
+    const spell_data_t* rain_of_fire_tick;
 
-    // DF - Backdraft (max 2 stacks, also now affects Soul Fire)
-    // DF - Mayhem (Choice against Havoc, single target spells have a chance to cleave)
-    // DF - Havoc (Choice against Mayhem, core functionality unchanged)
-    // DF - Pyrogenics (Enemies affected by Rain of Fire take increased Fire damage)
+    player_talent_t backdraft;
+    const spell_data_t* backdraft_buff; // DF - Now affects Soul Fire
+    player_talent_t mayhem; // It appears that the only spells that can proc Mayhem are ones that can be Havoc'd
+    player_talent_t havoc; // Talent data for Havoc is both the debuff and the action
+    const spell_data_t* havoc_debuff; // This is a second copy of the talent data for use in places that are shared by Havoc and Mayhem
+    player_talent_t pyrogenics; // Enemies affected by Rain of Fire receive debuff for increased Fire damage
+    const spell_data_t* pyrogenics_debuff;
 
-    const spell_data_t* roaring_blaze; // DF - Now a choice against Improved Conflagrate
-    // DF - Improved Conflagrate (Choice against Roaring Blaze, 1 additional charge for Conflagrate)
-    // DF - Explosive Potential (Reduces Conflagrate cooldown)
-    const spell_data_t* channel_demonfire;
-    // DF - Pandemonium (Choice against Cry Havoc, additional effects for Mayhem/Havoc)
-    // DF - Cry Havoc (Choice against Pandemonium, duplicated Chaos Bolts deal AoE damage)
-    // DF - Improved Immolate (2 point talent, duration increase)
-    const spell_data_t* inferno; // DF - Now a choice against Cataclysm, check that target cap nerfs remain
-    const spell_data_t* cataclysm; // DF - Now a choice against Inferno
+    player_talent_t roaring_blaze;
+    const spell_data_t* conflagrate_debuff; // Formerly called Roaring Blaze
+    player_talent_t improved_conflagrate; // +1 charge for Conflagrate
+    player_talent_t explosive_potential; // Reduces base Conflagrate cooldown by 2 seconds
+    player_talent_t channel_demonfire;
+    const spell_data_t* channel_demonfire_tick;
+    player_talent_t pandemonium; // Additional trigger chance for Mayhem or debuff duration for Havoc (talent)
+    player_talent_t cry_havoc; // Chaos Bolts on Havoc'd target proc AoE
+    const spell_data_t* cry_havoc_proc; // AoE damage (includes target hit)
+    player_talent_t improved_immolate; // Duration increase
+    player_talent_t inferno; // TOCHECK: Do SL target caps remain in effect?
+    player_talent_t cataclysm;
 
-    const spell_data_t* soul_fire;
-    const spell_data_t* shadowburn;
-    // DF - Raging Demonfire (2 point talent, additional Demonfire bolts and bolts extend Immolate)
-    // DF - Rolling Havoc (2 point talent, increased damage buff when spells are duplicated by Mayhem/Havoc)
-    // DF - Backlash (Crit chance increase, damage proc when physically attacked)
-    const spell_data_t* fire_and_brimstone; // DF - Now a 2 point talent
+    player_talent_t soul_fire;
+    const spell_data_t* soul_fire_2; // Contains Soul Shard energize data
+    player_talent_t shadowburn;
+    const spell_data_t* shadowburn_2; // Contains Soul Shard energize data
+    player_talent_t raging_demonfire; // Additional Demonfire bolts and bolts extend Immolate
+    player_talent_t rolling_havoc; // Increased damage buff when spells are duplicated by Mayhem/Havoc
+    const spell_data_t* rolling_havoc_buff;
+    player_talent_t backlash; // Crit chance increase. NOT IMPLEMENTED: Damage proc when physically attacked
+    player_talent_t fire_and_brimstone;
 
-    // DF - Decimation (Incinerate and Conflagrate casts reduce Soul Fire cooldown)
-    // DF - Conflagration of Chaos (2 point talent, Conflagrate/Shadowburn has chance to make next cast of it a guaranteed crit)
+    player_talent_t decimation; // Incinerate and Conflagrate casts reduce Soul Fire cooldown
+    player_talent_t conflagration_of_chaos; // Conflagrate/Shadowburn has chance to make next cast of it a guaranteed crit
+    const spell_data_t* conflagration_of_chaos_cf; // Player buff which affects next Conflagrate
+    const spell_data_t* conflagration_of_chaos_sb; // Player buff which affects next Shadowburn
     // DF - Flashpoint (2 point talent, stacking haste buff from Immolate ticks on high-health targets)
     // DF - Scalding Flames (2 point talent, increased Immolate damage)
 
@@ -389,6 +420,8 @@ public:
     action_t* soul_flame_proc;
     action_t* pandemic_invocation_proc;
     action_t* bilescourge_bombers_aoe_tick;
+    action_t* summon_random_demon; // Nether Portal and Inner Demons
+    action_t* rain_of_fire_tick;
   } proc_actions;
 
   // DF - This struct will be retired, need to determine if needed for pre-patch
@@ -447,6 +480,8 @@ public:
     propagate_const<cooldown_t*> infernal;
     propagate_const<cooldown_t*> shadowburn;
     propagate_const<cooldown_t*> soul_rot;
+    propagate_const<cooldown_t*> call_dreadstalkers;
+    propagate_const<cooldown_t*> soul_fire;
   } cooldowns;
 
   // DF - Retire this section, combine remnants with the mastery_spells struct above in a "core" or "base" spells section
@@ -506,14 +541,17 @@ public:
     propagate_const<buff_t*> dreadstalkers; //Buff for tracking number of Dreadstalkers currently out
     propagate_const<buff_t*> vilefiend; //Buff for tracking if Vilefiend is currently out
     propagate_const<buff_t*> tyrant; //Buff for tracking if Demonic Tyrant is currently out
-    propagate_const<buff_t*> portal_summons; // DF - This dummy buff may be unused for any practical purpose and could be removed
     propagate_const<buff_t*> grimoire_felguard; //Buff for tracking if GFG pet is currently out
     propagate_const<buff_t*> prince_malchezaar; //Buff for tracking Malchezaar (who is currently disabled in sims)
     propagate_const<buff_t*> eyes_of_guldan; //Buff for tracking if rare random summon is currently out
     propagate_const<buff_t*> dread_calling; // DF - Now comes from Demonology talent
     propagate_const<buff_t*> balespiders_burning_core; // DF - Now comes from Demonology talent
-    // DF - Shadow's Bite (Demonbolt damage buff on player)
-    // DF - Stolen Power (stacking buff from Wild Imp casts) - Could actually be two buffs, currently broken
+    propagate_const<buff_t*> shadows_bite;
+    propagate_const<buff_t*> fel_covenant;
+    propagate_const<buff_t*> stolen_power_building; // Stacking buff, triggers final buff as a separate buff at max stacks
+    propagate_const<buff_t*> stolen_power_final;
+    propagate_const<buff_t*> nether_portal_total; // Dummy buff. Used for Gul'dan's Ambition as the counter to trigger Soul Gluttony
+    propagate_const<buff_t*> demonic_servitude; // From Reign of Tyranny talent
 
     // Destruction Buffs
     propagate_const<buff_t*> backdraft; // DF - Max 2 stacks
@@ -522,9 +560,9 @@ public:
     propagate_const<buff_t*> impending_ruin; // DF - Impending Ruin and Ritual of Ruin now come from Destruction talent
     propagate_const<buff_t*> ritual_of_ruin;
     propagate_const<buff_t*> madness_of_the_azjaqir; // DF - Now comes from Destruction talent
-    // DF - Mayhem could be a hidden aura, if not a dummy buff could possibly simplify implementation anyway
-    // DF - Rolling Havoc (stacking damage increase when Mayhem/Havoc cleaves)
-    // DF - Backlash? (passive crit increase)
+    propagate_const<buff_t*> rolling_havoc;
+    propagate_const<buff_t*> conflagration_of_chaos_cf;
+    propagate_const<buff_t*> conflagration_of_chaos_sb;
     // DF - Flashpoint (stacking haste from Immolate ticks)
     // DF - Crashing Chaos (cost reduction after Infernal summon)
     // DF - Power Overwhelming (stacking mastery when spending Soul Shards)
@@ -560,7 +598,8 @@ public:
 
     gain_t* shadow_bolt;
     gain_t* doom;
-    gain_t* summon_demonic_tyrant;
+    gain_t* soulbound_tyrant;
+    gain_t* demonic_meteor;
   } gains;
 
   // Procs
@@ -587,12 +626,20 @@ public:
     proc_t* portal_summon;
     proc_t* carnivorous_stalkers; // DF - Now a Demonology talent
     proc_t* horned_nightmare; // DF - Now a Demonology talent
+    proc_t* demonic_meteor;
+    proc_t* imp_gang_boss;
+    proc_t* hounds_of_war;
+    proc_t* nerzhuls_volition;
+    proc_t* pact_of_the_imp_mother;
 
     // destro
     proc_t* reverse_entropy;
     proc_t* rain_of_chaos;
     proc_t* ritual_of_ruin;
     proc_t* avatar_of_destruction;
+    proc_t* mayhem;
+    proc_t* conflagration_of_chaos_cf;
+    proc_t* conflagration_of_chaos_sb;
   } procs;
 
   int initial_soul_shards;
@@ -619,6 +666,8 @@ public:
   timespan_t time_to_imps( int count );
   int imps_spawned_during( timespan_t period );
   void darkglare_extension_helper( warlock_t* p, timespan_t darkglare_extension );
+  int active_demon_count() const;
+  void expendables_trigger_helper( warlock_pet_t* source );
   bool min_version_check( version_check_e version ) const;
   action_t* pass_corruption_action( warlock_t* p ); // Horrible, horrible hack for getting Corruption in Aff module until things are re-merged
   bool crescendo_check( warlock_t* p ); 
@@ -644,9 +693,9 @@ public:
   double composite_player_target_pet_damage_multiplier( player_t* target, bool guardian ) const override;
   double composite_rating_multiplier( rating_e rating ) const override;
   void invalidate_cache( cache_e ) override;
-  double composite_spell_haste() const override;
-  double composite_melee_haste() const override;
   double composite_mastery() const override;
+  double composite_spell_crit_chance() const override;
+  double composite_melee_crit_chance() const override;
   double resource_regen_per_second( resource_e ) const override;
   double composite_attribute_multiplier( attribute_e attr ) const override;
   void combat_begin() override;
@@ -853,9 +902,56 @@ public:
     }
   }
 
+  void execute() override
+  {
+    spell_t::execute();
+
+    if ( p()->specialization() == WARLOCK_DESTRUCTION && p()->talents.rolling_havoc.ok() && use_havoc() )
+    {
+      p()->buffs.rolling_havoc->trigger();
+    }
+  }
+
   void impact( action_state_t* s ) override
   {
     spell_t::impact( s );
+
+    if ( p()->specialization() == WARLOCK_DESTRUCTION && p()->talents.reverse_entropy.ok() )
+    {
+      bool success = p()->buffs.reverse_entropy->trigger();
+      if ( success )
+      {
+        p()->procs.reverse_entropy->occur();
+      }
+    }
+
+    if ( can_havoc && p()->specialization() == WARLOCK_DESTRUCTION && p()->talents.mayhem.ok() )
+    {
+      // Attempt a Havoc trigger here. The debuff has an ICD so we do not need to worry about checking if it is already up
+      auto tl = target_list();
+      auto n = available_targets( tl );
+      
+      if ( n > 1u )
+      {
+        player_t* trigger_target = tl.at( 1u + rng().range( n - 1u ) );
+        if ( td( trigger_target )->debuffs_havoc->trigger() )
+          p()->procs.mayhem->occur();
+      }
+    }
+  }
+
+  void tick( dot_t* d ) override
+  {
+    spell_t::tick( d );
+
+    if ( p()->specialization() == WARLOCK_DESTRUCTION && p()->talents.reverse_entropy.ok() )
+    {
+      bool success = p()->buffs.reverse_entropy->trigger();
+      if ( success )
+      {
+        p()->procs.reverse_entropy->occur();
+      }
+    }
   }
 
   double composite_target_multiplier( player_t* t ) const override
@@ -898,7 +994,7 @@ public:
     }
   }
 
-  //Destruction specific things for Havoc that unfortunately need to be in main module
+  //Destruction specific things for Havoc/Mayhem
 
   bool use_havoc() const
   {
@@ -944,8 +1040,7 @@ public:
 
     if ( p()->specialization() == WARLOCK_DESTRUCTION && can_havoc )
     {
-        // SL - Conduit
-        base_aoe_multiplier *= p()->spec.havoc->effectN(1).percent();
+        base_aoe_multiplier *= p()->talents.havoc_debuff->effectN( 1 ).percent();
         p()->havoc_spells.push_back(this);
     }
   }
