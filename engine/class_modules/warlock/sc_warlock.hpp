@@ -385,7 +385,7 @@ public:
     player_talent_t backlash; // Crit chance increase. NOT IMPLEMENTED: Damage proc when physically attacked
     player_talent_t fire_and_brimstone;
 
-    // DF - Decimation (Incinerate and Conflagrate casts reduce Soul Fire cooldown)
+    player_talent_t decimation; // Incinerate and Conflagrate casts reduce Soul Fire cooldown
     // DF - Conflagration of Chaos (2 point talent, Conflagrate/Shadowburn has chance to make next cast of it a guaranteed crit)
     // DF - Flashpoint (2 point talent, stacking haste buff from Immolate ticks on high-health targets)
     // DF - Scalding Flames (2 point talent, increased Immolate damage)
@@ -479,6 +479,7 @@ public:
     propagate_const<cooldown_t*> shadowburn;
     propagate_const<cooldown_t*> soul_rot;
     propagate_const<cooldown_t*> call_dreadstalkers;
+    propagate_const<cooldown_t*> soul_fire;
   } cooldowns;
 
   // DF - Retire this section, combine remnants with the mastery_spells struct above in a "core" or "base" spells section
