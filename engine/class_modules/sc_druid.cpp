@@ -4258,12 +4258,7 @@ struct ferocious_bite_t : public cat_finisher_t<>
 
 struct frenzied_assault_t : public residual_action::residual_periodic_action_t<cat_attack_t>
 {
-  frenzied_assault_t( druid_t* p )
-    : residual_action::residual_periodic_action_t<cat_attack_t>( "frenzied_assault", p, p->find_spell( 391140 ) )
-  {
-    background = proc = true;
-    may_miss = may_dodge = may_parry = false;
-  }
+  frenzied_assault_t( druid_t* p ) : residual_action_t( "frenzied_assault", p, p->find_spell( 391140 ) ) {}
 };
 
 // Lunar Inspiration ========================================================
@@ -6594,17 +6589,9 @@ struct astral_communion_t : public druid_spell_t
 };
 
 // Astral Smolder ===========================================================
-struct astral_smolder_t : public druid_residual_action_t<druid_spell_t>
+struct astral_smolder_t : public residual_action::residual_periodic_action_t<druid_spell_t>
 {
-  astral_smolder_t( druid_t* p ) : base_t( "astral_smolder", p, p->find_spell( 394061 ) )
-  {
-    residual_mul = p->talent.astral_smolder->effectN( 1 ).percent();
-  }
-
-  double base_ta( const action_state_t* s ) const override
-  {
-    return get_amount( s ) * tick_time( s ) / composite_dot_duration( s );
-  }
+  astral_smolder_t( druid_t* p ) : residual_action_t( "astral_smolder", p, p->find_spell( 394061 ) ) {}
 };
 
 // Barkskin =================================================================
@@ -7943,10 +7930,12 @@ struct starfall_t : public druid_spell_t
 struct starfire_t : public druid_spell_t
 {
   double sotf_mul;
+  double smolder_mul;
 
   starfire_t( druid_t* p, std::string_view opt )
     : druid_spell_t( "starfire", p, p->talent.starfire, opt ),
-      sotf_mul( p->talent.soul_of_the_forest_moonkin->effectN( 2 ).percent() )
+      sotf_mul( p->talent.soul_of_the_forest_moonkin->effectN( 2 ).percent() ),
+      smolder_mul( p->talent.astral_smolder->effectN( 1 ).percent() )
   {
     aoe = -1;
     base_aoe_multiplier = data().effectN( p->specialization() == DRUID_BALANCE ? 3 : 2 ).percent();
@@ -8015,13 +8004,7 @@ struct starfire_t : public druid_spell_t
     druid_spell_t::impact( s );
 
     if ( p()->active.astral_smolder && s->result_amount > 0 && result_is_hit( s->result ) && s->result == RESULT_CRIT )
-    {
-      auto smolder = debug_cast<astral_smolder_t*>( p()->active.astral_smolder );
-
-      smolder->snapshot_and_execute( s, true, [ smolder, s ]( action_state_t* new_ ) {
-        smolder->set_amount( new_, s->result_amount );
-      } );
-    }
+      residual_action::trigger( p()->active.astral_smolder, s->target, s->result_amount * smolder_mul );
   }
 
   double composite_aoe_multiplier( const action_state_t* s ) const override
@@ -8465,23 +8448,16 @@ struct wild_charge_t : public druid_spell_t
 // Wild Mushroom ============================================================
 struct wild_mushroom_t : public druid_spell_t
 {
-  struct fungal_growth_t : public druid_residual_action_t<druid_spell_t>
+  struct fungal_growth_t : public residual_action::residual_periodic_action_t<druid_spell_t>
   {
-    fungal_growth_t( druid_t* p ) : base_t( "fungal_growth", p, p->find_spell( 81281 ) )
-    {
-      residual_mul = p->talent.fungal_growth->effectN( 1 ).percent();
-    }
-
-    double base_ta( const action_state_t* s ) const override
-    {
-      return get_amount( s ) * tick_time( s ) / composite_dot_duration( s );
-    }
+    fungal_growth_t( druid_t* p ) : residual_action_t( "fungal_growth", p, p->find_spell( 81281 ) ) {}
   };
 
   struct wild_mushroom_damage_t : public druid_spell_t
   {
     action_t* driver;
-    fungal_growth_t* fungal;
+    action_t* fungal;
+    double fungal_mul;
     double ap_per;
     double ap_max;
 
@@ -8489,6 +8465,7 @@ struct wild_mushroom_t : public druid_spell_t
       : druid_spell_t( "wild_mushroom_damage", p, p->find_spell( 88751 ) ),
         driver( a ),
         fungal( nullptr ),
+        fungal_mul( p->talent.fungal_growth->effectN( 1 ).percent() ),
         ap_per( 5 ),
         ap_max( data().effectN( 2 ).base_value() )
     {
@@ -8515,11 +8492,7 @@ struct wild_mushroom_t : public druid_spell_t
       druid_spell_t::impact( s );
 
       if ( fungal && s->result_amount > 0 && result_is_hit( s->result ) )
-      {
-        fungal->snapshot_and_execute( s, true, [ this, s ]( action_state_t* new_ ) {
-          fungal->set_amount( new_, s->result_amount );
-        } );
-      }
+        residual_action::trigger( fungal, s->target, s->result_amount * fungal_mul );
     }
   };
 
@@ -8554,6 +8527,7 @@ struct wrath_t : public druid_spell_t
 {
   double gcd_mul;
   double sotf_mul;
+  double smolder_mul;
   unsigned count;
 
   wrath_t( druid_t* p, std::string_view opt ) : wrath_t( p, "wrath", opt ) {}
@@ -8562,6 +8536,7 @@ struct wrath_t : public druid_spell_t
     : druid_spell_t( n, p, p->spec.wrath, opt ),
       gcd_mul( p->query_aura_effect( p->spec.eclipse_solar, A_ADD_PCT_MODIFIER, P_GCD, &data() )->percent() ),
       sotf_mul( p->talent.soul_of_the_forest_moonkin->effectN( 1 ).percent() ),
+      smolder_mul( p->talent.astral_smolder->effectN( 1 ).percent() ),
       count( 0 )
   {
     form_mask = NO_FORM | MOONKIN_FORM;
@@ -8652,13 +8627,7 @@ struct wrath_t : public druid_spell_t
     druid_spell_t::impact( s );
 
     if ( p()->active.astral_smolder && s->result_amount > 0 && result_is_hit( s->result ) && s->result == RESULT_CRIT )
-    {
-      auto smolder = debug_cast<astral_smolder_t*>( p()->active.astral_smolder );
-
-      smolder->snapshot_and_execute( s, false, [ smolder, s ]( action_state_t* new_ ) {
-        smolder->set_amount( new_, s->result_amount );
-      } );
-    }
+      residual_action::trigger( p()->active.astral_smolder, s->target, s->result_amount * smolder_mul );
   }
 };
 
@@ -10718,7 +10687,6 @@ void druid_t::create_buffs()
 
   buff.gore = make_buff( this, "gore", find_spell( 93622 ) )
     ->set_chance( talent.gore->effectN( 1 ).percent() + sets->set( DRUID_GUARDIAN, T29, B4 )->effectN( 1 ).percent() )
-    ->set_cooldown( talent.gore->internal_cooldown() )
     ->set_default_value_from_effect( 1, 0.1 /*RESOURCE_RAGE*/ );
 
   buff.gory_fur = make_buff( this, "gory_fur", talent.gory_fur->effectN( 1 ).trigger() )
