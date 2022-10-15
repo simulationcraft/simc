@@ -383,14 +383,14 @@ struct blade_of_justice_t : public paladin_melee_attack_t
     if ( p() -> buffs.blade_of_wrath -> up() )
       am *= 1.0 + p() -> buffs.blade_of_wrath -> data().effectN( 1 ).percent();
     if ( p() -> buffs.sealed_verdict -> up() )
-      am *= 1.0 + p() -> buffs.sealed_verdict -> data().effectN( 1 ).percent();
+      am *= 1.0 + p() -> talents.sealed_verdict -> effectN( 1 ).percent();
     return am;
   }
 
   double composite_crit_chance_multiplier() const override {
     double am = paladin_melee_attack_t::composite_crit_chance_multiplier();
-    if ( p() -> talents.condemning_blade -> ok() )
-      am *= 1.0 + p() -> talents.condemning_blade -> effectN( 1 ).percent();
+    if ( p() -> talents.blade_of_condemnation -> ok() )
+      am *= 1.0 + p() -> talents.blade_of_condemnation -> effectN( 1 ).percent();
     return am;
   }
 
@@ -1347,7 +1347,7 @@ void paladin_t::init_spells_retribution()
   talents.improved_crusader_strike    = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Crusader Strike" );
   talents.holy_crusader               = find_talent_spell( talent_tree::SPECIALIZATION, "Holy Crusader" );
   talents.holy_blade                  = find_talent_spell( talent_tree::SPECIALIZATION, "Holy Blade" );
-  talents.condemning_blade            = find_talent_spell( talent_tree::SPECIALIZATION, "Condemning Blade" );
+  talents.blade_of_condemnation       = find_talent_spell( talent_tree::SPECIALIZATION, "Blade of Condemnation" );
   talents.zeal                        = find_talent_spell( talent_tree::SPECIALIZATION, "Zeal" );
   talents.shield_of_vengeance         = find_talent_spell( talent_tree::SPECIALIZATION, "Shield of Vengeance" );
   talents.divine_protection           = find_talent_spell( talent_tree::SPECIALIZATION, "Divine Protection" );

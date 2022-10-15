@@ -2614,7 +2614,7 @@ void paladin_t::init_spells()
   talents.cleanse_toxins                  = find_talent_spell( talent_tree::CLASS, "Cleanse Toxins" );
   talents.blessing_of_sacrifice           = find_talent_spell( talent_tree::CLASS, "Blessing of Sacrifice" );
   //Judgment causes the target to take 25% more damage from your next holy power spending ability
-  talents.judgment                        = find_talent_spell( talent_tree::CLASS, "Judgment" );
+  talents.judgment                        = find_talent_spell( talent_tree::CLASS, "Greater Judgment" );
   talents.seal_of_reprisal                = find_talent_spell( talent_tree::CLASS, "Seal of Reprisal" );
   talents.afterimage                      = find_talent_spell( talent_tree::CLASS, "Afterimage" );
   talents.recompense                      = find_talent_spell( talent_tree::CLASS, "Recompense" );

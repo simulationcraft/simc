@@ -449,7 +449,7 @@ public:
     const spell_data_t* improved_crusader_strike;
     const spell_data_t* holy_crusader;
     const spell_data_t* holy_blade;
-    const spell_data_t* condemning_blade;
+    const spell_data_t* blade_of_condemnation;
     const spell_data_t* zeal;
     const spell_data_t* shield_of_vengeance;
     const spell_data_t* divine_protection; // NYI
