@@ -380,7 +380,8 @@ public:
     player_talent_t shadowburn;
     const spell_data_t* shadowburn_2; // Contains Soul Shard energize data
     player_talent_t raging_demonfire; // Additional Demonfire bolts and bolts extend Immolate
-    // DF - Rolling Havoc (2 point talent, increased damage buff when spells are duplicated by Mayhem/Havoc)
+    player_talent_t rolling_havoc; // Increased damage buff when spells are duplicated by Mayhem/Havoc
+    const spell_data_t* rolling_havoc_buff;
     // DF - Backlash (Crit chance increase, damage proc when physically attacked)
     const spell_data_t* fire_and_brimstone; // DF - Now a 2 point talent
 
@@ -556,8 +557,7 @@ public:
     propagate_const<buff_t*> impending_ruin; // DF - Impending Ruin and Ritual of Ruin now come from Destruction talent
     propagate_const<buff_t*> ritual_of_ruin;
     propagate_const<buff_t*> madness_of_the_azjaqir; // DF - Now comes from Destruction talent
-    // DF - Mayhem could be a hidden aura, if not a dummy buff could possibly simplify implementation anyway
-    // DF - Rolling Havoc (stacking damage increase when Mayhem/Havoc cleaves)
+    propagate_const<buff_t*> rolling_havoc;
     // DF - Backlash? (passive crit increase)
     // DF - Flashpoint (stacking haste from Immolate ticks)
     // DF - Crashing Chaos (cost reduction after Infernal summon)
@@ -891,6 +891,16 @@ public:
             break;
         }
       }
+    }
+  }
+
+  void execute() override
+  {
+    spell_t::execute();
+
+    if ( p()->specialization() == WARLOCK_DESTRUCTION && p()->talents.rolling_havoc.ok() && use_havoc() )
+    {
+      p()->buffs.rolling_havoc->trigger();
     }
   }
 

@@ -1037,7 +1037,6 @@ double warlock_t::composite_player_target_multiplier( player_t* target, school_e
 
     if ( talents.shadow_embrace->ok() )
       m *= 1.0 + td->debuffs_shadow_embrace->check_stack_value();
-
   }
 
   if ( specialization() == WARLOCK_DESTRUCTION )
@@ -1062,6 +1061,12 @@ double warlock_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
 
+  if ( specialization() == WARLOCK_DESTRUCTION )
+  {
+    if ( buffs.rolling_havoc->check() )
+      m *= 1.0 + buffs.rolling_havoc->check_stack_value();
+  }
+
   return m;
 }
 
@@ -1072,6 +1077,9 @@ double warlock_t::composite_player_pet_damage_multiplier( const action_state_t* 
   if ( specialization() == WARLOCK_DESTRUCTION )
   {
     m *= 1.0 + warlock_base.destruction_warlock->effectN( 3 ).percent();
+
+    if ( buffs.rolling_havoc->check() )
+      m *= 1.0 + buffs.rolling_havoc->check_stack_value();
   }
   if ( specialization() == WARLOCK_DEMONOLOGY )
   {
@@ -1290,6 +1298,10 @@ void warlock_t::create_buffs()
 
   buffs.soul_rot = make_buff(this, "soul_rot", talents.soul_rot)
                        ->set_cooldown( 0_ms );
+
+  buffs.rolling_havoc = make_buff( this, "rolling_havoc", talents.rolling_havoc_buff )
+                            ->set_default_value( talents.rolling_havoc->effectN( 1 ).percent() )
+                            ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   // Legendaries
   buffs.wrath_of_consumption = make_buff( this, "wrath_of_consumption", talents.wrath_of_consumption_buff )

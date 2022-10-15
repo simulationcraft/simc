@@ -1126,6 +1126,9 @@ void warlock_t::init_spells_destruction()
 
   talents.raging_demonfire = find_talent_spell( talent_tree::SPECIALIZATION, "Raging Demonfire" ); // Should be ID 387166
 
+  talents.rolling_havoc = find_talent_spell( talent_tree::SPECIALIZATION, "Rolling Havoc" ); // Should be ID 387569
+  talents.rolling_havoc_buff = find_spell( 387570 );
+
   talents.eradication = find_talent_spell( "Eradication" );
 
 
