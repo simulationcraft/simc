@@ -1,5 +1,5 @@
-// Spell text, wow build 10.0.2.46092
-static const std::array<spelltext_data_t, 19004> __spelltext_data { {
+// Spell text, wow build 10.0.2.46157
+static const std::array<spelltext_data_t, 19034> __spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -17045,6 +17045,36 @@ static const std::array<spelltext_data_t, 19004> __spelltext_data { {
   { 382820, "You are healed for $382998s1% of your maximum health whenever a Mirror Image dissipates due to direct damage.", 0, 0 },
   { 382824, "$@spelldesc382826", "Movement speed increased by $w1%.", 0 },
   { 382826, "Increases your movement speed by $s2% for $384360d after casting Blink and $s1% for $382824d after returning from Alter Time.", 0, 0 },
+  { 382835, 0, "Darkmoon Deck: Inferno is usable.", 0 },
+  { 382837, 0, "Darkmoon Deck: Inferno is usable.", 0 },
+  { 382838, 0, "Darkmoon Deck: Inferno is usable.", 0 },
+  { 382839, 0, "Darkmoon Deck: Inferno is usable.", 0 },
+  { 382840, 0, "Darkmoon Deck: Inferno is usable.", 0 },
+  { 382841, 0, "Darkmoon Deck: Inferno is usable.", 0 },
+  { 382844, 0, "Darkmoon Deck: Rime is usable.", 0 },
+  { 382845, 0, "Darkmoon Deck: Rime is usable.", 0 },
+  { 382846, 0, "Darkmoon Deck: Rime is usable.", 0 },
+  { 382847, 0, "Darkmoon Deck: Rime is usable.", 0 },
+  { 382848, 0, "Darkmoon Deck: Rime is usable.", 0 },
+  { 382849, 0, "Darkmoon Deck: Rime is usable.", 0 },
+  { 382850, 0, "Darkmoon Deck: Rime is usable.", 0 },
+  { 382851, 0, "Darkmoon Deck: Rime is usable.", 0 },
+  { 382852, 0, "Darkmoon Deck: Watcher is usable.", 0 },
+  { 382853, 0, "Darkmoon Deck: Watcher is usable.", 0 },
+  { 382854, 0, "Darkmoon Deck: Watcher is usable.", 0 },
+  { 382855, 0, "Darkmoon Deck: Watcher is usable.", 0 },
+  { 382856, 0, "Darkmoon Deck: Watcher is usable.", 0 },
+  { 382857, 0, "Darkmoon Deck: Watcher is usable.", 0 },
+  { 382858, 0, "Darkmoon Deck: Watcher is usable.", 0 },
+  { 382859, 0, "Darkmoon Deck: Watcher is usable.", 0 },
+  { 382860, 0, "Darkmoon Deck: Dance is usable.", 0 },
+  { 382861, 0, "Darkmoon Deck: Dance is usable.", 0 },
+  { 382862, 0, "Darkmoon Deck: Dance is usable.", 0 },
+  { 382863, 0, "Darkmoon Deck: Dance is usable.", 0 },
+  { 382864, 0, "Darkmoon Deck: Dance is usable.", 0 },
+  { 382865, 0, "Darkmoon Deck: Dance is usable.", 0 },
+  { 382866, 0, "Darkmoon Deck: Dance is usable.", 0 },
+  { 382867, 0, "Darkmoon Deck: Dance is usable.", 0 },
   { 382886, "Increases all Fire and Frost damage you deal by $s1%.", 0, 0 },
   { 382888, "Increases your attack speed by $382889s1% for your next $382889n melee swings after dealing a critical strike with a spell or ability.", 0, 0 },
   { 382889, "$@spelldesc382888", "Attack speed increased by $w1%.", 0 },
@@ -19006,12 +19036,12 @@ static const std::array<spelltext_data_t, 19004> __spelltext_data { {
   { 396484, "$@spelldesc387474", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.0.2.46092
+// spelltext hotfix entries, wow build 10.0.2.46157
 static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelltext_hotfix_data { {
   {  384277,  0, "Increases the damage of Thunderclap by $s1% and whenever you Thunder Clap a target affected by your Rend, you also affect $s3 nearby targets target with Rend.", "Thunderclap deals $s1% increased damage$?(s137048)[ and if you have Rend, Thunder Clap affects $s3 nearby targets with Rend.][, costs ${$s2/10} more Rage and if you have Rend, Thunder Clap affects $s3 nearby targets with Rend.]" },
 } };
 
-// Spell description variables, wow build 10.0.2.46092
+// Spell description variables, wow build 10.0.2.46157
 static const std::array<spelldesc_vars_data_t, 359> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$pvp=$?a134735[${1.1}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*2.8*(1+$@versadmg)*$<rapture>*$<shadow>*$<pvp>*$<weal>}\r\n" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -19088,14 +19118,14 @@ static const std::array<spelldesc_vars_data_t, 359> __spelldesc_vars_data { {
   {  113656, "$stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]\r\n$dwm=$?a108561|a115697[${1}][${0.857143}]\r\n$offm=$?a108561|a115697[${0}][${1}]\r\n\r\n$offlow=$?s121278[${$mwb/2/$mws}][${$owb/2/$ows}]\r\n$offhigh=$?s121278[${$MWB/2/$mws}][${$OWB/2/$ows}]\r\n\r\n$low=${$<stnc>*($<dwm>*(($mwb)/($MWS)+$<offm>*$<offlow>)+$AP/3.5-1)}\r\n$high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}\r\n" },
   {  114014, "$CAP=$?$OWB==0[${$AP*0.98}][${($AP+$OAP)*2/3}]--2H, DW" },
   {  115057, "$stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]\r\n$dwm=$?a108561|a115697[${1}][${0.857143}]\r\n$offm=$?a108561|a115697[${0}][${1}]\r\n\r\n$offlow=$?s121278[${$mwb/2/$mws}][${$owb/2/$ows}]\r\n$offhigh=$?s121278[${$MWB/2/$mws}][${$OWB/2/$ows}]\r\n\r\n$low=${$<stnc>*($<dwm>*(($mwb)/($MWS)+$<offm>*$<offlow>)+$AP/3.5-1)}\r\n$high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}\r\n" },
-  {  115203, "$health=$?s322960[${20}][${15}]\r\n$damage=$?s322960[${20}][${15}]" },
+  {  115203, "$health=$?s322960[${20}][${15}]\r\n$damage=$?c1[${20}][${20}]" },
   {  116847, "$stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]\r\n$dwm=$?a108561|a115697[${1}][${0.857143}]\r\n$offm=$?a108561|a115697[${0}][${1}]\r\n\r\n$offlow=$?s121278[${$mwb/2/$mws}][${$owb/2/$ows}]\r\n$offhigh=$?s121278[${$MWB/2/$mws}][${$OWB/2/$ows}]\r\n\r\n$low=${$<stnc>*($<dwm>*(($mwb)/($MWS)+$<offm>*$<offlow>)+$AP/3.5-1)}\r\n$high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}\r\n" },
   {  116849, "$shield=${($SP*11)*(1+$@versadmg)}\r\n$newshield=${$MHP*$s3/100*(1+$@versadmg)}" },
   {  116858, "$masteryMod=${$cond($gt($pl,79),1,0)}" },
   {  117952, "$dmgMult=$?s113656[${12}][${1.0}]\r\n$healMult=$?s115070[${1.2}][${1.0}]\r\n$damage=${4*($m1*$<dmgMult>)}" },
   {  118000, "$critMult=${3}" },
   {  120360, "$damageSec=${$120361sw2*11}" },
-  {  120954, "$health=$?s322960[${20}][${15}]\r\n$damage=$?s322960[${20}][${15}]" },
+  {  120954, "$health=$?s322960[${20}][${15}]\r\n$damage=$?c1[${20}][${20}]" },
   {  121253, "$stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]\r\n$dwm=$?a108561|a115697[${1}][${0.857143}]\r\n$offm=$?a108561|a115697[${0}][${1}]\r\n\r\n$offlow=$?s121278[${$mwb/2/$mws}][${$owb/2/$ows}]\r\n$offhigh=$?s121278[${$MWB/2/$mws}][${$OWB/2/$ows}]\r\n\r\n$low=${$<stnc>*($<dwm>*(($mwb)/($MWS)+$<offm>*$<offlow>)+$AP/3.5-1)}\r\n$high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}\r\n" },
   {  123586, "$stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]\r\n$dwm=$?a108561|a115697[${1}][${0.857143}]\r\n$offm=$?a108561|a115697[${0}][${1}]\r\n\r\n$offlow=$?s121278[${$mwb/2/$mws}][${$owb/2/$ows}]\r\n$offhigh=$?s121278[${$MWB/2/$mws}][${$OWB/2/$ows}]\r\n\r\n$low=${$<stnc>*($<dwm>*(($mwb)/($MWS)+$<offm>*$<offlow>)+$AP/3.5-1)}\r\n$high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}\r\n" },
   {  123986, "$dmgMult=$?a103985[${1.1}][${1.0}]\r\n$healMult=$?a115070[${1.2}][${1.0}]\r\n$damage=${$148135m1+$<dmgMult>*$AP*2.75*(1+$@versadmg)}\r\n$healing=${$130654m1+$<healMult>*$AP*4.125*(1+$@versadmg)}\r\n" },
@@ -19364,7 +19394,7 @@ static const std::array<spelldesc_vars_data_t, 359> __spelldesc_vars_data { {
   {  388011, "$points=${($s2/100*$max($AP,$SP)*(1+$@versadmg))}" },
   {  388023, "$pvp=$?a134735[${1.6}][${1}]}\r\n$healing=[${$s1*$<pvp>}]" },
   {  388026, "$pvp=$?a134735[${1.6}][${1}]}\r\n$healing=[${$388023s1*$<pvp>}]" },
-  {  388917, "$health=$?s322960[${20}][${15}]\r\n$damage=$?s322960[${20}][${15}]" },
+  {  388917, "$health=$?s322960[${20}][${15}]\r\n$damage=$?c1[${20}][${20}]" },
   {  389359, "$health=${5}\r\n$cdr=${10}" },
   {  389880, "$duration= ${$s1/1000}.1" },
   {  392359, "$damage=${$cond($gt($SP,$AP),$SP*0.75,$AP*0.75)*$pctD*(1+$@versadmg)}" },
@@ -19374,10 +19404,13 @@ static const std::array<spelldesc_vars_data_t, 359> __spelldesc_vars_data { {
   {  394354, "$damage=${($AP*1.0)*(1+$@versadmg)}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.0.2.46092
-static constexpr std::array<hotfix::client_hotfix_entry_t, 3> __spelldesc_vars_hotfix_data { {
+// spelldesc_vars hotfix entries, wow build 10.0.2.46157
+static constexpr std::array<hotfix::client_hotfix_entry_t, 6> __spelldesc_vars_hotfix_data { {
+  {  115203,  0, "$health=$?s322960[${20}][${15}]\r\n$damage=$?s322960[${20}][${15}]", "$health=$?s322960[${20}][${15}]\r\n$damage=$?c1[${20}][${20}]" },
+  {  120954,  0, "$health=$?s322960[${20}][${15}]\r\n$damage=$?s322960[${20}][${15}]", "$health=$?s322960[${20}][${15}]\r\n$damage=$?c1[${20}][${20}]" },
   {  188499,  0, "$baseDmg=${3*$199552sw2+$200685sw2} \r\n$firstbloodDmg=${(3*$199552sw2+$200685sw2)*(100+$206416s1)/100}", "$mastery=$?s185164[${((100+$185164m1)/100)}][${1.00}]\r\n$baseDmg=${3*$199552sw2+$200685sw2} \r\n$firstbloodDmg=${(3*$199552sw2+$200685sw2)*(100+$206416s1)/100*$<mastery>}" },
   {  193359,  0, "$cdr=${$s1/10}", "$cdr=${$s1/10}.1" },
   {  206416,  0, "$baseDmg=${3*$199552sw2+$200685sw2} \r\n$firstbloodDmg=${(3*$199552sw2+$200685sw2)*(100+$206416s1)/100}", "$mastery=$?s185164[${((100+$185164m1)/100)}][${1.00}]\r\n$baseDmg=${3*$199552sw2+$200685sw2} \r\n$firstbloodDmg=${(3*$199552sw2+$200685sw2)*(100+$206416s1)/100*$<mastery>}" },
+  {  388917,  0, "$health=$?s322960[${20}][${15}]\r\n$damage=$?s322960[${20}][${15}]", "$health=$?s322960[${20}][${15}]\r\n$damage=$?c1[${20}][${20}]" },
 } };
 
