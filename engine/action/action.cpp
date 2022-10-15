@@ -2519,6 +2519,13 @@ void action_t::init()
     update_flags &= ~( STATE_TGT_MUL_TA | STATE_TGT_MUL_DA | STATE_TGT_ARMOR );
   }
 
+  // TODO: accomodate negative mults such as damage reduction
+  if ( data().flags( spell_attribute::SX_DISABLE_TARGET_POSITIVE_MULT ) )
+  {
+    snapshot_flags &= ~( STATE_TGT_MUL_TA | STATE_TGT_MUL_DA );
+    update_flags &= ~( STATE_TGT_MUL_TA | STATE_TGT_MUL_DA );
+  }
+
   if ( ( spell_power_mod.direct > 0 || spell_power_mod.tick > 0 ) )
   {
     snapshot_flags |= STATE_SP;
