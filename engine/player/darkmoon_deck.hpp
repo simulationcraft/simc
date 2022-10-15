@@ -6,234 +6,233 @@
 #pragma once
 
 #include "config.hpp"
-#include "util/timespan.hpp"
-#include "sim/event.hpp"
-#include "player/unique_gear_helper.hpp"
-#include "util/rng.hpp"
-#include "dbc/dbc.hpp"
-#include "action/dbc_proc_callback.hpp"
+
 #include "action/action_state.hpp"
+#include "action/dbc_proc_callback.hpp"
+#include "dbc/dbc.hpp"
+#include "player/unique_gear_helper.hpp"
+#include "sim/event.hpp"
+#include "util/rng.hpp"
+#include "util/timespan.hpp"
 
 struct player_t;
 struct special_effect_t;
 
+struct darkmoon_deck_t
+{
+  const special_effect_t& effect;
+  player_t* player;
+  timespan_t shuffle_period;
 
-  struct darkmoon_deck_t
+  darkmoon_deck_t( const special_effect_t& e );
+
+  virtual ~darkmoon_deck_t() = default;
+
+  virtual void initialize() {}
+  virtual void shuffle() = 0;
+};
+
+template <typename BUFF_TYPE>
+struct darkmoon_buff_deck_t : public darkmoon_deck_t
+{
+  std::vector<unsigned> card_ids;
+  std::vector<BUFF_TYPE*> cards;
+  BUFF_TYPE* top_card;
+
+  darkmoon_buff_deck_t( const special_effect_t& effect, const std::vector<unsigned> c )
+    : darkmoon_deck_t( effect ), card_ids( std::move( c ) ), top_card( nullptr )
+  {}
+
+  void initialize() override
   {
-    const special_effect_t& effect;
-    player_t* player;
-    timespan_t shuffle_period;
+    range::for_each( card_ids, [ this ]( unsigned spell_id ) {
+      const spell_data_t* s = player->find_spell( spell_id );
+      assert( s->found() );
 
-    darkmoon_deck_t(const special_effect_t& e);
+      auto n = util::tokenize_fn( s->name_cstr() );
 
-    virtual ~darkmoon_deck_t() = default;
+      cards.push_back( make_buff<BUFF_TYPE>( player, n, s, effect.item ) );
+    } );
 
-    virtual void initialize() {}
-    virtual void shuffle() = 0;
-  };
+    // Pick a card during init so top_card is always initialized.
+    size_t index = player->rng().range( cards.size() );
+    top_card = cards[ index ];
+  }
 
-  template <typename BUFF_TYPE>
-  struct darkmoon_buff_deck_t : public darkmoon_deck_t
+  void shuffle() override
   {
-    std::vector<unsigned>   card_ids;
-    std::vector<BUFF_TYPE*> cards;
-    BUFF_TYPE* top_card;
+    size_t index = player->rng().range( cards.size() );
 
-    darkmoon_buff_deck_t(const special_effect_t& effect, const std::vector<unsigned> c) :
-      darkmoon_deck_t(effect), card_ids(std::move(c)), top_card(nullptr)
-    { }
-
-    void initialize() override
+    if ( top_card )
     {
-      range::for_each(card_ids, [this](unsigned spell_id) {
-        const spell_data_t* s = player->find_spell(spell_id);
-        assert(s->found());
-
-        auto n = util::tokenize_fn( s->name_cstr() );
-
-        cards.push_back(make_buff<BUFF_TYPE>(player, n, s, effect.item));
-        });
-
-      // Pick a card during init so top_card is always initialized.
-      size_t index = player->rng().range(cards.size());
-      top_card = cards[index];
+      top_card->expire();
     }
 
-    void shuffle() override
+    top_card = cards[ index ];
+
+    if ( top_card->sim->debug )
     {
-      size_t index = player->rng().range(cards.size());
-
-      if (top_card)
-      {
-        top_card->expire();
-      }
-
-      top_card = cards[index];
-
-      if (top_card->sim->debug)
-      {
-        top_card->sim->out_debug.print("{} top card is now {} ({}, id={}, index={})",
-          top_card->player->name(), top_card->name(), top_card->data().name_cstr(),
-          top_card->data().id(), index);
-      }
-
-      top_card->trigger();
+      top_card->sim->out_debug.print( "{} top card is now {} ({}, id={}, index={})", top_card->player->name(),
+                                      top_card->name(), top_card->data().name_cstr(), top_card->data().id(), index );
     }
-  };
 
-  template <typename ACTION_TYPE>
-  struct darkmoon_action_deck_t : public darkmoon_deck_t
+    top_card->trigger();
+  }
+};
+
+template <typename ACTION_TYPE>
+struct darkmoon_action_deck_t : public darkmoon_deck_t
+{
+  std::vector<unsigned> card_ids;
+  std::vector<action_t*> cards;
+  action_t* top_card;
+  bool trigger_on_shuffle;
+
+  darkmoon_action_deck_t( const special_effect_t& effect, std::vector<unsigned> c )
+    : darkmoon_deck_t( effect ), card_ids( std::move( c ) ), top_card( nullptr ), trigger_on_shuffle( false )
+  {}
+
+  darkmoon_action_deck_t<ACTION_TYPE>& set_trigger_on_shuffle( bool value )
   {
-    std::vector<unsigned>  card_ids;
-    std::vector<action_t*> cards;
-    action_t* top_card;
-    bool                   trigger_on_shuffle;
+    trigger_on_shuffle = value;
+    return *this;
+  }
 
-    darkmoon_action_deck_t(const special_effect_t& effect, std::vector<unsigned> c) :
-      darkmoon_deck_t(effect), card_ids(std::move(c)), top_card(nullptr), trigger_on_shuffle(false)
-    { }
-
-    darkmoon_action_deck_t<ACTION_TYPE>& set_trigger_on_shuffle(bool value)
-    {
-      trigger_on_shuffle = value; return *this;
-    }
-
-    void initialize() override
-    {
-      range::for_each(card_ids, [this](unsigned spell_id) {
-        const spell_data_t* s = player->find_spell(spell_id);
-        assert(s->found());
-
-        auto n = util::tokenize_fn( s->name_cstr() );
-
-        cards.push_back(unique_gear::create_proc_action<ACTION_TYPE>(n, effect, spell_id));
-        });
-
-      // Pick a card during init so top_card is always initialized.
-      size_t index = player->rng().range(cards.size());
-      top_card = cards[index];
-    }
-
-    // For actions, just shuffle the deck, and optionally trigger the action if trigger_on_shuffle is
-    // set
-    void shuffle() override
-    {
-      size_t index = player->rng().range(cards.size());
-      top_card = cards[index];
-
-      if (top_card->sim->debug)
-      {
-        top_card->sim->out_debug.print("{} top card is now {} ({}, id={}, index={})",
-          top_card->player->name(), top_card->name(), top_card->data().name_cstr(),
-          top_card->data().id(), index);
-      }
-
-      if (trigger_on_shuffle)
-      {
-        top_card->set_target(player->target);
-        top_card->schedule_execute();
-      }
-    }
-  };
-
-  // Generic deck to hold spell_data_t objects
-  struct darkmoon_spell_deck_t : public darkmoon_deck_t
+  void initialize() override
   {
-    std::vector<unsigned> card_ids;
-    std::vector<const spell_data_t*> cards;
-    const spell_data_t* top_card;
+    range::for_each( card_ids, [ this ]( unsigned spell_id ) {
+      const spell_data_t* s = player->find_spell( spell_id );
+      assert( s->found() );
 
-    darkmoon_spell_deck_t( const special_effect_t& e, std::vector<unsigned> c )
-      : darkmoon_deck_t( e ), card_ids( std::move( c ) ), top_card( spell_data_t::nil() )
-    {}
+      auto n = util::tokenize_fn( s->name_cstr() );
 
-    void initialize() override
-    {
-      for ( auto c : card_ids )
-      {
-        auto s = player->find_spell( c );
-        assert( s->ok() );
-        cards.push_back( s );
-      }
+      cards.push_back( unique_gear::create_proc_action<ACTION_TYPE>( n, effect, spell_id ) );
+    } );
 
-      shuffle();
-    }
+    // Pick a card during init so top_card is always initialized.
+    size_t index = player->rng().range( cards.size() );
+    top_card = cards[ index ];
+  }
 
-    void shuffle() override
-    {
-      top_card = cards[ player->rng().range( cards.size() ) ];
-      player->sim->print_debug( "{} top card is now {} ({})", player->name(), top_card->name_cstr(), top_card->id() );
-    }
-  };
-
-  struct shuffle_event_t : public event_t
+  // For actions, just shuffle the deck, and optionally trigger the action if trigger_on_shuffle is
+  // set
+  void shuffle() override
   {
-    darkmoon_deck_t* deck;
+    size_t index = player->rng().range( cards.size() );
+    top_card = cards[ index ];
 
-    static timespan_t delta_time(sim_t& sim, bool initial, darkmoon_deck_t* deck);
-
-    shuffle_event_t(darkmoon_deck_t* d, bool initial = false)
-      : event_t(*d->player, delta_time(*d->player->sim, initial, d)), deck(d)
+    if ( top_card->sim->debug )
     {
-      /* Shuffle when we schedule an event instead of when it executes.
-      This will assure the deck starts shuffled */
-      deck->shuffle();
+      top_card->sim->out_debug.print( "{} top card is now {} ({}, id={}, index={})", top_card->player->name(),
+                                      top_card->name(), top_card->data().name_cstr(), top_card->data().id(), index );
     }
 
-    const char* name() const override
+    if ( trigger_on_shuffle )
     {
-      return "shuffle_event";
+      top_card->set_target( player->target );
+      top_card->schedule_execute();
     }
+  }
+};
 
-    void execute() override
-    {
-      make_event<shuffle_event_t>(sim(), deck);
-    }
-  };
+// Generic deck to hold spell_data_t objects
+struct darkmoon_spell_deck_t : public darkmoon_deck_t
+{
+  std::vector<unsigned> card_ids;
+  std::vector<const spell_data_t*> cards;
+  const spell_data_t* top_card;
 
-  // Generic darkmoon card callback template class
-  template <typename T>
-  struct darkmoon_deck_cb_t : public dbc_proc_callback_t
+  darkmoon_spell_deck_t( const special_effect_t& e, std::vector<unsigned> c )
+    : darkmoon_deck_t( e ), card_ids( std::move( c ) ), top_card( spell_data_t::nil() )
+  {}
+
+  void initialize() override
   {
-    std::unique_ptr<darkmoon_action_deck_t<T>> deck;
-
-    darkmoon_deck_cb_t(const special_effect_t& effect, std::vector<unsigned> cards) :
-      dbc_proc_callback_t(effect.player, effect),
-      deck(std::make_unique<darkmoon_action_deck_t<T>>(effect, std::move( cards )))
+    for ( auto c : card_ids )
     {
-      deck->initialize();
-
-      effect.player->register_combat_begin([this](player_t*) {
-        make_event<shuffle_event_t>(*listener->sim, deck.get(), true);
-        });
+      auto s = player->find_spell( c );
+      assert( s->ok() );
+      cards.push_back( s );
     }
 
-    void execute(action_t*, action_state_t* state) override
-    {
-      deck->top_card->set_target(state->target);
-      deck->top_card->schedule_execute();
-    }
-  };
+    shuffle();
+  }
 
-  // Generic darkmoon card on-use template class
-  template <typename T = darkmoon_spell_deck_t, typename = std::enable_if_t<std::is_base_of_v<darkmoon_deck_t, T>>>
-  struct darkmoon_deck_proc_t : public unique_gear::proc_spell_t
+  void shuffle() override
   {
-    std::unique_ptr<T> deck;
+    top_card = cards[ player->rng().range( cards.size() ) ];
+    player->sim->print_debug( "{} top card is now {} ({})", player->name(), top_card->name_cstr(), top_card->id() );
+  }
+};
 
-    darkmoon_deck_proc_t( const special_effect_t& e, std::string_view n, unsigned shuffle_id,
-                          std::vector<unsigned> cards )
-      : proc_spell_t( n, e.player, e.trigger(), e.item )
-    {
-      auto shuffle = unique_gear::find_special_effect( player, shuffle_id );
-      if ( !shuffle )
-        return;
+struct shuffle_event_t : public event_t
+{
+  darkmoon_deck_t* deck;
 
-      deck = std::make_unique<T>( *shuffle, std::move( cards ) );
-      deck->initialize();
+  static timespan_t delta_time( sim_t& sim, bool initial, darkmoon_deck_t* deck );
 
-      player->register_combat_begin( [ this ]( player_t* ) {
-        make_event<shuffle_event_t>( *player->sim, deck.get(), true );
-      } );
-    }
-  };
+  shuffle_event_t( darkmoon_deck_t* d, bool initial = false )
+    : event_t( *d->player, delta_time( *d->player->sim, initial, d ) ), deck( d )
+  {
+    /* Shuffle when we schedule an event instead of when it executes.
+    This will assure the deck starts shuffled */
+    deck->shuffle();
+  }
+
+  const char* name() const override
+  {
+    return "shuffle_event";
+  }
+
+  void execute() override
+  {
+    make_event<shuffle_event_t>( sim(), deck );
+  }
+};
+
+// Generic darkmoon card callback template class
+template <typename T>
+struct darkmoon_deck_cb_t : public dbc_proc_callback_t
+{
+  std::unique_ptr<darkmoon_action_deck_t<T>> deck;
+
+  darkmoon_deck_cb_t( const special_effect_t& effect, std::vector<unsigned> cards )
+    : dbc_proc_callback_t( effect.player, effect ),
+      deck( std::make_unique<darkmoon_action_deck_t<T>>( effect, std::move( cards ) ) )
+  {
+    deck->initialize();
+
+    effect.player->register_combat_begin( [ this ]( player_t* ) {
+      make_event<shuffle_event_t>( *listener->sim, deck.get(), true );
+    } );
+  }
+
+  void execute( action_t*, action_state_t* state ) override
+  {
+    deck->top_card->set_target( state->target );
+    deck->top_card->schedule_execute();
+  }
+};
+
+// Generic darkmoon card on-use template class
+template <typename T = darkmoon_spell_deck_t, typename = std::enable_if_t<std::is_base_of_v<darkmoon_deck_t, T>>>
+struct darkmoon_deck_proc_t : public unique_gear::proc_spell_t
+{
+  std::unique_ptr<T> deck;
+
+  darkmoon_deck_proc_t( const special_effect_t& e, std::string_view n, unsigned shuffle_id,
+                        std::vector<unsigned> cards )
+    : proc_spell_t( n, e.player, e.trigger(), e.item )
+  {
+    auto shuffle = unique_gear::find_special_effect( player, shuffle_id );
+    if ( !shuffle )
+      return;
+
+    deck = std::make_unique<T>( *shuffle, std::move( cards ) );
+    deck->initialize();
+
+    player->register_combat_begin( [ this ]( player_t* ) {
+      make_event<shuffle_event_t>( *player->sim, deck.get(), true );
+    } );
+  }
+};
