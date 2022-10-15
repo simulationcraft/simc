@@ -813,8 +813,9 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
                             ->set_refresh_behavior( buff_refresh_behavior::DURATION )
                             ->set_default_value_from_effect( 1 );
   debuffs_roaring_blaze = make_buff( *this, "roaring_blaze", source->find_spell( 265931 ) );
-  debuffs_shadowburn    = make_buff( *this, "shadowburn", source->find_spell( 17877 ) )
-                              ->set_default_value( source->find_spell( 245731 )->effectN( 1 ).base_value() );
+
+  debuffs_shadowburn    = make_buff( *this, "shadowburn", p.talents.shadowburn )
+                              ->set_default_value( p.talents.shadowburn_2->effectN( 1 ).base_value() / 10 );
 
   debuffs_pyrogenics = make_buff( *this, "pyrogenics", p.talents.pyrogenics_debuff )
                            ->set_default_value( p.talents.pyrogenics->effectN( 1 ).percent() )
@@ -899,8 +900,7 @@ void warlock_td_t::target_demise()
    
     warlock.sim->print_log( "Player {} demised. Warlock {} gains 1 shard from Shadowburn.", target->name(), warlock.name() );
 
-    warlock.resource_gain( RESOURCE_SOUL_SHARD, debuffs_shadowburn->check_value() / 10,
-                           warlock.gains.shadowburn_refund );
+    warlock.resource_gain( RESOURCE_SOUL_SHARD, debuffs_shadowburn->check_value(), warlock.gains.shadowburn_refund );
   }
 
   if ( dots_agony->is_ticking() && warlock.talents.wrath_of_consumption.ok() )
@@ -999,7 +999,7 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
   cooldowns.darkglare           = get_cooldown( "summon_darkglare" );
   cooldowns.demonic_tyrant      = get_cooldown( "summon_demonic_tyrant" );
   cooldowns.infernal            = get_cooldown( "summon_infernal" );
-  cooldowns.shadowburn          = get_cooldown( "shadowburn" );
+  cooldowns.shadowburn = get_cooldown( "shadowburn" );
   cooldowns.soul_rot = get_cooldown( "soul_rot" );
   cooldowns.call_dreadstalkers = get_cooldown( "call_dreadstalkers" );
 
