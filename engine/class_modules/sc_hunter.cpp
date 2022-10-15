@@ -3927,7 +3927,6 @@ struct cobra_shot_t: public hunter_ranged_attack_t
 struct barbed_shot_t: public hunter_ranged_attack_t
 {
   timespan_t bestial_wrath_reduction;
-  timespan_t aspect_of_the_wild_reduction;
 
   barbed_shot_t( hunter_t* p, util::string_view options_str ) :
     hunter_ranged_attack_t( "barbed_shot", p, p -> talents.barbed_shot )
@@ -3935,7 +3934,6 @@ struct barbed_shot_t: public hunter_ranged_attack_t
     parse_options(options_str);
 
     bestial_wrath_reduction = p -> talents.barbed_wrath -> effectN( 1 ).time_value();
-    aspect_of_the_wild_reduction = p -> talents.barbed_wrath -> effectN( 2 ).time_value();
 
     p -> actions.barbed_shot = this;
   }
@@ -3963,7 +3961,6 @@ struct barbed_shot_t: public hunter_ranged_attack_t
     p() -> buffs.thrill_of_the_hunt -> trigger();
 
     p() -> cooldowns.bestial_wrath -> adjust( -bestial_wrath_reduction );
-    p() -> cooldowns.aspect_of_the_wild -> adjust( -aspect_of_the_wild_reduction );
 
     if ( rng().roll( p() -> talents.war_orders -> effectN( 3 ).percent() ) )
       p() -> cooldowns.kill_command -> reset( true );
