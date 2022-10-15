@@ -24,7 +24,9 @@ struct warrior_td_t : public actor_target_data_t
   dot_t* dots_gushing_wound;
   dot_t* dots_ravager;
   dot_t* dots_rend;
+  //dot_t* dots_thunderous_roar;
   buff_t* debuffs_colossus_smash;
+  buff_t* debuffs_concussive_blows;
   buff_t* debuffs_exploiter;
   buff_t* debuffs_executioners_precision;
   buff_t* debuffs_siegebreaker;
@@ -97,6 +99,7 @@ public:
     buff_t* bloodcraze;
     buff_t* bounding_stride;
     buff_t* charge_movement;
+    buff_t* concussive_blows;
     buff_t* defensive_stance;
     buff_t* die_by_the_sword;
     buff_t* enrage;
@@ -185,7 +188,7 @@ public:
     cooldown_t* bloodbath;
     cooldown_t* colossus_smash;
     cooldown_t* demoralizing_shout;
-    cooldown_t* dragon_roar;
+    cooldown_t* thunderous_roar;
     cooldown_t* enraged_regeneration;
     cooldown_t* execute;
     cooldown_t* heroic_leap;
@@ -277,6 +280,7 @@ public:
     // Old - maybe not needed?
 
     const spell_data_t* colossus_smash_debuff;
+    const spell_data_t* concussive_blows_debuff;
     const spell_data_t* ignore_pain;
     const spell_data_t* heroic_leap;
     const spell_data_t* intervene;
@@ -1034,10 +1038,16 @@ public:
     ab::apply_affecting_aura( p()->tier_set.frenzied_destruction_2p );
 
     // passive talents
-    ab::apply_affecting_aura( p()->talents.warrior.cruel_strikes );
     ab::apply_affecting_aura( p()->talents.arms.valor_in_victory );
     ab::apply_affecting_aura( p()->talents.fury.critical_thinking );
     ab::apply_affecting_aura( p()->talents.fury.deft_experience );
+    ab::apply_affecting_aura( p()->talents.warrior.barbaric_training );
+    ab::apply_affecting_aura( p()->talents.warrior.concussive_blows );
+    ab::apply_affecting_aura( p()->talents.warrior.cruel_strikes );
+    ab::apply_affecting_aura( p()->talents.warrior.crushing_force ); // crit portion not active
+    ab::apply_affecting_aura( p()->talents.warrior.honed_reflexes );
+    ab::apply_affecting_aura( p()->talents.warrior.thunderous_words );
+    ab::apply_affecting_aura( p()->talents.warrior.uproar );
 
 
 
@@ -1125,6 +1135,11 @@ public:
          affected_by.booming_voice )
     {
       m *= 1.0 + p()->talents.protection.booming_voice->effectN( 2 ).percent();
+    }
+
+    if ( td->debuffs_concussive_blows->check() )
+    {
+      m *= 1.0 + ( td->debuffs_concussive_blows->value() );
     }
 
     return m;
@@ -2817,14 +2832,23 @@ struct demoralizing_shout : public warrior_attack_t
 
 // Thunderous Roar ==============================================================
 
-struct dragon_roar_t : public warrior_attack_t
+
+struct thunderous_roar_t : public warrior_attack_t
 {
-  dragon_roar_t( warrior_t* p, util::string_view options_str )
-    : warrior_attack_t( "dragon_roar", p, p->talents.warrior.thunderous_roar )
+  thunderous_roar_t( warrior_t* p, util::string_view options_str )
+    : warrior_attack_t( "thunderous_roar", p, p->talents.warrior.thunderous_roar )
   {
     parse_options( options_str );
     aoe       = -1;
     may_dodge = may_parry = may_block = false;
+    if ( p->talents.warrior.uproar->ok() )
+    {
+      dot_duration = timespan_t::from_seconds ( 14 ); // data says 8 = 5 ticks, actually 16 = 8 ticks
+    }
+    else
+    {
+      dot_duration = timespan_t::from_seconds( 12 );  // data says 8 = 5 ticks, actually 14 = 7 ticks
+    }
   }
 };
 
@@ -3433,6 +3457,16 @@ struct pummel_t : public warrior_attack_t
     ignore_false_positive = true;
     may_miss = may_block = may_dodge = may_parry = false;
     is_interrupt = true;
+  }
+
+  void execute() override
+  {
+    warrior_attack_t::execute();
+
+    if ( p()->talents.warrior.concussive_blows.ok() && result_is_hit( execute_state->result ) )
+    {
+      td( execute_state->target )->debuffs_concussive_blows->trigger();
+    }
   }
 
   bool target_ready( player_t* candidate_target ) override
@@ -4837,10 +4871,16 @@ struct whirlwind_off_hand_t : public warrior_attack_t
     base_multiplier *= 1.0 + p->talents.fury.meat_cleaver->effectN( 1 ).percent();
   }
 
+  int current_tick;
+
   double action_multiplier() const override
   {
     double am = warrior_attack_t::action_multiplier();
 
+    if ( p()->talents.warrior.seismic_reverberation->ok() && current_tick == 3 )
+    {
+      am *= 1.0 + p()->talents.warrior.seismic_reverberation->effectN( 3 ).percent();
+    }
     if ( p()->buff.merciless_bonegrinder->check() )
     {
       am *= 1.0 + p()->conduit.merciless_bonegrinder.percent();
@@ -4860,10 +4900,16 @@ struct fury_whirlwind_mh_t : public warrior_attack_t
     base_multiplier *= 1.0 + p->talents.fury.meat_cleaver->effectN(1).percent();
   }
 
+  int current_tick;
+
   double action_multiplier() const override
   {
     double am = warrior_attack_t::action_multiplier();
 
+    if ( p()->talents.warrior.seismic_reverberation->ok() && current_tick == 3 )
+    {
+      am *= 1.0 + p()->talents.warrior.seismic_reverberation->effectN( 3 ).percent();
+    }
     if ( p()->buff.merciless_bonegrinder->check() )
     {
       am *= 1.0 + p()->conduit.merciless_bonegrinder.percent();
@@ -4918,10 +4964,10 @@ struct fury_whirlwind_parent_t : public warrior_attack_t
     {
       return dot_duration + ( base_tick_time * p()->legendary.najentuss_vertebrae->effectN( 2 ).base_value() );
     }
-    if ( p()->legendary.seismic_reverberation != spell_data_t::not_found() &&
-         as<int>( target_list().size() ) >= p()->legendary.seismic_reverberation->effectN( 1 ).base_value() )
+    if ( p()->talents.warrior.seismic_reverberation != spell_data_t::not_found() &&
+         as<int>( target_list().size() ) >= p()->talents.warrior.seismic_reverberation->effectN( 1 ).base_value() )
     {
-      return dot_duration + ( base_tick_time * p()->legendary.seismic_reverberation->effectN( 2 ).base_value() );
+      return dot_duration + ( base_tick_time * p()->talents.warrior.seismic_reverberation->effectN( 2 ).base_value() );
     }
 
     return dot_duration;
@@ -4929,6 +4975,8 @@ struct fury_whirlwind_parent_t : public warrior_attack_t
 
   void tick( dot_t* d ) override
   {
+    mh_attack->current_tick = d->current_tick;
+    oh_attack->current_tick = d->current_tick;
     warrior_attack_t::tick( d );
 
     if ( mh_attack )
@@ -4996,9 +5044,9 @@ struct arms_whirlwind_mh_t : public warrior_attack_t
   {
     double am = warrior_attack_t::action_multiplier();
 
-    if ( p()->legendary.seismic_reverberation->ok() && current_tick == 3 )
+    if ( p()->talents.warrior.seismic_reverberation->ok() && current_tick == 3 )
     {
-      am *= 1.0 + p()->legendary.seismic_reverberation->effectN( 3 ).percent();
+      am *= 1.0 + p()->talents.warrior.seismic_reverberation->effectN( 3 ).percent();
     }
     if ( p()->buff.merciless_bonegrinder->check() )
     {
@@ -5078,10 +5126,10 @@ struct arms_whirlwind_parent_t : public warrior_attack_t
     {
       return dot_duration + ( base_tick_time * p()->legendary.najentuss_vertebrae->effectN( 2 ).base_value() );
     }
-    if ( p()->legendary.seismic_reverberation != spell_data_t::not_found() &&
-         as<int>( target_list().size() ) >= p()->legendary.seismic_reverberation->effectN( 1 ).base_value() )
+    if ( p()->talents.warrior.seismic_reverberation != spell_data_t::not_found() &&
+         as<int>( target_list().size() ) >= p()->talents.warrior.seismic_reverberation->effectN( 1 ).base_value() )
     {
-      return dot_duration + ( base_tick_time * p()->legendary.seismic_reverberation->effectN( 2 ).base_value() );
+      return dot_duration + ( base_tick_time * p()->talents.warrior.seismic_reverberation->effectN( 2 ).base_value() );
     }
 
     return dot_duration;
@@ -6262,8 +6310,8 @@ action_t* warrior_t::create_action( util::string_view name, util::string_view op
     return new devastate_t( this, options_str );
   if ( name == "die_by_the_sword" )
     return new die_by_the_sword_t( this, options_str );
-  if ( name == "dragon_roar" )
-    return new dragon_roar_t( this, options_str );
+  if ( name == "thunderous_roar" )
+    return new thunderous_roar_t( this, options_str );
   if ( name == "enraged_regeneration" )
     return new enraged_regeneration_t( this, options_str );
   if ( name == "execute" )
@@ -6380,6 +6428,7 @@ void warrior_t::init_spells()
   spell.victory_rush            = find_class_spell( "Victory Rush" );
   spell.whirlwind               = find_class_spell( "Whirlwind" );
   spell.shield_block_buff       = find_spell( 132404 );
+  spell.concussive_blows_debuff = find_spell( 383116 ); 
 
   // Class Passives
   spell.warrior_aura            = find_spell( 137047 );
@@ -6390,8 +6439,6 @@ void warrior_t::init_spells()
   spec.seasoned_soldier         = find_specialization_spell( "Seasoned Soldier" );
   spec.deep_wounds_ARMS         = find_specialization_spell("Mastery: Deep Wounds", WARRIOR_ARMS);
   spell.colossus_smash_debuff   = find_spell( 208086 );
-  // spec.execute                = find_spell( 163201 );
-  // spec.whirlwind              = find_spell( 1680 );
 
   // Fury Spells
   mastery.unshackled_fury       = find_mastery_spell( WARRIOR_FURY );
@@ -6403,8 +6450,6 @@ void warrior_t::init_spells()
   spec.crushing_blow            = find_spell(335097);
   spell.whirlwind_buff          = find_spell( 85739, WARRIOR_FURY );  // Used to be called Meat Cleaver
   spell.siegebreaker_debuff     = find_spell( 280773 );
-  // spec.execute                = find_specialization_spell( 5308 );
-  // spec.whirlwind              = find_specialization_spell( 190411 );
 
   // Protection Spells
   mastery.critical_block        = find_mastery_spell( WARRIOR_PROTECTION );
@@ -6416,12 +6461,6 @@ void warrior_t::init_spells()
   spec.deep_wounds_PROT         = find_specialization_spell("Deep Wounds", WARRIOR_PROTECTION);
   spec.revenge_trigger          = find_specialization_spell("Revenge Trigger");
   spec.shield_block_2           = find_specialization_spell( 231847 ); // extra charge
-
-
-  // Only for Protection, the arms talent is under talents.avatar
-  //spec.avatar           = find_specialization_spell( "Avatar" );
-  // Makes the buff spec agnostic
-  //spec.avatar_buff = find_spell(107574); not needed anymore?
 
   // Class Talents
   talents.warrior.battle_stance                    = find_talent_spell( talent_tree::CLASS, "Battle Stance" );
@@ -6866,7 +6905,7 @@ void warrior_t::init_spells()
   cooldown.condemn                          = get_cooldown( "condemn" );
   cooldown.conquerors_banner                = get_cooldown( "conquerors_banner" );
   cooldown.demoralizing_shout               = get_cooldown( "demoralizing_shout" );
-  cooldown.dragon_roar                      = get_cooldown( "dragon_roar" );
+  cooldown.thunderous_roar                  = get_cooldown( "thunderous_roar" );
   cooldown.enraged_regeneration             = get_cooldown( "enraged_regeneration" );
   cooldown.execute                          = get_cooldown( "execute" );
   cooldown.heroic_leap                      = get_cooldown( "heroic_leap" );
@@ -7585,6 +7624,10 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ) : actor_target_data
                                ->set_duration( p.spell.colossus_smash_debuff->duration() )
                                ->modify_duration( p.sets->set( WARRIOR_ARMS, T28, B2 )->effectN( 1 ).time_value() )
                                ->set_cooldown( timespan_t::zero() );
+
+  debuffs_concussive_blows = make_buff( *this , "concussive_blows" )
+                               ->set_default_value( p.spell.concussive_blows_debuff->effectN( 1 ).percent() )
+                               ->set_duration( p.spell.concussive_blows_debuff->duration() );
 
   debuffs_siegebreaker = make_buff( *this , "siegebreaker" )
     ->set_default_value( p.spell.siegebreaker_debuff->effectN( 2 ).percent() )
