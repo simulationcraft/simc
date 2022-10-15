@@ -3406,6 +3406,11 @@ void paladin_t::combat_begin()
 
   // evidently it resets to summer on combat start
   next_season = SUMMER;
+
+  if ( talents.inner_grace->ok() )
+  {
+    buffs.inner_grace->trigger();
+  }
 }
 
 // paladin_t::standing_in_hallow ============================================

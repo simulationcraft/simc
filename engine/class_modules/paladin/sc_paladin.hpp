@@ -136,6 +136,7 @@ public:
     // Ret
     buffs::crusade_buff_t* crusade;
     buffs::shield_of_vengeance_buff_t* shield_of_vengeance;
+    buff_t* inner_grace;
     buff_t* blade_of_wrath;
     buff_t* fires_of_justice;
     buff_t* righteous_verdict;
@@ -183,6 +184,7 @@ public:
     gain_t* hp_cs;
     gain_t* hp_memory_of_lucid_dreams;
     gain_t* hp_sanctification;
+    gain_t* hp_inner_grace;
   } gains;
 
   // Spec Passives
@@ -463,7 +465,7 @@ public:
     const spell_data_t* expurgation;
     const spell_data_t* boundless_judgment; // NYI
     const spell_data_t* sanctification; // NYI
-    const spell_data_t* inner_power; // NYI
+    const spell_data_t* inner_grace; // NYI
     const spell_data_t* ashes_to_dust;
     const spell_data_t* radiant_decree;
     const spell_data_t* crusade;

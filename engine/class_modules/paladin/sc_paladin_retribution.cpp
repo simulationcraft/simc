@@ -1254,6 +1254,14 @@ void paladin_t::create_buffs_retribution()
   buffs.vanguards_momentum_legendary = make_buff( this, "vanguards_momentum", find_spell( 345046 ) )
                                         -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                                         -> set_default_value( find_spell( 345046 ) -> effectN( 1 ).percent() );
+
+  buffs.inner_grace = make_buff( this, "inner_grace", talents.inner_grace )
+    -> set_tick_zero( false )
+    -> set_period( 12_s ) // weirdly this is currently set to 1s
+    -> set_tick_callback( [ this ]( buff_t*, int, const timespan_t& ) {
+        // this 1 appears hardcoded
+        resource_gain( RESOURCE_HOLY_POWER, 1, gains.hp_inner_grace );
+      } );
 }
 
 void paladin_t::init_rng_retribution()
@@ -1286,7 +1294,7 @@ void paladin_t::init_spells_retribution()
   talents.expurgation                 = find_talent_spell( talent_tree::SPECIALIZATION, "Expurgation" );
   talents.boundless_judgment          = find_talent_spell( talent_tree::SPECIALIZATION, "Boundless Judgment" );
   talents.sanctification              = find_talent_spell( talent_tree::SPECIALIZATION, "Sanctification" );
-  talents.inner_power                 = find_talent_spell( talent_tree::SPECIALIZATION, "Inner Power" );
+  talents.inner_grace                 = find_talent_spell( talent_tree::SPECIALIZATION, "Inner Grace" );
   talents.ashes_to_dust               = find_talent_spell( talent_tree::SPECIALIZATION, "Ashes to Dust" );
   talents.radiant_decree              = find_talent_spell( talent_tree::SPECIALIZATION, "Radiant Decree" );
   talents.crusade                     = find_talent_spell( talent_tree::SPECIALIZATION, "Crusade" );
