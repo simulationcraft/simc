@@ -300,7 +300,10 @@ struct consecration_tick_t : public paladin_spell_t
     if ( p()->talents.sanctification->ok() )
     {
       size_t target_count = target_list().size();
-      double proc_chance = SANCTIFICATION_PROC_CHANCE_BY_TARGET_COUNT[std::min(target_count - 1, 3ul)];
+      if ( target_count - 1 > 3 )
+        target_count = 4;
+
+      double proc_chance = SANCTIFICATION_PROC_CHANCE_BY_TARGET_COUNT[target_count - 1];
       if ( rng().roll( proc_chance ) )
       {
         p()->resource_gain( RESOURCE_HOLY_POWER, p()->talents.sanctification->effectN( 1 ).base_value(),
