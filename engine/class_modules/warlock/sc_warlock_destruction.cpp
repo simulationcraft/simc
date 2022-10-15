@@ -127,12 +127,6 @@ struct shadowburn_t : public destruction_spell_t
   {
     parse_options( options_str );
     can_havoc = true;
-  }
-
-  void init() override
-  {
-    destruction_spell_t::init();
-
     cooldown->hasted = true;
   }
 
@@ -151,24 +145,24 @@ struct shadowburn_t : public destruction_spell_t
     int shards_used = as<int>( cost() );
     destruction_spell_t::execute();
 
-    if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T28, B2 ) )
-    {
-      // Shadowburn is an offensive spell that consumes Soul Shards, so it can trigger Impending Ruin
-      if ( shards_used > 0 )
-      {
-        int overflow = p()->buffs.impending_ruin->check() + shards_used - p()->buffs.impending_ruin->max_stack();
-        p()->buffs.impending_ruin->trigger( shards_used ); //Stack change callback should switch Impending Ruin to Ritual of Ruin if max stacks reached
-        if ( overflow > 0 )
-          make_event( sim, 1_ms, [ this, overflow ] { p()->buffs.impending_ruin->trigger( overflow ); } );
-      }
-    }
+    //if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T28, B2 ) )
+    //{
+    //  // Shadowburn is an offensive spell that consumes Soul Shards, so it can trigger Impending Ruin
+    //  if ( shards_used > 0 )
+    //  {
+    //    int overflow = p()->buffs.impending_ruin->check() + shards_used - p()->buffs.impending_ruin->max_stack();
+    //    p()->buffs.impending_ruin->trigger( shards_used ); //Stack change callback should switch Impending Ruin to Ritual of Ruin if max stacks reached
+    //    if ( overflow > 0 )
+    //      make_event( sim, 1_ms, [ this, overflow ] { p()->buffs.impending_ruin->trigger( overflow ); } );
+    //  }
+    //}
   }
 
   double composite_target_crit_chance( player_t* target ) const override
   {
     double m = destruction_spell_t::composite_target_crit_chance( target );
 
-    // TOCHECK - Currently no spelldata for the health threshold 08-20-2020
+    // TOCHECK - Currently no spelldata for the health threshold 2022-10-14
     if ( target->health_percentage() <= 20 )
       m += p()->talents.shadowburn->effectN( 3 ).percent();
 
@@ -1107,13 +1101,16 @@ void warlock_t::init_spells_destruction()
 
   talents.soul_fire = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Fire" ); // Should be ID 6353
   talents.soul_fire_2 = find_spell( 281490 );
+  
+  talents.shadowburn = find_talent_spell( talent_tree::SPECIALIZATION, "Shadowburn"); // Should be ID 17877
+  talents.shadowburn_2 = find_spell( 245731 );
 
   talents.eradication = find_talent_spell( "Eradication" );
 
 
 
 
-  talents.shadowburn          = find_talent_spell( "Shadowburn" );
+
 
 
   talents.fire_and_brimstone = find_talent_spell( "Fire and Brimstone" );
