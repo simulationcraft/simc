@@ -4004,7 +4004,7 @@ namespace spells
 struct resonant_fists_t : public monk_spell_t
 {
   resonant_fists_t( monk_t& p )
-    : monk_spell_t( "resonant_fists", &p, p.talent.general.resonant_fists->effectN( 1 ).trigger() )
+    : monk_spell_t( "resonant_fists", &p, p.talent.general.resonant_fists->effectN( 2 ).trigger() )
   {
     background = true;
     aoe        = -1;
