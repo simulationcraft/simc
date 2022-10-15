@@ -459,7 +459,7 @@ struct divine_storm_tempest_t : public paladin_melee_attack_t
     aoe = -1;
     base_multiplier *= p -> talents.tempest_of_the_lightbringer -> effectN( 1 ).percent();
   }
-}
+};
 
 struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
 {
@@ -890,11 +890,13 @@ struct judgment_ret_t : public judgment_t
 {
   int holy_power_generation;
   seal_of_wrath_t* seal_of_wrath;
+  bool is_boundless;
 
   judgment_ret_t( paladin_t* p, util::string_view name, util::string_view options_str ) :
     judgment_t( p, name ),
     holy_power_generation( as<int>( p -> find_spell( 220637 ) -> effectN( 1 ).base_value() ) ),
-    seal_of_wrath( nullptr )
+    seal_of_wrath( nullptr ),
+    is_boundless( false )
   {
     parse_options( options_str );
 
@@ -913,7 +915,8 @@ struct judgment_ret_t : public judgment_t
   judgment_ret_t( paladin_t* p, util::string_view name, bool is_divine_toll ) :
     judgment_t( p, name ),
     holy_power_generation( as<int>( p -> find_spell( 220637 ) -> effectN( 1 ).base_value() ) ),
-    seal_of_wrath( nullptr )
+    seal_of_wrath( nullptr ),
+    is_boundless( false )
   {
     // This is for Divine Toll's background judgments
     background = true;
@@ -928,14 +931,43 @@ struct judgment_ret_t : public judgment_t
     }
   }
 
+  void init() override
+  {
+    judgment_t::init();
+    is_boundless = false;
+  }
+
   void execute() override
   {
+    if ( p() -> talents.boundless_judgment -> ok() )
+    {
+      if ( rng().roll( p() -> talents.boundless_judgment -> effectN( 1 ).percent() ) )
+      {
+        is_boundless = true;
+      }
+    }
+
     judgment_t::execute();
 
     if ( p() -> talents.zeal -> ok() )
     {
       p() -> buffs.zeal -> trigger( as<int>( p() -> talents.zeal -> effectN( 1 ).base_value() ) );
     }
+
+    if ( p() -> spec.judgment_3 -> ok() )
+      p() -> resource_gain( RESOURCE_HOLY_POWER, holy_power_generation, p() -> gains.judgment );
+
+    is_boundless = false;
+  }
+
+  int n_targets() const override
+  {
+    int target_count = judgment_t::n_targets();
+
+    if ( is_boundless )
+      target_count++;
+
+    return target_count;
   }
 
   // Special things that happen when Judgment damages target
@@ -947,9 +979,6 @@ struct judgment_ret_t : public judgment_t
     {
       if ( p() -> talents.judgment -> ok() )
         td( s -> target ) -> debuff.judgment -> trigger();
-
-      if ( p() -> spec.judgment_3 -> ok() )
-        p() -> resource_gain( RESOURCE_HOLY_POWER, holy_power_generation, p() -> gains.judgment );
 
       if ( p() -> talents.seal_of_wrath -> ok() )
       {
