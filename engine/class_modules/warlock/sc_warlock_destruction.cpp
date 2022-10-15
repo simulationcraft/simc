@@ -905,14 +905,40 @@ struct soul_fire_t : public destruction_spell_t
     parse_options( options_str );
     energize_type     = action_energize::PER_HIT;
     energize_resource = RESOURCE_SOUL_SHARD;
-    energize_amount   = ( p->find_spell( 281490 )->effectN( 1 ).base_value() ) / 10.0;
+    energize_amount   = ( p->talents.soul_fire_2->effectN( 1 ).base_value() ) / 10.0;
 
     can_havoc = true;
 
-    immolate->background                  = true;
-    immolate->dual                        = true;
+    immolate->background = true;
+    immolate->dual = true;
     immolate->base_costs[ RESOURCE_MANA ] = 0;
     immolate->base_dd_multiplier *= 0.0;
+  }
+
+  timespan_t execute_time() const override
+  {
+    timespan_t h = destruction_spell_t::execute_time();
+
+    if ( p()->buffs.backdraft->check() )
+      h *= 1.0 + p()->talents.backdraft_buff->effectN( 1 ).percent();
+
+    return h;
+  }
+
+  timespan_t gcd() const override
+  {
+    timespan_t t = destruction_spell_t::gcd();
+
+    if ( t == 0_ms )
+      return t;
+
+    if ( p()->buffs.backdraft->check() )
+      t *= 1.0 + p()->talents.backdraft_buff->effectN( 2 ).percent();
+
+    if ( t < min_gcd )
+      t = min_gcd;
+
+    return t;
   }
 
   void execute() override
@@ -920,6 +946,8 @@ struct soul_fire_t : public destruction_spell_t
     destruction_spell_t::execute();
 
     immolate->execute_on_target( target );
+
+    p()->buffs.backdraft->decrement();
   }
 };
 
@@ -1077,8 +1105,11 @@ void warlock_t::init_spells_destruction()
 
   talents.cataclysm = find_talent_spell( talent_tree::SPECIALIZATION, "Cataclysm"); // Should be ID 152108
 
+  talents.soul_fire = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Fire" ); // Should be ID 6353
+  talents.soul_fire_2 = find_spell( 281490 );
+
   talents.eradication = find_talent_spell( "Eradication" );
-  talents.soul_fire   = find_talent_spell( "Soul Fire" );
+
 
 
 
