@@ -342,7 +342,7 @@ struct blade_of_justice_t : public paladin_melee_attack_t
   struct expurgation_t : public paladin_spell_t
   {
     expurgation_t( paladin_t* p ):
-      paladin_spell_t( "expurgation", p, p -> talents.expurgation )
+      paladin_spell_t( "expurgation", p, p -> find_spell( 383346 ) )
     {
       hasted_ticks = false;
       tick_may_crit = false;
