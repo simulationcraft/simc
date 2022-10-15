@@ -1962,6 +1962,76 @@ evoker_t::evoker_t( sim_t* sim, std::string_view name, race_e r )
   regen_caches[ CACHE_SPELL_HASTE ] = true;
 }
 
+// Kharnalex, The First Light ======================================================
+
+void karnalex_the_first_light( special_effect_t& effect )
+{
+  using generic_proc_t = unique_gear::generic_proc_t;
+  struct light_of_creation_t : public generic_proc_t
+  {
+    light_of_creation_t( const special_effect_t& e ) : generic_proc_t( e, "light_of_creation", e.driver() )
+    {
+      channeled = true;
+    }
+
+    bool usable_moving() const override
+    {
+      return false;
+    }
+
+    void execute() override
+    {
+      generic_proc_t::execute();
+      event_t::cancel( player->readying );
+      player->reset_auto_attacks( composite_dot_duration( execute_state ) );
+    }
+
+    evoker_t* p()
+    {
+      return static_cast<evoker_t*>( generic_proc_t::player );
+    }
+
+    evoker_t* p() const
+    {
+      return static_cast<evoker_t*>( generic_proc_t::player );
+    }
+
+    void last_tick( dot_t* d ) override
+    {
+      bool was_channeling = player->channeling == this;
+      generic_proc_t::last_tick( d );
+
+      if ( was_channeling && !player->readying )
+      {
+        player->schedule_ready( rng().gauss( sim->channel_lag, sim->channel_lag_stddev ) );
+      }
+    }
+
+    double composite_target_multiplier( player_t* t ) const override
+    {
+      double tm = generic_proc_t::composite_target_multiplier( t );
+
+      // Preliminary testing shows this is linear with target hp %.
+      // TODO: confirm this applies only to all evoker offensive spells
+      if ( p()->specialization() == EVOKER_DEVASTATION )
+      {
+        if ( !p()->buff.dragonrage->check() || !p()->talent.tyranny.ok() )
+          tm *= 1.0 + p()->cache.mastery_value() * t->health_percentage() / 100;
+        else
+          tm *= 1.0 + p()->cache.mastery_value();
+      }
+
+      return tm;
+    }
+  };
+
+  effect.execute_action = unique_gear::create_proc_action<light_of_creation_t>( "light_of_creation", effect );
+
+  action_t* action = effect.player->find_action( "use_item_" + effect.item->name_str );
+  if ( action )
+    action->base_execute_time = effect.execute_action->base_execute_time;
+}
+
 void evoker_t::init_action_list()
 {
   // 2022-08-07: Healing is not supported
@@ -2552,7 +2622,10 @@ struct evoker_module_t : public module_t
   }
   bool valid() const override { return true; }
   void init( player_t* ) const override {}
-  void static_init() const override {}
+  void static_init() const override
+  {
+    unique_gear::register_special_effect( 394927, karnalex_the_first_light );
+  }
   void register_hotfixes() const override {}
   void combat_begin( sim_t* ) const override {}
   void combat_end( sim_t* ) const override {}
