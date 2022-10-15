@@ -238,6 +238,9 @@ struct immolate_t : public destruction_spell_t
         p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.immolate_crits );
 
       p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.immolate );
+
+      if ( p()->talents.flashpoint.ok() && d->state->target->health_percentage() >= p()->talents.flashpoint->effectN( 2 ).base_value() )
+        p()->buffs.flashpoint->trigger();
     }
   };
 
@@ -1119,6 +1122,10 @@ void warlock_t::create_buffs_destruction()
 
   buffs.conflagration_of_chaos_sb = make_buff( this, "conflagration_of_chaos_sb", talents.conflagration_of_chaos_sb )
                                         ->set_default_value_from_effect( 1 );
+
+  buffs.flashpoint = make_buff( this, "flashpoint", talents.flashpoint_buff )
+                         ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+                         ->set_default_value( talents.flashpoint->effectN( 1 ).percent() );
 }
 void warlock_t::init_spells_destruction()
 {
@@ -1194,6 +1201,9 @@ void warlock_t::init_spells_destruction()
   talents.conflagration_of_chaos = find_talent_spell( talent_tree::SPECIALIZATION, "Conflagration of Chaos" ); // Should be ID 387108
   talents.conflagration_of_chaos_cf = find_spell( 387109 );
   talents.conflagration_of_chaos_sb = find_spell( 387110 );
+
+  talents.flashpoint = find_talent_spell( talent_tree::SPECIALIZATION, "Flashpoint" ); // Should be 387259
+  talents.flashpoint_buff = find_spell( 387263 );
 
   talents.eradication = find_talent_spell( "Eradication" );
 

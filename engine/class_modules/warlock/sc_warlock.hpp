@@ -389,7 +389,8 @@ public:
     player_talent_t conflagration_of_chaos; // Conflagrate/Shadowburn has chance to make next cast of it a guaranteed crit
     const spell_data_t* conflagration_of_chaos_cf; // Player buff which affects next Conflagrate
     const spell_data_t* conflagration_of_chaos_sb; // Player buff which affects next Shadowburn
-    // DF - Flashpoint (2 point talent, stacking haste buff from Immolate ticks on high-health targets)
+    player_talent_t flashpoint; // Stacking haste buff from Immolate ticks on high-health targets
+    const spell_data_t* flashpoint_buff;
     // DF - Scalding Flames (2 point talent, increased Immolate damage)
 
     // DF - Ruin (2 point talent, damage increase to several spells)
@@ -563,7 +564,7 @@ public:
     propagate_const<buff_t*> rolling_havoc;
     propagate_const<buff_t*> conflagration_of_chaos_cf;
     propagate_const<buff_t*> conflagration_of_chaos_sb;
-    // DF - Flashpoint (stacking haste from Immolate ticks)
+    propagate_const<buff_t*> flashpoint;
     // DF - Crashing Chaos (cost reduction after Infernal summon)
     // DF - Power Overwhelming (stacking mastery when spending Soul Shards)
     // DF - Burn to Ashes (increased Incinerate damage after Chaos Bolt/Rain of Fire)
