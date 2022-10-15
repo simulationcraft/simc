@@ -3179,6 +3179,11 @@ struct arcane_shot_t: public hunter_ranged_attack_t
 
 struct wind_arrow_t final : public hunter_ranged_attack_t
 {
+  struct {
+    double multiplier = 0;
+    double high, low;
+  } careful_aim;
+
   wind_arrow_t( util::string_view n, hunter_t* p ):
     hunter_ranged_attack_t( n, p, p -> find_spell( 191043 ) )
   {
@@ -3188,6 +3193,13 @@ struct wind_arrow_t final : public hunter_ranged_attack_t
     // TODO: RETEST for DL & test its behavior on lnl AiSes
     base_execute_time = p -> talents.aimed_shot -> cast_time();
     travel_speed = p -> talents.aimed_shot -> missile_speed();
+
+    if ( p -> talents.careful_aim.ok() )
+    {
+      careful_aim.high = p -> talents.careful_aim -> effectN( 1 ).base_value();
+      careful_aim.low = p -> talents.careful_aim -> effectN( 2 ).base_value();
+      careful_aim.multiplier = p -> talents.careful_aim -> effectN( 3 ).percent();
+    }
   }
 
   void execute() override
@@ -3198,6 +3210,30 @@ struct wind_arrow_t final : public hunter_ranged_attack_t
       p() -> buffs.trueshot -> trigger( p() -> talents.windrunners_guidance -> effectN( 2 ).time_value() );
       p() -> procs.windrunners_guidance -> occur();
     }
+  }
+
+  double composite_target_da_multiplier( player_t* t ) const override
+  {
+    double m = hunter_ranged_attack_t::composite_target_da_multiplier( t );
+
+    if ( careful_aim.multiplier )
+    {
+      const double target_health_pct = t -> health_percentage();
+      if ( target_health_pct > careful_aim.high || target_health_pct < careful_aim.low )
+        m *= 1 + careful_aim.multiplier;
+    }
+
+    return m;
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double am = hunter_ranged_attack_t::composite_da_multiplier( s );
+
+    // 14-10-22 TODO Affected by mastery twice.
+    am *= 1 + p() -> cache.mastery() * p() -> mastery.sniper_training -> effectN( affected_by.sniper_training.direct ).mastery_value();
+
+    return am;
   }
 };
 
