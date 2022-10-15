@@ -843,7 +843,9 @@ struct seal_of_wrath_t : public paladin_spell_t
 {
   seal_of_wrath_t( paladin_t* p ) :
     paladin_spell_t( "seal_of_wrath", p, p -> find_spell( 386911 ) )
-  { }
+  {
+    background = true;
+  }
 };
 
 struct judgment_ret_t : public judgment_t
@@ -867,7 +869,6 @@ struct judgment_ret_t : public judgment_t
     if ( p -> talents.seal_of_wrath -> ok() )
     {
       seal_of_wrath = new seal_of_wrath_t( p );
-      add_child( seal_of_wrath );
     }
   }
 
@@ -886,7 +887,6 @@ struct judgment_ret_t : public judgment_t
     if ( p -> talents.seal_of_wrath -> ok() )
     {
       seal_of_wrath = new seal_of_wrath_t( p );
-      add_child( seal_of_wrath );
     }
   }
 
