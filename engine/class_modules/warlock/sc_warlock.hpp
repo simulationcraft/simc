@@ -372,7 +372,7 @@ public:
     player_talent_t cry_havoc; // Chaos Bolts on Havoc'd target proc AoE
     const spell_data_t* cry_havoc_proc; // AoE damage (includes target hit)
     player_talent_t improved_immolate; // Duration increase
-    const spell_data_t* inferno; // DF - Now a choice against Cataclysm, check that target cap nerfs remain
+    player_talent_t inferno; // TOCHECK: Do SL target caps remain in effect?
     const spell_data_t* cataclysm; // DF - Now a choice against Inferno
 
     const spell_data_t* soul_fire;

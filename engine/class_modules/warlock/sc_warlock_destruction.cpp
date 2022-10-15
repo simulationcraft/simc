@@ -700,20 +700,20 @@ struct rain_of_fire_t : public destruction_spell_t
       aoe        = -1;
       background = dual = direct_tick = true;
       radius = p->talents.rain_of_fire->effectN( 1 ).radius();
-      //base_multiplier *= 1.0 + p->talents.inferno->effectN( 2 ).percent();
+      base_multiplier *= 1.0 + p->talents.inferno->effectN( 2 ).percent();
     }
 
     void impact( action_state_t* s ) override
     {
       destruction_spell_t::impact( s );
 
-      //if ( p()->talents.inferno && result_is_hit( s->result ) )
-      //{
-      //  if ( rng().roll( p()->talents.inferno->effectN( 1 ).percent() * ( 5.0 / std::max(5u, s->n_targets ) ) ) )
-      //  {
-      //    p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.inferno );
-      //  }
-      //}
+      if ( p()->talents.inferno.ok() && result_is_hit( s->result ) )
+      {
+        if ( rng().roll( p()->talents.inferno->effectN( 1 ).percent() * ( 5.0 / std::max(5u, s->n_targets ) ) ) )
+        {
+          p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.inferno );
+        }
+      }
 
       if ( p()->talents.pyrogenics.ok() )
         td( s->target )->debuffs_pyrogenics->trigger();
@@ -1074,6 +1074,8 @@ void warlock_t::init_spells_destruction()
 
   talents.improved_immolate = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Immolate" ); // Should be ID 387093
 
+  talents.inferno = find_talent_spell( talent_tree::SPECIALIZATION, "Inferno" ); // Should be ID 270545
+
   talents.eradication = find_talent_spell( "Eradication" );
   talents.soul_fire   = find_talent_spell( "Soul Fire" );
 
@@ -1081,7 +1083,7 @@ void warlock_t::init_spells_destruction()
 
   talents.shadowburn          = find_talent_spell( "Shadowburn" );
 
-  talents.inferno            = find_talent_spell( "Inferno" );
+
   talents.fire_and_brimstone = find_talent_spell( "Fire and Brimstone" );
   talents.cataclysm          = find_talent_spell( "Cataclysm" );
 
