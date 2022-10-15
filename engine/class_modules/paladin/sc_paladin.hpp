@@ -486,7 +486,7 @@ public:
     const spell_data_t* execution_sentence; // ?
     const spell_data_t* empyrean_endowment; // NYI
     const spell_data_t* virtuous_command;
-    const spell_data_t* final_verdict; // NYI
+    const spell_data_t* final_verdict; // sort of implemented
     const spell_data_t* executioners_will; // ?
     const spell_data_t* executioners_wrath; // ?
     const spell_data_t* final_reckoning;
