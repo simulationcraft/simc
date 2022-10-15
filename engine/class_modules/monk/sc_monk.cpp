@@ -8404,6 +8404,7 @@ void monk_t::init_spells()
   sample_datas.purified_damage            = get_sample_data( "Stagger damage that was purified" );
   sample_datas.staggering_strikes_cleared = get_sample_data( "Stagger damage that was cleared by Staggering Strikes" );
   sample_datas.quick_sip_cleared          = get_sample_data( "Stagger damage that was cleared by Quick Sip" );
+  sample_datas.tranquil_spirit            = get_sample_data( "Stagger damage that was cleared by Tranquil Spirit" );
 
   // Active Action Spells
   
@@ -10020,10 +10021,10 @@ void monk_t::target_mitigation( school_e school, result_amount_type dt, action_s
   }
 
   // Damage Reduction Cooldowns
-  if ( buff.fortifying_brew->up() )
+  if ( talent.general.fortifying_brew->ok() && buff.fortifying_brew->up() )
   {
     double reduction = spec.fortifying_brew_mw_ww->effectN( 2 ).percent();  // Saved as -15%
-    if ( spec.fortifying_brew_2_brm->ok() )
+    if ( talent.brewmaster.fortifying_brew_stagger->ok() )
       reduction -= 0.05;
 
     s->result_amount *= ( 1.0 + reduction );
@@ -10037,7 +10038,7 @@ void monk_t::target_mitigation( school_e school, result_amount_type dt, action_s
   }
 
   // Touch of Karma Absorbtion
-  if ( buff.touch_of_karma->up() )
+  if ( talent.windwalker.touch_of_karma->ok() && buff.touch_of_karma->up() )
   {
     double percent_HP = talent.windwalker.touch_of_karma->effectN( 3 ).percent() * max_health();
     if ( ( buff.touch_of_karma->value() + s->result_amount ) >= percent_HP )
@@ -10336,12 +10337,12 @@ double monk_t::current_stagger_amount_remains_to_total_percent()
 
 double monk_t::current_stagger_tick_dmg_percent()
 {
-  return current_stagger_tick_dmg() / resources.max[ RESOURCE_HEALTH ];
+  return ( current_stagger_tick_dmg() / resources.max[ RESOURCE_HEALTH ] );
 }
 
 double monk_t::current_stagger_amount_remains_percent()
 {
-  return current_stagger_amount_remains() / resources.max[ RESOURCE_HEALTH ];
+  return ( current_stagger_amount_remains() / resources.max[ RESOURCE_HEALTH ] );
 }
 
 // monk_t::current_stagger_dot_duration ==================================================
