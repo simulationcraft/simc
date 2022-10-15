@@ -1000,8 +1000,8 @@ public:
     const spell_data_t* t29_assassination_4pc;  // NYI
     const spell_data_t* t29_outlaw_2pc;
     const spell_data_t* t29_outlaw_4pc;
-    const spell_data_t* t29_subtlety_2pc;       // NYI
-    const spell_data_t* t29_subtlety_4pc;       // NYI
+    const spell_data_t* t29_subtlety_2pc;
+    const spell_data_t* t29_subtlety_4pc;
   } set_bonuses;
 
   // Options
@@ -8528,8 +8528,8 @@ void rogue_t::init_action_list()
     cds->add_action( "variable,name=deathmark_condition,value=!stealthed.rogue&dot.rupture.ticking&!debuff.deathmark.up&variable.deathmark_nightstalker_condition&variable.deathmark_ma_condition&variable.deathmark_covenant_condition", "Deathmark to be used if not stealthed, Rupture is up, and all other talent/covenant conditions are satisfied");
     cds->add_action( "use_item,name=wraps_of_electrostatic_potential" );
     cds->add_action( "use_item,name=ring_of_collapsing_futures,if=buff.temptation.down|fight_remains<30" );
-    cds->add_action( "use_items,slots=trinket1,if=(!variable.use_trinket_1_pre_deathmark|variable.deathmark_condition&(cooldown.deathmark.remains<2|variable.deathmark_cooldown_remains>trinket.1.cooldown.duration%2)|fight_remains<=20)&(variable.trinket_sync_slot=1&(debuff.deathmark.up|variable.use_trinket_1_pre_deathmark|fight_remains<=20)|(variable.trinket_sync_slot=2&(!trinket.2.cooldown.ready|variable.deathmark_cooldown_remains>20))|!variable.trinket_sync_slot)", "Sync the priority stat buff trinket with Deathmark, otherwise use on cooldown" );
-    cds->add_action( "use_items,slots=trinket2,if=(!variable.use_trinket_2_pre_deathmark|variable.deathmark_condition&(cooldown.deathmark.remains<2|variable.deathmark_cooldown_remains>trinket.2.cooldown.duration%2)|fight_remains<=20)&(variable.trinket_sync_slot=2&(debuff.deathmark.up|variable.use_trinket_2_pre_deathmark|fight_remains<=20)|(variable.trinket_sync_slot=1&(!trinket.1.cooldown.ready|variable.deathmark_cooldown_remains>20))|!variable.trinket_sync_slot)" );
+    cds->add_action( "use_items,slots=trinket1,if=(variable.trinket_sync_slot=1&(debuff.deathmark.up|fight_remains<=20)|(variable.trinket_sync_slot=2&(!trinket.2.cooldown.ready|variable.deathmark_cooldown_remains>20))|!variable.trinket_sync_slot)", "Sync the priority stat buff trinket with Deathmark, otherwise use on cooldown" );
+    cds->add_action( "use_items,slots=trinket2,if=(variable.trinket_sync_slot=2&(debuff.deathmark.up|fight_remains<=20)|(variable.trinket_sync_slot=1&(!trinket.1.cooldown.ready|variable.deathmark_cooldown_remains>20))|!variable.trinket_sync_slot)" );
     cds->add_action( "deathmark,if=variable.deathmark_condition" );
     cds->add_action( "kingsbane,if=(debuff.shiv.up|cooldown.shiv.ready)&buff.envenom.up" );
     cds->add_action( "exsanguinate,if=!stealthed.rogue&(!dot.garrote.refreshable&dot.rupture.remains>4+4*cp_max_spend|dot.rupture.remains*0.5>target.time_to_die)&target.time_to_die>4", "Exsanguinate when not stealthed and both Rupture and Garrote are up for long enough." );
