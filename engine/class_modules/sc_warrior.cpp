@@ -1046,6 +1046,7 @@ public:
     ab::apply_affecting_aura( p()->talents.warrior.cruel_strikes );
     ab::apply_affecting_aura( p()->talents.warrior.crushing_force ); // crit portion not active
     ab::apply_affecting_aura( p()->talents.warrior.honed_reflexes );
+    ab::apply_affecting_aura( p()->talents.warrior.sonic_boom );
     ab::apply_affecting_aura( p()->talents.warrior.thunderous_words );
     ab::apply_affecting_aura( p()->talents.warrior.uproar );
 
@@ -1586,6 +1587,14 @@ struct reckless_flurry_t : warrior_attack_t
   }
 };
 
+struct sidearm_t : warrior_attack_t
+{
+  sidearm_t( warrior_t* p ) : warrior_attack_t( "sidearm", p, p->find_spell( 384391 ) )
+  {
+    background = true;
+  }
+};
+
 struct devastator_t : warrior_attack_t
 {
   double shield_slam_reset;
@@ -1611,8 +1620,10 @@ struct devastator_t : warrior_attack_t
 struct melee_t : public warrior_attack_t
 {
   warrior_attack_t* reckless_flurry;
+  warrior_attack_t* sidearm;
   bool mh_lost_melee_contact, oh_lost_melee_contact;
   double base_rage_generation, arms_rage_multiplier, fury_rage_multiplier, seasoned_soldier_crit_mult;
+  double sidearm_chance;
   devastator_t* devastator;
   melee_t( util::string_view name, warrior_t* p )
     : warrior_attack_t( name, p, spell_data_t::nil() ), reckless_flurry( nullptr ),
@@ -1623,7 +1634,7 @@ struct melee_t : public warrior_attack_t
       arms_rage_multiplier( 4.00 ),
       fury_rage_multiplier( 1.00 ),
       seasoned_soldier_crit_mult( p->spec.seasoned_soldier->effectN( 1 ).percent() ),
-      devastator( nullptr )
+      devastator( nullptr ), sidearm( nullptr), sidearm_chance( p->talents.warrior.sidearm->proc_chance() )
   {
     background = repeating = may_glance = usable_while_channeling = true;
     allow_class_ability_procs = not_a_proc = true;
@@ -1643,6 +1654,10 @@ struct melee_t : public warrior_attack_t
     if ( p->azerite.reckless_flurry.ok() )
     {
       reckless_flurry = new reckless_flurry_t( p );
+    }
+    if ( p->talents.warrior.sidearm.ok() )
+    {
+      sidearm = new sidearm_t( p );
     }
   }
 
@@ -1743,6 +1758,12 @@ struct melee_t : public warrior_attack_t
     {
       reckless_flurry->set_target( s->target );
       reckless_flurry->execute();
+    }
+
+    if ( sidearm && result_is_hit( s->result ) &&rng().roll( sidearm_chance ) )
+    {
+      sidearm->set_target( s->target );
+      sidearm->execute();
     }
 
     if ( p()->talents.warrior.wild_strikes->ok() && s->result == RESULT_CRIT )
@@ -4821,7 +4842,7 @@ struct thunder_clap_t : public warrior_attack_t
     }
     if ( p()->talents.arms.rend->ok() && p()->talents.warrior.blood_and_thunder.ok() )
     {
-      blood_and_thunder->execute();
+      blood_and_thunder->execute(); // not capped at 5 targets in game
     }
   }
 };
