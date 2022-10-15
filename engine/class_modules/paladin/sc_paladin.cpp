@@ -2836,7 +2836,7 @@ double paladin_t::composite_mastery() const
     m += buffs.seraphim->data().effectN( 4 ).base_value();
 
   if ( talents.holy_crusader->ok() )
-    m += talents.holy_crusader->effectN( 1 ).percent();
+    m += talents.holy_crusader->effectN( 1 ).base_value();
 
   return m;
 }
