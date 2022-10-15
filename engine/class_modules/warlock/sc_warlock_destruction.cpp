@@ -128,6 +128,8 @@ struct shadowburn_t : public destruction_spell_t
     parse_options( options_str );
     can_havoc = true;
     cooldown->hasted = true;
+
+    base_multiplier *= 1.0 + p->talents.ruin->effectN( 1 ).percent();
   }
 
   void impact( action_state_t* s ) override
@@ -274,6 +276,8 @@ struct conflagrate_t : public destruction_spell_t
     cooldown->hasted = true;
     cooldown->charges += as<int>( p->talents.improved_conflagrate->effectN( 1 ).base_value() );
     cooldown->duration += p->talents.explosive_potential->effectN( 1 ).time_value();
+
+    base_multiplier *= 1.0 + p->talents.ruin->effectN( 1 ).percent();
 
     //if ( p->legendary.cinders_of_the_azjaqir->ok() )
     //{
@@ -874,6 +878,7 @@ struct channel_demonfire_tick_t : public destruction_spell_t
     spell_power_mod.direct = p->talents.channel_demonfire_tick->effectN( 1 ).sp_coeff();
 
     aoe = -1;
+    base_multiplier *= 1.0 + p->talents.ruin->effectN( 1 ).percent();
     base_aoe_multiplier = p->talents.channel_demonfire_tick->effectN( 2 ).sp_coeff() / p->talents.channel_demonfire_tick->effectN( 1 ).sp_coeff();
   }
 
@@ -976,6 +981,8 @@ struct soul_fire_t : public destruction_spell_t
     energize_type     = action_energize::PER_HIT;
     energize_resource = RESOURCE_SOUL_SHARD;
     energize_amount   = ( p->talents.soul_fire_2->effectN( 1 ).base_value() ) / 10.0;
+
+    base_multiplier *= 1.0 + p->talents.ruin->effectN( 1 ).percent();
 
     can_havoc = true;
 
@@ -1210,6 +1217,8 @@ void warlock_t::init_spells_destruction()
   talents.flashpoint_buff = find_spell( 387263 );
 
   talents.scalding_flames = find_talent_spell( talent_tree::SPECIALIZATION, "Scalding Flames" ); // Should be ID 388832
+
+  talents.ruin = find_talent_spell( talent_tree::SPECIALIZATION, "Ruin" ); // Should be ID 387103
 
   talents.eradication = find_talent_spell( "Eradication" );
 
