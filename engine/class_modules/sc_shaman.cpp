@@ -4764,7 +4764,9 @@ struct lava_beam_overload_t : public chained_overload_base_t
   lava_beam_overload_t( shaman_t* p, execute_type t, shaman_spell_t* parent_ )
     : chained_overload_base_t( p, "lava_beam_overload", t, p->find_spell( 114738 ),
         p->spec.maelstrom->effectN( 6 ).resource( RESOURCE_MAELSTROM ), parent_ )
-  { }
+  {
+    affected_by_master_of_the_elements = true;
+  }
 };
 
 struct chained_base_t : public shaman_spell_t
@@ -5042,6 +5044,8 @@ struct lava_beam_t : public chained_base_t
     : chained_base_t( player, "lava_beam", t, player->find_spell( 114074 ),
                       player->spec.maelstrom->effectN( 5 ).resource( RESOURCE_MAELSTROM ), options_str )
   {
+    affected_by_master_of_the_elements = true;
+
     if ( player->mastery.elemental_overload->ok() )
     {
       overload = new lava_beam_overload_t( player, t, this );
@@ -11629,8 +11633,8 @@ void shaman_t::init_action_list_elemental()
     aoe->add_action(
         "lava_burst,target_if=dot.flame_shock.remains,if=cooldown_react&buff.lava_surge.up&talent.master_of_the_elements.enabled&(maelstrom>=60-5*talent.eye_of_the_storm.rank-2*talent.flow_of_power.enabled)&(!talent.echoes_of_great_sundering.enabled|buff.echoes_of_great_sundering.up)",
         "Cast Lava Burst to buff your immediately follow-up Earthquake with Master of the Elements." );
-    aoe->add_action( "icefury,if=talent.electrified_shocks.enabled" );
-    aoe->add_action( "frost_shock,if=buff.icefury.up&talent.electrified_shocks.enabled&!debuff.electrified_shocks.up", "Spread out your Frost Shock casts to empower as many Chain Lightnings as possible." );
+    aoe->add_action( "icefury,if=talent.electrified_shocks.enabled&active_enemies<5", "Use Icefury if you can get the full benefit from Electrified Shocks. If more targets are present ignore it." );
+    aoe->add_action( "frost_shock,if=buff.icefury.up&talent.electrified_shocks.enabled&!debuff.electrified_shocks.up&active_enemies<5", "Spread out your Frost Shock casts to empower as many Chain Lightnings as possible." );
     aoe->add_action( "lava_beam", "" );
     aoe->add_action( "chain_lightning" );
     aoe->add_action( "flame_shock,moving=1,target_if=refreshable" );
