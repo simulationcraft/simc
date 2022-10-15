@@ -386,7 +386,9 @@ public:
     player_talent_t fire_and_brimstone;
 
     player_talent_t decimation; // Incinerate and Conflagrate casts reduce Soul Fire cooldown
-    // DF - Conflagration of Chaos (2 point talent, Conflagrate/Shadowburn has chance to make next cast of it a guaranteed crit)
+    player_talent_t conflagration_of_chaos; // Conflagrate/Shadowburn has chance to make next cast of it a guaranteed crit
+    const spell_data_t* conflagration_of_chaos_cf; // Player buff which affects next Conflagrate
+    const spell_data_t* conflagration_of_chaos_sb; // Player buff which affects next Shadowburn
     // DF - Flashpoint (2 point talent, stacking haste buff from Immolate ticks on high-health targets)
     // DF - Scalding Flames (2 point talent, increased Immolate damage)
 
@@ -559,7 +561,8 @@ public:
     propagate_const<buff_t*> ritual_of_ruin;
     propagate_const<buff_t*> madness_of_the_azjaqir; // DF - Now comes from Destruction talent
     propagate_const<buff_t*> rolling_havoc;
-    // DF - Backlash? (passive crit increase)
+    propagate_const<buff_t*> conflagration_of_chaos_cf;
+    propagate_const<buff_t*> conflagration_of_chaos_sb;
     // DF - Flashpoint (stacking haste from Immolate ticks)
     // DF - Crashing Chaos (cost reduction after Infernal summon)
     // DF - Power Overwhelming (stacking mastery when spending Soul Shards)
@@ -635,6 +638,8 @@ public:
     proc_t* ritual_of_ruin;
     proc_t* avatar_of_destruction;
     proc_t* mayhem;
+    proc_t* conflagration_of_chaos_cf;
+    proc_t* conflagration_of_chaos_sb;
   } procs;
 
   int initial_soul_shards;
