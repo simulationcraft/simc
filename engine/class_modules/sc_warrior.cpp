@@ -277,18 +277,13 @@ public:
     // Class Passives
     const spell_data_t* warrior_aura;
 
-    // Old - maybe not needed?
+    // Extra Spells To Make Things Work
 
     const spell_data_t* colossus_smash_debuff;
     const spell_data_t* concussive_blows_debuff;
-    const spell_data_t* ignore_pain;
-    const spell_data_t* heroic_leap;
-    const spell_data_t* intervene;
-    const spell_data_t* shattering_throw;
     const spell_data_t* shield_block_buff;
     const spell_data_t* siegebreaker_debuff;
     const spell_data_t* whirlwind_buff;
-
     const spell_data_t* aftershock_duration;
 
   } spell;
@@ -1041,6 +1036,7 @@ public:
     ab::apply_affecting_aura( p()->talents.arms.valor_in_victory );
     ab::apply_affecting_aura( p()->talents.fury.critical_thinking );
     ab::apply_affecting_aura( p()->talents.fury.deft_experience );
+    ab::apply_affecting_aura( p()->talents.fury.storm_of_steel );
     ab::apply_affecting_aura( p()->talents.warrior.barbaric_training );
     ab::apply_affecting_aura( p()->talents.warrior.concussive_blows );
     ab::apply_affecting_aura( p()->talents.warrior.cruel_strikes );
@@ -3214,7 +3210,7 @@ struct heroic_leap_t : public warrior_attack_t
 {
   const spell_data_t* heroic_leap_damage;
   heroic_leap_t( warrior_t* p, util::string_view options_str )
-    : warrior_attack_t( "heroic_leap", p, p->spell.heroic_leap ),
+    : warrior_attack_t( "heroic_leap", p, p->talents.warrior.heroic_leap ),
       heroic_leap_damage( p->find_spell( 52174 ) )
   {
     parse_options( options_str );
@@ -3318,7 +3314,7 @@ struct intervene_t : public warrior_attack_t
 {
   double movement_speed_increase;
   intervene_t( warrior_t* p, util::string_view options_str )
-    : warrior_attack_t( "intervene", p, p->spell.intervene ), movement_speed_increase( 5.0 )
+    : warrior_attack_t( "intervene", p, p->talents.warrior.intervene ), movement_speed_increase( 5.0 )
   {
     parse_options( options_str );
     ignore_false_positive   = true;
@@ -3792,7 +3788,7 @@ struct crushing_blow_t : public warrior_attack_t
 struct shattering_throw_t : public warrior_attack_t
 {
   shattering_throw_t( warrior_t* p, util::string_view options_str )
-    : warrior_attack_t( "shattering_throw", p, p->spell.shattering_throw )
+    : warrior_attack_t( "shattering_throw", p, p->talents.warrior.shattering_throw )
   {
     parse_options( options_str );
     weapon = &( player->main_hand_weapon );
@@ -5211,6 +5207,19 @@ struct arms_whirlwind_parent_t : public warrior_attack_t
   }
 };
 
+// Wrecking Throw ========================================================
+
+struct wrecking_throw_t : public warrior_attack_t
+{
+  wrecking_throw_t( warrior_t* p, util::string_view options_str )
+    : warrior_attack_t( "wrecking_throw", p, p->talents.warrior.wrecking_throw )
+  {
+    parse_options( options_str );
+    weapon = &( player->main_hand_weapon );
+  }
+  // add absorb shield bonus (are those even in SimC?), add cast time?
+};
+
 // ==========================================================================
 // Covenant Abilities
 // ==========================================================================
@@ -6384,6 +6393,8 @@ action_t* warrior_t::create_action( util::string_view name, util::string_view op
     return new rend_t( this, options_str );
   if ( name == "revenge" )
     return new revenge_t( this, options_str );
+  if ( name == "shattering_throw" )
+    return new shattering_throw_t( this, options_str );
   if ( name == "shield_block" )
     return new shield_block_t( this, options_str );
   if ( name == "shield_slam" )
@@ -6425,6 +6436,8 @@ action_t* warrior_t::create_action( util::string_view name, util::string_view op
       return new arms_whirlwind_parent_t( this, options_str );
     }
   }
+  if ( name == "wrecking_throw" )
+    return new wrecking_throw_t( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
