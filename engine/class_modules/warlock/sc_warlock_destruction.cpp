@@ -263,25 +263,12 @@ struct conflagrate_t : public destruction_spell_t
 
 struct incinerate_fnb_t : public destruction_spell_t
 {
-  double energize_mult;
-
-  incinerate_fnb_t( warlock_t* p ) : destruction_spell_t( "incinerate_fnb", p, p->find_class_spell( "Incinerate" ) )
+  incinerate_fnb_t( warlock_t* p ) : destruction_spell_t( "Incinerate (Fire and Brimstone)", p, p->warlock_base.incinerate )
   {
     aoe        = -1;
     background = true;
 
-    if ( p->talents.fire_and_brimstone->ok() )
-    {
-      base_multiplier *= p->talents.fire_and_brimstone->effectN( 1 ).percent();
-      energize_type     = action_energize::PER_HIT;
-      energize_resource = RESOURCE_SOUL_SHARD;
-      energize_amount   = ( p->talents.fire_and_brimstone->effectN( 2 ).base_value() ) / 10.0;
-      energize_mult = 1.0 + ( p->legendary.embers_of_the_diabolic_raiment->ok() ? p->legendary.embers_of_the_diabolic_raiment->effectN( 1 ).percent() : 0.0 );
-
-      energize_amount *= energize_mult;
-
-      gain = p->gains.incinerate_fnb;
-    }
+    base_multiplier *= p->talents.fire_and_brimstone->effectN( 1 ).percent();
   }
 
   void init() override
@@ -295,7 +282,7 @@ struct incinerate_fnb_t : public destruction_spell_t
 
   double cost() const override
   {
-    return 0;
+    return 0.0;
   }
 
   size_t available_targets( std::vector<player_t*>& tl ) const override
@@ -319,24 +306,16 @@ struct incinerate_fnb_t : public destruction_spell_t
     return tl.size();
   }
 
-  void impact( action_state_t* s ) override
-  {
-    destruction_spell_t::impact( s );
-
-    if ( s->result == RESULT_CRIT )
-      p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1 * energize_mult, p()->gains.incinerate_fnb_crits );
-  }
-
   double composite_target_multiplier( player_t* t ) const override
   {
     double m = destruction_spell_t::composite_target_multiplier( t );
 
-    auto td = this->td( t );
+    //auto td = this->td( t );
 
-    // SL - Conduit
-    // TOCHECK - Couldn't find affected_by spelldata to reference the spells 08-24-2020.
-    if ( td->dots_immolate->is_ticking() && p()->conduit.ashen_remains->ok() )
-      m *= 1.0 + p()->conduit.ashen_remains.percent();
+    //// SL - Conduit
+    //// TOCHECK - Couldn't find affected_by spelldata to reference the spells 08-24-2020.
+    //if ( td->dots_immolate->is_ticking() && p()->conduit.ashen_remains->ok() )
+    //  m *= 1.0 + p()->conduit.ashen_remains.percent();
 
     return m;
   }
@@ -352,7 +331,7 @@ struct incinerate_t : public destruction_spell_t
   {
     parse_options( options_str );
 
-    //add_child( fnb_action );
+    add_child( fnb_action );
 
     can_havoc = true;
 
@@ -396,11 +375,10 @@ struct incinerate_t : public destruction_spell_t
 
     p()->buffs.backdraft->decrement();
 
-    //if ( p()->talents.fire_and_brimstone->ok() )
-    //{
-    //  fnb_action->set_target( target );
-    //  fnb_action->execute();
-    //}
+    if ( p()->talents.fire_and_brimstone->ok() )
+    {
+      fnb_action->execute_on_target( target );
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -1131,6 +1109,8 @@ void warlock_t::init_spells_destruction()
 
   talents.backlash = find_talent_spell( talent_tree::SPECIALIZATION, "Backlash" ); // Should be ID 387384
 
+  talents.fire_and_brimstone = find_talent_spell( talent_tree::SPECIALIZATION, "Fire and Brimstone"); // Should be ID 196408
+
   talents.eradication = find_talent_spell( "Eradication" );
 
 
@@ -1139,7 +1119,7 @@ void warlock_t::init_spells_destruction()
 
 
 
-  talents.fire_and_brimstone = find_talent_spell( "Fire and Brimstone" );
+
 
 
 
