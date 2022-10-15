@@ -373,7 +373,7 @@ public:
     const spell_data_t* cry_havoc_proc; // AoE damage (includes target hit)
     player_talent_t improved_immolate; // Duration increase
     player_talent_t inferno; // TOCHECK: Do SL target caps remain in effect?
-    const spell_data_t* cataclysm; // DF - Now a choice against Inferno
+    player_talent_t cataclysm;
 
     const spell_data_t* soul_fire;
     const spell_data_t* shadowburn;

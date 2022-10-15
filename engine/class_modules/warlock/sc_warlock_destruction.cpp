@@ -933,8 +933,8 @@ struct cataclysm_t : public destruction_spell_t
     parse_options( options_str );
     aoe = -1;
 
-    immolate->background                  = true;
-    immolate->dual                        = true;
+    immolate->background = true;
+    immolate->dual = true;
     immolate->base_costs[ RESOURCE_MANA ] = 0;
     immolate->base_dd_multiplier *= 0.0;
   }
@@ -945,8 +945,7 @@ struct cataclysm_t : public destruction_spell_t
 
     if ( result_is_hit( s->result ) )
     {
-      immolate->set_target( s->target );
-      immolate->execute();
+      immolate->execute_on_target( s->target );
     }
   }
 };
@@ -1076,6 +1075,8 @@ void warlock_t::init_spells_destruction()
 
   talents.inferno = find_talent_spell( talent_tree::SPECIALIZATION, "Inferno" ); // Should be ID 270545
 
+  talents.cataclysm = find_talent_spell( talent_tree::SPECIALIZATION, "Cataclysm"); // Should be ID 152108
+
   talents.eradication = find_talent_spell( "Eradication" );
   talents.soul_fire   = find_talent_spell( "Soul Fire" );
 
@@ -1085,7 +1086,7 @@ void warlock_t::init_spells_destruction()
 
 
   talents.fire_and_brimstone = find_talent_spell( "Fire and Brimstone" );
-  talents.cataclysm          = find_talent_spell( "Cataclysm" );
+
 
 
   talents.rain_of_chaos = find_talent_spell( "Rain of Chaos" );
