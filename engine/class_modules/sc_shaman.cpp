@@ -6627,6 +6627,24 @@ struct earthquake_t : public earthquake_base_t
     {
       p()->buff.t29_4pc_ele->trigger();
     }
+
+    if ( p()->talent.windspeakers_lava_resurgence.ok() )
+    {
+      p()->buff.windspeakers_lava_resurgence->trigger();
+
+      if ( p()->buff.lava_surge->check() )
+      {
+        p()->proc.wasted_lava_surge->occur();
+      }
+
+      p()->proc.lava_surge_windspeakers_lava_resurgence->occur();
+      if ( !p()->executing || p()->executing->id != 51505 )
+      {
+        p()->cooldown.lava_burst->reset( true );
+      }
+
+      p()->buff.lava_surge->trigger();
+    }
   }
 };
 
