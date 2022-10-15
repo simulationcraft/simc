@@ -1855,6 +1855,7 @@ class SpellDataGenerator(DataGenerator):
           ( 124275, 1 ), # Light Stagger
           ( 124274, 1 ), # Medium Stagger
           ( 124273, 1 ), # Heavy Stagger
+          ( 205523, 1 ), # Blackout Kick Brewmaster version
           ( 216521, 1 ), # Celestial Fortune Heal
           ( 227679, 1 ), # Face Palm
           ( 227291, 1 ), # Niuzao pet Stomp
