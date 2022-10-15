@@ -836,7 +836,7 @@ public:
       player_talent_t shadowed_finishers;
       player_talent_t shuriken_tornado;
 
-      player_talent_t inevitability;            // NYI - scaling?
+      player_talent_t inevitability;
       player_talent_t without_a_trace;
       player_talent_t fade_to_nothing;          // No implementation
       player_talent_t cloaked_in_shadow;        // No implementation
@@ -3220,6 +3220,12 @@ struct backstab_t : public rogue_attack_t
       trigger_find_weakness( state, duration );
     }
 
+    if ( p()->talent.subtlety.inevitability->ok() )
+    {
+      timespan_t extend_duration = timespan_t::from_seconds( p()->talent.subtlety.inevitability->effectN( 2 ).base_value() / 10.0 );
+      p()->buffs.symbols_of_death->extend_duration( p(), extend_duration );
+    }
+
     if ( state->result == RESULT_CRIT && p()->set_bonuses.t29_subtlety_4pc->ok() )
     {
       p()->buffs.t29_subtlety_4pc->trigger();
@@ -4003,6 +4009,12 @@ struct gloomblade_t : public rogue_attack_t
     {
       timespan_t duration = timespan_t::from_seconds( p()->talent.subtlety.improved_backstab->effectN( 1 ).base_value() );
       trigger_find_weakness( state, duration );
+    }
+
+    if ( p()->talent.subtlety.inevitability->ok() )
+    {
+      timespan_t extend_duration = timespan_t::from_seconds( p()->talent.subtlety.inevitability->effectN( 2 ).base_value() / 10.0 );
+      p()->buffs.symbols_of_death->extend_duration( p(), extend_duration );
     }
 
     // TOCHECK DFALPHA -- Not in tooltip, need to test
@@ -4868,6 +4880,12 @@ struct shadowstrike_t : public rogue_attack_t
     {
       trigger_combo_point_gain( as<int>( p()->buffs.the_rotten->check_value() ), p()->gains.the_rotten );
       p()->buffs.the_rotten->expire( 1_ms );
+    }
+
+    if ( p()->talent.subtlety.inevitability->ok() )
+    {
+      timespan_t extend_duration = timespan_t::from_seconds( p()->talent.subtlety.inevitability->effectN( 2 ).base_value() / 10.0 );
+      p()->buffs.symbols_of_death->extend_duration( p(), extend_duration );
     }
   }
 
