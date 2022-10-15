@@ -376,7 +376,7 @@ struct consecration_t : public paladin_spell_t
   {
     paladin_spell_t::init_finished();
 
-    if ( action_list->name_str == "precombat" )
+    if ( action_list && action_list->name_str == "precombat" )
     {
       double MIN_TIME = player->base_gcd.total_seconds();  // the player's base unhasted gcd: 1.5s
       double MAX_TIME = cooldown->duration.total_seconds() - 1;
