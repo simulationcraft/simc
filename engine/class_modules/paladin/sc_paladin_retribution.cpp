@@ -429,12 +429,20 @@ struct blade_of_justice_t : public paladin_melee_attack_t
       }
     }
 
-    if ( p() -> buffs.virtuous_command -> up() && p() -> active.virtuous_command )
+    if ( p()->buffs.virtuous_command_conduit->up() && p()->active.virtuous_command_conduit )
     {
-      action_t* vc = p() -> active.virtuous_command;
-      vc -> base_dd_min = vc -> base_dd_max = state -> result_amount * p() -> conduit.virtuous_command.percent();
-      vc -> set_target( state -> target );
-      vc -> schedule_execute();
+      action_t* vc    = p()->active.virtuous_command_conduit;
+      vc->base_dd_min = vc->base_dd_max = state->result_amount * p()->conduit.virtuous_command.percent();
+      vc->set_target( state->target );
+      vc->schedule_execute();
+    }
+
+    if ( p()->buffs.virtuous_command->up() && p()->active.virtuous_command )
+    {
+      action_t* vc    = p()->active.virtuous_command;
+      vc->base_dd_min = vc->base_dd_max = state->result_amount * p()->talents.virtuous_command->effectN( 1 ).percent();
+      vc->set_target( state->target );
+      vc->schedule_execute();
     }
   }
 };
@@ -573,12 +581,20 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
     {
       paladin_melee_attack_t::impact( s );
 
-      if ( p() -> buffs.virtuous_command -> up() && p() -> active.virtuous_command )
+      if ( p()->buffs.virtuous_command_conduit->up() && p()->active.virtuous_command_conduit )
       {
-        action_t* vc = p() -> active.virtuous_command;
-        vc -> base_dd_min = vc -> base_dd_max = s -> result_amount * p() -> conduit.virtuous_command.percent();
-        vc -> set_target( s -> target );
-        vc -> schedule_execute();
+        action_t* vc    = p()->active.virtuous_command_conduit;
+        vc->base_dd_min = vc->base_dd_max = s->result_amount * p()->conduit.virtuous_command.percent();
+        vc->set_target( s->target );
+        vc->schedule_execute();
+      }
+
+      if ( p()->buffs.virtuous_command->up() && p()->active.virtuous_command )
+      {
+        action_t* vc    = p()->active.virtuous_command;
+        vc->base_dd_min = vc->base_dd_max = s->result_amount * p()->talents.virtuous_command->effectN( 1 ).percent();
+        vc->set_target( s->target );
+        vc->schedule_execute();
       }
 
       if ( p() -> conduit.templars_vindication -> ok() )
@@ -681,12 +697,20 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
 
     if ( is_fv )
     {
-      if ( p() -> buffs.virtuous_command -> up() && p() -> active.virtuous_command )
+      if ( p()->buffs.virtuous_command_conduit->up() && p()->active.virtuous_command_conduit )
       {
-        action_t* vc = p() -> active.virtuous_command;
-        vc -> base_dd_min = vc -> base_dd_max = s -> result_amount * p() -> conduit.virtuous_command.percent();
-        vc -> set_target( s -> target );
-        vc -> schedule_execute();
+        action_t* vc    = p()->active.virtuous_command_conduit;
+        vc->base_dd_min = vc->base_dd_max = s->result_amount * p()->conduit.virtuous_command.percent();
+        vc->set_target( s->target );
+        vc->schedule_execute();
+      }
+
+      if ( p()->buffs.virtuous_command->up() && p()->active.virtuous_command )
+      {
+        action_t* vc    = p()->active.virtuous_command;
+        vc->base_dd_min = vc->base_dd_max = s->result_amount * p()->talents.virtuous_command->effectN( 1 ).percent();
+        vc->set_target( s->target );
+        vc->schedule_execute();
       }
 
       if ( p() -> conduit.templars_vindication -> ok() )

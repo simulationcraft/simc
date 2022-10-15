@@ -1417,6 +1417,7 @@ class SpellDataGenerator(DataGenerator):
             ( 355455, 0 ),          # Divine Resonance
             ( 387643, 0 ),          # Sealed Verdict buff
             ( 382522, 0 ),          # Consecrated Blade buff
+            ( 383305, 0 ),          # Virtuous Command damage
         ),
 
         # Hunter:

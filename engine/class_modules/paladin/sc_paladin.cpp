@@ -818,10 +818,18 @@ struct melee_t : public paladin_melee_attack_t
         }
       }
 
+      if ( p()->buffs.virtuous_command_conduit->up() && p()->active.virtuous_command_conduit )
+      {
+        action_t* vc    = p()->active.virtuous_command_conduit;
+        vc->base_dd_min = vc->base_dd_max = execute_state->result_amount * p()->conduit.virtuous_command.percent();
+        vc->set_target( execute_state->target );
+        vc->schedule_execute();
+      }
+
       if ( p()->buffs.virtuous_command->up() && p()->active.virtuous_command )
       {
         action_t* vc    = p()->active.virtuous_command;
-        vc->base_dd_min = vc->base_dd_max = execute_state->result_amount * p()->conduit.virtuous_command.percent();
+        vc->base_dd_min = vc->base_dd_max = execute_state->result_amount * p()->talents.virtuous_command->effectN( 1 ).percent();
         vc->set_target( execute_state->target );
         vc->schedule_execute();
       }
@@ -911,10 +919,18 @@ struct crusader_strike_t : public paladin_melee_attack_t
         }
       }
 
+      if ( p()->buffs.virtuous_command_conduit->up() && p()->active.virtuous_command_conduit )
+      {
+        action_t* vc    = p()->active.virtuous_command_conduit;
+        vc->base_dd_min = vc->base_dd_max = s->result_amount * p()->conduit.virtuous_command.percent();
+        vc->set_target( s->target );
+        vc->schedule_execute();
+      }
+
       if ( p()->buffs.virtuous_command->up() && p()->active.virtuous_command )
       {
         action_t* vc    = p()->active.virtuous_command;
-        vc->base_dd_min = vc->base_dd_max = s->result_amount * p()->conduit.virtuous_command.percent();
+        vc->base_dd_min = vc->base_dd_max = s->result_amount * p()->talents.virtuous_command->effectN( 1 ).percent();
         vc->set_target( s->target );
         vc->schedule_execute();
       }
@@ -1747,7 +1763,7 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
 
 struct virtuous_command_t : public paladin_spell_t
 {
-  virtuous_command_t( paladin_t* p ) : paladin_spell_t( "virtuous_command", p, p->find_spell( 339669 ) )
+  virtuous_command_t( paladin_t* p, int spell_id ) : paladin_spell_t( "virtuous_command", p, p->find_spell( spell_id ) )
   {
     background = true;
   }
@@ -1999,7 +2015,16 @@ void paladin_t::create_actions()
 
   if ( conduit.virtuous_command->ok() )
   {
-    active.virtuous_command = new virtuous_command_t( this );
+    active.virtuous_command_conduit = new virtuous_command_t( this, 339669 );
+  }
+  else
+  {
+    active.virtuous_command_conduit = nullptr;
+  }
+
+  if ( talents.virtuous_command->ok() )
+  {
+    active.virtuous_command = new virtuous_command_t( this, 383305 );
   }
   else
   {
@@ -2344,8 +2369,10 @@ void paladin_t::create_buffs()
   buffs.the_magistrates_judgment = make_buff( this, "the_magistrates_judgment", find_spell( 337682 ) )
                                        ->set_default_value( find_spell( 337682 )->effectN( 1 ).base_value() );
   buffs.final_verdict = make_buff( this, "final_verdict", find_spell( 337228 ) );
+  buffs.virtuous_command_conduit =
+      make_buff( this, "virtuous_command_conduit", find_spell( 339664 ) );
   buffs.virtuous_command =
-      make_buff( this, "virtuous_command", find_spell( 339664 ) );
+      make_buff( this, "virtuous_command", find_spell( 383307 ) );
   buffs.divine_resonance = make_buff( this, "divine_resonance", find_spell( 355455 ) )
           ->set_tick_callback( [ this ]( buff_t* /* b */, int /* stacks */, timespan_t /* tick_time */ ) {
               this->active.divine_resonance->set_target( this->target );
