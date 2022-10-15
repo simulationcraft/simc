@@ -3339,10 +3339,13 @@ damage_buff_t::damage_buff_t( actor_pair_t q, util::string_view name )
 {
 }
 
-damage_buff_t::damage_buff_t( actor_pair_t q, util::string_view name, const spell_data_t* spell )
+damage_buff_t::damage_buff_t( actor_pair_t q, util::string_view name, const spell_data_t* spell, bool parse_data )
   : buff_t( q, name, spell, nullptr )
 {
-  parse_spell_data( spell );
+  if ( parse_data )
+  {
+    parse_spell_data( spell );
+  }
 }
 
 damage_buff_t::damage_buff_t( actor_pair_t q, util::string_view name, const spell_data_t* spell, const conduit_data_t& conduit )
@@ -3370,6 +3373,7 @@ damage_buff_t* damage_buff_t::parse_spell_data( const spell_data_t* spell, doubl
 
     if ( e.subtype() == A_MOD_AUTO_ATTACK_PCT || e.subtype() == A_MOD_AUTO_ATTACK_FROM_CASTER )
     {
+      assert( auto_attack_mod.multiplier == 1.0 && auto_attack_mod.effect_idx == 0 && "AA multiplier has already been set" );
       set_auto_attack_mod( spell, idx, multiplier );
       sim->print_debug( "{} damage buff AA multiplier initialized to {}", *this, auto_attack_mod.multiplier );
     }
@@ -3377,17 +3381,31 @@ damage_buff_t* damage_buff_t::parse_spell_data( const spell_data_t* spell, doubl
     {
       if ( e.property_type() == P_GENERIC )
       {
+        assert( direct_mod.multiplier == 1.0 && direct_mod.effect_idx == 0 && "Direct multiplier has already been set" );
         set_direct_mod( spell, idx, multiplier );
         sim->print_debug( "{} damage buff direct multiplier initialized to {}", *this, direct_mod.multiplier );
       }
       else if ( e.property_type() == P_TICK_DAMAGE )
       {
+        assert( periodic_mod.multiplier == 1.0 && periodic_mod.effect_idx == 0 && "Periodic multiplier has already been set" );
         set_periodic_mod( spell, idx, multiplier );
         sim->print_debug( "{} damage buff periodic multiplier initialized to {}", *this, periodic_mod.multiplier );
       }
     }
+    else if ( e.subtype() == A_ADD_FLAT_MODIFIER )
+    {
+      if ( e.property_type() == P_CRIT )
+      {
+        assert( crit_chance_mod.multiplier == 1.0 && crit_chance_mod.effect_idx == 0 && "Crit chance multiplier has already been set" );
+        set_crit_chance_mod( spell, idx, multiplier );
+        add_invalidate( CACHE_CRIT_CHANCE );
+        sim->print_debug( "{} damage buff crit chance multiplier initialized to {}", *this, crit_chance_mod.multiplier );
+      }
+    }
     else if ( e.subtype() == A_MOD_DAMAGE_FROM_CASTER_SPELLS )
     {
+      assert( direct_mod.multiplier == 1.0 && direct_mod.effect_idx == 0 && "Direct multiplier has already been set" );
+      assert( periodic_mod.multiplier == 1.0 && periodic_mod.effect_idx == 0 && "Periodic multiplier has already been set" );
       set_direct_mod( spell, idx, multiplier );
       set_periodic_mod( spell, idx, multiplier );
       sim->print_debug( "{} damage buff direct multiplier initialized to {}", *this, direct_mod.multiplier );
@@ -3478,6 +3496,17 @@ damage_buff_t* damage_buff_t::set_auto_attack_mod( double multiplier )
 damage_buff_t* damage_buff_t::set_auto_attack_mod( const spell_data_t* s, size_t effect_idx, double multiplier )
 { return set_buff_mod( auto_attack_mod, s, effect_idx, multiplier ); }
 
+damage_buff_t* damage_buff_t::set_crit_chance_mod( double multiplier )
+{ return set_crit_chance_mod( spell_data_t::nil(), 0, multiplier ); }
+
+damage_buff_t* damage_buff_t::set_crit_chance_mod( const spell_data_t* s, size_t effect_idx, double multiplier )
+{ return set_buff_mod( crit_chance_mod, s, effect_idx, multiplier ); }
+
+bool damage_buff_t::is_affecting( const spell_data_t* s )
+{
+  return is_affecting_direct( s ) || is_affecting_periodic( s ) || is_affecting_crit_chance( s );
+}
+
 bool damage_buff_t::is_affecting_direct( const spell_data_t* s )
 {
   if ( !direct_mod.s_data || !direct_mod.s_data->ok() || direct_mod.effect_idx == 0 )
@@ -3501,6 +3530,20 @@ bool damage_buff_t::is_affecting_periodic( const spell_data_t* s )
     return true;
 
   if ( s->affected_by_label( periodic_mod.s_data->effectN( periodic_mod.effect_idx ) ) )
+    return true;
+
+  return false;
+}
+
+bool damage_buff_t::is_affecting_crit_chance( const spell_data_t* s )
+{
+  if ( !crit_chance_mod.s_data || !crit_chance_mod.s_data->ok() || crit_chance_mod.effect_idx == 0 )
+    return false;
+
+  if ( s->affected_by( crit_chance_mod.s_data->effectN( crit_chance_mod.effect_idx ) ) )
+    return true;
+
+  if ( s->affected_by_label( crit_chance_mod.s_data->effectN( crit_chance_mod.effect_idx ) ) )
     return true;
 
   return false;
