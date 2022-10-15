@@ -8404,6 +8404,7 @@ void monk_t::init_spells()
   sample_datas.purified_damage            = get_sample_data( "Stagger damage that was purified" );
   sample_datas.staggering_strikes_cleared = get_sample_data( "Stagger damage that was cleared by Staggering Strikes" );
   sample_datas.quick_sip_cleared          = get_sample_data( "Stagger damage that was cleared by Quick Sip" );
+  sample_datas.tranquil_spirit            = get_sample_data( "Stagger damage that was cleared by Tranquil Spirit" );
 
   // Active Action Spells
   
@@ -10037,7 +10038,7 @@ void monk_t::target_mitigation( school_e school, result_amount_type dt, action_s
   }
 
   // Touch of Karma Absorbtion
-  if ( buff.touch_of_karma->up() )
+  if ( specialization() == MONK_WINDWALKER && buff.touch_of_karma->up() )
   {
     double percent_HP = talent.windwalker.touch_of_karma->effectN( 3 ).percent() * max_health();
     if ( ( buff.touch_of_karma->value() + s->result_amount ) >= percent_HP )
