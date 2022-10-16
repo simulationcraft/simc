@@ -407,7 +407,10 @@ public:
     player_talent_t infernal_brand; // Infernal melees increase Infernal AoE damage (Formerly SL Conduit)
     player_talent_t power_overwhelming; // Stacking mastery buff for spending Soul Shards
     const spell_data_t* power_overwhelming_buff;
-    // DF - Madness of the Azj'aqir (2 point talent, formerly SL Legendary, now applies to more spells)
+    player_talent_t madness_of_the_azjaqir; // Buffs that reward repeating certain spells
+    const spell_data_t* madness_cb;
+    const spell_data_t* madness_rof;
+    const spell_data_t* madness_sb;
     // DF - Master Ritualist (2 point talent, reduces proc cost of Ritual of Ruin)
     // DF - Burn to Ashes (2 point talent, Chaos Bolt and Rain of Fire increase damage of next 2 Incinerates)
 
@@ -569,6 +572,10 @@ public:
     propagate_const<buff_t*> flashpoint;
     propagate_const<buff_t*> crashing_chaos;
     propagate_const<buff_t*> power_overwhelming;
+    propagate_const<buff_t*> madness_cb;
+    propagate_const<buff_t*> madness_rof;
+    propagate_const<buff_t*> madness_sb;
+    propagate_const<buff_t*> madness_rof_snapshot; // (Dummy buff) 2022-10-16: For Rain of Fire, Madness of the Azj'Aqir affects ALL active events until the next cast of Rain of Fire
     // DF - Burn to Ashes (increased Incinerate damage after Chaos Bolt/Rain of Fire)
     // DF - Chaos Incarnate? (passive max mastery on certain spells)
   } buffs;
