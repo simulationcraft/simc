@@ -1833,6 +1833,7 @@ class SpellDataGenerator(DataGenerator):
           ( 387096, 0 ),    # Pyrogenics aura
           ( 387109, 0 ),    # Conflagration of Chaos aura 1
           ( 387110, 0 ),    # Conflagration of Chaos aura 2
+          ( 387158, 0 ),    # Impending Ruin talent aura
         ),
 
         # Monk:

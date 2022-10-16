@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46157 dragonflight-BETA (hotfix 2022-10-15/46157)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46157 dragonflight-BETA (hotfix 2022-10-16/46157, no-networking)
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -13984,6 +13984,28 @@ Effects          :
 Description      : $@spelldesc387156
 Tooltip          : Your next Chaos Bolt or Rain of Fire cost no Soul Shards and has its cast time reduced by $s3%.
 
+Name             : Impending Ruin (id=387158) [Spell Family (5)] 
+Class            : Warlock
+School           : Chaos
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 1842: Master Ritualist (387165 effect#2)
+Stacks           : 15 maximum
+Proc Chance      : 101%
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=1021767)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : $@spelldesc387156
+Tooltip          : $@spelldesc387156
+
 Name             : Avatar of Destruction (id=387159) [Spell Family (5), Passive] 
 Talent Entry     : Destruction [tree=spec, row=10, col=3, max_rank=1, req_points=20]
 Class            : Warlock
@@ -14083,6 +14105,7 @@ Effects          :
                    Affected Spells (Label): Ritual of Ruin (387156)
 #2 (id=1021779)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Max Stacks (37)
                    Base Value: -2 | Scaled Value: -2 | PvP Coefficient: 1.00000 | Misc Value: 37 | Misc Value 2: 1842 (Label) | Target: Self (1)
+                   Affected Spells (Label): Impending Ruin (387158)
 Description      : Ritual of Ruin requires $s1 less Soul Shards spent.
 
 Name             : Raging Demonfire (id=387166) [Spell Family (5), Passive] 

@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.2.46157
-static const std::array<spelltext_data_t, 19047> __spelltext_data { {
+static const std::array<spelltext_data_t, 19048> __spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -17762,6 +17762,7 @@ static const std::array<spelltext_data_t, 19047> __spelltext_data { {
   { 387154, "$@spelldesc387153", "Incinerate damage increased by $w1%.", 0 },
   { 387156, "Every $s1 Soul Shards spent grants Ritual of Ruin, making your next Chaos Bolt or Rain of Fire consume no Soul Shards and have its cast time reduced by $387157s3%.", 0, 0 },
   { 387157, "$@spelldesc387156", "Your next Chaos Bolt or Rain of Fire cost no Soul Shards and has its cast time reduced by $s3%.", 0 },
+  { 387158, "$@spelldesc387156", "$@spelldesc387156", 0 },
   { 387159, "When Chaos Bolt or Rain of Fire consumes a charge of Ritual of Ruin, you summon a Blasphemy for $s1 sec.\r\n\r\n$@spellicon387161 $@spellname387161\r\n$@spelldesc387161", 0, 0 },
   { 387160, "Summons a Blasphemy from the Twisting Nether, impacting for $22703s1 Fire damage and stunning all enemies in the area for $22703d.\r\n\r\nThe Blasphemy will serve you for $387159s1 sec, dealing ${$20153s1*(100+$137046s3)/100} damage to all nearby enemies every $19483t1 sec and generating $264365s1 Soul Shard Fragment every $264364t1 sec.", 0, "Guardian" },
   { 387161, "$@spelldesc387160", "$@spelldesc387160", "Guardian" },
