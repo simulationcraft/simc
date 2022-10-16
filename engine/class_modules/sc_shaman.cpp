@@ -3184,7 +3184,16 @@ struct stormblast_t : public shaman_spell_t
   stormblast_t( shaman_t* p, util::string_view name ) : shaman_spell_t( name, p, p->find_spell( 390287 ) )
   {
     background = may_crit = callbacks = false;
-    snapshot_flags = update_flags = 0;
+
+    affected_by_enh_mastery_da = true; // TODO: Until Blizzard fixes data
+  }
+
+  void init() override
+  {
+    shaman_spell_t::init();
+
+    may_proc_windfury = may_proc_flametongue = may_proc_stormbringer = may_proc_hot_hand = may_proc_ability_procs = false;;
+    may_proc_maelstrom_weapon = true;
   }
 };
 
