@@ -39,6 +39,7 @@ public:
     warlock_spell_t::consume_resource();
 
     int shards_used = as<int>( cost() );
+    int base_cost = as<int>( destruction_spell_t::cost() ); // Power Overwhelming is ignoring any cost changes
 
     // 2022-10-16: The shard cost reduction from Crashing Chaos is "undone" for Impending Ruin stacking
     // This can be observed during the free Ritual of Ruin cast, which always increments by 1 stack regardless of spell
@@ -66,6 +67,11 @@ public:
       p()->buffs.impending_ruin->trigger( shards_used ); //Stack change callback should switch Impending Ruin to Ritual of Ruin if max stacks reached
       if ( overflow > 0 )
         make_event( sim, 1_ms, [ this, overflow ] { p()->buffs.impending_ruin->trigger( overflow ); } );
+    }
+
+    if ( p()->talents.power_overwhelming.ok() && resource_current == RESOURCE_SOUL_SHARD && base_cost > 0 )
+    {
+      p()->buffs.power_overwhelming->trigger( base_cost );
     }
   }
 
@@ -1170,6 +1176,11 @@ void warlock_t::create_buffs_destruction()
                              ->set_max_stack( std::max( as<int>( talents.crashing_chaos->effectN( 1 ).base_value() ), 1 ) )
                              ->set_reverse( true )
                              ->set_default_value( talents.crashing_chaos_buff->effectN( 1 ).base_value() / 10.0 );
+
+  buffs.power_overwhelming = make_buff( this, "power_overwhelming", talents.power_overwhelming_buff )
+                                 ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
+                                 ->set_default_value( talents.power_overwhelming->effectN( 2 ).base_value() / 10.0 )
+                                 ->set_refresh_behavior( buff_refresh_behavior::DISABLED );
 }
 void warlock_t::init_spells_destruction()
 {
@@ -1272,6 +1283,9 @@ void warlock_t::init_spells_destruction()
   talents.crashing_chaos_buff = find_spell( 387356 );
 
   talents.infernal_brand = find_talent_spell( talent_tree::SPECIALIZATION, "Infernal Brand" ); // Should be ID 387475
+
+  talents.power_overwhelming = find_talent_spell( talent_tree::SPECIALIZATION, "Power Overwhelming" ); // Should be ID 387279
+  talents.power_overwhelming_buff = find_spell( 387283 );
 
   talents.rain_of_chaos = find_talent_spell( "Rain of Chaos" );
 
