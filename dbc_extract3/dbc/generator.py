@@ -1348,7 +1348,7 @@ class SpellDataGenerator(DataGenerator):
          370772, 370773, # Phial of Static Empowerment
          374002, 374037, # Iced Phial of Corrupting Rage
          371387, # Phial of Charged Isolation
-         382835, 382837, 382838, 382839, 382840, 382841, 382841, 382841, # Darkmoon Deck: Inferno
+         382835, 382837, 382838, 382839, 382840, 382841, 382842, 382843, # Darkmoon Deck: Inferno
          382852, 382853, 382854, 382855, 382856, 382857, 382858, 382859, # Darkmoon Deck: Watcher
          382844, 382845, 382846, 382847, 382848, 382849, 382850, 382851, # Darkmoon Deck: Rime
          382860, 382861, 382862, 382863, 382864, 382865, 382866, 382867, # Darkmoon Deck: Dance

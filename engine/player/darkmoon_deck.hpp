@@ -23,6 +23,7 @@ struct darkmoon_deck_t
   const special_effect_t& effect;
   player_t* player;
   timespan_t shuffle_period;
+  size_t top_index;
 
   darkmoon_deck_t( const special_effect_t& e );
 
@@ -55,26 +56,20 @@ struct darkmoon_buff_deck_t : public darkmoon_deck_t
     } );
 
     // Pick a card during init so top_card is always initialized.
-    size_t index = player->rng().range( cards.size() );
-    top_card = cards[ index ];
+    top_index = player->rng().range( cards.size() );
+    top_card = cards[ top_index ];
   }
 
   void shuffle() override
   {
-    size_t index = player->rng().range( cards.size() );
+    top_index = player->rng().range( cards.size() );
 
     if ( top_card )
-    {
       top_card->expire();
-    }
 
-    top_card = cards[ index ];
-
-    if ( top_card->sim->debug )
-    {
-      top_card->sim->out_debug.print( "{} top card is now {} ({}, id={}, index={})", top_card->player->name(),
-                                      top_card->name(), top_card->data().name_cstr(), top_card->data().id(), index );
-    }
+    top_card = cards[ top_index ];
+    player->sim->print_debug( "{} top card is now {} ({}, id={}, index={})", top_card->player->name(), top_card->name(),
+                              top_card->data().name_cstr(), top_card->data().id(), top_index );
 
     top_card->trigger();
   }
@@ -110,22 +105,18 @@ struct darkmoon_action_deck_t : public darkmoon_deck_t
     } );
 
     // Pick a card during init so top_card is always initialized.
-    size_t index = player->rng().range( cards.size() );
-    top_card = cards[ index ];
+    top_index = player->rng().range( cards.size() );
+    top_card = cards[ top_index ];
   }
 
   // For actions, just shuffle the deck, and optionally trigger the action if trigger_on_shuffle is
   // set
   void shuffle() override
   {
-    size_t index = player->rng().range( cards.size() );
-    top_card = cards[ index ];
-
-    if ( top_card->sim->debug )
-    {
-      top_card->sim->out_debug.print( "{} top card is now {} ({}, id={}, index={})", top_card->player->name(),
-                                      top_card->name(), top_card->data().name_cstr(), top_card->data().id(), index );
-    }
+    top_index = player->rng().range( cards.size() );
+    top_card = cards[ top_index ];
+    player->sim->print_debug( "{} top card is now {} ({}, id={}, index={})", top_card->player->name(), top_card->name(),
+                              top_card->data().name_cstr(), top_card->data().id(), top_index );
 
     if ( trigger_on_shuffle )
     {
@@ -160,8 +151,10 @@ struct darkmoon_spell_deck_t : public darkmoon_deck_t
 
   void shuffle() override
   {
-    top_card = cards[ player->rng().range( cards.size() ) ];
-    player->sim->print_debug( "{} top card is now {} ({})", player->name(), top_card->name_cstr(), top_card->id() );
+    top_index = player->rng().range( cards.size() );
+    top_card = cards[ top_index ];
+    player->sim->print_debug( "{} top card is now {} (id={}, index={})", player->name(), top_card->name_cstr(),
+                              top_card->id(), top_index );
   }
 };
 

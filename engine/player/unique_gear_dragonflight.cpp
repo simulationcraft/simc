@@ -454,12 +454,42 @@ void wafting_devotion( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 }
-
 }  // namespace enchants
 
 namespace items
 {
+void DISABLED_EFFECT( special_effect_t& effect )
+{
+  // Disable the effect, as we handle shuffling within the on-use effect
+  effect.type = SPECIAL_EFFECT_NONE;
+}
+
 // Trinkets
+void darkmoon_deck_inferno( special_effect_t& effect )
+{
+  struct darkmoon_deck_inferno_t : public darkmoon_deck_proc_t<>
+  {
+    // Ace is LAST card in card_list
+    darkmoon_deck_inferno_t( const special_effect_t& e )
+      : darkmoon_deck_proc_t( e, "darkmoon_deck_inferno", 382958,
+                              { 382837, 382838, 382839, 382840, 382841, 382842, 382843, 382835 } )
+    {}
+
+    double get_mult( size_t index ) const
+    {
+      // 7 of fires (index#5) does the base spell_data damage. each card above/below adjusts by 10%
+      return 1.0 + ( as<int>( index ) - 5 ) * 0.1;
+    }
+
+    double action_multiplier() const override
+    {
+      return darkmoon_deck_proc_t::action_multiplier() * get_mult( deck->top_index );
+    }
+  };
+
+  effect.execute_action = create_proc_action<darkmoon_deck_inferno_t>( "darkmoon_deck_inferno", effect );
+}
+
 void the_cartographers_calipers( special_effect_t& effect )
 {
   auto damage = create_proc_action<generic_proc_t>( "precision_blast", effect, "precision_blast", 384114 );
@@ -500,10 +530,12 @@ void register_special_effects()
   register_special_effect( { 390358, 390359, 390360 }, enchants::wafting_devotion );
 
   // Trinkets
+  register_special_effect( 382957, items::darkmoon_deck_inferno );
   register_special_effect( 384112, items::the_cartographers_calipers );
   // Weapons
   // Armor
   // Disabled
+  register_special_effect( 382958, items::DISABLED_EFFECT );  // df darkmoon deck shuffler
 }
 
 void register_target_data_initializers( sim_t& sim )
