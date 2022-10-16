@@ -8878,7 +8878,6 @@ void monk_t::create_buffs ()
 
   buff.bonedust_brew = make_buff( this, "bonedust_brew", find_spell( 325216 ) )
     ->set_cooldown( timespan_t::zero() )
-    ->set_chance( covenant.necrolord->ok() ? 1 : 0 )
     ->set_default_value_from_effect( 3 );
   buff.bonedust_brew_grounding_breath_hidden = make_buff( this, "bonedust_brew_hidden", passives.bonedust_brew_grounding_breath )
     ->set_quiet( true )
