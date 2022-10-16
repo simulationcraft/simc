@@ -5788,7 +5788,7 @@ struct harmonic_echo_t final : public mage_spell_t
 struct radiant_spark_t final : public mage_spell_t
 {
   radiant_spark_t( std::string_view n, mage_t* p, std::string_view options_str ) :
-    mage_spell_t( n, p, p->find_covenant_spell( "Radiant Spark" ) )
+    mage_spell_t( n, p, p->talents.radiant_spark.ok() ? p->talents.radiant_spark : p->find_covenant_spell( "Radiant Spark" ) )
   {
     parse_options( options_str );
     affected_by.ice_floes = affected_by.savant = true;
@@ -6276,10 +6276,10 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
   dots.radiant_spark = target->get_dot( "radiant_spark", mage );
 
   debuffs.mirrors_of_torment          = make_buff<buffs::mirrors_of_torment_t>( this );
-  debuffs.radiant_spark_vulnerability = make_buff( *this, "radiant_spark_vulnerability", mage->find_spell( 307454 ) )
+  debuffs.radiant_spark_vulnerability = make_buff( *this, "radiant_spark_vulnerability", mage->talents.radiant_spark.ok() ? mage->find_spell( 376104 ) : mage->find_spell( 307454 ) )
                                           ->set_activated( false )
                                           ->set_default_value_from_effect( 1 )
-                                          ->modify_default_value( mage->conduits.ire_of_the_ascended.percent() )
+                                          ->modify_default_value( mage->conduits.ire_of_the_ascended.percent() ) // TODO: Confirm that Ire of the Ascended affects the talent.
                                           ->set_refresh_behavior( buff_refresh_behavior::DISABLED );
 }
 
