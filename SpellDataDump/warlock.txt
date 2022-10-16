@@ -609,7 +609,7 @@ Spell Level      : 28
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 8 seconds
-Affecting spells : Ritual of Ruin (364349 effects: #4, #5), Ritual of Ruin (387157 effects: #4, #5)
+Affecting spells : Ritual of Ruin (364349 effects: #4, #5), Ritual of Ruin (387157 effects: #4, #5), Crashing Chaos (387356 effect#1)
 Family Flags     : 124
 Attributes       : ........ ........ x....... ........   ...x...x ..x..... ........ ....x... 
                  : ........ ........ ......x. ........   ........ ........ ........ ........ 
@@ -1005,7 +1005,7 @@ GCD              : 1.5 seconds
 Duration         : 5 seconds
 Charges          : 2 (12 seconds cooldown)
 Category         : 651: Warlock (137042 effect#5)
-Affecting spells : Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Demonic Synergy (171982 effects: #2, #3), Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1), Wrath of Consumption (387066 effect#1), Ruin (387103 effect#1), Conflagration of Chaos (387110 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Chaos Maelstrom (394679 effect#1)
+Affecting spells : Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Demonic Synergy (171982 effects: #2, #3), Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1), Wrath of Consumption (387066 effect#1), Ruin (387103 effect#1), Conflagration of Chaos (387110 effect#1), Crashing Chaos (387356 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Chaos Maelstrom (394679 effect#1)
 Family Flags     : 7, 49, 118
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3236,7 +3236,7 @@ Range            : 40 yards
 Cast Time        : 3 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
-Affecting spells : Backdraft (117828 effects: #1, #2), Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Immolate (157736 effect#2), Demonic Synergy (171982 effects: #2, #3), Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Crashing Chaos (277706 effect#1), Chaotic Inferno (278748 effect#2), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1), Madness of the Azj'Aqir (337170 effects: #1, #2), Soul Tithe (340238 effect#1), Ritual of Ruin (364349 effects: #1, #2, #3), Wrath of Consumption (387066 effect#1), Ritual of Ruin (387157 effects: #1, #2, #3), Warlock Destruction Class Set 4pc (393704 effect#1), Chaos Maelstrom (394679 effect#1)
+Affecting spells : Backdraft (117828 effects: #1, #2), Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Immolate (157736 effect#2), Demonic Synergy (171982 effects: #2, #3), Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Crashing Chaos (277706 effect#1), Chaotic Inferno (278748 effect#2), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1), Madness of the Azj'Aqir (337170 effects: #1, #2), Soul Tithe (340238 effect#1), Ritual of Ruin (364349 effects: #1, #2, #3), Wrath of Consumption (387066 effect#1), Ritual of Ruin (387157 effects: #1, #2, #3), Crashing Chaos (387356 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Chaos Maelstrom (394679 effect#1)
 Family Flags     : 45, 49, 118
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -14498,6 +14498,31 @@ Effects          :
 #1 (id=1022097)  : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Summon Infernal reduces the Soul Shard cost of your next $s1 casts of Chaos Bolt, Shadowburn, or Rain of Fire by 1.
+
+Name             : Crashing Chaos (id=387356) [Spell Family (5)] 
+Class            : Warlock
+School           : Shadowflame
+Spell Type       : None
+Duration         : 45 seconds
+Stacks           : 6 maximum
+Proc Chance      : 101%
+Proc Flags       : ........ ....x... x.x..... ........ 
+                 : Generic Hostile Spell, Magic Hostile Spell, Periodic
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=1022098)  : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost (14)
+                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
+                   Affected Spells: Rain of Fire (5740), Shadowburn (17877), Chaos Bolt (116858)
+                   Family Flags: 7, 45, 124
+Description      : $@spelldesc387355
+Tooltip          : The Soul Shard cost of Chaos Bolt $?s17877[,Shadowburn, ][]and Rain of Fire is reduced by 1.
 
 Name             : Backlash (id=387384) [Spell Family (5), Passive, Hidden] 
 Talent Entry     : Destruction [tree=spec, row=5, col=5, max_rank=1, req_points=8]
