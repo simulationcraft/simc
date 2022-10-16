@@ -418,10 +418,8 @@ struct incinerate_t : public destruction_spell_t
 
     parse_effect_data( p->warlock_base.incinerate_energize->effectN( 1 ) );
 
-    //energize_mult     = 1.0 + ( p->legendary.embers_of_the_diabolic_raiment->ok() ? p->legendary.embers_of_the_diabolic_raiment->effectN( 1 ).percent() : 0.0 );
-    //energize_amount *= energize_mult;
-
-    energize_mult = 1.0;
+    energize_mult = 1.0 + p->talents.diabolic_embers->effectN( 1 ).percent();
+    energize_amount *= energize_mult;
   }
 
   timespan_t execute_time() const override
@@ -471,7 +469,6 @@ struct incinerate_t : public destruction_spell_t
   {
     destruction_spell_t::impact( s );
 
-    //As of 9.0.5, critical strike gains should also be increased by Embers of the Diabolic Raiment. Checked on PTR 2021-03-07
     if ( s->result == RESULT_CRIT )
       p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1 * energize_mult, p()->gains.incinerate_crits );
   }
@@ -1218,6 +1215,7 @@ void warlock_t::init_spells_destruction()
   talents.summon_infernal_main = find_spell( 111685 );
   talents.infernal_awakening = find_spell( 22703 );
 
+  talents.diabolic_embers = find_talent_spell( talent_tree::SPECIALIZATION, "Diabolic Embers" ); // Should be ID 387173
 
 
 
