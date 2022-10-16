@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.2.46157
-static const std::array<spelltext_data_t, 19042> __spelltext_data { {
+static const std::array<spelltext_data_t, 19047> __spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -300,6 +300,7 @@ static const std::array<spelltext_data_t, 19042> __spelltext_data { {
   {  11390, "Increases Intellect and critical strike by $s1 for $d.  Battle Elixir.", "Intellect and critical strike increased by $w1.  Battle Elixir.", 0 },
   {  11396, "Increases your Intellect by $s1 for $d. Battle Elixir.", "Intellect increased by $w1.  Battle Elixir.", 0 },
   {  11405, "Increases your Strength by $s1 for $d.  Battle Elixir.", "Increases Strength by $w1.  Battle Elixir.", 0 },
+  {  11426, "Shields you with ice, absorbing $<shield> damage$?s235297[ and increasing your armor by $s3%][] for $d.\r\n\r\nMelee attacks against you reduce the attacker's movement speed by $205708s1%.", "Absorbs $w1 damage.\r\nMelee attackers slowed by $205708s1%.$?s235297[\r\nArmor increased by $s3%.][]", 0 },
   {  11474, "Increases shadow spell power by $s1 for $d.  Battle Elixir.", "Shadow spell power increased by $w1.  Battle Elixir.", 0 },
   {  11629, "An extremely potent alcoholic beverage.", "Sloshed.", 0 },
   {  11654, "Combines Jang'thraze and Sang'thraze to form the mighty sword, Sul'thraze.", 0, 0 },
@@ -6195,6 +6196,7 @@ static const std::array<spelltext_data_t, 19042> __spelltext_data { {
   { 194249, "$@spelldesc228264", "$?s193225[Spell damage dealt increased by $w16%.][Spell damage dealt increased by $w1%.]\r\n$?s341240[Critical strike chance increased by ${$W4}.1%.][]$?s193225[ Losing ${$w3/500} Insanity every sec.][]", 0 },
   { 194310, "A pustulent lesion that will burst on death or when damaged by Scourge Strike, dealing $194311s1 Shadow damage and generating ${$195757s2/10} Runic Power.", "Suffering from a wound that will deal ${$194311s1/$s1} Shadow damage when damaged by Scourge Strike.", 0 },
   { 194311, "$@spelldesc194310", 0, 0 },
+  { 194315, "Blazing Barrier reduces all Physical damage you take by $s1%.", 0, 0 },
   { 194384, "$@spelldesc81749", "Healed whenever $@auracaster damages an enemy.", 0 },
   { 194407, "$@spelldesc257891", 0, 0 },
   { 194431, "Flamestrike calls down $m1 additional pillar of fire each time it is cast.", 0, 0 },
@@ -8214,7 +8216,10 @@ static const std::array<spelltext_data_t, 19042> __spelltext_data { {
   { 235273, "Evocation gains $s1 additional $Lcharge:charges;.", 0, 0 },
   { 235297, "Ice Barrier increases your armor by $s1% while active, and Ice Block applies Ice Barrier to you when it fades.", 0, 0 },
   { 235300, "Each time you dodge or an enemy misses you, the remaining cooldown on your Brews is reduced by ${$s1/10}.1 sec.", 0, 0 },
+  { 235313, "Shields you in flame, absorbing $<shield> damage$?s194315[ and reducing Physical damage taken by $s3%][] for $d.\r\n\r\nMelee attacks against you cause the attacker to take $235314s1 Fire damage.", "Absorbs $w1 damage.\r\nMelee attackers take $235314s1 Fire damage.", 0 },
+  { 235314, "$@spelldesc235313", 0, 0 },
   { 235365, "Casting Blink ignites a Blazing Barrier around you.", 0, 0 },
+  { 235450, "Shields you with an arcane force, absorbing $<shield> damage and reducing magic damage taken by $s3% for $d.\r\n\r\nThe duration of harmful Magic effects against you is reduced by $s4%.", "Absorbs $w1 damage.\r\nMagic damage taken reduced by $s3%.\r\nDuration of all harmful Magic effects reduced by $w4%.", 0 },
   { 235484, "Critical strikes with Between the Eyes deal four times normal damage.\r\n", 0, 0 },
   { 235524, "Your Fiery Brand now heals you for $s1% of the damage done and each enemy hit by your Sigil of Flame increases the instant damage of your next Fiery Brand by $235543s1%, stacking up to $235543u times.", 0, 0 },
   { 235543, "$@spelldesc235524", "Increases the damage of your next Fiery Brand by $s1%.", 0 },
@@ -19050,7 +19055,7 @@ static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelltext_hotfix
 } };
 
 // Spell description variables, wow build 10.0.2.46157
-static const std::array<spelldesc_vars_data_t, 360> __spelldesc_vars_data { {
+static const std::array<spelldesc_vars_data_t, 363> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$pvp=$?a134735[${1.1}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*2.8*(1+$@versadmg)*$<rapture>*$<shadow>*$<pvp>*$<weal>}\r\n" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -19070,6 +19075,7 @@ static const std::array<spelldesc_vars_data_t, 360> __spelldesc_vars_data { {
   {    6572, "$cap=${5}" },
   {    8092, "$shield=${($SPS*$231682s1/100)*(1+$@versadmg)}" },
   {    8936, "$NSmult=$?a132158[${1+$132158s2/100}][${1}]\r\n$CCmult=$?a16870[${1+$16870s2/100}][${1}]\r\n$mult=${$<NSmult>*$<CCmult>}" },
+  {   11426, "$shield=${$s2/100*$MHP*(1+$@versadmg)}" },
   {   12294, "$mult=${($max(0,$min($pl-5,15))*8+207)/327}" },
   {   12950, "$damage=${$199667s1+$44949s1+(2*($199852s1+$199851s1))}\r\n$maxRage=${$190411s1+($190411s2*$190411s3)}" },
   {   16827, "$aotb=$?s191384[${1.3}][${1.0}]\r\n$ce=$?s152244[${1.7}][${1.5}]\r\n$spiked=$?s53184[${1.1}][${1.0}]\r\n$blink=$?s130392[${1.5}][${1.0}]\r\n$damage=${$<aotb>*$<ce>*$<spiked>*$<blink>*($RAP*0.333)*(1+$@versadmg)}" },
@@ -19207,6 +19213,8 @@ static const std::array<spelldesc_vars_data_t, 360> __spelldesc_vars_data { {
   {  231895, "$haste=${$s3/10}\r\n$pvp=$?a134735[${0.75}][${1}]\r\n$damage=${$s1/10*$<pvp>}" },
   {  234299, "$reduction=${$m1/10}" },
   {  235235, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
+  {  235313, "$shield=${$s2/100*$MHP*(1+$@versadmg)}" },
+  {  235450, "$shield=${$s6/100*$MHP*(1+$@versadmg)}" },
   {  236279, "$mult=${($max(0,$min($pl-12,8))*8.5+241)/309}" },
   {  242629, "$cooldown=$?a137008[${10}]?a212613[${10}]?a137010[${10}]?a137023[${10}]?a137028[${10}]?a137048[${10}][${10}]\r\n$extension=$?a137008[${0.5}.1]?a212613[${0.75}.2]?a137010[${0.5}.1]?a137023[${1}]?a137028[${1}]?a137048[${0.75}.2][${1}]" },
   {  242630, "$cooldown=$?a137008[${10}]?a212613[${10}]?a137010[${10}]?a137023[${10}]?a137028[${10}]?a137048[${10}][${10}]\r\n$extension=$?a137008[${0.5}.1]?a212613[${0.75}.2]?a137010[${0.5}.1]?a137023[${1}]?a137028[${1}]?a137048[${0.75}.2][${1}]" },
