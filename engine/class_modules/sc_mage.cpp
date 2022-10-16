@@ -323,6 +323,7 @@ public:
     buff_t* foresight_icd;
     buff_t* impetus;
     buff_t* invigorating_powder;
+    buff_t* nether_precision;
     buff_t* presence_of_mind;
     buff_t* rule_of_threes;
 
@@ -398,7 +399,7 @@ public:
 
 
     // Soulbind Conduits
-    buff_t* nether_precision;
+    buff_t* nether_precision_conduit;
 
     buff_t* flame_accretion;
     buff_t* infernal_cascade;
@@ -2043,7 +2044,10 @@ struct arcane_mage_spell_t : public mage_spell_t
         // Nether Precision is only triggered if the buff was actually decremented.
         // This is relevant when the player uses Expanded Potential.
         if ( cr == p()->buffs.clearcasting && cr->check() < before )
+        {
           p()->buffs.nether_precision->trigger();
+          p()->buffs.nether_precision_conduit->trigger();
+        }
         break;
       }
     }
@@ -2918,12 +2922,15 @@ struct arcane_blast_t final : public arcane_mage_spell_t
     // Clearcasting immediately after Arcane Blast, a stack of Nether Precision
     // will be consumed by Arcane Blast will not benefit from the damage bonus.
     // Check if this is still the case closer to Shadowlands release.
+    // TODO: This was fixed with the talent. Does it still happen with the conduit?
     if ( result_is_hit( s->result ) )
     {
       trigger_deaths_fathom();
 
-      if ( p()->conduits.nether_precision.ok() )
-        make_event( *sim, 15_ms, [ this ] { p()->buffs.nether_precision->decrement(); } );
+      p()->buffs.nether_precision->decrement();
+
+      if ( p()->conduits.nether_precision.ok() && !p()->talents.nether_precision.ok() )
+        make_event( *sim, 15_ms, [ this ] { p()->buffs.nether_precision_conduit->decrement(); } );
     }
   }
 
@@ -2933,6 +2940,7 @@ struct arcane_blast_t final : public arcane_mage_spell_t
 
     am *= arcane_charge_multiplier();
     am *= 1.0 + p()->buffs.nether_precision->check_value();
+    am *= 1.0 + p()->buffs.nether_precision_conduit->check_value();
 
     return am;
   }
@@ -6977,6 +6985,9 @@ void mage_t::create_buffs()
                                  ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.invigorating_powder  = make_buff( this, "invigorating_powder", find_spell( 384280 ) )
                                  ->set_default_value_from_effect( 1 );
+  buffs.nether_precision     = make_buff( this, "nether_precision", find_spell( 383783 ) )
+                                 ->set_default_value( talents.nether_precision->effectN( 1 ).percent() )
+                                 ->set_chance( talents.nether_precision.ok() );
   buffs.presence_of_mind     = make_buff( this, "presence_of_mind", find_spell( 205025 ) )
                                  ->set_cooldown( 0_ms )
                                  ->set_stack_change_callback( [ this ] ( buff_t*, int, int cur )
@@ -7168,9 +7179,9 @@ void mage_t::create_buffs()
 
 
   // Soulbind Conduits
-  buffs.nether_precision = make_buff( this, "nether_precision", find_spell( 336889 ) )
-                             ->set_default_value( conduits.nether_precision.percent() )
-                             ->set_chance( conduits.nether_precision.ok() );
+  buffs.nether_precision_conduit = make_buff( this, "nether_precision_conduit", find_spell( 336889 ) )
+                                     ->set_default_value( conduits.nether_precision.percent() )
+                                     ->set_chance( conduits.nether_precision.ok() && !talents.nether_precision.ok() );
 
   buffs.flame_accretion  = make_buff( this, "flame_accretion", find_spell( 157644 ) )
                              ->set_default_value( conduits.flame_accretion.value() )
