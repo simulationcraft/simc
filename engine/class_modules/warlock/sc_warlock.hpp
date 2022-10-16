@@ -412,7 +412,8 @@ public:
     const spell_data_t* madness_rof;
     const spell_data_t* madness_sb;
     player_talent_t master_ritualist; // Reduces proc cost of Ritual of Ruin
-    // DF - Burn to Ashes (2 point talent, Chaos Bolt and Rain of Fire increase damage of next 2 Incinerates)
+    player_talent_t burn_to_ashes; // Chaos Bolt and Rain of Fire increase damage of next 2 Incinerates
+    const spell_data_t* burn_to_ashes_buff;
 
     const spell_data_t* rain_of_chaos; // DF - Now a choice against Wilfred's, check deck of cards RNG
     // DF - Wilfred's Sigil of Superior Summoning (Choice against Rain of Chaos, formerly SL Legendary, NOTE: SHARES NAME WITH OTHER SPEC TALENTS)
@@ -576,7 +577,7 @@ public:
     propagate_const<buff_t*> madness_rof;
     propagate_const<buff_t*> madness_sb;
     propagate_const<buff_t*> madness_rof_snapshot; // (Dummy buff) 2022-10-16: For Rain of Fire, Madness of the Azj'Aqir affects ALL active events until the next cast of Rain of Fire
-    // DF - Burn to Ashes (increased Incinerate damage after Chaos Bolt/Rain of Fire)
+    propagate_const<buff_t*> burn_to_ashes;
     // DF - Chaos Incarnate? (passive max mastery on certain spells)
   } buffs;
 

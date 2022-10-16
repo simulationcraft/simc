@@ -431,6 +431,16 @@ struct incinerate_fnb_t : public destruction_spell_t
     return tl.size();
   }
 
+  double action_multiplier() const override
+  {
+    double m = destruction_spell_t::action_multiplier();
+
+    if ( p()->buffs.burn_to_ashes->check() )
+      m *= 1.0 + p()->buffs.burn_to_ashes->check_value();
+
+    return m;
+  }
+
   double composite_target_multiplier( player_t* t ) const override
   {
     double m = destruction_spell_t::composite_target_multiplier( t );
@@ -510,6 +520,8 @@ struct incinerate_t : public destruction_spell_t
     {
       p()->cooldowns.soul_fire->adjust( p()->talents.decimation->effectN( 1 ).time_value() );
     }
+
+    p()->buffs.burn_to_ashes->decrement(); // Decrement after Fire and Brimstone execute to ensure it's picked up
   }
 
   void impact( action_state_t* s ) override
@@ -518,6 +530,16 @@ struct incinerate_t : public destruction_spell_t
 
     if ( s->result == RESULT_CRIT )
       p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1 * energize_mult, p()->gains.incinerate_crits );
+  }
+
+  double action_multiplier() const override
+  {
+    double m = destruction_spell_t::action_multiplier();
+
+    if ( p()->buffs.burn_to_ashes->check() )
+      m *= 1.0 + p()->buffs.burn_to_ashes->check_value();
+
+    return m;
   }
 
   double composite_target_multiplier( player_t* t ) const override
@@ -685,6 +707,9 @@ struct chaos_bolt_t : public destruction_spell_t
 
     if ( p()->talents.madness_of_the_azjaqir.ok() )
       p()->buffs.madness_cb->trigger();
+
+    if ( p()->talents.burn_to_ashes.ok() )
+      p()->buffs.burn_to_ashes->trigger( as<int>( p()->talents.burn_to_ashes->effectN( 3 ).base_value() ) );
 
     //// SL - Legendary
     //if ( p()->legendary.madness_of_the_azjaqir->ok() )
@@ -880,6 +905,9 @@ struct rain_of_fire_t : public destruction_spell_t
 
     if ( p()->talents.madness_of_the_azjaqir.ok() )
       p()->buffs.madness_rof->trigger();
+
+    if ( p()->talents.burn_to_ashes.ok() )
+      p()->buffs.burn_to_ashes->trigger( as<int>( p()->talents.burn_to_ashes->effectN( 3 ).base_value() ) );
 
     //if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T28, B2 ) )
     //{
@@ -1236,6 +1264,9 @@ void warlock_t::create_buffs_destruction()
                          ->set_default_value( talents.madness_of_the_azjaqir->effectN( 1 ).percent() );
 
   buffs.madness_rof_snapshot = make_buff( this, "madness_rof_snapshot" );
+
+  buffs.burn_to_ashes = make_buff( this, "burn_to_ashes", talents.burn_to_ashes_buff )
+                            ->set_default_value( talents.burn_to_ashes->effectN( 1 ).percent() );
 }
 void warlock_t::init_spells_destruction()
 {
@@ -1348,6 +1379,9 @@ void warlock_t::init_spells_destruction()
   talents.madness_sb = find_spell( 387414 );
 
   talents.master_ritualist = find_talent_spell( talent_tree::SPECIALIZATION, "Master Ritualist" ); // Should be ID 387165
+
+  talents.burn_to_ashes = find_talent_spell( talent_tree::SPECIALIZATION, "Burn to Ashes" ); // Should be ID 387153
+  talents.burn_to_ashes_buff = find_spell( 387154 );
 
   talents.rain_of_chaos = find_talent_spell( "Rain of Chaos" );
 
