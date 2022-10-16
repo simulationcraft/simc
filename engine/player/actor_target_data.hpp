@@ -62,6 +62,8 @@ struct actor_target_data_t : public actor_pair_t, private noncopyable
     buff_t* remnants_despair;            // Soulwarped Seal of Menethil DK ring
     buff_t* scent_of_souls;              // Bells of the Endless Feast debuff
     buff_t* chains_of_domination;        // Chains of Domination debuff
+    // Dragonflight
+    buff_t* awakening_rime;  // darkmoon deck: rime
   } debuff;
 
   struct atd_dot_t

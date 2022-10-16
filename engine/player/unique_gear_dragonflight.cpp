@@ -12,6 +12,7 @@
 #include "dbc/item_database.hpp"
 #include "ground_aoe.hpp"
 #include "item/item.hpp"
+#include "item/item_targetdata_initializer.hpp"
 #include "sim/sim.hpp"
 #include "unique_gear.hpp"
 #include "unique_gear_helper.hpp"
@@ -490,6 +491,63 @@ void darkmoon_deck_inferno( special_effect_t& effect )
   effect.execute_action = create_proc_action<darkmoon_deck_inferno_t>( "darkmoon_deck_inferno", effect );
 }
 
+struct awakening_rime_initializer_t : public item_targetdata_initializer_t
+{
+  awakening_rime_initializer_t() : item_targetdata_initializer_t( 386624 ) {}
+
+  void operator()( actor_target_data_t* td ) const override
+  {
+    if ( !find_effect( td->source ) )
+    {
+      td->debuff.awakening_rime = make_buff( *td, "awakening_rime" )->set_quiet( true );
+      return;
+    }
+
+    assert( !td->debuff.awakening_rime );
+    td->debuff.awakening_rime = make_buff( *td, "awakening_rime", td->source->find_spell( 386623 ) );
+    td->debuff.awakening_rime->reset();
+  }
+};
+
+void darkmoon_deck_rime( special_effect_t& effect )
+{
+  struct darkmoon_deck_rime_t : public darkmoon_deck_proc_t<>
+  {
+    // Ace is LAST card in card_list
+    darkmoon_deck_rime_t( const special_effect_t& e )
+      : darkmoon_deck_proc_t( e, "darkmoon_deck_rime", 382958,
+                              { 382845, 382846, 382847, 382848, 382849, 382850, 382851, 382844 } )
+    {
+      auto explode =
+          create_proc_action<generic_aoe_proc_t>( "awakened_rime", e, "awakened_rime", e.player->find_spell( 370880 ) );
+
+      e.player->register_on_kill_callback( [ e, explode ]( player_t* t ) {
+        if ( e.player->sim->event_mgr.canceled )
+          return;
+
+        auto td = e.player->find_target_data( t );
+        if ( td && td->debuff.awakening_rime->check() )
+          explode->execute_on_target( t );
+      } );
+    }
+
+    timespan_t get_duration( size_t index ) const
+    {
+      return 4_s + timespan_t::from_seconds( index );
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      darkmoon_deck_proc_t::impact( s );
+
+      auto td = player->get_target_data( s->target );
+      td->debuff.awakening_rime->trigger( get_duration( deck->top_index ) );
+    }
+  };
+
+  effect.execute_action = create_proc_action<darkmoon_deck_rime_t>( "awakening_rime", effect );
+}
+
 // TODO: Do properly and add both drivers
 // 383798 = Driver for you
 // 386578 = Driver for target
@@ -558,6 +616,7 @@ void register_special_effects()
   // Trinkets
   register_special_effect( 383798, items::emerald_coachs_whistle );
   register_special_effect( 382957, items::darkmoon_deck_inferno );
+  register_special_effect( 386624, items::darkmoon_deck_rime );
   register_special_effect( 384112, items::the_cartographers_calipers );
   // Weapons
   // Armor
@@ -567,5 +626,6 @@ void register_special_effects()
 
 void register_target_data_initializers( sim_t& sim )
 {
+  sim.register_target_data_initializer( items::awakening_rime_initializer_t() );
 }
 }  // namespace unique_gear::dragonflight
