@@ -411,7 +411,7 @@ public:
     const spell_data_t* madness_cb;
     const spell_data_t* madness_rof;
     const spell_data_t* madness_sb;
-    // DF - Master Ritualist (2 point talent, reduces proc cost of Ritual of Ruin)
+    player_talent_t master_ritualist; // Reduces proc cost of Ritual of Ruin
     // DF - Burn to Ashes (2 point talent, Chaos Bolt and Rain of Fire increase damage of next 2 Incinerates)
 
     const spell_data_t* rain_of_chaos; // DF - Now a choice against Wilfred's, check deck of cards RNG
