@@ -2174,9 +2174,9 @@ struct blackout_kick_totm_proc : public monk_melee_attack_t
 };
 
 // Charred Passions ============================================================
-struct charred_passions_t : public monk_spell_t
+struct charred_passions_bok_t : public monk_spell_t
 {
-  charred_passions_t( monk_t* p ) : monk_spell_t( "charred_passions", p, p->passives.charred_passions_dmg )
+  charred_passions_bok_t( monk_t* p ) : monk_spell_t( "charred_passions_bok", p, p->passives.charred_passions_dmg )
   {
     background = dual = true;
     proc              = true;
@@ -2188,14 +2188,12 @@ struct charred_passions_t : public monk_spell_t
 struct blackout_kick_t : public monk_melee_attack_t
 {
   blackout_kick_totm_proc* bok_totm_proc;
-  charred_passions_t* charred_passions;
+  charred_passions_bok_t* charred_passions;
 
   blackout_kick_t( monk_t* p, util::string_view options_str )
     : monk_melee_attack_t(
           "blackout_kick", p,
-          ( p->specialization() == MONK_BREWMASTER ? p->spec.blackout_kick_brm : p->spec.blackout_kick ) ),
-      bok_totm_proc( new blackout_kick_totm_proc( p ) ),
-      charred_passions( new charred_passions_t( p ) )
+          ( p->specialization() == MONK_BREWMASTER ? p->spec.blackout_kick_brm : p->spec.blackout_kick ) )
   {
     ww_mastery = true;
 
@@ -2207,26 +2205,54 @@ struct blackout_kick_t : public monk_melee_attack_t
     trigger_bountiful_brew      = true;
     cast_during_sck             = true;
     
-    if ( p->specialization() == MONK_WINDWALKER )
+    switch ( p->specialization() )
     {
-      if ( p->spec.blackout_kick_2 )
-        // Saved as -2
-        base_costs[ RESOURCE_CHI ] +=
-            p->spec.blackout_kick_2->effectN( 1 ).base_value();  // Reduce base from 3 chi to 1
+      case MONK_BREWMASTER: {
+        if ( p->talent.brewmaster.shadowboxing_treads->ok() )
+          aoe = 1 + (int)p->talent.brewmaster.shadowboxing_treads->effectN( 1 ).base_value();
+        if ( p->talent.brewmaster.fluidity_of_motion->ok() )
+          cooldown->duration += p->talent.brewmaster.fluidity_of_motion->effectN( 1 ).time_value();
 
-      if ( p->talent.windwalker.shadowboxing_treads->ok() )
-        aoe = 1 + (int)p->talent.windwalker.shadowboxing_treads->effectN( 1 ).base_value();
+        if ( p->talent.brewmaster.charred_passions->ok() )
+        {
+          charred_passions = new charred_passions_bok_t( p );
 
-      apply_dual_wield_two_handed_scaling();
-    }
-    if ( p->specialization() == MONK_BREWMASTER )
-    {
-      if ( p->talent.brewmaster.shadowboxing_treads->ok() )
-        aoe = 1 + (int)p->talent.brewmaster.shadowboxing_treads->effectN( 1 ).base_value();
-      if ( p->talent.brewmaster.fluidity_of_motion->ok() )
-        cooldown->duration += p->talent.brewmaster.fluidity_of_motion->effectN( 1 ).time_value();
+          add_child( charred_passions );
+        }
 
-      apply_dual_wield_two_handed_scaling();
+        apply_dual_wield_two_handed_scaling();
+        break;
+      }
+      case MONK_MISTWEAVER: {
+        if ( p->talent.mistweaver.teachings_of_the_monastery->ok() )
+        {
+          bok_totm_proc = new blackout_kick_totm_proc( p );
+
+          add_child( bok_totm_proc );
+        }
+        break;
+      }
+      case MONK_WINDWALKER: {
+        if ( p->spec.blackout_kick_2 )
+          // Saved as -2
+          base_costs[ RESOURCE_CHI ] +=
+              p->spec.blackout_kick_2->effectN( 1 ).base_value();  // Reduce base from 3 chi to 1
+
+        if ( p->talent.windwalker.shadowboxing_treads->ok() )
+          aoe = 1 + (int)p->talent.windwalker.shadowboxing_treads->effectN( 1 ).base_value();
+
+        if ( p->talent.windwalker.teachings_of_the_monastery->ok() )
+        {
+          bok_totm_proc = new blackout_kick_totm_proc( p );
+
+          add_child( bok_totm_proc );
+        }
+
+        apply_dual_wield_two_handed_scaling();
+        break;
+      }
+      default:
+        break;
     }
   }
 
@@ -2584,12 +2610,23 @@ struct chi_explosion_t : public monk_spell_t
   }
 };
 
+// Charred Passions ============================================================
+struct charred_passions_sck_t : public monk_spell_t
+{
+  charred_passions_sck_t( monk_t* p ) : monk_spell_t( "charred_passions_sck", p, p->passives.charred_passions_dmg )
+  {
+    background = dual = true;
+    proc              = true;
+    may_crit          = false;
+  }
+};
+
 struct sck_tick_action_t : public monk_melee_attack_t
 {
-  charred_passions_t* charred_passions;
+  charred_passions_sck_t* charred_passions;
 
   sck_tick_action_t( util::string_view name, monk_t* p, const spell_data_t* data )
-    : monk_melee_attack_t( name, p, data ), charred_passions( new charred_passions_t( p ) )
+    : monk_melee_attack_t( name, p, data )
   {
     ww_mastery    = true;
     trigger_chiji = true;
@@ -2604,6 +2641,13 @@ struct sck_tick_action_t : public monk_melee_attack_t
 
     if ( p->specialization() == MONK_WINDWALKER )
       apply_dual_wield_two_handed_scaling();
+
+    if ( p->talent.brewmaster.charred_passions->ok() )
+    {
+      charred_passions = new charred_passions_sck_t( p );
+
+      add_child( charred_passions );
+    }
 
     // Reset some variables to ensure proper execution
     dot_duration                  = timespan_t::zero();
@@ -4347,6 +4391,8 @@ struct breath_of_fire_t : public monk_spell_t
     monk_spell_t::execute();
 
     if ( p()->legendary.charred_passions->ok() )
+      p()->buff.charred_passions->trigger();
+    else if ( p()->talent.brewmaster.charred_passions->ok() )
       p()->buff.charred_passions->trigger();
   }
 
