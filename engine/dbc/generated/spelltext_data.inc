@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.2.46157
-static const std::array<spelltext_data_t, 19048> __spelltext_data { {
+static const std::array<spelltext_data_t, 19049> __spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -17830,6 +17830,7 @@ static const std::array<spelltext_data_t, 19048> __spelltext_data { {
   { 387349, "The chance of receiving a Demonic Core from a Wild Imp is increased by $s1% or $s2% when imploded.", 0, 0 },
   { 387350, 0, "Your next Echo deals $s1% increased healing and has reduced cast time.", 0 },
   { 387355, "Summon Infernal reduces the Soul Shard cost of your next $s1 casts of Chaos Bolt, Shadowburn, or Rain of Fire by 1.", 0, 0 },
+  { 387356, "$@spelldesc387355", "The Soul Shard cost of Chaos Bolt $?s17877[,Shadowburn, ][]and Rain of Fire is reduced by 1.", 0 },
   { 387363, "The Primal Tsunami unleashes several globules of water, inflicting $387474s1 Frost damage to players within $387474A1 yards of each impact.\r\n\r\nThe Infused Globule then drifts about, applying Waterlogged to players on contact.\r\n\r\nAfter $s2 sec, the Globule explodes, inflicting $s1 Frost damage to players within $a1 yards.", 0, 0 },
   { 387384, "Increases your critical strike chance by $s1%.\r\n\r\nPhysical attacks against you have a $s2% chance to make your next Incinerate instant cast. This effect can only occur once every $proccooldown sec.", 0, 0 },
   { 387385, "$@spelldesc387384", "Your next Incinerate is instant cast.", 0 },

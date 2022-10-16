@@ -1834,6 +1834,7 @@ class SpellDataGenerator(DataGenerator):
           ( 387109, 0 ),    # Conflagration of Chaos aura 1
           ( 387110, 0 ),    # Conflagration of Chaos aura 2
           ( 387158, 0 ),    # Impending Ruin talent aura
+          ( 387356, 0 ),    # Crashing Chaos aura
         ),
 
         # Monk:
