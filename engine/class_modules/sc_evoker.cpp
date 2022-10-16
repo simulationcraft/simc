@@ -203,6 +203,7 @@ struct evoker_t : public player_t
 
     // Devastation Traits
     player_talent_t pyre;  // row 1
+    const spell_data_t* pyre_damage;
     player_talent_t ruby_essence_burst;  // row 2
     player_talent_t azure_essence_burst;
     player_talent_t dense_energy;  // row 3
@@ -1791,7 +1792,7 @@ struct pyre_t : public evoker_spell_t
   struct pyre_damage_t : public evoker_spell_t
   {
     pyre_damage_t( evoker_t* p, std::string_view name_str )
-      : evoker_spell_t( name_str, p, p->talent.pyre->effectN( 1 ).trigger() )
+      : evoker_spell_t( name_str, p, p->talent.pyre_damage )
     {
       dual = true;
       aoe  = -1;
@@ -2139,6 +2140,7 @@ void evoker_t::init_spells()
   talent.aerial_mastery       = CT( "Aerial Mastery" );
   // Devastation Traits
   talent.pyre                   = ST( "Pyre" );                // Row 1
+  talent.pyre_damage            = find_spell( 357212 );
   talent.ruby_essence_burst     = ST( "Ruby Essence Burst" );  // Row 2
   talent.azure_essence_burst    = ST( "Azure Essence Burst" );
   talent.dense_energy           = ST( "Dense Energy" );  // Row 3
