@@ -3792,6 +3792,7 @@ struct shattering_throw_t : public warrior_attack_t
   {
     parse_options( options_str );
     weapon = &( player->main_hand_weapon );
+    attack_power_mod.direct = 1.0;
   }
   //add absorb shield bonus (are those even in SimC?), add cast time?
 };
@@ -5216,8 +5217,9 @@ struct wrecking_throw_t : public warrior_attack_t
   {
     parse_options( options_str );
     weapon = &( player->main_hand_weapon );
+    attack_power_mod.direct = 1.0;
   }
-  // add absorb shield bonus (are those even in SimC?), add cast time?
+  // add absorb shield bonus (are those even in SimC?)
 };
 
 // ==========================================================================
