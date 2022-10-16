@@ -1257,16 +1257,13 @@ struct clearcasting_buff_t : public expanded_potential_buff_t
   {
     set_default_value_from_effect( 1 );
     modify_max_stack( as<int>( p->talents.improved_clearcasting->effectN( 1 ).base_value() ) );
-    set_chance( p->talents.clearcasting.ok() );
   }
 
   // TODO: Check everything here in game, especially the interaction with Expanded Potential
   void decrement( int stacks, double value ) override
   {
     if ( check() )
-    {
       mage->trigger_sinful_delight( MAGE_ARCANE );
-    }
 
     if ( check() && mage->buffs.concentration->check() )
       mage->buffs.concentration->expire();
@@ -1938,7 +1935,8 @@ public:
         auto spark_debuff = td->debuffs.radiant_spark_vulnerability;
 
         // Handle Harmonic Echo before changing the stack number
-        if ( ( p()->talents.harmonic_echo.ok() || p()->runeforge.harmonic_echo.ok() ) && spark_debuff->check() ){
+        if ( ( p()->talents.harmonic_echo.ok() || p()->runeforge.harmonic_echo.ok() ) && spark_debuff->check() )
+        {
           double echo_pct = p()->talents.harmonic_echo.ok() ? p()->talents.harmonic_echo->effectN( 1 ).percent() : p()->runeforge.harmonic_echo->effectN( 1 ).percent();
           p()->action.harmonic_echo->execute_on_target( s->target, echo_pct * s->result_total );
         }
@@ -3121,7 +3119,7 @@ struct arcane_missiles_tick_t final : public arcane_mage_spell_t
     if ( result_is_hit( s->result ) )
     {
       p()->buffs.arcane_harmony->trigger();
-      if( p()->buffs.orb_barrage_ready->up() )
+      if ( p()->buffs.orb_barrage_ready->check() )
       {
         // TODO: Does Arcane Missiles have to hit to trigger Orb Barrage?
         p()->buffs.orb_barrage_ready->expire();
@@ -7045,7 +7043,7 @@ void mage_t::create_buffs()
                                  ->set_default_value( talents.nether_precision->effectN( 1 ).percent() )
                                  ->set_chance( talents.nether_precision.ok() );
   buffs.orb_barrage          = make_buff( this, "orb_barrage", find_spell( 384859 ) )
-                                    ->set_chance( talents.orb_barrage.ok() );
+                                 ->set_chance( talents.orb_barrage.ok() );
   buffs.orb_barrage_ready    = make_buff( this, "orb_barrage_ready", find_spell( 384860 ) );
   buffs.presence_of_mind     = make_buff( this, "presence_of_mind", find_spell( 205025 ) )
                                  ->set_cooldown( 0_ms )
@@ -7074,7 +7072,7 @@ void mage_t::create_buffs()
                                        } )
                                      ->set_chance( talents.fiery_rush.ok() );
   buffs.firefall                 = make_buff( this, "firefall", find_spell( 384035 ) )
-                                           ->set_chance( talents.firefall.ok() );
+                                     ->set_chance( talents.firefall.ok() );
   buffs.firefall_ready           = make_buff( this, "firefall_ready", find_spell( 384038 ) );
   // TODO: 2022-10-02 Firemind currently affects base intellect and not current intellect.
   // This needs to be reimplemented if that bug is not fixed.
@@ -7174,7 +7172,7 @@ void mage_t::create_buffs()
                            ->set_default_value_from_effect( 1 )
                            ->set_chance( talents.arcane_harmony.ok() || runeforge.arcane_harmony.ok() )
                            ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
-  buffs.siphon_storm   = make_buff( this, "siphon_storm", find_spell( talents.temporal_warp.ok() ? 384267 : 332934 ) )
+  buffs.siphon_storm   = make_buff( this, "siphon_storm", find_spell( talents.siphon_storm.ok() ? 384267 : 332934 ) )
                            ->set_default_value_from_effect( 1 )
                            ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT )
                            ->set_chance( talents.siphon_storm.ok() || runeforge.siphon_storm.ok() );
@@ -7255,8 +7253,8 @@ void mage_t::create_buffs()
                                { if ( cur == 0 && buffs.combustion->check() ) procs.infernal_cascade_expires->occur(); } );
 
   buffs.siphoned_malice = make_buff( this, "siphoned_malice", find_spell( 337090 ) )
-                             ->set_default_value( conduits.siphoned_malice.percent() )
-                             ->set_chance( conduits.siphoned_malice.ok() );
+                            ->set_default_value( conduits.siphoned_malice.percent() )
+                            ->set_chance( conduits.siphoned_malice.ok() );
 
   // Set Bonuses
   buffs.bursting_energy = make_buff( this, "bursting_energy", find_spell( 395006 ) )
