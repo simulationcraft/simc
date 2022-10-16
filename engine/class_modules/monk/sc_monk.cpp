@@ -4498,8 +4498,19 @@ struct fortifying_brew_t : public monk_spell_t
 // ==========================================================================
 // Exploding Keg
 // ==========================================================================
+// Exploding Keg Secondary Hit ==============================================
+struct exploding_keg_second_t : public monk_spell_t
+{
+  exploding_keg_second_t( monk_t* p ) : monk_spell_t( "exploding_keg_second", p, p->find_spell( 388867 ) )
+  {
+    background = dual = true;
+    proc              = true;
+  }
+};
+
 struct exploding_keg_t : public monk_spell_t
 {
+  exploding_keg_second_t* exploding_keg;
   exploding_keg_t( monk_t& p, util::string_view options_str )
     : monk_spell_t( "exploding_keg", &p, p.talent.brewmaster.exploding_keg )
   {
@@ -4510,13 +4521,25 @@ struct exploding_keg_t : public monk_spell_t
     aoe             = -1;
     radius          = data().effectN( 1 ).radius();
     range           = data().max_range();
+
+    exploding_keg = new exploding_keg_second_t( &p );
+
+    add_child( exploding_keg );
+  }
+
+  void execute() override
+  {
+    monk_spell_t::execute();
+
+    p()->buff.exploding_keg->trigger();
   }
 
   void impact( action_state_t* state ) override
   {
     monk_spell_t::impact( state );
 
-    get_td( state->target )->debuff.exploding_keg->trigger();
+    exploding_keg->target = state->target;
+    exploding_keg->execute();
   }
 
   timespan_t travel_time() const override
@@ -7397,9 +7420,6 @@ monk_td_t::monk_td_t( player_t* target, monk_t* p ) : actor_target_data_t( targe
     debuff.keg_smash = make_buff( *this, "keg_smash", p->talent.brewmaster.keg_smash )
                            ->set_cooldown( timespan_t::zero() )
                            ->set_default_value_from_effect( 3 );
-
-    debuff.exploding_keg =
-        make_buff( *this, "exploding_keg", p->talent.brewmaster.exploding_keg )->set_cooldown( timespan_t::zero() );
   }
 
   // Covenant Abilities
@@ -8657,6 +8677,9 @@ void monk_t::create_buffs ()
 
     buff.elusive_brawler = make_buff( this, "elusive_brawler", mastery.elusive_brawler->effectN( 3 ).trigger() )
       ->add_invalidate( CACHE_DODGE );
+
+    buff.exploding_keg = make_buff( this, "exploding_keg", find_spell( 325153 ) )
+      ->set_default_value_from_effect( 2 );
 
     buff.faeline_stomp_brm = make_buff( this, "faeline_stomp_brm", passives.faeline_stomp_brm )
       ->set_default_value_from_effect( 1 )
