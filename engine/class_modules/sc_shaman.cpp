@@ -3187,14 +3187,6 @@ struct stormblast_t : public shaman_spell_t
 
     affected_by_enh_mastery_da = true; // TODO: Until Blizzard fixes data
   }
-
-  void init() override
-  {
-    shaman_spell_t::init();
-
-    may_proc_windfury = may_proc_flametongue = may_proc_stormbringer = may_proc_hot_hand = may_proc_ability_procs = false;;
-    may_proc_maelstrom_weapon = true;
-  }
 };
 
 struct lightning_rod_damage_t : public shaman_spell_t
