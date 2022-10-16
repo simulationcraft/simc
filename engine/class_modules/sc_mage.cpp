@@ -274,13 +274,14 @@ public:
     action_t* arcane_echo;
     action_t* cold_front_frozen_orb;
     action_t* conflagration_flare_up;
+    action_t* firefall_meteor;
     action_t* glacial_assault;
     action_t* harmonic_echo;
     action_t* ignite;
-    action_t* firefall_meteor;
     action_t* living_bomb_dot;
     action_t* living_bomb_dot_spread;
     action_t* living_bomb_explosion;
+    action_t* orb_barrage_arcane_orb;
     action_t* pet_freeze;
     action_t* pet_water_jet;
     action_t* tormenting_backlash;
@@ -324,6 +325,8 @@ public:
     buff_t* impetus;
     buff_t* invigorating_powder;
     buff_t* nether_precision;
+    buff_t* orb_barrage;
+    buff_t* orb_barrage_ready;
     buff_t* presence_of_mind;
     buff_t* rule_of_threes;
 
@@ -1948,19 +1951,19 @@ public:
       p()->buffs.ice_floes->decrement();
   }
 
-  void trigger_tracking_buff( buff_t* counter, buff_t* ready, int offset = 1 )
+  void trigger_tracking_buff( buff_t* counter, buff_t* ready, int offset = 1, int stacks = 1 )
   {
     if ( ready->check() )
       return;
 
-    if ( counter->at_max_stacks( offset ) )
+    if ( counter->at_max_stacks( offset + stacks - 1 ) )
     {
       counter->expire();
       ready->trigger();
     }
     else
     {
-      counter->trigger();
+      counter->trigger( stacks );
     }
   }
 
@@ -3087,7 +3090,15 @@ struct arcane_missiles_tick_t final : public arcane_mage_spell_t
     arcane_mage_spell_t::impact( s );
 
     if ( result_is_hit( s->result ) )
+    {
       p()->buffs.arcane_harmony->trigger();
+      if( p()->buffs.orb_barrage_ready->up() )
+      {
+        // TODO: Does Arcane Missiles have to hit to trigger Orb Barrage?
+        p()->buffs.orb_barrage_ready->expire();
+        p()->action.orb_barrage_arcane_orb->execute_on_target( s->target );
+      }
+    }
   }
 };
 
@@ -3176,6 +3187,8 @@ struct arcane_missiles_t final : public arcane_mage_spell_t
 
   void execute() override
   {
+    trigger_tracking_buff( p()->buffs.orb_barrage, p()->buffs.orb_barrage_ready, 2,
+      p()->buffs.clearcasting->check() ? as<int>( p()->talents.orb_barrage->effectN( 2 ).base_value() ) : 1 );
     // Set up the hidden Clearcasting buff before executing the spell
     // so that tick time and dot duration have the correct values.
     if ( p()->buffs.clearcasting->check() )
@@ -3261,16 +3274,23 @@ struct arcane_orb_bolt_t final : public arcane_mage_spell_t
 
 struct arcane_orb_t final : public arcane_mage_spell_t
 {
-  arcane_orb_t( std::string_view n, mage_t* p, std::string_view options_str ) :
-    arcane_mage_spell_t( n, p, p->talents.arcane_orb )
+  arcane_orb_t( std::string_view n, mage_t* p, std::string_view options_str, bool orb_barrage = false ) :
+    arcane_mage_spell_t( n, p, orb_barrage ? p->find_spell( 153626 ) : p->talents.arcane_orb )
   {
     parse_options( options_str );
     may_miss = may_crit = false;
     aoe = -1;
     cooldown->charges += as<int>( p->talents.charged_orb->effectN( 1 ).base_value() );
 
-    impact_action = get_action<arcane_orb_bolt_t>( "arcane_orb_bolt", p );
+    impact_action = get_action<arcane_orb_bolt_t>( orb_barrage ? "orb_barrage_arcane_orb_bolt" : "arcane_orb_bolt", p );
     add_child( impact_action );
+
+    if ( orb_barrage )
+    {
+      background = true;
+      cooldown->duration = 0_ms;
+      base_costs[ RESOURCE_MANA ] = 0;
+    }
   }
 
   void execute() override
@@ -6479,6 +6499,9 @@ void mage_t::create_actions()
   if ( talents.touch_of_the_magi.ok() )
     action.touch_of_the_magi_explosion = get_action<touch_of_the_magi_explosion_t>( "touch_of_the_magi_explosion", this );
 
+  if ( talents.orb_barrage.ok() )
+    action.orb_barrage_arcane_orb = get_action<arcane_orb_t>( "orb_barrage_arcane_orb", this, "", true );
+
   if ( talents.firefall.ok() || runeforge.molten_skyfall.ok() )
     action.firefall_meteor = get_action<meteor_t>( "firefall_meteor", this, "", true );
 
@@ -6991,6 +7014,9 @@ void mage_t::create_buffs()
   buffs.nether_precision     = make_buff( this, "nether_precision", find_spell( 383783 ) )
                                  ->set_default_value( talents.nether_precision->effectN( 1 ).percent() )
                                  ->set_chance( talents.nether_precision.ok() );
+  buffs.orb_barrage          = make_buff( this, "orb_barrage", find_spell( 384859 ) )
+                                    ->set_chance( talents.orb_barrage.ok() );
+  buffs.orb_barrage_ready    = make_buff( this, "orb_barrage_ready", find_spell( 384860 ) );
   buffs.presence_of_mind     = make_buff( this, "presence_of_mind", find_spell( 205025 ) )
                                  ->set_cooldown( 0_ms )
                                  ->set_stack_change_callback( [ this ] ( buff_t*, int, int cur )
