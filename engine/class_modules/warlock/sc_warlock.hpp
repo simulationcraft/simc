@@ -415,7 +415,9 @@ public:
     player_talent_t burn_to_ashes; // Chaos Bolt and Rain of Fire increase damage of next 2 Incinerates
     const spell_data_t* burn_to_ashes_buff;
 
-    const spell_data_t* rain_of_chaos; // DF - Now a choice against Wilfred's, check deck of cards RNG
+    player_talent_t rain_of_chaos; // TOCHECK: Ensure behavior is unchanged from SL
+    const spell_data_t* rain_of_chaos_buff;
+    const spell_data_t* summon_infernal_roc; // Contains Rain of Chaos infernal duration
     // DF - Wilfred's Sigil of Superior Summoning (Choice against Rain of Chaos, formerly SL Legendary, NOTE: SHARES NAME WITH OTHER SPEC TALENTS)
     // DF - Chaos Incarnate (Choice against Dimensional Rift, maximum mastery value for some spells)
     // DF - Dimensional Rift (Choice against Chaos Incarnate, charge cooldown instant spell which deals damage and grants fragments)

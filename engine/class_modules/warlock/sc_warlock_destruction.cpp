@@ -47,19 +47,18 @@ public:
     if ( p()->buffs.crashing_chaos->check() )
       shards_used -= p()->buffs.crashing_chaos->check_value();
 
-    //if ( resource_current == RESOURCE_SOUL_SHARD && p()->buffs.rain_of_chaos->check() )
-    //{
-    //  for ( int i = 0; i < as<int>( cost() ); i++ )
-    //  {
-    //    //trigger deck of cards draw
-    //    if ( p()->rain_of_chaos_rng->trigger() )
-    //    {
-    //      //Currently storing infernal duration (spell 335286) in buff default value
-    //      p()->warlock_pet_list.roc_infernals.spawn( timespan_t::from_millis( p()->buffs.rain_of_chaos->default_value ) + 1000_ms, 1U); // 2022-06-29 Animation has 2 second pad at end of lifetime, but safety window for actions is smaller. TOCHECK
-    //      p()->procs.rain_of_chaos->occur();
-    //    }
-    //  }
-    //}
+    // Do cost changes reduce number of draws appropriately? This may be difficult to check
+    if ( resource_current == RESOURCE_SOUL_SHARD && p()->buffs.rain_of_chaos->check() && shards_used > 0 )
+    {
+      for ( int i = 0; i < shards_used; i++ )
+      {
+        if ( p()->rain_of_chaos_rng->trigger() )
+        {
+          p()->warlock_pet_list.infernals.spawn( p()->talents.summon_infernal_roc->duration() );
+          p()->procs.rain_of_chaos->occur();
+        }
+      }
+    }
 
     if ( p()->talents.ritual_of_ruin.ok() && resource_current == RESOURCE_SOUL_SHARD && shards_used > 0 )
     {
@@ -814,10 +813,8 @@ struct summon_infernal_t : public destruction_spell_t
     if ( p()->talents.crashing_chaos.ok() )
       p()->buffs.crashing_chaos->trigger();
 
-    //if ( p()->talents.rain_of_chaos->ok() )
-    //{
-    //  p()->buffs.rain_of_chaos->extend_duration_or_trigger();
-    //}
+    if ( p()->talents.rain_of_chaos.ok() )
+      p()->buffs.rain_of_chaos->trigger();
   }
 };
 
@@ -1209,10 +1206,7 @@ void warlock_t::create_buffs_destruction()
                               ->set_trigger_spell( talents.reverse_entropy )
                               ->set_rppm( RPPM_NONE, talents.reverse_entropy->real_ppm() );
 
-  // Spell 335236 holds the duration of the proc'd infernal's duration, storing it in default value of the buff for use
-  // later
-  buffs.rain_of_chaos = make_buff( this, "rain_of_chaos", find_spell( 266087 ) )
-                            ->set_default_value( find_spell( 335236 )->_duration );
+  buffs.rain_of_chaos = make_buff( this, "rain_of_chaos", talents.rain_of_chaos_buff );
 
   // Legendaries
   buffs.madness_of_the_azjaqir =
@@ -1383,7 +1377,9 @@ void warlock_t::init_spells_destruction()
   talents.burn_to_ashes = find_talent_spell( talent_tree::SPECIALIZATION, "Burn to Ashes" ); // Should be ID 387153
   talents.burn_to_ashes_buff = find_spell( 387154 );
 
-  talents.rain_of_chaos = find_talent_spell( "Rain of Chaos" );
+  talents.rain_of_chaos = find_talent_spell( talent_tree::SPECIALIZATION, "Rain of Chaos" ); // Should be ID 266086
+  talents.rain_of_chaos_buff = find_spell( 266087 );
+  talents.summon_infernal_roc = find_spell( 335236 );
 
   // Legendaries
   legendary.cinders_of_the_azjaqir         = find_runeforge_legendary( "Cinders of the Azj'Aqir" );
@@ -1413,9 +1409,8 @@ void warlock_t::init_gains_destruction()
 
 void warlock_t::init_rng_destruction()
 {
-  //TOCHECK: SPELL DATA LISTS % CHANCE BUT THIS IS SUPPOSEDLY DECK OF CARDS
-  //2020-10-12: PTR for prepatch says 15% but beta still says 20%. 20% version was supposedly 2 out of 10
-  //PTR version is untested, using 3 out of 20 for now. Hopefully there is a way to tie this to spell data later.
+  // TOCHECK: 15% chance is what is listed in spell data but during SL this was presumed to use deck of cards at 3 out of 20
+  // May need rechecking in DF
   rain_of_chaos_rng = get_shuffled_rng( "rain_of_chaos", 3, 20 );
 }
 
