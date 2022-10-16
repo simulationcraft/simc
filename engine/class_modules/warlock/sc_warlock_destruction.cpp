@@ -40,6 +40,12 @@ public:
 
     int shards_used = as<int>( cost() );
 
+    // 2022-10-16: The shard cost reduction from Crashing Chaos is "undone" for Impending Ruin stacking
+    // This can be observed during the free Ritual of Ruin cast, which always increments by 1 stack regardless of spell
+    // TOCHECK: Does this apply for Rain of Chaos draws?
+    if ( p()->buffs.crashing_chaos->check() )
+      shards_used -= p()->buffs.crashing_chaos->check_value();
+
     //if ( resource_current == RESOURCE_SOUL_SHARD && p()->buffs.rain_of_chaos->check() )
     //{
     //  for ( int i = 0; i < as<int>( cost() ); i++ )
@@ -142,6 +148,16 @@ struct shadowburn_t : public destruction_spell_t
     base_multiplier *= 1.0 + p->talents.ruin->effectN( 1 ).percent();
   }
 
+  double cost() const override
+  {
+    double c = destruction_spell_t::cost();
+
+    if ( c > 0.0 && p()->buffs.crashing_chaos->check() )
+      c += p()->buffs.crashing_chaos->check_value();
+
+    return c;        
+  }
+
   void impact( action_state_t* s ) override
   {
     destruction_spell_t::impact( s );
@@ -165,6 +181,8 @@ struct shadowburn_t : public destruction_spell_t
       p()->buffs.conflagration_of_chaos_sb->trigger();
       p()->procs.conflagration_of_chaos_sb->occur();
     }
+
+    p()->buffs.crashing_chaos->decrement();
 
     //if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T28, B2 ) )
     //{
@@ -540,6 +558,9 @@ struct chaos_bolt_t : public destruction_spell_t
     if ( p()->buffs.ritual_of_ruin->check() )
       c *= 1.0 + p()->talents.ritual_of_ruin_buff->effectN( 2 ).percent();
 
+    if ( c > 0.0 && p()->buffs.crashing_chaos->check() )
+      c += p()->buffs.crashing_chaos->check_value();
+
     return c;      
   }
 
@@ -635,6 +656,7 @@ struct chaos_bolt_t : public destruction_spell_t
 
     p()->buffs.ritual_of_ruin->expire();
 
+    p()->buffs.crashing_chaos->decrement();
     //// SL - Legendary
     //if ( p()->legendary.madness_of_the_azjaqir->ok() )
     //  p()->buffs.madness_of_the_azjaqir->trigger();
@@ -735,6 +757,9 @@ struct summon_infernal_t : public destruction_spell_t
   {
     destruction_spell_t::execute();
 
+    if ( p()->talents.crashing_chaos.ok() )
+      p()->buffs.crashing_chaos->trigger();
+
     //if ( p()->talents.rain_of_chaos->ok() )
     //{
     //  p()->buffs.rain_of_chaos->extend_duration_or_trigger();
@@ -795,6 +820,9 @@ struct rain_of_fire_t : public destruction_spell_t
 
     if ( p()->buffs.ritual_of_ruin->check() )
       c *= 1.0 + p()->talents.ritual_of_ruin_buff->effectN( 5 ).percent();
+    
+    if ( c > 0.0 && p()->buffs.crashing_chaos->check() )
+      c += p()->buffs.crashing_chaos->check_value();
 
     return c;        
   }
@@ -856,6 +884,8 @@ struct rain_of_fire_t : public destruction_spell_t
                                         .action( p()->proc_actions.rain_of_fire_tick ) );
 
     p()->buffs.ritual_of_ruin->expire();
+
+    p()->buffs.crashing_chaos->decrement();
   }
 
   void impact( action_state_t* s ) override
@@ -1135,6 +1165,11 @@ void warlock_t::create_buffs_destruction()
   buffs.flashpoint = make_buff( this, "flashpoint", talents.flashpoint_buff )
                          ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
                          ->set_default_value( talents.flashpoint->effectN( 1 ).percent() );
+
+  buffs.crashing_chaos = make_buff( this, "crashing_chaos", talents.crashing_chaos_buff )
+                             ->set_max_stack( std::max( as<int>( talents.crashing_chaos->effectN( 1 ).base_value() ), 1 ) )
+                             ->set_reverse( true )
+                             ->set_default_value( talents.crashing_chaos_buff->effectN( 1 ).base_value() / 10.0 );
 }
 void warlock_t::init_spells_destruction()
 {
@@ -1233,6 +1268,8 @@ void warlock_t::init_spells_destruction()
   talents.impending_ruin_buff = find_spell( 387158 );
   talents.ritual_of_ruin_buff = find_spell( 387157 );
 
+  talents.crashing_chaos = find_talent_spell( talent_tree::SPECIALIZATION, "Crashing Chaos" ); // Should be ID 387355
+  talents.crashing_chaos_buff = find_spell( 387356 );
 
   talents.rain_of_chaos = find_talent_spell( "Rain of Chaos" );
 

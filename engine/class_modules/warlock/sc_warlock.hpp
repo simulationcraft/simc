@@ -402,7 +402,8 @@ public:
     const spell_data_t* impending_ruin_buff; // Stacking buff, triggers Ritual of Ruin buff at max
     const spell_data_t* ritual_of_ruin_buff;
     
-    // DF - Crashing Chaos (2 point talent, Summon Infernal reduces cost of next X casts)
+    player_talent_t crashing_chaos; // Summon Infernal reduces cost of next X casts
+    const spell_data_t* crashing_chaos_buff;
     // DF - Infernal Brand (2 point talent, formerly SL Conduit)
     // DF - Power Overwhelming (2 point talent, stacking mastery buff for spending Soul Shards)
     // DF - Madness of the Azj'aqir (2 point talent, formerly SL Legendary, now applies to more spells)
@@ -565,7 +566,7 @@ public:
     propagate_const<buff_t*> conflagration_of_chaos_cf;
     propagate_const<buff_t*> conflagration_of_chaos_sb;
     propagate_const<buff_t*> flashpoint;
-    // DF - Crashing Chaos (cost reduction after Infernal summon)
+    propagate_const<buff_t*> crashing_chaos;
     // DF - Power Overwhelming (stacking mastery when spending Soul Shards)
     // DF - Burn to Ashes (increased Incinerate damage after Chaos Bolt/Rain of Fire)
     // DF - Chaos Incarnate? (passive max mastery on certain spells)
