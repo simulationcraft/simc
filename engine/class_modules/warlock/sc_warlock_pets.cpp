@@ -243,8 +243,8 @@ void warlock_pet_t::demise()
 warlock_pet_td_t::warlock_pet_td_t( player_t* target, warlock_pet_t& p ) :
   actor_target_data_t( target, &p ), pet( p )
 {
-  debuff_infernal_brand = make_buff( *this, "infernal_brand", pet.o()->find_spell( 340045 ) )
-                              ->set_default_value( pet.o()->find_conduit_spell( "Infernal Brand" ).percent() );
+  debuff_infernal_brand = make_buff( *this, "infernal_brand", pet.o()->find_spell( 387476 ) )
+                              ->set_default_value( pet.o()->talents.infernal_brand->effectN( 1 ).percent() );
 
   debuff_whiplash = make_buff( *this, "whiplash", pet.o()->find_spell( 6360 ) )
                         ->set_default_value( pet.o()->find_spell( 6360 )->effectN( 2 ).percent() )
@@ -2024,8 +2024,8 @@ struct immolation_tick_t : public warlock_pet_spell_t
   {
     double m = warlock_pet_spell_t::composite_target_da_multiplier( t );
 
-    //if ( pet_td( t )->debuff_infernal_brand->check() )
-    //  m *= 1.0 + pet_td( t )->debuff_infernal_brand->check_stack_value();
+    if ( pet_td( t )->debuff_infernal_brand->check() )
+      m *= 1.0 + pet_td( t )->debuff_infernal_brand->check_stack_value();
 
     return m;
   }
@@ -2041,10 +2041,10 @@ struct infernal_melee_t : warlock_pet_melee_t
   {
     warlock_pet_melee_t::impact( s );
 
-    //if ( p()->o()->conduit.infernal_brand.ok() )
-    //{
-    //  pet_td( s->target )->debuff_infernal_brand->trigger();
-    //}
+    if ( p()->o()->talents.infernal_brand.ok() )
+    {
+      pet_td( s->target )->debuff_infernal_brand->trigger();
+    }
   }
 };
 

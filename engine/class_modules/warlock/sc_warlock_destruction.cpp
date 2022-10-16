@@ -1271,9 +1271,9 @@ void warlock_t::init_spells_destruction()
   talents.crashing_chaos = find_talent_spell( talent_tree::SPECIALIZATION, "Crashing Chaos" ); // Should be ID 387355
   talents.crashing_chaos_buff = find_spell( 387356 );
 
+  talents.infernal_brand = find_talent_spell( talent_tree::SPECIALIZATION, "Infernal Brand" ); // Should be ID 387475
+
   talents.rain_of_chaos = find_talent_spell( "Rain of Chaos" );
-
-
 
   // Legendaries
   legendary.cinders_of_the_azjaqir         = find_runeforge_legendary( "Cinders of the Azj'Aqir" );

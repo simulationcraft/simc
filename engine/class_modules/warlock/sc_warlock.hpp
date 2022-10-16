@@ -404,7 +404,7 @@ public:
     
     player_talent_t crashing_chaos; // Summon Infernal reduces cost of next X casts
     const spell_data_t* crashing_chaos_buff;
-    // DF - Infernal Brand (2 point talent, formerly SL Conduit)
+    player_talent_t infernal_brand; // Infernal melees increase Infernal AoE damage (Formerly SL Conduit)
     // DF - Power Overwhelming (2 point talent, stacking mastery buff for spending Soul Shards)
     // DF - Madness of the Azj'aqir (2 point talent, formerly SL Legendary, now applies to more spells)
     // DF - Master Ritualist (2 point talent, reduces proc cost of Ritual of Ruin)
