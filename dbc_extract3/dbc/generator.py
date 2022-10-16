@@ -1742,6 +1742,7 @@ class SpellDataGenerator(DataGenerator):
           ( 382113, 0 ), ( 382114, 0 ),             # Cold Front
           ( 365265, 0 ),                            # Arcane Surge energize
           ( 384859, 0 ), ( 384860, 0 ),             # Orb Barrage
+          ( 383783, 0 ),                            # Nether Precision
         ),
 
         # Warlock:
