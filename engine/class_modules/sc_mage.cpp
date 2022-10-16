@@ -3049,7 +3049,9 @@ struct arcane_assault_t final : public arcane_mage_spell_t
     arcane_mage_spell_t( n, p, p->find_spell( 225119 ) )
   {
     background = true;
-    affected_by.radiant_spark = callbacks = false;
+    callbacks = false;
+    if ( !p->talents.radiant_spark.ok() )
+      affected_by.radiant_spark = false;
   }
 };
 
@@ -3627,7 +3629,8 @@ struct conflagration_t final : public fire_mage_spell_t
     fire_mage_spell_t( n, p, p->find_spell( 226757 ) )
   {
     background = true;
-    affected_by.radiant_spark = false;
+    if ( !p->talents.radiant_spark.ok() )
+      affected_by.radiant_spark = false;
   }
 };
 
@@ -3637,7 +3640,9 @@ struct conflagration_flare_up_t final : public fire_mage_spell_t
     fire_mage_spell_t( n, p, p->find_spell( 205345 ) )
   {
     background = true;
-    affected_by.radiant_spark = callbacks = false;
+    callbacks = false;
+    if ( !p->talents.radiant_spark.ok() )
+      affected_by.radiant_spark = false;
     aoe = -1;
   }
 };
@@ -3974,7 +3979,8 @@ struct flame_patch_t final : public fire_mage_spell_t
   {
     aoe = -1;
     ground_aoe = background = true;
-    affected_by.radiant_spark = false;
+    if ( !p->talents.radiant_spark.ok() )
+      affected_by.radiant_spark = false;
   }
 
   result_amount_type amount_type( const action_state_t*, bool ) const override
@@ -4989,7 +4995,8 @@ struct living_bomb_dot_t final : public fire_mage_spell_t
     primary( primary_ )
   {
     background = true;
-    affected_by.radiant_spark = false;
+    if ( !p->talents.radiant_spark.ok() )
+      affected_by.radiant_spark = false;
   }
 
   void init() override
@@ -5046,7 +5053,9 @@ struct living_bomb_explosion_t final : public fire_mage_spell_t
     reduced_aoe_targets = 1.0;
     full_amount_targets = 1;
     background = true;
-    affected_by.radiant_spark = callbacks = false;
+    callbacks = false;
+    if ( !p->talents.radiant_spark.ok() )
+      affected_by.radiant_spark = false;
   }
 };
 
@@ -5212,7 +5221,8 @@ struct nether_tempest_aoe_t final : public arcane_mage_spell_t
   {
     aoe = -1;
     background = true;
-    affected_by.radiant_spark = false;
+    if ( !p->talents.radiant_spark.ok() )
+      affected_by.radiant_spark = false;
   }
 
   result_amount_type amount_type( const action_state_t*, bool ) const override
@@ -5231,7 +5241,8 @@ struct nether_tempest_t final : public arcane_mage_spell_t
   {
     parse_options( options_str );
     add_child( nether_tempest_aoe );
-    affected_by.radiant_spark = false;
+    if ( !p->talents.radiant_spark.ok() )
+      affected_by.radiant_spark = false;
   }
 
   void execute() override
@@ -5714,7 +5725,9 @@ struct arcane_echo_t final : public arcane_mage_spell_t
     aoe = -1;
     reduced_aoe_targets = p->talents.arcane_echo->effectN( 1 ).base_value();
     background = affected_by.savant = true;
-    callbacks = affected_by.radiant_spark = false;
+    callbacks = false;
+    if ( !p->talents.radiant_spark.ok() )
+      affected_by.radiant_spark = false;
   }
 };
 
@@ -5822,7 +5835,8 @@ struct radiant_spark_t final : public mage_spell_t
   {
     parse_options( options_str );
     affected_by.ice_floes = affected_by.savant = true;
-    affected_by.radiant_spark = false;
+    if ( !p->talents.radiant_spark.ok() )
+      affected_by.radiant_spark = false;
   }
 
   void impact( action_state_t* s ) override
