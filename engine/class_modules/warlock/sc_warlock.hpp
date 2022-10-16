@@ -397,7 +397,7 @@ public:
     player_talent_t summon_infernal;
     const spell_data_t* summon_infernal_main; // Data for main infernal summoning
     const spell_data_t* infernal_awakening; // AoE on impact is attributed to the Warlock
-    // DF - Embers of the Diabolic (formerly SL Legendary)
+    player_talent_t diabolic_embers; // Incinerate generates more Soul Shards (Formerly SL Legendary)
     // DF - Ritual of Ruin (formerly SL Tier Bonus, functionality slightly modified)
     
     // DF - Crashing Chaos (2 point talent, Summon Infernal reduces cost of next X casts)
