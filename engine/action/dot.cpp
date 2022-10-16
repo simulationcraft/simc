@@ -93,9 +93,12 @@ void dot_t::adjust_duration( timespan_t extra_seconds, timespan_t max_total_time
   if ( state_flags == (uint32_t)-1 )
     state_flags = current_action->snapshot_flags;
 
-  current_action->snapshot_internal(
-      state, state_flags,
-      current_action->type == ACTION_HEAL ? result_amount_type::HEAL_OVER_TIME : result_amount_type::DMG_OVER_TIME );
+  if ( state_flags != 0 )
+  {
+    current_action->snapshot_internal(
+        state, state_flags,
+        current_action->type == ACTION_HEAL ? result_amount_type::HEAL_OVER_TIME : result_amount_type::DMG_OVER_TIME );
+  }
 
   assert( end_event && "Dot is ticking but has no end event." );
   timespan_t remains = end_event->remains();
