@@ -759,6 +759,12 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
       p() -> buffs.vanquishers_hammer -> decrement( 1 );
     }
 
+    if ( p() -> buffs.empyrean_legacy -> up() )
+    {
+      p() -> active.empyrean_legacy -> schedule_execute();
+      p() -> buffs.empyrean_legacy -> expire();
+    }
+
     // TODO(mserrano): figure out the actionbar override thing instead of this hack.
     if ( is_fv )
     {
@@ -956,6 +962,15 @@ struct judgment_ret_t : public judgment_t
 
     if ( p() -> spec.judgment_3 -> ok() )
       p() -> resource_gain( RESOURCE_HOLY_POWER, holy_power_generation, p() -> gains.judgment );
+
+    if ( p() -> talents.empyrean_legacy -> ok() )
+    {
+      if ( ! ( p() -> buffs.empyrean_legacy_cooldown -> up() ) )
+      {
+        p() -> buffs.empyrean_legacy -> trigger();
+        p() -> buffs.empyrean_legacy_cooldown -> trigger();
+      }
+    }
 
     is_boundless = false;
   }
@@ -1259,6 +1274,15 @@ void paladin_t::create_ret_actions()
   active.shield_of_vengeance_damage = new shield_of_vengeance_proc_t( this );
   double necrolord_mult = 1.0 + covenant.necrolord -> effectN( 2 ).percent();
   active.necrolord_divine_storm = new divine_storm_t( this, true, necrolord_mult );
+  if ( talents.empyrean_legacy->ok() )
+  {
+    double empyrean_legacy_mult = 1.0 + talents.empyrean_legacy->effectN( 2 ).percent();
+    active.empyrean_legacy = new divine_storm_t( this, true, empyrean_legacy_mult );
+  }
+  else
+  {
+    active.empyrean_legacy = nullptr;
+  }
 
   if ( specialization() == PALADIN_RETRIBUTION )
   {
@@ -1329,6 +1353,9 @@ void paladin_t::create_buffs_retribution()
         // this 1 appears hardcoded
         resource_gain( RESOURCE_HOLY_POWER, 1, gains.hp_inner_grace );
       } );
+
+  buffs.empyrean_legacy = make_buff( this, "empyrean_legacy", find_spell( 387178 ) );
+  buffs.empyrean_legacy_cooldown = make_buff( this, "empyrean_legacy_cooldown", find_spell( 387441 ) );
 }
 
 void paladin_t::init_rng_retribution()

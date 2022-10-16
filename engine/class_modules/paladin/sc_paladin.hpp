@@ -89,6 +89,7 @@ public:
     // talent stuff
     action_t* background_cons;
     action_t* incandescence;
+    action_t* empyrean_legacy;
 
     // Conduit stuff
     action_t* virtuous_command_conduit;
@@ -166,6 +167,9 @@ public:
     buff_t* reign_of_ancient_kings;
     buff_t* equinox;
     buff_t* divine_resonance;
+
+    buff_t* empyrean_legacy;
+    buff_t* empyrean_legacy_cooldown;
   } buffs;
 
   // Gains
