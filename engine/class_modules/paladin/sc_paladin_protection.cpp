@@ -182,20 +182,20 @@ struct avengers_shield_t : public avengers_shield_base_t
       if ( p() -> talents.focused_enmity->ok() )
        {
         m *= 1.0 + p() -> talents.focused_enmity->effectN( 2 ).percent();
-      } 
+      }
     //TODO Actually implement this properly, right now its a flat damage increase and will return bad values for aoe.
     if ( p()->talents.ferren_marcuss_fervor->ok() )
         {
           m *= 1.0 + p()->talents.ferren_marcuss_fervor->effectN( 1 ).percent();
-        } 
+        }
     return m;
-  } 
+  }
 };
 
 // Bastion of Light ===========================================================
 struct bastion_of_light_t : public paladin_spell_t
 {
-  bastion_of_light_t( paladin_t* p, util::string_view options_str ) : 
+  bastion_of_light_t( paladin_t* p, util::string_view options_str ) :
       paladin_spell_t( "bastion_of_light", p, p -> find_talent_spell( talent_tree::SPECIALIZATION, "Bastion of Light" ))
   {
     parse_options( options_str );
@@ -205,7 +205,7 @@ struct bastion_of_light_t : public paladin_spell_t
   void execute() override
   {
     paladin_spell_t::execute();
-    
+
     p()->buffs.bastion_of_light->trigger( 3 );
   }
 };
@@ -477,7 +477,7 @@ struct judgment_prot_t : public judgment_t
   judgment_prot_t( paladin_t* p, util::string_view name, util::string_view options_str ) :
     judgment_t( p, name ),
     judge_holy_power( as<int>( p -> find_spell( 220637 ) -> effectN( 1 ).base_value() ) ),
-    sw_holy_power( as<int>( p -> talents.prot_sanctified_wrath -> effectN( 2 ).base_value() ) )
+    sw_holy_power( as<int>( p -> talents.sanctified_wrath -> effectN( 3 ).base_value() ) )
   {
     parse_options( options_str );
     cooldown -> charges += as<int>( p -> talents.crusaders_judgment -> effectN( 1 ).base_value() );
@@ -487,7 +487,7 @@ struct judgment_prot_t : public judgment_t
   judgment_prot_t( paladin_t* p, util::string_view name ) :
     judgment_t( p, name ),
     judge_holy_power( as<int>( p -> find_spell( 220637 ) -> effectN( 1 ).base_value() ) ),
-    sw_holy_power( as<int>( p -> talents.prot_sanctified_wrath -> effectN( 2 ).base_value() ) )
+    sw_holy_power( as<int>( p -> talents.sanctified_wrath -> effectN( 3 ).base_value() ) )
   {
     background = true;
   }
@@ -502,7 +502,7 @@ struct judgment_prot_t : public judgment_t
       int hopo = 0;
       if ( p() -> spec.judgment_3 -> ok() )
         hopo += judge_holy_power;
-      if ( p() -> talents.prot_sanctified_wrath -> ok() && p() -> buffs.avenging_wrath -> up() )
+      if ( p() -> talents.sanctified_wrath -> ok() && p() -> buffs.avenging_wrath -> up() )
         hopo += sw_holy_power;
       if( hopo > 0 )
         p() -> resource_gain( RESOURCE_HOLY_POWER, hopo, p() -> gains.judgment );
@@ -1050,7 +1050,6 @@ void paladin_t::init_spells_protection()
 
   talents.consecrated_ground         = find_talent_spell( "Consecrated Ground" );
 
-  talents.prot_sanctified_wrath      = find_talent_spell( "Sanctified Wrath", PALADIN_PROTECTION );
   talents.final_stand                = find_talent_spell( "Final Stand" );
 
   // Spec passives and useful spells

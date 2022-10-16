@@ -1258,7 +1258,7 @@ struct exorcism_t : public paladin_spell_t
 
 void paladin_t::create_ret_actions()
 {
-  if ( talents.ret_sanctified_wrath->ok() )
+  if ( talents.sanctified_wrath->ok() && specialization() == PALADIN_RETRIBUTION )
   {
     active.sanctified_wrath = new sanctified_wrath_t( this );
   }

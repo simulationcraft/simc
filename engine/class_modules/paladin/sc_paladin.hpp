@@ -352,7 +352,7 @@ public:
     const spell_data_t* holy_avenger;
     const spell_data_t* divine_purpose;
     const spell_data_t* obduracy;
-    
+
     // 20
     const spell_data_t* seal_of_clarity;
     const spell_data_t* aspiration_of_divinity;
@@ -367,9 +367,7 @@ public:
     const spell_data_t* improved_blessing_of_protection;
     const spell_data_t* seal_of_the_crusader;
     const spell_data_t* seal_of_order;
-    const spell_data_t* holy_sanctified_wrath;
-    const spell_data_t* prot_sanctified_wrath;
-    const spell_data_t* ret_sanctified_wrath;
+    const spell_data_t* sanctified_wrath;
     const spell_data_t* seraphim;
     const spell_data_t* zealots_paragon;
 
@@ -414,7 +412,7 @@ public:
     const spell_data_t* ardent_defender;
     const spell_data_t* crusaders_judgment;
     const spell_data_t* consecration_in_flame;
-    
+
     // 8
     const spell_data_t* bastion_of_light;
     const spell_data_t* bulwark_of_order;
@@ -430,7 +428,7 @@ public:
     const spell_data_t* guardian_of_ancient_kings;
     const spell_data_t* sanctuary;
     const spell_data_t* barricade_of_faith;
-    
+
     // 20
     const spell_data_t* soaring_shield;
     const spell_data_t* focused_enmity;
@@ -667,7 +665,7 @@ public:
   int     get_local_enemies( double distance ) const;
   bool    standing_in_consecration() const;
   bool    standing_in_hallow() const;
-  
+
   // Returns true if AW/Crusade is up, or if the target is below 20% HP.
   // This isn't in HoW's target_ready() so it can be used in the time_to_hpg expression
   bool    get_how_availability( player_t* t ) const;
@@ -1449,7 +1447,7 @@ struct holy_power_consumer_t : public Base
         ld -> execute();
       }
 
-      if ( p -> specialization() == PALADIN_RETRIBUTION && p -> talents.ret_sanctified_wrath -> ok() )
+      if ( p -> specialization() == PALADIN_RETRIBUTION && p -> talents.sanctified_wrath -> ok() )
       {
         sanctified_wrath_t* st = debug_cast<sanctified_wrath_t*>( p -> active.sanctified_wrath );
         st -> last_holy_power_cost = as<int>( ab::base_costs[ RESOURCE_HOLY_POWER ] );

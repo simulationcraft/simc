@@ -102,39 +102,13 @@ avenging_wrath_buff_t::avenging_wrath_buff_t( paladin_t* p )
   crit_bonus       = data().effectN( 3 ).percent();
   damage_modifier  = data().effectN( 1 ).percent();
 
-  // Lengthen duration if Sanctified Wrath is taken
-  bool took_sw = false;
-  switch ( p->specialization() )
+  if ( p->talents.sanctified_wrath->ok() )
   {
-    case PALADIN_HOLY:
-      if ( p->talents.holy_sanctified_wrath->ok() )
-      {
-        base_buff_duration *= 1.0 + p->talents.holy_sanctified_wrath->effectN( 1 ).percent();
-        took_sw = true;
-      }
-      break;
-    case PALADIN_RETRIBUTION:
-      if ( p->talents.ret_sanctified_wrath->ok() )
-      {
-        base_buff_duration *= 1.0 + p->talents.ret_sanctified_wrath->effectN( 1 ).percent();
-        took_sw = true;
-      }
-      break;
-    case PALADIN_PROTECTION:
-      if ( p->talents.prot_sanctified_wrath->ok() )
-      {
-        base_buff_duration *= 1.0 + p->talents.prot_sanctified_wrath->effectN( 1 ).percent();
-        took_sw = true;
-      }
-      break;
-    default:
-      break;
+    // the tooltip doesn't say this, but the spelldata does
+    base_buff_duration *= 1.0 + p->talents.sanctified_wrath->effectN( 1 ).percent();
   }
 
-  // ... or if we have Light's Decree
-  // TODO(mserrano): is this the right ordering?
-  //    apparently currently this just doesn't work at all with SW
-  if ( p->azerite.lights_decree.ok() && !( p->bugs && took_sw ) )
+  if ( p->azerite.lights_decree.ok() )
     base_buff_duration += p->spells.lights_decree->effectN( 2 ).time_value();
 
   // let the ability handle the cooldown
@@ -2638,7 +2612,7 @@ void paladin_t::init_action_list()
 void paladin_t::init_special_effects()
 {
   player_t::init_special_effects();
-  
+
   if ( talents.seal_of_the_crusader->ok() )
   {
     auto const seal_of_the_crusader_driver = new special_effect_t( this );
@@ -2687,7 +2661,7 @@ void paladin_t::init_spells()
 
   // Shared talents
   talents.lay_on_hands                    = find_talent_spell( talent_tree::CLASS, "Lay on Hands" );
-  talents.blessing_of_freedom             = find_talent_spell( talent_tree::CLASS, "Blessing of Freedom" ); 
+  talents.blessing_of_freedom             = find_talent_spell( talent_tree::CLASS, "Blessing of Freedom" );
   talents.hammer_of_wrath                 = find_talent_spell( talent_tree::CLASS, "Hammer of Wrath" );
   talents.auras_of_the_resolute           = find_talent_spell( talent_tree::CLASS, "Auras of the Resolute" );
   talents.auras_of_swift_vengeance        = find_talent_spell( talent_tree::CLASS, "Auras of Swift Vengeance" );
@@ -2730,9 +2704,7 @@ void paladin_t::init_spells()
   talents.improved_blessing_of_protection = find_talent_spell( talent_tree::CLASS, "Improved Blessing of Protection" );
   talents.seal_of_the_crusader            = find_talent_spell( talent_tree::CLASS, "Seal of the Crusader" );
   talents.seal_of_order                   = find_talent_spell( talent_tree::CLASS, "Seal of Order" );
-  talents.holy_sanctified_wrath           = find_talent_spell( talent_tree::CLASS, "Sanctified Wrath", PALADIN_HOLY );
-  talents.prot_sanctified_wrath           = find_talent_spell( talent_tree::CLASS, "Sanctified Wrath", PALADIN_PROTECTION );
-  talents.ret_sanctified_wrath            = find_talent_spell( talent_tree::CLASS, "Sanctified Wrath", PALADIN_RETRIBUTION );
+  talents.sanctified_wrath                = find_talent_spell( talent_tree::CLASS, "Sanctified Wrath" );
   talents.seraphim                        = find_talent_spell( talent_tree::CLASS, "Seraphim" );
   talents.zealots_paragon                 = find_talent_spell( talent_tree::CLASS, "Zealot's Paragon" );
 
@@ -3014,7 +2986,7 @@ double paladin_t::composite_base_armor_multiplier() const
 
   if ( passives.aegis_of_light -> ok() )
     a *= 1.0 + passives.aegis_of_light -> effectN( 2 ).percent();
-  
+
   if ( talents.holy_aegis -> ok() )
     a *= 1.0 + talents.holy_aegis -> effectN( 1 ).percent();
 
