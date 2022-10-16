@@ -1038,9 +1038,18 @@ public:
     ab::apply_affecting_aura( p()->tier_set.frenzied_destruction_2p );
 
     // passive talents
+    ab::apply_affecting_aura( p()->talents.arms.bloodborne );
+    ab::apply_affecting_aura( p()->talents.arms.blunt_instruments ); // damage only
+    ab::apply_affecting_aura( p()->talents.arms.impale );
+    ab::apply_affecting_aura( p()->talents.arms.improved_overpower );
+    ab::apply_affecting_aura( p()->talents.arms.improved_mortal_strike );
+    ab::apply_affecting_aura( p()->talents.arms.reaping_swings );
+    ab::apply_affecting_aura( p()->talents.arms.sharpened_blades );
     ab::apply_affecting_aura( p()->talents.arms.valor_in_victory );
+    ab::apply_affecting_aura( p()->talents.fury.bloodborne );
     ab::apply_affecting_aura( p()->talents.fury.critical_thinking );
     ab::apply_affecting_aura( p()->talents.fury.deft_experience );
+    ab::apply_affecting_aura( p()->talents.fury.improved_bloodthirst );
     ab::apply_affecting_aura( p()->talents.fury.storm_of_steel );
     ab::apply_affecting_aura( p()->talents.warrior.barbaric_training );
     ab::apply_affecting_aura( p()->talents.warrior.concussive_blows );
@@ -3547,6 +3556,10 @@ struct raging_blow_attack_t : public warrior_attack_t
     {
       am *= 1.0 + p()->talents.fury.cruelty->effectN( 1 ).percent();
     }
+    if ( p()->talents.fury.wrath_and_fury->ok() )
+    {
+      am *= 1.0 + p()->find_spell( 386045 )->effectN( 1 ).percent();
+    }
 
     return am;
   }
@@ -3598,14 +3611,15 @@ struct raging_blow_t : public warrior_attack_t
       mh_attack->execute();
       oh_attack->execute();
     }
-    if (p()->talents.fury.wrath_and_fury->ok() && p()->buff.enrage->check() )
+    if ( p()->talents.fury.improved_raging_blow->ok() && p()->talents.fury.wrath_and_fury->ok() &&
+         p()->buff.enrage->check() )
     {
       if ( rng().roll( wrath_and_fury_reset_chance ) )
         {
           cooldown->reset( true );
         }
     }
-    else
+    else if ( p()->talents.fury.improved_raging_blow->ok() )
     {
       if ( rng().roll( cd_reset_chance ) )
         {
@@ -3692,6 +3706,10 @@ struct crushing_blow_attack_t : public warrior_attack_t
     if ( p()->talents.fury.cruelty->ok() && p()->buff.enrage->check() )
     {
       am *= 1.0 + p()->talents.fury.cruelty->effectN( 1 ).percent();
+    }
+    if ( p()->talents.fury.wrath_and_fury->ok() )
+    {
+      am *= 1.0 + p()->find_spell( 386045 )->effectN( 1 ).percent();
     }
 
     return am;
@@ -7841,7 +7859,8 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ) : actor_target_data
   debuffs_colossus_smash = make_buff( *this , "colossus_smash" )
                                ->set_default_value( p.spell.colossus_smash_debuff->effectN( 2 ).percent() +
                                                     ( p.tier_set.pile_on_2p->effectN( 2 ).base_value() / 100 ) )
-                               ->set_duration( p.spell.colossus_smash_debuff->duration() )
+                               ->set_duration( p.spell.colossus_smash_debuff->duration() + 
+                                               p.talents.arms.blunt_instruments->effectN( 2 ).time_value() )
                                ->modify_duration( p.sets->set( WARRIOR_ARMS, T28, B2 )->effectN( 1 ).time_value() )
                                ->set_cooldown( timespan_t::zero() );
 
@@ -8571,8 +8590,10 @@ double warrior_t::composite_melee_haste() const
 {
   double a = player_t::composite_melee_haste();
 
+  if ( talents.fury.improved_enrage->ok() )
+  {
   a *= 1.0 / ( 1.0 + buff.enrage->check_value() );
-
+  }
   a *= 1.0 / ( 1.0 + buff.frenzy->check_stack_value() );
 
   a *= 1.0 / ( 1.0 + buff.cadence_of_fujieda->check_value() );
