@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.2.46157
-static const std::array<spelltext_data_t, 19049> __spelltext_data { {
+static const std::array<spelltext_data_t, 19052> __spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -17239,6 +17239,7 @@ static const std::array<spelltext_data_t, 19049> __spelltext_data { {
   { 383764, "$@spelldesc388505", 0, 0 },
   { 383781, "Solve a puzzle, increasing your Mastery by $383781s1 for $383781d.\r\n", "Mastery increased by $s1.", 0 },
   { 383782, "Consuming Clearcasting increases the damage of your next 2 Arcane Blasts by $s1%.", 0, 0 },
+  { 383783, "$@spelldesc383782", "Arcane Blast damage increased by $w1%.", 0 },
   { 383785, "Each time you dodge or an enemy misses you, your next Tiger Palm or Spinning Crane Kick deals $383800s1% increased damage.", "Each time you dodge or an enemy misses you,your next Tiger Palm or Spinning Crane Kick deals $383800s1% increased damage.", 0 },
   { 383798, "Your helpful spells and abilities have a chance to pep up you and your Coached ally, granting you both $s2 for $383803d. \r\n", 0, 0 },
   { 383799, "@spelldesc386578", "Mastery increased by $w3.", 0 },
@@ -17413,6 +17414,8 @@ static const std::array<spelltext_data_t, 19049> __spelltext_data { {
   { 384820, "Reduces the cooldown of Blessing of Sacrifice by ${$m1/-1000} sec.", 0, 0 },
   { 384825, "Gather 5 Leaves, then throw at the Playful Prowler!", 0, 0 },
   { 384858, "Consuming Clearcasting reduces the cooldown of Arcane Orb by ${$s3/1000} sec.\r\n\r\nAdditionally, casting Arcane Missiles $s1 times fires an Arcane Orb toward your target. Clearcast Arcane Missiles count as $s2.", 0, 0 },
+  { 384859, "$@spelldesc384858", "Building up an Arcane Orb", 0 },
+  { 384860, "$@spelldesc384858", "Your next Arcane Missiles will fire an Arcane Orb at your target.", 0 },
   { 384861, "Standing still for $384863d grants you Foresight, allowing you to cast while moving for ${$384865s1/1000} sec. This duration begins when you start moving.", 0, 0 },
   { 384863, "$@spelldesc384861", "You recently moved.\r\n\r\nStay still in order to gain Foresight.", 0 },
   { 384865, "$@spelldesc384861", "Your spells may be castable while moving.", 0 },
