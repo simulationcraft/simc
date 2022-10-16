@@ -418,7 +418,7 @@ public:
     player_talent_t rain_of_chaos; // TOCHECK: Ensure behavior is unchanged from SL
     const spell_data_t* rain_of_chaos_buff;
     const spell_data_t* summon_infernal_roc; // Contains Rain of Chaos infernal duration
-    // DF - Wilfred's Sigil of Superior Summoning (Choice against Rain of Chaos, formerly SL Legendary, NOTE: SHARES NAME WITH OTHER SPEC TALENTS)
+    // Grand Warlock's Design (formerly Wilfred's). Shared across all 3 specs
     // DF - Chaos Incarnate (Choice against Dimensional Rift, maximum mastery value for some spells)
     // DF - Dimensional Rift (Choice against Chaos Incarnate, charge cooldown instant spell which deals damage and grants fragments)
     // DF - Avatar of Destruction (Formerly SL Tier Bonus, summons Blasphemy when consuming Ritual of Ruin)
