@@ -253,6 +253,7 @@ public:
     actions::rogue_attack_t* bloodfang = nullptr;
     actions::rogue_attack_t* fan_the_hammer = nullptr;
     actions::flagellation_damage_t* flagellation = nullptr;
+    actions::rogue_attack_t* lingering_shadow = nullptr;
     actions::rogue_attack_t* main_gauche = nullptr;
     actions::rogue_attack_t* poison_bomb = nullptr;
     actions::shadow_blades_attack_t* shadow_blades_attack = nullptr;
@@ -356,6 +357,7 @@ public:
     buff_t* take_em_by_surprise_aura;
     damage_buff_t* summarily_dispatched;
     // Subtlety
+    buff_t* lingering_shadow;
     buff_t* master_of_shadows;
     buff_t* premeditation;
     buff_t* secret_technique;   // Only to simplify APL tracking
@@ -610,6 +612,8 @@ public:
     const spell_data_t* relentless_strikes_energize;
     const spell_data_t* replicating_shadows_tick;
     const spell_data_t* invigorating_shadowdust_cdr;
+    const spell_data_t* lingering_shadow_attack;
+    const spell_data_t* lingering_shadow_buff;
     const spell_data_t* secret_technique_attack;
     const spell_data_t* secret_technique_clone_attack;
     const spell_data_t* shadow_blades_attack;
@@ -849,7 +853,7 @@ public:
       player_talent_t flagellation;             // NYI
 
       player_talent_t invigorating_shadowdust;
-      player_talent_t lingering_shadow;         // NYI
+      player_talent_t lingering_shadow;
       player_talent_t finality;                 // NYI, merge with legendary?
 
       player_talent_t the_rotten;
@@ -2034,6 +2038,7 @@ public:
   void trigger_flagellation( const action_state_t* state );
   void trigger_perforated_veins( const action_state_t* state );
   void trigger_banshees_blight( const action_state_t* state );
+  void trigger_lingering_shadow( const action_state_t* state );
 
   // General Methods ==========================================================
 
@@ -3171,14 +3176,36 @@ struct ambush_t : public rogue_attack_t
 
 // Backstab =================================================================
 
+struct lingering_shadow_t : public rogue_attack_t
+{
+  lingering_shadow_t( util::string_view name, rogue_t* p ) :
+    rogue_attack_t( name, p, p->spec.lingering_shadow_attack )
+  {
+  }
+};
+
 struct backstab_t : public rogue_attack_t
 {
   backstab_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
     rogue_attack_t( name, p, p->spec.backstab, options_str )
   {
-    if ( p->active.weaponmaster.backstab && p->active.weaponmaster.backstab != this )
+  }
+
+  void init() override
+  {
+    rogue_attack_t::init();
+
+    if ( !is_secondary_action() )
     {
-      add_child( p->active.weaponmaster.backstab );
+      if ( p()->active.weaponmaster.backstab )
+      {
+        add_child( p()->active.weaponmaster.backstab );
+      }
+
+      if ( p()->active.lingering_shadow && !p()->talent.subtlety.gloomblade->ok() )
+      {
+        add_child( p()->active.lingering_shadow );
+      }
     }
   }
 
@@ -3219,6 +3246,8 @@ struct backstab_t : public rogue_attack_t
       timespan_t duration = timespan_t::from_seconds( p()->talent.subtlety.improved_backstab->effectN( 1 ).base_value() );
       trigger_find_weakness( state, duration );
     }
+
+    trigger_lingering_shadow( state );
 
     if ( p()->talent.subtlety.inevitability->ok() )
     {
@@ -3985,6 +4014,24 @@ struct gloomblade_t : public rogue_attack_t
   {
   }
 
+  void init() override
+  {
+    rogue_attack_t::init();
+
+    if ( !is_secondary_action() )
+    {
+      if ( p()->active.weaponmaster.gloomblade )
+      {
+        add_child( p()->active.weaponmaster.gloomblade );
+      }
+
+      if ( p()->active.lingering_shadow && p()->talent.subtlety.gloomblade->ok() )
+      {
+        add_child( p()->active.lingering_shadow );
+      }
+    }
+  }
+
   void execute() override
   {
     rogue_attack_t::execute();
@@ -4010,6 +4057,8 @@ struct gloomblade_t : public rogue_attack_t
       timespan_t duration = timespan_t::from_seconds( p()->talent.subtlety.improved_backstab->effectN( 1 ).base_value() );
       trigger_find_weakness( state, duration );
     }
+
+    trigger_lingering_shadow( state );
 
     if ( p()->talent.subtlety.inevitability->ok() )
     {
@@ -6733,6 +6782,17 @@ struct shadow_dance_t : public stealth_like_buff_t<damage_buff_t>
   {
     apply_affecting_aura( p->talent.subtlety.dark_shadow );
   }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    stealth_like_buff_t::expire_override( expiration_stacks, remaining_duration );
+
+    if ( rogue->talent.subtlety.lingering_shadow->ok() )
+    {
+      rogue->buffs.lingering_shadow->cancel();
+      rogue->buffs.lingering_shadow->trigger( rogue->buffs.lingering_shadow->max_stack() );
+    }
+  }
 };
 
 struct shuriken_tornado_t : public buff_t
@@ -7963,6 +8023,25 @@ void actions::rogue_action_t<Base>::trigger_banshees_blight( const action_state_
       } );
     }
   }
+}
+
+template <typename Base>
+void actions::rogue_action_t<Base>::trigger_lingering_shadow( const action_state_t* state )
+{
+  if ( !p()->talent.subtlety.lingering_shadow->ok() || !ab::result_is_hit( state->result ) )
+    return;
+
+  // Testing appears to show this does not work on Weaponmaster attacks
+  if ( is_secondary_action() )
+    return;
+
+  int stacks = p()->buffs.lingering_shadow->stack();
+  if ( stacks < 1 )
+    return;
+
+  // Tooltips imply a bonus of 1% per stack, appears to use mitigated result
+  double amount = state->result_mitigated * ( stacks / 100.0 );
+  p()->active.lingering_shadow->execute_on_target( state->target, amount );
 }
 
 // ==========================================================================
@@ -9746,17 +9825,19 @@ void rogue_t::init_spells()
   spec.black_powder_shadow_attack = talent.subtlety.shadowed_finishers->ok() ? find_spell( 319190 ) : spell_data_t::not_found();
   spec.eviscerate_shadow_attack = talent.subtlety.shadowed_finishers->ok() ? find_spell( 328082 ) : spell_data_t::not_found();
   spec.master_of_shadows_buff = talent.subtlety.master_of_shadows->ok() ? find_spell( 196980 ) : spell_data_t::not_found();
+  spec.lingering_shadow_attack = talent.subtlety.lingering_shadow->ok() ? find_spell( 386081 ) : spell_data_t::not_found();
+  spec.lingering_shadow_buff = talent.subtlety.lingering_shadow->ok() ? find_spell( 385960 ) : spell_data_t::not_found();
   spec.premeditation_buff = talent.subtlety.premeditation->ok() ? find_spell( 343173 ) : spell_data_t::not_found();
-  spec.secret_technique_attack = talent.subtlety.secret_technique->ok() ? find_spell( 280720 ) : spell_data_t::not_found();
-  spec.secret_technique_clone_attack = talent.subtlety.secret_technique->ok() ? find_spell( 282449 ) : spell_data_t::not_found();
   spec.relentless_strikes_energize = talent.subtlety.relentless_strikes->ok() ? find_spell( 98440 ) : spell_data_t::not_found();
   spec.replicating_shadows_tick = talent.subtlety.replicating_shadows->ok() ? find_spell( 394031 ) : spell_data_t::not_found();
+  spec.secret_technique_attack = talent.subtlety.secret_technique->ok() ? find_spell( 280720 ) : spell_data_t::not_found();
+  spec.secret_technique_clone_attack = talent.subtlety.secret_technique->ok() ? find_spell( 282449 ) : spell_data_t::not_found();
+  spec.shadowstrike_stealth_buff = spec.shadowstrike->ok() ? find_spell( 196911 ) : spell_data_t::not_found();
   spec.shadow_blades_attack = talent.subtlety.shadow_blades->ok() ? find_spell( 279043 ) : spell_data_t::not_found();
   spec.shadow_focus_buff = talent.subtlety.shadow_focus->ok() ? find_spell( 112942 ) : spell_data_t::not_found();
+  spec.shadow_techniques_energize = spec.shadow_techniques->ok() ? find_spell( 196911 ) : spell_data_t::not_found();
   spec.shot_in_the_dark_buff = talent.subtlety.shot_in_the_dark->ok() ? find_spell( 257506 ) : spell_data_t::not_found();
   spec.silent_storm_buff = talent.subtlety.silent_storm->ok() ? find_spell( 385722 ) : spell_data_t::not_found();
-  spec.shadowstrike_stealth_buff = spec.shadowstrike->ok() ? find_spell( 196911 ) : spell_data_t::not_found();
-  spec.shadow_techniques_energize = spec.shadow_techniques->ok() ? find_spell( 196911 ) : spell_data_t::not_found();
 
   // Covenant Abilities =====================================================
 
@@ -9993,6 +10074,11 @@ void rogue_t::init_spells()
       secondary_trigger::WEAPONMASTER, "shadowstrike_weaponmaster" );
     active.weaponmaster.akaaris_shadowstrike = get_secondary_trigger_action<actions::akaaris_shadowstrike_t>(
       secondary_trigger::WEAPONMASTER, "shadowstrike_akaaris_weaponmaster" );
+  }
+
+  if ( talent.subtlety.lingering_shadow->ok() )
+  {
+    active.lingering_shadow = get_background_action<actions::lingering_shadow_t>( "lingering_shadow" );
   }
 
   if ( specialization() == ROGUE_SUBTLETY || legendary.toxic_onslaught->ok() )
@@ -10358,6 +10444,21 @@ void rogue_t::create_buffs()
   buffs.loaded_dice = make_buff( this, "loaded_dice", talent.outlaw.loaded_dice->effectN( 1 ).trigger() );
 
   // Subtlety
+
+  buffs.lingering_shadow = make_buff( this, "lingering_shadow", spec.lingering_shadow_buff )
+    ->apply_affecting_aura( talent.subtlety.lingering_shadow ) // Max Stack Modifier
+    ->set_default_value( 1.0 )
+    ->set_tick_zero( true )
+    ->set_freeze_stacks( true )
+    ->set_tick_callback( [this]( buff_t* b, int, timespan_t ) {
+      // This is wonky and set up with a rolling partial stack reduction so it alternates per tick
+      // Otherwise we could just use the normal set_reverse_stack_count() functionality
+      double stack_reduction = b->max_stack() / talent.subtlety.lingering_shadow->effectN( 3 ).base_value();
+      int target_stacks = std::ceil( b->max_stack() - ( stack_reduction * b->current_tick ) ) - 1;
+      make_event( sim, [ b, target_stacks ] { 
+        b->decrement( b->check() - target_stacks ); 
+      } );
+    } );
 
   buffs.master_of_shadows = make_buff( this, "master_of_shadows", spec.master_of_shadows_buff )
     ->set_default_value_from_effect_type( A_PERIODIC_ENERGIZE )
