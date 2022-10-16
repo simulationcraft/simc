@@ -2623,8 +2623,6 @@ struct charred_passions_sck_t : public monk_spell_t
 
 struct sck_tick_action_t : public monk_melee_attack_t
 {
-  charred_passions_sck_t* charred_passions;
-
   sck_tick_action_t( util::string_view name, monk_t* p, const spell_data_t* data )
     : monk_melee_attack_t( name, p, data )
   {
@@ -2641,13 +2639,6 @@ struct sck_tick_action_t : public monk_melee_attack_t
 
     if ( p->specialization() == MONK_WINDWALKER )
       apply_dual_wield_two_handed_scaling();
-
-    if ( p->talent.brewmaster.charred_passions->ok() )
-    {
-      charred_passions = new charred_passions_sck_t( p );
-
-      add_child( charred_passions );
-    }
 
     // Reset some variables to ensure proper execution
     dot_duration                  = timespan_t::zero();
@@ -2758,15 +2749,16 @@ struct sck_tick_action_t : public monk_melee_attack_t
         else if ( p()->talent.brewmaster.charred_passions->ok() )
           dmg_percent += p()->talent.brewmaster.charred_passions->effectN( 1 ).percent();
 
-        charred_passions->base_dd_min = s->result_amount * dmg_percent;
-        charred_passions->base_dd_max = s->result_amount * dmg_percent;
+        p()->active_actions.charred_passions->base_dd_min              = s->result_amount * dmg_percent;
+        p()->active_actions.charred_passions->base_dd_max = s->result_amount * dmg_percent;
 
         if ( p()->legendary.charred_passions->ok() )
-          charred_passions->s_data = p()->legendary.charred_passions->effectN( 1 ).trigger();
+          p()->active_actions.charred_passions->s_data = p()->legendary.charred_passions->effectN( 1 ).trigger();
         else if ( p()->talent.brewmaster.charred_passions->ok() )
-          charred_passions->s_data = p()->talent.brewmaster.charred_passions->effectN( 1 ).trigger();
+          p()->active_actions.charred_passions->s_data =
+              p()->talent.brewmaster.charred_passions->effectN( 1 ).trigger();
 
-        charred_passions->execute();
+        p()->active_actions.charred_passions->execute();
         p()->proc.charred_passions_sck->occur();
 
         if ( get_td( s->target )->dots.breath_of_fire->is_ticking() && p()->cooldown.charred_passions->up() )
@@ -2812,8 +2804,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
   spinning_crane_kick_t( monk_t* p, util::string_view options_str )
     : monk_melee_attack_t(
           "spinning_crane_kick", p,
-          ( p->specialization() == MONK_BREWMASTER ? p->spec.spinning_crane_kick_brm : p->spec.spinning_crane_kick ) ),
-      chi_x( nullptr )
+          ( p->specialization() == MONK_BREWMASTER ? p->spec.spinning_crane_kick_brm : p->spec.spinning_crane_kick ) )
   {
     parse_options( options_str );
 
@@ -2822,13 +2813,6 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     may_proc_bron                   = true;
     trigger_faeline_stomp           = true;
     trigger_bountiful_brew          = true;
-
-    // Brewmaster can use SCK again after the GCD
-    if ( p->specialization() == MONK_BREWMASTER )
-    {
-      dot_behavior      = DOT_EXTEND;
-      cast_during_sck   = true;
-    }
 
     may_crit = may_miss = may_block = may_dodge = may_parry = false;
     tick_zero = hasted_ticks = channeled = interrupt_auto_attack = true;
@@ -2842,7 +2826,26 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     tick_action =
         new sck_tick_action_t( "spinning_crane_kick_tick", p, p->spec.spinning_crane_kick->effectN( 1 ).trigger() );
 
-    chi_x = new chi_explosion_t( p );
+    // Brewmaster can use SCK again after the GCD
+    if ( p->specialization() == MONK_BREWMASTER )
+    {
+      dot_behavior    = DOT_EXTEND;
+      cast_during_sck = true;
+
+      if ( p->talent.brewmaster.charred_passions->ok() )
+      {
+        add_child( p->active_actions.charred_passions );
+      }
+    }
+    else if ( p->specialization() == MONK_WINDWALKER )
+    {
+      if ( p->talent.windwalker.jade_ignition->ok() )
+      {
+        chi_x = new chi_explosion_t( p );
+
+        add_child( chi_x );
+      }
+    }
   }
 
   action_state_t* new_state() override
@@ -8474,6 +8477,7 @@ void monk_t::init_spells()
   if ( spec_tree == MONK_BREWMASTER )
   {
     active_actions.breath_of_fire         = new actions::spells::breath_of_fire_dot_t ( *this );
+    active_actions.charred_passions       = new actions::charred_passions_sck_t( this );
     active_actions.celestial_fortune      = new actions::heals::celestial_fortune_t ( *this );
     active_actions.gift_of_the_ox_trigger = new actions::gift_of_the_ox_trigger_t ( *this );
     active_actions.gift_of_the_ox_expire  = new actions::gift_of_the_ox_expire_t ( *this );

@@ -176,7 +176,9 @@ public:
 
     // Brewmaster
     propagate_const<action_t*> breath_of_fire;
+    propagate_const<action_t*> charred_passions;
     propagate_const<heal_t*> celestial_fortune;
+    propagate_const<action_t*> exploding_keg;
     propagate_const<heal_t*> gift_of_the_ox_trigger;
     propagate_const<heal_t*> gift_of_the_ox_expire;
     propagate_const<actions::spells::stagger_self_damage_t*> stagger_self_damage;
