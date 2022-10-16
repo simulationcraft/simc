@@ -1027,7 +1027,7 @@ public:
 
     if ( affected_by.divine_purpose && p()->buffs.blessing_of_dawn->up() && p()->talents.seal_of_order->ok() )
     {
-      am *= 1.0 + p()->talents.seal_of_order->effectN( 1 ).percent();
+      am *= 1.0 + p()->talents.seal_of_order->effectN( 2 ).percent();
     }
 
     return am;

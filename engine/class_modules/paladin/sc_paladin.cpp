@@ -2446,6 +2446,30 @@ void paladin_t::create_buffs()
   buffs.blessing_of_dawn = make_buff( this, "blessing_of_dawn", talents.of_dusk_and_dawn->effectN( 1 ).trigger() );
   buffs.blessing_of_dusk = make_buff( this, "blessing_of_dusk", talents.of_dusk_and_dawn->effectN( 2 ).trigger() )
                                ->set_default_value_from_effect( 1 );
+  if ( talents.seal_of_order->ok() )
+  {
+    buffs.blessing_of_dusk->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
+        double recharge_mult = 1.0 / ( 1.0 + talents.seal_of_order->effectN( 1 ).percent() );
+        int label = talents.seal_of_order->effectN( 1 ).misc_value1();
+        for ( auto a : action_list )
+        {
+          if ( a->cooldown->duration != 0_ms && a->data().affected_by_label( label ) )
+          {
+            if ( new_ == 1 )
+              a->dynamic_recharge_rate_multiplier *= recharge_mult;
+            else
+              a->dynamic_recharge_rate_multiplier /= recharge_mult;
+
+            if ( a->cooldown->action == a )
+              a->cooldown->adjust_recharge_multiplier();
+
+            if ( a->internal_cooldown->action == a )
+              a->internal_cooldown->adjust_recharge_multiplier();
+          }
+        }
+      } );
+  }
+
   buffs.relentless_inquisitor = make_buff( this, "relentless_inquisitor", find_spell( 337315 ) )
                                     ->set_default_value( find_spell( 337315 )->effectN( 1 ).percent() )
                                     ->add_invalidate( CACHE_HASTE );
