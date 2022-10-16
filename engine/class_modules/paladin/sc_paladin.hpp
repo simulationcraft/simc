@@ -468,7 +468,7 @@ public:
     const spell_data_t* consecrated_blade;
     const spell_data_t* seal_of_wrath;
     const spell_data_t* expurgation;
-    const spell_data_t* boundless_judgment; // NYI
+    const spell_data_t* boundless_judgment;
     const spell_data_t* sanctification;
     const spell_data_t* inner_grace;
     const spell_data_t* ashes_to_dust;
@@ -492,7 +492,7 @@ public:
     const spell_data_t* ashes_to_ashes;
     const spell_data_t* templars_vindication; // ?
     const spell_data_t* execution_sentence; // ?
-    const spell_data_t* empyrean_legacy; // NYI
+    const spell_data_t* empyrean_legacy;
     const spell_data_t* virtuous_command;
     const spell_data_t* final_verdict; // sort of implemented
     const spell_data_t* executioners_will; // ?
