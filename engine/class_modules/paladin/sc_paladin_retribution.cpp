@@ -1203,7 +1203,9 @@ struct exorcism_t : public paladin_spell_t
   {
     exorcism_dot_t( paladin_t* p ) :
       paladin_spell_t( "exorcism_dot", p, p -> find_spell( 383208 ) )
-    { }
+    {
+      background = true;
+    }
 
     int n_targets() const override
     {
