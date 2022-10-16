@@ -764,12 +764,12 @@ struct touch_of_light_cb_t : public dbc_proc_callback_t
   {
     if ( s->target->is_enemy() )
     {
-      dmg->target = s->target;
+      dmg->set_target( s->target );
       dmg->schedule_execute();
     }
     else
     {
-      heal->target = s->target;
+      heal->set_target( s->target );
       heal->schedule_execute();
     }
   }
