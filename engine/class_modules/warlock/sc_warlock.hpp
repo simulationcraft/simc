@@ -405,7 +405,8 @@ public:
     player_talent_t crashing_chaos; // Summon Infernal reduces cost of next X casts
     const spell_data_t* crashing_chaos_buff;
     player_talent_t infernal_brand; // Infernal melees increase Infernal AoE damage (Formerly SL Conduit)
-    // DF - Power Overwhelming (2 point talent, stacking mastery buff for spending Soul Shards)
+    player_talent_t power_overwhelming; // Stacking mastery buff for spending Soul Shards
+    const spell_data_t* power_overwhelming_buff;
     // DF - Madness of the Azj'aqir (2 point talent, formerly SL Legendary, now applies to more spells)
     // DF - Master Ritualist (2 point talent, reduces proc cost of Ritual of Ruin)
     // DF - Burn to Ashes (2 point talent, Chaos Bolt and Rain of Fire increase damage of next 2 Incinerates)
@@ -567,7 +568,7 @@ public:
     propagate_const<buff_t*> conflagration_of_chaos_sb;
     propagate_const<buff_t*> flashpoint;
     propagate_const<buff_t*> crashing_chaos;
-    // DF - Power Overwhelming (stacking mastery when spending Soul Shards)
+    propagate_const<buff_t*> power_overwhelming;
     // DF - Burn to Ashes (increased Incinerate damage after Chaos Bolt/Rain of Fire)
     // DF - Chaos Incarnate? (passive max mastery on certain spells)
   } buffs;
