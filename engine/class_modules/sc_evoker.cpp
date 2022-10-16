@@ -1819,13 +1819,16 @@ struct pyre_t : public evoker_spell_t
   {
     evoker_spell_t::init();
 
-    if ( proc_spell_type & proc_spell_type_e::DRAGONRAGE )
-      volatility = p()->action.volatility_dragonrage;
-    else
-      volatility = p()->action.volatility;
+    if ( p()->talent.volatility->ok() )
+    {
+      if ( proc_spell_type & proc_spell_type_e::DRAGONRAGE )
+        volatility = p()->action.volatility_dragonrage;
+      else
+        volatility = p()->action.volatility;
 
-    if ( ( proc_spell_type & proc_spell_type_e::VOLATILITY ) == 0 )
-      add_child( volatility );
+      if ( ( proc_spell_type & proc_spell_type_e::VOLATILITY ) == 0 )
+        add_child( volatility );
+    }
   }
 
   bool has_amount_result() const override
