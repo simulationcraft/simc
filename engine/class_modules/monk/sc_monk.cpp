@@ -921,8 +921,12 @@ struct monk_spell_t : public monk_action_t<spell_t>
         pm *= 1 + p()->cache.mastery_value();
     }
 
-    if ( p()->buff.brewmasters_rhythm->check() && base_t::data().affected_by( p()->buff.brewmasters_rhythm->data().effectN( 1 ) ) )
-      pm *= 1 + p()->buff.brewmasters_rhythm->check_stack_value();
+    // Brewmaster Tier Set
+    if ( p()->specialization() == MONK_BREWMASTER )
+    {
+      if ( p()->buff.brewmasters_rhythm->check() && base_t::data().affected_by( p()->buff.brewmasters_rhythm->data().effectN( 1 ) ) )
+        pm *= 1 + p()->buff.brewmasters_rhythm->check_stack_value();
+    }
 
     return pm;
   }
@@ -7516,6 +7520,7 @@ monk_t::monk_t( sim_t* sim, util::string_view name, race_e r )
   cooldown.expel_harm              = get_cooldown( "expel_harm" );
   cooldown.fortifying_brew         = get_cooldown( "fortifying_brew" );
   cooldown.fists_of_fury           = get_cooldown( "fists_of_fury" );
+  cooldown.fury_of_xuen            = get_cooldown( "fury_of_xuen" );      
   cooldown.healing_elixir          = get_cooldown( "healing_elixir" );
   cooldown.invoke_niuzao           = get_cooldown( "invoke_niuzao_the_black_ox" );
   cooldown.invoke_xuen             = get_cooldown( "invoke_xuen_the_white_tiger" );
