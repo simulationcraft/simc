@@ -4919,11 +4919,8 @@ struct melee_focus_spender_t: hunter_melee_attack_t
       rylakstalkers_strikes.proc = p -> get_proc( "Rylakstalker's Confounding Strikes" );
     }
 
-    if ( s -> ok() && p -> talents.spearhead.ok() )
-    {
+    if ( p -> talents.spearhead.ok() )
       spearhead = p -> get_background_action<spearhead_bleed_t>( "spearhead_bleed" );
-      add_child( spearhead );
-    }
   }
 
   void execute() override
@@ -4998,7 +4995,10 @@ struct mongoose_bite_base_t: melee_focus_spender_t
     for ( size_t i = 0; i < stats_.at_fury.size(); i++ )
       stats_.at_fury[ i ] = p -> get_proc( fmt::format( "bite_at_{}_fury", i ) );
 
-    background = ! p -> talents.mongoose_bite.ok();
+    background = !p -> talents.mongoose_bite.ok();
+
+    if ( p -> talents.mongoose_bite.ok() )
+      add_child( spearhead );
   }
 
   void execute() override
@@ -5183,6 +5183,9 @@ struct raptor_strike_base_t: public melee_focus_spender_t
     melee_focus_spender_t( n, p, s )
   {
     background = p -> talents.mongoose_bite.ok();
+
+    if ( !p -> talents.mongoose_bite.ok() )
+      add_child( spearhead );
   }
 };
 
