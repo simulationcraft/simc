@@ -581,7 +581,6 @@ struct infernal_t : public warlock_pet_t
   void init_base_stats() override;
   void create_buffs() override;
   void arise() override;
-  void demise() override;
 };
 
 struct blasphemy_t : public infernal_t

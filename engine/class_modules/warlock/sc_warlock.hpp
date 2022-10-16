@@ -131,14 +131,9 @@ public:
   {
     warlock_pet_t* active;
     warlock_pet_t* last;
-    static const int INFERNAL_LIMIT  = 1;
 
-    //TODO: Refactor infernal code including new talent Rain of Chaos
-    std::array<pets::destruction::infernal_t*, INFERNAL_LIMIT> infernals;
-    spawner::pet_spawner_t<pets::destruction::infernal_t, warlock_t>
-        roc_infernals;  // Infernal(s) summoned by Rain of Chaos
-    spawner::pet_spawner_t<pets::destruction::blasphemy_t, warlock_t>
-        blasphemy;  // DF - Now a Destruction Talent
+    spawner::pet_spawner_t<pets::destruction::infernal_t, warlock_t> infernals;
+    spawner::pet_spawner_t<pets::destruction::blasphemy_t, warlock_t> blasphemy;  // DF - Now a Destruction Talent
 
     spawner::pet_spawner_t<pets::affliction::darkglare_t, warlock_t> darkglare;
 
@@ -399,7 +394,9 @@ public:
     player_talent_t ashen_remains; // Increased Chaos Bolt and Incinerate damage to targets afflicted by Immolate (Formerly SL Conduit)
     // Grimoire of Sacrifice (shared with Affliction)
 
-    // DF - Summon Infernal
+    player_talent_t summon_infernal;
+    const spell_data_t* summon_infernal_main; // Data for main infernal summoning
+    const spell_data_t* infernal_awakening; // AoE on impact is attributed to the Warlock
     // DF - Embers of the Diabolic (formerly SL Legendary)
     // DF - Ritual of Ruin (formerly SL Tier Bonus, functionality slightly modified)
     
@@ -757,7 +754,6 @@ public:
   // sc_warlock_pets
   pet_t* create_main_pet( util::string_view pet_name, util::string_view pet_type );
   pet_t* create_demo_pet( util::string_view pet_name, util::string_view pet_type );
-  void create_all_pets();
   std::unique_ptr<expr_t> create_pet_expression( util::string_view name_str );
 };
 

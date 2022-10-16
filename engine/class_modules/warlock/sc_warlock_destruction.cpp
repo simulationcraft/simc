@@ -38,19 +38,19 @@ public:
   {
     warlock_spell_t::consume_resource();
 
-    if ( resource_current == RESOURCE_SOUL_SHARD && p()->buffs.rain_of_chaos->check() )
-    {
-      for ( int i = 0; i < as<int>( cost() ); i++ )
-      {
-        //trigger deck of cards draw
-        if ( p()->rain_of_chaos_rng->trigger() )
-        {
-          //Currently storing infernal duration (spell 335286) in buff default value
-          p()->warlock_pet_list.roc_infernals.spawn( timespan_t::from_millis( p()->buffs.rain_of_chaos->default_value ) + 1000_ms, 1U); // 2022-06-29 Animation has 2 second pad at end of lifetime, but safety window for actions is smaller. TOCHECK
-          p()->procs.rain_of_chaos->occur();
-        }
-      }
-    }
+    //if ( resource_current == RESOURCE_SOUL_SHARD && p()->buffs.rain_of_chaos->check() )
+    //{
+    //  for ( int i = 0; i < as<int>( cost() ); i++ )
+    //  {
+    //    //trigger deck of cards draw
+    //    if ( p()->rain_of_chaos_rng->trigger() )
+    //    {
+    //      //Currently storing infernal duration (spell 335286) in buff default value
+    //      p()->warlock_pet_list.roc_infernals.spawn( timespan_t::from_millis( p()->buffs.rain_of_chaos->default_value ) + 1000_ms, 1U); // 2022-06-29 Animation has 2 second pad at end of lifetime, but safety window for actions is smaller. TOCHECK
+    //      p()->procs.rain_of_chaos->occur();
+    //    }
+    //  }
+    //}
   }
 
   double composite_target_multiplier( player_t* t ) const override
@@ -696,59 +696,41 @@ struct chaos_bolt_t : public destruction_spell_t
 
 struct infernal_awakening_t : public destruction_spell_t
 {
-  infernal_awakening_t( warlock_t* p ) : destruction_spell_t( "infernal_awakening", p, p->find_spell( 22703 ) )
+  infernal_awakening_t( warlock_t* p ) : destruction_spell_t( "infernal_awakening", p, p->talents.infernal_awakening )
   {
     destro_mastery = false;
-    aoe            = -1;
-    background     = true;
-    dual           = true;
-    trigger_gcd    = 0_ms;
-    base_multiplier *= 1.0 + p->spec.summon_infernal_2->effectN( 1 ).percent();
-  }
-};
-
-struct summon_infernal_t : public destruction_spell_t
-{
-  infernal_awakening_t* infernal_awakening;
-  timespan_t infernal_duration;
-
-  summon_infernal_t( warlock_t* p, util::string_view options_str )
-    : destruction_spell_t( "summon_infernal", p, p->find_spell( 1122 ) ), infernal_awakening( nullptr )
-  {
-    parse_options( options_str );
-
-    harmful = may_crit        = false;
-    infernal_duration         = p->find_spell( 111685 )->duration() + 1000_ms; // 2022-06-29 Animation has 2 second pad at end of lifetime, but safety window for actions is smaller. TOCHECK
-    infernal_awakening        = new infernal_awakening_t( p );
-    infernal_awakening->stats = stats;
-    radius                    = infernal_awakening->radius;
+    aoe = -1;
+    background = dual = true;
   }
 
   void execute() override
   {
     destruction_spell_t::execute();
 
-    // TODO - Make infernal not spawn until after infernal awakening impacts.
-    if ( infernal_awakening )
-      infernal_awakening->execute();
+    p()->warlock_pet_list.infernals.spawn( p()->talents.summon_infernal_main->duration() ); // TOCHECK: Infernal duration may be fuzzy
+  }
+};
 
-    for ( auto* infernal : p()->warlock_pet_list.infernals )
-    {
-      if ( infernal->is_sleeping() )
-      {
-        infernal->summon( infernal_duration );
-      }
-    }
+struct summon_infernal_t : public destruction_spell_t
+{
+  summon_infernal_t( warlock_t* p, util::string_view options_str )
+    : destruction_spell_t( "summon_infernal", p, p->talents.summon_infernal )
+  {
+    parse_options( options_str );
 
-    if ( p()->talents.rain_of_chaos->ok() )
-    {
-      p()->buffs.rain_of_chaos->extend_duration_or_trigger();
-    }
+    harmful = may_crit = false;
+    impact_action = new infernal_awakening_t( p );
+    add_child( impact_action );
   }
 
-  timespan_t travel_time() const override
+  void execute() override
   {
-    return timespan_t::from_seconds( data().missile_speed() );
+    destruction_spell_t::execute();
+
+    //if ( p()->talents.rain_of_chaos->ok() )
+    //{
+    //  p()->buffs.rain_of_chaos->extend_duration_or_trigger();
+    //}
   }
 };
 
@@ -1232,9 +1214,9 @@ void warlock_t::init_spells_destruction()
 
   talents.ashen_remains = find_talent_spell( talent_tree::SPECIALIZATION, "Ashen Remains" ); // Should be ID 387252
 
-
-
-
+  talents.summon_infernal = find_talent_spell( talent_tree::SPECIALIZATION, "Summon Infernal" ); // Should be ID 1122
+  talents.summon_infernal_main = find_spell( 111685 );
+  talents.infernal_awakening = find_spell( 22703 );
 
 
 
