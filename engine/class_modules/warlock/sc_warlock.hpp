@@ -398,7 +398,9 @@ public:
     const spell_data_t* summon_infernal_main; // Data for main infernal summoning
     const spell_data_t* infernal_awakening; // AoE on impact is attributed to the Warlock
     player_talent_t diabolic_embers; // Incinerate generates more Soul Shards (Formerly SL Legendary)
-    // DF - Ritual of Ruin (formerly SL Tier Bonus, functionality slightly modified)
+    player_talent_t ritual_of_ruin; // Formerly SL Tier Bonus
+    const spell_data_t* impending_ruin_buff; // Stacking buff, triggers Ritual of Ruin buff at max
+    const spell_data_t* ritual_of_ruin_buff;
     
     // DF - Crashing Chaos (2 point talent, Summon Infernal reduces cost of next X casts)
     // DF - Infernal Brand (2 point talent, formerly SL Conduit)
@@ -556,7 +558,7 @@ public:
     propagate_const<buff_t*> backdraft; // DF - Max 2 stacks
     propagate_const<buff_t*> reverse_entropy;
     propagate_const<buff_t*> rain_of_chaos;
-    propagate_const<buff_t*> impending_ruin; // DF - Impending Ruin and Ritual of Ruin now come from Destruction talent
+    propagate_const<buff_t*> impending_ruin;
     propagate_const<buff_t*> ritual_of_ruin;
     propagate_const<buff_t*> madness_of_the_azjaqir; // DF - Now comes from Destruction talent
     propagate_const<buff_t*> rolling_havoc;

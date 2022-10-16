@@ -38,6 +38,8 @@ public:
   {
     warlock_spell_t::consume_resource();
 
+    int shards_used = as<int>( cost() );
+
     //if ( resource_current == RESOURCE_SOUL_SHARD && p()->buffs.rain_of_chaos->check() )
     //{
     //  for ( int i = 0; i < as<int>( cost() ); i++ )
@@ -51,6 +53,14 @@ public:
     //    }
     //  }
     //}
+
+    if ( p()->talents.ritual_of_ruin.ok() && resource_current == RESOURCE_SOUL_SHARD && shards_used > 0 )
+    {
+      int overflow = p()->buffs.impending_ruin->check() + shards_used - p()->buffs.impending_ruin->max_stack();
+      p()->buffs.impending_ruin->trigger( shards_used ); //Stack change callback should switch Impending Ruin to Ritual of Ruin if max stacks reached
+      if ( overflow > 0 )
+        make_event( sim, 1_ms, [ this, overflow ] { p()->buffs.impending_ruin->trigger( overflow ); } );
+    }
   }
 
   double composite_target_multiplier( player_t* t ) const override
@@ -527,27 +537,28 @@ struct chaos_bolt_t : public destruction_spell_t
   {
     double c = destruction_spell_t::cost();
 
-    //if ( p()->buffs.ritual_of_ruin->check() )
-    //  c *= 1 + p()->buffs.ritual_of_ruin->data().effectN( 2 ).percent();
+    if ( p()->buffs.ritual_of_ruin->check() )
+      c *= 1.0 + p()->talents.ritual_of_ruin_buff->effectN( 2 ).percent();
 
     return c;      
   }
 
   timespan_t execute_time() const override
   {
-    timespan_t h = destruction_spell_t::execute_time();
+    timespan_t t = destruction_spell_t::execute_time();
     
-    //if ( p()->buffs.ritual_of_ruin->check() )
-    //  h *= 1.0 + p()->buffs.ritual_of_ruin->data().effectN( 3 ).percent();
-
+    // 2022-10-15: Backdraft is not consumed for Ritual of Ruin empowered casts, but IS hasted by it
+    if ( p()->buffs.ritual_of_ruin->check() )
+      t *= 1.0 + p()->talents.ritual_of_ruin_buff->effectN( 3 ).percent();
+    
     if ( p()->buffs.backdraft->check() )
-      h *= 1.0 + p()->talents.backdraft_buff->effectN( 1 ).percent();
+      t *= 1.0 + p()->talents.backdraft_buff->effectN( 1 ).percent();
 
     //// SL - Legendary
     //if ( p()->buffs.madness_of_the_azjaqir->check() )
     //  h *= 1.0 + p()->buffs.madness_of_the_azjaqir->data().effectN( 2 ).percent();
 
-    return h;
+    return t;
   }
 
   double action_multiplier() const override
@@ -585,7 +596,7 @@ struct chaos_bolt_t : public destruction_spell_t
     if ( t == 0_ms )
       return t;
 
-    // PTR 2022-02-16: Backdraft is no longer consumed when using T28 free Chaos Bolt cast, but GCD is still shortened
+    // 2022-10-15: Backdraft is not consumed for Ritual of Ruin empowered casts, but IS hasted by it
     if ( p()->buffs.backdraft->check() )
       t *= 1.0 + p()->talents.backdraft_buff->effectN( 2 ).percent();
 
@@ -618,11 +629,11 @@ struct chaos_bolt_t : public destruction_spell_t
     int shards_used = as<int>( cost() );
     destruction_spell_t::execute();
 
-    //// PTR 2022-02-16: Backdraft is no longer consumed for T28 free Chaos Bolts
-    //if ( !p()->buffs.ritual_of_ruin->check() )
-    //  p()->buffs.backdraft->decrement();
+    // 2022-10-15: Backdraft is not consumed for Ritual of Ruin empowered casts, but IS hasted by it
+    if ( !p()->buffs.ritual_of_ruin->check() )
+      p()->buffs.backdraft->decrement();
 
-    p()->buffs.backdraft->decrement();
+    p()->buffs.ritual_of_ruin->expire();
 
     //// SL - Legendary
     //if ( p()->legendary.madness_of_the_azjaqir->ok() )
@@ -782,8 +793,8 @@ struct rain_of_fire_t : public destruction_spell_t
   {
     double c = destruction_spell_t::cost();
 
-    //if ( p()->buffs.ritual_of_ruin->check() )
-    //  c *= 1 + p()->buffs.ritual_of_ruin->data().effectN( 2 ).percent();
+    if ( p()->buffs.ritual_of_ruin->check() )
+      c *= 1.0 + p()->talents.ritual_of_ruin_buff->effectN( 5 ).percent();
 
     return c;        
   }
@@ -843,6 +854,8 @@ struct rain_of_fire_t : public destruction_spell_t
                                         .duration( p()->talents.rain_of_fire->duration() * player->cache.spell_haste() )
                                         .start_time( sim->current_time() )
                                         .action( p()->proc_actions.rain_of_fire_tick ) );
+
+    p()->buffs.ritual_of_ruin->expire();
   }
 
   void impact( action_state_t* s ) override
@@ -1099,8 +1112,7 @@ void warlock_t::create_buffs_destruction()
       make_buff( this, "madness_of_the_azjaqir", legendary.madness_of_the_azjaqir->effectN( 1 ).trigger() )
           ->set_trigger_spell( legendary.madness_of_the_azjaqir );
 
-  // Tier Sets
-  buffs.impending_ruin = make_buff ( this, "impending_ruin", find_spell ( 364348 ) )
+  buffs.impending_ruin = make_buff ( this, "impending_ruin", talents.impending_ruin_buff )
                              ->set_stack_change_callback( [ this ]( buff_t* b, int, int cur )
                                {
                                  if ( cur == b->max_stack() )
@@ -1112,7 +1124,7 @@ void warlock_t::create_buffs_destruction()
                                  };
                                });
 
-  buffs.ritual_of_ruin = make_buff ( this, "ritual_of_ruin", find_spell ( 364349 ) );
+  buffs.ritual_of_ruin = make_buff ( this, "ritual_of_ruin", talents.ritual_of_ruin_buff );
 
   buffs.conflagration_of_chaos_cf = make_buff( this, "conflagration_of_chaos_cf", talents.conflagration_of_chaos_cf )
                                         ->set_default_value_from_effect( 1 );
@@ -1217,7 +1229,9 @@ void warlock_t::init_spells_destruction()
 
   talents.diabolic_embers = find_talent_spell( talent_tree::SPECIALIZATION, "Diabolic Embers" ); // Should be ID 387173
 
-
+  talents.ritual_of_ruin = find_talent_spell( talent_tree::SPECIALIZATION, "Ritual of Ruin" ); // Should be ID 387156
+  talents.impending_ruin_buff = find_spell( 387158 );
+  talents.ritual_of_ruin_buff = find_spell( 387157 );
 
 
   talents.rain_of_chaos = find_talent_spell( "Rain of Chaos" );
