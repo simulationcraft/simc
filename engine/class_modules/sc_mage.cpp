@@ -3725,7 +3725,10 @@ struct evocation_t final : public arcane_mage_spell_t
     harmful = false;
     target = player;
 
-    if ( p->runeforge.siphon_storm.ok() )
+    if ( p->talents.siphon_storm.ok() )
+      siphon_storm_charges = as<int>( p->find_spell( 384265 )->effectN( 1 ).base_value() );
+
+    if ( p->runeforge.siphon_storm.ok() && !p->talents.siphon_storm.ok() )
       siphon_storm_charges = as<int>( p->find_spell( 332929 )->effectN( 1 ).base_value() );
   }
 
@@ -7115,10 +7118,10 @@ void mage_t::create_buffs()
                            ->set_default_value_from_effect( 1 )
                            ->set_chance( runeforge.arcane_harmony.ok() )
                            ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
-  buffs.siphon_storm   = make_buff( this, "siphon_storm", find_spell( 332934 ) )
+  buffs.siphon_storm   = make_buff( this, "siphon_storm", find_spell( talents.temporal_warp.ok() ? 384267 : 332934 ) )
                            ->set_default_value_from_effect( 1 )
                            ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT )
-                           ->set_chance( runeforge.siphon_storm.ok() );
+                           ->set_chance( talents.siphon_storm.ok() || runeforge.siphon_storm.ok() );
   buffs.temporal_warp  = make_buff( this, "temporal_warp", find_spell( talents.temporal_warp.ok() ? 386540 : 327355 ) )
                            ->set_default_value_from_effect( 1 )
                            ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
