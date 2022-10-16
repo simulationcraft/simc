@@ -129,6 +129,7 @@ public:
     buff_t* shining_light_stacks;
     buff_t* shining_light_free;
     buff_t* royal_decree;
+    buff_t* bastion_of_light;
 
     buff_t* inner_light;
     buff_t* inspiring_vanguard;
@@ -354,14 +355,13 @@ public:
     
     // 20
     const spell_data_t* seal_of_clarity;
-    const spell_data_t* aspirations_of_divinity;
-    const spell_data_t* avenging_wrath_2; //Cdr
+    const spell_data_t* aspiration_of_divinity;
     const spell_data_t* touch_of_light;
     const spell_data_t* incandescence;
     const spell_data_t* hallowed_ground;
     const spell_data_t* of_dusk_and_dawn;
     const spell_data_t* unbreakable_spirit;
-    const spell_data_t* judgment;
+    const spell_data_t* greater_judgment;
     const spell_data_t* seal_of_might;
     const spell_data_t* blessing_of_spellwarding;
     const spell_data_t* improved_blessing_of_protection;
@@ -371,7 +371,7 @@ public:
     const spell_data_t* prot_sanctified_wrath;
     const spell_data_t* ret_sanctified_wrath;
     const spell_data_t* seraphim;
-    const spell_data_t* the_mad_paragon;
+    const spell_data_t* zealots_paragon;
 
 
     // Shared
@@ -419,17 +419,17 @@ public:
     const spell_data_t* bastion_of_light;
     const spell_data_t* bulwark_of_order;
     const spell_data_t* light_of_the_titans;
-    const spell_data_t* uthers_guard;
+    const spell_data_t* uthers_counsel;
     const spell_data_t* hand_of_the_protector;
     const spell_data_t* resolute_defender;
     const spell_data_t* sentinel;
     const spell_data_t* avenging_wrath_might;
     const spell_data_t* strength_of_conviction;
-    const spell_data_t* ferren_marcuss_strength;
+    const spell_data_t* ferren_marcuss_fervor;
     const spell_data_t* tyrs_enforcer;
     const spell_data_t* guardian_of_ancient_kings;
     const spell_data_t* sanctuary;
-    const spell_data_t* faith_barricade;
+    const spell_data_t* barricade_of_faith;
     
     // 20
     const spell_data_t* soaring_shield;
@@ -443,7 +443,7 @@ public:
     const spell_data_t* bulwark_of_righteous_fury;
     const spell_data_t* moment_of_glory;
     const spell_data_t* eye_of_tyr;
-    const spell_data_t* improved_sera_and_dt;
+    const spell_data_t* quickened_invocations;
 
     // Retribution
     // 0
@@ -661,6 +661,7 @@ public:
   void    trigger_grand_crusader();
   void    trigger_holy_shield( action_state_t* s );
   void    trigger_tyrs_enforcer( action_state_t* s );
+  void    trigger_inner_light( action_state_t* s );
   void    trigger_t28_4p_prot( action_state_t* s );
   void    trigger_forbearance( player_t* target );
   int     get_local_enemies( double distance ) const;
@@ -846,7 +847,7 @@ public:
   // Damage increase whitelists
   struct affected_by_t
   {
-    bool avenging_wrath, judgment, blessing_of_dawn, the_magistrates_judgment, seal_of_reprisal, seal_of_order; // Shared
+    bool avenging_wrath, judgment, blessing_of_dawn, the_magistrates_judgment, seal_of_reprisal, seal_of_order, bastion_of_light; // Shared
     bool crusade, divine_purpose, divine_purpose_cost, hand_of_light, final_reckoning, reckoning; // Ret
     bool avenging_crusader; // Holy
   } affected_by;
@@ -886,6 +887,7 @@ public:
     this -> affected_by.blessing_of_dawn = this -> data().affected_by( p -> talents.of_dusk_and_dawn -> effectN( 1 ).trigger() -> effectN( 1 ) );
     this -> affected_by.the_magistrates_judgment = this -> data().affected_by( p -> buffs.the_magistrates_judgment -> data().effectN( 1 ) );
     this -> affected_by.seal_of_reprisal = this -> data().affected_by( p-> talents.seal_of_reprisal->effectN( 1 ) );
+    this -> affected_by.bastion_of_light = this -> data().affected_by( p->talents.bastion_of_light->effectN( 1 ) );
   }
 
   paladin_t* p()
@@ -1239,10 +1241,12 @@ struct holy_power_consumer_t : public Base
     typedef holy_power_consumer_t base_t;
   bool is_divine_storm;
   bool is_wog;
+  bool is_sotr;
   holy_power_consumer_t( util::string_view n, paladin_t* player, const spell_data_t* s ) :
     ab( n, player, s ),
     is_divine_storm ( false ),
-    is_wog( false )
+    is_wog( false ),
+    is_sotr( false )
   { }
 
   double cost() const override
@@ -1381,6 +1385,10 @@ struct holy_power_consumer_t : public Base
       }
     }
 
+    if ((is_wog || is_sotr) && p -> buffs.bastion_of_light -> check() )
+    {
+      p -> buffs.bastion_of_light->decrement();
+    }
     // For prot (2021-06-22). Magistrate's does not get consumed when DP or SL
     // are up, but does with RD.
     // (2021-06-26) Vanquisher's hammer's auto-sotr does not interact with magistrate's judgment

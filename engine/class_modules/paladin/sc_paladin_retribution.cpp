@@ -992,7 +992,7 @@ struct judgment_ret_t : public judgment_t
 
     if ( result_is_hit( s -> result ) )
     {
-      if ( p() -> talents.judgment -> ok() )
+      if ( p() -> talents.greater_judgment -> ok() )
         td( s -> target ) -> debuff.judgment -> trigger();
 
       if ( p() -> talents.seal_of_wrath -> ok() )
