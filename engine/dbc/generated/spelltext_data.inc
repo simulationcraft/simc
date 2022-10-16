@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.2.46157
-static const std::array<spelltext_data_t, 19040> __spelltext_data { {
+static const std::array<spelltext_data_t, 19049> __spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -300,6 +300,7 @@ static const std::array<spelltext_data_t, 19040> __spelltext_data { {
   {  11390, "Increases Intellect and critical strike by $s1 for $d.  Battle Elixir.", "Intellect and critical strike increased by $w1.  Battle Elixir.", 0 },
   {  11396, "Increases your Intellect by $s1 for $d. Battle Elixir.", "Intellect increased by $w1.  Battle Elixir.", 0 },
   {  11405, "Increases your Strength by $s1 for $d.  Battle Elixir.", "Increases Strength by $w1.  Battle Elixir.", 0 },
+  {  11426, "Shields you with ice, absorbing $<shield> damage$?s235297[ and increasing your armor by $s3%][] for $d.\r\n\r\nMelee attacks against you reduce the attacker's movement speed by $205708s1%.", "Absorbs $w1 damage.\r\nMelee attackers slowed by $205708s1%.$?s235297[\r\nArmor increased by $s3%.][]", 0 },
   {  11474, "Increases shadow spell power by $s1 for $d.  Battle Elixir.", "Shadow spell power increased by $w1.  Battle Elixir.", 0 },
   {  11629, "An extremely potent alcoholic beverage.", "Sloshed.", 0 },
   {  11654, "Combines Jang'thraze and Sang'thraze to form the mighty sword, Sul'thraze.", 0, 0 },
@@ -6195,6 +6196,7 @@ static const std::array<spelltext_data_t, 19040> __spelltext_data { {
   { 194249, "$@spelldesc228264", "$?s193225[Spell damage dealt increased by $w16%.][Spell damage dealt increased by $w1%.]\r\n$?s341240[Critical strike chance increased by ${$W4}.1%.][]$?s193225[ Losing ${$w3/500} Insanity every sec.][]", 0 },
   { 194310, "A pustulent lesion that will burst on death or when damaged by Scourge Strike, dealing $194311s1 Shadow damage and generating ${$195757s2/10} Runic Power.", "Suffering from a wound that will deal ${$194311s1/$s1} Shadow damage when damaged by Scourge Strike.", 0 },
   { 194311, "$@spelldesc194310", 0, 0 },
+  { 194315, "Blazing Barrier reduces all Physical damage you take by $s1%.", 0, 0 },
   { 194384, "$@spelldesc81749", "Healed whenever $@auracaster damages an enemy.", 0 },
   { 194407, "$@spelldesc257891", 0, 0 },
   { 194431, "Flamestrike calls down $m1 additional pillar of fire each time it is cast.", 0, 0 },
@@ -6839,6 +6841,7 @@ static const std::array<spelltext_data_t, 19040> __spelltext_data { {
   { 205473, "$@spelldesc76613", "$w1 |4Icicle:Icicles; stored.", 0 },
   { 205477, "Dominate Mind can now be used on players.", 0, 0 },
   { 205495, "Raises |cFFFFCC99The Fist of Ra-den|r to the sky and absorbs all nearby electric energy, causing your next $n casts of Lightning Bolt or Chain Lightning to be instant and deal $s1% increased damage.", "Your next Lightning Bolt or Chain Lightning will be instant and deal $w1% additional damage.", "Artifact" },
+  { 205523, "Strike with a blast of Chi energy, dealing $s1 Physical damage$?s117906[ and granting Shuffle for $s2 sec][].", 0, 0 },
   { 205545, "Unleashes the fiery power Odyn bestowed the |cFFFFCC99Warswords|r, dealing ${$205546sw2+$205547sw2} Fire damage and an additional $205546o3 Fire damage over $205546d to all enemies within $205546A2 yards.", 0, "Artifact" },
   { 205546, "$@spelldesc205545", "Suffering $o3 Fire damage over $d.", 0 },
   { 205547, "$@spelldesc205545", 0, 0 },
@@ -7721,6 +7724,7 @@ static const std::array<spelltext_data_t, 19040> __spelltext_data { {
   { 224167, "$@spelldesc224164", "Strength increased by $s1.", 0 },
   { 224169, "Your spells and abilities have a chance to increase your Critical Strike, Haste, or Mastery by $s2 for $224170d, whichever is highest.", 0, 0 },
   { 224170, "$@spelldesc224169", "Critical Strike increased by $w1.", 0 },
+  { 224239, "$@spelldesc53385", 0, 0 },
   { 224266, "A powerful weapon strike that deals $s1 Holy damage.", 0, 0 },
   { 224301, "Combine the Seed of Solar Fire with a Pure Drop of Shaladrassil's Sap to create a rare Sunbloom.\r\n", 0, 0 },
   { 224310, "Combine the Crest of the Lightborn with the Rod of the Ascended to create the Staff of the Lightborn.\r\n", 0, 0 },
@@ -8212,7 +8216,10 @@ static const std::array<spelltext_data_t, 19040> __spelltext_data { {
   { 235273, "Evocation gains $s1 additional $Lcharge:charges;.", 0, 0 },
   { 235297, "Ice Barrier increases your armor by $s1% while active, and Ice Block applies Ice Barrier to you when it fades.", 0, 0 },
   { 235300, "Each time you dodge or an enemy misses you, the remaining cooldown on your Brews is reduced by ${$s1/10}.1 sec.", 0, 0 },
+  { 235313, "Shields you in flame, absorbing $<shield> damage$?s194315[ and reducing Physical damage taken by $s3%][] for $d.\r\n\r\nMelee attacks against you cause the attacker to take $235314s1 Fire damage.", "Absorbs $w1 damage.\r\nMelee attackers take $235314s1 Fire damage.", 0 },
+  { 235314, "$@spelldesc235313", 0, 0 },
   { 235365, "Casting Blink ignites a Blazing Barrier around you.", 0, 0 },
+  { 235450, "Shields you with an arcane force, absorbing $<shield> damage and reducing magic damage taken by $s3% for $d.\r\n\r\nThe duration of harmful Magic effects against you is reduced by $s4%.", "Absorbs $w1 damage.\r\nMagic damage taken reduced by $s3%.\r\nDuration of all harmful Magic effects reduced by $w4%.", 0 },
   { 235484, "Critical strikes with Between the Eyes deal four times normal damage.\r\n", 0, 0 },
   { 235524, "Your Fiery Brand now heals you for $s1% of the damage done and each enemy hit by your Sigil of Flame increases the instant damage of your next Fiery Brand by $235543s1%, stacking up to $235543u times.", 0, 0 },
   { 235543, "$@spelldesc235524", "Increases the damage of your next Fiery Brand by $s1%.", 0 },
@@ -17755,6 +17762,7 @@ static const std::array<spelltext_data_t, 19040> __spelltext_data { {
   { 387154, "$@spelldesc387153", "Incinerate damage increased by $w1%.", 0 },
   { 387156, "Every $s1 Soul Shards spent grants Ritual of Ruin, making your next Chaos Bolt or Rain of Fire consume no Soul Shards and have its cast time reduced by $387157s3%.", 0, 0 },
   { 387157, "$@spelldesc387156", "Your next Chaos Bolt or Rain of Fire cost no Soul Shards and has its cast time reduced by $s3%.", 0 },
+  { 387158, "$@spelldesc387156", "$@spelldesc387156", 0 },
   { 387159, "When Chaos Bolt or Rain of Fire consumes a charge of Ritual of Ruin, you summon a Blasphemy for $s1 sec.\r\n\r\n$@spellicon387161 $@spellname387161\r\n$@spelldesc387161", 0, 0 },
   { 387160, "Summons a Blasphemy from the Twisting Nether, impacting for $22703s1 Fire damage and stunning all enemies in the area for $22703d.\r\n\r\nThe Blasphemy will serve you for $387159s1 sec, dealing ${$20153s1*(100+$137046s3)/100} damage to all nearby enemies every $19483t1 sec and generating $264365s1 Soul Shard Fragment every $264364t1 sec.", 0, "Guardian" },
   { 387161, "$@spelldesc387160", "$@spelldesc387160", "Guardian" },
@@ -17822,6 +17830,7 @@ static const std::array<spelltext_data_t, 19040> __spelltext_data { {
   { 387349, "The chance of receiving a Demonic Core from a Wild Imp is increased by $s1% or $s2% when imploded.", 0, 0 },
   { 387350, 0, "Your next Echo deals $s1% increased healing and has reduced cast time.", 0 },
   { 387355, "Summon Infernal reduces the Soul Shard cost of your next $s1 casts of Chaos Bolt, Shadowburn, or Rain of Fire by 1.", 0, 0 },
+  { 387356, "$@spelldesc387355", "The Soul Shard cost of Chaos Bolt $?s17877[,Shadowburn, ][]and Rain of Fire is reduced by 1.", 0 },
   { 387363, "The Primal Tsunami unleashes several globules of water, inflicting $387474s1 Frost damage to players within $387474A1 yards of each impact.\r\n\r\nThe Infused Globule then drifts about, applying Waterlogged to players on contact.\r\n\r\nAfter $s2 sec, the Globule explodes, inflicting $s1 Frost damage to players within $a1 yards.", 0, 0 },
   { 387384, "Increases your critical strike chance by $s1%.\r\n\r\nPhysical attacks against you have a $s2% chance to make your next Incinerate instant cast. This effect can only occur once every $proccooldown sec.", 0, 0 },
   { 387385, "$@spelldesc387384", "Your next Incinerate is instant cast.", 0 },
@@ -19048,7 +19057,7 @@ static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelltext_hotfix
 } };
 
 // Spell description variables, wow build 10.0.2.46157
-static const std::array<spelldesc_vars_data_t, 359> __spelldesc_vars_data { {
+static const std::array<spelldesc_vars_data_t, 363> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$pvp=$?a134735[${1.1}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*2.8*(1+$@versadmg)*$<rapture>*$<shadow>*$<pvp>*$<weal>}\r\n" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -19068,6 +19077,7 @@ static const std::array<spelldesc_vars_data_t, 359> __spelldesc_vars_data { {
   {    6572, "$cap=${5}" },
   {    8092, "$shield=${($SPS*$231682s1/100)*(1+$@versadmg)}" },
   {    8936, "$NSmult=$?a132158[${1+$132158s2/100}][${1}]\r\n$CCmult=$?a16870[${1+$16870s2/100}][${1}]\r\n$mult=${$<NSmult>*$<CCmult>}" },
+  {   11426, "$shield=${$s2/100*$MHP*(1+$@versadmg)}" },
   {   12294, "$mult=${($max(0,$min($pl-5,15))*8+207)/327}" },
   {   12950, "$damage=${$199667s1+$44949s1+(2*($199852s1+$199851s1))}\r\n$maxRage=${$190411s1+($190411s2*$190411s3)}" },
   {   16827, "$aotb=$?s191384[${1.3}][${1.0}]\r\n$ce=$?s152244[${1.7}][${1.5}]\r\n$spiked=$?s53184[${1.1}][${1.0}]\r\n$blink=$?s130392[${1.5}][${1.0}]\r\n$damage=${$<aotb>*$<ce>*$<spiked>*$<blink>*($RAP*0.333)*(1+$@versadmg)}" },
@@ -19185,6 +19195,7 @@ static const std::array<spelldesc_vars_data_t, 359> __spelldesc_vars_data { {
   {  204019, "$shield=${$AP*$s1/100}" },
   {  204074, "$reduction=${$m1/10}.1" },
   {  205448, "$ext=${$231688s1/1000} sec" },
+  {  205523, "$stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]\r\n$dwm=$?a108561|a115697[${1}][${0.857143}]\r\n$offm=$?a108561|a115697[${0}][${1}]\r\n\r\n$offlow=$?s121278[${$mwb/2/$mws}][${$owb/2/$ows}]\r\n$offhigh=$?s121278[${$MWB/2/$mws}][${$OWB/2/$ows}]\r\n\r\n$low=${$<stnc>*($<dwm>*(($mwb)/($MWS)+$<offm>*$<offlow>)+$AP/3.5-1)}\r\n$high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}\r\n" },
   {  206416, "$mastery=$?s185164[${((100+$185164m1)/100)}][${1.00}]\r\n$baseDmg=${3*$199552sw2+$200685sw2} \r\n$firstbloodDmg=${(3*$199552sw2+$200685sw2)*(100+$206416s1)/100*$<mastery>}" },
   {  206974, "$increase=${$s1}" },
   {  207068, "$bmMastery=$?s76657[${1+0.01*$76657m1}][${1}]\r\n$lowNerf=${0.5+$min($pl,20)*0.025}\r\n$damage=${$ap*($s2/100)*$<bmMastery>*(1+$@versadmg)*(1+($137015s1/100))}" },
@@ -19204,6 +19215,8 @@ static const std::array<spelldesc_vars_data_t, 359> __spelldesc_vars_data { {
   {  231895, "$haste=${$s3/10}\r\n$pvp=$?a134735[${0.75}][${1}]\r\n$damage=${$s1/10*$<pvp>}" },
   {  234299, "$reduction=${$m1/10}" },
   {  235235, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
+  {  235313, "$shield=${$s2/100*$MHP*(1+$@versadmg)}" },
+  {  235450, "$shield=${$s6/100*$MHP*(1+$@versadmg)}" },
   {  236279, "$mult=${($max(0,$min($pl-12,8))*8.5+241)/309}" },
   {  242629, "$cooldown=$?a137008[${10}]?a212613[${10}]?a137010[${10}]?a137023[${10}]?a137028[${10}]?a137048[${10}][${10}]\r\n$extension=$?a137008[${0.5}.1]?a212613[${0.75}.2]?a137010[${0.5}.1]?a137023[${1}]?a137028[${1}]?a137048[${0.75}.2][${1}]" },
   {  242630, "$cooldown=$?a137008[${10}]?a212613[${10}]?a137010[${10}]?a137023[${10}]?a137028[${10}]?a137048[${10}][${10}]\r\n$extension=$?a137008[${0.5}.1]?a212613[${0.75}.2]?a137010[${0.5}.1]?a137023[${1}]?a137028[${1}]?a137048[${0.75}.2][${1}]" },

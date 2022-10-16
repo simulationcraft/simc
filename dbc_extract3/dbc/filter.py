@@ -432,6 +432,7 @@ class TraitSet(DataSet):
                 for tree, id_skill in _trait_trees.values()
                     for entry in tree.child_refs('TraitNodeGroup')
         )
+        _trait_node_groups[0] = {'nodes': {}, 'cond': set()}
 
         # Map TraitNode entries to TraitNodeGroups
         for data in self.db('TraitNodeGroupXTraitNode').values():
@@ -450,6 +451,23 @@ class TraitSet(DataSet):
                 }
 
             _trait_node_groups[group_id]['nodes'][node_id] = _trait_nodes[node_id]
+
+        # Add in nodes with no group
+        for data in self.db('TraitNode').values():
+            if data.id_trait_tree not in _trait_trees:
+                continue
+
+            node_id = data.id
+
+            if node_id not in _trait_nodes:
+                _trait_nodes[node_id] = {
+                    'node': data,
+                    'cond': set(),
+                    'entries': set()
+                }
+
+                # Use group 0 to hold the nodes with no group
+                _trait_node_groups[0]['nodes'][node_id] = _trait_nodes[node_id]
 
         # Collect TraitCond entries for each used TraitNodeGroup
         for data in self.db('TraitNodeGroupXTraitCond').values():
@@ -497,8 +515,11 @@ class TraitSet(DataSet):
         })
 
         for group in _trait_node_groups.values():
-            class_id = util.class_id(player_skill=_trait_trees[group['group'].id_parent][1])
-            tree_index = _trait_node_group_map.get(group['group'].id, 0)
+            class_id = 0
+            tree_index = 1 # If a node has no groups, assume it is in the class tree.
+            if 'group' in group:
+                class_id = util.class_id(player_skill=_trait_trees[group['group'].id_parent][1])
+                tree_index = _trait_node_group_map.get(group['group'].id, 0)
 
             group_specs = set(_spec_map.get(cond.id_spec_set, 0)
                 for cond in group['cond'] if cond.type == 1
@@ -509,6 +530,8 @@ class TraitSet(DataSet):
             )
 
             for node in group['nodes'].values():
+                node_class_id = util.class_id(player_skill=_trait_trees[node['node'].id_parent][1])
+
                 node_specs = set(_spec_map.get(cond.id_spec_set, 0)
                     for cond in node['cond'] if cond.type == 1
                 )
@@ -521,12 +544,13 @@ class TraitSet(DataSet):
                     key = entry.id
                     definition = entry.ref('id_trait_definition')
 
-                    _traits[key]['groups'].add(group['group'])
+                    if 'group' in group:
+                        _traits[key]['groups'].add(group['group'])
                     _traits[key]['node'] = node['node']
                     _traits[key]['entry'] = entry
                     _traits[key]['definition'] = definition
                     _traits[key]['spell'] = definition.ref('id_spell')
-                    _traits[key]['class_'] = class_id
+                    _traits[key]['class_'] = class_id if class_id else node_class_id
                     _traits[key]['specs'] |= group_specs | node_specs
                     _traits[key]['starter'] |= group_starter | node_starter
 
@@ -559,6 +583,10 @@ class TraitSet(DataSet):
 
                 pos_x = round(entry['node'].pos_x, -2)
                 pos_y = round(entry['node'].pos_y, -2)
+
+                # Some trees have unused nodes with negative coordinates.
+                if pos_y < 0:
+                    continue
 
                 _coords[key][0].add(pos_y)
                 if pos_y not in _coords[key]:
@@ -594,6 +622,10 @@ class TraitSet(DataSet):
 
                 pos_x = round(entry['node'].pos_x, -2)
                 pos_y = round(entry['node'].pos_y, -2)
+
+                # Some trees have unused nodes with negative coordinates.
+                if pos_y < 0:
+                    continue
 
                 entry['row'] = _coords[key][0].index(pos_y) + 1
                 entry['col'] = _coords[key][pos_y].index(pos_x) + 1

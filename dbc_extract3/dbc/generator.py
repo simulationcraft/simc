@@ -1419,6 +1419,7 @@ class SpellDataGenerator(DataGenerator):
             ( 382522, 0 ),          # Consecrated Blade buff
             ( 383305, 0 ),          # Virtuous Command damage
             ( 387178, 0 ),          # Empyrean Legacy buff
+            ( 224239, 0 ),          # Tempest divine storm
         ),
 
         # Hunter:
@@ -1832,6 +1833,8 @@ class SpellDataGenerator(DataGenerator):
           ( 387096, 0 ),    # Pyrogenics aura
           ( 387109, 0 ),    # Conflagration of Chaos aura 1
           ( 387110, 0 ),    # Conflagration of Chaos aura 2
+          ( 387158, 0 ),    # Impending Ruin talent aura
+          ( 387356, 0 ),    # Crashing Chaos aura
         ),
 
         # Monk:
@@ -1854,6 +1857,7 @@ class SpellDataGenerator(DataGenerator):
           ( 124275, 1 ), # Light Stagger
           ( 124274, 1 ), # Medium Stagger
           ( 124273, 1 ), # Heavy Stagger
+          ( 205523, 1 ), # Blackout Kick Brewmaster version
           ( 216521, 1 ), # Celestial Fortune Heal
           ( 227679, 1 ), # Face Palm
           ( 227291, 1 ), # Niuzao pet Stomp

@@ -110,7 +110,6 @@ public:
   struct
   {
     // Brewmaster
-    propagate_const<buff_t*> exploding_keg;
     propagate_const<buff_t*> keg_smash;
 
     // Windwalker
@@ -176,6 +175,7 @@ public:
 
     // Brewmaster
     propagate_const<action_t*> breath_of_fire;
+    propagate_const<action_t*> charred_passions;
     propagate_const<heal_t*> celestial_fortune;
     propagate_const<heal_t*> gift_of_the_ox_trigger;
     propagate_const<heal_t*> gift_of_the_ox_expire;
@@ -235,6 +235,7 @@ public:
     propagate_const<buff_t*> celestial_flames;
     propagate_const<buff_t*> counterstrike;
     propagate_const<buff_t*> elusive_brawler;
+    propagate_const<buff_t*> exploding_keg;
     propagate_const<buff_t*> fortifying_brew;
     propagate_const<buff_t*> gift_of_the_ox;
     propagate_const<buff_t*> graceful_exit;
@@ -670,11 +671,7 @@ public:
     const spell_data_t* expel_harm_2_brm;
     const spell_data_t* expel_harm_2_mw;
     const spell_data_t* expel_harm_2_ww;
-    const spell_data_t* fortifying_brew_brm;
-    const spell_data_t* fortifying_brew_2_brm;
-    const spell_data_t* fortifying_brew_mw_ww;
-    const spell_data_t* fortifying_brew_2_mw;
-    const spell_data_t* fortifying_brew_2_ww;
+    const spell_data_t* fortifying_brew;
     const spell_data_t* leather_specialization;
     const spell_data_t* leg_sweep;
     const spell_data_t* mystic_touch;

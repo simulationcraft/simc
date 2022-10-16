@@ -88,6 +88,8 @@ public:
 
     // talent stuff
     action_t* background_cons;
+    action_t* incandescence;
+    action_t* empyrean_legacy;
 
     // Conduit stuff
     action_t* virtuous_command_conduit;
@@ -166,6 +168,9 @@ public:
     buff_t* reign_of_ancient_kings;
     buff_t* equinox;
     buff_t* divine_resonance;
+
+    buff_t* empyrean_legacy;
+    buff_t* empyrean_legacy_cooldown;
   } buffs;
 
   // Gains
@@ -449,7 +454,7 @@ public:
     const spell_data_t* improved_crusader_strike;
     const spell_data_t* holy_crusader;
     const spell_data_t* holy_blade;
-    const spell_data_t* condemning_blade;
+    const spell_data_t* blade_of_condemnation;
     const spell_data_t* zeal;
     const spell_data_t* shield_of_vengeance;
     const spell_data_t* divine_protection; // NYI
@@ -463,7 +468,7 @@ public:
     const spell_data_t* consecrated_blade;
     const spell_data_t* seal_of_wrath;
     const spell_data_t* expurgation;
-    const spell_data_t* boundless_judgment; // NYI
+    const spell_data_t* boundless_judgment;
     const spell_data_t* sanctification;
     const spell_data_t* inner_grace;
     const spell_data_t* ashes_to_dust;
@@ -479,7 +484,7 @@ public:
     const spell_data_t* hand_of_hindrance; // NYI
     const spell_data_t* selfless_healer; // NYI
     const spell_data_t* healing_hands; // NYI
-    const spell_data_t* tempest_of_the_lightbringer; // NYI
+    const spell_data_t* tempest_of_the_lightbringer;
     const spell_data_t* justicars_vengeance;
     const spell_data_t* eye_for_an_eye; // NYI
 
@@ -487,7 +492,7 @@ public:
     const spell_data_t* ashes_to_ashes;
     const spell_data_t* templars_vindication; // ?
     const spell_data_t* execution_sentence; // ?
-    const spell_data_t* empyrean_legacy; // NYI
+    const spell_data_t* empyrean_legacy;
     const spell_data_t* virtuous_command;
     const spell_data_t* final_verdict; // sort of implemented
     const spell_data_t* executioners_will; // ?
@@ -1284,7 +1289,7 @@ struct holy_power_consumer_t : public Base
       return;
 
     // as of 11/8, according to Skeletor, crusade and RI trigger at full value now
-    int num_stacks = as<int>( ab::base_costs[ RESOURCE_HOLY_POWER ] );
+    int num_hopo_spent = as<int>( ab::base_costs[ RESOURCE_HOLY_POWER ] );
 
     // as of 2021-06-22 magistrate's causes *extra* stacks?
     // fixed at least for ret as of 9.0.5
@@ -1293,7 +1298,7 @@ struct holy_power_consumer_t : public Base
       if ( p -> specialization() == PALADIN_PROTECTION &&
           is_wog && !p -> buffs.divine_purpose -> up() &&
           ( p -> buffs.shining_light_free -> up() || p -> buffs.royal_decree -> up() ) )
-        num_stacks += 1;
+        num_hopo_spent += 1;
     }
 
     // 2021-08-10 The Word of Glory that procs Vanquisher's Hammer does not proc
@@ -1302,18 +1307,18 @@ struct holy_power_consumer_t : public Base
       p -> buffs.vanquishers_hammer -> up() && p -> buffs.divine_purpose -> up() &&
       !( p -> buffs.royal_decree -> up() || p -> buffs.shining_light_free -> up() ) )
     {
-      num_stacks = 0;
+      num_hopo_spent = 0;
     }
 
     if ( p -> azerite.relentless_inquisitor.ok() )
-      p -> buffs.relentless_inquisitor_azerite -> trigger( num_stacks );
+      p -> buffs.relentless_inquisitor_azerite -> trigger( num_hopo_spent );
 
     if ( p -> legendary.relentless_inquisitor -> ok() )
       p -> buffs.relentless_inquisitor -> trigger();
 
     if ( p -> buffs.crusade -> check() )
     {
-      p -> buffs.crusade -> trigger( num_stacks );
+      p -> buffs.crusade -> trigger( num_hopo_spent );
     }
 
     // 2021-08-10 Free sotr from vanq does not proc RP
@@ -1323,8 +1328,8 @@ struct holy_power_consumer_t : public Base
         // Why is this in deciseconds?
          -1.0 * p -> talents.righteous_protector -> effectN( 1 ).base_value() / 10
        );
-      reduction *= num_stacks;
-      ab::sim -> print_debug( "Righteous protector reduced the cooldown of Avenging Wrath and Guardian of Ancient Kings by {} sec", num_stacks );
+      reduction *= num_hopo_spent;
+      ab::sim -> print_debug( "Righteous protector reduced the cooldown of Avenging Wrath and Guardian of Ancient Kings by {} sec", num_hopo_spent );
       p -> cooldowns.avenging_wrath -> adjust( reduction );
       p -> cooldowns.guardian_of_ancient_kings -> adjust( reduction );
     }
@@ -1433,7 +1438,6 @@ struct holy_power_consumer_t : public Base
     {
       p->buffs.divine_purpose->trigger();
       p->procs.divine_purpose->occur();
-
     }
 
     if ( p -> buffs.avenging_wrath -> up() || p -> buffs.crusade -> up() )
@@ -1450,6 +1454,18 @@ struct holy_power_consumer_t : public Base
         sanctified_wrath_t* st = debug_cast<sanctified_wrath_t*>( p -> active.sanctified_wrath );
         st -> last_holy_power_cost = as<int>( ab::base_costs[ RESOURCE_HOLY_POWER ] );
         st -> execute();
+      }
+    }
+
+    if ( p -> talents.incandescence -> ok() )
+    {
+      for ( int hopo = 0; hopo < num_hopo_spent; hopo++ )
+      {
+        // this appears to be hardcoded?
+        if ( ab::rng().roll( 0.05 ) )
+        {
+          p -> active.incandescence -> schedule_execute();
+        }
       }
     }
 

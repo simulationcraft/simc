@@ -2585,6 +2585,9 @@ static std::string generate_traits_hash( player_t* player )
     }
   }
 
+  if ( head % byte_size )
+    export_str += base64_char[ byte ];
+
   return export_str;
 }
 

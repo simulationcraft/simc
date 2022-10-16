@@ -131,14 +131,9 @@ public:
   {
     warlock_pet_t* active;
     warlock_pet_t* last;
-    static const int INFERNAL_LIMIT  = 1;
 
-    //TODO: Refactor infernal code including new talent Rain of Chaos
-    std::array<pets::destruction::infernal_t*, INFERNAL_LIMIT> infernals;
-    spawner::pet_spawner_t<pets::destruction::infernal_t, warlock_t>
-        roc_infernals;  // Infernal(s) summoned by Rain of Chaos
-    spawner::pet_spawner_t<pets::destruction::blasphemy_t, warlock_t>
-        blasphemy;  // DF - Now a Destruction Talent
+    spawner::pet_spawner_t<pets::destruction::infernal_t, warlock_t> infernals;
+    spawner::pet_spawner_t<pets::destruction::blasphemy_t, warlock_t> blasphemy;  // DF - Now a Destruction Talent
 
     spawner::pet_spawner_t<pets::affliction::darkglare_t, warlock_t> darkglare;
 
@@ -389,21 +384,29 @@ public:
     player_talent_t conflagration_of_chaos; // Conflagrate/Shadowburn has chance to make next cast of it a guaranteed crit
     const spell_data_t* conflagration_of_chaos_cf; // Player buff which affects next Conflagrate
     const spell_data_t* conflagration_of_chaos_sb; // Player buff which affects next Shadowburn
-    // DF - Flashpoint (2 point talent, stacking haste buff from Immolate ticks on high-health targets)
-    // DF - Scalding Flames (2 point talent, increased Immolate damage)
+    player_talent_t flashpoint; // Stacking haste buff from Immolate ticks on high-health targets
+    const spell_data_t* flashpoint_buff;
+    player_talent_t scalding_flames; // Increased Immolate damage
 
-    // DF - Ruin (2 point talent, damage increase to several spells)
-    const spell_data_t* eradication; // DF - Now a 2 point talent
-    // DF - Ashen Remains (2 point talent, formerly SL Conduit)
+    player_talent_t ruin; // Damage increase to several spells
+    player_talent_t eradication;
+    const spell_data_t* eradication_debuff;
+    player_talent_t ashen_remains; // Increased Chaos Bolt and Incinerate damage to targets afflicted by Immolate (Formerly SL Conduit)
     // Grimoire of Sacrifice (shared with Affliction)
 
-    // DF - Summon Infernal
-    // DF - Embers of the Diabolic (formerly SL Legendary)
-    // DF - Ritual of Ruin (formerly SL Tier Bonus, functionality slightly modified)
+    player_talent_t summon_infernal;
+    const spell_data_t* summon_infernal_main; // Data for main infernal summoning
+    const spell_data_t* infernal_awakening; // AoE on impact is attributed to the Warlock
+    player_talent_t diabolic_embers; // Incinerate generates more Soul Shards (Formerly SL Legendary)
+    player_talent_t ritual_of_ruin; // Formerly SL Tier Bonus
+    const spell_data_t* impending_ruin_buff; // Stacking buff, triggers Ritual of Ruin buff at max
+    const spell_data_t* ritual_of_ruin_buff;
     
-    // DF - Crashing Chaos (2 point talent, Summon Infernal reduces cost of next X casts)
-    // DF - Infernal Brand (2 point talent, formerly SL Conduit)
-    // DF - Power Overwhelming (2 point talent, stacking mastery buff for spending Soul Shards)
+    player_talent_t crashing_chaos; // Summon Infernal reduces cost of next X casts
+    const spell_data_t* crashing_chaos_buff;
+    player_talent_t infernal_brand; // Infernal melees increase Infernal AoE damage (Formerly SL Conduit)
+    player_talent_t power_overwhelming; // Stacking mastery buff for spending Soul Shards
+    const spell_data_t* power_overwhelming_buff;
     // DF - Madness of the Azj'aqir (2 point talent, formerly SL Legendary, now applies to more spells)
     // DF - Master Ritualist (2 point talent, reduces proc cost of Ritual of Ruin)
     // DF - Burn to Ashes (2 point talent, Chaos Bolt and Rain of Fire increase damage of next 2 Incinerates)
@@ -557,15 +560,15 @@ public:
     propagate_const<buff_t*> backdraft; // DF - Max 2 stacks
     propagate_const<buff_t*> reverse_entropy;
     propagate_const<buff_t*> rain_of_chaos;
-    propagate_const<buff_t*> impending_ruin; // DF - Impending Ruin and Ritual of Ruin now come from Destruction talent
+    propagate_const<buff_t*> impending_ruin;
     propagate_const<buff_t*> ritual_of_ruin;
     propagate_const<buff_t*> madness_of_the_azjaqir; // DF - Now comes from Destruction talent
     propagate_const<buff_t*> rolling_havoc;
     propagate_const<buff_t*> conflagration_of_chaos_cf;
     propagate_const<buff_t*> conflagration_of_chaos_sb;
-    // DF - Flashpoint (stacking haste from Immolate ticks)
-    // DF - Crashing Chaos (cost reduction after Infernal summon)
-    // DF - Power Overwhelming (stacking mastery when spending Soul Shards)
+    propagate_const<buff_t*> flashpoint;
+    propagate_const<buff_t*> crashing_chaos;
+    propagate_const<buff_t*> power_overwhelming;
     // DF - Burn to Ashes (increased Incinerate damage after Chaos Bolt/Rain of Fire)
     // DF - Chaos Incarnate? (passive max mastery on certain spells)
   } buffs;
@@ -755,7 +758,6 @@ public:
   // sc_warlock_pets
   pet_t* create_main_pet( util::string_view pet_name, util::string_view pet_type );
   pet_t* create_demo_pet( util::string_view pet_name, util::string_view pet_type );
-  void create_all_pets();
   std::unique_ptr<expr_t> create_pet_expression( util::string_view name_str );
 };
 

@@ -376,7 +376,7 @@ struct consecration_t : public paladin_spell_t
   {
     paladin_spell_t::init_finished();
 
-    if ( action_list->name_str == "precombat" )
+    if ( action_list && action_list->name_str == "precombat" )
     {
       double MIN_TIME = player->base_gcd.total_seconds();  // the player's base unhasted gcd: 1.5s
       double MAX_TIME = cooldown->duration.total_seconds() - 1;
@@ -728,6 +728,50 @@ struct seal_of_the_crusader_cb_t : public dbc_proc_callback_t
   {
     auto td = p->get_target_data( s->target );
     td->debuff.seal_of_the_crusader->trigger();
+  }
+};
+
+struct touch_of_light_dmg_t : public paladin_spell_t
+{
+  touch_of_light_dmg_t( paladin_t* p ) : paladin_spell_t( "touch_of_light_dmg", p, p -> find_spell( 385354 ) )
+  {
+    background = true;
+  }
+};
+
+struct touch_of_light_heal_t : public paladin_heal_t
+{
+  touch_of_light_heal_t( paladin_t* p ) : paladin_heal_t( "touch_of_light_heal", p, p -> find_spell( 385352 ) )
+  {
+    background = true;
+  }
+};
+
+struct touch_of_light_cb_t : public dbc_proc_callback_t
+{
+  paladin_t* p;
+  touch_of_light_dmg_t* dmg;
+  touch_of_light_heal_t* heal;
+
+  touch_of_light_cb_t( paladin_t* player, const special_effect_t& effect )
+    : dbc_proc_callback_t( player, effect ), p( player )
+  {
+    dmg = new touch_of_light_dmg_t( player );
+    heal = new touch_of_light_heal_t( player );
+  }
+
+  void execute( action_t*, action_state_t* s ) override
+  {
+    if ( s->target->is_enemy() )
+    {
+      dmg->set_target( s->target );
+      dmg->schedule_execute();
+    }
+    else
+    {
+      heal->set_target( s->target );
+      heal->schedule_execute();
+    }
   }
 };
 
@@ -1791,6 +1835,15 @@ struct virtuous_command_t : public paladin_spell_t
   }
 };
 
+struct incandescence_t : public paladin_spell_t
+{
+  incandescence_t( paladin_t* p ) : paladin_spell_t( "incandescence", p, p->find_spell( 385816 ) )
+  {
+    background = true;
+    aoe = 5;
+  }
+};
+
 // ==========================================================================
 // End Attacks
 // ==========================================================================
@@ -2049,6 +2102,15 @@ void paladin_t::create_actions()
   else
   {
     active.virtuous_command = nullptr;
+  }
+
+  if ( talents.incandescence->ok() )
+  {
+    active.incandescence = new incandescence_t( this );
+  }
+  else
+  {
+    active.incandescence = nullptr;
   }
 
   if ( legendary.the_magistrates_judgment->ok() )
@@ -2561,6 +2623,17 @@ void paladin_t::init_special_effects()
     special_effects.push_back( seal_of_the_crusader_driver );
 
     auto cb = new paladin::seal_of_the_crusader_cb_t( this, *seal_of_the_crusader_driver );
+    cb->initialize();
+  }
+
+  if ( talents.touch_of_light->ok() )
+  {
+    auto const touch_of_light_driver = new special_effect_t( this );
+    touch_of_light_driver->name_str = "touch_of_light_driver";
+    touch_of_light_driver->spell_id = 385349;
+    special_effects.push_back( touch_of_light_driver );
+
+    auto cb = new paladin::touch_of_light_cb_t( this, *touch_of_light_driver );
     cb->initialize();
   }
 }

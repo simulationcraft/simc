@@ -243,8 +243,8 @@ void warlock_pet_t::demise()
 warlock_pet_td_t::warlock_pet_td_t( player_t* target, warlock_pet_t& p ) :
   actor_target_data_t( target, &p ), pet( p )
 {
-  debuff_infernal_brand = make_buff( *this, "infernal_brand", pet.o()->find_spell( 340045 ) )
-                              ->set_default_value( pet.o()->find_conduit_spell( "Infernal Brand" ).percent() );
+  debuff_infernal_brand = make_buff( *this, "infernal_brand", pet.o()->find_spell( 387476 ) )
+                              ->set_default_value( pet.o()->talents.infernal_brand->effectN( 1 ).percent() );
 
   debuff_whiplash = make_buff( *this, "whiplash", pet.o()->find_spell( 6360 ) )
                         ->set_default_value( pet.o()->find_spell( 6360 )->effectN( 2 ).percent() )
@@ -2013,10 +2013,10 @@ infernal_t::infernal_t( warlock_t* owner, util::string_view name )
 
 struct immolation_tick_t : public warlock_pet_spell_t
 {
-  immolation_tick_t( warlock_pet_t* p, const spell_data_t* s )
-    : warlock_pet_spell_t( "immolation", p, s )
+  immolation_tick_t( warlock_pet_t* p )
+    : warlock_pet_spell_t( "immolation", p, p->find_spell( 20153 ) )
   {
-    aoe        = -1;
+    aoe = -1;
     background = may_crit = true;
   }
 
@@ -2033,15 +2033,15 @@ struct immolation_tick_t : public warlock_pet_spell_t
 
 struct infernal_melee_t : warlock_pet_melee_t
 {
-  infernal_melee_t(warlock_pet_t* p, double wm, const char* name = "melee") :
-    warlock_pet_melee_t (p, wm, name)
+  infernal_melee_t( warlock_pet_t* p, double wm, const char* name = "melee" ) :
+    warlock_pet_melee_t ( p, wm, name )
   {  }
 
   void impact( action_state_t* s ) override
   {
     warlock_pet_melee_t::impact( s );
 
-    if ( p()->o()->conduit.infernal_brand.ok() )
+    if ( p()->o()->talents.infernal_brand.ok() )
     {
       pet_td( s->target )->debuff_infernal_brand->trigger();
     }
@@ -2059,18 +2059,15 @@ void infernal_t::create_buffs()
 {
   warlock_pet_t::create_buffs();
 
-  auto damage = new immolation_tick_t( this, find_spell( 19483 )->effectN( 1 ).trigger() );
+  auto damage = new immolation_tick_t( this );
 
-  immolation =
-      make_buff<buff_t>( this, "immolation", find_spell( 19483 ) )
-          ->set_tick_time_behavior( buff_tick_time_behavior::HASTED )
-          ->set_tick_callback( [ damage, this ]( buff_t* /* b  */, int /* stacks */, timespan_t /* tick_time */ ) {
-            damage->set_target( target );
-            damage->execute();
-          } );
+  immolation = make_buff<buff_t>( this, "immolation", find_spell( 19483 ) )
+                   ->set_tick_time_behavior( buff_tick_time_behavior::HASTED )
+                   ->set_tick_callback( [ damage, this ]( buff_t* /* b  */, int /* stacks */, timespan_t /* tick_time */ ) {
+                        damage->execute_on_target( target );
+                     } );
 }
 
-// TODO: utilize new execute_on_target
 void infernal_t::arise()
 {
   warlock_pet_t::arise();
@@ -2090,17 +2087,6 @@ void infernal_t::arise()
   make_event( *sim, delay + 750_ms, [ this ] {
     immolation->trigger();
   } );
-}
-
-void infernal_t::demise()
-{
-  if ( !current.sleeping )
-  {
-    buffs.embers->expire();
-    immolation->expire();
-  }
-
-  warlock_pet_t::demise();
 }
 
 /// Infernal End

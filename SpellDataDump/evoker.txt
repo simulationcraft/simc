@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46157 dragonflight-BETA (hotfix 2022-10-15/46157, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46157 dragonflight-BETA (hotfix 2022-10-16/46157, no-networking)
 Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Orc (0x2)
@@ -132,7 +132,7 @@ Tooltip          : Switch to your Primary Talent Specialization.
 
 Name             : Shimmer (id=212653) [Spell Family (3)] 
 Replaces         : Blink (id=1953)
-Talent Entry     : Generic [tree=class, row=5, col=3, max_rank=1, req_points=8, select_idx=100, replace="Blink" (id=1953)]
+Talent Entry     : Generic [tree=class, row=6, col=3, max_rank=1, req_points=8, select_idx=100, replace="Blink" (id=1953)]
 Class            : Mage, Evoker
 School           : Arcane
 Spell Type       : Magic
@@ -5510,7 +5510,7 @@ $dotIV=${$357209o2*(1+$<blastTicks>)}
 $durIV=${2+$375510s1}
 
 Name             : Tempest Barrier (id=382289) [Spell Family (3), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=2, col=3, max_rank=2, req_points=0]
+Talent Entry     : Generic [tree=class, row=3, col=3, max_rank=2, req_points=0]
                  : Effect#1 [op=set, values=(3, 6)]
 Class            : Mage, Evoker
 School           : Arcane

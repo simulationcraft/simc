@@ -809,9 +809,9 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
   // Destro
   dots_immolate          = target->get_dot( "immolate", &p );
 
-  debuffs_eradication = make_buff( *this, "eradication", source->find_spell( 196414 ) )
-                            ->set_refresh_behavior( buff_refresh_behavior::DURATION )
-                            ->set_default_value_from_effect( 1 );
+  debuffs_eradication = make_buff( *this, "eradication", p.talents.eradication_debuff )
+                            ->set_default_value( p.talents.eradication->effectN( 2 ).percent() );
+
   debuffs_roaring_blaze = make_buff( *this, "roaring_blaze", source->find_spell( 265931 ) );
 
   debuffs_shadowburn    = make_buff( *this, "shadowburn", p.talents.shadowburn )
@@ -1120,7 +1120,7 @@ double warlock_t::composite_player_target_pet_damage_multiplier( player_t* targe
   {
     if ( td->debuffs_eradication->check() )
     {
-      m *= 1.0 + td->debuffs_eradication->data().effectN( guardian ? 3 : 2 ).percent();
+      m *= 1.0 + td->debuffs_eradication->check_value();
     }
   }
 
@@ -1298,8 +1298,6 @@ pet_t* warlock_t::create_pet( util::string_view pet_name, util::string_view pet_
 
 void warlock_t::create_pets()
 {
-  create_all_pets();
-
   for ( auto& pet : pet_name_list )
   {
     create_pet( pet );
@@ -1881,17 +1879,6 @@ pet_t* warlock_t::create_main_pet( util::string_view pet_name, util::string_view
   return nullptr;
 }
 
-void warlock_t::create_all_pets()
-{
-  if ( specialization() == WARLOCK_DESTRUCTION )
-  {
-    for ( auto& infernal : warlock_pet_list.infernals )
-    {
-      infernal = new pets::destruction::infernal_t( this );
-    }
-  }
-}
-
 //TODO: Are these expressions outdated?
 std::unique_ptr<expr_t> warlock_t::create_pet_expression( util::string_view name_str )
 {
@@ -2109,7 +2096,7 @@ warlock::warlock_t::pets_t::pets_t( warlock_t* w )
   : active( nullptr ),
     last( nullptr ),
     darkglare( "darkglare", w ),
-    roc_infernals( "roc_infernal", w ),
+    infernals( "infernal", w ),
     blasphemy( "blasphemy", w ),
     dreadstalkers( "dreadstalker", w ),
     vilefiends( "vilefiend", w ),

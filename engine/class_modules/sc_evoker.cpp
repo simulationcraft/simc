@@ -37,6 +37,14 @@ enum spell_color_e
   SPELL_RED
 };
 
+enum proc_spell_type_e : unsigned
+{
+  NONE          = 0x0,
+  DRAGONRAGE    = 0x1,  // 3 pyre proc'd via dragonrage
+  SCINTILLATION = 0x2,  // level 1 eternity surge proc'd from disintegrate tick via scintillation
+  VOLATILITY    = 0x4   // chained pyre proc'd via volatility
+};
+
 struct empowered_state_t : public action_state_t
 {
   empower_e empower;
@@ -96,6 +104,7 @@ struct evoker_t : public player_t
   struct actions_t
   {
     action_t* volatility;
+    action_t* volatility_dragonrage;
   } action;
 
   // Buffs
@@ -426,10 +435,14 @@ public:
   std::vector<debuff_effect_t> target_multiplier_debuffeffects;
 
   spell_color_e spell_color;
+  unsigned proc_spell_type;
   bool move_during_hover;
 
   evoker_action_t( std::string_view name, evoker_t* player, const spell_data_t* spell = spell_data_t::nil() )
-    : ab( name, player, spell ), spell_color( SPELL_COLOR_NONE ), move_during_hover( false )
+    : ab( name, player, spell ),
+      spell_color( SPELL_COLOR_NONE ),
+      proc_spell_type( proc_spell_type_e::NONE ),
+      move_during_hover( false )
   {
     // TODO: find out if there is a better data source for the spell color
     if ( ab::data().ok() )
@@ -1468,13 +1481,13 @@ struct disintegrate_t : public evoker_spell_t
   disintegrate_t( evoker_t* p, std::string_view options_str )
     : evoker_spell_t( "disintegrate", p, p->find_class_spell( "Disintegrate" ), options_str )
   {
-    channeled      = true;
-    
-    eternity_surge = p->get_secondary_action<eternity_surge_t::eternity_surge_damage_t>( "scintillation", "scintillation" );
-    eternity_surge->s_data_reporting = p->talent.scintillation;
-    eternity_surge->name_str_reporting = "scintillation";
-    
-    tick_zero = true;
+    channeled = tick_zero = true;
+
+    auto surge = p->get_secondary_action<eternity_surge_t::eternity_surge_damage_t>( "scintillation", "scintillation" );
+    surge->s_data_reporting = p->talent.scintillation;
+    surge->name_str_reporting = "scintillation";
+    surge->proc_spell_type = proc_spell_type_e::SCINTILLATION;
+    eternity_surge = surge;
 
     add_child( eternity_surge );
   }
@@ -1785,23 +1798,34 @@ struct pyre_t : public evoker_spell_t
     }
   };
 
+  action_t* volatility;
   action_t* damage;
 
   pyre_t( evoker_t* p, std::string_view options_str ) : pyre_t( p, "pyre", p->talent.pyre, options_str ) {}
 
   pyre_t( evoker_t* p, std::string_view n, const spell_data_t* s, std::string_view o = {} )
-    : evoker_spell_t( n, p, s, o )
+    : evoker_spell_t( n, p, s, o ), volatility( nullptr )
   {
     damage = p->get_secondary_action<pyre_damage_t>( name_str + "_damage", name_str + "_damage" );
     damage->stats = stats;
     damage->proc = true;
 
-    if ( p->action.volatility )
-      add_child( p->action.volatility );
-
     // Charged blast is consumed on cast, but we need it to apply to the damage action that is executed on impact. We
     // snapshot ONLY the da mul from charged blast and iridescence and pass it along to the damage action state.
     snapshot_flags |= STATE_MUL_DA;
+  }
+
+  void init() override
+  {
+    evoker_spell_t::init();
+
+    if ( proc_spell_type & proc_spell_type_e::DRAGONRAGE )
+      volatility = p()->action.volatility_dragonrage;
+    else
+      volatility = p()->action.volatility;
+
+    if ( ( proc_spell_type & proc_spell_type_e::VOLATILITY ) == 0 )
+      add_child( volatility );
   }
 
   bool has_amount_result() const override
@@ -1839,10 +1863,10 @@ struct pyre_t : public evoker_spell_t
     damage->schedule_execute( state );
 
     // TODO: How many times can volatility chain?
-    if ( p()->action.volatility && rng().roll( p()->talent.volatility->effectN( 1 ).percent() ) )
+    if ( volatility && rng().roll( p()->talent.volatility->effectN( 1 ).percent() ) )
     {
-      const auto& tl = p()->action.volatility->target_list();
-      p()->action.volatility->execute_on_target( tl[ rng().range( tl.size() ) ] );
+      const auto& tl = volatility->target_list();
+      volatility->execute_on_target( tl[ rng().range( tl.size() ) ] );
     }
   }
 };
@@ -1859,6 +1883,8 @@ struct dragonrage_t : public evoker_spell_t
       // spell has 30yd range but the effect to launch pyre only has 25yd
       range = data().effectN( 1 ).radius();
       aoe = as<int>( data().effectN( 1 ).base_value() );
+
+      proc_spell_type = proc_spell_type_e::DRAGONRAGE;
     }
 
     std::vector<player_t*>& target_list() const override
@@ -1934,6 +1960,76 @@ evoker_t::evoker_t( sim_t* sim, std::string_view name, race_e r )
   resource_regeneration = regen_type::DYNAMIC;
   regen_caches[ CACHE_HASTE ] = true;
   regen_caches[ CACHE_SPELL_HASTE ] = true;
+}
+
+// Kharnalex, The First Light ======================================================
+
+void karnalex_the_first_light( special_effect_t& effect )
+{
+  using generic_proc_t = unique_gear::generic_proc_t;
+  struct light_of_creation_t : public generic_proc_t
+  {
+    light_of_creation_t( const special_effect_t& e ) : generic_proc_t( e, "light_of_creation", e.driver() )
+    {
+      channeled = true;
+    }
+
+    bool usable_moving() const override
+    {
+      return false;
+    }
+
+    void execute() override
+    {
+      generic_proc_t::execute();
+      event_t::cancel( player->readying );
+      player->reset_auto_attacks( composite_dot_duration( execute_state ) );
+    }
+
+    evoker_t* p()
+    {
+      return static_cast<evoker_t*>( generic_proc_t::player );
+    }
+
+    evoker_t* p() const
+    {
+      return static_cast<evoker_t*>( generic_proc_t::player );
+    }
+
+    void last_tick( dot_t* d ) override
+    {
+      bool was_channeling = player->channeling == this;
+      generic_proc_t::last_tick( d );
+
+      if ( was_channeling && !player->readying )
+      {
+        player->schedule_ready( rng().gauss( sim->channel_lag, sim->channel_lag_stddev ) );
+      }
+    }
+
+    double composite_target_multiplier( player_t* t ) const override
+    {
+      double tm = generic_proc_t::composite_target_multiplier( t );
+
+      // Preliminary testing shows this is linear with target hp %.
+      // TODO: confirm this applies only to all evoker offensive spells
+      if ( p()->specialization() == EVOKER_DEVASTATION )
+      {
+        if ( !p()->buff.dragonrage->check() || !p()->talent.tyranny.ok() )
+          tm *= 1.0 + p()->cache.mastery_value() * t->health_percentage() / 100;
+        else
+          tm *= 1.0 + p()->cache.mastery_value();
+      }
+
+      return tm;
+    }
+  };
+
+  effect.execute_action = unique_gear::create_proc_action<light_of_creation_t>( "light_of_creation", effect );
+
+  action_t* action = effect.player->find_action( "use_item_" + effect.item->name_str );
+  if ( action )
+    action->base_execute_time = effect.execute_action->base_execute_time;
 }
 
 void evoker_t::init_action_list()
@@ -2099,7 +2195,17 @@ void evoker_t::create_actions()
     auto vol = get_secondary_action<pyre_t>( "pyre_volatility", "pyre_volatility", talent.pyre );
     vol->s_data_reporting = talent.volatility;
     vol->name_str_reporting = "volatility";
+    vol->proc_spell_type = proc_spell_type_e::VOLATILITY;
     action.volatility = vol;
+
+    if ( talent.dragonrage.ok() )
+    {
+      auto vol_dr = get_secondary_action<pyre_t>( "dragonrage_pyre_volatility", "dragonrage_pyre_volatility", talent.pyre );
+      vol_dr->s_data_reporting = talent.volatility;
+      vol_dr->name_str_reporting = "volatility";
+      vol_dr->proc_spell_type = proc_spell_type_e::VOLATILITY | proc_spell_type_e::DRAGONRAGE;
+      action.volatility_dragonrage = vol_dr;
+    }
   }
 
   player_t::create_actions();
@@ -2516,7 +2622,10 @@ struct evoker_module_t : public module_t
   }
   bool valid() const override { return true; }
   void init( player_t* ) const override {}
-  void static_init() const override {}
+  void static_init() const override
+  {
+    unique_gear::register_special_effect( 394927, karnalex_the_first_light );
+  }
   void register_hotfixes() const override {}
   void combat_begin( sim_t* ) const override {}
   void combat_end( sim_t* ) const override {}

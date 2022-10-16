@@ -5039,13 +5039,21 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
         base_crit += effect.percent();
         sim->print_debug( "{} base crit modified by {}", *this, effect.percent() );
         break;
+
       case P_COOLDOWN:
         if ( cooldown->action == this )
         {
-          cooldown->duration += effect.time_value();
-          if ( cooldown->duration < timespan_t::zero() )
-            cooldown->duration = timespan_t::zero();
-          sim->print_debug( "{} cooldown duration increase by {} to {}", *this, effect.time_value(), cooldown->duration );
+          if ( data().charge_cooldown() > 0_ms )
+          {
+            sim->print_debug( "{} cooldown duration modifier ({}) ignored due to being a charge cooldown", *this, effect.time_value() );
+          }
+          else
+          {
+            cooldown->duration += effect.time_value();
+            if ( cooldown->duration < timespan_t::zero() )
+              cooldown->duration = timespan_t::zero();
+            sim->print_debug( "{} cooldown duration increase by {} to {}", *this, effect.time_value(), cooldown->duration );
+          }
         }
         break;
 
@@ -5218,10 +5226,17 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
       case A_MODIFY_CATEGORY_COOLDOWN:
         if ( cooldown->action == this )
         {
-          cooldown->duration += effect.time_value();
-          if ( cooldown->duration < timespan_t::zero() )
-            cooldown->duration = timespan_t::zero();
-          sim->print_debug( "{} cooldown duration modified by {}", *this, effect.time_value() );
+          if ( data().charge_cooldown() > 0_ms )
+          {
+            sim->print_debug( "{} cooldown duration modifier ({}) ignored due to being a charge cooldown", *this, effect.time_value() );
+          }
+          else
+          {
+            cooldown->duration += effect.time_value();
+            if ( cooldown->duration < timespan_t::zero() )
+              cooldown->duration = timespan_t::zero();
+            sim->print_debug( "{} cooldown duration modified by {}", *this, effect.time_value() );
+          }
         }
         break;
 
@@ -5241,10 +5256,17 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
       case A_MOD_RECHARGE_TIME:
         if ( cooldown->action == this )
         {
-          cooldown->duration += effect.time_value();
-          if ( cooldown->duration < timespan_t::zero() )
-            cooldown->duration = timespan_t::zero();
-          sim->print_debug( "{} cooldown recharge time modified by {}", *this, effect.time_value() );
+          if ( data().charge_cooldown() <= 0_ms )
+          {
+            sim->print_debug( "{} cooldown recharge time modifier ({}) ignored due to not being a charge cooldown", *this, effect.time_value() );
+          }
+          else
+          {
+            cooldown->duration += effect.time_value();
+            if ( cooldown->duration < timespan_t::zero() )
+              cooldown->duration = timespan_t::zero();
+            sim->print_debug( "{} cooldown recharge time modified by {}", *this, effect.time_value() );
+          }
         }
         break;
 

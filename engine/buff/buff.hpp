@@ -482,9 +482,10 @@ struct damage_buff_t : public buff_t
   damage_buff_modifier_t direct_mod;
   damage_buff_modifier_t periodic_mod;
   damage_buff_modifier_t auto_attack_mod;
+  damage_buff_modifier_t crit_chance_mod;
 
   damage_buff_t( actor_pair_t q, util::string_view name );
-  damage_buff_t( actor_pair_t q, util::string_view name, const spell_data_t* );
+  damage_buff_t( actor_pair_t q, util::string_view name, const spell_data_t*, bool parse_data = true );
   damage_buff_t( actor_pair_t q, util::string_view name, const spell_data_t*, const conduit_data_t& );
 
   damage_buff_t* parse_spell_data( const spell_data_t*, double = 0.0 );
@@ -510,66 +511,89 @@ struct damage_buff_t : public buff_t
   damage_buff_t* set_periodic_mod( const spell_data_t*, size_t, double = 0.0 );
   damage_buff_t* set_auto_attack_mod( double );
   damage_buff_t* set_auto_attack_mod( const spell_data_t*, size_t, double = 0.0 );
+  damage_buff_t* set_crit_chance_mod( double );
+  damage_buff_t* set_crit_chance_mod( const spell_data_t*, size_t, double = 0.0 );
 
+  bool is_affecting( const spell_data_t* );
   bool is_affecting_direct( const spell_data_t* );
   bool is_affecting_periodic( const spell_data_t* );
+  bool is_affecting_crit_chance( const spell_data_t* );
 
-  // Get current direct damage buff value + benefit tracking.
+  // Get current direct damage buff multiplier value + benefit tracking.
   double value_direct()
   {
     buff_t::stack();
     return current_stack ? direct_mod.multiplier : 1.0;
   }
 
-  // Get current direct damage buff value multiplied by current stacks + benefit tracking.
+  // Get current direct damage buff multiplier value multiplied by current stacks + benefit tracking.
   double stack_value_direct()
   { return 1.0 + current_stack * ( value_direct() - 1.0 ); }
 
-  // Get current direct damage buff value + NO benefit tracking.
+  // Get current direct damage buff multiplier value + NO benefit tracking.
   double check_value_direct() const
   { return current_stack ? direct_mod.multiplier : 1.0; }
 
-  // Get current direct damage buff value multiplied by current stacks + NO benefit tracking.
+  // Get current direct damage buff multiplier value multiplied by current stacks + NO benefit tracking.
   double check_stack_value_direct() const
   { return 1.0 + current_stack * ( check_value_direct() - 1.0 ); }
 
-  // Get current periodic damage buff value + benefit tracking.
+  // Get current periodic damage buff multiplier value + benefit tracking.
   double value_periodic()
   {
     buff_t::stack();
     return current_stack ? periodic_mod.multiplier : 1.0;
   }
 
-  // Get current periodic damage buff value multiplied by current stacks + benefit tracking.
+  // Get current periodic damage buff multiplier value multiplied by current stacks + benefit tracking.
   double stack_value_periodic()
   { return 1.0 + current_stack * ( value_periodic() - 1.0 ); }
 
-  // Get current periodic damage buff value + NO benefit tracking.
+  // Get current periodic damage buff multiplier value + NO benefit tracking.
   double check_value_periodic() const
   { return current_stack ? periodic_mod.multiplier : 1.0; }
 
-  // Get current periodic damage buff value multiplied by current stacks + NO benefit tracking.
+  // Get current periodic damage buff multiplier value multiplied by current stacks + NO benefit tracking.
   double check_stack_value_periodic() const
   { return 1.0 + current_stack * ( check_value_periodic() - 1.0 ); }
 
-  // Get current AA damage buff value + benefit tracking.
+  // Get current AA damage buff multiplier value + benefit tracking.
   double value_auto_attack()
   {
     buff_t::stack();
     return current_stack ? auto_attack_mod.multiplier : 1.0;
   }
 
-  // Get current AA damage buff value multiplied by current stacks + benefit tracking.
+  // Get current AA damage buff multiplier value multiplied by current stacks + benefit tracking.
   double stack_value_auto_attack()
   { return 1.0 + current_stack * ( value_auto_attack() - 1.0 ); }
 
-  // Get current AA damage buff value + NO benefit tracking.
+  // Get current AA damage buff multiplier value + NO benefit tracking.
   double check_value_auto_attack() const
   { return current_stack ? auto_attack_mod.multiplier : 1.0; }
 
-  // Get current AA damage buff value multiplied by current stacks + NO benefit tracking.
+  // Get current AA damage buff multiplier value multiplied by current stacks + NO benefit tracking.
   double check_stack_value_auto_attack() const
   { return 1.0 + current_stack * ( check_value_auto_attack() - 1.0 ); }
+
+  // Get current additive crit chance buff value + benefit tracking.
+  double value_crit_chance()
+  {
+    buff_t::stack();
+    return current_stack ? crit_chance_mod.multiplier - 1.0 : 0.0;
+  }
+
+  // Get current additive crit chance buff value multiplied by current stacks + benefit tracking.
+  double stack_value_crit_chance()
+  { return current_stack * value_crit_chance(); }
+
+  // Get current additive crit chance buff value + NO benefit tracking.
+  double check_value_crit_chance() const
+  { return current_stack ? crit_chance_mod.multiplier - 1.0 : 0.0; }
+
+  // Get current additive crit chance buff value multiplied by current stacks + NO benefit tracking.
+  double check_stack_value_crit_chance() const
+  { return current_stack * check_value_crit_chance(); }
 
 protected:
   damage_buff_t* set_buff_mod( damage_buff_modifier_t&, double );

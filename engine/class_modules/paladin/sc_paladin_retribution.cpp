@@ -36,7 +36,7 @@ namespace buffs {
   struct shield_of_vengeance_buff_t : public absorb_buff_t
   {
     shield_of_vengeance_buff_t( player_t* p ):
-      absorb_buff_t( p, "shield_of_vengeance", p -> find_talent_spell( "Shield of Vengeance" ) )
+      absorb_buff_t( p, "shield_of_vengeance", p -> find_talent_spell( talent_tree::SPECIALIZATION, "Shield of Vengeance" ) )
     {
       cooldown -> duration = 0_ms;
     }
@@ -342,7 +342,7 @@ struct blade_of_justice_t : public paladin_melee_attack_t
   struct expurgation_t : public paladin_spell_t
   {
     expurgation_t( paladin_t* p ):
-      paladin_spell_t( "expurgation", p, p -> talents.expurgation )
+      paladin_spell_t( "expurgation", p, p -> find_spell( 383346 ) )
     {
       hasted_ticks = false;
       tick_may_crit = false;
@@ -383,14 +383,14 @@ struct blade_of_justice_t : public paladin_melee_attack_t
     if ( p() -> buffs.blade_of_wrath -> up() )
       am *= 1.0 + p() -> buffs.blade_of_wrath -> data().effectN( 1 ).percent();
     if ( p() -> buffs.sealed_verdict -> up() )
-      am *= 1.0 + p() -> buffs.sealed_verdict -> data().effectN( 1 ).percent();
+      am *= 1.0 + p() -> talents.sealed_verdict -> effectN( 1 ).percent();
     return am;
   }
 
   double composite_crit_chance_multiplier() const override {
     double am = paladin_melee_attack_t::composite_crit_chance_multiplier();
-    if ( p() -> talents.condemning_blade -> ok() )
-      am *= 1.0 + p() -> talents.condemning_blade -> effectN( 1 ).percent();
+    if ( p() -> talents.blade_of_condemnation -> ok() )
+      am *= 1.0 + p() -> talents.blade_of_condemnation -> effectN( 1 ).percent();
     return am;
   }
 
@@ -449,10 +449,25 @@ struct blade_of_justice_t : public paladin_melee_attack_t
 
 // Divine Storm =============================================================
 
+struct divine_storm_tempest_t : public paladin_melee_attack_t
+{
+  divine_storm_tempest_t( paladin_t* p ) :
+    paladin_melee_attack_t( "divine_storm_tempest", p, p -> find_spell( 224239 ) )
+  {
+    background = true;
+
+    aoe = -1;
+    base_multiplier *= p -> talents.tempest_of_the_lightbringer -> effectN( 1 ).percent();
+  }
+};
+
 struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
 {
+  divine_storm_tempest_t* tempest;
+
   divine_storm_t( paladin_t* p, util::string_view options_str ) :
-    holy_power_consumer_t( "divine_storm", p, p -> find_specialization_spell( "Divine Storm" ) )
+    holy_power_consumer_t( "divine_storm", p, p -> find_specialization_spell( "Divine Storm" ) ),
+    tempest( nullptr )
   {
     parse_options( options_str );
 
@@ -465,10 +480,17 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
 
     if ( p -> legendary.tempest_of_the_lightbringer -> ok() )
       base_multiplier *= 1.0 + p -> legendary.tempest_of_the_lightbringer -> effectN( 2 ).percent();
+
+    if ( p -> talents.tempest_of_the_lightbringer -> ok() )
+    {
+      tempest = new divine_storm_tempest_t( p );
+      add_child( tempest );
+    }
   }
 
   divine_storm_t( paladin_t* p, bool is_free, double mul ) :
-    holy_power_consumer_t( "divine_storm", p, p -> find_specialization_spell( "Divine Storm" ) )
+    holy_power_consumer_t( "divine_storm", p, p -> find_specialization_spell( "Divine Storm" ) ),
+    tempest( nullptr )
   {
     is_divine_storm = true;
     aoe = as<int>( data().effectN( 2 ).base_value() );
@@ -478,6 +500,12 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
 
     if ( p -> legendary.tempest_of_the_lightbringer -> ok() )
       base_multiplier *= 1.0 + p -> legendary.tempest_of_the_lightbringer -> effectN( 2 ).percent();
+
+    if ( p -> talents.tempest_of_the_lightbringer -> ok() )
+    {
+      tempest = new divine_storm_tempest_t( p );
+      add_child( tempest );
+    }
   }
 
   double bonus_da( const action_state_t* s ) const override
@@ -500,6 +528,16 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
       am *= 1.0 + p() -> buffs.empyrean_power -> data().effectN( 1 ).percent();
 
     return am;
+  }
+
+  void execute() override
+  {
+    holy_power_consumer_t::execute();
+
+    if ( p() -> talents.tempest_of_the_lightbringer -> ok() )
+    {
+      tempest -> schedule_execute();
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -721,6 +759,12 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
       p() -> buffs.vanquishers_hammer -> decrement( 1 );
     }
 
+    if ( p() -> buffs.empyrean_legacy -> up() )
+    {
+      p() -> active.empyrean_legacy -> schedule_execute();
+      p() -> buffs.empyrean_legacy -> expire();
+    }
+
     // TODO(mserrano): figure out the actionbar override thing instead of this hack.
     if ( is_fv )
     {
@@ -843,18 +887,22 @@ struct seal_of_wrath_t : public paladin_spell_t
 {
   seal_of_wrath_t( paladin_t* p ) :
     paladin_spell_t( "seal_of_wrath", p, p -> find_spell( 386911 ) )
-  { }
+  {
+    background = true;
+  }
 };
 
 struct judgment_ret_t : public judgment_t
 {
   int holy_power_generation;
   seal_of_wrath_t* seal_of_wrath;
+  bool is_boundless;
 
   judgment_ret_t( paladin_t* p, util::string_view name, util::string_view options_str ) :
     judgment_t( p, name ),
     holy_power_generation( as<int>( p -> find_spell( 220637 ) -> effectN( 1 ).base_value() ) ),
-    seal_of_wrath( nullptr )
+    seal_of_wrath( nullptr ),
+    is_boundless( false )
   {
     parse_options( options_str );
 
@@ -867,14 +915,14 @@ struct judgment_ret_t : public judgment_t
     if ( p -> talents.seal_of_wrath -> ok() )
     {
       seal_of_wrath = new seal_of_wrath_t( p );
-      add_child( seal_of_wrath );
     }
   }
 
   judgment_ret_t( paladin_t* p, util::string_view name, bool is_divine_toll ) :
     judgment_t( p, name ),
     holy_power_generation( as<int>( p -> find_spell( 220637 ) -> effectN( 1 ).base_value() ) ),
-    seal_of_wrath( nullptr )
+    seal_of_wrath( nullptr ),
+    is_boundless( false )
   {
     // This is for Divine Toll's background judgments
     background = true;
@@ -886,18 +934,55 @@ struct judgment_ret_t : public judgment_t
     if ( p -> talents.seal_of_wrath -> ok() )
     {
       seal_of_wrath = new seal_of_wrath_t( p );
-      add_child( seal_of_wrath );
     }
+  }
+
+  void init() override
+  {
+    judgment_t::init();
+    is_boundless = false;
   }
 
   void execute() override
   {
+    if ( p() -> talents.boundless_judgment -> ok() )
+    {
+      if ( rng().roll( p() -> talents.boundless_judgment -> effectN( 1 ).percent() ) )
+      {
+        is_boundless = true;
+      }
+    }
+
     judgment_t::execute();
 
     if ( p() -> talents.zeal -> ok() )
     {
       p() -> buffs.zeal -> trigger( as<int>( p() -> talents.zeal -> effectN( 1 ).base_value() ) );
     }
+
+    if ( p() -> spec.judgment_3 -> ok() )
+      p() -> resource_gain( RESOURCE_HOLY_POWER, holy_power_generation, p() -> gains.judgment );
+
+    if ( p() -> talents.empyrean_legacy -> ok() )
+    {
+      if ( ! ( p() -> buffs.empyrean_legacy_cooldown -> up() ) )
+      {
+        p() -> buffs.empyrean_legacy -> trigger();
+        p() -> buffs.empyrean_legacy_cooldown -> trigger();
+      }
+    }
+
+    is_boundless = false;
+  }
+
+  int n_targets() const override
+  {
+    int target_count = judgment_t::n_targets();
+
+    if ( is_boundless )
+      target_count++;
+
+    return target_count;
   }
 
   // Special things that happen when Judgment damages target
@@ -909,9 +994,6 @@ struct judgment_ret_t : public judgment_t
     {
       if ( p() -> talents.greater_judgment -> ok() )
         td( s -> target ) -> debuff.judgment -> trigger();
-
-      if ( p() -> spec.judgment_3 -> ok() )
-        p() -> resource_gain( RESOURCE_HOLY_POWER, holy_power_generation, p() -> gains.judgment );
 
       if ( p() -> talents.seal_of_wrath -> ok() )
       {
@@ -1192,6 +1274,15 @@ void paladin_t::create_ret_actions()
   active.shield_of_vengeance_damage = new shield_of_vengeance_proc_t( this );
   double necrolord_mult = 1.0 + covenant.necrolord -> effectN( 2 ).percent();
   active.necrolord_divine_storm = new divine_storm_t( this, true, necrolord_mult );
+  if ( talents.empyrean_legacy->ok() )
+  {
+    double empyrean_legacy_mult = 1.0 + talents.empyrean_legacy->effectN( 2 ).percent();
+    active.empyrean_legacy = new divine_storm_t( this, true, empyrean_legacy_mult );
+  }
+  else
+  {
+    active.empyrean_legacy = nullptr;
+  }
 
   if ( specialization() == PALADIN_RETRIBUTION )
   {
@@ -1262,6 +1353,9 @@ void paladin_t::create_buffs_retribution()
         // this 1 appears hardcoded
         resource_gain( RESOURCE_HOLY_POWER, 1, gains.hp_inner_grace );
       } );
+
+  buffs.empyrean_legacy = make_buff( this, "empyrean_legacy", find_spell( 387178 ) );
+  buffs.empyrean_legacy_cooldown = make_buff( this, "empyrean_legacy_cooldown", find_spell( 387441 ) );
 }
 
 void paladin_t::init_rng_retribution()
@@ -1276,11 +1370,11 @@ void paladin_t::init_spells_retribution()
   talents.blade_of_justice            = find_talent_spell( talent_tree::SPECIALIZATION, "Blade of Justice" );
   talents.divine_storm                = find_talent_spell( talent_tree::SPECIALIZATION, "Divine Storm" );
   talents.art_of_war                  = find_talent_spell( talent_tree::SPECIALIZATION, "Art of War" );
-  talents.timely_judgment             = find_talent_spell( talent_tree::SPECIALIZATION, "Timely Judgment" );
+  talents.timely_judgment             = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Judgment" );
   talents.improved_crusader_strike    = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Crusader Strike" );
   talents.holy_crusader               = find_talent_spell( talent_tree::SPECIALIZATION, "Holy Crusader" );
   talents.holy_blade                  = find_talent_spell( talent_tree::SPECIALIZATION, "Holy Blade" );
-  talents.condemning_blade            = find_talent_spell( talent_tree::SPECIALIZATION, "Condemning Blade" );
+  talents.blade_of_condemnation       = find_talent_spell( talent_tree::SPECIALIZATION, "Blade of Condemnation" );
   talents.zeal                        = find_talent_spell( talent_tree::SPECIALIZATION, "Zeal" );
   talents.shield_of_vengeance         = find_talent_spell( talent_tree::SPECIALIZATION, "Shield of Vengeance" );
   talents.divine_protection           = find_talent_spell( talent_tree::SPECIALIZATION, "Divine Protection" );
