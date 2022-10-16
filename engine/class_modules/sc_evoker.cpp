@@ -1973,6 +1973,7 @@ void karnalex_the_first_light( special_effect_t& effect )
   using generic_proc_t = unique_gear::generic_proc_t;
   struct light_of_creation_t : public generic_proc_t
   {
+
     light_of_creation_t( const special_effect_t& e ) : generic_proc_t( e, "light_of_creation", e.driver() )
     {
       channeled = true;
@@ -1998,6 +1999,14 @@ void karnalex_the_first_light( special_effect_t& effect )
     evoker_t* p() const
     {
       return static_cast<evoker_t*>( generic_proc_t::player );
+    }
+
+    void tick( dot_t* d ) override
+    {
+      generic_proc_t::tick( d );
+      
+      // TODO: Do a better job of this. It's close enough for now but it still is awful, and the item doesn't have the time properly added.
+      stats->iteration_total_execute_time += d->time_to_tick();
     }
 
     void last_tick( dot_t* d ) override
