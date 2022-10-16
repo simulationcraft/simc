@@ -3691,7 +3691,8 @@ struct use_mana_gem_t final : public mage_spell_t
 
     p()->resource_gain( RESOURCE_MANA, p()->resources.max[ RESOURCE_MANA ] * data().effectN( 1 ).percent(), p()->gains.mana_gem, this );
     p()->buffs.invigorating_powder->trigger();
-    p()->trigger_arcane_charge( as<int>( p()->talents.cascading_power->effectN( 1 ).base_value() ) );
+    // TODO: In game, this is bugged and will not properly apply buffs.clearcasting_channel when triggered from 0 stacks.
+    p()->buffs.clearcasting->trigger( as<int>( p()->talents.cascading_power->effectN( 1 ).base_value() ) );
 
     p()->state.mana_gem_charges--;
     assert( p()->state.mana_gem_charges >= 0 );
