@@ -731,6 +731,50 @@ struct seal_of_the_crusader_cb_t : public dbc_proc_callback_t
   }
 };
 
+struct touch_of_light_dmg_t : public paladin_spell_t
+{
+  touch_of_light_dmg_t( paladin_t* p ) : paladin_spell_t( "touch_of_light_dmg", p, p -> find_spell( 385354 ) )
+  {
+    background = true;
+  }
+};
+
+struct touch_of_light_heal_t : public paladin_heal_t
+{
+  touch_of_light_heal_t( paladin_t* p ) : paladin_heal_t( "touch_of_light_heal", p, p -> find_spell( 385352 ) )
+  {
+    background = true;
+  }
+};
+
+struct touch_of_light_cb_t : public dbc_proc_callback_t
+{
+  paladin_t* p;
+  touch_of_light_dmg_t* dmg;
+  touch_of_light_heal_t* heal;
+
+  touch_of_light_cb_t( paladin_t* player, const special_effect_t& effect )
+    : dbc_proc_callback_t( player, effect ), p( player )
+  {
+    dmg = new touch_of_light_dmg_t( player );
+    heal = new touch_of_light_heal_t( player );
+  }
+
+  void execute( action_t*, action_state_t* s ) override
+  {
+    if ( s->target->is_enemy() )
+    {
+      dmg->target = s->target;
+      dmg->schedule_execute();
+    }
+    else
+    {
+      heal->target = s->target;
+      heal->schedule_execute();
+    }
+  }
+};
+
 // ==========================================================================
 // End Spells, Heals, and Absorbs
 // ==========================================================================
@@ -2580,6 +2624,17 @@ void paladin_t::init_special_effects()
     special_effects.push_back( seal_of_the_crusader_driver );
 
     auto cb = new paladin::seal_of_the_crusader_cb_t( this, *seal_of_the_crusader_driver );
+    cb->initialize();
+  }
+
+  if ( talents.touch_of_light->ok() )
+  {
+    auto const touch_of_light_driver = new special_effect_t( this );
+    touch_of_light_driver->name_str = "touch_of_light_driver";
+    touch_of_light_driver->spell_id = 385349;
+    special_effects.push_back( touch_of_light_driver );
+
+    auto cb = new paladin::touch_of_light_cb_t( this, *touch_of_light_driver );
     cb->initialize();
   }
 }
