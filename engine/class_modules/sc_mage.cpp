@@ -7169,9 +7169,9 @@ void mage_t::create_buffs()
                                ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
 
   // Runeforge Legendaries
-  buffs.arcane_harmony = make_buff( this, "arcane_harmony", find_spell( 332777 ) )
+  buffs.arcane_harmony = make_buff( this, "arcane_harmony", talents.arcane_harmony.ok() ? find_spell( 384455 ) : find_spell( 332777 ) )
                            ->set_default_value_from_effect( 1 )
-                           ->set_chance( runeforge.arcane_harmony.ok() )
+                           ->set_chance( talents.arcane_harmony.ok() || runeforge.arcane_harmony.ok() )
                            ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
   buffs.siphon_storm   = make_buff( this, "siphon_storm", find_spell( talents.temporal_warp.ok() ? 384267 : 332934 ) )
                            ->set_default_value_from_effect( 1 )
