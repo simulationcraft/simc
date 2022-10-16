@@ -1912,8 +1912,10 @@ public:
         auto spark_debuff = td->debuffs.radiant_spark_vulnerability;
 
         // Handle Harmonic Echo before changing the stack number
-        if ( p()->runeforge.harmonic_echo.ok() && spark_debuff->check() )
-          p()->action.harmonic_echo->execute_on_target( s->target, p()->runeforge.harmonic_echo->effectN( 1 ).percent() * s->result_total );
+        if ( ( p()->talents.harmonic_echo.ok() || p()->runeforge.harmonic_echo.ok() ) && spark_debuff->check() ){
+          double echo_pct = p()->talents.harmonic_echo.ok() ? p()->talents.harmonic_echo->effectN( 1 ).percent() : p()->runeforge.harmonic_echo->effectN( 1 ).percent();
+          p()->action.harmonic_echo->execute_on_target( s->target, echo_pct * s->result_total );
+        }
 
         if ( spark_debuff->at_max_stacks() )
         {
@@ -5762,7 +5764,7 @@ struct mirrors_of_torment_t final : public mage_spell_t
 struct harmonic_echo_t final : public mage_spell_t
 {
   harmonic_echo_t( std::string_view n, mage_t* p ) :
-    mage_spell_t( n, p, p->find_spell( 354189 ) )
+    mage_spell_t( n, p, p->talents.harmonic_echo.ok() ? p->find_spell( 384685 ) : p->find_spell( 354189 ) )
   {
     background = true;
     may_miss = may_crit = callbacks = false;
@@ -6508,7 +6510,7 @@ void mage_t::create_actions()
   if ( talents.cold_front.ok() || runeforge.cold_front.ok() )
     action.cold_front_frozen_orb = get_action<frozen_orb_t>( "cold_front_frozen_orb", this, "", true );
 
-  if ( runeforge.harmonic_echo.ok() )
+  if ( talents.harmonic_echo.ok() || runeforge.harmonic_echo.ok() )
     action.harmonic_echo = get_action<harmonic_echo_t>( "harmonic_echo", this );
 
   if ( find_covenant_spell( "Mirrors of Torment" )->ok() )
