@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.2.46157
-static const std::array<spelltext_data_t, 19052> __spelltext_data { {
+static const std::array<spelltext_data_t, 19055> __spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -17844,6 +17844,9 @@ static const std::array<spelltext_data_t, 19052> __spelltext_data { {
   { 387399, "Each time Felstorm deals damage, it increases the damage the target takes from you and your pets by $s1% for $387402d, up to ${$s1*$387402u}%.", 0, 0 },
   { 387400, "Chaos Bolt increases the damage of Chaos Bolt by $s1% and reduces the cast time of Chaos Bolt by $s2% for $337170d.\r\n\r\nRain of Fire increases the damage of Rain of Fire by $s1% for $337170d.\r\n\r\nShadowburn increases the damage of Shadowburn by $s1% for $337170d.", 0, 0 },
   { 387402, "$@spelldesc387399", "Damage taken from $@auracaster and their pets is increased by $s1%.", 0 },
+  { 387409, "$@spelldesc387400", "Chaos Bolt damage is increased by $w1% and its cast time is reduced by $w2%.", 0 },
+  { 387413, "$@spelldesc387400", "Rain of Fire damage is increased by $w1%.", 0 },
+  { 387414, "$@spelldesc387400", "Shadowburn damage is increased by $w1%.", 0 },
   { 387431, "Boon of the Covenants passively increases your damage and healing by an additional ${$s1}.1%.", 0, 0 },
   { 387432, "Shadow Bolt increases the damage of your Demonbolt by $s2%, stacking up to $387437u times. Lasts $387437d.", 0, 0 },
   { 387437, "$@spelldesc387432", "Damage of your Demonbolt increased by $w1%.", 0 },

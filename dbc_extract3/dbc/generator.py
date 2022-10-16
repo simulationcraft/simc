@@ -1837,6 +1837,9 @@ class SpellDataGenerator(DataGenerator):
           ( 387110, 0 ),    # Conflagration of Chaos aura 2
           ( 387158, 0 ),    # Impending Ruin talent aura
           ( 387356, 0 ),    # Crashing Chaos aura
+          ( 387409, 0 ),    # Madness Chaos Bolt aura
+          ( 387413, 0 ),    # Madness Rain of Fire aura
+          ( 387414, 0 ),    # Madness Shadowburn aura
         ),
 
         # Monk:
