@@ -6161,7 +6161,7 @@ struct time_anomaly_tick_event_t final : public event_t
 
       auto spec = mage->specialization();
 
-      // TODO: these conditions haven't been tested
+      // TODO: these conditions haven't been tested; also check what happens if relevant talents like Clearcasting are not selected
       if ( spec == MAGE_ARCANE && !mage->buffs.arcane_surge->check() )
         possible_procs.push_back( TA_ARCANE_SURGE );
       if ( spec == MAGE_ARCANE && !mage->buffs.clearcasting->at_max_stacks() )
@@ -6950,7 +6950,8 @@ void mage_t::create_buffs()
                                  ->set_chance( talents.chrono_shift.ok() );
   buffs.clearcasting         = make_buff<buffs::expanded_potential_buff_t>( this, "clearcasting", find_spell( 263725 ) )
                                  ->set_default_value_from_effect( 1 )
-                                 ->modify_max_stack( as<int>( talents.improved_clearcasting->effectN( 1 ).base_value() ) );
+                                 ->modify_max_stack( as<int>( talents.improved_clearcasting->effectN( 1 ).base_value() ) )
+                                 ->set_chance( talents.clearcasting.ok() );
   buffs.clearcasting_channel = make_buff( this, "clearcasting_channel", find_spell( 277726 ) )
                                  ->set_quiet( true );
   buffs.enlightened_damage   = make_buff( this, "enlightened_damage", find_spell( 321388 ) )
