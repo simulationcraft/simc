@@ -1824,7 +1824,7 @@ struct pyre_t : public evoker_spell_t
     else
       volatility = p()->action.volatility;
 
-    if ( proc_spell_type & proc_spell_type_e::VOLATILITY == 0 )
+    if ( ( proc_spell_type & proc_spell_type_e::VOLATILITY ) == 0 )
       add_child( volatility );
   }
 
