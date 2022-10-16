@@ -13,7 +13,7 @@ namespace
 // Warrior
 // To Do: Clean up green text
 // Fury - Gathering Storm tick behavior - Fury needs 2 more
-// Arms - Clean up Crushing Assault (Whirlwind Fervor)
+// Arms - 
 // ==========================================================================
 
 struct warrior_t;
@@ -198,8 +198,9 @@ public:
     cooldown_t* impending_victory;
     cooldown_t* last_stand;
     cooldown_t* mortal_strike;
-    cooldown_t* overpower;
+    cooldown_t* odyns_fury;
     cooldown_t* onslaught;
+    cooldown_t* overpower;
     cooldown_t* pummel;
     cooldown_t* rage_from_auto_attack;
     cooldown_t* rage_from_crit_block;
@@ -3845,6 +3846,85 @@ struct sweeping_strikes_t : public warrior_spell_t
   }
 };
 
+// Odyn's Fury ==========================================================
+
+struct odyns_fury_off_hand_t : public warrior_attack_t
+{
+  odyns_fury_off_hand_t( warrior_t* p, const spell_data_t* odyns_fury )
+    : warrior_attack_t( "odyns_fury_oh", p, odyns_fury )
+  {
+    background          = true;
+    aoe                 = -1;
+  }
+};
+
+struct odyns_fury_main_hand_t : public warrior_attack_t
+{
+  odyns_fury_main_hand_t( warrior_t* p, const spell_data_t* odyns_fury )
+    : warrior_attack_t( "odyns_fury_mh", p, odyns_fury )
+  {
+    background = true;
+    aoe        = -1;
+  }
+};
+
+struct odyns_fury_t : warrior_attack_t
+{
+  odyns_fury_off_hand_t* oh_attack;
+  odyns_fury_off_hand_t* oh_attack2;
+  odyns_fury_main_hand_t* mh_attack;
+  odyns_fury_main_hand_t* mh_attack2;
+  odyns_fury_t( warrior_t* p, util::string_view options_str )
+    : warrior_attack_t( "odyns_fury", p, p->talents.fury.odyns_fury ),
+      oh_attack( nullptr ), oh_attack2( nullptr ),
+      mh_attack( nullptr ), mh_attack2( nullptr )
+  {
+    parse_options( options_str );
+    radius = data().effectN( 1 ).trigger()->effectN( 1 ).radius_max();
+
+    if ( p->main_hand_weapon.type != WEAPON_NONE )
+    {
+      mh_attack         = new odyns_fury_main_hand_t( p, p->talents.fury.odyns_fury->effectN( 1 ).trigger() );
+      mh_attack->weapon = &( p->main_hand_weapon );
+      mh_attack->radius = radius;
+      add_child( mh_attack );
+      mh_attack2         = new odyns_fury_main_hand_t( p, p->talents.fury.odyns_fury->effectN( 3 ).trigger() );
+      mh_attack2->weapon = &( p->main_hand_weapon );
+      mh_attack2->radius = radius;
+      add_child( mh_attack2 );
+      if ( p->off_hand_weapon.type != WEAPON_NONE )
+      {
+        oh_attack         = new odyns_fury_off_hand_t( p, p->talents.fury.odyns_fury->effectN( 2 ).trigger() );
+        oh_attack->weapon = &( p->off_hand_weapon );
+        oh_attack->weapon = &( p->off_hand_weapon );
+        add_child( oh_attack );
+        oh_attack2         = new odyns_fury_off_hand_t( p, p->talents.fury.odyns_fury->effectN( 4 ).trigger() );
+        oh_attack2->weapon = &( p->off_hand_weapon );
+        oh_attack2->weapon = &( p->off_hand_weapon );
+        add_child( oh_attack2 );
+      }
+    }
+  }
+
+  void execute() override
+  {
+    warrior_attack_t::execute();
+    mh_attack->execute();
+    oh_attack->execute();
+    mh_attack2->execute();
+    oh_attack2->execute();
+  }
+
+  bool ready() override
+  {
+    if ( p()->main_hand_weapon.type == WEAPON_NONE )
+    {
+      return false;
+    }
+    return warrior_attack_t::ready();
+  }
+};
+
 // Overpower ============================================================
 
 struct seismic_wave_t : warrior_attack_t
@@ -4973,7 +5053,6 @@ struct fury_whirlwind_parent_t : public warrior_attack_t
   timespan_t spin_time;
   double base_rage_gain;
   double additional_rage_gain_per_target;
-  double enrage_chance; // fix me
   fury_whirlwind_parent_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "whirlwind", p, p->spec.whirlwind ),
       oh_attack( nullptr ),
@@ -6461,6 +6540,8 @@ action_t* warrior_t::create_action( util::string_view name, util::string_view op
     return new last_stand_t( this, options_str );
   if ( name == "mortal_strike" )
     return new mortal_strike_t( this, options_str );
+  if ( name == "odyns_fury" )
+    return new odyns_fury_t( this, options_str );
   if ( name == "onslaught" )
     return new onslaught_t( this, options_str );
   if ( name == "overpower" )
@@ -7051,6 +7132,7 @@ void warrior_t::init_spells()
   cooldown.iron_fortress_icd -> duration    = azerite.iron_fortress.spell() -> effectN( 1 ).trigger() -> internal_cooldown();
   cooldown.last_stand                       = get_cooldown( "last_stand" );
   cooldown.mortal_strike                    = get_cooldown( "mortal_strike" );
+  cooldown.odyns_fury                       = get_cooldown( "odyns_fury" );
   cooldown.onslaught                        = get_cooldown( "onslaught" );
   cooldown.overpower                        = get_cooldown( "overpower" );
   cooldown.pummel                           = get_cooldown( "pummel" );
