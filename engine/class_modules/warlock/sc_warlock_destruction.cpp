@@ -188,6 +188,9 @@ struct shadowburn_t : public destruction_spell_t
       p()->procs.conflagration_of_chaos_sb->occur();
     }
 
+    if ( p()->talents.madness_of_the_azjaqir.ok() )
+      p()->buffs.madness_sb->trigger();
+
     p()->buffs.crashing_chaos->decrement();
 
     //if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T28, B2 ) )
@@ -201,6 +204,16 @@ struct shadowburn_t : public destruction_spell_t
     //      make_event( sim, 1_ms, [ this, overflow ] { p()->buffs.impending_ruin->trigger( overflow ); } );
     //  }
     //}
+  }
+
+  double action_multiplier() const override
+  {
+    double m = destruction_spell_t::action_multiplier();
+
+    if ( p()->buffs.madness_sb->check() )
+      m *= 1.0 + p()->buffs.madness_sb->check_value();
+
+    return m;
   }
 
   double composite_target_crit_chance( player_t* target ) const override
@@ -585,6 +598,9 @@ struct chaos_bolt_t : public destruction_spell_t
     //if ( p()->buffs.madness_of_the_azjaqir->check() )
     //  h *= 1.0 + p()->buffs.madness_of_the_azjaqir->data().effectN( 2 ).percent();
 
+    if ( p()->buffs.madness_cb->check() )
+      t *= 1.0 + p()->talents.madness_of_the_azjaqir->effectN( 2 ).percent();
+
     return t;
   }
 
@@ -597,6 +613,9 @@ struct chaos_bolt_t : public destruction_spell_t
     //{
     //  m *= 1.0 + p()->buffs.madness_of_the_azjaqir->data().effectN( 1 ).percent();
     //}
+
+    if ( p()->buffs.madness_cb->check() )
+      m *= 1.0 + p()->buffs.madness_cb->check_value();
 
     return m;
   }
@@ -663,6 +682,10 @@ struct chaos_bolt_t : public destruction_spell_t
     p()->buffs.ritual_of_ruin->expire();
 
     p()->buffs.crashing_chaos->decrement();
+
+    if ( p()->talents.madness_of_the_azjaqir.ok() )
+      p()->buffs.madness_cb->trigger();
+
     //// SL - Legendary
     //if ( p()->legendary.madness_of_the_azjaqir->ok() )
     //  p()->buffs.madness_of_the_azjaqir->trigger();
@@ -801,6 +824,16 @@ struct rain_of_fire_t : public destruction_spell_t
       if ( p()->talents.pyrogenics.ok() )
         td( s->target )->debuffs_pyrogenics->trigger();
     }
+
+    double action_multiplier() const override
+    {
+      double m = destruction_spell_t::action_multiplier();
+
+      if ( p()->buffs.madness_rof_snapshot->check() )
+        m *= 1.0 + p()->talents.madness_of_the_azjaqir->effectN( 1 ).percent();
+
+      return m;
+    }
   };
 
   rain_of_fire_t( warlock_t* p, util::string_view options_str )
@@ -837,6 +870,16 @@ struct rain_of_fire_t : public destruction_spell_t
   {
     int shards_used = as<int>( cost() );
     destruction_spell_t::execute();
+
+    // 2022-10-16: Madness of the Azj'Aqir buffs all active ticks of Rain of Fire when Rain of Fire is cast during the buff
+    // This persists even after the Madness buff expires, so we store this in a dummy snapshot buff
+    p()->buffs.madness_rof_snapshot->expire();
+
+    if ( p()->buffs.madness_rof->check() )
+      p()->buffs.madness_rof_snapshot->trigger();
+
+    if ( p()->talents.madness_of_the_azjaqir.ok() )
+      p()->buffs.madness_rof->trigger();
 
     //if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T28, B2 ) )
     //{
@@ -1181,6 +1224,17 @@ void warlock_t::create_buffs_destruction()
                                  ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
                                  ->set_default_value( talents.power_overwhelming->effectN( 2 ).base_value() / 10.0 )
                                  ->set_refresh_behavior( buff_refresh_behavior::DISABLED );
+
+  buffs.madness_cb = make_buff( this, "madness_cb", talents.madness_cb )
+                         ->set_default_value( talents.madness_of_the_azjaqir->effectN( 1 ).percent() );
+
+  buffs.madness_rof = make_buff( this, "madness_rof", talents.madness_rof )
+                          ->set_default_value( talents.madness_of_the_azjaqir->effectN( 1 ).percent() );
+
+  buffs.madness_sb = make_buff( this, "madness_sb", talents.madness_sb )
+                         ->set_default_value( talents.madness_of_the_azjaqir->effectN( 1 ).percent() );
+
+  buffs.madness_rof_snapshot = make_buff( this, "madness_rof_snapshot" );
 }
 void warlock_t::init_spells_destruction()
 {
@@ -1286,6 +1340,11 @@ void warlock_t::init_spells_destruction()
 
   talents.power_overwhelming = find_talent_spell( talent_tree::SPECIALIZATION, "Power Overwhelming" ); // Should be ID 387279
   talents.power_overwhelming_buff = find_spell( 387283 );
+
+  talents.madness_of_the_azjaqir = find_talent_spell( talent_tree::SPECIALIZATION, "Madness of the Azj'Aqir" ); // Should be ID 387400
+  talents.madness_cb = find_spell( 387409 );
+  talents.madness_rof = find_spell( 387413 );
+  talents.madness_sb = find_spell( 387414 );
 
   talents.rain_of_chaos = find_talent_spell( "Rain of Chaos" );
 
