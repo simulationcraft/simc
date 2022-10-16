@@ -14,6 +14,7 @@ public:
   gain_t* gain;
 
   bool destro_mastery;
+  bool chaos_incarnate;
 
   destruction_spell_t( warlock_t* p, util::string_view n ) : destruction_spell_t( n, p, p->find_class_spell( n ) )
   {
@@ -27,11 +28,12 @@ public:
   destruction_spell_t( util::string_view token, warlock_t* p, const spell_data_t* s = spell_data_t::nil() )
     : warlock_spell_t( token, p, s )
   {
-    may_crit          = true;
-    tick_may_crit     = true;
+    may_crit = true;
+    tick_may_crit = true;
     weapon_multiplier = 0.0;
-    gain              = player->get_gain( name_str );
-    destro_mastery    = true;
+    gain = player->get_gain( name_str );
+    destro_mastery = true;
+    chaos_incarnate = false;
   }
 
   void consume_resource() override
@@ -94,6 +96,9 @@ public:
       double destro_mastery_value = p()->cache.mastery_value() / 2.0;
       double chaotic_energies_rng = rng().range( 0, destro_mastery_value );
 
+      if ( chaos_incarnate )
+        chaotic_energies_rng = destro_mastery_value;
+
       pm *= 1.0 + chaotic_energies_rng + ( destro_mastery_value );
     }
 
@@ -149,6 +154,7 @@ struct shadowburn_t : public destruction_spell_t
     parse_options( options_str );
     can_havoc = true;
     cooldown->hasted = true;
+    chaos_incarnate = p->talents.chaos_incarnate.ok();
 
     base_multiplier *= 1.0 + p->talents.ruin->effectN( 1 ).percent();
   }
@@ -580,6 +586,7 @@ struct chaos_bolt_t : public destruction_spell_t
   {
     parse_options( options_str );
     can_havoc = true;
+    chaos_incarnate = p->talents.chaos_incarnate.ok();
 
     internal_combustion = new internal_combustion_t( p );
     add_child( internal_combustion );
@@ -829,6 +836,7 @@ struct rain_of_fire_t : public destruction_spell_t
       background = dual = direct_tick = true;
       radius = p->talents.rain_of_fire->effectN( 1 ).radius();
       base_multiplier *= 1.0 + p->talents.inferno->effectN( 2 ).percent();
+      chaos_incarnate = p->talents.chaos_incarnate.ok();
     }
 
     void impact( action_state_t* s ) override
@@ -1380,6 +1388,8 @@ void warlock_t::init_spells_destruction()
   talents.rain_of_chaos = find_talent_spell( talent_tree::SPECIALIZATION, "Rain of Chaos" ); // Should be ID 266086
   talents.rain_of_chaos_buff = find_spell( 266087 );
   talents.summon_infernal_roc = find_spell( 335236 );
+
+  talents.chaos_incarnate = find_talent_spell( talent_tree::SPECIALIZATION, "Chaos Incarnate" ); // Should be ID 387275
 
   // Legendaries
   legendary.cinders_of_the_azjaqir         = find_runeforge_legendary( "Cinders of the Azj'Aqir" );
