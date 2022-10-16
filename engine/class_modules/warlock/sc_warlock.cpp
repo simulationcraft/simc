@@ -1298,8 +1298,6 @@ pet_t* warlock_t::create_pet( util::string_view pet_name, util::string_view pet_
 
 void warlock_t::create_pets()
 {
-  create_all_pets();
-
   for ( auto& pet : pet_name_list )
   {
     create_pet( pet );
@@ -1881,17 +1879,6 @@ pet_t* warlock_t::create_main_pet( util::string_view pet_name, util::string_view
   return nullptr;
 }
 
-void warlock_t::create_all_pets()
-{
-  if ( specialization() == WARLOCK_DESTRUCTION )
-  {
-    for ( auto& infernal : warlock_pet_list.infernals )
-    {
-      infernal = new pets::destruction::infernal_t( this );
-    }
-  }
-}
-
 //TODO: Are these expressions outdated?
 std::unique_ptr<expr_t> warlock_t::create_pet_expression( util::string_view name_str )
 {
@@ -2109,7 +2096,7 @@ warlock::warlock_t::pets_t::pets_t( warlock_t* w )
   : active( nullptr ),
     last( nullptr ),
     darkglare( "darkglare", w ),
-    roc_infernals( "roc_infernal", w ),
+    infernals( "infernal", w ),
     blasphemy( "blasphemy", w ),
     dreadstalkers( "dreadstalker", w ),
     vilefiends( "vilefiend", w ),
