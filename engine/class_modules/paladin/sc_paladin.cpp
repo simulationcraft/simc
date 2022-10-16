@@ -1790,6 +1790,15 @@ struct virtuous_command_t : public paladin_spell_t
   }
 };
 
+struct incandescence_t : public paladin_spell_t
+{
+  incandescence_t( paladin_t* p ) : paladin_spell_t( "incandescence", p, p->find_spell( 385816 ) )
+  {
+    background = true;
+    aoe = 5;
+  }
+};
+
 // ==========================================================================
 // End Attacks
 // ==========================================================================
@@ -2050,6 +2059,15 @@ void paladin_t::create_actions()
   else
   {
     active.virtuous_command = nullptr;
+  }
+
+  if ( talents.incandescence->ok() )
+  {
+    active.incandescence = new incandescence_t( this );
+  }
+  else
+  {
+    active.incandescence = nullptr;
   }
 
   if ( legendary.the_magistrates_judgment->ok() )
