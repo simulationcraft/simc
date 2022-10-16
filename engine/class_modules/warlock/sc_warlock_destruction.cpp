@@ -1192,6 +1192,7 @@ void warlock_t::create_buffs_destruction()
           ->set_trigger_spell( legendary.madness_of_the_azjaqir );
 
   buffs.impending_ruin = make_buff ( this, "impending_ruin", talents.impending_ruin_buff )
+                             ->set_max_stack( talents.impending_ruin_buff->max_stacks() + as<int>( talents.master_ritualist->effectN( 2 ).base_value() ) )
                              ->set_stack_change_callback( [ this ]( buff_t* b, int, int cur )
                                {
                                  if ( cur == b->max_stack() )
@@ -1345,6 +1346,8 @@ void warlock_t::init_spells_destruction()
   talents.madness_cb = find_spell( 387409 );
   talents.madness_rof = find_spell( 387413 );
   talents.madness_sb = find_spell( 387414 );
+
+  talents.master_ritualist = find_talent_spell( talent_tree::SPECIALIZATION, "Master Ritualist" ); // Should be ID 387165
 
   talents.rain_of_chaos = find_talent_spell( "Rain of Chaos" );
 
