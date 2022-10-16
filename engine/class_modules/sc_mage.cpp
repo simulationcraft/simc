@@ -317,6 +317,7 @@ public:
     buff_t* chrono_shift;
     buff_t* clearcasting;
     buff_t* clearcasting_channel; // Hidden buff which governs tick and channel time
+    buff_t* concentration;
     buff_t* enlightened_damage;
     buff_t* enlightened_mana;
     buff_t* evocation;
@@ -1246,6 +1247,31 @@ struct expanded_potential_buff_t : public buff_t
       mage->buffs.expanded_potential->expire();
     else
       buff_t::decrement( stacks, value );
+  }
+};
+
+struct clearcasting_buff_t : public expanded_potential_buff_t
+{
+  clearcasting_buff_t( mage_t* p ) :
+    expanded_potential_buff_t( p, "clearcasting", p->find_spell( 263725 ) )
+  {
+    set_default_value_from_effect( 1 );
+    modify_max_stack( as<int>( p->talents.improved_clearcasting->effectN( 1 ).base_value() ) );
+    set_chance( p->talents.clearcasting.ok() );
+  }
+
+  // TODO: Check everything here in game, especially the interaction with Expanded Potential
+  void decrement( int stacks, double value ) override
+  {
+    if ( check() )
+    {
+      mage->trigger_sinful_delight( MAGE_ARCANE );
+    }
+
+    if ( check() && mage->buffs.concentration->check() )
+      mage->buffs.concentration->expire();
+    else
+      expanded_potential_buff_t::decrement( stacks, value );
   }
 };
 
@@ -2910,6 +2936,7 @@ struct arcane_blast_t final : public arcane_mage_spell_t
     if ( p()->buffs.presence_of_mind->up() )
       p()->buffs.presence_of_mind->decrement();
 
+    p()->buffs.concentration->trigger();
     p()->buffs.expanded_potential->trigger();
 
     if ( num_targets_crit > 0 )
@@ -6984,12 +7011,12 @@ void mage_t::create_buffs()
                                  ->set_default_value_from_effect( 1 )
                                  ->add_invalidate( CACHE_RUN_SPEED )
                                  ->set_chance( talents.chrono_shift.ok() );
-  buffs.clearcasting         = make_buff<buffs::expanded_potential_buff_t>( this, "clearcasting", find_spell( 263725 ) )
-                                 ->set_default_value_from_effect( 1 )
-                                 ->modify_max_stack( as<int>( talents.improved_clearcasting->effectN( 1 ).base_value() ) )
-                                 ->set_chance( talents.clearcasting.ok() );
+  buffs.clearcasting         = make_buff<buffs::clearcasting_buff_t>( this );
   buffs.clearcasting_channel = make_buff( this, "clearcasting_channel", find_spell( 277726 ) )
                                  ->set_quiet( true );
+  buffs.concentration        = make_buff( this, "concentration", find_spell( 384379 ) )
+                                 ->set_activated( false )
+                                 ->set_trigger_spell( talents.concentration );
   buffs.enlightened_damage   = make_buff( this, "enlightened_damage", find_spell( 321388 ) )
                                  ->set_default_value_from_effect( 1 )
                                  ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
