@@ -958,6 +958,11 @@ struct crusader_strike_t : public paladin_melee_attack_t
         }
       }
 
+      if ( p()->talents.aspiration_of_divinity->ok() )
+      {
+        p()->buffs.aspiration_of_divinity->trigger();
+      }
+
       if ( p()->buffs.virtuous_command_conduit->up() && p()->active.virtuous_command_conduit )
       {
         action_t* vc    = p()->active.virtuous_command_conduit;
@@ -2459,6 +2464,11 @@ void paladin_t::create_buffs()
               this->active.divine_resonance->set_target( this->target );
               this->active.divine_resonance->schedule_execute();
           } );
+
+  buffs.aspiration_of_divinity = make_buff<stat_buff_t>( this, "aspiration_of_divinity", find_spell( 385417 ) )
+    ->set_pct_buff_type( specialization() == PALADIN_HOLY ? STAT_PCT_BUFF_INTELLECT : STAT_PCT_BUFF_STRENGTH )
+    ->modify_default_value( talents.aspiration_of_divinity->effectN( 1 ).percent() )
+    ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
 
   // Covenants
   buffs.vanquishers_hammer = make_buff( this, "vanquishers_hammer", covenant.necrolord )->set_cooldown( 0_ms )

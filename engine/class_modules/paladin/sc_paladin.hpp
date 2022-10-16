@@ -171,6 +171,7 @@ public:
 
     buff_t* empyrean_legacy;
     buff_t* empyrean_legacy_cooldown;
+    buff_t* aspiration_of_divinity;
   } buffs;
 
   // Gains
