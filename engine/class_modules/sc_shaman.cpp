@@ -3179,13 +3179,30 @@ struct storm_elemental_t : public primal_elemental_t
 // Shaman Secondary Spells / Attacks
 // ==========================================================================
 
-struct stormblast_t : public shaman_spell_t
+struct stormblast_t : public shaman_attack_t
 {
-  stormblast_t( shaman_t* p, util::string_view name ) : shaman_spell_t( name, p, p->find_spell( 390287 ) )
+  stormblast_t( shaman_t* p, util::string_view name ) :
+    shaman_attack_t( name, p, p->find_spell( 390287 ) )
   {
+    weapon = &( p->main_hand_weapon );
     background = may_crit = callbacks = false;
 
     affected_by_enh_mastery_da = true; // TODO: Until Blizzard fixes data
+  }
+
+  void init() override
+  {
+    shaman_attack_t::init();
+
+    snapshot_flags = update_flags = STATE_MUL_DA | STATE_VERSATILITY | STATE_CRIT;
+
+    may_proc_windfury = may_proc_flametongue = may_proc_maelstrom_weapon = may_proc_hot_hand = false;
+    may_proc_stormbringer = may_proc_ability_procs = false;
+
+    if ( player->bugs )
+    {
+      may_proc_maelstrom_weapon = true;
+    }
   }
 };
 
@@ -3439,9 +3456,6 @@ struct stormstrike_attack_t : public shaman_attack_t
     if ( state->stormbringer && p()->talent.stormblast.ok() && result_is_hit( state->result ) )
     {
       auto dmg = p()->talent.stormblast->effectN( 1 ).percent() * state->result_amount;
-      dmg *= stormblast->action_da_multiplier();
-      dmg *= 1.0 + p()->cache.mastery_value(); //Temporary until Stormblast gets added to mastery white-list.
-      dmg *= p()->composite_player_multiplier( SCHOOL_NATURE ); // I don't know why this is being skipped when executing stormblast in this way, but it is.
       stormblast->base_dd_min = stormblast->base_dd_max = dmg;
 
       stormblast->set_target( state->target );
