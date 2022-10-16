@@ -490,6 +490,32 @@ void darkmoon_deck_inferno( special_effect_t& effect )
   effect.execute_action = create_proc_action<darkmoon_deck_inferno_t>( "darkmoon_deck_inferno", effect );
 }
 
+// TODO: Do properly and add both drivers
+// 383798 = Driver for you
+// 386578 = Driver for target
+// 383799 = Buff for Target (?)
+// 383803 = Buff for You (?)
+void emerald_coachs_whistle( special_effect_t& effect )
+{
+  auto buff = buff_t::find( effect.player, "star_coach" );
+  if ( !buff )
+  {
+    auto buff_spell = effect.player->find_spell( 383803 );
+
+    double amount = buff_spell->effectN( 1 ).average( effect.item );
+
+    buff = make_buff<stat_buff_t>( effect.player, "star_coach", buff_spell )
+               ->add_stat( STAT_MASTERY_RATING, amount );
+  }
+
+  effect.custom_buff  = buff;
+
+  effect.proc_flags_  = effect.player->find_spell( 386578 )->proc_flags(); // Pretend we are our bonded partner for the sake of procs, and trigger it from that.
+  effect.proc_flags2_ = PF2_ALL_HIT;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 void the_cartographers_calipers( special_effect_t& effect )
 {
   auto damage = create_proc_action<generic_proc_t>( "precision_blast", effect, "precision_blast", 384114 );
@@ -530,6 +556,7 @@ void register_special_effects()
   register_special_effect( { 390358, 390359, 390360 }, enchants::wafting_devotion );
 
   // Trinkets
+  register_special_effect( 383798, items::emerald_coachs_whistle );
   register_special_effect( 382957, items::darkmoon_deck_inferno );
   register_special_effect( 384112, items::the_cartographers_calipers );
   // Weapons

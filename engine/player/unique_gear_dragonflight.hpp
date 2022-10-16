@@ -38,6 +38,7 @@ void wafting_devotion( special_effect_t& );
 namespace items
 {
 // Trinkets
+void emerald_coachs_whistle( special_effect_t& );
 void darkmoon_deck_inferno( special_effect_t& );
 void the_cartographers_calipers( special_effect_t& );
 // Weapons
