@@ -396,7 +396,7 @@ public:
     player_talent_t ruin; // Damage increase to several spells
     player_talent_t eradication;
     const spell_data_t* eradication_debuff;
-    // DF - Ashen Remains (2 point talent, formerly SL Conduit)
+    player_talent_t ashen_remains; // Increased Chaos Bolt and Incinerate damage to targets afflicted by Immolate (Formerly SL Conduit)
     // Grimoire of Sacrifice (shared with Affliction)
 
     // DF - Summon Infernal

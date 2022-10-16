@@ -395,6 +395,9 @@ struct incinerate_fnb_t : public destruction_spell_t
     //if ( td->dots_immolate->is_ticking() && p()->conduit.ashen_remains->ok() )
     //  m *= 1.0 + p()->conduit.ashen_remains.percent();
 
+    if ( p()->talents.ashen_remains.ok() && td( t )->dots_immolate->is_ticking() )
+      m *= 1.0 + p()->talents.ashen_remains->effectN( 1 ).percent();
+
     return m;
   }
 };
@@ -483,6 +486,9 @@ struct incinerate_t : public destruction_spell_t
     //if ( td->dots_immolate->is_ticking() && p()->conduit.ashen_remains->ok() )
     //  m *= 1.0 + p()->conduit.ashen_remains.percent();
 
+    if ( p()->talents.ashen_remains.ok() && td( t )->dots_immolate->is_ticking() )
+      m *= 1.0 + p()->talents.ashen_remains->effectN( 1 ).percent();
+
     return m;
   }
 };
@@ -564,12 +570,13 @@ struct chaos_bolt_t : public destruction_spell_t
   {
     double m = destruction_spell_t::composite_target_multiplier( t );
 
-    auto td = this->td( t );
-
     //// SL - Conduit
     //// TOCHECK - Couldn't find affected_by spelldata to reference the spells 08-24-2020.
     //if ( td->dots_immolate->is_ticking() && p()->conduit.ashen_remains->ok() )
     //  m *= 1.0 + p()->conduit.ashen_remains.percent();
+
+    if ( p()->talents.ashen_remains.ok() && td( t )->dots_immolate->is_ticking() )
+      m *= 1.0 + p()->talents.ashen_remains->effectN( 1 ).percent();
 
     return m;
   }
@@ -1223,7 +1230,7 @@ void warlock_t::init_spells_destruction()
   talents.eradication = find_talent_spell( talent_tree::SPECIALIZATION, "Eradication" ); // Should be ID 196412
   talents.eradication_debuff = find_spell( 196414 );
 
-
+  talents.ashen_remains = find_talent_spell( talent_tree::SPECIALIZATION, "Ashen Remains" ); // Should be ID 387252
 
 
 
