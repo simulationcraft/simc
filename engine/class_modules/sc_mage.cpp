@@ -1903,20 +1903,22 @@ public:
         p()->buffs.overflowing_energy->trigger();
     }
 
-    if ( p()->talents.fevered_incantation.ok() && s->result_type == result_amount_type::DMG_DIRECT )
+    if ( s->result_type == result_amount_type::DMG_DIRECT )
     {
-      if ( s->result == RESULT_CRIT )
-        make_event( *sim, [ this ] { p()->buffs.fevered_incantation->trigger(); } );
-      else
-        make_event( *sim, [ this ] { p()->buffs.fevered_incantation->expire(); } );
-    }
-
-    if ( p()->runeforge.fevered_incantation.ok() && !p()->talents.fevered_incantation.ok() && s->result_type == result_amount_type::DMG_DIRECT )
-    {
-      if ( s->result == RESULT_CRIT )
-        make_event( *sim, [ this ] { p()->buffs.runeforge_fevered_incantation->trigger(); } );
-      else
-        make_event( *sim, [ this ] { p()->buffs.runeforge_fevered_incantation->expire(); } );
+      if ( p()->talents.fevered_incantation.ok() )
+      {
+        if ( s->result == RESULT_CRIT )
+          make_event( *sim, [ this ] { p()->buffs.fevered_incantation->trigger(); } );
+        else
+          make_event( *sim, [ this ] { p()->buffs.fevered_incantation->expire(); } );
+      }
+      else if ( p()->runeforge.fevered_incantation.ok() )
+      {
+        if ( s->result == RESULT_CRIT )
+          make_event( *sim, [ this ] { p()->buffs.runeforge_fevered_incantation->trigger(); } );
+        else
+          make_event( *sim, [ this ] { p()->buffs.runeforge_fevered_incantation->expire(); } );
+      }
     }
   }
 
@@ -2923,7 +2925,7 @@ struct arcane_blast_t final : public arcane_mage_spell_t
 
     p()->trigger_arcane_charge();
 
-    if ( rng().roll( p()->talents.impetus->effectN( 1 ).percent()  ) )
+    if ( rng().roll( p()->talents.impetus->effectN( 1 ).percent() ) )
     {
       if ( p()->buffs.arcane_charge->at_max_stacks() )
         p()->buffs.impetus->trigger();
@@ -3775,8 +3777,7 @@ struct evocation_t final : public arcane_mage_spell_t
 
     if ( p->talents.siphon_storm.ok() )
       siphon_storm_charges = as<int>( p->find_spell( 384265 )->effectN( 1 ).base_value() );
-
-    if ( p->runeforge.siphon_storm.ok() && !p->talents.siphon_storm.ok() )
+    else if ( p->runeforge.siphon_storm.ok() )
       siphon_storm_charges = as<int>( p->find_spell( 332929 )->effectN( 1 ).base_value() );
   }
 
@@ -7061,7 +7062,7 @@ void mage_t::create_buffs()
                                      ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
                                      ->set_chance( talents.feel_the_burn.ok() );
   buffs.fevered_incantation      = make_buff( this, "fevered_incantation", find_spell( 383811 ) )
-                                     ->set_default_value( talents.fevered_incantation->effectN( 1 ).base_value()  )
+                                     ->set_default_value( talents.fevered_incantation->effectN( 1 ).base_value() )
                                      ->set_chance( talents.fevered_incantation.ok() );
   buffs.fiery_rush               = make_buff( this, "fiery_rush", find_spell( 383637 ) )
                                      ->set_default_value_from_effect( 1 )
@@ -7209,7 +7210,7 @@ void mage_t::create_buffs()
 
   buffs.disciplinary_command        = make_buff( this, "disciplinary_command", find_spell( 327371 ) )
                                         ->set_default_value_from_effect( 1 );
-  buffs.disciplinary_command_arcane = make_buff( this, "disciplinary_command_arcane", find_spell( 327369  ) )
+  buffs.disciplinary_command_arcane = make_buff( this, "disciplinary_command_arcane", find_spell( 327369 ) )
                                         ->set_quiet( true )
                                         ->set_chance( runeforge.disciplinary_command.ok() );
   buffs.disciplinary_command_frost  = make_buff( this, "disciplinary_command_frost", find_spell( 327366 ) )
