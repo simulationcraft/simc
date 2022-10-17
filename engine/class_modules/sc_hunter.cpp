@@ -2080,6 +2080,18 @@ struct kill_command_base_t: public hunter_pet_action_t<hunter_main_pet_base_t, m
 
     return am;
   }
+
+  void impact( action_state_t* s ) override
+  {
+    hunter_pet_action_t::impact( s );
+
+    if ( o() -> talents.master_marksman.ok() && s -> result == RESULT_CRIT )
+    {
+      double amount = s -> result_amount * o() -> talents.master_marksman -> effectN( 1 ).percent();
+      if ( amount > 0 )
+        residual_action::trigger( o() -> actions.master_marksman, s -> target, amount );
+    }
+  }
 };
 
 // Beast Cleave ==============================================================
