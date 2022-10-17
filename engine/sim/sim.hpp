@@ -471,7 +471,7 @@ struct sim_t : private sc_thread_t
   struct dragonflight_opt_t
   {
     // Average time before the shield from darkmoon deck: watcher is depleted
-    timespan_t darkmoon_deck_watcher_shield_depletion = 2_s;
+    timespan_t darkmoon_deck_watcher_deplete = 2_s;
   } dragonflight_opts;
 
   // Auras and De-Buffs

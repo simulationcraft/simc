@@ -652,12 +652,10 @@ void darkmoon_deck_watcher( special_effect_t& effect )
       shield->trigger( dur );
 
       // TODO: placeholder value put at 2s before depletion. change to reasonable value.
-      auto deplete = rng().gauss( sim->dragonflight_opts.darkmoon_deck_watcher_shield_depletion, 1_s );
+      auto deplete = rng().gauss( sim->dragonflight_opts.darkmoon_deck_watcher_deplete, 1_s );
       clamp( deplete, 0_ms, dur );
 
-      make_event( *sim, sim->dragonflight_opts.darkmoon_deck_watcher_shield_depletion, [ this ]() {
-        shield->expire();
-      } );
+      make_event( *sim, deplete, [ this ]() { shield->expire(); } );
     }
   };
 

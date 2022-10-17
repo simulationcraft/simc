@@ -3890,7 +3890,7 @@ void sim_t::create_options()
   add_option( opt_float( "shadowlands.soothing_shade_duration_multiplier", shadowlands_opts.soothing_shade_duration_multiplier, 0.0, 1.0 ) );
 
   // Dragonflight
-  add_option( opt_timespan( "dragonflight.darkmoon_deck_watcher_shield_depletion", dragonflight_opts.darkmoon_deck_watcher_shield_depletion, 0_ms, timespan_t::max() ) );
+  add_option( opt_timespan( "dragonflight.darkmoon_deck_watcher_deplete", dragonflight_opts.darkmoon_deck_watcher_deplete, 0_ms, timespan_t::max() ) );
 }
 
 // sim_t::parse_option ======================================================
