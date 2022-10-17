@@ -1439,7 +1439,7 @@ void warlock_t::init_spells()
   talents.grimoire_of_synergy = find_talent_spell( talent_tree::CLASS, "Grimoire of Synergy" ); // Should be ID 171975
   talents.demonic_synergy = find_spell( 171982 );
 
-  talents.soul_conduit              = find_talent_spell( "Soul Conduit" );
+  talents.soul_conduit = find_talent_spell( talent_tree::CLASS, "Soul Conduit" ); // Should be ID 215941
 
   // Legendaries
   legendary.claw_of_endereth                     = find_runeforge_legendary( "Claw of Endereth" );
@@ -1500,7 +1500,7 @@ void warlock_t::init_procs()
   procs.three_shard_hog = get_proc( "three_shard_hog" );
   procs.portal_summon   = get_proc( "portal_summon" );
   procs.demonic_calling = get_proc( "demonic_calling" );
-  procs.soul_conduit    = get_proc( "soul_conduit" );
+  procs.soul_conduit = get_proc( "soul_conduit" );
   procs.carnivorous_stalkers = get_proc( "carnivorous_stalkers" );
   procs.horned_nightmare = get_proc( "horned_nightmare" );
   procs.ritual_of_ruin       = get_proc( "ritual_of_ruin" );

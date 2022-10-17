@@ -186,13 +186,14 @@ public:
     player_talent_t grand_warlocks_design; // One spell data for all 3 specs
 
     // Class Tree
-    const spell_data_t* soul_conduit; // DF - Verify unchanged other than in class tree now
+
     // DF - Demonic Embrace is a stamina talent, may be irrelevant now
     player_talent_t demonic_inspiration; // Pet haste on Soul Shard fill
     player_talent_t wrathful_minion; // Pet damage buff on Soul Shard fill
     // DF - Demonic Fortitude is a health talent, may be irrelevant now
     player_talent_t grimoire_of_synergy; // DF - Does not trigger when using Grimoire of Sacrifice
     const spell_data_t* demonic_synergy; // Buff from Grimoire of Synergy
+    player_talent_t soul_conduit;
     // DF - Claw of Endereth (moved from SL Legendary power)
     // DF - Summon Soulkeeper (Active ground aoe which spends hidden stacking buff)
     // DF - Inquisitor's Gaze (Non-guardian pet summon which behaves like Arcane Familiar)
@@ -786,8 +787,9 @@ public:
 
 namespace actions
 {
-//Event for triggering delayed refunds from Soul Conduit
-//Delay prevents instant reaction time issues for rng refunds
+
+// Event for triggering delayed refunds from Soul Conduit
+// Delay prevents instant reaction time issues for rng refunds
 struct sc_event_t : public player_event_t
 {
   gain_t* shard_gain;
@@ -901,7 +903,7 @@ public:
 
     if ( resource_current == RESOURCE_SOUL_SHARD && p()->in_combat )
     {
-      // lets try making all lock specs not react instantly to shard gen
+      // This event prevents instantaneous reactions by the sim to refunded shards
       if ( p()->talents.soul_conduit->ok() )
       {
         make_event<sc_event_t>( *p()->sim, p(), as<int>( last_resource_cost ) );
