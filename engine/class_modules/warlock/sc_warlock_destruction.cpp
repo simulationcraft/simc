@@ -707,6 +707,11 @@ struct chaos_bolt_t : public destruction_spell_t
     if ( !p()->buffs.ritual_of_ruin->check() )
       p()->buffs.backdraft->decrement();
 
+    if ( p()->talents.avatar_of_destruction.ok() && p()->buffs.ritual_of_ruin->check() )
+    {
+      p()->proc_actions.avatar_of_destruction->execute_on_target( target );
+    }
+
     p()->buffs.ritual_of_ruin->expire();
 
     p()->buffs.crashing_chaos->decrement();
@@ -964,6 +969,11 @@ struct rain_of_fire_t : public destruction_spell_t
                                         .duration( p()->talents.rain_of_fire->duration() * player->cache.spell_haste() )
                                         .start_time( sim->current_time() )
                                         .action( p()->proc_actions.rain_of_fire_tick ) );
+
+    if ( p()->talents.avatar_of_destruction.ok() && p()->buffs.ritual_of_ruin->check() )
+    {
+      p()->proc_actions.avatar_of_destruction->execute_on_target( target );
+    }
 
     p()->buffs.ritual_of_ruin->expire();
 
@@ -1325,6 +1335,43 @@ struct dimensional_rift_t : public destruction_spell_t
   }
 };
 
+struct avatar_of_destruction_t : public destruction_spell_t
+{
+  struct infernal_awakening_proc_t : public destruction_spell_t
+  {
+    infernal_awakening_proc_t( warlock_t* p ) : destruction_spell_t( "infernal_awakening_blasphemy", p, p->talents.infernal_awakening )
+    {
+      destro_mastery = false;
+      aoe = -1;
+      background = dual = true;
+    }
+  };
+
+  infernal_awakening_proc_t* infernal_awakening;
+
+  avatar_of_destruction_t( warlock_t* p ) : destruction_spell_t( "avatar_of_destruction", p, p->talents.avatar_of_destruction )
+  {
+    background = dual = true;
+    infernal_awakening = new infernal_awakening_proc_t( p );
+  }
+
+  void execute() override
+  {
+    destruction_spell_t::execute();
+
+    if ( p()->warlock_pet_list.blasphemy.active_pet() )
+    {
+      p()->warlock_pet_list.blasphemy.active_pet()->adjust_duration( p()->talents.avatar_of_destruction->effectN( 1 ).time_value() * 1000 );
+      p()->warlock_pet_list.blasphemy.active_pet()->blasphemous_existence->execute(); // Blasphemy only triggers this when extended
+    }
+    else
+    {
+      p()->warlock_pet_list.blasphemy.spawn( p()->talents.avatar_of_destruction->effectN( 1 ).time_value() * 1000 );
+      infernal_awakening->execute_on_target( target ); // Initial Blasphemy summons trigger this damage from the Warlock
+    }
+  }
+};
+
 }  // namespace actions_destruction
 
 namespace buffs
@@ -1563,6 +1610,8 @@ void warlock_t::init_spells_destruction()
   talents.chaos_tear_summon = find_spell( 394243 );
   talents.rift_chaos_bolt = find_spell( 394246 );
 
+  talents.avatar_of_destruction = find_talent_spell( talent_tree::SPECIALIZATION, "Avatar of Destruction" ); // Should be ID 387159
+
   // Legendaries
   legendary.cinders_of_the_azjaqir         = find_runeforge_legendary( "Cinders of the Azj'Aqir" );
   legendary.embers_of_the_diabolic_raiment = find_runeforge_legendary( "Embers of the Diabolic Raiment" );
@@ -1572,6 +1621,8 @@ void warlock_t::init_spells_destruction()
   conduit.ashen_remains     = find_conduit_spell( "Ashen Remains" );
   conduit.infernal_brand    = find_conduit_spell( "Infernal Brand" );
   //conduit.duplicitous_havoc is done in main module
+
+  proc_actions.avatar_of_destruction = new avatar_of_destruction_t( this );
 }
 
 void warlock_t::init_gains_destruction()
