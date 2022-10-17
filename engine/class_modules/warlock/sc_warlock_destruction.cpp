@@ -1240,10 +1240,47 @@ struct unstable_tear_t : public destruction_spell_t
   }
 };
 
+struct chaos_tear_t : public destruction_spell_t
+{
+  struct rift_chaos_bolt_t : public destruction_spell_t
+  {
+    rift_chaos_bolt_t( warlock_t* p ) : destruction_spell_t( "rift_chaos_bolt", p, p->talents.rift_chaos_bolt )
+    {
+      destro_mastery = false;
+      background = true;
+
+      // Though this behaves like a direct damage spell, it is also whitelisted under the periodic spec aura and benefits as such in game
+      base_dd_multiplier *= 1.0 + p->warlock_base.destruction_warlock->effectN( 2 ).percent(); 
+    }
+
+    double composite_crit_chance() const override
+    {
+      return 1.0;
+    }
+
+    double calculate_direct_amount( action_state_t* state ) const override
+    {
+      destruction_spell_t::calculate_direct_amount( state );
+
+      state->result_total *= 1.0 + player->cache.spell_crit_chance();
+
+      return state->result_total;
+    }
+  };
+
+  chaos_tear_t( warlock_t* p ) : destruction_spell_t( "chaos_tear", p, p->talents.chaos_tear_summon )
+  {
+    background = true;
+
+    impact_action = new rift_chaos_bolt_t( p );
+  }
+};
+
 struct dimensional_rift_t : public destruction_spell_t
 {
   shadowy_tear_t* shadowy_tear;
   unstable_tear_t* unstable_tear;
+  chaos_tear_t* chaos_tear;
 
   dimensional_rift_t( warlock_t* p, util::string_view options_str )
     : destruction_spell_t( "dimensional_rift", p, p->talents.dimensional_rift )
@@ -1257,16 +1294,18 @@ struct dimensional_rift_t : public destruction_spell_t
 
     shadowy_tear = new shadowy_tear_t( p );
     unstable_tear = new unstable_tear_t( p );
+    chaos_tear = new chaos_tear_t( p );
 
     add_child( shadowy_tear );
     add_child( unstable_tear );
+    add_child( chaos_tear );
   }
 
   void execute() override
   {
     destruction_spell_t::execute();
 
-    int rift = 2;
+    int rift = 3;
 
     switch ( rift )
     {
@@ -1275,6 +1314,10 @@ struct dimensional_rift_t : public destruction_spell_t
       break;
     case 2:
       unstable_tear->execute_on_target( target );
+      break;
+    case 3:
+      chaos_tear->execute_on_target( target );
+      break;
     default:
       break;
     }
