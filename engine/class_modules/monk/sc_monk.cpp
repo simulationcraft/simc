@@ -1800,7 +1800,7 @@ struct tiger_palm_t : public monk_melee_attack_t
       {
         if ( p()->covenant.necrolord->ok() )
           brew_cooldown_reduction( p()->covenant.necrolord->effectN( 3 ).base_value() );
-        else if ( p()->talent.brewmaster.bonedust_brew->ok() && !p()->bugs )
+        else if ( p()->talent.brewmaster.bonedust_brew->ok() )
           brew_cooldown_reduction( p()->talent.brewmaster.bonedust_brew->effectN( 3 ).base_value() );
       }
 
@@ -3666,7 +3666,7 @@ struct keg_smash_t : public monk_melee_attack_t
     // Bonedust Brew
     if ( p()->covenant.necrolord->ok() )
       brew_cooldown_reduction( p()->covenant.necrolord->effectN( 3 ).base_value() );
-    else if ( p()->talent.brewmaster.bonedust_brew->ok() && !p()->bugs )
+    else if ( p()->talent.brewmaster.bonedust_brew->ok() )
       brew_cooldown_reduction( p()->talent.brewmaster.bonedust_brew->effectN( 3 ).base_value() );
   }
 };
@@ -5445,9 +5445,9 @@ struct bonedust_brew_damage_t : public monk_spell_t
   {
     monk_spell_t::execute();
 
-    if ( p()->buff.bonedust_brew_grounding_breath_hidden->up() )
+    if ( p()->conduit.bone_marrow_hops->ok()  )
     {
-      if ( p()->conduit.bone_marrow_hops->ok() )
+      if ( p()->buff.bonedust_brew_grounding_breath_hidden->up() )
       {
         // Saved at -500
         p()->cooldown.bonedust_brew->adjust( p()->conduit.bone_marrow_hops->effectN( 2 ).time_value(), true );
@@ -5456,15 +5456,16 @@ struct bonedust_brew_damage_t : public monk_spell_t
         p()->proc.bonedust_brew_reduction->occur();
       }
     }
-    else if ( p()->buff.bonedust_brew_attenuation_hidden->up() )
+    else if ( p()->talent.brewmaster.attenuation->ok() || p()->talent.mistweaver.attenuation->ok() 
+        || p()->talent.windwalker.attenuation->ok() )
     {
-      if ( p()->conduit.bone_marrow_hops->ok() )
+      if ( p()->buff.bonedust_brew_attenuation_hidden->up() )
       {
         // Saved at -500
         p()->cooldown.bonedust_brew->adjust( p()->conduit.bone_marrow_hops->effectN( 2 ).time_value(), true );
 
         p()->buff.bonedust_brew_attenuation_hidden->decrement();
-        p()->proc.bonedust_brew_reduction->occur();
+        p()->proc.attenuation->occur();
       }
     }
   }
@@ -8997,6 +8998,7 @@ void monk_t::init_procs()
   base_t::init_procs();
 
   proc.anvil_and_stave                     = get_proc( "Anvil & Stave" );
+  proc.attenuation                         = get_proc( "Attenuation" );
   proc.blackout_combo_tiger_palm           = get_proc( "Blackout Combo - Tiger Palm" );
   proc.blackout_combo_breath_of_fire       = get_proc( "Blackout Combo - Breath of Fire" );
   proc.blackout_combo_keg_smash            = get_proc( "Blackout Combo - Keg Smash" );
@@ -9296,37 +9298,41 @@ void monk_t::bonedust_brew_assessor(action_state_t* s)
         break; // Until whitelist is populated for 10.0 let spells that aren't blacklisted pass through 
     }
 
-    double proc = 0;
+    double proc_chance = 0;
     double percent = 0;
     if ( covenant.necrolord->ok() )
     {
-      proc = covenant.necrolord->proc_chance();
-      percent = covenant.necrolord->effectN( 1 ).percent();
+      proc_chance = covenant.necrolord->proc_chance();
+      percent     = covenant.necrolord->effectN( 1 ).percent();
     }
     else if ( talent.brewmaster.bonedust_brew->ok() )
     {
-      proc    = talent.brewmaster.bonedust_brew->proc_chance();
-      percent = talent.brewmaster.bonedust_brew->effectN( 1 ).percent();
+      proc_chance = talent.brewmaster.bonedust_brew->proc_chance();
+      percent     = talent.brewmaster.bonedust_brew->effectN( 1 ).percent();
     }
     else if ( talent.mistweaver.bonedust_brew->ok() )
     {
-      proc    = talent.mistweaver.bonedust_brew->proc_chance();
-      percent = talent.mistweaver.bonedust_brew->effectN( 1 ).percent();
+      proc_chance = talent.mistweaver.bonedust_brew->proc_chance();
+      percent     = talent.mistweaver.bonedust_brew->effectN( 1 ).percent();
     }
     else if ( talent.windwalker.bonedust_brew->ok() )
     {
-      proc    = talent.windwalker.bonedust_brew->proc_chance();
-      percent = talent.windwalker.bonedust_brew->effectN( 1 ).percent();
+      proc_chance = talent.windwalker.bonedust_brew->proc_chance();
+      percent     = talent.windwalker.bonedust_brew->effectN( 1 ).percent();
     }
 
-    if ( rng().roll( proc ) )
+    if ( rng().roll( proc_chance ) )
     {
       double damage = s->result_amount * percent;
 
-      // TODO: Attenuation
-
       if (conduit.bone_marrow_hops->ok())
         damage *= 1 + conduit.bone_marrow_hops.percent();
+      else if (talent.brewmaster.attenuation->ok() )
+        damage *= 1 + talent.brewmaster.attenuation->effectN( 1 ).percent();
+      else if ( talent.mistweaver.attenuation->ok() )
+        damage *= 1 + talent.mistweaver.attenuation->effectN( 1 ).percent();
+      else if ( talent.windwalker.attenuation->ok() )
+        damage *= 1 + talent.windwalker.attenuation->effectN( 1 ).percent();
 
       active_actions.bonedust_brew_dmg->base_dd_min = damage;
       active_actions.bonedust_brew_dmg->base_dd_max = damage;

@@ -359,6 +359,7 @@ public:
   struct procs_t
   {
     propagate_const<proc_t*> anvil_and_stave;
+    propagate_const<proc_t*> attenuation;
     propagate_const<proc_t*> blackout_combo_tiger_palm;
     propagate_const<proc_t*> blackout_combo_breath_of_fire;
     propagate_const<proc_t*> blackout_combo_keg_smash;
