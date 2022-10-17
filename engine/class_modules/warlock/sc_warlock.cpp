@@ -392,13 +392,17 @@ struct seed_of_corruption_t : public warlock_spell_t
     // Copied from affliction_spell_t since this needs to be a warlock_spell_t
     double composite_da_multiplier( const action_state_t* s ) const override
     {
-      double pm = warlock_spell_t::composite_da_multiplier( s );
+      double m = warlock_spell_t::composite_da_multiplier( s );
 
       if ( this->data().affected_by( p()->warlock_base.potent_afflictions->effectN( 2 ) ) )
       {
-        pm *= 1.0 + p()->cache.mastery_value();
+        m *= 1.0 + p()->cache.mastery_value();
       }
-      return pm;
+
+      if ( p()->buffs.cruel_epiphany->check() )
+        m *= 1.0 + p()->buffs.cruel_epiphany->check_value();
+
+      return m;
     }
   };
 
@@ -448,6 +452,15 @@ struct seed_of_corruption_t : public warlock_spell_t
       tl.erase( std::remove_if( tl.begin(), tl.end(), [ this ]( player_t* target ){ return ( p()->get_target_data( target )->dots_seed_of_corruption->is_ticking() || has_travel_events_for( target ) ); } ), tl.end() );
 
     return tl.size();
+  }
+
+  void execute() override
+  {
+    warlock_spell_t::execute();
+
+    // 2022-10-17: Cruel Epiphany provides the damage bonus on explosion, but decrements on cast
+    // TOCHECK, as this can create unfortunate situations in-game and may be considered a bug
+    p()->buffs.cruel_epiphany->decrement();
   }
 
   void impact( action_state_t* s ) override

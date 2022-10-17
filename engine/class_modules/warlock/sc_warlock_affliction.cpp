@@ -157,6 +157,17 @@ struct agony_t : public affliction_spell_t
     {
       p()->resource_gain( RESOURCE_SOUL_SHARD, 1.0, p()->gains.agony );
       p()->agony_accumulator -= 1.0;
+
+      // TOCHECK 2022-10-17: % chance for the tier bonus is not in spell data
+      // There may also be some sneaky bad luck protection. Further testing needed.
+      if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T29, B2 ) && rng().roll( 0.3 ) )
+      {
+        p()->buffs.cruel_inspiration->trigger();
+        p()->procs.cruel_inspiration->occur();
+
+        if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T29, B4 ) )
+          p()->buffs.cruel_epiphany->trigger( 2 );
+      }
     }
 
     if ( result_is_hit( d->state->result ) && p()->talents.inevitable_demise->ok() && !p()->buffs.drain_life->check() )
@@ -295,6 +306,9 @@ struct malefic_rapture_t : public affliction_spell_t
         //  m *= 1.0 + p()->sets->set( WARLOCK_AFFLICTION, T28, B2 )->effectN( 1 ).percent();
         //}
 
+        if ( p()->buffs.cruel_epiphany->check() )
+          m *= 1.0 + p()->buffs.cruel_epiphany->check_value();
+
         return m;
       }
 
@@ -395,6 +409,7 @@ struct malefic_rapture_t : public affliction_spell_t
 
       p()->buffs.tormented_crescendo->decrement();
       //p()->buffs.calamitous_crescendo->expire();
+      p()->buffs.cruel_epiphany->decrement();
     }
 
     size_t available_targets( std::vector<player_t*>& tl ) const override
@@ -742,6 +757,13 @@ void warlock_t::create_buffs_affliction()
 
   buffs.haunted_soul = make_buff( this, "haunted_soul", talents.haunted_soul_buff )
                            ->set_default_value( talents.haunted_soul_buff->effectN( 1 ).percent() );
+
+  buffs.cruel_inspiration = make_buff( this, "cruel_inspiration", tier.cruel_inspiration )
+                                ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+                                ->set_default_value_from_effect( 1 );
+
+  buffs.cruel_epiphany = make_buff( this, "cruel_epiphany", tier.cruel_epiphany )
+                             ->set_default_value_from_effect( 1 );
 }
 
 void warlock_t::init_spells_affliction()
@@ -846,6 +868,13 @@ void warlock_t::init_spells_affliction()
 
   talents.dark_harvest = find_talent_spell( talent_tree::SPECIALIZATION, "Dark Harvest" ); // Should be ID 387016
   talents.dark_harvest_buff = find_spell( 387018 );
+
+  // Additional Tier Set spell data
+
+  // T29 (Vault of the Incarnates)
+  tier.cruel_inspiration = find_spell( 394215 );
+  tier.cruel_epiphany = find_spell( 394253 );
+
   // Conduits
   conduit.withering_bolt     = find_conduit_spell( "Withering Bolt" ); //9.1 PTR - New, replaces Cold Embrace
 }
@@ -871,6 +900,7 @@ void warlock_t::init_procs_affliction()
   procs.pandemic_invocation_shard = get_proc( "pandemic_invocation_shard" );
   procs.tormented_crescendo = get_proc( "tormented_crescendo" );
   procs.doom_blossom = get_proc( "doom_blossom" );
+  procs.cruel_inspiration = get_proc( "cruel_inspiration" );
 
   for ( size_t i = 0; i < procs.malefic_rapture.size(); i++ )
   {
