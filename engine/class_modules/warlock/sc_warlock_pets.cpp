@@ -2110,6 +2110,9 @@ void blasphemy_t::init_base_stats()
 {
   infernal_t::init_base_stats();
 
+  // 2022-10-17: Blasphemy no longer benefits from Infernal Brand, override with default melee attack
+  melee_attack = new warlock_pet_melee_t( this, 2.0 );
+
   blasphemous_existence = new blasphemous_existence_t( this );
 }
 

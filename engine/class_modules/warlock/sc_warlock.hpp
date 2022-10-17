@@ -133,7 +133,7 @@ public:
     warlock_pet_t* last;
 
     spawner::pet_spawner_t<pets::destruction::infernal_t, warlock_t> infernals;
-    spawner::pet_spawner_t<pets::destruction::blasphemy_t, warlock_t> blasphemy;  // DF - Now a Destruction Talent
+    spawner::pet_spawner_t<pets::destruction::blasphemy_t, warlock_t> blasphemy;
 
     spawner::pet_spawner_t<pets::affliction::darkglare_t, warlock_t> darkglare;
 
@@ -429,7 +429,7 @@ public:
     const spell_data_t* chaos_barrage_tick;
     const spell_data_t* chaos_tear_summon; // This only creates the "pet"
     const spell_data_t* rift_chaos_bolt; // Separate ID from Warlock's Chaos Bolt
-    // DF - Avatar of Destruction (Formerly SL Tier Bonus, summons Blasphemy when consuming Ritual of Ruin)
+    player_talent_t avatar_of_destruction; // Summons Blasphemy when consuming Ritual of Ruin (Formerly SL Tier Bonus)
   } talents;
 
   struct proc_actions_t
@@ -439,6 +439,7 @@ public:
     action_t* bilescourge_bombers_aoe_tick;
     action_t* summon_random_demon; // Nether Portal and Inner Demons
     action_t* rain_of_fire_tick;
+    action_t* avatar_of_destruction; // Triggered when Ritual of Ruin is consumed
   } proc_actions;
 
   // DF - This struct will be retired, need to determine if needed for pre-patch
