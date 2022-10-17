@@ -1495,10 +1495,8 @@ public:
 
       else if ( p()->specialization() == WARRIOR_ARMS )
       {
-        cd_time_reduction /= p()->talents.arms.anger_management->effectN( 1 ).base_value();  // Doesn't actually affect
-                                                                                        // Ravager, although they can be
-                                                                                        // used together with Soul of
-                                                                                        // the Battelord
+        cd_time_reduction /= p()->talents.arms.anger_management->effectN( 1 ).base_value();  
+                                                                                                                                                                       
         p()->cooldown.colossus_smash->adjust( timespan_t::from_seconds( cd_time_reduction ) );
         p()->cooldown.warbreaker->adjust( timespan_t::from_seconds( cd_time_reduction ) );
         p()->cooldown.bladestorm->adjust( timespan_t::from_seconds( cd_time_reduction ) );
@@ -2272,8 +2270,8 @@ struct bladestorm_t : public warrior_attack_t
       add_child( bladestorm_oh );
     }
 
-    // TODO: What happens if you have both Unhinged and Signet?
-    if ( p->legendary.unhinged->ok() && !signet_triggered )
+    // TODO: What happens if you have both Unhinged and Signet? Unhinged DOES work w/ Torment - same ticks
+    if ( p->talents.arms.unhinged->ok() && !signet_triggered )
     {
       mortal_strike = new mortal_strike_unhinged_t( p, "bladestorm_mortal_strike" );
       add_child( mortal_strike );
@@ -2353,7 +2351,7 @@ struct bladestorm_t : public warrior_attack_t
       bladestorm_oh->execute();
     }
     // Hotfix as of 2014-12-05: 3 -> 2 ticks with an additional MS. Seems to be ticks 1 and 3 (zero-indexed).
-    if ( mortal_strike && ( d->current_tick == 1 || d->current_tick == 3 ) )
+    if ( mortal_strike && ( d->current_tick == 2 || d->current_tick == 4 ) )
     {
       auto t = select_random_target();
 
@@ -2379,9 +2377,6 @@ struct bladestorm_t : public warrior_attack_t
   {
     if ( signet_triggered )
       return true;
-
-    if ( p()->talents.fury.ravager->ok() )
-      return false;
 
     return warrior_attack_t::verify_actor_spec();
   }
@@ -2488,24 +2483,14 @@ struct bloodthirst_t : public warrior_attack_t
   {
     warrior_attack_t::impact( s );
 
+    // Delayed event to cancel the stack on any crit results
+    if ( p()->talents.fury.bloodcraze->ok() && s->result == RESULT_CRIT )
+      make_event( *p()->sim, [ this ] { p()->buff.bloodcraze->expire(); } );
+
     if ( gushing_wound && s->result == RESULT_CRIT )
     {
       gushing_wound->set_target( s->target );
       gushing_wound->execute();
-    }
-
-    if ( p()->talents.fury.bloodcraze->ok() && !result_is_miss( s->result ) && s->result != RESULT_CRIT )
-    {
-      p()->buff.bloodcraze->trigger();
-    }
-    if ( p()->talents.fury.bloodcraze->ok() && s->result == RESULT_CRIT )
-    {
-      p()->buff.bloodcraze->expire();
-    }
-
-    if ( p()->talents.fury.cold_steel_hot_blood.ok() && execute_state->result == RESULT_CRIT )
-    {
-      p()->resource_gain( RESOURCE_RAGE, rage_from_cold_steel_hot_blood, p()->gain.cold_steel_hot_blood );
     }
 
     p()->buff.fujiedas_fury->trigger( 1 );
@@ -2514,6 +2499,7 @@ struct bloodthirst_t : public warrior_attack_t
   void execute() override
   {
     warrior_attack_t::execute();
+    p()->buff.bloodcraze->trigger( num_targets_hit );
 
     p()->buff.meat_cleaver->decrement();
 
@@ -2603,19 +2589,15 @@ struct bloodbath_t : public warrior_attack_t
   {
     warrior_attack_t::impact( s );
 
+    // Delayed event to cancel the stack on any crit results
+    if ( p()->talents.fury.bloodcraze->ok() && s->result == RESULT_CRIT )
+      make_event( *p()->sim, [ this ] { p()->buff.bloodcraze->expire(); } );
+
+
     if ( gushing_wound && s->result == RESULT_CRIT )
     {
       gushing_wound->set_target( s->target );
       gushing_wound->execute();
-    }
-
-    if ( p()->talents.fury.bloodcraze->ok() && !result_is_miss( s->result ) && s->result != RESULT_CRIT )
-    {
-      p()->buff.bloodcraze->trigger();
-    }
-    if ( p()->talents.fury.bloodcraze->ok() && s->result == RESULT_CRIT )
-    {
-      p()->buff.bloodcraze->expire();
     }
 
     if ( p()->talents.fury.cold_steel_hot_blood.ok() && execute_state->result == RESULT_CRIT )
@@ -2633,6 +2615,7 @@ struct bloodbath_t : public warrior_attack_t
   void execute() override
   {
     warrior_attack_t::execute();
+    p()->buff.bloodcraze->trigger( num_targets_hit );
 
     p()->buff.meat_cleaver->decrement();
 
@@ -4515,7 +4498,7 @@ struct ravager_t : public warrior_attack_t
     callbacks               = false;
     attack_power_mod.direct = attack_power_mod.tick = 0;
     add_child( ravager );
-    if ( p->legendary.unhinged->ok() )
+    if ( p->talents.arms.unhinged->ok() )
     {
       mortal_strike = new mortal_strike_unhinged_t( p, signet_triggered ? "mortal_strike_ravager_signet" : "mortal_strike_ravager" );
       add_child( mortal_strike );
@@ -4547,7 +4530,7 @@ struct ravager_t : public warrior_attack_t
 
   void execute() override
   {
-    if ( p()->specialization() == WARRIOR_FURY )
+    if ( p()->specialization() == WARRIOR_ARMS )
     {
       if( signet_triggered)
       {
@@ -4564,7 +4547,7 @@ struct ravager_t : public warrior_attack_t
         }
       }
     }
-    if ( p()->talents.fury.hurricane->ok() )
+    if ( p()->talents.shared.hurricane->ok() )
     {
       p()->buff.hurricane_driver->trigger();
     }
@@ -4605,17 +4588,6 @@ struct ravager_t : public warrior_attack_t
         p()->buff.merciless_bonegrinder->trigger( timespan_t::from_seconds( 7.0 ) );
       }
     }
-  }
-
-  bool verify_actor_spec() const override
-  {
-    if ( signet_triggered )
-      return true;
-
-    if ( !p()->talents.fury.ravager->ok() )
-      return false;
-
-    return warrior_attack_t::verify_actor_spec();
   }
 };
 
