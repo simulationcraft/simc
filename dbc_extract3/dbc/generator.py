@@ -1525,6 +1525,8 @@ class SpellDataGenerator(DataGenerator):
             ( 360826, 0 ), ( 360830, 0 ), # Deathmark Cloned Bleeds
             ( 394324, 0 ), ( 394325, 0 ), ( 394326, 0 ), ( 394327, 0 ), ( 394328, 0 ), # Deathmark Cloned Poisons
             ( 394031, 0 ),          # Replicating Shadows fake Rupture Shadow tick spell
+            ( 394757, 0 ),          # Flagellation talent damage spell
+            ( 394758, 0 ),          # Flagellation talent persist buff
             ( 385960, 0 ), ( 386081, 0 ), # Lingering Shadow talent background spells 
             ( 393724, 0 ), ( 393725, 0 ), # T29 Assassination Set Bonus Spells
             ( 393727, 0 ), ( 393728, 0 ), ( 394879, 0 ), ( 394888, 0 ), # T29 Outlaw Set Bonus Spells
