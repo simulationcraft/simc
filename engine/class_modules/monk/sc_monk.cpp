@@ -1598,7 +1598,6 @@ struct tiger_palm_t : public monk_melee_attack_t
 {
   heal_t* eye_of_the_tiger_heal;
   spell_t* eye_of_the_tiger_damage;
-  bool shaohoas_might;
   bool face_palm;
   bool power_strikes;
 
@@ -1643,9 +1642,7 @@ struct tiger_palm_t : public monk_melee_attack_t
       if ( p()->buff.blackout_combo->check() )
         am *= 1 + p()->buff.blackout_combo->data().effectN( 1 ).percent();
 
-      if ( shaohoas_might )
-        am *= 1 + p()->passives.shaohaos_might->effectN( 2 ).percent();
-      else if ( face_palm )
+      if ( face_palm )
         am *= 1 + p()->passives.face_palm->effectN( 1 ).percent();
 
       if ( p()->buff.counterstrike->check() )
@@ -1671,9 +1668,7 @@ struct tiger_palm_t : public monk_melee_attack_t
 
     if ( p()->specialization() == MONK_BREWMASTER )
     {
-      if ( p()->legendary.shaohaos_might->ok() && rng().roll( p()->legendary.shaohaos_might->effectN( 1 ).percent() ) )
-        shaohoas_might = true;
-      else if ( p()->talent.brewmaster.face_palm->ok() && rng().roll( p()->talent.brewmaster.face_palm->effectN( 1 ).percent() ) )
+      if ( p()->shared.face_palm && p()->shared.face_palm->ok() && rng().roll( p()->shared.face_palm->effectN( 1 ).percent() ) )
       {
         face_palm = true;
         p()->proc.face_palm->occur();
@@ -8501,6 +8496,9 @@ void monk_t::init_spells()
 
   shared.call_to_arms = _valid( legendary.call_to_arms ) ? (const spell_data_t*)legendary.call_to_arms :
     _valid( talent.brewmaster.call_to_arms ) ? talent.brewmaster.call_to_arms : spell_data_t::nil();
+
+  shared.face_palm = _valid( legendary.shaohaos_might ) ? (const spell_data_t*)legendary.shaohaos_might :
+    _valid( talent.brewmaster.face_palm ) ? talent.brewmaster.face_palm : spell_data_t::nil();
 
   // Does Mistweaver Awakened Faeline stack with this effect? TODO: How is this handled?
   shared.faeline_harmony = _valid( legendary.faeline_harmony ) ? (const spell_data_t*)legendary.faeline_harmony :
