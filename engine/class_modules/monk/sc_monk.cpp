@@ -1605,7 +1605,6 @@ struct tiger_palm_t : public monk_melee_attack_t
     : monk_melee_attack_t( "tiger_palm", p, p->spec.tiger_palm ),
       eye_of_the_tiger_heal( new eye_of_the_tiger_heal_tick_t( *p, "eye_of_the_tiger_heal" ) ),
       eye_of_the_tiger_damage( new eye_of_the_tiger_dmg_tick_t( p, "eye_of_the_tiger_damage" ) ),
-      shaohoas_might( false ),
       face_palm( false ),
       power_strikes( false )
   {
@@ -1643,7 +1642,7 @@ struct tiger_palm_t : public monk_melee_attack_t
         am *= 1 + p()->buff.blackout_combo->data().effectN( 1 ).percent();
 
       if ( face_palm )
-        am *= 1 + p()->passives.face_palm->effectN( 1 ).percent();
+        am *= 1 + p()->shared.face_palm->effectN( 2 ).percent();
 
       if ( p()->buff.counterstrike->check() )
         am *= 1 + p()->buff.counterstrike->data().effectN( 1 ).percent();
@@ -1757,17 +1756,14 @@ struct tiger_palm_t : public monk_melee_attack_t
           p()->buff.counterstrike->expire();
         }
 
-        if ( shaohoas_might )
-          brew_cooldown_reduction( p()->passives.shaohaos_might->effectN( 3 ).base_value() );
-        else if ( face_palm )
-          brew_cooldown_reduction( p()->passives.face_palm->effectN( 2 ).base_value() );
+      if ( face_palm )
+          brew_cooldown_reduction( p()->shared.face_palm->effectN( 3 ).base_value() );
         break;
       }
       default:
         break;
     }
 
-    shaohoas_might = false;
     face_palm      = false;
     power_strikes  = false;
   }
@@ -8336,7 +8332,6 @@ void monk_t::init_spells()
   passives.celestial_fortune            = find_spell( 216521 );
   passives.dragonfire_brew              = find_spell( 387621 );
   passives.elusive_brawler              = find_spell( 195630 );
-  passives.face_palm                    = find_spell( 227679 );
   passives.gai_plins_imperial_brew_heal = find_spell( 383701 );
   passives.gift_of_the_ox_heal          = find_spell( 124507 );
   passives.shuffle                      = find_spell( 215479 );
