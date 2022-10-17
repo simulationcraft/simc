@@ -43,7 +43,7 @@ st->add_action( "new_moon,if=astral_power.deficit>variable.passive_asp+10&(charg
 st->add_action( "half_moon,if=astral_power.deficit>variable.passive_asp+20" );
 st->add_action( "full_moon,if=astral_power.deficit>variable.passive_asp+40" );
 st->add_action( "starfall,if=buff.starweavers_warp.up|variable.4pc_starfall_st&buff.touch_the_cosmos.up" );
-st->add_action( "wrath,if=buff.gathering_starstuff.stack=3&!prev_gcd.2.wrath&astral_power.deficit>variable.passive_asp+6+3*talent.soul_of_the_forest" );
+st->add_action( "wrath,if=buff.gathering_starstuff.stack=3&astral_power.deficit>variable.passive_asp+6+3*talent.soul_of_the_forest" );
 st->add_action( "starsurge,if=buff.ca_inc.remains<5&buff.ca_inc.up|astral_power.deficit<variable.passive_asp|buff.starweavers_weft.up|(buff.eclipse_lunar.remains<4&buff.eclipse_lunar.up|buff.eclipse_solar.remains<4&buff.eclipse_solar.up)&astral_power>70|talent.starlord&buff.starlord.stack<3|talent.balance_of_all_things&(buff.balance_of_all_things_arcane.stack>5|buff.balance_of_all_things_nature.stack>5)" );
 st->add_action( "new_moon,if=astral_power.deficit>variable.passive_asp+10" );
 st->add_action( "wild_mushroom,if=astral_power.deficit>variable.passive_asp+5&(!talent.fungal_growth|!prev_gcd.1.wild_mushroom&!prev_gcd.2.wild_mushroom&dot.fungal_growth.remains<2)" );
