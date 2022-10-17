@@ -10649,7 +10649,7 @@ void shaman_t::create_buffs()
     ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
 
   buff.elemental_blast_mastery = make_buff<buff_t>( this, "elemental_blast_mastery", find_spell( 173184 ) )
-    ->set_default_value( find_spell( 173184 )->effectN( 1 ).percent() * ( 1.0 + spec.elemental_shaman->effectN( 18 ).percent() ) )
+    ->set_default_value( find_spell( 173184 )->effectN( 1 ).base_value() * ( 1.0 + spec.elemental_shaman->effectN( 18 ).percent() ) )
     ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY );
 
   buff.stormkeeper = make_buff( this, "stormkeeper", find_spell( 191634 ) )
