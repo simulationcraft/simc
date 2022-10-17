@@ -466,11 +466,56 @@ void DISABLED_EFFECT( special_effect_t& effect )
 }
 
 // Trinkets
+void darkmoon_deck_dance( special_effect_t& effect )
+{
+  struct darkmoon_deck_dance_t : public darkmoon_deck_proc_t<>
+  {
+    action_t* damage;
+    action_t* heal;
+
+    // TODO: confirm mixed order remains true in-game
+    // card order is [ 2 3 6 7 4 5 8 A ]
+    darkmoon_deck_dance_t( const special_effect_t& e )
+      : darkmoon_deck_proc_t( e, "darkmoon_deck_Dance", 382958,
+                              { 382861, 382862, 382865, 382866, 382863, 382864, 382867, 382860 } )
+    {
+      damage =
+        create_proc_action<generic_proc_t>( "refreshing_dance_damage", e, "refreshing_dance_damage", 384613 );
+      damage->name_str_reporting = "refreshing_dance";
+
+      heal =
+        create_proc_action<base_generic_proc_t<proc_heal_t>>( "refreshing_dance_heal", e, "refreshing_dance_heal", 384624 );
+      heal->name_str_reporting = "refreshing_dance";
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      darkmoon_deck_proc_t::impact( s );
+
+      damage->execute_on_target( s->target );
+
+      timespan_t delay = 0_ms;
+      for ( size_t i = 0; i < 5 + deck->top_index; i++ )
+      {
+        // As this chains to the nearest, assume 5yd melee range
+        delay += timespan_t::from_seconds( rng().gauss( 5.0 / travel_speed, sim->travel_variance ) );
+
+        if ( i % 2 )
+          make_event( *sim, delay, [ s, this ]() { damage->execute_on_target( s->target ); } );
+        else
+          make_event( *sim, delay, [ this ]() { heal->execute_on_target( player ); } );
+      }
+    }
+  };
+  // TODO: currently this trinket is doing ~1% of the damage it should based on spell data.
+  effect.execute_action = create_proc_action<darkmoon_deck_dance_t>( "darkmoon_deck_dance", effect );
+}
+
 void darkmoon_deck_inferno( special_effect_t& effect )
 {
   struct darkmoon_deck_inferno_t : public darkmoon_deck_proc_t<>
   {
-    // Ace is LAST card in card_list
+    // card order is [ 2 3 4 5 6 7 8 A ]
     darkmoon_deck_inferno_t( const special_effect_t& e )
       : darkmoon_deck_proc_t( e, "darkmoon_deck_inferno", 382958,
                               { 382837, 382838, 382839, 382840, 382841, 382842, 382843, 382835 } )
@@ -513,7 +558,7 @@ void darkmoon_deck_rime( special_effect_t& effect )
 {
   struct darkmoon_deck_rime_t : public darkmoon_deck_proc_t<>
   {
-    // Ace is LAST card in card_list
+    // card order is [ 2 3 4 5 6 7 8 A ]
     darkmoon_deck_rime_t( const special_effect_t& e )
       : darkmoon_deck_proc_t( e, "darkmoon_deck_rime", 382958,
                               { 382845, 382846, 382847, 382848, 382849, 382850, 382851, 382844 } )
@@ -614,9 +659,10 @@ void register_special_effects()
   register_special_effect( { 390358, 390359, 390360 }, enchants::wafting_devotion );
 
   // Trinkets
-  register_special_effect( 383798, items::emerald_coachs_whistle );
+  register_special_effect( 384615, items::darkmoon_deck_dance );
   register_special_effect( 382957, items::darkmoon_deck_inferno );
   register_special_effect( 386624, items::darkmoon_deck_rime );
+  register_special_effect( 383798, items::emerald_coachs_whistle );
   register_special_effect( 384112, items::the_cartographers_calipers );
   // Weapons
   // Armor

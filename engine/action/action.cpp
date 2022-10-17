@@ -4025,8 +4025,8 @@ void action_t::schedule_travel( action_state_t* s )
 
   execute_state->copy_state( s );
 
-  time_to_travel = distance_targeting_travel_time(
-      s );  // This is used for spells that don't use the typical player ---> main target travel time.
+  // This is used for spells that don't use the typical player ---> main target travel time.
+  time_to_travel = distance_targeting_travel_time( s );
   if ( time_to_travel == timespan_t::zero() )
     time_to_travel = travel_time();
 

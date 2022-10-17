@@ -38,6 +38,7 @@ void wafting_devotion( special_effect_t& );
 namespace items
 {
 // Trinkets
+void darkmoon_deck_dance( special_effect_t& );
 void darkmoon_deck_inferno( special_effect_t& );
 void darkmoon_deck_rime( special_effect_t& );
 void emerald_coachs_whistle( special_effect_t& );
