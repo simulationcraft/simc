@@ -48,7 +48,7 @@ struct warlock_pet_t : public pet_t
     propagate_const<buff_t*> soul_glutton;
     propagate_const<buff_t*> demonic_servitude; // Dummy buff for Tyrant that holds snapshot of Warlock's buff value
     propagate_const<buff_t*> fiendish_wrath; // Guillotine talent buff, causes AoE melee attacks and prevents Felstorm
-    // DF - Demonic Inspiration
+    propagate_const<buff_t*> demonic_inspiration; // Haste buff triggered by filling a Soul Shard
     // DF - Wrathful Minion
     // DF - Guillotine + Fiendish Wrath (Guillotine talent)
     // DF - Review permanent passive pet buffs and determine if they should be implemented or just assumed based on presence of talents
@@ -63,6 +63,10 @@ struct warlock_pet_t : public pet_t
   void schedule_ready( timespan_t = 0_ms, bool = false ) override;
   double composite_player_multiplier( school_e ) const override;
   double composite_player_target_multiplier( player_t*, school_e ) const override;
+  double composite_spell_haste() const override;
+  double composite_spell_speed() const override;
+  double composite_melee_haste() const override;
+  double composite_melee_speed() const override;
   void init_special_effects() override;
   void arise() override;
   void demise() override;

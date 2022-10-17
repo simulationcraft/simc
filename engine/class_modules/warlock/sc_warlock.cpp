@@ -1178,6 +1178,26 @@ double warlock_t::composite_attribute_multiplier( attribute_e attr ) const
   return m;
 }
 
+double warlock_t::resource_gain( resource_e resource_type, double amount, gain_t* source, action_t* action )
+{
+  double prev = resources.current[ resource_type ];
+
+  double amt = player_t::resource_gain( resource_type, amount, source, action );
+
+  if ( resource_type == RESOURCE_SOUL_SHARD )
+  {
+    bool filled = ( resources.current[ resource_type ] - std::floor( prev ) >= 1.0 );
+
+    if ( filled && talents.demonic_inspiration.ok() && warlock_pet_list.active )
+    {
+      warlock_pet_list.active->buffs.demonic_inspiration->trigger();
+      procs.demonic_inspiration->occur();
+    }
+  }
+
+  return amt;
+}
+
 //Note: Level is checked to be >=27 by the function calling this. This is technically wrong for warlocks due to
 //a missing level requirement in data, but correct generally.
 double warlock_t::matching_gear_multiplier( attribute_e attr ) const
@@ -1406,6 +1426,8 @@ void warlock_t::init_spells()
   talents.havoc = find_talent_spell( talent_tree::SPECIALIZATION, "Havoc" ); // Should be spell 80240
   talents.havoc_debuff = find_spell( 80240 );
 
+  talents.demonic_inspiration = find_talent_spell( talent_tree::CLASS, "Demonic Inspiration" ); // Should be ID 386858
+
   talents.soul_conduit              = find_talent_spell( "Soul Conduit" );
 
   // Legendaries
@@ -1475,6 +1497,7 @@ void warlock_t::init_procs()
   procs.mayhem = get_proc( "mayhem" );
   procs.conflagration_of_chaos_cf = get_proc( "conflagration_of_chaos_cf" );
   procs.conflagration_of_chaos_sb = get_proc( "conflagration_of_chaos_sb" );
+  procs.demonic_inspiration = get_proc( "demonic_inspiration" );
 }
 
 void warlock_t::init_base_stats()
