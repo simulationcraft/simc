@@ -794,10 +794,10 @@ public:
       }
     }
 
-    if ( p()->legendary.bountiful_brew->ok() && trigger_bountiful_brew && p()->cooldown.bountiful_brew->up() &&
+    if ( p()->shared.bountiful_brew && p()->shared.bountiful_brew->ok() && trigger_bountiful_brew && p()->cooldown.bountiful_brew->up() &&
          p()->rppm.bountiful_brew->trigger() )
     {
-      p()->cooldown.bountiful_brew->start( p()->legendary.bountiful_brew->internal_cooldown() );
+      p()->cooldown.bountiful_brew->start( p()->shared.bountiful_brew->internal_cooldown() );
 
       p()->active_actions.bountiful_brew->execute();
       p()->proc.bountiful_brew_proc->occur();
@@ -5308,12 +5308,8 @@ struct bountiful_brew_t : public monk_spell_t
 {
   buff_t* lead_by_example;
 
-  bountiful_brew_t( monk_t& p ) : monk_spell_t( "bountiful_brew", &p,
-    ( p.legendary.bountiful_brew->ok() ? p.legendary.bountiful_brew :
-          ( p.talent.brewmaster.bountiful_brew && p.talent.brewmaster.bountiful_brew->ok() ? p.talent.brewmaster.bountiful_brew :
-              ( p.talent.mistweaver.bountiful_brew && p.talent.mistweaver.bountiful_brew->ok() ? p.talent.mistweaver.bountiful_brew
-                                                                               : nullptr ) ) ) )
-      // TODO: convert nullptr to spell_data_t::nil() once legendary bountiful brew is removed
+  bountiful_brew_t( monk_t& p )
+    : monk_spell_t( "bountiful_brew", &p, p.shared.bountiful_brew && p.shared.bountiful_brew->ok() ? p.shared.bountiful_brew : spell_data_t::nil() )
   {
     harmful            = false;
     cooldown->duration = timespan_t::zero();
@@ -5346,43 +5342,21 @@ struct bountiful_brew_t : public monk_spell_t
       p()->buff.bonedust_brew_attenuation_hidden->trigger();
     else
       p()->buff.bonedust_brew_grounding_breath_hidden->trigger();
+
     monk_spell_t::execute();
 
-    if ( p()->legendary.bountiful_brew->ok() )
-        p()->buff.bonedust_brew->extend_duration_or_trigger( p()->legendary.bountiful_brew->effectN( 1 ).time_value() );
-    else if ( p()->talent.brewmaster.bountiful_brew->ok() )
-        p()->buff.bonedust_brew->extend_duration_or_trigger( p()->talent.brewmaster.bountiful_brew->effectN( 1 ).time_value() );
-    else if ( p()->talent.mistweaver.bountiful_brew->ok() )
-        p()->buff.bonedust_brew->extend_duration_or_trigger( p()->talent.mistweaver.bountiful_brew->effectN( 1 ).time_value() );
+    p()->buff.bonedust_brew->extend_duration_or_trigger( data().effectN( 1 ).time_value() );
 
     // Force trigger Lead by Example Buff
     if ( lead_by_example )
-    {
-        if ( p()->legendary.bountiful_brew->ok() )
-            lead_by_example->trigger( p()->legendary.bountiful_brew->effectN( 1 ).time_value() );
-        else if ( p()->talent.brewmaster.bountiful_brew->ok() )
-            lead_by_example->trigger( p()->talent.brewmaster.bountiful_brew->effectN( 1 ).time_value() );
-        else if ( p()->talent.mistweaver.bountiful_brew->ok() )
-            lead_by_example->trigger( p()->talent.mistweaver.bountiful_brew->effectN( 1 ).time_value() );
-    }
+      lead_by_example->trigger( data().effectN( 1 ).time_value() );
   }
 
   void impact( action_state_t* s ) override
   {
     monk_spell_t::impact( s );
 
-    if ( p()->legendary.bountiful_brew->ok() )
-        get_td(s->target)
-            ->debuff.bonedust_brew->extend_duration_or_trigger(
-            p()->legendary.bountiful_brew->effectN( 1 ).time_value() );
-    else if ( p()->talent.brewmaster.bountiful_brew->ok() )
-        get_td(s->target)
-            ->debuff.bonedust_brew->extend_duration_or_trigger(
-            p()->talent.brewmaster.bountiful_brew->effectN( 1 ).time_value() );
-    else if ( p()->talent.mistweaver.bountiful_brew->ok() )
-        get_td(s->target)
-            ->debuff.bonedust_brew->extend_duration_or_trigger(
-            p()->talent.mistweaver.bountiful_brew->effectN( 1 ).time_value() );
+    get_td( s->target )->debuff.bonedust_brew->extend_duration_or_trigger( data().effectN( 1 ).time_value() );
   }
 };
 
@@ -8549,6 +8523,10 @@ void monk_t::init_spells()
     _valid( talent.brewmaster.bonedust_brew ) ? talent.brewmaster.bonedust_brew :
     _valid( talent.mistweaver.bonedust_brew ) ? talent.mistweaver.bonedust_brew : spell_data_t::nil();
 
+  shared.bountiful_brew = _valid( legendary.bountiful_brew ) ? (const spell_data_t *) legendary.bountiful_brew :
+    _valid( talent.brewmaster.bountiful_brew ) ? talent.brewmaster.bountiful_brew :
+    _valid( talent.mistweaver.bountiful_brew ) ? talent.mistweaver.bountiful_brew : spell_data_t::nil();
+
   shared.faeline_stomp = _valid( covenant.night_fae ) ? covenant.night_fae :
     _valid( talent.windwalker.faeline_stomp ) ? talent.windwalker.faeline_stomp :
     _valid( talent.mistweaver.faeline_stomp ) ? talent.mistweaver.faeline_stomp : spell_data_t::nil();
@@ -9051,7 +9029,7 @@ void monk_t::init_assessors()
 void monk_t::init_rng()
 {
   player_t::init_rng();
-  if ( legendary.bountiful_brew->ok() )
+  if ( shared.bountiful_brew && shared.bountiful_brew->ok() )
     rppm.bountiful_brew = get_rppm( "bountiful_brew", find_spell( 356592 ) );
 }
 
