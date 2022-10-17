@@ -463,7 +463,7 @@ public:
     if ( p()->buff.invoke_xuen->check() )
     {
       // Tiger Lightning
-      total_damage_amplifier *= ( 1 + p()->talent.windwalker.invoke_xuen_the_white_tiger_rank_2->effectN( 2 ).percent() );
+      total_damage_amplifier *= ( 1 + p()->talent.windwalker.empowered_tiger_lightning->effectN( 2 ).percent() );
     }
 
     if ( p()->buff.storm_earth_and_fire->check() )
@@ -785,7 +785,7 @@ public:
 
     ab::impact( s );
 
-    if ( p()->talent.general.resonant_fists.ok() && trigger_resonant_fists ) 
+    if ( p()->talent.general.resonant_fists->ok() && trigger_resonant_fists ) 
     {
       if ( p()->cooldown.resonant_fists->up() && p()->rng().roll( p()->talent.general.resonant_fists.spell()->proc_chance() ) )
       {
@@ -818,6 +818,8 @@ public:
         p()->proc.sinister_teaching_reduction->occur();
       }
     }
+
+    trigger_exploding_keg_proc( s );
 
     p()->trigger_empowered_tiger_lightning( s, true, true );
 
@@ -853,6 +855,7 @@ public:
     p()->trigger_storm_earth_and_fire( a, sef_ability );
   }
 
+
   void trigger_mystic_touch( action_state_t* s )
   {
     if ( ab::sim->overrides.mystic_touch )
@@ -873,6 +876,30 @@ public:
     if ( s->target->debuffs.mystic_touch && p()->spec.mystic_touch->ok() )
     {
       s->target->debuffs.mystic_touch->trigger();
+    }
+  }
+
+  void trigger_exploding_keg_proc( action_state_t* s )
+  {
+    if ( p()->specialization() != MONK_BREWMASTER )
+      return;
+
+    // Blacklist spells
+    if ( s->action->id == 388867 || // Exploding Keg Proc
+         s->action->id == 124255 || // Stagger
+         s->action->id == 123725 || // Breath of Fire dot
+         s->action->id == 196733 || // Special Delivery
+         s->action->id == 325217 || // Bonedust Brew
+         s->action->id == 338141 || // Charred Passion
+         s->action->id == 387621 || // Dragonfire Brew
+         s->action->id == 393786 // Chi Surge
+       ) 
+      return;
+
+    if ( p()->buff.exploding_keg->up() && s->action->harmful )
+    {
+      p()->active_actions.exploding_keg->target = s->target;
+      p()->active_actions.exploding_keg->execute();
     }
   }
 };
@@ -4502,10 +4529,10 @@ struct fortifying_brew_t : public monk_spell_t
 // ==========================================================================
 // Exploding Keg
 // ==========================================================================
-// Exploding Keg Secondary Hit ==============================================
-struct exploding_keg_second_t : public monk_spell_t
+// Exploding Keg Proc ==============================================
+struct exploding_keg_proc_t : public monk_spell_t
 {
-  exploding_keg_second_t( monk_t* p ) : monk_spell_t( "exploding_keg_second", p, p->find_spell( 388867 ) )
+  exploding_keg_proc_t( monk_t* p ) : monk_spell_t( "exploding_keg_proc", p, p->find_spell( 388867 ) )
   {
     background = dual = true;
     proc              = true;
@@ -4514,7 +4541,6 @@ struct exploding_keg_second_t : public monk_spell_t
 
 struct exploding_keg_t : public monk_spell_t
 {
-  exploding_keg_second_t* exploding_keg;
   exploding_keg_t( monk_t& p, util::string_view options_str )
     : monk_spell_t( "exploding_keg", &p, p.talent.brewmaster.exploding_keg )
   {
@@ -4526,24 +4552,15 @@ struct exploding_keg_t : public monk_spell_t
     radius          = data().effectN( 1 ).radius();
     range           = data().max_range();
 
-    exploding_keg = new exploding_keg_second_t( &p );
-
-    add_child( exploding_keg );
+    if ( p.talent.brewmaster.exploding_keg->ok() )
+      add_child( p.active_actions.exploding_keg );
   }
 
   void execute() override
   {
-    monk_spell_t::execute();
-
     p()->buff.exploding_keg->trigger();
-  }
 
-  void impact( action_state_t* state ) override
-  {
-    monk_spell_t::impact( state );
-
-    exploding_keg->target = state->target;
-    exploding_keg->execute();
+    monk_spell_t::execute();
   }
 
   timespan_t travel_time() const override
@@ -5066,7 +5083,7 @@ struct empowered_tiger_lightning_t : public monk_spell_t
 
   bool ready() override
   {
-    return p()->talent.windwalker.invoke_xuen_the_white_tiger_rank_2->ok();
+    return p()->talent.windwalker.empowered_tiger_lightning->ok();
   }
 };
 
@@ -5090,7 +5107,7 @@ struct call_to_arms_empowered_tiger_lightning_t : public monk_spell_t
 
   bool ready() override
   {
-    return p()->legendary.call_to_arms->ok() && p()->talent.windwalker.invoke_xuen_the_white_tiger_rank_2->ok();
+    return p()->legendary.call_to_arms->ok() && p()->talent.windwalker.empowered_tiger_lightning->ok();
   }
 };
 
@@ -7042,7 +7059,7 @@ struct invoke_xuen_the_white_tiger_buff_t : public monk_buff_t<buff_t>
   static void invoke_xuen_callback( buff_t* b, int, timespan_t )
   {
     auto* p                                     = debug_cast<monk_t*>( b->player );
-    double empowered_tiger_lightning_multiplier = p->talent.windwalker.invoke_xuen_the_white_tiger_rank_2->effectN( 2 ).percent();
+    double empowered_tiger_lightning_multiplier = p->talent.windwalker.empowered_tiger_lightning->effectN( 2 ).percent();
 
     for ( auto target : p->sim->target_non_sleeping_list )
     {
@@ -7089,7 +7106,7 @@ struct call_to_arms_xuen_buff_t : public monk_buff_t<buff_t>
   static void call_to_arm_callback( buff_t* b, int, timespan_t )
   {
     auto* p                                     = debug_cast<monk_t*>( b->player );
-    double empowered_tiger_lightning_multiplier = p->talent.windwalker.invoke_xuen_the_white_tiger_rank_2->effectN( 2 ).percent();
+    double empowered_tiger_lightning_multiplier = p->talent.windwalker.empowered_tiger_lightning->effectN( 2 ).percent();
 
     for ( auto target : p->sim->target_non_sleeping_list )
     {
@@ -8166,7 +8183,7 @@ void monk_t::init_spells()
       talent.windwalker.crane_vortex                        = _ST( "Crane Vortex" );
       talent.windwalker.xuens_bond                          = _ST( "Xuen's Bond" );
       talent.windwalker.fury_of_xuen                        = _ST( "Fury of Xuen" );
-      talent.windwalker.invoke_xuen_the_white_tiger_rank_2  = find_talent_spell( talent_tree::SPECIALIZATION, 323999 );
+      talent.windwalker.empowered_tiger_lightning           = _ST( "Empowered Tiger Lightning" );
       talent.windwalker.rising_star                         = _ST( "Rising Star" );
       // Row 9
       talent.windwalker.bonedust_brew                       = _ST( "Bonedust Brew" );
@@ -8287,7 +8304,7 @@ void monk_t::init_spells()
       //spec.flying_serpent_kick        = find_specialization_spell( "Flying Serpent Kick" ); // talent.windwalker.flying_serpent_kick
       spec.flying_serpent_kick_2        = find_rank_spell( "Flying Serpent Kick", "Rank 2" );
       //spec.invoke_xuen                = find_specialization_spell( "Invoke Xuen, the White Tiger" ); // talent.windwalker.invoke_xuen_the_white_tiger
-      //spec.invoke_xuen_2              = find_rank_spell( "Invoke Xuen, the White Tiger", "Rank 2" ); // talent.windwalker.invoke_xuen_the_white_tiger_rank_2
+      //spec.invoke_xuen_2              = find_rank_spell( "Invoke Xuen, the White Tiger", "Rank 2" ); // talent.windwalker.empowered_tiger_lightning
       spec.reverse_harm                 = find_spell(342928);
       spec.stance_of_the_fierce_tiger   = find_specialization_spell( "Stance of the Fierce Tiger" );
       //spec.storm_earth_and_fire       = find_specialization_spell( "Storm, Earth, and Fire" );
@@ -8502,8 +8519,9 @@ void monk_t::init_spells()
   if ( spec_tree == MONK_BREWMASTER )
   {
     active_actions.breath_of_fire         = new actions::spells::breath_of_fire_dot_t ( *this );
-    active_actions.charred_passions       = new actions::charred_passions_sck_t( this );
+    active_actions.charred_passions       = new actions::attacks::charred_passions_sck_t( this );
     active_actions.celestial_fortune      = new actions::heals::celestial_fortune_t ( *this );
+    active_actions.exploding_keg          = new actions::spells::exploding_keg_proc_t( this );
     active_actions.gift_of_the_ox_trigger = new actions::gift_of_the_ox_trigger_t ( *this );
     active_actions.gift_of_the_ox_expire  = new actions::gift_of_the_ox_expire_t ( *this );
     active_actions.stagger_self_damage    = new actions::stagger_self_damage_t ( this );
@@ -10461,8 +10479,10 @@ double monk_t::calculate_last_stagger_tick_damage( int n ) const
 
 void monk_t::trigger_empowered_tiger_lightning( action_state_t* s, bool trigger_invoke_xuen, bool trigger_call_to_arms )
 {
+  if ( specialization() != MONK_WINDWALKER )
+    return;
 
-  if ( talent.windwalker.invoke_xuen_the_white_tiger_rank_2->ok() )
+  if ( talent.windwalker.empowered_tiger_lightning->ok() )
   {
     if ( !s->action->harmful )
       return;

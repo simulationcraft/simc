@@ -177,6 +177,7 @@ public:
     propagate_const<action_t*> breath_of_fire;
     propagate_const<action_t*> charred_passions;
     propagate_const<heal_t*> celestial_fortune;
+    propagate_const<action_t*> exploding_keg;
     propagate_const<heal_t*> gift_of_the_ox_trigger;
     propagate_const<heal_t*> gift_of_the_ox_expire;
     propagate_const<actions::spells::stagger_self_damage_t*> stagger_self_damage;
@@ -636,7 +637,7 @@ public:
       player_talent_t crane_vortex;
       player_talent_t xuens_bond;
       player_talent_t fury_of_xuen;
-      player_talent_t invoke_xuen_the_white_tiger_rank_2;
+      player_talent_t empowered_tiger_lightning;
       player_talent_t rising_star;
       // Row 9
       player_talent_t bonedust_brew;
