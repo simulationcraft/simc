@@ -109,6 +109,8 @@ public:
     buff_t* enrage;
     buff_t* frenzy;
     buff_t* heroic_leap_movement;
+    buff_t* hurricane;
+    buff_t* hurricane_driver;
     buff_t* ignore_pain;
     buff_t* intercept_movement;
     buff_t* intervene_movement;
@@ -603,6 +605,12 @@ public:
       player_talent_t storm_of_steel;
 
     } protection;
+
+    struct shared_talents_t
+    {
+      player_talent_t hurricane;
+
+    } shared;
 
   } talents;
 
@@ -2297,6 +2305,7 @@ struct bladestorm_t : public warrior_attack_t
     if( signet_triggered )
     {
       p()->buff.bladestorm->trigger( dot_duration );
+
     }
     else
     {
@@ -2307,6 +2316,10 @@ struct bladestorm_t : public warrior_attack_t
         action_t* signet_ability = p()->rng().roll( signet_chance ) ? p()->active.signet_avatar : p()->active.signet_recklessness;
         signet_ability->schedule_execute();
       }
+    }
+    if ( p()->talents.arms.hurricane->ok() || p()->talents.fury.hurricane->ok() )
+    {
+      p()->buff.hurricane_driver->trigger();
     }
   }
 
@@ -4534,7 +4547,7 @@ struct ravager_t : public warrior_attack_t
 
   void execute() override
   {
-    if ( p()->specialization() == WARRIOR_ARMS )
+    if ( p()->specialization() == WARRIOR_FURY )
     {
       if( signet_triggered)
       {
@@ -4550,6 +4563,10 @@ struct ravager_t : public warrior_attack_t
           signet_ability->schedule_execute();
         }
       }
+    }
+    if ( p()->talents.fury.hurricane->ok() )
+    {
+      p()->buff.hurricane_driver->trigger();
     }
 
     warrior_attack_t::execute();
@@ -7041,6 +7058,21 @@ void warrior_t::init_spells()
   talents.protection.dance_of_death         = find_talent_spell( talent_tree::SPECIALIZATION, "Dance of Death", WARRIOR_PROTECTION );
   talents.protection.storm_of_steel         = find_talent_spell( talent_tree::SPECIALIZATION, "Storm of Steel", WARRIOR_PROTECTION );
 
+  // Shared Talents - needed when using the same spell data with a spec check (hurricane)
+
+  auto find_shared_talent = [ this ]( std::vector<player_talent_t*> talents ) {
+    for ( const auto t : talents )
+    {
+      if ( t->ok() )
+      {
+        return *t;
+      }
+    }
+    return *talents[ 0 ];
+  };
+
+  talents.shared.hurricane = find_shared_talent( { &talents.arms.hurricane, &talents.fury.hurricane } );
+
   // All
   azerite.breach           = find_azerite_spell( "Breach" );
   azerite.moment_of_glory  = find_azerite_spell( "Moment of Glory" );
@@ -8133,6 +8165,19 @@ void warrior_t::create_buffs()
   buff.bloodcraze = make_buff( this, "bloodcraze", find_spell( 393951 ) )
     ->set_default_value( talents.fury.bloodcraze->effectN( 1 ).percent() );
 
+  const spell_data_t* hurricane_trigger = find_spell( 390577 );
+  const spell_data_t* hurricane_buff   = find_spell( 390581 );
+  buff.hurricane_driver =
+      make_buff( this, "hurricane_driver", hurricane_trigger )
+          ->set_quiet( true )
+          ->set_tick_time_behavior( buff_tick_time_behavior::HASTED )
+          ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) { buff.hurricane->trigger(); } );
+
+  buff.hurricane = make_buff( this, "hurricane", hurricane_buff )
+    ->set_trigger_spell( hurricane_trigger )
+    ->set_default_value( talents.shared.hurricane->effectN( 1 ).percent() )
+    ->add_invalidate( CACHE_STRENGTH );
+
   //buff.vengeance_ignore_pain = make_buff( this, "vengeance_ignore_pain", find_spell( 202574 ) )
     //->set_chance( talents.vengeance->ok() )
     //->set_default_value( find_spell( 202574 )->effectN( 1 ).percent() );
@@ -8795,6 +8840,8 @@ double warrior_t::composite_attribute_multiplier( attribute_e attr ) const
     m *= 1.0 + buff.veterans_repute->value();
 
     m *= 1.0 + buff.pile_on_str->check_stack_value();
+
+    m *= 1.0 + buff.hurricane->check_stack_value();
 
   }
 
