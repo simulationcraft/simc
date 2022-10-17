@@ -31,6 +31,9 @@ struct drain_life_t : public warlock_spell_t
       //// SL - Legendary
       //dot_duration *= 1.0 + p->legendary.claw_of_endereth->effectN( 1 ).percent();
       //base_tick_time *= 1.0 + p->legendary.claw_of_endereth->effectN( 1 ).percent();
+
+      dot_duration *= 1.0 + p->talents.grim_feast->effectN( 1 ).percent();
+      base_tick_time *= 1.0 + p->talents.grim_feast->effectN( 2 ).percent();
     }
 
     double bonus_ta( const action_state_t* s ) const override
@@ -83,6 +86,9 @@ struct drain_life_t : public warlock_spell_t
     //// SL - Legendary
     //dot_duration *= 1.0 + p->legendary.claw_of_endereth->effectN( 1 ).percent();
     //base_tick_time *= 1.0 + p->legendary.claw_of_endereth->effectN( 1 ).percent();
+
+    dot_duration *= 1.0 + p->talents.grim_feast->effectN( 1 ).percent();
+    base_tick_time *= 1.0 + p->talents.grim_feast->effectN( 2 ).percent();
   }
 
   void execute() override
@@ -1440,6 +1446,8 @@ void warlock_t::init_spells()
   talents.demonic_synergy = find_spell( 171982 );
 
   talents.soul_conduit = find_talent_spell( talent_tree::CLASS, "Soul Conduit" ); // Should be ID 215941
+
+  talents.grim_feast = find_talent_spell( talent_tree::CLASS, "Grim Feast" ); // Should be ID 386689
 
   // Legendaries
   legendary.claw_of_endereth                     = find_runeforge_legendary( "Claw of Endereth" );

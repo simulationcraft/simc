@@ -194,7 +194,7 @@ public:
     player_talent_t grimoire_of_synergy; // DF - Does not trigger when using Grimoire of Sacrifice
     const spell_data_t* demonic_synergy; // Buff from Grimoire of Synergy
     player_talent_t soul_conduit;
-    // DF - Claw of Endereth (moved from SL Legendary power)
+    player_talent_t grim_feast; // Faster Drain Life (Formerly SL Legendary)
     // DF - Summon Soulkeeper (Active ground aoe which spends hidden stacking buff)
     // DF - Inquisitor's Gaze (Non-guardian pet summon which behaves like Arcane Familiar)
 
