@@ -102,6 +102,7 @@ public:
     buff_t* bounding_stride;
     buff_t* charge_movement;
     buff_t* concussive_blows;
+    buff_t* dancing_blades;
     buff_t* defensive_stance;
     buff_t* die_by_the_sword;
     buff_t* enrage;
@@ -188,6 +189,7 @@ public:
     cooldown_t* bladestorm;
     cooldown_t* bloodthirst;
     cooldown_t* bloodbath;
+    cooldown_t* cleave;
     cooldown_t* colossus_smash;
     cooldown_t* demoralizing_shout;
     cooldown_t* thunderous_roar;
@@ -1039,18 +1041,21 @@ public:
 
     // passive talents
     ab::apply_affecting_aura( p()->talents.arms.bloodborne );
+    ab::apply_affecting_aura( p()->talents.arms.bloodletting );
     ab::apply_affecting_aura( p()->talents.arms.blunt_instruments ); // damage only
     ab::apply_affecting_aura( p()->talents.arms.impale );
     ab::apply_affecting_aura( p()->talents.arms.improved_overpower );
     ab::apply_affecting_aura( p()->talents.arms.improved_mortal_strike );
     ab::apply_affecting_aura( p()->talents.arms.reaping_swings );
     ab::apply_affecting_aura( p()->talents.arms.sharpened_blades );
+    ab::apply_affecting_aura( p()->talents.arms.storm_of_swords );
     ab::apply_affecting_aura( p()->talents.arms.valor_in_victory );
     ab::apply_affecting_aura( p()->talents.fury.bloodborne );
     ab::apply_affecting_aura( p()->talents.fury.critical_thinking );
     ab::apply_affecting_aura( p()->talents.fury.deft_experience );
     ab::apply_affecting_aura( p()->talents.fury.improved_bloodthirst );
     ab::apply_affecting_aura( p()->talents.fury.storm_of_steel );
+    ab::apply_affecting_aura( p()->talents.fury.storm_of_swords ); // rage generation in spell
     ab::apply_affecting_aura( p()->talents.warrior.barbaric_training );
     ab::apply_affecting_aura( p()->talents.warrior.concussive_blows );
     ab::apply_affecting_aura( p()->talents.warrior.cruel_strikes );
@@ -1718,6 +1723,15 @@ struct melee_t : public warrior_attack_t
     }
   }
 
+  double composite_hit() const override
+  {
+    if ( p()->talents.fury.focus_in_chaos.ok() && p()->buff.enrage->check() )
+    {
+      return 1.0;
+    }
+    return warrior_attack_t::composite_hit();
+  }
+
   void execute() override
   {
     if ( p()->current.distance_to_move > 5 )
@@ -2012,7 +2026,7 @@ struct mortal_strike_t : public warrior_attack_t
   {
     if ( ( !from_mortal_combo ) && p()->buff.battlelord->check() )
     {
-        return 15;
+        return 20;
     }
 
     if ( from_mortal_combo )
@@ -2580,11 +2594,15 @@ struct onslaught_t : public warrior_attack_t
     warrior_attack_t::execute();
 
     p()->buff.meat_cleaver->decrement();
+    if ( p()->talents.fury.tenderize->ok() )
+    {
+      p()->enrage();
+    }
   }
 
   bool ready() override
   {
-    if ( p()->main_hand_weapon.type == WEAPON_NONE || !p()->buff.enrage->check() )
+    if ( p()->main_hand_weapon.type == WEAPON_NONE )
       return false;
     return warrior_attack_t::ready();
   }
@@ -2720,6 +2738,16 @@ struct cleave_t : public warrior_attack_t
     reduced_aoe_targets = 5.0;
   }
 
+  double cost() const override
+  {
+    if ( p()->buff.battlelord->check() )
+    {
+      return 10;
+    }
+
+    return warrior_attack_t::cost();
+  }
+
   double action_multiplier() const override
   {
     double am = warrior_attack_t::action_multiplier();
@@ -2748,10 +2776,8 @@ struct cleave_t : public warrior_attack_t
     {
       p()->resource_gain(RESOURCE_RAGE, last_resource_cost * rage_from_frothing_berserker, p()->gain.frothing_berserker);
     }
-    if ( result_is_hit( execute_state->result ) )
-    {
+    p()->buff.battlelord->expire();
     p()->buff.martial_prowess->expire();
-    }
   }
 };
 
@@ -2885,14 +2911,6 @@ struct thunderous_roar_t : public warrior_attack_t
     parse_options( options_str );
     aoe       = -1;
     may_dodge = may_parry = may_block = false;
-    if ( p->talents.warrior.uproar->ok() )
-    {
-      dot_duration = timespan_t::from_seconds ( 14 ); // data says 8 = 5 ticks, actually 16 = 8 ticks
-    }
-    else
-    {
-      dot_duration = timespan_t::from_seconds( 12 );  // data says 8 = 5 ticks, actually 14 = 7 ticks
-    }
   }
 };
 
@@ -3931,6 +3949,11 @@ struct odyns_fury_t : warrior_attack_t
     oh_attack->execute();
     mh_attack2->execute();
     oh_attack2->execute();
+
+    if ( p()->talents.fury.dancing_blades->ok() )
+    {
+      p()->buff.dancing_blades->trigger();
+    } 
   }
 
   bool ready() override
@@ -3975,7 +3998,7 @@ struct overpower_t : public warrior_attack_t
 
   overpower_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "overpower", p, p->talents.arms.overpower ),
-      battlelord_chance( p->legendary.battlelord->proc_chance() ),
+      battlelord_chance( p->talents.arms.battlelord->proc_chance() ),
       seismic_wave( nullptr ),
       dreadnaught( nullptr )
   {
@@ -4031,9 +4054,10 @@ struct overpower_t : public warrior_attack_t
   void execute() override
   {
     warrior_attack_t::execute();
-    if ( p()->legendary.battlelord->ok() && rng().roll( battlelord_chance ) )
+    if ( p()->talents.arms.battlelord->ok() && rng().roll( battlelord_chance ) )
     {
       p()->cooldown.mortal_strike->reset( true );
+      p()->cooldown.cleave->reset( true );
       p() -> buff.battlelord -> trigger();
     }
     if ( p()->sets->has_set_bonus( WARRIOR_ARMS, T28, B4 ) && p()->buff.pile_on_ready->check() )
@@ -4759,6 +4783,10 @@ struct slam_t : public warrior_attack_t
     parse_options( options_str );
     weapon                       = &( p->main_hand_weapon );
     affected_by.crushing_assault = true;
+    if ( p->talents.fury.storm_of_swords->ok() )
+    {
+      energize_amount += p->talents.fury.storm_of_swords->effectN( 6 ).resource( RESOURCE_RAGE );
+    }
   }
 
   double bonus_da( const action_state_t* s ) const override
@@ -7138,6 +7166,7 @@ void warrior_t::init_spells()
   cooldown.bloodthirst    = get_cooldown( "bloodthirst" );
   cooldown.bloodbath      = get_cooldown( "bloodbath" );
 
+  cooldown.cleave                           = get_cooldown( "cleave" );
   cooldown.colossus_smash                   = get_cooldown( "colossus_smash" );
   cooldown.condemn                          = get_cooldown( "condemn" );
   cooldown.conquerors_banner                = get_cooldown( "conquerors_banner" );
@@ -7911,6 +7940,11 @@ void warrior_t::create_buffs()
 
   buff.wild_strikes = make_buff( this, "wild_strikes", talents.warrior.wild_strikes )
       ->set_default_value( talents.warrior.wild_strikes->effectN( 2 ).base_value() / 100.0 )
+      ->set_duration( find_spell( 392778 )->duration() )
+      ->add_invalidate( CACHE_ATTACK_SPEED );
+
+  buff.dancing_blades = make_buff( this, "dancing_blades", find_spell( 391688 ) )
+      ->set_default_value( find_spell( 391688 )->effectN( 1 ).base_value() / 100.0 )
       ->add_invalidate( CACHE_ATTACK_SPEED );
 
   if ( talents.warrior.unstoppable_force -> ok() )
@@ -7939,9 +7973,10 @@ void warrior_t::create_buffs()
     ->add_invalidate( CACHE_PARRY );
 
   buff.enrage = make_buff( this, "enrage", find_spell( 184362 ) )
-                    ->add_invalidate( CACHE_ATTACK_HASTE )
-                    ->add_invalidate( CACHE_RUN_SPEED )
-                    ->set_default_value( find_spell( 184362 )->effectN( 1 ).percent() );
+     ->add_invalidate( CACHE_ATTACK_HASTE )
+     ->add_invalidate( CACHE_RUN_SPEED )
+     ->set_default_value( find_spell( 184362 )->effectN( 1 ).percent() )
+     ->set_duration( find_spell( 184362 )->duration() + talents.fury.tenderize->effectN( 1 ).time_value() );
 
   buff.frenzy = make_buff( this, "frenzy", find_spell(335082) )
                            ->set_default_value( find_spell( 335082 )->effectN( 1 ).percent() )
@@ -8127,7 +8162,7 @@ void warrior_t::create_buffs()
                            ->set_default_value( conduit.unnerving_focus.percent() );
   // Runeforged Legendary Powers============================================================================================
 
-  buff.battlelord = make_buff( this, "battlelord", find_spell( 346369 ) );
+  buff.battlelord = make_buff( this, "battlelord", find_spell( 386631 ) );
 
   buff.cadence_of_fujieda = make_buff( this, "cadence_of_fujieda", find_spell( 335558 ) )
                            ->set_default_value( find_spell( 335558 )->effectN( 1 ).percent() )
@@ -8579,7 +8614,9 @@ double warrior_t::composite_melee_speed() const
     s *= 1.0 / ( 1.0 + talents.warrior.furious_blows->effectN( 1 ).percent() );
   }
 
-  s *= 1.0 / ( 1.0 + buff.wild_strikes->check_value () );
+  s *= 1.0 / ( 1.0 + buff.wild_strikes->check_value() );
+
+  s *= 1.0 / ( 1.0 + buff.dancing_blades->check_value() );
 
   return s;
 }
