@@ -1178,21 +1178,18 @@ struct shadowy_tear_t : public destruction_spell_t
       destro_mastery = false;
       background = dual = true;
 
-      // Though this behaves like a direct damage spell, it is whitelisted under the periodic spec aura and benefits as such in game
+      // Though this behaves like a direct damage spell, it is also whitelisted under the periodic spec aura and benefits as such in game
       base_dd_multiplier *= 1.0 + p->warlock_base.destruction_warlock->effectN( 2 ).percent(); 
     }
   };
 
   struct shadow_barrage_t : public destruction_spell_t
   {
-    rift_shadow_bolt_t* rift_shadow_bolt;
-
     shadow_barrage_t( warlock_t* p ) : destruction_spell_t( "shadow_barrage", p, p->talents.shadow_barrage )
     {
       background = true;
 
-      rift_shadow_bolt = new rift_shadow_bolt_t( p );
-      tick_action = rift_shadow_bolt;
+      tick_action = new rift_shadow_bolt_t( p );
     }
 
     double last_tick_factor( const dot_t* d, timespan_t time_to_tick, timespan_t duration ) const override
@@ -1210,9 +1207,43 @@ struct shadowy_tear_t : public destruction_spell_t
   }
 };
 
+struct unstable_tear_t : public destruction_spell_t
+{
+  // TOCHECK: Partial ticks are not matching up in game!
+  struct chaos_barrage_tick_t : public destruction_spell_t
+  {
+    chaos_barrage_tick_t( warlock_t* p ) : destruction_spell_t( "chaos_barrage_tick", p, p->talents.chaos_barrage_tick )
+    {
+      destro_mastery = false;
+      background = dual = true;
+
+      // Though this behaves like a direct damage spell, it is also whitelisted under the periodic spec aura and benefits as such in game
+      base_dd_multiplier *= 1.0 + p->warlock_base.destruction_warlock->effectN( 2 ).percent(); 
+    }
+  };
+
+  struct chaos_barrage_t : public destruction_spell_t
+  {
+    chaos_barrage_t( warlock_t* p ) : destruction_spell_t( "chaos_barrage", p, p->talents.chaos_barrage )
+    {
+      background = true;
+
+      tick_action = new chaos_barrage_tick_t( p );
+    }
+  };
+
+  unstable_tear_t( warlock_t* p ) : destruction_spell_t( "unstable_tear", p, p->talents.unstable_tear_summon )
+  {
+    background = true;
+
+    impact_action = new chaos_barrage_t( p );
+  }
+};
+
 struct dimensional_rift_t : public destruction_spell_t
 {
   shadowy_tear_t* shadowy_tear;
+  unstable_tear_t* unstable_tear;
 
   dimensional_rift_t( warlock_t* p, util::string_view options_str )
     : destruction_spell_t( "dimensional_rift", p, p->talents.dimensional_rift )
@@ -1225,21 +1256,25 @@ struct dimensional_rift_t : public destruction_spell_t
     energize_amount = p->talents.dimensional_rift->effectN( 2 ).base_value() / 10.0;
 
     shadowy_tear = new shadowy_tear_t( p );
+    unstable_tear = new unstable_tear_t( p );
 
     add_child( shadowy_tear );
+    add_child( unstable_tear );
   }
 
   void execute() override
   {
     destruction_spell_t::execute();
 
-    int rift = 1;
+    int rift = 2;
 
     switch ( rift )
     {
     case 1:
       shadowy_tear->execute_on_target( target );
       break;
+    case 2:
+      unstable_tear->execute_on_target( target );
     default:
       break;
     }
