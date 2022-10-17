@@ -374,6 +374,7 @@ public:
     propagate_const<proc_t*> bountiful_brew_proc;
     propagate_const<proc_t*> charred_passions_bok;
     propagate_const<proc_t*> charred_passions_sck;
+    propagate_const<proc_t*> chi_surge;
     propagate_const<proc_t*> counterstrike_tp;
     propagate_const<proc_t*> counterstrike_sck;
     propagate_const<proc_t*> elusive_footwork_proc;

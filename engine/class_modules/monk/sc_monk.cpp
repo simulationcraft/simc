@@ -5257,6 +5257,7 @@ struct chi_surge_t : public monk_spell_t
     {
       double cdr = p()->talent.brewmaster.chi_surge->effectN( 1 ).base_value(); // Saved as 4
       p()->cooldown.weapons_of_order->adjust( timespan_t::from_seconds( -1 * cdr * targets_hit ) );
+      p()->proc.chi_surge->occur();
     }
   }
 };
@@ -8486,46 +8487,6 @@ void monk_t::init_spells()
   sample_datas.quick_sip_cleared          = get_sample_data( "Stagger damage that was cleared by Quick Sip" );
   sample_datas.tranquil_spirit            = get_sample_data( "Stagger damage that was cleared by Tranquil Spirit" );
 
-  // Active Action Spells
-  
-  // General
-  active_actions.resonant_fists = new actions::spells::resonant_fists_t( *this );
-  close_to_heart_aura           = new actions::close_to_heart_aura_t( this );
-  generous_pour_aura            = new actions::generous_pour_aura_t( this );
-  windwalking_aura              = new actions::windwalking_aura_t( this );
-
-  // Brewmaster
-  if ( spec_tree == MONK_BREWMASTER )
-  {
-    active_actions.breath_of_fire         = new actions::spells::breath_of_fire_dot_t ( *this );
-    active_actions.charred_passions       = new actions::attacks::charred_passions_sck_t( this );
-    active_actions.celestial_fortune      = new actions::heals::celestial_fortune_t ( *this );
-    active_actions.exploding_keg          = new actions::spells::exploding_keg_proc_t( this );
-    active_actions.gift_of_the_ox_trigger = new actions::gift_of_the_ox_trigger_t ( *this );
-    active_actions.gift_of_the_ox_expire  = new actions::gift_of_the_ox_expire_t ( *this );
-    active_actions.stagger_self_damage    = new actions::stagger_self_damage_t ( this );
-  }
-
-  // Windwalker
-  if ( spec_tree == MONK_WINDWALKER )
-  {
-    active_actions.empowered_tiger_lightning  = new actions::empowered_tiger_lightning_t ( *this );
-  }
-
-  // Conduit
-  active_actions.evasive_stride = new actions::heals::evasive_stride_t( *this );
-
-  // Covenant
-  active_actions.bonedust_brew_dmg  = new actions::spells::bonedust_brew_damage_t( *this );
-  active_actions.bonedust_brew_heal = new actions::spells::bonedust_brew_heal_t( *this );
-
-  // Legendary
-  active_actions.bountiful_brew = new actions::spells::bountiful_brew_t( *this );
-  active_actions.call_to_arms_empowered_tiger_lightning = new actions::call_to_arms_empowered_tiger_lightning_t( *this );
-
-  // Passive Action Spells
-  passive_actions.thunderfist = new actions::thunderfist_t( this );
-
   //================================================================================
   // Shared Spells
   // These spells share common effects but are unique in that you may only have one
@@ -8576,6 +8537,46 @@ void monk_t::init_spells()
 
   shared.weapons_of_order = _valid( covenant.kyrian ) ? covenant.kyrian :
     _valid( talent.brewmaster.weapons_of_order ) ? talent.brewmaster.weapons_of_order :spell_data_t::nil();
+
+  // Active Action Spells
+  
+  // General
+  active_actions.resonant_fists = new actions::spells::resonant_fists_t( *this );
+  close_to_heart_aura           = new actions::close_to_heart_aura_t( this );
+  generous_pour_aura            = new actions::generous_pour_aura_t( this );
+  windwalking_aura              = new actions::windwalking_aura_t( this );
+
+  // Brewmaster
+  if ( spec_tree == MONK_BREWMASTER )
+  {
+    active_actions.breath_of_fire         = new actions::spells::breath_of_fire_dot_t ( *this );
+    active_actions.charred_passions       = new actions::attacks::charred_passions_sck_t( this );
+    active_actions.celestial_fortune      = new actions::heals::celestial_fortune_t ( *this );
+    active_actions.exploding_keg          = new actions::spells::exploding_keg_proc_t( this );
+    active_actions.gift_of_the_ox_trigger = new actions::gift_of_the_ox_trigger_t ( *this );
+    active_actions.gift_of_the_ox_expire  = new actions::gift_of_the_ox_expire_t ( *this );
+    active_actions.stagger_self_damage    = new actions::stagger_self_damage_t ( this );
+  }
+
+  // Windwalker
+  if ( spec_tree == MONK_WINDWALKER )
+  {
+    active_actions.empowered_tiger_lightning  = new actions::empowered_tiger_lightning_t ( *this );
+  }
+
+  // Conduit
+  active_actions.evasive_stride = new actions::heals::evasive_stride_t( *this );
+
+  // Covenant
+  active_actions.bonedust_brew_dmg  = new actions::spells::bonedust_brew_damage_t( *this );
+  active_actions.bonedust_brew_heal = new actions::spells::bonedust_brew_heal_t( *this );
+
+  // Legendary
+  active_actions.bountiful_brew = new actions::spells::bountiful_brew_t( *this );
+  active_actions.call_to_arms_empowered_tiger_lightning = new actions::call_to_arms_empowered_tiger_lightning_t( *this );
+
+  // Passive Action Spells
+  passive_actions.thunderfist = new actions::thunderfist_t( this );
 }
 
 // monk_t::init_base ========================================================
@@ -9035,6 +9036,7 @@ void monk_t::init_procs()
   proc.bountiful_brew_proc                 = get_proc( "Bountiful Brew Trigger" );
   proc.charred_passions_bok                = get_proc( "Charred Passions - Blackout Kick" );
   proc.charred_passions_sck                = get_proc( "Charred Passions - Spinning Crane Kick" );
+  proc.chi_surge                           = get_proc( "Chi Surge CDR" );
   proc.counterstrike_tp                    = get_proc( "Counterstrike - Tiger Palm" );
   proc.counterstrike_sck                   = get_proc( "Counterstrike - Spinning Crane Kick" );
   proc.elusive_footwork_proc               = get_proc( "Elusive Footwork" );
