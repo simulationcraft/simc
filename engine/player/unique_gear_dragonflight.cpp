@@ -467,9 +467,76 @@ void DISABLED_EFFECT( special_effect_t& effect )
 }
 
 // Trinkets
+struct DF_darkmoon_deck_t : public darkmoon_spell_deck_t
+{
+  bool bronzescale;  // shuffles every 2.5s
+  bool azurescale;   // shuffles from greatest to least
+  bool emberscale;   // no longer shuffles even cards
+  bool jetscale;     // no longer shuffles on Ace
+  bool sagescale;    // only shuffle on jump NYI
+
+  DF_darkmoon_deck_t( const special_effect_t& e, std::vector<unsigned> c )
+    : darkmoon_spell_deck_t( e, std::move( c ) ),
+      bronzescale( unique_gear::find_special_effect( player, 382913 ) != nullptr ),
+      azurescale( unique_gear::find_special_effect( player, 383336 ) != nullptr ),
+      emberscale( unique_gear::find_special_effect( player, 383333 ) != nullptr ),
+      jetscale( unique_gear::find_special_effect( player, 383337 ) != nullptr ),
+      sagescale( unique_gear::find_special_effect( player, 383339 ) != nullptr )
+  {
+    if ( bronzescale )
+      shuffle_period = player->find_spell( 382913 )->effectN( 1 ).period();
+  }
+
+  // TODO: currently in-game the shuffling does not start until the category cooldown 2042 is up. this is currently
+  // inconsistently applied between decks, with some having 20s and others have 90s. adjust to the correct behavior when
+  // DF goes live.
+  void shuffle() override
+  {
+    // NOTE: assumes last card, and thus highest index, is Ace
+    if ( jetscale && top_index == cards.size() - 1 )
+      return;
+
+    darkmoon_spell_deck_t::shuffle();
+  }
+
+  size_t get_index( bool init ) override
+  {
+    if ( azurescale )
+    {
+      if ( init )
+      {
+        // when you equip it you get the 7 card, but the first shuffle in combat remains at 7. for our purposes since we
+        // set the top card on initialization and shuffle again in combat_begin, we initialize to the 8 card, which is
+        // second to last.
+        top_index = card_ids.size() - 2;
+      }
+      else
+      {
+        if ( top_index == 0 )
+          top_index = card_ids.size() - 1;
+        else
+          top_index--;
+      }
+    }
+    else if ( emberscale )
+    {
+      top_index = player->rng().range( card_ids.size() / 2 ) * 2 + 1;
+    }
+    else
+    {
+      darkmoon_spell_deck_t::get_index();
+    }
+
+    return top_index;
+  }
+};
+
+template <typename Base = proc_spell_t>
+using DF_darkmoon_proc_t = darkmoon_deck_proc_t<Base, DF_darkmoon_deck_t>;
+
 void darkmoon_deck_dance( special_effect_t& effect )
 {
-  struct darkmoon_deck_dance_t : public darkmoon_deck_proc_t<>
+  struct darkmoon_deck_dance_t : public DF_darkmoon_proc_t<>
   {
     action_t* damage;
     action_t* heal;
@@ -517,7 +584,7 @@ void darkmoon_deck_dance( special_effect_t& effect )
 
 void darkmoon_deck_inferno( special_effect_t& effect )
 {
-  struct darkmoon_deck_inferno_t : public darkmoon_deck_proc_t<>
+  struct darkmoon_deck_inferno_t : public DF_darkmoon_proc_t<>
   {
     // card order is [ 2 3 4 5 6 7 8 A ]
     darkmoon_deck_inferno_t( const special_effect_t& e )
@@ -560,7 +627,7 @@ struct awakening_rime_initializer_t : public item_targetdata_initializer_t
 
 void darkmoon_deck_rime( special_effect_t& effect )
 {
-  struct darkmoon_deck_rime_t : public darkmoon_deck_proc_t<>
+  struct darkmoon_deck_rime_t : public DF_darkmoon_proc_t<>
   {
     // card order is [ 2 3 4 5 6 7 8 A ]
     darkmoon_deck_rime_t( const special_effect_t& e )
@@ -599,7 +666,7 @@ void darkmoon_deck_rime( special_effect_t& effect )
 
 void darkmoon_deck_watcher( special_effect_t& effect )
 {
-  struct darkmoon_deck_watcher_t : public darkmoon_deck_proc_t<proc_heal_t>
+  struct darkmoon_deck_watcher_t : public DF_darkmoon_proc_t<proc_heal_t>
   {
     struct watchers_blessing_absorb_buff_t : public absorb_buff_t
     {
@@ -739,6 +806,11 @@ void register_special_effects()
   // Armor
   // Disabled
   register_special_effect( 382958, items::DISABLED_EFFECT );  // df darkmoon deck shuffler
+  register_special_effect( 382913, items::DISABLED_EFFECT );  // bronzescale sigil (faster shuffle)
+  register_special_effect( 383336, items::DISABLED_EFFECT );  // azurescale sigil (shuffle greatest to least)
+  register_special_effect( 383333, items::DISABLED_EFFECT );  // emberscale sigil (no longer shuffles even cards)
+  register_special_effect( 383337, items::DISABLED_EFFECT );  // jetscale sigil (no longer shuffles on Ace)
+  register_special_effect( 383339, items::DISABLED_EFFECT );  // sagescale sigil (shuffle on jump) NYI
 }
 
 void register_target_data_initializers( sim_t& sim )
