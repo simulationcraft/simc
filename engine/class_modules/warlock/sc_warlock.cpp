@@ -527,6 +527,8 @@ struct shadow_bolt_t : public warlock_spell_t
       p()->cooldowns.call_dreadstalkers->reset( true );
       p()->procs.hounds_of_war->occur();
     }
+
+    p()->buffs.stolen_power_final->expire();
   }
 
   void impact( action_state_t* s ) override
