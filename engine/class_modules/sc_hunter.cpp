@@ -3166,6 +3166,19 @@ struct arcane_shot_t: public hunter_ranged_attack_t
   }
 };
 
+// Hit the Mark =========================================================================
+
+struct hit_the_mark_t : residual_bleed_base_t
+{
+  double result_mod;
+
+  hit_the_mark_t( util::string_view n, hunter_t* p)
+    : residual_bleed_base_t( n, p, p -> find_spell( 394371 ) )
+  {
+    result_mod = p -> tier_set.t29_mm_2pc -> effectN( 1 ).trigger() -> effectN( 1 ).percent();
+  }
+};
+
 // Wind Arrow =========================================================================
 
 struct wind_arrow_t final : public hunter_ranged_attack_t
@@ -3174,6 +3187,7 @@ struct wind_arrow_t final : public hunter_ranged_attack_t
     double multiplier = 0;
     double high, low;
   } careful_aim;
+  hit_the_mark_t* hit_the_mark;
 
   wind_arrow_t( util::string_view n, hunter_t* p ):
     hunter_ranged_attack_t( n, p, p -> find_spell( 191043 ) )
@@ -3191,6 +3205,9 @@ struct wind_arrow_t final : public hunter_ranged_attack_t
       careful_aim.low = p -> talents.careful_aim -> effectN( 2 ).base_value();
       careful_aim.multiplier = p -> talents.careful_aim -> effectN( 3 ).percent();
     }
+
+    if ( p -> tier_set.t29_mm_2pc.ok() )
+      hit_the_mark = p -> get_background_action<hit_the_mark_t>( "hit_the_mark" );
   }
 
   void execute() override
@@ -3225,6 +3242,20 @@ struct wind_arrow_t final : public hunter_ranged_attack_t
     am *= 1 + p() -> cache.mastery() * p() -> mastery.sniper_training -> effectN( affected_by.sniper_training.direct ).mastery_value();
 
     return am;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    hunter_ranged_attack_t::impact( s );
+
+    // 16-10-22 TODO: Wind Arrows are consuming MM 2pc buff
+    if ( hit_the_mark )
+    {
+      double amount = s -> result_amount * p() -> buffs.find_the_mark -> check_value();
+      if ( amount > 0 )
+        residual_action::trigger( hit_the_mark, s -> target, amount );
+      p() -> buffs.find_the_mark -> expire();
+    }
   }
 };
 
@@ -4228,17 +4259,6 @@ struct aimed_shot_t : public aimed_shot_base_t
     }
   };
 
-  struct hit_the_mark_t : residual_bleed_base_t
-  {
-    double result_mod;
-
-    hit_the_mark_t( util::string_view n, hunter_t* p)
-      : residual_bleed_base_t( n, p, p -> find_spell( 394371 ) )
-    {
-      result_mod = p -> talents.spearhead -> effectN( 2 ).percent();
-    }
-  };
-
   bool lock_and_loaded = false;
   bool secrets_of_the_vigil_up = false;
   struct {
@@ -4302,7 +4322,6 @@ struct aimed_shot_t : public aimed_shot_base_t
       hit_the_mark = p -> get_background_action<hit_the_mark_t>( "hit_the_mark" );
       add_child( hit_the_mark );
     }
-
   }
 
   double cost() const override
