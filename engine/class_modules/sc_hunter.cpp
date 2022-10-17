@@ -5059,7 +5059,7 @@ struct mongoose_bite_base_t: melee_focus_spender_t
 
     background = !p -> talents.mongoose_bite.ok();
 
-    if ( p -> talents.mongoose_bite.ok() )
+    if ( spearhead && p -> talents.mongoose_bite.ok() )
       add_child( spearhead );
   }
 
@@ -5246,7 +5246,7 @@ struct raptor_strike_base_t: public melee_focus_spender_t
   {
     background = p -> talents.mongoose_bite.ok();
 
-    if ( !p -> talents.mongoose_bite.ok() )
+    if ( spearhead && !p -> talents.mongoose_bite.ok() )
       add_child( spearhead );
   }
 };
