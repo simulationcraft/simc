@@ -5221,13 +5221,57 @@ struct summon_white_tiger_statue_spell_t : public monk_spell_t
 };
 
 // ==========================================================================
+// Chi Surge
+// ==========================================================================
+
+struct chi_surge_t : public monk_spell_t
+{
+  chi_surge_t( monk_t& p ) : monk_spell_t( "chi_surge", &p, p.talent.brewmaster.chi_surge->effectN( 1 ).trigger() )
+  {
+    harmful           = true;
+    dual = background = true;
+    aoe               = -1;
+    school            = SCHOOL_NATURE;
+
+    spell_power_mod.tick =
+      data().effectN( 2 ).base_value() / 100; // Saved as 45
+  }
+
+  double composite_spell_power() const override
+  {
+    return std::max( monk_spell_t::composite_spell_power(), monk_spell_t::composite_attack_power() );
+  }
+
+  double composite_persistent_multiplier( const action_state_t* s ) const override
+  {
+    return monk_spell_t::composite_persistent_multiplier( s ) / s->n_targets;
+  }
+
+  void execute() override
+  {
+    monk_spell_t::execute();
+
+    int targets_hit = std::min( 5U, execute_state->n_targets );
+
+    if ( targets_hit > 0 )
+    {
+      double cdr = p()->talent.brewmaster.chi_surge->effectN( 1 ).base_value(); // Saved as 4
+      p()->cooldown.weapons_of_order->adjust( timespan_t::from_seconds( -1 * cdr * targets_hit ) );
+    }
+  }
+};
+
+// ==========================================================================
 // Weapons of Order - Kyrian Covenant Ability
 // ==========================================================================
 
 struct weapons_of_order_t : public monk_spell_t
 {
+  chi_surge_t* chi_surge;
+
   weapons_of_order_t( monk_t& p, util::string_view options_str )
-    : monk_spell_t( "weapons_of_order", &p, p.shared.weapons_of_order && p.shared.weapons_of_order->ok() ? p.shared.weapons_of_order : spell_data_t::nil() )
+    : monk_spell_t( "weapons_of_order", &p, p.shared.weapons_of_order && p.shared.weapons_of_order->ok() ? p.shared.weapons_of_order : spell_data_t::nil() ),
+      chi_surge( new chi_surge_t( p ) )
   {
     parse_options( options_str );
     may_combo_strike            = true;
@@ -5235,16 +5279,27 @@ struct weapons_of_order_t : public monk_spell_t
     base_dd_min                 = 0;
     base_dd_max                 = 0;
     cast_during_sck             = true;
+
+    add_child( chi_surge );
   }
 
   void execute() override
   {
     p()->buff.weapons_of_order->trigger();
 
+    monk_spell_t::execute();
+
     if ( p()->specialization() == MONK_BREWMASTER )
+    {
       p()->cooldown.keg_smash->reset( true, 1 );
 
-    monk_spell_t::execute();
+      // TODO: Does this stack with Effusive Anima Accelerator?
+      if ( p()->talent.brewmaster.chi_surge->ok() )
+      {
+        chi_surge->set_target( target );
+        chi_surge->execute();
+      }
+    }
 
     if ( p()->shared.call_to_arms && p()->shared.call_to_arms->ok() )
     {
@@ -7984,7 +8039,7 @@ void monk_t::init_spells()
       talent.brewmaster.attenuation                         = _ST( "Attenuation" );
       talent.brewmaster.stormstouts_last_keg                = _ST( "Stormstout's Last Keg" );
       talent.brewmaster.call_to_arms                        = _ST( "Call to Arms" );
-      talent.brewmaster.chi_surge                           = _ST( "Chi Surge" );
+      talent.brewmaster.chi_surge                           = _ST( "Chi Surge" ); // TODOL Doesn't pull the spell for some reason
   }
 
   // ========
@@ -8471,8 +8526,11 @@ void monk_t::init_spells()
   // Passive Action Spells
   passive_actions.thunderfist = new actions::thunderfist_t( this );
 
+  //================================================================================
   // Shared Spells
   // These spells share common effects but are unique in that you may only have one
+  //================================================================================
+
   auto _valid = [ this ] ( auto spell ) { return ( spell && spell->ok() ); };
 
   shared.attenuation = _valid( conduit.bone_marrow_hops ) ? conduit.bone_marrow_hops :
