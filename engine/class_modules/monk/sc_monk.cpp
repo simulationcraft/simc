@@ -6539,10 +6539,7 @@ struct chi_burst_t : public monk_spell_t
 
 struct healing_elixir_t : public monk_heal_t
 {
-  healing_elixir_t( monk_t& p ) : monk_heal_t( "healing_elixir", p, 
-      ( p.specialization() == MONK_BREWMASTER ? p.talent.brewmaster.healing_elixir : 
-          ( p.specialization() == MONK_MISTWEAVER ? p.talent.mistweaver.healing_elixir
-                                                                   : spell_data_t::nil() ) ) )
+  healing_elixir_t( monk_t& p ) : monk_heal_t( "healing_elixir", p, p.shared.healing_elixir && p.shared.healing_elixir->ok() ? p.shared.healing_elixir : spell_data_t::nil() )
   {
     harmful = may_crit = false;
     target             = &p;
@@ -8512,6 +8509,9 @@ void monk_t::init_spells()
   shared.faeline_stomp = _valid( covenant.night_fae ) ? covenant.night_fae :
     _valid( talent.windwalker.faeline_stomp ) ? talent.windwalker.faeline_stomp :
     _valid( talent.mistweaver.faeline_stomp ) ? talent.mistweaver.faeline_stomp : spell_data_t::nil();
+
+  shared.healing_elixir = _valid( talent.brewmaster.healing_elixir ) ? talent.brewmaster.healing_elixir :
+    _valid( talent.mistweaver.healing_elixir ) ? talent.mistweaver.healing_elixir : spell_data_t::nil();
 
   shared.invokers_delight = _valid( legendary.invokers_delight ) ? (const spell_data_t*)legendary.invokers_delight :
     _valid( talent.windwalker.invokers_delight ) ? talent.windwalker.invokers_delight :
