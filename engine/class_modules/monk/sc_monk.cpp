@@ -706,9 +706,7 @@ public:
             }
         }
 
-      if ( p()->legendary.last_emperors_capacitor->ok() )
-        p()->buff.the_emperors_capacitor->trigger();
-      else if ( p()->talent.windwalker.last_emperors_capacitor->ok() )
+      if ( p()->legendary.last_emperors_capacitor->ok() || p()->talent.windwalker.last_emperors_capacitor->ok() )
         p()->buff.the_emperors_capacitor->trigger();
 
       // Chi Savings on Dodge & Parry & Miss
@@ -3169,9 +3167,7 @@ struct fists_of_fury_t : public monk_melee_attack_t
 
     // If Fists of Fury went the full duration
     if ( dot->current_tick == dot->num_ticks() ) {
-      if ( p()->legendary.xuens_battlegear->ok() )
-        p()->buff.pressure_point->trigger();
-      else if ( p()->talent.windwalker.xuens_battlegear->ok() )
+      if ( p()->legendary.xuens_battlegear->ok() || p()->talent.windwalker.xuens_battlegear->ok() )
         p()->buff.pressure_point->trigger();
     }
   }
@@ -5056,9 +5052,7 @@ struct xuen_spell_t : public monk_spell_t
 
     p()->buff.invoke_xuen->trigger();
 
-    if ( p()->legendary.invokers_delight->ok() )
-        p()->buff.invokers_delight->trigger();
-    else if ( p()->talent.windwalker.invokers_delight->ok() )
+    if ( p()->shared.invokers_delight && p()->shared.invokers_delight->ok() )
         p()->buff.invokers_delight->trigger();
   }
 };
@@ -5138,7 +5132,7 @@ struct niuzao_spell_t : public monk_spell_t
 
     p()->buff.invoke_niuzao->trigger();
 
-    if ( p()->legendary.invokers_delight->ok() )
+    if ( p()->shared.invokers_delight && p()->shared.invokers_delight->ok() )
       p()->buff.invokers_delight->trigger();
   }
 };
@@ -5169,11 +5163,8 @@ struct chiji_spell_t : public monk_spell_t
 
     p()->buff.invoke_chiji->trigger();
 
-    if ( p()->legendary.invokers_delight->ok() )
+    if ( p()->shared.invokers_delight && p()->shared.invokers_delight->ok() )
         p()->buff.invokers_delight->trigger();
-    else if ( p()->talent.mistweaver.invokers_delight->ok() )
-        p()->buff.invokers_delight->trigger();
-
   }
 };
 
@@ -5209,9 +5200,7 @@ struct yulon_spell_t : public monk_spell_t
 
     p()->pets.yulon.spawn( p()->spec.invoke_yulon->duration(), 1 );
 
-    if ( p()->legendary.invokers_delight->ok() )
-        p()->buff.invokers_delight->trigger();
-    else if ( p()->talent.mistweaver.invokers_delight->ok() )
+    if ( p()->shared.invokers_delight && p()->shared.invokers_delight->ok() )
         p()->buff.invokers_delight->trigger();
   }
 };
@@ -8523,6 +8512,10 @@ void monk_t::init_spells()
   shared.faeline_stomp = _valid( covenant.night_fae ) ? covenant.night_fae :
     _valid( talent.windwalker.faeline_stomp ) ? talent.windwalker.faeline_stomp :
     _valid( talent.mistweaver.faeline_stomp ) ? talent.mistweaver.faeline_stomp : spell_data_t::nil();
+
+  shared.invokers_delight = _valid( legendary.invokers_delight ) ? (const spell_data_t*)legendary.invokers_delight :
+    _valid( talent.windwalker.invokers_delight ) ? talent.windwalker.invokers_delight :
+    _valid( talent.mistweaver.invokers_delight ) ? talent.mistweaver.invokers_delight : spell_data_t::nil();
 
   shared.jade_ignition = _valid( legendary.jade_ignition ) ? (const spell_data_t*)legendary.jade_ignition :
     _valid( talent.windwalker.jade_ignition ) ? talent.windwalker.jade_ignition : spell_data_t::nil();
