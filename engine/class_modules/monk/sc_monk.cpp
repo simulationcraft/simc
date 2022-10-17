@@ -9296,19 +9296,42 @@ void monk_t::bonedust_brew_assessor(action_state_t* s)
         break; // Until whitelist is populated for 10.0 let spells that aren't blacklisted pass through 
     }
 
-    if (rng().roll(covenant.necrolord->proc_chance()))
+    double proc = 0;
+    double percent = 0;
+    if ( covenant.necrolord->ok() )
     {
-        double damage = s->result_amount * covenant.necrolord->effectN(1).percent();
+      proc = covenant.necrolord->proc_chance();
+      percent = covenant.necrolord->effectN( 1 ).percent();
+    }
+    else if ( talent.brewmaster.bonedust_brew->ok() )
+    {
+      proc    = talent.brewmaster.bonedust_brew->proc_chance();
+      percent = talent.brewmaster.bonedust_brew->effectN( 1 ).percent();
+    }
+    else if ( talent.mistweaver.bonedust_brew->ok() )
+    {
+      proc    = talent.mistweaver.bonedust_brew->proc_chance();
+      percent = talent.mistweaver.bonedust_brew->effectN( 1 ).percent();
+    }
+    else if ( talent.windwalker.bonedust_brew->ok() )
+    {
+      proc    = talent.windwalker.bonedust_brew->proc_chance();
+      percent = talent.windwalker.bonedust_brew->effectN( 1 ).percent();
+    }
 
-        // TODO: Attenuation
+    if ( rng().roll( proc ) )
+    {
+      double damage = s->result_amount * percent;
 
-        if (conduit.bone_marrow_hops->ok())
-            damage *= 1 + conduit.bone_marrow_hops.percent();
+      // TODO: Attenuation
 
-        active_actions.bonedust_brew_dmg->base_dd_min = damage;
-        active_actions.bonedust_brew_dmg->base_dd_max = damage;
-        active_actions.bonedust_brew_dmg->target = s->target;
-        active_actions.bonedust_brew_dmg->execute();
+      if (conduit.bone_marrow_hops->ok())
+        damage *= 1 + conduit.bone_marrow_hops.percent();
+
+      active_actions.bonedust_brew_dmg->base_dd_min = damage;
+      active_actions.bonedust_brew_dmg->base_dd_max = damage;
+      active_actions.bonedust_brew_dmg->target = s->target;
+      active_actions.bonedust_brew_dmg->execute();
     }
 }
 
