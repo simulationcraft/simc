@@ -2409,6 +2409,7 @@ struct hot_streak_spell_t : public fire_mage_spell_t
 
   void execute() override
   {
+    // TODO: instant non-HS flamestrike seems to actually trigger SKB combustion, pyroblast doesn't
     if ( time_to_execute > 0_ms && p()->buffs.sun_kings_blessing_ready->check() )
     {
       p()->buffs.sun_kings_blessing_ready->expire( p()->bugs ? 30_ms : 0_ms );
