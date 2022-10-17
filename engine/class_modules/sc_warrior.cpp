@@ -92,6 +92,7 @@ public:
   // Buffs
   struct buffs_t
   {
+    buff_t* ashen_juggernaut;
     buff_t* avatar;
     buff_t* ayalas_stone_heart;
     buff_t* bastion_of_might; // the mastery buff
@@ -121,6 +122,8 @@ public:
     buff_t* revenge;
     buff_t* shield_block;
     buff_t* shield_wall;
+    buff_t* slaughtering_strikes_rb;
+    buff_t* slaughtering_strikes_an;
     buff_t* spell_reflection;
     buff_t* sudden_death;
     buff_t* sweeping_strikes;
@@ -155,7 +158,7 @@ public:
     buff_t* conquerors_mastery;
     buff_t* elysian_might;
     // Conduits
-    buff_t* ashen_juggernaut;
+    buff_t* ashen_juggernaut_conduit;
     buff_t* merciless_bonegrinder;
     buff_t* harrowing_punishment;
     buff_t* veterans_repute;
@@ -478,7 +481,7 @@ public:
       player_talent_t unhinged;
       player_talent_t hurricane;
       player_talent_t merciless_bonegrinder;
-      player_talent_t juggernaught;
+      player_talent_t juggernaut;
 
     } arms;
 
@@ -583,7 +586,7 @@ public:
       player_talent_t unbreakable_will;
       player_talent_t impenetrable_wall;
       player_talent_t punish;
-      player_talent_t juggernaught;
+      player_talent_t juggernaut;
 
       player_talent_t focused_vigor;
       player_talent_t shield_specialization;
@@ -938,7 +941,8 @@ struct warrior_action_t : public Base
   {
     // mastery/buff damage increase.
     bool fury_mastery_direct, fury_mastery_dot, arms_mastery,
-    colossus_smash, impale, siegebreaker, ashen_juggernaut, recklessness;
+    colossus_smash, siegebreaker, ashen_juggernaut,
+    ashen_juggernaut_conduit, recklessness, slaughtering_strikes;
     // talents
     bool avatar, sweeping_strikes, booming_voice;
     // azerite
@@ -949,10 +953,11 @@ struct warrior_action_t : public Base
         fury_mastery_dot( false ),
         arms_mastery( false ),
         colossus_smash( false ),
-        impale( false ),
         siegebreaker( false ),
         ashen_juggernaut( false ),
+        ashen_juggernaut_conduit( false ),
         recklessness( false ),
+        slaughtering_strikes( false ),
         avatar( false ),
         sweeping_strikes( false ),
         booming_voice( false ),
@@ -1054,6 +1059,7 @@ public:
     ab::apply_affecting_aura( p()->talents.fury.critical_thinking );
     ab::apply_affecting_aura( p()->talents.fury.deft_experience );
     ab::apply_affecting_aura( p()->talents.fury.improved_bloodthirst );
+    ab::apply_affecting_aura( p()->talents.fury.raging_armaments );
     ab::apply_affecting_aura( p()->talents.fury.storm_of_steel );
     ab::apply_affecting_aura( p()->talents.fury.storm_of_swords ); // rage generation in spell
     ab::apply_affecting_aura( p()->talents.warrior.barbaric_training );
@@ -1067,7 +1073,9 @@ public:
 
 
 
-    affected_by.ashen_juggernaut    = ab::data().affected_by( p()->conduit.ashen_juggernaut->effectN( 1 ).trigger()->effectN( 1 ) );
+    affected_by.ashen_juggernaut_conduit = ab::data().affected_by( p()->conduit.ashen_juggernaut->effectN( 1 ).trigger()->effectN( 1 ) );
+    affected_by.slaughtering_strikes = ab::data().affected_by( p()->find_spell( 393931 )->effectN( 1 ) );
+    affected_by.ashen_juggernaut    = ab::data().affected_by( p()->talents.fury.ashen_juggernaut->effectN( 1 ).trigger()->effectN( 1 ) );
     affected_by.sweeping_strikes    = ab::data().affected_by( p()->talents.arms.sweeping_strikes->effectN( 1 ) );
     affected_by.fury_mastery_direct = ab::data().affected_by( p()->mastery.unshackled_fury->effectN( 1 ) );
     affected_by.fury_mastery_dot    = ab::data().affected_by( p()->mastery.unshackled_fury->effectN( 2 ) );
@@ -1077,7 +1085,7 @@ public:
     affected_by.siegebreaker        = ab::data().affected_by( p()->spell.siegebreaker_debuff->effectN( 1 ) );
     affected_by.avatar              = ab::data().affected_by( p()->talents.warrior.avatar->effectN( 1 ) );
     affected_by.recklessness        = ab::data().affected_by( p()->talents.fury.recklessness->effectN( 1 ) );
-    affected_by.impale              = ab::data().affected_by( p()->talents.arms.impale->effectN( 1 ) );
+    //affected_by.impale              = ab::data().affected_by( p()->talents.arms.impale->effectN( 1 ) );
 
     initialized = true;
   }
@@ -1181,8 +1189,13 @@ public:
 
     if( affected_by.ashen_juggernaut )
     {
-      c += p()->buff.ashen_juggernaut ->stack_value();
+      c += p()->buff.ashen_juggernaut->stack_value();
     }
+    if ( affected_by.ashen_juggernaut_conduit )
+    {
+      c += p()->buff.ashen_juggernaut_conduit->stack_value();
+    }
+
 
     if ( affected_by.recklessness && p()->buff.recklessness->up() )
     {
@@ -1216,6 +1229,16 @@ public:
     if ( affected_by.sweeping_strikes && s->chain_target > 0 )
     {
       dm *= p()->talents.arms.sweeping_strikes->effectN( 2 ).percent();
+    }
+
+    if ( affected_by.slaughtering_strikes && p()->buff.slaughtering_strikes_an->up() )
+    {
+      dm *= 1.0 + p()->buff.slaughtering_strikes_an->stack_value();
+    }
+
+    if ( affected_by.slaughtering_strikes && p()->buff.slaughtering_strikes_rb->up() )
+    {
+      dm *= 1.0 + p()->buff.slaughtering_strikes_rb->stack_value();
     }
 
     return dm;
@@ -3027,7 +3050,7 @@ struct execute_arms_t : public warrior_attack_t
     }
     if ( p()->conduit.ashen_juggernaut.ok() )
     {
-      p()->buff.ashen_juggernaut->trigger();
+      p()->buff.ashen_juggernaut_conduit->trigger();
     }
   }
 
@@ -3170,6 +3193,10 @@ struct fury_execute_parent_t : public warrior_attack_t
     }
 
     if ( p()->conduit.ashen_juggernaut.ok() )
+    {
+      p()->buff.ashen_juggernaut_conduit->trigger();
+    }
+    if ( p()->talents.fury.ashen_juggernaut->ok() )
     {
       p()->buff.ashen_juggernaut->trigger();
     }
@@ -3646,6 +3673,10 @@ struct raging_blow_t : public warrior_attack_t
     }
     p()->buff.meat_cleaver->decrement();
 
+    if ( p()->talents.fury.slaughtering_strikes->ok() )
+    {
+      p()->buff.slaughtering_strikes_rb->trigger();
+    }
     if ( p()->azerite.pulverizing_blows.ok() )
     {
       p()->buff.pulverizing_blows->trigger();
@@ -3791,6 +3822,10 @@ struct crushing_blow_t : public warrior_attack_t
     }
     p()->buff.meat_cleaver->decrement();
 
+    if ( p()->talents.fury.slaughtering_strikes->ok() )
+    {
+      p()->buff.slaughtering_strikes_rb->trigger();
+    }
     if ( p()->azerite.pulverizing_blows.ok() )
     {
       p()->buff.pulverizing_blows->trigger();
@@ -4287,7 +4322,8 @@ struct rampage_event_t : public event_t
       warrior->rampage_driver = nullptr;
       warrior->buff.meat_cleaver->decrement();
       warrior->buff.pulverizing_blows->expire();
-
+      warrior->buff.slaughtering_strikes_rb->expire();
+      warrior->buff.slaughtering_strikes_an->expire();
     }
   }
 };
@@ -4296,14 +4332,14 @@ struct rampage_parent_t : public warrior_attack_t
 {
   double cost_rage;
   double deathmaker_chance;
-  double unbridled_chance;  // unbridled ferocity azerite trait
+  double unbridled_chance;
   double frothing_berserker_chance;
   double hack_and_slash_chance;
   double rage_from_frothing_berserker;
   rampage_parent_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "rampage", p, p->talents.fury.rampage ),
     deathmaker_chance( p->legendary.deathmaker->proc_chance() ),
-    unbridled_chance( p->find_spell( 288060 )->proc_chance() ),
+    unbridled_chance( p->talents.fury.unbridled_ferocity->effectN( 1 ).base_value() / 100.0 ),
     frothing_berserker_chance( p->talents.warrior.frothing_berserker->proc_chance() ),
     hack_and_slash_chance( p->conduit.hack_and_slash.percent() / 10.0 ),
     rage_from_frothing_berserker( p->talents.warrior.frothing_berserker->effectN( 1 ).base_value() / 100.0 )
@@ -4334,15 +4370,29 @@ struct rampage_parent_t : public warrior_attack_t
     {
       p()->buff.frenzy->trigger();
     }
-    if ( p()->azerite.unbridled_ferocity.ok() && rng().roll( unbridled_chance ) )
+    if ( p()->talents.fury.unbridled_ferocity.ok() && rng().roll( unbridled_chance ) )
     {
       if ( p()->buff.recklessness->check() )
       {
-        p()->buff.recklessness->extend_duration( p(), timespan_t::from_seconds( 4 ) );
+        p()->buff.recklessness->extend_duration( p(), timespan_t::from_millis( 
+          p()->talents.fury.unbridled_ferocity->effectN( 2 ).base_value() ) );
+
+        if ( p()->talents.fury.reckless_abandon->ok() )
+        {
+          p()->buff.reckless_abandon->extend_duration( p(), timespan_t::from_millis( 
+            p()->talents.fury.unbridled_ferocity->effectN( 2 ).base_value() ) );
+        }
       }
       else
       {
-      p()->buff.recklessness->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, timespan_t::from_seconds( 4 ) );
+        p()->buff.recklessness->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0,
+            timespan_t::from_millis( p()->talents.fury.unbridled_ferocity->effectN( 2 ).base_value() ) );
+
+        if ( p()->talents.fury.reckless_abandon->ok() )
+        {
+          p()->buff.reckless_abandon->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0,
+            timespan_t::from_millis( p()->talents.fury.unbridled_ferocity->effectN( 2 ).base_value() ) );
+        }
       }
     }
     if ( p()->legendary.deathmaker->ok() && ( result_is_hit( execute_state->result ) ) && rng().roll( deathmaker_chance ) )
@@ -5572,7 +5622,7 @@ struct condemn_arms_t : public warrior_attack_t
     }
     if ( p()->conduit.ashen_juggernaut.ok() )
     {
-      p()->buff.ashen_juggernaut->trigger();
+      p()->buff.ashen_juggernaut_conduit->trigger();
     }
     if ( p()->legendary.sinful_surge->ok() && td( execute_state->target )->debuffs_colossus_smash->check() )
     {
@@ -5747,6 +5797,10 @@ struct fury_condemn_parent_t : public warrior_attack_t
 
     if ( p()->conduit.ashen_juggernaut.ok() )
     {
+      p()->buff.ashen_juggernaut_conduit->trigger();
+    }
+    if ( p()->talents.fury.ashen_juggernaut->ok() )
+    {
       p()->buff.ashen_juggernaut->trigger();
     }
 
@@ -5917,7 +5971,7 @@ struct avatar_t : public warrior_spell_t
 
     else
     {
-      p()->buff.avatar->trigger();
+      p()->buff.avatar->extend_duration_or_trigger();
 
       if ( p()->legendary.signet_of_tormented_kings.ok() && p()->talents.fury.ravager->ok() )
       {
@@ -6262,7 +6316,7 @@ struct recklessness_t : public warrior_spell_t
     }
     else
     {
-      p()->buff.recklessness->trigger();
+      p()->buff.recklessness->extend_duration_or_trigger();
 
       if ( p()->legendary.signet_of_tormented_kings.ok() )
       {
@@ -6277,7 +6331,7 @@ struct recklessness_t : public warrior_spell_t
     }
     if ( p()->talents.fury.reckless_abandon->ok() )
     {
-      p()->buff.reckless_abandon->trigger();
+      p()->buff.reckless_abandon->extend_duration_or_trigger();
     }
   }
 
@@ -6841,7 +6895,7 @@ void warrior_t::init_spells()
   talents.arms.unhinged                            = find_talent_spell( talent_tree::SPECIALIZATION, "Unhinged" );
   talents.arms.hurricane                           = find_talent_spell( talent_tree::SPECIALIZATION, "Hurricane", WARRIOR_ARMS );
   talents.arms.merciless_bonegrinder               = find_talent_spell( talent_tree::SPECIALIZATION, "Merciless Bonegrinder" );
-  talents.arms.juggernaught                        = find_talent_spell( talent_tree::SPECIALIZATION, "Juggernaught", WARRIOR_ARMS );
+  talents.arms.juggernaut                          = find_talent_spell( talent_tree::SPECIALIZATION, "Juggernaut", WARRIOR_ARMS );
 
   // Fury Talents
   talents.fury.bloodthirst          = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodthirst" );
@@ -6869,7 +6923,7 @@ void warrior_t::init_spells()
   talents.fury.frenzy               = find_talent_spell( talent_tree::SPECIALIZATION, "Frenzy" );
   talents.fury.hack_and_slash       = find_talent_spell( talent_tree::SPECIALIZATION, "Hack and Slash" );
   talents.fury.slaughtering_strikes = find_talent_spell( talent_tree::SPECIALIZATION, "Slaughtering Strikes" );
-  talents.fury.ashen_juggernaut     = find_talent_spell( talent_tree::SPECIALIZATION, "Ashen Juggernaught" );
+  talents.fury.ashen_juggernaut     = find_talent_spell( talent_tree::SPECIALIZATION, "Ashen Juggernaut" );
   talents.fury.improved_whirlwind   = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Whirlwind" );
   talents.fury.wrath_and_fury       = find_talent_spell( talent_tree::SPECIALIZATION, "Wrath and Fury" );
 
@@ -6940,7 +6994,7 @@ void warrior_t::init_spells()
   talents.protection.unbreakable_will       = find_talent_spell( talent_tree::SPECIALIZATION, "Unbreakable Will" );
   talents.protection.impenetrable_wall      = find_talent_spell( talent_tree::SPECIALIZATION, "Impenetrable Wall" );
   talents.protection.punish                 = find_talent_spell( talent_tree::SPECIALIZATION, "Punish" );
-  talents.protection.juggernaught           = find_talent_spell( talent_tree::SPECIALIZATION, "Juggernaught", WARRIOR_PROTECTION );
+  talents.protection.juggernaut             = find_talent_spell( talent_tree::SPECIALIZATION, "Juggernaut", WARRIOR_PROTECTION );
 
   talents.protection.focused_vigor          = find_talent_spell( talent_tree::SPECIALIZATION, "Focused Vigor" );
   talents.protection.shield_specialization  = find_talent_spell( talent_tree::SPECIALIZATION, "Shield Specialization" );
@@ -7929,6 +7983,9 @@ void warrior_t::create_buffs()
 
   using namespace buffs;
 
+  buff.ashen_juggernaut = make_buff( this, "ashen_juggernaut", find_spell( 392537 ) )
+      ->set_default_value( find_spell( 392537 )->effectN( 1 ).percent() );
+
   buff.revenge =
       make_buff( this, "revenge", find_spell( 5302 ) )
       ->set_default_value( find_spell( 5302 )->effectN( 1 ).percent() )
@@ -8016,7 +8073,7 @@ void warrior_t::create_buffs()
 
   buff.recklessness = make_buff( this, "recklessness", talents.fury.recklessness )
     ->set_chance(1)
-    ->set_duration( talents.fury.recklessness->duration() )
+    ->set_duration( talents.fury.recklessness->duration() + talents.fury.depths_of_insanity->effectN( 1 ).time_value() )
     ->apply_affecting_conduit( conduit.depths_of_insanity )
     //->add_invalidate( CACHE_CRIT_CHANCE ) removed in favor of composite_crit_chance (line 1015)
     ->set_cooldown( timespan_t::zero() )
@@ -8035,6 +8092,12 @@ void warrior_t::create_buffs()
   buff.shield_wall = make_buff( this, "shield_wall", talents.protection.shield_wall )
     ->set_default_value( talents.protection.shield_wall->effectN( 1 ).percent() )
     ->set_cooldown( timespan_t::zero() );
+
+  buff.slaughtering_strikes_rb = make_buff( this, "slaughtering_strikes", find_spell( 393931 ) )
+    ->set_default_value( find_spell( 393931 )->effectN( 1 ).percent() );
+
+  buff.slaughtering_strikes_an = make_buff( this, "slaughtering_strikes", find_spell( 393943 ) )
+    ->set_default_value( find_spell( 393943 )->effectN( 1 ).percent() );
 
   //buff.vengeance_ignore_pain = make_buff( this, "vengeance_ignore_pain", find_spell( 202574 ) )
     //->set_chance( talents.vengeance->ok() )
@@ -8142,7 +8205,7 @@ void warrior_t::create_buffs()
 
   // Conduits===============================================================================================================
 
-  buff.ashen_juggernaut = make_buff( this, "ashen_juggernaut", conduit.ashen_juggernaut->effectN( 1 ).trigger() )
+  buff.ashen_juggernaut_conduit = make_buff( this, "ashen_juggernaut_conduit", conduit.ashen_juggernaut->effectN( 1 ).trigger() )
                            ->set_default_value( ( (player_t*)this )->covenant->id() == (unsigned int)covenant_e::VENTHYR
                              ? conduit.ashen_juggernaut.percent() * (1 + covenant.condemn_driver ->effectN( 7 ).percent())
                              :  conduit.ashen_juggernaut.percent());
