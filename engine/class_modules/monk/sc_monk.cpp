@@ -888,6 +888,7 @@ public:
     if ( s->action->id == 388867 || // Exploding Keg Proc
          s->action->id == 124255 || // Stagger
          s->action->id == 123725 || // Breath of Fire dot
+         s->action->id == 196608 || // Eye of the Tiger
          s->action->id == 196733 || // Special Delivery
          s->action->id == 325217 || // Bonedust Brew
          s->action->id == 338141 || // Charred Passion
