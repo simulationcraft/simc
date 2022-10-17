@@ -8039,7 +8039,7 @@ void monk_t::init_spells()
       talent.brewmaster.attenuation                         = _ST( "Attenuation" );
       talent.brewmaster.stormstouts_last_keg                = _ST( "Stormstout's Last Keg" );
       talent.brewmaster.call_to_arms                        = _ST( "Call to Arms" );
-      talent.brewmaster.chi_surge                           = _ST( "Chi Surge" ); // TODOL Doesn't pull the spell for some reason
+      talent.brewmaster.chi_surge                           = _ST( "Chi Surge" );
   }
 
   // ========
