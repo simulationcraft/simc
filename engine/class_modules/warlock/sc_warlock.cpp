@@ -713,6 +713,59 @@ struct grimoire_of_sacrifice_t : public warlock_spell_t
   }
 };
 
+struct summon_soulkeeper_t : public warlock_spell_t
+{
+  struct soul_combustion_t : public warlock_spell_t
+  {
+    soul_combustion_t( warlock_t* p ) : warlock_spell_t( "soul_combustion", p, p->talents.soul_combustion )
+    {
+      background = dual = true;
+      aoe = -1;
+    }
+  };
+
+  summon_soulkeeper_t( warlock_t* p, util::string_view options_str )
+    : warlock_spell_t( "summon_soulkeeper", p, p->talents.summon_soulkeeper_aoe )
+  {
+    parse_options( options_str );
+    harmful = true;
+    dot_duration = 0_ms;
+
+    if ( !p->proc_actions.soul_combustion )
+    {
+      p->proc_actions.soul_combustion = new soul_combustion_t( p );
+      p->proc_actions.soul_combustion->stats = stats;
+    }
+  }
+
+  bool ready() override
+  {
+    if ( !p()->buffs.tormented_soul->check() )
+      return false;
+
+    return warlock_spell_t::ready();
+  }
+
+  void execute() override
+  {
+    // TODO: Cancel existing ground event if cast while one is already active
+
+    warlock_spell_t::execute();
+
+    make_event<ground_aoe_event_t>( *sim, p(),
+                                ground_aoe_params_t()
+                                    .target( execute_state->target )
+                                    .x( execute_state->target->x_position )
+                                    .y( execute_state->target->y_position )
+                                    .pulse_time( base_tick_time )
+                                    .duration( 1_s + 1_s * p()->buffs.tormented_soul->stack() )
+                                    .start_time( sim->current_time() )
+                                    .action( p()->proc_actions.soul_combustion ) );
+
+    p()->buffs.tormented_soul->expire();
+  }
+};
+
 //Catchall action to trigger pet interrupt abilities via main APL.
 //Using this should ensure that interrupt callback effects (Sephuz etc) proc correctly for the warlock.
 struct interrupt_t : public spell_t
@@ -930,6 +983,13 @@ void warlock_td_t::target_demise()
     warlock.sim->print_log( "Player {} demised. Warlock {} triggers Soul Flame on all targets in range.", target->name(), warlock.name() );
 
     warlock.proc_actions.soul_flame_proc->execute();
+  }
+
+  if ( warlock.talents.summon_soulkeeper.ok() )
+  {
+    warlock.sim->print_log( "Player {} demised. Warlock gains 1 stack of Tormented Soul.", target->name(), warlock.name() );
+
+    warlock.buffs.tormented_soul->trigger();
   }
 }
 
@@ -1270,6 +1330,8 @@ action_t* warlock_t::create_action_warlock( util::string_view action_name, util:
     return new interrupt_t( action_name, this, options_str );
   if ( action_name == "seed_of_corruption" )
     return new seed_of_corruption_t( this, options_str );
+  if ( action_name == "summon_soulkeeper" )
+    return new summon_soulkeeper_t( this, options_str );
 
   return nullptr;
 }
@@ -1378,6 +1440,15 @@ void warlock_t::create_buffs()
   buffs.dark_harvest_crit = make_buff( this, "dark_harvest_crit", talents.dark_harvest_buff )
                                 ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
                                 ->set_default_value( talents.dark_harvest_buff->effectN( 2 ).percent() );
+
+  buffs.tormented_soul = make_buff( this, "tormented_soul", talents.tormented_soul_buff );
+
+  buffs.tormented_soul_generator = make_buff( this, "tormented_soul_generator" )
+                                       ->set_period( talents.summon_soulkeeper->effectN( 2 ).period() )
+                                       ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED )
+                                       ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
+                                           buffs.tormented_soul->increment();
+                                         } );;
 }
 
 void warlock_t::init_spells()
@@ -1450,6 +1521,11 @@ void warlock_t::init_spells()
   talents.soul_conduit = find_talent_spell( talent_tree::CLASS, "Soul Conduit" ); // Should be ID 215941
 
   talents.grim_feast = find_talent_spell( talent_tree::CLASS, "Grim Feast" ); // Should be ID 386689
+
+  talents.summon_soulkeeper = find_talent_spell( talent_tree::CLASS, "Summon Soulkeeper" ); // Should be ID 386244
+  talents.summon_soulkeeper_aoe = find_spell( 386256 );
+  talents.tormented_soul_buff = find_spell( 386251 );
+  talents.soul_combustion = find_spell( 386265 );
 
   // Legendaries
   legendary.claw_of_endereth                     = find_runeforge_legendary( "Claw of Endereth" );
@@ -1648,6 +1724,9 @@ void warlock_t::init_special_effects()
 void warlock_t::combat_begin()
 {
   player_t::combat_begin();
+
+  if ( talents.summon_soulkeeper.ok() )
+    buffs.tormented_soul_generator->trigger();
 
   if ( specialization() == WARLOCK_DEMONOLOGY && buffs.inner_demons && talents.inner_demons->ok() )
     buffs.inner_demons->trigger();
