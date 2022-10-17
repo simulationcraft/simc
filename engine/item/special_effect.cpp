@@ -1262,9 +1262,9 @@ int special_effect_t::cooldown_group() const
   }
 
   // New-style On-Use item spells may use a special cooldown category to signal the shared cooldown
-  if ( driver()->category() == ITEM_TRINKET_BURST_CATEGORY )
+  if ( driver()->category() )
   {
-    return ITEM_TRINKET_BURST_CATEGORY;
+    return driver()->category();
   }
 
   // For everything else, look at the item effects for a cooldown group
@@ -1296,7 +1296,7 @@ timespan_t special_effect_t::cooldown_group_duration() const
 
   // New-style On-Use items when using a special cooldown category signal the shared cooldown
   // duration in the spell itself
-  if ( driver()->category() == ITEM_TRINKET_BURST_CATEGORY )
+  if ( driver()->category() )
   {
     return driver()->category_cooldown();
   }
