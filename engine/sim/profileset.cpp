@@ -36,7 +36,9 @@ bool overridable_option( const option_tuple_t& tuple )
   return tuple.value.rfind( '=' ) == std::string::npos &&
          tuple.name.rfind( "actions", 0 ) == std::string::npos &&
          tuple.name.rfind( "items", 0 ) == std::string::npos &&
-         tuple.name.rfind( "raid_events", 0 ) == std::string::npos;
+         tuple.name.rfind( "raid_events", 0 ) == std::string::npos &&
+         tuple.name.rfind( "class_talents", 0 ) == std::string::npos &&
+         tuple.name.rfind( "spec_talents", 0 ) == std::string::npos;
 }
 
 std::string format_time( double seconds, bool milliseconds = true )

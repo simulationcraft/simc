@@ -395,10 +395,9 @@ public:
     if ( p()->cooldown.black_ox_brew->down() )
       p()->cooldown.black_ox_brew->adjust( timespan_t::from_seconds( time_reduction ), true );
 
-    if ( p()->covenant.necrolord->ok() && p()->cooldown.bonedust_brew->down() )
+    if ( p()->shared.bonedust_brew && p()->shared.bonedust_brew->ok() && p()->cooldown.bonedust_brew->down() )
       p()->cooldown.bonedust_brew->adjust( timespan_t::from_seconds( time_reduction ), true );
-    else if ( p()->talent.brewmaster.bonedust_brew->ok() && p()->cooldown.bonedust_brew->down() )
-      p()->cooldown.bonedust_brew->adjust( timespan_t::from_seconds( time_reduction ), true );
+
   }
 
  bonedust_brew_zone_results_e bonedust_brew_zone()
@@ -707,9 +706,7 @@ public:
             }
         }
 
-      if ( p()->legendary.last_emperors_capacitor->ok() )
-        p()->buff.the_emperors_capacitor->trigger();
-      else if ( p()->talent.windwalker.last_emperors_capacitor->ok() )
+      if ( p()->legendary.last_emperors_capacitor->ok() || p()->talent.windwalker.last_emperors_capacitor->ok() )
         p()->buff.the_emperors_capacitor->trigger();
 
       // Chi Savings on Dodge & Parry & Miss
@@ -755,10 +752,8 @@ public:
       {
         double reset_value = p()->buff.faeline_stomp->value();
 
-        if ( p()->legendary.faeline_harmony->ok() )
-          reset_value *= 1 + p()->legendary.faeline_harmony->effectN( 2 ).percent();
-        else if ( p()->talent.windwalker.faeline_harmony->ok() )
-          reset_value *= 1 + p()->talent.windwalker.faeline_harmony->effectN( 2 ).percent();
+        if ( p()->shared.faeline_harmony && p()->shared.faeline_harmony->ok() )
+          reset_value *= 1 + p()->shared.faeline_harmony->effectN( 2 ).percent();
 
         if ( p()->rng().roll( reset_value ) )
         {
@@ -795,10 +790,10 @@ public:
       }
     }
 
-    if ( p()->legendary.bountiful_brew->ok() && trigger_bountiful_brew && p()->cooldown.bountiful_brew->up() &&
+    if ( p()->shared.bountiful_brew && p()->shared.bountiful_brew->ok() && trigger_bountiful_brew && p()->cooldown.bountiful_brew->up() &&
          p()->rppm.bountiful_brew->trigger() )
     {
-      p()->cooldown.bountiful_brew->start( p()->legendary.bountiful_brew->internal_cooldown() );
+      p()->cooldown.bountiful_brew->start( p()->shared.bountiful_brew->internal_cooldown() );
 
       p()->active_actions.bountiful_brew->execute();
       p()->proc.bountiful_brew_proc->occur();
@@ -1603,7 +1598,6 @@ struct tiger_palm_t : public monk_melee_attack_t
 {
   heal_t* eye_of_the_tiger_heal;
   spell_t* eye_of_the_tiger_damage;
-  bool shaohoas_might;
   bool face_palm;
   bool power_strikes;
 
@@ -1611,7 +1605,6 @@ struct tiger_palm_t : public monk_melee_attack_t
     : monk_melee_attack_t( "tiger_palm", p, p->spec.tiger_palm ),
       eye_of_the_tiger_heal( new eye_of_the_tiger_heal_tick_t( *p, "eye_of_the_tiger_heal" ) ),
       eye_of_the_tiger_damage( new eye_of_the_tiger_dmg_tick_t( p, "eye_of_the_tiger_damage" ) ),
-      shaohoas_might( false ),
       face_palm( false ),
       power_strikes( false )
   {
@@ -1635,10 +1628,8 @@ struct tiger_palm_t : public monk_melee_attack_t
 
     spell_power_mod.direct = 0.0;
 
-    if ( p->legendary.keefers_skyreach->ok() )
-      range += p->legendary.keefers_skyreach->effectN( 1 ).base_value();
-    else if ( p->talent.windwalker.skyreach && p->talent.windwalker.skyreach->ok() )
-      range += p->talent.windwalker.skyreach->effectN( 1 ).base_value();
+    if ( p->shared.skyreach && p->shared.skyreach->ok() )
+      range += p->shared.skyreach->effectN( 1 ).base_value();
   }
 
   double action_multiplier() const override
@@ -1650,10 +1641,8 @@ struct tiger_palm_t : public monk_melee_attack_t
       if ( p()->buff.blackout_combo->check() )
         am *= 1 + p()->buff.blackout_combo->data().effectN( 1 ).percent();
 
-      if ( shaohoas_might )
-        am *= 1 + p()->passives.shaohaos_might->effectN( 2 ).percent();
-      else if ( face_palm )
-        am *= 1 + p()->passives.face_palm->effectN( 1 ).percent();
+      if ( face_palm )
+        am *= 1 + p()->shared.face_palm->effectN( 2 ).percent();
 
       if ( p()->buff.counterstrike->check() )
         am *= 1 + p()->buff.counterstrike->data().effectN( 1 ).percent();
@@ -1678,9 +1667,7 @@ struct tiger_palm_t : public monk_melee_attack_t
 
     if ( p()->specialization() == MONK_BREWMASTER )
     {
-      if ( p()->legendary.shaohaos_might->ok() && rng().roll( p()->legendary.shaohaos_might->effectN( 1 ).percent() ) )
-        shaohoas_might = true;
-      else if ( p()->talent.brewmaster.face_palm->ok() && rng().roll( p()->talent.brewmaster.face_palm->effectN( 1 ).percent() ) )
+      if ( p()->shared.face_palm && p()->shared.face_palm->ok() && rng().roll( p()->shared.face_palm->effectN( 1 ).percent() ) )
       {
         face_palm = true;
         p()->proc.face_palm->occur();
@@ -1769,17 +1756,14 @@ struct tiger_palm_t : public monk_melee_attack_t
           p()->buff.counterstrike->expire();
         }
 
-        if ( shaohoas_might )
-          brew_cooldown_reduction( p()->passives.shaohaos_might->effectN( 3 ).base_value() );
-        else if ( face_palm )
-          brew_cooldown_reduction( p()->passives.face_palm->effectN( 2 ).base_value() );
+      if ( face_palm )
+          brew_cooldown_reduction( p()->shared.face_palm->effectN( 3 ).base_value() );
         break;
       }
       default:
         break;
     }
 
-    shaohoas_might = false;
     face_palm      = false;
     power_strikes  = false;
   }
@@ -1798,10 +1782,8 @@ struct tiger_palm_t : public monk_melee_attack_t
       // Bonedust Brew
       if ( get_td( s->target )->debuff.bonedust_brew->up() )
       {
-        if ( p()->covenant.necrolord->ok() )
-          brew_cooldown_reduction( p()->covenant.necrolord->effectN( 3 ).base_value() );
-        else if ( p()->talent.brewmaster.bonedust_brew->ok() )
-          brew_cooldown_reduction( p()->talent.brewmaster.bonedust_brew->effectN( 3 ).base_value() );
+        if ( p()->shared.bonedust_brew && p()->shared.bonedust_brew->ok() )
+          brew_cooldown_reduction( p()->shared.bonedust_brew->effectN( 3 ).base_value() );
       }
 
       if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T29, B2 ) && p()->cooldown.brewmasters_rhythm->up() ) {
@@ -2410,7 +2392,7 @@ struct blackout_kick_t : public monk_melee_attack_t
           timespan_t cd_reduction = -1 * p()->spec.blackout_kick->effectN( 3 ).time_value();
           if ( p()->buff.weapons_of_order->up() )
           {
-            cd_reduction += ( -1 * p()->covenant.kyrian->effectN( 8 ).time_value() );
+            cd_reduction += ( -1 * p()->shared.weapons_of_order->effectN( 8 ).time_value() );
             if ( p()->buff.serenity->up() )
               p()->proc.blackout_kick_cdr_serenity_with_woo->occur();
             else
@@ -3070,9 +3052,7 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::impact( s );
 
-    if ( p()->legendary.jade_ignition->ok() )
-      p()->buff.chi_energy->trigger();
-    else if ( p()->talent.windwalker.jade_ignition->ok() )
+    if ( p()->shared.jade_ignition && p()->shared.jade_ignition->ok() )
       p()->buff.chi_energy->trigger();
 
     if ( p()->talent.windwalker.open_palm_strikes.ok() && rng().roll( p()->talent.windwalker.open_palm_strikes->effectN( 2 ).percent() ) )
@@ -3178,9 +3158,7 @@ struct fists_of_fury_t : public monk_melee_attack_t
 
     // If Fists of Fury went the full duration
     if ( dot->current_tick == dot->num_ticks() ) {
-      if ( p()->legendary.xuens_battlegear->ok() )
-        p()->buff.pressure_point->trigger();
-      else if ( p()->talent.windwalker.xuens_battlegear->ok() )
+      if ( p()->legendary.xuens_battlegear->ok() || p()->talent.windwalker.xuens_battlegear->ok() )
         p()->buff.pressure_point->trigger();
     }
   }
@@ -3664,10 +3642,11 @@ struct keg_smash_t : public monk_melee_attack_t
       get_td( s->target )->debuff.weapons_of_order->trigger();
 
     // Bonedust Brew
-    if ( p()->covenant.necrolord->ok() )
-      brew_cooldown_reduction( p()->covenant.necrolord->effectN( 3 ).base_value() );
-    else if ( p()->talent.brewmaster.bonedust_brew->ok() )
-      brew_cooldown_reduction( p()->talent.brewmaster.bonedust_brew->effectN( 3 ).base_value() );
+    if ( get_td( s->target )->debuff.bonedust_brew->up() )
+    {
+      if ( p()->shared.bonedust_brew && p()->shared.bonedust_brew->ok() )
+        brew_cooldown_reduction( p()->shared.bonedust_brew->effectN( 3 ).base_value() );
+    }
   }
 };
 
@@ -5064,9 +5043,7 @@ struct xuen_spell_t : public monk_spell_t
 
     p()->buff.invoke_xuen->trigger();
 
-    if ( p()->legendary.invokers_delight->ok() )
-        p()->buff.invokers_delight->trigger();
-    else if ( p()->talent.windwalker.invokers_delight->ok() )
+    if ( p()->shared.invokers_delight && p()->shared.invokers_delight->ok() )
         p()->buff.invokers_delight->trigger();
   }
 };
@@ -5115,7 +5092,7 @@ struct call_to_arms_empowered_tiger_lightning_t : public monk_spell_t
 
   bool ready() override
   {
-    return p()->legendary.call_to_arms->ok() && p()->talent.windwalker.empowered_tiger_lightning->ok();
+    return p()->shared.call_to_arms->ok() && p()->talent.windwalker.empowered_tiger_lightning->ok();
   }
 };
 
@@ -5146,7 +5123,7 @@ struct niuzao_spell_t : public monk_spell_t
 
     p()->buff.invoke_niuzao->trigger();
 
-    if ( p()->legendary.invokers_delight->ok() )
+    if ( p()->shared.invokers_delight && p()->shared.invokers_delight->ok() )
       p()->buff.invokers_delight->trigger();
   }
 };
@@ -5177,11 +5154,8 @@ struct chiji_spell_t : public monk_spell_t
 
     p()->buff.invoke_chiji->trigger();
 
-    if ( p()->legendary.invokers_delight->ok() )
+    if ( p()->shared.invokers_delight && p()->shared.invokers_delight->ok() )
         p()->buff.invokers_delight->trigger();
-    else if ( p()->talent.mistweaver.invokers_delight->ok() )
-        p()->buff.invokers_delight->trigger();
-
   }
 };
 
@@ -5217,9 +5191,7 @@ struct yulon_spell_t : public monk_spell_t
 
     p()->pets.yulon.spawn( p()->spec.invoke_yulon->duration(), 1 );
 
-    if ( p()->legendary.invokers_delight->ok() )
-        p()->buff.invokers_delight->trigger();
-    else if ( p()->talent.mistweaver.invokers_delight->ok() )
+    if ( p()->shared.invokers_delight && p()->shared.invokers_delight->ok() )
         p()->buff.invokers_delight->trigger();
   }
 };
@@ -5249,14 +5221,58 @@ struct summon_white_tiger_statue_spell_t : public monk_spell_t
 };
 
 // ==========================================================================
+// Chi Surge
+// ==========================================================================
+
+struct chi_surge_t : public monk_spell_t
+{
+  chi_surge_t( monk_t& p ) : monk_spell_t( "chi_surge", &p, p.talent.brewmaster.chi_surge->effectN( 1 ).trigger() )
+  {
+    harmful           = true;
+    dual = background = true;
+    aoe               = -1;
+    school            = SCHOOL_NATURE;
+
+    spell_power_mod.tick =
+      data().effectN( 2 ).base_value() / 100; // Saved as 45
+  }
+
+  double composite_spell_power() const override
+  {
+    return std::max( monk_spell_t::composite_spell_power(), monk_spell_t::composite_attack_power() );
+  }
+
+  double composite_persistent_multiplier( const action_state_t* s ) const override
+  {
+    return monk_spell_t::composite_persistent_multiplier( s ) / s->n_targets;
+  }
+
+  void execute() override
+  {
+    monk_spell_t::execute();
+
+    int targets_hit = std::min( 5U, execute_state->n_targets );
+
+    if ( targets_hit > 0 )
+    {
+      double cdr = p()->talent.brewmaster.chi_surge->effectN( 1 ).base_value(); // Saved as 4
+      p()->cooldown.weapons_of_order->adjust( timespan_t::from_seconds( -1 * cdr * targets_hit ) );
+      p()->proc.chi_surge->occur();
+    }
+  }
+};
+
+// ==========================================================================
 // Weapons of Order - Kyrian Covenant Ability
 // ==========================================================================
 
 struct weapons_of_order_t : public monk_spell_t
 {
+  chi_surge_t* chi_surge;
+
   weapons_of_order_t( monk_t& p, util::string_view options_str )
-    : monk_spell_t( "weapons_of_order", &p, p.covenant.kyrian->ok() ? p.covenant.kyrian :
-                                            (p.talent.brewmaster.weapons_of_order && p.talent.brewmaster.weapons_of_order->ok() ? p.talent.brewmaster.weapons_of_order : spell_data_t::nil() ) )
+    : monk_spell_t( "weapons_of_order", &p, p.shared.weapons_of_order && p.shared.weapons_of_order->ok() ? p.shared.weapons_of_order : spell_data_t::nil() ),
+      chi_surge( new chi_surge_t( p ) )
   {
     parse_options( options_str );
     may_combo_strike            = true;
@@ -5264,18 +5280,29 @@ struct weapons_of_order_t : public monk_spell_t
     base_dd_min                 = 0;
     base_dd_max                 = 0;
     cast_during_sck             = true;
+
+    add_child( chi_surge );
   }
 
   void execute() override
   {
     p()->buff.weapons_of_order->trigger();
 
-    if ( p()->specialization() == MONK_BREWMASTER )
-      p()->cooldown.keg_smash->reset( true, 1 );
-
     monk_spell_t::execute();
 
-    if ( p()->legendary.call_to_arms->ok() )
+    if ( p()->specialization() == MONK_BREWMASTER )
+    {
+      p()->cooldown.keg_smash->reset( true, 1 );
+
+      // TODO: Does this stack with Effusive Anima Accelerator?
+      if ( p()->talent.brewmaster.chi_surge->ok() )
+      {
+        chi_surge->set_target( target );
+        chi_surge->execute();
+      }
+    }
+
+    if ( p()->shared.call_to_arms && p()->shared.call_to_arms->ok() )
     {
       switch ( p()->specialization() )
       {
@@ -5311,12 +5338,8 @@ struct bountiful_brew_t : public monk_spell_t
 {
   buff_t* lead_by_example;
 
-  bountiful_brew_t( monk_t& p ) : monk_spell_t( "bountiful_brew", &p,
-    ( p.legendary.bountiful_brew->ok() ? p.legendary.bountiful_brew :
-          ( p.talent.brewmaster.bountiful_brew && p.talent.brewmaster.bountiful_brew->ok() ? p.talent.brewmaster.bountiful_brew :
-              ( p.talent.mistweaver.bountiful_brew && p.talent.mistweaver.bountiful_brew->ok() ? p.talent.mistweaver.bountiful_brew
-                                                                               : nullptr ) ) ) )
-      // TODO: convert nullptr to spell_data_t::nil() once legendary bountiful brew is removed
+  bountiful_brew_t( monk_t& p )
+    : monk_spell_t( "bountiful_brew", &p, p.shared.bountiful_brew && p.shared.bountiful_brew->ok() ? p.shared.bountiful_brew : spell_data_t::nil() )
   {
     harmful            = false;
     cooldown->duration = timespan_t::zero();
@@ -5349,55 +5372,28 @@ struct bountiful_brew_t : public monk_spell_t
       p()->buff.bonedust_brew_attenuation_hidden->trigger();
     else
       p()->buff.bonedust_brew_grounding_breath_hidden->trigger();
+
     monk_spell_t::execute();
 
-    if ( p()->legendary.bountiful_brew->ok() )
-        p()->buff.bonedust_brew->extend_duration_or_trigger( p()->legendary.bountiful_brew->effectN( 1 ).time_value() );
-    else if ( p()->talent.brewmaster.bountiful_brew->ok() )
-        p()->buff.bonedust_brew->extend_duration_or_trigger( p()->talent.brewmaster.bountiful_brew->effectN( 1 ).time_value() );
-    else if ( p()->talent.mistweaver.bountiful_brew->ok() )
-        p()->buff.bonedust_brew->extend_duration_or_trigger( p()->talent.mistweaver.bountiful_brew->effectN( 1 ).time_value() );
+    p()->buff.bonedust_brew->extend_duration_or_trigger( data().effectN( 1 ).time_value() );
 
     // Force trigger Lead by Example Buff
     if ( lead_by_example )
-    {
-        if ( p()->legendary.bountiful_brew->ok() )
-            lead_by_example->trigger( p()->legendary.bountiful_brew->effectN( 1 ).time_value() );
-        else if ( p()->talent.brewmaster.bountiful_brew->ok() )
-            lead_by_example->trigger( p()->talent.brewmaster.bountiful_brew->effectN( 1 ).time_value() );
-        else if ( p()->talent.mistweaver.bountiful_brew->ok() )
-            lead_by_example->trigger( p()->talent.mistweaver.bountiful_brew->effectN( 1 ).time_value() );
-    }
+      lead_by_example->trigger( data().effectN( 1 ).time_value() );
   }
 
   void impact( action_state_t* s ) override
   {
     monk_spell_t::impact( s );
 
-    if ( p()->legendary.bountiful_brew->ok() )
-        get_td(s->target)
-            ->debuff.bonedust_brew->extend_duration_or_trigger(
-            p()->legendary.bountiful_brew->effectN( 1 ).time_value() );
-    else if ( p()->talent.brewmaster.bountiful_brew->ok() )
-        get_td(s->target)
-            ->debuff.bonedust_brew->extend_duration_or_trigger(
-            p()->talent.brewmaster.bountiful_brew->effectN( 1 ).time_value() );
-    else if ( p()->talent.mistweaver.bountiful_brew->ok() )
-        get_td(s->target)
-            ->debuff.bonedust_brew->extend_duration_or_trigger(
-            p()->talent.mistweaver.bountiful_brew->effectN( 1 ).time_value() );
+    get_td( s->target )->debuff.bonedust_brew->extend_duration_or_trigger( data().effectN( 1 ).time_value() );
   }
 };
 
 struct bonedust_brew_t : public monk_spell_t
 {
   bonedust_brew_t( monk_t& p, util::string_view options_str )
-      : monk_spell_t( "bonedust_brew", &p,
-          (p.covenant.necrolord->ok() ? p.covenant.necrolord :
-              ( p.talent.brewmaster.bonedust_brew && p.talent.brewmaster.bonedust_brew->ok() ? p.talent.brewmaster.bonedust_brew :
-                  ( p.talent.mistweaver.bonedust_brew && p.talent.mistweaver.bonedust_brew->ok() ? p.talent.mistweaver.bonedust_brew :
-                      ( p.talent.windwalker.bonedust_brew && p.talent.windwalker.bonedust_brew->ok() ? p.talent.windwalker.bonedust_brew
-                                                                            : spell_data_t::nil() ) ) ) ) )
+      : monk_spell_t( "bonedust_brew", &p, p.shared.bonedust_brew && p.shared.bonedust_brew->ok() ? p.shared.bonedust_brew : spell_data_t::nil())
   {
     parse_options( options_str );
     may_combo_strike            = true;
@@ -5445,31 +5441,21 @@ struct bonedust_brew_damage_t : public monk_spell_t
   {
     monk_spell_t::execute();
 
-    if ( p()->conduit.bone_marrow_hops->ok()  )
+    auto attenuation = p()->shared.attenuation;
+
+    if ( attenuation && attenuation->ok() )
     {
+      auto cooldown_reduction = attenuation->effectN( 2 ).time_value();
+
       if ( p()->buff.bonedust_brew_grounding_breath_hidden->up() )
       {
-        // Saved at -500
-        p()->cooldown.bonedust_brew->adjust( p()->conduit.bone_marrow_hops->effectN( 2 ).time_value(), true );
+        p()->cooldown.bonedust_brew->adjust( cooldown_reduction, true );
 
         p()->buff.bonedust_brew_grounding_breath_hidden->decrement();
         p()->proc.bonedust_brew_reduction->occur();
       }
-    }
-    else if ( p()->talent.brewmaster.attenuation->ok() || p()->talent.mistweaver.attenuation->ok() 
-        || p()->talent.windwalker.attenuation->ok() )
-    {
-      if ( p()->buff.bonedust_brew_attenuation_hidden->up() )
+      else if ( p()->buff.bonedust_brew_attenuation_hidden->up() )
       {
-        // Saved at -500
-        auto cooldown_reduction = timespan_t::zero();
-        if ( p()->talent.brewmaster.attenuation->ok() )
-          cooldown_reduction = p()->talent.brewmaster.attenuation->effectN( 2 ).time_value();
-        else if ( p()->talent.mistweaver.attenuation->ok() )
-          cooldown_reduction = p()->talent.mistweaver.attenuation->effectN( 2 ).time_value();
-        else if ( p()->talent.windwalker.attenuation->ok() )
-          cooldown_reduction = p()->talent.windwalker.attenuation->effectN( 2 ).time_value();
-
         p()->cooldown.bonedust_brew->adjust( cooldown_reduction, true );
 
         p()->buff.bonedust_brew_attenuation_hidden->decrement();
@@ -5494,26 +5480,25 @@ struct bonedust_brew_heal_t : public monk_heal_t
   {
     monk_heal_t::execute();
 
-    if ( p()->buff.bonedust_brew_grounding_breath_hidden->up() )
+    auto attenuation = p()->shared.attenuation;
+
+    if ( attenuation && attenuation->ok() )
     {
-      if ( p()->conduit.bone_marrow_hops->ok() )
+      auto cooldown_reduction = attenuation->effectN( 2 ).time_value();
+
+      if ( p()->buff.bonedust_brew_grounding_breath_hidden->up() )
       {
-        // Saved at -500
-        p()->cooldown.bonedust_brew->adjust( p()->conduit.bone_marrow_hops->effectN( 2 ).time_value(), true );
+        p()->cooldown.bonedust_brew->adjust( cooldown_reduction, true );
 
         p()->buff.bonedust_brew_grounding_breath_hidden->decrement();
         p()->proc.bonedust_brew_reduction->occur();
       }
-    }
-    else if ( p()->buff.bonedust_brew_attenuation_hidden->up() )
-    {
-      if ( p()->conduit.bone_marrow_hops->ok() )
+      else if ( p()->buff.bonedust_brew_attenuation_hidden->up() )
       {
-        // Saved at -500
-        p()->cooldown.bonedust_brew->adjust( p()->conduit.bone_marrow_hops->effectN( 2 ).time_value(), true );
+        p()->cooldown.bonedust_brew->adjust( cooldown_reduction, true );
 
         p()->buff.bonedust_brew_attenuation_hidden->decrement();
-        p()->proc.bonedust_brew_reduction->occur();
+        p()->proc.attenuation->occur();
       }
     }
   }
@@ -5578,7 +5563,7 @@ struct faeline_stomp_heal_t : public monk_heal_t
   {
     monk_heal_t::impact( s );
 
-    if ( p()->legendary.faeline_harmony->ok() )
+    if ( p()->shared.faeline_harmony && p()->shared.faeline_harmony->ok() )
       p()->buff.fae_exposure->trigger();
   }
 };
@@ -5591,11 +5576,7 @@ struct faeline_stomp_t : public monk_spell_t
   int aoe_initial_cap;
   int ww_aoe_cap;
   faeline_stomp_t( monk_t& p, util::string_view options_str )
-      : monk_spell_t( "faeline_stomp", &p,
-          (p.covenant.night_fae->ok() ? p.covenant.night_fae :
-              ( p.talent.mistweaver.faeline_stomp && p.talent.mistweaver.faeline_stomp->ok() ? p.talent.mistweaver.faeline_stomp : 
-                  ( p.talent.windwalker.faeline_stomp && p.talent.windwalker.faeline_stomp->ok() ? p.talent.windwalker.faeline_stomp
-                                                                              : spell_data_t::nil() ) ) ) ),
+      : monk_spell_t( "faeline_stomp", &p, p.shared.faeline_stomp && p.shared.faeline_stomp->ok() ? p.shared.faeline_stomp : spell_data_t::nil() ),
       damage( new faeline_stomp_damage_t( p ) ),
       heal( new faeline_stomp_heal_t( p ) ),
       ww_damage( new faeline_stomp_ww_damage_t( p ) ),
@@ -5606,12 +5587,7 @@ struct faeline_stomp_t : public monk_spell_t
     may_combo_strike = true;
     cast_during_sck  = true;
 
-    if ( p.covenant.night_fae )
-        aoe = (int)p.covenant.night_fae->effectN( 3 ).base_value();
-    else if ( p.specialization() == MONK_MISTWEAVER && p.talent.mistweaver.faeline_stomp->ok() )
-        aoe = (int)p.talent.mistweaver.faeline_stomp->effectN( 3 ).base_value();
-    else if ( p.specialization() == MONK_WINDWALKER && p.talent.windwalker.faeline_stomp->ok() )
-        aoe = (int)p.talent.windwalker.faeline_stomp->effectN( 3 ).base_value();
+    aoe = (int)data().effectN( 3 ).base_value();
 
     trigger_bountiful_brew      = true;
   }
@@ -5629,7 +5605,7 @@ struct faeline_stomp_t : public monk_spell_t
 
     p()->buff.faeline_stomp->trigger();
 
-    if ( p()->specialization() == MONK_MISTWEAVER && p()->legendary.faeline_harmony->ok() )
+    if ( p()->shared.faeline_harmony && p()->shared.faeline_harmony->ok() )
       p()->buff.fae_exposure->trigger();
   }
 
@@ -5661,7 +5637,7 @@ struct faeline_stomp_t : public monk_spell_t
     }
 
     // Fae Exposure is applied to all targets, even if they are healed/damage or not
-    if ( p()->legendary.faeline_harmony->ok() )
+    if ( p()->shared.faeline_harmony && p()->shared.faeline_harmony->ok() )
       get_td( s->target )->debuff.fae_exposure->trigger();
 
     aoe_initial_cap--;
@@ -6610,10 +6586,7 @@ struct chi_burst_t : public monk_spell_t
 
 struct healing_elixir_t : public monk_heal_t
 {
-  healing_elixir_t( monk_t& p ) : monk_heal_t( "healing_elixir", p, 
-      ( p.specialization() == MONK_BREWMASTER ? p.talent.brewmaster.healing_elixir : 
-          ( p.specialization() == MONK_MISTWEAVER ? p.talent.mistweaver.healing_elixir
-                                                                   : spell_data_t::nil() ) ) )
+  healing_elixir_t( monk_t& p ) : monk_heal_t( "healing_elixir", p, p.shared.healing_elixir && p.shared.healing_elixir->ok() ? p.shared.healing_elixir : spell_data_t::nil() )
   {
     harmful = may_crit = false;
     target             = &p;
@@ -7766,15 +7739,7 @@ void monk_t::trigger_mark_of_the_crane( action_state_t* s )
 
 void monk_t::trigger_keefers_skyreach( action_state_t* s )
 {
-  if ( legendary.keefers_skyreach->ok() )
-  {
-    if ( !get_target_data( s->target )->debuff.skyreach_exhaustion->up() )
-    {
-      get_target_data( s->target )->debuff.keefers_skyreach->trigger();
-      get_target_data( s->target )->debuff.skyreach_exhaustion->trigger();
-    }
-  }
-  else if ( talent.windwalker.skyreach->ok() )
+  if ( shared.skyreach && shared.skyreach->ok() )
   {
     if ( !get_target_data( s->target )->debuff.skyreach_exhaustion->up() )
     {
@@ -8423,7 +8388,6 @@ void monk_t::init_spells()
   passives.celestial_fortune            = find_spell( 216521 );
   passives.dragonfire_brew              = find_spell( 387621 );
   passives.elusive_brawler              = find_spell( 195630 );
-  passives.face_palm                    = find_spell( 227679 );
   passives.gai_plins_imperial_brew_heal = find_spell( 383701 );
   passives.gift_of_the_ox_heal          = find_spell( 124507 );
   passives.shuffle                      = find_spell( 215479 );
@@ -8522,6 +8486,57 @@ void monk_t::init_spells()
   sample_datas.staggering_strikes_cleared = get_sample_data( "Stagger damage that was cleared by Staggering Strikes" );
   sample_datas.quick_sip_cleared          = get_sample_data( "Stagger damage that was cleared by Quick Sip" );
   sample_datas.tranquil_spirit            = get_sample_data( "Stagger damage that was cleared by Tranquil Spirit" );
+
+  //================================================================================
+  // Shared Spells
+  // These spells share common effects but are unique in that you may only have one
+  //================================================================================
+
+  auto _valid = [ this ] ( auto spell ) { return ( spell && spell->ok() ); };
+
+  shared.attenuation = _valid( conduit.bone_marrow_hops ) ? conduit.bone_marrow_hops :
+    _valid( talent.windwalker.attenuation ) ? talent.windwalker.attenuation :
+    _valid( talent.brewmaster.attenuation ) ? talent.brewmaster.attenuation :
+    _valid( talent.mistweaver.attenuation ) ? talent.mistweaver.attenuation : spell_data_t::nil();
+
+  shared.bonedust_brew = _valid( covenant.necrolord ) ? covenant.necrolord :
+    _valid( talent.windwalker.bonedust_brew ) ? talent.windwalker.bonedust_brew :
+    _valid( talent.brewmaster.bonedust_brew ) ? talent.brewmaster.bonedust_brew :
+    _valid( talent.mistweaver.bonedust_brew ) ? talent.mistweaver.bonedust_brew : spell_data_t::nil();
+
+  shared.bountiful_brew = _valid( legendary.bountiful_brew ) ? (const spell_data_t *)legendary.bountiful_brew :
+    _valid( talent.brewmaster.bountiful_brew ) ? talent.brewmaster.bountiful_brew :
+    _valid( talent.mistweaver.bountiful_brew ) ? talent.mistweaver.bountiful_brew : spell_data_t::nil();
+
+  shared.call_to_arms = _valid( legendary.call_to_arms ) ? (const spell_data_t*)legendary.call_to_arms :
+    _valid( talent.brewmaster.call_to_arms ) ? talent.brewmaster.call_to_arms : spell_data_t::nil();
+
+  shared.face_palm = _valid( legendary.shaohaos_might ) ? (const spell_data_t*)legendary.shaohaos_might :
+    _valid( talent.brewmaster.face_palm ) ? talent.brewmaster.face_palm : spell_data_t::nil();
+
+  // Does Mistweaver Awakened Faeline stack with this effect? TODO: How is this handled?
+  shared.faeline_harmony = _valid( legendary.faeline_harmony ) ? (const spell_data_t*)legendary.faeline_harmony :
+    _valid( talent.windwalker.faeline_harmony ) ? talent.windwalker.faeline_harmony : spell_data_t::nil();
+
+  shared.faeline_stomp = _valid( covenant.night_fae ) ? covenant.night_fae :
+    _valid( talent.windwalker.faeline_stomp ) ? talent.windwalker.faeline_stomp :
+    _valid( talent.mistweaver.faeline_stomp ) ? talent.mistweaver.faeline_stomp : spell_data_t::nil();
+
+  shared.healing_elixir = _valid( talent.brewmaster.healing_elixir ) ? talent.brewmaster.healing_elixir :
+    _valid( talent.mistweaver.healing_elixir ) ? talent.mistweaver.healing_elixir : spell_data_t::nil();
+
+  shared.invokers_delight = _valid( legendary.invokers_delight ) ? (const spell_data_t*)legendary.invokers_delight :
+    _valid( talent.windwalker.invokers_delight ) ? talent.windwalker.invokers_delight :
+    _valid( talent.mistweaver.invokers_delight ) ? talent.mistweaver.invokers_delight : spell_data_t::nil();
+
+  shared.jade_ignition = _valid( legendary.jade_ignition ) ? (const spell_data_t*)legendary.jade_ignition :
+    _valid( talent.windwalker.jade_ignition ) ? talent.windwalker.jade_ignition : spell_data_t::nil();
+
+  shared.skyreach = _valid( legendary.keefers_skyreach ) ? (const spell_data_t*)legendary.keefers_skyreach :
+    _valid( talent.windwalker.skyreach ) ? talent.windwalker.skyreach : spell_data_t::nil();
+
+  shared.weapons_of_order = _valid( covenant.kyrian ) ? covenant.kyrian :
+    _valid( talent.brewmaster.weapons_of_order ) ? talent.brewmaster.weapons_of_order :spell_data_t::nil();
 
   // Active Action Spells
   
@@ -8930,7 +8945,7 @@ void monk_t::create_buffs ()
         : timespan_t::zero() ) )
     ->set_cooldown( timespan_t::zero() )
     ->add_invalidate( CACHE_MASTERY )
-    ->set_trigger_spell( covenant.kyrian );
+    ->set_trigger_spell( shared.weapons_of_order );
 
   buff.invoke_xuen_call_to_arms =
       new buffs::call_to_arms_xuen_buff_t( *this, "invoke_xuen_call_to_arms", passives.call_to_arms_invoke_xuen );
@@ -8940,7 +8955,7 @@ void monk_t::create_buffs ()
 
   buff.faeline_stomp = make_buff( this, "faeline_stomp", find_spell( 327104 ) )
     ->set_default_value_from_effect( 2 )
-    ->set_trigger_spell( covenant.night_fae );
+    ->set_trigger_spell( shared.faeline_stomp );
 
   buff.faeline_stomp_reset = make_buff( this, "faeline_stomp_reset", find_spell( 327276 ) );
 
@@ -9021,6 +9036,7 @@ void monk_t::init_procs()
   proc.bountiful_brew_proc                 = get_proc( "Bountiful Brew Trigger" );
   proc.charred_passions_bok                = get_proc( "Charred Passions - Blackout Kick" );
   proc.charred_passions_sck                = get_proc( "Charred Passions - Spinning Crane Kick" );
+  proc.chi_surge                           = get_proc( "Chi Surge CDR" );
   proc.counterstrike_tp                    = get_proc( "Counterstrike - Tiger Palm" );
   proc.counterstrike_sck                   = get_proc( "Counterstrike - Spinning Crane Kick" );
   proc.elusive_footwork_proc               = get_proc( "Elusive Footwork" );
@@ -9058,7 +9074,7 @@ void monk_t::init_assessors()
 void monk_t::init_rng()
 {
   player_t::init_rng();
-  if ( legendary.bountiful_brew->ok() )
+  if ( shared.bountiful_brew && shared.bountiful_brew->ok() )
     rppm.bountiful_brew = get_rppm( "bountiful_brew", find_spell( 356592 ) );
 }
 
@@ -9308,39 +9324,25 @@ void monk_t::bonedust_brew_assessor(action_state_t* s)
 
     double proc_chance = 0;
     double percent = 0;
-    if ( covenant.necrolord->ok() )
+
+    auto bonedust_brew = shared.bonedust_brew;
+    if ( bonedust_brew && bonedust_brew->ok() )
     {
-      proc_chance = covenant.necrolord->proc_chance();
-      percent     = covenant.necrolord->effectN( 1 ).percent();
-    }
-    else if ( talent.brewmaster.bonedust_brew->ok() )
-    {
-      proc_chance = talent.brewmaster.bonedust_brew->proc_chance();
-      percent     = talent.brewmaster.bonedust_brew->effectN( 1 ).percent();
-    }
-    else if ( talent.mistweaver.bonedust_brew->ok() )
-    {
-      proc_chance = talent.mistweaver.bonedust_brew->proc_chance();
-      percent     = talent.mistweaver.bonedust_brew->effectN( 1 ).percent();
-    }
-    else if ( talent.windwalker.bonedust_brew->ok() )
-    {
-      proc_chance = talent.windwalker.bonedust_brew->proc_chance();
-      percent     = talent.windwalker.bonedust_brew->effectN( 1 ).percent();
+      proc_chance = bonedust_brew->proc_chance();
+      percent     = bonedust_brew->effectN( 1 ).percent();
     }
 
     if ( rng().roll( proc_chance ) )
     {
       double damage = s->result_amount * percent;
 
-      if (conduit.bone_marrow_hops->ok())
-        damage *= 1 + conduit.bone_marrow_hops.percent();
-      else if (talent.brewmaster.attenuation->ok() )
-        damage *= 1 + talent.brewmaster.attenuation->effectN( 1 ).percent();
-      else if ( talent.mistweaver.attenuation->ok() )
-        damage *= 1 + talent.mistweaver.attenuation->effectN( 1 ).percent();
-      else if ( talent.windwalker.attenuation->ok() )
-        damage *= 1 + talent.windwalker.attenuation->effectN( 1 ).percent();
+      auto attenuation = shared.attenuation;
+
+      if ( attenuation && attenuation->ok() )
+      {
+        double attenuation_bonus = conduit.bone_marrow_hops->ok() ? conduit.bone_marrow_hops.percent() : attenuation->effectN( 1 ).percent();         
+        damage *= 1 + attenuation_bonus;
+      }
 
       active_actions.bonedust_brew_dmg->base_dd_min = damage;
       active_actions.bonedust_brew_dmg->base_dd_max = damage;
@@ -9473,10 +9475,9 @@ void monk_t::brew_cooldown_reduction( double time_reduction )
     if ( cooldown.black_ox_brew->down() )
       cooldown.black_ox_brew->adjust( timespan_t::from_seconds( time_reduction ), true );
 
-    if ( covenant.necrolord->ok() && cooldown.bonedust_brew->down() )
+    if ( shared.bonedust_brew && shared.bonedust_brew->ok() && cooldown.bonedust_brew->down() )
       cooldown.bonedust_brew->adjust( timespan_t::from_seconds( time_reduction ), true );
-    else if ( talent.brewmaster.bonedust_brew->ok() && cooldown.bonedust_brew->down() )
-      cooldown.bonedust_brew->adjust( timespan_t::from_seconds( time_reduction ), true );
+
   }
 
 // monk_t::composite_spell_haste =========================================

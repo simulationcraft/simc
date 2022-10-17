@@ -288,6 +288,8 @@ struct demonbolt_t : public demonology_spell_t
       p()->cooldowns.call_dreadstalkers->reset( true );
       p()->procs.hounds_of_war->occur();
     }
+
+    p()->buffs.stolen_power_final->expire();
   }
 
   double action_multiplier() const override

@@ -31,6 +31,9 @@ struct drain_life_t : public warlock_spell_t
       //// SL - Legendary
       //dot_duration *= 1.0 + p->legendary.claw_of_endereth->effectN( 1 ).percent();
       //base_tick_time *= 1.0 + p->legendary.claw_of_endereth->effectN( 1 ).percent();
+
+      dot_duration *= 1.0 + p->talents.grim_feast->effectN( 1 ).percent();
+      base_tick_time *= 1.0 + p->talents.grim_feast->effectN( 2 ).percent();
     }
 
     double bonus_ta( const action_state_t* s ) const override
@@ -83,6 +86,9 @@ struct drain_life_t : public warlock_spell_t
     //// SL - Legendary
     //dot_duration *= 1.0 + p->legendary.claw_of_endereth->effectN( 1 ).percent();
     //base_tick_time *= 1.0 + p->legendary.claw_of_endereth->effectN( 1 ).percent();
+
+    dot_duration *= 1.0 + p->talents.grim_feast->effectN( 1 ).percent();
+    base_tick_time *= 1.0 + p->talents.grim_feast->effectN( 2 ).percent();
   }
 
   void execute() override
@@ -521,6 +527,8 @@ struct shadow_bolt_t : public warlock_spell_t
       p()->cooldowns.call_dreadstalkers->reset( true );
       p()->procs.hounds_of_war->occur();
     }
+
+    p()->buffs.stolen_power_final->expire();
   }
 
   void impact( action_state_t* s ) override
@@ -702,6 +710,59 @@ struct grimoire_of_sacrifice_t : public warlock_spell_t
       p()->warlock_pet_list.active = nullptr;
       p()->buffs.grimoire_of_sacrifice->trigger();
     }
+  }
+};
+
+struct summon_soulkeeper_t : public warlock_spell_t
+{
+  struct soul_combustion_t : public warlock_spell_t
+  {
+    soul_combustion_t( warlock_t* p ) : warlock_spell_t( "soul_combustion", p, p->talents.soul_combustion )
+    {
+      background = dual = true;
+      aoe = -1;
+    }
+  };
+
+  summon_soulkeeper_t( warlock_t* p, util::string_view options_str )
+    : warlock_spell_t( "summon_soulkeeper", p, p->talents.summon_soulkeeper_aoe )
+  {
+    parse_options( options_str );
+    harmful = true;
+    dot_duration = 0_ms;
+
+    if ( !p->proc_actions.soul_combustion )
+    {
+      p->proc_actions.soul_combustion = new soul_combustion_t( p );
+      p->proc_actions.soul_combustion->stats = stats;
+    }
+  }
+
+  bool ready() override
+  {
+    if ( !p()->buffs.tormented_soul->check() )
+      return false;
+
+    return warlock_spell_t::ready();
+  }
+
+  void execute() override
+  {
+    // TODO: Cancel existing ground event if cast while one is already active
+
+    warlock_spell_t::execute();
+
+    make_event<ground_aoe_event_t>( *sim, p(),
+                                ground_aoe_params_t()
+                                    .target( execute_state->target )
+                                    .x( execute_state->target->x_position )
+                                    .y( execute_state->target->y_position )
+                                    .pulse_time( base_tick_time )
+                                    .duration( 1_s + 1_s * p()->buffs.tormented_soul->stack() )
+                                    .start_time( sim->current_time() )
+                                    .action( p()->proc_actions.soul_combustion ) );
+
+    p()->buffs.tormented_soul->expire();
   }
 };
 
@@ -922,6 +983,13 @@ void warlock_td_t::target_demise()
     warlock.sim->print_log( "Player {} demised. Warlock {} triggers Soul Flame on all targets in range.", target->name(), warlock.name() );
 
     warlock.proc_actions.soul_flame_proc->execute();
+  }
+
+  if ( warlock.talents.summon_soulkeeper.ok() )
+  {
+    warlock.sim->print_log( "Player {} demised. Warlock gains 1 stack of Tormented Soul.", target->name(), warlock.name() );
+
+    warlock.buffs.tormented_soul->trigger();
   }
 }
 
@@ -1178,6 +1246,32 @@ double warlock_t::composite_attribute_multiplier( attribute_e attr ) const
   return m;
 }
 
+double warlock_t::resource_gain( resource_e resource_type, double amount, gain_t* source, action_t* action )
+{
+  double prev = resources.current[ resource_type ];
+
+  double amt = player_t::resource_gain( resource_type, amount, source, action );
+
+  if ( resource_type == RESOURCE_SOUL_SHARD )
+  {
+    bool filled = ( resources.current[ resource_type ] - std::floor( prev ) >= 1.0 );
+
+    if ( filled && talents.demonic_inspiration.ok() && warlock_pet_list.active )
+    {
+      warlock_pet_list.active->buffs.demonic_inspiration->trigger();
+      procs.demonic_inspiration->occur();
+    }
+
+    if ( filled && talents.wrathful_minion.ok() && warlock_pet_list.active )
+    {
+      warlock_pet_list.active->buffs.wrathful_minion->trigger();
+      procs.wrathful_minion->occur();
+    }
+  }
+
+  return amt;
+}
+
 //Note: Level is checked to be >=27 by the function calling this. This is technically wrong for warlocks due to
 //a missing level requirement in data, but correct generally.
 double warlock_t::matching_gear_multiplier( attribute_e attr ) const
@@ -1236,6 +1330,8 @@ action_t* warlock_t::create_action_warlock( util::string_view action_name, util:
     return new interrupt_t( action_name, this, options_str );
   if ( action_name == "seed_of_corruption" )
     return new seed_of_corruption_t( this, options_str );
+  if ( action_name == "summon_soulkeeper" )
+    return new summon_soulkeeper_t( this, options_str );
 
   return nullptr;
 }
@@ -1326,8 +1422,8 @@ void warlock_t::create_buffs()
   buffs.wrath_of_consumption = make_buff( this, "wrath_of_consumption", talents.wrath_of_consumption_buff )
                                ->set_default_value( talents.wrath_of_consumption->effectN( 2 ).percent() );
 
-  buffs.demonic_synergy = make_buff( this, "demonic_synergy", find_spell( 337060 ) )
-                              ->set_default_value( legendary.relic_of_demonic_synergy->effectN( 1 ).percent() * ( this->specialization() == WARLOCK_DEMONOLOGY ? 1.5 : 1.0 ) );
+  buffs.demonic_synergy = make_buff( this, "demonic_synergy", talents.demonic_synergy )
+                              ->set_default_value( talents.grimoire_of_synergy->effectN( 2 ).percent() );
 
   buffs.decaying_soul_satchel_haste = make_buff( this, "decaying_soul_satchel_haste", find_spell( 356369 ) )
                                           ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
@@ -1344,6 +1440,15 @@ void warlock_t::create_buffs()
   buffs.dark_harvest_crit = make_buff( this, "dark_harvest_crit", talents.dark_harvest_buff )
                                 ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
                                 ->set_default_value( talents.dark_harvest_buff->effectN( 2 ).percent() );
+
+  buffs.tormented_soul = make_buff( this, "tormented_soul", talents.tormented_soul_buff );
+
+  buffs.tormented_soul_generator = make_buff( this, "tormented_soul_generator" )
+                                       ->set_period( talents.summon_soulkeeper->effectN( 2 ).period() )
+                                       ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED )
+                                       ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
+                                           buffs.tormented_soul->increment();
+                                         } );;
 }
 
 void warlock_t::init_spells()
@@ -1406,7 +1511,21 @@ void warlock_t::init_spells()
   talents.havoc = find_talent_spell( talent_tree::SPECIALIZATION, "Havoc" ); // Should be spell 80240
   talents.havoc_debuff = find_spell( 80240 );
 
-  talents.soul_conduit              = find_talent_spell( "Soul Conduit" );
+  talents.demonic_inspiration = find_talent_spell( talent_tree::CLASS, "Demonic Inspiration" ); // Should be ID 386858
+
+  talents.wrathful_minion = find_talent_spell( talent_tree::CLASS, "Wrathful Minion" ); // Should be ID 386864
+
+  talents.grimoire_of_synergy = find_talent_spell( talent_tree::CLASS, "Grimoire of Synergy" ); // Should be ID 171975
+  talents.demonic_synergy = find_spell( 171982 );
+
+  talents.soul_conduit = find_talent_spell( talent_tree::CLASS, "Soul Conduit" ); // Should be ID 215941
+
+  talents.grim_feast = find_talent_spell( talent_tree::CLASS, "Grim Feast" ); // Should be ID 386689
+
+  talents.summon_soulkeeper = find_talent_spell( talent_tree::CLASS, "Summon Soulkeeper" ); // Should be ID 386244
+  talents.summon_soulkeeper_aoe = find_spell( 386256 );
+  talents.tormented_soul_buff = find_spell( 386251 );
+  talents.soul_combustion = find_spell( 386265 );
 
   // Legendaries
   legendary.claw_of_endereth                     = find_runeforge_legendary( "Claw of Endereth" );
@@ -1467,7 +1586,7 @@ void warlock_t::init_procs()
   procs.three_shard_hog = get_proc( "three_shard_hog" );
   procs.portal_summon   = get_proc( "portal_summon" );
   procs.demonic_calling = get_proc( "demonic_calling" );
-  procs.soul_conduit    = get_proc( "soul_conduit" );
+  procs.soul_conduit = get_proc( "soul_conduit" );
   procs.carnivorous_stalkers = get_proc( "carnivorous_stalkers" );
   procs.horned_nightmare = get_proc( "horned_nightmare" );
   procs.ritual_of_ruin       = get_proc( "ritual_of_ruin" );
@@ -1475,6 +1594,8 @@ void warlock_t::init_procs()
   procs.mayhem = get_proc( "mayhem" );
   procs.conflagration_of_chaos_cf = get_proc( "conflagration_of_chaos_cf" );
   procs.conflagration_of_chaos_sb = get_proc( "conflagration_of_chaos_sb" );
+  procs.demonic_inspiration = get_proc( "demonic_inspiration" );
+  procs.wrathful_minion = get_proc( "wrathful_minion" );
 }
 
 void warlock_t::init_base_stats()
@@ -1587,11 +1708,11 @@ void warlock_t::init_special_effects()
       } );
   }
 
-  if ( legendary.relic_of_demonic_synergy->ok() )
+  if ( talents.grimoire_of_synergy.ok() )
   {
     auto const syn_effect = new special_effect_t( this );
     syn_effect->name_str = "demonic_synergy_effect";
-    syn_effect->spell_id = 337057;
+    syn_effect->spell_id = talents.grimoire_of_synergy->id();
     special_effects.push_back( syn_effect );
 
     auto cb = new warlock::actions::demonic_synergy_callback_t( this, *syn_effect );
@@ -1603,6 +1724,9 @@ void warlock_t::init_special_effects()
 void warlock_t::combat_begin()
 {
   player_t::combat_begin();
+
+  if ( talents.summon_soulkeeper.ok() )
+    buffs.tormented_soul_generator->trigger();
 
   if ( specialization() == WARLOCK_DEMONOLOGY && buffs.inner_demons && talents.inner_demons->ok() )
     buffs.inner_demons->trigger();

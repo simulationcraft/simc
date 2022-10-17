@@ -3888,6 +3888,9 @@ void sim_t::create_options()
   add_option( opt_timespan( "shadowlands.first_strike_period", shadowlands_opts.first_strike_period, 1_s, timespan_t::max() ) );
   add_option( opt_float( "shadowlands.adaptive_armor_fragment_uptime", shadowlands_opts.adaptive_armor_fragment_uptime, 0.0, 0.5 ) );
   add_option( opt_float( "shadowlands.soothing_shade_duration_multiplier", shadowlands_opts.soothing_shade_duration_multiplier, 0.0, 1.0 ) );
+
+  // Dragonflight
+  add_option( opt_timespan( "dragonflight.darkmoon_deck_watcher_deplete", dragonflight_opts.darkmoon_deck_watcher_deplete, 0_ms, timespan_t::max() ) );
 }
 
 // sim_t::parse_option ======================================================

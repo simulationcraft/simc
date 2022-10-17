@@ -38,7 +38,7 @@ struct warlock_pet_t : public pet_t
     propagate_const<buff_t*> demonic_consumption; // DF - REMOVED (Replace with Reign of Tyranny buffs)
     propagate_const<buff_t*> grimoire_of_service; // Buff used by Grimoire: Felguard talent
     propagate_const<buff_t*> grim_inquisitors_dread_calling; // DF - REMOVED (talent is new spell IDs)
-    propagate_const<buff_t*> demonic_synergy; // DF - Now comes from Class talent
+    propagate_const<buff_t*> demonic_synergy;
     propagate_const<buff_t*> annihilan_training; // Permanent aura when talented, 10% increased damage to all abilities
     propagate_const<buff_t*> dread_calling;
     propagate_const<buff_t*> imp_gang_boss; // Aura applied to some Wild Imps for increased damage (and size)
@@ -48,8 +48,8 @@ struct warlock_pet_t : public pet_t
     propagate_const<buff_t*> soul_glutton;
     propagate_const<buff_t*> demonic_servitude; // Dummy buff for Tyrant that holds snapshot of Warlock's buff value
     propagate_const<buff_t*> fiendish_wrath; // Guillotine talent buff, causes AoE melee attacks and prevents Felstorm
-    // DF - Demonic Inspiration
-    // DF - Wrathful Minion
+    propagate_const<buff_t*> demonic_inspiration; // Haste buff triggered by filling a Soul Shard
+    propagate_const<buff_t*> wrathful_minion; // Damage buff triggered by filling a Soul Shard
     // DF - Guillotine + Fiendish Wrath (Guillotine talent)
     // DF - Review permanent passive pet buffs and determine if they should be implemented or just assumed based on presence of talents
   } buffs;
@@ -63,6 +63,10 @@ struct warlock_pet_t : public pet_t
   void schedule_ready( timespan_t = 0_ms, bool = false ) override;
   double composite_player_multiplier( school_e ) const override;
   double composite_player_target_multiplier( player_t*, school_e ) const override;
+  double composite_spell_haste() const override;
+  double composite_spell_speed() const override;
+  double composite_melee_haste() const override;
+  double composite_melee_speed() const override;
   void init_special_effects() override;
   void arise() override;
   void demise() override;

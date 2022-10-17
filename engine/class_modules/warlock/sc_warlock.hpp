@@ -133,7 +133,7 @@ public:
     warlock_pet_t* last;
 
     spawner::pet_spawner_t<pets::destruction::infernal_t, warlock_t> infernals;
-    spawner::pet_spawner_t<pets::destruction::blasphemy_t, warlock_t> blasphemy;  // DF - Now a Destruction Talent
+    spawner::pet_spawner_t<pets::destruction::blasphemy_t, warlock_t> blasphemy;
 
     spawner::pet_spawner_t<pets::affliction::darkglare_t, warlock_t> darkglare;
 
@@ -186,14 +186,19 @@ public:
     player_talent_t grand_warlocks_design; // One spell data for all 3 specs
 
     // Class Tree
-    const spell_data_t* soul_conduit; // DF - Verify unchanged other than in class tree now
+
     // DF - Demonic Embrace is a stamina talent, may be irrelevant now
-    // DF - Demonic Inspiration (Pet haste on soul shard fill)
-    // DF - Wrathful Minion (Pet damage on soul shard fill)
+    player_talent_t demonic_inspiration; // Pet haste on Soul Shard fill
+    player_talent_t wrathful_minion; // Pet damage buff on Soul Shard fill
     // DF - Demonic Fortitude is a health talent, may be irrelevant now
-    // DF - Grimoire of Synergy (moved from SL Legendary power)
-    // DF - Claw of Endereth (moved from SL Legendary power)
-    // DF - Summon Soulkeeper (Active ground aoe which spends hidden stacking buff)
+    player_talent_t grimoire_of_synergy; // DF - Does not trigger when using Grimoire of Sacrifice
+    const spell_data_t* demonic_synergy; // Buff from Grimoire of Synergy
+    player_talent_t soul_conduit;
+    player_talent_t grim_feast; // Faster Drain Life (Formerly SL Legendary)
+    player_talent_t summon_soulkeeper; // Active ground AoE which spends hidden stacking buff. NOT A PET
+    const spell_data_t* summon_soulkeeper_aoe; // The actual active spell which triggers the AoE
+    const spell_data_t* tormented_soul_buff; // Stacks periodically, duration of Summon Soulkeeper is based on stack count
+    const spell_data_t* soul_combustion; // AoE tick damage for Summon Soulkeeper
     // DF - Inquisitor's Gaze (Non-guardian pet summon which behaves like Arcane Familiar)
 
     // AFF
@@ -429,7 +434,7 @@ public:
     const spell_data_t* chaos_barrage_tick;
     const spell_data_t* chaos_tear_summon; // This only creates the "pet"
     const spell_data_t* rift_chaos_bolt; // Separate ID from Warlock's Chaos Bolt
-    // DF - Avatar of Destruction (Formerly SL Tier Bonus, summons Blasphemy when consuming Ritual of Ruin)
+    player_talent_t avatar_of_destruction; // Summons Blasphemy when consuming Ritual of Ruin (Formerly SL Tier Bonus)
   } talents;
 
   struct proc_actions_t
@@ -439,6 +444,8 @@ public:
     action_t* bilescourge_bombers_aoe_tick;
     action_t* summon_random_demon; // Nether Portal and Inner Demons
     action_t* rain_of_fire_tick;
+    action_t* avatar_of_destruction; // Triggered when Ritual of Ruin is consumed
+    action_t* soul_combustion; // Summon Soulkeeper AoE tick
   } proc_actions;
 
   // DF - This struct will be retired, need to determine if needed for pre-patch
@@ -530,9 +537,10 @@ public:
   {
     propagate_const<buff_t*> demonic_power; //Buff from Summon Demonic Tyrant (increased demon damage + duration)
     propagate_const<buff_t*> grimoire_of_sacrifice; // Buff which grants damage proc
-    // DF - Summon Soulkeeper has a hidden stacking buff
+    propagate_const<buff_t*> tormented_soul; // Hidden stacking buff
+    propagate_const<buff_t*> tormented_soul_generator; // Dummy buff with periodic tick to add a stack every 20 seconds
     // DF - Determine if dummy buff should be added for Inquisitor's Eye
-    propagate_const<buff_t*> demonic_synergy; // DF - Now comes from Class talent
+    propagate_const<buff_t*> demonic_synergy;
 
     // Affliction Buffs
     propagate_const<buff_t*> drain_life; //Dummy buff used internally for handling Inevitable Demise cases
@@ -627,6 +635,8 @@ public:
   struct procs_t
   {
     proc_t* soul_conduit;
+    proc_t* demonic_inspiration;
+    proc_t* wrathful_minion;
 
     // aff
     proc_t* nightfall;
@@ -719,6 +729,7 @@ public:
   double composite_melee_crit_chance() const override;
   double resource_regen_per_second( resource_e ) const override;
   double composite_attribute_multiplier( attribute_e attr ) const override;
+  double resource_gain( resource_e, double, gain_t* source = nullptr, action_t* action = nullptr ) override;
   void combat_begin() override;
   void init_assessors() override;
   std::unique_ptr<expr_t> create_expression( util::string_view name_str ) override;
@@ -781,8 +792,9 @@ public:
 
 namespace actions
 {
-//Event for triggering delayed refunds from Soul Conduit
-//Delay prevents instant reaction time issues for rng refunds
+
+// Event for triggering delayed refunds from Soul Conduit
+// Delay prevents instant reaction time issues for rng refunds
 struct sc_event_t : public player_event_t
 {
   gain_t* shard_gain;
@@ -896,7 +908,7 @@ public:
 
     if ( resource_current == RESOURCE_SOUL_SHARD && p()->in_combat )
     {
-      // lets try making all lock specs not react instantly to shard gen
+      // This event prevents instantaneous reactions by the sim to refunded shards
       if ( p()->talents.soul_conduit->ok() )
       {
         make_event<sc_event_t>( *p()->sim, p(), as<int>( last_resource_cost ) );
@@ -986,11 +998,11 @@ public:
 
   double action_multiplier() const override
   {
-    double pm = spell_t::action_multiplier();
+    double m = spell_t::action_multiplier();
 
-    pm *= 1.0 + p()->buffs.demonic_synergy->check_stack_value();
+    m *= 1.0 + p()->buffs.demonic_synergy->check_stack_value();
 
-    return pm;
+    return m;
   }
 
   double composite_ta_multiplier( const action_state_t* s ) const override
@@ -1082,11 +1094,14 @@ struct grimoire_of_sacrifice_damage_t : public warlock_spell_t
     proc = true;
 
     // 2022-09-30 - It seems like the damage is either double dipping on the spec aura effect, or is benefiting from pet damage multiplier as well
-    // Using the latter for now as that seems *slightly* less silly
-    if ( p->specialization() == WARLOCK_AFFLICTION )
-      base_dd_multiplier *= 1.0 + p->warlock_base.affliction_warlock->effectN( 3 ).percent();
-    if ( p->specialization() == WARLOCK_DESTRUCTION )
-      base_dd_multiplier *= 1.0 + p->warlock_base.destruction_warlock->effectN( 3 ).percent();
+    // 2022-10-17 - Appears to be fixed, leaving for later cleanup
+    //if ( p->specialization() == WARLOCK_AFFLICTION )
+    //  base_dd_multiplier *= 1.0 + p->warlock_base.affliction_warlock->effectN( 3 ).percent();
+    //if ( p->specialization() == WARLOCK_DESTRUCTION )
+    //  base_dd_multiplier *= 1.0 + p->warlock_base.destruction_warlock->effectN( 3 ).percent();
+
+    base_dd_multiplier *= 1.0 + p->talents.demonic_inspiration->effectN( 7 ).percent();
+    base_dd_multiplier *= 1.0 + p->talents.wrathful_minion->effectN( 7 ).percent();
   }
 };
 
@@ -1103,9 +1118,7 @@ struct demonic_synergy_callback_t : public dbc_proc_callback_t
   {
     if ( owner->warlock_pet_list.active )
     {
-      auto pet = owner->warlock_pet_list.active;
-      //Always set the pet's buff value using the owner's to ensure specialization value is correct
-      pet->buffs.demonic_synergy->trigger( 1, owner->buffs.demonic_synergy->default_value );
+      owner->warlock_pet_list.active->buffs.demonic_synergy->trigger();
     }
   }
 };

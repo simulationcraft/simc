@@ -61,7 +61,7 @@ namespace buffs {
 struct crusade_t : public paladin_spell_t
 {
   crusade_t( paladin_t* p, util::string_view options_str ) :
-    paladin_spell_t( "crusade", p, p -> talents.crusade )
+    paladin_spell_t( "crusade", p, p -> find_spell( 231895 ) )
   {
     parse_options( options_str );
 
@@ -401,6 +401,9 @@ struct blade_of_justice_t : public paladin_melee_attack_t
     if ( p() -> buffs.blade_of_wrath -> up() )
       p() -> buffs.blade_of_wrath -> expire();
 
+    if ( p() -> buffs.sealed_verdict -> up() )
+      p() -> buffs.sealed_verdict -> expire();
+
     if ( p() -> buffs.consecrated_blade -> up() )
     {
       p() -> active.background_cons -> schedule_execute();
@@ -466,7 +469,7 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
   divine_storm_tempest_t* tempest;
 
   divine_storm_t( paladin_t* p, util::string_view options_str ) :
-    holy_power_consumer_t( "divine_storm", p, p -> find_specialization_spell( "Divine Storm" ) ),
+    holy_power_consumer_t( "divine_storm", p, p -> talents.divine_storm ),
     tempest( nullptr )
   {
     parse_options( options_str );
@@ -489,7 +492,7 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
   }
 
   divine_storm_t( paladin_t* p, bool is_free, double mul ) :
-    holy_power_consumer_t( "divine_storm", p, p -> find_specialization_spell( "Divine Storm" ) ),
+    holy_power_consumer_t( "divine_storm", p, p -> talents.divine_storm ),
     tempest( nullptr )
   {
     is_divine_storm = true;
@@ -910,7 +913,7 @@ struct judgment_ret_t : public judgment_t
       base_multiplier *= 1.0 + p -> talents.highlords_judgment -> effectN( 1 ).percent();
 
     if ( p -> talents.timely_judgment -> ok() )
-      cooldown->duration += timespan_t::from_seconds( p -> talents.timely_judgment -> effectN( 1 ).base_value() );
+      cooldown->duration += timespan_t::from_millis( p -> talents.timely_judgment -> effectN( 1 ).base_value() );
 
     if ( p -> talents.seal_of_wrath -> ok() )
     {
@@ -1344,7 +1347,7 @@ void paladin_t::create_buffs_retribution()
                               -> add_stat( STAT_HASTE_RATING, azerite.relentless_inquisitor.value() );
 
   // legendaries
-  buffs.vanguards_momentum_legendary = make_buff( this, "vanguards_momentum", find_spell( 345046 ) )
+  buffs.vanguards_momentum_legendary = make_buff( this, "vanguards_momentum_legendary", find_spell( 345046 ) )
                                         -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                                         -> set_default_value( find_spell( 345046 ) -> effectN( 1 ).percent() );
 

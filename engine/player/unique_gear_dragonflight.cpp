@@ -14,6 +14,7 @@
 #include "item/item.hpp"
 #include "item/item_targetdata_initializer.hpp"
 #include "sim/sim.hpp"
+#include "stats.hpp"
 #include "unique_gear.hpp"
 #include "unique_gear_helper.hpp"
 
@@ -466,9 +467,76 @@ void DISABLED_EFFECT( special_effect_t& effect )
 }
 
 // Trinkets
+struct DF_darkmoon_deck_t : public darkmoon_spell_deck_t
+{
+  bool bronzescale;  // shuffles every 2.5s
+  bool azurescale;   // shuffles from greatest to least
+  bool emberscale;   // no longer shuffles even cards
+  bool jetscale;     // no longer shuffles on Ace
+  bool sagescale;    // only shuffle on jump NYI
+
+  DF_darkmoon_deck_t( const special_effect_t& e, std::vector<unsigned> c )
+    : darkmoon_spell_deck_t( e, std::move( c ) ),
+      bronzescale( unique_gear::find_special_effect( player, 382913 ) != nullptr ),
+      azurescale( unique_gear::find_special_effect( player, 383336 ) != nullptr ),
+      emberscale( unique_gear::find_special_effect( player, 383333 ) != nullptr ),
+      jetscale( unique_gear::find_special_effect( player, 383337 ) != nullptr ),
+      sagescale( unique_gear::find_special_effect( player, 383339 ) != nullptr )
+  {
+    if ( bronzescale )
+      shuffle_period = player->find_spell( 382913 )->effectN( 1 ).period();
+  }
+
+  // TODO: currently in-game the shuffling does not start until the category cooldown 2042 is up. this is currently
+  // inconsistently applied between decks, with some having 20s and others have 90s. adjust to the correct behavior when
+  // DF goes live.
+  void shuffle() override
+  {
+    // NOTE: assumes last card, and thus highest index, is Ace
+    if ( jetscale && top_index == cards.size() - 1 )
+      return;
+
+    darkmoon_spell_deck_t::shuffle();
+  }
+
+  size_t get_index( bool init ) override
+  {
+    if ( azurescale )
+    {
+      if ( init )
+      {
+        // when you equip it you get the 7 card, but the first shuffle in combat remains at 7. for our purposes since we
+        // set the top card on initialization and shuffle again in combat_begin, we initialize to the 8 card, which is
+        // second to last.
+        top_index = card_ids.size() - 2;
+      }
+      else
+      {
+        if ( top_index == 0 )
+          top_index = card_ids.size() - 1;
+        else
+          top_index--;
+      }
+    }
+    else if ( emberscale )
+    {
+      top_index = player->rng().range( card_ids.size() / 2 ) * 2 + 1;
+    }
+    else
+    {
+      darkmoon_spell_deck_t::get_index();
+    }
+
+    return top_index;
+  }
+};
+
+template <typename Base = proc_spell_t>
+using DF_darkmoon_proc_t = darkmoon_deck_proc_t<Base, DF_darkmoon_deck_t>;
+
 void darkmoon_deck_dance( special_effect_t& effect )
 {
-  struct darkmoon_deck_dance_t : public darkmoon_deck_proc_t<>
+  struct darkmoon_deck_dance_t : public DF_darkmoon_proc_t<>
   {
     action_t* damage;
     action_t* heal;
@@ -476,16 +544,18 @@ void darkmoon_deck_dance( special_effect_t& effect )
     // TODO: confirm mixed order remains true in-game
     // card order is [ 2 3 6 7 4 5 8 A ]
     darkmoon_deck_dance_t( const special_effect_t& e )
-      : darkmoon_deck_proc_t( e, "darkmoon_deck_Dance", 382958,
+      : darkmoon_deck_proc_t( e, "refreshing_dance", 382958,
                               { 382861, 382862, 382865, 382866, 382863, 382864, 382867, 382860 } )
     {
       damage =
         create_proc_action<generic_proc_t>( "refreshing_dance_damage", e, "refreshing_dance_damage", 384613 );
-      damage->name_str_reporting = "refreshing_dance";
+      damage->background = damage->dual = true;
+      damage->stats = stats;
 
       heal =
         create_proc_action<base_generic_proc_t<proc_heal_t>>( "refreshing_dance_heal", e, "refreshing_dance_heal", 384624 );
-      heal->name_str_reporting = "refreshing_dance";
+      heal->name_str_reporting = "Heal";
+      heal->background = heal->dual = true;
     }
 
     void impact( action_state_t* s ) override
@@ -493,6 +563,7 @@ void darkmoon_deck_dance( special_effect_t& effect )
       darkmoon_deck_proc_t::impact( s );
 
       damage->execute_on_target( s->target );
+      heal->stats->add_execute( sim->current_time(), s->target );
 
       timespan_t delay = 0_ms;
       for ( size_t i = 0; i < 5 + deck->top_index; i++ )
@@ -508,12 +579,12 @@ void darkmoon_deck_dance( special_effect_t& effect )
     }
   };
   // TODO: currently this trinket is doing ~1% of the damage it should based on spell data.
-  effect.execute_action = create_proc_action<darkmoon_deck_dance_t>( "darkmoon_deck_dance", effect );
+  effect.execute_action = create_proc_action<darkmoon_deck_dance_t>( "refreshing_dance", effect );
 }
 
 void darkmoon_deck_inferno( special_effect_t& effect )
 {
-  struct darkmoon_deck_inferno_t : public darkmoon_deck_proc_t<>
+  struct darkmoon_deck_inferno_t : public DF_darkmoon_proc_t<>
   {
     // card order is [ 2 3 4 5 6 7 8 A ]
     darkmoon_deck_inferno_t( const special_effect_t& e )
@@ -556,11 +627,11 @@ struct awakening_rime_initializer_t : public item_targetdata_initializer_t
 
 void darkmoon_deck_rime( special_effect_t& effect )
 {
-  struct darkmoon_deck_rime_t : public darkmoon_deck_proc_t<>
+  struct darkmoon_deck_rime_t : public DF_darkmoon_proc_t<>
   {
     // card order is [ 2 3 4 5 6 7 8 A ]
     darkmoon_deck_rime_t( const special_effect_t& e )
-      : darkmoon_deck_proc_t( e, "darkmoon_deck_rime", 382958,
+      : darkmoon_deck_proc_t( e, "awakening_rime", 382958,
                               { 382845, 382846, 382847, 382848, 382849, 382850, 382851, 382844 } )
     {
       auto explode =
@@ -578,7 +649,7 @@ void darkmoon_deck_rime( special_effect_t& effect )
 
     timespan_t get_duration( size_t index ) const
     {
-      return 4_s + timespan_t::from_seconds( index );
+      return 5_s + timespan_t::from_seconds( index );
     }
 
     void impact( action_state_t* s ) override
@@ -591,6 +662,72 @@ void darkmoon_deck_rime( special_effect_t& effect )
   };
 
   effect.execute_action = create_proc_action<darkmoon_deck_rime_t>( "awakening_rime", effect );
+}
+
+void darkmoon_deck_watcher( special_effect_t& effect )
+{
+  struct darkmoon_deck_watcher_t : public DF_darkmoon_proc_t<proc_heal_t>
+  {
+    struct watchers_blessing_absorb_buff_t : public absorb_buff_t
+    {
+      buff_t* stat;
+
+      watchers_blessing_absorb_buff_t( const special_effect_t& e )
+        : absorb_buff_t( e.player, "watchers_blessing_absorb", e.driver(), e.item )
+      {
+        set_name_reporting( "Absorb" );
+
+        stat = buff_t::find( player, "watchers_blessing_stat" );
+        if ( !stat )
+        {
+          stat = make_buff<stat_buff_t>( player, "watchers_blessing_stat", player->find_spell( 384560 ), item )
+            ->set_name_reporting( "Stat" );
+        }
+      }
+
+      void expire_override( int s, timespan_t d ) override
+      {
+        absorb_buff_t::expire_override( s, d );
+
+        stat->trigger( d );
+      }
+    };
+
+    buff_t* shield;
+
+    // TODO: confirm mixed order remains true in-game
+    // card order is [ 2 3 6 7 4 5 8 A ]
+    darkmoon_deck_watcher_t( const special_effect_t& e )
+      : darkmoon_deck_proc_t( e, "watchers_blessing", 382958,
+                              { 382853, 382854, 382857, 382858, 382855, 382856, 382859, 382852 } )
+    {
+      shield = buff_t::find( player, "watchers_blessing_absorb" );
+      if ( !shield )
+        shield = make_buff<watchers_blessing_absorb_buff_t>( e );
+    }
+
+    timespan_t get_duration( size_t index ) const
+    {
+      return 5_s + timespan_t::from_seconds( index );
+    }
+
+    void execute() override
+    {
+      darkmoon_deck_proc_t::execute();
+
+      auto dur = get_duration( deck->top_index );
+      shield->trigger( dur );
+
+      // TODO: placeholder value put at 2s before depletion. change to reasonable value.
+      auto deplete = rng().gauss( sim->dragonflight_opts.darkmoon_deck_watcher_deplete, 1_s );
+      clamp( deplete, 0_ms, dur );
+
+      make_event( *sim, deplete, [ this ]() { shield->expire(); } );
+    }
+  };
+
+  effect.execute_action = create_proc_action<darkmoon_deck_watcher_t>( "watchers_blessing", effect );
+  effect.buff_disabled = true;
 }
 
 // TODO: Do properly and add both drivers
@@ -662,12 +799,18 @@ void register_special_effects()
   register_special_effect( 384615, items::darkmoon_deck_dance );
   register_special_effect( 382957, items::darkmoon_deck_inferno );
   register_special_effect( 386624, items::darkmoon_deck_rime );
+  register_special_effect( 384532, items::darkmoon_deck_watcher );
   register_special_effect( 383798, items::emerald_coachs_whistle );
   register_special_effect( 384112, items::the_cartographers_calipers );
   // Weapons
   // Armor
   // Disabled
   register_special_effect( 382958, items::DISABLED_EFFECT );  // df darkmoon deck shuffler
+  register_special_effect( 382913, items::DISABLED_EFFECT );  // bronzescale sigil (faster shuffle)
+  register_special_effect( 383336, items::DISABLED_EFFECT );  // azurescale sigil (shuffle greatest to least)
+  register_special_effect( 383333, items::DISABLED_EFFECT );  // emberscale sigil (no longer shuffles even cards)
+  register_special_effect( 383337, items::DISABLED_EFFECT );  // jetscale sigil (no longer shuffles on Ace)
+  register_special_effect( 383339, items::DISABLED_EFFECT );  // sagescale sigil (shuffle on jump) NYI
 }
 
 void register_target_data_initializers( sim_t& sim )

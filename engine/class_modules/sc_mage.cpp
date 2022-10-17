@@ -2244,7 +2244,17 @@ struct fire_mage_spell_t : public mage_spell_t
     if ( m <= 0.0 )
       return;
 
-    double amount = s->result_total / m * p()->cache.mastery_value();
+    double trigger_dmg = s->result_total;
+
+    // The extra crit damage from Overflowing Energy does not contribute to Ignite, factor it out.
+    if ( p()->bugs && s->result == RESULT_CRIT )
+    {
+      double spell_bonus = composite_crit_damage_bonus_multiplier() * composite_target_crit_damage_bonus_multiplier( s->target );
+      trigger_dmg /= 1.0 + s->result_crit_bonus;
+      trigger_dmg *= 1.0 + s->result_crit_bonus / spell_bonus;
+    }
+
+    double amount = trigger_dmg / m * p()->cache.mastery_value();
     if ( amount <= 0.0 )
       return;
 
@@ -7077,7 +7087,8 @@ void mage_t::create_buffs()
                                      ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
                                      ->set_chance( talents.feel_the_burn.ok() );
   buffs.fevered_incantation      = make_buff( this, "fevered_incantation", find_spell( 383811 ) )
-                                     ->set_default_value( talents.fevered_incantation->effectN( 1 ).base_value() )
+                                     ->set_default_value( talents.fevered_incantation->effectN( 1 ).percent() )
+                                     ->set_schools_from_effect( 1 )
                                      ->set_chance( talents.fevered_incantation.ok() );
   buffs.fiery_rush               = make_buff( this, "fiery_rush", find_spell( 383637 ) )
                                      ->set_default_value_from_effect( 1 )

@@ -374,6 +374,7 @@ public:
     propagate_const<proc_t*> bountiful_brew_proc;
     propagate_const<proc_t*> charred_passions_bok;
     propagate_const<proc_t*> charred_passions_sck;
+    propagate_const<proc_t*> chi_surge;
     propagate_const<proc_t*> counterstrike_tp;
     propagate_const<proc_t*> counterstrike_sck;
     propagate_const<proc_t*> elusive_footwork_proc;
@@ -657,6 +658,23 @@ public:
       player_talent_t faeline_harmony;
     } windwalker;
   } talent;
+
+  // Shared
+  struct shared_t
+  {
+    const spell_data_t* attenuation;
+    const spell_data_t* bonedust_brew;
+    const spell_data_t* bountiful_brew;
+    const spell_data_t* call_to_arms;
+    const spell_data_t* face_palm;
+    const spell_data_t* faeline_harmony;
+    const spell_data_t* faeline_stomp;
+    const spell_data_t* healing_elixir;
+    const spell_data_t* invokers_delight;
+    const spell_data_t* jade_ignition;
+    const spell_data_t* skyreach;
+    const spell_data_t* weapons_of_order;
+  } shared;
 
   // Specialization
   struct specs_t

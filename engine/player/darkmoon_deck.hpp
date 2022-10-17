@@ -22,26 +22,27 @@ struct darkmoon_deck_t
 {
   const special_effect_t& effect;
   player_t* player;
+  std::vector<unsigned> card_ids;
   timespan_t shuffle_period;
   size_t top_index;
 
-  darkmoon_deck_t( const special_effect_t& e );
+  darkmoon_deck_t( const special_effect_t& e, const std::vector<unsigned> c );
 
   virtual ~darkmoon_deck_t() = default;
 
-  virtual void initialize() {}
+  virtual void initialize() = 0;
   virtual void shuffle() = 0;
+  virtual size_t get_index( bool init = false );
 };
 
 template <typename BUFF_TYPE>
 struct darkmoon_buff_deck_t : public darkmoon_deck_t
 {
-  std::vector<unsigned> card_ids;
   std::vector<BUFF_TYPE*> cards;
   BUFF_TYPE* top_card;
 
   darkmoon_buff_deck_t( const special_effect_t& effect, const std::vector<unsigned> c )
-    : darkmoon_deck_t( effect ), card_ids( std::move( c ) ), top_card( nullptr )
+    : darkmoon_deck_t( effect, std::move( c ) ), top_card( nullptr )
   {}
 
   void initialize() override
@@ -56,13 +57,12 @@ struct darkmoon_buff_deck_t : public darkmoon_deck_t
     } );
 
     // Pick a card during init so top_card is always initialized.
-    top_index = player->rng().range( cards.size() );
-    top_card = cards[ top_index ];
+    top_card = cards[ get_index( true ) ];
   }
 
   void shuffle() override
   {
-    top_index = player->rng().range( cards.size() );
+    get_index();
 
     if ( top_card )
       top_card->expire();
@@ -78,13 +78,12 @@ struct darkmoon_buff_deck_t : public darkmoon_deck_t
 template <typename ACTION_TYPE>
 struct darkmoon_action_deck_t : public darkmoon_deck_t
 {
-  std::vector<unsigned> card_ids;
   std::vector<action_t*> cards;
   action_t* top_card;
   bool trigger_on_shuffle;
 
   darkmoon_action_deck_t( const special_effect_t& effect, std::vector<unsigned> c )
-    : darkmoon_deck_t( effect ), card_ids( std::move( c ) ), top_card( nullptr ), trigger_on_shuffle( false )
+    : darkmoon_deck_t( effect, std::move( c ) ), top_card( nullptr ), trigger_on_shuffle( false )
   {}
 
   darkmoon_action_deck_t<ACTION_TYPE>& set_trigger_on_shuffle( bool value )
@@ -105,16 +104,14 @@ struct darkmoon_action_deck_t : public darkmoon_deck_t
     } );
 
     // Pick a card during init so top_card is always initialized.
-    top_index = player->rng().range( cards.size() );
-    top_card = cards[ top_index ];
+    top_card = cards[ get_index( true ) ];
   }
 
   // For actions, just shuffle the deck, and optionally trigger the action if trigger_on_shuffle is
   // set
   void shuffle() override
   {
-    top_index = player->rng().range( cards.size() );
-    top_card = cards[ top_index ];
+    top_card = cards[ get_index() ];
     player->sim->print_debug( "{} top card is now {} ({}, id={}, index={})", top_card->player->name(), top_card->name(),
                               top_card->data().name_cstr(), top_card->data().id(), top_index );
 
@@ -129,12 +126,11 @@ struct darkmoon_action_deck_t : public darkmoon_deck_t
 // Generic deck to hold spell_data_t objects
 struct darkmoon_spell_deck_t : public darkmoon_deck_t
 {
-  std::vector<unsigned> card_ids;
   std::vector<const spell_data_t*> cards;
   const spell_data_t* top_card;
 
-  darkmoon_spell_deck_t( const special_effect_t& e, std::vector<unsigned> c )
-    : darkmoon_deck_t( e ), card_ids( std::move( c ) ), top_card( spell_data_t::nil() )
+  darkmoon_spell_deck_t( const special_effect_t& effect, std::vector<unsigned> c )
+    : darkmoon_deck_t( effect, std::move( c ) ), top_card( spell_data_t::nil() )
   {}
 
   void initialize() override
@@ -146,13 +142,13 @@ struct darkmoon_spell_deck_t : public darkmoon_deck_t
       cards.push_back( s );
     }
 
-    shuffle();
+    // Pick a card during init so top_card is always initialized.
+    top_card = cards[ get_index( true ) ];
   }
 
   void shuffle() override
   {
-    top_index = player->rng().range( cards.size() );
-    top_card = cards[ top_index ];
+    top_card = cards[ get_index() ];
     player->sim->print_debug( "{} top card is now {} (id={}, index={})", player->name(), top_card->name_cstr(),
                               top_card->id(), top_index );
   }
@@ -208,24 +204,26 @@ struct darkmoon_deck_cb_t : public dbc_proc_callback_t
 };
 
 // Generic darkmoon card on-use template class
-template <typename T = darkmoon_spell_deck_t, typename = std::enable_if_t<std::is_base_of_v<darkmoon_deck_t, T>>>
-struct darkmoon_deck_proc_t : public unique_gear::proc_spell_t
+template <typename Base = unique_gear::proc_spell_t, typename T = darkmoon_spell_deck_t>
+struct darkmoon_deck_proc_t : public Base
 {
+  static_assert( std::is_base_of_v<darkmoon_deck_t, T> );
+
   std::unique_ptr<T> deck;
 
   darkmoon_deck_proc_t( const special_effect_t& e, std::string_view n, unsigned shuffle_id,
                         std::vector<unsigned> cards )
-    : proc_spell_t( n, e.player, e.trigger(), e.item )
+    : Base( n, e.player, e.trigger(), e.item )
   {
-    auto shuffle = unique_gear::find_special_effect( player, shuffle_id );
+    auto shuffle = unique_gear::find_special_effect( Base::player, shuffle_id );
     if ( !shuffle )
       return;
 
     deck = std::make_unique<T>( *shuffle, std::move( cards ) );
     deck->initialize();
 
-    player->register_combat_begin( [ this ]( player_t* ) {
-      make_event<shuffle_event_t>( *player->sim, deck.get(), true );
+    Base::player->register_combat_begin( [ this ]( player_t* ) {
+      make_event<shuffle_event_t>( *Base::player->sim, deck.get(), true );
     } );
   }
 };
