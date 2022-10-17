@@ -5113,7 +5113,7 @@ struct call_to_arms_empowered_tiger_lightning_t : public monk_spell_t
 
   bool ready() override
   {
-    return p()->legendary.call_to_arms->ok() && p()->talent.windwalker.empowered_tiger_lightning->ok();
+    return p()->shared.call_to_arms->ok() && p()->talent.windwalker.empowered_tiger_lightning->ok();
   }
 };
 
@@ -5272,7 +5272,7 @@ struct weapons_of_order_t : public monk_spell_t
 
     monk_spell_t::execute();
 
-    if ( p()->legendary.call_to_arms->ok() )
+    if ( p()->shared.call_to_arms && p()->shared.call_to_arms->ok() )
     {
       switch ( p()->specialization() )
       {
@@ -8523,9 +8523,12 @@ void monk_t::init_spells()
     _valid( talent.brewmaster.bonedust_brew ) ? talent.brewmaster.bonedust_brew :
     _valid( talent.mistweaver.bonedust_brew ) ? talent.mistweaver.bonedust_brew : spell_data_t::nil();
 
-  shared.bountiful_brew = _valid( legendary.bountiful_brew ) ? (const spell_data_t *) legendary.bountiful_brew :
+  shared.bountiful_brew = _valid( legendary.bountiful_brew ) ? (const spell_data_t *)legendary.bountiful_brew :
     _valid( talent.brewmaster.bountiful_brew ) ? talent.brewmaster.bountiful_brew :
     _valid( talent.mistweaver.bountiful_brew ) ? talent.mistweaver.bountiful_brew : spell_data_t::nil();
+
+  shared.call_to_arms = _valid( legendary.call_to_arms ) ? (const spell_data_t*)legendary.call_to_arms :
+    _valid( talent.brewmaster.call_to_arms ) ? talent.brewmaster.call_to_arms : spell_data_t::nil();
 
   shared.faeline_stomp = _valid( covenant.night_fae ) ? covenant.night_fae :
     _valid( talent.windwalker.faeline_stomp ) ? talent.windwalker.faeline_stomp :
