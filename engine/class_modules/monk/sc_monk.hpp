@@ -658,6 +658,23 @@ public:
     } windwalker;
   } talent;
 
+  // Shared
+  struct shared_t
+  {
+    const spell_data_t* attenuation;
+    const spell_data_t* bonedust_brew;
+    const spell_data_t* bountiful_brew;
+    const spell_data_t* call_to_arms;
+    const spell_data_t* face_palm;
+    const spell_data_t* faeline_harmony;
+    const spell_data_t* faeline_stomp;
+    const spell_data_t* healing_elixir;
+    const spell_data_t* invokers_delight;
+    const spell_data_t* jade_ignition;
+    const spell_data_t* skyreach;
+    const spell_data_t* weapons_of_order;
+  } shared;
+
   // Specialization
   struct specs_t
   {
