@@ -1193,6 +1193,12 @@ double warlock_t::resource_gain( resource_e resource_type, double amount, gain_t
       warlock_pet_list.active->buffs.demonic_inspiration->trigger();
       procs.demonic_inspiration->occur();
     }
+
+    if ( filled && talents.wrathful_minion.ok() && warlock_pet_list.active )
+    {
+      warlock_pet_list.active->buffs.wrathful_minion->trigger();
+      procs.wrathful_minion->occur();
+    }
   }
 
   return amt;
@@ -1428,6 +1434,8 @@ void warlock_t::init_spells()
 
   talents.demonic_inspiration = find_talent_spell( talent_tree::CLASS, "Demonic Inspiration" ); // Should be ID 386858
 
+  talents.wrathful_minion = find_talent_spell( talent_tree::CLASS, "Wrathful Minion" ); // Should be ID 386864
+
   talents.soul_conduit              = find_talent_spell( "Soul Conduit" );
 
   // Legendaries
@@ -1498,6 +1506,7 @@ void warlock_t::init_procs()
   procs.conflagration_of_chaos_cf = get_proc( "conflagration_of_chaos_cf" );
   procs.conflagration_of_chaos_sb = get_proc( "conflagration_of_chaos_sb" );
   procs.demonic_inspiration = get_proc( "demonic_inspiration" );
+  procs.wrathful_minion = get_proc( "wrathful_minion" );
 }
 
 void warlock_t::init_base_stats()

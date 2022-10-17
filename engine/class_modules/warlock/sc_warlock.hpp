@@ -189,7 +189,7 @@ public:
     const spell_data_t* soul_conduit; // DF - Verify unchanged other than in class tree now
     // DF - Demonic Embrace is a stamina talent, may be irrelevant now
     player_talent_t demonic_inspiration; // Pet haste on Soul Shard fill
-    // DF - Wrathful Minion (Pet damage on soul shard fill)
+    player_talent_t wrathful_minion; // Pet damage buff on Soul Shard fill
     // DF - Demonic Fortitude is a health talent, may be irrelevant now
     // DF - Grimoire of Synergy (moved from SL Legendary power)
     // DF - Claw of Endereth (moved from SL Legendary power)
@@ -629,6 +629,7 @@ public:
   {
     proc_t* soul_conduit;
     proc_t* demonic_inspiration;
+    proc_t* wrathful_minion;
 
     // aff
     proc_t* nightfall;
@@ -1092,6 +1093,7 @@ struct grimoire_of_sacrifice_damage_t : public warlock_spell_t
     //  base_dd_multiplier *= 1.0 + p->warlock_base.destruction_warlock->effectN( 3 ).percent();
 
     base_dd_multiplier *= 1.0 + p->talents.demonic_inspiration->effectN( 7 ).percent();
+    base_dd_multiplier *= 1.0 + p->talents.wrathful_minion->effectN( 7 ).percent();
   }
 };
 

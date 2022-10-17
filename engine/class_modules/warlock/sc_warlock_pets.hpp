@@ -49,7 +49,7 @@ struct warlock_pet_t : public pet_t
     propagate_const<buff_t*> demonic_servitude; // Dummy buff for Tyrant that holds snapshot of Warlock's buff value
     propagate_const<buff_t*> fiendish_wrath; // Guillotine talent buff, causes AoE melee attacks and prevents Felstorm
     propagate_const<buff_t*> demonic_inspiration; // Haste buff triggered by filling a Soul Shard
-    // DF - Wrathful Minion
+    propagate_const<buff_t*> wrathful_minion; // Damage buff triggered by filling a Soul Shard
     // DF - Guillotine + Fiendish Wrath (Guillotine talent)
     // DF - Review permanent passive pet buffs and determine if they should be implemented or just assumed based on presence of talents
   } buffs;
