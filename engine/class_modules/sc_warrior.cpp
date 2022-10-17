@@ -139,8 +139,6 @@ public:
     buff_t* sephuzs_secret;
     buff_t* in_for_the_kill;
     // Azerite Traits
-    //buff_t* bloodcraze;
-    buff_t* bloodcraze_driver;
     buff_t* bloodsport;
     buff_t* brace_for_impact;
     buff_t* crushing_assault;
@@ -610,8 +608,6 @@ public:
 
   struct tier_set_t
   {
-    const spell_data_t* frenzied_destruction_2p;
-    const spell_data_t* frenzied_destruction_4p;
     const spell_data_t* pile_on_2p;
     const spell_data_t* pile_on_4p;
     const spell_data_t* outburst_4p;
@@ -730,7 +726,6 @@ public:
     azerite_power_t reckless_flurry;
     azerite_power_t pulverizing_blows;
     azerite_power_t infinite_fury;
-    azerite_power_t bloodcraze;
     azerite_power_t cold_steel_hot_blood;
     azerite_power_t unbridled_ferocity;
 
@@ -941,12 +936,12 @@ struct warrior_action_t : public Base
   {
     // mastery/buff damage increase.
     bool fury_mastery_direct, fury_mastery_dot, arms_mastery,
-    colossus_smash, siegebreaker, ashen_juggernaut,
-    ashen_juggernaut_conduit, recklessness, slaughtering_strikes;
+    siegebreaker;
     // talents
-    bool avatar, sweeping_strikes, booming_voice;
-    // azerite
-    bool crushing_assault;
+    bool avatar, sweeping_strikes, booming_voice, bloodcraze,
+    ashen_juggernaut, recklessness, slaughtering_strikes, colossus_smash;
+    // azerite & conduit
+    bool crushing_assault, ashen_juggernaut_conduit;
 
     affected_by_t()
       : fury_mastery_direct( false ),
@@ -959,6 +954,7 @@ struct warrior_action_t : public Base
         recklessness( false ),
         slaughtering_strikes( false ),
         avatar( false ),
+        bloodcraze( false ),
         sweeping_strikes( false ),
         booming_voice( false ),
         crushing_assault( false )
@@ -1042,7 +1038,6 @@ public:
     ab::apply_affecting_conduit( p()->conduit.piercing_verdict );
 
     // passive set bonuses
-    ab::apply_affecting_aura( p()->tier_set.frenzied_destruction_2p );
 
     // passive talents
     ab::apply_affecting_aura( p()->talents.arms.bloodborne );
@@ -1076,6 +1071,7 @@ public:
     affected_by.ashen_juggernaut_conduit = ab::data().affected_by( p()->conduit.ashen_juggernaut->effectN( 1 ).trigger()->effectN( 1 ) );
     affected_by.slaughtering_strikes = ab::data().affected_by( p()->find_spell( 393931 )->effectN( 1 ) );
     affected_by.ashen_juggernaut    = ab::data().affected_by( p()->talents.fury.ashen_juggernaut->effectN( 1 ).trigger()->effectN( 1 ) );
+    affected_by.bloodcraze          = ab::data().affected_by( p()->talents.fury.bloodcraze->effectN( 1 ).trigger()->effectN( 1 ) );
     affected_by.sweeping_strikes    = ab::data().affected_by( p()->talents.arms.sweeping_strikes->effectN( 1 ) );
     affected_by.fury_mastery_direct = ab::data().affected_by( p()->mastery.unshackled_fury->effectN( 1 ) );
     affected_by.fury_mastery_dot    = ab::data().affected_by( p()->mastery.unshackled_fury->effectN( 2 ) );
@@ -1196,6 +1192,10 @@ public:
       c += p()->buff.ashen_juggernaut_conduit->stack_value();
     }
 
+    if( affected_by.bloodcraze )
+    {
+      c += p()->buff.bloodcraze->stack_value();
+    }
 
     if ( affected_by.recklessness && p()->buff.recklessness->up() )
     {
@@ -1625,6 +1625,41 @@ struct reckless_flurry_t : warrior_attack_t
   }
 };
 
+struct annihilator_t : warrior_attack_t
+{
+  annihilator_t( warrior_t* p ) : warrior_attack_t( "annihilator", p, p->find_spell( 383915 ) )
+  {
+    background  = true;
+    if ( p->talents.fury.swift_strikes->ok() )
+    {
+      energize_amount += p->talents.fury.swift_strikes->effectN( 2 ).resource( RESOURCE_RAGE );
+    }
+  }
+
+  double action_multiplier() const override
+  {
+    double am = warrior_attack_t::action_multiplier();
+
+    if ( p()->talents.fury.cruelty->ok() && p()->buff.enrage->check() )
+    {
+      am *= 1.0 + p()->talents.fury.cruelty->effectN( 2 ).percent();
+    }
+
+    return am;
+  }
+
+  void execute() override
+  {
+    warrior_attack_t::execute();
+
+    if ( p()->talents.fury.slaughtering_strikes->ok() )
+    {
+      p()->buff.slaughtering_strikes_an->trigger();
+    }
+  }
+};
+
+
 struct sidearm_t : warrior_attack_t
 {
   sidearm_t( warrior_t* p ) : warrior_attack_t( "sidearm", p, p->find_spell( 384391 ) )
@@ -1657,11 +1692,12 @@ struct devastator_t : warrior_attack_t
 
 struct melee_t : public warrior_attack_t
 {
+  warrior_attack_t* annihilator;
   warrior_attack_t* reckless_flurry;
   warrior_attack_t* sidearm;
   bool mh_lost_melee_contact, oh_lost_melee_contact;
   double base_rage_generation, arms_rage_multiplier, fury_rage_multiplier, seasoned_soldier_crit_mult;
-  double sidearm_chance;
+  double sidearm_chance, enrage_chance;
   devastator_t* devastator;
   melee_t( util::string_view name, warrior_t* p )
     : warrior_attack_t( name, p, spell_data_t::nil() ), reckless_flurry( nullptr ),
@@ -1672,7 +1708,9 @@ struct melee_t : public warrior_attack_t
       arms_rage_multiplier( 4.00 ),
       fury_rage_multiplier( 1.00 ),
       seasoned_soldier_crit_mult( p->spec.seasoned_soldier->effectN( 1 ).percent() ),
-      devastator( nullptr ), sidearm( nullptr), sidearm_chance( p->talents.warrior.sidearm->proc_chance() )
+      devastator( nullptr ), annihilator( nullptr ), sidearm( nullptr),
+      sidearm_chance( p->talents.warrior.sidearm->proc_chance() ),
+      enrage_chance( p->talents.fury.frenzied_flurry->proc_chance() )
   {
     background = repeating = may_glance = usable_while_channeling = true;
     allow_class_ability_procs = not_a_proc = true;
@@ -1693,7 +1731,11 @@ struct melee_t : public warrior_attack_t
     {
       reckless_flurry = new reckless_flurry_t( p );
     }
-    if ( p->talents.warrior.sidearm.ok() )
+    if ( p->talents.fury.annihilator->ok() )
+    {
+      annihilator = new annihilator_t( p );
+    }
+    if ( p->talents.warrior.sidearm->ok() )
     {
       sidearm = new sidearm_t( p );
     }
@@ -1778,6 +1820,11 @@ struct melee_t : public warrior_attack_t
 
       if ( result_is_hit( execute_state->result ) )
       {
+        if ( p()->main_hand_weapon.group() == WEAPON_1H && p()->off_hand_weapon.group() == WEAPON_1H 
+          && p()->talents.fury.frenzied_flurry->ok() && rng().roll( enrage_chance ) )
+        {
+          p()->enrage();
+        }
         if ( p()->talents.protection.devastator->ok() )
         {
           devastator->target = execute_state->target;
@@ -1807,7 +1854,13 @@ struct melee_t : public warrior_attack_t
       reckless_flurry->execute();
     }
 
-    if ( sidearm && result_is_hit( s->result ) &&rng().roll( sidearm_chance ) )
+    if ( annihilator && result_is_hit( s->result ) )
+    {
+      annihilator->set_target( s->target );
+      annihilator->execute();
+    }
+
+    if ( sidearm && result_is_hit( s->result ) && rng().roll( sidearm_chance ) )
     {
       sidearm->set_target( s->target );
       sidearm->execute();
@@ -2368,7 +2421,7 @@ struct bloodthirst_t : public warrior_attack_t
       gushing_wound( nullptr ),
       aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) ),
       enrage_chance( p->spec.enrage->effectN( 2 ).percent() ),
-      rage_from_cold_steel_hot_blood( p->find_spell( 288087 )->effectN( 1 ).base_value() / 10.0 )
+      rage_from_cold_steel_hot_blood( p->find_spell( 383978 )->effectN( 1 ).base_value() / 10.0 )
   {
     parse_options( options_str );
 
@@ -2410,15 +2463,12 @@ struct bloodthirst_t : public warrior_attack_t
       am *= 1.0 + ( p()->conduit.vicious_contempt.value() / 100.0 );
     }
 
-    return am;
-  }
+    if ( p()->talents.fury.vicious_contempt->ok() && ( target->health_percentage() < 35 ) )
+    {
+      am *= 1.0 + ( p()->talents.fury.vicious_contempt->effectN( 1 ).percent() );
+    }
 
-  double composite_crit_chance() const override
-  {
-    double c = warrior_attack_t::composite_crit_chance();
-    if ( p()->buff.bloodcraze->check() )
-      c += p()->buff.bloodcraze->check_stack_value() / p()->current.rating.attack_crit;
-    return c;
+    return am;
   }
 
   void impact( action_state_t* s ) override
@@ -2429,6 +2479,15 @@ struct bloodthirst_t : public warrior_attack_t
     {
       gushing_wound->set_target( s->target );
       gushing_wound->execute();
+    }
+
+    if ( p()->talents.fury.bloodcraze->ok() && !result_is_miss( s->result ) && s->result != RESULT_CRIT )
+    {
+      p()->buff.bloodcraze->trigger();
+    }
+    if ( p()->talents.fury.bloodcraze->ok() && s->result == RESULT_CRIT )
+    {
+      p()->buff.bloodcraze->expire();
     }
 
     if ( p()->talents.fury.cold_steel_hot_blood.ok() && execute_state->result == RESULT_CRIT )
@@ -2494,7 +2553,7 @@ struct bloodbath_t : public warrior_attack_t
       gushing_wound( nullptr ),
       aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) ),
       enrage_chance( p->spec.enrage->effectN( 2 ).percent() ),
-      rage_from_cold_steel_hot_blood( p->find_spell( 288087 )->effectN( 1 ).base_value() / 10.0 )
+      rage_from_cold_steel_hot_blood( p->find_spell( 383978 )->effectN( 1 ).base_value() / 10.0 )
   {
     parse_options( options_str );
 
@@ -2527,14 +2586,6 @@ struct bloodbath_t : public warrior_attack_t
     return warrior_attack_t::n_targets();
   }
 
-  double composite_crit_chance() const override
-  {
-    double c = warrior_attack_t::composite_crit_chance();
-    if ( p()->buff.bloodcraze->check() )
-      c += p()->buff.bloodcraze->check_stack_value() / p()->current.rating.attack_crit;
-    return c;
-  }
-
   void impact( action_state_t* s ) override
   {
     warrior_attack_t::impact( s );
@@ -2543,6 +2594,15 @@ struct bloodbath_t : public warrior_attack_t
     {
       gushing_wound->set_target( s->target );
       gushing_wound->execute();
+    }
+
+    if ( p()->talents.fury.bloodcraze->ok() && !result_is_miss( s->result ) && s->result != RESULT_CRIT )
+    {
+      p()->buff.bloodcraze->trigger();
+    }
+    if ( p()->talents.fury.bloodcraze->ok() && s->result == RESULT_CRIT )
+    {
+      p()->buff.bloodcraze->expire();
     }
 
     if ( p()->talents.fury.cold_steel_hot_blood.ok() && execute_state->result == RESULT_CRIT )
@@ -3616,14 +3676,12 @@ struct raging_blow_t : public warrior_attack_t
   raging_blow_attack_t* oh_attack;
   double cd_reset_chance;
   double wrath_and_fury_reset_chance;
-  double frenzied_destruction_chance;
   raging_blow_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "raging_blow", p, p->talents.fury.raging_blow ),
       mh_attack( nullptr ),
       oh_attack( nullptr ),
       cd_reset_chance( p->talents.fury.raging_blow->effectN( 1 ).percent() ),
-      wrath_and_fury_reset_chance( p->talents.fury.wrath_and_fury->proc_chance() ),
-      frenzied_destruction_chance( p->tier_set.frenzied_destruction_4p ->effectN( 1 ).percent() )
+      wrath_and_fury_reset_chance( p->talents.fury.wrath_and_fury->proc_chance() )
   {
     parse_options( options_str );
 
@@ -3685,27 +3743,6 @@ struct raging_blow_t : public warrior_attack_t
     {
       ( p()->buff.will_of_the_berserker->trigger() ); // RB refreshs, but does not initially trigger
     }
-    if ( p()->sets->has_set_bonus( WARRIOR_FURY, T28, B4 ) && rng().roll( frenzied_destruction_chance ) )
-    {
-      if ( p()->buff.recklessness->check() )
-      {
-        p()->buff.recklessness->extend_duration( p(), timespan_t::from_seconds( 3 ) );
-
-        if ( p()->talents.fury.reckless_abandon->ok() ) // tier triggers ability override, but not rage gen
-        {
-          p()->buff.reckless_abandon->extend_duration( p(), timespan_t::from_seconds( 3 ) );
-        }
-      }
-      else
-      {
-      p()->buff.recklessness->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, timespan_t::from_seconds( 3 ) );
-
-        if ( p()->talents.fury.reckless_abandon->ok() ) // tier triggers ability override, but not rage gen
-        {
-          p()->buff.reckless_abandon->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, timespan_t::from_seconds( 3 ) );
-        }
-      }
-    }
   }
 
   bool ready() override
@@ -3716,6 +3753,10 @@ struct raging_blow_t : public warrior_attack_t
       return false;
     }
     if ( p()->talents.fury.reckless_abandon->ok() && p()->buff.reckless_abandon->check() )
+    {
+      return false;
+    }
+    if ( p()->talents.fury.annihilator->ok() )
     {
       return false;
     }
@@ -3770,13 +3811,11 @@ struct crushing_blow_t : public warrior_attack_t
   crushing_blow_attack_t* mh_attack;
   crushing_blow_attack_t* oh_attack;
   double cd_reset_chance;
-  double frenzied_destruction_chance;
   crushing_blow_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "crushing_blow", p, p->spec.crushing_blow ),
       mh_attack( nullptr ),
       oh_attack( nullptr ),
-      cd_reset_chance( p->spec.crushing_blow->effectN( 1 ).percent() ),
-      frenzied_destruction_chance( p->tier_set.frenzied_destruction_4p ->effectN( 1 ).percent() )
+      cd_reset_chance( p->spec.crushing_blow->effectN( 1 ).percent() )
   {
     parse_options( options_str );
 
@@ -3834,27 +3873,6 @@ struct crushing_blow_t : public warrior_attack_t
     {
       ( p()->buff.will_of_the_berserker->trigger() ); // CB refreshs, but does not initially trigger
     }
-    if ( p()->sets->has_set_bonus( WARRIOR_FURY, T28, B4 ) && rng().roll( frenzied_destruction_chance ) )
-    {
-      if ( p()->buff.recklessness->check() )
-      {
-        p()->buff.recklessness->extend_duration( p(), timespan_t::from_seconds( 3 ) );
-
-        if ( p()->talents.fury.reckless_abandon->ok() ) // tier triggers ability override, but not rage gen
-        {
-          p()->buff.reckless_abandon->extend_duration( p(), timespan_t::from_seconds( 3 ) );
-        }
-      }
-      else
-      {
-      p()->buff.recklessness->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, timespan_t::from_seconds( 3 ) );
-
-        if ( p()->talents.fury.reckless_abandon->ok() ) // tier triggers ability override, but not rage gen
-        {
-          p()->buff.reckless_abandon->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, timespan_t::from_seconds( 3 ) );
-        }
-      }
-    }
   }
 
   bool ready() override
@@ -3865,6 +3883,10 @@ struct crushing_blow_t : public warrior_attack_t
       return false;
     }
     if ( !p()->talents.fury.reckless_abandon->ok() || !p()->buff.reckless_abandon->check() )
+    {
+      return false;
+    }
+    if ( p()->talents.fury.annihilator->ok() )
     {
       return false;
     }
@@ -4196,6 +4218,7 @@ struct rampage_attack_t : public warrior_attack_t
   double rage_from_valarjar_berserking;
   double rage_from_simmering_rage;
   double reckless_defense_chance;
+  double hack_and_slash_chance;
   rampage_attack_t( warrior_t* p, const spell_data_t* rampage, util::string_view name )
     : warrior_attack_t( name, p, rampage ),
       aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) ),
@@ -4203,6 +4226,7 @@ struct rampage_attack_t : public warrior_attack_t
       first_attack_missed( false ),
       valarjar_berserking( false ),
       simmering_rage( false ),
+      hack_and_slash_chance( p->talents.fury.hack_and_slash->proc_chance() ),
       rage_from_valarjar_berserking( p->find_spell( 248179 )->effectN( 1 ).base_value() / 10.0 ),
       rage_from_simmering_rage(
           ( p->azerite.simmering_rage.spell()->effectN( 1 ).base_value() ) / 10.0 ),
@@ -4231,6 +4255,11 @@ struct rampage_attack_t : public warrior_attack_t
     {  // If the first attack misses, all of the rest do as well. However, if any other attack misses, the attacks after
        // continue. The animations and timing of everything else still occur, so we can't just cancel rampage.
       warrior_attack_t::impact( s );
+      if ( p()->talents.fury.hack_and_slash->ok() && rng().roll( hack_and_slash_chance ) )
+      {
+        p()->cooldown.raging_blow->reset( true );
+        p()->cooldown.crushing_blow->reset( true );
+      }
       if ( p()->legendary.valarjar_berserkers != spell_data_t::not_found() && s->result == RESULT_CRIT &&
            target == s->target )
       {
@@ -4334,14 +4363,14 @@ struct rampage_parent_t : public warrior_attack_t
   double deathmaker_chance;
   double unbridled_chance;
   double frothing_berserker_chance;
-  double hack_and_slash_chance;
+  double hack_and_slash_conduit_chance;
   double rage_from_frothing_berserker;
   rampage_parent_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "rampage", p, p->talents.fury.rampage ),
     deathmaker_chance( p->legendary.deathmaker->proc_chance() ),
     unbridled_chance( p->talents.fury.unbridled_ferocity->effectN( 1 ).base_value() / 100.0 ),
     frothing_berserker_chance( p->talents.warrior.frothing_berserker->proc_chance() ),
-    hack_and_slash_chance( p->conduit.hack_and_slash.percent() / 10.0 ),
+    hack_and_slash_conduit_chance( p->conduit.hack_and_slash.percent() / 10.0 ),
     rage_from_frothing_berserker( p->talents.warrior.frothing_berserker->effectN( 1 ).base_value() / 100.0 )
   {
     parse_options( options_str );
@@ -4406,7 +4435,7 @@ struct rampage_parent_t : public warrior_attack_t
         td( target )->debuffs_siegebreaker->trigger( timespan_t::from_millis( p()->legendary.deathmaker->effectN( 1 ).base_value() ) );
       }
     }
-    if ( p()->conduit.hack_and_slash->ok() && rng().roll( hack_and_slash_chance ) )
+    if ( p()->conduit.hack_and_slash->ok() && rng().roll( hack_and_slash_conduit_chance ) )
     {
       p()->cooldown.raging_blow->reset( true );
       p()->cooldown.crushing_blow->reset( true );
@@ -7037,7 +7066,6 @@ void warrior_t::init_spells()
   azerite.reckless_flurry   = find_azerite_spell( "Reckless Flurry" );
   azerite.pulverizing_blows = find_azerite_spell( "Pulverizing Blows" );
   azerite.infinite_fury     = find_azerite_spell( "Infinite Fury" );
-  azerite.bloodcraze        = find_azerite_spell( "Bloodcraze" );
   azerite.cold_steel_hot_blood   = find_azerite_spell( "Cold Steel, Hot Blood" );
   azerite.unbridled_ferocity     = find_azerite_spell( "Unbridled Ferocity" );
   // Essences
@@ -7079,8 +7107,6 @@ void warrior_t::init_spells()
   conduit.unnerving_focus             = find_conduit_spell( "Unnerving Focus" );
 
   // Tier Sets
-  tier_set.frenzied_destruction_2p    = sets -> set( WARRIOR_FURY, T28, B2 );
-  tier_set.frenzied_destruction_4p    = sets -> set( WARRIOR_FURY, T28, B4 );
   tier_set.pile_on_2p                 = sets -> set( WARRIOR_ARMS, T28, B2 );
   tier_set.pile_on_4p                 = sets -> set( WARRIOR_ARMS, T28, B4 );
   tier_set.outburst_4p                = find_spell( 364639 );
@@ -7128,6 +7154,11 @@ void warrior_t::init_spells()
              off_hand_weapon.group() == WEAPON_1H && talents.fury.single_minded_fury->ok() )
   {
     auto_attack_multiplier *= 1.0 + talents.fury.single_minded_fury->effectN( 4 ).percent();
+  }
+  if ( specialization() == WARRIOR_FURY && main_hand_weapon.group() == WEAPON_1H &&
+       off_hand_weapon.group() == WEAPON_1H && talents.fury.frenzied_flurry->ok() )
+  {
+    auto_attack_multiplier *= 1.0 + talents.fury.frenzied_flurry->effectN( 1 ).percent();
   }
   if ( specialization() == WARRIOR_FURY && talents.warrior.dual_wield_specialization->ok() )
   {
@@ -8099,6 +8130,9 @@ void warrior_t::create_buffs()
   buff.slaughtering_strikes_an = make_buff( this, "slaughtering_strikes", find_spell( 393943 ) )
     ->set_default_value( find_spell( 393943 )->effectN( 1 ).percent() );
 
+  buff.bloodcraze = make_buff( this, "bloodcraze", find_spell( 393951 ) )
+    ->set_default_value( talents.fury.bloodcraze->effectN( 1 ).percent() );
+
   //buff.vengeance_ignore_pain = make_buff( this, "vengeance_ignore_pain", find_spell( 202574 ) )
     //->set_chance( talents.vengeance->ok() )
     //->set_default_value( find_spell( 202574 )->effectN( 1 ).percent() );
@@ -8114,19 +8148,6 @@ void warrior_t::create_buffs()
   buff.whirlwind = make_buff( this, "whirlwind", find_spell( 85739 ) );
 
   // Azerite
-  const spell_data_t* bloodcraze_trigger = azerite.bloodcraze.spell()->effectN( 1 ).trigger();
-  const spell_data_t* bloodcraze_buff    = bloodcraze_trigger->effectN( 1 ).trigger();
-  buff.bloodcraze_driver =
-      make_buff( this, "bloodcraze_driver", bloodcraze_trigger )
-          ->set_trigger_spell( azerite.bloodcraze )
-          ->set_quiet( true )
-          ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED )
-          ->set_tick_callback( [this]( buff_t*, int, timespan_t ) { buff.bloodcraze->trigger(); } );
-
-  buff.bloodcraze = make_buff( this, "bloodcraze", bloodcraze_buff )
-                        ->set_trigger_spell( bloodcraze_trigger )
-                        ->set_default_value( azerite.bloodcraze.value( 1 ) );
-
   const spell_data_t* crushing_assault_trigger = azerite.crushing_assault.spell()->effectN( 1 ).trigger();
   const spell_data_t* crushing_assault_buff    = crushing_assault_trigger->effectN( 1 ).trigger();
   buff.crushing_assault                        = make_buff( this, "crushing_assault", crushing_assault_buff )
@@ -8552,8 +8573,6 @@ void warrior_t::combat_begin()
   }
   player_t::combat_begin();
   buff.into_the_fray -> trigger( into_the_fray_friends < 0 ? buff.into_the_fray -> max_stack() : into_the_fray_friends + 1 );
-  buff.bloodcraze->trigger( buff.bloodcraze->data().max_stacks() );
-  buff.bloodcraze_driver->trigger();
 }
 
 // Into the fray
