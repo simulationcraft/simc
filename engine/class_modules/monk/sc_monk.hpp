@@ -665,6 +665,7 @@ public:
     const spell_data_t* bonedust_brew;
     const spell_data_t* bountiful_brew;
     const spell_data_t* call_to_arms;
+    const spell_data_t* face_palm;
     const spell_data_t* faeline_harmony;
     const spell_data_t* faeline_stomp;
     const spell_data_t* healing_elixir;
