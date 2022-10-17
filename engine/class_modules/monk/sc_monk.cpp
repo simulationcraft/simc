@@ -1797,7 +1797,12 @@ struct tiger_palm_t : public monk_melee_attack_t
     {
       // Bonedust Brew
       if ( get_td( s->target )->debuff.bonedust_brew->up() )
-        brew_cooldown_reduction( p()->covenant.necrolord->effectN( 3 ).base_value() );
+      {
+        if ( p()->covenant.necrolord->ok() )
+          brew_cooldown_reduction( p()->covenant.necrolord->effectN( 3 ).base_value() );
+        else if ( p()->talent.brewmaster.bonedust_brew->ok() && !p()->bugs )
+          brew_cooldown_reduction( p()->talent.brewmaster.bonedust_brew->effectN( 3 ).base_value() );
+      }
 
       if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T29, B2 ) && p()->cooldown.brewmasters_rhythm->up() ) {
         p()->buff.brewmasters_rhythm->trigger();
@@ -3659,8 +3664,10 @@ struct keg_smash_t : public monk_melee_attack_t
       get_td( s->target )->debuff.weapons_of_order->trigger();
 
     // Bonedust Brew
-    if ( get_td( s->target )->debuff.bonedust_brew->up() )
+    if ( p()->covenant.necrolord->ok() )
       brew_cooldown_reduction( p()->covenant.necrolord->effectN( 3 ).base_value() );
+    else if ( p()->talent.brewmaster.bonedust_brew->ok() && !p()->bugs )
+      brew_cooldown_reduction( p()->talent.brewmaster.bonedust_brew->effectN( 3 ).base_value() );
   }
 };
 
@@ -7447,7 +7454,6 @@ monk_td_t::monk_td_t( player_t* target, monk_t* p ) : actor_target_data_t( targe
   // Covenant Abilities
   debuff.bonedust_brew = make_buff( *this, "bonedust_brew_debuff", p->find_spell( 325216 ) )
                              ->set_cooldown( timespan_t::zero() )
-                             ->set_chance( p->covenant.necrolord->ok() ? 1 : 0 )
                              ->set_default_value_from_effect( 3 );
 
   debuff.faeline_stomp = make_buff( *this, "faeline_stomp_debuff", p->find_spell( 327257 ) );
