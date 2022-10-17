@@ -35,9 +35,9 @@ st->add_action( "convoke_the_spirits,if=buff.ca_inc.remains>4|(!talent.primordia
 st->add_action( "warrior_of_elune" );
 st->add_action( "force_of_nature,if=astral_power.deficit>variable.passive_asp+20" );
 st->add_action( "astral_communion,if=astral_power.deficit>variable.passive_asp+75" );
-st->add_action( "variable,name=enter_lunar,value=eclipse.any_next|buff.eclipse_solar.remains<action.wrath.execute_time" );
-st->add_action( "starsurge,if=talent.rattle_the_stars&buff.rattled_stars.up&variable.enter_lunar&buff.rattled_stars.remains<action.starfire.execute_time" );
-st->add_action( "starfire,if=variable.enter_lunar" );
+st->add_action( "variable,name=enter_solar,value=eclipse.any_next|buff.eclipse_solar.remains<action.wrath.execute_time" );
+st->add_action( "starsurge,if=talent.rattle_the_stars&buff.rattled_stars.up&variable.enter_solar&buff.rattled_stars.remains<action.starfire.execute_time" );
+st->add_action( "starfire,if=variable.enter_solar" );
 st->add_action( "fury_of_elune,if=astral_power.deficit>variable.passive_asp+8" );
 st->add_action( "new_moon,if=astral_power.deficit>variable.passive_asp+10&(charges=2&recharge_time<5|charges=3)" );
 st->add_action( "half_moon,if=astral_power.deficit>variable.passive_asp+20" );
