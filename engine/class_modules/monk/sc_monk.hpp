@@ -658,6 +658,13 @@ public:
     } windwalker;
   } talent;
 
+  // Shared
+  struct shared_t
+  {
+    const spell_data_t* attenuation;
+    const spell_data_t* bonedust_brew;
+  } shared;
+
   // Specialization
   struct specs_t
   {
