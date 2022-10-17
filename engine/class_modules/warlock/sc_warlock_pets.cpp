@@ -87,6 +87,9 @@ void warlock_pet_t::create_buffs()
   // All Specs
   buffs.demonic_synergy = make_buff( this, "demonic_synergy", find_spell( 337060 ) )
                               ->set_default_value( o()->legendary.relic_of_demonic_synergy->effectN( 1 ).base_value() );
+
+  buffs.demonic_inspiration = make_buff( this, "demonic_inspiration", find_spell( 386861 ) )
+                                  ->set_default_value( o()->talents.demonic_inspiration->effectN( 1 ).percent() );
 }
 
 void warlock_pet_t::init_base_stats()
@@ -198,6 +201,46 @@ double warlock_pet_t::composite_player_target_multiplier( player_t* target, scho
     if ( td->debuffs_from_the_shadows->check() )
       m *= 1.0 + td->debuffs_from_the_shadows->check_value();
   }
+
+  return m;
+}
+
+double warlock_pet_t::composite_spell_haste() const
+{
+  double m = pet_t::composite_spell_haste();
+
+  if ( buffs.demonic_inspiration->check() )
+    m *= 1.0 + buffs.demonic_inspiration->check_value();
+
+  return m;
+}
+
+double warlock_pet_t::composite_spell_speed() const
+{
+  double m = pet_t::composite_spell_speed();
+
+  if ( buffs.demonic_inspiration->check() )
+    m /= 1.0 + buffs.demonic_inspiration->check_value();
+
+  return m;
+}
+
+double warlock_pet_t::composite_melee_haste() const
+{
+  double m = pet_t::composite_melee_haste();
+
+  if ( buffs.demonic_inspiration->check() )
+    m *= 1.0 + buffs.demonic_inspiration->check_value();
+
+  return m;
+}
+
+double warlock_pet_t::composite_melee_speed() const
+{
+  double m = pet_t::composite_melee_speed();
+
+  if ( buffs.demonic_inspiration->check() )
+    m /= 1.0 + buffs.demonic_inspiration->check_value();
 
   return m;
 }

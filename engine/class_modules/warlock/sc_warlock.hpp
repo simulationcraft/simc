@@ -188,7 +188,7 @@ public:
     // Class Tree
     const spell_data_t* soul_conduit; // DF - Verify unchanged other than in class tree now
     // DF - Demonic Embrace is a stamina talent, may be irrelevant now
-    // DF - Demonic Inspiration (Pet haste on soul shard fill)
+    player_talent_t demonic_inspiration; // Pet haste on Soul Shard fill
     // DF - Wrathful Minion (Pet damage on soul shard fill)
     // DF - Demonic Fortitude is a health talent, may be irrelevant now
     // DF - Grimoire of Synergy (moved from SL Legendary power)
@@ -628,6 +628,7 @@ public:
   struct procs_t
   {
     proc_t* soul_conduit;
+    proc_t* demonic_inspiration;
 
     // aff
     proc_t* nightfall;
@@ -720,6 +721,7 @@ public:
   double composite_melee_crit_chance() const override;
   double resource_regen_per_second( resource_e ) const override;
   double composite_attribute_multiplier( attribute_e attr ) const override;
+  double resource_gain( resource_e, double, gain_t* source = nullptr, action_t* action = nullptr ) override;
   void combat_begin() override;
   void init_assessors() override;
   std::unique_ptr<expr_t> create_expression( util::string_view name_str ) override;
@@ -1083,11 +1085,13 @@ struct grimoire_of_sacrifice_damage_t : public warlock_spell_t
     proc = true;
 
     // 2022-09-30 - It seems like the damage is either double dipping on the spec aura effect, or is benefiting from pet damage multiplier as well
-    // Using the latter for now as that seems *slightly* less silly
-    if ( p->specialization() == WARLOCK_AFFLICTION )
-      base_dd_multiplier *= 1.0 + p->warlock_base.affliction_warlock->effectN( 3 ).percent();
-    if ( p->specialization() == WARLOCK_DESTRUCTION )
-      base_dd_multiplier *= 1.0 + p->warlock_base.destruction_warlock->effectN( 3 ).percent();
+    // 2022-10-17 - Appears to be fixed, leaving for later cleanup
+    //if ( p->specialization() == WARLOCK_AFFLICTION )
+    //  base_dd_multiplier *= 1.0 + p->warlock_base.affliction_warlock->effectN( 3 ).percent();
+    //if ( p->specialization() == WARLOCK_DESTRUCTION )
+    //  base_dd_multiplier *= 1.0 + p->warlock_base.destruction_warlock->effectN( 3 ).percent();
+
+    base_dd_multiplier *= 1.0 + p->talents.demonic_inspiration->effectN( 7 ).percent();
   }
 };
 
