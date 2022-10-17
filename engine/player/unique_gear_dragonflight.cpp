@@ -532,7 +532,22 @@ struct DF_darkmoon_deck_t : public darkmoon_spell_deck_t
 };
 
 template <typename Base = proc_spell_t>
-using DF_darkmoon_proc_t = darkmoon_deck_proc_t<Base, DF_darkmoon_deck_t>;
+struct DF_darkmoon_proc_t : public darkmoon_deck_proc_t<Base, DF_darkmoon_deck_t>
+{
+  using base_t = darkmoon_deck_proc_t<Base, DF_darkmoon_deck_t>;
+
+  DF_darkmoon_proc_t( const special_effect_t& e, std::string_view n, unsigned shuffle_id, std::vector<unsigned> cards )
+    : base_t( e, n, shuffle_id, std::move( cards ) )
+  {}
+
+  void execute() override
+  {
+    base_t::execute();
+
+    if ( base_t::deck->shuffle_event )
+      base_t::deck->shuffle_event->reschedule( base_t::data().category_cooldown() );
+  }
+};
 
 void darkmoon_deck_dance( special_effect_t& effect )
 {
@@ -544,8 +559,8 @@ void darkmoon_deck_dance( special_effect_t& effect )
     // TODO: confirm mixed order remains true in-game
     // card order is [ 2 3 6 7 4 5 8 A ]
     darkmoon_deck_dance_t( const special_effect_t& e )
-      : darkmoon_deck_proc_t( e, "refreshing_dance", 382958,
-                              { 382861, 382862, 382865, 382866, 382863, 382864, 382867, 382860 } )
+      : DF_darkmoon_proc_t( e, "refreshing_dance", 382958,
+                            { 382861, 382862, 382865, 382866, 382863, 382864, 382867, 382860 } )
     {
       damage =
         create_proc_action<generic_proc_t>( "refreshing_dance_damage", e, "refreshing_dance_damage", 384613 );
@@ -560,7 +575,7 @@ void darkmoon_deck_dance( special_effect_t& effect )
 
     void impact( action_state_t* s ) override
     {
-      darkmoon_deck_proc_t::impact( s );
+      DF_darkmoon_proc_t::impact( s );
 
       damage->execute_on_target( s->target );
       heal->stats->add_execute( sim->current_time(), s->target );
@@ -588,8 +603,8 @@ void darkmoon_deck_inferno( special_effect_t& effect )
   {
     // card order is [ 2 3 4 5 6 7 8 A ]
     darkmoon_deck_inferno_t( const special_effect_t& e )
-      : darkmoon_deck_proc_t( e, "darkmoon_deck_inferno", 382958,
-                              { 382837, 382838, 382839, 382840, 382841, 382842, 382843, 382835 } )
+      : DF_darkmoon_proc_t( e, "darkmoon_deck_inferno", 382958,
+                            { 382837, 382838, 382839, 382840, 382841, 382842, 382843, 382835 } )
     {}
 
     double get_mult( size_t index ) const
@@ -600,7 +615,7 @@ void darkmoon_deck_inferno( special_effect_t& effect )
 
     double action_multiplier() const override
     {
-      return darkmoon_deck_proc_t::action_multiplier() * get_mult( deck->top_index );
+      return DF_darkmoon_proc_t::action_multiplier() * get_mult( deck->top_index );
     }
   };
 
@@ -631,8 +646,8 @@ void darkmoon_deck_rime( special_effect_t& effect )
   {
     // card order is [ 2 3 4 5 6 7 8 A ]
     darkmoon_deck_rime_t( const special_effect_t& e )
-      : darkmoon_deck_proc_t( e, "awakening_rime", 382958,
-                              { 382845, 382846, 382847, 382848, 382849, 382850, 382851, 382844 } )
+      : DF_darkmoon_proc_t( e, "awakening_rime", 382958,
+                            { 382845, 382846, 382847, 382848, 382849, 382850, 382851, 382844 } )
     {
       auto explode =
           create_proc_action<generic_aoe_proc_t>( "awakened_rime", e, "awakened_rime", e.player->find_spell( 370880 ) );
@@ -654,7 +669,7 @@ void darkmoon_deck_rime( special_effect_t& effect )
 
     void impact( action_state_t* s ) override
     {
-      darkmoon_deck_proc_t::impact( s );
+      DF_darkmoon_proc_t::impact( s );
 
       auto td = player->get_target_data( s->target );
       td->debuff.awakening_rime->trigger( get_duration( deck->top_index ) );
@@ -698,8 +713,8 @@ void darkmoon_deck_watcher( special_effect_t& effect )
     // TODO: confirm mixed order remains true in-game
     // card order is [ 2 3 6 7 4 5 8 A ]
     darkmoon_deck_watcher_t( const special_effect_t& e )
-      : darkmoon_deck_proc_t( e, "watchers_blessing", 382958,
-                              { 382853, 382854, 382857, 382858, 382855, 382856, 382859, 382852 } )
+      : DF_darkmoon_proc_t( e, "watchers_blessing", 382958,
+                            { 382853, 382854, 382857, 382858, 382855, 382856, 382859, 382852 } )
     {
       shield = buff_t::find( player, "watchers_blessing_absorb" );
       if ( !shield )
@@ -713,7 +728,7 @@ void darkmoon_deck_watcher( special_effect_t& effect )
 
     void execute() override
     {
-      darkmoon_deck_proc_t::execute();
+      DF_darkmoon_proc_t::execute();
 
       auto dur = get_duration( deck->top_index );
       shield->trigger( dur );

@@ -11,6 +11,7 @@ darkmoon_deck_t::darkmoon_deck_t( const special_effect_t& e, const std::vector<u
   : effect( e ),
     player( e.player ),
     card_ids( std::move( c ) ),
+    shuffle_event( nullptr ),
     shuffle_period( effect.driver()->effectN( 1 ).period() ),
     top_index( 0 )
 {}

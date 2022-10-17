@@ -23,6 +23,7 @@ struct darkmoon_deck_t
   const special_effect_t& effect;
   player_t* player;
   std::vector<unsigned> card_ids;
+  event_t* shuffle_event;
   timespan_t shuffle_period;
   size_t top_index;
 
@@ -175,7 +176,7 @@ struct shuffle_event_t : public event_t
 
   void execute() override
   {
-    make_event<shuffle_event_t>( sim(), deck );
+    deck->shuffle_event = make_event<shuffle_event_t>( sim(), deck );
   }
 };
 
@@ -192,7 +193,7 @@ struct darkmoon_deck_cb_t : public dbc_proc_callback_t
     deck->initialize();
 
     effect.player->register_combat_begin( [ this ]( player_t* ) {
-      make_event<shuffle_event_t>( *listener->sim, deck.get(), true );
+      deck->shuffle_event = make_event<shuffle_event_t>( *listener->sim, deck.get(), true );
     } );
   }
 
@@ -223,7 +224,7 @@ struct darkmoon_deck_proc_t : public Base
     deck->initialize();
 
     Base::player->register_combat_begin( [ this ]( player_t* ) {
-      make_event<shuffle_event_t>( *Base::player->sim, deck.get(), true );
+      deck->shuffle_event = make_event<shuffle_event_t>( *Base::player->sim, deck.get(), true );
     } );
   }
 };
