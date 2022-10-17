@@ -5462,7 +5462,15 @@ struct bonedust_brew_damage_t : public monk_spell_t
       if ( p()->buff.bonedust_brew_attenuation_hidden->up() )
       {
         // Saved at -500
-        p()->cooldown.bonedust_brew->adjust( p()->conduit.bone_marrow_hops->effectN( 2 ).time_value(), true );
+        auto cooldown_reduction = timespan_t::zero();
+        if ( p()->talent.brewmaster.attenuation->ok() )
+          cooldown_reduction = p()->talent.brewmaster.attenuation->effectN( 2 ).time_value();
+        else if ( p()->talent.mistweaver.attenuation->ok() )
+          cooldown_reduction = p()->talent.mistweaver.attenuation->effectN( 2 ).time_value();
+        else if ( p()->talent.windwalker.attenuation->ok() )
+          cooldown_reduction = p()->talent.windwalker.attenuation->effectN( 2 ).time_value();
+
+        p()->cooldown.bonedust_brew->adjust( cooldown_reduction, true );
 
         p()->buff.bonedust_brew_attenuation_hidden->decrement();
         p()->proc.attenuation->occur();
