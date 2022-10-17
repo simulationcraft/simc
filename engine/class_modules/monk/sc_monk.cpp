@@ -2407,7 +2407,7 @@ struct blackout_kick_t : public monk_melee_attack_t
           timespan_t cd_reduction = -1 * p()->spec.blackout_kick->effectN( 3 ).time_value();
           if ( p()->buff.weapons_of_order->up() )
           {
-            cd_reduction += ( -1 * p()->covenant.kyrian->effectN( 8 ).time_value() );
+            cd_reduction += ( -1 * p()->shared.weapons_of_order->effectN( 8 ).time_value() );
             if ( p()->buff.serenity->up() )
               p()->proc.blackout_kick_cdr_serenity_with_woo->occur();
             else
@@ -5253,8 +5253,7 @@ struct summon_white_tiger_statue_spell_t : public monk_spell_t
 struct weapons_of_order_t : public monk_spell_t
 {
   weapons_of_order_t( monk_t& p, util::string_view options_str )
-    : monk_spell_t( "weapons_of_order", &p, p.covenant.kyrian->ok() ? p.covenant.kyrian :
-                                            (p.talent.brewmaster.weapons_of_order && p.talent.brewmaster.weapons_of_order->ok() ? p.talent.brewmaster.weapons_of_order : spell_data_t::nil() ) )
+    : monk_spell_t( "weapons_of_order", &p, p.shared.weapons_of_order && p.shared.weapons_of_order->ok() ? p.shared.weapons_of_order : spell_data_t::nil() )
   {
     parse_options( options_str );
     may_combo_strike            = true;
@@ -8553,6 +8552,9 @@ void monk_t::init_spells()
   shared.faeline_stomp = _valid( covenant.night_fae ) ? covenant.night_fae :
     _valid( talent.windwalker.faeline_stomp ) ? talent.windwalker.faeline_stomp :
     _valid( talent.mistweaver.faeline_stomp ) ? talent.mistweaver.faeline_stomp : spell_data_t::nil();
+
+  shared.weapons_of_order = _valid( covenant.kyrian ) ? covenant.kyrian :
+    _valid( talent.brewmaster.weapons_of_order ) ? talent.brewmaster.weapons_of_order :spell_data_t::nil();
 }
 
 // monk_t::init_base ========================================================
@@ -8921,7 +8923,7 @@ void monk_t::create_buffs ()
         : timespan_t::zero() ) )
     ->set_cooldown( timespan_t::zero() )
     ->add_invalidate( CACHE_MASTERY )
-    ->set_trigger_spell( covenant.kyrian );
+    ->set_trigger_spell( shared.weapons_of_order );
 
   buff.invoke_xuen_call_to_arms =
       new buffs::call_to_arms_xuen_buff_t( *this, "invoke_xuen_call_to_arms", passives.call_to_arms_invoke_xuen );
@@ -8931,7 +8933,7 @@ void monk_t::create_buffs ()
 
   buff.faeline_stomp = make_buff( this, "faeline_stomp", find_spell( 327104 ) )
     ->set_default_value_from_effect( 2 )
-    ->set_trigger_spell( covenant.night_fae );
+    ->set_trigger_spell( shared.faeline_stomp );
 
   buff.faeline_stomp_reset = make_buff( this, "faeline_stomp_reset", find_spell( 327276 ) );
 
