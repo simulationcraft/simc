@@ -1430,6 +1430,7 @@ class SpellDataGenerator(DataGenerator):
           ( 171457, 0 ), # Chimaera Shot - Nature
           ( 201594, 1 ), # Stampede
           ( 118455, 5 ), # Beast Cleave
+          ( 389448, 5 ), # Kill Cleave
           ( 186254, 5 ), # Bestial Wrath
           ( 392054, 5 ), # Piercing Fangs
           ( 257622, 2 ), # Trick Shots buff
