@@ -1305,17 +1305,18 @@ struct dimensional_rift_t : public destruction_spell_t
   {
     destruction_spell_t::execute();
 
-    int rift = 3;
+    // TOCHECK: Are all rift types equally likely?
+    int rift = rng().range( 3 );
 
     switch ( rift )
     {
-    case 1:
+    case 0:
       shadowy_tear->execute_on_target( target );
       break;
-    case 2:
+    case 1:
       unstable_tear->execute_on_target( target );
       break;
-    case 3:
+    case 2:
       chaos_tear->execute_on_target( target );
       break;
     default:
