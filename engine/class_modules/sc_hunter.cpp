@@ -1556,6 +1556,7 @@ struct hunter_main_pet_base_t : public hunter_pet_t
     action_t* brutal_companion_ba = nullptr;
     action_t* kill_command = nullptr;
     action_t* beast_cleave = nullptr;
+    action_t* kill_cleave = nullptr;
     action_t* bestial_wrath = nullptr;
     action_t* stomp = nullptr;
     action_t* bloodshed = nullptr;
@@ -2119,7 +2120,7 @@ struct beast_cleave_attack_t: public hunter_pet_action_t<hunter_main_pet_base_t,
   }
 };
 
-static void trigger_beast_cleave( const action_state_t* s, double multiplier = 0 )
+static void trigger_beast_cleave( const action_state_t* s )
 {
   if ( !s -> action -> result_is_hit( s -> result ) )
     return;
@@ -2129,18 +2130,53 @@ static void trigger_beast_cleave( const action_state_t* s, double multiplier = 0
 
   auto p = debug_cast<hunter_main_pet_base_t*>( s -> action -> player );
 
-  if ( !p -> buffs.beast_cleave -> check() )
+  if ( !p -> buffs.beast_cleave -> up() )
     return;
-
-  if ( multiplier == 0 )
-    multiplier = p -> buffs.beast_cleave -> check_value();
 
   // Target multipliers do not replicate to secondary targets
   const double target_da_multiplier = ( 1.0 / s -> target_da_multiplier );
 
-  const double amount = s -> result_total * multiplier * target_da_multiplier;
+  const double amount = s -> result_total * p -> buffs.beast_cleave -> check_value() * target_da_multiplier;
   p -> active.beast_cleave -> execute_on_target( s -> target, amount );
 }
+
+// Kill Cleave ==============================================================
+
+struct kill_cleave_t: public hunter_pet_action_t<hunter_main_pet_base_t, melee_attack_t>
+{
+  kill_cleave_t( hunter_main_pet_base_t* p ):
+    hunter_pet_action_t( "kill_cleave", p, p -> find_spell( 389448 ) )
+  {
+    background = true;
+    callbacks = false;
+    may_miss = false;
+    may_crit = false;
+    proc = false;
+    // The starting damage includes all the buffs
+    base_dd_min = base_dd_max = 0;
+    spell_power_mod.direct = attack_power_mod.direct = 0;
+    weapon_multiplier = 0;
+
+    aoe = -1;
+    reduced_aoe_targets = data().effectN( 2 ).base_value();
+  }
+
+  void init() override
+  {
+    hunter_pet_action_t::init();
+    snapshot_flags |= STATE_TGT_MUL_DA;
+  }
+
+  size_t available_targets( std::vector< player_t* >& tl ) const override
+  {
+    hunter_pet_action_t::available_targets( tl );
+
+    // Cannot hit the original target.
+    tl.erase( std::remove( tl.begin(), tl.end(), target ), tl.end() );
+
+    return tl.size();
+  }
+};
 
 struct kill_command_bm_mm_t: public kill_command_base_t
 {
@@ -2207,8 +2243,13 @@ struct kill_command_bm_mm_t: public kill_command_base_t
         o() -> cooldowns.aspect_of_the_wild -> adjust( -ferocious_appetite_reduction );
     }
 
-    if ( o() -> talents.kill_cleave.ok() )
-      trigger_beast_cleave( s, o() -> talents.kill_cleave -> effectN( 1 ).percent() );
+    if ( o() -> talents.kill_cleave.ok() && s -> action -> result_is_hit( s -> result ) &&
+      s -> action -> sim -> active_enemies > 1 && p() -> buffs.beast_cleave -> up() )
+    {
+      const double target_da_multiplier = ( 1.0 / s -> target_da_multiplier );
+      const double amount = s -> result_total * o() -> talents.kill_cleave -> effectN( 1 ).percent() * target_da_multiplier;
+      p() -> active.kill_cleave -> execute_on_target( s -> target, amount );
+    }
   }
 
   double action_multiplier() const override
@@ -2504,6 +2545,9 @@ void hunter_main_pet_base_t::init_spells()
 
   if ( o() -> talents.beast_cleave.ok() )
     active.beast_cleave = new actions::beast_cleave_attack_t( this );
+
+  if ( o() -> talents.kill_cleave.ok() )
+    active.kill_cleave = new actions::kill_cleave_t( this );
 
   if ( o() -> talents.stomp.ok() )
     active.stomp = new actions::stomp_t( this );
