@@ -5573,11 +5573,7 @@ struct faeline_stomp_t : public monk_spell_t
   int aoe_initial_cap;
   int ww_aoe_cap;
   faeline_stomp_t( monk_t& p, util::string_view options_str )
-      : monk_spell_t( "faeline_stomp", &p,
-          (p.covenant.night_fae->ok() ? p.covenant.night_fae :
-              ( p.talent.mistweaver.faeline_stomp && p.talent.mistweaver.faeline_stomp->ok() ? p.talent.mistweaver.faeline_stomp : 
-                  ( p.talent.windwalker.faeline_stomp && p.talent.windwalker.faeline_stomp->ok() ? p.talent.windwalker.faeline_stomp
-                                                                              : spell_data_t::nil() ) ) ) ),
+      : monk_spell_t( "faeline_stomp", &p, p.shared.faeline_stomp && p.shared.faeline_stomp->ok() ? p.shared.faeline_stomp : spell_data_t::nil() ),
       damage( new faeline_stomp_damage_t( p ) ),
       heal( new faeline_stomp_heal_t( p ) ),
       ww_damage( new faeline_stomp_ww_damage_t( p ) ),
@@ -5588,12 +5584,7 @@ struct faeline_stomp_t : public monk_spell_t
     may_combo_strike = true;
     cast_during_sck  = true;
 
-    if ( p.covenant.night_fae )
-        aoe = (int)p.covenant.night_fae->effectN( 3 ).base_value();
-    else if ( p.specialization() == MONK_MISTWEAVER && p.talent.mistweaver.faeline_stomp->ok() )
-        aoe = (int)p.talent.mistweaver.faeline_stomp->effectN( 3 ).base_value();
-    else if ( p.specialization() == MONK_WINDWALKER && p.talent.windwalker.faeline_stomp->ok() )
-        aoe = (int)p.talent.windwalker.faeline_stomp->effectN( 3 ).base_value();
+    aoe = (int)p.shared.faeline_stomp->effectN( 3 ).base_value();
 
     trigger_bountiful_brew      = true;
   }
@@ -8549,15 +8540,19 @@ void monk_t::init_spells()
   // These spells share common effects but are unique in that you may only have one
   auto _valid = [ this ] ( auto spell ) { return ( spell && spell->ok() ); };
 
-  shared.attenuation = _valid(conduit.bone_marrow_hops) ? conduit.bone_marrow_hops :
-                        _valid(talent.windwalker.attenuation) ? talent.windwalker.attenuation : 
-                          _valid(talent.brewmaster.attenuation) ? talent.brewmaster.attenuation : 
-                            _valid(talent.mistweaver.attenuation) ? talent.mistweaver.attenuation : spell_data_t::nil();
+  shared.attenuation = _valid( conduit.bone_marrow_hops ) ? conduit.bone_marrow_hops :
+    _valid( talent.windwalker.attenuation ) ? talent.windwalker.attenuation :
+    _valid( talent.brewmaster.attenuation ) ? talent.brewmaster.attenuation :
+    _valid( talent.mistweaver.attenuation ) ? talent.mistweaver.attenuation : spell_data_t::nil();
 
-  shared.bonedust_brew = _valid(covenant.necrolord) ? covenant.necrolord :
-                          _valid(talent.windwalker.bonedust_brew) ? talent.windwalker.bonedust_brew :
-                            _valid(talent.brewmaster.bonedust_brew) ? talent.brewmaster.bonedust_brew :
-                              _valid(talent.mistweaver.bonedust_brew) ? talent.mistweaver.bonedust_brew : spell_data_t::nil();
+  shared.bonedust_brew = _valid( covenant.necrolord ) ? covenant.necrolord :
+    _valid( talent.windwalker.bonedust_brew ) ? talent.windwalker.bonedust_brew :
+    _valid( talent.brewmaster.bonedust_brew ) ? talent.brewmaster.bonedust_brew :
+    _valid( talent.mistweaver.bonedust_brew ) ? talent.mistweaver.bonedust_brew : spell_data_t::nil();
+
+  shared.faeline_stomp = _valid( covenant.night_fae ) ? covenant.night_fae :
+    _valid( talent.windwalker.faeline_stomp ) ? talent.windwalker.faeline_stomp :
+    _valid( talent.mistweaver.faeline_stomp ) ? talent.mistweaver.faeline_stomp : spell_data_t::nil();
 }
 
 // monk_t::init_base ========================================================
