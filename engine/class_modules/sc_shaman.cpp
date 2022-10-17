@@ -10641,15 +10641,18 @@ void shaman_t::create_buffs()
   buff.natures_swiftness = make_buff( this, "natures_swiftness", talent.natures_swiftness );
 
   buff.elemental_blast_crit = make_buff<buff_t>( this, "elemental_blast_critical_strike", find_spell( 118522 ) )
-    ->set_default_value( find_spell( 118522 )->effectN( 1 ).percent() * ( 1.0 + spec.elemental_shaman->effectN( 18 ).percent() ) )
+    ->set_default_value_from_effect_type(A_MOD_ALL_CRIT_CHANCE)
+    ->apply_affecting_aura(spec.elemental_shaman)
     ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
 
   buff.elemental_blast_haste = make_buff<buff_t>( this, "elemental_blast_haste", find_spell( 173183 ) )
-    ->set_default_value( find_spell( 173183 )->effectN( 1 ).percent() * ( 1.0 + spec.elemental_shaman->effectN( 18 ).percent() ) )
+    ->set_default_value_from_effect_type(A_HASTE_ALL)
+    ->apply_affecting_aura(spec.elemental_shaman)
     ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
 
   buff.elemental_blast_mastery = make_buff<buff_t>( this, "elemental_blast_mastery", find_spell( 173184 ) )
-    ->set_default_value( find_spell( 173184 )->effectN( 1 ).base_value() * ( 1.0 + spec.elemental_shaman->effectN( 18 ).percent() ) )
+    ->set_default_value_from_effect_type(A_MOD_MASTERY_PCT)
+    ->apply_affecting_aura(spec.elemental_shaman)
     ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY );
 
   buff.stormkeeper = make_buff( this, "stormkeeper", find_spell( 191634 ) )
