@@ -3664,10 +3664,13 @@ struct keg_smash_t : public monk_melee_attack_t
       get_td( s->target )->debuff.weapons_of_order->trigger();
 
     // Bonedust Brew
-    if ( p()->covenant.necrolord->ok() )
-      brew_cooldown_reduction( p()->covenant.necrolord->effectN( 3 ).base_value() );
-    else if ( p()->talent.brewmaster.bonedust_brew->ok() )
-      brew_cooldown_reduction( p()->talent.brewmaster.bonedust_brew->effectN( 3 ).base_value() );
+    if ( get_td( s->target )->debuff.bonedust_brew->up() )
+    {
+      if ( p()->covenant.necrolord->ok() )
+        brew_cooldown_reduction( p()->covenant.necrolord->effectN( 3 ).base_value() );
+      else if ( p()->talent.brewmaster.bonedust_brew->ok() )
+        brew_cooldown_reduction( p()->talent.brewmaster.bonedust_brew->effectN( 3 ).base_value() );
+    }
   }
 };
 
