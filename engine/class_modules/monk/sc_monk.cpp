@@ -8565,6 +8565,18 @@ void monk_t::init_spells()
 
   // Passive Action Spells
   passive_actions.thunderfist = new actions::thunderfist_t( this );
+
+  // Shared Spells
+  // These spells share common effects but are unique in that you may only have one
+  shared.attenuation = conduit.bone_marrow_hops ? conduit.bone_marrow_hops :
+                        talent.windwalker.attenuation ? talent.windwalker.attenuation : 
+                          talent.brewmaster.attenuation ? talent.brewmaster.attenuation : 
+                            talent.mistweaver.attenuation ? talent.mistweaver.attenuation : spell_data_t::nil();
+
+  shared.bonedust_brew = covenant.necrolord ? covenant.necrolord :
+                          talent.windwalker.bonedust_brew ? talent.windwalker.bonedust_brew :
+                            talent.brewmaster.bonedust_brew ? talent.brewmaster.bonedust_brew :
+                              talent.mistweaver.bonedust_brew ? talent.mistweaver.bonedust_brew : spell_data_t::nil();
 }
 
 // monk_t::init_base ========================================================
@@ -9311,39 +9323,22 @@ void monk_t::bonedust_brew_assessor(action_state_t* s)
 
     double proc_chance = 0;
     double percent = 0;
-    if ( covenant.necrolord->ok() )
+
+    auto bonedust_brew = shared.bonedust_brew;
+    if ( bonedust_brew && bonedust_brew->ok() )
     {
-      proc_chance = covenant.necrolord->proc_chance();
-      percent     = covenant.necrolord->effectN( 1 ).percent();
-    }
-    else if ( talent.brewmaster.bonedust_brew->ok() )
-    {
-      proc_chance = talent.brewmaster.bonedust_brew->proc_chance();
-      percent     = talent.brewmaster.bonedust_brew->effectN( 1 ).percent();
-    }
-    else if ( talent.mistweaver.bonedust_brew->ok() )
-    {
-      proc_chance = talent.mistweaver.bonedust_brew->proc_chance();
-      percent     = talent.mistweaver.bonedust_brew->effectN( 1 ).percent();
-    }
-    else if ( talent.windwalker.bonedust_brew->ok() )
-    {
-      proc_chance = talent.windwalker.bonedust_brew->proc_chance();
-      percent     = talent.windwalker.bonedust_brew->effectN( 1 ).percent();
+      proc_chance = bonedust_brew->proc_chance();
+      percent     = bonedust_brew->effectN( 1 ).percent();
     }
 
     if ( rng().roll( proc_chance ) )
     {
       double damage = s->result_amount * percent;
 
-      if (conduit.bone_marrow_hops->ok())
-        damage *= 1 + conduit.bone_marrow_hops.percent();
-      else if (talent.brewmaster.attenuation->ok() )
-        damage *= 1 + talent.brewmaster.attenuation->effectN( 1 ).percent();
-      else if ( talent.mistweaver.attenuation->ok() )
-        damage *= 1 + talent.mistweaver.attenuation->effectN( 1 ).percent();
-      else if ( talent.windwalker.attenuation->ok() )
-        damage *= 1 + talent.windwalker.attenuation->effectN( 1 ).percent();
+      auto attenuation = shared.attenuation;
+
+      if ( attenuation && attenuation->ok() )
+        damage *= 1 + attenuation->effectN( 1 ).percent();
 
       active_actions.bonedust_brew_dmg->base_dd_min = damage;
       active_actions.bonedust_brew_dmg->base_dd_max = damage;
