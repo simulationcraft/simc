@@ -208,24 +208,26 @@ struct darkmoon_deck_cb_t : public dbc_proc_callback_t
 };
 
 // Generic darkmoon card on-use template class
-template <typename T = darkmoon_spell_deck_t, typename = std::enable_if_t<std::is_base_of_v<darkmoon_deck_t, T>>>
-struct darkmoon_deck_proc_t : public unique_gear::proc_spell_t
+template <typename Base = unique_gear::proc_spell_t, typename T = darkmoon_spell_deck_t>
+struct darkmoon_deck_proc_t : public Base
 {
+  static_assert( std::is_base_of_v<darkmoon_deck_t, T> );
+
   std::unique_ptr<T> deck;
 
   darkmoon_deck_proc_t( const special_effect_t& e, std::string_view n, unsigned shuffle_id,
                         std::vector<unsigned> cards )
-    : proc_spell_t( n, e.player, e.trigger(), e.item )
+    : Base( n, e.player, e.trigger(), e.item )
   {
-    auto shuffle = unique_gear::find_special_effect( player, shuffle_id );
+    auto shuffle = unique_gear::find_special_effect( Base::player, shuffle_id );
     if ( !shuffle )
       return;
 
     deck = std::make_unique<T>( *shuffle, std::move( cards ) );
     deck->initialize();
 
-    player->register_combat_begin( [ this ]( player_t* ) {
-      make_event<shuffle_event_t>( *player->sim, deck.get(), true );
+    Base::player->register_combat_begin( [ this ]( player_t* ) {
+      make_event<shuffle_event_t>( *Base::player->sim, deck.get(), true );
     } );
   }
 };

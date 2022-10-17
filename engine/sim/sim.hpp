@@ -468,6 +468,12 @@ struct sim_t : private sc_thread_t
     double soothing_shade_duration_multiplier = 1.0;
   } shadowlands_opts;
 
+  struct dragonflight_opt_t
+  {
+    // Average time before the shield from darkmoon deck: watcher is depleted
+    timespan_t darkmoon_deck_watcher_shield_depletion = 2_s;
+  } dragonflight_opts;
+
   // Auras and De-Buffs
   auto_dispose<std::vector<buff_t*>> buff_list;
 

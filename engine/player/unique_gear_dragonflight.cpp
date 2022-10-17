@@ -14,6 +14,7 @@
 #include "item/item.hpp"
 #include "item/item_targetdata_initializer.hpp"
 #include "sim/sim.hpp"
+#include "stats.hpp"
 #include "unique_gear.hpp"
 #include "unique_gear_helper.hpp"
 
@@ -476,16 +477,18 @@ void darkmoon_deck_dance( special_effect_t& effect )
     // TODO: confirm mixed order remains true in-game
     // card order is [ 2 3 6 7 4 5 8 A ]
     darkmoon_deck_dance_t( const special_effect_t& e )
-      : darkmoon_deck_proc_t( e, "darkmoon_deck_Dance", 382958,
+      : darkmoon_deck_proc_t( e, "refreshing_dance", 382958,
                               { 382861, 382862, 382865, 382866, 382863, 382864, 382867, 382860 } )
     {
       damage =
         create_proc_action<generic_proc_t>( "refreshing_dance_damage", e, "refreshing_dance_damage", 384613 );
-      damage->name_str_reporting = "refreshing_dance";
+      damage->background = damage->dual = true;
+      damage->stats = stats;
 
       heal =
         create_proc_action<base_generic_proc_t<proc_heal_t>>( "refreshing_dance_heal", e, "refreshing_dance_heal", 384624 );
-      heal->name_str_reporting = "refreshing_dance";
+      heal->name_str_reporting = "Heal";
+      heal->background = heal->dual = true;
     }
 
     void impact( action_state_t* s ) override
@@ -493,6 +496,7 @@ void darkmoon_deck_dance( special_effect_t& effect )
       darkmoon_deck_proc_t::impact( s );
 
       damage->execute_on_target( s->target );
+      heal->stats->add_execute( sim->current_time(), s->target );
 
       timespan_t delay = 0_ms;
       for ( size_t i = 0; i < 5 + deck->top_index; i++ )
@@ -508,7 +512,7 @@ void darkmoon_deck_dance( special_effect_t& effect )
     }
   };
   // TODO: currently this trinket is doing ~1% of the damage it should based on spell data.
-  effect.execute_action = create_proc_action<darkmoon_deck_dance_t>( "darkmoon_deck_dance", effect );
+  effect.execute_action = create_proc_action<darkmoon_deck_dance_t>( "refreshing_dance", effect );
 }
 
 void darkmoon_deck_inferno( special_effect_t& effect )
@@ -560,7 +564,7 @@ void darkmoon_deck_rime( special_effect_t& effect )
   {
     // card order is [ 2 3 4 5 6 7 8 A ]
     darkmoon_deck_rime_t( const special_effect_t& e )
-      : darkmoon_deck_proc_t( e, "darkmoon_deck_rime", 382958,
+      : darkmoon_deck_proc_t( e, "awakening_rime", 382958,
                               { 382845, 382846, 382847, 382848, 382849, 382850, 382851, 382844 } )
     {
       auto explode =
@@ -578,7 +582,7 @@ void darkmoon_deck_rime( special_effect_t& effect )
 
     timespan_t get_duration( size_t index ) const
     {
-      return 4_s + timespan_t::from_seconds( index );
+      return 5_s + timespan_t::from_seconds( index );
     }
 
     void impact( action_state_t* s ) override
@@ -591,6 +595,74 @@ void darkmoon_deck_rime( special_effect_t& effect )
   };
 
   effect.execute_action = create_proc_action<darkmoon_deck_rime_t>( "awakening_rime", effect );
+}
+
+void darkmoon_deck_watcher( special_effect_t& effect )
+{
+  struct darkmoon_deck_watcher_t : public darkmoon_deck_proc_t<proc_heal_t>
+  {
+    struct watchers_blessing_absorb_buff_t : public absorb_buff_t
+    {
+      buff_t* stat;
+
+      watchers_blessing_absorb_buff_t( const special_effect_t& e )
+        : absorb_buff_t( e.player, "watchers_blessing_absorb", e.driver(), e.item )
+      {
+        set_name_reporting( "Absorb" );
+
+        stat = buff_t::find( player, "watchers_blessing_stat" );
+        if ( !stat )
+        {
+          stat = make_buff<stat_buff_t>( player, "watchers_blessing_stat", player->find_spell( 384560 ), item )
+            ->set_name_reporting( "Stat" );
+        }
+      }
+
+      void expire_override( int s, timespan_t d ) override
+      {
+        absorb_buff_t::expire_override( s, d );
+
+        stat->trigger( d );
+      }
+    };
+
+    buff_t* shield;
+
+    // TODO: confirm mixed order remains true in-game
+    // card order is [ 2 3 6 7 4 5 8 A ]
+    darkmoon_deck_watcher_t( const special_effect_t& e )
+      : darkmoon_deck_proc_t( e, "watchers_blessing", 382958,
+                              { 382853, 382854, 382857, 382858, 382855, 382856, 382859, 382852 } )
+    {
+      shield = buff_t::find( player, "watchers_blessing_absorb" );
+      if ( !shield )
+        shield = make_buff<watchers_blessing_absorb_buff_t>( e );
+    }
+
+    timespan_t get_duration( size_t index ) const
+    {
+      return 5_s + timespan_t::from_seconds( index );
+    }
+
+    void execute() override
+    {
+      darkmoon_deck_proc_t::execute();
+
+      auto dur = get_duration( deck->top_index );
+      shield->trigger( dur );
+
+      // TODO: placeholder value put at 2s before depletion. change to reasonable value.
+      auto deplete = rng().gauss( sim->dragonflight_opts.darkmoon_deck_watcher_shield_depletion, 1_s );
+      clamp( deplete, 0_ms, dur );
+
+      make_event( *sim, sim->dragonflight_opts.darkmoon_deck_watcher_shield_depletion, [ this ]() {
+        shield->expire();
+      } );
+    }
+  };
+
+  effect.execute_action = create_proc_action<darkmoon_deck_watcher_t>( "watchers_blessing", effect );
+  effect.buff_disabled = true;
 }
 
 // TODO: Do properly and add both drivers
@@ -662,6 +734,7 @@ void register_special_effects()
   register_special_effect( 384615, items::darkmoon_deck_dance );
   register_special_effect( 382957, items::darkmoon_deck_inferno );
   register_special_effect( 386624, items::darkmoon_deck_rime );
+  register_special_effect( 384532, items::darkmoon_deck_watcher );
   register_special_effect( 383798, items::emerald_coachs_whistle );
   register_special_effect( 384112, items::the_cartographers_calipers );
   // Weapons
