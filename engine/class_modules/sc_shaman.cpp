@@ -2058,7 +2058,12 @@ public:
       {
         event_t::cancel( this->p()->main_hand_attack->execute_event );
         this->p()->main_hand_attack->schedule_execute();
-        auto time4 = execute_time();
+      }
+
+      if ( this->p()->off_hand_attack && this->p()->off_hand_attack->execute_event )
+      {
+        event_t::cancel( this->p()->off_hand_attack->execute_event );
+        this->p()->off_hand_attack->schedule_execute();
       }
     }
 
@@ -5958,11 +5963,6 @@ struct lightning_bolt_t : public shaman_spell_t
     timespan_t t = shaman_spell_t::execute_time();
 
     t *= 1.0 + p()->buff.wind_gust->stack_value();
-
-    if ( type == execute_type::THORIMS_INVOCATION )
-    {
-      t = timespan_t::from_seconds( 0 );
-    }
 
     return t;
   }
