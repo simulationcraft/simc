@@ -766,6 +766,52 @@ struct summon_soulkeeper_t : public warlock_spell_t
   }
 };
 
+struct inquisitors_gaze_t : public warlock_spell_t
+{
+  struct fel_bolt_t : public warlock_spell_t
+  {
+    fel_bolt_t( warlock_t* p ) : warlock_spell_t( "fel_bolt", p, p->talents.fel_bolt )
+    {
+      background = dual = true;
+    }
+  };
+
+  struct fel_blast_t : public warlock_spell_t
+  {
+    fel_blast_t( warlock_t* p ) : warlock_spell_t( "fel_blast", p, p->talents.fel_blast )
+    {
+      background = dual = true;
+    }
+  };
+
+  inquisitors_gaze_t( warlock_t* p, util::string_view options_str )
+    : warlock_spell_t( "inquisitors_gaze", p, p->talents.inquisitors_gaze )
+  {
+    parse_options( options_str );
+    
+    harmful = false;
+
+    if ( !p->proc_actions.fel_bolt )
+    {
+      p->proc_actions.fel_bolt = new fel_bolt_t( p );
+      p->proc_actions.fel_bolt->stats = stats;
+    }
+
+    if ( !p->proc_actions.fel_blast )
+    {
+      p->proc_actions.fel_blast = new fel_blast_t( p );
+      p->proc_actions.fel_blast->stats = stats;
+    }
+  }
+
+  void execute() override
+  {
+    warlock_spell_t::execute();
+
+    p()->buffs.inquisitors_gaze->trigger();
+  }
+};
+
 //Catchall action to trigger pet interrupt abilities via main APL.
 //Using this should ensure that interrupt callback effects (Sephuz etc) proc correctly for the warlock.
 struct interrupt_t : public spell_t
@@ -1332,6 +1378,8 @@ action_t* warlock_t::create_action_warlock( util::string_view action_name, util:
     return new seed_of_corruption_t( this, options_str );
   if ( action_name == "summon_soulkeeper" )
     return new summon_soulkeeper_t( this, options_str );
+  if ( action_name == "inquisitors_gaze" )
+    return new inquisitors_gaze_t( this, options_str );
 
   return nullptr;
 }
@@ -1448,7 +1496,26 @@ void warlock_t::create_buffs()
                                        ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED )
                                        ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
                                            buffs.tormented_soul->increment();
-                                         } );;
+                                         } );
+
+  buffs.inquisitors_gaze = make_buff( this, "inquisitors_gaze", talents.inquisitors_gaze_buff )
+                               ->set_period( 3_s )
+                               ->set_tick_time_behavior( buff_tick_time_behavior::HASTED )
+                               ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
+                                   if ( buffs.inquisitors_gaze_buildup->at_max_stacks() )
+                                   {
+                                     proc_actions.fel_blast->execute_on_target( target );
+                                     buffs.inquisitors_gaze_buildup->expire();
+                                   }
+                                   else
+                                   {
+                                     proc_actions.fel_bolt->execute_on_target( target );
+                                     buffs.inquisitors_gaze_buildup->increment();
+                                   }
+                                 }  );
+
+  buffs.inquisitors_gaze_buildup = make_buff( this, "inquisitors_gaze_buildup" )
+                                       ->set_max_stack( 5 );
 }
 
 void warlock_t::init_spells()
@@ -1526,6 +1593,11 @@ void warlock_t::init_spells()
   talents.summon_soulkeeper_aoe = find_spell( 386256 );
   talents.tormented_soul_buff = find_spell( 386251 );
   talents.soul_combustion = find_spell( 386265 );
+
+  talents.inquisitors_gaze = find_talent_spell( talent_tree::CLASS, "Inquisitor's Gaze" ); // Should be ID 386344
+  talents.inquisitors_gaze_buff = find_spell( 388068 );
+  talents.fel_bolt = find_spell( 388070 );
+  talents.fel_blast = find_spell( 389277 );
 
   // Legendaries
   legendary.claw_of_endereth                     = find_runeforge_legendary( "Claw of Endereth" );

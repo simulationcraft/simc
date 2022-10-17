@@ -199,7 +199,10 @@ public:
     const spell_data_t* summon_soulkeeper_aoe; // The actual active spell which triggers the AoE
     const spell_data_t* tormented_soul_buff; // Stacks periodically, duration of Summon Soulkeeper is based on stack count
     const spell_data_t* soul_combustion; // AoE tick damage for Summon Soulkeeper
-    // DF - Inquisitor's Gaze (Non-guardian pet summon which behaves like Arcane Familiar)
+    player_talent_t inquisitors_gaze; // Arcane Familiar-like object
+    const spell_data_t* inquisitors_gaze_buff; // Aura which triggers the damage procs
+    const spell_data_t* fel_bolt; // Inquisitor's Eye spell #1
+    const spell_data_t* fel_blast; // Inquisitor's Eye spell #2
 
     // AFF
     player_talent_t malefic_rapture;
@@ -446,6 +449,8 @@ public:
     action_t* rain_of_fire_tick;
     action_t* avatar_of_destruction; // Triggered when Ritual of Ruin is consumed
     action_t* soul_combustion; // Summon Soulkeeper AoE tick
+    action_t* fel_bolt; // Inquistor's Eye spell #1
+    action_t* fel_blast; // Inquisitor's Eye spell #2
   } proc_actions;
 
   // DF - This struct will be retired, need to determine if needed for pre-patch
@@ -537,10 +542,11 @@ public:
   {
     propagate_const<buff_t*> demonic_power; //Buff from Summon Demonic Tyrant (increased demon damage + duration)
     propagate_const<buff_t*> grimoire_of_sacrifice; // Buff which grants damage proc
+    propagate_const<buff_t*> demonic_synergy;
     propagate_const<buff_t*> tormented_soul; // Hidden stacking buff
     propagate_const<buff_t*> tormented_soul_generator; // Dummy buff with periodic tick to add a stack every 20 seconds
-    // DF - Determine if dummy buff should be added for Inquisitor's Eye
-    propagate_const<buff_t*> demonic_synergy;
+    propagate_const<buff_t*> inquisitors_gaze; // Aura that indicates Inquisitor's Eye is summoned
+    propagate_const<buff_t*> inquisitors_gaze_buildup; // Dummy buff to trigger Fel Blast at max stacks
 
     // Affliction Buffs
     propagate_const<buff_t*> drain_life; //Dummy buff used internally for handling Inevitable Demise cases
