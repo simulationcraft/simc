@@ -420,7 +420,15 @@ public:
     const spell_data_t* summon_infernal_roc; // Contains Rain of Chaos infernal duration
     // Grand Warlock's Design (formerly Wilfred's). Shared across all 3 specs
     player_talent_t chaos_incarnate; // Maximum mastery value for some spells
-    // DF - Dimensional Rift (Choice against Chaos Incarnate, charge cooldown instant spell which deals damage and grants fragments)
+    player_talent_t dimensional_rift;
+    const spell_data_t* shadowy_tear_summon; // This only creates the "pet"
+    const spell_data_t* shadow_barrage; // Casts Rift version of Shadow Bolt on ticks
+    const spell_data_t* rift_shadow_bolt; // Separate ID from Warlock's Shadow Bolt
+    const spell_data_t* unstable_tear_summon; // This only creates the "pet"
+    const spell_data_t* chaos_barrage; // Triggers ticks of Chaos Barrage bolts
+    const spell_data_t* chaos_barrage_tick;
+    const spell_data_t* chaos_tear_summon; // This only creates the "pet"
+    const spell_data_t* rift_chaos_bolt; // Separate ID from Warlock's Chaos Bolt
     // DF - Avatar of Destruction (Formerly SL Tier Bonus, summons Blasphemy when consuming Ritual of Ruin)
   } talents;
 

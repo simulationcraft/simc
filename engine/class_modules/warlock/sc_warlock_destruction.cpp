@@ -1165,6 +1165,87 @@ struct cataclysm_t : public destruction_spell_t
     }
   }
 };
+
+// Dimensional Rift's portals are "pet damage" according to combat log behavior, but appear to be benefitting from
+// buffs to the *Warlock's* damage specifically (i.e. Grimoire of Synergy). For now, we will model them as Warlock spells
+
+struct shadowy_tear_t : public destruction_spell_t
+{
+  struct rift_shadow_bolt_t : public destruction_spell_t
+  {
+    rift_shadow_bolt_t( warlock_t* p ) : destruction_spell_t( "rift_shadow_bolt", p, p->talents.rift_shadow_bolt )
+    {
+      destro_mastery = false;
+      background = dual = true;
+
+      // Though this behaves like a direct damage spell, it is whitelisted under the periodic spec aura and benefits as such in game
+      base_dd_multiplier *= 1.0 + p->warlock_base.destruction_warlock->effectN( 2 ).percent(); 
+    }
+  };
+
+  struct shadow_barrage_t : public destruction_spell_t
+  {
+    rift_shadow_bolt_t* rift_shadow_bolt;
+
+    shadow_barrage_t( warlock_t* p ) : destruction_spell_t( "shadow_barrage", p, p->talents.shadow_barrage )
+    {
+      background = true;
+
+      rift_shadow_bolt = new rift_shadow_bolt_t( p );
+      tick_action = rift_shadow_bolt;
+    }
+
+    double last_tick_factor( const dot_t* d, timespan_t time_to_tick, timespan_t duration ) const override
+    {
+      // 2022-10-16: Once you pass a haste breakpoint, you always get another full damage Shadow Bolt
+      return 1.0;
+    }
+  };
+
+  shadowy_tear_t( warlock_t* p ) : destruction_spell_t( "shadowy_tear", p, p->talents.shadowy_tear_summon )
+  {
+    background = true;
+
+    impact_action = new shadow_barrage_t( p );
+  }
+};
+
+struct dimensional_rift_t : public destruction_spell_t
+{
+  shadowy_tear_t* shadowy_tear;
+
+  dimensional_rift_t( warlock_t* p, util::string_view options_str )
+    : destruction_spell_t( "dimensional_rift", p, p->talents.dimensional_rift )
+  {
+    parse_options( options_str );
+
+    harmful = true;
+
+    energize_type = action_energize::ON_CAST;
+    energize_amount = p->talents.dimensional_rift->effectN( 2 ).base_value() / 10.0;
+
+    shadowy_tear = new shadowy_tear_t( p );
+
+    add_child( shadowy_tear );
+  }
+
+  void execute() override
+  {
+    destruction_spell_t::execute();
+
+    int rift = 1;
+
+    switch ( rift )
+    {
+    case 1:
+      shadowy_tear->execute_on_target( target );
+      break;
+    default:
+      break;
+    }
+  }
+};
+
 }  // namespace actions_destruction
 
 namespace buffs
@@ -1200,6 +1281,8 @@ action_t* warlock_t::create_action_destruction( util::string_view action_name, u
     return new cataclysm_t( this, options_str );
   if ( action_name == "channel_demonfire" )
     return new channel_demonfire_t( this, options_str );
+  if ( action_name == "dimensional_rift" )
+    return new dimensional_rift_t( this, options_str );
 
   return nullptr;
 }
@@ -1390,6 +1473,16 @@ void warlock_t::init_spells_destruction()
   talents.summon_infernal_roc = find_spell( 335236 );
 
   talents.chaos_incarnate = find_talent_spell( talent_tree::SPECIALIZATION, "Chaos Incarnate" ); // Should be ID 387275
+
+  talents.dimensional_rift = find_talent_spell( talent_tree::SPECIALIZATION, "Dimensional Rift" ); // Should be ID 387976
+  talents.shadowy_tear_summon = find_spell( 394235 );
+  talents.shadow_barrage = find_spell( 394237 );
+  talents.rift_shadow_bolt = find_spell( 394238 );
+  talents.unstable_tear_summon = find_spell( 387979 );
+  talents.chaos_barrage = find_spell( 387984 );
+  talents.chaos_barrage_tick = find_spell( 387985 );
+  talents.chaos_tear_summon = find_spell( 394243 );
+  talents.rift_chaos_bolt = find_spell( 394246 );
 
   // Legendaries
   legendary.cinders_of_the_azjaqir         = find_runeforge_legendary( "Cinders of the Azj'Aqir" );
