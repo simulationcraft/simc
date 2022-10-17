@@ -395,10 +395,9 @@ public:
     if ( p()->cooldown.black_ox_brew->down() )
       p()->cooldown.black_ox_brew->adjust( timespan_t::from_seconds( time_reduction ), true );
 
-    if ( p()->covenant.necrolord->ok() && p()->cooldown.bonedust_brew->down() )
+    if ( p()->shared.bonedust_brew && p()->shared.bonedust_brew->ok() && p()->cooldown.bonedust_brew->down() )
       p()->cooldown.bonedust_brew->adjust( timespan_t::from_seconds( time_reduction ), true );
-    else if ( p()->talent.brewmaster.bonedust_brew->ok() && p()->cooldown.bonedust_brew->down() )
-      p()->cooldown.bonedust_brew->adjust( timespan_t::from_seconds( time_reduction ), true );
+
   }
 
  bonedust_brew_zone_results_e bonedust_brew_zone()
@@ -1798,10 +1797,8 @@ struct tiger_palm_t : public monk_melee_attack_t
       // Bonedust Brew
       if ( get_td( s->target )->debuff.bonedust_brew->up() )
       {
-        if ( p()->covenant.necrolord->ok() )
-          brew_cooldown_reduction( p()->covenant.necrolord->effectN( 3 ).base_value() );
-        else if ( p()->talent.brewmaster.bonedust_brew->ok() )
-          brew_cooldown_reduction( p()->talent.brewmaster.bonedust_brew->effectN( 3 ).base_value() );
+        if ( p()->shared.bonedust_brew && p()->shared.bonedust_brew->ok() )
+          brew_cooldown_reduction( p()->shared.bonedust_brew->effectN( 3 ).base_value() );
       }
 
       if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T29, B2 ) && p()->cooldown.brewmasters_rhythm->up() ) {
@@ -3666,10 +3663,8 @@ struct keg_smash_t : public monk_melee_attack_t
     // Bonedust Brew
     if ( get_td( s->target )->debuff.bonedust_brew->up() )
     {
-      if ( p()->covenant.necrolord->ok() )
-        brew_cooldown_reduction( p()->covenant.necrolord->effectN( 3 ).base_value() );
-      else if ( p()->talent.brewmaster.bonedust_brew->ok() )
-        brew_cooldown_reduction( p()->talent.brewmaster.bonedust_brew->effectN( 3 ).base_value() );
+      if ( p()->shared.bonedust_brew && p()->shared.bonedust_brew->ok() )
+        brew_cooldown_reduction( p()->shared.bonedust_brew->effectN( 3 ).base_value() );
     }
   }
 };
@@ -5395,12 +5390,7 @@ struct bountiful_brew_t : public monk_spell_t
 struct bonedust_brew_t : public monk_spell_t
 {
   bonedust_brew_t( monk_t& p, util::string_view options_str )
-      : monk_spell_t( "bonedust_brew", &p,
-          (p.covenant.necrolord->ok() ? p.covenant.necrolord :
-              ( p.talent.brewmaster.bonedust_brew && p.talent.brewmaster.bonedust_brew->ok() ? p.talent.brewmaster.bonedust_brew :
-                  ( p.talent.mistweaver.bonedust_brew && p.talent.mistweaver.bonedust_brew->ok() ? p.talent.mistweaver.bonedust_brew :
-                      ( p.talent.windwalker.bonedust_brew && p.talent.windwalker.bonedust_brew->ok() ? p.talent.windwalker.bonedust_brew
-                                                                            : spell_data_t::nil() ) ) ) ) )
+      : monk_spell_t( "bonedust_brew", &p, p.shared.bonedust_brew && p.shared.bonedust_brew->ok() ? p.shared.bonedust_brew : spell_data_t::nil())
   {
     parse_options( options_str );
     may_combo_strike            = true;
@@ -5448,31 +5438,21 @@ struct bonedust_brew_damage_t : public monk_spell_t
   {
     monk_spell_t::execute();
 
-    if ( p()->conduit.bone_marrow_hops->ok()  )
+    auto attenuation = p()->shared.attenuation;
+
+    if ( attenuation && attenuation->ok() )
     {
+      auto cooldown_reduction = attenuation->effectN( 2 ).time_value();
+
       if ( p()->buff.bonedust_brew_grounding_breath_hidden->up() )
       {
-        // Saved at -500
-        p()->cooldown.bonedust_brew->adjust( p()->conduit.bone_marrow_hops->effectN( 2 ).time_value(), true );
+        p()->cooldown.bonedust_brew->adjust( cooldown_reduction, true );
 
         p()->buff.bonedust_brew_grounding_breath_hidden->decrement();
         p()->proc.bonedust_brew_reduction->occur();
       }
-    }
-    else if ( p()->talent.brewmaster.attenuation->ok() || p()->talent.mistweaver.attenuation->ok() 
-        || p()->talent.windwalker.attenuation->ok() )
-    {
-      if ( p()->buff.bonedust_brew_attenuation_hidden->up() )
+      else if ( p()->buff.bonedust_brew_attenuation_hidden->up() )
       {
-        // Saved at -500
-        auto cooldown_reduction = timespan_t::zero();
-        if ( p()->talent.brewmaster.attenuation->ok() )
-          cooldown_reduction = p()->talent.brewmaster.attenuation->effectN( 2 ).time_value();
-        else if ( p()->talent.mistweaver.attenuation->ok() )
-          cooldown_reduction = p()->talent.mistweaver.attenuation->effectN( 2 ).time_value();
-        else if ( p()->talent.windwalker.attenuation->ok() )
-          cooldown_reduction = p()->talent.windwalker.attenuation->effectN( 2 ).time_value();
-
         p()->cooldown.bonedust_brew->adjust( cooldown_reduction, true );
 
         p()->buff.bonedust_brew_attenuation_hidden->decrement();
@@ -5497,26 +5477,25 @@ struct bonedust_brew_heal_t : public monk_heal_t
   {
     monk_heal_t::execute();
 
-    if ( p()->buff.bonedust_brew_grounding_breath_hidden->up() )
+    auto attenuation = p()->shared.attenuation;
+
+    if ( attenuation && attenuation->ok() )
     {
-      if ( p()->conduit.bone_marrow_hops->ok() )
+      auto cooldown_reduction = attenuation->effectN( 2 ).time_value();
+
+      if ( p()->buff.bonedust_brew_grounding_breath_hidden->up() )
       {
-        // Saved at -500
-        p()->cooldown.bonedust_brew->adjust( p()->conduit.bone_marrow_hops->effectN( 2 ).time_value(), true );
+        p()->cooldown.bonedust_brew->adjust( cooldown_reduction, true );
 
         p()->buff.bonedust_brew_grounding_breath_hidden->decrement();
         p()->proc.bonedust_brew_reduction->occur();
       }
-    }
-    else if ( p()->buff.bonedust_brew_attenuation_hidden->up() )
-    {
-      if ( p()->conduit.bone_marrow_hops->ok() )
+      else if ( p()->buff.bonedust_brew_attenuation_hidden->up() )
       {
-        // Saved at -500
-        p()->cooldown.bonedust_brew->adjust( p()->conduit.bone_marrow_hops->effectN( 2 ).time_value(), true );
+        p()->cooldown.bonedust_brew->adjust( cooldown_reduction, true );
 
         p()->buff.bonedust_brew_attenuation_hidden->decrement();
-        p()->proc.bonedust_brew_reduction->occur();
+        p()->proc.attenuation->occur();
       }
     }
   }
@@ -8568,15 +8547,17 @@ void monk_t::init_spells()
 
   // Shared Spells
   // These spells share common effects but are unique in that you may only have one
-  shared.attenuation = conduit.bone_marrow_hops ? conduit.bone_marrow_hops :
-                        talent.windwalker.attenuation ? talent.windwalker.attenuation : 
-                          talent.brewmaster.attenuation ? talent.brewmaster.attenuation : 
-                            talent.mistweaver.attenuation ? talent.mistweaver.attenuation : spell_data_t::nil();
+  auto _valid = [ this ] ( auto spell ) { return ( spell && spell->ok() ); };
 
-  shared.bonedust_brew = covenant.necrolord ? covenant.necrolord :
-                          talent.windwalker.bonedust_brew ? talent.windwalker.bonedust_brew :
-                            talent.brewmaster.bonedust_brew ? talent.brewmaster.bonedust_brew :
-                              talent.mistweaver.bonedust_brew ? talent.mistweaver.bonedust_brew : spell_data_t::nil();
+  shared.attenuation = _valid(conduit.bone_marrow_hops) ? conduit.bone_marrow_hops :
+                        _valid(talent.windwalker.attenuation) ? talent.windwalker.attenuation : 
+                          _valid(talent.brewmaster.attenuation) ? talent.brewmaster.attenuation : 
+                            _valid(talent.mistweaver.attenuation) ? talent.mistweaver.attenuation : spell_data_t::nil();
+
+  shared.bonedust_brew = _valid(covenant.necrolord) ? covenant.necrolord :
+                          _valid(talent.windwalker.bonedust_brew) ? talent.windwalker.bonedust_brew :
+                            _valid(talent.brewmaster.bonedust_brew) ? talent.brewmaster.bonedust_brew :
+                              _valid(talent.mistweaver.bonedust_brew) ? talent.mistweaver.bonedust_brew : spell_data_t::nil();
 }
 
 // monk_t::init_base ========================================================
@@ -9338,7 +9319,10 @@ void monk_t::bonedust_brew_assessor(action_state_t* s)
       auto attenuation = shared.attenuation;
 
       if ( attenuation && attenuation->ok() )
-        damage *= 1 + attenuation->effectN( 1 ).percent();
+      {
+        double attenuation_bonus = conduit.bone_marrow_hops->ok() ? conduit.bone_marrow_hops.percent() : attenuation->effectN( 1 ).percent();         
+        damage *= 1 + attenuation_bonus;
+      }
 
       active_actions.bonedust_brew_dmg->base_dd_min = damage;
       active_actions.bonedust_brew_dmg->base_dd_max = damage;
@@ -9471,10 +9455,9 @@ void monk_t::brew_cooldown_reduction( double time_reduction )
     if ( cooldown.black_ox_brew->down() )
       cooldown.black_ox_brew->adjust( timespan_t::from_seconds( time_reduction ), true );
 
-    if ( covenant.necrolord->ok() && cooldown.bonedust_brew->down() )
+    if ( shared.bonedust_brew && shared.bonedust_brew->ok() && cooldown.bonedust_brew->down() )
       cooldown.bonedust_brew->adjust( timespan_t::from_seconds( time_reduction ), true );
-    else if ( talent.brewmaster.bonedust_brew->ok() && cooldown.bonedust_brew->down() )
-      cooldown.bonedust_brew->adjust( timespan_t::from_seconds( time_reduction ), true );
+
   }
 
 // monk_t::composite_spell_haste =========================================
