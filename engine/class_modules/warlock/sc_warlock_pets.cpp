@@ -90,6 +90,9 @@ void warlock_pet_t::create_buffs()
 
   buffs.demonic_inspiration = make_buff( this, "demonic_inspiration", find_spell( 386861 ) )
                                   ->set_default_value( o()->talents.demonic_inspiration->effectN( 1 ).percent() );
+
+  buffs.wrathful_minion = make_buff( this, "wrathful_minion", find_spell( 386865 ) )
+                              ->set_default_value( o()->talents.wrathful_minion->effectN( 1 ).percent() );
 }
 
 void warlock_pet_t::init_base_stats()
@@ -183,6 +186,9 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
 
   if ( buffs.infernal_command->check() )
     m *= 1.0 + buffs.infernal_command->check_value();
+
+  if ( buffs.wrathful_minion->check() )
+    m *= 1.0 + buffs.wrathful_minion->check_value();
 
   return m;
 }
