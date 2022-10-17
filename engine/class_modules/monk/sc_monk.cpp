@@ -1632,10 +1632,8 @@ struct tiger_palm_t : public monk_melee_attack_t
 
     spell_power_mod.direct = 0.0;
 
-    if ( p->legendary.keefers_skyreach->ok() )
-      range += p->legendary.keefers_skyreach->effectN( 1 ).base_value();
-    else if ( p->talent.windwalker.skyreach && p->talent.windwalker.skyreach->ok() )
-      range += p->talent.windwalker.skyreach->effectN( 1 ).base_value();
+    if ( p->shared.skyreach && p->shared.skyreach->ok() )
+      range += p->shared.skyreach->effectN( 1 ).base_value();
   }
 
   double action_multiplier() const override
@@ -3065,9 +3063,7 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::impact( s );
 
-    if ( p()->legendary.jade_ignition->ok() )
-      p()->buff.chi_energy->trigger();
-    else if ( p()->talent.windwalker.jade_ignition->ok() )
+    if ( p()->shared.jade_ignition && p()->shared.jade_ignition->ok() )
       p()->buff.chi_energy->trigger();
 
     if ( p()->talent.windwalker.open_palm_strikes.ok() && rng().roll( p()->talent.windwalker.open_palm_strikes->effectN( 2 ).percent() ) )
@@ -7710,15 +7706,7 @@ void monk_t::trigger_mark_of_the_crane( action_state_t* s )
 
 void monk_t::trigger_keefers_skyreach( action_state_t* s )
 {
-  if ( legendary.keefers_skyreach->ok() )
-  {
-    if ( !get_target_data( s->target )->debuff.skyreach_exhaustion->up() )
-    {
-      get_target_data( s->target )->debuff.keefers_skyreach->trigger();
-      get_target_data( s->target )->debuff.skyreach_exhaustion->trigger();
-    }
-  }
-  else if ( talent.windwalker.skyreach->ok() )
+  if ( shared.skyreach && shared.skyreach->ok() )
   {
     if ( !get_target_data( s->target )->debuff.skyreach_exhaustion->up() )
     {
@@ -8535,6 +8523,12 @@ void monk_t::init_spells()
   shared.faeline_stomp = _valid( covenant.night_fae ) ? covenant.night_fae :
     _valid( talent.windwalker.faeline_stomp ) ? talent.windwalker.faeline_stomp :
     _valid( talent.mistweaver.faeline_stomp ) ? talent.mistweaver.faeline_stomp : spell_data_t::nil();
+
+  shared.jade_ignition = _valid( legendary.jade_ignition ) ? (const spell_data_t*)legendary.jade_ignition :
+    _valid( talent.windwalker.jade_ignition ) ? talent.windwalker.jade_ignition : spell_data_t::nil();
+
+  shared.skyreach = _valid( legendary.keefers_skyreach ) ? (const spell_data_t*)legendary.keefers_skyreach :
+    _valid( talent.windwalker.skyreach ) ? talent.windwalker.skyreach : spell_data_t::nil();
 
   shared.weapons_of_order = _valid( covenant.kyrian ) ? covenant.kyrian :
     _valid( talent.brewmaster.weapons_of_order ) ? talent.brewmaster.weapons_of_order :spell_data_t::nil();
