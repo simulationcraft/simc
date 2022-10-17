@@ -38,7 +38,7 @@ struct warlock_pet_t : public pet_t
     propagate_const<buff_t*> demonic_consumption; // DF - REMOVED (Replace with Reign of Tyranny buffs)
     propagate_const<buff_t*> grimoire_of_service; // Buff used by Grimoire: Felguard talent
     propagate_const<buff_t*> grim_inquisitors_dread_calling; // DF - REMOVED (talent is new spell IDs)
-    propagate_const<buff_t*> demonic_synergy; // DF - Now comes from Class talent
+    propagate_const<buff_t*> demonic_synergy;
     propagate_const<buff_t*> annihilan_training; // Permanent aura when talented, 10% increased damage to all abilities
     propagate_const<buff_t*> dread_calling;
     propagate_const<buff_t*> imp_gang_boss; // Aura applied to some Wild Imps for increased damage (and size)

@@ -191,7 +191,8 @@ public:
     player_talent_t demonic_inspiration; // Pet haste on Soul Shard fill
     player_talent_t wrathful_minion; // Pet damage buff on Soul Shard fill
     // DF - Demonic Fortitude is a health talent, may be irrelevant now
-    // DF - Grimoire of Synergy (moved from SL Legendary power)
+    player_talent_t grimoire_of_synergy; // DF - Does not trigger when using Grimoire of Sacrifice
+    const spell_data_t* demonic_synergy; // Buff from Grimoire of Synergy
     // DF - Claw of Endereth (moved from SL Legendary power)
     // DF - Summon Soulkeeper (Active ground aoe which spends hidden stacking buff)
     // DF - Inquisitor's Gaze (Non-guardian pet summon which behaves like Arcane Familiar)
@@ -533,7 +534,7 @@ public:
     propagate_const<buff_t*> grimoire_of_sacrifice; // Buff which grants damage proc
     // DF - Summon Soulkeeper has a hidden stacking buff
     // DF - Determine if dummy buff should be added for Inquisitor's Eye
-    propagate_const<buff_t*> demonic_synergy; // DF - Now comes from Class talent
+    propagate_const<buff_t*> demonic_synergy;
 
     // Affliction Buffs
     propagate_const<buff_t*> drain_life; //Dummy buff used internally for handling Inevitable Demise cases
@@ -990,11 +991,11 @@ public:
 
   double action_multiplier() const override
   {
-    double pm = spell_t::action_multiplier();
+    double m = spell_t::action_multiplier();
 
-    pm *= 1.0 + p()->buffs.demonic_synergy->check_stack_value();
+    m *= 1.0 + p()->buffs.demonic_synergy->check_stack_value();
 
-    return pm;
+    return m;
   }
 
   double composite_ta_multiplier( const action_state_t* s ) const override
@@ -1110,9 +1111,7 @@ struct demonic_synergy_callback_t : public dbc_proc_callback_t
   {
     if ( owner->warlock_pet_list.active )
     {
-      auto pet = owner->warlock_pet_list.active;
-      //Always set the pet's buff value using the owner's to ensure specialization value is correct
-      pet->buffs.demonic_synergy->trigger( 1, owner->buffs.demonic_synergy->default_value );
+      owner->warlock_pet_list.active->buffs.demonic_synergy->trigger();
     }
   }
 };
