@@ -2409,13 +2409,13 @@ struct hot_streak_spell_t : public fire_mage_spell_t
 
   void execute() override
   {
-    if ( !last_hot_streak && p()->buffs.sun_kings_blessing_ready->check() )
+    if ( time_to_execute > 0_ms && p()->buffs.sun_kings_blessing_ready->check() )
     {
       p()->buffs.sun_kings_blessing_ready->expire( p()->bugs ? 30_ms : 0_ms );
       p()->buffs.combustion->extend_duration_or_trigger( 1000 * p()->talents.sun_kings_blessing->effectN( 2 ).time_value() );
     }
 
-    if ( !last_hot_streak && p()->buffs.runeforge_sun_kings_blessing_ready->check() )
+    if ( time_to_execute > 0_ms && p()->buffs.runeforge_sun_kings_blessing_ready->check() )
     {
       p()->buffs.runeforge_sun_kings_blessing_ready->expire( p()->bugs ? 30_ms : 0_ms );
       p()->buffs.combustion->extend_duration_or_trigger( 1000 * p()->runeforge.sun_kings_blessing->effectN( 2 ).time_value() );
