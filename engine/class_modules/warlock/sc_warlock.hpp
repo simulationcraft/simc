@@ -453,6 +453,13 @@ public:
     action_t* fel_blast; // Inquisitor's Eye spell #2
   } proc_actions;
 
+  struct tier_sets_t
+  {
+    // Affliction
+    const spell_data_t* cruel_inspiration; // 2pc procs haste buff
+    const spell_data_t* cruel_epiphany; // 4pc also procs stacks of this buff when 2pc procs, increases Malefic Rapture/Seed of Corruption damage
+  } tier;
+
   // DF - This struct will be retired, need to determine if needed for pre-patch
   struct legendary_t
   {
@@ -561,6 +568,8 @@ public:
     propagate_const<buff_t*> haunted_soul;
     propagate_const<buff_t*> dark_harvest_haste; // One buff in game...
     propagate_const<buff_t*> dark_harvest_crit; // ...but split into two in simc for better handling
+    propagate_const<buff_t*> cruel_inspiration; // T29 2pc
+    propagate_const<buff_t*> cruel_epiphany; // T29 4pc
 
     // Demonology Buffs
     propagate_const<buff_t*> demonic_core;
@@ -652,6 +661,7 @@ public:
     proc_t* pandemic_invocation_shard;
     proc_t* tormented_crescendo;
     proc_t* doom_blossom;
+    proc_t* cruel_inspiration; // T29 2pc
 
     // demo
     proc_t* demonic_knowledge;
