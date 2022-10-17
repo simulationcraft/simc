@@ -195,7 +195,10 @@ public:
     const spell_data_t* demonic_synergy; // Buff from Grimoire of Synergy
     player_talent_t soul_conduit;
     player_talent_t grim_feast; // Faster Drain Life (Formerly SL Legendary)
-    // DF - Summon Soulkeeper (Active ground aoe which spends hidden stacking buff)
+    player_talent_t summon_soulkeeper; // Active ground AoE which spends hidden stacking buff. NOT A PET
+    const spell_data_t* summon_soulkeeper_aoe; // The actual active spell which triggers the AoE
+    const spell_data_t* tormented_soul_buff; // Stacks periodically, duration of Summon Soulkeeper is based on stack count
+    const spell_data_t* soul_combustion; // AoE tick damage for Summon Soulkeeper
     // DF - Inquisitor's Gaze (Non-guardian pet summon which behaves like Arcane Familiar)
 
     // AFF
@@ -442,6 +445,7 @@ public:
     action_t* summon_random_demon; // Nether Portal and Inner Demons
     action_t* rain_of_fire_tick;
     action_t* avatar_of_destruction; // Triggered when Ritual of Ruin is consumed
+    action_t* soul_combustion; // Summon Soulkeeper AoE tick
   } proc_actions;
 
   // DF - This struct will be retired, need to determine if needed for pre-patch
@@ -533,7 +537,8 @@ public:
   {
     propagate_const<buff_t*> demonic_power; //Buff from Summon Demonic Tyrant (increased demon damage + duration)
     propagate_const<buff_t*> grimoire_of_sacrifice; // Buff which grants damage proc
-    // DF - Summon Soulkeeper has a hidden stacking buff
+    propagate_const<buff_t*> tormented_soul; // Hidden stacking buff
+    propagate_const<buff_t*> tormented_soul_generator; // Dummy buff with periodic tick to add a stack every 20 seconds
     // DF - Determine if dummy buff should be added for Inquisitor's Eye
     propagate_const<buff_t*> demonic_synergy;
 
