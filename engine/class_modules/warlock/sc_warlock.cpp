@@ -1352,8 +1352,8 @@ void warlock_t::create_buffs()
   buffs.wrath_of_consumption = make_buff( this, "wrath_of_consumption", talents.wrath_of_consumption_buff )
                                ->set_default_value( talents.wrath_of_consumption->effectN( 2 ).percent() );
 
-  buffs.demonic_synergy = make_buff( this, "demonic_synergy", find_spell( 337060 ) )
-                              ->set_default_value( legendary.relic_of_demonic_synergy->effectN( 1 ).percent() * ( this->specialization() == WARLOCK_DEMONOLOGY ? 1.5 : 1.0 ) );
+  buffs.demonic_synergy = make_buff( this, "demonic_synergy", talents.demonic_synergy )
+                              ->set_default_value( talents.grimoire_of_synergy->effectN( 2 ).percent() );
 
   buffs.decaying_soul_satchel_haste = make_buff( this, "decaying_soul_satchel_haste", find_spell( 356369 ) )
                                           ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
@@ -1435,6 +1435,9 @@ void warlock_t::init_spells()
   talents.demonic_inspiration = find_talent_spell( talent_tree::CLASS, "Demonic Inspiration" ); // Should be ID 386858
 
   talents.wrathful_minion = find_talent_spell( talent_tree::CLASS, "Wrathful Minion" ); // Should be ID 386864
+
+  talents.grimoire_of_synergy = find_talent_spell( talent_tree::CLASS, "Grimoire of Synergy" ); // Should be ID 171975
+  talents.demonic_synergy = find_spell( 171982 );
 
   talents.soul_conduit              = find_talent_spell( "Soul Conduit" );
 
@@ -1619,11 +1622,11 @@ void warlock_t::init_special_effects()
       } );
   }
 
-  if ( legendary.relic_of_demonic_synergy->ok() )
+  if ( talents.grimoire_of_synergy.ok() )
   {
     auto const syn_effect = new special_effect_t( this );
     syn_effect->name_str = "demonic_synergy_effect";
-    syn_effect->spell_id = 337057;
+    syn_effect->spell_id = talents.grimoire_of_synergy->id();
     special_effects.push_back( syn_effect );
 
     auto cb = new warlock::actions::demonic_synergy_callback_t( this, *syn_effect );

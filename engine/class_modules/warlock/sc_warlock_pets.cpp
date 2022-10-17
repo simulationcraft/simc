@@ -85,8 +85,8 @@ void warlock_pet_t::create_buffs()
                      } );
 
   // All Specs
-  buffs.demonic_synergy = make_buff( this, "demonic_synergy", find_spell( 337060 ) )
-                              ->set_default_value( o()->legendary.relic_of_demonic_synergy->effectN( 1 ).base_value() );
+  buffs.demonic_synergy = make_buff( this, "demonic_synergy",  o()->talents.demonic_synergy )
+                              ->set_default_value( o()->talents.grimoire_of_synergy->effectN( 2 ).percent() );
 
   buffs.demonic_inspiration = make_buff( this, "demonic_inspiration", find_spell( 386861 ) )
                                   ->set_default_value( o()->talents.demonic_inspiration->effectN( 1 ).percent() );
@@ -132,11 +132,11 @@ void warlock_pet_t::init_special_effects()
 {
   pet_t::init_special_effects();
 
-  if ( o()->legendary.relic_of_demonic_synergy->ok() && is_main_pet )
+  if ( o()->talents.grimoire_of_synergy->ok() && is_main_pet )
   {
     auto const syn_effect = new special_effect_t( this );
     syn_effect->name_str = "demonic_synergy_pet_effect";
-    syn_effect->spell_id = 337057;
+    syn_effect->spell_id = o()->talents.grimoire_of_synergy->id();
     syn_effect->custom_buff = o()->buffs.demonic_synergy;
     special_effects.push_back( syn_effect );
 
@@ -179,7 +179,8 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
   if ( pet_type == PET_DREADSTALKER && o()->talents.dread_calling.ok() )
     m *= 1.0 + buffs.dread_calling->check_value();
 
-  m *= 1.0 + buffs.demonic_synergy->check_stack_value();
+  if ( buffs.demonic_synergy->check() )
+    m *= 1.0 + buffs.demonic_synergy->check_value();
 
   if ( buffs.the_expendables->check() )
     m *= 1.0 + buffs.the_expendables->check_stack_value();
