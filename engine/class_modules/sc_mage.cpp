@@ -7077,7 +7077,8 @@ void mage_t::create_buffs()
                                      ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
                                      ->set_chance( talents.feel_the_burn.ok() );
   buffs.fevered_incantation      = make_buff( this, "fevered_incantation", find_spell( 383811 ) )
-                                     ->set_default_value( talents.fevered_incantation->effectN( 1 ).base_value() )
+                                     ->set_default_value( talents.fevered_incantation->effectN( 1 ).percent() )
+                                     ->set_schools_from_effect( 1 )
                                      ->set_chance( talents.fevered_incantation.ok() );
   buffs.fiery_rush               = make_buff( this, "fiery_rush", find_spell( 383637 ) )
                                      ->set_default_value_from_effect( 1 )
