@@ -754,10 +754,8 @@ public:
       {
         double reset_value = p()->buff.faeline_stomp->value();
 
-        if ( p()->legendary.faeline_harmony->ok() )
-          reset_value *= 1 + p()->legendary.faeline_harmony->effectN( 2 ).percent();
-        else if ( p()->talent.windwalker.faeline_harmony->ok() )
-          reset_value *= 1 + p()->talent.windwalker.faeline_harmony->effectN( 2 ).percent();
+        if ( p()->shared.faeline_harmony && p()->shared.faeline_harmony->ok() )
+          reset_value *= 1 + p()->shared.faeline_harmony->effectN( 2 ).percent();
 
         if ( p()->rng().roll( reset_value ) )
         {
@@ -5533,7 +5531,7 @@ struct faeline_stomp_heal_t : public monk_heal_t
   {
     monk_heal_t::impact( s );
 
-    if ( p()->legendary.faeline_harmony->ok() )
+    if ( p()->shared.faeline_harmony && p()->shared.faeline_harmony->ok() )
       p()->buff.fae_exposure->trigger();
   }
 };
@@ -5557,7 +5555,7 @@ struct faeline_stomp_t : public monk_spell_t
     may_combo_strike = true;
     cast_during_sck  = true;
 
-    aoe = (int)p.shared.faeline_stomp->effectN( 3 ).base_value();
+    aoe = (int)data().effectN( 3 ).base_value();
 
     trigger_bountiful_brew      = true;
   }
@@ -5575,7 +5573,7 @@ struct faeline_stomp_t : public monk_spell_t
 
     p()->buff.faeline_stomp->trigger();
 
-    if ( p()->specialization() == MONK_MISTWEAVER && p()->legendary.faeline_harmony->ok() )
+    if ( p()->shared.faeline_harmony && p()->shared.faeline_harmony->ok() )
       p()->buff.fae_exposure->trigger();
   }
 
@@ -5607,7 +5605,7 @@ struct faeline_stomp_t : public monk_spell_t
     }
 
     // Fae Exposure is applied to all targets, even if they are healed/damage or not
-    if ( p()->legendary.faeline_harmony->ok() )
+    if ( p()->shared.faeline_harmony && p()->shared.faeline_harmony->ok() )
       get_td( s->target )->debuff.fae_exposure->trigger();
 
     aoe_initial_cap--;
@@ -8529,6 +8527,10 @@ void monk_t::init_spells()
 
   shared.call_to_arms = _valid( legendary.call_to_arms ) ? (const spell_data_t*)legendary.call_to_arms :
     _valid( talent.brewmaster.call_to_arms ) ? talent.brewmaster.call_to_arms : spell_data_t::nil();
+
+  // Does Mistweaver Awakened Faeline stack with this effect? TODO: How is this handled?
+  shared.faeline_harmony = _valid( legendary.faeline_harmony ) ? (const spell_data_t*)legendary.faeline_harmony :
+    _valid( talent.windwalker.faeline_harmony ) ? talent.windwalker.faeline_harmony : spell_data_t::nil();
 
   shared.faeline_stomp = _valid( covenant.night_fae ) ? covenant.night_fae :
     _valid( talent.windwalker.faeline_stomp ) ? talent.windwalker.faeline_stomp :
