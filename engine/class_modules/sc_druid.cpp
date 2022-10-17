@@ -10539,8 +10539,8 @@ void druid_t::create_buffs()
   auto nb_ap = nb_eff->resource( RESOURCE_ASTRAL_POWER );
   buff.natures_balance->set_quiet( true )
     ->set_default_value( nb_ap / nb_eff->period().total_seconds() )
-    ->set_tick_callback( [ nb_ap, this ]( buff_t*, int, timespan_t ) {
-      resource_gain( RESOURCE_ASTRAL_POWER, nb_ap, gain.natures_balance );
+    ->set_tick_callback( [ nb_ap, nb_eff, this ]( buff_t* b, int, timespan_t ) {
+      resource_gain( RESOURCE_ASTRAL_POWER, b->check_value() * nb_eff->period().total_seconds() , gain.natures_balance );
     } );
 
   buff.natures_grace = make_buff( this, "natures_grace", find_spell( 393959 ) )
