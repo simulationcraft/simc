@@ -1114,14 +1114,6 @@ public:
     if ( affected_by.coordinated_assault )
       am *= 1 + p() -> buffs.coordinated_assault_empower -> check_value();
 
-    if ( affected_by.serrated_shots )
-    {
-      if ( s -> target -> health_percentage() < p() -> talents.serrated_shots -> effectN( 3 ).base_value() )
-        am *= 1 + p() -> talents.serrated_shots -> effectN( 2 ).percent();
-      else
-        am *= 1 + p() -> talents.serrated_shots -> effectN( 1 ).percent();
-    }
-
     if ( affected_by.t29_sv_4pc_dmg.direct && p() -> buffs.bestial_barrage -> check() )
       am *= 1 + p() -> tier_set.t29_sv_4pc_buff -> effectN( affected_by.t29_sv_4pc_dmg.direct ).percent();
 
@@ -1143,14 +1135,6 @@ public:
 
     if ( affected_by.spirit_bond.tick )
       am *= 1 + p() -> cache.mastery() * p() -> mastery.spirit_bond -> effectN( affected_by.spirit_bond.tick ).mastery_value();
-
-    if ( affected_by.serrated_shots )
-    {
-      if ( s -> target -> health_percentage() < p() -> talents.serrated_shots -> effectN( 3 ).base_value() )
-        am *= 1 + p() -> talents.serrated_shots -> effectN( 2 ).percent();
-      else
-        am *= 1 + p() -> talents.serrated_shots -> effectN( 1 ).percent();
-    }
 
     if ( affected_by.t29_sv_4pc_dmg.tick && p() -> buffs.bestial_barrage -> check() )
       am *= 1 + p() -> tier_set.t29_sv_4pc_buff -> effectN( affected_by.t29_sv_4pc_dmg.tick ).percent();
@@ -1191,6 +1175,21 @@ public:
       return 0;
 
     return ceil( c );
+  }
+
+  double base_ta(const action_state_t* s) const override
+  {
+    double ta = ab::base_ta( s );
+
+    if ( affected_by.serrated_shots )
+    {
+      if ( s -> target -> health_percentage() < p() -> talents.serrated_shots -> effectN( 3 ).base_value() )
+        ta *= 1 + p() -> talents.serrated_shots -> effectN( 2 ).percent();
+      else
+        ta *= 1 + p() -> talents.serrated_shots -> effectN( 1 ).percent();
+    }
+
+    return ta;
   }
 
   void update_ready( timespan_t cd ) override
@@ -2957,14 +2956,6 @@ struct kill_shot_t : hunter_ranged_attack_t
       result_mod = p -> find_spell( 388998 ) -> effectN( 3 ).percent();
       aoe = as<int>( p -> find_spell( 388998 ) -> effectN( 2 ).base_value() );
     }
-
-    void init() override
-    {
-      residual_periodic_action_t::init();
-
-      snapshot_flags |= STATE_TGT_MUL_TA;
-      update_flags |= STATE_TGT_MUL_TA;
-    }
   };
 
   // Pouch of Razor Fragments (Runeforge)
@@ -2973,14 +2964,6 @@ struct kill_shot_t : hunter_ranged_attack_t
     pouch_of_razor_fragments_t( util::string_view n, hunter_t* p )
       : residual_bleed_base_t( n, p, p -> find_spell( 356620 ) )
     {
-    }
-
-    void init() override
-    {
-      residual_periodic_action_t::init();
-
-      snapshot_flags |= STATE_TGT_MUL_TA;
-      update_flags |= STATE_TGT_MUL_TA;
     }
   };
 
@@ -3411,6 +3394,18 @@ struct serpent_sting_base_t: public hunter_ranged_attack_t
     if ( s -> result_amount > 0 && p() -> legendary.latent_poison_injectors.ok() )
       td( s -> target ) -> debuffs.latent_poison_injectors -> trigger();
   }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = hunter_ranged_attack_t::composite_da_multiplier( s );
+
+    if ( s -> target -> health_percentage() < p() -> talents.serrated_shots -> effectN( 3 ).base_value() )
+      m *= 1 + p() -> talents.serrated_shots -> effectN( 2 ).percent();
+    else
+      m *= 1 + p() -> talents.serrated_shots -> effectN( 1 ).percent();
+
+    return m;
+  }
 };
 
 struct serpent_sting_t final : public serpent_sting_base_t
@@ -3492,14 +3487,6 @@ struct master_marksman_t : residual_bleed_base_t
   master_marksman_t( hunter_t* p ):
     residual_bleed_base_t( "master_marksman", p, p -> find_spell( 269576 ) )
   { }
-
-  void init() override
-  {
-    residual_periodic_action_t::init();
-
-    snapshot_flags |= STATE_TGT_MUL_TA;
-    update_flags   |= STATE_TGT_MUL_TA;
-  }
 };
 
 // ==========================================================================
