@@ -1170,7 +1170,7 @@ struct radiant_decree_t : public holy_power_consumer_t<paladin_spell_t>
   truths_wake_t* truths_wake;
 
   radiant_decree_t( paladin_t* p, util::string_view options_str ) :
-    holy_power_consumer_t( "radiant_decree", p, p -> talents.radiant_decree ),
+    holy_power_consumer_t( "radiant_decree", p, p -> find_spell( 383469 ) ),
     truths_wake( nullptr )
   {
     parse_options( options_str );
