@@ -390,11 +390,11 @@ struct blade_of_justice_t : public paladin_melee_attack_t
     return am;
   }
 
-  double composite_crit_chance_multiplier() const override {
-    double am = paladin_melee_attack_t::composite_crit_chance_multiplier();
+  double composite_crit_chance() const override {
+    double chance = paladin_melee_attack_t::composite_crit_chance();
     if ( p() -> talents.blade_of_condemnation -> ok() )
-      am *= 1.0 + p() -> talents.blade_of_condemnation -> effectN( 1 ).percent();
-    return am;
+      chance += p() -> talents.blade_of_condemnation -> effectN( 1 ).percent();
+    return chance;
   }
 
   void execute() override
