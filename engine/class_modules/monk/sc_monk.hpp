@@ -666,14 +666,23 @@ public:
     const spell_data_t* bonedust_brew;
     const spell_data_t* bountiful_brew;
     const spell_data_t* call_to_arms;
+    const spell_data_t* charred_passions;
     const spell_data_t* face_palm;
+    const spell_data_t* fatal_touch;
     const spell_data_t* faeline_harmony;
     const spell_data_t* faeline_stomp;
     const spell_data_t* healing_elixir;
     const spell_data_t* invokers_delight;
     const spell_data_t* jade_ignition;
+    const spell_data_t* last_emperors_capacitor;
+    const spell_data_t* scalding_brew;
     const spell_data_t* skyreach;
+    const spell_data_t* stormstouts_last_keg;
+    const spell_data_t* walk_with_the_ox;
+    const spell_data_t* way_of_the_fae;
     const spell_data_t* weapons_of_order;
+    const spell_data_t* xuens_battlegear;
+    const spell_data_t* xuens_bond;
   } shared;
 
   // Specialization

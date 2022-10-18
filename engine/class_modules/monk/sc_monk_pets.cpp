@@ -1352,10 +1352,8 @@ public:
   {
     double cpm = monk_pet_t::composite_player_multiplier( school );
 
-    if ( o()->conduit.xuens_bond->ok() )
-        cpm *= 1 + o()->conduit.xuens_bond.percent();
-    else if ( o()->talent.windwalker.xuens_bond->ok() )
-        cpm *= 1 + o()->talent.windwalker.xuens_bond->effectN( 1 ).percent();
+    if ( o()->shared.xuens_bond && o()->shared.xuens_bond->ok() )
+        cpm *= 1 + ( o()->conduit.xuens_bond->ok() ? o()->conduit.xuens_bond.percent() : o()->shared.xuens_bond->effectN( 1 ).percent() );
 
     return cpm;
   }
@@ -1467,10 +1465,8 @@ public:
   {
     double cpm = monk_pet_t::composite_player_multiplier( school );
 
-    if ( o()->conduit.xuens_bond->ok() )
-      cpm *= 1 + o()->conduit.xuens_bond.percent();
-    else if ( o()->talent.windwalker.xuens_bond->ok() )
-      cpm *= 1 + o()->talent.windwalker.xuens_bond->effectN( 1 ).percent();
+    if ( o()->shared.xuens_bond && o()->shared.xuens_bond->ok() )
+      cpm *= 1 + ( o()->conduit.xuens_bond->ok() ? o()->conduit.xuens_bond.percent() : o()->shared.xuens_bond->effectN( 1 ).percent() );
 
     return cpm;
   }
@@ -1549,8 +1545,8 @@ private:
     {
       double am = pet_melee_attack_t::action_multiplier();
 
-      if ( o()->conduit.walk_with_the_ox->ok() )
-        am *= 1 + o()->conduit.walk_with_the_ox.percent();
+      if ( o()->shared.walk_with_the_ox && o()->shared.walk_with_the_ox->ok() )
+        am *= 1 + ( o()->conduit.walk_with_the_ox->ok() ? o()->conduit.walk_with_the_ox.percent() : o()->shared.walk_with_the_ox->effectN( 1 ).percent() );
 
       return am;
     }
@@ -1664,8 +1660,8 @@ private:
     {
       double am = pet_melee_attack_t::action_multiplier();
 
-      if ( o()->conduit.walk_with_the_ox->ok() )
-        am *= 1 + o()->conduit.walk_with_the_ox.percent();
+      if ( o()->shared.walk_with_the_ox && o()->shared.walk_with_the_ox->ok() )
+        am *= 1 + ( o()->conduit.walk_with_the_ox->ok() ? o()->conduit.walk_with_the_ox.percent() : o()->shared.walk_with_the_ox->effectN( 1 ).percent() );
 
       return am;
     }
@@ -2192,14 +2188,14 @@ public:
     {
       double am = pet_melee_attack_t::action_multiplier();
 
-      if ( o()->legendary.stormstouts_last_keg->ok() )
-        am *= 1 + o()->legendary.stormstouts_last_keg->effectN( 1 ).percent();
+      if ( o()->shared.stormstouts_last_keg && o()->shared.stormstouts_last_keg->ok() )
+        am *= 1 + o()->shared.stormstouts_last_keg->effectN( 1 ).percent();
 
-      if ( o()->conduit.scalding_brew->ok() )
+      if ( o()->shared.scalding_brew && o()->shared.scalding_brew->ok() )
       {
         auto td = o()->get_target_data( player->target );
         if ( td->dots.breath_of_fire->is_ticking() )
-          am *= 1 + o()->conduit.scalding_brew.percent();
+          am *= 1 + ( o()->conduit.scalding_brew->ok() ? o()->conduit.scalding_brew.percent() : o()->shared.scalding_brew->effectN( 1 ).percent() );
       }
 
       return am;
@@ -2808,11 +2804,11 @@ public:
       if ( o()->legendary.stormstouts_last_keg->ok() )
         am *= 1 + o()->legendary.stormstouts_last_keg->effectN( 1 ).percent();
 
-      if ( o()->conduit.scalding_brew->ok() )
+      if ( o()->shared.scalding_brew && o()->shared.scalding_brew->ok() )
       {
-        auto td = o()->find_target_data( player->target );
-        if ( td && td->dots.breath_of_fire->is_ticking() )
-          am *= 1 + o()->conduit.scalding_brew.percent();
+        auto td = o()->get_target_data( player->target );
+        if ( td->dots.breath_of_fire->is_ticking() )
+          am *= 1 + ( o()->conduit.scalding_brew->ok() ? o()->conduit.scalding_brew.percent() : o()->shared.scalding_brew->effectN( 1 ).percent() );
       }
 
       return am;
@@ -3161,15 +3157,10 @@ public:
 
     double composite_player_multiplier(school_e school) const override
     {
-
-        // TODO: Validate that Xuen's Bond buffs Fury of Xuen Tiger
-
         double cpm = monk_pet_t::composite_player_multiplier(school);
 
-        if (o()->conduit.xuens_bond->ok())
-            cpm *= 1 + o()->conduit.xuens_bond.percent();
-        else if (o()->talent.windwalker.xuens_bond->ok())
-            cpm *= 1 + o()->talent.windwalker.xuens_bond->effectN(1).percent();
+        if ( o()->shared.xuens_bond && o()->shared.xuens_bond->ok() )
+          cpm *= 1 + ( o()->conduit.xuens_bond->ok() ? o()->conduit.xuens_bond.percent() : o()->shared.xuens_bond->effectN( 1 ).percent() );
 
         return cpm;
     }
