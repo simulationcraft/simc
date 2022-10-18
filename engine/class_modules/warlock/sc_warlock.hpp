@@ -461,6 +461,9 @@ public:
 
     // Demonology
     const spell_data_t* blazing_meteor; // 4pc procs buff which makes next Hand of Gul'dan instant + increased damage
+
+    // Destruction 
+    const spell_data_t* chaos_maelstrom; // 2pc procs crit chance buff
   } tier;
 
   // DF - This struct will be retired, need to determine if needed for pre-patch
@@ -615,7 +618,7 @@ public:
     propagate_const<buff_t*> madness_sb;
     propagate_const<buff_t*> madness_rof_snapshot; // (Dummy buff) 2022-10-16: For Rain of Fire, Madness of the Azj'Aqir affects ALL active events until the next cast of Rain of Fire
     propagate_const<buff_t*> burn_to_ashes;
-    // DF - Chaos Incarnate? (passive max mastery on certain spells)
+    propagate_const<buff_t*> chaos_maelstrom; // T29 2pc buff
   } buffs;
 
   //TODO: Determine if any gains are not currently being tracked
@@ -692,6 +695,7 @@ public:
     proc_t* mayhem;
     proc_t* conflagration_of_chaos_cf;
     proc_t* conflagration_of_chaos_sb;
+    proc_t* chaos_maelstrom;
   } procs;
 
   int initial_soul_shards;
@@ -1036,6 +1040,16 @@ public:
     if ( p()->talents.haunted_soul.ok() && p()->buffs.haunted_soul->check() && data().affected_by( p()->talents.haunted_soul_buff->effectN( 1 ) ) )
       m *= 1.0 + p()->buffs.haunted_soul->check_stack_value();
 
+    return m;
+  }
+
+  double composite_crit_damage_bonus_multiplier() const override
+  {
+    double m = spell_t::composite_crit_damage_bonus_multiplier();
+
+    if ( p()->specialization() == WARLOCK_DESTRUCTION && p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T29, B4 ) )
+      m += p()->sets->set( WARLOCK_DESTRUCTION, T29, B4 )->effectN( 1 ).percent();
+    
     return m;
   }
 
