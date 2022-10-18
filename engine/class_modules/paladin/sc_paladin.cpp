@@ -2004,7 +2004,8 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) : actor_targe
   debuff.reckoning             = make_buff( *this, "reckoning", paladin->spells.reckoning );
   debuff.vengeful_shock        = make_buff( *this, "vengeful_shock", paladin->conduit.vengeful_shock->effectN( 1 ).trigger() )
                                 ->set_default_value( paladin->conduit.vengeful_shock.percent() );
-  debuff.seal_of_the_crusader  = make_buff( *this, "seal_of_the_crusader", paladin->find_spell( 385723 ) );
+  debuff.seal_of_the_crusader  = make_buff( *this, "seal_of_the_crusader", paladin->find_spell( 385723 ) )
+                                ->set_default_value( paladin->talents.seal_of_the_crusader->effectN( 2 ).percent() );
   debuff.sanctify              = make_buff( *this, "sanctify", paladin->find_spell( 382538 ) );
 }
 
