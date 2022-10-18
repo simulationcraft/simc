@@ -96,7 +96,7 @@ struct execution_sentence_t : public holy_power_consumer_t<paladin_melee_attack_
     double accumulated;
 
     es_explosion_t( paladin_t* p ) :
-      holy_power_consumer_t( "execution_sentence", p, p -> find_spell( 387200 ) ),
+      holy_power_consumer_t( "execution_sentence", p, p -> talents.executioners_wrath -> ok() ? p -> find_spell( 387200 ) : p -> find_spell( 387113 ) ),
       accumulated( 0.0 )
     {
       dual = background = true;
@@ -297,6 +297,9 @@ struct execution_sentence_t : public holy_power_consumer_t<paladin_melee_attack_
     snapshot_flags |= STATE_TARGET_NO_PET | STATE_MUL_TA | STATE_MUL_DA;
     update_flags &= ~STATE_TARGET;
     update_flags |= STATE_MUL_TA | STATE_MUL_DA;
+
+    base_tick_time = data().duration();
+    dot_duration = data().duration();
   }
 
   void impact( action_state_t* s) override
