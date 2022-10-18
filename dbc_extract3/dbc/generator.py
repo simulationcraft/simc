@@ -1352,6 +1352,7 @@ class SpellDataGenerator(DataGenerator):
          382852, 382853, 382854, 382855, 382856, 382857, 382858, 382859, # Darkmoon Deck: Watcher
          382844, 382845, 382846, 382847, 382848, 382849, 382850, 382851, # Darkmoon Deck: Rime
          382860, 382861, 382862, 382863, 382864, 382865, 382866, 382867, # Darkmoon Deck: Dance
+         375335, 375342, 375343, 375345, # Elemental Lariat JC Neck
         ),
 
         # Warrior:

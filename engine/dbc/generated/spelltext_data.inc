@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.2.46157
-static const std::array<spelltext_data_t, 19065> __spelltext_data { {
+static const std::array<spelltext_data_t, 19069> __spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -16386,6 +16386,10 @@ static const std::array<spelltext_data_t, 19065> __spelltext_data { {
   { 375289, "The spearhead hones your edge, increasing your Critical Strike by $s1. Stacks up to $U times.", "Critical Strike increased by $w1.", 0 },
   { 375293, "Your healing spells have a chance to increase your Critical Strike by $375289s1.", 0, 0 },
   { 375323, "Spells and abilities have a chance to empower one of your socketed elemental gems, granting $s1 of their associated stat for $M2 sec.", 0, 0 },
+  { 375335, 0, "Critical strike increased by $w1.", 0 },
+  { 375342, 0, "Haste increased by $w1.", 0 },
+  { 375343, 0, "Versatility increased by $w1.", 0 },
+  { 375345, 0, "Mastery increased by $w1.", 0 },
   { 375406, "Obsidian Scales's cooldown is reduced by ${$s1/-1000} sec.", 0, 0 },
   { 375443, "Tail Swipe's cooldown is reduced by ${$s1/-1000} sec.", 0, 0 },
   { 375497, "When Obtained: Increases movement and flight speed by $s1% for $d.", "Movement and flight speed increased by $s1%.", 0 },

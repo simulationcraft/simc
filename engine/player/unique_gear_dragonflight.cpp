@@ -830,7 +830,94 @@ void the_cartographers_calipers( special_effect_t& effect )
 }
 // Weapons
 // Armor
+void elemental_lariat( special_effect_t& effect )
+{
+  enum gem_type_e
+  {
+    AIR_GEM   = 0x1,
+    EARTH_GEM = 0x2,
+    FIRE_GEM  = 0x4,
+    FROST_GEM = 0x8
+  };
+
+  // while part of this info is available in ItemSparse.db2, seems unnecessary to export another field to item_data.inc
+  // just for this single effect
+  using gem_name_type = std::pair<const char*, gem_type_e>;
+  static constexpr gem_name_type gem_types[] =
+  {
+    { "Crafty Alexstraszite",   AIR_GEM   },
+    { "Energized Malygite",     AIR_GEM   },
+    { "Quick Ysemerald",        AIR_GEM   },
+    { "Keen Neltharite",        AIR_GEM   },
+    { "Forceful Nozdorite",     AIR_GEM   },
+    { "Sensei's Alexstraszite", EARTH_GEM },
+    { "Zen Malygite",           EARTH_GEM },
+    { "Keen Ysemerald",         EARTH_GEM },
+    { "Fractured Neltharite",   EARTH_GEM },
+    { "Puissant Nozdorite",     EARTH_GEM },
+    { "Deadly Alexstraszite",   FIRE_GEM  },
+    { "Radiant Malygite",       FIRE_GEM  },
+    { "Crafty Ysemerald",       FIRE_GEM  },
+    { "Sensei's Neltharite",    FIRE_GEM  },
+    { "Jagged Nozdorite",       FIRE_GEM  },
+    { "Radiant Alexstraszite",  FROST_GEM },
+    { "Stormy Malygite",        FROST_GEM },
+    { "Energized Ysemerald",    FROST_GEM },
+    { "Zen Neltharite",         FROST_GEM },
+    { "Steady Nozdorite",       FROST_GEM },
+  };
+
+  // TODO: does having more of a type increase the chances of getting that buff?
+  unsigned gems = 0;
+  for ( const auto& item : effect.player->items )
+  {
+    for ( auto gem_id : item.parsed.gem_id )
+    {
+      if ( gem_id )
+      {
+        auto n = effect.player->dbc->item( gem_id ).name;
+        auto it = range::find( gem_types, n, &gem_name_type::first );
+        if ( it != std::end( gem_types ) )
+          gems |= ( *it ).second;
+      }
+    }
+  }
+
+  if ( !gems )
+    return;
+
+  auto val = effect.driver()->effectN( 1 ).average( effect.item );
+  auto dur = timespan_t::from_seconds( effect.driver()->effectN( 2 ).base_value() );
+  std::vector<buff_t*> buffs;
+
+  auto add_buff = [ &effect, gems, val, dur, &buffs ]( gem_type_e type, std::string suf, unsigned id, stat_e stat ) {
+    if ( gems & type )
+    {
+      auto name = "elemental_lariat__empowered_" + suf;
+      auto buff = buff_t::find( effect.player, name );
+      if ( !buff )
+      {
+        buff = make_buff<stat_buff_t>( effect.player, name, effect.player->find_spell( id ) )
+          ->add_stat( stat, val )
+          ->set_duration( dur );
+      }
+      buffs.push_back( buff );
+    }
+  };
+
+  add_buff( AIR_GEM, "air", 375342, STAT_HASTE_RATING );
+  add_buff( EARTH_GEM, "earth", 375345, STAT_MASTERY_RATING );
+  add_buff( FIRE_GEM, "flame", 375335, STAT_CRIT_RATING );
+  add_buff( FROST_GEM, "frost", 375343, STAT_VERSATILITY_RATING );
+
+  new dbc_proc_callback_t( effect.player, effect );
+
+  effect.player->callbacks.register_callback_execute_function(
+      effect.driver()->id(), [ buffs ]( const dbc_proc_callback_t* cb, action_t*, action_state_t* ) {
+        buffs[ cb->rng().range( buffs.size() ) ]->trigger();
+      } );
 }
+}  // namespace items
 
 void register_special_effects()
 {
@@ -871,6 +958,7 @@ void register_special_effects()
   register_special_effect( 384112, items::the_cartographers_calipers );
   // Weapons
   // Armor
+  register_special_effect( 375323, items::elemental_lariat );
   // Disabled
   register_special_effect( 382958, items::DISABLED_EFFECT );  // df darkmoon deck shuffler
   register_special_effect( 382913, items::DISABLED_EFFECT );  // bronzescale sigil (faster shuffle)

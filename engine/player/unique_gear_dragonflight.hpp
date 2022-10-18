@@ -47,6 +47,7 @@ void emerald_coachs_whistle( special_effect_t& );
 void the_cartographers_calipers( special_effect_t& );
 // Weapons
 // Armor
+void elemental_lariat( special_effect_t& );
 }
 
 void register_special_effects();
