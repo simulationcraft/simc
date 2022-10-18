@@ -1088,8 +1088,8 @@ struct shield_of_vengeance_t : public paladin_absorb_t
 
 struct truths_wake_t : public paladin_spell_t
 {
-  truths_wake_t( paladin_t* p ) :
-    paladin_spell_t( "truths_wake", p, p -> find_spell( 383351 ) )
+  truths_wake_t( paladin_t* p, util::string_view name ) :
+    paladin_spell_t( name, p, p -> find_spell( 383351 ) )
   {
     hasted_ticks = false;
     tick_may_crit = false;
@@ -1136,7 +1136,7 @@ struct wake_of_ashes_t : public paladin_spell_t
 
     if ( p -> talents.truths_wake -> ok() )
     {
-      truths_wake = new truths_wake_t( p );
+      truths_wake = new truths_wake_t( p, "truths_wake_woa" );
       add_child( truths_wake );
     }
   }
@@ -1183,7 +1183,7 @@ struct radiant_decree_t : public holy_power_consumer_t<paladin_spell_t>
 
     if ( p -> talents.truths_wake -> ok() )
     {
-      truths_wake = new truths_wake_t( p );
+      truths_wake = new truths_wake_t( p, "truths_wake_rd" );
       add_child( truths_wake );
     }
 
