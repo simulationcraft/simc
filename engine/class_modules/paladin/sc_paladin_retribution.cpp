@@ -1249,6 +1249,7 @@ struct exorcism_t : public paladin_spell_t
     impact_action -> stats = stats;
 
     dot_action = new exorcism_dot_t( p );
+    add_child( dot_action );
   }
 
   void impact( action_state_t* s ) override
