@@ -1119,6 +1119,9 @@ struct wake_of_ashes_t : public paladin_spell_t
   {
     parse_options( options_str );
 
+    if ( p -> talents.radiant_decree -> ok() ||  !( p -> talents.wake_of_ashes -> ok() ) )
+      background = true;
+
     may_crit = true;
     full_amount_targets = 1;
     reduced_aoe_targets = 1.06; // this is approximate, from ingame testing
@@ -1183,6 +1186,11 @@ struct radiant_decree_t : public holy_power_consumer_t<paladin_spell_t>
       truths_wake = new truths_wake_t( p );
       add_child( truths_wake );
     }
+
+    full_amount_targets = 5;
+    reduced_aoe_targets = 1.06; // this is approximate, from ingame testing
+
+    aoe = -1;
   }
 
   void impact( action_state_t* s) override

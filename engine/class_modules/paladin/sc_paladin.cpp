@@ -1194,6 +1194,20 @@ void judgment_t::execute()
 
   if ( p()->conduit.virtuous_command->ok() )
     p()->buffs.virtuous_command_conduit->trigger();
+
+  if ( p()->talents.zealots_paragon->ok() )
+  {
+    if ( p()->buffs.avenging_wrath->up() )
+    {
+      p()->buffs.avenging_wrath->extend_duration(
+          p(), timespan_t::from_millis( p()->talents.zealots_paragon->effectN( 1 ).base_value() ) );
+    }
+    else if ( p()->buffs.crusade->up() )
+    {
+      p()->buffs.crusade->extend_duration(
+          p(), timespan_t::from_millis( p()->talents.zealots_paragon->effectN( 1 ).base_value() ) );
+    }
+  }
 }
 
 // Rebuke ===================================================================
@@ -3002,7 +3016,7 @@ double paladin_t::composite_mastery_value() const
   double m = player_t::composite_mastery_value();
 
   if ( talents.seal_of_might->ok() && ( buffs.avenging_wrath->up() || buffs.crusade->up() ) )
-    m += talents.seal_of_might->effectN( 1 ).base_value();
+    m += talents.seal_of_might->effectN( 1 ).percent();
 
   return m;
 }
