@@ -24,11 +24,11 @@ struct warrior_td_t : public actor_target_data_t
   dot_t* dots_gushing_wound;
   dot_t* dots_ravager;
   dot_t* dots_rend;
-  //dot_t* dots_thunderous_roar;
   buff_t* debuffs_colossus_smash;
   buff_t* debuffs_concussive_blows;
-  buff_t* debuffs_exploiter;
   buff_t* debuffs_executioners_precision;
+  buff_t* debuffs_exploiter;
+  buff_t* debuffs_fatal_mark;
   buff_t* debuffs_siegebreaker;
   buff_t* debuffs_demoralizing_shout;
   buff_t* debuffs_taunt;
@@ -144,7 +144,6 @@ public:
     buff_t* bloodsport;
     buff_t* brace_for_impact;
     buff_t* crushing_assault;
-    buff_t* executioners_precision;
     buff_t* gathering_storm;
     buff_t* infinite_fury;
     buff_t* pulverizing_blows;
@@ -180,6 +179,7 @@ public:
 
   struct rppm_t
   {
+    real_ppm_t* fatal_mark;
     real_ppm_t* revenge;
   } rppm;
 
@@ -234,6 +234,7 @@ public:
     gain_t* archavons_heavy_hand;
     gain_t* avatar;
     gain_t* avoided_attacks;
+    gain_t* bloodsurge;
     gain_t* charge;
     gain_t* critical_block;
     gain_t* execute;
@@ -290,6 +291,8 @@ public:
     // Extra Spells To Make Things Work
 
     const spell_data_t* colossus_smash_debuff;
+    const spell_data_t* executioners_precision_debuff;
+    const spell_data_t* fatal_mark_debuff;
     const spell_data_t* concussive_blows_debuff;
     const spell_data_t* shield_block_buff;
     const spell_data_t* siegebreaker_debuff;
@@ -725,7 +728,6 @@ public:
     azerite_power_t seismic_wave;
     azerite_power_t lord_of_war;
     azerite_power_t gathering_storm;
-    azerite_power_t executioners_precision;
     azerite_power_t crushing_assault;
     azerite_power_t striking_the_anvil;
     // fury
@@ -857,6 +859,8 @@ public:
   void vision_of_perfection_proc() override;
   //void apply_affecting_auras(action_t& action) override;
 
+  void trigger_tide_of_blood( dot_t* dot );
+
   void default_apl_dps_precombat();
   void apl_default();
   void apl_fury();
@@ -946,7 +950,7 @@ struct warrior_action_t : public Base
     bool fury_mastery_direct, fury_mastery_dot, arms_mastery,
     siegebreaker;
     // talents
-    bool avatar, sweeping_strikes, booming_voice, bloodcraze,
+    bool avatar, sweeping_strikes, booming_voice, bloodcraze, executioners_precision,
     ashen_juggernaut, recklessness, slaughtering_strikes, colossus_smash;
     // azerite & conduit
     bool crushing_assault, ashen_juggernaut_conduit;
@@ -956,6 +960,7 @@ struct warrior_action_t : public Base
         fury_mastery_dot( false ),
         arms_mastery( false ),
         colossus_smash( false ),
+        executioners_precision( false ),
         siegebreaker( false ),
         ashen_juggernaut( false ),
         ashen_juggernaut_conduit( false ),
@@ -1086,6 +1091,7 @@ public:
     affected_by.arms_mastery        = ab::data().affected_by( p()->mastery.deep_wounds_ARMS -> effectN( 3 ).trigger()->effectN( 2 ) );
     affected_by.booming_voice       = ab::data().affected_by( p()->talents.protection.demoralizing_shout->effectN( 3 ) );
     affected_by.colossus_smash      = ab::data().affected_by( p()->spell.colossus_smash_debuff->effectN( 1 ) );
+    affected_by.executioners_precision = ab::data().affected_by( p()->spell.executioners_precision_debuff->effectN( 1 ) );
     affected_by.siegebreaker        = ab::data().affected_by( p()->spell.siegebreaker_debuff->effectN( 1 ) );
     affected_by.avatar              = ab::data().affected_by( p()->talents.warrior.avatar->effectN( 1 ) );
     affected_by.recklessness        = ab::data().affected_by( p()->talents.fury.recklessness->effectN( 1 ) );
@@ -1147,6 +1153,11 @@ public:
     if ( affected_by.colossus_smash && td->debuffs_colossus_smash->check() )
     {
       m *= 1.0 + ( td->debuffs_colossus_smash->value() );
+    }
+
+    if ( affected_by.executioners_precision && td->debuffs_executioners_precision->check() )
+    {
+      m *= 1.0 + ( td->debuffs_executioners_precision->stack_value() );
     }
 
     if ( affected_by.arms_mastery && td->dots_deep_wounds->is_ticking() )
@@ -2038,10 +2049,10 @@ struct mortal_strike_unhinged_t : public warrior_attack_t
       }
     }
     p()->buff.martial_prowess->expire();
-    p()->buff.executioners_precision->expire();
 
     warrior_td_t* td = this->td( execute_state->target );
     td->debuffs_exploiter->expire();
+    td->debuffs_executioners_precision->expire();
   }
 
   void impact( action_state_t* s ) override
@@ -2062,6 +2073,10 @@ struct mortal_strike_unhinged_t : public warrior_attack_t
     if ( mortal_combo_strike && rng().roll( mortal_combo_chance ) )
     {
       mortal_combo_strike->execute();
+    }
+    if ( p()->talents.arms.fatality->ok() && p()->rppm.fatal_mark->trigger() && target->health_percentage() > 30 )
+    {  // does this eat RPPM when switching from low -> high health target?
+      td( s->target )->debuffs_fatal_mark->trigger();
     }
   }
 
@@ -2141,13 +2156,6 @@ struct mortal_strike_t : public warrior_attack_t
     return m;
   }
 
-  double bonus_da( const action_state_t* s ) const override
-  {
-    double b = warrior_attack_t::bonus_da( s );
-    b += p()->buff.executioners_precision->stack_value();
-    return b;
-  }
-
   void execute() override
   {
     warrior_attack_t::execute();
@@ -2169,10 +2177,10 @@ struct mortal_strike_t : public warrior_attack_t
         p()->buff.battlelord->expire();
       }
     p()->buff.martial_prowess->expire();
-    p()->buff.executioners_precision->expire();
 
     warrior_td_t* td = this->td( execute_state->target );
     td->debuffs_exploiter->expire();
+    td->debuffs_executioners_precision->expire();
   }
 
   void impact( action_state_t* s ) override
@@ -2193,6 +2201,10 @@ struct mortal_strike_t : public warrior_attack_t
     if ( mortal_combo_strike && rng().roll( mortal_combo_chance ) )
     {
       mortal_combo_strike->execute();
+    }
+    if ( p()->talents.arms.fatality->ok() && p()->rppm.fatal_mark->trigger() && target->health_percentage() > 30 )
+    { // does this eat RPPM when switching from low -> high health target?
+      td( s->target )->debuffs_fatal_mark->trigger();
     }
   }
 
@@ -2844,6 +2856,10 @@ struct cleave_t : public warrior_attack_t
       p()->active.deep_wounds_ARMS->set_target( s->target );
       p()->active.deep_wounds_ARMS->execute();
     }
+    if ( p()->talents.arms.fatality->ok() && p()->rppm.fatal_mark->trigger() && target->health_percentage() > 30 )
+    {  // does this eat RPPM when switching from low -> high health target?
+      td( s->target )->debuffs_fatal_mark->trigger();
+    }
   }
 
   void execute() override
@@ -2928,12 +2944,23 @@ struct colossus_smash_t : public warrior_attack_t
 
 struct deep_wounds_ARMS_t : public warrior_attack_t
 {
-  deep_wounds_ARMS_t( warrior_t* p ) : warrior_attack_t( "deep_wounds", p, p->find_spell( 262115 ) )
+  double bloodsurge_chance, rage_from_bloodsurge;
+  deep_wounds_ARMS_t( warrior_t* p ) : warrior_attack_t( "deep_wounds", p, p->find_spell( 262115 ) ),
+    bloodsurge_chance( p->talents.arms.bloodsurge->proc_chance() ),
+    rage_from_bloodsurge( p->find_spell( 384362 )->effectN( 1 ).base_value() / 10.0 )
   {
     background = tick_may_crit = true;
     hasted_ticks               = true;
   }
-// add debuff to increase damage taken
+
+  void tick( dot_t* d ) override
+  {
+    warrior_attack_t::tick( d );
+    if ( p()->talents.arms.bloodsurge->ok() && rng().roll( bloodsurge_chance ) )
+    {
+      p()->resource_gain( RESOURCE_RAGE, rage_from_bloodsurge, p()->gain.bloodsurge );
+    }
+  }
 };
 
 // Deep Wounds PROT ==============================================================
@@ -2984,12 +3011,24 @@ struct demoralizing_shout : public warrior_attack_t
 
 struct thunderous_roar_t : public warrior_attack_t
 {
+  double bloodsurge_chance, rage_from_bloodsurge;
   thunderous_roar_t( warrior_t* p, util::string_view options_str )
-    : warrior_attack_t( "thunderous_roar", p, p->talents.warrior.thunderous_roar )
+    : warrior_attack_t( "thunderous_roar", p, p->talents.warrior.thunderous_roar ),
+      bloodsurge_chance( p->talents.arms.bloodsurge->proc_chance() ),
+      rage_from_bloodsurge( p->find_spell( 384362 )->effectN( 1 ).base_value() / 10.0 )
   {
     parse_options( options_str );
     aoe       = -1;
     may_dodge = may_parry = may_block = false;
+  }
+
+  void tick( dot_t* d ) override
+  {
+    warrior_attack_t::tick( d );
+    if ( p()->talents.arms.bloodsurge->ok() && rng().roll( bloodsurge_chance ) )
+    {
+      p()->resource_gain( RESOURCE_RAGE, rage_from_bloodsurge, p()->gain.bloodsurge );
+    }
   }
 };
 
@@ -3096,9 +3135,9 @@ struct execute_arms_t : public warrior_attack_t
     {
       p()->buff.sudden_death->expire();
     }
-    if ( p()->azerite.executioners_precision.ok() )
+    if ( p()->talents.arms.executioners_precision->ok() && ( result_is_hit( execute_state->result ) ) )
     {
-      p()->buff.executioners_precision->trigger();
+      td( execute_state->target )->debuffs_executioners_precision->trigger();
     }
     if ( p()->legendary.exploiter.ok() && ( result_is_hit( execute_state->result ) ) )
     {
@@ -3914,6 +3953,25 @@ struct skullsplitter_t : public warrior_attack_t
     parse_options( options_str );
     weapon = &( player->main_hand_weapon );
   }
+
+  void trigger_tide_of_blood( dot_t* dot )
+  {
+    if ( !dot->is_ticking() )
+      return;
+
+    const double coeff = 1.0 / ( 10 );
+    dot->adjust_full_ticks( coeff );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    warrior_attack_t::impact( s );
+    if ( p()->talents.arms.tide_of_blood->ok() )
+    {
+      warrior_td_t* td = p()->get_target_data( target );
+      trigger_tide_of_blood( td->dots_rend );
+    }
+  }
 };
 
 // Sweeping Strikes ===================================================================
@@ -4704,11 +4762,22 @@ struct enraged_regeneration_t : public warrior_heal_t
 
 struct rend_dot_t : public warrior_attack_t
 {
-  //bool from_thunder_clap;
-  rend_dot_t( warrior_t* p ) : warrior_attack_t( "rend", p, p->find_spell( 388539 ) )//,   from_thunder_clap( false )
+  double bloodsurge_chance, rage_from_bloodsurge;
+  rend_dot_t( warrior_t* p ) : warrior_attack_t( "rend", p, p->find_spell( 388539 ) ),
+    bloodsurge_chance( p->talents.arms.bloodsurge->proc_chance() ),
+    rage_from_bloodsurge( p->find_spell( 384362 )->effectN( 1 ).base_value() / 10.0 )
   {
     background = tick_may_crit = true;
     hasted_ticks               = true;
+  }
+
+  void tick( dot_t* d ) override
+  {
+    warrior_attack_t::tick( d );
+    if ( p()->talents.arms.bloodsurge->ok() && rng().roll( bloodsurge_chance ) )
+    {
+      p()->resource_gain( RESOURCE_RAGE, rage_from_bloodsurge, p()->gain.bloodsurge );
+    }
   }
 };
 
@@ -5630,9 +5699,9 @@ struct condemn_arms_t : public warrior_attack_t
     {
       p()->buff.sudden_death->expire();
     }
-    if ( p()->azerite.executioners_precision.ok() )
+    if ( p()->talents.arms.executioners_precision->ok() && ( result_is_hit( execute_state->result ) ) )
     {
-      p()->buff.executioners_precision->trigger();
+      td( execute_state->target )->debuffs_executioners_precision->trigger();
     }
     if ( p()->legendary.exploiter.ok() && ( result_is_hit( execute_state->result ) ) )
     {
@@ -6762,6 +6831,8 @@ void warrior_t::init_spells()
   spec.seasoned_soldier         = find_specialization_spell( "Seasoned Soldier" );
   spec.deep_wounds_ARMS         = find_specialization_spell("Mastery: Deep Wounds", WARRIOR_ARMS);
   spell.colossus_smash_debuff   = find_spell( 208086 );
+  spell.executioners_precision_debuff = find_spell( 386633 );
+  spell.fatal_mark_debuff       = find_spell( 383704 );
 
   // Fury Spells
   mastery.unshackled_fury       = find_mastery_spell( WARRIOR_FURY );
@@ -7061,7 +7132,6 @@ void warrior_t::init_spells()
   azerite.seismic_wave           = find_azerite_spell( "Seismic Wave" );
   azerite.lord_of_war            = find_azerite_spell( "Lord of War" );
   azerite.gathering_storm        = find_azerite_spell( "Gathering Storm" );
-  azerite.executioners_precision = find_azerite_spell( "Executioner's Precision" );
   azerite.crushing_assault       = find_azerite_spell( "Crushing Assault" );
   azerite.striking_the_anvil     = find_azerite_spell( "Striking the Anvil" );
   // Fury
@@ -7986,6 +8056,15 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ) : actor_target_data
                                ->set_default_value( p.spell.concussive_blows_debuff->effectN( 1 ).percent() )
                                ->set_duration( p.spell.concussive_blows_debuff->duration() );
 
+  debuffs_executioners_precision = make_buff( *this, "executioners_precision" ) 
+          ->set_duration( p.spell.executioners_precision_debuff->duration() )
+          ->set_max_stack( p.spell.executioners_precision_debuff->max_stacks() )
+          ->set_default_value( p.talents.arms.executioners_precision->effectN( 1 ).percent() );
+
+  debuffs_fatal_mark = make_buff( *this, "fatal_mark" ) 
+          ->set_duration( p.spell.fatal_mark_debuff->duration() )
+          ->set_max_stack( p.spell.fatal_mark_debuff->max_stacks() );
+
   debuffs_siegebreaker = make_buff( *this , "siegebreaker" )
     ->set_default_value( p.spell.siegebreaker_debuff->effectN( 2 ).percent() )
     ->set_duration( p.spell.siegebreaker_debuff->duration() )
@@ -8171,11 +8250,6 @@ void warrior_t::create_buffs()
                               ->set_default_value( azerite.crushing_assault.value( 1 ) )
                               ->set_trigger_spell( crushing_assault_trigger );
 
-  buff.executioners_precision =
-      make_buff( this, "executioners_precision", find_spell( 272870 ) )
-          ->set_trigger_spell( azerite.executioners_precision.spell_ref().effectN( 1 ).trigger() )
-          ->set_default_value( azerite.executioners_precision.value() );
-
   const spell_data_t* gathering_storm_trigger = azerite.gathering_storm.spell()->effectN( 1 ).trigger();
   //const spell_data_t* gathering_storm_buff    = gathering_storm_trigger->effectN( 1 ).trigger();
   buff.gathering_storm                        = make_buff<stat_buff_t>( this, "gathering_storm", find_spell( 273415 ) )
@@ -8298,6 +8372,7 @@ void warrior_t::create_buffs()
 void warrior_t::init_rng()
 {
   player_t::init_rng();
+  rppm.fatal_mark       = get_rppm( "fatal_mark", talents.arms.fatality );
   rppm.revenge        = get_rppm( "revenge_trigger", spec.revenge_trigger );
 }
 // warrior_t::init_scaling ==================================================
@@ -8328,6 +8403,7 @@ void warrior_t::init_gains()
   gain.archavons_heavy_hand             = get_gain( "archavons_heavy_hand" );
   gain.avatar                           = get_gain( "avatar" );
   gain.avoided_attacks                  = get_gain( "avoided_attacks" );
+  gain.bloodsurge                       = get_gain( "bloodsurge" );
   gain.charge                           = get_gain( "charge" );
   gain.conquerors_banner                = get_gain( "conquerors_banner" );
   gain.critical_block                   = get_gain( "critical_block" );
