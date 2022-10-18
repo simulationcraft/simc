@@ -5310,7 +5310,7 @@ struct thrash_bear_t : public bear_attack_t
 
       // if both cat thrash and bear thrash is up (due to cat thrash having a longer duration) then bear thrash damage
       // is suppressed
-      if ( td( d->target )->dots.thrash_bear->is_ticking() )
+      if ( td( d->target )->dots.thrash_cat->is_ticking() )
         return;
 
       bear_attack_t::tick( d );
