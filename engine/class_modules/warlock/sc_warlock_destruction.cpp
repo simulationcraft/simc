@@ -74,6 +74,15 @@ public:
     {
       p()->buffs.power_overwhelming->trigger( base_cost );
     }
+
+    // 2022-10-17: Spell data is missing the % chance!
+    // Need to test further, but chance appears independent of shard cost
+    // Also procs even if the cast is free due to other effects
+    if ( resource_current == RESOURCE_SOUL_SHARD && base_cost > 0 && p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T29, B2 ) && rng().roll( 0.2 ) )
+    {
+      p()->buffs.chaos_maelstrom->trigger();
+      p()->procs.chaos_maelstrom->occur();
+    }
   }
 
   double composite_target_multiplier( player_t* t ) const override
@@ -1478,6 +1487,10 @@ void warlock_t::create_buffs_destruction()
 
   buffs.burn_to_ashes = make_buff( this, "burn_to_ashes", talents.burn_to_ashes_buff )
                             ->set_default_value( talents.burn_to_ashes->effectN( 1 ).percent() );
+
+  buffs.chaos_maelstrom = make_buff( this, "chaos_maelstrom", tier.chaos_maelstrom )
+                              ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
+                              ->set_default_value_from_effect( 1 );
 }
 void warlock_t::init_spells_destruction()
 {
@@ -1612,6 +1625,11 @@ void warlock_t::init_spells_destruction()
 
   talents.avatar_of_destruction = find_talent_spell( talent_tree::SPECIALIZATION, "Avatar of Destruction" ); // Should be ID 387159
 
+  // Additional Tier Set spell data
+
+  // T29 (Vault of the Incarnates)
+  tier.chaos_maelstrom = find_spell( 394679 );
+
   // Legendaries
   legendary.cinders_of_the_azjaqir         = find_runeforge_legendary( "Cinders of the Azj'Aqir" );
   legendary.embers_of_the_diabolic_raiment = find_runeforge_legendary( "Embers of the Diabolic Raiment" );
@@ -1651,6 +1669,7 @@ void warlock_t::init_procs_destruction()
 {
   procs.reverse_entropy = get_proc( "reverse_entropy" );
   procs.rain_of_chaos = get_proc( "rain_of_chaos" );
+  procs.chaos_maelstrom = get_proc( "chaos_maelstrom" );
 }
 
 }  // namespace warlock
