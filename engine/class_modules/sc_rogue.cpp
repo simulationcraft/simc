@@ -237,8 +237,11 @@ public:
 class rogue_t : public player_t
 {
 public:
-  // Shadow techniques swing counter;
+  // Shadow Techniques swing counter;
   unsigned shadow_techniques_counter;
+
+  // Danse Macabre Ability ID Tracker
+  std::vector<unsigned> danse_macabre_tracker;
 
   // Active
   struct
@@ -357,6 +360,7 @@ public:
     buff_t* take_em_by_surprise_aura;
     damage_buff_t* summarily_dispatched;
     // Subtlety
+    damage_buff_t* danse_macabre;
     buff_t* lingering_shadow;
     buff_t* master_of_shadows;
     buff_t* premeditation;
@@ -604,6 +608,7 @@ public:
     const spell_data_t* symbols_of_death;
 
     const spell_data_t* black_powder_shadow_attack;
+    const spell_data_t* danse_macabre_buff;
     const spell_data_t* deeper_daggers_buff;
     const spell_data_t* eviscerate_shadow_attack;
     const spell_data_t* finality_black_powder_buff;
@@ -863,7 +868,7 @@ public:
       player_talent_t finality;
 
       player_talent_t the_rotten;
-      player_talent_t danse_macabre;            // NYI
+      player_talent_t danse_macabre;
       player_talent_t dark_brew;
 
     } subtlety;
@@ -1489,7 +1494,6 @@ public:
   {
     // Shadowlands
     bool flagellation = false;
-    bool master_assassins_mark = false;
     bool dashing_scoundrel = false;
     bool zoldyck_insignia = false;
     bool sepsis = false;                // Stance Mask
@@ -1501,6 +1505,7 @@ public:
     bool blindside = false;             // Stance Mask
     bool broadside_cp = false;
     bool cold_blood = false;
+    bool danse_macabre = false;         // Trigger
     bool deathmark = false;             // Tuning Aura
     bool deepening_shadows = false;     // Trigger
     bool elaborate_planning = false;    // Trigger
@@ -1612,12 +1617,6 @@ public:
       ab::data().affected_by( p->spec.broadside->effectN( 2 ) ) ||
       ab::data().affected_by( p->spec.broadside->effectN( 3 ) );
 
-    // Shadowlands
-    if ( p->legendary.master_assassins_mark.ok() )
-    {
-      affected_by.master_assassins_mark = ab::data().affected_by( p->find_spell( 340094 )->effectN( 1 ) );
-    }
-
     // Cross-Expansion Mechanics
     if ( p->conduit.maim_mangle->ok() || p->talent.assassination.systemic_failure->ok() )
     {
@@ -1644,13 +1643,10 @@ public:
     // Dragonflight
     affected_by.audacity = ab::data().affected_by( p->spec.audacity_buff->effectN( 1 ) );
     affected_by.blindside = ab::data().affected_by( p->spec.blindside_buff->effectN( 1 ) );
+    affected_by.danse_macabre = ab::data().affected_by( p->spec.danse_macabre_buff->effectN( 1 ) );
+    affected_by.improved_ambush = ab::data().affected_by( p->talent.rogue.improved_ambush->effectN( 1 ) );
     affected_by.improved_shiv = ab::data().affected_by( p->spec.improved_shiv_debuff->effectN( 1 ) );
     affected_by.master_assassin = ab::data().affected_by( p->spec.master_assassin_buff->effectN( 1 ) );
-
-    if ( p->talent.rogue.improved_ambush->ok() )
-    {
-      affected_by.improved_ambush = ab::data().affected_by( p->talent.rogue.improved_ambush->effectN( 1 ) );
-    }
 
     if ( p->talent.assassination.lethal_dose->ok() )
     {
@@ -1712,6 +1708,7 @@ public:
 
     register_damage_buff( p()->buffs.broadside );
     register_damage_buff( p()->buffs.cold_blood );
+    register_damage_buff( p()->buffs.danse_macabre );
     register_damage_buff( p()->buffs.deathly_shadows );
     register_damage_buff( p()->buffs.elaborate_planning );
     register_damage_buff( p()->buffs.finality_eviscerate );
@@ -2044,6 +2041,7 @@ public:
   void trigger_perforated_veins( const action_state_t* state );
   void trigger_banshees_blight( const action_state_t* state );
   void trigger_lingering_shadow( const action_state_t* state );
+  void trigger_danse_macabre( const action_state_t* state );
 
   // General Methods ==========================================================
 
@@ -2308,6 +2306,7 @@ public:
         }
       }
 
+      trigger_danse_macabre( ab::execute_state );
       trigger_dreadblades( ab::execute_state );
       trigger_relentless_strikes( ab::execute_state );
       trigger_elaborate_planning( ab::execute_state );
@@ -6823,6 +6822,17 @@ struct shadow_dance_t : public stealth_like_buff_t<damage_buff_t>
     apply_affecting_aura( p->talent.subtlety.improved_shadow_dance );
   }
 
+  void execute( int stacks, double value, timespan_t duration ) override
+  {
+    stealth_like_buff_t::execute( stacks, value, duration );
+
+    if ( rogue->talent.subtlety.danse_macabre->ok() )
+    {
+      rogue->buffs.danse_macabre->expire();
+      rogue->danse_macabre_tracker.clear();
+    }
+  }
+
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     stealth_like_buff_t::expire_override( expiration_stacks, remaining_duration );
@@ -6831,6 +6841,12 @@ struct shadow_dance_t : public stealth_like_buff_t<damage_buff_t>
     {
       rogue->buffs.lingering_shadow->cancel();
       rogue->buffs.lingering_shadow->trigger( rogue->buffs.lingering_shadow->max_stack() );
+    }
+
+    if ( rogue->talent.subtlety.danse_macabre->ok() )
+    {
+      rogue->buffs.danse_macabre->expire();
+      rogue->danse_macabre_tracker.clear();
     }
   }
 };
@@ -8088,6 +8104,30 @@ void actions::rogue_action_t<Base>::trigger_lingering_shadow( const action_state
   // Tooltips imply a bonus of 1% per stack, appears to use mitigated result
   double amount = state->result_mitigated * ( stacks / 100.0 );
   p()->active.lingering_shadow->execute_on_target( state->target, amount );
+}
+
+template <typename Base>
+void actions::rogue_action_t<Base>::trigger_danse_macabre( const action_state_t* state )
+{
+  if ( !p()->talent.subtlety.danse_macabre->ok() )
+    return;
+
+  if ( ab::background || ab::trigger_gcd == 0_ms || !affected_by.danse_macabre )
+    return;
+
+  if ( !p()->stealthed( STEALTH_SHADOWDANCE ) )
+    return;
+
+  if ( range::contains( p()->danse_macabre_tracker, ab::data().id() ) )
+  {
+    p()->danse_macabre_tracker.clear();
+    p()->buffs.danse_macabre->expire();
+  }
+  else
+  {
+    p()->danse_macabre_tracker.push_back( ab::data().id() );
+    p()->buffs.danse_macabre->increment();
+  }
 }
 
 // ==========================================================================
@@ -9886,6 +9926,7 @@ void rogue_t::init_spells()
   spec.true_bearing = talent.outlaw.roll_the_bones->ok() ? find_spell( 193359 ) : spell_data_t::not_found();
 
   spec.black_powder_shadow_attack = talent.subtlety.shadowed_finishers->ok() ? find_spell( 319190 ) : spell_data_t::not_found();
+  spec.danse_macabre_buff = talent.subtlety.danse_macabre->ok() ? find_spell( 393969 ) : spell_data_t::not_found();
   spec.eviscerate_shadow_attack = talent.subtlety.shadowed_finishers->ok() ? find_spell( 328082 ) : spell_data_t::not_found();
   spec.master_of_shadows_buff = talent.subtlety.master_of_shadows->ok() ? find_spell( 196980 ) : spell_data_t::not_found();
   spec.lingering_shadow_attack = talent.subtlety.lingering_shadow->ok() ? find_spell( 386081 ) : spell_data_t::not_found();
@@ -10450,6 +10491,9 @@ void rogue_t::create_buffs()
 
   // Subtlety ===============================================================
 
+  buffs.danse_macabre = make_buff<damage_buff_t>( this, "danse_macabre", spec.danse_macabre_buff );
+  buffs.danse_macabre->set_refresh_behavior( buff_refresh_behavior::DISABLED );
+
   buffs.shadow_blades = make_buff( this, "shadow_blades", talent.subtlety.shadow_blades ) // DFALPHA TOCHECK TO Legendary
     ->set_default_value_from_effect( 1 ) // Bonus Damage%
     ->set_cooldown( timespan_t::zero() );
@@ -10468,7 +10512,7 @@ void rogue_t::create_buffs()
 
   buffs.alacrity = make_buff( this, "alacrity", spell.alacrity_buff )
     ->set_default_value_from_effect_type( A_HASTE_ALL )
-    ->set_chance( talent.rogue.alacrity->ok() ) // DFALPHA -- Being redesigned
+    ->set_chance( talent.rogue.alacrity->ok() )
     ->add_invalidate( CACHE_HASTE );
 
   buffs.cold_blood = make_buff<damage_buff_t>( this, "cold_blood", talent.rogue.cold_blood );
@@ -11142,6 +11186,8 @@ void rogue_t::reset()
     shadow_techniques_counter = options.initial_shadow_techniques;
   else
     shadow_techniques_counter = rng().range( 0, 5 );
+
+  danse_macabre_tracker.clear();
 
   restealth_allowed = false;
 

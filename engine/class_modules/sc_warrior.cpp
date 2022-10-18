@@ -118,6 +118,7 @@ public:
     buff_t* intercept_movement;
     buff_t* intervene_movement;
     buff_t* into_the_fray;
+    buff_t* juggernaut;
     buff_t* last_stand;
     buff_t* meat_cleaver;
     buff_t* martial_prowess;
@@ -133,6 +134,8 @@ public:
     buff_t* spell_reflection;
     buff_t* sudden_death;
     buff_t* sweeping_strikes;
+    buff_t* test_of_might_tracker;  // Used to track rage gain from test of might.
+    buff_t* test_of_might;
     //buff_t* vengeance_revenge;
     //buff_t* vengeance_ignore_pain;
     buff_t* whirlwind;
@@ -152,8 +155,6 @@ public:
     buff_t* infinite_fury;
     buff_t* pulverizing_blows;
     buff_t* striking_the_anvil;
-    buff_t* test_of_might_tracker;  // Used to track rage gain from test of might.
-    stat_buff_t* test_of_might;
     buff_t* trample_the_weak;
     // Covenant
     buff_t* conquerors_banner;
@@ -956,7 +957,7 @@ struct warrior_action_t : public Base
     // talents
     bool avatar, sweeping_strikes, booming_voice, bloodcraze, executioners_precision,
     ashen_juggernaut, recklessness, slaughtering_strikes, colossus_smash,
-    merciless_bonegrinder;
+    merciless_bonegrinder, juggernaut;
     // azerite & conduit
     bool crushing_assault, ashen_juggernaut_conduit;
 
@@ -969,6 +970,7 @@ struct warrior_action_t : public Base
         siegebreaker( false ),
         ashen_juggernaut( false ),
         ashen_juggernaut_conduit( false ),
+        juggernaut( false ),
         merciless_bonegrinder( false ),
         recklessness( false ),
         slaughtering_strikes( false ),
@@ -1090,6 +1092,7 @@ public:
     affected_by.ashen_juggernaut_conduit = ab::data().affected_by( p()->conduit.ashen_juggernaut->effectN( 1 ).trigger()->effectN( 1 ) );
     affected_by.slaughtering_strikes = ab::data().affected_by( p()->find_spell( 393931 )->effectN( 1 ) );
     affected_by.ashen_juggernaut    = ab::data().affected_by( p()->talents.fury.ashen_juggernaut->effectN( 1 ).trigger()->effectN( 1 ) );
+    affected_by.juggernaut          = ab::data().affected_by( p()->talents.arms.juggernaut->effectN( 1 ).trigger()->effectN( 1 ) );
     affected_by.bloodcraze          = ab::data().affected_by( p()->talents.fury.bloodcraze->effectN( 1 ).trigger()->effectN( 1 ) );
     affected_by.sweeping_strikes    = ab::data().affected_by( p()->talents.arms.sweeping_strikes->effectN( 1 ) );
     affected_by.fury_mastery_direct = ab::data().affected_by( p()->mastery.unshackled_fury->effectN( 1 ) );
@@ -1269,6 +1272,11 @@ public:
     if ( affected_by.merciless_bonegrinder && p()->buff.merciless_bonegrinder->up() )
     {
       dm *= 1.0 + p()->buff.merciless_bonegrinder->check_value();
+    }
+
+    if ( affected_by.juggernaut && p()->buff.juggernaut->up() )
+    {
+      dm *= 1.0 + p()->buff.juggernaut->stack_value();
     }
 
     return dm;
@@ -3170,6 +3178,10 @@ struct execute_arms_t : public warrior_attack_t
     if ( p()->conduit.ashen_juggernaut.ok() )
     {
       p()->buff.ashen_juggernaut_conduit->trigger();
+    }
+    if ( p()->talents.arms.juggernaut.ok() )
+    {
+      p()->buff.juggernaut->trigger();
     }
   }
 
@@ -5777,6 +5789,10 @@ struct condemn_arms_t : public warrior_attack_t
     {
       p()->buff.ashen_juggernaut_conduit->trigger();
     }
+    if ( p()->talents.arms.juggernaut.ok() )
+    {
+      p()->buff.juggernaut->trigger();
+    }
     if ( p()->legendary.sinful_surge->ok() && td( execute_state->target )->debuffs_colossus_smash->check() )
     {
       td( execute_state->target )->debuffs_colossus_smash->extend_duration( p(), timespan_t::from_millis( p()->legendary.sinful_surge->effectN( 1 ).base_value() ) );
@@ -8182,12 +8198,10 @@ struct test_of_might_t : public warrior_buff_t<buff_t>
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
-    stat_buff_t* test_of_might = warrior().buff.test_of_might;
+    buff_t* test_of_might = warrior().buff.test_of_might;
     test_of_might->expire();
-    const int strength = static_cast<int>( current_value / 10 ) * as<int>( warrior().azerite.test_of_might.value( 1 ) );
-    test_of_might->manual_stats_added = false;
-    test_of_might->add_stat( STAT_STRENGTH, strength );
-    test_of_might->trigger();
+    double strength = ( current_value / 10 ) * ( warrior().talents.arms.test_of_might->effectN( 1 ).percent() );
+    test_of_might->trigger( 1, strength );
     current_value = 0;
     base_t::expire_override( expiration_stacks, remaining_duration );
   }
@@ -8359,6 +8373,10 @@ void warrior_t::create_buffs()
     ->set_default_value( find_spell( 202602 )->effectN( 1 ).percent() )
     ->add_invalidate( CACHE_HASTE );
 
+  buff.juggernaut = make_buff( this, "juggernaut", talents.arms.juggernaut->effectN( 1 ).trigger() )
+    ->set_default_value( talents.arms.juggernaut->effectN( 1 ).trigger()->effectN( 1 ).percent() )
+    ->set_duration( talents.arms.juggernaut->effectN( 1 ).trigger()->duration() );
+
   buff.last_stand = new buffs::last_stand_buff_t( *this, "last_stand", talents.protection.last_stand );
 
   buff.meat_cleaver = make_buff( this, "meat_cleaver", spell.whirlwind_buff );
@@ -8418,6 +8436,14 @@ void warrior_t::create_buffs()
       ->set_default_value( find_spell( 393931 )->effectN( 1 ).percent() );
   }
 
+  const spell_data_t* test_of_might_tracker = talents.arms.test_of_might.spell()->effectN( 1 ).trigger()->effectN( 1 ).trigger();
+  buff.test_of_might_tracker = new test_of_might_t( *this, "test_of_might_tracker", test_of_might_tracker );
+  buff.test_of_might_tracker->set_duration( spell.colossus_smash_debuff->duration() + talents.arms.blunt_instruments->effectN( 2 ).time_value() );
+  buff.test_of_might = make_buff( this, "test_of_might", find_spell( 385013 ) )
+                              ->set_default_value( talents.arms.test_of_might->effectN( 1 ).percent() )
+                              ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
+                              ->set_trigger_spell( test_of_might_tracker );
+
   buff.bloodcraze = make_buff( this, "bloodcraze", find_spell( 393951 ) )
     ->set_default_value( talents.fury.bloodcraze->effectN( 1 ).percent() );
 
@@ -8471,11 +8497,6 @@ void warrior_t::create_buffs()
   buff.pulverizing_blows = make_buff( this, "pulverizing_blows", find_spell( 275672 ) )
                                ->set_trigger_spell( azerite.pulverizing_blows.spell_ref().effectN( 1 ).trigger() )
                                ->set_default_value( azerite.pulverizing_blows.value() );
-
-  const spell_data_t* test_of_might_tracker = azerite.test_of_might.spell()->effectN( 1 ).trigger()->effectN( 1 ).trigger();
-  buff.test_of_might_tracker = new test_of_might_t( *this, "test_of_might_tracker", test_of_might_tracker );
-  buff.test_of_might = make_buff<stat_buff_t>( this, "test_of_might", find_spell( 275540 ) );
-  buff.test_of_might->set_trigger_spell( test_of_might_tracker );
 
   const spell_data_t* trample_the_weak_trigger = azerite.trample_the_weak.spell()->effectN( 1 ).trigger();
   const spell_data_t* trample_the_weak_buff    = trample_the_weak_trigger->effectN( 1 ).trigger();

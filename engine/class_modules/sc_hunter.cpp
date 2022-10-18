@@ -1576,6 +1576,7 @@ struct hunter_main_pet_base_t : public hunter_pet_t
     buff_t* rylakstalkers_piercing_fangs = nullptr;
 
     buff_t* bloodseeker = nullptr;
+    buff_t* coordinated_assault = nullptr;
   } buffs;
 
   struct {
@@ -1778,6 +1779,9 @@ struct hunter_main_pet_t final : public hunter_main_pet_base_t
       make_buff( this, "bloodseeker", o() -> find_spell( 260249 ) )
         -> set_default_value_from_effect( 1 )
         -> add_invalidate( CACHE_ATTACK_SPEED );
+
+    buffs.coordinated_assault =
+      make_buff( this, "coordinated_assault", o() -> find_spell( 361736 ) );
   }
 
   void init_action_list() override
@@ -2387,7 +2391,7 @@ struct basic_attack_t : public hunter_main_pet_attack_t
   {
     hunter_main_pet_attack_t::execute();
 
-    if ( o() -> buffs.coordinated_assault -> check() )
+    if ( p() -> buffs.coordinated_assault -> check() )
       o() -> buffs.coordinated_assault_empower -> trigger();
   }
 };
@@ -3084,7 +3088,7 @@ struct kill_shot_t : hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::impact( s );
 
-    if ( razor_fragments && debug_cast<state_t*>( s ) -> razor_fragments_up )
+    if ( razor_fragments && debug_cast<state_t*>( s ) -> razor_fragments_up && s -> chain_target < 1 )
     {
       double amount = s -> result_amount * razor_fragments -> result_mod;
       if ( amount > 0 )
@@ -3095,7 +3099,7 @@ struct kill_shot_t : hunter_ranged_attack_t
       }
     }
 
-    if ( razor_fragments_runeforge && debug_cast<state_t*>( s ) -> flayers_mark_up )
+    if ( razor_fragments_runeforge && debug_cast<state_t*>( s ) -> flayers_mark_up && s -> chain_target < 1 )
     {
       double amount = s -> result_amount * p() -> legendary.pouch_of_razor_fragments -> effectN( 1 ).percent();
       if ( amount > 0 )
@@ -3106,6 +3110,7 @@ struct kill_shot_t : hunter_ranged_attack_t
       }
     }
 
+    // Buff is consumed on first impact but all hits (in the case of Birds of Prey) can trigger the bleed.
     p() -> buffs.coordinated_assault_empower -> expire();
     if ( bleeding_gash && debug_cast<state_t*>( s ) -> coordinated_assault_empower_up )
     {
@@ -3435,6 +3440,8 @@ struct explosive_shot_t : public hunter_ranged_attack_t
 
 struct explosive_shot_background_t : public explosive_shot_t
 {
+  size_t targets = 0;
+
   explosive_shot_background_t( util::string_view, hunter_t* p ) : explosive_shot_t( p, "" )
   {
     dual = true;
@@ -3458,6 +3465,18 @@ struct serpent_sting_base_t: public hunter_ranged_attack_t
     parse_options( options_str );
 
     affected_by.serrated_shots = true;
+
+    if ( p -> talents.hydras_bite.ok() )
+      aoe = 1 + static_cast<int>( p -> talents.hydras_bite -> effectN( 1 ).base_value() );
+  }
+
+  void execute() override
+  {
+    // have to always reset target_cache because of smart targeting
+    if ( is_aoe() )
+      target_cache.is_valid = false;
+
+    hunter_ranged_attack_t::execute();
   }
 
   void init() override
@@ -3493,25 +3512,6 @@ struct serpent_sting_base_t: public hunter_ranged_attack_t
 
     return m;
   }
-};
-
-struct serpent_sting_t final : public serpent_sting_base_t
-{
-  serpent_sting_t( hunter_t* p, util::string_view options_str ):
-    serpent_sting_base_t( p, options_str, p -> talents.serpent_sting )
-  {
-    if ( p -> talents.hydras_bite.ok() )
-      aoe = 1 + static_cast<int>( p -> talents.hydras_bite -> effectN( 1 ).base_value() );
-  }
-
-  void execute() override
-  {
-    // have to always reset target_cache because of smart targeting
-    if ( is_aoe() )
-      target_cache.is_valid = false;
-
-    hunter_ranged_attack_t::execute();
-  }
 
   size_t available_targets( std::vector< player_t* >& tl ) const override
   {
@@ -3530,6 +3530,14 @@ struct serpent_sting_t final : public serpent_sting_base_t
     }
 
     return tl.size();
+  }
+};
+
+struct serpent_sting_t final : public serpent_sting_base_t
+{
+  serpent_sting_t( hunter_t* p, util::string_view options_str ):
+    serpent_sting_base_t( p, options_str, p -> talents.serpent_sting )
+  {
   }
 };
 
@@ -3726,6 +3734,7 @@ struct death_chakram_t : death_chakram::base_t
 {
   death_chakram::single_target_t* single_target;
   explosive_shot_background_t* explosive = nullptr;
+  int munitions_targets = 0;
 
   death_chakram_t( hunter_t* p, util::string_view options_str ):
     death_chakram::base_t( "death_chakram", p, p -> talents.death_chakram ),
@@ -3742,8 +3751,21 @@ struct death_chakram_t : death_chakram::base_t
     attack_power_mod.direct = single_target -> attack_power_mod.direct;
     school = single_target -> school;
 
-    if ( p -> legendary.bag_of_munitions.ok() )
+    // Hack in a Unity check; it's possible in prepatch for Death Chakrams to perform the Munitions effect without Necrolord being the active covenant.
+    bool unity = false;
+    for ( const auto& i : p -> items )
+    {
+      if ( range::contains( i.parsed.bonus_id, 8122 ) )
+      {
+        unity = true;
+        break;
+      }
+    }
+
+    if ( p -> legendary.bag_of_munitions.ok() || unity ) {
       explosive = p -> get_background_action<explosive_shot_background_t>( "explosive_shot_munitions" );
+      explosive -> targets = as<size_t>( p -> find_spell( 356264 ) -> effectN( 1 ).base_value() );
+    }
   }
 
   void init() override
@@ -3767,8 +3789,8 @@ struct death_chakram_t : death_chakram::base_t
       make_event<single_target_event_t>( *sim, *single_target, s -> target, ST_FIRST_HIT_DELAY );
     }
 
-    if ( p() -> legendary.bag_of_munitions.ok() && s -> chain_target < p() -> legendary.bag_of_munitions -> effectN( 1 ).base_value() )
-      explosive->execute_on_target( s -> target );
+    if ( explosive && s -> chain_target < explosive -> targets )
+      explosive -> execute_on_target( s -> target );
 
     td( s -> target ) -> debuffs.death_chakram -> trigger();
   }
@@ -4790,7 +4812,10 @@ struct multishot_mm_t: public hunter_ranged_attack_t
     reduced_aoe_targets = p -> find_spell( 2643 ) -> effectN( 1 ).base_value();
 
     if ( p -> talents.salvo.ok() )
+    {
       explosive = p -> get_background_action<attacks::explosive_shot_background_t>( "explosive_shot_salvo" );
+      explosive -> targets = as<size_t>( p -> talents.salvo -> effectN( 1 ).base_value() );
+    }
   }
 
   void execute() override
@@ -4807,10 +4832,10 @@ struct multishot_mm_t: public hunter_ranged_attack_t
 
     p() -> buffs.bombardment -> expire();
 
-    if ( p() -> talents.salvo.ok() && !p() -> buffs.salvo -> check() )
+    if ( explosive && !p() -> buffs.salvo -> check() )
     {
       std::vector<player_t*>& tl = target_list();
-      size_t targets = std::min<size_t>( tl.size(), as<size_t>( p() -> talents.salvo -> effectN( 1 ).base_value() ) );
+      size_t targets = std::min<size_t>( tl.size(), explosive -> targets );
       for ( size_t t = 0; t < targets; t++ )
         explosive -> execute_on_target( tl[ t ] );
       p() -> buffs.salvo -> trigger();
@@ -4945,6 +4970,9 @@ struct melee_focus_spender_t: hunter_melee_attack_t
       dual = true;
       base_costs[ RESOURCE_FOCUS ] = 0;
       triggers_wild_spirits = false;
+
+      // Viper's Venom is left out of Hydra's Bite target count modification.
+      aoe = 0;
     }
   };
 
@@ -5429,7 +5457,10 @@ struct coordinated_assault_t: public hunter_melee_attack_t
     p() -> buffs.coordinated_assault -> trigger();
 
     if ( auto pet = p() -> pets.main )
+    {
+      pet -> buffs.coordinated_assault -> trigger();
       pet -> active.coordinated_assault -> execute_on_target( target );
+    }
   }
 };
 
@@ -6273,8 +6304,10 @@ struct volley_t : public hunter_spell_t
       aoe = -1;
       background = dual = ground_aoe = true;
 
-      if ( p -> talents.salvo.ok() )
+      if ( p -> talents.salvo.ok() ) {
         explosive = p -> get_background_action<attacks::explosive_shot_background_t>( "explosive_shot_salvo" );
+        explosive -> targets = as<size_t>( p -> talents.salvo -> effectN( 1 ).base_value() );
+      }
     }
 
     void impact( action_state_t* s ) override
@@ -6290,10 +6323,10 @@ struct volley_t : public hunter_spell_t
     {
       hunter_ranged_attack_t::execute();
 
-      if ( p() -> talents.salvo.ok() && !p() -> buffs.salvo -> check() )
+      if ( explosive && !p() -> buffs.salvo -> check() )
       {
         std::vector<player_t*>& tl = target_list();
-        size_t targets = std::min<size_t>( tl.size(), as<size_t>( p() -> talents.salvo -> effectN( 1 ).base_value() ) );
+        size_t targets = std::min<size_t>( tl.size(), explosive -> targets );
         for ( size_t t = 0; t < targets; t++ )
           explosive -> execute_on_target( tl[ t ] );
         p() -> buffs.salvo -> trigger();
