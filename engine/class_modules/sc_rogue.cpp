@@ -606,6 +606,12 @@ public:
     const spell_data_t* black_powder_shadow_attack;
     const spell_data_t* deeper_daggers_buff;
     const spell_data_t* eviscerate_shadow_attack;
+    const spell_data_t* finality_black_powder_buff;
+    const spell_data_t* finality_eviscerate_buff;
+    const spell_data_t* finality_rupture_buff;
+    const spell_data_t* flagellation_buff;
+    const spell_data_t* flagellation_persist_buff;
+    const spell_data_t* flagellation_damage;
     const spell_data_t* master_of_shadows_buff;
     const spell_data_t* perforated_veins_buff;
     const spell_data_t* premeditation_buff;
@@ -850,11 +856,11 @@ public:
       player_talent_t perforated_veins;
       player_talent_t dark_shadow;
       player_talent_t deeper_daggers;
-      player_talent_t flagellation;             // NYI
+      player_talent_t flagellation;
 
       player_talent_t invigorating_shadowdust;
       player_talent_t lingering_shadow;
-      player_talent_t finality;                 // NYI, merge with legendary?
+      player_talent_t finality;
 
       player_talent_t the_rotten;
       player_talent_t danse_macabre;            // NYI
@@ -888,7 +894,6 @@ public:
   {
     const spell_data_t* echoing_reprimand;
     const spell_data_t* flagellation;
-    const spell_data_t* flagellation_buff;
     const spell_data_t* sepsis;
     const spell_data_t* serrated_bone_spike;
   } covenant;
@@ -3801,7 +3806,7 @@ struct eviscerate_t : public rogue_attack_t
       bonus_attack->execute();
     }
 
-    if ( p()->legendary.finality.ok() )
+    if ( p()->spec.finality_eviscerate_buff->ok() )
     {
       if ( p()->buffs.finality_eviscerate->check() )
         p()->buffs.finality_eviscerate->expire();
@@ -4564,7 +4569,7 @@ struct rupture_t : public rogue_attack_t
     trigger_poison_bomb( execute_state );
     trigger_scent_of_blood();
 
-    if ( p()->legendary.finality.ok() )
+    if ( p()->spec.finality_rupture_buff->ok() )
     {
       if ( p()->buffs.finality_rupture->check() )
         p()->buffs.finality_rupture->expire();
@@ -5073,7 +5078,7 @@ struct black_powder_t: public rogue_attack_t
     // BUG: Finality BP seems to affect every instance of shadow damage due to, err, spaghetti with the bonus attack trigger order and travel time?
     // See https://github.com/SimCMinMax/WoW-BugTracker/issues/747
     bool triggered_finality = false;
-    if ( p()->legendary.finality.ok() && !p()->buffs.finality_black_powder->check() )
+    if ( p()->spec.finality_black_powder_buff->ok() && !p()->buffs.finality_black_powder->check() )
     {
       p()->buffs.finality_black_powder->trigger();
       triggered_finality = true;
@@ -5767,7 +5772,7 @@ struct flagellation_damage_t : public rogue_attack_t
   buff_t* debuff;
 
   flagellation_damage_t( util::string_view name, rogue_t* p ) :
-    rogue_attack_t( name, p, p->find_spell( 345316 ) ),
+    rogue_attack_t( name, p, p->spec.flagellation_damage ),
     debuff( nullptr )
   {
     dual = true;
@@ -5779,11 +5784,11 @@ struct flagellation_damage_t : public rogue_attack_t
   }
 };
 
-struct flagellation_t : public rogue_attack_t
+struct flagellation_covenant_t : public rogue_attack_t
 {
   int initial_lashes;
 
-  flagellation_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
+  flagellation_covenant_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
     rogue_attack_t( name, p, p->covenant.flagellation, options_str ),
     initial_lashes()
   {
@@ -5825,6 +5830,30 @@ struct flagellation_t : public rogue_attack_t
   // 2022-07-02 -- Initial damage procs Blade Flurry, lashes do not
   bool procs_blade_flurry() const override
   { return true; }
+};
+
+struct flagellation_t : public rogue_attack_t
+{
+  flagellation_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
+    rogue_attack_t( name, p, p->talent.subtlety.flagellation, options_str )
+  {
+    dot_duration = timespan_t::zero();
+
+    if ( p->active.flagellation )
+    {
+      add_child( p->active.flagellation );
+    }
+  }
+
+  void execute() override
+  {
+    rogue_attack_t::execute();
+
+    p()->active.flagellation->debuff = td( execute_state->target )->debuffs.flagellation;
+    p()->active.flagellation->debuff->trigger();
+
+    p()->buffs.flagellation->trigger();
+  }
 };
 
 // Sepsis ===================================================================
@@ -7954,7 +7983,10 @@ void actions::rogue_action_t<Base>::trigger_keep_it_rolling()
 template <typename Base>
 void actions::rogue_action_t<Base>::trigger_flagellation( const action_state_t* state )
 {
-  if ( !p()->covenant.flagellation->ok() || !affected_by.flagellation )
+  if ( !affected_by.flagellation )
+    return;
+
+  if ( !p()->covenant.flagellation->ok() && !p()->talent.subtlety.flagellation->ok() )
     return;
 
   buff_t* debuff = p()->active.flagellation->debuff;
@@ -7972,11 +8004,14 @@ void actions::rogue_action_t<Base>::trigger_flagellation( const action_state_t* 
     return;
 
   p()->active.flagellation->trigger_secondary_action( debuff->player, cp_spend, 0.75_s );
-  if ( p()->legendary.obedience->ok() )
+  
+  // DFALPHA TOCHECK -- Currently Obedience does nothing on the talent version
+  if ( p()->legendary.obedience->ok() && !p()->talent.subtlety.flagellation->ok() )
   {
     const timespan_t obedience_cdr = p()->legendary.obedience->effectN( 1 ).time_value() * cp_spend;
     p()->cooldowns.flagellation->adjust( -obedience_cdr );
   }
+
   for ( int i = 0; i < cp_spend; i++ )
   {
     p()->procs.flagellation_cp_spend->occur();
@@ -8091,7 +8126,7 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   debuffs.between_the_eyes = make_buff( *this, "between_the_eyes", source->spec.between_the_eyes )
     ->set_default_value_from_effect_type( A_MOD_CRIT_CHANCE_FROM_CASTER )
     ->set_cooldown( timespan_t::zero() );
-  debuffs.flagellation = make_buff( *this, "flagellation", source->covenant.flagellation )
+  debuffs.flagellation = make_buff( *this, "flagellation", source->spec.flagellation_buff )
     ->set_initial_stack( 1 )
     ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
     ->set_period( timespan_t::zero() )
@@ -8171,12 +8206,12 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   }
 
   // Flagellation On-Death Buff Trigger
-  if ( source->covenant.flagellation->ok() )
+  // DFALPHA TOCHECK -- Confirm the talent version gives bonus death stacks
+  if ( source->covenant.flagellation->ok() || source->talent.subtlety.flagellation->ok() )
   {
     target->register_on_demise_callback( source, [ this, source ]( player_t* ) {
       if ( debuffs.flagellation->check() )
       {
-        // TOCHECK: As of PTR for 9.0.5, dying target appears to give 10 stacks for free to the persisting buff.
         source->buffs.flagellation->increment( 10 );
         source->buffs.flagellation->expire(); // Triggers persist buff
       }
@@ -8233,13 +8268,17 @@ double rogue_t::composite_melee_haste() const
     h *= 1.0 / ( 1.0 + buffs.alacrity->check_stack_value() );
   }
 
-  if ( buffs.flagellation->check() )
+  // Talent version gives Mastery, not Haste
+  if ( !talent.subtlety.flagellation->ok() )
   {
-    h *= 1.0 / ( 1.0 + buffs.flagellation->check_stack_value() );
-  }
-  if ( buffs.flagellation_persist->check() )
-  {
-    h *= 1.0 / ( 1.0 + buffs.flagellation_persist->check_stack_value() );
+    if ( buffs.flagellation->check() )
+    {
+      h *= 1.0 / ( 1.0 + buffs.flagellation->check_stack_value() );
+    }
+    if ( buffs.flagellation_persist->check() )
+    {
+      h *= 1.0 / ( 1.0 + buffs.flagellation_persist->check_stack_value() );
+    }
   }
 
   return h;
@@ -8300,13 +8339,17 @@ double rogue_t::composite_spell_haste() const
     h *= 1.0 / ( 1.0 + buffs.alacrity->check_stack_value() );
   }
 
-  if ( buffs.flagellation->check() )
+  // Talent version gives Mastery, not Haste
+  if ( !talent.subtlety.flagellation->ok() )
   {
-    h *= 1.0 / ( 1.0 + buffs.flagellation->check_stack_value() );
-  }
-  if ( buffs.flagellation_persist->check() )
-  {
-    h *= 1.0 / ( 1.0 + buffs.flagellation_persist->check_stack_value() );
+    if ( buffs.flagellation->check() )
+    {
+      h *= 1.0 / ( 1.0 + buffs.flagellation->check_stack_value() );
+    }
+    if ( buffs.flagellation_persist->check() )
+    {
+      h *= 1.0 / ( 1.0 + buffs.flagellation_persist->check_stack_value() );
+    }
   }
 
   return h;
@@ -8318,7 +8361,8 @@ double rogue_t::composite_damage_versatility() const
 {
   double cdv = player_t::composite_damage_versatility();
 
-  if ( legendary.obedience->ok() )
+  // DFALPHA TOCHECK -- Currently Obedience does nothing on the talent version
+  if ( legendary.obedience->ok() && !talent.subtlety.flagellation->ok() )
   {
     if ( buffs.flagellation->check() )
     {
@@ -8342,7 +8386,8 @@ double rogue_t::composite_heal_versatility() const
 {
   double chv = player_t::composite_heal_versatility();
 
-  if ( legendary.obedience->ok() && buffs.flagellation->check() )
+  // DFALPHA TOCHECK -- Currently Obedience does nothing on the talent version
+  if ( legendary.obedience->ok() && !talent.subtlety.flagellation->ok() && buffs.flagellation->check() )
   {
     chv += buffs.flagellation->check_stack_value();
   }
@@ -8801,10 +8846,10 @@ void rogue_t::init_action_list()
     cds->add_action( "flagellation,target_if=max:target.time_to_die,if=variable.snd_condition&!stealthed.mantle&(spell_targets.shuriken_storm<=1&cooldown.symbols_of_death.up&!talent.shadow_focus.enabled|buff.symbols_of_death.up)&combo_points>=5&target.time_to_die>10" );
     cds->add_action( "vanish,if=(runeforge.mark_of_the_master_assassin&combo_points.deficit<=1-talent.deeper_strategem.enabled|runeforge.deathly_shadows&combo_points<1)&buff.symbols_of_death.up&buff.shadow_dance.up&master_assassin_remains=0&buff.deathly_shadows.down" );
     cds->add_action( "pool_resource,for_next=1,if=talent.shuriken_tornado.enabled&!talent.shadow_focus.enabled", "Pool for Tornado pre-SoD with ShD ready when not running SF." );
-    cds->add_action( "shuriken_tornado,if=spell_targets.shuriken_storm<=1&energy>=60&variable.snd_condition&cooldown.symbols_of_death.up&cooldown.shadow_dance.charges>=1&(!runeforge.obedience|buff.flagellation_buff.up|spell_targets.shuriken_storm>=(1+4*(!talent.nightstalker.enabled&!talent.dark_shadow.enabled)))&combo_points<=2&!buff.premeditation.up&(!covenant.venthyr|!cooldown.flagellation.up)", "Use Tornado pre SoD when we have the energy whether from pooling without SF or just generally.");
+    cds->add_action( "shuriken_tornado,if=spell_targets.shuriken_storm<=1&energy>=60&variable.snd_condition&cooldown.symbols_of_death.up&cooldown.shadow_dance.charges>=1&(!runeforge.obedience|buff.flagellation_buff.up|spell_targets.shuriken_storm>=(1+4*(!talent.nightstalker.enabled&!talent.dark_shadow.enabled)))&combo_points<=2&!buff.premeditation.up&(!covenant.venthyr&!talent.flagellation|!cooldown.flagellation.up)", "Use Tornado pre SoD when we have the energy whether from pooling without SF or just generally.");
     cds->add_action( "serrated_bone_spike,cycle_targets=1,if=variable.snd_condition&!dot.serrated_bone_spike_dot.ticking&target.time_to_die>=21&(combo_points.deficit>=(cp_gain>?4))&!buff.shuriken_tornado.up&(!buff.premeditation.up|spell_targets.shuriken_storm>4)|fight_remains<=5&spell_targets.shuriken_storm<3" );
     cds->add_action( "sepsis,if=variable.snd_condition&combo_points.deficit>=1&target.time_to_die>=16" );
-    cds->add_action( "symbols_of_death,if=variable.snd_condition&(!stealthed.all|buff.perforated_veins.stack<4|spell_targets.shuriken_storm>4&!variable.use_priority_rotation)&(!talent.shuriken_tornado.enabled|talent.shadow_focus.enabled|spell_targets.shuriken_storm>=2|cooldown.shuriken_tornado.remains>2)&(!covenant.venthyr|cooldown.flagellation.remains>10|cooldown.flagellation.up&combo_points>=5)", "Use Symbols on cooldown (after first SnD) unless we are going to pop Tornado and do not have Shadow Focus.");
+    cds->add_action( "symbols_of_death,if=variable.snd_condition&(!stealthed.all|buff.perforated_veins.stack<4|spell_targets.shuriken_storm>4&!variable.use_priority_rotation)&(!talent.shuriken_tornado.enabled|talent.shadow_focus.enabled|spell_targets.shuriken_storm>=2|cooldown.shuriken_tornado.remains>2)&(!covenant.venthyr&!talent.flagellation|cooldown.flagellation.remains>10|cooldown.flagellation.up&combo_points>=5)", "Use Symbols on cooldown (after first SnD) unless we are going to pop Tornado and do not have Shadow Focus.");
     cds->add_action( "marked_for_death,line_cd=1.5,target_if=min:target.time_to_die,if=raid_event.adds.up&(target.time_to_die<combo_points.deficit|!stealthed.all&combo_points.deficit>=cp_max_spend)", "If adds are up, snipe the one with lowest TTD. Use when dying faster than CP deficit or not stealthed without any CP.");
     cds->add_action( "marked_for_death,if=raid_event.adds.in>30-raid_event.adds.duration&combo_points.deficit>=cp_max_spend", "If no adds will die within the next 30s, use MfD on boss without any CP." );
     cds->add_action( "shadow_blades,if=variable.snd_condition&combo_points.deficit>=2&(buff.symbols_of_death.up|fight_remains<=20)");
@@ -8849,7 +8894,7 @@ void rogue_t::init_action_list()
     stealthed->add_action( "call_action_list,name=finish,if=spell_targets.shuriken_storm>=4&variable.effective_combo_points>=4", "Also safe to finish at 4+ CP with exactly 4 targets. (Same as outside stealth.)" );
     stealthed->add_action( "call_action_list,name=finish,if=combo_points.deficit<=1-(talent.deeper_stratagem.enabled&buff.vanish.up)", "Finish at 4+ CP without DS, 5+ with DS, and 6 with DS after Vanish" );
     stealthed->add_action( "shadowstrike,if=stealthed.sepsis&spell_targets.shuriken_storm<4" );
-    stealthed->add_action( "backstab,if=conduit.perforated_veins.rank>=8&buff.perforated_veins.stack>=5&buff.shadow_dance.remains>=3&buff.shadow_blades.up&(spell_targets.shuriken_storm<=3|variable.use_priority_rotation)&(buff.shadow_blades.remains<=buff.shadow_dance.remains+2|!covenant.venthyr)", "Backstab during Shadow Dance when on high PV stacks and Shadow Blades is up.");
+    stealthed->add_action( "backstab,if=conduit.perforated_veins.rank>=8&buff.perforated_veins.stack>=5&buff.shadow_dance.remains>=3&buff.shadow_blades.up&(spell_targets.shuriken_storm<=3|variable.use_priority_rotation)&(buff.shadow_blades.remains<=buff.shadow_dance.remains+2|!covenant.venthyr&!talent.flagellation)", "Backstab during Shadow Dance when on high PV stacks and Shadow Blades is up.");
     stealthed->add_action( "shiv,if=talent.nightstalker.enabled&runeforge.tiny_toxic_blade&spell_targets.shuriken_storm<5");
     stealthed->add_action( "shadowstrike,cycle_targets=1,if=!variable.use_priority_rotation&debuff.find_weakness.remains<1&spell_targets.shuriken_storm<=3&target.time_to_die-remains>6", "Up to 3 targets (no prio) keep up Find Weakness by cycling Shadowstrike." );
     stealthed->add_action( "shadowstrike,if=variable.use_priority_rotation&(debuff.find_weakness.remains<1|talent.weaponmaster.enabled&spell_targets.shuriken_storm<=4)", "For priority rotation, use Shadowstrike over Storm with WM against up to 4 targets or if FW is running off (on any amount of targets)" );
@@ -8914,7 +8959,6 @@ action_t* rogue_t::create_action( util::string_view name, util::string_view opti
   if ( name == "exsanguinate"        ) return new exsanguinate_t        ( name, this, options_str );
   if ( name == "fan_of_knives"       ) return new fan_of_knives_t       ( name, this, options_str );
   if ( name == "feint"               ) return new feint_t               ( name, this, options_str );
-  if ( name == "flagellation"        ) return new flagellation_t        ( name, this, options_str );
   if ( name == "garrote"             ) return new garrote_t             ( name, this, spec.garrote, options_str );
   if ( name == "gouge"               ) return new gouge_t               ( name, this, options_str );
   if ( name == "ghostly_strike"      ) return new ghostly_strike_t      ( name, this, options_str );
@@ -8950,6 +8994,14 @@ action_t* rogue_t::create_action( util::string_view name, util::string_view opti
   if ( name == "swap_weapon"         ) return new weapon_swap_t         ( this, options_str );
 
   // Cross-Expansion Covenant Abilities
+
+  if ( name == "flagellation" )
+  {
+    if ( talent.subtlety.flagellation->ok() )
+      return new flagellation_t( name, this, options_str );
+    else
+      return new flagellation_covenant_t( name, this, options_str );
+  }
 
   if ( name == "sepsis" )
   {
@@ -9843,7 +9895,6 @@ void rogue_t::init_spells()
 
   covenant.echoing_reprimand      = find_covenant_spell( "Echoing Reprimand" );
   covenant.flagellation           = find_covenant_spell( "Flagellation" );
-  covenant.flagellation_buff      = covenant.flagellation->ok() ? find_spell( 345569 ) : spell_data_t::not_found();
   covenant.sepsis                 = find_covenant_spell( "Sepsis" );
   covenant.serrated_bone_spike    = find_covenant_spell( "Serrated Bone Spike" );
 
@@ -9962,6 +10013,52 @@ void rogue_t::init_spells()
     spec.deeper_daggers_buff = conduit.deeper_daggers->effectN( 1 ).trigger();
   else
     spec.deeper_daggers_buff = spell_data_t::not_found();
+
+  if ( talent.subtlety.finality->ok() )
+  {
+    spec.finality_black_powder_buff = find_spell( 385948 );
+    spec.finality_eviscerate_buff = find_spell( 385949 );
+    spec.finality_rupture_buff = find_spell( 385951 );
+  }
+  else if ( legendary.finality->ok() )
+  {
+    spec.finality_black_powder_buff = find_spell( 340603 );
+    spec.finality_eviscerate_buff = find_spell( 340600 );
+    spec.finality_rupture_buff = find_spell( 340601 );
+  }
+  else
+  {
+    spec.finality_black_powder_buff = spell_data_t::not_found();
+    spec.finality_eviscerate_buff = spell_data_t::not_found();
+    spec.finality_rupture_buff = spell_data_t::not_found();
+  }
+
+  if ( talent.subtlety.flagellation->ok() )
+  {
+    spec.flagellation_buff = talent.subtlety.flagellation;
+    spec.flagellation_persist_buff = find_spell( 394758 );
+    spec.flagellation_damage = find_spell( 394757 );
+
+  }
+  else if ( covenant.flagellation->ok() )
+  {
+    spec.flagellation_buff = covenant.flagellation;
+    spec.flagellation_persist_buff = find_spell( 345569 );
+    spec.flagellation_damage = find_spell( 345316 );
+  }
+  else
+  {
+    spec.flagellation_buff = spell_data_t::not_found();
+    spec.flagellation_persist_buff = spell_data_t::not_found();
+    spec.flagellation_damage = spell_data_t::not_found();
+  }
+
+  if ( talent.subtlety.invigorating_shadowdust->ok() )
+    spec.invigorating_shadowdust_cdr = talent.subtlety.invigorating_shadowdust;
+  else if ( legendary.invigorating_shadowdust->ok() )
+    spec.invigorating_shadowdust_cdr = find_spell( 340080 );
+  else
+    spec.invigorating_shadowdust_cdr = spell_data_t::not_found();
 
   if ( talent.subtlety.invigorating_shadowdust->ok() )
     spec.invigorating_shadowdust_cdr = talent.subtlety.invigorating_shadowdust;
@@ -10086,7 +10183,7 @@ void rogue_t::init_spells()
     active.shadow_blades_attack = get_background_action<actions::shadow_blades_attack_t>( "shadow_blades_attack" );
   }
 
-  if ( covenant.flagellation->ok() )
+  if ( spec.flagellation_damage->ok() )
   {
     active.flagellation = get_secondary_trigger_action<actions::flagellation_damage_t>(
       secondary_trigger::FLAGELLATION, "flagellation_damage" );
@@ -10494,23 +10591,35 @@ void rogue_t::create_buffs()
 
   // Covenants ==============================================================
 
-  buffs.flagellation = make_buff( this, "flagellation_buff", covenant.flagellation )
-    ->set_default_value_from_effect_type( A_HASTE_ALL, P_MAX, 0.01 )
+  buffs.flagellation = make_buff( this, "flagellation_buff", spec.flagellation_buff )
     ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
     ->set_cooldown( timespan_t::zero() )
     ->set_period( timespan_t::zero() )
-    ->add_invalidate( CACHE_HASTE )
     ->set_stack_change_callback( [ this ]( buff_t*, int old_, int new_ ) {
         if ( new_ == 0 )
           buffs.flagellation_persist->trigger( old_, buffs.flagellation->default_value );
       } );
-  buffs.flagellation_persist = make_buff( this, "flagellation_persist", covenant.flagellation_buff )
-    ->add_invalidate( CACHE_HASTE );
-  
-  if ( legendary.obedience->ok() )
+  buffs.flagellation_persist = make_buff( this, "flagellation_persist", spec.flagellation_persist_buff );
+  if ( talent.subtlety.flagellation->ok() )
   {
-    buffs.flagellation->add_invalidate( CACHE_VERSATILITY );
-    buffs.flagellation_persist->add_invalidate( CACHE_VERSATILITY );
+    buffs.flagellation
+      ->set_default_value_from_effect_type( A_MOD_MASTERY_PCT )
+      ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY );
+    buffs.flagellation_persist
+      ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY );
+  }
+  else
+  {
+    buffs.flagellation->set_default_value_from_effect_type( A_HASTE_ALL, P_MAX, 0.01 );
+    buffs.flagellation->add_invalidate( CACHE_HASTE );
+    buffs.flagellation_persist->add_invalidate( CACHE_HASTE );
+    
+    // DFALPHA TOCHECK -- Does not currently seem to affect the talent version of the spell
+    if ( legendary.obedience->ok() )
+    {
+      buffs.flagellation->add_invalidate( CACHE_VERSATILITY );
+      buffs.flagellation_persist->add_invalidate( CACHE_VERSATILITY );
+    }
   }
 
   buffs.echoing_reprimand.clear();
@@ -10636,10 +10745,26 @@ void rogue_t::create_buffs()
       legendary.guile_charm_counter = 0;
     } );
 
-  buffs.finality_eviscerate = make_buff<damage_buff_t>( this, "finality_eviscerate", find_spell( 340600 ) );
-  buffs.finality_rupture = make_buff( this, "finality_rupture", find_spell( 340601 ) )
-    ->set_default_value_from_effect( 1 ); // Bonus Damage%
-  buffs.finality_black_powder = make_buff<damage_buff_t>( this, "finality_black_powder", find_spell( 340603 ) );
+  buffs.finality_black_powder = make_buff<damage_buff_t>( this, "finality_black_powder", spec.finality_black_powder_buff );
+  buffs.finality_eviscerate = make_buff<damage_buff_t>( this, "finality_eviscerate", spec.finality_eviscerate_buff );
+  buffs.finality_rupture = make_buff( this, "finality_rupture", spec.finality_rupture_buff );
+  if ( talent.subtlety.finality->ok() )
+  {
+    // Talent ranks override the value of this via dummy effects, but we need the effect whitelist
+    double mod = talent.subtlety.finality->effectN( 1 ).percent();
+    timespan_t duration = timespan_t::from_seconds( talent.subtlety.finality->effectN( 2 ).base_value() );
+    buffs.finality_black_powder->direct_mod.multiplier = 1.0 + mod;
+    buffs.finality_black_powder->set_duration( duration );
+    buffs.finality_eviscerate->direct_mod.multiplier = 1.0 + mod;
+    buffs.finality_eviscerate->set_duration( duration );
+    buffs.finality_rupture
+      ->set_default_value( mod )
+      ->set_duration( duration );
+  }
+  else
+  {
+    buffs.finality_rupture->set_default_value_from_effect( 1 ); // Bonus Damage%
+  }
 
   buffs.concealed_blunderbuss = make_buff( this, "concealed_blunderbuss", find_spell( 340587 ) )
     ->set_chance( talent.outlaw.fan_the_hammer->ok() ? 0.0 : legendary.concealed_blunderbuss->effectN( 1 ).percent() )
