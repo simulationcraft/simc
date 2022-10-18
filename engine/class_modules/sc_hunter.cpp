@@ -3465,6 +3465,18 @@ struct serpent_sting_base_t: public hunter_ranged_attack_t
     parse_options( options_str );
 
     affected_by.serrated_shots = true;
+
+    if ( p -> talents.hydras_bite.ok() )
+      aoe = 1 + static_cast<int>( p -> talents.hydras_bite -> effectN( 1 ).base_value() );
+  }
+
+  void execute() override
+  {
+    // have to always reset target_cache because of smart targeting
+    if ( is_aoe() )
+      target_cache.is_valid = false;
+
+    hunter_ranged_attack_t::execute();
   }
 
   void init() override
@@ -3500,25 +3512,6 @@ struct serpent_sting_base_t: public hunter_ranged_attack_t
 
     return m;
   }
-};
-
-struct serpent_sting_t final : public serpent_sting_base_t
-{
-  serpent_sting_t( hunter_t* p, util::string_view options_str ):
-    serpent_sting_base_t( p, options_str, p -> talents.serpent_sting )
-  {
-    if ( p -> talents.hydras_bite.ok() )
-      aoe = 1 + static_cast<int>( p -> talents.hydras_bite -> effectN( 1 ).base_value() );
-  }
-
-  void execute() override
-  {
-    // have to always reset target_cache because of smart targeting
-    if ( is_aoe() )
-      target_cache.is_valid = false;
-
-    hunter_ranged_attack_t::execute();
-  }
 
   size_t available_targets( std::vector< player_t* >& tl ) const override
   {
@@ -3537,6 +3530,14 @@ struct serpent_sting_t final : public serpent_sting_base_t
     }
 
     return tl.size();
+  }
+};
+
+struct serpent_sting_t final : public serpent_sting_base_t
+{
+  serpent_sting_t( hunter_t* p, util::string_view options_str ):
+    serpent_sting_base_t( p, options_str, p -> talents.serpent_sting )
+  {
   }
 };
 
@@ -4969,6 +4970,9 @@ struct melee_focus_spender_t: hunter_melee_attack_t
       dual = true;
       base_costs[ RESOURCE_FOCUS ] = 0;
       triggers_wild_spirits = false;
+
+      // Viper's Venom is left out of Hydra's Bite target count modification.
+      aoe = 0;
     }
   };
 
