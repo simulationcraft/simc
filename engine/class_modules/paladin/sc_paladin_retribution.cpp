@@ -1099,7 +1099,7 @@ struct wake_of_ashes_t : public paladin_spell_t
   struct truths_wake_conduit_t : public paladin_spell_t
   {
     truths_wake_conduit_t( paladin_t* p ) :
-      paladin_spell_t( "truths_wake", p, p -> find_spell( 339376 ) )
+      paladin_spell_t( "truths_wake_conduit", p, p -> find_spell( 339376 ) )
     {
       hasted_ticks = false;
       tick_may_crit = false;
@@ -1118,6 +1118,9 @@ struct wake_of_ashes_t : public paladin_spell_t
     parse_options( options_str );
 
     may_crit = true;
+    full_amount_targets = 1;
+    reduced_aoe_targets = 1.06; // this is approximate, from ingame testing
+
     aoe = -1;
 
     if ( p -> conduit.truths_wake -> ok() )
