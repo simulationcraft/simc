@@ -225,6 +225,7 @@ struct moment_of_glory_t : public paladin_spell_t
     paladin_spell_t::execute();
 
     p()->buffs.moment_of_glory->trigger();
+    p()->cooldowns.avengers_shield->reset( true );
 
 
   }
