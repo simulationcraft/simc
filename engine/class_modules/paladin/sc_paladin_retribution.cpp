@@ -31,6 +31,8 @@ namespace buffs {
     cooldown -> duration = 0_ms;
 
     add_invalidate( CACHE_HASTE );
+    add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+    add_invalidate( CACHE_MASTERY );
   }
 
   struct shield_of_vengeance_buff_t : public absorb_buff_t

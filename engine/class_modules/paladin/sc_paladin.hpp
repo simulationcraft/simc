@@ -622,6 +622,7 @@ public:
   virtual double    composite_heal_versatility() const override;
   virtual double    composite_mitigation_versatility() const override;
   virtual double    composite_mastery() const override;
+  virtual double    composite_mastery_value() const override;
   virtual double    composite_melee_haste() const override;
   virtual double    composite_melee_speed() const override;
   virtual double    composite_spell_haste() const override;

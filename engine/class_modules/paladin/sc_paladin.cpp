@@ -116,6 +116,9 @@ avenging_wrath_buff_t::avenging_wrath_buff_t( paladin_t* p )
 
   // invalidate Healing
   add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
+  add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  add_invalidate( CACHE_CRIT_CHANCE );
+  add_invalidate( CACHE_MASTERY );
 }
 }  // namespace buffs
 
@@ -2985,6 +2988,16 @@ double paladin_t::composite_mastery() const
 
   if ( talents.holy_crusader->ok() )
     m += talents.holy_crusader->effectN( 1 ).base_value();
+
+  return m;
+}
+
+double paladin_t::composite_mastery_value() const
+{
+  double m = player_t::composite_mastery_value();
+
+  if ( talents.seal_of_might->ok() && ( buffs.avenging_wrath->up() || buffs.crusade->up() ) )
+    m += talents.seal_of_might->effectN( 1 ).base_value();
 
   return m;
 }
