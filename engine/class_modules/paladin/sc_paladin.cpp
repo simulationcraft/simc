@@ -2481,6 +2481,7 @@ void paladin_t::create_buffs()
                                     ->set_default_value( find_spell( 337315 )->effectN( 1 ).percent() )
                                     ->add_invalidate( CACHE_HASTE );
   buffs.relentless_inquisitor = make_buff( this, "relentless_inquisitor", find_spell( 383389 ) )
+                                ->set_default_value( find_spell( 383389 )->effectN( 1 ).percent() )
                                 ->add_invalidate( CACHE_HASTE );
   if ( talents.relentless_inquisitor->ok() )
   {
