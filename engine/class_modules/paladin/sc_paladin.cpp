@@ -2459,9 +2459,12 @@ void paladin_t::create_buffs()
       } );
   }
 
-  buffs.relentless_inquisitor = make_buff( this, "relentless_inquisitor", find_spell( 337315 ) )
+  buffs.relentless_inquisitor_legendary = make_buff( this, "relentless_inquisitor_legendary", find_spell( 337315 ) )
                                     ->set_default_value( find_spell( 337315 )->effectN( 1 ).percent() )
                                     ->add_invalidate( CACHE_HASTE );
+  buffs.relentless_inquisitor = make_buff( this, "relentless_inquisitor", find_spell( 383389 ) )
+                                ->set_max_stack( talents.relentless_inquisitor->effectN( 2 ).base_value() + talents.relentless_inquisitor->effectN( 3 ).base_value() )
+                                ->add_invalidate( CACHE_HASTE );
   buffs.the_magistrates_judgment = make_buff( this, "the_magistrates_judgment", find_spell( 337682 ) )
                                        ->set_default_value( find_spell( 337682 )->effectN( 1 ).base_value() );
   buffs.final_verdict = make_buff( this, "final_verdict", find_spell( 337228 ) );
@@ -2732,6 +2735,7 @@ void paladin_t::init_spells()
   talents.divine_toll                    = find_talent_spell( talent_tree::SPECIALIZATION, "Divine Toll" );
   talents.divine_resonance               = find_talent_spell( talent_tree::SPECIALIZATION, "Divine Resonance" );
   talents.avenging_wrath_might           = find_talent_spell( talent_tree::SPECIALIZATION, "Avenging Wrath: Might" );
+  talents.relentless_inquisitor          = find_talent_spell( talent_tree::SPECIALIZATION, "Relentless Inquisitor" );
 
   // Shared Passives and spells
   passives.plate_specialization = find_specialization_spell( "Plate Specialization" );
@@ -3059,6 +3063,10 @@ double paladin_t::composite_melee_haste() const
 
   if ( buffs.relentless_inquisitor->up() )
     h /= 1.0 + buffs.relentless_inquisitor->stack_value();
+
+  if ( buffs.relentless_inquisitor_legendary->up() )
+    h /= 1.0 + buffs.relentless_inquisitor_legendary->stack_value();
+
   return h;
 }
 
@@ -3086,6 +3094,10 @@ double paladin_t::composite_spell_haste() const
 
   if ( buffs.relentless_inquisitor->up() )
     h /= 1.0 + buffs.relentless_inquisitor->stack_value();
+
+  if ( buffs.relentless_inquisitor_legendary->up() )
+    h /= 1.0 + buffs.relentless_inquisitor_legendary->stack_value();
+
   return h;
 }
 

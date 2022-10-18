@@ -161,7 +161,7 @@ public:
     buff_t* bulwark_of_righteous_fury;
     buff_t* blessing_of_dusk;
     buff_t* blessing_of_dawn;
-    buff_t* relentless_inquisitor;
+    buff_t* relentless_inquisitor_legendary;
     buff_t* the_magistrates_judgment;
     buff_t* final_verdict;
     buff_t* virtuous_command_conduit;
@@ -172,6 +172,7 @@ public:
     buff_t* empyrean_legacy;
     buff_t* empyrean_legacy_cooldown;
     buff_t* aspiration_of_divinity;
+    buff_t* relentless_inquisitor;
   } buffs;
 
   // Gains
@@ -1310,6 +1311,9 @@ struct holy_power_consumer_t : public Base
       p -> buffs.relentless_inquisitor_azerite -> trigger( num_hopo_spent );
 
     if ( p -> legendary.relentless_inquisitor -> ok() )
+      p -> buffs.relentless_inquisitor_legendary -> trigger();
+
+    if ( p -> talents.relentless_inquisitor -> ok() )
       p -> buffs.relentless_inquisitor -> trigger();
 
     if ( p -> buffs.crusade -> check() )
