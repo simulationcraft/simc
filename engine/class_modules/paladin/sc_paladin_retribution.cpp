@@ -980,6 +980,9 @@ struct judgment_ret_t : public judgment_t
       }
     }
 
+    if ( p() -> talents.virtuous_command -> ok() )
+      p() -> buffs.virtuous_command -> trigger();
+
     is_boundless = false;
   }
 

@@ -1193,7 +1193,7 @@ void judgment_t::execute()
   }
 
   if ( p()->conduit.virtuous_command->ok() )
-    p()->buffs.virtuous_command->trigger();
+    p()->buffs.virtuous_command_conduit->trigger();
 }
 
 // Rebuke ===================================================================
