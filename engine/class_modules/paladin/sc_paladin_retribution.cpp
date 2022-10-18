@@ -998,9 +998,6 @@ struct judgment_ret_t : public judgment_t
 
     if ( result_is_hit( s -> result ) )
     {
-      if ( p() -> talents.greater_judgment -> ok() )
-        td( s -> target ) -> debuff.judgment -> trigger();
-
       if ( p() -> talents.seal_of_wrath -> ok() )
       {
         if ( rng().roll( p() -> talents.seal_of_wrath -> effectN( 1 ).percent() ) )
@@ -1438,7 +1435,7 @@ void paladin_t::init_spells_retribution()
     spec.judgment_3 = find_specialization_spell( 315867 );
     spec.judgment_4 = find_specialization_spell( 231663 );
 
-    spells.judgment_debuff = find_spell( 231663 );
+    spells.judgment_debuff = find_spell( 197277 );
   }
 
   passives.boundless_conviction = find_spell( 115675 );

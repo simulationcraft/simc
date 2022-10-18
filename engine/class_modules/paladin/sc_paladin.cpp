@@ -1152,6 +1152,8 @@ proc_types judgment_t::proc_type() const
 
 void judgment_t::impact( action_state_t* s )
 {
+  paladin_melee_attack_t::impact( s );
+
   if ( result_is_hit( s->result ) )
   {
       if ( p()->talents.greater_judgment->ok() )
@@ -1160,8 +1162,6 @@ void judgment_t::impact( action_state_t* s )
     if ( p()->talents.judgment_of_light->ok() )
       td( s->target )->debuff.judgment_of_light->trigger( 25 );
   }
-
-  paladin_melee_attack_t::impact( s );
 }
 
 void judgment_t::execute()
