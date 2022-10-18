@@ -1051,7 +1051,9 @@ static std::string get_bonus_id_desc( const dbc_t& dbc, util::span<const item_bo
   {
     if ( entry.type == ITEM_BONUS_DESC )
     {
-      return dbc.item_description( entry.value_1 ).description;
+      const item_name_description_t& desc = dbc.item_description( entry.value_1 );
+      if ( &desc != &item_name_description_t::nil() )
+        return desc.description;
     }
   }
 
