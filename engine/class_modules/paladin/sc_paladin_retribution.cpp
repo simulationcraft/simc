@@ -291,6 +291,13 @@ struct execution_sentence_t : public holy_power_consumer_t<paladin_melee_attack_
     affected_by.reckoning = true;
 
     explosion = new es_explosion_t( p );
+
+    // for some reason the spelldata doesn't think it's a dot anymore
+    base_tick_time = data().duration();
+    dot_duration = data().duration();
+
+    // unclear why this is needed...
+    cooldown -> duration = data().cooldown();
   }
 
   void init() override
@@ -299,9 +306,6 @@ struct execution_sentence_t : public holy_power_consumer_t<paladin_melee_attack_
     snapshot_flags |= STATE_TARGET_NO_PET | STATE_MUL_TA | STATE_MUL_DA;
     update_flags &= ~STATE_TARGET;
     update_flags |= STATE_MUL_TA | STATE_MUL_DA;
-
-    base_tick_time = data().duration();
-    dot_duration = data().duration();
   }
 
   void impact( action_state_t* s) override
