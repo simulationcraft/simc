@@ -47,6 +47,13 @@ struct mind_sear_tick_t final : public priest_spell_t
   {
     priest_spell_t::impact( s );
 
+    // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/998
+    if ( priest().bugs )
+    {
+      priest_td_t& td = get_td( s->target );
+      td.buffs.screams_of_the_void->trigger();
+    }
+
     // Benefit Tracking
     if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T29, B2 ) )
     {
@@ -205,6 +212,13 @@ struct mind_flay_base_t final : public priest_spell_t
   void tick( dot_t* d ) override
   {
     priest_spell_t::tick( d );
+
+    // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/998
+    if ( priest().bugs )
+    {
+      priest_td_t& td = get_td( d->target );
+      td.buffs.screams_of_the_void->trigger();
+    }
 
     priest().trigger_eternal_call_to_the_void( d->state );
     priest().trigger_idol_of_cthun( d->state );
@@ -2166,15 +2180,13 @@ void priest_t::create_buffs_shadow()
   buffs.void_torrent      = make_buff( this, "void_torrent", talents.shadow.void_torrent );
   buffs.surge_of_darkness = make_buff( this, "surge_of_darkness", talents.shadow.surge_of_darkness_buff )
                                 ->set_default_value_from_effect( 2 );  // automagic handles the cast time
-
+  buffs.mind_devourer_ms_active = make_buff( this, "mind_devourer_ms_active" )->set_quiet( true )->set_duration( 0_s );
   // TODO: Check Buff ID(s) for Mind Devourer
   if ( talents.shadow.mind_devourer.enabled() )
   {
     buffs.mind_devourer = make_buff( this, "mind_devourer", find_spell( 373204 ) )
                               ->set_trigger_spell( talents.shadow.mind_devourer )
                               ->set_chance( talents.shadow.mind_devourer->effectN( 1 ).percent() );
-    buffs.mind_devourer_ms_active =
-        make_buff( this, "mind_devourer_ms_active" )->set_quiet( true )->set_duration( 0_s );
   }
   else
   {
@@ -2554,18 +2566,27 @@ void priest_t::trigger_shadow_weaving( action_state_t* s )
 
 bool priest_t::is_screams_of_the_void_up( player_t* target ) const
 {
-  if ( talents.shadow.screams_of_the_void.enabled() )
+  priest_td_t* td = get_target_data( target );
+
+  // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/998
+  if ( bugs )
   {
-    priest_td_t* td = get_target_data( target );
-    if ( td->dots.mind_flay->is_ticking() || td->dots.void_torrent->is_ticking() ||
-         td->dots.mind_flay_insanity->is_ticking() ||
-         ( talents.shadow.mind_sear.enabled() && channeling != nullptr &&
-           channeling->id == talents.shadow.mind_sear->id() ) )
-    {
-      return true;
-    }
+    return td->buffs.screams_of_the_void->up();
   }
-  return false;
+  else
+  {
+    if ( talents.shadow.screams_of_the_void.enabled() )
+    {
+      if ( td->dots.mind_flay->is_ticking() || td->dots.void_torrent->is_ticking() ||
+           td->dots.mind_flay_insanity->is_ticking() ||
+           ( talents.shadow.mind_sear.enabled() && channeling != nullptr &&
+             channeling->id == talents.shadow.mind_sear->id() ) )
+      {
+        return true;
+      }
+    }
+    return false;
+  }
 }
 
 // Helper function to refresh talbadars buff
