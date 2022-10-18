@@ -1154,7 +1154,7 @@ struct wake_of_ashes_t : public paladin_spell_t
 
       if ( p() -> talents.truths_wake -> ok() )
       {
-        double truths_wake_mul = p() -> talents.truths_wake -> effectN( 1 ).percent();
+        double truths_wake_mul = p() -> talents.truths_wake -> effectN( 1 ).percent() / p() -> talents.truths_wake -> effectN( 2 ).base_value();
         truths_wake -> base_td = s -> result_raw * truths_wake_mul;
         truths_wake -> set_target( s -> target );
         truths_wake -> execute();
