@@ -5323,6 +5323,10 @@ struct phoenix_flames_t final : public fire_mage_spell_t
     fire_mage_spell_t( n, p, p->talents.phoenix_flames )
   {
     parse_options( options_str );
+
+    if ( !data().ok() )
+      return;
+
     cooldown->charges += as<int>( p->talents.call_of_the_sun_king->effectN( 1 ).base_value() );
 
     impact_action = get_action<phoenix_flames_splash_t>( "phoenix_flames_splash", p );

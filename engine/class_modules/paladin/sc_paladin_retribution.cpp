@@ -291,6 +291,13 @@ struct execution_sentence_t : public holy_power_consumer_t<paladin_melee_attack_
     affected_by.reckoning = true;
 
     explosion = new es_explosion_t( p );
+
+    // for some reason the spelldata doesn't think it's a dot anymore
+    base_tick_time = data().duration();
+    dot_duration = data().duration();
+
+    // unclear why this is needed...
+    cooldown -> duration = data().cooldown();
   }
 
   void init() override
@@ -299,9 +306,6 @@ struct execution_sentence_t : public holy_power_consumer_t<paladin_melee_attack_
     snapshot_flags |= STATE_TARGET_NO_PET | STATE_MUL_TA | STATE_MUL_DA;
     update_flags &= ~STATE_TARGET;
     update_flags |= STATE_MUL_TA | STATE_MUL_DA;
-
-    base_tick_time = data().duration();
-    dot_duration = data().duration();
   }
 
   void impact( action_state_t* s) override
@@ -1088,8 +1092,8 @@ struct shield_of_vengeance_t : public paladin_absorb_t
 
 struct truths_wake_t : public paladin_spell_t
 {
-  truths_wake_t( paladin_t* p ) :
-    paladin_spell_t( "truths_wake", p, p -> find_spell( 383351 ) )
+  truths_wake_t( paladin_t* p, util::string_view name ) :
+    paladin_spell_t( name, p, p -> find_spell( 383351 ) )
   {
     hasted_ticks = false;
     tick_may_crit = false;
@@ -1136,7 +1140,7 @@ struct wake_of_ashes_t : public paladin_spell_t
 
     if ( p -> talents.truths_wake -> ok() )
     {
-      truths_wake = new truths_wake_t( p );
+      truths_wake = new truths_wake_t( p, "truths_wake_woa" );
       add_child( truths_wake );
     }
   }
@@ -1183,7 +1187,7 @@ struct radiant_decree_t : public holy_power_consumer_t<paladin_spell_t>
 
     if ( p -> talents.truths_wake -> ok() )
     {
-      truths_wake = new truths_wake_t( p );
+      truths_wake = new truths_wake_t( p, "truths_wake_rd" );
       add_child( truths_wake );
     }
 
