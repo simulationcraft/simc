@@ -8301,6 +8301,33 @@ struct healing_stream_totem_spell_t : public shaman_totem_t<heal_t, shaman_heal_
 // PvP talents/abilities
 // ==========================================================================
 
+
+struct cancelaura_lava_surge_t : public shaman_spell_t
+{
+  cancelaura_lava_surge_t( shaman_t* player, util::string_view options_str )
+    : shaman_spell_t( "cancelaura_lava_surge", player )
+  {
+    parse_options( options_str );
+    trigger_gcd = timespan_t::zero();
+    harmful     = false;
+  }
+
+  virtual void execute()
+  {
+    p()->buff.lava_surge->expire();
+
+    update_ready( timespan_t::zero() );
+  }
+
+  virtual bool ready()
+  {
+    if ( !p()->buff.lava_surge->check() )
+      return false;
+
+    return shaman_spell_t::ready();
+  }
+};
+
 struct lightning_lasso_t : public shaman_spell_t
 {
   lightning_lasso_t( shaman_t* player, util::string_view options_str ) :
@@ -8987,6 +9014,8 @@ action_t* shaman_t::create_action( util::string_view name, util::string_view opt
     return new thunderstorm_t( this, options_str );
   if ( name == "lightning_lasso" )
     return new lightning_lasso_t( this, options_str );
+  if(name == "cancelaura_lava_surge")
+    return new cancelaura_lava_surge_t( this, options_str );
 
   // enhancement
   if ( name == "crash_lightning" )
