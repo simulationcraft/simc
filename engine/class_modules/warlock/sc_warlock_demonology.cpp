@@ -135,7 +135,19 @@ struct hand_of_guldan_t : public demonology_spell_t
       if ( p()->talents.demonic_meteor.ok() )
         m *= 1.0 + p()->talents.demonic_meteor->effectN( 1 ).percent();
 
+      if ( p()->buffs.blazing_meteor->check() )
+        m *= 1.0 + p()->buffs.blazing_meteor->check_value();
+
       return m;
+    }
+
+    void execute() override
+    {
+      demonology_spell_t::execute();
+
+      // 2022-10-17: NOTE in game the buff is consumed on a delay which can cause Demonbolt -> HoG queuing to consume the buff
+      // If this bug is not fixed closer to release this must be modeled
+      p()->buffs.blazing_meteor->expire();
     }
 
     void impact( action_state_t* s ) override
@@ -172,6 +184,16 @@ struct hand_of_guldan_t : public demonology_spell_t
   timespan_t travel_time() const override
   {
     return 0_ms;
+  }
+
+  timespan_t execute_time() const override
+  {
+    timespan_t t = demonology_spell_t::execute_time();
+
+    if ( p()->buffs.blazing_meteor->check() )
+      t *= 1.0 + p()->tier.blazing_meteor->effectN( 2 ).percent();
+
+    return t;
   }
 
   bool ready() override
@@ -290,6 +312,14 @@ struct demonbolt_t : public demonology_spell_t
     }
 
     p()->buffs.stolen_power_final->expire();
+
+    // 2022-10-17 Percent chance for this effect is not in spell data!
+    // TOCHECK with further testing.
+    if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T29, B4 ) && rng().roll( 0.15 ) )
+    {
+      p()->buffs.blazing_meteor->trigger();
+      p()->procs.blazing_meteor->occur();
+    }
   }
 
   double action_multiplier() const override
@@ -316,6 +346,9 @@ struct demonbolt_t : public demonology_spell_t
 
     if ( p()->talents.stolen_power.ok() && p()->buffs.stolen_power_final->check() )
       m *= 1.0 + p()->talents.stolen_power_final_buff->effectN( 2 ).percent();
+
+    if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T29, B2 ) )
+      m *= 1.0 + p()->sets->set( WARLOCK_DEMONOLOGY, T29, B2 )->effectN( 1 ).percent();
 
     return m;
   }
@@ -1239,6 +1272,9 @@ void warlock_t::create_buffs_demonology()
 
   buffs.demonic_servitude = make_buff( this, "demonic_servitude", talents.demonic_servitude )
                                 ->set_default_value( talents.reign_of_tyranny->effectN( 3 ).percent() );
+
+  buffs.blazing_meteor = make_buff( this, "blazing_meteor", tier.blazing_meteor )
+                             ->set_default_value_from_effect( 1 );
 }
 
 void warlock_t::init_spells_demonology()
@@ -1350,6 +1386,11 @@ void warlock_t::init_spells_demonology()
 
   talents.guillotine = find_talent_spell( talent_tree::SPECIALIZATION, "Guillotine" ); // Should be ID 386833
 
+  // Additional Tier Set spell data
+
+  // T29 (Vault of the Incarnates)
+  tier.blazing_meteor = find_spell( 394776 );
+
   // Legendaries
   legendary.balespiders_burning_core       = find_runeforge_legendary( "Balespider's Burning Core" );
   legendary.forces_of_the_horned_nightmare = find_runeforge_legendary( "Forces of the Horned Nightmare" );
@@ -1388,6 +1429,7 @@ void warlock_t::init_procs_demonology()
   procs.hounds_of_war = get_proc( "hounds_of_war" );
   procs.nerzhuls_volition = get_proc( "nerzhuls_volition" );
   procs.pact_of_the_imp_mother = get_proc( "pact_of_the_imp_mother" );
+  procs.blazing_meteor = get_proc( "blazing_meteor" );
 }
 
 }  // namespace warlock

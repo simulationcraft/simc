@@ -639,6 +639,9 @@ struct felstorm_t : public warlock_pet_melee_attack_t
         m *= 1.0 + p()->o()->talents.fel_and_steel->effectN( 1 ).percent();
       }
 
+      if ( p()->o()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T29, B2 ) )
+        m *= 1.0 + p()->o()->sets->set( WARLOCK_DEMONOLOGY, T29, B2 )->effectN( 1 ).percent();
+
       return m;
     }
 
