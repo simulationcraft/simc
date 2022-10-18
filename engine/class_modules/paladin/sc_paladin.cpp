@@ -2443,10 +2443,10 @@ void paladin_t::create_buffs()
   {
     buffs.blessing_of_dusk->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
         double recharge_mult = 1.0 / ( 1.0 + talents.seal_of_order->effectN( 1 ).percent() );
-        int label = talents.seal_of_order->effectN( 1 ).misc_value1();
+        auto label = talents.of_dusk_and_dawn->effectN( 2 ).trigger()->effectN( 3 );
         for ( auto a : action_list )
         {
-          if ( a->cooldown->duration != 0_ms && a->data().affected_by_label( label ) )
+          if ( a->cooldown->duration != 0_ms && a->data().affected_by( label ) )
           {
             if ( new_ == 1 )
               a->dynamic_recharge_rate_multiplier *= recharge_mult;
