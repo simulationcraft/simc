@@ -49,20 +49,24 @@ struct avengers_shield_base_t : public paladin_spell_t
     }
     may_crit = true;
     //Turn off chaining if focused enmity
-    if ( !p->talents.focused_enmity->ok() )
+    if ( p -> talents.focused_enmity -> ok() )
+    {
+      aoe += as<int>( p -> talents.focused_enmity -> effectN( 1 ).base_value() );
+    }
+    else
     {
       aoe = data().effectN( 1 ).chain_target();
-    if ( p -> azerite.soaring_shield.enabled() )
-    {
-      aoe = as<int>( p -> azerite.soaring_shield.spell() -> effectN( 2 ).base_value() );
+      if ( p -> azerite.soaring_shield.enabled() )
+      {
+          aoe = as<int>( p -> azerite.soaring_shield.spell() -> effectN( 2 ).base_value() );
+      }
+      
+      // Soaring Shield hits +2 targets
+      if ( p->talents.soaring_shield->ok() )
+      {
+          aoe += as<int>( p -> talents.soaring_shield -> effectN( 1 ).base_value() );
+      }
     }
-
-    // Soaring Shield hits +2 targets
-    if ( p->talents.soaring_shield->ok() )
-    {
-      aoe += as<int>( p -> talents.soaring_shield -> effectN( 1 ).base_value() );
-    }
-  }
   }
 
   void impact( action_state_t* s ) override
