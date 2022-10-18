@@ -78,6 +78,7 @@ public:
     action_t* spear_of_bastion_attack;
     action_t* deep_wounds_ARMS;
     action_t* deep_wounds_PROT;
+    action_t* fatality;
     action_t* signet_avatar;
     action_t* signet_bladestorm_a;
     action_t* signet_bladestorm_f;
@@ -97,6 +98,7 @@ public:
     buff_t* ayalas_stone_heart;
     buff_t* bastion_of_might; // the mastery buff
     buff_t* bastion_of_might_vop; // bastion of might proc from VoP
+    buff_t* battle_stance;
     buff_t* berserker_rage;
     buff_t* bladestorm;
     buff_t* bloodcraze;
@@ -3149,6 +3151,17 @@ struct execute_arms_t : public warrior_attack_t
     }
   }
 
+  void impact( action_state_t* state ) override
+  {
+    warrior_attack_t::impact( state );
+
+    if( state->target->health_percentage() < 30 && td( state->target )->debuffs_fatal_mark->check() )
+    {
+      p()->active.fatality->set_target( state->target );
+      p()->active.fatality->execute();
+    }
+  }
+
   bool target_ready( player_t* candidate_target ) override
   {
     // Ayala's Stone Heart and Sudden Death allow execution on any target
@@ -3170,6 +3183,28 @@ struct execute_arms_t : public warrior_attack_t
     }
 
     return warrior_attack_t::ready();
+  }
+};
+
+// Fatality ===============================================================================
+struct fatality_t : public warrior_attack_t
+{
+  fatality_t( warrior_t* p ) : warrior_attack_t( "fatality", p, p->find_spell( 383706 ) )
+  {
+    background = true;
+  }
+
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = warrior_attack_t::composite_target_multiplier( target );
+    m *= td( target )->debuffs_fatal_mark->stack();
+    return m;
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    warrior_attack_t::impact( state );
+    td( state->target )->debuffs_fatal_mark->expire();
   }
 };
 
@@ -3959,8 +3994,17 @@ struct skullsplitter_t : public warrior_attack_t
     if ( !dot->is_ticking() )
       return;
 
-    const double coeff = 1.0 / ( 10 );
-    dot->adjust_full_ticks( coeff );
+    const int full_ticks = as<int>( std::floor( dot->ticks_left_fractional() ) );
+    if ( full_ticks < 1 )
+      return;
+
+    p()->sim->print_log( "{} has {} ticks of {} remaining for Tide of Blood", *p(), full_ticks, *dot );
+    for ( int i = 0; i < full_ticks; i++ )
+    {
+      dot->tick();
+    }
+
+    dot->cancel();
   }
 
   void impact( action_state_t* s ) override
@@ -6166,6 +6210,63 @@ struct berserker_rage_t : public warrior_spell_t
   }
 };
 
+// Battle Stance ===============================================================
+
+struct battle_stance_t : public warrior_spell_t
+{
+  std::string onoff;
+  bool onoffbool;
+  battle_stance_t( warrior_t* p, util::string_view options_str )
+    : warrior_spell_t( "battle_stance", p, p->talents.warrior.battle_stance ), onoff(), onoffbool( false )
+  {
+    add_option( opt_string( "toggle", onoff ) );
+    parse_options( options_str );
+
+    if ( onoff == "on" )
+    {
+      onoffbool = true;
+    }
+    else if ( onoff == "off" )
+    {
+      onoffbool = false;
+    }
+    else
+    {
+      sim->errorf( "Battle stance must use the option 'toggle=on' or 'toggle=off'" );
+      background = true;
+    }
+
+    use_off_gcd = true;
+  }
+
+  void execute() override
+  {
+    warrior_spell_t::execute();
+    if ( onoffbool )
+    {
+      p()->buff.battle_stance->trigger();
+    }
+    else
+    {
+      p()->buff.battle_stance->expire();
+    }
+  }
+
+  bool ready() override
+  {
+    if ( onoffbool && p()->buff.battle_stance->check() )
+    {
+      return false;
+    }
+    else if ( !onoffbool && !p()->buff.battle_stance->check() )
+    {
+      return false;
+    }
+
+    return warrior_spell_t::ready();
+  }
+};
+
 // Defensive Stance ===============================================================
 
 struct defensive_stance_t : public warrior_spell_t
@@ -6661,6 +6762,8 @@ action_t* warrior_t::create_action( util::string_view name, util::string_view op
     return new battle_shout_t( this, options_str );
   if ( name == "recklessness" )
     return new recklessness_t( this, options_str, name, specialization() == WARRIOR_FURY ? talents.fury.recklessness : find_spell( 1719 ) );
+  if ( name == "battle_stance" )
+    return new battle_stance_t( this, options_str );
   if ( name == "berserker_rage" )
     return new berserker_rage_t( this, options_str );
   if ( name == "bladestorm" )
@@ -7190,6 +7293,7 @@ void warrior_t::init_spells()
   //active.ancient_aftershock_pulse = nullptr;
   active.deep_wounds_ARMS = nullptr;
   active.deep_wounds_PROT = nullptr;
+  active.fatality         = nullptr;
 
   // Runeforged Legendary Items
   legendary.elysian_might             = find_runeforge_legendary( "Elysian Might" );
@@ -7257,6 +7361,8 @@ void warrior_t::init_spells()
     active.deep_wounds_ARMS = new deep_wounds_ARMS_t( this );
   if ( spec.deep_wounds_PROT->ok() )
     active.deep_wounds_PROT = new deep_wounds_PROT_t( this );
+  if ( talents.arms.fatality->ok() )
+    active.fatality = new fatality_t( this );
   if ( talents.fury.rampage->ok() )
   {
     // rampage now hits 4 times instead of 5 and effect indexes shifted
@@ -8134,6 +8240,11 @@ void warrior_t::create_buffs()
       ->set_period( timespan_t::zero() )
       ->set_cooldown( timespan_t::zero() );
 
+  buff.battle_stance = make_buff( this, "battle_stance", talents.warrior.battle_stance )
+    ->set_activated( true )
+    ->set_default_value( talents.warrior.battle_stance->effectN( 1 ).percent() )
+    ->add_invalidate( CACHE_CRIT_CHANCE );
+
   buff.defensive_stance = make_buff( this, "defensive_stance", talents.warrior.defensive_stance )
     ->set_activated( true )
     ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
@@ -8943,7 +9054,7 @@ double warrior_t::composite_bonus_armor() const
 {
   double ba = player_t::composite_bonus_armor();
 
-  ba += spec.vanguard -> effectN( 1 ).percent() * cache.strength();
+  //ba += spec.vanguard -> effectN( 1 ).percent() * cache.strength(); //endless looping
 
   return ba;
 }
@@ -9068,6 +9179,7 @@ double warrior_t::composite_melee_crit_chance() const
   c += buff.will_of_the_berserker->check_value();
   c += buff.conquerors_frenzy->check_value();
   c += talents.warrior.cruel_strikes->effectN( 1 ).percent();
+  c += buff.battle_stance->check_value();
 
   if ( specialization() == WARRIOR_ARMS )
   {
