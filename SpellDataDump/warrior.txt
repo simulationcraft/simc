@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46157 dragonflight-BETA (hotfix 2022-10-16/46157, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46157 dragonflight-BETA (hotfix 2022-10-18/46157)
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -635,7 +635,6 @@ Description      : Attempt to finish off a wounded foe, causing ${$280849s1+$163
 
 
 Name             : Thunder Clap (id=6343) [Spell Family (4)] 
-Hotfixed         : Proc Flags (0 -> 16)
 Talent Entry     : Generic [tree=class, row=4, col=4, max_rank=1, req_points=0]
 Class            : Warrior
 School           : Physical
@@ -646,8 +645,6 @@ GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 6 seconds
 Proc Chance      : 101%
-Proc Flags       : ....x... ........ ........ ........ 
-                 : Yellow Melee
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effects: #1, #8), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #3, #4, #9), Warrior (137047 effects: #1, #2), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Crackling Thunder (203201 effects: #1, #2), Kakushan's Stormscale Gauntlets (207844 effects: #1, #2), Colossus Smash (208086 effect#1), Deep Wounds (262115 effect#2), Deafening Crash (272824 effect#2), Siegebreaker (280773 effect#1), Will of the Berserker (335597 effect#1), Unnerving Focus (337155 effect#5), Show of Force (339825 effect#1), Outburst (364010 effects: #1, #2, #4), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Impale (383430 effect#1), Unnerving Focus (384043 effect#5), Blood and Thunder (384277 effects: #1, #2), Show of Force (385842 effect#1), Thunder Clap Prot Hidden (386229 effects: #1, #2), Violent Outburst (386478 effects: #1, #2, #4), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2, #3)
 Family Flags     : 7, 8, 9, 18
 Attributes       : ....x... ........ x.x..x.. ........   ...x...x .x...... ........ ........ 

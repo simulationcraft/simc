@@ -1596,6 +1596,8 @@ class SpellDataGenerator(DataGenerator):
             ( 394745, 0 ),          # Priest Holy Class Set 4-set buff
             ( 234946, 0 ),          # Trail of Light heal
             ( 368276, 0 ),          # Binding Heals heal
+            ( 391156, 0 ),          # Holy Mending heal
+            ( 391359, 0 ),          # Empowered Renew heal
             # Discipline Priest
             ( 393679, 0 ),          # Priest Discipline Class Set 2-set
             ( 394609, 0 ),          # Light Weaving 2-set buff
