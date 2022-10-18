@@ -438,12 +438,6 @@ public:
   // Set Bonus effects
   struct set_bonuses_t
   {
-    const spell_data_t* t28_havoc_2pc;
-    const spell_data_t* t28_havoc_4pc;
-    const spell_data_t* t28_vengeance_2pc;
-    const spell_data_t* t28_vengeance_4pc;
-
-    double deadly_dance_counter = 0.0;
   } set_bonuses;
 
   // Mastery Spells
@@ -552,7 +546,7 @@ public:
     proc_t* darkglare_boon_resets;
 
     // Set Bonuses
-    proc_t* deadly_dance;
+
   } proc;
 
   // RPPM objects
@@ -1043,29 +1037,6 @@ struct soul_fragment_t
       dh->resource_gain( RESOURCE_FURY, dh->spec.blind_faith_fury->effectN( 1 ).resource( RESOURCE_FURY ), dh->gain.blind_faith );
     }
 
-    if ( is_type( soul_fragment::LESSER ) && dh->set_bonuses.t28_vengeance_4pc->ok() )
-    {
-
-     timespan_t duration =  (dh->set_bonuses.t28_vengeance_4pc->effectN( 1 ).time_value()) ;
-
-      if ( !dh->cooldown.immolation_aura->is_ready() && dh->cooldown.fel_devastation->is_ready() )
-      {
-        dh->cooldown.immolation_aura->adjust( -duration );
-      }
-      else if ( !dh->cooldown.fel_devastation->is_ready() && dh->cooldown.immolation_aura->is_ready() )
-      {
-        dh->cooldown.fel_devastation->adjust( -duration );
-      }
-      else if ( dh->rng().roll( 0.5 ) )
-      {
-        dh->cooldown.immolation_aura->adjust( -duration );
-      }
-      else
-      {
-        dh->cooldown.fel_devastation->adjust( -duration );
-      }
-    }
-
     remove();
   }
 };
@@ -1275,7 +1246,6 @@ public:
       ab::apply_affecting_aura( p->legendary.erratic_fel_core );
 
       // Set Bonus Passives
-      ab::apply_affecting_aura( p->set_bonuses.t28_havoc_2pc );
 
       // Affect Flags
       parse_affect_flags( p->mastery.demonic_presence, affected_by.demonic_presence );
@@ -1549,20 +1519,6 @@ public:
       if ( !ab::hit_any_target )
       {
         trigger_fury_refund();
-      }
-      else
-      {
-        // T28 Havoc 4pc Bonus
-        if ( p()->set_bonuses.t28_havoc_4pc->ok() )
-        {
-          p()->set_bonuses.deadly_dance_counter += ab::last_resource_cost;
-          while ( p()->set_bonuses.deadly_dance_counter >= p()->set_bonuses.t28_havoc_4pc->effectN( 2 ).base_value() )
-          {
-            p()->cooldown.metamorphosis->adjust( -timespan_t::from_seconds( p()->set_bonuses.t28_havoc_4pc->effectN( 1 ).base_value() ) );
-            p()->set_bonuses.deadly_dance_counter -= p()->set_bonuses.t28_havoc_4pc->effectN( 2 ).base_value();
-            p()->proc.deadly_dance->occur();
-          }
-        }
       }
     }
   }
@@ -2658,11 +2614,6 @@ struct immolation_aura_t : public demon_hunter_spell_t
         {
           p()->spawn_soul_fragment( soul_fragment::LESSER, 1 );
           p()->proc.soul_fragment_from_fallout->occur();
-        }
-        if ( p()->sets->has_set_bonus( DEMON_HUNTER_VENGEANCE, T28, B2 ) && rng().roll( p()->set_bonuses.t28_vengeance_2pc->proc_chance() ) )
-        {
-          p()->spawn_soul_fragment( soul_fragment::LESSER, 1 );
-          p()->proc.soul_fragment_from_hunger->occur();
         }
 
         if ( p()->talent.charred_flesh->ok() )
@@ -4669,7 +4620,6 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
     {
       set_default_value_from_effect_type( A_HASTE_ALL );
       apply_affecting_aura( p->spec.metamorphosis_rank_2 );
-      apply_affecting_aura( p->set_bonuses.t28_havoc_4pc );
       add_invalidate( CACHE_HASTE );
       add_invalidate( CACHE_LEECH );
     }
@@ -5388,7 +5338,7 @@ void demon_hunter_t::init_procs()
   proc.darkglare_boon_resets          = get_proc( "darkglare_boon_resets" );
 
   // Set Bonuses
-  proc.deadly_dance                   = get_proc( "deadly_dance_reduction" );
+
 }
 
 // demon_hunter_t::init_resources ===========================================
@@ -5671,11 +5621,6 @@ void demon_hunter_t::init_spells()
   spec.darkglare_boon_refund  = ( legendary.darkglare_boon->ok() ) ? find_spell( 350726 ) : spell_data_t::not_found();
 
   // Set Bonus Items ========================================================
-
-  set_bonuses.t28_havoc_2pc     = sets->set( DEMON_HUNTER_HAVOC, T28, B2 );
-  set_bonuses.t28_havoc_4pc     = sets->set( DEMON_HUNTER_HAVOC, T28, B4 );
-  set_bonuses.t28_vengeance_2pc = sets->set( DEMON_HUNTER_VENGEANCE, T28, B2 );
-  set_bonuses.t28_vengeance_4pc = sets->set( DEMON_HUNTER_VENGEANCE, T28, B4 );
 
   // Spell Initialization ===================================================
 
@@ -6535,7 +6480,6 @@ void demon_hunter_t::reset()
   next_fragment_spawn               = 0;
   metamorphosis_health              = 0;
   spirit_bomb_accumulator           = 0.0;
-  set_bonuses.deadly_dance_counter  = 0.0;
 
   for ( size_t i = 0; i < soul_fragments.size(); i++ )
   {
