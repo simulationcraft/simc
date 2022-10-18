@@ -991,7 +991,7 @@ struct judgment_ret_t : public judgment_t
     int target_count = judgment_t::n_targets();
 
     if ( is_boundless )
-      target_count++;
+      target_count = 2;
 
     return target_count;
   }
