@@ -3755,7 +3755,13 @@ struct eviscerate_t : public rogue_attack_t
     eviscerate_bonus_t( util::string_view name, rogue_t* p ):
       rogue_attack_t( name, p, p->spec.eviscerate_shadow_attack ),
       last_eviscerate_cp( 1 )
-    {}
+    {
+      if ( p->talent.subtlety.shadowed_finishers->ok() )
+      {
+        // Spell has the full damage coefficient and is modified via talent scripting
+        base_multiplier *= p->talent.subtlety.shadowed_finishers->effectN( 1 ).percent();
+      }
+    }
 
     void reset() override
     {
@@ -4799,8 +4805,6 @@ struct shadow_dance_t : public rogue_spell_t
   {
     harmful = false;
     dot_duration = timespan_t::zero(); // No need to have a tick here
-
-    apply_affecting_aura( p->talent.subtlety.improved_shadow_dance );
   }
 
   void execute() override
@@ -5004,6 +5008,12 @@ struct black_powder_t: public rogue_attack_t
       callbacks = false; // 2021-07-19-- Does not appear to trigger normal procs
       aoe = -1;
       reduced_aoe_targets = p->talent.subtlety.black_powder->effectN( 4 ).base_value();
+
+      if ( p->talent.subtlety.shadowed_finishers->ok() )
+      {
+        // Spell has the full damage coefficient and is modified via talent scripting
+        base_multiplier *= p->talent.subtlety.shadowed_finishers->effectN( 1 ).percent();
+      }
     }
 
     void reset() override
@@ -6810,6 +6820,7 @@ struct shadow_dance_t : public stealth_like_buff_t<damage_buff_t>
     base_t( p, "shadow_dance", p->spell.shadow_dance )
   {
     apply_affecting_aura( p->talent.subtlety.dark_shadow );
+    apply_affecting_aura( p->talent.subtlety.improved_shadow_dance );
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
