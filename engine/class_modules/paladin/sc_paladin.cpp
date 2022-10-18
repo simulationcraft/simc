@@ -1138,6 +1138,11 @@ judgment_t::judgment_t( paladin_t* p, util::string_view name ) :
   {
     base_multiplier *= 1.0 + p->spells.judgment_2->effectN( 1 ).percent();
   }
+
+  if ( p->talents.zealots_paragon->ok() )
+  {
+    base_multiplier *= 1.0 + p->talents.zealots_paragon->effectN( 3 ).percent();
+  }
 }
 
 proc_types judgment_t::proc_type() const
@@ -1730,6 +1735,11 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
     {
       cooldown->charges += as<int>( p->talents.vanguards_momentum->effectN( 3 ).base_value() );
     }
+
+    if ( p->talents.zealots_paragon->ok() )
+    {
+      base_multiplier *= 1.0 + p->talents.zealots_paragon->effectN( 2 ).percent();
+    }
   }
 
   bool target_ready( player_t* candidate_target ) override
@@ -1775,12 +1785,12 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
       if ( p()->buffs.avenging_wrath->up() )
       {
         p()->buffs.avenging_wrath->extend_duration(
-            p(), timespan_t::from_seconds( p()->talents.zealots_paragon->effectN( 1 ).base_value() ) );
+            p(), timespan_t::from_millis( p()->talents.zealots_paragon->effectN( 1 ).base_value() ) );
       }
       else if ( p()->buffs.crusade->up() )
       {
         p()->buffs.crusade->extend_duration(
-            p(), timespan_t::from_seconds( p()->talents.zealots_paragon->effectN( 1 ).base_value() ) );
+            p(), timespan_t::from_millis( p()->talents.zealots_paragon->effectN( 1 ).base_value() ) );
       }
     }
 
