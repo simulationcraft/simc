@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46157 dragonflight-BETA (hotfix 2022-10-18/46157, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46144 dragonflight-BETA (hotfix 2022-10-18/46144)
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -941,7 +941,6 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1038628)  : Apply Aura (6) | Unknown(531)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 Description      : Damage dealt by pets increased by $s1%.
 
 Name             : Intimidation (id=24394) 
@@ -1090,7 +1089,7 @@ GCD              : 1.5 seconds
 Cooldown         : 0.5 seconds
 Charges          : 1 (7.5 seconds cooldown)
 Category         : 2067: Hunter (137014 effect#13), Alpha Predator (269737 effect#3), Dire Pack (378747 effect#1)
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Hunter (137014 effects: #2, #3), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Roar of the Seven Lions (207318 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Rotting Jaws (264195 effect#1), Alpha Predator (269737 effect#4), Flamewaker's Cobra Sting (336826 effect#1), Improved Kill Command (378010 effect#1), Killer Command (378740 effect#1), Dire Pack (378747 effect#2), Lunge (378934 effect#2), Cobra Sting (392296 effect#1), Hunter Beast Mastery Class Set 2pc (393646 effect#1), If It Bleeds, We Can Kill It (394298 effect#1)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Hunter (137014 effects: #2, #3), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Roar of the Seven Lions (207318 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Rotting Jaws (264195 effect#1), Alpha Predator (269737 effect#4), Flamewaker's Cobra Sting (336826 effect#1), Improved Kill Command (378010 effect#1), Killer Command (378740 effect#1), Dire Pack (378747 effect#2), Lunge (378934 effect#2), Cobra Sting (392296 effect#1), Hunter Beast Mastery Class Set 2pc (393646 effect#1), Lethal Command (394298 effect#1)
 Family Flags     : 1, 2, 43, 106
 Attributes       : ....x... ........ x.x..x.. ........   ........ .xx..... ........ ..xxx... 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -1775,10 +1774,8 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000
 #3 (id=1037286)  : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 #4 (id=1037287)  : Dummy (3)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 Description      : When your pet is at or above 50 Focus, your pet's Basic Attacks will deal $s1% more damage, but cost $s2% additional focus.
 
 Name             : Viciousness (desc=Racial Passive) (id=68975) [Passive] 
@@ -1902,7 +1899,7 @@ School           : Physical
 Spell Type       : Melee
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Roar of the Seven Lions (207318 effect#1), Rotting Jaws (264195 effect#1), Alpha Predator (269737 effect#4), Flamewaker's Cobra Sting (336826 effect#1), Improved Kill Command (378010 effect#1), Killer Command (378740 effect#1), Dire Pack (378747 effect#2), Cobra Sting (392296 effect#1), Hunter Beast Mastery Class Set 2pc (393646 effect#1), If It Bleeds, We Can Kill It (394298 effect#1)
+Affecting spells : Roar of the Seven Lions (207318 effect#1), Rotting Jaws (264195 effect#1), Alpha Predator (269737 effect#4), Flamewaker's Cobra Sting (336826 effect#1), Improved Kill Command (378010 effect#1), Killer Command (378740 effect#1), Dire Pack (378747 effect#2), Cobra Sting (392296 effect#1), Hunter Beast Mastery Class Set 2pc (393646 effect#1), Lethal Command (394298 effect#1)
 Family Flags     : 43
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -5420,7 +5417,7 @@ Attributes       : ....x... ........ x....... ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Extra Initial Period (169), Do Not Auto Select Target with Initiates Combat (220), Always Cast Log (255), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=323302)   : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.45000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.35000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=323303)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Fire a shot that tears through your enemy, causing them to bleed for ${$s1*$s2} damage over $d$?s257944[ and  increases your critical strike chance by $257946s1% for $257946d, stacking up to $257946u $Ltime:times;][].
@@ -6652,8 +6649,8 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 1
 Proc Chance      : 101%
-Proc Flags       : ....x... x....... ........ ........ 
-                 : Yellow Melee, Yellow Ranged
+Proc Flags       : ....x... x....... ..x..... ........ 
+                 : Yellow Melee, Yellow Ranged, Periodic
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -7727,7 +7724,6 @@ Description      : The Wind Serpent takes on a defensive posture, increasing dod
 Tooltip          : Dodge chance increased by $s1%.
 
 Name             : Pathfinding (desc=Cunning Passive) (id=264656) [Spell Family (9), Passive] 
-Hotfixed         : Attributes
 Class            : Ferocity Tenacity Cunning Hunter Pet
 School           : Physical
 Spell Type       : None
@@ -7752,7 +7748,6 @@ Description      : You and your pet gain $s1% increased movement speed.
 Tooltip          : Movement speed increased by $w2%.
 
 Name             : Endurance Training (desc=Tenacity Passive) (id=264662) [Spell Family (9), Passive] 
-Hotfixed         : Attributes
 Class            : Ferocity Tenacity Cunning Hunter Pet
 School           : Physical
 Spell Type       : None
@@ -7777,7 +7772,6 @@ Description      : You and your pet gain $s1% increased maximum health.
 Tooltip          : Maximum health increased by $w2%.
 
 Name             : Predator's Thirst (desc=Ferocity Passive) (id=264663) [Spell Family (9), Passive] 
-Hotfixed         : Attributes
 Class            : Ferocity Tenacity Cunning Hunter Pet
 School           : Physical
 Spell Type       : None
@@ -9290,7 +9284,7 @@ Velocity         : 45 yards/sec
 Duration         : 18 seconds
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effect#1), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Hydra's Bite (260241 effect#2), Mastery: Spirit Bond (263135 effects: #1, #2), Lunge (378934 effect#2), Ranger (385695 effects: #1, #2)
 Family Flags     : 1, 14, 55, 106, 121
-Attributes       : ........ ........ x....... ........   ........ .x...... ........ ...x.... 
+Attributes       : ........ ........ x....... ........   ........ ........ ........ ...x.... 
                  : ........ ........ .x...... ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ ........ ........ 
@@ -9298,7 +9292,7 @@ Attributes       : ........ ........ x....... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x......x ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Do Not Reset Combat Timers (81), DoT Stacking Rule (103), Spell Haste Affects Periodic (173), Do Not Auto Select Target with Initiates Combat (220), Periodic Can Crit (265), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
+                 : Not Shapeshifted (16), Discount Power On Miss (59), Do Not Reset Combat Timers (81), DoT Stacking Rule (103), Spell Haste Affects Periodic (173), Do Not Auto Select Target with Initiates Combat (220), Periodic Can Crit (265), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=722198)   : School Damage (2): nature
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.16500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
@@ -13674,7 +13668,6 @@ Effects          :
 Description      : Bonus Kill Shots from Flayed Shot cause $356620I targets within $356620A1 yds to bleed for $s1% of the damage dealt by Kill Shot over $356620d.
 
 Name             : Call of the Wild (id=359844) [Spell Family (9)] 
-Hotfixed         : Proc Flags (0 -> 256), Internal Cooldown (700 -> 0), Attributes
 Talent Entry     : Beast Mastery [tree=spec, row=9, col=4, max_rank=1, req_points=20]
 Class            : Hunter
 School           : Nature
@@ -14563,7 +14556,6 @@ Effects          :
 Description      : Cobra Shot reduces the cooldown of Kill Command by an additional ${$m1/-1000}.1 sec.
 
 Name             : Wild Instincts (id=378442) [Spell Family (9), Passive, Hidden] 
-Hotfixed         : Attributes
 Talent Entry     : Beast Mastery [tree=spec, row=10, col=3, max_rank=1, req_points=20, select_idx=100]
 Class            : Hunter
 School           : Nature
@@ -14595,9 +14587,6 @@ School           : Nature
 Spell Type       : None
 GCD              : 1.5 seconds
 Cooldown         : 120 seconds
-Proc Chance      : 25%
-Proc Flags       : ....x... x.x.x.x. x....... ........ 
-                 : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -14993,11 +14982,11 @@ Effects          :
                    Affected Spells: Trick Shots (257621)
                    Family Flags: 59
 #3 (id=1007412)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Trick Shots (257621)
                    Family Flags: 59
 #4 (id=1007413)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 5 (33)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 33 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 33 | Target: Self (1)
                    Affected Spells: Trick Shots (257621)
                    Family Flags: 59
 Description      : Trick Shots now ricochets to $s1 fewer targets, but each ricochet deals an additional $s3% damage.
@@ -15067,7 +15056,7 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 5 | Target: Self (1)
                    Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Kill Shot (53351), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Counter Shot (147362), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Muzzle (187707), Carve (187708), Wind Arrow (191043), Cobra Shot (193455), Wing Clip (195645), Stomp (199530), Stampede (201594), Fury of the Eagle (203413), Butchery (212436), Explosive Shot (212680), Barbed Shot (217200), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565), Resonating Arrow (308495), Kill Shot (320976), Bloodshed (321530), Bloodshed (321538), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Wild Spirits (328757), Wild Spirits (328837), Wildfire Cluster (336899), Chimaera Shot (344120), Chimaera Shot (344121), Wailing Arrow (354831), Wailing Arrow (355589), Wailing Arrow (355596), Coordinated Assault (360969), Death Chakram (361756), Death Chakram (375891), Death Chakram (375893), Spearhead (378957), Wailing Arrow (392058), Wailing Arrow (392060), Wailing Arrow (392061)
                    Family Flags: 106, 115, 125
-Description      : Range of your melee attacks and abilities increased by $s1 yd.
+Description      : Increases the range of your melee attacks and abilities by $s1 yds.
 
 Name             : Explosives Expert (id=378937) [Spell Family (9), Passive, Hidden] 
 Talent Entry     : Survival [tree=spec, row=9, col=4, max_rank=2, req_points=20]
@@ -15626,7 +15615,6 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1026082)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (100 -> 50)
 Description      : When Barbed Shot causes Frenzy to stack up to $s1, your pet will immediately use its special attack and deal $s2% bonus damage.
 
 Name             : Bombardment (id=386875) [Spell Family (9)] 
@@ -15961,7 +15949,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=1025066)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 7 | Scaled Value: 7 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Multi-Shot (2643), Multi-Shot (257620)
                    Family Flags: 12
 Description      : $@spelldesc389019
@@ -16265,7 +16253,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1026894)  : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.40000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (0.2 -> 0.4)
 #2 (id=1026895)  : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc390231
@@ -16611,7 +16598,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Barbed Shot (217200), Frenzy (272790)
                    Family Flags: 78
-#3 (id=1036817)  : Apply Aura (6) | Proc Trigger Spell (42): If It Bleeds, We Can Kill It
+#3 (id=1036817)  : Apply Aura (6) | Proc Trigger Spell (42): Lethal Command
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 394298 | Target: Self (1)
 Description      : Barbed Shot damage increased by $s1% and Barbed Shot increases damage of your next Kill Command by $394298s1%.
 
@@ -16793,7 +16780,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Aimed Shot deals $s3% bonus damage to targets who are above $s1% health.
 
-Name             : If It Bleeds, We Can Kill It (id=394298) [Spell Family (9)] 
+Name             : Lethal Command (id=394298) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -16802,14 +16789,15 @@ Proc Chance      : 100%
 Proc Flags       : ........ x...x... x....... ........ 
                  : Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
 Triggered by     : Hunter Beast Mastery Class Set 4pc (393647)
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ..x..... 
+                 : .......x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
+                 : Do Not Sheath (18), No Threat (42), Include In Advanced Combat Log (72), Can Proc From Procs (122), Allow Cast While Casting (135), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1033805)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -16830,13 +16818,13 @@ Proc Flags       : ........ x....... ........ ........
 Triggered by     : Hunter Marksmanship Class Set 2pc (393648)
 Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ..x..... 
+                 : .......x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Do Not Sheath (18), No Threat (42), Include In Advanced Combat Log (72), Can Proc From Procs (122), Aura Points On Client (268), Allow Class Ability Procs (416)
+                 : Do Not Sheath (18), No Threat (42), Include In Advanced Combat Log (72), Can Proc From Procs (122), Allow Cast While Casting (135), Aura Points On Client (268), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1033937)  : Apply Aura (6) | Dummy (4)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -16875,14 +16863,15 @@ Proc Chance      : 101%
 Proc Flags       : ........ x....... ........ ........ 
                  : Yellow Ranged
 Triggered by     : Hunter Marksmanship Class Set 4pc (393649)
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ......x. 
+                 : .......x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
+                 : Do Not Sheath (18), No Threat (42), Include In Advanced Combat Log (72), Do Not Display Range (126), Allow Cast While Casting (135), Allow Cast While Channeling (308)
 Effects          :
 #1 (id=1033964)  : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)

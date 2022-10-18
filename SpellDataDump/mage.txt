@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46157 dragonflight-BETA (hotfix 2022-10-18/46157, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46144 dragonflight-BETA (hotfix 2022-10-18/46144)
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Talent Entry     : Generic [tree=class, row=2, col=3, max_rank=1, req_points=0]
 Class            : Paladin, Mage
@@ -553,7 +553,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=4785)     : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.28346 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (1.42607 -> 1.28346)
 Description      : Hurls an immense fiery boulder that causes $s1 Fire damage$?a321711[ and an additional $321712o2 Fire damage over $321712d][].$?a383669[
 
 Pyroblast's initial damage is increased by $383669s1% when the target is above $383669s3% health or below $383669s2% health.][]
@@ -741,7 +740,6 @@ Effects          :
                    Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=290011)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Sub Type (226 -> 4)
 #4 (id=817843)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Your target burns for an additional ${$s1}.1% over $12654d of the total direct damage caused by your Fireball, Fire Blast, Scorch, Pyroblast$?s153561[, Meteor][]$?s257541[, Phoenix Flames][]$?s198929[, Cinderstorm][], and Flamestrike. If this effect is reapplied, any remaining damage will be added to the new Ignite.$?a387044[
@@ -811,7 +809,6 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1038628)  : Apply Aura (6) | Unknown(531)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 Description      : Damage dealt by pets increased by $s1%.
 
 Name             : Strength (id=27973) [Passive, Hidden] 
@@ -7318,7 +7315,6 @@ Attributes       : ........ ........ ........ x..x....   ........ ........ .....
 Effects          :
 #1 (id=718057)   : Apply Aura (6) | Dummy (4)
                    Base Value: 230 | Scaled Value: 230 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
-Hotfixed         : Base Value (240 -> 230)
 Description      : $@spelldesc269650
 Tooltip          : Damage done by your next non-instant Pyroblast increased by $s1%.
 
@@ -13538,7 +13534,6 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Ignite (12654)
                    Family Flags: 27
-Hotfixed         : Misc Value (0 -> 22)
 #3 (id=1017924)  : Apply Aura (6) | Dummy (4)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=1017925)  : Apply Aura (6) | Dummy (4)
@@ -13656,8 +13651,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Can Proc From Procs (122), Aura Points On Client (268), Only Proc From Class Abilities (415)
 Effects          :
-#1 (id=1015497)  : Apply Aura (6) | Modify Attribute% (80)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
+#1 (id=1015497)  : Apply Aura (6) | Modify Total Stat% (137)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value 2: 0x8 | Target: Self (1)
+Hotfixed         : Sub Type (80 -> 137), Misc Value (3 -> 0), Misc Value 2 (0 -> 8)
 #2 (id=1015498)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 383499
 Description      : $@spelldesc383499
@@ -13693,15 +13689,14 @@ Description      : Casting Scorch on targets below $s2% health increase the targ
 Additionally, Scorch critical strikes increase your movement speed by $236060s1% for $236060d.
 
 Name             : Improved Scorch (id=383608) [Spell Family (3)] 
-Hotfixed         : Attributes
 Class            : Mage
 School           : Physical
-Spell Type       : None
+Spell Type       : Magic
 Range            : 100 yards
 Duration         : 8 seconds
 Stacks           : 3 maximum
 Proc Chance      : 101%
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ..x...x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13709,7 +13704,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x......x ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : DoT Stacking Rule (103), Can Proc From Procs (122), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
+                 : Aura Is Debuff (26), DoT Stacking Rule (103), Can Proc From Procs (122), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=1015643)  : Apply Aura (6) | Modify Damage Taken% from Caster (270)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x5c | Target: Enemy (6)
@@ -13783,17 +13778,14 @@ Effects          :
                    Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Pyroblast (11366)
                    Family Flags: 22
-Hotfixed         : Base Value (-40 -> -30)
 #2 (id=1015716)  : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Pyroblast (11366)
                    Family Flags: 22
-Hotfixed         : Base Value (15 -> 10)
 #3 (id=1015717)  : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Combustion (190319)
                    Family Flags: 58
-Hotfixed         : Base Value (-40 -> -50)
 Description      : Pyroblast has a $s1% reduced cast time and a $s2% increased critical strike chance. The duration of Combustion is reduced by $s3%. 
 
 Name             : Improved Arcane Missiles (id=383661) [Spell Family (3), Passive] 
@@ -14050,7 +14042,7 @@ Effects          :
 #1 (id=1016071)  : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc383886
-Tooltip          : Your next non-instant Pyroblast will grant you Combustion.
+Tooltip          : Your next non-instant Pyroblast or Flamestrike will grant you Combustion.
 
 Name             : Sun King's Blessing (id=383886) [Spell Family (3), Passive] 
 Talent Entry     : Fire [tree=spec, row=10, col=1, max_rank=1, req_points=20]
@@ -14072,7 +14064,7 @@ Effects          :
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1016075)  : Apply Aura (6) | Dummy (4)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : After consuming $s1 Hot Streaks, your next non-instant Pyroblast cast within $383883d grants you Combustion for $s2 sec.
+Description      : After consuming $s1 Hot Streaks, your next non-instant Pyroblast or Flamestrike cast within $383883d grants you Combustion for $s2 sec.
 
 Name             : Improved Combustion (id=383967) [Spell Family (3), Passive] 
 Talent Entry     : Fire [tree=spec, row=7, col=3, max_rank=1, req_points=8, select_idx=100]
@@ -14249,7 +14241,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1016589)  : Apply Aura (6) | Dummy (4)
                    Base Value: 18 | Scaled Value: 18 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (25 -> 18)
 #2 (id=1016595)  : Apply Aura (6) | Dummy (4)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Ignite deals $s1% more damage while Combustion is not active. Fire Blast spreads Ignite to $s2 additional nearby targets during Combustion.
