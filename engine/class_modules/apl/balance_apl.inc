@@ -57,10 +57,10 @@ aoe->add_action( "celestial_alignment,if=!buff.ca_inc.up&(target.time_to_die>15|
 aoe->add_action( "incarnation,if=!buff.ca_inc.up&(target.time_to_die>15|fight_remains<35)" );
 aoe->add_action( "convoke_the_spirits,if=buff.ca_inc.remains>4|(!talent.primordial_arcanic_pulsar&cooldown.ca_inc.remains>30|variable.no_cd_talent)&(buff.eclipse_lunar.remains>4|buff.eclipse_solar.remains>4)" );
 aoe->add_action( "warrior_of_elune" );
-aoe->add_action( "fury_of_elune,if=astral_power.deficit>variable.passive_asp+8" );
 aoe->add_action( "force_of_nature,if=astral_power.deficit>variable.passive_asp+20" );
 aoe->add_action( "astral_communion,if=astral_power.deficit>variable.passive_asp+75" );
 aoe->add_action( "wrath,if=eclipse.any_next|buff.eclipse_lunar.remains<action.wrath.execute_time" );
+aoe->add_action( "fury_of_elune,if=astral_power.deficit>variable.passive_asp+8" );
 aoe->add_action( "new_moon,if=astral_power.deficit>variable.passive_asp+10&(charges=2&recharge_time<5|charges=3)" );
 aoe->add_action( "half_moon,if=astral_power.deficit>variable.passive_asp+20&(charges=2&recharge_time<5|charges=3)" );
 aoe->add_action( "full_moon,if=astral_power.deficit>variable.passive_asp+40" );
