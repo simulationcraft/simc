@@ -100,6 +100,7 @@ public:
     buff_t* bastion_of_might_vop; // bastion of might proc from VoP
     buff_t* battle_stance;
     buff_t* berserker_rage;
+    buff_t* berserker_stance;
     buff_t* bladestorm;
     buff_t* bloodcraze;
     buff_t* bounding_stride;
@@ -120,6 +121,7 @@ public:
     buff_t* last_stand;
     buff_t* meat_cleaver;
     buff_t* martial_prowess;
+    buff_t* merciless_bonegrinder;
     buff_t* ravager;
     buff_t* recklessness;
     buff_t* reckless_abandon; // fake buff to control duration of ability override
@@ -160,7 +162,7 @@ public:
     buff_t* elysian_might;
     // Conduits
     buff_t* ashen_juggernaut_conduit;
-    buff_t* merciless_bonegrinder;
+    buff_t* merciless_bonegrinder_conduit;
     buff_t* harrowing_punishment;
     buff_t* veterans_repute;
     buff_t* show_of_force;
@@ -953,7 +955,8 @@ struct warrior_action_t : public Base
     siegebreaker;
     // talents
     bool avatar, sweeping_strikes, booming_voice, bloodcraze, executioners_precision,
-    ashen_juggernaut, recklessness, slaughtering_strikes, colossus_smash;
+    ashen_juggernaut, recklessness, slaughtering_strikes, colossus_smash,
+    merciless_bonegrinder;
     // azerite & conduit
     bool crushing_assault, ashen_juggernaut_conduit;
 
@@ -966,6 +969,7 @@ struct warrior_action_t : public Base
         siegebreaker( false ),
         ashen_juggernaut( false ),
         ashen_juggernaut_conduit( false ),
+        merciless_bonegrinder( false ),
         recklessness( false ),
         slaughtering_strikes( false ),
         avatar( false ),
@@ -1094,10 +1098,10 @@ public:
     affected_by.booming_voice       = ab::data().affected_by( p()->talents.protection.demoralizing_shout->effectN( 3 ) );
     affected_by.colossus_smash      = ab::data().affected_by( p()->spell.colossus_smash_debuff->effectN( 1 ) );
     affected_by.executioners_precision = ab::data().affected_by( p()->spell.executioners_precision_debuff->effectN( 1 ) );
+    affected_by.merciless_bonegrinder = ab::data().affected_by( p()->find_spell( 383316 )->effectN( 1 ) );
     affected_by.siegebreaker        = ab::data().affected_by( p()->spell.siegebreaker_debuff->effectN( 1 ) );
     affected_by.avatar              = ab::data().affected_by( p()->talents.warrior.avatar->effectN( 1 ) );
     affected_by.recklessness        = ab::data().affected_by( p()->talents.fury.recklessness->effectN( 1 ) );
-    //affected_by.impale              = ab::data().affected_by( p()->talents.arms.impale->effectN( 1 ) );
 
     initialized = true;
   }
@@ -1260,6 +1264,11 @@ public:
     if ( affected_by.slaughtering_strikes && p()->buff.slaughtering_strikes_rb->up() )
     {
       dm *= 1.0 + p()->buff.slaughtering_strikes_rb->stack_value();
+    }
+
+    if ( affected_by.merciless_bonegrinder && p()->buff.merciless_bonegrinder->up() )
+    {
+      dm *= 1.0 + p()->buff.merciless_bonegrinder->check_value();
     }
 
     return dm;
@@ -1805,6 +1814,15 @@ struct melee_t : public warrior_attack_t
     {
       oh_lost_melee_contact = false;
     }
+  }
+
+  double action_multiplier() const override
+  {
+    double am = warrior_attack_t::action_multiplier();
+
+    am *= 1.0 + p()->buff.berserker_stance->check_stack_value();
+
+    return am;
   }
 
   double composite_hit() const override
@@ -2383,7 +2401,11 @@ struct bladestorm_t : public warrior_attack_t
     p()->buff.bladestorm->expire();
     if ( p()->conduit.merciless_bonegrinder->ok() )
     {
-    p()->buff.merciless_bonegrinder->trigger( timespan_t::from_seconds( 9.0 ) );
+    p()->buff.merciless_bonegrinder_conduit->trigger( timespan_t::from_seconds( 9.0 ) );
+    }
+    if ( p()->talents.arms.merciless_bonegrinder->ok() )
+    {
+      p()->buff.merciless_bonegrinder->trigger();
     }
   }
 
@@ -4683,11 +4705,11 @@ struct ravager_t : public warrior_attack_t
     {
       if ( signet_triggered )
       {
-        p()->buff.merciless_bonegrinder->trigger( timespan_t::from_seconds( 2.3 ) );
+        p()->buff.merciless_bonegrinder_conduit->trigger( timespan_t::from_seconds( 2.3 ) );
       }
       else
       {
-        p()->buff.merciless_bonegrinder->trigger( timespan_t::from_seconds( 7.0 ) );
+        p()->buff.merciless_bonegrinder_conduit->trigger( timespan_t::from_seconds( 7.0 ) );
       }
     }
   }
@@ -5216,7 +5238,7 @@ struct victory_rush_t : public warrior_attack_t
 
 struct whirlwind_off_hand_t : public warrior_attack_t
 {
-  whirlwind_off_hand_t( warrior_t* p, const spell_data_t* whirlwind ) : warrior_attack_t( "whirlwind_oh", p, whirlwind )
+  whirlwind_off_hand_t( warrior_t* p, const spell_data_t* whirlwind ) : warrior_attack_t( "whirlwind_off-hand", p, whirlwind )
   {
     background = true;
     aoe = -1;
@@ -5236,7 +5258,7 @@ struct whirlwind_off_hand_t : public warrior_attack_t
     {
       am *= 1.0 + p()->talents.warrior.seismic_reverberation->effectN( 3 ).percent();
     }
-    if ( p()->buff.merciless_bonegrinder->check() )
+    if ( p()->buff.merciless_bonegrinder_conduit->check() )
     {
       am *= 1.0 + p()->conduit.merciless_bonegrinder.percent();
     }
@@ -5265,7 +5287,7 @@ struct fury_whirlwind_mh_t : public warrior_attack_t
     {
       am *= 1.0 + p()->talents.warrior.seismic_reverberation->effectN( 3 ).percent();
     }
-    if ( p()->buff.merciless_bonegrinder->check() )
+    if ( p()->buff.merciless_bonegrinder_conduit->check() )
     {
       am *= 1.0 + p()->conduit.merciless_bonegrinder.percent();
     }
@@ -5402,7 +5424,7 @@ struct arms_whirlwind_mh_t : public warrior_attack_t
     {
       am *= 1.0 + p()->talents.warrior.seismic_reverberation->effectN( 3 ).percent();
     }
-    if ( p()->buff.merciless_bonegrinder->check() )
+    if ( p()->buff.merciless_bonegrinder_conduit->check() )
     {
       am *= 1.0 + p()->conduit.merciless_bonegrinder.percent();
     }
@@ -5424,7 +5446,7 @@ struct first_arms_whirlwind_mh_t : public warrior_attack_t
   {
     double am = warrior_attack_t::action_multiplier();
 
-    if ( p()->buff.merciless_bonegrinder->check() )
+    if ( p()->buff.merciless_bonegrinder_conduit->check() )
     {
       am *= 1.0 + p()->conduit.merciless_bonegrinder.percent();
     }
@@ -6267,6 +6289,63 @@ struct battle_stance_t : public warrior_spell_t
   }
 };
 
+// Berserker Stance ===============================================================
+
+struct berserker_stance_t : public warrior_spell_t
+{
+  std::string onoff;
+  bool onoffbool;
+  berserker_stance_t( warrior_t* p, util::string_view options_str )
+    : warrior_spell_t( "berserker_stance", p, p->talents.warrior.berserker_stance ), onoff(), onoffbool( false )
+  {
+    add_option( opt_string( "toggle", onoff ) );
+    parse_options( options_str );
+
+    if ( onoff == "on" )
+    {
+      onoffbool = true;
+    }
+    else if ( onoff == "off" )
+    {
+      onoffbool = false;
+    }
+    else
+    {
+      sim->errorf( "Berserker stance must use the option 'toggle=on' or 'toggle=off'" );
+      background = true;
+    }
+
+    use_off_gcd = true;
+  }
+
+  void execute() override
+  {
+    warrior_spell_t::execute();
+    if ( onoffbool )
+    {
+      p()->buff.berserker_stance->trigger();
+    }
+    else
+    {
+      p()->buff.berserker_stance->expire();
+    }
+  }
+
+  bool ready() override
+  {
+    if ( onoffbool && p()->buff.berserker_stance->check() )
+    {
+      return false;
+    }
+    else if ( !onoffbool && !p()->buff.berserker_stance->check() )
+    {
+      return false;
+    }
+
+    return warrior_spell_t::ready();
+  }
+};
+
 // Defensive Stance ===============================================================
 
 struct defensive_stance_t : public warrior_spell_t
@@ -6766,6 +6845,8 @@ action_t* warrior_t::create_action( util::string_view name, util::string_view op
     return new battle_stance_t( this, options_str );
   if ( name == "berserker_rage" )
     return new berserker_rage_t( this, options_str );
+  if ( name == "berserker_stance" )
+    return new berserker_stance_t( this, options_str );
   if ( name == "bladestorm" )
     return new bladestorm_t( this, options_str, name, specialization() == WARRIOR_FURY ? find_spell( 46924 ) : talents.arms.bladestorm );
   if ( name == "bloodthirst" )
@@ -8245,6 +8326,10 @@ void warrior_t::create_buffs()
     ->set_default_value( talents.warrior.battle_stance->effectN( 1 ).percent() )
     ->add_invalidate( CACHE_CRIT_CHANCE );
 
+  buff.berserker_stance = make_buff( this, "berserker_stance", talents.warrior.berserker_stance )
+    ->set_activated( true )
+    ->set_default_value( talents.warrior.berserker_stance->effectN( 1 ).percent() );
+
   buff.defensive_stance = make_buff( this, "defensive_stance", talents.warrior.defensive_stance )
     ->set_activated( true )
     ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
@@ -8284,6 +8369,10 @@ void warrior_t::create_buffs()
     ->set_default_value(talents.arms.overpower->effectN(2).percent() );
   buff.martial_prowess->set_max_stack(buff.martial_prowess->max_stack() + as<int>( talents.arms.martial_prowess->effectN(2).base_value() ) );
 
+  buff.merciless_bonegrinder = make_buff( this, "merciless_bonegrinder", find_spell( 383316 ) )
+    ->set_default_value( find_spell( 383316 )->effectN( 1 ).percent() )
+    ->set_duration( find_spell( 383316 )->duration() );
+
   buff.ravager = make_buff( this, "ravager", talents.fury.ravager )
     -> set_cooldown( 0_ms ); // handled by the ability
 
@@ -8318,11 +8407,16 @@ void warrior_t::create_buffs()
     ->set_default_value( talents.protection.shield_wall->effectN( 1 ).percent() )
     ->set_cooldown( timespan_t::zero() );
 
-  buff.slaughtering_strikes_rb = make_buff( this, "slaughtering_strikes", find_spell( 393931 ) )
-    ->set_default_value( find_spell( 393931 )->effectN( 1 ).percent() );
-
-  buff.slaughtering_strikes_an = make_buff( this, "slaughtering_strikes", find_spell( 393943 ) )
-    ->set_default_value( find_spell( 393943 )->effectN( 1 ).percent() );
+  if ( talents.fury.annihilator->ok() )
+  {
+    buff.slaughtering_strikes_an = make_buff( this, "slaughtering_strikes", find_spell( 393943 ) )
+      ->set_default_value( find_spell( 393943 )->effectN( 1 ).percent() );
+  }
+  else
+  {
+    buff.slaughtering_strikes_rb = make_buff( this, "slaughtering_strikes", find_spell( 393931 ) )
+      ->set_default_value( find_spell( 393931 )->effectN( 1 ).percent() );
+  }
 
   buff.bloodcraze = make_buff( this, "bloodcraze", find_spell( 393951 ) )
     ->set_default_value( talents.fury.bloodcraze->effectN( 1 ).percent() );
@@ -8433,7 +8527,7 @@ void warrior_t::create_buffs()
                              ? conduit.ashen_juggernaut.percent() * (1 + covenant.condemn_driver ->effectN( 7 ).percent())
                              :  conduit.ashen_juggernaut.percent());
 
-  buff.merciless_bonegrinder = make_buff( this, "merciless_bonegrinder", find_spell( 335260 ) )
+  buff.merciless_bonegrinder_conduit = make_buff( this, "merciless_bonegrinder_conduit", find_spell( 335260 ) )
                                 ->set_default_value( conduit.merciless_bonegrinder.percent() );
 
   buff.veterans_repute = make_buff( this, "veterans_repute", conduit.veterans_repute )
