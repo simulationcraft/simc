@@ -1340,7 +1340,8 @@ void paladin_t::create_buffs_retribution()
 
   buffs.vanguards_momentum = make_buff( this, "vanguards_momentum", find_spell( 383311 ) )
                                         -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-                                        -> set_default_value( find_spell( 383311 ) -> effectN( 1 ).percent() );
+                                        -> set_default_value( talents.vanguards_momentum->effectN( 1 ).percent() );
+
   buffs.sealed_verdict = make_buff( this, "sealed_verdict", find_spell( 387643 ) );
   buffs.consecrated_blade = make_buff( this, "consecrated_blade", find_spell( 382522 ) );
 

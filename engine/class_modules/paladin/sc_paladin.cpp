@@ -1728,7 +1728,7 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
 
     if ( p->talents.vanguards_momentum->ok() )
     {
-      cooldown->charges += as<int>( p->talents.vanguards_momentum->effectN( 1 ).base_value() );
+      cooldown->charges += as<int>( p->talents.vanguards_momentum->effectN( 3 ).base_value() );
     }
   }
 
@@ -1786,7 +1786,7 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
 
     if ( p()->legendary.vanguards_momentum->ok() )
     {
-      p()->buffs.vanguards_momentum->trigger();
+      p()->buffs.vanguards_momentum_legendary->trigger();
     }
 
     if ( p()->talents.vanguards_momentum->ok() )
@@ -2888,9 +2888,16 @@ double paladin_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
 
-  if ( dbc::is_school( school, SCHOOL_HOLY ) && buffs.vanguards_momentum->up() )
+  if ( dbc::is_school( school, SCHOOL_HOLY ) )
   {
-    m *= 1.0 + buffs.vanguards_momentum->stack_value();
+    if ( buffs.vanguards_momentum->up() )
+    {
+      m *= 1.0 + buffs.vanguards_momentum->stack_value();
+    }
+    if ( buffs.vanguards_momentum_legendary->up() )
+    {
+      m *= 1.0 + buffs.vanguards_momentum_legendary->stack_value();
+    }
   }
 
   return m;
