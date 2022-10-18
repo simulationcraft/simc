@@ -821,7 +821,7 @@ struct melee_t : public paladin_melee_attack_t
           if ( p()->talents.ashes_to_ashes->ok() )
           {
             p()->buffs.seraphim->extend_duration_or_trigger(
-              timespan_t::from_seconds( p()->talents.ashes_to_dust->effectN( 1 ).base_value() ),
+              timespan_t::from_seconds( p()->talents.ashes_to_ashes->effectN( 1 ).base_value() ),
               player
             );
           }
