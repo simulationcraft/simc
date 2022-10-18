@@ -1576,6 +1576,7 @@ struct hunter_main_pet_base_t : public hunter_pet_t
     buff_t* rylakstalkers_piercing_fangs = nullptr;
 
     buff_t* bloodseeker = nullptr;
+    buff_t* coordinated_assault = nullptr;
   } buffs;
 
   struct {
@@ -1778,6 +1779,9 @@ struct hunter_main_pet_t final : public hunter_main_pet_base_t
       make_buff( this, "bloodseeker", o() -> find_spell( 260249 ) )
         -> set_default_value_from_effect( 1 )
         -> add_invalidate( CACHE_ATTACK_SPEED );
+
+    buffs.coordinated_assault =
+      make_buff( this, "coordinated_assault", o() -> find_spell( 361736 ) );
   }
 
   void init_action_list() override
@@ -2387,7 +2391,7 @@ struct basic_attack_t : public hunter_main_pet_attack_t
   {
     hunter_main_pet_attack_t::execute();
 
-    if ( o() -> buffs.coordinated_assault -> check() )
+    if ( p() -> buffs.coordinated_assault -> check() )
       o() -> buffs.coordinated_assault_empower -> trigger();
   }
 };
@@ -5429,7 +5433,10 @@ struct coordinated_assault_t: public hunter_melee_attack_t
     p() -> buffs.coordinated_assault -> trigger();
 
     if ( auto pet = p() -> pets.main )
+    {
+      pet -> buffs.coordinated_assault -> trigger();
       pet -> active.coordinated_assault -> execute_on_target( target );
+    }
   }
 };
 
