@@ -4782,13 +4782,12 @@ struct thrash_cat_t : public cat_attack_t
 
   void trigger_dot( action_state_t* s ) override
   {
-    auto bear_thrash = td( s->target )->dots.thrash_bear;
-
-    // Cat thrash will not overwrite bear thrash if bear thrash is on cooldown and has more than one stack
-    if ( p()->cooldown.thrash_bear->down() && bear_thrash->current_stack() > 1 )
+    // cat thrash is not applied if existing bear thrash has longer duration
+    auto thrash_bear = td( s->target )->dots.thrash_bear;
+    if ( thrash_bear->remains() > composite_dot_duration( s ) )
       return;
 
-    bear_thrash->cancel();
+    thrash_bear->cancel();
 
     cat_attack_t::trigger_dot( s );
   }
@@ -5297,16 +5296,24 @@ struct thrash_bear_t : public bear_attack_t
 
     void trigger_dot( action_state_t* s ) override
     {
-      td( s->target )->dots.thrash_cat->cancel();
+      // existing cat thrash is cancelled only if it's shorter than bear thrash duration
+      auto thrash_cat = td( s->target )->dots.thrash_cat;
+      if ( thrash_cat->remains() < composite_dot_duration( s ) )
+        thrash_cat->cancel();
 
       bear_attack_t::trigger_dot( s );
     }
 
     void tick( dot_t* d ) override
     {
-      bear_attack_t::tick( d );
-
       p()->resource_gain( RESOURCE_RAGE, bf_energize, p()->gain.blood_frenzy );
+
+      // if both cat thrash and bear thrash is up (due to cat thrash having a longer duration) then bear thrash damage
+      // is suppressed
+      if ( td( d->target )->dots.thrash_bear->is_ticking() )
+        return;
+
+      bear_attack_t::tick( d );
     }
   };
 
