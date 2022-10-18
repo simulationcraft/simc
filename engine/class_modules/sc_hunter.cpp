@@ -7859,6 +7859,7 @@ void hunter_t::init_special_effects()
     auto const effect = new special_effect_t( this );
     effect -> name_str = "master_marksman";
     effect -> spell_id = talents.master_marksman -> id();
+    effect -> proc_flags_ = PF_RANGED_ABILITY | PF_MELEE_ABILITY | PF_PERIODIC;
     effect -> proc_flags2_ = PF2_CRIT;
     special_effects.push_back( effect );
 
