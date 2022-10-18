@@ -3440,6 +3440,8 @@ struct explosive_shot_t : public hunter_ranged_attack_t
 
 struct explosive_shot_background_t : public explosive_shot_t
 {
+  size_t targets = 0;
+
   explosive_shot_background_t( util::string_view, hunter_t* p ) : explosive_shot_t( p, "" )
   {
     dual = true;
@@ -3731,6 +3733,7 @@ struct death_chakram_t : death_chakram::base_t
 {
   death_chakram::single_target_t* single_target;
   explosive_shot_background_t* explosive = nullptr;
+  int munitions_targets = 0;
 
   death_chakram_t( hunter_t* p, util::string_view options_str ):
     death_chakram::base_t( "death_chakram", p, p -> talents.death_chakram ),
@@ -3747,8 +3750,21 @@ struct death_chakram_t : death_chakram::base_t
     attack_power_mod.direct = single_target -> attack_power_mod.direct;
     school = single_target -> school;
 
-    if ( p -> legendary.bag_of_munitions.ok() )
+    // Hack in a Unity check; it's possible in prepatch for Death Chakrams to perform the Munitions effect without Necrolord being the active covenant.
+    bool unity = false;
+    for ( const auto& i : p -> items )
+    {
+      if ( range::contains( i.parsed.bonus_id, 8122 ) )
+      {
+        unity = true;
+        break;
+      }
+    }
+
+    if ( p -> legendary.bag_of_munitions.ok() || unity ) {
       explosive = p -> get_background_action<explosive_shot_background_t>( "explosive_shot_munitions" );
+      explosive -> targets = as<size_t>( p -> find_spell( 356264 ) -> effectN( 1 ).base_value() );
+    }
   }
 
   void init() override
@@ -3772,8 +3788,8 @@ struct death_chakram_t : death_chakram::base_t
       make_event<single_target_event_t>( *sim, *single_target, s -> target, ST_FIRST_HIT_DELAY );
     }
 
-    if ( p() -> legendary.bag_of_munitions.ok() && s -> chain_target < p() -> legendary.bag_of_munitions -> effectN( 1 ).base_value() )
-      explosive->execute_on_target( s -> target );
+    if ( explosive && s -> chain_target < explosive -> targets )
+      explosive -> execute_on_target( s -> target );
 
     td( s -> target ) -> debuffs.death_chakram -> trigger();
   }
@@ -4795,7 +4811,10 @@ struct multishot_mm_t: public hunter_ranged_attack_t
     reduced_aoe_targets = p -> find_spell( 2643 ) -> effectN( 1 ).base_value();
 
     if ( p -> talents.salvo.ok() )
+    {
       explosive = p -> get_background_action<attacks::explosive_shot_background_t>( "explosive_shot_salvo" );
+      explosive -> targets = as<size_t>( p -> talents.salvo -> effectN( 1 ).base_value() );
+    }
   }
 
   void execute() override
@@ -4812,10 +4831,10 @@ struct multishot_mm_t: public hunter_ranged_attack_t
 
     p() -> buffs.bombardment -> expire();
 
-    if ( p() -> talents.salvo.ok() && !p() -> buffs.salvo -> check() )
+    if ( explosive && !p() -> buffs.salvo -> check() )
     {
       std::vector<player_t*>& tl = target_list();
-      size_t targets = std::min<size_t>( tl.size(), as<size_t>( p() -> talents.salvo -> effectN( 1 ).base_value() ) );
+      size_t targets = std::min<size_t>( tl.size(), explosive -> targets );
       for ( size_t t = 0; t < targets; t++ )
         explosive -> execute_on_target( tl[ t ] );
       p() -> buffs.salvo -> trigger();
@@ -6281,8 +6300,10 @@ struct volley_t : public hunter_spell_t
       aoe = -1;
       background = dual = ground_aoe = true;
 
-      if ( p -> talents.salvo.ok() )
+      if ( p -> talents.salvo.ok() ) {
         explosive = p -> get_background_action<attacks::explosive_shot_background_t>( "explosive_shot_salvo" );
+        explosive -> targets = as<size_t>( p -> talents.salvo -> effectN( 1 ).base_value() );
+      }
     }
 
     void impact( action_state_t* s ) override
@@ -6298,10 +6319,10 @@ struct volley_t : public hunter_spell_t
     {
       hunter_ranged_attack_t::execute();
 
-      if ( p() -> talents.salvo.ok() && !p() -> buffs.salvo -> check() )
+      if ( explosive && !p() -> buffs.salvo -> check() )
       {
         std::vector<player_t*>& tl = target_list();
-        size_t targets = std::min<size_t>( tl.size(), as<size_t>( p() -> talents.salvo -> effectN( 1 ).base_value() ) );
+        size_t targets = std::min<size_t>( tl.size(), explosive -> targets );
         for ( size_t t = 0; t < targets; t++ )
           explosive -> execute_on_target( tl[ t ] );
         p() -> buffs.salvo -> trigger();
