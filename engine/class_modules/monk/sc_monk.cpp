@@ -352,10 +352,8 @@ public:
       if ( p()->talent.windwalker.hit_combo->ok() )
         p()->buff.hit_combo->trigger();
 
-      if ( p()->conduit.xuens_bond->ok() )
-          p()->cooldown.invoke_xuen->adjust( p()->conduit.xuens_bond->effectN( 2 ).time_value(), true );  // Saved as -100
-      else if ( p()->talent.windwalker.xuens_bond->ok() )
-          p()->cooldown.invoke_xuen->adjust( p()->talent.windwalker.xuens_bond->effectN( 2 ).time_value(), true ); // Saved as -100
+      if ( p()->shared.xuens_bond && p()->shared.xuens_bond->ok() )
+          p()->cooldown.invoke_xuen->adjust( p()->shared.xuens_bond->effectN( 2 ).time_value(), true );  // Saved as -100
 
       if ( p()->talent.windwalker.meridian_strikes->ok() )
           p()->cooldown.touch_of_death->adjust( -10 * p()->talent.windwalker.meridian_strikes->effectN( 2 ).time_value(), true ); // Saved as 35
@@ -581,10 +579,8 @@ public:
         p()->buff.shuffle->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, base_time );
       }
 
-      if ( p()->conduit.walk_with_the_ox->ok() && p()->cooldown.invoke_niuzao->down() )
-        p()->cooldown.invoke_niuzao->adjust( p()->conduit.walk_with_the_ox->effectN( 2 ).time_value(), true );
-      else if ( p()->talent.brewmaster.walk_with_the_ox->ok() && p()->cooldown.invoke_niuzao->down() )
-        p()->cooldown.invoke_niuzao->adjust( p()->talent.brewmaster.walk_with_the_ox->effectN( 2 ).time_value(), true );
+      if ( p()->shared.walk_with_the_ox && p()->shared.walk_with_the_ox->ok() && p()->cooldown.invoke_niuzao->down() )
+        p()->cooldown.invoke_niuzao->adjust( p()->shared.walk_with_the_ox->effectN( 2 ).time_value(), true );
       
     }
   }
@@ -706,7 +702,7 @@ public:
             }
         }
 
-      if ( p()->legendary.last_emperors_capacitor->ok() || p()->talent.windwalker.last_emperors_capacitor->ok() )
+      if ( p()->shared.last_emperors_capacitor && p()->shared.last_emperors_capacitor->ok() )
         p()->buff.the_emperors_capacitor->trigger();
 
       // Chi Savings on Dodge & Parry & Miss
@@ -1939,14 +1935,9 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
       if ( p()->talent.windwalker.transfer_the_power->ok() )
         p()->buff.transfer_the_power->trigger();
 
-      if ( p()->legendary.xuens_battlegear->ok() && ( s->result == RESULT_CRIT ) )
+      if ( p()->shared.xuens_battlegear && p()->shared.xuens_battlegear->ok() && ( s->result == RESULT_CRIT ) )
       {
-        p()->cooldown.fists_of_fury->adjust( -1 * p()->legendary.xuens_battlegear->effectN( 2 ).time_value(), true );
-        p()->proc.xuens_battlegear_reduction->occur();
-      }
-      else if ( p()->talent.windwalker.xuens_battlegear->ok() && ( s->result == RESULT_CRIT ) )
-      {
-        p()->cooldown.fists_of_fury->adjust( -1 * p()->talent.windwalker.xuens_battlegear->effectN( 2 ).time_value(), true );
+        p()->cooldown.fists_of_fury->adjust( -1 * p()->shared.xuens_battlegear->effectN( 2 ).time_value(), true );
         p()->proc.xuens_battlegear_reduction->occur();
       }
 
@@ -2482,33 +2473,21 @@ struct blackout_kick_t : public monk_melee_attack_t
 
         if ( p()->buff.charred_passions->up() )
         {
-          double dmg_percent = 0;
-          if ( p()->legendary.charred_passions->ok() )
-            dmg_percent += p()->legendary.charred_passions->effectN( 1 ).percent();
-          else if ( p()->talent.brewmaster.charred_passions->ok() )
-            dmg_percent += p()->talent.brewmaster.charred_passions->effectN( 1 ).trigger()->effectN( 1 ).percent();
+
+          double dmg_percent = p()->shared.charred_passions->effectN( 1 ).percent();
 
           charred_passions->base_dd_min = s->result_amount * dmg_percent;
           charred_passions->base_dd_max = s->result_amount * dmg_percent;
-
-          if ( p()->legendary.charred_passions->ok() )
-            charred_passions->s_data = p()->legendary.charred_passions->effectN( 1 ).trigger();
-          else if ( p()->talent.brewmaster.charred_passions->ok() )
-            charred_passions->s_data = p()->talent.brewmaster.charred_passions->effectN( 1 ).trigger();
-
+          charred_passions->s_data = p()->shared.charred_passions->effectN( 1 ).trigger();
           charred_passions->execute();
+
           p()->proc.charred_passions_bok->occur();
 
           if ( get_td( s->target )->dots.breath_of_fire->is_ticking() && p()->cooldown.charred_passions->up() )
           {
             get_td( s->target )->dots.breath_of_fire->refresh_duration();
 
-            if ( p()->legendary.charred_passions->ok() )
-              p()->cooldown.charred_passions->start(
-                p()->legendary.charred_passions->effectN( 1 ).trigger()->internal_cooldown() );
-            else if ( p()->talent.brewmaster.charred_passions->ok() )
-              p()->cooldown.charred_passions->start(
-                p()->talent.brewmaster.charred_passions->effectN( 1 ).trigger()->internal_cooldown() );
+            p()->cooldown.charred_passions->start( p()->shared.charred_passions->effectN( 1 ).trigger()->internal_cooldown() );
           }
         }
 
@@ -2762,34 +2741,20 @@ struct sck_tick_action_t : public monk_melee_attack_t
     {
       if ( p()->buff.charred_passions->up() )
       {
-        double dmg_percent = 0;
-        if ( p()->legendary.charred_passions->ok() )
-          dmg_percent += p()->legendary.charred_passions->effectN( 1 ).percent();
-        else if ( p()->talent.brewmaster.charred_passions->ok() )
-          dmg_percent += p()->talent.brewmaster.charred_passions->effectN( 1 ).percent();
+        double dmg_percent = p()->shared.charred_passions->effectN( 1 ).percent();
 
-        p()->active_actions.charred_passions->base_dd_min              = s->result_amount * dmg_percent;
+        p()->active_actions.charred_passions->base_dd_min = s->result_amount * dmg_percent;
         p()->active_actions.charred_passions->base_dd_max = s->result_amount * dmg_percent;
-
-        if ( p()->legendary.charred_passions->ok() )
-          p()->active_actions.charred_passions->s_data = p()->legendary.charred_passions->effectN( 1 ).trigger();
-        else if ( p()->talent.brewmaster.charred_passions->ok() )
-          p()->active_actions.charred_passions->s_data =
-              p()->talent.brewmaster.charred_passions->effectN( 1 ).trigger();
-
+        p()->active_actions.charred_passions->s_data = p()->shared.charred_passions->effectN( 1 ).trigger();
         p()->active_actions.charred_passions->execute();
+
         p()->proc.charred_passions_sck->occur();
 
         if ( get_td( s->target )->dots.breath_of_fire->is_ticking() && p()->cooldown.charred_passions->up() )
         {
           get_td( s->target )->dots.breath_of_fire->refresh_duration();
 
-          if ( p()->legendary.charred_passions->ok() )
-            p()->cooldown.charred_passions->start(
-              p()->legendary.charred_passions->effectN( 1 ).trigger()->internal_cooldown() );
-          else if ( p()->talent.brewmaster.charred_passions->ok() )
-            p()->cooldown.charred_passions->start(
-              p()->talent.brewmaster.charred_passions->effectN( 1 ).trigger()->internal_cooldown() );
+          p()->cooldown.charred_passions->start( p()->shared.charred_passions->effectN( 1 ).trigger()->internal_cooldown() );
         }
       }
 
@@ -2851,7 +2816,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
       dot_behavior    = DOT_EXTEND;
       cast_during_sck = true;
 
-      if ( p->talent.brewmaster.charred_passions->ok() )
+      if ( p->shared.charred_passions && p->shared.charred_passions->ok() )
       {
         add_child( p->active_actions.charred_passions );
       }
@@ -3158,7 +3123,7 @@ struct fists_of_fury_t : public monk_melee_attack_t
 
     // If Fists of Fury went the full duration
     if ( dot->current_tick == dot->num_ticks() ) {
-      if ( p()->legendary.xuens_battlegear->ok() || p()->talent.windwalker.xuens_battlegear->ok() )
+      if ( p()->shared.xuens_battlegear && p()->shared.xuens_battlegear->ok() )
         p()->buff.pressure_point->trigger();
     }
   }
@@ -3564,10 +3529,8 @@ struct keg_smash_t : public monk_melee_attack_t
     cooldown->duration = p.talent.brewmaster.keg_smash->cooldown();
     cooldown->duration = p.talent.brewmaster.keg_smash->charge_cooldown();
 
-    if ( p.legendary.stormstouts_last_keg->ok() )
-      cooldown->charges += (int)p.legendary.stormstouts_last_keg->effectN( 2 ).base_value();
-    else if ( p.talent.brewmaster.stormstouts_last_keg->ok() )
-      cooldown->charges += (int)p.talent.brewmaster.stormstouts_last_keg->effectN( 2 ).base_value();
+    if ( p.shared.stormstouts_last_keg && p.shared.stormstouts_last_keg->ok() )
+      cooldown->charges += (int)p.shared.stormstouts_last_keg->effectN( 2 ).base_value();
 
     // Keg Smash does not appear to be picking up the baseline Trigger GCD reduction
     // Forcing the trigger GCD to 1 second.
@@ -3578,25 +3541,15 @@ struct keg_smash_t : public monk_melee_attack_t
   {
     double am = monk_melee_attack_t::action_multiplier();
 
-    if ( p()->legendary.stormstouts_last_keg->ok() )
-      am *= 1 + p()->legendary.stormstouts_last_keg->effectN( 1 ).percent();
-    else if ( p()->talent.brewmaster.stormstouts_last_keg->ok() )
-      am *= 1 + p()->talent.brewmaster.stormstouts_last_keg->effectN( 1 ).percent();
+    if ( p()->shared.stormstouts_last_keg && p()->shared.stormstouts_last_keg->ok() )
+      am *= 1 + p()->shared.stormstouts_last_keg->effectN( 1 ).percent();
 
-    if ( p()->conduit.scalding_brew->ok() )
+    if ( p()->shared.scalding_brew && p()->shared.scalding_brew->ok() )
     {
       if ( auto* td = this->get_td( p()->target ) )
       {
         if ( td->dots.breath_of_fire->is_ticking() )
-          am *= 1 + p()->conduit.scalding_brew.percent();
-      }
-    }
-    else if ( p()->talent.brewmaster.scalding_brew->ok() )
-    {
-      if ( auto* td = this->get_td( p()->target ) )
-      {
-        if ( td->dots.breath_of_fire->is_ticking() )
-          am *= 1 + p()->talent.brewmaster.scalding_brew->effectN( 1 ).percent();
+          am *= 1 + ( p()->conduit.scalding_brew->ok() ? p()->conduit.scalding_brew.percent() : p()->shared.scalding_brew->effectN( 1 ).percent() );
       }
     }
 
@@ -3668,13 +3621,10 @@ struct touch_of_death_t : public monk_melee_attack_t
     parse_options( options_str );
     cooldown->duration = data().cooldown();
 
+    if ( p.shared.fatal_touch && p.shared.fatal_touch->ok() )
+      cooldown->duration += p.shared.fatal_touch->effectN( 1 ).time_value();
 
-    if ( p.legendary.fatal_touch->ok() )
-      cooldown->duration += p.legendary.fatal_touch->effectN( 1 ).time_value();
-    else if ( p.talent.general.fatal_touch->ok() )
-      cooldown->duration += p.talent.general.fatal_touch->effectN( 1 ).time_value();
-
-    if ( p.talent.windwalker.fatal_flying_guillotine->ok() )
+    if ( p.specialization() == MONK_WINDWALKER && p.talent.windwalker.fatal_flying_guillotine->ok() )
       aoe = 1 + (int)p.talent.windwalker.fatal_flying_guillotine->effectN( 1 ).base_value();
   }
 
@@ -4411,9 +4361,7 @@ struct breath_of_fire_t : public monk_spell_t
   {
     monk_spell_t::execute();
 
-    if ( p()->legendary.charred_passions->ok() )
-      p()->buff.charred_passions->trigger();
-    else if ( p()->talent.brewmaster.charred_passions->ok() )
+    if ( p()->shared.charred_passions && p()->shared.charred_passions->ok() )
       p()->buff.charred_passions->trigger();
   }
 
@@ -5535,16 +5483,12 @@ struct faeline_stomp_damage_t : public monk_spell_t
 
     const std::vector<player_t*>& targets = state->action->target_list();
 
-    if ( p()->conduit.way_of_the_fae->ok() && !targets.empty() )
+    if ( p()->shared.way_of_the_fae && p()->shared.way_of_the_fae->ok() && !targets.empty() )
     {
-      cam *= 1 + ( p()->conduit.way_of_the_fae.percent() *
-          std::min( (double)targets.size(), p()->conduit.way_of_the_fae->effectN( 2 ).base_value() ) );
+      double percent = ( p()->conduit.way_of_the_fae->ok() ? p()->conduit.way_of_the_fae.percent() : p()->shared.way_of_the_fae->effectN( 1 ).percent() );
+      cam *= 1 + ( percent * std::min( (double)targets.size(), p()->shared.way_of_the_fae->effectN( 2 ).base_value() ) );
     }
-    else if ( p()->talent.windwalker.way_of_the_fae->ok() && !targets.empty() )
-    {
-        cam *= 1 + ( p()->talent.windwalker.way_of_the_fae->effectN( 1 ).percent() *
-            std::min( (double)targets.size(), p()->talent.windwalker.way_of_the_fae->effectN( 2 ).base_value() ) );
-    }
+
     return cam;
   }
 };
@@ -8502,42 +8446,66 @@ void monk_t::init_spells()
     return spell_data_t::nil();
   };
 
-  shared.attenuation = 
+  shared.attenuation =
     _priority( conduit.bone_marrow_hops, talent.windwalker.attenuation, talent.brewmaster.attenuation, talent.mistweaver.attenuation );
 
-  shared.bonedust_brew = 
+  shared.bonedust_brew =
     _priority( covenant.necrolord, talent.windwalker.bonedust_brew, talent.brewmaster.bonedust_brew, talent.mistweaver.bonedust_brew );
 
-  shared.bountiful_brew = 
+  shared.bountiful_brew =
     _priority( legendary.bountiful_brew, talent.brewmaster.bountiful_brew, talent.mistweaver.bountiful_brew );
 
-  shared.call_to_arms = 
+  shared.call_to_arms =
     _priority( legendary.call_to_arms, talent.brewmaster.call_to_arms );
 
-  shared.face_palm = 
+  shared.charred_passions =
+    _priority( legendary.charred_passions, talent.brewmaster.charred_passions );
+
+  shared.face_palm =
     _priority( legendary.shaohaos_might, talent.brewmaster.face_palm );
 
+  shared.fatal_touch =
+    _priority( legendary.fatal_touch, talent.general.fatal_touch );
+
   // Does Mistweaver Awakened Faeline stack with this effect? TODO: How is this handled?
-  shared.faeline_harmony = 
+  shared.faeline_harmony =
     _priority( legendary.faeline_harmony, talent.windwalker.faeline_harmony );
 
-  shared.faeline_stomp = 
+  shared.faeline_stomp =
     _priority( covenant.night_fae, talent.windwalker.faeline_stomp, talent.mistweaver.faeline_stomp );
 
-  shared.healing_elixir = 
+  shared.healing_elixir =
     _priority( talent.brewmaster.healing_elixir, talent.mistweaver.healing_elixir );
 
-  shared.invokers_delight = 
+  shared.invokers_delight =
     _priority( legendary.invokers_delight, talent.windwalker.invokers_delight, talent.mistweaver.invokers_delight );
 
-  shared.jade_ignition = 
-    _priority( legendary.jade_ignition, talent.windwalker.jade_ignition ) ;
+  shared.jade_ignition =
+    _priority( legendary.jade_ignition, talent.windwalker.jade_ignition );
 
-  shared.skyreach = 
+  shared.last_emperors_capacitor =
+    _priority( legendary.last_emperors_capacitor, talent.windwalker.last_emperors_capacitor );
+
+  shared.scalding_brew =
+    _priority( conduit.scalding_brew, talent.brewmaster.scalding_brew );
+
+  shared.skyreach =
     _priority( legendary.keefers_skyreach, talent.windwalker.skyreach );
 
-  shared.weapons_of_order = 
+  shared.stormstouts_last_keg =
+    _priority( legendary.stormstouts_last_keg, talent.brewmaster.stormstouts_last_keg );
+
+  shared.way_of_the_fae =
+    _priority( conduit.way_of_the_fae, talent.windwalker.way_of_the_fae );
+
+  shared.weapons_of_order =
     _priority( covenant.kyrian, talent.brewmaster.weapons_of_order );
+
+  shared.xuens_battlegear =
+    _priority( legendary.xuens_battlegear, talent.windwalker.xuens_battlegear );
+
+  shared.xuens_bond =
+    _priority( conduit.xuens_bond, talent.windwalker.xuens_bond );
 
   // Active Action Spells
   
