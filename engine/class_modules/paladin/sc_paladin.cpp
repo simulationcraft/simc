@@ -98,9 +98,9 @@ avenging_wrath_buff_t::avenging_wrath_buff_t( paladin_t* p )
     crit_bonus( 0.0 )
 {
   // Map modifiers appropriately based on spec
-  healing_modifier = data().effectN( 4 ).percent();
-  crit_bonus       = data().effectN( 3 ).percent();
-  damage_modifier  = data().effectN( 1 ).percent();
+  healing_modifier = p->talents.avenging_wrath->effectN( 2 ).percent();
+  crit_bonus       = 0;
+  damage_modifier  = p->talents.avenging_wrath->effectN( 2 ).percent();
 
   if ( p->talents.sanctified_wrath->ok() )
   {
@@ -184,7 +184,7 @@ struct avenging_wrath_t : public paladin_spell_t
   {
     paladin_spell_t::execute();
 
-        p()->buffs.avenging_wrath->trigger();
+    p()->buffs.avenging_wrath->trigger();
 
     if ( p()->azerite.avengers_might.ok() )
       p()->buffs.avengers_might->trigger( 1, p()->buffs.avengers_might->default_value, -1.0,
