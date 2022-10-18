@@ -3088,7 +3088,7 @@ struct kill_shot_t : hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::impact( s );
 
-    if ( razor_fragments && debug_cast<state_t*>( s ) -> razor_fragments_up )
+    if ( razor_fragments && debug_cast<state_t*>( s ) -> razor_fragments_up && s -> chain_target < 1 )
     {
       double amount = s -> result_amount * razor_fragments -> result_mod;
       if ( amount > 0 )
@@ -3099,7 +3099,7 @@ struct kill_shot_t : hunter_ranged_attack_t
       }
     }
 
-    if ( razor_fragments_runeforge && debug_cast<state_t*>( s ) -> flayers_mark_up )
+    if ( razor_fragments_runeforge && debug_cast<state_t*>( s ) -> flayers_mark_up && s -> chain_target < 1 )
     {
       double amount = s -> result_amount * p() -> legendary.pouch_of_razor_fragments -> effectN( 1 ).percent();
       if ( amount > 0 )
@@ -3110,6 +3110,7 @@ struct kill_shot_t : hunter_ranged_attack_t
       }
     }
 
+    // Buff is consumed on first impact but all hits (in the case of Birds of Prey) can trigger the bleed.
     p() -> buffs.coordinated_assault_empower -> expire();
     if ( bleeding_gash && debug_cast<state_t*>( s ) -> coordinated_assault_empower_up )
     {
