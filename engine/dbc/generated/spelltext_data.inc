@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.2.46157
-static const std::array<spelltext_data_t, 19069> __spelltext_data { {
+static const std::array<spelltext_data_t, 19070> __spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -15577,6 +15577,7 @@ static const std::array<spelltext_data_t, 19069> __spelltext_data { {
   { 361705, "Create a soulbound Korthian weapon or offhand item appropriate for your loot specialization ($@lootspec).", 0, 0 },
   { 361707, "Create a soulbound Korthian piece of wrist armor appropriate for your loot specialization ($@lootspec).", 0, 0 },
   { 361734, "Increase the Renown of your currently active Covenant to $s1.", 0, 0 },
+  { 361736, "$@spelldesc360952", "You and your pet's bond is strengthened, empowering your Serpent Sting, Kill Command, or Kill Shot when your pet uses their main attack.", 0 },
   { 361738, "$@spelldesc360952", "Your abilities are empowered.\r\n\r\n$@spellname187708: Reduces the cooldown of Wildfire Bomb by an additional 1 sec.\r\n$@spellname320976: Applies Bleeding Gash to your target.", 0 },
   { 361756, "$@spelldesc325028", "Taking $w1% increased Physical damage from $@auracaster.", 0 },
   { 361839, "Create a soulbound Mythic Dungeon item appropriate for your loot specialization ($@lootspec) during Shadowlands Season 2.", 0, 0 },

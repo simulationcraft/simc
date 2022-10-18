@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46157 dragonflight-BETA (hotfix 2022-10-18/46157)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46157 dragonflight-BETA (hotfix 2022-10-18/46157, no-networking)
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -13880,6 +13880,29 @@ Effects          :
 Description      : $@spelldesc359844
 Tooltip          : Being assisted by a pet from your stable.
 
+Name             : Coordinated Assault (id=361736) [Spell Family (9)] 
+Class            : Hunter
+School           : Nature
+Spell Type       : None
+Range            : 100 yards
+Duration         : 20 seconds
+Proc Chance      : 101%
+Proc Flags       : ....x... x...x... x....... ........ 
+                 : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=899871)   : Apply Aura (6) | Proc Trigger Spell (42): Coordinated Assault
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 361738 | Target: Active Pet (5)
+Description      : $@spelldesc360952
+Tooltip          : You and your pet's bond is strengthened, empowering your Serpent Sting, Kill Command, or Kill Shot when your pet uses their main attack.
+
 Name             : Coordinated Assault (id=361738) [Spell Family (9)] 
 Class            : Hunter
 School           : Nature
@@ -13890,6 +13913,7 @@ Proc Chance      : 101%
 Proc Flags       : ........ x....... ........ ........ 
                  : Yellow Ranged
 Affecting spells : Mastery: Sniper Training (193468 effects: #2, #4)
+Triggered by     : Coordinated Assault (361736)
 Family Flags     : 5
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 

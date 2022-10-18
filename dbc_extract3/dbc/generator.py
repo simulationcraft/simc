@@ -1461,6 +1461,7 @@ class SpellDataGenerator(DataGenerator):
           ( 378016, 0 ), # Latent Poison Injectors (talent dd action)
           ( 386875, 2 ), # Bombardment
           ( 164273, 2 ), # Lone Wolf buff
+          ( 361736, 5 ), # Coordinated Assault (pet buff)
         ),
 
         # Rogue:
