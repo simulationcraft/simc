@@ -1123,7 +1123,7 @@ static int get_bonus_id_base_ilevel( util::span<const item_bonus_entry_t> entrie
 {
   for ( const auto& entry : entries )
   {
-    if ( entry.type == ITEM_BONUS_SET_ILEVEL )
+    if ( entry.type == ITEM_BONUS_SET_ILEVEL || entry.type == ITEM_BONUS_SET_ILEVEL_2 )
     {
       return entry.value_1;
     }
@@ -1307,7 +1307,8 @@ std::string dbc::bonus_ids_str( const dbc_t& dbc )
          e.type != ITEM_BONUS_SOCKET && e.type != ITEM_BONUS_SCALING &&
          e.type != ITEM_BONUS_SCALING_2 && e.type != ITEM_BONUS_SET_ILEVEL &&
          e.type != ITEM_BONUS_ADD_RANK && e.type != ITEM_BONUS_QUALITY &&
-         e.type != ITEM_BONUS_ADD_ITEM_EFFECT && e.type != ITEM_BONUS_MOD_ITEM_STAT )
+         e.type != ITEM_BONUS_ADD_ITEM_EFFECT && e.type != ITEM_BONUS_MOD_ITEM_STAT &&
+         e.type != ITEM_BONUS_SET_ILEVEL_2 )
     {
       continue;
     }
