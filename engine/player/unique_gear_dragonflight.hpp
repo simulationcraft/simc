@@ -38,6 +38,7 @@ void wafting_devotion( special_effect_t& );
 namespace items
 {
 // Trinkets
+std::function<void( special_effect_t& )> idol_of_the_aspects( std::string_view );
 void darkmoon_deck_dance( special_effect_t& );
 void darkmoon_deck_inferno( special_effect_t& );
 void darkmoon_deck_rime( special_effect_t& );

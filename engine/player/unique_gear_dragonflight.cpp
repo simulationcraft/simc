@@ -372,7 +372,7 @@ void shocking_disclosure( special_effect_t& effect )
 
 namespace enchants
 {
-std::function<void( special_effect_t& )> writ_enchant( stat_e stat, bool cr )
+custom_cb_t writ_enchant( stat_e stat, bool cr )
 {
   return [ stat, cr ]( special_effect_t& effect ) {
     auto amount = effect.driver()->effectN( 1 ).average( effect.player );
@@ -467,6 +467,54 @@ void DISABLED_EFFECT( special_effect_t& effect )
 }
 
 // Trinkets
+custom_cb_t idol_of_the_aspects( std::string_view type )
+{
+  return [ type ]( special_effect_t& effect )
+  {
+    int gems = 0;
+    for ( const auto& item : effect.player->items )
+      for ( auto gem_id : item.parsed.gem_id )
+        if ( gem_id && util::str_in_str_ci( effect.player->dbc->item( gem_id ).name, type ) )
+          gems++;
+
+    if ( !gems )
+      return;
+
+    auto gift = buff_t::find( effect.player, "gift_of_the_aspects" );
+    if ( !gift )
+    {
+      auto val = effect.driver()->effectN( 3 ).average( effect.item ) / 4;
+      gift = make_buff<stat_buff_t>( effect.player, "gift_of_the_aspects", effect.player->find_spell( 376643 ) )
+        ->add_stat( STAT_CRIT_RATING, val )
+        ->add_stat( STAT_HASTE_RATING, val )
+        ->add_stat( STAT_MASTERY_RATING, val )
+        ->add_stat( STAT_VERSATILITY_RATING, val );
+    }
+    auto buff = buff_t::find( effect.player, effect.name() );
+    if ( !buff )
+    {
+      auto stat = util::translate_rating_mod( effect.trigger()->effectN( 1 ).misc_value1() );
+      buff = make_buff<stat_buff_t>( effect.player, effect.name(), effect.trigger() )
+        ->add_stat( stat, effect.driver()->effectN( 1 ).average( effect.item ) )
+        ->set_max_stack( as<int>( effect.driver()->effectN( 2 ).base_value() ) )
+        ->set_expire_at_max_stack( true )
+        ->set_stack_change_callback( [ gift ]( buff_t*, int, int new_ ) {
+          if ( !new_ )
+            gift->trigger();
+        } );
+    }
+
+    effect.custom_buff = buff;
+
+    new dbc_proc_callback_t( effect.player, effect );
+
+    effect.player->callbacks.register_callback_execute_function(
+        effect.driver()->id(), [ buff, gems ]( const dbc_proc_callback_t* cb, action_t*, action_state_t* ) {
+          buff->trigger( gems );
+        } );
+  };
+}
+
 struct DF_darkmoon_deck_t : public darkmoon_spell_deck_t
 {
   bool bronzescale;  // shuffles every 2.5s
@@ -811,6 +859,10 @@ void register_special_effects()
   register_special_effect( { 390358, 390359, 390360 }, enchants::wafting_devotion );
 
   // Trinkets
+  register_special_effect( 376636, items::idol_of_the_aspects( "neltharite" ) );     // idol of the earth warder
+  register_special_effect( 376638, items::idol_of_the_aspects( "ysemerald" ) );      // idol of the dreamer
+  register_special_effect( 376640, items::idol_of_the_aspects( "malygite" ) );       // idol of the spellweaver
+  register_special_effect( 376642, items::idol_of_the_aspects( "alexstraszite" ) );  // idol of the lifebinder
   register_special_effect( 384615, items::darkmoon_deck_dance );
   register_special_effect( 382957, items::darkmoon_deck_inferno );
   register_special_effect( 386624, items::darkmoon_deck_rime );
