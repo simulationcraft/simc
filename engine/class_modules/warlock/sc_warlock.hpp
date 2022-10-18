@@ -458,6 +458,9 @@ public:
     // Affliction
     const spell_data_t* cruel_inspiration; // 2pc procs haste buff
     const spell_data_t* cruel_epiphany; // 4pc also procs stacks of this buff when 2pc procs, increases Malefic Rapture/Seed of Corruption damage
+
+    // Demonology
+    const spell_data_t* blazing_meteor; // 4pc procs buff which makes next Hand of Gul'dan instant + increased damage
   } tier;
 
   // DF - This struct will be retired, need to determine if needed for pre-patch
@@ -592,6 +595,7 @@ public:
     propagate_const<buff_t*> stolen_power_final;
     propagate_const<buff_t*> nether_portal_total; // Dummy buff. Used for Gul'dan's Ambition as the counter to trigger Soul Gluttony
     propagate_const<buff_t*> demonic_servitude; // From Reign of Tyranny talent
+    propagate_const<buff_t*> blazing_meteor; // T29 4pc buff
 
     // Destruction Buffs
     propagate_const<buff_t*> backdraft; // DF - Max 2 stacks
@@ -678,6 +682,7 @@ public:
     proc_t* hounds_of_war;
     proc_t* nerzhuls_volition;
     proc_t* pact_of_the_imp_mother;
+    proc_t* blazing_meteor;
 
     // destro
     proc_t* reverse_entropy;
