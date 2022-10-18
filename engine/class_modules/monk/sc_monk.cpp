@@ -8492,51 +8492,52 @@ void monk_t::init_spells()
   // These spells share common effects but are unique in that you may only have one
   //================================================================================
 
-  auto _valid = [ this ] ( auto spell ) { return ( spell && spell->ok() ); };
+  // Returns first valid spell in argument list, pass highest priority to first argument
+  // Returns spell_data_t::nil() if none are valid
+  auto _priority = [ ] ( auto ... spell_list )
+  {
+    for ( auto spell : { (const spell_data_t*)spell_list... } )
+      if ( spell && spell->ok() )
+        return spell;
+    return spell_data_t::nil();
+  };
 
-  shared.attenuation = _valid( conduit.bone_marrow_hops ) ? conduit.bone_marrow_hops :
-    _valid( talent.windwalker.attenuation ) ? talent.windwalker.attenuation :
-    _valid( talent.brewmaster.attenuation ) ? talent.brewmaster.attenuation :
-    _valid( talent.mistweaver.attenuation ) ? talent.mistweaver.attenuation : spell_data_t::nil();
+  shared.attenuation = 
+    _priority( conduit.bone_marrow_hops, talent.windwalker.attenuation, talent.brewmaster.attenuation, talent.mistweaver.attenuation );
 
-  shared.bonedust_brew = _valid( covenant.necrolord ) ? covenant.necrolord :
-    _valid( talent.windwalker.bonedust_brew ) ? talent.windwalker.bonedust_brew :
-    _valid( talent.brewmaster.bonedust_brew ) ? talent.brewmaster.bonedust_brew :
-    _valid( talent.mistweaver.bonedust_brew ) ? talent.mistweaver.bonedust_brew : spell_data_t::nil();
+  shared.bonedust_brew = 
+    _priority( covenant.necrolord, talent.windwalker.bonedust_brew, talent.brewmaster.bonedust_brew, talent.mistweaver.bonedust_brew );
 
-  shared.bountiful_brew = _valid( legendary.bountiful_brew ) ? (const spell_data_t *)legendary.bountiful_brew :
-    _valid( talent.brewmaster.bountiful_brew ) ? talent.brewmaster.bountiful_brew :
-    _valid( talent.mistweaver.bountiful_brew ) ? talent.mistweaver.bountiful_brew : spell_data_t::nil();
+  shared.bountiful_brew = 
+    _priority( legendary.bountiful_brew, talent.brewmaster.bountiful_brew, talent.mistweaver.bountiful_brew );
 
-  shared.call_to_arms = _valid( legendary.call_to_arms ) ? (const spell_data_t*)legendary.call_to_arms :
-    _valid( talent.brewmaster.call_to_arms ) ? talent.brewmaster.call_to_arms : spell_data_t::nil();
+  shared.call_to_arms = 
+    _priority( legendary.call_to_arms, talent.brewmaster.call_to_arms );
 
-  shared.face_palm = _valid( legendary.shaohaos_might ) ? (const spell_data_t*)legendary.shaohaos_might :
-    _valid( talent.brewmaster.face_palm ) ? talent.brewmaster.face_palm : spell_data_t::nil();
+  shared.face_palm = 
+    _priority( legendary.shaohaos_might, talent.brewmaster.face_palm );
 
   // Does Mistweaver Awakened Faeline stack with this effect? TODO: How is this handled?
-  shared.faeline_harmony = _valid( legendary.faeline_harmony ) ? (const spell_data_t*)legendary.faeline_harmony :
-    _valid( talent.windwalker.faeline_harmony ) ? talent.windwalker.faeline_harmony : spell_data_t::nil();
+  shared.faeline_harmony = 
+    _priority( legendary.faeline_harmony, talent.windwalker.faeline_harmony );
 
-  shared.faeline_stomp = _valid( covenant.night_fae ) ? covenant.night_fae :
-    _valid( talent.windwalker.faeline_stomp ) ? talent.windwalker.faeline_stomp :
-    _valid( talent.mistweaver.faeline_stomp ) ? talent.mistweaver.faeline_stomp : spell_data_t::nil();
+  shared.faeline_stomp = 
+    _priority( covenant.night_fae, talent.windwalker.faeline_stomp, talent.mistweaver.faeline_stomp );
 
-  shared.healing_elixir = _valid( talent.brewmaster.healing_elixir ) ? talent.brewmaster.healing_elixir :
-    _valid( talent.mistweaver.healing_elixir ) ? talent.mistweaver.healing_elixir : spell_data_t::nil();
+  shared.healing_elixir = 
+    _priority( talent.brewmaster.healing_elixir, talent.mistweaver.healing_elixir );
 
-  shared.invokers_delight = _valid( legendary.invokers_delight ) ? (const spell_data_t*)legendary.invokers_delight :
-    _valid( talent.windwalker.invokers_delight ) ? talent.windwalker.invokers_delight :
-    _valid( talent.mistweaver.invokers_delight ) ? talent.mistweaver.invokers_delight : spell_data_t::nil();
+  shared.invokers_delight = 
+    _priority( legendary.invokers_delight, talent.windwalker.invokers_delight, talent.mistweaver.invokers_delight );
 
-  shared.jade_ignition = _valid( legendary.jade_ignition ) ? (const spell_data_t*)legendary.jade_ignition :
-    _valid( talent.windwalker.jade_ignition ) ? talent.windwalker.jade_ignition : spell_data_t::nil();
+  shared.jade_ignition = 
+    _priority( legendary.jade_ignition, talent.windwalker.jade_ignition ) ;
 
-  shared.skyreach = _valid( legendary.keefers_skyreach ) ? (const spell_data_t*)legendary.keefers_skyreach :
-    _valid( talent.windwalker.skyreach ) ? talent.windwalker.skyreach : spell_data_t::nil();
+  shared.skyreach = 
+    _priority( legendary.keefers_skyreach, talent.windwalker.skyreach );
 
-  shared.weapons_of_order = _valid( covenant.kyrian ) ? covenant.kyrian :
-    _valid( talent.brewmaster.weapons_of_order ) ? talent.brewmaster.weapons_of_order :spell_data_t::nil();
+  shared.weapons_of_order = 
+    _priority( covenant.kyrian, talent.brewmaster.weapons_of_order );
 
   // Active Action Spells
   
