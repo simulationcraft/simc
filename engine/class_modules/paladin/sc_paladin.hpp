@@ -374,9 +374,6 @@ public:
 
 
     // Shared
-    const spell_data_t* holy_avenging_wrath_might;
-    const spell_data_t* prot_avenging_wrath_might;
-    const spell_data_t* ret_avenging_wrath_might;
     const spell_data_t* divine_toll;
     const spell_data_t* divine_resonance;
     const spell_data_t* relentless_inquisitor;

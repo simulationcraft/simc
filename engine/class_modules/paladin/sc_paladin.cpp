@@ -2718,7 +2718,10 @@ void paladin_t::init_spells()
   talents.seraphim                        = find_talent_spell( talent_tree::CLASS, "Seraphim" );
   talents.zealots_paragon                 = find_talent_spell( talent_tree::CLASS, "Zealot's Paragon" );
 
-
+  // spec talents shared among specs
+  talents.divine_toll                    = find_talent_spell( talent_tree::SPECIALIZATION, "Divine Toll" );
+  talents.divine_resonance               = find_talent_spell( talent_tree::SPECIALIZATION, "Divine Resonance" );
+  talents.avenging_wrath_might           = find_talent_spell( talent_tree::SPECIALIZATION, "Avenging Wrath: Might" );
 
   // Shared Passives and spells
   passives.plate_specialization = find_specialization_spell( "Plate Specialization" );
@@ -2982,6 +2985,9 @@ double paladin_t::composite_spell_crit_chance() const
   if ( talents.holy_aegis->ok() )
     h += talents.holy_aegis->effectN( 1 ).percent();
 
+  if ( talents.avenging_wrath_might->ok() && buffs.avenging_wrath->up() )
+    h += talents.avenging_wrath_might->effectN( 1 ).percent();
+
   return h;
 }
 
@@ -2991,6 +2997,9 @@ double paladin_t::composite_melee_crit_chance() const
 
   if ( buffs.seraphim->up() )
     h += buffs.seraphim->data().effectN( 1 ).percent();
+
+  if ( talents.avenging_wrath_might->ok() && buffs.avenging_wrath->up() )
+    h += talents.avenging_wrath_might->effectN( 1 ).percent();
 
   return h;
 }
