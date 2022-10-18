@@ -2466,8 +2466,12 @@ void paladin_t::create_buffs()
                                     ->set_default_value( find_spell( 337315 )->effectN( 1 ).percent() )
                                     ->add_invalidate( CACHE_HASTE );
   buffs.relentless_inquisitor = make_buff( this, "relentless_inquisitor", find_spell( 383389 ) )
-                                ->set_max_stack( talents.relentless_inquisitor->effectN( 2 ).base_value() + talents.relentless_inquisitor->effectN( 3 ).base_value() )
                                 ->add_invalidate( CACHE_HASTE );
+  if ( talents.relentless_inquisitor->ok() )
+  {
+    buffs.relentless_inquisitor->set_max_stack( talents.relentless_inquisitor->effectN( 2 ).base_value() + talents.relentless_inquisitor->effectN( 3 ).base_value() );
+  }
+
   buffs.the_magistrates_judgment = make_buff( this, "the_magistrates_judgment", find_spell( 337682 ) )
                                        ->set_default_value( find_spell( 337682 )->effectN( 1 ).base_value() );
   buffs.final_verdict = make_buff( this, "final_verdict", find_spell( 337228 ) );
