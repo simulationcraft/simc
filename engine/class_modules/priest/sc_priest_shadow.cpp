@@ -83,14 +83,6 @@ struct mind_sear_tick_t final : public priest_spell_t
       priest().buffs.coalescing_shadows->trigger();
       priest().procs.coalescing_shadows_mind_sear->occur();
     }
-
-    if ( priest().talents.shadow.shadowy_apparitions.enabled() )
-    {
-      if ( rng().roll( priest().talents.shadow.shadowy_apparitions->effectN( 3 ).percent() ) )
-      {
-        priest().trigger_shadowy_apparitions( priest().procs.shadowy_apparition_ms, false );
-      }
-    }
   }
 };
 
@@ -179,6 +171,18 @@ struct mind_sear_t final : public priest_spell_t
     priest().buffs.mind_devourer_ms_active->expire();
 
     priest().buffs.gathering_shadows->expire();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    priest_spell_t::impact( s );
+    if ( priest().talents.shadow.shadowy_apparitions.enabled() )
+    {
+      if ( rng().roll( priest().talents.shadow.shadowy_apparitions->effectN( 3 ).percent() ) )
+      {
+        priest().trigger_shadowy_apparitions( priest().procs.shadowy_apparition_ms, false );
+      }
+    }
   }
 };
 
