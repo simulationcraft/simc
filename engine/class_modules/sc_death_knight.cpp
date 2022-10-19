@@ -989,6 +989,7 @@ public:
     const spell_data_t* plaguebringer_buff;
     const spell_data_t* festermight_buff;
     const spell_data_t* ghoulish_infusion;
+    const spell_data_t* unholy_blight_dot;
 
     // T28 Blood 4pc
     const spell_data_t* endless_rune_waltz_4pc; // parry % chance and ICD
@@ -8528,6 +8529,18 @@ struct unholy_blight_dot_t : public death_knight_spell_t
     impact_action = get_action<virulent_plague_t>( "virulent_plague", p );
   }
 
+  timespan_t tick_time ( const action_state_t* ) const override
+  {
+    timespan_t base_tick_time = p() -> spell.unholy_blight_dot -> effectN( 1 ).period();
+
+    if ( p() -> buffs.plaguebringer -> up() )
+    { 
+      base_tick_time *= 1.0 + p() -> talent.unholy.plaguebringer -> effectN( 1 ).percent();
+    }
+
+    return base_tick_time;
+  }
+
   void impact( action_state_t* state ) override
   {
     death_knight_spell_t::impact( state );
@@ -8567,6 +8580,18 @@ struct unholy_blight_t : public death_knight_spell_t
     {
       add_child( dot_damage );
     }
+  }
+
+  timespan_t tick_time ( const action_state_t* ) const override
+  {
+    timespan_t base_tick_time = p() -> talent.unholy.unholy_blight -> effectN( 1 ).period();
+
+    if ( p() -> buffs.plaguebringer -> up() )
+    { 
+      base_tick_time *= 1.0 + p() -> talent.unholy.plaguebringer -> effectN( 1 ).percent();
+    }
+
+    return base_tick_time;
   }
 
   void init() override
@@ -10599,6 +10624,7 @@ void death_knight_t::init_spells()
   spell.plaguebringer_buff         = find_spell( 390178 );
   spell.festermight_buff           = find_spell( 377591 );
   spell.ghoulish_infusion          = find_spell( 394899 );
+  spell.unholy_blight_dot          = find_spell( 115994 );
 
   // Pet abilities
   // Raise Dead abilities, used for both rank 1 and rank 2
