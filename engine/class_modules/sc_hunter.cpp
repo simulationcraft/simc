@@ -461,7 +461,7 @@ public:
     // Tier Set Bonuses
     buff_t* find_the_mark;
     buff_t* focusing_aim;
-    buff_t* if_it_bleeds_we_can_kill_it;
+    buff_t* lethal_command;
     buff_t* bestial_barrage;
 
     // Conduits
@@ -2246,7 +2246,7 @@ struct kill_command_bm_mm_t: public kill_command_base_t
       dire_command_runeforge.proc -> occur();
     }
 
-    o() -> buffs.if_it_bleeds_we_can_kill_it -> expire();
+    o() -> buffs.lethal_command -> expire();
   }
 
   void impact( action_state_t* s ) override
@@ -2272,7 +2272,7 @@ struct kill_command_bm_mm_t: public kill_command_base_t
   {
     double am = kill_command_base_t::action_multiplier();
 
-    am *= 1 + o() -> buffs.if_it_bleeds_we_can_kill_it -> value();
+    am *= 1 + o() -> buffs.lethal_command -> value();
 
     return am;
   }
@@ -4090,7 +4090,7 @@ struct barbed_shot_t: public hunter_ranged_attack_t
       pet -> active.brutal_companion_ba -> execute_on_target( target );
     }
 
-    p() -> buffs.if_it_bleeds_we_can_kill_it -> trigger();
+    p() -> buffs.lethal_command -> trigger();
   }
 
   void impact( action_state_t* s ) override
@@ -7594,8 +7594,8 @@ void hunter_t::create_buffs()
     -> set_chance( tier_set.t29_mm_4pc -> effectN( 1 ).percent() )
     -> set_default_value_from_effect( 1 );
 
-  buffs.if_it_bleeds_we_can_kill_it =
-    make_buff( this, "if_it_bleeds_we_can_kill_it", tier_set.t29_bm_4pc -> effectN( 3 ).trigger() )
+  buffs.lethal_command =
+    make_buff( this, "lethal_command", tier_set.t29_bm_4pc -> effectN( 3 ).trigger() )
       -> set_default_value_from_effect( 1 );
 
   buffs.bestial_barrage =
@@ -7892,7 +7892,6 @@ void hunter_t::init_special_effects()
     auto const effect = new special_effect_t( this );
     effect -> name_str = "master_marksman";
     effect -> spell_id = talents.master_marksman -> id();
-    effect -> proc_flags_ = PF_RANGED_ABILITY | PF_MELEE_ABILITY | PF_PERIODIC;
     effect -> proc_flags2_ = PF2_CRIT;
     special_effects.push_back( effect );
 
