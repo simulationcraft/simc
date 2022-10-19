@@ -185,11 +185,16 @@ public:
     // charge. Therefore update_ready needs to not be called in that case.
     if ( priest().buffs.shadowy_insight->up() )
     {
-      if ( priest().buffs.mind_melt->check() )
+      // Mind Melt is only double consumed with Shadowy Insight if it only has one stack
+      if ( priest().buffs.mind_melt->check() == 1 )
       {
         priest().procs.mind_melt_waste->occur();
       }
-      priest().buffs.shadowy_insight->decrement();
+      // Mind Melt at 2 stacks gets consumed over Shadowy Insight
+      if ( priest().buffs.mind_melt->check() != 2 )
+      {
+        priest().buffs.shadowy_insight->decrement();
+      }
     }
     else
     {
