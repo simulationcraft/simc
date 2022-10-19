@@ -1627,7 +1627,7 @@ struct hunter_main_pet_base_t : public hunter_pet_t
     buffs.rylakstalkers_piercing_fangs =
       make_buff( this, "rylakstalkers_piercing_fangs", o() -> find_spell( 336845 ) )
         -> set_default_value_from_effect( 1 )
-        -> set_chance( o() -> legendary.rylakstalkers_fangs.ok() );
+        -> set_chance( o() -> legendary.rylakstalkers_fangs.ok() && !o() -> talents.piercing_fangs.ok() );
 
     buffs.piercing_fangs =
       make_buff( this, "piercing_fangs", o() -> find_spell( 392054 ) )
@@ -7429,7 +7429,7 @@ void hunter_t::create_buffs()
     make_buff( this, "eagletalons_true_focus_runeforge", legendary.eagletalons_true_focus -> effectN( 1 ).trigger() )
       -> set_default_value_from_effect( 1 )
       -> set_trigger_spell( legendary.eagletalons_true_focus )
-      -> set_chance( talents.eagletalons_true_focus.ok() ? 0.0 : 1.0 );
+      -> set_chance( legendary.eagletalons_true_focus.ok() && !talents.eagletalons_true_focus.ok() );
 
   buffs.eagletalons_true_focus =
     make_buff( this, "eagletalons_true_focus", talents.eagletalons_true_focus -> effectN( 4 ).trigger() )
