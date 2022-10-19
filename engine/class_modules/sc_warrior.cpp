@@ -4099,17 +4099,23 @@ struct odyns_fury_main_hand_t : public warrior_attack_t
 
 struct odyns_fury_t : warrior_attack_t
 {
+  bool from_avatar;
   odyns_fury_off_hand_t* oh_attack;
   odyns_fury_off_hand_t* oh_attack2;
   odyns_fury_main_hand_t* mh_attack;
   odyns_fury_main_hand_t* mh_attack2;
   odyns_fury_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "odyns_fury", p, p->talents.fury.odyns_fury ),
+      from_avatar( false ),
       oh_attack( nullptr ), oh_attack2( nullptr ),
       mh_attack( nullptr ), mh_attack2( nullptr )
   {
     parse_options( options_str );
     radius = data().effectN( 1 ).trigger()->effectN( 1 ).radius_max();
+    if ( from_avatar )
+    {
+      use_off_gcd = true;
+    }
 
     if ( p->main_hand_weapon.type != WEAPON_NONE )
     {
@@ -4146,6 +4152,12 @@ struct odyns_fury_t : warrior_attack_t
     if ( p()->talents.fury.dancing_blades->ok() )
     {
       p()->buff.dancing_blades->trigger();
+    } 
+
+    if ( p()->talents.warrior.titans_torment->ok() && !from_avatar )
+    {
+      const timespan_t trigger_duration = timespan_t::from_millis( 4000 );  // value not in talent data
+      p()->buff.avatar->extend_duration_or_trigger( trigger_duration );
     } 
   }
 
@@ -6147,16 +6159,23 @@ struct avatar_t : public warrior_spell_t
   double signet_chance;
   bool signet_triggered;
   bool torment_triggered;
-
+  odyns_fury_t* tormented_titan;
   avatar_t( warrior_t* p, util::string_view options_str, util::string_view n, const spell_data_t* spell, bool signet_triggered = false,
   bool torment_triggered = false ) :
     warrior_spell_t( n, p, spell ),
+    tormented_titan( nullptr ),
     signet_chance( 0.5 * p->legendary.signet_of_tormented_kings->proc_chance() ),
     signet_triggered( signet_triggered ), torment_triggered( torment_triggered )
   {
 
     parse_options( options_str );
     callbacks = false;
+
+    if ( p->talents.warrior.titans_torment->ok() )
+    {
+      tormented_titan              = new odyns_fury_t( p, options_str );
+      tormented_titan->from_avatar = true;
+    }
 
     // Vision of Perfection doesn't reduce the cooldown for non-prot
     if ( p -> azerite.vision_of_perfection.enabled() && p -> specialization() == WARRIOR_PROTECTION )
@@ -6211,6 +6230,10 @@ struct avatar_t : public warrior_spell_t
       {
         action_t* torment_ability = p()->active.torment_recklessness;
         torment_ability->schedule_execute();
+      }
+      if ( p()->talents.warrior.titans_torment->ok() )
+      {
+        tormented_titan->execute();
       }
     }
 
@@ -6679,6 +6702,9 @@ struct recklessness_t : public warrior_spell_t
       return true;
 
     if ( torment_triggered )
+      return true;
+
+    if ( p()->talents.warrior.warlords_torment->ok() )
       return true;
 
     return warrior_spell_t::verify_actor_spec();
@@ -7566,8 +7592,6 @@ void warrior_t::init_spells()
   }
   if ( talents.warrior.berserkers_torment->ok() )
   {
-    cooldown.berserkers_torment           = get_cooldown( "berserkers_torment" );
-    cooldown.berserkers_torment->duration = talents.warrior.berserkers_torment->internal_cooldown();
 
     active.torment_recklessness = new recklessness_t( this, "", "recklessness_torment", find_spell( 1719 ), true );
     active.torment_avatar       = new avatar_t( this, "", "avatar_torment", find_spell( 107574 ), true );
@@ -7575,7 +7599,6 @@ void warrior_t::init_spells()
     {
       action->background  = true;
       action->trigger_gcd = timespan_t::zero();
-      action->cooldown    = cooldown.berserkers_torment;
     }
   }
 
@@ -7957,7 +7980,7 @@ void warrior_t::apl_arms()
   execute->add_talent( this, "Warbreaker" );
   execute->add_action( this, "Colossus Smash" );
   execute->add_action( this, covenant.ancient_aftershock, "ancient_aftershock", ",if=debuff.colossus_smash.up" );
-  //execute->add_action( this, covenant.spear_of_bastion, "spear_of_bastion" );
+  execute->add_action( this, covenant.kyrian_spear, "spear_of_bastion" );
   execute->add_action( this, covenant.condemn, "condemn", "if=runeforge.signet_of_tormented_kings&(rage.deficit<25|debuff.colossus_smash.up&rage>40|buff.sudden_death.react|buff.deadly_calm.up)" );
   execute->add_action( this, "Overpower", "if=charges=2" );
   execute->add_talent( this, "Cleave", "if=spell_targets.whirlwind>1&dot.deep_wounds.remains<gcd" );
