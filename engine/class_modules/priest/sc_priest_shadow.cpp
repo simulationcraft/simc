@@ -2662,13 +2662,14 @@ void priest_t::trigger_idol_of_nzoth( player_t* target, proc_t* proc )
   if ( !talents.shadow.idol_of_nzoth.enabled() )
     return;
 
-  if ( number_of_echoing_voids_active() == talents.shadow.idol_of_nzoth->effectN( 1 ).base_value() )
+  auto td = get_target_data( target );
+
+  if ( !td || !td->buffs.echoing_void->up() && number_of_echoing_voids_active() == talents.shadow.idol_of_nzoth->effectN( 1 ).base_value() )
     return;
 
   if ( rng().roll( talents.shadow.idol_of_nzoth->proc_chance() ) )
   {
     proc->occur();
-    auto td = get_target_data( target );
     td->buffs.echoing_void->trigger();
     if ( !td->buffs.echoing_void_collapse->check() && rng().roll( talents.shadow.idol_of_nzoth->proc_chance() ) )
     {
