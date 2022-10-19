@@ -675,6 +675,7 @@ public:
     const spell_data_t* invokers_delight;
     const spell_data_t* jade_ignition;
     const spell_data_t* last_emperors_capacitor;
+    const spell_data_t* rushing_jade_wind;
     const spell_data_t* scalding_brew;
     const spell_data_t* skyreach;
     const spell_data_t* stormstouts_last_keg;
