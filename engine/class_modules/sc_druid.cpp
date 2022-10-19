@@ -102,8 +102,6 @@ struct druid_td_t : public actor_target_data_t
 
   struct debuffs_t
   {
-    buff_t* moonfire;
-    buff_t* sunfire;
     buff_t* pulverize;
     buff_t* tooth_and_claw;
   } debuff;
@@ -391,7 +389,7 @@ public:
     action_t* starfall_starweaver;       // free starfall from starweaver's warp
     action_t* starsurge_starweaver;      // free starsurge from starweaver's weft
     action_t* sundered_firmament;
-    action_t* syzygy;
+    action_t* orbital_strike;
 
     // Feral
     action_t* ferocious_bite_apex;       // free bite from apex predator's crazing
@@ -512,7 +510,7 @@ public:
     buff_t* predatory_swiftness;
     buff_t* protective_growth;
     buff_t* sabertooth;
-    buff_t* sharpened_claws_bloodied_fangs;  // 4t29
+    buff_t* sharpened_claws;  // 4t29
     buff_t* sudden_ambush;
     buff_t* tigers_fury;
     buff_t* tigers_tenacity;
@@ -736,7 +734,7 @@ public:
 
     player_talent_t astral_communion;  // Row 7
     player_talent_t natures_grace;
-    player_talent_t syzygy;
+    player_talent_t orbital_strike;
     player_talent_t primordial_arcanic_pulsar;
     player_talent_t soul_of_the_forest_moonkin;
     player_talent_t wild_mushroom;
@@ -766,7 +764,7 @@ public:
     player_talent_t primal_claws;
     player_talent_t primal_wrath;
 
-    player_talent_t merciless_strikes;  // Row 3
+    player_talent_t merciless_claws;  // Row 3
     player_talent_t predator;
     player_talent_t doubleclawed_rake;
 
@@ -1212,6 +1210,7 @@ public:
   const spell_data_t* apply_override( const spell_data_t* base, const spell_data_t* passive );
   void apply_affecting_auras( action_t& ) override;
   bool check_astral_power( action_t* a, int over );
+  double cache_mastery_value() const;  // for balance mastery
 
   // secondary actions
   std::vector<action_t*> secondary_action_list;
@@ -1301,26 +1300,6 @@ struct denizen_of_the_dream_t : public pet_t
   {
     fey_missile_t( pet_t* p ) : spell_t( "fey_missile", p, p->find_spell( 188046 ) )
     {
-      // From ExpectedStat.db2
-      double base_dam = 127552;  // @70
-
-      switch( p->owner->true_level )
-      {
-        case 70: break;
-        case 69: base_dam = 122190; break;
-        case 68: base_dam = 114924; break;
-        case 67: base_dam = 104111; break;
-        case 66: base_dam = 89147;  break;
-        case 65: base_dam = 76320;  break;
-        case 64: base_dam = 65318;  break;
-        case 63: base_dam = 55870;  break;
-        case 62: base_dam = 47749;  break;
-        case 61: base_dam = 40760;  break;
-        default: base_dam = 23406;  break;
-      }
-
-      base_dd_min = base_dd_max = base_dam / 100;
-
       name_str_reporting = "fey_missile";
 
       auto proxy = debug_cast<druid_t*>( p->owner )->active.denizen_of_the_dream;
@@ -1342,7 +1321,7 @@ struct denizen_of_the_dream_t : public pet_t
 
   denizen_of_the_dream_t( druid_t* p ) : pet_t( p->sim, p, "denizen_of_the_dream", true, true )
   {
-    owner_coeff.sp_from_sp = 0;  // TODO: bugged ATM
+    owner_coeff.sp_from_sp = 1.0;
 
     action_list_str = "fey_missile";
   }
@@ -1718,7 +1697,7 @@ struct celestial_alignment_buff_t : public druid_buff_t<buff_t>
   bool inc;
 
   celestial_alignment_buff_t( druid_t& p, std::string_view n, const spell_data_t* s, bool b = false )
-    : base_t( p, n, p.apply_override( s, p.talent.syzygy ) ), inc( b )
+    : base_t( p, n, p.apply_override( s, p.talent.orbital_strike ) ), inc( b )
   {
     set_cooldown( 0_ms );
 
@@ -1743,8 +1722,8 @@ struct celestial_alignment_buff_t : public druid_buff_t<buff_t>
       p().eclipse_handler.trigger_both( remains() );
       p().uptime.combined_ca_inc->update( true, sim->current_time() );
 
-      if ( p().active.syzygy )
-        p().active.syzygy->execute_on_target( p().target );
+      if ( p().active.orbital_strike )
+        p().active.orbital_strike->execute_on_target( p().target );
     }
 
     return ret;
@@ -2158,9 +2137,10 @@ struct dot_debuff_t
   dfun func;
   double value;
   bool use_stacks;
+  bool mastery;
 
-  dot_debuff_t( dfun f, double v, bool b )
-    : func( std::move( f ) ), value( v ), use_stacks( b )
+  dot_debuff_t( dfun f, double v, bool s, bool m = false )
+    : func( std::move( f ) ), value( v ), use_stacks( s ), mastery( m )
   {}
 };
 
@@ -2734,7 +2714,7 @@ public:
     parse_buff_effects( p()->buff.incarnation_cat );
     parse_buff_effects( p()->buff.predatory_swiftness );
     parse_buff_effects( p()->buff.sabertooth, true, true );
-    parse_buff_effects( p()->buff.sharpened_claws_bloodied_fangs );
+    parse_buff_effects( p()->buff.sharpened_claws );
 
     // Guardian
     parse_buff_effects( p()->buff.bear_form );
@@ -2772,7 +2752,7 @@ public:
     {
       const auto& eff = s_data->effectN( i );
       double val      = eff.percent();
-      bool mastery;  // dummy
+      bool mastery    = false;
 
       if ( eff.type() != E_APPLY_AURA )
         continue;
@@ -2780,16 +2760,16 @@ public:
       if ( i <= 5 )
         parse_spell_effects_mods( val, mastery, s_data, i, mods... );
 
-      if ( !val )
+      if ( !mastery && !val )
         continue;
 
       if ( !( eff.subtype() == A_MOD_DAMAGE_FROM_CASTER_SPELLS && ab::data().affected_by_all( eff ) ) &&
            !( eff.subtype() == A_MOD_AUTO_ATTACK_FROM_CASTER && is_auto_attack ) )
         continue;
 
-      p()->sim->print_debug( "dot-debuffs: {} ({}) damage modified by {}% on targets with dot {} ({}#{})", ab::name(),
-                             ab::id, val * 100.0, s_data->name_cstr(), s_data->id(), i );
-      target_multiplier_dotdebuffs.emplace_back( func, val, use_stacks  );
+      p()->sim->print_debug( "dot-debuffs: {} ({}) damage modified by {}%{} on targets with dot {} ({}#{})", ab::name(),
+                             ab::id, val * 100.0, mastery ? "+mastery" : "", s_data->name_cstr(), s_data->id(), i );
+      target_multiplier_dotdebuffs.emplace_back( func, val, use_stacks, mastery );
     }
   }
 
@@ -2806,9 +2786,13 @@ public:
     for ( const auto& i : target_multiplier_dotdebuffs )
     {
       auto dot = i.func( t );
+      auto eff_val = i.value;
+
+      if ( i.mastery )
+        eff_val += p()->cache_mastery_value();
 
       if ( dot->is_ticking() )
-        return_value *= 1.0 + i.value * ( i.use_stacks ? dot->current_stack() : 1.0 );
+        return_value *= 1.0 + eff_val * ( i.use_stacks ? dot->current_stack() : 1.0 );
     }
 
     return return_value;
@@ -2821,12 +2805,14 @@ public:
   //  spell = optional list of spell with redirect effects that modify the effects on the dot
   void apply_dot_debuffs()
   {
-    using S = const spell_data_t*;
-
+    parse_dot_debuffs( []( druid_td_t* t ) -> dot_t* { return t->dots.moonfire; },
+                       p()->spec.moonfire_dmg, p()->mastery.astral_invocation );
+    parse_dot_debuffs( []( druid_td_t* t ) -> dot_t* { return t->dots.sunfire; },
+                       p()->spec.sunfire_dmg, p()->mastery.astral_invocation );
     parse_dot_debuffs( []( druid_td_t* t ) -> dot_t* { return t->dots.adaptive_swarm_damage; },
                        false, p()->spec.adaptive_swarm_damage );
-    parse_dot_debuffs<S>( []( druid_td_t* t ) -> dot_t* { return t->dots.thrash_bear; },
-                          p()->spec.thrash_bear_dot, p()->talent.rend_and_tear );
+    parse_dot_debuffs( []( druid_td_t* t ) -> dot_t* { return t->dots.thrash_bear; },
+                       p()->spec.thrash_bear_dot, p()->talent.rend_and_tear );
   }
 
   double cost() const override
@@ -3819,7 +3805,7 @@ struct cat_finisher_t : public cat_attack_t
       return;
 
     if ( p()->sets->has_set_bonus( DRUID_FERAL, T29, B4 ) )
-      p()->buff.sharpened_claws_bloodied_fangs->trigger( consumed );
+      p()->buff.sharpened_claws->trigger( consumed );
 
     if ( !is_free() )
     {
@@ -3903,8 +3889,8 @@ struct brutal_slash_t : public cat_attack_t
     aoe = -1;
     reduced_aoe_targets = data().effectN( 3 ).base_value();
 
-    if ( p->talent.merciless_strikes.ok() )
-      bleed_mul = p->talent.merciless_strikes->effectN( 1 ).percent();
+    if ( p->talent.merciless_claws.ok() )
+      bleed_mul = p->talent.merciless_claws->effectN( 1 ).percent();
   }
 
   void execute() override
@@ -4438,11 +4424,11 @@ struct rip_t : public cat_finisher_t<>
       residual_mul = p->talent.rip_and_tear->effectN( 1 ).percent();
     }
 
-    // TODO: currently bugged to be 6% per tick, rather than 6% over the entire dot
+    // TODO: currently bugged to be 3% per tick with hasted ticks, rather than 12% over the entire dot
     double base_ta( const action_state_t* s ) const override
     {
       if ( p()->bugs )
-        return get_amount( s );
+        return get_amount( s ) / 4;
       else
         return get_amount( s ) * tick_time( s ) / composite_dot_duration( s );
     }
@@ -4629,8 +4615,8 @@ struct shred_t : public cat_attack_t
   shred_t( druid_t* p, std::string_view n, std::string_view opt )
     : cat_attack_t( n, p, p->find_class_spell( "Shred" ), opt ), stealth_mul( 0.0 ), stealth_cp( 0.0 )
   {
-    if ( p->talent.merciless_strikes.ok() )
-      bleed_mul = p->talent.merciless_strikes->effectN( 2 ).percent();
+    if ( p->talent.merciless_claws.ok() )
+      bleed_mul = p->talent.merciless_claws->effectN( 2 ).percent();
 
     if ( p->talent.pouncing_strikes.ok() )
     {
@@ -4700,8 +4686,8 @@ struct swipe_cat_t : public cat_attack_t
     aoe = -1;
     reduced_aoe_targets = data().effectN( 4 ).base_value();
 
-    if ( p->talent.merciless_strikes.ok() )
-      bleed_mul = p->talent.merciless_strikes->effectN( 1 ).percent();
+    if ( p->talent.merciless_claws.ok() )
+      bleed_mul = p->talent.merciless_claws->effectN( 1 ).percent();
 
     if ( p->specialization() == DRUID_FERAL )
       name_str_reporting = "swipe";
@@ -6658,7 +6644,7 @@ struct celestial_alignment_base_t : public druid_spell_t
   buff_t* buff;
 
   celestial_alignment_base_t( std::string_view n, druid_t* p, const spell_data_t* s, std::string_view opt )
-    : druid_spell_t( n, p, p->apply_override( s, p->talent.syzygy ), opt ), buff( p->buff.celestial_alignment )
+    : druid_spell_t( n, p, p->apply_override( s, p->talent.orbital_strike ), opt ), buff( p->buff.celestial_alignment )
   {
     harmful = false;
   }
@@ -7305,8 +7291,6 @@ struct moonfire_t : public druid_spell_t
     {
       druid_spell_t::trigger_dot( s );
 
-      td( s->target )->debuff.moonfire->trigger( -1, p()->cache.mastery_value(), -1.0, timespan_t::min() );
-
       // moonfire will completely replace lunar inspiration if the new moonfire duration is greater
       auto li_dot = td( s->target )->dots.lunar_inspiration;
 
@@ -7329,13 +7313,6 @@ struct moonfire_t : public druid_spell_t
       druid_spell_t::tick( d );
 
       trigger_shooting_stars( d->target );
-    }
-
-    void last_tick( dot_t* d ) override
-    {
-      druid_spell_t::last_tick( d );
-
-      td( d->target )->debuff.moonfire->expire();
     }
   };
 
@@ -8193,25 +8170,11 @@ struct sunfire_t : public druid_spell_t
       dot_name = "sunfire";
     }
 
-    void trigger_dot( action_state_t* s ) override
-    {
-      druid_spell_t::trigger_dot( s );
-
-      td( s->target )->debuff.sunfire->trigger( -1, p()->cache.mastery_value(), -1.0, timespan_t::min() );
-    }
-
     void tick( dot_t* d ) override
     {
       druid_spell_t::tick( d );
 
       trigger_shooting_stars( d->target );
-    }
-
-    void last_tick( dot_t* d ) override
-    {
-      druid_spell_t::last_tick( d );
-
-      td( d->target )->debuff.sunfire->expire();
     }
   };
 
@@ -8273,17 +8236,17 @@ struct survival_instincts_t : public druid_spell_t
   }
 };
 
-// Syzygy ===================================================================
-struct syzygy_t : public druid_spell_t
+// Orbital Strike ===========================================================
+struct orbital_strike_t : public druid_spell_t
 {
   action_t* flare;
 
-  syzygy_t( druid_t* p ) : druid_spell_t( "syzygy", p, p->find_spell( 361237 ) )
+  orbital_strike_t( druid_t* p ) : druid_spell_t( "orbital_strike", p, p->find_spell( 361237 ) )
   {
     aoe = -1;
     travel_speed = 75.0;  // guesstimate
 
-    flare = p->get_secondary_action_n<stellar_flare_t>( "stellar_flare_syzygy", p->find_spell( 202347 ), "" );
+    flare = p->get_secondary_action_n<stellar_flare_t>( "stellar_flare_orbital_strike", p->find_spell( 202347 ), "" );
     flare->name_str_reporting = "stellar_flare";
     add_child( flare );
   }
@@ -9921,7 +9884,7 @@ void druid_t::init_spells()
   talent.stellar_flare                  = ST( "Stellar Flare" );
   talent.stellar_innervation            = ST( "Stellar Innervation" );
   talent.sundered_firmament             = ST( "Sundered Firmament" );
-  talent.syzygy                         = ST( "Syzygy" );
+  talent.orbital_strike                 = ST( "Orbital Strike" );
   talent.twin_moons                     = ST( "Twin Moons" );
   talent.umbral_embrace                 = ST( "Umbral Embrace" );
   talent.umbral_intensity               = ST( "Umbral Intensity" );
@@ -9948,7 +9911,7 @@ void druid_t::init_spells()
   talent.infected_wounds_cat            = STS( "Infected Wounds", DRUID_FERAL );
   talent.lions_strength                 = ST( "Lion's Strength" );
   talent.lunar_inspiration              = ST( "Lunar Inspiration" );
-  talent.merciless_strikes              = ST( "Merciless STrikes" );
+  talent.merciless_claws                = ST( "Merciless Claws" );
   talent.moment_of_clarity              = ST( "Moment of Clarity" );
   talent.omen_of_clarity_cat            = STS( "Omen of Clarity", DRUID_FERAL );
   talent.pouncing_strikes               = ST( "Pouncing Strikes" );
@@ -10663,7 +10626,7 @@ void druid_t::create_buffs()
     ->set_default_value( talent.sabertooth->effectN( 2 ).percent() )
     ->set_max_stack( as<int>( resources.base[ RESOURCE_COMBO_POINT ] ) );
 
-  buff.sharpened_claws_bloodied_fangs = make_buff( this, "sharpened_claws_bloodied_fangs", find_spell( 394465 ) );
+  buff.sharpened_claws = make_buff( this, "sharpened_claws", find_spell( 394465 ) );
 
   buff.sudden_ambush = make_buff( this, "sudden_ambush", talent.sudden_ambush->effectN( 1 ).trigger() );
 
@@ -10916,8 +10879,8 @@ void druid_t::create_actions()
     active.sundered_firmament = firmament;
   }
 
-  if ( talent.syzygy.ok() )
-    active.syzygy = get_secondary_action<syzygy_t>( "syzygy" );
+  if ( talent.orbital_strike.ok() )
+    active.orbital_strike = get_secondary_action<orbital_strike_t>( "orbital_strike" );
   
   // Feral
   if ( talent.apex_predators_craving.ok() )
@@ -11938,14 +11901,6 @@ double druid_t::composite_player_multiplier( school_e school ) const
     }
   }
 
-  // NOTE: working as intended that multi school spells only take the highest buff and don't stack.
-  // TODO: check if workaround for this is created
-  if ( buff.eclipse_lunar->check() && buff.eclipse_lunar->has_common_school( school ) )
-    cpm *= 1.0 + buff.eclipse_lunar->value();
-
-  if ( buff.eclipse_solar->check() && buff.eclipse_solar->has_common_school( school ) )
-    cpm *= 1.0 + buff.eclipse_solar->value();
-
   if ( buff.friend_of_the_fae->check() && buff.friend_of_the_fae->has_common_school( school ) )
     cpm *= 1.0 + buff.friend_of_the_fae->value();
 
@@ -11956,32 +11911,10 @@ double druid_t::composite_player_target_multiplier( player_t* target, school_e s
 {
   auto cptm = player_t::composite_player_target_multiplier( target, school );
 
-  if ( specialization() == DRUID_BALANCE )
+  if ( talent.waning_twilight.ok() &&
+       get_target_data( target )->dots_ticking() >= as<int>( talent.waning_twilight->effectN( 3 ).base_value() ) )
   {
-    auto td = get_target_data( target );
-
-    if ( bugs )
-    {
-      if ( dbc::has_common_school( school, SCHOOL_ARCANE ) )
-        cptm *= 1.0 + td->debuff.moonfire->check_value();
-
-      if ( dbc::has_common_school( school, SCHOOL_NATURE ) )
-        cptm *= 1.0 + td->debuff.sunfire->check_value();
-    }
-    else
-    {
-      if ( dbc::has_common_school( school, SCHOOL_ARCANE ) && td->dots.moonfire->is_ticking() )
-        cptm *= 1.0 + cache.mastery_value();
-
-      if ( dbc::has_common_school( school, SCHOOL_NATURE ) && td->dots.sunfire->is_ticking() )
-        cptm *= 1.0 + cache.mastery_value();
-    }
-
-    if ( talent.waning_twilight.ok() &&
-         td->dots_ticking() >= as<int>( talent.waning_twilight->effectN( 3 ).base_value() ) )
-    {
-      cptm *= 1.0 + talent.waning_twilight->effectN( 1 ).percent();
-    }
+    cptm *= 1.0 + talent.waning_twilight->effectN( 1 ).percent();
   }
 
   return cptm;
@@ -12741,10 +12674,6 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
   hots.spring_blossoms       = target.get_dot( "spring_blossoms", &source );
   hots.wild_growth           = target.get_dot( "wild_growth", &source );
 
-  // proxy debuffs for balance mastery
-  debuff.moonfire = make_buff( *this, "moonfire_debuff" )->set_quiet( true );
-  debuff.sunfire  = make_buff( *this, "sunfire_debuff" )->set_quiet( true );
-
   debuff.pulverize = make_buff( *this, "pulverize_debuff", source.talent.pulverize )
     ->set_cooldown( 0_ms )
     ->set_refresh_behavior( buff_refresh_behavior::DURATION )
@@ -13313,6 +13242,12 @@ bool druid_t::check_astral_power( action_t* a, int over )
   ap += spec.shooting_stars_dmg->effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
 
   return ap <= resources.max[ RESOURCE_ASTRAL_POWER ] + over;
+}
+
+// TODO: implement mastery updating for dot mastery snapshots
+double druid_t::cache_mastery_value() const
+{
+  return cache.mastery_value();
 }
 
 /* Report Extension Class
