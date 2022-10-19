@@ -303,6 +303,8 @@ public:
   // !!! Runtime variables NOTE: these MUST be properly reset in druid_t::reset() !!!
   // !!!==========================================================================!!!
   moon_stage_e moon_stage;
+  double cache_mastery_snapshot;  // for balance mastery snapshot
+  event_t* cache_mastery_event;
   double after_the_wildfire_counter;
   std::vector<event_t*> persistent_event_delay;
   event_t* lycaras_event;
@@ -333,6 +335,7 @@ public:
     int initial_moon_stage = static_cast<int>( moon_stage_e::NEW_MOON );
     double initial_pulsar_value = 0.0;
     bool delay_berserking = false;
+    timespan_t cache_mastery_timer = 3_s;
 
     // Feral
     double predator_rppm_rate = 0.0;
@@ -7340,6 +7343,9 @@ struct moonfire_t : public druid_spell_t
 
   void execute() override
   {
+    p()->cache.invalidate( CACHE_MASTERY );
+    p()->cache_mastery_snapshot = p()->cache.mastery_value();
+
     druid_spell_t::execute();
 
     damage->target = target;
@@ -8208,6 +8214,9 @@ struct sunfire_t : public druid_spell_t
 
   void execute() override
   {
+    p()->cache.invalidate( CACHE_MASTERY );
+    p()->cache_mastery_snapshot = p()->cache.mastery_value();
+
     druid_spell_t::execute();
 
     damage->target = target;
@@ -11458,6 +11467,8 @@ void druid_t::reset()
 
   // Reset runtime variables
   moon_stage = static_cast<moon_stage_e>( options.initial_moon_stage );
+  cache_mastery_snapshot = cache.mastery_value();
+  cache_mastery_event = nullptr;
   after_the_wildfire_counter = 0.0;
   persistent_event_delay.clear();
   lycaras_event = nullptr;
@@ -11532,6 +11543,12 @@ timespan_t druid_t::available() const
 void druid_t::arise()
 {
   player_t::arise();
+
+  if ( specialization() == DRUID_BALANCE )
+  {
+    persistent_event_delay.push_back( make_event<persistent_delay_event_t>(
+        *sim, this, [ this ]() { cache_mastery_snapshot = cache.mastery_value(); }, 5.25_s ) );
+  }
 
   if ( talent.lycaras_teachings.ok() )
     persistent_event_delay.push_back( make_event<persistent_delay_event_t>( *sim, this, buff.lycaras_teachings ) );
@@ -13244,10 +13261,10 @@ bool druid_t::check_astral_power( action_t* a, int over )
   return ap <= resources.max[ RESOURCE_ASTRAL_POWER ] + over;
 }
 
-// TODO: implement mastery updating for dot mastery snapshots
+// snapshotted mastery for balance druids
 double druid_t::cache_mastery_value() const
 {
-  return cache.mastery_value();
+  return cache_mastery_snapshot;
 }
 
 /* Report Extension Class
