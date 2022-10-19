@@ -2244,7 +2244,6 @@ struct ghoul_pet_t : public base_ghoul_pet_t
 
       if ( result_is_hit( state -> result ) )
       {
-        // Ghoulish Infusion proc chance not listed in spell data, using hard coded 15% for now
         if ( dk() -> sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T29, B4 ) )
         {
           double chance = dk() -> sets -> set( DEATH_KNIGHT_UNHOLY, T29, B4 ) -> effectN( 1 ).percent();
@@ -10972,6 +10971,7 @@ void death_knight_t::create_buffs()
   buffs.ghoulish_infusion = make_buff( this, "ghoulish_infusion", spell.ghoulish_infusion )
            -> set_duration( spell.ghoulish_infusion -> duration() )
            -> set_default_value_from_effect( 1 )
+           -> set_pct_buff_type( STAT_PCT_BUFF_HASTE )
            -> add_invalidate( CACHE_HASTE )
            -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
@@ -11712,11 +11712,6 @@ double death_knight_t::composite_melee_speed() const
   if ( buffs.ghoulish_frenzy -> up() )
   {
     haste *= 1.0 / ( 1.0 + talent.unholy.ghoulish_frenzy -> effectN( 1 ).percent() );
-  }
-
-  if ( buffs.ghoulish_infusion -> up() )
-  {
-    haste *= 1.0 / ( 1.0 + buffs.ghoulish_infusion -> value() );
   }
 
   return haste;
