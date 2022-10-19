@@ -897,7 +897,7 @@ public:
     return action;
   }
 
-  void trigger_wild_spirits( const action_state_t* s );
+  void trigger_wild_spirits( const action_state_t* s, bool chain = false );
   void trigger_bloodseeker_update();
   void trigger_lethal_shots();
   void trigger_calling_the_shots( action_t* action, double cost );
@@ -1627,7 +1627,7 @@ struct hunter_main_pet_base_t : public hunter_pet_t
     buffs.rylakstalkers_piercing_fangs =
       make_buff( this, "rylakstalkers_piercing_fangs", o() -> find_spell( 336845 ) )
         -> set_default_value_from_effect( 1 )
-        -> set_chance( o() -> legendary.rylakstalkers_fangs.ok() );
+        -> set_chance( o() -> legendary.rylakstalkers_fangs.ok() && !o() -> talents.piercing_fangs.ok() );
 
     buffs.piercing_fangs =
       make_buff( this, "piercing_fangs", o() -> find_spell( 392054 ) )
@@ -2677,12 +2677,12 @@ struct trick_shots_t : public buff_t
 
 } // namespace buffs
 
-void hunter_t::trigger_wild_spirits( const action_state_t* s )
+void hunter_t::trigger_wild_spirits( const action_state_t* s, bool chain )
 {
   if ( !covenants.wild_spirits.ok() )
     return;
 
-  if ( s -> chain_target != 0 )
+  if ( s -> chain_target != 0 && !chain )
     return;
 
   if ( !buffs.wild_spirits -> check() )
@@ -3651,7 +3651,6 @@ struct base_t : hunter_ranged_attack_t
   base_t( util::string_view n, hunter_t* p, const spell_data_t* s ):
     hunter_ranged_attack_t( n, p, s )
   {
-
     chain_multiplier = p -> talents.death_chakram.ok() ?
       p -> talents.death_chakram -> effectN( 1 ).chain_multiplier() :
       p -> covenants.death_chakram -> effectN( 1 ).chain_multiplier();
@@ -3795,6 +3794,9 @@ struct death_chakram_t : death_chakram::base_t
       explosive -> execute_on_target( s -> target );
 
     td( s -> target ) -> debuffs.death_chakram -> trigger();
+
+    // Manually proc Wild Spirits to get past the chain limitation.
+    p() -> trigger_wild_spirits( s, true );
   }
 
   size_t available_targets( std::vector< player_t* >& tl ) const override
@@ -7429,7 +7431,7 @@ void hunter_t::create_buffs()
     make_buff( this, "eagletalons_true_focus_runeforge", legendary.eagletalons_true_focus -> effectN( 1 ).trigger() )
       -> set_default_value_from_effect( 1 )
       -> set_trigger_spell( legendary.eagletalons_true_focus )
-      -> set_chance( talents.eagletalons_true_focus.ok() ? 0.0 : 1.0 );
+      -> set_chance( legendary.eagletalons_true_focus.ok() && !talents.eagletalons_true_focus.ok() );
 
   buffs.eagletalons_true_focus =
     make_buff( this, "eagletalons_true_focus", talents.eagletalons_true_focus -> effectN( 4 ).trigger() )

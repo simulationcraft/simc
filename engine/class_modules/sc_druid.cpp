@@ -1783,23 +1783,24 @@ struct eclipse_buff_t : public druid_buff_t<buff_t>
 
     base_t::execute( s, v, d );
 
-    if ( !was_active)
+    if ( p().talent.balance_of_all_things.ok() )
     {
-      if ( p().talent.sundered_firmament.ok() )
-        trigger_sundered_firmament();
-
-      if ( p().sets->has_set_bonus( DRUID_BALANCE, T29, B4 ) )
-        p().buff.touch_the_cosmos->trigger();
+      if ( is_solar )
+        p().buff.balance_of_all_things_nature->trigger();
+      else if ( is_lunar )
+        p().buff.balance_of_all_things_arcane->trigger();
     }
+
+    if ( p().sets->has_set_bonus( DRUID_BALANCE, T29, B4 ) )
+      p().buff.touch_the_cosmos->trigger();
+
+    if ( !was_active && p().talent.sundered_firmament.ok() )
+      trigger_sundered_firmament();
+
+    if ( !was_active && p().talent.solstice.ok() )
+      p().buff.solstice->trigger();
+
   }
-
-  /* TODO: re-enable if this comes back, otherwise remove by launch
-  void extend_duration( player_t* player, timespan_t d ) override
-  {
-    base_t::extend_duration( player, d );
-
-    trigger_sundered_firmament();
-  }*/
 
   void expire_override( int s, timespan_t d ) override
   {
@@ -3102,8 +3103,16 @@ public:
             p()->active.shift_to_moonkin->execute();
           }
 
+          bool was_active = p()->buff.ca_inc->check();
+
           p()->buff.ca_inc->extend_duration_or_trigger( p_time, p() );
           p()->proc.pulsar->occur();
+
+          if ( was_active && p()->active.sundered_firmament )
+            p()->active.sundered_firmament->execute_on_target( ab::target );
+
+          if ( was_active && p()->talent.natures_grace.ok() )
+            p()->buff.natures_grace->trigger();
 
           p()->uptime.primordial_arcanic_pulsar->update( true, sim->current_time() );
           make_event( *sim, p_time, [ this ]() {
@@ -6655,6 +6664,8 @@ struct celestial_alignment_base_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
+    p()->buff.eclipse_lunar->expire();
+    p()->buff.eclipse_solar->expire();
     buff->trigger();
     p()->uptime.primordial_arcanic_pulsar->update( false, sim->current_time() );
     p()->eclipse_handler.cast_ca_inc();
@@ -12988,12 +12999,6 @@ void eclipse_handler_t::advance_eclipse()
       {
         p->buff.eclipse_solar->trigger();
 
-        if ( p->talent.solstice.ok() )
-          p->buff.solstice->trigger();
-
-        if ( p->talent.balance_of_all_things.ok() )
-          p->buff.balance_of_all_things_nature->trigger();
-
         state = IN_SOLAR;
         p->uptime.eclipse_none->update( false, p->sim->current_time() );
         p->uptime.eclipse_solar->update( true, p->sim->current_time() );
@@ -13002,12 +13007,6 @@ void eclipse_handler_t::advance_eclipse()
       else if ( !wrath_counter )
       {
         p->buff.eclipse_lunar->trigger();
-
-        if ( p->talent.solstice.ok() )
-          p->buff.solstice->trigger();
-
-        if ( p->legendary.balance_of_all_things.ok() )
-          p->buff.balance_of_all_things_arcane->trigger();
 
         state = IN_LUNAR;
         p->uptime.eclipse_none->update( false, p->sim->current_time() );
@@ -13043,15 +13042,6 @@ void eclipse_handler_t::advance_eclipse()
 
 void eclipse_handler_t::trigger_both( timespan_t d = 0_ms )
 {
-  if ( p->talent.balance_of_all_things.ok() )
-  {
-    p->buff.balance_of_all_things_arcane->trigger();
-    p->buff.balance_of_all_things_nature->trigger();
-  }
-
-  if ( p->talent.solstice.ok() )
-    p->buff.solstice->trigger();
-
   p->buff.eclipse_lunar->trigger( d );
   p->buff.eclipse_solar->trigger( d );
 
@@ -13077,7 +13067,7 @@ void eclipse_handler_t::expire_both()
 void eclipse_handler_t::reset_stacks()
 {
   wrath_counter    = wrath_counter_base;
-  starfire_counter = wrath_counter_base;
+  starfire_counter = starfire_counter_base;
 }
 
 void eclipse_handler_t::reset_state()
