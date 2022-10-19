@@ -13324,6 +13324,28 @@ Each time Echoing Void is applied, it has a chance to collapse, consuming a stac
 
 If an enemy dies with Echoing Void, all stacks collapse immediately.
 
+Name             : Echoing Void (id=373281) [Spell Family (6)] 
+Class            : Priest
+School           : Shadow
+Spell Type       : None
+Range            : 40 yards
+Duration         : 20 seconds
+Stacks           : 10 maximum
+Proc Chance      : 101%
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=998390)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Description      : $@spelldesc373280
+Tooltip          : Each time Echoing Void is applied, it has a chance to collapse, exploding for $373304s1 Shadow damage until no stacks remain.
+
 Name             : Echoing Void (id=373304) [Spell Family (6)] 
 Class            : Priest
 School           : Shadow
