@@ -2093,6 +2093,7 @@ class SpellDataGenerator(DataGenerator):
           ( 337567, 1 ), # Chaotic Blades legendary buff
           ( 390197, 1 ), # Ragefire talent damage spell
           ( 390195, 1 ), # Chaos Theory talent buff
+          ( 391374, 1 ), ( 391378, 1 ), ( 393054, 1 ), ( 393055, 1 ), # First Blood Chaos spells
           ( 393628, 0 ), ( 393629, 0 ), # T29 Set Bonus Spells
 
           # Vengeance
