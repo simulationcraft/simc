@@ -85,14 +85,11 @@ struct avengers_shield_base_t : public paladin_spell_t
     //Bulwark of Order absorb shield. Amount is additive per hit.
     if ( p() -> talents.bulwark_of_order -> ok() )
     {
-      //Bulwark of Order is capped at 30% of max hp. Hardcoded here.
-      double max_absorb = 0.3 * p() -> resources.max[ RESOURCE_HEALTH ];
+      //Bulwark of Order is capped at 30% of max hp. Hardcoded here. Effect 2 NYI
+      double max_absorb = /* p()->talents.bulwark_of_order->effectN( 2 ).percent()*/ .3 * p()->resources.max[ RESOURCE_HEALTH ];
 
       double new_absorb = s -> result_amount * p() -> talents.bulwark_of_order -> effectN( 1 ).percent();
-      if( p() -> buffs.bulwark_of_order_absorb -> value() + new_absorb < max_absorb )
-        p() -> buffs.bulwark_of_order_absorb -> trigger( 1, p() -> buffs.bulwark_of_order_absorb -> value() + new_absorb );
-      else
-        p() -> buffs.bulwark_of_order_absorb -> trigger( 1, max_absorb );
+      p() -> buffs.bulwark_of_order_absorb -> trigger( 1, std::min(p() -> buffs.bulwark_of_order_absorb -> value() + new_absorb, max_absorb) );
     }
 
     if ( p() -> conduit.vengeful_shock -> ok() )
@@ -972,7 +969,7 @@ void paladin_t::create_buffs_protection()
   buffs.blessed_hammer_absorb = make_buff<absorb_buff_t>( this, "blessed_hammer_absorb", find_spell( 204301 ) );
   buffs.blessed_hammer_absorb -> set_absorb_source( get_stats( "blessed_hammer_absorb" ) )
         -> set_absorb_gain( get_gain( "blessed_hammer_absorb" ) );
-  buffs.bulwark_of_order_absorb = make_buff<absorb_buff_t>( this, "bulwark_of_order", find_spell( 209388 ) )
+  buffs.bulwark_of_order_absorb = make_buff<absorb_buff_t>( this, "bulwark_of_order", find_spell( 209389 ) )
         -> set_absorb_source( get_stats( "bulwark_of_order_absorb" ) );
   buffs.redoubt = make_buff( this, "redoubt", talents.redoubt -> effectN( 1 ).trigger() )
         -> set_default_value( talents.redoubt -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
