@@ -3593,11 +3593,11 @@ namespace death_chakram
 /**
  * A whole namespace for a single spell...
  *
- * The spell consists of at least 3 spells:
- *   325028 - main spell, does all damage on multiple targets
- *   361756 - values the main spell tooltip points to
- *   325037 - additional periodic damage done on single target
- *   325553 - energize (amount is in 325028)
+ * The spell consists of at least 3 spells: (talent version in parentheses)
+ *   325028 (375891) - main spell, does all damage on multiple targets
+ *   361756 (375893) - values the main spell tooltip points to
+ *   325037 (375893) - additional periodic damage done on single target
+ *   325553 (375894) - energize (amount is in 325028 (375891))
  *
  * The behavior is different when it hits multiple or only a single target.
  *
@@ -3655,12 +3655,17 @@ struct base_t : hunter_ranged_attack_t
   base_t( util::string_view n, hunter_t* p, const spell_data_t* s ):
     hunter_ranged_attack_t( n, p, s )
   {
-    chain_multiplier = p -> talents.death_chakram -> effectN( 1 ).chain_multiplier();
+
+    chain_multiplier = p -> talents.death_chakram.ok() ?
+      p -> talents.death_chakram -> effectN( 1 ).chain_multiplier() :
+      p -> covenants.death_chakram -> effectN( 1 ).chain_multiplier();
 
     energize_type = action_energize::PER_HIT;
     energize_resource = RESOURCE_FOCUS;
-    energize_amount = p -> talents.death_chakram -> effectN( 4 ).base_value() +
-                      p -> conduits.necrotic_barrage -> effectN( 2 ).base_value();
+    energize_amount = ( p -> talents.death_chakram.ok() ? 
+      p -> talents.death_chakram -> effectN( 4 ).base_value() :
+      p -> covenants.death_chakram -> effectN( 4 ).base_value() ) + 
+      p -> conduits.necrotic_barrage -> effectN( 2 ).base_value();
   }
 };
 
@@ -3669,9 +3674,9 @@ struct single_target_t final : base_t
   int hit_number = 0;
   int max_hit_number;
 
-  single_target_t( util::string_view n, hunter_t* p ):
-    base_t( n, p, p -> find_spell( 325037 ) ),
-    max_hit_number( p -> talents.death_chakram -> effectN( 1 ).chain_target() )
+  single_target_t( util::string_view n, hunter_t* p, int hits ):
+    base_t( n, p, p -> find_spell( p -> talents.death_chakram.ok() ? 375893 : 325037 ) ),
+    max_hit_number( hits )
   {
     dual = true;
   }
@@ -3737,13 +3742,14 @@ struct death_chakram_t : death_chakram::base_t
   int munitions_targets = 0;
 
   death_chakram_t( hunter_t* p, util::string_view options_str ):
-    death_chakram::base_t( "death_chakram", p, p -> talents.death_chakram.ok() ? p -> talents.death_chakram : p -> covenants.death_chakram ),
-    single_target( p -> get_background_action<death_chakram::single_target_t>( "death_chakram_st" ) )
+    death_chakram::base_t( "death_chakram", p, p -> talents.death_chakram.ok() ? p -> talents.death_chakram : p -> covenants.death_chakram )
   {
     parse_options( options_str );
 
     radius = 8; // Tested on 2020-08-11
     aoe = data().effectN( 1 ).chain_target();
+
+    single_target = p -> get_background_action<death_chakram::single_target_t>( "death_chakram_st", data().effectN( 1 ).chain_target() );
 
     may_crit = single_target -> may_crit;
     base_dd_min = single_target -> base_dd_min;
@@ -6746,7 +6752,7 @@ hunter_td_t::hunter_td_t( player_t* target, hunter_t* p ):
       -> set_trigger_spell( p -> legendary.latent_poison_injectors );
 
   debuffs.death_chakram =
-    make_buff( *this, "death_chakram", p -> find_spell( 325037 ) )
+    make_buff( *this, "death_chakram", p -> find_spell( p -> talents.death_chakram.ok() ? 375893 : 325037 ) )
       -> set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER )
       -> set_cooldown( 0_s );
 
