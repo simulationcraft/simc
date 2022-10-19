@@ -2865,7 +2865,9 @@ struct soul_reaper_t : public drw_action_t<melee_attack_t>
 
   void tick( dot_t* dot ) override
   {
-    if ( dot -> target -> health_percentage() < data().effectN( 3 ).base_value() )
+    // SR execute only fires if DRW is still alive
+    if ( dk() -> buffs.dancing_rune_weapon -> up() &&
+          dot -> target -> health_percentage() < data().effectN( 3 ).base_value() )
       soul_reaper_execute -> execute_on_target ( dot -> target );
   }
 };
