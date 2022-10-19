@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46157 dragonflight-BETA (hotfix 2022-10-15/46157, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46144 dragonflight-BETA (hotfix 2022-10-19/46144, no-networking)
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -635,7 +635,7 @@ Description      : Attempt to finish off a wounded foe, causing ${$280849s1+$163
 
 
 Name             : Thunder Clap (id=6343) [Spell Family (4)] 
-Talent Entry     : Generic [tree=class, row=4, col=4, max_rank=1, req_points=0]
+Talent Entry     : Protection [tree=class, row=4, col=4, max_rank=1, req_points=0]
 Class            : Warrior
 School           : Physical
 Spell Type       : Melee
@@ -12410,7 +12410,7 @@ Effects          :
 Description      : If Whirlwind $?a137048[or Revenge hits $s1 or more enemies, it hits them $s2 additional time for $s5% damage.][hits $s1 or more enemies, it hits them $s2 additional time for $s3% damage.]
 
 Name             : Barbaric Training (id=383082) [Spell Family (4), Passive] 
-Talent Entry     : Arms [tree=class, row=5, col=7, max_rank=1, req_points=8, select_idx=100]
+Talent Entry     : Arms [tree=class, row=6, col=4, max_rank=1, req_points=8]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -13817,7 +13817,9 @@ Effects          :
 Description      : $@spelldesc384404
 
 Name             : Sidearm (id=384404) [Passive] 
-Talent Entry     : Generic [tree=class, row=6, col=4, max_rank=1, req_points=8]
+Talent Entry     : Arms [tree=class, row=5, col=7, max_rank=1, req_points=8, select_idx=100]
+                 : Protection [tree=class, row=5, col=7, max_rank=1, req_points=8, select_idx=0]
+                 : Fury [tree=class, row=5, col=7, max_rank=1, req_points=8, select_idx=0]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -15670,7 +15672,7 @@ Description      : Shield Slam deals an additional $s1% damage and deals $s2% in
 
 
 Name             : Barbaric Training (id=390674) [Spell Family (4), Passive] 
-Talent Entry     : Fury [tree=class, row=5, col=7, max_rank=1, req_points=8, select_idx=0]
+Talent Entry     : Fury [tree=class, row=6, col=4, max_rank=1, req_points=8]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -15695,7 +15697,7 @@ Effects          :
 Description      : Slam and Whirlwind deal $s1% increased damage and $s2% increased critical strike damage.
 
 Name             : Barbaric Training (id=390675) [Spell Family (4), Passive] 
-Talent Entry     : Protection [tree=class, row=5, col=7, max_rank=1, req_points=8, select_idx=0]
+Talent Entry     : Protection [tree=class, row=6, col=4, max_rank=1, req_points=8]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
