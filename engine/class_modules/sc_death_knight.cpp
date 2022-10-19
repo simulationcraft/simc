@@ -2648,9 +2648,6 @@ struct risen_skulker_pet_t : public death_knight_pet_t
 struct dancing_rune_weapon_pet_t : public death_knight_pet_t
 {
   target_specific_t<dot_t> blood_plague_dot;
-  // Main drw is the only one that can apply BP.  Technically speaking all spells are only cast from main DRW pet
-  // However, we allow all of the copies to cast thier own in simc for accounting purposes.
-  bool main_drw_guardian;
 
   dot_t* get_blood_plague( player_t* target )
   {
@@ -2683,20 +2680,41 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
 
   struct blood_plague_t : public drw_action_t<spell_t>
   {
+    double snapshot_coagulopathy;
     blood_plague_t( dancing_rune_weapon_pet_t* p ) :
       drw_action_t<spell_t>( p, "blood_plague", p -> dk() -> spell.blood_plague )
     {
       // DRW usually behaves the same regardless of talents, but BP ticks are affected by rapid decomposition
       this -> base_tick_time *= 1.0 + dk() -> talent.blood.rapid_decomposition -> effectN( 1 ).percent();
+      snapshot_coagulopathy = 0.0;
     }
 
     double composite_ta_multiplier( const action_state_t* state ) const override
     {
       double m = drw_action_t::composite_ta_multiplier( state );
 
-      m *= 1.0 + dk() -> buffs.coagulopathy -> stack_value();
+      // DRW snapshots the coag stacks when the weapon demises, so if DRW is down, use the snapshot value
+      if ( dk() -> buffs.dancing_rune_weapon -> up() )
+        m *= 1.0 + dk() -> buffs.coagulopathy -> stack_value();
+      else
+        m *= 1.0 + snapshot_coagulopathy;
 
       return m;
+    }
+
+    void tick( dot_t* dot ) override
+    {
+      drw_action_t::tick( dot );
+
+      // Snapshot damage amp, as it's constant if drw demises
+      if( dk() -> buffs.dancing_rune_weapon -> up() )
+        snapshot_coagulopathy = dk() -> buffs.coagulopathy -> stack_value();
+    }
+
+    void execute() override
+    {
+      drw_action_t::execute();
+      snapshot_coagulopathy = 0.0;
     }
   };
 
@@ -2707,9 +2725,7 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     {
       aoe = -1;
       cooldown -> duration = 0_ms;
-      // Only main guardian can apply the dot
-      if( p -> main_drw_guardian )
-        this -> impact_action = p -> ability.blood_plague;
+      this -> impact_action = p -> ability.blood_plague;
     }
   };
 
@@ -2728,9 +2744,7 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     deaths_caress_t( dancing_rune_weapon_pet_t* p ) :
       drw_action_t( p, "deaths_caress", p -> dk() -> talent.blood.deaths_caress )
     {
-      // Only main guardian can apply the dot
-      if ( p -> main_drw_guardian )
-        this -> impact_action = p -> ability.blood_plague;
+      this -> impact_action = p -> ability.blood_plague;
     }
   };
 
@@ -2825,6 +2839,35 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     }
   };
 
+  struct soul_reaper_execute_t : public drw_action_t<spell_t>
+  {
+    soul_reaper_execute_t( util::string_view name, dancing_rune_weapon_pet_t* p ) : 
+      drw_action_t<spell_t>( p, name, p -> dk() -> find_spell( 343295 ) )
+    {
+      background = true;
+    }
+  };
+
+struct soul_reaper_t : public drw_action_t<melee_attack_t>
+{
+  action_t* soul_reaper_execute;
+
+  soul_reaper_t( dancing_rune_weapon_pet_t* p ) :
+    drw_action_t<melee_attack_t>( p, "soul_reaper", p -> dk() -> talent.soul_reaper ),
+    soul_reaper_execute( get_action<soul_reaper_execute_t>( "soul_reaper_execute", p ) )
+  {
+    add_child( soul_reaper_execute );
+    hasted_ticks = false;
+    dot_behavior = DOT_EXTEND;
+  }
+
+  void tick( dot_t* dot ) override
+  {
+    if ( dot -> target -> health_percentage() < data().effectN( 3 ).base_value() )
+      soul_reaper_execute -> execute_on_target ( dot -> target );
+  }
+};
+
   struct abilities_t
   {
     drw_action_t<spell_t>*  blood_plague;
@@ -2833,10 +2876,11 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     drw_action_t<melee_attack_t>* death_strike;
     drw_action_t<melee_attack_t>* heart_strike;
     drw_action_t<melee_attack_t>* marrowrend;
+    drw_action_t<melee_attack_t>* soul_reaper;
     drw_action_t<melee_attack_t>* consumption;
   } ability;
 
-  dancing_rune_weapon_pet_t( death_knight_t* owner, util::string_view drw_name, bool main_drw_guardian ) :
+  dancing_rune_weapon_pet_t( death_knight_t* owner, util::string_view drw_name ) :
     death_knight_pet_t( owner, drw_name, true, true ),
     blood_plague_dot( false ),
     ability()
@@ -2847,8 +2891,6 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
 
     owner_coeff.ap_from_ap = 1 / 3.0;
     resource_regeneration = regen_type::DISABLED;
-
-    this->main_drw_guardian = main_drw_guardian;
   }
 
 
@@ -2862,6 +2904,7 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     ability.death_strike  = new death_strike_t ( this );
     ability.heart_strike  = new heart_strike_t ( this );
     ability.marrowrend    = new marrowrend_t   ( this );
+    ability.soul_reaper   = new soul_reaper_t  ( this );
     ability.consumption   = new consumption_t  ( this );
   }
 
@@ -8264,6 +8307,19 @@ struct soul_reaper_t : public death_knight_melee_attack_t
 
     return d;
   }
+
+  void execute() override
+  {
+    death_knight_melee_attack_t::execute();
+    if ( p() -> buffs.dancing_rune_weapon -> up() )
+    {
+      p() -> pets.dancing_rune_weapon_pet -> ability.soul_reaper -> execute_on_target( target );
+      if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T28, B4 ) )
+        p() -> pets.endless_rune_waltz_pet -> ability.soul_reaper -> execute_on_target( target );
+      if ( p() -> talent.blood.everlasting_bond.ok() )
+        p() -> pets.everlasting_bond_pet -> ability.soul_reaper -> execute_on_target( target );
+    }
+  }
 };
 
 // Summon Gargoyle ==========================================================
@@ -10061,11 +10117,11 @@ void death_knight_t::create_pets()
   {
     if ( find_action( "dancing_rune_weapon" ) )
     {
-      pets.dancing_rune_weapon_pet = new pets::dancing_rune_weapon_pet_t( this, "dancing_rune_weapon", true );
+      pets.dancing_rune_weapon_pet = new pets::dancing_rune_weapon_pet_t( this, "dancing_rune_weapon" );
       if ( sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T28, B4 ) )
-        pets.endless_rune_waltz_pet = new pets::dancing_rune_weapon_pet_t( this, "endless_rune_waltz_t28_4pc", false );
+        pets.endless_rune_waltz_pet = new pets::dancing_rune_weapon_pet_t( this, "endless_rune_waltz_t28_4pc" );
       if ( talent.blood.everlasting_bond.ok() )
-        pets.everlasting_bond_pet = new pets::dancing_rune_weapon_pet_t( this, "everlasting_bond", false );
+        pets.everlasting_bond_pet = new pets::dancing_rune_weapon_pet_t( this, "everlasting_bond" );
     }
 
     if ( talent.blood.bloodworms.ok() )
