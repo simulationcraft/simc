@@ -2254,7 +2254,7 @@ struct ghoul_pet_t : public base_ghoul_pet_t
             chance = dk() -> sets -> set( DEATH_KNIGHT_UNHOLY, T29, B4 ) -> effectN( 2 ).percent();
           }
 
-          if ( dk() -> sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T29, B4 ) && dk() -> rng().roll( chance ) )
+          if ( dk() -> rng().roll( chance ) )
           {
             dk() -> buffs.ghoulish_infusion -> trigger();
           }
@@ -5039,16 +5039,16 @@ struct dancing_rune_weapon_t : public death_knight_spell_t
     // Only summon the rune weapons if the buff is down.
     if ( ! p() -> buffs.dancing_rune_weapon -> up() )
     {
-      p() -> pets.dancing_rune_weapon_pet -> summon( timespan_t::from_seconds( p() -> talent.blood.dancing_rune_weapon -> effectN( 4 ).base_value() ) +
+      p() -> pets.dancing_rune_weapon_pet -> summon( p() -> talent.blood.dancing_rune_weapon -> duration() +
                                                                                p() -> talent.blood.everlasting_bond -> effectN( 2 ).time_value() );
       if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T28, B4 ) )
       {
-        p() -> pets.endless_rune_waltz_pet -> summon( timespan_t::from_seconds( p() -> talent.blood.dancing_rune_weapon -> effectN( 4 ).base_value() ) +
+        p() -> pets.endless_rune_waltz_pet -> summon( p() -> talent.blood.dancing_rune_weapon -> duration() +
                                                                                 p() -> talent.blood.everlasting_bond -> effectN( 2 ).time_value() );
       }
       if ( p() -> talent.blood.everlasting_bond.ok() )
       {
-        p() -> pets.everlasting_bond_pet -> summon( timespan_t::from_seconds( p() -> talent.blood.dancing_rune_weapon -> effectN( 4 ).base_value() ) +
+        p() -> pets.everlasting_bond_pet -> summon( p() -> talent.blood.dancing_rune_weapon -> duration() +
                                                                               p() -> talent.blood.everlasting_bond -> effectN( 2 ).time_value() );
       }
     }
@@ -11053,7 +11053,7 @@ void death_knight_t::create_buffs()
 
   buffs.ghoulish_infusion = make_buff( this, "ghoulish_infusion", spell.ghoulish_infusion )
            -> set_duration( spell.ghoulish_infusion -> duration() )
-           -> set_default_value_from_effect( 1 )
+           -> set_default_value_from_effect( 2 )
            -> set_pct_buff_type( STAT_PCT_BUFF_HASTE )
            -> add_invalidate( CACHE_HASTE )
            -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
