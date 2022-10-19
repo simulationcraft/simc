@@ -2286,7 +2286,7 @@ struct ghoul_pet_t : public base_ghoul_pet_t
 
     m *= 1.0 + ( ghoulish_frenzy -> value() / 100 ) ;
 
-    m *= 1.0 + vile_infusion -> data().effectN( 1 ).percent();
+    m *= 1.0 + vile_infusion -> value();
 
     return m;
   }
@@ -2378,6 +2378,7 @@ struct ghoul_pet_t : public base_ghoul_pet_t
 
     vile_infusion = make_buff( this, "vile_infusion", dk() -> pet_spell.vile_infusion )
       -> set_duration( dk() -> pet_spell.vile_infusion -> duration() )
+      -> set_default_value_from_effect( 1 )
       -> set_cooldown( dk() -> sets -> set(DEATH_KNIGHT_UNHOLY, T29, B2 ) -> internal_cooldown() )
       -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
       -> add_invalidate( CACHE_ATTACK_SPEED );
@@ -11665,14 +11666,16 @@ double death_knight_t::composite_player_target_pet_damage_multiplier( player_t* 
       m *= 1.0 + td -> debuff.tightening_grasp -> value();
     }
 
-    // Currently morbidity only has spelldata to affect pets, not guardians
-    // Aug 31 2022, blood plague does not seem to apply to pets
-    if ( talent.unholy.morbidity.ok() && !guardian )
+    if ( talent.unholy.morbidity.ok() )
     {
       m *= 1.0 + ( td->dot.virulent_plague->is_ticking() * talent.unholy.morbidity->effectN(1).percent() );
       m *= 1.0 + ( td->dot.frost_fever->is_ticking() * talent.unholy.morbidity->effectN(1).percent() );
-      //m *= 1.0 + ( td->dot.blood_plague->is_ticking() * talent.unholy.morbidity->effectN(1).percent() );
       m *= 1.0 + ( td->debuff.unholy_blight->up() * talent.unholy.morbidity->effectN(1).percent() );
+      // Bugged as of 10/19/22 Morbidity is modifying effects 3, 4 and 5 of Blood Plague, does not include the guardian damage modifier, effect 6.
+      if ( !guardian )
+      {
+        m *= 1.0 + ( td->dot.blood_plague->is_ticking() * talent.unholy.morbidity->effectN(1).percent() );
+      }
     }
   }
 
