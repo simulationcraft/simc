@@ -128,8 +128,8 @@ struct avengers_shield_dt_t : public avengers_shield_base_t
   {
     avengers_shield_base_t::execute();
 
-    // Gain 1 Holy Power for each target hit (Protection only)
-    p()->resource_gain( RESOURCE_HOLY_POWER, 1, p()->gains.hp_divine_toll);
+    // Gain 1 Holy Power for each target hit (Protection only) - Not sure if Effect 5 with a value of 1 belongs to this
+    p()->resource_gain( RESOURCE_HOLY_POWER, as<int>( p() -> talents.divine_toll -> effectN( 5 ).base_value() ), p()->gains.hp_divine_toll );
   }
 };
 
