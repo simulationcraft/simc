@@ -116,7 +116,7 @@ void shadow( player_t* p )
   // CDs
   cds->add_action( "power_infusion,if=(buff.voidform.up|buff.dark_ascension.up)" );
   cds->add_action(
-      "void_eruption,if=if=!cooldown.fiend.up&(pet.fiend.active|!talent.mindbender|covenant.night_fae)&(cooldown.mind_"
+      "void_eruption,if=!cooldown.fiend.up&(pet.fiend.active|!talent.mindbender|covenant.night_fae)&(cooldown.mind_"
       "blast.charges=0|time>15|buff.shadowy_insight.up&cooldown.mind_blast.charges=buff.shadowy_insight.stack)" );
   cds->add_action(
       "dark_ascension,if=pet.fiend.active&(!cooldown.shadow_word_death.up|buff.deathspeaker.up|target.health.pct<20)|!"
