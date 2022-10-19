@@ -499,6 +499,7 @@ struct priest_pet_spell_t : public spell_t
     parse_buff_effects( p().o().buffs.voidform );
     parse_buff_effects( p().o().buffs.shadowform );
     parse_buff_effects( p().o().buffs.twist_of_fate, p().o().talents.twist_of_fate );
+    parse_buff_effects( p().o().buffs.devoured_pride );
   }
 
   priest_pet_t& p()
@@ -734,7 +735,7 @@ struct mindbender_pet_t final : public base_fiend_pet_t
   {
     base_fiend_pet_t::demise();
 
-    if ( o().talents.shadow.inescapable_torment )
+    if ( o().talents.shadow.inescapable_torment.enabled() )
     {
       if ( o().cooldowns.mind_blast->is_ready() )
       {
@@ -1417,7 +1418,6 @@ struct void_spike_t final : public priest_pet_spell_t
   {
     parse_options( options );
 
-    // TODO: check this again
     gcd_type = gcd_haste_type::SPELL_HASTE;
 
     child_void_spike_cleave = new void_spike_cleave_t( p );

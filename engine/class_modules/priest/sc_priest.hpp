@@ -1114,6 +1114,7 @@ public:
     parse_buff_effects( p().buffs.coalescing_shadows_dot );
     parse_buff_effects( p().buffs.words_of_the_pious );       // Spell Direct amount for Smite and Holy Nova
     parse_buff_effects( p().buffs.gathering_shadows, true );  // Spell Direct amount for Mind Sear (NOT DP)
+    parse_buff_effects( p().buffs.devoured_pride );           // Spell Direct and Periodic amount
   }
 
   template <typename... Ts>

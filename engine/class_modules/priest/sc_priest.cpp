@@ -2102,10 +2102,11 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) : actor_target_data_t(
   buffs.wrathful_faerie_fermata  = make_buff( *this, "wrathful_faerie_fermata", p.find_spell( 345452 ) )
                                       ->set_cooldown( timespan_t::zero() )
                                       ->set_duration( priest().conduits.fae_fermata.time_value() );
-  buffs.echoing_void = make_buff( *this, "echoing_void", p.talents.shadow.idol_of_nzoth->effectN( 1 ).trigger() );
+  buffs.echoing_void = make_buff( *this, "echoing_void", p.find_spell( 373281 ) );
 
   // TODO: stacks generated mid-collapse need to get re-triggered to collapse
   buffs.echoing_void_collapse = make_buff( *this, "echoing_void_collapse" )
+                                    ->set_quiet( true )
                                     ->set_tick_behavior( buff_tick_behavior::REFRESH )
                                     ->set_period( timespan_t::from_seconds( 1.0 ) )
                                     ->set_tick_callback( [ this, &p, target ]( buff_t* b, int, timespan_t ) {
@@ -2406,6 +2407,8 @@ double priest_t::composite_player_pet_damage_multiplier( const action_state_t* s
 {
   double m = player_t::composite_player_pet_damage_multiplier( s, guardian );
   m *= ( 1.0 + specs.shadow_priest->effectN( 3 ).percent() );
+
+  // Auto parsing does not cover melee attacks, and other attacks double dip with this
   if ( buffs.devoured_pride->check() )
   {
     m *= ( 1.0 + talents.shadow.devoured_pride->effectN( 2 ).percent() );
@@ -2446,10 +2449,10 @@ double priest_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
 
-  if ( buffs.devoured_pride->check() )
-  {
-    m *= ( 1.0 + talents.shadow.devoured_pride->effectN( 1 ).percent() );
-  }
+  // if ( buffs.devoured_pride->check() )
+  // {
+  //   m *= ( 1.0 + talents.shadow.devoured_pride->effectN( 1 ).percent() );
+  // }
 
   return m;
 }
