@@ -3737,7 +3737,7 @@ struct death_chakram_t : death_chakram::base_t
   int munitions_targets = 0;
 
   death_chakram_t( hunter_t* p, util::string_view options_str ):
-    death_chakram::base_t( "death_chakram", p, p -> talents.death_chakram ),
+    death_chakram::base_t( "death_chakram", p, p -> talents.death_chakram.ok() ? p -> talents.death_chakram : p -> covenants.death_chakram ),
     single_target( p -> get_background_action<death_chakram::single_target_t>( "death_chakram_st" ) )
   {
     parse_options( options_str );
