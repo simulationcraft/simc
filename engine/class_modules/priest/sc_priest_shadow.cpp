@@ -173,9 +173,10 @@ struct mind_sear_t final : public priest_spell_t
     priest().buffs.gathering_shadows->expire();
   }
 
-  void impact( action_state_t* s ) override
+  void tick( dot_t* d ) override
   {
-    priest_spell_t::impact( s );
+    priest_spell_t::tick( d );
+
     if ( priest().talents.shadow.shadowy_apparitions.enabled() )
     {
       if ( rng().roll( priest().talents.shadow.shadowy_apparitions->effectN( 3 ).percent() ) )
