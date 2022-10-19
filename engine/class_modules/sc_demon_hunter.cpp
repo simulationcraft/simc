@@ -1161,9 +1161,6 @@ public:
 
   struct
   {
-    affect_flags demon_soul;
-    affect_flags empowered_demon_soul;
-
     // Havoc
     affect_flags demonic_presence;
     affect_flags momentum;
@@ -1173,6 +1170,11 @@ public:
     // Legendary
     bool agony_gaze = false;
   } affected_by;
+
+  std::vector<damage_buff_t*> direct_damage_buffs;
+  std::vector<damage_buff_t*> periodic_damage_buffs;
+  std::vector<damage_buff_t*> auto_attack_damage_buffs;
+  std::vector<damage_buff_t*> crit_chance_buffs;
 
   void parse_affect_flags( const spell_data_t* spell, affect_flags& flags )
   {
@@ -1220,10 +1222,6 @@ public:
     ab::apply_affecting_conduit( p->conduit.fel_defender );
     ab::apply_affecting_conduit( p->conduit.increased_scrutiny );
     ab::apply_affecting_conduit( p->conduit.unnatural_malice );
-
-    // Generic Affect Flags
-    parse_affect_flags( p->spec.demon_soul, affected_by.demon_soul );
-    parse_affect_flags( p->spec.empowered_demon_soul, affected_by.empowered_demon_soul );
 
     if ( p->specialization() == DEMON_HUNTER_HAVOC )
     {
@@ -1302,6 +1300,28 @@ public:
   {
     ab::init();
 
+    auto register_damage_buff = [this]( damage_buff_t* buff ) {
+      if ( buff->is_affecting_direct( ab::s_data ) )
+        direct_damage_buffs.push_back( buff );
+
+      if ( buff->is_affecting_periodic( ab::s_data ) )
+        periodic_damage_buffs.push_back( buff );
+
+      if ( ab::repeating && !ab::special && !ab::s_data->ok() && buff->auto_attack_mod.multiplier != 1.0 )
+        auto_attack_damage_buffs.push_back( buff );
+
+      if ( buff->is_affecting_crit_chance( ab::s_data ) )
+        crit_chance_buffs.push_back( buff );
+    };
+
+    direct_damage_buffs.clear();
+    periodic_damage_buffs.clear();
+    auto_attack_damage_buffs.clear();
+    crit_chance_buffs.clear();
+
+    register_damage_buff( p()->buff.demon_soul );
+    register_damage_buff( p()->buff.empowered_demon_soul );
+
     if ( track_cd_waste )
     {
       cd_wasted_exec =
@@ -1351,6 +1371,10 @@ public:
   {
     double m = ab::composite_da_multiplier( s );
 
+    // Registered Damage Buffs
+    for ( auto damage_buff : direct_damage_buffs )
+      m *= damage_buff->stack_value_direct();
+
     if ( affected_by.demonic_presence.direct )
     {
       m *= 1.0 + p()->cache.mastery_value();
@@ -1361,22 +1385,16 @@ public:
       m *= 1.0 + p()->buff.momentum->check_value();
     }
 
-    if ( affected_by.demon_soul.direct )
-    {
-      m *= p()->buff.demon_soul->check_value_direct();
-    }
-
-    if ( affected_by.empowered_demon_soul.direct )
-    {
-      m *= p()->buff.empowered_demon_soul->check_value_direct();
-    }
-
     return m;
   }
 
   double composite_ta_multiplier( const action_state_t* s ) const override
   {
     double m = ab::composite_ta_multiplier( s );
+
+    // Registered Damage Buffs
+    for ( auto damage_buff : periodic_damage_buffs )
+      m *= damage_buff->stack_value_periodic();
 
     if ( affected_by.demonic_presence.periodic )
     {
@@ -1386,16 +1404,6 @@ public:
     if ( affected_by.momentum.periodic )
     {
       m *= 1.0 + p()->buff.momentum->check_value();
-    }
-
-    if ( affected_by.demon_soul.periodic )
-    {
-      m *= p()->buff.demon_soul->check_value_periodic();
-    }
-
-    if ( affected_by.empowered_demon_soul.periodic )
-    {
-      m *= p()->buff.empowered_demon_soul->check_value_periodic();
     }
 
     return m;
@@ -1413,30 +1421,11 @@ public:
     return ea;
   }
 
-  void track_benefits( action_state_t* /* s */ )
-  {
-    if ( ab::snapshot_flags & STATE_MUL_TA )
-    {
-      p()->buff.demon_soul->up();
-      p()->buff.empowered_demon_soul->up();
-    }
-
-    if ( affected_by.momentum.direct || affected_by.momentum.periodic )
-    {
-      p()->buff.momentum->up();
-    }
-  }
-
   void tick( dot_t* d ) override
   {
     ab::tick( d );
 
     accumulate_spirit_bomb( d->state );
-
-    if ( d->state->result_amount > 0 )
-    {
-      track_benefits( d->state );
-    }
   }
 
   void impact( action_state_t* s ) override
@@ -1448,11 +1437,6 @@ public:
       accumulate_spirit_bomb( s );
       trigger_chaos_brand( s );
       trigger_agony_gaze( s );
-
-      if ( s->result_amount > 0 )
-      {
-        track_benefits( s );
-      }
     }
   }
 
@@ -3368,8 +3352,9 @@ namespace attacks
     {
       double m = demon_hunter_attack_t::action_multiplier();
 
-      m *= p()->buff.demon_soul->stack_value_auto_attack();
-      m *= p()->buff.empowered_demon_soul->stack_value_auto_attack();
+      // Registered Damage Buffs
+      for ( auto damage_buff : auto_attack_damage_buffs )
+        m *= damage_buff->stack_value_auto_attack();
 
       return m;
     }
