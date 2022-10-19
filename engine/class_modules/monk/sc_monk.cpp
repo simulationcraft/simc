@@ -7782,7 +7782,7 @@ bool monk_t::mark_of_the_crane_max()
   return true;
 }
 
-// Current talent contributions to SCK ( not including DoCJ bonus )
+// Current contributions to SCK ( not including DoCJ bonus )
 double monk_t::sck_modifier()
 {
     double current = 1;
@@ -7802,6 +7802,9 @@ double monk_t::sck_modifier()
 
       if ( talent.windwalker.crane_vortex->ok() )
         current *= 1 + talent.windwalker.crane_vortex->effectN( 1 ).percent();
+
+      if ( buff.kicks_of_flowing_momentum->check() )
+        current *= 1 + buff.kicks_of_flowing_momentum->check_value();
     }
     else if ( specialization() == MONK_BREWMASTER )
     {
