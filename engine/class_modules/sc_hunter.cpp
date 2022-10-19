@@ -7386,9 +7386,11 @@ void hunter_t::create_buffs()
           else if ( cur == 1 )
             buffs.unerring_vision_hidden -> trigger();
         } )
-      -> apply_affecting_aura( legendary.eagletalons_true_focus )
       -> apply_affecting_aura( talents.eagletalons_true_focus )
       -> apply_affecting_conduit( conduits.sharpshooters_focus );
+
+  if ( !talents.eagletalons_true_focus.ok() )
+    buffs.trueshot -> apply_affecting_aura( legendary.eagletalons_true_focus );
 
   buffs.lock_and_load =
     make_buff( this, "lock_and_load", talents.lock_and_load -> effectN( 1 ).trigger() )
@@ -7426,7 +7428,8 @@ void hunter_t::create_buffs()
   buffs.eagletalons_true_focus_runeforge =
     make_buff( this, "eagletalons_true_focus_runeforge", legendary.eagletalons_true_focus -> effectN( 1 ).trigger() )
       -> set_default_value_from_effect( 1 )
-      -> set_trigger_spell( legendary.eagletalons_true_focus );
+      -> set_trigger_spell( legendary.eagletalons_true_focus )
+      -> set_chance( talents.eagletalons_true_focus.ok() ? 0.0 : 1.0 );
 
   buffs.eagletalons_true_focus =
     make_buff( this, "eagletalons_true_focus", talents.eagletalons_true_focus -> effectN( 4 ).trigger() )
