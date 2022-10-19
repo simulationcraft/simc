@@ -5287,6 +5287,8 @@ struct bountiful_brew_t : public monk_spell_t
     aoe                = -1;
     base_dd_min        = 0;
     base_dd_max        = 0;
+    may_miss           = false;
+    may_parry          = true;
   }
 
   void init_finished() override
@@ -5342,6 +5344,8 @@ struct bonedust_brew_t : public monk_spell_t
     base_dd_min                 = 0;
     base_dd_max                 = 0;
     cast_during_sck             = true;
+    may_miss                    = false;
+    may_parry                   = true;
 
     if ( p.talent.windwalker.dust_in_the_wind->ok() )
       radius *= 1 + p.talent.windwalker.dust_in_the_wind->effectN( 1 ).percent();
