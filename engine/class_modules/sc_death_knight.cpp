@@ -8526,6 +8526,18 @@ struct unholy_blight_t : public death_knight_spell_t
     }
   }
 
+  timespan_t tick_time ( const action_state_t* ) const override
+  {
+    timespan_t base_tick_time = p() -> talent.unholy.unholy_blight -> effectN( 1 ).period();
+
+    if ( p() -> buffs.plaguebringer -> up() )
+    { 
+      base_tick_time *= 1.0 + p() -> talent.unholy.plaguebringer -> effectN( 1 ).percent();
+    }
+
+    return base_tick_time;
+  }
+
   void init() override
   {
     death_knight_spell_t::init();
