@@ -3305,11 +3305,6 @@ struct strike_of_the_windlord_off_hand_t : public monk_melee_attack_t
 
     if ( p()->talent.windwalker.thunderfist->ok() )
       p()->buff.thunderfist->trigger();
-
-    // Apply Mark of the Crane
-    if ( p()->specialization() == MONK_WINDWALKER && result_is_hit( s->result ) &&
-         p()->talent.windwalker.mark_of_the_crane->ok() )
-      p()->trigger_mark_of_the_crane( s );
   }
 };
 
