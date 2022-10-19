@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.2.46144
-static const std::array<spelltext_data_t, 19087> __spelltext_data { {
+static const std::array<spelltext_data_t, 19094> __spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -6395,7 +6395,7 @@ static const std::array<spelltext_data_t, 19087> __spelltext_data { {
   { 197531, "$@spelldesc195679", 0, 0 },
   { 197568, "$@spelldesc210689", 0, 0 },
   { 197625, "Shapeshift into $?s114301[Astral Form][Moonkin Form], increasing your armor by $m3%, and granting protection from Polymorph effects.\r\n\r\nThe act of shapeshifting frees you from movement impairing effects.", "Immune to Polymorph effects.$?$w3>0[\r\nArmor increased by $w3%.][]", 0 },
-  { 197626, "Launch a surge of stellar energies at the target, dealing $s1 Astral damage, and empowering the damage bonus of any active Eclipse for its duration.", 0, 0 },
+  { 197626, "Launch a surge of stellar energies at the target, dealing $s1 Astral damage.", 0, 0 },
   { 197628, "Call down a burst of energy, causing $s1 Arcane damage to the target, and ${$m1*$m2/100} Arcane damage to all other enemies within $A1 yards.", 0, 0 },
   { 197630, "Burns the enemy for $164815s1 Nature damage and then an additional $164815o2 Nature damage over $164815d to the primary target and all enemies within $164815A2 yards.", "Suffering $w2 Nature damage every $t2 seconds.", 0 },
   { 197632, "You gain:\r\n\r\n$@spellicon197524 $@spellname197524\r\n$@spelldesc197524\r\n\r\nYou also learn:\r\n\r\n$@spellicon197625 $@spellname197625\r\n$@spellicon197626 $@spellname197626\r\n$@spellicon197628 $@spellname197628\r\n$@spellicon132469$@spellname132469", 0, 0 },
@@ -17452,7 +17452,7 @@ static const std::array<spelltext_data_t, 19087> __spelltext_data { {
   { 385404, "$@spelldesc385403", 0, 0 },
   { 385408, "Infect the target's blood, dealing $o1 Nature damage over $d. If the target survives its full duration, they suffer an additional $394026s1 damage and you gain $s6 use of any Stealth ability for $375939d.\r\n\r\nCooldown reduced by $s3 sec if Sepsis does not last its full duration.\r\n\r\n|cFFFFFFFFAwards $s7 combo $lpoint:points;.|r", "Suffering $w1 Nature damage every $t1 sec, and $394026s1 when the poison ends.", 0 },
   { 385414, "After you spend $s3 holy power, your next Word of Glory echoes onto a nearby ally at $s1% effectiveness", 0, 0 },
-  { 385416, "Your $?S53595[Hammer of the Righteous]?S204019[Blessed Hammer][Crusader Strike] now also grants you $385417s1% increased $pri for $385417d. Multiple applications may overlap.", 0, 0 },
+  { 385416, "Your $?S53595[Hammer of the Righteous]?S204019[Blessed Hammer][Crusader Strike] now also grants you $s1% increased $pri for $385417d. Multiple applications may overlap.", 0, 0 },
   { 385417, "Increases $pri by $s1%.", "$pri increased by $s1%.", 0 },
   { 385422, "Each $s2 Holy Power you spend reduces the cooldown of Ardent Defender and Divine Shield by ${$s1/10}.1 sec.", 0, 0 },
   { 385424, "Embed a bone spike in the target, dealing $s1 Physical damage and $394036s1 Bleed damage every $394036t1 sec until they die or leave combat. \r\n\r\nRefunds a charge when target dies.\r\n\r\n|cFFFFFFFFAwards 1 combo point plus 1 additional per active bone spike.|r", 0, 0 },
@@ -18376,6 +18376,7 @@ static const std::array<spelltext_data_t, 19087> __spelltext_data { {
   { 390947, "Circle of Healing heals $s1 additional ally and its cooldown is reduced by ${$s2/-1000} sec.", 0, 0 },
   { 390951, "Temporarily imbues shoulders with a fiery illusion for $ecd.", 0, 0 },
   { 390954, "Increases the critical strike chance of Flash Heal and Heal by $s1%.", 0, 0 },
+  { 390961, "$@spelldesc390990", 0, 0 },
   { 390964, "$@spelldesc120517", 0, 0 },
   { 390967, "Increases the healing done by your Mastery: Echo of Light by $s1%.", 0, 0 },
   { 390971, "$@spelldesc120517", 0, 0 },
@@ -18386,10 +18387,12 @@ static const std::array<spelltext_data_t, 19087> __spelltext_data { {
   { 390980, "Critical heals from Flash Heal and Heal increase your healing done by your next Holy Word spell by $390989s1%, stacking up to $390989U times.", 0, 0 },
   { 390981, "$@spelldesc110744", 0, 0 },
   { 390989, "$@spelldesc390980", "The healing of your next Holy Word spell is increased by $w1%.", 0 },
+  { 390990, "Causes the earth at the target location to tremble and break, dealing Nature damage every $t1 sec to enemies in $r yard radius. Lasts $d.\r\n\r\nUsable in the Obsidian Citadel and adjacent lava fields.", "Suffering Nature damage every $t2 sec.", 0 },
   { 390992, "Flash Heal reduces the cast time of your next Heal within $390993d by $390993s2% and increases its healing done by $390993s1%.\r\n\r\nStacks up to $390993U times.", 0, 0 },
   { 390993, "$@spelldesc390992", "The cast time of your next Heal is reduced by $w2% and its healing is increased by $w1%.", 0 },
   { 390994, "Circle of Healing reduces the cooldown of Holy Word: Sanctify, Prayer of Mending reduces the cooldown of Holy Word: Serenity, and Holy Fire reduces the cooldown of Holy Word: Chastise by $s1 sec.", 0, 0 },
   { 390996, "Your $?a137033[Mind Blast and Mind Spike]?a137031[Smite and Holy Fire][Smite and Penance] casts reduce the cooldown of Mindgames by ${$s1/2}.1 sec.", 0, 0 },
+  { 390997, "Causes the earth at the target location to tremble and break, dealing Nature damage every $t1 sec to enemies in $a1 yard radius. Lasts $d.", "Suffering Nature damage every $t2 sec.", 0 },
   { 391023, "Summons an arcana orb outside of the Cobalt Assembly.", "Summons an arcana orb outside of the Cobalt Assembly.", 0 },
   { 391037, "Your combo point generating abilities have a $s1% chance to generate $s2 extra combo $Lpoint:points;.", 0, 0 },
   { 391045, "Rip damage increased by $s1%.", 0, 0 },
@@ -18451,6 +18454,8 @@ static const std::array<spelltext_data_t, 19087> __spelltext_data { {
   { 391369, "$@spelldesc388110", "Damage taken from $@auracaster increased by $s1%.", 0 },
   { 391370, "The duration of $?s152173[Serenity][Storm, Earth, and Fire] is extended by $?s152173[${$s2/10}.1 sec every time you cast a Chi spender][${$s1/10}.1 sec for every Chi you spend].", 0, 0 },
   { 391371, "$@spelldesc391288", 0, 0 },
+  { 391374, "$@spelldesc188499", 0, 0 },
+  { 391378, "$@spelldesc188499", 0, 0 },
   { 391381, "Increases healing by $s1% on friendly targets at or below $s2% health.", 0, 0 },
   { 391383, "Blackout Kick critical strike chance increased by $s1% and critical damage increased by $s2%.", 0, 0 },
   { 391386, "Anti-Magic Shell heals you for $s1% of the damage it absorbs.", 0, 0 },
@@ -18668,6 +18673,8 @@ static const std::array<spelltext_data_t, 19087> __spelltext_data { {
   { 393030, "Your chance to block spells is increased by $s1%.", 0, 0 },
   { 393038, "Parry increased by $s1%.", "Parry increased by $w1%.", 0 },
   { 393039, "$@spelldesc235053", "Damage of next Crackling Jade Lightning increased by $s1%.\r\nEnergy cost of next Crackling Jade Lightning reduced by $s2%.", 0 },
+  { 393054, "$@spelldesc210152", 0, 0 },
+  { 393055, "$@spelldesc210152", 0, 0 },
   { 393056, "$@spelldesc392979", 0, 0 },
   { 393057, "$@spelldesc337483", "Increases the damage done by your next Chi Explosion by $s1%.\r\n\r\nChi Explosion is triggered whenever you use Spinning Crane Kick.", 0 },
   { 393071, "For each target hit by Avenger's Shield, gain $s1% parry for $393038d.", 0, 0 },
@@ -19090,7 +19097,9 @@ static const std::array<spelltext_data_t, 19087> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 10.0.2.46144
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __spelltext_hotfix_data { {
+  {  197626,  0, "Launch a surge of stellar energies at the target, dealing $s1 Astral damage, and empowering the damage bonus of any active Eclipse for its duration.", "Launch a surge of stellar energies at the target, dealing $s1 Astral damage." },
+  {  385416,  0, "Your $?S53595[Hammer of the Righteous]?S204019[Blessed Hammer][Crusader Strike] now also grants you $385417s1% increased $pri for $385417d. Multiple applications may overlap.", "Your $?S53595[Hammer of the Righteous]?S204019[Blessed Hammer][Crusader Strike] now also grants you $s1% increased $pri for $385417d. Multiple applications may overlap." },
 } };
 
 // Spell description variables, wow build 10.0.2.46144
