@@ -1349,17 +1349,83 @@ struct thing_from_beyond_t final : public priest_pet_t
   action_t* create_action( util::string_view name, util::string_view options_str ) override;
 };
 
+struct void_spike_cleave_t final : public priest_pet_spell_t
+{
+  void_spike_cleave_t( thing_from_beyond_t& p )
+    : priest_pet_spell_t( "void_spike_cleave", p, p.o().find_spell( 396895 ) )
+  {
+    aoe          = -1;
+    travel_speed = 0;
+
+    // Since we manually remove the main target add 1 to the scaling so it SQRT scales correctly
+    reduced_aoe_targets = data().effectN( 3 ).base_value() + 1;
+    radius              = data().effectN( 1 ).radius_max();
+
+    background = dual = true;
+    may_miss          = false;
+
+    // TODO: check how this works with the bugged implementation
+    may_crit = false;
+
+    // BUG: Instead of triggering for 30% of the damage done it has its own spell power scaling
+    // https://github.com/SimCMinMax/WoW-BugTracker/issues/1000
+    if ( !p.o().bugs )
+    {
+      spell_power_mod.direct = 0.0;
+    }
+  }
+
+  void init() override
+  {
+    priest_pet_spell_t::init();
+
+    merge_pet_stats( p().o(), p(), *this );
+  }
+
+  // Does not hit your main target, but uses it to determine radius
+  std::vector<player_t*>& target_list() const override
+  {
+    target_cache.is_valid = false;
+
+    std::vector<player_t*>& tl = priest_pet_spell_t::target_list();
+
+    tl.erase( std::remove( tl.begin(), tl.end(), target ), tl.end() );
+
+    return tl;
+  }
+
+  void trigger( player_t* target, double original_amount )
+  {
+    // BUG: Instead of triggering for 30% of the damage done it has its own spell power scaling
+    // https://github.com/SimCMinMax/WoW-BugTracker/issues/1000
+    if ( !p().o().bugs )
+    {
+      base_dd_min = base_dd_max = original_amount * data().effectN( 2 ).percent();
+    }
+
+    set_target( target );
+    execute();
+  }
+};
+
 struct void_spike_t final : public priest_pet_spell_t
 {
+  propagate_const<void_spike_cleave_t*> child_void_spike_cleave;
+
   void_spike_t( thing_from_beyond_t& p, util::string_view options )
-    : priest_pet_spell_t( "void_spike", p, p.o().find_spell( 373279 ) )
+    : priest_pet_spell_t( "void_spike", p, p.o().find_spell( 373279 ) ), child_void_spike_cleave( nullptr )
   {
     parse_options( options );
 
+    // TODO: check this again
     gcd_type = gcd_haste_type::SPELL_HASTE;
+
+    child_void_spike_cleave = new void_spike_cleave_t( p );
+    add_child( child_void_spike_cleave );
 
     // BUG: Does not scale with Mastery
     // https://github.com/SimCMinMax/WoW-BugTracker/issues/931
+    // NOTE: a recent blue post said it should, but on beta it is not
     if ( !p.o().bugs )
     {
       affected_by_shadow_weaving = true;
@@ -1371,6 +1437,16 @@ struct void_spike_t final : public priest_pet_spell_t
     priest_pet_spell_t::init();
 
     merge_pet_stats( p().o(), p(), *this );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    priest_pet_spell_t::impact( s );
+
+    if ( result_is_hit( s->result ) )
+    {
+      child_void_spike_cleave->trigger( s->target, s->result_amount );
+    }
   }
 };
 

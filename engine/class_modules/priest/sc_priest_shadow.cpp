@@ -83,6 +83,14 @@ struct mind_sear_tick_t final : public priest_spell_t
       priest().buffs.coalescing_shadows->trigger();
       priest().procs.coalescing_shadows_mind_sear->occur();
     }
+
+    if ( priest().talents.shadow.shadowy_apparitions.enabled() )
+    {
+      if ( rng().roll( priest().talents.shadow.shadowy_apparitions->effectN( 3 ).percent() ) )
+      {
+        priest().trigger_shadowy_apparitions( priest().procs.shadowy_apparition_ms, false );
+      }
+    }
   }
 };
 
@@ -506,11 +514,6 @@ struct shadowy_apparition_damage_t final : public priest_spell_t
       priest().generate_insanity( insanity_gain, priest().gains.insanity_auspicious_spirits, s->action );
     }
 
-    if ( priest().talents.shadow.idol_of_yoggsaron.enabled() )
-    {
-      priest().buffs.idol_of_yoggsaron->trigger();
-    }
-
     if ( priest().talents.shadow.puppet_master.enabled() && rng().roll( coalescing_shadows_chance ) )
     {
       priest().buffs.coalescing_shadows->trigger();
@@ -521,6 +524,8 @@ struct shadowy_apparition_damage_t final : public priest_spell_t
 
 struct shadowy_apparition_spell_t final : public priest_spell_t
 {
+  bool gets_crit_mod = false;
+
   shadowy_apparition_spell_t( priest_t& p )
     : priest_spell_t( "shadowy_apparitions", p, p.talents.shadow.shadowy_apparitions )
   {
@@ -529,18 +534,31 @@ struct shadowy_apparition_spell_t final : public priest_spell_t
     may_miss     = false;
     may_crit     = false;
     trigger_gcd  = timespan_t::zero();
-    travel_speed = 6.0;
+    travel_speed = priest().talents.shadow.shadowy_apparition->missile_speed();
 
     impact_action = new shadowy_apparition_damage_t( p );
 
     add_child( impact_action );
   }
 
-  /** Trigger a shadowy apparition */
-  void trigger( player_t* target, proc_t* proc )
+  double composite_da_multiplier( const action_state_t* s ) const override
   {
-    player->sim->print_debug( "{} triggered shadowy apparition on target {} from {}.", priest(), *target,
-                              proc->name() );
+    double m = priest_spell_t::composite_da_multiplier( s );
+
+    if ( gets_crit_mod )
+    {
+      m *= 1 + priest().talents.shadow.shadowy_apparitions->effectN( 2 ).percent();
+    }
+
+    return m;
+  }
+
+  /** Trigger a shadowy apparition */
+  void trigger( player_t* target, proc_t* proc, bool _gets_crit_mod )
+  {
+    gets_crit_mod = _gets_crit_mod;
+    player->sim->print_debug( "{} triggered shadowy apparition on target {} from {}. crit_mod={}", priest(), *target,
+                              proc->name(), gets_crit_mod );
 
     proc->occur();
     set_target( target );
@@ -695,7 +713,7 @@ struct shadow_word_pain_t final : public priest_spell_t
                            .talents.shadow.tormented_spirits->effectN( ( d->state->result == RESULT_CRIT ) ? 2 : 1 )
                            .percent() ) )
       {
-        priest().trigger_shadowy_apparitions( d->state, priest().procs.shadowy_apparition_swp, false );
+        priest().trigger_shadowy_apparitions( priest().procs.shadowy_apparition_swp, false );
       }
 
       if ( priest().talents.shadow.coalescing_shadows.enabled() && rng().roll( coalescing_shadows_chance ) )
@@ -1123,7 +1141,7 @@ struct devouring_plague_t final : public priest_spell_t
     // Damnation does not trigger a SA - 2022-10-01
     if ( casted )
     {
-      priest().trigger_shadowy_apparitions( s, priest().procs.shadowy_apparition_dp );
+      priest().trigger_shadowy_apparitions( priest().procs.shadowy_apparition_dp, s->result == RESULT_CRIT );
     }
 
     if ( result_is_hit( s->result ) )
@@ -1147,7 +1165,6 @@ struct devouring_plague_t final : public priest_spell_t
     if ( result_is_hit( d->state->result ) && d->state->result_amount > 0 )
     {
       devouring_plague_heal->trigger( d->state->result_amount );
-      priest().trigger_idol_of_nzoth( d->state->target, priest().procs.idol_of_nzoth_dp );
 
       if ( priest().talents.shadow.surge_of_darkness.enabled() && rng().roll( surge_of_darkness_proc_rate ) )
       {
@@ -1337,7 +1354,7 @@ struct void_bolt_t final : public priest_spell_t
   {
     priest_spell_t::impact( s );
 
-    priest().trigger_shadowy_apparitions( s, priest().procs.shadowy_apparition_vb );
+    priest().trigger_shadowy_apparitions( priest().procs.shadowy_apparition_vb, s->result == RESULT_CRIT );
 
     if ( void_bolt_extension )
     {
@@ -2497,25 +2514,49 @@ void priest_t::init_background_actions_shadow()
 // ==========================================================================
 // Trigger Shadowy Apparitions on all targets affected by vampiric touch
 // ==========================================================================
-void priest_t::trigger_shadowy_apparitions( action_state_t* s, proc_t* proc, bool spawn_multiple )
+void priest_t::trigger_shadowy_apparitions( proc_t* proc, bool gets_crit_mod )
 {
   if ( !talents.shadow.shadowy_apparitions.enabled() )
   {
     return;
   }
-  // TODO: check if this procs non non-hits
-  int number_of_apparitions_to_trigger = spawn_multiple ? ( s->result == RESULT_CRIT ? 2 : 1 ) : 1;
+
+  // Idol of Yogg-Saron only triggers for each cast that generates an apparition
+  if ( talents.shadow.idol_of_yoggsaron.enabled() )
+  {
+    buffs.idol_of_yoggsaron->trigger();
+  }
 
   for ( priest_td_t* priest_td : _target_data.get_entries() )
   {
     if ( priest_td && priest_td->dots.vampiric_touch->is_ticking() )
     {
-      for ( int i = 0; i < number_of_apparitions_to_trigger; ++i )
-      {
-        background_actions.shadowy_apparitions->trigger( priest_td->target, proc );
-      }
+      background_actions.shadowy_apparitions->trigger( priest_td->target, proc, gets_crit_mod );
     }
   }
+}
+
+// ==========================================================================
+// Trigger Shadowy Apparitions on all targets affected by vampiric touch
+// ==========================================================================
+int priest_t::number_of_echoing_voids_active()
+{
+  int echoing_voids_active = 0;
+
+  if ( !talents.shadow.idol_of_nzoth.enabled() )
+  {
+    return echoing_voids_active;
+  }
+
+  for ( priest_td_t* priest_td : _target_data.get_entries() )
+  {
+    if ( priest_td && priest_td->buffs.echoing_void->check() )
+    {
+      echoing_voids_active++;
+    }
+  }
+
+  return echoing_voids_active;
 }
 
 // ==========================================================================
@@ -2621,7 +2662,10 @@ void priest_t::trigger_idol_of_nzoth( player_t* target, proc_t* proc )
   if ( !talents.shadow.idol_of_nzoth.enabled() )
     return;
 
-  if ( rng().roll( talents.shadow.idol_of_nzoth->effectN( 1 ).percent() ) )
+  if ( number_of_echoing_voids_active() == talents.shadow.idol_of_nzoth->effectN( 1 ).base_value() )
+    return;
+
+  if ( rng().roll( talents.shadow.idol_of_nzoth->proc_chance() ) )
   {
     proc->occur();
     auto td = get_target_data( target );
