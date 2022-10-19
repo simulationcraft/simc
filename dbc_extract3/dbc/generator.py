@@ -1579,6 +1579,7 @@ class SpellDataGenerator(DataGenerator):
             ( 394976, 5 ),          # Idol of C'thun Void Lasher Mind Sear
             ( 394979, 5 ),          # Idol of C'thun Void Lasher Mind Sear Tick
             ( 393919, 0 ),          # Screams of the Void extra data
+            ( 375408, 0 ),          # Screams of the Void extra data
             ( 390964, 0 ),          # Halo Damage Spell
             ( 390971, 0 ),          # Halo Heal Spell
             ( 390845, 0 ),          # Divine Star Damage Spell
