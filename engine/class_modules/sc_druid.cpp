@@ -304,7 +304,6 @@ public:
   // !!!==========================================================================!!!
   moon_stage_e moon_stage;
   double cache_mastery_snapshot;  // for balance mastery snapshot
-  event_t* cache_mastery_event;
   double after_the_wildfire_counter;
   std::vector<event_t*> persistent_event_delay;
   event_t* lycaras_event;
@@ -11468,7 +11467,6 @@ void druid_t::reset()
   // Reset runtime variables
   moon_stage = static_cast<moon_stage_e>( options.initial_moon_stage );
   cache_mastery_snapshot = cache.mastery_value();
-  cache_mastery_event = nullptr;
   after_the_wildfire_counter = 0.0;
   persistent_event_delay.clear();
   lycaras_event = nullptr;
