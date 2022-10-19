@@ -6403,7 +6403,7 @@ struct earthquake_damage_base_t : public shaman_spell_t
   // Note, in-game Earthquake Overload does not snapshot EoGS. Simc presumes this is a bug.
   void snapshot_state( action_state_t* s, unsigned flags, result_amount_type rt ) override
   {
-    if ( parent && ( !p()->bugs || ( p()->bugs && id == 298762 ) ) )
+    if ( parent && id == 298762 )
     {
       s->copy_state( parent->execute_state );
     }
