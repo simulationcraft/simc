@@ -2802,6 +2802,10 @@ void paladin_t::init_spells()
   // Shadowlands Tier Sets
   tier_sets.glorious_purpose_2pc = sets->set( PALADIN_PROTECTION, T28, B2 );
   tier_sets.glorious_purpose_4pc = sets->set( PALADIN_PROTECTION, T28, B4 );
+
+  tier_sets.ally_of_the_light_2pc = sets->set( PALADIN_PROTECTION, T29, B2 );
+  tier_sets.ally_of_the_light_4pc = sets->set( PALADIN_PROTECTION, T29, B4 );
+
   tier_sets.dawn_will_come_2pc = sets->set( PALADIN_HOLY, T28, B2 );
   tier_sets.dawn_will_come_4pc = sets->set( PALADIN_HOLY, T28, B4 );
   tier_sets.ashes_to_ashes_2pc   = sets->set( PALADIN_RETRIBUTION, T28, B2 );
@@ -2977,6 +2981,9 @@ double paladin_t::composite_damage_versatility() const
   if ( buffs.seraphim->up() )
     cdv += buffs.seraphim->data().effectN( 2 ).percent();
 
+  if ( buffs.ally_of_the_light->up() )
+    cdv += buffs.ally_of_the_light->data().effectN( 1 ).percent();
+
   return cdv;
 }
 
@@ -2986,6 +2993,9 @@ double paladin_t::composite_heal_versatility() const
 
   if ( buffs.seraphim->up() )
     chv += buffs.seraphim->data().effectN( 2 ).percent();
+
+  if ( buffs.ally_of_the_light->up() )
+    chv += buffs.ally_of_the_light->data().effectN( 1 ).percent();
 
   return chv;
 }

@@ -135,6 +135,8 @@ public:
     buff_t* inspiring_vanguard;
     buff_t* soaring_shield;
     buff_t* glorious_purpose; //T28 2pc
+    buff_t* ally_of_the_light; // T29 2pc
+    buff_t* deflecting_light; // T29 4pc
 
     // Ret
     buffs::crusade_buff_t* crusade;
@@ -573,6 +575,10 @@ public:
   {
     const spell_data_t* glorious_purpose_2pc;
     const spell_data_t* glorious_purpose_4pc;
+
+    const spell_data_t* ally_of_the_light_2pc; 
+    const spell_data_t* ally_of_the_light_4pc;
+
     const spell_data_t* dawn_will_come_2pc;
     const spell_data_t* dawn_will_come_4pc;
     const spell_data_t* ashes_to_ashes_2pc;

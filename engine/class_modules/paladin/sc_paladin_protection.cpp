@@ -178,6 +178,12 @@ struct avengers_shield_t : public avengers_shield_base_t
       else
         p() -> procs.as_engraved_sigil_wasted -> occur();
     }
+
+    // TODO: Increase 5% Versa of nearest ally
+    if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, T29, B2 ) )
+    {
+      p()->buffs.ally_of_the_light->trigger();
+    }
   }
 
   double action_multiplier() const override
@@ -1007,6 +1013,16 @@ void paladin_t::create_buffs_protection()
   buffs.glorious_purpose = make_buff( this, "glorious_purpose", find_spell( 364305 ) )
     -> set_default_value_from_effect( 1 )
     -> add_invalidate( CACHE_BLOCK );
+
+  buffs.ally_of_the_light =
+      make_buff( this, "ally_of_the_light", find_spell( 394714 ) )
+    ->set_default_value_from_effect( 1 )
+    ->add_invalidate(CACHE_VERSATILITY);
+
+  buffs.deflecting_light = 
+      make_buff( this, "deflecting_light", find_spell( 394727 ) )
+    ->set_default_value_from_effect( 1 )
+    ->add_invalidate( CACHE_PARRY );
 }
 
 void paladin_t::init_spells_protection()
@@ -1089,6 +1105,9 @@ void paladin_t::init_spells_protection()
 
   // Tier Sets
   tier_sets.glorious_purpose_2pc = find_spell( 364305 );
+
+  tier_sets.ally_of_the_light_2pc = find_spell( 394714 );
+  tier_sets.ally_of_the_light_4pc = find_spell( 394727 );
 }
 
 void paladin_t::generate_action_prio_list_prot()
