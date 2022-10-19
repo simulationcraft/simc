@@ -2449,11 +2449,6 @@ double priest_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
 
-  // if ( buffs.devoured_pride->check() )
-  // {
-  //   m *= ( 1.0 + talents.shadow.devoured_pride->effectN( 1 ).percent() );
-  // }
-
   return m;
 }
 
