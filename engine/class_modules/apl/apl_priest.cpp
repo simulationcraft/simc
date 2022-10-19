@@ -89,14 +89,14 @@ void shadow( player_t* p )
       "variable,name=pool_for_cds,op=set,value=(cooldown.void_eruption.remains<=gcd.max*3&talent.void_eruption|"
       "cooldown.dark_ascension.up&talent.dark_ascension)" );
   // Racials
-  default_list->add_action( "fireblood,if=buff.voidform.up|buff.power_infusion.up|buff.dark_ascension.up" );
-  default_list->add_action( "berserking,if=buff.voidform.up|buff.power_infusion.up|buff.dark_ascension.up" );
+  default_list->add_action( "fireblood,if=buff.power_infusion.up" );
+  default_list->add_action( "berserking,if=buff.power_infusion.up" );
+  default_list->add_action( "blood_fury,if=buff.power_infusion.up" );
+  default_list->add_action( "ancestral_call,if=buff.power_infusion.up" );
   default_list->add_action( "variable,name=pool_amount,op=set,value=60" );
-  default_list->add_action( "blood_fury,if=buff.voidform.up|buff.power_infusion.up|buff.dark_ascension.up" );
   default_list->add_action( "variable,name=pool_amount,op=set,value=85+16*(action.void_eruption.cost>=80)" );
   default_list->add_action(
       "lights_judgment,if=spell_targets.lights_judgment>=2|(!raid_event.adds.exists|raid_event.adds.in>75)" );
-  default_list->add_action( "ancestral_call,if=buff.voidform.up|buff.power_infusion.up|buff.dark_ascension.up" );
   default_list->add_run_action_list( main );
 
   // Trinkets
@@ -114,14 +114,21 @@ void shadow( player_t* p )
       "Default fallback for usable items: Use on cooldown in order by trinket slot." );
 
   // CDs
-  cds->add_action( "power_infusion,if=buff.voidform.up|buff.dark_ascension.up" );
+  cds->add_action( "power_infusion,if=(buff.voidform.up|buff.dark_ascension.up)" );
   cds->add_action(
-      "void_eruption,if=!cooldown.fiend.up&(pet.fiend.active|!talent.mindbender)&(cooldown.mind_blast.charges=0|time>"
-      "15|buff.shadowy_insight.up&cooldown.mind_blast.charges=buff.shadowy_insight.stack)" );
+      "void_eruption,if=if=!cooldown.fiend.up&(pet.fiend.active|!talent.mindbender|covenant.night_fae)&(cooldown.mind_"
+      "blast.charges=0|time>15|buff.shadowy_insight.up&cooldown.mind_blast.charges=buff.shadowy_insight.stack)" );
   cds->add_action(
-      "dark_ascension,if=pet.fiend.active&(!cooldown.shadow_word_death.up|buff.deathspeaker.up|target.health.pct<20)" );
+      "dark_ascension,if=pet.fiend.active&(!cooldown.shadow_word_death.up|buff.deathspeaker.up|target.health.pct<20)|!"
+      "talent.mindbender&!cooldown.fiend.up|covenant.night_fae&cooldown.fiend.remains>=15&cooldown.fae_guardians."
+      "remains>=4*gcd.max" );
   cds->add_call_action_list( trinkets );
-  cds->add_action( "mindbender,if=dot.shadow_word_pain.ticking&variable.vts_applied|action.shadow_crash.in_flight" );
+  cds->add_action( "unholy_nova,if=dot.shadow_word_pain.ticking&variable.vts_applied|action.shadow_crash.in_flight" );
+  cds->add_action(
+      "fae_guardians,if=(dot.shadow_word_pain.ticking&variable.vts_applied|action.shadow_crash.in_flight)&(!talent."
+      "void_eruption|buff.voidform.up&!cooldown.void_bolt.up&cooldown.mind_blast.full_recharge_time>gcd.max|!cooldown."
+      "void_eruption.up)" );
+  cds->add_action( "mindbender,if=(dot.shadow_word_pain.ticking&variable.vts_applied|action.shadow_crash.in_flight)" );
   cds->add_action( "desperate_prayer,if=health.pct<=75" );
 
   // Main APL, should cover all ranges of targets and scenarios
@@ -134,9 +141,6 @@ void shadow( player_t* p )
       "mind_sear<=7" );
   main->add_action(
       "damnation,target_if=dot.vampiric_touch.refreshable&variable.is_vt_possible|dot.shadow_word_pain.refreshable" );
-  main->add_action(
-      "shadow_word_death,if=!buff.death_and_madness_reset.up,target_if=(pet.fiend.active&variable.sfp&spell_targets."
-      "mind_sear<=7)" );
   main->add_action( "void_bolt,if=variable.dots_up&insanity<=85" );
   main->add_action(
       "mind_sear,target_if=(spell_targets.mind_sear>variable.mind_sear_cutoff|buff.voidform.up)&buff.mind_devourer."
@@ -170,7 +174,7 @@ void shadow( player_t* p )
   main->add_action( "mind_flay,if=buff.mind_flay_insanity.up&!buff.surge_of_darkness.up&variable.dots_up" );
   main->add_action( "halo,if=raid_event.adds.in>20&(spell_targets.halo>1|variable.all_dots_up)" );
   main->add_action( "divine_star,if=spell_targets.divine_star>1" );
-  main->add_action( "mind_spike" );
+  main->add_action( "mind_spike,if=buff.surge_of_darkness.up|!conduit.dissonant_echoes" );
   main->add_action( "mind_flay,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2" );
   main->add_action( "shadow_crash,if=raid_event.adds.in>30",
                     "Use Shadow Crash while moving as a low-priority action when adds will not come in 30 seconds." );
