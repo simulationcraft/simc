@@ -1553,7 +1553,7 @@ void pit_lord_t::init_base_stats()
 {
   warlock_pet_t::init_base_stats();
 
-  melee_attack = new warlock_pet_melee_t( this, 1.087 );
+  melee_attack = new warlock_pet_melee_t( this, 4.34 );
 }
 
 void pit_lord_t::arise()
