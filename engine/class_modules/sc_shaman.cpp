@@ -7584,7 +7584,7 @@ struct stormkeeper_t : public shaman_spell_t
 
   bool ready() override
   {
-    if ( !p()->talent.stormkeeper.ok() && p()->talent.stormkeeper2.ok() )
+    if ( !p()->talent.stormkeeper.ok() && !p()->talent.stormkeeper2.ok() )
     {
       return false;
     }
