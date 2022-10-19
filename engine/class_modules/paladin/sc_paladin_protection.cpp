@@ -124,6 +124,13 @@ struct avengers_shield_dt_t : public avengers_shield_base_t
   {
     background = true;
   }
+  void execute() override
+  {
+    avengers_shield_base_t::execute();
+
+    // Gain 1 Holy Power for each target hit (Protection only)
+    p()->resource_gain( RESOURCE_HOLY_POWER, 1, p()->gains.hp_divine_toll);
+  }
 };
 
 struct avengers_shield_dr_t : public avengers_shield_base_t

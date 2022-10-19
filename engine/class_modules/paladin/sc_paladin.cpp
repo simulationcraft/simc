@@ -2359,6 +2359,7 @@ void paladin_t::init_gains()
   gains.hp_cs                      = get_gain( "crusader_strike" );
   gains.hp_memory_of_lucid_dreams  = get_gain( "memory_of_lucid_dreams" );
   gains.hp_sanctification          = get_gain( "sanctification" );
+  gains.hp_divine_toll             = get_gain( "divine_toll" );
 }
 
 // paladin_t::init_procs ====================================================

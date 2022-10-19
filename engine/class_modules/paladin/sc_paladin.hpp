@@ -193,6 +193,7 @@ public:
     gain_t* hp_memory_of_lucid_dreams;
     gain_t* hp_sanctification;
     gain_t* hp_inner_grace;
+    gain_t* hp_divine_toll;
   } gains;
 
   // Spec Passives
