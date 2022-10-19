@@ -2247,11 +2247,11 @@ struct ghoul_pet_t : public base_ghoul_pet_t
         // Ghoulish Infusion proc chance not listed in spell data, using hard coded 15% for now
         if ( dk() -> sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T29, B4 ) )
         {
-          double chance = 0.15;
+          double chance = dk() -> sets -> set( DEATH_KNIGHT_UNHOLY, T29, B4 ) -> effectN( 1 ).percent();
 
           if ( dk() -> pets.ghoul_pet -> vile_infusion -> up() )
           {
-            chance *= 1.0 + 2.0;
+            chance = dk() -> sets -> set( DEATH_KNIGHT_UNHOLY, T29, B4 ) -> effectN( 2 ).percent();
           }
 
           if ( dk() -> sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T29, B4 ) && dk() -> rng().roll( chance ) )
@@ -2287,7 +2287,7 @@ struct ghoul_pet_t : public base_ghoul_pet_t
 
     m *= 1.0 + ( ghoulish_frenzy -> value() / 100 ) ;
 
-    m *= 1.0 + vile_infusion -> value();
+    m *= 1.0 + vile_infusion -> data().effectN( 1 ).percent();
 
     return m;
   }
@@ -2318,7 +2318,7 @@ struct ghoul_pet_t : public base_ghoul_pet_t
       haste *= 1.0 / ( 1.0 + ghoulish_frenzy -> data().effectN( 2 ).percent() );
 
     if ( vile_infusion -> up() )
-      haste *= 1.0 / ( 1.0 + vile_infusion -> value() );
+      haste *= 1.0 / ( 1.0 + vile_infusion -> data().effectN( 2 ).percent() );
 
     return haste;
   }
@@ -2378,7 +2378,6 @@ struct ghoul_pet_t : public base_ghoul_pet_t
       -> set_duration( 0_s );
 
     vile_infusion = make_buff( this, "vile_infusion", dk() -> pet_spell.vile_infusion )
-      -> set_default_value( dk() -> pet_spell.vile_infusion -> effectN( 1 ).percent() )
       -> set_duration( dk() -> pet_spell.vile_infusion -> duration() )
       -> set_cooldown( dk() -> sets -> set(DEATH_KNIGHT_UNHOLY, T29, B2 ) -> internal_cooldown() )
       -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
@@ -10973,7 +10972,7 @@ void death_knight_t::create_buffs()
   buffs.ghoulish_infusion = make_buff( this, "ghoulish_infusion", spell.ghoulish_infusion )
            -> set_duration( spell.ghoulish_infusion -> duration() )
            -> set_default_value_from_effect( 1 )
-           -> add_invalidate( CACHE_ATTACK_SPEED )
+           -> add_invalidate( CACHE_HASTE )
            -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buffs.commander_of_the_dead_window = make_buff( this, "commander_of_the_dead_window" )
