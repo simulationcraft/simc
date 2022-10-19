@@ -134,7 +134,10 @@ public:
         priest().procs.mind_devourer->occur();
       }
 
-      priest().trigger_shadowy_apparitions( s, priest().procs.shadowy_apparition_mb );
+      if ( priest().talents.shadow.shadowy_apparitions.enabled() )
+      {
+        priest().trigger_shadowy_apparitions( priest().procs.shadowy_apparition_mb, s->result == RESULT_CRIT );
+      }
 
       priest().trigger_psychic_link( s );
 
@@ -182,11 +185,16 @@ public:
     // charge. Therefore update_ready needs to not be called in that case.
     if ( priest().buffs.shadowy_insight->up() )
     {
-      if ( priest().buffs.mind_melt->check() )
+      // Mind Melt is only double consumed with Shadowy Insight if it only has one stack
+      if ( priest().buffs.mind_melt->check() == 1 )
       {
         priest().procs.mind_melt_waste->occur();
       }
-      priest().buffs.shadowy_insight->decrement();
+      // Mind Melt at 2 stacks gets consumed over Shadowy Insight
+      if ( priest().buffs.mind_melt->check() != 2 )
+      {
+        priest().buffs.shadowy_insight->decrement();
+      }
     }
     else
     {
@@ -1282,12 +1290,13 @@ struct echoing_void_t final : public priest_spell_t
 {
   echoing_void_t( priest_t& p ) : priest_spell_t( "echoing_void", p, p.find_spell( 373304 ) )
   {
-    background = true;
-    proc       = false;
-    callbacks  = true;
-    may_miss   = false;
-    aoe        = -1;
-    range      = 10.0;
+    background          = true;
+    proc                = false;
+    callbacks           = true;
+    may_miss            = false;
+    aoe                 = -1;
+    range               = data().effectN( 1 ).radius_max();
+    reduced_aoe_targets = data().effectN( 2 ).base_value();
 
     affected_by_shadow_weaving = true;
   }
@@ -2098,8 +2107,11 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) : actor_target_data_t(
   buffs.wrathful_faerie_fermata  = make_buff( *this, "wrathful_faerie_fermata", p.find_spell( 345452 ) )
                                       ->set_cooldown( timespan_t::zero() )
                                       ->set_duration( priest().conduits.fae_fermata.time_value() );
-  buffs.echoing_void = make_buff( *this, "echoing_void", p.talents.shadow.idol_of_nzoth->effectN( 1 ).trigger() );
+  buffs.echoing_void = make_buff( *this, "echoing_void", p.find_spell( 373281 ) );
+
+  // TODO: stacks generated mid-collapse need to get re-triggered to collapse
   buffs.echoing_void_collapse = make_buff( *this, "echoing_void_collapse" )
+                                    ->set_quiet( true )
                                     ->set_tick_behavior( buff_tick_behavior::REFRESH )
                                     ->set_period( timespan_t::from_seconds( 1.0 ) )
                                     ->set_tick_callback( [ this, &p, target ]( buff_t* b, int, timespan_t ) {
@@ -2139,6 +2151,15 @@ void priest_td_t::target_demise()
       double amount =
           priest().talents.throes_of_pain->effectN( 5 ).percent() / 100.0 * priest().resources.max[ RESOURCE_MANA ];
       priest().resource_gain( RESOURCE_MANA, amount, priest().gains.throes_of_pain );
+    }
+  }
+
+  // Stacks of Idol of N'Zoth will detonate on death
+  if ( priest().talents.shadow.idol_of_nzoth.enabled() )
+  {
+    for ( int i = 0; i < buffs.echoing_void->check(); ++i )
+    {
+      priest().background_actions.echoing_void->execute_on_target( target );
     }
   }
 
@@ -2227,6 +2248,7 @@ void priest_t::create_procs()
   procs.shadowy_apparition_swp                 = get_proc( "Shadowy Apparition from Shadow Word: Pain" );
   procs.shadowy_apparition_dp                  = get_proc( "Shadowy Apparition from Devouring Plague" );
   procs.shadowy_apparition_mb                  = get_proc( "Shadowy Apparition from Mind Blast" );
+  procs.shadowy_apparition_ms                  = get_proc( "Shadowy Apparition from Mind Sear Tick" );
   procs.mind_devourer                          = get_proc( "Mind Devourer free Devouring Plague proc" );
   procs.void_tendril                           = get_proc( "Void Tendril proc from Idol of C'Thun" );
   procs.void_lasher                            = get_proc( "Void Lasher proc from Idol of C'Thun" );
@@ -2244,7 +2266,6 @@ void priest_t::create_procs()
   procs.mind_melt_waste                        = get_proc( "Mind Blast that consumed Mind Melt and Shadowy Insight" );
   procs.idol_of_nzoth_swp                      = get_proc( "Idol of N'Zoth procs from Shadow Word: Pain" );
   procs.idol_of_nzoth_vt                       = get_proc( "Idol of N'Zoth procs from Vampiric Touch" );
-  procs.idol_of_nzoth_dp                       = get_proc( "Idol of N'Zoth procs from Devouring Plague" );
   procs.mind_flay_insanity_wasted      = get_proc( "Mind Flay: Insanity casts that did not channel for full ticks" );
   procs.idol_of_yshaarj_extra_duration = get_proc( "Idol of Y'Shaarj Devoured Violence procs" );
   procs.void_torrent_ticks_no_mastery  = get_proc( "Void Torrent ticks without full Mastery value" );
@@ -2391,6 +2412,8 @@ double priest_t::composite_player_pet_damage_multiplier( const action_state_t* s
 {
   double m = player_t::composite_player_pet_damage_multiplier( s, guardian );
   m *= ( 1.0 + specs.shadow_priest->effectN( 3 ).percent() );
+
+  // Auto parsing does not cover melee attacks, and other attacks double dip with this
   if ( buffs.devoured_pride->check() )
   {
     m *= ( 1.0 + talents.shadow.devoured_pride->effectN( 2 ).percent() );
@@ -2430,11 +2453,6 @@ double priest_t::composite_player_absorb_multiplier( const action_state_t* s ) c
 double priest_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
-
-  if ( buffs.devoured_pride->check() )
-  {
-    m *= ( 1.0 + talents.shadow.devoured_pride->effectN( 1 ).percent() );
-  }
 
   return m;
 }

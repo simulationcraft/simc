@@ -1584,6 +1584,8 @@ class SpellDataGenerator(DataGenerator):
             ( 390971, 0 ),          # Halo Heal Spell
             ( 390845, 0 ),          # Divine Star Damage Spell
             ( 390981, 0 ),          # Divine Star Heal Spell
+            ( 396895, 5 ),          # Idol of Yogg-Saron Void Spike Cleave
+            ( 373281, 0 ),          # Idol of N'Zoth Echoing Void debuff
             # Holy Priest
             ( 196809, 5 ),          # Healing Light (Divine Image legendary pet spell)
             ( 196810, 5 ),          # Dazzling Light (Divine Image legendary pet spell)
@@ -2091,6 +2093,7 @@ class SpellDataGenerator(DataGenerator):
           ( 337567, 1 ), # Chaotic Blades legendary buff
           ( 390197, 1 ), # Ragefire talent damage spell
           ( 390195, 1 ), # Chaos Theory talent buff
+          ( 391374, 1 ), ( 391378, 1 ), ( 393054, 1 ), ( 393055, 1 ), # First Blood Chaos spells
           ( 393628, 0 ), ( 393629, 0 ), # T29 Set Bonus Spells
 
           # Vengeance

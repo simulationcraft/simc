@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46144 dragonflight-BETA (hotfix 2022-10-18/46144)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46144 dragonflight-BETA (hotfix 2022-10-19/46144)
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -13324,6 +13324,28 @@ Each time Echoing Void is applied, it has a chance to collapse, consuming a stac
 
 If an enemy dies with Echoing Void, all stacks collapse immediately.
 
+Name             : Echoing Void (id=373281) [Spell Family (6)] 
+Class            : Priest
+School           : Shadow
+Spell Type       : None
+Range            : 40 yards
+Duration         : 20 seconds
+Stacks           : 10 maximum
+Proc Chance      : 101%
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=998390)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Description      : $@spelldesc373280
+Tooltip          : Each time Echoing Void is applied, it has a chance to collapse, exploding for $373304s1 Shadow damage until no stacks remain.
+
 Name             : Echoing Void (id=373304) [Spell Family (6)] 
 Class            : Priest
 School           : Shadow
@@ -16697,5 +16719,30 @@ Effects          :
 #2 (id=1035091)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.13000 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: Unknown(76) -> AOE enemy (instant) (16)
 Description      : $@spelldesc336214
+
+Name             : Void Spike (id=396895) 
+Class            : Priest
+School           : Shadow
+Spell Type       : Magic
+Spell Level      : 1
+Range            : 45 yards
+Cast Time        : 1.5 seconds
+Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ..x..... ........ ........ ........   
+                 : Not Shapeshifted (16), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1038632)  : School Damage (2): shadow
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.36144 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: Unknown(63) -> AOE enemy (instant) (16)
+#2 (id=1038633)  : Dummy (3)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000
+#3 (id=1038634)  : Dummy (3)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
+Description      : Hurls a bolt of dark magic at the target, dealing $s1 Shadow damage.
 
 

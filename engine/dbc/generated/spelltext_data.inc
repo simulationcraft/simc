@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.2.46144
-static const std::array<spelltext_data_t, 19085> __spelltext_data { {
+static const std::array<spelltext_data_t, 19087> __spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -16310,6 +16310,7 @@ static const std::array<spelltext_data_t, 19085> __spelltext_data { {
   { 373277, "$@spelldesc373273", "A Thing from Beyond serves you in combat, blasting enemies for $373279s1 Shadow damage.", 0 },
   { 373279, "Hurls a bolt of dark magic at the target, dealing $s1 Shadow damage.", 0, 0 },
   { 373280, "Your periodic Shadow Word: Pain and Vampiric Touch damage has a $h% chance to apply Echoing Void, max $s1 targets.\r\n\r\nEach time Echoing Void is applied, it has a chance to collapse, consuming a stack every $373305T1 sec to deal $373304s1 Shadow damage to all nearby enemies. Damage reduced beyond $373304s2 targets.\r\n\r\nIf an enemy dies with Echoing Void, all stacks collapse immediately.", 0, 0 },
+  { 373281, "$@spelldesc373280", "Each time Echoing Void is applied, it has a chance to collapse, exploding for $373304s1 Shadow damage until no stacks remain.", 0 },
   { 373304, "$@spelldesc373280", 0, 0 },
   { 373305, "$@spelldesc373280", 0, 0 },
   { 373310, "Summoning $?s123040|s200174[Mindbender][Shadowfiend] causes you to gain a benefit based on your target's current state or increases its duration by $373320s1 sec if no state matches.\r\n\r\n|cffffffffHealthy|r: You and your $?s123040|s200174[Mindbender][Shadowfiend] deal $373316s1% additional damage.\r\n\r\n|cffffffffEnraged|r: Devours the Enraged effect, increasing your Haste by $373318s1%.\r\n\r\n|cffffffffStunned|r: Generates ${$373317s1/100} Insanity every $373317t1 sec.\r\n\r\n|cffffffffFeared|r: You and your $?s123040|s200174[Mindbender][Shadowfiend] deal $373319s1% increased damage and do not break Fear effects.", 0, 0 },
@@ -19085,6 +19086,7 @@ static const std::array<spelltext_data_t, 19085> __spelltext_data { {
   { 396824, "$@spelldesc389549", 0, 0 },
   { 396826, "$@spelldesc389551", 0, 0 },
   { 396848, "$@spelldesc389558", 0, 0 },
+  { 396895, "Hurls a bolt of dark magic at the target, dealing $s1 Shadow damage.", 0, 0 },
 } };
 
 // spelltext hotfix entries, wow build 10.0.2.46144

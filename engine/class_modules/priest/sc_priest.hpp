@@ -458,6 +458,7 @@ public:
     propagate_const<proc_t*> shadowy_apparition_swp;
     propagate_const<proc_t*> shadowy_apparition_dp;
     propagate_const<proc_t*> shadowy_apparition_mb;
+    propagate_const<proc_t*> shadowy_apparition_ms;
     propagate_const<proc_t*> holy_fire_cd;
     propagate_const<proc_t*> power_of_the_dark_side;
     propagate_const<proc_t*> power_of_the_dark_side_overflow;
@@ -481,7 +482,6 @@ public:
     propagate_const<proc_t*> mind_melt_waste;
     propagate_const<proc_t*> idol_of_nzoth_swp;
     propagate_const<proc_t*> idol_of_nzoth_vt;
-    propagate_const<proc_t*> idol_of_nzoth_dp;
     propagate_const<proc_t*> mind_flay_insanity_wasted;
     propagate_const<proc_t*> idol_of_yshaarj_extra_duration;
     propagate_const<proc_t*> void_torrent_ticks_no_mastery;
@@ -721,7 +721,8 @@ public:
   void trigger_shadowflame_prism( player_t* target );
   void trigger_eternal_call_to_the_void( action_state_t* );
   void trigger_idol_of_cthun( action_state_t* );
-  void trigger_shadowy_apparitions( action_state_t*, proc_t* proc, bool = true );
+  void trigger_shadowy_apparitions( proc_t* proc, bool gets_crit_mod );
+  int number_of_echoing_voids_active();
   void trigger_psychic_link( action_state_t* );
   void trigger_pain_of_death( action_state_t* );
   void trigger_shadow_weaving( action_state_t* );
@@ -1113,6 +1114,7 @@ public:
     parse_buff_effects( p().buffs.coalescing_shadows_dot );
     parse_buff_effects( p().buffs.words_of_the_pious );       // Spell Direct amount for Smite and Holy Nova
     parse_buff_effects( p().buffs.gathering_shadows, true );  // Spell Direct amount for Mind Sear (NOT DP)
+    parse_buff_effects( p().buffs.devoured_pride );           // Spell Direct and Periodic amount
   }
 
   template <typename... Ts>

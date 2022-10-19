@@ -512,6 +512,7 @@ public:
 
     // Background Spells
     const spell_data_t* alacrity_buff;
+    const spell_data_t* find_weakness_debuff;
     const spell_data_t* leeching_poison_buff;
     const spell_data_t* nightstalker_buff;
     const spell_data_t* prey_on_the_weak_debuff;
@@ -8146,7 +8147,7 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   debuffs.ghostly_strike = make_buff( *this, "ghostly_strike", source->talent.outlaw.ghostly_strike )
     ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER )
     ->set_cooldown( timespan_t::zero() );
-  debuffs.find_weakness = make_buff( *this, "find_weakness", source->talent.rogue.find_weakness->effectN( 1 ).trigger() )
+  debuffs.find_weakness = make_buff( *this, "find_weakness", source->spell.find_weakness_debuff )
     ->set_default_value( source->talent.rogue.find_weakness->effectN( 1 ).percent() );
   debuffs.prey_on_the_weak = make_buff( *this, "prey_on_the_weak", source->spell.prey_on_the_weak_debuff )
     ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN );
@@ -9848,6 +9849,7 @@ void rogue_t::init_spells()
 
   // Class Background Spells
   spell.alacrity_buff = talent.rogue.alacrity->ok() ? find_spell( 193538 ) : spell_data_t::not_found();
+  spell.find_weakness_debuff = talent.rogue.find_weakness->ok() ? find_spell( 316220 ) : spell_data_t::not_found();
   spell.leeching_poison_buff = talent.rogue.leeching_poison->ok() ? find_spell( 108211 ) : spell_data_t::not_found();
   spell.nightstalker_buff = talent.rogue.nightstalker->ok() ? find_spell( 130493 ) : spell_data_t::not_found();
   spell.prey_on_the_weak_debuff = talent.rogue.prey_on_the_weak->ok() ? find_spell( 255909 ) : spell_data_t::not_found();
