@@ -1139,6 +1139,14 @@ public:
     if ( affected_by.t29_sv_4pc_dmg.tick && p() -> buffs.bestial_barrage -> check() )
       am *= 1 + p() -> tier_set.t29_sv_4pc_buff -> effectN( affected_by.t29_sv_4pc_dmg.tick ).percent();
 
+    if ( affected_by.serrated_shots )
+    {
+      if ( s -> target -> health_percentage() < p() -> talents.serrated_shots -> effectN( 3 ).base_value() )
+        am *= 1 + p() -> talents.serrated_shots -> effectN( 2 ).percent();
+      else
+        am *= 1 + p() -> talents.serrated_shots -> effectN( 1 ).percent();
+    }
+
     return am;
   }
 
@@ -1175,21 +1183,6 @@ public:
       return 0;
 
     return ceil( c );
-  }
-
-  double base_ta(const action_state_t* s) const override
-  {
-    double ta = ab::base_ta( s );
-
-    if ( affected_by.serrated_shots )
-    {
-      if ( s -> target -> health_percentage() < p() -> talents.serrated_shots -> effectN( 3 ).base_value() )
-        ta *= 1 + p() -> talents.serrated_shots -> effectN( 2 ).percent();
-      else
-        ta *= 1 + p() -> talents.serrated_shots -> effectN( 1 ).percent();
-    }
-
-    return ta;
   }
 
   void update_ready( timespan_t cd ) override
@@ -2974,6 +2967,9 @@ struct residual_bleed_base_t : public residual_action::residual_periodic_action_
   residual_bleed_base_t( util::string_view n, hunter_t* p, const spell_data_t* s )
     : residual_periodic_action_t( n, p, s )
   {
+    // Affected by Serrated Shots regardless of modifier attribute flags, so ignore any possible
+    // application in hunter_action_t::composite_ta_multiplier since it's handled manually in below.
+    affected_by.serrated_shots = false;
   }
 
   double base_ta(const action_state_t* s) const override
