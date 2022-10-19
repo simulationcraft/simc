@@ -4777,6 +4777,13 @@ struct chain_lightning_overload_t : public chained_overload_base_t
       p()->buff.t29_2pc_ele->trigger();
     }
   }
+
+  void impact( action_state_t* state ) override
+  {
+    chained_overload_base_t::impact( state );
+
+    p()->trigger_lightning_rod_damage( state );
+  }
 };
 
 struct lava_beam_overload_t : public chained_overload_base_t
@@ -5842,6 +5849,13 @@ struct lightning_bolt_overload_t : public elemental_overload_spell_t
       p()->buff.t29_2pc_ele->trigger();
     }
   }
+
+  void impact( action_state_t* state ) override
+  {
+    elemental_overload_spell_t::impact( state );
+
+    p()->trigger_lightning_rod_damage( state );
+  }
 };
 
 struct lightning_bolt_t : public shaman_spell_t
@@ -5996,6 +6010,7 @@ struct lightning_bolt_t : public shaman_spell_t
       p()->buff.primordial_wave->expire();
     }
 
+
     shaman_spell_t::execute();
 
     // Storm Elemental Wind Gust passive buff trigger
@@ -6012,18 +6027,15 @@ struct lightning_bolt_t : public shaman_spell_t
         p()->buff.wind_gust->trigger();
       }
     }
-
-    if ( type == execute_type::NORMAL && !background && p()->specialization() == SHAMAN_ELEMENTAL )
-    {
-      p()->buff.stormkeeper->decrement();
-    }
-
+    // trigger additional Overload before execute to ensure all buffs are cached for the Overloads
     if ( p()->buff.power_of_the_maelstrom->up() )
     {
       trigger_elemental_overload( execute_state, 1.0 );
+      p()->buff.power_of_the_maelstrom->decrement();
     }
 
-    if ( p()->buff.surge_of_power->check() )
+    // trigger additional Overload before execute to ensure all buffs are cached for the Overloads
+    if ( p()->buff.surge_of_power->up() )
     {
       p()->proc.surge_of_power_lightning_bolt->occur();
 
@@ -6035,7 +6047,10 @@ struct lightning_bolt_t : public shaman_spell_t
       p()->buff.surge_of_power->decrement();
     }
 
-    p()->buff.power_of_the_maelstrom->decrement();
+    if ( type == execute_type::NORMAL && p()->specialization() == SHAMAN_ELEMENTAL )
+    {
+      p()->buff.stormkeeper->decrement();
+    }
 
     p()->trigger_flash_of_lightning();
     p()->trigger_lightning_rod_damage( execute_state );
@@ -6053,6 +6068,27 @@ struct lightning_bolt_t : public shaman_spell_t
 
   }
 
+  void schedule_travel(action_state_t* s) override
+  {
+    if ( p()->buff.power_of_the_maelstrom->up() )
+    {
+      trigger_elemental_overload( s, 1.0 );
+    }
+
+    if ( p()->buff.surge_of_power->check() )
+    {
+      p()->proc.surge_of_power_lightning_bolt->occur();
+
+      for ( auto i = 0; i < as<int>( p()->talent.surge_of_power->effectN( 2 ).base_value() ); ++i )
+      {
+        trigger_elemental_overload( s, 1.0 );
+      }
+
+      p()->buff.surge_of_power->decrement();
+    }
+
+    shaman_spell_t::schedule_travel( s );
+  }
   //void reset_swing_timers()
   //{
   //  if ( player->main_hand_attack && player->main_hand_attack->execute_event )
