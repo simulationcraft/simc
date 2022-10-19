@@ -398,7 +398,8 @@ public:
     damage_buff_t* t29_outlaw_2pc;
     damage_buff_t* t29_outlaw_4pc;
     damage_buff_t* t29_subtlety_2pc;
-    buff_t* t29_subtlety_4pc;
+    damage_buff_t* t29_subtlety_4pc;
+    damage_buff_t* t29_subtlety_4pc_black_powder;
 
   } buffs;
 
@@ -1728,6 +1729,8 @@ public:
     register_damage_buff( p()->buffs.t29_outlaw_2pc );
     register_damage_buff( p()->buffs.t29_outlaw_4pc );
     register_damage_buff( p()->buffs.t29_subtlety_2pc );
+    register_damage_buff( p()->buffs.t29_subtlety_4pc );
+    register_damage_buff( p()->buffs.t29_subtlety_4pc_black_powder );
 
     // Dragonflight version of Deeper Daggers is not a whitelisted buff and still a school buff
     if ( !p()->talent.subtlety.deeper_daggers->ok() && p()->conduit.deeper_daggers.ok() )
@@ -3262,6 +3265,7 @@ struct backstab_t : public rogue_attack_t
     if ( state->result == RESULT_CRIT && p()->set_bonuses.t29_subtlety_4pc->ok() )
     {
       p()->buffs.t29_subtlety_4pc->trigger();
+      p()->buffs.t29_subtlety_4pc_black_powder->trigger();
     }
   }
 
@@ -3787,18 +3791,6 @@ struct eviscerate_t : public rogue_attack_t
     }
   }
 
-  double composite_da_multiplier( const action_state_t* state ) const override
-  {
-    double m = rogue_attack_t::composite_da_multiplier( state );
-
-    if ( p()->buffs.t29_subtlety_4pc->up() )
-    {
-      m *= 1.0 + p()->buffs.t29_subtlety_4pc->check() * p()->buffs.t29_subtlety_4pc->data().effectN( 1 ).percent();
-    }
-
-    return m;
-  }
-
   void execute() override
   {
     rogue_attack_t::execute();
@@ -3824,9 +3816,6 @@ struct eviscerate_t : public rogue_attack_t
       p()->buffs.t29_subtlety_2pc->expire();
       p()->buffs.t29_subtlety_2pc->trigger( cast_state( execute_state )->get_combo_points() );
     }
-
-    // TOCHECK DFALPHA if this works on Shadow damage bonus or not
-    p()->buffs.t29_subtlety_4pc->expire();
   }
 };
 
@@ -4076,10 +4065,10 @@ struct gloomblade_t : public rogue_attack_t
       p()->buffs.symbols_of_death->extend_duration( p(), extend_duration );
     }
 
-    // TOCHECK DFALPHA -- Not in tooltip, need to test
     if ( state->result == RESULT_CRIT && p()->set_bonuses.t29_subtlety_4pc->ok() )
     {
       p()->buffs.t29_subtlety_4pc->trigger();
+      p()->buffs.t29_subtlety_4pc_black_powder->trigger();
     }
   }
 };
@@ -4960,6 +4949,7 @@ struct shadowstrike_t : public rogue_attack_t
     if ( state->result == RESULT_CRIT && p()->set_bonuses.t29_subtlety_4pc->ok() )
     {
       p()->buffs.t29_subtlety_4pc->trigger();
+      p()->buffs.t29_subtlety_4pc_black_powder->trigger();
     }
   }
 
@@ -5065,18 +5055,6 @@ struct black_powder_t: public rogue_attack_t
     }
   }
 
-  double composite_da_multiplier( const action_state_t* state ) const override
-  {
-    double m = rogue_attack_t::composite_da_multiplier( state );
-
-    if ( p()->buffs.t29_subtlety_4pc->up() )
-    {
-      m *= 1.0 + p()->buffs.t29_subtlety_4pc->check() * p()->buffs.t29_subtlety_4pc->data().effectN( 2 ).percent();
-    }
-
-    return m;
-  }
-
   void execute() override
   {
     rogue_attack_t::execute();
@@ -5109,9 +5087,6 @@ struct black_powder_t: public rogue_attack_t
       p()->buffs.t29_subtlety_2pc->expire();
       p()->buffs.t29_subtlety_2pc->trigger( cast_state( execute_state )->get_combo_points() );
     }
-
-    // TOCHECK DFALPHA if this works on Shadow damage bonus or not
-    p()->buffs.t29_subtlety_4pc->expire();
   }
 
   bool procs_poison() const override
@@ -5192,6 +5167,7 @@ struct shuriken_storm_t: public rogue_attack_t
     if ( state->result == RESULT_CRIT && p()->set_bonuses.t29_subtlety_4pc->ok() )
     {
       p()->buffs.t29_subtlety_4pc->trigger();
+      p()->buffs.t29_subtlety_4pc_black_powder->trigger();
     }
   }
 
@@ -10745,9 +10721,15 @@ void rogue_t::create_buffs()
   buffs.t29_subtlety_2pc
     ->set_max_stack( consume_cp_max() );    
 
-  // Cannot parse as a single damage_buff_t since it has different benefit for Eviscerate and Black Powder
-  buffs.t29_subtlety_4pc = make_buff( this, "masterful_finish", set_bonuses.t29_subtlety_4pc->ok() ?
-                                      find_spell( 395003 ) : spell_data_t::not_found() );
+  // Cannot fully auto-parse as a single damage_buff_t since it has different mod for Black Powder
+  const spell_data_t* t29_buff = ( set_bonuses.t29_subtlety_4pc->ok() ?
+                                   find_spell( 395003 ) : spell_data_t::not_found() );
+  buffs.t29_subtlety_4pc = make_buff<damage_buff_t>( this, "masterful_finish", t29_buff, false )
+    ->set_direct_mod( t29_buff, 1 )
+    ->set_periodic_mod( t29_buff, 3 );
+  buffs.t29_subtlety_4pc_black_powder = make_buff<damage_buff_t>( this, "masterful_finish_bp", t29_buff, false )
+    ->set_direct_mod( t29_buff, 2 );
+  buffs.t29_subtlety_4pc_black_powder->set_quiet( true );
 
   // Legendary Items ========================================================
 
