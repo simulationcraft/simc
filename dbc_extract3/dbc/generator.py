@@ -1584,6 +1584,7 @@ class SpellDataGenerator(DataGenerator):
             ( 390971, 0 ),          # Halo Heal Spell
             ( 390845, 0 ),          # Divine Star Damage Spell
             ( 390981, 0 ),          # Divine Star Heal Spell
+            ( 396895, 5 ),          # Idol of Yogg-Saron Void Spike Cleave
             # Holy Priest
             ( 196809, 5 ),          # Healing Light (Divine Image legendary pet spell)
             ( 196810, 5 ),          # Dazzling Light (Divine Image legendary pet spell)

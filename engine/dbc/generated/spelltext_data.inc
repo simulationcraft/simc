@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.2.46144
-static const std::array<spelltext_data_t, 19085> __spelltext_data { {
+static const std::array<spelltext_data_t, 19086> __spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -19085,6 +19085,7 @@ static const std::array<spelltext_data_t, 19085> __spelltext_data { {
   { 396824, "$@spelldesc389549", 0, 0 },
   { 396826, "$@spelldesc389551", 0, 0 },
   { 396848, "$@spelldesc389558", 0, 0 },
+  { 396895, "Hurls a bolt of dark magic at the target, dealing $s1 Shadow damage.", 0, 0 },
 } };
 
 // spelltext hotfix entries, wow build 10.0.2.46144

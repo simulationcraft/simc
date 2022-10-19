@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46144 dragonflight-BETA (hotfix 2022-10-18/46144)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46144 dragonflight-BETA (hotfix 2022-10-19/46144)
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -5170,6 +5170,7 @@ Description      : $@spelldesc210689
 Tooltip          : Casting Shaman's Lightning Bolt and Chain Lightning also deal $210689s2% of their damage to the Lightning Rod.
 
 Name             : Sundering (id=197214) [Spell Family (11)] 
+Hotfixed         : Affecting Spells
 Talent Entry     : Enhancement [tree=spec, row=5, col=2, max_rank=1, req_points=8]
 Class            : Shaman
 School           : Flamestrike
@@ -5180,7 +5181,7 @@ Duration         : 2 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 40 seconds
 Affecting spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#3), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Molten Weapon (224125 effects: #1, #2), Fire and Ice (382886 effect#1), Legacy of the Frost Witch (384451 effects: #1, #2), Earthen Weapon (392375 effects: #1, #2), Maelstrom of Elements (394677 effect#1), Totemic Inspiration (394733 effect#1)
-Family Flags     : 16, 39, 56, 58, 103, 107, 122
+Family Flags     : 16, 39, 56, 58, 103, 122
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -6517,6 +6518,7 @@ Description      : $@spelldesc201900
 Tooltip          : Lava Lash damage increased by $s1% and cooldown reduced by ${$s2/4}%.
 
 Name             : Feral Lunge (id=215802) [Spell Family (11)] 
+Hotfixed         : Affecting Spells
 Class            : Shaman
 School           : Physical
 Spell Type       : Melee
@@ -6524,7 +6526,7 @@ Spell Level      : 1
 Range            : 100 yards
 Proc Chance      : 101%
 Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Legacy of the Frost Witch (384451 effects: #1, #2), Earthen Weapon (392375 effects: #1, #2), Totemic Inspiration (394733 effect#1)
-Family Flags     : 39, 58, 107
+Family Flags     : 39, 58
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ......x.   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13482,6 +13484,10 @@ Effects          :
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Astral Shift (108271)
                    Family Flags: 43
+#2 (id=1038937)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 5 (33)
+                   Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Misc Value: 33 | Target: Self (1)
+                   Family Flags: 107
+Hotfixed         : NEW EFFECT
 Description      : Astral Shift reduces damage taken by an additional $s1%.
 
 Name             : Thunderous Paws (id=378075) [Spell Family (11), Passive, Hidden] 
@@ -14218,6 +14224,14 @@ Effects          :
                    Base Value: 4000 | Scaled Value: 4000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Astral Shift (108271)
                    Family Flags: 43
+#3 (id=1038939)  : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
+                   Base Value: -15000 | Scaled Value: -15000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
+                   Family Flags: 107
+Hotfixed         : NEW EFFECT
+#4 (id=1038940)  : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
+                   Base Value: 4000 | Scaled Value: 4000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+                   Family Flags: 107
+Hotfixed         : NEW EFFECT
 Description      : Reduces the cooldown of Astral Shift by ${$s1/-1000} sec and increases its duration by ${$s2/1000} sec.
 
 Name             : Elemental Warding (id=381650) [Spell Family (11), Passive, Hidden] 
