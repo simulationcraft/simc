@@ -5318,7 +5318,10 @@ struct bountiful_brew_t : public monk_spell_t
 
     monk_spell_t::execute();
 
-    p()->buff.bonedust_brew->extend_duration_or_trigger( data().effectN( 1 ).time_value() );
+    if ( p()->bugs )
+      p()->buff.bonedust_brew->trigger( data().effectN( 1 ).time_value() );
+    else
+      p()->buff.bonedust_brew->extend_duration_or_trigger( data().effectN( 1 ).time_value() );
 
     // Force trigger Lead by Example Buff
     if ( lead_by_example )
