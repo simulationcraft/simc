@@ -11704,6 +11704,8 @@ void shaman_t::init_action_list_elemental()
     single_target->add_action( "liquid_magma_totem", "Keep your cooldowns rolling." );
     single_target->add_action( "stormkeeper,if=!buff.ascendance.up" );
     single_target->add_action( "ascendance,if=!buff.stormkeeper.up" );
+    single_target->add_action( "cancel_buff,name=lava_surge,if=buff.stormkeeper.up&buff.surge_of_power.up" );
+    single_target->add_action( "lava_burst,if=buff.stormkeeper.up&buff.surge_of_power.up" );
     single_target->add_action( "lightning_bolt,if=buff.stormkeeper.up&buff.surge_of_power.up", "Stormkeeper is strong and should be used." );
     single_target->add_action( "lightning_bolt,if=buff.stormkeeper.up&!talent.surge_of_power.enabled", "Stormkeeper is strong and should be used." );
     single_target->add_action( "lightning_bolt,if=buff.surge_of_power.up", "Surge of Power is strong and should be used." );
