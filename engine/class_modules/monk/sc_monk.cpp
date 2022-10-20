@@ -2536,9 +2536,7 @@ struct rjw_tick_action_t : public monk_melee_attack_t
 struct rushing_jade_wind_t : public monk_melee_attack_t
 {
   rushing_jade_wind_t( monk_t* p, util::string_view options_str )
-    : monk_melee_attack_t( "rushing_jade_wind", p, 
-        ( p->specialization() == MONK_BREWMASTER ? p->talent.brewmaster.rushing_jade_wind :
-         ( p->specialization() == MONK_WINDWALKER ? p->talent.windwalker.rushing_jade_wind : spell_data_t::nil() ) ) )
+    : monk_melee_attack_t( "rushing_jade_wind", p, p->shared.rushing_jade_wind )
   {
     parse_options( options_str );
     sef_ability                     = sef_ability_e::SEF_RUSHING_JADE_WIND;
@@ -5214,7 +5212,7 @@ struct weapons_of_order_t : public monk_spell_t
   chi_surge_t* chi_surge;
 
   weapons_of_order_t( monk_t& p, util::string_view options_str )
-    : monk_spell_t( "weapons_of_order", &p, p.shared.weapons_of_order && p.shared.weapons_of_order->ok() ? p.shared.weapons_of_order : spell_data_t::nil() ),
+    : monk_spell_t( "weapons_of_order", &p, p.shared.weapons_of_order ),
       chi_surge( new chi_surge_t( p ) )
   {
     parse_options( options_str );
@@ -5282,13 +5280,15 @@ struct bountiful_brew_t : public monk_spell_t
   buff_t* lead_by_example;
 
   bountiful_brew_t( monk_t& p )
-    : monk_spell_t( "bountiful_brew", &p, p.shared.bountiful_brew && p.shared.bountiful_brew->ok() ? p.shared.bountiful_brew : spell_data_t::nil() )
+    : monk_spell_t( "bountiful_brew", &p, p.shared.bountiful_brew )
   {
     harmful            = false;
     cooldown->duration = timespan_t::zero();
     aoe                = -1;
     base_dd_min        = 0;
     base_dd_max        = 0;
+    may_miss           = false;
+    may_parry          = true;
   }
 
   void init_finished() override
@@ -5310,8 +5310,7 @@ struct bountiful_brew_t : public monk_spell_t
 
   void execute() override
   {
-    if ( p()->talent.brewmaster.attenuation->ok() || p()->talent.mistweaver.attenuation->ok() ||
-         p()->talent.windwalker.attenuation->ok() )
+    if ( !p()->covenant.necrolord )
       p()->buff.bonedust_brew_attenuation_hidden->trigger();
     else
       p()->buff.bonedust_brew_grounding_breath_hidden->trigger();
@@ -5339,7 +5338,7 @@ struct bountiful_brew_t : public monk_spell_t
 struct bonedust_brew_t : public monk_spell_t
 {
   bonedust_brew_t( monk_t& p, util::string_view options_str )
-      : monk_spell_t( "bonedust_brew", &p, p.shared.bonedust_brew && p.shared.bonedust_brew->ok() ? p.shared.bonedust_brew : spell_data_t::nil())
+      : monk_spell_t( "bonedust_brew", &p, p.shared.bonedust_brew )
   {
     parse_options( options_str );
     may_combo_strike            = true;
@@ -5348,17 +5347,20 @@ struct bonedust_brew_t : public monk_spell_t
     base_dd_min                 = 0;
     base_dd_max                 = 0;
     cast_during_sck             = true;
+    may_miss                    = false;
+    may_parry                   = true;
+
     if ( p.talent.windwalker.dust_in_the_wind->ok() )
       radius *= 1 + p.talent.windwalker.dust_in_the_wind->effectN( 1 ).percent();
   }
 
   void execute() override
   {
-    if ( p()->talent.brewmaster.attenuation->ok() || p()->talent.mistweaver.attenuation->ok() ||
-         p()->talent.windwalker.attenuation->ok() )
+    if ( !p()->covenant.necrolord )
       p()->buff.bonedust_brew_attenuation_hidden->trigger();
     else
       p()->buff.bonedust_brew_grounding_breath_hidden->trigger();
+
     monk_spell_t::execute();
 
     p()->buff.bonedust_brew->trigger();
@@ -5518,7 +5520,7 @@ struct faeline_stomp_t : public monk_spell_t
   int aoe_initial_cap;
   int ww_aoe_cap;
   faeline_stomp_t( monk_t& p, util::string_view options_str )
-      : monk_spell_t( "faeline_stomp", &p, p.shared.faeline_stomp && p.shared.faeline_stomp->ok() ? p.shared.faeline_stomp : spell_data_t::nil() ),
+      : monk_spell_t( "faeline_stomp", &p, p.shared.faeline_stomp ),
       damage( new faeline_stomp_damage_t( p ) ),
       heal( new faeline_stomp_heal_t( p ) ),
       ww_damage( new faeline_stomp_ww_damage_t( p ) ),
@@ -6528,7 +6530,7 @@ struct chi_burst_t : public monk_spell_t
 
 struct healing_elixir_t : public monk_heal_t
 {
-  healing_elixir_t( monk_t& p ) : monk_heal_t( "healing_elixir", p, p.shared.healing_elixir && p.shared.healing_elixir->ok() ? p.shared.healing_elixir : spell_data_t::nil() )
+  healing_elixir_t( monk_t& p ) : monk_heal_t( "healing_elixir", p, p.shared.healing_elixir )
   {
     harmful = may_crit = false;
     target             = &p;
@@ -8487,6 +8489,9 @@ void monk_t::init_spells()
   shared.last_emperors_capacitor =
     _priority( legendary.last_emperors_capacitor, talent.windwalker.last_emperors_capacitor );
 
+  shared.rushing_jade_wind =
+    _priority( talent.windwalker.rushing_jade_wind, talent.brewmaster.rushing_jade_wind );
+
   shared.scalding_brew =
     _priority( conduit.scalding_brew, talent.brewmaster.scalding_brew );
 
@@ -8667,9 +8672,7 @@ void monk_t::create_buffs ()
 
   buff.generous_pour_driver = new buffs::generous_pour_driver_t( *this, "generous_pour_aura_driver", find_spell( 389685 ) );
 
-  buff.rushing_jade_wind = new buffs::rushing_jade_wind_buff_t ( *this, "rushing_jade_wind",
-    ( specialization () == MONK_BREWMASTER ? talent.brewmaster.rushing_jade_wind : 
-        ( specialization() == MONK_WINDWALKER ? talent.windwalker.rushing_jade_wind : spell_data_t::nil() ) ) );
+  buff.rushing_jade_wind = new buffs::rushing_jade_wind_buff_t ( *this, "rushing_jade_wind", shared.rushing_jade_wind );
 
   buff.dampen_harm = make_buff ( this, "dampen_harm", talent.general.dampen_harm );
 
