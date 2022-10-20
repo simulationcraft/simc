@@ -171,7 +171,6 @@ struct avengers_shield_t : public avengers_shield_base_t
         p() -> procs.as_engraved_sigil_wasted -> occur();
     }
 
-    // TODO: Increase 5% Versa of nearest ally
     if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, T29, B2 ) )
     {
       p()->buffs.ally_of_the_light->trigger();
@@ -346,10 +345,9 @@ struct blessed_hammer_t : public paladin_spell_t
     // Grand Crusader can proc on cast, but not on impact
     p() -> trigger_grand_crusader();
 
-    // TODO: Override deflecting light trigger to increase 2set duration by 1s when triggered
     if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, T29, B4 ) )
     {
-      p()->buffs.deflecting_light->trigger();
+      p()->t29_4p_prot();
     }
   }
 };
@@ -474,7 +472,7 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
       }
       if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, T29, B4 ) )
       {
-        p()->buffs.deflecting_light->trigger();
+        p()->t29_4p_prot();
       }
     }
   }
@@ -545,6 +543,7 @@ struct t28_4p_prot_t : public judgment_prot_t
     may_miss                     = false;
   }
 };
+
 
 // Shield of the Righteous ==================================================
 
@@ -855,6 +854,7 @@ void paladin_t::trigger_grand_crusader()
   if ( talents.inspiring_vanguard -> ok() )
   {
     buffs.inspiring_vanguard -> trigger();
+    
   }
 }
 
@@ -903,7 +903,12 @@ void paladin_t::trigger_tyrs_enforcer( action_state_t* s )
   active.tyrs_enforcer_damage->execute();
 
 }
-
+void paladin_t::t29_4p_prot()
+{
+  buffs.deflecting_light->trigger();
+  if ( buffs.ally_of_the_light->up() )
+    buffs.ally_of_the_light->extend_duration(this, tier_sets.ally_of_the_light_4pc->effectN(1).time_value() );
+}
 bool paladin_t::standing_in_consecration() const
 {
   if ( ! sim -> distance_targeting_enabled )
