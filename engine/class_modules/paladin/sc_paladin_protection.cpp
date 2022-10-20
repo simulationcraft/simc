@@ -829,10 +829,10 @@ void paladin_t::trigger_grand_crusader()
   if ( ! talents.grand_crusader -> ok() )
     return;
 
-  double gc_proc_chance = talents.grand_crusader -> proc_chance();
+  double gc_proc_chance = talents.grand_crusader->effectN( 1 ).percent();
   if ( talents.inspiring_vanguard -> ok() )
   {
-    gc_proc_chance = talents.inspiring_vanguard->effectN( 2 ).percent();
+    gc_proc_chance = gc_proc_chance += talents.inspiring_vanguard->effectN( 2 ).percent();
   }
 
   // The bonus from First Avenger is added after Inspiring Vanguard
