@@ -990,8 +990,10 @@ struct crusader_strike_t : public paladin_melee_attack_t
     }
   }
 
-  void execute() override
+  void execute() override 
   {
+    paladin_melee_attack_t::execute();
+
     if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, T29, B4 ) )
     {
       p()->t29_4p_prot();
