@@ -6527,6 +6527,31 @@ struct wildfire_bomb_t: public hunter_spell_t
 
   struct volatile_bomb_t final : public bomb_base_t
   {
+    struct serpent_sting_vb_t final : public attacks::serpent_sting_base_t
+    {
+      serpent_sting_vb_t( util::string_view n, hunter_t* p ):
+        serpent_sting_base_t( p, "", p -> find_spell( 271788 ) )
+      {
+        dual = true;
+        base_costs[ RESOURCE_FOCUS ] = 0;
+        triggers_wild_spirits = false;
+
+        aoe = as<int>( p -> talents.wildfire_infusion -> effectN( 2 ).base_value() );
+      }
+
+      size_t available_targets( std::vector< player_t* >& tl ) const override
+      {
+        hunter_ranged_attack_t::available_targets( tl );
+
+        // Don't force primary target to stay at the front.
+        std::partition( tl.begin(), tl.end(), [ this ]( player_t* t ) {
+          return !( this -> td( t ) -> dots.serpent_sting -> is_ticking() );
+          } );
+
+        return tl.size();
+      }
+    };
+
     struct violent_reaction_t final : public hunter_spell_t
     {
       violent_reaction_t( util::string_view n, hunter_t* p ):
@@ -6538,6 +6563,7 @@ struct wildfire_bomb_t: public hunter_spell_t
       }
     };
     violent_reaction_t* violent_reaction;
+    serpent_sting_vb_t* serpent_sting;
 
     volatile_bomb_t( util::string_view n, hunter_t* p, wildfire_bomb_t* a ):
       bomb_base_t( n, a, p -> find_spell( 271048 ), "volatile_bomb", p -> find_spell( 271049 ) ),
@@ -6547,6 +6573,8 @@ struct wildfire_bomb_t: public hunter_spell_t
         add_child( violent_reaction );
       else
         a -> add_child( violent_reaction );
+
+      serpent_sting = p -> get_background_action<serpent_sting_vb_t>( "serpent_sting" );
     }
 
     void execute() override
@@ -6555,13 +6583,8 @@ struct wildfire_bomb_t: public hunter_spell_t
 
       if ( td( target ) -> dots.serpent_sting -> is_ticking() )
         violent_reaction -> execute_on_target( target );
-    }
 
-    void impact( action_state_t* s ) override
-    {
-      bomb_base_t::impact( s );
-
-      td( s -> target ) -> dots.serpent_sting -> refresh_duration();
+      serpent_sting -> execute_on_target( target );
     }
   };
 
