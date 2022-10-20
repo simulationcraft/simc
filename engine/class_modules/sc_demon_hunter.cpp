@@ -6410,6 +6410,8 @@ void demon_hunter_t::apl_havoc()
   apl_default->add_action( "pick_up_fragment,type=demon,if=demon_soul_fragments>0" );
   apl_default->add_action( "pick_up_fragment,mode=nearest,if=(talent.demonic_appetite.enabled&fury.deficit>=35|runeforge.blind_faith&buff.blind_faith.up)&(!cooldown.eye_beam.ready|fury<30)" );
   apl_default->add_action( "throw_glaive,if=buff.fel_bombardment.stack=5&(buff.immolation_aura.up|!buff.metamorphosis.up)");
+  apl_default->add_action( "vengeful_retreat,if=time>1&(variable.waiting_for_momentum|!talent.momentum&talent.tactical_retreat)&buff.tactical_retreat.down" );
+  apl_default->add_action( "fel_rush,if=(buff.unbound_chaos.up|variable.waiting_for_momentum&(!talent.unbound_chaos.enabled|!cooldown.immolation_aura.ready))&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))" );
   apl_default->add_action( "run_action_list,name=demonic,if=talent.demonic.enabled" );
   apl_default->add_action( "run_action_list,name=normal" );
 
@@ -6425,8 +6427,6 @@ void demon_hunter_t::apl_havoc()
 
   action_priority_list_t* apl_normal = get_action_priority_list( "normal" );
   apl_normal->add_action( "eye_beam,if=runeforge.agony_gaze&(active_enemies>desired_targets|raid_event.adds.in>15)&dot.sinful_brand.ticking&dot.sinful_brand.remains<=gcd" );
-  apl_normal->add_action( "vengeful_retreat,if=talent.tactical_retreat.enabled&buff.tactical_retreat.down&time>1" );
-  apl_normal->add_action( "fel_rush,if=(buff.unbound_chaos.up|variable.waiting_for_momentum&(!talent.unbound_chaos.enabled|!cooldown.immolation_aura.ready))&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))" );
   apl_normal->add_action( "fel_barrage,if=active_enemies>desired_targets|raid_event.adds.in>30");
   apl_normal->add_action( "death_sweep,if=variable.blade_dance" );
   apl_normal->add_action( "immolation_aura,if=!buff.immolation_aura.up" );
@@ -6446,14 +6446,13 @@ void demon_hunter_t::apl_havoc()
   apl_normal->add_action( "demons_bite" );
   apl_normal->add_action( "fel_rush,if=!talent.momentum.enabled&raid_event.movement.in>charges*10&talent.demon_blades" );
   apl_normal->add_action( "felblade,if=movement.distance>15|buff.out_of_range.up");
-  apl_normal->add_action( "fel_rush,if=movement.distance>15|(buff.out_of_range.up&!talent.momentum.enabled)" );
-  apl_normal->add_action( "vengeful_retreat,if=movement.distance>15" );
+  apl_normal->add_action( "fel_rush,if=movement.distance>15|(buff.out_of_range.up&!talent.momentum)" );
+  apl_normal->add_action( "vengeful_retreat,if=!talent.momentum&movement.distance>15" );
   apl_normal->add_action( "throw_glaive,if=talent.demon_blades" );
 
   action_priority_list_t* apl_demonic = get_action_priority_list( "demonic" );
   apl_demonic->add_action( "eye_beam,if=runeforge.agony_gaze&(active_enemies>desired_targets|raid_event.adds.in>25-talent.cycle_of_hatred*10)"
                                              "&dot.sinful_brand.ticking&dot.sinful_brand.remains<=gcd" );
-  apl_demonic->add_action( "fel_rush,if=talent.unbound_chaos.enabled&buff.unbound_chaos.up&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))" );
   apl_demonic->add_action( "death_sweep,if=variable.blade_dance");
   apl_demonic->add_action( "fel_barrage,if=active_enemies>desired_targets|raid_event.adds.in>30" );
   apl_demonic->add_action( "glaive_tempest,if=active_enemies>desired_targets|raid_event.adds.in>10" );
@@ -6468,14 +6467,14 @@ void demon_hunter_t::apl_havoc()
   apl_demonic->add_action( "essence_break" );
   apl_demonic->add_action( "sigil_of_flame,if=active_enemies>desired_targets" );
   apl_demonic->add_action( "chaos_strike,if=!variable.pooling_for_blade_dance&!variable.pooling_for_eye_beam");
-  apl_demonic->add_action( "fel_rush,if=talent.demon_blades&!cooldown.eye_beam.ready&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))" );
+  apl_demonic->add_action( "fel_rush,if=!talent.momentum&talent.demon_blades&!cooldown.eye_beam.ready&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))" );
   apl_demonic->add_action( "demons_bite,target_if=min:debuff.burning_wound.remains,if=(runeforge.burning_wound|talent.burning_wound)&debuff.burning_wound.remains<4" );
-  apl_demonic->add_action( "fel_rush,if=!talent.demon_blades&spell_targets>1&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))" );
+  apl_demonic->add_action( "fel_rush,if=!talent.momentum&!talent.demon_blades&spell_targets>1&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))" );
   apl_demonic->add_action( "sigil_of_flame,if=raid_event.adds.in>15&fury.deficit>=30" );
   apl_demonic->add_action( "demons_bite" );
   apl_demonic->add_action( "throw_glaive,if=buff.out_of_range.up" );
-  apl_demonic->add_action( "fel_rush,if=movement.distance>15|buff.out_of_range.up" );
-  apl_demonic->add_action( "vengeful_retreat,if=movement.distance>15" );
+  apl_demonic->add_action( "fel_rush,if=movement.distance>15|(buff.out_of_range.up&!talent.momentum)" );
+  apl_demonic->add_action( "vengeful_retreat,if=!talent.momentum&movement.distance>15" );
   apl_demonic->add_action( "throw_glaive,if=talent.demon_blades" );
 }
 
