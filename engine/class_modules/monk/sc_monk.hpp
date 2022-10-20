@@ -51,6 +51,7 @@ enum class sef_ability_e
   // Attacks begin here
   SEF_TIGER_PALM,
   SEF_BLACKOUT_KICK,
+  SEF_BLACKOUT_KICK_TOTM,
   SEF_RISING_SUN_KICK,
   SEF_FISTS_OF_FURY,
   SEF_SPINNING_CRANE_KICK,

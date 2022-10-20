@@ -689,13 +689,29 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     }
   };
 
+struct sef_blackout_kick_totm_proc_t : public sef_melee_attack_t
+  {
+    sef_blackout_kick_totm_proc_t( storm_earth_and_fire_pet_t* player )
+      : sef_melee_attack_t( "blackout_kick_totm_proc", player, player->o()->passives.totm_bok_proc )
+    {
+      background  = true;
+      trigger_gcd = timespan_t::zero();
+    }
+  };
+
   struct sef_blackout_kick_t : public sef_melee_attack_t
   {
+    sef_blackout_kick_totm_proc_t* bok_totm_proc;
+
     sef_blackout_kick_t( storm_earth_and_fire_pet_t* player )
       : sef_melee_attack_t( "blackout_kick", player, player->o()->spec.blackout_kick )
     {
-      // Hard Code the divider
-      base_dd_min = base_dd_max = 1;
+      if ( player->o()->talent.windwalker.teachings_of_the_monastery->ok() )
+      {
+        bok_totm_proc = new sef_blackout_kick_totm_proc_t( player );
+
+        add_child( bok_totm_proc );
+      }
     }
 
     void impact( action_state_t* state ) override
@@ -1164,6 +1180,7 @@ public:
 
     attacks.at( (int)sef_ability_e::SEF_TIGER_PALM ) = new sef_tiger_palm_t( this );
     attacks.at( (int)sef_ability_e::SEF_BLACKOUT_KICK ) = new sef_blackout_kick_t( this );
+    attacks.at( (int)sef_ability_e::SEF_BLACKOUT_KICK_TOTM ) = new sef_blackout_kick_totm_proc_t( this );
     attacks.at( (int)sef_ability_e::SEF_RISING_SUN_KICK ) = new sef_rising_sun_kick_t( this );
     attacks.at( (int)sef_ability_e::SEF_FISTS_OF_FURY )   = new sef_fists_of_fury_t( this );
     attacks.at( (int)sef_ability_e::SEF_SPINNING_CRANE_KICK ) = new sef_spinning_crane_kick_t( this );

@@ -2062,10 +2062,12 @@ struct rising_sun_kick_t : public monk_melee_attack_t
 // ==========================================================================
 
 // Blackout Kick Proc from Teachings of the Monastery =======================
-struct blackout_kick_totm_proc : public monk_melee_attack_t
+struct blackout_kick_totm_proc_t : public monk_melee_attack_t
 {
-  blackout_kick_totm_proc( monk_t* p ) : monk_melee_attack_t( "blackout_kick_totm_proc", p, p->passives.totm_bok_proc )
+  blackout_kick_totm_proc_t( monk_t* p )
+    : monk_melee_attack_t( "blackout_kick_totm_proc", p, p->passives.totm_bok_proc )
   {
+    sef_ability         = sef_ability_e::SEF_BLACKOUT_KICK_TOTM;
     ww_mastery          = false;
     cooldown->duration  = timespan_t::zero();
     background = dual   = true;
@@ -2197,7 +2199,7 @@ struct charred_passions_bok_t : public monk_spell_t
 // Blackout Kick Baseline ability =======================================
 struct blackout_kick_t : public monk_melee_attack_t
 {
-  blackout_kick_totm_proc* bok_totm_proc;
+  blackout_kick_totm_proc_t* bok_totm_proc;
   charred_passions_bok_t* charred_passions;
 
   blackout_kick_t( monk_t* p, util::string_view options_str )
@@ -2236,7 +2238,7 @@ struct blackout_kick_t : public monk_melee_attack_t
       case MONK_MISTWEAVER: {
         if ( p->talent.mistweaver.teachings_of_the_monastery->ok() )
         {
-          bok_totm_proc = new blackout_kick_totm_proc( p );
+          bok_totm_proc = new blackout_kick_totm_proc_t( p );
 
           add_child( bok_totm_proc );
         }
@@ -2253,7 +2255,7 @@ struct blackout_kick_t : public monk_melee_attack_t
 
         if ( p->talent.windwalker.teachings_of_the_monastery->ok() )
         {
-          bok_totm_proc = new blackout_kick_totm_proc( p );
+          bok_totm_proc = new blackout_kick_totm_proc_t( p );
 
           add_child( bok_totm_proc );
         }
