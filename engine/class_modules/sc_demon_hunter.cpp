@@ -6455,6 +6455,7 @@ void demon_hunter_t::apl_havoc()
                                              "&dot.sinful_brand.ticking&dot.sinful_brand.remains<=gcd" );
   apl_demonic->add_action( "fel_rush,if=talent.unbound_chaos.enabled&buff.unbound_chaos.up&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))" );
   apl_demonic->add_action( "death_sweep,if=variable.blade_dance");
+  apl_demonic->add_action( "fel_barrage,if=active_enemies>desired_targets|raid_event.adds.in>30" );
   apl_demonic->add_action( "glaive_tempest,if=active_enemies>desired_targets|raid_event.adds.in>10" );
   apl_demonic->add_action( "throw_glaive,if=conduit.serrated_glaive.enabled&cooldown.eye_beam.remains<6&!buff.metamorphosis.up&!debuff.exposed_wound.up" );
   apl_demonic->add_action( "eye_beam,if=active_enemies>desired_targets|raid_event.adds.in>25-talent.cycle_of_hatred*10"
