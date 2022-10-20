@@ -4162,6 +4162,7 @@ struct odyns_fury_t : warrior_attack_t
     {
       const timespan_t trigger_duration = timespan_t::from_millis( 4000 );  // value not in talent data
       p()->buff.avatar->extend_duration_or_trigger( trigger_duration );
+      p()->resource_gain( RESOURCE_RAGE, ( p()->talents.warrior.avatar->effectN( 6 ).base_value() / 10.0 ), p()->gain.avatar );
     } 
     if ( from_avatar )
       cooldown->reset( true );
