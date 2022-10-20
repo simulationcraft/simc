@@ -185,15 +185,22 @@ struct avengers_shield_t : public avengers_shield_base_t
     {
       m *= 1.0 + p()->talents.moment_of_glory->effectN( 2 ).percent();
     }
-      if ( p() -> talents.focused_enmity->ok() )
-       {
-        m *= 1.0 + p() -> talents.focused_enmity->effectN( 2 ).percent();
-      }
-    //TODO Actually implement this properly, right now its a flat damage increase and will return bad values for aoe.
-    if ( p()->talents.ferren_marcuss_fervor->ok() )
-        {
-          m *= 1.0 + p()->talents.ferren_marcuss_fervor->effectN( 1 ).percent();
-        }
+    if ( p() -> talents.focused_enmity->ok() )
+    {
+      m *= 1.0 + p() -> talents.focused_enmity->effectN( 2 ).percent();
+    }
+    return m;
+  }
+
+  double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    double m = avengers_shield_base_t::composite_da_multiplier( state );
+
+    if ( state->chain_target == 0 )
+    {
+      sim->print_debug( "DEBUG: This is the target!" );
+      m *= 1.0 + p()->talents.ferren_marcuss_fervor->effectN( 1 ).percent();
+    }
     return m;
   }
 };
