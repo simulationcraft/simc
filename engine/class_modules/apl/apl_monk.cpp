@@ -687,7 +687,7 @@ void windwalker( player_t* p )
   serenity->add_action( "spinning_crane_kick,if=combo_strike&active_enemies>1&spinning_crane_kick.modifier>2.1" );
   serenity->add_action( "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike");
   serenity->add_action( "spinning_crane_kick,if=combo_strike&(buff.dance_of_chiji.up|active_enemies>1)" );
-  serenity->add_action( "rushing_jade_wind,if=buff.rushing_jade_wind.down" );
+  serenity->add_action( "rushing_jade_wind,if=buff.rushing_jade_wind.down,if=!set_bonus.tier29_2pc|active_enemies>2" );
   serenity->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike" );
   serenity->add_action( "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=talent.teachings_of_the_monastery&buff.teachings_of_the_monastery.stack<3" );
   // Opener
