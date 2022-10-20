@@ -929,7 +929,12 @@ void flaring_cowl( special_effect_t& effect )
 
 void thriving_thorns( special_effect_t& effect )
 {
-  effect.player->passive.add_stat( STAT_STAMINA, effect.driver()->effectN( 2 ).average( effect.item ) );
+  auto toxic_mul = 1.0;
+  auto toxic = unique_gear::find_special_effect( effect.player, 378758 );
+  if ( toxic )
+    toxic_mul += toxic->driver()->effectN( 2 ).percent();
+
+  effect.player->passive.add_stat( STAT_STAMINA, effect.driver()->effectN( 2 ).average( effect.item ) * toxic_mul );
 
   // velocity & triggered missile reference is in 379395 for damage & 379405 for heal
   // TODO: implement heal
@@ -937,13 +942,7 @@ void thriving_thorns( special_effect_t& effect )
   auto damage = create_proc_action<generic_proc_t>( "launched_thorns", effect, "launched_thorns",
                                                     damage_trg->effectN( 1 ).trigger() );
   damage->travel_speed = damage_trg->missile_speed();
-
-  auto val = effect.driver()->effectN( 4 ).average( effect.item );
-  auto toxic = unique_gear::find_special_effect( effect.player, 378758 );
-  if ( toxic )
-    val *= 1.0 + toxic->driver()->effectN( 2 ).percent();
-
-  damage->base_dd_min = damage->base_dd_max = val;
+  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 4 ).average( effect.item ) * toxic_mul;
 
   effect.execute_action = damage;
 
