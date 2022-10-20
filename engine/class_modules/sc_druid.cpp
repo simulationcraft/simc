@@ -11226,26 +11226,22 @@ void druid_t::init()
 
 bool druid_t::validate_fight_style( fight_style_e style ) const
 {
+  if ( SC_BETA == 0 && SC_MAJOR_VERSION == "1000" )
+  {
+    sim->error( "Prepatch {} sims are untested and not supported. Sim at your own risk!",
+                util::specialization_string( specialization() ) );
+  }
+/* uncomment if certain fight styles prove problematic again
   switch ( specialization() )
   {
     case DRUID_BALANCE:
-      if ( style == FIGHT_STYLE_PATCHWERK || style == FIGHT_STYLE_CASTING_PATCHWERK )
-        return true;
-      else
-        return false;
     case DRUID_FERAL:
     case DRUID_GUARDIAN:
     case DRUID_RESTORATION:
     default:
       break;
   }
-
-  if ( SC_BETA == 0 && SC_MAJOR_VERSION == "1000" )
-  {
-    sim->error( "Prepatch {} sims are untested and not supported. Sim at your own risk!",
-                util::specialization_string( specialization() ) );
-  }
-
+*/
   return true;
 }
 
