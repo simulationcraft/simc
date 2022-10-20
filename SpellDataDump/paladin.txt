@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46144 dragonflight-BETA (hotfix 2022-10-19/46144, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46144 dragonflight-BETA (hotfix 2022-10-20/46144, no-networking)
 Name             : Frostbolt of Ages (id=11) 
 Class            : Paladin
 School           : Frost
@@ -688,7 +688,8 @@ Attributes       : ........ ........ x.x..... ...x....   ........ ........ .....
                  : Not Shapeshifted (16), Do Not Sheath (18), Allow While Sitting (27), Active Threat (94), Not a Proc (105), Do Not Display Range (126), No Cast Log (128), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=15851)    : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.68000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.61200 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : SP Coefficient (0.68 -> 0.612)
 Description      : $@spelldesc20473
 
 Name             : Holy Shock (id=25914) [Spell Family (10)] 
@@ -710,7 +711,8 @@ Attributes       : ........ ........ x.x..... ...x....   ........ ........ .....
                  : Not Shapeshifted (16), Do Not Sheath (18), Allow While Sitting (27), Not a Proc (105), Do Not Display Range (126), No Cast Log (128), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=15852)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.55000 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.39500 | PvP Coefficient: 1.00000 | Target: Friend (21)
+Hotfixed         : SP Coefficient (1.55 -> 1.395)
 Description      : $@spelldesc20473
 
 Name             : Consecration (id=26573) [Spell Family (10)] 
@@ -1823,7 +1825,7 @@ Resource         : 3 Holy Power (9) (id=4098)
 Spell Level      : 7
 Range            : 40 yards
 GCD              : 1.5 seconds
-Affecting spells : Avenging Wrath (31884 effects: #2, #3, #11), Sanctuary (105805 effect#5), Retribution Paladin (137027 effect#15), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Consecration (188370 effect#3), Fires of Justice (209785 effect#1), Rule of Law (214202 effect#1), Divine Purpose (223819 effects: #1, #2), Righteous Conviction (287126 effect#1), Shining Light (327510 effect#1), The Magistrate's Judgment (337682 effect#1), Blessing of Dawn (337747 effects: #1, #2), Royal Decree (340147 effect#1), Bastion of Light (378974 effect#1), Blessing of Dawn (385127 effects: #1, #2, #4), Shining Savior (388005 effect#1), Sentinel (389539 effects: #1, #2, #3), Paladin Holy Class Set 4pc (393672 effects: #2, #3), Luminous Force (394550 effect#1)
+Affecting spells : Avenging Wrath (31884 effects: #2, #3, #11), Sanctuary (105805 effect#5), Retribution Paladin (137027 effect#15), Holy Paladin (137029 effects: #1, #2, #15), Beacon of Faith (156910 effect#3), Consecration (188370 effect#3), Fires of Justice (209785 effect#1), Rule of Law (214202 effect#1), Divine Purpose (223819 effects: #1, #2), Righteous Conviction (287126 effect#1), Shining Light (327510 effect#1), The Magistrate's Judgment (337682 effect#1), Blessing of Dawn (337747 effects: #1, #2), Royal Decree (340147 effect#1), Bastion of Light (378974 effect#1), Blessing of Dawn (385127 effects: #1, #2, #4), Shining Savior (388005 effect#1), Sentinel (389539 effects: #1, #2, #3), Paladin Holy Class Set 4pc (393672 effects: #2, #3), Luminous Force (394550 effect#1)
 Family Flags     : 46, 78
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3021,6 +3023,11 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000
 #14 (id=1032421)  : Apply Aura (6) | Unknown(531)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000
+#15 (id=1039315)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: -8 | Scaled Value: -8 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Word of Glory (85673)
+                   Family Flags: 78
+Hotfixed         : NEW EFFECT
 Description      : Holy Paladin core passive
 
 Name             : Glyph of Pillar of Light (id=146959) [Spell Family (10), Passive, Hidden] 
@@ -3592,7 +3599,8 @@ Attributes       : ........ ........ ..x..... .....x..   ........ ..x..... .....
                  : Do Not Sheath (18), No Immunities (29), No Threat (42), Do Not Display Range (126), Allow Cast While Casting (135), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=266292)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.07000 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.03500 | PvP Coefficient: 1.00000 | Target: Friend (21)
+Hotfixed         : SP Coefficient (0.07 -> 0.035)
 Description      : $@spelldesc183778
 
 Name             : Mastery: Lightbringer (id=183997) [Spell Family (10), Passive] 
@@ -5291,7 +5299,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Not a Proc (105), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=337592)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.05000 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.92400 | PvP Coefficient: 1.00000 | Target: Friend (21)
+Hotfixed         : SP Coefficient (1.05 -> 0.924)
 Description      : $@spelldesc85222
 
 Name             : Cavalier (id=230332) [Passive] 
@@ -15007,7 +15016,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Aura Points On Client (268)
 Effects          :
 #1 (id=1022823)  : Apply Aura (6) | Modify Armor% (101)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Friend (21)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Friend (21)
+Hotfixed         : Base Value (15 -> 30)
 Description      : $@spelldesc387791
 Tooltip          : Armor increased by $s1%.
 
@@ -15181,9 +15191,10 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
                  : No Aura Cancel (31)
 Effects          :
 #1 (id=1022867)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Light of the Martyr (183998)
                    Family Flags: 124
+Hotfixed         : Base Value (8 -> 10)
 Description      : $@spelldesc387814
 Tooltip          : Light of the Martyr damage and healing increased by $s1%.
 

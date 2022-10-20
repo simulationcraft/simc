@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46144 dragonflight-BETA (hotfix 2022-10-19/46144, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46144 dragonflight-BETA (hotfix 2022-10-20/46144, no-networking)
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -170,7 +170,7 @@ School           : Physical
 Spell Type       : Melee
 Spell Level      : 19
 Range            : 50000 yards
-Duration         : 3 seconds
+Duration         : 6 seconds
 Mechanic         : Silence
 Affecting spells : Iron Wire (196861 effect#1)
 Family Flags     : 61
@@ -4193,11 +4193,13 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=289043)   : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
-                   Base Value: 3000 | Scaled Value: 3000 | PvP Coefficient: 0.50000 | Misc Value: 1 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Garrote - Silence (1330)
                    Family Flags: 61
+Hotfixed         : Base Value (3000 -> 0), PvP Coefficient (0.5 -> 1)
 #2 (id=705892)   : Dummy (3)
-                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 0.33333 | Target: Self (1)
+                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 0.50000 | Target: Self (1)
+Hotfixed         : PvP Coefficient (0.333333 -> 0.5)
 Description      : Garrote silences the target for $s2 sec when used from Stealth.
 
 Enemies silenced by Garrote deal $256148s1% reduced damage for $256148d.
