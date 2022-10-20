@@ -184,12 +184,24 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
         break;
       }
 
-      if ( item.sim -> debug )
-      {
-        item.player -> sim -> print_debug( "Player {} item '{}' adjusting ilevel by {} (old={} new={})",
-            item.player -> name(), item.name(), entry.value_1, item.parsed.data.level, item.parsed.data.level + entry.value_1 );
-      }
+      item.parsed.data.bonus_level += entry.value_1;
+      item.sim->print_debug( "Player {} item '{}' adjusting ilevel by {} (old={} new={})", item.player->name(),
+                             item.name(), entry.value_1, item.parsed.data.level,
+                             item.parsed.data.level + item.parsed.data.bonus_level );
       item.parsed.data.level += entry.value_1;
+      break;
+    case ITEM_BONUS_SET_ILEVEL_2:
+      // TODO: confirm if these ilevel adjust disable IDs also affect type 42 bonus ids
+      if ( range::find( item.parsed.bonus_id, 7215 ) != item.parsed.bonus_id.end() ||
+           range::find( item.parsed.bonus_id, 7250 ) != item.parsed.bonus_id.end() )
+      {
+        break;
+      }
+
+      item.sim->print_debug( "Player {} item '{}' setting ilevel to {} (old={} new={})", item.player->name(),
+                             item.name(), entry.value_1, item.parsed.data.level,
+                             entry.value_1 + item.parsed.data.bonus_level );
+      item.parsed.data.level = entry.value_1 + item.parsed.data.bonus_level;
       break;
     // Add new item stats. Value_1 has the item modifier, value_2 has the
     // allocation percent. This bonus type is the reason we don't really
