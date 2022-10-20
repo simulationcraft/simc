@@ -346,6 +346,12 @@ struct blessed_hammer_t : public paladin_spell_t
 
     // Grand Crusader can proc on cast, but not on impact
     p() -> trigger_grand_crusader();
+
+    // TODO: Override deflecting light trigger to increase 2set duration by 1s when triggered
+    if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, T29, B4 ) )
+    {
+      p()->buffs.deflecting_light->trigger();
+    }
   }
 };
 
@@ -466,6 +472,10 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
       {
         hotr_aoe -> target = execute_state -> target;
         hotr_aoe -> execute();
+      }
+      if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, T29, B4 ) )
+      {
+        p()->buffs.deflecting_light->trigger();
       }
     }
   }
