@@ -844,6 +844,7 @@ enum set_bonus_type_e
   T28,
   T28_RIPPED_SECRETS,
   T29,
+  T29_PLAYFUL_SPIRITS_FUR,
   SET_BONUS_MAX
 };
 

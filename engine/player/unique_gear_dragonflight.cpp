@@ -14,6 +14,7 @@
 #include "item/item.hpp"
 #include "item/item_targetdata_initializer.hpp"
 #include "sim/sim.hpp"
+#include "set_bonus.hpp"
 #include "stats.hpp"
 #include "unique_gear.hpp"
 #include "unique_gear_helper.hpp"
@@ -460,12 +461,6 @@ void wafting_devotion( special_effect_t& effect )
 
 namespace items
 {
-void DISABLED_EFFECT( special_effect_t& effect )
-{
-  // Disable the effect, as we handle shuffling within the on-use effect
-  effect.type = SPECIAL_EFFECT_NONE;
-}
-
 // Trinkets
 custom_cb_t idol_of_the_aspects( std::string_view type )
 {
@@ -919,6 +914,31 @@ void elemental_lariat( special_effect_t& effect )
 }
 }  // namespace items
 
+namespace sets
+{
+void playful_spirits_fur( special_effect_t& effect )
+{
+  if ( !effect.player->sets->has_set_bonus( effect.player->specialization(), T29_PLAYFUL_SPIRITS_FUR, B2 ) )
+    return;
+
+  auto snowball = create_proc_action<generic_proc_t>( "magic_snowball", effect, "magic_snowball", 376932 );
+
+  if ( effect.driver() == effect.player->sets->set( effect.player->specialization(), T29_PLAYFUL_SPIRITS_FUR, B2 ) )
+  {
+    effect.execute_action = snowball;
+
+    new dbc_proc_callback_t( effect.player, effect );
+  }
+  else
+  {
+    auto val = effect.driver()->effectN( 1 ).average( effect.item );
+
+    snowball->base_dd_min += val;
+    snowball->base_dd_max += val;
+  }
+}
+}  // namespace sets
+
 void register_special_effects()
 {
   // Food
@@ -959,13 +979,17 @@ void register_special_effects()
   // Weapons
   // Armor
   register_special_effect( 375323, items::elemental_lariat );
+
+  // Sets
+  register_special_effect( { 393620, 393982 }, sets::playful_spirits_fur );
+
   // Disabled
-  register_special_effect( 382958, items::DISABLED_EFFECT );  // df darkmoon deck shuffler
-  register_special_effect( 382913, items::DISABLED_EFFECT );  // bronzescale sigil (faster shuffle)
-  register_special_effect( 383336, items::DISABLED_EFFECT );  // azurescale sigil (shuffle greatest to least)
-  register_special_effect( 383333, items::DISABLED_EFFECT );  // emberscale sigil (no longer shuffles even cards)
-  register_special_effect( 383337, items::DISABLED_EFFECT );  // jetscale sigil (no longer shuffles on Ace)
-  register_special_effect( 383339, items::DISABLED_EFFECT );  // sagescale sigil (shuffle on jump) NYI
+  register_special_effect( 382958, DISABLED_EFFECT );  // df darkmoon deck shuffler
+  register_special_effect( 382913, DISABLED_EFFECT );  // bronzescale sigil (faster shuffle)
+  register_special_effect( 383336, DISABLED_EFFECT );  // azurescale sigil (shuffle greatest to least)
+  register_special_effect( 383333, DISABLED_EFFECT );  // emberscale sigil (no longer shuffles even cards)
+  register_special_effect( 383337, DISABLED_EFFECT );  // jetscale sigil (no longer shuffles on Ace)
+  register_special_effect( 383339, DISABLED_EFFECT );  // sagescale sigil (shuffle on jump) NYI
 }
 
 void register_target_data_initializers( sim_t& sim )

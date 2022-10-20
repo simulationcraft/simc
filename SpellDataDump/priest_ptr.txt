@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46157 dragonflight-BETA (hotfix 2022-10-15/46157, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46144 dragonflight-BETA (hotfix 2022-10-19/46144, no-networking)
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -15667,6 +15667,25 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : When Prayer of Mending jumps to a target affected by your Renew, that target is instantly healed for $196781s1.
 
+Name             : Holy Mending (id=391156) [Spell Family (6)] 
+Class            : Priest
+School           : Holy
+Spell Type       : None
+Range            : 100 yards
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Do Not Display Range (126), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1028476)  : Direct Heal (10)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.37500 | PvP Coefficient: 1.00000 | Target: Friend (21)
+Description      : $@spelldesc391154
+
 Name             : Everlasting Light (id=391161) [Spell Family (6), Passive, Hidden] 
 Talent Entry     : Holy [tree=spec, row=6, col=2, max_rank=1, req_points=8]
 Class            : Priest
@@ -16038,6 +16057,24 @@ Effects          :
 #1 (id=1028796)  : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Renew instantly heals your target for $s1% of its total periodic effect.
+
+Name             : Empowered Renew (id=391359) [Spell Family (6)] 
+Class            : Priest
+School           : Holy
+Spell Type       : None
+Range            : 100 yards
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=1028825)  : Direct Heal (10)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friend (21)
+Description      : $@spelldesc391339
 
 Name             : Rapid Recovery (id=391368) [Spell Family (6), Passive, Hidden] 
 Talent Entry     : Holy [tree=spec, row=8, col=3, max_rank=1, req_points=20, select_idx=200]

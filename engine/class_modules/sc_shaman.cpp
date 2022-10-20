@@ -433,8 +433,8 @@ public:
     buff_t* elemental_equilibrium_nature;
     buff_t* fire_elemental;
     buff_t* flux_melting;
-    buff_t* heat_wave;
-    buff_t* heat_wave_lava_burst_buff;
+    buff_t* primordial_surge;
+    buff_t* primordial_surge_lava_burst_buff;
     buff_t* icefury;
     buff_t* magma_chamber;
     buff_t* master_of_the_elements;
@@ -608,8 +608,8 @@ public:
     // Elemental
     proc_t* lava_surge_fireheart;
     proc_t* wasted_lava_surge_fireheart;
-    proc_t* lava_surge_heat_wave;
-    proc_t* wasted_lava_surge_heat_wave;
+    proc_t* lava_surge_primordial_surge;
+    proc_t* wasted_lava_surge_primordial_surge;
     proc_t* lava_surge_windspeakers_lava_resurgence;
 
     proc_t* aftershock;
@@ -870,7 +870,7 @@ public:
     // Row 10
     player_talent_t stormkeeper2;
     player_talent_t lightning_rod;
-    player_talent_t heat_wave;
+    player_talent_t primordial_surge;
     player_talent_t mountains_will_fall;
     player_talent_t further_beyond;
     player_talent_t skybreakers_fiery_demise;
@@ -995,7 +995,7 @@ public:
   void trigger_lightning_shield( const action_state_t* state );
   void trigger_hot_hand( const action_state_t* state );
   void trigger_vesper_totem( const action_state_t* state );
-  void trigger_lava_surge( bool fireheart = false, bool heat_wave = false );
+  void trigger_lava_surge( bool fireheart = false, bool primordial_surge = false );
   void trigger_splintered_elements( action_t* secondary );
   void trigger_flash_of_lightning();
   void trigger_lightning_rod_damage( const action_state_t* state );
@@ -2243,7 +2243,7 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
 
     if ( affected_by_stormkeeper_damage && p()->buff.stormkeeper->up() )
     {
-      m *= 1.0 + p()->buff.stormkeeper->stack_value();
+      m *= 1.0 + p()->buff.stormkeeper->value();
     }
 
     return m;
@@ -4777,6 +4777,13 @@ struct chain_lightning_overload_t : public chained_overload_base_t
       p()->buff.t29_2pc_ele->trigger();
     }
   }
+
+  void impact( action_state_t* state ) override
+  {
+    chained_overload_base_t::impact( state );
+
+    p()->trigger_lightning_rod_damage( state );
+  }
 };
 
 struct lava_beam_overload_t : public chained_overload_base_t
@@ -4823,7 +4830,7 @@ struct chained_base_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
-    if ( p()->buff.stormkeeper->check() )
+    if ( !background && p()->buff.stormkeeper->check() )
     {
       p()->buff.stormkeeper->decrement();
     }
@@ -5088,10 +5095,10 @@ struct lava_beam_t : public chained_base_t
 struct lava_burst_state_t : public shaman_spell_state_t
 {
   bool wlr_buffed;
-  bool hw_buffed;
+  bool ps_buffed;
 
   lava_burst_state_t( action_t* action_, player_t* target_ ) :
-    shaman_spell_state_t( action_, target_ ), wlr_buffed( false ), hw_buffed( false )
+    shaman_spell_state_t( action_, target_ ), wlr_buffed( false ), ps_buffed( false )
   { }
 
   void initialize() override
@@ -5099,7 +5106,7 @@ struct lava_burst_state_t : public shaman_spell_state_t
     shaman_spell_state_t::initialize();
 
     wlr_buffed = false;
-    hw_buffed = false;
+    ps_buffed = false;
   }
 
   void copy_state( const action_state_t* s ) override
@@ -5108,7 +5115,7 @@ struct lava_burst_state_t : public shaman_spell_state_t
 
     auto lbs = debug_cast<const lava_burst_state_t*>( s );
     wlr_buffed = lbs->wlr_buffed;
-    hw_buffed = lbs->hw_buffed;
+    ps_buffed = lbs->ps_buffed;
   }
 
   std::ostringstream& debug_str( std::ostringstream& s ) override
@@ -5116,7 +5123,7 @@ struct lava_burst_state_t : public shaman_spell_state_t
     shaman_spell_state_t::debug_str( s );
 
     s << " wlr_buffed=" << wlr_buffed;
-    s << " hw_buffed=" << hw_buffed;
+    s << " ps_buffed=" << ps_buffed;
 
     return s;
   }
@@ -5128,12 +5135,12 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
   unsigned impact_flags;
   execute_type type;
   bool wlr_buffed_impact;
-  bool hw_buffed_impact;
+  bool ps_buffed_impact;
 
   lava_burst_overload_t( shaman_t* player, execute_type type, shaman_spell_t* parent_ )
     : elemental_overload_spell_t( player, ::action_name( "lava_burst_overload", type ),
         player->find_spell( 285466 ), parent_ ),
-      impact_flags(), type(type), wlr_buffed_impact( false ), hw_buffed_impact( false )
+      impact_flags(), type(type), wlr_buffed_impact( false ), ps_buffed_impact( false )
   {
     maelstrom_gain         = player->spec.maelstrom->effectN( 4 ).resource( RESOURCE_MAELSTROM );
     if ( player->talent.flow_of_power.enabled() )
@@ -5157,15 +5164,15 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
   {
     auto et = cast_state( s )->exec_type;
     wlr_buffed_impact = cast_state( s )->wlr_buffed;
-    hw_buffed_impact = cast_state( s )->hw_buffed;
+    ps_buffed_impact = cast_state( s )->ps_buffed;
 
     snapshot_internal( s, impact_flags, rt );
 
     cast_state( s )->exec_type = et;
     // Restore state for debugging purposes, this->wlr_buffed_impact is used for state
     cast_state( s )->wlr_buffed = wlr_buffed_impact;
-    // Restore state for debugging purposes, this->hw_buffed_impact is used for state
-    cast_state( s )->hw_buffed = hw_buffed_impact;
+    // Restore state for debugging purposes, this->ps_buffed_impact is used for state
+    cast_state( s )->ps_buffed = ps_buffed_impact;
   }
 
   double calculate_direct_amount( action_state_t* /* s */ ) const override
@@ -5218,9 +5225,9 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
       m *= 1.0 + p()->buff.windspeakers_lava_resurgence->data().effectN( 1 ).percent();
     }
 
-    if ( hw_buffed_impact || p()->buff.heat_wave_lava_burst_buff->up() )
+    if ( ps_buffed_impact || p()->buff.primordial_surge_lava_burst_buff->up() )
     {
-      m *= 1.0 + p()->buff.heat_wave_lava_burst_buff->default_value;
+      m *= 1.0 + p()->buff.primordial_surge_lava_burst_buff->default_value;
     }
 
     if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T28, B2 ) && p()->buff.fireheart->check() )
@@ -5474,11 +5481,11 @@ struct lava_burst_t : public shaman_spell_t
   execute_type type;
   unsigned impact_flags;
   bool wlr_buffed_impact;
-  bool hw_buffed_impact;
+  bool ps_buffed_impact;
 
   lava_burst_t( shaman_t* player, execute_type type_, util::string_view options_str = {} )
     : shaman_spell_t( ::action_name( "lava_burst", type_ ), player, player->talent.lava_burst ),
-      type( type_ ), impact_flags(), wlr_buffed_impact( false ), hw_buffed_impact( false )
+      type( type_ ), impact_flags(), wlr_buffed_impact( false ), ps_buffed_impact( false )
   {
     parse_options( options_str );
     // Manacost is only for resto
@@ -5572,20 +5579,20 @@ struct lava_burst_t : public shaman_spell_t
     shaman_spell_t::snapshot_internal( s, flags, rt );
 
     cast_state( s )->wlr_buffed = p()->buff.windspeakers_lava_resurgence->check();
-    cast_state( s )->hw_buffed = p()->buff.heat_wave_lava_burst_buff->check();
+    cast_state( s )->ps_buffed = p()->buff.primordial_surge_lava_burst_buff->check();
   }
 
   void snapshot_impact_state( action_state_t* s, result_amount_type rt )
   {
     wlr_buffed_impact = cast_state( s )->wlr_buffed;
-    hw_buffed_impact = cast_state( s )->hw_buffed;
+    ps_buffed_impact = cast_state( s )->ps_buffed;
 
     snapshot_internal( s, impact_flags, rt );
 
     // Restore state for debugging purposes, this->wlr_buffed_impact is used for state
     cast_state( s )->wlr_buffed = wlr_buffed_impact;
-    // Restore state for debugging purposes, this->hw_buffed_impact is used for state
-    cast_state( s )->hw_buffed = hw_buffed_impact;
+    // Restore state for debugging purposes, this->ps_buffed_impact is used for state
+    cast_state( s )->ps_buffed = ps_buffed_impact;
   }
 
   double calculate_direct_amount( action_state_t* /* s */ ) const override
@@ -5616,8 +5623,8 @@ struct lava_burst_t : public shaman_spell_t
         p()->buff.windspeakers_lava_resurgence->expire();
       }
 
-      if ( p()->buff.heat_wave_lava_burst_buff->up() ) {
-        p()->buff.heat_wave_lava_burst_buff->expire();
+      if ( p()->buff.primordial_surge_lava_burst_buff->up() ) {
+        p()->buff.primordial_surge_lava_burst_buff->expire();
       }
 
       if ( p()->buff.surge_of_power->up() )
@@ -5660,9 +5667,9 @@ struct lava_burst_t : public shaman_spell_t
       m *= 1.0 + p()->buff.windspeakers_lava_resurgence->data().effectN( 1 ).percent();
     }
 
-    if ( hw_buffed_impact || p()->buff.heat_wave_lava_burst_buff->up() )
+    if ( ps_buffed_impact || p()->buff.primordial_surge_lava_burst_buff->up() )
     {
-      m *= 1.0 + p()->buff.heat_wave_lava_burst_buff->default_value;
+      m *= 1.0 + p()->buff.primordial_surge_lava_burst_buff->default_value;
     }
 
     if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T28, B2 ) && p()->buff.fireheart->check() )
@@ -5842,6 +5849,13 @@ struct lightning_bolt_overload_t : public elemental_overload_spell_t
       p()->buff.t29_2pc_ele->trigger();
     }
   }
+
+  void impact( action_state_t* state ) override
+  {
+    elemental_overload_spell_t::impact( state );
+
+    p()->trigger_lightning_rod_damage( state );
+  }
 };
 
 struct lightning_bolt_t : public shaman_spell_t
@@ -5996,6 +6010,7 @@ struct lightning_bolt_t : public shaman_spell_t
       p()->buff.primordial_wave->expire();
     }
 
+
     shaman_spell_t::execute();
 
     // Storm Elemental Wind Gust passive buff trigger
@@ -6012,18 +6027,15 @@ struct lightning_bolt_t : public shaman_spell_t
         p()->buff.wind_gust->trigger();
       }
     }
-
-    if ( type == execute_type::NORMAL && p()->specialization() == SHAMAN_ELEMENTAL )
-    {
-      p()->buff.stormkeeper->decrement();
-    }
-
+    // trigger additional Overload before execute to ensure all buffs are cached for the Overloads
     if ( p()->buff.power_of_the_maelstrom->up() )
     {
       trigger_elemental_overload( execute_state, 1.0 );
+      p()->buff.power_of_the_maelstrom->decrement();
     }
 
-    if ( p()->buff.surge_of_power->check() )
+    // trigger additional Overload before execute to ensure all buffs are cached for the Overloads
+    if ( p()->buff.surge_of_power->up() )
     {
       p()->proc.surge_of_power_lightning_bolt->occur();
 
@@ -6035,7 +6047,10 @@ struct lightning_bolt_t : public shaman_spell_t
       p()->buff.surge_of_power->decrement();
     }
 
-    p()->buff.power_of_the_maelstrom->decrement();
+    if ( type == execute_type::NORMAL && p()->specialization() == SHAMAN_ELEMENTAL )
+    {
+      p()->buff.stormkeeper->decrement();
+    }
 
     p()->trigger_flash_of_lightning();
     p()->trigger_lightning_rod_damage( execute_state );
@@ -6053,6 +6068,27 @@ struct lightning_bolt_t : public shaman_spell_t
 
   }
 
+  void schedule_travel(action_state_t* s) override
+  {
+    if ( p()->buff.power_of_the_maelstrom->up() )
+    {
+      trigger_elemental_overload( s, 1.0 );
+    }
+
+    if ( p()->buff.surge_of_power->check() )
+    {
+      p()->proc.surge_of_power_lightning_bolt->occur();
+
+      for ( auto i = 0; i < as<int>( p()->talent.surge_of_power->effectN( 2 ).base_value() ); ++i )
+      {
+        trigger_elemental_overload( s, 1.0 );
+      }
+
+      p()->buff.surge_of_power->decrement();
+    }
+
+    shaman_spell_t::schedule_travel( s );
+  }
   //void reset_swing_timers()
   //{
   //  if ( player->main_hand_attack && player->main_hand_attack->execute_event )
@@ -6367,7 +6403,7 @@ struct earthquake_damage_base_t : public shaman_spell_t
   // Note, in-game Earthquake Overload does not snapshot EoGS. Simc presumes this is a bug.
   void snapshot_state( action_state_t* s, unsigned flags, result_amount_type rt ) override
   {
-    if ( parent && ( !p()->bugs || ( p()->bugs && id == 298762 ) ) )
+    if ( parent && id == 298762 )
     {
       s->copy_state( parent->execute_state );
     }
@@ -7548,7 +7584,7 @@ struct stormkeeper_t : public shaman_spell_t
 
   bool ready() override
   {
-    if ( !p()->talent.stormkeeper.ok() && p()->talent.stormkeeper2.ok() )
+    if ( !p()->talent.stormkeeper.ok() && !p()->talent.stormkeeper2.ok() )
     {
       return false;
     }
@@ -8462,9 +8498,9 @@ struct primordial_wave_t : public shaman_spell_t
       cooldown->reset( true );
     }
 
-    if ( p()->talent.heat_wave.ok() )
+    if ( p()->talent.primordial_surge.ok() )
     {
-      p()->buff.heat_wave->trigger();
+      p()->buff.primordial_surge->trigger();
     }
   }
 
@@ -9590,7 +9626,7 @@ void shaman_t::init_spells()
   // Row 10
   talent.stormkeeper2 = find_talent_spell( talent_tree::SPECIALIZATION, 392763 );
   talent.lightning_rod = _ST( "Lightning Rod" );
-  talent.heat_wave = _ST( "Heat Wave" );
+  talent.primordial_surge = _ST( "Primordial Surge" );
   talent.mountains_will_fall = _ST( "Mountains Will Fall" );
   talent.further_beyond = _ST( "Further Beyond" );
   talent.skybreakers_fiery_demise = _ST( "Skybreaker's Fiery Demise" );
@@ -10490,7 +10526,7 @@ void shaman_t::trigger_lightning_shield( const action_state_t* state )
   }
 }
 
-void shaman_t::trigger_lava_surge( bool fireheart, bool heat_wave )
+void shaman_t::trigger_lava_surge( bool fireheart, bool primordial_surge )
 {
   if ( buff.lava_surge->check() )
   {
@@ -10498,9 +10534,9 @@ void shaman_t::trigger_lava_surge( bool fireheart, bool heat_wave )
     {
       proc.wasted_lava_surge_fireheart->occur();
     }
-    else if (heat_wave)
+    else if (primordial_surge)
     {
-      proc.wasted_lava_surge_heat_wave->occur();
+      proc.wasted_lava_surge_primordial_surge->occur();
     }
     else
     {
@@ -10512,9 +10548,9 @@ void shaman_t::trigger_lava_surge( bool fireheart, bool heat_wave )
   {
     proc.lava_surge_fireheart->occur();
   }
-  else if (heat_wave)
+  else if (primordial_surge)
   {
-    proc.lava_surge_heat_wave->occur();
+    proc.lava_surge_primordial_surge->occur();
   }
   else
   {
@@ -10731,13 +10767,13 @@ void shaman_t::create_buffs()
   buff.flux_melting = make_buff( this, "flux_melting", talent.flux_melting->effectN( 1 ).trigger() )
                             ->set_default_value( talent.flux_melting->effectN( 1 ).trigger()->effectN(1).percent() );
 
-  buff.heat_wave_lava_burst_buff = make_buff( this, "heat_wave_lava_burst_buff", find_spell( 396484 ))
+  buff.primordial_surge_lava_burst_buff = make_buff( this, "primordial_surge_lava_burst_buff", find_spell( 396484 ))
                                     ->set_default_value( find_spell( 396484 )->effectN( 1 ).percent() );
 
-  buff.heat_wave = make_buff( this, "heat_wave", find_spell( 387622 ) )
+  buff.primordial_surge = make_buff( this, "primordial_surge", find_spell( 387622 ) )
           ->set_tick_callback( [ this ]( buff_t* /* b */, int, timespan_t ) { 
               trigger_lava_surge( false, true );
-              buff.heat_wave_lava_burst_buff->trigger();
+              buff.primordial_surge_lava_burst_buff->trigger();
             } );
 
   buff.magma_chamber = make_buff( this, "magma_chamber", find_spell( 381933 ) )
@@ -10948,11 +10984,11 @@ void shaman_t::init_procs()
 
   proc.lava_surge                               = get_proc( "Lava Surge" );
   proc.lava_surge_fireheart                     = get_proc( "Lava Surge: Fireheart" );
-  proc.lava_surge_heat_wave                     = get_proc( "Lava Surge: Heat Wave" );
+  proc.lava_surge_primordial_surge              = get_proc( "Lava Surge: Primordial Surge" );
   proc.lava_surge_windspeakers_lava_resurgence  = get_proc( "Lava Surge: Windspeaker's Fiery Demise" );
   proc.wasted_lava_surge                        = get_proc( "Lava Surge: Wasted" );
   proc.wasted_lava_surge_fireheart              = get_proc( "Lava Surge: Wasted Fireheart" );
-  proc.wasted_lava_surge_heat_wave              = get_proc( "Lava Surge: Heat Wave" );
+  proc.wasted_lava_surge_primordial_surge       = get_proc( "Lava Surge: Primordial Surge" );
   proc.surge_during_lvb                         = get_proc( "Lava Surge: During Lava Burst" );
 
   proc.surge_of_power_lightning_bolt = get_proc( "Surge of Power: Lightning Bolt" );

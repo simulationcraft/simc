@@ -25,7 +25,6 @@
 
 namespace unique_gear
 {
-  
 // Old-style special effect registering functions
 void register_special_effect( unsigned spell_id, const char* encoded_str );
 void register_special_effect( unsigned spell_id, std::function<void( special_effect_t& )> init_callback,
@@ -49,6 +48,7 @@ void register_special_effect( unsigned spell_id, const T& cb, bool fallback = fa
 // Utility helpers
 bool create_fallback_buffs( const special_effect_t& effect, const std::vector<util::string_view>& names );
 void init_feast( special_effect_t& effect, std::initializer_list<std::pair<stat_e, int>> stat_map);
+void DISABLED_EFFECT( special_effect_t& effect );
 
 // A scoped special effect callback that validates against a player class or specialization.
 struct class_scoped_callback_t : public scoped_callback_t
@@ -609,5 +609,4 @@ BUFF* create_buff( player_t* p, util::string_view name, ARGS&&... args )
 
   return make_buff<BUFF>( p, name, std::forward<ARGS>( args )... );
 }
-
 } // unique_gear

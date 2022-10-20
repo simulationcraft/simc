@@ -1,5 +1,5 @@
-// Set bonus data, wow build 10.0.2.46157
-static const std::array<item_set_bonus_t, 317> __set_bonus_data { {
+// Set bonus data, wow build 10.0.2.46144
+static const std::array<item_set_bonus_t, 330> __set_bonus_data { {
   // SetBonusName                               , OptName              , EnumID, SetID, Tier, Bns, Cls, Spec, SpellID, ItemIDs
   { "March of the Legion"                       , "march_of_the_legion",      0,  1293,   19,   2,   1,   -1,  228445, { 134529, 134533,  0 } },
   { "March of the Legion"                       , "march_of_the_legion",      0,  1293,   19,   2,   2,   -1,  228445, { 134529, 134533,  0 } },
@@ -330,4 +330,18 @@ static const std::array<item_set_bonus_t, 317> __set_bonus_data { {
   { "Scales of the Awakened"                    , "tier29"             ,     13,  1530,   29,   2,  13, 1468,  393644, { 200378, 200380, 200381, 200382, 200383,  0 } },
   { "Scales of the Awakened"                    , "tier29"             ,     13,  1530,   29,   4,  13, 1467,  393643, { 200378, 200380, 200381, 200382, 200383,  0 } },
   { "Scales of the Awakened"                    , "tier29"             ,     13,  1530,   29,   4,  13, 1468,  393645, { 200378, 200380, 200381, 200382, 200383,  0 } },
+  { "Playful Spirit's Fur"                      , "playful_spirits_fur",     14,  1509,   29,   2,   1,   -1,  393982, { 193454, 193458, 193457,  0 } },
+  { "Playful Spirit's Fur"                      , "playful_spirits_fur",     14,  1509,   29,   2,   2,   -1,  393982, { 193454, 193458, 193457,  0 } },
+  { "Playful Spirit's Fur"                      , "playful_spirits_fur",     14,  1509,   29,   2,   3,   -1,  393982, { 193454, 193458, 193457,  0 } },
+  { "Playful Spirit's Fur"                      , "playful_spirits_fur",     14,  1509,   29,   2,   4,   -1,  393982, { 193454, 193458, 193457,  0 } },
+  { "Playful Spirit's Fur"                      , "playful_spirits_fur",     14,  1509,   29,   2,   5,   -1,  393982, { 193454, 193458, 193457,  0 } },
+  { "Playful Spirit's Fur"                      , "playful_spirits_fur",     14,  1509,   29,   2,   6,   -1,  393982, { 193454, 193458, 193457,  0 } },
+  { "Playful Spirit's Fur"                      , "playful_spirits_fur",     14,  1509,   29,   2,   7,   -1,  393982, { 193454, 193458, 193457,  0 } },
+  { "Playful Spirit's Fur"                      , "playful_spirits_fur",     14,  1509,   29,   2,   8,   -1,  393982, { 193454, 193458, 193457,  0 } },
+  // SetBonusName                               , OptName              , EnumID, SetID, Tier, Bns, Cls, Spec, SpellID, ItemIDs
+  { "Playful Spirit's Fur"                      , "playful_spirits_fur",     14,  1509,   29,   2,   9,   -1,  393982, { 193454, 193458, 193457,  0 } },
+  { "Playful Spirit's Fur"                      , "playful_spirits_fur",     14,  1509,   29,   2,  10,   -1,  393982, { 193454, 193458, 193457,  0 } },
+  { "Playful Spirit's Fur"                      , "playful_spirits_fur",     14,  1509,   29,   2,  11,   -1,  393982, { 193454, 193458, 193457,  0 } },
+  { "Playful Spirit's Fur"                      , "playful_spirits_fur",     14,  1509,   29,   2,  12,   -1,  393982, { 193454, 193458, 193457,  0 } },
+  { "Playful Spirit's Fur"                      , "playful_spirits_fur",     14,  1509,   29,   2,  13,   -1,  393982, { 193454, 193458, 193457,  0 } },
 } };

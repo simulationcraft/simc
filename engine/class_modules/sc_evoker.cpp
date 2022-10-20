@@ -1071,19 +1071,9 @@ struct empowered_release_spell_t : public empowered_base_t
     if ( rng().roll( p()->sets->set( EVOKER_DEVASTATION, T29, B4 )->effectN( 2 ).percent() ) )
     {
       if ( p()->buffs.bloodlust->check() )
-      {
-        timespan_t d = std::min( 40_s, p()->buffs.bloodlust->remains() + extend_4pc );
-
-        if ( d > p()->buffs.bloodlust->remains() )
-          p()->buffs.bloodlust->extend_duration( p(), d - p()->buffs.bloodlust->remains() );
-      }
+        p()->buffs.bloodlust->extend_duration( p(), extend_4pc );
       else if ( p()->buff.fury_of_the_aspects->check() )
-      {
-        timespan_t d = std::min( 40_s, p()->buff.fury_of_the_aspects->remains() + extend_4pc );
-
-        if ( d > p()->buff.fury_of_the_aspects->remains() )
-          p()->buff.fury_of_the_aspects->extend_duration( p(), d - p()->buff.fury_of_the_aspects->remains() );
-      }
+        p()->buff.fury_of_the_aspects->extend_duration( p(), extend_4pc );
       else
         p()->buff.fury_of_the_aspects->trigger( extend_4pc );
     }

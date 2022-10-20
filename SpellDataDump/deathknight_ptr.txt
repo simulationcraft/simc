@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46157 dragonflight-BETA (hotfix 2022-10-15/46157, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46144 dragonflight-BETA (hotfix 2022-10-19/46144, no-networking)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -886,7 +886,7 @@ Spell Type       : Magic
 Spell Level      : 34
 Range            : 30 yards
 GCD              : 1.5 seconds
-Duration         : 13 seconds
+Duration         : 8 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 120 seconds
 Proc Chance      : 100%
@@ -1135,6 +1135,7 @@ Effects          :
 Description      : Harnesses the energy that surrounds and binds all matter, drawing the target toward you$?a389679[ and slowing their movement speed by $389681s1% for $389681d][]$?s137008[ and forcing the enemy to attack you][].
 
 Name             : Death Strike (id=49998) [Spell Family (15)] 
+Hotfixed         : Travel Delay (0.25 -> 0)
 Talent Entry     : Generic [free=(Blood), tree=class, row=1, col=2, max_rank=1, req_points=0]
 Class            : Death Knight
 School           : Physical
@@ -1143,7 +1144,6 @@ Resource         : 45 Runic Power (6) (id=6268)
 Spell Level      : 4
 Range            : 5 yards
 GCD              : 1.5 seconds
-Travel Delay     : 0.25 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Labels           : 823: Will to Survive (312922 effect#2)
 Stance Mask      : 0x01000000
@@ -13682,7 +13682,6 @@ Talent Entry     : Generic [tree=class, row=4, col=4, max_rank=1, req_points=0]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
-Max Scaling Level: 70
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13693,8 +13692,9 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Update Passives on Apply/Remove (344)
 Effects          :
-#1 (id=999681)   : Apply Aura (6) | Modify Rating (189) | Scaling Class: -1
-                   Base Value: 2 | Scaled Value: 25.00017 (coefficient=0.046412) | PvP Coefficient: 1.00000 | Misc Value: 1048576 | Target: Self (1)
+#1 (id=999681)   : Apply Aura (6) | Modify AoE Damage Taken% (229)
+                   Base Value: -3 | Scaled Value: -3 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
+Hotfixed         : Sub Type (189 -> 229), Coefficient (0.046412 -> 0), Base Value (2 -> -3), Misc Value (1048576 -> 127), Unknown(28) (-1 -> 0)
 #2 (id=999745)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000
 Description      : Increases Avoidance by $s2%.
