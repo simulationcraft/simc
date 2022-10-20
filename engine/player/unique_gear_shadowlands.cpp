@@ -311,12 +311,6 @@ void sinful_revelation( special_effect_t& effect )
 
 namespace items
 {
-void DISABLED_EFFECT( special_effect_t& effect )
-{
-  // Disable the effect, as we handle shuffling within the on-use effect
-  effect.type = SPECIAL_EFFECT_NONE;
-}
-
 // Trinkets
 void darkmoon_deck_putrescence( special_effect_t& effect )
 {
@@ -6237,11 +6231,11 @@ void register_special_effects()
     unique_gear::register_special_effect( 357074, items::shard_of_kyr );
 
     // Disabled effects
-    unique_gear::register_special_effect( 329028, items::DISABLED_EFFECT ); // Light-Infused Armor shield
-    unique_gear::register_special_effect( 333885, items::DISABLED_EFFECT ); // Darkmoon Deck: Putrescence shuffler
-    unique_gear::register_special_effect( 329446, items::DISABLED_EFFECT ); // Darkmoon Deck: Voracity shuffler
-    unique_gear::register_special_effect( 364086, items::DISABLED_EFFECT ); // Cypher effect Strip Advantage
-    unique_gear::register_special_effect( 364087, items::DISABLED_EFFECT ); // Cypher effect Cosmic Boom
+    unique_gear::register_special_effect( 329028, DISABLED_EFFECT ); // Light-Infused Armor shield
+    unique_gear::register_special_effect( 333885, DISABLED_EFFECT ); // Darkmoon Deck: Putrescence shuffler
+    unique_gear::register_special_effect( 329446, DISABLED_EFFECT ); // Darkmoon Deck: Voracity shuffler
+    unique_gear::register_special_effect( 364086, DISABLED_EFFECT ); // Cypher effect Strip Advantage
+    unique_gear::register_special_effect( 364087, DISABLED_EFFECT ); // Cypher effect Cosmic Boom
 }
 
 action_t* create_action( player_t* player, util::string_view name, util::string_view options )
