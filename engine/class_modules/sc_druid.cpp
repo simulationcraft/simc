@@ -3233,6 +3233,10 @@ struct moonkin_form_t : public druid_form_t
   moonkin_form_t( druid_t* p, std::string_view opt )
     : druid_form_t( "moonkin_form", p, p->talent.moonkin_form, opt, MOONKIN_FORM )
   {}
+
+  moonkin_form_t( druid_t* p, const spell_data_t* s )
+    : druid_form_t( "moonkin_form", p, s, "", MOONKIN_FORM )
+  {}
 };
 
 // Cancelform (revert to caster form)========================================
@@ -10829,12 +10833,18 @@ void druid_t::create_actions()
   active.shift_to_caster = get_secondary_action<cancel_form_t>( "cancel_form_shift", "" );
   active.shift_to_caster->dual = true;
   active.shift_to_caster->background = true;
+
   active.shift_to_bear = get_secondary_action<bear_form_t>( "bear_form_shift", "" );
   active.shift_to_bear->dual = true;
+
   active.shift_to_cat = get_secondary_action<cat_form_t>( "cat_form_shift", "" );
   active.shift_to_cat->dual = true;
-  active.shift_to_moonkin = get_secondary_action<moonkin_form_t>( "moonkin_form_shift", "" );
-  active.shift_to_moonkin->dual = true;
+
+  if ( talent.incarnation_moonkin.ok() )
+  {
+    active.shift_to_moonkin = get_secondary_action<moonkin_form_t>( "moonkin_form_shift", find_spell( 24858 ) );
+    active.shift_to_moonkin->dual = true;
+  }
 
   if ( legendary.lycaras_fleeting_glimpse->ok() )
     active.lycaras_fleeting_glimpse = new lycaras_fleeting_glimpse_t( this );
@@ -11228,6 +11238,12 @@ bool druid_t::validate_fight_style( fight_style_e style ) const
     case DRUID_RESTORATION:
     default:
       break;
+  }
+
+  if ( SC_BETA == 0 && SC_MAJOR_VERSION == "1000" )
+  {
+    sim->error( "Prepatch {} sims are untested and not supported. Sim at your own risk!",
+                util::specialization_string( specialization() ) );
   }
 
   return true;
