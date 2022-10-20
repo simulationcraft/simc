@@ -14,6 +14,7 @@
 #include "item/item.hpp"
 #include "item/item_targetdata_initializer.hpp"
 #include "sim/sim.hpp"
+#include "set_bonus.hpp"
 #include "stats.hpp"
 #include "unique_gear.hpp"
 #include "unique_gear_helper.hpp"
@@ -913,6 +914,31 @@ void elemental_lariat( special_effect_t& effect )
 }
 }  // namespace items
 
+namespace sets
+{
+void playful_spirits_fur( special_effect_t& effect )
+{
+  if ( !effect.player->sets->has_set_bonus( effect.player->specialization(), T29_PLAYFUL_SPIRITS_FUR, B2 ) )
+    return;
+
+  auto snowball = create_proc_action<generic_proc_t>( "magic_snowball", effect, "magic_snowball", 376932 );
+
+  if ( effect.driver() == effect.player->sets->set( effect.player->specialization(), T29_PLAYFUL_SPIRITS_FUR, B2 ) )
+  {
+    effect.execute_action = snowball;
+
+    new dbc_proc_callback_t( effect.player, effect );
+  }
+  else
+  {
+    auto val = effect.driver()->effectN( 1 ).average( effect.item );
+
+    snowball->base_dd_min += val;
+    snowball->base_dd_max += val;
+  }
+}
+}  // namespace sets
+
 void register_special_effects()
 {
   // Food
@@ -953,6 +979,9 @@ void register_special_effects()
   // Weapons
   // Armor
   register_special_effect( 375323, items::elemental_lariat );
+
+  // Sets
+  register_special_effect( { 393620, 393982 }, sets::playful_spirits_fur );
 
   // Disabled
   register_special_effect( 382958, DISABLED_EFFECT );  // df darkmoon deck shuffler

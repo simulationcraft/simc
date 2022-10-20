@@ -50,6 +50,11 @@ void the_cartographers_calipers( special_effect_t& );
 void elemental_lariat( special_effect_t& );
 }
 
+namespace sets
+{
+void playful_spirits_fur( special_effect_t& );
+}
+
 void register_special_effects();
 void register_target_data_initializers( sim_t& );
 }

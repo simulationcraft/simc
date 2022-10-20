@@ -3562,6 +3562,11 @@ class SetBonusListGenerator(DataGenerator):
             'name'   : 'tier29',
             'bonuses': [ 1526, 1527, 1528, 1529, 1530, 1531, 1532, 1533, 1534, 1535, 1536, 1537, 1538 ],
             'tier'   : 29
+        },
+        {
+            'name'   : 'playful_spirits_fur',
+            'bonuses': [ 1509 ],
+            'tier'   : 29
         }
     ]
 
