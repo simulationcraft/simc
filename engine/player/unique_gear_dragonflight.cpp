@@ -816,10 +816,8 @@ void emerald_coachs_whistle( special_effect_t& effect )
 
 void the_cartographers_calipers( special_effect_t& effect )
 {
-  auto damage = create_proc_action<generic_proc_t>( "precision_blast", effect, "precision_blast", 384114 );
-  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
-
-  effect.execute_action = damage;
+  effect.trigger_spell_id = 384114;
+  effect.discharge_amount = effect.driver()->effectN( 1 ).average( effect.item );
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -968,20 +966,18 @@ void playful_spirits_fur( special_effect_t& effect )
   if ( !effect.player->sets->has_set_bonus( effect.player->specialization(), T29_PLAYFUL_SPIRITS_FUR, B2 ) )
     return;
 
-  auto snowball = create_proc_action<generic_proc_t>( "magic_snowball", effect, "magic_snowball", 376932 );
+  auto set_driver_id = effect.player->sets->set( effect.player->specialization(), T29_PLAYFUL_SPIRITS_FUR, B2 )->id();
 
-  if ( effect.driver() == effect.player->sets->set( effect.player->specialization(), T29_PLAYFUL_SPIRITS_FUR, B2 ) )
+  if ( effect.driver()->id() == set_driver_id )
   {
-    effect.execute_action = snowball;
+    effect.trigger_spell_id = 376932;
 
     new dbc_proc_callback_t( effect.player, effect );
   }
   else
   {
-    auto val = effect.driver()->effectN( 1 ).average( effect.item );
-
-    snowball->base_dd_min += val;
-    snowball->base_dd_max += val;
+    unique_gear::find_special_effect( effect.player, set_driver_id )->discharge_amount +=
+        effect.driver()->effectN( 1 ).average( effect.item );
   }
 }
 }  // namespace sets
