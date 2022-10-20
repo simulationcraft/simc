@@ -9968,11 +9968,11 @@ void rogue_t::init_spells()
   legendary.master_assassins_mark     = find_runeforge_legendary( "Mark of the Master Assassin" );
   legendary.tiny_toxic_blade          = find_runeforge_legendary( "Tiny Toxic Blade" );
   legendary.invigorating_shadowdust   = find_runeforge_legendary( "Invigorating Shadowdust" );
-
+  
   // Generic Covenant
   legendary.deathspike                = find_runeforge_legendary( "Deathspike" );
   legendary.obedience                 = find_runeforge_legendary( "Obedience" );
-  legendary.resounding_clarity        = find_runeforge_legendary( "Resounding Clarity" );
+  legendary.resounding_clarity        = find_runeforge_legendary( "Resounding Clarity", false, true );
   legendary.toxic_onslaught           = find_runeforge_legendary( "Toxic Onslaught" );
 
   // Assassination
