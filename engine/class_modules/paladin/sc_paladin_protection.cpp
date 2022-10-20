@@ -851,7 +851,7 @@ void paladin_t::trigger_grand_crusader()
 
   if ( talents.crusaders_judgment -> ok() && cooldowns.judgment -> current_charge < cooldowns.judgment -> charges )
   {
-    cooldowns.judgment -> adjust( -( cooldowns.judgment -> duration ), true ); //decrease remaining time by the duration of one charge, i.e., add one charge
+    cooldowns.judgment->adjust( -( talents.crusaders_judgment->effectN( 2 ).time_value() ), true );
   }
 
   if ( azerite.inspiring_vanguard.enabled() )
