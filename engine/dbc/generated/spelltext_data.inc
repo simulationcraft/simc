@@ -19023,7 +19023,6 @@ static const std::array<spelltext_data_t, 19094> __spelltext_data { {
   { 395157, "$@spelldesc199471", 0, 0 },
   { 395175, "Impale yourself with the splinter, immediately suffering $s1 Nature damage but letting its slime loose over your body. The slime absorbs 50% of damage taken, up to $s2 total damage, for $d.", "Absorbing 50% of damage taken, up to $w2 total damage.", 0 },
   { 395180, "$@spelldesc148039", "Absorbs $w1 damage.", 0 },
-  { 395268, "Weapons of Order calls forth $?c1[Niuzao, the Black Ox]?c2&s325197[Chi-Ji, the Red Crane]?c3[Xuen, the White Tiger][Yu'lon, the Jade Serpent] to assist you for ${$s1/1000} sec.", 0, 0 },
   { 395336, "$@spelldesc378986", "Healing of your next Regrowth increased by $w1.", 0 },
   { 395349, "$@spelldesc192222", 0, 0 },
   { 395388, "Add the Thundering affix to a Mythic Keystone.", 0, 0 },
@@ -19094,6 +19093,7 @@ static const std::array<spelltext_data_t, 19094> __spelltext_data { {
   { 396826, "$@spelldesc389551", 0, 0 },
   { 396848, "$@spelldesc389558", 0, 0 },
   { 396895, "Hurls a bolt of dark magic at the target, dealing $s1 Shadow damage.", 0, 0 },
+  { 397251, "Weapons of Order calls forth $?c1[Niuzao, the Black Ox]?c2&s325197[Chi-Ji, the Red Crane]?c3[Xuen, the White Tiger][Yu'lon, the Jade Serpent] to assist you for ${$s1/1000} sec.", 0, 0 },
 } };
 
 // spelltext hotfix entries, wow build 10.0.2.46144
