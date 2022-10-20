@@ -543,6 +543,8 @@ public:
 
     spell_data_ptr_t improved_kill_shot;
 
+    spell_data_ptr_t tar_trap;
+
     spell_data_ptr_t improved_traps;
     spell_data_ptr_t born_to_be_wild;
 
@@ -734,6 +736,7 @@ public:
     spell_data_ptr_t freezing_trap;
     spell_data_ptr_t arcane_shot;
     spell_data_ptr_t steady_shot;
+    spell_data_ptr_t flare;
 
     // Sylvanas bow
     spell_data_ptr_t wailing_arrow;
@@ -4349,10 +4352,6 @@ struct aimed_shot_t : public aimed_shot_base_t
   } double_tap;
   struct {
     double chance = 0;
-    serpent_sting_sst_t* action = nullptr;
-  } serpentstalkers_trickery;
-  struct {
-    double chance = 0;
     proc_t* proc;
   } surging_shots;
   struct {
@@ -4361,6 +4360,7 @@ struct aimed_shot_t : public aimed_shot_base_t
     wind_arrow_t* action = nullptr;
   } legacy_of_the_windrunners;
   hit_the_mark_t* hit_the_mark = nullptr;
+  serpent_sting_sst_t* serpentstalkers_trickery = nullptr;
 
   aimed_shot_t( hunter_t* p, util::string_view options_str ) :
     aimed_shot_base_t( "aimed_shot", p )
@@ -4374,16 +4374,8 @@ struct aimed_shot_t : public aimed_shot_base_t
       double_tap.proc = p -> get_proc( "Double Tap Aimed" );
     }
 
-    if ( p -> legendary.serpentstalkers_trickery.ok() )
-    {
-      serpentstalkers_trickery.action = p -> get_background_action<serpent_sting_sst_t>( "serpent_sting" );
-      serpentstalkers_trickery.chance = 1;
-    }
-    else if ( p -> talents.serpentstalkers_trickery.ok() )
-    {
-      serpentstalkers_trickery.action = p -> get_background_action<serpent_sting_sst_t>( "serpent_sting" );
-      serpentstalkers_trickery.chance = p -> talents.serpentstalkers_trickery -> effectN( 1 ).percent();
-    }
+    if ( p -> talents.serpentstalkers_trickery.ok() || p -> legendary.serpentstalkers_trickery.ok() )
+      serpentstalkers_trickery = p -> get_background_action<serpent_sting_sst_t>( "serpent_sting" );
 
     if ( p -> talents.surging_shots.ok() )
     {
@@ -4452,8 +4444,8 @@ struct aimed_shot_t : public aimed_shot_base_t
       double_tap.proc -> occur();
     }
 
-    if ( rng().roll( serpentstalkers_trickery.chance ) )
-      serpentstalkers_trickery.action -> execute_on_target( target );
+    if ( serpentstalkers_trickery )
+      serpentstalkers_trickery -> execute_on_target( target );
 
     secrets_of_the_vigil_up = false;
 
@@ -5717,7 +5709,7 @@ struct tar_trap_t : public trap_base_t
   timespan_t debuff_duration;
 
   tar_trap_t( hunter_t* p, util::string_view options_str ) :
-    trap_base_t( "tar_trap", p, p -> find_class_spell( "Tar Trap" ) )
+    trap_base_t( "tar_trap", p, p -> talents.tar_trap )
   {
     parse_options( options_str );
 
@@ -5786,17 +5778,17 @@ struct flare_t : hunter_spell_t
       : hunter_spell_t( n, p, p -> find_spell( 336746 ) )
     {
       aoe = -1;
-      reduced_aoe_targets = p->legendary.soulforge_embers->effectN( 1 ).base_value();
+      reduced_aoe_targets = p -> legendary.soulforge_embers -> effectN( 1 ).base_value();
 
-      radius = p -> find_class_spell( "Tar Trap" ) -> effectN( 1 ).trigger() -> effectN( 1 ).base_value();
+      radius = p -> talents.tar_trap -> effectN( 1 ).trigger() -> effectN( 1 ).base_value();
       triggers_wild_spirits = false;
     }
 
     double calculate_tick_amount( action_state_t* state, double mult ) const override
     {
-      if ( as<double>( state->n_targets ) > state->action->reduced_aoe_targets )
+      if ( as< double >( state -> n_targets ) > state -> action -> reduced_aoe_targets )
       {
-        mult *= std::sqrt( reduced_aoe_targets / state->n_targets );
+        mult *= std::sqrt( reduced_aoe_targets / state -> n_targets );
       }
 
       return hunter_spell_t::calculate_tick_amount( state, mult );
@@ -5806,7 +5798,7 @@ struct flare_t : hunter_spell_t
   soulforge_embers_t* soulforge_embers = nullptr;
 
   flare_t( hunter_t* p, util::string_view options_str ):
-    hunter_spell_t( "flare", p, p -> find_class_spell( "Flare" ) )
+    hunter_spell_t( "flare", p, p -> specs.flare )
   {
     parse_options( options_str );
 
@@ -6996,6 +6988,8 @@ void hunter_t::init_spells()
 
   talents.improved_kill_shot                = find_talent_spell( talent_tree::CLASS, "Improved Kill Shot" );
 
+  talents.tar_trap                          = find_talent_spell( talent_tree::CLASS, "Tar Trap" );
+
   talents.improved_traps                    = find_talent_spell( talent_tree::CLASS, "Improved Traps" );
   talents.born_to_be_wild                   = find_talent_spell( talent_tree::CLASS, "Born To Be Wild" );
 
@@ -7197,6 +7191,7 @@ void hunter_t::init_spells()
   specs.freezing_trap        = find_class_spell( "Freezing Trap" );
   specs.arcane_shot          = find_class_spell( "Arcane Shot" );
   specs.steady_shot          = find_class_spell( "Steady Shot" );
+  specs.flare                = find_class_spell( "Flare" );
 
   // Rae'shalare, Death's Whisper spell
   specs.wailing_arrow        = find_item_by_name( "raeshalare_deaths_whisper" ) ? find_spell( 355589 ) : spell_data_t::not_found();
