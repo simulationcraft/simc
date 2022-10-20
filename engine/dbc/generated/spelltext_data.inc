@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.2.46144
-static const std::array<spelltext_data_t, 19096> __spelltext_data { {
+static const std::array<spelltext_data_t, 19100> __spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -16746,7 +16746,11 @@ static const std::array<spelltext_data_t, 19096> __spelltext_data { {
   { 379049, "Frostbolt and Flurry have a $s2% chance to generate $s1 Icicles.", 0, 0 },
   { 379076, "Increases Critical Strike by $s1 for $d. Counts as both a Battle and Guardian elixir.", "Critical Strike increased by $w1... hic!", 0 },
   { 379391, "Cooldown of Seraphim is reduced by ${-$s2/1000} sec and Divine Toll by ${-$s1/1000} sec.", 0, 0 },
+  { 379395, "Launches magical thorns at the target, dealing $379396s3 Nature damage.", 0, 0 },
   { 379396, "The thorns feed off your vitality, reducing Stamina by $s2. Your spells and abilities have a chance to launch magical thorns at your target, healing allies for $s3 or striking enemies for $s4 Nature damage.\r\n\r\nThese effects are increased by $378758s2% if you equip an item crafted with a Toxified Armor Patch.", 0, 0 },
+  { 379403, "$@spelldesc379395", 0, 0 },
+  { 379405, "Launches magical thorns at the target, healing them for $379396s2.", 0, 0 },
+  { 379407, "$@spelldesc379405", 0, 0 },
   { 379420, "Being struck causes magma to lash out dealing $s1 Fire damage to attackers.", 0, 0 },
   { 379983, "Your spells and abilities have a chance to pierce the target with a barb dealing $s1 Physical damage.", 0, 0 },
   { 379985, "Toxins course through you, occasionally triggering Potent Venom. While affected by Potent Venom, you lose $s2 of your lowest secondary stat and gain $s3 of your highest secondary stat for $395630d.\r\n\r\nThese effects are increased by $378758s2% if you equip an item crafted with a Toxified Armor Patch.", 0, 0 },

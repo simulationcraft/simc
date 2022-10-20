@@ -1354,6 +1354,7 @@ class SpellDataGenerator(DataGenerator):
          382860, 382861, 382862, 382863, 382864, 382865, 382866, 382867, # Darkmoon Deck: Dance
          375335, 375342, 375343, 375345, # Elemental Lariat JC Neck
          376932, # MAGIC SNOWBALL
+         379403, 379407, # Toxic Thorn Footwraps LW Boots
         ),
 
         # Warrior:

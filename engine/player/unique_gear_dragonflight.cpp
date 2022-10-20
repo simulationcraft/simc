@@ -912,6 +912,43 @@ void elemental_lariat( special_effect_t& effect )
         buffs[ cb->rng().range( buffs.size() ) ]->trigger();
       } );
 }
+
+void flaring_cowl( special_effect_t& effect )
+{
+  auto damage = create_proc_action<generic_aoe_proc_t>( "flaring_cowl", effect, "flaring_cowl", 377079 );
+  // damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
+  // TODO: currently bugged and only doing damage as if the item was at the base ilevel of 350
+  damage->base_dd_min = damage->base_dd_max =
+      effect.player->dbc->random_property( 350 ).damage_replace_stat * effect.driver()->effectN( 1 ).m_coefficient();
+
+  auto period = effect.trigger()->effectN( 1 ).period();
+  effect.player->register_combat_begin( [ period, damage ]( player_t* p ) {
+    make_repeating_event( p->sim, period, [ damage ]() { damage->execute(); } );
+  } );
+}
+
+void thriving_thorns( special_effect_t& effect )
+{
+  effect.player->passive.add_stat( STAT_STAMINA, effect.driver()->effectN( 2 ).average( effect.item ) );
+
+  // velocity & triggered missile reference is in 379395 for damage & 379405 for heal
+  // TODO: implement heal
+  auto damage_trg = effect.player->find_spell( 379395 );
+  auto damage = create_proc_action<generic_proc_t>( "launched_thorns", effect, "launched_thorns",
+                                                    damage_trg->effectN( 1 ).trigger() );
+  damage->travel_speed = damage_trg->missile_speed();
+
+  auto val = effect.driver()->effectN( 4 ).average( effect.item );
+  auto toxic = unique_gear::find_special_effect( effect.player, 378758 );
+  if ( toxic )
+    val *= 1.0 + toxic->driver()->effectN( 2 ).percent();
+
+  damage->base_dd_min = damage->base_dd_max = val;
+
+  effect.execute_action = damage;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
 }  // namespace items
 
 namespace sets
@@ -979,6 +1016,8 @@ void register_special_effects()
   // Weapons
   // Armor
   register_special_effect( 375323, items::elemental_lariat );
+  register_special_effect( 381424, items::flaring_cowl );
+  register_special_effect( 379396, items::thriving_thorns );
 
   // Sets
   register_special_effect( { 393620, 393982 }, sets::playful_spirits_fur );
@@ -990,6 +1029,7 @@ void register_special_effects()
   register_special_effect( 383333, DISABLED_EFFECT );  // emberscale sigil (no longer shuffles even cards)
   register_special_effect( 383337, DISABLED_EFFECT );  // jetscale sigil (no longer shuffles on Ace)
   register_special_effect( 383339, DISABLED_EFFECT );  // sagescale sigil (shuffle on jump) NYI
+  register_special_effect( 378758, DISABLED_EFFECT );  // toxified embellishment
 }
 
 void register_target_data_initializers( sim_t& sim )
