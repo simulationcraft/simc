@@ -912,6 +912,20 @@ void elemental_lariat( special_effect_t& effect )
         buffs[ cb->rng().range( buffs.size() ) ]->trigger();
       } );
 }
+
+void flaring_cowl( special_effect_t& effect )
+{
+  auto damage = create_proc_action<generic_aoe_proc_t>( "flaring_cowl", effect, "flaring_cowl", 377079 );
+  // damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
+  // TODO: currently bugged and only doing damage as if the item was at the base ilevel of 350
+  damage->base_dd_min = damage->base_dd_max =
+      effect.player->dbc->random_property( 350 ).damage_replace_stat * effect.driver()->effectN( 1 ).m_coefficient();
+
+  auto period = effect.trigger()->effectN( 1 ).period();
+  effect.player->register_combat_begin( [ period, damage ]( player_t* p ) {
+    make_repeating_event( p->sim, period, [ damage ]() { damage->execute(); } );
+  } );
+}
 }  // namespace items
 
 namespace sets
@@ -979,6 +993,7 @@ void register_special_effects()
   // Weapons
   // Armor
   register_special_effect( 375323, items::elemental_lariat );
+  register_special_effect( 381424, items::flaring_cowl );
 
   // Sets
   register_special_effect( { 393620, 393982 }, sets::playful_spirits_fur );
