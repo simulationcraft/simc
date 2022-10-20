@@ -654,13 +654,14 @@ void windwalker( player_t* p )
   def_actions->add_action( "strike_of_the_windlord,if=active_enemies>1&(!talent.bonedust_brew&!covenant.necrolord|buff.bonedust_brew.up|cooldown.bonedust_brew.remains>15)" );
   def_actions->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.teachings_of_the_monastery.stack>=2" );
   def_actions->add_action( "strike_of_the_windlord,if=(!talent.bonedust_brew&!covenant.necrolord|buff.bonedust_brew.up|cooldown.bonedust_brew.remains>15)" );
-  def_actions->add_action( "spinning_crane_kick,if=combo_strike&(buff.bonedust_brew.up|buff.weapons_of_order_ww.up)&active_enemies>1&spinning_crane_kick.modifier>2.8" );
-  def_actions->add_action( "spinning_crane_kick,if=buff.bonedust_brew.up&spinning_crane_kick.modifier>3.9&(!talent.teachings_of_the_monastery|!talent.shadowboxing_treads|active_enemies>=9)" );
+  def_actions->add_action( "spinning_crane_kick,if=combo_strike&(buff.bonedust_brew.up|buff.weapons_of_order_ww.up)&active_enemies>1&spinning_crane_kick.modifier>2.1" );
+  def_actions->add_action( "spinning_crane_kick,if=buff.bonedust_brew.up&spinning_crane_kick.modifier>2.9&(!talent.teachings_of_the_monastery|!talent.shadowboxing_treads|active_enemies>=9)" );
+  def_actions->add_action( "rushing_jade_wind,if=buff.rushing_jade_wind.down&active_enemies>=7" );
   def_actions->add_action( "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&(!talent.xuens_battlegear&!runeforge.xuens_treasure|cooldown.fists_of_fury.remains)" );
   def_actions->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.teachings_of_the_monastery.stack=1&cooldown.rising_sun_kick.remains&(cooldown.fists_of_fury.remains|!talent.whirling_dragon_punch)" );
   def_actions->add_action( "fists_of_fury,target_if=max:target.time_to_die,if=(raid_event.adds.in>cooldown.fists_of_fury.duration*0.8|active_enemies>1)&(energy.time_to_max>execute_time-1|chi.max-chi<=1|buff.storm_earth_and_fire.remains<execute_time+1)|fight_remains<execute_time+1|debuff.bonedust_brew_debuff.up" );
   def_actions->add_action( "rushing_jade_wind,if=buff.rushing_jade_wind.down" );
-  def_actions->add_action( "spinning_crane_kick,if=combo_strike&(active_enemies>1&!talent.shadowboxing_treads|active_enemies>=6&spinning_crane_kick.modifier>=3.1)" );
+  def_actions->add_action( "spinning_crane_kick,if=combo_strike&(active_enemies>1&!talent.shadowboxing_treads|active_enemies>=6&spinning_crane_kick.modifier>=2.4)" );
   // ..
   def_actions->add_action( "faeline_stomp,if=combo_strike&!buff.bonedust_brew.up" );
   def_actions->add_action( "crackling_jade_lightning,if=buff.the_emperors_capacitor.stack>19&energy.time_to_max>execute_time-1&cooldown.rising_sun_kick.remains>execute_time|buff.the_emperors_capacitor.stack>14&(cooldown.serenity.remains<5&talent.serenity|cooldown.weapons_of_order.remains<5&covenant.kyrian|fight_remains<5)" );
