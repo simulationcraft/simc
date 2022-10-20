@@ -302,6 +302,7 @@ public:
     const spell_data_t* executioners_precision_debuff;
     const spell_data_t* fatal_mark_debuff;
     const spell_data_t* concussive_blows_debuff;
+    const spell_data_t* recklessness_buff;
     const spell_data_t* shield_block_buff;
     const spell_data_t* siegebreaker_debuff;
     const spell_data_t* whirlwind_buff;
@@ -1108,7 +1109,7 @@ public:
     affected_by.merciless_bonegrinder = ab::data().affected_by( p()->find_spell( 383316 )->effectN( 1 ) );
     affected_by.siegebreaker        = ab::data().affected_by( p()->spell.siegebreaker_debuff->effectN( 1 ) );
     affected_by.avatar              = ab::data().affected_by( p()->talents.warrior.avatar->effectN( 1 ) );
-    affected_by.recklessness        = ab::data().affected_by( p()->talents.fury.recklessness->effectN( 1 ) );
+    affected_by.recklessness        = ab::data().affected_by( p()->spell.recklessness_buff->effectN( 1 ) );
 
     initialized = true;
   }
@@ -1833,6 +1834,8 @@ struct melee_t : public warrior_attack_t
     double am = warrior_attack_t::action_multiplier();
 
     am *= 1.0 + p()->buff.berserker_stance->check_stack_value();
+
+    am *= 1.0 + p()->buff.dancing_blades->check_value();
 
     return am;
   }
@@ -7104,6 +7107,7 @@ void warrior_t::init_spells()
   spell.whirlwind               = find_class_spell( "Whirlwind" );
   spell.shield_block_buff       = find_spell( 132404 );
   spell.concussive_blows_debuff = find_spell( 383116 ); 
+  spell.recklessness_buff       = find_spell( 1719 ); // lookup to allow Warlord to use Reck
 
   // Class Passives
   spell.warrior_aura            = find_spell( 137047 );
@@ -8489,13 +8493,13 @@ void warrior_t::create_buffs()
 
   buff.ignore_pain = new ignore_pain_buff_t( this );
 
-  buff.recklessness = make_buff( this, "recklessness", talents.fury.recklessness )
+  buff.recklessness = make_buff( this, "recklessness", spell.recklessness_buff )
     ->set_chance(1)
-    ->set_duration( talents.fury.recklessness->duration() + talents.fury.depths_of_insanity->effectN( 1 ).time_value() )
+    ->set_duration( spell.recklessness_buff->duration() + talents.fury.depths_of_insanity->effectN( 1 ).time_value() )
     ->apply_affecting_conduit( conduit.depths_of_insanity )
     //->add_invalidate( CACHE_CRIT_CHANCE ) removed in favor of composite_crit_chance (line 1015)
     ->set_cooldown( timespan_t::zero() )
-    ->set_default_value( talents.fury.recklessness->effectN( 1 ).percent() )
+    ->set_default_value( spell.recklessness_buff->effectN( 1 ).percent() )
     ->set_stack_change_callback( [ this ]( buff_t*, int, int after ) { if ( after == 0  && this->legendary.will_of_the_berserker->ok() ) buff.will_of_the_berserker->trigger(); });
 
   buff.reckless_abandon = make_buff( this, "reckless_abandon", find_spell( 335101 ) )
@@ -9445,7 +9449,7 @@ double warrior_t::resource_gain( resource_e r, double a, gain_t* g, action_t* ac
                                 g == gain.memory_of_lucid_dreams || g == gain.frothing_berserker || g == gain.avatar );
 
     if ( !do_not_double_rage )  // FIXME: remove this horror after BFA launches, keep Simmering Rage
-      a *= 1.0 + talents.fury.recklessness->effectN( 4 ).percent();
+      a *= 1.0 + spell.recklessness_buff->effectN( 4 ).percent();
   }
   // Memory of Lucid Dreams
   if ( buffs.memory_of_lucid_dreams->up() )
