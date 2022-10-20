@@ -377,83 +377,63 @@ custom_cb_t writ_enchant( stat_e stat, bool cr )
 {
   return [ stat, cr ]( special_effect_t& effect ) {
     auto amount = effect.driver()->effectN( 1 ).average( effect.player );
-
     if ( cr )
     {
       amount = item_database::apply_combat_rating_multiplier( effect.player, CR_MULTIPLIER_WEAPON,
                                                               effect.player->level(), amount );
     }
 
+    auto new_driver = effect.trigger();
+    auto new_trigger = new_driver->effectN( 1 ).trigger();
+
+    if ( stat == STAT_NONE )
+    {
+      effect.stat = util::translate_rating_mod( new_trigger->effectN( 1 ).misc_value1() );
+    }
+    else
+    {
+      effect.stat = stat;
+    }
+
     effect.stat_amount = amount;
-    effect.stat = stat;
+    effect.spell_id = new_driver->id();
+    effect.trigger_spell_id = new_trigger->id();
 
     new dbc_proc_callback_t( effect.player, effect );
   };
 }
 
-void earthen_devotion( special_effect_t& effect )
-{
-  auto buff = buff_t::find( effect.player, "earthen_devotion" );
-  if ( !buff )
-  {
-    auto amount = effect.driver()->effectN( 1 ).average( effect.player );
-    amount = item_database::apply_combat_rating_multiplier( effect.player, CR_MULTIPLIER_WEAPON,
-                                                            effect.player->level(), amount );
-
-    buff = make_buff<stat_buff_t>( effect.player, "earthen_devotion", effect.trigger() )
-      ->add_stat( STAT_BONUS_ARMOR, amount );
-  }
-
-  effect.custom_buff = buff;
-
-  new dbc_proc_callback_t( effect.player, effect );
-}
-
 void frozen_devotion( special_effect_t& effect )
 {
-  auto damage =
-      create_proc_action<generic_aoe_proc_t>( "frozen_devotion", effect, "frozen_devotion", effect.trigger() );
-  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect.player );
-
-  effect.execute_action = damage;
-
-  new dbc_proc_callback_t( effect.player, effect );
-}
-
-void titanic_devotion( special_effect_t& effect )
-{
-  auto buff = buff_t::find( effect.player, "titanic_devotion" );
-  if ( !buff )
-  {
-    buff = make_buff<stat_buff_t>( effect.player, "titanic_devotion", effect.trigger() )
-      ->add_stat( STAT_STR_AGI_INT, effect.driver()->effectN( 1 ).average( effect.player ) );
-  }
-
-  effect.custom_buff = buff;
+  effect.discharge_amount = effect.driver()->effectN( 1 ).average( effect.player );
+  effect.aoe = -1;
+  effect.spell_id = effect.trigger()->id();
+  effect.trigger_spell_id = effect.trigger()->effectN( 1 ).trigger()->id();
 
   new dbc_proc_callback_t( effect.player, effect );
 }
-
 
 void wafting_devotion( special_effect_t& effect )
 {
-  auto buff = buff_t::find( effect.player, "wafting_devotion" );
-  if ( !buff )
-  {
-    auto haste = effect.driver()->effectN( 1 ).average( effect.player );
-    haste = item_database::apply_combat_rating_multiplier( effect.player, CR_MULTIPLIER_WEAPON,
-                                                            effect.player->level(), haste );
+  auto new_driver = effect.trigger();
+  auto new_trigger = new_driver->effectN( 1 ).trigger();
 
-    auto speed = effect.driver()->effectN( 2 ).average( effect.player );
-    speed = item_database::apply_combat_rating_multiplier( effect.player, CR_MULTIPLIER_WEAPON,
-                                                            effect.player->level(), speed );
+  auto haste = effect.driver()->effectN( 1 ).average( effect.player );
+  haste = item_database::apply_combat_rating_multiplier( effect.player, CR_MULTIPLIER_WEAPON,
+                                                         effect.player->level(), haste );
 
-    buff = make_buff<stat_buff_t>( effect.player, "wafting_devotion", effect.trigger() )
-      ->add_stat( STAT_HASTE_RATING, haste )
-      ->add_stat( STAT_SPEED_RATING, speed );
-  }
+  auto speed = effect.driver()->effectN( 2 ).average( effect.player );
+  speed = item_database::apply_combat_rating_multiplier( effect.player, CR_MULTIPLIER_WEAPON,
+                                                         effect.player->level(), speed );
+
+  auto buff = create_buff<stat_buff_t>( effect.player, "wafting_devotion", new_trigger );
+  buff->manual_stats_added = false;
+  buff->add_stat( STAT_HASTE_RATING, haste );
+  buff->add_stat( STAT_SPEED_RATING, speed );
 
   effect.custom_buff = buff;
+  effect.spell_id = new_driver->id();
+  effect.trigger_spell_id = new_trigger->id();
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -998,14 +978,17 @@ void register_special_effects()
   register_special_effect( 370816, consumables::shocking_disclosure );
 
   // Enchants
-  register_special_effect( { 390164, 390167, 390168 }, enchants::writ_enchant( STAT_CRIT_RATING ) );
-  register_special_effect( { 390172, 390183, 390190 }, enchants::writ_enchant( STAT_MASTERY_RATING ) );
-  register_special_effect( { 390243, 390244, 390246 }, enchants::writ_enchant( STAT_VERSATILITY_RATING ) );
-  register_special_effect( { 390248, 390249, 390251 }, enchants::writ_enchant( STAT_HASTE_RATING ) );
-  register_special_effect( { 390215, 390217, 390219 }, enchants::writ_enchant( STAT_STR_AGI_INT, false ) );
-  register_special_effect( { 390346, 390347, 390348 }, enchants::earthen_devotion );
+  register_special_effect( { 390164, 390167, 390168 }, enchants::writ_enchant() );   // burning writ
+  register_special_effect( { 390172, 390183, 390190 }, enchants::writ_enchant() );   // earthen writ
+  register_special_effect( { 390243, 390244, 390246 }, enchants::writ_enchant() );   // frozen writ
+  register_special_effect( { 390248, 390249, 390251 }, enchants::writ_enchant() );   // wafting writ
+  register_special_effect( { 390215, 390217, 390219 },
+                           enchants::writ_enchant( STAT_STR_AGI_INT, false ) );      // sophic writ
+  register_special_effect( { 390346, 390347, 390348 },
+                           enchants::writ_enchant( STAT_BONUS_ARMOR ) );             // earthen devotion
+  register_special_effect( { 390222, 390227, 390229 },
+                           enchants::writ_enchant( STAT_STR_AGI_INT, false ) );      // sophic devotion
   register_special_effect( { 390351, 390352, 390353 }, enchants::frozen_devotion );
-  register_special_effect( { 390222, 390227, 390229 }, enchants::titanic_devotion );
   register_special_effect( { 390358, 390359, 390360 }, enchants::wafting_devotion );
 
   // Trinkets
