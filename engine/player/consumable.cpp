@@ -27,20 +27,28 @@ namespace
 
 // Find a consumable of a given subtype, see data_enum.hh for type values.
 // Returns 0 if not found.
-const dbc_item_data_t* find_consumable( const dbc_t& dbc, util::string_view name_str, item_subclass_consumable type )
+const dbc_item_data_t* find_consumable( const dbc_t& dbc, std::string_view name_str, item_subclass_consumable type )
 {
   if ( name_str.empty() )
   {
     return nullptr;
   }
 
-  auto split = util::string_split<std::string_view>( name_str, ":" );
+  std::string_view name;
+  int quality = 0;
 
-  auto name = split[ 0 ];
-  if ( name.empty() )
-    return nullptr;
-
-  auto quality = split.size() >= 2 ? util::to_int( split[ 1 ] ) : 0;
+  // parse string for profession revamp rank suffix. name without a suffix will default to rank 1.
+  auto r_pos = name_str.find_last_of( '_' );
+  if ( r_pos != std::string::npos && r_pos == name_str.size() - 2 &&
+       util::is_number( name_str.substr( r_pos + 1, 1 ) ) )
+  {
+    name = name_str.substr( 0, r_pos );
+    quality = util::to_int( name_str.substr( r_pos + 1, 1 ) );
+  }
+  else
+  {
+    name = name_str;
+  }
 
   // Poor man's longest matching prefix!
   const auto& item = dbc::find_consumable( type, dbc.ptr, [ name, quality ]( const dbc_item_data_t* i ) {
