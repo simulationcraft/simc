@@ -4562,6 +4562,11 @@ void unique_gear::init_feast( special_effect_t& effect, std::initializer_list<st
   effect.stat_amount = effect.player->find_spell( effect.trigger_spell_id )->effectN( 1 ).average( effect.player );
 }
 
+void unique_gear::DISABLED_EFFECT( special_effect_t& effect )
+{
+  effect.type = SPECIAL_EFFECT_NONE;
+}
+
 /**
  * Master list of special effects in Simulationcraft.
  *

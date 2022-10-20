@@ -1,4 +1,4 @@
-// Gem properties, wow build 10.0.2.46157
+// Gem properties, wow build 10.0.2.46144
 static const std::array<gem_property_data_t, 2052> __gem_property_data { {
   {    2,  2686, 0x00000002 }, // +$k1 Strength
   {    3,  2687, 0x00000008 }, // +$k1 Agility
@@ -1787,7 +1787,7 @@ static const std::array<gem_property_data_t, 2052> __gem_property_data { {
   { 3742,  6084, 0x0000000e }, // +$k1 Strength
   { 3743,  6085, 0x0000000e }, // +$k1 Agility
   { 3744,  6086, 0x0000000e }, // +$k1 Intellect
-  { 3745,  6092, 0x0000000e }, // +3% Movement Speed
+  { 3745,  6092, 0x0000000e }, // +$k1 Speed
   { 3746,  5233, 0x0000000e }, // +$k1 Versatility
   { 3747,  6097, 0x00020000 }, // Equip: Your abilities have a chance to grant you $293142s1 Haste for $293142d.
   { 3748,  4223, 0x00000020 }, // Nitro Boosts
@@ -1834,7 +1834,7 @@ static const std::array<gem_property_data_t, 2052> __gem_property_data { {
   { 3790,  6144, 0x00020000 }, // Use: Create a stampede of Mechagnome automatons to trample your foes.
   { 3791,  6145, 0x00020000 }, // Equip: Your spells have a chance to redistribute your stats based on your equipped Logic Board.
   { 3792,  6146, 0x00020000 }, // Equip: Critical heals generate Capacitance, increasing your next heal by $k.
-  { 3795,  6147, 0x0000000e }, // +5% Movement Speed
+  { 3795,  6147, 0x0000000e }, // +$k1 Speed
   { 3796,  6151, 0x00000020 }, // Empowers creatures formed from Mardivas's Arcane Coffer with the power of water.
   { 3797,  6152, 0x00000020 }, // Empowers creatures formed from Mardivas's Arcane Coffer with the power of fire.
   { 3798,  6153, 0x00000020 }, // Empowers creatures formed from Mardivas's Arcane Coffer with the power of earth.

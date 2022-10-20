@@ -1,4 +1,4 @@
-// Temporary item enchants, wow build 10.0.2.46157
+// Temporary item enchants, wow build 10.0.2.46144
 static const std::array<temporary_enchant_entry_t, 70> __temporary_enchant_data { {
   {  2713,  29453, "adamantite_sharpening_stone"  },
   {  2955,  34340, "adamantite_weightstone"       },
@@ -50,12 +50,12 @@ static const std::array<temporary_enchant_entry_t, 70> __temporary_enchant_data 
   {  6382, 371641, "primal_razorstone"            },
   {  6383, 371680, "primal_razorstone"            },
   {  6384, 371681, "primal_razorstone"            },
-  {  6379, 371676, "primal_weightstone"           },
-  {  6380, 371677, "primal_weightstone"           },
-  {  6381, 371678, "primal_weightstone"           },
-  {  6380, 371647, "primal_whetstone"             },
-  {  6381, 371649, "primal_whetstone"             },
-  {  6382, 371641, "primal_whetstone"             },
+  {  6696, 371676, "primal_weightstone"           },
+  {  6697, 371677, "primal_weightstone"           },
+  {  6698, 371678, "primal_weightstone"           },
+  {  6379, 396155, "primal_whetstone"             },
+  {  6380, 396156, "primal_whetstone"             },
+  {  6381, 396157, "primal_whetstone"             },
   {  3266,  45397, "righteous_weapon_coating"     },
   {    40,   2828, "rough_sharpening_stone"       },
   {    19,   3112, "rough_weightstone"            },

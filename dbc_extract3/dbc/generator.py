@@ -1353,6 +1353,7 @@ class SpellDataGenerator(DataGenerator):
          382844, 382845, 382846, 382847, 382848, 382849, 382850, 382851, # Darkmoon Deck: Rime
          382860, 382861, 382862, 382863, 382864, 382865, 382866, 382867, # Darkmoon Deck: Dance
          375335, 375342, 375343, 375345, # Elemental Lariat JC Neck
+         376932, # MAGIC SNOWBALL
         ),
 
         # Warrior:
@@ -1461,6 +1462,7 @@ class SpellDataGenerator(DataGenerator):
           ( 378016, 0 ), # Latent Poison Injectors (talent dd action)
           ( 386875, 2 ), # Bombardment
           ( 164273, 2 ), # Lone Wolf buff
+          ( 361736, 5 ), # Coordinated Assault (pet buff)
         ),
 
         # Rogue:
@@ -1578,10 +1580,13 @@ class SpellDataGenerator(DataGenerator):
             ( 394976, 5 ),          # Idol of C'thun Void Lasher Mind Sear
             ( 394979, 5 ),          # Idol of C'thun Void Lasher Mind Sear Tick
             ( 393919, 0 ),          # Screams of the Void extra data
+            ( 375408, 0 ),          # Screams of the Void extra data
             ( 390964, 0 ),          # Halo Damage Spell
             ( 390971, 0 ),          # Halo Heal Spell
             ( 390845, 0 ),          # Divine Star Damage Spell
             ( 390981, 0 ),          # Divine Star Heal Spell
+            ( 396895, 5 ),          # Idol of Yogg-Saron Void Spike Cleave
+            ( 373281, 0 ),          # Idol of N'Zoth Echoing Void debuff
             # Holy Priest
             ( 196809, 5 ),          # Healing Light (Divine Image legendary pet spell)
             ( 196810, 5 ),          # Dazzling Light (Divine Image legendary pet spell)
@@ -2089,6 +2094,7 @@ class SpellDataGenerator(DataGenerator):
           ( 337567, 1 ), # Chaotic Blades legendary buff
           ( 390197, 1 ), # Ragefire talent damage spell
           ( 390195, 1 ), # Chaos Theory talent buff
+          ( 391374, 1 ), ( 391378, 1 ), ( 393054, 1 ), ( 393055, 1 ), # First Blood Chaos spells
           ( 393628, 0 ), ( 393629, 0 ), # T29 Set Bonus Spells
 
           # Vengeance
@@ -3555,6 +3561,11 @@ class SetBonusListGenerator(DataGenerator):
         {
             'name'   : 'tier29',
             'bonuses': [ 1526, 1527, 1528, 1529, 1530, 1531, 1532, 1533, 1534, 1535, 1536, 1537, 1538 ],
+            'tier'   : 29
+        },
+        {
+            'name'   : 'playful_spirits_fur',
+            'bonuses': [ 1509 ],
             'tier'   : 29
         }
     ]

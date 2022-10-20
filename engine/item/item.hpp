@@ -38,17 +38,19 @@ struct stat_pair_t
   { }
 };
 
-struct parsed_item_data_t : dbc_item_data_t {
+struct parsed_item_data_t : dbc_item_data_t
+{
   std::array<int, MAX_ITEM_STAT> stat_type_e;
   std::array<int, MAX_ITEM_STAT> stat_alloc;
   std::array<item_effect_t, MAX_ITEM_EFFECT> effects;
+  int bonus_level;
 
-  parsed_item_data_t()
-    : dbc_item_data_t{}
+  parsed_item_data_t() : dbc_item_data_t{}
   {
     range::fill( stat_type_e, -1 );
     range::fill( stat_alloc, 0 );
     range::fill( effects, item_effect_t::nil() );
+    bonus_level = 0;
   }
 
   void init( const dbc_item_data_t& raw, const dbc_t& dbc );
