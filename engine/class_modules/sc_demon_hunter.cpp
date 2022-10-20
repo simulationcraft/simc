@@ -282,7 +282,7 @@ public:
       player_talent_t unleashed_power;
       player_talent_t illidari_knowledge;
       player_talent_t demonic;
-      player_talent_t first_of_the_illidari;      // Partial NYI Vers to Meta buff
+      player_talent_t first_of_the_illidari;
       player_talent_t will_of_the_illidari;       // NYI Vengeance
       player_talent_t improved_sigil_of_misery;   
       player_talent_t misery_in_defeat;           // NYI
@@ -299,7 +299,7 @@ public:
       player_talent_t demon_muzzle;               // NYI Vengeance
       player_talent_t extended_sigils;
       
-      player_talent_t collective_anguish;         // NYI
+      player_talent_t collective_anguish;
       player_talent_t unnatural_malice;
       player_talent_t relentless_pursuit;
       player_talent_t quickened_sigils;
@@ -442,6 +442,8 @@ public:
     const spell_data_t* leather_specialization;
 
     // Background Spells
+    const spell_data_t* collective_anguish;
+    const spell_data_t* collective_anguish_damage;
     const spell_data_t* demon_soul;
     const spell_data_t* demon_soul_empowered;
     const spell_data_t* felblade_damage;
@@ -2748,14 +2750,14 @@ struct sigil_of_flame_t : public demon_hunter_spell_t
   }
 };
 
-// Sigil of the Illidari Legendary ==========================================
+// Collective Anguish =======================================================
 
 struct collective_anguish_t : public demon_hunter_spell_t
 {
   struct collective_anguish_tick_t : public demon_hunter_spell_t
   {
-    collective_anguish_tick_t( util::string_view name, demon_hunter_t* p, const spell_data_t* s )
-      : demon_hunter_spell_t( name, p, s )
+    collective_anguish_tick_t( util::string_view name, demon_hunter_t* p )
+      : demon_hunter_spell_t( name, p, p->spell.collective_anguish_damage )
     {
       // TOCHECK: Currently does not use split damage on beta but probably will at some point
       dual = true;
@@ -2765,7 +2767,7 @@ struct collective_anguish_t : public demon_hunter_spell_t
 
     double composite_crit_chance() const override
     {
-      // 2020-03-15 -- 100% crit rate as of 9.0.5, does not appear to be in any spell data
+      // Appears to have a hard-coded 100% spell crit rate on the Eye Beam cast not in data
       if ( p()->specialization() == DEMON_HUNTER_VENGEANCE )
         return 1.0;
 
@@ -2773,16 +2775,13 @@ struct collective_anguish_t : public demon_hunter_spell_t
     }
   };
 
-  collective_anguish_t( util::string_view name, demon_hunter_t* p, const spell_data_t* s )
-    : demon_hunter_spell_t( name, p, s )
+  collective_anguish_t( util::string_view name, demon_hunter_t* p )
+    : demon_hunter_spell_t( name, p, p->spell.collective_anguish )
   {
     may_miss = channeled = false;
     dual = true;
 
-    if( p->specialization() == DEMON_HUNTER_HAVOC )
-      tick_action = p->get_background_action<collective_anguish_tick_t>( "collective_anguish_tick", data().effectN( 1 ).trigger() );
-    else // Trigger data not set up correctly for Vengeance
-      tick_action = p->get_background_action<collective_anguish_tick_t>( "collective_anguish_tick", p->find_spell( 346505 ) );
+    tick_action = p->get_background_action<collective_anguish_tick_t>( "collective_anguish_tick" );
   }
 
   // Behaves as a channeled spell, although we can't set channeled = true since it is background
@@ -5044,6 +5043,10 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
       add_invalidate( CACHE_LEECH );
     }
 
+    if ( p->talent.demon_hunter.first_of_the_illidari->ok() )
+    {
+      add_invalidate( CACHE_VERSATILITY );
+    }
   }
 
   void trigger_demonic()
@@ -6156,6 +6159,26 @@ void demon_hunter_t::init_spells()
   else
     spell.the_hunt = spell_data_t::not_found();
 
+  if ( talent.demon_hunter.collective_anguish->ok() )
+  {
+    spell.collective_anguish = specialization() == DEMON_HUNTER_HAVOC ? find_spell( 393831 ) : find_spell( 391057 );
+    spell.collective_anguish_damage = ( specialization() == DEMON_HUNTER_HAVOC ?
+                                        spell.collective_anguish->effectN( 1 ).trigger() :
+                                        find_spell( 391058 ) );
+  }
+  else if ( legendary.collective_anguish->ok() )
+  {
+    spell.collective_anguish = specialization() == DEMON_HUNTER_HAVOC ? find_spell( 346502 ) : find_spell( 346504 );
+    spell.collective_anguish_damage = ( specialization() == DEMON_HUNTER_HAVOC ?
+                                        spell.collective_anguish->effectN( 1 ).trigger() :
+                                        find_spell( 346505 ) );
+  }
+  else
+  {
+    spell.collective_anguish = spell_data_t::not_found();
+    spell.collective_anguish_damage = spell_data_t::not_found();
+  }
+
   // Havoc
   spec.burning_wound_debuff = ( talent.havoc.burning_wound->ok() ?
                                 talent.havoc.burning_wound->effectN( 1 ).trigger() :
@@ -6188,10 +6211,9 @@ void demon_hunter_t::init_spells()
     active.demon_blades = new demon_blades_t( this );
   }
 
-  if ( legendary.collective_anguish.ok() )
+  if ( legendary.collective_anguish.ok() || talent.demon_hunter.collective_anguish->ok() )
   {
-    const spell_data_t* driver = ( specialization() == DEMON_HUNTER_HAVOC ) ? find_spell( 346502 ) : find_spell( 346504 );
-    active.collective_anguish = get_background_action<collective_anguish_t>( "collective_anguish", driver );
+    active.collective_anguish = get_background_action<collective_anguish_t>( "collective_anguish" );
   }
 
   if ( ( conduit.relentless_onslaught.ok() || talent.havoc.relentless_onslaught->ok() ) && specialization() == DEMON_HUNTER_HAVOC )
@@ -6805,6 +6827,11 @@ double demon_hunter_t::composite_damage_versatility() const
 {
   double cdv = player_t::composite_damage_versatility();
 
+  if ( talent.demon_hunter.first_of_the_illidari->ok() && buff.metamorphosis->check() )
+  {
+    cdv += talent.demon_hunter.first_of_the_illidari->effectN( 2 ).percent();
+  }
+
   return cdv;
 }
 
@@ -6814,6 +6841,11 @@ double demon_hunter_t::composite_heal_versatility() const
 {
   double chv = player_t::composite_heal_versatility();
 
+  if ( talent.demon_hunter.first_of_the_illidari->ok() && buff.metamorphosis->check() )
+  {
+    chv += talent.demon_hunter.first_of_the_illidari->effectN( 2 ).percent();
+  }
+
   return chv;
 }
 
@@ -6822,6 +6854,11 @@ double demon_hunter_t::composite_heal_versatility() const
 double demon_hunter_t::composite_mitigation_versatility() const
 {
   double cmv = player_t::composite_mitigation_versatility();
+
+  if ( talent.demon_hunter.first_of_the_illidari->ok() && buff.metamorphosis->check() )
+  {
+    cmv += talent.demon_hunter.first_of_the_illidari->effectN( 2 ).percent() / 2;
+  }
 
   return cmv;
 }
