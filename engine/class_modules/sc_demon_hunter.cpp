@@ -238,6 +238,10 @@ public:
     buff_t* blazing_slaughter;
     buff_t* blind_faith;
     buff_t* fel_bombardment;
+
+    // Set Bonuses
+    damage_buff_t* t29_havoc_4pc;
+
   } buff;
 
   // Talents
@@ -579,6 +583,10 @@ public:
   // Set Bonus effects
   struct set_bonuses_t
   {
+    const spell_data_t* t29_havoc_2pc;
+    const spell_data_t* t29_havoc_4pc;
+    const spell_data_t* t29_vengeance_2pc;          // NYI
+    const spell_data_t* t29_vengeance_4pc;          // NYI
   } set_bonuses;
 
   // Mastery Spells
@@ -1435,6 +1443,7 @@ public:
       ab::apply_affecting_aura( p->legendary.erratic_fel_core );
 
       // Set Bonus Passives
+      ab::apply_affecting_aura( p->set_bonuses.t29_havoc_2pc );
 
       // Affect Flags
       parse_affect_flags( p->mastery.demonic_presence, affected_by.demonic_presence );
@@ -1500,6 +1509,8 @@ public:
     register_damage_buff( p()->buff.momentum );
     register_damage_buff( p()->buff.chaos_theory );
     register_damage_buff( p()->buff.restless_hunter );
+
+    register_damage_buff( p()->buff.t29_havoc_4pc );
 
     if ( track_cd_waste )
     {
@@ -3617,8 +3628,10 @@ struct the_hunt_t : public demon_hunter_spell_t
 
   void execute() override
   {
-    p()->buff.momentum->trigger(); // DFALPHA TOCHECK -- Timing before or after?
+    p()->buff.momentum->trigger();
+
     demon_hunter_spell_t::execute();
+
     p()->set_out_of_range( timespan_t::zero() ); // Cancel all other movement
   }
 
@@ -3845,6 +3858,16 @@ struct blade_dance_base_t : public demon_hunter_attack_t
           trail_of_ruin_dot->set_target( s->target );
           trail_of_ruin_dot->execute();
         }
+      }
+
+      if ( p()->set_bonuses.t29_havoc_4pc->ok() )
+      {
+        double chance = p()->set_bonuses.t29_havoc_4pc->effectN( 1 ).percent();
+        if ( s->result == RESULT_CRIT )
+          chance *= 2;
+
+        if ( p()->rng().roll( chance ) )
+          p()->buff.t29_havoc_4pc->trigger();
       }
     }
 
@@ -4081,6 +4104,17 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
             relentless_onslaught->schedule_execute();
           }
         }
+      }
+
+      // DFALPHA TOCHECK -- Does this proc from Relentless Onslaught?
+      if ( p()->set_bonuses.t29_havoc_4pc->ok() )
+      {
+        double chance = p()->set_bonuses.t29_havoc_4pc->effectN( 1 ).percent();
+        if ( s->result == RESULT_CRIT )
+          chance *= 2;
+
+        if ( p()->rng().roll( chance ) )
+          p()->buff.t29_havoc_4pc->trigger();
       }
     }
   };
@@ -5387,6 +5421,32 @@ void demon_hunter_t::create_buffs()
   buff.metamorphosis = new buffs::metamorphosis_buff_t( this );
 
   // Havoc ==================================================================
+  
+  buff.out_of_range = make_buff( this, "out_of_range", spell_data_t::nil() )
+    ->set_chance( 1.0 );
+
+  buff.fel_rush_move = new movement_buff_t( this, "fel_rush_movement", spell_data_t::nil() );
+  buff.fel_rush_move->set_chance( 1.0 )
+    ->set_duration( spec.fel_rush->gcd() );
+
+  buff.vengeful_retreat_move = new movement_buff_t( this, "vengeful_retreat_movement", spell_data_t::nil() );
+  buff.vengeful_retreat_move
+    ->set_chance( 1.0 )
+    ->set_duration( talent.demon_hunter.vengeful_retreat->duration() );
+
+  buff.metamorphosis_move = new movement_buff_t( this, "metamorphosis_movement", spell_data_t::nil() );
+  buff.metamorphosis_move
+    ->set_chance( 1.0 )
+    ->set_duration( 1_s );
+
+  buff.blind_fury = make_buff( this, "blind_fury", talent.havoc.eye_beam )
+    ->set_default_value( talent.havoc.blind_fury->effectN( 3 ).resource( RESOURCE_FURY ) / 50 )
+    ->set_cooldown( timespan_t::zero() )
+    ->set_period( timespan_t::from_millis( 100 ) ) // Overridden on cast
+    ->set_tick_zero( true )
+    ->set_tick_callback( [this]( buff_t* b, int, timespan_t ) {
+      resource_gain( RESOURCE_FURY, b->check_value(), gain.blind_fury );
+    } );
 
   buff.blur = make_buff( this, "blur", spec.blur->effectN( 1 ).trigger() )
     ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN )
@@ -5399,21 +5459,14 @@ void demon_hunter_t::create_buffs()
     ->set_default_value_from_effect_type( A_HASTE_ALL )
     ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
 
-  buff.fel_rush_move = new movement_buff_t( this, "fel_rush_movement", spell_data_t::nil() );
-  buff.fel_rush_move->set_chance( 1.0 )
-    ->set_duration( spec.fel_rush->gcd() );
-
   buff.initiative = make_buff( this, "initiative", spec.initiative_buff )
     ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
     ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
 
   buff.momentum = make_buff<damage_buff_t>( this, "momentum", spec.momentum_buff );
-  buff.momentum->set_refresh_behavior( buff_refresh_behavior::EXTEND ); // DFALPHA TOCHECK
+  buff.momentum->set_refresh_behavior( buff_refresh_behavior::EXTEND );
 
   buff.restless_hunter = make_buff<damage_buff_t>( this, "restless_hunter", spec.restless_hunter_buff );
-
-  buff.out_of_range = make_buff( this, "out_of_range", spell_data_t::nil() )
-    ->set_chance( 1.0 );
 
   buff.tactical_retreat = make_buff( this, "tactical_retreat", spec.tactical_retreat_buff )
     ->set_default_value_from_effect_type( A_PERIODIC_ENERGIZE )
@@ -5421,27 +5474,8 @@ void demon_hunter_t::create_buffs()
       resource_gain( RESOURCE_FURY, b->check_value(), gain.tactical_retreat );
     } );
 
-  buff.blind_fury = make_buff( this, "blind_fury", talent.havoc.eye_beam )
-    ->set_default_value( talent.havoc.blind_fury->effectN( 3 ).resource( RESOURCE_FURY ) / 50 )
-    ->set_cooldown( timespan_t::zero() )
-    ->set_period( timespan_t::from_millis( 100 ) ) // Overridden on cast
-    ->set_tick_zero( true )
-    ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
-      resource_gain( RESOURCE_FURY, b->check_value(), gain.blind_fury );
-    } );
-
   buff.unbound_chaos = make_buff( this, "unbound_chaos", spec.unbound_chaos_buff )
     ->set_default_value( talent.havoc.unbound_chaos->effectN( 2 ).percent() );
-
-  buff.vengeful_retreat_move = new movement_buff_t(this, "vengeful_retreat_movement", spell_data_t::nil() );
-  buff.vengeful_retreat_move
-    ->set_chance( 1.0 )
-    ->set_duration( talent.demon_hunter.vengeful_retreat->duration() );
-
-  buff.metamorphosis_move = new movement_buff_t( this, "metamorphosis_movement", spell_data_t::nil() );
-  buff.metamorphosis_move
-    ->set_chance( 1.0 )
-    ->set_duration( 1_s );
 
   // Vengeance ==============================================================
 
@@ -5500,6 +5534,12 @@ void demon_hunter_t::create_buffs()
   buff.blazing_slaughter = make_buff<buff_t>( this, "blazing_slaughter", blazing_slaughter_buff )
     ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
     ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY );
+
+  // Set Bonus Items ========================================================
+
+  buff.t29_havoc_4pc = make_buff<damage_buff_t>( this, "seething_chaos", set_bonuses.t29_havoc_4pc->ok() ?
+                                                 find_spell( 394934 ) : spell_data_t::not_found() );
+  buff.t29_havoc_4pc->set_refresh_behavior( buff_refresh_behavior::DURATION );
 }
 
 struct metamorphosis_adjusted_cooldown_expr_t : public expr_t
@@ -6196,6 +6236,11 @@ void demon_hunter_t::init_spells()
     spec.chaos_theory_buff = spell_data_t::not_found();
 
   // Set Bonus Items ========================================================
+
+  set_bonuses.t29_havoc_2pc     = sets->set( DEMON_HUNTER_HAVOC, T29, B2 );
+  set_bonuses.t29_havoc_4pc     = sets->set( DEMON_HUNTER_HAVOC, T29, B4 );
+  set_bonuses.t29_vengeance_2pc = sets->set( DEMON_HUNTER_VENGEANCE, T29, B2 );
+  set_bonuses.t29_vengeance_4pc = sets->set( DEMON_HUNTER_VENGEANCE, T29, B4 );
 
   // Spell Initialization ===================================================
 
