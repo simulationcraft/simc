@@ -309,10 +309,12 @@ void bottled_putrescence( special_effect_t& effect )
     };
 
     action_t* damage;
+    timespan_t duration;
 
     bottled_putrescence_t( const special_effect_t& e )
       : proc_spell_t( "bottled_putrescence", e.player, e.driver() ),
-        damage( create_proc_action<bottled_putrescence_tick_t>( "bottled_putresence", e ) )
+        damage( create_proc_action<bottled_putrescence_tick_t>( "bottled_putresence", e ) ),
+        duration( data().effectN( 1 ).trigger()->duration() * inhibitor_mul( e.player ) )
     {
       damage->stats = stats;
     }
@@ -324,7 +326,7 @@ void bottled_putrescence( special_effect_t& effect )
       make_event<ground_aoe_event_t>( *sim, player, ground_aoe_params_t()
         .target( s->target )
         .pulse_time( damage->base_tick_time )
-        .duration( data().effectN( 1 ).trigger()->duration() - 1_ms )  // has 0tick, but no tick at the end
+        .duration( duration - 1_ms )  // has 0tick, but no tick at the end
         .action( damage ), true );
     }
   };
@@ -342,7 +344,8 @@ void chilled_clarity( special_effect_t& effect )
   {
     buff = make_buff( effect.player, "potion_of_chilled_clarity", effect.trigger() )
       ->set_default_value_from_effect_type( A_355 )
-      ->set_duration( timespan_t::from_seconds( effect.driver()->effectN( 1 ).base_value() ) );
+      ->set_duration( timespan_t::from_seconds( effect.driver()->effectN( 1 ).base_value() ) )
+      ->set_duration_multiplier( inhibitor_mul( effect.player ) );
   }
 
   effect.custom_buff = effect.player->buffs.chilled_clarity = buff;
@@ -362,6 +365,7 @@ void shocking_disclosure( special_effect_t& effect )
       damage->stats = pot_action->stats;
 
     buff = make_buff( effect.player, "shocking_disclosure", effect.driver() )
+      ->set_duration_multiplier( inhibitor_mul( effect.player ) )
       ->set_tick_callback( [ damage ]( buff_t* b, int, timespan_t ) {
         damage->execute_on_target( b->player->target );
       } );
@@ -1036,5 +1040,17 @@ double toxified_mul( player_t* player )
     return 1.0 + toxic->driver()->effectN( 2 ).percent();
 
   return 1.0;
+}
+
+// check and return multiplier for potion absorption inhibitor
+double inhibitor_mul( player_t* player )
+{
+  int count = 0;
+
+  for ( const auto& item : player->items )
+    if ( range::contains( item.parsed.special_effects, 371700, &special_effect_t::spell_id ) )
+      count++;
+
+  return 1.0 + count * player->find_spell( 371700 )->effectN( 1 ).percent();
 }
 }  // namespace unique_gear::dragonflight
