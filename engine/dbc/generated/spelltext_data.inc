@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.2.46144
-static const std::array<spelltext_data_t, 19094> __spelltext_data { {
+static const std::array<spelltext_data_t, 19095> __spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -16495,6 +16495,7 @@ static const std::array<spelltext_data_t, 19094> __spelltext_data { {
   { 376907, "$@spelldesc376905", "Strength increased by $w1%.", 0 },
   { 376918, "$?a393620[$@spellaura393620][Your non-periodic spells and abilities have a chance to pelt your target with a magic snowball, causing enemies to take $s1 Frost damage or cause allies to receive $s2 healing.]", "Your non-periodic spells and abilities have a chance to pelt your target with a magic snowball, causing enemies to take $w1 Frost damage or cause allies to receive $w2 healing.", 0 },
   { 376930, "Your healing done and healing received are increased by $s1%.", 0, 0 },
+  { 376932, "$@spelldesc376918.", 0, 0 },
   { 376938, "Remorseless Winter deals $s1% increased damage to enemies it hits, stacking up to $376974u times.", 0, 0 },
   { 376953, "Place an intimidating statue of a decapitated dragon onto the battlefield nearby which can be attacked by players of either faction. Once destroyed, it will drop a random battleground buff that anyone can claim.\r\n\r\nCan only be used in War Mode on the Dragon Isles and in unrated battlegrounds.", 0, 0 },
   { 376955, "Place a remarkable statue of a Titan Keeper nearby for $d. Players who /kneel before the statue will have their worthiness judged.\r\n\r\nA player's worthiness can only be judged once every $377740d. Can only be used on the Dragon Isles.", 0, 0 },
