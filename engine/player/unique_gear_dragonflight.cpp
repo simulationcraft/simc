@@ -824,7 +824,21 @@ void the_cartographers_calipers( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 // Weapons
+
 // Armor
+void coated_in_slime( special_effect_t& effect )
+{
+  auto mul = toxified_mul( effect.player );
+
+  effect.player->passive.add_stat( util::translate_rating_mod( effect.driver()->effectN( 1 ).misc_value1() ),
+                                   effect.driver()->effectN( 2 ).average( effect.item ) * mul );
+
+  effect.trigger_spell_id = effect.driver()->effectN( 3 ).trigger_spell_id();
+  effect.discharge_amount = effect.driver()->effectN( 3 ).average( effect.item ) * mul;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 void elemental_lariat( special_effect_t& effect )
 {
   enum gem_type_e
@@ -929,12 +943,9 @@ void flaring_cowl( special_effect_t& effect )
 
 void thriving_thorns( special_effect_t& effect )
 {
-  auto toxic_mul = 1.0;
-  auto toxic = unique_gear::find_special_effect( effect.player, 378758 );
-  if ( toxic )
-    toxic_mul += toxic->driver()->effectN( 2 ).percent();
+  auto mul = toxified_mul( effect.player );
 
-  effect.player->passive.add_stat( STAT_STAMINA, effect.driver()->effectN( 2 ).average( effect.item ) * toxic_mul );
+  effect.player->passive.add_stat( STAT_STAMINA, effect.driver()->effectN( 2 ).average( effect.item ) * mul );
 
   // velocity & triggered missile reference is in 379395 for damage & 379405 for heal
   // TODO: implement heal
@@ -942,7 +953,7 @@ void thriving_thorns( special_effect_t& effect )
   auto damage = create_proc_action<generic_proc_t>( "launched_thorns", effect, "launched_thorns",
                                                     damage_trg->effectN( 1 ).trigger() );
   damage->travel_speed = damage_trg->missile_speed();
-  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 4 ).average( effect.item ) * toxic_mul;
+  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 4 ).average( effect.item ) * mul;
 
   effect.execute_action = damage;
 
@@ -1013,7 +1024,9 @@ void register_special_effects()
   register_special_effect( 383798, items::emerald_coachs_whistle );
   register_special_effect( 384112, items::the_cartographers_calipers );
   // Weapons
+
   // Armor
+  register_special_effect( 378423, items::coated_in_slime );
   register_special_effect( 375323, items::elemental_lariat );
   register_special_effect( 381424, items::flaring_cowl );
   register_special_effect( 379396, items::thriving_thorns );
@@ -1034,5 +1047,15 @@ void register_special_effects()
 void register_target_data_initializers( sim_t& sim )
 {
   sim.register_target_data_initializer( items::awakening_rime_initializer_t() );
+}
+
+// check and return multiplier for toxified armor patch
+// TODO: spell data seems to indicate you can have up to 4 stacks. currently implemented as a simple check
+double toxified_mul( player_t* player )
+{
+  if ( auto toxic = unique_gear::find_special_effect( player, 378758 ) )
+    return 1.0 + toxic->driver()->effectN( 2 ).percent();
+
+  return 1.0;
 }
 }  // namespace unique_gear::dragonflight

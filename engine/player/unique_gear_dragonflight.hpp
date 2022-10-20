@@ -46,7 +46,9 @@ void darkmoon_deck_watcher( special_effect_t& );
 void emerald_coachs_whistle( special_effect_t& );
 void the_cartographers_calipers( special_effect_t& );
 // Weapons
+
 // Armor
+void coated_in_slime( special_effect_t& );
 void elemental_lariat( special_effect_t& );
 void flaring_cowl( special_effect_t& );
 void thriving_thorns( special_effect_t& );
@@ -59,4 +61,5 @@ void playful_spirits_fur( special_effect_t& );
 
 void register_special_effects();
 void register_target_data_initializers( sim_t& );
+double toxified_mul( player_t* );
 }
