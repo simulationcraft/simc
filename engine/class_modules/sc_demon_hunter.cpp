@@ -193,6 +193,8 @@ public:
   double spirit_bomb_accumulator;  // Spirit Bomb healing accumulator
   event_t* spirit_bomb_driver;
 
+  double ragefire_accumulator;
+  int ragefire_crit_accumulator;
   double shattered_destiny_accumulator;
 
   event_t* exit_melee_event;  // Event to disable melee abilities mid-VR.
@@ -292,7 +294,7 @@ public:
       player_talent_t erratic_felheart;
       player_talent_t long_night;                 // NYI
       player_talent_t pitch_black;
-      player_talent_t the_hunt;
+      player_talent_t the_hunt;                   // NYI
       player_talent_t demon_muzzle;               // NYI
       player_talent_t extended_sigils;
       
@@ -315,7 +317,7 @@ public:
       player_talent_t demonic_appetite;
       player_talent_t improved_fel_rush;
       player_talent_t first_blood;                // NYI
-      player_talent_t furious_throws;             // NYI
+      player_talent_t furious_throws;
       player_talent_t burning_hatred;
 
       player_talent_t critical_chaos;
@@ -346,7 +348,7 @@ public:
       player_talent_t restless_hunter;
       player_talent_t inner_demon;
       player_talent_t accelerating_blade;         // Partial NYI -- Add chain_bonus_damage in apply_affecting
-      player_talent_t ragefire;                   // NYI
+      player_talent_t ragefire;
 
       player_talent_t know_your_enemy;
       player_talent_t glaive_tempest;
@@ -354,11 +356,11 @@ public:
       player_talent_t cycle_of_hatred;
       player_talent_t fodder_to_the_flame;        // NYI
       player_talent_t elysian_decree;             // NYI
-      player_talent_t soulrend;                   // NYI
+      player_talent_t soulrend;
 
       player_talent_t essence_break;
       player_talent_t shattered_destiny;
-      player_talent_t any_means_necessary;        // NYI
+      player_talent_t any_means_necessary;
 
     } havoc;
 
@@ -490,7 +492,9 @@ public:
     const spell_data_t* inner_demon_damage;
     const spell_data_t* isolated_prey_fury;
     const spell_data_t* momentum_buff;
+    const spell_data_t* ragefire_damage;
     const spell_data_t* serrated_glaive_debuff;
+    const spell_data_t* soulrend_debuff;
     const spell_data_t* restless_hunter_buff;
     const spell_data_t* tactical_retreat_buff;
     const spell_data_t* unbound_chaos_buff;
@@ -575,6 +579,7 @@ public:
   {
     // Havoc
     const spell_data_t* demonic_presence;
+    const spell_data_t* any_means_necessary;
     // Vengeance
     const spell_data_t* fel_blood;
     const spell_data_t* fel_blood_rank_2;
@@ -706,6 +711,7 @@ public:
     // Havoc
     attack_t* demon_blades = nullptr;
     spell_t* inner_demon = nullptr;
+    spell_t* ragefire = nullptr;
     attack_t* relentless_onslaught = nullptr;
     attack_t* relentless_onslaught_annihilation = nullptr;
 
@@ -1317,6 +1323,7 @@ public:
   struct
   {
     // Havoc
+    affect_flags any_means_necessary;
     affect_flags demonic_presence;
     bool essence_break = false;
     bool burning_wound = false;
@@ -1388,6 +1395,7 @@ public:
     ab::apply_affecting_aura( p->talent.havoc.looks_can_kill );
     ab::apply_affecting_aura( p->talent.havoc.tactical_retreat );
     ab::apply_affecting_aura( p->talent.havoc.accelerating_blade );
+    ab::apply_affecting_aura( p->talent.havoc.any_means_necessary );
     
     // Cross-Expansion Mechanics
     if ( p->talent.demon_hunter.unnatural_malice->ok() )
@@ -1421,6 +1429,7 @@ public:
 
       // Affect Flags
       parse_affect_flags( p->mastery.demonic_presence, affected_by.demonic_presence );
+      parse_affect_flags( p->mastery.any_means_necessary, affected_by.any_means_necessary );
       
       if ( p->talent.havoc.essence_break->ok() )
       {
@@ -1541,6 +1550,11 @@ public:
       m *= 1.0 + p()->cache.mastery_value();
     }
 
+    if ( affected_by.any_means_necessary.direct )
+    {
+      m *= 1.0 + p()->cache.mastery_value();
+    }
+
     return m;
   }
 
@@ -1553,6 +1567,11 @@ public:
       m *= damage_buff->stack_value_periodic();
 
     if ( affected_by.demonic_presence.periodic )
+    {
+      m *= 1.0 + p()->cache.mastery_value();
+    }
+
+    if ( affected_by.any_means_necessary.periodic )
     {
       m *= 1.0 + p()->cache.mastery_value();
     }
@@ -1703,24 +1722,32 @@ public:
   void accumulate_spirit_bomb( action_state_t* s )
   {
     if ( !p()->talent.vengeance.spirit_bomb->ok() )
-    {
       return;
-    }
 
     if ( !( ab::harmful && s->result_amount > 0 ) )
-    {
       return;
-    }
 
     const demon_hunter_td_t* target_data = td( s->target );
-
     if ( !target_data->debuffs.frailty->check() )
-    {
       return;
-    }
 
     const double multiplier = target_data->debuffs.frailty->stack_value();
     p()->spirit_bomb_accumulator += s->result_amount * multiplier;
+  }
+
+  void accumulate_ragefire( action_state_t* s )
+  {
+    if ( !p()->talent.havoc.ragefire->ok() )
+      return;
+
+    if ( !( s->result_amount > 0 && s->result == RESULT_CRIT ) )
+      return;
+
+    if ( p()->ragefire_crit_accumulator >= p()->talent.havoc.ragefire->effectN( 2 ).base_value() )
+      return;
+
+    const double multiplier = p()->talent.havoc.ragefire->effectN( 1 ).percent();
+    p()->ragefire_accumulator += s->result_amount * multiplier;
   }
 
   void trigger_felblade( action_state_t* s )
@@ -2875,6 +2902,12 @@ struct immolation_aura_t : public demon_hunter_spell_t
         {
           p()->buff.fel_bombardment->trigger();
         }
+
+        // DFALPHA TOCHECK -- Does this accumulate from the initial hit?
+        if ( !initial )
+        {
+          accumulate_ragefire( s );
+        }
       }
     }
 
@@ -2908,6 +2941,11 @@ struct immolation_aura_t : public demon_hunter_spell_t
     {
       p->active.infernal_armor = p->get_background_action<infernal_armor_damage_t>( "infernal_armor" );
       add_child( p->active.infernal_armor );
+    }
+
+    if ( p->talent.havoc.ragefire->ok() )
+    {
+      add_child( p->active.ragefire );
     }
 
     // Add damage modifiers in immolation_aura_damage_t, not here.
@@ -4461,6 +4499,17 @@ struct fracture_t : public demon_hunter_attack_t
   }
 };
 
+// Ragefire Talent ==========================================================
+
+struct ragefire_t : public demon_hunter_spell_t
+{
+  ragefire_t( util::string_view name, demon_hunter_t* p )
+    : demon_hunter_spell_t( name, p, p->spec.ragefire_damage )
+  {
+    aoe = -1;
+  }
+};
+
 // Inner Demon Talent =======================================================
 
 struct inner_demon_t : public demon_hunter_spell_t
@@ -4468,6 +4517,7 @@ struct inner_demon_t : public demon_hunter_spell_t
   inner_demon_t( util::string_view name, demon_hunter_t* p )
     : demon_hunter_spell_t( name, p, p->spec.inner_demon_damage )
   {
+    aoe = -1;
   }
 };
 
@@ -4632,11 +4682,28 @@ struct throw_glaive_t : public demon_hunter_attack_t
 {
   struct throw_glaive_damage_t : public demon_hunter_attack_t
   {
+    struct soulrend_t : public residual_action::residual_periodic_action_t<demon_hunter_attack_t>
+    {
+      soulrend_t( util::string_view name, demon_hunter_t* p ) :
+        base_t( name, p, p->spec.soulrend_debuff )
+      {
+        dual = true;
+      }
+    };
+
+    soulrend_t* soulrend;
+
     throw_glaive_damage_t( util::string_view name, demon_hunter_t* p )
-      : demon_hunter_attack_t( name, p, p->spell.throw_glaive->effectN( 1 ).trigger() )
+      : demon_hunter_attack_t( name, p, p->spell.throw_glaive->effectN( 1 ).trigger() ),
+      soulrend( nullptr )
     {
       background = dual = true;
       radius = 10.0;
+
+      if ( p->talent.havoc.soulrend->ok() )
+      {
+        soulrend = p->get_background_action<soulrend_t>( "soulrend" );
+      }
     }
 
     double composite_da_multiplier( const action_state_t* s ) const override
@@ -4647,16 +4714,42 @@ struct throw_glaive_t : public demon_hunter_attack_t
 
       return m;
     }
+
+    void impact( action_state_t* state ) override
+    {
+      demon_hunter_attack_t::impact( state );
+
+      if ( soulrend && result_is_hit( state->result ) )
+      {
+        const double dot_damage = state->result_amount * p()->talent.havoc.soulrend->effectN( 1 ).percent();
+        residual_action::trigger( soulrend, state->target, dot_damage );
+      }
+    }
   };
 
+  throw_glaive_damage_t* furious_throws;
   throw_glaive_damage_t* fel_bombardment;
 
   throw_glaive_t( demon_hunter_t* p, util::string_view options_str )
     : demon_hunter_attack_t( "throw_glaive", p, p->spell.throw_glaive, options_str ),
-    fel_bombardment( nullptr )
+    furious_throws( nullptr ), fel_bombardment( nullptr )
   {
-    execute_action = p->get_background_action<throw_glaive_damage_t>( "throw_glaive" );
+    throw_glaive_damage_t* damage = p->get_background_action<throw_glaive_damage_t>( "throw_glaive" );
+    execute_action = damage;
     execute_action->stats = stats;
+
+    if ( damage->soulrend )
+    {
+      add_child( damage->soulrend );
+    }
+
+    if ( p->talent.havoc.furious_throws->ok() )
+    {
+      resource_current = RESOURCE_FURY;
+      base_costs[ RESOURCE_FURY ] = p->talent.havoc.furious_throws->effectN( 1 ).base_value();
+      furious_throws = p->get_background_action<throw_glaive_damage_t>( "throw_glaive_furious_throws" );
+      add_child( furious_throws );
+    }
 
     if ( p->legendary.fel_bombardment->ok() )
     {
@@ -4698,6 +4791,11 @@ struct throw_glaive_t : public demon_hunter_attack_t
         fel_bombardment->execute();
         bombardment_stacks--;
       }
+    }
+
+    if ( hit_any_target && furious_throws )
+    {
+      furious_throws->execute_on_target( target );
     }
   }
 
@@ -4824,8 +4922,11 @@ struct immolation_aura_buff_t : public demon_hunter_buff_t<buff_t>
     apply_affecting_aura( p->talent.vengeance.agonizing_flames );
 
     set_tick_callback( [ p ]( buff_t*, int, timespan_t ) {
-      p->active.immolation_aura->set_target( p->target );
-      p->active.immolation_aura->execute();
+      if ( p->talent.havoc.ragefire->ok() )
+      {
+        p->ragefire_crit_accumulator = 0;
+      }
+      p->active.immolation_aura->execute_on_target( p->target );
       p->buff.growing_inferno->trigger();
     } );
 
@@ -4860,6 +4961,24 @@ struct immolation_aura_buff_t : public demon_hunter_buff_t<buff_t>
     if ( p()->talent.havoc.unbound_chaos->ok() )
     {
       p()->buff.unbound_chaos->trigger();
+    }
+
+    if ( p()->talent.havoc.ragefire->ok() )
+    {
+      p()->ragefire_accumulator = 0.0;
+      p()->ragefire_crit_accumulator = 0.0;
+    }
+  }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    demon_hunter_buff_t<buff_t>::expire_override( expiration_stacks, remaining_duration );
+
+    if ( p()->talent.havoc.ragefire->ok() )
+    {
+      p()->active.ragefire->execute_on_target( p()->target, p()->ragefire_accumulator );
+      p()->ragefire_accumulator = 0.0;
+      p()->ragefire_crit_accumulator = 0.0;
     }
   }
 
@@ -5096,6 +5215,8 @@ demon_hunter_t::demon_hunter_t(sim_t* sim, util::string_view name, race_e r)
   soul_fragments(),
   spirit_bomb_accumulator( 0.0 ),
   spirit_bomb_driver( nullptr ),
+  ragefire_accumulator( 0.0 ),
+  ragefire_crit_accumulator( 0.0 ),
   shattered_destiny_accumulator( 0.0 ),
   exit_melee_event( nullptr ),
   buff(),
@@ -5904,6 +6025,8 @@ void demon_hunter_t::init_spells()
   spell.sigil_of_flame_damage = talent.demon_hunter.sigil_of_flame->ok() ? find_spell( 204598 ) : spell_data_t::not_found();
 
   // Spec Background Spells
+  mastery.any_means_necessary = talent.havoc.any_means_necessary;
+
   spec.demon_blades_damage = talent.havoc.demon_blades->effectN( 1 ).trigger();
   spec.essence_break_debuff = talent.havoc.essence_break->ok() ? find_spell( 320338 ) : spell_data_t::not_found();
   spec.eye_beam_damage = talent.havoc.eye_beam->ok() ? find_spell( 198030 ) : spell_data_t::not_found();
@@ -5914,7 +6037,9 @@ void demon_hunter_t::init_spells()
   spec.inner_demon_damage = talent.havoc.inner_demon->ok() ? find_spell( 390137 ) : spell_data_t::not_found();
   spec.isolated_prey_fury = talent.havoc.isolated_prey->ok() ? find_spell( 357323 ) : spell_data_t::not_found();
   spec.momentum_buff = talent.havoc.momentum->ok() ? find_spell( 208628 ) : spell_data_t::not_found();
+  spec.ragefire_damage = talent.havoc.ragefire->ok() ? find_spell( 390197 ) : spell_data_t::not_found();
   spec.restless_hunter_buff = talent.havoc.restless_hunter->ok() ? find_spell( 390212 ) : spell_data_t::not_found();
+  spec.soulrend_debuff = talent.havoc.soulrend->ok() ? find_spell( 390181 ) : spell_data_t::not_found();
   spec.tactical_retreat_buff = talent.havoc.tactical_retreat->ok() ? find_spell( 389890 ) : spell_data_t::not_found();
   spec.unbound_chaos_buff = talent.havoc.unbound_chaos->ok() ? find_spell( 347462 ) : spell_data_t::not_found();
 
@@ -6015,6 +6140,11 @@ void demon_hunter_t::init_spells()
   if ( talent.havoc.inner_demon->ok() )
   {
     active.inner_demon = get_background_action<inner_demon_t>( "inner_demon" );
+  }
+
+  if ( talent.havoc.ragefire->ok() )
+  {
+    active.ragefire = get_background_action<ragefire_t>( "ragefire" );
   }
 }
 
@@ -6350,12 +6480,12 @@ void demon_hunter_t::create_gains()
   gain.miss_refund            = get_gain( "miss_refund" );
 
   // Havoc
-  gain.blind_fury             = get_gain("blind_fury");
+  gain.blind_fury             = get_gain( "blind_fury" );
   gain.isolated_prey          = get_gain( "isolated_prey" );
-  gain.tactical_retreat       = get_gain("tactical_retreat");
+  gain.tactical_retreat       = get_gain( "tactical_retreat" );
 
   // Vengeance
-  gain.metamorphosis          = get_gain("metamorphosis");
+  gain.metamorphosis          = get_gain( "metamorphosis" );
 
   // Legendary
   gain.blind_faith            = get_gain( "blind_faith" );
@@ -6875,6 +7005,8 @@ void demon_hunter_t::reset()
   next_fragment_spawn               = 0;
   metamorphosis_health              = 0;
   spirit_bomb_accumulator           = 0.0;
+  ragefire_accumulator              = 0.0;
+  ragefire_crit_accumulator         = 0.0;
   shattered_destiny_accumulator     = 0.0;
 
   for ( size_t i = 0; i < soul_fragments.size(); i++ )
