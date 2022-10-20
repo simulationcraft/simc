@@ -450,6 +450,7 @@ public:
     const spell_data_t* immolation_aura_damage;
     const spell_data_t* infernal_armor_damage;
     const spell_data_t* sigil_of_flame_damage;
+    const spell_data_t* sigil_of_flame_fury;
     const spell_data_t* soul_fragment;
 
     // Cross-Expansion Override Spells
@@ -2712,6 +2713,13 @@ struct sigil_of_flame_t : public demon_hunter_spell_t
     sigil = p->get_background_action<sigil_of_flame_damage_t>( "sigil_of_flame_damage", ground_aoe_duration );
     sigil->stats = stats;
 
+    if ( p->spell.sigil_of_flame_fury->ok() )
+    {
+      energize_type = action_energize::ON_CAST;
+      energize_resource = RESOURCE_FURY;
+      energize_amount = p->spell.sigil_of_flame_fury->effectN( 1 ).resource();
+    }
+
     // Add damage modifiers in sigil_of_flame_damage_t, not here.
   }
 
@@ -2731,6 +2739,12 @@ struct sigil_of_flame_t : public demon_hunter_spell_t
       return e;
 
     return demon_hunter_spell_t::create_expression(name);
+  }
+
+  bool verify_actor_spec() const override
+  {
+    // Spell data still has a Vengeance Demon Hunter class association
+    return p()->talent.demon_hunter.sigil_of_flame->ok();
   }
 };
 
@@ -5182,13 +5196,13 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
   else // DEMON_HUNTER_VENGEANCE
   {
     dots.fiery_brand = target->get_dot("fiery_brand", &p);
-    dots.sigil_of_flame = target->get_dot("sigil_of_flame", &p);
     debuffs.frailty = make_buff( *this, "frailty", p.find_spell( 247456 ) )
       ->set_default_value_from_effect( 1 );
     debuffs.void_reaver = make_buff( *this, "void_reaver", p.find_spell( 268178 ) )
       ->set_default_value_from_effect_type( A_MOD_DAMAGE_TO_CASTER );
   }
 
+  dots.sigil_of_flame = target->get_dot( "sigil_of_flame", &p );
   dots.sinful_brand = target->get_dot( "sinful_brand", &p );
   dots.the_hunt = target->get_dot( "the_hunt_dot", &p );
   
@@ -6046,6 +6060,7 @@ void demon_hunter_t::init_spells()
   spell.infernal_armor_damage = talent.demon_hunter.infernal_armor->ok() ? find_spell( 320334 ) : spell_data_t::not_found();
   spell.immolation_aura_damage = spell.immolation_aura_2->ok() ? find_spell( 258921 ) : spell_data_t::not_found();
   spell.sigil_of_flame_damage = talent.demon_hunter.sigil_of_flame->ok() ? find_spell( 204598 ) : spell_data_t::not_found();
+  spell.sigil_of_flame_fury = talent.demon_hunter.sigil_of_flame->ok() ? find_spell( 389787 ) : spell_data_t::not_found();
 
   // Spec Background Spells
   mastery.any_means_necessary = talent.havoc.any_means_necessary;
@@ -6400,10 +6415,12 @@ void demon_hunter_t::apl_havoc()
   apl_normal->add_action( "blade_dance,if=variable.blade_dance");
   apl_normal->add_action( "felblade,if=fury.deficit>=40");
   apl_normal->add_action( "essence_break" );
+  apl_normal->add_action( "sigil_of_flame,if=active_enemies>desired_targets" );
   apl_normal->add_action( "annihilation,if=(talent.demon_blades|!variable.waiting_for_momentum|fury.deficit<30|buff.metamorphosis.remains<5)&!variable.pooling_for_blade_dance" );
   apl_normal->add_action( "chaos_strike,if=(talent.demon_blades|!variable.waiting_for_momentum|fury.deficit<30)&!variable.pooling_for_meta&!variable.pooling_for_blade_dance");
   apl_normal->add_action( "eye_beam,if=talent.blind_fury.enabled&raid_event.adds.in>cooldown&!variable.waiting_for_agony_gaze" );
   apl_normal->add_action( "demons_bite,target_if=min:debuff.burning_wound.remains,if=(runeforge.burning_wound|talent.burning_wound)&debuff.burning_wound.remains<4" );
+  apl_normal->add_action( "sigil_of_flame,if=raid_event.adds.in>15&fury.deficit>=30" );
   apl_normal->add_action( "demons_bite" );
   apl_normal->add_action( "fel_rush,if=!talent.momentum.enabled&raid_event.movement.in>charges*10&talent.demon_blades" );
   apl_normal->add_action( "felblade,if=movement.distance>15|buff.out_of_range.up");
@@ -6419,17 +6436,19 @@ void demon_hunter_t::apl_havoc()
   apl_demonic->add_action( "glaive_tempest,if=active_enemies>desired_targets|raid_event.adds.in>10" );
   apl_demonic->add_action( "throw_glaive,if=conduit.serrated_glaive.enabled&cooldown.eye_beam.remains<6&!buff.metamorphosis.up&!debuff.exposed_wound.up" );
   apl_demonic->add_action( "eye_beam,if=active_enemies>desired_targets|raid_event.adds.in>25-talent.cycle_of_hatred*10"
-                                    "&(!variable.use_eye_beam_fury_condition|spell_targets>1|fury<70)&!variable.waiting_for_agony_gaze" );
-  apl_demonic->add_action( "blade_dance, if = variable.blade_dance & !cooldown.metamorphosis.ready"
-                                                "&(cooldown.eye_beam.remains>5|(raid_event.adds.in>cooldown&raid_event.adds.in<25))" );
+                                     "&(!variable.use_eye_beam_fury_condition|spell_targets>1|fury<70)&!variable.waiting_for_agony_gaze" );
+  apl_demonic->add_action( "blade_dance,if=variable.blade_dance&!cooldown.metamorphosis.ready"
+                                        "&(cooldown.eye_beam.remains>5|(raid_event.adds.in>cooldown&raid_event.adds.in<25))" );
   apl_demonic->add_action( "immolation_aura,if=!buff.immolation_aura.up" );
   apl_demonic->add_action( "annihilation,if=!variable.pooling_for_blade_dance" );
   apl_demonic->add_action( "felblade,if=fury.deficit>=40" );
   apl_demonic->add_action( "essence_break" );
+  apl_demonic->add_action( "sigil_of_flame,if=active_enemies>desired_targets" );
   apl_demonic->add_action( "chaos_strike,if=!variable.pooling_for_blade_dance&!variable.pooling_for_eye_beam");
   apl_demonic->add_action( "fel_rush,if=talent.demon_blades&!cooldown.eye_beam.ready&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))" );
   apl_demonic->add_action( "demons_bite,target_if=min:debuff.burning_wound.remains,if=(runeforge.burning_wound|talent.burning_wound)&debuff.burning_wound.remains<4" );
   apl_demonic->add_action( "fel_rush,if=!talent.demon_blades&spell_targets>1&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))" );
+  apl_demonic->add_action( "sigil_of_flame,if=raid_event.adds.in>15&fury.deficit>=30" );
   apl_demonic->add_action( "demons_bite" );
   apl_demonic->add_action( "throw_glaive,if=buff.out_of_range.up" );
   apl_demonic->add_action( "fel_rush,if=movement.distance>15|buff.out_of_range.up" );
