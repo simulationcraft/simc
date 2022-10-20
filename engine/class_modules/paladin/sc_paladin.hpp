@@ -511,9 +511,7 @@ public:
 
     // Protection
     azerite_power_t bulwark_of_light; // Defensive, NYI
-    azerite_power_t inspiring_vanguard;
     azerite_power_t inner_light;
-    azerite_power_t soaring_shield;
 
     // Retribution
     azerite_power_t empyrean_power;

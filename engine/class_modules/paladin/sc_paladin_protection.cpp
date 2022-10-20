@@ -56,10 +56,6 @@ struct avengers_shield_base_t : public paladin_spell_t
     else
     {
       aoe = data().effectN( 1 ).chain_target();
-      if ( p -> azerite.soaring_shield.enabled() )
-      {
-          aoe = as<int>( p -> azerite.soaring_shield.spell() -> effectN( 2 ).base_value() );
-      }
       
       // Soaring Shield hits +2 targets
       if ( p->talents.soaring_shield->ok() )
@@ -77,10 +73,6 @@ struct avengers_shield_base_t : public paladin_spell_t
       p()->trigger_tyrs_enforcer(s);
     }
 
-    if ( p() -> azerite.soaring_shield.enabled() )
-    {
-      p() -> buffs.soaring_shield -> trigger();
-    }
 
     //Bulwark of Order absorb shield. Amount is additive per hit.
     if ( p() -> talents.bulwark_of_order -> ok() )
@@ -835,7 +827,6 @@ void paladin_t::trigger_grand_crusader()
     gc_proc_chance = gc_proc_chance += talents.inspiring_vanguard->effectN( 2 ).percent();
   }
 
-  // The bonus from First Avenger is added after Inspiring Vanguard
   bool success = rng().roll( gc_proc_chance );
   if ( ! success )
     return;
@@ -854,7 +845,7 @@ void paladin_t::trigger_grand_crusader()
     cooldowns.judgment->adjust( -( talents.crusaders_judgment->effectN( 2 ).time_value() ), true );
   }
 
-  if ( azerite.inspiring_vanguard.enabled() )
+  if ( talents.inspiring_vanguard -> ok() )
   {
     buffs.inspiring_vanguard -> trigger();
   }
@@ -955,7 +946,7 @@ action_t* paladin_t::create_action_protection( util::string_view name, util::str
   if ( name == "shield_of_the_righteous"   ) return new shield_of_the_righteous_t  ( this, options_str );
   if ( name == "moment_of_glory"           ) return new moment_of_glory_t          ( this, options_str );
   if ( name == "bastion_of_light"          ) return new bastion_of_light_t         ( this, options_str );
-  if ( name == "eye_of_tyr"                )     return new eye_of_tyr_t           ( this, options_str );
+  if ( name == "eye_of_tyr"                ) return new eye_of_tyr_t               ( this, options_str );
 
 
   if ( specialization() == PALADIN_PROTECTION )
@@ -993,7 +984,6 @@ void paladin_t::create_buffs_protection()
         -> add_invalidate( CACHE_STAMINA );
   buffs.shield_of_the_righteous = new shield_of_the_righteous_buff_t( this );
   buffs.moment_of_glory         = make_buff( this, "moment_of_glory", talents.moment_of_glory );
-        //-> set_default_value( talents.moment_of_glory -> effectN( 2 ).percent() );
   buffs.bastion_of_light = make_buff( this, "bastion_of_light", talents.bastion_of_light);
   buffs.bulwark_of_righteous_fury = make_buff( this, "bulwark_of_righteous_fury", find_spell( 337848) )
         -> set_default_value( find_spell( 337848 ) -> effectN( 1 ).percent() );
@@ -1003,17 +993,14 @@ void paladin_t::create_buffs_protection()
   // Kind of lazy way to make sure that SL only triggers for prot. That spelldata doesn't have to be used anywhere else so /shrug
     -> set_trigger_spell( find_specialization_spell( "Shining Light" ) );
   buffs.shining_light_free = make_buff( this, "shining_light_free", find_spell( 327510 ) );
+  buffs.inspiring_vanguard = make_buff( this, "inspiring_vanguard", talents.inspiring_vanguard -> effectN( 1 ).trigger() ) 
+      ->set_default_value( talents.inspiring_vanguard->effectN( 1 ).trigger()->effectN( 1 ).percent() )
+      -> add_invalidate( CACHE_STRENGTH );
+  buffs.inner_light = make_buff( this, "inner_light", find_spell( 386556 ) );
 
   buffs.royal_decree = make_buff( this, "royal_decree", find_spell( 340147 ) );
   buffs.reign_of_ancient_kings = make_buff( this, "reign_of_ancient_kings",
     legendary.reign_of_endless_kings -> effectN( 2 ).trigger() -> effectN( 2 ).trigger() );
-
-  // Azerite traits
-  buffs.inner_light = make_buff( this, "inner_light", find_spell( 386556 ) );
-  buffs.inspiring_vanguard = make_buff<stat_buff_t>( this, "inspiring_vanguard", azerite.inspiring_vanguard.spell() -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() )
-        -> add_stat( STAT_STRENGTH, azerite.inspiring_vanguard.value( 1 ) );
-  buffs.soaring_shield = make_buff<stat_buff_t>( this, "soaring_shield", azerite.soaring_shield.spell() -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() )
-        -> add_stat( STAT_MASTERY_RATING, azerite.soaring_shield.value( 1 ) );
 
   if ( specialization() == PALADIN_PROTECTION )
     player_t::buffs.memory_of_lucid_dreams -> set_stack_change_callback( [ this ]( buff_t*, int, int )
@@ -1076,12 +1063,10 @@ void paladin_t::init_spells_protection()
   talents.bulwark_of_righteous_fury      = find_talent_spell( talent_tree::SPECIALIZATION, "Bulwark of Righteous Fury" );
   talents.moment_of_glory                = find_talent_spell( talent_tree::SPECIALIZATION, "Moment of Glory" );
   talents.eye_of_tyr                     = find_talent_spell( talent_tree::SPECIALIZATION, "Eye of Tyr" );
-  talents.quickened_invocations           = find_talent_spell( talent_tree::SPECIALIZATION, "Quickened Invocations" );
+  talents.quickened_invocations          = find_talent_spell( talent_tree::SPECIALIZATION, "Quickened Invocations" );
   talents.blessing_of_spellwarding       = find_talent_spell( talent_tree::SPECIALIZATION, "Blessing of Spellwarding" );
-
-  talents.consecrated_ground         = find_talent_spell( "Consecrated Ground" );
-
-  talents.final_stand                = find_talent_spell( "Final Stand" );
+  talents.consecrated_ground             = find_talent_spell( talent_tree::SPECIALIZATION, "Consecrated Ground" );
+  talents.final_stand                    = find_talent_spell( talent_tree::SPECIALIZATION, "Final Stand" );
 
   // Spec passives and useful spells
   spec.protection_paladin = find_specialization_spell( "Protection Paladin" );
@@ -1091,31 +1076,24 @@ void paladin_t::init_spells_protection()
 
   if ( specialization() == PALADIN_PROTECTION )
   {
-    spec.consecration_3 = find_rank_spell( "Consecration", "Rank 3" );
-    spec.consecration_2 = find_rank_spell( "Consecration", "Rank 2" );
-    spec.judgment_3 = find_rank_spell( "Judgment", "Rank 3" );
-    spec.judgment_4 = find_rank_spell( "Judgment", "Rank 4" );
-
+    spec.consecration_3    = find_rank_spell( "Consecration", "Rank 3" );
+    spec.consecration_2    = find_rank_spell( "Consecration", "Rank 2" );
+    spec.judgment_3        = find_rank_spell( "Judgment", "Rank 3" );
+    spec.judgment_4        = find_rank_spell( "Judgment", "Rank 4" );
     spells.judgment_debuff = find_spell( 197277 );
   }
 
   spec.shield_of_the_righteous = find_class_spell( "Shield of the Righteous" );
-  spells.sotr_buff = find_spell( 132403 );
+  spells.sotr_buff             = find_spell( 132403 );
 
   passives.grand_crusader      = find_specialization_spell( "Grand Crusader" );
   passives.riposte             = find_specialization_spell( "Riposte" );
   passives.sanctuary           = find_specialization_spell( "Sanctuary" );
-
   passives.aegis_of_light      = find_specialization_spell( "Aegis of Light" );
   passives.aegis_of_light_2    = find_rank_spell( "Aegis of Light", "Rank 2" );
 
-  // Azerite traits
-  azerite.inspiring_vanguard = find_azerite_spell( "Inspiring Vanguard" );
-  azerite.soaring_shield     = find_azerite_spell( "Soaring Shield"     );
-
   // Tier Sets
-  tier_sets.glorious_purpose_2pc = find_spell( 364305 );
-
+  tier_sets.glorious_purpose_2pc  = find_spell( 364305 );
   tier_sets.ally_of_the_light_2pc = find_spell( 394714 );
   tier_sets.ally_of_the_light_4pc = find_spell( 394727 );
 }
