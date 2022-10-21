@@ -1159,7 +1159,7 @@ struct wake_of_ashes_t : public paladin_spell_t
       if ( p() -> conduit.truths_wake -> ok() )
       {
         double truths_wake_mul = p() -> conduit.truths_wake.percent() / p() -> conduit.truths_wake -> effectN( 2 ).base_value();
-        truths_wake_conduit -> base_td = s -> result_raw * truths_wake_mul;
+        truths_wake_conduit -> base_td = s -> result_amount * truths_wake_mul;
         truths_wake_conduit -> set_target( s -> target );
         truths_wake_conduit -> execute();
       }
@@ -1167,7 +1167,7 @@ struct wake_of_ashes_t : public paladin_spell_t
       if ( p() -> talents.truths_wake -> ok() )
       {
         double truths_wake_mul = p() -> talents.truths_wake -> effectN( 1 ).percent() / p() -> talents.truths_wake -> effectN( 2 ).base_value();
-        truths_wake -> base_td = s -> result_raw * truths_wake_mul;
+        truths_wake -> base_td = s -> result_amount * truths_wake_mul;
         truths_wake -> set_target( s -> target );
         truths_wake -> execute();
       }
@@ -1210,7 +1210,7 @@ struct radiant_decree_t : public holy_power_consumer_t<paladin_spell_t>
       if ( p() -> talents.truths_wake -> ok() )
       {
         double truths_wake_mul = p() -> talents.truths_wake -> effectN( 1 ).percent();
-        truths_wake -> base_td = s -> result_raw * truths_wake_mul;
+        truths_wake -> base_td = s -> result_amount * truths_wake_mul;
         truths_wake -> set_target( s -> target );
         truths_wake -> execute();
       }
