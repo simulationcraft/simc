@@ -3420,31 +3420,18 @@ public:
   snapshot_counter_t* bt_counter;
   snapshot_counter_t* tf_counter;
 
-  double berserk_cp;
   double primal_claws_cp;
   double primal_fury_cp;
-  bool consumes_combo_points;
 
   cat_attack_t( std::string_view n, druid_t* p, const spell_data_t* s = spell_data_t::nil(), std::string_view opt = {} )
     : base_t( n, p, s ),
       snapshots(),
       bt_counter( nullptr ),
       tf_counter( nullptr ),
-      berserk_cp( 0.0 ),
       primal_claws_cp( p->talent.primal_claws->effectN( 2 ).base_value() ),
-      primal_fury_cp( p->talent.primal_fury->effectN( 1 ).trigger()->effectN( 1 ).base_value() ),
-      consumes_combo_points( false )
+      primal_fury_cp( p->talent.primal_fury->effectN( 1 ).trigger()->effectN( 1 ).base_value() )
   {
     parse_options( opt );
-
-    if ( data().cost( POWER_COMBO_POINT ) )
-    {
-      consumes_combo_points = true;
-      form_mask |= CAT_FORM;
-
-      if ( p->talent.berserk.ok() )
-        berserk_cp = p->spec.berserk_cat->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_COMBO_POINT );
-    }
 
     if ( p->specialization() == DRUID_BALANCE || p->specialization() == DRUID_RESTORATION )
       ap_type = attack_power_type::NO_WEAPON;
@@ -3658,14 +3645,6 @@ public:
     }
   }
 
-  bool ready() override
-  {
-    if ( consumes_combo_points && p()->resources.current[ RESOURCE_COMBO_POINT ] < 1 )
-      return false;
-
-    return base_t::ready();
-  }
-
   void trigger_energy_refund()
   {
     player->resource_gain( RESOURCE_ENERGY, last_resource_cost * 0.80, p()->gain.energy_refund );
@@ -3730,9 +3709,15 @@ struct cat_finisher_t : public cat_attack_t
 {
   using state_t = druid_action_state_t<Data>;
 
+  double berserk_cp;
+  bool consumes_combo_points;
+
   cat_finisher_t( std::string_view n, druid_t* p, const spell_data_t* s, std::string_view opt = {} )
-    : cat_attack_t( n, p, s, opt )
-  {}
+    : cat_attack_t( n, p, s, opt ), berserk_cp( 0.0 ), consumes_combo_points( true )
+  {
+    if ( p->talent.berserk.ok() )
+      berserk_cp = p->spec.berserk_cat->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_COMBO_POINT );
+  }
 
   action_state_t* new_state() override
   {
@@ -3763,6 +3748,14 @@ struct cat_finisher_t : public cat_attack_t
     cast_state( s )->combo_points = _combo_points();
 
     cat_attack_t::snapshot_state( s, rt );
+  }
+
+  bool ready() override
+  {
+    if ( consumes_combo_points && p()->resources.current[ RESOURCE_COMBO_POINT ] < 1 )
+      return false;
+
+    return cat_attack_t::ready();
   }
 
   void consume_resource() override
