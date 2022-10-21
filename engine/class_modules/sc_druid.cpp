@@ -471,6 +471,7 @@ public:
     buff_t* balance_of_all_things_arcane;
     buff_t* balance_of_all_things_nature;
     buff_t* celestial_alignment;
+    buff_t* denizen_of_the_dream;  // proxy buff to track stack uptime
     buff_t* eclipse_lunar;
     buff_t* eclipse_solar;
     buff_t* friend_of_the_fae;
@@ -622,6 +623,7 @@ public:
   struct procs_t
   {
     // Balance
+    proc_t* denizen_of_the_dream;
     proc_t* pulsar;
 
     // Feral
@@ -10519,6 +10521,11 @@ void druid_t::create_buffs()
   buff.incarnation_moonkin =
       make_buff<celestial_alignment_buff_t>( *this, "incarnation_chosen_of_elune", spec.incarnation_moonkin, true );
 
+  buff.denizen_of_the_dream = make_buff( this, "denizen_of_the_dream", find_spell( 394076 ) )
+    ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+    ->set_max_stack( 10 )
+    ->set_rppm( rppm_scale_e::RPPM_DISABLE );
+
   buff.eclipse_lunar = make_buff<eclipse_buff_t>( *this, "eclipse_lunar", spec.eclipse_lunar );
 
   buff.eclipse_solar = make_buff<eclipse_buff_t>( *this, "eclipse_solar", spec.eclipse_solar );
@@ -11305,6 +11312,7 @@ void druid_t::init_procs()
   player_t::init_procs();
 
   // Balance
+  proc.denizen_of_the_dream   = get_proc( "Denizen of the Dream" )->collect_count();
   proc.pulsar                 = get_proc( "Primordial Arcanic Pulsar" )->collect_interval();
 
   // Feral
@@ -11386,6 +11394,8 @@ void druid_t::init_special_effects()
       void execute( action_t*, action_state_t* ) override
       {
         p()->active.denizen_of_the_dream->execute();
+        p()->buff.denizen_of_the_dream->trigger();
+        p()->proc.denizen_of_the_dream->occur();
       }
 
       druid_t* p() { return static_cast<druid_t*>( listener ); }
