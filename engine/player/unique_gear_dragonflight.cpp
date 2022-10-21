@@ -810,7 +810,15 @@ void the_cartographers_calipers( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 }
+
 // Weapons
+void fang_adornments( special_effect_t& effect )
+{
+  effect.school = effect.driver()->get_school_type();
+  effect.discharge_amount = effect.driver()->effectN( 1 ).average( effect.item );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
 
 // Armor
 void coated_in_slime( special_effect_t& effect )
@@ -1012,7 +1020,9 @@ void register_special_effects()
   register_special_effect( 384532, items::darkmoon_deck_watcher );
   register_special_effect( 383798, items::emerald_coachs_whistle );
   register_special_effect( 384112, items::the_cartographers_calipers );
+
   // Weapons
+  register_special_effect( 377708, items::fang_adornments );
 
   // Armor
   register_special_effect( 378423, items::coated_in_slime );
