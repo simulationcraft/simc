@@ -8685,16 +8685,11 @@ void warrior_t::create_buffs()
     ->set_default_value( talents.protection.shield_wall->effectN( 1 ).percent() )
     ->set_cooldown( timespan_t::zero() );
 
-  if ( talents.fury.annihilator->ok() )
-  {
-    buff.slaughtering_strikes_an = make_buff( this, "slaughtering_strikes", find_spell( 393943 ) )
-      ->set_default_value( find_spell( 393943 )->effectN( 1 ).percent() );
-  }
-  else
-  {
-    buff.slaughtering_strikes_rb = make_buff( this, "slaughtering_strikes", find_spell( 393931 ) )
-      ->set_default_value( find_spell( 393931 )->effectN( 1 ).percent() );
-  }
+  buff.slaughtering_strikes_an = make_buff( this, "slaughtering_strikes_an", find_spell( 393943 ) )
+    ->set_default_value( find_spell( 393943 )->effectN( 1 ).percent() );
+
+  buff.slaughtering_strikes_rb = make_buff( this, "slaughtering_strikes_rb", find_spell( 393931 ) )
+    ->set_default_value( find_spell( 393931 )->effectN( 1 ).percent() );
 
   const spell_data_t* test_of_might_tracker = talents.arms.test_of_might.spell()->effectN( 1 ).trigger()->effectN( 1 ).trigger();
   buff.test_of_might_tracker = new test_of_might_t( *this, "test_of_might_tracker", test_of_might_tracker );
