@@ -50,6 +50,7 @@ void bronzed_grip_wrappings( special_effect_t& );
 void fang_adornments( special_effect_t& );
 
 // Armor
+void blue_silken_lining( special_effect_t& );
 void breath_of_neltharion( special_effect_t& );
 void coated_in_slime( special_effect_t& );
 void elemental_lariat( special_effect_t& );

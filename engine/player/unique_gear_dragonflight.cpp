@@ -834,6 +834,15 @@ void fang_adornments( special_effect_t& effect )
 }
 
 // Armor
+void blue_silken_lining( special_effect_t& effect )
+{
+  auto buff = create_buff<stat_buff_t>( effect.player, "zone_of_focus", effect.trigger()->effectN( 1 ).trigger() );
+  buff->add_stat( STAT_MASTERY_RATING, effect.driver()->effectN( 1 ).average( effect.item ) );
+
+  // TODO: implement losing buff when hp < 90%
+  effect.player->register_combat_begin( [ buff ]( player_t* ) { buff->trigger(); } );
+}
+
 void breath_of_neltharion( special_effect_t& effect )
 {
   struct breath_of_neltharion_t : public generic_proc_t
@@ -1081,6 +1090,7 @@ void register_special_effects()
   register_special_effect( 377708, items::fang_adornments );         // fang adornments embellishment
 
   // Armor
+  register_special_effect( 387335, items::blue_silken_lining );    // blue silken lining embellishment
   register_special_effect( 385520, items::breath_of_neltharion );  // breath of neltharion tinker
   register_special_effect( 378423, items::coated_in_slime );
   register_special_effect( 375323, items::elemental_lariat );
