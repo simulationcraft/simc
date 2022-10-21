@@ -4375,7 +4375,7 @@ struct aimed_shot_t : public aimed_shot_base_t
     }
 
     if ( p -> talents.serpentstalkers_trickery.ok() || p -> legendary.serpentstalkers_trickery.ok() )
-      serpentstalkers_trickery = p -> get_background_action<serpent_sting_sst_t>( "serpent_sting" );
+      serpentstalkers_trickery = p -> get_background_action<serpent_sting_sst_t>( "serpent_sting_sst" );
 
     if ( p -> talents.surging_shots.ok() )
     {
@@ -4996,7 +4996,7 @@ struct melee_focus_spender_t: hunter_melee_attack_t
     if ( p -> talents.vipers_venom.ok() )
     {
       vipers_venom.chance = p -> talents.vipers_venom -> effectN( 1 ).percent();
-      vipers_venom.action = p -> get_background_action<serpent_sting_vv_t>( "serpent_sting" );
+      vipers_venom.action = p -> get_background_action<serpent_sting_vv_t>( "serpent_sting_vv" );
     }
 
     if ( p -> legendary.rylakstalkers_strikes.ok() )
@@ -5735,7 +5735,7 @@ struct freezing_trap_t : public trap_base_t
   }
 };
 
-// Hi-Explosive Trap =====================================================================
+// High Explosive Trap =====================================================================
 
 struct high_explosive_trap_t : public trap_base_t
 {
@@ -5870,7 +5870,7 @@ struct kill_command_t: public hunter_spell_t
       if ( p -> talents.quick_shot.ok() )
       {
         quick_shot.chance = p -> talents.quick_shot -> effectN( 1 ).percent();
-        quick_shot.action = p -> get_background_action<arcane_shot_qs_t>( "arcane_shot" );
+        quick_shot.action = p -> get_background_action<arcane_shot_qs_t>( "arcane_shot_qs" );
       }
     }
   }
@@ -6574,7 +6574,7 @@ struct wildfire_bomb_t: public hunter_spell_t
       else
         a -> add_child( violent_reaction );
 
-      serpent_sting = p -> get_background_action<serpent_sting_vb_t>( "serpent_sting" );
+      serpent_sting = p -> get_background_action<serpent_sting_vb_t>( "serpent_sting_vb" );
     }
 
     void execute() override
