@@ -11939,21 +11939,10 @@ double druid_t::composite_player_multiplier( school_e school ) const
 {
   auto cpm = player_t::composite_player_multiplier( school );
 
-  // TODO: bugged so that they don't stack, but in-game other instances of multiple buffs of the same school do stack
   if ( dbc::has_common_school( school, SCHOOL_ARCANE ) && get_form() == BEAR_FORM )
   {
-    if ( bugs )
-    {
-      auto ef = talent.elunes_favored->effectN( 1 ).percent();
-      auto fn = talent.fury_of_nature->effectN( 1 ).percent();
-
-      cpm *= 1.0 + std::max( ef, fn );
-    }
-    else
-    {
-      cpm *= 1.0 + talent.elunes_favored->effectN( 1 ).percent();
-      cpm *= 1.0 + talent.fury_of_nature->effectN( 1 ).percent();
-    }
+    cpm *= 1.0 + talent.elunes_favored->effectN( 1 ).percent();
+    cpm *= 1.0 + talent.fury_of_nature->effectN( 1 ).percent();
   }
 
   if ( buff.friend_of_the_fae->check() && buff.friend_of_the_fae->has_common_school( school ) )
