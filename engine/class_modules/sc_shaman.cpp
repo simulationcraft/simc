@@ -4772,10 +4772,7 @@ struct chain_lightning_overload_t : public chained_overload_base_t
   {
     chained_overload_base_t::execute();
 
-    if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T29, B2 ) )
-    {
-      p()->buff.t29_2pc_ele->trigger();
-    }
+    p()->buff.t29_2pc_ele->trigger();
   }
 
   void impact( action_state_t* state ) override
@@ -4830,7 +4827,7 @@ struct chained_base_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
-    if ( !background && p()->buff.stormkeeper->check() )
+    if ( exec_type == execute_type::NORMAL )
     {
       p()->buff.stormkeeper->decrement();
     }
@@ -5049,10 +5046,7 @@ struct chain_lightning_t : public chained_base_t
       p()->action.ti_trigger = p()->action.chain_lightning_ti;
     }
 
-    if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T29, B2 ) )
-    {
-      p()->buff.t29_2pc_ele->trigger();
-    }
+    p()->buff.t29_2pc_ele->trigger();
   }
 
   void impact( action_state_t* state ) override
@@ -5295,10 +5289,7 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
       p()->cooldown.primordial_wave->adjust( p()->talent.rolling_magma->effectN( 1 ).time_value() );
     }
 
-    if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T29, B2 ) )
-    {
-      p()->buff.t29_2pc_ele->trigger();
-    }
+    p()->buff.t29_2pc_ele->trigger();
   }
  };
 
@@ -5794,10 +5785,7 @@ struct lava_burst_t : public shaman_spell_t
       p()->cooldown.primordial_wave->adjust( p()->talent.rolling_magma->effectN( 1 ).time_value() );
     }
 
-    if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T29, B2 ) )
-    {
-      p()->buff.t29_2pc_ele->trigger();
-    }
+    p()->buff.t29_2pc_ele->trigger();
   }
 
   timespan_t execute_time() const override
@@ -5844,10 +5832,8 @@ struct lightning_bolt_overload_t : public elemental_overload_spell_t
   void execute() override
   {
     elemental_overload_spell_t::execute();
-    if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T29, B2 ) )
-    {
-      p()->buff.t29_2pc_ele->trigger();
-    }
+
+    p()->buff.t29_2pc_ele->trigger();
   }
 
   void impact( action_state_t* state ) override
@@ -6027,27 +6013,9 @@ struct lightning_bolt_t : public shaman_spell_t
         p()->buff.wind_gust->trigger();
       }
     }
-    // trigger additional Overload before execute to ensure all buffs are cached for the Overloads
-    if ( p()->buff.power_of_the_maelstrom->up() )
-    {
-      trigger_elemental_overload( execute_state, 1.0 );
-      p()->buff.power_of_the_maelstrom->decrement();
-    }
 
-    // trigger additional Overload before execute to ensure all buffs are cached for the Overloads
-    if ( p()->buff.surge_of_power->up() )
-    {
-      p()->proc.surge_of_power_lightning_bolt->occur();
-
-      for ( auto i = 0; i < as<int>( p()->talent.surge_of_power->effectN( 2 ).base_value() ); ++i )
-      {
-        trigger_elemental_overload( execute_state, 1.0 );
-      }
-
-      p()->buff.surge_of_power->decrement();
-    }
-
-    if ( type == execute_type::NORMAL && p()->specialization() == SHAMAN_ELEMENTAL )
+    if ( type == execute_type::NORMAL &&
+         p()->specialization() == SHAMAN_ELEMENTAL )
     {
       p()->buff.stormkeeper->decrement();
     }
@@ -6061,21 +6029,20 @@ struct lightning_bolt_t : public shaman_spell_t
       p()->action.ti_trigger = p()->action.lightning_bolt_ti;
     }
 
-    if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T29, B2 ) )
-    {
-      p()->buff.t29_2pc_ele->trigger();
-    }
-
+    p()->buff.t29_2pc_ele->trigger();
   }
 
-  void schedule_travel(action_state_t* s) override
+  void schedule_travel( action_state_t* s ) override
   {
-    if ( p()->buff.power_of_the_maelstrom->up() )
+    if ( exec_type == execute_type::NORMAL &&
+         p()->buff.power_of_the_maelstrom->up() )
     {
       trigger_elemental_overload( s, 1.0 );
+      p()->buff.power_of_the_maelstrom->decrement();
     }
 
-    if ( p()->buff.surge_of_power->check() )
+    if ( exec_type == execute_type::NORMAL &&
+         p()->buff.surge_of_power->check() )
     {
       p()->proc.surge_of_power_lightning_bolt->occur();
 
@@ -6152,11 +6119,7 @@ struct elemental_blast_overload_t : public elemental_overload_spell_t
   {
     double m = shaman_spell_t::action_multiplier();
 
-    if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T29, B2 ) && p()->buff.t29_2pc_ele->check() )
-    {
-      m *= 1.0 + p()->buff.t29_2pc_ele->check_stack_value();
-    }
-
+    m *= 1.0 + p()->buff.t29_2pc_ele->stack_value();
     m *= 1.0 + p()->buff.magma_chamber->stack_value();
 
     return m;
@@ -6208,11 +6171,7 @@ struct elemental_blast_t : public shaman_spell_t
   {
     double m = shaman_spell_t::action_multiplier();
 
-    if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T29, B2 ) && p()->buff.t29_2pc_ele->check() )
-    {
-      m *= 1.0 + p()->buff.t29_2pc_ele->stack_value();
-    }
-
+    m *= 1.0 + p()->buff.t29_2pc_ele->stack_value();
     m *= 1.0 + p()->buff.magma_chamber->stack_value();
 
     return m;
@@ -6399,18 +6358,9 @@ struct earthquake_damage_base_t : public shaman_spell_t
 
   // Snapshot base state from the parent to grab proper persistent multiplier for all damage
   // (normal, overload)
-  //
-  // Note, in-game Earthquake Overload does not snapshot EoGS. Simc presumes this is a bug.
-  void snapshot_state( action_state_t* s, unsigned flags, result_amount_type rt ) override
+  void snapshot_state( action_state_t* s, unsigned /* flags */, result_amount_type /* rt */ ) override
   {
-    if ( parent && id == 298762 )
-    {
-      s->copy_state( parent->execute_state );
-    }
-    else
-    {
-      shaman_spell_t::snapshot_state( s, flags, rt );
-    }
+    s->copy_state( parent->execute_state );
   }
 
   double composite_target_armor( player_t* ) const override
@@ -6427,20 +6377,9 @@ struct earthquake_damage_base_t : public shaman_spell_t
       m *= 1.0 + p()->buff.master_of_the_elements->default_value;
     }
 
-    if ( p()->buff.echoes_of_great_sundering->up() )
-    {
-      m *= 1.0 + p()->buff.echoes_of_great_sundering->value();
-    }
-
-    if ( p()->buff.magma_chamber->up() )
-    {
-      m *= 1.0 + p()->buff.magma_chamber->stack_value();
-    }
-
-    if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T29, B2 ) && p()->buff.t29_2pc_ele->up() )
-    {
-      m *= 1 + p()->buff.t29_2pc_ele->stack_value();
-    }
+    m *= 1.0 + p()->buff.echoes_of_great_sundering->value();
+    m *= 1.0 + p()->buff.magma_chamber->stack_value();
+    m *= 1.0 + p()->buff.t29_2pc_ele->stack_value();
 
     return m;
   }
@@ -6498,6 +6437,7 @@ struct earthquake_base_t : public shaman_spell_t
 
     m *= 1.0 + p()->buff.echoes_of_great_sundering->stack_value();
     m *= 1.0 + p()->buff.magma_chamber->stack_value();
+    m *= 1.0 + p()->buff.t29_2pc_ele->check_stack_value();
 
     return m;
   }
@@ -6586,20 +6526,6 @@ struct earthquake_damage_t : public earthquake_damage_base_t
   {
     // Earthquake modifier is hardcoded rather than using effects, so we set the modifier here
     spell_power_mod.direct = 0.176;
-  }
-
-  double action_multiplier() const override
-  {
-    double m = shaman_spell_t::action_multiplier();
-
-    m *= 1.0 + p()->buff.magma_chamber->stack_value();
-
-    if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T29, B2 ) && p()->buff.t29_2pc_ele->check() )
-    {
-      m *= 1 + p()->buff.t29_2pc_ele->check_stack_value();
-    }
-
-    return m;
   }
 };
 
@@ -6832,11 +6758,7 @@ struct earth_shock_overload_t : public elemental_overload_spell_t
     double m = shaman_spell_t::action_multiplier();
 
     m *= 1.0 + p()->buff.magma_chamber->stack_value();
-
-    if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T29, B2 ) && p()->buff.t29_2pc_ele->check() )
-    {
-      m *= 1 + p()->buff.t29_2pc_ele->check_stack_value();
-    }
+    m *= 1.0 + p()->buff.t29_2pc_ele->stack_value();
 
     return m;
   }
@@ -6862,11 +6784,7 @@ struct earth_shock_t : public shaman_spell_t
   {
     double m = shaman_spell_t::action_multiplier();
 
-    if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T29, B2 ) && p()->buff.t29_2pc_ele->up() )
-    {
-      m *= 1.0 + p()->buff.t29_2pc_ele->stack_value();
-    }
-
+    m *= 1.0 + p()->buff.t29_2pc_ele->stack_value();
     m *= 1.0 + p()->buff.magma_chamber->stack_value();
 
     return m;
@@ -6932,7 +6850,7 @@ struct earth_shock_t : public shaman_spell_t
     if ( p()->buff.t29_2pc_ele->up() )
     {
       p()->track_t29_2pc_ele();
-      p()->buff.t29_2pc_ele->expire();    
+      p()->buff.t29_2pc_ele->expire();
     }
 
     if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T29, B4 ) )
@@ -10695,8 +10613,9 @@ void shaman_t::create_buffs()
     ->set_cooldown( timespan_t::zero() )  // Handled by the action
     ->set_default_value_from_effect( 2 ); // Damage bonus as default value
 
-  buff.t29_2pc_ele = make_buff( this, "t29_2pc_ele", spell.t29_2pc_ele )
-                      ->set_default_value_from_effect(1);
+  buff.t29_2pc_ele = make_buff( this, "seismic_accumulation", spell.t29_2pc_ele )
+                      ->set_default_value_from_effect(1)
+                      ->set_trigger_spell( sets->set( SHAMAN_ELEMENTAL, T29, B2 ) );
   buff.t29_4pc_ele = make_buff<buff_t>( this, "t29_4pc_ele", spell.t29_4pc_ele )
                       ->set_default_value_from_effect(1)
                       ->set_pct_buff_type(STAT_PCT_BUFF_MASTERY);
