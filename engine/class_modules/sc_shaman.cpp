@@ -3203,11 +3203,6 @@ struct stormblast_t : public shaman_attack_t
 
     may_proc_windfury = may_proc_flametongue = may_proc_maelstrom_weapon = may_proc_hot_hand = false;
     may_proc_stormbringer = may_proc_ability_procs = false;
-
-    if ( player->bugs )
-    {
-      may_proc_maelstrom_weapon = true;
-    }
   }
 };
 
@@ -4083,6 +4078,7 @@ struct stormstrike_base_t : public shaman_attack_t
   {
     shaman_attack_t::init();
     may_proc_flametongue = may_proc_windfury = may_proc_stormbringer = false;
+    may_proc_maelstrom_weapon = false;
 
     may_proc_bron = true;
   }
@@ -4255,7 +4251,9 @@ struct windstrike_t : public stormstrike_base_t
   {
     stormstrike_base_t::execute();
 
-    if ( p()->talent.thorims_invocation.ok() && p()->buff.maelstrom_weapon->check() )
+    if ( !stormflurry &&
+         p()->talent.thorims_invocation.ok() &&
+         p()->buff.maelstrom_weapon->check() )
     {
       auto spell = p()->action.ti_trigger
         ? p()->action.ti_trigger
