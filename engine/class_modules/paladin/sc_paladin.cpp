@@ -990,6 +990,15 @@ struct crusader_strike_t : public paladin_melee_attack_t
     }
   }
 
+  void execute() override
+  {
+    paladin_melee_attack_t::execute();
+
+    if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, T29, B4 ) )
+    {
+      p()->t29_4p_prot();
+    }
+  }
   double cost() const override
   {
     if ( has_crusader_2 )
@@ -2359,6 +2368,7 @@ void paladin_t::init_gains()
   gains.hp_cs                      = get_gain( "crusader_strike" );
   gains.hp_memory_of_lucid_dreams  = get_gain( "memory_of_lucid_dreams" );
   gains.hp_sanctification          = get_gain( "sanctification" );
+  gains.hp_divine_toll             = get_gain( "divine_toll" );
 }
 
 // paladin_t::init_procs ====================================================
@@ -2806,6 +2816,10 @@ void paladin_t::init_spells()
   tier_sets.ashes_to_ashes_2pc   = sets->set( PALADIN_RETRIBUTION, T28, B2 );
   tier_sets.ashes_to_ashes_4pc   = sets->set( PALADIN_RETRIBUTION, T28, B4 );
 
+  // Dragonflight Tier Sets
+  tier_sets.ally_of_the_light_2pc = sets->set( PALADIN_PROTECTION, T29, B2 );
+  tier_sets.ally_of_the_light_4pc = sets->set( PALADIN_PROTECTION, T29, B4 );
+
   // Covenants
   covenant.kyrian    = find_covenant_spell( "Divine Toll" );
   covenant.venthyr   = find_covenant_spell( "Ashen Hallow" );
@@ -2975,6 +2989,9 @@ double paladin_t::composite_damage_versatility() const
 
   if ( buffs.seraphim->up() )
     cdv += buffs.seraphim->data().effectN( 2 ).percent();
+  
+  if ( buffs.ally_of_the_light->up() )
+    cdv += buffs.ally_of_the_light->data().effectN( 1 ).percent();
 
   return cdv;
 }
@@ -2985,6 +3002,9 @@ double paladin_t::composite_heal_versatility() const
 
   if ( buffs.seraphim->up() )
     chv += buffs.seraphim->data().effectN( 2 ).percent();
+
+  if ( buffs.ally_of_the_light->up() )
+    chv += buffs.ally_of_the_light->data().effectN( 1 ).percent();
 
   return chv;
 }
