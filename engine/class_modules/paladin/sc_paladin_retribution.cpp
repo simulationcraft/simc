@@ -488,7 +488,8 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
 
     is_divine_storm = true;
 
-    aoe = as<int>( data().effectN( 2 ).base_value() );
+    aoe = -1;
+    reduced_aoe_targets = data().effectN( 2 ).base_value();
 
     if ( p -> legendary.tempest_of_the_lightbringer -> ok() )
       base_multiplier *= 1.0 + p -> legendary.tempest_of_the_lightbringer -> effectN( 2 ).percent();
@@ -505,7 +506,8 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
     tempest( nullptr )
   {
     is_divine_storm = true;
-    aoe = as<int>( data().effectN( 2 ).base_value() );
+    aoe = -1;
+    reduced_aoe_targets = data().effectN( 2 ).base_value();
 
     background = is_free;
     base_multiplier *= mul;
@@ -1128,7 +1130,7 @@ struct wake_of_ashes_t : public paladin_spell_t
 
     may_crit = true;
     full_amount_targets = 1;
-    reduced_aoe_targets = 1.06; // this is approximate, from ingame testing
+    reduced_aoe_targets = 1.0;
 
     aoe = -1;
 
@@ -1191,8 +1193,7 @@ struct radiant_decree_t : public holy_power_consumer_t<paladin_spell_t>
       add_child( truths_wake );
     }
 
-    full_amount_targets = 5;
-    reduced_aoe_targets = 1.06; // this is approximate, from ingame testing
+    reduced_aoe_targets = 5.0;
 
     aoe = -1;
   }
