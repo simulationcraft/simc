@@ -59,7 +59,7 @@ public:
   void   trigger(timespan_t duration);
   void   decrement(int stacks);
   void   increment(int stacks);
-  void   copy(player_t* destination, dot_copy_e = DOT_COPY_START) const;
+  void   copy(player_t* destination, dot_copy_e = DOT_COPY_START, action_t* copy_action = nullptr ) const;
   // Scale on-going dot remaining time by a coefficient during a tick. Note that this should be
   // accompanied with the correct (time related) scaling information in the action's supporting
   // methods (action_t::tick_time, action_t::composite_dot_ruration), otherwise bad things will
