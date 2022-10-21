@@ -8594,6 +8594,9 @@ void monk_t::init_spells()
   shared.stormstouts_last_keg =
     _priority( legendary.stormstouts_last_keg, talent.brewmaster.stormstouts_last_keg );
 
+  shared.walk_with_the_ox = 
+    _priority( conduit.walk_with_the_ox, talent.brewmaster.walk_with_the_ox);
+
   shared.way_of_the_fae =
     _priority( conduit.way_of_the_fae, talent.windwalker.way_of_the_fae );
 
