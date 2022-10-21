@@ -4179,8 +4179,8 @@ struct sweeping_strikes_t : public warrior_spell_t
 
 struct odyns_fury_off_hand_t : public warrior_attack_t
 {
-  odyns_fury_off_hand_t( warrior_t* p, const spell_data_t* odyns_fury )
-    : warrior_attack_t( "odyns_fury_oh", p, odyns_fury )
+  odyns_fury_off_hand_t( warrior_t* p, util::string_view name, const spell_data_t* spell )
+    : warrior_attack_t( name, p, spell )
   {
     background          = true;
     aoe                 = -1;
@@ -4189,8 +4189,8 @@ struct odyns_fury_off_hand_t : public warrior_attack_t
 
 struct odyns_fury_main_hand_t : public warrior_attack_t
 {
-  odyns_fury_main_hand_t( warrior_t* p, const spell_data_t* odyns_fury )
-    : warrior_attack_t( "odyns_fury_mh", p, odyns_fury )
+  odyns_fury_main_hand_t( warrior_t* p, util::string_view name, const spell_data_t* spell )
+    : warrior_attack_t( name, p, spell )
   {
     background = true;
     aoe        = -1;
@@ -4203,34 +4203,32 @@ struct odyns_fury_t : warrior_attack_t
   odyns_fury_off_hand_t* oh_attack2;
   odyns_fury_main_hand_t* mh_attack;
   odyns_fury_main_hand_t* mh_attack2;
-  odyns_fury_t( warrior_t* p, util::string_view options_str )
-    : warrior_attack_t( "odyns_fury", p, p->talents.fury.odyns_fury ),
-      oh_attack( nullptr ), oh_attack2( nullptr ),
-      mh_attack( nullptr ), mh_attack2( nullptr )
+  odyns_fury_t( warrior_t* p, util::string_view options_str, util::string_view n, const spell_data_t* spell )
+    : warrior_attack_t( n, p, spell ),
+      mh_attack( new odyns_fury_main_hand_t( p, fmt::format( "{}_mh", n ), spell->effectN( 1 ).trigger() ) ),
+      mh_attack2( new odyns_fury_main_hand_t( p, fmt::format( "{}_mh", n ), spell->effectN( 3 ).trigger() ) ),
+      oh_attack( new odyns_fury_off_hand_t( p, fmt::format( "{}_oh", n ), spell->effectN( 2 ).trigger() ) ),
+      oh_attack2( new odyns_fury_off_hand_t( p, fmt::format( "{}_oh", n ), spell->effectN( 4 ).trigger() ) )
   {
     parse_options( options_str );
     radius = data().effectN( 1 ).trigger()->effectN( 1 ).radius_max();
 
     if ( p->main_hand_weapon.type != WEAPON_NONE )
     {
-      mh_attack         = new odyns_fury_main_hand_t( p, p->talents.fury.odyns_fury->effectN( 1 ).trigger() );
       mh_attack->weapon = &( p->main_hand_weapon );
-      mh_attack->radius = radius;
       add_child( mh_attack );
-      mh_attack2         = new odyns_fury_main_hand_t( p, p->talents.fury.odyns_fury->effectN( 3 ).trigger() );
+      mh_attack->radius = radius;
       mh_attack2->weapon = &( p->main_hand_weapon );
       mh_attack2->radius = radius;
       add_child( mh_attack2 );
       if ( p->off_hand_weapon.type != WEAPON_NONE )
       {
-        oh_attack         = new odyns_fury_off_hand_t( p, p->talents.fury.odyns_fury->effectN( 2 ).trigger() );
-        oh_attack->weapon = &( p->off_hand_weapon );
         oh_attack->weapon = &( p->off_hand_weapon );
         add_child( oh_attack );
-        oh_attack2         = new odyns_fury_off_hand_t( p, p->talents.fury.odyns_fury->effectN( 4 ).trigger() );
-        oh_attack2->weapon = &( p->off_hand_weapon );
+        oh_attack->radius = radius;
         oh_attack2->weapon = &( p->off_hand_weapon );
         add_child( oh_attack2 );
+        oh_attack2->radius = radius;
       }
     }
   }
@@ -4267,42 +4265,38 @@ struct odyns_fury_t : warrior_attack_t
 
 // Torment Odyn's Fury ==========================================================
 
-struct torment_odyns_fury_t : public warrior_attack_t
+struct torment_odyns_fury_t : warrior_attack_t
 {
   odyns_fury_off_hand_t* oh_attack;
   odyns_fury_off_hand_t* oh_attack2;
   odyns_fury_main_hand_t* mh_attack;
   odyns_fury_main_hand_t* mh_attack2;
   torment_odyns_fury_t( warrior_t* p, util::string_view options_str, util::string_view n, const spell_data_t* spell, bool torment_triggered = false )
-    : warrior_attack_t( n, p, spell), // "odyns_fury", p, p->talents.fury.odyns_fury ),
-      oh_attack( nullptr ),
-      oh_attack2( nullptr ),
-      mh_attack( nullptr ),
-      mh_attack2( nullptr )
+    : warrior_attack_t( n, p, spell ),
+      mh_attack( new odyns_fury_main_hand_t( p, fmt::format( "{}_mh", n ), spell->effectN( 1 ).trigger() ) ),
+      mh_attack2( new odyns_fury_main_hand_t( p, fmt::format( "{}_mh", n ), spell->effectN( 3 ).trigger() ) ),
+      oh_attack( new odyns_fury_off_hand_t( p, fmt::format( "{}_oh", n ), spell->effectN( 2 ).trigger() ) ),
+      oh_attack2( new odyns_fury_off_hand_t( p, fmt::format( "{}_oh", n ), spell->effectN( 4 ).trigger() ) )
   {
     parse_options( options_str );
     radius = data().effectN( 1 ).trigger()->effectN( 1 ).radius_max();
 
     if ( p->main_hand_weapon.type != WEAPON_NONE )
     {
-      mh_attack         = new odyns_fury_main_hand_t( p, p->find_spell( 385059 )->effectN( 1 ).trigger() );
       mh_attack->weapon = &( p->main_hand_weapon );
-      mh_attack->radius = radius;
       add_child( mh_attack );
-      mh_attack2         = new odyns_fury_main_hand_t( p, p->find_spell( 385059 )->effectN( 3 ).trigger() );
+      mh_attack->radius  = radius;
       mh_attack2->weapon = &( p->main_hand_weapon );
       mh_attack2->radius = radius;
       add_child( mh_attack2 );
       if ( p->off_hand_weapon.type != WEAPON_NONE )
       {
-        oh_attack         = new odyns_fury_off_hand_t( p, p->find_spell( 385059 )->effectN( 2 ).trigger() );
-        oh_attack->weapon = &( p->off_hand_weapon );
         oh_attack->weapon = &( p->off_hand_weapon );
         add_child( oh_attack );
-        oh_attack2         = new odyns_fury_off_hand_t( p, p->find_spell( 385059 )->effectN( 4 ).trigger() );
-        oh_attack2->weapon = &( p->off_hand_weapon );
+        oh_attack->radius  = radius;
         oh_attack2->weapon = &( p->off_hand_weapon );
         add_child( oh_attack2 );
+        oh_attack2->radius = radius;
       }
     }
   }
@@ -7169,7 +7163,7 @@ action_t* warrior_t::create_action( util::string_view name, util::string_view op
   if ( name == "mortal_strike" )
     return new mortal_strike_t( this, options_str );
   if ( name == "odyns_fury" )
-    return new odyns_fury_t( this, options_str );
+    return new odyns_fury_t( this, options_str, name, talents.fury.odyns_fury );
   if ( name == "onslaught" )
     return new onslaught_t( this, options_str );
   if ( name == "overpower" )
