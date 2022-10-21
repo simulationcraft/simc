@@ -346,10 +346,13 @@ public:
     damage_buff_t* elaborate_planning;
     buff_t* improved_garrote;
     buff_t* improved_garrote_aura;
+    buff_t* indiscriminate_carnage_garrote;
+    buff_t* indiscriminate_carnage_rupture;
     damage_buff_t* kingsbane;
     damage_buff_t* master_assassin;
     damage_buff_t* master_assassin_aura;
     buff_t* scent_of_blood;
+
     // Outlaw
     buff_t* audacity;
     buff_t* dreadblades;
@@ -359,6 +362,7 @@ public:
     buff_t* take_em_by_surprise;
     buff_t* take_em_by_surprise_aura;
     damage_buff_t* summarily_dispatched;
+
     // Subtlety
     damage_buff_t* danse_macabre;
     buff_t* lingering_shadow;
@@ -727,9 +731,9 @@ public:
 
       player_talent_t crimson_tempest;
       player_talent_t venom_rush;
-      player_talent_t deathmark;                // Partial NYI -- Need non-lethal debuffs and Crimson Tempest
+      player_talent_t deathmark;
       player_talent_t master_assassin;
-      player_talent_t exsanguinate;             // Partial NYI -- Needs Deathmark support
+      player_talent_t exsanguinate;
 
       player_talent_t flying_daggers;
       player_talent_t vicious_venoms;
@@ -754,7 +758,7 @@ public:
 
       player_talent_t kingsbane;
       player_talent_t dragon_tempered_blades;
-      player_talent_t indiscriminate_carnage;   // NYI
+      player_talent_t indiscriminate_carnage;
       
     } assassination;
 
@@ -3555,7 +3559,26 @@ struct deathmark_t : public rogue_attack_t
   void impact( action_state_t* state ) override
   {
     rogue_attack_t::impact( state );
-    td( state->target )->debuffs.deathmark->trigger();
+
+    auto tdata = td( state->target );
+    tdata->debuffs.deathmark->trigger();
+    
+    // Deathmark clones all the relevant DoTs and debuffs present on the target when cast
+    if ( tdata->dots.deadly_poison->is_ticking() )
+      tdata->dots.deadly_poison->copy( state->target, DOT_COPY_CLONE, p()->active.deathmark.deadly_poison_dot );
+    
+    if ( tdata->dots.garrote->is_ticking() )
+      tdata->dots.garrote->copy( state->target, DOT_COPY_CLONE, p()->active.deathmark.garrote );
+    
+    if ( tdata->dots.rupture->is_ticking() )
+      tdata->dots.rupture->copy( state->target, DOT_COPY_CLONE, p()->active.deathmark.rupture );
+
+    if ( tdata->debuffs.amplifying_poison->check() )
+    {
+      tdata->debuffs.amplifying_poison_deathmark->expire();
+      tdata->debuffs.amplifying_poison_deathmark->trigger( tdata->debuffs.amplifying_poison->check(),
+                                                           tdata->debuffs.amplifying_poison->remains() );
+    }
   }
 
   void last_tick( dot_t* d ) override
@@ -3899,6 +3922,18 @@ struct garrote_t : public rogue_attack_t
   {
   }
 
+  int n_targets() const override
+  {
+    int n = rogue_attack_t::n_targets();
+
+    if ( !is_secondary_action() && p()->buffs.indiscriminate_carnage_garrote->check() )
+    {
+      n = as<int>( p()->talent.assassination.indiscriminate_carnage->effectN( 1 ).base_value() );
+    }
+
+    return n;
+  }
+
   double composite_persistent_multiplier( const action_state_t* state ) const override
   {
     double m = rogue_attack_t::composite_persistent_multiplier( state );
@@ -3934,6 +3969,8 @@ struct garrote_t : public rogue_attack_t
       trigger_combo_point_gain( as<int>( p()->talent.assassination.shrouded_suffocation->effectN( 2 ).base_value() ),
                                 p()->gains.shrouded_suffocation );
     }
+
+    p()->buffs.indiscriminate_carnage_garrote->expire();
   }
 
   void impact( action_state_t* state ) override
@@ -4071,6 +4108,24 @@ struct gloomblade_t : public rogue_attack_t
       p()->buffs.t29_subtlety_4pc->trigger();
       p()->buffs.t29_subtlety_4pc_black_powder->trigger();
     }
+  }
+};
+
+// Indiscriminate Carnage ===================================================
+
+struct indiscriminate_carnage_t : public rogue_spell_t
+{
+  indiscriminate_carnage_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
+    rogue_spell_t( name, p, p->talent.assassination.indiscriminate_carnage, options_str )
+  {
+    harmful = false;
+  }
+
+  void execute() override
+  {
+    rogue_spell_t::execute();
+    p()->buffs.indiscriminate_carnage_garrote->trigger();
+    p()->buffs.indiscriminate_carnage_rupture->trigger();
   }
 };
 
@@ -4542,6 +4597,18 @@ struct rupture_t : public rogue_attack_t
     }
   }
 
+  int n_targets() const override
+  {
+    int n = rogue_attack_t::n_targets();
+
+    if ( !is_secondary_action() && p()->buffs.indiscriminate_carnage_rupture->check() )
+    {
+      n = as<int>( p()->talent.assassination.indiscriminate_carnage->effectN( 1 ).base_value() );
+    }
+
+    return n;
+  }
+
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
     const auto rs = cast_state( s );
@@ -4561,7 +4628,6 @@ struct rupture_t : public rogue_attack_t
   {
     rogue_attack_t::execute();
 
-    trigger_poison_bomb( execute_state );
     trigger_scent_of_blood();
 
     if ( p()->spec.finality_rupture_buff->ok() )
@@ -4571,6 +4637,8 @@ struct rupture_t : public rogue_attack_t
       else
         p()->buffs.finality_rupture->trigger();
     }
+
+    p()->buffs.indiscriminate_carnage_rupture->expire();
   }
 
   void impact( action_state_t* state ) override
@@ -7276,6 +7344,10 @@ void rogue_t::trigger_exsanguinate( player_t* target )
   do_exsanguinate( td->dots.internal_bleeding, rate );
   do_exsanguinate( td->dots.rupture, rate );
   do_exsanguinate( td->dots.crimson_tempest, rate );
+
+  do_exsanguinate( td->dots.deathmark, rate );
+  do_exsanguinate( td->dots.rupture_deathmark, rate );
+  do_exsanguinate( td->dots.garrote_deathmark, rate );
 }
 
 template <typename Base>
@@ -8681,6 +8753,7 @@ void rogue_t::init_action_list()
     cds->add_action( "shiv,if=!covenant.night_fae&!debuff.shiv.up&dot.garrote.ticking&dot.rupture.ticking&(!talent.crimson_tempest.enabled|variable.single_target|dot.crimson_tempest.ticking)", "Shiv if DoTs are up; if Night Fae attempt to sync with Sepsis or Deathmark if we won't waste more than half Shiv's cooldown" );
     cds->add_action( "shiv,if=covenant.night_fae&!debuff.shiv.up&dot.garrote.ticking&dot.rupture.ticking&((cooldown.sepsis.ready|cooldown.sepsis.remains>12)+(cooldown.deathmark.ready|variable.deathmark_cooldown_remains>12)=2)");
     cds->add_action( "thistle_tea,if=energy.deficit>=100&!buff.thistle_tea.up&(charges=3|debuff.deathmark.up|fight_remains<cooldown.deathmark.remains)");
+    cds->add_action( "indiscriminate_carnage,if=(spell_targets.fan_of_knives>desired_targets|spell_targets.fan_of_knives>1&raid_event.adds.in>60)&(!talent.improved_garrote&!talent.nightstalker|cooldown.vanish.remains>60)" );
 
     // Non-spec stuff with lower prio
     cds->add_action( potion_action );
@@ -8700,17 +8773,18 @@ void rogue_t::init_action_list()
     vanish->add_action( "vanish,if=talent.exsanguinate.enabled&talent.nightstalker.enabled&variable.nightstalker_cp_condition&cooldown.exsanguinate.remains<1", "Vanish with Exsg + Nightstalker: Maximum CP and Exsg ready for next GCD" );
     vanish->add_action( "vanish,if=talent.nightstalker.enabled&!talent.exsanguinate.enabled&variable.nightstalker_cp_condition&debuff.deathmark.up", "Vanish with Nightstalker + No Exsg: Maximum CP and Deathmark up" );
     vanish->add_action( "pool_resource,for_next=1,extra_amount=45" );
-    vanish->add_action( "vanish,if=talent.subterfuge.enabled&cooldown.garrote.up&debuff.deathmark.up&(dot.garrote.refreshable|dot.garrote.pmultiplier<=1)&combo_points.deficit>=(spell_targets.fan_of_knives>?4)&raid_event.adds.in>12" );
+    vanish->add_action( "vanish,if=talent.improved_garrote.enabled&cooldown.garrote.up&debuff.deathmark.up&(dot.garrote.refreshable|dot.garrote.pmultiplier<=1)&combo_points.deficit>=(spell_targets.fan_of_knives>?4)&raid_event.adds.in>12" );
     vanish->add_action( "vanish,if=(talent.master_assassin.enabled|runeforge.mark_of_the_master_assassin)&!dot.rupture.refreshable&dot.garrote.remains>3&debuff.deathmark.up&(debuff.shiv.up|debuff.deathmark.remains<4|dot.sepsis.ticking)&dot.sepsis.remains<3", "Vanish with Master Assasin: Rupture+Garrote not in refresh range, during Deathmark+Shiv. Sync with Sepsis final hit if possible." );
 
     // Stealth
     action_priority_list_t* stealthed = get_action_priority_list( "stealthed", "Stealthed Actions" );
+    stealthed->add_action( "indiscriminate_carnage,if=spell_targets.fan_of_knives>desired_targets|spell_targets.fan_of_knives>1&raid_event.adds.in>60" );
     stealthed->add_action( "crimson_tempest,if=talent.nightstalker.enabled&spell_targets>=3&combo_points>=4&target.time_to_die-remains>6", "Nighstalker on 3T: Crimson Tempest");
     stealthed->add_action( "rupture,if=talent.nightstalker.enabled&combo_points>=4&target.time_to_die-remains>6", "Nighstalker on 1T: Snapshot Rupture");
-    stealthed->add_action( "pool_resource,for_next=1", "Subterfuge: Apply or Refresh with buffed Garrotes" );
-    stealthed->add_action( "garrote,target_if=min:remains,if=talent.subterfuge.enabled&!will_lose_exsanguinate&(remains<12%exsanguinated_rate|pmultiplier<=1)&target.time_to_die-remains>2");
-    stealthed->add_action( "pool_resource,for_next=1", "Subterfuge + Exsg on 1T: Refresh Garrote at the end of stealth to get max duration before Exsanguinate" );
-    stealthed->add_action( "garrote,if=talent.subterfuge.enabled&talent.exsanguinate.enabled&active_enemies=1&buff.subterfuge.remains<1.3");
+    stealthed->add_action( "pool_resource,for_next=1", "Improved Garrote: Apply or Refresh with buffed Garrotes" );
+    stealthed->add_action( "garrote,target_if=min:remains,if=talent.improved_garrote.enabled&!will_lose_exsanguinate&(remains<12%exsanguinated_rate|pmultiplier<=1)&target.time_to_die-remains>2");
+    stealthed->add_action( "pool_resource,for_next=1", "Improved Garrote + Exsg on 1T: Refresh Garrote at the end of stealth to get max duration before Exsanguinate" );
+    stealthed->add_action( "garrote,if=talent.improved_garrote.enabled&talent.exsanguinate.enabled&active_enemies=1&buff.improved_garrote.remains<1.3");
 
     // Damage over time abilities
     action_priority_list_t* dot = get_action_priority_list( "dot", "Damage over time abilities" );
@@ -8965,61 +9039,62 @@ action_t* rogue_t::create_action( util::string_view name, util::string_view opti
 {
   using namespace actions;
 
-  if ( name == "adrenaline_rush"     ) return new adrenaline_rush_t     ( name, this, options_str );
-  if ( name == "ambush"              ) return new ambush_t              ( name, this, options_str );
-  if ( name == "apply_poison"        ) return new apply_poison_t        ( this, options_str );
-  if ( name == "auto_attack"         ) return new auto_melee_attack_t   ( this, options_str );
-  if ( name == "backstab"            ) return new backstab_t            ( name, this, options_str );
-  if ( name == "between_the_eyes"    ) return new between_the_eyes_t    ( name, this, options_str );
-  if ( name == "black_powder"        ) return new black_powder_t        ( name, this, options_str );
-  if ( name == "blade_flurry"        ) return new blade_flurry_t        ( name, this, options_str );
-  if ( name == "blade_rush"          ) return new blade_rush_t          ( name, this, options_str );
-  if ( name == "cheap_shot"          ) return new cheap_shot_t          ( name, this, options_str );
-  if ( name == "cold_blood"          ) return new cold_blood_t          ( name, this, options_str );
-  if ( name == "crimson_tempest"     ) return new crimson_tempest_t     ( name, this, options_str );
-  if ( name == "deathmark"           ) return new deathmark_t           ( name, this, options_str );
-  if ( name == "detection"           ) return new detection_t           ( name, this, options_str );
-  if ( name == "dispatch"            ) return new dispatch_t            ( name, this, options_str );
-  if ( name == "dreadblades"         ) return new dreadblades_t         ( name, this, options_str );
-  if ( name == "echoing_reprimand"   ) return new echoing_reprimand_t   ( name, this, options_str );
-  if ( name == "envenom"             ) return new envenom_t             ( name, this, options_str );
-  if ( name == "eviscerate"          ) return new eviscerate_t          ( name, this, options_str );
-  if ( name == "exsanguinate"        ) return new exsanguinate_t        ( name, this, options_str );
-  if ( name == "fan_of_knives"       ) return new fan_of_knives_t       ( name, this, options_str );
-  if ( name == "feint"               ) return new feint_t               ( name, this, options_str );
-  if ( name == "garrote"             ) return new garrote_t             ( name, this, spec.garrote, options_str );
-  if ( name == "gouge"               ) return new gouge_t               ( name, this, options_str );
-  if ( name == "ghostly_strike"      ) return new ghostly_strike_t      ( name, this, options_str );
-  if ( name == "gloomblade"          ) return new gloomblade_t          ( name, this, options_str );
-  if ( name == "keep_it_rolling"     ) return new keep_it_rolling_t     ( name, this, options_str );
-  if ( name == "kick"                ) return new kick_t                ( name, this, options_str );
-  if ( name == "kidney_shot"         ) return new kidney_shot_t         ( name, this, options_str );
-  if ( name == "killing_spree"       ) return new killing_spree_t       ( name, this, options_str );
-  if ( name == "kingsbane"           ) return new kingsbane_t           ( name, this, options_str );
-  if ( name == "marked_for_death"    ) return new marked_for_death_t    ( name, this, options_str );
-  if ( name == "mutilate"            ) return new mutilate_t            ( name, this, options_str );
-  if ( name == "pistol_shot"         ) return new pistol_shot_t         ( name, this, options_str );
-  if ( name == "poisoned_knife"      ) return new poisoned_knife_t      ( name, this, options_str );
-  if ( name == "roll_the_bones"      ) return new roll_the_bones_t      ( name, this, options_str );
-  if ( name == "rupture"             ) return new rupture_t             ( name, this, spec.rupture, options_str );
-  if ( name == "secret_technique"    ) return new secret_technique_t    ( name, this, options_str );
-  if ( name == "shadow_blades"       ) return new shadow_blades_t       ( name, this, options_str );
-  if ( name == "shadow_dance"        ) return new shadow_dance_t        ( name, this, options_str );
-  if ( name == "shadowstep"          ) return new shadowstep_t          ( name, this, options_str );
-  if ( name == "shadowstrike"        ) return new shadowstrike_t        ( name, this, options_str );
-  if ( name == "shuriken_storm"      ) return new shuriken_storm_t      ( name, this, options_str );
-  if ( name == "shuriken_tornado"    ) return new shuriken_tornado_t    ( name, this, options_str );
-  if ( name == "shuriken_toss"       ) return new shuriken_toss_t       ( name, this, options_str );
-  if ( name == "sinister_strike"     ) return new sinister_strike_t     ( name, this, options_str );
-  if ( name == "slice_and_dice"      ) return new slice_and_dice_t      ( name, this, options_str );
-  if ( name == "sprint"              ) return new sprint_t              ( name, this, options_str );
-  if ( name == "stealth"             ) return new stealth_t             ( name, this, options_str );
-  if ( name == "symbols_of_death"    ) return new symbols_of_death_t    ( name, this, options_str );
-  if ( name == "shiv"                ) return new shiv_t                ( name, this, options_str );
-  if ( name == "thistle_tea"         ) return new thistle_tea_t         ( name, this, options_str );
-  if ( name == "vanish"              ) return new vanish_t              ( name, this, options_str );
-  if ( name == "cancel_autoattack"   ) return new cancel_autoattack_t   ( this, options_str );
-  if ( name == "swap_weapon"         ) return new weapon_swap_t         ( this, options_str );
+  if ( name == "adrenaline_rush"        ) return new adrenaline_rush_t        ( name, this, options_str );
+  if ( name == "ambush"                 ) return new ambush_t                 ( name, this, options_str );
+  if ( name == "apply_poison"           ) return new apply_poison_t           ( this, options_str );
+  if ( name == "auto_attack"            ) return new auto_melee_attack_t      ( this, options_str );
+  if ( name == "backstab"               ) return new backstab_t               ( name, this, options_str );
+  if ( name == "between_the_eyes"       ) return new between_the_eyes_t       ( name, this, options_str );
+  if ( name == "black_powder"           ) return new black_powder_t           ( name, this, options_str );
+  if ( name == "blade_flurry"           ) return new blade_flurry_t           ( name, this, options_str );
+  if ( name == "blade_rush"             ) return new blade_rush_t             ( name, this, options_str );
+  if ( name == "cheap_shot"             ) return new cheap_shot_t             ( name, this, options_str );
+  if ( name == "cold_blood"             ) return new cold_blood_t             ( name, this, options_str );
+  if ( name == "crimson_tempest"        ) return new crimson_tempest_t        ( name, this, options_str );
+  if ( name == "deathmark"              ) return new deathmark_t              ( name, this, options_str );
+  if ( name == "detection"              ) return new detection_t              ( name, this, options_str );
+  if ( name == "dispatch"               ) return new dispatch_t               ( name, this, options_str );
+  if ( name == "dreadblades"            ) return new dreadblades_t            ( name, this, options_str );
+  if ( name == "echoing_reprimand"      ) return new echoing_reprimand_t      ( name, this, options_str );
+  if ( name == "envenom"                ) return new envenom_t                ( name, this, options_str );
+  if ( name == "eviscerate"             ) return new eviscerate_t             ( name, this, options_str );
+  if ( name == "exsanguinate"           ) return new exsanguinate_t           ( name, this, options_str );
+  if ( name == "fan_of_knives"          ) return new fan_of_knives_t          ( name, this, options_str );
+  if ( name == "feint"                  ) return new feint_t                  ( name, this, options_str );
+  if ( name == "garrote"                ) return new garrote_t                ( name, this, spec.garrote, options_str );
+  if ( name == "gouge"                  ) return new gouge_t                  ( name, this, options_str );
+  if ( name == "ghostly_strike"         ) return new ghostly_strike_t         ( name, this, options_str );
+  if ( name == "gloomblade"             ) return new gloomblade_t             ( name, this, options_str );
+  if ( name == "indiscriminate_carnage" ) return new indiscriminate_carnage_t ( name, this, options_str );
+  if ( name == "keep_it_rolling"        ) return new keep_it_rolling_t        ( name, this, options_str );
+  if ( name == "kick"                   ) return new kick_t                   ( name, this, options_str );
+  if ( name == "kidney_shot"            ) return new kidney_shot_t            ( name, this, options_str );
+  if ( name == "killing_spree"          ) return new killing_spree_t          ( name, this, options_str );
+  if ( name == "kingsbane"              ) return new kingsbane_t              ( name, this, options_str );
+  if ( name == "marked_for_death"       ) return new marked_for_death_t       ( name, this, options_str );
+  if ( name == "mutilate"               ) return new mutilate_t               ( name, this, options_str );
+  if ( name == "pistol_shot"            ) return new pistol_shot_t            ( name, this, options_str );
+  if ( name == "poisoned_knife"         ) return new poisoned_knife_t         ( name, this, options_str );
+  if ( name == "roll_the_bones"         ) return new roll_the_bones_t         ( name, this, options_str );
+  if ( name == "rupture"                ) return new rupture_t                ( name, this, spec.rupture, options_str );
+  if ( name == "secret_technique"       ) return new secret_technique_t       ( name, this, options_str );
+  if ( name == "shadow_blades"          ) return new shadow_blades_t          ( name, this, options_str );
+  if ( name == "shadow_dance"           ) return new shadow_dance_t           ( name, this, options_str );
+  if ( name == "shadowstep"             ) return new shadowstep_t             ( name, this, options_str );
+  if ( name == "shadowstrike"           ) return new shadowstrike_t           ( name, this, options_str );
+  if ( name == "shuriken_storm"         ) return new shuriken_storm_t         ( name, this, options_str );
+  if ( name == "shuriken_tornado"       ) return new shuriken_tornado_t       ( name, this, options_str );
+  if ( name == "shuriken_toss"          ) return new shuriken_toss_t          ( name, this, options_str );
+  if ( name == "sinister_strike"        ) return new sinister_strike_t        ( name, this, options_str );
+  if ( name == "slice_and_dice"         ) return new slice_and_dice_t         ( name, this, options_str );
+  if ( name == "sprint"                 ) return new sprint_t                 ( name, this, options_str );
+  if ( name == "stealth"                ) return new stealth_t                ( name, this, options_str );
+  if ( name == "symbols_of_death"       ) return new symbols_of_death_t       ( name, this, options_str );
+  if ( name == "shiv"                   ) return new shiv_t                   ( name, this, options_str );
+  if ( name == "thistle_tea"            ) return new thistle_tea_t            ( name, this, options_str );
+  if ( name == "vanish"                 ) return new vanish_t                 ( name, this, options_str );
+  if ( name == "cancel_autoattack"      ) return new cancel_autoattack_t      ( this, options_str );
+  if ( name == "swap_weapon"            ) return new weapon_swap_t            ( this, options_str );
 
   // Cross-Expansion Covenant Abilities
 
@@ -10535,6 +10610,13 @@ void rogue_t::create_buffs()
     ->set_direct_mod( talent.assassination.elaborate_planning->effectN( 1 ).percent() )
     ->set_periodic_mod( talent.assassination.elaborate_planning->effectN( 1 ).percent() )
     ->set_auto_attack_mod( talent.assassination.elaborate_planning->effectN( 1 ).percent() );
+
+  buffs.indiscriminate_carnage_garrote = make_buff( this, "indiscriminate_carnage_garrote",
+                                                    talent.assassination.indiscriminate_carnage )
+    ->set_cooldown( timespan_t::zero() );
+  buffs.indiscriminate_carnage_rupture = make_buff( this, "indiscriminate_carnage_rupture",
+                                                    talent.assassination.indiscriminate_carnage )
+    ->set_cooldown( timespan_t::zero() );
 
   buffs.kingsbane = make_buff<damage_buff_t>( this, "kingsbane", spec.kingsbane_buff );
   buffs.kingsbane->set_refresh_behavior( buff_refresh_behavior::NONE );
