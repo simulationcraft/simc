@@ -3556,6 +3556,15 @@ struct keg_smash_t : public monk_melee_attack_t
 
   void execute() override
   {
+    if ( p()->shared.scalding_brew && p()->shared.scalding_brew->ok() )
+    {
+      if ( auto* td = this->get_td( p()->target ) )
+      {
+        if ( td->dots.breath_of_fire->is_ticking() )
+          p()->proc.keg_smash_scalding_brew->occur();
+      }
+    }
+
     monk_melee_attack_t::execute();
 
     if ( p()->talent.brewmaster.salsalabims_strength->ok() )
@@ -9107,6 +9116,7 @@ void monk_t::init_procs()
   proc.elusive_footwork_proc               = get_proc( "Elusive Footwork" );
   proc.face_palm                           = get_proc( "Face Palm" );
   proc.glory_of_the_dawn                   = get_proc( "Glory of the Dawn" );
+  proc.keg_smash_scalding_brew             = get_proc( "Keg Smash - Scalding Brew" );
   proc.quick_sip                           = get_proc( "Quick Sip" );
   proc.resonant_fists                      = get_proc( "Resonant Fists" );
   proc.rsk_reset_totm                      = get_proc( "Rising Sun Kick TotM Reset" );

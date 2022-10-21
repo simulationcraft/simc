@@ -383,6 +383,7 @@ public:
     propagate_const<proc_t*> elusive_footwork_proc;
     propagate_const<proc_t*> face_palm;
     propagate_const<proc_t*> glory_of_the_dawn;
+    propagate_const<proc_t*> keg_smash_scalding_brew;
     propagate_const<proc_t*> quick_sip;
     propagate_const<proc_t*> resonant_fists;
     propagate_const<proc_t*> rsk_reset_totm;
