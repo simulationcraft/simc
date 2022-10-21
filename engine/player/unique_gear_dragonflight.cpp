@@ -812,6 +812,19 @@ void the_cartographers_calipers( special_effect_t& effect )
 }
 
 // Weapons
+void bronzed_grip_wrappings( special_effect_t& effect )
+{
+  // TODO: implement heal
+
+  auto amount = effect.driver()->effectN( 2 ).average( effect.item );
+
+  effect.trigger_spell_id = effect.driver()->effectN( 2 ).trigger_spell_id();
+  effect.spell_id = effect.driver()->effectN( 1 ).trigger_spell_id();
+  effect.discharge_amount = amount;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 void fang_adornments( special_effect_t& effect )
 {
   effect.school = effect.driver()->get_school_type();
@@ -1064,7 +1077,8 @@ void register_special_effects()
   register_special_effect( 384112, items::the_cartographers_calipers );
 
   // Weapons
-  register_special_effect( 377708, items::fang_adornments );
+  register_special_effect( 396442, items::bronzed_grip_wrappings );  // bronzed grip wrappings embellishment
+  register_special_effect( 377708, items::fang_adornments );         // fang adornments embellishment
 
   // Armor
   register_special_effect( 385520, items::breath_of_neltharion );  // breath of neltharion tinker

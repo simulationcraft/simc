@@ -46,6 +46,7 @@ void emerald_coachs_whistle( special_effect_t& );
 void the_cartographers_calipers( special_effect_t& );
 
 // Weapons
+void bronzed_grip_wrappings( special_effect_t& );
 void fang_adornments( special_effect_t& );
 
 // Armor
