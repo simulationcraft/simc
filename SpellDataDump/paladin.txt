@@ -317,11 +317,12 @@ Description      : Blesses a party or raid member, granting immunity to movement
 Tooltip          : Immune to movement impairing effects. $?s199325[Movement speed increased by $199325m1%][]
 
 Name             : Cleanse (id=4987) [Spell Family (10)] 
+Hotfixed         : Learn Level (12 -> 10), Required Level (12 -> 10)
 Class            : Holy Paladin
 School           : Holy
 Spell Type       : Magic
 Resource         : 6.5% Base Mana (0) (id=221)
-Spell Level      : 12
+Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 8 seconds
@@ -1265,7 +1266,7 @@ $@spelldesc280373][]
 
 
 Name             : Light's Beacon (id=53651) [Spell Family (10), Passive, Hidden] 
-Class            : Paladin
+Class            : Holy Paladin
 School           : Holy
 Spell Type       : None
 Spell Level      : 16
@@ -16001,9 +16002,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Can Proc From Procs (122), Not In Spellbook (143)
 Effects          :
 #1 (id=1031543)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 2500 | Scaled Value: 2500 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (2000 -> 2500)
 #2 (id=1031544)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 4000 | Scaled Value: 4000 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 5000 | Scaled Value: 5000 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (4000 -> 5000)
 #3 (id=1038005)  : Apply Aura (6) | Dummy (4)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Casting Flash of Light on targets affected by Tyr's Deliverance extends the duration of your Tyr's Deliverance by ${$s1/1000}.1 sec.

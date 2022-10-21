@@ -96,11 +96,12 @@ Description      : Soothes enemies in the target area, reducing the range at whi
 Tooltip          : Reduced distance at which target will attack.
 
 Name             : Purify (id=527) [Spell Family (6)] 
+Hotfixed         : Learn Level (18 -> 10), Required Level (18 -> 10)
 Class            : Discipline Holy Priest
 School           : Holy
 Spell Type       : Magic
 Resource         : 1.3% Base Mana (0) (id=56)
-Spell Level      : 18
+Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 8 seconds

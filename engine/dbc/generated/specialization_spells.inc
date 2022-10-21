@@ -1,5 +1,5 @@
 // Talent tree specialization abilities, wow build 10.0.2.46144
-static const std::array<specialization_spell_entry_t, 346> __specialization_spell_data { {
+static const std::array<specialization_spell_entry_t, 347> __specialization_spell_data { {
   {  0,  535, 264656,      0, "Pathfinding"                       , 0 },
   {  0,  535, 264662,      0, "Endurance Training"                , 0 },
   {  0,  535, 264663,      0, "Predator's Thirst"                 , 0 },
@@ -42,6 +42,7 @@ static const std::array<specialization_spell_entry_t, 346> __specialization_spel
   {  2,   65,   4987,      0, "Cleanse"                           , 0 },
   {  2,   65,  53563,      0, "Beacon of Light"                   , 0 },
   {  2,   65,  53576,      0, "Infusion of Light"                 , 0 },
+  {  2,   65,  53651,      0, "Light's Beacon"                    , 0 },
   {  2,   65,  86103,      0, "Plate Specialization"              , 0 },
   {  2,   65, 137029,      0, "Holy Paladin"                      , 0 },
   {  2,   65, 162701,      0, "Stat Negation Aura - Intellect Healer", 0 },
@@ -231,7 +232,7 @@ static const std::array<specialization_spell_entry_t, 346> __specialization_spel
   { 10,  268, 322729, 101546, "Spinning Crane Kick"               , 0 },
   { 10,  268, 325095,      0, "Touch of Death"                    , "Rank 3" },
   { 10,  268, 346104,      0, "Windwalker Monk Two-Hand Adjustment", 0 },
-  { 10,  270, 115450, 218164, "Detox"                             , 0 },
+  { 10,  270, 115450,      0, "Detox"                             , 0 },
   { 10,  270, 117907,      0, "Mastery: Gust of Mists"            , 0 },
   { 10,  270, 120224,      0, "Leather Specialization"            , 0 },
   { 10,  270, 137024,      0, "Mistweaver Monk"                   , 0 },

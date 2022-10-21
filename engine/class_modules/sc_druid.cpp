@@ -1949,6 +1949,8 @@ struct umbral_embrace_buff_t : public druid_buff_t<buff_t>
 
   umbral_embrace_buff_t( druid_t& p ) : base_t( p, "umbral_embrace", p.talent.umbral_embrace->effectN( 2 ).trigger() )
   {
+    // TODO: fix/remove when final bugfix of umbral embrace is pushed
+    set_default_value( p.talent.umbral_embrace->effectN( 1 ).percent() );
     set_stack_change_callback( [ this ]( buff_t*, int old_, int new_ ) {
       if ( !old_ )
       {
@@ -2711,7 +2713,8 @@ public:
     parse_buff_effects( p()->buff.starweavers_warp );
     parse_buff_effects( p()->buff.starweavers_weft );
     parse_buff_effects( p()->buff.touch_the_cosmos );
-    parse_buff_effects<S>( p()->buff.umbral_embrace, p()->talent.umbral_embrace );
+    // TODO: fix/remove when final bugfix of umbral embrace is pushed
+    // parse_buff_effects<S>( p()->buff.umbral_embrace, p()->talent.umbral_embrace );
     parse_buff_effects( p()->buff.warrior_of_elune, false );
 
     // Feral
@@ -8029,6 +8032,12 @@ struct starfire_t : public druid_spell_t
 
     return cam;
   }
+
+  // TODO: fix/remove when final bugfix of umbral embrace is pushed
+  double composite_da_multiplier( const action_state_t * s ) const override
+  {
+    return druid_spell_t::composite_da_multiplier( s ) * ( 1.0 + p()->buff.umbral_embrace->value() );
+  }
 };
 
 // Starsurge Spell ==========================================================
@@ -8630,6 +8639,12 @@ struct wrath_t : public druid_spell_t
 
     if ( p()->active.astral_smolder && s->result_amount > 0 && result_is_hit( s->result ) && s->result == RESULT_CRIT )
       residual_action::trigger( p()->active.astral_smolder, s->target, s->result_amount * smolder_mul );
+  }
+
+  // TODO: fix/remove when final bugfix of umbral embrace is pushed
+  double composite_da_multiplier( const action_state_t * s ) const override
+  {
+    return druid_spell_t::composite_da_multiplier( s ) * ( 1.0 + p()->buff.umbral_embrace->value() );
   }
 };
 
@@ -13206,6 +13221,7 @@ void druid_t::apply_affecting_auras( action_t& action )
 
   // Balance
   action.apply_affecting_aura( talent.elunes_guidance );
+  action.apply_affecting_aura( talent.orbital_strike );
   action.apply_affecting_aura( talent.radiant_moonlight );
   action.apply_affecting_aura( talent.twin_moons );
   

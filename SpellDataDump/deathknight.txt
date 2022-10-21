@@ -16520,6 +16520,12 @@ Effects          :
                    Family Flags: 43
 #3 (id=1034346)  : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+#4 (id=1039550)  : Apply Party Aura (35) | Unknown(531)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : NEW EFFECT
+#5 (id=1039650)  : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : NEW EFFECT
 Description      : $@spelldesc393622
 Tooltip          : Damage and Haste increased by $w1%.
 
