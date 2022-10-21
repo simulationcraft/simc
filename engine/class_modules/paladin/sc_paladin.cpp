@@ -3583,26 +3583,6 @@ void paladin_t::combat_begin()
   }
 }
 
-bool paladin_t::standing_in_consecration() const
-{
-  if ( !sim->distance_targeting_enabled )
-  {
-    return !all_active_consecrations.empty();
-  }
-
-  for ( ground_aoe_event_t* active_cons : all_active_consecrations )
-  {
-    double distance = get_position_distance( active_cons->params->x(), active_cons->params->y() );
-
-    // exit with true if we're in range of any one Cons center
-    if ( distance <= find_spell( 81297 )->effectN( 1 ).radius() )
-      return true;
-  }
-
-  // if we're not in range of any of them
-  return false;
-}
-
 
 
 // paladin_t::standing_in_hallow ============================================
