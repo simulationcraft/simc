@@ -309,10 +309,12 @@ void bottled_putrescence( special_effect_t& effect )
     };
 
     action_t* damage;
+    timespan_t duration;
 
     bottled_putrescence_t( const special_effect_t& e )
       : proc_spell_t( "bottled_putrescence", e.player, e.driver() ),
-        damage( create_proc_action<bottled_putrescence_tick_t>( "bottled_putresence", e ) )
+        damage( create_proc_action<bottled_putrescence_tick_t>( "bottled_putresence", e ) ),
+        duration( data().effectN( 1 ).trigger()->duration() * inhibitor_mul( e.player ) )
     {
       damage->stats = stats;
     }
@@ -324,7 +326,7 @@ void bottled_putrescence( special_effect_t& effect )
       make_event<ground_aoe_event_t>( *sim, player, ground_aoe_params_t()
         .target( s->target )
         .pulse_time( damage->base_tick_time )
-        .duration( data().effectN( 1 ).trigger()->duration() - 1_ms )  // has 0tick, but no tick at the end
+        .duration( duration - 1_ms )  // has 0tick, but no tick at the end
         .action( damage ), true );
     }
   };
@@ -342,10 +344,16 @@ void chilled_clarity( special_effect_t& effect )
   {
     buff = make_buff( effect.player, "potion_of_chilled_clarity", effect.trigger() )
       ->set_default_value_from_effect_type( A_355 )
-      ->set_duration( timespan_t::from_seconds( effect.driver()->effectN( 1 ).base_value() ) );
+      ->set_duration( timespan_t::from_seconds( effect.driver()->effectN( 1 ).base_value() ) )
+      ->set_duration_multiplier( inhibitor_mul( effect.player ) );
   }
 
   effect.custom_buff = effect.player->buffs.chilled_clarity = buff;
+}
+
+void elemental_power( special_effect_t& effect )
+{
+  effect.duration_ = effect.duration() * inhibitor_mul( effect.player );
 }
 
 void shocking_disclosure( special_effect_t& effect )
@@ -362,6 +370,7 @@ void shocking_disclosure( special_effect_t& effect )
       damage->stats = pot_action->stats;
 
     buff = make_buff( effect.player, "shocking_disclosure", effect.driver() )
+      ->set_duration_multiplier( inhibitor_mul( effect.player ) )
       ->set_tick_callback( [ damage ]( buff_t* b, int, timespan_t ) {
         damage->execute_on_target( b->player->target );
       } );
@@ -377,83 +386,63 @@ custom_cb_t writ_enchant( stat_e stat, bool cr )
 {
   return [ stat, cr ]( special_effect_t& effect ) {
     auto amount = effect.driver()->effectN( 1 ).average( effect.player );
-
     if ( cr )
     {
       amount = item_database::apply_combat_rating_multiplier( effect.player, CR_MULTIPLIER_WEAPON,
                                                               effect.player->level(), amount );
     }
 
+    auto new_driver = effect.trigger();
+    auto new_trigger = new_driver->effectN( 1 ).trigger();
+
+    if ( stat == STAT_NONE )
+    {
+      effect.stat = util::translate_rating_mod( new_trigger->effectN( 1 ).misc_value1() );
+    }
+    else
+    {
+      effect.stat = stat;
+    }
+
     effect.stat_amount = amount;
-    effect.stat = stat;
+    effect.spell_id = new_driver->id();
+    effect.trigger_spell_id = new_trigger->id();
 
     new dbc_proc_callback_t( effect.player, effect );
   };
 }
 
-void earthen_devotion( special_effect_t& effect )
-{
-  auto buff = buff_t::find( effect.player, "earthen_devotion" );
-  if ( !buff )
-  {
-    auto amount = effect.driver()->effectN( 1 ).average( effect.player );
-    amount = item_database::apply_combat_rating_multiplier( effect.player, CR_MULTIPLIER_WEAPON,
-                                                            effect.player->level(), amount );
-
-    buff = make_buff<stat_buff_t>( effect.player, "earthen_devotion", effect.trigger() )
-      ->add_stat( STAT_BONUS_ARMOR, amount );
-  }
-
-  effect.custom_buff = buff;
-
-  new dbc_proc_callback_t( effect.player, effect );
-}
-
 void frozen_devotion( special_effect_t& effect )
 {
-  auto damage =
-      create_proc_action<generic_aoe_proc_t>( "frozen_devotion", effect, "frozen_devotion", effect.trigger() );
-  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect.player );
-
-  effect.execute_action = damage;
-
-  new dbc_proc_callback_t( effect.player, effect );
-}
-
-void titanic_devotion( special_effect_t& effect )
-{
-  auto buff = buff_t::find( effect.player, "titanic_devotion" );
-  if ( !buff )
-  {
-    buff = make_buff<stat_buff_t>( effect.player, "titanic_devotion", effect.trigger() )
-      ->add_stat( STAT_STR_AGI_INT, effect.driver()->effectN( 1 ).average( effect.player ) );
-  }
-
-  effect.custom_buff = buff;
+  effect.discharge_amount = effect.driver()->effectN( 1 ).average( effect.player );
+  effect.aoe = -1;
+  effect.spell_id = effect.trigger()->id();
+  effect.trigger_spell_id = effect.trigger()->effectN( 1 ).trigger()->id();
 
   new dbc_proc_callback_t( effect.player, effect );
 }
-
 
 void wafting_devotion( special_effect_t& effect )
 {
-  auto buff = buff_t::find( effect.player, "wafting_devotion" );
-  if ( !buff )
-  {
-    auto haste = effect.driver()->effectN( 1 ).average( effect.player );
-    haste = item_database::apply_combat_rating_multiplier( effect.player, CR_MULTIPLIER_WEAPON,
-                                                            effect.player->level(), haste );
+  auto new_driver = effect.trigger();
+  auto new_trigger = new_driver->effectN( 1 ).trigger();
 
-    auto speed = effect.driver()->effectN( 2 ).average( effect.player );
-    speed = item_database::apply_combat_rating_multiplier( effect.player, CR_MULTIPLIER_WEAPON,
-                                                            effect.player->level(), speed );
+  auto haste = effect.driver()->effectN( 1 ).average( effect.player );
+  haste = item_database::apply_combat_rating_multiplier( effect.player, CR_MULTIPLIER_WEAPON,
+                                                         effect.player->level(), haste );
 
-    buff = make_buff<stat_buff_t>( effect.player, "wafting_devotion", effect.trigger() )
-      ->add_stat( STAT_HASTE_RATING, haste )
-      ->add_stat( STAT_SPEED_RATING, speed );
-  }
+  auto speed = effect.driver()->effectN( 2 ).average( effect.player );
+  speed = item_database::apply_combat_rating_multiplier( effect.player, CR_MULTIPLIER_WEAPON,
+                                                         effect.player->level(), speed );
+
+  auto buff = create_buff<stat_buff_t>( effect.player, "wafting_devotion", new_trigger );
+  buff->manual_stats_added = false;
+  buff->add_stat( STAT_HASTE_RATING, haste );
+  buff->add_stat( STAT_SPEED_RATING, speed );
 
   effect.custom_buff = buff;
+  effect.spell_id = new_driver->id();
+  effect.trigger_spell_id = new_trigger->id();
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -816,15 +805,77 @@ void emerald_coachs_whistle( special_effect_t& effect )
 
 void the_cartographers_calipers( special_effect_t& effect )
 {
-  auto damage = create_proc_action<generic_proc_t>( "precision_blast", effect, "precision_blast", 384114 );
-  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
-
-  effect.execute_action = damage;
+  effect.trigger_spell_id = 384114;
+  effect.discharge_amount = effect.driver()->effectN( 1 ).average( effect.item );
 
   new dbc_proc_callback_t( effect.player, effect );
 }
+
 // Weapons
+void fang_adornments( special_effect_t& effect )
+{
+  effect.school = effect.driver()->get_school_type();
+  effect.discharge_amount = effect.driver()->effectN( 1 ).average( effect.item );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Armor
+void breath_of_neltharion( special_effect_t& effect )
+{
+  struct breath_of_neltharion_t : public generic_proc_t
+  {
+    breath_of_neltharion_t( const special_effect_t& e ) : generic_proc_t( e, "breath_of_neltharion", e.driver() )
+    {
+      channeled = true;
+      harmful = false;
+
+      tick_action = create_proc_action<generic_aoe_proc_t>(
+          "breath_of_neltharion_tick", e, "breath_of_neltharion_tick", e.trigger() );
+      tick_action->stats = stats;
+      tick_action->dual = true;
+    }
+
+    bool usable_moving() const override
+    {
+      return true;
+    }
+
+    void execute() override
+    {
+      generic_proc_t::execute();
+
+      event_t::cancel( player->readying );
+      player->reset_auto_attacks( composite_dot_duration( execute_state ) );
+    }
+
+    void last_tick( dot_t* d ) override
+    {
+      bool was_channeling = player->channeling == this;
+
+      generic_proc_t::last_tick( d );
+
+      if ( was_channeling && !player->readying )
+        player->schedule_ready( rng().gauss( sim->channel_lag, sim->channel_lag_stddev ) );
+    }
+  };
+
+  effect.execute_action = create_proc_action<breath_of_neltharion_t>( "breath_of_neltharion", effect );
+}
+
+void coated_in_slime( special_effect_t& effect )
+{
+  auto mul = toxified_mul( effect.player );
+
+  effect.player->passive.add_stat( util::translate_rating_mod( effect.driver()->effectN( 1 ).misc_value1() ),
+                                   effect.driver()->effectN( 2 ).average( effect.item ) * mul );
+
+  effect.trigger_spell_id = effect.driver()->effectN( 3 ).trigger_spell_id();
+  effect.discharge_amount = effect.driver()->effectN( 3 ).average( effect.item ) * mul;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 void elemental_lariat( special_effect_t& effect )
 {
   enum gem_type_e
@@ -929,7 +980,9 @@ void flaring_cowl( special_effect_t& effect )
 
 void thriving_thorns( special_effect_t& effect )
 {
-  effect.player->passive.add_stat( STAT_STAMINA, effect.driver()->effectN( 2 ).average( effect.item ) );
+  auto mul = toxified_mul( effect.player );
+
+  effect.player->passive.add_stat( STAT_STAMINA, effect.driver()->effectN( 2 ).average( effect.item ) * mul );
 
   // velocity & triggered missile reference is in 379395 for damage & 379405 for heal
   // TODO: implement heal
@@ -937,13 +990,7 @@ void thriving_thorns( special_effect_t& effect )
   auto damage = create_proc_action<generic_proc_t>( "launched_thorns", effect, "launched_thorns",
                                                     damage_trg->effectN( 1 ).trigger() );
   damage->travel_speed = damage_trg->missile_speed();
-
-  auto val = effect.driver()->effectN( 4 ).average( effect.item );
-  auto toxic = unique_gear::find_special_effect( effect.player, 378758 );
-  if ( toxic )
-    val *= 1.0 + toxic->driver()->effectN( 2 ).percent();
-
-  damage->base_dd_min = damage->base_dd_max = val;
+  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 4 ).average( effect.item ) * mul;
 
   effect.execute_action = damage;
 
@@ -958,20 +1005,18 @@ void playful_spirits_fur( special_effect_t& effect )
   if ( !effect.player->sets->has_set_bonus( effect.player->specialization(), T29_PLAYFUL_SPIRITS_FUR, B2 ) )
     return;
 
-  auto snowball = create_proc_action<generic_proc_t>( "magic_snowball", effect, "magic_snowball", 376932 );
+  auto set_driver_id = effect.player->sets->set( effect.player->specialization(), T29_PLAYFUL_SPIRITS_FUR, B2 )->id();
 
-  if ( effect.driver() == effect.player->sets->set( effect.player->specialization(), T29_PLAYFUL_SPIRITS_FUR, B2 ) )
+  if ( effect.driver()->id() == set_driver_id )
   {
-    effect.execute_action = snowball;
+    effect.trigger_spell_id = 376932;
 
     new dbc_proc_callback_t( effect.player, effect );
   }
   else
   {
-    auto val = effect.driver()->effectN( 1 ).average( effect.item );
-
-    snowball->base_dd_min += val;
-    snowball->base_dd_max += val;
+    unique_gear::find_special_effect( effect.player, set_driver_id )->discharge_amount +=
+        effect.driver()->effectN( 1 ).average( effect.item );
   }
 }
 }  // namespace sets
@@ -989,17 +1034,21 @@ void register_special_effects()
   // Potion
   register_special_effect( 372046, consumables::bottled_putrescence );
   register_special_effect( { 371149, 371151, 371152 }, consumables::chilled_clarity );
+  register_special_effect( { 371024, 371028 }, consumables::elemental_power );  // normal & ultimate
   register_special_effect( 370816, consumables::shocking_disclosure );
 
   // Enchants
-  register_special_effect( { 390164, 390167, 390168 }, enchants::writ_enchant( STAT_CRIT_RATING ) );
-  register_special_effect( { 390172, 390183, 390190 }, enchants::writ_enchant( STAT_MASTERY_RATING ) );
-  register_special_effect( { 390243, 390244, 390246 }, enchants::writ_enchant( STAT_VERSATILITY_RATING ) );
-  register_special_effect( { 390248, 390249, 390251 }, enchants::writ_enchant( STAT_HASTE_RATING ) );
-  register_special_effect( { 390215, 390217, 390219 }, enchants::writ_enchant( STAT_STR_AGI_INT, false ) );
-  register_special_effect( { 390346, 390347, 390348 }, enchants::earthen_devotion );
+  register_special_effect( { 390164, 390167, 390168 }, enchants::writ_enchant() );  // burning writ
+  register_special_effect( { 390172, 390183, 390190 }, enchants::writ_enchant() );  // earthen writ
+  register_special_effect( { 390243, 390244, 390246 }, enchants::writ_enchant() );  // frozen writ
+  register_special_effect( { 390248, 390249, 390251 }, enchants::writ_enchant() );  // wafting writ
+  register_special_effect( { 390215, 390217, 390219 },
+                           enchants::writ_enchant( STAT_STR_AGI_INT, false ) );     // sophic writ
+  register_special_effect( { 390346, 390347, 390348 },
+                           enchants::writ_enchant( STAT_BONUS_ARMOR ) );            // earthen devotion
+  register_special_effect( { 390222, 390227, 390229 },
+                           enchants::writ_enchant( STAT_STR_AGI_INT, false ) );     // sophic devotion
   register_special_effect( { 390351, 390352, 390353 }, enchants::frozen_devotion );
-  register_special_effect( { 390222, 390227, 390229 }, enchants::titanic_devotion );
   register_special_effect( { 390358, 390359, 390360 }, enchants::wafting_devotion );
 
   // Trinkets
@@ -1013,8 +1062,13 @@ void register_special_effects()
   register_special_effect( 384532, items::darkmoon_deck_watcher );
   register_special_effect( 383798, items::emerald_coachs_whistle );
   register_special_effect( 384112, items::the_cartographers_calipers );
+
   // Weapons
+  register_special_effect( 377708, items::fang_adornments );
+
   // Armor
+  register_special_effect( 385520, items::breath_of_neltharion );  // breath of neltharion tinker
+  register_special_effect( 378423, items::coated_in_slime );
   register_special_effect( 375323, items::elemental_lariat );
   register_special_effect( 381424, items::flaring_cowl );
   register_special_effect( 379396, items::thriving_thorns );
@@ -1030,10 +1084,33 @@ void register_special_effects()
   register_special_effect( 383337, DISABLED_EFFECT );  // jetscale sigil (no longer shuffles on Ace)
   register_special_effect( 383339, DISABLED_EFFECT );  // sagescale sigil (shuffle on jump) NYI
   register_special_effect( 378758, DISABLED_EFFECT );  // toxified embellishment
+  register_special_effect( 371700, DISABLED_EFFECT );  // potion absorption inhibitor embellishment
 }
 
 void register_target_data_initializers( sim_t& sim )
 {
   sim.register_target_data_initializer( items::awakening_rime_initializer_t() );
+}
+
+// check and return multiplier for toxified armor patch
+// TODO: spell data seems to indicate you can have up to 4 stacks. currently implemented as a simple check
+double toxified_mul( player_t* player )
+{
+  if ( auto toxic = unique_gear::find_special_effect( player, 378758 ) )
+    return 1.0 + toxic->driver()->effectN( 2 ).percent();
+
+  return 1.0;
+}
+
+// check and return multiplier for potion absorption inhibitor
+double inhibitor_mul( player_t* player )
+{
+  int count = 0;
+
+  for ( const auto& item : player->items )
+    if ( range::contains( item.parsed.special_effects, 371700, &special_effect_t::spell_id ) )
+      count++;
+
+  return 1.0 + count * player->find_spell( 371700 )->effectN( 1 ).percent();
 }
 }  // namespace unique_gear::dragonflight

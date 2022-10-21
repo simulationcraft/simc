@@ -10535,7 +10535,7 @@ const spell_data_t* player_t::find_covenant_spell( util::string_view name ) cons
   return covenant->get_covenant_ability( name );
 }
 
-item_runeforge_t player_t::find_runeforge_legendary( util::string_view name, bool tokenized ) const
+item_runeforge_t player_t::find_runeforge_legendary( util::string_view name, bool tokenized, bool force_unity ) const
 {
   auto entries = runeforge_legendary_entry_t::find( name, dbc->ptr, tokenized );
   if ( entries.empty() )
@@ -10547,8 +10547,8 @@ item_runeforge_t player_t::find_runeforge_legendary( util::string_view name, boo
   unsigned unity_bonus_id = 0;
   unsigned unity_spell_id = 0;
 
-  if ( cov_type != covenant_e::DISABLED && cov_type != covenant_e::INVALID &&
-       entries.front().covenant_id == static_cast<unsigned>( cov_type ) )
+  if ( force_unity || ( cov_type != covenant_e::DISABLED && cov_type != covenant_e::INVALID &&
+                        entries.front().covenant_id == static_cast<unsigned>( cov_type ) ) )
   {
     auto unity_entries = runeforge_legendary_entry_t::find( "Unity", dbc->ptr );
     if ( !unity_entries.empty() )

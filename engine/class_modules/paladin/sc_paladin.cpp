@@ -990,16 +990,6 @@ struct crusader_strike_t : public paladin_melee_attack_t
     }
   }
 
-  void execute() override 
-  {
-    paladin_melee_attack_t::execute();
-
-    if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, T29, B4 ) )
-    {
-      p()->t29_4p_prot();
-    }
-  }
-
   double cost() const override
   {
     if ( has_crusader_2 )
@@ -2369,7 +2359,6 @@ void paladin_t::init_gains()
   gains.hp_cs                      = get_gain( "crusader_strike" );
   gains.hp_memory_of_lucid_dreams  = get_gain( "memory_of_lucid_dreams" );
   gains.hp_sanctification          = get_gain( "sanctification" );
-  gains.hp_divine_toll             = get_gain( "divine_toll" );
 }
 
 // paladin_t::init_procs ====================================================
@@ -2812,10 +2801,6 @@ void paladin_t::init_spells()
   // Shadowlands Tier Sets
   tier_sets.glorious_purpose_2pc = sets->set( PALADIN_PROTECTION, T28, B2 );
   tier_sets.glorious_purpose_4pc = sets->set( PALADIN_PROTECTION, T28, B4 );
-
-  tier_sets.ally_of_the_light_2pc = sets->set( PALADIN_PROTECTION, T29, B2 );
-  tier_sets.ally_of_the_light_4pc = sets->set( PALADIN_PROTECTION, T29, B4 );
-
   tier_sets.dawn_will_come_2pc = sets->set( PALADIN_HOLY, T28, B2 );
   tier_sets.dawn_will_come_4pc = sets->set( PALADIN_HOLY, T28, B4 );
   tier_sets.ashes_to_ashes_2pc   = sets->set( PALADIN_RETRIBUTION, T28, B2 );
@@ -2991,9 +2976,6 @@ double paladin_t::composite_damage_versatility() const
   if ( buffs.seraphim->up() )
     cdv += buffs.seraphim->data().effectN( 2 ).percent();
 
-  if ( buffs.ally_of_the_light->up() )
-    cdv += buffs.ally_of_the_light->data().effectN( 1 ).percent();
-
   return cdv;
 }
 
@@ -3003,9 +2985,6 @@ double paladin_t::composite_heal_versatility() const
 
   if ( buffs.seraphim->up() )
     chv += buffs.seraphim->data().effectN( 2 ).percent();
-
-  if ( buffs.ally_of_the_light->up() )
-    chv += buffs.ally_of_the_light->data().effectN( 1 ).percent();
 
   return chv;
 }
@@ -3583,7 +3562,25 @@ void paladin_t::combat_begin()
   }
 }
 
+bool paladin_t::standing_in_consecration() const
+{
+  if ( ! sim -> distance_targeting_enabled )
+  {
+    return ! all_active_consecrations.empty();
+  }
 
+  for ( ground_aoe_event_t* active_cons : all_active_consecrations )
+  {
+    double distance = get_position_distance( active_cons -> params -> x(), active_cons -> params -> y() );
+
+    // exit with true if we're in range of any one Cons center
+    if ( distance <= find_spell( 81297 )->effectN( 1 ).radius() )
+      return true;
+  }
+
+  // if we're not in range of any of them
+  return false;
+}
 
 // paladin_t::standing_in_hallow ============================================
 

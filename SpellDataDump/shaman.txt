@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46144 dragonflight-BETA (hotfix 2022-10-19/46144, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46144 dragonflight-BETA (hotfix 2022-10-21/46144, no-networking)
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical

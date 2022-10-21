@@ -91,6 +91,7 @@ public:
     action_t* background_cons;
     action_t* incandescence;
     action_t* empyrean_legacy;
+    action_t* es_explosion;
 
     // Conduit stuff
     action_t* virtuous_command_conduit;
@@ -669,6 +670,7 @@ public:
   void    trigger_t28_4p_prot( action_state_t* s );
   void    t29_4p_prot();
   void    trigger_forbearance( player_t* target );
+  void    trigger_es_explosion( player_t* target );
   int     get_local_enemies( double distance ) const;
   bool    standing_in_consecration() const;
   bool    standing_in_hallow() const;
@@ -770,9 +772,17 @@ struct execution_sentence_debuff_t : public buff_t
   execution_sentence_debuff_t( paladin_td_t* td )
     : buff_t( *td, "execution_sentence", debug_cast<paladin_t*>( td->source )->talents.execution_sentence ),
       accumulated_damage( 0.0 ),
+      accum_percent( 0.0 ),
       extended_count( 0 )
   {
     set_cooldown( 0_ms );  // handled by the ability
+    accum_percent = data().effectN( 2 ).percent();
+
+    paladin_t* p = debug_cast<paladin_t*>( td->source );
+
+    // unclear if this is intended
+    if ( p->talents.executioners_wrath->ok() )
+      accum_percent = p->talents.executioners_wrath->effectN( 2 ).percent();
   }
 
   void reset() override
@@ -788,6 +798,9 @@ struct execution_sentence_debuff_t : public buff_t
 
     accumulated_damage = 0.0;
     extended_count = 0;
+
+    paladin_t* paladin = debug_cast<paladin_t*>( source );
+    paladin -> trigger_es_explosion( player );
   }
 
   void accumulate_damage( const action_state_t* s )
@@ -800,7 +813,7 @@ struct execution_sentence_debuff_t : public buff_t
 
   double get_accumulated_damage() const
   {
-    return accumulated_damage;
+    return accumulated_damage * accum_percent;
   }
 
   void do_will_extension()
@@ -814,6 +827,7 @@ struct execution_sentence_debuff_t : public buff_t
 
 private:
   double accumulated_damage;
+  double accum_percent;
   int extended_count;
 };
 

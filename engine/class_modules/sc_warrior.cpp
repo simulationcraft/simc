@@ -86,6 +86,8 @@ public:
     action_t* signet_ravager;
     action_t* signet_recklessness;
     action_t* torment_avatar;
+    action_t* torment_bladestorm;
+    action_t* torment_odyns_fury;
     action_t* torment_recklessness;
     action_t* iron_fortress; // Prot azerite trait
     action_t* bastion_of_might_ip; // 0 rage IP from Bastion of Might azerite trait
@@ -2318,8 +2320,8 @@ struct bladestorm_t : public warrior_attack_t
       add_child( bladestorm_oh );
     }
 
-    // TODO: What happens if you have both Unhinged and Signet? Unhinged DOES work w/ Torment - same ticks
-    if ( p->talents.arms.unhinged->ok() && !signet_triggered )
+    // Unhinged DOES work w/ Torment and Signet
+    if ( p->talents.arms.unhinged->ok() )
     {
       mortal_strike = new mortal_strike_unhinged_t( p, "bladestorm_mortal_strike" );
       add_child( mortal_strike );
@@ -2351,7 +2353,6 @@ struct bladestorm_t : public warrior_attack_t
     if( signet_triggered )
     {
       p()->buff.bladestorm->trigger( dot_duration );
-
     }
     else
     {
@@ -2362,7 +2363,13 @@ struct bladestorm_t : public warrior_attack_t
         action_t* signet_ability = p()->rng().roll( signet_chance ) ? p()->active.signet_avatar : p()->active.signet_recklessness;
         signet_ability->schedule_execute();
       }
+      if ( p()->talents.warrior.blademasters_torment.ok() )
+      {
+        action_t* torment_ability = p()->active.torment_avatar;
+        torment_ability->schedule_execute();
+      }
     }
+
     if ( p()->talents.arms.hurricane->ok() || p()->talents.fury.hurricane->ok() )
     {
       p()->buff.hurricane_driver->trigger();
@@ -2398,7 +2405,7 @@ struct bladestorm_t : public warrior_attack_t
     {
       bladestorm_oh->execute();
     }
-    // Hotfix as of 2014-12-05: 3 -> 2 ticks with an additional MS. Seems to be ticks 1 and 3 (zero-indexed).
+    // As of Dragonflight, Unhinged triggers with tick 2 and 4
     if ( mortal_strike && ( d->current_tick == 2 || d->current_tick == 4 ) )
     {
       auto t = select_random_target();
@@ -2425,12 +2432,108 @@ struct bladestorm_t : public warrior_attack_t
     }
   }
 
+// TODO: Mush Torment Bladestorm into regular Bladestorm reporting
+//  void init() override
+//  {
+//    warrior_attack_t::init();
+//    p()->active.torment_bladestorm->stats = stats;
+//  }
+
   bool verify_actor_spec() const override
   {
     if ( signet_triggered )
       return true;
 
     return warrior_attack_t::verify_actor_spec();
+  }
+};
+
+// Torment Bladestorm ===============================================================
+
+struct torment_bladestorm_t : public warrior_attack_t
+{
+  attack_t *bladestorm_mh, *bladestorm_oh;
+  mortal_strike_unhinged_t* mortal_strike;
+
+  torment_bladestorm_t( warrior_t* p, util::string_view options_str, util::string_view n, const spell_data_t* spell,
+                bool torment_triggered = false )
+    : warrior_attack_t( n, p, spell ),
+      bladestorm_mh( new bladestorm_tick_t( p, fmt::format( "{}_mh", n ), spell->effectN( 1 ).trigger() ) ),
+      bladestorm_oh( nullptr ),
+      mortal_strike( nullptr )
+  {
+    parse_options( options_str );
+    channeled = false;
+    tick_zero = true;
+    callbacks = interrupt_auto_attack = false;
+    travel_speed = 0;
+    dot_duration = p->talents.warrior.blademasters_torment->effectN( 2 ).time_value();
+    bladestorm_mh->weapon = &( player->main_hand_weapon );
+    add_child( bladestorm_mh );
+
+    if ( p->talents.arms.unhinged->ok() )
+    {
+      mortal_strike = new mortal_strike_unhinged_t( p, "bladestorm_mortal_strike" );
+      add_child( mortal_strike );
+    }
+  }
+
+  timespan_t composite_dot_duration( const action_state_t* s ) const override
+  {
+      return warrior_attack_t::composite_dot_duration( s );
+    return dot_duration * ( tick_time( s ) / base_tick_time );
+  }
+
+  void execute() override
+  {
+    warrior_attack_t::execute();
+
+    p()->buff.bladestorm->trigger();
+
+    if ( p()->talents.arms.hurricane->ok() )
+    {
+      p()->buff.hurricane_driver->trigger();
+    }
+  }
+
+  void tick( dot_t* d ) override
+  {
+    // dont tick if BS buff not up
+    // since first tick is instant the buff won't be up yet
+    if ( d->ticks_left() < d->num_ticks() && !p()->buff.bladestorm->up() )
+    {
+      make_event( sim, [ d ] { d->cancel(); } );
+      return;
+    }
+
+    warrior_attack_t::tick( d );
+    bladestorm_mh->execute();
+
+    // As of Dragonflight, Unhinged triggers with tick 2 and 4
+    if ( mortal_strike && ( d->current_tick == 2 || d->current_tick == 4 ) )
+    {
+      auto t = select_random_target();
+
+      if ( t )
+      {
+        mortal_strike->target = t;
+        mortal_strike->execute();
+      }
+    }
+  }
+
+  void last_tick( dot_t* d ) override
+  {
+    warrior_attack_t::last_tick( d );
+    p()->buff.bladestorm->expire();
+    if ( p()->conduit.merciless_bonegrinder->ok() )
+    {
+      p()->buff.merciless_bonegrinder_conduit->trigger( timespan_t::from_seconds( 9.0 ) );
+    }
+    if ( p()->talents.arms.merciless_bonegrinder->ok() )
+    {
+      p()->buff.merciless_bonegrinder->trigger();
+    }
   }
 };
 
@@ -2967,15 +3070,8 @@ struct colossus_smash_t : public warrior_attack_t
 
     if ( p()->talents.warrior.warlords_torment->ok() )
     {
-      if ( p()->buff.recklessness->check() )
-      {
-        p()->buff.recklessness->extend_duration(
-            p(), timespan_t::from_millis( p()->talents.warrior.warlords_torment->effectN( 2 ).base_value() ) );
-      }
-      else
-      {
-        p()->buff.recklessness->trigger( p()->talents.warrior.warlords_torment->effectN( 2 ).time_value() );
-      }
+      const timespan_t trigger_duration = p()->talents.warrior.warlords_torment->effectN( 2 ).time_value();
+      p()->buff.recklessness->extend_duration_or_trigger( trigger_duration );
     }
   }
 };
@@ -4083,8 +4179,8 @@ struct sweeping_strikes_t : public warrior_spell_t
 
 struct odyns_fury_off_hand_t : public warrior_attack_t
 {
-  odyns_fury_off_hand_t( warrior_t* p, const spell_data_t* odyns_fury )
-    : warrior_attack_t( "odyns_fury_oh", p, odyns_fury )
+  odyns_fury_off_hand_t( warrior_t* p, util::string_view name, const spell_data_t* spell )
+    : warrior_attack_t( name, p, spell )
   {
     background          = true;
     aoe                 = -1;
@@ -4093,8 +4189,8 @@ struct odyns_fury_off_hand_t : public warrior_attack_t
 
 struct odyns_fury_main_hand_t : public warrior_attack_t
 {
-  odyns_fury_main_hand_t( warrior_t* p, const spell_data_t* odyns_fury )
-    : warrior_attack_t( "odyns_fury_mh", p, odyns_fury )
+  odyns_fury_main_hand_t( warrior_t* p, util::string_view name, const spell_data_t* spell )
+    : warrior_attack_t( name, p, spell )
   {
     background = true;
     aoe        = -1;
@@ -4103,44 +4199,36 @@ struct odyns_fury_main_hand_t : public warrior_attack_t
 
 struct odyns_fury_t : warrior_attack_t
 {
-  bool from_avatar;
   odyns_fury_off_hand_t* oh_attack;
   odyns_fury_off_hand_t* oh_attack2;
   odyns_fury_main_hand_t* mh_attack;
   odyns_fury_main_hand_t* mh_attack2;
-  odyns_fury_t( warrior_t* p, util::string_view options_str )
-    : warrior_attack_t( "odyns_fury", p, p->talents.fury.odyns_fury ),
-      from_avatar( false ),
-      oh_attack( nullptr ), oh_attack2( nullptr ),
-      mh_attack( nullptr ), mh_attack2( nullptr )
+  odyns_fury_t( warrior_t* p, util::string_view options_str, util::string_view n, const spell_data_t* spell )
+    : warrior_attack_t( n, p, spell ),
+      mh_attack( new odyns_fury_main_hand_t( p, fmt::format( "{}_mh", n ), spell->effectN( 1 ).trigger() ) ),
+      mh_attack2( new odyns_fury_main_hand_t( p, fmt::format( "{}_mh", n ), spell->effectN( 3 ).trigger() ) ),
+      oh_attack( new odyns_fury_off_hand_t( p, fmt::format( "{}_oh", n ), spell->effectN( 2 ).trigger() ) ),
+      oh_attack2( new odyns_fury_off_hand_t( p, fmt::format( "{}_oh", n ), spell->effectN( 4 ).trigger() ) )
   {
     parse_options( options_str );
     radius = data().effectN( 1 ).trigger()->effectN( 1 ).radius_max();
-    if ( from_avatar )
-    {
-      use_off_gcd = true;
-    }
 
     if ( p->main_hand_weapon.type != WEAPON_NONE )
     {
-      mh_attack         = new odyns_fury_main_hand_t( p, p->talents.fury.odyns_fury->effectN( 1 ).trigger() );
       mh_attack->weapon = &( p->main_hand_weapon );
-      mh_attack->radius = radius;
       add_child( mh_attack );
-      mh_attack2         = new odyns_fury_main_hand_t( p, p->talents.fury.odyns_fury->effectN( 3 ).trigger() );
+      mh_attack->radius = radius;
       mh_attack2->weapon = &( p->main_hand_weapon );
       mh_attack2->radius = radius;
       add_child( mh_attack2 );
       if ( p->off_hand_weapon.type != WEAPON_NONE )
       {
-        oh_attack         = new odyns_fury_off_hand_t( p, p->talents.fury.odyns_fury->effectN( 2 ).trigger() );
-        oh_attack->weapon = &( p->off_hand_weapon );
         oh_attack->weapon = &( p->off_hand_weapon );
         add_child( oh_attack );
-        oh_attack2         = new odyns_fury_off_hand_t( p, p->talents.fury.odyns_fury->effectN( 4 ).trigger() );
-        oh_attack2->weapon = &( p->off_hand_weapon );
+        oh_attack->radius = radius;
         oh_attack2->weapon = &( p->off_hand_weapon );
         add_child( oh_attack2 );
+        oh_attack2->radius = radius;
       }
     }
   }
@@ -4158,14 +4246,73 @@ struct odyns_fury_t : warrior_attack_t
       p()->buff.dancing_blades->trigger();
     } 
 
-    if ( p()->talents.warrior.titans_torment->ok() && !from_avatar )
+    if ( p()->talents.warrior.titans_torment->ok() )
     {
-      const timespan_t trigger_duration = timespan_t::from_millis( 4000 );  // value not in talent data
-      p()->buff.avatar->extend_duration_or_trigger( trigger_duration );
-      p()->resource_gain( RESOURCE_RAGE, ( p()->talents.warrior.avatar->effectN( 6 ).base_value() / 10.0 ), p()->gain.avatar );
-    } 
-    if ( from_avatar )
-      cooldown->reset( true );
+      action_t* torment_ability = p()->active.torment_avatar;
+      torment_ability->schedule_execute();
+    }
+  }
+
+  bool ready() override
+  {
+    if ( p()->main_hand_weapon.type == WEAPON_NONE )
+    {
+      return false;
+    }
+    return warrior_attack_t::ready();
+  }
+};
+
+// Torment Odyn's Fury ==========================================================
+
+struct torment_odyns_fury_t : warrior_attack_t
+{
+  odyns_fury_off_hand_t* oh_attack;
+  odyns_fury_off_hand_t* oh_attack2;
+  odyns_fury_main_hand_t* mh_attack;
+  odyns_fury_main_hand_t* mh_attack2;
+  torment_odyns_fury_t( warrior_t* p, util::string_view options_str, util::string_view n, const spell_data_t* spell, bool torment_triggered = false )
+    : warrior_attack_t( n, p, spell ),
+      mh_attack( new odyns_fury_main_hand_t( p, fmt::format( "{}_mh", n ), spell->effectN( 1 ).trigger() ) ),
+      mh_attack2( new odyns_fury_main_hand_t( p, fmt::format( "{}_mh", n ), spell->effectN( 3 ).trigger() ) ),
+      oh_attack( new odyns_fury_off_hand_t( p, fmt::format( "{}_oh", n ), spell->effectN( 2 ).trigger() ) ),
+      oh_attack2( new odyns_fury_off_hand_t( p, fmt::format( "{}_oh", n ), spell->effectN( 4 ).trigger() ) )
+  {
+    parse_options( options_str );
+    radius = data().effectN( 1 ).trigger()->effectN( 1 ).radius_max();
+
+    if ( p->main_hand_weapon.type != WEAPON_NONE )
+    {
+      mh_attack->weapon = &( p->main_hand_weapon );
+      add_child( mh_attack );
+      mh_attack->radius  = radius;
+      mh_attack2->weapon = &( p->main_hand_weapon );
+      mh_attack2->radius = radius;
+      add_child( mh_attack2 );
+      if ( p->off_hand_weapon.type != WEAPON_NONE )
+      {
+        oh_attack->weapon = &( p->off_hand_weapon );
+        add_child( oh_attack );
+        oh_attack->radius  = radius;
+        oh_attack2->weapon = &( p->off_hand_weapon );
+        add_child( oh_attack2 );
+        oh_attack2->radius = radius;
+      }
+    }
+  }
+
+  void execute() override
+  {
+    warrior_attack_t::execute();
+    mh_attack->execute();
+    oh_attack->execute();
+    mh_attack2->execute();
+    oh_attack2->execute();
+
+    if ( p()->talents.fury.dancing_blades->ok() )
+    {
+      p()->buff.dancing_blades->trigger();
+    }
   }
 
   bool ready() override
@@ -4341,15 +4488,8 @@ struct warbreaker_t : public warrior_attack_t
 
     if ( p()->talents.warrior.warlords_torment->ok() )
     {
-      if ( p()->buff.recklessness->check() )
-      {
-        p()->buff.recklessness->extend_duration(
-            p(), timespan_t::from_millis( p()->talents.warrior.warlords_torment->effectN( 2 ).base_value() ) );
-      }
-      else
-      {
-        p()->buff.recklessness->trigger( p()->talents.warrior.warlords_torment->effectN( 2 ).time_value() );
-      }
+      const timespan_t trigger_duration = p()->talents.warrior.warlords_torment->effectN( 2 ).time_value();
+      p()->buff.recklessness->extend_duration_or_trigger( trigger_duration );
     }
   }
 
@@ -6165,23 +6305,15 @@ struct avatar_t : public warrior_spell_t
 {
   double signet_chance;
   bool signet_triggered;
-  odyns_fury_t* tormented_titan;
   avatar_t( warrior_t* p, util::string_view options_str, util::string_view n, const spell_data_t* spell,
   bool signet_triggered = false )
     : warrior_spell_t( n, p, spell ),
-    tormented_titan( nullptr ),
     signet_chance( 0.5 * p->legendary.signet_of_tormented_kings->proc_chance() ),
     signet_triggered( signet_triggered )
   {
 
     parse_options( options_str );
     callbacks = false;
-
-    if ( p->talents.warrior.titans_torment->ok() )
-    {
-      tormented_titan              = new odyns_fury_t( p, options_str );
-      tormented_titan->from_avatar = true;
-    }
 
     // Vision of Perfection doesn't reduce the cooldown for non-prot
     if ( p -> azerite.vision_of_perfection.enabled() && p -> specialization() == WARRIOR_PROTECTION )
@@ -6224,23 +6356,22 @@ struct avatar_t : public warrior_spell_t
         action_t* torment_ability = p()->active.torment_recklessness;
         torment_ability->schedule_execute();
       }
+      if ( p()->talents.warrior.blademasters_torment.ok() )
+      {
+        action_t* torment_ability = p()->active.torment_bladestorm;
+        torment_ability->schedule_execute();
+      }
       if ( p()->talents.warrior.titans_torment->ok() )
       {
-        tormented_titan->execute();
+        action_t* torment_ability = p()->active.torment_odyns_fury;
+        torment_ability->schedule_execute();
       }
     }
 
     if ( p()->talents.warrior.warlords_torment->ok() )
     {
-      if ( p()->buff.recklessness->check() )
-      {
-        p()->buff.recklessness->extend_duration(
-            p(), timespan_t::from_millis( p()->talents.warrior.warlords_torment->effectN( 2 ).base_value() ) );
-      }
-      else
-      {
-        p()->buff.recklessness->trigger( p()->talents.warrior.warlords_torment->effectN( 2 ).time_value() );
-      }
+      const timespan_t trigger_duration = p()->talents.warrior.warlords_torment->effectN( 2 ).time_value();
+      p()->buff.recklessness->extend_duration_or_trigger( trigger_duration );
     }
 
     if ( p()->azerite.bastion_of_might.enabled() )
@@ -6285,7 +6416,7 @@ struct torment_avatar_t : public warrior_spell_t
   {
     warrior_spell_t::execute();
 
-    const timespan_t trigger_duration = p()->talents.warrior.berserkers_torment->effectN( 2 ).time_value();
+    const timespan_t trigger_duration = timespan_t::from_millis( 4000 ); // avoid talent check - berserker/blademaster/titan all use same value
     p()->buff.avatar->extend_duration_or_trigger( trigger_duration );
   }
 };
@@ -7032,7 +7163,7 @@ action_t* warrior_t::create_action( util::string_view name, util::string_view op
   if ( name == "mortal_strike" )
     return new mortal_strike_t( this, options_str );
   if ( name == "odyns_fury" )
-    return new odyns_fury_t( this, options_str );
+    return new odyns_fury_t( this, options_str, name, talents.fury.odyns_fury );
   if ( name == "onslaught" )
     return new onslaught_t( this, options_str );
   if ( name == "overpower" )
@@ -7616,10 +7747,29 @@ void warrior_t::init_spells()
   }
   if ( talents.warrior.berserkers_torment->ok() )
   {
-
     active.torment_recklessness = new torment_recklessness_t( this, "", "recklessness_torment", find_spell( 1719 ), true );
     active.torment_avatar       = new torment_avatar_t( this, "", "avatar_torment", find_spell( 107574 ), true );
     for ( action_t* action : { active.torment_recklessness, active.torment_avatar } )
+    {
+      action->background  = true;
+      action->trigger_gcd = timespan_t::zero();
+    }
+  }
+  if ( talents.warrior.blademasters_torment->ok() )
+  {
+    active.torment_avatar       = new torment_avatar_t( this, "", "avatar_torment", find_spell( 107574 ), true );
+    active.torment_bladestorm   = new torment_bladestorm_t( this, "", "bladestorm_torment", find_spell( 227847 ), true );
+    for ( action_t* action : { active.torment_avatar, active.torment_bladestorm } )
+    {
+      action->background  = true;
+      action->trigger_gcd = timespan_t::zero();
+    }
+  }
+  if ( talents.warrior.titans_torment->ok() )
+  {
+    active.torment_avatar       = new torment_avatar_t( this, "", "avatar_torment", find_spell( 107574 ), true );
+    active.torment_odyns_fury   = new torment_odyns_fury_t( this, "", "odyns_fury_torment", find_spell( 385059 ), true );
+    for ( action_t* action : { active.torment_avatar, active.torment_odyns_fury } )
     {
       action->background  = true;
       action->trigger_gcd = timespan_t::zero();

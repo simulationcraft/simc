@@ -3233,6 +3233,10 @@ struct moonkin_form_t : public druid_form_t
   moonkin_form_t( druid_t* p, std::string_view opt )
     : druid_form_t( "moonkin_form", p, p->talent.moonkin_form, opt, MOONKIN_FORM )
   {}
+
+  moonkin_form_t( druid_t* p, const spell_data_t* s )
+    : druid_form_t( "moonkin_form", p, s, "", MOONKIN_FORM )
+  {}
 };
 
 // Cancelform (revert to caster form)========================================
@@ -3895,13 +3899,27 @@ struct incarnation_cat_t : public berserk_cat_base_t
 // Brutal Slash =============================================================
 struct brutal_slash_t : public cat_attack_t
 {
-  brutal_slash_t( druid_t* p, std::string_view opt ) : cat_attack_t( "brutal_slash", p, p->talent.brutal_slash, opt )
+  double berserk_swipe_cp;
+
+  brutal_slash_t( druid_t* p, std::string_view opt )
+    : cat_attack_t( "brutal_slash", p, p->talent.brutal_slash, opt ),
+      berserk_swipe_cp( p->spec.berserk_cat->effectN( 3 ).base_value() )
   {
     aoe = -1;
     reduced_aoe_targets = data().effectN( 3 ).base_value();
 
     if ( p->talent.merciless_claws.ok() )
       bleed_mul = p->talent.merciless_claws->effectN( 1 ).percent();
+  }
+
+  double composite_energize_amount( const action_state_t* s ) const override
+  {
+    auto ea = cat_attack_t::composite_energize_amount( s );
+
+    if ( p()->buff.b_inc_cat->check() )
+      ea += berserk_swipe_cp;
+
+    return ea;
   }
 
   void execute() override
@@ -4688,11 +4706,11 @@ struct shred_t : public cat_attack_t
 // Swipe (Cat) ====================================================================
 struct swipe_cat_t : public cat_attack_t
 {
-  double berserk_cp;
+  double berserk_swipe_cp;
 
   swipe_cat_t( druid_t* p, std::string_view opt )
     : cat_attack_t( "swipe_cat", p, p->apply_override( p->talent.swipe, p->spec.cat_form_override ), opt ),
-      berserk_cp( p->spec.berserk_cat->effectN( 3 ).base_value() )
+      berserk_swipe_cp( p->spec.berserk_cat->effectN( 3 ).base_value() )
   {
     aoe = -1;
     reduced_aoe_targets = data().effectN( 4 ).base_value();
@@ -4717,7 +4735,7 @@ struct swipe_cat_t : public cat_attack_t
     auto ea = cat_attack_t::composite_energize_amount( s );
 
     if ( p()->buff.b_inc_cat->check() )
-      ea += berserk_cp;
+      ea += berserk_swipe_cp;
 
     return ea;
   }
@@ -10829,12 +10847,18 @@ void druid_t::create_actions()
   active.shift_to_caster = get_secondary_action<cancel_form_t>( "cancel_form_shift", "" );
   active.shift_to_caster->dual = true;
   active.shift_to_caster->background = true;
+
   active.shift_to_bear = get_secondary_action<bear_form_t>( "bear_form_shift", "" );
   active.shift_to_bear->dual = true;
+
   active.shift_to_cat = get_secondary_action<cat_form_t>( "cat_form_shift", "" );
   active.shift_to_cat->dual = true;
-  active.shift_to_moonkin = get_secondary_action<moonkin_form_t>( "moonkin_form_shift", "" );
-  active.shift_to_moonkin->dual = true;
+
+  if ( talent.incarnation_moonkin.ok() )
+  {
+    active.shift_to_moonkin = get_secondary_action<moonkin_form_t>( "moonkin_form_shift", find_spell( 24858 ) );
+    active.shift_to_moonkin->dual = true;
+  }
 
   if ( legendary.lycaras_fleeting_glimpse->ok() )
     active.lycaras_fleeting_glimpse = new lycaras_fleeting_glimpse_t( this );
@@ -11216,20 +11240,22 @@ void druid_t::init()
 
 bool druid_t::validate_fight_style( fight_style_e style ) const
 {
+  if ( SC_BETA == 0 && SC_MAJOR_VERSION == "1000" )
+  {
+    sim->error( "Prepatch {} sims are untested and not supported. Sim at your own risk!",
+                util::specialization_string( specialization() ) );
+  }
+/* uncomment if certain fight styles prove problematic again
   switch ( specialization() )
   {
     case DRUID_BALANCE:
-      if ( style == FIGHT_STYLE_PATCHWERK || style == FIGHT_STYLE_CASTING_PATCHWERK )
-        return true;
-      else
-        return false;
     case DRUID_FERAL:
     case DRUID_GUARDIAN:
     case DRUID_RESTORATION:
     default:
       break;
   }
-
+*/
   return true;
 }
 

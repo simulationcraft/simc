@@ -2062,10 +2062,12 @@ struct rising_sun_kick_t : public monk_melee_attack_t
 // ==========================================================================
 
 // Blackout Kick Proc from Teachings of the Monastery =======================
-struct blackout_kick_totm_proc : public monk_melee_attack_t
+struct blackout_kick_totm_proc_t : public monk_melee_attack_t
 {
-  blackout_kick_totm_proc( monk_t* p ) : monk_melee_attack_t( "blackout_kick_totm_proc", p, p->passives.totm_bok_proc )
+  blackout_kick_totm_proc_t( monk_t* p )
+    : monk_melee_attack_t( "blackout_kick_totm_proc", p, p->passives.totm_bok_proc )
   {
+    sef_ability         = sef_ability_e::SEF_BLACKOUT_KICK_TOTM;
     ww_mastery          = false;
     cooldown->duration  = timespan_t::zero();
     background = dual   = true;
@@ -2197,7 +2199,7 @@ struct charred_passions_bok_t : public monk_spell_t
 // Blackout Kick Baseline ability =======================================
 struct blackout_kick_t : public monk_melee_attack_t
 {
-  blackout_kick_totm_proc* bok_totm_proc;
+  blackout_kick_totm_proc_t* bok_totm_proc;
   charred_passions_bok_t* charred_passions;
 
   blackout_kick_t( monk_t* p, util::string_view options_str )
@@ -2236,7 +2238,7 @@ struct blackout_kick_t : public monk_melee_attack_t
       case MONK_MISTWEAVER: {
         if ( p->talent.mistweaver.teachings_of_the_monastery->ok() )
         {
-          bok_totm_proc = new blackout_kick_totm_proc( p );
+          bok_totm_proc = new blackout_kick_totm_proc_t( p );
 
           add_child( bok_totm_proc );
         }
@@ -2253,7 +2255,7 @@ struct blackout_kick_t : public monk_melee_attack_t
 
         if ( p->talent.windwalker.teachings_of_the_monastery->ok() )
         {
-          bok_totm_proc = new blackout_kick_totm_proc( p );
+          bok_totm_proc = new blackout_kick_totm_proc_t( p );
 
           add_child( bok_totm_proc );
         }
@@ -5037,6 +5039,30 @@ struct call_to_arms_empowered_tiger_lightning_t : public monk_spell_t
   }
 };
 
+struct fury_of_xuen_empowered_tiger_lightning_t : public monk_spell_t
+{
+  fury_of_xuen_empowered_tiger_lightning_t( monk_t& p )
+    : monk_spell_t( "empowered_tiger_lightning_fury_of_xuen", &p, p.passives.empowered_tiger_lightning )
+  {
+    background = true;
+    may_crit   = false;
+    may_miss   = true;
+  }
+
+  // For some reason this is a yellow spell that is not following the normal hit rules
+  double miss_chance( double hit, player_t* t ) const override
+  {
+    double miss = monk_spell_t::miss_chance( hit, t );
+    miss += 0.03 + ( 0.015 * ( t->level() - p()->level() ) );
+    return miss;
+  }
+
+  bool ready() override
+  {
+    return p()->talent.windwalker.empowered_tiger_lightning->ok();
+  }
+};
+
 // ==========================================================================
 // Invoke Niuzao, the Black Ox
 // ==========================================================================
@@ -6992,24 +7018,28 @@ struct invoke_xuen_the_white_tiger_buff_t : public monk_buff_t<buff_t>
 {
   static void invoke_xuen_callback( buff_t* b, int, timespan_t )
   {
-    auto* p                                     = debug_cast<monk_t*>( b->player );
-    double empowered_tiger_lightning_multiplier = p->talent.windwalker.empowered_tiger_lightning->effectN( 2 ).percent();
-
-    for ( auto target : p->sim->target_non_sleeping_list )
+    auto* p = debug_cast<monk_t*>( b->player );
+    if ( p->talent.windwalker.empowered_tiger_lightning->ok() )
     {
-      if ( p->find_target_data( target ) )
+      double empowered_tiger_lightning_multiplier =
+          p->talent.windwalker.empowered_tiger_lightning->effectN( 2 ).percent();
+
+      for ( auto target : p->sim->target_non_sleeping_list )
       {
-        auto td = p->get_target_data( target );
-        if ( td->debuff.empowered_tiger_lightning->up() )
+        if ( p->find_target_data( target ) )
         {
-          double value                                        = td->debuff.empowered_tiger_lightning->check_value();
-          td->debuff.empowered_tiger_lightning->current_value = 0;
-          if ( value > 0 )
+          auto td = p->get_target_data( target );
+          if ( td->debuff.empowered_tiger_lightning->up() )
           {
-            p->active_actions.empowered_tiger_lightning->set_target( target );
-            p->active_actions.empowered_tiger_lightning->base_dd_min = value * empowered_tiger_lightning_multiplier;
-            p->active_actions.empowered_tiger_lightning->base_dd_max = value * empowered_tiger_lightning_multiplier;
-            p->active_actions.empowered_tiger_lightning->execute();
+            double value                                        = td->debuff.empowered_tiger_lightning->check_value();
+            td->debuff.empowered_tiger_lightning->current_value = 0;
+            if ( value > 0 )
+            {
+              p->active_actions.empowered_tiger_lightning->set_target( target );
+              p->active_actions.empowered_tiger_lightning->base_dd_min = value * empowered_tiger_lightning_multiplier;
+              p->active_actions.empowered_tiger_lightning->base_dd_max = value * empowered_tiger_lightning_multiplier;
+              p->active_actions.empowered_tiger_lightning->execute();
+            }
           }
         }
       }
@@ -7021,7 +7051,8 @@ struct invoke_xuen_the_white_tiger_buff_t : public monk_buff_t<buff_t>
     set_cooldown( timespan_t::zero() );
     set_duration( p.talent.windwalker.invoke_xuen_the_white_tiger->duration() );
 
-    set_period( p.talent.windwalker.invoke_xuen_the_white_tiger->effectN( 2 ).period() );
+    set_period(
+        timespan_t::from_seconds( p.talent.windwalker.empowered_tiger_lightning->effectN( 1 ).base_value() ) );
 
     set_tick_callback( invoke_xuen_callback );
   }
@@ -7039,26 +7070,30 @@ struct call_to_arms_xuen_buff_t : public monk_buff_t<buff_t>
 {
   static void call_to_arm_callback( buff_t* b, int, timespan_t )
   {
-    auto* p                                     = debug_cast<monk_t*>( b->player );
-    double empowered_tiger_lightning_multiplier = p->talent.windwalker.empowered_tiger_lightning->effectN( 2 ).percent();
-
-    for ( auto target : p->sim->target_non_sleeping_list )
+    auto* p = debug_cast<monk_t*>( b->player );
+    if ( p->talent.windwalker.empowered_tiger_lightning->ok() )
     {
-      if ( p->find_target_data( target ) )
+      double empowered_tiger_lightning_multiplier =
+          p->talent.windwalker.empowered_tiger_lightning->effectN( 2 ).percent();
+
+      for ( auto target : p->sim->target_non_sleeping_list )
       {
-        auto td = p->get_target_data( target );
-        if ( td->debuff.call_to_arms_empowered_tiger_lightning->up() )
+        if ( p->find_target_data( target ) )
         {
-          double value = td->debuff.call_to_arms_empowered_tiger_lightning->check_value();
-          td->debuff.call_to_arms_empowered_tiger_lightning->current_value = 0;
-          if ( value > 0 )
+          auto td = p->get_target_data( target );
+          if ( td->debuff.call_to_arms_empowered_tiger_lightning->up() )
           {
-            p->active_actions.call_to_arms_empowered_tiger_lightning->set_target( target );
-            p->active_actions.call_to_arms_empowered_tiger_lightning->base_dd_min =
-                value * empowered_tiger_lightning_multiplier;
-            p->active_actions.call_to_arms_empowered_tiger_lightning->base_dd_max =
-                value * empowered_tiger_lightning_multiplier;
-            p->active_actions.call_to_arms_empowered_tiger_lightning->execute();
+            double value = td->debuff.call_to_arms_empowered_tiger_lightning->check_value();
+            td->debuff.call_to_arms_empowered_tiger_lightning->current_value = 0;
+            if ( value > 0 )
+            {
+              p->active_actions.call_to_arms_empowered_tiger_lightning->set_target( target );
+              p->active_actions.call_to_arms_empowered_tiger_lightning->base_dd_min =
+                  value * empowered_tiger_lightning_multiplier;
+              p->active_actions.call_to_arms_empowered_tiger_lightning->base_dd_max =
+                  value * empowered_tiger_lightning_multiplier;
+              p->active_actions.call_to_arms_empowered_tiger_lightning->execute();
+            }
           }
         }
       }
@@ -7070,7 +7105,7 @@ struct call_to_arms_xuen_buff_t : public monk_buff_t<buff_t>
     set_cooldown( timespan_t::zero() );
     set_duration( p.passives.call_to_arms_invoke_xuen->duration() );
 
-    set_period( p.talent.windwalker.invoke_xuen_the_white_tiger->effectN( 2 ).period() );
+    set_period( timespan_t::from_seconds( p.talent.windwalker.empowered_tiger_lightning->effectN( 1 ).base_value() ) );
 
     set_tick_callback( call_to_arm_callback );
   }
@@ -7082,7 +7117,7 @@ struct call_to_arms_xuen_buff_t : public monk_buff_t<buff_t>
 };
 
 // ===============================================================================
-// Fury of Xuen Buff
+// Fury of Xuen Stacking Buff
 // ===============================================================================
 struct fury_of_xuen_stacking_buff_t : public monk_buff_t<buff_t>
 {
@@ -7098,6 +7133,58 @@ struct fury_of_xuen_stacking_buff_t : public monk_buff_t<buff_t>
     p().buff.fury_of_xuen_haste->trigger();
     p().pets.fury_of_xuen_tiger.spawn( p().passives.fury_of_xuen_haste_buff->duration(), 1 );
     buff_t::expire_override( expiration_stacks, remaining_duration );
+  }
+};
+
+// ===============================================================================
+// Fury of Xuen Stacking Buff
+// ===============================================================================
+struct fury_of_xuen_haste_buff_t : public monk_buff_t<buff_t>
+{
+  static void fury_of_xuen_callback( buff_t* b, int, timespan_t )
+  {
+    auto* p = debug_cast<monk_t*>( b->player );
+    if ( p->talent.windwalker.empowered_tiger_lightning->ok() )
+    {
+      double empowered_tiger_lightning_multiplier =
+          p->talent.windwalker.empowered_tiger_lightning->effectN( 2 ).percent();
+
+      for ( auto target : p->sim->target_non_sleeping_list )
+      {
+        if ( p->find_target_data( target ) )
+        {
+          auto td = p->get_target_data( target );
+          if ( td->debuff.fury_of_xuen_empowered_tiger_lightning->up() )
+          {
+            double value = td->debuff.fury_of_xuen_empowered_tiger_lightning->check_value();
+            td->debuff.fury_of_xuen_empowered_tiger_lightning->current_value = 0;
+            if ( value > 0 )
+            {
+              p->active_actions.fury_of_xuen_empowered_tiger_lightning->set_target( target );
+              p->active_actions.fury_of_xuen_empowered_tiger_lightning->base_dd_min =
+                  value * empowered_tiger_lightning_multiplier;
+              p->active_actions.fury_of_xuen_empowered_tiger_lightning->base_dd_max =
+                  value * empowered_tiger_lightning_multiplier;
+              p->active_actions.fury_of_xuen_empowered_tiger_lightning->execute();
+            }
+          }
+        }
+      }
+    }
+  }
+  fury_of_xuen_haste_buff_t( monk_t& p, util::string_view n, const spell_data_t* s ) : monk_buff_t( p, n, s )
+  {
+    set_cooldown( timespan_t::zero() );
+    set_default_value_from_effect( 1 );
+    set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+    add_invalidate( CACHE_ATTACK_HASTE );
+    add_invalidate( CACHE_RPPM_HASTE );
+    add_invalidate( CACHE_HASTE );
+    add_invalidate( CACHE_SPELL_HASTE );
+
+    set_period( p.passives.fury_of_xuen_haste_buff->effectN( 3 ).period() );
+
+    set_tick_callback( fury_of_xuen_callback );
   }
 };
 
@@ -7361,6 +7448,12 @@ monk_td_t::monk_td_t( player_t* target, monk_t* p ) : actor_target_data_t( targe
                                            ->set_refresh_behavior( buff_refresh_behavior::NONE )
                                            ->set_max_stack( 1 )
                                            ->set_default_value( 0 );
+    debuff.fury_of_xuen_empowered_tiger_lightning = make_buff( *this, "empowered_tiger_lightning_fury_of_xuen", spell_data_t::nil() )
+                                                        ->set_quiet( true )
+                                                        ->set_cooldown( timespan_t::zero() )
+                                                        ->set_refresh_behavior( buff_refresh_behavior::NONE )
+                                                        ->set_max_stack( 1 )
+                                                        ->set_default_value( 0 );
 
     debuff.mark_of_the_crane = make_buff( *this, "mark_of_the_crane", p->passives.mark_of_the_crane )
                                    ->set_default_value( p->passives.cyclone_strikes->effectN( 1 ).percent() )
@@ -8501,6 +8594,9 @@ void monk_t::init_spells()
   shared.stormstouts_last_keg =
     _priority( legendary.stormstouts_last_keg, talent.brewmaster.stormstouts_last_keg );
 
+  shared.walk_with_the_ox = 
+    _priority( conduit.walk_with_the_ox, talent.brewmaster.walk_with_the_ox);
+
   shared.way_of_the_fae =
     _priority( conduit.way_of_the_fae, talent.windwalker.way_of_the_fae );
 
@@ -8537,6 +8633,7 @@ void monk_t::init_spells()
   if ( spec_tree == MONK_WINDWALKER )
   {
     active_actions.empowered_tiger_lightning  = new actions::empowered_tiger_lightning_t ( *this );
+    active_actions.fury_of_xuen_empowered_tiger_lightning = new actions::fury_of_xuen_empowered_tiger_lightning_t(*this);
   }
 
   // Conduit
@@ -8813,12 +8910,7 @@ void monk_t::create_buffs ()
 
     buff.fury_of_xuen_stacks = new buffs::fury_of_xuen_stacking_buff_t ( *this, "fury_of_xuen_stacks", passives.fury_of_xuen_stacking_buff );
 
-    buff.fury_of_xuen_haste = make_buff ( this, "fury_of_xuen_haste", passives.fury_of_xuen_haste_buff )
-      ->set_default_value_from_effect( 1 )
-      ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
-      ->add_invalidate( CACHE_ATTACK_HASTE )
-      ->add_invalidate( CACHE_HASTE )
-      ->add_invalidate( CACHE_SPELL_HASTE );
+    buff.fury_of_xuen_haste = new buffs::fury_of_xuen_haste_buff_t ( *this, "fury_of_xuen_haste", passives.fury_of_xuen_haste_buff );
 
     buff.hidden_masters_forbidden_touch = new buffs::hidden_masters_forbidden_touch_t (
       *this, "hidden_masters_forbidden_touch", passives.hidden_masters_forbidden_touch );
@@ -10539,6 +10631,21 @@ void monk_t::trigger_empowered_tiger_lightning( action_state_t* s, bool trigger_
       else
       {
         td->debuff.call_to_arms_empowered_tiger_lightning->trigger( -1, s->result_amount, -1,
+                                                                    buff.invoke_xuen_call_to_arms->remains() );
+      }
+    }
+
+    if ( buff.fury_of_xuen_haste->check() )
+    {
+      auto td = get_target_data( s->target );
+
+      if ( td->debuff.fury_of_xuen_empowered_tiger_lightning->check() )
+      {
+        td->debuff.fury_of_xuen_empowered_tiger_lightning->current_value += s->result_amount;
+      }
+      else
+      {
+        td->debuff.fury_of_xuen_empowered_tiger_lightning->trigger( -1, s->result_amount, -1,
                                                                     buff.invoke_xuen_call_to_arms->remains() );
       }
     }
