@@ -941,6 +941,9 @@ struct judgment_ret_t : public judgment_t
     // This is for Divine Toll's background judgments
     background = true;
 
+    if ( p -> talents.highlords_judgment -> ok() )
+      base_multiplier *= 1.0 + p -> talents.highlords_judgment -> effectN( 1 ).percent();
+
     // according to skeletor this is given the bonus of 326011
     if ( is_divine_toll )
       base_multiplier *= 1.0 + p -> find_spell( 326011 ) -> effectN( 1 ).percent();
