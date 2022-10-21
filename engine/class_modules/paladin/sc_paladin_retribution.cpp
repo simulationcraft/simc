@@ -91,183 +91,180 @@ struct crusade_t : public paladin_spell_t
 
 // Execution Sentence =======================================================
 
+struct es_explosion_t : public holy_power_consumer_t<paladin_melee_attack_t>
+{
+  double accumulated;
+
+  es_explosion_t( paladin_t* p ) :
+    holy_power_consumer_t( "execution_sentence", p, p -> find_spell( 387113 ) ),
+    accumulated( 0.0 )
+  {
+    dual = background = true;
+    may_crit = false;
+
+    if ( p -> talents.executioners_wrath -> ok() )
+      aoe = -1;
+  }
+
+  double calculate_direct_amount( action_state_t* state ) const
+  {
+    double amount = sim->averaged_range( base_da_min( state ), base_da_max( state ) );
+
+    if ( round_base_dmg )
+      amount = floor( amount + 0.5 );
+
+    if ( amount == 0 && weapon_multiplier == 0 && attack_direct_power_coefficient( state ) == 0 &&
+        spell_direct_power_coefficient( state ) == 0 )
+      return 0;
+
+    double base_direct_amount = amount;
+    double weapon_amount      = 0;
+
+    if ( weapon_multiplier > 0 )
+    {
+      // x% weapon damage + Y
+      // e.g. Obliterate, Shred, Backstab
+      amount += calculate_weapon_damage( state->attack_power );
+      amount *= weapon_multiplier;
+      weapon_amount = amount;
+    }
+    amount += spell_direct_power_coefficient( state ) * ( state->composite_spell_power() );
+    amount += attack_direct_power_coefficient( state ) * ( state->composite_attack_power() );
+
+    // OH penalty, this applies to any OH attack even if is not based on weapon damage
+    double weapon_slot_modifier = 1.0;
+    if ( weapon && weapon->slot == SLOT_OFF_HAND )
+    {
+      weapon_slot_modifier = 0.5;
+      amount *= weapon_slot_modifier;
+      weapon_amount *= weapon_slot_modifier;
+    }
+
+    // Bonus direct damage historically appears to bypass the OH penalty for yellow attacks in-game
+    // White damage bonuses (such as Jeweled Signet of Melandrus and older weapon enchants) do not
+    if ( !special )
+      amount += bonus_da( state ) * weapon_slot_modifier;
+    else
+      amount += bonus_da( state );
+
+    amount *= state->composite_da_multiplier();
+
+    // this is the only difference from normal direct_amount!
+    amount += accumulated;
+
+    // damage variation in WoD is based on the delta field in the spell data, applied to entire amount
+    double delta_mod = amount_delta_modifier( state );
+    if ( !sim->average_range && delta_mod > 0 )
+      amount *= 1 + delta_mod / 2 * sim->averaged_range( -1.0, 1.0 );
+
+    // AoE with decay per target
+    if ( state->chain_target > 0 && chain_multiplier != 1.0 )
+      amount *= pow( chain_multiplier, state->chain_target );
+
+    if ( state->chain_target > 0 && chain_bonus_damage != 0.0 )
+      amount *= std::max( 1.0 + chain_bonus_damage * state->chain_target, 0.0 );
+
+    // AoE with static reduced damage per target
+    if ( state->chain_target > 0 )
+      amount *= base_aoe_multiplier;
+
+    // Spell splits damage across all targets equally
+    if ( state->action->split_aoe_damage )
+      amount /= state->n_targets;
+
+    // New Shadowlands AoE damage reduction based on total target count
+    // The square root factor reaches its minimum when the number of targets is equal
+    // to sim->max_aoe_enemies (usually 20), after that it remains constant.
+    if ( state->chain_target >= state->action->full_amount_targets &&
+        state->action->reduced_aoe_targets > 0.0 &&
+        as<double>( state->n_targets ) > state->action->reduced_aoe_targets )
+    {
+      amount *= std::sqrt( state->action->reduced_aoe_targets / std::min<int>( sim->max_aoe_enemies, state->n_targets ) );
+    }
+
+    amount *= composite_aoe_multiplier( state );
+
+    // Spell goes over the maximum number of AOE targets - ignore for enemies
+    // Note that this split damage factor DOES affect spells that are supposed
+    // to do full damage to the main target.
+    if ( !state->action->split_aoe_damage &&
+        state->n_targets > static_cast<size_t>( sim->max_aoe_enemies ) &&
+        !state->action->player->is_enemy() )
+    {
+      amount *= sim->max_aoe_enemies / static_cast<double>( state->n_targets );
+    }
+
+    // Record initial amount to state
+    state->result_raw = amount;
+
+    if ( state->result == RESULT_GLANCE )
+    {
+      double delta_skill = ( state->target->level() - player->level() ) * 5.0;
+
+      if ( delta_skill < 0.0 )
+        delta_skill = 0.0;
+
+      double max_glance = 1.3 - 0.03 * delta_skill;
+
+      if ( max_glance > 0.99 )
+        max_glance = 0.99;
+      else if ( max_glance < 0.2 )
+        max_glance = 0.20;
+
+      double min_glance = 1.4 - 0.05 * delta_skill;
+
+      if ( min_glance > 0.91 )
+        min_glance = 0.91;
+      else if ( min_glance < 0.01 )
+        min_glance = 0.01;
+
+      if ( min_glance > max_glance )
+      {
+        double temp = min_glance;
+        min_glance  = max_glance;
+        max_glance  = temp;
+      }
+
+      amount *= sim->averaged_range( min_glance, max_glance );  // 0.75 against +3 targets.
+    }
+
+    if ( !sim->average_range )
+      amount = floor( amount + rng().real() );
+
+    if ( amount < 0 )
+    {
+      amount = 0;
+    }
+
+    if ( sim->debug )
+    {
+      sim->print_debug(
+          "{} direct amount for {}: amount={} initial_amount={} weapon={} base={} s_mod={} s_power={} "
+          "a_mod={} a_power={} mult={} w_mult={} w_slot_mod={} bonus_da={}",
+          *player, *this, amount, state->result_raw, weapon_amount, base_direct_amount,
+          spell_direct_power_coefficient( state ), state->composite_spell_power(),
+          attack_direct_power_coefficient( state ), state->composite_attack_power(), state->composite_da_multiplier(),
+          weapon_multiplier, weapon_slot_modifier, bonus_da( state ) );
+    }
+
+    // Record total amount to state
+    if ( result_is_miss( state->result ) )
+    {
+      state->result_total = 0.0;
+      return 0.0;
+    }
+    else
+    {
+      state->result_total = amount;
+      return amount;
+    }
+  }
+};
+
 struct execution_sentence_t : public holy_power_consumer_t<paladin_melee_attack_t>
 {
-  struct es_explosion_t : public holy_power_consumer_t<paladin_melee_attack_t>
-  {
-    double accumulated;
-
-    es_explosion_t( paladin_t* p ) :
-      holy_power_consumer_t( "execution_sentence", p, p -> talents.executioners_wrath -> ok() ? p -> find_spell( 387200 ) : p -> find_spell( 387113 ) ),
-      accumulated( 0.0 )
-    {
-      dual = background = true;
-      may_crit = false;
-
-      if ( p -> talents.executioners_wrath -> ok() )
-        aoe = -1;
-    }
-
-    double calculate_direct_amount( action_state_t* state ) const
-    {
-      double amount = sim->averaged_range( base_da_min( state ), base_da_max( state ) );
-
-      if ( round_base_dmg )
-        amount = floor( amount + 0.5 );
-
-      if ( amount == 0 && weapon_multiplier == 0 && attack_direct_power_coefficient( state ) == 0 &&
-          spell_direct_power_coefficient( state ) == 0 )
-        return 0;
-
-      double base_direct_amount = amount;
-      double weapon_amount      = 0;
-
-      if ( weapon_multiplier > 0 )
-      {
-        // x% weapon damage + Y
-        // e.g. Obliterate, Shred, Backstab
-        amount += calculate_weapon_damage( state->attack_power );
-        amount *= weapon_multiplier;
-        weapon_amount = amount;
-      }
-      amount += spell_direct_power_coefficient( state ) * ( state->composite_spell_power() );
-      amount += attack_direct_power_coefficient( state ) * ( state->composite_attack_power() );
-
-      // OH penalty, this applies to any OH attack even if is not based on weapon damage
-      double weapon_slot_modifier = 1.0;
-      if ( weapon && weapon->slot == SLOT_OFF_HAND )
-      {
-        weapon_slot_modifier = 0.5;
-        amount *= weapon_slot_modifier;
-        weapon_amount *= weapon_slot_modifier;
-      }
-
-      // Bonus direct damage historically appears to bypass the OH penalty for yellow attacks in-game
-      // White damage bonuses (such as Jeweled Signet of Melandrus and older weapon enchants) do not
-      if ( !special )
-        amount += bonus_da( state ) * weapon_slot_modifier;
-      else
-        amount += bonus_da( state );
-
-      amount *= state->composite_da_multiplier();
-
-      // this is the only difference from normal direct_amount!
-      amount += accumulated;
-
-      // damage variation in WoD is based on the delta field in the spell data, applied to entire amount
-      double delta_mod = amount_delta_modifier( state );
-      if ( !sim->average_range && delta_mod > 0 )
-        amount *= 1 + delta_mod / 2 * sim->averaged_range( -1.0, 1.0 );
-
-      // AoE with decay per target
-      if ( state->chain_target > 0 && chain_multiplier != 1.0 )
-        amount *= pow( chain_multiplier, state->chain_target );
-
-      if ( state->chain_target > 0 && chain_bonus_damage != 0.0 )
-        amount *= std::max( 1.0 + chain_bonus_damage * state->chain_target, 0.0 );
-
-      // AoE with static reduced damage per target
-      if ( state->chain_target > 0 )
-        amount *= base_aoe_multiplier;
-
-      // Spell splits damage across all targets equally
-      if ( state->action->split_aoe_damage )
-        amount /= state->n_targets;
-
-      // New Shadowlands AoE damage reduction based on total target count
-      // The square root factor reaches its minimum when the number of targets is equal
-      // to sim->max_aoe_enemies (usually 20), after that it remains constant.
-      if ( state->chain_target >= state->action->full_amount_targets &&
-          state->action->reduced_aoe_targets > 0.0 &&
-          as<double>( state->n_targets ) > state->action->reduced_aoe_targets )
-      {
-        amount *= std::sqrt( state->action->reduced_aoe_targets / std::min<int>( sim->max_aoe_enemies, state->n_targets ) );
-      }
-
-      amount *= composite_aoe_multiplier( state );
-
-      // Spell goes over the maximum number of AOE targets - ignore for enemies
-      // Note that this split damage factor DOES affect spells that are supposed
-      // to do full damage to the main target.
-      if ( !state->action->split_aoe_damage &&
-          state->n_targets > static_cast<size_t>( sim->max_aoe_enemies ) &&
-          !state->action->player->is_enemy() )
-      {
-        amount *= sim->max_aoe_enemies / static_cast<double>( state->n_targets );
-      }
-
-      // Record initial amount to state
-      state->result_raw = amount;
-
-      if ( state->result == RESULT_GLANCE )
-      {
-        double delta_skill = ( state->target->level() - player->level() ) * 5.0;
-
-        if ( delta_skill < 0.0 )
-          delta_skill = 0.0;
-
-        double max_glance = 1.3 - 0.03 * delta_skill;
-
-        if ( max_glance > 0.99 )
-          max_glance = 0.99;
-        else if ( max_glance < 0.2 )
-          max_glance = 0.20;
-
-        double min_glance = 1.4 - 0.05 * delta_skill;
-
-        if ( min_glance > 0.91 )
-          min_glance = 0.91;
-        else if ( min_glance < 0.01 )
-          min_glance = 0.01;
-
-        if ( min_glance > max_glance )
-        {
-          double temp = min_glance;
-          min_glance  = max_glance;
-          max_glance  = temp;
-        }
-
-        amount *= sim->averaged_range( min_glance, max_glance );  // 0.75 against +3 targets.
-      }
-
-      if ( !sim->average_range )
-        amount = floor( amount + rng().real() );
-
-      if ( amount < 0 )
-      {
-        amount = 0;
-      }
-
-      if ( sim->debug )
-      {
-        sim->print_debug(
-            "{} direct amount for {}: amount={} initial_amount={} weapon={} base={} s_mod={} s_power={} "
-            "a_mod={} a_power={} mult={} w_mult={} w_slot_mod={} bonus_da={}",
-            *player, *this, amount, state->result_raw, weapon_amount, base_direct_amount,
-            spell_direct_power_coefficient( state ), state->composite_spell_power(),
-            attack_direct_power_coefficient( state ), state->composite_attack_power(), state->composite_da_multiplier(),
-            weapon_multiplier, weapon_slot_modifier, bonus_da( state ) );
-      }
-
-      // Record total amount to state
-      if ( result_is_miss( state->result ) )
-      {
-        state->result_total = 0.0;
-        return 0.0;
-      }
-      else
-      {
-        state->result_total = amount;
-        return amount;
-      }
-    }
-  };
-
-  es_explosion_t* explosion;
-
   execution_sentence_t( paladin_t* p, util::string_view options_str ) :
-    holy_power_consumer_t( "execution_sentence", p, p -> talents.execution_sentence ),
-    explosion( nullptr )
+    holy_power_consumer_t( "execution_sentence", p, p -> talents.execution_sentence )
   {
     parse_options( options_str );
 
@@ -278,8 +275,6 @@ struct execution_sentence_t : public holy_power_consumer_t<paladin_melee_attack_
     // Spelldata doesn't seem to have this
     hasted_gcd = true;
 
-    tick_may_crit = may_crit = false;
-
     // ... this appears to be true for the base damage only,
     // and is not automatically obtained from spell data.
     // TODO: check if judgment double-dips when it's there on hit
@@ -289,12 +284,6 @@ struct execution_sentence_t : public holy_power_consumer_t<paladin_melee_attack_
     affected_by.judgment = true;
     affected_by.final_reckoning = true;
     affected_by.reckoning = true;
-
-    explosion = new es_explosion_t( p );
-
-    // for some reason the spelldata doesn't think it's a dot anymore
-    base_tick_time = data().duration();
-    dot_duration = data().duration();
 
     // unclear why this is needed...
     cooldown -> duration = data().cooldown();
@@ -316,20 +305,6 @@ struct execution_sentence_t : public holy_power_consumer_t<paladin_melee_attack_
     {
       td( s -> target ) -> debuff.execution_sentence -> trigger();
     }
-  }
-
-  void last_tick( dot_t* d ) override
-  {
-    double ta = 0.0;
-    double accumulated = td( d->target ) -> debuff.execution_sentence -> get_accumulated_damage();
-    sim -> print_debug( "{}'s {} has accumulated {} total additional damage.", player -> name(), name(), accumulated );
-    ta += accumulated * data().effectN( 2 ).percent();
-
-    explosion->set_target( d->target );
-    explosion->accumulated = ta;
-    explosion->schedule_execute();
-
-    holy_power_consumer_t::last_tick( d );
   }
 };
 
@@ -1282,6 +1257,19 @@ struct exorcism_t : public paladin_spell_t
   }
 };
 
+void paladin_t::trigger_es_explosion( player_t* target )
+{
+  double ta = 0.0;
+  double accumulated = get_target_data( target ) -> debuff.execution_sentence -> get_accumulated_damage();
+  sim -> print_debug( "{}'s execution_sentence has accumulated {} total additional damage.", target -> name(), accumulated );
+  ta += accumulated;
+
+  es_explosion_t* explosion = static_cast<es_explosion_t*>( active.es_explosion );
+  explosion->set_target( target );
+  explosion->accumulated = ta;
+  explosion->schedule_execute();
+}
+
 // Initialization
 
 void paladin_t::create_ret_actions()
@@ -1312,6 +1300,15 @@ void paladin_t::create_ret_actions()
   else
   {
     active.empyrean_legacy = nullptr;
+  }
+
+  if ( talents.execution_sentence->ok() )
+  {
+    active.es_explosion = new es_explosion_t( this );
+  }
+  else
+  {
+    active.es_explosion = nullptr;
   }
 
   if ( specialization() == PALADIN_RETRIBUTION )

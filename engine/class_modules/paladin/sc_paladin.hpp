@@ -90,6 +90,7 @@ public:
     action_t* background_cons;
     action_t* incandescence;
     action_t* empyrean_legacy;
+    action_t* es_explosion;
 
     // Conduit stuff
     action_t* virtuous_command_conduit;
@@ -662,6 +663,7 @@ public:
   void    trigger_inner_light( action_state_t* s );
   void    trigger_t28_4p_prot( action_state_t* s );
   void    trigger_forbearance( player_t* target );
+  void    trigger_es_explosion( player_t* target );
   int     get_local_enemies( double distance ) const;
   bool    standing_in_consecration() const;
   bool    standing_in_hallow() const;
@@ -781,6 +783,9 @@ struct execution_sentence_debuff_t : public buff_t
 
     accumulated_damage = 0.0;
     extended_count = 0;
+
+    paladin_t* paladin = debug_cast<paladin_t*>( source );
+    paladin -> trigger_es_explosion( player );
   }
 
   void accumulate_damage( const action_state_t* s )
@@ -793,7 +798,7 @@ struct execution_sentence_debuff_t : public buff_t
 
   double get_accumulated_damage() const
   {
-    return accumulated_damage;
+    return accumulated_damage * data().effectN( 2 ).percent();
   }
 
   void do_will_extension()
