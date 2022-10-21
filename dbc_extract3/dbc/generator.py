@@ -1528,6 +1528,7 @@ class SpellDataGenerator(DataGenerator):
             ( 385794, 0 ), ( 385802, 0 ), ( 385806, 0 ), # Vicious Venoms Ambush/Mutilate variant spells
             ( 360826, 0 ), ( 360830, 0 ), # Deathmark Cloned Bleeds
             ( 394324, 0 ), ( 394325, 0 ), ( 394326, 0 ), ( 394327, 0 ), ( 394328, 0 ), # Deathmark Cloned Poisons
+            ( 385754, 0 ), ( 385747, 0 ), # Indiscriminate Carnage bleed jump target spells
             ( 394031, 0 ),          # Replicating Shadows fake Rupture Shadow tick spell
             ( 394757, 0 ),          # Flagellation talent damage spell
             ( 394758, 0 ),          # Flagellation talent persist buff
