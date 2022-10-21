@@ -4692,11 +4692,11 @@ struct shred_t : public cat_attack_t
 // Swipe (Cat) ====================================================================
 struct swipe_cat_t : public cat_attack_t
 {
-  double berserk_cp;
+  double berserk_swipe_cp;
 
   swipe_cat_t( druid_t* p, std::string_view opt )
     : cat_attack_t( "swipe_cat", p, p->apply_override( p->talent.swipe, p->spec.cat_form_override ), opt ),
-      berserk_cp( p->spec.berserk_cat->effectN( 3 ).base_value() )
+      berserk_swipe_cp( p->spec.berserk_cat->effectN( 3 ).base_value() )
   {
     aoe = -1;
     reduced_aoe_targets = data().effectN( 4 ).base_value();
@@ -4721,7 +4721,7 @@ struct swipe_cat_t : public cat_attack_t
     auto ea = cat_attack_t::composite_energize_amount( s );
 
     if ( p()->buff.b_inc_cat->check() )
-      ea += berserk_cp;
+      ea += berserk_swipe_cp;
 
     return ea;
   }
