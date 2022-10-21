@@ -765,9 +765,17 @@ struct execution_sentence_debuff_t : public buff_t
   execution_sentence_debuff_t( paladin_td_t* td )
     : buff_t( *td, "execution_sentence", debug_cast<paladin_t*>( td->source )->talents.execution_sentence ),
       accumulated_damage( 0.0 ),
+      accum_percent( 0.0 ),
       extended_count( 0 )
   {
     set_cooldown( 0_ms );  // handled by the ability
+    accum_percent = data().effectN( 2 ).percent();
+
+    paladin_t* p = debug_cast<paladin_t*>( td->source );
+
+    // unclear if this is intended
+    if ( p->talents.executioners_wrath->ok() )
+      accum_percent = p->talents.executioners_wrath->effectN( 2 ).percent();
   }
 
   void reset() override
@@ -798,7 +806,7 @@ struct execution_sentence_debuff_t : public buff_t
 
   double get_accumulated_damage() const
   {
-    return accumulated_damage * data().effectN( 2 ).percent();
+    return accumulated_damage * accum_percent;
   }
 
   void do_will_extension()
@@ -812,6 +820,7 @@ struct execution_sentence_debuff_t : public buff_t
 
 private:
   double accumulated_damage;
+  double accum_percent;
   int extended_count;
 };
 
