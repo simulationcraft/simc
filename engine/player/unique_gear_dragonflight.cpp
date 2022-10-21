@@ -821,6 +821,48 @@ void fang_adornments( special_effect_t& effect )
 }
 
 // Armor
+void breath_of_neltharion( special_effect_t& effect )
+{
+  struct breath_of_neltharion_t : public generic_proc_t
+  {
+    breath_of_neltharion_t( const special_effect_t& e ) : generic_proc_t( e, "breath_of_neltharion", e.driver() )
+    {
+      channeled = true;
+      harmful = false;
+
+      tick_action = create_proc_action<generic_aoe_proc_t>(
+          "breath_of_neltharion_tick", e, "breath_of_neltharion_tick", e.trigger() );
+      tick_action->stats = stats;
+      tick_action->dual = true;
+    }
+
+    bool usable_moving() const override
+    {
+      return true;
+    }
+
+    void execute() override
+    {
+      generic_proc_t::execute();
+
+      event_t::cancel( player->readying );
+      player->reset_auto_attacks( composite_dot_duration( execute_state ) );
+    }
+
+    void last_tick( dot_t* d ) override
+    {
+      bool was_channeling = player->channeling == this;
+
+      generic_proc_t::last_tick( d );
+
+      if ( was_channeling && !player->readying )
+        player->schedule_ready( rng().gauss( sim->channel_lag, sim->channel_lag_stddev ) );
+    }
+  };
+
+  effect.execute_action = create_proc_action<breath_of_neltharion_t>( "breath_of_neltharion", effect );
+}
+
 void coated_in_slime( special_effect_t& effect )
 {
   auto mul = toxified_mul( effect.player );
@@ -996,16 +1038,16 @@ void register_special_effects()
   register_special_effect( 370816, consumables::shocking_disclosure );
 
   // Enchants
-  register_special_effect( { 390164, 390167, 390168 }, enchants::writ_enchant() );   // burning writ
-  register_special_effect( { 390172, 390183, 390190 }, enchants::writ_enchant() );   // earthen writ
-  register_special_effect( { 390243, 390244, 390246 }, enchants::writ_enchant() );   // frozen writ
-  register_special_effect( { 390248, 390249, 390251 }, enchants::writ_enchant() );   // wafting writ
+  register_special_effect( { 390164, 390167, 390168 }, enchants::writ_enchant() );  // burning writ
+  register_special_effect( { 390172, 390183, 390190 }, enchants::writ_enchant() );  // earthen writ
+  register_special_effect( { 390243, 390244, 390246 }, enchants::writ_enchant() );  // frozen writ
+  register_special_effect( { 390248, 390249, 390251 }, enchants::writ_enchant() );  // wafting writ
   register_special_effect( { 390215, 390217, 390219 },
-                           enchants::writ_enchant( STAT_STR_AGI_INT, false ) );      // sophic writ
+                           enchants::writ_enchant( STAT_STR_AGI_INT, false ) );     // sophic writ
   register_special_effect( { 390346, 390347, 390348 },
-                           enchants::writ_enchant( STAT_BONUS_ARMOR ) );             // earthen devotion
+                           enchants::writ_enchant( STAT_BONUS_ARMOR ) );            // earthen devotion
   register_special_effect( { 390222, 390227, 390229 },
-                           enchants::writ_enchant( STAT_STR_AGI_INT, false ) );      // sophic devotion
+                           enchants::writ_enchant( STAT_STR_AGI_INT, false ) );     // sophic devotion
   register_special_effect( { 390351, 390352, 390353 }, enchants::frozen_devotion );
   register_special_effect( { 390358, 390359, 390360 }, enchants::wafting_devotion );
 
@@ -1025,6 +1067,7 @@ void register_special_effects()
   register_special_effect( 377708, items::fang_adornments );
 
   // Armor
+  register_special_effect( 385520, items::breath_of_neltharion );  // breath of neltharion tinker
   register_special_effect( 378423, items::coated_in_slime );
   register_special_effect( 375323, items::elemental_lariat );
   register_special_effect( 381424, items::flaring_cowl );
@@ -1041,7 +1084,7 @@ void register_special_effects()
   register_special_effect( 383337, DISABLED_EFFECT );  // jetscale sigil (no longer shuffles on Ace)
   register_special_effect( 383339, DISABLED_EFFECT );  // sagescale sigil (shuffle on jump) NYI
   register_special_effect( 378758, DISABLED_EFFECT );  // toxified embellishment
-  register_special_effect( 371700, DISABLED_EFFECT );  // potion absorption inhibitor
+  register_special_effect( 371700, DISABLED_EFFECT );  // potion absorption inhibitor embellishment
 }
 
 void register_target_data_initializers( sim_t& sim )
