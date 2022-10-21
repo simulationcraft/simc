@@ -351,6 +351,11 @@ void chilled_clarity( special_effect_t& effect )
   effect.custom_buff = effect.player->buffs.chilled_clarity = buff;
 }
 
+void elemental_power( special_effect_t& effect )
+{
+  effect.duration_ = effect.duration() * inhibitor_mul( effect.player );
+}
+
 void shocking_disclosure( special_effect_t& effect )
 {
   auto buff = buff_t::find( effect.player, "shocking_disclosure" );
@@ -979,6 +984,7 @@ void register_special_effects()
   // Potion
   register_special_effect( 372046, consumables::bottled_putrescence );
   register_special_effect( { 371149, 371151, 371152 }, consumables::chilled_clarity );
+  register_special_effect( { 371024, 371028 }, consumables::elemental_power );  // normal & ultimate
   register_special_effect( 370816, consumables::shocking_disclosure );
 
   // Enchants
@@ -1025,6 +1031,7 @@ void register_special_effects()
   register_special_effect( 383337, DISABLED_EFFECT );  // jetscale sigil (no longer shuffles on Ace)
   register_special_effect( 383339, DISABLED_EFFECT );  // sagescale sigil (shuffle on jump) NYI
   register_special_effect( 378758, DISABLED_EFFECT );  // toxified embellishment
+  register_special_effect( 371700, DISABLED_EFFECT );  // potion absorption inhibitor
 }
 
 void register_target_data_initializers( sim_t& sim )
