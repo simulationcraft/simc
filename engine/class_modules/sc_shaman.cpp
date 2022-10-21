@@ -6228,10 +6228,7 @@ struct elemental_blast_t : public shaman_spell_t
       p()->buff.t29_2pc_ele->expire();
     }
 
-    if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T29, B4 ) )
-    {
-      p()->buff.t29_4pc_ele->trigger();
-    }
+    p()->buff.t29_4pc_ele->trigger();
   }
 
   void impact( action_state_t* state ) override
@@ -6602,10 +6599,7 @@ struct earthquake_t : public earthquake_base_t
       p()->buff.t29_2pc_ele->expire();
     }
 
-    if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T29, B4 ) )
-    {
-      p()->buff.t29_4pc_ele->trigger();
-    }
+    p()->buff.t29_4pc_ele->trigger();
 
     if ( p()->talent.windspeakers_lava_resurgence.ok() )
     {
@@ -6851,10 +6845,7 @@ struct earth_shock_t : public shaman_spell_t
       p()->buff.t29_2pc_ele->expire();
     }
 
-    if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T29, B4 ) )
-    {
-      p()->buff.t29_4pc_ele->trigger();
-    }
+    p()->buff.t29_4pc_ele->trigger();
   }
 
   void impact( action_state_t* state ) override
@@ -10614,9 +10605,10 @@ void shaman_t::create_buffs()
   buff.t29_2pc_ele = make_buff( this, "seismic_accumulation", spell.t29_2pc_ele )
                       ->set_default_value_from_effect(1)
                       ->set_trigger_spell( sets->set( SHAMAN_ELEMENTAL, T29, B2 ) );
-  buff.t29_4pc_ele = make_buff<buff_t>( this, "t29_4pc_ele", spell.t29_4pc_ele )
+  buff.t29_4pc_ele = make_buff<buff_t>( this, "elemental_mastery", spell.t29_4pc_ele )
                       ->set_default_value_from_effect(1)
-                      ->set_pct_buff_type(STAT_PCT_BUFF_MASTERY);
+                      ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
+                      ->set_trigger_spell( sets->set( SHAMAN_ELEMENTAL, T29, B4 ) );
 
   if ( legendary.ancestral_reminder->ok() )
   {
