@@ -909,28 +909,6 @@ void paladin_t::t29_4p_prot()
   if ( buffs.ally_of_the_light->up() )
     buffs.ally_of_the_light->extend_duration(this, tier_sets.ally_of_the_light_4pc->effectN(1).time_value() );
 }
-bool paladin_t::standing_in_consecration() const
-{
-  if ( ! sim -> distance_targeting_enabled )
-  {
-    return active_consecration != nullptr;
-  }
-
-  // new
-  if ( active_consecration != nullptr )
-  {
-    // calculate current distance to each consecration
-    ground_aoe_event_t* cons_to_test = active_consecration;
-
-    double distance = get_position_distance( cons_to_test -> params -> x(), cons_to_test -> params -> y() );
-
-    // exit with true if we're in range of any one Cons center
-    if ( distance <= find_spell( 81297 ) -> effectN( 1 ).radius() )
-      return true;
-  }
-  // if we're not in range of any of them
-  return false;
-}
 
 // Initialization
 void paladin_t::create_prot_actions()

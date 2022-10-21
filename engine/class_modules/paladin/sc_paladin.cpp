@@ -3583,6 +3583,28 @@ void paladin_t::combat_begin()
   }
 }
 
+bool paladin_t::standing_in_consecration() const
+{
+  if ( !sim->distance_targeting_enabled )
+  {
+    return !all_active_consecrations.empty();
+  }
+
+  for ( ground_aoe_event_t* active_cons : all_active_consecrations )
+  {
+    double distance = get_position_distance( active_cons->params->x(), active_cons->params->y() );
+
+    // exit with true if we're in range of any one Cons center
+    if ( distance <= find_spell( 81297 )->effectN( 1 ).radius() )
+      return true;
+  }
+
+  // if we're not in range of any of them
+  return false;
+}
+
+
+
 // paladin_t::standing_in_hallow ============================================
 
 bool paladin_t::standing_in_hallow() const
@@ -3636,7 +3658,7 @@ std::unique_ptr<expr_t> paladin_t::create_consecration_expression( util::string_
 
   if ( util::str_compare_ci( expr[ 1U ], "ticking" ) || util::str_compare_ci( expr[ 1U ], "up" ) )
   {
-    return make_fn_expr( "consecration_ticking", [ this ]() { return active_consecration == nullptr ? 0 : 1; } );
+    return make_fn_expr( "consecration_ticking", [ this ]() { return all_active_consecrations.empty() ? 0 : 1; } );
   }
   else if ( util::str_compare_ci( expr[ 1U ], "remains" ) )
   {
