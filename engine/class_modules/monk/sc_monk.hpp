@@ -116,6 +116,7 @@ public:
     // Windwalker
     propagate_const<buff_t*> flying_serpent_kick;
     propagate_const<buff_t*> empowered_tiger_lightning;
+    propagate_const<buff_t*> fury_of_xuen_empowered_tiger_lightning;
     propagate_const<buff_t*> mark_of_the_crane;
     propagate_const<buff_t*> storm_earth_and_fire;
     propagate_const<buff_t*> touch_of_karma;
@@ -185,6 +186,7 @@ public:
 
     // Windwalker
     propagate_const<action_t*> empowered_tiger_lightning;
+    propagate_const<action_t*> fury_of_xuen_empowered_tiger_lightning;
 
     // Conduit
     propagate_const<heal_t*> evasive_stride;
