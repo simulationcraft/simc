@@ -70,11 +70,11 @@ void phial_of_charged_isolation( special_effect_t& effect )
 
     auto stat_buff =
         make_buff<stat_buff_t>( effect.player, "phial_of_charged_isolation_stats", effect.player->find_spell( 371387 ) )
-            ->add_stat( STAT_STR_AGI_INT, amount );
+            ->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ), amount );
 
     auto linger_buff =
         make_buff<stat_buff_t>( effect.player, "phial_of_charged_isolation_linger", effect.player->find_spell( 384713 ) )
-            ->add_stat( STAT_STR_AGI_INT, amount * linger_mul );
+            ->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ), amount * linger_mul );
 
     buff = make_buff( effect.player, effect.name(), effect.driver() )
       ->set_stack_change_callback( [ stat_buff ]( buff_t*, int, int new_ ) {
@@ -253,7 +253,9 @@ void phial_of_static_empowerment( special_effect_t& effect )
   if ( !buff )
   {
     auto primary = make_buff<stat_buff_t>( effect.player, "static_empowerment", effect.player->find_spell( 370772 ) );
-    primary->add_stat( STAT_STR_AGI_INT, effect.driver()->effectN( 1 ).average( effect.item ) / primary->max_stack() );
+    primary
+        ->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ),
+                    effect.driver()->effectN( 1 ).average( effect.item ) / primary->max_stack() );
 
     buff = make_buff( effect.player, effect.name(), effect.driver() )
       ->set_stack_change_callback( [ primary ]( buff_t*, int, int new_ ) {
