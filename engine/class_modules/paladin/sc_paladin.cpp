@@ -61,6 +61,7 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
   cooldowns.ashen_hallow = get_cooldown( "ashen_hallow" );
 
   cooldowns.t28_4p_prot_icd = get_cooldown( "t28_4p_prot_icd" );
+  cooldowns.ret_aura_icd = get_cooldown( "ret_aura_icd" );
 
   beacon_target         = nullptr;
   resource_regeneration = regen_type::DYNAMIC;
@@ -689,7 +690,25 @@ struct devotion_aura_t : public paladin_aura_base_t
     : paladin_aura_base_t( "devotion_aura", p, p->find_class_spell( "Devotion Aura" ) )
   {
     parse_options( options_str );
+
+    if ( !p->talents.auras_of_the_resolute->ok() )
+      background = true;
+
     aura_buff = p->buffs.devotion_aura;
+  }
+};
+
+struct retribution_aura_t : public paladin_aura_base_t
+{
+  retribution_aura_t( paladin_t* p, util::string_view options_str )
+    : paladin_aura_base_t( "retribution_aura", p, p->find_spell( 183435 ) )
+  {
+    parse_options( options_str );
+
+    if ( !p->talents.auras_of_swift_vengeance->ok() )
+      background = true;
+
+    aura_buff = p->buffs.retribution_aura;
   }
 };
 
@@ -2131,6 +2150,8 @@ void paladin_t::create_actions()
     active.background_cons = new consecration_t( this );
   }
 
+  cooldowns.ret_aura_icd->duration = timespan_t::from_seconds( 30 );
+
   player_t::create_actions();
 }
 
@@ -2186,6 +2207,8 @@ action_t* paladin_t::create_action( util::string_view name, util::string_view op
     return new hammer_of_wrath_t( this, options_str );
   if ( name == "devotion_aura" )
     return new devotion_aura_t( this, options_str );
+  if ( name == "retribution_aura" )
+    return new retribution_aura_t( this, options_str );
 
   if ( name == "vanquishers_hammer" )
     return new vanquishers_hammer_t( this, options_str );
@@ -2448,6 +2471,19 @@ void paladin_t::create_buffs()
       make_buff( this, "holy_avenger", talents.holy_avenger )->set_cooldown( 0_ms );  // handled by the ability
   buffs.devotion_aura = make_buff( this, "devotion_aura", find_class_spell( "Devotion Aura" ) )
                             ->set_default_value( find_class_spell( "Devotion Aura" )->effectN( 1 ).percent() );
+  buffs.retribution_aura = make_buff( this, "retribution_aura", find_spell( 183435 ) )
+                            ->set_period( 1_s )
+                            ->set_tick_callback( [this]( buff_t* b, int, timespan_t ) {
+                              if ( b->player != this ) return;
+                              if ( cooldowns.ret_aura_icd->up() && rng().roll( options.proc_chance_ret_aura_sera ) )
+                              {
+                                buffs.seraphim->extend_duration_or_trigger(
+                                  timespan_t::from_seconds( b->data().effectN( 4 ).base_value() ),
+                                  this
+                                );
+                                cooldowns.ret_aura_icd->start();
+                              }
+                            });
 
   // Legendaries
   buffs.blessing_of_dawn = make_buff( this, "blessing_of_dawn", talents.of_dusk_and_dawn->effectN( 1 ).trigger() );
@@ -3525,6 +3561,7 @@ void paladin_t::create_options()
       opt_float( "proc_chance_ret_memory_of_lucid_dreams", options.proc_chance_ret_memory_of_lucid_dreams, 0.0, 1.0 ) );
   add_option( opt_float( "proc_chance_prot_memory_of_lucid_dreams", options.proc_chance_prot_memory_of_lucid_dreams,
                          0.0, 1.0 ) );
+  add_option( opt_float( "proc_chance_ret_aura_sera", options.proc_chance_ret_aura_sera, 0.0, 1.0 ) );
 
   player_t::create_options();
 }

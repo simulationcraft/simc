@@ -105,6 +105,7 @@ public:
     buff_t* divine_shield;
     buff_t* divine_steed;
     buff_t* devotion_aura;
+    buff_t* retribution_aura;
 
     buff_t* avengers_might;
     buff_t* avenging_wrath_might;
@@ -241,6 +242,7 @@ public:
     cooldown_t* ashen_hallow; // Radiant Embers Legendary
 
     cooldown_t* t28_4p_prot_icd;
+    cooldown_t* ret_aura_icd;
   } cooldowns;
 
   // Passives
@@ -586,6 +588,7 @@ public:
     double proc_chance_ret_memory_of_lucid_dreams = 0.15;
     double proc_chance_prot_memory_of_lucid_dreams = 0.15;
     bool fake_sov = true;
+    double proc_chance_ret_aura_sera = 0.10;
   } options;
   player_t* beacon_target;
 
