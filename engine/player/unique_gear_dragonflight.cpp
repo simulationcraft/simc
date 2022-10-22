@@ -403,7 +403,7 @@ custom_cb_t writ_enchant( stat_e stat, bool cr )
     }
     else
     {
-      effect.stat = stat;
+      effect.stat = effect.player->convert_hybrid_stat( stat );
     }
 
     effect.stat_amount = amount;
