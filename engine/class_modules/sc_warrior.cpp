@@ -172,8 +172,6 @@ public:
     buff_t* show_of_force;
     buff_t* unnerving_focus;
     // Tier
-    buff_t* pile_on_ready;
-    buff_t* pile_on_str;
     buff_t* seeing_red;
     buff_t* seeing_red_tracking;
     buff_t* outburst;
@@ -630,8 +628,6 @@ public:
 
   struct tier_set_t
   {
-    const spell_data_t* pile_on_2p;
-    const spell_data_t* pile_on_4p;
     const spell_data_t* outburst_4p;
   } tier_set;
 
@@ -1018,7 +1014,7 @@ public:
     }
     else
     {
-    tactician_per_rage += ( player->talents.arms.tactician->effectN( 1 ).percent() / 100 );
+      tactician_per_rage += ( player->talents.arms.tactician->effectN( 1 ).percent() / 100 );
     }
   }
 
@@ -1498,11 +1494,7 @@ public:
     double tact_rage = tactician_cost();  // Tactician resets based on cost before things make it cost less.
     double tactician_chance = tactician_per_rage;
     warrior_td_t* td        = this->td( ab::target );
-    if ( p()->sets->has_set_bonus( WARRIOR_ARMS, T28, B4 ) && td->debuffs_colossus_smash->check() )
-    {
-      tactician_chance *= ( ( p()->talents.arms.tactician->effectN( 1 ).base_value() / 100 ) *
-                            ( p()->tier_set.pile_on_4p->effectN( 1 ).percent() / 100 + 1 ) );
-    }
+
     if ( ab::rng().roll( tactician_chance * tact_rage ) )
     {
       p()->cooldown.overpower->reset( true );
@@ -1510,10 +1502,6 @@ public:
       if ( p()->azerite.striking_the_anvil.ok() )
       {
         p()->buff.striking_the_anvil->trigger();
-      }
-      if ( p()->sets->has_set_bonus( WARRIOR_ARMS, T28, B4 ) )
-      {
-        p()->buff.pile_on_ready->trigger();
       }
     }
   }
@@ -4166,6 +4154,7 @@ struct skullsplitter_t : public warrior_attack_t
     {
       warrior_td_t* td = p()->get_target_data( target );
       trigger_tide_of_blood( td->dots_rend );
+      trigger_tide_of_blood( td->dots_deep_wounds );
     }
   }
 };
@@ -4432,11 +4421,6 @@ struct overpower_t : public warrior_attack_t
       p()->cooldown.mortal_strike->reset( true );
       p()->cooldown.cleave->reset( true );
       p() -> buff.battlelord -> trigger();
-    }
-    if ( p()->sets->has_set_bonus( WARRIOR_ARMS, T28, B4 ) && p()->buff.pile_on_ready->check() )
-    {
-      p()->buff.pile_on_ready->expire();
-      p()->buff.pile_on_str->trigger();
     }
 
     if ( p()->talents.arms.martial_prowess->ok() )
@@ -7576,8 +7560,6 @@ void warrior_t::init_spells()
   conduit.unnerving_focus             = find_conduit_spell( "Unnerving Focus" );
 
   // Tier Sets
-  tier_set.pile_on_2p                 = sets -> set( WARRIOR_ARMS, T28, B2 );
-  tier_set.pile_on_4p                 = sets -> set( WARRIOR_ARMS, T28, B4 );
   tier_set.outburst_4p                = find_spell( 364639 );
 
 
@@ -8458,11 +8440,9 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ) : actor_target_data
   dots_gushing_wound = target->get_dot( "gushing_wound", &p );
 
   debuffs_colossus_smash = make_buff( *this , "colossus_smash" )
-                               ->set_default_value( p.spell.colossus_smash_debuff->effectN( 2 ).percent() +
-                                                    ( p.tier_set.pile_on_2p->effectN( 2 ).base_value() / 100 ) )
+                               ->set_default_value( p.spell.colossus_smash_debuff->effectN( 2 ).percent() )
                                ->set_duration( p.spell.colossus_smash_debuff->duration() + 
                                                p.talents.arms.blunt_instruments->effectN( 2 ).time_value() )
-                               ->modify_duration( p.sets->set( WARRIOR_ARMS, T28, B2 )->effectN( 1 ).time_value() )
                                ->set_cooldown( timespan_t::zero() );
 
   debuffs_concussive_blows = make_buff( *this , "concussive_blows" )
@@ -8784,14 +8764,9 @@ void warrior_t::create_buffs()
                                ->set_default_value( find_spell( 335597 )->effectN( 1 ).percent() )
                                ->add_invalidate( CACHE_CRIT_CHANCE );
 
-  // T28 Effects ===============================================================================================================
+  // T29 Tier Effects ===============================================================================================================
 
-  buff.pile_on_ready = make_buff( this, "pile_on_ready" )
-                      ->set_duration(find_spell( 363917 )->duration() );
 
-  buff.pile_on_str = make_buff( this, "pile_on_str", find_spell( 366769 ) )
-                     ->add_invalidate( CACHE_STRENGTH )
-                     ->set_default_value( find_spell( 366769 )->effectN( 1 ).percent() );
 
   // Protection T28 Set Bonuses ===============================================================================================================
 
@@ -9324,8 +9299,6 @@ double warrior_t::composite_attribute_multiplier( attribute_e attr ) const
   if ( attr == ATTR_STRENGTH )
   {
     m *= 1.0 + buff.veterans_repute->value();
-
-    m *= 1.0 + buff.pile_on_str->check_stack_value();
 
     m *= 1.0 + buff.hurricane->check_stack_value();
 
