@@ -1274,6 +1274,8 @@ public:
   double    composite_player_multiplier( school_e school ) const override;
   double    composite_player_pet_damage_multiplier( const action_state_t* /* state */, bool /* guardian */ ) const override;
   double    composite_player_target_pet_damage_multiplier( player_t* target, bool guardian ) const override;
+  double    composite_melee_crit_chance() const override;
+  double    composite_spell_crit_chance() const override;
   double    composite_crit_avoidance() const override;
   void      combat_begin() override;
   void      activate() override;
@@ -3277,16 +3279,6 @@ struct death_knight_action_t : public Base
   virtual double runic_power_generation_multiplier( const action_state_t* /* s */ ) const
   {
     return 1.0;
-  }
-
-  double composite_crit_chance() const override
-  {
-    double cc = Base::composite_crit_chance();
-
-    if ( p() -> talent.merciless_strikes.ok() )
-      cc += p() -> talent.merciless_strikes->effectN( 1 ).percent();
-
-    return cc;
   }
 
   double composite_da_multiplier( const action_state_t* state ) const override
@@ -5767,16 +5759,10 @@ struct death_coil_t : public death_knight_spell_t
     }
 
     // Currently Rotten Touch only triggers on the main target
-    if ( !p() -> bugs && p() -> talent.unholy.rotten_touch.ok() && p() -> buffs.sudden_doom -> check() )
+    if ( p() -> talent.unholy.rotten_touch.ok() && p() -> buffs.sudden_doom -> check() )
     {
       get_td( target ) -> debuff.rotten_touch -> trigger();
     }
-    // Rotten touch is bugged as of 10/14/22, applying on every death coil cast.
-    if ( p() -> bugs && p() -> talent.unholy.rotten_touch.ok() )
-    {
-      get_td( target ) -> debuff.rotten_touch -> trigger();
-    }
-
     p() -> buffs.sudden_doom -> decrement();
   }
 
@@ -11802,6 +11788,24 @@ double death_knight_t::composite_melee_speed() const
   }
 
   return haste;
+}
+
+double death_knight_t::composite_melee_crit_chance() const
+{
+  double c = player_t::composite_melee_crit_chance();
+
+  c += talent.merciless_strikes->effectN( 1 ).percent();
+
+  return c;
+}
+
+double death_knight_t::composite_spell_crit_chance() const
+{
+  double c = player_t::composite_spell_crit_chance();
+
+  c += talent.merciless_strikes->effectN( 1 ).percent();
+
+  return c;
 }
 
 // death_knight_t::composite_tank_crit ======================================

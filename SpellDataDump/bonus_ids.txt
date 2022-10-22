@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46157 dragonflight-BETA (hotfix 2022-10-18/46157, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46144 dragonflight-BETA (hotfix 2022-10-21/46144, no-networking)
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
 bonus_id={ 3 }, suffix={ of Power }, socket={ 2 }, stats={ 100% StrAgiInt [0.5263] }
@@ -3607,7 +3607,7 @@ bonus_id={ 6408 }, stats={ 100% RunSpeed [0.3000] }
 bonus_id={ 6409 }, stats={ 100% Leech [0.3000] }
 bonus_id={ 6410 }, stats={ 100% Avoidance [0.3000] }
 bonus_id={ 6411 }, stats={ 100% unknown [0.3000] }
-bonus_id={ 6416 }, ilevel={ 5 @plvl 1 - 138 @plvl 60 }
+bonus_id={ 6416 }, ilevel={ 1 @plvl 1 - 327 @plvl 70 }
 bonus_id={ 6423 }, ilevel={ 5 @plvl 1 - 82 @plvl 50 }
 bonus_id={ 6424 }, desc={ Timewarped }, ilevel={ 5 @plvl 1 - 82 @plvl 50 }
 bonus_id={ 6425 }, desc={ Warforged }, ilevel={ 5 @plvl 1 - 90 @plvl 50 }
@@ -4435,7 +4435,7 @@ bonus_id={ 8184 }, suffix={ of the Aurora }, stats={ 71% Haste [0.5000], 29% Ver
 bonus_id={ 8185 }, suffix={ of the Aurora }, stats={ 29% Haste [0.2000], 71% Vers [0.5000] }
 bonus_id={ 8186 }, suffix={ of the Harmonious }, stats={ 71% Mastery [0.5000], 29% Vers [0.2000] }
 bonus_id={ 8187 }, suffix={ of the Harmonious }, stats={ 29% Mastery [0.2000], 71% Vers [0.5000] }
-bonus_id={ 8188 }, effects={ Armor Spikes (id=372528, index=0, type=equip) }
+bonus_id={ 8188 }, effects={ Armor Spikes (id=396581, index=0, type=equip) }
 bonus_id={ 8289 }, socket={ 1 }
 bonus_id={ 8402 }, desc={ Timewarped }, quality={ rare }, ilevel={ 3 @plvl 1 - 210 @plvl 60 }
 bonus_id={ 8403 }, desc={ Timewarped }, ilevel={ 5 @plvl 1 - 200 @plvl 60 }
@@ -4510,7 +4510,7 @@ bonus_id={ 8933 }
 bonus_id={ 8934 }, quality={ legendary }, effects={ Unity (id=387431, index=0, type=equip) }
 bonus_id={ 8935 }, quality={ rare }, ilevel={ 3 @plvl 1 - 252 @plvl 70 }
 bonus_id={ 8936 }, quality={ rare }, ilevel={ 146 @plvl 59 - 252 @plvl 70 }
-bonus_id={ 8937 }, effects={ Bronzed Grip Wrappings (id=388069, index=0, type=equip) }
+bonus_id={ 8937 }, effects={ Bronzed Grip Wrappings (id=396442, index=0, type=equip) }
 bonus_id={ 8948 }, mod_to_stat={ Haste (100) }
 bonus_id={ 8949 }, mod_to_stat={ Crit (100) }
 bonus_id={ 8950 }, mod_to_stat={ Mastery (100) }
@@ -4649,3 +4649,4 @@ bonus_id={ 9123 }, quality={ epic }, ilevel={ 39 @plvl 1 - 212 @plvl 70 }
 bonus_id={ 9124 }, desc={ Heroic }, quality={ epic }, ilevel={ 41 @plvl 1 - 214 @plvl 70 }
 bonus_id={ 9125 }, desc={ Mythic }, quality={ epic }, ilevel={ 43 @plvl 1 - 216 @plvl 70 }
 bonus_id={ 9128 }, base_ilevel={ 333 }
+bonus_id={ 9129 }, quality={ rare }

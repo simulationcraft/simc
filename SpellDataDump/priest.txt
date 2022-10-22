@@ -48,7 +48,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Stance Mask      : 0x88000000
-Affecting spells : Rapid Healing (24546 effect#2), Spirit of Redemption (27827 effect#2), Healing Trance (37706 effect#1), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2), An'juna's Trance (207555 effect#1), Light of T'uure (208065 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Renewed Faith (341997 effect#1), Divine Favor: Serenity (372791 effects: #1, #2, #3, #4), Twist of Fate (390978 effects: #1, #2), Rapid Recovery (391368 effects: #1, #2), Seize the Moment (394745 effect#1)
+Affecting spells : Rapid Healing (24546 effect#2), Spirit of Redemption (27827 effect#2), Healing Trance (37706 effect#1), Holy Priest (137031 effects: #1, #2, #14), Discipline Priest (137032 effects: #1, #2), An'juna's Trance (207555 effect#1), Light of T'uure (208065 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Renewed Faith (341997 effect#1), Divine Favor: Serenity (372791 effects: #1, #2, #3, #4), Twist of Fate (390978 effects: #1, #2), Rapid Recovery (391368 effects: #1, #2), Seize the Moment (394745 effect#1)
 Family Flags     : 6, 126
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ...x.... x....... ...x.... ........   .......x ........ ........ ........ 
@@ -96,11 +96,12 @@ Description      : Soothes enemies in the target area, reducing the range at whi
 Tooltip          : Reduced distance at which target will attack.
 
 Name             : Purify (id=527) [Spell Family (6)] 
+Hotfixed         : Learn Level (18 -> 10), Required Level (18 -> 10)
 Class            : Discipline Holy Priest
 School           : Holy
 Spell Type       : Magic
 Resource         : 1.3% Base Mana (0) (id=56)
-Spell Level      : 18
+Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 8 seconds
@@ -253,7 +254,7 @@ Talent Entry     : Holy [tree=spec, row=2, col=1, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
-Resource         : 4% Base Mana (0) (id=67)
+Resource         : 4.4% Base Mana (0) (id=67)[Hotfixed: Percent Cost (4 -> 4.4)]
 Spell Level      : 32
 Range            : 40 yards
 Cast Time        : 2 seconds
@@ -2226,7 +2227,8 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : Passive (6), Do Not Log (8), Can Proc From Procs (122), Mastery Affects Points (285), Can Proc from Suppressed Caster Procs (385), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=68102)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.25000 | PvP Coefficient: 1.00000 | Misc Value: 2 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.12500 | PvP Coefficient: 1.00000 | Misc Value: 2 | Target: Self (1)
+Hotfixed         : SP Coefficient (1.25 -> 1.125)
 #2 (id=90770)    : Apply Aura (6) | Dummy (4)
                    Base Value: 125 | Scaled Value: 125 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Your direct healing spells heal for an additional ${$77485s1}.1% over $77489d.
@@ -3535,6 +3537,11 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 37 | Target: Self (1)
                    Affected Spells: Focused Will (45242)
                    Family Flags: 111
+#14 (id=1039629)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Renew (139)
+                   Family Flags: 6
+Hotfixed         : NEW EFFECT
 Description      : Holy Priest core passive
 
 Name             : Discipline Priest (id=137032) [Spell Family (6), Passive, Hidden] 
@@ -3996,7 +4003,8 @@ Attributes       : ......xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=283376)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 8 | Target: Self (1)
+                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Misc Value: 8 | Target: Self (1)
+Hotfixed         : Base Value (15 -> 12)
 Description      : Your Prayer of Mending has a $s1% chance to leave a Renew on each target it heals.
 
 Name             : Call to the Void (id=193371) [Spell Family (6), Passive] 
@@ -9147,13 +9155,15 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=809046)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
-                   Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
+                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Prayer of Healing (596)
                    Family Flags: 9
+Hotfixed         : Base Value (-25 -> -20)
 #2 (id=912580)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
-                   Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
+                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Prayer of Healing (596)
                    Family Flags: 9
+Hotfixed         : Base Value (-25 -> -20)
 Description      : $@spelldesc321377
 Tooltip          : Cast time and cost of Prayer of Healing reduced by $w1%.
 
@@ -11059,9 +11069,10 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=842754)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
+                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Renew (139)
                    Family Flags: 6
+Hotfixed         : Base Value (8 -> 6)
 Description      : Your healing on allies with your Renew is increased by $s1%.
 
 Name             : Wrathful Faerie (desc=Night Fae) (id=342132) [Spell Family (6)] 
@@ -15716,6 +15727,7 @@ Talent Entry     : Holy [tree=spec, row=4, col=2, max_rank=1, req_points=0, sele
 Class            : Priest
 School           : Holy
 Spell Type       : None
+Labels           : 2401: Rapid Recovery (391368 effect#3)
 Proc Chance      : 101%
 Proc Flags       : ........ ......x. ........ ........ 
                  : Magic Heal
@@ -15730,7 +15742,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1028557)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (30 -> 25)
 #2 (id=1028558)  : Apply Aura (6) | Dummy (4)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Prayer of Healing has a $s1% chance to apply a $s2 second Renew to allies it heals.
@@ -16085,6 +16098,10 @@ Effects          :
                    Base Value: -3000 | Scaled Value: -3000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Renew (139)
                    Family Flags: 6
+#3 (id=1039631)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
+                   Base Value: -1 | Scaled Value: -1 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 2401 (Label) | Target: Self (1)
+                   Affected Spells (Label): Revitalizing Prayers (391208)
+Hotfixed         : NEW EFFECT
 Description      : Increases healing done by Renew by $s1%, but decreases its base duration by ${$s2/-1000} sec.
 
 Name             : Pain of Death (id=391371) 

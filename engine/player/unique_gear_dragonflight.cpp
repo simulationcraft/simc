@@ -70,11 +70,11 @@ void phial_of_charged_isolation( special_effect_t& effect )
 
     auto stat_buff =
         make_buff<stat_buff_t>( effect.player, "phial_of_charged_isolation_stats", effect.player->find_spell( 371387 ) )
-            ->add_stat( STAT_STR_AGI_INT, amount );
+            ->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ), amount );
 
     auto linger_buff =
         make_buff<stat_buff_t>( effect.player, "phial_of_charged_isolation_linger", effect.player->find_spell( 384713 ) )
-            ->add_stat( STAT_STR_AGI_INT, amount * linger_mul );
+            ->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ), amount * linger_mul );
 
     buff = make_buff( effect.player, effect.name(), effect.driver() )
       ->set_stack_change_callback( [ stat_buff ]( buff_t*, int, int new_ ) {
@@ -253,7 +253,9 @@ void phial_of_static_empowerment( special_effect_t& effect )
   if ( !buff )
   {
     auto primary = make_buff<stat_buff_t>( effect.player, "static_empowerment", effect.player->find_spell( 370772 ) );
-    primary->add_stat( STAT_STR_AGI_INT, effect.driver()->effectN( 1 ).average( effect.item ) / primary->max_stack() );
+    primary
+        ->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ),
+                    effect.driver()->effectN( 1 ).average( effect.item ) / primary->max_stack() );
 
     buff = make_buff( effect.player, effect.name(), effect.driver() )
       ->set_stack_change_callback( [ primary ]( buff_t*, int, int new_ ) {
@@ -401,7 +403,7 @@ custom_cb_t writ_enchant( stat_e stat, bool cr )
     }
     else
     {
-      effect.stat = stat;
+      effect.stat = effect.player->convert_hybrid_stat( stat );
     }
 
     effect.stat_amount = amount;
@@ -812,6 +814,19 @@ void the_cartographers_calipers( special_effect_t& effect )
 }
 
 // Weapons
+void bronzed_grip_wrappings( special_effect_t& effect )
+{
+  // TODO: implement heal
+
+  auto amount = effect.driver()->effectN( 2 ).average( effect.item );
+
+  effect.trigger_spell_id = effect.driver()->effectN( 2 ).trigger_spell_id();
+  effect.spell_id = effect.driver()->effectN( 1 ).trigger_spell_id();
+  effect.discharge_amount = amount;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 void fang_adornments( special_effect_t& effect )
 {
   effect.school = effect.driver()->get_school_type();
@@ -821,6 +836,15 @@ void fang_adornments( special_effect_t& effect )
 }
 
 // Armor
+void blue_silken_lining( special_effect_t& effect )
+{
+  auto buff = create_buff<stat_buff_t>( effect.player, "zone_of_focus", effect.trigger()->effectN( 1 ).trigger() );
+  buff->add_stat( STAT_MASTERY_RATING, effect.driver()->effectN( 1 ).average( effect.item ) );
+
+  // TODO: implement losing buff when hp < 90%
+  effect.player->register_combat_begin( [ buff ]( player_t* ) { buff->trigger(); } );
+}
+
 void breath_of_neltharion( special_effect_t& effect )
 {
   struct breath_of_neltharion_t : public generic_proc_t
@@ -1064,9 +1088,11 @@ void register_special_effects()
   register_special_effect( 384112, items::the_cartographers_calipers );
 
   // Weapons
-  register_special_effect( 377708, items::fang_adornments );
+  register_special_effect( 396442, items::bronzed_grip_wrappings );  // bronzed grip wrappings embellishment
+  register_special_effect( 377708, items::fang_adornments );         // fang adornments embellishment
 
   // Armor
+  register_special_effect( 387335, items::blue_silken_lining );    // blue silken lining embellishment
   register_special_effect( 385520, items::breath_of_neltharion );  // breath of neltharion tinker
   register_special_effect( 378423, items::coated_in_slime );
   register_special_effect( 375323, items::elemental_lariat );

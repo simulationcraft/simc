@@ -2404,21 +2404,17 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : Passive (6), Do Not Log (8), Mastery Affects Points (285), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=68129)    : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.62000 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.80000 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Death Coil (47632), Death and Decay (52212), Scourge Strike (70890), Outbreak (77575), Unholy Blight (115989), Unholy Blight (115994), Defile (156000), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Bursting Sores (207267), Clawing Shadows (207311), Epidemic (212739), Epidemic (215969), Necrotic Strike (223829), Horrid Experimentation (273096), Apocalypse (275699), Harrowing Decay (275931), Swarming Mist (311730), Unholy Pact (319236), Abomination Limb (323710), Abomination Limb (323798), Sacrificial Pact (327611), Death's Due (341340), Soul Reaper (343294), Soul Reaper (343295), Dark Transformation (344955), Shattering Bone (377642), Abomination Limb (383312), Abomination Limb (383313)
                    Family Flags: 78
-Hotfixed         : SP Coefficient (1.8 -> 1.62)
 #2 (id=90623)    : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.62000 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.80000 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Death Coil (47632), Death and Decay (52212), Scourge Strike (70890), Outbreak (77575), Unholy Blight (115989), Unholy Blight (115994), Defile (156000), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Bursting Sores (207267), Clawing Shadows (207311), Epidemic (212739), Epidemic (215969), Necrotic Strike (223829), Horrid Experimentation (273096), Apocalypse (275699), Harrowing Decay (275931), Swarming Mist (311730), Unholy Pact (319236), Abomination Limb (323710), Abomination Limb (323798), Sacrificial Pact (327611), Death's Due (341340), Soul Reaper (343294), Soul Reaper (343295), Dark Transformation (344955), Shattering Bone (377642), Abomination Limb (383312), Abomination Limb (383313)
                    Family Flags: 78
-Hotfixed         : SP Coefficient (1.8 -> 1.62)
 #3 (id=800836)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.62000 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : SP Coefficient (1.8 -> 1.62)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.80000 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=1037297)  : Apply Aura (6) | Unknown(531)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.62000 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : SP Coefficient (1.8 -> 1.62)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.80000 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Increases the damage of your Minions and Shadow damage abilities by ${$s1}.1%.
 
 Name             : Blood Shield (id=77535) [Spell Family (15)] 
@@ -3426,17 +3422,21 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179690)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Death Coil (47632), Howling Blast (49184), Death Strike (49998), Razorice (50401), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Scourge Strike (55090), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Scourge Strike (70890), Outbreak (77575), Festering Strike (85948), Unholy Blight (115989), Unholy Blight (115994), Breath of Sindragosa (155166), Defile (156000), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Marrowrend (195182), Death's Caress (195292), Frozen Pulse (195750), Glacial Advance (195975), Bonestorm (196528), Remorseless Winter (196771), Chill Streak (204167), Heart Strike (206930), Blooddrinker (206931), Avalanche (207150), Frostscythe (207230), Bursting Sores (207267), Clawing Shadows (207311), Epidemic (212739), Epidemic (215969), Obliterate (222024), Frost Strike (222026), Heart Strike (228645), Howling Blast (237680), Inexorable Assault (253597), Horrid Experimentation (273096), Glacial Contagion (274074), Consumption (274156), Apocalypse (275699), Echoing Howl (275918), Harrowing Decay (275931), Frostwyrm's Fury (279303), Cold Heart (281209), Cold Heart (281210), Helchains (286836), Helchains (286954), Helchains (286978), Helchains (286979), Frostwhelp's Indignation (287320), Helchains (290814), Swarming Mist (311730), Shackle the Unworthy (312202), Rune Strike (316239), Unholy Pact (319236), Unholy Pact (319240), Unholy Pact (319245), Abomination Limb (323710), Abomination Limb (323798), Obliterate (325461), Frost Strike (325464), Sacrificial Pact (327611), Death's Due (341340), Soul Reaper (343294), Dark Transformation (344955), Blood Draw (374606), Frostwhelp's Aid (377245), Shattering Bone (377642), Abomination Limb (383312), Abomination Limb (383313)
                    Family Flags: 43
+Hotfixed         : Base Value (0 -> -5)
 #2 (id=191170)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Death Coil (47632), Howling Blast (49184), Death Strike (49998), Razorice (50401), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Scourge Strike (55090), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Scourge Strike (70890), Outbreak (77575), Festering Strike (85948), Unholy Blight (115989), Unholy Blight (115994), Breath of Sindragosa (155166), Defile (156000), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Marrowrend (195182), Death's Caress (195292), Frozen Pulse (195750), Glacial Advance (195975), Bonestorm (196528), Remorseless Winter (196771), Chill Streak (204167), Heart Strike (206930), Blooddrinker (206931), Avalanche (207150), Frostscythe (207230), Bursting Sores (207267), Clawing Shadows (207311), Epidemic (212739), Epidemic (215969), Obliterate (222024), Frost Strike (222026), Heart Strike (228645), Howling Blast (237680), Inexorable Assault (253597), Horrid Experimentation (273096), Glacial Contagion (274074), Consumption (274156), Apocalypse (275699), Echoing Howl (275918), Harrowing Decay (275931), Frostwyrm's Fury (279303), Cold Heart (281209), Cold Heart (281210), Helchains (286836), Helchains (286954), Helchains (286978), Helchains (286979), Frostwhelp's Indignation (287320), Helchains (290814), Swarming Mist (311730), Shackle the Unworthy (312202), Rune Strike (316239), Unholy Pact (319236), Unholy Pact (319240), Unholy Pact (319245), Abomination Limb (323710), Abomination Limb (323798), Obliterate (325461), Frost Strike (325464), Sacrificial Pact (327611), Death's Due (341340), Soul Reaper (343294), Dark Transformation (344955), Blood Draw (374606), Frostwhelp's Aid (377245), Shattering Bone (377642), Abomination Limb (383312), Abomination Limb (383313)
                    Family Flags: 43
+Hotfixed         : Base Value (0 -> -5)
 #3 (id=191171)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (0 -> -5)
 #4 (id=1032341)  : Apply Aura (6) | Unknown(531)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (0 -> -5)
 
 Name             : Blood Death Knight (id=137008) [Spell Family (15), Passive, Hidden] 
 Class            : Blood Death Knight
@@ -16520,6 +16520,12 @@ Effects          :
                    Family Flags: 43
 #3 (id=1034346)  : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+#4 (id=1039550)  : Apply Party Aura (35) | Unknown(531)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : NEW EFFECT
+#5 (id=1039650)  : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : NEW EFFECT
 Description      : $@spelldesc393622
 Tooltip          : Damage and Haste increased by $w1%.
 

@@ -1369,7 +1369,6 @@ Effects          :
 Description      : Chug some Black Ox Brew, which instantly refills your Energy, Purifying Brew charges, and resets the cooldown of Celestial Brew.
 
 Name             : Detox (id=115450) [Spell Family (53)] 
-Replaces         : Detox (id=218164)
 Class            : Mistweaver Monk
 School           : Nature
 Spell Type       : Magic
@@ -6022,13 +6021,14 @@ Effects          :
 Description      : $@spelldesc216519
 
 Name             : Detox (id=218164) [Spell Family (53)] 
+Hotfixed         : Learn Level (0 -> 10), Required Level (24 -> 10)
 Talent Entry     : Windwalker [tree=class, row=3, col=4, max_rank=1, req_points=0]
                  : Brewmaster [tree=class, row=3, col=4, max_rank=1, req_points=0]
 Class            : Monk
 School           : Nature
 Spell Type       : Magic
 Resource         : 20 Energy (3) (id=11277)
-Spell Level      : 24
+Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 1 (8 seconds cooldown)

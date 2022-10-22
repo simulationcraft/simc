@@ -982,7 +982,7 @@ public:
     ab::apply_affecting_aura( p -> talents.streamline );
     ab::apply_affecting_aura( p -> talents.killing_blow );
     ab::apply_affecting_aura( p -> talents.hunters_knowledge );
-    ab::apply_affecting_aura( p -> talents.surging_shots );
+    ab::apply_affecting_aura( p -> talents.surging_shots.ok() ? p -> talents.surging_shots : p -> legendary.surging_shots );
     ab::apply_affecting_aura( p -> talents.target_practice );
     ab::apply_affecting_aura( p -> talents.focused_aim );
     ab::apply_affecting_aura( p -> talents.dead_eye );
@@ -2197,11 +2197,6 @@ struct kill_command_bm_mm_t: public kill_command_base_t
     proc_t* proc;
   } dire_command;
 
-  struct {
-    double chance = 0;
-    proc_t* proc;
-  } dire_command_runeforge;
-
   timespan_t ferocious_appetite_reduction;
 
   kill_command_bm_mm_t( hunter_main_pet_base_t* p ) :
@@ -2217,12 +2212,10 @@ struct kill_command_bm_mm_t: public kill_command_base_t
       dire_command.chance = o() -> talents.dire_command -> effectN( 1 ).percent();
       dire_command.proc = o() -> get_proc( "Dire Command" );
     }
-
-    if ( o() -> legendary.dire_command.ok() )
+    else if ( o() -> legendary.dire_command.ok() )
     {
-      // assume it's a flat % without any bs /shrug
-      dire_command_runeforge.chance = o() -> legendary.dire_command -> effectN( 1 ).percent();
-      dire_command_runeforge.proc = o() -> get_proc( "Dire Command (Runeforge)" );
+      dire_command.chance = o() -> legendary.dire_command -> effectN( 1 ).percent();
+      dire_command.proc = o() -> get_proc( "Dire Command (Runeforge)" );
     }
   }
 
@@ -2234,12 +2227,6 @@ struct kill_command_bm_mm_t: public kill_command_base_t
     {
       o() -> pets.dc_dire_beast.spawn( pets::dire_beast_duration( o() ).first );
       dire_command.proc -> occur();
-    }
-
-    if ( rng().roll( dire_command_runeforge.chance ) )
-    {
-      o() -> pets.dc_dire_beast.spawn( pets::dire_beast_duration( o() ).first );
-      dire_command_runeforge.proc -> occur();
     }
 
     o() -> buffs.lethal_command -> expire();
@@ -3755,18 +3742,7 @@ struct death_chakram_t : death_chakram::base_t
     attack_power_mod.direct = single_target -> attack_power_mod.direct;
     school = single_target -> school;
 
-    // Hack in a Unity check; it's possible in prepatch for Death Chakrams to perform the Munitions effect without Necrolord being the active covenant.
-    bool unity = false;
-    for ( const auto& i : p -> items )
-    {
-      if ( range::contains( i.parsed.bonus_id, 8122 ) )
-      {
-        unity = true;
-        break;
-      }
-    }
-
-    if ( p -> legendary.bag_of_munitions.ok() || unity ) {
+    if ( p -> legendary.bag_of_munitions.ok() ) {
       explosive = p -> get_background_action<explosive_shot_background_t>( "explosive_shot_munitions" );
       explosive -> targets = as<size_t>( p -> find_spell( 356264 ) -> effectN( 1 ).base_value() );
     }
@@ -4375,12 +4351,17 @@ struct aimed_shot_t : public aimed_shot_base_t
     }
 
     if ( p -> talents.serpentstalkers_trickery.ok() || p -> legendary.serpentstalkers_trickery.ok() )
-      serpentstalkers_trickery = p -> get_background_action<serpent_sting_sst_t>( "serpent_sting" );
+      serpentstalkers_trickery = p -> get_background_action<serpent_sting_sst_t>( "serpent_sting_sst" );
 
     if ( p -> talents.surging_shots.ok() )
     {
       surging_shots.chance = p -> talents.surging_shots -> proc_chance();
       surging_shots.proc = p -> get_proc( "Surging Shots Rapid Fire reset" );
+    }
+    else if ( p -> legendary.surging_shots.ok() )
+    {
+      surging_shots.chance = p -> legendary.surging_shots -> proc_chance();
+      surging_shots.proc = p -> get_proc( "Surging Shots (Runeforge) Rapid Fire reset" );
     }
 
     if ( p -> talents.legacy_of_the_windrunners.ok() )
@@ -4996,7 +4977,7 @@ struct melee_focus_spender_t: hunter_melee_attack_t
     if ( p -> talents.vipers_venom.ok() )
     {
       vipers_venom.chance = p -> talents.vipers_venom -> effectN( 1 ).percent();
-      vipers_venom.action = p -> get_background_action<serpent_sting_vv_t>( "serpent_sting" );
+      vipers_venom.action = p -> get_background_action<serpent_sting_vv_t>( "serpent_sting_vv" );
     }
 
     if ( p -> legendary.rylakstalkers_strikes.ok() )
@@ -5735,7 +5716,7 @@ struct freezing_trap_t : public trap_base_t
   }
 };
 
-// Hi-Explosive Trap =====================================================================
+// High Explosive Trap =====================================================================
 
 struct high_explosive_trap_t : public trap_base_t
 {
@@ -5870,7 +5851,7 @@ struct kill_command_t: public hunter_spell_t
       if ( p -> talents.quick_shot.ok() )
       {
         quick_shot.chance = p -> talents.quick_shot -> effectN( 1 ).percent();
-        quick_shot.action = p -> get_background_action<arcane_shot_qs_t>( "arcane_shot" );
+        quick_shot.action = p -> get_background_action<arcane_shot_qs_t>( "arcane_shot_qs" );
       }
     }
   }
@@ -6574,7 +6555,7 @@ struct wildfire_bomb_t: public hunter_spell_t
       else
         a -> add_child( violent_reaction );
 
-      serpent_sting = p -> get_background_action<serpent_sting_vb_t>( "serpent_sting" );
+      serpent_sting = p -> get_background_action<serpent_sting_vb_t>( "serpent_sting_vb" );
     }
 
     void execute() override

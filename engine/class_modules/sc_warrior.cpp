@@ -2804,14 +2804,17 @@ struct bloodbath_t : public warrior_attack_t
 struct onslaught_t : public warrior_attack_t
 {
   int aoe_targets;
+  const spell_data_t* damage_spell;
   onslaught_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "onslaught", p, p->talents.fury.onslaught ),
+      damage_spell( p->find_spell( 396718 ) ),
       aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 2 ).base_value() ) )
   {
     parse_options( options_str );
     weapon              = &( p->main_hand_weapon );
     radius              = 5;
     base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 3 ).percent();
+    attack_power_mod.direct = damage_spell->effectN( 1 ).ap_coeff();
   }
 
   int n_targets() const override
@@ -8685,16 +8688,11 @@ void warrior_t::create_buffs()
     ->set_default_value( talents.protection.shield_wall->effectN( 1 ).percent() )
     ->set_cooldown( timespan_t::zero() );
 
-  if ( talents.fury.annihilator->ok() )
-  {
-    buff.slaughtering_strikes_an = make_buff( this, "slaughtering_strikes", find_spell( 393943 ) )
-      ->set_default_value( find_spell( 393943 )->effectN( 1 ).percent() );
-  }
-  else
-  {
-    buff.slaughtering_strikes_rb = make_buff( this, "slaughtering_strikes", find_spell( 393931 ) )
-      ->set_default_value( find_spell( 393931 )->effectN( 1 ).percent() );
-  }
+  buff.slaughtering_strikes_an = make_buff( this, "slaughtering_strikes_an", find_spell( 393943 ) )
+    ->set_default_value( find_spell( 393943 )->effectN( 1 ).percent() );
+
+  buff.slaughtering_strikes_rb = make_buff( this, "slaughtering_strikes_rb", find_spell( 393931 ) )
+    ->set_default_value( find_spell( 393931 )->effectN( 1 ).percent() );
 
   const spell_data_t* test_of_might_tracker = talents.arms.test_of_might.spell()->effectN( 1 ).trigger()->effectN( 1 ).trigger();
   buff.test_of_might_tracker = new test_of_might_t( *this, "test_of_might_tracker", test_of_might_tracker );

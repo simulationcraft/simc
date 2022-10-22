@@ -1039,6 +1039,10 @@ struct summon_random_demon_t : public demonology_spell_t
   {
     parse_options( options_str );
     background = true;
+
+    // Fallback if Inner Demons data is not present
+    if ( p->talents.nether_portal.ok() )
+      summon_duration = p->talents.nether_portal->duration();
   }
 
   void execute() override

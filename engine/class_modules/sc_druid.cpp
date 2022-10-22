@@ -471,6 +471,7 @@ public:
     buff_t* balance_of_all_things_arcane;
     buff_t* balance_of_all_things_nature;
     buff_t* celestial_alignment;
+    buff_t* denizen_of_the_dream;  // proxy buff to track stack uptime
     buff_t* eclipse_lunar;
     buff_t* eclipse_solar;
     buff_t* friend_of_the_fae;
@@ -622,6 +623,7 @@ public:
   struct procs_t
   {
     // Balance
+    proc_t* denizen_of_the_dream;
     proc_t* pulsar;
 
     // Feral
@@ -1303,6 +1305,7 @@ struct denizen_of_the_dream_t : public pet_t
     fey_missile_t( pet_t* p ) : spell_t( "fey_missile", p, p->find_spell( 188046 ) )
     {
       name_str_reporting = "fey_missile";
+      cooldown->hasted = true;
 
       auto proxy = debug_cast<druid_t*>( p->owner )->active.denizen_of_the_dream;
       auto it = range::find( proxy->child_action, data().id(), &action_t::id );
@@ -1947,6 +1950,8 @@ struct umbral_embrace_buff_t : public druid_buff_t<buff_t>
 
   umbral_embrace_buff_t( druid_t& p ) : base_t( p, "umbral_embrace", p.talent.umbral_embrace->effectN( 2 ).trigger() )
   {
+    // TODO: fix/remove when final bugfix of umbral embrace is pushed
+    set_default_value( p.talent.umbral_embrace->effectN( 1 ).percent() );
     set_stack_change_callback( [ this ]( buff_t*, int old_, int new_ ) {
       if ( !old_ )
       {
@@ -2709,7 +2714,8 @@ public:
     parse_buff_effects( p()->buff.starweavers_warp );
     parse_buff_effects( p()->buff.starweavers_weft );
     parse_buff_effects( p()->buff.touch_the_cosmos );
-    parse_buff_effects<S>( p()->buff.umbral_embrace, p()->talent.umbral_embrace );
+    // TODO: fix/remove when final bugfix of umbral embrace is pushed
+    // parse_buff_effects<S>( p()->buff.umbral_embrace, p()->talent.umbral_embrace );
     parse_buff_effects( p()->buff.warrior_of_elune, false );
 
     // Feral
@@ -3418,31 +3424,18 @@ public:
   snapshot_counter_t* bt_counter;
   snapshot_counter_t* tf_counter;
 
-  double berserk_cp;
   double primal_claws_cp;
   double primal_fury_cp;
-  bool consumes_combo_points;
 
   cat_attack_t( std::string_view n, druid_t* p, const spell_data_t* s = spell_data_t::nil(), std::string_view opt = {} )
     : base_t( n, p, s ),
       snapshots(),
       bt_counter( nullptr ),
       tf_counter( nullptr ),
-      berserk_cp( 0.0 ),
       primal_claws_cp( p->talent.primal_claws->effectN( 2 ).base_value() ),
-      primal_fury_cp( p->talent.primal_fury->effectN( 1 ).trigger()->effectN( 1 ).base_value() ),
-      consumes_combo_points( false )
+      primal_fury_cp( p->talent.primal_fury->effectN( 1 ).trigger()->effectN( 1 ).base_value() )
   {
     parse_options( opt );
-
-    if ( data().cost( POWER_COMBO_POINT ) )
-    {
-      consumes_combo_points = true;
-      form_mask |= CAT_FORM;
-
-      if ( p->talent.berserk.ok() )
-        berserk_cp = p->spec.berserk_cat->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_COMBO_POINT );
-    }
 
     if ( p->specialization() == DRUID_BALANCE || p->specialization() == DRUID_RESTORATION )
       ap_type = attack_power_type::NO_WEAPON;
@@ -3656,14 +3649,6 @@ public:
     }
   }
 
-  bool ready() override
-  {
-    if ( consumes_combo_points && p()->resources.current[ RESOURCE_COMBO_POINT ] < 1 )
-      return false;
-
-    return base_t::ready();
-  }
-
   void trigger_energy_refund()
   {
     player->resource_gain( RESOURCE_ENERGY, last_resource_cost * 0.80, p()->gain.energy_refund );
@@ -3728,9 +3713,15 @@ struct cat_finisher_t : public cat_attack_t
 {
   using state_t = druid_action_state_t<Data>;
 
+  double berserk_cp;
+  bool consumes_combo_points;
+
   cat_finisher_t( std::string_view n, druid_t* p, const spell_data_t* s, std::string_view opt = {} )
-    : cat_attack_t( n, p, s, opt )
-  {}
+    : cat_attack_t( n, p, s, opt ), berserk_cp( 0.0 ), consumes_combo_points( true )
+  {
+    if ( p->talent.berserk.ok() )
+      berserk_cp = p->spec.berserk_cat->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_COMBO_POINT );
+  }
 
   action_state_t* new_state() override
   {
@@ -3761,6 +3752,14 @@ struct cat_finisher_t : public cat_attack_t
     cast_state( s )->combo_points = _combo_points();
 
     cat_attack_t::snapshot_state( s, rt );
+  }
+
+  bool ready() override
+  {
+    if ( consumes_combo_points && p()->resources.current[ RESOURCE_COMBO_POINT ] < 1 )
+      return false;
+
+    return cat_attack_t::ready();
   }
 
   void consume_resource() override
@@ -4573,7 +4572,7 @@ struct primal_wrath_t : public cat_finisher_t<>
 
   rip_t* rip;
   action_t* wounds;
-  timespan_t base_dur;
+  timespan_t rip_dur;
 
   primal_wrath_t( druid_t* p, std::string_view opt ) : primal_wrath_t( p, "primal_wrath", p->talent.primal_wrath, opt )
   {}  // TODO: remove ctor overload when no longer needed
@@ -4581,7 +4580,7 @@ struct primal_wrath_t : public cat_finisher_t<>
   primal_wrath_t( druid_t* p, std::string_view n, const spell_data_t* s, std::string_view opt )
     : cat_finisher_t( n, p, s, opt ),
       wounds( nullptr ),
-      base_dur( timespan_t::from_seconds( data().effectN( 2 ).base_value() ) )
+      rip_dur( timespan_t::from_seconds( data().effectN( 2 ).base_value() ) )
   {
     aoe = -1;
 
@@ -4589,8 +4588,20 @@ struct primal_wrath_t : public cat_finisher_t<>
     // Manually set true so bloodtalons is decremented and we get proper snapshot reporting
     snapshots.bloodtalons = true;
 
+    if ( p->talent.circle_of_life_and_death.ok() )
+    {
+      rip_dur *= 1.0 + p->query_aura_effect(
+        p->talent.circle_of_life_and_death, A_ADD_PCT_MODIFIER, P_EFFECT_2, &data() )->percent();
+    }
+
+    if ( p->talent.veinripper.ok() )
+    {
+      rip_dur *= 1.0 + p->query_aura_effect(
+          p->talent.veinripper, A_ADD_PCT_MODIFIER, P_EFFECT_2, &data() )->percent();
+    }
+
     rip = p->get_secondary_action_n<rip_t>( "rip_primal", p->find_spell( 1079 ), "" );
-    rip->dot_duration = timespan_t::from_seconds( data().effectN( 2 ).base_value() );
+    rip->dot_duration = rip_dur;
     rip->dual = rip->background = true;
     rip->stats = stats;
     rip->base_costs[ RESOURCE_ENERGY ] = 0;
@@ -4603,13 +4614,6 @@ struct primal_wrath_t : public cat_finisher_t<>
       wounds = p->get_secondary_action<tear_open_wounds_t>( "tear_open_wounds" );
       wounds->background = true;
       add_child( wounds );
-    }
-
-    if ( p->talent.circle_of_life_and_death.ok() )
-    {
-      base_dur *=
-          1.0 + p->query_aura_effect( p->talent.circle_of_life_and_death, A_ADD_PCT_MODIFIER, P_EFFECT_2, &data() )
-                    ->percent();
     }
   }
 
@@ -8034,6 +8038,12 @@ struct starfire_t : public druid_spell_t
 
     return cam;
   }
+
+  // TODO: fix/remove when final bugfix of umbral embrace is pushed
+  double composite_da_multiplier( const action_state_t * s ) const override
+  {
+    return druid_spell_t::composite_da_multiplier( s ) * ( 1.0 + p()->buff.umbral_embrace->value() );
+  }
 };
 
 // Starsurge Spell ==========================================================
@@ -8635,6 +8645,12 @@ struct wrath_t : public druid_spell_t
 
     if ( p()->active.astral_smolder && s->result_amount > 0 && result_is_hit( s->result ) && s->result == RESULT_CRIT )
       residual_action::trigger( p()->active.astral_smolder, s->target, s->result_amount * smolder_mul );
+  }
+
+  // TODO: fix/remove when final bugfix of umbral embrace is pushed
+  double composite_da_multiplier( const action_state_t * s ) const override
+  {
+    return druid_spell_t::composite_da_multiplier( s ) * ( 1.0 + p()->buff.umbral_embrace->value() );
   }
 };
 
@@ -10519,6 +10535,11 @@ void druid_t::create_buffs()
   buff.incarnation_moonkin =
       make_buff<celestial_alignment_buff_t>( *this, "incarnation_chosen_of_elune", spec.incarnation_moonkin, true );
 
+  buff.denizen_of_the_dream = make_buff( this, "denizen_of_the_dream", find_spell( 394076 ) )
+    ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+    ->set_max_stack( 10 )
+    ->set_rppm( rppm_scale_e::RPPM_DISABLE );
+
   buff.eclipse_lunar = make_buff<eclipse_buff_t>( *this, "eclipse_lunar", spec.eclipse_lunar );
 
   buff.eclipse_solar = make_buff<eclipse_buff_t>( *this, "eclipse_solar", spec.eclipse_solar );
@@ -11238,9 +11259,9 @@ void druid_t::init()
   }
 }
 
-bool druid_t::validate_fight_style( fight_style_e style ) const
+bool druid_t::validate_fight_style( fight_style_e /* style */) const
 {
-  if ( SC_BETA == 0 && SC_MAJOR_VERSION == "1000" )
+  if ( SC_BETA == 0 && strcmp( SC_MAJOR_VERSION, "1000" ) == 0 )
   {
     sim->error( "Prepatch {} sims are untested and not supported. Sim at your own risk!",
                 util::specialization_string( specialization() ) );
@@ -11305,6 +11326,7 @@ void druid_t::init_procs()
   player_t::init_procs();
 
   // Balance
+  proc.denizen_of_the_dream   = get_proc( "Denizen of the Dream" )->collect_count();
   proc.pulsar                 = get_proc( "Primordial Arcanic Pulsar" )->collect_interval();
 
   // Feral
@@ -11386,6 +11408,8 @@ void druid_t::init_special_effects()
       void execute( action_t*, action_state_t* ) override
       {
         p()->active.denizen_of_the_dream->execute();
+        p()->buff.denizen_of_the_dream->trigger();
+        p()->proc.denizen_of_the_dream->occur();
       }
 
       druid_t* p() { return static_cast<druid_t*>( listener ); }
@@ -11936,21 +11960,10 @@ double druid_t::composite_player_multiplier( school_e school ) const
 {
   auto cpm = player_t::composite_player_multiplier( school );
 
-  // TODO: bugged so that they don't stack, but in-game other instances of multiple buffs of the same school do stack
   if ( dbc::has_common_school( school, SCHOOL_ARCANE ) && get_form() == BEAR_FORM )
   {
-    if ( bugs )
-    {
-      auto ef = talent.elunes_favored->effectN( 1 ).percent();
-      auto fn = talent.fury_of_nature->effectN( 1 ).percent();
-
-      cpm *= 1.0 + std::max( ef, fn );
-    }
-    else
-    {
-      cpm *= 1.0 + talent.elunes_favored->effectN( 1 ).percent();
-      cpm *= 1.0 + talent.fury_of_nature->effectN( 1 ).percent();
-    }
+    cpm *= 1.0 + talent.elunes_favored->effectN( 1 ).percent();
+    cpm *= 1.0 + talent.fury_of_nature->effectN( 1 ).percent();
   }
 
   if ( buff.friend_of_the_fae->check() && buff.friend_of_the_fae->has_common_school( school ) )
@@ -13214,6 +13227,7 @@ void druid_t::apply_affecting_auras( action_t& action )
 
   // Balance
   action.apply_affecting_aura( talent.elunes_guidance );
+  action.apply_affecting_aura( talent.orbital_strike );
   action.apply_affecting_aura( talent.radiant_moonlight );
   action.apply_affecting_aura( talent.twin_moons );
   

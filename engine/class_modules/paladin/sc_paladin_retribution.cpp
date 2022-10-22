@@ -91,12 +91,12 @@ struct crusade_t : public paladin_spell_t
 
 // Execution Sentence =======================================================
 
-struct es_explosion_t : public holy_power_consumer_t<paladin_melee_attack_t>
+struct es_explosion_t : public paladin_spell_t
 {
   double accumulated;
 
   es_explosion_t( paladin_t* p ) :
-    holy_power_consumer_t( "execution_sentence", p, p -> find_spell( 387113 ) ),
+    paladin_spell_t( "execution_sentence", p, p -> find_spell( 387113 ) ),
     accumulated( 0.0 )
   {
     dual = background = true;
@@ -104,6 +104,13 @@ struct es_explosion_t : public holy_power_consumer_t<paladin_melee_attack_t>
 
     if ( p -> talents.executioners_wrath -> ok() )
       aoe = -1;
+
+    // apparently base damage is affected
+    affected_by.hand_of_light = true;
+    affected_by.divine_purpose = true;
+    affected_by.judgment = true;
+    affected_by.final_reckoning = true;
+    affected_by.reckoning = true;
   }
 
   double calculate_direct_amount( action_state_t* state ) const
