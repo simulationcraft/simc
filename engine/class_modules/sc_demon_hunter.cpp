@@ -6626,6 +6626,7 @@ void demon_hunter_t::apl_havoc()
   apl_normal->add_action( "eye_beam,if=!variable.waiting_for_momentum&(active_enemies>desired_targets|raid_event.adds.in>15"
                                     "&(!variable.use_eye_beam_fury_condition|spell_targets>1|fury<70)&!variable.waiting_for_agony_gaze)" );
   apl_normal->add_action( "blade_dance,if=variable.blade_dance");
+  apl_normal->add_action( "throw_glaive,if=talent.soulrend&spell_targets>(2-talent.furious_throws)" );
   apl_normal->add_action( "felblade,if=fury.deficit>=40");
   apl_normal->add_action( "sigil_of_flame,if=active_enemies>desired_targets" );
   apl_normal->add_action( "annihilation,if=(talent.demon_blades|!variable.waiting_for_momentum|fury.deficit<30|buff.metamorphosis.remains<5)&!variable.pooling_for_blade_dance" );
@@ -6647,11 +6648,12 @@ void demon_hunter_t::apl_havoc()
   apl_demonic->add_action( "death_sweep,if=variable.blade_dance");
   apl_demonic->add_action( "fel_barrage,if=active_enemies>desired_targets|raid_event.adds.in>30" );
   apl_demonic->add_action( "glaive_tempest,if=active_enemies>desired_targets|raid_event.adds.in>10" );
-  apl_demonic->add_action( "throw_glaive,if=conduit.serrated_glaive.enabled&cooldown.eye_beam.remains<6&!buff.metamorphosis.up&!debuff.exposed_wound.up" );
+  apl_demonic->add_action( "throw_glaive,if=(conduit.serrated_glaive|talent.serrated_glaive)&cooldown.eye_beam.remains<6&!buff.metamorphosis.up&!debuff.exposed_wound.up" );
   apl_demonic->add_action( "eye_beam,if=active_enemies>desired_targets|raid_event.adds.in>25-talent.cycle_of_hatred*10"
                                      "&(!variable.use_eye_beam_fury_condition|spell_targets>1|fury<70)&!variable.waiting_for_agony_gaze" );
   apl_demonic->add_action( "blade_dance,if=variable.blade_dance&!cooldown.metamorphosis.ready"
                                         "&(cooldown.eye_beam.remains>5|(raid_event.adds.in>cooldown&raid_event.adds.in<25))" );
+  apl_demonic->add_action( "throw_glaive,if=talent.soulrend&spell_targets>(2-talent.furious_throws)" );
   apl_demonic->add_action( "annihilation,if=!variable.pooling_for_blade_dance" );
   apl_demonic->add_action( "immolation_aura,if=!buff.immolation_aura.up" );
   apl_demonic->add_action( "felblade,if=fury.deficit>=40" );
