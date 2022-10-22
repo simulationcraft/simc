@@ -10061,7 +10061,7 @@ void rogue_t::init_spells()
   // Generic Covenant
   legendary.deathspike                = find_runeforge_legendary( "Deathspike" );
   legendary.obedience                 = find_runeforge_legendary( "Obedience" );
-  legendary.resounding_clarity        = find_runeforge_legendary( "Resounding Clarity", false, true );
+  legendary.resounding_clarity        = find_runeforge_legendary( "Resounding Clarity" );
   legendary.toxic_onslaught           = find_runeforge_legendary( "Toxic Onslaught" );
 
   // Assassination
