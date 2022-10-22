@@ -5759,16 +5759,10 @@ struct death_coil_t : public death_knight_spell_t
     }
 
     // Currently Rotten Touch only triggers on the main target
-    if ( !p() -> bugs && p() -> talent.unholy.rotten_touch.ok() && p() -> buffs.sudden_doom -> check() )
+    if ( p() -> talent.unholy.rotten_touch.ok() && p() -> buffs.sudden_doom -> check() )
     {
       get_td( target ) -> debuff.rotten_touch -> trigger();
     }
-    // Rotten touch is bugged as of 10/14/22, applying on every death coil cast.
-    if ( p() -> bugs && p() -> talent.unholy.rotten_touch.ok() )
-    {
-      get_td( target ) -> debuff.rotten_touch -> trigger();
-    }
-
     p() -> buffs.sudden_doom -> decrement();
   }
 
