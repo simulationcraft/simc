@@ -6621,8 +6621,8 @@ void demon_hunter_t::apl_havoc()
                                      "&(!variable.use_eye_beam_fury_condition|spell_targets>1|fury<70)&!variable.waiting_for_agony_gaze" );
   apl_demonic->add_action( "blade_dance,if=variable.blade_dance&!cooldown.metamorphosis.ready"
                                         "&(cooldown.eye_beam.remains>5|(raid_event.adds.in>cooldown&raid_event.adds.in<25))" );
-  apl_demonic->add_action( "immolation_aura,if=!buff.immolation_aura.up" );
   apl_demonic->add_action( "annihilation,if=!variable.pooling_for_blade_dance" );
+  apl_demonic->add_action( "immolation_aura,if=!buff.immolation_aura.up" );
   apl_demonic->add_action( "felblade,if=fury.deficit>=40" );
   apl_demonic->add_action( "sigil_of_flame,if=active_enemies>desired_targets" );
   apl_demonic->add_action( "chaos_strike,if=!variable.pooling_for_blade_dance&!variable.pooling_for_eye_beam");
