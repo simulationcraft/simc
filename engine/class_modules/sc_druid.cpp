@@ -4600,7 +4600,7 @@ struct primal_wrath_t : public cat_finisher_t<>
     }
 
     rip = p->get_secondary_action_n<rip_t>( "rip_primal", p->find_spell( 1079 ), "" );
-    rip->dot_duration = base_dur;
+    rip->dot_duration = rip_dur;
     rip->dual = rip->background = true;
     rip->stats = stats;
     rip->base_costs[ RESOURCE_ENERGY ] = 0;
@@ -11258,9 +11258,9 @@ void druid_t::init()
   }
 }
 
-bool druid_t::validate_fight_style( fight_style_e style ) const
+bool druid_t::validate_fight_style( fight_style_e /* style */) const
 {
-  if ( SC_BETA == 0 && SC_MAJOR_VERSION == "1000" )
+  if ( SC_BETA == 0 && strcmp( SC_MAJOR_VERSION, "1000" ) == 0 )
   {
     sim->error( "Prepatch {} sims are untested and not supported. Sim at your own risk!",
                 util::specialization_string( specialization() ) );
