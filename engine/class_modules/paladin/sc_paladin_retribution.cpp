@@ -107,6 +107,10 @@ struct es_explosion_t : public paladin_spell_t
 
     // apparently base damage is affected
     affected_by.hand_of_light = true;
+    affected_by.divine_purpose = true;
+    affected_by.judgment = true;
+    affected_by.final_reckoning = true;
+    affected_by.reckoning = true;
   }
 
   double calculate_direct_amount( action_state_t* state ) const
