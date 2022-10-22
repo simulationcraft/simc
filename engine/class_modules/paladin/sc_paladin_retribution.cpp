@@ -91,12 +91,12 @@ struct crusade_t : public paladin_spell_t
 
 // Execution Sentence =======================================================
 
-struct es_explosion_t : public holy_power_consumer_t<paladin_melee_attack_t>
+struct es_explosion_t : public paladin_spell_t
 {
   double accumulated;
 
   es_explosion_t( paladin_t* p ) :
-    holy_power_consumer_t( "execution_sentence", p, p -> find_spell( 387113 ) ),
+    paladin_spell_t( "execution_sentence", p, p -> find_spell( 387113 ) ),
     accumulated( 0.0 )
   {
     dual = background = true;
