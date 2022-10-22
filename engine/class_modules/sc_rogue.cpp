@@ -2022,7 +2022,7 @@ public:
   void trigger_venomous_wounds( const action_state_t* );
   void trigger_blade_flurry( const action_state_t* );
   void trigger_ruthlessness_cp( const action_state_t* );
-  void trigger_combo_point_gain( int, gain_t* gain = nullptr );
+  void trigger_combo_point_gain( int, gain_t* gain = nullptr, bool requires_reaction = false );
   void trigger_elaborate_planning( const action_state_t* );
   void trigger_alacrity( const action_state_t* );
   void trigger_deepening_shadows( const action_state_t* );
@@ -2310,8 +2310,6 @@ public:
 
       if ( ab::energize_type != action_energize::NONE && ab::energize_resource == RESOURCE_COMBO_POINT )
       {
-        p()->buffs.shadow_techniques->cancel(); // Remove tracking mechanism after CP builders
-
         if ( affected_by.shadow_blades_cp && p()->buffs.shadow_blades->up() )
         {
           trigger_combo_point_gain( as<int>( p()->buffs.shadow_blades->data().effectN( 2 ).base_value() ), p()->gains.shadow_blades );
@@ -3346,7 +3344,7 @@ struct between_the_eyes_t : public rogue_attack_t
         if ( rng().roll( p()->talent.outlaw.ace_up_your_sleeve->effectN( 1 ).percent() * cp_spend ) )
         {
           trigger_combo_point_gain( as<int>( p()->talent.outlaw.ace_up_your_sleeve->effectN( 2 ).base_value() ),
-                                    p()->gains.ace_up_your_sleeve );
+                                    p()->gains.ace_up_your_sleeve, true );
         }
       }
     }
@@ -4886,7 +4884,6 @@ struct shadow_dance_t : public rogue_spell_t
 
     if ( p()->talent.subtlety.the_first_dance->ok() )
     {
-      p()->buffs.shadow_techniques->cancel(); // Remove tracking mechanism after CP builders
       trigger_combo_point_gain( as<int>( p()->talent.subtlety.the_first_dance->effectN( 1 ).base_value() ),
                                 p()->gains.the_first_dance );
     }
@@ -7421,7 +7418,8 @@ void actions::rogue_action_t<Base>::trigger_seal_fate( const action_state_t* sta
   if ( !p()->rng().roll( p()->talent.rogue.seal_fate->effectN( 1 ).percent() ) )
     return;
 
-  trigger_combo_point_gain( as<int>( p()->talent.rogue.seal_fate->effectN( 2 ).trigger()->effectN( 1 ).base_value() ), p()->gains.seal_fate );
+  trigger_combo_point_gain( as<int>( p()->talent.rogue.seal_fate->effectN( 2 ).trigger()->effectN( 1 ).base_value() ),
+                            p()->gains.seal_fate, true );
 }
 
 template <typename Base>
@@ -7578,8 +7576,11 @@ void actions::rogue_action_t<Base>::trigger_blade_flurry( const action_state_t* 
 }
 
 template <typename Base>
-void actions::rogue_action_t<Base>::trigger_combo_point_gain( int cp, gain_t* gain )
+void actions::rogue_action_t<Base>::trigger_combo_point_gain( int cp, gain_t* gain, bool requires_reaction )
 {
+  if ( !requires_reaction && p()->buffs.shadow_techniques->check() )
+    p()->buffs.shadow_techniques->cancel();
+
   p()->resource_gain( RESOURCE_COMBO_POINT, cp, gain, this );
 }
 
@@ -7657,7 +7658,8 @@ void actions::rogue_action_t<Base>::trigger_shadow_techniques( const action_stat
     double energy_gain = p()->spec.shadow_techniques_energize->effectN( 2 ).base_value() +
                          p()->talent.subtlety.improved_shadow_techniques->effectN( 1 ).base_value();
     p()->resource_gain( RESOURCE_ENERGY, energy_gain, p()->gains.shadow_techniques, state->action );
-    trigger_combo_point_gain( as<int>( p()->spec.shadow_techniques_energize->effectN( 1 ).base_value() ), p()->gains.shadow_techniques );
+    trigger_combo_point_gain( as<int>( p()->spec.shadow_techniques_energize->effectN( 1 ).base_value() ),
+                              p()->gains.shadow_techniques, true );
 
     if ( p()->talent.subtlety.stiletto_staccato->ok() )
     {
@@ -8973,6 +8975,7 @@ void rogue_t::init_action_list()
     cds->add_action( "echoing_reprimand,if=(!talent.shadow_focus.enabled|!stealthed.all|spell_targets.shuriken_storm>=4)&variable.snd_condition&combo_points.deficit>=2&(variable.use_priority_rotation|spell_targets.shuriken_storm<=4|runeforge.resounding_clarity|talent.resounding_clarity)" );
     cds->add_action( "shuriken_tornado,if=(talent.shadow_focus.enabled|spell_targets.shuriken_storm>=2)&variable.snd_condition&buff.symbols_of_death.up&combo_points<=2&(!buff.premeditation.up|spell_targets.shuriken_storm>4)", "With SF, if not already done, use Tornado with SoD up.");
     cds->add_action( "shadow_dance,if=!buff.shadow_dance.up&fight_remains<=8+talent.subterfuge.enabled" );
+    cds->add_action( "thistle_tea,if=!buff.thistle_tea.up&(energy.deficit>=100|cooldown.thistle_tea.charges_fractional>=2.75&energy.deficit>=40)" );
     cds->add_action( "fleshcraft,if=(soulbind.pustule_eruption|soulbind.volatile_solvent)&energy.deficit>=30&!stealthed.all&buff.symbols_of_death.down" );
 
     // Non-spec stuff with lower prio
@@ -9001,7 +9004,7 @@ void rogue_t::init_action_list()
     stealth_cds->add_action( "variable,name=shd_combo_points,value=combo_points.deficit<=1,if=variable.use_priority_rotation&spell_targets.shuriken_storm>=4" );
     stealth_cds->add_action( "variable,name=shd_combo_points,value=combo_points.deficit<=1,if=spell_targets.shuriken_storm=4" );
     stealth_cds->add_action( "shadow_dance,if=((runeforge.the_rotten|talent.the_rotten)&cooldown.symbols_of_death.remains<=8|variable.shd_combo_points&(buff.symbols_of_death.remains>=1.2|variable.shd_threshold)|buff.chaos_bane.up|spell_targets.shuriken_storm>=4&cooldown.symbols_of_death.remains>10)&(buff.perforated_veins.stack<4|spell_targets.shuriken_storm>3)", "Dance during Symbols or above threshold." );
-    stealth_cds->add_action( "shadow_dance,if=variable.shd_combo_points&fight_remains<cooldown.symbols_of_death.remains|!talent.enveloping_shadows.enabled", "Burn Dances charges if you play Dark Shadows/Alacrity or before the fight ends if SoD won't be ready in time." );
+    stealth_cds->add_action( "shadow_dance,if=variable.shd_combo_points&fight_remains<cooldown.symbols_of_death.remains", "Burn Dances charges if the fight ends and SoD won't be ready in time." );
 
     // Stealthed Rotation
     action_priority_list_t* stealthed = get_action_priority_list( "stealthed", "Stealthed Rotation" );
@@ -9009,7 +9012,7 @@ void rogue_t::init_action_list()
     stealthed->add_action( "call_action_list,name=finish,if=variable.effective_combo_points>=cp_max_spend" );
     stealthed->add_action( "call_action_list,name=finish,if=buff.shuriken_tornado.up&combo_points.deficit<=2", "Finish at 3+ CP without DS / 4+ with DS with Shuriken Tornado buff up to avoid some CP waste situations." );
     stealthed->add_action( "call_action_list,name=finish,if=spell_targets.shuriken_storm>=4&variable.effective_combo_points>=4", "Also safe to finish at 4+ CP with exactly 4 targets. (Same as outside stealth.)" );
-    stealthed->add_action( "call_action_list,name=finish,if=combo_points.deficit<=1-(talent.deeper_stratagem.enabled&buff.vanish.up)", "Finish at 4+ CP without DS, 5+ with DS, and 6 with DS after Vanish" );
+    stealthed->add_action( "call_action_list,name=finish,if=combo_points.deficit<=(talent.deeper_stratagem.enabled+talent.secret_stratagem.enabled+talent.seal_fate.enabled)" );
     stealthed->add_action( "shadowstrike,if=stealthed.sepsis&spell_targets.shuriken_storm<4" );
     stealthed->add_action( "backstab,if=conduit.perforated_veins.rank>=8&buff.perforated_veins.stack>=5&buff.shadow_dance.remains>=3&buff.shadow_blades.up&(spell_targets.shuriken_storm<=3|variable.use_priority_rotation)&(buff.shadow_blades.remains<=buff.shadow_dance.remains+2|!covenant.venthyr&!talent.flagellation)", "Backstab during Shadow Dance when on high PV stacks and Shadow Blades is up.");
     stealthed->add_action( "shiv,if=talent.nightstalker.enabled&runeforge.tiny_toxic_blade&spell_targets.shuriken_storm<5");
