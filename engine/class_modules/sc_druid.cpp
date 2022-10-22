@@ -1305,6 +1305,7 @@ struct denizen_of_the_dream_t : public pet_t
     fey_missile_t( pet_t* p ) : spell_t( "fey_missile", p, p->find_spell( 188046 ) )
     {
       name_str_reporting = "fey_missile";
+      cooldown->hasted = true;
 
       auto proxy = debug_cast<druid_t*>( p->owner )->active.denizen_of_the_dream;
       auto it = range::find( proxy->child_action, data().id(), &action_t::id );
