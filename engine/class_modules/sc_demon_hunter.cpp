@@ -321,7 +321,7 @@ public:
 
       player_talent_t demonic_appetite;
       player_talent_t improved_fel_rush;
-      player_talent_t first_blood;                // NYI
+      player_talent_t first_blood;
       player_talent_t furious_throws;
       player_talent_t burning_hatred;
 
@@ -359,7 +359,7 @@ public:
       player_talent_t glaive_tempest;
       player_talent_t fel_barrage;
       player_talent_t cycle_of_hatred;
-      player_talent_t fodder_to_the_flame;        // NYI
+      player_talent_t fodder_to_the_flame;
       player_talent_t elysian_decree;
       player_talent_t soulrend;
 
@@ -462,6 +462,8 @@ public:
     // Cross-Expansion Override Spells
     const spell_data_t* elysian_decree;
     const spell_data_t* elysian_decree_damage;
+    const spell_data_t* fodder_to_the_flame;
+    const spell_data_t* fodder_to_the_flame_damage;
     const spell_data_t* the_hunt;
 
   } spell;
@@ -3484,13 +3486,14 @@ struct fodder_to_the_flame_cb_t : public dbc_proc_callback_t
     fiery_brand_t* demonic_oath_brand;
 
     fodder_to_the_flame_damage_t( util::string_view name, demon_hunter_t* p )
-      : demon_hunter_spell_t( name, p, p->find_spell( 350631 ) ),
+      : demon_hunter_spell_t( name, p, p->spell.fodder_to_the_flame_damage ),
       demonic_oath_brand( nullptr )
     {
       background = true;
       aoe = -1;
-      reduced_aoe_targets = p->find_spell( 350570 )->effectN( 1 ).base_value();
+      reduced_aoe_targets = p->spell.fodder_to_the_flame->effectN( 1 ).base_value();
 
+      // DFALPHA TOCHECK -- Does this work for prepatch talent version?
       if ( p->legendary.demonic_oath->ok() )
       {
         demonic_oath_brand = p->get_background_action<fiery_brand_t>( "fiery_brand_demonic_oath", "", true );
@@ -3528,7 +3531,7 @@ struct fodder_to_the_flame_cb_t : public dbc_proc_callback_t
     };
 
     fodder_to_the_flame_spawn_trigger_t( util::string_view name, demon_hunter_t* p )
-      : demon_hunter_spell_t( name, p, p->find_spell( 350570 ) )
+      : demon_hunter_spell_t( name, p, p->spell.fodder_to_the_flame )
     {
       quiet = true;
     }
@@ -3867,6 +3870,18 @@ struct blade_dance_base_t : public demon_hunter_attack_t
       }
 
       return tl.size();
+    }
+
+    double action_multiplier() const override
+    {
+      double am = demon_hunter_attack_t::action_multiplier();
+
+      if ( from_first_blood )
+      {
+        am *= 1.0 + p()->talent.havoc.first_blood->effectN( 1 ).percent();
+      }
+
+      return am;
     }
 
     void impact( action_state_t* s ) override
@@ -5933,11 +5948,11 @@ void demon_hunter_t::init_special_effects()
 {
   base_t::init_special_effects();
 
-  if ( covenant.fodder_to_the_flame->ok() )
+  if ( covenant.fodder_to_the_flame->ok() || talent.havoc.fodder_to_the_flame->ok() )
   {
     auto const fodder_to_the_flame_driver = new special_effect_t( this );
     fodder_to_the_flame_driver->name_str = "fodder_to_the_flame_driver";
-    fodder_to_the_flame_driver->spell_id = 350570;
+    fodder_to_the_flame_driver->spell_id = spell.fodder_to_the_flame->id();
     special_effects.push_back( fodder_to_the_flame_driver );
 
     auto cb = new actions::spells::fodder_to_the_flame_cb_t( this, *fodder_to_the_flame_driver );
@@ -6264,7 +6279,7 @@ void demon_hunter_t::init_spells()
     spell.elysian_decree = talent.havoc.elysian_decree;
     spell.elysian_decree_damage = find_spell( 389860 );
   }
-  else if ( covenant.elysian_decree )
+  else if ( covenant.elysian_decree->ok() )
   {
     spell.elysian_decree = covenant.elysian_decree;
     spell.elysian_decree_damage = find_spell( 307046 );
@@ -6273,6 +6288,22 @@ void demon_hunter_t::init_spells()
   {
     spell.elysian_decree = spell_data_t::not_found();
     spell.elysian_decree_damage = spell_data_t::not_found();
+  }
+
+  if ( talent.havoc.fodder_to_the_flame->ok() || talent.vengeance.fodder_to_the_flame->ok() )
+  {
+    spell.fodder_to_the_flame = talent.havoc.fodder_to_the_flame;
+    spell.fodder_to_the_flame_damage = find_spell( 350631 ); // Reused
+  }
+  else if ( covenant.fodder_to_the_flame->ok() )
+  {
+    spell.fodder_to_the_flame = find_spell( 350570 );
+    spell.fodder_to_the_flame_damage = find_spell( 350631 );
+  }
+  else
+  {
+    spell.fodder_to_the_flame = spell_data_t::not_found();
+    spell.fodder_to_the_flame_damage = spell_data_t::not_found();
   }
 
   if ( talent.demon_hunter.the_hunt->ok() )
@@ -6555,8 +6586,9 @@ void demon_hunter_t::apl_havoc()
 
   action_priority_list_t* apl_normal = get_action_priority_list( "normal" );
   apl_normal->add_action( "eye_beam,if=runeforge.agony_gaze&(active_enemies>desired_targets|raid_event.adds.in>15)&dot.sinful_brand.ticking&dot.sinful_brand.remains<=gcd" );
-  apl_normal->add_action( "fel_barrage,if=active_enemies>desired_targets|raid_event.adds.in>30");
+  apl_normal->add_action( "essence_break" );
   apl_normal->add_action( "death_sweep,if=variable.blade_dance" );
+  apl_normal->add_action( "fel_barrage,if=active_enemies>desired_targets|raid_event.adds.in>30" );
   apl_normal->add_action( "immolation_aura,if=!buff.immolation_aura.up" );
   apl_normal->add_action( "glaive_tempest,if=!variable.waiting_for_momentum&(active_enemies>desired_targets|raid_event.adds.in>10)" );
   apl_normal->add_action( "throw_glaive,if=conduit.serrated_glaive.enabled&cooldown.eye_beam.remains<6&!buff.metamorphosis.up&!debuff.exposed_wound.up" );
@@ -6564,7 +6596,6 @@ void demon_hunter_t::apl_havoc()
                                     "&(!variable.use_eye_beam_fury_condition|spell_targets>1|fury<70)&!variable.waiting_for_agony_gaze)" );
   apl_normal->add_action( "blade_dance,if=variable.blade_dance");
   apl_normal->add_action( "felblade,if=fury.deficit>=40");
-  apl_normal->add_action( "essence_break" );
   apl_normal->add_action( "sigil_of_flame,if=active_enemies>desired_targets" );
   apl_normal->add_action( "annihilation,if=(talent.demon_blades|!variable.waiting_for_momentum|fury.deficit<30|buff.metamorphosis.remains<5)&!variable.pooling_for_blade_dance" );
   apl_normal->add_action( "chaos_strike,if=(talent.demon_blades|!variable.waiting_for_momentum|fury.deficit<30)&!variable.pooling_for_meta&!variable.pooling_for_blade_dance");
@@ -6581,6 +6612,7 @@ void demon_hunter_t::apl_havoc()
   action_priority_list_t* apl_demonic = get_action_priority_list( "demonic" );
   apl_demonic->add_action( "eye_beam,if=runeforge.agony_gaze&(active_enemies>desired_targets|raid_event.adds.in>25-talent.cycle_of_hatred*10)"
                                              "&dot.sinful_brand.ticking&dot.sinful_brand.remains<=gcd" );
+  apl_demonic->add_action( "essence_break" );
   apl_demonic->add_action( "death_sweep,if=variable.blade_dance");
   apl_demonic->add_action( "fel_barrage,if=active_enemies>desired_targets|raid_event.adds.in>30" );
   apl_demonic->add_action( "glaive_tempest,if=active_enemies>desired_targets|raid_event.adds.in>10" );
@@ -6592,7 +6624,6 @@ void demon_hunter_t::apl_havoc()
   apl_demonic->add_action( "immolation_aura,if=!buff.immolation_aura.up" );
   apl_demonic->add_action( "annihilation,if=!variable.pooling_for_blade_dance" );
   apl_demonic->add_action( "felblade,if=fury.deficit>=40" );
-  apl_demonic->add_action( "essence_break" );
   apl_demonic->add_action( "sigil_of_flame,if=active_enemies>desired_targets" );
   apl_demonic->add_action( "chaos_strike,if=!variable.pooling_for_blade_dance&!variable.pooling_for_eye_beam");
   apl_demonic->add_action( "fel_rush,if=!talent.momentum&talent.demon_blades&!cooldown.eye_beam.ready&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))" );
