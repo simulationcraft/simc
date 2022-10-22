@@ -1306,7 +1306,7 @@ struct vanquishers_hammer_t : public paladin_melee_attack_t
 struct divine_toll_t : public paladin_spell_t
 {
   divine_toll_t( paladin_t* p, util::string_view options_str )
-    : paladin_spell_t( "divine_toll", p, p->talents.divine_toll )
+    : paladin_spell_t( "divine_toll", p, p->talents.divine_toll->ok() ? p->talents.divine_toll : p->covenant.kyrian )
   {
     parse_options( options_str );
 
