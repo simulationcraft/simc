@@ -7902,6 +7902,9 @@ struct starfall_t : public druid_spell_t
     if ( p()->buff.touch_the_cosmos->check() )
       p()->buff.touch_the_cosmos_starfall->trigger();
 
+    if ( p()->bugs )
+      p()->buff.touch_the_cosmos->expire();
+
     p()->buff.gathering_starstuff->trigger();
 
     if ( is_free_proc() )
@@ -8124,6 +8127,9 @@ struct starsurge_t : public druid_spell_t
     }
 
     druid_spell_t::execute();
+
+    if ( p()->bugs )
+      p()->buff.touch_the_cosmos->expire();
 
     if ( goldrinn && rng().roll( p()->talent.power_of_goldrinn->proc_chance() ) )
       goldrinn->execute_on_target( target );
