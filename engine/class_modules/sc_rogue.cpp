@@ -1751,7 +1751,7 @@ public:
 
     if ( p()->talent.rogue.nightstalker->ok() )
     {
-      affected_by.nightstalker = p()->buffs.nightstalker->is_affecting_direct( ab::s_data );
+      affected_by.nightstalker = p()->buffs.nightstalker->is_affecting( ab::s_data );
     }
 
     if ( ab::base_costs[ RESOURCE_COMBO_POINT ] > 0 )
@@ -2133,6 +2133,13 @@ public:
       m *= 1.0 + p()->cache.mastery() * p()->mastery.potent_assassin->effectN( 2 ).mastery_value();
     }
 
+    // DFALPHA TOCHECK -- Currently does nothing even after the pmultiplier removal
+    // Apply Nightstalker periodic damage increase via the corresponding driver spell.
+    //if ( affected_by.nightstalker && p()->stealthed( STEALTH_BASIC | STEALTH_SHADOWDANCE ) )
+    //{
+    //  m *= p()->buffs.nightstalker->periodic_mod.multiplier;
+    //}
+
     return m;
   }
 
@@ -2163,6 +2170,12 @@ public:
     if ( affected_by.lethal_dose )
     {
       int lethal_dose_count = tdata->total_bleeds() + tdata->total_poisons();
+      // DFALPHA TOCHECK -- What does and doesn't trigger this for retail?
+      if ( p()->bugs )
+      {
+        lethal_dose_count -= ( tdata->dots.serrated_bone_spike->is_ticking() +
+                               tdata->dots.crimson_tempest->is_ticking() );
+      }
       m *= 1.0 + ( p()->talent.assassination.lethal_dose->effectN( 1 ).percent() * lethal_dose_count );
     }
 
@@ -2178,13 +2191,14 @@ public:
   {
     double m = ab::composite_persistent_multiplier( state );
 
+    // DFALPHA TOCHECK -- Persistent multipliers are currently disabled as of the latest build
     // Apply Nightstalker as a Persistent Multiplier for things that snapshot
     // This appears to be driven by the dummy effect #2 and there is no whitelist.
     // This can and will cause double dips on direct damage if a spell is whitelisted in effect #1.
-    if ( p()->talent.rogue.nightstalker->ok() && snapshots_nightstalker() && p()->stealthed( STEALTH_BASIC | STEALTH_SHADOWDANCE ) )
-    {
-      m *= p()->buffs.nightstalker->periodic_mod.multiplier;
-    }
+    //if ( p()->talent.rogue.nightstalker->ok() && snapshots_nightstalker() && p()->stealthed( STEALTH_BASIC | STEALTH_SHADOWDANCE ) )
+    //{
+    //  m *= p()->buffs.nightstalker->periodic_mod.multiplier;
+    //}
 
     return m;
   }
@@ -10574,10 +10588,15 @@ void rogue_t::create_buffs()
     ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
     ->set_duration( sim->max_time / 2 );
 
-  // DFALPHA -- This still seems very messed up and still appears to have a 50% value
+  // DFALPHA -- This still seems very messed up and still appears to have a 50% value in data
+  //            2022-10-21 -- Appears hotfixed to not use this value in latest build but unsure how
   buffs.nightstalker = make_buff<damage_buff_t>( this, "nightstalker", spell.nightstalker_buff )
-    ->set_periodic_mod( spell.nightstalker_buff, 2 ) // Dummy Value
-    ->apply_affecting_aura( spec.subtlety_rogue ); // DFALPHA -- Seems messed up
+    ->set_periodic_mod( spell.nightstalker_buff, 2 ); // Dummy Value
+  // 2022-10-21 -- Manually overwrite to maintain whitelist until we figure out what is going on
+  buffs.nightstalker->direct_mod.multiplier = 1.0 + talent.rogue.nightstalker->effectN(1).percent();
+  buffs.nightstalker->periodic_mod.multiplier = 1.0 + talent.rogue.nightstalker->effectN( 1 ).percent();
+  // 2022-10-21 -- Appears non-functional now even though it still exists in the passive
+  //  ->apply_affecting_aura( spec.subtlety_rogue ); // DFALPHA -- Seems messed up
 
   buffs.subterfuge = new buffs::subterfuge_t( this );
 
