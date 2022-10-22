@@ -4571,7 +4571,7 @@ struct primal_wrath_t : public cat_finisher_t<>
 
   rip_t* rip;
   action_t* wounds;
-  timespan_t base_dur;
+  timespan_t rip_dur;
 
   primal_wrath_t( druid_t* p, std::string_view opt ) : primal_wrath_t( p, "primal_wrath", p->talent.primal_wrath, opt )
   {}  // TODO: remove ctor overload when no longer needed
@@ -4579,7 +4579,7 @@ struct primal_wrath_t : public cat_finisher_t<>
   primal_wrath_t( druid_t* p, std::string_view n, const spell_data_t* s, std::string_view opt )
     : cat_finisher_t( n, p, s, opt ),
       wounds( nullptr ),
-      base_dur( timespan_t::from_seconds( data().effectN( 2 ).base_value() ) )
+      rip_dur( timespan_t::from_seconds( data().effectN( 2 ).base_value() ) )
   {
     aoe = -1;
 
@@ -4587,8 +4587,20 @@ struct primal_wrath_t : public cat_finisher_t<>
     // Manually set true so bloodtalons is decremented and we get proper snapshot reporting
     snapshots.bloodtalons = true;
 
+    if ( p->talent.circle_of_life_and_death.ok() )
+    {
+      rip_dur *= 1.0 + p->query_aura_effect(
+        p->talent.circle_of_life_and_death, A_ADD_PCT_MODIFIER, P_EFFECT_2, &data() )->percent();
+    }
+
+    if ( p->talent.veinripper.ok() )
+    {
+      rip_dur *= 1.0 + p->query_aura_effect(
+          p->talent.veinripper, A_ADD_PCT_MODIFIER, P_EFFECT_2, &data() )->percent();
+    }
+
     rip = p->get_secondary_action_n<rip_t>( "rip_primal", p->find_spell( 1079 ), "" );
-    rip->dot_duration = timespan_t::from_seconds( data().effectN( 2 ).base_value() );
+    rip->dot_duration = base_dur;
     rip->dual = rip->background = true;
     rip->stats = stats;
     rip->base_costs[ RESOURCE_ENERGY ] = 0;
@@ -4601,13 +4613,6 @@ struct primal_wrath_t : public cat_finisher_t<>
       wounds = p->get_secondary_action<tear_open_wounds_t>( "tear_open_wounds" );
       wounds->background = true;
       add_child( wounds );
-    }
-
-    if ( p->talent.circle_of_life_and_death.ok() )
-    {
-      base_dur *=
-          1.0 + p->query_aura_effect( p->talent.circle_of_life_and_death, A_ADD_PCT_MODIFIER, P_EFFECT_2, &data() )
-                    ->percent();
     }
   }
 
