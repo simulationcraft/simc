@@ -4886,6 +4886,7 @@ struct shadow_dance_t : public rogue_spell_t
 
     if ( p()->talent.subtlety.the_first_dance->ok() )
     {
+      p()->buffs.shadow_techniques->cancel(); // Remove tracking mechanism after CP builders
       trigger_combo_point_gain( as<int>( p()->talent.subtlety.the_first_dance->effectN( 1 ).base_value() ),
                                 p()->gains.the_first_dance );
     }
