@@ -170,6 +170,7 @@ void frost( player_t* p )
   action_priority_list_t* breath = p->get_action_priority_list( "breath" );
   action_priority_list_t* cooldowns = p->get_action_priority_list( "cooldowns" );
   action_priority_list_t* cold_heart = p->get_action_priority_list( "cold_heart" );
+  action_priority_list_t* covenants = p->get_action_priority_list( "covenants" );
   action_priority_list_t* obliteration = p->get_action_priority_list( "obliteration" );
   action_priority_list_t* single_target = p->get_action_priority_list( "single_target" );
   action_priority_list_t* racials = p->get_action_priority_list( "racials" );
@@ -209,6 +210,7 @@ void frost( player_t* p )
   default_->add_action( "call_action_list,name=trinkets", "Choose Action list to run" );
   default_->add_action( "call_action_list,name=cooldowns" );
   default_->add_action( "call_action_list,name=racials" );
+  default_->add_action( "call_action_list,name=covenants" );
   default_->add_action( "call_action_list,name=cold_heart,if=talent.cold_heart&(!buff.killing_machine.up|talent.breath_of_sindragosa)&((debuff.razorice.stack=5|!death_knight.runeforge.razorice&!talent.glacial_advance&!talent.avalanche)|fight_remains<=gcd)" );
   default_->add_action( "run_action_list,name=breath_oblit,if=buff.breath_of_sindragosa.up&talent.obliteration&buff.pillar_of_frost.up" );
   default_->add_action( "run_action_list,name=breath,if=buff.breath_of_sindragosa.up&(!talent.obliteration|talent.obliteration&!buff.pillar_of_frost.up)" );
@@ -274,6 +276,16 @@ void frost( player_t* p )
   cold_heart->add_action( "chains_of_ice,if=!talent.obliteration&!death_knight.runeforge.fallen_crusader&buff.cold_heart.stack>=10&!buff.pillar_of_frost.up&cooldown.pillar_of_frost.remains>20" );
   cold_heart->add_action( "chains_of_ice,if=talent.obliteration&!buff.pillar_of_frost.up&(buff.cold_heart.stack>=14&(buff.unholy_strength.up|buff.chaos_bane.up)|buff.cold_heart.stack>=19|cooldown.pillar_of_frost.remains<3&buff.cold_heart.stack>=14)" );
 
+  covenants->add_action( "deaths_due,if=(variable.rw_buffs&cooldown.remorseless_winter.remains|!variable.rw_buffs)&(!talent.obliteration|talent.obliteration&active_enemies>=2&cooldown.pillar_of_frost.remains|active_enemies=1)&(variable.st_planning|variable.adds_remain)", "Covenant Abilities" );
+  covenants->add_action( "swarming_mist,if=runic_power.deficit>13&cooldown.pillar_of_frost.remains<3&!talent.breath_of_sindragosa&variable.st_planning" );
+  covenants->add_action( "swarming_mist,if=!talent.breath_of_sindragosa&variable.adds_remain" );
+  covenants->add_action( "swarming_mist,if=talent.breath_of_sindragosa&(buff.breath_of_sindragosa.up&(variable.st_planning&runic_power.deficit>40|variable.adds_remain&runic_power.deficit>60|variable.adds_remain&raid_event.adds.remains<9&raid_event.adds.exists)|!buff.breath_of_sindragosa.up&cooldown.breath_of_sindragosa.remains)" );
+  covenants->add_action( "abomination_limb,if=cooldown.pillar_of_frost.remains<gcd*2&variable.st_planning&(talent.breath_of_sindragosa&runic_power>65&cooldown.breath_of_sindragosa.remains<2|!talent.breath_of_sindragosa)" );
+  covenants->add_action( "abomination_limb,if=variable.adds_remain" );
+  covenants->add_action( "shackle_the_unworthy,if=variable.st_planning&(cooldown.pillar_of_frost.remains<3|talent.icecap)" );
+  covenants->add_action( "shackle_the_unworthy,if=variable.adds_remain" );
+  covenants->add_action( "fleshcraft,if=!buff.pillar_of_frost.up&(soulbind.pustule_eruption|soulbind.volatile_solvent&!buff.volatile_solvent_humanoid.up),interrupt_immediate=1,interrupt_global=1,interrupt_if=soulbind.volatile_solvent" );
+
   obliteration->add_action( "remorseless_winter,if=active_enemies>3", "Obliteration Active Rotation" );
   obliteration->add_action( "chill_streak,if=active_enemies>=2&active_enemies<=5&(!talent.cleaving_strikes|talent.cleaving_strikes&!death_and_decay.ticking)" );
   obliteration->add_action( "obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=buff.killing_machine.react&!variable.frostscythe_priority" );
@@ -318,6 +330,7 @@ void frost( player_t* p )
   trinkets->add_action( "use_item,slot=trinket2,if=(!trinket.2.has_use_buff&(trinket.1.cooldown.remains|!trinket.1.has_use_buff)|talent.pillar_of_frost&cooldown.pillar_of_frost.remains>20|!talent.pillar_of_frost)" );
 }
 //frost_apl_end
+
 //unholy_apl_start
 void unholy( player_t* p )
 {
