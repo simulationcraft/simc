@@ -1764,7 +1764,6 @@ struct eclipse_buff_t : public druid_buff_t<buff_t>
       is_solar( data().id() == p.spec.eclipse_solar->id() )
   {
     add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-    set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_DONE );
   }
 
   void trigger_sundered_firmament()
