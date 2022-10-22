@@ -2597,7 +2597,7 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
     player->sim->error( "Player {} has invalid talent tree hash {}{}{}", player->name(), talents_str, msg.empty() ? "" : ": ", msg );
   };
 
-  if ( player->talents_str.find_first_not_of( base64_char ) != std::string::npos )
+  if ( talents_str.find_first_not_of( base64_char ) != std::string::npos )
   {
     do_error();
     return;
