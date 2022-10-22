@@ -104,6 +104,9 @@ struct es_explosion_t : public paladin_spell_t
 
     if ( p -> talents.executioners_wrath -> ok() )
       aoe = -1;
+
+    // apparently base damage is affected
+    affected_by.hand_of_light = true;
   }
 
   double calculate_direct_amount( action_state_t* state ) const
