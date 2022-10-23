@@ -3198,7 +3198,10 @@ double paladin_t::composite_bonus_armor() const
 
   if ( buffs.shield_of_the_righteous->check() )
   {
-    ba += buffs.shield_of_the_righteous->value() * cache.strength();
+    double bonus = buffs.shield_of_the_righteous->value() * cache.strength();
+    if ( talents.faiths_armor->ok() )
+      bonus *= 1.0 + talents.faiths_armor->effectN( 1 ).percent();
+    ba += bonus;
   }
 
   return ba;
