@@ -4847,15 +4847,8 @@ struct bear_attack_t : public druid_attack_t<melee_attack_t>
         }
       }
 
-      if ( p()->talent.ursocs_guidance.ok() )
-      {
-        auto cdr = timespan_t::from_seconds( last_resource_cost / -20 );
-
-        if ( p()->talent.incarnation_bear.ok() )
-          p()->cooldown.incarnation_bear->adjust( cdr );
-        else
-          p()->cooldown.berserk_bear->adjust( cdr );
-      }
+      if ( p()->talent.ursocs_guidance.ok() && p()->talent.incarnation_bear.ok() )
+        p()->cooldown.incarnation_bear->adjust( timespan_t::from_seconds( last_resource_cost / -20 ) );
     }
   }
 
