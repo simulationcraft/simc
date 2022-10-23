@@ -5006,6 +5006,9 @@ struct ironfur_t : public bear_attack_t
     p()->buff.ironfur->trigger( stack, composite_buff_duration() );
 
     p()->buff.guardian_of_elune->expire();
+
+    if ( !is_free_proc() )
+      p()->buff.gory_fur->expire();
   }
 };
 
