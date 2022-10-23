@@ -2755,7 +2755,8 @@ public:
     for ( size_t i = 1; i <= s_data->effect_count(); i++ )
     {
       const auto& eff = s_data->effectN( i );
-      double val      = eff.percent();
+      double val      = eff.base_value();
+      double val_mul  = 0.01;
       bool mastery    = false;
 
       if ( eff.type() != E_APPLY_AURA )
@@ -2771,9 +2772,9 @@ public:
            !( eff.subtype() == A_MOD_AUTO_ATTACK_FROM_CASTER && is_auto_attack ) )
         continue;
 
-      p()->sim->print_debug( "dot-debuffs: {} ({}) damage modified by {}%{} on targets with dot {} ({}#{})", ab::name(),
-                             ab::id, val * 100.0, mastery ? "+mastery" : "", s_data->name_cstr(), s_data->id(), i );
-      target_multiplier_dotdebuffs.emplace_back( func, val, use_stacks, mastery );
+      p()->sim->print_debug( "dot-debuffs: {} ({}) damage modified by {}{} on targets with dot {} ({}#{})", ab::name(),
+                             ab::id, val * val_mul, mastery ? "+mastery" : "", s_data->name_cstr(), s_data->id(), i );
+      target_multiplier_dotdebuffs.emplace_back( func, val * val_mul, use_stacks, mastery );
     }
   }
 
