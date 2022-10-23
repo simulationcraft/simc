@@ -98,6 +98,13 @@ struct avengers_shield_base_t : public paladin_spell_t
 
     if ( p()->talents.bulwark_of_righteous_fury->ok() )
       p()->buffs.bulwark_of_righteous_fury->trigger();
+
+    if ( p() ->talents.gift_of_the_golden_valkyr->ok())
+    {
+      // TODO: Test, if this works, after GoAK works correctly.
+      p()->cooldowns.guardian_of_ancient_kings->adjust(
+          timespan_t::from_millis(-1) * p()->talents.gift_of_the_golden_valkyr->effectN( 1 ).base_value() );
+    }
   }
 
 double recharge_multiplier( const cooldown_t& cd ) const override
