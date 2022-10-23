@@ -1559,7 +1559,6 @@ struct cat_form_buff_t : public druid_buff_t<buff_t>
     add_invalidate( CACHE_ATTACK_POWER );
     add_invalidate( CACHE_EXP );
     add_invalidate( CACHE_HIT );
-    add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
@@ -1585,7 +1584,6 @@ struct moonkin_form_buff_t : public druid_buff_t<buff_t>
     add_invalidate( CACHE_ARMOR );
     add_invalidate( CACHE_EXP );
     add_invalidate( CACHE_HIT );
-    add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
 };
 
@@ -1766,9 +1764,7 @@ struct eclipse_buff_t : public druid_buff_t<buff_t>
     : base_t( p, n, s ),
       is_lunar( data().id() == p.spec.eclipse_lunar->id() ),
       is_solar( data().id() == p.spec.eclipse_solar->id() )
-  {
-    add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  }
+  {}
 
   void trigger_sundered_firmament()
   {
@@ -10779,8 +10775,6 @@ void druid_t::create_buffs()
   buff.convoke_the_spirits = make_buff( this, "convoke_the_spirits", talent.convoke_the_spirits )
     ->set_cooldown( 0_ms )
     ->set_period( 0_ms );
-  if ( conduit.conflux_of_elements->ok() )
-    buff.convoke_the_spirits->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buff.kindred_empowerment =
       make_buff<kindred_empowerment_buff_t>( *this, "kindred_empowerment" );
@@ -10802,15 +10796,13 @@ void druid_t::create_buffs()
     ->set_default_value_from_effect_type( A_HASTE_ALL )
     ->set_period( 0_ms )
     ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
-    ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
     ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
   if ( conduit.endless_thirst->ok() )
     buff.ravenous_frenzy->add_invalidate( CACHE_CRIT_CHANCE );
 
   buff.sinful_hysteria = make_buff( this, "ravenous_frenzy_sinful_hysteria", find_spell( 355315 ) )
     ->set_default_value_from_effect_type( A_HASTE_ALL )
-    ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
-    ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+    ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
   if ( conduit.endless_thirst->ok() )
     buff.sinful_hysteria->add_invalidate( CACHE_CRIT_CHANCE );
   if ( legendary.sinful_hysteria->ok() )
