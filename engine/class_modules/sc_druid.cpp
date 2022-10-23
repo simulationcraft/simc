@@ -10719,12 +10719,12 @@ void druid_t::create_buffs()
   buff.vicious_cycle_mangle = make_buff( this, "vicious_cycle_mangle", find_spell( 372019) )
     ->set_trigger_spell( talent.vicious_cycle )
     ->set_default_value( talent.vicious_cycle->effectN( 1 ).percent() )
-    ->set_name_reporting( "Vicious Cycle (Mangle)" );
+    ->set_name_reporting( "Mangle" );
 
   buff.vicious_cycle_maul = make_buff( this, "vicious_cycle_maul", find_spell( 372015 ) )
     ->set_trigger_spell( talent.vicious_cycle )
     ->set_default_value( talent.vicious_cycle->effectN( 1 ).percent() )
-    ->set_name_reporting( "Vicious Cycle (Maul)" );
+    ->set_name_reporting( "Maul" );
 
   // Guardian Conduits
   buff.savage_combatant = make_buff( this, "savage_combatant", conduit.savage_combatant->effectN( 1 ).trigger() )
@@ -10971,7 +10971,7 @@ void druid_t::create_actions()
     auto flash = get_secondary_action_n<thrash_bear_t>( "flashing_claws",
                                                         apply_override( talent.thrash, spec.bear_form_override ), "" );
     flash->s_data_reporting = talent.flashing_claws;
-    flash->name_str_reporting = "pawsitive_outlook";
+    flash->name_str_reporting = "flashing_claws";
     flash->set_free_cast( free_spell_e::FLASHING );
     active.thrash_bear_flashing = flash;
   }
@@ -11554,6 +11554,23 @@ void druid_t::analyze( sim_t& sim )
     range::for_each( active.denizen_of_the_dream->child_action, [ this ]( action_t* a ) { a->stats->player = this; } );
 
   player_t::analyze( sim );
+
+  // GG is a major portion of guardian druid damage but skews moonfire reporting because gg has no execute time. We
+  // adjust by removing the gg amount from mf stat and re-calculating dpe and dpet for moonfire.
+  if ( talent.galactic_guardian.ok() )
+  {
+    auto mf = find_action( "moonfire" );
+    auto gg = find_action( "galactic_guardian" );
+    if ( mf && gg )
+    {
+      auto mf_amt = mf->stats->compound_amount;
+      auto gg_amt = gg->stats->compound_amount;
+      auto mod = ( mf_amt - gg_amt ) / mf_amt;
+
+      mf->stats->ape *= mod;
+      mf->stats->apet *= mod;
+    }
+  }
 }
 
 // druid_t::mana_regen_per_second ===========================================
