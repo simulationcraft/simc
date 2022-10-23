@@ -29,7 +29,7 @@ st->add_action( "starsurge,if=talent.rattle_the_stars&buff.rattled_stars.up&buff
 st->add_action( "sunfire,target_if=refreshable&astral_power.deficit>variable.passive_asp+3" );
 st->add_action( "moonfire,target_if=refreshable&astral_power.deficit>variable.passive_asp+3" );
 st->add_action( "stellar_flare,target_if=refreshable&astral_power.deficit>variable.passive_asp+8" );
-st->add_action( "variable,name=cd_condition_st,value=!buff.ca_inc.up&(target.1.time_to_die>15|fight_remains<25+10*talent.incarnation_chosen_of_elune)" );
+st->add_action( "variable,name=cd_condition_st,value=cooldown.ca_inc.remains<15&!buff.ca_inc.up&(target.1.time_to_die>15|fight_remains<25+10*talent.incarnation_chosen_of_elune)" );
 st->add_action( "wrath,if=variable.cd_condition_st&set_bonus.tier29_4pc&eclipse.any_next" );
 st->add_action( "starfall,if=variable.cd_condition_st&buff.touch_the_cosmos.up" );
 st->add_action( "celestial_alignment,if=variable.cd_condition_st" );
@@ -38,7 +38,7 @@ st->add_action( "convoke_the_spirits,if=buff.ca_inc.remains>4|(!talent.primordia
 st->add_action( "warrior_of_elune" );
 st->add_action( "force_of_nature,if=astral_power.deficit>variable.passive_asp+20" );
 st->add_action( "astral_communion,if=astral_power.deficit>variable.passive_asp+75" );
-st->add_action( "variable,name=enter_solar,value=eclipse.any_next|buff.eclipse_solar.remains<action.wrath.execute_time" );
+st->add_action( "variable,name=enter_solar,value=eclipse.any_next|buff.eclipse_solar.up&buff.eclipse_solar.remains<action.wrath.execute_time" );
 st->add_action( "starsurge,if=talent.rattle_the_stars&buff.rattled_stars.up&variable.enter_solar&buff.rattled_stars.remains<action.starfire.execute_time" );
 st->add_action( "starfire,if=variable.enter_solar" );
 st->add_action( "fury_of_elune,if=astral_power.deficit>variable.passive_asp+8" );
