@@ -10690,8 +10690,8 @@ void druid_t::create_buffs()
     ->set_trigger_spell( talent.earthwarden )
     ->set_default_value( talent.earthwarden->effectN( 1 ).percent() );
 
+  // trigger spell handled within druid_action_t::trigger_galactic_guardian()
   buff.galactic_guardian = make_buff( this, "galactic_guardian", find_spell( 213708 ) )
-    ->set_trigger_spell( talent.galactic_guardian )
     ->set_cooldown( talent.galactic_guardian->internal_cooldown() )
     ->set_default_value_from_effect( 1, 0.1 /*RESOURCE_RAGE*/ );
 
