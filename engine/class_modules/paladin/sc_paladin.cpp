@@ -687,7 +687,7 @@ struct paladin_aura_base_t : public paladin_spell_t
 struct devotion_aura_t : public paladin_aura_base_t
 {
   devotion_aura_t( paladin_t* p, util::string_view options_str )
-    : paladin_aura_base_t( "devotion_aura", p, p->find_class_spell( "Devotion Aura" ) )
+    : paladin_aura_base_t( "devotion_aura", p, p->find_spell( 465 ) )
   {
     parse_options( options_str );
 
@@ -2488,8 +2488,8 @@ void paladin_t::create_buffs()
                        ->set_cooldown( 0_ms );  // let the ability handle the cooldown
   buffs.holy_avenger =
       make_buff( this, "holy_avenger", talents.holy_avenger )->set_cooldown( 0_ms );  // handled by the ability
-  buffs.devotion_aura = make_buff( this, "devotion_aura", find_class_spell( "Devotion Aura" ) )
-                            ->set_default_value( find_class_spell( "Devotion Aura" )->effectN( 1 ).percent() );
+  buffs.devotion_aura = make_buff( this, "devotion_aura", find_spell( 465 ) )
+                            ->set_default_value( find_spell( 465 )->effectN( 1 ).percent() );
   buffs.retribution_aura = make_buff( this, "retribution_aura", find_spell( 183435 ) )
                             ->set_period( 1_s )
                             ->set_tick_callback( [this]( buff_t* b, int, timespan_t ) {
