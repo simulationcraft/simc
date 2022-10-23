@@ -2049,6 +2049,8 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) : actor_targe
   debuff.seal_of_the_crusader  = make_buff( *this, "seal_of_the_crusader", paladin->find_spell( 385723 ) )
                                 ->set_default_value( paladin->talents.seal_of_the_crusader->effectN( 2 ).percent() );
   debuff.sanctify              = make_buff( *this, "sanctify", paladin->find_spell( 382538 ) );
+  debuff.eye_of_tyr            = make_buff( *this, "eye_of_tyr", paladin->find_spell( 387174 ) )
+                                ->set_cooldown( 0_ms );
 }
 
 bool paladin_td_t::standing_in_consecration()

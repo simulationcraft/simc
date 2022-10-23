@@ -496,6 +496,15 @@ struct eye_of_tyr_t : public paladin_spell_t
     aoe      = -1;
     may_crit = true;
   }
+  void impact(action_state_t* s) override
+  {
+    paladin_spell_t::impact( s );
+    if ( result_is_hit(s->result) )
+    {
+      td( s->target )
+          ->debuff.eye_of_tyr->trigger( 1, data().effectN( 1 ).percent(), 1.0, p()->talents.eye_of_tyr->duration() );
+    }
+  }
 };
 
 // Judgment - Protection =================================================================
@@ -749,6 +758,13 @@ void paladin_t::target_mitigation( school_e school,
 
   if ( buffs.devotion_aura -> up() )
     s -> result_amount *= 1.0 + buffs.devotion_aura -> value();
+
+  paladin_td_t* td = get_target_data( s->action->player );
+
+  if ( td->debuff.eye_of_tyr->up() )
+  {
+    s -> result_amount *= 1.0 + td -> debuff.eye_of_tyr -> value();
+  }
 
   // Divine Bulwark and consecration reduction
   if ( standing_in_consecration() && specialization() == PALADIN_PROTECTION )
