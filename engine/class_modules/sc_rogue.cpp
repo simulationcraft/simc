@@ -10615,7 +10615,7 @@ void rogue_t::create_buffs()
   buffs.nightstalker = make_buff<damage_buff_t>( this, "nightstalker", spell.nightstalker_buff )
     ->set_periodic_mod( spell.nightstalker_buff, 2 ); // Dummy Value
   // 2022-10-21 -- Manually overwrite to maintain whitelist until we figure out what is going on
-  buffs.nightstalker->direct_mod.multiplier = 1.0 + talent.rogue.nightstalker->effectN(1).percent();
+  buffs.nightstalker->direct_mod.multiplier = 1.0 + talent.rogue.nightstalker->effectN( 1 ).percent();
   buffs.nightstalker->periodic_mod.multiplier = 1.0 + talent.rogue.nightstalker->effectN( 1 ).percent();
   // 2022-10-21 -- Appears non-functional now even though it still exists in the passive
   //  ->apply_affecting_aura( spec.subtlety_rogue ); // DFALPHA -- Seems messed up
@@ -10630,10 +10630,10 @@ void rogue_t::create_buffs()
   // Assassination
 
   buffs.improved_garrote = make_buff( this, "improved_garrote", spec.improved_garrote_buff )
-    ->set_default_value_from_effect( 1 )
+    ->set_default_value_from_effect( 2 )
     ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.improved_garrote_aura = make_buff( this, "improved_garrote_aura", spec.improved_garrote_buff )
-    ->set_default_value_from_effect( 1 )
+    ->set_default_value_from_effect( 2 )
     ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
     ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
     ->set_duration( sim->max_time / 2 )
@@ -10647,32 +10647,30 @@ void rogue_t::create_buffs()
   buffs.blindside = make_buff( this, "blindside", spec.blindside_buff )
     ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_RESOURCE_COST );
 
-  buffs.elaborate_planning = make_buff<damage_buff_t>( this, "elaborate_planning", spec.elaborate_planning_buff )
-    ->set_direct_mod( talent.assassination.elaborate_planning->effectN( 1 ).percent() )
-    ->set_periodic_mod( talent.assassination.elaborate_planning->effectN( 1 ).percent() )
-    ->set_auto_attack_mod( talent.assassination.elaborate_planning->effectN( 1 ).percent() );
+  buffs.elaborate_planning = make_buff<damage_buff_t>( this, "elaborate_planning", spec.elaborate_planning_buff,
+                                                       talent.assassination.elaborate_planning->effectN( 1 ).percent() );
 
   // Cooldown on Indiscriminate Carnage starts when both buffs are used
   buffs.indiscriminate_carnage_garrote = make_buff( this, "indiscriminate_carnage_garrote",
                                                     talent.assassination.indiscriminate_carnage )
     ->set_cooldown( timespan_t::zero() )
     ->set_stack_change_callback( [this]( buff_t*, int, int new_ ) {
-        if ( new_ == 0 && !buffs.indiscriminate_carnage_rupture->check() )
-        {
-          cooldowns.indiscriminate_carnage->reset( false );
-          cooldowns.indiscriminate_carnage->start();
-        }
-      } );
+      if ( new_ == 0 && !buffs.indiscriminate_carnage_rupture->check() )
+      {
+        cooldowns.indiscriminate_carnage->reset( false );
+        cooldowns.indiscriminate_carnage->start();
+      }
+    } );
   buffs.indiscriminate_carnage_rupture = make_buff( this, "indiscriminate_carnage_rupture",
                                                     talent.assassination.indiscriminate_carnage )
     ->set_cooldown( timespan_t::zero() )
     ->set_stack_change_callback( [this]( buff_t*, int, int new_ ) {
-    if ( new_ == 0 && !buffs.indiscriminate_carnage_garrote->check() )
-    {
-      cooldowns.indiscriminate_carnage->reset( false );
-      cooldowns.indiscriminate_carnage->start();
-    }
-    } );;
+      if ( new_ == 0 && !buffs.indiscriminate_carnage_garrote->check() )
+      {
+        cooldowns.indiscriminate_carnage->reset( false );
+        cooldowns.indiscriminate_carnage->start();
+      }
+    } );
 
   buffs.kingsbane = make_buff<damage_buff_t>( this, "kingsbane", spec.kingsbane_buff );
   buffs.kingsbane->set_refresh_behavior( buff_refresh_behavior::NONE );
@@ -10922,25 +10920,26 @@ void rogue_t::create_buffs()
       legendary.guile_charm_counter = 0;
     } );
 
-  buffs.finality_black_powder = make_buff<damage_buff_t>( this, "finality_black_powder", spec.finality_black_powder_buff );
-  buffs.finality_eviscerate = make_buff<damage_buff_t>( this, "finality_eviscerate", spec.finality_eviscerate_buff );
-  buffs.finality_rupture = make_buff( this, "finality_rupture", spec.finality_rupture_buff );
   if ( talent.subtlety.finality->ok() )
   {
-    // Talent ranks override the value of this via dummy effects, but we need the effect whitelist
-    double mod = talent.subtlety.finality->effectN( 1 ).percent();
+    // Talent ranks override the value and duration of the buffs via dummy effects
     timespan_t duration = timespan_t::from_seconds( talent.subtlety.finality->effectN( 2 ).base_value() );
-    buffs.finality_black_powder->direct_mod.multiplier = 1.0 + mod;
+    buffs.finality_black_powder = make_buff<damage_buff_t>( this, "finality_black_powder", spec.finality_black_powder_buff,
+                                                            talent.subtlety.finality->effectN( 1 ).percent() );
     buffs.finality_black_powder->set_duration( duration );
-    buffs.finality_eviscerate->direct_mod.multiplier = 1.0 + mod;
+    buffs.finality_eviscerate = make_buff<damage_buff_t>( this, "finality_eviscerate", spec.finality_eviscerate_buff,
+                                                          talent.subtlety.finality->effectN( 1 ).percent() );
     buffs.finality_eviscerate->set_duration( duration );
-    buffs.finality_rupture
-      ->set_default_value( mod )
+    buffs.finality_rupture = make_buff( this, "finality_rupture", spec.finality_rupture_buff )
+      ->set_default_value( talent.subtlety.finality->effectN( 1 ).percent() )
       ->set_duration( duration );
   }
   else
   {
-    buffs.finality_rupture->set_default_value_from_effect( 1 ); // Bonus Damage%
+    buffs.finality_black_powder = make_buff<damage_buff_t>( this, "finality_black_powder", spec.finality_black_powder_buff );
+    buffs.finality_eviscerate = make_buff<damage_buff_t>( this, "finality_eviscerate", spec.finality_eviscerate_buff );
+    buffs.finality_rupture = make_buff( this, "finality_rupture", spec.finality_rupture_buff )
+      ->set_default_value_from_effect( 1 ); // Bonus Damage%
   }
 
   buffs.concealed_blunderbuss = make_buff( this, "concealed_blunderbuss", find_spell( 340587 ) )
