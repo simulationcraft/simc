@@ -1,5 +1,6 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46144 dragonflight-BETA (hotfix 2022-10-19/46144, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46144 dragonflight-BETA (hotfix 2022-10-22/46144, no-networking)
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
+Hotfixed         : Variables
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -34,7 +35,7 @@ Variables        : $rapture=$?a47536[${(1+$47536s1/100)}][${1}]
 $shadow=$?a137033[${1.00}][${1}]
 $pvp=$?a134735[${1.1}][${1}]
 $weal=$?a390787[${1+$390787s2/100}][${1}]
-$shield=${$SP*2.8*(1+$@versadmg)*$<rapture>*$<shadow>*$<pvp>*$<weal>}
+$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<pvp>*$<weal>}
 
 
 Name             : Renew (id=139) [Spell Family (6)] 
@@ -42,13 +43,15 @@ Talent Entry     : Generic [free=(Discipline, Holy), tree=class, row=1, col=1, m
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
-Resource         : 1.8% Base Mana (0) (id=35)
+Resource         : 1.8% Base Mana (0) (id=35) w/ Holy Priest (id=137031)[Hotfixed: Aura Id (0 -> 137031)]
+Resource         : 2.7% Base Mana (0) (id=265695) w/ Discipline Priest (id=137032)[Hotfixed: NEW POWER]
+Resource         : 1.8% Base Mana (0) (id=265696) w/ Shadow Priest (id=137033)[Hotfixed: NEW POWER]
 Spell Level      : 12
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Stance Mask      : 0x88000000
-Affecting spells : Rapid Healing (24546 effect#2), Spirit of Redemption (27827 effect#2), Healing Trance (37706 effect#1), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2), An'juna's Trance (207555 effect#1), Light of T'uure (208065 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Renewed Faith (341997 effect#1), Divine Favor: Serenity (372791 effects: #1, #2, #3, #4), Twist of Fate (390978 effects: #1, #2), Rapid Recovery (391368 effects: #1, #2)
+Affecting spells : Rapid Healing (24546 effect#2), Spirit of Redemption (27827 effect#2), Healing Trance (37706 effect#1), Holy Priest (137031 effects: #1, #2, #14), Discipline Priest (137032 effects: #1, #2), An'juna's Trance (207555 effect#1), Light of T'uure (208065 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Renewed Faith (341997 effect#1), Divine Favor: Serenity (372791 effects: #1, #2, #3, #4), Twist of Fate (390978 effects: #1, #2), Rapid Recovery (391368 effects: #1, #2)
 Family Flags     : 6, 126
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ...x.... x....... ...x.... ........   .......x ........ ........ ........ 
@@ -96,11 +99,12 @@ Description      : Soothes enemies in the target area, reducing the range at whi
 Tooltip          : Reduced distance at which target will attack.
 
 Name             : Purify (id=527) [Spell Family (6)] 
+Hotfixed         : Learn Level (18 -> 10), Required Level (18 -> 10)
 Class            : Discipline Holy Priest
 School           : Holy
 Spell Type       : Magic
 Resource         : 1.3% Base Mana (0) (id=56)
-Spell Level      : 18
+Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 8 seconds
@@ -252,7 +256,7 @@ Talent Entry     : Holy [tree=spec, row=2, col=1, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
-Resource         : 4% Base Mana (0) (id=67)
+Resource         : 4.4% Base Mana (0) (id=67)[Hotfixed: Percent Cost (4 -> 4.4)]
 Spell Level      : 32
 Range            : 40 yards
 Cast Time        : 2 seconds
@@ -1368,6 +1372,8 @@ Description      : Melee attacks against you cause you to gain Focused Will, red
 
 Name             : Divine Aegis (id=47515) [Spell Family (6), Passive, Hidden] 
 Talent Entry     : Discipline [tree=spec, row=9, col=1, max_rank=2, req_points=20]
+                 : Effect#1 [op=set, values=(5, 10)]
+                 : Effect#2 [op=set, values=(5, 10)]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -1385,9 +1391,11 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Do Not Display Range (126), Allow Proc While Sitting (147), Can Proc from Suppressed Caster Procs (385), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=39726)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (15 -> 5)
 #2 (id=1028367)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (15 -> 5)
 Description      : Critical heals create a protective shield on the target, absorbing $s1% of the amount healed. Lasts $47753d.
 
 Critical heals with Power Word: Shield absorb $s2% additional damage.
@@ -1420,7 +1428,8 @@ Effects          :
 #1 (id=39747)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friend (21)
 #2 (id=476560)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
+Hotfixed         : Base Value (30 -> 40)
 #3 (id=476561)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Power Word: Shield (17)
@@ -2226,7 +2235,8 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : Passive (6), Do Not Log (8), Can Proc From Procs (122), Mastery Affects Points (285), Can Proc from Suppressed Caster Procs (385), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=68102)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.25000 | PvP Coefficient: 1.00000 | Misc Value: 2 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.12500 | PvP Coefficient: 1.00000 | Misc Value: 2 | Target: Self (1)
+Hotfixed         : SP Coefficient (1.25 -> 1.125)
 #2 (id=90770)    : Apply Aura (6) | Dummy (4)
                    Base Value: 125 | Scaled Value: 125 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Your direct healing spells heal for an additional ${$77485s1}.1% over $77489d.
@@ -3205,7 +3215,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), AI Doesn't Face Target (179), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=155096)   : Energize Power% (137)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Unknown(25)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Unknown(25)
+Hotfixed         : Base Value (50 -> 20)
 Description      : The Mindbender's melee attacks siphon energy from the target, converting it into power for its master.
 
 Name             : Glyph of the Val'kyr (desc=Holy) (id=126094) [Spell Family (6), Passive, Hidden] 
@@ -3535,6 +3546,11 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 37 | Target: Self (1)
                    Affected Spells: Focused Will (45242)
                    Family Flags: 111
+#14 (id=1039629)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Renew (139)
+                   Family Flags: 6
+Hotfixed         : NEW EFFECT
 Description      : Holy Priest core passive
 
 Name             : Discipline Priest (id=137032) [Spell Family (6), Passive, Hidden] 
@@ -3995,7 +4011,8 @@ Attributes       : ......xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=283376)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 8 | Target: Self (1)
+                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Misc Value: 8 | Target: Self (1)
+Hotfixed         : Base Value (15 -> 12)
 Description      : Your Prayer of Mending has a $s1% chance to leave a Renew on each target it heals.
 
 Name             : Call to the Void (id=193371) [Spell Family (6), Passive] 
@@ -4190,7 +4207,8 @@ Effects          :
 #1 (id=285534)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friend (21)
 #2 (id=298593)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.05000 | PvP Coefficient: 1.00000 | Radius: 0 - 30 yards | Target: Unknown(132) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.57500 | PvP Coefficient: 1.00000 | Radius: 0 - 30 yards | Target: Unknown(132) -> AOE friendly (31)
+Hotfixed         : SP Coefficient (1.05 -> 1.575)
 #3 (id=298594)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000
 #4 (id=298595)   : Dummy (3)
@@ -6001,7 +6019,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=360820)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (50 -> 30)
 #2 (id=369065)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Power Word: Shield (17)
@@ -7103,7 +7122,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Can't Crit (93), Do Not Display Range (126)
 Effects          :
 #1 (id=719440)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.14400 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.09360 | PvP Coefficient: 1.00000 | Target: Friend (21)
+Hotfixed         : SP Coefficient (0.144 -> 0.0936)
 Description      : $@spelldesc197419
 
 Name             : Mastery: Grace (id=271534) [Spell Family (6), Passive] 
@@ -9167,13 +9187,15 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=809046)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
-                   Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
+                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Prayer of Healing (596)
                    Family Flags: 9
+Hotfixed         : Base Value (-25 -> -20)
 #2 (id=912580)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
-                   Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
+                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Prayer of Healing (596)
                    Family Flags: 9
+Hotfixed         : Base Value (-25 -> -20)
 Description      : $@spelldesc321377
 Tooltip          : Cast time and cost of Prayer of Healing reduced by $w1%.
 
@@ -11098,9 +11120,10 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=842754)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
+                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Renew (139)
                    Family Flags: 6
+Hotfixed         : Base Value (8 -> 6)
 Description      : Your healing on allies with your Renew is increased by $s1%.
 
 Name             : Wrathful Faerie (desc=Night Fae) (id=342132) [Spell Family (6)] 
@@ -12935,9 +12958,10 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook Until Learned (269)
 Effects          :
 #1 (id=998019)   : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
-                   Base Value: 3000 | Scaled Value: 3000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+                   Base Value: 5000 | Scaled Value: 5000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Rapture (47536)
                    Family Flags: 119
+Hotfixed         : Base Value (3000 -> 5000)
 Description      : Increases the duration of Rapture by ${$s1/1000} sec.
 
 Name             : Indemnity (id=373049) [Spell Family (6), Passive, Hidden] 
@@ -12956,7 +12980,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=998034)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (3 -> 2)
 Description      : Atonements granted by Power Word: Shield last an additional $s1 sec.
 
 Name             : Stolen Psyche (id=373054) [Spell Family (6), Passive, Hidden] 
@@ -13554,6 +13579,9 @@ Tooltip          : The duration of Shadowfiend is extended by $s1 sec.
 
 Name             : Inescapable Torment (id=373427) [Spell Family (6), Passive, Hidden] 
 Talent Entry     : Discipline [tree=spec, row=10, col=5, max_rank=1, req_points=20]
+                 : Effect#3 [op=set, values=(0.5, 1)]
+                 : Effect#4 [op=set, values=(-50, 0)]
+                 : Effect#5 [op=mul, values=(0.5, 1)]
                  : Shadow [tree=spec, row=9, col=1, max_rank=2, req_points=20]
                  : Effect#3 [op=set, values=(0.5, 1)]
                  : Effect#4 [op=set, values=(-50, 0)]
@@ -14486,9 +14514,10 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1027692)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Power Word: Radiance (194509)
                    Family Flags: 22
+Hotfixed         : Base Value (15 -> 10)
 Description      : Power Word: Radiance applies Atonement at an additional $s1% of its normal duration.
 
 Name             : Painful Punishment (id=390686) [Spell Family (6), Passive, Hidden] 
@@ -14727,8 +14756,6 @@ Description      : After being struck by a melee or ranged critical hit, heal $s
 
 Name             : Void Summoner (id=390770) [Spell Family (6), Passive, Hidden] 
 Talent Entry     : Discipline [tree=spec, row=9, col=6, max_rank=2, req_points=20]
-                 : Effect#1 [op=set, values=(-3000, -6000)]
-                 : Effect#2 [op=set, values=(-1000, -2000)]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -14744,9 +14771,11 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1027832)  : Apply Aura (6) | Dummy (4)
-                   Base Value: -3000 | Scaled Value: -3000 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: -6000 | Scaled Value: -6000 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (-3000 -> -6000)
 #2 (id=1027840)  : Apply Aura (6) | Dummy (4)
-                   Base Value: -1000 | Scaled Value: -1000 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: -2000 | Scaled Value: -2000 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (-1000 -> -2000)
 Description      : Your Smite, Mind Blast, and Penance casts reduce the cooldown of Shadowfiend by ${$s1/-1000} sec or Mindbender by ${$s2/-1000} sec.
 
 Name             : Blessed Recovery (id=390771) [Spell Family (6)] 
@@ -14865,11 +14894,13 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Aura Points On Client (268)
 Effects          :
 #1 (id=1027856)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Smite (585)
                    Family Flags: 7
+Hotfixed         : Base Value (8 -> 12)
 #2 (id=1027857)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (3 -> 5)
 #3 (id=1027915)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc390786
@@ -15730,6 +15761,7 @@ Talent Entry     : Holy [tree=spec, row=4, col=2, max_rank=1, req_points=0, sele
 Class            : Priest
 School           : Holy
 Spell Type       : None
+Labels           : 2401: Rapid Recovery (391368 effect#3)
 Proc Chance      : 101%
 Proc Flags       : ........ ......x. ........ ........ 
                  : Magic Heal
@@ -15744,7 +15776,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1028557)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (30 -> 25)
 #2 (id=1028558)  : Apply Aura (6) | Dummy (4)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Prayer of Healing has a $s1% chance to apply a $s2 second Renew to allies it heals.
@@ -16099,6 +16132,10 @@ Effects          :
                    Base Value: -3000 | Scaled Value: -3000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Renew (139)
                    Family Flags: 6
+#3 (id=1039631)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
+                   Base Value: -1 | Scaled Value: -1 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 2401 (Label) | Target: Self (1)
+                   Affected Spells (Label): Revitalizing Prayers (391208)
+Hotfixed         : NEW EFFECT
 Description      : Increases healing done by Renew by $s1%, but decreases its base duration by ${$s2/-1000} sec.
 
 Name             : Pain of Death (id=391371) 

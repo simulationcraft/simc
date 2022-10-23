@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46144 dragonflight-BETA (hotfix 2022-10-19/46144, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46144 dragonflight-BETA (hotfix 2022-10-22/46144, no-networking)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -1084,12 +1084,13 @@ The Gargoyle gains $211947s1% increased damage for every $s4 Runic Power you spe
 |cFFFFFFFFGenerates ${$s5/10} Runic Power.|r
 
 Name             : Sudden Doom (id=49530) [Spell Family (15), Passive] 
+Hotfixed         : RPPM (2.875 -> 2.5)
 Talent Entry     : Unholy [tree=spec, row=5, col=6, max_rank=1, req_points=8]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
-Real PPM         : 2.875 (Haste multiplier)
+Real PPM         : 2.5 (Haste multiplier)
 Proc Flags       : ..x..... ........ ........ ........ 
                  : White Melee
 Family Flags     : 97
@@ -1626,7 +1627,7 @@ Spell Type       : Melee
 Spell Level      : 23
 Range            : 50000 yards
 Duration         : 24 seconds
-Affecting spells : Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Rapid Decomposition (194662 effects: #1, #3), Soulflayer's Corruption (248066 effect#1), Plaguebringer (332688 effect#1), Withering Plague (337884 effect#1), Debilitating Malady (338523 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Morbidity (377592 effects: #5, #6), Plaguebringer (390178 effect#1), Superstrain (390283 effect#2), Coagulopathy (391477 effect#1), Coagulopathy (391481 effect#1)
+Affecting spells : Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Rapid Decomposition (194662 effects: #1, #3), Soulflayer's Corruption (248066 effect#1), Plaguebringer (332688 effect#1), Withering Plague (337884 effect#1), Debilitating Malady (338523 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Morbidity (377592 effects: #7, #8, #9), Plaguebringer (390178 effect#1), Superstrain (390283 effect#2), Coagulopathy (391477 effect#1), Coagulopathy (391481 effect#1)
 Triggered by     : Death's Caress (195292)
 Family Flags     : 43, 57, 65
 Attributes       : ....x... ........ ........ ..x.....   ........ ........ ........ ........ 
@@ -1652,6 +1653,9 @@ Effects          :
                    Affected School(s): All
 #5 (id=1026998)  : Apply Aura (6) | Modify Damage Taken% from Caster Pet (381)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Unknown(25)
+#6 (id=1038126)  : Apply Aura (6) | Modify Damage Taken% from Caster Guardian (380)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Unknown(25)
+Hotfixed         : NEW EFFECT
 Description      : A shadowy disease that drains $o1 health from the target over $d.  
 Tooltip          : Draining $w1 health from the target every $t1 sec.
 
@@ -1697,7 +1701,7 @@ Spell Type       : Melee
 Range            : 50000 yards
 Duration         : 24 seconds
 Proc Chance      : 101%
-Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Plaguebringer (332688 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Morbidity (377592 effects: #7, #8), Plaguebringer (390178 effect#1), Superstrain (390283 effect#2)
+Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Plaguebringer (332688 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Morbidity (377592 effects: #10, #11, #12), Plaguebringer (390178 effect#1), Superstrain (390283 effect#2)
 Family Flags     : 43, 58, 65, 120
 Attributes       : ....x... ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ..x..... ......x. 
@@ -1716,6 +1720,9 @@ Effects          :
                    Affected School(s): All
 #3 (id=1027000)  : Apply Aura (6) | Modify Damage Taken% from Caster Pet (381)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Unknown(25)
+#4 (id=1038128)  : Apply Aura (6) | Modify Damage Taken% from Caster Guardian (380)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Unknown(25)
+Hotfixed         : NEW EFFECT
 Description      : A disease that deals ${$o1*$<CAP>/$AP} Frost damage over $d and has a chance to grant the Death Knight ${$195617m1/10} Runic Power each time it deals damage.
 Tooltip          : Suffering $w1 Frost damage every $t1 sec.
 Variables        : $CAP=$?$OWB==0[${$AP*0.98}][${($AP+$OAP)*2/3}]--2H, DW
@@ -3226,7 +3233,7 @@ GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 45 seconds
 Stance Mask      : 0x01000000
-Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Morbidity (377592 effects: #3, #4), Plaguebringer (390178 effect#1)
+Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Morbidity (377592 effects: #4, #5, #6), Plaguebringer (390178 effect#1)
 Family Flags     : 43, 78, 93
 Attributes       : ........ ........ x....... ........   ........ ........ .x...... ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -3251,7 +3258,7 @@ Spell Level      : 1
 Duration         : 14 seconds
 Stacks           : 4 maximum
 Proc Chance      : 101%
-Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Morbidity (377592 effects: #3, #4), Plaguebringer (390178 effect#1)
+Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Morbidity (377592 effects: #4, #5, #6), Plaguebringer (390178 effect#1)
 Triggered by     : Unholy Blight (115989)
 Family Flags     : 43, 78, 93
 Attributes       : ....x... ........ ........ ..x.....   ........ ........ ........ ........ 
@@ -3271,6 +3278,9 @@ Effects          :
                    Affected School(s): All
 #3 (id=844463)   : Apply Aura (6) | Modify Damage Taken% from Caster Pet (381)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
+#4 (id=1038123)  : Apply Aura (6) | Modify Damage Taken% from Caster Guardian (380)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
+Hotfixed         : NEW EFFECT
 Description      : $@spelldesc115989
 Tooltip          : Suffering $s1 Shadow damage every $t1 sec.
 
@@ -3436,17 +3446,21 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179690)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Death Coil (47632), Howling Blast (49184), Death Strike (49998), Razorice (50401), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Scourge Strike (55090), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Scourge Strike (70890), Outbreak (77575), Festering Strike (85948), Unholy Blight (115989), Unholy Blight (115994), Breath of Sindragosa (155166), Defile (156000), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Marrowrend (195182), Death's Caress (195292), Frozen Pulse (195750), Glacial Advance (195975), Bonestorm (196528), Remorseless Winter (196771), Chill Streak (204167), Heart Strike (206930), Blooddrinker (206931), Avalanche (207150), Frostscythe (207230), Bursting Sores (207267), Clawing Shadows (207311), Epidemic (212739), Epidemic (215969), Obliterate (222024), Frost Strike (222026), Heart Strike (228645), Howling Blast (237680), Inexorable Assault (253597), Horrid Experimentation (273096), Glacial Contagion (274074), Consumption (274156), Apocalypse (275699), Echoing Howl (275918), Harrowing Decay (275931), Frostwyrm's Fury (279303), Cold Heart (281209), Cold Heart (281210), Helchains (286836), Helchains (286954), Helchains (286978), Helchains (286979), Frostwhelp's Indignation (287320), Helchains (290814), Swarming Mist (311730), Shackle the Unworthy (312202), Rune Strike (316239), Unholy Pact (319236), Unholy Pact (319240), Unholy Pact (319245), Abomination Limb (323710), Abomination Limb (323798), Obliterate (325461), Frost Strike (325464), Sacrificial Pact (327611), Death's Due (341340), Soul Reaper (343294), Dark Transformation (344955), Blood Draw (374606), Frostwhelp's Aid (377245), Shattering Bone (377642), Abomination Limb (383312), Abomination Limb (383313)
                    Family Flags: 43
+Hotfixed         : Base Value (0 -> -5)
 #2 (id=191170)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Death Coil (47632), Howling Blast (49184), Death Strike (49998), Razorice (50401), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Scourge Strike (55090), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Scourge Strike (70890), Outbreak (77575), Festering Strike (85948), Unholy Blight (115989), Unholy Blight (115994), Breath of Sindragosa (155166), Defile (156000), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Marrowrend (195182), Death's Caress (195292), Frozen Pulse (195750), Glacial Advance (195975), Bonestorm (196528), Remorseless Winter (196771), Chill Streak (204167), Heart Strike (206930), Blooddrinker (206931), Avalanche (207150), Frostscythe (207230), Bursting Sores (207267), Clawing Shadows (207311), Epidemic (212739), Epidemic (215969), Obliterate (222024), Frost Strike (222026), Heart Strike (228645), Howling Blast (237680), Inexorable Assault (253597), Horrid Experimentation (273096), Glacial Contagion (274074), Consumption (274156), Apocalypse (275699), Echoing Howl (275918), Harrowing Decay (275931), Frostwyrm's Fury (279303), Cold Heart (281209), Cold Heart (281210), Helchains (286836), Helchains (286954), Helchains (286978), Helchains (286979), Frostwhelp's Indignation (287320), Helchains (290814), Swarming Mist (311730), Shackle the Unworthy (312202), Rune Strike (316239), Unholy Pact (319236), Unholy Pact (319240), Unholy Pact (319245), Abomination Limb (323710), Abomination Limb (323798), Obliterate (325461), Frost Strike (325464), Sacrificial Pact (327611), Death's Due (341340), Soul Reaper (343294), Dark Transformation (344955), Blood Draw (374606), Frostwhelp's Aid (377245), Shattering Bone (377642), Abomination Limb (383312), Abomination Limb (383313)
                    Family Flags: 43
+Hotfixed         : Base Value (0 -> -5)
 #3 (id=191171)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (0 -> -5)
 #4 (id=1032341)  : Apply Aura (6) | Unknown(531)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (0 -> -5)
 
 Name             : Blood Death Knight (id=137008) [Spell Family (15), Passive, Hidden] 
 Class            : Blood Death Knight
@@ -4069,7 +4083,7 @@ Internal Cooldown: 1 seconds
 Proc Chance      : 100%
 Proc Flags       : ........ ...x...x ........ .......x 
                  : Generic Heal Taken, Magic Heal Taken
-Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Ebon Fever (207269 effects: #1, #2, #3), Plaguebringer (332688 effect#1), Lingering Plague (338566 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Morbidity (377592 effects: #1, #2), Plaguebringer (390178 effect#1)
+Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Ebon Fever (207269 effects: #1, #2, #3), Plaguebringer (332688 effect#1), Lingering Plague (338566 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Morbidity (377592 effects: #1, #2, #3), Plaguebringer (390178 effect#1)
 Triggered by     : Outbreak (77575)
 Family Flags     : 40, 43, 65, 78
 Attributes       : ....x... ........ ........ ..x.....   ........ ........ ........ ........ 
@@ -4138,7 +4152,7 @@ Class            : Death Knight
 School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Ebon Fever (207269 effects: #1, #2, #3), Plaguebringer (332688 effect#1), Lingering Plague (338566 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Morbidity (377592 effects: #1, #2), Plaguebringer (390178 effect#1)
+Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Ebon Fever (207269 effects: #1, #2, #3), Plaguebringer (332688 effect#1), Lingering Plague (338566 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Morbidity (377592 effects: #1, #2, #3), Plaguebringer (390178 effect#1)
 Family Flags     : 40, 43, 78
 Attributes       : ........ ........ ........ ...x....   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ ......x. ......x. 
@@ -5677,9 +5691,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=306535)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Festering Wound (194311)
                    Family Flags: 119
+Hotfixed         : Base Value (25 -> 20)
 #2 (id=756116)   : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Bursting a Festering Wound deals $s1% more damage, and deals $207267s1 Shadow damage to all nearby enemies. Deals reduced damage beyond $207267s3 targets.
@@ -5704,7 +5719,8 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : Is Ability (4), Allow Dead Target (64), Ignore Line of Sight (66), Always Hit (114), Do Not Display Range (126), Not In Spellbook (143), Suppress Weapon Procs (151), Missile Speed is Delay (in sec) (292), Bypass Visibility Check (320), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=306540)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.20000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.18000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+Hotfixed         : AP Coefficient (0.2 -> 0.18)
 #2 (id=338561)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=818620)   : Dummy (3)
@@ -5822,7 +5838,8 @@ Effects          :
 #1 (id=306601)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=324719)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.50784 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.55862 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+Hotfixed         : AP Coefficient (0.50784 -> 0.558624)
 Description      : Deals $s2 Shadow damage and causes 1 Festering Wound to burst.
 
 Name             : Sludge Belcher (id=207313) [Spell Family (15), Passive] 
@@ -6204,9 +6221,11 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Treat as Area Effect (175), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=315517)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.24000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.22800 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (0.24 -> 0.228)
 #2 (id=872659)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.09600 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.09120 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+Hotfixed         : AP Coefficient (0.096 -> 0.0912)
 Description      : $@spelldesc207317
 
 Name             : Epidemic (id=215969) [Spell Family (15)] 
@@ -6230,7 +6249,8 @@ Effects          :
 #1 (id=321210)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=328301)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.09600 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.09120 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+Hotfixed         : AP Coefficient (0.096 -> 0.0912)
 Description      : $@spelldesc207317
 
 Name             : Ossuary (id=219786) [Spell Family (15), Passive] 
@@ -8192,7 +8212,8 @@ Effects          :
                    Affected Spells: Sudden Doom (81340)
                    Family Flags: 81
 #2 (id=729402)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 18 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 18 | Target: Self (1)
+Hotfixed         : Base Value (15 -> 30)
 Description      : Sudden Doom triggers $s2% more often and can accumulate up to ${$m1+1} charges.
 
 Name             : Death's Reach (id=276079) [Spell Family (15), Passive] 
@@ -10861,7 +10882,8 @@ Attributes       : ........ ........ ..x..... ........   ........ .x...... .....
                  : Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Allow While Not Shapeshifted (caster form) (83), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=803165)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.62400 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.56160 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (0.624 -> 0.5616)
 Description      : Deals $s1 Shadow damage.
 
 Name             : Frostbolt (id=317792) 
@@ -10886,7 +10908,8 @@ Attributes       : ........ ........ ..x..... ........   ........ .x...... .....
                  : Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Allow While Not Shapeshifted (caster form) (83), Not In Spellbook (143), Show Mechanic as Combat Text (213), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=803166)   : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.66352 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.59717 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (0.66352 -> 0.597168)
 #2 (id=803167)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
 Description      : Deals $s1 Frost damage and reduces their movement speed by $s2% for $d.
@@ -10998,7 +11021,8 @@ Attributes       : ........ ........ ........ ........   .......x ........ .....
                  : No Reflection (39), Do Not Display Range (126), Not On AOE Immune (127), Treat as Area Effect (175), Aura Points On Client (268)
 Effects          :
 #1 (id=805554)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.15750 | PvP Coefficient: 1.00000 | Target: Unknown(25)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.14963 | PvP Coefficient: 1.00000 | Target: Unknown(25)
+Hotfixed         : AP Coefficient (0.1575 -> 0.149625)
 Description      : $@spelldesc319230
 Tooltip          : Deals $s1 Shadow damage.
 
@@ -15047,6 +15071,12 @@ Talent Entry     : Unholy [tree=spec, row=9, col=4, max_rank=2, req_points=20]
                  : Effect#4 [op=set, values=(1, 2)]
                  : Effect#5 [op=set, values=(1, 2)]
                  : Effect#6 [op=set, values=(1, 2)]
+                 : Effect#7 [op=set, values=(1, 2)]
+                 : Effect#8 [op=set, values=(1, 2)]
+                 : Effect#9 [op=set, values=(1, 2)]
+                 : Effect#10 [op=set, values=(1, 2)]
+                 : Effect#11 [op=set, values=(1, 2)]
+                 : Effect#12 [op=set, values=(1, 2)]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -15068,30 +15098,56 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Virulent Plague (191587), Virulent Eruption (191685)
                    Family Flags: 40
-#3 (id=1005550)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
+#3 (id=1005550)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 5 (33)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 33 | Target: Self (1)
+                   Affected Spells: Virulent Plague (191587), Virulent Eruption (191685)
+                   Family Flags: 40
+Hotfixed         : Misc Value (12 -> 33), Affects Spells
+#4 (id=1005551)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Unholy Blight (115989), Unholy Blight (115994)
                    Family Flags: 93
-#4 (id=1005551)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
+Hotfixed         : Misc Value (23 -> 12)
+#5 (id=1005555)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Unholy Blight (115989), Unholy Blight (115994)
                    Family Flags: 93
-#5 (id=1005555)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
+Hotfixed         : Affects Spells
+#6 (id=1005556)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
+                   Affected Spells: Unholy Blight (115989), Unholy Blight (115994)
+                   Family Flags: 93
+Hotfixed         : Affects Spells
+#7 (id=1027001)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Blood Plague (55078)
                    Family Flags: 57
-#6 (id=1005556)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
+Hotfixed         : Misc Value (12 -> 23), Affects Spells
+#8 (id=1027002)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Blood Plague (55078)
                    Family Flags: 57
-#7 (id=1027001)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
+Hotfixed         : Misc Value (23 -> 32), Affects Spells
+#9 (id=1038115)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 5 (33)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 33 | Target: Self (1)
+                   Affected Spells: Blood Plague (55078)
+                   Family Flags: 57
+Hotfixed         : NEW EFFECT
+#10 (id=1038129)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Frost Fever (55095)
                    Family Flags: 58
-#8 (id=1027002)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
+Hotfixed         : NEW EFFECT
+#11 (id=1038130)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Frost Fever (55095)
                    Family Flags: 58
+Hotfixed         : NEW EFFECT
+#12 (id=1038131)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
+                   Affected Spells: Frost Fever (55095)
+                   Family Flags: 58
+Hotfixed         : NEW EFFECT
 Description      : Diseased enemies take $s1% increased damage from you per disease they are affected by.
 
 Name             : Leeching Strike (id=377629) [Spell Family (15), Passive] 
