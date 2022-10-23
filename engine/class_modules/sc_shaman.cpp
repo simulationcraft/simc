@@ -655,6 +655,7 @@ public:
     proc_t* surge_of_power_lava_burst;
     proc_t* surge_of_power_frost_shock;
     proc_t* surge_of_power_flame_shock;
+    proc_t* surge_of_power_wasted;
 
 
     // Enhancement
@@ -7131,6 +7132,12 @@ public:
       p()->cooldown.chain_harvest->adjust( -1.0 * elemental_conduit->effectN( 3 ).time_value() );
     }
 
+    if ( p()->buff.surge_of_power->up() && sim->target_non_sleeping_list.size() == 1 )
+    {
+      p()->proc.surge_of_power_wasted->occur();
+      p()->buff.surge_of_power->decrement();
+    }
+
     if ( p()->buff.surge_of_power->up() && sim->target_non_sleeping_list.size() > 1 )
     {
       shaman_td_t* source_td = td( target );
@@ -10918,6 +10925,7 @@ void shaman_t::init_procs()
   proc.surge_of_power_lava_burst     = get_proc( "Surge of Power: Lava Burst" );
   proc.surge_of_power_frost_shock    = get_proc( "Surge of Power: Frost Shock" );
   proc.surge_of_power_flame_shock    = get_proc( "Surge of Power: Flame Shock" );
+  proc.surge_of_power_wasted    = get_proc( "Surge of Power: Wasted" );
 
   proc.aftershock           = get_proc( "Aftershock" );
   proc.flash_of_lightning   = get_proc( "Flash of Lightning" );
