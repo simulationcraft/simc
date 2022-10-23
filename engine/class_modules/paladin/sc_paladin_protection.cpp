@@ -994,9 +994,6 @@ void paladin_t::create_buffs_protection()
   buffs.reign_of_ancient_kings = make_buff( this, "reign_of_ancient_kings",
     legendary.reign_of_endless_kings -> effectN( 2 ).trigger() -> effectN( 2 ).trigger() );
 
-  // Azerite traits
-  buffs.inner_light = make_buff( this, "inner_light", find_spell( 386556 ) );
-
 
   if ( specialization() == PALADIN_PROTECTION )
     player_t::buffs.memory_of_lucid_dreams -> set_stack_change_callback( [ this ]( buff_t*, int, int )
