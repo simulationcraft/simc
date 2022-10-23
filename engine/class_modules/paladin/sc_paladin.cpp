@@ -1365,7 +1365,7 @@ struct divine_toll_t : public paladin_spell_t
   void execute() override
   {
     paladin_spell_t::execute();
-    if ( p()->conduit.ringing_clarity->ok() )
+    if ( p()->conduit.ringing_clarity->ok() && !p()->talents.divine_toll->ok() )
     {
       for ( int hits = 0; hits < p()->conduit.ringing_clarity->effectN( 2 ).base_value(); hits++ )
       {
