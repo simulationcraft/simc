@@ -570,7 +570,10 @@ public:
   {
     cooldown_t* berserk_bear;
     cooldown_t* berserk_cat;
-    cooldown_t* incarnation;
+    cooldown_t* incarnation_bear;
+    cooldown_t* incarnation_cat;
+    cooldown_t* incarnation_moonkin;
+    cooldown_t* incarnation_tree;
     cooldown_t* mangle;
     cooldown_t* moon_cd;  // New / Half / Full Moon
     cooldown_t* natures_swiftness;
@@ -1108,16 +1111,19 @@ public:
       conduit( conduit_t() ),
       legendary( legendary_t() )
   {
-    cooldown.berserk_bear       = get_cooldown( "berserk_bear" );
-    cooldown.berserk_cat        = get_cooldown( "berserk_cat" );
-    cooldown.incarnation        = get_cooldown( "incarnation" );
-    cooldown.mangle             = get_cooldown( "mangle" );
-    cooldown.moon_cd            = get_cooldown( "moon_cd" );
-    cooldown.natures_swiftness  = get_cooldown( "natures_swiftness" );
-    cooldown.thrash_bear        = get_cooldown( "thrash_bear" );
-    cooldown.tigers_fury        = get_cooldown( "tigers_fury" );
-    cooldown.warrior_of_elune   = get_cooldown( "warrior_of_elune" );
-    cooldown.rage_from_melees   = get_cooldown( "rage_from_melees" );
+    cooldown.berserk_bear        = get_cooldown( "berserk_bear" );
+    cooldown.berserk_cat         = get_cooldown( "berserk_cat" );
+    cooldown.incarnation_bear    = get_cooldown( "incarnation_guardian_of_ursoc" );
+    cooldown.incarnation_cat     = get_cooldown( "incarnation_avatar_of_ashamane" );
+    cooldown.incarnation_moonkin = get_cooldown( "incarnation_chosen_of_elune" );
+    cooldown.incarnation_tree    = get_cooldown( "incarnation_tree_of_life" );
+    cooldown.mangle              = get_cooldown( "mangle" );
+    cooldown.moon_cd             = get_cooldown( "moon_cd" );
+    cooldown.natures_swiftness   = get_cooldown( "natures_swiftness" );
+    cooldown.thrash_bear         = get_cooldown( "thrash_bear" );
+    cooldown.tigers_fury         = get_cooldown( "tigers_fury" );
+    cooldown.warrior_of_elune    = get_cooldown( "warrior_of_elune" );
+    cooldown.rage_from_melees    = get_cooldown( "rage_from_melees" );
     cooldown.rage_from_melees->duration = 1_s;
 
     resource_regeneration = regen_type::DYNAMIC;
@@ -3769,7 +3775,7 @@ struct cat_finisher_t : public cat_attack_t
                                             consumed * -0.1 );
 
       if ( p()->talent.incarnation_cat.ok() )
-        p()->cooldown.incarnation->adjust( dur_ );
+        p()->cooldown.incarnation_cat->adjust( dur_ );
       else
         p()->cooldown.berserk_cat->adjust( dur_ );
     }
@@ -4846,9 +4852,9 @@ struct bear_attack_t : public druid_attack_t<melee_attack_t>
         auto cdr = timespan_t::from_seconds( last_resource_cost / -20 );
 
         if ( p()->talent.incarnation_bear.ok() )
-          p()->cooldown.incarnation->adjust( cdr );
+          p()->cooldown.incarnation_bear->adjust( cdr );
         else
-          p()->cooldown.berserk_cat->adjust( cdr );
+          p()->cooldown.berserk_bear->adjust( cdr );
       }
     }
   }
@@ -12213,14 +12219,7 @@ std::unique_ptr<expr_t> druid_t::create_expression( std::string_view name_str )
 
   if ( splits.size() >= 2 && util::str_compare_ci( splits[ 1 ], "bs_inc" ) )
   {
-    // special case since incarnation is handled via the proxy action and the cooldown obj is not explicitly named for
-    // the spec variant
-    if ( util::str_compare_ci( splits[ 0 ], "cooldown" ) &&
-         ( talent.incarnation_cat.ok() || talent.incarnation_bear.ok() ) )
-    {
-      splits[ 1 ] = "incarnation";
-    }
-    else if ( specialization() == DRUID_FERAL )
+    if ( specialization() == DRUID_FERAL )
     {
       if ( talent.incarnation_cat.ok() )
         splits[ 1 ] = "incarnation_king_of_the_jungle";
@@ -12365,10 +12364,10 @@ std::unique_ptr<expr_t> druid_t::create_expression( std::string_view name_str )
     } );
   }
 
-  // Convert talent.incarnation.* & buff.incarnation.* to spec-based incarnations. cooldown.incarnation.* doesn't need
-  // name conversion.
+  // Convert [talent/buff/cooldown].incarnation.* to spec-based incarnations
   if ( splits.size() >= 2 && util::str_compare_ci( splits[ 1 ], "incarnation" ) &&
-       ( util::str_compare_ci( splits[ 0 ], "buff" ) || util::str_compare_ci( splits[ 0 ], "talent" ) ) )
+       ( util::str_compare_ci( splits[ 0 ], "buff" ) || util::str_compare_ci( splits[ 0 ], "talent" ) ||
+         util::str_compare_ci( splits[ 0 ], "cooldown" ) ) )
   {
     switch ( specialization() )
     {
