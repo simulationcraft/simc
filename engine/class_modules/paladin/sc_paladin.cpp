@@ -1381,7 +1381,7 @@ struct divine_toll_t : public paladin_spell_t
       }
     }
 
-    if ( p()->legendary.divine_resonance->ok() )
+    if ( !p()->talents.divine_toll->ok() && p()->legendary.divine_resonance->ok() )
     {
       p()->buffs.divine_resonance->trigger();
     }
