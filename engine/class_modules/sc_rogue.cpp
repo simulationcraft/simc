@@ -417,6 +417,7 @@ public:
     cooldown_t* blind;
     cooldown_t* cloak_of_shadows;
     cooldown_t* cold_blood;
+    cooldown_t* deathmark;
     cooldown_t* dreadblades;
     cooldown_t* echoing_reprimand;
     cooldown_t* evasion;
@@ -427,8 +428,10 @@ public:
     cooldown_t* ghostly_strike;
     cooldown_t* gouge;
     cooldown_t* grappling_hook;
+    cooldown_t* indiscriminate_carnage;
     cooldown_t* keep_it_rolling;
     cooldown_t* killing_spree;
+    cooldown_t* kingsbane;
     cooldown_t* marked_for_death;
     cooldown_t* riposte;
     cooldown_t* roll_the_bones;
@@ -1064,6 +1067,7 @@ public:
     cooldowns.blind                     = get_cooldown( "blind" );
     cooldowns.cloak_of_shadows          = get_cooldown( "cloak_of_shadows" );
     cooldowns.cold_blood                = get_cooldown( "cold_blood" );
+    cooldowns.deathmark                 = get_cooldown( "deathmark" );
     cooldowns.dreadblades               = get_cooldown( "dreadblades" );
     cooldowns.echoing_reprimand         = get_cooldown( "echoing_reprimand" );
     cooldowns.evasion                   = get_cooldown( "evasion" );
@@ -1074,8 +1078,10 @@ public:
     cooldowns.ghostly_strike            = get_cooldown( "ghostly_strike" );
     cooldowns.gouge                     = get_cooldown( "gouge" );
     cooldowns.grappling_hook            = get_cooldown( "grappling_hook" );
+    cooldowns.indiscriminate_carnage    = get_cooldown( "indiscriminate_carnage" );
     cooldowns.keep_it_rolling           = get_cooldown( "keep_it_rolling" );
     cooldowns.killing_spree             = get_cooldown( "killing_spree" );
+    cooldowns.kingsbane                 = get_cooldown( "kingsbane" );
     cooldowns.marked_for_death          = get_cooldown( "marked_for_death" );
     cooldowns.riposte                   = get_cooldown( "riposte" );
     cooldowns.roll_the_bones            = get_cooldown( "roll_the_bones" );
@@ -2280,7 +2286,8 @@ public:
           p()->legendary.duskwalkers_patch_counter += ab::last_resource_cost;
           while ( p()->legendary.duskwalkers_patch_counter >= p()->legendary.duskwalkers_patch->effectN( 2 ).base_value() )
           {
-            /* DFALPHA Deathmark? */
+            // TOCHECK -- Have been informed this is likely to work on Deathmark in prepatch
+            p()->cooldowns.deathmark->adjust( -timespan_t::from_seconds( p()->legendary.duskwalkers_patch->effectN( 1 ).base_value() ) );
             p()->legendary.duskwalkers_patch_counter -= p()->legendary.duskwalkers_patch->effectN( 2 ).base_value();
             p()->procs.duskwalker_patch->occur();
           }
@@ -4138,6 +4145,16 @@ struct indiscriminate_carnage_t : public rogue_spell_t
     rogue_spell_t::execute();
     p()->buffs.indiscriminate_carnage_garrote->trigger();
     p()->buffs.indiscriminate_carnage_rupture->trigger();
+  }
+
+  bool ready() override
+  {
+    // Cooldown does not begin until both buffs are consumed
+    if ( p()->buffs.indiscriminate_carnage_garrote->check() ||
+         p()->buffs.indiscriminate_carnage_rupture->check() )
+      return false;
+
+    return rogue_spell_t::ready();
   }
 };
 
@@ -6824,12 +6841,13 @@ struct vanish_t : public stealth_like_buff_t<buff_t>
     if ( r->talent.subtlety.invigorating_shadowdust || r->legendary.invigorating_shadowdust.ok() || r->options.prepull_shadowdust )
     {
       shadowdust_cooldowns = { r->cooldowns.adrenaline_rush, r->cooldowns.between_the_eyes, r->cooldowns.blade_flurry,
-        r->cooldowns.blade_rush, r->cooldowns.blind, r->cooldowns.cloak_of_shadows, r->cooldowns.dreadblades,
-        r->cooldowns.echoing_reprimand, r->cooldowns.flagellation, r->cooldowns.fleshcraft, r->cooldowns.garrote,
-        r->cooldowns.ghostly_strike, r->cooldowns.gouge, r->cooldowns.grappling_hook, r->cooldowns.killing_spree,
+        r->cooldowns.blade_rush, r->cooldowns.blind, r->cooldowns.cloak_of_shadows, r->cooldowns.deathmark,
+        r->cooldowns.dreadblades, r->cooldowns.echoing_reprimand, r->cooldowns.flagellation, r->cooldowns.fleshcraft,
+        r->cooldowns.garrote, r->cooldowns.ghostly_strike, r->cooldowns.gouge, r->cooldowns.grappling_hook,
+        r->cooldowns.indiscriminate_carnage, r->cooldowns.keep_it_rolling, r->cooldowns.killing_spree, r->cooldowns.kingsbane,
         r->cooldowns.marked_for_death, r->cooldowns.riposte, r->cooldowns.roll_the_bones, r->cooldowns.secret_technique,
         r->cooldowns.sepsis, r->cooldowns.serrated_bone_spike, r->cooldowns.shadow_blades, r->cooldowns.shadow_dance,
-        r->cooldowns.shiv, r->cooldowns.sprint, r->cooldowns.symbols_of_death };
+        r->cooldowns.shiv, r->cooldowns.sprint, r->cooldowns.symbols_of_death, r->cooldowns.thistle_tea };
     }
   }
 
@@ -10634,12 +10652,27 @@ void rogue_t::create_buffs()
     ->set_periodic_mod( talent.assassination.elaborate_planning->effectN( 1 ).percent() )
     ->set_auto_attack_mod( talent.assassination.elaborate_planning->effectN( 1 ).percent() );
 
+  // Cooldown on Indiscriminate Carnage starts when both buffs are used
   buffs.indiscriminate_carnage_garrote = make_buff( this, "indiscriminate_carnage_garrote",
                                                     talent.assassination.indiscriminate_carnage )
-    ->set_cooldown( timespan_t::zero() );
+    ->set_cooldown( timespan_t::zero() )
+    ->set_stack_change_callback( [this]( buff_t*, int, int new_ ) {
+        if ( new_ == 0 && !buffs.indiscriminate_carnage_rupture->check() )
+        {
+          cooldowns.indiscriminate_carnage->reset( false );
+          cooldowns.indiscriminate_carnage->start();
+        }
+      } );
   buffs.indiscriminate_carnage_rupture = make_buff( this, "indiscriminate_carnage_rupture",
                                                     talent.assassination.indiscriminate_carnage )
-    ->set_cooldown( timespan_t::zero() );
+    ->set_cooldown( timespan_t::zero() )
+    ->set_stack_change_callback( [this]( buff_t*, int, int new_ ) {
+    if ( new_ == 0 && !buffs.indiscriminate_carnage_garrote->check() )
+    {
+      cooldowns.indiscriminate_carnage->reset( false );
+      cooldowns.indiscriminate_carnage->start();
+    }
+    } );;
 
   buffs.kingsbane = make_buff<damage_buff_t>( this, "kingsbane", spec.kingsbane_buff );
   buffs.kingsbane->set_refresh_behavior( buff_refresh_behavior::NONE );
