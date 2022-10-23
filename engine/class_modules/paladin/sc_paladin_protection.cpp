@@ -1016,6 +1016,9 @@ void paladin_t::create_buffs_protection()
   buffs.royal_decree = make_buff( this, "royal_decree", find_spell( 340147 ) );
   buffs.reign_of_ancient_kings = make_buff( this, "reign_of_ancient_kings",
     legendary.reign_of_endless_kings -> effectN( 2 ).trigger() -> effectN( 2 ).trigger() );
+  buffs.faith_in_the_light = make_buff( this, "faith_in_the_light", find_spell( 379041 ) )
+                                 ->set_default_value( talents.faith_in_the_light->effectN( 1 ).percent() )
+                                 ->add_invalidate(CACHE_BLOCK);
 
 
   if ( specialization() == PALADIN_PROTECTION )

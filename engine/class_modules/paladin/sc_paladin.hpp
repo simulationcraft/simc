@@ -134,6 +134,7 @@ public:
     buff_t* shining_light_free;
     buff_t* royal_decree;
     buff_t* bastion_of_light;
+    buff_t* faith_in_the_light;
 
     buff_t* inner_light;
     buff_t* inspiring_vanguard;

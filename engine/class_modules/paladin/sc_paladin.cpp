@@ -1071,10 +1071,17 @@ struct word_of_glory_t : public holy_power_consumer_t<paladin_heal_t>
   {
     holy_power_consumer_t::execute();
 
-    if ( p()->specialization() == PALADIN_PROTECTION && p()->buffs.vanquishers_hammer->up() )
+    if ( p()->specialization() == PALADIN_PROTECTION )
     {
-      p()->buffs.vanquishers_hammer->decrement( 1 );
-      p()->active.necrolord_shield_of_the_righteous->execute();
+      if ( p()->buffs.vanquishers_hammer->up() )
+      {
+        p()->buffs.vanquishers_hammer->decrement( 1 );
+        p()->active.necrolord_shield_of_the_righteous->execute();
+      }
+      if ( p()->talents.faith_in_the_light->ok() )
+      {
+        p()->buffs.faith_in_the_light->trigger();
+      }
     }
 
     if ( p()->specialization() == PALADIN_HOLY && p()->talents.awakening->ok() )
@@ -3298,6 +3305,7 @@ double paladin_t::composite_block() const
 
   b += talents.holy_shield->effectN( 1 ).percent();
   b += buffs.glorious_purpose->stack_value();
+  b += buffs.faith_in_the_light->value();
 
   return b;
 }
