@@ -12,8 +12,8 @@ namespace paladin {
 
 struct ardent_defender_t : public paladin_spell_t
 {
-  ardent_defender_t( paladin_t* p, util::string_view options_str ) :
-    paladin_spell_t( "ardent_defender", p, p -> find_specialization_spell( "Ardent Defender" ) )
+  ardent_defender_t( paladin_t* p, util::string_view options_str )
+    : paladin_spell_t( "ardent_defender", p, p->find_talent_spell( talent_tree::SPECIALIZATION, "Ardent Defender" ) )
   {
     parse_options( options_str );
 
@@ -390,8 +390,9 @@ struct blessing_of_spellwarding_t : public paladin_spell_t
 
 struct guardian_of_ancient_kings_t : public paladin_spell_t
 {
-  guardian_of_ancient_kings_t( paladin_t* p, util::string_view options_str ) :
-    paladin_spell_t( "guardian_of_ancient_kings", p, p -> find_specialization_spell( "Guardian of Ancient Kings" ) )
+  guardian_of_ancient_kings_t( paladin_t* p, util::string_view options_str )
+    : paladin_spell_t( "guardian_of_ancient_kings", p,
+                       p->find_talent_spell( talent_tree::SPECIALIZATION, "Guardian of Ancient Kings" ) )
   {
     parse_options( options_str );
     use_off_gcd = true;
@@ -956,9 +957,10 @@ action_t* paladin_t::create_action_protection( util::string_view name, util::str
 
 void paladin_t::create_buffs_protection()
 {
-  buffs.ardent_defender = make_buff( this, "ardent_defender", find_specialization_spell( "Ardent Defender" ) )
+  buffs.ardent_defender =
+      make_buff( this, "ardent_defender", find_spell( 31850 ) )
         -> set_cooldown( 0_ms ); // handled by the ability
-  buffs.guardian_of_ancient_kings = make_buff( this, "guardian_of_ancient_kings", find_specialization_spell( "Guardian of Ancient Kings" ) )
+  buffs.guardian_of_ancient_kings = make_buff( this, "guardian_of_ancient_kings", find_spell( 86659 ) )
         -> set_cooldown( 0_ms )
         -> set_stack_change_callback( [ this ] ( buff_t*, int /*old*/, int curr )
         {
