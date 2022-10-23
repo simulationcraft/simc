@@ -36,6 +36,8 @@ struct ardent_defender_t : public paladin_spell_t
 
 // Avengers Shield ==========================================================
 
+// This struct is for all things Avenger's Shield which should occur baseline, disregarding whether it's selfcast, Divine Resonance or Divine Toll.
+// Specific interactions with Selfcast, Divine Resonance and Divine Toll should be put under the other structs.
 struct avengers_shield_base_t : public paladin_spell_t
 {
   avengers_shield_base_t( util::string_view n, paladin_t* p, util::string_view options_str )
@@ -106,8 +108,44 @@ double recharge_multiplier( const cooldown_t& cd ) const override
        rm *= 1.0 + p()->talents.moment_of_glory->effectN( 1 ).percent();
     return rm;
   }
+
+  double action_multiplier() const override
+  {
+    double m = paladin_spell_t::action_multiplier();
+    if ( p()->buffs.moment_of_glory->up() )
+    {
+      m *= 1.0 + p()->talents.moment_of_glory->effectN( 2 ).percent();
+    }
+    if ( p()->talents.focused_enmity->ok() )
+    {
+      m *= 1.0 + p()->talents.focused_enmity->effectN( 2 ).percent();
+    }
+    return m;
+  }
+  double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    double m = paladin_spell_t::composite_da_multiplier( state );
+
+    if ( state->chain_target == 0 )
+    {
+      {
+        m *= 1.0 + p()->talents.ferren_marcuss_fervor->effectN( 1 ).percent();
+      }
+    }
+    return m;
+  }
+  void execute() override
+  {
+    paladin_spell_t::execute();
+
+    if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, T29, B2 ) )
+    {
+      p()->buffs.ally_of_the_light->trigger();
+    }
+  }
 };
 
+// This struct is solely for all Avenger's Shields which are cast by Divine Toll.
 struct avengers_shield_dt_t : public avengers_shield_base_t
 {
   avengers_shield_dt_t( paladin_t* p ) :
@@ -125,6 +163,7 @@ struct avengers_shield_dt_t : public avengers_shield_base_t
   }
 };
 
+// This struct is solely for all Avenger's Shields which are cast by Divine Resonance.
 struct avengers_shield_dr_t : public avengers_shield_base_t
 {
   avengers_shield_dr_t( paladin_t* p ):
@@ -132,18 +171,9 @@ struct avengers_shield_dr_t : public avengers_shield_base_t
   {
     background = true;
   }
-
-  double action_multiplier() const override
-  {
-    // 2021-06-26 Divine resonance damage is increased by Moment of Glory, but
-    // does not consume the buff.
-    double m = avengers_shield_base_t::action_multiplier();
-    if ( p()->bugs && p()->buffs.moment_of_glory->up() )
-      m *= 1.0 + p()->talents.moment_of_glory->effectN( 2 ).percent();
-    return m;
-  }
 };
 
+// This struct is solely for all Avenger's Shield which are self cast.
 struct avengers_shield_t : public avengers_shield_base_t
 {
   avengers_shield_t( paladin_t* p, util::string_view options_str ) :
@@ -173,37 +203,6 @@ struct avengers_shield_t : public avengers_shield_base_t
       else
         p() -> procs.as_engraved_sigil_wasted -> occur();
     }
-
-    if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, T29, B2 ) )
-    {
-      p()->buffs.ally_of_the_light->trigger();
-    }
-  }
-
-  double action_multiplier() const override
-  {
-    double m = avengers_shield_base_t::action_multiplier();
-    if ( p()->buffs.moment_of_glory->up() )
-    {
-      m *= 1.0 + p()->talents.moment_of_glory->effectN( 2 ).percent();
-    }
-    if ( p()->talents.focused_enmity->ok() )
-    {
-      m *= 1.0 + p()->talents.focused_enmity->effectN( 2 ).percent();
-    }
-    return m;
-  }
-  double composite_da_multiplier( const action_state_t* state ) const override
-  {
-    double m = avengers_shield_base_t::composite_da_multiplier( state );
-
-    if ( state->chain_target == 0 )
-    {
-      {
-        m *= 1.0 + p()->talents.ferren_marcuss_fervor->effectN( 1 ).percent();
-      }
-    }
-    return m;
   }
 };
 
