@@ -11459,7 +11459,8 @@ void druid_t::init_special_effects()
     driver->name_str = "ashamanes_guidance_driver";
     driver->spell_id = spec.ashamanes_guidance->id();
     driver->proc_flags_ = PF_MELEE;
-    driver->ppm_ = -0.95;  // TODO: determine what this is. for now guesstimating at old vision of perfection rppm
+    driver->ppm_ = -0.85;  // TODO: determine what this is.
+    driver->rppm_scale_ |= RPPM_HASTE;
     special_effects.push_back( driver );
 
     auto cb = new ashamanes_guidance_cb_t( this, *driver );
