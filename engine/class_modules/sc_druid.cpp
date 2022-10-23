@@ -12281,10 +12281,7 @@ std::unique_ptr<expr_t> druid_t::create_expression( std::string_view name_str )
     // automatic resolution of Celestial Alignment vs talented Incarnation
     if ( splits.size() >= 2 && util::str_compare_ci( splits[ 1 ], "ca_inc" ) )
     {
-      if ( util::str_compare_ci( splits[ 0 ], "cooldown" ) )
-        splits[ 1 ] = talent.incarnation_moonkin.ok() ? "incarnation" : "celestial_alignment";
-      else
-        splits[ 1 ] = talent.incarnation_moonkin.ok() ? "incarnation_chosen_of_elune" : "celestial_alignment";
+      splits[ 1 ] = talent.incarnation_moonkin.ok() ? "incarnation_chosen_of_elune" : "celestial_alignment";
 
       return druid_t::create_expression( util::string_join( splits, "." ) );
     }
