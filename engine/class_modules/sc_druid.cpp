@@ -7828,12 +7828,14 @@ struct starfall_t : public druid_spell_t
   };
 
   starfall_driver_t* driver;
+  timespan_t dot_ext;
   timespan_t max_ext;
 
   starfall_t( druid_t* p, std::string_view opt ) : starfall_t( p, "starfall", p->talent.starfall, opt ) {}
 
   starfall_t( druid_t* p, std::string_view n, const spell_data_t* s, std::string_view opt )
     : druid_spell_t( n, p, s, opt ),
+      dot_ext( timespan_t::from_seconds( p->talent.aetherial_kindling->effectN( 1 ).base_value() ) ),
       max_ext( timespan_t::from_seconds( p->talent.aetherial_kindling->effectN( 2 ).base_value() ) )
   {
     may_miss = false;
@@ -7872,15 +7874,10 @@ struct starfall_t : public druid_spell_t
 
     if ( p()->talent.aetherial_kindling.ok() )
     {
-      auto ext = p()->talent.aetherial_kindling->effectN( 1 ).base_value();
-
-      std::vector<player_t*>& tl = target_list();
-      auto dur = timespan_t::from_seconds( ext );
-
-      for ( const auto& t : tl )
+      for ( auto t : p()->sim->target_non_sleeping_list )
       {
-        td( t )->dots.moonfire->adjust_duration( dur, max_ext, -1, false );
-        td( t )->dots.sunfire->adjust_duration( dur, max_ext, -1, false );
+        td( t )->dots.moonfire->adjust_duration( dot_ext, max_ext, -1, false );
+        td( t )->dots.sunfire->adjust_duration( dot_ext, max_ext, -1, false );
       }
     }
 
