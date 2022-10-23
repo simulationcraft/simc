@@ -399,6 +399,7 @@ public:
     damage_buff_t* perforated_veins;
 
     // Set Bonuses
+    damage_buff_t* t29_assassination_4pc;
     damage_buff_t* t29_outlaw_2pc;
     damage_buff_t* t29_outlaw_4pc;
     damage_buff_t* t29_subtlety_2pc;
@@ -1021,7 +1022,7 @@ public:
   struct set_bonuses_t
   {
     const spell_data_t* t29_assassination_2pc;
-    const spell_data_t* t29_assassination_4pc;  // NYI
+    const spell_data_t* t29_assassination_4pc;
     const spell_data_t* t29_outlaw_2pc;
     const spell_data_t* t29_outlaw_4pc;
     const spell_data_t* t29_subtlety_2pc;
@@ -1737,6 +1738,7 @@ public:
     register_damage_buff( p()->buffs.symbols_of_death );
     register_damage_buff( p()->buffs.the_rotten );
 
+    register_damage_buff( p()->buffs.t29_assassination_4pc );
     register_damage_buff( p()->buffs.t29_outlaw_2pc );
     register_damage_buff( p()->buffs.t29_outlaw_4pc );
     register_damage_buff( p()->buffs.t29_subtlety_2pc );
@@ -2524,9 +2526,13 @@ struct rogue_poison_t : public rogue_attack_t
   {
     rogue_attack_t::impact( state );
 
-    if ( is_lethal && state->result_amount > 0 && td( state->target )->dots.kingsbane->is_ticking() )
+    if ( is_lethal && state->result_amount > 0 )
     {
-      p()->buffs.kingsbane->trigger();
+      if ( td( state->target )->dots.kingsbane->is_ticking() )
+        p()->buffs.kingsbane->trigger();
+
+      if ( p()->set_bonuses.t29_assassination_4pc->ok() )
+        p()->buffs.t29_assassination_4pc->trigger();
     }
 
     if ( deathmark_impact_action && td( state->target )->dots.deathmark->is_ticking() )
@@ -10847,6 +10853,10 @@ void rogue_t::create_buffs()
 
   // Set Bonus Items ========================================================
   
+  buffs.t29_assassination_4pc = make_buff<damage_buff_t>( this, "septic_wounds", set_bonuses.t29_assassination_4pc->ok() ?
+                                                          find_spell( 394845 ) : spell_data_t::not_found() );
+  buffs.t29_assassination_4pc->set_trigger_spell( set_bonuses.t29_assassination_4pc ); // Proc Rate
+
   buffs.t29_outlaw_2pc = make_buff<damage_buff_t>( this, "vicious_followup", set_bonuses.t29_outlaw_2pc->ok() ?
                                                    find_spell( 394879 ) : spell_data_t::not_found() );
   buffs.t29_outlaw_2pc->set_max_stack( consume_cp_max() );
