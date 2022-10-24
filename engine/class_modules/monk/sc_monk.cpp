@@ -10749,6 +10749,8 @@ std::unique_ptr<expr_t> monk_t::create_expression( util::string_view name_str )
     else if ( splits[1] == "max" )
       return make_fn_expr( name_str, [ this ] { return mark_of_the_crane_max(); } );
   }
+  else if ( splits.size() == 1 && splits[ 0 ] == "no_bof_dot" )
+    return make_fn_expr( name_str, [ this ] { return user_options.no_bof_dot; } );
 
   return base_t::create_expression( name_str );
 }
