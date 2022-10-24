@@ -1110,7 +1110,10 @@ void paladin_t::init_spells_protection()
 
 
   // Tier Sets
-  tier_sets.glorious_purpose_2pc = find_spell( 364305 );
+  tier_sets.glorious_purpose_2pc  = find_spell( 364305 );
+  tier_sets.ally_of_the_light_2pc = find_spell( 394714 );
+  tier_sets.ally_of_the_light_4pc = find_spell( 394727 );
+
 }
 
 void paladin_t::generate_action_prio_list_prot()
