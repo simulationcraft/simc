@@ -6210,7 +6210,7 @@ struct expel_harm_t : public monk_heal_t
     auto mm = monk_heal_t::composite_crit_chance();
 
     if ( p()->talent.general.vigorous_expulsion->ok() )
-      mm += 1 + p()->talent.general.vigorous_expulsion->effectN( 2 ).percent();
+      mm += p()->talent.general.vigorous_expulsion->effectN( 2 ).percent();
 
     return mm;
   }
