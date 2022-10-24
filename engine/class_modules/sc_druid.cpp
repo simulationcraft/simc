@@ -5181,7 +5181,7 @@ struct maul_t : public bear_attack_t
 
     p()->buff.savage_combatant->expire();
 
-    p()->buff.vicious_cycle_maul->decrement();
+    p()->buff.vicious_cycle_maul->expire();
 
     p()->buff.vicious_cycle_mangle->trigger();
   }
