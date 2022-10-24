@@ -141,6 +141,7 @@ public:
   {
     buff_t* amplifying_poison;
     buff_t* amplifying_poison_deathmark;
+    buff_t* atrophic_poison;
     buff_t* akaaris_soul_fragment;
     buff_t* between_the_eyes;
     buff_t* crippling_poison;
@@ -180,6 +181,9 @@ public:
 
   timespan_t non_lethal_poison_remains() const
   {
+    if ( debuffs.atrophic_poison->check() )
+      return debuffs.atrophic_poison->remains();
+
     if ( debuffs.crippling_poison->check() )
       return debuffs.crippling_poison->remains();
 
@@ -198,7 +202,7 @@ public:
 
   bool is_non_lethal_poisoned() const
   {
-    return debuffs.crippling_poison->check() || debuffs.numbing_poison->check();
+    return debuffs.atrophic_poison->check() || debuffs.crippling_poison->check() || debuffs.numbing_poison->check();
   }
 
   bool is_poisoned() const
@@ -664,7 +668,7 @@ public:
 
       player_talent_t master_poisoner;          // No implementation
       player_talent_t numbing_poison;
-      player_talent_t atrophic_poison;          // No implementation
+      player_talent_t atrophic_poison;
       player_talent_t nimble_fingers;
       player_talent_t gouge;
       player_talent_t rushed_setup;
@@ -2713,7 +2717,32 @@ struct amplifying_poison_t : public rogue_poison_t
   }
 };
 
-// Crippling poison =========================================================
+// Atrophic Poison ==========================================================
+
+struct atrophic_poison_t : public rogue_poison_t
+{
+  struct atrophic_poison_proc_t : public rogue_poison_t
+  {
+    atrophic_poison_proc_t( util::string_view name, rogue_t* p ) :
+      rogue_poison_t( name, p, p->talent.rogue.atrophic_poison->effectN( 1 ).trigger(), false, true )
+    {
+    }
+
+    void impact( action_state_t* state ) override
+    {
+      rogue_poison_t::impact( state );
+      td( state->target )->debuffs.atrophic_poison->trigger();
+    }
+  };
+
+  atrophic_poison_t( util::string_view name, rogue_t* p ) :
+    rogue_poison_t( name, p, p->talent.rogue.atrophic_poison )
+  {
+    impact_action = p->get_background_action<atrophic_poison_proc_t>( "atrophic_poison" );
+  }
+};
+
+// Crippling Poison =========================================================
 
 struct crippling_poison_t : public rogue_poison_t
 {
@@ -2737,7 +2766,7 @@ struct crippling_poison_t : public rogue_poison_t
   }
 };
 
-// Numbing poison ===========================================================
+// Numbing Poison ===========================================================
 
 struct numbing_poison_t : public rogue_poison_t
 {
@@ -2755,7 +2784,7 @@ struct numbing_poison_t : public rogue_poison_t
   };
 
   numbing_poison_t( util::string_view name, rogue_t* p ) :
-    rogue_poison_t( name, p, p->find_class_spell( "Numbing Poison" ) )
+    rogue_poison_t( name, p, p->talent.rogue.numbing_poison )
   {
     impact_action = p->get_background_action<numbing_poison_proc_t>( "numbing_poison" );
   }
@@ -2890,6 +2919,8 @@ struct apply_poison_t : public action_t
       return p->get_background_action<amplifying_poison_t>( "amplifying_poison_driver" );
     else if ( poison_name == "wound" )
       return p->get_background_action<wound_poison_t>( "wound_poison_driver" );
+    else if ( poison_name == "atrophic" )
+      return p->get_background_action<atrophic_poison_t>( "atrophic_poison_driver" );
     else if ( poison_name == "crippling" )
       return p->get_background_action<crippling_poison_t>( "crippling_poison_driver" );
     else if ( poison_name == "numbing" )
@@ -7020,6 +7051,14 @@ struct wound_poison_t : public rogue_poison_buff_t
   }
 };
 
+struct atrophic_poison_t : public rogue_poison_buff_t
+{
+  atrophic_poison_t( rogue_td_t& r ) :
+    rogue_poison_buff_t( r, "atrophic_poison", debug_cast<rogue_t*>( r.source )->talent.rogue.atrophic_poison->effectN( 1 ).trigger() )
+  {
+  }
+};
+
 struct crippling_poison_t : public rogue_poison_buff_t
 {
   crippling_poison_t( rogue_td_t& r ) :
@@ -8237,6 +8276,7 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   dots.serrated_bone_spike      = target->get_dot( "serrated_bone_spike_dot", source );
 
   debuffs.wound_poison          = new buffs::wound_poison_t( *this );
+  debuffs.atrophic_poison       = new buffs::atrophic_poison_t( *this );
   debuffs.crippling_poison      = new buffs::crippling_poison_t( *this );
   debuffs.numbing_poison        = new buffs::numbing_poison_t( *this );
 
@@ -8288,8 +8328,8 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
              dots.rupture, dots.rupture_deathmark, dots.crimson_tempest, dots.mutilated_flesh,
              dots.serrated_bone_spike };
   poison_dots = { dots.deadly_poison, dots.deadly_poison_deathmark, dots.sepsis, dots.kingsbane };
-  poison_debuffs = { debuffs.crippling_poison, debuffs.numbing_poison, debuffs.wound_poison,
-                     debuffs.amplifying_poison, debuffs.amplifying_poison_deathmark };
+  poison_debuffs = { debuffs.atrophic_poison, debuffs.crippling_poison, debuffs.numbing_poison,
+                     debuffs.wound_poison, debuffs.amplifying_poison, debuffs.amplifying_poison_deathmark };
 
   // Callbacks ================================================================
 
