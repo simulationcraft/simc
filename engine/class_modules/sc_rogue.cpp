@@ -41,6 +41,7 @@ enum stealth_type_e
   STEALTH_SUBTERFUGE = 0x08,
   STEALTH_SHADOWDANCE = 0x10,
   STEALTH_SEPSIS = 0x20,
+  STEALTH_IMPROVED_GARROTE = 0x40,
 
   STEALTH_ROGUE = ( STEALTH_SUBTERFUGE | STEALTH_SHADOWDANCE ),   // Subterfuge + Shadowdance
   STEALTH_BASIC = ( STEALTH_NORMAL | STEALTH_VANISH ),            // Normal + Vanish
@@ -3183,13 +3184,13 @@ struct ambush_t : public rogue_attack_t
     void execute() override
     {
       rogue_attack_t::execute();
-      trigger_count_the_odds( execute_state ); // TOCHECK DFALPHA
+      trigger_count_the_odds( execute_state );
     }
 
     void impact( action_state_t* state ) override
     {
       rogue_attack_t::impact( state );
-      trigger_find_weakness( state ); // TOCHECK DFALPHA
+      trigger_find_weakness( state );
     }
 
     bool procs_main_gauche() const override
@@ -4024,7 +4025,9 @@ struct garrote_t : public rogue_attack_t
   {
     rogue_attack_t::execute();
 
-    if ( p()->talent.assassination.shrouded_suffocation->ok() && p()->stealthed( STEALTH_BASIC | STEALTH_SUBTERFUGE ) )
+    // DFALPHA TOCHECK -- Does not work with Shadow Dance currently based on testing but supposed to
+    if ( p()->talent.assassination.shrouded_suffocation->ok() &&
+         p()->stealthed( STEALTH_BASIC | STEALTH_ROGUE | STEALTH_IMPROVED_GARROTE ) )
     {
       trigger_combo_point_gain( as<int>( p()->talent.assassination.shrouded_suffocation->effectN( 2 ).base_value() ),
                                 p()->gains.shrouded_suffocation );
@@ -6795,15 +6798,21 @@ struct stealth_like_buff_t : public BuffBase
 
     if ( rogue->stealthed( STEALTH_BASIC ) )
     {
-      if ( rogue->talent.assassination.master_assassin->ok() )
-        rogue->buffs.master_assassin_aura->trigger();
-
       if ( rogue->legendary.master_assassins_mark->ok() )
         rogue->buffs.master_assassins_mark_aura->trigger();
     }
 
     if ( rogue->stealthed( STEALTH_BASIC | STEALTH_SHADOWDANCE ) )
     {
+      if ( rogue->talent.assassination.master_assassin->ok() )
+        rogue->buffs.master_assassin_aura->trigger();
+
+      if ( rogue->talent.assassination.improved_garrote->ok() )
+        rogue->buffs.improved_garrote_aura->trigger();
+
+      if ( rogue->talent.outlaw.take_em_by_surprise->ok() )
+        rogue->buffs.take_em_by_surprise_aura->trigger();
+
       if ( rogue->talent.subtlety.premeditation->ok() )
         rogue->buffs.premeditation->trigger();
 
@@ -6813,10 +6822,6 @@ struct stealth_like_buff_t : public BuffBase
       if ( rogue->talent.subtlety.silent_storm->ok() )
         rogue->buffs.silent_storm->trigger();
     }
-
-    // TOCHECK -- All different stealth trigger conditions
-    rogue->buffs.improved_garrote_aura->trigger();
-    rogue->buffs.take_em_by_surprise_aura->trigger();
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
@@ -6826,9 +6831,9 @@ struct stealth_like_buff_t : public BuffBase
     // Don't swap these buffs around if we are still in stealth due to Vanish expiring
     if ( !rogue->stealthed( STEALTH_BASIC ) )
     {
+      rogue->buffs.improved_garrote_aura->expire();
       rogue->buffs.master_assassin_aura->expire();
       rogue->buffs.master_assassins_mark_aura->expire();
-      rogue->buffs.improved_garrote_aura->expire();
       rogue->buffs.take_em_by_surprise_aura->expire();
     }
   }
@@ -6953,6 +6958,10 @@ struct shadow_dance_t : public stealth_like_buff_t<damage_buff_t>
       rogue->buffs.danse_macabre->expire();
       rogue->danse_macabre_tracker.clear();
     }
+
+    // These buffs do not persist after Shadow Dance expires, unlike normal Stealth
+    rogue->buffs.improved_garrote->expire();
+    rogue->buffs.master_assassin->expire();
   }
 };
 
@@ -8790,7 +8799,7 @@ void rogue_t::init_action_list()
     def->add_action( "variable,name=single_target,value=spell_targets.fan_of_knives<2" );
     def->add_action( "variable,name=regen_saturated,value=energy.regen_combined>35", "Combined Energy Regen needed to saturate" );
     def->add_action( "variable,name=deathmark_cooldown_remains,value=cooldown.deathmark.remains*variable.deathmark_cdr" );
-    def->add_action( "call_action_list,name=stealthed,if=stealthed.rogue|buff.improved_garrote.up" );
+    def->add_action( "call_action_list,name=stealthed,if=stealthed.rogue|stealthed.improved_garrote" );
     def->add_action( "call_action_list,name=cds" );
     def->add_action( "slice_and_dice,if=!buff.slice_and_dice.up&combo_points>=2", "Put SnD up initially for Cut to the Chase, refresh with Envenom if at low duration" );
     def->add_action( "envenom,if=buff.slice_and_dice.up&buff.slice_and_dice.remains<5&combo_points>=4", "Higher priority Envenom casts for refreshing SnD or at the end of Flagellation");
@@ -8821,7 +8830,7 @@ void rogue_t::init_action_list()
     cds->add_action( "use_items,slots=trinket2,if=(variable.trinket_sync_slot=2&(debuff.deathmark.up|fight_remains<=20)|(variable.trinket_sync_slot=1&(!trinket.1.cooldown.ready|variable.deathmark_cooldown_remains>20))|!variable.trinket_sync_slot)" );
     cds->add_action( "deathmark,if=variable.deathmark_condition" );
     cds->add_action( "kingsbane,if=(debuff.shiv.up|cooldown.shiv.ready)&buff.envenom.up" );
-    cds->add_action( "exsanguinate,if=!stealthed.rogue&!buff.improved_garrote.up&!dot.deathmark.ticking&(!dot.garrote.refreshable&dot.rupture.remains>4+4*cp_max_spend|dot.rupture.remains*0.5>target.time_to_die)&target.time_to_die>4", "Exsanguinate when not stealthed and both Rupture and Garrote are up for long enough." );
+    cds->add_action( "exsanguinate,if=!stealthed.rogue&!stealthed.improved_garrote&!dot.deathmark.ticking&(!dot.garrote.refreshable&dot.rupture.remains>4+4*cp_max_spend|dot.rupture.remains*0.5>target.time_to_die)&target.time_to_die>4", "Exsanguinate when not stealthed and both Rupture and Garrote are up for long enough." );
     cds->add_action( "shiv,if=!covenant.night_fae&!debuff.shiv.up&dot.garrote.ticking&dot.rupture.ticking&(!talent.crimson_tempest.enabled|variable.single_target|dot.crimson_tempest.ticking)", "Shiv if DoTs are up; if Night Fae attempt to sync with Sepsis or Deathmark if we won't waste more than half Shiv's cooldown" );
     cds->add_action( "shiv,if=covenant.night_fae&!debuff.shiv.up&dot.garrote.ticking&dot.rupture.ticking&((cooldown.sepsis.ready|cooldown.sepsis.remains>12)+(cooldown.deathmark.ready|variable.deathmark_cooldown_remains>12)=2)");
     cds->add_action( "thistle_tea,if=energy.deficit>=100&!buff.thistle_tea.up&(charges=3|debuff.deathmark.up|fight_remains<cooldown.deathmark.remains)");
@@ -8833,7 +8842,7 @@ void rogue_t::init_action_list()
     cds->add_action( "berserking,if=debuff.deathmark.up" );
     cds->add_action( "fireblood,if=debuff.deathmark.up" );
     cds->add_action( "ancestral_call,if=debuff.deathmark.up" );
-    cds->add_action( "call_action_list,name=vanish,if=!stealthed.all&master_assassin_remains=0&!buff.improved_garrote.up" );
+    cds->add_action( "call_action_list,name=vanish,if=!stealthed.all&master_assassin_remains=0" );
     cds->add_action( "use_item,name=windscar_whetstone,if=spell_targets.fan_of_knives>desired_targets|raid_event.adds.in>60|fight_remains<7" );
     cds->add_action( "use_item,name=cache_of_acquired_treasures,if=buff.acquired_axe.up&(spell_targets.fan_of_knives=1&raid_event.adds.in>60|spell_targets.fan_of_knives>1)|fight_remains<25" );
     cds->add_action( "use_item,name=bloodstained_handkerchief,target_if=max:target.time_to_die*(!dot.cruel_garrote.ticking),if=!dot.cruel_garrote.ticking" );
@@ -8844,6 +8853,9 @@ void rogue_t::init_action_list()
     vanish->add_action( "pool_resource,for_next=1,extra_amount=45" );
     vanish->add_action( "vanish,if=talent.improved_garrote&cooldown.garrote.up&!exsanguinated.garrote&dot.garrote.pmultiplier<=1&(debuff.deathmark.up|cooldown.deathmark.remains<4)&combo_points.deficit>=(spell_targets.fan_of_knives>?4)" );
     vanish->add_action( "vanish,if=!talent.improved_garrote&(talent.master_assassin.enabled|runeforge.mark_of_the_master_assassin)&!dot.rupture.refreshable&dot.garrote.remains>3&debuff.deathmark.up&(debuff.shiv.up|debuff.deathmark.remains<4|dot.sepsis.ticking)&dot.sepsis.remains<3", "Vanish with Master Assasin: Rupture+Garrote not in refresh range, during Deathmark+Shiv. Sync with Sepsis final hit if possible." );
+    vanish->add_action( "pool_resource,for_next=1,extra_amount=45" );
+    vanish->add_action( "shadow_dance,if=talent.improved_garrote&cooldown.garrote.up&!exsanguinated.garrote&dot.garrote.pmultiplier<=1&(debuff.deathmark.up|cooldown.deathmark.remains<4|cooldown.deathmark.remains>60)&combo_points.deficit>=(spell_targets.fan_of_knives>?4)" );
+    vanish->add_action( "shadow_dance,if=!talent.improved_garrote&(talent.master_assassin.enabled|runeforge.mark_of_the_master_assassin)&!dot.rupture.refreshable&dot.garrote.remains>3&(debuff.deathmark.up|cooldown.deathmark.remains>60)&(debuff.shiv.up|debuff.deathmark.remains<4|dot.sepsis.ticking)&dot.sepsis.remains<3", "Shadow Dance with Master Assasin: Rupture+Garrote not in refresh range, during Deathmark+Shiv. Sync with Sepsis final hit if possible." );
 
     // Stealth
     action_priority_list_t* stealthed = get_action_priority_list( "stealthed", "Stealthed Actions" );
@@ -9367,6 +9379,12 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
     {
       return make_fn_expr( split[ 0 ], [ this ]() {
         return stealthed( STEALTH_SEPSIS );
+      } );
+    }
+    else if ( util::str_compare_ci( split[ 1 ], "improved_garrote" ) )
+    {
+      return make_fn_expr( split[ 0 ], [this]() {
+        return stealthed( STEALTH_IMPROVED_GARROTE );
       } );
     }
     else if ( util::str_compare_ci( split[ 1 ], "all" ) )
@@ -11509,6 +11527,10 @@ bool rogue_t::stealthed( uint32_t stealth_mask ) const
     return true;
 
   if ( ( stealth_mask & STEALTH_SEPSIS ) && buffs.sepsis->check() )
+    return true;
+
+  if ( ( stealth_mask & STEALTH_IMPROVED_GARROTE ) &&
+       ( buffs.improved_garrote->check() || buffs.improved_garrote_aura->check() ) )
     return true;
 
   return false;
