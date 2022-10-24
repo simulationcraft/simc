@@ -130,8 +130,8 @@ struct mind_sear_t final : public priest_spell_t
 
     if ( priest().buffs.mind_devourer_ms_active->check() )
     {
-      player->sim->print_debug( "{} {} consumes ticking cost 0 insanity (current={}).", priest(), *this,
-                                player->resources.current[ RESOURCE_INSANITY ] );
+      player->sim->print_debug( "{} {} consumes ticking cost 0 insanity (current={}) from mind_devourer.", priest(),
+                                *this, player->resources.current[ RESOURCE_INSANITY ] );
       return true;
     }
 
@@ -183,6 +183,17 @@ struct mind_sear_t final : public priest_spell_t
       {
         priest().trigger_shadowy_apparitions( priest().procs.shadowy_apparition_ms, false );
       }
+    }
+
+    double insanity_after_tick = player->resources.current[ RESOURCE_INSANITY ] - cost_per_tick( RESOURCE_INSANITY );
+
+    // Mind Sear will only ever consume 25 Insanity, no partial amounts
+    // Cancel the channel after the ticks happen
+    if ( insanity_after_tick < cost_per_tick( RESOURCE_INSANITY ) )
+    {
+      player->sim->print_debug( "{} {} will be cancelled. Ran out of Insanity for next tick, insanity_after_tick={}.",
+                                priest(), *this, insanity_after_tick );
+      make_event( *sim, 10_ms, [ this ] { this->cancel(); } );
     }
   }
 };
