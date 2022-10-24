@@ -81,11 +81,9 @@ struct avengers_shield_base_t : public paladin_spell_t
     {
       //Bulwark of Order is capped at 30% of max hp. Effect 2 JNYI.
       double max_absorb = p()->talents.bulwark_of_order->effectN( 2 ).percent() * p()->resources.max[ RESOURCE_HEALTH ];
-      double new_absorb = s -> result_amount * p() -> talents.bulwark_of_order -> effectN( 1 ).percent();
-      if( p() -> buffs.bulwark_of_order_absorb -> value() + new_absorb < max_absorb )
-        p() -> buffs.bulwark_of_order_absorb -> trigger( 1, p() -> buffs.bulwark_of_order_absorb -> value() + new_absorb );
-      else
-        p() -> buffs.bulwark_of_order_absorb -> trigger( 1, max_absorb );
+      double new_absorb = s->result_amount * p()->talents.bulwark_of_order->effectN( 1 ).percent();
+      p()->buffs.bulwark_of_order_absorb->trigger(
+          1, std::min( p()->buffs.bulwark_of_order_absorb->value() + new_absorb, max_absorb ) );
     }
 
     if ( p() -> conduit.vengeful_shock -> ok() )
