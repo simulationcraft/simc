@@ -91,7 +91,7 @@ struct avengers_shield_base_t : public paladin_spell_t
       td( s -> target ) -> debuff.vengeful_shock -> trigger();
     }
 
-    if ( p() -> legendary.bulwark_of_righteous_fury -> ok() )
+    if ( p() -> legendary.bulwark_of_righteous_fury -> ok() && !p() -> talents.bulwark_of_righteous_fury -> ok() )
       p() -> buffs.bulwark_of_righteous_fury -> trigger();
 
     if ( p()->talents.bulwark_of_righteous_fury->ok() )
@@ -687,9 +687,9 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
   {
     double am = holy_power_consumer_t::action_multiplier();
     // Range increase on bulwark of righteous fury not implemented.
-    if ( p()->talents.bulwark_of_righteous_fury->ok() )
+    if ( p()->talents.bulwark_of_righteous_fury->ok() || p()->legendary.bulwark_of_righteous_fury->ok())
     {
-    am *= 1.0 + p() -> buffs.bulwark_of_righteous_fury -> stack_value();
+      am *= 1.0 + p() -> buffs.bulwark_of_righteous_fury -> stack_value();
     }
     if ( p()->talents.strength_of_conviction->ok() )
     {
@@ -998,8 +998,8 @@ void paladin_t::create_buffs_protection()
   buffs.moment_of_glory         = make_buff( this, "moment_of_glory", talents.moment_of_glory );
         //-> set_default_value( talents.moment_of_glory -> effectN( 2 ).percent() );
   buffs.bastion_of_light = make_buff( this, "bastion_of_light", talents.bastion_of_light);
-  buffs.bulwark_of_righteous_fury = make_buff( this, "bulwark_of_righteous_fury", find_spell( 337848) )
-        -> set_default_value( find_spell( 337848 ) -> effectN( 1 ).percent() );
+  buffs.bulwark_of_righteous_fury = make_buff( this, "bulwark_of_righteous_fury", find_spell( 386652 ) )
+                                        ->set_default_value( find_spell( 386652 )->effectN( 1 ).percent() );
   buffs.shielding_words = make_buff<absorb_buff_t>( this, "shielding_words", conduit.shielding_words )
         -> set_absorb_source( get_stats( "shielding_words" ) );
   buffs.shining_light_stacks = make_buff( this, "shining_light_stacks", find_spell( 182104 ) )
