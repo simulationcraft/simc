@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46144 dragonflight-BETA (hotfix 2022-10-22/46144, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46144 dragonflight-BETA (hotfix 2022-10-24/46144, no-networking)
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -1388,10 +1388,11 @@ Description      : A two-headed shot that hits your primary target and another n
 |cFFFFFFFFGenerates $204304s1 Focus for each target hit.|r][]
 
 Name             : Exotic Beasts (id=53270) [Spell Family (9), Passive] 
+Hotfixed         : Learn Level (39 -> 10), Required Level (39 -> 10)
 Class            : Beast Mastery Hunter
 School           : Physical
 Spell Type       : None
-Spell Level      : 39
+Spell Level      : 10
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3836,7 +3837,7 @@ Spell Level      : 5
 Duration         : 3 seconds
 Cooldown         : 180 seconds
 Labels           : 1381: Blessing of the Bronze (381746 effect#1), Blessing of the Bronze (381749 effect#1), Blessing of the Bronze (381753 effect#1), Blessing of the Bronze (381754 effect#1), Blessing of the Bronze (381756 effect#1), Blessing of the Bronze (381757 effect#1)
-Affecting spells : Call of the Wild (206332 effect#1), Born To Be Wild (266921 effect#1), Call of the Wild (336742 effect#1), Cheetah's Vigor (339558 effect#1), Aspect of the Cheetah (343241 effect#1)
+Affecting spells : Call of the Wild (206332 effect#1), Born To Be Wild (266921 effect#1), Call of the Wild (336742 effect#1), Cheetah's Vigor (339558 effect#1)
 Family Flags     : 21, 40
 Attributes       : ....x... ........ x....... ........   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13129,27 +13130,6 @@ Effects          :
 Description      : $@spelldesc260367
 Tooltip          : Aimed Shot cast time reduced by $s1%.
 
-Name             : Aspect of the Cheetah (desc=Rank 2) (id=343241) [Spell Family (9), Passive] 
-Class            : Hunter
-School           : Nature
-Spell Type       : None
-Spell Level      : 46
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ x....... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Passive (6), Only In Spellbook Until Learned (240), Cooldown Shared With AI Group (418)
-Effects          :
-#1 (id=844882)   : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
-                   Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
-                   Affected Spells: Aspect of the Cheetah (186257)
-                   Family Flags: 40
-Description      : Aspect of the Cheetah's initial movement speed burst duration is increased by ${$m1/1000}.1 sec.
-
 Name             : Wilderness Medicine (id=343242) [Spell Family (9), Passive, Hidden] 
 Talent Entry     : Generic [tree=class, row=3, col=1, max_rank=2, req_points=0]
                  : Effect#1 [op=set, values=(5, 10)]
@@ -14593,9 +14573,6 @@ School           : Nature
 Spell Type       : None
 GCD              : 1.5 seconds
 Cooldown         : 120 seconds
-Proc Chance      : 25%
-Proc Flags       : ....x... x.x.x.x. x....... ........ 
-                 : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -14991,13 +14968,15 @@ Effects          :
                    Affected Spells: Trick Shots (257621)
                    Family Flags: 59
 #3 (id=1007412)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Trick Shots (257621)
                    Family Flags: 59
+Hotfixed         : Base Value (25 -> 10)
 #4 (id=1007413)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 5 (33)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 33 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 33 | Target: Self (1)
                    Affected Spells: Trick Shots (257621)
                    Family Flags: 59
+Hotfixed         : Base Value (25 -> 10)
 Description      : Trick Shots now ricochets to $s1 fewer targets, but each ricochet deals an additional $s3% damage.
 
 Name             : Light Ammo (id=378913) [Spell Family (9), Passive, Hidden] 
@@ -15959,9 +15938,10 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=1025066)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 7 | Scaled Value: 7 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Multi-Shot (2643), Multi-Shot (257620)
                    Family Flags: 12
+Hotfixed         : Base Value (15 -> 7)
 Description      : $@spelldesc389019
 Tooltip          : Multi-Shot damage increased by $s1%.
 
