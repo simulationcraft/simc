@@ -6205,9 +6205,9 @@ struct expel_harm_t : public monk_heal_t
     add_child( dmg );
   }
 
-  double composite_crit_chance_multiplier() const override
+  double composite_crit_chance() const override
   {
-    auto mm = monk_heal_t::composite_crit_chance_multiplier();
+    auto mm = monk_heal_t::composite_crit_chance();
 
     if ( p()->talent.general.vigorous_expulsion->ok() )
       mm += 1 + p()->talent.general.vigorous_expulsion->effectN( 2 ).percent();
