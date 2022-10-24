@@ -1423,6 +1423,7 @@ public:
     ab::apply_affecting_aura( o() -> talents.killer_companion );
     ab::apply_affecting_aura( o() -> talents.improved_kill_command );
     ab::apply_affecting_aura( o() -> tier_set.t29_bm_2pc );
+    ab::apply_affecting_aura( o() -> talents.killer_command );
   }
 
   T_PET* p()             { return static_cast<T_PET*>( ab::player ); }
