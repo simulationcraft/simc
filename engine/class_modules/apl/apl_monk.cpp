@@ -428,9 +428,9 @@ void windwalker( player_t* p )
 
   // Build Chi at the start of combat
   if ( monk->talent.windwalker.invoke_xuen_the_white_tiger->ok() )
-    def->add_action( "call_action_list,name=opener,if=time<4&chi<5&!pet.xuen_the_white_tiger.active", "Build Chi at the start of combat" );
+    def->add_action( "call_action_list,name=opener,if=time<4&chi<5&!pet.xuen_the_white_tiger.active&!talent.serenity", "Build Chi at the start of combat" );
   else
-    def->add_action( "call_action_list,name=opener,if=time<4&chi<5", "Build Chi at the start of combat" );
+    def->add_action( "call_action_list,name=opener,if=time<4&chi<5&!talent.serenity", "Build Chi at the start of combat" );
 
   // Prioritize Faeline Stomp if playing with Faeline Harmony or Niya Soulbind
   def->add_action( "faeline_stomp,if=combo_strike&fight_remains>5&!buff.bonedust_brew.up&(runeforge.faeline_harmony|talent.faeline_harmony|soulbind.grove_invigoration|active_enemies<3&buff.storm_earth_and_fire.down)", "Prioritize Faeline Stomp if playing with Faeline Harmony or Niya Soulbind" );
