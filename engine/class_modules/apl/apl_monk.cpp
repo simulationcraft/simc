@@ -428,9 +428,9 @@ void windwalker( player_t* p )
 
   // Build Chi at the start of combat
   if ( monk->talent.windwalker.invoke_xuen_the_white_tiger->ok() )
-    def->add_action( "call_action_list,name=opener,if=time<4&chi<5&!pet.xuen_the_white_tiger.active", "Build Chi at the start of combat" );
+    def->add_action( "call_action_list,name=opener,if=time<4&chi<5&!pet.xuen_the_white_tiger.active&!talent.serenity", "Build Chi at the start of combat" );
   else
-    def->add_action( "call_action_list,name=opener,if=time<4&chi<5", "Build Chi at the start of combat" );
+    def->add_action( "call_action_list,name=opener,if=time<4&chi<5&!talent.serenity", "Build Chi at the start of combat" );
 
   // Prioritize Faeline Stomp if playing with Faeline Harmony or Niya Soulbind
   def->add_action( "faeline_stomp,if=combo_strike&fight_remains>5&!buff.bonedust_brew.up&(runeforge.faeline_harmony|talent.faeline_harmony|soulbind.grove_invigoration|active_enemies<3&buff.storm_earth_and_fire.down)", "Prioritize Faeline Stomp if playing with Faeline Harmony or Niya Soulbind" );
@@ -649,14 +649,17 @@ void windwalker( player_t* p )
   // Default Actions
   def_actions->add_action( "whirling_dragon_punch,if=active_enemies>2", "Default Actions" );
   def_actions->add_action( "spinning_crane_kick,if=combo_strike&buff.dance_of_chiji.up" );
+  def_actions->add_action( "fists_of_fury,target_if=max:target.time_to_die,if=buff.weapons_of_order_ww.up" );
   def_actions->add_action( "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&buff.weapons_of_order.up" );
   def_actions->add_action( "strike_of_the_windlord,if=active_enemies=1&buff.bonedust_brew.up&prev_gcd.1.spinning_crane_kick" );
   def_actions->add_action( "fists_of_fury,target_if=max:target.time_to_die,if=set_bonus.tier29_2pc" );
   def_actions->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.teachings_of_the_monastery.stack>=2" );
   def_actions->add_action( "strike_of_the_windlord,if=active_enemies<2|buff.bonedust_brew.up&prev_gcd.1.spinning_crane_kick" );
   def_actions->add_action( "whirling_dragon_punch" );
+  def_actions->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&buff.weapons_of_order_ww.up&active_enemies<=3" );
   def_actions->add_action( "spinning_crane_kick,if=combo_strike&(buff.bonedust_brew.up|buff.weapons_of_order_ww.up)&active_enemies>1&spinning_crane_kick.modifier>2.1" );
   def_actions->add_action( "spinning_crane_kick,if=buff.bonedust_brew.up&spinning_crane_kick.modifier>2.9&(!talent.teachings_of_the_monastery|!talent.shadowboxing_treads|active_enemies>=9)" );
+  def_actions->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&buff.weapons_of_order_ww.up" );
   def_actions->add_action( "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&(!talent.xuens_battlegear&!runeforge.xuens_treasure|cooldown.fists_of_fury.remains)" );
   def_actions->add_action( "rushing_jade_wind,if=buff.rushing_jade_wind.down&active_enemies>=7" );
   def_actions->add_action( "strike_of_the_windlord,if=active_enemies<10|talent.thunderfist" );
@@ -681,19 +684,18 @@ void windwalker( player_t* p )
 
 
   // Serenity Priority
-  serenity->add_action( "whirling_dragon_punch", "Serenity Priority" );
+  serenity->add_action( "strike_of_the_windlord", "Serenity Priority" );
+  serenity->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.teachings_of_the_monastery.stack=3" );
+  serenity->add_action( "spinning_crane_kick,if=combo_strike&(buff.dance_of_chiji.up&active_enemies>2|spinning_crane_kick.modifier>2.7&active_enemies>3)" );
+  serenity->add_action( "whirling_dragon_punch,if=active_enemies>=3" );
   serenity->add_action( "fists_of_fury" );
-  serenity->add_action( "strike_of_the_windlord,if=active_enemies<3" );
-  serenity->add_action( "spinning_crane_kick,if=combo_strike&buff.dance_of_chiji.up&active_enemies>1&spinning_crane_kick.max" );
-  serenity->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.teachings_of_the_monastery.stack=3&talent.shadowboxing_treads&active_enemies>1" );
-  serenity->add_action( "strike_of_the_windlord,if=active_enemies<10|talent.thunderfist" );
+  serenity->add_action( "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&(active_enemies<5|talent.whirling_dragon_punch)" );
   serenity->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&talent.mark_of_the_crane&!spinning_crane_kick.max&active_enemies>2" );
   serenity->add_action( "spinning_crane_kick,if=combo_strike&active_enemies>1&spinning_crane_kick.modifier>2.1" );
-  serenity->add_action( "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike");
-  serenity->add_action( "spinning_crane_kick,if=combo_strike&(buff.dance_of_chiji.up|active_enemies>1)" );
   serenity->add_action( "rushing_jade_wind,if=buff.rushing_jade_wind.down,if=!set_bonus.tier29_2pc|active_enemies>2" );
   serenity->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike" );
   serenity->add_action( "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=talent.teachings_of_the_monastery&buff.teachings_of_the_monastery.stack<3" );
+  
   // Opener
   opener->add_action( p, "Expel Harm", "if=talent.chi_burst.enabled&chi.max-chi>=3", "Opener" );
   opener->add_action( p, "Tiger Palm",
