@@ -1764,7 +1764,9 @@ struct eclipse_buff_t : public druid_buff_t<buff_t>
     : base_t( p, n, s ),
       is_lunar( data().id() == p.spec.eclipse_lunar->id() ),
       is_solar( data().id() == p.spec.eclipse_solar->id() )
-  {}
+  {
+    set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC );
+  }
 
   void trigger_sundered_firmament()
   {
@@ -8032,6 +8034,29 @@ struct starsurge_t : public druid_spell_t
       background = true;
       name_str_reporting = "goldrinns_fang";
     }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      auto da = druid_spell_t::composite_da_multiplier( s );
+
+      da *= 1.0 + p()->buff.eclipse_lunar->check_value();
+      da *= 1.0 + p()->buff.eclipse_solar->check_value();
+
+      return da;
+    }
+
+    double composite_target_da_multiplier( player_t* t ) const override
+    {
+      auto tda = druid_spell_t::composite_target_da_multiplier( t );
+
+      if ( td( t )->dots.moonfire->is_ticking() )
+        tda *= 1.0 + p()->cache_mastery_value();
+
+      if ( td( t )->dots.sunfire->is_ticking() )
+        tda *= 1.0 + p()->cache_mastery_value();
+
+      return tda;
+    }
   };
 
   action_t* goldrinn;
@@ -8266,6 +8291,29 @@ struct orbital_strike_t : public druid_spell_t
     flare->execute_on_target( s->target );  // flare is applied before impact damage
 
     druid_spell_t::impact( s );
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    auto da = druid_spell_t::composite_da_multiplier( s );
+
+    da *= 1.0 + p()->buff.eclipse_lunar->check_value();
+    da *= 1.0 + p()->buff.eclipse_solar->check_value();
+
+    return da;
+  }
+
+  double composite_target_da_multiplier( player_t* t ) const override
+  {
+    auto tda = druid_spell_t::composite_target_da_multiplier( t );
+
+    if ( td( t )->dots.moonfire->is_ticking() )
+      tda *= 1.0 + p()->cache_mastery_value();
+
+    if ( td( t )->dots.sunfire->is_ticking() )
+      tda *= 1.0 + p()->cache_mastery_value();
+
+    return tda;
   }
 };
 
