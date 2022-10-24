@@ -1097,11 +1097,11 @@ public:
   struct options_t
   {
     int initial_chi;
-    double memory_of_lucid_dreams_proc_chance = 0.15;
     double expel_harm_effectiveness;
     double faeline_stomp_uptime;
     int chi_burst_healing_targets;
     int motc_override;
+    int no_bof_dot;
   } user_options;
 
   // Blizzard rounds it's stagger damage; anything higher than half a percent beyond

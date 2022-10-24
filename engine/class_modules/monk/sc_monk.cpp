@@ -4384,12 +4384,15 @@ struct breath_of_fire_t : public monk_spell_t
 
   void impact( action_state_t* s ) override
   {
+    if ( p()->user_options.no_bof_dot == 1 )
+      s->result_amount = 0;
+
     monk_spell_t::impact( s );
 
     monk_td_t& td = *this->get_td( s->target );
 
-    if ( td.debuff.keg_smash->up() || td.debuff.fallen_monk_keg_smash->up() ||
-         td.debuff.sinister_teaching_fallen_monk_keg_smash->up() )
+    if ( p()->user_options.no_bof_dot == 0 && ( td.debuff.keg_smash->up() || td.debuff.fallen_monk_keg_smash->up() ||
+         td.debuff.sinister_teaching_fallen_monk_keg_smash->up() ) )
     {
       p()->active_actions.breath_of_fire->target = s->target;
       if ( p()->buff.blackout_combo->up() )
@@ -6207,7 +6210,7 @@ struct expel_harm_t : public monk_heal_t
     auto mm = monk_heal_t::composite_crit_chance_multiplier();
 
     if ( p()->talent.general.vigorous_expulsion->ok() )
-      mm *= 1 + p()->talent.general.vigorous_expulsion->effectN( 2 ).percent();
+      mm += 1 + p()->talent.general.vigorous_expulsion->effectN( 2 ).percent();
 
     return mm;
   }
@@ -7627,6 +7630,7 @@ monk_t::monk_t( sim_t* sim, util::string_view name, race_e r )
   user_options.faeline_stomp_uptime      = 1.0;
   user_options.chi_burst_healing_targets = 8;
   user_options.motc_override             = 0;
+  user_options.no_bof_dot                = 0;
 }
 
 // monk_t::create_action ====================================================
@@ -9923,20 +9927,12 @@ void monk_t::create_options()
 {
   base_t::create_options();
 
-  // TODO: Remove in 9.2
-  add_option( opt_deprecated( "initial_chi", "monk.initial_chi" ) );
-  add_option( opt_deprecated( "memory_of_lucid_dreams_proc_chance", "monk.memory_of_lucid_dreams_proc_chance" ) );
-  add_option( opt_deprecated( "expel_harm_effectiveness", "monk.expel_harm_effectiveness" ) );
-  add_option( opt_deprecated( "faeline_stomp_uptime", "monk.faeline_stomp_uptime" ) );
-  add_option( opt_deprecated( "chi_burst_healing_targets", "monk.chi_burst_healing_targets" ) );
-
   add_option( opt_int( "monk.initial_chi", user_options.initial_chi, 0, 6 ) );
-  add_option( opt_float( "monk.memory_of_lucid_dreams_proc_chance", user_options.memory_of_lucid_dreams_proc_chance,
-                         0.0, 1.0 ) );
   add_option( opt_float( "monk.expel_harm_effectiveness", user_options.expel_harm_effectiveness, 0.0, 1.0 ) );
   add_option( opt_float( "monk.faeline_stomp_uptime", user_options.faeline_stomp_uptime, 0.0, 1.0 ) );
   add_option( opt_int( "monk.chi_burst_healing_targets", user_options.chi_burst_healing_targets, 0, 30 ) );
   add_option( opt_int( "monk.motc_override", user_options.motc_override, 0, 5 ) );
+  add_option( opt_int( "monk.no_bof_dot", user_options.no_bof_dot, 0, 1 ) );
 }
 
 // monk_t::copy_from =========================================================
