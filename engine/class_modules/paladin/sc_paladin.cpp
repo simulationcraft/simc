@@ -226,6 +226,9 @@ struct seraphim_t : public holy_power_consumer_t<paladin_spell_t>
 
     // not in spelldata for some reason, apparently?
     hasted_gcd = true;
+
+    if ( p->talents.quickened_invocations->ok() )
+      cooldown->duration += timespan_t::from_millis( p->talents.quickened_invocations->effectN( 2 ).base_value() );
   }
 
   void execute() override
@@ -1349,6 +1352,9 @@ struct divine_toll_t : public paladin_spell_t
 
     add_child( p->active.divine_toll );
     add_child( p->active.divine_resonance );
+
+    if ( p->talents.quickened_invocations->ok() )
+      cooldown->duration += timespan_t::from_millis( p->talents.quickened_invocations->effectN( 1 ).base_value() );
   }
 
   void impact( action_state_t* s ) override
