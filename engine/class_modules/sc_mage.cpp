@@ -2854,11 +2854,9 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
 
     m *= 1.0 + s->n_targets * p()->talents.resonance->effectN( 1 ).percent();
 
-    // TODO: check what happens when you have both the talent and the legendary
-    // the legendary is missing from the SpellReplacement table, so presumably you get both
     if ( s->target->health_percentage() < p()->talents.arcane_bombardment->effectN( 1 ).base_value() )
       m *= 1.0 + p()->talents.arcane_bombardment->effectN( 2 ).percent();
-    if ( s->target->health_percentage() < p()->runeforge.arcane_bombardment->effectN( 1 ).base_value() )
+    if ( !p()->talents.arcane_bombardment.ok() && s->target->health_percentage() < p()->runeforge.arcane_bombardment->effectN( 1 ).base_value() )
       m *= 1.0 + p()->runeforge.arcane_bombardment->effectN( 2 ).percent();
 
     return m;
@@ -7229,7 +7227,7 @@ void mage_t::create_buffs()
                                         ->set_chance( runeforge.disciplinary_command.ok() );
   buffs.expanded_potential          = make_buff( this, "expanded_potential", find_spell( 327495 ) )
                                         ->set_activated( false )
-                                        ->set_trigger_spell( runeforge.expanded_potential );
+                                        ->set_trigger_spell( !talents.concentration.ok() ? static_cast<const spell_data_t *>( runeforge.expanded_potential ) : spell_data_t::not_found() );
   buffs.heart_of_the_fae            = make_buff( this, "heart_of_the_fae", find_spell( 356881 ) )
                                         ->set_default_value_from_effect( 1 )
                                         ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
