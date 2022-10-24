@@ -133,9 +133,15 @@ avenging_wrath_buff_t::avenging_wrath_buff_t( paladin_t* p )
 struct blessing_of_protection_t : public paladin_spell_t
 {
   blessing_of_protection_t( paladin_t* p, util::string_view options_str )
-    : paladin_spell_t( "blessing_of_protection", p, p->find_class_spell( "Blessing of Protection" ) )
+    : paladin_spell_t( "blessing_of_protection", p, p->find_talent_spell( talent_tree::CLASS, "Blessing of Protection" ) )
   {
     parse_options( options_str );
+
+    // Uther's Counsel reduces cooldown
+    if ( p->talents.uthers_counsel->ok() )
+    {
+      cooldown->duration *= 1.0 + p->talents.uthers_counsel->effectN( 2 ).percent();
+    }
   }
 
   void execute() override
@@ -471,6 +477,13 @@ struct divine_shield_t : public paladin_spell_t
     // unbreakable spirit reduces cooldown
     if ( p->talents.unbreakable_spirit->ok() )
       cooldown->duration = data().cooldown() * ( 1 + p->talents.unbreakable_spirit->effectN( 1 ).percent() );
+
+    // Uther's Counsel also reduces cooldown
+    if ( p->talents.uthers_counsel->ok() )
+    {
+      cooldown->duration *= 1.0 + p->talents.uthers_counsel->effectN( 2 ).percent();
+    }
+
   }
 
   void execute() override
@@ -603,13 +616,19 @@ struct judgment_of_light_proc_t : public paladin_heal_t
 struct lay_on_hands_t : public paladin_heal_t
 {
   lay_on_hands_t( paladin_t* p, util::string_view options_str )
-    : paladin_heal_t( "lay_on_hands", p, p->find_class_spell( "Lay on Hands" ) )
+    : paladin_heal_t( "lay_on_hands", p, p->find_talent_spell (talent_tree::CLASS, "Lay on Hands" ) )
   {
     parse_options( options_str );
     // unbreakable spirit reduces cooldown
     if ( p->talents.unbreakable_spirit->ok() )
     {
       cooldown->duration *= 1.0 + p->talents.unbreakable_spirit->effectN( 1 ).percent();
+    }
+
+    // Uther's Counsel also reduces cooldown
+    if ( p->talents.uthers_counsel->ok())
+    {
+      cooldown->duration *= 1.0 + p->talents.uthers_counsel->effectN( 2 ).percent();
     }
 
     may_crit    = false;
