@@ -81,6 +81,9 @@ struct monk_action_t : public Base
   bool may_proc_bron;
   proc_t* bron_proc;
 
+  // Keefer's Skyreach trigger
+  proc_t* keefers_skyreach_proc;
+
   // Affect flags for various dynamic effects
   struct
   {
@@ -106,6 +109,7 @@ public:
       trigger_resonant_fists( false ),
       may_proc_bron( false ),
       bron_proc( nullptr ),
+      keefers_skyreach_proc( nullptr ),
       affected_by()
   {
     range::fill( _resource_by_stance, RESOURCE_MAX );
@@ -263,6 +267,9 @@ public:
 
     if ( may_proc_bron )
       bron_proc = p()->get_proc( std::string( "Bron's Call to Action: " ) + full_name() );
+
+    if ( ab::data().affected_by( p()->passives.keefers_skyreach_debuff->effectN( 1 ) ) )
+      keefers_skyreach_proc = p()->get_proc( std::string( "Keefer's Skyreach: " ) + full_name() );
   }
 
   void reset_swing()
@@ -735,6 +742,12 @@ public:
     {
       if ( may_combo_strike )
         combo_strikes_trigger();
+
+      if ( auto* td = this->get_td( p()->target ) )
+      {
+        if ( td->debuff.keefers_skyreach->check() && ab::data().affected_by( p()->passives.keefers_skyreach_debuff->effectN( 1 ) ) )
+          keefers_skyreach_proc->occur();
+      }
     }
 
     ab::execute();
@@ -920,7 +933,7 @@ struct monk_spell_t : public monk_action_t<spell_t>
     if ( auto* td = this->find_td( target ) )
     {
       if ( td->debuff.keefers_skyreach->check() &&
-           base_t::data().affected_by( td->debuff.keefers_skyreach->data().effectN( 1 ) ) )
+           base_t::data().affected_by( p()->passives.keefers_skyreach_debuff->effectN( 1 ) ) )
       {
         c += td->debuff.keefers_skyreach->check_value();
       }
@@ -1001,7 +1014,7 @@ struct monk_heal_t : public monk_action_t<heal_t>
     if ( auto* td = this->find_td( target ) )
     {
       if ( td->debuff.keefers_skyreach->check() &&
-           base_t::data().affected_by( td->debuff.keefers_skyreach->data().effectN( 1 ) ) )
+           base_t::data().affected_by( p()->passives.keefers_skyreach_debuff->effectN( 1 ) ) )
       {
         c += td->debuff.keefers_skyreach->check_value();
       }
@@ -1304,7 +1317,7 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
     if ( auto* td = this->find_td( target ) )
     {
       if ( td->debuff.keefers_skyreach->check() &&
-           base_t::data().affected_by( td->debuff.keefers_skyreach->data().effectN( 1 ) ) )
+           base_t::data().affected_by( p()->passives.keefers_skyreach_debuff->effectN( 1 ) ) )
       {
         c += td->debuff.keefers_skyreach->check_value();
       }
@@ -7507,7 +7520,7 @@ monk_td_t::monk_td_t( player_t* target, monk_t* p ) : actor_target_data_t( targe
                             ->set_default_value_from_effect( 1 )
                             ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                             ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
-  debuff.keefers_skyreach = make_buff( *this, "keefers_skyreach", p->find_spell( 344021 ) )
+  debuff.keefers_skyreach = make_buff( *this, "keefers_skyreach", p->passives.keefers_skyreach_debuff )
                                 ->set_default_value_from_effect( 1 )
                                 ->add_invalidate( CACHE_ATTACK_CRIT_CHANCE )
                                 ->set_refresh_behavior( buff_refresh_behavior::NONE );
@@ -8471,6 +8484,7 @@ void monk_t::init_spells()
   passives.glory_of_the_dawn_damage         = find_spell( 392959 );
   passives.hidden_masters_forbidden_touch   = find_spell( 213114 );
   passives.hit_combo                        = find_spell( 196741 );
+  passives.keefers_skyreach_debuff          = find_spell( 344021 );
   passives.mark_of_the_crane                = find_spell( 228287 );
   passives.power_strikes_chi                = find_spell( 121283 );
   passives.thunderfist                      = find_spell( 242390 );

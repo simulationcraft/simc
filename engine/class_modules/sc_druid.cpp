@@ -1764,7 +1764,9 @@ struct eclipse_buff_t : public druid_buff_t<buff_t>
     : base_t( p, n, s ),
       is_lunar( data().id() == p.spec.eclipse_lunar->id() ),
       is_solar( data().id() == p.spec.eclipse_solar->id() )
-  {}
+  {
+    set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC );
+  }
 
   void trigger_sundered_firmament()
   {
@@ -5006,6 +5008,9 @@ struct ironfur_t : public bear_attack_t
     p()->buff.ironfur->trigger( stack, composite_buff_duration() );
 
     p()->buff.guardian_of_elune->expire();
+
+    if ( !is_free_proc() )
+      p()->buff.gory_fur->expire();
   }
 };
 
@@ -5178,7 +5183,7 @@ struct maul_t : public bear_attack_t
 
     p()->buff.savage_combatant->expire();
 
-    p()->buff.vicious_cycle_maul->decrement();
+    p()->buff.vicious_cycle_maul->expire();
 
     p()->buff.vicious_cycle_mangle->trigger();
   }
@@ -8029,6 +8034,29 @@ struct starsurge_t : public druid_spell_t
       background = true;
       name_str_reporting = "goldrinns_fang";
     }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      auto da = druid_spell_t::composite_da_multiplier( s );
+
+      da *= 1.0 + p()->buff.eclipse_lunar->check_value();
+      da *= 1.0 + p()->buff.eclipse_solar->check_value();
+
+      return da;
+    }
+
+    double composite_target_da_multiplier( player_t* t ) const override
+    {
+      auto tda = druid_spell_t::composite_target_da_multiplier( t );
+
+      if ( td( t )->dots.moonfire->is_ticking() )
+        tda *= 1.0 + p()->cache_mastery_value();
+
+      if ( td( t )->dots.sunfire->is_ticking() )
+        tda *= 1.0 + p()->cache_mastery_value();
+
+      return tda;
+    }
   };
 
   action_t* goldrinn;
@@ -8263,6 +8291,29 @@ struct orbital_strike_t : public druid_spell_t
     flare->execute_on_target( s->target );  // flare is applied before impact damage
 
     druid_spell_t::impact( s );
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    auto da = druid_spell_t::composite_da_multiplier( s );
+
+    da *= 1.0 + p()->buff.eclipse_lunar->check_value();
+    da *= 1.0 + p()->buff.eclipse_solar->check_value();
+
+    return da;
+  }
+
+  double composite_target_da_multiplier( player_t* t ) const override
+  {
+    auto tda = druid_spell_t::composite_target_da_multiplier( t );
+
+    if ( td( t )->dots.moonfire->is_ticking() )
+      tda *= 1.0 + p()->cache_mastery_value();
+
+    if ( td( t )->dots.sunfire->is_ticking() )
+      tda *= 1.0 + p()->cache_mastery_value();
+
+    return tda;
   }
 };
 
@@ -10687,8 +10738,8 @@ void druid_t::create_buffs()
     ->set_trigger_spell( talent.earthwarden )
     ->set_default_value( talent.earthwarden->effectN( 1 ).percent() );
 
+  // trigger spell handled within druid_action_t::trigger_galactic_guardian()
   buff.galactic_guardian = make_buff( this, "galactic_guardian", find_spell( 213708 ) )
-    ->set_trigger_spell( talent.galactic_guardian )
     ->set_cooldown( talent.galactic_guardian->internal_cooldown() )
     ->set_default_value_from_effect( 1, 0.1 /*RESOURCE_RAGE*/ );
 
@@ -10719,12 +10770,12 @@ void druid_t::create_buffs()
   buff.vicious_cycle_mangle = make_buff( this, "vicious_cycle_mangle", find_spell( 372019) )
     ->set_trigger_spell( talent.vicious_cycle )
     ->set_default_value( talent.vicious_cycle->effectN( 1 ).percent() )
-    ->set_name_reporting( "Vicious Cycle (Mangle)" );
+    ->set_name_reporting( "Mangle" );
 
   buff.vicious_cycle_maul = make_buff( this, "vicious_cycle_maul", find_spell( 372015 ) )
     ->set_trigger_spell( talent.vicious_cycle )
     ->set_default_value( talent.vicious_cycle->effectN( 1 ).percent() )
-    ->set_name_reporting( "Vicious Cycle (Maul)" );
+    ->set_name_reporting( "Maul" );
 
   // Guardian Conduits
   buff.savage_combatant = make_buff( this, "savage_combatant", conduit.savage_combatant->effectN( 1 ).trigger() )
@@ -10971,7 +11022,7 @@ void druid_t::create_actions()
     auto flash = get_secondary_action_n<thrash_bear_t>( "flashing_claws",
                                                         apply_override( talent.thrash, spec.bear_form_override ), "" );
     flash->s_data_reporting = talent.flashing_claws;
-    flash->name_str_reporting = "pawsitive_outlook";
+    flash->name_str_reporting = "flashing_claws";
     flash->set_free_cast( free_spell_e::FLASHING );
     active.thrash_bear_flashing = flash;
   }
@@ -11554,6 +11605,23 @@ void druid_t::analyze( sim_t& sim )
     range::for_each( active.denizen_of_the_dream->child_action, [ this ]( action_t* a ) { a->stats->player = this; } );
 
   player_t::analyze( sim );
+
+  // GG is a major portion of guardian druid damage but skews moonfire reporting because gg has no execute time. We
+  // adjust by removing the gg amount from mf stat and re-calculating dpe and dpet for moonfire.
+  if ( talent.galactic_guardian.ok() )
+  {
+    auto mf = find_action( "moonfire" );
+    auto gg = find_action( "galactic_guardian" );
+    if ( mf && gg )
+    {
+      auto mf_amt = mf->stats->compound_amount;
+      auto gg_amt = gg->stats->compound_amount;
+      auto mod = ( mf_amt - gg_amt ) / mf_amt;
+
+      mf->stats->ape *= mod;
+      mf->stats->apet *= mod;
+    }
+  }
 }
 
 // druid_t::mana_regen_per_second ===========================================

@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.2.46144
-static const std::array<spelltext_data_t, 19099> __spelltext_data { {
+static const std::array<spelltext_data_t, 19100> __spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -17259,6 +17259,7 @@ static const std::array<spelltext_data_t, 19099> __spelltext_data { {
   { 383874, "$@spelldesc383860", "Pyroblast and Flamestrike have no cast time and are guaranteed to critically strike.", 0 },
   { 383876, "Judgment has a $s1% chance to chain to a nearby enemy.", 0, 0 },
   { 383877, "Each Rampage strike has a $h% chance to refund a charge of Raging Blow.", 0, 0 },
+  { 383882, "$@spelldesc383886", "Building up a Combustion.", 0 },
   { 383883, "$@spelldesc383886", "Your next non-instant Pyroblast or Flamestrike will grant you Combustion.", 0 },
   { 383885, "Bloodthirst deals $s1% increased damage to enemies who are below $<threshold>% health.", 0, 0 },
   { 383886, "After consuming $s1 Hot Streaks, your next non-instant Pyroblast or Flamestrike cast within $383883d grants you Combustion for $s2 sec.", 0, 0 },

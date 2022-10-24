@@ -141,6 +141,7 @@ public:
   {
     buff_t* amplifying_poison;
     buff_t* amplifying_poison_deathmark;
+    buff_t* atrophic_poison;
     buff_t* akaaris_soul_fragment;
     buff_t* between_the_eyes;
     buff_t* crippling_poison;
@@ -180,6 +181,9 @@ public:
 
   timespan_t non_lethal_poison_remains() const
   {
+    if ( debuffs.atrophic_poison->check() )
+      return debuffs.atrophic_poison->remains();
+
     if ( debuffs.crippling_poison->check() )
       return debuffs.crippling_poison->remains();
 
@@ -198,7 +202,7 @@ public:
 
   bool is_non_lethal_poisoned() const
   {
-    return debuffs.crippling_poison->check() || debuffs.numbing_poison->check();
+    return debuffs.atrophic_poison->check() || debuffs.crippling_poison->check() || debuffs.numbing_poison->check();
   }
 
   bool is_poisoned() const
@@ -664,7 +668,7 @@ public:
 
       player_talent_t master_poisoner;          // No implementation
       player_talent_t numbing_poison;
-      player_talent_t atrophic_poison;          // No implementation
+      player_talent_t atrophic_poison;
       player_talent_t nimble_fingers;
       player_talent_t gouge;
       player_talent_t rushed_setup;
@@ -1588,7 +1592,6 @@ public:
     ab::apply_affecting_aura( p->talent.assassination.lightweight_shiv );
     ab::apply_affecting_aura( p->talent.assassination.fatal_concoction );
     ab::apply_affecting_aura( p->talent.assassination.flying_daggers );
-    ab::apply_affecting_aura( p->talent.assassination.twist_the_knife );
     ab::apply_affecting_aura( p->talent.assassination.tiny_toxic_blade );
     ab::apply_affecting_aura( p->talent.assassination.shrouded_suffocation );
 
@@ -1963,11 +1966,9 @@ public:
   virtual bool procs_poison() const
   { return ab::weapon != nullptr && ab::has_amount_result(); }
 
-  // 2021-06-29-- As of recent log analysis, a number of abilities that still proc non-lethal poisons no longer proc Deadly Poison
-  //               Primarily this appears to be things such as Rupture and Garrote primary casts, but also affects things like Shiv
-  //               These abilities still trigger Wound Poison as well, so this is not strictly about Lethal poisons
+  // 2022-10-23 -- As of the latest beta build it appears all expected abilities proc Deadly Poison
   virtual bool procs_deadly_poison() const
-  { return procs_poison() && ( !( p()->bugs ) || ab::attack_power_mod.direct > 0 ); }
+  { return procs_poison(); }
 
   // Generic rules for proccing Main Gauche, used by rogue_t::trigger_main_gauche()
   virtual bool procs_main_gauche() const
@@ -2116,7 +2117,7 @@ public:
 
     if ( affected_by.t29_assassination_2pc && p()->buffs.envenom->check() )
     {
-      m *= p()->set_bonuses.t29_assassination_2pc->effectN( 1 ).percent();
+      m *= 1.0 + p()->set_bonuses.t29_assassination_2pc->effectN( 1 ).percent();
     }
 
     return m;
@@ -2715,7 +2716,32 @@ struct amplifying_poison_t : public rogue_poison_t
   }
 };
 
-// Crippling poison =========================================================
+// Atrophic Poison ==========================================================
+
+struct atrophic_poison_t : public rogue_poison_t
+{
+  struct atrophic_poison_proc_t : public rogue_poison_t
+  {
+    atrophic_poison_proc_t( util::string_view name, rogue_t* p ) :
+      rogue_poison_t( name, p, p->talent.rogue.atrophic_poison->effectN( 1 ).trigger(), false, true )
+    {
+    }
+
+    void impact( action_state_t* state ) override
+    {
+      rogue_poison_t::impact( state );
+      td( state->target )->debuffs.atrophic_poison->trigger();
+    }
+  };
+
+  atrophic_poison_t( util::string_view name, rogue_t* p ) :
+    rogue_poison_t( name, p, p->talent.rogue.atrophic_poison )
+  {
+    impact_action = p->get_background_action<atrophic_poison_proc_t>( "atrophic_poison" );
+  }
+};
+
+// Crippling Poison =========================================================
 
 struct crippling_poison_t : public rogue_poison_t
 {
@@ -2739,7 +2765,7 @@ struct crippling_poison_t : public rogue_poison_t
   }
 };
 
-// Numbing poison ===========================================================
+// Numbing Poison ===========================================================
 
 struct numbing_poison_t : public rogue_poison_t
 {
@@ -2757,7 +2783,7 @@ struct numbing_poison_t : public rogue_poison_t
   };
 
   numbing_poison_t( util::string_view name, rogue_t* p ) :
-    rogue_poison_t( name, p, p->find_class_spell( "Numbing Poison" ) )
+    rogue_poison_t( name, p, p->talent.rogue.numbing_poison )
   {
     impact_action = p->get_background_action<numbing_poison_proc_t>( "numbing_poison" );
   }
@@ -2837,7 +2863,13 @@ struct apply_poison_t : public action_t
 
   std::string get_default_lethal_poison( rogue_t* p )
   {
-    return p->specialization() == ROGUE_ASSASSINATION ? "deadly" : "instant";
+    if ( p->talent.assassination.amplifying_poison->ok() && !p->talent.assassination.dragon_tempered_blades->ok() )
+      return "amplifying";
+
+    if ( p->talent.assassination.deadly_poison->ok() )
+      return "deadly";
+
+    return "instant";
   }
 
   std::string get_default_lethal_poison_dtb( rogue_t* p )
@@ -2886,6 +2918,8 @@ struct apply_poison_t : public action_t
       return p->get_background_action<amplifying_poison_t>( "amplifying_poison_driver" );
     else if ( poison_name == "wound" )
       return p->get_background_action<wound_poison_t>( "wound_poison_driver" );
+    else if ( poison_name == "atrophic" )
+      return p->get_background_action<atrophic_poison_t>( "atrophic_poison_driver" );
     else if ( poison_name == "crippling" )
       return p->get_background_action<crippling_poison_t>( "crippling_poison_driver" );
     else if ( poison_name == "numbing" )
@@ -3780,7 +3814,8 @@ struct envenom_t : public rogue_attack_t
   void impact( action_state_t* state ) override
   {
     // Trigger Envenom buff before impact() so that poison procs from Envenom itself benefit
-    timespan_t envenom_duration = p()->buffs.envenom->data().duration() * ( 1 + cast_state( state )->get_combo_points() );
+    timespan_t envenom_duration = p()->buffs.envenom->data().duration() * ( 1 + cast_state( state )->get_combo_points() ) +
+                                  p()->talent.assassination.twist_the_knife->effectN( 1 ).time_value();
     p()->buffs.envenom->trigger( envenom_duration );
 
     rogue_attack_t::impact( state );
@@ -5550,10 +5585,6 @@ struct shiv_t : public rogue_attack_t
 
   bool procs_blade_flurry() const override
   { return true; }
-
-  // 2021-06-29-- Testing shows this does not proc Deadly Poison despite being direct
-  bool procs_deadly_poison() const override
-  { return false; }
 };
 
 // Vanish ===================================================================
@@ -5722,17 +5753,12 @@ struct vicious_venoms_t : public rogue_attack_t
   vicious_venoms_t( util::string_view name, rogue_t* p, const spell_data_t* s ) :
     rogue_attack_t( name, p, s )
   {
-  }
-
-  double action_multiplier() const override
-  {
-    double m = rogue_attack_t::action_multiplier();
-
     // Appears to be overridden by a scripted multiplier even though the base damage is identical
-    m *= p()->talent.assassination.vicious_venoms->effectN( 1 ).percent();
-
-    return m;
+    base_multiplier *= p->talent.assassination.vicious_venoms->effectN( 1 ).percent();
   }
+
+  bool procs_poison() const override
+  { return false; }
 };
 
 // Poisoned Knife ===========================================================
@@ -6143,6 +6169,9 @@ struct serrated_bone_spike_covenant_t : public rogue_attack_t
     // 2021-07-05 -- Confirmed as working in-game, although not on Sudden Fractures damage
     bool procs_shadow_blades_damage() const override
     { return true; }
+
+    bool procs_poison() const override
+    { return false; }
   };
 
   int base_impact_cp;
@@ -6229,10 +6258,6 @@ struct serrated_bone_spike_covenant_t : public rogue_attack_t
   bool procs_blade_flurry() const override
   { return true; }
 
-  // 2021-06-29 -- Testing shows this does not proc Deadly Poison despite being direct
-  bool procs_deadly_poison() const override
-  { return false; }
-
   // 2021-07-05 -- Confirmed as working in-game
   bool procs_shadow_blades_damage() const override
   { return true; }
@@ -6255,6 +6280,9 @@ struct serrated_bone_spike_t : public rogue_attack_t
     //               This works on both the initial hit and also the DoT, until it is applied again
     bool snapshots_nightstalker() const override
     { return p()->bugs; }
+
+    bool procs_poison() const override
+    { return false; }
   };
 
   int base_impact_cp;
@@ -6330,10 +6358,6 @@ struct serrated_bone_spike_t : public rogue_attack_t
 
     return rogue_attack_t::travel_time();
   }
-
-  // 2021-06-29 -- Testing shows this does not proc Deadly Poison despite being direct
-  bool procs_deadly_poison() const override
-  { return false; }
 };
 
 // ==========================================================================
@@ -7027,6 +7051,14 @@ struct wound_poison_t : public rogue_poison_buff_t
   }
 };
 
+struct atrophic_poison_t : public rogue_poison_buff_t
+{
+  atrophic_poison_t( rogue_td_t& r ) :
+    rogue_poison_buff_t( r, "atrophic_poison", debug_cast<rogue_t*>( r.source )->talent.rogue.atrophic_poison->effectN( 1 ).trigger() )
+  {
+  }
+};
+
 struct crippling_poison_t : public rogue_poison_buff_t
 {
   crippling_poison_t( rogue_td_t& r ) :
@@ -7407,7 +7439,7 @@ void actions::rogue_action_t<Base>::trigger_poisons( const action_state_t* state
   auto trigger_lethal_poison = [this, state]( rogue_poison_t* poison ) {
     if ( poison )
     {
-      // 2021-06-29-- For reasons unknown, Deadly Poison has its own proc logic than Wound or Instant Poison
+      // 2021-06-29 -- For reasons unknown, Deadly Poison has its own proc logic
       bool procs_lethal_poison = p()->specialization() == ROGUE_ASSASSINATION &&
         poison->data().id() == p()->talent.assassination.deadly_poison->id() ?
         procs_deadly_poison() : procs_poison();
@@ -8244,6 +8276,7 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   dots.serrated_bone_spike      = target->get_dot( "serrated_bone_spike_dot", source );
 
   debuffs.wound_poison          = new buffs::wound_poison_t( *this );
+  debuffs.atrophic_poison       = new buffs::atrophic_poison_t( *this );
   debuffs.crippling_poison      = new buffs::crippling_poison_t( *this );
   debuffs.numbing_poison        = new buffs::numbing_poison_t( *this );
 
@@ -8295,8 +8328,8 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
              dots.rupture, dots.rupture_deathmark, dots.crimson_tempest, dots.mutilated_flesh,
              dots.serrated_bone_spike };
   poison_dots = { dots.deadly_poison, dots.deadly_poison_deathmark, dots.sepsis, dots.kingsbane };
-  poison_debuffs = { debuffs.crippling_poison, debuffs.numbing_poison, debuffs.wound_poison,
-                     debuffs.amplifying_poison, debuffs.amplifying_poison_deathmark };
+  poison_debuffs = { debuffs.atrophic_poison, debuffs.crippling_poison, debuffs.numbing_poison,
+                     debuffs.wound_poison, debuffs.amplifying_poison, debuffs.amplifying_poison_deathmark };
 
   // Callbacks ================================================================
 
@@ -8842,17 +8875,17 @@ void rogue_t::init_action_list()
     dot->add_action( "rupture,if=!variable.skip_rupture&effective_combo_points>=4&refreshable&(pmultiplier<=1|remains<=tick_time&spell_targets.fan_of_knives>=3)&(!will_lose_exsanguinate|remains<=tick_time*2&spell_targets.fan_of_knives>=3)&target.time_to_die-remains>(4+(runeforge.dashing_scoundrel*5)+(runeforge.doomblade*5)+(variable.regen_saturated*6))", "Keep up Rupture at 4+ on all targets (when living long enough and not snapshot)" );
     dot->add_action( "rupture,cycle_targets=1,if=!variable.skip_cycle_rupture&!variable.skip_rupture&target!=self.target&effective_combo_points>=4&refreshable&(pmultiplier<=1|remains<=tick_time&spell_targets.fan_of_knives>=3)&(!will_lose_exsanguinate|remains<=tick_time*2&spell_targets.fan_of_knives>=3)&target.time_to_die-remains>(4+(runeforge.dashing_scoundrel*5)+(runeforge.doomblade*5)+(variable.regen_saturated*6))" );
     dot->add_action( "crimson_tempest,if=spell_targets>=2&effective_combo_points>=4&remains<2+3*(spell_targets>=4)", "Fallback AoE Crimson Tempest with the same logic as above, but ignoring the energy conditions if we aren't using Rupture" );
-    dot->add_action( "crimson_tempest,if=spell_targets=1&(!runeforge.dashing_scoundrel|rune_word.frost.enabled)&effective_combo_points>=(cp_max_spend-1)&refreshable&!will_lose_exsanguinate&!debuff.shiv.up&target.time_to_die-remains>4", "Crimson Tempest on ST if in pandemic and nearly max energy and if Envenom won't do more damage due to TB/MA" );
+    dot->add_action( "crimson_tempest,if=spell_targets=1&(!runeforge.dashing_scoundrel|rune_word.frost.enabled)&effective_combo_points>=(cp_max_spend-1)&refreshable&!will_lose_exsanguinate&!debuff.shiv.up&debuff.amplifying_poison.stack<15&target.time_to_die-remains>4", "Crimson Tempest on ST if in pandemic and nearly max energy and if Envenom won't do more damage due to TB/MA" );
 
     // Direct damage abilities
     action_priority_list_t* direct = get_action_priority_list( "direct", "Direct damage abilities" );
-    direct->add_action( "envenom,if=effective_combo_points>=4+talent.deeper_stratagem.enabled&(debuff.deathmark.up|debuff.shiv.up|buff.flagellation_buff.up|energy.deficit<=25+energy.regen_combined|!variable.single_target|effective_combo_points>cp_max_spend)&(!talent.exsanguinate.enabled|cooldown.exsanguinate.remains>2)", "Envenom at 4+ (5+ with DS) CP. Immediately on 2+ targets, with Deathmark, or with TB; otherwise wait for some energy. Also wait if Exsg combo is coming up.");
+    direct->add_action( "envenom,if=effective_combo_points>=4+talent.deeper_stratagem.enabled&(debuff.deathmark.up|debuff.shiv.up|debuff.amplifying_poison.stack>=10|buff.flagellation_buff.up|energy.deficit<=25+energy.regen_combined|!variable.single_target|effective_combo_points>cp_max_spend)&(!talent.exsanguinate.enabled|cooldown.exsanguinate.remains>2)", "Envenom at 4+ (5+ with DS) CP. Immediately on 2+ targets, with Deathmark, or with TB; otherwise wait for some energy. Also wait if Exsg combo is coming up.");
     direct->add_action( "variable,name=use_filler,value=combo_points.deficit>1|energy.deficit<=25+energy.regen_combined|!variable.single_target" );
     direct->add_action( "serrated_bone_spike,if=variable.use_filler&!dot.serrated_bone_spike_dot.ticking", "Apply SBS to all targets without a debuff as priority, preferring targets dying sooner after the primary target" );
     direct->add_action( "serrated_bone_spike,target_if=min:target.time_to_die+(dot.serrated_bone_spike_dot.ticking*600),if=variable.use_filler&!dot.serrated_bone_spike_dot.ticking" );
     direct->add_action( "serrated_bone_spike,if=variable.use_filler&master_assassin_remains<0.8&(fight_remains<=5|cooldown.serrated_bone_spike.max_charges-charges_fractional<=0.25)", "Keep from capping charges or burn at the end of fights" );
     direct->add_action( "serrated_bone_spike,if=variable.use_filler&master_assassin_remains<0.8&(soulbind.lead_by_example.enabled&!buff.lead_by_example.up&debuff.deathmark.up|buff.marrowed_gemstone_enhancement.up|!variable.single_target&debuff.shiv.up)", "When MA is not at high duration, sync with damage buffs without overwriting Lead by Example" );
-    direct->add_action( "fan_of_knives,if=variable.use_filler&(!priority_rotation&spell_targets.fan_of_knives>=3+stealthed.rogue)", "Fan of Knives at 19+ stacks of Hidden Blades or against 4+ targets." );
+    direct->add_action( "fan_of_knives,if=variable.use_filler&(!priority_rotation&spell_targets.fan_of_knives>=3+stealthed.rogue+talent.dragontempered_blades)", "Fan of Knives at 19+ stacks of Hidden Blades or against 4+ targets." );
     direct->add_action( "fan_of_knives,target_if=!dot.deadly_poison_dot.ticking&(!priority_rotation|dot.garrote.ticking|dot.rupture.ticking),if=variable.use_filler&spell_targets.fan_of_knives>=3", "Fan of Knives to apply poisons if inactive on any target (or any bleeding targets with priority rotation) at 3T" );
     direct->add_action( "echoing_reprimand,if=variable.use_filler&variable.deathmark_cooldown_remains>10" );
     direct->add_action( "ambush,if=variable.use_filler&(master_assassin_remains=0&!runeforge.doomblade|buff.blindside.up)" );

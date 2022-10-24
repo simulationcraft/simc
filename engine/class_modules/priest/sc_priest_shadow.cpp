@@ -2123,13 +2123,22 @@ struct ancient_madness_t final : public priest_buff_t<buff_t>
 
     add_invalidate( CACHE_CRIT_CHANCE );
     add_invalidate( CACHE_SPELL_CRIT_CHANCE );
-
-    set_duration( p.specs.voidform->duration() );        // Uses the same duration as Voidform for tooltip
-    set_default_value( data().effectN( 2 ).percent() );  // Each stack is worth 2% from effect 2
-    set_max_stack( as<int>( data().effectN( 1 ).base_value() ) /
-                   as<int>( data().effectN( 2 ).base_value() ) );  // Set max stacks to 30 / 2
     set_reverse( true );
     set_period( timespan_t::from_seconds( 1 ) );
+    set_duration( p.specs.voidform->duration() );  // Uses the same duration as Voidform for tooltip
+
+    // BUG: Ancient Madness consumes twice as much crit with Voidform
+    // https://github.com/SimCMinMax/WoW-BugTracker/issues/1030
+    if ( priest().bugs && priest().talents.shadow.void_eruption.enabled() )
+    {
+      set_default_value( 0.02 ); // 2%
+      set_max_stack( as<int>( data().effectN( 3 ).base_value() )  ); // 5/10;
+    }
+    else
+    {
+      set_default_value( data().effectN( 2 ).percent() ); // 0.5%/1%
+      set_max_stack( 20 ); // 20/20;
+    }
   }
 };
 
@@ -2669,7 +2678,8 @@ void priest_t::trigger_idol_of_nzoth( player_t* target, proc_t* proc )
 
   auto td = get_target_data( target );
 
-  if ( !td || !td->buffs.echoing_void->up() && number_of_echoing_voids_active() == talents.shadow.idol_of_nzoth->effectN( 1 ).base_value() )
+  if ( !td || !td->buffs.echoing_void->up() &&
+                  number_of_echoing_voids_active() == talents.shadow.idol_of_nzoth->effectN( 1 ).base_value() )
     return;
 
   if ( rng().roll( talents.shadow.idol_of_nzoth->proc_chance() ) )
