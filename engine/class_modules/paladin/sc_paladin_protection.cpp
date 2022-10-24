@@ -1016,7 +1016,9 @@ void paladin_t::create_buffs_protection()
     legendary.reign_of_endless_kings -> effectN( 2 ).trigger() -> effectN( 2 ).trigger() );
   buffs.faith_in_the_light = make_buff( this, "faith_in_the_light", find_spell( 379041 ) )
                                  ->set_default_value( talents.faith_in_the_light->effectN( 1 ).percent() )
-                                 ->add_invalidate(CACHE_BLOCK);
+                                 ->add_invalidate( CACHE_BLOCK );
+  buffs.moment_of_glory_absorb = make_buff<absorb_buff_t>( this, "moment_of_glory_absorb", find_spell( 393899 ) )
+                                      ->set_absorb_source( get_stats( "moment_of_glory_absorb" ) );
 
 
   if ( specialization() == PALADIN_PROTECTION )

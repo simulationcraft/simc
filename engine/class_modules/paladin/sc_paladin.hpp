@@ -135,6 +135,7 @@ public:
     buff_t* royal_decree;
     buff_t* bastion_of_light;
     buff_t* faith_in_the_light;
+    buff_t* moment_of_glory_absorb;
 
     buff_t* inner_light;
     buff_t* inspiring_vanguard;
@@ -1120,6 +1121,11 @@ public:
     if ( td -> debuff.execution_sentence -> check() )
     {
       td -> debuff.execution_sentence -> accumulate_damage( s );
+    }
+    if ( p()->buffs.moment_of_glory->up() )
+    {
+      double amount = s->result_amount * p()->talents.moment_of_glory->effectN( 3 ).percent();
+      p()->buffs.moment_of_glory_absorb->trigger( 1, p()->buffs.moment_of_glory_absorb->value() + amount );
     }
   }
 };
