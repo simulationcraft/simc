@@ -1963,11 +1963,9 @@ public:
   virtual bool procs_poison() const
   { return ab::weapon != nullptr && ab::has_amount_result(); }
 
-  // 2021-06-29-- As of recent log analysis, a number of abilities that still proc non-lethal poisons no longer proc Deadly Poison
-  //               Primarily this appears to be things such as Rupture and Garrote primary casts, but also affects things like Shiv
-  //               These abilities still trigger Wound Poison as well, so this is not strictly about Lethal poisons
+  // 2022-10-23 -- As of the latest beta build it appears all expected abilities proc Deadly Poison
   virtual bool procs_deadly_poison() const
-  { return procs_poison() && ( !( p()->bugs ) || ab::attack_power_mod.direct > 0 ); }
+  { return procs_poison(); }
 
   // Generic rules for proccing Main Gauche, used by rogue_t::trigger_main_gauche()
   virtual bool procs_main_gauche() const
@@ -2116,7 +2114,7 @@ public:
 
     if ( affected_by.t29_assassination_2pc && p()->buffs.envenom->check() )
     {
-      m *= p()->set_bonuses.t29_assassination_2pc->effectN( 1 ).percent();
+      m *= 1.0 + p()->set_bonuses.t29_assassination_2pc->effectN( 1 ).percent();
     }
 
     return m;
@@ -2837,7 +2835,13 @@ struct apply_poison_t : public action_t
 
   std::string get_default_lethal_poison( rogue_t* p )
   {
-    return p->specialization() == ROGUE_ASSASSINATION ? "deadly" : "instant";
+    if ( p->talent.assassination.amplifying_poison->ok() && !p->talent.assassination.dragon_tempered_blades->ok() )
+      return "amplifying";
+
+    if ( p->talent.assassination.deadly_poison->ok() )
+      return "deadly";
+
+    return "instant";
   }
 
   std::string get_default_lethal_poison_dtb( rogue_t* p )
@@ -5550,10 +5554,6 @@ struct shiv_t : public rogue_attack_t
 
   bool procs_blade_flurry() const override
   { return true; }
-
-  // 2021-06-29-- Testing shows this does not proc Deadly Poison despite being direct
-  bool procs_deadly_poison() const override
-  { return false; }
 };
 
 // Vanish ===================================================================
@@ -5722,17 +5722,12 @@ struct vicious_venoms_t : public rogue_attack_t
   vicious_venoms_t( util::string_view name, rogue_t* p, const spell_data_t* s ) :
     rogue_attack_t( name, p, s )
   {
-  }
-
-  double action_multiplier() const override
-  {
-    double m = rogue_attack_t::action_multiplier();
-
     // Appears to be overridden by a scripted multiplier even though the base damage is identical
-    m *= p()->talent.assassination.vicious_venoms->effectN( 1 ).percent();
-
-    return m;
+    base_multiplier *= p->talent.assassination.vicious_venoms->effectN( 1 ).percent();
   }
+
+  bool procs_poison() const override
+  { return false; }
 };
 
 // Poisoned Knife ===========================================================
@@ -6143,6 +6138,9 @@ struct serrated_bone_spike_covenant_t : public rogue_attack_t
     // 2021-07-05 -- Confirmed as working in-game, although not on Sudden Fractures damage
     bool procs_shadow_blades_damage() const override
     { return true; }
+
+    bool procs_poison() const override
+    { return false; }
   };
 
   int base_impact_cp;
@@ -6229,10 +6227,6 @@ struct serrated_bone_spike_covenant_t : public rogue_attack_t
   bool procs_blade_flurry() const override
   { return true; }
 
-  // 2021-06-29 -- Testing shows this does not proc Deadly Poison despite being direct
-  bool procs_deadly_poison() const override
-  { return false; }
-
   // 2021-07-05 -- Confirmed as working in-game
   bool procs_shadow_blades_damage() const override
   { return true; }
@@ -6255,6 +6249,9 @@ struct serrated_bone_spike_t : public rogue_attack_t
     //               This works on both the initial hit and also the DoT, until it is applied again
     bool snapshots_nightstalker() const override
     { return p()->bugs; }
+
+    bool procs_poison() const override
+    { return false; }
   };
 
   int base_impact_cp;
@@ -6330,10 +6327,6 @@ struct serrated_bone_spike_t : public rogue_attack_t
 
     return rogue_attack_t::travel_time();
   }
-
-  // 2021-06-29 -- Testing shows this does not proc Deadly Poison despite being direct
-  bool procs_deadly_poison() const override
-  { return false; }
 };
 
 // ==========================================================================
@@ -7407,7 +7400,7 @@ void actions::rogue_action_t<Base>::trigger_poisons( const action_state_t* state
   auto trigger_lethal_poison = [this, state]( rogue_poison_t* poison ) {
     if ( poison )
     {
-      // 2021-06-29-- For reasons unknown, Deadly Poison has its own proc logic than Wound or Instant Poison
+      // 2021-06-29 -- For reasons unknown, Deadly Poison has its own proc logic
       bool procs_lethal_poison = p()->specialization() == ROGUE_ASSASSINATION &&
         poison->data().id() == p()->talent.assassination.deadly_poison->id() ?
         procs_deadly_poison() : procs_poison();
@@ -8846,7 +8839,7 @@ void rogue_t::init_action_list()
 
     // Direct damage abilities
     action_priority_list_t* direct = get_action_priority_list( "direct", "Direct damage abilities" );
-    direct->add_action( "envenom,if=effective_combo_points>=4+talent.deeper_stratagem.enabled&(debuff.deathmark.up|debuff.shiv.up|buff.flagellation_buff.up|energy.deficit<=25+energy.regen_combined|!variable.single_target|effective_combo_points>cp_max_spend)&(!talent.exsanguinate.enabled|cooldown.exsanguinate.remains>2)", "Envenom at 4+ (5+ with DS) CP. Immediately on 2+ targets, with Deathmark, or with TB; otherwise wait for some energy. Also wait if Exsg combo is coming up.");
+    direct->add_action( "envenom,if=effective_combo_points>=4+talent.deeper_stratagem.enabled&(debuff.deathmark.up|debuff.shiv.up|debuff.amplifying_poison.stack>=10|buff.flagellation_buff.up|energy.deficit<=25+energy.regen_combined|!variable.single_target|effective_combo_points>cp_max_spend)&(!talent.exsanguinate.enabled|cooldown.exsanguinate.remains>2)", "Envenom at 4+ (5+ with DS) CP. Immediately on 2+ targets, with Deathmark, or with TB; otherwise wait for some energy. Also wait if Exsg combo is coming up.");
     direct->add_action( "variable,name=use_filler,value=combo_points.deficit>1|energy.deficit<=25+energy.regen_combined|!variable.single_target" );
     direct->add_action( "serrated_bone_spike,if=variable.use_filler&!dot.serrated_bone_spike_dot.ticking", "Apply SBS to all targets without a debuff as priority, preferring targets dying sooner after the primary target" );
     direct->add_action( "serrated_bone_spike,target_if=min:target.time_to_die+(dot.serrated_bone_spike_dot.ticking*600),if=variable.use_filler&!dot.serrated_bone_spike_dot.ticking" );
