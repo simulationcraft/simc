@@ -1757,6 +1757,7 @@ class SpellDataGenerator(DataGenerator):
           ( 365265, 0 ),                            # Arcane Surge energize
           ( 384859, 0 ), ( 384860, 0 ),             # Orb Barrage
           ( 383783, 0 ),                            # Nether Precision
+          ( 383882, 0 ),                            # Sun King's Blessing
         ),
 
         # Warlock:
