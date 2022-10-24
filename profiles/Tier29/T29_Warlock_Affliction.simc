@@ -160,33 +160,32 @@ actions.trinket_split_check+=/variable,name=trinket_two,value=(trinket.2.has_pro
 actions.trinket_split_check+=/variable,name=damage_trinket,value=(!(trinket.1.has_proc.any&trinket.1.has_cooldown))|(!(trinket.2.has_proc.any&trinket.2.has_cooldown))|equipped.glyph_of_assimilation
 actions.trinket_split_check+=/variable,name=trinket_split,value=(variable.trinket_one&variable.damage_trinket)|(variable.trinket_two&variable.damage_trinket)|(variable.trinket_one^variable.special_equipped)|(variable.trinket_two^variable.special_equipped)
 
-# TODO
 # Gear Summary
-# gear_ilvl=283.13
-# gear_stamina=2924
-# gear_intellect=1913
-# gear_crit_rating=310
-# gear_haste_rating=844
-# gear_mastery_rating=737
-# gear_versatility_rating=560
-# gear_armor=526
-# set_bonus=tier28_2pc=1
-# set_bonus=tier28_4pc=1
-head=horns_of_the_demon_star,id=188889,bonus_id=1498/7187/6935,gem_id=173128
-neck=worldkiller_iris,id=189859,bonus_id=1524/7187/6935,gem_id=173128
-shoulders=mantle_of_the_demon_star,id=188888,bonus_id=1505/7187
-back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187
-chest=robes_of_the_demon_star,id=188884,bonus_id=1505/7187,enchant=eternal_stats
-wrists=cuffs_of_the_covert_commander,id=189842,bonus_id=1524/7187/6935,gem_id=173128,enchant=eternal_intellect
-hands=grimveiled_mittens,id=173244,bonus_id=7031/6649/6648/1588
-waist=grimveiled_belt,id=173248,bonus_id=6716/8129/6649/6650/1808/1588,gem_id=173129
-legs=leggings_of_the_demon_star,id=188887,bonus_id=1498/7187
-feet=prefabricated_footpads,id=189770,bonus_id=1524/7187
-finger1=signet_of_collapsing_stars,id=185813,bonus_id=1595/6536/6646/6935,gem_id=173128,enchant=tenet_of_haste
-finger2=rygelons_heraldric_ring,id=189854,bonus_id=1524/7187/6935,gem_id=173128,enchant=tenet_of_haste
-trinket1=the_first_sigil,id=188271,bonus_id=1524/7187
-trinket2=unbound_changeling,id=178708,bonus_id=1592/6536/6646/6916
-main_hand=antumbra_shadow_of_the_cosmos,id=189852,bonus_id=1524/7187,enchant=celestial_guidance
-off_hand=forbidden_truth,id=189860,bonus_id=1524/7187
+# TODO
+# gear_ilvl=
+# gear_stamina=
+# gear_intellect=
+# gear_crit_rating=
+# gear_haste_rating=
+# gear_mastery_rating=
+# gear_versatility_rating=
+# gear_armor=
+# set_bonus=tier29_2pc=1
+# set_bonus=tier29_4pc=1
+head=scalesworn_cultists_scorn,id=200336,bonus_id=1463/8767
+neck=felsoul_medallion,id=154009,bonus_id=8942/3219
+shoulders=scalesworn_cultists_effigy,id=200338,bonus_id=1463/8767
+back=scalesworn_cultists_runedrape,id=200341,bonus_id=1472/8767
+chest=scalesworn_cultists_frock,id=200333,bonus_id=1466/8767
+wrists=scalesworn_cultists_wristwraps,id=200340,bonus_id=1472/8767
+hands=scalesworn_cultists_gloves,id=200335,bonus_id=1466/8767
+waist=scalesworn_cultists_girdle,id=200339,bonus_id=1472/8767
+legs=scalesworn_cultists_culottes,id=200337,bonus_id=1472/8767
+feet=scalesworn_cultists_sandals,id=200334,bonus_id=1472/8767
+finger1=eternal_sentrys_ring,id=193804,bonus_id=7976/6652/7937/1591/4785
+finger2=circle_of_ascended_frost,id=193731,bonus_id=7976/6652/7937/1591/4785
+trinket1=spoils_of_neltharus,id=193773,bonus_id=7976/6652/1591/4785
+trinket2=umbrelskuls_fractured_heart,id=193639,bonus_id=7976/6652/1591/4785
+main_hand=chillworns_infusion_staff,id=193761,bonus_id=7976/6652/1591/4785
 
 default_pet=sayaad
