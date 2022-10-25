@@ -952,6 +952,7 @@ public:
     const spell_data_t* cat_form_passive;
     const spell_data_t* cat_form_speed;
     const spell_data_t* feral_affinity;
+    const spell_data_t* moonfire_2;
     const spell_data_t* moonfire_dmg;
     const spell_data_t* wrath;
 
@@ -10190,6 +10191,7 @@ void druid_t::init_spells()
   spec.cat_form_passive         = find_spell( 3025 );
   spec.cat_form_speed           = find_spell( 113636 );
   spec.feral_affinity           = find_specialization_spell( "Feral Affinity" );
+  spec.moonfire_2               = find_rank_spell( "Moonfire", "Rank 2" );
   spec.moonfire_dmg             = find_spell( 164812 );
   spec.wrath                    = find_specialization_spell( "Wrath" );
   if ( !spec.wrath->ok() )
@@ -13260,6 +13262,9 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( spec.feral );
   action.apply_affecting_aura( spec.guardian );
   action.apply_affecting_aura( spec.restoration );
+
+  // Rank spells
+  action.apply_affecting_aura( spec.moonfire_2 );
 
   // Class
   action.apply_affecting_aura( talent.astral_influence );
