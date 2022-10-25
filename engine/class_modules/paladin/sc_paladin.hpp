@@ -1379,6 +1379,18 @@ struct holy_power_consumer_t : public Base
       p -> cooldowns.guardian_of_ancient_kings -> adjust( reduction );
     }
 
+    // 2022-10-25 Resolute Defender, spend 3 HP to reduce AD/DS cooldown
+    if ( p->talents.resolute_defender->ok() )
+    {
+      // Just like RP, value is in deciseconds, for whatever reasons
+      timespan_t reduction =
+          timespan_t::from_seconds( -1.0 * p->talents.resolute_defender->effectN( 1 ).base_value() / 10 );
+      p->cooldowns.ardent_defender->adjust( reduction );
+      // "Let the ability handle the cd", yeah.. But how to reduce it's cd?
+      //p->buffs.divine_shield->cooldown->adjust( reduction );
+      auto foo = 1;
+    }
+
     // Consume Empyrean Power on Divine Storm, handled here for interaction with DP/FoJ
     // Cost reduction is still in divine_storm_t
     bool should_continue = true;
