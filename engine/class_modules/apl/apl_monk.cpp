@@ -207,6 +207,8 @@ void brewmaster( player_t* p )
   def->add_action( p, "Touch of Death", "if=target.health.pct<=15" );
   // TODO: Remove Covenant after Pre-patch
   def->add_action( "bonedust_brew,if=!debuff.bonedust_brew_debuff.up&(talent.bonedust_brew.enabled|covenant.necrolord)" );
+  def->add_action( "faeline_stomp,if=covenant.night_fae" );
+  def->add_action( "fallen_order,if=covenant.venthyr" );
 
   // On-Use Effects
   if ( p->items[ SLOT_MAIN_HAND ].name_str == "jotungeirr_destinys_call" )
