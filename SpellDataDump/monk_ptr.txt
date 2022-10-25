@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46144 dragonflight-BETA (hotfix 2022-10-22/46144, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46144 dragonflight-BETA (hotfix 2022-10-24/46144, no-networking)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -1499,8 +1499,8 @@ Class            : Monk
 School           : Physical
 Spell Type       : Melee
 Resource         : 15 Energy (3) (id=6079) w/ Stagger (id=115069)
-Resource         : 0.7% Base Mana (0) (id=6422)
-Resource         : 15 Energy (3) (id=7579)
+Resource         : 0.7% Base Mana (0) (id=6422) w/ Mistweaver Monk (id=137024)[Hotfixed: Aura Id (115070 -> 137024)]
+Resource         : 15 Energy (3) (id=7579) w/ Windwalker Monk (id=137025)[Hotfixed: Aura Id (0 -> 137025)]
 Spell Level      : 34
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -15239,7 +15239,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Include In Advanced Combat Log (72), Not In Spellbook (143)
 Effects          :
 #1 (id=1024253)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
+Hotfixed         : Base Value (1 -> 2)
 Description      : Thunder Focus Tea also empowers $s1 additional Renewing Mist, Essence Font, or Rising Sun Kick at random.
 
 Name             : Mists of Life (id=388548) [Spell Family (53), Passive] 
@@ -16429,10 +16430,11 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Expel Harm (322101)
                    Family Flags: 17
-#2 (id=1031442)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Chance (7)
+#2 (id=1031442)  : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Expel Harm (322101)
                    Family Flags: 17
+Hotfixed         : Sub Type (108 -> 107)
 Description      : Expel Harm's healing increased by $s1% and critical strike chance increased by $s2%. 
 
 Name             : Profound Rebuttal (id=392910) [Spell Family (53), Passive] 
@@ -16964,7 +16966,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Include In Advanced Combat Log (72), Not In Spellbook (143)
 Effects          :
 #1 (id=1032459)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
+Hotfixed         : Base Value (1 -> 2)
 Description      : Thunder Focus Tea also empowers $s1 additional Renewing Mist, Enveloping Mist, or Vivify at random.
 
 Name             : Pretense of Instability (id=393515) [Spell Family (53)] 

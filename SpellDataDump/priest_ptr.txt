@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46144 dragonflight-BETA (hotfix 2022-10-22/46144, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46144 dragonflight-BETA (hotfix 2022-10-24/46144, no-networking)
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Hotfixed         : Variables
 Class            : Priest
@@ -12696,21 +12696,22 @@ Effects          :
 Description      : Creates a Holy Lightwell. Every $372840t1 sec the Lightwell will attempt to heal party and raid members within $372845a1 yards that are lower than $s2% health for $372847s1 over $372847d. Lightwell lasts for $d or until $372838n heals are expended.
 
 Name             : Lightwell Charges (id=372838) [Spell Family (6)] 
+Hotfixed         : Attributes
 Class            : Priest
 School           : Holy
 Spell Type       : None
-Duration         : Aura (infinite)
+Duration         : 180 seconds
 Stacks           : 15 initial, 15 maximum
 Proc Chance      : 100%
-Attributes       : ........ x....... ..x..... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ xx...... ..x..... 
+Attributes       : ........ x....... ..x..... .......x   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ xx..x... ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Do Not Log (8), Do Not Sheath (18), No Threat (42), Suppress Caster Procs (112), Suppress Target Procs (113), Can Proc From Procs (122), Aura Points On Client (268), Allow Class Ability Procs (416)
+                 : Do Not Log (8), Do Not Sheath (18), No Aura Cancel (31), No Threat (42), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Can Proc From Procs (122), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=997680)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -12750,7 +12751,7 @@ Attributes       : .......x x....... ........ ........   ........ ........ .....
                  : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Not a Proc (105), Suppress Caster Procs (112), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=997689)   : Dummy (3)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE friendly (30)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Radius: 0 - 20 yards | Target: At Caster (22) -> AOE friendly (30)
 
 Name             : Lightwell Renew (id=372847) [Spell Family (6)] 
 Class            : Priest
@@ -12770,7 +12771,8 @@ Attributes       : ........ ........ ..x..... ...x....   ........ ..x..... .....
                  : Do Not Sheath (18), Allow While Sitting (27), No Threat (42), DoT Stacking Rule (103), Not In Spellbook (143), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Heal Prediction (280), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=997691)   : Apply Aura (6) | Periodic Heal (8): every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.27472 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.82417 | PvP Coefficient: 1.00000 | Target: Friend (21)
+Hotfixed         : SP Coefficient (0.274725 -> 0.824175)
 Description      : Restore $s1 health every $t1 sec.
 Tooltip          : Restore $w1 health every $t1 sec.
 
@@ -13363,11 +13365,12 @@ Effects          :
 Description      : Hurls a bolt of dark magic at the target, dealing $s1 Shadow damage.
 
 Name             : Idol of N'Zoth (id=373280) [Spell Family (6), Passive, Hidden] 
+Hotfixed         : Proc Chance (20 -> 30)
 Talent Entry     : Shadow [tree=spec, row=10, col=4, max_rank=1, req_points=20]
 Class            : Priest
 School           : Shadow
 Spell Type       : None
-Proc Chance      : 20%
+Proc Chance      : 30%
 Proc Flags       : ........ ........ ..x..... ........ 
                  : Periodic
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -13380,8 +13383,12 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=998389)   : Apply Aura (6) | Proc Trigger Spell (42): Echoing Void
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Trigger Spell: 373281 | Target: Self (1)
+#1 (id=998389)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Sub Type (42 -> 4), Base Value (20 -> 30), Trigger Spell (373281 -> 0)
+#2 (id=1038289)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : NEW EFFECT
 Description      : Damage dealt by Shadow Word: Pain, Vampiric Touch, and Devouring Plague has a $s1% chance to apply Echoing Void.
 
 Each time Echoing Void is applied, it has a chance to collapse, dealing $373304s1 Shadow damage to all nearby enemies until no stacks remain.
@@ -13394,7 +13401,6 @@ Range            : 40 yards
 Duration         : 20 seconds
 Stacks           : 10 maximum
 Proc Chance      : 101%
-Triggered by     : Idol of N'Zoth (373280)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13427,7 +13433,11 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Do Not Display Range (126)
 Effects          :
 #1 (id=998430)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: Unknown(63) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.10000 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: Unknown(63) -> AOE enemy (instant) (16)
+Hotfixed         : SP Coefficient (0.25 -> 0.1)
+#2 (id=1038320)  : Dummy (3)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
+Hotfixed         : NEW EFFECT
 Description      : $@spelldesc373280
 
 Name             : Idol of Y'Shaarj (id=373310) [Spell Family (6), Passive, Hidden] 

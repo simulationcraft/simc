@@ -1,5 +1,5 @@
-// Mastery abilities, wow build 9.2.5.43903
-static const std::array<mastery_spell_entry_t, 36> __ptr_mastery_spell_data { {
+// Mastery abilities, wow build 10.0.0.46270
+static const std::array<mastery_spell_entry_t, 38> __ptr_mastery_spell_data { {
   {   62, 190740 }, // Mastery: Savant (Arcane Mage)
   {   63,  12846 }, // Mastery: Ignite (Fire Mage)
   {   64,  76613 }, // Mastery: Icicles (Frost Mage)
@@ -9,7 +9,7 @@ static const std::array<mastery_spell_entry_t, 36> __ptr_mastery_spell_data { {
   {   71, 262111 }, // Mastery: Deep Wounds (Arms Warrior)
   {   72,  76856 }, // Mastery: Unshackled Fury (Fury Warrior)
   {   73,  76857 }, // Mastery: Critical Block (Protection Warrior)
-  {  102, 326085 }, // Mastery: Total Eclipse (Balance Druid)
+  {  102, 393014 }, // Mastery: Astral Invocation (Balance Druid)
   {  103,  77493 }, // Mastery: Razor Claws (Feral Druid)
   {  104, 155783 }, // Mastery: Nature's Guardian (Guardian Druid)
   {  105,  77495 }, // Mastery: Harmony (Restoration Druid)
@@ -36,5 +36,7 @@ static const std::array<mastery_spell_entry_t, 36> __ptr_mastery_spell_data { {
   {  270, 117907 }, // Mastery: Gust of Mists (Mistweaver Monk)
   {  577, 185164 }, // Mastery: Demonic Presence (Havoc Demon Hunter)
   {  581, 203747 }, // Mastery: Fel Blood (Vengeance Demon Hunter)
+  { 1467, 362980 }, // Mastery: Giantkiller (Devastation Evoker)
+  { 1468, 363510 }, // Mastery: Life-Binder (Preservation Evoker)
 } };
 

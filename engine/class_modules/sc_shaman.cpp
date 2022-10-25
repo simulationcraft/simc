@@ -2107,8 +2107,8 @@ public:
       }
 
       if ( this->p()->sets->has_set_bonus( SHAMAN_ENHANCEMENT, T29, B4 ) )
-      {
-        this->p()->buff.t29_4pc_enh->expire();
+      { 
+        //4pc refreshes duration and adds stacks
         this->p()->buff.t29_4pc_enh->trigger( stacks );
       }
     }
@@ -10071,6 +10071,12 @@ void shaman_t::trigger_vesper_totem( const action_state_t* state )
     case ACTION_ATTACK:
     case ACTION_SPELL:
     {
+      if ( bugs == true && state->action->name() == "Fire Nova" )
+      {
+        current_event = ev_vesper_totem_heal;
+        charges = &( vesper_totem_heal_charges );
+        break;
+      }
       current_event = ev_vesper_totem_dmg;
       charges = &( vesper_totem_dmg_charges );
       break;
@@ -11728,93 +11734,89 @@ void shaman_t::init_action_list_enhancement()
   def->add_action( "berserking,if=!talent.ascendance.enabled|buff.ascendance.up" );
   def->add_action( "fireblood,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50" );
   def->add_action( "ancestral_call,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50" );
-  def->add_action( "bag_of_tricks,if=!talent.ascendance.enabled|!buff.ascendance.up" );
 
   def->add_action( this, "Feral Spirit" );
   def->add_action("fae_transfusion,if=(talent.ascendance.enabled|talent.doom_winds.enabled|runeforge.doom_winds.equipped)&(soulbind.grove_invigoration|soulbind.field_of_blossoms|active_enemies=1)");
-  def->add_talent( this, "Ascendance", "if=raid_event.adds.in>=90|active_enemies>1" );
-  def->add_action( this, "Windfury Totem", "if=(talent.doom_winds|runeforge.doom_winds.equipped)&buff.doom_winds_debuff.down&(raid_event.adds.in>=60|active_enemies>1)");
+  def->add_action("vesper_totem,if=raid_event.adds.in>40|active_enemies>1");
+  def->add_talent( this, "Ascendance", "if=(ti_lightning_bolt&active_enemies=1&raid_event.adds.in>=90)|(ti_chain_lightning&active_enemies>1)" );
+  def->add_action("doom_winds,if=raid_event.adds.in>=90|active_enemies>1");
+  def->add_action( this, "Windfury Totem", "if=runeforge.doom_winds.equipped&buff.doom_winds_debuff.down&(raid_event.adds.in>=60|active_enemies>1)");
+
   def->add_action( "call_action_list,name=single,if=active_enemies=1", "If only one enemy, priority follows the 'single' action list." );
   def->add_action( "call_action_list,name=aoe,if=active_enemies>1", "On multiple enemies, the priority follows the 'aoe' action list." );
 
-  single->add_action("windstrike");
-  single->add_action(this, "Lava Lash", "if=buff.hot_hand.up|((talent.primal_lava_actuators|runeforge.primal_lava_actuators.equipped)&buff.primal_lava_actuators.stack>6)");
-  single->add_action(this, "Windfury Totem", "if=!buff.windfury_totem.up");
-  single->add_action(this, "Stormstrike", "if=(talent.doom_winds|runeforge.doom_winds.equipped)&buff.doom_winds.up");
-  single->add_action(this, "Crash Lightning", "if=(talent.doom_winds|runeforge.doom_winds.equipped)&buff.doom_winds.up");
-  single->add_talent(this, "Ice Strike", "if=(talent.doom_winds|runeforge.doom_winds.equipped)&buff.doom_winds.up");
-  single->add_talent(this, "Sundering", "if=(talent.doom_winds|runeforge.doom_winds.equipped)&buff.doom_winds.up");
-  single->add_action("primordial_wave,if=buff.primordial_wave.down&(raid_event.adds.in>42|raid_event.adds.in<6)");
-  single->add_action(this, "Flame Shock", "if=!ticking");
-  single->add_action(this, "Lightning Bolt", "if=buff.maelstrom_weapon.stack>=5&buff.primordial_wave.up&raid_event.adds.in>buff.primordial_wave.remains&(!buff.splintered_elements.up|fight_remains<=12)");
-  single->add_action("vesper_totem,if=raid_event.adds.in>40");
-  single->add_action(this, "Frost Shock", "if=buff.hailstorm.up");
-  single->add_action(this, "Lava Lash", "if=dot.flame_shock.refreshable");
-  single->add_action("fae_transfusion,if=!runeforge.seeds_of_rampant_growth.equipped|cooldown.feral_spirit.remains>30");
-  single->add_action(this, "Stormstrike", "if=talent.stormflurry.enabled&buff.stormbringer.up");
-  single->add_action(this, "Chain Lightning", "if=buff.stormkeeper.up");
-  single->add_talent(this, "Elemental Blast", "if=buff.maelstrom_weapon.stack>=5");
-  single->add_action(this, "Healing Stream Totem", "if=runeforge.raging_vesper_vortex.equipped&talent.earth_shield.enabled&(vesper_totem_heal_charges>1|(vesper_totem_heal_charges>0&raid_event.adds.in>(buff.vesper_totem.remains-3)))");
-  single->add_talent(this, "Earth Shield", "if=runeforge.raging_vesper_vortex.equipped&talent.earth_shield.enabled&(vesper_totem_heal_charges>1|(vesper_totem_heal_charges>0&raid_event.adds.in>(buff.vesper_totem.remains-3)))");
-  single->add_action("chain_harvest,if=buff.maelstrom_weapon.stack>=5&raid_event.adds.in>=90");
-  single->add_action(this, "Lightning Bolt", "if=buff.maelstrom_weapon.stack=10&buff.primordial_wave.down");
-  single->add_action(this, "Stormstrike");
-  single->add_talent(this, "Stormkeeper", "if=buff.maelstrom_weapon.stack>=5");
-  single->add_action("fleshcraft,interrupt=1,if=soulbind.volatile_solvent");
-  single->add_action(this, "Windfury Totem", "if=buff.windfury_totem.remains<10");
-  single->add_action(this, "Lava Lash");
-  single->add_action(this, "Lightning Bolt", "if=buff.maelstrom_weapon.stack>=5&buff.primordial_wave.down");
-  single->add_talent(this, "Sundering", "if=raid_event.adds.in>=40");
-  single->add_action(this, "Frost Shock");
-  single->add_action(this, "Crash Lightning");
-  single->add_talent(this, "Ice Strike");
-  single->add_talent(this, "Fire Nova", "if=active_dot.flame_shock");
-  single->add_action("fleshcraft,if=soulbind.pustule_eruption");
-  single->add_action(this, "Earth Elemental");
-  single->add_action(this, "Flame Shock");
-  single->add_action(this, "Windfury Totem", "if=buff.windfury_totem.remains<30");
-
-  aoe->add_action("chain_harvest,if=buff.maelstrom_weapon.stack>=5");
-  aoe->add_action(this, "Crash Lightning", "if=(talent.doom_winds|runeforge.doom_winds.equipped)&buff.doom_winds.up");
-  aoe->add_talent(this, "Sundering", "if=(talent.doomwinds|runeforge.doom_winds.equipped)&buff.doom_winds.up");
-  aoe->add_action(this, "Healing Stream Totem", "if=runeforge.raging_vesper_vortex.equipped&talent.earth_shield.enabled&vesper_totem_heal_charges>0");
-  aoe->add_talent(this, "Earth Shield", "if=runeforge.raging_vesper_vortex.equipped&talent.earth_shield.enabled&vesper_totem_heal_charges>0");
-  aoe->add_talent(this, "Fire Nova", "if=active_dot.flame_shock>=6|(active_dot.flame_shock>=4&active_dot.flame_shock=active_enemies)");
-  aoe->add_action("primordial_wave,target_if=min:dot.flame_shock.remains,cycle_targets=1,if=!buff.primordial_wave.up");
-  aoe->add_action("windstrike,if=(talent.deeply_rooted_elements|runeforge.deeply_rooted_elements.equipped)&buff.crash_lightning.up");
-  aoe->add_action(this, "Stormstrike", "if=(talent.deeply_rooted_elements|runeforge.deeply_rooted_elements.equipped)&buff.crash_lightning.up");
-  aoe->add_action(this, "Lava Lash", "target_if=min:debuff.lashing_flames.remains,cycle_targets=1,if=dot.flame_shock.ticking&(active_dot.flame_shock<active_enemies&active_dot.flame_shock<6)");
-  aoe->add_action(this, "Flame Shock", "if=!ticking");
-  aoe->add_action(this, "Flame Shock", "target_if=min:dot.flame_shock.remains,cycle_targets=1,if=!talent.hailstorm.enabled&active_dot.flame_shock<active_enemies&active_dot.flame_shock<6");
-  aoe->add_action(this, "Lightning Bolt", "if=(active_dot.flame_shock>=active_enemies|active_dot.flame_shock>=4)&buff.primordial_wave.up&buff.maelstrom_weapon.stack>=5&(!buff.splintered_elements.up|fight_remains<=12|raid_event.adds.remains<=gcd)");
-  aoe->add_action(this, "Frost Shock", "if=buff.hailstorm.up");
-  aoe->add_action("fae_transfusion,if=soulbind.grove_invigoration|soulbind.field_of_blossoms|runeforge.seeds_of_rampant_growth.equipped");
-  aoe->add_action(this, "Crash Lightning", "if=buff.crash_lightning.down&buff.primordial_wave.up&buff.maelstrom_weapon.stack<5");
-  aoe->add_talent(this, "Sundering", "if=buff.primordial_wave.up&buff.maelstrom_weapon.stack<5");
-  aoe->add_action(this, "Stormstrike", "if=buff.primordial_wave.up&buff.maelstrom_weapon.stack<5");
-  aoe->add_talent(this, "Sundering");
-  aoe->add_talent(this, "Fire Nova", "if=active_dot.flame_shock>=4");
-  aoe->add_action(this, "Crash Lightning", "if=buff.crash_lightning.down");
-  aoe->add_action(this, "Lava Lash", "target_if=min:debuff.lashing_flames.remains,cycle_targets=1,if=talent.lashing_flames.enabled");
-  aoe->add_talent(this, "Fire Nova", "if=active_dot.flame_shock>=3");
-  aoe->add_action("vesper_totem");
-  aoe->add_action(this, "Chain Lightning", "if=buff.stormkeeper.up");
-  aoe->add_action(this, "Lava Lash", "if=buff.crash_lightning.up");
-  aoe->add_talent(this, "Elemental Blast", "if=buff.maelstrom_weapon.stack>=5");
-  aoe->add_talent(this, "Stormkeeper", "if=buff.maelstrom_weapon.stack>=5");
-  aoe->add_action(this, "Chain Lightning", "if=buff.maelstrom_weapon.stack=10");
-  aoe->add_action(this, "Stormstrike", "if=buff.crash_lightning.up");
-  aoe->add_talent(this, "Fire Nova", "if=active_dot.flame_shock>=2");
-  aoe->add_action(this, "Crash Lightning");
-  aoe->add_action("windstrike");
-  aoe->add_action(this, "Stormstrike");
-  aoe->add_action("fleshcraft,interrupt=1,if=soulbind.volatile_solvent");
-  aoe->add_action(this, "Flame Shock", "target_if=refreshable,cycle_targets=1");
-  aoe->add_action("fae_transfusion");
-  aoe->add_action(this, "Frost Shock");
-  aoe->add_action(this, "Chain Lightning", "if=buff.maelstrom_weapon.stack>=5");
-  aoe->add_action(this, "Earth Elemental");
-  aoe->add_action(this, "Windfury Totem", "if=buff.windfury_totem.remains<30");
+  single->add_action( "windstrike");
+  single->add_action( this, "Lava Lash", "if=buff.hot_hand.up|buff.ashen_catalyst.stack=8|(runeforge.primal_lava_actuators.equipped&buff.primal_lava_actuators.stack=8)");
+  single->add_action( this, "Windfury Totem", "if=!buff.windfury_totem.up");
+  single->add_action( this, "Stormstrike", "if=buff.doom_winds_buff.up|buff.doom_winds_talent.up");
+  single->add_action( this, "Crash Lightning", "if=buff.doom_winds_buff.up|buff.doom_winds_talent.up");
+  single->add_talent( this, "Ice Strike", "if=buff.doom_winds_buff.up|buff.doom_winds_talent.up");
+  single->add_talent( this, "Sundering", "if=buff.doom_winds_buff.up|buff.doom_winds_talent.up");
+  single->add_action( "primordial_wave,if=buff.primordial_wave.down&(raid_event.adds.in>42|raid_event.adds.in<6)");
+  single->add_action( this, "Flame Shock", "if=!ticking");
+  single->add_action( this, "Lightning Bolt", "if=buff.maelstrom_weapon.stack>=5&buff.primordial_wave.up&raid_event.adds.in>buff.primordial_wave.remains&(!buff.splintered_elements.up|fight_remains<=12)");
+  single->add_talent( this, "Ice Strike", "if=talent.hailstorm.enabled");
+  single->add_action( this, "Frost Shock", "if=buff.hailstorm.up");
+  single->add_action( this, "Lava Lash", "if=dot.flame_shock.refreshable");
+  single->add_action( this, "Stormstrike", "if=talent.stormflurry.enabled&buff.stormbringer.up");
+  single->add_talent( this, "Elemental Blast", "if=(!talent.elemental_spirits.enabled|(talent.elemental_spirits.enabled&(charges=max_charges|buff.feral_spirit.up)))&buff.maelstrom_weapon.stack>=5");
+  single->add_action( "chain_harvest,if=buff.maelstrom_weapon.stack>=5&raid_event.adds.in>=90");
+  single->add_action( "lava_burst,if=buff.maelstrom_weapon.stack>=5" );
+  single->add_action( this, "Lightning Bolt", "lightning_bolt,if=buff.maelstrom_weapon.stack=10&buff.primordial_wave.down");
+  single->add_action( this, "Stormstrike");
+  single->add_action( "fleshcraft,interrupt=1,if=soulbind.volatile_solvent");
+  single->add_action( this, "Windfury Totem", "if=buff.windfury_totem.remains<10");
+  single->add_action( this, "Ice Strike");
+  single->add_action( this, "Lava Lash");
+  single->add_action( this, "bag_of_tricks");
+  single->add_action( this, "Lightning Bolt", "if=buff.maelstrom_weapon.stack>=5&buff.primordial_wave.down");
+  single->add_talent( this, "Sundering", "if=raid_event.adds.in>=40");
+  single->add_action( this, "Fire Nova", "if=talent.swirling_maelstrom.enabled&active_dot.flame_shock");
+  single->add_action( this, "Frost Shock");
+  single->add_action( this, "Crash Lightning");
+  single->add_talent( this, "Fire Nova", "if=active_dot.flame_shock");
+  single->add_action( "fleshcraft,if=soulbind.pustule_eruption");
+  single->add_action( this, "Earth Elemental");
+  single->add_action( this, "Flame Shock");
+  single->add_action( this, "Windfury Totem", "if=buff.windfury_totem.remains<30");
+  
+  aoe->add_action( this, "Crash Lightning", "if=(talent.doom_winds|runeforge.doom_winds.equipped)&buff.doom_winds.up");
+  aoe->add_action( "lightning_bolt,if=(active_dot.flame_shock=active_enemies|active_dot.flame_shock=6)&buff.primordial_wave.up&buff.maelstrom_weapon.stack>=(5+5*talent.overflowing_maelstrom.enabled)&(!buff.splintered_elements.up|fight_remains<=12|raid_event.adds.remains<=gcd)" );
+  aoe->add_action( "chain_harvest,if=buff.maelstrom_weapon.stack>=5" );
+  aoe->add_talent( this, "Sundering", "if=(talent.doomwinds|runeforge.doom_winds.equipped)&buff.doom_winds.up" );
+  aoe->add_talent( this, "Fire Nova", "if=active_dot.flame_shock>=6|(active_dot.flame_shock>=4&active_dot.flame_shock=active_enemies)");
+  aoe->add_action( "primordial_wave,target_if=min:dot.flame_shock.remains,cycle_targets=1,if=!buff.primordial_wave.up");
+  aoe->add_action( "windstrike,if=talent.thorims_invocation.enabled&ti_chain_lightning&buff.maelstrom_weapon.stack>1");
+  aoe->add_action( this, "Lava Lash", "target_if=min:debuff.lashing_flames.remains,cycle_targets=1,if=dot.flame_shock.ticking&(active_dot.flame_shock<active_enemies&active_dot.flame_shock<6)");
+  aoe->add_action( this, "Flame Shock", "if=!ticking");
+  aoe->add_action( this, "Flame Shock", "target_if=min:dot.flame_shock.remains,cycle_targets=1,if=!talent.hailstorm.enabled&active_dot.flame_shock<active_enemies&active_dot.flame_shock<6");
+  aoe->add_talent( this, "Ice Strike", "if=talent.hailstorm.enabled" );
+  aoe->add_action( this, "Frost Shock", "if=talent.hailstorm.enabled&buff.hailstorm.up");
+  aoe->add_talent( this, "Sundering" );
+  aoe->add_talent( this, "Fire Nova", "if=active_dot.flame_shock>=4" );
+  aoe->add_action( this, "Lava Lash", "target_if=min:debuff.lashing_flames.remains,cycle_targets=1,if=talent.lashing_flames.enabled");
+  aoe->add_talent( this, "Fire Nova", "if=active_dot.flame_shock>=3" );
+  aoe->add_talent( this, "Elemental Blast", "if=(!talent.elemental_spirits.enabled|(talent.elemental_spirits.enabled&(charges=max_charges|buff.feral_spirit.up)))&buff.maelstrom_weapon.stack=10&(!talent.crashing_storms.enabled|active_enemies<=3)" );
+  aoe->add_action( this, "Chain Lightning", "if=buff.maelstrom_weapon.stack=10" );
+  aoe->add_action( this, "Crash Lightning", "if=buff.cl_crash_lightning.up" );
+  aoe->add_action( this, "Lava Lash", "buff.crash_lightning.up&buff.ashen_catalyst.stack=8|buff.primal_lava_actuators.stack=8");
+  aoe->add_action( this, "Windstrike", "if=buff.crash_lightning.up" );
+  aoe->add_action( this, "Stormstrike", "if=buff.crash_lightning.up&buff.gathering_storms.stack=6" );
+  aoe->add_action( this, "Lava Lash", "if=buff.crash_lightning.up" );
+  aoe->add_action( this, "Ice Strike", "if=buff.crash_lightning.up" );
+  aoe->add_action( this, "Stormstrike", "if=buff.crash_lightning.up" );
+  aoe->add_talent( this, "Elemental Blast", "if=(!talent.elemental_spirits.enabled|(talent.elemental_spirits.enabled&(charges=max_charges|buff.feral_spirit.up)))&buff.maelstrom_weapon.stack>=5&(!talent.crashing_storms.enabled|active_enemies<=3)" );
+  aoe->add_talent( this, "Fire Nova", "if=active_dot.flame_shock>=2" );
+  aoe->add_action( this, "Crash Lightning" );
+  aoe->add_action( this, "Windstrike" );
+  aoe->add_action( this, "Lava Lash" );
+  aoe->add_action( this, "Ice Strike" );
+  aoe->add_action( this, "Stormstrike" );
+  aoe->add_action( this, "Flame Shock", "target_if=refreshable,cycle_targets=1" );
+  aoe->add_action( this, "Frost Shock" );
+  aoe->add_action( this, "Chain Lightning", "if=buff.maelstrom_weapon.stack>=5" );
+  aoe->add_action( this, "Earth Elemental" );
+  aoe->add_action( this, "Windfury Totem", "if=buff.windfury_totem.remains<30" );
 
   // def->add_action( "call_action_list,name=opener" );
 }

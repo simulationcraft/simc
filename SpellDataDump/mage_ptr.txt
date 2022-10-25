@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46144 dragonflight-BETA (hotfix 2022-10-22/46144, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46144 dragonflight-BETA (hotfix 2022-10-24/46144, no-networking)
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Talent Entry     : Generic [tree=class, row=2, col=3, max_rank=1, req_points=0]
 Class            : Paladin, Mage
@@ -14021,6 +14021,28 @@ Effects          :
                    Family Flags: 22, 99
 Description      : $@spelldesc383860
 Tooltip          : Pyroblast and Flamestrike have no cast time and are guaranteed to critically strike.
+
+Name             : Sun King's Blessing (id=383882) [Spell Family (3)] 
+Class            : Mage
+School           : Physical
+Spell Type       : None
+Duration         : 30 seconds
+Stacks           : 8 maximum
+Proc Chance      : 101%
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Include In Advanced Combat Log (72)
+Effects          :
+#1 (id=1016070)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : $@spelldesc383886
+Tooltip          : Building up a Combustion.
 
 Name             : Sun King's Blessing (id=383883) [Spell Family (3)] 
 Class            : Mage
