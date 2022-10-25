@@ -2380,7 +2380,7 @@ public:
       return;
 
     // trigger on non-free_cast or free_cast that requires you to actually cast (or UFR)
-    if ( !f || is_free_cast() || f == free_spell_e::FLASHING )
+    if ( !f || is_free_cast() || f == free_spell_e::FLASHING || f == free_spell_e::CONVOKE )
       p()->buff.ravenous_frenzy->trigger();
   }
 
@@ -9121,7 +9121,12 @@ struct convoke_the_spirits_t : public druid_spell_t
 
     conv_cast = convoke_action_from_type( type );
     if ( !conv_cast )
+    {
+      // Heals still proc a stack of Frenzy
+      if ( p()->buff.ravenous_frenzy->check() )
+        p()->buff.ravenous_frenzy->trigger();
       return;
+    }
 
     conv_cast->execute_on_target( conv_tar );
   }
