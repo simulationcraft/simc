@@ -3040,7 +3040,7 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
 
 struct fists_of_fury_t : public monk_melee_attack_t
 {
-  fists_of_fury_t( monk_t* p, util::string_view options_str )
+  fists_of_fury_t( monk_t* p, util::string_view options_str, bool canceled = false )
     : monk_melee_attack_t( "fists_of_fury", p, p->talent.windwalker.fists_of_fury )
   {
     parse_options( options_str );
@@ -3058,11 +3058,17 @@ struct fists_of_fury_t : public monk_melee_attack_t
     attack_power_mod.direct = 0;
     weapon_power_mod        = 0;
 
-    // Effect 1 shows a period of 166 milliseconds which appears to refer to the visual and not the tick period
-    base_tick_time = dot_duration / 4;
     may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
 
+    // Effect 1 shows a period of 166 milliseconds which appears to refer to the visual and not the tick period
+    base_tick_time = dot_duration / 4;
+
+    // Using fists_of_fury_cancel in APL will cancel immediately after the GCD regardless of priority
+    if ( canceled ) 
+      dot_duration = trigger_gcd;
+
     tick_action = new fists_of_fury_tick_t( p, "fists_of_fury_tick" );
+
   }
 
   double cost() const override
@@ -7718,6 +7724,8 @@ action_t* monk_t::create_action( util::string_view name, util::string_view optio
   // Windwalker
   if ( name == "fists_of_fury" )
     return new fists_of_fury_t( this, options_str );
+  if ( name == "fists_of_fury_cancel" )
+    return new fists_of_fury_t( this, options_str, true );
   if ( name == "flying_serpent_kick" )
     return new flying_serpent_kick_t( this, options_str );
   if ( name == "touch_of_karma" )
