@@ -3041,7 +3041,7 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
 struct fists_of_fury_t : public monk_melee_attack_t
 {
   fists_of_fury_t( monk_t* p, util::string_view options_str, bool canceled = false )
-    : monk_melee_attack_t( "fists_of_fury", p, p->talent.windwalker.fists_of_fury )
+    : monk_melee_attack_t( ( canceled ? "fists_of_fury_cancel" : "fists_of_fury" ), p, p->talent.windwalker.fists_of_fury )
   {
     parse_options( options_str );
 
