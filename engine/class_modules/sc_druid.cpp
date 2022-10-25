@@ -556,7 +556,7 @@ public:
     buff_t* kindred_affinity;
     buff_t* lone_empowerment;
     buff_t* ravenous_frenzy;
-    buff_t* sinful_hysteria;
+    buff_t* sinful_indulgence;
 
     // Helper pointers
     buff_t* clearcasting;  // clearcasting_cat or clearcasting_tree
@@ -1064,7 +1064,7 @@ public:
     item_runeforge_t kindred_affinity;   // 7477
     item_runeforge_t unbridled_swarm;    // 7472
     item_runeforge_t celestial_spirits;  // 7571
-    item_runeforge_t sinful_hysteria;    // 7474
+    item_runeforge_t sinful_indulgence;    // 7474
 
     // Balance
     item_runeforge_t oneths_clear_vision;        // 7087
@@ -2679,7 +2679,7 @@ public:
     using C = const conduit_data_t&;
 
     parse_buff_effects( p()->buff.ravenous_frenzy );
-    parse_buff_effects( p()->buff.sinful_hysteria );
+    parse_buff_effects( p()->buff.sinful_indulgence );
     parse_buff_effects<C>( p()->buff.convoke_the_spirits, p()->conduit.conflux_of_elements );
     parse_buff_effects( p()->buff.lone_empowerment );
 
@@ -10153,7 +10153,7 @@ void druid_t::init_spells()
   legendary.kindred_affinity          = find_runeforge_legendary( "Kindred Affinity" );
   legendary.unbridled_swarm           = find_runeforge_legendary( "Locust Swarm" );
   legendary.celestial_spirits         = find_runeforge_legendary( "Celestial Spirits" );
-  legendary.sinful_hysteria           = find_runeforge_legendary( "Sinful Hysteria" );
+  legendary.sinful_indulgence           = find_runeforge_legendary( "Sinful Indulgence" );
 
   // Balance
   legendary.oneths_clear_vision       = find_runeforge_legendary( "Oneth's Clear Vision" );
@@ -10852,21 +10852,21 @@ void druid_t::create_buffs()
   if ( conduit.endless_thirst->ok() )
     buff.ravenous_frenzy->add_invalidate( CACHE_CRIT_CHANCE );
 
-  buff.sinful_hysteria = make_buff( this, "ravenous_frenzy_sinful_hysteria", find_spell( 355315 ) )
+  buff.sinful_indulgence = make_buff( this, "ravenous_frenzy_sinful_indulgence", find_spell( 355315 ) )
     ->set_default_value_from_effect_type( A_HASTE_ALL )
     ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
   if ( conduit.endless_thirst->ok() )
-    buff.sinful_hysteria->add_invalidate( CACHE_CRIT_CHANCE );
-  if ( legendary.sinful_hysteria->ok() )
+    buff.sinful_indulgence->add_invalidate( CACHE_CRIT_CHANCE );
+  if ( legendary.sinful_indulgence->ok() )
   {
-    buff.sinful_hysteria->s_data_reporting = legendary.sinful_hysteria;
-    buff.sinful_hysteria->name_str_reporting = "sinful_hysteria";
+    buff.sinful_indulgence->s_data_reporting = legendary.sinful_indulgence;
+    buff.sinful_indulgence->name_str_reporting = "sinful_indulgence";
     buff.ravenous_frenzy->set_stack_change_callback( [ this ]( buff_t* b, int old_, int new_ ) {
       // spell data hasn't changed and still indicates 0.2s, but tooltip says 0.1s
       if ( old_ && new_ )
         b->extend_duration( this, 100_ms );
       else if ( old_ )
-        buff.sinful_hysteria->trigger( old_ );
+        buff.sinful_indulgence->trigger( old_ );
     } );
   }
 
@@ -11871,7 +11871,7 @@ double druid_t::composite_melee_crit_chance() const
   crit += spec.critical_strikes->effectN( 1 ).percent();
 
   crit += buff.ravenous_frenzy->check() * conduit.endless_thirst.percent() / 10.0;
-  crit += buff.sinful_hysteria->check() * conduit.endless_thirst.percent() / 10.0;
+  crit += buff.sinful_indulgence->check() * conduit.endless_thirst.percent() / 10.0;
 
   return crit;
 }
@@ -11883,7 +11883,7 @@ double druid_t::composite_spell_crit_chance() const
   crit += spec.critical_strikes->effectN( 1 ).percent();
 
   crit += buff.ravenous_frenzy->check() * conduit.endless_thirst.percent() / 10.0;
-  crit += buff.sinful_hysteria->check() * conduit.endless_thirst.percent() / 10.0;
+  crit += buff.sinful_indulgence->check() * conduit.endless_thirst.percent() / 10.0;
 
   return crit;
 }
