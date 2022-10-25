@@ -10,7 +10,8 @@ precombat->add_action( "cat_form,if=(druid.catweave_bear=1)&(cooldown.pause_acti
 precombat->add_action( "moonkin_form,if=(!druid.catweave_bear=1)&(cooldown.pause_action.remains|time>30)" );
 precombat->add_action( "heart_of_the_wild,if=talent.heart_of_the_wild.enabled" );
 precombat->add_action( "prowl,if=(druid.catweave_bear=1)&(cooldown.pause_action.remains|time>30)" );
-precombat->add_action( "bear_form,if=(!buff.prowl.up)actions.precombat+=/fleshcraft,if=soulbind.pustule_eruption.enabled|soulbind.volatile_solvent.enabled,interrupt_immediate=1,interrupt_global=1,interrupt_if=soulbind.volatile_solvent" );
+precombat->add_action( "bear_form,if=(!buff.prowl.up)" );
+precombat->add_action( "fleshcraft,if=soulbind.pustule_eruption.enabled|soulbind.volatile_solvent.enabled,interrupt_immediate=1,interrupt_global=1,interrupt_if=soulbind.volatile_solvent" );
 
 def->add_action( "auto_attack,if=!buff.prowl.up" );
 def->add_action( "use_item,name=jotungeirr_destinys_call,if=!buff.prowl.up&!covenant.venthyr" );
