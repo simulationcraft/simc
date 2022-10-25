@@ -4408,6 +4408,9 @@ struct rake_t : public cat_attack_t
       
       if ( !stealthed() )
       	p()->buff.sudden_ambush->expire();
+
+      if ( num_targets_hit > 1 )
+        trigger_ravenous_frenzy( free_spell );
     }
   }
 
