@@ -2122,6 +2122,7 @@ struct mortal_strike_t : public warrior_attack_t
   double cost_rage;
   double enduring_blow_chance;
   double mortal_combo_chance;
+  double exhilarating_blows_chance;
   double frothing_berserker_chance;
   double rage_from_frothing_berserker;
   mortal_strike_t( warrior_t* p, util::string_view options_str, bool mortal_combo = false )
@@ -2129,6 +2130,7 @@ struct mortal_strike_t : public warrior_attack_t
       from_mortal_combo( mortal_combo ),
       enduring_blow_chance( p->legendary.enduring_blow->proc_chance() ),
       mortal_combo_chance( mortal_combo ? 0.0 : p->conduit.mortal_combo.percent() ),
+      exhilarating_blows_chance( p->talents.arms.exhilarating_blows->proc_chance() ),
       frothing_berserker_chance( p->talents.warrior.frothing_berserker->proc_chance() ),
       rage_from_frothing_berserker( p->talents.warrior.frothing_berserker->effectN( 1 ).base_value() / 100.0 )
   {
@@ -2198,10 +2200,15 @@ struct mortal_strike_t : public warrior_attack_t
         execute_state->target->debuffs.mortal_wounds->trigger();
       }
     }
-      if ( !from_mortal_combo )
-      {
-        p()->buff.battlelord->expire();
-      }
+    if ( !from_mortal_combo )
+    {
+      p()->buff.battlelord->expire();
+    }
+    if ( p()->talents.arms.exhilarating_blows->ok() && rng().roll( exhilarating_blows_chance ) )
+    {
+      p()->cooldown.mortal_strike->reset( true );
+      p()->cooldown.cleave->reset( true );
+    }
     p()->buff.martial_prowess->expire();
 
     warrior_td_t* td = this->td( execute_state->target );
@@ -3273,11 +3280,11 @@ struct execute_arms_t : public warrior_attack_t
     {
       td( execute_state->target )->debuffs_executioners_precision->trigger();
     }
-    if ( p()->legendary.exploiter.ok() && ( result_is_hit( execute_state->result ) ) )
+    if ( p()->legendary.exploiter.ok() && !p()->talents.arms.executioners_precision->ok() && ( result_is_hit( execute_state->result ) ) )
     {
       td( execute_state->target )->debuffs_exploiter->trigger();
     }
-    if ( p()->conduit.ashen_juggernaut.ok() )
+    if ( p()->conduit.ashen_juggernaut.ok() && !p()->talents.arms.juggernaut->ok() )
     {
       p()->buff.ashen_juggernaut_conduit->trigger();
     }
@@ -4540,6 +4547,12 @@ struct rampage_attack_t : public warrior_attack_t
       first_attack_missed = true;
     else if ( first_attack )
       first_attack_missed = false;
+
+    if ( p()->talents.fury.hack_and_slash->ok() && rng().roll( hack_and_slash_chance ) )
+    {
+      p()->cooldown.raging_blow->reset( true );
+      p()->cooldown.crushing_blow->reset( true );
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -4548,11 +4561,7 @@ struct rampage_attack_t : public warrior_attack_t
     {  // If the first attack misses, all of the rest do as well. However, if any other attack misses, the attacks after
        // continue. The animations and timing of everything else still occur, so we can't just cancel rampage.
       warrior_attack_t::impact( s );
-      if ( p()->talents.fury.hack_and_slash->ok() && rng().roll( hack_and_slash_chance ) )
-      {
-        p()->cooldown.raging_blow->reset( true );
-        p()->cooldown.crushing_blow->reset( true );
-      }
+
       if ( p()->legendary.valarjar_berserkers != spell_data_t::not_found() && s->result == RESULT_CRIT &&
            target == s->target )
       {
@@ -5314,6 +5323,7 @@ struct thunder_clap_t : public warrior_attack_t
     }
     if ( p()->talents.arms.rend->ok() && p()->talents.warrior.blood_and_thunder.ok() )
     {
+      blood_and_thunder->set_target( state->target );
       blood_and_thunder->execute(); // not capped at 5 targets in game
     }
   }
@@ -5885,11 +5895,11 @@ struct condemn_arms_t : public warrior_attack_t
     {
       td( execute_state->target )->debuffs_executioners_precision->trigger();
     }
-    if ( p()->legendary.exploiter.ok() && ( result_is_hit( execute_state->result ) ) )
+    if ( p()->legendary.exploiter.ok() && !p()->talents.arms.executioners_precision->ok() && ( result_is_hit( execute_state->result ) ) )
     {
       td( execute_state->target )->debuffs_exploiter->trigger();
     }
-    if ( p()->conduit.ashen_juggernaut.ok() )
+    if ( p()->conduit.ashen_juggernaut.ok() && !p()->talents.arms.juggernaut->ok() )
     {
       p()->buff.ashen_juggernaut_conduit->trigger();
     }
