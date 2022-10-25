@@ -7601,8 +7601,9 @@ void actions::rogue_action_t<Base>::trigger_blade_flurry( const action_state_t* 
 
   // Compute Blade Flurry modifier
   double multiplier = 1.0;
-  if ( ab::data().id() == p()->spec.killing_spree_mh_attack->id() ||
-       ab::data().id() == p()->spec.killing_spree_oh_attack->id() )
+  if ( p()->talent.outlaw.killing_spree->ok() &&
+       ( ab::data().id() == p()->spec.killing_spree_mh_attack->id() ||
+         ab::data().id() == p()->spec.killing_spree_oh_attack->id() ) )
   {
     multiplier = p()->talent.outlaw.killing_spree->effectN( 2 ).percent();
   }
@@ -7618,11 +7619,11 @@ void actions::rogue_action_t<Base>::trigger_blade_flurry( const action_state_t* 
     const auto max_targets = p()->active.blade_flurry->aoe;
     if ( num_targets < max_targets )
     {
-      multiplier *= 1.0 + p()->talent.outlaw.precise_cuts->effectN( 1 ).percent() * ( max_targets - num_targets );
+      multiplier += p()->talent.outlaw.precise_cuts->effectN( 1 ).percent() * ( max_targets - num_targets );
     }
   }
 
-  // DFALPHA -- Crit multiplier currently doesn't exist on alpha
+  // DFALPHA TOCHECK
   // Between the Eyes crit damage multiplier does not transfer across correctly due to a Shadowlands-specific bug
   //if ( p()->bugs && ab::data().id() == p()->spec.between_the_eyes->id() && state->result == RESULT_CRIT )
   //{
