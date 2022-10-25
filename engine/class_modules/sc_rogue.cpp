@@ -8863,9 +8863,9 @@ void rogue_t::init_action_list()
     action_priority_list_t* stealthed = get_action_priority_list( "stealthed", "Stealthed Actions" );
     stealthed->add_action( "indiscriminate_carnage,if=spell_targets.fan_of_knives>desired_targets|spell_targets.fan_of_knives>1&raid_event.adds.in>60" );
     stealthed->add_action( "pool_resource,for_next=1", "Improved Garrote: Apply or Refresh with buffed Garrotes" );
-    stealthed->add_action( "garrote,target_if=min:remains,if=talent.improved_garrote.enabled&!will_lose_exsanguinate&(remains<12%exsanguinated_rate|pmultiplier<=1)&target.time_to_die-remains>2");
+    stealthed->add_action( "garrote,target_if=min:remains,if=stealthed.improved_garrote&!will_lose_exsanguinate&(remains<12%exsanguinated_rate|pmultiplier<=1)&target.time_to_die-remains>2");
     stealthed->add_action( "pool_resource,for_next=1", "Improved Garrote + Exsg on 1T: Refresh Garrote at the end of stealth to get max duration before Exsanguinate" );
-    stealthed->add_action( "garrote,if=talent.improved_garrote.enabled&talent.exsanguinate.enabled&active_enemies=1&!will_lose_exsanguinate&buff.improved_garrote.remains<1.3");
+    stealthed->add_action( "garrote,if=talent.exsanguinate.enabled&stealthed.improved_garrote&active_enemies=1&!will_lose_exsanguinate&improved_garrote_remains<1.3");
 
     // Damage over time abilities
     action_priority_list_t* dot = get_action_priority_list( "dot", "Damage over time abilities" );
@@ -9234,23 +9234,29 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
   {
     return make_mem_fn_expr( name_str, *this, &rogue_t::consume_cp_max );
   }
-  else if ( util::str_compare_ci( name_str, "master_assassin_remains" ) && !legendary.master_assassins_mark->ok() )
+  else if ( util::str_compare_ci( name_str, "master_assassin_remains" ) &&
+            ( talent.assassination.master_assassin->ok() || !legendary.master_assassins_mark->ok() ) )
   {
+    if ( !talent.assassination.master_assassin->ok() )
+      return expr_t::create_constant( name_str, 0 );
+
     return make_fn_expr( name_str, [ this ]() {
       if ( buffs.master_assassin_aura->check() )
       {
+        // Shadow Dance has no lingering effect
+        if ( buffs.shadow_dance->check() )
+          return buffs.shadow_dance->remains();
+
         timespan_t nominal_master_assassin_duration = timespan_t::from_seconds( talent.assassination.master_assassin->effectN( 1 ).base_value() );
         timespan_t gcd_remains = timespan_t::from_seconds( std::max( ( gcd_ready - sim->current_time() ).total_seconds(), 0.0 ) );
         return gcd_remains + nominal_master_assassin_duration;
       }
-      else if ( buffs.master_assassin->check() )
-        return buffs.master_assassin->remains();
-      else
-        return timespan_t::from_seconds( 0.0 );
+      return buffs.master_assassin->remains();
     } );
   }
   else if ( legendary.master_assassins_mark->ok() &&
-    ( util::str_compare_ci( name_str, "master_assassins_mark_remains" ) || util::str_compare_ci( name_str, "master_assassin_remains" ) ) )
+            ( util::str_compare_ci( name_str, "master_assassins_mark_remains" ) ||
+              util::str_compare_ci( name_str, "master_assassin_remains" ) ) )
   {
     return make_fn_expr( name_str, [ this ]() {
       if ( buffs.master_assassins_mark_aura->check() )
@@ -9259,10 +9265,26 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
         timespan_t gcd_remains = timespan_t::from_seconds( std::max( ( gcd_ready - sim->current_time() ).total_seconds(), 0.0 ) );
         return gcd_remains + nominal_master_assassin_duration;
       }
-      else if ( buffs.master_assassins_mark->check() )
-        return buffs.master_assassins_mark->remains();
-      else
-        return timespan_t::from_seconds( 0.0 );
+      return buffs.master_assassins_mark->remains();
+    } );
+  }
+  else if ( util::str_compare_ci( name_str, "improved_garrote_remains" ) )
+  {
+    if ( !talent.assassination.improved_garrote->ok() )
+      return expr_t::create_constant( name_str, 0 );
+
+    return make_fn_expr( name_str, [this]() {
+      if ( buffs.improved_garrote_aura->check() )
+      {
+        // Shadow Dance has no lingering effect
+        if ( buffs.shadow_dance->check() )
+          return buffs.shadow_dance->remains();
+
+        timespan_t nominal_duration = buffs.improved_garrote->base_buff_duration;
+        timespan_t gcd_remains = timespan_t::from_seconds( std::max( ( gcd_ready - sim->current_time() ).total_seconds(), 0.0 ) );
+        return gcd_remains + nominal_duration;
+      }
+      return buffs.improved_garrote->remains();
     } );
   }
   else if ( util::str_compare_ci( name_str, "poisoned" ) )
@@ -9385,6 +9407,9 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
     }
     else if ( util::str_compare_ci( split[ 1 ], "improved_garrote" ) )
     {
+      if ( !talent.assassination.improved_garrote->ok() )
+        return expr_t::create_constant( name_str, false );
+
       return make_fn_expr( split[ 0 ], [this]() {
         return stealthed( STEALTH_IMPROVED_GARROTE );
       } );
