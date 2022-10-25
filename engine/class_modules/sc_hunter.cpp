@@ -5352,6 +5352,8 @@ struct fury_of_the_eagle_t: public hunter_melee_attack_t
       reduced_aoe_targets = aoe_cap;
       health_threshold = p -> talents.fury_of_the_eagle -> effectN( 4 ).base_value() + p -> talents.ruthless_marauder -> effectN( 1 ).base_value();
       crit_chance_bonus = p -> talents.fury_of_the_eagle -> effectN( 3 ).percent();
+      // TODO 25-10-22 Ruthless Marauder says nothing about increasing damage but is adding the cdr value data to the tick dmg as well.
+      base_dd_adder += p -> talents.ruthless_marauder -> effectN( 3 ).base_value();
 
       if ( p -> talents.ruthless_marauder )
         ruthless_marauder_adjust = p -> talents.ruthless_marauder -> effectN( 3 ).time_value();
