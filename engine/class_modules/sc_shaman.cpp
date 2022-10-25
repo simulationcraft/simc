@@ -11734,13 +11734,12 @@ void shaman_t::init_action_list_enhancement()
   def->add_action( "berserking,if=!talent.ascendance.enabled|buff.ascendance.up" );
   def->add_action( "fireblood,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50" );
   def->add_action( "ancestral_call,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50" );
-  def->add_action( "bag_of_tricks,if=!talent.ascendance.enabled|!buff.ascendance.up" );
 
   def->add_action( this, "Feral Spirit" );
   def->add_action("fae_transfusion,if=(talent.ascendance.enabled|talent.doom_winds.enabled|runeforge.doom_winds.equipped)&(soulbind.grove_invigoration|soulbind.field_of_blossoms|active_enemies=1)");
   def->add_action("vesper_totem,if=raid_event.adds.in>40|active_enemies>1");
-  def->add_action( "doom_winds" );
   def->add_talent( this, "Ascendance", "if=(ti_lightning_bolt&active_enemies=1&raid_event.adds.in>=90)|(ti_chain_lightning&active_enemies>1)" );
+  def->add_action("doom_winds,if=raid_event.adds.in>=90|active_enemies>1");
   def->add_action( this, "Windfury Totem", "if=runeforge.doom_winds.equipped&buff.doom_winds_debuff.down&(raid_event.adds.in>=60|active_enemies>1)");
 
   def->add_action( "call_action_list,name=single,if=active_enemies=1", "If only one enemy, priority follows the 'single' action list." );
@@ -11756,7 +11755,7 @@ void shaman_t::init_action_list_enhancement()
   single->add_action( "primordial_wave,if=buff.primordial_wave.down&(raid_event.adds.in>42|raid_event.adds.in<6)");
   single->add_action( this, "Flame Shock", "if=!ticking");
   single->add_action( this, "Lightning Bolt", "if=buff.maelstrom_weapon.stack>=5&buff.primordial_wave.up&raid_event.adds.in>buff.primordial_wave.remains&(!buff.splintered_elements.up|fight_remains<=12)");
-  single->add_talent( this, "Ice Strike" );
+  single->add_talent( this, "Ice Strike", "if=talent.hailstorm.enabled");
   single->add_action( this, "Frost Shock", "if=buff.hailstorm.up");
   single->add_action( this, "Lava Lash", "if=dot.flame_shock.refreshable");
   single->add_action( this, "Stormstrike", "if=talent.stormflurry.enabled&buff.stormbringer.up");
@@ -11767,9 +11766,12 @@ void shaman_t::init_action_list_enhancement()
   single->add_action( this, "Stormstrike");
   single->add_action( "fleshcraft,interrupt=1,if=soulbind.volatile_solvent");
   single->add_action( this, "Windfury Totem", "if=buff.windfury_totem.remains<10");
+  single->add_action( this, "Ice Strike");
   single->add_action( this, "Lava Lash");
+  single->add_action( this, "bag_of_tricks");
   single->add_action( this, "Lightning Bolt", "if=buff.maelstrom_weapon.stack>=5&buff.primordial_wave.down");
   single->add_talent( this, "Sundering", "if=raid_event.adds.in>=40");
+  single->add_action( this, "Fire Nova", "if=talent.swirling_maelstrom.enabled&active_dot.flame_shock");
   single->add_action( this, "Frost Shock");
   single->add_action( this, "Crash Lightning");
   single->add_talent( this, "Fire Nova", "if=active_dot.flame_shock");
@@ -11801,11 +11803,14 @@ void shaman_t::init_action_list_enhancement()
   aoe->add_action( this, "Windstrike", "if=buff.crash_lightning.up" );
   aoe->add_action( this, "Stormstrike", "if=buff.crash_lightning.up&buff.gathering_storms.stack=6" );
   aoe->add_action( this, "Lava Lash", "if=buff.crash_lightning.up" );
+  aoe->add_action( this, "Ice Strike", "if=buff.crash_lightning.up" );
   aoe->add_action( this, "Stormstrike", "if=buff.crash_lightning.up" );
   aoe->add_talent( this, "Elemental Blast", "if=(!talent.elemental_spirits.enabled|(talent.elemental_spirits.enabled&(charges=max_charges|buff.feral_spirit.up)))&buff.maelstrom_weapon.stack>=5&(!talent.crashing_storms.enabled|active_enemies<=3)" );
   aoe->add_talent( this, "Fire Nova", "if=active_dot.flame_shock>=2" );
   aoe->add_action( this, "Crash Lightning" );
   aoe->add_action( this, "Windstrike" );
+  aoe->add_action( this, "Lava Lash" );
+  aoe->add_action( this, "Ice Strike" );
   aoe->add_action( this, "Stormstrike" );
   aoe->add_action( this, "Flame Shock", "target_if=refreshable,cycle_targets=1" );
   aoe->add_action( this, "Frost Shock" );
