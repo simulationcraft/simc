@@ -74,12 +74,15 @@ void beast_mastery( player_t* p )
   cds->add_action( "potion,if=buff.aspect_of_the_wild.up|target.time_to_die<26" );
 
   cleave->add_action( "aspect_of_the_wild,if=!raid_event.adds.exists|raid_event.adds.remains>=10|active_enemies>=raid_event.adds.count*2" );
+  cleave->add_action( "call_of_the_wild" );
   cleave->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<=gcd|buff.wild_spirits.up&charges_fractional>1.4&runeforge.fragments_of_the_elder_antlers" );
   cleave->add_action( "multishot,if=gcd-pet.main.buff.beast_cleave.remains>0.25" );
   cleave->add_action( "kill_shot,if=runeforge.pouch_of_razor_fragments&buff.flayers_mark.up" );
   cleave->add_action( "flayed_shot,if=runeforge.pouch_of_razor_fragments" );
   cleave->add_action( "tar_trap,if=runeforge.soulforge_embers&tar_trap.remains<gcd&cooldown.flare.remains<gcd" );
   cleave->add_action( "flare,if=tar_trap.up&runeforge.soulforge_embers" );
+  cleave->add_action( "explosive_shot" );
+  cleave->add_action( "steel_trap" );
   cleave->add_action( "death_chakram,if=focus+cast_regen<focus.max" );
   cleave->add_action( "wild_spirits,if=!raid_event.adds.exists|raid_event.adds.remains>=10|active_enemies>=raid_event.adds.count*2" );
   cleave->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=full_recharge_time<gcd&cooldown.bestial_wrath.remains|cooldown.bestial_wrath.remains<12+gcd&talent.scent_of_blood" );
@@ -89,7 +92,7 @@ void beast_mastery( player_t* p )
   cleave->add_action( "wailing_arrow,if=pet.main.buff.frenzy.remains>execute_time" );
   cleave->add_action( "flayed_shot" );
   cleave->add_action( "kill_shot" );
-  cleave->add_action( "chimaera_shot" );
+  cleave->add_action( "serpent_sting,target_if=min:dot.serpent_sting.remains,if=refreshable" );
   cleave->add_action( "bloodshed" );
   cleave->add_action( "a_murder_of_crows" );
   cleave->add_action( "barrage,if=pet.main.buff.frenzy.remains>execute_time" );
@@ -103,13 +106,16 @@ void beast_mastery( player_t* p )
   cleave->add_action( "arcane_torrent,if=(focus+focus.regen+30)<focus.max" );
 
   st->add_action( "aspect_of_the_wild,if=(!covenant.night_fae|cooldown.wild_spirits.remains>20)&(!raid_event.adds.exists|!raid_event.adds.up&(raid_event.adds.duration+raid_event.adds.in<20|(raid_event.adds.count=1&covenant.kyrian))|raid_event.adds.up&raid_event.adds.remains>19)" );
+  st->add_action( "call_of_the_wild" );
   st->add_action( "barbed_shot,if=pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<=gcd|buff.wild_spirits.up&charges_fractional>1.4&runeforge.fragments_of_the_elder_antlers" );
   st->add_action( "tar_trap,if=runeforge.soulforge_embers&tar_trap.remains<gcd&cooldown.flare.remains<gcd" );
   st->add_action( "flare,if=tar_trap.up&runeforge.soulforge_embers" );
+  st->add_action( "steel_trap" );
   st->add_action( "bloodshed" );
   st->add_action( "wild_spirits,if=!raid_event.adds.exists|!raid_event.adds.up&raid_event.adds.duration+raid_event.adds.in<20|raid_event.adds.up&raid_event.adds.remains>19" );
   st->add_action( "flayed_shot" );
   st->add_action( "kill_shot" );
+  st->add_action( "explosive_shot" );
   st->add_action( "wailing_arrow,if=pet.main.buff.frenzy.remains>execute_time&(cooldown.resonating_arrow.remains<gcd&(!talent.explosive_shot|buff.bloodlust.up)|!covenant.kyrian)|target.time_to_die<5" );
   st->add_action( "barbed_shot,if=cooldown.bestial_wrath.remains<12*charges_fractional+gcd&talent.scent_of_blood|full_recharge_time<gcd&cooldown.bestial_wrath.remains|target.time_to_die<9" );
   st->add_action( "death_chakram,if=focus+cast_regen<focus.max" );
@@ -117,10 +123,10 @@ void beast_mastery( player_t* p )
   st->add_action( "a_murder_of_crows" );
   st->add_action( "resonating_arrow,if=(buff.bestial_wrath.up|target.time_to_die<10)&(!raid_event.adds.exists|!raid_event.adds.up&(raid_event.adds.duration+raid_event.adds.in<20|raid_event.adds.count=1)|raid_event.adds.up&raid_event.adds.remains>19)" );
   st->add_action( "bestial_wrath,if=(cooldown.wild_spirits.remains>15|covenant.kyrian&(cooldown.resonating_arrow.remains<5|cooldown.resonating_arrow.remains>20)|target.time_to_die<15|(!covenant.night_fae&!covenant.kyrian))&(!raid_event.adds.exists|!raid_event.adds.up&(raid_event.adds.duration+raid_event.adds.in<20|raid_event.adds.count=1)|raid_event.adds.up&raid_event.adds.remains>19)" );
-  st->add_action( "chimaera_shot" );
   st->add_action( "kill_command" );
   st->add_action( "bag_of_tricks,if=buff.bestial_wrath.down|target.time_to_die<5" );
   st->add_action( "dire_beast" );
+  st->add_action( "serpent_sting,target_if=min:remains,if=refreshable&target.time_to_die>duration" );
   st->add_action( "cobra_shot,if=(focus-cost+focus.regen*(cooldown.kill_command.remains-1)>action.kill_command.cost|cooldown.kill_command.remains>1+gcd)|(buff.bestial_wrath.up|buff.nesingwarys_trapping_apparatus.up)&!runeforge.qapla_eredun_war_order|target.time_to_die<3" );
   st->add_action( "barbed_shot,if=buff.wild_spirits.up|charges_fractional>1.2&conduit.bloodletting" );
   st->add_action( "arcane_pulse,if=buff.bestial_wrath.down|target.time_to_die<5" );
@@ -175,20 +181,22 @@ void marksmanship( player_t* p )
 
   st->add_action( "steady_shot,if=talent.steady_focus&(prev_gcd.1.steady_shot&buff.steady_focus.remains<5|buff.steady_focus.down)&(buff.resonating_arrow.down|!covenant.kyrian)" );
   st->add_action( "kill_shot" );
+  st->add_action( "steel_trap" );
   st->add_action( "double_tap,if=(covenant.kyrian&(cooldown.resonating_arrow.remains<gcd)|!covenant.kyrian&!covenant.night_fae|covenant.night_fae&(cooldown.wild_spirits.remains<gcd|cooldown.wild_spirits.remains>30)|fight_remains<15)&(!raid_event.adds.exists|raid_event.adds.up&(raid_event.adds.in<10&raid_event.adds.remains<3|raid_event.adds.in>cooldown|active_enemies>1)|!raid_event.adds.up&(raid_event.adds.count=1|raid_event.adds.in>cooldown))" );
   st->add_action( "flare,if=tar_trap.up&runeforge.soulforge_embers" );
   st->add_action( "tar_trap,if=runeforge.soulforge_embers&tar_trap.remains<gcd&cooldown.flare.remains<gcd" );
   st->add_action( "explosive_shot" );
+  st->add_action( "stampede" );
   st->add_action( "wild_spirits,if=(cooldown.trueshot.remains<gcd|buff.trueshot.up)&(!raid_event.adds.exists|!raid_event.adds.up&(raid_event.adds.duration+raid_event.adds.in<20|raid_event.adds.in>60)|raid_event.adds.up&raid_event.adds.remains>19|active_enemies>1)|fight_remains<20" );
   st->add_action( "flayed_shot" );
   st->add_action( "death_chakram" );
-  st->add_action( "a_murder_of_crows" );
   st->add_action( "wailing_arrow,if=cooldown.resonating_arrow.remains<gcd&(!talent.explosive_shot|buff.bloodlust.up)|!covenant.kyrian|cooldown.resonating_arrow.remains|target.time_to_die<5" );
   st->add_action( "resonating_arrow,if=(buff.double_tap.up|!talent.double_tap|fight_remains<12)&(!raid_event.adds.exists|!raid_event.adds.up&(raid_event.adds.duration+raid_event.adds.in<10|raid_event.adds.in>40|raid_event.adds.count=1)|raid_event.adds.up&raid_event.adds.remains>9|active_enemies>1)" );
   st->add_action( "volley,if=buff.resonating_arrow.up|!covenant.kyrian&(buff.precise_shots.down|!talent.chimaera_shot|active_enemies<2)" );
   st->add_action( "steady_shot,if=covenant.kyrian&focus+cast_regen<focus.max&((cooldown.resonating_arrow.remains<gcd*3&(!soulbind.effusive_anima_accelerator|!talent.double_tap))|talent.double_tap&cooldown.double_tap.remains<3)" );
   st->add_action( "rapid_fire,if=runeforge.surging_shots&talent.streamline&(cooldown.resonating_arrow.remains>10|!covenant.kyrian|!talent.double_tap|soulbind.effusive_anima_accelerator)" );
   st->add_action( "trueshot,if=((covenant.venthyr&(buff.precise_shots.down|talent.calling_the_shots)|covenant.necrolord|covenant.kyrian&(cooldown.resonating_arrow.remains>30|cooldown.resonating_arrow.remains<10)|covenant.night_fae&(cooldown.wild_spirits.remains>30|buff.wild_spirits.up))|buff.volley.up&active_enemies>1)&(!raid_event.adds.exists|!raid_event.adds.up&(raid_event.adds.duration+raid_event.adds.in<25|raid_event.adds.in>60)|raid_event.adds.up&raid_event.adds.remains>10|active_enemies>1)|fight_remains<25" );
+  st->add_action( "multishot,if=buff.bombardment.up&buff.trickshots.down&active_enemies>1|talent.salvo&buff.salvo.down&!talent.volley" );
   st->add_action( "aimed_shot,target_if=min:dot.serpent_sting.remains+action.serpent_sting.in_flight_to_target*99,if=buff.precise_shots.down|(buff.trueshot.up|full_recharge_time<gcd+cast_time)&(!talent.chimaera_shot|active_enemies<2)|buff.trick_shots.remains>execute_time&active_enemies>1" );
   st->add_action( "steady_shot,if=buff.steady_focus.remains<5&talent.steady_focus&buff.resonating_arrow.down" );
   st->add_action( "rapid_fire,if=(cooldown.resonating_arrow.remains>10|!covenant.kyrian|!talent.double_tap|soulbind.effusive_anima_accelerator)&focus+cast_regen<focus.max&(buff.double_tap.down&buff.eagletalons_true_focus.down|talent.streamline)" );
@@ -203,11 +211,13 @@ void marksmanship( player_t* p )
 
   trickshots->add_action( "steady_shot,if=talent.steady_focus&in_flight&buff.steady_focus.remains<5" );
   trickshots->add_action( "kill_shot,if=runeforge.pouch_of_razor_fragments&buff.flayers_mark.up" );
+  trickshots->add_action( "steel_trap" );
   trickshots->add_action( "flayed_shot,if=runeforge.pouch_of_razor_fragments" );
   trickshots->add_action( "double_tap,if=(covenant.kyrian&cooldown.resonating_arrow.remains<gcd|!covenant.kyrian&!covenant.night_fae|covenant.night_fae&(cooldown.wild_spirits.remains<gcd|cooldown.wild_spirits.remains>30)|target.time_to_die<10|cooldown.resonating_arrow.remains>10&active_enemies>3)&(!raid_event.adds.exists|raid_event.adds.remains>9|!covenant.kyrian)" );
   trickshots->add_action( "tar_trap,if=runeforge.soulforge_embers&tar_trap.remains<gcd&cooldown.flare.remains<gcd" );
   trickshots->add_action( "flare,if=tar_trap.up&runeforge.soulforge_embers" );
   trickshots->add_action( "explosive_shot" );
+  trickshots->add_action( "stampede" );
   trickshots->add_action( "wild_spirits,if=!raid_event.adds.exists|raid_event.adds.remains>10|active_enemies>=raid_event.adds.count*2|raid_event.adds.in>60" );
   trickshots->add_action( "wailing_arrow,if=cooldown.resonating_arrow.remains<gcd&(!talent.explosive_shot|buff.bloodlust.up)|!covenant.kyrian|cooldown.resonating_arrow.remains>10|target.time_to_die<5" );
   trickshots->add_action( "resonating_arrow,if=(cooldown.volley.remains<gcd|!talent.volley|target.time_to_die<12)&(!raid_event.adds.exists|raid_event.adds.remains>9|active_enemies>=raid_event.adds.count*2)" );
@@ -221,7 +231,6 @@ void marksmanship( player_t* p )
   trickshots->add_action( "multishot,if=buff.trick_shots.down|buff.precise_shots.up&focus>cost+action.aimed_shot.cost&(!talent.chimaera_shot|active_enemies>3)" );
   trickshots->add_action( "chimaera_shot,if=buff.precise_shots.up&focus>cost+action.aimed_shot.cost&active_enemies<4" );
   trickshots->add_action( "kill_shot" );
-  trickshots->add_action( "a_murder_of_crows" );
   trickshots->add_action( "flayed_shot" );
   trickshots->add_action( "serpent_sting,target_if=min:dot.serpent_sting.remains,if=refreshable" );
   trickshots->add_action( "multishot,if=focus>cost+action.aimed_shot.cost&(cooldown.resonating_arrow.remains>5|!covenant.kyrian)" );
