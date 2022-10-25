@@ -3134,10 +3134,11 @@ struct fists_of_fury_t : public monk_melee_attack_t
     if ( p()->buff.fists_of_flowing_momentum_fof->up() )
       p()->buff.fists_of_flowing_momentum_fof->expire();
 
+    if ( p()->shared.xuens_battlegear && p()->shared.xuens_battlegear->ok() )
+      p()->buff.pressure_point->trigger();
+
     // If Fists of Fury went the full duration
     if ( dot->current_tick == dot->num_ticks() ) {
-      if ( p()->shared.xuens_battlegear && p()->shared.xuens_battlegear->ok() )
-        p()->buff.pressure_point->trigger();
     }
   }
 };
