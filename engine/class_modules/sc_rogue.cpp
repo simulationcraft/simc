@@ -8151,7 +8151,8 @@ void actions::rogue_action_t<Base>::trigger_flagellation( const action_state_t* 
   if ( !debuff || !debuff->up() )
     return;
 
-  int cp_spend = cast_state( state )->get_combo_points();
+  const auto rs = cast_state( state );
+  const int cp_spend = rs->get_combo_points();
   if ( cp_spend <= 0 )
     return;
 
@@ -8166,7 +8167,9 @@ void actions::rogue_action_t<Base>::trigger_flagellation( const action_state_t* 
   // DFALPHA TOCHECK -- Currently Obedience does nothing on the talent version
   if ( p()->legendary.obedience->ok() && !p()->talent.subtlety.flagellation->ok() )
   {
-    const timespan_t obedience_cdr = p()->legendary.obedience->effectN( 1 ).time_value() * cp_spend;
+    // Obedience currently does not benefit from Echoing Reprimand CP
+    const int base_cp_spend = rs->get_combo_points( true );
+    const timespan_t obedience_cdr = p()->legendary.obedience->effectN( 1 ).time_value() * base_cp_spend;
     p()->cooldowns.flagellation->adjust( -obedience_cdr );
   }
 
