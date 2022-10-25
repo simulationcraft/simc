@@ -149,8 +149,17 @@ std::string temporary_enchant( const player_t* p )
 
 void brewmaster( player_t* p )
 {
-  auto monk                   = debug_cast<monk::monk_t*>( p );
-  action_priority_list_t* pre = p->get_action_priority_list( "precombat" );
+  auto monk                                             = debug_cast<monk::monk_t*>( p );
+  std::vector<std::string> racial_actions               = p->get_racial_actions();
+  action_priority_list_t* pre                           = p->get_action_priority_list( "precombat" );
+  action_priority_list_t* def                           = p->get_action_priority_list( "default" );
+  action_priority_list_t* cooldowns_improved_niuzao_woo = p->get_action_priority_list( "cooldowns_improved_niuzao_woo" );
+  action_priority_list_t* cooldowns_improved_niuzao_cta = p->get_action_priority_list( "cooldowns_improved_niuzao_cta" );
+  action_priority_list_t* cooldowns_niuzao_woo          = p->get_action_priority_list( "cooldowns_niuzao_woo" );
+  action_priority_list_t* rotation_blackout_combo       = p->get_action_priority_list( "rotation_blackout_combo" );
+  action_priority_list_t* rotation_base_salsalchp       = p->get_action_priority_list( "rotation_base_salsalchp" );
+  action_priority_list_t* rotation_fallback             = p->get_action_priority_list( "rotation_fallback" );
+
 
   // Flask
   pre->add_action( "flask" );
@@ -168,14 +177,38 @@ void brewmaster( player_t* p )
 
   pre->add_action( "fleshcraft" );
 
-  pre->add_talent( p, "Chi Burst", "if=!covenant.night_fae" );
-  pre->add_talent( p, "Chi Wave" );
+  pre->add_action( "chi_burst,if=!covenant.night_fae" );
+  pre->add_action( "chi_wave" );
 
-  std::vector<std::string> racial_actions = p->get_racial_actions();
-  action_priority_list_t* def             = p->get_action_priority_list( "default" );
+  // ---------------------------------
+  // PRE-COMBAT VARIABLE CONFIGURATION
+  // ---------------------------------
+  // Cooldowns
+  pre->add_action( "variable,name=niuzao_score,op=set,value=talent.invoke_niuzao_the_black_ox.enabled+talent.improved_invoke_niuzao_the_black_ox.enabled", "Cooldowns" );
+  pre->add_action( "variable,name=woo_score,op=set,value=talent.weapons_of_order.enabled+talent.call_to_arms.enabled" );
+  pre->add_action( "variable,name=brew_cdr_approximation,op=set,value=1%0.5" );
+
+  // Blackout Combo
+  pre->add_action( "variable,name=boc_count,op=set,value=0", "Blackout Combo" );
+  pre->add_action( "variable,name=offset,op=set,value=-0.1" );
+
+  // Base Sal'salabim's Strength + Charred Passions
+  pre->add_action( "variable,name=chp_threshold,op=set,value=6", "Base Sal'salabim's Strength + Charred Passions" );
+
+  // ---------------------------------
+  // BEGIN ACTIONS
+  // ---------------------------------
+
   def->add_action( "auto_attack" );
-  def->add_action( p, "Spear Hand Strike", "if=target.debuff.casting.react" );
+  def->add_action( "spear_hand_strike,if=target.debuff.casting.react" );
 
+  // Base DPS Cooldowns
+  def->add_action( "summon_white_tiger_statue,if=talent.summon_white_tiger_statue.enabled", "Base DPS Cooldowns" );
+  def->add_action( p, "Touch of Death", "if=target.health.pct<=15" );
+  // TODO: Remove Covenant after Pre-patch
+  def->add_action( "bonedust_brew,if=!debuff.bonedust_brew_debuff.up&(talent.bonedust_brew.enabled|covenant.necrolord)" );
+
+  // On-Use Effects
   if ( p->items[ SLOT_MAIN_HAND ].name_str == "jotungeirr_destinys_call" )
     def->add_action( "use_item,name=" + p->items[ SLOT_MAIN_HAND ].name_str );
 
@@ -184,20 +217,15 @@ void brewmaster( player_t* p )
     if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
     {
       if ( item.name_str == "scars_of_fraternal_strife" )
-        def->add_action( "use_item,name=" + item.name_str + 
-            ",if=!buff.scars_of_fraternal_strife_4.up&time>1" );
-      else if( item.name_str == "cache_of_acquired_treasures" )
-          def->add_action( "use_item,name=" + item.name_str + ",if=buff.acquired_axe.up|fight_remains<25" );
+        def->add_action( "use_item,name=" + item.name_str + ",if=!buff.scars_of_fraternal_strife_4.up&time>1" );
+      else if ( item.name_str == "cache_of_acquired_treasures" )
+        def->add_action( "use_item,name=" + item.name_str + ",if=buff.acquired_axe.up|fight_remains<25" );
       else if ( item.name_str == "jotungeirr_destinys_call" )
         continue;
       else
         def->add_action( "use_item,name=" + item.name_str );
     }
   }
-
-  def->add_action( p, "Gift of the Ox", "if=health<health.max*0.65" );
-  def->add_talent( p, "Dampen Harm", "if=incoming_damage_1500ms&buff.fortifying_brew.down" );
-  def->add_action( p, "Fortifying Brew", "if=incoming_damage_1500ms&(buff.dampen_harm.down|buff.diffuse_magic.down)" );
 
   def->add_action( "potion" );
 
@@ -207,92 +235,110 @@ void brewmaster( player_t* p )
       def->add_action( racial_action );
   }
 
-  def->add_action(
-      p, monk->talent.brewmaster.invoke_niuzao_the_black_ox, "invoke_niuzao_the_black_ox",
-      "if=buff.recent_purifies.value>=health.max*0.05&(target.cooldown.pause_action.remains>=20|time<=10|target.cooldown.pause_action.duration=0)&(!runeforge.call_to_arms.equipped|cooldown.weapons_of_order.remains>25)&!buff.invoke_niuzao_the_black_ox.up",
-      "Cast Niuzao when we'll get at least 20 seconds of uptime. This is specific to the default enemy APL and will "
-      "need adjustments for other enemies." );
-  def->add_action(
-      p, monk->talent.brewmaster.invoke_niuzao_the_black_ox, "invoke_niuzao_the_black_ox",
-      "if=buff.weapons_of_order.up&runeforge.call_to_arms.equipped&!buff.invoke_niuzao_the_black_ox.up",
-      "Cast Niuzao if we just lost the Niuzao from CtA"
-      );
-  def->add_action( p, "Touch of Death", "if=target.health.pct<=15" );
+  // DPS Cooldown Action Lists
+  def->add_action( "call_action_list,name=cooldowns_improved_niuzao_woo,if=variable.niuzao_score=2&variable.woo_score<=1",
+                   "DPS Cooldown Action Lists" );
+  def->add_action( "call_action_list,name=cooldowns_improved_niuzao_cta,if=variable.niuzao_score=2&variable.woo_score=2" );
+  def->add_action( "call_action_list,name=cooldowns_niuzao_woo,if=variable.niuzao_score<=1" );
 
-  // Covenant Abilities
-  def->add_action( "weapons_of_order,if=!runeforge.call_to_arms.equipped|(buff.recent_purifies.value>=health.max*0.05&(target.cooldown.pause_action.remains>=20|time<=10|target.cooldown.pause_action.duration=0)&!buff.invoke_niuzao_the_black_ox.up)", "Use WoO on CD unless we have CtA equipped, in which case we treat it as mini-Niuzao not WoO." );
-  def->add_action( "fallen_order" );
-  def->add_action( "bonedust_brew,if=!debuff.bonedust_brew_debuff.up" );
+  // Rotation Action Lists
+  def->add_action( "call_action_list,name=rotation_blackout_combo,if=talent.blackout_combo.enabled&talent.salsalabims_strength.enabled&talent.charred_passions.enabled",
+                   "Rotation Action Lists" );
+  def->add_action( "call_action_list,name=rotation_base_salsalchp,if=!talent.blackout_combo.enabled&talent.salsalabims_strength.enabled&talent.charred_passions.enabled" );
 
-  // Purifying Brew
-  def->add_action( p, "Purifying Brew",
-                   "if=stagger.amounttototalpct>=0.7&(((target.cooldown.pause_action.remains>=20|time<=10|target.cooldown.pause_action.duration=0)&cooldown."
-                   "invoke_niuzao_the_black_ox.remains<5)|buff.invoke_niuzao_the_black_ox.up)",
-                   "Cast PB during the Niuzao window, but only if recently hit." );
-  def->add_action( p, "Purifying Brew", "if=buff.invoke_niuzao_the_black_ox.up&buff.invoke_niuzao_the_black_ox.remains<8", "Dump PB charges towards the end of Niuzao: anything is better than nothing." );
-  def->add_action( p, "Purifying Brew", "if=cooldown.purifying_brew.charges_fractional>=1.8&(cooldown.invoke_niuzao_the_black_ox.remains>10|buff.invoke_niuzao_the_black_ox.up)", "Avoid capping charges, but pool charges shortly before Niuzao comes up and allow dumping to avoid capping during Niuzao." );
+  // Fallback Rotation
+  def->add_action( "call_action_list,name=rotation_fallback,if=!talent.salsalabims_strength.enabled|!talent.charred_passions.enabled",
+                   "Fallback Rotation" );
 
-  // Black Ox Brew
-  def->add_talent( p, "Black Ox Brew", "if=cooldown.purifying_brew.charges_fractional<0.5",
-                   "Black Ox Brew is currently used to either replenish brews based on less than half a brew charge "
-                   "available, or low energy to enable Keg Smash" );
-  def->add_talent(
-      p, "Black Ox Brew",
-      "if=(energy+(energy.regen*cooldown.keg_smash.remains))<40&buff.blackout_combo.down&cooldown.keg_smash.up" );
+ def->add_action( "fleshcraft,if=soulbind.volatile_solvent.enabled" );
 
-  def->add_action( "fleshcraft,if=cooldown.bonedust_brew.remains<4&soulbind.pustule_eruption.enabled" );
+  // ---------------------------------
+  // DPS COOLDOWNS
+  // ---------------------------------
 
-  def->add_action(
-      p, "Keg Smash", "if=spell_targets>=2",
-      "Offensively, the APL prioritizes KS on cleave, BoS else, with energy spenders and cds sorted below" );
+  // Includes abilities:
+  // Invoke Niuzao, Invoke Niuzao Rank 2, Weapons of Order, Weapons of Order - Call to Arms, Purifying Brew
 
-  // Covenant Faeline Stomp
-  def->add_action( "faeline_stomp,if=spell_targets>=2" );
+  // cooldowns_niuzao_woo & cooldowns_niuzao_cta
+  // TODO: Remove Covenant after Pre-patch
+  cooldowns_niuzao_woo->add_action( "weapons_of_order,if=talent.weapons_of_order.enabled|covenant.kyrian", "cooldowns_niuzao_woo & cooldowns_niuzao_cta" );
+  // TODO: Remove Covenant after Pre-patch
+  cooldowns_niuzao_woo->add_action( "invoke_niuzao_the_black_ox,if=buff.weapons_of_order.remains<=16&(talent.weapons_of_order.enabled|covenant.kyrian)" );
+  // TODO: Remove Covenant after Pre-patch
+  cooldowns_niuzao_woo->add_action( "invoke_niuzao_the_black_ox,if=!talent.weapons_of_order.enabled&!covenant.kyrian" );
+  cooldowns_niuzao_woo->add_action( "purifying_brew,if=stagger.amounttototalpct>=0.7&!buff.blackout_combo.up" );
+  cooldowns_niuzao_woo->add_action( "purifying_brew,if=cooldown.purifying_brew.remains_expected<5&!buff.blackout_combo.up" );
 
-  def->add_action( p, "Keg Smash", "if=buff.weapons_of_order.up", "cast KS at top prio during WoO buff" );
+  // cooldowns_improved_niuzao_woo
+  // TODO: Remove Covenant after Pre-patch
+  cooldowns_improved_niuzao_woo->add_action( "weapons_of_order,if=talent.weapons_of_order.enabled|covenant.kyrian", "cooldowns_improved_niuzao_woo" );
+  cooldowns_improved_niuzao_woo->add_action( "invoke_niuzao_the_black_ox,if=buff.recent_purifies.value>=health.max*0.05&(target.cooldown.pause_action.remains>=20|time<=10|target.cooldown.pause_action.duration=0)&(buff.weapons_of_order.remains<=16|cooldown.weapons_of_order.remains>=30)" );
+  cooldowns_improved_niuzao_woo->add_action( "purifying_brew,if=stagger.amounttototalpct>=0.7&(((target.cooldown.pause_action.remains>=20|time<=10|target.cooldown.pause_action.duration=0)&cooldown.invoke_niuzao_the_black_ox.remains<5)|buff.invoke_niuzao_the_black_ox.up)" );
+  cooldowns_improved_niuzao_woo->add_action( "purifying_brew,if=buff.invoke_niuzao_the_black_ox.up&buff.invoke_niuzao_the_black_ox.remains<8" );
+  cooldowns_improved_niuzao_woo->add_action( "purifying_brew,if=cooldown.purifying_brew.charges_fractional>=1.8&(cooldown.invoke_niuzao_the_black_ox.remains>cooldown.purifying_brew.duration_expected*variable.brew_cdr_approximation|buff.invoke_niuzao_the_black_ox.up)" );
 
-  // Celestial Brew
-  def->add_action( p, "Celestial Brew",
-                   "if=buff.blackout_combo.down&incoming_damage_1999ms>(health.max*0.1+stagger.last_tick_damage_4)&buff.elusive_brawler.stack<2",
-                   "Celestial Brew priority whenever it took significant damage (adjust the health.max coefficient "
-                   "according to intensity of damage taken), and to dump excess charges before BoB." );
-  
-  def->add_action( "exploding_keg" );
+  // cooldowns_improved_niuzao_cta
+  cooldowns_improved_niuzao_cta->add_action( "weapons_of_order,if=buff.recent_purifies.value>=health.max*0.05&(target.cooldown.pause_action.remains>=20|time<=10|target.cooldown.pause_action.duration=0)&!buff.invoke_niuzao_the_black_ox.up", "cooldowns_improved_niuzao_cta" );
+  cooldowns_improved_niuzao_cta->add_action( "invoke_niuzao_the_black_ox,if=buff.recent_purifies.value>=health.max*0.05&(target.cooldown.pause_action.remains>=20|time<=10|target.cooldown.pause_action.duration=0)&(cooldown.weapons_of_order.remains>=30|buff.weapons_of_order.remains<=16)" );
+  cooldowns_improved_niuzao_cta->add_action( "purifying_brew,if=stagger.amounttototalpct>=0.7&(((target.cooldown.pause_action.remains>=20|time<=10|target.cooldown.pause_action.duration=0)&cooldown.invoke_niuzao_the_black_ox.remains<5)|buff.invoke_niuzao_the_black_ox.up)" );
+  cooldowns_improved_niuzao_cta->add_action( "purifying_brew,if=buff.invoke_niuzao_the_black_ox.up&buff.invoke_niuzao_the_black_ox.remains<8" );
+  cooldowns_improved_niuzao_cta->add_action( "purifying_brew,if=cooldown.purifying_brew.charges_fractional>=1.8&(cooldown.invoke_niuzao_the_black_ox.remains>cooldown.purifying_brew.duration_expected*variable.brew_cdr_approximation|buff.invoke_niuzao_the_black_ox.up)" );
 
-  def->add_action( p, "Tiger Palm",
-                   "if=talent.rushing_jade_wind.enabled&buff.blackout_combo.up&buff.rushing_jade_wind.up" );
-  def->add_action( p, "Breath of Fire", "if=buff.charred_passions.down&runeforge.charred_passions.equipped" );
-  def->add_action( p, "Blackout Kick" );
-  def->add_action( p, "Keg Smash" );
+  // ---------------------------------
+  // ROTATIONS
+  // ---------------------------------
 
-  // Covenant Faeline Stomp
-  def->add_talent( p, "Chi Burst", "if=cooldown.faeline_stomp.remains>2&spell_targets>=2" );
-  def->add_action( "faeline_stomp" );
+  // Includes abilities:
+  // Blackout Kick, Rising Sun Kick, Keg Smash, Breath of Fire, Exploding Keg, Rushing Jade Wind, Black Ox Brew, Spinning Crane Kick, Chi Wave, Chi Burst
 
-  def->add_action( p, "Touch of Death" );
-  def->add_talent( p, "Rushing Jade Wind", "if=buff.rushing_jade_wind.down" );
-  def->add_action( p, "Spinning Crane Kick", "if=buff.charred_passions.up" );
-  def->add_action( p, "Breath of Fire",
-      "if=buff.blackout_combo.down&(buff.bloodlust.down|(buff.bloodlust.up&dot.breath_of_fire_dot.refreshable))" );
-  def->add_talent( p, "Chi Burst" );
-  def->add_talent( p, "Chi Wave" );
-  def->add_action( p, "Spinning Crane Kick",
-      "if=!runeforge.shaohaos_might.equipped&active_enemies>=3&cooldown.keg_smash.remains>gcd&(energy+(energy.regen*("
-      "cooldown.keg_smash.remains+execute_time)))>=65&(!talent.spitfire.enabled|!runeforge.charred_passions.equipped)",
-      "Cast SCK if enough enemies are around, or if WWWTO is enabled. This is a slight defensive loss over using TP "
-      "but generally reduces sim variance more than anything else." );
-  def->add_action( p, "Tiger Palm",
-       "if=!talent.blackout_combo&cooldown.keg_smash.remains>gcd&(energy+(energy.regen*(cooldown.keg_smash.remains+gcd)))>=65" );
+  // Missing Considerations:
+  // Fortifying Brew, Expel Harm, Fluidity of Motion, Blackout Combo, Charred Passion, Sal'salabim's Strength 
+  // (Blackout Kick, Keg Smash x Blackout Kick, Breath of Fire x Blackout Kick, Keg Smash/? x)
 
-  for ( const auto& racial_action : racial_actions )
-  {
-    if ( racial_action == "arcane_torrent" )
-      def->add_action( racial_action + ",if=energy<31" );
-  }
+  // Name: Blackout Combo
+  // Basic Sequence: Blackout Kick Breath of Fire x x Blackout Kick Keg Smash x x
+  rotation_blackout_combo->add_action("variable,name=time_to_scheduled_ks,op=set,value=(variable.boc_count+1)%%2*4+cooldown.blackout_kick.remains", 
+      "Rotation: Blackout Combo");
+  rotation_blackout_combo->add_action("strict_sequence,name=blackout_kick_and_counter:blackout_kick:variable,name=boc_count,op=add,value=1" );
+  rotation_blackout_combo->add_action( "rising_sun_kick,if=talent.rising_sun_kick.enabled" );
+  rotation_blackout_combo->add_action( "keg_smash,if=buff.blackout_combo.up&variable.boc_count%%2=0" );
+  rotation_blackout_combo->add_action( "breath_of_fire,if=buff.blackout_combo.up&variable.boc_count%%2=1" );
+  rotation_blackout_combo->add_action( "exploding_keg,if=talent.exploding_keg.enabled" );
+  rotation_blackout_combo->add_action( "rushing_jade_wind,if=buff.rushing_jade_wind.down&talent.rushing_jade_wind.enabled" );
+  rotation_blackout_combo->add_action( "black_ox_brew,if=(energy+(energy.regen*(variable.time_to_scheduled_ks+execute_time)))>=65&talent.black_ox_brew.enabled" );
+  rotation_blackout_combo->add_action( "keg_smash,if=(cooldown.keg_smash.full_recharge_time-cooldown.keg_smash.duration_expected%(talent.stormstouts_last_keg.enabled+1)+variable.offset)<=variable.time_to_scheduled_ks&(energy+(energy.regen*(variable.time_to_scheduled_ks+execute_time)))>=65" );
+  rotation_blackout_combo->add_action( "spinning_crane_kick,if=(energy+(energy.regen*(cooldown.keg_smash.remains+execute_time)))>=65" );
+  rotation_blackout_combo->add_action( "celestial_brew,if=talent.celestial_brew.enabled&!buff.blackout_combo.up" );
+  rotation_blackout_combo->add_action( "chi_wave,if=talent.chi_wave.enabled" );
+  rotation_blackout_combo->add_action( "chi_burst,if=talent.chi_burst.enabled" );
 
-  def->add_action("fleshcraft,if=soulbind.volatile_solvent.enabled");
+  // Name: Base Sal'salabim's Strength - Charred Passion
+  // Basic Sequence: Keg Smash Blackout Kick x x x x x
+  rotation_base_salsalchp->add_action("keg_smash,if=buff.charred_passions.remains<=variable.chp_threshold", 
+      "Base Sal'salabim's Strength - Charred Passion Rotation");
+  rotation_base_salsalchp->add_action( "breath_of_fire" );
+  rotation_base_salsalchp->add_action( "blackout_kick" );
+  rotation_base_salsalchp->add_action( "rising_sun_kick,if=talent.rising_sun_kick.enabled" );
+  rotation_base_salsalchp->add_action( "exploding_keg,if=cooldown.breath_of_fire.remains>=12&talent.exploding_keg.enabled" );
+  rotation_base_salsalchp->add_action( "rushing_jade_wind,if=buff.rushing_jade_wind.down&talent.rushing_jade_wind.enabled" );
+  rotation_base_salsalchp->add_action( "black_ox_brew,if=(energy+(energy.regen*(buff.charred_passions.remains+execute_time-variable.chp_threshold)))>=65&talent.black_ox_brew.enabled" );
+  rotation_base_salsalchp->add_action( "spinning_crane_kick,if=(energy+(energy.regen*(buff.charred_passions.remains+execute_time-variable.chp_threshold)))>=65" );
+  rotation_base_salsalchp->add_action( "chi_wave,if=talent.chi_wave.enabled" );
+  rotation_base_salsalchp->add_action( "chi_burst,if=talent.chi_burst.enabled" );
 
-  def->add_talent( p, "Rushing Jade Wind" );
+  // Name: Fallback
+  rotation_fallback->add_action( "rising_sun_kick,if=talent.rising_sun_kick.enabled",
+                                       "Fallback Rotation" );
+  rotation_fallback->add_action( "keg_smash" );
+  rotation_fallback->add_action( "breath_of_fire,if=talent.breath_of_fire.enabled" );
+  rotation_fallback->add_action( "blackout_kick" );
+  rotation_fallback->add_action( "exploding_keg,if=talent.exploding_keg.enabled" );
+  rotation_fallback->add_action( "black_ox_brew,if=(energy+(energy.regen*(cooldown.keg_smash.remains+execute_time)))>=65&talent.black_ox_brew.enabled" );
+  rotation_fallback->add_action( "rushing_jade_wind,if=talent.rushing_jade_wind.enabled" );
+  rotation_fallback->add_action( "spinning_crane_kick,if=(energy+(energy.regen*(cooldown.keg_smash.remains+execute_time)))>=65" );
+  rotation_fallback->add_action( "celestial_brew,if=!buff.blackout_combo.up&talent.celestial_brew.enabled" );
+  rotation_fallback->add_action( "chi_wave,if=talent.chi_wave.enabled" );
+  rotation_fallback->add_action( "chi_burst,if=talent.chi_burst.enabled" );
 }
 
 void mistweaver( player_t* p )

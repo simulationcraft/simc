@@ -8858,10 +8858,10 @@ void monk_t::create_buffs ()
     buff.shuffle = make_buff( this, "shuffle", passives.shuffle )
       ->set_duration_multiplier( 3 )
       ->set_refresh_behavior( buff_refresh_behavior::DURATION );
+
     buff.training_of_niuzao = make_buff( this, "training_of_niuzao", find_spell( 383733 ) )
-      ->set_default_value( talent.brewmaster.training_of_niuzao->effectN(1).percent() )
+      ->set_default_value( talent.brewmaster.training_of_niuzao->effectN( 1 ).percent() )
       ->add_invalidate( CACHE_MASTERY );
-    buff.training_of_niuzao->set_max_stack( (int)talent.brewmaster.training_of_niuzao->effectN( 3 ).base_value() );
 
     buff.light_stagger = make_buff<buffs::stagger_buff_t>( *this, "light_stagger", find_spell( 124275 ) );
     buff.moderate_stagger = make_buff<buffs::stagger_buff_t>( *this, "moderate_stagger", find_spell( 124274 ) );
@@ -9744,7 +9744,7 @@ double monk_t::composite_mastery() const
   if ( specialization() == MONK_BREWMASTER )
   {
     if ( buff.training_of_niuzao->check() )
-      m += buff.training_of_niuzao->check_stack_value();
+      m += buff.training_of_niuzao->check_value();
   }
 
   return m;
@@ -10543,7 +10543,7 @@ void monk_t::stagger_damage_changed( bool last_tick )
   {
     new_buff->trigger();
     if ( talent.brewmaster.training_of_niuzao.ok() )
-      buff.training_of_niuzao->trigger( niuzao );
+      buff.training_of_niuzao->trigger( 1, niuzao * talent.brewmaster.training_of_niuzao->effectN( 1 ).percent(), -1, timespan_t::min() );
   }
 }
 
