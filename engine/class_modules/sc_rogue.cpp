@@ -8151,7 +8151,8 @@ void actions::rogue_action_t<Base>::trigger_flagellation( const action_state_t* 
   if ( !debuff || !debuff->up() )
     return;
 
-  int cp_spend = cast_state( state )->get_combo_points();
+  const auto rs = cast_state( state );
+  const int cp_spend = rs->get_combo_points();
   if ( cp_spend <= 0 )
     return;
 
@@ -8166,7 +8167,9 @@ void actions::rogue_action_t<Base>::trigger_flagellation( const action_state_t* 
   // DFALPHA TOCHECK -- Currently Obedience does nothing on the talent version
   if ( p()->legendary.obedience->ok() && !p()->talent.subtlety.flagellation->ok() )
   {
-    const timespan_t obedience_cdr = p()->legendary.obedience->effectN( 1 ).time_value() * cp_spend;
+    // Obedience currently does not benefit from Echoing Reprimand CP
+    const int base_cp_spend = rs->get_combo_points( true );
+    const timespan_t obedience_cdr = p()->legendary.obedience->effectN( 1 ).time_value() * base_cp_spend;
     p()->cooldowns.flagellation->adjust( -obedience_cdr );
   }
 
@@ -8903,9 +8906,10 @@ void rogue_t::init_action_list()
   else if ( specialization() == ROGUE_OUTLAW )
   {
     // Pre-Combat
+    precombat->add_action( "adrenaline_rush,precombat_seconds=3,if=talent.improved_adrenaline_rush" );
     precombat->add_action( "roll_the_bones,precombat_seconds=2");
-    precombat->add_action( this, "Slice and Dice", "precombat_seconds=1" );
-    precombat->add_action( this, "Stealth" );
+    precombat->add_action( "slice_and_dice,precombat_seconds=1" );
+    precombat->add_action( "stealth" );
 
     // Main Rotation
     def->add_action( "variable,name=rtb_reroll,value=rtb_buffs<2&(!buff.broadside.up&(!runeforge.concealed_blunderbuss&!talent.fan_the_hammer|!buff.skull_and_crossbones.up)&(!runeforge.invigorating_shadowdust|!buff.true_bearing.up))|rtb_buffs=2&buff.buried_treasure.up&buff.grand_melee.up", "Reroll BT + GM or single buffs early other than Broadside, TB with Shadowdust, or SnC with Blunderbuss" );
@@ -8943,8 +8947,8 @@ void rogue_t::init_action_list()
     cds->add_action( "variable,name=killing_spree_vanish_sync,value=!runeforge.mark_of_the_master_assassin|cooldown.vanish.remains>10|master_assassin_remains>2", "Attempt to sync Killing Spree with Vanish for Master Assassin" );
     cds->add_action( "killing_spree,if=variable.blade_flurry_sync&variable.killing_spree_vanish_sync&!stealthed.rogue&(debuff.between_the_eyes.up&buff.dreadblades.down&energy.base_deficit>(energy.regen*2+15)|spell_targets.blade_flurry>(2-buff.deathly_shadows.up)|master_assassin_remains>0)", "Use in 1-2T if BtE is up and won't cap Energy, or at 3T+ (2T+ with Deathly Shadows) or when Master Assassin is up.");
     cds->add_action( "blade_rush,if=variable.blade_flurry_sync&(energy.base_time_to_max>2&!buff.dreadblades.up&!buff.flagellation_buff.up|energy<=30|spell_targets>2)");
-    cds->add_action( "vanish,if=runeforge.invigorating_shadowdust&covenant.venthyr&!stealthed.all&variable.ambush_condition&(!cooldown.flagellation.ready&(!talent.dreadblades|!cooldown.dreadblades.ready|!buff.flagellation_buff.up))", "If using Invigorating Shadowdust, use normal logic in addition to checking major CDs." );
-    cds->add_action( "vanish,if=runeforge.invigorating_shadowdust&!covenant.venthyr&!stealthed.all&(cooldown.echoing_reprimand.remains>6|!cooldown.sepsis.ready|cooldown.serrated_bone_spike.full_recharge_time>20)" );
+    cds->add_action( "vanish,if=runeforge.invigorating_shadowdust&covenant.venthyr&!stealthed.all&variable.finish_condition&(!cooldown.flagellation.ready&(!talent.dreadblades|!cooldown.dreadblades.ready|!buff.flagellation_buff.up))", "If using Invigorating Shadowdust, use normal logic in addition to checking major CDs." );
+    cds->add_action( "vanish,if=runeforge.invigorating_shadowdust&!covenant.venthyr&!stealthed.all&variable.finish_condition&(cooldown.echoing_reprimand.remains>6|!cooldown.sepsis.ready|cooldown.serrated_bone_spike.full_recharge_time>20)" );
     cds->add_action( "shadowmeld,if=!stealthed.all&((conduit.count_the_odds|talent.count_the_odds)&variable.finish_condition|!talent.weaponmaster.enabled&variable.ambush_condition)" );
     cds->add_action( "thistle_tea,if=energy.deficit>=100&!buff.thistle_tea.up&(charges=3|buff.adrenaline_rush.up|fight_remains<charges*6)" );
 
