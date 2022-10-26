@@ -360,6 +360,9 @@ public:
 
     action_t* lightning_rod;
 
+    /// Totemic Recall last used totem (action)
+    action_t* totemic_recall_totem;
+
     // Legendaries
     action_t* dre_ascendance; // Deeply Rooted Elements
   } action;
@@ -760,11 +763,11 @@ public:
     // Row 9
     player_talent_t lightning_lasso;
     player_talent_t thundershock;
-    player_talent_t totemic_recall; // TODO: NYI
+    player_talent_t totemic_recall;
     // Row 10
     player_talent_t ancestral_guidance;
     player_talent_t creation_core; // TODO: NYI
-    player_talent_t call_of_the_elements; // TODO: NYI
+    player_talent_t call_of_the_elements;
 
     // Spec - Shared
     player_talent_t ancestral_wolf_affinity; // TODO: NYI
@@ -7723,6 +7726,8 @@ struct healing_rain_t : public shaman_heal_t
   }
 };
 
+// Windfury Totem Spell =====================================================
+
 struct windfury_totem_t : public shaman_spell_t
 {
   windfury_totem_t( shaman_t* player, util::string_view options_str ) :
@@ -7784,6 +7789,30 @@ struct windfury_totem_t : public shaman_spell_t
     return shaman_spell_t::ready();
   }
 };
+
+// Totemic Recall Spell =====================================================
+
+struct totemic_recall_t : public shaman_spell_t
+{
+  totemic_recall_t( shaman_t* player, util::string_view options_str ) :
+    shaman_spell_t( "totemic_recall", player, player->talent.totemic_recall )
+  {
+    parse_options( options_str );
+
+    harmful = false;
+  }
+
+  void execute() override
+  {
+    shaman_spell_t::execute();
+
+    if ( p()->action.totemic_recall_totem )
+    {
+      p()->action.totemic_recall_totem->cooldown->reset( false );
+    }
+  }
+};
+
 
 // ==========================================================================
 // Shaman Totem System
@@ -7898,6 +7927,12 @@ struct shaman_totem_t : public V
   {
     V::execute();
     totem_pet->summon( totem_duration );
+
+    // Cooldown threshold is hardcoded into the spell description
+    if ( this->p()->talent.totemic_recall.ok() && this->data().cooldown() < 180_s )
+    {
+      this->p()->action.totemic_recall_totem = this;
+    }
   }
 
   std::unique_ptr<expr_t> create_expression( util::string_view name ) override
@@ -8905,6 +8940,8 @@ action_t* shaman_t::create_action( util::string_view name, util::string_view opt
     return new earth_shield_t( this, options_str );
   if ( name == "natures_swiftness" )
     return new natures_swiftness_t( this, options_str );
+  if ( name == "totemic_recall" )
+    return new totemic_recall_t( this, options_str );
 
   // covenants
   if ( name == "primordial_wave" )
@@ -11119,6 +11156,7 @@ void shaman_t::apply_affecting_auras( action_t& action )
 {
   // Generic
   action.apply_affecting_aura( spec.shaman );
+  action.apply_affecting_aura( talent.call_of_the_elements );
 
   // Specialization
   action.apply_affecting_aura( spec.elemental_shaman );
@@ -12252,6 +12290,7 @@ void shaman_t::reset()
   vesper_totem_used_charges = vesper_totem_heal_charges = vesper_totem_dmg_charges = 0;
   lotfw_counter = 0U;
   action.ti_trigger = nullptr;
+  action.totemic_recall_totem = nullptr;
 
   assert( active_flame_shock.empty() );
 }
