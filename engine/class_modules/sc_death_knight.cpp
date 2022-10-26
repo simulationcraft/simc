@@ -9145,6 +9145,20 @@ void death_knight_t::trigger_soul_reaper_death( player_t* target )
   {
     return;
   }
+
+  if ( ! talent.soul_reaper.ok() )
+  {
+    return;
+  }
+
+  if ( get_target_data( target ) -> dot.soul_reaper -> is_ticking() )
+  {
+    sim -> print_log( "Target {} died while affected by Soul Reaper, player {} gains Runic Corruption buff.",
+                      target -> name(), name() );
+
+    trigger_runic_corruption( procs.sr_runic_corruption, 0, 1.0, true );
+    return;
+  }
 }
 
 void death_knight_t::trigger_festering_wound_death( player_t* target )
