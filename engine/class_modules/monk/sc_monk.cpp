@@ -7504,6 +7504,7 @@ monk_td_t::monk_td_t( player_t* target, monk_t* p ) : actor_target_data_t( targe
 
   // Covenant Abilities
   debuff.bonedust_brew = make_buff( *this, "bonedust_brew_debuff", p->find_spell( 325216 ) )
+                             ->set_chance( 1 )
                              ->set_cooldown( timespan_t::zero() )
                              ->set_default_value_from_effect( 3 );
 
@@ -9027,6 +9028,7 @@ void monk_t::create_buffs ()
   // Covenants
 
   buff.bonedust_brew = make_buff( this, "bonedust_brew", find_spell( 325216 ) )
+    ->set_chance( 1 )
     ->set_cooldown( timespan_t::zero() )
     ->set_default_value_from_effect( 3 );
   buff.bonedust_brew_grounding_breath_hidden = make_buff( this, "bonedust_brew_hidden", passives.bonedust_brew_grounding_breath )
