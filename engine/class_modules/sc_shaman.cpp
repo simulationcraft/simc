@@ -11748,10 +11748,10 @@ void shaman_t::init_action_list_enhancement()
   single->add_action( "windstrike");
   single->add_action( this, "Lava Lash", "if=buff.hot_hand.up|buff.ashen_catalyst.stack=8|(runeforge.primal_lava_actuators.equipped&buff.primal_lava_actuators.stack=8)");
   single->add_action( this, "Windfury Totem", "if=!buff.windfury_totem.up");
-  single->add_action( this, "Stormstrike", "if=buff.doom_winds_buff.up|buff.doom_winds_talent.up");
-  single->add_action( this, "Crash Lightning", "if=buff.doom_winds_buff.up|buff.doom_winds_talent.up");
-  single->add_talent( this, "Ice Strike", "if=buff.doom_winds_buff.up|buff.doom_winds_talent.up");
-  single->add_talent( this, "Sundering", "if=buff.doom_winds_buff.up|buff.doom_winds_talent.up");
+  single->add_action( this, "Stormstrike", "if=buff.doom_winds.up|buff.doom_winds_talent.up");
+  single->add_action( this, "Crash Lightning", "if=buff.doom_winds.up|buff.doom_winds_talent.up");
+  single->add_talent( this, "Ice Strike", "if=buff.doom_winds.up|buff.doom_winds_talent.up");
+  single->add_talent( this, "Sundering", "if=buff.doom_winds.up|buff.doom_winds_talent.up");
   single->add_action( "primordial_wave,if=buff.primordial_wave.down&(raid_event.adds.in>42|raid_event.adds.in<6)");
   single->add_action( this, "Flame Shock", "if=!ticking");
   single->add_action( this, "Lightning Bolt", "if=buff.maelstrom_weapon.stack>=5&buff.primordial_wave.up&raid_event.adds.in>buff.primordial_wave.remains&(!buff.splintered_elements.up|fight_remains<=12)");
@@ -11780,10 +11780,10 @@ void shaman_t::init_action_list_enhancement()
   single->add_action( this, "Flame Shock");
   single->add_action( this, "Windfury Totem", "if=buff.windfury_totem.remains<30");
   
-  aoe->add_action( this, "Crash Lightning", "if=(talent.doom_winds|runeforge.doom_winds.equipped)&buff.doom_winds.up");
+  aoe->add_action( this, "Crash Lightning", "if=(talent.doom_winds|runeforge.doom_winds.equipped)&(buff.doom_winds.up|buff.doom_winds_talent.up)");
   aoe->add_action( "lightning_bolt,if=(active_dot.flame_shock=active_enemies|active_dot.flame_shock=6)&buff.primordial_wave.up&buff.maelstrom_weapon.stack>=(5+5*talent.overflowing_maelstrom.enabled)&(!buff.splintered_elements.up|fight_remains<=12|raid_event.adds.remains<=gcd)" );
   aoe->add_action( "chain_harvest,if=buff.maelstrom_weapon.stack>=5" );
-  aoe->add_talent( this, "Sundering", "if=(talent.doomwinds|runeforge.doom_winds.equipped)&buff.doom_winds.up" );
+  aoe->add_talent( this, "Sundering", "if=(talent.doomwinds|runeforge.doom_winds.equipped)&(buff.doom_winds.up|buff.doom_winds_talent.up)" );
   aoe->add_talent( this, "Fire Nova", "if=active_dot.flame_shock>=6|(active_dot.flame_shock>=4&active_dot.flame_shock=active_enemies)");
   aoe->add_action( "primordial_wave,target_if=min:dot.flame_shock.remains,cycle_targets=1,if=!buff.primordial_wave.up");
   aoe->add_action( "windstrike,if=talent.thorims_invocation.enabled&ti_chain_lightning&buff.maelstrom_weapon.stack>1");
