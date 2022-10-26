@@ -3078,13 +3078,14 @@ public:
     main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
 
     if (  o()->specialization() == MONK_MISTWEAVER )
-      owner_coeff.ap_from_ap      = o()->spec.mistweaver_monk->effectN( 4 ).percent();
-
+      owner_coeff.ap_from_sp    = o()->spec.mistweaver_monk->effectN( 4 ).percent();
+    else
+      owner_coeff.ap_from_ap    = 1.00;
   }
 
   void init_action_list() override
   {
-    action_list_str += "claw_of_the_white_tiger";
+    action_list_str = "claw_of_the_white_tiger";
 
     pet_t::init_action_list();
   }
