@@ -1,5 +1,5 @@
-// Talent tree specialization abilities, wow build 10.0.0.46270
-static const std::array<specialization_spell_entry_t, 345> __ptr_specialization_spell_data { {
+// Talent tree specialization abilities, wow build 10.0.2.46144
+static const std::array<specialization_spell_entry_t, 346> __ptr_specialization_spell_data { {
   {  0,  535, 264656,      0, "Pathfinding"                       , 0 },
   {  0,  535, 264662,      0, "Endurance Training"                , 0 },
   {  0,  535, 264663,      0, "Predator's Thirst"                 , 0 },
@@ -265,6 +265,7 @@ static const std::array<specialization_spell_entry_t, 345> __ptr_specialization_
   { 11,  102, 197911,      0, "Astral Power"                      , 0 },
   { 11,  102, 228545,      0, "Shapeshift Form"                   , 0 },
   { 11,  102, 231042,      0, "Owlkin Frenzy"                     , 0 },
+  { 11,  102, 326646,      0, "Moonfire"                          , "Rank 2" },
   { 11,  102, 393014,      0, "Mastery: Astral Invocation"        , 0 },
   { 11,  103,  16949,      0, "Feral Instinct"                    , 0 },
   { 11,  103,  77493,      0, "Mastery: Razor Claws"              , 0 },
