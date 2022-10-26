@@ -1367,6 +1367,8 @@ struct secondary_action_trigger_t : public event_t
       // Calling snapshot_internal, snapshot_state would overwrite CP.
       action->snapshot_internal( state, action->snapshot_flags, action->amount_type( state ) );
     }
+    
+    assert( !action->pre_execute_state );
 
     action->pre_execute_state = state;
     action->execute();
@@ -5407,7 +5409,9 @@ struct sinister_strike_t : public rogue_attack_t
       rogue_attack_t::execute();
       trigger_guile_charm( execute_state );
 
-      if ( p()->active.triple_threat_oh && p()->rng().roll( triple_threat_chance ) )
+      // Triple Threat procs do not appear to be able to chain-proc based on testing
+      if ( secondary_trigger_type == secondary_trigger::SINISTER_STRIKE && p()->active.triple_threat_oh &&
+           p()->rng().roll( triple_threat_chance ) )
       {
         p()->active.triple_threat_oh->trigger_secondary_action( execute_state->target, 300_ms );
       }
