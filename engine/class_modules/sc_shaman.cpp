@@ -658,6 +658,7 @@ public:
     proc_t* surge_of_power_lava_burst;
     proc_t* surge_of_power_frost_shock;
     proc_t* surge_of_power_flame_shock;
+    proc_t* surge_of_power_wasted;
 
 
     // Enhancement
@@ -7134,6 +7135,12 @@ public:
       p()->cooldown.chain_harvest->adjust( -1.0 * elemental_conduit->effectN( 3 ).time_value() );
     }
 
+    if ( p()->buff.surge_of_power->up() && sim->target_non_sleeping_list.size() == 1 )
+    {
+      p()->proc.surge_of_power_wasted->occur();
+      p()->buff.surge_of_power->decrement();
+    }
+
     if ( p()->buff.surge_of_power->up() && sim->target_non_sleeping_list.size() > 1 )
     {
       shaman_td_t* source_td = td( target );
@@ -10961,6 +10968,7 @@ void shaman_t::init_procs()
   proc.surge_of_power_lava_burst     = get_proc( "Surge of Power: Lava Burst" );
   proc.surge_of_power_frost_shock    = get_proc( "Surge of Power: Frost Shock" );
   proc.surge_of_power_flame_shock    = get_proc( "Surge of Power: Flame Shock" );
+  proc.surge_of_power_wasted    = get_proc( "Surge of Power: Wasted" );
 
   proc.aftershock           = get_proc( "Aftershock" );
   proc.flash_of_lightning   = get_proc( "Flash of Lightning" );
@@ -11325,7 +11333,7 @@ void shaman_t::init_action_list_elemental()
 
   action_priority_list_t* single_target    = get_action_priority_list( "single_target" );
   action_priority_list_t* aoe              = get_action_priority_list( "aoe" );
-  
+  /*
   if ( options.rotation == ROTATION_STANDARD )
   {
     action_priority_list_t* se_single_target = get_action_priority_list( "se_single_target" );
@@ -11571,8 +11579,8 @@ void shaman_t::init_action_list_elemental()
     se_single_target->add_action( this, "Flame Shock", "moving=1,target_if=refreshable" );
     se_single_target->add_action( this, "Flame Shock", "moving=1,if=movement.distance>6" );
     se_single_target->add_action( this, "Frost Shock", "moving=1" );
-  }
-  else if (options.rotation == ROTATION_SIMPLE) {
+  }*/
+  if (options.rotation == ROTATION_SIMPLE || options.rotation == ROTATION_STANDARD) {
     precombat->add_action( "flask" );
     precombat->add_action( "food" );
     precombat->add_action( "augmentation" );
