@@ -11667,13 +11667,18 @@ void shaman_t::init_action_list_elemental()
     single_target->add_action(
         "primordial_wave,target_if=min:dot.flame_shock.remains,if=!buff.primordial_wave.up&!buff.splintered_elements.up",
         "Use Primordial Wave as much as possible without wasting buffs." );
-    single_target->add_action( "flame_shock,target_if=min:dot.flame_shock.remains,if=refreshable,cycle_targets=1" );
+    single_target->add_action( "flame_shock,target_if=min:dot.flame_shock.remains,if=refreshable&!buff.surge_of_power.up,cycle_targets=1" );
     single_target->add_action( "liquid_magma_totem", "Keep your cooldowns rolling." );
     single_target->add_action( "stormkeeper,if=!buff.ascendance.up" );
     single_target->add_action( "ascendance,if=!buff.stormkeeper.up" );
+    single_target->add_action( "cancel_buff,name=lava_surge,if=buff.stormkeeper.up&buff.surge_of_power.up" );
+    single_target->add_action( "lava_burst,if=buff.stormkeeper.up&buff.surge_of_power.up" );
     single_target->add_action( "lightning_bolt,if=buff.stormkeeper.up&buff.surge_of_power.up", "Stormkeeper is strong and should be used." );
     single_target->add_action( "lightning_bolt,if=buff.stormkeeper.up&!talent.surge_of_power.enabled", "Stormkeeper is strong and should be used." );
     single_target->add_action( "lightning_bolt,if=buff.surge_of_power.up", "Surge of Power is strong and should be used." );
+    single_target->add_action( "icefury,if=talent.electrified_shocks.enabled" );
+    single_target->add_action( "frost_shock,if=buff.icefury.up&talent.electrified_shocks.enabled&(!debuff.electrified_shocks.up|buff.icefury.remains<=gcd)" );
+    single_target->add_action( "frost_shock,if=buff.icefury.up&talent.electrified_shocks.enabled&maelstrom>=50&debuff.electrified_shocks.remains<2*gcd&buff.stormkeeper.up" );
     single_target->add_action( "lava_burst,if=buff.windspeakers_lava_resurgence.up", "Windspeaker's Lava Resurgence is strong. Don't sit on it." );
     single_target->add_action( "lava_burst,if=cooldown_react&buff.lava_surge.up",
                                "Lava Surge is neat. Utilize it." );
