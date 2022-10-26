@@ -130,8 +130,8 @@ struct mind_sear_t final : public priest_spell_t
 
     if ( priest().buffs.mind_devourer_ms_active->check() )
     {
-      player->sim->print_debug( "{} {} consumes ticking cost 0 insanity (current={}).", priest(), *this,
-                                player->resources.current[ RESOURCE_INSANITY ] );
+      player->sim->print_debug( "{} {} consumes ticking cost 0 insanity (current={}) from mind_devourer.", priest(),
+                                *this, player->resources.current[ RESOURCE_INSANITY ] );
       return true;
     }
 
@@ -183,6 +183,17 @@ struct mind_sear_t final : public priest_spell_t
       {
         priest().trigger_shadowy_apparitions( priest().procs.shadowy_apparition_ms, false );
       }
+    }
+
+    double insanity_after_tick = player->resources.current[ RESOURCE_INSANITY ] - cost_per_tick( RESOURCE_INSANITY );
+
+    // Mind Sear will only ever consume 25 Insanity, no partial amounts
+    // Cancel the channel after the ticks happen
+    if ( insanity_after_tick < cost_per_tick( RESOURCE_INSANITY ) )
+    {
+      player->sim->print_debug( "{} {} will be cancelled. Ran out of Insanity for next tick, insanity_after_tick={}.",
+                                priest(), *this, insanity_after_tick );
+      make_event( *sim, 10_ms, [ this ] { this->cancel(); } );
     }
   }
 };
@@ -2123,13 +2134,22 @@ struct ancient_madness_t final : public priest_buff_t<buff_t>
 
     add_invalidate( CACHE_CRIT_CHANCE );
     add_invalidate( CACHE_SPELL_CRIT_CHANCE );
-
-    set_duration( p.specs.voidform->duration() );        // Uses the same duration as Voidform for tooltip
-    set_default_value( data().effectN( 2 ).percent() );  // Each stack is worth 2% from effect 2
-    set_max_stack( as<int>( data().effectN( 1 ).base_value() ) /
-                   as<int>( data().effectN( 2 ).base_value() ) );  // Set max stacks to 30 / 2
     set_reverse( true );
     set_period( timespan_t::from_seconds( 1 ) );
+    set_duration( p.specs.voidform->duration() );  // Uses the same duration as Voidform for tooltip
+
+    // BUG: Ancient Madness consumes twice as much crit with Voidform
+    // https://github.com/SimCMinMax/WoW-BugTracker/issues/1030
+    if ( priest().bugs && priest().talents.shadow.void_eruption.enabled() )
+    {
+      set_default_value( 0.02 ); // 2%
+      set_max_stack( as<int>( data().effectN( 3 ).base_value() )  ); // 5/10;
+    }
+    else
+    {
+      set_default_value( data().effectN( 2 ).percent() ); // 0.5%/1%
+      set_max_stack( 20 ); // 20/20;
+    }
   }
 };
 
@@ -2669,7 +2689,8 @@ void priest_t::trigger_idol_of_nzoth( player_t* target, proc_t* proc )
 
   auto td = get_target_data( target );
 
-  if ( !td || !td->buffs.echoing_void->up() && number_of_echoing_voids_active() == talents.shadow.idol_of_nzoth->effectN( 1 ).base_value() )
+  if ( !td || !td->buffs.echoing_void->up() &&
+                  number_of_echoing_voids_active() == talents.shadow.idol_of_nzoth->effectN( 1 ).base_value() )
     return;
 
   if ( rng().roll( talents.shadow.idol_of_nzoth->proc_chance() ) )

@@ -1423,6 +1423,7 @@ public:
     ab::apply_affecting_aura( o() -> talents.killer_companion );
     ab::apply_affecting_aura( o() -> talents.improved_kill_command );
     ab::apply_affecting_aura( o() -> tier_set.t29_bm_2pc );
+    ab::apply_affecting_aura( o() -> talents.killer_command );
   }
 
   T_PET* p()             { return static_cast<T_PET*>( ab::player ); }
@@ -1570,6 +1571,7 @@ struct hunter_main_pet_base_t : public hunter_pet_t
     buff_t* bestial_wrath = nullptr;
     buff_t* piercing_fangs = nullptr;
     buff_t* rylakstalkers_piercing_fangs = nullptr;
+    buff_t* lethal_command = nullptr;
 
     buff_t* bloodseeker = nullptr;
     buff_t* coordinated_assault = nullptr;
@@ -1636,6 +1638,10 @@ struct hunter_main_pet_base_t : public hunter_pet_t
       make_buff( this, "piercing_fangs", o() -> find_spell( 392054 ) )
         -> set_default_value_from_effect( 1 )
         -> set_chance( o() -> talents.piercing_fangs.ok() );
+
+    buffs.lethal_command =
+      make_buff( this, "lethal_command", o() -> tier_set.t29_bm_4pc -> effectN( 3 ).trigger() )
+      -> set_default_value_from_effect( 1 );
   }
 
   double composite_melee_speed() const override
@@ -2207,12 +2213,7 @@ struct kill_command_bm_mm_t: public kill_command_base_t
     if ( o() -> conduits.ferocious_appetite.ok() )
       ferocious_appetite_reduction = timespan_t::from_seconds( o() -> conduits.ferocious_appetite.value() / 10 );
 
-    if ( o() -> talents.dire_command.ok() )
-    {
-      dire_command.chance = o() -> talents.dire_command -> effectN( 1 ).percent();
-      dire_command.proc = o() -> get_proc( "Dire Command" );
-    }
-    else if ( o() -> legendary.dire_command.ok() )
+    if ( o() -> legendary.dire_command.ok() && !o() -> talents.dire_command.ok() )
     {
       dire_command.chance = o() -> legendary.dire_command -> effectN( 1 ).percent();
       dire_command.proc = o() -> get_proc( "Dire Command (Runeforge)" );
@@ -2229,7 +2230,7 @@ struct kill_command_bm_mm_t: public kill_command_base_t
       dire_command.proc -> occur();
     }
 
-    o() -> buffs.lethal_command -> expire();
+    p() -> buffs.lethal_command -> expire();
   }
 
   void impact( action_state_t* s ) override
@@ -2255,7 +2256,7 @@ struct kill_command_bm_mm_t: public kill_command_base_t
   {
     double am = kill_command_base_t::action_multiplier();
 
-    am *= 1 + o() -> buffs.lethal_command -> value();
+    am *= 1 + p() -> buffs.lethal_command -> value();
 
     return am;
   }
@@ -3240,7 +3241,6 @@ struct wind_arrow_t final : public hunter_ranged_attack_t
     hunter_ranged_attack_t( n, p, p -> find_spell( 191043 ) )
   {
     dual = true;
-    proc = true;
     // LotW arrows behave more like AiS re cast time/speed
     // TODO: RETEST for DL & test its behavior on lnl AiSes
     base_execute_time = p -> talents.aimed_shot -> cast_time();
@@ -4059,6 +4059,7 @@ struct barbed_shot_t: public hunter_ranged_attack_t
 
       pet -> buffs.frenzy -> trigger();
       pet -> buffs.thrill_of_the_hunt -> trigger();
+      pet -> buffs.lethal_command -> trigger();
     }
 
     if ( p() -> talents.bloody_frenzy.ok() && p() -> buffs.call_of_the_wild -> up() )
@@ -5350,6 +5351,9 @@ struct fury_of_the_eagle_t: public hunter_melee_attack_t
       reduced_aoe_targets = aoe_cap;
       health_threshold = p -> talents.fury_of_the_eagle -> effectN( 4 ).base_value() + p -> talents.ruthless_marauder -> effectN( 1 ).base_value();
       crit_chance_bonus = p -> talents.fury_of_the_eagle -> effectN( 3 ).percent();
+      // TODO 25-10-22 Ruthless Marauder says nothing about increasing damage but is adding the cdr value data to the tick dmg as well.
+      base_dd_adder += p -> talents.ruthless_marauder -> effectN( 3 ).base_value();
+      triggers_wild_spirits = false;
 
       if ( p -> talents.ruthless_marauder )
         ruthless_marauder_adjust = p -> talents.ruthless_marauder -> effectN( 3 ).time_value();
@@ -5832,6 +5836,11 @@ struct kill_command_t: public hunter_spell_t
     arcane_shot_qs_t* action = nullptr;
   } quick_shot;
 
+  struct {
+    double chance = 0;
+    proc_t* proc;
+  } dire_command;
+
   double df_bm_2pc_chance = 0;
 
   kill_command_t( hunter_t* p, util::string_view options_str ):
@@ -5853,6 +5862,12 @@ struct kill_command_t: public hunter_spell_t
         quick_shot.chance = p -> talents.quick_shot -> effectN( 1 ).percent();
         quick_shot.action = p -> get_background_action<arcane_shot_qs_t>( "arcane_shot_qs" );
       }
+    }
+
+    if ( p -> talents.dire_command.ok() )
+    {
+      dire_command.chance = p -> talents.dire_command -> effectN( 1 ).percent();
+      dire_command.proc = p -> get_proc( "Dire Command" );
     }
   }
 
@@ -5900,6 +5915,12 @@ struct kill_command_t: public hunter_spell_t
       }
     }
 
+    if ( rng().roll( dire_command.chance ) )
+    {
+      p() -> pets.dc_dire_beast.spawn( pets::dire_beast_duration( p() ).first );
+      dire_command.proc -> occur();
+    }
+
     p() -> buffs.flamewakers_cobra_sting -> up(); // benefit tracking
     p() -> buffs.flamewakers_cobra_sting -> decrement();
 
@@ -5911,6 +5932,8 @@ struct kill_command_t: public hunter_spell_t
 
     if ( rng().roll( p() -> tier_set.t29_bm_2pc -> proc_chance() ) )
       p() -> cooldowns.barbed_shot -> reset( true );
+
+    p() -> buffs.lethal_command -> expire();
   }
 
   double cost() const override

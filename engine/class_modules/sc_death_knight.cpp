@@ -3929,6 +3929,18 @@ struct melee_t : public death_knight_melee_attack_t
       return t;
   }
 
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = death_knight_melee_attack_t::composite_da_multiplier( s );
+
+    if ( p() -> buffs.vigorous_lifeblood_4pc -> up() )
+    {
+      m *= 1.0 + p() -> spell.vigorous_lifeblood_4pc -> effectN ( 5 ).percent();
+    }
+
+    return m;
+  }
+
   void execute() override
   {
     if ( first )
@@ -5759,16 +5771,10 @@ struct death_coil_t : public death_knight_spell_t
     }
 
     // Currently Rotten Touch only triggers on the main target
-    if ( !p() -> bugs && p() -> talent.unholy.rotten_touch.ok() && p() -> buffs.sudden_doom -> check() )
+    if ( p() -> talent.unholy.rotten_touch.ok() && p() -> buffs.sudden_doom -> check() )
     {
       get_td( target ) -> debuff.rotten_touch -> trigger();
     }
-    // Rotten touch is bugged as of 10/14/22, applying on every death coil cast.
-    if ( p() -> bugs && p() -> talent.unholy.rotten_touch.ok() )
-    {
-      get_td( target ) -> debuff.rotten_touch -> trigger();
-    }
-
     p() -> buffs.sudden_doom -> decrement();
   }
 
@@ -6622,7 +6628,7 @@ struct frost_strike_t : public death_knight_melee_attack_t
 
   void execute() override
   {
-    const death_knight_td_t* td = p() -> find_target_data( target );
+    const death_knight_td_t* td = p() -> get_target_data( target );
 
     if ( p() -> talent.frost.shattering_blade.ok() && td -> debuff.razorice -> stack() == 5 )
     {
@@ -11714,6 +11720,11 @@ double death_knight_t::composite_player_pet_damage_multiplier( const action_stat
   if ( talent.unholy.unholy_aura.ok() )
   {
     m *= 1.0 + talent.unholy.unholy_aura->effectN( 3 ).percent();
+  }
+
+  if ( buffs.vigorous_lifeblood_4pc -> up() )
+  {
+    m *= 1.0 + spell.vigorous_lifeblood_4pc -> effectN( 4 ).percent();
   }
 
   return m;

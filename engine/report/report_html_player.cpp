@@ -372,15 +372,36 @@ double vulnerable_fight_length( player_t* actor )
   return fight_length;
 }
 
-void collect_compound_stats( std::unique_ptr<stats_t>& compound_stats, const stats_t* stats, double& count )
+double target_fight_length( sim_t* sim )
+{
+  double fight_length = 0.0;
+
+  for ( auto t : sim->targets_by_name )
+  {
+    fight_length += vulnerable_fight_length( t );
+
+    for ( auto pet : t->pet_list )
+    {
+      fight_length += vulnerable_fight_length( pet );
+    }
+  }
+
+  return fight_length;
+}
+
+void collect_compound_stats( std::unique_ptr<stats_t>& compound_stats, const stats_t* stats, double& count,
+                             double& tick_time )
 {
   compound_stats->merge( *stats );
   count += stats->has_direct_amount_results()
     ? stats->num_direct_results.mean()
     : stats->num_tick_results.mean();
+  tick_time += stats->has_tick_amount_results()
+    ? stats->total_tick_time.mean()
+    : 0;
 
-  range::for_each( stats->children, [&]( stats_t* s ) {
-    collect_compound_stats( compound_stats, s, count );
+  range::for_each( stats->children, [ & ]( stats_t* s ) {
+    collect_compound_stats( compound_stats, s, count, tick_time );
   } );
 }
 
@@ -398,6 +419,7 @@ void print_html_action_summary( report::sc_html_stream& os, unsigned stats_mask,
   // Strings for merged stat reporting
   std::string count_str;
   std::string critpct_str;
+  std::string uppct_str;
 
   // Create Merged Stat
   if ( !s.children.empty() )
@@ -405,8 +427,9 @@ void print_html_action_summary( report::sc_html_stream& os, unsigned stats_mask,
     auto compound_stats = std::make_unique<stats_t>( s.name_str + "_compound", s.player );
 
     double compound_count = 0.0;
+    double compound_tick_time = 0.0;
 
-    collect_compound_stats( compound_stats, &s, compound_count );
+    collect_compound_stats( compound_stats, &s, compound_count, compound_tick_time );
     compound_stats->analyze();
 
     count_str = "&#160;(" + util::to_string( compound_count, 1 ) + ")";
@@ -418,6 +441,14 @@ void print_html_action_summary( report::sc_html_stream& os, unsigned stats_mask,
                                                : pct_value<full_result_t, full_result_e>( compound_dr,
                                                  { FULLTYPE_CRIT, FULLTYPE_CRIT_BLOCK, FULLTYPE_CRIT_CRITBLOCK } );
     critpct_str = "&#160;(" + util::to_string( compound_critpct, 1 ) + "%)";
+
+
+    if ( player_has_tick_results( p, stats_mask ) && result_type == 1 )
+    {
+      uppct_str = "&#160;(" +
+                  util::to_string( 100 * compound_tick_time / target_fight_length( p.sim ), 1 ) +
+                  "%)";
+    }
   }
 
   // Result type
@@ -480,18 +511,9 @@ void print_html_action_summary( report::sc_html_stream& os, unsigned stats_mask,
   {
     if ( result_type == 1 )
     {
-      double target_fight_length = 0.0;
-
-      for ( auto target : p.sim->targets_by_name )
-      {
-        target_fight_length += vulnerable_fight_length( target );
-
-        for ( auto pet : target->pet_list )
-        {
-          target_fight_length += vulnerable_fight_length( pet );
-        }
-      }
-      os.printf( "<td class=\"right\">%.1f%%</td>\n", 100 * s.total_tick_time.mean() / target_fight_length );
+      os.printf( "<td class=\"right\">%.1f%%%s</td>\n",
+                 100 * s.total_tick_time.mean() / target_fight_length( p.sim ),
+                 uppct_str.c_str() );
     }
     else
     {

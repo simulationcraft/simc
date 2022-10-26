@@ -487,8 +487,9 @@ struct damage_buff_t : public buff_t
   damage_buff_t( actor_pair_t q, util::string_view name );
   damage_buff_t( actor_pair_t q, util::string_view name, const spell_data_t*, bool parse_data = true );
   damage_buff_t( actor_pair_t q, util::string_view name, const spell_data_t*, const conduit_data_t& );
+  damage_buff_t( actor_pair_t q, util::string_view name, const spell_data_t*, double );
 
-  damage_buff_t* parse_spell_data( const spell_data_t*, double = 0.0 );
+  damage_buff_t* parse_spell_data( const spell_data_t*, double = 0.0, double = 0.0 );
   damage_buff_t* apply_mod_affecting_effect( damage_buff_modifier_t&, const spelleffect_data_t& );
 
   buff_t* apply_affecting_effect( const spelleffect_data_t& effect ) override;

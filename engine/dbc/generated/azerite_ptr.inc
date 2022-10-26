@@ -1,4 +1,4 @@
-// Azerite powers, wow build 9.2.5.43903
+// Azerite powers, wow build 10.0.2.46144
 static const std::array<azerite_power_entry_t, 379> __ptr_azerite_power_data { {
   {  13, 263978,  4775, "Azerite Empowered"                 , 0 },
   {  14, 268594,     0, "Longstrider"                       , 1 },
@@ -381,7 +381,7 @@ static const std::array<azerite_power_entry_t, 379> __ptr_azerite_power_data { {
   { 582, 317137,     0, "Heart of Darkness"                 , 3 },
 } };
 
-// Azerite Essences, wow build 9.2.5.43903
+// Azerite Essences, wow build 10.0.2.46144
 static const std::array<azerite_essence_entry_t, 28> __ptr_azerite_essence_data { {
   {  2,   1, "Azeroth's Undying Gift"       },
   {  3,   1, "Sphere of Suppression"        },
@@ -399,13 +399,13 @@ static const std::array<azerite_essence_entry_t, 28> __ptr_azerite_essence_data 
   { 19,  49, "The Well of Existence"        },
   { 20,  49, "Life-Binder's Invocation"     },
   { 21,  49, "Vitality Conduit"             },
-  { 22,   2, "Vision of Perfection"         },
+  { 22, 173, "Vision of Perfection"         },
   { 23, 160, "Blood of the Enemy"           },
   { 24,  49, "Spirit of Preservation"       },
   { 25,   1, "Aegis of the Deep"            },
-  { 27,   2, "Memory of Lucid Dreams"       },
+  { 27, 173, "Memory of Lucid Dreams"       },
   { 28, 160, "The Unbound Force"            },
-  { 32,   2, "Conflict and Strife"          },
+  { 32, 173, "Conflict and Strife"          },
   { 33,   1, "Touch of the Everlasting"     },
   { 34,   1, "Strength of the Warden"       },
   { 35, 160, "Breath of the Dying"          },
@@ -413,7 +413,7 @@ static const std::array<azerite_essence_entry_t, 28> __ptr_azerite_essence_data 
   { 37,   2, "The Formless Void"            },
 } };
 
-// Azerite Essence Powers, wow build 9.2.5.43903
+// Azerite Essence Powers, wow build 10.0.2.46144
 static const std::array<azerite_essence_power_entry_t, 112> __ptr_azerite_essence_power_data { {
   {   5,   2,   1, { 293019, 294668 }, { 293019, 294668 } }, // Azeroth's Undying Gift
   {   6,   2,   2, { 298080, 298082 }, { 294653, 294687 } }, // Azeroth's Undying Gift

@@ -510,18 +510,6 @@ struct judgment_prot_t : public judgment_t
   }
 };
 
-// T28 4P damage proc ==================================================
-
-struct t28_4p_prot_t : public judgment_prot_t
-{
-  t28_4p_prot_t( paladin_t* p ) :
-    judgment_prot_t( p, "judgment_t28_4p" )
-  {
-    background = proc = may_crit = true;
-    may_miss                     = false;
-  }
-};
-
 // Shield of the Righteous ==================================================
 
 shield_of_the_righteous_buff_t::shield_of_the_righteous_buff_t( paladin_t* p ) :
@@ -596,11 +584,6 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
     if ( p() -> azerite_essence.memory_of_lucid_dreams.enabled() )
     {
       p() -> trigger_memory_of_lucid_dreams( 1.0 );
-    }
-
-    if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, T28, B2 ) )
-    {
-      p()->buffs.glorious_purpose->trigger();
     }
 
     // As of 2020-11-07 Resolute Defender now always provides its CDR.
@@ -849,17 +832,6 @@ void paladin_t::trigger_holy_shield( action_state_t* s )
   active.holy_shield_damage -> schedule_execute();
 }
 
-void paladin_t::trigger_t28_4p_prot( action_state_t* s )
-{
-  active.t28_4p_prot->set_target( s->action->player );
-  // Fallback to the player's current target if the source isn't an enemy
-  if ( !s->action->player->is_enemy() )
-    active.t28_4p_prot->set_target( this->target );
-
-  active.t28_4p_prot->schedule_execute();
-  cooldowns.t28_4p_prot_icd->start();
-}
-
 void paladin_t::trigger_inner_light( action_state_t* s )
 {
   if ( !talents.inner_light->ok() && cooldowns.inner_light_icd -> up() && !buffs.inner_light->check() )
@@ -890,7 +862,6 @@ void paladin_t::create_prot_actions()
 
   if ( specialization() == PALADIN_PROTECTION )
   {
-    active.t28_4p_prot = new t28_4p_prot_t( this );
     active.tyrs_enforcer_damage = new tyrs_enforcer_damage_t( this );
     active.inner_light_damage   = new inner_light_damage_t( this );
   }
@@ -970,11 +941,6 @@ void paladin_t::create_buffs_protection()
   if ( specialization() == PALADIN_PROTECTION )
     player_t::buffs.memory_of_lucid_dreams -> set_stack_change_callback( [ this ]( buff_t*, int, int )
     { this -> cooldowns.shield_of_the_righteous -> adjust_recharge_multiplier(); } );
-
-  // Tier Sets
-  buffs.glorious_purpose = make_buff( this, "glorious_purpose", find_spell( 364305 ) )
-    -> set_default_value_from_effect( 1 )
-    -> add_invalidate( CACHE_BLOCK );
 }
 
 void paladin_t::init_spells_protection()
@@ -1054,9 +1020,6 @@ void paladin_t::init_spells_protection()
   // Azerite traits
   azerite.inspiring_vanguard = find_azerite_spell( "Inspiring Vanguard" );
   azerite.soaring_shield     = find_azerite_spell( "Soaring Shield"     );
-
-  // Tier Sets
-  tier_sets.glorious_purpose_2pc = find_spell( 364305 );
 }
 
 void paladin_t::generate_action_prio_list_prot()

@@ -1228,17 +1228,26 @@ struct void_lasher_t final : public priest_pet_t
 // Insanity gain (legendary=208232, cthun=377358)
 struct void_lasher_mind_sear_tick_t final : public priest_pet_spell_t
 {
-  const double void_lasher_insanity_gain;
-
-  void_lasher_mind_sear_tick_t( void_lasher_t& p, const spell_data_t* s )
-    : priest_pet_spell_t( "mind_sear_tick", p, s ),
-      void_lasher_insanity_gain( p.o().find_spell( 377358 )->effectN( 1 ).resource( RESOURCE_INSANITY ) )
+  void_lasher_mind_sear_tick_t( void_lasher_t& p, const spell_data_t* s ) : priest_pet_spell_t( "mind_sear_tick", p, s )
   {
     background = true;
     dual       = true;
     aoe        = -1;
     radius     = data().effectN( 2 ).radius_max();  // base radius is 100yd, actual is stored in effect 2
-    affected_by_shadow_weaving = true;
+
+    // BUG: The damage this is dealing is not following spell data
+    // https://github.com/SimCMinMax/WoW-BugTracker/issues/1029
+    if ( p.o().bugs )
+    {
+      spell_power_mod.direct = 0.071;
+    }
+
+    // BUG: This spell is not being affected by Mastery
+    // https://github.com/SimCMinMax/WoW-BugTracker/issues/931
+    if ( !p.o().bugs )
+    {
+      affected_by_shadow_weaving = true;
+    }
   }
 
   void init() override
@@ -1267,41 +1276,40 @@ struct void_lasher_mind_sear_tick_t final : public priest_pet_spell_t
     // Not hasted
     return base_tick_time;
   }
-
-  void impact( action_state_t* s ) override
-  {
-    priest_pet_spell_t::impact( s );
-
-    // You only get the Insanity on your main target
-    if ( s->target != parent_dot->target )
-    {
-      return;
-    }
-
-    // TODO: remove after launch
-    if ( p().o().talents.shadow.idol_of_cthun.enabled() )
-    {
-      p().o().generate_insanity( void_lasher_insanity_gain, p().o().gains.insanity_idol_of_cthun_mind_sear, s->action );
-    }
-    else
-    {
-      p().o().generate_insanity( void_lasher_insanity_gain, p().o().gains.insanity_eternal_call_to_the_void_mind_sear,
-                                 s->action );
-    }
-  }
 };
 
 // Legendary: 344754 -> 344752
 // Idol of C'thun: 394976 -> 394979
 struct void_lasher_mind_sear_t final : public priest_pet_spell_t
 {
+  const double void_lasher_insanity_gain;
+
   void_lasher_mind_sear_t( void_lasher_t& p, util::string_view options )
-    : priest_pet_spell_t( "mind_sear", p, p.o().find_spell( 394976 ) )
+    : priest_pet_spell_t( "mind_sear", p, p.o().find_spell( 394976 ) ),
+      void_lasher_insanity_gain( p.o().find_spell( 377358 )->effectN( 1 ).resource( RESOURCE_INSANITY ) )
   {
     parse_options( options );
     channeled    = true;
     hasted_ticks = false;
     tick_action  = new void_lasher_mind_sear_tick_t( p, data().effectN( 1 ).trigger() );
+  }
+
+  // You only get the Insanity on your main target
+  void tick( dot_t* d ) override
+  {
+    priest_pet_spell_t::tick( d );
+
+    // TODO: remove after launch
+    if ( p().o().talents.shadow.idol_of_cthun.enabled() )
+    {
+      p().o().generate_insanity( void_lasher_insanity_gain, p().o().gains.insanity_idol_of_cthun_mind_sear,
+                                 d->state->action );
+    }
+    else
+    {
+      p().o().generate_insanity( void_lasher_insanity_gain, p().o().gains.insanity_eternal_call_to_the_void_mind_sear,
+                                 d->state->action );
+    }
   }
 };
 

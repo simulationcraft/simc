@@ -382,8 +382,6 @@ public:
     buff_t* firestorm;
     buff_t* molten_skyfall;
     buff_t* molten_skyfall_ready;
-    buff_t* runeforge_sun_kings_blessing;
-    buff_t* runeforge_sun_kings_blessing_ready;
 
     buff_t* disciplinary_command;
     buff_t* disciplinary_command_arcane; // Hidden buff
@@ -2426,12 +2424,6 @@ struct hot_streak_spell_t : public fire_mage_spell_t
       p()->buffs.combustion->extend_duration_or_trigger( 1000 * p()->talents.sun_kings_blessing->effectN( 2 ).time_value() );
     }
 
-    if ( time_to_execute > 0_ms && p()->buffs.runeforge_sun_kings_blessing_ready->check() )
-    {
-      p()->buffs.runeforge_sun_kings_blessing_ready->expire( p()->bugs ? 30_ms : 0_ms );
-      p()->buffs.combustion->extend_duration_or_trigger( 1000 * p()->runeforge.sun_kings_blessing->effectN( 2 ).time_value() );
-    }
-
     fire_mage_spell_t::execute();
 
     if ( last_hot_streak )
@@ -2441,7 +2433,6 @@ struct hot_streak_spell_t : public fire_mage_spell_t
       p()->buffs.firemind->trigger();
 
       trigger_tracking_buff( p()->buffs.sun_kings_blessing, p()->buffs.sun_kings_blessing_ready );
-      trigger_tracking_buff( p()->buffs.runeforge_sun_kings_blessing, p()->buffs.runeforge_sun_kings_blessing_ready );
 
       if ( rng().roll( p()->talents.pyromaniac->effectN( 1 ).percent() ) )
       {
@@ -2863,11 +2854,9 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
 
     m *= 1.0 + s->n_targets * p()->talents.resonance->effectN( 1 ).percent();
 
-    // TODO: check what happens when you have both the talent and the legendary
-    // the legendary is missing from the SpellReplacement table, so presumably you get both
     if ( s->target->health_percentage() < p()->talents.arcane_bombardment->effectN( 1 ).base_value() )
       m *= 1.0 + p()->talents.arcane_bombardment->effectN( 2 ).percent();
-    if ( s->target->health_percentage() < p()->runeforge.arcane_bombardment->effectN( 1 ).base_value() )
+    if ( !p()->talents.arcane_bombardment.ok() && s->target->health_percentage() < p()->runeforge.arcane_bombardment->effectN( 1 ).base_value() )
       m *= 1.0 + p()->runeforge.arcane_bombardment->effectN( 2 ).percent();
 
     return m;
@@ -7157,9 +7146,9 @@ void mage_t::create_buffs()
                                          else
                                            buffs.flame_accretion->decrement( old - cur );
                                        } );
-  buffs.sun_kings_blessing       = make_buff( this, "sun_kings_blessing", find_spell( 333314 ) )
-                                     ->set_chance( talents.sun_kings_blessing.ok() );
-  buffs.sun_kings_blessing_ready = make_buff( this, "sun_kings_blessing_ready", find_spell( 333315 ) );
+  buffs.sun_kings_blessing       = make_buff( this, "sun_kings_blessing", talents.sun_kings_blessing.ok() ? find_spell( 383882 ) : find_spell( 333314 ) )
+                                     ->set_chance( talents.sun_kings_blessing.ok() || runeforge.sun_kings_blessing.ok() );
+  buffs.sun_kings_blessing_ready = make_buff( this, "sun_kings_blessing_ready", talents.sun_kings_blessing.ok() ? find_spell( 383883 ) : find_spell( 333315 ) );
   buffs.wildfire                 = make_buff( this, "wildfire", find_spell( 383492 ) )
                                      ->set_default_value( talents.wildfire->effectN( 3 ).percent() )
                                      ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
@@ -7224,9 +7213,6 @@ void mage_t::create_buffs()
   buffs.molten_skyfall                     = make_buff( this, "molten_skyfall", find_spell( 333170 ) )
                                                ->set_chance( runeforge.molten_skyfall.ok() && !talents.firefall.ok() );
   buffs.molten_skyfall_ready               = make_buff( this, "molten_skyfall_ready", find_spell( 333182 ) );
-  buffs.runeforge_sun_kings_blessing       = make_buff( this, "runeforge_sun_kings_blessing", find_spell( 333314 ) )
-                                               ->set_chance( runeforge.sun_kings_blessing.ok() && !talents.sun_kings_blessing.ok() );
-  buffs.runeforge_sun_kings_blessing_ready = make_buff( this, "runeforge_sun_kings_blessing_ready", find_spell( 333315 ) );
 
   buffs.disciplinary_command        = make_buff( this, "disciplinary_command", find_spell( 327371 ) )
                                         ->set_default_value_from_effect( 1 );
@@ -7241,7 +7227,7 @@ void mage_t::create_buffs()
                                         ->set_chance( runeforge.disciplinary_command.ok() );
   buffs.expanded_potential          = make_buff( this, "expanded_potential", find_spell( 327495 ) )
                                         ->set_activated( false )
-                                        ->set_trigger_spell( runeforge.expanded_potential );
+                                        ->set_trigger_spell( !talents.concentration.ok() ? static_cast<const spell_data_t *>( runeforge.expanded_potential ) : spell_data_t::not_found() );
   buffs.heart_of_the_fae            = make_buff( this, "heart_of_the_fae", find_spell( 356881 ) )
                                         ->set_default_value_from_effect( 1 )
                                         ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
