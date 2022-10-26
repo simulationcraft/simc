@@ -7906,8 +7906,8 @@ void warrior_t::apl_fury()
   default_list->add_action( "auto_attack" );
   default_list->add_action( "charge,if=time<=0.5|movement.distance>5" );
 
-  default_list->add_action( "run_action_list,name=movement,if=movement.distance>5",
-                            "This is mostly to prevent cooldowns from being accidentally used during movement." );
+  //default_list->add_action( "run_action_list,name=movement,if=movement.distance>5",
+                            //"This is mostly to prevent cooldowns from being accidentally used during movement." );
   default_list->add_action( "heroic_leap,if=(raid_event.movement.distance>25&raid_event.movement.in>45)" );
 
   if ( sim->allow_potions && true_level >= 40 )
