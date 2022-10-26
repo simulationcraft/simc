@@ -47,13 +47,6 @@ struct mind_sear_tick_t final : public priest_spell_t
   {
     priest_spell_t::impact( s );
 
-    // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/998
-    if ( priest().bugs )
-    {
-      priest_td_t& td = get_td( s->target );
-      td.buffs.screams_of_the_void->trigger();
-    }
-
     // Benefit Tracking
     if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T29, B2 ) )
     {
@@ -237,13 +230,6 @@ struct mind_flay_base_t final : public priest_spell_t
   void tick( dot_t* d ) override
   {
     priest_spell_t::tick( d );
-
-    // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/998
-    if ( priest().bugs )
-    {
-      priest_td_t& td = get_td( d->target );
-      td.buffs.screams_of_the_void->trigger();
-    }
 
     priest().trigger_eternal_call_to_the_void( d->state );
     priest().trigger_idol_of_cthun( d->state );
