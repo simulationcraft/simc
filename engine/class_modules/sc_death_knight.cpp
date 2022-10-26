@@ -622,10 +622,6 @@ public:
     action_t* virulent_eruption;
     action_t* ruptured_viscera;
 
-    // Tier28
-    action_t* glacial_advance_t28_4pc;
-    action_t* soul_reaper_t28;
-    action_t* heart_strike_t28;
   } active_spells;
 
   // Gains
@@ -6405,16 +6401,6 @@ struct frostscythe_t : public death_knight_melee_attack_t
   {
     death_knight_melee_attack_t::execute();
 
-    if ( p() -> buffs.killing_machine -> up() )
-    {
-      // Tier28, KM is up, so fire GA, in game fires after oblits
-      if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T28, B4 ) )
-      {
-        p() -> active_spells.glacial_advance_t28_4pc -> set_target( target );
-        p() -> active_spells.glacial_advance_t28_4pc -> execute();
-      }
-    }
-
     if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T29, B4 ) &&
           p() -> buffs.killing_machine -> up() )
     {
@@ -6652,47 +6638,6 @@ struct glacial_advance_damage_t : public death_knight_spell_t
   }
 };
 
-// Tier 28 glacial advance, implement everything by hand here, to avoid having to disable all the gcd, procs, etc
-struct glacial_advance_damage_tier28_4pc_t : public glacial_advance_damage_t
-{
-  double ga_rp_cost;
-
-  glacial_advance_damage_tier28_4pc_t( util::string_view name, death_knight_t* p ) :
-    glacial_advance_damage_t( name, p )
-  {
-    //  Lookup GA rp cost from spelldata, we don't use the talent here, as we may not have ga talented
-    ga_rp_cost = p -> find_spell( 194913 ) -> cost(POWER_RUNIC_POWER);
-  }
-
-  void execute() override
-  {
-    glacial_advance_damage_t::execute();
-
-    // Obliteration's rune generation
-    if ( rng().roll( p() -> talent.frost.obliteration -> effectN( 2 ).percent() ) )
-    {
-      // WTB spelldata for the rune gain
-      p() -> replenish_rune( 1, p() -> gains.obliteration );
-    }
-
-    // These three are normally called through the standard action, but since we call damage event directly, they need to be manually called
-    p() -> buffs.icy_talons -> trigger();
-    p() -> trigger_runic_empowerment( ga_rp_cost );
-
-    if ( p() -> talent.frost.unleashed_frenzy.ok() )
-    {
-      p() -> buffs.unleashed_frenzy->trigger();
-    }
-
-    // We also have to add the ga_rp_cost to insatiable hunger legendary accumulator
-    if ( p() -> legendary.insatiable_hunger.ok() && p() -> buffs.swarming_mist -> check() )
-    {
-      sim -> print_debug ( "Insatiable hunger RP stored increased from {} to {} by {} from {}", p() -> insatiable_hunger_spent_rp_accumulator, ( p() -> insatiable_hunger_spent_rp_accumulator + ga_rp_cost), ga_rp_cost, name_str );
-      p() -> insatiable_hunger_spent_rp_accumulator += ga_rp_cost;
-    }
-  }
-};
-
 struct glacial_advance_t : public death_knight_spell_t
 {
   glacial_advance_t( death_knight_t* p, util::string_view options_str ) :
@@ -6769,7 +6714,6 @@ struct leeching_strike_t : public death_knight_heal_t
 struct heart_strike_t : public death_knight_melee_attack_t
 {
   double heartbreaker_rp_gen;
-  bool is_t28_counterattack;
   action_t* leeching_strike;
 
   heart_strike_t( death_knight_t* p, util::string_view options_str ) :
@@ -6783,22 +6727,6 @@ struct heart_strike_t : public death_knight_melee_attack_t
     // TODO July 19 2022 Heart Strike is missing rank 2 for the extra rp gain
     //energize_amount += p -> spec.heart_strike_2 -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER );
     base_multiplier *= 1.0 + p -> talent.blood.improved_heart_strike -> effectN( 1 ).percent();
-    is_t28_counterattack = false;
-    leeching_strike = get_action<leeching_strike_t>("leeching_strike", p);
-  }
-
-  // Background constructor for procs from T28 4PC.  Remove constructor after Slands
-  heart_strike_t( util::string_view name, death_knight_t* p ) :
-    death_knight_melee_attack_t( name, p, p -> find_spell( 206930 ) ),
-    heartbreaker_rp_gen( p -> talent.blood.heartbreaker -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) )
-  {
-    background = proc = may_crit = true;
-    may_miss = false;
-    triggers_shackle_the_unworthy = true;
-    aoe = 2;
-    weapon = &( p -> main_hand_weapon );
-    base_multiplier *= 1.0 + p -> talent.blood.improved_heart_strike -> effectN( 1 ).percent();
-    is_t28_counterattack = true;
     leeching_strike = get_action<leeching_strike_t>("leeching_strike", p);
   }
 
@@ -6806,17 +6734,6 @@ struct heart_strike_t : public death_knight_melee_attack_t
   {
     death_knight_melee_attack_t::init();
     may_proc_bron = true;
-  }
-
-  // This section added for T28 4PC.  Remove after Slands.
-  double cost() const override
-  {
-    if ( background )
-    {
-      return 0;
-    }
-
-    return death_knight_melee_attack_t::cost();
   }
 
   int n_targets() const override
@@ -6845,12 +6762,8 @@ struct heart_strike_t : public death_knight_melee_attack_t
 
     if ( p() -> buffs.dancing_rune_weapon -> up() )
     {
-      if( !is_t28_counterattack )  // Counterattack does not trigger DRW heart strikes
-      {
-        p() -> pets.dancing_rune_weapon_pet -> ability.heart_strike -> execute_on_target( target );
-      }
 
-      if ( p() -> talent.blood.everlasting_bond.ok() && !is_t28_counterattack )  // Counterattack does not trigger DRW heart strikes
+      if ( p() -> talent.blood.everlasting_bond.ok() )
       {
         p() -> pets.everlasting_bond_pet -> ability.heart_strike -> execute_on_target( target );
       }
@@ -7396,9 +7309,6 @@ struct obliterate_t : public death_knight_melee_attack_t
         if ( oh && km_oh )
 
           km_oh -> execute_on_target( target );
-        // Tier28, KM is up, so fire GA, in game fires before oblits
-        if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T28, B4 ) )
-          p() -> active_spells.glacial_advance_t28_4pc -> execute_on_target( target );
       }
       else
       {
@@ -7885,7 +7795,6 @@ struct sacrificial_pact_t : public death_knight_heal_t
 
 struct scourge_strike_base_t : public death_knight_melee_attack_t
 {
-  timespan_t summon_duration; // For T28 Ghoul summon, remove after shadowlands
   double dnd_cleave_targets; // For when in dnd how many targets we can cleave
   scourge_strike_base_t( util::string_view name, death_knight_t* p, const spell_data_t* spell ) :
     death_knight_melee_attack_t( name, p, spell ),
@@ -8137,19 +8046,6 @@ struct soul_reaper_t : public death_knight_melee_attack_t
     dot_behavior = DOT_EXTEND;
   }
 
-  // T28 constructor
-  soul_reaper_t( death_knight_t* p ) :
-    death_knight_melee_attack_t( "soul_reaper", p, p -> find_spell( 343294 ) ),  // T28, they may not have soul reaper talented
-    soul_reaper_execute( get_action<soul_reaper_execute_t>( "soul_reaper_execute", p ) )
-  {
-    add_child( soul_reaper_execute );
-
-    triggers_shackle_the_unworthy = true;
-    hasted_ticks = false;
-    background = true;
-    dot_behavior = DOT_EXTEND;
-  }
-
   void init() override
   {
     death_knight_melee_attack_t::init();
@@ -8172,21 +8068,6 @@ struct soul_reaper_t : public death_knight_melee_attack_t
   {
     if ( dot -> target -> health_percentage() < data().effectN( 3 ).base_value() )
       soul_reaper_execute -> execute_on_target ( dot -> target );
-  }
-
-  // 6-28-22 In 9.2.5 a bug was introduced that causes soul reaper refreshes to add the remaining debuff duration to the refreshed duration
-  // if set procs SR with 3s remaining on the debuff, it adds 3s from the remaining, then the 5s it should. leading to an 11s debuff rather than 8s
-  timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
-  {
-    timespan_t d = death_knight_melee_attack_t::calculate_dot_refresh_duration( dot, triggered_duration );
-
-    // only the t28 version is a background action
-    if ( p() -> bugs && background )
-    {
-      d = d + dot->remains();
-    }
-
-    return d;
   }
 
   void execute() override
@@ -9660,21 +9541,6 @@ void death_knight_t::create_actions()
   if ( talent.unholy.outbreak.ok() || talent.unholy.unholy_blight.ok() || legendary.superstrain -> ok() )
     active_spells.virulent_eruption = new virulent_eruption_t( this );
 
-  if ( sets -> has_set_bonus( DEATH_KNIGHT_FROST, T28, B4 ) )
-  {
-    active_spells.glacial_advance_t28_4pc = new glacial_advance_damage_tier28_4pc_t( "glacial_advance_t28_4pc", this );
-  }
-
-  if ( sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T28, B2 ) )
-  {
-    active_spells.soul_reaper_t28 = new soul_reaper_t( this );
-  }
-
-  if ( sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T28, B4 ) )
-  {
-    active_spells.heart_strike_t28 = new heart_strike_t( "heart_strike_t28_4pc", this );
-  }
-
   player_t::create_actions();
 }
 
@@ -9953,12 +9819,6 @@ void death_knight_t::create_pets()
     {
       pets.apoc_ghouls.set_creation_callback(
         [] ( death_knight_t* p ) { return new pets::army_ghoul_pet_t( p, "apoc_ghoul" ); } );
-    }
-
-    if ( sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T28, B2 ) )
-    {
-      pets.harvest_ghouls.set_creation_callback(
-        [] ( death_knight_t* p ) { return new pets::army_ghoul_pet_t( p, "harvest_ghoul" ); } );
     }
 
     if ( talent.unholy.magus_of_the_dead.ok() )
@@ -11086,10 +10946,6 @@ void death_knight_t::activate()
 
     if ( specialization() == DEATH_KNIGHT_UNHOLY )
     {
-      if ( sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T28, B2 ) )
-      {
-        target->register_on_demise_callback( this, [this]( player_t* t ) { trigger_soul_reaper_death( t ); } );
-      }
 
       if ( spec.festering_wound->ok() )
       {
