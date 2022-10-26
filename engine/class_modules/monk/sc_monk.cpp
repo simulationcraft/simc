@@ -4048,6 +4048,19 @@ struct resonant_fists_t : public monk_spell_t
     background = true;
     aoe        = -1;
   }
+
+  double action_multiplier() const override
+  {
+    double am = monk_spell_t::action_multiplier();
+
+    // Effect 1 says how much damage the talent actually does
+    // Talent is currently bugged and doing full damage at 1 talent point.
+    // The first talent point should be doing 50% of the total damage
+    if ( !p()->bugs )
+      am *= p()->talent.general.resonant_fists->effectN( 1 ).percent();
+    
+    return am;
+  }
 };
 
 // ==========================================================================
