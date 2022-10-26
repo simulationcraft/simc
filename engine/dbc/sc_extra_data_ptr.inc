@@ -1768,7 +1768,7 @@ static constexpr stat_data_t __ptr_gt_class_stats_by_level[][120] =
 };
 
 //  Racial Base Stat Modifiers (Str Agi Sta Int Spi)
-static constexpr stat_data_t __gt_race_stats[] =
+static constexpr stat_data_t __ptr_gt_race_stats[] =
 {
   // Str Agi Sta Int Spi
   {   0,  0,  0,  0,  0 }, // No Race
