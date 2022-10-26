@@ -6628,7 +6628,7 @@ struct frost_strike_t : public death_knight_melee_attack_t
 
   void execute() override
   {
-    const death_knight_td_t* td = p() -> find_target_data( target );
+    const death_knight_td_t* td = p() -> get_target_data( target );
 
     if ( p() -> talent.frost.shattering_blade.ok() && td -> debuff.razorice -> stack() == 5 )
     {
