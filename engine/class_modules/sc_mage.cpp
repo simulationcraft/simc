@@ -2421,7 +2421,8 @@ struct hot_streak_spell_t : public fire_mage_spell_t
     if ( time_to_execute > 0_ms && p()->buffs.sun_kings_blessing_ready->check() )
     {
       p()->buffs.sun_kings_blessing_ready->expire();
-      p()->buffs.combustion->extend_duration_or_trigger( 1000 * p()->talents.sun_kings_blessing->effectN( 2 ).time_value() );
+      const spell_data_t* spell = p()->talents.sun_kings_blessing.ok() ? p()->talents.sun_kings_blessing : p()->runeforge.sun_kings_blessing;
+      p()->buffs.combustion->extend_duration_or_trigger( 1000 * spell->effectN( 2 ).time_value() );
     }
 
     fire_mage_spell_t::execute();
