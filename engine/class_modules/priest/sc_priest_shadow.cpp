@@ -680,7 +680,10 @@ struct shadow_word_pain_t final : public priest_spell_t
   {
     timespan_t t = priest_spell_t::tick_time( state );
 
-    if ( priest().is_screams_of_the_void_up( state->target ) )
+    // BUG: Screams of the Void does not work with Shadow Word: Pain with Mental Decay talented
+    // https://github.com/SimCMinMax/WoW-BugTracker/issues/1038
+    if ( ( !priest().bugs || !priest().talents.shadow.mental_decay.enabled() ) &&
+         priest().is_screams_of_the_void_up( state->target ) )
     {
       t /= ( 1 + priest().talents.shadow.screams_of_the_void->effectN( 1 ).percent() );
     }
@@ -2621,26 +2624,17 @@ bool priest_t::is_screams_of_the_void_up( player_t* target ) const
 {
   priest_td_t* td = get_target_data( target );
 
-  // BUG: Screams is not currently working on live
-  // https://github.com/SimCMinMax/WoW-BugTracker/issues/949
-  if ( bugs )
+  if ( talents.shadow.screams_of_the_void.enabled() )
   {
-    return false;
-  }
-  else
-  {
-    if ( talents.shadow.screams_of_the_void.enabled() )
+    if ( td->dots.mind_flay->is_ticking() || td->dots.void_torrent->is_ticking() ||
+         td->dots.mind_flay_insanity->is_ticking() ||
+         ( talents.shadow.mind_sear.enabled() && channeling != nullptr &&
+           channeling->id == talents.shadow.mind_sear->id() ) )
     {
-      if ( td->dots.mind_flay->is_ticking() || td->dots.void_torrent->is_ticking() ||
-           td->dots.mind_flay_insanity->is_ticking() ||
-           ( talents.shadow.mind_sear.enabled() && channeling != nullptr &&
-             channeling->id == talents.shadow.mind_sear->id() ) )
-      {
-        return true;
-      }
+      return true;
     }
-    return false;
   }
+  return false;
 }
 
 // Helper function to refresh talbadars buff
