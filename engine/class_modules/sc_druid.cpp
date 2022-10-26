@@ -11305,7 +11305,7 @@ bool druid_t::validate_fight_style( fight_style_e /* style */) const
 {
   if ( SC_BETA == 0 && strcmp( SC_MAJOR_VERSION, "1000" ) == 0 )
   {
-    sim->error( "Prepatch {} sims are untested and not supported. Sim at your own risk!",
+    sim->error( "Prepatch {} sims are untested and not supported. Many legendaries and conduits may not work. Sim at your own risk!",
                 util::specialization_string( specialization() ) );
   }
 /* uncomment if certain fight styles prove problematic again
