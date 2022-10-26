@@ -3045,6 +3045,7 @@ struct fists_of_fury_t : public monk_melee_attack_t
   {
     parse_options( options_str );
 
+    cooldown                        = p->cooldown.fists_of_fury;
     sef_ability                     = sef_ability_e::SEF_FISTS_OF_FURY;
     may_combo_strike                = true;
     may_proc_bron                   = true;
