@@ -3076,11 +3076,7 @@ public:
     main_hand_weapon.max_dmg    = dbc->spell_scaling( o()->type, level() );
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
-
-    if (  o()->specialization() == MONK_MISTWEAVER )
-      owner_coeff.ap_from_sp    = o()->spec.mistweaver_monk->effectN( 4 ).percent();
-    else
-      owner_coeff.ap_from_ap    = 1.00;
+    owner_coeff.ap_from_ap      = 1.00;
   }
 
   void init_action_list() override
