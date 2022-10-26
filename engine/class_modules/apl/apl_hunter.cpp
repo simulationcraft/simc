@@ -198,7 +198,6 @@ void marksmanship( player_t* p )
   st->add_action( "trueshot,if=((covenant.venthyr&(buff.precise_shots.down|talent.calling_the_shots)|covenant.necrolord|covenant.kyrian&(cooldown.resonating_arrow.remains>30|cooldown.resonating_arrow.remains<10)|covenant.night_fae&(cooldown.wild_spirits.remains>30|buff.wild_spirits.up))|buff.volley.up&active_enemies>1)&(!raid_event.adds.exists|!raid_event.adds.up&(raid_event.adds.duration+raid_event.adds.in<25|raid_event.adds.in>60)|raid_event.adds.up&raid_event.adds.remains>10|active_enemies>1)|fight_remains<25" );
   st->add_action( "multishot,if=buff.bombardment.up&buff.trick_shots.down&active_enemies>1|talent.salvo&buff.salvo.down&!talent.volley" );
   st->add_action( "aimed_shot,target_if=min:dot.serpent_sting.remains+action.serpent_sting.in_flight_to_target*99,if=buff.precise_shots.down|(buff.trueshot.up|full_recharge_time<gcd+cast_time)&(!talent.chimaera_shot|active_enemies<2)|buff.trick_shots.remains>execute_time&active_enemies>1" );
-  st->add_action( "steady_shot,if=buff.steady_focus.remains<5&talent.steady_focus&buff.resonating_arrow.down" );
   st->add_action( "rapid_fire,if=(cooldown.resonating_arrow.remains>10|!covenant.kyrian|!talent.double_tap|soulbind.effusive_anima_accelerator)&focus+cast_regen<focus.max&(buff.double_tap.down&buff.eagletalons_true_focus.down|talent.streamline)" );
   st->add_action( "chimaera_shot,if=buff.precise_shots.up|focus>cost+action.aimed_shot.cost" );
   st->add_action( "arcane_shot,if=buff.precise_shots.up|focus>cost+action.aimed_shot.cost" );
