@@ -139,6 +139,7 @@ public:
     buff_t* sweeping_strikes;
     buff_t* test_of_might_tracker;  // Used to track rage gain from test of might.
     buff_t* test_of_might;
+    buff_t* titanic_rage;
     //buff_t* vengeance_revenge;
     //buff_t* vengeance_ignore_pain;
     buff_t* whirlwind;
@@ -3965,7 +3966,7 @@ struct raging_blow_t : public warrior_attack_t
     {
       return false;
     }
-    if ( p()->talents.fury.reckless_abandon->ok() && p()->buff.reckless_abandon->check() )
+    if ( p()->buff.reckless_abandon->check() || p()->buff.titanic_rage->check() )
     {
       return false;
     }
@@ -4099,7 +4100,7 @@ struct crushing_blow_t : public warrior_attack_t
     {
       return false;
     }
-    if ( !p()->talents.fury.reckless_abandon->ok() || !p()->buff.reckless_abandon->check() )
+    if ( !p()->buff.reckless_abandon->check() && !p()->buff.titanic_rage->check() )
     {
       return false;
     }
@@ -4256,6 +4257,12 @@ struct odyns_fury_t : warrior_attack_t
       p()->buff.dancing_blades->trigger();
     } 
 
+    if ( p()->talents.fury.titanic_rage->ok() )
+    {
+      p()->enrage();
+      p()->buff.titanic_rage->trigger();
+    }
+
     if ( p()->talents.warrior.titans_torment->ok() )
     {
       action_t* torment_ability = p()->active.torment_avatar;
@@ -4322,6 +4329,11 @@ struct torment_odyns_fury_t : warrior_attack_t
     if ( p()->talents.fury.dancing_blades->ok() )
     {
       p()->buff.dancing_blades->trigger();
+    }
+    if ( p()->talents.fury.titanic_rage->ok() )
+    {
+      p()->enrage();
+      p()->buff.titanic_rage->trigger();
     }
   }
 
@@ -8590,6 +8602,10 @@ void warrior_t::create_buffs()
     ->set_stack_change_callback( [ this ]( buff_t*, int, int after ) { if ( after == 0  && this->legendary.will_of_the_berserker->ok() ) buff.will_of_the_berserker->trigger(); });
 
   buff.reckless_abandon = make_buff( this, "reckless_abandon", find_spell( 335101 ) )
+    ->apply_affecting_conduit( conduit.depths_of_insanity );
+
+  buff.titanic_rage = make_buff( this, "titanic_rage", talents.fury.titanic_rage->effectN( 1 ).trigger() )
+    ->set_duration( talents.fury.titanic_rage->effectN( 1 ).trigger()->duration() )
     ->apply_affecting_conduit( conduit.depths_of_insanity );
 
   buff.sudden_death = make_buff( this, "sudden_death", specialization() == WARRIOR_FURY ? talents.fury.sudden_death : talents.arms.sudden_death );
