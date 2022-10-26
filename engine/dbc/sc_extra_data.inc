@@ -1867,6 +1867,14 @@ static double _gt_resolve_dps_by_level[120] =
   2843.4148, 2843.4148, 2843.4148, 2843.4148, 2843.4148,    // 116-120
 };
 
+// These values are not in any database and need to be calculated at each level manually.
+// To calculate these values you need to use the in-game GetParryChance() or GetDodgeChance()
+// Take the naked base primary stat for the level and divide that by what
+// was returned from either GetParryChance() for Strength users or GetDodgeChance() for
+// Agility users; minus 3 for the base dodge or parry. As an example at level 29
+// my base Agility on a monk is 85. GetDodgeChance() returns 6.256046295166. I subtract 3 for 
+// the base dodge from the result, or 3.256046295166. I then divide that by the base Agility
+// 85 / 3.256046295166 = 26.10527993
 static double _gt_avoid_per_str_agi_by_level[120] =
 { 
    1/16.04048030,  1/16.04048303,  1/16.04048526,  1/16.04048201,  1/16.04048397, // 1-5
