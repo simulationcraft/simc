@@ -63,7 +63,6 @@ public:
     heal_t* beacon_of_light;
     action_t* holy_shield_damage;
     action_t* tyrs_enforcer_damage;
-    action_t* t28_4p_prot;
     action_t* judgment_of_light;
     action_t* shield_of_vengeance_damage;
     action_t* zeal;
@@ -136,7 +135,6 @@ public:
     buff_t* inner_light;
     buff_t* inspiring_vanguard;
     buff_t* soaring_shield;
-    buff_t* glorious_purpose; //T28 2pc
 
     // Ret
     buffs::crusade_buff_t* crusade;
@@ -241,7 +239,6 @@ public:
     cooldown_t* blessing_of_the_seasons;
     cooldown_t* ashen_hallow; // Radiant Embers Legendary
 
-    cooldown_t* t28_4p_prot_icd;
     cooldown_t* ret_aura_icd;
   } cooldowns;
 
@@ -571,14 +568,8 @@ public:
     item_runeforge_t divine_resonance;
   } legendary;
 
-    struct tier_sets_t
+  struct tier_sets_t
   {
-    const spell_data_t* glorious_purpose_2pc;
-    const spell_data_t* glorious_purpose_4pc;
-    const spell_data_t* dawn_will_come_2pc;
-    const spell_data_t* dawn_will_come_4pc;
-    const spell_data_t* ashes_to_ashes_2pc;
-    const spell_data_t* ashes_to_ashes_4pc;
 
   } tier_sets;
 
@@ -664,7 +655,6 @@ public:
   void    trigger_holy_shield( action_state_t* s );
   void    trigger_tyrs_enforcer( action_state_t* s );
   void    trigger_inner_light( action_state_t* s );
-  void    trigger_t28_4p_prot( action_state_t* s );
   void    trigger_forbearance( player_t* target );
   void    trigger_es_explosion( player_t* target );
   int     get_local_enemies( double distance ) const;

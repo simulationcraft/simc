@@ -70,7 +70,6 @@ public:
     propagate_const<buff_t*> echoing_void;
     propagate_const<buff_t*> echoing_void_collapse;
     propagate_const<buff_t*> apathy;
-    propagate_const<buff_t*> screams_of_the_void;
   } buffs;
 
   priest_t& priest()

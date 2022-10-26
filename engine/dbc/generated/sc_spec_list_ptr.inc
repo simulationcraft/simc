@@ -1,5 +1,5 @@
 #define MAX_SPECS_PER_CLASS (4)
-#define MAX_SPEC_CLASS  (13)
+#define MAX_SPEC_CLASS  (14)
 
 static constexpr specialization_e __class_spec_id[MAX_SPEC_CLASS][MAX_SPECS_PER_CLASS] =
 {
@@ -78,6 +78,12 @@ static constexpr specialization_e __class_spec_id[MAX_SPEC_CLASS][MAX_SPECS_PER_
   {
     DEMON_HUNTER_HAVOC,
     DEMON_HUNTER_VENGEANCE,
+    SPEC_NONE,
+    SPEC_NONE,
+  },
+  {
+    EVOKER_DEVASTATION,
+    EVOKER_PRESERVATION,
     SPEC_NONE,
     SPEC_NONE,
   },

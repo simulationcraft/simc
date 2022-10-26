@@ -564,6 +564,9 @@ struct haunt_t : public affliction_spell_t
 
       if ( p()->talents.haunted_soul.ok() )
         p()->buffs.haunted_soul->trigger();
+
+      if ( p()->talents.shadow_embrace.ok() )
+        td( s->target )->debuffs_shadow_embrace->trigger();
     }
   }
 };

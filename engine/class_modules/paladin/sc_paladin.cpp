@@ -60,8 +60,8 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
   cooldowns.blessing_of_the_seasons = get_cooldown( "blessing_of_the_seasons" );
   cooldowns.ashen_hallow = get_cooldown( "ashen_hallow" );
 
-  cooldowns.t28_4p_prot_icd = get_cooldown( "t28_4p_prot_icd" );
   cooldowns.ret_aura_icd = get_cooldown( "ret_aura_icd" );
+  cooldowns.ret_aura_icd->duration = timespan_t::from_seconds( 30 );
 
   beacon_target         = nullptr;
   resource_regeneration = regen_type::DYNAMIC;
@@ -832,14 +832,6 @@ struct melee_t : public paladin_melee_attack_t
         {
           p()->procs.art_of_war->occur();
 
-          if ( p()->sets->has_set_bonus( PALADIN_RETRIBUTION, T28, B2 ) )
-          {
-            p()->buffs.seraphim->extend_duration_or_trigger(
-              timespan_t::from_seconds( p()->sets->set( PALADIN_RETRIBUTION, T28, B2 )->effectN( 1 ).base_value() ),
-              player
-            );
-          }
-
           if ( p()->talents.ashes_to_ashes->ok() )
           {
             p()->buffs.seraphim->extend_duration_or_trigger(
@@ -848,26 +840,19 @@ struct melee_t : public paladin_melee_attack_t
             );
           }
 
-          if ( p()->sets->has_set_bonus( PALADIN_RETRIBUTION, T28, B4 ) && rng().roll( p()->sets->set( PALADIN_RETRIBUTION, T28, B4 )->effectN( 1 ).percent() ) )
+          if ( p()->talents.ashes_to_dust->ok() && rng().roll( p()->talents.ashes_to_dust->effectN( 1 ).percent() ) )
           {
             p()->cooldowns.wake_of_ashes->reset( true );
           }
           else
           {
-            if ( p()->talents.ashes_to_dust->ok() && rng().roll( p()->talents.ashes_to_dust->effectN( 1 ).percent() ) )
-            {
-              p()->cooldowns.wake_of_ashes->reset( true );
-            }
-            else
-            {
-              if ( p()->talents.blade_of_wrath->ok() )
-                p()->buffs.blade_of_wrath->trigger();
+            if ( p()->talents.blade_of_wrath->ok() )
+              p()->buffs.blade_of_wrath->trigger();
 
-              if ( p()->talents.consecrated_blade->ok() )
-                p()->buffs.consecrated_blade->trigger();
+            if ( p()->talents.consecrated_blade->ok() )
+              p()->buffs.consecrated_blade->trigger();
 
-              p()->cooldowns.blade_of_justice->reset( true );
-            }
+            p()->cooldowns.blade_of_justice->reset( true );
           }
         }
 
@@ -2142,15 +2127,11 @@ void paladin_t::create_actions()
   if ( legendary.the_magistrates_judgment->ok() )
     cooldowns.the_magistrates_judgment_icd->duration = legendary.the_magistrates_judgment->internal_cooldown();
 
-  if ( sets->has_set_bonus( PALADIN_PROTECTION, T28, B4 ))
-    cooldowns.t28_4p_prot_icd->duration = tier_sets.glorious_purpose_4pc->internal_cooldown();
-
   if ( talents.consecrated_blade->ok() )
   {
     active.background_cons = new consecration_t( this );
   }
 
-  cooldowns.ret_aura_icd->duration = timespan_t::from_seconds( 30 );
 
   player_t::create_actions();
 }
@@ -2834,14 +2815,6 @@ void paladin_t::init_spells()
   legendary.divine_resonance              = find_runeforge_legendary( "Divine Resonance" );
 
 
-  // Shadowlands Tier Sets
-  tier_sets.glorious_purpose_2pc = sets->set( PALADIN_PROTECTION, T28, B2 );
-  tier_sets.glorious_purpose_4pc = sets->set( PALADIN_PROTECTION, T28, B4 );
-  tier_sets.dawn_will_come_2pc = sets->set( PALADIN_HOLY, T28, B2 );
-  tier_sets.dawn_will_come_4pc = sets->set( PALADIN_HOLY, T28, B4 );
-  tier_sets.ashes_to_ashes_2pc   = sets->set( PALADIN_RETRIBUTION, T28, B2 );
-  tier_sets.ashes_to_ashes_4pc   = sets->set( PALADIN_RETRIBUTION, T28, B4 );
-
   // Covenants
   covenant.kyrian    = find_covenant_spell( "Divine Toll" );
   covenant.venthyr   = find_covenant_spell( "Ashen Hallow" );
@@ -3272,7 +3245,6 @@ double paladin_t::composite_block() const
   double b                   = player_t::composite_block_dr( block_subject_to_dr );
 
   b += talents.holy_shield->effectN( 1 ).percent();
-  b += buffs.glorious_purpose->stack_value();
 
   return b;
 }
@@ -3477,19 +3449,6 @@ void paladin_t::assess_damage( school_e school, result_amount_type dtype, action
   if ( s->block_result == BLOCK_RESULT_BLOCKED )
   {
     trigger_holy_shield( s );
-  }
-
-  // T28 4P bonus
-  if ( sets->has_set_bonus( PALADIN_PROTECTION, T28, B4 ) && cooldowns.t28_4p_prot_icd->up() &&
-       !( s->result == RESULT_DODGE || s->result == RESULT_PARRY || s->result == RESULT_MISS )
-     // The set doesn't proc on *all* damage despite saying so, and the default enemy damage
-     // has an unrealistically high amount of damage instances
-     // to counter that, the set only works on blockable and physical damage in simc
-       && s->action->may_block && school == SCHOOL_PHYSICAL
-     // TOCHECK: This might be subject to block chance reduction from level difference between attacker and target
-       && rng().roll( cache.block() * tier_sets.glorious_purpose_4pc->effectN( 1 ).percent() ) )
-  {
-    trigger_t28_4p_prot( s );
   }
 
   if ( buffs.inner_light->up() && !s->action->special && cooldowns.inner_light_icd->up() )

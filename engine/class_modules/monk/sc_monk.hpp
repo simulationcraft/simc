@@ -907,6 +907,7 @@ public:
     const spell_data_t* glory_of_the_dawn_damage;
     const spell_data_t* hidden_masters_forbidden_touch;
     const spell_data_t* hit_combo;
+    const spell_data_t* keefers_skyreach_debuff;
     const spell_data_t* mark_of_the_crane;
     const spell_data_t* power_strikes_chi;
     const spell_data_t* thunderfist;
@@ -1096,11 +1097,11 @@ public:
   struct options_t
   {
     int initial_chi;
-    double memory_of_lucid_dreams_proc_chance = 0.15;
     double expel_harm_effectiveness;
     double faeline_stomp_uptime;
     int chi_burst_healing_targets;
     int motc_override;
+    int no_bof_dot;
   } user_options;
 
   // Blizzard rounds it's stagger damage; anything higher than half a percent beyond

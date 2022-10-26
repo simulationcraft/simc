@@ -81,6 +81,9 @@ struct monk_action_t : public Base
   bool may_proc_bron;
   proc_t* bron_proc;
 
+  // Keefer's Skyreach trigger
+  proc_t* keefers_skyreach_proc;
+
   // Affect flags for various dynamic effects
   struct
   {
@@ -106,6 +109,7 @@ public:
       trigger_resonant_fists( false ),
       may_proc_bron( false ),
       bron_proc( nullptr ),
+      keefers_skyreach_proc( nullptr ),
       affected_by()
   {
     range::fill( _resource_by_stance, RESOURCE_MAX );
@@ -263,6 +267,9 @@ public:
 
     if ( may_proc_bron )
       bron_proc = p()->get_proc( std::string( "Bron's Call to Action: " ) + full_name() );
+
+    if ( ab::data().affected_by( p()->passives.keefers_skyreach_debuff->effectN( 1 ) ) )
+      keefers_skyreach_proc = p()->get_proc( std::string( "Keefer's Skyreach: " ) + full_name() );
   }
 
   void reset_swing()
@@ -735,6 +742,12 @@ public:
     {
       if ( may_combo_strike )
         combo_strikes_trigger();
+
+      if ( auto* td = this->get_td( p()->target ) )
+      {
+        if ( td->debuff.keefers_skyreach->check() && ab::data().affected_by( p()->passives.keefers_skyreach_debuff->effectN( 1 ) ) )
+          keefers_skyreach_proc->occur();
+      }
     }
 
     ab::execute();
@@ -920,7 +933,7 @@ struct monk_spell_t : public monk_action_t<spell_t>
     if ( auto* td = this->find_td( target ) )
     {
       if ( td->debuff.keefers_skyreach->check() &&
-           base_t::data().affected_by( td->debuff.keefers_skyreach->data().effectN( 1 ) ) )
+           base_t::data().affected_by( p()->passives.keefers_skyreach_debuff->effectN( 1 ) ) )
       {
         c += td->debuff.keefers_skyreach->check_value();
       }
@@ -1001,7 +1014,7 @@ struct monk_heal_t : public monk_action_t<heal_t>
     if ( auto* td = this->find_td( target ) )
     {
       if ( td->debuff.keefers_skyreach->check() &&
-           base_t::data().affected_by( td->debuff.keefers_skyreach->data().effectN( 1 ) ) )
+           base_t::data().affected_by( p()->passives.keefers_skyreach_debuff->effectN( 1 ) ) )
       {
         c += td->debuff.keefers_skyreach->check_value();
       }
@@ -1304,7 +1317,7 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
     if ( auto* td = this->find_td( target ) )
     {
       if ( td->debuff.keefers_skyreach->check() &&
-           base_t::data().affected_by( td->debuff.keefers_skyreach->data().effectN( 1 ) ) )
+           base_t::data().affected_by( p()->passives.keefers_skyreach_debuff->effectN( 1 ) ) )
       {
         c += td->debuff.keefers_skyreach->check_value();
       }
@@ -3027,11 +3040,12 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
 
 struct fists_of_fury_t : public monk_melee_attack_t
 {
-  fists_of_fury_t( monk_t* p, util::string_view options_str )
-    : monk_melee_attack_t( "fists_of_fury", p, p->talent.windwalker.fists_of_fury )
+  fists_of_fury_t( monk_t* p, util::string_view options_str, bool canceled = false )
+    : monk_melee_attack_t( ( canceled ? "fists_of_fury_cancel" : "fists_of_fury" ), p, p->talent.windwalker.fists_of_fury )
   {
     parse_options( options_str );
 
+    cooldown                        = p->cooldown.fists_of_fury;
     sef_ability                     = sef_ability_e::SEF_FISTS_OF_FURY;
     may_combo_strike                = true;
     may_proc_bron                   = true;
@@ -3045,11 +3059,17 @@ struct fists_of_fury_t : public monk_melee_attack_t
     attack_power_mod.direct = 0;
     weapon_power_mod        = 0;
 
-    // Effect 1 shows a period of 166 milliseconds which appears to refer to the visual and not the tick period
-    base_tick_time = dot_duration / 4;
     may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
 
+    // Effect 1 shows a period of 166 milliseconds which appears to refer to the visual and not the tick period
+    base_tick_time = dot_duration / 4;
+
+    // Using fists_of_fury_cancel in APL will cancel immediately after the GCD regardless of priority
+    if ( canceled ) 
+      dot_duration = trigger_gcd;
+
     tick_action = new fists_of_fury_tick_t( p, "fists_of_fury_tick" );
+
   }
 
   double cost() const override
@@ -3121,10 +3141,11 @@ struct fists_of_fury_t : public monk_melee_attack_t
     if ( p()->buff.fists_of_flowing_momentum_fof->up() )
       p()->buff.fists_of_flowing_momentum_fof->expire();
 
+    if ( p()->shared.xuens_battlegear && p()->shared.xuens_battlegear->ok() )
+      p()->buff.pressure_point->trigger();
+
     // If Fists of Fury went the full duration
     if ( dot->current_tick == dot->num_ticks() ) {
-      if ( p()->shared.xuens_battlegear && p()->shared.xuens_battlegear->ok() )
-        p()->buff.pressure_point->trigger();
     }
   }
 };
@@ -4028,6 +4049,19 @@ struct resonant_fists_t : public monk_spell_t
     background = true;
     aoe        = -1;
   }
+
+  double action_multiplier() const override
+  {
+    double am = monk_spell_t::action_multiplier();
+
+    // Effect 1 says how much damage the talent actually does
+    // Talent is currently bugged and doing full damage at 1 talent point.
+    // The first talent point should be doing 50% of the total damage
+    if ( !p()->bugs )
+      am *= p()->talent.general.resonant_fists->effectN( 1 ).percent();
+    
+    return am;
+  }
 };
 
 // ==========================================================================
@@ -4371,12 +4405,15 @@ struct breath_of_fire_t : public monk_spell_t
 
   void impact( action_state_t* s ) override
   {
+    if ( p()->user_options.no_bof_dot == 1 )
+      s->result_amount = 0;
+
     monk_spell_t::impact( s );
 
     monk_td_t& td = *this->get_td( s->target );
 
-    if ( td.debuff.keg_smash->up() || td.debuff.fallen_monk_keg_smash->up() ||
-         td.debuff.sinister_teaching_fallen_monk_keg_smash->up() )
+    if ( p()->user_options.no_bof_dot == 0 && ( td.debuff.keg_smash->up() || td.debuff.fallen_monk_keg_smash->up() ||
+         td.debuff.sinister_teaching_fallen_monk_keg_smash->up() ) )
     {
       p()->active_actions.breath_of_fire->target = s->target;
       if ( p()->buff.blackout_combo->up() )
@@ -6189,12 +6226,12 @@ struct expel_harm_t : public monk_heal_t
     add_child( dmg );
   }
 
-  double composite_crit_chance_multiplier() const override
+  double composite_crit_chance() const override
   {
-    auto mm = monk_heal_t::composite_crit_chance_multiplier();
+    auto mm = monk_heal_t::composite_crit_chance();
 
     if ( p()->talent.general.vigorous_expulsion->ok() )
-      mm *= 1 + p()->talent.general.vigorous_expulsion->effectN( 2 ).percent();
+      mm += p()->talent.general.vigorous_expulsion->effectN( 2 ).percent();
 
     return mm;
   }
@@ -7481,6 +7518,7 @@ monk_td_t::monk_td_t( player_t* target, monk_t* p ) : actor_target_data_t( targe
 
   // Covenant Abilities
   debuff.bonedust_brew = make_buff( *this, "bonedust_brew_debuff", p->find_spell( 325216 ) )
+                             ->set_chance( 1 )
                              ->set_cooldown( timespan_t::zero() )
                              ->set_default_value_from_effect( 3 );
 
@@ -7507,7 +7545,7 @@ monk_td_t::monk_td_t( player_t* target, monk_t* p ) : actor_target_data_t( targe
                             ->set_default_value_from_effect( 1 )
                             ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                             ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
-  debuff.keefers_skyreach = make_buff( *this, "keefers_skyreach", p->find_spell( 344021 ) )
+  debuff.keefers_skyreach = make_buff( *this, "keefers_skyreach", p->passives.keefers_skyreach_debuff )
                                 ->set_default_value_from_effect( 1 )
                                 ->add_invalidate( CACHE_ATTACK_CRIT_CHANCE )
                                 ->set_refresh_behavior( buff_refresh_behavior::NONE );
@@ -7614,6 +7652,7 @@ monk_t::monk_t( sim_t* sim, util::string_view name, race_e r )
   user_options.faeline_stomp_uptime      = 1.0;
   user_options.chi_burst_healing_targets = 8;
   user_options.motc_override             = 0;
+  user_options.no_bof_dot                = 0;
 }
 
 // monk_t::create_action ====================================================
@@ -7700,6 +7739,8 @@ action_t* monk_t::create_action( util::string_view name, util::string_view optio
   // Windwalker
   if ( name == "fists_of_fury" )
     return new fists_of_fury_t( this, options_str );
+  if ( name == "fists_of_fury_cancel" )
+    return new fists_of_fury_t( this, options_str, true );
   if ( name == "flying_serpent_kick" )
     return new flying_serpent_kick_t( this, options_str );
   if ( name == "touch_of_karma" )
@@ -8471,6 +8512,7 @@ void monk_t::init_spells()
   passives.glory_of_the_dawn_damage         = find_spell( 392959 );
   passives.hidden_masters_forbidden_touch   = find_spell( 213114 );
   passives.hit_combo                        = find_spell( 196741 );
+  passives.keefers_skyreach_debuff          = find_spell( 344021 );
   passives.mark_of_the_crane                = find_spell( 228287 );
   passives.power_strikes_chi                = find_spell( 121283 );
   passives.thunderfist                      = find_spell( 242390 );
@@ -8840,10 +8882,10 @@ void monk_t::create_buffs ()
     buff.shuffle = make_buff( this, "shuffle", passives.shuffle )
       ->set_duration_multiplier( 3 )
       ->set_refresh_behavior( buff_refresh_behavior::DURATION );
+
     buff.training_of_niuzao = make_buff( this, "training_of_niuzao", find_spell( 383733 ) )
-      ->set_default_value( talent.brewmaster.training_of_niuzao->effectN(1).percent() )
+      ->set_default_value( talent.brewmaster.training_of_niuzao->effectN( 1 ).percent() )
       ->add_invalidate( CACHE_MASTERY );
-    buff.training_of_niuzao->set_max_stack( (int)talent.brewmaster.training_of_niuzao->effectN( 3 ).base_value() );
 
     buff.light_stagger = make_buff<buffs::stagger_buff_t>( *this, "light_stagger", find_spell( 124275 ) );
     buff.moderate_stagger = make_buff<buffs::stagger_buff_t>( *this, "moderate_stagger", find_spell( 124274 ) );
@@ -9000,6 +9042,7 @@ void monk_t::create_buffs ()
   // Covenants
 
   buff.bonedust_brew = make_buff( this, "bonedust_brew", find_spell( 325216 ) )
+    ->set_chance( 1 )
     ->set_cooldown( timespan_t::zero() )
     ->set_default_value_from_effect( 3 );
   buff.bonedust_brew_grounding_breath_hidden = make_buff( this, "bonedust_brew_hidden", passives.bonedust_brew_grounding_breath )
@@ -9726,7 +9769,7 @@ double monk_t::composite_mastery() const
   if ( specialization() == MONK_BREWMASTER )
   {
     if ( buff.training_of_niuzao->check() )
-      m += buff.training_of_niuzao->check_stack_value();
+      m += buff.training_of_niuzao->check_value();
   }
 
   return m;
@@ -9909,20 +9952,12 @@ void monk_t::create_options()
 {
   base_t::create_options();
 
-  // TODO: Remove in 9.2
-  add_option( opt_deprecated( "initial_chi", "monk.initial_chi" ) );
-  add_option( opt_deprecated( "memory_of_lucid_dreams_proc_chance", "monk.memory_of_lucid_dreams_proc_chance" ) );
-  add_option( opt_deprecated( "expel_harm_effectiveness", "monk.expel_harm_effectiveness" ) );
-  add_option( opt_deprecated( "faeline_stomp_uptime", "monk.faeline_stomp_uptime" ) );
-  add_option( opt_deprecated( "chi_burst_healing_targets", "monk.chi_burst_healing_targets" ) );
-
   add_option( opt_int( "monk.initial_chi", user_options.initial_chi, 0, 6 ) );
-  add_option( opt_float( "monk.memory_of_lucid_dreams_proc_chance", user_options.memory_of_lucid_dreams_proc_chance,
-                         0.0, 1.0 ) );
   add_option( opt_float( "monk.expel_harm_effectiveness", user_options.expel_harm_effectiveness, 0.0, 1.0 ) );
   add_option( opt_float( "monk.faeline_stomp_uptime", user_options.faeline_stomp_uptime, 0.0, 1.0 ) );
   add_option( opt_int( "monk.chi_burst_healing_targets", user_options.chi_burst_healing_targets, 0, 30 ) );
   add_option( opt_int( "monk.motc_override", user_options.motc_override, 0, 5 ) );
+  add_option( opt_int( "monk.no_bof_dot", user_options.no_bof_dot, 0, 1 ) );
 }
 
 // monk_t::copy_from =========================================================
@@ -10533,7 +10568,7 @@ void monk_t::stagger_damage_changed( bool last_tick )
   {
     new_buff->trigger();
     if ( talent.brewmaster.training_of_niuzao.ok() )
-      buff.training_of_niuzao->trigger( niuzao );
+      buff.training_of_niuzao->trigger( 1, niuzao * talent.brewmaster.training_of_niuzao->effectN( 1 ).percent(), -1, timespan_t::min() );
   }
 }
 
@@ -10739,6 +10774,8 @@ std::unique_ptr<expr_t> monk_t::create_expression( util::string_view name_str )
     else if ( splits[1] == "max" )
       return make_fn_expr( name_str, [ this ] { return mark_of_the_crane_max(); } );
   }
+  else if ( splits.size() == 1 && splits[ 0 ] == "no_bof_dot" )
+    return make_fn_expr( name_str, [ this ] { return user_options.no_bof_dot; } );
 
   return base_t::create_expression( name_str );
 }

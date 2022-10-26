@@ -352,7 +352,7 @@ public:
       player_talent_t chaos_theory;
       player_talent_t restless_hunter;
       player_talent_t inner_demon;
-      player_talent_t accelerating_blade;         // Partial NYI -- Add chain_bonus_damage in apply_affecting
+      player_talent_t accelerating_blade;
       player_talent_t ragefire;
 
       player_talent_t know_your_enemy;
@@ -1348,6 +1348,7 @@ public:
     // Havoc
     affect_flags any_means_necessary;
     affect_flags demonic_presence;
+    bool chaos_theory = false;
     bool essence_break = false;
     bool burning_wound = false;
 
@@ -1464,6 +1465,11 @@ public:
       {
         affected_by.burning_wound = ab::data().affected_by( p->spec.burning_wound_debuff->effectN( 2 ) );
       }
+
+      if ( p->talent.havoc.chaos_theory->ok() )
+      {
+        affected_by.chaos_theory = ab::data().affected_by( p->spec.chaos_theory_buff->effectN( 1 ) );
+      }
     }
     else // DEMON_HUNTER_VENGEANCE
     {
@@ -1513,10 +1519,14 @@ public:
     register_damage_buff( p()->buff.demon_soul );
     register_damage_buff( p()->buff.empowered_demon_soul );
     register_damage_buff( p()->buff.momentum );
-    register_damage_buff( p()->buff.chaos_theory );
     register_damage_buff( p()->buff.restless_hunter );
-
     register_damage_buff( p()->buff.t29_havoc_4pc );
+
+    // Chaos Theory legendary is an 8s damage buff while talent is a one-shot crit buff
+    if ( !p()->talent.havoc.chaos_theory->ok() && p()->legendary.chaos_theory->ok() )
+    {
+      register_damage_buff( p()->buff.chaos_theory );
+    }
 
     if ( track_cd_waste )
     {
@@ -1612,6 +1622,13 @@ public:
     // Registered Damage Buffs
     for ( auto crit_chance_buff : crit_chance_buffs )
       c += crit_chance_buff->stack_value_crit_chance();
+
+    if ( affected_by.chaos_theory && p()->buff.chaos_theory->up() )
+    {
+      const double bonus = p()->rng().range( p()->talent.havoc.chaos_theory->effectN( 1 ).percent(),
+                                             p()->talent.havoc.chaos_theory->effectN( 2 ).percent() );
+      c += bonus;
+    }
 
     return c;
   }
@@ -2903,10 +2920,7 @@ struct immolation_aura_t : public demon_hunter_spell_t
     {
       double am = demon_hunter_spell_t::action_multiplier();
 
-      if ( p()->conduit.growing_inferno.ok() )
-      {
-        am *= 1.0 + p()->buff.growing_inferno->stack_value();
-      }
+      am *= 1.0 + p()->buff.growing_inferno->stack_value();
 
       return am;
     }
@@ -4170,12 +4184,24 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
     void execute() override
     {
       demon_hunter_attack_t::execute();
-
-      // Technically this appears to have a 0.5s ICD, but this is handled elsewhere
-      // 2021-06-22 -- It once again appears that Onslaught procs can proc refunds, as the procs are now 600ms apart
-      if ( may_refund && p()->rng().roll( this->get_refund_proc_chance() ) )
+     
+      if ( may_refund )
       {
-        p()->resource_gain( RESOURCE_FURY, p()->spec.chaos_strike_fury->effectN( 1 ).resource( RESOURCE_FURY ), parent->gain );
+        // Technically this appears to have a 0.5s ICD, but this is handled elsewhere
+        // Onslaught can currently proc refunds due to being delayed by 600ms
+        if ( p()->rng().roll( this->get_refund_proc_chance() ) )
+        {
+          p()->resource_gain( RESOURCE_FURY, p()->spec.chaos_strike_fury->effectN( 1 ).resource( RESOURCE_FURY ), parent->gain );
+        }
+
+        // DFALPHA TOCHECK -- Timing here in logs is unclear as to if this benefits the crit% of the second hit
+        //                    Expire matches the timing of the energize in logs but prior to second impact
+        //                    Possible the energize and expire has to be moved before execute()
+        if ( p()->talent.havoc.chaos_theory->ok() )
+        {
+          // Legendary buff does not expire on cast, only talent
+          p()->buff.chaos_theory->expire();
+        }
       }
     }
 
@@ -4978,10 +5004,7 @@ struct vengeful_retreat_t : public demon_hunter_spell_t
 
     void execute() override
     {
-      demon_hunter_spell_t::execute();
-
-      p()->buff.tactical_retreat->trigger();
-
+      // Initiative reset mechanic happens prior to the ability dealing damage
       if ( p()->talent.havoc.initiative->ok() )
       {
         for ( auto p : sim->target_non_sleeping_list )
@@ -4989,6 +5012,10 @@ struct vengeful_retreat_t : public demon_hunter_spell_t
           td( p )->debuffs.initiative_tracker->expire();
         }
       }
+
+      demon_hunter_spell_t::execute();
+
+      p()->buff.tactical_retreat->trigger();
     }
   };
 
@@ -5605,6 +5632,7 @@ void demon_hunter_t::create_buffs()
 
   // Legendary ==============================================================
   
+  // Chaos Theory legendary is an 8s damage buff while talent is a one-shot crit buff
   buff.chaos_theory = make_buff<damage_buff_t>( this, "chaos_theory", spec.chaos_theory_buff );
   if ( !talent.havoc.chaos_theory->ok() )
     buff.chaos_theory->set_chance( legendary.chaos_theory->effectN( 1 ).percent() );
@@ -6589,12 +6617,13 @@ void demon_hunter_t::apl_havoc()
   apl_normal->add_action( "essence_break" );
   apl_normal->add_action( "death_sweep,if=variable.blade_dance" );
   apl_normal->add_action( "fel_barrage,if=active_enemies>desired_targets|raid_event.adds.in>30" );
-  apl_normal->add_action( "immolation_aura,if=!buff.immolation_aura.up" );
+  apl_normal->add_action( "immolation_aura,if=!buff.immolation_aura.up&(!talent.ragefire|active_enemies>desired_targets|raid_event.adds.in>15)" );
   apl_normal->add_action( "glaive_tempest,if=!variable.waiting_for_momentum&(active_enemies>desired_targets|raid_event.adds.in>10)" );
-  apl_normal->add_action( "throw_glaive,if=conduit.serrated_glaive.enabled&cooldown.eye_beam.remains<6&!buff.metamorphosis.up&!debuff.exposed_wound.up" );
+  apl_normal->add_action( "throw_glaive,if=(conduit.serrated_glaive|talent.serrated_glaive)&cooldown.eye_beam.remains<6&!buff.metamorphosis.up&!debuff.exposed_wound.up" );
   apl_normal->add_action( "eye_beam,if=!variable.waiting_for_momentum&(active_enemies>desired_targets|raid_event.adds.in>15"
                                     "&(!variable.use_eye_beam_fury_condition|spell_targets>1|fury<70)&!variable.waiting_for_agony_gaze)" );
   apl_normal->add_action( "blade_dance,if=variable.blade_dance");
+  apl_normal->add_action( "throw_glaive,if=talent.soulrend&spell_targets>(2-talent.furious_throws)" );
   apl_normal->add_action( "felblade,if=fury.deficit>=40");
   apl_normal->add_action( "sigil_of_flame,if=active_enemies>desired_targets" );
   apl_normal->add_action( "annihilation,if=(talent.demon_blades|!variable.waiting_for_momentum|fury.deficit<30|buff.metamorphosis.remains<5)&!variable.pooling_for_blade_dance" );
@@ -6616,13 +6645,14 @@ void demon_hunter_t::apl_havoc()
   apl_demonic->add_action( "death_sweep,if=variable.blade_dance");
   apl_demonic->add_action( "fel_barrage,if=active_enemies>desired_targets|raid_event.adds.in>30" );
   apl_demonic->add_action( "glaive_tempest,if=active_enemies>desired_targets|raid_event.adds.in>10" );
-  apl_demonic->add_action( "throw_glaive,if=conduit.serrated_glaive.enabled&cooldown.eye_beam.remains<6&!buff.metamorphosis.up&!debuff.exposed_wound.up" );
+  apl_demonic->add_action( "throw_glaive,if=(conduit.serrated_glaive|talent.serrated_glaive)&cooldown.eye_beam.remains<6&!buff.metamorphosis.up&!debuff.exposed_wound.up" );
   apl_demonic->add_action( "eye_beam,if=active_enemies>desired_targets|raid_event.adds.in>25-talent.cycle_of_hatred*10"
                                      "&(!variable.use_eye_beam_fury_condition|spell_targets>1|fury<70)&!variable.waiting_for_agony_gaze" );
   apl_demonic->add_action( "blade_dance,if=variable.blade_dance&!cooldown.metamorphosis.ready"
                                         "&(cooldown.eye_beam.remains>5|(raid_event.adds.in>cooldown&raid_event.adds.in<25))" );
+  apl_demonic->add_action( "throw_glaive,if=talent.soulrend&spell_targets>(2-talent.furious_throws)" );
   apl_demonic->add_action( "annihilation,if=!variable.pooling_for_blade_dance" );
-  apl_demonic->add_action( "immolation_aura,if=!buff.immolation_aura.up" );
+  apl_demonic->add_action( "immolation_aura,if=!buff.immolation_aura.up&(!talent.ragefire|active_enemies>desired_targets|raid_event.adds.in>15)" );
   apl_demonic->add_action( "felblade,if=fury.deficit>=40" );
   apl_demonic->add_action( "sigil_of_flame,if=active_enemies>desired_targets" );
   apl_demonic->add_action( "chaos_strike,if=!variable.pooling_for_blade_dance&!variable.pooling_for_eye_beam");
