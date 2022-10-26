@@ -1406,7 +1406,7 @@ public:
 
     if ( p()->buff.test_of_might_tracker->check() )
       p()->buff.test_of_might_tracker->current_value +=
-          rage;  // Uses rage cost before deadly calm makes it cheaper.
+          rage;  // Uses rage cost before anything makes it cheaper.
 
     if ( p()->talents.arms.anger_management->ok() || p()->talents.fury.anger_management->ok() || p()->talents.protection.anger_management->ok() )
     {
@@ -7899,7 +7899,7 @@ void warrior_t::apl_fury()
 
   default_apl_dps_precombat();
   action_priority_list_t* default_list  = get_action_priority_list( "default" );
-  action_priority_list_t* movement      = get_action_priority_list( "movement" );
+  //action_priority_list_t* movement      = get_action_priority_list( "movement" );
   //action_priority_list_t* aoe           = get_action_priority_list( "aoe" );
   action_priority_list_t* single_target = get_action_priority_list( "single_target" );
 
@@ -8007,7 +8007,7 @@ void warrior_t::apl_fury()
 
   default_list->add_action( "call_action_list,name=single_target" );
 
-  movement->add_action( this, "Heroic Leap" );
+  //movement->add_action( this, "Heroic Leap" );
 
   single_target->add_action( "rampage,if=buff.recklessness.up|buff.enrage.remains<gcd|(rage>110&talent.overwhelming_rage)|(rage>80&!talent.overwhelming_rage)|buff.frenzy.remains<1.5" );
   single_target->add_action( "execute" );
@@ -8022,7 +8022,7 @@ void warrior_t::apl_fury()
   single_target->add_action( "bloodthirst,if=talent.annihilator" );
   single_target->add_action( "rampage" );
   single_target->add_action( "slam,if=talent.annihilator" );
-  single_target->add_action( "bloodthirst,if=talent.annihilator" );
+  single_target->add_action( "bloodthirst,if=!talent.annihilator" );
   single_target->add_action( this, spec.bloodbath, "bloodbath" );
   single_target->add_action( "raging_blow" );
   single_target->add_action( this, spec.crushing_blow, "crushing_blow" );
