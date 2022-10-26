@@ -320,6 +320,7 @@ void frost( player_t* p )
   cds->add_action( "mirrors_of_torment" );
   cds->add_action( "icy_veins,if=buff.rune_of_power.down" );
   cds->add_action( "rune_of_power,if=buff.rune_of_power.down&cooldown.icy_veins.remains>10" );
+  cds->add_action( "use_items" );
   cds->add_action( "blood_fury" );
   cds->add_action( "berserking" );
   cds->add_action( "lights_judgment" );
