@@ -268,7 +268,7 @@ void frost( player_t* p )
   cooldowns->add_action( "raise_dead" );
   cooldowns->add_action( "soul_reaper,if=fight_remains>5&target.time_to_pct_35<5&active_enemies<=2&(buff.breath_of_sindragosa.up&runic_power>40|!buff.breath_of_sindragosa.up&!talent.obliteration|talent.obliteration&!buff.pillar_of_frost.up)" );
   cooldowns->add_action( "sacrificial_pact,if=!talent.glacial_advance&!buff.breath_of_sindragosa.up&pet.ghoul.remains<gcd*2&active_enemies>3" );
-  cooldowns->add_action( "death_and_decay,if=!death_and_decay.ticking&variable.adds_remain&(buff.pillar_of_frost.up&buff.pillar_of_frost.remains>5|!buff.pillar_of_frost.up)&(active_enemies>5|talent.cleaving_strikes&active_enemies>=2)" );
+  cooldowns->add_action( "any_dnd,if=!death_and_decay.ticking&variable.adds_remain&(buff.pillar_of_frost.up&buff.pillar_of_frost.remains>5|!buff.pillar_of_frost.up)&(active_enemies>5|talent.cleaving_strikes&active_enemies>=2)" );
 
   cold_heart->add_action( "chains_of_ice,if=fight_remains<gcd&(rune<2|!buff.killing_machine.up&(!variable.2h_check&buff.cold_heart.stack>=4|variable.2h_check&buff.cold_heart.stack>8)|buff.killing_machine.up&(!variable.2h_check&buff.cold_heart.stack>8|variable.2h_check&buff.cold_heart.stack>10))", "Cold Heart" );
   cold_heart->add_action( "chains_of_ice,if=!talent.obliteration&buff.pillar_of_frost.up&buff.cold_heart.stack>=10&(buff.pillar_of_frost.remains<gcd*(1+cooldown.frostwyrms_fury.ready)|buff.unholy_strength.up&buff.unholy_strength.remains<gcd)" );
