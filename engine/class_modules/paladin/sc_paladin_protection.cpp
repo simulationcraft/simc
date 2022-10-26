@@ -691,9 +691,8 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
     {
       am *= 1.0 + p() -> buffs.bulwark_of_righteous_fury -> stack_value();
     }
-    if ( p()->talents.strength_of_conviction->ok() )
+    if ( p()->talents.strength_of_conviction->ok() && p()->standing_in_consecration() )
     {
-      if ( p()->standing_in_consecration() )
         am *= 1.0 + p()->talents.strength_of_conviction->effectN( 1 ).percent();
     }
     return am;
