@@ -221,7 +221,8 @@ struct mind_flay_base_t final : public priest_spell_t
 
   void trigger_mind_flay_dissonant_echoes()
   {
-    if ( !priest().conduits.dissonant_echoes->ok() || priest().buffs.voidform->check() )
+    if ( !priest().conduits.dissonant_echoes->ok() || !priest().talents.shadow.void_eruption.enabled() ||
+         priest().buffs.voidform->check() )
     {
       return;
     }
@@ -2142,13 +2143,13 @@ struct ancient_madness_t final : public priest_buff_t<buff_t>
     // https://github.com/SimCMinMax/WoW-BugTracker/issues/1030
     if ( priest().bugs && priest().talents.shadow.void_eruption.enabled() )
     {
-      set_default_value( 0.02 ); // 2%
-      set_max_stack( as<int>( data().effectN( 3 ).base_value() )  ); // 5/10;
+      set_default_value( 0.02 );                                     // 2%
+      set_max_stack( as<int>( data().effectN( 3 ).base_value() ) );  // 5/10;
     }
     else
     {
-      set_default_value( data().effectN( 2 ).percent() ); // 0.5%/1%
-      set_max_stack( 20 ); // 20/20;
+      set_default_value( data().effectN( 2 ).percent() );  // 0.5%/1%
+      set_max_stack( 20 );                                 // 20/20;
     }
   }
 };
@@ -2634,10 +2635,11 @@ bool priest_t::is_screams_of_the_void_up( player_t* target ) const
 {
   priest_td_t* td = get_target_data( target );
 
-  // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/998
+  // BUG: Screams is not currently working on live
+  // https://github.com/SimCMinMax/WoW-BugTracker/issues/949
   if ( bugs )
   {
-    return td->buffs.screams_of_the_void->up();
+    return false;
   }
   else
   {
