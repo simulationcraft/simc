@@ -7798,7 +7798,6 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
   double dnd_cleave_targets; // For when in dnd how many targets we can cleave
   scourge_strike_base_t( util::string_view name, death_knight_t* p, const spell_data_t* spell ) :
     death_knight_melee_attack_t( name, p, spell ),
-    summon_duration( timespan_t::from_seconds( p -> find_spell( 364392 ) -> effectN( 3 ).base_value() ) ),
     dnd_cleave_targets( p -> talent.unholy.scourge_strike -> effectN( 4 ).base_value() )
   {
     weapon = &( player -> main_hand_weapon );
