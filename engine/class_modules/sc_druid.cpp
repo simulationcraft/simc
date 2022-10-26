@@ -4479,12 +4479,6 @@ struct rip_t : public cat_finisher_t<>
     return t *= cast_state( s )->combo_points + 1;
   }
 
-  // Newly applied rip will not lower existing duration
-  timespan_t calculate_dot_refresh_duration( const dot_t* d, timespan_t dur ) const override
-  {
-    return std::max( cat_finisher_t::calculate_dot_refresh_duration( d, dur ), d->remains() );
-  }
-
   void impact( action_state_t* s ) override
   {
     cat_finisher_t::impact( s );
