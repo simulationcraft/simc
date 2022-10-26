@@ -11289,7 +11289,7 @@ void shaman_t::init_action_list_elemental()
 
   action_priority_list_t* single_target    = get_action_priority_list( "single_target" );
   action_priority_list_t* aoe              = get_action_priority_list( "aoe" );
-  
+  /*
   if ( options.rotation == ROTATION_STANDARD )
   {
     action_priority_list_t* se_single_target = get_action_priority_list( "se_single_target" );
@@ -11535,8 +11535,8 @@ void shaman_t::init_action_list_elemental()
     se_single_target->add_action( this, "Flame Shock", "moving=1,target_if=refreshable" );
     se_single_target->add_action( this, "Flame Shock", "moving=1,if=movement.distance>6" );
     se_single_target->add_action( this, "Frost Shock", "moving=1" );
-  }
-  else if (options.rotation == ROTATION_SIMPLE) {
+  }*/
+  if (options.rotation == ROTATION_SIMPLE || options.rotation == ROTATION_STANDARD) {
     precombat->add_action( "flask" );
     precombat->add_action( "food" );
     precombat->add_action( "augmentation" );
