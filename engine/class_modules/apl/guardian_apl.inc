@@ -62,7 +62,7 @@ bear->add_action( "thrash_bear" );
 bear->add_action( "moonfire,if=active_enemies<2" );
 bear->add_action( "swipe_bear" );
 
-catweave->add_action( "heart_of_the_wild,if=talent.heart_of_the_wild.enabled&!buff.heart_of_the_wild.up&!buff.cat_form.up" );
+catweave->add_action( "heart_of_the_wild,if=talent.heart_of_the_wild.enabled&!buff.heart_of_the_wild.up&!buff.cat_form.up","if you read this know that Kitch is a dummy" );
 catweave->add_action( "cat_form,if=!buff.cat_form.up" );
 catweave->add_action( "rake,if=buff.prowl.up" );
 catweave->add_action( "heart_of_the_wild,if=talent.heart_of_the_wild.enabled&!buff.heart_of_the_wild.up" );
