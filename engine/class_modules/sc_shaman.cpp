@@ -11762,7 +11762,7 @@ void shaman_t::init_action_list_enhancement()
   single->add_talent( this, "Elemental Blast", "if=(!talent.elemental_spirits.enabled|(talent.elemental_spirits.enabled&(charges=max_charges|buff.feral_spirit.up)))&buff.maelstrom_weapon.stack>=5");
   single->add_action( "chain_harvest,if=buff.maelstrom_weapon.stack>=5&raid_event.adds.in>=90");
   single->add_action( "lava_burst,if=buff.maelstrom_weapon.stack>=5" );
-  single->add_action( this, "Lightning Bolt", "lightning_bolt,if=buff.maelstrom_weapon.stack=10&buff.primordial_wave.down");
+  single->add_action( this, "Lightning Bolt", "if=buff.maelstrom_weapon.stack=10&buff.primordial_wave.down");
   single->add_action( this, "Stormstrike");
   single->add_action( "fleshcraft,interrupt=1,if=soulbind.volatile_solvent");
   single->add_action( this, "Windfury Totem", "if=buff.windfury_totem.remains<10");
