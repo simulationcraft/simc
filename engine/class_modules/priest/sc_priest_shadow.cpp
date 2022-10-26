@@ -102,7 +102,7 @@ struct mind_sear_t final : public priest_spell_t
 
   bool ready() override
   {
-    if ( priest().buffs.mind_devourer->may_react() )
+    if ( priest().buffs.mind_devourer->may_react() && priest().talents.shadow.mind_devourer.enabled() )
     {
       return true;
     }
