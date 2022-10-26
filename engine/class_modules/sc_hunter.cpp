@@ -3012,6 +3012,12 @@ struct kill_shot_t : hunter_ranged_attack_t
       : residual_bleed_base_t( n, p, p -> find_spell( 356620 ) )
     {
     }
+
+    double base_ta(const action_state_t* s) const override
+    {
+      // 26-10-22 TODO Not affected by Serrated Shots.
+      return residual_periodic_action_t::base_ta( s );
+    }
   };
 
   // Coordinated Assault
