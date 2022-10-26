@@ -352,7 +352,7 @@ public:
       player_talent_t chaos_theory;
       player_talent_t restless_hunter;
       player_talent_t inner_demon;
-      player_talent_t accelerating_blade;         // Partial NYI -- Add chain_bonus_damage in apply_affecting
+      player_talent_t accelerating_blade;
       player_talent_t ragefire;
 
       player_talent_t know_your_enemy;
@@ -2920,10 +2920,7 @@ struct immolation_aura_t : public demon_hunter_spell_t
     {
       double am = demon_hunter_spell_t::action_multiplier();
 
-      if ( p()->conduit.growing_inferno.ok() )
-      {
-        am *= 1.0 + p()->buff.growing_inferno->stack_value();
-      }
+      am *= 1.0 + p()->buff.growing_inferno->stack_value();
 
       return am;
     }
