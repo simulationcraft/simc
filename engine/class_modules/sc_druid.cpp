@@ -2714,8 +2714,9 @@ public:
     parse_buff_effects( p()->buff.touch_the_cosmos );
     // TODO: fix/remove when final bugfix of umbral embrace is pushed
     // parse_buff_effects<S>( p()->buff.umbral_embrace, p()->talent.umbral_embrace );
-    parse_conditional_effects( p()->buff.umbral_embrace,
-        [ this ]() { return p()->eclipse_handler.state != ANY_NEXT; }, 0U, false, true );
+    parse_conditional_effects( p()->buff.umbral_embrace->data(), [ this ]() {
+      return p()->buff.umbral_embrace->check() && p()->eclipse_handler.state != ANY_NEXT;
+    }, 0U, false, true );
     parse_buff_effects( p()->buff.warrior_of_elune, false );
 
     // Feral
