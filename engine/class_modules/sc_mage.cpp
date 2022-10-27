@@ -68,57 +68,6 @@ enum target_trigger_type_e
   TT_ALL_TARGETS
 };
 
-struct state_switch_t
-{
-private:
-  bool state;
-  timespan_t last_enable;
-  timespan_t last_disable;
-
-public:
-  state_switch_t()
-  {
-    reset();
-  }
-
-  bool enable( timespan_t now )
-  {
-    if ( last_enable == now )
-      return false;
-
-    state = true;
-    last_enable = now;
-    return true;
-  }
-
-  bool disable( timespan_t now )
-  {
-    if ( last_disable == now )
-      return false;
-
-    state = false;
-    last_disable = now;
-    return true;
-  }
-
-  bool on() const
-  {
-    return state;
-  }
-
-  timespan_t duration( timespan_t now ) const
-  {
-    return state ? now - last_enable : 0_ms;
-  }
-
-  void reset()
-  {
-    state        = false;
-    last_enable  = timespan_t::min();
-    last_disable = timespan_t::min();
-  }
-};
-
 struct icicle_tuple_t
 {
   action_t* action; // Icicle action corresponding to the source action
@@ -250,9 +199,6 @@ public:
     event_t* from_the_ashes;
     event_t* time_anomaly;
   } events;
-
-  // State switches for rotation selection
-  state_switch_t burn_phase;
 
   // Ground AoE tracking
   std::array<timespan_t, AOE_MAX> ground_aoe_expiration;
@@ -461,8 +407,6 @@ public:
   struct sample_data_t
   {
     std::unique_ptr<extended_sample_data_t> icy_veins_duration;
-    std::unique_ptr<extended_sample_data_t> burn_duration_history;
-    std::unique_ptr<extended_sample_data_t> burn_initial_mana;
   } sample_data;
 
   // Specializations
@@ -764,13 +708,6 @@ public:
     player_talent_t glacial_spike;
   } talents;
 
-  struct uptimes_t
-  {
-    uptime_t* burn_phase;
-    uptime_t* conserve_phase;
-  } uptime;
-
-
   mage_t( sim_t* sim, std::string_view name, race_e r = RACE_NONE );
 
   // Character Definition
@@ -821,7 +758,6 @@ public:
   double passive_movement_modifier() const override;
   void arise() override;
   void combat_begin() override;
-  void combat_end() override;
   void copy_from( player_t* ) override;
   void merge( player_t& ) override;
   void analyze( sim_t& ) override;
@@ -5431,82 +5367,6 @@ struct shifting_power_t final : public mage_spell_t
 // Mage Custom Actions
 // ==========================================================================
 
-// Arcane Mage "Burn" State Switch Action ===================================
-
-void report_burn_switch_error( action_t* a )
-{
-  throw std::runtime_error(
-    fmt::format( "{} action {} infinite loop detected (no time passing between executes) at '{}'",
-                 a->player->name(), a->name(), a->signature_str ) );
-}
-
-struct start_burn_phase_t final : public action_t
-{
-  start_burn_phase_t( std::string_view n, mage_t* p, std::string_view options_str ) :
-    action_t( ACTION_OTHER, n, p )
-  {
-    parse_options( options_str );
-    trigger_gcd = 0_ms;
-    harmful = false;
-    ignore_false_positive = true;
-  }
-
-  void execute() override
-  {
-    mage_t* p = debug_cast<mage_t*>( player );
-
-    bool success = p->burn_phase.enable( sim->current_time() );
-    if ( !success )
-      report_burn_switch_error( this );
-
-    p->sample_data.burn_initial_mana->add( 100.0 * p->resources.pct( RESOURCE_MANA ) );
-    p->uptime.burn_phase->update( true, sim->current_time() );
-    p->uptime.conserve_phase->update( false, sim->current_time() );
-  }
-
-  bool ready() override
-  {
-    if ( debug_cast<mage_t*>( player )->burn_phase.on() )
-      return false;
-
-    return action_t::ready();
-  }
-};
-
-struct stop_burn_phase_t final : public action_t
-{
-  stop_burn_phase_t( std::string_view n, mage_t* p, std::string_view options_str ) :
-    action_t( ACTION_OTHER, n, p )
-  {
-    parse_options( options_str );
-    trigger_gcd = 0_ms;
-    harmful = false;
-    ignore_false_positive = true;
-  }
-
-  void execute() override
-  {
-    mage_t* p = debug_cast<mage_t*>( player );
-
-    p->sample_data.burn_duration_history->add( p->burn_phase.duration( sim->current_time() ).total_seconds() );
-
-    bool success = p->burn_phase.disable( sim->current_time() );
-    if ( !success )
-      report_burn_switch_error( this );
-
-    p->uptime.burn_phase->update( false, sim->current_time() );
-    p->uptime.conserve_phase->update( true, sim->current_time() );
-  }
-
-  bool ready() override
-  {
-    if ( !debug_cast<mage_t*>( player )->burn_phase.on() )
-      return false;
-
-    return action_t::ready();
-  }
-};
-
 // Proxy Water Elemental Actions ======================================================
 
 struct freeze_t final : public action_t
@@ -5810,8 +5670,7 @@ mage_t::mage_t( sim_t* sim, std::string_view name, race_e r ) :
   spec(),
   state(),
   expression_support(),
-  talents(),
-  uptime()
+  talents()
 {
   // Cooldowns
   cooldowns.combustion           = get_cooldown( "combustion"           );
@@ -5878,9 +5737,6 @@ action_t* mage_t::create_action( std::string_view name, std::string_view options
   if ( name == "supernova"              ) return new              supernova_t( name, this, options_str );
   if ( name == "touch_of_the_magi"      ) return new      touch_of_the_magi_t( name, this, options_str );
   if ( name == "use_mana_gem"           ) return new           use_mana_gem_t( name, this, options_str );
-
-  if ( name == "start_burn_phase"       ) return new       start_burn_phase_t( name, this, options_str );
-  if ( name == "stop_burn_phase"        ) return new        stop_burn_phase_t( name, this, options_str );
 
   // Fire
   if ( name == "combustion"             ) return new             combustion_t( name, this, options_str );
@@ -6024,10 +5880,6 @@ void mage_t::merge( player_t& other )
 
   switch ( specialization() )
   {
-    case MAGE_ARCANE:
-      sample_data.burn_duration_history->merge( *mage.sample_data.burn_duration_history );
-      sample_data.burn_initial_mana->merge( *mage.sample_data.burn_initial_mana );
-      break;
     case MAGE_FROST:
       if ( talents.thermal_void.ok() )
         sample_data.icy_veins_duration->merge( *mage.sample_data.icy_veins_duration );
@@ -6043,10 +5895,6 @@ void mage_t::analyze( sim_t& s )
 
   switch ( specialization() )
   {
-    case MAGE_ARCANE:
-      sample_data.burn_duration_history->analyze();
-      sample_data.burn_initial_mana->analyze();
-      break;
     case MAGE_FROST:
       if ( talents.thermal_void.ok() )
         sample_data.icy_veins_duration->analyze();
@@ -6497,7 +6345,7 @@ void mage_t::create_buffs()
   buffs.heating_up               = make_buff( this, "heating_up", find_spell( 48107 ) );
   buffs.hot_streak               = make_buff( this, "hot_streak", find_spell( 48108 ) )
                                      ->set_stack_change_callback( [ this ] ( buff_t*, int old, int )
-                                       { if ( old == 0 ) buffs.hyperthermia->trigger();} );
+                                       { if ( old == 0 ) buffs.hyperthermia->trigger(); } );
   buffs.hyperthermia             = make_buff( this, "hyperthermia", find_spell( 383874 ) )
                                     ->set_default_value_from_effect( 2 )
                                     ->set_trigger_spell( talents.hyperthermia );
@@ -6674,13 +6522,6 @@ void mage_t::init_uptimes()
 
   switch ( specialization() )
   {
-    case MAGE_ARCANE:
-      uptime.burn_phase     = get_uptime( "Burn Phase" );
-      uptime.conserve_phase = get_uptime( "Conserve Phase" );
-
-      sample_data.burn_duration_history = std::make_unique<extended_sample_data_t>( "Burn duration history", false );
-      sample_data.burn_initial_mana     = std::make_unique<extended_sample_data_t>( "Burn initial mana", false );
-      break;
     case MAGE_FROST:
       if ( talents.thermal_void.ok() )
         sample_data.icy_veins_duration = std::make_unique<extended_sample_data_t>( "Icy Veins duration", false );
@@ -6935,7 +6776,6 @@ void mage_t::reset()
 
   icicles.clear();
   events = events_t();
-  burn_phase.reset();
   ground_aoe_expiration = std::array<timespan_t, AOE_MAX>();
   state = state_t();
   expression_support = expression_support_t();
@@ -7003,20 +6843,6 @@ void mage_t::combat_begin()
     int ac_stack = buffs.arcane_charge->check();
     if ( ac_stack > 1 )
       buffs.arcane_charge->decrement( ac_stack - 1 );
-
-    uptime.burn_phase->update( false, sim->current_time() );
-    uptime.conserve_phase->update( true, sim->current_time() );
-  }
-}
-
-void mage_t::combat_end()
-{
-  player_t::combat_end();
-
-  if ( specialization() == MAGE_ARCANE )
-  {
-    uptime.burn_phase->update( false, sim->current_time() );
-    uptime.conserve_phase->update( false, sim->current_time() );
   }
 }
 
@@ -7109,18 +6935,6 @@ std::unique_ptr<expr_t> mage_t::create_expression( std::string_view name )
       else
         return buffs.incanters_flow->check() == 5 ? 0.0 : 1.0;
     } );
-  }
-
-  if ( util::str_compare_ci( name, "burn_phase" ) )
-  {
-    return make_fn_expr( name, [ this ]
-    { return burn_phase.on(); } );
-  }
-
-  if ( util::str_compare_ci( name, "burn_phase_duration" ) )
-  {
-    return make_fn_expr( name, [ this ]
-    { return burn_phase.duration( sim->current_time() ).total_seconds(); } );
   }
 
   if ( util::str_compare_ci( name, "shooting_icicles" ) )
@@ -7579,69 +7393,6 @@ public:
           "</div>\n";
   }
 
-  void html_customsection_burn_phases( report::sc_html_stream& os )
-  {
-    os << "<div class=\"player-section custom_section\">\n"
-          "<h3 class=\"toggle open\">Burn Phases</h3>\n"
-          "<div class=\"toggle-content\">\n"
-          "<p>Burn phase duration tracks the amount of time spent in each burn phase. This is defined as the time between a "
-          "start_burn_phase and stop_burn_phase action being executed. Note that \"execute\" burn phases, i.e., the "
-          "final burn of a fight, is also included.</p>\n"
-          "<div class=\"flexwrap\">\n"
-          "<table class=\"sc even\">\n"
-          "<thead>\n"
-          "<tr>\n"
-          "<th>Burn Phase Duration</th>\n"
-          "</tr>\n"
-          "</thead>\n"
-          "<tbody>\n";
-
-    auto print_sample_data = [ &os ] ( extended_sample_data_t& s )
-    {
-      fmt::print( os, "<tr><td class=\"left\">Count</td><td>{}</td></tr>\n", s.count() );
-      fmt::print( os, "<tr><td class=\"left\">Minimum</td><td>{:.3f}</td></tr>\n", s.min() );
-      fmt::print( os, "<tr><td class=\"left\">5<sup>th</sup> percentile</td><td>{:.3f}</td></tr>\n", s.percentile( 0.05 ) );
-      fmt::print( os, "<tr><td class=\"left\">Mean</td><td>{:.3f}</td></tr>\n", s.mean() );
-      fmt::print( os, "<tr><td class=\"left\">95<sup>th</sup> percentile</td><td>{:.3f}</td></tr>\n", s.percentile( 0.95 ) );
-      fmt::print( os, "<tr><td class=\"left\">Max</td><td>{:.3f}</td></tr>\n", s.max() );
-      fmt::print( os, "<tr><td class=\"left\">Variance</td><td>{:.3f}</td></tr>\n", s.variance );
-      fmt::print( os, "<tr><td class=\"left\">Mean Variance</td><td>{:.3f}</td></tr>\n", s.mean_variance );
-      fmt::print( os, "<tr><td class=\"left\">Mean Std. Dev</td><td>{:.3f}</td></tr>\n", s.mean_std_dev );
-    };
-
-    print_sample_data( *p.sample_data.burn_duration_history );
-
-    os << "</tbody>\n"
-          "</table>\n";
-
-    auto& h = *p.sample_data.burn_duration_history;
-    highchart::histogram_chart_t chart( highchart::build_id( p, "burn_duration" ), *p.sim );
-    if ( chart::generate_distribution( chart, &p, h.distribution, "Burn Duration", h.mean(), h.min(), h.max() ) )
-    {
-      chart.set( "tooltip.headerFormat", "<b>{point.key}</b> s<br/>" );
-      chart.set( "chart.width", "575" );
-      os << chart.to_target_div();
-      p.sim->add_chart_data( chart );
-    }
-
-    os << "</div>\n"
-          "<p>Mana at burn start is the mana level recorded (in percentage of total mana) when a start_burn_phase command is executed.</p>\n"
-          "<table class=\"sc even\">\n"
-          "<thead>\n"
-          "<tr>\n"
-          "<th>Mana at Burn Start</th>\n"
-          "</tr>\n"
-          "</thead>\n"
-          "<tbody>\n";
-
-    print_sample_data( *p.sample_data.burn_initial_mana );
-
-    os << "</tbody>\n"
-          "</table>\n"
-          "</div>\n"
-          "</div>\n";
-  }
-
   void html_customsection_icy_veins( report::sc_html_stream& os )
   {
     os << "<div class=\"player-section custom_section\">\n"
@@ -7739,9 +7490,6 @@ public:
     html_customsection_cd_waste( os );
     switch ( p.specialization() )
     {
-      case MAGE_ARCANE:
-        html_customsection_burn_phases( os );
-        break;
       case MAGE_FROST:
         html_customsection_shatter( os );
         if ( p.talents.thermal_void.ok() )
