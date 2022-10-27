@@ -2278,6 +2278,7 @@ void priest_t::create_buffs_shadow()
   // TODO: use default_value to parse increase instead of stacks
   buffs.dark_ascension = make_buff( this, "dark_ascension", talents.shadow.dark_ascension )
                              ->set_default_value_from_effect( 1 )
+                             ->set_cooldown( 0_s )
                              ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   // Conduits (Shadowlands)
