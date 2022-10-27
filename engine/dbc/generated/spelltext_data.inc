@@ -1,5 +1,5 @@
-// Spell text, wow build 10.0.0.46293
-static const std::array<spelltext_data_t, 18922> __spelltext_data { {
+// Spell text, wow build 10.0.0.46313
+static const std::array<spelltext_data_t, 18924> __spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -18261,8 +18261,10 @@ static const std::array<spelltext_data_t, 18922> __spelltext_data { {
   { 390135, "Activating Avatar casts Odyn's Fury, activating Odyn's Fury casts Avatar at reduced effectiveness.", 0, 0 },
   { 390137, "$@spelldesc389693", 0, 0 },
   { 390138, "Activating Avatar or Bladestorm casts  the other at reduced effectiveness.", 0, 0 },
+  { 390139, "$@spelldesc389693", 0, 0 },
   { 390140, "Activating Avatar or Colossus Smash casts Recklessness at reduced effectiveness.", 0, 0 },
   { 390142, "Leaving demon form grants a charge of Fel Rush and increases the damage of your next Blade Dance by $390212s1%.", 0, 0 },
+  { 390145, "$@spelldesc389693", "Your next Chaos Strike unleashes your inner demon, dealing $390137s1 Chaos damage to all nearby enemies.", 0 },
   { 390148, "$@spelldesc385696", "Time is moving $s1% faster.", 0 },
   { 390152, "$?a212613[Fel Devastation][Eye Beam] summons an allied $?a212613[Havoc][Vengeance] Demon Hunter who casts $?a212613[Eye Beam][Fel Devastation], dealing $?a212613[${$391058s1*10*2} Chaos][${$393834s1*(2/$393831t1)} Fire] damage over $?a212613[$391057d][$393831d]. $?a212613[Deals reduced damage beyond $198013s5 targets.][Dealing damage heals you for up to ${$212106s1*(2/$t1)} health.]", 0, 0 },
   { 390154, "Enemies hit by Throw Glaive take $s1% increased damage from Eye Beam.", 0, 0 },
@@ -18924,7 +18926,7 @@ static const std::array<spelltext_data_t, 18922> __spelltext_data { {
   { 397251, "Weapons of Order calls forth $?c1[Niuzao, the Black Ox]?c2&s325197[Chi-Ji, the Red Crane]?c3[Xuen, the White Tiger][Yu'lon, the Jade Serpent] to assist you for ${$s1/1000} sec.", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.0.0.46293
+// spelltext hotfix entries, wow build 10.0.0.46313
 static constexpr std::array<hotfix::client_hotfix_entry_t, 5> __spelltext_hotfix_data { {
   {   78674,  0, "Launch a surge of stellar energies at the target, dealing $s1 Astral damage, and empowering the damage bonus of any active Eclipse for its duration.", "Launch a surge of stellar energies at the target, dealing $s1 Astral damage." },
   {  120954,  0, "Turns your skin to stone for $120954d$?$w1>0[, increasing your armor by $s8% and dodge by $s7%][]$?$w1>0[, increasing your current and maximum health by $<health>%][]$?s322960[, increasing the effectiveness of Stagger by $322960s1%][]$?$w1>0[, and reducing all damage you take by $<damage>%][].", "Turns your skin to stone for $120954d$?a388917[, increasing your current and maximum health by $<health>%][]$?s322960[, increasing the effectiveness of Stagger by $322960s1%][]$?a388917[, reducing all damage you take by $<damage>%][]$?a388814[, increasing your armor by $388814s2% and dodge chance by $388814s1%][]." },
@@ -18933,7 +18935,7 @@ static constexpr std::array<hotfix::client_hotfix_entry_t, 5> __spelltext_hotfix
   {  385416,  0, "Your $?S53595[Hammer of the Righteous]?S204019[Blessed Hammer][Crusader Strike] now also grants you $385417s1% increased $pri for $385417d. Multiple applications may overlap.", "Your $?S53595[Hammer of the Righteous]?S204019[Blessed Hammer][Crusader Strike] now also grants you $s1% increased $pri for $385417d. Multiple applications may overlap." },
 } };
 
-// Spell description variables, wow build 10.0.0.46293
+// Spell description variables, wow build 10.0.0.46313
 static const std::array<spelldesc_vars_data_t, 361> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$pvp=$?a134735[${1.1}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<pvp>*$<weal>}\r\n" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -19298,7 +19300,7 @@ static const std::array<spelldesc_vars_data_t, 361> __spelldesc_vars_data { {
   {  394354, "$damage=${($AP*1.0)*(1+$@versadmg)}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.0.0.46293
+// spelldesc_vars hotfix entries, wow build 10.0.0.46313
 static constexpr std::array<hotfix::client_hotfix_entry_t, 4> __spelldesc_vars_hotfix_data { {
   {      17,  0, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$pvp=$?a134735[${1.1}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*2.8*(1+$@versadmg)*$<rapture>*$<shadow>*$<pvp>*$<weal>}\r\n", "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$pvp=$?a134735[${1.1}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<pvp>*$<weal>}\r\n" },
   {  115203,  0, "$health=$?s322960[${20}][${15}]\r\n$damage=$?s322960[${20}][${15}]", "$health=$?s322960[${15}][${15}]\r\n$damage=$?c1[${20}][${20}]" },
