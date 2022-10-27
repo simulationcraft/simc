@@ -216,6 +216,7 @@ public:
     buff_t* death_sweep;
     buff_t* furious_gaze;
     buff_t* initiative;
+    buff_t* inner_demon;
     damage_buff_t* momentum;
     buff_t* out_of_range;
     damage_buff_t* restless_hunter;
@@ -506,6 +507,7 @@ public:
     const spell_data_t* glaive_tempest_damage;
     const spell_data_t* immolation_aura_3;
     const spell_data_t* initiative_buff;
+    const spell_data_t* inner_demon_buff;
     const spell_data_t* inner_demon_damage;
     const spell_data_t* isolated_prey_fury;
     const spell_data_t* momentum_buff;
@@ -3108,6 +3110,7 @@ struct metamorphosis_t : public demon_hunter_spell_t
     {
       // Buff is gained at the start of the leap.
       p()->buff.metamorphosis->extend_duration_or_trigger();
+      p()->buff.inner_demon->trigger();
 
       if ( p()->talent.havoc.chaotic_transformation->ok() )
       {
@@ -4296,6 +4299,12 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
       p()->spawn_soul_fragment( soul_fragment::LESSER );
     }
 
+    if ( p()->buff.inner_demon->check() )
+    {
+      make_event<delayed_execute_event_t>( *sim, p(), p()->active.inner_demon, target, 1.25_s );
+      p()->buff.inner_demon->expire();
+    }
+
     trigger_cycle_of_hatred();
   }
 
@@ -5208,6 +5217,7 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
   {
     const timespan_t extend_duration = p()->talent.demon_hunter.demonic->effectN( 1 ).time_value();
     p()->buff.metamorphosis->extend_duration_or_trigger( extend_duration );
+    p()->buff.inner_demon->trigger();
   }
 
   void start(int stacks, double value, timespan_t duration) override
@@ -5218,11 +5228,6 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
     {
       p()->metamorphosis_health = p()->max_health() * value;
       p()->stat_gain( STAT_MAX_HEALTH, p()->metamorphosis_health, ( gain_t* )nullptr, ( action_t* )nullptr, true );
-    }
-
-    if ( p()->talent.havoc.inner_demon->ok() )
-    {
-      p()->active.inner_demon->execute_on_target( p()->target );
     }
   }
 
@@ -5585,7 +5590,19 @@ void demon_hunter_t::create_buffs()
     ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
 
   buff.momentum = make_buff<damage_buff_t>( this, "momentum", spec.momentum_buff );
-  buff.momentum->set_refresh_behavior( buff_refresh_behavior::EXTEND );
+  if ( is_ptr() ) // Updated on beta
+  {
+    buff.momentum->set_refresh_behavior( buff_refresh_behavior::CUSTOM )
+      ->set_refresh_duration_callback( []( const buff_t* b, timespan_t d ) {
+        return std::min( b->remains() + d, 10_s ); // Capped to 10 seconds
+    } );
+  }
+  else
+  {
+    buff.momentum->set_refresh_behavior( buff_refresh_behavior::EXTEND );
+  }
+
+  buff.inner_demon = make_buff( this, "inner_demon", spec.inner_demon_buff );
 
   buff.restless_hunter = make_buff<damage_buff_t>( this, "restless_hunter", spec.restless_hunter_buff );
 
@@ -6241,6 +6258,7 @@ void demon_hunter_t::init_spells()
   spec.first_blood_death_sweep_2_damage = talent.havoc.first_blood->ok() ? find_spell( 393054 ) : spell_data_t::not_found();
   spec.glaive_tempest_damage = talent.havoc.glaive_tempest->ok() ? find_spell( 342857 ) : spell_data_t::not_found();
   spec.initiative_buff = talent.havoc.initiative->ok() ? find_spell( 391215 ) : spell_data_t::not_found();
+  spec.inner_demon_buff = talent.havoc.inner_demon->ok() ? find_spell( 390145 ) : spell_data_t::not_found();
   spec.inner_demon_damage = talent.havoc.inner_demon->ok() ? find_spell( 390137 ) : spell_data_t::not_found();
   spec.isolated_prey_fury = talent.havoc.isolated_prey->ok() ? find_spell( 357323 ) : spell_data_t::not_found();
   spec.momentum_buff = talent.havoc.momentum->ok() ? find_spell( 208628 ) : spell_data_t::not_found();
@@ -6582,11 +6600,9 @@ void demon_hunter_t::apl_havoc()
   action_priority_list_t* apl_default = get_action_priority_list( "default" );
   apl_default->add_action( "auto_attack" );
   apl_default->add_action( "retarget_auto_attack,line_cd=1,target_if=min:debuff.burning_wound.remains,if=(runeforge.burning_wound|talent.burning_wound)&talent.demon_blades" );
-  apl_default->add_action( "variable,name=blade_dance,if=!runeforge.chaos_theory&!talent.chaos_theory&!runeforge.darkglare_medallion,value=talent.first_blood.enabled|spell_targets.blade_dance1>=(3-talent.trail_of_ruin.enabled)", "Without Chaos Theory or Darkglare, Blade Dance with First Blood or at 3+ (2+ with Trail of Ruin) targets" );
-  apl_default->add_action( "variable,name=blade_dance,if=runeforge.chaos_theory|talent.chaos_theory,value=buff.chaos_theory.down|talent.first_blood.enabled&spell_targets.blade_dance1>=(2-talent.trail_of_ruin.enabled)|!talent.cycle_of_hatred.enabled&spell_targets.blade_dance1>=(4-talent.trail_of_ruin.enabled)", "With Chaos Theory, Blade Dance when the buff is down, with First Blood at 2+ (1+ with Trail of Ruin) or with Essence Break at 4+ (3+ with Trail of Ruin) targets" );
+  apl_default->add_action( "variable,name=blade_dance,if=!runeforge.chaos_theory&!runeforge.darkglare_medallion,value=talent.first_blood.enabled|spell_targets.blade_dance1>=(3-talent.trail_of_ruin.enabled)", "Without Chaos Theory or Darkglare, Blade Dance with First Blood or at 3+ (2+ with Trail of Ruin) targets" );
+  apl_default->add_action( "variable,name=blade_dance,if=runeforge.chaos_theory|talent.chaos_theory,value=buff.chaos_theory.down|talent.first_blood.enabled|!talent.cycle_of_hatred.enabled&spell_targets.blade_dance1>=(4-talent.trail_of_ruin.enabled)", "With Chaos Theory, Blade Dance when the buff is down, with First Blood at 2+ (1+ with Trail of Ruin) or with Essence Break at 4+ (3+ with Trail of Ruin) targets" );
   apl_default->add_action( "variable,name=blade_dance,if=runeforge.darkglare_medallion,value=talent.first_blood.enabled|(buff.metamorphosis.up|talent.trail_of_ruin.enabled|debuff.essence_break.up)&spell_targets.blade_dance1>=(3-talent.trail_of_ruin.enabled)|!talent.demonic.enabled&spell_targets.blade_dance1>=4", "With Darkglare, Blade Dance at normal target count when buffed by a secondary effect, or always at 4T+ for non-Demonic" );
-  apl_default->add_action( "variable,name=blade_dance,op=reset,if=talent.essence_break.enabled&cooldown.essence_break.ready", "Use Essence Break before Blade Dance if it is available and off cooldown" );
-  apl_default->add_action( "variable,name=blade_dance,if=runeforge.agony_gaze&talent.cycle_of_hatred,value=variable.blade_dance&active_dot.sinful_brand<2", "With Agony Gaze and Cycle of Hatred, avoid using Blade Dance when there is the possibility to extend an AoE Sinful Brand" );
   apl_default->add_action( "variable,name=pooling_for_meta,value=!talent.demonic.enabled&cooldown.metamorphosis.remains<6&fury.deficit>30" );
   apl_default->add_action( "variable,name=pooling_for_blade_dance,value=variable.blade_dance&(fury<75-talent.first_blood.enabled*20)" );
   apl_default->add_action( "variable,name=pooling_for_eye_beam,value=talent.demonic.enabled&!talent.blind_fury.enabled&cooldown.eye_beam.remains<(gcd.max*2)&fury.deficit>20" );
@@ -6641,7 +6657,7 @@ void demon_hunter_t::apl_havoc()
   action_priority_list_t* apl_demonic = get_action_priority_list( "demonic" );
   apl_demonic->add_action( "eye_beam,if=runeforge.agony_gaze&(active_enemies>desired_targets|raid_event.adds.in>25-talent.cycle_of_hatred*10)"
                                              "&dot.sinful_brand.ticking&dot.sinful_brand.remains<=gcd" );
-  apl_demonic->add_action( "essence_break" );
+  apl_demonic->add_action( "essence_break,if=!variable.waiting_for_momentum&(!cooldown.eye_beam.ready|buff.metamorphosis.up)" );
   apl_demonic->add_action( "death_sweep,if=variable.blade_dance");
   apl_demonic->add_action( "fel_barrage,if=active_enemies>desired_targets|raid_event.adds.in>30" );
   apl_demonic->add_action( "glaive_tempest,if=active_enemies>desired_targets|raid_event.adds.in>10" );
