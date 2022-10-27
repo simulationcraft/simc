@@ -8267,8 +8267,12 @@ void actions::rogue_action_t<Base>::trigger_danse_macabre( const action_state_t*
 
   if ( range::contains( p()->danse_macabre_tracker, ab::data().id() ) )
   {
-    p()->danse_macabre_tracker.clear();
-    p()->buffs.danse_macabre->expire();
+    // Beta has been revamped to not clear the debuff on repeats. Not present in prepatch.
+    if ( !p()->is_ptr() )
+    {
+      p()->danse_macabre_tracker.clear();
+      p()->buffs.danse_macabre->expire();
+    }
   }
   else
   {
@@ -9001,13 +9005,15 @@ void rogue_t::init_action_list()
     build->add_action( "echoing_reprimand,if=!soulbind.effusive_anima_accelerator|variable.blade_flurry_sync" );
     build->add_action( "ambush" );
     build->add_action( "cold_blood,if=buff.opportunity.up&buff.greenskins_wickers.up|buff.greenskins_wickers.up&buff.greenskins_wickers.remains<1.5", "Use Pistol Shot when buffed by bonuses as a priority" );
-    build->add_action( "pistol_shot,if=buff.opportunity.up&(buff.greenskins_wickers.up|buff.concealed_blunderbuss.up|talent.fan_the_hammer)|buff.greenskins_wickers.up&buff.greenskins_wickers.remains<1.5" );
+    build->add_action( "pistol_shot,if=buff.opportunity.up&(buff.greenskins_wickers.up&!talent.fan_the_hammer|buff.concealed_blunderbuss.up)|buff.greenskins_wickers.up&buff.greenskins_wickers.remains<1.5" );
+    build->add_action( "pistol_shot,if=talent.fan_the_hammer&buff.opportunity.up&(buff.opportunity.stack>=buff.opportunity.max_stack|buff.opportunity.remains<2)", "With Fan the Hammer, consume Opportunity at max stacks or if we will get 4+ CP and Dreadblades is not up ");
+    build->add_action( "pistol_shot,if=talent.fan_the_hammer&buff.opportunity.up&combo_points.deficit>4&!buff.dreadblades.up" );
     build->add_action( "pool_resource,for_next=1" );
     build->add_action( "ambush" );
     build->add_action( "serrated_bone_spike,if=!dot.serrated_bone_spike_dot.ticking", "Apply SBS to all targets without a debuff as priority, preferring targets dying sooner after the primary target" );
     build->add_action( "serrated_bone_spike,target_if=min:target.time_to_die+(dot.serrated_bone_spike_dot.ticking*600),if=!dot.serrated_bone_spike_dot.ticking" );
     build->add_action( "serrated_bone_spike,if=fight_remains<=5|cooldown.serrated_bone_spike.max_charges-charges_fractional<=0.25|combo_points.deficit=cp_gain&!buff.skull_and_crossbones.up&energy.base_time_to_max>1", "Attempt to use when it will cap combo points and SnD is down, otherwise keep from capping charges" );
-    build->add_action( "pistol_shot,if=buff.opportunity.up&(energy.base_deficit>energy.regen*1.5|!talent.weaponmaster&combo_points.deficit<=1+buff.broadside.up|talent.quick_draw.enabled|talent.audacity.enabled&!buff.audacity.up)", "Use Pistol Shot with Opportunity if Combat Potency won't overcap energy, when it will exactly cap CP, or when using Quick Draw");
+    build->add_action( "pistol_shot,if=!talent.fan_the_hammer&buff.opportunity.up&(energy.base_deficit>energy.regen*1.5|!talent.weaponmaster&combo_points.deficit<=1+buff.broadside.up|talent.quick_draw.enabled|talent.audacity.enabled&!buff.audacity.up)", "Use Pistol Shot with Opportunity if Combat Potency won't overcap energy, when it will exactly cap CP, or when using Quick Draw");
     build->add_action( "sinister_strike,target_if=min:dot.vicious_wound.remains,if=buff.acquired_axe_driver.up", "Use Sinister Strike on targets without the Cache DoT if the trinket is up");
     build->add_action( "sinister_strike" );
   }
