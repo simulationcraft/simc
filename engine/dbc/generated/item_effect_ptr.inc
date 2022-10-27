@@ -1,5 +1,5 @@
-// Item effects, wow build 10.0.2.46144
-static const std::array<item_effect_t, 8194> __ptr_item_effect_data { {
+// Item effects, wow build 10.0.2.46259
+static const std::array<item_effect_t, 8198> __ptr_item_effect_data { {
   { 116657, 317388,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116658, 317389,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116661, 317407,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
@@ -8057,7 +8057,7 @@ static const std::array<item_effect_t, 8194> __ptr_item_effect_data { {
   { 172111, 394927, 195519,   0,   0,    0,      -1,      -1 }, // Light of Creation
   { 172054, 394455, 195526,   0,   1,    0,      -1,      -1 }, // Broodkeeper's Barrier
   { 172112, 394928, 195527,   0,   1,    0,      -1,      -1 }, // Heaven's Nemesis
-  { 167655, 379076, 195580,   0,   0,   79,       0,    3000 }, // Finely Aged Draconic Liquor
+  { 167655, 379076, 195580,   0,   0,   79,       0,    3000 }, // Finely Aged Draconic Brew
   { 167962, 379420, 195885,   0,   1,    0,      -1,      -1 }, // Magma Shield
   { 168512, 379983, 196435,   0,   1,    0,      -1,      -1 }, // Piercing Barb
   { 169722, 381274, 197725,   0,   1,    0,      -1,      -1 }, // Deathrip's Curled Claw
@@ -8178,7 +8178,7 @@ static const std::array<item_effect_t, 8194> __ptr_item_effect_data { {
   { 171643, 392208, 200858,   0,   1,    0,      -1,      -1 }, // Plume of the Forgotten
   { 171644, 392237, 200859,   0,   1,    0,      -1,      -1 }, // Seasoned Hunter's Trophy
   { 171647, 392359, 200868,   0,   0,    0,      -1,      -1 }, // Cataclysmic Punch
-  { 171654, 392409, 200880,   0,   1,    0,      -1,      -1 }, // Wind-Sealed Time Capsule
+  { 171654, 392409, 200880,   0,   1,    0,      -1,      -1 }, // Wind-Sealed Mana Capsule
   { 171766, 393375, 201158,   0,   0, 1197,      -1,    1000 }, // Scepter of Spectacle: Order
   { 171768, 393370, 201160,   0,   0, 1197,      -1,    1000 }, // Scepter of Spectacle: Earth
   { 171769, 393356, 201161,   0,   0, 1197,      -1,    1000 }, // Scepter of Spectacle: Air
@@ -8194,9 +8194,13 @@ static const std::array<item_effect_t, 8194> __ptr_item_effect_data { {
   { 172117, 345231, 201809,   0,   0, 1141,  120000,   20000 }, // Gladiator's Emblem
   { 172118, 336126, 201810,   0,   0,    0,      -1,      -1 }, // Gladiator's Medallion
   { 172119, 336135, 201811,   0,   1,    0,      -1,      -1 }, // Adaptation
+  { 172386, 375626, 202116,   1,   1,    0,      -1,      -1 }, // Alacritous Alchemist Stone
+  { 172387, 397035, 202117,   0,   1,    0,      -1,      -1 }, // Aligning Matter
+  { 172388, 397038, 202118,   0,   1,    0,      -1,      -1 }, // Arcane Bubble
+  { 172389, 397040, 202119,   0,   1,    0,      -1,      -1 }, // Corporeal Tear
 } };
 
-static const std::array<uint16_t, 8194> __ptr_item_effect_id_index { {
+static const std::array<uint16_t, 8198> __ptr_item_effect_id_index { {
     409,   410,   411,   412,   413,   414,   415,   418,
     419,   420,   421,   422,   423,   424,   425,   426,
     427,   428,   429,   430,   433,   434,   435,   436,
@@ -9221,6 +9225,6 @@ static const std::array<uint16_t, 8194> __ptr_item_effect_id_index { {
    7956,  7962,  7959,  7960,  7888,  7895,  7952,  7957,
    7921,  7932,  7918,  7919,  7926,  7928,  7886,  7890,
    7948,  2115,  7064,  7459,  7859,  7986,  8087,  8088,
-   8111,  8114,
+   8111,  8114,  8194,  8195,  8196,  8197,
 } };
 
