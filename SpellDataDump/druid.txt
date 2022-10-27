@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.46293 dragonflight-BETA (hotfix 2022-10-26/46293, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.46313 Live (hotfix 2022-10-27/46313)
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=8, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
@@ -7352,7 +7352,7 @@ Description      : Deals $m1 Arcane damage to the target and empowers Half Moon 
 |cFFFFFFFFGenerates ${$m3/10} Astral Power.|r
 
 Name             : Fury of Elune (id=202770) [Spell Family (7)] 
-Talent Entry     : Balance [tree=spec, row=9, col=5, max_rank=1, req_points=20, select_idx=100]
+Talent Entry     : Balance [tree=spec, row=9, col=5, max_rank=1, req_points=20, select_idx=101]
 Class            : Druid
 School           : Astral
 Spell Type       : Magic
@@ -18498,7 +18498,7 @@ Tooltip          : Your next Starsurge costs no Astral Power.
 
 Name             : Rattle the Stars (id=393954) [Spell Family (7), Passive] 
 Hotfixed         : Attributes
-Talent Entry     : Balance [tree=spec, row=5, col=5, max_rank=1, req_points=8, select_idx=100]
+Talent Entry     : Balance [tree=spec, row=5, col=5, max_rank=1, req_points=8, select_idx=101]
 Class            : Druid
 School           : Physical
 Spell Type       : None
