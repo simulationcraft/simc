@@ -11750,10 +11750,10 @@ void shaman_t::init_action_list_enhancement()
   precombat->add_action("windfury_weapon");
   precombat->add_action("flametongue_weapon" );
   precombat->add_action("lightning_shield" );
-  precombat->add_action("windfury_totem,if=!runeforge.doom_winds.equipped" );
-  precombat->add_action( "fleshcraft,if=soulbind.pustule_eruption|soulbind.volatile_solvent" );
-  precombat->add_action( "variable,name=trinket1_is_weird,value=trinket.1.is.the_first_sigil|trinket.1.is.scars_of_fraternal_strife|trinket.1.is.cache_of_acquired_treasures" );
-  precombat->add_action( "variable,name=trinket2_is_weird,value=trinket.2.is.the_first_sigil|trinket.2.is.scars_of_fraternal_strife|trinket.2.is.cache_of_acquired_treasures" );
+  precombat->add_action("windfury_totem,if=!runeforge.doom_winds.equipped");
+  precombat->add_action("fleshcraft,if=soulbind.pustule_eruption|soulbind.volatile_solvent");
+  precombat->add_action("variable,name=trinket1_is_weird,value=trinket.1.is.the_first_sigil|trinket.1.is.scars_of_fraternal_strife|trinket.1.is.cache_of_acquired_treasures");
+  precombat->add_action("variable,name=trinket2_is_weird,value=trinket.2.is.the_first_sigil|trinket.2.is.scars_of_fraternal_strife|trinket.2.is.cache_of_acquired_treasures");
 
   // Snapshot stats
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
@@ -11786,7 +11786,7 @@ void shaman_t::init_action_list_enhancement()
     def->add_action("ancestral_call,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50");
 
     def->add_action("feral_spirit");
-    def->add_action("fae_transfusion,if=(talent.ascendance.enabled|talent.doom_winds.enabled|runeforge.doom_winds.equipped)&(soulbind.grove_invigoration|soulbind.field_of_blossoms|active_enemies=1)");
+    def->add_action("fae_transfusion,if=runeforge.seeds_of_rampant_growth.equipped|soulbind.grove_invigoration|soulbind.field_of_blossoms|active_enemies=1");
     def->add_action("vesper_totem,if=raid_event.adds.in>40|active_enemies>1");
     def->add_action("ascendance,if=(ti_lightning_bolt&active_enemies=1&raid_event.adds.in>=90)|(ti_chain_lightning&active_enemies>1)");
     def->add_action("doom_winds,if=raid_event.adds.in>=90|active_enemies>1");
@@ -11800,12 +11800,12 @@ void shaman_t::init_action_list_enhancement()
     single->add_action("windfury_totem,if=!buff.windfury_totem.up");
     single->add_action("stormstrike,if=buff.doom_winds.up|buff.doom_winds_talent.up");
     single->add_action("crash_lightning,if=buff.doom_winds.up|buff.doom_winds_talent.up");
-    single->add_action("ice_strike,if=buff.doom_winds.up|buff.doom_winds_talent.up" );
-    single->add_action("sundering,if=buff.doom_winds.up|buff.doom_winds_talent.up" );
+    single->add_action("ice_strike,if=buff.doom_winds.up|buff.doom_winds_talent.up");
+    single->add_action("sundering,if=buff.doom_winds.up|buff.doom_winds_talent.up");
     single->add_action("primordial_wave,if=buff.primordial_wave.down&(raid_event.adds.in>42|raid_event.adds.in<6)");
     single->add_action("flame_shock,if=!ticking");
     single->add_action("lightning_bolt,if=buff.maelstrom_weapon.stack>=5&buff.primordial_wave.up&raid_event.adds.in>buff.primordial_wave.remains&(!buff.splintered_elements.up|fight_remains<=12)");
-    single->add_action( "ice_strike,if=talent.hailstorm.enabled" );
+    single->add_action("ice_strike,if=talent.hailstorm.enabled");
     single->add_action("frost_shock,if=buff.hailstorm.up");
     single->add_action("lava_lash,if=dot.flame_shock.refreshable");
     single->add_action("stormstrike,if=talent.stormflurry.enabled&buff.stormbringer.up");
@@ -11820,11 +11820,11 @@ void shaman_t::init_action_list_enhancement()
     single->add_action("lava_lash");
     single->add_action("bag_of_tricks");
     single->add_action("lightning_bolt,if=buff.maelstrom_weapon.stack>=5&buff.primordial_wave.down");
-    single->add_action( "sundering,if=raid_event.adds.in>=40" );
+    single->add_action("sundering,if=raid_event.adds.in>=40");
     single->add_action("fire_nova,if=talent.swirling_maelstrom.enabled&active_dot.flame_shock");
     single->add_action("frost_shock");
     single->add_action("crash_lightning");
-    single->add_action( "fire_nova,if=active_dot.flame_shock" );
+    single->add_action("fire_nova,if=active_dot.flame_shock");
     single->add_action("fleshcraft,if=soulbind.pustule_eruption");
     single->add_action("earth_elemental");
     single->add_action("flame_shock");
@@ -11840,12 +11840,12 @@ void shaman_t::init_action_list_enhancement()
     aoe->add_action("lava_lash,target_if=min:debuff.lashing_flames.remains,cycle_targets=1,if=dot.flame_shock.ticking&(active_dot.flame_shock<active_enemies&active_dot.flame_shock<6)");
     aoe->add_action("flame_shock,if=!ticking");
     aoe->add_action("flame_shock,target_if=min:dot.flame_shock.remains,cycle_targets=1,if=!talent.hailstorm.enabled&active_dot.flame_shock<active_enemies&active_dot.flame_shock<6");
-    aoe->add_action( "ice_strike,if=talent.hailstorm.enabled" );
+    aoe->add_action("ice_strike,if=talent.hailstorm.enabled" );
     aoe->add_action("frost_shock,if=talent.hailstorm.enabled&buff.hailstorm.up");
-    aoe->add_action( "sundering" );
-    aoe->add_action( "fire_nova,if=active_dot.flame_shock>=4" );
+    aoe->add_action("sundering");
+    aoe->add_action("fire_nova,if=active_dot.flame_shock>=4");
     aoe->add_action("lava_lash,target_if=min:debuff.lashing_flames.remains,cycle_targets=1,if=talent.lashing_flames.enabled");
-    aoe->add_action( "fire_nova,if=active_dot.flame_shock>=3" );
+    aoe->add_action("fire_nova,if=active_dot.flame_shock>=3");
     aoe->add_action("elemental_blast,if=(!talent.elemental_spirits.enabled|(talent.elemental_spirits.enabled&(charges=max_charges|buff.feral_spirit.up)))&buff.maelstrom_weapon.stack=10&(!talent.crashing_storms.enabled|active_enemies<=3)");
     aoe->add_action("chain_lightning,if=buff.maelstrom_weapon.stack=10");
     aoe->add_action("crash_lightning,if=buff.cl_crash_lightning.up");
