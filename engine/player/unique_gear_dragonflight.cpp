@@ -859,18 +859,17 @@ void rumbling_ruby( special_effect_t& effect )
     rumbling_ruby_proc->custom_buff = rumbling_power_buff;
 
     effect.player->special_effects.push_back( rumbling_ruby_proc );
-    auto proc_object = new buff_t( rumbling_ruby_buff );
 
-    rumbling_power_buff->set_stack_change_callback( [ proc_object ]( buff_t*, int, int new_, int old_ ) {
+    rumbling_power_buff->set_stack_change_callback(( buff_t*, int, int new_, int old_ ) {
       if ( new_ == effect.player -> find_spell( 382094 ).max_stacks() && old_ != effect.player -> find_spell( 382094 ).max_stacks() )
       { 
-        proc_object -> activate( effect.player -> find_spell( 382095 ).max_stacks() );
+        effect.player -> buff.rumbling_ruby_buff -> trigger( effect.player -> find_spell( 382095 ).max_stacks() );
       }
     } );
   }
 
   auto rumbling_ruby_buff = buff_t::find( effect.player, "rumbling_ruby" );
-  if (rumbling_power_buff.stacks() == max_stacks)
+  if ( !rumbling_ruby_buff )
   {
     auto proc_spell = effect.player -> find_spell( 382095 );
     auto rumbling_ruby_buff = make_buff( effect.player, "rumbling_ruby", proc_spell );
