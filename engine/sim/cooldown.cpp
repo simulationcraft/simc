@@ -241,12 +241,12 @@ void cooldown_t::adjust_remaining_duration( double delta )
   }
 }
 
-void cooldown_t::adjust( timespan_t amount, bool requires_reaction )
+void cooldown_t::adjust( timespan_t amount, bool requires_reaction, bool apply_recharge_rate )
 {
   if ( amount == 0_ms )
     return;
 
-  if ( action )
+  if ( action && apply_recharge_rate )
     amount *= action->recharge_rate_multiplier( *this );
 
   // Normal cooldown, just adjust as we see fit
