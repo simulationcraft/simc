@@ -500,7 +500,7 @@ void windwalker( player_t* p )
   cd_sef->add_action( "invoke_xuen_the_white_tiger,if=!variable.hold_xuen&(covenant.necrolord|talent.bonedust_brew)&cooldown.bonedust_brew.remains<=5&(active_enemies<3&chi>=3|active_enemies>=3&chi>=2)|fight_remains<25" );
   cd_sef->add_action( "invoke_xuen_the_white_tiger,if=!variable.hold_xuen&!(covenant.necrolord|talent.bonedust_brew)&(cooldown.rising_sun_kick.remains<2|!covenant.kyrian)&chi>=3" );
   cd_sef->add_action(
-    "weapons_of_order,if=(raid_event.adds.in>45|raid_event.adds.up)&cooldown.rising_sun_kick.remains<execute_time&cooldown.invoke_xuen_the_white_tiger.remains>(20+20*(runeforge.invokers_delight|talent.invokers_delight))&(!runeforge.xuens_treasure&!talent.xuens_battlegear|cooldown.fists_of_fury.remains)|fight_remains<35" );
+    "weapons_of_order,if=(raid_event.adds.in>45|raid_event.adds.up)&cooldown.rising_sun_kick.remains<execute_time&cooldown.invoke_xuen_the_white_tiger.remains>(20+20*(runeforge.invokers_delight|talent.invokers_delight))|fight_remains<35" );
   cd_sef->add_action( "storm_earth_and_fire,if=(covenant.necrolord|talent.bonedust_brew)&(fight_remains<30&cooldown.bonedust_brew.remains<4&chi>=4|buff.bonedust_brew.up&!variable.hold_sef|!spinning_crane_kick.max&active_enemies>=3&cooldown.bonedust_brew.remains<=2&chi>=2)&(pet.xuen_the_white_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>cooldown.storm_earth_and_fire.full_recharge_time)" );
   cd_sef->add_action( "bonedust_brew,if=(!buff.bonedust_brew.up&buff.storm_earth_and_fire.up&buff.storm_earth_and_fire.remains<11&spinning_crane_kick.max)|(!buff.bonedust_brew.up&fight_remains<30&fight_remains>10&spinning_crane_kick.max&chi>=4)|fight_remains<10&soulbind.lead_by_example" );
   cd_sef->add_action(
@@ -615,7 +615,7 @@ void windwalker( player_t* p )
   cd_serenity->add_action( "invoke_xuen_the_white_tiger,if=!variable.hold_xuen&!(covenant.necrolord|talent.bonedust_brew)&(cooldown.rising_sun_kick.remains<2|!covenant.kyrian)|fight_remains<25" );
 
   cd_serenity->add_action(
-    "weapons_of_order,if=(raid_event.adds.in>45|raid_event.adds.up)&cooldown.rising_sun_kick.remains<execute_time&cooldown.invoke_xuen_the_white_tiger.remains>(20+20*(runeforge.invokers_delight|talent.invokers_delight))&(!runeforge.xuens_treasure&!talent.xuens_battlegear|cooldown.fists_of_fury.remains)|fight_remains<35" );
+    "weapons_of_order,if=(raid_event.adds.in>45|raid_event.adds.up)&cooldown.rising_sun_kick.remains<execute_time&cooldown.invoke_xuen_the_white_tiger.remains>(20+20*(runeforge.invokers_delight|talent.invokers_delight))|fight_remains<35" );
   cd_serenity->add_action(
     "bonedust_brew,if=!buff.bonedust_brew.up&(cooldown.serenity.up|cooldown.serenity.remains>15|fight_remains<30&fight_remains>10)|fight_remains<10&soulbind.lead_by_example" );
  
