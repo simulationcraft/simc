@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.0.46313
-static const std::array<spelltext_data_t, 18924> __spelltext_data { {
+static const std::array<spelltext_data_t, 18928> __spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -16293,7 +16293,11 @@ static const std::array<spelltext_data_t, 18924> __spelltext_data { {
   { 373049, "Atonements granted by Power Word: Shield last an additional $s1 sec.", 0, 0 },
   { 373054, "Atonement heals for $s1% more when activated by Mind Blast.", 0, 0 },
   { 373065, "While Shadow Covenant is active, Penance becomes Dark Reprimand, causing ${$373130s1*($373129d+1)} Shadow damage over $373129d. Castable while moving.", 0, 0 },
+  { 373108, "Critical Strike increased by $s1% for each dreadlord captured. \r\n\r\nThis effect stacks.", "Critical Strike increased by $s1%.", 0 },
   { 373112, "Lash the whip at target destination.", 0, 0 },
+  { 373113, "Haste increased by $s1% for each dreadlord captured. \r\n\r\nThis effect stacks.", "Haste increased by $s1%.", 0 },
+  { 373116, "Mastery increased by $s1 for each dreadlord captured. \r\n\r\nThis effect stacks.", "Mastery increased by $s1.", 0 },
+  { 373121, "Versatility increased by $s1% for each dreadlord captured. \r\n\r\nThis effect stacks.", "Versatility increased by $s1%.", 0 },
   { 373129, "Launches a volley of darkness at the target, causing $<penancedamage> Shadow damage over $d. Castable while moving.", 0, 0 },
   { 373130, "$@spelldesc373129", 0, 0 },
   { 373178, "Invoke the Light's wrath, dealing $s1 Radiant damage to the target, increased by $s2% per ally affected by your Atonement.", 0, 0 },
