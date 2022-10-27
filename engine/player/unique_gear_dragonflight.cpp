@@ -813,6 +813,92 @@ void the_cartographers_calipers( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Rumbling Ruby
+// 377454 = Driver
+// 382094 = Stacking Buff, triggers 382095 at max stacks
+// 382095 = Player Buff triggerd from 382094, triggers 382096
+// 382096 = Damage Area trigger
+// 382097 = Damage spell
+void rumbling_ruby( special_effect_t& effect )
+{
+  struct rumbling_ruby_damage_t : public proc_spell_t
+  {
+    rumbling_ruby_damage_t( const special_effect_t& e ) :
+      proc_spell_t( "rumbling_ruby_damage", e.player, e.player->find_spell( 382097 ), e.item )
+    {
+      // TODO: Explore the noted "increased damage at higher enemy health"
+      base_dd = e.player -> find_spell( 377454 )->effectN( 3 ).average( e.item );
+      aoe = -1;
+    }
+  };
+
+  struct rumbling_ruby_proc_t : public dbc_proc_callback_t
+  {
+    rumbling_ruby_proc_t( const special_effect_t* e ) :
+      dbc_proc_callback_t( e->player, *e ) { }
+
+    void execute( action_t*, action_state_t* s ) override
+    {
+      // Only allow one proc on simultaneous hits
+      if ( !proc_buff->check() )
+        return;
+    }
+  };
+
+  auto rumbling_power_buff = buff_t::find( effect.player, "rumbling_power" );
+  if ( !rumbling_power_buff )
+  {
+    auto proc_spell = effect.player->find_spell( 382094 );
+    auto rumbling_power_buff = make_buff<stat_buff_t>(effect.player, "rumbling_power", proc_spell);
+    rumbling_power_buff->add_stat( STAT_STRENGTH, effect.player -> find_spell( 377454 ) -> effectN( 1 ).average( effect.item ))
+
+    special_effect_t* rumbling_ruby_proc = new special_effect_t( effect.player );
+    rumbling_ruby_proc->proc_flags_ = proc_spell->proc_flags();
+    rumbling_ruby_proc->proc_flags2_ = PF2_CAST_DAMAGE;
+    rumbling_ruby_proc->spell_id = 382094;
+    rumbling_ruby_proc->custom_buff = rumbling_power_buff;
+
+    effect.player->special_effects.push_back( rumbling_ruby_proc );
+    auto proc_object = new buff_t( rumbling_ruby_buff );
+
+    rumbling_power_buff->set_stack_change_callback( [ proc_object ]( buff_t*, int, int new_, int old_ ) {
+      if ( new_ == effect.player -> find_spell( 382094 ).max_stacks() && old_ != effect.player -> find_spell( 382094 ).max_stacks() )
+      { 
+        proc_object -> activate( effect.player -> find_spell( 382095 ).max_stacks() );
+      }
+    } );
+  }
+
+  auto rumbling_ruby_buff = buff_t::find( effect.player, "rumbling_ruby" );
+  if (rumbling_power_buff.stacks() == max_stacks)
+  {
+    auto proc_spell = effect.player -> find_spell( 382095 );
+    auto rumbling_ruby_buff = make_buff( effect.player, "rumbling_ruby", proc_spell );
+
+    special_effect_t* rumbling_ruby_damage_proc = new special_effect_t( effect -> target );
+    rumbling_ruby_damage_proc->proc_flags_ = proc_spell->proc_flags();
+    rumbling_ruby_damage_proc->proc_flags2_ = PF2_CAST_DAMAGE;
+    rumbling_ruby_damage_proc->spell_id = 382095;
+    rumbling_ruby_damage_proc->custom_buff = rumbling_ruby_buff;
+
+    effect.player -> special_effect.push_back( rumbling_ruby_damage_proc );
+    auto proc_object = new rumbling_ruby_damage_t( rumbling_ruby_damage_proc );
+
+    rumbling_ruby_buff->set_stack_change_callback( [ proc_object ]( buff_t*, int, int new_ ) {
+    if ( new_ == 0 ) 
+      { 
+        effect.player -> buff.rumbling_ruby_buff -> expire();
+        effect.player -> buff.rumbling_power_buff -> expire();
+      }
+    else (new_ >= 1)
+      {
+        proc_object -> activate();
+      }
+    } );
+  }
+}
+
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -1086,6 +1172,7 @@ void register_special_effects()
   register_special_effect( 384532, items::darkmoon_deck_watcher );
   register_special_effect( 383798, items::emerald_coachs_whistle );
   register_special_effect( 384112, items::the_cartographers_calipers );
+  register_special_effect( 377454, items::rumbling_ruby );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );  // bronzed grip wrappings embellishment
