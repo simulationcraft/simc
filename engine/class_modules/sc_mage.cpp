@@ -3335,7 +3335,8 @@ struct arcane_surge_t final : public arcane_mage_spell_t
     energize_pct( p->find_spell( 365265 )->effectN( 1 ).percent() )
   {
     parse_options( options_str );
-    triggers.radiant_spark = true;
+    if ( p->talents.radiant_spark.ok() )
+      triggers.radiant_spark = true;
     // TODO: Arcane Surge is currently fully capped at 5 targets instead of dealing reduced damage beyond 5 targets like the tooltip says.
     if ( !p->bugs )
     {

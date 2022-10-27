@@ -2127,7 +2127,7 @@ struct blackout_kick_totm_proc_t : public monk_melee_attack_t
     double m = monk_melee_attack_t::composite_crit_damage_bonus_multiplier();
 
     if ( p()->specialization() == MONK_WINDWALKER && p()->talent.windwalker.hardened_soles->ok() )
-      m += p()->talent.windwalker.hardened_soles->effectN( 2 ).percent();
+      m *= 1 + p()->talent.windwalker.hardened_soles->effectN( 2 ).percent();
 
     return m;
   }
@@ -2320,6 +2320,26 @@ struct blackout_kick_t : public monk_melee_attack_t
           p()->gain.bok_proc->add( RESOURCE_CHI, base_costs[RESOURCE_CHI] );
       }
     }
+  }
+
+  double composite_crit_chance() const override
+  {
+    double c = monk_melee_attack_t::composite_crit_chance();
+
+    if ( p()->specialization() == MONK_WINDWALKER && p()->talent.windwalker.hardened_soles->ok() )
+      c += p()->talent.windwalker.hardened_soles->effectN( 1 ).percent();
+
+    return c;
+  }
+
+  double composite_crit_damage_bonus_multiplier() const override
+  {
+    double m = monk_melee_attack_t::composite_crit_damage_bonus_multiplier();
+
+    if ( p()->specialization() == MONK_WINDWALKER && p()->talent.windwalker.hardened_soles->ok() )
+      m *= 1 + p()->talent.windwalker.hardened_soles->effectN( 2 ).percent();
+
+    return m;
   }
 
   double action_multiplier() const override
@@ -6887,7 +6907,7 @@ struct fortifying_brew_t : public monk_buff_t<buff_t>
   {
     double health_multiplier = ( p().bugs ? 0.2 : 0.15 );  // p().spec.fortifying_brew_mw_ww->effectN( 1 ).percent();
 
-    if ( p().talent.brewmaster.fortifying_brew_stagger->ok() )
+    if ( p().talent.brewmaster.fortifying_brew_determination->ok() )
     {
       // The tooltip is hard-coded with 20% if Brewmaster Rank 2 is activated
       // Currently it's bugged and giving 17.39% HP instead of the intended 20%
@@ -8103,7 +8123,7 @@ void monk_t::init_spells()
       // Row 7
       talent.brewmaster.scalding_brew                       = _ST( "Scalding Brew" );
       talent.brewmaster.salsalabims_strength                = _ST( "Sal'salabim's Strength" );
-      talent.brewmaster.fortifying_brew_stagger             = find_talent_spell(talent_tree::SPECIALIZATION, 322960);
+      talent.brewmaster.fortifying_brew_determination       = is_ptr() ? _ST( "Fortifying Brew: Determination" ) :find_talent_spell( talent_tree::SPECIALIZATION, 322960 );
       talent.brewmaster.black_ox_brew                       = _ST( "Black Ox Brew" );
       talent.brewmaster.bob_and_weave                       = _ST( "Bob and Weave" );
       talent.brewmaster.invoke_niuzao_the_black_ox          = find_talent_spell( talent_tree::SPECIALIZATION, 132578 ); //_ST( "Invoke Niuzao, the Black Ox" ); This pulls Rank 2 (322740) for some reason
@@ -10474,7 +10494,7 @@ double monk_t::stagger_base_value()
     if ( talent.brewmaster.high_tolerance->ok() )
       stagger_base *= 1 + talent.brewmaster.high_tolerance->effectN( 5 ).percent();
 
-    if ( talent.brewmaster.fortifying_brew_stagger->ok() && buff.fortifying_brew->up() )
+    if ( talent.brewmaster.fortifying_brew_determination->ok() && buff.fortifying_brew->up() )
       stagger_base *= 1 + passives.fortifying_brew->effectN( 6 ).percent();
 
     // Hard coding the 125% multiplier until Blizzard fixes this

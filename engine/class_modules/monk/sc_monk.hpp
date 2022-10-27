@@ -497,7 +497,7 @@ public:
       // Row 7
       player_talent_t scalding_brew;
       player_talent_t salsalabims_strength;
-      player_talent_t fortifying_brew_stagger;
+      player_talent_t fortifying_brew_determination;
       player_talent_t black_ox_brew;
       player_talent_t bob_and_weave;
       player_talent_t invoke_niuzao_the_black_ox;

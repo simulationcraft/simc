@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.46293 dragonflight-BETA (hotfix 2022-10-26/46293, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.46313 Live (hotfix 2022-10-27/46313, no-networking)
 Name             : Frostbolt of Ages (id=11) 
 Class            : Paladin
 School           : Frost
@@ -317,7 +317,6 @@ Description      : Blesses a party or raid member, granting immunity to movement
 Tooltip          : Immune to movement impairing effects. $?s199325[Movement speed increased by $199325m1%][]
 
 Name             : Cleanse (id=4987) [Spell Family (10)] 
-Hotfixed         : Learn Level (12 -> 10), Required Level (12 -> 10)
 Class            : Holy Paladin
 School           : Holy
 Spell Type       : Magic
@@ -509,7 +508,6 @@ Attributes       : ........ ........ x.x..x.. ........   ........ .x...... .....
 Effects          :
 #1 (id=11347)    : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.57060 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (0.634 -> 0.5706)
 Description      : Judges the target, dealing $s1 Holy damage$?s231663[, and causing them to take $197277s1% increased damage from your next Holy Power ability.][]$?s315867[
 
 |cFFFFFFFFGenerates $220637s1 Holy Power.][]
@@ -691,7 +689,6 @@ Attributes       : ........ ........ x.x..... ...x....   ........ ........ .....
 Effects          :
 #1 (id=15851)    : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.61200 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (0.68 -> 0.612)
 Description      : $@spelldesc20473
 
 Name             : Holy Shock (id=25914) [Spell Family (10)] 
@@ -714,7 +711,6 @@ Attributes       : ........ ........ x.x..... ...x....   ........ ........ .....
 Effects          :
 #1 (id=15852)    : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.39500 | PvP Coefficient: 1.00000 | Target: Friend (21)
-Hotfixed         : SP Coefficient (1.55 -> 1.395)
 Description      : $@spelldesc20473
 
 Name             : Consecration (id=26573) [Spell Family (10)] 
@@ -1136,7 +1132,6 @@ Attributes       : ........ ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=157591)   : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.86229 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
-Hotfixed         : AP Coefficient (0.9581 -> 0.86229)
 #2 (id=821259)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 Description      : Unleashes a whirl of divine energy, dealing $s1 Holy damage to all nearby enemies. Deals reduced damage beyond $s2 targets.
@@ -1266,7 +1261,7 @@ $@spelldesc280373][]
 
 
 Name             : Light's Beacon (id=53651) [Spell Family (10), Passive, Hidden] 
-Class            : Holy Paladin
+Class            : Paladin
 School           : Holy
 Spell Type       : None
 Spell Level      : 16
@@ -3030,7 +3025,6 @@ Effects          :
                    Base Value: -8 | Scaled Value: -8 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Word of Glory (85673)
                    Family Flags: 78
-Hotfixed         : NEW EFFECT
 Description      : Holy Paladin core passive
 
 Name             : Glyph of Pillar of Light (id=146959) [Spell Family (10), Passive, Hidden] 
@@ -3603,7 +3597,6 @@ Attributes       : ........ ........ ..x..... .....x..   ........ ..x..... .....
 Effects          :
 #1 (id=266292)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.03500 | PvP Coefficient: 1.00000 | Target: Friend (21)
-Hotfixed         : SP Coefficient (0.07 -> 0.035)
 Description      : $@spelldesc183778
 
 Name             : Mastery: Lightbringer (id=183997) [Spell Family (10), Passive] 
@@ -5255,7 +5248,6 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
 Effects          :
 #1 (id=335563)   : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.86229 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (0.9581 -> 0.86229)
 Description      : $@spelldesc53385
 
 Name             : Templar's Verdict (id=224266) [Spell Family (10)] 
@@ -5304,7 +5296,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=337592)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.92400 | PvP Coefficient: 1.00000 | Target: Friend (21)
-Hotfixed         : SP Coefficient (1.05 -> 0.924)
 Description      : $@spelldesc85222
 
 Name             : Cavalier (id=230332) [Passive] 
@@ -9249,7 +9240,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=817884)   : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.13500 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (instant) (16)
-Hotfixed         : AP Coefficient (0.27 -> 0.135)
 Description      : $@spelldesc317866
 
 Name             : Empyrean Power (id=326732) [Spell Family (10), Passive] 
@@ -13302,7 +13292,6 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
 Effects          :
 #1 (id=1015429)  : School Damage (2): holyfire
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.25000 | PvP Coefficient: 0.68200 | Radius: 12 yards | Target: Cone Front (104)
-Hotfixed         : AP Coefficient (2.5 -> 2.25)
 #2 (id=1015430)  : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Radius: 12 yards | Mechanic: Snare | Target: Cone Front (104)
 #3 (id=1015431)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
@@ -13753,11 +13742,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Passive (6)
+                 : Passive (6), Aura Points On Client (268)
 Effects          :
 #1 (id=1017835)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -14023,7 +14012,6 @@ Effects          :
 Description      : After you spend $s3 holy power, your next Word of Glory echoes onto a nearby ally at $s1% effectiveness
 
 Name             : Aspiration of Divinity (id=385416) [Spell Family (10), Passive] 
-Hotfixed         : Attributes, Description
 Talent Entry     : Generic [tree=class, row=8, col=2, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(1, 2)]
 Class            : Paladin
@@ -14051,7 +14039,6 @@ Effects          :
 Description      : Your $?S53595[Hammer of the Righteous]?S204019[Blessed Hammer][Crusader Strike] now also grants you $s1% increased $pri for $385417d. Multiple applications may overlap.
 
 Name             : Aspiration of Divinity (id=385417) [Spell Family (10)] 
-Hotfixed         : Attributes, Affecting Spells
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -14072,7 +14059,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1018614)  : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value 2: 0x9 | Target: Self (1)
-Hotfixed         : Sub Type (80 -> 137), Misc Value (-2 -> 0), Misc Value 2 (0 -> 9)
 Description      : Increases $pri by $s1%.
 Tooltip          : $pri increased by $s1%.
 
@@ -15023,7 +15009,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1022823)  : Apply Aura (6) | Modify Armor% (101)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Friend (21)
-Hotfixed         : Base Value (15 -> 30)
 Description      : $@spelldesc387791
 Tooltip          : Armor increased by $s1%.
 
@@ -15197,10 +15182,9 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
                  : No Aura Cancel (31)
 Effects          :
 #1 (id=1022867)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Light of the Martyr (183998)
                    Family Flags: 124
-Hotfixed         : Base Value (8 -> 10)
 Description      : $@spelldesc387814
 Tooltip          : Light of the Martyr damage and healing increased by $s1%.
 
@@ -16003,12 +15987,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1031543)  : Apply Aura (6) | Dummy (4)
                    Base Value: 2500 | Scaled Value: 2500 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (2000 -> 2500)
 #2 (id=1031544)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5000 | Scaled Value: 5000 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (4000 -> 5000)
 #3 (id=1038005)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Casting Flash of Light on targets affected by Tyr's Deliverance extends the duration of your Tyr's Deliverance by ${$s1/1000}.1 sec.
 
 Casting Holy Light on targets affected by Tyr's Deliverance extends the duration of your Tyr's Deliverance by ${$s2/1000}.1 sec.
