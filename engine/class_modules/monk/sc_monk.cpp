@@ -2127,7 +2127,7 @@ struct blackout_kick_totm_proc_t : public monk_melee_attack_t
     double m = monk_melee_attack_t::composite_crit_damage_bonus_multiplier();
 
     if ( p()->specialization() == MONK_WINDWALKER && p()->talent.windwalker.hardened_soles->ok() )
-      m += p()->talent.windwalker.hardened_soles->effectN( 2 ).percent();
+      m *= 1 + p()->talent.windwalker.hardened_soles->effectN( 2 ).percent();
 
     return m;
   }
@@ -2320,6 +2320,26 @@ struct blackout_kick_t : public monk_melee_attack_t
           p()->gain.bok_proc->add( RESOURCE_CHI, base_costs[RESOURCE_CHI] );
       }
     }
+  }
+
+  double composite_crit_chance() const override
+  {
+    double c = monk_melee_attack_t::composite_crit_chance();
+
+    if ( p()->specialization() == MONK_WINDWALKER && p()->talent.windwalker.hardened_soles->ok() )
+      c += p()->talent.windwalker.hardened_soles->effectN( 1 ).percent();
+
+    return c;
+  }
+
+  double composite_crit_damage_bonus_multiplier() const override
+  {
+    double m = monk_melee_attack_t::composite_crit_damage_bonus_multiplier();
+
+    if ( p()->specialization() == MONK_WINDWALKER && p()->talent.windwalker.hardened_soles->ok() )
+      m *= 1 + p()->talent.windwalker.hardened_soles->effectN( 2 ).percent();
+
+    return m;
   }
 
   double action_multiplier() const override
