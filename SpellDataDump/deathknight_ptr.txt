@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.46293 dragonflight-BETA (hotfix 2022-10-26/46293, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.46293 Live (hotfix 2022-10-26/46293, no-networking)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -69,12 +69,13 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=8994)     : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Description      : Bite the enemy, causing ${$<damage>} damage. Deals $62762s2% more damage and costs $62762s1% more Focus when your pet has 50 or more Focus.
-Variables        : $aotb=$?s191384[${1.3}][${1.0}]
-$ce=$?s152244[${1.7}][${1.5}]
-$spiked=$?s53184[${1.1}][${1.0}]
-$blink=$?s130392[${1.5}][${1.0}]
-$damage=${$<aotb>*$<ce>*$<spiked>*$<blink>*($RAP*0.333)*(1+$@versadmg)}
+Description      : Bite the enemy, causing ${$<damage>} damage. Deals $62762s2% more damage and costs $62762s1% more Focus when your pet has $62762s3 or more Focus.
+Variables        : $aotb=$?s191384[${1+($191384s1/100)}][${1.0}]
+$beastMasterTalent=$?s378007[${1+($378007s1/100)}][${1}]
+$trainingExpert=$?s378209[${1+($378209s1/100)}][${1}]
+$ferocity=$?s378916[${1+($378916s1/100)}][${1}]
+$bmMastery=$?s76657[${1+0.01*$76657s1}][${1}]
+$damage=${$<aotb>*$<bmMastery>*$<beastMasterTalent>*$<trainingExpert>*$<ferocity>*($RAP*0.333)*(1+$@versadmg)}
 
 Name             : Blood Fury (desc=Racial) (id=20572) 
 Class            : Warrior, Hunter, Rogue, Death Knight
@@ -1083,7 +1084,6 @@ The Gargoyle gains $211947s1% increased damage for every $s4 Runic Power you spe
 |cFFFFFFFFGenerates ${$s5/10} Runic Power.|r
 
 Name             : Sudden Doom (id=49530) [Spell Family (15), Passive] 
-Hotfixed         : RPPM (2.875 -> 2.5)
 Talent Entry     : Unholy [tree=spec, row=5, col=6, max_rank=1, req_points=8]
 Class            : Death Knight
 School           : Physical
@@ -1135,7 +1135,6 @@ Effects          :
 Description      : Harnesses the energy that surrounds and binds all matter, drawing the target toward you$?a389679[ and slowing their movement speed by $389681s1% for $389681d][]$?s137008[ and forcing the enemy to attack you][].
 
 Name             : Death Strike (id=49998) [Spell Family (15)] 
-Hotfixed         : Travel Delay (0.25 -> 0)
 Talent Entry     : Generic [free=(Blood), tree=class, row=1, col=2, max_rank=1, req_points=0]
 Class            : Death Knight
 School           : Physical
@@ -2146,7 +2145,7 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=1037287)  : Dummy (3)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : When your pet is at or above 50 Focus, your pet's Basic Attacks will deal $s1% more damage, but cost $s2% additional focus.
+Description      : When your pet is at or above $s3 Focus, your pet's Basic Attacks will deal $s1% more damage, but cost $s2% additional focus.
 
 Name             : Dark Transformation (id=63560) [Spell Family (15)] 
 Talent Entry     : Unholy [tree=spec, row=3, col=2, max_rank=1, req_points=0]
@@ -2233,7 +2232,7 @@ School           : Physical
 Spell Type       : Melee
 Range            : 100 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Killing Machine (51124 effects: #1, #2), Might of the Frozen Wastes (81333 effects: #1, #2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Death and Decay (188290 effect#4), Koltira's Newfound Will (208782 effect#2), Improved Obliterate (317198 effect#1), Koltira's Favor (334583 effect#2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Frigid Executioner (377073 effect#2), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3)
+Affecting spells : Killing Machine (51124 effects: #1, #2), Might of the Frozen Wastes (81333 effects: #1, #2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Death and Decay (188290 effect#4), Koltira's Newfound Will (208782 effect#2), Improved Obliterate (317198 effect#1), Koltira's Favor (334583 effect#2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Frigid Executioner (377073 effect#2), Death Knight Frost Class Set 2pc (393623 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3)
 Triggered by     : Obliterate (49020)
 Family Flags     : 43, 49, 111
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ...x.... 
@@ -2339,6 +2338,33 @@ Effects          :
 #2 (id=214692)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.20980 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 Description      : $@spelldesc55090
+
+Name             : Mastery: Master of Beasts (id=76657) [Spell Family (9), Passive] 
+Class            : Beast Mastery Hunter, Death Knight
+School           : Physical
+Spell Type       : None
+Spell Level      : 10
+Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ .....x..   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Log (8), Aura Points On Client (268), Mastery Affects Points (285), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=67988)    : Apply Aura (6) | Modify Pet Damage Done% (429)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.90000 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=90635)    : Apply Aura (6) | Dummy (4)
+                   Base Value: 190 | Scaled Value: 190 | PvP Coefficient: 1.00000 | Target: Self (1)
+#3 (id=171318)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.90000 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: A Murder of Crows (131894), A Murder of Crows (131900), Stampede (201594)
+                   Family Flags: 99, 113
+#4 (id=1033046)  : Apply Aura (6) | Unknown(531)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.90000 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Increases the damage done by your pets by ${$s1}.1%.
 
 Name             : Mastery: Blood Shield (id=77513) [Spell Family (15), Passive] 
 Class            : Blood Death Knight
@@ -3425,18 +3451,14 @@ Effects          :
                    Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Death Coil (47632), Howling Blast (49184), Death Strike (49998), Razorice (50401), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Scourge Strike (55090), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Scourge Strike (70890), Outbreak (77575), Festering Strike (85948), Unholy Blight (115989), Unholy Blight (115994), Breath of Sindragosa (155166), Defile (156000), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Marrowrend (195182), Death's Caress (195292), Frozen Pulse (195750), Glacial Advance (195975), Bonestorm (196528), Remorseless Winter (196771), Chill Streak (204167), Heart Strike (206930), Blooddrinker (206931), Avalanche (207150), Frostscythe (207230), Bursting Sores (207267), Clawing Shadows (207311), Epidemic (212739), Epidemic (215969), Obliterate (222024), Frost Strike (222026), Heart Strike (228645), Howling Blast (237680), Inexorable Assault (253597), Horrid Experimentation (273096), Glacial Contagion (274074), Consumption (274156), Apocalypse (275699), Echoing Howl (275918), Harrowing Decay (275931), Frostwyrm's Fury (279303), Cold Heart (281209), Cold Heart (281210), Helchains (286836), Helchains (286954), Helchains (286978), Helchains (286979), Frostwhelp's Indignation (287320), Helchains (290814), Swarming Mist (311730), Shackle the Unworthy (312202), Rune Strike (316239), Unholy Pact (319236), Unholy Pact (319240), Unholy Pact (319245), Abomination Limb (323710), Abomination Limb (323798), Obliterate (325461), Frost Strike (325464), Sacrificial Pact (327611), Death's Due (341340), Soul Reaper (343294), Dark Transformation (344955), Blood Draw (374606), Frostwhelp's Aid (377245), Shattering Bone (377642), Abomination Limb (383312), Abomination Limb (383313)
                    Family Flags: 43
-Hotfixed         : Base Value (0 -> -5)
 #2 (id=191170)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Death Coil (47632), Howling Blast (49184), Death Strike (49998), Razorice (50401), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Scourge Strike (55090), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Scourge Strike (70890), Outbreak (77575), Festering Strike (85948), Unholy Blight (115989), Unholy Blight (115994), Breath of Sindragosa (155166), Defile (156000), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Marrowrend (195182), Death's Caress (195292), Frozen Pulse (195750), Glacial Advance (195975), Bonestorm (196528), Remorseless Winter (196771), Chill Streak (204167), Heart Strike (206930), Blooddrinker (206931), Avalanche (207150), Frostscythe (207230), Bursting Sores (207267), Clawing Shadows (207311), Epidemic (212739), Epidemic (215969), Obliterate (222024), Frost Strike (222026), Heart Strike (228645), Howling Blast (237680), Inexorable Assault (253597), Horrid Experimentation (273096), Glacial Contagion (274074), Consumption (274156), Apocalypse (275699), Echoing Howl (275918), Harrowing Decay (275931), Frostwyrm's Fury (279303), Cold Heart (281209), Cold Heart (281210), Helchains (286836), Helchains (286954), Helchains (286978), Helchains (286979), Frostwhelp's Indignation (287320), Helchains (290814), Swarming Mist (311730), Shackle the Unworthy (312202), Rune Strike (316239), Unholy Pact (319236), Unholy Pact (319240), Unholy Pact (319245), Abomination Limb (323710), Abomination Limb (323798), Obliterate (325461), Frost Strike (325464), Sacrificial Pact (327611), Death's Due (341340), Soul Reaper (343294), Dark Transformation (344955), Blood Draw (374606), Frostwhelp's Aid (377245), Shattering Bone (377642), Abomination Limb (383312), Abomination Limb (383313)
                    Family Flags: 43
-Hotfixed         : Base Value (0 -> -5)
 #3 (id=191171)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (0 -> -5)
 #4 (id=1032341)  : Apply Aura (6) | Unknown(531)
                    Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (0 -> -5)
 
 Name             : Blood Death Knight (id=137008) [Spell Family (15), Passive, Hidden] 
 Class            : Blood Death Knight
@@ -3654,32 +3676,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1074
 Description      : $@spelldesc146652
 
-Name             : Adaptation (id=152244) [Passive] 
-Class            : Hunter, Death Knight, Shaman
-School           : Physical
-Spell Type       : None
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Passive (6), Not In Spellbook (143), Allow Class Ability Procs (416)
-Effects          :
-#1 (id=210781)   : Apply Aura (6) | Unknown(451)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Increases the effect of your pet's Combat Experience to $156843m2% increased damage. Your pet now gains the following abilities, regardless of its active spec:
-|cFFFFFFFF
-Spiked Collar
-Roar of Sacrifice
-Cornered
-Boar's Speed
-Last Stand
-Blood of the Rhino
-Great Stamina|r
-
 Name             : Breath of Sindragosa (id=152279) [Spell Family (15)] 
 Talent Entry     : Frost [tree=spec, row=10, col=3, max_rank=1, req_points=20]
 Class            : Death Knight
@@ -3821,28 +3817,6 @@ Effects          :
 #2 (id=322756)   : Dummy (3)
                    Base Value: 66 | Scaled Value: 66 | PvP Coefficient: 1.00000
 Description      : $@spelldesc152280
-
-Name             : Combat Experience (id=156843) [Spell Family (9), Passive] 
-Class            : Hunter, Death Knight, Shaman
-School           : Physical
-Spell Type       : None
-Spell Level      : 1
-Attributes       : ....x.x. x....... ..x..... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Is Ability (4), Passive (6), Do Not Log (8), Do Not Sheath (18), Not In Spellbook (143), Allow Class Ability Procs (416)
-Effects          :
-#1 (id=218485)   : Apply Aura (6) | Unknown(214)
-                   Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 1.00000 | Target: Self (1)
-#2 (id=218486)   : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 70 | Scaled Value: 70 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
-                   Affected School(s): All
-Description      : Increases all damage done by your pet by $s2%.
 
 Name             : Riposte (id=161797) [Spell Family (15), Passive] 
 Class            : Blood Death Knight
@@ -5672,7 +5646,6 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Festering Wound (194311)
                    Family Flags: 119
-Hotfixed         : Base Value (25 -> 20)
 #2 (id=756116)   : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Bursting a Festering Wound deals $s1% more damage, and deals $207267s1 Shadow damage to all nearby enemies. Deals reduced damage beyond $207267s3 targets.
@@ -5698,7 +5671,6 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=306540)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.18000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
-Hotfixed         : AP Coefficient (0.2 -> 0.18)
 #2 (id=338561)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=818620)   : Dummy (3)
@@ -5817,7 +5789,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=324719)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.55862 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
-Hotfixed         : AP Coefficient (0.50784 -> 0.558624)
 Description      : Deals $s2 Shadow damage and causes 1 Festering Wound to burst.
 
 Name             : Sludge Belcher (id=207313) [Spell Family (15), Passive] 
@@ -6200,10 +6171,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=315517)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.22800 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (0.24 -> 0.228)
 #2 (id=872659)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.09120 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
-Hotfixed         : AP Coefficient (0.096 -> 0.0912)
 Description      : $@spelldesc207317
 
 Name             : Epidemic (id=215969) [Spell Family (15)] 
@@ -6228,7 +6197,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=328301)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.09120 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
-Hotfixed         : AP Coefficient (0.096 -> 0.0912)
 Description      : $@spelldesc207317
 
 Name             : Ossuary (id=219786) [Spell Family (15), Passive] 
@@ -8191,7 +8159,6 @@ Effects          :
                    Family Flags: 81
 #2 (id=729402)   : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 18 | Target: Self (1)
-Hotfixed         : Base Value (15 -> 30)
 Description      : Sudden Doom triggers $s2% more often and can accumulate up to ${$m1+1} charges.
 
 Name             : Death's Reach (id=276079) [Spell Family (15), Passive] 
@@ -10861,7 +10828,6 @@ Attributes       : ........ ........ ..x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=803165)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.56160 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (0.624 -> 0.5616)
 Description      : Deals $s1 Shadow damage.
 
 Name             : Frostbolt (id=317792) 
@@ -10887,7 +10853,6 @@ Attributes       : ........ ........ ..x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=803166)   : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.59717 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (0.66352 -> 0.597168)
 #2 (id=803167)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
 Description      : Deals $s1 Frost damage and reduces their movement speed by $s2% for $d.
@@ -11000,7 +10965,6 @@ Attributes       : ........ ........ ........ ........   .......x ........ .....
 Effects          :
 #1 (id=805554)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.14963 | PvP Coefficient: 1.00000 | Target: Unknown(25)
-Hotfixed         : AP Coefficient (0.1575 -> 0.149625)
 Description      : $@spelldesc319230
 Tooltip          : Deals $s1 Shadow damage.
 
@@ -13696,10 +13660,9 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=999681)   : Apply Aura (6) | Modify AoE Damage Taken% (229)
                    Base Value: -3 | Scaled Value: -3 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
-Hotfixed         : Sub Type (189 -> 229), Coefficient (0.046412 -> 0), Base Value (2 -> -3), Misc Value (1048576 -> 127), Unknown(28) (-1 -> 0)
 #2 (id=999745)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000
-Description      : Increases Avoidance by $s2%.
+Description      : Damage taken from area of effect attacks reduced by $s1%.
 
 Name             : Might of Thassarian (id=374111) [Spell Family (15), Passive, Hidden] 
 Talent Entry     : Generic [tree=class, row=5, col=4, max_rank=1, req_points=8]
@@ -15302,6 +15265,46 @@ Effects          :
                    Family Flags: 30, 74
 Description      : Summons $s1 additional copy of Dancing Rune Weapon and increases its duration by ${$s2/1000} sec.
 
+Name             : Beast Master (id=378007) [Passive] 
+Talent Entry     : Generic [tree=class, row=8, col=1, max_rank=2, req_points=20]
+                 : Effect#1 [op=set, values=(3, 6)]
+Class            : Hunter, Death Knight
+School           : Physical
+Spell Type       : None
+Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Is Ability (4), Passive (6), Do Not Log (8), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1006229)  : Apply Aura (6) | Modify Pet Damage Done% (429)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Pet damage increased by $s1%.
+
+Name             : Training Expert (id=378209) [Spell Family (9), Passive, Hidden] 
+Talent Entry     : Beast Mastery [tree=spec, row=3, col=3, max_rank=2, req_points=0]
+                 : Effect#1 [op=set, values=(5, 10)]
+Class            : Hunter, Death Knight
+School           : Physical
+Spell Type       : None
+Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ...x.... ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Do Not Log on Learn (355), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1006527)  : Apply Aura (6) | Modify Pet Damage Done% (429)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : All pet damage dealt increased by $s1%.
+
 Name             : Coldthirst (id=378848) [Spell Family (15), Passive, Hidden] 
 Talent Entry     : Generic [tree=class, row=3, col=2, max_rank=1, req_points=0]
 Class            : Death Knight
@@ -15345,6 +15348,25 @@ Effects          :
 #2 (id=1007332)  : Unknown(292)
                    Base Value: -3000 | Scaled Value: -3000 | PvP Coefficient: 1.00000 | Misc Value: 88 | Target: Self (1)
 Description      : $@spelldesc378848
+
+Name             : Ferocity (id=378916) [Spell Family (9), Passive] 
+Talent Entry     : Survival [tree=spec, row=3, col=1, max_rank=1, req_points=0]
+Class            : Hunter, Death Knight
+School           : Physical
+Spell Type       : None
+Attributes       : ......x. ........ ........ .......x   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ....x...   ........ ........ xx..x... ........ 
+                 : ........ ........ .......x ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), No Aura Cancel (31), No Threat (42), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Suppress Weapon Procs (151), Allow While Riding Vehicle (204), Aura Points On Client (268)
+Effects          :
+#1 (id=1007418)  : Apply Aura (6) | Modify Pet Damage Done% (429)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : All damage done by your pet is increased by $s1%.
 
 Name             : Abomination Limb (id=383269) [Spell Family (15)] 
 Talent Entry     : Generic [tree=class, row=10, col=2, max_rank=1, req_points=20]
@@ -16397,7 +16419,7 @@ Class            : Death Knight
 School           : Physical
 Spell Type       : None
 Affecting spells : Killing Machine (51124 effect#1), Death Knight (137005 effects: #1, #5)
-Family Flags     : 7, 15
+Family Flags     : 7, 15, 111
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -16410,8 +16432,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1032708)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Damage (15)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 15 | Target: Self (1)
-                   Affected Spells: Frostscythe (207230), Obliterate (222024), Obliterate (325461), Death Knight Frost Class Set 2pc (393623)
-                   Family Flags: 7, 15
+                   Affected Spells: Obliterate Off-Hand (66198), Frostscythe (207230), Obliterate (222024), Obliterate (325461), Death Knight Frost Class Set 2pc (393623)
+                   Family Flags: 7, 15, 111
 Description      : Obliterate and Frostscythe critical strike damage is increased by $s1%.
 
 Name             : Death Knight Frost Class Set 4pc (id=393624) [Spell Family (15), Passive, Hidden] 
@@ -16455,7 +16477,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1032711)  : Apply Aura (6) | Proc Trigger Spell (42): Vile Infusion
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 394863 | Target: Self (1)
-Description      : Bursting a Festering Wound grants your ghoul Vile Infusion, increasing their damage by $394863s1% and attack speed by $394863s2% for $394863d.
+Description      : Bursting a Festering Wound grants your ghoul Vile Infusion, increasing their damage by $394863s1% and Haste by $394863s2% for $394863d.
 
 Name             : Death Knight Unholy Class Set 4pc (id=393627) [Passive, Hidden] 
 Class            : Death Knight
@@ -16513,19 +16535,15 @@ Effects          :
 #1 (id=1034344)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Death Coil (47632), Howling Blast (49184), Death Strike (49998), Razorice (50401), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Scourge Strike (55090), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Scourge Strike (70890), Outbreak (77575), Festering Strike (85948), Unholy Blight (115989), Unholy Blight (115994), Breath of Sindragosa (155166), Defile (156000), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Marrowrend (195182), Death's Caress (195292), Frozen Pulse (195750), Glacial Advance (195975), Bonestorm (196528), Remorseless Winter (196771), Chill Streak (204167), Heart Strike (206930), Blooddrinker (206931), Avalanche (207150), Frostscythe (207230), Bursting Sores (207267), Clawing Shadows (207311), Epidemic (212739), Epidemic (215969), Obliterate (222024), Frost Strike (222026), Heart Strike (228645), Howling Blast (237680), Inexorable Assault (253597), Horrid Experimentation (273096), Glacial Contagion (274074), Consumption (274156), Apocalypse (275699), Echoing Howl (275918), Harrowing Decay (275931), Frostwyrm's Fury (279303), Cold Heart (281209), Cold Heart (281210), Helchains (286836), Helchains (286954), Helchains (286978), Helchains (286979), Frostwhelp's Indignation (287320), Helchains (290814), Swarming Mist (311730), Shackle the Unworthy (312202), Rune Strike (316239), Unholy Pact (319236), Unholy Pact (319240), Unholy Pact (319245), Abomination Limb (323710), Abomination Limb (323798), Obliterate (325461), Frost Strike (325464), Sacrificial Pact (327611), Death's Due (341340), Soul Reaper (343294), Dark Transformation (344955), Blood Draw (374606), Frostwhelp's Aid (377245), Shattering Bone (377642), Abomination Limb (383312), Abomination Limb (383313)
-                   Family Flags: 43
+                   Family Flags: 43, 94
 #2 (id=1034345)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Death Coil (47632), Howling Blast (49184), Death Strike (49998), Razorice (50401), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Scourge Strike (55090), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Scourge Strike (70890), Outbreak (77575), Festering Strike (85948), Unholy Blight (115989), Unholy Blight (115994), Breath of Sindragosa (155166), Defile (156000), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Marrowrend (195182), Death's Caress (195292), Frozen Pulse (195750), Glacial Advance (195975), Bonestorm (196528), Remorseless Winter (196771), Chill Streak (204167), Heart Strike (206930), Blooddrinker (206931), Avalanche (207150), Frostscythe (207230), Bursting Sores (207267), Clawing Shadows (207311), Epidemic (212739), Epidemic (215969), Obliterate (222024), Frost Strike (222026), Heart Strike (228645), Howling Blast (237680), Inexorable Assault (253597), Horrid Experimentation (273096), Glacial Contagion (274074), Consumption (274156), Apocalypse (275699), Echoing Howl (275918), Harrowing Decay (275931), Frostwyrm's Fury (279303), Cold Heart (281209), Cold Heart (281210), Helchains (286836), Helchains (286954), Helchains (286978), Helchains (286979), Frostwhelp's Indignation (287320), Helchains (290814), Swarming Mist (311730), Shackle the Unworthy (312202), Rune Strike (316239), Unholy Pact (319236), Unholy Pact (319240), Unholy Pact (319245), Abomination Limb (323710), Abomination Limb (323798), Obliterate (325461), Frost Strike (325464), Sacrificial Pact (327611), Death's Due (341340), Soul Reaper (343294), Dark Transformation (344955), Blood Draw (374606), Frostwhelp's Aid (377245), Shattering Bone (377642), Abomination Limb (383312), Abomination Limb (383313)
-                   Family Flags: 43
+                   Family Flags: 43, 94
 #3 (id=1034346)  : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=1039550)  : Apply Party Aura (35) | Unknown(531)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : NEW EFFECT
-#5 (id=1039650)  : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 Description      : $@spelldesc393622
 Tooltip          : Damage and Haste increased by $w1%.
 

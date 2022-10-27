@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.46293 dragonflight-BETA (hotfix 2022-10-26/46293, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.46293 Live (hotfix 2022-10-26/46293, no-networking)
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -58,7 +58,6 @@ Effects          :
 Description      : Corrupts the target, causing$?s334342[ $s3 Shadow damage and an additional][] $146739o1 Shadow damage over $146739d.
 
 Name             : Immolate (id=348) [Spell Family (5)] 
-Hotfixed         : Learn Level (11 -> 0), Required Level (11 -> 0)
 Replaces         : Corruption (id=172)
 Class            : Destruction Warlock
 School           : Fire
@@ -81,7 +80,6 @@ Attributes       : ........ ........ x....... .......x   ........ ........ .....
 Effects          :
 #1 (id=145)      : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.53784 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (0.3984 -> 0.53784)
 #2 (id=371976)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000
 Description      : Burns the enemy, causing $s1 Fire damage immediately and an additional $157736o1 Fire damage over $157736d.
@@ -90,7 +88,6 @@ Description      : Burns the enemy, causing $s1 Fire damage immediately and an a
 Variables        : $mastery=$?s77220[${((100+$77220m3)/100)}][${1.00}]
 
 Name             : Doom (id=603) [Spell Family (5)] 
-Hotfixed         : Learn Level (15 -> 0), Required Level (15 -> 0)
 Talent Entry     : Demonology [tree=spec, row=6, col=3, max_rank=1, req_points=8]
 Class            : Warlock
 School           : Shadow
@@ -342,11 +339,11 @@ Description      : Sacrifices ${$m3*$d/$t1}% of your maximum health to heal your
 Tooltip          : Transferring health.
 
 Name             : Agony (id=980) [Spell Family (5)] 
-Hotfixed         : Learn Level (10 -> 0), Required Level (10 -> 0)
 Class            : Affliction Warlock
 School           : Shadow
 Spell Type       : Magic
 Resource         : 1% Base Mana (0) (id=105)
+Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 18 seconds
@@ -404,7 +401,6 @@ Description      : Subjugates the target demon up to level $s1, forcing it to do
 Tooltip          : $@auracaster's subject.
 
 Name             : Summon Infernal (desc=Guardian) (id=1122) [Spell Family (5)] 
-Hotfixed         : Learn Level (42 -> 0), Required Level (42 -> 0)
 Talent Entry     : Destruction [tree=spec, row=8, col=1, max_rank=1, req_points=20]
 Class            : Warlock
 School           : Shadow
@@ -601,7 +597,6 @@ Description      : Let loose a terrifying howl, causing $i enemies within $A1 yd
 Tooltip          : Disoriented.
 
 Name             : Rain of Fire (id=5740) [Spell Family (5)] 
-Hotfixed         : Learn Level (28 -> 0), Required Level (28 -> 0)
 Talent Entry     : Destruction [tree=spec, row=2, col=3, max_rank=1, req_points=0]
 Class            : Warlock
 School           : Fire
@@ -1049,7 +1044,6 @@ Effects          :
 Description      : $@spelldesc980
 
 Name             : Conflagrate (id=17962) [Spell Family (5)] 
-Hotfixed         : Learn Level (13 -> 0), Required Level (13 -> 0)
 Talent Entry     : Destruction [tree=spec, row=2, col=1, max_rank=1, req_points=0]
 Class            : Warlock
 School           : Fire
@@ -1073,7 +1067,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .x...
 Effects          :
 #1 (id=9553)     : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.16875 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (0.935 -> 1.16875)
 Description      : Triggers an explosion on the target, dealing $s1 Fire damage.$?s196406[
 
 Reduces the cast time of your next Incinerate or Chaos Bolt by $117828s1% for $117828d.][]
@@ -1216,7 +1209,6 @@ Effects          :
 Description      : Maximum mana increased by $s1%.
 
 Name             : Soulstone (id=20707) [Spell Family (5)] 
-Hotfixed         : Learn Level (26 -> 14), Required Level (26 -> 14)
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
@@ -1431,7 +1423,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=288276)   : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.30841 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
-Hotfixed         : SP Coefficient (0.969192 -> 1.30841)
 #3 (id=371982)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Draws fire toward the enemy, dealing $s2 Fire damage.
@@ -1439,7 +1430,6 @@ Description      : Draws fire toward the enemy, dealing $s2 Fire damage.
 |cFFFFFFFFGenerates $244670s1 Soul Shard Fragments and an additional 1 on critical strikes.|r
 
 Name             : Unstable Affliction (id=30108) [Spell Family (5)] 
-Hotfixed         : Learn Level (12 -> 0), Required Level (12 -> 0)
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -1476,7 +1466,6 @@ If dispelled, deals ${$233490s1*$s1/100} damage to the dispeller and silences th
 |cFFFFFFFFRefunds $231791m1 Soul $LShard:Shards; if the target dies while afflicted.|r][]
 
 Name             : Summon Felguard (desc=Summon) (id=30146) [Spell Family (5)] 
-Hotfixed         : Learn Level (12 -> 0), Required Level (12 -> 0)
 Class            : Demonology Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -1662,7 +1651,6 @@ Description      : Reduces the damage your pet takes from area of effect attacks
 Reduces the range at which enemies detect your pet.
 
 Name             : Shadow Embrace (id=32388) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Affliction [tree=spec, row=4, col=1, max_rank=2, req_points=0]
                  : Effect#1 [op=set, values=(1.5, 3)]
                  : Effect#2 [op=set, values=(15, 30)]
@@ -1782,11 +1770,9 @@ Attributes       : ........ ........ .......x x..x....   ...x.x.x ........ .....
 Effects          :
 #1 (id=33883)    : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.12101 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (0.08964 -> 0.121014)
 Description      : $@spelldesc5740
 
 Name             : Haunt (id=48181) [Spell Family (5)] 
-Hotfixed         : Learn Level (18 -> 0), Required Level (18 -> 0)
 Talent Entry     : Affliction [tree=spec, row=8, col=2, max_rank=1, req_points=20]
 Class            : Warlock
 School           : Shadow
@@ -2171,7 +2157,6 @@ Effects          :
 Description      : Your spells deal ${$s1/2}.1% increased damage, plus a random amount of up to ${$s1/2}.1% additional increased damage.
 
 Name             : Havoc (id=80240) [Spell Family (5)] 
-Hotfixed         : Learn Level (27 -> 0), Required Level (27 -> 0)
 Talent Entry     : Destruction [tree=spec, row=3, col=2, max_rank=1, req_points=0, select_idx=300]
 Class            : Warlock
 School           : Shadow
@@ -2234,7 +2219,7 @@ Class            : Warlock
 School           : Shadowflame
 Spell Type       : Magic
 Range            : 50000 yards
-Affecting spells : Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Demonic Synergy (171982 effects: #2, #3), From the Shadows (270569 effect#1), Demonic Meteor (278737 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Wrath of Consumption (387066 effect#1), Demonic Meteor (387396 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Chaos Maelstrom (394679 effect#1), Blazing Meteor (394776 effect#1)
+Affecting spells : Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Demonic Synergy (171982 effects: #2, #3), From the Shadows (270569 effect#1), Demonic Meteor (278737 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Wrath of Consumption (387066 effect#1), Demonic Meteor (387396 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Chaos Maelstrom (394679 effect#1)
 Family Flags     : 49, 86
 Attributes       : ........ ........ .......x ........   ...x...x ........ ........ ........ 
                  : ..x..... ........ ........ ....x...   x....... .x...... ........ ......x. 
@@ -2561,7 +2546,6 @@ Effects          :
 Description      : Corrupts all of your Warlock fire spells, infusing them with fel magic.
 
 Name             : Call Dreadstalkers (id=104316) [Spell Family (5)] 
-Hotfixed         : Learn Level (13 -> 0), Attributes, Required Level (13 -> 0)
 Talent Entry     : Demonology [tree=spec, row=1, col=1, max_rank=1, req_points=0]
 Class            : Warlock
 School           : Shadow
@@ -2721,7 +2705,6 @@ Description      : $@spelldesc108370
 Tooltip          : Absorbs $w1 damage.
 
 Name             : Soul Leech (id=108370) [Spell Family (5), Passive] 
-Hotfixed         : Learn Level (24 -> 10), Required Level (24 -> 10)
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -2910,7 +2893,6 @@ Description      : Sacrifices your demon pet for power, gaining its command demo
 Lasts $196099d or until you summon a demon pet.
 
 Name             : Nightfall (id=108558) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Affliction [tree=spec, row=3, col=1, max_rank=1, req_points=0]
 Class            : Warlock
 School           : Shadow
@@ -3129,7 +3111,6 @@ Description      : Summons a Felhunter who attacks the target for $108501s1 sec.
 Felhunters will Spell Lock their target when summoned.
 
 Name             : Grimoire: Felguard (desc=Summon) (id=111898) [Spell Family (5)] 
-Hotfixed         : Attributes
 Talent Entry     : Demonology [tree=spec, row=5, col=4, max_rank=1, req_points=8]
 Class            : Warlock
 School           : Shadow
@@ -3258,7 +3239,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=132079)   : School Damage (2): chromatic
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.52880 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (1.176 -> 1.5288)
 #2 (id=177448)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=283496)   : Energize Power% (137)
@@ -3658,7 +3638,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=210584)   : School Damage (2): shadowflame
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 2.16000 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: AOE enemy (instant) (16)
-Hotfixed         : SP Coefficient (1.8 -> 2.16)
 Description      : Calls forth a cataclysm at the target location, dealing $s1 Shadowflame damage to all enemies within $A1 yards and afflicting them with $?s980[Agony and Unstable Affliction][]$?s104315[Corruption][]$?s348[Immolate][]$?!s980&!s104315&!s348[Agony, Unstable Affliction, Corruption, or Immolate][].
 
 Name             : Immolate (id=157736) [Spell Family (5)] 
@@ -3681,7 +3660,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=219942)   : Apply Aura (6) | Periodic Damage (3): fire every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.33615 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (0.249 -> 0.33615)
 #2 (id=839431)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
                    Affected Spells: Incinerate (29722), Chaos Bolt (116858), Incinerate (244670)
@@ -4137,7 +4115,6 @@ Effects          :
 Description      : $@spelldesc108503
 
 Name             : Writhe in Agony (id=196102) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Affliction [tree=spec, row=4, col=3, max_rank=2, req_points=0]
                  : Effect#1 [op=set, values=(4, 8)]
                  : Effect#2 [op=set, values=(14, 18)]
@@ -4166,7 +4143,6 @@ Effects          :
 Description      : Agony's damage starts at $s3 stacks and may now ramp up to $s2 stacks.
 
 Name             : Absolute Corruption (id=196103) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Affliction [tree=spec, row=5, col=2, max_rank=1, req_points=8, select_idx=100]
 Class            : Warlock
 School           : Shadow
@@ -4192,7 +4168,6 @@ Description      : Corruption is now permanent and deals $s2% increased damage.
 Duration reduced to $s1 sec against players.
 
 Name             : Sow the Seeds (id=196226) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Affliction [tree=spec, row=3, col=3, max_rank=1, req_points=0]
 Class            : Warlock
 School           : Physical
@@ -4232,7 +4207,6 @@ Effects          :
 Description      : Demonic Empowerment also causes your next Shadow Bolt to be Instant.
 
 Name             : Implosion (id=196277) [Spell Family (5)] 
-Hotfixed         : Learn Level (27 -> 0), Required Level (27 -> 0)
 Talent Entry     : Demonology [tree=spec, row=4, col=1, max_rank=1, req_points=0]
 Class            : Warlock
 School           : Shadowflame
@@ -4325,7 +4299,6 @@ Description      : $@spelldesc316099
 Tooltip          : Silenced.
 
 Name             : Backdraft (id=196406) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Destruction [tree=spec, row=3, col=1, max_rank=1, req_points=0]
 Class            : Warlock
 School           : Physical
@@ -4347,7 +4320,6 @@ Effects          :
 Description      : Conflagrate reduces the cast time of your next Incinerate, Chaos Bolt, or Soul Fire by $117828s1%. Maximum $?s267115[$s2][$s1] charges.
 
 Name             : Fire and Brimstone (id=196408) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Destruction [tree=spec, row=5, col=6, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(13, 25)]
 Class            : Warlock
@@ -4658,7 +4630,6 @@ Damage is increased by $s2% against enemies below $s3% health.
 Tooltip          : Suffering $w1 Shadow damage every $t1 seconds.
 
 Name             : Soul Flame (id=199471) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Affliction [tree=spec, row=6, col=4, max_rank=2, req_points=8]
                  : Effect#1 [op=none, values=(1, 2)]
                  : Effect#2 [op=set, values=(0, 100)]
@@ -4734,7 +4705,6 @@ Description      : Switch to your Primary Talent Specialization.
 Tooltip          : Switch to your Primary Talent Specialization.
 
 Name             : Harvester of Souls (id=201424) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Affliction [tree=spec, row=4, col=2, max_rank=2, req_points=0]
                  : Effect#1 [op=set, values=(7, 15)]
 Class            : Warlock
@@ -4758,7 +4728,6 @@ Effects          :
 Description      : Each time Corruption deals damage, it has a $s2% chance to deal $218615s1 Shadow damage to the target and heal you for ${$218615e1*100}% of the damage dealt.
 
 Name             : Demonic Calling (id=205145) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Demonology [tree=spec, row=5, col=3, max_rank=2, req_points=8]
                  : Effect#1 [op=none, values=(1, 2)]
                  : Effect#2 [op=none, values=(0, 2)]
@@ -4819,7 +4788,6 @@ Description      : $@spelldesc205145
 Tooltip          : Your next Call Dreadstalkers costs $205145s1 less Soul $LShard:Shards; and has no cast time.
 
 Name             : Reverse Entropy (id=205148) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Destruction [tree=spec, row=2, col=2, max_rank=1, req_points=0, select_idx=100]
 Class            : Warlock
 School           : Fire
@@ -4900,7 +4868,6 @@ Description      : Places a phantom singularity above the target, which consumes
 Tooltip          : Dealing damage to all nearby targets every $t1 sec and healing the casting Warlock.
 
 Name             : Summon Darkglare (id=205180) [Spell Family (5)] 
-Hotfixed         : Learn Level (42 -> 0), Required Level (42 -> 0)
 Talent Entry     : Affliction [tree=spec, row=8, col=3, max_rank=1, req_points=20]
 Class            : Warlock
 School           : Shadow
@@ -4936,7 +4903,6 @@ The Darkglare will serve you for $d, blasting its target for $205231s1 Shadow da
 Tooltip          : Summons a Darkglare from the Twisting Nether that blasts its target for Shadow damage, dealing increased damage for every damage over time effect you have active on any target.
 
 Name             : Roaring Blaze (id=205184) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Destruction [tree=spec, row=4, col=1, max_rank=1, req_points=0, select_idx=100]
 Class            : Warlock
 School           : Physical
@@ -5211,7 +5177,6 @@ Effects          :
 Description      : $@spelldesc187365
 
 Name             : Soul Conduit (id=215941) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=9, col=4, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(5, 10)]
 Class            : Warlock
@@ -5334,7 +5299,6 @@ Effects          :
 Description      : Deals $s1 Shadow damage and heals you for $s2% of the damage dealt.
 
 Name             : Demon Skin (id=219272) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=2, col=2, max_rank=2, req_points=0]
                  : Effect#1 [op=set, values=(2, 5)]
                  : Effect#2 [op=set, values=(8, 15)]
@@ -5450,7 +5414,6 @@ Effects          :
 Description      : $@spelldesc224103
 
 Name             : Unstable Affliction (desc=Rank 2) (id=231791) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Class            : Affliction Warlock
 School           : Fire
 Spell Type       : None
@@ -6123,7 +6086,6 @@ Description      : Your damaging abilities have a chance to deal $s1 Nature dama
 Tooltip          : Your damaging abilities have a chance to deal $s1 Nature damage to your target, and $s2 Nature damage to enemies within 3 yards of that target.
 
 Name             : Creeping Death (id=264000) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Affliction [tree=spec, row=8, col=1, max_rank=1, req_points=20]
 Class            : Warlock
 School           : Physical
@@ -6173,7 +6135,6 @@ $demoPassive=$?s137044[${1+0.01*$137044m3}][${1}]
 $damage=${.575*($SP*1)*$<demoMastery>*$<demoPassive>*(1+$@versadmg)}
 
 Name             : Dreadlash (id=264078) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Demonology [tree=spec, row=2, col=2, max_rank=1, req_points=0]
 Class            : Warlock
 School           : Shadowflame
@@ -6217,7 +6178,6 @@ Description      : Increases your Mastery by $s1 and your Leech by $s2.
 Tooltip          : Increases Mastery by $s1 and Leech by $s2.
 
 Name             : Summon Vilefiend (id=264119) [Spell Family (5)] 
-Hotfixed         : Attributes
 Talent Entry     : Demonology [tree=spec, row=3, col=2, max_rank=1, req_points=0, select_idx=100]
 Class            : Warlock
 School           : Fire
@@ -6244,7 +6204,6 @@ Effects          :
 Description      : Summon a Vilefiend to fight for you for the next $d.
 
 Name             : Power Siphon (id=264130) [Spell Family (5)] 
-Hotfixed         : Attributes
 Talent Entry     : Demonology [tree=spec, row=5, col=1, max_rank=1, req_points=8]
 Class            : Warlock
 School           : Shadow
@@ -6296,7 +6255,6 @@ Description      : $@spelldesc267102
 Tooltip          : The cast time of Demonbolt is reduced by $s1%. $?a334581[Demonbolt damage is increased by $334581s1%.][]
 
 Name             : Demonbolt (id=264178) [Spell Family (5)] 
-Hotfixed         : Learn Level (14 -> 0), Required Level (14 -> 0)
 Talent Entry     : Demonology [tree=spec, row=2, col=1, max_rank=1, req_points=0]
 Class            : Warlock
 School           : Shadowflame
@@ -6455,7 +6413,6 @@ Description      : Encases the Voidwalker in shadow energy, reducing physical da
 Tooltip          : Damage taken reduced by $s1%.
 
 Name             : Summon Demonic Tyrant (id=265187) [Spell Family (5)] 
-Hotfixed         : Learn Level (42 -> 0), Attributes, Required Level (42 -> 0)
 Talent Entry     : Demonology [tree=spec, row=8, col=2, max_rank=1, req_points=20]
 Class            : Warlock
 School           : Shadow
@@ -6653,7 +6610,6 @@ Description      : $@spelldesc205148
 Tooltip          : Haste increased by $s1%.
 
 Name             : Rain of Chaos (id=266086) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Destruction [tree=spec, row=10, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Warlock
 School           : Physical
@@ -6696,7 +6652,6 @@ Description      : $@spelldesc266086
 Tooltip          : Spending Soul Shards has a $266086s1% chance to summon an Infernal.
 
 Name             : Internal Combustion (id=266134) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Destruction [tree=spec, row=2, col=2, max_rank=1, req_points=0, select_idx=200]
 Class            : Warlock
 School           : Fire
@@ -6837,7 +6792,6 @@ Effects          :
 Description      : Conflagrate deals $s3% increased damage and grants an additional charge of Backdraft.
 
 Name             : From the Shadows (id=267170) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Demonology [tree=spec, row=3, col=4, max_rank=1, req_points=0]
 Class            : Warlock
 School           : Shadowflame
@@ -6859,7 +6813,6 @@ Effects          :
 Description      : Dreadbite causes the target to take $270569s1% additional Shadowflame damage from you for the next $270569d.
 
 Name             : Demonic Strength (id=267171) [Spell Family (5)] 
-Hotfixed         : Attributes
 Talent Entry     : Demonology [tree=spec, row=3, col=3, max_rank=1, req_points=0, select_idx=200]
 Class            : Warlock
 School           : Shadow
@@ -6887,7 +6840,6 @@ Description      : Infuse your Felguard with demonic strength and command it to 
 Tooltip          : Your next Felstorm will deal $s2% increased damage.
 
 Name             : Bilescourge Bombers (id=267211) [Spell Family (5)] 
-Hotfixed         : Attributes
 Talent Entry     : Demonology [tree=spec, row=3, col=3, max_rank=1, req_points=0, select_idx=100]
 Class            : Warlock
 School           : Physical
@@ -6935,7 +6887,6 @@ Effects          :
 Description      : $@spelldesc267211
 
 Name             : Sacrificed Souls (id=267214) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Demonology [tree=spec, row=9, col=3, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(2, 4)]
 Class            : Warlock
@@ -6978,7 +6929,6 @@ Effects          :
 Description      : Your Demon Commander now drains $267971s2% of the life from your demon servants to empower himself.
 
 Name             : Inner Demons (id=267216) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Demonology [tree=spec, row=5, col=2, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(5, 10)]
 Class            : Warlock
@@ -7003,7 +6953,6 @@ Effects          :
 Description      : You passively summon a Wild Imp to fight for you every $t1 sec. While in combat, you also have a $s1% chance to summon an additional Demon to fight for you for $s2 sec.
 
 Name             : Nether Portal (id=267217) [Spell Family (5)] 
-Hotfixed         : Attributes
 Talent Entry     : Demonology [tree=spec, row=8, col=1, max_rank=1, req_points=20]
 Class            : Warlock
 School           : Shadow
@@ -7605,7 +7554,6 @@ Effects          :
 Description      : Summon an Ur'zul to fight for you for the next $d.
 
 Name             : Demonic Circle (id=268358) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=1, col=2, max_rank=1, req_points=0]
 Class            : Warlock
 School           : Shadow
@@ -7816,7 +7764,6 @@ Effects          :
 Description      : Deal $s1 Shadowflame damage to your enemy target.
 
 Name             : Inferno (id=270545) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Destruction [tree=spec, row=4, col=6, max_rank=1, req_points=0, select_idx=100]
 Class            : Warlock
 School           : Fire
@@ -9955,12 +9902,12 @@ Description      : Deal $s1 Arcane damage instantly, and $o2 over $d. If the ene
 Tooltip          : Suffering $w2 Arcane damage every $t2 sec.
 
 Name             : Unstable Affliction (id=316099) [Spell Family (5)] 
-Hotfixed         : Learn Level (13 -> 0), Required Level (13 -> 0)
 Talent Entry     : Affliction [tree=spec, row=2, col=1, max_rank=1, req_points=0]
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
 Resource         : 1% Base Mana (0) (id=192752)
+Spell Level      : 13
 Range            : 40 yards
 Max Targets      : 1
 Cast Time        : 1.5 seconds
@@ -10035,7 +9982,6 @@ Effects          :
 Description      : Your secondary stats are all increased by $s1.
 
 Name             : Strength of Will (id=317138) [Spell Family (5), Passive, Hidden] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=6, col=2, max_rank=1, req_points=8, select_idx=100]
 Class            : Warlock
 School           : Shadow
@@ -10477,7 +10423,6 @@ Description      : Reduces the target's movement speed by $s1% for $d.
 Tooltip          : Movement speed slowed by $w1%.
 
 Name             : Unstable Affliction (desc=Rank 3) (id=334315) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Class            : Affliction Warlock
 School           : Shadow
 Spell Type       : None
@@ -10498,7 +10443,6 @@ Effects          :
 Description      : Unstable Affliction's duration is increased by 5 seconds.
 
 Name             : Inevitable Demise (id=334319) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Affliction [tree=spec, row=6, col=2, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(7, 15)]
 Class            : Warlock
@@ -10556,7 +10500,6 @@ Description      : $@spelldesc334319
 Tooltip          : Drain Life deals $w1% additional damage and costs $w3% less mana.
 
 Name             : Corruption (desc=Rank 3) (id=334342) [Spell Family (5), Passive] 
-Hotfixed         : Learn Level (54 -> 0), Attributes, Required Level (54 -> 0)
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
@@ -10599,7 +10542,6 @@ Effects          :
 Description      : $@spelldesc264130
 
 Name             : Soulbound Tyrant (id=334585) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Demonology [tree=spec, row=9, col=4, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(30, 50)]
 Class            : Warlock
@@ -12415,7 +12357,6 @@ $@spellicon334275$@spellname334275:
 $@spelldesc334275
 
 Name             : Fiendish Stride (id=386110) [Spell Family (5), Passive, Hidden] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=2, col=4, max_rank=2, req_points=0]
                  : Effect#1 [op=set, values=(-25, -50)]
                  : Effect#2 [op=set, values=(5, 10)]
@@ -12443,7 +12384,6 @@ Effects          :
 Description      : Reduces the damage dealt by Burning Rush by ${$abs($s1)}%. Burning Rush increases your movement speed by an additional $s2%.
 
 Name             : Fel Pact (id=386113) [Spell Family (5), Passive, Hidden] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=2, col=1, max_rank=2, req_points=0]
                  : Effect#1 [op=set, values=(-30000, -60000)]
 Class            : Warlock
@@ -12498,7 +12438,6 @@ Description      : When Soul Leech absorbs damage, $s1% of damage taken is absor
 Reduces damage taken by ${$s4/10}.1%.
 
 Name             : Annihilan Training (id=386174) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Demonology [tree=spec, row=2, col=3, max_rank=1, req_points=0]
 Class            : Warlock
 School           : Physical
@@ -12544,7 +12483,6 @@ Description      : $@spelldesc386174
 Tooltip          : Your Felguard deals $w1% more damage and takes $w1% less damage.
 
 Name             : Demonic Knowledge (id=386185) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Demonology [tree=spec, row=3, col=1, max_rank=1, req_points=0]
 Class            : Warlock
 School           : Physical
@@ -12564,7 +12502,6 @@ Effects          :
 Description      : Hand of Gul'dan has a $s1% chance to generate a charge of Demonic Core.
 
 Name             : Carnivorous Stalkers (id=386194) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Demonology [tree=spec, row=4, col=3, max_rank=1, req_points=0]
 Class            : Warlock
 School           : Physical
@@ -12584,7 +12521,6 @@ Effects          :
 Description      : Your Dreadstalkers' attacks have a $s1% chance to trigger an additional Dreadbite.
 
 Name             : Fel and Steel (id=386200) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Demonology [tree=spec, row=4, col=4, max_rank=1, req_points=0]
 Class            : Warlock
 School           : Physical
@@ -13117,7 +13053,6 @@ Effects          :
 Description      : Reduces the cooldown of Dark Pact by ${$s1/-1000} sec.
 
 Name             : Grim Feast (id=386689) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=10, col=1, max_rank=1, req_points=20]
 Class            : Warlock
 School           : Physical
@@ -13143,12 +13078,10 @@ Effects          :
 Description      : Drain Life now channels ${$s1*-1}% faster and restores health ${$s1*-1}% faster.
 
 Name             : Pandemic Invocation (id=386759) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Affliction [tree=spec, row=7, col=1, max_rank=2, req_points=8]
                  : Effect#1 [op=none, values=(1, 2)]
-                 : Effect#2 [op=none, values=(1, 2)]
-                 : Effect#3 [op=set, values=(333, 666)]
-                 : Effect#4 [op=set, values=(0, 100)]
+                 : Effect#2 [op=set, values=(333, 666)]
+                 : Effect#3 [op=set, values=(0, 100)]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -13187,7 +13120,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   
+                 : ..x..... ........ ........ ........   
                  : Ignore Line of Sight (66), Do Not Display Range (126), Not In Spellbook (143), Always AOE Line of Sight (186), Aura Points On Client (268)
 Effects          :
 #1 (id=1021053)  : School Damage (2): shadow
@@ -13196,7 +13129,6 @@ Description      : $@spelldesc386759
 Tooltip          : Deals $w1 Shadow damage.
 
 Name             : Guillotine (id=386833) [Spell Family (5)] 
-Hotfixed         : Attributes
 Talent Entry     : Demonology [tree=spec, row=10, col=3, max_rank=1, req_points=20]
 Class            : Warlock
 School           : Physical
@@ -13362,7 +13294,6 @@ Description      : Damage taken reduced by $s1%.
 Tooltip          : Damage taken reduced by $w1%.
 
 Name             : Agonizing Corruption (id=386922) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Affliction [tree=spec, row=4, col=4, max_rank=2, req_points=0]
                  : Effect#1 [op=set, values=(1, 2)]
 Class            : Warlock
@@ -13428,7 +13359,6 @@ Effects          :
 Description      : Applies Corruption, Agony, and Unstable Affliction to your target.
 
 Name             : Withering Bolt (id=386976) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Affliction [tree=spec, row=7, col=2, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(7, 15)]
 Class            : Warlock
@@ -13452,7 +13382,6 @@ Effects          :
 Description      : Shadow Bolt and Drain Soul deal $s1% increased damage, up to ${$s1*$s2}%, per damage over time effect you have active on the target.
 
 Name             : Sacrolash's Dark Strike (id=386986) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Affliction [tree=spec, row=7, col=3, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(7, 15)]
                  : Effect#2 [op=set, values=(500, 1000)]
@@ -13514,7 +13443,6 @@ For the next $d, casting Drain Life will cause you to also Drain Life from any e
 Tooltip          : Suffering $s2 Nature damage every $t2 sec.
 
 Name             : Dark Harvest (id=387016) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Affliction [tree=spec, row=10, col=4, max_rank=1, req_points=20]
 Class            : Warlock
 School           : Physical
@@ -13559,7 +13487,6 @@ Tooltip          : Haste increased by ${$W1}.1%.
 Critical strike chance increased by ${$W2}.1%.
 
 Name             : Wrath of Consumption (id=387065) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Affliction [tree=spec, row=9, col=5, max_rank=1, req_points=20]
 Class            : Warlock
 School           : Physical
@@ -13630,7 +13557,6 @@ Description      : Sacrifice $s1% of your Soul Leech to gain a Soul Shard.
 
 
 Name             : Tormented Crescendo (id=387075) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Affliction [tree=spec, row=9, col=2, max_rank=1, req_points=20]
 Class            : Warlock
 School           : Shadow
@@ -13708,7 +13634,6 @@ Description      : $@spelldesc387077
 Tooltip          : Your next Malefic Rapture is instant cast and costs no Soul Shards.
 
 Name             : Grand Warlock's Design (id=387084) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Destruction [tree=spec, row=10, col=1, max_rank=1, req_points=20, select_idx=200]
                  : Affliction [tree=spec, row=10, col=3, max_rank=1, req_points=20, select_idx=100]
                  : Demonology [tree=spec, row=10, col=2, max_rank=1, req_points=20, select_idx=200]
@@ -13802,7 +13727,6 @@ Description      : $@spelldesc387095
 Tooltip          : Fire damage taken increased by $s1%.
 
 Name             : Ruin (id=387103) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Destruction [tree=spec, row=7, col=1, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(10, 20)]
 Class            : Warlock
@@ -13900,7 +13824,6 @@ Description      : $@spelldesc387108
 Tooltip          : Your next Shadowburn will critically strike and your critical strike chance will increase its critical strike damage.
 
 Name             : Burn to Ashes (id=387153) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Destruction [tree=spec, row=9, col=6, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(15, 30)]
 Class            : Warlock
@@ -13957,7 +13880,6 @@ Description      : $@spelldesc387153
 Tooltip          : Incinerate damage increased by $w1%.
 
 Name             : Ritual of Ruin (id=387156) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Destruction [tree=spec, row=8, col=3, max_rank=1, req_points=20]
 Class            : Warlock
 School           : Chaos
@@ -14044,7 +13966,6 @@ Description      : $@spelldesc387156
 Tooltip          : $@spelldesc387156
 
 Name             : Avatar of Destruction (id=387159) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Destruction [tree=spec, row=10, col=3, max_rank=1, req_points=20]
 Class            : Warlock
 School           : Shadow
@@ -14147,7 +14068,6 @@ Effects          :
 Description      : Ritual of Ruin requires $s1 less Soul Shards spent.
 
 Name             : Raging Demonfire (id=387166) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Destruction [tree=spec, row=5, col=3, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(2, 5)]
                  : Effect#2 [op=set, values=(200, 500)]
@@ -14178,7 +14098,6 @@ Effects          :
 Description      : Channel Demonfire fires an additional $s1 bolts. Each bolt increases the remaining duration of Immolate on all targets hit by ${$s2/1000}.1 sec.
 
 Name             : Diabolic Embers (id=387173) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Destruction [tree=spec, row=8, col=2, max_rank=1, req_points=20]
 Class            : Warlock
 School           : Physical
@@ -14219,7 +14138,6 @@ Effects          :
 Description      : Your Incinerate and Conflagrate casts on targets that have $s2% or less health reduce the cooldown of Soulfire by ${$s1/-1000} sec.
 
 Name             : Seized Vitality (id=387250) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Affliction [tree=spec, row=9, col=3, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(10, 20)]
                  : Effect#2 [op=set, values=(50, 100)]
@@ -14320,7 +14238,6 @@ Description      : $@spelldesc387259
 Tooltip          : Haste increased by $w1%.
 
 Name             : Malevolent Visionary (id=387273) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Affliction [tree=spec, row=9, col=4, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(3, 5)]
                  : Effect#2 [op=set, values=(5000, 10000)]
@@ -14350,7 +14267,6 @@ Effects          :
 Description      : Darkglare increases its damage by an additional $s1% for each damage over time effect active. Darkglare lasts an additional ${$s2/1000} sec.
 
 Name             : Chaos Incarnate (id=387275) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Destruction [tree=spec, row=10, col=2, max_rank=1, req_points=20, select_idx=100]
 Class            : Warlock
 School           : Physical
@@ -14370,7 +14286,6 @@ Effects          :
 Description      : Chaos Bolt, Rain of Fire, and Shadowburn always gains maximum benefit from your Mastery: Chaotic Energies.
 
 Name             : Power Overwhelming (id=387279) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Destruction [tree=spec, row=9, col=3, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(0.5, 1)]
                  : Effect#2 [op=set, values=(5, 10)]
@@ -14421,7 +14336,6 @@ Description      : $@spelldesc387279
 Tooltip          : Mastery increased by ${$W1}.1%.
 
 Name             : Haunted Soul (id=387301) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Affliction [tree=spec, row=10, col=2, max_rank=1, req_points=20]
 Class            : Warlock
 School           : Shadow
@@ -14464,7 +14378,6 @@ Description      : $@spelldesc387301
 Tooltip          : Your damage over time effects deal $s1% additional damage while Haunt is active.
 
 Name             : Shadow's Bite (id=387322) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Demonology [tree=spec, row=4, col=2, max_rank=1, req_points=0]
 Class            : Warlock
 School           : Shadow
@@ -14484,7 +14397,6 @@ Effects          :
 Description      : When your summoned Dreadstalkers fade away, they increase the damage of your Demonbolt by $s1% for $272945d.
 
 Name             : Fel Might (id=387338) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Demonology [tree=spec, row=4, col=5, max_rank=1, req_points=0]
 Class            : Warlock
 School           : Shadow
@@ -14505,7 +14417,6 @@ Effects          :
 Description      : Reduces the cooldown of Felstorm by ${$abs($s1/1000)} sec.
 
 Name             : Bloodbound Imps (id=387349) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Demonology [tree=spec, row=6, col=1, max_rank=1, req_points=8]
 Class            : Warlock
 School           : Shadow
@@ -14527,7 +14438,6 @@ Effects          :
 Description      : The chance of receiving a Demonic Core from a Wild Imp is increased by $s1% or $s2% when imploded.
 
 Name             : Crashing Chaos (id=387355) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Destruction [tree=spec, row=9, col=1, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(3, 6)]
 Class            : Warlock
@@ -14630,7 +14540,6 @@ Description      : $@spelldesc387384
 Tooltip          : Your next Incinerate is instant cast.
 
 Name             : Dread Calling (id=387391) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Demonology [tree=spec, row=6, col=2, max_rank=1, req_points=8]
 Class            : Warlock
 School           : Shadow
@@ -14698,7 +14607,6 @@ Description      : $@spelldesc387391
 Tooltip          : Your next Call Dreadstalkers will have their damage increased by $337141s1%.
 
 Name             : Demonic Meteor (id=387396) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Demonology [tree=spec, row=6, col=4, max_rank=1, req_points=8]
 Class            : Warlock
 School           : Physical
@@ -14722,7 +14630,6 @@ Effects          :
 Description      : Hand of Gul'dan deals $s1% additional damage and has a $s2% chance per Soul Shard spent of refunding a Soul Shard.
 
 Name             : Fel Sunder (id=387399) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Demonology [tree=spec, row=6, col=5, max_rank=1, req_points=8]
 Class            : Warlock
 School           : Shadow
@@ -14747,7 +14654,6 @@ Effects          :
 Description      : Each time Felstorm deals damage, it increases the damage the target takes from you and your pets by $s1% for $387402d, up to ${$s1*$387402u}%.
 
 Name             : Madness of the Azj'Aqir (id=387400) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Destruction [tree=spec, row=9, col=4, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(12, 25)]
                  : Effect#2 [op=set, values=(-10, -20)]
@@ -14877,7 +14783,6 @@ Description      : $@spelldesc387400
 Tooltip          : Shadowburn damage is increased by $w1%.
 
 Name             : Fel Covenant (id=387432) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Demonology [tree=spec, row=7, col=1, max_rank=2, req_points=8]
                  : Effect#1 [op=none, values=(1, 2)]
                  : Effect#2 [op=set, values=(7, 15)]
@@ -14931,7 +14836,6 @@ Description      : $@spelldesc387432
 Tooltip          : Damage of your Demonbolt increased by $w1%.
 
 Name             : Imp Gang Boss (id=387445) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Demonology [tree=spec, row=7, col=2, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(5, 10)]
 Class            : Warlock
@@ -14979,7 +14883,6 @@ Description      : $@spelldesc387445
 Tooltip          : Damage done increased by $s2%.
 
 Name             : Infernal Brand (id=387475) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Destruction [tree=spec, row=9, col=2, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(3, 6)]
 Class            : Warlock
@@ -15025,7 +14928,6 @@ Description      : $@spelldesc387475
 Tooltip          : Taking $w1% increased Fire damage from Infernal.
 
 Name             : Kazaak's Final Curse (id=387483) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Demonology [tree=spec, row=7, col=3, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(3, 5)]
 Class            : Warlock
@@ -15046,7 +14948,6 @@ Effects          :
 Description      : Doom deals $s1% increased damage for each demon pet you have active.
 
 Name             : Ripped through the Portal (id=387485) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Demonology [tree=spec, row=7, col=4, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(50, 100)]
 Class            : Warlock
@@ -15067,7 +14968,6 @@ Effects          :
 Description      : Call Dreadstalkers has a $s1% chance to summon an additional Dreadstalker.
 
 Name             : Hounds of War (id=387488) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Demonology [tree=spec, row=7, col=5, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(3, 5)]
 Class            : Warlock
@@ -15091,7 +14991,6 @@ Effects          :
 Description      : Shadow Bolt and Demonbolt have a $s1% chance to reset the cooldown of Call Dreadstalkers.
 
 Name             : Antoran Armaments (id=387494) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Demonology [tree=spec, row=8, col=3, max_rank=1, req_points=20]
 Class            : Warlock
 School           : Shadow
@@ -15162,7 +15061,6 @@ Effects          :
 Description      : $@spelldesc387494
 
 Name             : Mayhem (id=387506) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Destruction [tree=spec, row=3, col=2, max_rank=1, req_points=0, select_idx=200]
 Class            : Warlock
 School           : Physical
@@ -15173,14 +15071,14 @@ Proc Chance      : 101%
 Proc Flags       : ........ ....x... x....... ........ 
                  : Generic Hostile Spell, Magic Hostile Spell
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ...x.... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Passive (6), Can Proc From Procs (122), Not In Spellbook (143), Do Not Log on Learn (355)
+                 : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1022328)  : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -15194,7 +15092,6 @@ $@spellicon80240 $@spellname80240
 Marks a target with Havoc for ${$s3/1000}.1 sec, causing your single target spells to also strike the Havoc victim for $80240s1% of normal initial damage.
 
 Name             : Pandemonium (id=387509) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Destruction [tree=spec, row=4, col=4, max_rank=1, req_points=0, select_idx=100]
 Class            : Warlock
 School           : Physical
@@ -15223,7 +15120,6 @@ Mayhem has an additional $s2% chance to trigger.
 
 
 Name             : Cry Havoc (id=387522) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Destruction [tree=spec, row=4, col=4, max_rank=1, req_points=0, select_idx=200]
 Class            : Warlock
 School           : Physical
@@ -15244,7 +15140,6 @@ Effects          :
 Description      : When Chaos Bolt damages a target afflicted by Havoc, it explodes, dealing $387547s2 damage to enemies within $387547A2 yards.
 
 Name             : Ner'zhul's Volition (id=387526) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Demonology [tree=spec, row=9, col=1, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(15, 30)]
 Class            : Warlock
@@ -15265,7 +15160,6 @@ Effects          :
 Description      : When Nether Portal summons a demon, it has a $s1% chance to summon an additional demon.
 
 Name             : Pact of the Imp Mother (id=387541) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Demonology [tree=spec, row=9, col=5, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(5, 10)]
 Class            : Warlock
@@ -15308,7 +15202,6 @@ Effects          :
 Description      : $@spelldesc387522
 
 Name             : Infernal Command (id=387549) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Demonology [tree=spec, row=9, col=7, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(5, 10)]
 Class            : Warlock
@@ -15353,7 +15246,6 @@ Description      : $@spelldesc387549
 Tooltip          : Damage done increased by $w1%.
 
 Name             : Rolling Havoc (id=387569) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Destruction [tree=spec, row=5, col=4, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(1, 2)]
                  : Effect#2 [op=set, values=(1, 2)]
@@ -15406,7 +15298,6 @@ Description      : $@spelldesc387569
 Tooltip          : Damage increased by $W1%.
 
 Name             : Gul'dan's Ambition (id=387578) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Demonology [tree=spec, row=10, col=1, max_rank=1, req_points=20]
 Class            : Warlock
 School           : Shadow
@@ -15472,7 +15363,6 @@ Description      : $@spelldesc387578
 Tooltip          : Damage done increased by $s1%. Haste increased by $s2%.
 
 Name             : The Expendables (id=387600) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Demonology [tree=spec, row=9, col=6, max_rank=1, req_points=20]
 Class            : Warlock
 School           : Shadow
@@ -15516,7 +15406,6 @@ Description      : $@spelldesc387600
 Tooltip          : Damage done increased by $s1%.
 
 Name             : Stolen Power (id=387602) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Demonology [tree=spec, row=9, col=2, max_rank=1, req_points=20]
 Class            : Warlock
 School           : Shadow
@@ -15752,7 +15641,6 @@ Tooltip          : $w1 damage is being delayed every $387846t1 sec.
 Damage Remaining: $w2
 
 Name             : Teachings of the Satyr (id=387972) [Spell Family (5), Passive, Hidden] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=5, col=1, max_rank=1, req_points=8]
 Class            : Warlock
 School           : Shadow
@@ -16081,7 +15969,6 @@ Effects          :
 #2 (id=1025902)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 2364 (Label)
                    Affected Spells (Label): Profane Bargain (394747)
-Hotfixed         : Sub Type (4 -> 219), Misc Value (0 -> 3), Misc Value 2 (0 -> 2364)
 #3 (id=1030612)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 1985 (Label) | Target: Self (1)
                    Affected Spells (Label): Grimoire of Sacrifice (196099)
@@ -16187,7 +16074,6 @@ Effects          :
 Description      : Targets resurrected with Soulstone resurrect with $s1% additional health and $s2% additional mana.
 
 Name             : Soul-Eater's Gluttony (id=389630) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Affliction [tree=spec, row=9, col=6, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(1, 2)]
 Class            : Warlock
@@ -16213,7 +16099,6 @@ Effects          :
 Description      : Whenever Unstable Affliction deals damage, the cooldown of Soul Rot is reduced by ${$s1/$s2}.1 sec.
 
 Name             : Malefic Affliction (id=389761) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Affliction [tree=spec, row=9, col=1, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(5, 10)]
 Class            : Warlock
@@ -16240,7 +16125,6 @@ Effects          :
 Description      : Malefic Rapture causes your active Unstable Affliction to deal $s1% additional damage, up to ${$s1*$389845u}%, for the rest of its duration.
 
 Name             : Doom Blossom (id=389764) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Affliction [tree=spec, row=10, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Warlock
 School           : Shadow
@@ -16263,7 +16147,6 @@ Effects          :
 Description      : If Corruption damages a target affected by your Unstable Affliction, it has a $s1% chance per stack of Malefic Affliction to deal $389869s1 Shadow damage to nearby enemies.
 
 Name             : Dread Touch (id=389775) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Affliction [tree=spec, row=10, col=1, max_rank=1, req_points=20, select_idx=200]
 Class            : Warlock
 School           : Shadow
@@ -16351,7 +16234,6 @@ Effects          :
 Description      : $@spelldesc389764
 
 Name             : Grim Reach (id=389992) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Affliction [tree=spec, row=10, col=3, max_rank=1, req_points=20, select_idx=200]
 Class            : Warlock
 School           : Shadow
@@ -16389,7 +16271,6 @@ Effects          :
 Description      : $@spelldesc389992
 
 Name             : Reign of Tyranny (id=390173) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Demonology [tree=spec, row=10, col=2, max_rank=1, req_points=20, select_idx=100]
 Class            : Warlock
 School           : Shadow
@@ -16409,10 +16290,8 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1026980)  : None (0)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000
-Hotfixed         : Base Value (2 -> 3)
 #3 (id=1026971)  : None (0)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
-Hotfixed         : Base Value (3 -> 5)
 Description      : Active Wild Imps grant $s1 stack of Demonic Servitude. Active greater demons grant $s2 stacks of Demonic Servitude.
 
 Demonic Tyrant deals $s3% additional damage for each stack of Demonic Servitude active at the time of his summon.
@@ -16761,8 +16640,6 @@ Spell Type       : None
 Duration         : 10 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
-Proc Flags       : ........ ....x... x....... ........ 
-                 : Generic Hostile Spell, Magic Hostile Spell
 Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -16773,10 +16650,8 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   
                  : Do Not Sheath (18), No Threat (42), Can Proc From Procs (122), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
-#1 (id=1034733)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+#1 (id=1034733)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Hand of Gul'dan (86040)
-                   Family Flags: 86
 #2 (id=1034734)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Hand of Gul'dan (105174)
