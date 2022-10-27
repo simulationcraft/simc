@@ -195,8 +195,9 @@ public:
   struct events_t
   {
     event_t* enlightened;
-    event_t* icicle;
     event_t* from_the_ashes;
+    event_t* icicle;
+    event_t* merged_buff_execute;
     event_t* time_anomaly;
   } events;
 
@@ -806,6 +807,7 @@ public:
   void      trigger_arcane_charge( int stacks = 1 );
   bool      trigger_crowd_control( const action_state_t* s, spell_mechanic type, timespan_t duration = timespan_t::min() );
   void      trigger_time_manipulation();
+  void      trigger_merged_buff( buff_t* buff, bool trigger );
 };
 
 namespace pets {
@@ -1554,23 +1556,11 @@ public:
     if ( triggers.icy_propulsion && s->result == RESULT_CRIT )
       p()->cooldowns.icy_veins->adjust( -p()->talents.icy_propulsion->effectN( 1 ).time_value() );
 
-    if ( callbacks && p()->talents.overflowing_energy.ok() && s->result_type == result_amount_type::DMG_DIRECT )
-    {
-      // TODO: should we use events here just like with Fevered Incantation? OE doesn't trigger from AoE spells
-      // so multiple simultaneous triggers happen rather rarely
-      if ( s->result == RESULT_CRIT )
-        p()->buffs.overflowing_energy->expire();
-      else if ( triggers.overflowing_energy )
-        p()->buffs.overflowing_energy->trigger();
-    }
+    if ( callbacks && p()->talents.overflowing_energy.ok() && s->result_type == result_amount_type::DMG_DIRECT && ( s->result == RESULT_CRIT || triggers.overflowing_energy ) )
+      p()->trigger_merged_buff( p()->buffs.overflowing_energy, s->result != RESULT_CRIT );
 
     if ( p()->talents.fevered_incantation.ok() && s->result_type == result_amount_type::DMG_DIRECT )
-    {
-      if ( s->result == RESULT_CRIT )
-        make_event( *sim, [ this ] { p()->buffs.fevered_incantation->trigger(); } );
-      else
-        make_event( *sim, [ this ] { p()->buffs.fevered_incantation->expire(); } );
-    }
+      p()->trigger_merged_buff( p()->buffs.fevered_incantation, s->result == RESULT_CRIT );
   }
 
   void assess_damage( result_amount_type rt, action_state_t* s ) override
@@ -2304,7 +2294,7 @@ struct frost_mage_spell_t : public mage_spell_t
   void trigger_chill_effect( const action_state_t* s )
   {
     // TODO: double check if frostbite and bone chilling trigger from the same spells
-    p()->buffs.bone_chilling->trigger();
+    p()->trigger_merged_buff( p()->buffs.bone_chilling, true );
     if ( p()->rng().roll( p()->talents.frostbite->proc_chance() ) )
       p()->trigger_crowd_control( s, MECHANIC_ROOT, 0.5_s ); // Frostbite only has the initial grace period
   }
@@ -5536,6 +5526,58 @@ struct from_the_ashes_event_t final : public event_t
   }
 };
 
+struct merged_buff_execute_event_t final : public event_t
+{
+  struct buff_execute_info_t
+  {
+    buff_t* buff;
+    bool expire;
+    int stacks;
+  };
+
+  mage_t* mage;
+  std::vector<buff_execute_info_t> buffs;
+
+  merged_buff_execute_event_t( mage_t& m ) :
+    event_t( m, 0_ms ),
+    mage( &m )
+  { }
+
+  const char* name() const override
+  { return "merged_buff_execute_event"; }
+
+  void execute() override
+  {
+    mage->events.merged_buff_execute = nullptr;
+    for ( const auto& b : buffs )
+    {
+      if ( b.expire )
+        b.buff->expire();
+      if ( b.stacks > 0 )
+        b.buff->trigger( b.stacks );
+    }
+    buffs.clear();
+  }
+
+  void add_buff( buff_t* buff, bool trigger )
+  {
+    auto it = range::find( buffs, buff, [] ( const auto& i ) { return i.buff; } );
+    if ( it == buffs.end() )
+    {
+      buffs.push_back( { buff, !trigger, as<int>( trigger ) } );
+    }
+    else if ( trigger )
+    {
+      it->stacks++;
+    }
+    else
+    {
+      it->expire = true;
+      it->stacks = 0;
+    }
+  }
+};
+
 struct time_anomaly_tick_event_t final : public event_t
 {
   mage_t* mage;
@@ -5716,6 +5758,14 @@ void mage_t::trigger_time_manipulation()
 
   timespan_t t = talents.time_manipulation->effectN( 1 ).time_value();
   for ( auto cd : time_manipulation_cooldowns ) cd->adjust( t, false );
+}
+
+void mage_t::trigger_merged_buff( buff_t* buff, bool trigger )
+{
+  if ( !events.merged_buff_execute )
+    events.merged_buff_execute = make_event<events::merged_buff_execute_event_t>( *sim, *this );
+
+  debug_cast<events::merged_buff_execute_event_t*>( events.merged_buff_execute )->add_buff( buff, trigger );
 }
 
 action_t* mage_t::create_action( std::string_view name, std::string_view options_str )
