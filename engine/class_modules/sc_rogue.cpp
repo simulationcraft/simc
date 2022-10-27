@@ -10792,7 +10792,7 @@ void rogue_t::create_buffs()
     } );
 
   buffs.scent_of_blood = make_buff( this, "scent_of_blood", spec.scent_of_blood_buff )
-    ->set_default_value_from_effect_type( A_MOD_PERCENT_STAT )
+    ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
     ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
     ->set_duration( sim->max_time / 2 ) // Duration is 24s in spell data, but not enforced
     ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY );
