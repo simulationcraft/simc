@@ -10384,11 +10384,11 @@ player_talent_t player_t::find_talent_spell(
 
   if ( name_tokenized )
   {
-    trait = trait_data_t::find_tokenized( tree, name, class_idx, s == SPEC_NONE ? _spec : s );
+    trait = trait_data_t::find_tokenized( tree, name, class_idx, s == SPEC_NONE ? _spec : s, dbc->ptr );
   }
   else
   {
-    trait = trait_data_t::find( tree, name, class_idx, s == SPEC_NONE ? _spec : s );
+    trait = trait_data_t::find( tree, name, class_idx, s == SPEC_NONE ? _spec : s, dbc->ptr );
   }
 
   if ( trait == &trait_data_t::nil() )
@@ -10409,7 +10409,7 @@ player_talent_t player_t::find_talent_spell(
 
   dbc->spec_idx( s == SPEC_NONE ? _spec : s, class_idx, spec_idx );
 
-  auto traits = trait_data_t::find_by_spell( tree, spell_id, class_idx, s == SPEC_NONE ? _spec : s );
+  auto traits = trait_data_t::find_by_spell( tree, spell_id, class_idx, s == SPEC_NONE ? _spec : s, dbc->ptr );
   if ( traits.size() == 0 )
   {
     sim->print_debug( "Player {}: Can't find {} talent with spell_id '{}'.", this->name(),
