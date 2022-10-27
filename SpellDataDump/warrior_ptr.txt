@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.46293 Live (hotfix 2022-10-26/46293, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.46313 Live (hotfix 2022-10-27/46313, no-networking)
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -16600,6 +16600,9 @@ Effects          :
                    Family Flags: 9
 #3 (id=1035323)  : Apply Aura (6) | Modify Critical Strike% (290)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+#4 (id=1039651)  : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : NEW EFFECT
 Description      : $@spelldesc393706
 Tooltip          : Damage and critical strike chance increased by $s1%.
 

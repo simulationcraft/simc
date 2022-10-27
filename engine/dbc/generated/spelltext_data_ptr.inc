@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.2.46259
-static const std::array<spelltext_data_t, 19116> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 19118> __ptr_spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -18235,8 +18235,10 @@ static const std::array<spelltext_data_t, 19116> __ptr_spelltext_data { {
   { 390135, "Activating Avatar casts Odyn's Fury, activating Odyn's Fury casts Avatar at reduced effectiveness.", 0, 0 },
   { 390137, "$@spelldesc389693", 0, 0 },
   { 390138, "Activating Avatar or Bladestorm casts  the other at reduced effectiveness.", 0, 0 },
+  { 390139, "$@spelldesc389693", 0, 0 },
   { 390140, "Activating Avatar or Colossus Smash casts Recklessness at reduced effectiveness.", 0, 0 },
   { 390142, "Leaving demon form grants a charge of Fel Rush and increases the damage of your next Blade Dance by $390212s1%.", 0, 0 },
+  { 390145, "$@spelldesc389693", "Your next Chaos Strike unleashes your inner demon, dealing $390137s1 Chaos damage to all nearby enemies.", 0 },
   { 390148, "$@spelldesc385696", "Time is moving $s1% faster.", 0 },
   { 390152, "$?a212613[Fel Devastation][Eye Beam] summons an allied $?a212613[Havoc][Vengeance] Demon Hunter who casts $?a212613[Eye Beam][Fel Devastation], dealing $?a212613[${$391058s1*10*2} Chaos][${$393834s1*(2/$393831t1)} Fire] damage over $?a212613[$391057d][$393831d]. $?a212613[Deals reduced damage beyond $198013s5 targets.][Dealing damage heals you for up to ${$212106s1*(2/$t1)} health.]", 0, 0 },
   { 390154, "Enemies hit by Throw Glaive take $s1% increased damage from Eye Beam.", 0, 0 },
