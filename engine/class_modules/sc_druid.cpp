@@ -11303,24 +11303,24 @@ void druid_t::init()
   }
 }
 
-bool druid_t::validate_fight_style( fight_style_e /* style */) const
+bool druid_t::validate_fight_style( fight_style_e /* style */ ) const
 {
-  if ( SC_BETA == 0 && strcmp( SC_MAJOR_VERSION, "1000" ) == 0 )
+  if ( SC_BETA == 0 && strcmp( SC_MAJOR_VERSION, "1000" ) == 0 && level() == 60 )
   {
     sim->error( "Prepatch {} sims are untested and not supported. Many legendaries and conduits may not work. Sim at your own risk!",
-                util::specialization_string( specialization() ) );
+      util::specialization_string( specialization() ) );
   }
-/* uncomment if certain fight styles prove problematic again
-  switch ( specialization() )
-  {
-    case DRUID_BALANCE:
-    case DRUID_FERAL:
-    case DRUID_GUARDIAN:
-    case DRUID_RESTORATION:
-    default:
-      break;
-  }
-*/
+  /* uncomment if certain fight styles prove problematic again
+    switch ( specialization() )
+    {
+      case DRUID_BALANCE:
+      case DRUID_FERAL:
+      case DRUID_GUARDIAN:
+      case DRUID_RESTORATION:
+      default:
+        break;
+    }
+  */
   return true;
 }
 
