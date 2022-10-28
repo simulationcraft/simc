@@ -3696,7 +3696,7 @@ struct touch_of_death_t : public monk_melee_attack_t
 
     // You exploit the enemy target's weakest point, instantly killing creatures if they have less health than you
     // Only applicable in health based sims
-    if ( target->current_health > 0 && target->current_health() <= p()->resources.max[ RESOURCE_HEALTH ] )
+    if ( target->current_health() > 0 && target->current_health() <= p()->resources.max[ RESOURCE_HEALTH ] )
       return monk_melee_attack_t::ready();
 
     return false;
