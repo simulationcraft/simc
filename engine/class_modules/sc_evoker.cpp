@@ -1028,8 +1028,10 @@ struct empowered_release_spell_t : public empowered_base_t
   {
     dual = true;
 
-    // TODO: Confirm this still applies, as of 09/Aug/2022 it would appear to be approximately a 1s gcd after a empower finishes
-    trigger_gcd = p->option.post_empower_gcd ? 1_s : 0_s;
+    // TODO: Continue to check it uses this spell to trigger GCD, as of 28/10/2022 it does. It can still be bypassed via spell queue. Potentally add a better way to model this?
+    spell_data_t* gcd_spell = p->find_spell( 359115 );
+    if ( gcd_spell )
+      trigger_gcd = p->option.post_empower_gcd ? gcd_spell->gcd() : 0_s;
     gcd_type = gcd_haste_type::NONE;
 
     extend_4pc = timespan_t::from_seconds( p->sets->set( EVOKER_DEVASTATION, T29, B4 )->effectN( 1 ).base_value() );
