@@ -887,6 +887,7 @@ public:
     const spell_data_t* resurgence;
     const spell_data_t* maelstrom_weapon;
     const spell_data_t* feral_spirit;
+    const spell_data_t* earth_elemental;
     const spell_data_t* fire_elemental;
     const spell_data_t* storm_elemental;
     const spell_data_t* flametongue_weapon;
@@ -4515,8 +4516,6 @@ struct earth_elemental_t : public shaman_spell_t
     parse_options( options_str );
 
     harmful = may_crit = false;
-    cooldown->duration =
-        player->find_spell( 198103 )->cooldown();  // earth ele cd and durations are on different spells.. go figure.
   }
 
   void init() override
@@ -4540,11 +4539,11 @@ struct earth_elemental_t : public shaman_spell_t
       {
         p()->pet.pet_fire_elemental->demise();
       }
-      p()->pet.pet_earth_elemental->summon( s_data->duration() );
+      p()->pet.pet_earth_elemental->summon( p()->spell.earth_elemental->duration() );
     }
     else
     {
-      p()->pet.guardian_earth_elemental->summon( s_data->duration() );
+      p()->pet.guardian_earth_elemental->summon( p()->spell.earth_elemental->duration() );
     }
 
     // Earth Elemental in game exhibits the same bug as maelstrom-weapon empowered spells
@@ -9653,6 +9652,7 @@ void shaman_t::init_spells()
   spell.feral_spirit        = find_spell( 228562 );
   spell.fire_elemental      = find_spell( 188592 );
   spell.storm_elemental     = find_spell( 157299 );
+  spell.earth_elemental     = find_spell( 188616 );
   spell.flametongue_weapon  = find_spell( 318038 );
   spell.windfury_weapon     = find_spell( 319773 );
   spell.inundate            = find_spell( 378777 );
@@ -12248,7 +12248,7 @@ double shaman_t::composite_leech() const
 {
   double l = player_t::composite_leech();
 
-  l *= 1.0 + talent.ancestral_defense->effectN( 3 ).percent();
+  l *= 1.0 + talent.ancestral_defense->effectN( 1 ).percent();
 
   return l;
 }
