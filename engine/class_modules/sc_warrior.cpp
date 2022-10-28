@@ -8189,7 +8189,7 @@ void warrior_t::apl_prot()
   default_list -> add_action( "lights_judgment" );
 
   generic -> add_talent( this, "Ravager" );
-  generic -> add_talent( this, "Dragon Roar" );
+  //generic -> add_talent( this, "Dragon Roar" );
   generic -> add_action( this, "Execute" );
   generic -> add_action( this, covenant.condemn, "condemn");
   generic -> add_action( this, "Shield Slam" );
@@ -8198,7 +8198,7 @@ void warrior_t::apl_prot()
   generic -> add_action( this, "Devastate" );
 
   aoe -> add_talent( this, "Ravager" );
-  aoe -> add_talent( this, "Dragon Roar" );
+  //aoe -> add_talent( this, "Dragon Roar" );
   //This only gets called around 1/3 of Outburst procs due to the SS call being higher priority, which is about
   //how often you want to TC on 4+ targets for more damage without sacrificing Banner uptime.
   aoe -> add_action( this, "Thunder Clap,if=buff.outburst.up" );

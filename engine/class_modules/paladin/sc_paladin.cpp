@@ -825,7 +825,7 @@ struct melee_t : public paladin_melee_attack_t
         // Check for BoW procs
         double aow_proc_chance = p()->talents.art_of_war->effectN( 1 ).percent();
 
-        if ( p()->talents.blade_of_wrath->ok() )
+        if ( p()->talents.blade_of_wrath->ok() && !p()->bugs )
           aow_proc_chance *= 1.0 + p()->talents.blade_of_wrath->effectN( 1 ).percent();
 
         if ( rng().roll( aow_proc_chance ) )

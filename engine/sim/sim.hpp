@@ -472,6 +472,8 @@ struct sim_t : private sc_thread_t
   {
     // Average time before the shield from darkmoon deck: watcher is depleted
     timespan_t darkmoon_deck_watcher_deplete = 2_s;
+    // Which roles in your group has a Whispering Incarnate Icon trinket
+    std::string whispering_incarnate_icon_roles = "tank/heal/dps";
   } dragonflight_opts;
 
   // Auras and De-Buffs
