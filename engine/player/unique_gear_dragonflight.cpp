@@ -161,12 +161,8 @@ void phial_of_glacial_fury( special_effect_t& effect )
   };
 
   // Buff that triggers when you hit a new target
-  auto new_target_buff = buff_t::find( effect.player, "glacial_fury" );
-  if ( !new_target_buff )
-  {
-    new_target_buff = make_buff( effect.player, "glacial_fury", effect.player->find_spell( 373265 ) )
-      ->set_default_value( effect.driver()->effectN( 4 ).percent() );
-  }
+  auto new_target_buff = create_buff<buff_t>( effect.player, effect.player->find_spell( 373265 ) );
+  new_target_buff->set_default_value( effect.driver()->effectN( 4 ).percent() );
 
   // effect to trigger damage proc
   auto damage_effect            = new special_effect_t( effect.player );
@@ -224,11 +220,8 @@ void phial_of_glacial_fury( special_effect_t& effect )
   new_target_cb->deactivate();
 
   // Phial buff itself
-  auto buff = buff_t::find( effect.player, effect.name() );
-  if ( !buff )
-  {
-    buff = make_buff( effect.player, effect.name(), effect.driver() )
-      ->set_chance( 1.0 )
+  auto buff = create_buff<buff_t>( effect.player, effect.driver() );
+  buff->set_chance( 1.0 )
       ->set_stack_change_callback( [ damage_cb, new_target_cb ]( buff_t*, int, int new_ ) {
         if ( new_ )
         {
@@ -241,7 +234,6 @@ void phial_of_glacial_fury( special_effect_t& effect )
           new_target_cb->deactivate();
         }
       } );
-  }
 
   effect.custom_buff = buff;
 }
@@ -341,14 +333,10 @@ void chilled_clarity( special_effect_t& effect )
   if ( create_fallback_buffs( effect, { "potion_of_chilled_clarity" } ) )
     return;
 
-  auto buff = buff_t::find( effect.player, "potion_of_chilled_clarity" );
-  if ( !buff )
-  {
-    buff = make_buff( effect.player, "potion_of_chilled_clarity", effect.trigger() )
-      ->set_default_value_from_effect_type( A_355 )
+  auto buff = create_buff<buff_t>( effect.player, effect.trigger() );
+  buff->set_default_value_from_effect_type( A_355 )
       ->set_duration( timespan_t::from_seconds( effect.driver()->effectN( 1 ).base_value() ) )
       ->set_duration_multiplier( inhibitor_mul( effect.player ) );
-  }
 
   effect.custom_buff = effect.player->buffs.chilled_clarity = buff;
 }
@@ -437,10 +425,10 @@ void wafting_devotion( special_effect_t& effect )
   speed = item_database::apply_combat_rating_multiplier( effect.player, CR_MULTIPLIER_WEAPON,
                                                          effect.player->level(), speed );
 
-  auto buff = create_buff<stat_buff_t>( effect.player, "wafting_devotion", new_trigger );
+  auto buff = create_buff<stat_buff_t>( effect.player, new_trigger );
   buff->manual_stats_added = false;
-  buff->add_stat( STAT_HASTE_RATING, haste );
-  buff->add_stat( STAT_SPEED_RATING, speed );
+  buff->add_stat( STAT_HASTE_RATING, haste )
+      ->add_stat( STAT_SPEED_RATING, speed );
 
   effect.custom_buff = buff;
   effect.spell_id = new_driver->id();
@@ -455,8 +443,7 @@ namespace items
 // Trinkets
 custom_cb_t idol_of_the_aspects( std::string_view type )
 {
-  return [ type ]( special_effect_t& effect )
-  {
+  return [ type ]( special_effect_t& effect ) {
     int gems = 0;
     for ( const auto& item : effect.player->items )
       for ( auto gem_id : item.parsed.gem_id )
@@ -466,29 +453,23 @@ custom_cb_t idol_of_the_aspects( std::string_view type )
     if ( !gems )
       return;
 
-    auto gift = buff_t::find( effect.player, "gift_of_the_aspects" );
-    if ( !gift )
-    {
-      auto val = effect.driver()->effectN( 3 ).average( effect.item ) / 4;
-      gift = make_buff<stat_buff_t>( effect.player, "gift_of_the_aspects", effect.player->find_spell( 376643 ) )
-        ->add_stat( STAT_CRIT_RATING, val )
+    auto val = effect.driver()->effectN( 3 ).average( effect.item ) / 4;
+    auto gift = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 376643 ) );
+    gift->manual_stats_added = false;
+    gift->add_stat( STAT_CRIT_RATING, val )
         ->add_stat( STAT_HASTE_RATING, val )
         ->add_stat( STAT_MASTERY_RATING, val )
         ->add_stat( STAT_VERSATILITY_RATING, val );
-    }
-    auto buff = buff_t::find( effect.player, effect.name() );
-    if ( !buff )
-    {
-      auto stat = util::translate_rating_mod( effect.trigger()->effectN( 1 ).misc_value1() );
-      buff = make_buff<stat_buff_t>( effect.player, effect.name(), effect.trigger() )
-        ->add_stat( stat, effect.driver()->effectN( 1 ).average( effect.item ) )
+
+    auto stat = util::translate_rating_mod( effect.trigger()->effectN( 1 ).misc_value1() );
+    auto buff = create_buff<stat_buff_t>( effect.player, effect.trigger() );
+    buff->add_stat( stat, effect.driver()->effectN( 1 ).average( effect.item ) )
         ->set_max_stack( as<int>( effect.driver()->effectN( 2 ).base_value() ) )
         ->set_expire_at_max_stack( true )
         ->set_stack_change_callback( [ gift ]( buff_t*, int, int new_ ) {
           if ( !new_ )
             gift->trigger();
         } );
-    }
 
     effect.custom_buff = buff;
 
@@ -726,12 +707,8 @@ void darkmoon_deck_watcher( special_effect_t& effect )
       {
         set_name_reporting( "Absorb" );
 
-        stat = buff_t::find( player, "watchers_blessing_stat" );
-        if ( !stat )
-        {
-          stat = make_buff<stat_buff_t>( player, "watchers_blessing_stat", player->find_spell( 384560 ), item )
-            ->set_name_reporting( "Stat" );
-        }
+        stat = create_buff<stat_buff_t>( player, "watchers_blessing_stat", player->find_spell( 384560 ), item );
+        stat->set_name_reporting( "Stat" );
       }
 
       void expire_override( int s, timespan_t d ) override
@@ -826,20 +803,15 @@ void conjured_chillglobe( special_effect_t& effect )
 // 383803 = Buff for You (?)
 void emerald_coachs_whistle( special_effect_t& effect )
 {
-  auto buff = buff_t::find( effect.player, "star_coach" );
-  if ( !buff )
-  {
-    auto buff_spell = effect.player->find_spell( 383803 );
-
-    double amount = buff_spell->effectN( 1 ).average( effect.item );
-
-    buff = make_buff<stat_buff_t>( effect.player, "star_coach", buff_spell )
-               ->add_stat( STAT_MASTERY_RATING, amount );
-  }
+  auto buff_spell = effect.player->find_spell( 383803 );
+  auto buff = create_buff<stat_buff_t>( effect.player, buff_spell );
+  buff->manual_stats_added = false;
+  buff->add_stat( STAT_MASTERY_RATING, buff_spell->effectN( 1 ).average( effect.item ) );
 
   effect.custom_buff  = buff;
 
-  effect.proc_flags_  = effect.player->find_spell( 386578 )->proc_flags(); // Pretend we are our bonded partner for the sake of procs, and trigger it from that.
+  // Pretend we are our bonded partner for the sake of procs, and trigger it from that.
+  effect.proc_flags_  = effect.player->find_spell( 386578 )->proc_flags();
   effect.proc_flags2_ = PF2_ALL_HIT;
 
   new dbc_proc_callback_t( effect.player, effect );
@@ -923,8 +895,7 @@ void whispering_incarnate_icon( special_effect_t& effect )
   }
 
   auto buff_data = effect.player->find_spell( buff_id );
-  auto buff =
-      create_buff<stat_buff_t>( effect.player, util::tokenize_fn( buff_data->name_cstr() ), buff_data );
+  auto buff = create_buff<stat_buff_t>( effect.player, buff_data );
   buff->manual_stats_added = false;
   buff->set_constant_behavior( buff_constant_behavior::ALWAYS_CONSTANT );
   buff->set_rppm( rppm_scale_e::RPPM_DISABLE );
@@ -938,8 +909,7 @@ void whispering_incarnate_icon( special_effect_t& effect )
   if ( proc_buff_id )
   {
     auto proc_buff_data = effect.player->find_spell( proc_buff_id );
-    auto proc_buff =
-        create_buff<stat_buff_t>( effect.player, util::tokenize_fn( proc_buff_data->name_cstr() ), proc_buff_data );
+    auto proc_buff = create_buff<stat_buff_t>( effect.player, proc_buff_data );
     proc_buff->manual_stats_added = false;
     proc_buff->add_stat( util::translate_rating_mod( proc_buff_data->effectN( 1 ).misc_value1() ),
                          effect.driver()->effectN( 2 ).average( effect.item ) );
@@ -1087,7 +1057,7 @@ void fang_adornments( special_effect_t& effect )
 // Armor
 void blue_silken_lining( special_effect_t& effect )
 {
-  auto buff = create_buff<stat_buff_t>( effect.player, "zone_of_focus", effect.trigger()->effectN( 1 ).trigger() );
+  auto buff = create_buff<stat_buff_t>( effect.player, effect.trigger()->effectN( 1 ).trigger() );
   buff->manual_stats_added = false;
   buff->add_stat( STAT_MASTERY_RATING, effect.driver()->effectN( 1 ).average( effect.item ) );
 

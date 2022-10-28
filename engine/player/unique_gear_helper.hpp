@@ -609,4 +609,10 @@ BUFF* create_buff( player_t* p, util::string_view name, ARGS&&... args )
 
   return make_buff<BUFF>( p, name, std::forward<ARGS>( args )... );
 }
+
+template <typename BUFF, typename... ARGS>
+BUFF* create_buff( player_t* p, const spell_data_t* s, ARGS&&... args )
+{
+  return create_buff<BUFF>( p, util::tokenize_fn( s->name_cstr() ), s, std::forward<ARGS>( args )... );
+}
 } // unique_gear
