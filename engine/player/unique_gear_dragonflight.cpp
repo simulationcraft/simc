@@ -851,10 +851,28 @@ void rumbling_ruby( special_effect_t& effect )
     rumbling_ruby_damage_t( const special_effect_t& e, buff_t* b ) :
       proc_spell_t( "rumbling_ruby_damage", e.player, e.player->find_spell( 382097 ), e.item ), ruby_buff( b )
     {
-      // TODO: Explore the noted "increased damage at higher enemy health"
       base_dd_min = base_dd_max = e.player -> find_spell( 377454 ) -> effectN( 2 ).average( e.item );
       background = true;
       aoe = -1;
+    }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+       double d = proc_spell_t::composite_da_multiplier( s );
+
+       if (s->target->health_percentage() >= 50 && s->target->health_percentage() <= 75)
+       {
+         d *= 1.1;
+       }
+       if (s->target->health_percentage() >= 75 && s->target->health_percentage() <= 90)
+       {
+         d *= 1.25;
+       }
+       if (s->target->health_percentage() >= 90)
+       {
+         d *= 1.5;
+       }
+      return d;
     }
 
     void execute() override
