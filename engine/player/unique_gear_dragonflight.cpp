@@ -821,14 +821,24 @@ void the_cartographers_calipers( special_effect_t& effect )
 // 382097 = Damage spell
 void rumbling_ruby( special_effect_t& effect )
 {
+  auto damage = effect.player -> find_spell( 382097 );
+  buff_t* ruby_buff;
+  buff_t* power_buff;
+
   struct rumbling_ruby_damage_t : public proc_spell_t
   {
     rumbling_ruby_damage_t( const special_effect_t& e ) :
       proc_spell_t( "rumbling_ruby_damage", e.player, e.player->find_spell( 382097 ), e.item )
     {
       // TODO: Explore the noted "increased damage at higher enemy health"
-      base_dd = e.player -> find_spell( 377454 )->effectN( 3 ).average( e.item );
+      base_dd_min = base_dd_max = e.driver() ->effectN(3).average(e.item);
       aoe = -1;
+    }
+
+    void execute() override
+    {
+      proc_spell_t::execute();
+      ruby_buff -> decrement();
     }
   };
 
@@ -850,21 +860,14 @@ void rumbling_ruby( special_effect_t& effect )
   {
     auto proc_spell = effect.player->find_spell( 382094 );
     auto rumbling_power_buff = make_buff<stat_buff_t>(effect.player, "rumbling_power", proc_spell);
-    rumbling_power_buff->add_stat( STAT_STRENGTH, effect.player -> find_spell( 377454 ) -> effectN( 1 ).average( effect.item ))
+    rumbling_power_buff->add_stat( STAT_STRENGTH, effect.driver() -> effectN( 1 ).average( effect.item ));
 
-    special_effect_t* rumbling_ruby_proc = new special_effect_t( effect.player );
-    rumbling_ruby_proc->proc_flags_ = proc_spell->proc_flags();
-    rumbling_ruby_proc->proc_flags2_ = PF2_CAST_DAMAGE;
-    rumbling_ruby_proc->spell_id = 382094;
-    rumbling_ruby_proc->custom_buff = rumbling_power_buff;
+    effect.custom_buff = rumbling_power_buff;
+    new dbc_proc_callback_t( effect.player, effect );
 
-    effect.player->special_effects.push_back( rumbling_ruby_proc );
-
-    rumbling_power_buff->set_stack_change_callback(( buff_t*, int, int new_, int old_ ) {
-      if ( new_ == effect.player -> find_spell( 382094 ).max_stacks() && old_ != effect.player -> find_spell( 382094 ).max_stacks() )
-      { 
-        effect.player -> buff.rumbling_ruby_buff -> trigger( effect.player -> find_spell( 382095 ).max_stacks() );
-      }
+    rumbling_power_buff->set_stack_change_callback( [ ruby_buff ]( buff_t* b, int, int ) {
+      if ( b->at_max_stacks() )
+        ruby_buff->trigger();
     } );
   }
 
@@ -874,22 +877,22 @@ void rumbling_ruby( special_effect_t& effect )
     auto proc_spell = effect.player -> find_spell( 382095 );
     auto rumbling_ruby_buff = make_buff( effect.player, "rumbling_ruby", proc_spell );
 
-    special_effect_t* rumbling_ruby_damage_proc = new special_effect_t( effect -> target );
+    special_effect_t* rumbling_ruby_damage_proc = new special_effect_t( effect.player -> target );
     rumbling_ruby_damage_proc->proc_flags_ = proc_spell->proc_flags();
     rumbling_ruby_damage_proc->proc_flags2_ = PF2_CAST_DAMAGE;
     rumbling_ruby_damage_proc->spell_id = 382095;
     rumbling_ruby_damage_proc->custom_buff = rumbling_ruby_buff;
 
-    effect.player -> special_effect.push_back( rumbling_ruby_damage_proc );
-    auto proc_object = new rumbling_ruby_damage_t( rumbling_ruby_damage_proc );
+    effect.player -> special_effects.push_back( rumbling_ruby_damage_proc );
+    auto proc_object = rumbling_ruby_proc_t( rumbling_ruby_damage_proc );
 
-    rumbling_ruby_buff->set_stack_change_callback( [ proc_object ]( buff_t*, int, int new_ ) {
-    if ( new_ == 0 ) 
+    rumbling_ruby_buff->set_stack_change_callback( [ power_buff ]( buff_t* b, int, int new_ ) {
+    if ( new_ == 0 )
       { 
-        effect.player -> buff.rumbling_ruby_buff -> expire();
-        effect.player -> buff.rumbling_power_buff -> expire();
+        b->expire();
+        power_buff->expire();
       }
-    else (new_ >= 1)
+    else ( new_ <= 3 )
       {
         proc_object -> activate();
       }
