@@ -634,7 +634,7 @@ public:
       player_talent_t hit_combo;
       // Row 7
       player_talent_t rushing_jade_wind;
-      player_talent_t forbidden_touch;
+      player_talent_t forbidden_technique;
       player_talent_t invoke_xuen_the_white_tiger;
       player_talent_t teachings_of_the_monastery;
       player_talent_t thunderfist;
