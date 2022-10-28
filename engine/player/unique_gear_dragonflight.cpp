@@ -919,6 +919,109 @@ void the_cartographers_calipers( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Rumbling Ruby
+// 377454 = Driver
+// 382094 = Stacking Buff, triggers 382095 at max stacks
+// 382095 = Player Buff triggerd from 382094, triggers 382096
+// 382096 = Damage Area trigger
+// 382097 = Damage spell
+void rumbling_ruby( special_effect_t& effect )
+{
+  buff_t* ruby_buff;
+  buff_t* power_buff;
+  special_effect_t* rumbling_ruby_damage_proc = new special_effect_t( effect.player );
+  rumbling_ruby_damage_proc->item = effect.item;
+
+  auto rumbling_ruby_buff = buff_t::find( effect.player, "rumbling_ruby");
+  if ( !rumbling_ruby_buff )
+  {
+    auto ruby_proc_spell = effect.player -> find_spell( 382095 );
+    ruby_buff = make_buff( effect.player, "rumbling_ruby", ruby_proc_spell );
+    rumbling_ruby_damage_proc->spell_id = 382095;
+
+    effect.player -> special_effects.push_back( rumbling_ruby_damage_proc );
+  }
+
+  auto ruby_power_buff = buff_t::find( effect.player, "rumbling_power" );
+  if ( !ruby_power_buff )
+  {
+    auto power_proc_spell = effect.player->find_spell( 382094 );
+    power_buff = make_buff<stat_buff_t>(effect.player, "rumbling_power", power_proc_spell)
+                   ->add_stat( STAT_STRENGTH, effect.driver() -> effectN( 1 ).average( effect.item ));
+  }
+
+  struct rumbling_ruby_damage_t : public proc_spell_t
+  {
+    buff_t* ruby_buff;
+
+    rumbling_ruby_damage_t( const special_effect_t& e, buff_t* b ) :
+      proc_spell_t( "rumbling_ruby_damage", e.player, e.player->find_spell( 382097 ), e.item ), ruby_buff( b )
+    {
+      base_dd_min = base_dd_max = e.player -> find_spell( 377454 ) -> effectN( 2 ).average( e.item );
+      background = true;
+      aoe = -1;
+    }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+       double d = proc_spell_t::composite_da_multiplier( s );
+
+       // 10-28-22 In game testing suggests the damage scaling is 
+       // 50% increase above 90% enemy hp
+       // 25% above 75% enemy hp
+       // 10% above 50% enemy hp
+
+       if (s->target->health_percentage() >= 50 && s->target->health_percentage() <= 75)
+       {
+         d *= 1.1;
+       }
+       if (s->target->health_percentage() >= 75 && s->target->health_percentage() <= 90)
+       {
+         d *= 1.25;
+       }
+       if (s->target->health_percentage() >= 90)
+       {
+         d *= 1.5;
+       }
+      return d;
+    }
+
+    void execute() override
+    {
+      proc_spell_t::execute();
+      ruby_buff -> decrement();
+    }
+  };
+
+  auto proc_object = new dbc_proc_callback_t( effect.player, *rumbling_ruby_damage_proc );
+  rumbling_ruby_damage_proc->execute_action = create_proc_action<rumbling_ruby_damage_t>( "rumbling_ruby_damage", *rumbling_ruby_damage_proc, ruby_buff );
+  ruby_buff -> set_stack_change_callback( [ proc_object, power_buff ]( buff_t* b, int, int new_ )
+  {
+    if ( new_ == 0 )
+    { 
+      b->expire();
+      power_buff->expire();
+      proc_object->deactivate();
+    }
+    else if ( b->at_max_stacks() )
+    {
+      proc_object->activate();
+    }
+  } );
+
+  power_buff -> set_stack_change_callback( [ ruby_buff ]( buff_t* b, int, int ) 
+  {
+    if ( b->at_max_stacks() )
+    {
+      ruby_buff->trigger();
+    }
+  } );
+
+  effect.custom_buff = power_buff;
+  new dbc_proc_callback_t( effect.player, effect );
+  proc_object->deactivate();
+}
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -1194,6 +1297,7 @@ void register_special_effects()
   register_special_effect( 383798, items::emerald_coachs_whistle );
   register_special_effect( 377452, items::whispering_incarnate_icon );
   register_special_effect( 384112, items::the_cartographers_calipers );
+  register_special_effect( 377454, items::rumbling_ruby );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );  // bronzed grip wrappings embellishment
