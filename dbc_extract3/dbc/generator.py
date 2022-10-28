@@ -2119,6 +2119,7 @@ class SpellDataGenerator(DataGenerator):
           # General
           ( 372470, 0 ), # Scarlet Adaptation buff
           ( 370901, 0 ), ( 370917, 0 ), # Leaping Flames buff
+          ( 359115, 0),  # Empower Triggered GCD
           # Devastation
           ( 386399, 1 ), # Iridescence: Blue buff
           ( 375802, 1 ), # Burnout buff
