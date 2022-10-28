@@ -832,7 +832,6 @@ void rumbling_ruby( special_effect_t& effect )
     auto ruby_proc_spell = effect.player -> find_spell( 382095 );
     ruby_buff = make_buff( effect.player, "rumbling_ruby", ruby_proc_spell );
     rumbling_ruby_damage_proc->spell_id = 382095;
-    rumbling_ruby_damage_proc->proc_flags_ = ruby_proc_spell->proc_flags();
 
     effect.player -> special_effects.push_back( rumbling_ruby_damage_proc );
   }
@@ -883,7 +882,7 @@ void rumbling_ruby( special_effect_t& effect )
 
   power_buff -> set_stack_change_callback( [ ruby_buff ]( buff_t* b, int, int ) 
   {
-    if ( b->at_max_stacks() && !ruby_buff -> up() )
+    if ( b->at_max_stacks() )
     {
       ruby_buff->trigger();
     }
