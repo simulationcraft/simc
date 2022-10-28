@@ -3988,6 +3988,19 @@ struct garrote_t : public rogue_attack_t
   {
   }
 
+  void init() override
+  {
+    rogue_attack_t::init();
+
+    // Secondary Deathmark triggers do not trigger base CP gain
+    if ( secondary_trigger_type == secondary_trigger::DEATHMARK )
+    {
+      energize_type = action_energize::NONE;
+      energize_amount = 0;
+      energize_resource = RESOURCE_NONE;
+    }
+  }
+
   int n_targets() const override
   {
     int n = rogue_attack_t::n_targets();
