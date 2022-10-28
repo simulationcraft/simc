@@ -823,6 +823,25 @@ void rumbling_ruby( special_effect_t& effect )
 {
   buff_t* ruby_buff;
   buff_t* power_buff;
+  special_effect_t* rumbling_ruby_damage_proc = new special_effect_t( effect.player );
+
+  auto rumbling_ruby_buff = buff_t::find( effect.player, "rumbling_ruby");
+  if ( !rumbling_ruby_buff )
+  {
+    auto ruby_proc_spell = effect.player -> find_spell( 382095 );
+    ruby_buff = make_buff( effect.player, "rumbling_ruby", ruby_proc_spell );
+    rumbling_ruby_damage_proc->spell_id = 382095;
+
+    effect.player -> special_effects.push_back( rumbling_ruby_damage_proc );
+  }
+
+  auto ruby_power_buff = buff_t::find( effect.player, "rumbling_power" );
+  if ( !ruby_power_buff )
+  {
+    auto power_proc_spell = effect.player->find_spell( 382094 );
+    power_buff = make_buff<stat_buff_t>(effect.player, "rumbling_power", power_proc_spell)
+                   ->add_stat( STAT_STRENGTH, effect.driver() -> effectN( 1 ).average( effect.item ));
+  }
 
   struct rumbling_ruby_damage_t : public proc_spell_t
   {
@@ -832,8 +851,8 @@ void rumbling_ruby( special_effect_t& effect )
       proc_spell_t( "rumbling_ruby_damage", e.player, e.player->find_spell( 382097 ), e.item ), ruby_buff( b )
     {
       // TODO: Explore the noted "increased damage at higher enemy health"
-      base_dd_min = base_dd_max = e.driver() ->effectN(3).average(e.item);
-      aoe = -1;
+      base_dd_min = base_dd_max = e.player -> find_spell( 377454 ) -> effectN( 2 ).average( e.item );
+      background = true;
     }
 
     void execute() override
@@ -843,58 +862,31 @@ void rumbling_ruby( special_effect_t& effect )
     }
   };
 
-  struct rumbling_ruby_proc_t : public dbc_proc_callback_t
+  rumbling_ruby_damage_proc->execute_action = create_proc_action<rumbling_ruby_damage_t>( "rumbling_ruby_damage", *rumbling_ruby_damage_proc, ruby_buff );
+  auto proc_object = new dbc_proc_callback_t( effect.player, *rumbling_ruby_damage_proc );
+  ruby_buff -> set_stack_change_callback( [ power_buff, proc_object ]( buff_t* b, int, int new_ )
   {
-    rumbling_ruby_proc_t( const special_effect_t* e ) :
-      dbc_proc_callback_t( e->player, *e ) { }
-  };
-
-  auto rumbling_ruby_buff = buff_t::find( effect.player, "rumbling_ruby");
-  if ( !rumbling_ruby_buff )
-  {
-    special_effect_t* rumbling_ruby_damage_proc = new special_effect_t( effect.player -> target );
-    auto ruby_proc_spell = effect.player -> find_spell( 382095 );
-    ruby_buff = make_buff( effect.player, "rumbling_ruby", ruby_proc_spell );
-    rumbling_ruby_damage_proc->proc_flags_ = ruby_proc_spell->proc_flags();
-    rumbling_ruby_damage_proc->proc_flags2_ = PF2_CAST_DAMAGE;
-    rumbling_ruby_damage_proc->spell_id = 382095;
-    rumbling_ruby_damage_proc->execute_action = create_proc_action<rumbling_ruby_damage_t>( "rumbling_ruby_damage", *rumbling_ruby_damage_proc, ruby_buff );
-
-    effect.player -> special_effects.push_back( rumbling_ruby_damage_proc );
-    auto proc_object = new rumbling_ruby_proc_t( rumbling_ruby_damage_proc );
-
-    ruby_buff -> set_stack_change_callback( [ power_buff, proc_object ](buff_t* b, int, int new_)
-    {
     if ( new_ == 0 )
-      { 
-        b->expire();
-        power_buff->expire();
-        proc_object->activate();
-      }
+    { 
+      b->expire();
+      power_buff->expire();
+      proc_object->activate();
+    }
     else
-      {
-        proc_object->activate();
-      }
-    } );
-  }
-  
-  auto ruby_power_buff = buff_t::find( effect.player, "rumbling_power" );
-  if ( !ruby_power_buff )
-  {
-    new dbc_proc_callback_t( effect.player, effect );
-    auto power_proc_spell = effect.player->find_spell( 382094 );
-    power_buff = make_buff<stat_buff_t>(effect.player, "rumbling_power", power_proc_spell)
-                   ->add_stat( STAT_STRENGTH, effect.driver() -> effectN( 1 ).average( effect.item ));
-    effect.custom_buff = power_buff;
-
-    power_buff -> set_stack_change_callback( [ ruby_buff ]( buff_t* b, int, int ) 
     {
-      if ( b->at_max_stacks() )
-      {
-        ruby_buff->trigger();
-      }
-    } );
-  }
+      proc_object->activate();
+    } 
+   } );
+
+  power_buff -> set_stack_change_callback( [ ruby_buff ]( buff_t* b, int, int ) 
+  {
+    if ( b->at_max_stacks() )
+    {
+      ruby_buff->trigger();
+    }
+  } );
+
+  effect.custom_buff = power_buff;
   new dbc_proc_callback_t( effect.player, effect );
 }
 
