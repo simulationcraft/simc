@@ -3810,6 +3810,8 @@ struct flayed_shot_t : hunter_ranged_attack_t
     hunter_ranged_attack_t( "flayed_shot", p, p -> covenants.flayed_shot )
   {
     parse_options( options_str );
+
+    affected_by.serrated_shots = false;
   }
 
   void impact( action_state_t* s ) override
