@@ -860,6 +860,11 @@ void rumbling_ruby( special_effect_t& effect )
     {
        double d = proc_spell_t::composite_da_multiplier( s );
 
+       // 10-28-22 In game testing suggests the damage scaling is 
+       // 50% increase above 90% enemy hp
+       // 25% above 75% enemy hp
+       // 10% above 50% enemy hp
+
        if (s->target->health_percentage() >= 50 && s->target->health_percentage() <= 75)
        {
          d *= 1.1;
