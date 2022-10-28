@@ -297,6 +297,7 @@ void survival( player_t* p )
   cleave->add_action( "flayed_shot,target_if=max:target.health.pct" );
   cleave->add_action( "resonating_arrow" );
   cleave->add_action( "death_chakram,if=focus+cast_regen<focus.max" );
+  cleave->add_action( "stampede" );
   cleave->add_action( "coordinated_assault" );
   cleave->add_action( "kill_shot,if=buff.flayers_mark.up|buff.coordinated_assault_empower.up" );
   cleave->add_action( "explosive_shot" );
@@ -323,6 +324,7 @@ void survival( player_t* p )
   other_on_use->add_action( "use_item,name=jotungeirr_destinys_call,if=cooldown.coordinated_assault.remains>75|time_to_die<30" );
 
   st->add_action( "death_chakram,if=focus+cast_regen<focus.max" );
+  st->add_action( "stampede" );
   st->add_action( "wild_spirits" );
   st->add_action( "flayed_shot" );
   st->add_action( "resonating_arrow" );
