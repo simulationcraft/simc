@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.2.46259
-static const std::array<spelltext_data_t, 19137> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 19135> __ptr_spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -16556,6 +16556,7 @@ static const std::array<spelltext_data_t, 19137> __ptr_spelltext_data { {
   { 377438, "For $390933d after casting Power Word: Shield, you deal $390933s1% additional damage and healing with Smite and Holy Nova.", 0, 0 },
   { 377440, "All enemies within $a2 yards take $s3% increased damage from your minions.", 0, 0 },
   { 377449, "Stomp the ground, commanding flames to radiate outward from your position, dealing $394393s1 Fire damage to enemies struck and granting you a $394393s2 shield for $382058d. After a delay, the flames return, dealing the same damage and refreshing the shield.\r\n\r\nDamage and absorption are increased for each enemy struck, up to $s3 enemies.", 0, 0 },
+  { 377451, "\r\n\r\n", 0, 0 },
   { 377452, "Succumb to the Icon's whispers and become Infused with $?a137048|a137028|a137023|a137010|a137008|a212613[Earth]?a137039|a137031|a137032|a137029|a137024|a356810|a137012[Fire][Frost], increasing your $?a137048|a137028|a137023|a137010|a137008|a212613[Versatility]?a137039|a137031|a137032|a137029|a137024|a356810|a137012[Haste][Critical Strike] by $s1. \r\n\r\nFighting alongside allies who are Infused with $?a137048|a137028|a137023|a137010|a137008|a212613[Fire or Frost]?a137039|a137031|a137032|a137029|a137024|a356810|a137012[Earth or Frost][Earth or Fire] has a chance to grant you $s2 of their Infusion's stat for $382081d seconds.", 0, 0 },
   { 377453, "Accept the storm, becoming a Primal Air Elemental and immobilizing yourself for $d.\r\n\r\nWhile in this form, the winds around you deal $382092s1 Nature damage per second to all enemies within $s5 yards, intensifying by $s4% each second until the transformation subsides.", "Deal $382092w1 Nature damage per second to all enemies within $s5 yards, intensifying by $s4% each second.", 0 },
   { 377454, "Your attacks slowly build Concussive Force, granting $s1 attack power per stack. \r\n\r\nAt $382094u stacks, your next $s3 melee abilities emit a shockwave in front of you, dealing $s2 bonus Nature damage to all enemies in a line. Shockwaves deal more damage to enemies at high health.", 0, 0 },
@@ -16866,6 +16867,7 @@ static const std::array<spelltext_data_t, 19137> __ptr_spelltext_data { {
   { 381802, "Your next Garrote and your next Rupture apply to up to $s1 enemies within $s2 yards.", "Your next Garrote and Rupture apply to $s1 nearby targets.", 0 },
   { 381819, "When Capacitor Totem fades or is destroyed, another Capacitor Totem is automatically dropped in the same place.", 0, 0 },
   { 381822, "Main Gauche has an additional $s1% chance to strike while Blade Flurry is active.", 0, 0 },
+  { 381824, "\r\n\r\n", 0, 0 },
   { 381828, "Between the Eyes has a $s1% chance per combo point spent to grant $s2 combo points.", 0, 0 },
   { 381839, "Roll the Bones has a $s1% increased chance of granting additional matches.", 0, 0 },
   { 381845, "Half-cost uses of Pistol Shot have a $193315s3% chance to cause your next Ambush to be usable without Stealth.\r\n\r\nChance to trigger this effect matches the chance for your Sinister Strike to strike an additional time.", 0, 0 },

@@ -1359,6 +1359,7 @@ class SpellDataGenerator(DataGenerator):
          382095, 382096, 382097, # Rumbling Ruby trinket
          382078, 382079, 382080, 382081, 382082, 382083, 394460, 394461, 394462, # Whispering Incarnate Icon
          377466, 396679, 382425, 382428, 394864, 382426, # Spiteful Storm trinket
+         377451, 381824, # Conjured Chillglobe
         ),
 
         # Warrior:
@@ -2120,6 +2121,7 @@ class SpellDataGenerator(DataGenerator):
           # General
           ( 372470, 0 ), # Scarlet Adaptation buff
           ( 370901, 0 ), ( 370917, 0 ), # Leaping Flames buff
+          ( 359115, 0),  # Empower Triggered GCD
           # Devastation
           ( 386399, 1 ), # Iridescence: Blue buff
           ( 375802, 1 ), # Burnout buff

@@ -37,6 +37,7 @@ actions.cleave+=/wild_spirits
 actions.cleave+=/flayed_shot,target_if=max:target.health.pct
 actions.cleave+=/resonating_arrow
 actions.cleave+=/death_chakram,if=focus+cast_regen<focus.max
+actions.cleave+=/stampede
 actions.cleave+=/coordinated_assault
 actions.cleave+=/kill_shot,if=buff.flayers_mark.up|buff.coordinated_assault_empower.up
 actions.cleave+=/explosive_shot
@@ -63,6 +64,7 @@ actions.other_on_use+=/use_items,slots=finger2
 actions.other_on_use+=/use_item,name=jotungeirr_destinys_call,if=cooldown.coordinated_assault.remains>75|time_to_die<30
 
 actions.st=death_chakram,if=focus+cast_regen<focus.max
+actions.st+=/stampede
 actions.st+=/wild_spirits
 actions.st+=/flayed_shot
 actions.st+=/resonating_arrow

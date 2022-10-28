@@ -779,6 +779,46 @@ void darkmoon_deck_watcher( special_effect_t& effect )
   effect.buff_disabled = true;
 }
 
+void conjured_chillglobe( special_effect_t& effect )
+{
+  struct conjured_chillglobe_proxy_t : public action_t
+  {
+    action_t* damage;
+    action_t* mana;
+    double mana_level;
+
+    conjured_chillglobe_proxy_t( const special_effect_t& e )
+      : action_t( action_e::ACTION_USE, "conjured_chillglobe", e.player, e.driver() )
+    {
+      dual = true;
+
+      auto value_data = e.player->find_spell( 377450 );
+      mana_level = value_data->effectN( 1 ).percent();
+
+      damage = new generic_proc_t( e, "conjured_chillglobe_damage", 377451 );
+      damage->base_dd_min = damage->base_dd_max = value_data->effectN( 2 ).average( e.item );
+      damage->stats = stats;
+
+      mana = new generic_proc_t( e, "conjured_chillglobe_mana", 381824 );
+      mana->energize_amount = value_data->effectN( 3 ).average( e.item );
+      mana->harmful = false;
+      mana->name_str_reporting = "conjured_chillglobe";
+    }
+
+    void execute() override
+    {
+      action_t::execute();
+
+      if ( player->resources.active_resource[ RESOURCE_MANA ] && player->resources.pct( RESOURCE_MANA ) < mana_level )
+        mana->execute();
+      else
+        damage->execute_on_target( target );
+    }
+  };
+
+  effect.execute_action = create_proc_action<conjured_chillglobe_proxy_t>( "conjured_chillglobe", effect );
+}
+
 // TODO: Do properly and add both drivers
 // 383798 = Driver for you
 // 386578 = Driver for target
@@ -1401,6 +1441,7 @@ void register_special_effects()
   register_special_effect( 382957, items::darkmoon_deck_inferno );
   register_special_effect( 386624, items::darkmoon_deck_rime );
   register_special_effect( 384532, items::darkmoon_deck_watcher );
+  register_special_effect( 396391, items::conjured_chillglobe );
   register_special_effect( 383798, items::emerald_coachs_whistle );
   register_special_effect( 377452, items::whispering_incarnate_icon );
   register_special_effect( 384112, items::the_cartographers_calipers );
