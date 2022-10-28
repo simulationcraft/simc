@@ -1029,7 +1029,7 @@ struct empowered_release_spell_t : public empowered_base_t
     dual = true;
 
     // TODO: Continue to check it uses this spell to trigger GCD, as of 28/10/2022 it does. It can still be bypassed via spell queue. Potentally add a better way to model this?
-    spell_data_t* gcd_spell = p->find_spell( 359115 );
+    const spell_data_t* gcd_spell = p->find_spell( 359115 );
     if ( gcd_spell )
       trigger_gcd = p->option.post_empower_gcd ? gcd_spell->gcd() : 0_s;
     gcd_type = gcd_haste_type::NONE;
