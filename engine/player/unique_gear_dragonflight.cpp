@@ -1022,6 +1022,113 @@ void rumbling_ruby( special_effect_t& effect )
   proc_object->deactivate();
 }
 
+// Spiteful Storm
+// 377466 Driver
+// 396679 Player Buff
+// 382425 Stacking Player Buff
+// 382428 Target Debuff
+// 394864 Stacking Player Buff
+// 382426 Damage over Time
+void spiteful_storm( special_effect_t& effect )
+{
+  buff_t* spite_buff;
+  buff_t* storm_buff;
+
+  auto storm_proc_spell = effect.player->find_spell( 394864 );
+  storm_buff = make_buff(effect.player, "gathering_storm", storm_proc_spell);
+
+  double stacks = as<int>(effect.player -> find_spell( 377466 ) -> effectN( 2 ).base_value() + storm_buff -> stack());
+
+  struct spiteful_stormbolt_t : public proc_spell_t
+  {
+    buff_t* storm_buff;
+    double buff_travel_speed;
+
+    spiteful_stormbolt_t( const special_effect_t& e, buff_t* b ) :
+      proc_spell_t( "spiteful_stormbolt", e.player, e.player->find_spell( 382426 ), e.item ), storm_buff( b )
+    {
+      dot_behavior = dot_behavior_e::DOT_NONE;
+      base_td = e.player -> find_spell( 377466 ) -> effectN( 1 ).average( e.item );
+      buff_travel_speed = e.player -> find_spell( 382426 ) -> missile_speed();
+    }
+
+    double composite_ta_multiplier( const action_state_t* s ) const override
+    {
+       double d = proc_spell_t::composite_ta_multiplier( s );
+
+       // 10-28-22 In game testing suggests the damage scaling is 
+       // 10% per stack of the Gathering Storm buff on the player, additively.
+       d *= 1.0 * storm_buff -> stack();
+
+      return d;
+    }
+
+    void last_tick( dot_t* d ) override
+    {
+      proc_spell_t::last_tick( d );
+      storm_buff->trigger();
+    }
+  };
+
+  struct spiteful_storm_proc_t : public proc_spell_t
+  {
+    action_t* stormbolt;
+
+    spiteful_storm_proc_t( const special_effect_t& e, buff_t* b ) :
+      proc_spell_t( "spiteful_storm", e.player, e.driver() ) 
+    {
+      stormbolt = create_proc_action<spiteful_stormbolt_t>( "spiteful_stormbolt", e, b );
+    }
+
+    void impact(action_state_t* s) override
+    {
+      player_t* t = s->target;
+      if (target = t)
+      {
+        make_event( *sim, [ this, t ] 
+        {
+          stormbolt -> set_target( t );
+          stormbolt -> execute();
+        } );
+      } 
+    }
+  };
+
+  auto spite_player_buff = buff_t::find( effect.player, "spite");
+  if ( !spite_player_buff )
+  {
+    auto spite_proc_spell = effect.player -> find_spell( 382425 );
+    spite_buff = make_buff(effect.player, "spite", spite_proc_spell)
+                                           ->set_max_stack( stacks );
+    special_effect_t* spiteful_storm_damage_proc = new special_effect_t( effect.player );
+    spiteful_storm_damage_proc->item = effect.item;
+    spiteful_storm_damage_proc->proc_flags_ = spite_proc_spell->proc_flags();
+    spiteful_storm_damage_proc->proc_flags2_ = PF2_CAST_DAMAGE;
+    spiteful_storm_damage_proc->custom_buff = spite_buff;
+    spiteful_storm_damage_proc->spell_id = 382425;
+    spiteful_storm_damage_proc->execute_action = create_proc_action<spiteful_stormbolt_t>( "spiteful_stormbolt", effect );
+
+    effect.player -> special_effects.push_back( spiteful_storm_damage_proc );
+
+    auto proc_object = new dbc_proc_callback_t( effect.player, *spiteful_storm_damage_proc );
+    proc_object -> deactivate();
+
+    spite_buff -> set_stack_change_callback( [ proc_object ]( buff_t* b, int, int ) 
+    {
+      if ( b->at_max_stacks() )
+      {
+        proc_object -> activate();
+        b -> expire();
+      }
+      else
+      {
+        proc_object -> deactivate();
+      }
+    } );
+    new dbc_proc_callback_t( effect.player, effect );
+  }
+}
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -1298,6 +1405,7 @@ void register_special_effects()
   register_special_effect( 377452, items::whispering_incarnate_icon );
   register_special_effect( 384112, items::the_cartographers_calipers );
   register_special_effect( 377454, items::rumbling_ruby );
+  register_special_effect( 377466, items::spiteful_storm );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );  // bronzed grip wrappings embellishment

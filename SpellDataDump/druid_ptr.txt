@@ -8606,7 +8606,7 @@ Description      : While stealthed, Rake will also stun the target for $163505d,
 While stealthed, Shred deals $5221s3% increased damage, and has double the chance to critically strike.
 
 Name             : Merciless Claws (id=231063) [Spell Family (7), Passive] 
-Talent Entry     : Feral [tree=spec, row=3, col=1, max_rank=1, req_points=0, name="Merciless Strikes"]
+Talent Entry     : Feral [tree=spec, row=3, col=1, max_rank=1, req_points=0]
 Class            : Druid
 School           : Nature
 Spell Type       : None
@@ -16448,7 +16448,7 @@ Effects          :
 Description      : Clearcast abilities generate $s1% of their Energy cost.
 
 Name             : Orbital Strike (id=390378) [Spell Family (7), Passive] 
-Talent Entry     : Balance [tree=spec, row=7, col=3, max_rank=1, req_points=8, select_idx=100, name="Syzygy"]
+Talent Entry     : Balance [tree=spec, row=7, col=3, max_rank=1, req_points=8, select_idx=100]
 Class            : Druid
 School           : Physical
 Spell Type       : None

@@ -16443,7 +16443,7 @@ Effects          :
 Description      : Consuming at least $s2 $Lstack:stacks; of Hailstorm, using Ice Strike, and each explosion from Fire Nova now also grants you $s1 $lstack:stacks; of Maelstrom Weapon.
 
 Name             : Converging Storms (id=384363) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Enhancement [tree=spec, row=7, col=4, max_rank=1, req_points=8, name="Gathering Storms"]
+Talent Entry     : Enhancement [tree=spec, row=7, col=4, max_rank=1, req_points=8]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -16695,7 +16695,7 @@ Effects          :
 Description      : Lava Burst and Lava Burst Overload damage reduces the cooldown of Primordial Wave by ${$s1/-1000}.1 sec.
 
 Name             : Primordial Surge (id=386474) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Elemental [tree=spec, row=10, col=2, max_rank=1, req_points=20, select_idx=200, name="Heat Wave"]
+Talent Entry     : Elemental [tree=spec, row=10, col=2, max_rank=1, req_points=20, select_idx=200]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
