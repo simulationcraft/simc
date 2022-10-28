@@ -106,9 +106,6 @@ struct priest_pet_t : public pet_t
   {
     double m = pet_t::composite_player_multiplier( school );
 
-    // Orc racial
-    m *= 1.0 + o().racials.command->effectN( 1 ).percent();
-
     return m;
   }
 
