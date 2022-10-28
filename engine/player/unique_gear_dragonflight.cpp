@@ -930,6 +930,7 @@ void rumbling_ruby( special_effect_t& effect )
   buff_t* ruby_buff;
   buff_t* power_buff;
   special_effect_t* rumbling_ruby_damage_proc = new special_effect_t( effect.player );
+  rumbling_ruby_damage_proc->item = effect.item;
 
   auto rumbling_ruby_buff = buff_t::find( effect.player, "rumbling_ruby");
   if ( !rumbling_ruby_buff )
@@ -959,6 +960,7 @@ void rumbling_ruby( special_effect_t& effect )
       // TODO: Explore the noted "increased damage at higher enemy health"
       base_dd_min = base_dd_max = e.player -> find_spell( 377454 ) -> effectN( 2 ).average( e.item );
       background = true;
+      aoe = -1;
     }
 
     void execute() override
@@ -968,21 +970,21 @@ void rumbling_ruby( special_effect_t& effect )
     }
   };
 
-  rumbling_ruby_damage_proc->execute_action = create_proc_action<rumbling_ruby_damage_t>( "rumbling_ruby_damage", *rumbling_ruby_damage_proc, ruby_buff );
   auto proc_object = new dbc_proc_callback_t( effect.player, *rumbling_ruby_damage_proc );
-  ruby_buff -> set_stack_change_callback( [ power_buff, proc_object ]( buff_t* b, int, int new_ )
+  rumbling_ruby_damage_proc->execute_action = create_proc_action<rumbling_ruby_damage_t>( "rumbling_ruby_damage", *rumbling_ruby_damage_proc, ruby_buff );
+  ruby_buff -> set_stack_change_callback( [ proc_object, power_buff ]( buff_t* b, int, int new_ )
   {
     if ( new_ == 0 )
     { 
       b->expire();
       power_buff->expire();
-      proc_object->activate();
+      proc_object->deactivate();
     }
-    else
+    else if ( b->at_max_stacks() )
     {
       proc_object->activate();
-    } 
-   } );
+    }
+  } );
 
   power_buff -> set_stack_change_callback( [ ruby_buff ]( buff_t* b, int, int ) 
   {
@@ -994,6 +996,7 @@ void rumbling_ruby( special_effect_t& effect )
 
   effect.custom_buff = power_buff;
   new dbc_proc_callback_t( effect.player, effect );
+  proc_object->deactivate();
 }
 
 // Weapons
