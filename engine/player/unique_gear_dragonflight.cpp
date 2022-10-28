@@ -805,6 +805,112 @@ void emerald_coachs_whistle( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+void whispering_incarnate_icon( special_effect_t& effect )
+{
+  bool has_heal = false, has_tank = false, has_dps = false;
+
+  auto splits = util::string_split<std::string_view>(
+      effect.player->sim->dragonflight_opts.whispering_incarnate_icon_roles, "/" );
+  for ( auto s : splits )
+  {
+    if ( util::str_compare_ci( s, "heal" ) )
+      has_heal = true;
+    else if ( util::str_compare_ci( s, "tank" ) )
+      has_tank = true;
+    else if ( util::str_compare_ci( s, "dps" ) )
+      has_dps = true;
+    else
+      throw std::invalid_argument( "Invalid string for dragonflight.whispering_incarnate_icon_roles." );
+  }
+
+  unsigned buff_id = 0, proc_buff_id = 0;
+
+  // single inspiration
+  constexpr unsigned dps_buff_id = 382082;   // inspired by frost
+  constexpr unsigned tank_buff_id = 382081;  // inspired by earth
+  constexpr unsigned heal_buff_id = 382083;  // inspired by flame
+
+  switch ( effect.player->specialization() )
+  {
+    case WARRIOR_PROTECTION:
+    case PALADIN_PROTECTION:
+    case DEATH_KNIGHT_BLOOD:
+    case MONK_BREWMASTER:
+    case DRUID_GUARDIAN:
+    case DEMON_HUNTER_VENGEANCE:
+      buff_id = 382078;  // mark of earth
+
+      if ( has_dps && has_heal )
+        proc_buff_id = 394460;  // inspired by frost and fire
+      else if ( has_dps )
+        proc_buff_id = dps_buff_id;
+      else if ( has_heal )
+        proc_buff_id = heal_buff_id;
+      else
+        proc_buff_id = 0;
+
+      break;
+    case PALADIN_HOLY:
+    case PRIEST_DISCIPLINE:
+    case PRIEST_HOLY:
+    case SHAMAN_RESTORATION:
+    case MONK_MISTWEAVER:
+    case DRUID_FERAL:
+    case EVOKER_PRESERVATION:
+      buff_id = 382080;  // mark of fire
+
+      if ( has_dps && has_tank )
+        proc_buff_id = 394462;  // inspired by frost and earth
+      else if ( has_dps )
+        proc_buff_id = dps_buff_id;
+      else if ( has_tank )
+        proc_buff_id = tank_buff_id;
+      else
+        proc_buff_id = 0;
+
+      break;
+    default:
+      buff_id = 382079;  // mark of frost
+
+      if ( has_heal && has_tank )
+        proc_buff_id = 394461;  // inspired by fire and earth
+      else if ( has_heal )
+        proc_buff_id = heal_buff_id;
+      else if ( has_tank )
+        proc_buff_id = tank_buff_id;
+
+      break;
+  }
+
+  auto buff_data = effect.player->find_spell( buff_id );
+  auto buff =
+      create_buff<stat_buff_t>( effect.player, util::tokenize_fn( buff_data->name_cstr() ), buff_data );
+  buff->manual_stats_added = false;
+  buff->set_constant_behavior( buff_constant_behavior::ALWAYS_CONSTANT );
+  buff->set_rppm( rppm_scale_e::RPPM_DISABLE );
+  buff->add_stat( util::translate_rating_mod( buff_data->effectN( 1 ).misc_value1() ),
+                  effect.driver()->effectN( 1 ).average( effect.item ) );
+
+  effect.player->register_combat_begin( [ buff ]( player_t* ) {
+    buff->trigger();
+  } );
+
+  if ( proc_buff_id )
+  {
+    auto proc_buff_data = effect.player->find_spell( proc_buff_id );
+    auto proc_buff =
+        create_buff<stat_buff_t>( effect.player, util::tokenize_fn( proc_buff_data->name_cstr() ), proc_buff_data );
+    proc_buff->manual_stats_added = false;
+    proc_buff->add_stat( util::translate_rating_mod( proc_buff_data->effectN( 1 ).misc_value1() ),
+                         effect.driver()->effectN( 2 ).average( effect.item ) );
+
+    effect.spell_id = buff_id;
+    effect.custom_buff = proc_buff;
+
+    new dbc_proc_callback_t( effect.player, effect );
+  }
+}
+
 void the_cartographers_calipers( special_effect_t& effect )
 {
   effect.trigger_spell_id = 384114;
@@ -839,6 +945,7 @@ void fang_adornments( special_effect_t& effect )
 void blue_silken_lining( special_effect_t& effect )
 {
   auto buff = create_buff<stat_buff_t>( effect.player, "zone_of_focus", effect.trigger()->effectN( 1 ).trigger() );
+  buff->manual_stats_added = false;
   buff->add_stat( STAT_MASTERY_RATING, effect.driver()->effectN( 1 ).average( effect.item ) );
 
   // TODO: implement losing buff when hp < 90%
@@ -1085,6 +1192,7 @@ void register_special_effects()
   register_special_effect( 386624, items::darkmoon_deck_rime );
   register_special_effect( 384532, items::darkmoon_deck_watcher );
   register_special_effect( 383798, items::emerald_coachs_whistle );
+  register_special_effect( 377452, items::whispering_incarnate_icon );
   register_special_effect( 384112, items::the_cartographers_calipers );
 
   // Weapons

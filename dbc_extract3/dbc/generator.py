@@ -1356,6 +1356,7 @@ class SpellDataGenerator(DataGenerator):
          375335, 375342, 375343, 375345, # Elemental Lariat JC Neck
          376932, # MAGIC SNOWBALL
          379403, 379407, # Toxic Thorn Footwraps LW Boots
+         382078, 382079, 382080, 382081, 382082, 382083, 394460, 394461, 394462, # Whispering Incarnate Icon
         ),
 
         # Warrior:

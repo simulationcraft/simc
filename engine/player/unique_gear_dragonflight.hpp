@@ -43,6 +43,7 @@ void darkmoon_deck_inferno( special_effect_t& );
 void darkmoon_deck_rime( special_effect_t& );
 void darkmoon_deck_watcher( special_effect_t& );
 void emerald_coachs_whistle( special_effect_t& );
+void whispering_incarnate_icon( special_effect_t& );
 void the_cartographers_calipers( special_effect_t& );
 
 // Weapons
