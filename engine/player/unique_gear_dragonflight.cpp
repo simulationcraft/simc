@@ -823,13 +823,6 @@ void rumbling_ruby( special_effect_t& effect )
 {
   buff_t* ruby_buff;
   buff_t* power_buff;
-  
-  auto ruby_proc_spell = effect.player -> find_spell( 382095 );
-  ruby_buff = make_buff( effect.player, "rumbling_ruby", ruby_proc_spell );
-
-  auto power_proc_spell = effect.player->find_spell( 382094 );
-  power_buff = make_buff<stat_buff_t>(effect.player, "rumbling_power", power_proc_spell)
-                   ->add_stat( STAT_STRENGTH, effect.driver() -> effectN( 1 ).average( effect.item ));
 
   struct rumbling_ruby_damage_t : public proc_spell_t
   {
@@ -856,27 +849,16 @@ void rumbling_ruby( special_effect_t& effect )
       dbc_proc_callback_t( e->player, *e ) { }
   };
 
-  if ( !power_buff )
+  auto rumbling_ruby_buff = buff_t::find( effect.player, "rumbling_ruby");
+  if ( !rumbling_ruby_buff )
   {
-    effect.custom_buff = power_buff;
-    new dbc_proc_callback_t( effect.player, effect );
-
-    power_buff -> set_stack_change_callback( [ ruby_buff ]( buff_t* b, int, int ) 
-    {
-      if ( b->at_max_stacks() )
-      {
-        ruby_buff->trigger();
-      }
-    } );
-  }
-
-  if ( !ruby_buff )
-  {
-    special_effect_t* rumbling_ruby_damage_proc = new special_effect_t( effect.player );
-    rumbling_ruby_damage_proc->proc_flags_ = power_proc_spell->proc_flags();
+    special_effect_t* rumbling_ruby_damage_proc = new special_effect_t( effect.player -> target );
+    auto ruby_proc_spell = effect.player -> find_spell( 382095 );
+    ruby_buff = make_buff( effect.player, "rumbling_ruby", ruby_proc_spell );
+    rumbling_ruby_damage_proc->proc_flags_ = ruby_proc_spell->proc_flags();
     rumbling_ruby_damage_proc->proc_flags2_ = PF2_CAST_DAMAGE;
     rumbling_ruby_damage_proc->spell_id = 382095;
-    effect.execute_action = create_proc_action<rumbling_ruby_damage_t>( "rumbling_ruby_damage", *rumbling_ruby_damage_proc, ruby_buff );
+    rumbling_ruby_damage_proc->execute_action = create_proc_action<rumbling_ruby_damage_t>( "rumbling_ruby_damage", *rumbling_ruby_damage_proc, ruby_buff );
 
     effect.player -> special_effects.push_back( rumbling_ruby_damage_proc );
     auto proc_object = new rumbling_ruby_proc_t( rumbling_ruby_damage_proc );
@@ -887,6 +869,7 @@ void rumbling_ruby( special_effect_t& effect )
       { 
         b->expire();
         power_buff->expire();
+        proc_object->activate();
       }
     else
       {
@@ -894,9 +877,26 @@ void rumbling_ruby( special_effect_t& effect )
       }
     } );
   }
+  
+  auto ruby_power_buff = buff_t::find( effect.player, "rumbling_power" );
+  if ( !ruby_power_buff )
+  {
+    new dbc_proc_callback_t( effect.player, effect );
+    auto power_proc_spell = effect.player->find_spell( 382094 );
+    power_buff = make_buff<stat_buff_t>(effect.player, "rumbling_power", power_proc_spell)
+                   ->add_stat( STAT_STRENGTH, effect.driver() -> effectN( 1 ).average( effect.item ));
+    effect.custom_buff = power_buff;
+
+    power_buff -> set_stack_change_callback( [ ruby_buff ]( buff_t* b, int, int ) 
+    {
+      if ( b->at_max_stacks() )
+      {
+        ruby_buff->trigger();
+      }
+    } );
+  }
   new dbc_proc_callback_t( effect.player, effect );
 }
-
 
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
