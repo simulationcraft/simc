@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.2.46259
-static const std::array<spelltext_data_t, 19135> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 19139> __ptr_spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
