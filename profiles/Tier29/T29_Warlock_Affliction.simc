@@ -5,9 +5,8 @@ level=70
 race=orc
 role=spell
 position=ranged_back
-# using these talents https://www.wowhead.com/beta/talent-calc/warlock/affliction/DAORqERUARBVIUagQCUQLUUqFSBoVJgFBR
-class_talents=333889:1/268358:1/111400:1/386113:2/219272:2/386124:2/386105:1/6789:1/288843:1/386858:1/386864:1386620:1/111771:1/108416:1/386659:1/30283:1/386664:1/386646:2/389367:1/108415:1/389359:1/171975:2/389576:2/215941:2/386344:1
-spec_talents=324536:1/316099:1/108558:1/317031:1/32388:2/201424:2/196102:2/198590:1/63106:1/205179:1/334319:2/108503:1/386759:2/386976:2/264000:1/48181:1/205180:1/389761:2/387075:1/387250:2/389775:1/387301:1
+# using these talents https://www.wowhead.com/talent-calc/warlock/affliction/DANRKkRUARBVIEIgBVLVViFUIKUAgBBQ
+talents=BkQAU3BjZ/IAySQ6AmAmsjvQ+BQSkIBSjIItkkQaAAAAAkAAAAAAACpQSiEJJRTIAA
 
 # TODO
 # Default consumables
@@ -81,9 +80,9 @@ actions+=/call_action_list,name=se,if=talent.shadow_embrace&(debuff.shadow_embra
 # Use Malefic Rapture when major dots are up, or if there will be significant time until the next Phantom Singularity. If utilizing Malefic Affliction, hold a shard to refresh the buff
 actions+=/malefic_rapture,if=(dot.vile_taint.ticking|dot.soul_rot.ticking)&(!talent.malefic_affliction|buff.malefic_affliction.stack<3|soul_shard>1)
 # Use Malefic Rapture if using Dread Touch
-actions+=/malefic_rapture,if=talent.dread_touch&(!buff.dread_touch|buff.dread_touch.remains<2)
+actions+=/malefic_rapture,if=talent.dread_touch.enabled&(!debuff.dread_touch.up|debuff.dread_touch.remains<2)
 # Use Malefic Rapture to maintain the malefic affliction buff until shards need to be generated for the next burst window (20 seconds is more than sufficient to generate 3 shards)
-actions+=/malefic_rapture,if=buff.malefic_affliction&(cooldown.soul_rot.remains>20|cooldown.phantom_singularity.remains>20|cooldown.summon_darkglare.remains>20)&buff.malefic_affliction.remains<4
+actions+=/malefic_rapture,if=buff.malefic_affliction.up&(cooldown.soul_rot.remains>20|cooldown.phantom_singularity.remains>20|cooldown.summon_darkglare.remains>20)&buff.malefic_affliction.remains<4
 # Use Malefic Rapture on Phantom Singularity casts, making sure to save a shard to stack Malefic Affliction if using it
 actions+=/malefic_rapture,if=talent.phantom_singularity&(dot.phantom_singularity.ticking|cooldown.phantom_singularity.remains>25|time_to_die<cooldown.phantom_singularity.remains)&(!talent.malefic_affliction|buff.malefic_affliction.stack<3|soul_shard>1)
 actions+=/malefic_rapture,if=talent.sow_the_seeds
@@ -108,7 +107,7 @@ actions.aoe+=/agony,cycle_targets=1,if=active_dot.agony>=4,target_if=refreshable
 actions.aoe+=/unstable_affliction,if=dot.unstable_affliction.refreshable
 actions.aoe+=/call_action_list,name=darkglare_prep,if=cooldown.summon_darkglare.remains<2&(dot.phantom_singularity.remains>2|!talent.phantom_singularity)
 actions.aoe+=/call_action_list,name=item
-actions.aoe+=/call_action_list,name=delayed_trinkets
+# actions.aoe+=/call_action_list,name=delayed_trinkets
 actions.aoe+=/call_action_list,name=damage_trinkets
 actions.aoe+=/call_action_list,name=stat_trinkets,if=dot.phantom_singularity.ticking|!talent.phantom_singularity
 actions.aoe+=/malefic_rapture,if=dot.vile_taint.ticking
@@ -176,7 +175,7 @@ head=scalesworn_cultists_scorn,id=200336,bonus_id=1463/8767
 neck=felsoul_medallion,id=154009,bonus_id=8942/3219
 shoulders=scalesworn_cultists_effigy,id=200338,bonus_id=1463/8767
 back=scalesworn_cultists_runedrape,id=200341,bonus_id=1472/8767
-chest=scalesworn_cultists_frock,id=200333,bonus_id=1466/8767
+chest=scalesworn_cultists_frosk,id=200333,bonus_id=1466/8767
 wrists=scalesworn_cultists_wristwraps,id=200340,bonus_id=1472/8767
 hands=scalesworn_cultists_gloves,id=200335,bonus_id=1466/8767
 waist=scalesworn_cultists_girdle,id=200339,bonus_id=1472/8767
