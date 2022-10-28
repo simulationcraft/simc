@@ -3446,6 +3446,9 @@ struct blade_flurry_t : public rogue_attack_t
     {
       range = -1.0;
     }
+
+    bool procs_main_gauche() const override
+    { return true; }
   };
 
   blade_flurry_instant_attack_t* instant_attack;
