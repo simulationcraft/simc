@@ -1358,6 +1358,7 @@ class SpellDataGenerator(DataGenerator):
          379403, 379407, # Toxic Thorn Footwraps LW Boots
          382095, 382096, 382097, # Rumbling Ruby trinket
          382078, 382079, 382080, 382081, 382082, 382083, 394460, 394461, 394462, # Whispering Incarnate Icon
+         377451, 381824, # Conjured Chillglobe
         ),
 
         # Warrior:
