@@ -1347,7 +1347,7 @@ Effects          :
 Description      : Increases your maximum Chi by $s1, maximum Energy by $s3, and your Energy regeneration by $s2%.
 
 Name             : Black Ox Brew (id=115399) [Spell Family (53)] 
-Talent Entry     : Brewmaster [tree=spec, row=7, col=3, max_rank=1, req_points=8, select_idx=200]
+Talent Entry     : Brewmaster [tree=spec, row=7, col=3, max_rank=1, req_points=8, select_idx=100]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -1840,7 +1840,7 @@ Tooltip          : Nearby enemies will be knocked out of the Ring of Peace.
 
 Name             : Rushing Jade Wind (id=116847) [Spell Family (53)] 
 Talent Entry     : Windwalker [tree=spec, row=7, col=1, max_rank=1, req_points=8]
-                 : Brewmaster [tree=spec, row=4, col=5, max_rank=1, req_points=0, select_idx=200]
+                 : Brewmaster [tree=spec, row=4, col=5, max_rank=1, req_points=0, select_idx=100]
 Class            : Monk
 School           : Nature
 Spell Type       : Melee
@@ -5159,7 +5159,7 @@ Description      : Summon a whirling tornado around you, causing ${$162530s1*13}
 Tooltip          : Healing $s2 nearby allies every $116847t1 sec.
 
 Name             : Special Delivery (id=196730) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=4, col=5, max_rank=1, req_points=0, select_idx=100]
+Talent Entry     : Brewmaster [tree=spec, row=4, col=5, max_rank=1, req_points=0, select_idx=200]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -8597,7 +8597,7 @@ Effects          :
 Description      : Your spells and abilities have a chance to conjure Swirling Sands, increasing your Critical Strike by $s1 for $280433d. Your critical effects extend Swirling Sands by ${$s2/1000} sec, up to a maximum duration of ${$280433d+($s3/1000)} sec.
 
 Name             : Bob and Weave (id=280515) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=7, col=3, max_rank=1, req_points=8, select_idx=100]
+Talent Entry     : Brewmaster [tree=spec, row=7, col=3, max_rank=1, req_points=8, select_idx=200]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -10097,7 +10097,7 @@ Tooltip          : Attacking all nearby enemies for Physical damage every $10154
 Variables        : $CAP=$?$OWB==0[${$AP*0.98}][${($AP+$OAP)*2/3}]--2H, DW
 
 Name             : Improved Invoke Niuzao, the Black Ox (id=322740) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=9, col=2, max_rank=1, req_points=20, name="Invoke Niuzao, the Black Ox"]
+Talent Entry     : Brewmaster [tree=spec, row=9, col=2, max_rank=1, req_points=20]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -10116,7 +10116,7 @@ Effects          :
 Description      : Purifying Stagger damage while Niuzao is active increases the damage of Niuzao's next Stomp by $s1% of damage purified, split between all enemies.
 
 Name             : Fortifying Brew: Determination (id=322960) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=7, col=2, max_rank=1, req_points=8, name="Fortifying Brew"]
+Talent Entry     : Brewmaster [tree=spec, row=7, col=2, max_rank=1, req_points=8]
 Class            : Monk
 School           : Physical
 Spell Type       : None

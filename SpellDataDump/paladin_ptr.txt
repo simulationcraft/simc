@@ -1082,7 +1082,7 @@ Effects          :
 Description      : Increases Agility by $s1.
 
 Name             : Sanctified Wrath (id=53376) [Spell Family (10), Passive] 
-Talent Entry     : Generic [tree=class, row=10, col=2, max_rank=1, req_points=20, select_idx=100]
+Talent Entry     : Generic [tree=class, row=10, col=2, max_rank=1, req_points=20, select_idx=100, name="$@spellname53376", override="Avenging Wrath" (id=31884)]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -5338,7 +5338,7 @@ Effects          :
 Description      : Casting Flash of Light or Holy Light on your Beacon of Light grants $s1 Holy Power.
 
 Name             : Greater Judgment (id=231644) [Spell Family (10), Passive] 
-Talent Entry     : Holy [tree=class, row=4, col=4, max_rank=1, req_points=0, name="Judgment"]
+Talent Entry     : Holy [tree=class, row=4, col=4, max_rank=1, req_points=0]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -13549,7 +13549,7 @@ Effects          :
 Description      : Hitting an enemy with Templar's Verdict that has an active Execution Sentence, extends the duration of their Execution Sentence by $s1 sec.
 
 Name             : Avenging Wrath (id=384376) [Spell Family (10), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=5, col=2, max_rank=1, req_points=8]
+Talent Entry     : Generic [tree=class, row=5, col=2, max_rank=1, req_points=8, override="Avenging Wrath" (id=31884)]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -13606,7 +13606,7 @@ If $@spellname31884 is known, also grants $s1% damage per stack.
 
 
 Name             : Avenging Wrath: Might (id=384442) [Spell Family (10), Passive, Hidden] 
-Talent Entry     : Protection [free=(Protection), tree=spec, row=6, col=3, max_rank=1, req_points=8, select_idx=100]
+Talent Entry     : Protection [free=(Protection), tree=spec, row=6, col=3, max_rank=1, req_points=8, select_idx=100, override="Avenging Wrath" (id=31884)]
                  : Retribution [tree=spec, row=6, col=4, max_rank=1, req_points=8, select_idx=100]
                  : Holy [tree=spec, row=8, col=5, max_rank=1, req_points=20, select_idx=100]
 Class            : Paladin
@@ -14131,7 +14131,7 @@ Effects          :
 Description      : Speed and Avoidance increased by $s3%.
 
 Name             : Sentinel (id=385438) [Spell Family (10), Passive, Hidden] 
-Talent Entry     : Protection [free=(Protection), tree=spec, row=6, col=3, max_rank=1, req_points=8, select_idx=200, replace="Avenging Wrath" (id=31884), override="Sentinel" (id=385438)]
+Talent Entry     : Protection [free=(Protection), tree=spec, row=6, col=3, max_rank=1, req_points=8, select_idx=200, replace="Avenging Wrath" (id=31884), override="Sentinel" (id=389539)]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
