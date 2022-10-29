@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.46313 Live (hotfix 2022-10-27/46313)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.46340 Live (hotfix 2022-10-29/46340, no-networking)
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -128,7 +128,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
-Affecting spells : Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2, #4), Destruction Warlock (137046 effects: #1, #2), Demonic Synergy (171982 effects: #2, #3), Shadowy Inspiration (196606 effect#1), Nightfall (264571 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Decimating Bolt (325299 effect#1), Relic of Demonic Synergy (337060 effects: #2, #3), Malefic Wrath (337125 effects: #1, #2), Wrath of Consumption (337130 effect#1), Shard of Annihilation (356342 effects: #1, #2), Wrath of Consumption (387066 effect#1), Stolen Power (387604 effect#1), Drain Soul (388667 effect#1)
+Affecting spells : Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2, #4), Destruction Warlock (137046 effects: #1, #2), Demonic Synergy (171982 effects: #2, #3), Shadowy Inspiration (196606 effect#1), Nightfall (264571 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Decimating Bolt (325299 effect#1), Relic of Demonic Synergy (337060 effects: #2, #3), Malefic Wrath (337125 effects: #1, #2), Wrath of Consumption (337130 effect#1), Shard of Annihilation (356342 effects: #1, #2), Wrath of Consumption (387066 effect#1), Stolen Power (387604 effect#1)
 Family Flags     : 0, 49
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3212,6 +3212,57 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 58964 | Target: Unknown(32)
 Description      : Summons an Observer under your command, able to disrupt the spell casts of your enemies.
 
+Name             : Dark Soul: Instability (id=113858) [Spell Family (5)] 
+Class            : Warlock
+School           : Fire
+Spell Type       : None
+Resource         : 1% Base Mana (0) (id=192762)
+Duration         : 20 seconds
+Cooldown         : 120 seconds
+Charges          : 0 (120 seconds cooldown)
+Category         : 1447
+Family Flags     : 108
+Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ...x.... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Allow While Not Shapeshifted (caster form) (83), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=126897)   : Apply Aura (6) | Modify Critical Strike% (290)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
+Description      : Infuses your soul with unstable power, increasing your critical strike chance by $113858s1% for $113858d.$?s56228[
+
+|cFFFFFFFFPassive:|r
+Increases your critical strike chance by ${$113858m1/$56228m1}%. This effect is disabled while on cooldown.][]
+Tooltip          : Critical strike chance increased by $w1%.
+
+Name             : Dark Soul: Misery (id=113860) [Spell Family (5)] 
+Class            : Warlock
+School           : Shadow
+Spell Type       : Magic
+Resource         : 1% Base Mana (0) (id=192758)
+Duration         : 20 seconds
+Cooldown         : 120 seconds
+Family Flags     : 108
+Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ...x.... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x......x ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Allow While Not Shapeshifted (caster form) (83), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
+Effects          :
+#1 (id=126899)   : Apply Aura (6) | Modify All Haste% (193)
+                   Base Value: 30 | Scaled Value: 30 | SP Coefficient: 0.25000 | PvP Coefficient: 0.66700 | Misc Value: 15 | Target: Self (1)
+Description      : Infuses your soul with the misery of fallen foes, increasing haste by $s1% for $d.
+Tooltip          : Haste increased by $s1%.
+
 Name             : Demonic Gateway (id=113942) [Spell Family (5)] 
 Class            : Warlock
 School           : Physical
@@ -4625,6 +4676,7 @@ Effects          :
 Description      : $@spelldesc187365
 
 Name             : Drain Soul (id=198590) [Spell Family (5)] 
+Replaces         : Shadow Bolt (id=686)
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -15896,6 +15948,7 @@ Effects          :
 Description      : Deals $s1 Chaos damage.
 
 Name             : Inquisitor's Gaze (id=388068) 
+Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
@@ -15911,9 +15964,9 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ....x... ..x..... 
+                 : ........ ........ ........ .......x   x....... ........ ....x... ..x..... 
                  : ........ ........ ........ ........   
-                 : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Ignore Line of Sight (66), No Initial Threat (86), Ignore Caster & Target Restrictions (124), Not In Spellbook (143), Ignore Healing Modifiers (219), Do Not Log Full Overheal (323), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436), Always Allow Negative Healing Percent Modifiers (442)
+                 : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Ignore Line of Sight (66), No Initial Threat (86), Ignore Caster & Target Restrictions (124), Not In Spellbook (143), Ignore Healing Modifiers (219), Do Not Log Full Overheal (323), Only Proc From Class Abilities (415), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436), Always Allow Negative Healing Percent Modifiers (442)
 Effects          :
 #1 (id=1023548)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -15943,6 +15996,7 @@ Effects          :
 Description      : Blasts the enemy target with a bolt of fel magic, causing $s1 Shadowflame damage. 
 
 Name             : Drain Soul (id=388667) [Spell Family (5), Passive] 
+Hotfixed         : Attributes
 Talent Entry     : Affliction [tree=spec, row=5, col=1, max_rank=1, req_points=8, override="Drain Soul" (id=198590)]
 Class            : Warlock
 School           : Shadow
@@ -15951,16 +16005,15 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ......x. ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ...x.... ........ ........ ........   
-                 : Passive (6), Not In Spellbook (143), Spellcast Override In Spellbook (310)
+                 : Passive (6), Not In Spellbook (143)
 Effects          :
-#1 (id=1024496)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
+#1 (id=1024496)  : Apply Aura (6) | Dummy (4)
                    Base Value: 198590 | Scaled Value: 198590 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Shadow Bolt (686)
-                   Family Flags: 0
+Hotfixed         : Sub Type (332 -> 4), Affects Spells
 Description      : $@spelldesc198590
 
 Name             : Explosive Potential (id=388827) [Spell Family (5), Passive, Hidden] 

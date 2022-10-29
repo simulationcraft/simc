@@ -1360,7 +1360,6 @@ class SpellDataGenerator(DataGenerator):
          382078, 382079, 382080, 382081, 382082, 382083, 394460, 394461, 394462, # Whispering Incarnate Icon
          377451, 381824, # Conjured Chillglobe
          382425, 382428, 394864, # Spiteful Storm
-         377453, 382090, 382091, 382092 # Storm-Eater's Boon trinket
         ),
 
         # Warrior:
