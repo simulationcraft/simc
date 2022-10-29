@@ -4222,7 +4222,28 @@ double player_t::composite_melee_attack_power_by_type( attack_power_type type ) 
       break;
   }
 
-  return ap;
+  // 2022-08-25 -- Recent logs have shown that player->auto_attack_modifier now works as a general AP modifier
+  //               This is normalized to AP based on weapon speed in a similar way as base weapon DPS above
+  double aa_bonus_ap = 0;
+  if ( auto_attack_modifier > 0 )
+  {
+    if ( type == attack_power_type::WEAPON_MAINHAND )
+    {
+      aa_bonus_ap = auto_attack_modifier / main_hand_weapon.swing_time.total_seconds();
+    }
+    else if ( type == attack_power_type::WEAPON_OFFHAND )
+    {
+      aa_bonus_ap = auto_attack_modifier / off_hand_weapon.swing_time.total_seconds();
+    }
+    else if ( type == attack_power_type::WEAPON_BOTH )
+    {
+      aa_bonus_ap = ( auto_attack_modifier / main_hand_weapon.swing_time.total_seconds()
+              + auto_attack_modifier / off_hand_weapon.swing_time.total_seconds() * 0.5 ) * ( 2.0 / 3.0 );
+    }
+    aa_bonus_ap *= WEAPON_POWER_COEFFICIENT;
+  }
+
+  return ap + aa_bonus_ap;
 }
 
 double player_t::composite_attack_power_multiplier() const
@@ -10363,11 +10384,11 @@ player_talent_t player_t::find_talent_spell(
 
   if ( name_tokenized )
   {
-    trait = trait_data_t::find_tokenized( tree, name, class_idx, s == SPEC_NONE ? _spec : s );
+    trait = trait_data_t::find_tokenized( tree, name, class_idx, s == SPEC_NONE ? _spec : s, dbc->ptr );
   }
   else
   {
-    trait = trait_data_t::find( tree, name, class_idx, s == SPEC_NONE ? _spec : s );
+    trait = trait_data_t::find( tree, name, class_idx, s == SPEC_NONE ? _spec : s, dbc->ptr );
   }
 
   if ( trait == &trait_data_t::nil() )
@@ -10388,7 +10409,7 @@ player_talent_t player_t::find_talent_spell(
 
   dbc->spec_idx( s == SPEC_NONE ? _spec : s, class_idx, spec_idx );
 
-  auto traits = trait_data_t::find_by_spell( tree, spell_id, class_idx, s == SPEC_NONE ? _spec : s );
+  auto traits = trait_data_t::find_by_spell( tree, spell_id, class_idx, s == SPEC_NONE ? _spec : s, dbc->ptr );
   if ( traits.size() == 0 )
   {
     sim->print_debug( "Player {}: Can't find {} talent with spell_id '{}'.", this->name(),

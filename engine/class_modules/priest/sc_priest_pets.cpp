@@ -106,9 +106,6 @@ struct priest_pet_t : public pet_t
   {
     double m = pet_t::composite_player_multiplier( school );
 
-    // Orc racial
-    m *= 1.0 + o().racials.command->effectN( 1 ).percent();
-
     return m;
   }
 
@@ -500,6 +497,7 @@ struct priest_pet_spell_t : public spell_t
     parse_buff_effects( p().o().buffs.shadowform );
     parse_buff_effects( p().o().buffs.twist_of_fate, p().o().talents.twist_of_fate );
     parse_buff_effects( p().o().buffs.devoured_pride );
+    parse_buff_effects( p().o().buffs.dark_ascension, true );  // Buffs corresponding non-periodic spells
   }
 
   priest_pet_t& p()
@@ -1151,6 +1149,22 @@ struct void_tendril_mind_flay_t final : public priest_pet_spell_t
     channeled                  = true;
     hasted_ticks               = false;
     affected_by_shadow_weaving = true;
+
+    // BUG: This talent is cursed
+    // https://github.com/SimCMinMax/WoW-BugTracker/issues/1029
+    if ( p.o().bugs )
+    {
+      if ( p.o().level() == 70 )
+      {
+        base_td += 1275;
+      }
+      else
+      {
+        base_td += 219;
+      }
+      
+      spell_power_mod.tick *= 0.6;
+    }
   }
 
   void init() override
@@ -1239,7 +1253,8 @@ struct void_lasher_mind_sear_tick_t final : public priest_pet_spell_t
     // https://github.com/SimCMinMax/WoW-BugTracker/issues/1029
     if ( p.o().bugs )
     {
-      spell_power_mod.direct = 0.071;
+      spell_power_mod.direct *= 0.6;
+      da_multiplier_buffeffects.clear();  // This is in spelldata to scale with things but it does not in game
     }
 
     // BUG: This spell is not being affected by Mastery

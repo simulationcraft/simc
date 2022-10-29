@@ -497,7 +497,7 @@ public:
       // Row 7
       player_talent_t scalding_brew;
       player_talent_t salsalabims_strength;
-      player_talent_t fortifying_brew_stagger;
+      player_talent_t fortifying_brew_determination;
       player_talent_t black_ox_brew;
       player_talent_t bob_and_weave;
       player_talent_t invoke_niuzao_the_black_ox;
@@ -634,7 +634,7 @@ public:
       player_talent_t hit_combo;
       // Row 7
       player_talent_t rushing_jade_wind;
-      player_talent_t forbidden_touch;
+      player_talent_t forbidden_technique;
       player_talent_t invoke_xuen_the_white_tiger;
       player_talent_t teachings_of_the_monastery;
       player_talent_t thunderfist;

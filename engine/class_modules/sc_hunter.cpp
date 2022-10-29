@@ -2213,7 +2213,7 @@ struct kill_command_bm_mm_t: public kill_command_base_t
     if ( o() -> conduits.ferocious_appetite.ok() )
       ferocious_appetite_reduction = timespan_t::from_seconds( o() -> conduits.ferocious_appetite.value() / 10 );
 
-    if ( o() -> legendary.dire_command.ok() )
+    if ( o() -> legendary.dire_command.ok() && !o() -> talents.dire_command.ok() )
     {
       dire_command.chance = o() -> legendary.dire_command -> effectN( 1 ).percent();
       dire_command.proc = o() -> get_proc( "Dire Command (Runeforge)" );
@@ -3012,6 +3012,12 @@ struct kill_shot_t : hunter_ranged_attack_t
       : residual_bleed_base_t( n, p, p -> find_spell( 356620 ) )
     {
     }
+
+    double base_ta(const action_state_t* s) const override
+    {
+      // 26-10-22 TODO Not affected by Serrated Shots.
+      return residual_periodic_action_t::base_ta( s );
+    }
   };
 
   // Coordinated Assault
@@ -3036,6 +3042,7 @@ struct kill_shot_t : hunter_ranged_attack_t
     health_threshold_pct( p -> talents.kill_shot -> effectN( 2 ).base_value() )
   {
     parse_options( options_str );
+    triggers_wild_spirits = false;
 
     if ( p -> legendary.pouch_of_razor_fragments.ok() )
     {
@@ -3105,6 +3112,9 @@ struct kill_shot_t : hunter_ranged_attack_t
       if ( amount > 0 )
         residual_action::trigger( bleeding_gash, s -> target, amount );
     }
+
+    // 28-10-22 TODO All hits from BoP Kill Shot triggers Wild Spirits.
+    p() -> trigger_wild_spirits( s, true );
   }
 
   int n_targets() const override
@@ -3241,7 +3251,6 @@ struct wind_arrow_t final : public hunter_ranged_attack_t
     hunter_ranged_attack_t( n, p, p -> find_spell( 191043 ) )
   {
     dual = true;
-    proc = true;
     // LotW arrows behave more like AiS re cast time/speed
     // TODO: RETEST for DL & test its behavior on lnl AiSes
     base_execute_time = p -> talents.aimed_shot -> cast_time();
@@ -3434,11 +3443,6 @@ struct explosive_shot_background_t : public explosive_shot_t
     dual = true;
     base_costs[ RESOURCE_FOCUS ] = 0;
     triggers_wild_spirits = false;
-  }
-
-  timespan_t travel_time() const override
-  {
-    return 0_s;
   }
 };
 
@@ -3805,6 +3809,8 @@ struct flayed_shot_t : hunter_ranged_attack_t
     hunter_ranged_attack_t( "flayed_shot", p, p -> covenants.flayed_shot )
   {
     parse_options( options_str );
+
+    affected_by.serrated_shots = false;
   }
 
   void impact( action_state_t* s ) override
@@ -4948,7 +4954,6 @@ struct melee_focus_spender_t: hunter_melee_attack_t
     {
       dual = true;
       base_costs[ RESOURCE_FOCUS ] = 0;
-      triggers_wild_spirits = false;
 
       // Viper's Venom is left out of Hydra's Bite target count modification.
       aoe = 0;
@@ -5379,6 +5384,10 @@ struct fury_of_the_eagle_t: public hunter_melee_attack_t
         p() -> cooldowns.flanking_strike -> adjust( -ruthless_marauder_adjust );
         p() -> cooldowns.ruthless_marauder -> start();
       }
+
+      // XXX: Wild Spirits kludge
+      if ( state -> chain_target == 0 && p() -> buffs.wild_spirits -> check() )
+        triggers_wild_spirits = false;
     }
   };
 
@@ -5390,6 +5399,14 @@ struct fury_of_the_eagle_t: public hunter_melee_attack_t
     channeled = true;
     tick_zero = true;
     tick_action = new fury_of_the_eagle_tick_t( p, as<int>( data().effectN( 5 ).base_value() ) );
+  }
+
+  void execute() override
+  {
+    // XXX: Wild Spirits kludge
+    static_cast<fury_of_the_eagle_tick_t*>( tick_action ) -> triggers_wild_spirits = true;
+
+    hunter_melee_attack_t::execute();
   }
 };
 
@@ -5864,7 +5881,7 @@ struct kill_command_t: public hunter_spell_t
       }
     }
 
-    if ( p -> specialization() == HUNTER_BEAST_MASTERY && p -> talents.dire_command.ok() )
+    if ( p -> talents.dire_command.ok() )
     {
       dire_command.chance = p -> talents.dire_command -> effectN( 1 ).percent();
       dire_command.proc = p -> get_proc( "Dire Command" );
@@ -6538,7 +6555,6 @@ struct wildfire_bomb_t: public hunter_spell_t
       {
         dual = true;
         base_costs[ RESOURCE_FOCUS ] = 0;
-        triggers_wild_spirits = false;
 
         aoe = as<int>( p -> talents.wildfire_infusion -> effectN( 2 ).base_value() );
       }
@@ -7842,13 +7858,22 @@ void hunter_t::init_action_list()
     switch ( specialization() )
     {
     case HUNTER_BEAST_MASTERY:
-      hunter_apl::beast_mastery( this );
+      if ( true_level > 60 )
+        hunter_apl::beast_mastery_df( this );
+      else
+        hunter_apl::beast_mastery( this );
       break;
     case HUNTER_MARKSMANSHIP:
-      hunter_apl::marksmanship( this );
+      if ( true_level > 60 )
+        hunter_apl::marksmanship_df( this );
+      else
+        hunter_apl::marksmanship( this );
       break;
     case HUNTER_SURVIVAL:
-      hunter_apl::survival( this );
+      if ( true_level > 60 )
+        hunter_apl::survival_df( this );
+      else
+        hunter_apl::survival( this );
       break;
     default:
       get_action_priority_list( "default" ) -> add_action( "arcane_shot" );

@@ -14,5 +14,8 @@ std::string temporary_enchant( const player_t* );
 void beast_mastery( player_t* );
 void marksmanship( player_t* );
 void survival( player_t* );
+void beast_mastery_df( player_t* );
+void marksmanship_df( player_t* );
+void survival_df( player_t* );
 
 } // namespace hunter_apl

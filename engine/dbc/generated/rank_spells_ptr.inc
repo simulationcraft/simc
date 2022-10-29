@@ -1,5 +1,5 @@
-// Rank class spells, wow build 10.0.0.46270
-static const std::array<rank_class_spell_t, 53> __ptr_rank_spells_data { {
+// Rank class spells, wow build 10.0.2.46259
+static const std::array<rank_class_spell_t, 54> __ptr_rank_spells_data { {
   {  2,   66, 358934,      0, "Aegis of Light"                    , "Rank 2" },
   { 10,  269, 322719,      0, "Afterlife"                         , "Rank 2" },
   { 11,  104, 270100,      0, "Bear Form"                         , "Rank 2" },
@@ -40,6 +40,7 @@ static const std::array<rank_class_spell_t, 53> __ptr_rank_spells_data { {
   {  4,  259, 319473,      0, "Mastery: Potent Assassin"          , "Rank 2" },
   { 12,  581, 321067,      0, "Metamorphosis"                     , "Rank 2" },
   { 12,  581, 321068,      0, "Metamorphosis"                     , "Rank 2" },
+  { 11,  102, 326646,      0, "Moonfire"                          , "Rank 2" },
   { 12,  581, 321021,      0, "Soul Cleave"                       , "Rank 2" },
   {  9,  265, 231811,      0, "Soulstone"                         , "Rank 2" },
   {  9,  266, 231811,      0, "Soulstone"                         , "Rank 2" },

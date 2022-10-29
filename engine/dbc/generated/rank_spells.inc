@@ -1,9 +1,8 @@
-// Rank class spells, wow build 10.0.2.46144
-static const std::array<rank_class_spell_t, 57> __rank_spells_data { {
+// Rank class spells, wow build 10.0.0.46340
+static const std::array<rank_class_spell_t, 55> __rank_spells_data { {
   {  2,   66, 358934,      0, "Aegis of Light"                    , "Rank 2" },
   { 10,  269, 322719,      0, "Afterlife"                         , "Rank 2" },
   {  9,  265, 231792,      0, "Agony"                             , "Rank 2" },
-  {  3,    0, 343241,      0, "Aspect of the Cheetah"             , "Rank 2" },
   { 11,  104, 270100,      0, "Bear Form"                         , "Rank 2" },
   { 10,  269, 261916,      0, "Blackout Kick"                     , "Rank 2" },
   { 10,  269, 261917,      0, "Blackout Kick"                     , "Rank 3" },
@@ -11,7 +10,6 @@ static const std::array<rank_class_spell_t, 57> __rank_spells_data { {
   {  4,  260, 331851,      0, "Blade Flurry"                      , "Rank 2" },
   {  2,   66, 344172,      0, "Consecration"                      , "Rank 2" },
   {  2,   66, 327980,      0, "Consecration"                      , "Rank 3" },
-  {  9,  265, 334342,      0, "Corruption"                        , "Rank 3" },
   {  2,   66, 342348,      0, "Crusader Strike"                   , "Rank 2" },
   {  2,   70, 342348,      0, "Crusader Strike"                   , "Rank 2" },
   {  6,  252, 325554,      0, "Dark Transformation"               , "Rank 2" },
@@ -43,7 +41,7 @@ static const std::array<rank_class_spell_t, 57> __rank_spells_data { {
   {  4,  259, 319473,      0, "Mastery: Potent Assassin"          , "Rank 2" },
   { 12,  581, 321067,      0, "Metamorphosis"                     , "Rank 2" },
   { 12,  581, 321068,      0, "Metamorphosis"                     , "Rank 2" },
-  { 11,    0, 326646,      0, "Moonfire"                          , "Rank 2" },
+  { 11,  102, 326646,      0, "Moonfire"                          , "Rank 2" },
   { 12,  581, 321021,      0, "Soul Cleave"                       , "Rank 2" },
   {  9,  265, 231811,      0, "Soulstone"                         , "Rank 2" },
   {  9,  266, 231811,      0, "Soulstone"                         , "Rank 2" },

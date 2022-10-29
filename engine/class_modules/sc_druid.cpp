@@ -556,7 +556,7 @@ public:
     buff_t* kindred_affinity;
     buff_t* lone_empowerment;
     buff_t* ravenous_frenzy;
-    buff_t* sinful_hysteria;
+    buff_t* sinful_indulgence;
 
     // Helper pointers
     buff_t* clearcasting;  // clearcasting_cat or clearcasting_tree
@@ -952,6 +952,7 @@ public:
     const spell_data_t* cat_form_passive;
     const spell_data_t* cat_form_speed;
     const spell_data_t* feral_affinity;
+    const spell_data_t* moonfire_2;
     const spell_data_t* moonfire_dmg;
     const spell_data_t* wrath;
 
@@ -1064,7 +1065,7 @@ public:
     item_runeforge_t kindred_affinity;   // 7477
     item_runeforge_t unbridled_swarm;    // 7472
     item_runeforge_t celestial_spirits;  // 7571
-    item_runeforge_t sinful_hysteria;    // 7474
+    item_runeforge_t sinful_indulgence;    // 7474
 
     // Balance
     item_runeforge_t oneths_clear_vision;        // 7087
@@ -2380,7 +2381,7 @@ public:
       return;
 
     // trigger on non-free_cast or free_cast that requires you to actually cast (or UFR)
-    if ( !f || is_free_cast() || f == free_spell_e::FLASHING )
+    if ( !f || is_free_cast() || f == free_spell_e::FLASHING || f == free_spell_e::CONVOKE )
       p()->buff.ravenous_frenzy->trigger();
   }
 
@@ -2612,7 +2613,8 @@ public:
     parse_buff_effects<Ts...>( buff, 0U, true, false, mods... );
   }
 
-  void parse_conditional_effects( const spell_data_t* spell, bfun f, unsigned ignore_mask = 0U )
+  void parse_conditional_effects( const spell_data_t* spell, bfun f, unsigned ignore_mask = 0U, bool use_stack = true,
+                                  bool use_default = false )
   {
     if ( !spell || !spell->ok() )
       return;
@@ -2622,7 +2624,7 @@ public:
       if ( ignore_mask & 1 << ( i - 1 ) )
         continue;
 
-      parse_buff_effect( nullptr, f, spell, i, false, false );
+      parse_buff_effect( nullptr, f, spell, i, use_stack, use_default );
     }
   }
 
@@ -2679,7 +2681,7 @@ public:
     using C = const conduit_data_t&;
 
     parse_buff_effects( p()->buff.ravenous_frenzy );
-    parse_buff_effects( p()->buff.sinful_hysteria );
+    parse_buff_effects( p()->buff.sinful_indulgence );
     parse_buff_effects<C>( p()->buff.convoke_the_spirits, p()->conduit.conflux_of_elements );
     parse_buff_effects( p()->buff.lone_empowerment );
 
@@ -2712,6 +2714,9 @@ public:
     parse_buff_effects( p()->buff.touch_the_cosmos );
     // TODO: fix/remove when final bugfix of umbral embrace is pushed
     // parse_buff_effects<S>( p()->buff.umbral_embrace, p()->talent.umbral_embrace );
+    parse_conditional_effects( &p()->buff.umbral_embrace->data(), [ this ]() {
+      return p()->buff.umbral_embrace->check() && p()->eclipse_handler.state != ANY_NEXT;
+    }, 0U, false, true );
     parse_buff_effects( p()->buff.warrior_of_elune, false );
 
     // Feral
@@ -2736,8 +2741,8 @@ public:
     parse_buff_effects( p()->buff.overpowering_aura );
     parse_passive_effects( p()->talent.reinvigoration, p()->talent.innate_resolve.ok() ? 0b01U : 0b10U );
     parse_buff_effects( p()->buff.tooth_and_claw, false );
-    parse_buff_effects( p()->buff.vicious_cycle_mangle, false, true );
-    parse_buff_effects( p()->buff.vicious_cycle_maul, false, true );
+    parse_buff_effects( p()->buff.vicious_cycle_mangle, true, true );
+    parse_buff_effects( p()->buff.vicious_cycle_maul, true, true );
     parse_buff_effects<C>( p()->buff.savage_combatant, p()->conduit.savage_combatant );
 
     // Restoration
@@ -4408,6 +4413,9 @@ struct rake_t : public cat_attack_t
       
       if ( !stealthed() )
       	p()->buff.sudden_ambush->expire();
+
+      if ( num_targets_hit > 1 )
+        trigger_ravenous_frenzy( free_spell );
     }
   }
 
@@ -4473,12 +4481,6 @@ struct rip_t : public cat_finisher_t<>
     timespan_t t = cat_finisher_t::composite_dot_duration( s );
 
     return t *= cast_state( s )->combo_points + 1;
-  }
-
-  // Newly applied rip will not lower existing duration
-  timespan_t calculate_dot_refresh_duration( const dot_t* d, timespan_t dur ) const override
-  {
-    return std::max( cat_finisher_t::calculate_dot_refresh_duration( d, dur ), d->remains() );
   }
 
   void impact( action_state_t* s ) override
@@ -7978,11 +7980,13 @@ struct starfire_t : public druid_spell_t
     else if ( p()->buff.warrior_of_elune->up() )
       p()->buff.warrior_of_elune->decrement();
 
-    p()->buff.umbral_embrace->expire();
     p()->buff.gathering_starstuff->expire();
 
     if ( is_free_proc() )
       return;
+
+    if ( p()->eclipse_handler.state != ANY_NEXT )
+      p()->buff.umbral_embrace->expire();
 
     p()->eclipse_handler.cast_starfire();
   }
@@ -8627,11 +8631,13 @@ struct wrath_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    p()->buff.umbral_embrace->expire();
     p()->buff.gathering_starstuff->expire();
 
     if ( is_free_proc() )
       return;
+
+    if ( p()->eclipse_handler.state != ANY_NEXT )
+      p()->buff.umbral_embrace->expire();
 
     // in druid_t::init_finished(), we set the final wrath of the precombat to have energize type of NONE, so that
     // we can handle the delayed enerigze & eclipse stack triggering here.
@@ -9121,7 +9127,12 @@ struct convoke_the_spirits_t : public druid_spell_t
 
     conv_cast = convoke_action_from_type( type );
     if ( !conv_cast )
+    {
+      // Heals still proc a stack of Frenzy
+      if ( p()->buff.ravenous_frenzy->check() )
+        p()->buff.ravenous_frenzy->trigger();
       return;
+    }
 
     conv_cast->execute_on_target( conv_tar );
   }
@@ -9934,6 +9945,7 @@ void druid_t::init_spells()
   talent.natures_grace                  = ST( "Nature's Grace" );
   talent.new_moon                       = ST( "New Moon" );
   talent.orbit_breaker                  = ST( "Orbit Breaker" );
+  talent.orbital_strike                 = ST( maybe_ptr( dbc->ptr ) ? "Orbital Strike" : "Syzygy" );
   talent.power_of_goldrinn              = ST( "Power of Goldrinn" );
   talent.primordial_arcanic_pulsar      = ST( "Primordial Arcanic Pulsar" );
   talent.radiant_moonlight              = ST( "Radiant Moonlight" );
@@ -9948,7 +9960,6 @@ void druid_t::init_spells()
   talent.stellar_flare                  = ST( "Stellar Flare" );
   talent.stellar_innervation            = ST( "Stellar Innervation" );
   talent.sundered_firmament             = ST( "Sundered Firmament" );
-  talent.orbital_strike                 = ST( "Orbital Strike" );
   talent.twin_moons                     = ST( "Twin Moons" );
   talent.umbral_embrace                 = ST( "Umbral Embrace" );
   talent.umbral_intensity               = ST( "Umbral Intensity" );
@@ -9975,7 +9986,7 @@ void druid_t::init_spells()
   talent.infected_wounds_cat            = STS( "Infected Wounds", DRUID_FERAL );
   talent.lions_strength                 = ST( "Lion's Strength" );
   talent.lunar_inspiration              = ST( "Lunar Inspiration" );
-  talent.merciless_claws                = ST( "Merciless Claws" );
+  talent.merciless_claws                = ST( maybe_ptr( dbc->ptr ) ? "Merciless Claws" : "Merciless Strikes" );
   talent.moment_of_clarity              = ST( "Moment of Clarity" );
   talent.omen_of_clarity_cat            = STS( "Omen of Clarity", DRUID_FERAL );
   talent.pouncing_strikes               = ST( "Pouncing Strikes" );
@@ -10148,7 +10159,7 @@ void druid_t::init_spells()
   legendary.kindred_affinity          = find_runeforge_legendary( "Kindred Affinity" );
   legendary.unbridled_swarm           = find_runeforge_legendary( "Locust Swarm" );
   legendary.celestial_spirits         = find_runeforge_legendary( "Celestial Spirits" );
-  legendary.sinful_hysteria           = find_runeforge_legendary( "Sinful Hysteria" );
+  legendary.sinful_indulgence           = find_runeforge_legendary( "Sinful Indulgence" );
 
   // Balance
   legendary.oneths_clear_vision       = find_runeforge_legendary( "Oneth's Clear Vision" );
@@ -10182,6 +10193,7 @@ void druid_t::init_spells()
   spec.cat_form_passive         = find_spell( 3025 );
   spec.cat_form_speed           = find_spell( 113636 );
   spec.feral_affinity           = find_specialization_spell( "Feral Affinity" );
+  spec.moonfire_2               = find_rank_spell( "Moonfire", "Rank 2" );
   spec.moonfire_dmg             = find_spell( 164812 );
   spec.wrath                    = find_specialization_spell( "Wrath" );
   if ( !spec.wrath->ok() )
@@ -10847,21 +10859,21 @@ void druid_t::create_buffs()
   if ( conduit.endless_thirst->ok() )
     buff.ravenous_frenzy->add_invalidate( CACHE_CRIT_CHANCE );
 
-  buff.sinful_hysteria = make_buff( this, "ravenous_frenzy_sinful_hysteria", find_spell( 355315 ) )
+  buff.sinful_indulgence = make_buff( this, "ravenous_frenzy_sinful_indulgence", find_spell( 355315 ) )
     ->set_default_value_from_effect_type( A_HASTE_ALL )
     ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
   if ( conduit.endless_thirst->ok() )
-    buff.sinful_hysteria->add_invalidate( CACHE_CRIT_CHANCE );
-  if ( legendary.sinful_hysteria->ok() )
+    buff.sinful_indulgence->add_invalidate( CACHE_CRIT_CHANCE );
+  if ( legendary.sinful_indulgence->ok() )
   {
-    buff.sinful_hysteria->s_data_reporting = legendary.sinful_hysteria;
-    buff.sinful_hysteria->name_str_reporting = "sinful_hysteria";
+    buff.sinful_indulgence->s_data_reporting = legendary.sinful_indulgence;
+    buff.sinful_indulgence->name_str_reporting = "sinful_indulgence";
     buff.ravenous_frenzy->set_stack_change_callback( [ this ]( buff_t* b, int old_, int new_ ) {
       // spell data hasn't changed and still indicates 0.2s, but tooltip says 0.1s
       if ( old_ && new_ )
         b->extend_duration( this, 100_ms );
       else if ( old_ )
-        buff.sinful_hysteria->trigger( old_ );
+        buff.sinful_indulgence->trigger( old_ );
     } );
   }
 
@@ -11291,24 +11303,24 @@ void druid_t::init()
   }
 }
 
-bool druid_t::validate_fight_style( fight_style_e /* style */) const
+bool druid_t::validate_fight_style( fight_style_e /* style */ ) const
 {
-  if ( SC_BETA == 0 && strcmp( SC_MAJOR_VERSION, "1000" ) == 0 )
+  if ( SC_BETA == 0 && strcmp( SC_MAJOR_VERSION, "1000" ) == 0 && level() == 60 )
   {
-    sim->error( "Prepatch {} sims are untested and not supported. Sim at your own risk!",
-                util::specialization_string( specialization() ) );
+    sim->error( "Prepatch {} sims are untested and not supported. Many legendaries and conduits may not work. Sim at your own risk!",
+      util::specialization_string( specialization() ) );
   }
-/* uncomment if certain fight styles prove problematic again
-  switch ( specialization() )
-  {
-    case DRUID_BALANCE:
-    case DRUID_FERAL:
-    case DRUID_GUARDIAN:
-    case DRUID_RESTORATION:
-    default:
-      break;
-  }
-*/
+  /* uncomment if certain fight styles prove problematic again
+    switch ( specialization() )
+    {
+      case DRUID_BALANCE:
+      case DRUID_FERAL:
+      case DRUID_GUARDIAN:
+      case DRUID_RESTORATION:
+      default:
+        break;
+    }
+  */
   return true;
 }
 
@@ -11866,7 +11878,7 @@ double druid_t::composite_melee_crit_chance() const
   crit += spec.critical_strikes->effectN( 1 ).percent();
 
   crit += buff.ravenous_frenzy->check() * conduit.endless_thirst.percent() / 10.0;
-  crit += buff.sinful_hysteria->check() * conduit.endless_thirst.percent() / 10.0;
+  crit += buff.sinful_indulgence->check() * conduit.endless_thirst.percent() / 10.0;
 
   return crit;
 }
@@ -11878,7 +11890,7 @@ double druid_t::composite_spell_crit_chance() const
   crit += spec.critical_strikes->effectN( 1 ).percent();
 
   crit += buff.ravenous_frenzy->check() * conduit.endless_thirst.percent() / 10.0;
-  crit += buff.sinful_hysteria->check() * conduit.endless_thirst.percent() / 10.0;
+  crit += buff.sinful_indulgence->check() * conduit.endless_thirst.percent() / 10.0;
 
   return crit;
 }
@@ -13252,6 +13264,9 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( spec.feral );
   action.apply_affecting_aura( spec.guardian );
   action.apply_affecting_aura( spec.restoration );
+
+  // Rank spells
+  action.apply_affecting_aura( spec.moonfire_2 );
 
   // Class
   action.apply_affecting_aura( talent.astral_influence );
