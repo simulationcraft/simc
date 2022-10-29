@@ -604,6 +604,7 @@ BUFF* create_buff( player_t* p, util::string_view name, ARGS&&... args )
   auto b = buff_t::find( p, name );
   if ( b != nullptr )
   {
+    p->sim->error( "Attempting to create buff {} when buff already exists." );
     return debug_cast<BUFF*>( b );
   }
 
