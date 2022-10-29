@@ -1,5 +1,5 @@
-// Spell text, wow build 10.0.0.46313
-static const std::array<spelltext_data_t, 18928> __spelltext_data { {
+// Spell text, wow build 10.0.0.46340
+static const std::array<spelltext_data_t, 18942> __spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -3509,6 +3509,8 @@ static const std::array<spelltext_data_t, 18928> __spelltext_data { {
   { 113724, "Summons a Ring of Frost for $d at the target location. Enemies entering the ring are incapacitated for $82691d. Limit 10 targets.\r\n\r\nWhen the incapacitate expires, enemies are slowed by $321329s1% for $321329d.", 0, 0 },
   { 113746, "$@spelldesc8647", "Physical damage taken increased by $w1%.", 0 },
   { 113780, "Poisoned weapons have a chance to deal $s1 Nature damage to a target already affected by Deadly Poison.", 0, 0 },
+  { 113858, "Infuses your soul with unstable power, increasing your critical strike chance by $113858s1% for $113858d.$?s56228[\r\n\r\n|cFFFFFFFFPassive:|r\r\nIncreases your critical strike chance by ${$113858m1/$56228m1}%. This effect is disabled while on cooldown.][]", "Critical strike chance increased by $w1%.", 0 },
+  { 113860, "Infuses your soul with the misery of fallen foes, increasing haste by $s1% for $d.", "Haste increased by $s1%.", 0 },
   { 113862, "$@spelldesc110959", "Damage taken is reduced by $s1%.", 0 },
   { 113942, "Faded into the nether and unable to use another Demonic Gateway.", "Faded into the nether and unable to use another Demonic Gateway.", 0 },
   { 114014, "Throws a shuriken at an enemy target for ${$s1*$<CAP>/$AP} Physical damage.\r\n\r\n|cFFFFFFFFAwards $s2 combo $lpoint:points;.|r", 0, 0 },
@@ -16887,6 +16889,7 @@ static const std::array<spelltext_data_t, 18928> __spelltext_data { {
   { 381802, "Your next Garrote and your next Rupture apply to up to $s1 enemies within $s2 yards.", "Your next Garrote and Rupture apply to $s1 nearby targets.", 0 },
   { 381819, "When Capacitor Totem fades or is destroyed, another Capacitor Totem is automatically dropped in the same place.", 0, 0 },
   { 381822, "Main Gauche has an additional $s1% chance to strike while Blade Flurry is active.", 0, 0 },
+  { 381824, "\r\n\r\n", 0, 0 },
   { 381828, "Between the Eyes has a $s1% chance per combo point spent to grant $s2 combo points.", 0, 0 },
   { 381839, "Roll the Bones has a $s1% increased chance of granting additional matches.", 0, 0 },
   { 381845, "Half-cost uses of Pistol Shot have a $193315s3% chance to cause your next Ambush to be usable without Stealth.\r\n\r\nChance to trigger this effect matches the chance for your Sinister Strike to strike an additional time.", 0, 0 },
@@ -16934,8 +16937,17 @@ static const std::array<spelltext_data_t, 18928> __spelltext_data { {
   { 382043, "$@spelldesc382042", "Haste increased by $w1%.", 0 },
   { 382045, "Every $s1 casts of Riptide also applies Riptide to another friendly target near your Riptide target.", 0, 0 },
   { 382046, "Reduces the cooldown of Primordial Wave by ${$s1/-1000} sec.", 0, 0 },
+  { 382078, "Swear your oath to the Primalists to become Marked by Frost, increasing your Critical Strike by [medium amount]. \r\n\r\nFighting alongside allies who are Marked by Earth or Fire has a chance to grant you half of their Mark's stats for $s1 seconds.", 0, 0 },
+  { 382079, "Swear your oath to the Primalists to become Marked by Frost, increasing your Critical Strike by [medium amount]. \r\n\r\nFighting alongside allies who are Marked by Earth or Fire has a chance to grant you half of their Mark's stats for $s1 seconds.", 0, 0 },
+  { 382080, "Swear your oath to the Primalists to become Marked by Frost, increasing your Critical Strike by [medium amount]. \r\n\r\nFighting alongside allies who are Marked by Earth or Fire has a chance to grant you half of their Mark's stats for $s1 seconds.", 0, 0 },
+  { 382081, "Swear your oath to the Primalists to become Marked by Frost, increasing your Critical Strike by [medium amount]. \r\n\r\nFighting alongside allies who are Marked by Earth or Fire has a chance to grant you half of their Mark's stats for $s1 seconds.", 0, 0 },
+  { 382082, "Swear your oath to the Primalists to become Marked by Frost, increasing your Critical Strike by [medium amount]. \r\n\r\nFighting alongside allies who are Marked by Earth or Fire has a chance to grant you half of their Mark's stats for $s1 seconds.", 0, 0 },
+  { 382083, "Swear your oath to the Primalists to become Marked by Frost, increasing your Critical Strike by [medium amount]. \r\n\r\nFighting alongside allies who are Marked by Earth or Fire has a chance to grant you half of their Mark's stats for $s1 seconds.", 0, 0 },
   { 382086, "Icefury causes your Frost Shocks to damage up to $s1 additional enemies and targets hit take $382089s1% increased Nature damage from your spells for $382089d. Chain Lightning prefers targets with this effect.", 0, 0 },
   { 382089, "$@spelldesc382086", "Damage taken from Nature spells increased by $w1%.", 0 },
+  { 382095, "Your attacks slowly build Concussive Force, granting [low] attack power per stack. \r\n\r\nAt X stacks, your next 3 melee abilities emit a shockwave in front of you, dealing bonus Nature damage to all enemies in a line. Shockwaves deal more damage to enemies at high health.", 0, 0 },
+  { 382096, "Your attacks slowly build Concussive Force, granting [low] attack power per stack. \r\n\r\nAt X stacks, your next 3 melee abilities emit a shockwave in front of you, dealing bonus Nature damage to all enemies in a line. Shockwaves deal more damage to enemies at high health.", 0, 0 },
+  { 382097, "Your attacks slowly build Concussive Force, granting [low] attack power per stack. \r\n\r\nAt X stacks, your next 3 melee abilities emit a shockwave in front of you, dealing bonus Nature damage to all enemies in a line. Shockwaves deal more damage to enemies at high health.", 0, 0 },
   { 382103, "While Frozen Orb is active, you gain Fingers of Frost every $382106t1 sec.", 0, 0 },
   { 382106, "$@spelldesc382103", "Gaining Fingers of Frost every $t1 sec.", 0 },
   { 382108, "Dealing or taking damage has a low chance to grant you a stack of Brimming Life-Pod, up to $384646u.\r\n\r\n", 0, 0 },
@@ -17018,7 +17030,9 @@ static const std::array<spelltext_data_t, 18928> __spelltext_data { {
   { 382416, "Combine the Ace through Eight of Earth to complete the set.", 0, 0 },
   { 382423, "Set out a fresh batch of Yusa's Hearty Stew for all players to partake in.\r\n\r\n$@spelldesc369166  If you spend at least 10 seconds eating you will become well fed and gain $382145s1 to your lowest secondary stat for $382145d.", 0, 0 },
   { 382424, "The cooldown of Ice Block is reduced by ${$s1/-1000} sec.", 0, 0 },
+  { 382425, "Casting and attacking builds stacks of Spite. At 5, a Spiteful Stormbolt arcs towards your current target, dealing [low] nature damage over 3 seconds.\r\n\r\nUpon expiration the bolt returns, increasing the amount of Spite needed by 1 and permanently increasing Spiteful Stormbolt's damage against them until either of you die.", 0, 0 },
   { 382427, "Set out a traditional tuskarr feast that all players can partake in.\r\n\r\n$@spelldesc369166  If you spend at least 10 seconds eating you will become well fed and gain $382145s1 to your highest secondary stat for $382145d.", 0, 0 },
+  { 382428, "Casting and attacking builds stacks of Spite. At 5, a Spiteful Stormbolt arcs towards your current target, dealing [low] nature damage over 3 seconds.\r\n\r\nUpon expiration the bolt returns, increasing the amount of Spite needed by 1 and permanently increasing Spiteful Stormbolt's damage against them until either of you die.", 0, 0 },
   { 382430, "Consecration periodic damage has a chance to grant you $s1 Holy Power.\r\n\r\nChances increase up to $s2 targets within Consecration.", 0, 0 },
   { 382440, "Draw power from the Night Fae, dealing ${$382445s1*$d/$t} Nature damage over $d to enemies within $382445A1 yds. \r\n\r\nWhile channeling, your Mage ability cooldowns are reduced by ${-$s2/1000*$d/$t} sec over $d.", "Every $t1 sec, deal $382445s1 Nature damage to enemies within $382445A1 yds and reduce the remaining cooldown of your abilities by ${-$s2/1000} sec.", 0 },
   { 382445, "$@spelldesc382440", 0, 0 },
@@ -18930,7 +18944,7 @@ static const std::array<spelltext_data_t, 18928> __spelltext_data { {
   { 397251, "Weapons of Order calls forth $?c1[Niuzao, the Black Ox]?c2&s325197[Chi-Ji, the Red Crane]?c3[Xuen, the White Tiger][Yu'lon, the Jade Serpent] to assist you for ${$s1/1000} sec.", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.0.0.46313
+// spelltext hotfix entries, wow build 10.0.0.46340
 static constexpr std::array<hotfix::client_hotfix_entry_t, 5> __spelltext_hotfix_data { {
   {   78674,  0, "Launch a surge of stellar energies at the target, dealing $s1 Astral damage, and empowering the damage bonus of any active Eclipse for its duration.", "Launch a surge of stellar energies at the target, dealing $s1 Astral damage." },
   {  120954,  0, "Turns your skin to stone for $120954d$?$w1>0[, increasing your armor by $s8% and dodge by $s7%][]$?$w1>0[, increasing your current and maximum health by $<health>%][]$?s322960[, increasing the effectiveness of Stagger by $322960s1%][]$?$w1>0[, and reducing all damage you take by $<damage>%][].", "Turns your skin to stone for $120954d$?a388917[, increasing your current and maximum health by $<health>%][]$?s322960[, increasing the effectiveness of Stagger by $322960s1%][]$?a388917[, reducing all damage you take by $<damage>%][]$?a388814[, increasing your armor by $388814s2% and dodge chance by $388814s1%][]." },
@@ -18939,7 +18953,7 @@ static constexpr std::array<hotfix::client_hotfix_entry_t, 5> __spelltext_hotfix
   {  385416,  0, "Your $?S53595[Hammer of the Righteous]?S204019[Blessed Hammer][Crusader Strike] now also grants you $385417s1% increased $pri for $385417d. Multiple applications may overlap.", "Your $?S53595[Hammer of the Righteous]?S204019[Blessed Hammer][Crusader Strike] now also grants you $s1% increased $pri for $385417d. Multiple applications may overlap." },
 } };
 
-// Spell description variables, wow build 10.0.0.46313
+// Spell description variables, wow build 10.0.0.46340
 static const std::array<spelldesc_vars_data_t, 361> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$pvp=$?a134735[${1.1}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<pvp>*$<weal>}\r\n" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -19304,7 +19318,7 @@ static const std::array<spelldesc_vars_data_t, 361> __spelldesc_vars_data { {
   {  394354, "$damage=${($AP*1.0)*(1+$@versadmg)}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.0.0.46313
+// spelldesc_vars hotfix entries, wow build 10.0.0.46340
 static constexpr std::array<hotfix::client_hotfix_entry_t, 4> __spelldesc_vars_hotfix_data { {
   {      17,  0, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$pvp=$?a134735[${1.1}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*2.8*(1+$@versadmg)*$<rapture>*$<shadow>*$<pvp>*$<weal>}\r\n", "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$pvp=$?a134735[${1.1}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<pvp>*$<weal>}\r\n" },
   {  115203,  0, "$health=$?s322960[${20}][${15}]\r\n$damage=$?s322960[${20}][${15}]", "$health=$?s322960[${15}][${15}]\r\n$damage=$?c1[${20}][${20}]" },
