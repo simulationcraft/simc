@@ -187,6 +187,7 @@ public:
     gain_t* holy_shield;
     gain_t* bulwark_of_order;
     gain_t* blessed_hammer;
+    gain_t* moment_of_glory;
 
     // Mana
     gain_t* mana_beacon_of_light;

@@ -79,8 +79,8 @@ struct avengers_shield_base_t : public paladin_spell_t
     //Bulwark of Order absorb shield. Amount is additive per hit.
     if ( p() -> talents.bulwark_of_order -> ok() )
     {
-      //Bulwark of Order is capped at 30% of max hp. Effect 2 JNYI.
-      double max_absorb = p()->talents.bulwark_of_order->effectN( 2 ).percent() * p()->resources.max[ RESOURCE_HEALTH ];
+      //Bulwark of Order is capped at 30% of max hp. Effect 2 back to NYI.
+      double max_absorb = /* p()->talents.bulwark_of_order->effectN( 2 ).percent() */ .3 * p()->resources.max[ RESOURCE_HEALTH ];
       double new_absorb = s->result_amount * p()->talents.bulwark_of_order->effectN( 1 ).percent();
       p()->buffs.bulwark_of_order_absorb->trigger(
           1, std::min( p()->buffs.bulwark_of_order_absorb->value() + new_absorb, max_absorb ) );
@@ -851,7 +851,9 @@ void paladin_t::trigger_grand_crusader()
 
   if ( talents.crusaders_judgment -> ok() && cooldowns.judgment -> current_charge < cooldowns.judgment -> charges )
   {
-    cooldowns.judgment->adjust( -( talents.crusaders_judgment->effectN( 2 ).time_value() ), true );
+    //Cooldown should be reduced by 3 seconds, but apparently that's nyi on live servers. Still old functionality.
+    //cooldowns.judgment->adjust( -( talents.crusaders_judgment->effectN( 2 ).time_value() ), true );
+    cooldowns.judgment->adjust( -( cooldowns.judgment->duration ), true );
   }
 
   if ( talents.inspiring_vanguard->ok() )
@@ -1077,10 +1079,6 @@ void paladin_t::init_spells_protection()
 
   tier_sets.ally_of_the_light_2pc = find_spell( 394714 );
   tier_sets.ally_of_the_light_4pc = find_spell( 394727 );
-
-  // Azerite traits
-  azerite.inspiring_vanguard = find_azerite_spell( "Inspiring Vanguard" );
-  azerite.soaring_shield     = find_azerite_spell( "Soaring Shield"     );
 }
 
 void paladin_t::generate_action_prio_list_prot()

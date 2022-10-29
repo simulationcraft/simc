@@ -2407,6 +2407,8 @@ void paladin_t::init_gains()
   // Health
   gains.holy_shield   = get_gain( "holy_shield_absorb" );
   gains.bulwark_of_order = get_gain( "bulwark_of_order_absorb" );
+  gains.moment_of_glory  = get_gain( "moment_of_glory_absorb" );
+  
 
   // Holy Power
   gains.hp_templars_verdict_refund = get_gain( "templars_verdict_refund" );
