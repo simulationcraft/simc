@@ -1145,6 +1145,63 @@ void rumbling_ruby( special_effect_t& effect )
   proc_object->deactivate();
 }
 
+// Storm-Eater's Boon
+// 377453 Driver
+// 382090 Damage Effect & Stacking Buff
+// 382092 Damage Value
+void storm_eaters_boon( special_effect_t& effect )
+{
+  buff_t* stack_buff;
+  buff_t* main_buff;
+
+  main_buff = make_buff( effect.player, "stormeaters_boon", effect.player->find_spell(377453))
+      ->set_cooldown( 0_ms );
+  stack_buff = make_buff( effect.player, "stormeaters_boon_stacks", effect.player->find_spell( 382090 ))
+      ->set_duration( effect.player -> find_spell( 377453 )->duration() )
+      ->set_cooldown( 0_ms );
+
+  effect.custom_buff = main_buff;
+
+  struct storm_eaters_boon_damage_t : public proc_spell_t
+  {
+    buff_t* stack_buff;
+    storm_eaters_boon_damage_t( const special_effect_t& e, buff_t* b ) :
+      proc_spell_t( "stormeaters_boon_damage", e.player, e.player->find_spell( 382090 ), e.item ), stack_buff( b )
+    {
+      background = true;
+      base_dd_min = base_dd_max = e.player->find_spell( 382092 )->effectN( 1 ).average(e.item);
+    }
+
+     double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double m = proc_spell_t::composite_da_multiplier( s );
+
+      m *= 1.0 + (stack_buff -> stack() / 10);
+
+      return m;
+    }
+
+     void execute() override
+     {
+       proc_spell_t::execute();
+       stack_buff -> trigger();
+     }
+  };
+  action_t* boon_action = create_proc_action<storm_eaters_boon_damage_t>( "stormeaters_boon_damage", effect, stack_buff );
+  main_buff->set_refresh_behavior( buff_refresh_behavior::DISABLED );
+  main_buff->set_tick_callback( [ boon_action ]( buff_t* /* buff */, int /* current_tick */, timespan_t /* tick_time */ ) 
+  {
+    boon_action->execute();
+  } );
+  main_buff->set_stack_change_callback( [ stack_buff ](buff_t*, int, int new_) 
+  {
+    if( new_ == 0 )
+    {
+      stack_buff->expire();
+    }
+  } );
+}
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -1423,6 +1480,7 @@ void register_special_effects()
   register_special_effect( 377452, items::whispering_incarnate_icon );
   register_special_effect( 384112, items::the_cartographers_calipers );
   register_special_effect( 377454, items::rumbling_ruby );
+  register_special_effect( 377453, items::storm_eaters_boon );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );  // bronzed grip wrappings embellishment
