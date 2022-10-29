@@ -128,7 +128,7 @@ public:
     buff_t* merciless_bonegrinder;
     buff_t* ravager;
     buff_t* recklessness;
-    buff_t* reckless_abandon; // fake buff to control duration of ability override
+    buff_t* reckless_abandon;
     buff_t* revenge;
     buff_t* shield_block;
     buff_t* shield_wall;
@@ -2684,7 +2684,7 @@ struct bloodthirst_t : public warrior_attack_t
 
   bool ready() override
   {
-    if ( p()->talents.fury.reckless_abandon->ok() && p()->buff.recklessness->check() )
+    if ( p()->buff.reckless_abandon->check() )
     {
       return false;
     }
@@ -2770,9 +2770,15 @@ struct bloodbath_t : public warrior_attack_t
   void execute() override
   {
     warrior_attack_t::execute();
+
     if ( p()->talents.fury.bloodcraze->ok() )
     {
       p()->buff.bloodcraze->trigger( num_targets_hit );
+    }
+
+    if ( p()->is_ptr() )
+    {
+      p()->buff.reckless_abandon->decrement();
     }
 
     p()->buff.meat_cleaver->decrement();
@@ -2794,7 +2800,7 @@ struct bloodbath_t : public warrior_attack_t
 
   bool ready() override
   {
-    if ( !p()->talents.fury.reckless_abandon->ok() || !p()->buff.recklessness->check() )
+    if ( !p()->buff.reckless_abandon->check() )
     {
       return false;
     }
@@ -4077,6 +4083,11 @@ struct crushing_blow_t : public warrior_attack_t
     {
       cooldown->reset( true );
     }
+
+    if ( p()->is_ptr() )
+    {
+      p()->buff.reckless_abandon->decrement();
+    }
     p()->buff.meat_cleaver->decrement();
 
     if ( p()->talents.fury.slaughtering_strikes->ok() )
@@ -4705,38 +4716,23 @@ struct rampage_parent_t : public warrior_attack_t
     {
       p()->resource_gain(RESOURCE_RAGE, last_resource_cost * rage_from_frothing_berserker, p()->gain.frothing_berserker);
     }
-    if ( p()->azerite.trample_the_weak.ok() )
-    {
-      p()->buff.trample_the_weak->trigger();
-    }
-    if (p()->talents.fury.frenzy->ok())
+    if ( p()->talents.fury.frenzy->ok() )
     {
       p()->buff.frenzy->trigger();
     }
     if ( p()->talents.fury.unbridled_ferocity.ok() && rng().roll( unbridled_chance ) )
     {
-      if ( p()->buff.recklessness->check() )
-      {
-        p()->buff.recklessness->extend_duration( p(), timespan_t::from_millis( 
-          p()->talents.fury.unbridled_ferocity->effectN( 2 ).base_value() ) );
+      const timespan_t trigger_duration = p()->talents.fury.unbridled_ferocity->effectN( 2 ).time_value();
+      p()->buff.recklessness->extend_duration_or_trigger( trigger_duration );
 
-        if ( p()->talents.fury.reckless_abandon->ok() )
-        {
-          p()->buff.reckless_abandon->extend_duration( p(), timespan_t::from_millis( 
-            p()->talents.fury.unbridled_ferocity->effectN( 2 ).base_value() ) );
-        }
-      }
-      else
+      if ( p()->talents.fury.reckless_abandon->ok() && !p()->is_ptr() )
       {
-        p()->buff.recklessness->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0,
-            timespan_t::from_millis( p()->talents.fury.unbridled_ferocity->effectN( 2 ).base_value() ) );
-
-        if ( p()->talents.fury.reckless_abandon->ok() )
-        {
-          p()->buff.reckless_abandon->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0,
-            timespan_t::from_millis( p()->talents.fury.unbridled_ferocity->effectN( 2 ).base_value() ) );
-        }
+        p()->buff.reckless_abandon->extend_duration_or_trigger( trigger_duration );
       }
+    }
+    if ( p()->talents.fury.reckless_abandon->ok() && p()->is_ptr() )
+    {
+      p()->buff.reckless_abandon->trigger();
     }
     if ( p()->legendary.deathmaker->ok() && ( result_is_hit( execute_state->result ) ) && rng().roll( deathmaker_chance ) )
     {
@@ -4754,6 +4750,11 @@ struct rampage_parent_t : public warrior_attack_t
       p()->cooldown.raging_blow->reset( true );
       p()->cooldown.crushing_blow->reset( true );
     }
+    if ( p()->azerite.trample_the_weak.ok() )
+    {
+      p()->buff.trample_the_weak->trigger();
+    }
+
     p()->enrage();
     p()->rampage_driver = make_event<rampage_event_t>( *sim, p(), 0 );
   }
@@ -6784,7 +6785,7 @@ struct recklessness_t : public warrior_spell_t
         torment_ability->schedule_execute();
       }
     }
-    if ( p()->talents.fury.reckless_abandon->ok() )
+    if ( p()->talents.fury.reckless_abandon->ok() && !p()->is_ptr() )
     {
       p()->buff.reckless_abandon->extend_duration_or_trigger();
     }
@@ -6825,7 +6826,7 @@ struct torment_recklessness_t : public warrior_spell_t
     const timespan_t trigger_duration = p()->talents.warrior.berserkers_torment->effectN( 2 ).time_value();
     p()->buff.recklessness->extend_duration_or_trigger( trigger_duration );
 
-    if ( p()->talents.fury.reckless_abandon->ok() )
+    if ( p()->talents.fury.reckless_abandon->ok() && !p()->is_ptr() )
     {
       p()->buff.reckless_abandon->extend_duration_or_trigger( trigger_duration );
     }
@@ -8601,8 +8602,16 @@ void warrior_t::create_buffs()
     ->set_default_value( spell.recklessness_buff->effectN( 1 ).percent() )
     ->set_stack_change_callback( [ this ]( buff_t*, int, int after ) { if ( after == 0  && this->legendary.will_of_the_berserker->ok() ) buff.will_of_the_berserker->trigger(); });
 
-  buff.reckless_abandon = make_buff( this, "reckless_abandon", find_spell( 335101 ) )
-    ->apply_affecting_conduit( conduit.depths_of_insanity );
+  if ( is_ptr() )
+  {
+    buff.reckless_abandon = make_buff( this, "reckless_abandon", find_spell( 396752 ) );
+  }
+
+  else
+  {
+    buff.reckless_abandon = make_buff( this, "reckless_abandon", find_spell( 335101 ) )
+      ->apply_affecting_conduit( conduit.depths_of_insanity );
+  }
 
   buff.titanic_rage = make_buff( this, "titanic_rage", talents.fury.titanic_rage->effectN( 1 ).trigger() )
     ->set_duration( talents.fury.titanic_rage->effectN( 1 ).trigger()->duration() )
