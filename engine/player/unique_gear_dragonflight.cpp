@@ -1203,7 +1203,6 @@ void storm_eaters_boon( special_effect_t& effect )
 
 // Decoration of Flame
 // TODO - Create a miss chance for the target list to better emulate in game behavior
-// TODO - Adjust absorb value based of enemies hit
 // 377449 Driver
 // 382058 Shield Buff
 // 394393 Damage and Shield Value
@@ -1212,8 +1211,7 @@ void storm_eaters_boon( special_effect_t& effect )
 void decoration_of_flame( special_effect_t& effect )
 {
   buff_t* buff;
-  
-  double value = effect.player -> find_spell( 394393 ) -> effectN( 2 ).average( effect.item );
+
   buff = make_buff( effect.player, "decoration_of_flame", effect.player->find_spell( 377449 ) );
 
   effect.custom_buff = buff;
@@ -1224,7 +1222,7 @@ void decoration_of_flame( special_effect_t& effect )
     buff_t* shield;
 
     decoration_of_flame_damage_t( const special_effect_t& e ) :
-      proc_spell_t( "decoration_of_flame", e.player, e.player->find_spell( 377449 ), e.item ), shield( nullptr )
+      proc_spell_t( "decoration_of_flame", e.player, e.player->find_spell( 377449 ), e.item ), shield( nullptr ), value( e.player -> find_spell( 394393 ) -> effectN( 2 ).average( e.item ) )
     {
       background = true;
       base_dd_min = base_dd_max = e.player->find_spell( 394393 )->effectN( 1 ).average(e.item);
@@ -1246,8 +1244,8 @@ void decoration_of_flame( special_effect_t& effect )
     void execute() override
     {
       proc_spell_t::execute();
-      value *= 1.0 + ( num_targets_hit - 1 ) * 0.5;
-      shield->trigger( -1, value );
+      
+      shield->trigger( -1, value * ( 1.0 + ( num_targets_hit - 1 ) * 0.5 ) );
     }
   };
 
