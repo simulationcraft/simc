@@ -1213,18 +1213,18 @@ void decoration_of_flame( special_effect_t& effect )
 {
   buff_t* buff;
   
-
+  double value = effect.player -> find_spell( 394393 ) -> effectN( 2 ).average( effect.item );
   buff = make_buff( effect.player, "decoration_of_flame", effect.player->find_spell( 377449 ) );
 
   effect.custom_buff = buff;
 
   struct decoration_of_flame_damage_t : public proc_spell_t
   {
+    double value;
     buff_t* shield;
-    double value = player -> find_spell( 394393 ) -> effectN( 2 ).average( item );
 
-    decoration_of_flame_damage_t( const special_effect_t& e, buff_t* b ) :
-      proc_spell_t( "decoration_of_flame", e.player, e.player->find_spell( 377449 ), e.item ), shield( b )
+    decoration_of_flame_damage_t( const special_effect_t& e ) :
+      proc_spell_t( "decoration_of_flame", e.player, e.player->find_spell( 377449 ), e.item ), shield( nullptr )
     {
       background = true;
       base_dd_min = base_dd_max = e.player->find_spell( 394393 )->effectN( 1 ).average(e.item);
@@ -1233,7 +1233,7 @@ void decoration_of_flame( special_effect_t& effect )
       shield = make_buff<absorb_buff_t>( e.player, "decoration_of_flame_shield", e.player->find_spell( 382058 ) );
     }
 
-     double composite_da_multiplier( const action_state_t* s ) const override
+    double composite_da_multiplier( const action_state_t* s ) const override
     {
       double m = proc_spell_t::composite_da_multiplier( s );
 
@@ -1243,21 +1243,15 @@ void decoration_of_flame( special_effect_t& effect )
       return m;
     }
 
-     void impact( action_state_t* s ) override
-     {
-       proc_spell_t::impact( s );
-       value *= 1.0 + ( n_targets() * 0.5 );
-     }
-
-     void execute() override
-     {
-       proc_spell_t::execute();
-       shield->set_default_value( value );
-       shield->trigger();
-     }
+    void execute() override
+    {
+      proc_spell_t::execute();
+      value *= 1.0 + ( num_targets_hit - 1 ) * 0.5;
+      shield->trigger( -1, value );
+    }
   };
 
-  action_t* action = create_proc_action<decoration_of_flame_damage_t>( "decoration_of_flame", effect, buff );
+  action_t* action = create_proc_action<decoration_of_flame_damage_t>( "decoration_of_flame", effect );
   buff->set_stack_change_callback( [ action ](buff_t*, int, int ) 
   {
     action -> execute();
