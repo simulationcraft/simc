@@ -894,22 +894,18 @@ void spiteful_storm( special_effect_t& effect )
 
   effect.custom_buff = spite;
   auto cb = new dbc_proc_callback_t( effect.player, effect );
-  cb -> initialize();
-  auto gathering = create_buff<buff_t>( effect.player, effect.player->find_spell( 394864 ) );
+
+  auto gathering = create_buff<buff_t>( effect.player, "gathering_storm_trinket" , effect.player->find_spell(394864));
   gathering->set_default_value( 0.1 );  // increases damage by 10% per stack, value from testing, not found in spell data
 
   auto stormbolt = debug_cast<spiteful_stormbolt_t*>(
       create_proc_action<spiteful_stormbolt_t>( "spiteful_stormbolt", effect, gathering, cb ) );
 
-  spite->set_stack_change_callback( [ stormbolt, cb, spite ]( buff_t* b, int, int new_ ) {
-    if ( spite -> at_max_stacks() )
+  spite->set_stack_change_callback( [ stormbolt, cb ]( buff_t* b, int, int new_ ) {
+    if ( !new_ )
     {
       cb->deactivate();
       stormbolt->execute_on_target( b->player->target );  // always execute_on_target so set_target is properly called
-    }
-    else
-    {
-      cb->activate();
     }
   } );
 
@@ -919,6 +915,7 @@ void spiteful_storm( special_effect_t& effect )
     else
       spite->set_max_stack( as<int>( spite->default_value ) );
   } );
+
 
   auto p = effect.player;
   effect.player->register_on_kill_callback( [ p, stormbolt, gathering ]( player_t* t ) {
@@ -931,6 +928,7 @@ void spiteful_storm( special_effect_t& effect )
       gathering->expire();
     }
   } );
+  effect.player->register_combat_begin( [ cb ]( player_t* p ) { cb->activate(); } );
 }
 
 void whispering_incarnate_icon( special_effect_t& effect )
