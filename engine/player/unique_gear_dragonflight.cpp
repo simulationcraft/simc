@@ -1186,7 +1186,7 @@ void storm_eaters_boon( special_effect_t& effect )
        stack_buff -> trigger();
      }
   };
-  action_t* boon_action = create_proc_action<storm_eaters_boon_damage_t>( "stormeaters_boon_damage", effect, main_buff );
+  action_t* boon_action = create_proc_action<storm_eaters_boon_damage_t>( "stormeaters_boon_damage", effect, stack_buff );
   main_buff->set_refresh_behavior( buff_refresh_behavior::DISABLED );
   main_buff->set_tick_callback( [ boon_action, stack_buff ]( buff_t* /* buff */, int /* current_tick */, timespan_t /* tick_time */ ) {
         boon_action->execute();
