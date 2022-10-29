@@ -1062,6 +1062,74 @@ void rumbling_ruby( special_effect_t& effect )
   proc_object->deactivate();
 }
 
+// Storm-Eater's Boon
+// 377453 Driver
+// 382092 Damage
+void storm_eaters_boon( special_effect_t& effect )
+{
+  struct storm_eaters_boon_damage_t : public proc_spell_t
+  {
+    storm_eaters_boon_damage_t( const special_effect_t& e ) :
+      proc_spell_t( "stormeaters_boon_damage", e.player, e.player->find_spell( 382092 ), e.item )
+    {
+      background = true;
+
+      base_dd_min = base_dd_max = e.player->find_spell( 382092 )->effectN( 1 ).average(e.item);
+    }
+  };
+
+  struct storm_eaters_boon_buff_t : public buff_t
+  {
+    storm_eaters_boon_damage_t* boon;
+    storm_eaters_boon_buff_t( const special_effect_t& e, action_t* action ) : buff_t( e.player, "stormeaters_boon", e.player->find_spell( 377453 ), e.item )
+    {
+      // Buff should never refresh itself since the trigger is disabled while it's up, but just in case
+      set_refresh_behavior( buff_refresh_behavior::DISABLED );
+
+      // Triggers the given action for each tick
+      set_tick_callback( [action]( buff_t* /* buff */, int /* current_tick */, timespan_t /* tick_time */ ) {
+        action->execute();
+      } );
+    }
+  };
+  struct storm_eaters_boon_t : public proc_spell_t
+  {
+    buff_t* buff;
+
+    storm_eaters_boon_t( const special_effect_t& e ) :
+      proc_spell_t( "stormeaters_boon", e.player, e.trigger() )
+    {
+      // Create the boon action and pass it to the buff
+      action_t* boon_action = create_proc_action<storm_eaters_boon_damage_t>( "stormeaters_boon_damage", e );
+
+      buff = buff_t::find(player, "stormeaters_boon");
+      // Creates the buff if absent
+      if (!buff)
+      {
+        buff = make_buff<storm_eaters_boon_buff_t>( player, boon_action );
+      }
+
+      if ( action_t* boon = e.player->find_action( "stormeaters_boon_damage" ) )
+      {
+        add_child( boon );
+      }
+    }
+
+    void execute() override
+    {
+      // If the aura isn't currently running, execute the spell and triggers the buff
+      if (!buff->check())
+      {
+        proc_spell_t::execute();
+        buff->trigger();
+      }
+    }
+  };
+
+  effect.execute_action = create_proc_action<storm_eaters_boon_t>( "stormeaters_boon", effect );
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -1339,6 +1407,7 @@ void register_special_effects()
   register_special_effect( 377452, items::whispering_incarnate_icon );
   register_special_effect( 384112, items::the_cartographers_calipers );
   register_special_effect( 377454, items::rumbling_ruby );
+  register_special_effect( 377453, items::storm_eaters_boon );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );  // bronzed grip wrappings embellishment
