@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.2.46259
-static const std::array<spelltext_data_t, 19138> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 19139> __ptr_spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -16923,6 +16923,7 @@ static const std::array<spelltext_data_t, 19138> __ptr_spelltext_data { {
   { 382083, "Swear your oath to the Primalists to become Marked by Frost, increasing your Critical Strike by [medium amount]. \r\n\r\nFighting alongside allies who are Marked by Earth or Fire has a chance to grant you half of their Mark's stats for $s1 seconds.", "Haste increased by $w1.", 0 },
   { 382086, "Icefury causes your Frost Shocks to damage up to $s1 additional enemies and targets hit take $382089s1% increased Nature damage from your spells for $382089d. Chain Lightning prefers targets with this effect.", 0, 0 },
   { 382089, "$@spelldesc382086", "Damage taken from Nature spells increased by $w1%.", 0 },
+  { 382090, "Accept the storm, becoming a Primal Air Elemental and immobilizing yourself for X seconds.\r\n\r\nWhile in this form, your melee attacks and abilities gain range and have a very high chance to summon Windbursts at your target's location, dealing [low] nature damage around them. ", 0, 0 },
   { 382094, "Your attacks slowly build Concussive Force, granting [low] attack power per stack. \r\n\r\nAt X stacks, your next 3 melee abilities emit a shockwave in front of you, dealing bonus Nature damage to all enemies in a line. Shockwaves deal more damage to enemies at high health.", "Strength increased by $w1.", 0 },
   { 382095, "Your attacks slowly build Concussive Force, granting [low] attack power per stack. \r\n\r\nAt X stacks, your next 3 melee abilities emit a shockwave in front of you, dealing bonus Nature damage to all enemies in a line. Shockwaves deal more damage to enemies at high health.", "Your next melee ability will emit a shockwave in front of you, dealing $377454w2  bonus Nature damage.", 0 },
   { 382096, "Your attacks slowly build Concussive Force, granting [low] attack power per stack. \r\n\r\nAt X stacks, your next 3 melee abilities emit a shockwave in front of you, dealing bonus Nature damage to all enemies in a line. Shockwaves deal more damage to enemies at high health.", 0, 0 },
