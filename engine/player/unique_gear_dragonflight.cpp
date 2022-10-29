@@ -835,8 +835,19 @@ struct spiteful_storm_initializer_t : public item_targetdata_initializer_t
   }
 };
 
+// Spiteful Storm
+// 377466 Driver
+// 396679 Player Buff
+// 382425 Stacking Player Buff
+// 382428 Target Debuff
+// 394864 Stacking Player Buff
+// 382426 Damage over Time
 void spiteful_storm( special_effect_t& effect )
 {
+  buff_t* gathering;
+  auto gathering_spell = effect.player->find_spell(394864);
+  gathering = make_buff(effect.player, "gathering_storm", gathering_spell);
+
   struct spiteful_stormbolt_t : public generic_proc_t
   {
     buff_t* gathering;
@@ -862,7 +873,13 @@ void spiteful_storm( special_effect_t& effect )
 
     double composite_ta_multiplier( const action_state_t* s ) const override
     {
-      return generic_proc_t::composite_ta_multiplier( s ) * ( 1.0 + gathering->check_stack_value() );
+      double d = generic_proc_t::composite_ta_multiplier( s );
+
+      // 10-28-22 In game testing suggests the damage scaling is 
+      // 10% per stack of the Gathering Storm buff on the player, additively.
+      d *= 1.0 + gathering->check_stack_value();
+
+      return d;
     }
 
     void impact( action_state_t* s ) override
@@ -881,6 +898,7 @@ void spiteful_storm( special_effect_t& effect )
     {
       generic_proc_t::last_tick( d );
 
+      gathering->trigger();
       callback->activate();
 
       make_event( *sim, travel_time(), [ this ]() { gathering->trigger(); } );
@@ -894,18 +912,21 @@ void spiteful_storm( special_effect_t& effect )
 
   effect.custom_buff = spite;
   auto cb = new dbc_proc_callback_t( effect.player, effect );
-
-  auto gathering = create_buff<buff_t>( effect.player, effect.player->find_spell( 394864 ) );
+  cb->initialize();
   gathering->set_default_value( 0.1 );  // increases damage by 10% per stack, value from testing, not found in spell data
 
   auto stormbolt = debug_cast<spiteful_stormbolt_t*>(
       create_proc_action<spiteful_stormbolt_t>( "spiteful_stormbolt", effect, gathering, cb ) );
 
-  spite->set_stack_change_callback( [ stormbolt, cb ]( buff_t* b, int, int new_ ) {
-    if ( !new_ )
+  spite->set_stack_change_callback( [ stormbolt, cb, spite ]( buff_t* b, int, int new_ ) {
+    if ( spite -> at_max_stacks() )
     {
       cb->deactivate();
       stormbolt->execute_on_target( b->player->target );  // always execute_on_target so set_target is properly called
+    }
+    else
+    {
+      cb->activate();
     }
   } );
 
@@ -915,7 +936,6 @@ void spiteful_storm( special_effect_t& effect )
     else
       spite->set_max_stack( as<int>( spite->default_value ) );
   } );
-
 
   auto p = effect.player;
   effect.player->register_on_kill_callback( [ p, stormbolt, gathering ]( player_t* t ) {
