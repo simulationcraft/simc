@@ -1175,7 +1175,7 @@ void storm_eaters_boon( special_effect_t& effect )
     {
       double m = proc_spell_t::composite_da_multiplier( s );
 
-      m *= 1.0 + stack_buff -> stack();
+      m *= 1.0 + ( stack_buff -> stack() / 10 );
 
       return m;
     }
