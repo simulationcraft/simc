@@ -897,6 +897,7 @@ void spiteful_storm( special_effect_t& effect )
 
   auto gathering = create_buff<buff_t>( effect.player, "gathering_storm_trinket" , effect.player->find_spell(394864));
   gathering->set_default_value( 0.1 );  // increases damage by 10% per stack, value from testing, not found in spell data
+  gathering->set_name_reporting( "gathering_storm" );
 
   auto stormbolt = debug_cast<spiteful_stormbolt_t*>(
       create_proc_action<spiteful_stormbolt_t>( "spiteful_stormbolt", effect, gathering, cb ) );
