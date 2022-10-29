@@ -5530,7 +5530,7 @@ void items::hyperthread_wristwraps( special_effect_t& effect )
       {
         if ( action_t* a = player->find_action( splits[ 1 ] ) )
         {
-          if ( splits.size() == 2 || splits.size() == 3 && splits[ 2 ] == "count" )
+          if ( splits.size() == 2 || ( splits.size() == 3 && splits[ 2 ] == "count" ) )
           {
             return make_fn_expr( name_str, [ this, a ] { return tracked_count( a ); } );
           }

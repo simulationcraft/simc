@@ -476,7 +476,7 @@ custom_cb_t idol_of_the_aspects( std::string_view type )
     new dbc_proc_callback_t( effect.player, effect );
 
     effect.player->callbacks.register_callback_execute_function(
-        effect.driver()->id(), [ buff, gems ]( const dbc_proc_callback_t* cb, action_t*, action_state_t* ) {
+        effect.driver()->id(), [ buff, gems ]( const dbc_proc_callback_t*, action_t*, action_state_t* ) {
           buff->trigger( gems );
         } );
   };
@@ -928,7 +928,7 @@ void spiteful_storm( special_effect_t& effect )
       gathering->expire();
     }
   } );
-  effect.player->register_combat_begin( [ cb ]( player_t* p ) { cb->activate(); } );
+  effect.player->register_combat_begin( [ cb ]( player_t* ) { cb->activate(); } );
 }
 
 void whispering_incarnate_icon( special_effect_t& effect )
@@ -1051,13 +1051,11 @@ void the_cartographers_calipers( special_effect_t& effect )
 // 382097 = Damage spell
 void rumbling_ruby( special_effect_t& effect )
 {
-  buff_t* ruby_buff;
-  buff_t* power_buff;
   special_effect_t* rumbling_ruby_damage_proc = new special_effect_t( effect.player );
   rumbling_ruby_damage_proc->item = effect.item;
 
-  auto rumbling_ruby_buff = buff_t::find( effect.player, "rumbling_ruby");
-  if ( !rumbling_ruby_buff )
+  auto ruby_buff = buff_t::find( effect.player, "rumbling_ruby");
+  if ( !ruby_buff )
   {
     auto ruby_proc_spell = effect.player -> find_spell( 382095 );
     ruby_buff = make_buff( effect.player, "rumbling_ruby", ruby_proc_spell );
@@ -1066,8 +1064,8 @@ void rumbling_ruby( special_effect_t& effect )
     effect.player -> special_effects.push_back( rumbling_ruby_damage_proc );
   }
 
-  auto ruby_power_buff = buff_t::find( effect.player, "rumbling_power" );
-  if ( !ruby_power_buff )
+  auto power_buff = buff_t::find( effect.player, "rumbling_power" );
+  if ( !power_buff )
   {
     auto power_proc_spell = effect.player->find_spell( 382094 );
     power_buff = make_buff<stat_buff_t>(effect.player, "rumbling_power", power_proc_spell)
@@ -1531,7 +1529,7 @@ double inhibitor_mul( player_t* player )
   int count = 0;
 
   for ( const auto& item : player->items )
-    if ( range::contains( item.parsed.special_effects, 371700, &special_effect_t::spell_id ) )
+    if ( range::contains( item.parsed.special_effects, 371700U, &special_effect_t::spell_id ) )
       count++;
 
   return 1.0 + count * player->find_spell( 371700 )->effectN( 1 ).percent();
