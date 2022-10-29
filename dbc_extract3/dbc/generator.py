@@ -1361,6 +1361,7 @@ class SpellDataGenerator(DataGenerator):
          377451, 381824, # Conjured Chillglobe
          382425, 382428, 394864, # Spiteful Storm
          382090, # Storm-Eater's Boon
+         382131, 394618, # Iceblood Deathsnare
         ),
 
         # Warrior:

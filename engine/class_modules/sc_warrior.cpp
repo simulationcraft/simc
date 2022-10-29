@@ -24,6 +24,7 @@ struct warrior_td_t : public actor_target_data_t
   dot_t* dots_gushing_wound;
   dot_t* dots_ravager;
   dot_t* dots_rend;
+  dot_t* dots_thunderous_roar;
   buff_t* debuffs_colossus_smash;
   buff_t* debuffs_concussive_blows;
   buff_t* debuffs_executioners_precision;
@@ -128,7 +129,7 @@ public:
     buff_t* merciless_bonegrinder;
     buff_t* ravager;
     buff_t* recklessness;
-    buff_t* reckless_abandon; // fake buff to control duration of ability override
+    buff_t* reckless_abandon;
     buff_t* revenge;
     buff_t* shield_block;
     buff_t* shield_wall;
@@ -2684,7 +2685,7 @@ struct bloodthirst_t : public warrior_attack_t
 
   bool ready() override
   {
-    if ( p()->talents.fury.reckless_abandon->ok() && p()->buff.recklessness->check() )
+    if ( p()->buff.reckless_abandon->check() )
     {
       return false;
     }
@@ -2770,9 +2771,15 @@ struct bloodbath_t : public warrior_attack_t
   void execute() override
   {
     warrior_attack_t::execute();
+
     if ( p()->talents.fury.bloodcraze->ok() )
     {
       p()->buff.bloodcraze->trigger( num_targets_hit );
+    }
+
+    if ( p()->is_ptr() )
+    {
+      p()->buff.reckless_abandon->decrement();
     }
 
     p()->buff.meat_cleaver->decrement();
@@ -2794,7 +2801,7 @@ struct bloodbath_t : public warrior_attack_t
 
   bool ready() override
   {
-    if ( !p()->talents.fury.reckless_abandon->ok() || !p()->buff.recklessness->check() )
+    if ( !p()->buff.reckless_abandon->check() )
     {
       return false;
     }
@@ -3150,18 +3157,16 @@ struct demoralizing_shout : public warrior_attack_t
 
 // Thunderous Roar ==============================================================
 
-
-struct thunderous_roar_t : public warrior_attack_t
+struct thunderous_roar_dot_t : public warrior_attack_t
 {
   double bloodsurge_chance, rage_from_bloodsurge;
-  thunderous_roar_t( warrior_t* p, util::string_view options_str )
-    : warrior_attack_t( "thunderous_roar", p, p->talents.warrior.thunderous_roar ),
+  thunderous_roar_dot_t( warrior_t* p )
+    : warrior_attack_t( "thunderous_roar_dot", p, p->find_spell( 397364 ) ),
       bloodsurge_chance( p->talents.arms.bloodsurge->proc_chance() ),
       rage_from_bloodsurge( p->find_spell( 384362 )->effectN( 1 ).base_value() / 10.0 )
   {
-    parse_options( options_str );
-    aoe       = -1;
-    may_dodge = may_parry = may_block = false;
+    background = tick_may_crit = true;
+    hasted_ticks               = false;
   }
 
   void tick( dot_t* d ) override
@@ -3171,6 +3176,43 @@ struct thunderous_roar_t : public warrior_attack_t
     {
       p()->resource_gain( RESOURCE_RAGE, rage_from_bloodsurge, p()->gain.bloodsurge );
     }
+  }
+};
+
+struct thunderous_roar_t : public warrior_attack_t
+{
+  double bloodsurge_chance, rage_from_bloodsurge;
+  warrior_attack_t* thunderous_roar_dot;
+  thunderous_roar_t( warrior_t* p, util::string_view options_str )
+    : warrior_attack_t( "thunderous_roar", p, p->talents.warrior.thunderous_roar ),
+      bloodsurge_chance( p->talents.arms.bloodsurge->proc_chance() ),
+      rage_from_bloodsurge( p->find_spell( 384362 )->effectN( 1 ).base_value() / 10.0 ),
+      thunderous_roar_dot( nullptr )
+  {
+    parse_options( options_str );
+    aoe       = -1;
+    may_dodge = may_parry = may_block = false;
+    if ( p->is_ptr() )
+    {
+      thunderous_roar_dot   = new thunderous_roar_dot_t( p );
+      add_child( thunderous_roar_dot );
+    }
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    warrior_attack_t::impact( s );
+    if ( p()->is_ptr() )
+    {
+      thunderous_roar_dot->set_target( s->target );
+      thunderous_roar_dot->execute();
+    }
+  }
+
+  void tick( dot_t* d ) override
+  {
+    warrior_attack_t::tick( d );
+    p()->resource_gain( RESOURCE_RAGE, rage_from_bloodsurge, p()->gain.bloodsurge );
   }
 };
 
@@ -4077,6 +4119,11 @@ struct crushing_blow_t : public warrior_attack_t
     {
       cooldown->reset( true );
     }
+
+    if ( p()->is_ptr() )
+    {
+      p()->buff.reckless_abandon->decrement();
+    }
     p()->buff.meat_cleaver->decrement();
 
     if ( p()->talents.fury.slaughtering_strikes->ok() )
@@ -4705,38 +4752,23 @@ struct rampage_parent_t : public warrior_attack_t
     {
       p()->resource_gain(RESOURCE_RAGE, last_resource_cost * rage_from_frothing_berserker, p()->gain.frothing_berserker);
     }
-    if ( p()->azerite.trample_the_weak.ok() )
-    {
-      p()->buff.trample_the_weak->trigger();
-    }
-    if (p()->talents.fury.frenzy->ok())
+    if ( p()->talents.fury.frenzy->ok() )
     {
       p()->buff.frenzy->trigger();
     }
     if ( p()->talents.fury.unbridled_ferocity.ok() && rng().roll( unbridled_chance ) )
     {
-      if ( p()->buff.recklessness->check() )
-      {
-        p()->buff.recklessness->extend_duration( p(), timespan_t::from_millis( 
-          p()->talents.fury.unbridled_ferocity->effectN( 2 ).base_value() ) );
+      const timespan_t trigger_duration = p()->talents.fury.unbridled_ferocity->effectN( 2 ).time_value();
+      p()->buff.recklessness->extend_duration_or_trigger( trigger_duration );
 
-        if ( p()->talents.fury.reckless_abandon->ok() )
-        {
-          p()->buff.reckless_abandon->extend_duration( p(), timespan_t::from_millis( 
-            p()->talents.fury.unbridled_ferocity->effectN( 2 ).base_value() ) );
-        }
-      }
-      else
+      if ( p()->talents.fury.reckless_abandon->ok() && !p()->is_ptr() )
       {
-        p()->buff.recklessness->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0,
-            timespan_t::from_millis( p()->talents.fury.unbridled_ferocity->effectN( 2 ).base_value() ) );
-
-        if ( p()->talents.fury.reckless_abandon->ok() )
-        {
-          p()->buff.reckless_abandon->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0,
-            timespan_t::from_millis( p()->talents.fury.unbridled_ferocity->effectN( 2 ).base_value() ) );
-        }
+        p()->buff.reckless_abandon->extend_duration_or_trigger( trigger_duration );
       }
+    }
+    if ( p()->talents.fury.reckless_abandon->ok() && p()->is_ptr() )
+    {
+      p()->buff.reckless_abandon->trigger();
     }
     if ( p()->legendary.deathmaker->ok() && ( result_is_hit( execute_state->result ) ) && rng().roll( deathmaker_chance ) )
     {
@@ -4754,6 +4786,11 @@ struct rampage_parent_t : public warrior_attack_t
       p()->cooldown.raging_blow->reset( true );
       p()->cooldown.crushing_blow->reset( true );
     }
+    if ( p()->azerite.trample_the_weak.ok() )
+    {
+      p()->buff.trample_the_weak->trigger();
+    }
+
     p()->enrage();
     p()->rampage_driver = make_event<rampage_event_t>( *sim, p(), 0 );
   }
@@ -6784,7 +6821,7 @@ struct recklessness_t : public warrior_spell_t
         torment_ability->schedule_execute();
       }
     }
-    if ( p()->talents.fury.reckless_abandon->ok() )
+    if ( p()->talents.fury.reckless_abandon->ok() && !p()->is_ptr() )
     {
       p()->buff.reckless_abandon->extend_duration_or_trigger();
     }
@@ -6825,7 +6862,7 @@ struct torment_recklessness_t : public warrior_spell_t
     const timespan_t trigger_duration = p()->talents.warrior.berserkers_torment->effectN( 2 ).time_value();
     p()->buff.recklessness->extend_duration_or_trigger( trigger_duration );
 
-    if ( p()->talents.fury.reckless_abandon->ok() )
+    if ( p()->talents.fury.reckless_abandon->ok() && !p()->is_ptr() )
     {
       p()->buff.reckless_abandon->extend_duration_or_trigger( trigger_duration );
     }
@@ -8431,6 +8468,7 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ) : actor_target_data
   dots_ravager     = target->get_dot( "ravager", &p );
   dots_rend        = target->get_dot( "rend", &p );
   dots_gushing_wound = target->get_dot( "gushing_wound", &p );
+  dots_thunderous_roar = target->get_dot( "thunderous_roar", &p );
 
   debuffs_colossus_smash = make_buff( *this , "colossus_smash" )
                                ->set_default_value( p.spell.colossus_smash_debuff->effectN( 2 ).percent() )
@@ -8601,8 +8639,16 @@ void warrior_t::create_buffs()
     ->set_default_value( spell.recklessness_buff->effectN( 1 ).percent() )
     ->set_stack_change_callback( [ this ]( buff_t*, int, int after ) { if ( after == 0  && this->legendary.will_of_the_berserker->ok() ) buff.will_of_the_berserker->trigger(); });
 
-  buff.reckless_abandon = make_buff( this, "reckless_abandon", find_spell( 335101 ) )
-    ->apply_affecting_conduit( conduit.depths_of_insanity );
+  if ( is_ptr() )
+  {
+    buff.reckless_abandon = make_buff( this, "reckless_abandon", find_spell( 396752 ) );
+  }
+
+  else
+  {
+    buff.reckless_abandon = make_buff( this, "reckless_abandon", find_spell( 335101 ) )
+      ->apply_affecting_conduit( conduit.depths_of_insanity );
+  }
 
   buff.titanic_rage = make_buff( this, "titanic_rage", talents.fury.titanic_rage->effectN( 1 ).trigger() )
     ->set_duration( talents.fury.titanic_rage->effectN( 1 ).trigger()->duration() )
