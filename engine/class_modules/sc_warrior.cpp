@@ -24,6 +24,7 @@ struct warrior_td_t : public actor_target_data_t
   dot_t* dots_gushing_wound;
   dot_t* dots_ravager;
   dot_t* dots_rend;
+  dot_t* dots_thunderous_roar;
   buff_t* debuffs_colossus_smash;
   buff_t* debuffs_concussive_blows;
   buff_t* debuffs_executioners_precision;
@@ -3156,18 +3157,16 @@ struct demoralizing_shout : public warrior_attack_t
 
 // Thunderous Roar ==============================================================
 
-
-struct thunderous_roar_t : public warrior_attack_t
+struct thunderous_roar_dot_t : public warrior_attack_t
 {
   double bloodsurge_chance, rage_from_bloodsurge;
-  thunderous_roar_t( warrior_t* p, util::string_view options_str )
-    : warrior_attack_t( "thunderous_roar", p, p->talents.warrior.thunderous_roar ),
+  thunderous_roar_dot_t( warrior_t* p )
+    : warrior_attack_t( "thunderous_roar_dot", p, p->find_spell( 397364 ) ),
       bloodsurge_chance( p->talents.arms.bloodsurge->proc_chance() ),
       rage_from_bloodsurge( p->find_spell( 384362 )->effectN( 1 ).base_value() / 10.0 )
   {
-    parse_options( options_str );
-    aoe       = -1;
-    may_dodge = may_parry = may_block = false;
+    background = tick_may_crit = true;
+    hasted_ticks               = false;
   }
 
   void tick( dot_t* d ) override
@@ -3177,6 +3176,43 @@ struct thunderous_roar_t : public warrior_attack_t
     {
       p()->resource_gain( RESOURCE_RAGE, rage_from_bloodsurge, p()->gain.bloodsurge );
     }
+  }
+};
+
+struct thunderous_roar_t : public warrior_attack_t
+{
+  double bloodsurge_chance, rage_from_bloodsurge;
+  warrior_attack_t* thunderous_roar_dot;
+  thunderous_roar_t( warrior_t* p, util::string_view options_str )
+    : warrior_attack_t( "thunderous_roar", p, p->talents.warrior.thunderous_roar ),
+      bloodsurge_chance( p->talents.arms.bloodsurge->proc_chance() ),
+      rage_from_bloodsurge( p->find_spell( 384362 )->effectN( 1 ).base_value() / 10.0 ),
+      thunderous_roar_dot( nullptr )
+  {
+    parse_options( options_str );
+    aoe       = -1;
+    may_dodge = may_parry = may_block = false;
+    if ( p->is_ptr() )
+    {
+      thunderous_roar_dot   = new thunderous_roar_dot_t( p );
+      add_child( thunderous_roar_dot );
+    }
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    warrior_attack_t::impact( s );
+    if ( p()->is_ptr() )
+    {
+      thunderous_roar_dot->set_target( s->target );
+      thunderous_roar_dot->execute();
+    }
+  }
+
+  void tick( dot_t* d ) override
+  {
+    warrior_attack_t::tick( d );
+    p()->resource_gain( RESOURCE_RAGE, rage_from_bloodsurge, p()->gain.bloodsurge );
   }
 };
 
@@ -8432,6 +8468,7 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ) : actor_target_data
   dots_ravager     = target->get_dot( "ravager", &p );
   dots_rend        = target->get_dot( "rend", &p );
   dots_gushing_wound = target->get_dot( "gushing_wound", &p );
+  dots_thunderous_roar = target->get_dot( "thunderous_roar", &p );
 
   debuffs_colossus_smash = make_buff( *this , "colossus_smash" )
                                ->set_default_value( p.spell.colossus_smash_debuff->effectN( 2 ).percent() )
