@@ -922,7 +922,7 @@ void spiteful_storm( special_effect_t& effect )
     if ( p->sim->event_mgr.canceled )
       return;
 
-    if ( t->actor_spawn_index == stormbolt->grudge->actor_spawn_index )
+    if ( stormbolt->grudge && t->actor_spawn_index == stormbolt->grudge->actor_spawn_index )
     {
       stormbolt->grudge = nullptr;
       gathering->expire();
