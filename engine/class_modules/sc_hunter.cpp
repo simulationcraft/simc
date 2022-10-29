@@ -3042,6 +3042,7 @@ struct kill_shot_t : hunter_ranged_attack_t
     health_threshold_pct( p -> talents.kill_shot -> effectN( 2 ).base_value() )
   {
     parse_options( options_str );
+    triggers_wild_spirits = false;
 
     if ( p -> legendary.pouch_of_razor_fragments.ok() )
     {
@@ -3111,6 +3112,9 @@ struct kill_shot_t : hunter_ranged_attack_t
       if ( amount > 0 )
         residual_action::trigger( bleeding_gash, s -> target, amount );
     }
+
+    // 28-10-22 TODO All hits from BoP Kill Shot triggers Wild Spirits.
+    p() -> trigger_wild_spirits( s, true );
   }
 
   int n_targets() const override
@@ -3439,11 +3443,6 @@ struct explosive_shot_background_t : public explosive_shot_t
     dual = true;
     base_costs[ RESOURCE_FOCUS ] = 0;
     triggers_wild_spirits = false;
-  }
-
-  timespan_t travel_time() const override
-  {
-    return 0_s;
   }
 };
 
@@ -4955,7 +4954,6 @@ struct melee_focus_spender_t: hunter_melee_attack_t
     {
       dual = true;
       base_costs[ RESOURCE_FOCUS ] = 0;
-      triggers_wild_spirits = false;
 
       // Viper's Venom is left out of Hydra's Bite target count modification.
       aoe = 0;
@@ -5361,7 +5359,6 @@ struct fury_of_the_eagle_t: public hunter_melee_attack_t
       crit_chance_bonus = p -> talents.fury_of_the_eagle -> effectN( 3 ).percent();
       // TODO 25-10-22 Ruthless Marauder says nothing about increasing damage but is adding the cdr value data to the tick dmg as well.
       base_dd_adder += p -> talents.ruthless_marauder -> effectN( 3 ).base_value();
-      triggers_wild_spirits = false;
 
       if ( p -> talents.ruthless_marauder )
         ruthless_marauder_adjust = p -> talents.ruthless_marauder -> effectN( 3 ).time_value();
@@ -5387,6 +5384,10 @@ struct fury_of_the_eagle_t: public hunter_melee_attack_t
         p() -> cooldowns.flanking_strike -> adjust( -ruthless_marauder_adjust );
         p() -> cooldowns.ruthless_marauder -> start();
       }
+
+      // XXX: Wild Spirits kludge
+      if ( state -> chain_target == 0 && p() -> buffs.wild_spirits -> check() )
+        triggers_wild_spirits = false;
     }
   };
 
@@ -5398,6 +5399,14 @@ struct fury_of_the_eagle_t: public hunter_melee_attack_t
     channeled = true;
     tick_zero = true;
     tick_action = new fury_of_the_eagle_tick_t( p, as<int>( data().effectN( 5 ).base_value() ) );
+  }
+
+  void execute() override
+  {
+    // XXX: Wild Spirits kludge
+    static_cast<fury_of_the_eagle_tick_t*>( tick_action ) -> triggers_wild_spirits = true;
+
+    hunter_melee_attack_t::execute();
   }
 };
 
@@ -6546,7 +6555,6 @@ struct wildfire_bomb_t: public hunter_spell_t
       {
         dual = true;
         base_costs[ RESOURCE_FOCUS ] = 0;
-        triggers_wild_spirits = false;
 
         aoe = as<int>( p -> talents.wildfire_infusion -> effectN( 2 ).base_value() );
       }
