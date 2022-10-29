@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.2.46259
-static const std::array<spelltext_data_t, 19135> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 19138> __ptr_spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -17011,8 +17011,10 @@ static const std::array<spelltext_data_t, 19135> __ptr_spelltext_data { {
   { 382419, "Casting spells grants stacks of Hatred, permanently lowering this trinket's cooldown by $s1 second until combat ends.\r\n\r\n", "Desperate Invocation's cooldown reduced by $w1 sec and self-damage increased to $377465s3.", 0 },
   { 382423, "Set out a fresh batch of Yusa's Hearty Stew for all players to partake in.\r\n\r\n$@spelldesc369166  If you spend at least 10 seconds eating you will become well fed and gain $382145s1 to your lowest secondary stat for $382145d.", 0, 0 },
   { 382424, "The cooldown of Ice Block is reduced by ${$s1/-1000} sec.", 0, 0 },
+  { 382425, "Casting and attacking builds stacks of Spite. At 5, a Spiteful Stormbolt arcs towards your current target, dealing [low] nature damage over 3 seconds.\r\n\r\nUpon expiration the bolt returns, increasing the amount of Spite needed by 1 and permanently increasing Spiteful Stormbolt's damage against them until either of you die.", "Build Spite to unleash a Spiteful Stormbolt onto your enemy.", 0 },
   { 382426, "Casting and attacking builds stacks of Spite. At 5, a Spiteful Stormbolt arcs towards your current target, dealing [low] nature damage over 3 seconds.\r\n\r\nUpon expiration the bolt returns, increasing the amount of Spite needed by 1 and permanently increasing Spiteful Stormbolt's damage against them until either of you die.", "Deal ${$w1*($d/$t1)*(1+$@versadmg)} Nature damage over $d.", 0 },
   { 382427, "Set out a traditional tuskarr feast that all players can partake in.\r\n\r\n$@spelldesc369166  If you spend at least 10 seconds eating you will become well fed and gain $396092s1 primary stat for $396092d.", 0, 0 },
+  { 382428, "Casting and attacking builds stacks of Spite. At 5, a Spiteful Stormbolt arcs towards your current target, dealing ${$377466s1*($382426d/$382426t1)*(1+$@versadmg)} Nature damage over $382426d.\r\n\r\nUpon expiration the bolt returns, increasing the amount of Spite needed by 1 and permanently increasing Spiteful Stormbolt's damage against them until either of you die.", "All future Spiteful Stormbolts will target this unit.", 0 },
   { 382430, "Consecration periodic damage has a chance to grant you $s1 Holy Power.\r\n\r\nChances increase up to $s2 targets within Consecration.", 0, 0 },
   { 382440, "Draw power from the Night Fae, dealing ${$382445s1*$d/$t} Nature damage over $d to enemies within $382445A1 yds. \r\n\r\nWhile channeling, your Mage ability cooldowns are reduced by ${-$s2/1000*$d/$t} sec over $d.", "Every $t1 sec, deal $382445s1 Nature damage to enemies within $382445A1 yds and reduce the remaining cooldown of your abilities by ${-$s2/1000} sec.", 0 },
   { 382445, "$@spelldesc382440", 0, 0 },
@@ -19016,6 +19018,7 @@ static const std::array<spelltext_data_t, 19135> __ptr_spelltext_data { {
   { 394845, "@spelldesc393725", "Bleed damage increased by $w1%.", 0 },
   { 394855, "Gain Strength equal to $s2% of your Armor.", 0, 0 },
   { 394863, "$@spelldesc393626", "Damage increased by $s1% and Haste increased by $s2%.", 0 },
+  { 394864, "Casting and attacking builds stacks of Spite. At 5, a Spiteful Stormbolt arcs towards your current target, dealing [low] nature damage over 3 seconds.\r\n\r\nUpon expiration the bolt returns, increasing the amount of Spite needed by 1 and permanently increasing Spiteful Stormbolt's damage against them until either of you die.", "The amount of Spite needed to unleash a Spiteful Stormbolt has increased, but so has its damage.", 0 },
   { 394879, 0, "Sinister Strike and Ambush critical strike chance increased by $w1%.", 0 },
   { 394888, 0, "Dispatch damage increased by $w1%.", 0 },
   { 394894, "$@spelldesc393729", "$?s200758[Gloomblade][Backstab], Shadowstrike, and Shuriken Storm damage and critical strike chance increased by $w1%.", 0 },

@@ -817,6 +817,119 @@ void emerald_coachs_whistle( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+struct spiteful_storm_initializer_t : public item_targetdata_initializer_t
+{
+  spiteful_storm_initializer_t() : item_targetdata_initializer_t( 377466 ) {}
+
+  void operator()( actor_target_data_t* td ) const override
+  {
+    if ( !find_effect( td->source ) )
+    {
+      td->debuff.grudge = make_buff( *td, "grudge" )->set_quiet( true );
+      return;
+    }
+
+    assert( !td->debuff.grudge );
+    td->debuff.grudge = make_buff( *td, "grudge", td->source->find_spell( 382428 ) );
+    td->debuff.grudge->reset();
+  }
+};
+
+void spiteful_storm( special_effect_t& effect )
+{
+  struct spiteful_stormbolt_t : public generic_proc_t
+  {
+    buff_t* gathering;
+    dbc_proc_callback_t* callback;
+    player_t* grudge;
+
+    spiteful_stormbolt_t( const special_effect_t& e, buff_t* b, dbc_proc_callback_t* cb )
+      : generic_proc_t( e, "spiteful_stormbolt", e.player->find_spell( 382426 ) ),
+        gathering( b ),
+        callback( cb ),
+        grudge( nullptr )
+    {
+      base_td = e.driver()->effectN( 1 ).average( e.item );
+    }
+
+    void set_target( player_t* t ) override
+    {
+      if ( grudge )
+        target = grudge;
+      else
+        generic_proc_t::set_target( t );
+    }
+
+    double composite_ta_multiplier( const action_state_t* s ) const override
+    {
+      return generic_proc_t::composite_ta_multiplier( s ) * ( 1.0 + gathering->check_stack_value() );
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      generic_proc_t::impact( s );
+
+      if ( !grudge )
+      {
+        grudge = s->target;
+        assert( grudge );
+        player->get_target_data( grudge )->debuff.grudge->trigger();
+      }
+    }
+
+    void last_tick( dot_t* d ) override
+    {
+      generic_proc_t::last_tick( d );
+
+      callback->activate();
+
+      make_event( *sim, travel_time(), [ this ]() { gathering->trigger(); } );
+    }
+  };
+
+  auto spite = create_buff<buff_t>( effect.player, effect.player->find_spell( 382425 ) );
+  spite->set_default_value( effect.driver()->effectN( 2 ).base_value() )
+       ->set_max_stack( as<int>( spite->default_value ) )
+       ->set_expire_at_max_stack( true );
+
+  effect.custom_buff = spite;
+  auto cb = new dbc_proc_callback_t( effect.player, effect );
+
+  auto gathering = create_buff<buff_t>( effect.player, effect.player->find_spell( 394864 ) );
+  gathering->set_default_value( 0.1 );  // increases damage by 10% per stack, value from testing, not found in spell data
+
+  auto stormbolt = debug_cast<spiteful_stormbolt_t*>(
+      create_proc_action<spiteful_stormbolt_t>( "spiteful_stormbolt", effect, gathering, cb ) );
+
+  spite->set_stack_change_callback( [ stormbolt, cb ]( buff_t* b, int, int new_ ) {
+    if ( !new_ )
+    {
+      cb->deactivate();
+      stormbolt->execute_on_target( b->player->target );  // always execute_on_target so set_target is properly called
+    }
+  } );
+
+  gathering->set_stack_change_callback( [ spite ]( buff_t*, int, int new_ ) {
+    if ( new_ )
+      spite->set_max_stack( as<int>( spite->default_value ) + new_ );
+    else
+      spite->set_max_stack( as<int>( spite->default_value ) );
+  } );
+
+
+  auto p = effect.player;
+  effect.player->register_on_kill_callback( [ p, stormbolt, gathering ]( player_t* t ) {
+    if ( p->sim->event_mgr.canceled )
+      return;
+
+    if ( t->actor_spawn_index == stormbolt->grudge->actor_spawn_index )
+    {
+      stormbolt->grudge = nullptr;
+      gathering->expire();
+    }
+  } );
+}
+
 void whispering_incarnate_icon( special_effect_t& effect )
 {
   bool has_heal = false, has_tank = false, has_dps = false;
@@ -1306,6 +1419,7 @@ void register_special_effects()
   register_special_effect( 384532, items::darkmoon_deck_watcher );
   register_special_effect( 396391, items::conjured_chillglobe );
   register_special_effect( 383798, items::emerald_coachs_whistle );
+  register_special_effect( 377466, items::spiteful_storm );
   register_special_effect( 377452, items::whispering_incarnate_icon );
   register_special_effect( 384112, items::the_cartographers_calipers );
   register_special_effect( 377454, items::rumbling_ruby );
@@ -1339,6 +1453,7 @@ void register_special_effects()
 void register_target_data_initializers( sim_t& sim )
 {
   sim.register_target_data_initializer( items::awakening_rime_initializer_t() );
+  sim.register_target_data_initializer( items::spiteful_storm_initializer_t() );
 }
 
 // check and return multiplier for toxified armor patch
