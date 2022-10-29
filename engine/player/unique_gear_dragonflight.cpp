@@ -1154,7 +1154,8 @@ void storm_eaters_boon( special_effect_t& effect )
   buff_t* stack_buff;
   buff_t* main_buff;
 
-  main_buff = make_buff( effect.player, "stormeaters_boon", effect.player->find_spell(377453));
+  main_buff = make_buff( effect.player, "stormeaters_boon", effect.player->find_spell(377453))
+      ->set_cooldown( 0_ms );
   stack_buff = make_buff( effect.player, "stormeaters_boon_stacks", effect.player->find_spell( 382090 ))
       ->set_duration( effect.player -> find_spell( 377453 )->duration() )
       ->set_cooldown( 0_ms );
@@ -1175,7 +1176,7 @@ void storm_eaters_boon( special_effect_t& effect )
     {
       double m = proc_spell_t::composite_da_multiplier( s );
 
-      m *= 1.0 + ( stack_buff -> stack() / 10 );
+      m *= 1.0 + (stack_buff -> stack() / 10);
 
       return m;
     }
@@ -1188,9 +1189,17 @@ void storm_eaters_boon( special_effect_t& effect )
   };
   action_t* boon_action = create_proc_action<storm_eaters_boon_damage_t>( "stormeaters_boon_damage", effect, stack_buff );
   main_buff->set_refresh_behavior( buff_refresh_behavior::DISABLED );
-  main_buff->set_tick_callback( [ boon_action, stack_buff ]( buff_t* /* buff */, int /* current_tick */, timespan_t /* tick_time */ ) {
-        boon_action->execute();
-      } );
+  main_buff->set_tick_callback( [ boon_action ]( buff_t* /* buff */, int /* current_tick */, timespan_t /* tick_time */ ) 
+  {
+    boon_action->execute();
+  } );
+  main_buff->set_stack_change_callback( [ stack_buff ](buff_t*, int, int new_) 
+  {
+    if( new_ == 0 )
+    {
+      stack_buff->expire();
+    }
+  } );
 }
 
 // Weapons
