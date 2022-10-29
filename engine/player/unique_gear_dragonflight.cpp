@@ -1175,7 +1175,7 @@ void storm_eaters_boon( special_effect_t& effect )
     {
       double m = proc_spell_t::composite_da_multiplier( s );
 
-      m *= 1.0 + (stack_buff -> stack() / 10);
+      m *= 1.0 + ( stack_buff -> stack() * 0.1 );
 
       return m;
     }
@@ -1212,24 +1212,25 @@ void storm_eaters_boon( special_effect_t& effect )
 void decoration_of_flame( special_effect_t& effect )
 {
   buff_t* buff;
-  buff_t* shield;
+  
 
   buff = make_buff( effect.player, "decoration_of_flame", effect.player->find_spell( 377449 ) );
-  shield = make_buff<absorb_buff_t>( effect.player, "decoration_of_flame_shield", effect.player->find_spell( 382058 ) )
-      ->set_default_value( effect.player -> find_spell( 394393 ) -> effectN( 2 ).average( effect.item ) );
 
   effect.custom_buff = buff;
 
   struct decoration_of_flame_damage_t : public proc_spell_t
   {
-    buff_t* buff;
+    buff_t* shield;
+    double value = player -> find_spell( 394393 ) -> effectN( 2 ).average( item );
+
     decoration_of_flame_damage_t( const special_effect_t& e, buff_t* b ) :
-      proc_spell_t( "decoration_of_flame", e.player, e.player->find_spell( 377449 ), e.item ), buff( b )
+      proc_spell_t( "decoration_of_flame", e.player, e.player->find_spell( 377449 ), e.item ), shield( b )
     {
       background = true;
       base_dd_min = base_dd_max = e.player->find_spell( 394393 )->effectN( 1 ).average(e.item);
       aoe = e.driver()->effectN(3).base_value();
       radius = 10;
+      shield = make_buff<absorb_buff_t>( e.player, "decoration_of_flame_shield", e.player->find_spell( 382058 ) );
     }
 
      double composite_da_multiplier( const action_state_t* s ) const override
@@ -1237,17 +1238,29 @@ void decoration_of_flame( special_effect_t& effect )
       double m = proc_spell_t::composite_da_multiplier( s );
 
      // Damage increases by 10% per target based on in game testing
-      m *= 1.0 + ( n_targets() / 10 );
+      m *= 1.0 + ( n_targets() - 1 ) * 0.1;
 
       return m;
     }
+
+     void impact( action_state_t* s ) override
+     {
+       proc_spell_t::impact( s );
+       value *= 1.0 + ( n_targets() * 0.5 );
+     }
+
+     void execute() override
+     {
+       proc_spell_t::execute();
+       shield->set_default_value( value );
+       shield->trigger();
+     }
   };
 
   action_t* action = create_proc_action<decoration_of_flame_damage_t>( "decoration_of_flame", effect, buff );
-  buff->set_stack_change_callback( [ action, shield ](buff_t*, int, int ) 
+  buff->set_stack_change_callback( [ action ](buff_t*, int, int ) 
   {
     action -> execute();
-    shield -> trigger();
   } );
 }
 
