@@ -893,7 +893,7 @@ public:
     this -> affected_by.divine_purpose = this -> data().affected_by( p -> spells.divine_purpose_buff -> effectN( 2 ) );
     this -> affected_by.blessing_of_dawn = this -> data().affected_by( p -> talents.of_dusk_and_dawn -> effectN( 1 ).trigger() -> effectN( 1 ) );
     this -> affected_by.the_magistrates_judgment = this -> data().affected_by( p -> buffs.the_magistrates_judgment -> data().effectN( 1 ) );
-    this -> affected_by.seal_of_reprisal = this -> data().affected_by( p-> talents.seal_of_reprisal->effectN( 1 ) );
+    this -> affected_by.seal_of_reprisal = this -> data().affected_by( p-> talents.seal_of_reprisal->effectN( 1 ) ) && !(p -> bugs);
     this -> affected_by.bastion_of_light = this -> data().affected_by( p->talents.bastion_of_light->effectN( 1 ) );
   }
 
