@@ -904,7 +904,7 @@ struct water_jet_t final : public mage_pet_spell_t
   void execute() override
   {
     mage_pet_spell_t::execute();
-    o()->trigger_brain_freeze( 1.0, o()->procs.brain_freeze_water_jet );
+    o()->trigger_brain_freeze( 1.0, o()->procs.brain_freeze_water_jet, 0_ms );
   }
 };
 
@@ -2097,7 +2097,6 @@ struct hot_streak_spell_t : public fire_mage_spell_t
 
   void execute() override
   {
-    // TODO: instant non-HS flamestrike seems to actually trigger SKB combustion, pyroblast doesn't
     if ( time_to_execute > 0_ms && p()->buffs.sun_kings_blessing_ready->check() )
     {
       p()->buffs.sun_kings_blessing_ready->expire();
@@ -2269,17 +2268,21 @@ struct frost_mage_spell_t : public mage_spell_t
 
   void trigger_chill_effect( const action_state_t* s )
   {
-    // TODO: double check if frostbite and bone chilling trigger from the same spells
     p()->trigger_merged_buff( p()->buffs.bone_chilling, true );
     if ( p()->rng().roll( p()->talents.frostbite->proc_chance() ) )
       p()->trigger_crowd_control( s, MECHANIC_ROOT, p()->options.frozen_duration - 0.5_s ); // Frostbite only has the initial grace period
   }
 
-  void trigger_cold_front()
+  void trigger_cold_front( int stacks = 1 )
   {
-    trigger_tracking_buff( p()->buffs.cold_front, p()->buffs.cold_front_ready, 2 );
+    trigger_tracking_buff( p()->buffs.cold_front, p()->buffs.cold_front_ready, 2, stacks );
   }
 
+  // Behavior for various initial states and trigger spells (format: spell, initial state -> final state, ...)
+  // Flurry,     26 -> 27, 27 -> 28, 28 -> 0,     ready -> 1
+  // Frostbolt1, 26 -> 27, 27 -> 28, 28 -> ready, ready -> 1
+  // Frostbolt2, 26 -> 28, 27 -> 0,  28 -> 1,     ready -> 2
+  // Frostbolt3, 26 -> 0,  27 -> 0,  28 -> 1,     ready -> 3
   bool consume_cold_front( player_t* target )
   {
     if ( !p()->buffs.cold_front_ready->check() )
@@ -3667,6 +3670,8 @@ struct flurry_bolt_t final : public frost_mage_spell_t
     for ( int i = 0; i < wc->max_stack(); i++ )
       p()->procs.winters_chill_applied->occur();
 
+    consume_cold_front( s->target );
+
     if ( rng().roll( p()->talents.glacial_assault->effectN( 1 ).percent() ) )
     {
       make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
@@ -3741,8 +3746,10 @@ struct flurry_t final : public frost_mage_spell_t
       .n_pulses( as<int>( data().effectN( 1 ).base_value() ) )
       .action( flurry_bolt ), true );
 
-    consume_cold_front( s->target );
-    trigger_cold_front();
+    // Flurry only triggers one stack of Cold Front, but it happens after the first
+    // Flurry bolt attempts to consume Cold Front buff, let it execute first.
+    if ( p()->talents.cold_front.ok() )
+      make_event( sim, 1_ms, [ this ] { trigger_cold_front(); } );
   }
 };
 
@@ -3856,21 +3863,28 @@ struct frostbolt_t final : public frost_mage_spell_t
   {
     frost_mage_spell_t::impact( s );
 
-    if ( result_is_hit( s->result ) )
+    if ( s->chain_target != 0 )
+      return;
+
+    // See frost_mage_spell_t::consume_cold_front
+    if ( p()->buffs.cold_front_ready->check() )
     {
       consume_cold_front( s->target );
-      // Cold Front and Deathborne cleave have some unusual interactions.
-      // After casting a Frostbolt that hits 3 targets, the following occurs:
-      // * 26-28 cold_front: FO is triggered, 0 stacks after
-      // * cold_front_ready: FO is triggered, 3 stacks after
-      // Other outcomes are also possible, although rare. This is most
-      // likely due to batching.
-      // TODO: double check if this is still the case
-      if ( s->chain_target == 0 )
+      trigger_cold_front( s->n_targets );
+    }
+    else if ( p()->buffs.cold_front->check() >= 28 )
+    {
+      trigger_cold_front();
+      if ( s->n_targets > 1 )
       {
-        for ( unsigned i = 0; i < s->n_targets; i++ )
-          trigger_cold_front();
+        consume_cold_front( s->target );
+        trigger_cold_front();
       }
+    }
+    else
+    {
+      trigger_cold_front( s->n_targets );
+      consume_cold_front( s->target );
     }
   }
 
@@ -4106,8 +4120,6 @@ struct glacial_spike_t final : public frost_mage_spell_t
     {
       p()->get_icicle();
       p()->trigger_fof( p()->talents.flash_freeze->effectN( 1 ).percent(), p()->procs.fingers_of_frost_flash_freeze );
-      // TODO: check if splitting ice doubles the procs
-      // TODO: what happens if buff stacks and icicle count don't match up
     }
   }
 
@@ -4386,15 +4398,13 @@ struct icy_veins_t final : public frost_mage_spell_t
   {
     frost_mage_spell_t::execute();
 
-    // TODO: check if this is the case with the talent as well
     p()->buffs.slick_ice->expire();
     p()->buffs.icy_veins->trigger();
     p()->buffs.rune_of_power->trigger();
 
     if ( p()->talents.snap_freeze.ok() )
     {
-      // TODO: check what the delay is if BF is already up
-      p()->trigger_brain_freeze( 1.0, p()->procs.brain_freeze_snap_freeze );
+      p()->trigger_brain_freeze( 1.0, p()->procs.brain_freeze_snap_freeze, 0_ms );
       p()->trigger_fof( 1.0, p()->procs.fingers_of_frost_snap_freeze );
     }
   }
@@ -5303,7 +5313,6 @@ struct shifting_power_t final : public mage_spell_t
       cd->adjust( reduction, false );
   }
 
-  // TODO: are these necessary now that the conduit doesn't have to be taken into account?
   std::unique_ptr<expr_t> create_expression( std::string_view name ) override
   {
     if ( util::str_compare_ci( name, "tick_reduction" ) )
@@ -7202,7 +7211,7 @@ bool mage_t::trigger_delayed_buff( buff_t* buff, double chance, timespan_t delay
 
   if ( success )
   {
-    if ( buff->check() )
+    if ( delay > 0_ms && buff->check() )
       make_event( sim, delay, [ buff ] { buff->execute(); } );
     else
       buff->execute();
@@ -7218,7 +7227,7 @@ bool mage_t::trigger_brain_freeze( double chance, proc_t* source, timespan_t del
   bool success = rng().roll( chance );
   if ( success )
   {
-    if ( buffs.brain_freeze->check() )
+    if ( delay > 0_ms && buffs.brain_freeze->check() )
     {
       make_event( sim, delay, [ this, chance ]
       {
