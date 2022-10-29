@@ -18,4 +18,4 @@ void assassination_df( player_t* );
 void outlaw_df( player_t* );
 void subtlety_df( player_t* );
 
-} // namespace hunter_apl
+} // namespace rogue_apl
