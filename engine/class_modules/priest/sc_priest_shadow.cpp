@@ -2680,9 +2680,9 @@ void priest_t::trigger_idol_of_nzoth( player_t* target, proc_t* proc )
   {
     proc->occur();
     td->buffs.echoing_void->trigger();
-    if ( !td->buffs.echoing_void_collapse->check() && rng().roll( talents.shadow.idol_of_nzoth->proc_chance() ) )
+    if ( rng().roll( talents.shadow.idol_of_nzoth->proc_chance() ) )
     {
-      td->buffs.echoing_void_collapse->trigger();
+      td->buffs.echoing_void_collapse->trigger( timespan_t::from_seconds( td->buffs.echoing_void->stack() + 1 ) );
     }
   }
 }
