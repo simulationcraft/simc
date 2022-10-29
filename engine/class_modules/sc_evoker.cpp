@@ -2016,14 +2016,10 @@ void karnalex_the_first_light( special_effect_t& effect )
     {
       double tm = generic_proc_t::composite_target_multiplier( t );
 
-      // Preliminary testing shows this is linear with target hp %.
-      // TODO: confirm this applies only to all evoker offensive spells
+      // Current testing shadows Kharnalex Gets Full Value Always
       if ( p()->specialization() == EVOKER_DEVASTATION )
       {
-        if ( !p()->buff.dragonrage->check() || !p()->talent.tyranny.ok() )
-          tm *= 1.0 + p()->cache.mastery_value() * t->health_percentage() / 100;
-        else
-          tm *= 1.0 + p()->cache.mastery_value();
+        tm *= 1.0 + p()->cache.mastery_value();
       }
 
       return tm;
