@@ -297,7 +297,7 @@ struct consecration_tick_t : public paladin_spell_t
     {
       m *= 1.0 + p()->talents.consecration_in_flame->effectN( 2 ).percent();
     }
-    if ( p()->talents.hallowed_ground->ok() )
+    if ( p()->talents.hallowed_ground->ok() && !(p() -> bugs))
     {
       m *= 1.0 + p()->talents.hallowed_ground->effectN( 1 ).percent();
     }
@@ -2951,9 +2951,9 @@ double paladin_t::composite_player_multiplier( school_e school ) const
     {
       m *= 1.0 + buffs.vanguards_momentum_legendary->stack_value();
     }
-    if ( bugs && talents.seal_of_reprisal->ok() )
+    if ( bugs && talents.hallowed_ground->ok() )
     {
-      m *= 1.0 + talents.seal_of_reprisal->effectN( 1 ).percent();
+      m *= 1.0 + talents.hallowed_ground->effectN( 1 ).percent();
     }
   }
 
