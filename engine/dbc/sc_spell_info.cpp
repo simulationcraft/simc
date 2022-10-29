@@ -1787,7 +1787,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
                 dbc.spell( replace_spell_id ) -> name_cstr(), replace_spell_id );
   }
 
-  const auto talents = trait_data_t::find_by_spell( talent_tree::INVALID, spell->id() );
+  const auto talents = trait_data_t::find_by_spell( talent_tree::INVALID, spell->id(), 0, SPEC_NONE, dbc.ptr );
   if ( !talents.empty() )
   {
     s << "Talent Entry     : " << trait_data_to_str( dbc, spell, talents ) << std::endl;

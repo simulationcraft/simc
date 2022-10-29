@@ -297,7 +297,7 @@ struct consecration_tick_t : public paladin_spell_t
     {
       m *= 1.0 + p()->talents.consecration_in_flame->effectN( 2 ).percent();
     }
-    if ( p()->talents.hallowed_ground->ok() )
+    if ( p()->talents.hallowed_ground->ok() && !(p() -> bugs))
     {
       m *= 1.0 + p()->talents.hallowed_ground->effectN( 1 ).percent();
     }
@@ -824,6 +824,10 @@ struct melee_t : public paladin_melee_attack_t
       {
         // Check for BoW procs
         double aow_proc_chance = p()->talents.art_of_war->effectN( 1 ).percent();
+
+        // apparently on live, AoW procs with an 8% chance
+        if ( p()->bugs )
+          aow_proc_chance = 0.08;
 
         if ( p()->talents.blade_of_wrath->ok() )
           aow_proc_chance *= 1.0 + p()->talents.blade_of_wrath->effectN( 1 ).percent();
@@ -2946,6 +2950,10 @@ double paladin_t::composite_player_multiplier( school_e school ) const
     if ( buffs.vanguards_momentum_legendary->up() )
     {
       m *= 1.0 + buffs.vanguards_momentum_legendary->stack_value();
+    }
+    if ( bugs && talents.hallowed_ground->ok() )
+    {
+      m *= 1.0 + talents.hallowed_ground->effectN( 1 ).percent();
     }
   }
 

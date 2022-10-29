@@ -106,9 +106,6 @@ struct priest_pet_t : public pet_t
   {
     double m = pet_t::composite_player_multiplier( school );
 
-    // Orc racial
-    m *= 1.0 + o().racials.command->effectN( 1 ).percent();
-
     return m;
   }
 
@@ -500,6 +497,7 @@ struct priest_pet_spell_t : public spell_t
     parse_buff_effects( p().o().buffs.shadowform );
     parse_buff_effects( p().o().buffs.twist_of_fate, p().o().talents.twist_of_fate );
     parse_buff_effects( p().o().buffs.devoured_pride );
+    parse_buff_effects( p().o().buffs.dark_ascension, true );  // Buffs corresponding non-periodic spells
   }
 
   priest_pet_t& p()

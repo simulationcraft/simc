@@ -560,7 +560,23 @@ class TraitSet(DataSet):
                     _traits[key]['req_points'] = max([_traits[key]['req_points']] + [cond.req_points for cond in (node['cond'] | group['cond'])])
 
                     if node['node'].type == 2:
-                        _traits[key]['selection_index'] = entry.child_ref('TraitNodeXTraitNodeEntry').index
+                        sel_idx = entry.child_ref('TraitNodeXTraitNodeEntry').index
+
+                        # It's possible to have nodes with entries that have the same selection index.
+                        # In such cases, the game seems to assign the first choice to the entry that
+                        # comes earlier in TraitNodeXTraitNodeEntry.db2 itself. As entries are added in
+                        # this same order to _trait_nodes[node_id], we can adjust here by incrementing
+                        # the selection_index on successive entries with the same selection_index as an
+                        # already processed entry that is on the same node.
+
+                        # Iterate through all entries on the node that does not match the current entry
+                        for _e in [e for e in node['entries'] if e.id != entry.id]:
+                            # Check if we've already processed the selection_index for an entry on this node
+                            if _traits[_e.id]['selection_index'] == sel_idx:
+                                # If we have, increment the current entry's selection_index by 1
+                                sel_idx += 1
+
+                        _traits[key]['selection_index'] = sel_idx
 
         _coords = {}
         for entry in _traits.values():

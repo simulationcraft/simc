@@ -3891,6 +3891,7 @@ void sim_t::create_options()
 
   // Dragonflight
   add_option( opt_timespan( "dragonflight.darkmoon_deck_watcher_deplete", dragonflight_opts.darkmoon_deck_watcher_deplete, 0_ms, timespan_t::max() ) );
+  add_option( opt_string( "dragonflight.whispering_incarnate_icon_roles", dragonflight_opts.whispering_incarnate_icon_roles ) );
 }
 
 // sim_t::parse_option ======================================================

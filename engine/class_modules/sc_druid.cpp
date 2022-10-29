@@ -2613,7 +2613,8 @@ public:
     parse_buff_effects<Ts...>( buff, 0U, true, false, mods... );
   }
 
-  void parse_conditional_effects( const spell_data_t* spell, bfun f, unsigned ignore_mask = 0U )
+  void parse_conditional_effects( const spell_data_t* spell, bfun f, unsigned ignore_mask = 0U, bool use_stack = true,
+                                  bool use_default = false )
   {
     if ( !spell || !spell->ok() )
       return;
@@ -2623,7 +2624,7 @@ public:
       if ( ignore_mask & 1 << ( i - 1 ) )
         continue;
 
-      parse_buff_effect( nullptr, f, spell, i, false, false );
+      parse_buff_effect( nullptr, f, spell, i, use_stack, use_default );
     }
   }
 
@@ -2713,6 +2714,9 @@ public:
     parse_buff_effects( p()->buff.touch_the_cosmos );
     // TODO: fix/remove when final bugfix of umbral embrace is pushed
     // parse_buff_effects<S>( p()->buff.umbral_embrace, p()->talent.umbral_embrace );
+    parse_conditional_effects( &p()->buff.umbral_embrace->data(), [ this ]() {
+      return p()->buff.umbral_embrace->check() && p()->eclipse_handler.state != ANY_NEXT;
+    }, 0U, false, true );
     parse_buff_effects( p()->buff.warrior_of_elune, false );
 
     // Feral
@@ -2737,8 +2741,8 @@ public:
     parse_buff_effects( p()->buff.overpowering_aura );
     parse_passive_effects( p()->talent.reinvigoration, p()->talent.innate_resolve.ok() ? 0b01U : 0b10U );
     parse_buff_effects( p()->buff.tooth_and_claw, false );
-    parse_buff_effects( p()->buff.vicious_cycle_mangle, false, true );
-    parse_buff_effects( p()->buff.vicious_cycle_maul, false, true );
+    parse_buff_effects( p()->buff.vicious_cycle_mangle, true, true );
+    parse_buff_effects( p()->buff.vicious_cycle_maul, true, true );
     parse_buff_effects<C>( p()->buff.savage_combatant, p()->conduit.savage_combatant );
 
     // Restoration
@@ -7976,11 +7980,13 @@ struct starfire_t : public druid_spell_t
     else if ( p()->buff.warrior_of_elune->up() )
       p()->buff.warrior_of_elune->decrement();
 
-    p()->buff.umbral_embrace->expire();
     p()->buff.gathering_starstuff->expire();
 
     if ( is_free_proc() )
       return;
+
+    if ( p()->eclipse_handler.state != ANY_NEXT )
+      p()->buff.umbral_embrace->expire();
 
     p()->eclipse_handler.cast_starfire();
   }
@@ -8625,11 +8631,13 @@ struct wrath_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    p()->buff.umbral_embrace->expire();
     p()->buff.gathering_starstuff->expire();
 
     if ( is_free_proc() )
       return;
+
+    if ( p()->eclipse_handler.state != ANY_NEXT )
+      p()->buff.umbral_embrace->expire();
 
     // in druid_t::init_finished(), we set the final wrath of the precombat to have energize type of NONE, so that
     // we can handle the delayed enerigze & eclipse stack triggering here.
@@ -11295,24 +11303,24 @@ void druid_t::init()
   }
 }
 
-bool druid_t::validate_fight_style( fight_style_e /* style */) const
+bool druid_t::validate_fight_style( fight_style_e /* style */ ) const
 {
-  if ( SC_BETA == 0 && strcmp( SC_MAJOR_VERSION, "1000" ) == 0 )
+  if ( SC_BETA == 0 && strcmp( SC_MAJOR_VERSION, "1000" ) == 0 && level() == 60 )
   {
     sim->error( "Prepatch {} sims are untested and not supported. Many legendaries and conduits may not work. Sim at your own risk!",
-                util::specialization_string( specialization() ) );
+      util::specialization_string( specialization() ) );
   }
-/* uncomment if certain fight styles prove problematic again
-  switch ( specialization() )
-  {
-    case DRUID_BALANCE:
-    case DRUID_FERAL:
-    case DRUID_GUARDIAN:
-    case DRUID_RESTORATION:
-    default:
-      break;
-  }
-*/
+  /* uncomment if certain fight styles prove problematic again
+    switch ( specialization() )
+    {
+      case DRUID_BALANCE:
+      case DRUID_FERAL:
+      case DRUID_GUARDIAN:
+      case DRUID_RESTORATION:
+      default:
+        break;
+    }
+  */
   return true;
 }
 

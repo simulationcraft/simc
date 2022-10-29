@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.46293 dragonflight-BETA (hotfix 2022-10-26/46293, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.46340 Live (hotfix 2022-10-29/46340)
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Talent Entry     : Generic [tree=class, row=2, col=3, max_rank=1, req_points=0]
 Class            : Paladin, Mage
@@ -1433,7 +1433,7 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
 #2 (id=376737)   : Trigger Missiles (32)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.1) | PvP Coefficient: 1.00000 | Trigger Spell: 228354 | Target: Enemy (6)
-Description      : Unleash a flurry of ice, striking the target $s1 times for a total of ${$228354s2*$m1} Frost damage. Each hit reduces the target's movement speed by $228354s1 for $228354d$?a378947[, has a $378947s1% chance to activate Glacial Assault,][] and applies Winter's Chill to the target.
+Description      : Unleash a flurry of ice, striking the target $s1 times for a total of ${$228354s2*$m1} Frost damage. Each hit reduces the target's movement speed by $228354s1% for $228354d$?a378947[, has a $378947s1% chance to activate Glacial Assault,][] and applies Winter's Chill to the target.
 
 Winter's Chill causes the target to take damage from your spells as if it were frozen.
 
@@ -13653,7 +13653,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1015497)  : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value 2: 0x8 | Target: Self (1)
-Hotfixed         : Sub Type (80 -> 137), Misc Value (3 -> 0), Misc Value 2 (0 -> 8)
 #2 (id=1015498)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 383499
 Description      : $@spelldesc383499

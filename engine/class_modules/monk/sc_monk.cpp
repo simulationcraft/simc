@@ -2127,7 +2127,7 @@ struct blackout_kick_totm_proc_t : public monk_melee_attack_t
     double m = monk_melee_attack_t::composite_crit_damage_bonus_multiplier();
 
     if ( p()->specialization() == MONK_WINDWALKER && p()->talent.windwalker.hardened_soles->ok() )
-      m += p()->talent.windwalker.hardened_soles->effectN( 2 ).percent();
+      m *= 1 + p()->talent.windwalker.hardened_soles->effectN( 2 ).percent();
 
     return m;
   }
@@ -2320,6 +2320,26 @@ struct blackout_kick_t : public monk_melee_attack_t
           p()->gain.bok_proc->add( RESOURCE_CHI, base_costs[RESOURCE_CHI] );
       }
     }
+  }
+
+  double composite_crit_chance() const override
+  {
+    double c = monk_melee_attack_t::composite_crit_chance();
+
+    if ( p()->specialization() == MONK_WINDWALKER && p()->talent.windwalker.hardened_soles->ok() )
+      c += p()->talent.windwalker.hardened_soles->effectN( 1 ).percent();
+
+    return c;
+  }
+
+  double composite_crit_damage_bonus_multiplier() const override
+  {
+    double m = monk_melee_attack_t::composite_crit_damage_bonus_multiplier();
+
+    if ( p()->specialization() == MONK_WINDWALKER && p()->talent.windwalker.hardened_soles->ok() )
+      m *= 1 + p()->talent.windwalker.hardened_soles->effectN( 2 ).percent();
+
+    return m;
   }
 
   double action_multiplier() const override
@@ -3644,13 +3664,15 @@ struct touch_of_death_t : public monk_melee_attack_t
     trigger_bountiful_brew      = true;
     cast_during_sck             = true;
     parse_options( options_str );
+
     cooldown->duration = data().cooldown();
 
     if ( p.shared.fatal_touch && p.shared.fatal_touch->ok() )
-      cooldown->duration += p.shared.fatal_touch->effectN( 1 ).time_value();
+      cooldown->duration += p.shared.fatal_touch->effectN( 1 ).time_value(); // -45000, -90000
 
     if ( p.specialization() == MONK_WINDWALKER && p.talent.windwalker.fatal_flying_guillotine->ok() )
       aoe = 1 + (int)p.talent.windwalker.fatal_flying_guillotine->effectN( 1 ).base_value();
+
   }
 
   void init() override
@@ -3664,14 +3686,17 @@ struct touch_of_death_t : public monk_melee_attack_t
   {
     return 0;
   }
-
+    
   bool ready() override
   {
-    if ( p()->talent.general.improved_touch_of_death->ok() &&
-         ( target->health_percentage() < p()->talent.general.improved_touch_of_death->effectN( 1 ).percent() ) )
+    // Deals damage equal to 35% of your maximum health against players and stronger creatures under 15% health
+    if ( target->true_level > p()->true_level && p()->talent.general.improved_touch_of_death->ok() &&
+         ( target->health_percentage() < p()->talent.general.improved_touch_of_death->effectN( 1 ).base_value() ) )
       return monk_melee_attack_t::ready();
-    if ( ( target->true_level <= p()->true_level ) &&
-         ( target->current_health() <= p()->resources.max[ RESOURCE_HEALTH ] ) )
+
+    // You exploit the enemy target's weakest point, instantly killing creatures if they have less health than you
+    // Only applicable in health based sims
+    if ( target->current_health() > 0 && target->current_health() <= p()->resources.max[ RESOURCE_HEALTH ] )
       return monk_melee_attack_t::ready();
 
     return false;
@@ -3685,14 +3710,14 @@ struct touch_of_death_t : public monk_melee_attack_t
     {
       case MONK_WINDWALKER:
 
-        if ( p()->talent.windwalker.forbidden_touch->ok() )
+        if ( p()->talent.windwalker.forbidden_technique->ok() )
         {
           if ( p()->buff.hidden_masters_forbidden_touch->up() )
             p()->buff.hidden_masters_forbidden_touch->expire();
           else
           {
-            p()->buff.hidden_masters_forbidden_touch->execute();
-            this->cooldown->reset( true );
+            p()->buff.hidden_masters_forbidden_touch->trigger();
+            p()->cooldown.touch_of_death->reset( true );
           }
         }
 
@@ -3720,28 +3745,37 @@ struct touch_of_death_t : public monk_melee_attack_t
 
   void impact( action_state_t* s ) override
   {
-    // Damage is associated with the players non-buffed max HP
-    // Meaning using Fortifying Brew does not affect ToD's damage
-    double amount = p()->resources.initial[RESOURCE_HEALTH];
+    // In execute range ToD deals the target health in damage
+    double amount = target->current_health();
 
-    if ( target->true_level > p()->true_level )
-      amount *= p()->talent.general.improved_touch_of_death->effectN( 2 ).percent();  // 35% HP
-
-    if ( p()->specialization() == MONK_WINDWALKER )
+    // Not in execute range
+    // or not a health-based fight style
+    if ( target->current_health() == 0 || target->current_health() > p()->resources.max[RESOURCE_HEALTH] )
     {
-      if ( p()->talent.windwalker.meridian_strikes.ok() )
-        amount *= 1 + p()->talent.windwalker.meridian_strikes->effectN( 1 ).percent();
+      // Damage is associated with the players non-buffed max HP
+      // Meaning using Fortifying Brew does not affect ToD's damage
+      double amount = p()->resources.initial[RESOURCE_HEALTH];
 
-      if ( p()->talent.windwalker.forbidden_touch->ok() )
-        amount *= 1 + p()->talent.windwalker.forbidden_touch->effectN( 2 ).percent();
+      if ( target->true_level > p()->true_level )
+        amount *= p()->talent.general.improved_touch_of_death->effectN( 2 ).percent();  // 35% HP
 
-      // Damage is only affected by Windwalker's Mastery
-      // Versatility does not affect the damage of Touch of Death.
-      if ( p()->buff.combo_strikes->up() )
-        amount *= 1 + p()->cache.mastery_value();
+      if ( p()->specialization() == MONK_WINDWALKER )
+      {
+        if ( p()->talent.windwalker.meridian_strikes.ok() )
+          amount *= 1 + p()->talent.windwalker.meridian_strikes->effectN( 1 ).percent();
+
+        if ( p()->talent.windwalker.forbidden_technique->ok() )
+          amount *= 1 + p()->talent.windwalker.forbidden_technique->effectN( 2 ).percent();
+
+        // Damage is only affected by Windwalker's Mastery
+        // Versatility does not affect the damage of Touch of Death.
+        if ( p()->buff.combo_strikes->up() )
+          amount *= 1 + p()->cache.mastery_value();
+      }
+
+      s->result_total = s->result_raw = amount;
     }
 
-    s->result_total = s->result_raw = amount;
     monk_melee_attack_t::impact( s );
 
     if ( p()->specialization() == MONK_BREWMASTER )
@@ -6887,7 +6921,7 @@ struct fortifying_brew_t : public monk_buff_t<buff_t>
   {
     double health_multiplier = ( p().bugs ? 0.2 : 0.15 );  // p().spec.fortifying_brew_mw_ww->effectN( 1 ).percent();
 
-    if ( p().talent.brewmaster.fortifying_brew_stagger->ok() )
+    if ( p().talent.brewmaster.fortifying_brew_determination->ok() )
     {
       // The tooltip is hard-coded with 20% if Brewmaster Rank 2 is activated
       // Currently it's bugged and giving 17.39% HP instead of the intended 20%
@@ -8103,7 +8137,7 @@ void monk_t::init_spells()
       // Row 7
       talent.brewmaster.scalding_brew                       = _ST( "Scalding Brew" );
       talent.brewmaster.salsalabims_strength                = _ST( "Sal'salabim's Strength" );
-      talent.brewmaster.fortifying_brew_stagger             = find_talent_spell(talent_tree::SPECIALIZATION, 322960);
+      talent.brewmaster.fortifying_brew_determination       = is_ptr() ? _ST( "Fortifying Brew: Determination" ) :find_talent_spell( talent_tree::SPECIALIZATION, 322960 );
       talent.brewmaster.black_ox_brew                       = _ST( "Black Ox Brew" );
       talent.brewmaster.bob_and_weave                       = _ST( "Bob and Weave" );
       talent.brewmaster.invoke_niuzao_the_black_ox          = find_talent_spell( talent_tree::SPECIALIZATION, 132578 ); //_ST( "Invoke Niuzao, the Black Ox" ); This pulls Rank 2 (322740) for some reason
@@ -8245,7 +8279,7 @@ void monk_t::init_spells()
      
       // Row 7
       talent.windwalker.rushing_jade_wind                   = _ST( "Rushing Jade Wind" );
-      talent.windwalker.forbidden_touch                     = _ST( "Forbidden Touch" );
+      talent.windwalker.forbidden_technique                     = _ST( "Forbidden Technique" );
       talent.windwalker.invoke_xuen_the_white_tiger         = _ST( "Invoke Xuen, the White Tiger" );
       talent.windwalker.teachings_of_the_monastery          = _ST( "Teachings of the Monastery" );
       talent.windwalker.thunderfist                         = _ST( "Thunderfist" );
@@ -8515,7 +8549,7 @@ void monk_t::init_spells()
   passives.keefers_skyreach_debuff          = find_spell( 344021 );
   passives.mark_of_the_crane                = find_spell( 228287 );
   passives.power_strikes_chi                = find_spell( 121283 );
-  passives.thunderfist                      = find_spell( 242390 );
+  passives.thunderfist                      = find_spell( 242387 );
   passives.touch_of_karma_tick              = find_spell( 124280 );
   passives.whirling_dragon_punch_tick       = find_spell( 158221 );
 
@@ -8985,7 +9019,7 @@ void monk_t::create_buffs ()
     buff.teachings_of_the_monastery =
       make_buff( this, "teachings_of_the_monastery", find_spell( 202090 ) )->set_default_value_from_effect( 1 );
 
-    buff.thunderfist = make_buff ( this, "thunderfist", passives.thunderfist );
+    buff.thunderfist = make_buff( this, "thunderfist", passives.thunderfist );
 
     buff.touch_of_death_ww = new buffs::touch_of_death_ww_buff_t ( *this, "touch_of_death_ww", spell_data_t::nil () );
 
@@ -10474,7 +10508,7 @@ double monk_t::stagger_base_value()
     if ( talent.brewmaster.high_tolerance->ok() )
       stagger_base *= 1 + talent.brewmaster.high_tolerance->effectN( 5 ).percent();
 
-    if ( talent.brewmaster.fortifying_brew_stagger->ok() && buff.fortifying_brew->up() )
+    if ( talent.brewmaster.fortifying_brew_determination->ok() && buff.fortifying_brew->up() )
       stagger_base *= 1 + passives.fortifying_brew->effectN( 6 ).percent();
 
     // Hard coding the 125% multiplier until Blizzard fixes this

@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.46293 dragonflight-BETA (hotfix 2022-10-26/46293, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.46340 Live (hotfix 2022-10-29/46340)
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -811,7 +811,7 @@ Stacks           : 2 initial, 2 maximum
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x...... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken
-Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Gathering Storms (198300 effect#1), Stormbringer (201846 effects: #4, #5), Elemental Assault (210853 effect#1), Thunderaan's Fury (287768 effect#2), Legacy of the Frost Witch (335901 effect#1), Legacy of the Frost Witch (384451 effects: #1, #2), Earthen Weapon (392375 effects: #1, #2)
+Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Converging Storms (198300 effect#1), Stormbringer (201846 effects: #4, #5), Elemental Assault (210853 effect#1), Thunderaan's Fury (287768 effect#2), Legacy of the Frost Witch (335901 effect#1), Legacy of the Frost Witch (384451 effects: #1, #2), Earthen Weapon (392375 effects: #1, #2)
 Triggered by     : Stormstrike (17364)
 Family Flags     : 39, 58, 76
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ........ 
@@ -837,7 +837,7 @@ Spell Type       : Melee
 Spell Level      : 19
 Range            : 5 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Gathering Storms (198300 effect#1), Stormbringer (201846 effects: #4, #5), Elemental Assault (210853 effect#1), Thunderaan's Fury (287768 effect#2), Legacy of the Frost Witch (335901 effect#1), Legacy of the Frost Witch (384451 effects: #1, #2), Earthen Weapon (392375 effects: #1, #2)
+Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Converging Storms (198300 effect#1), Stormbringer (201846 effects: #4, #5), Elemental Assault (210853 effect#1), Thunderaan's Fury (287768 effect#2), Legacy of the Frost Witch (335901 effect#1), Legacy of the Frost Witch (384451 effects: #1, #2), Earthen Weapon (392375 effects: #1, #2)
 Triggered by     : Stormstrike (17364)
 Family Flags     : 39, 58, 76
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
@@ -1961,8 +1961,6 @@ Spell Level      : 2
 Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Charges          : 0 (12 seconds cooldown)
-Category         : 1254
 Proc Chance      : 100%
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -2520,7 +2518,7 @@ Spell Level      : 42
 Duration         : 8 seconds
 Cooldown         : 120 seconds
 Labels           : 1284: Symbol of Hope (265144 effect#2)
-Affecting spells : Astral Shift (263786 effect#1), Astral Bulwark (377933 effect#1), Planes Traveler (381647 effects: #1, #2)
+Affecting spells : Ethereal Form (210918 effect#6), Astral Shift (263786 effect#1), Astral Bulwark (377933 effect#1), Planes Traveler (381647 effects: #1, #2)
 Family Flags     : 43
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2676,7 +2674,7 @@ Spell Level      : 50
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 180 seconds
-Affecting spells : Oath of the Far Seer (381785 effect#2)
+Affecting spells : Oath of the Far Seer (381785 effects: #2, #3)
 Family Flags     : 102
 Attributes       : ........ ........ x....... .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2697,10 +2695,14 @@ Effects          :
 #3 (id=127189)   : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: -8000 | Scaled Value: -8000 | PvP Coefficient: 1.00000 | Misc Value: 1536 | Target: Self (1)
                    Affected Spells (Category): Lava Burst (51505)
+#4 (id=1038728)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Transform into a Flame Ascendant for $d, replacing Chain Lightning with Lava Beam, removing the cooldown on Lava Burst, and increasing the damage of Lava Burst by an amount equal to your critical strike chance.
 
 When you transform into the Flame Ascendant, instantly cast a Lava Burst at all enemies affected by your Flame Shock, and refresh your Flame Shock durations to $188389d.
-Tooltip          : Transformed into a powerful Fire ascendant. Chain Lightning is transformed into Lava Beam.
+Tooltip          : Transformed into a powerful Fire ascendant. Chain Lightning is transformed into Lava Beam.$?$w4>0[
+
+Haste increased by $w4%][].
 
 Name             : Ascendance (id=114051) [Spell Family (11)] 
 Talent Entry     : Enhancement [tree=spec, row=8, col=3, max_rank=1, req_points=20, select_idx=200]
@@ -2712,7 +2714,7 @@ GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 180 seconds
 Labels           : 2339: Static Accumulation (384411 effect#1)
-Affecting spells : Oath of the Far Seer (381785 effect#2)
+Affecting spells : Oath of the Far Seer (381785 effects: #2, #3)
 Family Flags     : 102
 Attributes       : ........ ........ x....... .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2761,7 +2763,7 @@ Cooldown         : 180 seconds
 Proc Chance      : 100%
 Proc Flags       : ........ ......x. .....x.. ........ 
                  : Magic Heal, Trap Triggered
-Affecting spells : Oath of the Far Seer (381785 effect#2)
+Affecting spells : Oath of the Far Seer (381785 effects: #2, #3)
 Family Flags     : 102
 Attributes       : ........ ........ x....... .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -2979,7 +2981,7 @@ Range            : 100 yards
 Velocity         : 30 yards/sec
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Proc Chance      : 101%
-Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Gathering Storms (198300 effect#1), Stormbringer (201846 effects: #4, #5), Elemental Assault (210853 effect#1), Thunderaan's Fury (287768 effect#2), Legacy of the Frost Witch (335901 effect#1), Legacy of the Frost Witch (384451 effects: #1, #2), Earthen Weapon (392375 effects: #1, #2)
+Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Converging Storms (198300 effect#1), Stormbringer (201846 effects: #4, #5), Elemental Assault (210853 effect#1), Thunderaan's Fury (287768 effect#2), Legacy of the Frost Witch (335901 effect#1), Legacy of the Frost Witch (384451 effects: #1, #2), Earthen Weapon (392375 effects: #1, #2)
 Triggered by     : Windstrike (115356)
 Family Flags     : 39, 58, 76
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ........ 
@@ -3006,7 +3008,7 @@ Spell Level      : 19
 Range            : 100 yards
 Velocity         : 30 yards/sec
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Gathering Storms (198300 effect#1), Stormbringer (201846 effects: #4, #5), Elemental Assault (210853 effect#1), Thunderaan's Fury (287768 effect#2), Legacy of the Frost Witch (335901 effect#1), Legacy of the Frost Witch (384451 effects: #1, #2), Earthen Weapon (392375 effects: #1, #2)
+Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Converging Storms (198300 effect#1), Stormbringer (201846 effects: #4, #5), Elemental Assault (210853 effect#1), Thunderaan's Fury (287768 effect#2), Legacy of the Frost Witch (335901 effect#1), Legacy of the Frost Witch (384451 effects: #1, #2), Earthen Weapon (392375 effects: #1, #2)
 Triggered by     : Windstrike (115356)
 Family Flags     : 39, 58, 76
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
@@ -3664,7 +3666,7 @@ Effects          :
 Description      : $@spelldesc147784
 
 Name             : Adaptation (id=152244) [Passive] 
-Class            : Hunter, Death Knight, Shaman
+Class            : Shaman
 School           : Physical
 Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -3690,7 +3692,7 @@ Blood of the Rhino
 Great Stamina|r
 
 Name             : Combat Experience (id=156843) [Spell Family (9), Passive] 
-Class            : Hunter, Death Knight, Shaman
+Class            : Shaman
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
@@ -4690,27 +4692,7 @@ Attributes       : ....x... ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=281765)   : Summon (28)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 97285 | Misc Value 2: 0xe6f | Radius: 10 yards | Target: AOE friendly (31)
-Description      : Summons a totem at the target location for $d, continually granting all allies who pass within $192078s1 yards $192082s% increased movement speed for $192082d.
-
-Name             : Wind Rush Totem (id=192078) [Spell Family (11), Passive] 
-Class            : Shaman
-School           : Nature
-Spell Type       : Magic
-Spell Level      : 1
-Family Flags     : 53
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Passive (6), Allow Class Ability Procs (416)
-Effects          :
-#1 (id=281766)   : Apply Aura (6) | Unknown(395)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 8537 | Target: Self (1)
-Description      : $@spelldesc192077
+Description      : Summons a totem at the target location for $d, continually granting all allies who pass within $a1 yards $192082s1% increased movement speed for $192082d.
 
 Name             : Wind Rush (id=192082) [Spell Family (11)] 
 Class            : Shaman
@@ -5170,7 +5152,6 @@ Description      : $@spelldesc210689
 Tooltip          : Casting Shaman's Lightning Bolt and Chain Lightning also deal $210689s2% of their damage to the Lightning Rod.
 
 Name             : Sundering (id=197214) [Spell Family (11)] 
-Hotfixed         : Affecting Spells
 Talent Entry     : Enhancement [tree=spec, row=5, col=2, max_rank=1, req_points=8]
 Class            : Shaman
 School           : Flamestrike
@@ -5337,7 +5318,7 @@ Description      : Calls forth a Greater Earth Elemental to protect you and your
 
 While this elemental is active, your maximum health is increased by $381755s1%.
 
-Name             : Gathering Storms (id=198300) [Spell Family (11)] 
+Name             : Converging Storms (id=198300) [Spell Family (11)] 
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -6402,6 +6383,72 @@ Effects          :
                    Family Flags: 36
 Description      : Stormstrike damage is increased by $s1%, and Stormstrike has a $m3% chance to generate $m2 $Lstack:stacks; of Maelstrom Weapon.
 
+Name             : Ethereal Form (desc=PvP Talent) (id=210918) [Spell Family (11)] 
+Class            : Shaman
+School           : Physical
+Spell Type       : None
+Spell Level      : 42
+GCD              : 1 seconds
+Duration         : 10 seconds
+Cooldown         : 60 seconds
+Stance Mask      : 0x00008000
+Affecting spells : Astral Bulwark (377933 effect#2), Planes Traveler (381647 effects: #3, #4)
+Family Flags     : 107
+Attributes       : ........ ........ x....... .x......   .....x.. ..x..... ........ ........ 
+                 : .x...... ........ ...x.... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ...x.... ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Not Shapeshifted (16), Cooldown On Event (25), Allow While Stealthed (37), No Threat (42), No shapeshift UI (65), Allow While Not Shapeshifted (caster form) (83), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=312436)   : Apply Aura (6) | Decrease Movement Speed% (33)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=312437)   : Apply Aura (6) | Damage Immunity (40)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+#3 (id=312438)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 126 | Target: Self (1)
+#4 (id=312442)   : Apply Aura (6) | Pacify Silence (60)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
+#5 (id=312777)   : Apply Aura (6) | Modify Damage Taken% (87)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7e | Target: Self (1)
+                   Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
+#6 (id=370407)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
+                   Base Value: 211060 | Scaled Value: 211060 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Astral Shift (108271)
+                   Family Flags: 43
+#7 (id=1038936)  : Apply Aura (6) | Shapeshift (36)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 16 | Misc Value 2: 0x2
+Description      : You turn ethereal, making you immune to all physical damage$?s377933[ and reducing magic damage taken by $377933s2%][], but unable to attack or cast spells and your movement speed is reduced by $m1%. Lasts for $d.
+
+Use Ethereal Form again to shift out.
+Tooltip          : Immune to all physical damage$?s377933[ and magic damage taken reduced by $377933s2%][].
+Unable to attack or cast spells.
+
+Name             : Ethereal Form: Return (desc=PvP Talent) (id=211060) [Spell Family (11)] 
+Class            : Shaman
+School           : Physical
+Spell Type       : None
+Spell Level      : 1
+GCD              : 2 seconds
+Category         : 1832
+Stance Mask      : 0x00008000
+Attributes       : ........ ........ ........ ........   .....x.. ..x..... ........ ....x... 
+                 : ........ ........ ...x.... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Allow While Stealthed (37), No Threat (42), No Aura Icon (60), Allow While Not Shapeshifted (caster form) (83), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=312626)   : Dummy (3)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Removes you from your ethereal state.
+
 Name             : Ancestral Vision (id=212048) [Spell Family (11)] 
 Class            : Restoration Shaman
 School           : Nature
@@ -6515,10 +6562,9 @@ Effects          :
                    Affected Spells: Lava Lash (60103)
                    Family Flags: 66
 Description      : $@spelldesc201900
-Tooltip          : Lava Lash damage increased by $s1% and cooldown reduced by ${$s2/4}%.
+Tooltip          : Lava Lash damage increased by $s1% and cooldown reduced by ${100*(1-(100/(100+$m2)))}%.
 
 Name             : Feral Lunge (id=215802) [Spell Family (11)] 
-Hotfixed         : Affecting Spells
 Class            : Shaman
 School           : Physical
 Spell Type       : Melee
@@ -12932,7 +12978,7 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 50
 Labels           : 1679: Nature's Fury (381655 effect#2)
-Affecting spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Crackling Surge (224127 effects: #1, #2), Oath of the Far Seer (381785 effect#2)
+Affecting spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Crackling Surge (224127 effects: #1, #2), Oath of the Far Seer (381785 effects: #2, #3)
 Triggered by     : Ascendance (114051)
 Family Flags     : 39, 56, 102, 126
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13465,9 +13511,9 @@ Effects          :
                    Family Flags: 43
 #2 (id=1038937)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 5 (33)
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Misc Value: 33 | Target: Self (1)
+                   Affected Spells: Ethereal Form (210918)
                    Family Flags: 107
-Hotfixed         : NEW EFFECT
-Description      : Astral Shift reduces damage taken by an additional $s1%.
+Description      : $?s210918[Ethereal Form reduces magic damage taken by $s2%.][Astral Shift reduces damage taken by an additional $s1%.]
 
 Name             : Thunderous Paws (id=378075) [Spell Family (11), Passive, Hidden] 
 Talent Entry     : Generic [tree=class, row=2, col=4, max_rank=1, req_points=0, select_idx=200]
@@ -13624,7 +13670,6 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Chain Heal (1064), Healing Surge (8004), Healing Rain (73920), Healing Wave (77472), Elemental Blast (117014), Wellspring (197995), Wellspring (197997), Downpour (207778)
                    Family Flags: 7, 8, 33, 51, 80, 84, 98
-Hotfixed         : Affects Spells
 #2 (id=1006347)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Chain Heal (1064), Healing Surge (8004), Healing Rain (73920), Healing Wave (77472), Elemental Blast (117014), Lightning Bolt (188196), Chain Lightning (188443), Wellspring (197995), Wellspring (197997), Downpour (207778), Lightning Bolt Overload (214816)
@@ -13633,7 +13678,6 @@ Hotfixed         : Affects Spells
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Lightning Bolt (188196), Chain Lightning (188443), Lightning Bolt Overload (214816)
                    Family Flags: 0, 1
-Hotfixed         : NEW EFFECT
 Description      : Your next healing or damaging Nature spell is instant cast and costs no mana.
 Tooltip          : Your next healing or damaging Nature spell is instant cast and costs no mana.
 
@@ -14211,13 +14255,13 @@ Effects          :
                    Family Flags: 43
 #3 (id=1038939)  : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
                    Base Value: -15000 | Scaled Value: -15000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
+                   Affected Spells: Ethereal Form (210918)
                    Family Flags: 107
-Hotfixed         : NEW EFFECT
 #4 (id=1038940)  : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 4000 | Scaled Value: 4000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+                   Affected Spells: Ethereal Form (210918)
                    Family Flags: 107
-Hotfixed         : NEW EFFECT
-Description      : Reduces the cooldown of Astral Shift by ${$s1/-1000} sec and increases its duration by ${$s2/1000} sec.
+Description      : Reduces the cooldown of $?s210918[Ethereal Form by ${$s3/-1000} sec and increases its duration by ${$s4/1000}][Astral Shift by ${$s1/-1000} sec and increases its duration by ${$s2/1000}] sec.
 
 Name             : Elemental Warding (id=381650) [Spell Family (11), Passive, Hidden] 
 Talent Entry     : Generic [tree=class, row=6, col=2, max_rank=2, req_points=8]
@@ -14736,6 +14780,7 @@ Name             : Oath of the Far Seer (id=381785) [Spell Family (11), Passive,
 Talent Entry     : Elemental [tree=spec, row=9, col=5, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(8, 15)]
                  : Effect#2 [op=set, values=(-30000, -60000)]
+                 : Effect#3 [op=set, values=(8, 15)]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -14753,6 +14798,10 @@ Effects          :
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 1732 (Label) | Target: Self (1)
 #2 (id=1033618)  : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
                    Base Value: -45000 | Scaled Value: -45000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
+                   Affected Spells: Ascendance (114050), Ascendance (114051), Ascendance (114052), Ascendance (344548)
+                   Family Flags: 102
+#3 (id=1038729)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Ascendance (114050), Ascendance (114051), Ascendance (114052), Ascendance (344548)
                    Family Flags: 102
 Description      : Reduces the cooldown of Ascendance by ${$s2/-1000} sec, and you gain $s1% additional Haste while Ascendance is active.
@@ -15886,7 +15935,7 @@ Effects          :
 #1 (id=1014654)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Cooldown (11)
                    Base Value: -60000 | Scaled Value: -60000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Misc Value 2: 1676 (Label) | Target: Self (1)
                    Affected Spells (Label): Totemic Recall (108285)
-Description      : Reduces the cooldown of Call of the Elements by ${$s1/-1000} sec.
+Description      : Reduces the cooldown of $@spellname108285 by ${$s1/-1000} sec.
 
 Name             : Creation Core (id=383012) [Spell Family (11), Passive, Hidden] 
 Talent Entry     : Generic [tree=class, row=10, col=3, max_rank=1, req_points=20, select_idx=300]
@@ -15905,7 +15954,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1014655)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Call of the Elements affects an additional totem.
+Description      : $@spellname108285 affects an additional totem.
 
 Name             : Poison Cleansing Totem (id=383013) [Spell Family (11)] 
 Talent Entry     : Generic [tree=class, row=9, col=3, max_rank=1, req_points=20]
@@ -16393,7 +16442,7 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Consuming at least $s2 $Lstack:stacks; of Hailstorm, using Ice Strike, and each explosion from Fire Nova now also grants you $s1 $lstack:stacks; of Maelstrom Weapon.
 
-Name             : Gathering Storms (id=384363) [Spell Family (11), Passive, Hidden] 
+Name             : Converging Storms (id=384363) [Spell Family (11), Passive, Hidden] 
 Talent Entry     : Enhancement [tree=spec, row=7, col=4, max_rank=1, req_points=8]
 Class            : Shaman
 School           : Physical
@@ -16646,7 +16695,7 @@ Effects          :
 Description      : Lava Burst and Lava Burst Overload damage reduces the cooldown of Primordial Wave by ${$s1/-1000}.1 sec.
 
 Name             : Primordial Surge (id=386474) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Elemental [tree=spec, row=10, col=2, max_rank=1, req_points=20, select_idx=200, name="Heat Wave"]
+Talent Entry     : Elemental [tree=spec, row=10, col=2, max_rank=1, req_points=20, select_idx=200]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -17248,7 +17297,6 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
 Effects          :
 #1 (id=1034667)  : Apply Aura (6) | Modify Critical Strike% (290)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Sub Type (108 -> 290), Misc Value (7 -> 0), Affects Spells
 Description      : $@spelldesc393695
 Tooltip          : Critical Strike increased by $w1%.
 
@@ -17295,7 +17343,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1036879)  : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Sub Type (405 -> 193), Misc Value (917504 -> 0)
 Description      : $@spelldesc393693
 Tooltip          : Haste increased by $w1%.
 

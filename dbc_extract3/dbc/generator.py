@@ -1342,6 +1342,7 @@ class SpellDataGenerator(DataGenerator):
          367327, 367455, 367457, 367458, # Gemstone of Prismatic Brilliance
          368643, # Chains of Domination AoE damage
          363338, # Jailer fight buff
+         373108, 373113, 373116, 373121, # Season 4 M+ Bounty buffs
          # 10.0 =============================================================
          371070, # Rotting from Within debuff on 'toxic' consumables
          371348, 371350, 371351, 371353, # Phial of Elemental Chaos
@@ -1355,6 +1356,12 @@ class SpellDataGenerator(DataGenerator):
          375335, 375342, 375343, 375345, # Elemental Lariat JC Neck
          376932, # MAGIC SNOWBALL
          379403, 379407, # Toxic Thorn Footwraps LW Boots
+         382095, 382096, 382097, # Rumbling Ruby trinket
+         382078, 382079, 382080, 382081, 382082, 382083, 394460, 394461, 394462, # Whispering Incarnate Icon
+         377451, 381824, # Conjured Chillglobe
+         382425, 382428, 394864, # Spiteful Storm
+         382090, # Storm-Eater's Boon
+         382131, 394618, # Iceblood Deathsnare
         ),
 
         # Warrior:
@@ -2097,6 +2104,7 @@ class SpellDataGenerator(DataGenerator):
           ( 337567, 1 ), # Chaotic Blades legendary buff
           ( 390197, 1 ), # Ragefire talent damage spell
           ( 390195, 1 ), # Chaos Theory talent buff
+          ( 390145, 1 ), # Inner Demon talent buff
           ( 391374, 1 ), ( 391378, 1 ), ( 393054, 1 ), ( 393055, 1 ), # First Blood Chaos spells
           ( 393628, 0 ), ( 393629, 0 ), # T29 Set Bonus Spells
 
@@ -2115,6 +2123,7 @@ class SpellDataGenerator(DataGenerator):
           # General
           ( 372470, 0 ), # Scarlet Adaptation buff
           ( 370901, 0 ), ( 370917, 0 ), # Leaping Flames buff
+          ( 359115, 0),  # Empower Triggered GCD
           # Devastation
           ( 386399, 1 ), # Iridescence: Blue buff
           ( 375802, 1 ), # Burnout buff

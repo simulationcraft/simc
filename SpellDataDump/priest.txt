@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.46293 dragonflight-BETA (hotfix 2022-10-26/46293, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.46340 Live (hotfix 2022-10-29/46340)
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Hotfixed         : Variables
 Class            : Priest
@@ -10148,7 +10148,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Allow Cast While Casting (135), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=833323)   : Summon (28)
-                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Misc Value: 98167 | Misc Value 2: 0x13eb | Radius: 3 yards | Target: Unknown(73)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 98167 | Misc Value 2: 0x13eb | Radius: 3 yards | Target: Unknown(73)
+Hotfixed         : Base Value (60 -> 0)
 Description      : $@spelldesc336214
 
 Name             : Flash Concentration (id=336266) [Spell Family (6), Passive] 
@@ -10294,7 +10295,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=833843)   : Summon (28)
-                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Misc Value: 172309 | Misc Value 2: 0x142d | Radius: 3 yards | Target: Unknown(91)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 172309 | Misc Value 2: 0x142d | Radius: 3 yards | Target: Unknown(91)
+Hotfixed         : Base Value (60 -> 0)
 #2 (id=833844)   : Trigger Spell (64): Divine Image
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 196705 | Target: Self (1)
 Description      : $@spelldesc336400
@@ -11345,7 +11347,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Allow Cast While Casting (135), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=869352)   : Summon (28)
-                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Misc Value: 175198 | Misc Value 2: 0x13eb | Radius: 3 yards | Target: Unknown(73)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 175198 | Misc Value 2: 0x13eb | Radius: 3 yards | Target: Unknown(73)
+Hotfixed         : Base Value (60 -> 0)
 Description      : $@spelldesc193371
 
 Name             : Mind Sear (id=344754) [Spell Family (6)] 
@@ -14105,7 +14108,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Allow Cast While Casting (135), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1005146)  : Summon (28)
-                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Misc Value: 192337 | Misc Value 2: 0x1513 | Radius: 3 yards | Target: Unknown(73)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 192337 | Misc Value 2: 0x1513 | Radius: 3 yards | Target: Unknown(73)
+Hotfixed         : Base Value (60 -> 0)
 Description      : $@spelldesc377349
 
 Name             : Idol of C'Thun (id=377358) [Spell Family (6)] 
@@ -16430,7 +16434,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Do Not Display Range (126), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1031612)  : Summon (28)
-                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Misc Value: 198236 | Misc Value 2: 0x1580 | Radius: 3 yards | Target: Unknown(91)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 198236 | Misc Value 2: 0x1580 | Radius: 3 yards | Target: Unknown(91)
+Hotfixed         : Base Value (60 -> 0)
 #2 (id=1031613)  : Trigger Spell (64): Divine Image
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 196705 | Target: Self (1)
 #3 (id=1033812)  : Apply Aura (6) | Dummy (4)
