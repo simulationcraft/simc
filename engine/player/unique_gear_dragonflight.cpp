@@ -916,7 +916,6 @@ void spiteful_storm( special_effect_t& effect )
       spite->set_max_stack( as<int>( spite->default_value ) );
   } );
 
-
   auto p = effect.player;
   effect.player->register_on_kill_callback( [ p, stormbolt, gathering ]( player_t* t ) {
     if ( p->sim->event_mgr.canceled )
