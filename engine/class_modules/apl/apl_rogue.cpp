@@ -515,12 +515,13 @@ void outlaw_df( player_t* p )
 
   default_->add_action( "stealth", "Restealth if possible (no vulnerable enemies in combat)" );
   default_->add_action( "kick", "Interrupt on cooldown to allow simming interactions with that" );
-  default_->add_action( "variable,name=rtb_reroll,value=rtb_buffs<2&(!buff.broadside.up&(!talent.fan_the_hammer|!buff.skull_and_crossbones.up)&!buff.true_bearing.up)|rtb_buffs=2&buff.buried_treasure.up&buff.grand_melee.up", "Reroll BT + GM or single buffs early other than Broadside, TB, or SnC (with Fan the Hammer)" );
-  default_->add_action( "variable,name=ambush_condition,value=combo_points.deficit>=2+buff.broadside.up&energy>=50&(!talent.count_the_odds|buff.roll_the_bones.remains>=10)", "Ensure we get full Ambush CP gains and aren't rerolling Count the Odds buffs away" );
+  default_->add_action( "variable,name=stealthed_cto,value=talent.count_the_odds&(stealthed.basic|buff.shadowmeld.up|buff.shadow_dance.up)", "Checks if we are in an appropriate Stealth state for triggering the Count the Odds bonus" );
+  default_->add_action( "variable,name=rtb_reroll,value=rtb_buffs<2&(!buff.broadside.up&(!talent.fan_the_hammer|!buff.skull_and_crossbones.up)&!buff.true_bearing.up|buff.loaded_dice.up)|rtb_buffs=2&(buff.buried_treasure.up&buff.grand_melee.up|!buff.broadside.up&!buff.true_bearing.up&buff.loaded_dice.up)", "Roll the Bones Reroll Conditions" );
+  default_->add_action( "variable,name=ambush_condition,value=combo_points.deficit>=2+talent.improved_ambush+buff.broadside.up&energy>=50&(!talent.count_the_odds|buff.roll_the_bones.remains>=10)", "Ensure we get full Ambush CP gains and aren't rerolling Count the Odds buffs away" );
   default_->add_action( "variable,name=finish_condition,value=combo_points>=cp_max_spend-buff.broadside.up-(buff.opportunity.up*(talent.quick_draw|talent.fan_the_hammer)|buff.concealed_blunderbuss.up)|effective_combo_points>=cp_max_spend", "Finish at max possible CP without overflowing bonus combo points, unless for BtE which always should be 5+ CP" );
   default_->add_action( "variable,name=finish_condition,op=reset,if=cooldown.between_the_eyes.ready&effective_combo_points<5", "Always attempt to use BtE at 5+ CP, regardless of CP gen waste" );
   default_->add_action( "variable,name=blade_flurry_sync,value=spell_targets.blade_flurry<2&raid_event.adds.in>20|buff.blade_flurry.remains>1+talent.killing_spree.enabled", "With multiple targets, this variable is checked to decide whether some CDs should be synced with Blade Flurry" );
-  default_->add_action( "run_action_list,name=stealth,if=stealthed.all" );
+  default_->add_action( "call_action_list,name=stealth,if=stealthed.all" );
   default_->add_action( "call_action_list,name=cds" );
   default_->add_action( "run_action_list,name=finish,if=variable.finish_condition" );
   default_->add_action( "call_action_list,name=build" );
@@ -543,8 +544,9 @@ void outlaw_df( player_t* p )
   cds->add_action( "blade_flurry,if=spell_targets>=2&!buff.blade_flurry.up", "Cooldowns  Blade Flurry on 2+ enemies" );
   cds->add_action( "roll_the_bones,if=buff.dreadblades.down&(!buff.roll_the_bones.up|variable.rtb_reroll)" );
   cds->add_action( "keep_it_rolling,if=!variable.rtb_reroll&(buff.broadside.up+buff.true_bearing.up+buff.skull_and_crossbones.up+buff.ruthless_precision.up)>2" );
-  cds->add_action( "shadow_dance,if=!stealthed.all&!buff.take_em_by_surprise.up&(variable.finish_condition&buff.slice_and_dice.up|variable.ambush_condition&!buff.slice_and_dice.up)" );
-  cds->add_action( "vanish,if=!stealthed.all&!buff.take_em_by_surprise.up&(variable.finish_condition&buff.slice_and_dice.up|variable.ambush_condition&!buff.slice_and_dice.up)" );
+  cds->add_action( "vanish,if=(!stealthed.all|talent.count_the_odds&!variable.stealthed_cto)&!buff.take_em_by_surprise.up&((talent.find_weakness&debuff.find_weakness.down|talent.hidden_opportunity)&variable.ambush_condition|talent.count_the_odds&variable.finish_condition)&(!talent.shadow_dance|!cooldown.shadow_dance.ready)" );
+  cds->add_action( "shadow_dance,if=!variable.stealthed_cto&!talent.keep_it_rolling&buff.slice_and_dice.up&debuff.between_the_eyes.up&(!talent.ghostly_strike|debuff.ghostly_strike.up)&(!talent.dreadblades|!cooldown.dreadblades.ready)&(variable.finish_condition|talent.hidden_opportunity)" );
+  cds->add_action( "shadow_dance,if=!variable.stealthed_cto&talent.keep_it_rolling&debuff.between_the_eyes.up&(!talent.ghostly_strike|debuff.ghostly_strike.up)&(!talent.dreadblades|!cooldown.dreadblades.ready)&(cooldown.keep_it_rolling.remains<=30|cooldown.keep_it_rolling.remains>120&(variable.finish_condition|talent.hidden_opportunity))" );
   cds->add_action( "adrenaline_rush,if=!buff.adrenaline_rush.up&(!talent.improved_adrenaline_rush|combo_points<=2)" );
   cds->add_action( "dreadblades,if=!stealthed.all&combo_points<=2&(!talent.marked_for_death|!cooldown.marked_for_death.ready)" );
   cds->add_action( "marked_for_death,line_cd=1.5,target_if=min:target.time_to_die,if=raid_event.adds.up&(target.time_to_die<combo_points.deficit|!stealthed.rogue&combo_points.deficit>=cp_max_spend-1)&!buff.dreadblades.up", "If adds are up, snipe the one with lowest TTD. Use when dying faster than CP deficit or without any CP." );
@@ -568,7 +570,7 @@ void outlaw_df( player_t* p )
 
   stealth->add_action( "cold_blood,if=variable.finish_condition", "Stealth" );
   stealth->add_action( "dispatch,if=variable.finish_condition" );
-  stealth->add_action( "ambush" );
+  stealth->add_action( "ambush,if=variable.stealthed_cto|stealthed.basic&talent.find_weakness&!debuff.find_weakness.up" );
 }
 //outlaw_df_apl_end
 

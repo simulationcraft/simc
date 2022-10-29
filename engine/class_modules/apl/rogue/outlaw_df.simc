@@ -16,17 +16,19 @@ actions.precombat+=/stealth
 actions=stealth
 # Interrupt on cooldown to allow simming interactions with that
 actions+=/kick
-# Reroll BT + GM or single buffs early other than Broadside, TB, or SnC (with Fan the Hammer)
-actions+=/variable,name=rtb_reroll,value=rtb_buffs<2&(!buff.broadside.up&(!talent.fan_the_hammer|!buff.skull_and_crossbones.up)&!buff.true_bearing.up)|rtb_buffs=2&buff.buried_treasure.up&buff.grand_melee.up
+# Checks if we are in an appropriate Stealth state for triggering the Count the Odds bonus
+actions+=/variable,name=stealthed_cto,value=talent.count_the_odds&(stealthed.basic|buff.shadowmeld.up|buff.shadow_dance.up)
+# Roll the Bones Reroll Conditions
+actions+=/variable,name=rtb_reroll,value=rtb_buffs<2&(!buff.broadside.up&(!talent.fan_the_hammer|!buff.skull_and_crossbones.up)&!buff.true_bearing.up|buff.loaded_dice.up)|rtb_buffs=2&(buff.buried_treasure.up&buff.grand_melee.up|!buff.broadside.up&!buff.true_bearing.up&buff.loaded_dice.up)
 # Ensure we get full Ambush CP gains and aren't rerolling Count the Odds buffs away
-actions+=/variable,name=ambush_condition,value=combo_points.deficit>=2+buff.broadside.up&energy>=50&(!talent.count_the_odds|buff.roll_the_bones.remains>=10)
+actions+=/variable,name=ambush_condition,value=combo_points.deficit>=2+talent.improved_ambush+buff.broadside.up&energy>=50&(!talent.count_the_odds|buff.roll_the_bones.remains>=10)
 # Finish at max possible CP without overflowing bonus combo points, unless for BtE which always should be 5+ CP
 actions+=/variable,name=finish_condition,value=combo_points>=cp_max_spend-buff.broadside.up-(buff.opportunity.up*(talent.quick_draw|talent.fan_the_hammer)|buff.concealed_blunderbuss.up)|effective_combo_points>=cp_max_spend
 # Always attempt to use BtE at 5+ CP, regardless of CP gen waste
 actions+=/variable,name=finish_condition,op=reset,if=cooldown.between_the_eyes.ready&effective_combo_points<5
 # With multiple targets, this variable is checked to decide whether some CDs should be synced with Blade Flurry
 actions+=/variable,name=blade_flurry_sync,value=spell_targets.blade_flurry<2&raid_event.adds.in>20|buff.blade_flurry.remains>1+talent.killing_spree.enabled
-actions+=/run_action_list,name=stealth,if=stealthed.all
+actions+=/call_action_list,name=stealth,if=stealthed.all
 actions+=/call_action_list,name=cds
 actions+=/run_action_list,name=finish,if=variable.finish_condition
 actions+=/call_action_list,name=build
@@ -55,8 +57,9 @@ actions.build+=/sinister_strike
 actions.cds=blade_flurry,if=spell_targets>=2&!buff.blade_flurry.up
 actions.cds+=/roll_the_bones,if=buff.dreadblades.down&(!buff.roll_the_bones.up|variable.rtb_reroll)
 actions.cds+=/keep_it_rolling,if=!variable.rtb_reroll&(buff.broadside.up+buff.true_bearing.up+buff.skull_and_crossbones.up+buff.ruthless_precision.up)>2
-actions.cds+=/shadow_dance,if=!stealthed.all&!buff.take_em_by_surprise.up&(variable.finish_condition&buff.slice_and_dice.up|variable.ambush_condition&!buff.slice_and_dice.up)
-actions.cds+=/vanish,if=!stealthed.all&!buff.take_em_by_surprise.up&(variable.finish_condition&buff.slice_and_dice.up|variable.ambush_condition&!buff.slice_and_dice.up)
+actions.cds+=/vanish,if=(!stealthed.all|talent.count_the_odds&!variable.stealthed_cto)&!buff.take_em_by_surprise.up&((talent.find_weakness&debuff.find_weakness.down|talent.hidden_opportunity)&variable.ambush_condition|talent.count_the_odds&variable.finish_condition)&(!talent.shadow_dance|!cooldown.shadow_dance.ready)
+actions.cds+=/shadow_dance,if=!variable.stealthed_cto&!talent.keep_it_rolling&buff.slice_and_dice.up&debuff.between_the_eyes.up&(!talent.ghostly_strike|debuff.ghostly_strike.up)&(!talent.dreadblades|!cooldown.dreadblades.ready)&(variable.finish_condition|talent.hidden_opportunity)
+actions.cds+=/shadow_dance,if=!variable.stealthed_cto&talent.keep_it_rolling&debuff.between_the_eyes.up&(!talent.ghostly_strike|debuff.ghostly_strike.up)&(!talent.dreadblades|!cooldown.dreadblades.ready)&(cooldown.keep_it_rolling.remains<=30|cooldown.keep_it_rolling.remains>120&(variable.finish_condition|talent.hidden_opportunity))
 actions.cds+=/adrenaline_rush,if=!buff.adrenaline_rush.up&(!talent.improved_adrenaline_rush|combo_points<=2)
 actions.cds+=/dreadblades,if=!stealthed.all&combo_points<=2&(!talent.marked_for_death|!cooldown.marked_for_death.ready)
 # If adds are up, snipe the one with lowest TTD. Use when dying faster than CP deficit or without any CP.
@@ -87,4 +90,4 @@ actions.finish+=/dispatch
 # Stealth
 actions.stealth=cold_blood,if=variable.finish_condition
 actions.stealth+=/dispatch,if=variable.finish_condition
-actions.stealth+=/ambush
+actions.stealth+=/ambush,if=variable.stealthed_cto|stealthed.basic&talent.find_weakness&!debuff.find_weakness.up
