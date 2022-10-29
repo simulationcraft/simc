@@ -1298,7 +1298,7 @@ public:
 
     if ( affected_by.avatar && p()->buff.avatar->up() )
     {
-      double percent_increase = p()->buff.avatar->data().effectN( 8 ).percent();
+      double percent_increase = p()->buff.avatar->data().effectN( 9 ).percent();
 
       tm *= 1.0 + percent_increase;
     }
@@ -5336,7 +5336,7 @@ struct thunder_clap_t : public warrior_attack_t
     if ( p()->talents.arms.rend->ok() && p()->talents.warrior.blood_and_thunder.ok() )
     {
       blood_and_thunder->set_target( state->target );
-      blood_and_thunder->execute(); // not capped at 5 targets in game
+      blood_and_thunder->execute(); // TODO: capped at 5 targets in ptr/beta
     }
   }
 };
@@ -9537,10 +9537,18 @@ double warrior_t::resource_gain( resource_e r, double a, gain_t* g, action_t* ac
   if ( buff.recklessness->check() && r == RESOURCE_RAGE )
   {
     bool do_not_double_rage = false;
-    do_not_double_rage      = ( g == gain.ceannar_rage || g == gain.valarjar_berserking || g == gain.simmering_rage || 
-                                g == gain.memory_of_lucid_dreams || g == gain.frothing_berserker || g == gain.avatar ||
-                                g == gain.avatar_torment );
 
+    if ( is_ptr() ) 
+    {
+      do_not_double_rage      = ( g == gain.ceannar_rage || g == gain.valarjar_berserking || g == gain.simmering_rage || 
+                                  g == gain.memory_of_lucid_dreams || g == gain.frothing_berserker );
+    }
+    else
+    {
+      do_not_double_rage      = ( g == gain.ceannar_rage || g == gain.valarjar_berserking || g == gain.simmering_rage || 
+                                  g == gain.memory_of_lucid_dreams || g == gain.frothing_berserker || g == gain.avatar ||
+                                  g == gain.avatar_torment );
+    }
     if ( !do_not_double_rage )  // FIXME: remove this horror after BFA launches, keep Simmering Rage
       a *= 1.0 + spell.recklessness_buff->effectN( 4 ).percent();
   }
