@@ -11,7 +11,7 @@
 #include <functional>
 
 // Mixin to action base class to allow auto parsing and dynamic application of whitelist based buffs & auras.
-// 1) Add `parse_buff_effects_t` as an additional parent with the target data object as template parameter:
+// 1) Add `parse_buff_effects_t` as an additional parent with the target data class as template parameter:
 //
 //    struct my_action_base_t : public action_t, parse_buff_effects_t<my_target_data_t>
 //
@@ -49,22 +49,6 @@
       double composite_target_multiplier( player_t* t ) const override
       { return BASE::composite_target_multiplier( t ) * get_debuff_effect_value( td( t ) ); }
 */
-
-// void apply_buff_effects() must be overriden in the base class. Within, use parse_buff_effects() as below:
-//
-// Syntax: parse_buff_effects[<S|C[,...]>]( buff[, ignore_mask|use_stacks[, use_default]][, spell|conduit][,...] )
-//  buff = buff to be checked for to see if effect applies
-//  ignore_mask = optional bitmask to skip effect# n corresponding to the n'th bit
-//  use_stacks = optional, default true, whether to multiply value by stacks, mutually exclusive with ignore parameters
-//  use_default = optional, default false, whether to use buff's default value over effect's value
-//  S/C = optional list of template parameter to indicate spell or conduit with redirect effects
-//  spell/conduit = optional list of spell or conduit with redirect effects that modify the effects on the buff
-//
-// Example 1: Parse buff1, ignore effects #1 #3 #5, modify by talent1, modify by tier1:
-//  parse_buff_effects<S,S>( buff1, 0b10101, talent1, tier1 );
-//
-// Example 2: Parse buff2, don't multiply by stacks, use the default value set on the buff instead of effect value:
-//  parse_buff_effects( buff2, false, true );
 
 template <typename TD>
 struct parse_buff_effects_t
@@ -154,6 +138,18 @@ struct parse_buff_effects_t
     parse_spell_effects_mods( val, m, base, idx, mods... );
   }
 
+  // Syntax: parse_buff_effects( buff[, ignore_mask|use_stacks[, use_default]][, spell][,...] )
+  //  buff = buff to be checked for to see if effect applies
+  //  ignore_mask = optional bitmask to skip effect# n corresponding to the n'th bit
+  //  use_stacks = optional, default true, whether to multiply value by stacks, mutually exclusive with ignore parameters
+  //  use_default = optional, default false, whether to use buff's default value over effect's value
+  //  spell = optional list of spell with redirect effects that modify the effects on the buff
+  //
+  // Example 1: Parse buff1, ignore effects #1 #3 #5, modify by talent1, modify by tier1:
+  //  parse_buff_effects<S,S>( buff1, 0b10101, talent1, tier1 );
+  //
+  // Example 2: Parse buff2, don't multiply by stacks, use the default value set on the buff instead of effect value:
+  //  parse_buff_effects( buff2, false, true );
   template <typename... Ts>
   void parse_buff_effect( buff_t* buff, bfun f, const spell_data_t* s_data, size_t i, bool use_stacks, bool use_default,
                           Ts... mods )
@@ -361,6 +357,10 @@ struct parse_buff_effects_t
     return return_value;
   }
 
+  // Syntax: parse_debuff_effects( func, debuff[, spell][,...] )
+  //  func = function taking the class's target_data as argument and returning an integer
+  //  debuff = spell data of the debuff
+  //  spell = optional list of spells with redirect effects that modify the effects on the debuff
   template <typename... Ts>
   void parse_debuff_effects( const dfun& func, const spell_data_t* s_data, Ts... mods )
   {

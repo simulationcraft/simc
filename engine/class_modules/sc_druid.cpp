@@ -2459,11 +2459,6 @@ public:
     parse_buff_effects<S>( p()->buff.natures_swiftness, p()->talent.natures_splendor );
   }
 
-  // Syntax: parse_debuff_effects[<S[,...]>]( func, spell_data_t* dot[, spell_data_t* spell][,...] )
-  //  func = function returning the dot_t* of the dot
-  //  dot = spell data of the dot
-  //  S = optional list of template parameter to indicate spell with redirect effects
-  //  spell = optional list of spell with redirect effects that modify the effects on the dot
   void apply_debuffs_effects()
   {
     parse_debuff_effects( []( druid_td_t* t ) { return t->dots.moonfire->is_ticking(); },
