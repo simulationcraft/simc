@@ -1768,7 +1768,7 @@ static constexpr stat_data_t __ptr_gt_class_stats_by_level[][120] =
 };
 
 //  Racial Base Stat Modifiers (Str Agi Sta Int Spi)
-static constexpr stat_data_t __gt_race_stats[] =
+static constexpr stat_data_t __ptr_gt_race_stats[] =
 {
   // Str Agi Sta Int Spi
   {   0,  0,  0,  0,  0 }, // No Race
@@ -1814,25 +1814,25 @@ static constexpr stat_data_t __gt_race_stats[] =
 // BfA : no blue post about those values yet (as of 2018-07-29), using AskMrRobot's blog post instead
 // http://blog.askmrrobot.com/diminishing-returns-other-bfa-tank-formulas/
 
-static double __gt_DodgeFactor[] =
+static double __ptr_gt_DodgeFactor[] =
 { 0.0, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000 };
 
-static double __gt_ParryFactor[] =
+static double __ptr_gt_ParryFactor[] =
 { 0.0, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000 };
 
-static double __gt_MissFactor[] =
+static double __ptr_gt_MissFactor[] =
 { 0.0, 8.500000, 8.500000, 1.000000, 1.000000, 1.000000, 8.500000, 1.000000, 1.000000, 1.000000, 6.555555, 6.555555, 1.0, 1.0000 };
 
-static double __gt_BlockFactor[] =
+static double __ptr_gt_BlockFactor[] =
 { 0.0, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000 };
 
-static double __gt_BlockVerticalStretch[] =
+static double __ptr_gt_BlockVerticalStretch[] =
 { 0.0, 0.0067, 0.0067, 0.0067, 0.0067, 0.0067, 0.0067, 0.0067, 0.0067, 0.0067, 0.0067, 0.0067, 0.0067, 0.0067 };
 
-static double __gt_VerticalStretch[] =
+static double __ptr_gt_VerticalStretch[] =
 { 0.0, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.02, 0.01 };
 
-static double __gt_HorizontalShift[] =
+static double __ptr_gt_HorizontalShift[] =
 { 0.0, 1/0.94, 1/0.94, 1/0.94, 1/0.94, 1/0.94, 1/0.94, 1/0.94, 1/0.94, 1/0.94, 1/0.94, 1/0.97, 1/0.94, 1/0.94 };
 
 // Resolve "basic equal-level creature damage" expectation values
@@ -1840,7 +1840,7 @@ static double __gt_HorizontalShift[] =
 // using 1 as placeholder for unknown to avoid divide-by-zero errors
 // Pulled data from the CreatureAutoAttackDps field in the ExpectedStat table
 
-static double _gt_resolve_dps_by_level[120] =
+static double _ptr_gt_resolve_dps_by_level[120] =
 {
   2.1690638, 2.3859704, 2.6028767,  2.819783,  3.0366893,   // 1-5
   3.3407423, 3.6971202, 4.1481075, 4.7465677, 5.5165443,    // 6-10
@@ -1875,7 +1875,7 @@ static double _gt_resolve_dps_by_level[120] =
 // my base Agility on a monk is 85. Naked GetDodgeChance() returns 6.256046295166. I subtract 3 for 
 // the base dodge from the result, or 3.256046295166. I then divide that by the base Agility
 // 85 / 3.256046295166 = 26.10527993
-static double _gt_avoid_per_str_agi_by_level[120] =
+static double _ptr_gt_avoid_per_str_agi_by_level[120] =
 { 
    1/16.04048030,  1/16.04048303,  1/16.04048526,  1/16.04048201,  1/16.04048397, // 1-5
    1/16.04048566,  1/16.04047795,  1/16.04047986,  1/16.04048073,  1/16.04048303, // 6-10
