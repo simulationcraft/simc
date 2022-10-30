@@ -593,12 +593,6 @@ struct shadow_word_pain_t final : public priest_spell_t
       spell_power_mod.direct = 0;
     }
 
-    auto rank2 = p.find_rank_spell( "Shadow Word: Pain", "Rank 2" );
-    if ( rank2->ok() )
-    {
-      dot_duration += rank2->effectN( 1 ).time_value();
-    }
-
     if ( priest().talents.shadow.misery.enabled() )
     {
       dot_duration += priest().talents.shadow.misery->effectN( 2 ).time_value();

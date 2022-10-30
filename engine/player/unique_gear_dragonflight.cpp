@@ -1175,7 +1175,7 @@ void storm_eaters_boon( special_effect_t& effect )
     {
       double m = proc_spell_t::composite_da_multiplier( s );
 
-      m *= 1.0 + (stack_buff -> stack() / 10);
+      m *= 1.0 + ( stack_buff -> stack() * 0.1 );
 
       return m;
     }
@@ -1198,6 +1198,70 @@ void storm_eaters_boon( special_effect_t& effect )
     {
       stack_buff->expire();
     }
+  } );
+}
+
+// Decoration of Flame
+// 377449 Driver
+// 382058 Shield Buff
+// 394393 Damage and Shield Value
+// 397331 Fireball 1
+// 397347 - 397353 Fireballs 2-8
+void decoration_of_flame( special_effect_t& effect )
+{
+  buff_t* buff;
+
+  buff = make_buff( effect.player, "decoration_of_flame", effect.player->find_spell( 377449 ) );
+
+  effect.custom_buff = buff;
+
+  struct decoration_of_flame_damage_t : public proc_spell_t
+  {
+    double value;
+    buff_t* shield;
+
+    decoration_of_flame_damage_t( const special_effect_t& e ) :
+      proc_spell_t( "decoration_of_flame", e.player, e.player->find_spell( 377449 ), e.item ), shield( nullptr ), value( e.player -> find_spell( 394393 ) -> effectN( 2 ).average( e.item ) )
+    {
+      background = true;
+      base_dd_min = base_dd_max = e.player->find_spell( 394393 )->effectN( 1 ).average(e.item);
+      aoe = e.driver()->effectN(3).base_value();
+      radius = 10;
+      shield = make_buff<absorb_buff_t>( e.player, "decoration_of_flame_shield", e.player->find_spell( 382058 ) );
+    }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double m = proc_spell_t::composite_da_multiplier( s );
+
+     // Damage increases by 10% per target based on in game testing
+      m *= 1.0 + ( n_targets() - 1 ) * 0.1;
+
+      return m;
+    }
+
+    int n_targets() const override
+    { 
+      double chance = player -> sim -> dragonflight_opts.decoration_of_flame_miss_chance;
+      if ( rng().roll( chance ) )
+      {
+        return aoe - as<int>( rng().range( 0, n_targets() ) );
+      }
+      return aoe; 
+    }
+
+    void execute() override
+    {
+      proc_spell_t::execute();
+
+      shield->trigger( -1, value * ( 1.0 + ( num_targets_hit - 1 ) * 0.05 ) );
+    }
+  };
+
+  action_t* action = create_proc_action<decoration_of_flame_damage_t>( "decoration_of_flame", effect );
+  buff->set_stack_change_callback( [ action ](buff_t*, int, int ) 
+  {
+    action -> execute();
   } );
 }
 
@@ -1480,6 +1544,7 @@ void register_special_effects()
   register_special_effect( 384112, items::the_cartographers_calipers );
   register_special_effect( 377454, items::rumbling_ruby );
   register_special_effect( 377453, items::storm_eaters_boon );
+  register_special_effect( 377449, items::decoration_of_flame );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );  // bronzed grip wrappings embellishment

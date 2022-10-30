@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.46340 Live (hotfix 2022-10-29/46340)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.46366 Live (hotfix 2022-10-30/46366)
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -128,7 +128,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
-Affecting spells : Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2, #4), Destruction Warlock (137046 effects: #1, #2), Demonic Synergy (171982 effects: #2, #3), Shadowy Inspiration (196606 effect#1), Nightfall (264571 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Decimating Bolt (325299 effect#1), Relic of Demonic Synergy (337060 effects: #2, #3), Malefic Wrath (337125 effects: #1, #2), Wrath of Consumption (337130 effect#1), Shard of Annihilation (356342 effects: #1, #2), Wrath of Consumption (387066 effect#1), Stolen Power (387604 effect#1)
+Affecting spells : Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2, #4), Destruction Warlock (137046 effects: #1, #2), Demonic Synergy (171982 effects: #2, #3), Shadowy Inspiration (196606 effect#1), Nightfall (264571 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Decimating Bolt (325299 effect#1), Relic of Demonic Synergy (337060 effects: #2, #3), Malefic Wrath (337125 effects: #1, #2), Wrath of Consumption (337130 effect#1), Shard of Annihilation (356342 effects: #1, #2), Wrath of Consumption (387066 effect#1), Stolen Power (387604 effect#1), Drain Soul (388667 effect#1)
 Family Flags     : 0, 49
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4676,7 +4676,6 @@ Effects          :
 Description      : $@spelldesc187365
 
 Name             : Drain Soul (id=198590) [Spell Family (5)] 
-Replaces         : Shadow Bolt (id=686)
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -16005,15 +16004,17 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ......x. ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ...x.... ........ ........ ........   
-                 : Passive (6), Not In Spellbook (143)
+                 : Passive (6), Not In Spellbook (143), Aura Points On Client (268), Spellcast Override In Spellbook (310)
 Effects          :
-#1 (id=1024496)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 198590 | Scaled Value: 198590 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Sub Type (332 -> 4), Affects Spells
+#1 (id=1024496)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
+                   Base Value: 198590 | Scaled Value: 198590 | PvP Coefficient: 1.00000 | Misc Value: 686 | Misc Value 2: 0x2 | Target: Self (1)
+                   Affected Spells: Shadow Bolt (686)
+                   Family Flags: 0
+Hotfixed         : Misc Value (0 -> 686), Misc Value 2 (0 -> 2)
 Description      : $@spelldesc198590
 
 Name             : Explosive Potential (id=388827) [Spell Family (5), Passive, Hidden] 
