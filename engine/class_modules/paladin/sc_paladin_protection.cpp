@@ -981,7 +981,10 @@ void paladin_t::create_buffs_protection()
         -> set_absorb_source( get_stats( "shielding_words" ) );
   buffs.shining_light_stacks = make_buff( this, "shining_light_stacks", find_spell( 182104 ) )
   // Kind of lazy way to make sure that SL only triggers for prot. That spelldata doesn't have to be used anywhere else so /shrug
-    -> set_trigger_spell( find_specialization_spell( "Shining Light" ) );
+    -> set_trigger_spell( find_specialization_spell( "Shining Light" ) )
+  // Chance was 0% for whatever reasons, max stacks were also 5. Set to 2, because it changes to free when ShoR is used at 2 stacks
+                                   ->set_chance(1)
+                                   ->set_max_stack(2);
   buffs.shining_light_free = make_buff( this, "shining_light_free", find_spell( 327510 ) );
   buffs.inspiring_vanguard =
       make_buff( this, "inspiring_vanguard", talents.inspiring_vanguard->effectN( 1 ).trigger() )
