@@ -1310,13 +1310,12 @@ void manic_grieftorch( special_effect_t& effect )
       tick_action = create_proc_action<manic_grieftorch_missile_t>( "manic_grieftorch_missile", e );
     }
 
-    std::vector<player_t*>& target_list() const override
+    size_t available_targets( std::vector< player_t* >& tl ) const override
     {
-      std::vector<player_t*> tl = proc_spell_t::target_list();
+    proc_spell_t::available_targets( tl );
 
-      tl.erase( std::remove_if( tl.begin(), tl.end(), [ this ]( player_t* t ) 
-      {
-        if( t == target )
+    tl.erase( std::remove_if( tl.begin(), tl.end(), [ this ]( player_t* t) {
+         if( t == target )
         {
           return false;
         }
@@ -1324,9 +1323,9 @@ void manic_grieftorch( special_effect_t& effect )
         {
           return !rng().roll( player->sim->dragonflight_opts.manic_grieftorch_chance );
         }
-      } ), tl.end() );
+      }), tl.end() );
 
-      return tl;
+      return tl.size();
     }
 
     void last_tick( dot_t* d ) override
