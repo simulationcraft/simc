@@ -7055,7 +7055,7 @@ void hunter_t::init_spells()
   talents.explosive_shot                    = find_talent_spell( talent_tree::CLASS, "Explosive Shot" );
   talents.barrage                           = find_talent_spell( talent_tree::CLASS, "Barrage" );
   talents.poison_injection                  = find_talent_spell( talent_tree::CLASS, "Poison Injection" );
-  talents.hydras_bite                       = find_talent_spell( talent_tree::CLASS, "Hydras Bite" );
+  talents.hydras_bite                       = find_talent_spell( talent_tree::CLASS, "Hydra's Bite" );
 
   // Marksmanship Tree
   if (specialization() == HUNTER_MARKSMANSHIP)
