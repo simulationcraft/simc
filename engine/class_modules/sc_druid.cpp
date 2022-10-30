@@ -2517,6 +2517,13 @@ public:
     return std::max( 0_ms, et );
   }
 
+  timespan_t composite_dot_duration( const action_state_t* s ) const override
+  {
+    timespan_t dd = ab::composite_dot_duration( s ) * get_buff_effects_value( dot_duration_buffeffects );
+
+    return dd;
+  }
+
   double recharge_multiplier( const cooldown_t& cd ) const override
   {
     double rm = ab::recharge_multiplier( cd ) * get_buff_effects_value( recharge_multiplier_buffeffects );

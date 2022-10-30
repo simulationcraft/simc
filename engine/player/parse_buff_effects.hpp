@@ -77,6 +77,7 @@ struct parse_buff_effects_t
   std::vector<buff_effect_t> ta_multiplier_buffeffects;
   std::vector<buff_effect_t> da_multiplier_buffeffects;
   std::vector<buff_effect_t> execute_time_buffeffects;
+  std::vector<buff_effect_t> dot_duration_buffeffects;
   std::vector<buff_effect_t> recharge_multiplier_buffeffects;
   std::vector<buff_effect_t> cost_buffeffects;
   std::vector<buff_effect_t> flat_cost_buffeffects;
@@ -198,6 +199,10 @@ struct parse_buff_effects_t
         case P_GENERIC:
           da_multiplier_buffeffects.emplace_back( buff, val * val_mul, use_stacks, mastery, f );
           debug_message( "direct damage" );
+          break;
+        case P_DURATION:
+          dot_duration_buffeffects.emplace_back( buff, val * val_mul, use_stacks, mastery, f );
+          debug_message( "duration" );
           break;
         case P_TICK_DAMAGE:
           ta_multiplier_buffeffects.emplace_back( buff, val * val_mul, use_stacks, mastery, f );
