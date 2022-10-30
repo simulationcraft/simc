@@ -1276,78 +1276,65 @@ void decoration_of_flame( special_effect_t& effect )
 // 396434 ???
 void manic_grieftorch( special_effect_t& effect )
 {
-  buff_t* buff;
-
-  buff = make_buff( effect.player, "manic_grieftorch", effect.player->find_spell( 377463 ) )
-      ->set_cooldown( 0_ms );
-
-  effect.custom_buff = buff;
-
-  struct manic_grieftorch_damage_t : public proc_spell_t
+    struct manic_grieftorch_damage_t : public proc_spell_t
   {
-    manic_grieftorch_damage_t( const special_effect_t& e, buff_t* b ) :
-      proc_spell_t( "manic_grieftorch", e.player, e.player->find_spell( 382136 ), e.item )
+    manic_grieftorch_damage_t( const special_effect_t& e ) :
+      proc_spell_t( "manic_grieftorch", e.player, e.player->find_spell( 382135 ), e.item )
     {
       background = true;
-      dual = true;
       base_dd_min = base_dd_max = e.player->find_spell( 394954 )->effectN( 1 ).average( e.item );
-      aoe = rng().range( 0, n_targets() );
+      aoe = -1;
       radius = e.player -> find_spell( 382256 ) -> effectN( 1 ).radius();
+    }
+    
+    size_t available_targets( std::vector< player_t* >& tl ) const override
+    {
+    proc_spell_t::available_targets( tl );
+
+    tl.erase( std::remove_if( tl.begin(), tl.end(), [ this ]( player_t* ) {
+        return !rng().roll( sim->dragonflight_opts.manic_grieftorch_chance );
+      }), tl.end() );
+
+      return tl.size();
+  }
+  };
+  
+  struct manic_grieftorch_missile_t : public proc_spell_t
+  {
+    action_t* damage;
+    manic_grieftorch_missile_t( const special_effect_t& e ) :
+      proc_spell_t( "manic_grieftorch_missile", e.player, e.player->find_spell( 382136 ), e.item ), damage( nullptr )
+    {
+      background = true;
+      damage = player -> find_action( "manic_grieftorch" );
+      impact_action = create_proc_action<manic_grieftorch_damage_t>( "manic_grieftorch", e );
     }
   };
 
   struct manic_grieftorch_channel_t : public proc_spell_t
   {
-    action_t* damage;
-
-    manic_grieftorch_channel_t( const special_effect_t& e, buff_t* b) :
+    manic_grieftorch_channel_t( const special_effect_t& e ) :
       proc_spell_t( "manic_grieftorch_channel", e.player, e.player->find_spell( 377463 ), e.item)
     {
       background = true;
       channeled = tick_zero = true;
       hasted_ticks = false;
       base_tick_time = e.player -> find_spell( 377463 ) -> effectN( 1 ).period();
-
-      damage = player -> find_action( "manic_grieftorch" );
-    }
-
-    void execute() override
-    {
-      proc_spell_t::execute();
-
-      // Use_item_t (that executes this action) will trigger a player-ready event after execution.
-      // Since this action is a "background channel", we'll need to cancel the player ready event to
-      // prevent the player from picking something to do while channeling.
-      event_t::cancel( player -> readying );
-    }
-
-    void tick( dot_t* d ) override
-    {
-      proc_spell_t::tick( d );
-
-      damage -> execute();
+      tick_action = create_proc_action<manic_grieftorch_missile_t>( "manic_grieftorch_missile", e );
     }
 
     void last_tick( dot_t* d ) override
     {
-      // Last_tick() will zero player_t::channeling if this action is being channeled, so check it
-      // before calling the parent.
-      auto was_channeling = player -> channeling == this;
+      bool was_channeling = player->channeling == this;
 
       proc_spell_t::last_tick( d );
-      player -> schedule_ready();
+
+      if ( was_channeling && !player->readying )
+        player->schedule_ready( rng().gauss( sim->channel_lag, sim->channel_lag_stddev ) );
     }
   };
 
-  action_t* action = create_proc_action<manic_grieftorch_channel_t>( "manic_grieftorch_channel", effect, buff );
-  buff->set_refresh_behavior( buff_refresh_behavior::DISABLED );
-  buff->set_stack_change_callback( [ action ](buff_t*, int, int new_ ) 
-  {
-    if( new_ == 1 )
-    {
-      action->execute();
-    }
-  } );
+  effect.execute_action = create_proc_action<manic_grieftorch_channel_t>( "manic_grieftorch_channel", effect );
 }
 
 // Weapons
