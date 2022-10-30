@@ -388,8 +388,8 @@ struct blessing_of_spellwarding_t : public paladin_spell_t
     if ( candidate_target -> debuffs.forbearance -> check() )
       return false;
 
-    /*if ( candidate_target->is_enemy() )
-      return false;*/
+    if ( candidate_target->is_enemy() )
+      return false;
 
     return paladin_spell_t::target_ready( candidate_target );
   }
