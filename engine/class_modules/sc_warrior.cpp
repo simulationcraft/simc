@@ -5195,9 +5195,11 @@ struct shield_slam_t : public warrior_attack_t
 
 struct slam_t : public warrior_attack_t
 {
+  int aoe_targets;
   bool from_Fervor;
   slam_t( warrior_t* p, util::string_view options_str )
-    : warrior_attack_t( "slam", p, p->spell.slam ), from_Fervor( false )
+    : warrior_attack_t( "slam", p, p->spell.slam ), from_Fervor( false ),
+      aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) )
   {
     parse_options( options_str );
     weapon                       = &( p->main_hand_weapon );
@@ -5206,6 +5208,16 @@ struct slam_t : public warrior_attack_t
     {
       energize_amount += p->talents.fury.storm_of_swords->effectN( 6 ).resource( RESOURCE_RAGE );
     }
+    base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 3 ).percent();
+  }
+
+  int n_targets() const override
+  {
+    if ( p()->buff.meat_cleaver->check() )
+    {
+      return aoe_targets + 1;
+    }
+    return warrior_attack_t::n_targets();
   }
 
   double bonus_da( const action_state_t* s ) const override
@@ -5238,6 +5250,8 @@ struct slam_t : public warrior_attack_t
   void execute() override
   {
     warrior_attack_t::execute();
+
+    p()->buff.meat_cleaver->decrement();
   }
 
   bool ready() override
@@ -5588,12 +5602,7 @@ struct fury_whirlwind_parent_t : public warrior_attack_t
 
     if ( p()->talents.fury.improved_whirlwind->ok() )
     {
-      p()->buff.meat_cleaver->trigger( p()->buff.meat_cleaver->data().max_stacks() );
-    }
-    else if ( p()->talents.fury.improved_whirlwind->ok() && p()->talents.fury.meat_cleaver->ok() )
-    {
-      p()->buff.meat_cleaver->trigger( as<int>( p()->buff.meat_cleaver->data().max_stacks() +
-      p()->talents.fury.meat_cleaver->effectN( 2 ).base_value() ) );
+      p()->buff.meat_cleaver->trigger( p()->buff.meat_cleaver->max_stack() );
     }
   }
 
