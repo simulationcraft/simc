@@ -893,7 +893,7 @@ static constexpr stat_data_t __ptr_gt_class_stats_by_level[][120] =
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 }, // 120
   },
-  { // Shaman TODO: Verify 37-59; 61-69 values
+  { // Shaman TODO: Verify 61-69 values
     // Str = 0.43 of Primary
     //    Str     Agi     Sta     Int     Spi
     {      8,     18,     15,     20,      0 },
@@ -933,16 +933,16 @@ static constexpr stat_data_t __ptr_gt_class_stats_by_level[][120] =
     {     48,    112,    103,    112,      0 }, // 35
     {     50,    117,    108,    117,      0 },
     {     53,    123,    113,    123,      0 },
-    {     55,    129,    119,    129,      0 },
+    {     56,    129,    119,    129,      0 },
     {     58,    136,    125,    136,      0 },
     {     61,    143,    131,    143,      0 }, // 40
-    {     64,    150,    138,    150,      0 },
+    {     65,    150,    138,    150,      0 },
     {     68,    158,    145,    158,      0 },
-    {     71,    166,    153,    166,      0 },
+    {     72,    166,    153,    166,      0 },
     {     75,    175,    161,    175,      0 },
     {     80,    185,    170,    185,      0 }, // 45
     {     84,    195,    180,    195,      0 },
-    {     89,    206,    190,    206,      0 },
+    {     88,    206,    190,    206,      0 },
     {     93,    217,    200,    217,      0 },
     {     99,    230,    212,    230,      0 },
     {    104,    243,    224,    243,      0 }, // 50
@@ -1267,7 +1267,7 @@ static constexpr stat_data_t __ptr_gt_class_stats_by_level[][120] =
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 }, // 120
   },
-  { // Monk TODO: Verify 29-59
+  { // Monk
     // Str = 0.43 of Primary
     //    Str     Agi     Sta     Int     Spi
     {      8,     18,     18,     20,      0 },
@@ -1307,16 +1307,16 @@ static constexpr stat_data_t __ptr_gt_class_stats_by_level[][120] =
     {     48,    112,    103,    112,      0 }, // 35
     {     50,    117,    108,    117,      0 },
     {     53,    123,    113,    123,      0 },
-    {     55,    129,    119,    129,      0 },
+    {     56,    129,    119,    129,      0 },
     {     58,    136,    125,    136,      0 },
     {     61,    143,    131,    143,      0 }, // 40
-    {     64,    150,    138,    150,      0 },
+    {     65,    150,    138,    150,      0 },
     {     68,    158,    145,    158,      0 },
-    {     71,    166,    153,    166,      0 },
+    {     72,    166,    153,    166,      0 },
     {     75,    175,    161,    175,      0 },
     {     80,    185,    170,    185,      0 }, // 45
     {     84,    195,    180,    195,      0 },
-    {     89,    206,    190,    206,      0 },
+    {     88,    206,    190,    206,      0 },
     {     93,    217,    200,    217,      0 },
     {     99,    230,    212,    230,      0 },
     {    104,    243,    224,    243,      0 }, // 50
@@ -1391,7 +1391,7 @@ static constexpr stat_data_t __ptr_gt_class_stats_by_level[][120] =
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 }, // 120
   },
-  { // Druid TODO: Verify 36-59; 61-69 values
+  { // Druid TODO: Verify 61-69 values
     // Str = 0.43 of Primary
     //    Str     Agi     Sta     Int     Spi
     {      8,     18,     18,     20,      0 },
@@ -1431,16 +1431,16 @@ static constexpr stat_data_t __ptr_gt_class_stats_by_level[][120] =
     {     48,    112,    103,    112,      0 }, // 35
     {     50,    117,    108,    117,      0 },
     {     53,    123,    113,    123,      0 },
-    {     55,    129,    119,    129,      0 },
+    {     56,    129,    119,    129,      0 },
     {     58,    136,    125,    136,      0 },
     {     61,    143,    131,    143,      0 }, // 40
-    {     64,    150,    138,    150,      0 },
+    {     65,    150,    138,    150,      0 },
     {     68,    158,    145,    158,      0 },
-    {     71,    166,    153,    166,      0 },
+    {     72,    166,    153,    166,      0 },
     {     75,    175,    161,    175,      0 },
     {     80,    185,    170,    185,      0 }, // 45
     {     84,    195,    180,    195,      0 },
-    {     89,    206,    190,    206,      0 },
+    {     88,    206,    190,    206,      0 },
     {     93,    217,    200,    217,      0 },
     {     99,    230,    212,    230,      0 },
     {    104,    243,    224,    243,      0 }, // 50
@@ -1768,7 +1768,7 @@ static constexpr stat_data_t __ptr_gt_class_stats_by_level[][120] =
 };
 
 //  Racial Base Stat Modifiers (Str Agi Sta Int Spi)
-static constexpr stat_data_t __ptr_gt_race_stats[] =
+static constexpr stat_data_t __gt_race_stats[] =
 {
   // Str Agi Sta Int Spi
   {   0,  0,  0,  0,  0 }, // No Race
@@ -1814,25 +1814,25 @@ static constexpr stat_data_t __ptr_gt_race_stats[] =
 // BfA : no blue post about those values yet (as of 2018-07-29), using AskMrRobot's blog post instead
 // http://blog.askmrrobot.com/diminishing-returns-other-bfa-tank-formulas/
 
-static double __ptr_gt_DodgeFactor[] =
+static double __gt_DodgeFactor[] =
 { 0.0, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000 };
 
-static double __ptr_gt_ParryFactor[] =
+static double __gt_ParryFactor[] =
 { 0.0, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000 };
 
-static double __ptr_gt_MissFactor[] =
+static double __gt_MissFactor[] =
 { 0.0, 8.500000, 8.500000, 1.000000, 1.000000, 1.000000, 8.500000, 1.000000, 1.000000, 1.000000, 6.555555, 6.555555, 1.0, 1.0000 };
 
-static double __ptr_gt_BlockFactor[] =
+static double __gt_BlockFactor[] =
 { 0.0, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000 };
 
-static double __ptr_gt_BlockVerticalStretch[] =
+static double __gt_BlockVerticalStretch[] =
 { 0.0, 0.0067, 0.0067, 0.0067, 0.0067, 0.0067, 0.0067, 0.0067, 0.0067, 0.0067, 0.0067, 0.0067, 0.0067, 0.0067 };
 
-static double __ptr_gt_VerticalStretch[] =
+static double __gt_VerticalStretch[] =
 { 0.0, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.02, 0.01 };
 
-static double __ptr_gt_HorizontalShift[] =
+static double __gt_HorizontalShift[] =
 { 0.0, 1/0.94, 1/0.94, 1/0.94, 1/0.94, 1/0.94, 1/0.94, 1/0.94, 1/0.94, 1/0.94, 1/0.94, 1/0.97, 1/0.94, 1/0.94 };
 
 // Resolve "basic equal-level creature damage" expectation values
@@ -1840,7 +1840,7 @@ static double __ptr_gt_HorizontalShift[] =
 // using 1 as placeholder for unknown to avoid divide-by-zero errors
 // Pulled data from the CreatureAutoAttackDps field in the ExpectedStat table
 
-static double _ptr_gt_resolve_dps_by_level[120] =
+static double _gt_resolve_dps_by_level[120] =
 {
   2.1690638, 2.3859704, 2.6028767,  2.819783,  3.0366893,   // 1-5
   3.3407423, 3.6971202, 4.1481075, 4.7465677, 5.5165443,    // 6-10
@@ -1852,32 +1852,31 @@ static double _ptr_gt_resolve_dps_by_level[120] =
   79.435196, 83.40472,  87.5251,   91.766464, 96.16141,     // 36-40
   101.14363, 106.86478, 113.10574, 120.20306, 128.33798,    // 41-45
   136.76813, 146.30544, 157.0878,  168.55536, 180.34207,    // 46-50
-  249.57643, 273.59277, 298.83823, 326.351,   356.29208,    // 51-55
-  388.82693, 416.91205, 435.93613, 456.0562,  489.4525,     // 51-60
-  489.4525,  489.4525,  489.4525,  489.4525,  489.4525,     // 61-65
-  489.4525,  489.4525,  489.4525,  489.4525,  489.4525,     // 66-70
-  489.4525,  489.4525,  489.4525,  489.4525,  489.4525,     // 71-75
-  489.4525,  489.4525,  489.4525,  489.4525,  489.4525,     // 76-80
-  489.4525,  489.4525,  489.4525,  489.4525,  489.4525,     // 81-85
-  489.4525,  489.4525,  489.4525,  489.4525,  489.4525,     // 86-90
-  489.4525,  489.4525,  489.4525,  489.4525,  489.4525,     // 91-95
-  489.4525,  489.4525,  489.4525,  489.4525,  489.4525,     // 96-100
-  489.4525,  489.4525,  489.4525,  489.4525,  489.4525,     // 101-105
-  489.4525,  489.4525,  489.4525,  489.4525,  489.4525,     // 106-110
-  489.4525,  489.4525,  489.4525,  489.4525,  489.4525,     // 111-115
-  489.4525,  489.4525,  489.4525,  489.4525,  489.4525,     // 116-120
+  388.82693, 416.91205, 432.71927, 448.8418,  474.4007,     // 51-60
+  674.793,   835.4365,  1031.5687, 1257.6083, 1529.0323,    // 61-65
+  1861.4313, 2262.5496, 2492.5215, 2658.433,  2843.4148,    // 66-70
+  2843.4148, 2843.4148, 2843.4148, 2843.4148, 2843.4148,    // 71-75
+  2843.4148, 2843.4148, 2843.4148, 2843.4148, 2843.4148,    // 76-80
+  2843.4148, 2843.4148, 2843.4148, 2843.4148, 2843.4148,    // 81-85
+  2843.4148, 2843.4148, 2843.4148, 2843.4148, 2843.4148,    // 86-90
+  2843.4148, 2843.4148, 2843.4148, 2843.4148, 2843.4148,    // 91-95
+  2843.4148, 2843.4148, 2843.4148, 2843.4148, 2843.4148,    // 96-100
+  2843.4148, 2843.4148, 2843.4148, 2843.4148, 2843.4148,    // 101-105
+  2843.4148, 2843.4148, 2843.4148, 2843.4148, 2843.4148,    // 106-110
+  2843.4148, 2843.4148, 2843.4148, 2843.4148, 2843.4148,    // 111-115
+  2843.4148, 2843.4148, 2843.4148, 2843.4148, 2843.4148,    // 116-120
 };
 
 // These values are not in any database and need to be calculated at each level manually.
-// To calculate these values you need to use the in-game GetParryChance() or GetDodgeChance().
+// To calculate these values you need to use the in-game GetParryChance() or GetDodgeChance()
 // Take the naked base primary stat for the level and divide that by what
 // was returned from either GetParryChance() for Strength users or GetDodgeChance() for
 // Agility users; minus 3 for the base dodge or parry. As an example at level 29
 // my base Agility on a monk is 85. Naked GetDodgeChance() returns 6.256046295166. I subtract 3 for 
 // the base dodge from the result, or 3.256046295166. I then divide that by the base Agility
 // 85 / 3.256046295166 = 26.10527993
-static double _ptr_gt_avoid_per_str_agi_by_level[120] =
-{
+static double _gt_avoid_per_str_agi_by_level[120] =
+{ 
    1/16.04048030,  1/16.04048303,  1/16.04048526,  1/16.04048201,  1/16.04048397, // 1-5
    1/16.04048566,  1/16.04047795,  1/16.04047986,  1/16.04048073,  1/16.04048303, // 6-10
    1/16.04048104,  1/16.04047996,  1/16.04048189,  1/16.04048090,  1/16.04048201, // 11-15
