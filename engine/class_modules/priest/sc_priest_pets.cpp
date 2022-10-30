@@ -1387,15 +1387,14 @@ struct void_spike_cleave_t final : public priest_pet_spell_t
 
     background = dual = true;
     may_miss          = false;
-
-    // TODO: check how this works with the bugged implementation
-    may_crit = false;
+    may_crit          = true;
 
     // BUG: Instead of triggering for 30% of the damage done it has its own spell power scaling
     // https://github.com/SimCMinMax/WoW-BugTracker/issues/1000
     if ( !p.o().bugs )
     {
       spell_power_mod.direct = 0.0;
+      may_crit               = false;
     }
   }
 
