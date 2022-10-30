@@ -1,4 +1,4 @@
-// Player trait definitions, wow build 10.0.0.46340
+// Player trait definitions, wow build 10.0.0.46366
 static const std::array<trait_data_t, 2407> __trait_data_data { {
   { 1,  1, 112108, 90258, 2, 20, 117113, 384124,      0,      0,  8,  1,  -1,              "Armored to the Teeth", {   72,    0,    0,    0 }, {    0,    0,    0,    0 } },
   { 1,  1, 112109, 90259, 2, 20, 117114, 394855,      0,      0,  8,  1,  -1,              "Armored to the Teeth", {   73,    0,    0,    0 }, {    0,    0,    0,    0 } },
@@ -2230,8 +2230,8 @@ static const std::array<trait_data_t, 2407> __trait_data_data { {
   { 2, 11, 109869, 88233, 1, 20, 114874, 202425,      0,      0, 10,  2,  -1,                  "Warrior of Elune", {  102,    0,    0,    0 }, {    0,    0,    0,    0 } },
   { 2, 11, 109870, 88234, 1, 20, 114875, 394081,      0,      0, 10,  1,  -1,                 "Friend of the Fae", {  102,    0,    0,    0 }, {    0,    0,    0,    0 } },
   { 2, 11, 109871, 88235, 1,  8, 114876, 202359,      0,      0,  7,  1,  -1,                  "Astral Communion", {  102,    0,    0,    0 }, {    0,    0,    0,    0 } },
-  { 2, 11, 109872, 88236, 1,  8, 114877, 393954,      0,      0,  5,  5, 101,                  "Rattle the Stars", {  102,    0,    0,    0 }, {    0,    0,    0,    0 } },
-  { 2, 11, 109873, 88236, 1,  8, 114878, 393940,      0,      0,  5,  5, 100,                        "Starweaver", {  102,    0,    0,    0 }, {    0,    0,    0,    0 } },
+  { 2, 11, 109872, 88236, 1,  8, 114877, 393954,      0,      0,  5,  5, 100,                  "Rattle the Stars", {  102,    0,    0,    0 }, {    0,    0,    0,    0 } },
+  { 2, 11, 109873, 88236, 1,  8, 114878, 393940,      0,      0,  5,  5, 101,                        "Starweaver", {  102,    0,    0,    0 }, {    0,    0,    0,    0 } },
   { 2, 12, 112821, 90913, 1,  8, 117826, 196555,      0,      0,  5,  2, 200,                        "Netherwalk", {  577,    0,    0,    0 }, {    0,    0,    0,    0 } },
   { 2, 12, 112822, 90913, 1,  8, 117827, 205411,      0,      0,  5,  2, 100,               "Desperate Instincts", {  577,    0,    0,    0 }, {    0,    0,    0,    0 } },
   { 2, 12, 112823, 90914, 1,  0, 117828, 206478,      0,      0,  3,  1,  -1,                  "Demonic Appetite", {  577,    0,    0,    0 }, {    0,    0,    0,    0 } },
@@ -2409,8 +2409,8 @@ static const std::array<trait_data_t, 2407> __trait_data_data { {
   { 2, 13,  87674, 68648, 1,  8,  92676, 365937,      0,      0,  5,  1, 100,                       "Ruby Embers", { 1467,    0,    0,    0 }, {    0,    0,    0,    0 } },
 } };
 
-// Player trait definition effect entries, wow build 10.0.0.46340
-static const std::array<trait_definition_effect_entry_t, 661> __trait_definition_effect_data { {
+// Player trait definition effect entries, wow build 10.0.0.46366
+static const std::array<trait_definition_effect_entry_t, 662> __trait_definition_effect_data { {
   { 85152, 0, 0, 52490 },
   { 85152, 1, 0, 52491 },
   { 85152, 2, 0, 52492 },
@@ -2726,6 +2726,7 @@ static const std::array<trait_definition_effect_entry_t, 661> __trait_definition
   { 106485, 0, 0, 61686 },
   { 106491, 0, 0, 59254 },
   { 106502, 0, 0, 58433 },
+  { 106512, 0, 0, 62004 },
   { 106519, 0, 0, 58434 },
   { 106522, 0, 0, 61525 },
   { 106523, 0, 0, 59022 },

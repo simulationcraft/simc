@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.46340 Live (hotfix 2022-10-29/46340)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.46366 Live (hotfix 2022-10-30/46366)
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Hotfixed         : Variables
 Class            : Priest

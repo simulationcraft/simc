@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.46340 Live (hotfix 2022-10-29/46340)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.46366 Live (hotfix 2022-10-30/46366)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -6303,6 +6303,7 @@ $high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}
 
 Name             : Improved Vivify (id=231602) [Spell Family (53), Passive, Hidden] 
 Talent Entry     : Generic [tree=class, row=3, col=3, max_rank=2, req_points=0]
+                 : Effect#1 [op=set, values=(20, 40)]
 Class            : Brewmaster Monk
 School           : Frost
 Spell Type       : None
