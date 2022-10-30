@@ -2112,6 +2112,7 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) : actor_target_data_t(
   // TODO: stacks generated mid-collapse need to get re-triggered to collapse
   buffs.echoing_void_collapse = make_buff( *this, "echoing_void_collapse" )
                                     ->set_quiet( true )
+                                    ->set_refresh_behavior( buff_refresh_behavior::DURATION )
                                     ->set_tick_behavior( buff_tick_behavior::REFRESH )
                                     ->set_period( timespan_t::from_seconds( 1.0 ) )
                                     ->set_tick_callback( [ this, &p, target ]( buff_t* b, int, timespan_t ) {

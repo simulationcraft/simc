@@ -23,7 +23,7 @@ actions+=/variable,name=rtb_reroll,value=rtb_buffs<2&(!buff.broadside.up&(!talen
 # Ensure we get full Ambush CP gains and aren't rerolling Count the Odds buffs away
 actions+=/variable,name=ambush_condition,value=combo_points.deficit>=2+talent.improved_ambush+buff.broadside.up&energy>=50&(!talent.count_the_odds|buff.roll_the_bones.remains>=10)
 # Finish at max possible CP without overflowing bonus combo points, unless for BtE which always should be 5+ CP
-actions+=/variable,name=finish_condition,value=combo_points>=cp_max_spend-buff.broadside.up-(buff.opportunity.up*(talent.quick_draw|talent.fan_the_hammer)|buff.concealed_blunderbuss.up)|effective_combo_points>=cp_max_spend
+actions+=/variable,name=finish_condition,value=combo_points>=cp_max_spend-buff.broadside.up-(buff.opportunity.up*(talent.quick_draw|talent.fan_the_hammer))|effective_combo_points>=cp_max_spend
 # Always attempt to use BtE at 5+ CP, regardless of CP gen waste
 actions+=/variable,name=finish_condition,op=reset,if=cooldown.between_the_eyes.ready&effective_combo_points<5
 # With multiple targets, this variable is checked to decide whether some CDs should be synced with Blade Flurry
@@ -41,8 +41,10 @@ actions+=/bag_of_tricks
 actions.build=sepsis,target_if=max:target.time_to_die*debuff.between_the_eyes.up,if=target.time_to_die>11&debuff.between_the_eyes.up|fight_remains<11
 actions.build+=/ghostly_strike,if=debuff.ghostly_strike.remains<=3
 actions.build+=/echoing_reprimand,if=!buff.dreadblades.up
-# Use Pistol Shot when buffed by bonuses as a priority
-actions.build+=/pistol_shot,if=buff.opportunity.up&(buff.greenskins_wickers.up&!talent.fan_the_hammer|buff.concealed_blunderbuss.up)|buff.greenskins_wickers.up&buff.greenskins_wickers.remains<1.5
+# High priority Ambush line to apply Find Weakness or consume HO+Audacity buff before Pistol Shot
+actions.build+=/ambush,if=talent.hidden_opportunity&buff.audacity.up|talent.find_weakness&debuff.find_weakness.down
+# Use Greenskins Wickers buff immediately with Opportunity unless running Fan the Hammer
+actions.build+=/pistol_shot,if=buff.greenskins_wickers.up&(!talent.fan_the_hammer&buff.opportunity.up|buff.greenskins_wickers.remains<1.5)
 # With Fan the Hammer, consume Opportunity at max stacks or if we will get 4+ CP and Dreadblades is not up
 actions.build+=/pistol_shot,if=talent.fan_the_hammer&buff.opportunity.up&(buff.opportunity.stack>=buff.opportunity.max_stack|buff.opportunity.remains<2)
 actions.build+=/pistol_shot,if=talent.fan_the_hammer&buff.opportunity.up&combo_points.deficit>4&!buff.dreadblades.up
@@ -58,8 +60,9 @@ actions.cds=blade_flurry,if=spell_targets>=2&!buff.blade_flurry.up
 actions.cds+=/roll_the_bones,if=buff.dreadblades.down&(!buff.roll_the_bones.up|variable.rtb_reroll)
 actions.cds+=/keep_it_rolling,if=!variable.rtb_reroll&(buff.broadside.up+buff.true_bearing.up+buff.skull_and_crossbones.up+buff.ruthless_precision.up)>2
 actions.cds+=/vanish,if=(!stealthed.all|talent.count_the_odds&!variable.stealthed_cto)&!buff.take_em_by_surprise.up&((talent.find_weakness&debuff.find_weakness.down|talent.hidden_opportunity)&variable.ambush_condition|talent.count_the_odds&variable.finish_condition)&(!talent.shadow_dance|!cooldown.shadow_dance.ready)
-actions.cds+=/shadow_dance,if=!variable.stealthed_cto&!talent.keep_it_rolling&buff.slice_and_dice.up&debuff.between_the_eyes.up&(!talent.ghostly_strike|debuff.ghostly_strike.up)&(!talent.dreadblades|!cooldown.dreadblades.ready)&(variable.finish_condition|talent.hidden_opportunity)
-actions.cds+=/shadow_dance,if=!variable.stealthed_cto&talent.keep_it_rolling&debuff.between_the_eyes.up&(!talent.ghostly_strike|debuff.ghostly_strike.up)&(!talent.dreadblades|!cooldown.dreadblades.ready)&(cooldown.keep_it_rolling.remains<=30|cooldown.keep_it_rolling.remains>120&(variable.finish_condition|talent.hidden_opportunity))
+actions.cds+=/variable,name=shadow_dance_condition,value=talent.shadow_dance&(!stealthed.all|talent.count_the_odds&!variable.stealthed_cto)&debuff.between_the_eyes.up&(!talent.ghostly_strike|debuff.ghostly_strike.up)&(!talent.dreadblades|!cooldown.dreadblades.ready)
+actions.cds+=/shadow_dance,if=!talent.keep_it_rolling&variable.shadow_dance_condition&buff.slice_and_dice.up&(variable.finish_condition|talent.hidden_opportunity)
+actions.cds+=/shadow_dance,if=talent.keep_it_rolling&variable.shadow_dance_condition&(cooldown.keep_it_rolling.remains<=30|cooldown.keep_it_rolling.remains>120&(variable.finish_condition|talent.hidden_opportunity))
 actions.cds+=/adrenaline_rush,if=!buff.adrenaline_rush.up&(!talent.improved_adrenaline_rush|combo_points<=2)
 actions.cds+=/dreadblades,if=!stealthed.all&combo_points<=2&(!talent.marked_for_death|!cooldown.marked_for_death.ready)
 # If adds are up, snipe the one with lowest TTD. Use when dying faster than CP deficit or without any CP.

@@ -593,12 +593,6 @@ struct shadow_word_pain_t final : public priest_spell_t
       spell_power_mod.direct = 0;
     }
 
-    auto rank2 = p.find_rank_spell( "Shadow Word: Pain", "Rank 2" );
-    if ( rank2->ok() )
-    {
-      dot_duration += rank2->effectN( 1 ).time_value();
-    }
-
     if ( priest().talents.shadow.misery.enabled() )
     {
       dot_duration += priest().talents.shadow.misery->effectN( 2 ).time_value();
@@ -2680,9 +2674,9 @@ void priest_t::trigger_idol_of_nzoth( player_t* target, proc_t* proc )
   {
     proc->occur();
     td->buffs.echoing_void->trigger();
-    if ( !td->buffs.echoing_void_collapse->check() && rng().roll( talents.shadow.idol_of_nzoth->proc_chance() ) )
+    if ( rng().roll( talents.shadow.idol_of_nzoth->proc_chance() ) )
     {
-      td->buffs.echoing_void_collapse->trigger();
+      td->buffs.echoing_void_collapse->trigger( timespan_t::from_seconds( td->buffs.echoing_void->stack() + 1 ) );
     }
   }
 }
