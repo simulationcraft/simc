@@ -1265,6 +1265,91 @@ void decoration_of_flame( special_effect_t& effect )
   } );
 }
 
+// Manic Grieftorch
+// 377463 Driver
+// 382135 Damage
+// 382136 Damage Driver
+// 394954 Damage Value
+// 382256 AoE Radius
+// 382257 ???
+// 395703 ???
+// 396434 ???
+void manic_grieftorch( special_effect_t& effect )
+{
+  buff_t* buff;
+
+  buff = make_buff( effect.player, "manic_grieftorch", effect.player->find_spell( 377463 ) )
+      ->set_cooldown( 0_ms );
+
+  effect.custom_buff = buff;
+
+  struct manic_grieftorch_damage_t : public proc_spell_t
+  {
+    manic_grieftorch_damage_t( const special_effect_t& e, buff_t* b ) :
+      proc_spell_t( "manic_grieftorch", e.player, e.player->find_spell( 382136 ), e.item )
+    {
+      background = true;
+      dual = true;
+      base_dd_min = base_dd_max = e.player->find_spell( 394954 )->effectN( 1 ).average( e.item );
+      aoe = rng().range( 0, n_targets() );
+      radius = e.player -> find_spell( 382256 ) -> effectN( 1 ).radius();
+    }
+  };
+
+  struct manic_grieftorch_channel_t : public proc_spell_t
+  {
+    action_t* damage;
+
+    manic_grieftorch_channel_t( const special_effect_t& e, buff_t* b) :
+      proc_spell_t( "manic_grieftorch_channel", e.player, e.player->find_spell( 377463 ), e.item)
+    {
+      background = true;
+      channeled = tick_zero = true;
+      hasted_ticks = false;
+      base_tick_time = e.player -> find_spell( 377463 ) -> effectN( 1 ).period();
+
+      damage = player -> find_action( "manic_grieftorch" );
+    }
+
+    void execute() override
+    {
+      proc_spell_t::execute();
+
+      // Use_item_t (that executes this action) will trigger a player-ready event after execution.
+      // Since this action is a "background channel", we'll need to cancel the player ready event to
+      // prevent the player from picking something to do while channeling.
+      event_t::cancel( player -> readying );
+    }
+
+    void tick( dot_t* d ) override
+    {
+      proc_spell_t::tick( d );
+
+      damage -> execute();
+    }
+
+    void last_tick( dot_t* d ) override
+    {
+      // Last_tick() will zero player_t::channeling if this action is being channeled, so check it
+      // before calling the parent.
+      auto was_channeling = player -> channeling == this;
+
+      proc_spell_t::last_tick( d );
+      player -> schedule_ready();
+    }
+  };
+
+  action_t* action = create_proc_action<manic_grieftorch_channel_t>( "manic_grieftorch_channel", effect, buff );
+  buff->set_refresh_behavior( buff_refresh_behavior::DISABLED );
+  buff->set_stack_change_callback( [ action ](buff_t*, int, int new_ ) 
+  {
+    if( new_ == 1 )
+    {
+      action->execute();
+    }
+  } );
+}
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -1545,6 +1630,7 @@ void register_special_effects()
   register_special_effect( 377454, items::rumbling_ruby );
   register_special_effect( 377453, items::storm_eaters_boon );
   register_special_effect( 377449, items::decoration_of_flame );
+  register_special_effect( 377463, items::manic_grieftorch );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );  // bronzed grip wrappings embellishment
