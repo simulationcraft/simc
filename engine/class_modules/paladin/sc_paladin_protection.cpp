@@ -207,6 +207,11 @@ struct avengers_shield_t : public avengers_shield_base_t
       else
         p() -> procs.as_engraved_sigil_wasted -> occur();
     }
+    // Barricade only triggers on self-cast AS
+    if ( p()->talents.barricade_of_faith->ok() )
+    {
+      p()->buffs.barricade_of_faith->trigger();
+    }
   }
 };
 
@@ -991,6 +996,9 @@ void paladin_t::create_buffs_protection()
                                  ->add_invalidate( CACHE_BLOCK );
   buffs.moment_of_glory_absorb = make_buff<absorb_buff_t>( this, "moment_of_glory_absorb", find_spell( 393899 ) )
                                       ->set_absorb_source( get_stats( "moment_of_glory_absorb" ) );
+  buffs.barricade_of_faith = make_buff( this, "barricade_of_faith", find_spell( 385726 ) )
+                                 ->set_default_value( talents.barricade_of_faith->effectN( 1 ).percent() )
+                                 ->add_invalidate( CACHE_BLOCK );
 
 
   if ( specialization() == PALADIN_PROTECTION )

@@ -138,6 +138,7 @@ public:
     buff_t* inner_light;
     buff_t* inspiring_vanguard;
     buff_t* soaring_shield;
+    buff_t* barricade_of_faith;
     buff_t* ally_of_the_light; // T29 2pc
     buff_t* deflecting_light; // T29 4pc
 

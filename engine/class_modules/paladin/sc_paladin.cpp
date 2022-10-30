@@ -3317,7 +3317,7 @@ double paladin_t::composite_block() const
 
   b += talents.holy_shield->effectN( 1 ).percent();
   b += buffs.faith_in_the_light->value();
-
+  b += buffs.barricade_of_faith->value();
   return b;
 }
 
