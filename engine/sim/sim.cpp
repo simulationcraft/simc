@@ -3892,6 +3892,7 @@ void sim_t::create_options()
   // Dragonflight
   add_option( opt_timespan( "dragonflight.darkmoon_deck_watcher_deplete", dragonflight_opts.darkmoon_deck_watcher_deplete, 0_ms, timespan_t::max() ) );
   add_option( opt_string( "dragonflight.whispering_incarnate_icon_roles", dragonflight_opts.whispering_incarnate_icon_roles ) );
+  add_option( opt_float("dragonflight.decoration_of_flame_miss_chance", dragonflight_opts.decoration_of_flame_miss_chance, 0.0, 1.0 ) );
 }
 
 // sim_t::parse_option ======================================================

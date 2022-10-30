@@ -1202,7 +1202,6 @@ void storm_eaters_boon( special_effect_t& effect )
 }
 
 // Decoration of Flame
-// TODO - Create a miss chance for the target list to better emulate in game behavior
 // 377449 Driver
 // 382058 Shield Buff
 // 394393 Damage and Shield Value
@@ -1241,11 +1240,21 @@ void decoration_of_flame( special_effect_t& effect )
       return m;
     }
 
+    int n_targets() const override
+    { 
+      double chance = player -> sim -> dragonflight_opts.decoration_of_flame_miss_chance;
+      if ( rng().roll( chance ) )
+      {
+        return aoe - as<int>( rng().range( 0, n_targets() ) );
+      }
+      return aoe; 
+    }
+
     void execute() override
     {
       proc_spell_t::execute();
-      
-      shield->trigger( -1, value * ( 1.0 + ( num_targets_hit - 1 ) * 0.5 ) );
+
+      shield->trigger( -1, value * ( 1.0 + ( num_targets_hit - 1 ) * 0.05 ) );
     }
   };
 
