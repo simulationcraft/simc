@@ -5,8 +5,8 @@
 
 #include "config.hpp"
 #include "simulationcraft.hpp"
-#include "player/parse_buff_effects.hpp"
 #include "player/covenant.hpp"
+#include "player/parse_buff_effects.hpp"
 #include "player/pet_spawner.hpp"
 
 namespace

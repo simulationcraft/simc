@@ -3,6 +3,13 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
+#include "action/action.hpp"
+#include "buff/buff.hpp"
+#include "player/player.hpp"
+#include "sim/sim.hpp"
+
+#include <functional>
+
 // Mixin to action base class to allow auto parsing and dynamic application of whitelist based buffs & auras.
 // 1) Add `parse_buff_effects_t` as an additional parent
 // 2) Within the constructor, set `action_ = this;`
