@@ -227,6 +227,9 @@ public:
     cooldown_t* hammer_of_justice;
     cooldown_t* judgment_of_light_icd;
     cooldown_t* the_magistrates_judgment_icd;
+    cooldown_t* blessing_of_protection; // Blessing of Spellwarding Shared CD
+    cooldown_t* blessing_of_spellwarding; // Blessing of Protection Shared CD
+    cooldown_t* divine_shield; // Resolute Defender (Prot)
 
     cooldown_t* holy_shock; // Crusader's Might, Divine Purpose
     cooldown_t* light_of_dawn; // Divine Purpose
@@ -1375,9 +1378,7 @@ struct holy_power_consumer_t : public Base
       timespan_t reduction =
           timespan_t::from_seconds( -1.0 * p->talents.resolute_defender->effectN( 1 ).base_value() / 10 );
       p->cooldowns.ardent_defender->adjust( reduction );
-      // "Let the ability handle the cd", yeah.. But how to reduce it's cd?
-      //p->buffs.divine_shield->cooldown->adjust( reduction );
-      auto foo = 1;
+      p->cooldowns.divine_shield->adjust( reduction );
     }
 
     // Consume Empyrean Power on Divine Storm, handled here for interaction with DP/FoJ

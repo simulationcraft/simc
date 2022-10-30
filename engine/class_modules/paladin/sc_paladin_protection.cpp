@@ -369,12 +369,16 @@ struct blessing_of_spellwarding_t : public paladin_spell_t
     paladin_spell_t( "blessing_of_spellwarding", p, p -> talents.blessing_of_spellwarding )
   {
     parse_options( options_str );
+    harmful = false;
+    may_miss = false;
+    cooldown = p->cooldowns.blessing_of_spellwarding; // Needed for shared cooldown with Blessing of Protection
   }
 
   void execute() override
   {
     paladin_spell_t::execute();
 
+    p()->cooldowns.blessing_of_protection->start(); // Shared cooldown
     // apply forbearance, track locally for forbearant faithful & force recharge recalculation
     p() -> trigger_forbearance( execute_state -> target );
   }
@@ -383,6 +387,9 @@ struct blessing_of_spellwarding_t : public paladin_spell_t
   {
     if ( candidate_target -> debuffs.forbearance -> check() )
       return false;
+
+    /*if ( candidate_target->is_enemy() )
+      return false;*/
 
     return paladin_spell_t::target_ready( candidate_target );
   }

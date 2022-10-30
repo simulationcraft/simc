@@ -40,6 +40,9 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
   cooldowns.hammer_of_justice            = get_cooldown( "hammer_of_justice" );
   cooldowns.judgment_of_light_icd        = get_cooldown( "judgment_of_light_icd" );
   cooldowns.the_magistrates_judgment_icd = get_cooldown( "the_magistrates_judgment_icd" );
+  cooldowns.blessing_of_protection       = get_cooldown( "blessing_of_protection" );
+  cooldowns.blessing_of_spellwarding     = get_cooldown( "blessing_of_spellwarding" );
+  cooldowns.divine_shield                = get_cooldown( "divine_shield" );
 
   cooldowns.holy_shock    = get_cooldown( "holy_shock" );
   cooldowns.light_of_dawn = get_cooldown( "light_of_dawn" );
@@ -136,6 +139,9 @@ struct blessing_of_protection_t : public paladin_spell_t
     : paladin_spell_t( "blessing_of_protection", p, p->find_talent_spell( talent_tree::CLASS, "Blessing of Protection" ) )
   {
     parse_options( options_str );
+    harmful = false;
+    may_miss = false;
+    cooldown = p->cooldowns.blessing_of_protection; // Used to set it on cooldown via Blessing of Spellwarding
 
     // Uther's Counsel reduces cooldown
     if ( p->talents.uthers_counsel->ok() )
@@ -148,6 +154,8 @@ struct blessing_of_protection_t : public paladin_spell_t
   {
     paladin_spell_t::execute();
 
+    if ( p()->talents.blessing_of_spellwarding->ok() )
+      p()->cooldowns.blessing_of_spellwarding->start();
     // apply forbearance, track locally for forbearant faithful & force recharge recalculation
     p()->trigger_forbearance( execute_state->target );
   }
@@ -156,6 +164,9 @@ struct blessing_of_protection_t : public paladin_spell_t
   {
     if ( candidate_target->debuffs.forbearance->check() )
       return false;
+
+    //if ( candidate_target->is_enemy() )
+    //  return false;
 
     return paladin_spell_t::target_ready( candidate_target );
   }
@@ -470,6 +481,7 @@ struct divine_shield_t : public paladin_spell_t
     parse_options( options_str );
 
     harmful = false;
+    cooldown = p->cooldowns.divine_shield; // Needed for cooldown reduction via Resolute Defender
 
     // unbreakable spirit reduces cooldown
     if ( p->talents.unbreakable_spirit->ok() )
