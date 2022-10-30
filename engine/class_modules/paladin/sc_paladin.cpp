@@ -398,6 +398,9 @@ struct consecration_t : public paladin_spell_t
     if ( precombat_time > 0 )
       cons_duration -= timespan_t::from_seconds( precombat_time + 1 );
 
+    if ( p()->talents.consecration_in_flame->ok() )
+      cons_duration += timespan_t::from_millis( p()->talents.consecration_in_flame->effectN( 1 ).base_value() );
+
     cons_params = ground_aoe_params_t()
                       .duration( cons_duration )
                       .hasted( ground_aoe_params_t::SPELL_HASTE )
@@ -436,12 +439,6 @@ struct consecration_t : public paladin_spell_t
 
     if ( sim->distance_targeting_enabled )
       cons_params.x( p()->x_position ).y( p()->y_position );
-
-    auto duration = data().duration();
-    if ( p()->talents.consecration_in_flame->ok() )
-    {
-      duration +=  p()->talents.consecration_in_flame->effectN( 1 ).time_value();
-    }
 
     if ( !player->in_combat && precombat_time > 0 )
     {
