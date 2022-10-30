@@ -832,7 +832,7 @@ public:
     }
   }
 
-    // Syntax: parse_buff_effects[<S[,S...]>]( buff[, ignore_mask|use_stacks[, use_default]][, spell1[,spell2...] )
+  // Syntax: parse_buff_effects[<S[,S...]>]( buff[, ignore_mask|use_stacks[, use_default]][, spell1[,spell2...] )
   //  buff = buff to be checked for to see if effect applies
   //  ignore_mask = optional bitmask to skip effect# n corresponding to the n'th bit
   //  use_stacks = optional, default true, whether to multiply value by stacks
