@@ -7862,9 +7862,13 @@ void actions::rogue_action_t<Base>::trigger_restless_blades( const action_state_
   p()->cooldowns.killing_spree->adjust( v, false );
   p()->cooldowns.marked_for_death->adjust( v, false );
   p()->cooldowns.roll_the_bones->adjust( v, false );
-  p()->cooldowns.sepsis->adjust( v, false );
+  // DFALPHA -- Currently bugged, but may not return
+  if ( !p()->bugs )
+  {
+    p()->cooldowns.sepsis->adjust( v, false );
+  }
   p()->cooldowns.sprint->adjust( v, false );
-  p()->cooldowns.vanish->adjust( v, false ); // DFALPHA -- Appears bugged
+  p()->cooldowns.vanish->adjust( v, false );
 
   if ( p()->talent.outlaw.float_like_a_butterfly->ok() )
   {
