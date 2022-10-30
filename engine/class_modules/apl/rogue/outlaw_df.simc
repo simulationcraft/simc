@@ -28,7 +28,8 @@ actions+=/variable,name=finish_condition,value=combo_points>=cp_max_spend-buff.b
 actions+=/variable,name=finish_condition,op=reset,if=cooldown.between_the_eyes.ready&effective_combo_points<5
 # With multiple targets, this variable is checked to decide whether some CDs should be synced with Blade Flurry
 actions+=/variable,name=blade_flurry_sync,value=spell_targets.blade_flurry<2&raid_event.adds.in>20|buff.blade_flurry.remains>1+talent.killing_spree.enabled
-actions+=/call_action_list,name=stealth,if=stealthed.all
+# Higher priority Stealth list for Count the Odds or true Stealth/Vanish that will break in a single global
+actions+=/call_action_list,name=stealth,if=stealthed.basic|variable.stealthed_cto
 actions+=/call_action_list,name=cds
 actions+=/run_action_list,name=finish,if=variable.finish_condition
 actions+=/call_action_list,name=build

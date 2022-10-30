@@ -521,7 +521,7 @@ void outlaw_df( player_t* p )
   default_->add_action( "variable,name=finish_condition,value=combo_points>=cp_max_spend-buff.broadside.up-(buff.opportunity.up*(talent.quick_draw|talent.fan_the_hammer))|effective_combo_points>=cp_max_spend", "Finish at max possible CP without overflowing bonus combo points, unless for BtE which always should be 5+ CP" );
   default_->add_action( "variable,name=finish_condition,op=reset,if=cooldown.between_the_eyes.ready&effective_combo_points<5", "Always attempt to use BtE at 5+ CP, regardless of CP gen waste" );
   default_->add_action( "variable,name=blade_flurry_sync,value=spell_targets.blade_flurry<2&raid_event.adds.in>20|buff.blade_flurry.remains>1+talent.killing_spree.enabled", "With multiple targets, this variable is checked to decide whether some CDs should be synced with Blade Flurry" );
-  default_->add_action( "call_action_list,name=stealth,if=stealthed.all" );
+  default_->add_action( "call_action_list,name=stealth,if=stealthed.basic|variable.stealthed_cto", "Higher priority Stealth list for Count the Odds or true Stealth/Vanish that will break in a single global" );
   default_->add_action( "call_action_list,name=cds" );
   default_->add_action( "run_action_list,name=finish,if=variable.finish_condition" );
   default_->add_action( "call_action_list,name=build" );
