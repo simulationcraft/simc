@@ -2128,29 +2128,13 @@ struct kindred_affinity_external_buff_t : public kindred_affinity_base_t
 
 // Template for common druid action code. See priest_action_t.
 template <class Base>
-struct druid_action_t : public Base, parse_buff_effects_t
+struct druid_action_t : public Base, parse_buff_effects_t<druid_td_t>
 {
 private:
   using ab = Base;  // action base, eg. spell_t
 
-protected:
-  using dfun = std::function<dot_t*( druid_td_t* )>;
-  struct dot_debuff_t
-  {
-    dfun func;
-    double value;
-    bool use_stacks;
-    bool mastery;
-
-    dot_debuff_t( dfun f, double v, bool s, bool m = false )
-      : func( std::move( f ) ), value( v ), use_stacks( s ), mastery( m )
-    {}
-  };
-
 public:
   using base_t = druid_action_t<Base>;
-
-  std::vector<dot_debuff_t> target_multiplier_dotdebuffs;
 
   // list of action_ids that triggers the same dot as this action
   std::vector<int> dot_ids;
@@ -2185,7 +2169,7 @@ public:
     if ( ab::data().ok() )
     {
       apply_buff_effects();
-      apply_dot_debuffs();
+      apply_debuffs_effects();
     }
   }
 
@@ -2398,7 +2382,7 @@ public:
     make_event( ab::sim, [ this ]() { p()->buff.galactic_guardian->trigger(); } );  // schedule buff after damage execute
   }
 
-  void apply_buff_effects() override
+  void apply_buff_effects()
   {
     using S = const spell_data_t*;
     using C = const conduit_data_t&;
@@ -2475,6 +2459,46 @@ public:
     parse_buff_effects<S>( p()->buff.natures_swiftness, p()->talent.natures_splendor );
   }
 
+  // Syntax: parse_debuff_effects[<S[,...]>]( func, spell_data_t* dot[, spell_data_t* spell][,...] )
+  //  func = function returning the dot_t* of the dot
+  //  dot = spell data of the dot
+  //  S = optional list of template parameter to indicate spell with redirect effects
+  //  spell = optional list of spell with redirect effects that modify the effects on the dot
+  void apply_debuffs_effects()
+  {
+    parse_debuff_effects( []( druid_td_t* t ) { return t->dots.moonfire->is_ticking(); },
+                          p()->spec.moonfire_dmg, p()->mastery.astral_invocation );
+
+    parse_debuff_effects( []( druid_td_t* t ) { return t->dots.sunfire->is_ticking(); },
+                          p()->spec.sunfire_dmg, p()->mastery.astral_invocation );
+
+    parse_debuff_effects( []( druid_td_t* t ) { return t->dots.adaptive_swarm_damage->is_ticking(); },
+                          p()->spec.adaptive_swarm_damage );
+
+    parse_debuff_effects( []( druid_td_t* t ) { return t->dots.thrash_bear->current_stack(); },
+                          p()->spec.thrash_bear_dot, p()->talent.rend_and_tear );
+  }
+
+  double get_debuff_effects_value( druid_td_t* t ) const override
+  {
+    double return_value = 1.0;
+
+    for ( const auto& i : target_multiplier_dotdebuffs )
+    {
+      if ( auto check = i.func( t ) )
+      {
+        auto eff_val = i.value;
+
+        if ( i.mastery )
+          eff_val += p()->cache_mastery_value();
+
+        return_value *= 1.0 + eff_val * check;
+      }
+    }
+
+    return return_value;
+  }
+
   double cost() const override
   {
     double c = ab::cost();
@@ -2531,83 +2555,9 @@ public:
     return rm;
   }
 
-  template <typename... Ts>
-  void parse_dot_debuffs( const dfun& func, bool use_stacks, const spell_data_t* s_data, Ts... mods )
-  {
-    if ( !s_data->ok() )
-      return;
-
-    for ( size_t i = 1; i <= s_data->effect_count(); i++ )
-    {
-      const auto& eff = s_data->effectN( i );
-      double val      = eff.base_value();
-      double val_mul  = 0.01;
-      bool mastery    = false;
-
-      if ( eff.type() != E_APPLY_AURA )
-        continue;
-
-      if ( i <= 5 )
-        parse_spell_effects_mods( val, mastery, s_data, i, mods... );
-
-      if ( !mastery && !val )
-        continue;
-
-      if ( !( eff.subtype() == A_MOD_DAMAGE_FROM_CASTER_SPELLS && ab::data().affected_by_all( eff ) ) &&
-           !( eff.subtype() == A_MOD_AUTO_ATTACK_FROM_CASTER && is_auto_attack ) )
-        continue;
-
-      p()->sim->print_debug( "dot-debuffs: {} ({}) damage modified by {}{} on targets with dot {} ({}#{})", ab::name(),
-                             ab::id, val * val_mul, mastery ? "+mastery" : "", s_data->name_cstr(), s_data->id(), i );
-      target_multiplier_dotdebuffs.emplace_back( func, val * val_mul, use_stacks, mastery );
-    }
-  }
-
-  template <typename... Ts>
-  void parse_dot_debuffs( dfun func, const spell_data_t* s_data, Ts... mods )
-  {
-    parse_dot_debuffs( func, true, s_data, mods... );
-  }
-
-  double get_dot_debuffs_value( druid_td_t* t ) const
-  {
-    double return_value = 1.0;
-
-    for ( const auto& i : target_multiplier_dotdebuffs )
-    {
-      auto dot = i.func( t );
-      auto eff_val = i.value;
-
-      if ( i.mastery )
-        eff_val += p()->cache_mastery_value();
-
-      if ( dot->is_ticking() )
-        return_value *= 1.0 + eff_val * ( i.use_stacks ? dot->current_stack() : 1.0 );
-    }
-
-    return return_value;
-  }
-
-  // Syntax: parse_dot_debuffs[<S[,...]>]( func, spell_data_t* dot[, spell_data_t* spell][,...] )
-  //  func = function returning the dot_t* of the dot
-  //  dot = spell data of the dot
-  //  S = optional list of template parameter to indicate spell with redirect effects
-  //  spell = optional list of spell with redirect effects that modify the effects on the dot
-  void apply_dot_debuffs()
-  {
-    parse_dot_debuffs( []( druid_td_t* t ) -> dot_t* { return t->dots.moonfire; },
-                       p()->spec.moonfire_dmg, p()->mastery.astral_invocation );
-    parse_dot_debuffs( []( druid_td_t* t ) -> dot_t* { return t->dots.sunfire; },
-                       p()->spec.sunfire_dmg, p()->mastery.astral_invocation );
-    parse_dot_debuffs( []( druid_td_t* t ) -> dot_t* { return t->dots.adaptive_swarm_damage; },
-                       false, p()->spec.adaptive_swarm_damage );
-    parse_dot_debuffs( []( druid_td_t* t ) -> dot_t* { return t->dots.thrash_bear; },
-                       p()->spec.thrash_bear_dot, p()->talent.rend_and_tear );
-  }
-
   double composite_target_multiplier( player_t* t ) const override
   {
-    double tm = ab::composite_target_multiplier( t ) * get_dot_debuffs_value( td( t ) );
+    double tm = ab::composite_target_multiplier( t ) * get_debuff_effects_value( td( t ) );
 
     return tm;
   }
@@ -8983,7 +8933,7 @@ struct druid_melee_t : public Base
     ab::weapon_multiplier = 1.0;
 
     ab::apply_buff_effects();
-    ab::apply_dot_debuffs();
+    ab::apply_debuffs_effects();
 
     // Auto attack mods
     ab::parse_passive_effects( p->spec.guardian );

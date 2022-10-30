@@ -757,24 +757,8 @@ namespace actions
  * spell_t/heal_t or absorb_t directly.
  */
 template <typename Base>
-struct priest_action_t : public Base, parse_buff_effects_t
+struct priest_action_t : public Base, parse_buff_effects_t<priest_td_t>
 {
-  using dfun = std::function<buff_t*( priest_td_t* )>;
-  struct debuff_effect_t
-  {
-    dfun func;
-    double value;
-    bool use_stacks;
-    bool mastery;
-
-    debuff_effect_t( dfun f, double v, bool s, bool m = false )
-      : func( std::move( f ) ), value( v ), use_stacks( s ), mastery( m )
-    {
-    }
-  };
-
-  std::vector<debuff_effect_t> target_multiplier_debuffeffects;
-
 protected:
   priest_t& priest()
   {
@@ -876,57 +860,6 @@ public:
     parse_buff_effects( p().buffs.devoured_pride );           // Spell Direct and Periodic amount
   }
 
-  template <typename... Ts>
-  void parse_debuff_effects( const dfun& func, bool use_stacks, const spell_data_t* s_data, Ts... mods )
-  {
-    if ( !s_data->ok() )
-      return;
-
-    for ( size_t i = 1; i <= s_data->effect_count(); i++ )
-    {
-      const auto& eff = s_data->effectN( i );
-      double val      = eff.percent();
-      bool mastery    = false;
-
-      if ( eff.type() != E_APPLY_AURA )
-        continue;
-
-      if ( eff.subtype() != A_MOD_DAMAGE_FROM_CASTER_SPELLS || !ab::data().affected_by_all( eff ) )
-        continue;
-
-      if ( i <= 5 )
-        parse_spell_effects_mods( val, mastery, s_data, i, mods... );
-
-      if ( !val )
-        continue;
-
-      p().sim->print_debug( "debuff-effects: {} ({}) damage modified by {}% on targets with debuff {} ({}#{})",
-                            ab::name(), ab::id, val * 100.0, s_data->name_cstr(), s_data->id(), i );
-      target_multiplier_debuffeffects.emplace_back( func, val, use_stacks );
-    }
-  }
-
-  template <typename... Ts>
-  void parse_debuff_effects( dfun func, const spell_data_t* s_data, Ts... mods )
-  {
-    parse_debuff_effects( func, true, s_data, mods... );
-  }
-
-  double get_debuff_effect_values( priest_td_t* t ) const
-  {
-    double return_value = 1.0;
-
-    for ( const auto& i : target_multiplier_debuffeffects )
-    {
-      auto debuff = i.func( t );
-
-      if ( debuff->check() )
-        return_value *= 1.0 + i.value * ( i.use_stacks ? debuff->check() : 1.0 );
-    }
-
-    return return_value;
-  }
-
   // Syntax: parse_dot_debuffs[<S[,S...]>]( func, spell_data_t* dot[, spell_data_t* spell1[,spell2...] )
   //  func = function returning the dot_t* of the dot
   //  dot = spell data of the dot
@@ -936,7 +869,7 @@ public:
   {
     // using S = const spell_data_t*;
 
-    parse_debuff_effects( []( priest_td_t* t ) -> buff_t* { return t->buffs.schism; }, p().talents.schism );
+    parse_debuff_effects( []( priest_td_t* t ) { return t->buffs.schism->check(); }, p().talents.schism );
   }
 
   double cost() const override
@@ -947,7 +880,7 @@ public:
 
   double composite_target_multiplier( player_t* t ) const override
   {
-    double tm = ab::composite_target_multiplier( t ) * get_debuff_effect_values( td( t ) );
+    double tm = ab::composite_target_multiplier( t ) * get_debuff_effects_value( td( t ) );
     return tm;
   }
 

@@ -11,8 +11,12 @@
 #include <functional>
 
 // Mixin to action base class to allow auto parsing and dynamic application of whitelist based buffs & auras.
-// 1) Add `parse_buff_effects_t` as an additional parent
+// 1) Add `parse_buff_effects_t` as an additional parent with the target data object as template parameter:
+//
+//    struct my_action_base_t : public action_t, parse_buff_effects_t<my_target_data_t>
+//
 // 2) Within the constructor, set `action_ = this;`
+//
 // 3) `get_buff_effects_value( buff effect vector ) returns the modified value.
 //    Add the following overrides with any addtional adjustments as needed (BASE is the parent to the action base class):
 
@@ -25,31 +29,29 @@
       }
 
       double composite_ta_multiplier( const action_state_t* s ) const override
-      {
-        return BASE::composite_ta_multiplier( s ) * get_buff_effects_value( ta_multiplier_buffeffects );
-      }
+      { return BASE::composite_ta_multiplier( s ) * get_buff_effects_value( ta_multiplier_buffeffects ); }
 
       double composite_da_multiplier( const action_state_t* s ) const override
-      {
-        return BASE::composite_da_multiplier( s ) * get_buff_effects_value( da_multiplier_buffeffects );
-      }
+      { return BASE::composite_da_multiplier( s ) * get_buff_effects_value( da_multiplier_buffeffects ); }
 
       double composite_crit_chance() const override
-      {
-        return BASE::composite_crit_chance() + get_buff_effects_value( crit_chance_buffeffects, true );
-      }
+      { return BASE::composite_crit_chance() + get_buff_effects_value( crit_chance_buffeffects, true ); }
 
       timespan_t execute_time() const override
-      {
-        return std::max( 0_ms, BASE::execute_time() * get_buff_effects_value( execute_time_buffeffects ) );
-      }
+      { return std::max( 0_ms, BASE::execute_time() * get_buff_effects_value( execute_time_buffeffects ) ); }
+
+      timespan_t composite_dot_duration( const action_state_t* s ) const override
+      { return BASE::composite_dot_duration( s ) * get_buff_effects_value( dot_duration_buffeffects ); }
 
       double recharge_multiplier( const cooldown_t& cd ) const override
-      {
-        return BASE::recharge_multiplier( cd ) * get_buff_effects_value( recharge_multiplier_buffeffects );
-      }
+      { return BASE::recharge_multiplier( cd ) * get_buff_effects_value( recharge_multiplier_buffeffects ); }
+
+      double composite_target_multiplier( player_t* t ) const override
+      { return BASE::composite_target_multiplier( t ) * get_debuff_effect_value( td( t ) ); }
 */
 
+// void apply_buff_effects() must be overriden in the base class. Within, use parse_buff_effects() as below:
+//
 // Syntax: parse_buff_effects[<S|C[,...]>]( buff[, ignore_mask|use_stacks[, use_default]][, spell|conduit][,...] )
 //  buff = buff to be checked for to see if effect applies
 //  ignore_mask = optional bitmask to skip effect# n corresponding to the n'th bit
@@ -58,12 +60,13 @@
 //  S/C = optional list of template parameter to indicate spell or conduit with redirect effects
 //  spell/conduit = optional list of spell or conduit with redirect effects that modify the effects on the buff
 //
-// Example 1: Parse buff1, ignore effects #1 #3 #5, modify by talent1, modiry by tier1:
+// Example 1: Parse buff1, ignore effects #1 #3 #5, modify by talent1, modify by tier1:
 //  parse_buff_effects<S,S>( buff1, 0b10101, talent1, tier1 );
 //
 // Example 2: Parse buff2, don't multiply by stacks, use the default value set on the buff instead of effect value:
 //  parse_buff_effects( buff2, false, true );
 
+template <typename TD>
 struct parse_buff_effects_t
 {
   using bfun = std::function<bool()>;
@@ -80,6 +83,18 @@ struct parse_buff_effects_t
     {}
   };
 
+  using dfun = std::function<int( TD* )>;
+  struct dot_debuff_t
+  {
+    dfun func;
+    double value;
+    bool mastery;
+
+    dot_debuff_t( dfun f, double v, bool m = false )
+      : func( std::move( f ) ), value( v ), mastery( m )
+    {}
+  };
+
   // auto parsed dynamic effects
   std::vector<buff_effect_t> ta_multiplier_buffeffects;
   std::vector<buff_effect_t> da_multiplier_buffeffects;
@@ -89,9 +104,9 @@ struct parse_buff_effects_t
   std::vector<buff_effect_t> cost_buffeffects;
   std::vector<buff_effect_t> flat_cost_buffeffects;
   std::vector<buff_effect_t> crit_chance_buffeffects;
-  action_t* action_;
+  std::vector<dot_debuff_t> target_multiplier_dotdebuffs;
 
-  virtual void apply_buff_effects() = 0;
+  action_t* action_;
 
   double mod_spell_effects_value( const spell_data_t*, const spelleffect_data_t& e ) { return e.base_value(); }
 
@@ -341,6 +356,59 @@ struct parse_buff_effects_t
         return_value += eff_val * mod;
       else
         return_value *= 1.0 + eff_val * mod;
+    }
+
+    return return_value;
+  }
+
+  template <typename... Ts>
+  void parse_debuff_effects( const dfun& func, const spell_data_t* s_data, Ts... mods )
+  {
+    if ( !s_data->ok() )
+      return;
+
+    for ( size_t i = 1; i <= s_data->effect_count(); i++ )
+    {
+      const auto& eff = s_data->effectN( i );
+      double val      = eff.base_value();
+      double val_mul  = 0.01;
+      bool mastery    = false;
+
+      if ( eff.type() != E_APPLY_AURA )
+        continue;
+
+      if ( i <= 5 )
+        parse_spell_effects_mods( val, mastery, s_data, i, mods... );
+
+      if ( !mastery && !val )
+        continue;
+
+      if ( !( eff.subtype() == A_MOD_DAMAGE_FROM_CASTER_SPELLS && action_->data().affected_by_all( eff ) ) &&
+           !( eff.subtype() == A_MOD_AUTO_ATTACK_FROM_CASTER && !action_->special ) )
+        continue;
+
+      action_->sim->print_debug( "dot-debuffs: {} ({}) damage modified by {}{} on targets with dot {} ({}#{})",
+                             action_->name(), action_->id, val * val_mul, mastery ? "+mastery" : "",
+                             s_data->name_cstr(), s_data->id(), i );
+      target_multiplier_dotdebuffs.emplace_back( func, val * val_mul, mastery );
+    }
+  }
+
+  virtual double get_debuff_effects_value( TD* t ) const
+  {
+    double return_value = 1.0;
+
+    for ( const auto& i : target_multiplier_dotdebuffs )
+    {
+      if ( auto check = i.func( t ) )
+      {
+        auto eff_val = i.value;
+
+        if ( i.mastery )
+          eff_val += action_->player->cache.mastery_value();
+
+        return_value *= 1.0 + eff_val * check;
+      }
     }
 
     return return_value;
