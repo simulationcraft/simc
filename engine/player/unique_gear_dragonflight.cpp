@@ -1304,6 +1304,7 @@ void manic_grieftorch( special_effect_t& effect )
       background = true;
       channeled = tick_zero = true;
       hasted_ticks = false;
+      target_cache.is_valid = false;
       aoe = -1;
       radius = e.player -> find_spell( 382256 ) -> effectN( 1 ).radius();
       base_tick_time = e.player -> find_spell( 377463 ) -> effectN( 1 ).period();
