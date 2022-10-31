@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.2.46259
-static const std::array<spelltext_data_t, 19145> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 19149> __ptr_spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -16563,6 +16563,9 @@ static const std::array<spelltext_data_t, 19145> __ptr_spelltext_data { {
   { 377455, "Deal $382132s1 Frost damage to your target, encasing them and all enemies within $s4 yards in a Crystalline Web for $382130d.\r\n\r\nWhile the web persists, enemies within it are slowed for $382130s2%, and dealing damage to them causes all webbed enemies to take $382132s2 Frost damage.", 0, 0 },
   { 377456, "Your critical strikes have a chance to build Static Electricity, granting $s2% attack speed per stack.\r\n\r\nAt $s3 stacks lightning surges through you, increasing your movement speed by $s4% for $s1 seconds. While surging, your auto attacks jolt your target and 1 nearby enemy for $s5 Nature damage.", 0, 0 },
   { 377457, "Enter an Elemental Stance. Successfully dodging or parrying an attack unleashes a powerful Elemental Counterattack to enemies in front of you as you assume the next stance.\r\n\r\nThis effect can only occur once every $proccooldown seconds.", 0, 0 },
+  { 377458, "$@spelldesc377457\r\n", "Your Armor is increased by $w3.", 0 },
+  { 377459, "$@spelldesc377457", "Primal flames scorch you for $w3 Fire damage per second.", 0 },
+  { 377461, "$@spelldesc377457\r\n", "Primal winds increase your Haste by $w3.", 0 },
   { 377462, "Designate another player to bond with, becoming their Guardian for $382281d.\r\n\r\nWhile bonded, you and your ally gain $382280s1 Versatility and restore $382280s2 health per second. If you are within 15 yards of one another, these bonuses are increased.", 0, 0 },
   { 377463, "Channel for $d, unleashing a furious volley of flame around your target, dealing up to ${$394954s1*($d/$t)*(1+$@versadmg)} fire damage.\r\n\r\nWhenever an allied player dies, this cooldown is reduced by $s2 seconds.", 0, 0 },
   { 377464, "Let loose a dangerous current of lightning, dealing $377465s2 Nature damage to your target and $377465s3 Nature damage to yourself. Self-damage increases with your stacks of Hatred.", 0, 0 },
@@ -16938,6 +16941,7 @@ static const std::array<spelltext_data_t, 19145> __ptr_spelltext_data { {
   { 382126, "$@spelldesc385884.", "You have stolen $w1 Intellect.", 0 },
   { 382130, "Casting spells spins Crystalline Silk, granting [low] mastery per stack.\r\n\r\nAt X stacks, your next single-target spell deals [high] bonus Frost damage, encasing them and enemies within 10 yards in a Crystalline Web for X seconds. While the web persists, a portion of the damage you deal is shared across all enemies in the Web.", "Movement Speed reduced by $w2%.  Damaging this unit will cause all webbed enemies to take $382132s2 Frost damage.\r\nThis can occur once every 1.5 sec.", 0 },
   { 382131, "Casting spells spins Crystalline Silk, granting [low] mastery per stack.\r\n\r\nAt X stacks, your next single-target spell deals [high] bonus Frost damage, encasing them and enemies within 10 yards in a Crystalline Web for X seconds. While the web persists, a portion of the damage you deal is shared across all enemies in the Web.", 0, 0 },
+  { 382133, "$@spelldesc377457", "Frost soothes your wounds, healing you for $w3 per second.", 0 },
   { 382135, "Channel for 2 seconds, unleashing a furious volley of flame around your target, dealing [A Lot] fire damage.\r\n\r\nWhenever an allied player dies, this cooldown is reduced by 90 seconds.", 0, 0 },
   { 382136, "Channel for 2 seconds, unleashing a furious volley of flame around your target, dealing [A Lot] fire damage.\r\n\r\nWhenever an allied player dies, this cooldown is reduced by 90 seconds.", 0, 0 },
   { 382139, "Call on the Lost Dwarves to rain down cannon fire at your location dealing $387777s1 Fire damage split between you and all enemies over $d.\r\n\r\nDamage is increased for each target struck, up to $s2 targets.", 0, 0 },
