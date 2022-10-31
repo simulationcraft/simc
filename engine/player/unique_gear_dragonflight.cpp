@@ -1421,11 +1421,6 @@ void alltotem_of_the_master( special_effect_t& effect )
     buff_t* fire_buff;
     buff_t* air_buff;
     buff_t* ice_buff;
-    action_t* earth_damage;
-    action_t* fire_damage;
-    action_t* fire_dot;
-    action_t* air_damage;
-    action_t* ice_damage;
     std::vector<buff_t*> buffs;
     buff_t* first;
 
