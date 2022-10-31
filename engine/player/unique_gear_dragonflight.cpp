@@ -1345,10 +1345,95 @@ void manic_grieftorch( special_effect_t& effect )
 
 // All-Totem of the Master
 // 377457 Driver and values
+// Effect 1 - Fire/Ice direct damage
+// Effect 2 - 
+// Effect 3 - Earth/Air direct damage
+// 
 // 377458 Earth buff
 // 377459 Fire buff
 // 377461 Air buff
 // 382133 Ice buff
+void alltotem_of_the_master_boon( special_effect_t& effect )
+{
+  buff_t* earth_buff;
+  buff_t* fire_buff;
+  buff_t* air_buff;
+  buff_t* ice_buff;
+
+  earth_buff = make_buff<stat_buff_t>(effect.player, "elemental_stance_earth", effect.player->find_spell(377458));
+  fire_buff = make_buff(effect.player, "elemental_stance_fire", effect.player->find_spell(377459));
+  air_buff = make_buff<stat_buff_t>(effect.player, "elemental_stance_air", effect.player->find_spell(377461));
+  ice_buff = make_buff(effect.player, "elemental_stance_ice", effect.player->find_spell(382133));
+
+  auto next_buff = earth_buff;
+  // Here is where we select which buff we are going to trigger via random selection
+
+  struct alltotem_earth_damage_t : public proc_spell_t
+  {
+    alltotem_earth_damage_t( const special_effect_t& e ) :
+      proc_spell_t( "elemental_stance_earth", e.player, e.player->find_spell( 377458 ), e.item )
+    {
+      background = true;
+      aoe = -1;
+      base_dd_min = base_dd_max = e.player->find_spell( 377457 )->effectN( 3 ).average( e.item );
+    }
+  };
+
+  struct alltotem_fire_damage_t : public proc_spell_t
+  {
+    alltotem_fire_damage_t( const special_effect_t& e ) :
+      proc_spell_t( "elemental_stance_fire", e.player, e.player->find_spell( 377459 ), e.item )
+    {
+      background = true;
+      aoe = -1;
+      base_dd_min = base_dd_max = e.player->find_spell( 377457 )->effectN( 1 ).average( e.item );
+      base_td = e.player->find_spell( 377457 )->effectN( 2 ).average( e.item );
+    }
+  };
+
+  struct alltotem_air_damage_t : public proc_spell_t
+  {
+    alltotem_air_damage_t( const special_effect_t& e ) :
+      proc_spell_t( "elemental_stance_air", e.player, e.player->find_spell( 377461 ), e.item )
+    {
+      background = true;
+      aoe = -1;
+      base_dd_min = base_dd_max = e.player->find_spell( 377457 )->effectN( 3 ).average( e.item );
+    }
+  };
+
+  struct alltotem_ice_damage_t : public proc_spell_t
+  {
+    alltotem_ice_damage_t( const special_effect_t& e ) :
+      proc_spell_t( "elemental_stance_ice", e.player, e.player->find_spell( 382133 ), e.item )
+    {
+      background = true;
+      aoe = -1;
+      base_dd_min = base_dd_max = e.player->find_spell( 377457 )->effectN( 1 ).average( e.item );
+    }
+  };
+
+  if (next_buff == earth_buff)
+  {
+    effect.execute_action = create_proc_action<alltotem_earth_damage_t>( "elemental_stance_earth", effect );
+    next_buff = fire_buff;
+  }
+  else if (next_buff == fire_buff)
+  {
+    effect.execute_action = create_proc_action<alltotem_fire_damage_t>( "elemental_stance_fire", effect );
+    next_buff = air_buff;
+  }
+  else if (next_buff == air_buff)
+  {
+    effect.execute_action = create_proc_action<alltotem_air_damage_t>( "elemental_stance_air", effect );
+    next_buff = ice_buff;
+  }
+  else if (next_buff == ice_buff)
+  {
+    effect.execute_action = create_proc_action<alltotem_ice_damage_t>( "elemental_stance_ice", effect );
+    next_buff = earth_buff;
+  }
+}
 
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
