@@ -1344,7 +1344,6 @@ void manic_grieftorch( special_effect_t& effect )
 }
 
 // All-Totem of the Master
-// TODO - Setup variable execute time for tanks specifically 
 // TODO - Setup to only proc for tank specs
 // 377457 Driver and values
 // Effect 1 - Fire/Ice direct damage
@@ -1367,7 +1366,7 @@ void alltotem_of_the_master( special_effect_t& effect )
     {
       background = true;
       aoe = -1;
-      base_dd_min = base_dd_max = e.player->find_spell( 377457 )->effectN( 3 ).average( e.item );
+      base_dd_min = base_dd_max = e.driver()->effectN(3).average(e.item);
     }
   };
 
@@ -1378,7 +1377,7 @@ void alltotem_of_the_master( special_effect_t& effect )
     {
       background = true;
       aoe = -1;
-      base_dd_min = base_dd_max = e.player->find_spell( 377457 )->effectN( 1 ).average( e.item );
+      base_dd_min = base_dd_max = e.driver()->effectN(1).average(e.item);
     }
   };
 
@@ -1389,7 +1388,7 @@ void alltotem_of_the_master( special_effect_t& effect )
     {
       background = true;
       aoe = -1;
-      base_dd_min = base_dd_max = e.player->find_spell( 377457 )->effectN( 4 ).average( e.item );
+      base_dd_min = base_dd_max = e.driver()->effectN(4).average(e.item);
     }
   };
 
@@ -1400,7 +1399,7 @@ void alltotem_of_the_master( special_effect_t& effect )
     {
       background = true;
       aoe = -1;
-      base_dd_min = base_dd_max = e.player->find_spell( 377457 )->effectN( 3 ).average( e.item );
+      base_dd_min = base_dd_max = e.driver()->effectN( 3 ).average( e.item );
     }
   };
 
@@ -1411,7 +1410,7 @@ void alltotem_of_the_master( special_effect_t& effect )
     {
       background = true;
       aoe = -1;
-      base_dd_min = base_dd_max = e.player->find_spell( 377457 )->effectN( 1 ).average( e.item );
+      base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e.item );
     }
   };
 
@@ -1425,15 +1424,11 @@ void alltotem_of_the_master( special_effect_t& effect )
     buff_t* first;
 
     alltotem_buffs_t( const special_effect_t& e ) : 
-      proc_spell_t( "alltotem_of_the_master", e.player, e.player -> find_spell( 377457 ), e.item ), 
-        earth_buff( nullptr ), 
-        fire_buff( nullptr ),
-        air_buff( nullptr ),
-        ice_buff( nullptr )
+      proc_spell_t( "alltotem_of_the_master", e.player, e.player -> find_spell( 377457 ), e.item )
     {
 
       earth_buff = make_buff<stat_buff_t>(e.player, "elemental_stance_earth", e.player->find_spell(377458))
-          ->add_stat(STAT_BONUS_ARMOR, e.player->find_spell(377457)->effectN(5).average(e.item));
+          ->add_stat(STAT_BONUS_ARMOR, e.driver()->effectN(5).average(e.item));
       auto earth_damage = create_proc_action<alltotem_earth_damage_t>( "elemental_stance_earth", e );
       earth_buff->set_stack_change_callback( [ earth_damage ](buff_t*, int, int new_) 
       {
@@ -1458,7 +1453,7 @@ void alltotem_of_the_master( special_effect_t& effect )
         fire_dot->execute();
       } );
       air_buff = make_buff<stat_buff_t>(e.player, "elemental_stance_air", e.player->find_spell(377461))
-           ->add_stat(STAT_HASTE_RATING, e.player->find_spell(377457)->effectN(5).average(e.item));
+           ->add_stat(STAT_HASTE_RATING, e.driver()->effectN(5).average(e.item));
       auto air_damage = create_proc_action<alltotem_air_damage_t>( "elemental_stance_air", e );
       air_buff->set_stack_change_callback( [ air_damage ](buff_t*, int, int new_) 
       {
@@ -1468,7 +1463,7 @@ void alltotem_of_the_master( special_effect_t& effect )
         }
       } );
       ice_buff = make_buff(e.player, "elemental_stance_ice", e.player->find_spell(382133));
-      ice_buff->set_default_value(e.player -> find_spell( 377457 )->effectN(2).average(e.item));
+      ice_buff->set_default_value(e.driver()->effectN(2).average(e.item));
       auto ice_damage = create_proc_action<alltotem_ice_damage_t>( "elemental_stance_ice", e );
       ice_buff->set_stack_change_callback( [ ice_damage ](buff_t*, int, int new_) 
       {
@@ -1512,7 +1507,8 @@ void alltotem_of_the_master( special_effect_t& effect )
   action_t* action = create_proc_action<alltotem_buffs_t>( "alltotem_of_the_master", effect );
 
   effect.player->register_combat_begin([&effect, action ](player_t*) {
-    timespan_t period = effect.player -> sim -> dragonflight_opts.alltotem_of_the_master_period;
+    timespan_t base_period = effect.driver()->internal_cooldown();
+    timespan_t period = base_period + effect.player -> sim -> dragonflight_opts.alltotem_of_the_master_period + effect.player -> rng().range( 0_s, 12_s );
     make_repeating_event( effect.player -> sim, period , [ action ]()
     {
       action -> execute();
