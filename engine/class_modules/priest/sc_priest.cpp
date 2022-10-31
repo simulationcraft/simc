@@ -240,40 +240,77 @@ struct angelic_feather_t final : public priest_spell_t
 // Base Spell, used for both heal and damage spell.
 // TODO: add reduced healing beyond 6 targets
 // ==========================================================================
-template <class Base>
-struct divine_star_base_t : public Base
+struct divine_star_spell_t final : public priest_spell_t
 {
-private:
-  using ab = Base;  // the action base ("ab") type (priest_spell_t or priest_heal_t)
-public:
-  using base_t = divine_star_base_t<Base>;
+  propagate_const<divine_star_spell_t*> return_spell;
 
-  propagate_const<divine_star_base_t*> return_spell;
-
-  divine_star_base_t( util::string_view n, priest_t& p, const spell_data_t* spell_data, bool is_return_spell = false )
-    : ab( n, p, spell_data ),
-      return_spell( ( is_return_spell ? nullptr : new divine_star_base_t( n, p, spell_data, true ) ) )
+  divine_star_spell_t( util::string_view n, priest_t& p, const spell_data_t* s, bool is_return_spell = false )
+    : priest_spell_t( n, p, s ),
+      return_spell( ( is_return_spell ? nullptr : new divine_star_spell_t( n, p, s, true ) ) )
   {
-    ab::aoe = -1;
+    aoe = -1;
 
-    ab::proc = ab::background      = true;
-    ab::affected_by_shadow_weaving = true;
+    proc = background          = true;
+    affected_by_shadow_weaving = true;
   }
 
-  // Divine Star will damage and heal targets twice, once on the way out and again on the way back. This is determined
-  // by distance from the target. If we are too far away, it misses completely. If we are at the very edge distance
-  // wise, it will only hit once. If we are within range (and aren't moving such that it would miss the target on the
-  // way out and/or back), it will hit twice. Threshold is 24 yards, per tooltip and tests for 2 hits. 28 yards is the
-  // threshold for 1 hit.
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = priest_spell_t::composite_da_multiplier( s );
+
+    // This is not found in the affected spells for Dark Ascension, overriding it manually
+    // TODO: add a way to override the apply_buff_effects to inject a spell that way
+    if ( priest().buffs.dark_ascension->check() )
+    {
+      m *= 1.0 + priest().buffs.dark_ascension->check_value();
+    }
+    return m;
+  }
+
+  // Hits twice, but only if you are at the correct distance
+  // 24 yards or less for 2 hits, 28 yards or less for 1 hit
   void execute() override
   {
     double distance;
 
-    distance = ab::player->get_player_distance( *ab::target );
+    distance = priest_spell_t::player->get_player_distance( *target );
 
     if ( distance <= 28 )
     {
-      ab::execute();
+      priest_spell_t::execute();
+
+      if ( return_spell && distance <= 24 )
+      {
+        return_spell->execute();
+      }
+    }
+  }
+};
+
+struct divine_star_heal_t final : public priest_heal_t
+{
+  propagate_const<divine_star_heal_t*> return_spell;
+
+  divine_star_heal_t( util::string_view n, priest_t& p, const spell_data_t* s, bool is_return_spell = false )
+    : priest_heal_t( n, p, s ), return_spell( ( is_return_spell ? nullptr : new divine_star_heal_t( n, p, s, true ) ) )
+  {
+    aoe = -1;
+
+    proc = background          = true;
+    affected_by_shadow_weaving = true;
+  }
+
+  // Hits twice, but only if you are at the correct distance
+  // 24 yards or less for 2 hits, 28 yards or less for 1 hit
+  void execute() override
+  {
+    double distance;
+
+    distance = priest_heal_t::player->get_player_distance( *target );
+
+    if ( distance <= 28 )
+    {
+      priest_heal_t::execute();
 
       if ( return_spell && distance <= 24 )
       {
@@ -287,8 +324,8 @@ struct divine_star_t final : public priest_spell_t
 {
   divine_star_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "divine_star", p, p.talents.divine_star ),
-      _heal_spell( new divine_star_base_t<priest_heal_t>( "divine_star_heal", p, p.talents.divine_star_heal ) ),
-      _dmg_spell( new divine_star_base_t<priest_spell_t>( "divine_star_damage", p, p.talents.divine_star_dmg ) )
+      _heal_spell( new divine_star_heal_t( "divine_star_heal", p, p.talents.divine_star_heal ) ),
+      _dmg_spell( new divine_star_spell_t( "divine_star_damage", p, p.talents.divine_star_dmg ) )
   {
     parse_options( options_str );
 
@@ -316,18 +353,42 @@ private:
 // Base Spell, used for both damage and heal spell.
 // TODO: add reduced healing beyond 5 targets
 // ==========================================================================
-template <class Base>
-struct halo_base_t : public Base
+struct halo_spell_t final : public priest_spell_t
 {
-public:
-  halo_base_t( util::string_view n, priest_t& p, const spell_data_t* s ) : Base( n, p, s )
+  halo_spell_t( util::string_view n, priest_t& p, const spell_data_t* s ) : priest_spell_t( n, p, s )
   {
-    Base::aoe                        = -1;
-    Base::background                 = true;
-    Base::radius                     = Base::data().max_range();
-    Base::range                      = 0;
-    Base::travel_speed               = 15;  // Rough estimate, 2021-01-03
-    Base::affected_by_shadow_weaving = true;
+    aoe                        = -1;
+    background                 = true;
+    radius                     = data().max_range();
+    range                      = 0;
+    travel_speed               = 15;  // Rough estimate, 2021-01-03
+    affected_by_shadow_weaving = true;
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = priest_spell_t::composite_da_multiplier( s );
+
+    // This is not found in the affected spells for Dark Ascension, overriding it manually
+    // TODO: add a way to override the apply_buff_effects to inject a spell that way
+    if ( priest().buffs.dark_ascension->check() )
+    {
+      m *= 1.0 + priest().buffs.dark_ascension->check_value();
+    }
+    return m;
+  }
+};
+
+struct halo_heal_t final : public priest_heal_t
+{
+  halo_heal_t( util::string_view n, priest_t& p, const spell_data_t* s ) : priest_heal_t( n, p, s )
+  {
+    aoe                        = -1;
+    background                 = true;
+    radius                     = data().max_range();
+    range                      = 0;
+    travel_speed               = 15;  // Rough estimate, 2021-01-03
+    affected_by_shadow_weaving = true;
   }
 };
 
@@ -335,8 +396,8 @@ struct halo_t final : public priest_spell_t
 {
   halo_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "halo", p, p.talents.halo ),
-      _heal_spell( new halo_base_t<priest_heal_t>( "halo_heal", p, p.talents.halo_heal ) ),
-      _dmg_spell( new halo_base_t<priest_spell_t>( "halo_damage", p, p.talents.halo_dmg ) )
+      _heal_spell( new halo_heal_t( "halo_heal", p, p.talents.halo_heal ) ),
+      _dmg_spell( new halo_spell_t( "halo_damage", p, p.talents.halo_dmg ) )
   {
     parse_options( options_str );
 

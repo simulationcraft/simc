@@ -1369,11 +1369,8 @@ struct void_bolt_t final : public priest_spell_t
 // ==========================================================================
 struct dark_ascension_t final : public priest_spell_t
 {
-  double dark_ascension_value;
-
   dark_ascension_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "dark_ascension", p, p.talents.shadow.dark_ascension ),
-      dark_ascension_value( priest().buffs.dark_ascension->default_value )
+    : priest_spell_t( "dark_ascension", p, p.talents.shadow.dark_ascension )
   {
     parse_options( options_str );
 
