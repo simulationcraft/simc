@@ -179,6 +179,20 @@ std::vector<const trait_data_t*> trait_data_t::find_by_spell(
   }
 }
 
+const trait_data_t* trait_data_t::find_by_trait_definition( unsigned trait_definition_id, bool ptr )
+{
+  auto _data = data( ptr );
+  auto _it = range::find( _data, trait_definition_id, &trait_data_t::id_trait_definition );
+
+  if ( _it != _data.end() )
+  {
+    return _it;
+  }
+
+  return &( nil() );
+}
+
+
 util::span<const trait_definition_effect_entry_t> trait_definition_effect_entry_t::data( bool ptr )
 {
   return SC_DBC_GET_DATA( __trait_definition_effect_data, __ptr_trait_definition_effect_data, ptr );
