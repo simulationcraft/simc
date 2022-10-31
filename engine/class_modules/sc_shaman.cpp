@@ -7060,7 +7060,7 @@ public:
     // proc chance suddenly became 100% and the actual chance became effectN 1
     double proc_chance = p()->talent.lava_surge->effectN( 1 ).percent();
 
-    if ( p()->spec.restoration_shaman->ok() )
+    if ( p()->talent.lava_surge.ok() && p()->spec.restoration_shaman->ok() )
     {
       proc_chance += p()->spec.restoration_shaman->effectN( 8 ).percent();
     }
