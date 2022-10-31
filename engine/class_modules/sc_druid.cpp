@@ -3175,7 +3175,7 @@ public:
     size_t da_old   = da_multiplier_buffeffects.size();
     size_t cost_old = cost_buffeffects.size();
 
-    parse_buff_effects( buff, ignore_mask, use_stacks, false, 0U, mods... );
+    parse_buff_effects( buff, ignore_mask, use_stacks, false, mods... );
 
     // If there is a new entry in the ta_mul table, move it to the pers_mul table.
     if ( ta_multiplier_buffeffects.size() > ta_old )

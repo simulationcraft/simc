@@ -254,7 +254,7 @@ struct divine_star_spell_t final : public priest_spell_t
     affected_by_shadow_weaving = true;
 
     // This is not found in the affected spells for Dark Ascension, overriding it manually
-    force_buff_effects( p.buffs.dark_ascension, 1 );
+    force_buff_effect( p.buffs.dark_ascension, 1 );
   }
 
   // Hits twice, but only if you are at the correct distance
@@ -354,7 +354,7 @@ struct halo_spell_t final : public priest_spell_t
     affected_by_shadow_weaving = true;
 
     // This is not found in the affected spells for Dark Ascension, overriding it manually
-    force_buff_effects( p.buffs.dark_ascension, 1 );
+    force_buff_effect( p.buffs.dark_ascension, 1 );
   }
 };
 
