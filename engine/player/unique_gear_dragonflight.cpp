@@ -1353,7 +1353,7 @@ void manic_grieftorch( special_effect_t& effect )
 // 377459 Fire buff
 // 377461 Air buff
 // 382133 Ice buff
-void alltotem_of_the_master_boon( special_effect_t& effect )
+void alltotem_of_the_master( special_effect_t& effect )
 {
   buff_t* earth_buff;
   buff_t* fire_buff;
@@ -1716,6 +1716,7 @@ void register_special_effects()
   register_special_effect( 377453, items::storm_eaters_boon );
   register_special_effect( 377449, items::decoration_of_flame );
   register_special_effect( 377463, items::manic_grieftorch );
+  register_special_effect( 377457, items::alltotem_of_the_master );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );  // bronzed grip wrappings embellishment
