@@ -1416,21 +1416,25 @@ void alltotem_of_the_master( special_effect_t& effect )
   if (next_buff == earth_buff)
   {
     effect.execute_action = create_proc_action<alltotem_earth_damage_t>( "elemental_stance_earth", effect );
+    earth_buff -> trigger();
     next_buff = fire_buff;
   }
   else if (next_buff == fire_buff)
   {
     effect.execute_action = create_proc_action<alltotem_fire_damage_t>( "elemental_stance_fire", effect );
+    fire_buff -> trigger();
     next_buff = air_buff;
   }
   else if (next_buff == air_buff)
   {
     effect.execute_action = create_proc_action<alltotem_air_damage_t>( "elemental_stance_air", effect );
+    air_buff -> trigger();
     next_buff = ice_buff;
   }
   else if (next_buff == ice_buff)
   {
     effect.execute_action = create_proc_action<alltotem_ice_damage_t>( "elemental_stance_ice", effect );
+    ice_buff -> trigger();
     next_buff = earth_buff;
   }
 }
