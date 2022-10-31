@@ -378,7 +378,6 @@ public:
     const spell_data_t* unbreakable_spirit;
     const spell_data_t* greater_judgment;
     const spell_data_t* seal_of_might;
-    const spell_data_t* blessing_of_spellwarding;
     const spell_data_t* improved_blessing_of_protection;
     const spell_data_t* seal_of_the_crusader;
     const spell_data_t* seal_of_order;
@@ -420,39 +419,44 @@ public:
     const spell_data_t* grand_crusader;
     const spell_data_t* shining_light;
     const spell_data_t* consecrated_ground;
+    const spell_data_t* improved_lay_on_hands;
     const spell_data_t* inspiring_vanguard;
     const spell_data_t* ardent_defender;
-    const spell_data_t* crusaders_judgment;
+    const spell_data_t* barricade_of_faith;
     const spell_data_t* consecration_in_flame;
 
     // 8
-    const spell_data_t* bastion_of_light;
-    const spell_data_t* bulwark_of_order;
-    const spell_data_t* light_of_the_titans;
-    const spell_data_t* uthers_counsel;
-    const spell_data_t* hand_of_the_protector;
-    const spell_data_t* resolute_defender;
-    const spell_data_t* sentinel;
-    const spell_data_t* avenging_wrath_might;
-    const spell_data_t* strength_of_conviction;
-    const spell_data_t* ferren_marcuss_fervor;
-    const spell_data_t* tyrs_enforcer;
-    const spell_data_t* guardian_of_ancient_kings;
     const spell_data_t* sanctuary;
-    const spell_data_t* barricade_of_faith;
+    const spell_data_t* improved_holy_shield;
+    const spell_data_t* bulwark_of_order;
+    const spell_data_t* improved_ardent_defender;
+    const spell_data_t* blessing_of_spellwarding;
+    const spell_data_t* light_of_the_titans;
+    const spell_data_t* strength_in_adversity;
+    const spell_data_t* crusaders_resolve;
+    const spell_data_t* tyrs_enforcer;
+    const spell_data_t* avenging_wrath_might;
+    const spell_data_t* sentinel;
+    const spell_data_t* hand_of_the_protector;
+    const spell_data_t* strength_of_conviction;
+    const spell_data_t* resolute_defender;
+    const spell_data_t* bastion_of_light;
+    const spell_data_t* guardian_of_ancient_kings;
+    const spell_data_t* crusaders_judgment;
+    const spell_data_t* uthers_counsel;
 
     // 20
-    const spell_data_t* soaring_shield;
     const spell_data_t* focused_enmity;
-    const spell_data_t* faiths_armor;
-    const spell_data_t* faith_in_the_light;
-    const spell_data_t* crusaders_resolve;
+    const spell_data_t* soaring_shield;
     const spell_data_t* gift_of_the_golden_valkyr;
-    const spell_data_t* final_stand;
-    const spell_data_t* righteous_protector;
-    const spell_data_t* bulwark_of_righteous_fury;
-    const spell_data_t* moment_of_glory;
     const spell_data_t* eye_of_tyr;
+    const spell_data_t* righteous_protector;
+    const spell_data_t* faith_in_the_light;
+    const spell_data_t* ferren_marcuss_fervor;
+    const spell_data_t* faiths_armor;
+    const spell_data_t* final_stand;
+    const spell_data_t* moment_of_glory;
+    const spell_data_t* bulwark_of_righteous_fury;
     const spell_data_t* quickened_invocations;
 
     // Retribution
