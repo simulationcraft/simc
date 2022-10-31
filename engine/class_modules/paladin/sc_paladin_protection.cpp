@@ -743,7 +743,13 @@ void paladin_t::target_mitigation( school_e school,
 
   if ( buffs.ardent_defender -> up() )
   {
-    s -> result_amount *= 1.0 + buffs.ardent_defender -> data().effectN( 1 ).percent();
+    double adReduce = buffs.ardent_defender->data().effectN( 1 ).percent();
+    // Improved Ardent Defender reduces damage taken by an additional amount
+    if ( talents.improved_ardent_defender->ok() )
+    {
+      adReduce += talents.improved_ardent_defender->effectN( 1 ).percent();
+    }
+    s -> result_amount *= 1.0 + adReduce;
   }
 
   if ( buffs.blessing_of_dusk -> up() )
