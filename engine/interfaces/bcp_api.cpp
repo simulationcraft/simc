@@ -396,9 +396,14 @@ void parse_subtree( player_t* p, const rapidjson::Value& talents )
   {
     const auto& talent_data = talents[ talent_idx ];
 
-    if ( !talent_data.HasMember( "id" ) )
+    if ( !talent_data.HasMember( "tooltip" ) || !talent_data[ "tooltip" ].HasMember( "talent" )
+        || !talent_data[ "tooltip" ][ "talent" ].HasMember( "id" ) )
     {
-      throw std::runtime_error( "Unable to determine node id for talent parsing" );
+      throw std::runtime_error( "Unable to determine trait definition id for talent parsing" );
+    }
+    if ( !talent_data.HasMember( "rank" ) )
+    {
+      throw std::runtime_error( "Unable to determine rank for talent parsing" );
     }
 
     auto definition_id = talent_data[ "tooltip" ][ "talent" ][ "id" ].GetUint();
@@ -467,7 +472,7 @@ void parse_talents( player_t* p, const player_spec_t& spec_info, const std::stri
       continue;
     }
 
-    if ( !spec_data.HasMember( "selected_class_talents" ) )
+    if ( !spec_data.HasMember( "selected_class_talents" ) || !spec_data.HasMember( "selected_spec_talents" ) )
     {
       continue;
     }
