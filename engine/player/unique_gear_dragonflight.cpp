@@ -1376,7 +1376,17 @@ void alltotem_of_the_master( special_effect_t& effect )
       background = true;
       aoe = -1;
       base_dd_min = base_dd_max = e.player->find_spell( 377457 )->effectN( 1 ).average( e.item );
-      base_td = e.player->find_spell( 377457 )->effectN( 2 ).average( e.item );
+    }
+  };
+
+  struct alltotem_fire_dot_damage_t : public proc_spell_t
+  {
+    alltotem_fire_dot_damage_t( const special_effect_t& e ) :
+      proc_spell_t( "elemental_stance_fire_dot", e.player, e.player->find_spell( 377459 ), e.item )
+    {
+      background = true;
+      aoe = -1;
+      base_dd_min = base_dd_max = e.player->find_spell( 377457 )->effectN( 4 ).average( e.item );
     }
   };
 
@@ -1412,6 +1422,8 @@ void alltotem_of_the_master( special_effect_t& effect )
     action_t* fire_damage;
     action_t* air_damage;
     action_t* ice_damage;
+    std::vector<buff_t*> buffs;
+    buff_t* first;
 
     alltotem_buffs_t( const special_effect_t& e ) : 
       proc_spell_t( "alltotem_of_the_master", e.player, e.player -> find_spell( 377457 ), e.item ), 
@@ -1422,45 +1434,71 @@ void alltotem_of_the_master( special_effect_t& effect )
     {
       earth_buff = make_buff<stat_buff_t>(e.player, "elemental_stance_earth", e.player->find_spell(377458))
           ->add_stat(STAT_BONUS_ARMOR, e.player->find_spell(377457)->effectN(5).average(e.item));
-      earth_damage = create_proc_action<alltotem_earth_damage_t>( "elemental_stance_earth", e );
+      auto earth_damage = create_proc_action<alltotem_earth_damage_t>( "elemental_stance_earth", e );
+      earth_buff->set_stack_change_callback( [ earth_damage ](buff_t*, int, int new_) 
+      {
+        if( new_ == 1 )
+        {
+          earth_damage->execute();
+        }
+      } );
       fire_buff = make_buff(e.player, "elemental_stance_fire", e.player->find_spell(377459));
-      fire_damage = create_proc_action<alltotem_fire_damage_t>( "elemental_stance_fire", e );
+      auto fire_damage = create_proc_action<alltotem_fire_damage_t>( "elemental_stance_fire", e );
+      auto fire_dot = create_proc_action<alltotem_fire_dot_damage_t>( "elemental_stance_fire_dot", e );
+      fire_buff->set_stack_change_callback( [ fire_damage ](buff_t*, int, int new_) 
+      {
+        if( new_ == 1 )
+        {
+          fire_damage->execute();
+        }
+      } );
+      fire_buff->set_tick_callback( [ fire_dot ]( buff_t* /* buff */, int /* current_tick */, timespan_t /* tick_time */ ) 
+      {
+        fire_dot->execute();
+      } );
       air_buff = make_buff<stat_buff_t>(e.player, "elemental_stance_air", e.player->find_spell(377461))
            ->add_stat(STAT_HASTE_RATING, e.player->find_spell(377457)->effectN(5).average(e.item));
-      air_damage = create_proc_action<alltotem_air_damage_t>( "elemental_stance_air", e );
+      auto air_damage = create_proc_action<alltotem_air_damage_t>( "elemental_stance_air", e );
+      air_buff->set_stack_change_callback( [ air_damage ](buff_t*, int, int new_) 
+      {
+        if( new_ == 1 )
+        {
+          air_damage->execute();
+        }
+      } );
       ice_buff = make_buff(e.player, "elemental_stance_ice", e.player->find_spell(382133));
-      ice_buff->set_default_value(e.player -> find_spell( 377457 )->effectN(4).average(e.item));
-      ice_damage = create_proc_action<alltotem_ice_damage_t>( "elemental_stance_ice", e );
+      ice_buff->set_default_value(e.player -> find_spell( 377457 )->effectN(2).average(e.item));
+      auto ice_damage = create_proc_action<alltotem_ice_damage_t>( "elemental_stance_ice", e );
+      ice_buff->set_stack_change_callback( [ ice_damage ](buff_t*, int, int new_) 
+      {
+        if( new_ == 1 )
+        {
+          ice_damage->execute();
+        }
+      } );
+
+      first = buffs.emplace_back( earth_buff );
+      buffs.push_back( fire_buff );
+      buffs.push_back( air_buff);
+      buffs.push_back( ice_buff );
+    }
+
+    void rotate()
+    {
+       buffs.front()->trigger();
+       std::rotate(buffs.begin(), buffs.begin() + 1, buffs.end());
     }
 
     void execute() override
     {
-      auto next_buff = earth_buff;
+      proc_spell_t::execute();
+      rotate();
+    }
 
-      if (next_buff == earth_buff)
-      {
-          earth_buff->trigger();
-          earth_damage->execute();
-          next_buff = fire_buff;
-      }
-      if (next_buff == fire_buff)
-      {
-          fire_buff->trigger();
-          fire_damage->execute();
-          next_buff = air_buff;
-      }
-      if (next_buff == air_buff)
-      {
-          air_buff->trigger();
-          air_damage->execute();
-          next_buff = ice_buff;
-      }
-      if (next_buff == ice_buff)
-      {
-          ice_buff->trigger();
-          ice_damage->execute();
-          next_buff = earth_buff;
-      }
+    void reset() override
+    {
+      proc_spell_t::reset();
+      std::rotate( buffs.begin(), range::find( buffs, first ), buffs.end() );
     }
   };
 
