@@ -1292,23 +1292,9 @@ void manic_grieftorch( special_effect_t& effect )
       proc_spell_t( "manic_grieftorch_missile", e.player, e.player->find_spell( 382136 ), e.item )
     {
       background = true;
-      impact_action = create_proc_action<manic_grieftorch_damage_t>( "manic_grieftorch", e );
-    }
-  };
-
-  struct manic_grieftorch_channel_t : public proc_spell_t
-  {
-    manic_grieftorch_channel_t( const special_effect_t& e ) :
-      proc_spell_t( "manic_grieftorch_channel", e.player, e.player->find_spell( 377463 ), e.item)
-    {
-      background = true;
-      channeled = tick_zero = true;
-      hasted_ticks = false;
-      target_cache.is_valid = false;
       aoe = -1;
       radius = e.player -> find_spell( 382256 ) -> effectN( 1 ).radius();
-      base_tick_time = e.player -> find_spell( 377463 ) -> effectN( 1 ).period();
-      tick_action = create_proc_action<manic_grieftorch_missile_t>( "manic_grieftorch_missile", e );
+      impact_action = create_proc_action<manic_grieftorch_damage_t>( "manic_grieftorch", e );
     }
 
     size_t available_targets( std::vector< player_t* >& tl ) const override
@@ -1327,6 +1313,20 @@ void manic_grieftorch( special_effect_t& effect )
       }), tl.end() );
 
       return tl.size();
+    }
+  };
+
+  struct manic_grieftorch_channel_t : public proc_spell_t
+  {
+    manic_grieftorch_channel_t( const special_effect_t& e ) :
+      proc_spell_t( "manic_grieftorch_channel", e.player, e.player->find_spell( 377463 ), e.item)
+    {
+      background = true;
+      channeled = tick_zero = true;
+      hasted_ticks = false;
+      target_cache.is_valid = false;
+      base_tick_time = e.player -> find_spell( 377463 ) -> effectN( 1 ).period();
+      tick_action = create_proc_action<manic_grieftorch_missile_t>( "manic_grieftorch_missile", e );
     }
 
     void last_tick( dot_t* d ) override
@@ -1355,18 +1355,7 @@ void manic_grieftorch( special_effect_t& effect )
 // 382133 Ice buff
 void alltotem_of_the_master( special_effect_t& effect )
 {
-  buff_t* earth_buff;
-  buff_t* fire_buff;
-  buff_t* air_buff;
-  buff_t* ice_buff;
-
-  earth_buff = make_buff<stat_buff_t>(effect.player, "elemental_stance_earth", effect.player->find_spell(377458));
-  fire_buff = make_buff(effect.player, "elemental_stance_fire", effect.player->find_spell(377459));
-  air_buff = make_buff<stat_buff_t>(effect.player, "elemental_stance_air", effect.player->find_spell(377461));
-  ice_buff = make_buff(effect.player, "elemental_stance_ice", effect.player->find_spell(382133));
-
-  auto next_buff = earth_buff;
-  // Here is where we select which buff we are going to trigger via random selection
+  effect.type = SPECIAL_EFFECT_NONE;
 
   struct alltotem_earth_damage_t : public proc_spell_t
   {
@@ -1413,30 +1402,77 @@ void alltotem_of_the_master( special_effect_t& effect )
     }
   };
 
-  if (next_buff == earth_buff)
+  struct alltotem_buffs_t : public proc_spell_t
   {
-    effect.execute_action = create_proc_action<alltotem_earth_damage_t>( "elemental_stance_earth", effect );
-    earth_buff -> trigger();
-    next_buff = fire_buff;
-  }
-  else if (next_buff == fire_buff)
-  {
-    effect.execute_action = create_proc_action<alltotem_fire_damage_t>( "elemental_stance_fire", effect );
-    fire_buff -> trigger();
-    next_buff = air_buff;
-  }
-  else if (next_buff == air_buff)
-  {
-    effect.execute_action = create_proc_action<alltotem_air_damage_t>( "elemental_stance_air", effect );
-    air_buff -> trigger();
-    next_buff = ice_buff;
-  }
-  else if (next_buff == ice_buff)
-  {
-    effect.execute_action = create_proc_action<alltotem_ice_damage_t>( "elemental_stance_ice", effect );
-    ice_buff -> trigger();
-    next_buff = earth_buff;
-  }
+    buff_t* earth_buff;
+    buff_t* fire_buff;
+    buff_t* air_buff;
+    buff_t* ice_buff;
+    action_t* earth_damage;
+    action_t* fire_damage;
+    action_t* air_damage;
+    action_t* ice_damage;
+
+    alltotem_buffs_t( const special_effect_t& e ) : 
+      proc_spell_t( "alltotem_of_the_master", e.player, e.player -> find_spell( 377457 ), e.item ), 
+        earth_buff( nullptr ), 
+        fire_buff( nullptr ),
+        air_buff( nullptr ),
+        ice_buff( nullptr )
+    {
+      earth_buff = make_buff<stat_buff_t>(e.player, "elemental_stance_earth", e.player->find_spell(377458))
+          ->add_stat(STAT_BONUS_ARMOR, e.player->find_spell(377457)->effectN(5).average(e.item));
+      earth_damage = create_proc_action<alltotem_earth_damage_t>( "elemental_stance_earth", e );
+      fire_buff = make_buff(e.player, "elemental_stance_fire", e.player->find_spell(377459));
+      fire_damage = create_proc_action<alltotem_fire_damage_t>( "elemental_stance_fire", e );
+      air_buff = make_buff<stat_buff_t>(e.player, "elemental_stance_air", e.player->find_spell(377461))
+           ->add_stat(STAT_HASTE_RATING, e.player->find_spell(377457)->effectN(5).average(e.item));
+      air_damage = create_proc_action<alltotem_air_damage_t>( "elemental_stance_air", e );
+      ice_buff = make_buff(e.player, "elemental_stance_ice", e.player->find_spell(382133));
+      ice_buff->set_default_value(e.player -> find_spell( 377457 )->effectN(4).average(e.item));
+      ice_damage = create_proc_action<alltotem_ice_damage_t>( "elemental_stance_ice", e );
+    }
+
+    void execute() override
+    {
+      auto next_buff = earth_buff;
+
+      if (next_buff == earth_buff)
+      {
+          earth_buff->trigger();
+          earth_damage->execute();
+          next_buff = fire_buff;
+      }
+      if (next_buff == fire_buff)
+      {
+          fire_buff->trigger();
+          fire_damage->execute();
+          next_buff = air_buff;
+      }
+      if (next_buff == air_buff)
+      {
+          air_buff->trigger();
+          air_damage->execute();
+          next_buff = ice_buff;
+      }
+      if (next_buff == ice_buff)
+      {
+          ice_buff->trigger();
+          ice_damage->execute();
+          next_buff = earth_buff;
+      }
+    }
+  };
+
+  action_t* action = create_proc_action<alltotem_buffs_t>( "alltotem_of_the_master", effect );
+
+  effect.player->register_combat_begin([&effect, action ](player_t*) {
+    timespan_t period = 37_s; // Placeholder
+    make_repeating_event( effect.player -> sim, period , [ action ]()
+    {
+      action -> execute();
+    } );
+  } );
 }
 
 // Weapons
