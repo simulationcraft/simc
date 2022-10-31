@@ -1343,6 +1343,13 @@ void manic_grieftorch( special_effect_t& effect )
   effect.execute_action = create_proc_action<manic_grieftorch_channel_t>( "manic_grieftorch_channel", effect );
 }
 
+// All-Totem of the Master
+// 377457 Driver and values
+// 377458 Earth buff
+// 377459 Fire buff
+// 377461 Air buff
+// 382133 Ice buff
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {

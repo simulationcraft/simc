@@ -1363,6 +1363,7 @@ class SpellDataGenerator(DataGenerator):
          382090, # Storm-Eater's Boon
          382131, 394618, # Iceblood Deathsnare
          377463, 382135, 382136, 382256, 382257, 394954, 395703, 396434, # Manic Grieftorch
+         377458, 377459, 377461, 382133, # All-Totem of the Master
         ),
 
         # Warrior:
