@@ -604,14 +604,9 @@ public:
     // Generic Priest
     conduit_data_t power_unto_others;
     conduit_data_t translucent_image;
-    // Holy
-    conduit_data_t holy_oration;  // NYI
-    // Discipline
-    conduit_data_t swift_penitence;  // NYI
     // Shadow
     conduit_data_t dissonant_echoes;
     conduit_data_t mind_devourer;
-    conduit_data_t rabid_shadows;
     conduit_data_t haunting_apparitions;
     // Covenant
     conduit_data_t courageous_ascension;

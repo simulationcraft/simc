@@ -795,11 +795,6 @@ struct fiend_melee_t : public priest_pet_melee_t
     // Mindbender inherits haste from the player
     timespan_t hasted_time = base_execute_time * player->cache.spell_speed();
 
-    if ( p().o().conduits.rabid_shadows->ok() )
-    {
-      hasted_time /= 1.0 + p().o().conduits.rabid_shadows.percent();
-    }
-
     return hasted_time;
   }
 

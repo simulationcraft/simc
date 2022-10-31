@@ -2747,7 +2747,6 @@ void priest_t::init_spells()
   conduits.dissonant_echoes     = find_conduit_spell( "Dissonant Echoes" );
   conduits.haunting_apparitions = find_conduit_spell( "Haunting Apparitions" );
   conduits.mind_devourer        = find_conduit_spell( "Mind Devourer" );
-  conduits.rabid_shadows        = find_conduit_spell( "Rabid Shadows" );
   // Covenant Conduits
   conduits.courageous_ascension  = find_conduit_spell( "Courageous Ascension" );
   conduits.festering_transfusion = find_conduit_spell( "Festering Transfusion" );
