@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.2.46259
-static const std::array<spelltext_data_t, 19139> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 19145> __ptr_spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -16937,6 +16937,9 @@ static const std::array<spelltext_data_t, 19139> __ptr_spelltext_data { {
   { 382119, "Your abilities have a low chance to summon a gnoll ally to assist you during combat. They may deal $s2 Physical damage to your target and $?134735a[snare][stun] it for $386168d, poison your target for ${$s3*($384290d/($384290t1))} Nature over $384290d, or increase your highest secondary stat by $s1 for $384294d.", 0, 0 },
   { 382126, "$@spelldesc385884.", "You have stolen $w1 Intellect.", 0 },
   { 382130, "Casting spells spins Crystalline Silk, granting [low] mastery per stack.\r\n\r\nAt X stacks, your next single-target spell deals [high] bonus Frost damage, encasing them and enemies within 10 yards in a Crystalline Web for X seconds. While the web persists, a portion of the damage you deal is shared across all enemies in the Web.", "Movement Speed reduced by $w2%.  Damaging this unit will cause all webbed enemies to take $382132s2 Frost damage.\r\nThis can occur once every 1.5 sec.", 0 },
+  { 382131, "Casting spells spins Crystalline Silk, granting [low] mastery per stack.\r\n\r\nAt X stacks, your next single-target spell deals [high] bonus Frost damage, encasing them and enemies within 10 yards in a Crystalline Web for X seconds. While the web persists, a portion of the damage you deal is shared across all enemies in the Web.", 0, 0 },
+  { 382135, "Channel for 2 seconds, unleashing a furious volley of flame around your target, dealing [A Lot] fire damage.\r\n\r\nWhenever an allied player dies, this cooldown is reduced by 90 seconds.", 0, 0 },
+  { 382136, "Channel for 2 seconds, unleashing a furious volley of flame around your target, dealing [A Lot] fire damage.\r\n\r\nWhenever an allied player dies, this cooldown is reduced by 90 seconds.", 0, 0 },
   { 382139, "Call on the Lost Dwarves to rain down cannon fire at your location dealing $387777s1 Fire damage split between you and all enemies over $d.\r\n\r\nDamage is increased for each target struck, up to $s2 targets.", 0, 0 },
   { 382144, "While Icy Veins is active, each Frostbolt you cast reduces the cast time of Frostbolt by $327509s1% and increases its damage by $327509s2%, stacking up to $327509u times.", 0, 0 },
   { 382145, "Increases Haste by $s1 for $d.", "Haste increased by $w1.", 0 },
@@ -16988,6 +16991,8 @@ static const std::array<spelltext_data_t, 19139> __ptr_spelltext_data { {
   { 382247, "Increases Stamina by $s1.", "Stamina increased by $w1.", 0 },
   { 382250, "$@spelldesc396917  If you spend at least 10 seconds eating you will become well fed and gain $382246s1 Stamina for $382246d.", 0, 0 },
   { 382252, "$@spelldesc396918  If you spend at least 10 seconds eating you will become well fed and gain $382247s1 Stamina for $382247d.", 0, 0 },
+  { 382256, "Channel for 2 seconds, unleashing a furious volley of flame around your target, dealing [A Lot] fire damage.\r\n\r\nWhenever an allied player dies, this cooldown is reduced by 90 seconds.", 0, 0 },
+  { 382257, "Channel for 2 seconds, unleashing a furious volley of flame around your target, dealing [A Lot] fire damage.\r\n\r\nWhenever an allied player dies, this cooldown is reduced by 90 seconds.", 0, 0 },
   { 382258, "Leech increased by $s1%.", 0, 0 },
   { 382260, "Movement speed increased by $s1%.", 0, 0 },
   { 382266, "$@spelldesc357208\r\n\r\n|cFFFFFFFFIV:|r Deals $<dmgIV> damage instantly and $<dotIV> over $<durIV> sec.", 0, "Red" },
@@ -18999,6 +19004,7 @@ static const std::array<spelltext_data_t, 19139> __ptr_spelltext_data { {
   { 394565, "$@spelldesc393641", "Wild Growth healing increased by $w1%.", 0 },
   { 394570, "$@spelldesc393622", "Damage and Haste increased by $w1%.", 0 },
   { 394609, "$@spelldesc393679", "Next direct damage or healing spell increased by $s1%.", 0 },
+  { 394618, "Casting spells spins Crystalline Silk, granting [low] mastery per stack.\r\n\r\nAt X stacks, your next single-target spell deals [high] bonus Frost damage, encasing them and enemies within 10 yards in a Crystalline Web for X seconds. While the web persists, a portion of the damage you deal is shared across all enemies in the Web.", "Movement Speed reduced by $w2%.  Damaging this unit will cause all webbed enemies to take $382132s2 Frost damage. \r\nThis can occur once every 1.5 sec.", 0 },
   { 394624, "$@spelldesc393681", "Next Power Word: Shield increased by $w1.", 0 },
   { 394651, "$@spelldesc393688", "$?s117014[Elemental Blast][Earth Shock] and Earthquake damage increased by $W1%.", 0 },
   { 394667, "$@spelldesc393672", "Your next Holy Shock deals $s1% additional damage or healing.", 0 },

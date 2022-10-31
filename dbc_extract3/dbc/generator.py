@@ -1362,6 +1362,7 @@ class SpellDataGenerator(DataGenerator):
          382425, 382428, 394864, # Spiteful Storm
          382090, # Storm-Eater's Boon
          382131, 394618, # Iceblood Deathsnare
+         377463, 382135, 382136, 382256, 382257, 394954, 395703, 396434, # Manic Grieftorch
         ),
 
         # Warrior:
