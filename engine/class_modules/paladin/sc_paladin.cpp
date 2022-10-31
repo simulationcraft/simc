@@ -154,6 +154,9 @@ struct blessing_of_protection_t : public paladin_spell_t
   {
     paladin_spell_t::execute();
 
+    // TODO: Check if target is self, because it's castable on anyone
+    p()->buffs.blessing_of_protection->trigger();
+
     if ( p()->talents.blessing_of_spellwarding->ok() )
       p()->cooldowns.blessing_of_spellwarding->start();
     // apply forbearance, track locally for forbearant faithful & force recharge recalculation
@@ -2502,6 +2505,8 @@ void paladin_t::create_buffs()
   buffs.divine_purpose = make_buff( this, "divine_purpose", spells.divine_purpose_buff );
   buffs.divine_shield  = make_buff( this, "divine_shield", find_class_spell( "Divine Shield" ) )
                             ->set_cooldown( 0_ms );  // Let the ability handle the CD
+  buffs.blessing_of_protection = make_buff( this, "blessing_of_protection", find_spell( 1022 ) );
+  buffs.blessing_of_spellwarding = make_buff( this, "blessing_of_spellwarding", find_spell( 204018 ) );
 
   buffs.avengers_might = make_buff<stat_buff_t>( this, "avengers_might", find_spell( 272903 ) )
                              ->add_stat( STAT_MASTERY_RATING, azerite.avengers_might.value() );
@@ -3518,6 +3523,24 @@ double paladin_t::resource_loss( resource_e resource_type, double amount, gain_t
 void paladin_t::assess_damage( school_e school, result_amount_type dtype, action_state_t* s )
 {
   if ( buffs.divine_shield->up() )
+  {
+    s->result_amount = 0;
+
+    // Return out, as you don't get to benefit from anything else
+    player_t::assess_damage( school, dtype, s );
+    return;
+  }
+
+  if (buffs.blessing_of_protection->up() && school == SCHOOL_PHYSICAL)
+  {
+    s->result_amount = 0;
+
+    // Return out, as you don't get to benefit from anything else
+    player_t::assess_damage( school, dtype, s );
+    return;
+  }
+
+  if ( buffs.blessing_of_spellwarding->up() && school != SCHOOL_PHYSICAL )
   {
     s->result_amount = 0;
 

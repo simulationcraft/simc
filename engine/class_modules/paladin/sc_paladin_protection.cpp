@@ -378,6 +378,9 @@ struct blessing_of_spellwarding_t : public paladin_spell_t
   {
     paladin_spell_t::execute();
 
+    // TODO: Check if target is self, because it's castable on anyone
+    p()->buffs.blessing_of_spellwarding->trigger();
+
     p()->cooldowns.blessing_of_protection->start(); // Shared cooldown
     // apply forbearance, track locally for forbearant faithful & force recharge recalculation
     p() -> trigger_forbearance( execute_state -> target );

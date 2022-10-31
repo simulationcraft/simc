@@ -106,6 +106,7 @@ public:
     buff_t* divine_steed;
     buff_t* devotion_aura;
     buff_t* retribution_aura;
+    buff_t* blessing_of_protection;
 
     buff_t* avengers_might;
     buff_t* avenging_wrath_might;
@@ -134,6 +135,7 @@ public:
     buff_t* bastion_of_light;
     buff_t* faith_in_the_light;
     buff_t* moment_of_glory_absorb;
+    buff_t* blessing_of_spellwarding;
 
     buff_t* inner_light;
     buff_t* inspiring_vanguard;
