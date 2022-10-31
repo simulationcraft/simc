@@ -148,7 +148,7 @@ struct parse_buff_effects_t
   //  parse_buff_effects( buff2, false, true );
   template <typename... Ts>
   void parse_buff_effect( buff_t* buff, bfun f, const spell_data_t* s_data, size_t i, bool use_stacks, bool use_default,
-                          Ts... mods )
+                          bool force, Ts... mods )
   {
     const auto& eff = s_data->effectN( i );
     double val      = eff.base_value();
@@ -194,7 +194,7 @@ struct parse_buff_effects_t
       return;
     }
 
-    if ( !action_->data().affected_by_all( eff ) )
+    if ( !action_->data().affected_by_all( eff ) && !force )
       return;
 
     if ( use_default && buff)
@@ -258,7 +258,8 @@ struct parse_buff_effects_t
   }
 
   template <typename... Ts>
-  void parse_buff_effects( buff_t* buff, unsigned ignore_mask, bool use_stacks, bool use_default, Ts... mods )
+  void parse_buff_effects( buff_t* buff, unsigned ignore_mask, bool use_stacks, bool use_default, unsigned force_idx,
+                           Ts... mods )
   {
     if ( !buff )
       return;
@@ -270,32 +271,41 @@ struct parse_buff_effects_t
       if ( ignore_mask & 1 << ( i - 1 ) )
         continue;
 
-      parse_buff_effect( buff, nullptr, s_data, i, use_stacks, use_default, mods... );
+      parse_buff_effect( buff, nullptr, s_data, i, use_stacks, use_default, i == force_idx, mods... );
     }
   }
 
   template <typename... Ts>
   void parse_buff_effects( buff_t* buff, unsigned ignore_mask, Ts... mods )
   {
-    parse_buff_effects<Ts...>( buff, ignore_mask, true, false, mods... );
+    parse_buff_effects<Ts...>( buff, ignore_mask, true, false, 0U, mods... );
   }
 
   template <typename... Ts>
   void parse_buff_effects( buff_t* buff, bool stack, bool use_default, Ts... mods )
   {
-    parse_buff_effects<Ts...>( buff, 0U, stack, use_default, mods... );
+    parse_buff_effects<Ts...>( buff, 0U, stack, use_default, 0U, mods... );
   }
 
   template <typename... Ts>
   void parse_buff_effects( buff_t* buff, bool stack, Ts... mods )
   {
-    parse_buff_effects<Ts...>( buff, 0U, stack, false, mods... );
+    parse_buff_effects<Ts...>( buff, 0U, stack, false, 0U, mods... );
   }
 
   template <typename... Ts>
   void parse_buff_effects( buff_t* buff, Ts... mods )
   {
-    parse_buff_effects<Ts...>( buff, 0U, true, false, mods... );
+    parse_buff_effects<Ts...>( buff, 0U, true, false, 0U, mods... );
+  }
+
+  template <typename... Ts>
+  void force_buff_effects( buff_t* buff, unsigned idx, Ts... mods )
+  {
+    if ( action_->data().affected_by_all( buff->data().effectN( idx ) ) )
+      return;
+
+    parse_buff_effects<Ts...>( buff, 0U, true, false, idx, mods... );
   }
 
   void parse_conditional_effects( const spell_data_t* spell, bfun f, unsigned ignore_mask = 0U, bool use_stack = true,
@@ -309,7 +319,7 @@ struct parse_buff_effects_t
       if ( ignore_mask & 1 << ( i - 1 ) )
         continue;
 
-      parse_buff_effect( nullptr, f, spell, i, use_stack, use_default );
+      parse_buff_effect( nullptr, f, spell, i, use_stack, use_default, false );
     }
   }
 
