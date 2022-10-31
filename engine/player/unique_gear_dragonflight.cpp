@@ -1344,11 +1344,14 @@ void manic_grieftorch( special_effect_t& effect )
 }
 
 // All-Totem of the Master
+// TODO - Setup variable execute time for tanks specifically 
+// TODO - Setup to only proc for tank specs
 // 377457 Driver and values
 // Effect 1 - Fire/Ice direct damage
-// Effect 2 - 
+// Effect 2 - Ice buff value
 // Effect 3 - Earth/Air direct damage
-// 
+// Effect 4 - Fire DoT damage
+// Effect 5 - Haste value
 // 377458 Earth buff
 // 377459 Fire buff
 // 377461 Air buff
