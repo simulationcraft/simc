@@ -102,6 +102,7 @@ HEADERS += engine/player/expansion_effects.hpp
 HEADERS += engine/player/gear_stats.hpp
 HEADERS += engine/player/ground_aoe.hpp
 HEADERS += engine/player/instant_absorb.hpp
+HEADERS += engine/player/parse_buff_effects.hpp
 HEADERS += engine/player/pet.hpp
 HEADERS += engine/player/pet_spawner.hpp
 HEADERS += engine/player/pet_spawner_impl.hpp
