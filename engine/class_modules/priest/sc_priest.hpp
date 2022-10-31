@@ -946,10 +946,8 @@ public:
 
 struct priest_heal_t : public priest_action_t<heal_t>
 {
-  bool affected_by_shadow_weaving;  // adding this in so that template code for Divine Star/Halo doesn't scream
-
   priest_heal_t( util::string_view name, priest_t& player, const spell_data_t* s = spell_data_t::nil() )
-    : base_t( name, player, s ), affected_by_shadow_weaving( false )
+    : base_t( name, player, s )
   {
   }
 

@@ -252,19 +252,9 @@ struct divine_star_spell_t final : public priest_spell_t
 
     proc = background          = true;
     affected_by_shadow_weaving = true;
-  }
-
-  double composite_da_multiplier( const action_state_t* s ) const override
-  {
-    double m = priest_spell_t::composite_da_multiplier( s );
 
     // This is not found in the affected spells for Dark Ascension, overriding it manually
-    // TODO: add a way to override the apply_buff_effects to inject a spell that way
-    if ( priest().buffs.dark_ascension->check() )
-    {
-      m *= 1.0 + priest().buffs.dark_ascension->check_value();
-    }
-    return m;
+    force_buff_effects( p.buffs.dark_ascension, 1 );
   }
 
   // Hits twice, but only if you are at the correct distance
@@ -296,8 +286,7 @@ struct divine_star_heal_t final : public priest_heal_t
   {
     aoe = -1;
 
-    proc = background          = true;
-    affected_by_shadow_weaving = true;
+    proc = background = true;
   }
 
   // Hits twice, but only if you are at the correct distance
@@ -363,19 +352,9 @@ struct halo_spell_t final : public priest_spell_t
     range                      = 0;
     travel_speed               = 15;  // Rough estimate, 2021-01-03
     affected_by_shadow_weaving = true;
-  }
-
-  double composite_da_multiplier( const action_state_t* s ) const override
-  {
-    double m = priest_spell_t::composite_da_multiplier( s );
 
     // This is not found in the affected spells for Dark Ascension, overriding it manually
-    // TODO: add a way to override the apply_buff_effects to inject a spell that way
-    if ( priest().buffs.dark_ascension->check() )
-    {
-      m *= 1.0 + priest().buffs.dark_ascension->check_value();
-    }
-    return m;
+    force_buff_effects( p.buffs.dark_ascension, 1 );
   }
 };
 
@@ -383,12 +362,11 @@ struct halo_heal_t final : public priest_heal_t
 {
   halo_heal_t( util::string_view n, priest_t& p, const spell_data_t* s ) : priest_heal_t( n, p, s )
   {
-    aoe                        = -1;
-    background                 = true;
-    radius                     = data().max_range();
-    range                      = 0;
-    travel_speed               = 15;  // Rough estimate, 2021-01-03
-    affected_by_shadow_weaving = true;
+    aoe          = -1;
+    background   = true;
+    radius       = data().max_range();
+    range        = 0;
+    travel_speed = 15;  // Rough estimate, 2021-01-03
   }
 };
 
