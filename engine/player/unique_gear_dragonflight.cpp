@@ -1423,6 +1423,7 @@ void alltotem_of_the_master( special_effect_t& effect )
     buff_t* ice_buff;
     action_t* earth_damage;
     action_t* fire_damage;
+    action_t* fire_dot;
     action_t* air_damage;
     action_t* ice_damage;
     std::vector<buff_t*> buffs;
@@ -1435,6 +1436,7 @@ void alltotem_of_the_master( special_effect_t& effect )
         air_buff( nullptr ),
         ice_buff( nullptr )
     {
+
       earth_buff = make_buff<stat_buff_t>(e.player, "elemental_stance_earth", e.player->find_spell(377458))
           ->add_stat(STAT_BONUS_ARMOR, e.player->find_spell(377457)->effectN(5).average(e.item));
       auto earth_damage = create_proc_action<alltotem_earth_damage_t>( "elemental_stance_earth", e );
@@ -1449,7 +1451,7 @@ void alltotem_of_the_master( special_effect_t& effect )
           ->set_period(e.player->find_spell( 377459 )->effectN(3).period());
       auto fire_damage = create_proc_action<alltotem_fire_damage_t>( "elemental_stance_fire", e );
       auto fire_dot = create_proc_action<alltotem_fire_dot_damage_t>( "elemental_stance_fire_dot", e );
-      fire_buff->set_stack_change_callback( [ fire_damage, fire_dot ](buff_t*, int, int new_) 
+      fire_buff->set_stack_change_callback( [ fire_damage ](buff_t*, int, int new_) 
       {
         if( new_ == 1 )
         {
@@ -1485,6 +1487,12 @@ void alltotem_of_the_master( special_effect_t& effect )
       buffs.push_back( fire_buff );
       buffs.push_back( air_buff);
       buffs.push_back( ice_buff );
+
+      add_child(earth_damage);
+      add_child(fire_damage);
+      add_child(fire_dot);
+      add_child(ice_damage);
+      add_child(air_damage);
     }
 
     void rotate()
