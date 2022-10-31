@@ -1348,7 +1348,7 @@ void manic_grieftorch( special_effect_t& effect )
 // TODO - Setup to only proc for tank specs
 // 377457 Driver and values
 // Effect 1 - Fire/Ice direct damage
-// Effect 2 - Ice buff value
+// Effect 2 - Ice buff value ?
 // Effect 3 - Earth/Air direct damage
 // Effect 4 - Fire DoT damage
 // Effect 5 - Haste value
@@ -1445,10 +1445,11 @@ void alltotem_of_the_master( special_effect_t& effect )
           earth_damage->execute();
         }
       } );
-      fire_buff = make_buff(e.player, "elemental_stance_fire", e.player->find_spell(377459));
+      fire_buff = make_buff(e.player, "elemental_stance_fire", e.player->find_spell(377459))
+          ->set_period(e.player->find_spell( 377459 )->effectN(3).period());
       auto fire_damage = create_proc_action<alltotem_fire_damage_t>( "elemental_stance_fire", e );
       auto fire_dot = create_proc_action<alltotem_fire_dot_damage_t>( "elemental_stance_fire_dot", e );
-      fire_buff->set_stack_change_callback( [ fire_damage ](buff_t*, int, int new_) 
+      fire_buff->set_stack_change_callback( [ fire_damage, fire_dot ](buff_t*, int, int new_) 
       {
         if( new_ == 1 )
         {
@@ -1508,7 +1509,7 @@ void alltotem_of_the_master( special_effect_t& effect )
   action_t* action = create_proc_action<alltotem_buffs_t>( "alltotem_of_the_master", effect );
 
   effect.player->register_combat_begin([&effect, action ](player_t*) {
-    timespan_t period = 37_s; // Placeholder
+    timespan_t period = effect.player -> sim -> dragonflight_opts.alltotem_of_the_master_period;
     make_repeating_event( effect.player -> sim, period , [ action ]()
     {
       action -> execute();
