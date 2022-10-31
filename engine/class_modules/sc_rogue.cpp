@@ -2888,7 +2888,7 @@ struct apply_poison_t : public action_t
     }
   }
 
-  std::string get_default_nonlethal_poison( rogue_t* p )
+  std::string get_default_nonlethal_poison( rogue_t* )
   {
     return "crippling";
   }
@@ -7381,7 +7381,7 @@ void rogue_t::trigger_venomous_wounds_death( player_t* target )
                  td->dots.rupture->current_action );
 }
 
-void rogue_t::trigger_toxic_onslaught( player_t* target )
+void rogue_t::trigger_toxic_onslaught( player_t* /*target*/ )
 {
   if ( !legendary.toxic_onslaught->ok() )
     return;
@@ -8275,7 +8275,7 @@ void actions::rogue_action_t<Base>::trigger_lingering_shadow( const action_state
 }
 
 template <typename Base>
-void actions::rogue_action_t<Base>::trigger_danse_macabre( const action_state_t* state )
+void actions::rogue_action_t<Base>::trigger_danse_macabre( const action_state_t* )
 {
   if ( !p()->talent.subtlety.danse_macabre->ok() )
     return;
@@ -9711,7 +9711,7 @@ void rogue_t::init_spells()
   spell.shadow_dance = talent.rogue.shadow_dance.find_override_spell( false );
   spell.shadowstep = talent.rogue.shadowstep.find_override_spell( false );
 
-  auto find_shared_talent = [ this ]( std::vector<player_talent_t*> talents ) {
+  auto find_shared_talent = []( std::vector<player_talent_t*> talents ) {
     for ( const auto t : talents )
     {
       if ( t->ok() )
@@ -10048,7 +10048,7 @@ void rogue_t::init_spells()
     active.blade_flurry = get_background_action<actions::blade_flurry_attack_t>( "blade_flurry_attack" );
   }
 
-  if ( conduit.triple_threat.ok() && specialization() == ROGUE_OUTLAW || talent.outlaw.triple_threat->ok() )
+  if ( ( conduit.triple_threat.ok() && specialization() == ROGUE_OUTLAW ) || talent.outlaw.triple_threat->ok() )
   {
     active.triple_threat_mh = get_secondary_trigger_action<actions::sinister_strike_t::sinister_strike_extra_attack_t>(
       secondary_trigger::TRIPLE_THREAT, "sinister_strike_triple_threat_mh" );

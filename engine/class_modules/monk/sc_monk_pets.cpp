@@ -3132,7 +3132,7 @@ private:
             tick_action = new crackling_tiger_lightning_tick_t(p);
         }
 
-        double last_tick_factor(const dot_t*, timespan_t, timespan_t) const
+        double last_tick_factor(const dot_t*, timespan_t, timespan_t) const override
         {
             return 0.0;
         }

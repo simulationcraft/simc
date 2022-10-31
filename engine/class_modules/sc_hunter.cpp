@@ -3139,7 +3139,7 @@ struct kill_shot_t : hunter_ranged_attack_t
       ( candidate_target -> health_percentage() <= health_threshold_pct
         || p() -> buffs.flayers_mark -> check() || p() -> buffs.deathblow -> check()
         || p() -> buffs.hunters_prey -> check()
-        || p() -> talents.coordinated_kill.ok() && p() -> buffs.coordinated_assault -> check() );
+        || ( p() -> talents.coordinated_kill.ok() && p() -> buffs.coordinated_assault -> check() ) );
   }
 
   double action_multiplier() const override
@@ -3450,8 +3450,8 @@ struct explosive_shot_background_t : public explosive_shot_t
 
 struct serpent_sting_base_t: public hunter_ranged_attack_t
 {
-  serpent_sting_base_t( hunter_t* p, util::string_view options_str, const spell_data_t* s ) :
-    hunter_ranged_attack_t( "serpent_sting", p, s )
+  serpent_sting_base_t( hunter_t* p, util::string_view n, util::string_view options_str, const spell_data_t* s ) :
+    hunter_ranged_attack_t( n, p, s )
   {
     parse_options( options_str );
 
@@ -3527,7 +3527,7 @@ struct serpent_sting_base_t: public hunter_ranged_attack_t
 struct serpent_sting_t final : public serpent_sting_base_t
 {
   serpent_sting_t( hunter_t* p, util::string_view options_str ):
-    serpent_sting_base_t( p, options_str, p -> talents.serpent_sting )
+    serpent_sting_base_t( p, "serpent_string", options_str, p -> talents.serpent_sting )
   {
   }
 };
@@ -4320,7 +4320,7 @@ struct aimed_shot_t : public aimed_shot_base_t
   struct serpent_sting_sst_t final : public serpent_sting_base_t
   {
     serpent_sting_sst_t( util::string_view n, hunter_t* p ):
-      serpent_sting_base_t( p, "", p -> find_spell( 271788 ) )
+      serpent_sting_base_t( p, n, "", p -> find_spell( 271788 ) )
     {
       dual = true;
       base_costs[ RESOURCE_FOCUS ] = 0;
@@ -4812,7 +4812,7 @@ struct multishot_mm_t: public hunter_ranged_attack_t
 
     p() -> trigger_lethal_shots();
 
-    if ( p() -> talents.trick_shots.ok() && num_targets_hit >= p() -> talents.trick_shots -> effectN( 2 ).base_value() || p() -> buffs.bombardment -> up() )
+    if ( ( p() -> talents.trick_shots.ok() && num_targets_hit >= p() -> talents.trick_shots -> effectN( 2 ).base_value() ) || p() -> buffs.bombardment -> up() )
       p() -> buffs.trick_shots -> trigger();
 
     p() -> buffs.bombardment -> expire();
@@ -4950,7 +4950,7 @@ struct melee_focus_spender_t: hunter_melee_attack_t
   struct serpent_sting_vv_t final : public serpent_sting_base_t
   {
     serpent_sting_vv_t( util::string_view n, hunter_t* p ):
-      serpent_sting_base_t( p, "", p -> find_spell( 271788 ) )
+      serpent_sting_base_t( p, n, "", p -> find_spell( 271788 ) )
     {
       dual = true;
       base_costs[ RESOURCE_FOCUS ] = 0;
@@ -6551,7 +6551,7 @@ struct wildfire_bomb_t: public hunter_spell_t
     struct serpent_sting_vb_t final : public attacks::serpent_sting_base_t
     {
       serpent_sting_vb_t( util::string_view n, hunter_t* p ):
-        serpent_sting_base_t( p, "", p -> find_spell( 271788 ) )
+        serpent_sting_base_t( p, n, "", p -> find_spell( 271788 ) )
       {
         dual = true;
         base_costs[ RESOURCE_FOCUS ] = 0;
@@ -7414,7 +7414,7 @@ void hunter_t::create_buffs()
       -> set_refresh_behavior( buff_refresh_behavior::EXTEND )
       -> set_affects_regen( true )
       -> set_stack_change_callback(
-        [ this ]( buff_t*, int old, int cur ) {
+        [ this ]( buff_t*, int /*ol*/, int cur ) {
           cooldowns.aimed_shot -> adjust_recharge_multiplier();
           cooldowns.rapid_fire -> adjust_recharge_multiplier();
           if ( cur == 0 ) {
@@ -7583,7 +7583,7 @@ void hunter_t::create_buffs()
 
   if ( talents.coordinated_kill.ok() ) {
     buffs.coordinated_assault -> set_stack_change_callback(
-      [ this ]( buff_t*, int old, int cur ) {
+      [ this ]( buff_t*, int /*old*/, int /*cur*/ ) {
         if ( talents.bombardier.ok() )
           cooldowns.wildfire_bomb -> reset( true );
 

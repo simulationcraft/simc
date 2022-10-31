@@ -101,12 +101,12 @@ public:
       sef_ability( sef_ability_e::SEF_NONE ),
       ww_mastery( false ),
       may_combo_strike( false ),
-      cast_during_sck( false ),
       trigger_chiji( false ),
       trigger_faeline_stomp( false ),
       trigger_bountiful_brew( false ),
       trigger_sinister_teaching_cdr( true ),
       trigger_resonant_fists( false ),
+      cast_during_sck( false ),
       may_proc_bron( false ),
       bron_proc( nullptr ),
       keefers_skyreach_proc( nullptr ),
@@ -2384,8 +2384,8 @@ struct blackout_kick_t : public monk_melee_attack_t
 
     // Teachings of the Monastery
     // Used by both Windwalker and Mistweaver
-      if ( p()->buff.teachings_of_the_monastery && p()->buff.teachings_of_the_monastery->up() )
-        p()->buff.teachings_of_the_monastery->expire();
+    if ( p()->buff.teachings_of_the_monastery && p()->buff.teachings_of_the_monastery->up() )
+      p()->buff.teachings_of_the_monastery->expire();
 
     switch ( p()->specialization() )
     {

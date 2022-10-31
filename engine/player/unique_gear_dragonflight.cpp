@@ -1217,8 +1217,8 @@ void decoration_of_flame( special_effect_t& effect )
 
   struct decoration_of_flame_damage_t : public proc_spell_t
   {
-    double value;
     buff_t* shield;
+    double value;
 
     decoration_of_flame_damage_t( const special_effect_t& e ) :
       proc_spell_t( "decoration_of_flame", e.player, e.player->find_spell( 377449 ), e.item ), shield( nullptr ), value( e.player -> find_spell( 394393 ) -> effectN( 2 ).average( e.item ) )

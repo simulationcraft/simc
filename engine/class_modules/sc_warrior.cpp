@@ -976,21 +976,21 @@ struct warrior_action_t : public Base
       : fury_mastery_direct( false ),
         fury_mastery_dot( false ),
         arms_mastery( false ),
-        colossus_smash( false ),
-        executioners_precision( false ),
         siegebreaker( false ),
-        ashen_juggernaut( false ),
-        ashen_juggernaut_conduit( false ),
-        juggernaut( false ),
-        merciless_bonegrinder( false ),
-        recklessness( false ),
-        slaughtering_strikes( false ),
         avatar( false ),
-        bloodcraze( false ),
         sweeping_strikes( false ),
         booming_voice( false ),
+        bloodcraze( false ),
+        executioners_precision( false ),
+        ashen_juggernaut( false ),
+        recklessness( false ),
+        slaughtering_strikes( false ),
+        colossus_smash( false ),
+        merciless_bonegrinder( false ),
+        juggernaut( false ),
+        t29_arms_4pc ( false ),
         crushing_assault( false ),
-        t29_arms_4pc ( false )
+        ashen_juggernaut_conduit( false )
     {
     }
   } affected_by;
@@ -1518,7 +1518,6 @@ public:
   {
     double tact_rage = tactician_cost();  // Tactician resets based on cost before things make it cost less.
     double tactician_chance = tactician_per_rage;
-    warrior_td_t* td        = this->td( ab::target );
 
     if ( ab::rng().roll( tactician_chance * tact_rage ) )
     {
@@ -2845,11 +2844,11 @@ struct bloodbath_t : public warrior_attack_t
 
 struct onslaught_t : public warrior_attack_t
 {
-  int aoe_targets;
   const spell_data_t* damage_spell;
+  int aoe_targets;
   onslaught_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "onslaught", p, p->talents.fury.onslaught ),
-      damage_spell( p->find_spell( 396718 ) ),
+      damage_spell( p->find_spell( 396718U ) ),
       aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 2 ).base_value() ) )
   {
     parse_options( options_str );
@@ -4299,10 +4298,10 @@ struct odyns_fury_main_hand_t : public warrior_attack_t
 
 struct odyns_fury_t : warrior_attack_t
 {
-  odyns_fury_off_hand_t* oh_attack;
-  odyns_fury_off_hand_t* oh_attack2;
   odyns_fury_main_hand_t* mh_attack;
   odyns_fury_main_hand_t* mh_attack2;
+  odyns_fury_off_hand_t* oh_attack;
+  odyns_fury_off_hand_t* oh_attack2;
   odyns_fury_t( warrior_t* p, util::string_view options_str, util::string_view n, const spell_data_t* spell )
     : warrior_attack_t( n, p, spell ),
       mh_attack( new odyns_fury_main_hand_t( p, fmt::format( "{}_mh", n ), spell->effectN( 1 ).trigger() ) ),
@@ -4627,11 +4626,11 @@ struct rampage_attack_t : public warrior_attack_t
       first_attack_missed( false ),
       valarjar_berserking( false ),
       simmering_rage( false ),
-      hack_and_slash_chance( p->talents.fury.hack_and_slash->proc_chance() ),
       rage_from_valarjar_berserking( p->find_spell( 248179 )->effectN( 1 ).base_value() / 10.0 ),
       rage_from_simmering_rage(
           ( p->azerite.simmering_rage.spell()->effectN( 1 ).base_value() ) / 10.0 ),
-      reckless_defense_chance( p->legendary.reckless_defense->effectN( 2 ).percent() )
+      reckless_defense_chance( p->legendary.reckless_defense->effectN( 2 ).percent() ),
+      hack_and_slash_chance( p->talents.fury.hack_and_slash->proc_chance() )
   {
     background = true;
     dual = true;
@@ -5195,8 +5194,8 @@ struct shield_slam_t : public warrior_attack_t
 
 struct slam_t : public warrior_attack_t
 {
-  int aoe_targets;
   bool from_Fervor;
+  int aoe_targets;
   slam_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "slam", p, p->spell.slam ), from_Fervor( false ),
       aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) )
@@ -7596,7 +7595,7 @@ void warrior_t::init_spells()
 
   // Shared Talents - needed when using the same spell data with a spec check (hurricane)
 
-  auto find_shared_talent = [ this ]( std::vector<player_talent_t*> talents ) {
+  auto find_shared_talent = []( std::vector<player_talent_t*> talents ) {
     for ( const auto t : talents )
     {
       if ( t->ok() )

@@ -1538,8 +1538,6 @@ struct mind_spike_t final : public priest_spell_t
   {
     priest_spell_t::impact( s );
 
-    priest_td_t& td = get_td( s->target );
-
     if ( result_is_hit( s->result ) )
     {
       priest().trigger_psychic_link( s );
@@ -2233,7 +2231,7 @@ void priest_t::create_buffs_shadow()
           ->set_stack_change_callback( ( [ this ]( buff_t* b, int, int cur ) {
             if ( cur == b->max_stack() )
             {
-              make_event( b->sim, [ this, b ] { b->cancel(); } );
+              make_event( b->sim, [ b ] { b->cancel(); } );
               procs.thing_from_beyond->occur();
               spawn_thing_from_beyond();
             }
@@ -2663,8 +2661,8 @@ void priest_t::trigger_idol_of_nzoth( player_t* target, proc_t* proc )
 
   auto td = get_target_data( target );
 
-  if ( !td || !td->buffs.echoing_void->up() &&
-                  number_of_echoing_voids_active() == talents.shadow.idol_of_nzoth->effectN( 1 ).base_value() )
+  if ( !td || ( !td->buffs.echoing_void->up() &&
+                number_of_echoing_voids_active() == talents.shadow.idol_of_nzoth->effectN( 1 ).base_value() ) )
     return;
 
   if ( rng().roll( talents.shadow.idol_of_nzoth->proc_chance() ) )

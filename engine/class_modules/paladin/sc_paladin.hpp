@@ -1376,7 +1376,6 @@ struct holy_power_consumer_t : public Base
       p->cooldowns.ardent_defender->adjust( reduction );
       // "Let the ability handle the cd", yeah.. But how to reduce it's cd?
       //p->buffs.divine_shield->cooldown->adjust( reduction );
-      auto foo = 1;
     }
 
     // Consume Empyrean Power on Divine Storm, handled here for interaction with DP/FoJ

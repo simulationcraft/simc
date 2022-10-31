@@ -1739,7 +1739,7 @@ struct power_word_shield_t final : public priest_absorb_t
   }
 
   // Manually create the buff so we can reference it with Void Shield
-  absorb_buff_t* create_buff( const action_state_t* s ) override
+  absorb_buff_t* create_buff( const action_state_t* ) override
   {
     return priest().buffs.power_word_shield;
   }
@@ -2160,7 +2160,7 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) : actor_target_data_t(
                                       buffs.echoing_void->decrement();
                                       if ( !buffs.echoing_void->check() )
                                       {
-                                        make_event( b->sim, [ this, b ] { b->cancel(); } );
+                                        make_event( b->sim, [ b ] { b->cancel(); } );
                                       }
                                     } );
   buffs.apathy =
@@ -2897,12 +2897,12 @@ void priest_t::create_buffs()
                             ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
   buffs.rhapsody =
       make_buff( this, "rhapsody", talents.rhapsody_buff )
-          ->set_stack_change_callback( ( [ this ]( buff_t* b, int, int ) { buffs.rhapsody_timer->trigger(); } ) );
+          ->set_stack_change_callback( ( [ this ]( buff_t*, int, int ) { buffs.rhapsody_timer->trigger(); } ) );
   buffs.rhapsody_timer = make_buff( this, "rhapsody_timer", talents.rhapsody )
                              ->set_quiet( true )
                              ->set_duration( timespan_t::from_seconds( 5 ) )
                              ->set_max_stack( 1 )
-                             ->set_stack_change_callback( ( [ this ]( buff_t* b, int, int new_ ) {
+                             ->set_stack_change_callback( ( [ this ]( buff_t*, int, int new_ ) {
                                if ( new_ == 0 )
                                {
                                  buffs.rhapsody->trigger();
@@ -3229,7 +3229,7 @@ void priest_t::trigger_idol_of_cthun( action_state_t* s )
 {
   auto mind_sear_id          = talents.shadow.mind_sear->effectN( 1 ).trigger()->id();
   auto mind_flay_id          = specs.mind_flay->id();
-  auto mind_flay_insanity_id = 391403;
+  auto mind_flay_insanity_id = 391403U;
   auto action_id             = s->action->id;
   if ( !talents.shadow.idol_of_cthun.enabled() )
     return;

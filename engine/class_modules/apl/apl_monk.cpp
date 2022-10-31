@@ -149,7 +149,6 @@ std::string temporary_enchant( const player_t* p )
 
 void brewmaster( player_t* p )
 {
-  auto monk                                             = debug_cast<monk::monk_t*>( p );
   std::vector<std::string> racial_actions               = p->get_racial_actions();
   action_priority_list_t* pre                           = p->get_action_priority_list( "precombat" );
   action_priority_list_t* def                           = p->get_action_priority_list( "default" );
