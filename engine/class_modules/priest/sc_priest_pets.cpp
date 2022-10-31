@@ -222,7 +222,7 @@ struct priest_pet_melee_t : public melee_attack_t
   }
 };
 
-struct priest_pet_spell_t : public spell_t, parse_buff_effects_t<priest_td_t>
+struct priest_pet_spell_t : public spell_t, public parse_buff_effects_t<priest_td_t>
 {
   bool affected_by_shadow_weaving;
 

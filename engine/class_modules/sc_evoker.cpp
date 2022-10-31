@@ -395,7 +395,7 @@ public:
 
 // Template for base evoker action code.
 template <class Base>
-struct evoker_action_t : public Base, parse_buff_effects_t<evoker_td_t>
+struct evoker_action_t : public Base, public parse_buff_effects_t<evoker_td_t>
 {
 private:
   using ab = Base;  // action base, spell_t/heal_t/etc.

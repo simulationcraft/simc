@@ -21,12 +21,8 @@
 //    Add the following overrides with any addtional adjustments as needed (BASE is the parent to the action base class):
 
 /*    double cost() const override
-      {
-        double c = BASE::cost();
-        c += get_buff_effects_value( flat_cost_buffeffects, true, false );
-        c *= std::max( 0.0, get_buff_effects_value( cost_buffeffects, false, false ) );
-        return c;
-      }
+      { return std::max( 0.0, ( BASE::cost() + get_buff_effects_value( flat_cost_buffeffects, true, false ) )
+                                             * get_buff_effects_value( cost_buffeffects, false, false ) ); }
 
       double composite_ta_multiplier( const action_state_t* s ) const override
       { return BASE::composite_ta_multiplier( s ) * get_buff_effects_value( ta_multiplier_buffeffects ); }

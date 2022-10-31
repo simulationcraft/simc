@@ -2128,7 +2128,7 @@ struct kindred_affinity_external_buff_t : public kindred_affinity_base_t
 
 // Template for common druid action code. See priest_action_t.
 template <class Base>
-struct druid_action_t : public Base, parse_buff_effects_t<druid_td_t>
+struct druid_action_t : public Base, public parse_buff_effects_t<druid_td_t>
 {
 private:
   using ab = Base;  // action base, eg. spell_t

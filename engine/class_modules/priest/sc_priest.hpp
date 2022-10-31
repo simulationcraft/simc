@@ -757,7 +757,7 @@ namespace actions
  * spell_t/heal_t or absorb_t directly.
  */
 template <typename Base>
-struct priest_action_t : public Base, parse_buff_effects_t<priest_td_t>
+struct priest_action_t : public Base, public parse_buff_effects_t<priest_td_t>
 {
 protected:
   priest_t& priest()
