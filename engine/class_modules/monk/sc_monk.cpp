@@ -793,6 +793,7 @@ public:
     {
       if ( p()->cooldown.resonant_fists->up() && p()->rng().roll( p()->talent.general.resonant_fists.spell()->proc_chance() ) )
       {
+          p()->active_actions.resonant_fists->set_target( s->target );
           p()->active_actions.resonant_fists->execute();
           p()->proc.resonant_fists->occur();
           p()->cooldown.resonant_fists->start( p()->talent.general.resonant_fists.spell()->internal_cooldown() );
@@ -4080,6 +4081,7 @@ struct resonant_fists_t : public monk_spell_t
   resonant_fists_t( monk_t& p )
     : monk_spell_t( "resonant_fists", &p, p.talent.general.resonant_fists->effectN( 2 ).trigger() )
   {
+    trigger_resonant_fists = false;
     background = true;
     aoe        = -1;
   }
