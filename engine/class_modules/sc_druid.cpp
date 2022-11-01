@@ -951,6 +951,7 @@ public:
     const spell_data_t* cat_form_passive;
     const spell_data_t* cat_form_speed;
     const spell_data_t* feral_affinity;
+    const spell_data_t* improved_prowl;  // stealth rake
     const spell_data_t* moonfire_2;
     const spell_data_t* moonfire_dmg;
     const spell_data_t* wrath;
@@ -3998,7 +3999,7 @@ struct rake_t : public cat_attack_t
   rake_t( druid_t* p, std::string_view n, const spell_data_t* s, std::string_view opt )
     : cat_attack_t( n, p, s, opt ), stealth_mul( 0.0 )
   {
-    if ( p->talent.pouncing_strikes.ok() )
+    if ( p->talent.pouncing_strikes.ok() || p->spec.improved_prowl->ok() )
       stealth_mul = data().effectN( 4 ).percent();
 
     aoe = std::max( aoe, 1 ) + as<int>( p->talent.doubleclawed_rake->effectN( 1 ).base_value() );
@@ -9798,6 +9799,7 @@ void druid_t::init_spells()
   spec.cat_form_passive         = find_spell( 3025 );
   spec.cat_form_speed           = find_spell( 113636 );
   spec.feral_affinity           = find_specialization_spell( "Feral Affinity" );
+  spec.improved_prowl           = find_specialization_spell( "Improved Prowl" );
   spec.moonfire_2               = find_rank_spell( "Moonfire", "Rank 2" );
   spec.moonfire_dmg             = find_spell( 164812 );
   spec.wrath                    = find_specialization_spell( "Wrath" );
