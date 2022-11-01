@@ -48,6 +48,7 @@ struct paladin_td_t : public actor_target_data_t
     buff_t* seal_of_the_crusader;
     buff_t* sanctify;
     buff_t* eye_of_tyr;
+    buff_t* crusaders_resolve;
   } debuff;
 
   paladin_td_t( player_t* target, paladin_t* paladin );

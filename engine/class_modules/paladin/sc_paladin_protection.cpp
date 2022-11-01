@@ -102,6 +102,10 @@ struct avengers_shield_base_t : public paladin_spell_t
       p()->cooldowns.guardian_of_ancient_kings->adjust(
           timespan_t::from_millis( -1 ) * p()->talents.gift_of_the_golden_valkyr->effectN( 1 ).base_value() );
     }
+    if ( p()->talents.crusaders_resolve->ok() )
+    {
+      td( s->target )->debuff.crusaders_resolve->trigger();
+    }
   }
 
 double recharge_multiplier( const cooldown_t& cd ) const override
@@ -770,6 +774,11 @@ void paladin_t::target_mitigation( school_e school,
   if ( td->debuff.eye_of_tyr->up() )
   {
     s -> result_amount *= 1.0 + td -> debuff.eye_of_tyr -> value();
+  }
+
+  if (td->debuff.crusaders_resolve->up())
+  {
+    s->result_amount *= 1.0 + talents.crusaders_resolve->effectN( 1 ).percent() * td->debuff.crusaders_resolve->stack();
   }
 
   // Divine Bulwark and consecration reduction
