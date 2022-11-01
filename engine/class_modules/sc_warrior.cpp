@@ -262,6 +262,7 @@ public:
     gain_t* thunder_clap;
     gain_t* endless_rage;
     gain_t* collateral_damage;
+    gain_t* instigate;
 
     // Legendarys, Azerite, and Special Effects
     gain_t* execute_refund;
@@ -1657,6 +1658,18 @@ struct devastate_t : public warrior_attack_t
     {
       p()->cooldown.shield_slam->reset( true );
     }
+
+    if ( p() -> talents.protection.instigate.ok() )
+      p() -> resource_gain( RESOURCE_RAGE, p() -> talents.protection.instigate -> effectN( 2 ).resource( RESOURCE_RAGE ), p() -> gain.instigate );
+  }
+
+  double action_multiplier() const override
+  {
+    double am = warrior_attack_t::action_multiplier();
+
+    am *= 1.0 + p() -> talents.protection.instigate -> effectN( 1 ).percent();
+
+    return am;
   }
 
   bool ready() override
@@ -1743,6 +1756,18 @@ struct devastator_t : warrior_attack_t
     {
       p() -> cooldown.shield_slam -> reset( true );
     }
+
+    if ( p() -> talents.protection.instigate.ok() )
+      p() -> resource_gain( RESOURCE_RAGE, p() -> talents.protection.instigate -> effectN( 4 ).resource( RESOURCE_RAGE ), p() -> gain.instigate );
+  }
+
+  double action_multiplier() const override
+  {
+    double am = warrior_attack_t::action_multiplier();
+
+    am *= 1.0 + p() -> talents.protection.instigate -> effectN( 3 ).percent();
+
+    return am;
   }
 };
 
@@ -8953,6 +8978,7 @@ void warrior_t::init_gains()
   gain.thunder_clap                     = get_gain( "thunder_clap" );
   gain.whirlwind                        = get_gain( "whirlwind" );
   gain.collateral_damage                = get_gain( "collateral_damage" );
+  gain.instigate                        = get_gain( "instigate" );
 
   gain.ceannar_rage           = get_gain( "ceannar_rage" );
   gain.cold_steel_hot_blood   = get_gain( "cold_steel_hot_blood" );
