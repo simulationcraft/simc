@@ -7,8 +7,9 @@ PR_Death_Knight_Blood.simc
 PR_Death_Knight_Frost.simc
 PR_Death_Knight_Unholy.simc
 
-PR_Demon_Hunter_Havoc.simc
-PR_Demon_Hunter_Vengeance.simc
+# TODO: reenable when DH is working again. As of 2022-11-01, sigil_of_flame is broken
+#PR_Demon_Hunter_Havoc.simc
+#PR_Demon_Hunter_Vengeance.simc
 
 PR_Druid_Balance.simc
 PR_Druid_Feral.simc
