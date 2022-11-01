@@ -3161,10 +3161,10 @@ struct deep_wounds_PROT_t : public warrior_attack_t
 
 // Demoralizing Shout =======================================================
 
-struct demoralizing_shout : public warrior_attack_t
+struct demoralizing_shout_t : public warrior_attack_t
 {
   double rage_gain;
-  demoralizing_shout( warrior_t* p, util::string_view options_str )
+  demoralizing_shout_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "demoralizing_shout", p, p->talents.protection.demoralizing_shout ), rage_gain( 0 )
   {
     parse_options( options_str );
@@ -3616,6 +3616,23 @@ struct heroic_throw_t : public warrior_attack_t
 
     weapon    = &( player->main_hand_weapon );
     may_dodge = may_parry = may_block = false;
+
+    if ( p -> talents.protection.improved_heroic_throw -> ok() )
+    {
+      impact_action = p->active.deep_wounds_PROT;
+    }
+  }
+
+  double action_multiplier() const override
+  {
+    double am = warrior_attack_t::action_multiplier();
+
+    if ( p()->talents.protection.improved_heroic_throw->ok() )
+    {
+      am *= 1.0 + p()->talents.protection.improved_heroic_throw->effectN( 2 ).percent();
+    }
+
+    return am;
   }
 
   bool ready() override
@@ -6933,7 +6950,7 @@ struct ignore_pain_buff_t : public absorb_buff_t
   // Custom consume implementation to allow minimum absorb amount.
   double consume( double amount ) override
   {
-    // IP only absorbs up to 50% of the damage taken
+    // IP only absorbs up to 55% of the damage taken
     amount *= debug_cast< warrior_t* >( player ) -> talents.protection.ignore_pain -> effectN( 2 ).percent();
     double absorbed = absorb_buff_t::consume( amount );
 
@@ -7180,7 +7197,7 @@ action_t* warrior_t::create_action( util::string_view name, util::string_view op
   if ( name == "defensive_stance" )
     return new defensive_stance_t( this, options_str );
   if ( name == "demoralizing_shout" )
-    return new demoralizing_shout( this, options_str );
+    return new demoralizing_shout_t( this, options_str );
   if ( name == "devastate" )
     return new devastate_t( this, options_str );
   if ( name == "die_by_the_sword" )
