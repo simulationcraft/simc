@@ -1,0 +1,9 @@
+priest="T28_Priest_Shadow"
+source=default
+spec=shadow
+level=60
+race=human
+role=spell
+position=ranged_back
+actions=use_items
+main_hand=drustlords_greataxe,id=178713,bonus_id=6807/1498/6646,enchant=sinful_revelation

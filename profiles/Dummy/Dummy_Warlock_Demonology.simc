@@ -1,0 +1,9 @@
+warlock="T28_Warlock_Demonology"
+source=default
+spec=demonology
+level=60
+race=troll
+role=spell
+position=ranged_back
+actions=use_items
+main_hand=drustlords_greataxe,id=178713,bonus_id=6807/1498/6646,enchant=sinful_revelation

@@ -1,0 +1,10 @@
+monk="T28_Monk_Brewmaster"
+source=default
+spec=brewmaster
+level=60
+race=troll
+role=tank
+
+position=front
+
+main_hand=zovastrum_the_unmaking,id=189861,bonus_id=1524/7187,enchant=sinful_revelation

@@ -1,0 +1,9 @@
+warlock="T28_Warlock_Destruction"
+source=default
+spec=destruction
+level=60
+race=mechagnome
+role=spell
+position=ranged_back
+actions=use_items
+main_hand=drustlords_greataxe,id=178713,bonus_id=6807/1498/6646,enchant=sinful_revelation

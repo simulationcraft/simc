@@ -1,0 +1,10 @@
+deathknight="Dummy_Death_Knight_Blood"
+source=default
+spec=blood
+level=60
+race=goblin
+role=tank
+position=front
+actions=use_items
+
+main_hand=drustlords_greataxe,id=178713,bonus_id=6807/1498/6646,enchant=sinful_revelation
