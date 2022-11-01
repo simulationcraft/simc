@@ -5447,6 +5447,12 @@ struct thunder_clap_t : public warrior_attack_t
           std::min( execute_state->n_targets, as<unsigned int>( p()->legendary.thunderlord->effectN( 2 ).base_value() ) ) );
     }
 
+    if ( p() -> talents.protection.thunderlord.ok() )
+    {
+      p() -> cooldown.demoralizing_shout -> adjust( - p() -> talents.protection.thunderlord -> effectN( 1 ).time_value() *
+          std::min( execute_state->n_targets, as<unsigned int>( p() -> talents.protection.thunderlord -> effectN ( 2 ).base_value() ) ) );
+    }
+
     if ( p()->buff.outburst->check() )
     {
       p()->resource_gain( RESOURCE_RAGE, p() -> buff.outburst->data().effectN( 4 ).resource( RESOURCE_RAGE ), p() -> gain.t28_2pc );
