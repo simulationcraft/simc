@@ -5167,11 +5167,10 @@ struct shield_slam_t : public warrior_attack_t
     if ( p() -> buff.shield_block->up() )
     {
       double sb_increase = p() -> spell.shield_block_buff -> effectN( 2 ).percent();
-      sb_increase += p()->talents.protection.heavy_repercussions->effectN( 2 ).percent();
       am *= 1.0 + sb_increase;
     }
 
-    if ( p()->talents.protection.punish->ok() )
+    if ( p()->talents.protection.punish.ok() )
     {
       am *= 1.0 + p()->talents.protection.punish->effectN( 1 ).percent();
     }
@@ -5224,7 +5223,7 @@ struct shield_slam_t : public warrior_attack_t
 
     warrior_td_t* td = p() -> get_target_data( state -> target );
 
-    if ( p()->talents.protection.punish->ok() )
+    if ( p()->talents.protection.punish.ok() )
     {
       td -> debuffs_punish -> trigger();
     }
