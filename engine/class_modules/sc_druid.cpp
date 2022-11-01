@@ -2349,15 +2349,6 @@ public:
       p()->buff.ravenous_frenzy->trigger();
   }
 
-  void trigger_gore()  // need this here instead of bear_attack_t because of moonfire
-  {
-    if ( p()->buff.gore->trigger() )
-    {
-      p()->proc.gore->occur();
-      p()->cooldown.mangle->reset( true );
-    }
-  }
-
   void trigger_galactic_guardian( action_state_t* s )
   {
     if ( !p()->talent.galactic_guardian.ok() )
@@ -2576,6 +2567,23 @@ public:
   }
 };
 
+struct trigger_gore_t
+{
+  void trigger_gore( action_state_t* s )
+  {
+    auto p = static_cast<druid_t*>( s->action->player );
+
+    if ( !action_t::result_is_hit( s->result ) )
+      return;
+
+    if ( p->buff.gore->trigger() )
+    {
+      p->proc.gore->occur();
+      p->cooldown.mangle->reset( true );
+    }
+  }
+};
+
 // Druid melee attack base for cat_attack_t and bear_attack_t
 template <class Base>
 struct druid_attack_t : public druid_action_t<Base>
@@ -2788,19 +2796,6 @@ public:
     }
   }
 
-  void trigger_shooting_stars( player_t* t )
-  {
-    if ( !p()->active.shooting_stars )
-      return;
-
-    double chance = p()->talent.shooting_stars->effectN( 1 ).percent() / std::sqrt( get_dot_count() );
-
-    chance *= 1.0 + p()->buff.solstice->value();
-
-    if ( rng().roll( chance ) )
-      p()->active.shooting_stars->execute_on_target( t );
-  }
-
   std::unique_ptr<expr_t> create_expression( std::string_view name_str ) override
   {
     auto splits = util::string_split<std::string_view>( name_str, "." );
@@ -2815,6 +2810,40 @@ public:
     return ab::create_expression( name_str );
   }
 };  // end druid_spell_t
+
+struct trigger_astral_smolder_t
+{
+  void trigger_astral_smolder( action_state_t* s )
+  {
+    auto p = static_cast<druid_t*>( s->action->player );
+
+    if ( !p->active.astral_smolder || s->result_amount || s->result != RESULT_CRIT )
+      return;
+
+    auto mul = p->talent.astral_smolder->effectN( 1 ).percent();
+
+    residual_action::trigger( p->active.astral_smolder, s->target, s->result_amount * mul );
+  }
+};
+
+struct trigger_shooting_stars_t
+{
+  void trigger_shooting_stars( dot_t* d )
+  {
+    auto a = static_cast<druid_spell_t*>( d->current_action );
+    auto p = a->p();
+
+    if ( !p->active.shooting_stars || !d->is_ticking() )
+      return;
+
+    double chance = p->talent.shooting_stars->effectN( 1 ).percent() / std::sqrt( a->get_dot_count() );
+
+    chance *= 1.0 + p->buff.solstice->value();
+
+    if ( p->rng().roll( chance ) )
+      p->active.shooting_stars->execute_on_target( d->target );
+  }
+};
 
 struct druid_interrupt_t : public druid_spell_t
 {
@@ -2907,22 +2936,6 @@ struct cancel_form_t : public druid_form_t
   cancel_form_t( druid_t* p, std::string_view opt ) : druid_form_t( "cancelform", p, spell_data_t::nil(), opt, NO_FORM )
   {
     trigger_gcd = 0_ms;
-  }
-};
-
-// Shooting Stars ===========================================================
-struct shooting_stars_t : public druid_spell_t
-{
-  shooting_stars_t( druid_t* player ) : druid_spell_t( "shooting_stars", player, player->spec.shooting_stars_dmg )
-  {
-    background = true;
-  }
-
-  void execute() override
-  {
-    druid_spell_t::execute();
-
-    p()->buff.orbit_breaker->trigger();
   }
 };
 }  // namespace spells
@@ -3355,7 +3368,7 @@ struct cat_finisher_data_t
   }
 };
 
-template <class Data>
+template <class Data = cat_finisher_data_t>
 struct cat_finisher_base_t : public cat_attack_t
 {
   using base_t = cat_finisher_base_t<Data>;
@@ -3483,7 +3496,7 @@ struct cat_finisher_base_t : public cat_attack_t
   }
 };
 
-typedef cat_finisher_base_t<cat_finisher_data_t> cat_finisher_t;
+typedef cat_finisher_base_t<> cat_finisher_t;
 
 // Berserk (Cat) ==============================================================
 struct berserk_cat_base_t : public cat_attack_t
@@ -4440,11 +4453,9 @@ namespace bear_attacks
 // ==========================================================================
 struct bear_attack_t : public druid_attack_t<melee_attack_t>
 {
-  bool proc_gore;
-
   bear_attack_t( std::string_view n, druid_t* p, const spell_data_t* s = spell_data_t::nil(),
                  std::string_view opt = {} )
-    : base_t( n, p, s ), proc_gore( false )
+    : base_t( n, p, s )
   {
     parse_options( opt );
 
@@ -4477,14 +4488,6 @@ struct bear_attack_t : public druid_attack_t<melee_attack_t>
       if ( p()->talent.ursocs_guidance.ok() && p()->talent.incarnation_bear.ok() )
         p()->cooldown.incarnation_bear->adjust( timespan_t::from_seconds( last_resource_cost / -20 ) );
     }
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    base_t::impact( s );
-
-    if ( result_is_hit( s->result ) && proc_gore )
-      trigger_gore();
   }
 };  // end bear_attack_t
 
@@ -4776,16 +4779,16 @@ struct mangle_t : public bear_attack_t
 };
 
 // Maul =====================================================================
-struct maul_t : public bear_attack_t
+struct maul_t : public bear_attack_t, public trigger_gore_t
 {
   maul_t( druid_t* p, std::string_view opt ) : bear_attack_t( "maul", p, p->talent.maul, opt )
-  {
-    proc_gore = true;
-  }
+  {}
 
   void impact( action_state_t* s ) override
   {
     bear_attack_t::impact( s );
+
+    trigger_gore( s );
 
     if ( !result_is_hit( s->result ) )
       return;
@@ -4876,7 +4879,7 @@ struct rage_of_the_sleeper_t : public bear_attack_t
 };
 
 // Swipe (Bear) =============================================================
-struct swipe_bear_t : public bear_attack_t
+struct swipe_bear_t : public bear_attack_t, public trigger_gore_t
 {
   swipe_bear_t( druid_t* p, std::string_view opt )
     : bear_attack_t( "swipe_bear", p, p->apply_override( p->talent.swipe, p->spec.bear_form_override ), opt )
@@ -4884,15 +4887,21 @@ struct swipe_bear_t : public bear_attack_t
     aoe = -1;
     // target hit data stored in cat swipe
     reduced_aoe_targets = p->apply_override( p->talent.swipe, p->spec.cat_form_override )->effectN( 4 ).base_value();
-    proc_gore = true;
 
     if ( p->specialization() == DRUID_GUARDIAN )
       name_str_reporting = "swipe";
   }
+
+  void impact( action_state_t* s ) override
+  {
+    bear_attack_t::impact( s );
+
+    trigger_gore( s );
+  }
 };
 
 // Thrash (Bear) ============================================================
-struct thrash_bear_t : public bear_attack_t
+struct thrash_bear_t : public bear_attack_t, public trigger_gore_t
 {
   struct thrash_bear_dot_t : public bear_attack_t
   {
@@ -4944,7 +4953,6 @@ struct thrash_bear_t : public bear_attack_t
     : bear_attack_t( n, p, s, opt )
   {
     aoe = -1;
-    proc_gore = true;
 
     dot = p->get_secondary_action_n<thrash_bear_dot_t>( name_str + "_dot" );
     dot->stats = stats;
@@ -4972,6 +4980,8 @@ struct thrash_bear_t : public bear_attack_t
   void impact( action_state_t* s ) override
   {
     bear_attack_t::impact( s );
+
+    trigger_gore( s );
 
     if ( result_is_hit( s->result ) )
       p()->buff.earthwarden->trigger();
@@ -6764,7 +6774,7 @@ struct moon_proxy_t : public druid_spell_t
 // Moonfire Spell ===========================================================
 struct moonfire_t : public druid_spell_t
 {
-  struct moonfire_damage_t : public druid_spell_t
+  struct moonfire_damage_t : public druid_spell_t, public trigger_shooting_stars_t, public trigger_gore_t
   {
     double gg_mul;
     double feral_override_da;
@@ -6882,8 +6892,6 @@ struct moonfire_t : public druid_spell_t
 
       if ( hit_any_target )
       {
-        trigger_gore();
-
         p()->buff.protector_of_the_pack_moonfire->expire();
 
         if ( !is_free() )
@@ -6894,6 +6902,8 @@ struct moonfire_t : public druid_spell_t
     void impact( action_state_t* s ) override
     {
       druid_spell_t::impact( s );
+
+      trigger_gore( s );
 
       p()->resource_gain( RESOURCE_RAGE, p()->buff.galactic_guardian->check_value(), gain );
     }
@@ -6917,13 +6927,13 @@ struct moonfire_t : public druid_spell_t
       // Note that moonfire CAN still proc shooting stars while suppressed
       if ( td( d->target )->dots.lunar_inspiration->is_ticking() )
       {
-        trigger_shooting_stars( d->target );
+        trigger_shooting_stars( d );
         return;
       }
 
       druid_spell_t::tick( d );
 
-      trigger_shooting_stars( d->target );
+      trigger_shooting_stars( d );
     }
   };
 
@@ -7222,6 +7232,22 @@ struct thrash_proxy_t : public druid_spell_t
       return thrash_bear->cost();
 
     return 0;
+  }
+};
+
+// Shooting Stars ===========================================================
+struct shooting_stars_t : public druid_spell_t
+{
+  shooting_stars_t( druid_t* player ) : druid_spell_t( "shooting_stars", player, player->spec.shooting_stars_dmg )
+  {
+    background = true;
+  }
+
+  void execute() override
+  {
+    druid_spell_t::execute();
+
+    p()->buff.orbit_breaker->trigger();
   }
 };
 
@@ -7525,7 +7551,7 @@ struct starfall_t : public druid_spell_t
 };
 
 // Starfire =============================================================
-struct starfire_t : public druid_spell_t
+struct starfire_t : public druid_spell_t, public trigger_astral_smolder_t
 {
   double sotf_mul;
   double smolder_mul;
@@ -7602,8 +7628,7 @@ struct starfire_t : public druid_spell_t
   {
     druid_spell_t::impact( s );
 
-    if ( p()->active.astral_smolder && s->result_amount > 0 && result_is_hit( s->result ) && s->result == RESULT_CRIT )
-      residual_action::trigger( p()->active.astral_smolder, s->target, s->result_amount * smolder_mul );
+    trigger_astral_smolder( s );
   }
 
   double composite_aoe_multiplier( const action_state_t* s ) const override
@@ -7766,7 +7791,7 @@ struct starsurge_t : public druid_spell_t
 };
 
 // Stellar Flare ============================================================
-struct stellar_flare_t : public druid_spell_t
+struct stellar_flare_t : public druid_spell_t, public trigger_shooting_stars_t
 {
   stellar_flare_t( druid_t* p, std::string_view opt )
     : stellar_flare_t( p, "stellar_flare", p->talent.stellar_flare, opt )
@@ -7782,14 +7807,14 @@ struct stellar_flare_t : public druid_spell_t
   {
     druid_spell_t::tick( d );
 
-    trigger_shooting_stars( d->target );
+    trigger_shooting_stars( d );
   }
 };
 
 // Sunfire Spell ============================================================
 struct sunfire_t : public druid_spell_t
 {
-  struct sunfire_damage_t : public druid_spell_t
+  struct sunfire_damage_t : public druid_spell_t, public trigger_shooting_stars_t
   {
     sunfire_damage_t( druid_t* p ) : druid_spell_t( "sunfire_dmg", p, p->spec.sunfire_dmg )
     {
@@ -7805,7 +7830,7 @@ struct sunfire_t : public druid_spell_t
     {
       druid_spell_t::tick( d );
 
-      trigger_shooting_stars( d->target );
+      trigger_shooting_stars( d );
     }
   };
 
@@ -8139,7 +8164,7 @@ struct wild_mushroom_t : public druid_spell_t
 };
 
 // Wrath ====================================================================
-struct wrath_t : public druid_spell_t
+struct wrath_t : public druid_spell_t, public trigger_astral_smolder_t
 {
   double gcd_mul;
   double sotf_mul;
@@ -8244,8 +8269,7 @@ struct wrath_t : public druid_spell_t
   {
     druid_spell_t::impact( s );
 
-    if ( p()->active.astral_smolder && s->result_amount > 0 && result_is_hit( s->result ) && s->result == RESULT_CRIT )
-      residual_action::trigger( p()->active.astral_smolder, s->target, s->result_amount * smolder_mul );
+    trigger_astral_smolder( s );
   }
 
   // TODO: fix/remove when final bugfix of umbral embrace is pushed
