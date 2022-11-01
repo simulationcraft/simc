@@ -8868,8 +8868,8 @@ void warrior_t::create_buffs()
   buff.show_of_force = make_buff( this, "show_of_force", find_spell( 339825 ) )
                            ->set_default_value( conduit.show_of_force.percent() );
 
-  buff.unnerving_focus = make_buff( this, "unnerving_focus", find_spell( 337155 ) )
-                           ->set_default_value( conduit.unnerving_focus.percent() );
+  buff.unnerving_focus = make_buff( this, "unnerving_focus", talents.protection.unnerving_focus -> effectN( 1 ).trigger() )
+                           ->set_default_value( talents.protection.unnerving_focus -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
   // Runeforged Legendary Powers============================================================================================
 
   buff.battlelord = make_buff( this, "battlelord", find_spell( 386631 ) );
