@@ -8264,7 +8264,7 @@ void monk_t::init_spells()
       talent.windwalker.glory_of_the_dawn                   = _ST( "Glory of the Dawn" );
       // 8 Required
       // Row 5
-      talent.windwalker.shadowboxing_treads                 = find_talent_spell(talent_tree::SPECIALIZATION, 331512);
+      talent.windwalker.shadowboxing_treads                 = _ST( "Shadowboxing Treads" );
       talent.windwalker.inner_peace                         = _ST( "Inner Peace" );
       talent.windwalker.storm_earth_and_fire                = _ST( "Storm, Earth, and Fire" );
       talent.windwalker.serenity                            = _ST( "Serenity" );
@@ -8279,7 +8279,7 @@ void monk_t::init_spells()
      
       // Row 7
       talent.windwalker.rushing_jade_wind                   = _ST( "Rushing Jade Wind" );
-      talent.windwalker.forbidden_technique                     = _ST( "Forbidden Technique" );
+      talent.windwalker.forbidden_technique                 = _ST( "Forbidden Technique" );
       talent.windwalker.invoke_xuen_the_white_tiger         = _ST( "Invoke Xuen, the White Tiger" );
       talent.windwalker.teachings_of_the_monastery          = _ST( "Teachings of the Monastery" );
       talent.windwalker.thunderfist                         = _ST( "Thunderfist" );
