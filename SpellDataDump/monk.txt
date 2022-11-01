@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.46366 Live (hotfix 2022-10-30/46366)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.46366 Live (hotfix 2022-11-01/46366)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -441,7 +441,7 @@ Resource         : 50 Energy (3) (id=5167)
 Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Power Strikes (129914 effect#2), Brewmaster Monk (137023 effects: #1, #2, #7, #14, #17), Mistweaver Monk (137024 effects: #6, #7, #13, #18), Windwalker Monk (137025 effects: #1, #2, #4, #5, #13, #16, #18), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), Blackout Combo (228563 effect#1), The Wind Blows (281452 effects: #1, #2), Keefer's Skyreach (337334 effect#1), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Primordial Power (363924 effects: #1, #2), Counterstrike (383800 effect#1), Touch of the Tiger (388856 effect#1), Skyreach (392991 effect#1)
+Affecting spells : Power Strikes (129914 effect#2), Brewmaster Monk (137023 effects: #1, #2, #7, #14, #17), Mistweaver Monk (137024 effects: #6, #7, #13, #18), Windwalker Monk (137025 effects: #1, #2, #4, #5, #12, #15, #17), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), Blackout Combo (228563 effect#1), The Wind Blows (281452 effects: #1, #2), Keefer's Skyreach (337334 effect#1), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Primordial Power (363924 effects: #1, #2), Counterstrike (383800 effect#1), Touch of the Tiger (388856 effect#1), Skyreach (392991 effect#1)
 Triggered by     : Counterstrike (383800)
 Family Flags     : 10, 103
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
@@ -492,7 +492,7 @@ Cooldown         : 3 seconds
 Category         : 1561: Fluidity of Motion (387230 effect#3)
 Category Cooldown: 3 seconds
 Proc Chance      : 101%
-Affecting spells : Blackout Kick! (116768 effects: #1, #2, #3), Brewmaster Monk (137023 effects: #1, #2, #14, #16), Mistweaver Monk (137024 effects: #6, #7, #12), Windwalker Monk (137025 effects: #1, #2, #5, #9, #10, #13, #18), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #1, #2, #6), Hit Combo (196741 effects: #1, #2), Blackout Kick (261916 effect#1), The Wind Blows (281452 effects: #1, #2), Weapons of Order (310454 effect#8), Weapons of Order (311054 effect#1), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Primordial Power (363924 effects: #1, #2), Elusive Footwork (387046 effect#3), Weapons of Order (387184 effect#8), Fluidity of Motion (387230 effects: #1, #2), Shadowboxing Treads (387638 effects: #1, #2), Hardened Soles (391383 effects: #1, #2), Shadowboxing Treads (392982 effects: #1, #2)
+Affecting spells : Blackout Kick! (116768 effects: #1, #2, #3), Brewmaster Monk (137023 effects: #1, #2, #14, #16), Mistweaver Monk (137024 effects: #6, #7, #12), Windwalker Monk (137025 effects: #1, #2, #5, #9, #12, #17), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #1, #2, #6), Hit Combo (196741 effects: #1, #2), Blackout Kick (261916 effect#1), The Wind Blows (281452 effects: #1, #2), Weapons of Order (310454 effect#8), Weapons of Order (311054 effect#1), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Primordial Power (363924 effects: #1, #2), Elusive Footwork (387046 effect#3), Weapons of Order (387184 effect#8), Fluidity of Motion (387230 effects: #1, #2), Shadowboxing Treads (387638 effects: #1, #2), Hardened Soles (391383 effects: #1, #2), Shadowboxing Treads (392982 effects: #1, #2)
 Family Flags     : 4, 67, 103
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
@@ -573,7 +573,7 @@ Resource         : 40 Energy (3) (id=10834) w/ Brewmaster Monk (id=137023)
 Spell Level      : 7
 GCD              : 1.5 seconds
 Duration         : 1.5 seconds
-Affecting spells : Brewmaster Monk (137023 effect#14), Mistweaver Monk (137024 effects: #6, #7), Windwalker Monk (137025 effect#13), Serenity (152173 effect#1), Dance of Chi-Ji (286587 effect#3), Weapons of Order (311054 effect#1), Dance of Chi-Ji (325202 effect#1), Fast Feet (388809 effect#2), Widening Whirl (388846 effect#1), Crane Vortex (388848 effect#1)
+Affecting spells : Brewmaster Monk (137023 effect#14), Mistweaver Monk (137024 effects: #6, #7), Windwalker Monk (137025 effect#12), Serenity (152173 effect#1), Dance of Chi-Ji (286587 effect#3), Weapons of Order (311054 effect#1), Dance of Chi-Ji (325202 effect#1), Fast Feet (388809 effect#2), Widening Whirl (388846 effect#1), Crane Vortex (388848 effect#1)
 Triggered by     : Cyclone Strikes (220358), Counterstrike (383800)
 Family Flags     : 63
 Attributes       : ....x... ........ x.x..... .......x   ..x...x. ........ ........ ....xx.. 
@@ -607,7 +607,7 @@ Spell Level      : 32
 GCD              : 1.5 seconds
 Duration         : 900 seconds
 Cooldown         : 10 seconds
-Affecting spells : Brewmaster Monk (137023 effect#14), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#13)
+Affecting spells : Brewmaster Monk (137023 effect#14), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#12)
 Family Flags     : 9
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -650,7 +650,7 @@ Name             : Spinning Crane Kick (id=107270) [Spell Family (53)]
 Class            : Monk
 School           : Physical
 Spell Type       : Melee
-Affecting spells : Brewmaster Monk (137023 effects: #1, #2), Mistweaver Monk (137024 effect#14), Windwalker Monk (137025 effects: #1, #2, #8, #22), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), Cyclone Strikes (220358 effect#1), The Wind Blows (281452 effects: #1, #2), Dance of Chi-Ji (286587 effect#3), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Primordial Power (363924 effects: #1, #2), Fast Feet (388809 effect#2), Widening Whirl (388846 effect#1), Crane Vortex (388848 effect#1)
+Affecting spells : Brewmaster Monk (137023 effects: #1, #2), Mistweaver Monk (137024 effect#14), Windwalker Monk (137025 effects: #1, #2, #8, #19), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), Cyclone Strikes (220358 effect#1), The Wind Blows (281452 effects: #1, #2), Dance of Chi-Ji (286587 effect#3), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Primordial Power (363924 effects: #1, #2), Fast Feet (388809 effect#2), Widening Whirl (388846 effect#1), Crane Vortex (388848 effect#1)
 Triggered by     : Spinning Crane Kick (101546), Spinning Crane Kick (322729)
 Family Flags     : 8, 103
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
@@ -682,7 +682,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 10 seconds
 Labels           : 359: Serenity (152173 effect#4)
-Affecting spells : Thunder Focus Tea (116680 effect#1), Monk (137022 effect#1), Brewmaster Monk (137023 effect#14), Mistweaver Monk (137024 effects: #6, #10, #11), Windwalker Monk (137025 effects: #5, #13, #17, #19), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effect#1), Weapons of Order (311054 effect#1), Pressure Point (337482 effect#1), Fast Feet (388809 effect#1), Rising Star (388849 effect#1)
+Affecting spells : Thunder Focus Tea (116680 effect#1), Monk (137022 effect#1), Brewmaster Monk (137023 effect#14), Mistweaver Monk (137024 effects: #6, #10, #11), Windwalker Monk (137025 effects: #5, #12, #16), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effect#1), Weapons of Order (311054 effect#1), Pressure Point (337482 effect#1), Fast Feet (388809 effect#1), Rising Star (388849 effect#1)
 Family Flags     : 39, 67
 Attributes       : ....x... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -757,7 +757,7 @@ Duration         : 4 seconds
 Requires weapon  : One-handed Axe, One-handed Mace, Polearm, One-handed Sword, Staff, Fist Weapon
 Cooldown         : 24 seconds
 Labels           : 359: Serenity (152173 effect#4)
-Affecting spells : Monk (137022 effect#1), Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2, #21), Serenity (152173 effects: #1, #2, #6), Hit Combo (196741 effects: #1, #2), Katsuo's Eclipse (208045 effect#1), The Wind Blows (281452 effects: #1, #2), Weapons of Order (311054 effect#1), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Primordial Power (363924 effects: #1, #2), Fists of Primordium (364418 effect#1), Flashing Fists (388854 effect#1)
+Affecting spells : Monk (137022 effect#1), Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Serenity (152173 effects: #1, #2, #6), Hit Combo (196741 effects: #1, #2), Katsuo's Eclipse (208045 effect#1), The Wind Blows (281452 effects: #1, #2), Weapons of Order (311054 effect#1), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Primordial Power (363924 effects: #1, #2), Fists of Primordium (364418 effect#1), Flashing Fists (388854 effect#1)
 Triggered by     : Katsuo's Eclipse (208045)
 Family Flags     : 55, 67, 103
 Attributes       : ........ ........ x....... ........   ..x...x. .xx..... ........ .....x.. 
@@ -939,7 +939,7 @@ Proc Chance      : 100%
 Mechanic         : Incapacitate
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
-Affecting spells : Brewmaster Monk (137023 effect#14), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#13), Improved Paralysis (344359 effect#1)
+Affecting spells : Brewmaster Monk (137023 effect#14), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#12), Improved Paralysis (344359 effect#1)
 Family Flags     : 35, 87
 Attributes       : ....x... ........ x...xx.. ........   ...x...x ..x..... ..x..... .x.x.... 
                  : ........ ........ ........ ........   x..x.... ........ x....... ..x..... 
@@ -968,7 +968,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Cooldown         : 15 seconds
-Affecting spells : Brewmaster Monk (137023 effect#14), Windwalker Monk (137025 effect#13)
+Affecting spells : Brewmaster Monk (137023 effect#14), Windwalker Monk (137025 effect#12)
 Family Flags     : 1
 Attributes       : ........ ........ x....... ...x....   .......x ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
@@ -1349,6 +1349,7 @@ Description      : Increases your maximum Chi by $s1, maximum Energy by $s3, and
 
 Name             : Black Ox Brew (id=115399) [Spell Family (53)] 
 Talent Entry     : Brewmaster [tree=spec, row=7, col=3, max_rank=1, req_points=8, select_idx=200]
+                 : Brewmaster [tree=spec, row=7, col=3, max_rank=1, req_points=8, select_idx=100]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -1379,7 +1380,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 1 (8 seconds cooldown)
 Category         : 1511
-Affecting spells : Brewmaster Monk (137023 effect#14), Windwalker Monk (137025 effect#13)
+Affecting spells : Brewmaster Monk (137023 effect#14), Windwalker Monk (137025 effect#12)
 Family Flags     : 22
 Attributes       : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
@@ -1509,7 +1510,7 @@ Proc Chance      : 100%
 Mechanic         : Snare
 Proc Flags       : ...x.x.. ........ ........ ........ 
                  : White Melee Taken, Yellow Melee Taken
-Affecting spells : Brewmaster Monk (137023 effect#14), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#13)
+Affecting spells : Brewmaster Monk (137023 effect#14), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#12)
 Family Flags     : 29
 Attributes       : ....x... ...x.... x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ...x.... ..x..... ........ ........ 
@@ -1578,7 +1579,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Can Proc From Procs (122), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=131760)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 8 | Target: Self (1)
+                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Misc Value: 8 | Target: Self (1)
+Hotfixed         : Base Value (15 -> 12)
 Description      : Tiger Palm causes your next Blackout Kick to strike an additional time, stacking up to $202090u.
 
 Blackout Kick has a $s1% chance to reset the remaining cooldown on Rising Sun Kick.
@@ -1793,7 +1795,7 @@ Range            : 20 yards
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 30 seconds
-Affecting spells : Brewmaster Monk (137023 effect#14), Windwalker Monk (137025 effect#13)
+Affecting spells : Brewmaster Monk (137023 effect#14), Windwalker Monk (137025 effect#12)
 Family Flags     : 47
 Attributes       : ....x... ........ x....... ........   ........ ........ ........ ........ 
                  : ........ x....... ...x.... ........   ........ ........ ........ ..x..... 
@@ -1820,7 +1822,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 5 seconds
 Cooldown         : 45 seconds
-Affecting spells : Brewmaster Monk (137023 effect#14), Windwalker Monk (137025 effect#13)
+Affecting spells : Brewmaster Monk (137023 effect#14), Windwalker Monk (137025 effect#12)
 Family Flags     : 99
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
@@ -1850,7 +1852,7 @@ Spell Level      : 1
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 6 seconds
-Affecting spells : Monk (137022 effect#1), Brewmaster Monk (137023 effects: #6, #9, #14, #16), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effects: #6, #13), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effect#1), Weapons of Order (311054 effect#1)
+Affecting spells : Monk (137022 effect#1), Brewmaster Monk (137023 effects: #6, #9, #14, #16), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effects: #6, #12, #20), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effect#1), Weapons of Order (311054 effect#1)
 Family Flags     : 5, 76
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1920,7 +1922,7 @@ School           : Physical
 Spell Type       : Melee
 Spell Level      : 1
 Range            : 8 yards
-Affecting spells : Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2, #21), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), Open Palm Strikes (279918 effect#4), The Wind Blows (281452 effects: #1, #2), Inner Fury (336452 effect#1), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Primordial Power (363924 effects: #1, #2), Fists of Primordium (364418 effect#1), Flashing Fists (388854 effect#1), Open Palm Strikes (392970 effect#4)
+Affecting spells : Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), Open Palm Strikes (279918 effect#4), The Wind Blows (281452 effects: #1, #2), Inner Fury (336452 effect#1), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Primordial Power (363924 effects: #1, #2), Fists of Primordium (364418 effect#1), Flashing Fists (388854 effect#1), Open Palm Strikes (392970 effect#4)
 Triggered by     : Fists of Fury (113656), Fists of Fury (330898)
 Family Flags     : 20, 103
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2010,7 +2012,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 4 seconds
 Proc Chance      : 100%
-Affecting spells : Brewmaster Monk (137023 effects: #1, #2, #14), Mistweaver Monk (137024 effect#15), Windwalker Monk (137025 effects: #1, #2, #13), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), The Emperor's Capacitor (235054 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), The Emperor's Capacitor (337291 effects: #1, #2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Primordial Power (363924 effects: #1, #2), The Emperor's Capacitor (393039 effects: #1, #2)
+Affecting spells : Brewmaster Monk (137023 effects: #1, #2, #14), Mistweaver Monk (137024 effect#15), Windwalker Monk (137025 effects: #1, #2, #12), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), The Emperor's Capacitor (235054 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), The Emperor's Capacitor (337291 effects: #1, #2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Primordial Power (363924 effects: #1, #2), The Emperor's Capacitor (393039 effects: #1, #2)
 Family Flags     : 32, 70, 103
 Attributes       : ........ ........ x....... ........   ..x..... ......x. ........ ...x.x.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2114,7 +2116,7 @@ GCD              : 1.5 seconds
 Duration         : 3 seconds
 Cooldown         : 60 seconds
 Mechanic         : Stun
-Affecting spells : Brewmaster Monk (137023 effect#14), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#13), Tiger Tail Sweep (264348 effects: #1, #2)
+Affecting spells : Brewmaster Monk (137023 effect#14), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#12), Tiger Tail Sweep (264348 effects: #1, #2)
 Family Flags     : 41
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2232,7 +2234,7 @@ Spell Level      : 1
 Range            : 5 yards
 Duration         : 4 seconds
 Mechanic         : Stun
-Affecting spells : Monk (137022 effect#1), Windwalker Monk (137025 effect#21), Serenity (152173 effect#1), Katsuo's Eclipse (208045 effect#1), Weapons of Order (311054 effect#1), Fists of Primordium (364418 effect#1), Flashing Fists (388854 effect#1)
+Affecting spells : Monk (137022 effect#1), Serenity (152173 effect#1), Katsuo's Eclipse (208045 effect#1), Weapons of Order (311054 effect#1), Fists of Primordium (364418 effect#1), Flashing Fists (388854 effect#1)
 Triggered by     : Fists of Fury (113656)
 Family Flags     : 55
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2702,7 +2704,7 @@ Spell Type       : Magic
 Spell Level      : 42
 Range            : 40 yards
 GCD              : 1 seconds
-Duration         : 24 seconds
+Duration         : 20 seconds
 Cooldown         : 120 seconds
 Proc Chance      : 100%
 Proc Flags       : ..x.x.x. x...x... x.x..... ........ 
@@ -2739,7 +2741,7 @@ GCD              : 1.5 seconds
 Velocity         : 30 yards/sec
 Duration         : 1 seconds
 Cooldown         : 30 seconds
-Affecting spells : Brewmaster Monk (137023 effects: #7, #14), Windwalker Monk (137025 effect#13)
+Affecting spells : Brewmaster Monk (137023 effects: #7, #14), Windwalker Monk (137025 effect#12)
 Family Flags     : 38
 Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ..x..... ........ 
@@ -3489,7 +3491,7 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Enveloping Mist (124682 effect#2), Brewmaster Monk (137023 effects: #7, #14, #19), Mistweaver Monk (137024 effects: #1, #2), Windwalker Monk (137025 effect#13), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2)
+Affecting spells : Enveloping Mist (124682 effect#2), Brewmaster Monk (137023 effects: #7, #14, #19), Mistweaver Monk (137024 effects: #1, #2), Windwalker Monk (137025 effect#12), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2)
 Family Flags     : 38, 48, 89
 Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ ........ ........ 
                  : ........ ......x. ...x.... ........   ........ .x...... ........ ......x. 
@@ -4061,54 +4063,57 @@ Effects          :
                    Base Value: 140 | Scaled Value: 140 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Spinning Crane Kick (107270)
                    Family Flags: 8
-#9 (id=260820)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Blackout Kick (100784), Blackout Kick (205523), Blackout Kick (228649)
-                   Family Flags: 4
-#10 (id=260821)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cooldown (11)
+#9 (id=260820)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cooldown (11)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Blackout Kick (100784), Blackout Kick (205523), Blackout Kick (228649)
                    Family Flags: 4
-#11 (id=733910)   : Apply Aura (6) | Increase Energy (35)
+Hotfixed         : Base Value (10 -> -100), Misc Value (0 -> 11)
+#10 (id=260821)   : Apply Aura (6) | Increase Energy (35)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
-#12 (id=739335)   : Apply Aura (6) | Unknown(312)
+Hotfixed         : Sub Type (108 -> 35), Base Value (-100 -> 1), Misc Value (11 -> 12), Affects Spells
+#11 (id=733910)   : Apply Aura (6) | Unknown(312)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 115 | Target: Self (1)
-#13 (id=739336)   : Apply Aura (6) | Add Flat Modifier (107): Spell Global Cooldown (21)
+Hotfixed         : Sub Type (35 -> 312), Base Value (1 -> 0), Misc Value (12 -> 115)
+#12 (id=739335)   : Apply Aura (6) | Add Flat Modifier (107): Spell Global Cooldown (21)
                    Base Value: -500 | Scaled Value: -500 | PvP Coefficient: 1.00000 | Misc Value: 21 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (101546), Transcendence (101643), Rising Sun Kick (107428), Paralysis (115078), Chi Wave (115098), Detox (115450), Disable (116095), Tiger's Lust (116841), Ring of Peace (116844), Rushing Jade Wind (116847), Crackling Jade Lightning (117952), Leg Sweep (119381), Chi Burst (123986), Chi Burst (130654), Chi Burst (148135), Rising Sun Kick (185099), Refreshing Jade Wind (196725), Song of Chi-Ji (198898), Blackout Kick (205523), Detox (218164), Blackout Kick (228649), Chi Burst (261682), Sweep the Leg (280184), Weapons of Order (310454), Expel Harm (322101), Touch of Death (322109), Spinning Crane Kick (322729), Weapons of Order (387184)
                    Family Flags: 1, 2, 4, 9, 10, 17, 22, 29, 32, 35, 38, 39, 40, 41, 47, 54, 63, 76, 77, 99, 100
-#14 (id=739337)   : Apply Aura (6) | Override Spell Power per Attack Power% (366)
+Hotfixed         : Sub Type (312 -> 107), Base Value (0 -> -500), Misc Value (115 -> 21), Affects Spells
+#13 (id=739336)   : Apply Aura (6) | Override Spell Power per Attack Power% (366)
                    Base Value: 96 | Scaled Value: 96 | PvP Coefficient: 1.00000 | Target: Self (1)
-#15 (id=739777)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Global Cooldown (21)
+Hotfixed         : Sub Type (107 -> 366), Base Value (-500 -> 96), Misc Value (21 -> 0), Affects Spells
+#14 (id=739337)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Global Cooldown (21)
                    Base Value: -33 | Scaled Value: -33 | PvP Coefficient: 1.00000 | Misc Value: 21 | Misc Value 2: 640 (Label) | Target: Self (1)
                    Affected Spells (Label): Azeroth's Undying Gift (293019), Unwavering Ward (293030), Suppressing Pulse (293031), Life-Binder's Invocation (293032), Azeroth's Undying Gift (294650), Azeroth's Undying Gift (294653), Azeroth's Undying Gift (294655), Hardened Azerite (294668), Hardened Azerite (294685), Hardened Azerite (294687), Hardened Azerite (294688), Hardened Azerite (294689), Sphere of Suppression (294906), Sphere of Suppression (294907), Sphere of Suppression (294908), Sphere of Suppression (294909), Sphere of Suppression (294910), Sphere of Suppression (294912), Sphere of Suppression (294919), Sphere of Suppression (294920), Sphere of Suppression (294922), Anima of Death (294926), Anima of Death (294945), Anima of Death (294946), Azeroth's Undying Gift (294951), Anima of Life (294964), Anima of Life (294966), Anima of Life (294969), Anima of Life (294970), Anima of Life (294972), Touch of the Everlasting (295046), Touch of the Everlasting (295047), Touch of the Everlasting (295048), Lifeblood (295078), Touch of the Everlasting (295098), Lifeblood Shard (295114), Touch of the Everlasting (295119), Touch of the Everlasting (295129), Lifeblood (295137), Worldvein Resonance (295160), Will to Survive (295164), Lifeblood (295165), Lifeblood (295166), Worldvein Resonance (295186), Worldvein Resonance (295206), Worldvein Resonance (295208), Worldvein Resonance (295209), Worldvein Resonance (295210), Focused Energy (295246), Focused Energy (295248), Focused Energy (295251), Focused Energy (295252), Essence of the Focusing Iris (295253), Focused Azerite Beam (295258), Focused Azerite Beam (295261), Focused Azerite Beam (295262), Focused Azerite Beam (295263), Focused Azerite Beam (295264), Purification Protocol (295293), Purification Protocol (295305), Anima of Death (295306), Anima of Death (295307), Touch of the Everlasting (295308), Will to Survive (295309), Purification Protocol (295310), Purification Protocol (295333), Purifying Blast (295337), Purifying Blast (295338), Will to Survive (295339), Will to Survive (295349), Purification Protocol (295351), Purifying Blast (295352), Will to Survive (295353), Purifying Blast (295354), Purifying Blast (295358), Purification Protocol (295363), Purifying Blast (295364), Ancient Flame (295365), Purifying Blast (295366), Ancient Flame (295367), Concentrated Flame (295368), Ancient Flame (295369), Ancient Flame (295372), Concentrated Flame (295373), Concentrated Flame (295374), Concentrated Flame (295376), Concentrated Flame (295377), Concentrated Flame (295379), Concentrated Flame (295380), Ancient Flame (295381), Empowered Null Barrier (295746), Null Dynamo (295747), Null Dynamo (295748), Null Barrier (295749), Null Barrier (295750), Condensed Life-Force (295834), Azerite Spike (295835), Condensed Life-Force (295836), Condensed Life-Force (295837), Condensed Life-Force (295838), Condensed Life-Force (295839), Guardian of Azeroth (295840), Guardian of Azeroth (295841), Null Barrier (295842), Guardian of Azeroth (295843), Null Dynamo (295844), Null Dynamo (295845), Null Dynamo (295846), Guardian of Azeroth (295855), Azerite Spike (295856), Azeroth's Undying Gift (295872), Hardened Azerite (295883), Condensed Life-Force (295892), Unwavering Ward (296004), Unwavering Ward (296031), Unwavering Ward (296032), Guardian Shell (296036), Guardian Shell (296038), The Ever-Rising Tide (296050), The Ever-Rising Tide (296059), Null Barrier (296061), The Ever-Rising Tide (296062), The Ever-Rising Tide (296067), Overcharge Mana (296072), Overcharge Mana (296074), Overcharge Mana (296075), Artifice of Time (296081), Quickening (296086), Artifice of Time (296089), Artifice of Time (296091), Standstill (296094), Rewind (296101), Artifice of Time (296102), Artifice of Time (296103), Guardian Shell (296104), The Well of Existence (296136), The Well of Existence (296192), The Well of Existence (296193), Refreshment (296197), Refreshment (296200), Refreshment (296201), Suppressing Pulse (296203), Seed of Eonar (296207), Seed of Eonar (296211), Life-Binder's Invocation (296213), Life-Binder's Invocation (296214), Life-Binder's Invocation (296220), Life-Binder's Invocation (296221), Vitality Conduit (296230), Vitality Conduit (unused) (296231), Vitality Conduit (296232), Strive for Perfection (296320), Strive for Perfection (296321), Strive for Perfection (296322), Strive for Perfection (296324), Vision of Perfection (296325), Vision of Perfection (296326), Vision of Perfection (296328), Strive for Perfection (296330), Blood of the Enemy (297108), Blood of the Enemy (297120), Blood of the Enemy (297122), Seething Rage (297126), Blood-Soaked (297147), Blood-Soaked (297162), Blood-Soaked (297168), Blood-Soaked (297177), Blood-Soaked (297178), Anima of Life and Death (297365), Spirit of Preservation (297375), Nullification Dynamo (297384), Devout Spirit (297411), Devout Spirit (297412), Devout Spirit (297542), Devout Spirit (297544), Spirit of Preservation (297546), Spirit of Preservation (297547), Vision of Perfection (297736), Vision of Perfection (297737), Vision of Perfection (297738), Vision of Perfection (297739), Vision of Perfection (297745), Vision of Perfection (297866), Vision of Perfection (297868), Vision of Perfection (297869), Spirit of Preservation (297961), Spirit of Preservation (297964), Spirit of Preservation (297965), Blood of the Enemy (297969), Blood of the Enemy (297970), Blood of the Enemy (297971), Azeroth's Undying Gift (298080), Azeroth's Undying Gift (298081), Hardened Azerite (298082), Hardened Azerite (298083), Vision of Perfection (298084), Aegis of the Deep (298168), Aegis of the Deep (298169), Aegis of the Deep (298174), Blood of the Enemy (298182), Blood of the Enemy (298183), Spirit of Preservation (298184), Devout Spirit (298185), Aegis of the Deep (298186), Stand Your Ground (298193), Stand Your Ground (298197), Stand Your Ground (298204), Lucid Dreams (298268), Blood of the Enemy (298273), Blood-Soaked (298274), Blood-Soaked (298275), Blood of the Enemy (298277), Azeroth's Undying Gift (298278), Azeroth's Undying Gift (298279), Azeroth's Undying Gift (298280), Nullification Dynamo (298281), Nullification Dynamo (298282), Nullification Dynamo (298284), Anima of Life and Death (298286), Anima of Life and Death (298287), Anima of Life and Death (298288), Sphere of Suppression (298292), Devout Spirit (298302), Devout Spirit (298304), Spirit of Preservation (298309), Spirit of Preservation (298312), Lucid Dreams (298337), Lucid Dreams (298339), Lucid Dreams (298343), Stand Your Ground (298351), Stand Your Ground (298352), Aegis of the Deep (298353), Memory of Lucid Dreams (298357), Lucid Dreams (298373), Memory of Lucid Dreams (298376), Memory of Lucid Dreams (298377), Lucid Dreams (298404), Lucid Dreams (298405), Reckless Force (298407), Reckless Force (298409), Touch of the Everlasting (298412), Touch of the Everlasting (298414), Touch of the Everlasting (298415), Touch of the Everlasting (298416), Sphere of Suppression (298418), Sphere of Suppression (298419), Sphere of Suppression (298420), Reckless Force (298448), Reckless Force (298449), Reckless Force (298450), The Unbound Force (298452), The Unbound Force (298453), The Unbound Force (298455), The Unbound Force (298456), The Unbound Force (298457), The Crucible of Flame (298601), The Crucible of Flame (298603), The Crucible of Flame (298604), The Crucible of Flame (298605), Worldvein Resonance (298606), Worldvein Resonance (298607), Worldvein Resonance (298609), Worldvein Resonance (298611), Essence of the Focusing Iris (298618), Essence of the Focusing Iris (298620), Essence of the Focusing Iris (298621), Essence of the Focusing Iris (298623), Lifeblood (298627), Worldvein Resonance (298628), Blood of the Enemy (299039), Spirit of Preservation (299149), Aegis of the Deep (299237), Aegis of the Deep (299238), Aegis of the Deep (299239), Aegis of the Deep (299240), Aegis of the Deep (299273), Stand Your Ground (299274), Aegis of the Deep (299275), Stand Your Ground (299277), Vision of Perfection (299296), Vision of Perfection (299297), Vision of Perfection (299298), Vision of Perfection (299299), Memory of Lucid Dreams (299300), Memory of Lucid Dreams (299302), Memory of Lucid Dreams (299304), Ripple in Space (299306), Ripple in Space (299307), Ripple in Space (299309), Ripple in Space (299310), Condensed Life-Force (299312), Condensed Life-Force (299313), Condensed Life-Force (299314), Condensed Life-Force (299315), Purification Protocol (299316), Purification Protocol (299317), Purification Protocol (299318), Purification Protocol (299320), The Unbound Force (299321), The Unbound Force (299322), The Unbound Force (299323), The Unbound Force (299324), Lifeblood (299333), Worldvein Resonance (299334), Focused Energy (299335), Focused Azerite Beam (299336), Focused Energy (299337), Focused Azerite Beam (299338), Purification Protocol (299343), Purifying Blast (299345), Purification Protocol (299346), Purifying Blast (299347), Ancient Flame (299348), Concentrated Flame (299349), Ancient Flame (299350), Concentrated Flame (299353), Condensed Life-Force (299354), Guardian of Azeroth (299355), Condensed Life-Force (299357), Guardian of Azeroth (299358), Strive for Perfection (299367), Vision of Perfection (299368), Strive for Perfection (299369), Vision of Perfection (299370), Lucid Dreams (299371), Memory of Lucid Dreams (299372), Lucid Dreams (299373), Memory of Lucid Dreams (299374), Reckless Force (299375), The Unbound Force (299376), Reckless Force (299377), The Unbound Force (299378), Burning Embrace (299396), Artifice of Time (299506), Artifice of Time (299507), Artifice of Time (299508), Artifice of Time (299509), Life-Binder's Invocation (299510), Life-Binder's Invocation (299511), Life-Binder's Invocation (299512), Life-Binder's Invocation (299513), The Ever-Rising Tide (299514), The Ever-Rising Tide (299515), The Ever-Rising Tide (299516), The Ever-Rising Tide (299517), Artifice of Time (299518), Artifice of Time (299519), Life-Binder's Invocation (299520), Life-Binder's Invocation (299521), Overcharge Mana (299522), The Ever-Rising Tide (299523), The Well of Existence (299524), The Well of Existence (299526), The Well of Existence (299527), The Well of Existence (299528), Refreshment (299529), The Well of Existence (299530), Unwavering Ward (299538), Unwavering Ward (299539), Unwavering Ward (299540), Unwavering Ward (299541), Guardian Shell (299542), Unwavering Ward (299544), Vitality Conduit (299550), Vitality Conduit (299551), Vitality Conduit (299552), Vitality Conduit (299554), Vitality Conduit (299559), Vitality Conduit (299560), Overcharge Mana (299624), Overcharge Mana (299875), Overcharge Mana (299876), The Ever-Rising Tide (299878), The Ever-Rising Tide (299879), Standstill (299882), Standstill (299883), Artifice of Time (299885), Artifice of Time (299887), Refreshment (299932), Refreshment (299933), The Well of Existence (299935), The Well of Existence (299936), Seed of Eonar (299939), Seed of Eonar (299940), Life-Binder's Invocation (299943), Life-Binder's Invocation (299944), Vitality Conduit (299958), Vitality Conduit (299959), Touch of the Everlasting (299984), Touch of the Everlasting (299988), Will to Survive (299989), Will to Survive (299991), Anima of Death (300002), Anima of Death (300003), Anima of Life (300004), Anima of Life (300005), Suppressing Pulse (300009), Suppressing Pulse (300010), Sphere of Suppression (300012), Sphere of Suppression (300013), Empowered Null Barrier (300015), Empowered Null Barrier (300016), Null Barrier (300018), Null Barrier (300020), Guardian of Azeroth (300091), Perseverance (300573), Perseverance (300575), Perseverance (300576), Perseverance (300577), Heart of Azeroth Slot Unlock (300949), Azerite Spike (302555), Vision of Perfection (302656), Ripple in Space (302731), Ripple in Space (302778), Ripple in Space (302780), Ripple in Space (302864), Ripple in Space (302910), Reality Shift (302916), Reckless Force (302917), Reckless Force (302932), Reality Shift (302952), Reality Shift (302953), Reality Shift (302957), Reality Shift (302961), Reality Shift (302962), Ripple in Space (302982), Ripple in Space (302983), Reality Shift (302984), Reality Shift (302985), Vision of Perfection (303342), Vision of Perfection (303344), Guardian of Azeroth (303347), Guardian of Azeroth (303349), Azerite Volley (303351), Memory of Lucid Dreams (303399), Memory of Lucid Dreams (303412), Transference (303448), Vitality Conduit (303460), Vitality Conduit (303463), Vitality Conduit (303472), Transference (303474), Transference (303476), Conflict (303823), Conflict and Strife (303824), Conflict and Strife (303834), Conflict and Strife (303835), Conflict and Strife (303836), Conflict and Strife (303837), Conflict and Strife (303868), Conflict (303892), Conflict (303894), Conflict and Strife (303897), Conflict and Strife (304014), Conflict and Strife (304015), Conflict and Strife (304016), Conflict and Strife (304017), Conflict and Strife (304018), Conflict and Strife (304019), Conflict and Strife (304020), Conflict and Strife (304021), Conflict and Strife (304022), Conflict and Strife (304023), Reckless Force (304038), Strife (304055), Strife (304056), Strife (304081), Conflict (304086), Conflict (304088), Strife (304089), Conflict (304121), Strife (304123), Strife (304125), Conflict (304375), Strife (304533), Lucid Dreams (304633), Aegis of the Deep (304693), Conflict (304720), Vitality Conduit (304722), Conflict (304724), Conflict (304775), Strife (305148), Conflict and Strife (305350), Conflict and Strife (305352), Seed of Eonar (305500), Lifeblood (305694), Strife (305723), Unwavering Ward (310422), Guardian Shell (310425), Unwavering Ward (310426), Guardian Shell (310442), Saving Vigil (310479), Devout Spirit (310530), Vigilant Protector (310592), Vigilant Protector (310595), Vigilant Protector (310597), Vigilant Protector (310599), Vigilant Protector (310600), Vigilant Protector (310601), Vigilant Protector (310602), Endurance (310603), Endurance (310605), Endurance (310606), Endurance (310607), Endurance (310608), Endurance (310609), Reaping Flames (310690), Reaping Flames (310705), Reaping Flames (310710), Reaping Flames (310711), Lethal Strikes (310712), Lethal Strikes (311166), Lethal Strikes (311167), Lethal Strikes (311177), Breath of the Dying (311185), Breath of the Dying (311186), Breath of the Dying (311187), Breath of the Dying (311188), Lethal Strikes (311192), Reaping Flames (311194), Reaping Flames (311195), Lethal Strikes (311197), Lethal Strikes (311198), Lethal Strikes (311201), Reaping Flames (311202), Moment of Glory (311203), Moment of Glory (311206), Moment of Glory (311207), Moment of Glory (311209), Unified Strength (311210), Unified Strength (311211), Unified Strength (311212), Unified Strength (311213), Spark of Inspiration (311214), Spark of Inspiration (311215), Spark of Inspiration (311216), Spark of Inspiration (311217), Moment of Glory (311302), Moment of Glory (311303), Unified Strength (311304), Unified Strength (311306), Strength of the Warden (311308), Strength of the Warden (311309), Strength of the Warden (311310), Strength of the Warden (311311), Reaping Flames (311947), Guardian Shell (312130), Replica of Knowledge (312725), The Formless Void (312734), Replica of Knowledge (312764), Replica of Knowledge (312768), Replica of Knowledge (312770), Symbiotic Presence (312771), Symbiotic Presence (312773), Symbiotic Presence (312774), Symbiotic Presence (312775), The Formless Void (312793), The Formless Void (312794), The Formless Void (312795), The Formless Void (312796), Symbiotic Presence (312915), Will to Survive (312920), Will to Survive (312922), Perseverance (312927), Perseverance (312928), Worldvein Resonance (313310), Unified Strength (313643), Symbiotic Presence (313917), Symbiotic Presence (313918), Symbiotic Presence (313919), Symbiotic Presence (313920), Replica of Knowledge (313921), Replica of Knowledge (313922)
-#16 (id=984572)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+Hotfixed         : Sub Type (366 -> 218), Base Value (96 -> -33), Misc Value (0 -> 21), Misc Value 2 (0 -> 640)
+#15 (id=739777)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Strike of the Windlord (392983), Strike of the Windlord (395519), Strike of the Windlord (395521)
                    Family Flags: 10, 118
-Hotfixed         : Affects Spells
-#17 (id=984590)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+Hotfixed         : Sub Type (218 -> 108), Base Value (-33 -> 10), Misc Value (21 -> 0), Misc Value 2 (640 -> 0), Affects Spells
+#16 (id=984572)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.00000 | Target: Self (1)
                    Affected Spells: Rising Sun Kick (107428), Rising Sun Kick (185099)
                    Family Flags: 39
-#18 (id=1003545)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+Hotfixed         : Affects Spells, PvP Coefficient (1 -> 0)
+#17 (id=984590)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.00000 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Strike of the Windlord (392983), Strike of the Windlord (395519), Strike of the Windlord (395521)
                    Family Flags: 4, 10, 118
-#19 (id=1003546)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.00000 | Target: Self (1)
-                   Affected Spells: Rising Sun Kick (107428), Rising Sun Kick (185099)
-                   Family Flags: 39
-#20 (id=1003547)  : Apply Aura (6) | Dummy (4)
+Hotfixed         : Base Value (10 -> 20), Affects Spells
+#18 (id=1003545)  : Apply Aura (6) | Dummy (4)
                    Base Value: -11 | Scaled Value: -11 | PvP Coefficient: 0.00000 | Target: Self (1)
-#21 (id=1003799)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.00000 | Target: Self (1)
-                   Affected Spells: Fists of Fury (113656), Fists of Fury (117418), Fists of Fury (120086)
-                   Family Flags: 20, 55
-#22 (id=1020543)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+Hotfixed         : Sub Type (108 -> 4), Base Value (20 -> -11), Affects Spells
+#19 (id=1003546)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Spinning Crane Kick (107270)
                    Family Flags: 8
+Hotfixed         : Base Value (20 -> -5), Affects Spells, PvP Coefficient (0 -> 1)
+#20 (id=1040369)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Rushing Jade Wind (116847), Rushing Jade Wind (148187), Refreshing Jade Wind (196725)
+                   Family Flags: 5, 76
+Hotfixed         : NEW EFFECT
 
 Name             : Paladin (id=137026) [Spell Family (10), Passive, Hidden] 
 Class            : Paladin, Monk
@@ -4367,17 +4372,21 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Include In Advanced Combat Log (72), Active Threat (94), Always Hit (114), Can Proc From Procs (122), Taps immediately (215), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=180816)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -55 | Scaled Value: -55 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: -58 | Scaled Value: -58 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Rising Sun Kick (107428), Rushing Jade Wind (116847), Fists of Fury (117418), Crackling Jade Lightning (117952), Chi Wave (132463), Chi Wave (132466), Chi Wave (132467), Rushing Jade Wind (148187), Whirling Dragon Punch (152175), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Strike of the Windlord (392983), Strike of the Windlord (395519), Strike of the Windlord (395521)
                    Family Flags: 4, 5, 8, 10, 20, 27, 32, 39, 58, 118, 122
+Hotfixed         : Base Value (-55 -> -58)
 #2 (id=181516)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: -55 | Scaled Value: -55 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: -58 | Scaled Value: -58 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Rising Sun Kick (107428), Rushing Jade Wind (116847), Fists of Fury (117418), Crackling Jade Lightning (117952), Chi Wave (132463), Chi Wave (132466), Chi Wave (132467), Rushing Jade Wind (148187), Whirling Dragon Punch (152175), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Strike of the Windlord (392983), Strike of the Windlord (395519), Strike of the Windlord (395521)
                    Family Flags: 4, 5, 8, 10, 20, 27, 32, 39, 58, 118, 122
+Hotfixed         : Base Value (-55 -> -58)
 #3 (id=181626)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
-                   Base Value: -55 | Scaled Value: -55 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: -58 | Scaled Value: -58 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (-55 -> -58)
 #4 (id=289040)   : Apply Aura (6) | Dummy (4)
-                   Base Value: -55 | Scaled Value: -55 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: -58 | Scaled Value: -58 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+Hotfixed         : Base Value (-55 -> -58)
 #5 (id=330909)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 221771 | Scaled Value: 221771 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
                    Affected Spells: Storm, Earth, and Fire (137639), Storm, Earth, and Fire: Fixate (221771)
@@ -4415,7 +4424,7 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Brewmaster Monk (137023 effects: #1, #2, #7, #14), Windwalker Monk (137025 effects: #1, #2, #13), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Primordial Power (363924 effects: #1, #2)
+Affecting spells : Brewmaster Monk (137023 effects: #1, #2, #7, #14), Windwalker Monk (137025 effects: #1, #2, #12), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Primordial Power (363924 effects: #1, #2)
 Family Flags     : 38, 103
 Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ ........ ........ 
                  : ........ ......x. ...x.... ........   ........ .x...... ........ ......x. 
@@ -4435,7 +4444,7 @@ Name             : Rushing Jade Wind (id=148187) [Spell Family (53)]
 Class            : Monk
 School           : Physical
 Spell Type       : Melee
-Affecting spells : Brewmaster Monk (137023 effects: #1, #2, #6, #16), Windwalker Monk (137025 effects: #1, #2, #6), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #1, #2, #6), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Primordial Power (363924 effects: #1, #2)
+Affecting spells : Brewmaster Monk (137023 effects: #1, #2, #6, #16), Windwalker Monk (137025 effects: #1, #2, #6, #20), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #1, #2, #6), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Primordial Power (363924 effects: #1, #2)
 Triggered by     : Rushing Jade Wind (116847)
 Family Flags     : 5, 103
 Attributes       : ....x... ........ ..x..... ...x....   ........ ........ ........ ........ 
@@ -4476,22 +4485,26 @@ Effects          :
                    Affected Spells: Blackout Kick (100784), Spinning Crane Kick (101546), Rising Sun Kick (107428), Fists of Fury (113656), Rushing Jade Wind (116847), Fists of Fury (120086), Rushing Jade Wind (148187), Rising Sun Kick (185099), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Spinning Crane Kick (322729), Strike of the Windlord (392983), Strike of the Windlord (395519), Strike of the Windlord (395521)
                    Family Flags: 4, 5, 16, 39, 55, 63, 118
 #2 (id=303755)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Faeline Stomp (327264), Spinning Crane Kick (330901), Spinning Crane Kick (330903), Breath of Fire (330907), Keg Smash (330911), Chi Explosion (337342), Fists of Fury (345714), Faeline Stomp (345727), Faeline Stomp (388201), Faeline Stomp (388207), Resonant Fists (391400), Glory of the Dawn (392959), Chi Explosion (393056)
                    Family Flags: 103
+Hotfixed         : Base Value (20 -> 15)
 #3 (id=303756)   : Apply Aura (6) | Modify Healing% Done (136)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
+Hotfixed         : Base Value (20 -> 15)
 #4 (id=303757)   : Apply Aura (6) | Modify Cooldown Recharge Rate% (Label) (143)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 359 | Target: Self (1)
                    Affected Spells (Label): Rising Sun Kick (107428), Fists of Fury (113656), Fists of Fury (330898), Strike of the Windlord (392983)
 #5 (id=330099)   : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 359 | Target: Self (1)
 #6 (id=479822)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Faeline Stomp (327264), Spinning Crane Kick (330901), Spinning Crane Kick (330903), Breath of Fire (330907), Keg Smash (330911), Chi Explosion (337342), Fists of Fury (345714), Faeline Stomp (345727), Faeline Stomp (388201), Faeline Stomp (388207), Resonant Fists (391400), Glory of the Dawn (392959), Chi Explosion (393056)
                    Family Flags: 103
+Hotfixed         : Base Value (20 -> 15)
 #7 (id=739494)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (20 -> 15)
 Description      : Enter an elevated state of mental and physical serenity for $?s115069[$s1 sec][$d]. While in this state, you deal $s2% increased damage and healing, and all Chi consumers are free and cool down $s4% more quickly.
 Tooltip          : Damage and healing increased by $w2%.
 All Chi consumers are free and cool down $w4% more quickly.
@@ -4632,7 +4645,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Extra Initial Period (169), Always Line of Sight (185), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=220760)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.82932 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.74639 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+Hotfixed         : AP Coefficient (0.829319 -> 0.746387)
 Description      : $@spelldesc152175
 
 Name             : Refreshing Jade Wind (id=162530) [Spell Family (53)] 
@@ -4816,7 +4830,7 @@ School           : Physical
 Spell Type       : Melee
 Spell Level      : 24
 Range            : 5 yards
-Affecting spells : Thunder Focus Tea (116680 effect#1), Monk (137022 effect#1), Brewmaster Monk (137023 effects: #1, #2, #14), Mistweaver Monk (137024 effects: #6, #10, #11), Windwalker Monk (137025 effects: #1, #2, #5, #13, #17, #19), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #1, #2, #6), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Weapons of Order (311054 effect#1), Pressure Point (337482 effect#1), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Primordial Power (363924 effects: #1, #2), Fast Feet (388809 effect#1), Rising Star (388849 effect#1)
+Affecting spells : Thunder Focus Tea (116680 effect#1), Monk (137022 effect#1), Brewmaster Monk (137023 effects: #1, #2, #14), Mistweaver Monk (137024 effects: #6, #10, #11), Windwalker Monk (137025 effects: #1, #2, #5, #12, #16), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #1, #2, #6), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Weapons of Order (311054 effect#1), Pressure Point (337482 effect#1), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Primordial Power (363924 effects: #1, #2), Fast Feet (388809 effect#1), Rising Star (388849 effect#1)
 Triggered by     : Rising Sun Kick (107428)
 Family Flags     : 39, 103
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ...x.... 
@@ -5151,7 +5165,7 @@ Spell Level      : 1
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 45 seconds
-Affecting spells : Monk (137022 effect#1), Brewmaster Monk (137023 effects: #9, #14), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#13), Weapons of Order (311054 effect#1)
+Affecting spells : Monk (137022 effect#1), Brewmaster Monk (137023 effects: #9, #14), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effects: #12, #20), Weapons of Order (311054 effect#1)
 Family Flags     : 76
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5616,7 +5630,7 @@ Cast Time        : 1.8 seconds
 GCD              : 1.5 seconds
 Duration         : 5 seconds
 Cooldown         : 30 seconds
-Affecting spells : Brewmaster Monk (137023 effects: #7, #14), Windwalker Monk (137025 effect#13)
+Affecting spells : Brewmaster Monk (137023 effects: #7, #14), Windwalker Monk (137025 effect#12)
 Family Flags     : 38
 Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ..x..... ........ 
@@ -5740,7 +5754,7 @@ Requires weapon  : One-handed Axe, One-handed Mace, Polearm, One-handed Sword, S
 Charges          : 1 (4 seconds cooldown)
 Category         : 1561: Fluidity of Motion (387230 effect#3)
 Proc Chance      : 101%
-Affecting spells : Blackout Kick! (116768 effects: #1, #2, #3), Brewmaster Monk (137023 effects: #1, #2, #14, #16), Mistweaver Monk (137024 effects: #6, #7, #12), Windwalker Monk (137025 effects: #1, #2, #5, #9, #10, #13, #18), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #1, #2, #6), Hit Combo (196741 effects: #1, #2), Blackout Kick (261916 effect#1), Elusive Footwork (278571 effect#3), The Wind Blows (281452 effects: #1, #2), Weapons of Order (310454 effect#8), Weapons of Order (311054 effect#1), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Primordial Power (363924 effects: #1, #2), Elusive Footwork (387046 effect#3), Weapons of Order (387184 effect#8), Fluidity of Motion (387230 effects: #1, #2), Shadowboxing Treads (387638 effects: #1, #2), Hardened Soles (391383 effects: #1, #2), Shadowboxing Treads (392982 effects: #1, #2)
+Affecting spells : Blackout Kick! (116768 effects: #1, #2, #3), Brewmaster Monk (137023 effects: #1, #2, #14, #16), Mistweaver Monk (137024 effects: #6, #7, #12), Windwalker Monk (137025 effects: #1, #2, #5, #9, #12, #17), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #1, #2, #6), Hit Combo (196741 effects: #1, #2), Blackout Kick (261916 effect#1), Elusive Footwork (278571 effect#3), The Wind Blows (281452 effects: #1, #2), Weapons of Order (310454 effect#8), Weapons of Order (311054 effect#1), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Primordial Power (363924 effects: #1, #2), Elusive Footwork (387046 effect#3), Weapons of Order (387184 effect#8), Fluidity of Motion (387230 effects: #1, #2), Shadowboxing Treads (387638 effects: #1, #2), Hardened Soles (391383 effects: #1, #2), Shadowboxing Treads (392982 effects: #1, #2)
 Family Flags     : 4, 67, 80, 103
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
@@ -6035,7 +6049,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 1 (8 seconds cooldown)
 Category         : 1511
-Affecting spells : Brewmaster Monk (137023 effect#14), Windwalker Monk (137025 effect#13)
+Affecting spells : Brewmaster Monk (137023 effect#14), Windwalker Monk (137025 effect#12)
 Family Flags     : 22
 Attributes       : ........ ........ x....... ........   .......x ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
@@ -6275,7 +6289,7 @@ School           : Physical
 Spell Type       : Melee
 Spell Level      : 3
 Range            : 100 yards
-Affecting spells : Blackout Kick! (116768 effects: #1, #2, #3), Brewmaster Monk (137023 effects: #1, #2, #14, #16), Mistweaver Monk (137024 effects: #6, #7, #12), Windwalker Monk (137025 effects: #1, #2, #5, #9, #10, #13, #18), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #1, #2, #6), Hit Combo (196741 effects: #1, #2), Blackout Kick (261916 effect#1), The Wind Blows (281452 effects: #1, #2), Weapons of Order (310454 effect#8), Weapons of Order (311054 effect#1), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Primordial Power (363924 effects: #1, #2), Elusive Footwork (387046 effect#3), Weapons of Order (387184 effect#8), Fluidity of Motion (387230 effects: #1, #2), Shadowboxing Treads (387638 effects: #1, #2), Hardened Soles (391383 effects: #1, #2), Shadowboxing Treads (392982 effects: #1, #2)
+Affecting spells : Blackout Kick! (116768 effects: #1, #2, #3), Brewmaster Monk (137023 effects: #1, #2, #14, #16), Mistweaver Monk (137024 effects: #6, #7, #12), Windwalker Monk (137025 effects: #1, #2, #5, #9, #12, #17), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #1, #2, #6), Hit Combo (196741 effects: #1, #2), Blackout Kick (261916 effect#1), The Wind Blows (281452 effects: #1, #2), Weapons of Order (310454 effect#8), Weapons of Order (311054 effect#1), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Primordial Power (363924 effects: #1, #2), Elusive Footwork (387046 effect#3), Weapons of Order (387184 effect#8), Fluidity of Motion (387230 effects: #1, #2), Shadowboxing Treads (387638 effects: #1, #2), Hardened Soles (391383 effects: #1, #2), Shadowboxing Treads (392982 effects: #1, #2)
 Family Flags     : 4, 103
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
@@ -6754,7 +6768,7 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Brewmaster Monk (137023 effects: #7, #14), Windwalker Monk (137025 effect#13)
+Affecting spells : Brewmaster Monk (137023 effects: #7, #14), Windwalker Monk (137025 effect#12)
 Family Flags     : 38
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ...x.... ........   ........ ........ ........ ......x. 
@@ -6864,7 +6878,7 @@ Resource         : 40 Energy (3) (id=79673) w/ Windwalker Monk (id=137025)
 Range            : 5 yards
 GCD              : 1 seconds
 Cooldown         : 30 seconds
-Affecting spells : Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2, #16, #18), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #1, #2, #6), Hit Combo (196741 effects: #1, #2), The Wind Blows (248101 effect#1), The Wind Blows (281452 effects: #1, #2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Primordial Power (363924 effects: #1, #2)
+Affecting spells : Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2, #15, #17), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #1, #2, #6), Hit Combo (196741 effects: #1, #2), The Wind Blows (248101 effect#1), The Wind Blows (281452 effects: #1, #2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Primordial Power (363924 effects: #1, #2)
 Family Flags     : 103, 118
 Attributes       : ........ ........ x....... .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ x....... 
@@ -6891,7 +6905,7 @@ Class            : Monk
 School           : Physical
 Spell Type       : Melee
 Range            : 5 yards
-Affecting spells : Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2, #16, #18), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #1, #2, #6), Hit Combo (196741 effects: #1, #2), The Wind Blows (248101 effect#1), The Wind Blows (281452 effects: #1, #2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Primordial Power (363924 effects: #1, #2)
+Affecting spells : Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2, #15, #17), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #1, #2, #6), Hit Combo (196741 effects: #1, #2), The Wind Blows (248101 effect#1), The Wind Blows (281452 effects: #1, #2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Primordial Power (363924 effects: #1, #2)
 Triggered by     : Fist of the White Tiger (261947)
 Family Flags     : 103, 118
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ....x... 
@@ -8614,7 +8628,6 @@ Effects          :
 Description      : Your spells and abilities have a chance to conjure Swirling Sands, increasing your Critical Strike by $s1 for $280433d. Your critical effects extend Swirling Sands by ${$s2/1000} sec, up to a maximum duration of ${$280433d+($s3/1000)} sec.
 
 Name             : Bob and Weave (id=280515) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=7, col=3, max_rank=1, req_points=8, select_idx=100]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -9599,7 +9612,7 @@ Stacks           : 1 maximum
 Proc Chance      : 101%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
-Affecting spells : Brewmaster Monk (137023 effect#14), Windwalker Monk (137025 effect#13)
+Affecting spells : Brewmaster Monk (137023 effect#14), Windwalker Monk (137025 effect#12)
 Family Flags     : 77
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -9781,7 +9794,7 @@ Spell Level      : 8
 Range            : 100 yards
 GCD              : 1 seconds
 Cooldown         : 15 seconds
-Affecting spells : Enveloping Mist (124682 effect#2), Brewmaster Monk (137023 effect#14), Mistweaver Monk (137024 effects: #1, #2), Windwalker Monk (137025 effect#13), Expel Harm (322102 effect#1), Expel Harm (322106 effect#1), Celestial Brew (322507 effect#2), Enveloping Breath (325209 effect#3), Harm Denial (336379 effect#1), Reverse Harm (342928 effects: #1, #2), Enveloping Mist (344008 effect#2), Vigorous Expulsion (392900 effects: #1, #2), Profound Rebuttal (392910 effect#1)
+Affecting spells : Enveloping Mist (124682 effect#2), Brewmaster Monk (137023 effect#14), Mistweaver Monk (137024 effects: #1, #2), Windwalker Monk (137025 effect#12), Expel Harm (322102 effect#1), Expel Harm (322106 effect#1), Celestial Brew (322507 effect#2), Enveloping Breath (325209 effect#3), Harm Denial (336379 effect#1), Reverse Harm (342928 effects: #1, #2), Enveloping Mist (344008 effect#2), Vigorous Expulsion (392900 effects: #1, #2), Profound Rebuttal (392910 effect#1)
 Family Flags     : 17, 48, 95
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ......x. 
@@ -9877,7 +9890,7 @@ Spell Level      : 10
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 180 seconds
-Affecting spells : Brewmaster Monk (137023 effect#14), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#13), Hidden Master's Forbidden Touch (213112 effect#2), Hidden Master's Forbidden Touch (213114 effect#1), Fatal Touch (337296 effect#1), Meridian Strikes (391330 effect#1), Forbidden Technique (393098 effect#2), Fatal Touch (394123 effect#1), Fatal Flying Guillotine (394923 effect#1)
+Affecting spells : Brewmaster Monk (137023 effect#14), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#12), Hidden Master's Forbidden Touch (213112 effect#2), Hidden Master's Forbidden Touch (213114 effect#1), Fatal Touch (337296 effect#1), Meridian Strikes (391330 effect#1), Forbidden Technique (393098 effect#2), Fatal Touch (394123 effect#1), Fatal Flying Guillotine (394923 effect#1)
 Family Flags     : 40, 67
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ .....x..   ........ ..x..... ........ ........ 
@@ -10087,7 +10100,7 @@ Spell Type       : Melee
 Resource         : 25 Energy (3) (id=192645) w/ Brewmaster Monk (id=137023)
 GCD              : 1.5 seconds
 Duration         : 1.5 seconds
-Affecting spells : Brewmaster Monk (137023 effect#14), Mistweaver Monk (137024 effects: #6, #7), Windwalker Monk (137025 effect#13), Serenity (152173 effect#1), Dance of Chi-Ji (286587 effect#3), Weapons of Order (311054 effect#1), Dance of Chi-Ji (325202 effect#1), Fast Feet (388809 effect#2), Widening Whirl (388846 effect#1), Crane Vortex (388848 effect#1)
+Affecting spells : Brewmaster Monk (137023 effect#14), Mistweaver Monk (137024 effects: #6, #7), Windwalker Monk (137025 effect#12), Serenity (152173 effect#1), Dance of Chi-Ji (286587 effect#3), Weapons of Order (311054 effect#1), Dance of Chi-Ji (325202 effect#1), Fast Feet (388809 effect#2), Widening Whirl (388846 effect#1), Crane Vortex (388848 effect#1)
 Family Flags     : 63
 Attributes       : ....x... ........ x.x..... .......x   ..x...x. ........ ........ ....xx.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12069,9 +12082,10 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Include In Advanced Combat Log (72), Aura Points On Client (268)
 Effects          :
 #1 (id=835536)   : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Rising Sun Kick (107428), Rising Sun Kick (185099)
                    Family Flags: 39
+Hotfixed         : Base Value (50 -> 40)
 Description      : $@spelldesc337481
 Tooltip          : Rising Sun Kick critical strike chance increased by $w1%.
 
@@ -14280,7 +14294,7 @@ Stacks           : 1 maximum
 Proc Chance      : 101%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
-Affecting spells : Brewmaster Monk (137023 effect#14), Windwalker Monk (137025 effect#13)
+Affecting spells : Brewmaster Monk (137023 effect#14), Windwalker Monk (137025 effect#12)
 Family Flags     : 77
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -16627,9 +16641,10 @@ Effects          :
                    Affected Spells: Blackout Kick (100784), Blackout Kick (205523), Blackout Kick (228649)
                    Family Flags: 4
 #2 (id=1031599)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Blackout Kick (100784), Blackout Kick (205523), Blackout Kick (228649)
                    Family Flags: 4
+Hotfixed         : Base Value (20 -> 10)
 Description      : Blackout Kick damage increased by $s2% and strikes an additional $s1 $ltarget;targets.
 Tooltip          : Blackout Kick damage increased by $s2% and strikes an additional $s1 $ltarget;targets.
 
@@ -16644,7 +16659,7 @@ GCD              : 1 seconds
 Duration         : 6 seconds
 Cooldown         : 40 seconds
 Labels           : 359: Serenity (152173 effect#4)
-Affecting spells : Windwalker Monk (137025 effects: #16, #18), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effect#1), The Wind Blows (248101 effect#1)
+Affecting spells : Windwalker Monk (137025 effects: #15, #17), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effect#1), The Wind Blows (248101 effect#1)
 Family Flags     : 118
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -16780,9 +16795,11 @@ Effects          :
 #1 (id=1031618)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 5 | Target: Self (1)
 #2 (id=1031619)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 5000 | Scaled Value: 5000 | PvP Coefficient: 1.00000 | Misc Value: 5 | Target: Self (1)
+                   Base Value: 4000 | Scaled Value: 4000 | PvP Coefficient: 1.00000 | Misc Value: 5 | Target: Self (1)
+Hotfixed         : Base Value (5000 -> 4000)
 #3 (id=1031620)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 5 | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Misc Value: 5 | Target: Self (1)
+Hotfixed         : Base Value (50 -> 40)
 Description      : Rising Sun Kick critical strikes reduce the cooldown of Fists of Fury by ${$m2/1000}.1 sec.
 
 When Fists of Fury ends, the critical strike chance of Rising Sun Kick is increased by $337482m1% for $337482d.
@@ -16901,9 +16918,10 @@ Effects          :
 #1 (id=1031818)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1031819)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.37500 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.37500 | Target: Self (1)
                    Affected Spells: Touch of Death (322109)
                    Family Flags: 40
+Hotfixed         : Base Value (40 -> 20)
 Description      : Touch of Death deals $s2% increased damage and can be used a second time within $213114d before its cooldown is triggered.
 
 Name             : Tranquil Spirit (id=393357) [Spell Family (53), Passive, Hidden] 
@@ -17175,7 +17193,7 @@ Class            : Monk
 School           : Physical
 Spell Type       : Melee
 Range            : 12 yards
-Affecting spells : Windwalker Monk (137025 effects: #16, #18), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effect#1), The Wind Blows (248101 effect#1)
+Affecting spells : Windwalker Monk (137025 effects: #15, #17), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effect#1), The Wind Blows (248101 effect#1)
 Triggered by     : Strike of the Windlord (392983)
 Family Flags     : 118
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -17199,7 +17217,7 @@ Class            : Monk
 School           : Physical
 Spell Type       : Melee
 Range            : 12 yards
-Affecting spells : Windwalker Monk (137025 effects: #16, #18), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effect#1), The Wind Blows (248101 effect#1)
+Affecting spells : Windwalker Monk (137025 effects: #15, #17), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effect#1), The Wind Blows (248101 effect#1)
 Triggered by     : Strike of the Windlord (392983)
 Family Flags     : 118
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -17235,7 +17253,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=1037154)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 0.00000 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.00000 | Target: Self (1)
+Hotfixed         : Base Value (8 -> 5)
 Description      : Your Combo Strikes grant a stacking ${$396167s3/100}.1% chance for your next Fists of Fury to grant $s1% Haste and invoke Xuen, The White Tiger for $396168d.
 
 Name             : Fury of Xuen (id=396167) [Spell Family (53)] 
@@ -17285,7 +17304,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Do Not Display Range (126), Aura Points On Client (268)
 Effects          :
 #1 (id=1037158)  : Apply Aura (6) | Modify All Haste% (193)
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (8 -> 5)
 #2 (id=1037159)  : Summon (28)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 63508 | Misc Value 2: 0x11e4 | Target: At Enemy (53)
 #3 (id=1037168)  : Apply Aura (6) | Periodic Dummy (226): every 4 seconds

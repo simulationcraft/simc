@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.46366 Live (hotfix 2022-10-30/46366)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.46366 Live (hotfix 2022-11-01/46366)
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=8, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
@@ -8632,7 +8632,7 @@ Effects          :
 Description      : Sunfire now applies its damage over time effect to all enemies within $164815A2 yards.
 
 Name             : Improved Prowl (id=231052) [Spell Family (7), Passive, Hidden] 
-Class            : Druid
+Class            : Balance Guardian Restoration Druid
 School           : Nature
 Spell Type       : None
 Spell Level      : 13
@@ -18429,7 +18429,7 @@ Tooltip          : Health and armor increased by ${$w1}%.
 
 Name             : Starweaver (id=393940) [Spell Family (7), Passive] 
 Hotfixed         : Attributes
-Talent Entry     : Balance [tree=spec, row=5, col=5, max_rank=1, req_points=8, select_idx=101]
+Talent Entry     : Balance [tree=spec, row=5, col=5, max_rank=1, req_points=8, select_idx=100]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -18510,7 +18510,7 @@ Tooltip          : Your next Starsurge costs no Astral Power.
 
 Name             : Rattle the Stars (id=393954) [Spell Family (7), Passive] 
 Hotfixed         : Attributes
-Talent Entry     : Balance [tree=spec, row=5, col=5, max_rank=1, req_points=8, select_idx=100]
+Talent Entry     : Balance [tree=spec, row=5, col=5, max_rank=1, req_points=8, select_idx=101]
 Class            : Druid
 School           : Physical
 Spell Type       : None

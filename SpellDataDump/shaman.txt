@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.46366 Live (hotfix 2022-10-30/46366)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.46366 Live (hotfix 2022-11-01/46366)
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -704,7 +704,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Not a Proc (105), Requires Main-Hand Weapon (106), Do Not Display Range (126), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=15497)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.24000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.18000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (0.24 -> 0.18)
 Description      : $@spelldesc33757
 
 Name             : Strength (id=27973) [Passive, Hidden] 
@@ -826,7 +827,8 @@ Attributes       : ........ ........ ..x..... ........   ........ .x...... .....
                  : Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Not a Proc (105), Requires Main-Hand Weapon (106), No Cast Log (128), Not In Spellbook (143), No Attack Dodge (247), No Attack Parry (248), No Attack Miss (249), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=21915)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.29000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.96800 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (1.29 -> 0.968)
 #2 (id=172084)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc17364
@@ -852,7 +854,8 @@ Attributes       : ....x... ........ ..x..... ........   ........ ........ .....
                  : Is Ability (4), Do Not Sheath (18), Not a Proc (105), Requires Off-Hand Weapon (120), Do Not Display Range (126), No Cast Log (128), Not In Spellbook (143), No Attack Dodge (247), No Attack Parry (248), No Attack Miss (249), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=21916)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.29000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.96800 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (1.29 -> 0.968)
 #2 (id=172085)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc17364
@@ -1660,7 +1663,8 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Not a Proc (105), Requires Off-Hand Weapon (120), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=53784)    : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.45100 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.09000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (1.451 -> 1.09)
 #2 (id=53785)    : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=1033576)  : Dummy (3)
@@ -2994,7 +2998,8 @@ Attributes       : ........ ........ x.x..... ........   ........ .x...... .....
                  : Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Not a Proc (105), Requires Main-Hand Weapon (106), Do Not Display Range (126), No Cast Log (128), Not In Spellbook (143), No Attack Dodge (247), No Attack Parry (248), No Attack Miss (249), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=129139)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.29000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.96800 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (1.29 -> 0.968)
 #2 (id=197633)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc115356
@@ -3021,7 +3026,8 @@ Attributes       : ....x... ........ x.x..... ........   ........ ........ .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Not a Proc (105), Requires Off-Hand Weapon (120), Do Not Display Range (126), No Cast Log (128), Not In Spellbook (143), No Attack Dodge (247), No Attack Parry (248), No Attack Miss (249), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=129143)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.29000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.96800 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (1.29 -> 0.968)
 #2 (id=197634)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc115356
@@ -3516,9 +3522,10 @@ Effects          :
 #4 (id=191040)   : Apply Aura (6) | Override Spell Power per Attack Power% (366)
                    Base Value: 101 | Scaled Value: 101 | PvP Coefficient: 1.00000 | Target: Self (1)
 #5 (id=191041)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: -32 | Scaled Value: -32 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Chain Heal (1064), Lava Burst (51505), Elemental Blast (117014), Lightning Bolt (188196), Chain Lightning (188443), Lightning Bolt Overload (214816), Lava Burst (285452)
                    Family Flags: 0, 1, 8, 44, 98
+Hotfixed         : Base Value (-10 -> -32)
 #6 (id=261007)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 68 | Scaled Value: 68 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Earth Shield (379)
@@ -3547,6 +3554,20 @@ Effects          :
                    Family Flags: 98
 #13 (id=1032431)  : Apply Aura (6) | Unknown(531)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+#14 (id=1039898)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Flame Shock (188389), Frost Shock (196840)
+                   Family Flags: 28, 31
+Hotfixed         : NEW EFFECT
+#15 (id=1039899)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Flame Shock (188389), Frost Shock (196840)
+                   Family Flags: 28, 31
+Hotfixed         : NEW EFFECT
+#16 (id=1039993)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
+                   Base Value: -32 | Scaled Value: -32 | PvP Coefficient: 1.00000 | Misc Value 2: 983 (Label) | Target: Self (1)
+                   Affected Spells (Label): Chain Harvest (320751), Chain Harvest (320752)
+Hotfixed         : NEW EFFECT
 
 Name             : Lightning Blast (id=145002) 
 Class            : Shaman
@@ -4165,7 +4186,8 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Requires Main-Hand Weapon (106), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=274038)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.32000 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Cone Front (104)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.24000 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Cone Front (104)
+Hotfixed         : AP Coefficient (0.32 -> 0.24)
 #2 (id=739957)   : Dummy (3)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Electrocutes all enemies in front of you, dealing ${$s1*$<CAP>/$AP} Nature damage. Hitting 2 or more targets enhances your weapons for $187878d, causing Stormstrike, Ice Strike, and Lava Lash to also deal ${$195592s1*$<CAP>/$AP} Nature damage to all targets in front of you. Damage reduced beyond $s2 targets.$?s384363[
@@ -4295,7 +4317,7 @@ Max Targets      : 6
 GCD              : 1.5 seconds
 Duration         : 18 seconds
 Cooldown         : 6 seconds
-Affecting spells : Shaman Shock Range Bonus (32973 effect#1), Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2, #8), Elemental Bellows (184919 effects: #1, #2, #3), Fire Elemental (188592 effects: #2, #3), Molten Weapon (224125 effects: #1, #2), Lashing Flames (334168 effect#1), Skybreaker's Fiery Demise (336734 effect#3), Call of Fire (378255 effects: #1, #4), Flames of the Cauldron (378266 effects: #1, #2), Skybreaker's Fiery Demise (378310 effect#3), Improved Flametongue Weapon (382028 effects: #1, #2), Fire and Ice (382886 effects: #1, #2)
+Affecting spells : Shaman Shock Range Bonus (32973 effect#1), Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2, #8, #14, #15), Elemental Bellows (184919 effects: #1, #2, #3), Fire Elemental (188592 effects: #2, #3), Molten Weapon (224125 effects: #1, #2), Lashing Flames (334168 effect#1), Skybreaker's Fiery Demise (336734 effect#3), Call of Fire (378255 effects: #1, #4), Flames of the Cauldron (378266 effects: #1, #2), Skybreaker's Fiery Demise (378310 effect#3), Improved Flametongue Weapon (382028 effects: #1, #2), Fire and Ice (382886 effects: #1, #2)
 Family Flags     : 28, 39, 56, 103
 Attributes       : ........ ........ x.x..... ..x.....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5065,7 +5087,8 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=287112)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.32000 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Cone Front (104)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.24000 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Cone Front (104)
+Hotfixed         : AP Coefficient (0.32 -> 0.24)
 Description      : $@spelldesc187874
 
 Name             : Frost Shock (id=196840) [Spell Family (11)] 
@@ -5078,7 +5101,7 @@ Spell Level      : 17
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 6 seconds
-Affecting spells : Shaman Shock Range Bonus (32973 effect#1), Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2, #7, #8), Icefury (210714 effect#2), Icy Edge (224126 effects: #1, #2), Hailstorm (334196 effect#1), Fire and Ice (382886 effect#1), Ice Strike (384357 effect#1)
+Affecting spells : Shaman Shock Range Bonus (32973 effect#1), Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2, #7, #8, #14, #15), Icefury (210714 effect#2), Icy Edge (224126 effects: #1, #2), Hailstorm (334196 effect#1), Fire and Ice (382886 effect#1), Ice Strike (384357 effect#1)
 Family Flags     : 24, 31, 39, 56
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5194,7 +5217,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Requires Main-Hand Weapon (106), Always Show Ground Texture (190), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=289629)   : School Damage (2): flamestrike
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.45000 | PvP Coefficient: 1.00000 | Radius: 11 yards | Target: Unknown(129)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.84000 | PvP Coefficient: 1.00000 | Radius: 11 yards | Target: Unknown(129)
+Hotfixed         : AP Coefficient (2.45 -> 1.84)
 #2 (id=290614)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 11 yards | Target: Unknown(129)
 #3 (id=290630)   : Dummy (3)
@@ -10501,6 +10525,7 @@ Effects          :
 Description      : Your secondary stats are all increased by $s1.
 
 Name             : Flametongue Weapon (desc=Weapon Imbue) (id=318038) [Spell Family (11)] 
+Hotfixed         : Variables
 Class            : Shaman
 School           : Fire
 Spell Type       : None
@@ -10523,7 +10548,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Imbue your $?s33757[off-hand ][]weapon with the element of Fire for $319778d, causing each of your attacks to deal ${$max(($<coeff>*$AP),1)} additional Fire damage$?s382027[ and increasing the damage of your Fire spells by $382028s1%][]. 
 Tooltip          : Each of your weapon attacks causes up to ${$max(($<coeff>*$AP),1)} additional Fire damage.
-Variables        : $coeff=${0.0264}
+Variables        : $coeff=${0.0198}
 
 Name             : Lightning Bolt (desc=Rank 2) (id=318044) [Spell Family (11), Passive] 
 Class            : Shaman
@@ -10572,6 +10597,7 @@ Effects          :
 Description      : $@spelldesc33757
 
 Name             : Flametongue Weapon (id=319778) [Spell Family (11), Hidden] 
+Hotfixed         : Variables
 Class            : Shaman
 School           : Fire
 Spell Type       : None
@@ -10596,7 +10622,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Imbue your weapon with the element of Fire for $d, causing each of your attacks to deal ${$max(($<coeff>*$AP),1)} additional Fire damage.
 Tooltip          : Each of your weapon attacks causes up to ${$max(($<coeff>*$AP),1)} additional Fire damage.
-Variables        : $coeff=${0.0264}
+Variables        : $coeff=${0.0198}
 
 Name             : Stormblast (id=319930) [Spell Family (11), Passive] 
 Talent Entry     : Enhancement [tree=spec, row=7, col=2, max_rank=1, req_points=8]
@@ -10771,7 +10797,7 @@ School           : Shadow
 Spell Type       : Magic
 Spell Level      : 48
 Range            : 100 yards
-Labels           : 983: Elemental Fury (60188 effect#3), Restoration Shaman (137039 effect#10), Elemental Shaman (137040 effect#7), Maelstrom Weapon (187881 effect#3), Lavish Harvest (339185 effect#1)
+Labels           : 983: Elemental Fury (60188 effect#3), Restoration Shaman (137039 effect#10), Elemental Shaman (137040 effect#7), Enhancement Shaman (137041 effect#16), Maelstrom Weapon (187881 effect#3), Lavish Harvest (339185 effect#1)
 Affecting spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2), Ever-Rising Tide (382029 effects: #2, #4)
 Family Flags     : 41
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10794,7 +10820,7 @@ School           : Shadow
 Spell Type       : Magic
 Spell Level      : 48
 Range            : 100 yards
-Labels           : 983: Elemental Fury (60188 effect#3), Restoration Shaman (137039 effect#10), Elemental Shaman (137040 effect#7), Maelstrom Weapon (187881 effect#3), Lavish Harvest (339185 effect#1)
+Labels           : 983: Elemental Fury (60188 effect#3), Restoration Shaman (137039 effect#10), Elemental Shaman (137040 effect#7), Enhancement Shaman (137041 effect#16), Maelstrom Weapon (187881 effect#3), Lavish Harvest (339185 effect#1)
 Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2)
 Family Flags     : 39
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11374,7 +11400,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Always AOE Line of Sight (186), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=829633)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.52500 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.39400 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+Hotfixed         : AP Coefficient (0.525 -> 0.394)
 Description      : $@spelldesc333974
 
 Name             : Molten Assault (id=334033) [Spell Family (11), Passive] 
@@ -12768,7 +12795,8 @@ Attributes       : ....x... ........ x....... ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Requires Main-Hand Weapon (106), No Caster Aura Icon (187), Show Mechanic as Combat Text (213), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=843157)   : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.38000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.03500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (1.38 -> 1.035)
 #2 (id=843158)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
 #3 (id=1016917)  : Trigger Spell (64): Ice Strike
@@ -12947,7 +12975,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Always AOE Line of Sight (186), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=869020)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.50000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.87500 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+Hotfixed         : AP Coefficient (2.5 -> 1.875)
 Description      : $@spelldesc114051
 
 Name             : Pyroclastic Shock (id=345594) [Spell Family (11), Passive, Hidden] 

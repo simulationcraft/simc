@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.46366 Live (hotfix 2022-10-30/46366)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.46366 Live (hotfix 2022-11-01/46366)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -2661,7 +2661,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
 Effects          :
 #1 (id=68730)    : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Death Coil (47541), Death Coil (47632), Death Coil (47633), Remorseless Winter (196771), Epidemic (207317), Epidemic (212739), Epidemic (215969)
+                   Affected Spells: Death Coil (47541), Death Coil (47632), Death Coil (47633), Epidemic (207317), Epidemic (212739), Epidemic (215969)
                    Family Flags: 13, 121
 #2 (id=836283)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -4837,12 +4837,13 @@ Tooltip          : Dealing $196771s1 Frost damage to enemies within $196771A1 ya
 Variables        : $CAP=$?$OWB==0[${$AP*0.98}][${($AP+$OAP)*2/3}]--2H, DW
 
 Name             : Remorseless Winter (id=196771) [Spell Family (15)] 
+Hotfixed         : Affecting Spells
 Class            : Death Knight
 School           : Frost
 Spell Type       : Magic
-Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Sudden Doom (81340 effect#1), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Gathering Storm (211805 effect#1), Frozen Tempest (278487 effects: #2, #3), Biting Cold (334678 effects: #2, #3), Everfrost (337989 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Everfrost (376974 effect#1), Biting Cold (377056 effects: #2, #3)
+Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Gathering Storm (211805 effect#1), Frozen Tempest (278487 effects: #2, #3), Biting Cold (334678 effects: #2, #3), Everfrost (337989 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Everfrost (376974 effect#1), Biting Cold (377056 effects: #2, #3)
 Triggered by     : Remorseless Winter (196770)
-Family Flags     : 43, 120, 121, 126
+Family Flags     : 43, 120, 126
 Attributes       : ........ ........ ........ ..xx....   ........ ........ ........ ........ 
                  : ........ ........ ........ ....x...   .......x .x...... ........ ........ 
                  : x......x ........ ........ ........   ...x.... ........ .xx..... ........ 
@@ -10041,7 +10042,7 @@ Name             : Strive for Perfection (id=296321) [Passive]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
-Labels           : 640: Cat Form (768 effect#6), Brewmaster Monk (137023 effect#21), Windwalker Monk (137025 effect#15), Rogue (137034 effect#2)
+Labels           : 640: Cat Form (768 effect#6), Brewmaster Monk (137023 effect#21), Windwalker Monk (137025 effect#14), Rogue (137034 effect#2)
 Internal Cooldown: 1 seconds
 Proc Chance      : 101%
 Azerite EssenceId: 22 (Type: Minor/Upgrade, Rank: 2)
@@ -10065,7 +10066,7 @@ Name             : Strive for Perfection (id=296330)
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
-Labels           : 640: Cat Form (768 effect#6), Brewmaster Monk (137023 effect#21), Windwalker Monk (137025 effect#15), Rogue (137034 effect#2)
+Labels           : 640: Cat Form (768 effect#6), Brewmaster Monk (137023 effect#21), Windwalker Monk (137025 effect#14), Rogue (137034 effect#2)
 Proc Chance      : 101%
 Real PPM         : 1
 Proc Flags       : ....x... x.x.x.x. x.x..x.. ........ 
@@ -10089,7 +10090,7 @@ Name             : Vision of Perfection (id=297745)
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
-Labels           : 640: Cat Form (768 effect#6), Brewmaster Monk (137023 effect#21), Windwalker Monk (137025 effect#15), Rogue (137034 effect#2)
+Labels           : 640: Cat Form (768 effect#6), Brewmaster Monk (137023 effect#21), Windwalker Monk (137025 effect#14), Rogue (137034 effect#2)
 Attributes       : ....x... ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10153,7 +10154,7 @@ Name             : Vision of Perfection (id=302656)
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
-Labels           : 640: Cat Form (768 effect#6), Brewmaster Monk (137023 effect#21), Windwalker Monk (137025 effect#15), Rogue (137034 effect#2)
+Labels           : 640: Cat Form (768 effect#6), Brewmaster Monk (137023 effect#21), Windwalker Monk (137025 effect#14), Rogue (137034 effect#2)
 Attributes       : ....x... ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -14948,8 +14949,8 @@ Description      : When a Festering Wound pops it generates an additional ${$s1/
 
 Name             : Ghoulish Frenzy (id=377587) [Spell Family (15), Passive, Hidden] 
 Talent Entry     : Unholy [tree=spec, row=9, col=2, max_rank=2, req_points=20]
-                 : Effect#1 [op=set, values=(6, 10)]
-                 : Effect#2 [op=set, values=(6, 10)]
+                 : Effect#1 [op=set, values=(5, 10)]
+                 : Effect#2 [op=set, values=(5, 10)]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None

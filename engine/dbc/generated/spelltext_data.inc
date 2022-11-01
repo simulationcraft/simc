@@ -19199,7 +19199,7 @@ static const std::array<spelldesc_vars_data_t, 361> __spelldesc_vars_data { {
   {  315341, "$CAP=${($AP+$OAP)*2/3}\r\n$damage=${$m1*$<CAP>/$AP}" },
   {  317349, "$damage=${2.0*$317483s1}\r\n$absorb=${(($317320s3/100)*$AP)*2.0*(1+$@versadmg)}" },
   {  317485, "$damage=${2.0*$317483s1}\r\n$absorb=${(($317320s3/100)*$AP)*2.0*(1+$@versadmg)}" },
-  {  318038, "$coeff=${0.0264}" },
+  {  318038, "$coeff=${0.0198}" },
   {  318187, "$points=${($s2/100*$max($AP,$SP)*(1+$@versadmg))}" },
   {  318211, "$points=${($s2/100*$max($AP,$SP)*(1+$@versadmg))}" },
   {  318216, "$points=${($s2/100*$max($AP,$SP)*(1+$@versadmg))}" },
@@ -19211,7 +19211,7 @@ static const std::array<spelldesc_vars_data_t, 361> __spelldesc_vars_data { {
   {  318488, "$points=${($s2/100*$max($AP,$SP)*(1+$@versadmg))}" },
   {  319191, "$mod=$?a137005[${0.25}]?a212611[${1.5}]?a137009[${2}]?a137014[${2}]?a137018[${1}]?a137022[${0.5}]?a137026[${0.75}]?a137030[${1.5}]?a137034[${1.5}]?a137038[${2}]?a137042[${1}]?a137047[${1.5}]?a353167[${2}][${1}]" },
   {  319217, "$points=${$cond($gt($SP,$AP),$SP*10,$AP*10)*(1)}" },
-  {  319778, "$coeff=${0.0264}" },
+  {  319778, "$coeff=${0.0198}" },
   {  319978, "$absorb=${($319978s1/100)*$MHP*(1+$@versadmg)}" },
   {  319983, "$mod=$?a137005[${1.0}]?a212611[${1.0}]?a137009[${3.0}]?a137014[${0.5}.1]?a137018[${1.5}.1]?a137022[${3.0}]?a137026[${4.0}]?a137030[${0.8}.2]?a137034[${1.5}]?a137038[${1.4}.1]?a137042[${1.0}]?a137047[${1.0}]?a353167[${2.0}][${1.0}]" },
   {  320659, "$points=${$cond($gt($SP,$AP),$SP*0.3312,$AP*0.3312)*(1+$@versadmg)}" },
@@ -19330,10 +19330,12 @@ static const std::array<spelldesc_vars_data_t, 361> __spelldesc_vars_data { {
 } };
 
 // spelldesc_vars hotfix entries, wow build 10.0.0.46366
-static constexpr std::array<hotfix::client_hotfix_entry_t, 4> __spelldesc_vars_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 6> __spelldesc_vars_hotfix_data { {
   {      17,  0, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$pvp=$?a134735[${1.1}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*2.8*(1+$@versadmg)*$<rapture>*$<shadow>*$<pvp>*$<weal>}\r\n", "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$pvp=$?a134735[${1.1}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<pvp>*$<weal>}\r\n" },
   {  115203,  0, "$health=$?s322960[${20}][${15}]\r\n$damage=$?s322960[${20}][${15}]", "$health=$?s322960[${15}][${15}]\r\n$damage=$?c1[${20}][${20}]" },
   {  120954,  0, "$health=$?s322960[${20}][${15}]\r\n$damage=$?s322960[${20}][${15}]", "$health=$?s322960[${15}][${15}]\r\n$damage=$?c1[${20}][${20}]" },
+  {  318038,  0, "$coeff=${0.0264}", "$coeff=${0.0198}" },
+  {  319778,  0, "$coeff=${0.0264}", "$coeff=${0.0198}" },
   {  388917,  0, "$health=$?s322960[${20}][${15}]\r\n$damage=$?s322960[${20}][${15}]", "$health=$?s322960[${15}][${15}]\r\n$damage=$?c1[${20}][${20}]" },
 } };
 
