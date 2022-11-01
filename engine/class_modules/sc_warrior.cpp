@@ -6818,7 +6818,7 @@ struct last_stand_t : public warrior_spell_t
     parse_options( options_str );
     range              = -1;
     cooldown->duration = data().cooldown();
-    cooldown -> duration += timespan_t::from_millis( p -> talents.protection.bolster -> effectN( 1 ).base_value() );
+    cooldown -> duration += p -> talents.protection.bolster -> effectN( 1 ).time_value();
   }
 
   void execute() override
