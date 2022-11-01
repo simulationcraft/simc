@@ -2507,6 +2507,10 @@ void paladin_t::create_buffs()
                             ->set_cooldown( 0_ms );  // Let the ability handle the CD
   buffs.blessing_of_protection = make_buff( this, "blessing_of_protection", find_spell( 1022 ) );
   buffs.blessing_of_spellwarding = make_buff( this, "blessing_of_spellwarding", find_spell( 204018 ) );
+  buffs.strength_in_adversity    = make_buff( this, "strength_in_adversity", find_spell( 393071 ) )
+                                    ->add_invalidate( CACHE_PARRY )
+                                    ->set_default_value_from_effect(1)
+                                    ->set_max_stack(5); // Buff has no stacks, but can have up to 5 different values.
 
   buffs.avengers_might = make_buff<stat_buff_t>( this, "avengers_might", find_spell( 272903 ) )
                              ->add_stat( STAT_MASTERY_RATING, azerite.avengers_might.value() );
@@ -3364,6 +3368,18 @@ double paladin_t::composite_parry_rating() const
   // add Riposte
   if ( passives.riposte->ok() )
     p += composite_melee_crit_rating();
+
+  return p;
+}
+
+double paladin_t::composite_parry() const
+{
+  double p = player_t::composite_parry();
+
+  if ( buffs.strength_in_adversity->up())
+  {
+    p += buffs.strength_in_adversity->value()*buffs.strength_in_adversity->stack();
+  }
 
   return p;
 }

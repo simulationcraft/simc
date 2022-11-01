@@ -136,6 +136,7 @@ public:
     buff_t* faith_in_the_light;
     buff_t* moment_of_glory_absorb;
     buff_t* blessing_of_spellwarding;
+    buff_t* strength_in_adversity;
 
     buff_t* inner_light;
     buff_t* inspiring_vanguard;
@@ -641,6 +642,7 @@ public:
   virtual double    composite_spell_power( school_e school ) const override;
   virtual double    composite_spell_power_multiplier() const override;
   virtual double    composite_crit_avoidance() const override;
+  virtual double    composite_parry() const override;
   virtual double    composite_parry_rating() const override;
   virtual double    composite_block() const override;
   virtual double    composite_block_reduction( action_state_t* s ) const override;

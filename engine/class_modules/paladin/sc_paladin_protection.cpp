@@ -146,6 +146,11 @@ double recharge_multiplier( const cooldown_t& cd ) const override
     {
       p()->buffs.ally_of_the_light->trigger();
     }
+    if ( p()->talents.strength_in_adversity->ok() )
+    {
+      // Buff overwrites previous buff, even if it was stronger
+      p()->buffs.strength_in_adversity->trigger( execute_state->n_targets );
+    }
   }
 };
 
