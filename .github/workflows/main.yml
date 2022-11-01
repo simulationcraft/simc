@@ -70,12 +70,10 @@ jobs:
           ccache -s
 
       - name: Smoke Test
-        continue-on-error: true
         run: ${{ runner.workspace }}/b/ninja/simc $SIMC_PROFILE iterations=20
               output=/dev/null html=/dev/null json2=/dev/null
 
       - name: Spell Query
-        continue-on-error: true
         run: ${{ runner.workspace }}/b/ninja/simc spell_query=spell.name=auto_shot
 
 
@@ -163,10 +161,9 @@ jobs:
           key: ubuntu-clang-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
 
       - name: Run
-        continue-on-error: true
         env:
           UBSAN_OPTIONS: print_stacktrace=1
-        run: ${{ runner.workspace }}/b/ninja/simc output=/dev/null html=/dev/null json2=/dev/null json3=/dev/null ${{ matrix.simc_flags }}
+        run: ${{ runner.workspace }}/b/ninja/simc output=/dev/null html=/dev/null json2=/dev/null json=/dev/null ${{ matrix.simc_flags }}
 
   simc-tests:
     if: false
@@ -262,5 +259,5 @@ jobs:
           cmake --build "${{ env.CMAKE_BUILD_DIR }}"
 
       - name: Smoke Test
-        continue-on-error: true
+        if: ${{ matrix.runSmokeTest }}
         run: ${{ env.CMAKE_BUILD_DIR }}/simc.exe $env:SIMC_PROFILE iterations=5 output=nul html=nul json2=nul cleanup_threads=1
