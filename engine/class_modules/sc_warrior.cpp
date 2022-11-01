@@ -3282,8 +3282,10 @@ struct execute_arms_t : public warrior_attack_t
   execute_damage_t* trigger_attack;
   double max_rage;
   double execute_pct;
+  double shield_slam_reset;
   execute_arms_t( warrior_t* p, util::string_view options_str )
-    : warrior_attack_t( "execute", p, p->spell.execute ), max_rage( 40 ), execute_pct( 20 )
+    : warrior_attack_t( "execute", p, p->spell.execute ), max_rage( 40 ), execute_pct( 20 ),
+    shield_slam_reset( p -> talents.protection.strategist -> effectN( 1 ).percent() )
   {
     parse_options( options_str );
     weapon        = &( p->main_hand_weapon );
@@ -3370,6 +3372,9 @@ struct execute_arms_t : public warrior_attack_t
     {
       p()->buff.juggernaut->trigger();
     }
+
+    if ( rng().roll( shield_slam_reset ) )
+      p()->cooldown.shield_slam->reset( true );
   }
 
   void impact( action_state_t* state ) override
