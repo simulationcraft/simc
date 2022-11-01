@@ -1349,7 +1349,6 @@ Description      : Increases your maximum Chi by $s1, maximum Energy by $s3, and
 
 Name             : Black Ox Brew (id=115399) [Spell Family (53)] 
 Talent Entry     : Brewmaster [tree=spec, row=7, col=3, max_rank=1, req_points=8, select_idx=200]
-                 : Brewmaster [tree=spec, row=7, col=3, max_rank=1, req_points=8, select_idx=100]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -8628,6 +8627,7 @@ Effects          :
 Description      : Your spells and abilities have a chance to conjure Swirling Sands, increasing your Critical Strike by $s1 for $280433d. Your critical effects extend Swirling Sands by ${$s2/1000} sec, up to a maximum duration of ${$280433d+($s3/1000)} sec.
 
 Name             : Bob and Weave (id=280515) [Spell Family (53), Passive] 
+Talent Entry     : Brewmaster [tree=spec, row=7, col=3, max_rank=1, req_points=8, select_idx=100]
 Class            : Monk
 School           : Physical
 Spell Type       : None

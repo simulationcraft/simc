@@ -1109,12 +1109,14 @@ Effects          :
 Description      : Your auto attacks have a chance to make your next Death Coil$?s207317[ or Epidemic][] cost no Runic Power.
 
 Name             : Death Grip (id=49576) [Spell Family (15)] 
+Hotfixed         : Cooldown (0 -> 1000)
 Class            : Death Knight
 School           : Shadow
 Spell Type       : Magic
 Spell Level      : 5
 Range            : 30 yards
 GCD              : 0.5 seconds
+Cooldown         : 1 seconds
 Charges          : 1 (25 seconds cooldown)
 Category         : 1428: Blood Death Knight (137008 effect#4), Blood Death Knight (137008 effect#11), Grip of the Everlasting (334724 effect#1), Death's Echo (356367 effect#2)
 Stance Mask      : 0x01000000
