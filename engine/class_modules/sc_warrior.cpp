@@ -5029,7 +5029,7 @@ struct revenge_t : public warrior_attack_t
     if ( rng().roll( shield_slam_reset ) )
       p()->cooldown.shield_slam->reset( true );
 
-    if ( p()->conduit.show_of_force->ok() )
+    if ( p()->talents.protection.show_of_force->ok() )
     {
       p()->buff.show_of_force->trigger();
     }
@@ -5069,6 +5069,9 @@ struct revenge_t : public warrior_attack_t
       am *= 1.0 + p()->talents.protection.best_served_cold->effectN( 1 ).percent() +
             p()->buff.revenge->data().effectN( 2 ).percent();
     }
+
+    am *= 1.0 + p() -> talents.protection.show_of_force -> effectN( 2 ).percent();
+
     return am;
   }
 };
@@ -8890,8 +8893,8 @@ void warrior_t::create_buffs()
                           ->set_default_value( conduit.veterans_repute.percent() )
                           ->set_duration( covenant.conquerors_banner->duration() );
 
-  buff.show_of_force = make_buff( this, "show_of_force", find_spell( 339825 ) )
-                           ->set_default_value( conduit.show_of_force.percent() );
+  buff.show_of_force = make_buff( this, "show_of_force", talents.protection.show_of_force -> effectN( 1 ).trigger() )
+                           ->set_default_value( talents.protection.show_of_force -> effectN( 1 ).percent() );
 
   buff.unnerving_focus = make_buff( this, "unnerving_focus", talents.protection.unnerving_focus -> effectN( 1 ).trigger() )
                            ->set_default_value( talents.protection.unnerving_focus -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
