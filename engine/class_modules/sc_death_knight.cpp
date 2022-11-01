@@ -46,7 +46,6 @@ namespace pets {
   struct army_ghoul_pet_t;
   struct bloodworm_pet_t;
   struct dancing_rune_weapon_pet_t;
-  struct endless_rune_waltz_pet_t;
   struct everlasting_bond_pet_t;
   struct gargoyle_pet_t;
   struct ghoul_pet_t;
@@ -558,13 +557,6 @@ public:
     buff_t* deaths_due; // Night Fae
     buff_t* swarming_mist; // Venthyr
 
-    // Tier 28
-    buff_t* arctic_assault; // T28 Frost 2PC
-    buff_t* harvest_time; // T28 Unholy 4PC
-    buff_t* harvest_time_stack; // T28 Unholy 2PC
-    buff_t* endless_rune_waltz; // T28 Blood 2PC
-    buff_t* endless_rune_waltz_duration; // T28 Blood 2PC expiration buff
-    buff_t* endless_rune_waltz_icd; // T28 4PC ICD
   } buffs;
 
   struct runeforge_t {
@@ -607,9 +599,7 @@ public:
     cooldown_t* army_of_the_dead;
     cooldown_t* dark_transformation;
     cooldown_t* vile_contagion;
-
-    // T28
-    cooldown_t* endless_rune_waltz_icd;  // internal cooldown for Blood T28 4PC counterattack
+	
   } cooldown;
 
   // Active Spells
@@ -632,10 +622,6 @@ public:
     action_t* virulent_eruption;
     action_t* ruptured_viscera;
 
-    // Tier28
-    action_t* glacial_advance_t28_4pc;
-    action_t* soul_reaper_t28;
-    action_t* heart_strike_t28;
   } active_spells;
 
   // Gains
@@ -991,9 +977,6 @@ public:
     const spell_data_t* ghoulish_infusion;
     const spell_data_t* unholy_blight_dot;
 
-    // T28 Blood 4pc
-    const spell_data_t* endless_rune_waltz_4pc; // parry % chance and ICD
-    const spell_data_t* endless_rune_waltz_energize; // RP gain on heart strike
     // T29 Blood
     const spell_data_t* vigorous_lifeblood_4pc; // Damage and haste buff
     const spell_data_t* vigorous_lifeblood_energize; // Rune refund
@@ -1038,7 +1021,6 @@ public:
   struct pets_t
   {
     pets::dancing_rune_weapon_pet_t* dancing_rune_weapon_pet;
-    pets::dancing_rune_weapon_pet_t* endless_rune_waltz_pet;
     pets::dancing_rune_weapon_pet_t* everlasting_bond_pet;
     pets::gargoyle_pet_t* gargoyle;
     pets::ghoul_pet_t* ghoul_pet;
@@ -1239,7 +1221,6 @@ public:
     cooldown.pillar_of_frost          = get_cooldown( "pillar_of_frost" );
     cooldown.shackle_the_unworthy_icd = get_cooldown( "shackle_the_unworthy_icd" );
     cooldown.vampiric_blood           = get_cooldown( "vampiric_blood" );
-    cooldown.endless_rune_waltz_icd   = get_cooldown( "endless_rune_waltz_icd" );
     cooldown.enduring_strength_icd    = get_cooldown( "enduring_strength" );
     cooldown.mind_freeze              = get_cooldown( "mind_freeze" );
 
@@ -2804,20 +2785,6 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     {
       drw_action_t::execute();
 
-      if ( dk() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T28, B2 ) )
-      {
-        dk() -> buffs.endless_rune_waltz -> trigger();
-        if ( dk() -> buffs.dancing_rune_weapon -> up() )
-        {
-          // We do not need to expire DRW buff, as the pet demise will expire it for us.
-          dk() -> pets.dancing_rune_weapon_pet -> adjust_duration( dk() -> sets -> set ( DEATH_KNIGHT_BLOOD, T28, B2 ) -> effectN( 1 ).time_value() );
-          if ( dk() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T28, B4 ) )
-            dk() -> pets.endless_rune_waltz_pet -> adjust_duration( dk() -> sets -> set ( DEATH_KNIGHT_BLOOD, T28, B2 ) -> effectN( 1 ).time_value() );
-          if ( dk() -> talent.blood.everlasting_bond.ok() )
-            dk() -> pets.everlasting_bond_pet -> adjust_duration( dk() -> sets -> set ( DEATH_KNIGHT_BLOOD, T28, B2 ) -> effectN( 1 ).time_value() );
-        }
-      }
-
       if ( dk() -> legendary.gorefiends_domination.ok() )
       {
         dk() -> cooldown.vampiric_blood -> adjust( -timespan_t::from_seconds( dk() -> legendary.gorefiends_domination -> effectN( 1 ).base_value() ) );
@@ -2914,7 +2881,7 @@ struct soul_reaper_t : public drw_action_t<melee_attack_t>
     ability.consumption   = new consumption_t  ( this );
   }
 
-  double composite_player_target_multiplier( player_t* target, school_e school ) const
+  double composite_player_target_multiplier( player_t* target, school_e school ) const override
   {
     double m = death_knight_pet_t::composite_player_target_multiplier( target, school );
 
@@ -3929,6 +3896,18 @@ struct melee_t : public death_knight_melee_attack_t
       return t;
   }
 
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = death_knight_melee_attack_t::composite_da_multiplier( s );
+
+    if ( p() -> buffs.vigorous_lifeblood_4pc -> up() )
+    {
+      m *= 1.0 + p() -> spell.vigorous_lifeblood_4pc -> effectN ( 5 ).percent();
+    }
+
+    return m;
+  }
+
   void execute() override
   {
     if ( first )
@@ -4459,8 +4438,6 @@ struct blood_boil_t : public death_knight_spell_t
     if ( p() -> buffs.dancing_rune_weapon -> up() )
     {
       p() -> pets.dancing_rune_weapon_pet -> ability.blood_boil -> execute_on_target( target );
-      if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T28, B4 ) )
-        p() -> pets.endless_rune_waltz_pet -> ability.blood_boil -> execute_on_target( target );
       if ( p() -> talent.blood.everlasting_bond.ok() )
         p() -> pets.everlasting_bond_pet -> ability.blood_boil -> execute_on_target( target );
     }
@@ -4967,10 +4944,7 @@ struct consumption_t : public death_knight_melee_attack_t
     if ( p() -> buffs.dancing_rune_weapon -> up() )
     {
       p() -> pets.dancing_rune_weapon_pet -> ability.consumption -> execute_on_target( target );
-      if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T28, B4 ) )
-      {
-        p() -> pets.endless_rune_waltz_pet -> ability.consumption -> execute_on_target( target );
-      }
+
       if ( p() -> talent.blood.everlasting_bond.ok() )
         p() -> pets.everlasting_bond_pet -> ability.consumption -> execute_on_target( target );
     }
@@ -4998,12 +4972,6 @@ struct dancing_rune_weapon_buff_t : public buff_t
 
     if ( p -> legendary.crimson_rune_weapon -> ok() )
       p -> buffs.crimson_rune_weapon -> trigger();
-
-    // Expiry of this buff forces the str buff to expire at the same time
-    if ( p -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T28, B2 ) )
-    {
-      p -> buffs.endless_rune_waltz_duration -> trigger();
-    }
   }
 };
 
@@ -5035,11 +5003,7 @@ struct dancing_rune_weapon_t : public death_knight_spell_t
     {
       p() -> pets.dancing_rune_weapon_pet -> summon( p() -> talent.blood.dancing_rune_weapon -> duration() +
                                                                                p() -> talent.blood.everlasting_bond -> effectN( 2 ).time_value() );
-      if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T28, B4 ) )
-      {
-        p() -> pets.endless_rune_waltz_pet -> summon( p() -> talent.blood.dancing_rune_weapon -> duration() +
-                                                                                p() -> talent.blood.everlasting_bond -> effectN( 2 ).time_value() );
-      }
+
       if ( p() -> talent.blood.everlasting_bond.ok() )
       {
         p() -> pets.everlasting_bond_pet -> summon( p() -> talent.blood.dancing_rune_weapon -> duration() +
@@ -5624,10 +5588,7 @@ struct deaths_caress_t : public death_knight_spell_t
     if ( p() -> buffs.dancing_rune_weapon -> up() )
     {
       p() -> pets.dancing_rune_weapon_pet -> ability.deaths_caress -> execute_on_target( target );
-      if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T28, B4 ) )
-      {
-        p() -> pets.endless_rune_waltz_pet -> ability.deaths_caress -> execute_on_target( target );
-      }
+
       if ( p() -> talent.blood.everlasting_bond.ok() )
         p() -> pets.everlasting_bond_pet -> ability.deaths_caress -> execute_on_target( target );
     }
@@ -5759,16 +5720,10 @@ struct death_coil_t : public death_knight_spell_t
     }
 
     // Currently Rotten Touch only triggers on the main target
-    if ( !p() -> bugs && p() -> talent.unholy.rotten_touch.ok() && p() -> buffs.sudden_doom -> check() )
+    if ( p() -> talent.unholy.rotten_touch.ok() && p() -> buffs.sudden_doom -> check() )
     {
       get_td( target ) -> debuff.rotten_touch -> trigger();
     }
-    // Rotten touch is bugged as of 10/14/22, applying on every death coil cast.
-    if ( p() -> bugs && p() -> talent.unholy.rotten_touch.ok() )
-    {
-      get_td( target ) -> debuff.rotten_touch -> trigger();
-    }
-
     p() -> buffs.sudden_doom -> decrement();
   }
 
@@ -6061,8 +6016,7 @@ struct death_strike_t : public death_knight_melee_attack_t
     if ( p() -> buffs.dancing_rune_weapon -> up() )
     {
       p() -> pets.dancing_rune_weapon_pet -> ability.death_strike -> execute_on_target( target );
-      if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T28, B4 ) )
-        p() -> pets.endless_rune_waltz_pet -> ability.death_strike -> execute_on_target( target );
+
       if ( p() -> talent.blood.everlasting_bond.ok() )
         p() -> pets.everlasting_bond_pet -> ability.death_strike -> execute_on_target( target );
 
@@ -6447,16 +6401,6 @@ struct frostscythe_t : public death_knight_melee_attack_t
   {
     death_knight_melee_attack_t::execute();
 
-    if ( p() -> buffs.killing_machine -> up() )
-    {
-      // Tier28, KM is up, so fire GA, in game fires after oblits
-      if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T28, B4 ) )
-      {
-        p() -> active_spells.glacial_advance_t28_4pc -> set_target( target );
-        p() -> active_spells.glacial_advance_t28_4pc -> execute();
-      }
-    }
-
     if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T29, B4 ) &&
           p() -> buffs.killing_machine -> up() )
     {
@@ -6622,7 +6566,7 @@ struct frost_strike_t : public death_knight_melee_attack_t
 
   void execute() override
   {
-    const death_knight_td_t* td = p() -> find_target_data( target );
+    const death_knight_td_t* td = p() -> get_target_data( target );
 
     if ( p() -> talent.frost.shattering_blade.ok() && td -> debuff.razorice -> stack() == 5 )
     {
@@ -6690,47 +6634,6 @@ struct glacial_advance_damage_t : public death_knight_spell_t
     if ( p() -> bugs || p() -> runeforge.rune_of_razorice_mh || p() -> runeforge.rune_of_razorice_oh )
     {
       get_td( state -> target ) -> debuff.razorice -> trigger();
-    }
-  }
-};
-
-// Tier 28 glacial advance, implement everything by hand here, to avoid having to disable all the gcd, procs, etc
-struct glacial_advance_damage_tier28_4pc_t : public glacial_advance_damage_t
-{
-  double ga_rp_cost;
-
-  glacial_advance_damage_tier28_4pc_t( util::string_view name, death_knight_t* p ) :
-    glacial_advance_damage_t( name, p )
-  {
-    //  Lookup GA rp cost from spelldata, we don't use the talent here, as we may not have ga talented
-    ga_rp_cost = p -> find_spell( 194913 ) -> cost(POWER_RUNIC_POWER);
-  }
-
-  void execute() override
-  {
-    glacial_advance_damage_t::execute();
-
-    // Obliteration's rune generation
-    if ( rng().roll( p() -> talent.frost.obliteration -> effectN( 2 ).percent() ) )
-    {
-      // WTB spelldata for the rune gain
-      p() -> replenish_rune( 1, p() -> gains.obliteration );
-    }
-
-    // These three are normally called through the standard action, but since we call damage event directly, they need to be manually called
-    p() -> buffs.icy_talons -> trigger();
-    p() -> trigger_runic_empowerment( ga_rp_cost );
-
-    if ( p() -> talent.frost.unleashed_frenzy.ok() )
-    {
-      p() -> buffs.unleashed_frenzy->trigger();
-    }
-
-    // We also have to add the ga_rp_cost to insatiable hunger legendary accumulator
-    if ( p() -> legendary.insatiable_hunger.ok() && p() -> buffs.swarming_mist -> check() )
-    {
-      sim -> print_debug ( "Insatiable hunger RP stored increased from {} to {} by {} from {}", p() -> insatiable_hunger_spent_rp_accumulator, ( p() -> insatiable_hunger_spent_rp_accumulator + ga_rp_cost), ga_rp_cost, name_str );
-      p() -> insatiable_hunger_spent_rp_accumulator += ga_rp_cost;
     }
   }
 };
@@ -6811,7 +6714,6 @@ struct leeching_strike_t : public death_knight_heal_t
 struct heart_strike_t : public death_knight_melee_attack_t
 {
   double heartbreaker_rp_gen;
-  bool is_t28_counterattack;
   action_t* leeching_strike;
 
   heart_strike_t( death_knight_t* p, util::string_view options_str ) :
@@ -6825,24 +6727,6 @@ struct heart_strike_t : public death_knight_melee_attack_t
     // TODO July 19 2022 Heart Strike is missing rank 2 for the extra rp gain
     //energize_amount += p -> spec.heart_strike_2 -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER );
     base_multiplier *= 1.0 + p -> talent.blood.improved_heart_strike -> effectN( 1 ).percent();
-    is_t28_counterattack = false;
-    leeching_strike = get_action<leeching_strike_t>("leeching_strike", p);
-  }
-
-  // Background constructor for procs from T28 4PC.  Remove constructor after Slands
-  heart_strike_t( util::string_view name, death_knight_t* p ) :
-    death_knight_melee_attack_t( name, p, p -> find_spell( 206930 ) ),
-    heartbreaker_rp_gen( p -> talent.blood.heartbreaker -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) )
-  {
-    background = proc = may_crit = true;
-    may_miss = false;
-    triggers_shackle_the_unworthy = true;
-    aoe = 2;
-    weapon = &( p -> main_hand_weapon );
-    // T28 reads the amount of RP gain directly from t28 spell data, it does not use the resources section in heart strike
-    energize_amount = p -> spell.endless_rune_waltz_energize -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER );
-    base_multiplier *= 1.0 + p -> talent.blood.improved_heart_strike -> effectN( 1 ).percent();
-    is_t28_counterattack = true;
     leeching_strike = get_action<leeching_strike_t>("leeching_strike", p);
   }
 
@@ -6850,17 +6734,6 @@ struct heart_strike_t : public death_knight_melee_attack_t
   {
     death_knight_melee_attack_t::init();
     may_proc_bron = true;
-  }
-
-  // This section added for T28 4PC.  Remove after Slands.
-  double cost() const override
-  {
-    if ( background )
-    {
-      return 0;
-    }
-
-    return death_knight_melee_attack_t::cost();
   }
 
   int n_targets() const override
@@ -6889,31 +6762,8 @@ struct heart_strike_t : public death_knight_melee_attack_t
 
     if ( p() -> buffs.dancing_rune_weapon -> up() )
     {
-      if( !is_t28_counterattack )  // Counterattack does not trigger DRW heart strikes
-      {
-        p() -> pets.dancing_rune_weapon_pet -> ability.heart_strike -> execute_on_target( target );
-      }
 
-      if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T28, B2 ) )
-      {
-        p() -> buffs.endless_rune_waltz -> trigger();
-        if ( p() -> buffs.dancing_rune_weapon -> up() )
-        {
-          // We do not need to expire DRW buff, as the pet demise will expire it for us.
-          p() -> pets.dancing_rune_weapon_pet -> adjust_duration( p() -> sets -> set ( DEATH_KNIGHT_BLOOD, T28, B2 ) -> effectN( 1 ).time_value() );
-          if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T28, B4 ) )
-            p() -> pets.endless_rune_waltz_pet -> adjust_duration( p() -> sets -> set ( DEATH_KNIGHT_BLOOD, T28, B2 ) -> effectN( 1 ).time_value() );
-          if ( p() -> talent.blood.everlasting_bond.ok() )
-            p() -> pets.everlasting_bond_pet -> adjust_duration( p() -> sets -> set ( DEATH_KNIGHT_BLOOD, T28, B2 ) -> effectN( 1 ).time_value() );
-        }
-      }
-
-      if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T28, B4 ) && !is_t28_counterattack )  // Counterattack does not trigger DRW heart strikes
-      {
-        p() -> pets.endless_rune_waltz_pet -> ability.heart_strike -> execute_on_target( target );
-      }
-
-      if ( p() -> talent.blood.everlasting_bond.ok() && !is_t28_counterattack )  // Counterattack does not trigger DRW heart strikes
+      if ( p() -> talent.blood.everlasting_bond.ok() )
       {
         p() -> pets.everlasting_bond_pet -> ability.heart_strike -> execute_on_target( target );
       }
@@ -7180,8 +7030,7 @@ struct marrowrend_t : public death_knight_melee_attack_t
     if ( p() -> buffs.dancing_rune_weapon -> up() )
     {
       p() -> pets.dancing_rune_weapon_pet -> ability.marrowrend -> execute_on_target(  target );
-      if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T28, B4 ) )
-        p() -> pets.endless_rune_waltz_pet -> ability.marrowrend -> execute_on_target( target );
+
       if ( p() -> talent.blood.everlasting_bond.ok() )
         p() -> pets.everlasting_bond_pet -> ability.marrowrend -> execute_on_target( target );
     }
@@ -7460,9 +7309,6 @@ struct obliterate_t : public death_knight_melee_attack_t
         if ( oh && km_oh )
 
           km_oh -> execute_on_target( target );
-        // Tier28, KM is up, so fire GA, in game fires before oblits
-        if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T28, B4 ) )
-          p() -> active_spells.glacial_advance_t28_4pc -> execute_on_target( target );
       }
       else
       {
@@ -7861,7 +7707,6 @@ struct remorseless_winter_buff_t : public buff_t
     buff_t::expire_override( expiration_stacks, remaining_duration );
 
     debug_cast<death_knight_t*>( player ) -> buffs.gathering_storm -> expire();
-    debug_cast<death_knight_t*>( player ) -> buffs.arctic_assault -> expire();
   }
 };
 
@@ -7894,11 +7739,6 @@ struct remorseless_winter_t : public death_knight_spell_t
     death_knight_spell_t::execute();
 
     p() -> buffs.remorseless_winter -> trigger();
-
-    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T28, B2 ) )
-    {
-      p() -> buffs.arctic_assault -> trigger();
-    }
   }
 };
 
@@ -7955,11 +7795,9 @@ struct sacrificial_pact_t : public death_knight_heal_t
 
 struct scourge_strike_base_t : public death_knight_melee_attack_t
 {
-  timespan_t summon_duration; // For T28 Ghoul summon, remove after shadowlands
   double dnd_cleave_targets; // For when in dnd how many targets we can cleave
   scourge_strike_base_t( util::string_view name, death_knight_t* p, const spell_data_t* spell ) :
     death_knight_melee_attack_t( name, p, spell ),
-    summon_duration( timespan_t::from_seconds( p -> find_spell( 364392 ) -> effectN( 3 ).base_value() ) ),
     dnd_cleave_targets( p -> talent.unholy.scourge_strike -> effectN( 4 ).base_value() )
   {
     weapon = &( player -> main_hand_weapon );
@@ -8034,24 +7872,6 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
     if ( p() -> talent.unholy.plaguebringer.ok() )
     {
       p()->buffs.plaguebringer->trigger();
-    }
-  }
-
-  void execute() override
-  {
-    death_knight_melee_attack_t::execute();
-
-    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T28, B2 ) && get_td( target ) -> debuff.festering_wound -> up() )
-    {
-      p() -> buffs.harvest_time_stack -> trigger();
-
-      if ( p() -> buffs.harvest_time_stack -> at_max_stacks() )
-      {
-        p() -> active_spells.soul_reaper_t28 -> execute_on_target( target );
-        if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T28, B2 ) )
-          p() -> pets.harvest_ghouls.spawn( summon_duration, 1 );
-        p() -> buffs.harvest_time_stack -> expire();
-      }
     }
   }
 };
@@ -8196,13 +8016,6 @@ struct soul_reaper_execute_t : public death_knight_spell_t
     background = true;
   }
 
-  void execute() override
-  {
-    death_knight_spell_t::execute();
-    if( p() -> sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T28, B4 ) )
-      p() -> buffs.harvest_time -> trigger();
-  }
-
   double composite_da_multiplier( const action_state_t* state ) const override
   {
     double m = death_knight_spell_t::composite_da_multiplier( state );
@@ -8232,39 +8045,6 @@ struct soul_reaper_t : public death_knight_melee_attack_t
     dot_behavior = DOT_EXTEND;
   }
 
-  // T28 constructor
-  soul_reaper_t( death_knight_t* p ) :
-    death_knight_melee_attack_t( "soul_reaper", p, p -> find_spell( 343294 ) ),  // T28, they may not have soul reaper talented
-    soul_reaper_execute( get_action<soul_reaper_execute_t>( "soul_reaper_execute", p ) )
-  {
-    add_child( soul_reaper_execute );
-
-    triggers_shackle_the_unworthy = true;
-    hasted_ticks = false;
-    background = true;
-    dot_behavior = DOT_EXTEND;
-  }
-
-  double cost() const override
-  {
-    // This will only ever be at max stacks when we have triggered it by scourge strike, and we have called execute on the t28 version
-    if ( p() -> buffs.harvest_time_stack->at_max_stacks() )
-      return 0;
-
-    return death_knight_melee_attack_t::cost();
-  }
-
-  double runic_power_generation_multiplier( const action_state_t* state ) const override
-  {
-    double m = death_knight_melee_attack_t::runic_power_generation_multiplier( state );
-
-    // This will only ever be at max stacks when we have triggered it by scourge strike, and we have called execute on the t28 version
-    if ( p() -> buffs.harvest_time_stack->at_max_stacks() )
-      m *= 1.0 + ( -1.0 );
-
-    return m;
-  }
-
   void init() override
   {
     death_knight_melee_attack_t::init();
@@ -8289,29 +8069,13 @@ struct soul_reaper_t : public death_knight_melee_attack_t
       soul_reaper_execute -> execute_on_target ( dot -> target );
   }
 
-  // 6-28-22 In 9.2.5 a bug was introduced that causes soul reaper refreshes to add the remaining debuff duration to the refreshed duration
-  // if set procs SR with 3s remaining on the debuff, it adds 3s from the remaining, then the 5s it should. leading to an 11s debuff rather than 8s
-  timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
-  {
-    timespan_t d = death_knight_melee_attack_t::calculate_dot_refresh_duration( dot, triggered_duration );
-
-    // only the t28 version is a background action
-    if ( p() -> bugs && background )
-    {
-      d = d + dot->remains();
-    }
-
-    return d;
-  }
-
   void execute() override
   {
     death_knight_melee_attack_t::execute();
     if ( p() -> buffs.dancing_rune_weapon -> up() )
     {
       p() -> pets.dancing_rune_weapon_pet -> ability.soul_reaper -> execute_on_target( target );
-      if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T28, B4 ) )
-        p() -> pets.endless_rune_waltz_pet -> ability.soul_reaper -> execute_on_target( target );
+
       if ( p() -> talent.blood.everlasting_bond.ok() )
         p() -> pets.everlasting_bond_pet -> ability.soul_reaper -> execute_on_target( target );
     }
@@ -8917,29 +8681,6 @@ struct vampiric_blood_t : public death_knight_spell_t
 
 // Buffs ====================================================================
 
-struct endless_rune_waltz_duration_buff_t : public buff_t
-{
-  endless_rune_waltz_duration_buff_t( death_knight_t* p ) :
-  buff_t( p, "endless_rune_waltz_duration", p -> sets -> set( DEATH_KNIGHT_BLOOD, T28, B2 ) )
-  {
-    set_duration ( timespan_t::from_seconds( p -> sets -> set( DEATH_KNIGHT_BLOOD, T28, B2) -> effectN( 4 ).base_value() ) );
-    set_quiet( true );
-  }
-
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-  {
-    buff_t::expire_override( expiration_stacks, remaining_duration );
-
-    death_knight_t* p = debug_cast< death_knight_t* >( player );
-
-    // Expiry of this buff forces the str buff to expire at the same time
-    if ( p -> buffs.endless_rune_waltz -> up() )
-    {
-      p -> buffs.endless_rune_waltz -> expire();
-    }
-  }
-};
-
 struct runic_corruption_buff_t : public buff_t
 {
   runic_corruption_buff_t( death_knight_t* p ) :
@@ -9405,7 +9146,7 @@ void death_knight_t::trigger_soul_reaper_death( player_t* target )
     return;
   }
 
-  if ( ! talent.soul_reaper.ok() && ! sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T28, B2 ) )
+  if ( ! talent.soul_reaper.ok() )
   {
     return;
   }
@@ -9416,12 +9157,6 @@ void death_knight_t::trigger_soul_reaper_death( player_t* target )
                       target -> name(), name() );
 
     trigger_runic_corruption( procs.sr_runic_corruption, 0, 1.0, true );
-    if ( sets -> has_set_bonus ( DEATH_KNIGHT_UNHOLY, T28, B4 ) )
-    {
-      buffs.harvest_time -> trigger();
-      sim -> print_log( "Target {} died while affected by Soul Reaper T28, player {} gains Harvest Time buff.",
-                      target -> name(), name() );
-    }
     return;
   }
 }
@@ -9819,21 +9554,6 @@ void death_knight_t::create_actions()
   if ( talent.unholy.outbreak.ok() || talent.unholy.unholy_blight.ok() || legendary.superstrain -> ok() )
     active_spells.virulent_eruption = new virulent_eruption_t( this );
 
-  if ( sets -> has_set_bonus( DEATH_KNIGHT_FROST, T28, B4 ) )
-  {
-    active_spells.glacial_advance_t28_4pc = new glacial_advance_damage_tier28_4pc_t( "glacial_advance_t28_4pc", this );
-  }
-
-  if ( sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T28, B2 ) )
-  {
-    active_spells.soul_reaper_t28 = new soul_reaper_t( this );
-  }
-
-  if ( sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T28, B4 ) )
-  {
-    active_spells.heart_strike_t28 = new heart_strike_t( "heart_strike_t28_4pc", this );
-  }
-
   player_t::create_actions();
 }
 
@@ -10114,12 +9834,6 @@ void death_knight_t::create_pets()
         [] ( death_knight_t* p ) { return new pets::army_ghoul_pet_t( p, "apoc_ghoul" ); } );
     }
 
-    if ( sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T28, B2 ) )
-    {
-      pets.harvest_ghouls.set_creation_callback(
-        [] ( death_knight_t* p ) { return new pets::army_ghoul_pet_t( p, "harvest_ghoul" ); } );
-    }
-
     if ( talent.unholy.magus_of_the_dead.ok() )
     {
       pets.magus_of_the_dead.set_creation_callback(
@@ -10138,8 +9852,7 @@ void death_knight_t::create_pets()
     if ( find_action( "dancing_rune_weapon" ) )
     {
       pets.dancing_rune_weapon_pet = new pets::dancing_rune_weapon_pet_t( this, "dancing_rune_weapon" );
-      if ( sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T28, B4 ) )
-        pets.endless_rune_waltz_pet = new pets::dancing_rune_weapon_pet_t( this, "endless_rune_waltz_t28_4pc" );
+
       if ( talent.blood.everlasting_bond.ok() )
         pets.everlasting_bond_pet = new pets::dancing_rune_weapon_pet_t( this, "everlasting_bond" );
     }
@@ -10593,9 +10306,6 @@ void death_knight_t::init_spells()
   spell.bone_shield         = find_spell( 195181 );
   spell.sanguine_ground     = find_spell( 391459 );
   spell.tightening_grasp_debuff = find_spell( 374776 );
-  // T28 Blood
-  spell.endless_rune_waltz_energize = find_spell( 368938 );
-  spell.endless_rune_waltz_4pc      = find_spell( 363590 );
   // T29 Blood
   spell.vigorous_lifeblood_4pc      = find_spell( 394570 );
   spell.vigorous_lifeblood_energize = find_spell( 394559 );
@@ -10767,11 +10477,6 @@ void death_knight_t::init_spells()
     cooldown.koltiras_favor_icd -> duration = legendary.koltiras_favor -> internal_cooldown();
   if ( talent.frost.frigid_executioner )
     cooldown.frigid_executioner_icd -> duration = talent.frost.frigid_executioner -> internal_cooldown();
-
-  if ( sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T28, B4 ) )
-  {
-    cooldown.endless_rune_waltz_icd -> duration = spell.endless_rune_waltz_4pc -> internal_cooldown();
-  }
 
 }
 
@@ -11122,24 +10827,6 @@ void death_knight_t::create_buffs()
   buffs.abomination_limb_covenant = new abomination_limb_covenant_buff_t( this );
   buffs.swarming_mist = new swarming_mist_buff_t( this );
 
-  // Tier 28
-  buffs.arctic_assault = make_buff( this, "arctic_assault", find_spell( 364384 ) )
-    -> set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
-    -> set_pct_buff_type( STAT_PCT_BUFF_CRIT )
-    -> add_invalidate( CACHE_CRIT_CHANCE );
-
-  buffs.harvest_time = make_buff( this, "harvest_time", find_spell( 367954 ))
-    -> set_default_value_from_effect_type( A_MOD_PET_DAMAGE_DONE );
-
-  buffs.harvest_time_stack = make_buff( this, "harvest_time_stack", find_spell( 363885 ) )
-    -> set_cooldown( sets -> set( DEATH_KNIGHT_UNHOLY, T28, B2 ) -> internal_cooldown() );
-
-  buffs.endless_rune_waltz = make_buff( this, "endless_rune_waltz", find_spell( 366008 ) )
-    -> set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
-    -> set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
-    -> add_invalidate( CACHE_STRENGTH );
-
-  buffs.endless_rune_waltz_duration = new endless_rune_waltz_duration_buff_t( this );
 }
 
 // death_knight_t::init_gains ===============================================
@@ -11272,10 +10959,6 @@ void death_knight_t::activate()
 
     if ( specialization() == DEATH_KNIGHT_UNHOLY )
     {
-      if ( sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T28, B2 ) )
-      {
-        target->register_on_demise_callback( this, [this]( player_t* t ) { trigger_soul_reaper_death( t ); } );
-      }
 
       if ( spec.festering_wound->ok() )
       {
@@ -11377,20 +11060,6 @@ void death_knight_t::bone_shield_handler( const action_state_t* state ) const
 void death_knight_t::assess_damage_imminent( school_e school, result_amount_type, action_state_t* s )
 {
   bone_shield_handler( s );
-
-  if ( sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T28, B4 ) )
-  {
-    if ( cooldown.endless_rune_waltz_icd-> is_ready() && rng().roll( spell.endless_rune_waltz_4pc -> effectN ( 1 ).percent() * composite_parry() ) )
-    {
-      player_t* td = s -> action -> player;
-      if ( td )
-      {
-        sim -> print_debug( "{} caused Blood counterattack T28 4pc to proc from {}", td->name_str, s->action->name_str );
-        active_spells.heart_strike_t28 -> execute_on_target( td );
-      }
-      cooldown.endless_rune_waltz_icd -> start();
-    }
-  }
 
   if ( school != SCHOOL_PHYSICAL )
   {
@@ -11699,21 +11368,14 @@ double death_knight_t::composite_player_pet_damage_multiplier( const action_stat
   m *= 1.0 + spec.frost_death_knight -> effectN( 3 ).percent();
   m *= 1.0 + spec.unholy_death_knight -> effectN( 3 ).percent();
 
-  // T28 Unholy 4PC
-  if ( sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T28, B4 ) )
-  {
-    // first is the 5% that is always active
-    m *= 1.0 + sets -> set( DEATH_KNIGHT_UNHOLY, T28, B4 )->effectN( 5 ).percent();
-    // Then we check if the extra 20% is active
-    if ( buffs.harvest_time -> up() )
-    {
-      m *= 1.0 + buffs.harvest_time -> value();
-    }
-  }
-
   if ( talent.unholy.unholy_aura.ok() )
   {
     m *= 1.0 + talent.unholy.unholy_aura->effectN( 3 ).percent();
+  }
+
+  if ( buffs.vigorous_lifeblood_4pc -> up() )
+  {
+    m *= 1.0 + spell.vigorous_lifeblood_4pc -> effectN( 4 ).percent();
   }
 
   return m;

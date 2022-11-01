@@ -564,6 +564,9 @@ struct haunt_t : public affliction_spell_t
 
       if ( p()->talents.haunted_soul.ok() )
         p()->buffs.haunted_soul->trigger();
+
+      if ( p()->talents.shadow_embrace.ok() )
+        td( s->target )->debuffs_shadow_embrace->trigger();
     }
   }
 };
@@ -678,6 +681,7 @@ struct soul_swap_t : public affliction_spell_t
   soul_swap_t( warlock_t* p, util::string_view options_str )
     : affliction_spell_t( "Soul Swap", p, p->talents.soul_swap )
   {
+    parse_options( options_str );
     may_crit = false;
 
     corruption = p->pass_corruption_action( p );

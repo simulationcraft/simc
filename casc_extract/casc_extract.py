@@ -143,7 +143,7 @@ if __name__ == '__main__':
 
 				data = cdn.fetch_file(file_keys[0])
 				if not data:
-					print('No data for a given key %s' % file_keys[0].encode('hex'))
+					print('No data for a given key %s' % binascii.hexlify(file_keys[0]).decode('utf-8'))
 					continue
 
 				blte.extract_buffer_to_file(data, os.path.join(output_path, file_name.replace('\\', '/')))

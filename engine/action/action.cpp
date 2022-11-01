@@ -4167,7 +4167,7 @@ timespan_t action_t::calculate_dot_refresh_duration( const dot_t* dot, timespan_
   switch ( dot_behavior )
   {
     case dot_behavior_e::DOT_REFRESH_PANDEMIC:
-      return std::min( triggered_duration * 0.3, dot->remains() ) + triggered_duration;
+      return std::max( dot->remains(), std::min( triggered_duration * 0.3, dot->remains() ) + triggered_duration );
     case dot_behavior_e::DOT_REFRESH_DURATION:
       return dot->time_to_next_full_tick() + triggered_duration;
     case dot_behavior_e::DOT_EXTEND:
@@ -5073,6 +5073,11 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
         sim->print_debug( "{} max target count modified by {} to {}", *this, effect.base_value(), aoe );
         break;
 
+      case P_TARGET_BONUS:
+        chain_bonus_damage += effect.percent();
+        sim->print_debug( "{} chain target bonus modified by {} to {}", *this, effect.percent(), chain_bonus_damage );
+        break;
+
       case P_GCD:
         trigger_gcd += effect.time_value();
         sim->print_debug( "{} trigger_gcd modified by {} to {}", *this, effect.time_value(), trigger_gcd );
@@ -5129,6 +5134,12 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
         base_costs[ resource_current ] *= 1.0 + effect.percent();
         sim->print_debug( "{} base resource cost for resource {} modified by {}%", *this,
                           resource_current, effect.base_value() );
+        break;
+
+      case P_TARGET_BONUS:
+        // Chain Bonus Damage is base 0.0 and applied as 1.0 + chain_bonus_damage in action_t::calculate_direct_amount
+        chain_bonus_damage = ( ( 1.0 + chain_bonus_damage ) * ( 1.0 + effect.percent() ) ) - 1.0;
+        sim->print_debug( "{} chain target bonus modified by {}% to {}", *this, effect.base_value(), chain_bonus_damage );
         break;
 
       case P_TICK_TIME:

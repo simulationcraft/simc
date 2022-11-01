@@ -268,6 +268,7 @@ struct player_t : public actor_t
   action_t* queueing;
   action_t* channeling;
   action_t* strict_sequence; // Strict sequence of actions currently being executed
+  event_t* demise_event;
   event_t* readying;
   event_t* off_gcd;
   event_t* cast_while_casting_poll_event; // Periodically check for something to do while casting

@@ -21,7 +21,9 @@ SRC += \
     class_modules$(PATHSEP)apl$(PATHSEP)apl_evoker.cpp \
     class_modules$(PATHSEP)apl$(PATHSEP)apl_hunter.cpp \
     class_modules$(PATHSEP)apl$(PATHSEP)apl_monk.cpp \
+    class_modules$(PATHSEP)apl$(PATHSEP)apl_paladin.cpp \
     class_modules$(PATHSEP)apl$(PATHSEP)apl_priest.cpp \
+    class_modules$(PATHSEP)apl$(PATHSEP)apl_rogue.cpp \
     class_modules$(PATHSEP)apl$(PATHSEP)mage.cpp \
     class_modules$(PATHSEP)apl$(PATHSEP)warlock.cpp \
     class_modules$(PATHSEP)monk$(PATHSEP)sc_monk.cpp \

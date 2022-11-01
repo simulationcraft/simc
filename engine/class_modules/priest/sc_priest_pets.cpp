@@ -106,9 +106,6 @@ struct priest_pet_t : public pet_t
   {
     double m = pet_t::composite_player_multiplier( school );
 
-    // Orc racial
-    m *= 1.0 + o().racials.command->effectN( 1 ).percent();
-
     return m;
   }
 
@@ -225,264 +222,21 @@ struct priest_pet_melee_t : public melee_attack_t
   }
 };
 
-struct priest_pet_spell_t : public spell_t
+struct priest_pet_spell_t : public spell_t, public parse_buff_effects_t<priest_td_t>
 {
   bool affected_by_shadow_weaving;
-  // auto parsed dynamic effects
-  using bfun = std::function<bool()>;
-  struct buff_effect_t
-  {
-    buff_t* buff;
-    double value;
-    bool use_stacks;
-    bfun func;
-
-    buff_effect_t( buff_t* b, double v, bool s = true, bfun f = nullptr )
-      : buff( b ), value( v ), use_stacks( s ), func( std::move( f ) )
-    {
-    }
-  };
-
-  std::vector<buff_effect_t> ta_multiplier_buffeffects;
-  std::vector<buff_effect_t> da_multiplier_buffeffects;
-  std::vector<buff_effect_t> execute_time_buffeffects;
-  std::vector<buff_effect_t> dot_duration_buffeffects;
-  std::vector<buff_effect_t> recharge_multiplier_buffeffects;
-  std::vector<buff_effect_t> cost_buffeffects;
-  std::vector<buff_effect_t> crit_chance_buffeffects;
 
   priest_pet_spell_t( util::string_view token, priest_pet_t& p, const spell_data_t* s )
     : spell_t( token, &p, s ), affected_by_shadow_weaving( false )
   {
     may_crit = true;
 
+    action_ = this;
+
     if ( data().ok() )
     {
       apply_buff_effects();
     }
-  }
-
-  template <typename T>
-  void parse_spell_effects_mods( double& val, const spell_data_t* base, size_t idx, T mod )
-  {
-    for ( size_t i = 1; i <= mod->effect_count(); i++ )
-    {
-      const auto& eff = mod->effectN( i );
-
-      if ( eff.type() != E_APPLY_AURA )
-        continue;
-
-      if ( ( base->affected_by_all( eff ) &&
-             ( ( eff.misc_value1() == P_EFFECT_1 && idx == 1 ) || ( eff.misc_value1() == P_EFFECT_2 && idx == 2 ) ||
-               ( eff.misc_value1() == P_EFFECT_3 && idx == 3 ) || ( eff.misc_value1() == P_EFFECT_4 && idx == 4 ) ||
-               ( eff.misc_value1() == P_EFFECT_5 && idx == 5 ) ) ) ||
-           ( eff.subtype() == A_PROC_TRIGGER_SPELL_WITH_VALUE && eff.trigger_spell_id() == base->id() && idx == 1 ) )
-      {
-        double pct = eff.percent();
-
-        if ( eff.subtype() == A_ADD_FLAT_MODIFIER || eff.subtype() == A_ADD_FLAT_LABEL_MODIFIER )
-          val += pct;
-        else if ( eff.subtype() == A_ADD_PCT_MODIFIER || eff.subtype() == A_ADD_PCT_LABEL_MODIFIER )
-          val *= 1.0 + pct;
-        else if ( eff.subtype() == A_PROC_TRIGGER_SPELL_WITH_VALUE )
-          val = pct;
-        else
-          continue;
-      }
-    }
-  }
-
-  void parse_spell_effects_mods( double&, const spell_data_t*, size_t )
-  {
-  }
-
-  template <typename T, typename... Ts>
-  void parse_spell_effects_mods( double& val, const spell_data_t* base, size_t idx, T mod, Ts... mods )
-  {
-    parse_spell_effects_mods( val, base, idx, mod );
-    parse_spell_effects_mods( val, base, idx, mods... );
-  }
-
-  // Will parse simple buffs that ONLY target the caster and DO NOT have multiple ranks
-  // 1: Add Percent Modifier to Spell Direct Amount
-  // 2: Add Percent Modifier to Spell Periodic Amount
-  // 3: Add Percent Modifier to Spell Cast Time
-  // 4: Add Percent Modifier to Spell Cooldown
-  // 5: Add Percent Modifier to Spell Resource Cost
-  // 6: Add Flat Modifier to Spell Critical Chance
-  template <typename... Ts>
-  void parse_buff_effect( buff_t* buff, bfun f, const spell_data_t* s_data, size_t i, bool use_stacks, bool use_default,
-                          Ts... mods )
-  {
-    const auto& eff = s_data->effectN( i );
-    double val      = eff.percent();
-
-    auto debug_message = [ & ]( std::string_view type ) {
-      if ( buff )
-      {
-        p().sim->print_debug( "buff-effects: {} ({}) {} modified by {}% with buff {} ({}#{})", name(), id, type,
-                              val * 100.0, buff->name(), buff->data().id(), i );
-      }
-      else if ( f )
-      {
-        p().sim->print_debug( "conditional-effects: {} ({}) {} modified by {}% with condition from {} ({}#{})", name(),
-                              id, type, val * 100.0, s_data->name_cstr(), s_data->id(), i );
-      }
-      else
-      {
-        p().sim->print_debug( "passive-effects: {} ({}) {} modified by {}% from {} ({}#{})", name(), id, type,
-                              val * 100.0, s_data->name_cstr(), s_data->id(), i );
-      }
-    };
-
-    // TODO: more robust logic around 'party' buffs with radius
-    if ( !( eff.type() == E_APPLY_AURA || eff.type() == E_APPLY_AREA_AURA_PARTY ) || eff.radius() )
-      return;
-
-    if ( i <= 5 )
-      parse_spell_effects_mods( val, s_data, i, mods... );
-
-    if ( !data().affected_by_all( eff ) )
-      return;
-
-    if ( use_default && buff )
-      val = buff->default_value;
-
-    if ( !val )
-      return;
-
-    if ( eff.subtype() == A_ADD_PCT_MODIFIER || eff.subtype() == A_ADD_PCT_LABEL_MODIFIER )
-    {
-      switch ( eff.misc_value1() )
-      {
-        case P_GENERIC:
-          da_multiplier_buffeffects.emplace_back( buff, val, use_stacks, f );
-          debug_message( "direct damage" );
-          break;
-        case P_DURATION:
-          dot_duration_buffeffects.emplace_back( buff, val, use_stacks, f );
-          debug_message( "duration" );
-          break;
-        case P_TICK_DAMAGE:
-          ta_multiplier_buffeffects.emplace_back( buff, val, use_stacks, f );
-          debug_message( "tick damage" );
-          break;
-        case P_CAST_TIME:
-          execute_time_buffeffects.emplace_back( buff, val, use_stacks, f );
-          debug_message( "cast time" );
-          break;
-        case P_COOLDOWN:
-          recharge_multiplier_buffeffects.emplace_back( buff, val, use_stacks, f );
-          debug_message( "cooldown" );
-          break;
-        case P_RESOURCE_COST:
-          cost_buffeffects.emplace_back( buff, val, use_stacks, f );
-          debug_message( "cost" );
-          break;
-        default:
-          return;
-      }
-    }
-    else if ( eff.subtype() == A_ADD_FLAT_MODIFIER && eff.misc_value1() == P_CRIT )
-    {
-      crit_chance_buffeffects.emplace_back( buff, val, use_stacks, f );
-      debug_message( "crit chance" );
-    }
-    else
-    {
-      return;
-    }
-  }
-
-  template <typename... Ts>
-  void parse_buff_effects( buff_t* buff, unsigned ignore_mask, bool use_stacks, bool use_default, Ts... mods )
-  {
-    if ( !buff )
-      return;
-
-    const spell_data_t* s_data = &buff->data();
-    for ( size_t i = 1; i <= s_data->effect_count(); i++ )
-    {
-      if ( ignore_mask & 1 << ( i - 1 ) )
-        continue;
-
-      parse_buff_effect( buff, nullptr, s_data, i, use_stacks, use_default, mods... );
-    }
-  }
-
-  template <typename... Ts>
-  void parse_buff_effects( buff_t* buff, unsigned ignore_mask, Ts... mods )
-  {
-    parse_buff_effects<Ts...>( buff, ignore_mask, true, false, mods... );
-  }
-
-  template <typename... Ts>
-  void parse_buff_effects( buff_t* buff, bool stack, bool use_default, Ts... mods )
-  {
-    parse_buff_effects<Ts...>( buff, 0U, stack, use_default, mods... );
-  }
-
-  template <typename... Ts>
-  void parse_buff_effects( buff_t* buff, bool stack, Ts... mods )
-  {
-    parse_buff_effects<Ts...>( buff, 0U, stack, false, mods... );
-  }
-
-  template <typename... Ts>
-  void parse_buff_effects( buff_t* buff, Ts... mods )
-  {
-    parse_buff_effects<Ts...>( buff, 0U, true, false, mods... );
-  }
-
-  void parse_conditional_effects( const spell_data_t* spell, bfun f, unsigned ignore_mask = 0U )
-  {
-    if ( !spell || !spell->ok() )
-      return;
-
-    for ( size_t i = 1; i <= spell->effect_count(); i++ )
-    {
-      if ( ignore_mask & 1 << ( i - 1 ) )
-        continue;
-
-      parse_buff_effect( nullptr, f, spell, i, false, false );
-    }
-  }
-
-  void parse_passive_effects( const spell_data_t* spell, unsigned ignore_mask = 0U )
-  {
-    parse_conditional_effects( spell, nullptr, ignore_mask );
-  }
-
-  double get_buff_effects_value( const std::vector<buff_effect_t>& buffeffects, bool flat = false,
-                                 bool benefit = true ) const
-  {
-    double return_value = flat ? 0.0 : 1.0;
-
-    for ( const auto& i : buffeffects )
-    {
-      double eff_val = i.value;
-      int mod        = 1;
-
-      if ( i.func && !i.func() )
-        continue;  // continue to next effect if conditional effect function is false
-
-      if ( i.buff )
-      {
-        auto stack = benefit ? i.buff->stack() : i.buff->check();
-
-        if ( !stack )
-          continue;  // continue to next effect if stacks == 0 (buff is down)
-
-        mod = i.use_stacks ? stack : 1;
-      }
-
-      if ( flat )
-        return_value += eff_val * mod;
-      else
-        return_value *= 1.0 + eff_val * mod;
-    }
-
-    return return_value;
   }
 
   // Syntax: parse_buff_effects[<S[,S...]>]( buff[, ignore_mask|use_stacks[, use_default]][, spell1[,spell2...] )
@@ -500,6 +254,7 @@ struct priest_pet_spell_t : public spell_t
     parse_buff_effects( p().o().buffs.shadowform );
     parse_buff_effects( p().o().buffs.twist_of_fate, p().o().talents.twist_of_fate );
     parse_buff_effects( p().o().buffs.devoured_pride );
+    parse_buff_effects( p().o().buffs.dark_ascension, true );  // Buffs corresponding non-periodic spells
   }
 
   priest_pet_t& p()
@@ -796,11 +551,6 @@ struct fiend_melee_t : public priest_pet_melee_t
 
     // Mindbender inherits haste from the player
     timespan_t hasted_time = base_execute_time * player->cache.spell_speed();
-
-    if ( p().o().conduits.rabid_shadows->ok() )
-    {
-      hasted_time /= 1.0 + p().o().conduits.rabid_shadows.percent();
-    }
 
     return hasted_time;
   }
@@ -1151,6 +901,22 @@ struct void_tendril_mind_flay_t final : public priest_pet_spell_t
     channeled                  = true;
     hasted_ticks               = false;
     affected_by_shadow_weaving = true;
+
+    // BUG: This talent is cursed
+    // https://github.com/SimCMinMax/WoW-BugTracker/issues/1029
+    if ( p.o().bugs )
+    {
+      if ( p.o().level() == 70 )
+      {
+        base_td += 1275;
+      }
+      else
+      {
+        base_td += 219;
+      }
+
+      spell_power_mod.tick *= 0.6;
+    }
   }
 
   void init() override
@@ -1228,17 +994,27 @@ struct void_lasher_t final : public priest_pet_t
 // Insanity gain (legendary=208232, cthun=377358)
 struct void_lasher_mind_sear_tick_t final : public priest_pet_spell_t
 {
-  const double void_lasher_insanity_gain;
-
-  void_lasher_mind_sear_tick_t( void_lasher_t& p, const spell_data_t* s )
-    : priest_pet_spell_t( "mind_sear_tick", p, s ),
-      void_lasher_insanity_gain( p.o().find_spell( 377358 )->effectN( 1 ).resource( RESOURCE_INSANITY ) )
+  void_lasher_mind_sear_tick_t( void_lasher_t& p, const spell_data_t* s ) : priest_pet_spell_t( "mind_sear_tick", p, s )
   {
     background = true;
     dual       = true;
     aoe        = -1;
     radius     = data().effectN( 2 ).radius_max();  // base radius is 100yd, actual is stored in effect 2
-    affected_by_shadow_weaving = true;
+
+    // BUG: The damage this is dealing is not following spell data
+    // https://github.com/SimCMinMax/WoW-BugTracker/issues/1029
+    if ( p.o().bugs )
+    {
+      spell_power_mod.direct *= 0.6;
+      da_multiplier_buffeffects.clear();  // This is in spelldata to scale with things but it does not in game
+    }
+
+    // BUG: This spell is not being affected by Mastery
+    // https://github.com/SimCMinMax/WoW-BugTracker/issues/931
+    if ( !p.o().bugs )
+    {
+      affected_by_shadow_weaving = true;
+    }
   }
 
   void init() override
@@ -1267,41 +1043,40 @@ struct void_lasher_mind_sear_tick_t final : public priest_pet_spell_t
     // Not hasted
     return base_tick_time;
   }
-
-  void impact( action_state_t* s ) override
-  {
-    priest_pet_spell_t::impact( s );
-
-    // You only get the Insanity on your main target
-    if ( s->target != parent_dot->target )
-    {
-      return;
-    }
-
-    // TODO: remove after launch
-    if ( p().o().talents.shadow.idol_of_cthun.enabled() )
-    {
-      p().o().generate_insanity( void_lasher_insanity_gain, p().o().gains.insanity_idol_of_cthun_mind_sear, s->action );
-    }
-    else
-    {
-      p().o().generate_insanity( void_lasher_insanity_gain, p().o().gains.insanity_eternal_call_to_the_void_mind_sear,
-                                 s->action );
-    }
-  }
 };
 
 // Legendary: 344754 -> 344752
 // Idol of C'thun: 394976 -> 394979
 struct void_lasher_mind_sear_t final : public priest_pet_spell_t
 {
+  const double void_lasher_insanity_gain;
+
   void_lasher_mind_sear_t( void_lasher_t& p, util::string_view options )
-    : priest_pet_spell_t( "mind_sear", p, p.o().find_spell( 394976 ) )
+    : priest_pet_spell_t( "mind_sear", p, p.o().find_spell( 394976 ) ),
+      void_lasher_insanity_gain( p.o().find_spell( 377358 )->effectN( 1 ).resource( RESOURCE_INSANITY ) )
   {
     parse_options( options );
     channeled    = true;
     hasted_ticks = false;
     tick_action  = new void_lasher_mind_sear_tick_t( p, data().effectN( 1 ).trigger() );
+  }
+
+  // You only get the Insanity on your main target
+  void tick( dot_t* d ) override
+  {
+    priest_pet_spell_t::tick( d );
+
+    // TODO: remove after launch
+    if ( p().o().talents.shadow.idol_of_cthun.enabled() )
+    {
+      p().o().generate_insanity( void_lasher_insanity_gain, p().o().gains.insanity_idol_of_cthun_mind_sear,
+                                 d->state->action );
+    }
+    else
+    {
+      p().o().generate_insanity( void_lasher_insanity_gain, p().o().gains.insanity_eternal_call_to_the_void_mind_sear,
+                                 d->state->action );
+    }
   }
 };
 
@@ -1364,15 +1139,14 @@ struct void_spike_cleave_t final : public priest_pet_spell_t
 
     background = dual = true;
     may_miss          = false;
-
-    // TODO: check how this works with the bugged implementation
-    may_crit = false;
+    may_crit          = true;
 
     // BUG: Instead of triggering for 30% of the damage done it has its own spell power scaling
     // https://github.com/SimCMinMax/WoW-BugTracker/issues/1000
     if ( !p.o().bugs )
     {
       spell_power_mod.direct = 0.0;
+      may_crit               = false;
     }
   }
 

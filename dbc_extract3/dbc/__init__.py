@@ -110,6 +110,7 @@ KEY_FIELD_HOTFIX_RECORD = {
     'ItemBonusListGroupEntry'     : 'id_item_bonus_list_group',
     'SkillLineXTraitTree'         : 'id_skill_line',
     'TraitDefinitionEffectPoints' : 'id_trait_definition',
+    'TraitNodeXTraitCond'         : 'id_trait_node',
     'TraitNodeXTraitNodeEntry'    : 'id_trait_node',
     'TraitNodeGroupXTraitCond'    : 'id_trait_node_group',
     'TraitNodeGroupXTraitCost'    : 'id_trait_node_group',

@@ -604,9 +604,16 @@ BUFF* create_buff( player_t* p, util::string_view name, ARGS&&... args )
   auto b = buff_t::find( p, name );
   if ( b != nullptr )
   {
+    p->sim->error( "Attempting to create buff {} when buff already exists.", b->name() );
     return debug_cast<BUFF*>( b );
   }
 
   return make_buff<BUFF>( p, name, std::forward<ARGS>( args )... );
+}
+
+template <typename BUFF, typename... ARGS>
+BUFF* create_buff( player_t* p, const spell_data_t* s, ARGS&&... args )
+{
+  return create_buff<BUFF>( p, util::tokenize_fn( s->name_cstr() ), s, std::forward<ARGS>( args )... );
 }
 } // unique_gear

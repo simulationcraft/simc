@@ -982,7 +982,7 @@ public:
     ab::apply_affecting_aura( p -> talents.streamline );
     ab::apply_affecting_aura( p -> talents.killing_blow );
     ab::apply_affecting_aura( p -> talents.hunters_knowledge );
-    ab::apply_affecting_aura( p -> talents.surging_shots );
+    ab::apply_affecting_aura( p -> talents.surging_shots.ok() ? p -> talents.surging_shots : p -> legendary.surging_shots );
     ab::apply_affecting_aura( p -> talents.target_practice );
     ab::apply_affecting_aura( p -> talents.focused_aim );
     ab::apply_affecting_aura( p -> talents.dead_eye );
@@ -1423,6 +1423,7 @@ public:
     ab::apply_affecting_aura( o() -> talents.killer_companion );
     ab::apply_affecting_aura( o() -> talents.improved_kill_command );
     ab::apply_affecting_aura( o() -> tier_set.t29_bm_2pc );
+    ab::apply_affecting_aura( o() -> talents.killer_command );
   }
 
   T_PET* p()             { return static_cast<T_PET*>( ab::player ); }
@@ -1570,6 +1571,7 @@ struct hunter_main_pet_base_t : public hunter_pet_t
     buff_t* bestial_wrath = nullptr;
     buff_t* piercing_fangs = nullptr;
     buff_t* rylakstalkers_piercing_fangs = nullptr;
+    buff_t* lethal_command = nullptr;
 
     buff_t* bloodseeker = nullptr;
     buff_t* coordinated_assault = nullptr;
@@ -1636,6 +1638,10 @@ struct hunter_main_pet_base_t : public hunter_pet_t
       make_buff( this, "piercing_fangs", o() -> find_spell( 392054 ) )
         -> set_default_value_from_effect( 1 )
         -> set_chance( o() -> talents.piercing_fangs.ok() );
+
+    buffs.lethal_command =
+      make_buff( this, "lethal_command", o() -> tier_set.t29_bm_4pc -> effectN( 3 ).trigger() )
+      -> set_default_value_from_effect( 1 );
   }
 
   double composite_melee_speed() const override
@@ -2197,11 +2203,6 @@ struct kill_command_bm_mm_t: public kill_command_base_t
     proc_t* proc;
   } dire_command;
 
-  struct {
-    double chance = 0;
-    proc_t* proc;
-  } dire_command_runeforge;
-
   timespan_t ferocious_appetite_reduction;
 
   kill_command_bm_mm_t( hunter_main_pet_base_t* p ) :
@@ -2212,17 +2213,10 @@ struct kill_command_bm_mm_t: public kill_command_base_t
     if ( o() -> conduits.ferocious_appetite.ok() )
       ferocious_appetite_reduction = timespan_t::from_seconds( o() -> conduits.ferocious_appetite.value() / 10 );
 
-    if ( o() -> talents.dire_command.ok() )
+    if ( o() -> legendary.dire_command.ok() && !o() -> talents.dire_command.ok() )
     {
-      dire_command.chance = o() -> talents.dire_command -> effectN( 1 ).percent();
-      dire_command.proc = o() -> get_proc( "Dire Command" );
-    }
-
-    if ( o() -> legendary.dire_command.ok() )
-    {
-      // assume it's a flat % without any bs /shrug
-      dire_command_runeforge.chance = o() -> legendary.dire_command -> effectN( 1 ).percent();
-      dire_command_runeforge.proc = o() -> get_proc( "Dire Command (Runeforge)" );
+      dire_command.chance = o() -> legendary.dire_command -> effectN( 1 ).percent();
+      dire_command.proc = o() -> get_proc( "Dire Command (Runeforge)" );
     }
   }
 
@@ -2236,13 +2230,7 @@ struct kill_command_bm_mm_t: public kill_command_base_t
       dire_command.proc -> occur();
     }
 
-    if ( rng().roll( dire_command_runeforge.chance ) )
-    {
-      o() -> pets.dc_dire_beast.spawn( pets::dire_beast_duration( o() ).first );
-      dire_command_runeforge.proc -> occur();
-    }
-
-    o() -> buffs.lethal_command -> expire();
+    p() -> buffs.lethal_command -> expire();
   }
 
   void impact( action_state_t* s ) override
@@ -2268,7 +2256,7 @@ struct kill_command_bm_mm_t: public kill_command_base_t
   {
     double am = kill_command_base_t::action_multiplier();
 
-    am *= 1 + o() -> buffs.lethal_command -> value();
+    am *= 1 + p() -> buffs.lethal_command -> value();
 
     return am;
   }
@@ -3024,6 +3012,12 @@ struct kill_shot_t : hunter_ranged_attack_t
       : residual_bleed_base_t( n, p, p -> find_spell( 356620 ) )
     {
     }
+
+    double base_ta(const action_state_t* s) const override
+    {
+      // 26-10-22 TODO Not affected by Serrated Shots.
+      return residual_periodic_action_t::base_ta( s );
+    }
   };
 
   // Coordinated Assault
@@ -3048,6 +3042,7 @@ struct kill_shot_t : hunter_ranged_attack_t
     health_threshold_pct( p -> talents.kill_shot -> effectN( 2 ).base_value() )
   {
     parse_options( options_str );
+    triggers_wild_spirits = false;
 
     if ( p -> legendary.pouch_of_razor_fragments.ok() )
     {
@@ -3117,6 +3112,9 @@ struct kill_shot_t : hunter_ranged_attack_t
       if ( amount > 0 )
         residual_action::trigger( bleeding_gash, s -> target, amount );
     }
+
+    // 28-10-22 TODO All hits from BoP Kill Shot triggers Wild Spirits.
+    p() -> trigger_wild_spirits( s, true );
   }
 
   int n_targets() const override
@@ -3141,7 +3139,7 @@ struct kill_shot_t : hunter_ranged_attack_t
       ( candidate_target -> health_percentage() <= health_threshold_pct
         || p() -> buffs.flayers_mark -> check() || p() -> buffs.deathblow -> check()
         || p() -> buffs.hunters_prey -> check()
-        || p() -> talents.coordinated_kill.ok() && p() -> buffs.coordinated_assault -> check() );
+        || ( p() -> talents.coordinated_kill.ok() && p() -> buffs.coordinated_assault -> check() ) );
   }
 
   double action_multiplier() const override
@@ -3253,7 +3251,6 @@ struct wind_arrow_t final : public hunter_ranged_attack_t
     hunter_ranged_attack_t( n, p, p -> find_spell( 191043 ) )
   {
     dual = true;
-    proc = true;
     // LotW arrows behave more like AiS re cast time/speed
     // TODO: RETEST for DL & test its behavior on lnl AiSes
     base_execute_time = p -> talents.aimed_shot -> cast_time();
@@ -3446,11 +3443,6 @@ struct explosive_shot_background_t : public explosive_shot_t
     dual = true;
     base_costs[ RESOURCE_FOCUS ] = 0;
     triggers_wild_spirits = false;
-  }
-
-  timespan_t travel_time() const override
-  {
-    return 0_s;
   }
 };
 
@@ -3755,18 +3747,7 @@ struct death_chakram_t : death_chakram::base_t
     attack_power_mod.direct = single_target -> attack_power_mod.direct;
     school = single_target -> school;
 
-    // Hack in a Unity check; it's possible in prepatch for Death Chakrams to perform the Munitions effect without Necrolord being the active covenant.
-    bool unity = false;
-    for ( const auto& i : p -> items )
-    {
-      if ( range::contains( i.parsed.bonus_id, 8122 ) )
-      {
-        unity = true;
-        break;
-      }
-    }
-
-    if ( p -> legendary.bag_of_munitions.ok() || unity ) {
+    if ( p -> legendary.bag_of_munitions.ok() ) {
       explosive = p -> get_background_action<explosive_shot_background_t>( "explosive_shot_munitions" );
       explosive -> targets = as<size_t>( p -> find_spell( 356264 ) -> effectN( 1 ).base_value() );
     }
@@ -3828,6 +3809,8 @@ struct flayed_shot_t : hunter_ranged_attack_t
     hunter_ranged_attack_t( "flayed_shot", p, p -> covenants.flayed_shot )
   {
     parse_options( options_str );
+
+    affected_by.serrated_shots = false;
   }
 
   void impact( action_state_t* s ) override
@@ -4083,6 +4066,7 @@ struct barbed_shot_t: public hunter_ranged_attack_t
 
       pet -> buffs.frenzy -> trigger();
       pet -> buffs.thrill_of_the_hunt -> trigger();
+      pet -> buffs.lethal_command -> trigger();
     }
 
     if ( p() -> talents.bloody_frenzy.ok() && p() -> buffs.call_of_the_wild -> up() )
@@ -4335,7 +4319,7 @@ struct aimed_shot_t : public aimed_shot_base_t
 
   struct serpent_sting_sst_t final : public serpent_sting_base_t
   {
-    serpent_sting_sst_t( util::string_view n, hunter_t* p ):
+    serpent_sting_sst_t( util::string_view /*name*/, hunter_t* p ):
       serpent_sting_base_t( p, "", p -> find_spell( 271788 ) )
     {
       dual = true;
@@ -4381,6 +4365,11 @@ struct aimed_shot_t : public aimed_shot_base_t
     {
       surging_shots.chance = p -> talents.surging_shots -> proc_chance();
       surging_shots.proc = p -> get_proc( "Surging Shots Rapid Fire reset" );
+    }
+    else if ( p -> legendary.surging_shots.ok() )
+    {
+      surging_shots.chance = p -> legendary.surging_shots -> proc_chance();
+      surging_shots.proc = p -> get_proc( "Surging Shots (Runeforge) Rapid Fire reset" );
     }
 
     if ( p -> talents.legacy_of_the_windrunners.ok() )
@@ -4823,7 +4812,7 @@ struct multishot_mm_t: public hunter_ranged_attack_t
 
     p() -> trigger_lethal_shots();
 
-    if ( p() -> talents.trick_shots.ok() && num_targets_hit >= p() -> talents.trick_shots -> effectN( 2 ).base_value() || p() -> buffs.bombardment -> up() )
+    if ( ( p() -> talents.trick_shots.ok() && num_targets_hit >= p() -> talents.trick_shots -> effectN( 2 ).base_value() ) || p() -> buffs.bombardment -> up() )
       p() -> buffs.trick_shots -> trigger();
 
     p() -> buffs.bombardment -> expire();
@@ -4960,12 +4949,11 @@ struct melee_focus_spender_t: hunter_melee_attack_t
 
   struct serpent_sting_vv_t final : public serpent_sting_base_t
   {
-    serpent_sting_vv_t( util::string_view n, hunter_t* p ):
+    serpent_sting_vv_t( util::string_view /*name*/, hunter_t* p ):
       serpent_sting_base_t( p, "", p -> find_spell( 271788 ) )
     {
       dual = true;
       base_costs[ RESOURCE_FOCUS ] = 0;
-      triggers_wild_spirits = false;
 
       // Viper's Venom is left out of Hydra's Bite target count modification.
       aoe = 0;
@@ -5369,6 +5357,8 @@ struct fury_of_the_eagle_t: public hunter_melee_attack_t
       reduced_aoe_targets = aoe_cap;
       health_threshold = p -> talents.fury_of_the_eagle -> effectN( 4 ).base_value() + p -> talents.ruthless_marauder -> effectN( 1 ).base_value();
       crit_chance_bonus = p -> talents.fury_of_the_eagle -> effectN( 3 ).percent();
+      // TODO 25-10-22 Ruthless Marauder says nothing about increasing damage but is adding the cdr value data to the tick dmg as well.
+      base_dd_adder += p -> talents.ruthless_marauder -> effectN( 3 ).base_value();
 
       if ( p -> talents.ruthless_marauder )
         ruthless_marauder_adjust = p -> talents.ruthless_marauder -> effectN( 3 ).time_value();
@@ -5394,6 +5384,10 @@ struct fury_of_the_eagle_t: public hunter_melee_attack_t
         p() -> cooldowns.flanking_strike -> adjust( -ruthless_marauder_adjust );
         p() -> cooldowns.ruthless_marauder -> start();
       }
+
+      // XXX: Wild Spirits kludge
+      if ( state -> chain_target == 0 && p() -> buffs.wild_spirits -> check() )
+        triggers_wild_spirits = false;
     }
   };
 
@@ -5405,6 +5399,14 @@ struct fury_of_the_eagle_t: public hunter_melee_attack_t
     channeled = true;
     tick_zero = true;
     tick_action = new fury_of_the_eagle_tick_t( p, as<int>( data().effectN( 5 ).base_value() ) );
+  }
+
+  void execute() override
+  {
+    // XXX: Wild Spirits kludge
+    static_cast<fury_of_the_eagle_tick_t*>( tick_action ) -> triggers_wild_spirits = true;
+
+    hunter_melee_attack_t::execute();
   }
 };
 
@@ -5832,7 +5834,7 @@ struct kill_command_t: public hunter_spell_t
 {
   struct arcane_shot_qs_t final : public attacks::arcane_shot_t
   {
-    arcane_shot_qs_t( util::string_view n, hunter_t* p ):
+    arcane_shot_qs_t( util::string_view /*name*/, hunter_t* p ):
       arcane_shot_t( p, "" )
     {
       dual = true;
@@ -5850,6 +5852,11 @@ struct kill_command_t: public hunter_spell_t
     double chance = 0;
     arcane_shot_qs_t* action = nullptr;
   } quick_shot;
+
+  struct {
+    double chance = 0;
+    proc_t* proc;
+  } dire_command;
 
   double df_bm_2pc_chance = 0;
 
@@ -5872,6 +5879,12 @@ struct kill_command_t: public hunter_spell_t
         quick_shot.chance = p -> talents.quick_shot -> effectN( 1 ).percent();
         quick_shot.action = p -> get_background_action<arcane_shot_qs_t>( "arcane_shot_qs" );
       }
+    }
+
+    if ( p -> talents.dire_command.ok() )
+    {
+      dire_command.chance = p -> talents.dire_command -> effectN( 1 ).percent();
+      dire_command.proc = p -> get_proc( "Dire Command" );
     }
   }
 
@@ -5919,6 +5932,12 @@ struct kill_command_t: public hunter_spell_t
       }
     }
 
+    if ( rng().roll( dire_command.chance ) )
+    {
+      p() -> pets.dc_dire_beast.spawn( pets::dire_beast_duration( p() ).first );
+      dire_command.proc -> occur();
+    }
+
     p() -> buffs.flamewakers_cobra_sting -> up(); // benefit tracking
     p() -> buffs.flamewakers_cobra_sting -> decrement();
 
@@ -5930,6 +5949,8 @@ struct kill_command_t: public hunter_spell_t
 
     if ( rng().roll( p() -> tier_set.t29_bm_2pc -> proc_chance() ) )
       p() -> cooldowns.barbed_shot -> reset( true );
+
+    p() -> buffs.lethal_command -> expire();
   }
 
   double cost() const override
@@ -6089,7 +6110,7 @@ struct aspect_of_the_wild_t: public hunter_spell_t
 {
   struct cobra_shot_aotw_t final : public attacks::cobra_shot_t
   {
-    cobra_shot_aotw_t( util::string_view n, hunter_t* p ):
+    cobra_shot_aotw_t( util::string_view /*name*/, hunter_t* p ):
       cobra_shot_t( p, "" )
     {
       dual = true;
@@ -6529,12 +6550,11 @@ struct wildfire_bomb_t: public hunter_spell_t
   {
     struct serpent_sting_vb_t final : public attacks::serpent_sting_base_t
     {
-      serpent_sting_vb_t( util::string_view n, hunter_t* p ):
+      serpent_sting_vb_t( util::string_view /*name*/, hunter_t* p ):
         serpent_sting_base_t( p, "", p -> find_spell( 271788 ) )
       {
         dual = true;
         base_costs[ RESOURCE_FOCUS ] = 0;
-        triggers_wild_spirits = false;
 
         aoe = as<int>( p -> talents.wildfire_infusion -> effectN( 2 ).base_value() );
       }
@@ -7035,7 +7055,7 @@ void hunter_t::init_spells()
   talents.explosive_shot                    = find_talent_spell( talent_tree::CLASS, "Explosive Shot" );
   talents.barrage                           = find_talent_spell( talent_tree::CLASS, "Barrage" );
   talents.poison_injection                  = find_talent_spell( talent_tree::CLASS, "Poison Injection" );
-  talents.hydras_bite                       = find_talent_spell( talent_tree::CLASS, "Hydras Bite" );
+  talents.hydras_bite                       = find_talent_spell( talent_tree::CLASS, "Hydra's Bite" );
 
   // Marksmanship Tree
   if (specialization() == HUNTER_MARKSMANSHIP)
@@ -7394,7 +7414,7 @@ void hunter_t::create_buffs()
       -> set_refresh_behavior( buff_refresh_behavior::EXTEND )
       -> set_affects_regen( true )
       -> set_stack_change_callback(
-        [ this ]( buff_t*, int old, int cur ) {
+        [ this ]( buff_t*, int /*ol*/, int cur ) {
           cooldowns.aimed_shot -> adjust_recharge_multiplier();
           cooldowns.rapid_fire -> adjust_recharge_multiplier();
           if ( cur == 0 ) {
@@ -7563,7 +7583,7 @@ void hunter_t::create_buffs()
 
   if ( talents.coordinated_kill.ok() ) {
     buffs.coordinated_assault -> set_stack_change_callback(
-      [ this ]( buff_t*, int old, int cur ) {
+      [ this ]( buff_t*, int /*old*/, int /*cur*/ ) {
         if ( talents.bombardier.ok() )
           cooldowns.wildfire_bomb -> reset( true );
 
@@ -7838,13 +7858,22 @@ void hunter_t::init_action_list()
     switch ( specialization() )
     {
     case HUNTER_BEAST_MASTERY:
-      hunter_apl::beast_mastery( this );
+      if ( true_level > 60 )
+        hunter_apl::beast_mastery_df( this );
+      else
+        hunter_apl::beast_mastery( this );
       break;
     case HUNTER_MARKSMANSHIP:
-      hunter_apl::marksmanship( this );
+      if ( true_level > 60 )
+        hunter_apl::marksmanship_df( this );
+      else
+        hunter_apl::marksmanship( this );
       break;
     case HUNTER_SURVIVAL:
-      hunter_apl::survival( this );
+      if ( true_level > 60 )
+        hunter_apl::survival_df( this );
+      else
+        hunter_apl::survival( this );
       break;
     default:
       get_action_priority_list( "default" ) -> add_action( "arcane_shot" );

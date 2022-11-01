@@ -3076,15 +3076,12 @@ public:
     main_hand_weapon.max_dmg    = dbc->spell_scaling( o()->type, level() );
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
-
-    if (  o()->specialization() == MONK_MISTWEAVER )
-      owner_coeff.ap_from_ap      = o()->spec.mistweaver_monk->effectN( 4 ).percent();
-
+    owner_coeff.ap_from_ap      = 1.00;
   }
 
   void init_action_list() override
   {
-    action_list_str += "claw_of_the_white_tiger";
+    action_list_str = "claw_of_the_white_tiger";
 
     pet_t::init_action_list();
   }
@@ -3135,7 +3132,7 @@ private:
             tick_action = new crackling_tiger_lightning_tick_t(p);
         }
 
-        double last_tick_factor(const dot_t*, timespan_t, timespan_t) const
+        double last_tick_factor(const dot_t*, timespan_t, timespan_t) const override
         {
             return 0.0;
         }

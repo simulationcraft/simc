@@ -1,5 +1,5 @@
-// Active class spells, wow build 10.0.2.46144
-static const std::array<active_class_spell_t, 266> __active_spells_data { {
+// Active class spells, wow build 10.0.0.46366
+static const std::array<active_class_spell_t, 265> __active_spells_data { {
   {  1,    0,    100,      0, "Charge"                             },
   {  1,    0,    355,      0, "Taunt"                              },
   {  1,    0,   1464,      0, "Slam"                               },
@@ -204,11 +204,10 @@ static const std::array<active_class_spell_t, 266> __active_spells_data { {
   { 10,    0, 117952,      0, "Crackling Jade Lightning"           },
   { 10,    0, 119381,      0, "Leg Sweep"                          },
   { 10,    0, 125883,      0, "Zen Flight"                         },
-  { 10,    0, 218164,      0, "Detox"                              },
   { 10,    0, 322101,      0, "Expel Harm"                         },
   { 10,    0, 322109,      0, "Touch of Death"                     },
   { 10,  268, 322729, 101546, "Spinning Crane Kick"                },
-  { 10,  270, 115450, 218164, "Detox"                              },
+  { 10,  270, 115450,      0, "Detox"                              },
   { 10,  270, 212051,      0, "Reawaken"                           },
   { 11,    0,    339,      0, "Entangling Roots"                   },
   { 11,    0,    768,      0, "Cat Form"                           },
@@ -268,7 +267,7 @@ static const std::array<active_class_spell_t, 266> __active_spells_data { {
   { 13, 1468, 361178,      0, "Mass Return"                        },
 } };
 
-// Pet active spells, wow build 10.0.2.46144
+// Pet active spells, wow build 10.0.0.46366
 static const std::array<active_pet_spell_t, 134> __active_pet_spells_data { {
   {  3,   2649, "Growl"                              },
   {  3,  16827, "Claw"                               },

@@ -3357,7 +3357,13 @@ damage_buff_t::damage_buff_t( actor_pair_t q, util::string_view name, const spel
   }
 }
 
-damage_buff_t* damage_buff_t::parse_spell_data( const spell_data_t* spell, double conduit_value )
+damage_buff_t::damage_buff_t( actor_pair_t q, util::string_view name, const spell_data_t* spell, double talent_value )
+  : buff_t( q, name, spell, nullptr )
+{
+  parse_spell_data( spell, 0.0, talent_value );
+}
+
+damage_buff_t* damage_buff_t::parse_spell_data( const spell_data_t* spell, double conduit_value, double talent_value )
 {
   if ( !spell->ok() )
     return this;
@@ -3368,8 +3374,15 @@ damage_buff_t* damage_buff_t::parse_spell_data( const spell_data_t* spell, doubl
     if ( !e.ok() || e.type() != E_APPLY_AURA )
       continue;
 
-    // Pass down the conduit override value if this is the first effect
-    double multiplier = ( idx == 1 ) ? conduit_value : 0.0;
+    double multiplier = 0.0;
+
+    // Pass down the conduit override value only if this is the first effect
+    if ( conduit_value != 0.0 && idx == 1 )
+      multiplier = conduit_value;
+
+    // If a talent value is supplied, overwrite all entries with it
+    if ( talent_value != 0.0 )
+      multiplier = talent_value;
 
     if ( e.subtype() == A_MOD_AUTO_ATTACK_PCT || e.subtype() == A_MOD_AUTO_ATTACK_FROM_CASTER )
     {

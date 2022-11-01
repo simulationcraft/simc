@@ -497,7 +497,7 @@ public:
       // Row 7
       player_talent_t scalding_brew;
       player_talent_t salsalabims_strength;
-      player_talent_t fortifying_brew_stagger;
+      player_talent_t fortifying_brew_determination;
       player_talent_t black_ox_brew;
       player_talent_t bob_and_weave;
       player_talent_t invoke_niuzao_the_black_ox;
@@ -634,7 +634,7 @@ public:
       player_talent_t hit_combo;
       // Row 7
       player_talent_t rushing_jade_wind;
-      player_talent_t forbidden_touch;
+      player_talent_t forbidden_technique;
       player_talent_t invoke_xuen_the_white_tiger;
       player_talent_t teachings_of_the_monastery;
       player_talent_t thunderfist;
@@ -907,6 +907,7 @@ public:
     const spell_data_t* glory_of_the_dawn_damage;
     const spell_data_t* hidden_masters_forbidden_touch;
     const spell_data_t* hit_combo;
+    const spell_data_t* keefers_skyreach_debuff;
     const spell_data_t* mark_of_the_crane;
     const spell_data_t* power_strikes_chi;
     const spell_data_t* thunderfist;
@@ -1096,11 +1097,11 @@ public:
   struct options_t
   {
     int initial_chi;
-    double memory_of_lucid_dreams_proc_chance = 0.15;
     double expel_harm_effectiveness;
     double faeline_stomp_uptime;
     int chi_burst_healing_targets;
     int motc_override;
+    int no_bof_dot;
   } user_options;
 
   // Blizzard rounds it's stagger damage; anything higher than half a percent beyond

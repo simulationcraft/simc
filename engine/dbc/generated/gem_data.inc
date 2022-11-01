@@ -1,5 +1,5 @@
-// Gem properties, wow build 10.0.2.46144
-static const std::array<gem_property_data_t, 2052> __gem_property_data { {
+// Gem properties, wow build 10.0.0.46366
+static const std::array<gem_property_data_t, 2050> __gem_property_data { {
   {    2,  2686, 0x00000002 }, // +$k1 Strength
   {    3,  2687, 0x00000008 }, // +$k1 Agility
   {    4,  2688, 0x00000004 }, // +$k1 Stamina
@@ -1787,7 +1787,7 @@ static const std::array<gem_property_data_t, 2052> __gem_property_data { {
   { 3742,  6084, 0x0000000e }, // +$k1 Strength
   { 3743,  6085, 0x0000000e }, // +$k1 Agility
   { 3744,  6086, 0x0000000e }, // +$k1 Intellect
-  { 3745,  6092, 0x0000000e }, // +$k1 Speed
+  { 3745,  6092, 0x0000000e }, // +3% Movement Speed
   { 3746,  5233, 0x0000000e }, // +$k1 Versatility
   { 3747,  6097, 0x00020000 }, // Equip: Your abilities have a chance to grant you $293142s1 Haste for $293142d.
   { 3748,  4223, 0x00000020 }, // Nitro Boosts
@@ -1834,7 +1834,7 @@ static const std::array<gem_property_data_t, 2052> __gem_property_data { {
   { 3790,  6144, 0x00020000 }, // Use: Create a stampede of Mechagnome automatons to trample your foes.
   { 3791,  6145, 0x00020000 }, // Equip: Your spells have a chance to redistribute your stats based on your equipped Logic Board.
   { 3792,  6146, 0x00020000 }, // Equip: Critical heals generate Capacitance, increasing your next heal by $k.
-  { 3795,  6147, 0x0000000e }, // +$k1 Speed
+  { 3795,  6147, 0x0000000e }, // +5% Movement Speed
   { 3796,  6151, 0x00000020 }, // Empowers creatures formed from Mardivas's Arcane Coffer with the power of water.
   { 3797,  6152, 0x00000020 }, // Empowers creatures formed from Mardivas's Arcane Coffer with the power of fire.
   { 3798,  6153, 0x00000020 }, // Empowers creatures formed from Mardivas's Arcane Coffer with the power of earth.
@@ -2041,16 +2041,14 @@ static const std::array<gem_property_data_t, 2052> __gem_property_data { {
   { 4015,  6486, 0x0000000e }, // Speed increased by $k1 |A:Professions-Icon-Quality-Tier2-Small:20:20|a
   { 4016,  6487, 0x0000000e }, // Speed increased by $k1 |A:Professions-Icon-Quality-Tier3-Small:20:20|a
   { 4017,  6499, 0x00020000 }, // $spell@spelldesc382957
-  { 4018,  6502, 0x01000000 }, // $spell@spelldesc384044
-  { 4019,  6504, 0x01000000 }, // $spell@spelldesc384081
-  { 4020,  6505, 0x01000000 }, // $spell@spelldesc384098
+  { 4018,  6502, 0x00080000 }, // $spell@spelldesc384044
+  { 4019,  6504, 0x00080000 }, // $spell@spelldesc384081
+  { 4020,  6505, 0x00080000 }, // $spell@spelldesc384098
   { 4021,  6506, 0x00080000 }, // $spell@spelldesc384141
   { 4022,  6507, 0x01000000 }, // $spell@spelldesc384266
-  { 4023,  6508, 0x01000000 }, // $spell@spelldesc385520
-  { 4024,  6519, 0x01000000 }, // This device always malfunctions.
-  { 4025,  6535, 0x01000000 }, // $spell@spelldesc386674 |n$spell@spelldesc386681
-  { 4026,  6691, 0x01000000 }, // $spell@spelldesc393795
-  { 4027,  6692, 0x01000000 }, // $spell@spelldesc384266
-  { 4028,  6693, 0x01000000 }, // $spell@spelldesc384266
+  { 4023,  6508, 0x00080000 }, // $spell@spelldesc385520
+  { 4024,  6519, 0x00080000 }, // This device always malfunctions.
+  { 4025,  6535, 0x00080000 }, // $spell@spelldesc386674 |n$spell@spelldesc386681
+  { 4026,  6691, 0x00080000 }, // $spell@spelldesc393795
 } };
 

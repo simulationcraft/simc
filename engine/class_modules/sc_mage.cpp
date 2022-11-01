@@ -382,8 +382,6 @@ public:
     buff_t* firestorm;
     buff_t* molten_skyfall;
     buff_t* molten_skyfall_ready;
-    buff_t* runeforge_sun_kings_blessing;
-    buff_t* runeforge_sun_kings_blessing_ready;
 
     buff_t* disciplinary_command;
     buff_t* disciplinary_command_arcane; // Hidden buff
@@ -2266,6 +2264,73 @@ struct fire_mage_spell_t : public mage_spell_t
     residual_action::trigger( p()->action.ignite, s->target, amount );
   }
 
+  // TODO: When an Ignite has a partial tick, how is the bank amount calculated to determine valid spread targets?
+  static double ignite_bank( dot_t* ignite )
+  {
+    if ( !ignite->is_ticking() )
+      return 0.0;
+
+    auto ignite_state = debug_cast<residual_action::residual_periodic_state_t*>( ignite->state );
+    return ignite_state->tick_amount * ignite->ticks_left_fractional();
+  }
+
+  void spread_ignite( player_t* primary )
+  {
+    auto source = primary->get_dot( "ignite", player );
+    if ( source->is_ticking() )
+    {
+      std::vector<dot_t*> ignites;
+
+      // Collect the Ignite DoT objects of all targets that are in range.
+      for ( auto t : target_list() )
+        ignites.push_back( t->get_dot( "ignite", player ) );
+
+      // Sort candidate Ignites by ascending bank size.
+      std::stable_sort( ignites.begin(), ignites.end(), [] ( dot_t* a, dot_t* b )
+      { return ignite_bank( a ) < ignite_bank( b ); } );
+
+      auto source_bank = ignite_bank( source );
+      auto source_tick_amount = debug_cast<residual_action::residual_periodic_state_t*>( source->state )->tick_amount;
+      auto targets_remaining = as<int>( p()->spec.ignite->effectN( 4 ).base_value() );
+      if ( p()->buffs.combustion->check() )
+        targets_remaining += as<int>( p()->talents.master_of_flame->effectN( 2 ).base_value() );
+
+      for ( auto destination : ignites )
+      {
+        // The original spread source doesn't count towards the spread target limit.
+        if ( source == destination )
+          continue;
+
+        // Target cap was reached, stop.
+        if ( targets_remaining-- <= 0 )
+          break;
+
+        // Source Ignite cannot spread to targets with higher Ignite bank.
+        if ( ignite_bank( destination ) >= source_bank )
+          continue;
+
+        if ( destination->is_ticking() )
+        {
+          p()->procs.ignite_overwrite->occur();
+
+          // If Ignite is already active on the target, the copied Ignite is applied as if it were refreshing the active one.
+          source->copy( destination->target, DOT_COPY_CLONE );
+        }
+        else
+        {
+          p()->procs.ignite_new_spread->occur();
+
+          // If Ignite is not active, we need to apply a new Ignite, but the full state is not copied (i.e., time to tick).
+          source->copy( destination->target, DOT_COPY_START );
+        }
+
+        // Regardless of existing Ignites, the tick amount is directly copied when spreading an Ignite.
+        // This usually results in the newly spread Ignites having an incorrect bank size.
+        debug_cast<residual_action::residual_periodic_state_t*>( destination->state )->tick_amount = source_tick_amount;
+      }
+    }
+  }
+
   bool firestarter_active( player_t* target ) const
   {
     if ( !p()->talents.firestarter.ok() )
@@ -2423,13 +2488,8 @@ struct hot_streak_spell_t : public fire_mage_spell_t
     if ( time_to_execute > 0_ms && p()->buffs.sun_kings_blessing_ready->check() )
     {
       p()->buffs.sun_kings_blessing_ready->expire();
-      p()->buffs.combustion->extend_duration_or_trigger( 1000 * p()->talents.sun_kings_blessing->effectN( 2 ).time_value() );
-    }
-
-    if ( time_to_execute > 0_ms && p()->buffs.runeforge_sun_kings_blessing_ready->check() )
-    {
-      p()->buffs.runeforge_sun_kings_blessing_ready->expire( p()->bugs ? 30_ms : 0_ms );
-      p()->buffs.combustion->extend_duration_or_trigger( 1000 * p()->runeforge.sun_kings_blessing->effectN( 2 ).time_value() );
+      const spell_data_t* spell = p()->talents.sun_kings_blessing.ok() ? p()->talents.sun_kings_blessing : p()->runeforge.sun_kings_blessing;
+      p()->buffs.combustion->extend_duration_or_trigger( 1000 * spell->effectN( 2 ).time_value() );
     }
 
     fire_mage_spell_t::execute();
@@ -2441,7 +2501,6 @@ struct hot_streak_spell_t : public fire_mage_spell_t
       p()->buffs.firemind->trigger();
 
       trigger_tracking_buff( p()->buffs.sun_kings_blessing, p()->buffs.sun_kings_blessing_ready );
-      trigger_tracking_buff( p()->buffs.runeforge_sun_kings_blessing, p()->buffs.runeforge_sun_kings_blessing_ready );
 
       if ( rng().roll( p()->talents.pyromaniac->effectN( 1 ).percent() ) )
       {
@@ -2863,11 +2922,9 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
 
     m *= 1.0 + s->n_targets * p()->talents.resonance->effectN( 1 ).percent();
 
-    // TODO: check what happens when you have both the talent and the legendary
-    // the legendary is missing from the SpellReplacement table, so presumably you get both
     if ( s->target->health_percentage() < p()->talents.arcane_bombardment->effectN( 1 ).base_value() )
       m *= 1.0 + p()->talents.arcane_bombardment->effectN( 2 ).percent();
-    if ( s->target->health_percentage() < p()->runeforge.arcane_bombardment->effectN( 1 ).base_value() )
+    if ( !p()->talents.arcane_bombardment.ok() && s->target->health_percentage() < p()->runeforge.arcane_bombardment->effectN( 1 ).base_value() )
       m *= 1.0 + p()->runeforge.arcane_bombardment->effectN( 2 ).percent();
 
     return m;
@@ -3345,7 +3402,8 @@ struct arcane_surge_t final : public arcane_mage_spell_t
     energize_pct( p->find_spell( 365265 )->effectN( 1 ).percent() )
   {
     parse_options( options_str );
-    triggers.radiant_spark = true;
+    if ( p->talents.radiant_spark.ok() )
+      triggers.radiant_spark = true;
     // TODO: Arcane Surge is currently fully capped at 5 targets instead of dealing reduced damage beyond 5 targets like the tooltip says.
     if ( !p->bugs )
     {
@@ -4869,8 +4927,6 @@ struct icy_veins_t final : public frost_mage_spell_t
 
 struct fire_blast_t final : public fire_mage_spell_t
 {
-  int max_spread_targets;
-
   fire_blast_t( std::string_view n, mage_t* p, std::string_view options_str ) :
     fire_mage_spell_t( n, p, p->talents.fire_blast.ok() ? p->talents.fire_blast : p->find_class_spell( "Fire Blast" ) )
   {
@@ -4888,74 +4944,6 @@ struct fire_blast_t final : public fire_mage_spell_t
     {
       base_crit += 1.0;
       usable_while_casting = true;
-    }
-
-    // Ignite is bugged and spreads to one fewer target than it should.
-    max_spread_targets = as<int>( p->spec.ignite->effectN( 4 ).base_value() + p->talents.master_of_flame->effectN( 2 ).base_value() ) - ( p->bugs ? 1 : 0 );
-  }
-
-  // TODO: When an Ignite has a partial tick, how is the bank amount calculated to determine valid spread targets?
-  static double ignite_bank( dot_t* ignite )
-  {
-    if ( !ignite->is_ticking() )
-      return 0.0;
-
-    auto ignite_state = debug_cast<residual_action::residual_periodic_state_t*>( ignite->state );
-    return ignite_state->tick_amount * ignite->ticks_left_fractional();
-  }
-
-  void spread_ignite( player_t* primary )
-  {
-    auto source = primary->get_dot( "ignite", player );
-    if ( source->is_ticking() )
-    {
-      std::vector<dot_t*> ignites;
-
-      // Collect the Ignite DoT objects of all targets that are in range.
-      for ( auto t : target_list() )
-        ignites.push_back( t->get_dot( "ignite", player ) );
-
-      // Sort candidate Ignites by descending bank size.
-      std::stable_sort( ignites.begin(), ignites.end(), [] ( dot_t* a, dot_t* b )
-      { return ignite_bank( a ) > ignite_bank( b ); } );
-
-      auto source_bank = ignite_bank( source );
-      auto targets_remaining = max_spread_targets;
-      auto source_tick_amount = debug_cast<residual_action::residual_periodic_state_t*>( source->state )->tick_amount;
-      for ( auto destination : ignites )
-      {
-        // The original spread source doesn't count towards the spread target limit.
-        if ( source == destination )
-          continue;
-
-        // Target cap was reached, stop.
-        if ( targets_remaining-- <= 0 )
-          break;
-
-        // Source Ignite cannot spread to targets with higher Ignite bank. It will
-        // still count towards the spread target cap, though.
-        if ( ignite_bank( destination ) >= source_bank )
-          continue;
-
-        if ( destination->is_ticking() )
-        {
-          p()->procs.ignite_overwrite->occur();
-
-          // If Ignite is already active on the target, the copied Ignite is applied as if it were refreshing the active one.
-          source->copy( destination->target, DOT_COPY_CLONE );
-        }
-        else
-        {
-          p()->procs.ignite_new_spread->occur();
-
-          // If Ignite is not active, we need to apply a new Ignite, but the full state is not copied (i.e., time to tick).
-          source->copy( destination->target, DOT_COPY_START );
-        }
-
-        // Regardless of existing Ignites, the tick amount is directly copied when spreading an Ignite.
-        // This can sometimes result in the newly spread Ignites having a larger than expected bank.
-        debug_cast<residual_action::residual_periodic_state_t*>( destination->state )->tick_amount = source_tick_amount;
-      }
     }
   }
 
@@ -5347,6 +5335,16 @@ struct phoenix_flames_t final : public fire_mage_spell_t
       m /= 1.0 + p()->buffs.fiery_rush->check_value();
 
     return m;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    // TODO: If Phoenix Flames spreading Ignite does not get fixed, there
+    // is sometimes a delay that causes this to occur after the damage.
+    if ( p()->bugs )
+      spread_ignite( s->target );
+
+    fire_mage_spell_t::impact( s );
   }
 };
 
@@ -7157,9 +7155,9 @@ void mage_t::create_buffs()
                                          else
                                            buffs.flame_accretion->decrement( old - cur );
                                        } );
-  buffs.sun_kings_blessing       = make_buff( this, "sun_kings_blessing", find_spell( 333314 ) )
-                                     ->set_chance( talents.sun_kings_blessing.ok() );
-  buffs.sun_kings_blessing_ready = make_buff( this, "sun_kings_blessing_ready", find_spell( 333315 ) );
+  buffs.sun_kings_blessing       = make_buff( this, "sun_kings_blessing", talents.sun_kings_blessing.ok() ? find_spell( 383882 ) : find_spell( 333314 ) )
+                                     ->set_chance( talents.sun_kings_blessing.ok() || runeforge.sun_kings_blessing.ok() );
+  buffs.sun_kings_blessing_ready = make_buff( this, "sun_kings_blessing_ready", talents.sun_kings_blessing.ok() ? find_spell( 383883 ) : find_spell( 333315 ) );
   buffs.wildfire                 = make_buff( this, "wildfire", find_spell( 383492 ) )
                                      ->set_default_value( talents.wildfire->effectN( 3 ).percent() )
                                      ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
@@ -7224,9 +7222,6 @@ void mage_t::create_buffs()
   buffs.molten_skyfall                     = make_buff( this, "molten_skyfall", find_spell( 333170 ) )
                                                ->set_chance( runeforge.molten_skyfall.ok() && !talents.firefall.ok() );
   buffs.molten_skyfall_ready               = make_buff( this, "molten_skyfall_ready", find_spell( 333182 ) );
-  buffs.runeforge_sun_kings_blessing       = make_buff( this, "runeforge_sun_kings_blessing", find_spell( 333314 ) )
-                                               ->set_chance( runeforge.sun_kings_blessing.ok() && !talents.sun_kings_blessing.ok() );
-  buffs.runeforge_sun_kings_blessing_ready = make_buff( this, "runeforge_sun_kings_blessing_ready", find_spell( 333315 ) );
 
   buffs.disciplinary_command        = make_buff( this, "disciplinary_command", find_spell( 327371 ) )
                                         ->set_default_value_from_effect( 1 );
@@ -7241,7 +7236,7 @@ void mage_t::create_buffs()
                                         ->set_chance( runeforge.disciplinary_command.ok() );
   buffs.expanded_potential          = make_buff( this, "expanded_potential", find_spell( 327495 ) )
                                         ->set_activated( false )
-                                        ->set_trigger_spell( runeforge.expanded_potential );
+                                        ->set_trigger_spell( !talents.concentration.ok() ? static_cast<const spell_data_t *>( runeforge.expanded_potential ) : spell_data_t::not_found() );
   buffs.heart_of_the_fae            = make_buff( this, "heart_of_the_fae", find_spell( 356881 ) )
                                         ->set_default_value_from_effect( 1 )
                                         ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )

@@ -20,6 +20,7 @@ struct player_demise_event_t : public player_event_t
   player_demise_event_t(player_t& p, timespan_t delta_time = timespan_t::zero() /* Instantly kill the player */) :
     player_event_t(p, delta_time)
   {
+    p.demise_event = this;
     if (sim().debug)
       sim().out_debug.printf("New Player-Demise Event: %s", p.name());
   }
@@ -29,6 +30,7 @@ struct player_demise_event_t : public player_event_t
   }
   virtual void execute() override
   {
+    p()->demise_event = nullptr;
     p()->demise();
   }
 };

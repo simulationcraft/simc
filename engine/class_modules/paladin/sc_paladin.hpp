@@ -47,6 +47,7 @@ struct paladin_td_t : public actor_target_data_t
     buff_t* vengeful_shock;
     buff_t* seal_of_the_crusader;
     buff_t* sanctify;
+    buff_t* eye_of_tyr;
   } debuff;
 
   paladin_td_t( player_t* target, paladin_t* paladin );
@@ -63,7 +64,6 @@ public:
     heal_t* beacon_of_light;
     action_t* holy_shield_damage;
     action_t* tyrs_enforcer_damage;
-    action_t* t28_4p_prot;
     action_t* judgment_of_light;
     action_t* shield_of_vengeance_damage;
     action_t* zeal;
@@ -105,6 +105,7 @@ public:
     buff_t* divine_shield;
     buff_t* divine_steed;
     buff_t* devotion_aura;
+    buff_t* retribution_aura;
 
     buff_t* avengers_might;
     buff_t* avenging_wrath_might;
@@ -131,11 +132,14 @@ public:
     buff_t* shining_light_free;
     buff_t* royal_decree;
     buff_t* bastion_of_light;
+    buff_t* faith_in_the_light;
+    buff_t* moment_of_glory_absorb;
 
     buff_t* inner_light;
     buff_t* inspiring_vanguard;
     buff_t* soaring_shield;
-    buff_t* glorious_purpose; //T28 2pc
+    buff_t* ally_of_the_light; // T29 2pc
+    buff_t* deflecting_light; // T29 4pc
 
     // Ret
     buffs::crusade_buff_t* crusade;
@@ -183,6 +187,7 @@ public:
     gain_t* holy_shield;
     gain_t* bulwark_of_order;
     gain_t* blessed_hammer;
+    gain_t* moment_of_glory;
 
     // Mana
     gain_t* mana_beacon_of_light;
@@ -194,6 +199,7 @@ public:
     gain_t* hp_memory_of_lucid_dreams;
     gain_t* hp_sanctification;
     gain_t* hp_inner_grace;
+    gain_t* hp_divine_toll;
   } gains;
 
   // Spec Passives
@@ -240,7 +246,7 @@ public:
     cooldown_t* blessing_of_the_seasons;
     cooldown_t* ashen_hallow; // Radiant Embers Legendary
 
-    cooldown_t* t28_4p_prot_icd;
+    cooldown_t* ret_aura_icd;
   } cooldowns;
 
   // Passives
@@ -509,9 +515,7 @@ public:
 
     // Protection
     azerite_power_t bulwark_of_light; // Defensive, NYI
-    azerite_power_t inspiring_vanguard;
     azerite_power_t inner_light;
-    azerite_power_t soaring_shield;
 
     // Retribution
     azerite_power_t empyrean_power;
@@ -569,14 +573,10 @@ public:
     item_runeforge_t divine_resonance;
   } legendary;
 
-    struct tier_sets_t
+  struct tier_sets_t
   {
-    const spell_data_t* glorious_purpose_2pc;
-    const spell_data_t* glorious_purpose_4pc;
-    const spell_data_t* dawn_will_come_2pc;
-    const spell_data_t* dawn_will_come_4pc;
-    const spell_data_t* ashes_to_ashes_2pc;
-    const spell_data_t* ashes_to_ashes_4pc;
+    const spell_data_t* ally_of_the_light_2pc;
+    const spell_data_t* ally_of_the_light_4pc;
 
   } tier_sets;
 
@@ -586,6 +586,7 @@ public:
     double proc_chance_ret_memory_of_lucid_dreams = 0.15;
     double proc_chance_prot_memory_of_lucid_dreams = 0.15;
     bool fake_sov = true;
+    double proc_chance_ret_aura_sera = 0.10;
   } options;
   player_t* beacon_target;
 
@@ -661,7 +662,7 @@ public:
   void    trigger_holy_shield( action_state_t* s );
   void    trigger_tyrs_enforcer( action_state_t* s );
   void    trigger_inner_light( action_state_t* s );
-  void    trigger_t28_4p_prot( action_state_t* s );
+  void    t29_4p_prot();
   void    trigger_forbearance( player_t* target );
   void    trigger_es_explosion( player_t* target );
   int     get_local_enemies( double distance ) const;
@@ -860,7 +861,7 @@ public:
   struct affected_by_t
   {
     bool avenging_wrath, judgment, blessing_of_dawn, the_magistrates_judgment, seal_of_reprisal, seal_of_order, bastion_of_light; // Shared
-    bool crusade, divine_purpose, divine_purpose_cost, hand_of_light, final_reckoning, reckoning; // Ret
+    bool crusade, divine_purpose, divine_purpose_cost, hand_of_light, final_reckoning, reckoning, ret_t29_2p, ret_t29_4p; // Ret
     bool avenging_crusader; // Holy
   } affected_by;
 
@@ -886,6 +887,8 @@ public:
       this -> affected_by.crusade = this -> data().affected_by( p -> talents.crusade -> effectN( 1 ) );
       this -> affected_by.reckoning = this -> data().affected_by( p -> spells.reckoning -> effectN( 1 ) );
       this -> affected_by.final_reckoning = this -> data().affected_by( p -> talents.final_reckoning -> effectN( 3 ) );
+      this -> affected_by.ret_t29_2p = this -> data().affected_by( p -> sets -> set( PALADIN_RETRIBUTION, T29, B2 ) -> effectN( 1 ) );
+      this -> affected_by.ret_t29_4p = this -> data().affected_by( p -> sets -> set( PALADIN_RETRIBUTION, T29, B4 ) -> effectN( 1 ) );
     }
     if ( p->specialization() == PALADIN_HOLY )
     {
@@ -1009,6 +1012,16 @@ public:
       {
         am *= 1.0 + p() -> buffs.crusade -> get_damage_mod();
       }
+
+      if ( affected_by.ret_t29_2p && p() -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T29, B2 ) )
+      {
+        am *= 1.0 + p() -> sets -> set( PALADIN_RETRIBUTION, T29, B2 ) -> effectN( 1 ).percent();
+      }
+
+      if ( affected_by.ret_t29_4p && p() -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T29, B4 ) )
+      {
+        am *= 1.0 + p() -> sets -> set( PALADIN_RETRIBUTION, T29, B4 ) -> effectN( 1 ).percent();
+      }
     }
 
     if ( affected_by.avenging_wrath && p() -> buffs.avenging_wrath -> up() )
@@ -1096,6 +1109,11 @@ public:
     if ( td -> debuff.execution_sentence -> check() )
     {
       td -> debuff.execution_sentence -> accumulate_damage( s );
+    }
+    if ( p()->buffs.moment_of_glory->up() )
+    {
+      double amount = s->result_amount * p()->talents.moment_of_glory->effectN( 3 ).percent();
+      p()->buffs.moment_of_glory_absorb->trigger( 1, p()->buffs.moment_of_glory_absorb->value() + amount );
     }
   }
 };
@@ -1347,6 +1365,17 @@ struct holy_power_consumer_t : public Base
       ab::sim -> print_debug( "Righteous protector reduced the cooldown of Avenging Wrath and Guardian of Ancient Kings by {} sec", num_hopo_spent );
       p -> cooldowns.avenging_wrath -> adjust( reduction );
       p -> cooldowns.guardian_of_ancient_kings -> adjust( reduction );
+    }
+
+    // 2022-10-25 Resolute Defender, spend 3 HP to reduce AD/DS cooldown
+    if ( p->talents.resolute_defender->ok() )
+    {
+      // Just like RP, value is in deciseconds, for whatever reasons
+      timespan_t reduction =
+          timespan_t::from_seconds( -1.0 * p->talents.resolute_defender->effectN( 1 ).base_value() / 10 );
+      p->cooldowns.ardent_defender->adjust( reduction );
+      // "Let the ability handle the cd", yeah.. But how to reduce it's cd?
+      //p->buffs.divine_shield->cooldown->adjust( reduction );
     }
 
     // Consume Empyrean Power on Divine Storm, handled here for interaction with DP/FoJ

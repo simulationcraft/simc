@@ -1787,7 +1787,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
                 dbc.spell( replace_spell_id ) -> name_cstr(), replace_spell_id );
   }
 
-  const auto talents = trait_data_t::find_by_spell( talent_tree::INVALID, spell->id() );
+  const auto talents = trait_data_t::find_by_spell( talent_tree::INVALID, spell->id(), 0, SPEC_NONE, dbc.ptr );
   if ( !talents.empty() )
   {
     s << "Talent Entry     : " << trait_data_to_str( dbc, spell, talents ) << std::endl;
@@ -2400,6 +2400,7 @@ std::string spell_info::talent_to_str( const dbc_t& /* dbc */, const trait_data_
   s << "Name         : " << talent->name << std::endl;
   s << "Entry        : " << talent->id_trait_node_entry << std::endl;
   s << "Node         : " << talent->id_node << std::endl;
+  s << "Definition   : " << talent->id_trait_definition << std::endl;
   s << "Tree         : " << util::talent_tree_string( static_cast<talent_tree>( talent->tree_index ) ) << std::endl;
   s << "Class        : " << util::player_type_string( util::translate_class_id( talent->id_class ) ) << std::endl;
   s << "Column       : " << talent->col << std::endl;
