@@ -4805,6 +4805,8 @@ struct rupture_t : public rogue_attack_t
     {
       desired_stacks += p()->get_active_dots( p()->active.deathmark.rupture->internal_id );
     }
+    desired_stacks = std::min( p()->buffs.scent_of_blood->max_stack(),
+                               desired_stacks * as<int>( p()->talent.assassination.scent_of_blood->effectN( 1 ).base_value() ) );
 
     if ( current_stacks != desired_stacks )
     {
