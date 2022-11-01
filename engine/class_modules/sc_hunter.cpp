@@ -3450,8 +3450,8 @@ struct explosive_shot_background_t : public explosive_shot_t
 
 struct serpent_sting_base_t: public hunter_ranged_attack_t
 {
-  serpent_sting_base_t( hunter_t* p, util::string_view n, util::string_view options_str, const spell_data_t* s ) :
-    hunter_ranged_attack_t( n, p, s )
+  serpent_sting_base_t( hunter_t* p, util::string_view options_str, const spell_data_t* s ) :
+    hunter_ranged_attack_t( "serpent_sting", p, s )
   {
     parse_options( options_str );
 
@@ -3527,7 +3527,7 @@ struct serpent_sting_base_t: public hunter_ranged_attack_t
 struct serpent_sting_t final : public serpent_sting_base_t
 {
   serpent_sting_t( hunter_t* p, util::string_view options_str ):
-    serpent_sting_base_t( p, "serpent_string", options_str, p -> talents.serpent_sting )
+    serpent_sting_base_t( p, options_str, p -> talents.serpent_sting )
   {
   }
 };
@@ -4319,8 +4319,8 @@ struct aimed_shot_t : public aimed_shot_base_t
 
   struct serpent_sting_sst_t final : public serpent_sting_base_t
   {
-    serpent_sting_sst_t( util::string_view n, hunter_t* p ):
-      serpent_sting_base_t( p, n, "", p -> find_spell( 271788 ) )
+    serpent_sting_sst_t( util::string_view /*name*/, hunter_t* p ):
+      serpent_sting_base_t( p, "", p -> find_spell( 271788 ) )
     {
       dual = true;
       base_costs[ RESOURCE_FOCUS ] = 0;
@@ -4949,8 +4949,8 @@ struct melee_focus_spender_t: hunter_melee_attack_t
 
   struct serpent_sting_vv_t final : public serpent_sting_base_t
   {
-    serpent_sting_vv_t( util::string_view n, hunter_t* p ):
-      serpent_sting_base_t( p, n, "", p -> find_spell( 271788 ) )
+    serpent_sting_vv_t( util::string_view /*name*/, hunter_t* p ):
+      serpent_sting_base_t( p, "", p -> find_spell( 271788 ) )
     {
       dual = true;
       base_costs[ RESOURCE_FOCUS ] = 0;
@@ -5834,7 +5834,7 @@ struct kill_command_t: public hunter_spell_t
 {
   struct arcane_shot_qs_t final : public attacks::arcane_shot_t
   {
-    arcane_shot_qs_t( util::string_view n, hunter_t* p ):
+    arcane_shot_qs_t( util::string_view /*name*/, hunter_t* p ):
       arcane_shot_t( p, "" )
     {
       dual = true;
@@ -6110,7 +6110,7 @@ struct aspect_of_the_wild_t: public hunter_spell_t
 {
   struct cobra_shot_aotw_t final : public attacks::cobra_shot_t
   {
-    cobra_shot_aotw_t( util::string_view n, hunter_t* p ):
+    cobra_shot_aotw_t( util::string_view /*name*/, hunter_t* p ):
       cobra_shot_t( p, "" )
     {
       dual = true;
@@ -6550,8 +6550,8 @@ struct wildfire_bomb_t: public hunter_spell_t
   {
     struct serpent_sting_vb_t final : public attacks::serpent_sting_base_t
     {
-      serpent_sting_vb_t( util::string_view n, hunter_t* p ):
-        serpent_sting_base_t( p, n, "", p -> find_spell( 271788 ) )
+      serpent_sting_vb_t( util::string_view /*name*/, hunter_t* p ):
+        serpent_sting_base_t( p, "", p -> find_spell( 271788 ) )
       {
         dual = true;
         base_costs[ RESOURCE_FOCUS ] = 0;
