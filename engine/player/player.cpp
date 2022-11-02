@@ -1116,6 +1116,7 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     queueing( nullptr ),
     channeling( nullptr ),
     strict_sequence( nullptr ),
+    demise_event(),
     readying( nullptr ),
     off_gcd( nullptr ),
     cast_while_casting_poll_event(),
@@ -5964,6 +5965,7 @@ void player_t::reset()
   executing       = nullptr;
   queueing        = nullptr;
   channeling      = nullptr;
+  demise_event    = nullptr;
   readying        = nullptr;
   strict_sequence = nullptr;
   off_gcd         = nullptr;
@@ -6348,6 +6350,7 @@ void player_t::arise()
 
   cache.invalidate_all();
 
+  demise_event = nullptr;
   readying = nullptr;
   off_gcd  = nullptr;
   cast_while_casting_poll_event = nullptr;
@@ -7677,7 +7680,7 @@ void player_t::do_damage( action_state_t* incoming_state )
   }
 
   // Check if target is dying
-  if ( health_percentage() <= death_pct && !resources.is_infinite( RESOURCE_HEALTH ) )
+  if ( !demise_event && health_percentage() <= death_pct && !resources.is_infinite( RESOURCE_HEALTH ) )
   {
     if ( !try_guardian_spirit( *this, actual_amount ) )
     {  // Player was not saved by guardian spirit, kill him
@@ -10384,11 +10387,11 @@ player_talent_t player_t::find_talent_spell(
 
   if ( name_tokenized )
   {
-    trait = trait_data_t::find_tokenized( tree, name, class_idx, s == SPEC_NONE ? _spec : s );
+    trait = trait_data_t::find_tokenized( tree, name, class_idx, s == SPEC_NONE ? _spec : s, dbc->ptr );
   }
   else
   {
-    trait = trait_data_t::find( tree, name, class_idx, s == SPEC_NONE ? _spec : s );
+    trait = trait_data_t::find( tree, name, class_idx, s == SPEC_NONE ? _spec : s, dbc->ptr );
   }
 
   if ( trait == &trait_data_t::nil() )
@@ -10409,7 +10412,7 @@ player_talent_t player_t::find_talent_spell(
 
   dbc->spec_idx( s == SPEC_NONE ? _spec : s, class_idx, spec_idx );
 
-  auto traits = trait_data_t::find_by_spell( tree, spell_id, class_idx, s == SPEC_NONE ? _spec : s );
+  auto traits = trait_data_t::find_by_spell( tree, spell_id, class_idx, s == SPEC_NONE ? _spec : s, dbc->ptr );
   if ( traits.size() == 0 )
   {
     sim->print_debug( "Player {}: Can't find {} talent with spell_id '{}'.", this->name(),

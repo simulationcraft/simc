@@ -7,10 +7,11 @@ import shutil
 # The script will only attempt to generate the APL of specs listed here
 specList = ['blood', 'frost', 'unholy',  # Death Knight
             'arcane', 'fire', # Mage (frost is ignored because of duplicate name)
-            'marksmanship', 'beast_mastery', 'survival', # Hunter
+            'marksmanship', 'beast_mastery', 'survival', 'marksmanship_df', 'beast_mastery_df', 'survival_df', # Hunter
             'affliction', 'demonology', 'destruction', # Warlock
             'devastation', #Evoker
             'retribution', # Paladin
+            'assassination', 'outlaw', 'subtlety', 'assassination_df', 'outlaw_df', 'subtlety_df', # Rogue
            ]
 
 ignored_comments = [

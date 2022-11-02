@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.46293 dragonflight-BETA (hotfix 2022-10-26/46293, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.46366 Live (hotfix 2022-11-01/46366)
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -25,6 +25,7 @@ Description      : Automatically shoots the target until cancelled.
 Tooltip          : Firing at the target.
 
 Name             : Mend Pet (id=136) [Spell Family (9)] 
+Hotfixed         : Attributes
 Class            : Hunter
 School           : Nature
 Spell Type       : Magic
@@ -41,9 +42,9 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
                  : ........ ....x... ........ x.......   ........ ........ ......x. ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ....x... ..x..... 
+                 : ........ ........ ........ ........   x....... x....... ....x... ..x..... 
                  : ........ ........ ........ ........   
-                 : Not Shapeshifted (16), Can't Crit (93), Cannot Be Stolen (134), Ignore Healing Modifiers (219), Aura Points On Client (268), Heal Prediction (280), Spellcast Override In Spellbook (310), Spellbook Hidden Until Overridden (335), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436), Always Allow Negative Healing Percent Modifiers (442)
+                 : Not Shapeshifted (16), Can't Crit (93), Cannot Be Stolen (134), Ignore Healing Modifiers (219), Aura Points On Client (268), Heal Prediction (280), Spellcast Override In Spellbook (310), Spellbook Hidden Until Overridden (335), Allow Class Ability Procs (416), Cannot Lifesteal/Leech (424), Periodic Refresh Extends Duration (436), Always Allow Negative Healing Percent Modifiers (442)
 Effects          :
 #1 (id=94)       : Apply Aura (6) | Periodic Heal% (20): every 2 seconds
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Active Pet (5)
@@ -649,7 +650,8 @@ Attributes       : .x..x... ........ x....... ........   ........ ........ .....
                  : Uses Ranged Slot (1), Is Ability (4), Not Shapeshifted (16), Discount Power On Miss (59), Do Not Reset Combat Timers (81), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Bouncy Chain Missiles (146), Force Display Castbar (155), Do Not Auto Select Target with Initiates Combat (220), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=10651)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.73000 | PvP Coefficient: 1.15000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.32050 | PvP Coefficient: 1.15000 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (2.73 -> 2.3205)
 #2 (id=101526)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000
 Description      : A powerful aimed shot that deals $s1 Physical damage$?s260240[ and causes your next 1-$260242u ][]$?s342049&s260240[Chimaera Shots]?s260240[Arcane Shots][]$?s260240[ or Multi-Shots to deal $260242s1% more damage][].$?s260228[
@@ -2710,6 +2712,7 @@ Effects          :
 Description      : Launch fireworks from your gun, bow or crossbow.
 
 Name             : Exhilaration (id=128594) [Spell Family (9)] 
+Hotfixed         : Attributes
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -2721,9 +2724,9 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ..x..... 
+                 : ........ ........ ........ ........   x....... x....... ........ ..x..... 
                  : ........ ........ ........ ........   
-                 : Is Ability (4), Ignore Line of Sight (66), Can't Crit (93), Ignore Caster Modifiers (125), Do Not Display Range (126), Ignore Healing Modifiers (219), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Always Allow Negative Healing Percent Modifiers (442)
+                 : Is Ability (4), Ignore Line of Sight (66), Can't Crit (93), Ignore Caster Modifiers (125), Do Not Display Range (126), Ignore Healing Modifiers (219), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Cannot Lifesteal/Leech (424), Always Allow Negative Healing Percent Modifiers (442)
 Effects          :
 #1 (id=164149)   : Direct Heal% (136)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Friend (21)
@@ -16564,7 +16567,7 @@ Name             : War Orders (id=393933) [Spell Family (9), Passive]
 Talent Entry     : Beast Mastery [tree=spec, row=6, col=3, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(5, 10)]
                  : Effect#2 [op=set, values=(5, 10)]
-                 : Effect#3 [op=set, values=(50, 100)]
+                 : Effect#3 [op=set, values=(25, 50)]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -16590,7 +16593,8 @@ Effects          :
                    Affected Spells: Barbed Shot (217200), Frenzy (272790)
                    Family Flags: 78
 #3 (id=1033179)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (50 -> 25)
 Description      : Barbed Shot deals $s2% increased damage, and applying Barbed Shot has a $s3% chance to reset the cooldown of Kill Command.
 
 Name             : Poison Injection (id=393949) [Spell Family (9), Passive] 

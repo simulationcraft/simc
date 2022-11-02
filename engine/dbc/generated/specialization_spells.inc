@@ -1,5 +1,5 @@
-// Talent tree specialization abilities, wow build 10.0.0.46293
-static const std::array<specialization_spell_entry_t, 347> __specialization_spell_data { {
+// Talent tree specialization abilities, wow build 10.0.0.46366
+static const std::array<specialization_spell_entry_t, 350> __specialization_spell_data { {
   {  0,  535, 264656,      0, "Pathfinding"                       , 0 },
   {  0,  535, 264662,      0, "Endurance Training"                , 0 },
   {  0,  535, 264663,      0, "Predator's Thirst"                 , 0 },
@@ -36,8 +36,8 @@ static const std::array<specialization_spell_entry_t, 347> __specialization_spel
   {  1,   73, 161798,      0, "Riposte"                           , 0 },
   {  1,   73, 162702,      0, "Stat Negation Aura - Strength Tank", 0 },
   {  1,   73, 231847,      0, "Shield Block"                      , 0 },
-  {  1,   73, 316405,      0, "Improved Execute"                  , 0 },
   {  1,   73, 386229,      0, "Thunder Clap Prot Hidden"          , 0 },
+  {  1,   73, 397708,      0, "Improved Execute"                  , 0 },
   {  1, 1446, 325446,      0, "Initial Warrior"                   , 0 },
   {  2,   65,   4987,      0, "Cleanse"                           , 0 },
   {  2,   65,  53563,      0, "Beacon of Light"                   , 0 },
@@ -266,6 +266,7 @@ static const std::array<specialization_spell_entry_t, 347> __specialization_spel
   { 11,  102, 197911,      0, "Astral Power"                      , 0 },
   { 11,  102, 228545,      0, "Shapeshift Form"                   , 0 },
   { 11,  102, 231042,      0, "Owlkin Frenzy"                     , 0 },
+  { 11,  102, 231052,      0, "Improved Prowl"                    , 0 },
   { 11,  102, 326646,      0, "Moonfire"                          , "Rank 2" },
   { 11,  102, 393014,      0, "Mastery: Astral Invocation"        , 0 },
   { 11,  103,  16949,      0, "Feral Instinct"                    , 0 },
@@ -285,6 +286,7 @@ static const std::array<specialization_spell_entry_t, 347> __specialization_spel
   { 11,  104, 162700,      0, "Stat Negation Aura - Agility Tank" , 0 },
   { 11,  104, 197490,      0, "Feral Affinity"                    , 0 },
   { 11,  104, 228545,      0, "Shapeshift Form"                   , 0 },
+  { 11,  104, 231052,      0, "Improved Prowl"                    , 0 },
   { 11,  104, 231065,      0, "Lightning Reflexes"                , 0 },
   { 11,  104, 270100,      0, "Bear Form"                         , "Rank 2" },
   { 11,  105,  77495,      0, "Mastery: Harmony"                  , 0 },
@@ -294,6 +296,7 @@ static const std::array<specialization_spell_entry_t, 347> __specialization_spel
   { 11,  105, 162701,      0, "Stat Negation Aura - Intellect Healer", 0 },
   { 11,  105, 197490,      0, "Feral Affinity"                    , 0 },
   { 11,  105, 212040,      0, "Revitalize"                        , 0 },
+  { 11,  105, 231052,      0, "Improved Prowl"                    , 0 },
   { 12,  577, 162243, 344859, "Demon's Bite"                      , 0 },
   { 12,  577, 162697,      0, "Stat Negation Aura - Agility DPS"  , 0 },
   { 12,  577, 162794, 344862, "Chaos Strike"                      , 0 },

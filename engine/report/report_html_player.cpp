@@ -1921,7 +1921,7 @@ void print_html_talents( report::sc_html_stream& os, const player_t& p )
   for ( auto t : p.player_traits )
   {
     std::array<std::vector<talentrank_t>, TREE_ROWS>* tree;
-    auto trait = trait_data_t::find( std::get<1>( t ) );
+    auto trait = trait_data_t::find( std::get<1>( t ), maybe_ptr( p.dbc->ptr ) );
     auto rank = std::get<2>( t );
 
     switch ( std::get<0>( t ) )

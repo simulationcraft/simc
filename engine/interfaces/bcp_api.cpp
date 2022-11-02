@@ -390,6 +390,31 @@ void parse_file( sim_t* sim, const std::string& path, rapidjson::Document& d )
 
 // parse_talents ============================================================
 
+void parse_subtree( player_t* p, const rapidjson::Value& talents )
+{
+  for ( auto talent_idx = 0U, talent_end = talents.Size(); talent_idx < talent_end; ++talent_idx )
+  {
+    const auto& talent_data = talents[ talent_idx ];
+
+    if ( !talent_data.HasMember( "tooltip" ) || !talent_data[ "tooltip" ].HasMember( "talent" )
+        || !talent_data[ "tooltip" ][ "talent" ].HasMember( "id" ) )
+    {
+      throw std::runtime_error( "Unable to determine trait definition id for talent parsing" );
+    }
+    if ( !talent_data.HasMember( "rank" ) )
+    {
+      throw std::runtime_error( "Unable to determine rank for talent parsing" );
+    }
+
+    auto definition_id = talent_data[ "tooltip" ][ "talent" ][ "id" ].GetUint();
+    auto trait = trait_data_t::find_by_trait_definition( definition_id, p->dbc->ptr );
+    auto rank = talent_data[ "rank" ].GetUint();
+
+    p->player_traits.emplace_back( static_cast<talent_tree>( trait->tree_index ), trait->id_trait_node_entry,
+        as<unsigned>( rank ) );
+  }
+}
+
 void parse_talents( player_t* p, const player_spec_t& spec_info, const std::string& url, cache::behavior_e caching )
 {
   rapidjson::Document spec;
@@ -447,33 +472,16 @@ void parse_talents( player_t* p, const player_spec_t& spec_info, const std::stri
       continue;
     }
 
-    if ( !spec_data.HasMember( "talents" ) )
+    if ( !spec_data.HasMember( "selected_class_talents" ) || !spec_data.HasMember( "selected_spec_talents" ) )
     {
       continue;
     }
 
-    const auto& talents = spec_data[ "talents" ];
+    p->player_traits.clear();
 
-    for ( auto talent_idx = 0U, talent_end = talents.Size(); talent_idx < talent_end; ++talent_idx )
-    {
-      const auto& talent_data = talents[ talent_idx ];
+    parse_subtree( p, spec_data[ "selected_class_talents" ] );
+    parse_subtree( p, spec_data[ "selected_spec_talents" ] );
 
-      if ( !talent_data.HasMember( "talent" ) || !talent_data[ "talent" ].HasMember( "id" ) )
-      {
-        throw std::runtime_error( "Unable to determine talent id for talent parsing" );
-      }
-
-      auto talent_id = talent_data[ "talent" ][ "id" ].GetUint();
-      const auto talent = p->dbc->talent( talent_id );
-      if ( talent->id() != talent_id )
-      {
-        p->sim->error( "Warning: Unable to find talent id {} for {} from Simulationcraft client data",
-          talent_id, p->name() );
-        continue;
-      }
-
-      p->talent_points->select_row_col( talent->row(), talent->col() );
-    }
   }
 
   p->recreate_talent_str(talent_format::ARMORY );

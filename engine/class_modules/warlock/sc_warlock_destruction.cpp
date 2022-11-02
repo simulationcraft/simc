@@ -190,7 +190,7 @@ struct shadowburn_t : public destruction_spell_t
 
   void execute() override
   {
-    int shards_used = as<int>( cost() );
+    //int shards_used = as<int>( cost() );
     destruction_spell_t::execute();
 
     // 2022-10-15 - Conflagration of Chaos can proc from a spell that consumes it
@@ -1211,7 +1211,7 @@ struct shadowy_tear_t : public destruction_spell_t
       tick_action = new rift_shadow_bolt_t( p );
     }
 
-    double last_tick_factor( const dot_t* d, timespan_t time_to_tick, timespan_t duration ) const override
+    double last_tick_factor( const dot_t*, timespan_t /*time_to_tick*/, timespan_t /*duration*/ ) const override
     {
       // 2022-10-16: Once you pass a haste breakpoint, you always get another full damage Shadow Bolt
       return 1.0;

@@ -1551,10 +1551,10 @@
   "TraitEdge": {
     "fields": [
       { "data_type": "i", "field": "id" },
-      { "data_type": "B", "field": "visual_style" },
+      { "data_type": "i", "field": "visual_style" },
       { "data_type": "i", "field": "id_left_trait_node", "ref": "TraitNode" },
       { "data_type": "i", "field": "id_right_trait_node", "ref": "TraitNode" },
-      { "data_type": "B", "field": "type" }
+      { "data_type": "i", "field": "type" }
     ]
   },
   "TraitNode": {

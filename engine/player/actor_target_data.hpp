@@ -64,6 +64,7 @@ struct actor_target_data_t : public actor_pair_t, private noncopyable
     buff_t* chains_of_domination;        // Chains of Domination debuff
     // Dragonflight
     buff_t* awakening_rime;  // darkmoon deck: rime
+    buff_t* grudge;          // spiteful storm
   } debuff;
 
   struct atd_dot_t
