@@ -3234,7 +3234,7 @@ struct flametongue_weapon_spell_t : public shaman_spell_t  // flametongue_attack
     may_crit = background      = true;
 
     snapshot_flags          = STATE_AP;
-    attack_power_mod.direct = 0.0264;
+    attack_power_mod.direct = 0.0198;
 
     if ( player->main_hand_weapon.type != WEAPON_NONE )
     {
