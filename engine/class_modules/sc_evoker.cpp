@@ -266,6 +266,7 @@ struct evoker_t : public player_t
   // Gains
   struct gains_t
   {
+    propagate_const<gain_t*> eye_of_infinity;
     propagate_const<gain_t*> roar_of_exhilaration;
   } gain;
 
@@ -274,7 +275,6 @@ struct evoker_t : public player_t
   {
     propagate_const<proc_t*> ruby_essence_burst;
     propagate_const<proc_t*> azure_essence_burst;
-    propagate_const<proc_t*> eye_of_infinity;
   } proc;
 
   // RPPMs
@@ -1057,18 +1057,20 @@ struct eternity_surge_t : public empowered_charge_spell_t
 {
   struct eternity_surge_damage_t : public empowered_release_spell_t
   {
+    double eoi_ess;  // essence gain on crit from Eye of Infinity
+
     eternity_surge_damage_t( evoker_t* p, std::string_view name )
-      : base_t( name, p, p->find_spell( 359077 ) )
+      : base_t( name, p, p->find_spell( 359077 ) ),
+        eoi_ess( p->talent.eye_of_infinity->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_ESSENCE ) )
     {}
 
-    eternity_surge_damage_t( evoker_t* p ) : eternity_surge_damage_t( p, "eternity_surge_damage" )
-    {}
+    eternity_surge_damage_t( evoker_t* p ) : eternity_surge_damage_t( p, "eternity_surge_damage" ) {}
 
     int n_targets() const override
     {
       int n = pre_execute_state ? empower_value( pre_execute_state ) : max_empower;
 
-      n *=  as<int>( 1 + p()->talent.eternitys_span->effectN( 2 ).percent() );
+      n *= as<int>( 1 + p()->talent.eternitys_span->effectN( 2 ).percent() );
 
       return n == 1 ? 0 : n;
     }
@@ -1077,11 +1079,8 @@ struct eternity_surge_t : public empowered_charge_spell_t
     {
       base_t::impact( s );
 
-      if ( p()->talent.eye_of_infinity.ok() && result_is_hit( s->result ) && s->result == RESULT_CRIT )
-      {
-        p()->buff.essence_burst->trigger();
-        p()->proc.eye_of_infinity->occur();
-      }
+      if ( eoi_ess && s->result == RESULT_CRIT )
+        p()->resource_gain( RESOURCE_ESSENCE, eoi_ess, p()->gain.eye_of_infinity );
     }
   };
 
@@ -1786,6 +1785,7 @@ void evoker_t::init_gains()
 {
   player_t::init_gains();
 
+  gain.eye_of_infinity      = get_gain( "Eye of Infinity" );
   gain.roar_of_exhilaration = get_gain( "Roar of Exhilaration" );
 }
 
@@ -1795,7 +1795,6 @@ void evoker_t::init_procs()
 
   proc.ruby_essence_burst  = get_proc( "Ruby Essence Burst" );
   proc.azure_essence_burst = get_proc( "Azure Essence Burst" );
-  proc.eye_of_infinity           = get_proc( "eye_of_infinity" );
 }
 
 void evoker_t::init_base_stats()
