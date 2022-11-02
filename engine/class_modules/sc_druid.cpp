@@ -7611,13 +7611,13 @@ struct starfire_t : public druid_spell_t, public trigger_astral_smolder_t
     else if ( p()->buff.warrior_of_elune->up() )
       p()->buff.warrior_of_elune->decrement();
 
+    if ( p()->eclipse_handler.state != ANY_NEXT )
+      p()->buff.umbral_embrace->expire();
+
     p()->buff.gathering_starstuff->expire();
 
     if ( is_free_proc() )
       return;
-
-    if ( p()->eclipse_handler.state != ANY_NEXT )
-      p()->buff.umbral_embrace->expire();
 
     p()->eclipse_handler.cast_starfire();
   }
@@ -8239,13 +8239,13 @@ struct wrath_t : public druid_spell_t, public trigger_astral_smolder_t
   {
     druid_spell_t::execute();
 
+    if ( p()->eclipse_handler.state != ANY_NEXT )
+      p()->buff.umbral_embrace->expire();
+
     p()->buff.gathering_starstuff->expire();
 
     if ( is_free_proc() )
       return;
-
-    if ( p()->eclipse_handler.state != ANY_NEXT )
-      p()->buff.umbral_embrace->expire();
 
     // in druid_t::init_finished(), we set the final wrath of the precombat to have energize type of NONE, so that
     // we can handle the delayed enerigze & eclipse stack triggering here.
