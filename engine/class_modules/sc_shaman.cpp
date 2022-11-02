@@ -5636,13 +5636,6 @@ struct lava_burst_t : public shaman_spell_t
         p()->buff.primordial_surge_lava_burst_buff->decrement();
       }
 
-      if ( p()->buff.surge_of_power->up() )
-      {
-        p()->cooldown.fire_elemental->adjust( -1.0 * p()->talent.surge_of_power->effectN( 1 ).time_value() );
-        p()->cooldown.storm_elemental->adjust( -1.0 * p()->talent.surge_of_power->effectN( 1 ).time_value() );
-        p()->buff.surge_of_power->decrement();
-        p()->proc.surge_of_power_lava_burst->occur();
-      }
       p()->buff.flux_melting->decrement();
     }
   }
@@ -5758,6 +5751,14 @@ struct lava_burst_t : public shaman_spell_t
 
         p()->proc.t28_4pc_ele_cd_reduction->occur();
       }
+    }
+
+    if ( p()->buff.surge_of_power->up() )
+    {
+      p()->cooldown.fire_elemental->adjust( -1.0 * p()->talent.surge_of_power->effectN( 1 ).time_value() );
+      p()->cooldown.storm_elemental->adjust( -1.0 * p()->talent.surge_of_power->effectN( 1 ).time_value() );
+      p()->buff.surge_of_power->decrement();
+      p()->proc.surge_of_power_lava_burst->occur();
     }
 
     if ( p()->talent.master_of_the_elements->ok() )
