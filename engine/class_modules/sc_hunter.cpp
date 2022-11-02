@@ -445,6 +445,7 @@ public:
     buff_t* coordinated_assault;
     buff_t* coordinated_assault_empower;
     buff_t* spearhead;
+    buff_t* deadly_duo;
 
     // Pet family buffs
     buff_t* endurance_training;
@@ -966,7 +967,8 @@ public:
 
     affected_by.spirit_bond           = parse_damage_affecting_aura( this, p -> mastery.spirit_bond );
     affected_by.coordinated_assault   = check_affected_by( this, p -> find_spell( 361738 ) -> effectN( 2 ) );
-    affected_by.spearhead             = check_affected_by( this, p -> talents.spearhead -> effectN( 4 ) );
+    // 1-11-22 TODO remove data check once live has new Deadly Duo
+    affected_by.spearhead             = check_affected_by( this, p -> talents.spearhead -> effectN( 4 ) ) && !p -> buffs.deadly_duo -> data().ok();
     affected_by.t29_sv_4pc_cost       = check_affected_by( this, p -> tier_set.t29_sv_4pc_buff -> effectN( 1 ) );
     affected_by.t29_sv_4pc_dmg        = parse_damage_affecting_aura( this, p -> tier_set.t29_sv_4pc_buff );
 
@@ -2286,6 +2288,15 @@ struct kill_command_sv_t: public kill_command_base_t
     kill_command_base_t::last_tick( d );
 
     o() -> trigger_bloodseeker_update();
+  }
+
+  double action_multiplier() const override
+  {
+    double am = kill_command_base_t::action_multiplier();
+
+    am *= 1 + o() -> buffs.deadly_duo -> stack_value();
+
+    return am;
   }
 };
 
@@ -5018,6 +5029,9 @@ struct melee_focus_spender_t: hunter_melee_attack_t
       p() -> actions.arctic_bola -> execute_on_target( target );
 
     p() -> buffs.bestial_barrage -> trigger();
+
+    if ( p() -> buffs.spearhead -> up() )
+      p() -> buffs.deadly_duo -> trigger();
   }
 
   void impact( action_state_t* s ) override
@@ -5918,6 +5932,9 @@ struct kill_command_t: public hunter_spell_t
       if ( p() -> buffs.spearhead -> check() )
         chance += p() -> talents.spearhead -> effectN( 3 ).percent();
 
+      if ( p() -> buffs.deadly_duo -> check() )
+        chance += p() -> buffs.deadly_duo -> check() * p() -> talents.deadly_duo -> effectN( 3 ).percent();
+
       if ( rng().roll( chance ) )
       {
         reset.proc -> occur();
@@ -5951,6 +5968,7 @@ struct kill_command_t: public hunter_spell_t
       p() -> cooldowns.barbed_shot -> reset( true );
 
     p() -> buffs.lethal_command -> expire();
+    p() -> buffs.deadly_duo -> expire();
   }
 
   double cost() const override
@@ -7599,6 +7617,10 @@ void hunter_t::create_buffs()
   buffs.spearhead =
     make_buff( this, "spearhead", talents.spearhead )
     -> set_default_value_from_effect( 1 );
+
+  buffs.deadly_duo =
+    make_buff( this, "deadly_duo", find_spell( 397568 ) )
+      -> set_default_value( talents.deadly_duo -> effectN( 1 ).percent() );
 
   // Pet family buffs
 
