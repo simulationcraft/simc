@@ -5582,7 +5582,11 @@ struct fury_whirlwind_parent_t : public warrior_attack_t
   void tick( dot_t* d ) override
   {
     mh_attack->current_tick = d->current_tick;
-    oh_attack->current_tick = d->current_tick;
+    if ( oh_attack )
+    {
+      oh_attack->current_tick = d->current_tick;
+    }
+
     warrior_attack_t::tick( d );
 
     if ( mh_attack )
