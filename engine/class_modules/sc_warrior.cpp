@@ -1092,6 +1092,7 @@ public:
     ab::apply_affecting_aura( p()->talents.fury.raging_armaments );
     ab::apply_affecting_aura( p()->talents.fury.storm_of_steel );
     ab::apply_affecting_aura( p()->talents.fury.storm_of_swords ); // rage generation in spell
+    ab::apply_affecting_aura( p()->talents.protection.storm_of_steel );
     ab::apply_affecting_aura( p()->talents.warrior.barbaric_training );
     ab::apply_affecting_aura( p()->talents.warrior.concussive_blows );
     ab::apply_affecting_aura( p()->talents.warrior.cruel_strikes );
@@ -4904,14 +4905,11 @@ struct ravager_tick_t : public warrior_attack_t
     aoe = -1;
     reduced_aoe_targets = 8.0;
     dual = ground_aoe = true;
-    if ( p->talents.fury.storm_of_steel->ok() )
-    {
-      rage_from_ravager = p->find_spell( 382953 )->effectN( 6 ).resource( RESOURCE_RAGE ) * 10;
-    }
-    else
-    {
-      rage_from_ravager = p->find_spell( 334934 )->effectN( 1 ).resource( RESOURCE_RAGE );
-    }
+    rage_from_ravager = p->find_spell( 334934 )->effectN( 1 ).resource( RESOURCE_RAGE );
+    rage_from_ravager += p->talents.fury.storm_of_steel->effectN( 5 ).resource( RESOURCE_RAGE );
+    rage_from_ravager += p->talents.protection.storm_of_steel->effectN( 5 ).resource( RESOURCE_RAGE );
+
+    printf("DEBUGME: %.3f\n", rage_from_ravager);
   }
 
   void execute() override
@@ -4925,8 +4923,9 @@ struct ravager_tick_t : public warrior_attack_t
 struct ravager_t : public warrior_attack_t
 {
   ravager_tick_t* ravager;
+  // We have to use find_spell here, rather than use the talent lookup, as both fury and protection use the same spell_id
   ravager_t( warrior_t* p, util::string_view options_str )
-    : warrior_attack_t( "ravager", p, p->talents.fury.ravager ),
+    : warrior_attack_t( "ravager", p, p->find_spell( 228920 ) ),
       ravager( new ravager_tick_t( p, "ravager_tick" ) )
   {
     parse_options( options_str );
