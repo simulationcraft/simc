@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.46313 Live (hotfix 2022-10-27/46313, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.46366 Live (hotfix 2022-11-01/46366)
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
 bonus_id={ 3 }, suffix={ of Power }, socket={ 2 }, stats={ 100% StrAgiInt [0.5263] }
@@ -4287,7 +4287,7 @@ bonus_id={ 7970 }, ilevel={ 265 @plvl 1 - 265 @plvl 80 }
 bonus_id={ 7971 }, ilevel={ 265 @plvl 1 - 265 @plvl 80 }
 bonus_id={ 7972 }, ilevel={ 285 @plvl 1 - 285 @plvl 80 }
 bonus_id={ 7973 }, ilevel={ 285 @plvl 1 - 285 @plvl 80 }
-bonus_id={ 7978 }, ilevel={ 181 @plvl 45 - 356 @plvl 80 }
+bonus_id={ 7978 }, ilevel={ 226 @plvl 45 - 346 @plvl 80 }
 bonus_id={ 7985 }, suffix={ of the Quickblade }, stats={ 69% Crit [0.4850], 31% Vers [0.2150] }
 bonus_id={ 7986 }, suffix={ of the Quickblade }, stats={ 67% Crit [0.4700], 33% Vers [0.2300] }
 bonus_id={ 7987 }, suffix={ of the Quickblade }, stats={ 65% Crit [0.4550], 35% Vers [0.2450] }
@@ -4419,7 +4419,7 @@ bonus_id={ 8148 }, quality={ epic }
 bonus_id={ 8157 }
 bonus_id={ 8165 }, ilevel={ 5 @plvl 1 - 272 @plvl 60 }
 bonus_id={ 8170 }, quality={ rare }, ilevel={ 219 @plvl 45 - 340 @plvl 80 }
-bonus_id={ 8171 }, desc={ Timewarped }, quality={ rare }, ilevel={ 21 @plvl 1 - 359 @plvl 70 }
+bonus_id={ 8171 }, quality={ rare }, ilevel={ 21 @plvl 1 - 359 @plvl 70 }
 bonus_id={ 8172 }, desc={ Timewarped }, ilevel={ 21 @plvl 1 - 346 @plvl 70 }
 bonus_id={ 8174 }, effects={ Alchemical Flavor Pocket (id=372120, index=0, type=equip) }
 bonus_id={ 8175 }, effects={ Potion Absorption Inhibitor (id=371700, index=0, type=equip) }
