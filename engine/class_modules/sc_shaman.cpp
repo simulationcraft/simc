@@ -2670,7 +2670,7 @@ struct base_wolf_t : public shaman_pet_t
   base_wolf_t( shaman_t* owner, util::string_view name )
     : shaman_pet_t( owner, name ), alpha_wolf( nullptr ), alpha_wolf_buff( nullptr ), wolf_type( SPIRIT_WOLF )
   {
-    owner_coeff.ap_from_ap = 1.5;
+    owner_coeff.ap_from_ap = 1.125;
 
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.5 );
   }
