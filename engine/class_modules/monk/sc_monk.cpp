@@ -113,6 +113,13 @@ public:
       affected_by()
   {
     range::fill( _resource_by_stance, RESOURCE_MAX );
+    // Resonant Fists talent
+    if ( player->talent.general.resonant_fists->ok() )
+    {
+      auto trigger = player->talent.general.resonant_fists.spell();
+
+      trigger_resonant_fists = ab::harmful && ab::may_hit && ( trigger->proc_flags() & ( 1 << ab::proc_type() ) );
+    }
   }
 
   std::string full_name() const
@@ -6300,7 +6307,6 @@ struct expel_harm_t : public monk_heal_t
       p()->sample_datas.tranquil_spirit->add( amount_cleared );
       p()->proc.tranquil_spirit_expel_harm->occur();
     }
-
   }
 
   void impact( action_state_t* s ) override
@@ -6311,20 +6317,8 @@ struct expel_harm_t : public monk_heal_t
     if ( p()->talent.general.strength_of_spirit->ok() )
     {
       double health_percent = health_difference / p()->resources.max[RESOURCE_HEALTH];
-      s->result_total *= 1 + ( health_percent * p()->talent.general.strength_of_spirit->effectN( 1 ).percent() );
+      s->result_total *= 1 + ( (1 - health_percent) * p()->talent.general.strength_of_spirit->effectN( 1 ).percent() );
     }
-
-    /*
-    *  Unclear if this will be used yet
-    * 
-    if ( p()->specialization() == MONK_BREWMASTER )
-    {
-      if ( p()->talent.brewmaster.strength_of_spirit->ok() )
-      {
-        double health_percent = health_difference / p()->resources.max[RESOURCE_HEALTH];
-        s->result_total *= 1 + ( health_percent * p()->talent.brewmaster.strength_of_spirit->effectN( 1 ).percent() );
-      }
-    }*/
 
     monk_heal_t::impact( s );
 
@@ -6333,6 +6327,8 @@ struct expel_harm_t : public monk_heal_t
     // Harm Denial only increases the healing, not the damage
     if ( p()->conduit.harm_denial->ok() )
       result /= 1 + p()->conduit.harm_denial.percent();
+
+    result *= p()->spec.expel_harm->effectN( 2 ).percent();
 
     if ( p()->specialization() == MONK_WINDWALKER )
     {
@@ -6349,14 +6345,10 @@ struct expel_harm_t : public monk_heal_t
         // to zero, we want to use a range of 10 and the result to simulate varying amounts of health.
         result = rng().range( min_amount, result );
       }
-
     }
-
-    result *= p()->spec.expel_harm->effectN( 2 ).percent();
 
     if ( p()->specialization() == MONK_BREWMASTER )
     {
-
       if ( p()->buff.gift_of_the_ox->up() && p()->spec.expel_harm_2_brm->ok() )
       {
         double goto_heal = p()->passives.gift_of_the_ox_heal->effectN( 1 ).ap_coeff();
@@ -6364,15 +6356,15 @@ struct expel_harm_t : public monk_heal_t
         result += goto_heal;
       }
 
-      dmg->base_dd_min = result;
-      dmg->base_dd_max = result;
-      dmg->execute();
-
       for ( int i = 0; i < p()->buff.gift_of_the_ox->check(); i++ )
       {
         p()->buff.gift_of_the_ox->decrement();
       }
     }
+
+    dmg->base_dd_min = result;
+    dmg->base_dd_max = result;
+    dmg->execute();
   }
 };
 
@@ -8318,7 +8310,7 @@ void monk_t::init_spells()
   spec.crackling_jade_lightning  = find_class_spell( "Crackling Jade Lightning" );
   spec.critical_strikes          = find_specialization_spell( "Critical Strikes" );
   //spec.detox                     = find_specialization_spell( "Detox" ); // talent.general.detox
-  spec.expel_harm                = find_class_spell( "Expel Harm" ); 
+  spec.expel_harm                = find_spell( 322101 ); 
   spec.expel_harm_2_brm          = find_rank_spell( "Expel Harm", "Rank 2", MONK_BREWMASTER );
   spec.expel_harm_2_mw           = find_rank_spell( "Expel Harm", "Rank 2", MONK_MISTWEAVER );
   spec.expel_harm_2_ww           = find_rank_spell( "Expel Harm", "Rank 2", MONK_WINDWALKER );
@@ -8782,7 +8774,7 @@ void monk_t::init_base_stats()
         base.distance = 5;
       // base_gcd += spec.windwalker_monk->effectN( 14 ).time_value();  // Saved as -500 milliseconds
       base.attack_power_per_agility     = 1.0;
-      base.spell_power_per_attack_power = spec.windwalker_monk->effectN( 14 ).percent();
+      base.spell_power_per_attack_power = spec.windwalker_monk->effectN( 13 ).percent();
       resources.base[ RESOURCE_ENERGY ] = 100;
       resources.base[ RESOURCE_ENERGY ] += talent.windwalker.ascension->effectN( 3 ).base_value();
       resources.base[ RESOURCE_ENERGY ] += talent.windwalker.inner_peace->effectN( 1 ).base_value();
