@@ -881,7 +881,7 @@ struct sef_blackout_kick_totm_proc_t : public sef_melee_attack_t
 
       tick_action = new sef_spinning_crane_kick_tick_t( player );
 
-      if ( player->o()->talent.windwalker.jade_ignition.ok() )
+      if ( player->o()->shared.jade_ignition && player->o()->shared.jade_ignition.ok() )
       {
         chi_explosion = new sef_chi_explosion_t( player );
       }
