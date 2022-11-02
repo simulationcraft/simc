@@ -2829,7 +2829,8 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
   spinning_crane_kick_t( monk_t* p, util::string_view options_str )
     : monk_melee_attack_t(
           "spinning_crane_kick", p,
-          ( p->specialization() == MONK_BREWMASTER ? p->spec.spinning_crane_kick_brm : p->spec.spinning_crane_kick ) )
+          ( p->specialization() == MONK_BREWMASTER ? p->spec.spinning_crane_kick_brm : p->spec.spinning_crane_kick ) ),
+    chi_x( nullptr )
   {
     parse_options( options_str );
 
@@ -2955,7 +2956,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 
     if ( p()->specialization() == MONK_WINDWALKER )
     {
-      if ( p()->buff.chi_energy->up() )
+      if ( chi_x && p()->buff.chi_energy->up() )
         chi_x->execute();
 
       // Bonedust Brew
