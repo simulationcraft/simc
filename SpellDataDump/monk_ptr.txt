@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.46366 Live (hotfix 2022-11-01/46366)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.46366 Live (hotfix 2022-11-02/46366)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -3093,7 +3093,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Duration         : 6 seconds
-Affecting spells : Mistweaver Monk (137024 effects: #1, #2), Mist Wrap (197900 effects: #1, #2), Lifecycles (Enveloping Mist) (197919 effect#1), Soothing Mist (209525 effect#2), Enveloping Breath (325209 effect#3), Clouded Focus (337476 effects: #2, #3), Invoke Chi-Ji, the Red Crane (343820 effects: #1, #2), Enveloping Mist (344008 effect#2), Clouded Focus (388048 effects: #2, #3)
+Affecting spells : Mistweaver Monk (137024 effects: #1, #2), Mist Wrap (197900 effects: #1, #2), Lifecycles (Enveloping Mist) (197919 effect#1), Soothing Mist (209525 effect#2), Enveloping Breath (325209 effect#3), Clouded Focus (337476 effects: #2, #3), Invoke Chi-Ji, the Red Crane (343820 effects: #1, #2), Enveloping Mist (344008 effect#2), Clouded Focus (388048 effects: #1, #2, #3)
 Family Flags     : 48, 67, 79
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ...x.... x....... ........ ........   ........ ........ ........ ........ 
@@ -10422,7 +10422,7 @@ School           : Nature
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 6 seconds
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Mist Wrap (197900 effects: #1, #2), Lifecycles (Enveloping Mist) (197919 effect#1), Soothing Mist (209525 effect#2), Clouded Focus (337476 effects: #2, #3), Invoke Chi-Ji, the Red Crane (343820 effects: #1, #2), Enveloping Mist (344008 effect#2), Clouded Focus (388048 effects: #2, #3)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Mist Wrap (197900 effects: #1, #2), Lifecycles (Enveloping Mist) (197919 effect#1), Soothing Mist (209525 effect#2), Clouded Focus (337476 effects: #2, #3), Invoke Chi-Ji, the Red Crane (343820 effects: #1, #2), Enveloping Mist (344008 effect#2), Clouded Focus (388048 effects: #1, #2, #3)
 Family Flags     : 48, 79
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ......x. 
@@ -14772,8 +14772,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1023511)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Vivify (116670)
-                   Family Flags: 26
+                   Affected Spells: Vivify (116670), Enveloping Mist (124682), Enveloping Breath (325209)
+                   Family Flags: 26, 79
+Hotfixed         : Affects Spells
 #2 (id=1023512)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Vivify (116670), Enveloping Mist (124682), Enveloping Breath (325209)

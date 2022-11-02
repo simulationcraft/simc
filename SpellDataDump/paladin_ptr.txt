@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.46366 Live (hotfix 2022-11-01/46366)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.46366 Live (hotfix 2022-11-02/46366)
 Name             : Frostbolt of Ages (id=11) 
 Class            : Paladin
 School           : Frost
@@ -1082,7 +1082,7 @@ Effects          :
 Description      : Increases Agility by $s1.
 
 Name             : Sanctified Wrath (id=53376) [Spell Family (10), Passive] 
-Talent Entry     : Generic [tree=class, row=10, col=2, max_rank=1, req_points=20, select_idx=100, name="$@spellname53376", override="Avenging Wrath" (id=31884)]
+Talent Entry     : Generic [tree=class, row=10, col=2, max_rank=1, req_points=20, select_idx=100, override="Avenging Wrath" (id=31884)]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -13611,9 +13611,9 @@ If $@spellname31884 is known, also grants $s1% damage per stack.
 
 
 Name             : Avenging Wrath: Might (id=384442) [Spell Family (10), Passive, Hidden] 
-Talent Entry     : Protection [tree=spec, row=6, col=3, max_rank=1, req_points=8, select_idx=100, name="$@spellname384442", override="Avenging Wrath" (id=31884)]
-                 : Retribution [tree=spec, row=6, col=4, max_rank=1, req_points=8, select_idx=100, name="$@spellname384442", override="Avenging Wrath" (id=31884)]
-                 : Holy [tree=spec, row=8, col=5, max_rank=1, req_points=20, select_idx=100, name="$@spellname384442", override="Avenging Wrath" (id=31884)]
+Talent Entry     : Protection [tree=spec, row=6, col=3, max_rank=1, req_points=8, select_idx=100, override="Avenging Wrath" (id=31884)]
+                 : Retribution [tree=spec, row=6, col=4, max_rank=1, req_points=8, select_idx=100, override="Avenging Wrath" (id=31884)]
+                 : Holy [tree=spec, row=8, col=5, max_rank=1, req_points=20, select_idx=100, override="Avenging Wrath" (id=31884)]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
