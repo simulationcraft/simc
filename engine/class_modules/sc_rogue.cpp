@@ -40,12 +40,15 @@ enum stealth_type_e
   STEALTH_VANISH = 0x02,
   STEALTH_SHADOWMELD = 0x04,
   STEALTH_SUBTERFUGE = 0x08,
-  STEALTH_SHADOWDANCE = 0x10,
+  STEALTH_SHADOW_DANCE = 0x10,
   STEALTH_SEPSIS = 0x20,
   STEALTH_IMPROVED_GARROTE = 0x40,
 
-  STEALTH_ROGUE = ( STEALTH_SUBTERFUGE | STEALTH_SHADOWDANCE ),   // Subterfuge + Shadowdance
   STEALTH_BASIC = ( STEALTH_NORMAL | STEALTH_VANISH ),            // Normal + Vanish
+  STEALTH_ROGUE = ( STEALTH_SUBTERFUGE | STEALTH_SHADOW_DANCE ),   // Subterfuge + Shadowdance
+
+  // All Stealth states that enable Stealth ability stance masks
+  STEALTH_STANCE = ( STEALTH_BASIC | STEALTH_ROGUE | STEALTH_SHADOWMELD | STEALTH_SEPSIS ),
 
   STEALTH_ALL = 0xFF
 };
@@ -2114,7 +2117,7 @@ public:
 
     // Apply Nightstalker direct damage increase via the corresponding driver spell.
     // And yes, this can cause double dips with the persistent multiplier on DoTs which was the case with Crimson Tempest once.
-    if ( affected_by.nightstalker && p()->stealthed( STEALTH_BASIC | STEALTH_SHADOWDANCE ) )
+    if ( affected_by.nightstalker && p()->stealthed( STEALTH_BASIC | STEALTH_SHADOW_DANCE ) )
     {
       m *= p()->buffs.nightstalker->direct_mod.multiplier;
     }
@@ -2148,7 +2151,7 @@ public:
 
     // DFALPHA TOCHECK -- Currently does nothing even after the pmultiplier removal
     // Apply Nightstalker periodic damage increase via the corresponding driver spell.
-    //if ( affected_by.nightstalker && p()->stealthed( STEALTH_BASIC | STEALTH_SHADOWDANCE ) )
+    //if ( affected_by.nightstalker && p()->stealthed( STEALTH_BASIC | STEALTH_SHADOW_DANCE ) )
     //{
     //  m *= p()->buffs.nightstalker->periodic_mod.multiplier;
     //}
@@ -2208,7 +2211,7 @@ public:
     // Apply Nightstalker as a Persistent Multiplier for things that snapshot
     // This appears to be driven by the dummy effect #2 and there is no whitelist.
     // This can and will cause double dips on direct damage if a spell is whitelisted in effect #1.
-    //if ( p()->talent.rogue.nightstalker->ok() && snapshots_nightstalker() && p()->stealthed( STEALTH_BASIC | STEALTH_SHADOWDANCE ) )
+    //if ( p()->talent.rogue.nightstalker->ok() && snapshots_nightstalker() && p()->stealthed( STEALTH_BASIC | STEALTH_SHADOW_DANCE ) )
     //{
     //  m *= p()->buffs.nightstalker->periodic_mod.multiplier;
     //}
@@ -2251,7 +2254,7 @@ public:
     if ( c <= 0 )
       return 0;
 
-    if ( p()->talent.subtlety.shadow_focus->ok() && p()->stealthed( STEALTH_BASIC | STEALTH_SHADOWDANCE ) )
+    if ( p()->talent.subtlety.shadow_focus->ok() && p()->stealthed( STEALTH_BASIC | STEALTH_SHADOW_DANCE ) )
     {
       c *= 1.0 + p()->spec.shadow_focus_buff->effectN( 1 ).percent();
     }
@@ -2396,7 +2399,7 @@ public:
       p()->current_cp() < ab::base_costs[ RESOURCE_COMBO_POINT ] )
       return false;
 
-    if ( requires_stealth() && !p()->stealthed() )
+    if ( requires_stealth() && !p()->stealthed( STEALTH_STANCE ) )
     {
       return false;
     }
@@ -2624,7 +2627,7 @@ struct instant_poison_t : public rogue_poison_t
       double m = rogue_poison_t::composite_da_multiplier( state );
 
       // 2020-10-18- Nightstalker appears to buff Instant Poison by the base 50% amount, despite being in no whitelists
-      if ( p()->bugs && p()->talent.rogue.nightstalker->ok() && p()->stealthed( STEALTH_BASIC | STEALTH_SHADOWDANCE ) )
+      if ( p()->bugs && p()->talent.rogue.nightstalker->ok() && p()->stealthed( STEALTH_BASIC | STEALTH_SHADOW_DANCE ) )
       {
         m *= 1.0 + p()->spell.nightstalker_buff->effectN( 2 ).percent();
       }
@@ -5895,7 +5898,7 @@ struct echoing_reprimand_t : public rogue_attack_t
       }
 
       // TOCHECK -- Due to beta behavior never removed, Echoing Reprimand can trigger FW from Stealth
-      if ( p()->bugs && p()->stealthed( STEALTH_BASIC | STEALTH_SHADOWDANCE ) )
+      if ( p()->bugs && p()->stealthed( STEALTH_BASIC | STEALTH_SHADOW_DANCE ) )
       {
         trigger_find_weakness( state );
       }
@@ -6275,7 +6278,7 @@ struct serrated_bone_spike_covenant_t : public rogue_attack_t
   {
     // 2021-03-28 -- Testing shows that Nightstalker works if you are very close to the target's hitbox
     // Assume if the player is playing Nightstalker they are getting inside the hitbox to reduce travel time
-    if ( p()->bugs && p()->talent.rogue.nightstalker->ok() && p()->stealthed( STEALTH_BASIC | STEALTH_SHADOWDANCE ) )
+    if ( p()->bugs && p()->talent.rogue.nightstalker->ok() && p()->stealthed( STEALTH_BASIC | STEALTH_SHADOW_DANCE ) )
       return timespan_t::zero();
 
     return rogue_attack_t::travel_time();
@@ -6379,7 +6382,7 @@ struct serrated_bone_spike_t : public rogue_attack_t
   {
     // 2021-03-28 -- Testing shows that Nightstalker works if you are very close to the target's hitbox
     // Assume if the player is playing Nightstalker they are getting inside the hitbox to reduce travel time
-    if ( p()->bugs && p()->talent.rogue.nightstalker->ok() && p()->stealthed( STEALTH_BASIC | STEALTH_SHADOWDANCE ) )
+    if ( p()->bugs && p()->talent.rogue.nightstalker->ok() && p()->stealthed( STEALTH_BASIC | STEALTH_SHADOW_DANCE ) )
       return timespan_t::zero();
 
     return rogue_attack_t::travel_time();
@@ -6825,7 +6828,7 @@ struct stealth_like_buff_t : public BuffBase
         rogue->buffs.master_assassins_mark_aura->trigger();
     }
 
-    if ( rogue->stealthed( STEALTH_BASIC | STEALTH_SHADOWDANCE ) )
+    if ( rogue->stealthed( STEALTH_BASIC | STEALTH_SHADOW_DANCE ) )
     {
       if ( rogue->talent.assassination.master_assassin->ok() )
         rogue->buffs.master_assassin_aura->trigger();
@@ -8137,7 +8140,7 @@ void actions::rogue_action_t<Base>::trigger_count_the_odds( const action_state_t
 
   // Confirmed via logs this works with Shadowmeld and Shadow Dance
   double stealth_bonus = 1.0;
-  if ( p()->stealthed( STEALTH_BASIC | STEALTH_SHADOWMELD | STEALTH_SHADOWDANCE ) )
+  if ( p()->stealthed( STEALTH_BASIC | STEALTH_SHADOWMELD | STEALTH_SHADOW_DANCE ) )
   {
     stealth_bonus += ( p()->talent.outlaw.count_the_odds->ok() ?
                        p()->talent.outlaw.count_the_odds->effectN( 3 ).percent() :
@@ -8285,7 +8288,7 @@ void actions::rogue_action_t<Base>::trigger_danse_macabre( const action_state_t*
   if ( ab::background || ab::trigger_gcd == 0_ms || !affected_by.danse_macabre )
     return;
 
-  if ( !p()->stealthed( STEALTH_SHADOWDANCE ) )
+  if ( !p()->stealthed( STEALTH_SHADOW_DANCE ) )
     return;
 
   if ( range::contains( p()->danse_macabre_tracker, ab::data().id() ) )
@@ -11236,7 +11239,7 @@ bool rogue_t::stealthed( uint32_t stealth_mask ) const
   if ( ( stealth_mask & STEALTH_VANISH ) && buffs.vanish->check() )
     return true;
 
-  if ( ( stealth_mask & STEALTH_SHADOWDANCE ) && buffs.shadow_dance->check() )
+  if ( ( stealth_mask & STEALTH_SHADOW_DANCE ) && buffs.shadow_dance->check() )
     return true;
 
   if ( ( stealth_mask & STEALTH_SUBTERFUGE ) && buffs.subterfuge->check() )
@@ -11308,7 +11311,7 @@ double rogue_t::passive_movement_modifier() const
   ms += spell.fleet_footed->effectN( 1 ).percent(); // DFALPHA: Duplicate passive?
   ms += talent.outlaw.hit_and_run->effectN( 1 ).percent();
 
-  if ( stealthed( ( STEALTH_BASIC | STEALTH_SHADOWDANCE ) ) )
+  if ( stealthed( ( STEALTH_BASIC | STEALTH_SHADOW_DANCE ) ) )
   {
     ms += talent.rogue.shadowrunner->effectN( 1 ).percent();
   }
