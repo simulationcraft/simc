@@ -906,14 +906,15 @@ struct void_tendril_mind_flay_t final : public priest_pet_spell_t
     {
       if ( p.o().level() == 70 )
       {
-        base_td += 1275;
+        base_td += 1667.5;
       }
       else
       {
-        base_td += 219;
+        base_td += 321.5;
       }
 
-      spell_power_mod.tick *= 0.6;
+      // Pulled the 0.6 from Mind Sear and apply the 10% "buff"
+      spell_power_mod.tick *= 0.5454545455;
     }
   }
 
