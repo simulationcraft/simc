@@ -5,7 +5,7 @@
 
 #include "config.hpp"
 #include "simulationcraft.hpp"
-#include "player/parse_buff_effects.hpp"
+#include "action/parse_buff_effects.hpp"
 #include "sim/option.hpp"
 #include "class_modules/apl/apl_evoker.hpp"
 

@@ -5,8 +5,8 @@
 
 #include "config.hpp"
 #include "simulationcraft.hpp"
+#include "action/parse_buff_effects.hpp"
 #include "player/covenant.hpp"
-#include "player/parse_buff_effects.hpp"
 #include "player/pet_spawner.hpp"
 
 namespace
@@ -2372,11 +2372,9 @@ public:
 
   void apply_buff_effects()
   {
-    using C = const conduit_data_t&;
-
     parse_buff_effects( p()->buff.ravenous_frenzy );
     parse_buff_effects( p()->buff.sinful_indulgence );
-    parse_buff_effects<C>( p()->buff.convoke_the_spirits, p()->conduit.conflux_of_elements );
+    parse_buff_effects( p()->buff.convoke_the_spirits );
     parse_buff_effects( p()->buff.lone_empowerment );
 
     // Class
@@ -2438,7 +2436,7 @@ public:
     parse_buff_effects( p()->buff.tooth_and_claw, false );
     parse_buff_effects( p()->buff.vicious_cycle_mangle, true, true );
     parse_buff_effects( p()->buff.vicious_cycle_maul, true, true );
-    parse_buff_effects<C>( p()->buff.savage_combatant, p()->conduit.savage_combatant );
+    parse_buff_effects( p()->buff.savage_combatant );
 
     // Restoration
     parse_buff_effects( p()->buff.abundance );

@@ -13,6 +13,7 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\action\dbc_proc_callback.hpp" />
 		<ClInclude Include="..\engine\action\dot.hpp" />
 		<ClInclude Include="..\engine\action\heal.hpp" />
+		<ClInclude Include="..\engine\action\parse_buff_effects.hpp" />
 		<ClInclude Include="..\engine\action\residual_action.hpp" />
 		<ClInclude Include="..\engine\action\sequence.hpp" />
 		<ClInclude Include="..\engine\action\snapshot_stats.hpp" />
@@ -106,7 +107,6 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\player\gear_stats.hpp" />
 		<ClInclude Include="..\engine\player\ground_aoe.hpp" />
 		<ClInclude Include="..\engine\player\instant_absorb.hpp" />
-		<ClInclude Include="..\engine\player\parse_buff_effects.hpp" />
 		<ClInclude Include="..\engine\player\pet.hpp" />
 		<ClInclude Include="..\engine\player\pet_spawner.hpp" />
 		<ClInclude Include="..\engine\player\pet_spawner_impl.hpp" />

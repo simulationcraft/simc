@@ -9,8 +9,8 @@
 // in the respective spec file if they are limited to one spec only.
 
 #pragma once
+#include "action/parse_buff_effects.hpp"
 #include "player/covenant.hpp"
-#include "player/parse_buff_effects.hpp"
 #include "player/pet_spawner.hpp"
 #include "sc_enums.hpp"
 
