@@ -15,7 +15,7 @@
 //
 //    struct my_action_base_t : public action_t, parse_buff_effects_t<my_target_data_t>
 //
-// 2) Within the constructor, set `action_ = this;`
+// 2) Construct the mixin via `parse_buff_effects_t( this );`
 //
 // 3) `get_buff_effects_value( buff effect vector ) returns the modified value.
 //    Add the following overrides with any addtional adjustments as needed (BASE is the parent to the action base class):
@@ -75,6 +75,10 @@ struct parse_buff_effects_t
     {}
   };
 
+private:
+  action_t* action_;
+
+public:
   // auto parsed dynamic effects
   std::vector<buff_effect_t> ta_multiplier_buffeffects;
   std::vector<buff_effect_t> da_multiplier_buffeffects;
@@ -86,7 +90,7 @@ struct parse_buff_effects_t
   std::vector<buff_effect_t> crit_chance_buffeffects;
   std::vector<dot_debuff_t> target_multiplier_dotdebuffs;
 
-  action_t* action_;
+  parse_buff_effects_t( action_t* a ) : action_( a ) {}
 
   double mod_spell_effects_value( const spell_data_t*, const spelleffect_data_t& e ) { return e.base_value(); }
 

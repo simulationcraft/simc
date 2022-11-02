@@ -779,10 +779,8 @@ protected:
 
 public:
   priest_action_t( util::string_view name, priest_t& p, const spell_data_t* s = spell_data_t::nil() )
-    : ab( name, &p, s )
+    : ab( name, &p, s ), parse_buff_effects_t( this )
   {
-    action_ = this;
-
     if ( ab::data().ok() )
     {
       apply_buff_effects();

@@ -2152,6 +2152,7 @@ public:
 
   druid_action_t( std::string_view n, druid_t* player, const spell_data_t* s = spell_data_t::nil() )
     : ab( n, player, s ),
+      parse_buff_effects_t( this ),
       dot_name( n ),
       autoshift( nullptr ),
       free_spell( free_spell_e::NONE ),
@@ -2161,8 +2162,6 @@ public:
       is_auto_attack( false ),
       break_stealth( !ab::data().flags( spell_attribute::SX_NO_STEALTH_BREAK ) )
   {
-    action_ = this;
-
     // WARNING: auto attacks will NOT get processed here since they have no spell data
     if ( ab::data().ok() )
     {

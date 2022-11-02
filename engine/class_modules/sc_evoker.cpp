@@ -407,12 +407,11 @@ public:
 
   evoker_action_t( std::string_view name, evoker_t* player, const spell_data_t* spell = spell_data_t::nil() )
     : ab( name, player, spell ),
+      parse_buff_effects_t( this ),
       spell_color( SPELL_COLOR_NONE ),
       proc_spell_type( proc_spell_type_e::NONE ),
       move_during_hover( false )
   {
-    action_ = this;
-
     // TODO: find out if there is a better data source for the spell color
     if ( ab::data().ok() )
     {

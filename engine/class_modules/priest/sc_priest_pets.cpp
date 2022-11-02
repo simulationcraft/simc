@@ -227,11 +227,9 @@ struct priest_pet_spell_t : public spell_t, public parse_buff_effects_t<priest_t
   bool affected_by_shadow_weaving;
 
   priest_pet_spell_t( util::string_view token, priest_pet_t& p, const spell_data_t* s )
-    : spell_t( token, &p, s ), affected_by_shadow_weaving( false )
+    : spell_t( token, &p, s ), parse_buff_effects_t( this ), affected_by_shadow_weaving( false )
   {
     may_crit = true;
-
-    action_ = this;
 
     if ( data().ok() )
     {
