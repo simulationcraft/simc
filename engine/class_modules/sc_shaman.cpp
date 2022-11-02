@@ -3742,8 +3742,12 @@ struct auto_attack_t : public shaman_attack_t
     p()->melee_mh = new melee_t( "Main Hand", spell_data_t::nil(), player, &( p()->main_hand_weapon ), sync_weapons,
                                  swing_timer_variance );
     p()->melee_mh->school = SCHOOL_PHYSICAL;
-    p()->ascendance_mh = new windlash_t( "Windlash", player->find_spell( 114089 ), player, &( p()->main_hand_weapon ),
-                                         swing_timer_variance );
+
+    if ( player->talent.ascendance.ok() && player->specialization() == SHAMAN_ENHANCEMENT )
+    {
+      p()->ascendance_mh = new windlash_t( "Windlash", player->find_spell( 114089 ), player, &( p()->main_hand_weapon ),
+                                           swing_timer_variance );
+    }
 
     p()->main_hand_attack = p()->melee_mh;
 
@@ -3755,8 +3759,11 @@ struct auto_attack_t : public shaman_attack_t
       p()->melee_oh = new melee_t( "Off-Hand", spell_data_t::nil(), player, &( p()->off_hand_weapon ), sync_weapons,
                                    swing_timer_variance );
       p()->melee_oh->school = SCHOOL_PHYSICAL;
-      p()->ascendance_oh    = new windlash_t( "Windlash Off-Hand", player->find_spell( 114093 ), player,
-                                           &( p()->off_hand_weapon ), swing_timer_variance );
+      if ( player->talent.ascendance.ok() )
+      {
+        p()->ascendance_oh    = new windlash_t( "Windlash Off-Hand", player->find_spell( 114093 ), player,
+                                             &( p()->off_hand_weapon ), swing_timer_variance );
+      }
 
       p()->off_hand_attack = p()->melee_oh;
 
