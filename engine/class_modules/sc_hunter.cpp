@@ -7620,6 +7620,7 @@ void hunter_t::create_buffs()
 
   buffs.deadly_duo =
     make_buff( this, "deadly_duo", find_spell( 397568 ) )
+      -> set_chance( talents.deadly_duo.ok() )
       -> set_default_value( talents.deadly_duo -> effectN( 1 ).percent() );
 
   // Pet family buffs
