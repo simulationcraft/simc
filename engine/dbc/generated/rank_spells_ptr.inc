@@ -1,7 +1,8 @@
-// Rank class spells, wow build 10.0.2.46259
-static const std::array<rank_class_spell_t, 54> __ptr_rank_spells_data { {
+// Rank class spells, wow build 10.0.2.46420
+static const std::array<rank_class_spell_t, 55> __ptr_rank_spells_data { {
   {  2,   66, 358934,      0, "Aegis of Light"                    , "Rank 2" },
   { 10,  269, 322719,      0, "Afterlife"                         , "Rank 2" },
+  {  9,  265, 231792,      0, "Agony"                             , "Rank 2" },
   { 11,  104, 270100,      0, "Bear Form"                         , "Rank 2" },
   { 10,  269, 261916,      0, "Blackout Kick"                     , "Rank 2" },
   { 10,  269, 261917,      0, "Blackout Kick"                     , "Rank 3" },
