@@ -4090,16 +4090,13 @@ struct rip_t : public cat_finisher_t
     {
       name_str_reporting = "tear";
 
-      residual_mul = p->talent.rip_and_tear->effectN( 1 ).percent();
+      // Rip and Tear is 12% over the duration, or 3% per tick
+      residual_mul = p->talent.rip_and_tear->effectN( 1 ).percent() * data().effectN( 1 ).period() / dot_duration;
     }
 
-    // TODO: currently bugged to be 3% per tick with hasted ticks, rather than 12% over the entire dot
     double base_ta( const action_state_t* s ) const override
     {
-      if ( p()->bugs )
-        return get_amount( s ) / 4;
-      else
-        return get_amount( s ) * tick_time( s ) / composite_dot_duration( s );
+      return get_amount( s );
     }
   };
 
