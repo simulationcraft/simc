@@ -4088,9 +4088,15 @@ struct resonant_fists_t : public monk_spell_t
   resonant_fists_t( monk_t& p )
     : monk_spell_t( "resonant_fists", &p, p.talent.general.resonant_fists->effectN( 2 ).trigger() )
   {
-    trigger_resonant_fists = false;
     background = true;
     aoe        = -1;
+  }
+
+  void init() override
+  {
+    monk_spell_t::init();
+
+    trigger_resonant_fists = false;
   }
 
   double action_multiplier() const override
