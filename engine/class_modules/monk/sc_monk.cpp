@@ -9039,10 +9039,10 @@ void monk_t::create_buffs ()
     buff.weapons_of_order_ww = make_buff ( this, "weapons_of_order_ww", find_spell ( 311054 ) )
       ->set_default_value ( find_spell ( 311054 )->effectN ( 1 ).base_value () )
       ->set_chance ( covenant.kyrian->ok () ? 1 : 0 );
-
-    buff.windwalking_venthyr =
-      make_buff ( this, "windwalking_venthyr", passives.fallen_monk_windwalking )->set_default_value_from_effect ( 1 );
   }
+
+  buff.windwalking_venthyr =
+    make_buff ( this, "windwalking_venthyr", passives.fallen_monk_windwalking )->set_default_value_from_effect ( 1 );
 
   // Covenant Conduits
   buff.fortifying_ingrediences = make_buff<absorb_buff_t>( this, "fortifying_ingredients", find_spell( 336874 ) );
