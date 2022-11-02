@@ -473,7 +473,7 @@ struct consecration_t : public paladin_spell_t
       make_event<ground_aoe_event_t>( *sim, p(), cons_params, true /* Immediate pulse */ );
   }
 };
-
+//TEST
 // Divine Shield ==============================================================
 
 struct divine_shield_t : public paladin_spell_t
