@@ -59,7 +59,12 @@ public:
 
     if ( priest().talents.shadow.mind_melt.enabled() && priest().buffs.mind_melt->check() )
     {
-      priest().buffs.mind_melt->expire();
+      // BUG: If you have 1 stack of Mind Melt it will not be consumed if you also have Shadowy Insight
+      // https://github.com/SimCMinMax/WoW-BugTracker/issues/1056
+      if ( !priest().bugs | !( priest().buffs.mind_melt->check() == 1 && priest().buffs.shadowy_insight->check() ) )
+      {
+        priest().buffs.mind_melt->expire();
+      }
     }
 
     if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T29, B2 ) )
@@ -185,15 +190,30 @@ public:
     // charge. Therefore update_ready needs to not be called in that case.
     if ( priest().buffs.shadowy_insight->up() )
     {
-      // Mind Melt is only double consumed with Shadowy Insight if it only has one stack
-      if ( priest().buffs.mind_melt->check() == 1 )
+      // BUG: you will consume both SI and Mind Melt if active, did not use to work this way, new in build 46420
+      // https://github.com/SimCMinMax/WoW-BugTracker/issues/1055
+      if ( priest().bugs )
       {
-        priest().procs.mind_melt_waste->occur();
-      }
-      // Mind Melt at 2 stacks gets consumed over Shadowy Insight
-      if ( priest().buffs.mind_melt->check() != 2 )
-      {
+        // BUG: you will keep the Mind melt if its at 1 stack with SI active
+        // https://github.com/SimCMinMax/WoW-BugTracker/issues/1056
+        if ( priest().buffs.mind_melt->check() == 2 )
+        {
+          priest().procs.mind_melt_waste->occur();
+        }
         priest().buffs.shadowy_insight->decrement();
+      }
+      else
+      {
+        // Mind Melt is only double consumed with Shadowy Insight if it only has one stack
+        if ( priest().buffs.mind_melt->check() == 1 )
+        {
+          priest().procs.mind_melt_waste->occur();
+        }
+        // Mind Melt at 2 stacks gets consumed over Shadowy Insight
+        if ( priest().buffs.mind_melt->check() != 2 )
+        {
+          priest().buffs.shadowy_insight->decrement();
+        }
       }
     }
     else
@@ -2896,8 +2916,9 @@ void priest_t::create_buffs()
                             ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                             ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
   buffs.rhapsody =
-      make_buff( this, "rhapsody", talents.rhapsody_buff )
-          ->set_stack_change_callback( ( [ this ]( buff_t*, int, int ) { buffs.rhapsody_timer->trigger(); } ) );
+      make_buff( this, "rhapsody", talents.rhapsody_buff )->set_stack_change_callback( ( [ this ]( buff_t*, int, int ) {
+        buffs.rhapsody_timer->trigger();
+      } ) );
   buffs.rhapsody_timer = make_buff( this, "rhapsody_timer", talents.rhapsody )
                              ->set_quiet( true )
                              ->set_duration( timespan_t::from_seconds( 5 ) )
