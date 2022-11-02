@@ -29,10 +29,9 @@ actions.precombat+=/augmentation
 actions.precombat+=/summon_pet
 actions.precombat+=/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled
 actions.precombat+=/snapshot_stats
-actions.precombat+=/seed_of_corruption,if=talent.seed_of_corruption&spell_targets.seed_of_corruption_aoe>=3
 actions.precombat+=/haunt,if=talent.haunt.enabled
-# technically an optional talent but come on.
-actions.precombat+=/unstable_affliction
+actions.precombat+=/seed_of_corruption,if=talent.seed_of_corruption&spell_targets.seed_of_corruption_aoe>=3
+actions.precombat+=/unstable_affliction,if=talent.unstable_affliction.enabled
 
 # Executed every time the actor is available.
 actions=call_action_list,name=aoe,if=active_enemies>3
@@ -44,30 +43,32 @@ actions+=/call_action_list,name=stat_trinkets,if=(dot.soul_rot.ticking|dot.phant
 actions+=/call_action_list,name=damage_trinkets,if=talent.soul_rot.enabled&!variable.trinket_split|cooldown.soul_rot.remains>20|(variable.trinket_one&cooldown.soul_rot.remains<trinket.1.cooldown.remains)|(variable.trinket_two&cooldown.soul_rot.remains<trinket.2.cooldown.remains)
 actions+=/call_action_list,name=damage_trinkets,if=talent.phantom_singularity.enabled&!variable.trinket_split|cooldown.phantom_singularity.remains>20|(variable.trinket_one&cooldown.phantom_singularity.remains<trinket.1.cooldown.remains)|(variable.trinket_two&cooldown.phantom_singularity.remains<trinket.2.cooldown.remains)
 actions+=/call_action_list,name=damage_trinkets,if=!talent.phantom_singularity.enabled&talent.summon_darkglare.enabled&(!variable.trinket_split|cooldown.summon_darkglare.remains>20|(variable.trinket_one&cooldown.summon_darkglare.remains<trinket.1.cooldown.remains)|(variable.trinket_two&cooldown.summon_darkglare.remains<trinket.2.cooldown.remains))
+
 # Burn soul shards if fight is almost over
 actions+=/malefic_rapture,if=time_to_die<execute_time*soul_shard&dot.unstable_affliction.ticking
-# If Soul Rot or Phantom Singularity is running, use Darkglare to extend the current set
-actions+=/call_action_list,name=darkglare_prep,if=talent.phantom_singularity.enabled&cooldown.summon_darkglare.remains<2&dot.phantom_singularity.remains>2
+
+# Always Be Dotting
+actions+=/call_action_list,name=apply_dots
+
+# If major dots are rolling, use Darkglare
+actions+=/call_action_list,name=darkglare_prep,if=cooldown.summon_darkglare.remains<2&((talent.phantom_singularity.enabled&dot.phantom_singularity.remains>2)|(talent.soul_rot.enabled&dot.soul_rot.))
+actions+=/call_action_list,name=darkglare_prep,if=(talent.phantom_singularity.enabled)&cooldown.summon_darkglare.remains<2&dot.phantom_singularity.remains>2
 actions+=/call_action_list,name=darkglare_prep,if=talent.soul_rot.enabled&dot.soul_rot.ticking&cooldown.summon_darkglare.remains<2
 # If using Phantom Singularity on cooldown, make sure to extend it before it runs out
 actions+=/call_action_list,name=darkglare_prep,if=talent.phantom_singularity.enabled&dot.phantom_singularity.ticking&dot.phantom_singularity.remains<2
 # Refresh dots early if going into a shard spending phase
-actions+=/call_action_list,name=dot_prep,if=talent.soul_rot.enabled&!dot.soul_rot.ticking&cooldown.soul_rot.remains<4
-actions+=/call_action_list,name=dot_prep,if=talent.phantom_singularity.enabled&!dot.phantom_singularity.ticking&cooldown.phantom_singularity.remains<4
+actions+=/call_action_list,name=apply_dots,if=talent.soul_rot.enabled&!dot.soul_rot.ticking&cooldown.soul_rot.remains<4
+actions+=/call_action_list,name=apply_dots,if=talent.phantom_singularity.enabled&!dot.phantom_singularity.ticking&cooldown.phantom_singularity.remains<4
 # Sync Phantom Singularity with Soul Rot, otherwise use on cooldown.
 actions+=/phantom_singularity,if=talent.soul_rot.enabled&time>5&cooldown.soul_rot.remains<1
 actions+=/phantom_singularity,if=!talent.soul_rot.enabled
 actions+=/phantom_singularity,if=time_to_die<16
 # If Phantom Singularity is ticking, it's time to use other major dots
 actions+=/soul_rot,if=dot.phantom_singularity.ticking&talent.soul_rot
-actions+=/agony,cycle_targets=1,target_if=dot.agony.remains<4
-actions+=/haunt,if=talent.haunt
 # Sow the Seeds on 3 targets if it isn't currently in flight or on the target. With Siphon Life it's also better to use Seed over manually applying 3 Corruptions.
 actions+=/seed_of_corruption,if=active_enemies>2&talent.sow_the_seeds&!dot.seed_of_corruption.ticking&!in_flight
 actions+=/seed_of_corruption,if=active_enemies>2&talent.siphon_life&!dot.seed_of_corruption.ticking&!in_flight&dot.corruption_dot.refreshable
 actions+=/vile_taint,if=(soul_shard>1|active_enemies>2)&cooldown.summon_darkglare.remains>12
-actions+=/unstable_affliction,if=dot.unstable_affliction.remains<4
-actions+=/siphon_life,cycle_targets=1,target_if=dot.siphon_life.remains<4
 # Apply Corruption manually on 1-2 targets, or on 3 with Absolute Corruption
 actions+=/corruption,cycle_targets=1,if=active_enemies<4-(talent.sow_the_seeds|talent.siphon_life),target_if=dot.corruption_dot.refreshable
 # After the opener, spend a shard when at 5 on Malefic Rapture to avoid overcapping
@@ -89,7 +90,6 @@ actions+=/malefic_rapture,if=talent.sow_the_seeds
 # Drain Life is only a DPS gain with Inevitable Demise near max stacks. If fight is about to end do not miss spending the stacks
 actions+=/drain_life,if=buff.inevitable_demise.stack>40|buff.inevitable_demise.up&time_to_die<4
 actions+=/agony,cycle_targets=1,target_if=refreshable
-actions+=/unstable_affliction,if=refreshable
 actions+=/siphon_life,cycle_targets=1,target_if=refreshable
 actions+=/corruption,cycle_targets=1,if=active_enemies<4-(talent.sow_the_seeds|talent.siphon_life),target_if=dot.corruption_dot.refreshable
 actions+=/drain_soul,interrupt=1
@@ -129,17 +129,13 @@ actions.darkglare_prep+=/potion
 actions.darkglare_prep+=/fireblood
 actions.darkglare_prep+=/blood_fury
 actions.darkglare_prep+=/berserking
-actions.darkglare_prep+=/soul_rot
 actions.darkglare_prep+=/summon_darkglare
 
-actions.dot_prep=agony,if=!talent.pandemic_invocation&dot.agony.refreshable&cooldown.summon_darkglare.remains>dot.agony.remains
-actions.dot_prep+=/agony,if=talent.pandemic_invocation&dot.agony.remains<5&cooldown.summon_darkglare.remains>dot.agony.remains
-actions.dot_prep+=/siphon_life,if=!talent.pandemic_invocation&dot.siphon_life.refreshable&cooldown.summon_darkglare.remains>dot.siphon_life.remains
-actions.dot_prep+=/siphon_life,if=talent.pandemic_invocation&dot.siphon_life.remains<5&cooldown.summon_darkglare.remains>dot.siphon_life.remains
-actions.dot_prep+=/unstable_affliction,if=!talent.pandemic_invocation&dot.unstable_affliction.refreshable&cooldown.summon_darkglare.remains>dot.unstable_affliction.remains
-actions.dot_prep+=/unstable_affliction,if=talent.pandemic_invocation&dot.unstable_affliction.remains<5&cooldown.summon_darkglare.remains>dot.unstable_affliction.remains
-actions.dot_prep+=/corruption,if=!talent.pandemic_invocation&dot.corruption_dot.refreshable&cooldown.summon_darkglare.remains>dot.corruption_dot.remains
-actions.dot_prep+=/corruption,if=talent.pandemic_invocation&dot.corruption_dot.remains<5&cooldown.summon_darkglare.remains>dot.corruption_dot.remains
+actions.apply_dots=agony,if=(talent.pandemic_invocation&dot.agony.remains<5)|refreshable
+actions.apply_dots+=/unstable_affliction,if=(talent.pandemic_invocation&dot.unstable_affliction.remains<5)|refreshable
+actions.apply_dots+=/corruption,if=(talent.pandemic_invocation&dot.corruption.remains<5)|refreshable
+actions.apply_dots+=/siphon_life,if=(talent.pandemic_invocation&dot.siphon_life.remains<5)|refreshable
+actions.apply_dots+=/haunt,if=talent.haunt.enabled
 
 actions.item=use_items
 
