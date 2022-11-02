@@ -1376,7 +1376,11 @@ struct holy_power_consumer_t : public Base
        );
       reduction *= num_hopo_spent;
       ab::sim -> print_debug( "Righteous protector reduced the cooldown of Avenging Wrath and Guardian of Ancient Kings by {} sec", num_hopo_spent );
-      p -> cooldowns.avenging_wrath -> adjust( reduction );
+      // 2022-11-02 RP currently does not, or has ever, reduced Sentinels cooldown 
+      if ( !( p->bugs && p->talents.sentinel->ok() ) )
+      {
+        p->cooldowns.avenging_wrath->adjust( reduction );
+      }
       p -> cooldowns.guardian_of_ancient_kings -> adjust( reduction );
     }
 
