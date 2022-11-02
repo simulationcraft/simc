@@ -912,7 +912,7 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
   debuffs_haunt = make_buff( *this, "haunt", p.talents.haunt )
                       ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
                       ->set_default_value_from_effect( 2 )
-                      ->set_stack_change_callback( [ &p ]( buff_t* b, int old, int cur ) {
+                      ->set_stack_change_callback( [ &p ]( buff_t*, int /*old*/, int cur ) {
                           if ( cur == 0 )
                             p.buffs.haunted_soul->expire();
                         } );
@@ -1110,6 +1110,7 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
     warlock_pet_list( this ),
     active(),
     talents(),
+    proc_actions(),
     legendary(),
     conduit(),
     covenant(),
@@ -2304,9 +2305,9 @@ struct warlock_module_t : public module_t
 warlock::warlock_t::pets_t::pets_t( warlock_t* w )
   : active( nullptr ),
     last( nullptr ),
-    darkglare( "darkglare", w ),
     infernals( "infernal", w ),
     blasphemy( "blasphemy", w ),
+    darkglare( "darkglare", w ),
     dreadstalkers( "dreadstalker", w ),
     vilefiends( "vilefiend", w ),
     demonic_tyrants( "demonic_tyrant", w ),

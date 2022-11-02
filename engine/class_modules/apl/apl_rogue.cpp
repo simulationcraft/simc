@@ -365,7 +365,7 @@ void subtlety( player_t* p )
   stealth_cds->add_action( "variable,name=shd_combo_points,value=combo_points.deficit>=3,if=covenant.kyrian" );
   stealth_cds->add_action( "variable,name=shd_combo_points,value=combo_points.deficit<=1,if=variable.use_priority_rotation&spell_targets.shuriken_storm>=4" );
   stealth_cds->add_action( "variable,name=shd_combo_points,value=combo_points.deficit<=1,if=spell_targets.shuriken_storm=4" );
-  stealth_cds->add_action( "shadow_dance,if=(variable.shd_combo_points&(buff.symbols_of_death.remains>=(2.2-talent.flagellation.enabled)|variable.shd_threshold)|buff.flagellation.up|buff.flagellation_persist.remains>=6|spell_targets.shuriken_storm>=4&cooldown.symbols_of_death.remains>10)&(buff.perforated_veins.stack<4|spell_targets.shuriken_storm>3)&!cooldown.flagellation.up", "Dance during Symbols or above threshold." );
+  stealth_cds->add_action( "shadow_dance,if=(variable.shd_combo_points&(buff.symbols_of_death.remains>=(1.2+talent.flagellation.enabled)|variable.shd_threshold)|buff.flagellation.up|buff.flagellation_persist.remains>=6|spell_targets.shuriken_storm>=4&cooldown.symbols_of_death.remains>10)&(buff.perforated_veins.stack<4|spell_targets.shuriken_storm>3)", "Dance during Symbols or above threshold." );
   stealth_cds->add_action( "shadow_dance,if=variable.shd_combo_points&fight_remains<cooldown.symbols_of_death.remains", "Burn Dances charges if the fight ends and SoD won't be ready in time." );
 
   stealthed->add_action( "shadowstrike,if=(buff.stealth.up|buff.vanish.up)&(spell_targets.shuriken_storm<4|variable.use_priority_rotation)&master_assassin_remains=0", "Stealthed Rotation  If Stealth/vanish are up, use Shadowstrike to benefit from the passive bonus and Find Weakness, even if we are at max CP (unless using Master Assassin)" );
@@ -545,7 +545,7 @@ void outlaw_df( player_t* p )
   cds->add_action( "blade_flurry,if=spell_targets>=2&!buff.blade_flurry.up", "Cooldowns  Blade Flurry on 2+ enemies" );
   cds->add_action( "roll_the_bones,if=buff.dreadblades.down&(!buff.roll_the_bones.up|variable.rtb_reroll)" );
   cds->add_action( "keep_it_rolling,if=!variable.rtb_reroll&(buff.broadside.up+buff.true_bearing.up+buff.skull_and_crossbones.up+buff.ruthless_precision.up)>2" );
-  cds->add_action( "vanish,if=(!stealthed.all|talent.count_the_odds&!variable.stealthed_cto)&!buff.take_em_by_surprise.up&((talent.find_weakness&debuff.find_weakness.down|talent.hidden_opportunity)&variable.ambush_condition|talent.count_the_odds&variable.finish_condition)&(!talent.shadow_dance|!cooldown.shadow_dance.ready)" );
+  cds->add_action( "vanish,if=(!stealthed.all|talent.count_the_odds&!variable.stealthed_cto)&!buff.take_em_by_surprise.up&((talent.find_weakness&debuff.find_weakness.down|talent.hidden_opportunity)&variable.ambush_condition|!talent.find_weakness&talent.count_the_odds&variable.finish_condition)&(!talent.shadow_dance|!cooldown.shadow_dance.ready)" );
   cds->add_action( "variable,name=shadow_dance_condition,value=talent.shadow_dance&(!stealthed.all|talent.count_the_odds&!variable.stealthed_cto)&debuff.between_the_eyes.up&(!talent.ghostly_strike|debuff.ghostly_strike.up)&(!talent.dreadblades|!cooldown.dreadblades.ready)" );
   cds->add_action( "shadow_dance,if=!talent.keep_it_rolling&variable.shadow_dance_condition&buff.slice_and_dice.up&(variable.finish_condition|talent.hidden_opportunity)" );
   cds->add_action( "shadow_dance,if=talent.keep_it_rolling&variable.shadow_dance_condition&(cooldown.keep_it_rolling.remains<=30|cooldown.keep_it_rolling.remains>120&(variable.finish_condition|talent.hidden_opportunity))" );
@@ -556,7 +556,7 @@ void outlaw_df( player_t* p )
   cds->add_action( "killing_spree,if=variable.blade_flurry_sync&!stealthed.rogue&(debuff.between_the_eyes.up&buff.dreadblades.down&energy.base_deficit>(energy.regen*2+15)|spell_targets.blade_flurry>2)", "Use in 1-2T if BtE is up and won't cap Energy, or at 3T+" );
   cds->add_action( "blade_rush,if=variable.blade_flurry_sync&(energy.base_time_to_max>2&!buff.dreadblades.up|energy<=30|spell_targets>2)" );
   cds->add_action( "shadowmeld,if=!stealthed.all&(talent.count_the_odds&variable.finish_condition|!talent.weaponmaster.enabled&variable.ambush_condition)" );
-  cds->add_action( "thistle_tea,if=energy.deficit>=100&!buff.thistle_tea.up&(charges=3|buff.adrenaline_rush.up|fight_remains<charges*6)" );
+  cds->add_action( "thistle_tea,if=!buff.thistle_tea.up&(energy.deficit>=100&(charges=3|buff.adrenaline_rush.up)|fight_remains<charges*6)" );
   cds->add_action( "potion,if=buff.bloodlust.react|fight_remains<30|buff.adrenaline_rush.up" );
   cds->add_action( "blood_fury" );
   cds->add_action( "berserking" );

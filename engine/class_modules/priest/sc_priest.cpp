@@ -240,40 +240,66 @@ struct angelic_feather_t final : public priest_spell_t
 // Base Spell, used for both heal and damage spell.
 // TODO: add reduced healing beyond 6 targets
 // ==========================================================================
-template <class Base>
-struct divine_star_base_t : public Base
+struct divine_star_spell_t final : public priest_spell_t
 {
-private:
-  using ab = Base;  // the action base ("ab") type (priest_spell_t or priest_heal_t)
-public:
-  using base_t = divine_star_base_t<Base>;
+  propagate_const<divine_star_spell_t*> return_spell;
 
-  propagate_const<divine_star_base_t*> return_spell;
-
-  divine_star_base_t( util::string_view n, priest_t& p, const spell_data_t* spell_data, bool is_return_spell = false )
-    : ab( n, p, spell_data ),
-      return_spell( ( is_return_spell ? nullptr : new divine_star_base_t( n, p, spell_data, true ) ) )
+  divine_star_spell_t( util::string_view n, priest_t& p, const spell_data_t* s, bool is_return_spell = false )
+    : priest_spell_t( n, p, s ),
+      return_spell( ( is_return_spell ? nullptr : new divine_star_spell_t( n, p, s, true ) ) )
   {
-    ab::aoe = -1;
+    aoe = -1;
 
-    ab::proc = ab::background      = true;
-    ab::affected_by_shadow_weaving = true;
+    proc = background          = true;
+    affected_by_shadow_weaving = true;
+
+    // This is not found in the affected spells for Dark Ascension, overriding it manually
+    force_buff_effect( p.buffs.dark_ascension, 1 );
   }
 
-  // Divine Star will damage and heal targets twice, once on the way out and again on the way back. This is determined
-  // by distance from the target. If we are too far away, it misses completely. If we are at the very edge distance
-  // wise, it will only hit once. If we are within range (and aren't moving such that it would miss the target on the
-  // way out and/or back), it will hit twice. Threshold is 24 yards, per tooltip and tests for 2 hits. 28 yards is the
-  // threshold for 1 hit.
+  // Hits twice, but only if you are at the correct distance
+  // 24 yards or less for 2 hits, 28 yards or less for 1 hit
   void execute() override
   {
     double distance;
 
-    distance = ab::player->get_player_distance( *ab::target );
+    distance = priest_spell_t::player->get_player_distance( *target );
 
     if ( distance <= 28 )
     {
-      ab::execute();
+      priest_spell_t::execute();
+
+      if ( return_spell && distance <= 24 )
+      {
+        return_spell->execute();
+      }
+    }
+  }
+};
+
+struct divine_star_heal_t final : public priest_heal_t
+{
+  propagate_const<divine_star_heal_t*> return_spell;
+
+  divine_star_heal_t( util::string_view n, priest_t& p, const spell_data_t* s, bool is_return_spell = false )
+    : priest_heal_t( n, p, s ), return_spell( ( is_return_spell ? nullptr : new divine_star_heal_t( n, p, s, true ) ) )
+  {
+    aoe = -1;
+
+    proc = background = true;
+  }
+
+  // Hits twice, but only if you are at the correct distance
+  // 24 yards or less for 2 hits, 28 yards or less for 1 hit
+  void execute() override
+  {
+    double distance;
+
+    distance = priest_heal_t::player->get_player_distance( *target );
+
+    if ( distance <= 28 )
+    {
+      priest_heal_t::execute();
 
       if ( return_spell && distance <= 24 )
       {
@@ -287,8 +313,8 @@ struct divine_star_t final : public priest_spell_t
 {
   divine_star_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "divine_star", p, p.talents.divine_star ),
-      _heal_spell( new divine_star_base_t<priest_heal_t>( "divine_star_heal", p, p.talents.divine_star_heal ) ),
-      _dmg_spell( new divine_star_base_t<priest_spell_t>( "divine_star_damage", p, p.talents.divine_star_dmg ) )
+      _heal_spell( new divine_star_heal_t( "divine_star_heal", p, p.talents.divine_star_heal ) ),
+      _dmg_spell( new divine_star_spell_t( "divine_star_damage", p, p.talents.divine_star_dmg ) )
   {
     parse_options( options_str );
 
@@ -316,18 +342,31 @@ private:
 // Base Spell, used for both damage and heal spell.
 // TODO: add reduced healing beyond 5 targets
 // ==========================================================================
-template <class Base>
-struct halo_base_t : public Base
+struct halo_spell_t final : public priest_spell_t
 {
-public:
-  halo_base_t( util::string_view n, priest_t& p, const spell_data_t* s ) : Base( n, p, s )
+  halo_spell_t( util::string_view n, priest_t& p, const spell_data_t* s ) : priest_spell_t( n, p, s )
   {
-    Base::aoe                        = -1;
-    Base::background                 = true;
-    Base::radius                     = Base::data().max_range();
-    Base::range                      = 0;
-    Base::travel_speed               = 15;  // Rough estimate, 2021-01-03
-    Base::affected_by_shadow_weaving = true;
+    aoe                        = -1;
+    background                 = true;
+    radius                     = data().max_range();
+    range                      = 0;
+    travel_speed               = 15;  // Rough estimate, 2021-01-03
+    affected_by_shadow_weaving = true;
+
+    // This is not found in the affected spells for Dark Ascension, overriding it manually
+    force_buff_effect( p.buffs.dark_ascension, 1 );
+  }
+};
+
+struct halo_heal_t final : public priest_heal_t
+{
+  halo_heal_t( util::string_view n, priest_t& p, const spell_data_t* s ) : priest_heal_t( n, p, s )
+  {
+    aoe          = -1;
+    background   = true;
+    radius       = data().max_range();
+    range        = 0;
+    travel_speed = 15;  // Rough estimate, 2021-01-03
   }
 };
 
@@ -335,8 +374,8 @@ struct halo_t final : public priest_spell_t
 {
   halo_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "halo", p, p.talents.halo ),
-      _heal_spell( new halo_base_t<priest_heal_t>( "halo_heal", p, p.talents.halo_heal ) ),
-      _dmg_spell( new halo_base_t<priest_spell_t>( "halo_damage", p, p.talents.halo_dmg ) )
+      _heal_spell( new halo_heal_t( "halo_heal", p, p.talents.halo_heal ) ),
+      _dmg_spell( new halo_spell_t( "halo_damage", p, p.talents.halo_dmg ) )
   {
     parse_options( options_str );
 
@@ -1700,7 +1739,7 @@ struct power_word_shield_t final : public priest_absorb_t
   }
 
   // Manually create the buff so we can reference it with Void Shield
-  absorb_buff_t* create_buff( const action_state_t* s ) override
+  absorb_buff_t* create_buff( const action_state_t* ) override
   {
     return priest().buffs.power_word_shield;
   }
@@ -2121,7 +2160,7 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) : actor_target_data_t(
                                       buffs.echoing_void->decrement();
                                       if ( !buffs.echoing_void->check() )
                                       {
-                                        make_event( b->sim, [ this, b ] { b->cancel(); } );
+                                        make_event( b->sim, [ b ] { b->cancel(); } );
                                       }
                                     } );
   buffs.apathy =
@@ -2747,7 +2786,6 @@ void priest_t::init_spells()
   conduits.dissonant_echoes     = find_conduit_spell( "Dissonant Echoes" );
   conduits.haunting_apparitions = find_conduit_spell( "Haunting Apparitions" );
   conduits.mind_devourer        = find_conduit_spell( "Mind Devourer" );
-  conduits.rabid_shadows        = find_conduit_spell( "Rabid Shadows" );
   // Covenant Conduits
   conduits.courageous_ascension  = find_conduit_spell( "Courageous Ascension" );
   conduits.festering_transfusion = find_conduit_spell( "Festering Transfusion" );
@@ -2859,12 +2897,12 @@ void priest_t::create_buffs()
                             ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
   buffs.rhapsody =
       make_buff( this, "rhapsody", talents.rhapsody_buff )
-          ->set_stack_change_callback( ( [ this ]( buff_t* b, int, int ) { buffs.rhapsody_timer->trigger(); } ) );
+          ->set_stack_change_callback( ( [ this ]( buff_t*, int, int ) { buffs.rhapsody_timer->trigger(); } ) );
   buffs.rhapsody_timer = make_buff( this, "rhapsody_timer", talents.rhapsody )
                              ->set_quiet( true )
                              ->set_duration( timespan_t::from_seconds( 5 ) )
                              ->set_max_stack( 1 )
-                             ->set_stack_change_callback( ( [ this ]( buff_t* b, int, int new_ ) {
+                             ->set_stack_change_callback( ( [ this ]( buff_t*, int, int new_ ) {
                                if ( new_ == 0 )
                                {
                                  buffs.rhapsody->trigger();
@@ -3191,7 +3229,7 @@ void priest_t::trigger_idol_of_cthun( action_state_t* s )
 {
   auto mind_sear_id          = talents.shadow.mind_sear->effectN( 1 ).trigger()->id();
   auto mind_flay_id          = specs.mind_flay->id();
-  auto mind_flay_insanity_id = 391403;
+  auto mind_flay_insanity_id = 391403U;
   auto action_id             = s->action->id;
   if ( !talents.shadow.idol_of_cthun.enabled() )
     return;

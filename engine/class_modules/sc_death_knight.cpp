@@ -2881,7 +2881,7 @@ struct soul_reaper_t : public drw_action_t<melee_attack_t>
     ability.consumption   = new consumption_t  ( this );
   }
 
-  double composite_player_target_multiplier( player_t* target, school_e school ) const
+  double composite_player_target_multiplier( player_t* target, school_e school ) const override
   {
     double m = death_knight_pet_t::composite_player_target_multiplier( target, school );
 

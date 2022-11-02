@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.0.46366
-static const std::array<spelltext_data_t, 18944> __spelltext_data { {
+static const std::array<spelltext_data_t, 18953> __spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -16583,6 +16583,9 @@ static const std::array<spelltext_data_t, 18944> __spelltext_data { {
   { 377455, "Casting spells spins Crystalline Silk, granting [low] mastery per stack.\r\n\r\nAt X stacks, your next single-target spell deals [high] bonus Frost damage, encasing them and enemies within 10 yards in a Crystalline Web for X seconds. While the web persists, a portion of the damage you deal is shared across all enemies in the Web.", 0, 0 },
   { 377456, "Your critical strikes have a chance to build Static Electricity, granting $s2% attack speed per stack.\r\n\r\nAt $s3 stacks lightning surges through you, increasing your movement speed by $s4% for $s1 seconds. While surging, your auto attacks jolt your target and 1 nearby enemy for $s5 Nature damage.", 0, 0 },
   { 377457, "Enter an Elemental Stance. Successfully dodging or parrying an attack has a chance to unleash a powerful Elemental Counterattack to enemies in front of you as you assume the next stance.", 0, 0 },
+  { 377458, "Dodging or parrying an attack has a chance to deal Nature damage to all enemies in front of you, gaining [A Lot Of] Armor and receiving increased healing for 10 seconds.\r\n\r\nNext stance: Fire", 0, 0 },
+  { 377459, "Dodging or parrying an attack has a chance to deal Fire damage to all enemies in front of you, burning them for an additional amount (up to a cap) based on your Maximum Health for 10 seconds.\r\n\r\nNext stance: Ice", 0, 0 },
+  { 377461, "Dodging or parrying an attack has a chance to deal Nature damage to all enemies in front of you, reducing their armor by [amount] for 10 seconds.\r\n\r\nNext stance: Earth", 0, 0 },
   { 377462, "Designate another player to bond with, becoming their Guardian for $382281d.\r\n\r\nWhile bonded, you and your ally gain $382280s1 Versatility and restore $382280s2 health per second. If you are within 15 yards of one another, these bonuses are increased.", 0, 0 },
   { 377463, "Channel for 2 seconds, unleashing a furious volley of flame around your target, dealing [A Lot] fire damage.\r\n\r\nWhenever an allied player dies, this cooldown is reduced by 90 seconds.", 0, 0 },
   { 377464, "Let loose a dangerous current of lightning, dealing [Big Number] Nature damage to your target and [low] damage to yourself. Self-damage increases with your stacks of Hatred.", 0, 0 },
@@ -16958,6 +16961,9 @@ static const std::array<spelltext_data_t, 18944> __spelltext_data { {
   { 382119, "Infrequently summons a gnoll ally to assist you during combat. It may deal $s2 Physical damage to your target and $?134735a[snare][stun] it for 2 sec, poison your target for ${$s3*($384290d/$384290t1)*(1+$@versadmg)} Nature over $384290d, or increase your highest secondary stat by $s1 for $384294d.", "Something is watching you.", 0 },
   { 382126, "$@spelldesc385884.", "You have stolen $w1 Intellect.", 0 },
   { 382131, "Casting spells spins Crystalline Silk, granting [low] mastery per stack.\r\n\r\nAt X stacks, your next single-target spell deals [high] bonus Frost damage, encasing them and enemies within 10 yards in a Crystalline Web for X seconds. While the web persists, a portion of the damage you deal is shared across all enemies in the Web.", 0, 0 },
+  { 382133, "Dodging or parrying an attack has a chance to deal Frost damage to all enemies in front of you, slowing their cast and attack speeds by [amount] for 10 seconds.\r\n\r\nNext stance: Air", 0, 0 },
+  { 382135, "Channel for 2 seconds, unleashing a furious volley of flame around your target, dealing [A Lot] fire damage.\r\n\r\nWhenever an allied player dies, this cooldown is reduced by 90 seconds.", 0, 0 },
+  { 382136, "Channel for 2 seconds, unleashing a furious volley of flame around your target, dealing [A Lot] fire damage.\r\n\r\nWhenever an allied player dies, this cooldown is reduced by 90 seconds.", 0, 0 },
   { 382139, "Call on the Lost Dwarves to rain down cannon fire at your location dealing $387777s1 Fire damage split between you and all enemies over $d.\r\n\r\nDamage is increased for each target struck, up to $s2 targets.", 0, 0 },
   { 382144, "While Icy Veins is active, each Frostbolt you cast reduces the cast time of Frostbolt by $327509s1% and increases its damage by $327509s2%, stacking up to $327509u times.", 0, 0 },
   { 382145, "Increases Haste by $s1 for $d.", "Haste increased by $w1.", 0 },
@@ -17009,6 +17015,8 @@ static const std::array<spelltext_data_t, 18944> __spelltext_data { {
   { 382247, "Increases Stamina by $s1.", "Stamina increased by $w1.", 0 },
   { 382250, "$@spelldesc369156  If you spend at least 10 seconds eating you will become well fed and gain $382246s1 Stamina for $382246d.", 0, 0 },
   { 382252, "$@spelldesc369159  If you spend at least 10 seconds eating you will become well fed and gain $382247s1 Stamina for $382247d.", 0, 0 },
+  { 382256, "Channel for 2 seconds, unleashing a furious volley of flame around your target, dealing [A Lot] fire damage.\r\n\r\nWhenever an allied player dies, this cooldown is reduced by 90 seconds.", 0, 0 },
+  { 382257, "Channel for 2 seconds, unleashing a furious volley of flame around your target, dealing [A Lot] fire damage.\r\n\r\nWhenever an allied player dies, this cooldown is reduced by 90 seconds.", 0, 0 },
   { 382258, "Leech increased by $s1%.", 0, 0 },
   { 382260, "Movement speed increased by $s1%.", 0, 0 },
   { 382266, "Inhale, stoking your inner flame. Release to exhale, burning enemies in a cone in front of you for $<sOneDmg> Fire damage. Deals reduced damage beyond 5 targets.\r\n\r\n|cFFFFFFFFI:|r   Deals $<sOneDoT> damage over 4 sec.\r\n\r\n|cFFFFFFFFII:|r  Deals $<sTwoDoT> damage over 8 sec.\r\n\r\n|cFFFFFFFFIII:|r Deals $<sThreeDoT> damage over 12 sec.\r\n\r\n|cFFFFFFFFIV:|r Deals $<sFourDoT> damage over 16 sec.", 0, "Red" },
@@ -18944,6 +18952,7 @@ static const std::array<spelltext_data_t, 18944> __spelltext_data { {
   { 396484, "$@spelldesc387474", 0, 0 },
   { 396895, "Hurls a bolt of dark magic at the target, dealing $s1 Shadow damage.", 0, 0 },
   { 397251, "Weapons of Order calls forth $?c1[Niuzao, the Black Ox]?c2&s325197[Chi-Ji, the Red Crane]?c3[Xuen, the White Tiger][Yu'lon, the Jade Serpent] to assist you for ${$s1/1000} sec.", 0, 0 },
+  { 397708, "Execute no longer has a cooldown and if your foe survives, $163201s2% of the Rage spent is refunded.", 0, 0 },
 } };
 
 // spelltext hotfix entries, wow build 10.0.0.46366
@@ -19011,7 +19020,7 @@ static const std::array<spelldesc_vars_data_t, 361> __spelldesc_vars_data { {
   {   51690, "$dmg=${$57841s2*6+$57842s1*6}" },
   {   55095, "$CAP=$?$OWB==0[${$AP*0.98}][${($AP+$OAP)*2/3}]--2H, DW" },
   {   58877, "$percent=$?s63271[${$58877m1*1.4}][${$58877m1}]" },
-  {   61882, "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$damage=${$SPN*0.176*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>}" },
+  {   61882, "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$damage=${$SPN*0.1936*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>}" },
   {   64382, "$damage=${($AP*1.0)*(1+$@versadmg)}" },
   {   77756, "$chance=$?a279830[${$s1+$279830s1}][${$s1}]" },
   {   79096, "$cdr=${$s1/10}" },
@@ -19174,7 +19183,7 @@ static const std::array<spelldesc_vars_data_t, 361> __spelldesc_vars_data { {
   {  296320, "$cooldownValue=${($m1+3320)/-100}.1\r\n$cooldown=${$clamp($<cooldownValue>,10,25)}.1" },
   {  298441, "$points=${$298461s2}" },
   {  298442, "$points=${$298461s2}" },
-  {  298762, "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$damage=${$SPN*0.391*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>*($168534s2/100)*($381726s1/100)}" },
+  {  298762, "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$damage=${$SPN*0.1936*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>*($168534s2/100)*($381726s1/100)}" },
   {  299367, "$cooldownValue=${($m1+3320)/-100}.1\r\n$cooldown=${$clamp($<cooldownValue>,10,25)}.1" },
   {  299369, "$cooldownValue=${($m1+3320)/-100}.1\r\n$cooldown=${$clamp($<cooldownValue>,10,25)}.1" },
   {  299958, "$transfer=${$303448s1*(1+$303463s1/100)*(1+$@versadmg)}" },
@@ -19190,7 +19199,7 @@ static const std::array<spelldesc_vars_data_t, 361> __spelldesc_vars_data { {
   {  315341, "$CAP=${($AP+$OAP)*2/3}\r\n$damage=${$m1*$<CAP>/$AP}" },
   {  317349, "$damage=${2.0*$317483s1}\r\n$absorb=${(($317320s3/100)*$AP)*2.0*(1+$@versadmg)}" },
   {  317485, "$damage=${2.0*$317483s1}\r\n$absorb=${(($317320s3/100)*$AP)*2.0*(1+$@versadmg)}" },
-  {  318038, "$coeff=${0.0264}" },
+  {  318038, "$coeff=${0.0198}" },
   {  318187, "$points=${($s2/100*$max($AP,$SP)*(1+$@versadmg))}" },
   {  318211, "$points=${($s2/100*$max($AP,$SP)*(1+$@versadmg))}" },
   {  318216, "$points=${($s2/100*$max($AP,$SP)*(1+$@versadmg))}" },
@@ -19202,7 +19211,7 @@ static const std::array<spelldesc_vars_data_t, 361> __spelldesc_vars_data { {
   {  318488, "$points=${($s2/100*$max($AP,$SP)*(1+$@versadmg))}" },
   {  319191, "$mod=$?a137005[${0.25}]?a212611[${1.5}]?a137009[${2}]?a137014[${2}]?a137018[${1}]?a137022[${0.5}]?a137026[${0.75}]?a137030[${1.5}]?a137034[${1.5}]?a137038[${2}]?a137042[${1}]?a137047[${1.5}]?a353167[${2}][${1}]" },
   {  319217, "$points=${$cond($gt($SP,$AP),$SP*10,$AP*10)*(1)}" },
-  {  319778, "$coeff=${0.0264}" },
+  {  319778, "$coeff=${0.0198}" },
   {  319978, "$absorb=${($319978s1/100)*$MHP*(1+$@versadmg)}" },
   {  319983, "$mod=$?a137005[${1.0}]?a212611[${1.0}]?a137009[${3.0}]?a137014[${0.5}.1]?a137018[${1.5}.1]?a137022[${3.0}]?a137026[${4.0}]?a137030[${0.8}.2]?a137034[${1.5}]?a137038[${1.4}.1]?a137042[${1.0}]?a137047[${1.0}]?a353167[${2.0}][${1.0}]" },
   {  320659, "$points=${$cond($gt($SP,$AP),$SP*0.3312,$AP*0.3312)*(1+$@versadmg)}" },
@@ -19321,10 +19330,14 @@ static const std::array<spelldesc_vars_data_t, 361> __spelldesc_vars_data { {
 } };
 
 // spelldesc_vars hotfix entries, wow build 10.0.0.46366
-static constexpr std::array<hotfix::client_hotfix_entry_t, 4> __spelldesc_vars_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 8> __spelldesc_vars_hotfix_data { {
   {      17,  0, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$pvp=$?a134735[${1.1}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*2.8*(1+$@versadmg)*$<rapture>*$<shadow>*$<pvp>*$<weal>}\r\n", "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$pvp=$?a134735[${1.1}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<pvp>*$<weal>}\r\n" },
+  {   61882,  0, "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$damage=${$SPN*0.176*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>}", "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$damage=${$SPN*0.1936*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>}" },
   {  115203,  0, "$health=$?s322960[${20}][${15}]\r\n$damage=$?s322960[${20}][${15}]", "$health=$?s322960[${15}][${15}]\r\n$damage=$?c1[${20}][${20}]" },
   {  120954,  0, "$health=$?s322960[${20}][${15}]\r\n$damage=$?s322960[${20}][${15}]", "$health=$?s322960[${15}][${15}]\r\n$damage=$?c1[${20}][${20}]" },
+  {  298762,  0, "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$damage=${$SPN*0.391*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>*($168534s2/100)*($381726s1/100)}", "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$damage=${$SPN*0.1936*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>*($168534s2/100)*($381726s1/100)}" },
+  {  318038,  0, "$coeff=${0.0264}", "$coeff=${0.0198}" },
+  {  319778,  0, "$coeff=${0.0264}", "$coeff=${0.0198}" },
   {  388917,  0, "$health=$?s322960[${20}][${15}]\r\n$damage=$?s322960[${20}][${15}]", "$health=$?s322960[${15}][${15}]\r\n$damage=$?c1[${20}][${20}]" },
 } };
 

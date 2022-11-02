@@ -2670,7 +2670,7 @@ struct base_wolf_t : public shaman_pet_t
   base_wolf_t( shaman_t* owner, util::string_view name )
     : shaman_pet_t( owner, name ), alpha_wolf( nullptr ), alpha_wolf_buff( nullptr ), wolf_type( SPIRIT_WOLF )
   {
-    owner_coeff.ap_from_ap = 1.5;
+    owner_coeff.ap_from_ap = 1.125;
 
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.5 );
   }
@@ -3234,7 +3234,7 @@ struct flametongue_weapon_spell_t : public shaman_spell_t  // flametongue_attack
     may_crit = background      = true;
 
     snapshot_flags          = STATE_AP;
-    attack_power_mod.direct = 0.0264;
+    attack_power_mod.direct = 0.0198;
 
     if ( player->main_hand_weapon.type != WEAPON_NONE )
     {
@@ -3742,8 +3742,14 @@ struct auto_attack_t : public shaman_attack_t
     p()->melee_mh = new melee_t( "Main Hand", spell_data_t::nil(), player, &( p()->main_hand_weapon ), sync_weapons,
                                  swing_timer_variance );
     p()->melee_mh->school = SCHOOL_PHYSICAL;
-    p()->ascendance_mh = new windlash_t( "Windlash", player->find_spell( 114089 ), player, &( p()->main_hand_weapon ),
-                                         swing_timer_variance );
+
+    if ( ( player->legendary.deeply_rooted_elements.ok() || player->talent.deeply_rooted_elements.ok() ||
+           player->talent.ascendance.ok() ) &&
+          player->specialization() == SHAMAN_ENHANCEMENT )
+    {
+      p()->ascendance_mh = new windlash_t( "Windlash", player->find_spell( 114089 ), player, &( p()->main_hand_weapon ),
+                                           swing_timer_variance );
+    }
 
     p()->main_hand_attack = p()->melee_mh;
 
@@ -3755,8 +3761,12 @@ struct auto_attack_t : public shaman_attack_t
       p()->melee_oh = new melee_t( "Off-Hand", spell_data_t::nil(), player, &( p()->off_hand_weapon ), sync_weapons,
                                    swing_timer_variance );
       p()->melee_oh->school = SCHOOL_PHYSICAL;
-      p()->ascendance_oh    = new windlash_t( "Windlash Off-Hand", player->find_spell( 114093 ), player,
-                                           &( p()->off_hand_weapon ), swing_timer_variance );
+    if ( player->legendary.deeply_rooted_elements.ok() || player->talent.deeply_rooted_elements.ok() ||
+         player->talent.ascendance.ok() )
+      {
+        p()->ascendance_oh    = new windlash_t( "Windlash Off-Hand", player->find_spell( 114093 ), player,
+                                             &( p()->off_hand_weapon ), swing_timer_variance );
+      }
 
       p()->off_hand_attack = p()->melee_oh;
 
@@ -6491,7 +6501,7 @@ struct earthquake_overload_damage_t : public earthquake_damage_base_t
     earthquake_damage_base_t( player, "earthquake_overload_damage", player->find_spell( 298765 ), parent )
   {
     // Earthquake modifier is hardcoded rather than using effects, so we set the modifier here
-    spell_power_mod.direct = 0.176 * player->talent.mountains_will_fall->effectN( 1 ).percent();
+    spell_power_mod.direct = 0.1936 * player->talent.mountains_will_fall->effectN( 1 ).percent();
   }
 };
 
@@ -6525,7 +6535,7 @@ struct earthquake_damage_t : public earthquake_damage_base_t
     earthquake_damage_base_t( player, "earthquake_damage", player->find_spell( 77478 ), parent )
   {
     // Earthquake modifier is hardcoded rather than using effects, so we set the modifier here
-    spell_power_mod.direct = 0.176;
+    spell_power_mod.direct = 0.1936;
   }
 };
 
@@ -7060,7 +7070,7 @@ public:
     // proc chance suddenly became 100% and the actual chance became effectN 1
     double proc_chance = p()->talent.lava_surge->effectN( 1 ).percent();
 
-    if ( p()->spec.restoration_shaman->ok() )
+    if ( p()->talent.lava_surge.ok() && p()->spec.restoration_shaman->ok() )
     {
       proc_chance += p()->spec.restoration_shaman->effectN( 8 ).percent();
     }
@@ -10115,7 +10125,7 @@ void shaman_t::trigger_vesper_totem( const action_state_t* state )
     case ACTION_ATTACK:
     case ACTION_SPELL:
     {
-      if ( bugs == true && state->action->name() == "Fire Nova" )
+      if ( bugs == true && std::string_view{state->action->name()} == "Fire Nova" )
       {
         current_event = ev_vesper_totem_heal;
         charges = &( vesper_totem_heal_charges );

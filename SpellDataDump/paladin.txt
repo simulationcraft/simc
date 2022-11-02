@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.46366 Live (hotfix 2022-10-30/46366)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.46366 Live (hotfix 2022-11-01/46366)
 Name             : Frostbolt of Ages (id=11) 
 Class            : Paladin
 School           : Frost
@@ -728,7 +728,7 @@ Duration         : 12 seconds
 Cooldown         : 9 seconds
 Category         : 932
 Category Cooldown: 9 seconds
-Affecting spells : Retribution Paladin (137027 effect#13), Protection Paladin (137028 effects: #4, #12), Holy Paladin (137029 effects: #4, #12), Consecrated Ground (204054 effect#1), Consecration (327980 effect#1), Consecration in Flame (379022 effects: #1, #2), Sanctify (382538 effect#1), Sanctified Ground (387479 effect#1)
+Affecting spells : Retribution Paladin (137027 effect#13), Protection Paladin (137028 effects: #4, #12), Holy Paladin (137029 effects: #4, #12), Consecrated Ground (204054 effect#1), Consecration (327980 effect#1), Hallowed Ground (377043 effects: #1, #2), Consecration in Flame (379022 effects: #1, #2), Sanctify (382538 effect#1), Sanctified Ground (387479 effect#1)
 Family Flags     : 5, 58
 Attributes       : ........ ........ x....... ........   ...x...x ..x..... ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1645,8 +1645,7 @@ Class            : Paladin
 School           : Holy
 Spell Type       : Magic
 Range            : 50000 yards
-Affecting spells : Avenging Wrath (31884 effects: #2, #3, #11), Retribution Paladin (137027 effects: #1, #2, #13), Protection Paladin (137028 effects: #1, #2, #4, #12), Holy Paladin (137029 effects: #4, #10, #12), Consecrated Ground (204054 effect#1), Crusade (231895 effects: #1, #2), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effects: #1, #2), Consecration (327980 effect#1), Blessing of Dawn (337747 effects: #1, #2), Consecration in Flame (379022 effect#2), Sanctify (382538 effect#1), Radiant Decree (383469 effect#3), Blessing of Dawn (385127 effects: #1, #2), Sanctified Ground (387479 effect#1), Sentinel (389539 effects: #1, #2, #3)
-Triggered by     : Hallowed Ground (377043)
+Affecting spells : Avenging Wrath (31884 effects: #2, #3, #11), Retribution Paladin (137027 effects: #1, #2, #13), Protection Paladin (137028 effects: #1, #2, #4, #12), Holy Paladin (137029 effects: #4, #10, #12), Consecrated Ground (204054 effect#1), Crusade (231895 effects: #1, #2), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effects: #1, #2), Consecration (327980 effect#1), Blessing of Dawn (337747 effects: #1, #2), Hallowed Ground (377043 effects: #1, #2), Consecration in Flame (379022 effect#2), Sanctify (382538 effect#1), Radiant Decree (383469 effect#3), Blessing of Dawn (385127 effects: #1, #2), Sanctified Ground (387479 effect#1), Sentinel (389539 effects: #1, #2, #3)
 Family Flags     : 5, 27, 65
 Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ ........ ........ 
                  : ..x..... ......x. ...x.... ....x.x.   x....... ........ ........ .x....x. 
@@ -12065,9 +12064,16 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Is Ability (4), Passive (6), Do Not Log (8), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1004680)  : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 0x2 | Trigger Spell: 81297 | Target: Self (1)
-                   Affected School(s): Holy
+#1 (id=1004680)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Consecration (26573), Consecration (81297)
+                   Family Flags: 5
+Hotfixed         : Sub Type (79 -> 108), Misc Value (2 -> 0), Affects Spells, Trigger Spell (81297 -> 0)
+#2 (id=1039657)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Consecration (26573), Consecration (81297)
+                   Family Flags: 5
+Hotfixed         : NEW EFFECT
 Description      : Consecration's damage is increased by $s1%.
 
 Name             : Seal of Reprisal (id=377053) [Spell Family (10), Passive] 

@@ -1217,8 +1217,8 @@ void decoration_of_flame( special_effect_t& effect )
 
   struct decoration_of_flame_damage_t : public proc_spell_t
   {
-    double value;
     buff_t* shield;
+    double value;
 
     decoration_of_flame_damage_t( const special_effect_t& e ) :
       proc_spell_t( "decoration_of_flame", e.player, e.player->find_spell( 377449 ), e.item ), shield( nullptr ), value( e.player -> find_spell( 394393 ) -> effectN( 2 ).average( e.item ) )
@@ -1262,6 +1262,257 @@ void decoration_of_flame( special_effect_t& effect )
   buff->set_stack_change_callback( [ action ](buff_t*, int, int ) 
   {
     action -> execute();
+  } );
+}
+
+// Manic Grieftorch
+// 377463 Driver
+// 382135 Damage
+// 382136 Damage Driver
+// 394954 Damage Value
+// 382256 AoE Radius
+// 382257 ???
+// 395703 ???
+// 396434 ???
+void manic_grieftorch( special_effect_t& effect )
+{
+    struct manic_grieftorch_damage_t : public proc_spell_t
+  {
+    manic_grieftorch_damage_t( const special_effect_t& e ) :
+      proc_spell_t( "manic_grieftorch", e.player, e.player->find_spell( 382135 ), e.item )
+    {
+      background = true;
+      base_dd_min = base_dd_max = e.player->find_spell( 394954 )->effectN( 1 ).average( e.item );
+    }
+  };
+  
+  struct manic_grieftorch_missile_t : public proc_spell_t
+  {
+    manic_grieftorch_missile_t( const special_effect_t& e ) :
+      proc_spell_t( "manic_grieftorch_missile", e.player, e.player->find_spell( 382136 ), e.item )
+    {
+      background = true;
+      aoe = -1;
+      radius = e.player -> find_spell( 382256 ) -> effectN( 1 ).radius();
+      impact_action = create_proc_action<manic_grieftorch_damage_t>( "manic_grieftorch", e );
+    }
+
+    size_t available_targets( std::vector< player_t* >& tl ) const override
+    {
+    proc_spell_t::available_targets( tl );
+
+    tl.erase( std::remove_if( tl.begin(), tl.end(), [ this ]( player_t* t) {
+         if( t == target )
+        {
+          return false;
+        }
+        else
+        {
+          return !rng().roll( player->sim->dragonflight_opts.manic_grieftorch_chance );
+        }
+      }), tl.end() );
+
+      return tl.size();
+    }
+  };
+
+  struct manic_grieftorch_channel_t : public proc_spell_t
+  {
+    manic_grieftorch_channel_t( const special_effect_t& e ) :
+      proc_spell_t( "manic_grieftorch_channel", e.player, e.player->find_spell( 377463 ), e.item)
+    {
+      background = true;
+      channeled = tick_zero = true;
+      hasted_ticks = false;
+      target_cache.is_valid = false;
+      base_tick_time = e.player -> find_spell( 377463 ) -> effectN( 1 ).period();
+      tick_action = create_proc_action<manic_grieftorch_missile_t>( "manic_grieftorch_missile", e );
+    }
+
+    void last_tick( dot_t* d ) override
+    {
+      bool was_channeling = player->channeling == this;
+
+      proc_spell_t::last_tick( d );
+
+      if ( was_channeling && !player->readying )
+        player->schedule_ready( rng().gauss( sim->channel_lag, sim->channel_lag_stddev ) );
+    }
+  };
+
+  effect.execute_action = create_proc_action<manic_grieftorch_channel_t>( "manic_grieftorch_channel", effect );
+}
+
+// All-Totem of the Master
+// TODO - Setup to only proc for tank specs
+// 377457 Driver and values
+// Effect 1 - Fire/Ice direct damage
+// Effect 2 - Ice buff value ?
+// Effect 3 - Earth/Air direct damage
+// Effect 4 - Fire DoT damage
+// Effect 5 - Haste value
+// 377458 Earth buff
+// 377459 Fire buff
+// 377461 Air buff
+// 382133 Ice buff
+void alltotem_of_the_master( special_effect_t& effect )
+{
+  effect.type = SPECIAL_EFFECT_NONE;
+
+  struct alltotem_earth_damage_t : public proc_spell_t
+  {
+    alltotem_earth_damage_t( const special_effect_t& e ) :
+      proc_spell_t( "elemental_stance_earth", e.player, e.player->find_spell( 377458 ), e.item )
+    {
+      background = true;
+      aoe = -1;
+      base_dd_min = base_dd_max = e.driver()->effectN(3).average(e.item);
+    }
+  };
+
+  struct alltotem_fire_damage_t : public proc_spell_t
+  {
+    alltotem_fire_damage_t( const special_effect_t& e ) :
+      proc_spell_t( "elemental_stance_fire", e.player, e.player->find_spell( 377459 ), e.item )
+    {
+      background = true;
+      aoe = -1;
+      base_dd_min = base_dd_max = e.driver()->effectN(1).average(e.item);
+    }
+  };
+
+  struct alltotem_fire_dot_damage_t : public proc_spell_t
+  {
+    alltotem_fire_dot_damage_t( const special_effect_t& e ) :
+      proc_spell_t( "elemental_stance_fire_dot", e.player, e.player->find_spell( 377459 ), e.item )
+    {
+      background = true;
+      aoe = -1;
+      base_dd_min = base_dd_max = e.driver()->effectN(4).average(e.item);
+    }
+  };
+
+  struct alltotem_air_damage_t : public proc_spell_t
+  {
+    alltotem_air_damage_t( const special_effect_t& e ) :
+      proc_spell_t( "elemental_stance_air", e.player, e.player->find_spell( 377461 ), e.item )
+    {
+      background = true;
+      aoe = -1;
+      base_dd_min = base_dd_max = e.driver()->effectN( 3 ).average( e.item );
+    }
+  };
+
+  struct alltotem_ice_damage_t : public proc_spell_t
+  {
+    alltotem_ice_damage_t( const special_effect_t& e ) :
+      proc_spell_t( "elemental_stance_ice", e.player, e.player->find_spell( 382133 ), e.item )
+    {
+      background = true;
+      aoe = -1;
+      base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e.item );
+    }
+  };
+
+  struct alltotem_buffs_t : public proc_spell_t
+  {
+    buff_t* earth_buff;
+    buff_t* fire_buff;
+    buff_t* air_buff;
+    buff_t* ice_buff;
+    std::vector<buff_t*> buffs;
+    buff_t* first;
+
+    alltotem_buffs_t( const special_effect_t& e ) : 
+      proc_spell_t( "alltotem_of_the_master", e.player, e.player -> find_spell( 377457 ), e.item )
+    {
+
+      earth_buff = make_buff<stat_buff_t>(e.player, "elemental_stance_earth", e.player->find_spell(377458))
+          ->add_stat(STAT_BONUS_ARMOR, e.driver()->effectN(5).average(e.item));
+      auto earth_damage = create_proc_action<alltotem_earth_damage_t>( "elemental_stance_earth", e );
+      earth_buff->set_stack_change_callback( [ earth_damage ](buff_t*, int, int new_) 
+      {
+        if( new_ == 1 )
+        {
+          earth_damage->execute();
+        }
+      } );
+      fire_buff = make_buff(e.player, "elemental_stance_fire", e.player->find_spell(377459))
+          ->set_period(e.player->find_spell( 377459 )->effectN(3).period());
+      auto fire_damage = create_proc_action<alltotem_fire_damage_t>( "elemental_stance_fire", e );
+      auto fire_dot = create_proc_action<alltotem_fire_dot_damage_t>( "elemental_stance_fire_dot", e );
+      fire_buff->set_stack_change_callback( [ fire_damage ](buff_t*, int, int new_) 
+      {
+        if( new_ == 1 )
+        {
+          fire_damage->execute();
+        }
+      } );
+      fire_buff->set_tick_callback( [ fire_dot ]( buff_t* /* buff */, int /* current_tick */, timespan_t /* tick_time */ ) 
+      {
+        fire_dot->execute();
+      } );
+      air_buff = make_buff<stat_buff_t>(e.player, "elemental_stance_air", e.player->find_spell(377461))
+           ->add_stat(STAT_HASTE_RATING, e.driver()->effectN(5).average(e.item));
+      auto air_damage = create_proc_action<alltotem_air_damage_t>( "elemental_stance_air", e );
+      air_buff->set_stack_change_callback( [ air_damage ](buff_t*, int, int new_) 
+      {
+        if( new_ == 1 )
+        {
+          air_damage->execute();
+        }
+      } );
+      ice_buff = make_buff(e.player, "elemental_stance_ice", e.player->find_spell(382133));
+      ice_buff->set_default_value(e.driver()->effectN(2).average(e.item));
+      auto ice_damage = create_proc_action<alltotem_ice_damage_t>( "elemental_stance_ice", e );
+      ice_buff->set_stack_change_callback( [ ice_damage ](buff_t*, int, int new_) 
+      {
+        if( new_ == 1 )
+        {
+          ice_damage->execute();
+        }
+      } );
+
+      first = buffs.emplace_back( earth_buff );
+      buffs.push_back( fire_buff );
+      buffs.push_back( air_buff);
+      buffs.push_back( ice_buff );
+
+      add_child(earth_damage);
+      add_child(fire_damage);
+      add_child(fire_dot);
+      add_child(ice_damage);
+      add_child(air_damage);
+    }
+
+    void rotate()
+    {
+       buffs.front()->trigger();
+       std::rotate(buffs.begin(), buffs.begin() + 1, buffs.end());
+    }
+
+    void execute() override
+    {
+      proc_spell_t::execute();
+      rotate();
+    }
+
+    void reset() override
+    {
+      proc_spell_t::reset();
+      std::rotate( buffs.begin(), range::find( buffs, first ), buffs.end() );
+    }
+  };
+
+  action_t* action = create_proc_action<alltotem_buffs_t>( "alltotem_of_the_master", effect );
+
+  effect.player->register_combat_begin([&effect, action ](player_t*) {
+    timespan_t base_period = effect.driver()->internal_cooldown();
+    timespan_t period = base_period + ( effect.player -> sim -> dragonflight_opts.alltotem_of_the_master_period + effect.player -> rng().range( 0_s, 12_s ) / effect.player -> sim -> target_non_sleeping_list.size() );
+    make_repeating_event( effect.player -> sim, period , [ action ]()
+    {
+      action -> execute();
+    } );
   } );
 }
 
@@ -1545,6 +1796,8 @@ void register_special_effects()
   register_special_effect( 377454, items::rumbling_ruby );
   register_special_effect( 377453, items::storm_eaters_boon );
   register_special_effect( 377449, items::decoration_of_flame );
+  register_special_effect( 377463, items::manic_grieftorch );
+  register_special_effect( 377457, items::alltotem_of_the_master );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );  // bronzed grip wrappings embellishment

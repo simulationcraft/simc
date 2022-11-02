@@ -9,6 +9,7 @@ HEADERS += engine/action/attack.hpp
 HEADERS += engine/action/dbc_proc_callback.hpp
 HEADERS += engine/action/dot.hpp
 HEADERS += engine/action/heal.hpp
+HEADERS += engine/action/parse_buff_effects.hpp
 HEADERS += engine/action/residual_action.hpp
 HEADERS += engine/action/sequence.hpp
 HEADERS += engine/action/snapshot_stats.hpp

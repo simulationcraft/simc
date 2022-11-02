@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.46366 Live (hotfix 2022-10-30/46366)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.46366 Live (hotfix 2022-11-01/46366)
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -2846,9 +2846,6 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | Value Multiplier: 1 | PvP Coefficient: 1.00000 | Misc Value: 127 | Radius: 100 yards | Target: Self (1)
 #3 (id=311358)   : Apply Owner Area Aura (143) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Value Multiplier: 1 | PvP Coefficient: 1.00000 | Misc Value: 127 | Radius: 100 yards | Target: Self (1)
-#4 (id=1030268)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 1985 (Label) | Target: Self (1)
-                   Affected Spells (Label): Grimoire of Sacrifice (196099)
 Description      : $@spelldesc108415
 Tooltip          : $s1% of all damage taken is split with the Warlock's summoned demon.  
 The Warlock is healed for $s2% and your demon is healed for $s3% of all absorption granted by Soul Leech.
@@ -4139,7 +4136,7 @@ Spell Type       : None
 Spell Level      : 1
 Range            : 50000 yards
 Duration         : 3600 seconds
-Labels           : 1985: Soul Link (108446 effect#4), Profane Bargain (389576 effect#3)
+Labels           : 1985: Profane Bargain (389576 effect#3)
 Proc Chance      : 100%
 Real PPM         : 20 (Haste multiplier)
 Proc Flags       : ........ ........ x.x..... ........ 
@@ -4159,6 +4156,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 196100 | Target: Self (1)
 #2 (id=1030265)  : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value 2: 0x4 | Target: Self (1)
+#3 (id=1039953)  : Apply Aura (6) | Modify Total Stat% (137)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value 2: 0x4 | Target: Self (1)
+Hotfixed         : NEW EFFECT
 Description      : $@spelldesc108503
 Tooltip          : Sacrificed your demon pet to gain its command demon ability.
 

@@ -1362,6 +1362,8 @@ class SpellDataGenerator(DataGenerator):
          382425, 382428, 394864, # Spiteful Storm
          382090, # Storm-Eater's Boon
          382131, 394618, # Iceblood Deathsnare
+         377463, 382135, 382136, 382256, 382257, 394954, 395703, 396434, # Manic Grieftorch
+         377458, 377459, 377461, 382133, # All-Totem of the Master
         ),
 
         # Warrior:
@@ -4525,10 +4527,14 @@ class TraitGenerator(DataGenerator):
             fields += entry['definition'].field('id_override_spell')
             fields += [f'{entry["row"]:2d}', f'{entry["col"]:2d}']
             fields.append(f'{entry["selection_index"]:3d}')
-            if entry['definition'].override_name:
-                fields.append("{:>35s}".format(f'"{entry["definition"].override_name}"'))
-            else:
-                fields.append("{:>35s}".format(f'"{entry["spell"].name}"'))
+
+            _name = entry['spell'].name
+            if override := entry['definition'].override_name:
+                _name = override
+                if override.startswith('$@spellname') and override[11:].isnumeric():
+                    _name = self.db('SpellName')[int(override[11:])].name
+
+            fields.append("{:>35s}".format(f'"{_name}"'))
             fields.append(f'{{ {", ".join(["{:4d}".format(x) for x in sorted(entry["specs"]) + [0] * (constants.MAX_SPECIALIZATION - len(entry["specs"]))])} }}')
             fields.append(f'{{ {", ".join(["{:4d}".format(x) for x in sorted(entry["starter"]) + [0] * (constants.MAX_SPECIALIZATION - len(entry["starter"]))])} }}')
 

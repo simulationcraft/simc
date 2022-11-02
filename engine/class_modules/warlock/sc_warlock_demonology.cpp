@@ -1215,7 +1215,7 @@ void warlock_t::create_buffs_demonology()
                            } );
 
   buffs.nether_portal = make_buff( this, "nether_portal", talents.nether_portal_buff )
-                            ->set_stack_change_callback( [ this ]( buff_t* b, int, int cur ) {
+                            ->set_stack_change_callback( [ this ]( buff_t*, int, int cur ) {
                               if ( cur == 0 && talents.guldans_ambition.ok() )
                               {
                                 warlock_pet_list.pit_lords.spawn( talents.soul_glutton->duration(), 1u );

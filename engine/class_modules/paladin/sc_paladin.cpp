@@ -508,7 +508,6 @@ struct divine_shield_t : public paladin_spell_t
 
     // in this sim, the only debuffs we care about are enemy DoTs.
     // Check for them and remove them when cast
-    int num_destroyed = 0;
     for ( size_t i = 0, size = p()->dot_list.size(); i < size; i++ )
     {
       dot_t* d = p()->dot_list[ i ];
@@ -516,7 +515,6 @@ struct divine_shield_t : public paladin_spell_t
       if ( d->source != p() && d->source->is_enemy() && d->is_ticking() )
       {
         d->cancel();
-        num_destroyed++;
       }
     }
 

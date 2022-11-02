@@ -1369,11 +1369,8 @@ struct void_bolt_t final : public priest_spell_t
 // ==========================================================================
 struct dark_ascension_t final : public priest_spell_t
 {
-  double dark_ascension_value;
-
   dark_ascension_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "dark_ascension", p, p.talents.shadow.dark_ascension ),
-      dark_ascension_value( priest().buffs.dark_ascension->default_value )
+    : priest_spell_t( "dark_ascension", p, p.talents.shadow.dark_ascension )
   {
     parse_options( options_str );
 
@@ -1540,8 +1537,6 @@ struct mind_spike_t final : public priest_spell_t
   void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
-
-    priest_td_t& td = get_td( s->target );
 
     if ( result_is_hit( s->result ) )
     {
@@ -2236,7 +2231,7 @@ void priest_t::create_buffs_shadow()
           ->set_stack_change_callback( ( [ this ]( buff_t* b, int, int cur ) {
             if ( cur == b->max_stack() )
             {
-              make_event( b->sim, [ this, b ] { b->cancel(); } );
+              make_event( b->sim, [ b ] { b->cancel(); } );
               procs.thing_from_beyond->occur();
               spawn_thing_from_beyond();
             }
@@ -2666,8 +2661,8 @@ void priest_t::trigger_idol_of_nzoth( player_t* target, proc_t* proc )
 
   auto td = get_target_data( target );
 
-  if ( !td || !td->buffs.echoing_void->up() &&
-                  number_of_echoing_voids_active() == talents.shadow.idol_of_nzoth->effectN( 1 ).base_value() )
+  if ( !td || ( !td->buffs.echoing_void->up() &&
+                number_of_echoing_voids_active() == talents.shadow.idol_of_nzoth->effectN( 1 ).base_value() ) )
     return;
 
   if ( rng().roll( talents.shadow.idol_of_nzoth->proc_chance() ) )
