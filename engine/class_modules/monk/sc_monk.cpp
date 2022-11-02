@@ -6317,7 +6317,7 @@ struct expel_harm_t : public monk_heal_t
     if ( p()->talent.general.strength_of_spirit->ok() )
     {
       double health_percent = health_difference / p()->resources.max[RESOURCE_HEALTH];
-      s->result_total *= 1 + ( (1 - health_percent) * p()->talent.general.strength_of_spirit->effectN( 1 ).percent() );
+      s->result_total *= 1 + ( health_percent * p()->talent.general.strength_of_spirit->effectN( 1 ).percent() );
     }
 
     monk_heal_t::impact( s );
