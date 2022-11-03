@@ -3338,18 +3338,8 @@ double paladin_t::composite_block() const
   b += talents.holy_shield->effectN( 1 ).percent();
   b += buffs.faith_in_the_light->value();
   b += buffs.barricade_of_faith->value();
+  b += buffs.inner_light->value();
   return b;
-}
-
-// paladin_t::composite_block_reduction =======================================
-
-double paladin_t::composite_block_reduction( action_state_t* s ) const
-{
-  double br = player_t::composite_block_reduction( s );
-
-  br += buffs.inner_light->value();
-
-  return br;
 }
 
 // paladin_t::composite_crit_avoidance ========================================

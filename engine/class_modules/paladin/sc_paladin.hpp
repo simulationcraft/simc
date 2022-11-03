@@ -647,7 +647,6 @@ public:
   virtual double    composite_parry() const override;
   virtual double    composite_parry_rating() const override;
   virtual double    composite_block() const override;
-  virtual double    composite_block_reduction( action_state_t* s ) const override;
   virtual double    temporary_movement_modifier() const override;
   virtual double 	  composite_player_target_multiplier ( player_t *target, school_e school ) const override;
   virtual double    composite_base_armor_multiplier() const override;
