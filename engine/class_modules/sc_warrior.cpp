@@ -125,6 +125,7 @@ public:
     buff_t* intervene_movement;
     buff_t* into_the_fray;
     buff_t* juggernaut;
+    buff_t* juggernaut_prot;
     buff_t* last_stand;
     buff_t* meat_cleaver;
     buff_t* martial_prowess;
@@ -967,7 +968,7 @@ struct warrior_action_t : public Base
     // talents
     bool avatar, sweeping_strikes, booming_voice, bloodcraze, executioners_precision,
     ashen_juggernaut, recklessness, slaughtering_strikes, colossus_smash,
-    merciless_bonegrinder, juggernaut;
+    merciless_bonegrinder, juggernaut, juggernaut_prot;
     // tier
     bool t29_arms_4pc;
     // azerite & conduit
@@ -989,6 +990,7 @@ struct warrior_action_t : public Base
         colossus_smash( false ),
         merciless_bonegrinder( false ),
         juggernaut( false ),
+        juggernaut_prot( false ),
         t29_arms_4pc ( false ),
         crushing_assault( false ),
         ashen_juggernaut_conduit( false )
@@ -1113,6 +1115,7 @@ public:
     affected_by.slaughtering_strikes     = ab::data().affected_by( p()->find_spell( 393931 )->effectN( 1 ) );
     affected_by.ashen_juggernaut         = ab::data().affected_by( p()->talents.fury.ashen_juggernaut->effectN( 1 ).trigger()->effectN( 1 ) );
     affected_by.juggernaut               = ab::data().affected_by( p()->talents.arms.juggernaut->effectN( 1 ).trigger()->effectN( 1 ) );
+    affected_by.juggernaut_prot          = ab::data().affected_by( p()->talents.protection.juggernaut->effectN( 1 ).trigger()->effectN( 1 ) );
     affected_by.bloodcraze               = ab::data().affected_by( p()->talents.fury.bloodcraze->effectN( 1 ).trigger()->effectN( 1 ) );
     affected_by.sweeping_strikes         = ab::data().affected_by( p()->talents.arms.sweeping_strikes->effectN( 1 ) );
     affected_by.fury_mastery_direct      = ab::data().affected_by( p()->mastery.unshackled_fury->effectN( 1 ) );
@@ -1291,6 +1294,11 @@ public:
     if ( affected_by.juggernaut && p()->buff.juggernaut->up() )
     {
       dm *= 1.0 + p()->buff.juggernaut->stack_value();
+    }
+
+    if ( affected_by.juggernaut_prot && p()->buff.juggernaut_prot->up() )
+    {
+      dm *= 1.0 + p()->buff.juggernaut_prot->stack_value();
     }
 
     if ( affected_by.t29_arms_4pc && p()->buff.strike_vulnerabilities->up() )
@@ -3389,6 +3397,10 @@ struct execute_arms_t : public warrior_attack_t
     if ( p()->talents.arms.juggernaut.ok() )
     {
       p()->buff.juggernaut->trigger();
+    }
+    if ( p()->talents.protection.juggernaut.ok() )
+    {
+      p()->buff.juggernaut_prot->trigger();
     }
 
     if ( rng().roll( shield_slam_reset ) )
@@ -6077,6 +6089,10 @@ struct condemn_arms_t : public warrior_attack_t
     {
       p()->buff.juggernaut->trigger();
     }
+    if ( p()->talents.protection.juggernaut.ok() )
+    {
+      p()->buff.juggernaut_prot->trigger();
+    }
     if ( p()->legendary.sinful_surge->ok() && td( execute_state->target )->debuffs_colossus_smash->check() )
     {
       td( execute_state->target )->debuffs_colossus_smash->extend_duration( p(), timespan_t::from_millis( p()->legendary.sinful_surge->effectN( 1 ).base_value() ) );
@@ -8737,6 +8753,11 @@ void warrior_t::create_buffs()
   buff.juggernaut = make_buff( this, "juggernaut", talents.arms.juggernaut->effectN( 1 ).trigger() )
     ->set_default_value( talents.arms.juggernaut->effectN( 1 ).trigger()->effectN( 1 ).percent() )
     ->set_duration( talents.arms.juggernaut->effectN( 1 ).trigger()->duration() );
+
+  buff.juggernaut_prot = make_buff( this, "juggernaut_prot", talents.protection.juggernaut->effectN( 1 ).trigger() )
+    ->set_default_value( talents.protection.juggernaut->effectN( 1 ).trigger()->effectN( 1 ).percent() )
+    ->set_duration( talents.protection.juggernaut->effectN( 1 ).trigger()->duration() )
+    ->set_cooldown( talents.protection.juggernaut->internal_cooldown() );
 
   buff.last_stand = new buffs::last_stand_buff_t( *this, "last_stand", talents.protection.last_stand );
 
