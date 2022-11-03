@@ -5688,6 +5688,11 @@ struct arms_whirlwind_mh_t : public warrior_attack_t
     }
     return am;
   }
+
+  double tactician_cost() const override
+  {
+    return 0;
+  }
 };
 
 struct first_arms_whirlwind_mh_t : public warrior_attack_t
@@ -5709,6 +5714,11 @@ struct first_arms_whirlwind_mh_t : public warrior_attack_t
       am *= 1.0 + p()->conduit.merciless_bonegrinder.percent();
     }
     return am;
+  }
+
+  double tactician_cost() const override
+  {
+    return 0;
   }
 };
 
