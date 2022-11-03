@@ -844,6 +844,7 @@ public:
   double composite_melee_haste() const override;
   double composite_armor_multiplier() const override;
   double composite_bonus_armor() const override;
+  double composite_base_armor_multiplier() const override;
   double composite_block() const override;
   double composite_block_reduction( action_state_t* s ) const override;
   double composite_parry_rating() const override;
@@ -9409,6 +9410,8 @@ double warrior_t::composite_melee_haste() const
 
   a *= 1.0 / ( 1.0 + talents.fury.swift_strikes->effectN( 1 ).percent() );
 
+  a *= 1.0 / ( 1.0 + talents.protection.enduring_alacrity->effectN( 2 ).percent());
+
   return a;
 }
 
@@ -9475,15 +9478,14 @@ double warrior_t::composite_attribute_multiplier( attribute_e attr ) const
   if ( attr == ATTR_STRENGTH )
   {
     m *= 1.0 + buff.veterans_repute->value();
-
     m *= 1.0 + buff.hurricane->check_stack_value();
-
   }
 
   // Protection has increased stamina from vanguard
   if ( attr == ATTR_STAMINA )
   {
     m *= 1.0 + spec.vanguard -> effectN( 2 ).percent();
+    m *= 1.0 + talents.protection.enduring_alacrity -> effectN( 1 ).percent();
   }
 
   return m;
@@ -9533,6 +9535,16 @@ double warrior_t::composite_bonus_armor() const
   //ba += spec.vanguard -> effectN( 1 ).percent() * cache.strength(); //endless looping
 
   return ba;
+}
+
+// warrior_t::composite_base_armor_multiplier ================================
+double warrior_t::composite_base_armor_multiplier() const
+{
+  double a = player_t::composite_base_armor_multiplier();
+
+  a *= 1.0 + talents.protection.enduring_alacrity -> effectN( 3 ).percent();
+
+  return a;
 }
 
 // warrior_t::composite_block ================================================
