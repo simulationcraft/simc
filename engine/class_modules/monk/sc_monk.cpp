@@ -2195,6 +2195,9 @@ struct blackout_kick_totm_proc_t : public monk_melee_attack_t
         {
           if ( p()->talent.windwalker.transfer_the_power->ok() )
             p()->buff.transfer_the_power->trigger();
+
+          if ( p()->talent.windwalker.mark_of_the_crane->ok() )
+            p()->trigger_mark_of_the_crane( s );
         }
 
         break;
