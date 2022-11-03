@@ -697,6 +697,17 @@ struct sef_blackout_kick_totm_proc_t : public sef_melee_attack_t
       background  = true;
       trigger_gcd = timespan_t::zero();
     }
+
+    void impact( action_state_t* state ) override
+    {
+      sef_melee_attack_t::impact( state );
+
+      if ( result_is_hit( state->result ) )
+      {
+        if ( o()->talent.windwalker.mark_of_the_crane->ok() )
+          o()->trigger_mark_of_the_crane( state );
+      }
+    }
   };
 
   struct sef_blackout_kick_t : public sef_melee_attack_t
