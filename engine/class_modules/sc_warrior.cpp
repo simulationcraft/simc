@@ -8503,7 +8503,7 @@ struct debuff_demo_shout_t : public warrior_buff_t<buff_t>
   int extended;
   const int deafening_crash_cap;
   debuff_demo_shout_t( warrior_td_t& p, warrior_t* w )
-    : base_t( p, "demoralizing_shout_debuff", w -> find_specialization_spell( "Demoralizing Shout" ) ),
+    : base_t( p, "demoralizing_shout_debuff", w -> find_spell( 1160 ) ),
       extended( 0 ), deafening_crash_cap( as<int>( w -> azerite.deafening_crash.spell() -> effectN( 3 ).base_value() ) )
   {
     cooldown -> duration = timespan_t::zero(); // Cooldown handled by the action
