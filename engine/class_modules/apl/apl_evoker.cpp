@@ -39,7 +39,6 @@ void devastation( player_t* p )
   action_priority_list_t* default_ = p->get_action_priority_list( "default" );
   action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
   action_priority_list_t* trinkets = p->get_action_priority_list( "trinkets" );
-  
 
   precombat->add_action( "flask" );
   precombat->add_action( "food" );
