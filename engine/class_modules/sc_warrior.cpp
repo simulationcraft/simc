@@ -39,6 +39,8 @@ struct warrior_td_t : public actor_target_data_t
 
   warrior_t& warrior;
   warrior_td_t( player_t* target, warrior_t& p );
+
+  void target_demise();
 };
 
 using data_t        = std::pair<std::string, simple_sample_data_with_min_max_t>;
@@ -146,6 +148,8 @@ public:
     buff_t* whirlwind;
     buff_t* wild_strikes;
     buff_t* tornados_eye;
+
+    buff_t* dance_of_death_prot;
 
     // Legion Legendary
     buff_t* fujiedas_fury;
@@ -4903,13 +4907,11 @@ struct ravager_tick_t : public warrior_attack_t
     : warrior_attack_t( name, p, p->find_spell( 156287 ) ), rage_from_ravager( 0.0 )
   {
     aoe = -1;
-    reduced_aoe_targets = 8.0;
+    reduced_aoe_targets = data().effectN( 2 ).base_value();
     dual = ground_aoe = true;
     rage_from_ravager = p->find_spell( 334934 )->effectN( 1 ).resource( RESOURCE_RAGE );
     rage_from_ravager += p->talents.fury.storm_of_steel->effectN( 5 ).resource( RESOURCE_RAGE );
     rage_from_ravager += p->talents.protection.storm_of_steel->effectN( 5 ).resource( RESOURCE_RAGE );
-
-    printf("DEBUGME: %.3f\n", rage_from_ravager);
   }
 
   void execute() override
@@ -4917,6 +4919,17 @@ struct ravager_tick_t : public warrior_attack_t
     warrior_attack_t::execute();
     if ( execute_state->n_targets > 0 )
       p()->resource_gain( RESOURCE_RAGE, rage_from_ravager, p()->gain.ravager );
+  }
+
+  double action_multiplier() const override
+  {
+    double am = warrior_attack_t::action_multiplier();
+    if( p() -> buff.dance_of_death_prot -> up() )
+    {
+      am *= 1.0 + p() -> buff.dance_of_death_prot -> value();
+    }
+
+    return am;
   }
 };
 
@@ -4944,9 +4957,19 @@ struct ravager_t : public warrior_attack_t
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
+    // Haste reduces dot time, as well as the tick time for Ravager
     timespan_t tt = tick_time( s );
+    auto full_duration = dot_duration;
 
-    return dot_duration * ( tt / base_tick_time );
+    if ( p() -> buff.dance_of_death_prot -> up () )
+    {
+      // Nov 2 2022 - Dance of death extends ravager by 2 seconds, but you do not get an extra tick.
+      // As a result, not applying the time for now, as it doesn't work.
+      if ( !p() -> bugs )
+        full_duration += p() -> talents.protection.dance_of_death -> effectN( 1 ).trigger() -> effectN( 1 ).time_value();
+    }
+
+    return full_duration * ( tt / base_tick_time );
   }
 
   void execute() override
@@ -8568,6 +8591,7 @@ struct sephuzs_secret_buff_t : public buff_t
 
 warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ) : actor_target_data_t( target, &p ), warrior( p )
 {
+  target->register_on_demise_callback( &p, [ this ]( player_t* ) { target_demise(); } );
   using namespace buffs;
 
   hit_by_fresh_meat = false;
@@ -8618,6 +8642,20 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ) : actor_target_data
                                  : p.find_spell( 335451 )->effectN( 1 ).percent() )
                                ->set_duration( p.find_spell( 335452 )->duration() )
                                ->set_cooldown( timespan_t::zero() );
+}
+
+void warrior_td_t::target_demise()
+{
+  // Don't pollute results at the end-of-iteration deaths of everyone
+  if ( source->sim->event_mgr.canceled )
+    return;
+
+  warrior_t* p = static_cast<warrior_t*>( source );
+
+  if ( p -> talents.protection.dance_of_death.ok() && dots_ravager->is_ticking() )
+  {
+    p -> buff.dance_of_death_prot -> trigger();
+  }
 }
 
 // warrior_t::init_buffs ====================================================
@@ -8814,6 +8852,9 @@ void warrior_t::create_buffs()
   buff.in_for_the_kill = new in_for_the_kill_t( *this, "in_for_the_kill", find_spell( 248622 ) );
 
   buff.whirlwind = make_buff( this, "whirlwind", find_spell( 85739 ) );
+
+  buff.dance_of_death_prot = make_buff( this, "dance_of_death_prot", talents.protection.dance_of_death -> effectN( 1 ).trigger() )
+                                          -> set_default_value( talents.protection.dance_of_death -> effectN( 1 ).trigger() -> effectN( 2 ).percent() );
 
   // Azerite
   const spell_data_t* crushing_assault_trigger = azerite.crushing_assault.spell()->effectN( 1 ).trigger();
