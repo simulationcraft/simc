@@ -1,4 +1,4 @@
-// Spell text, wow build 10.0.2.46420
+// Spell text, wow build 10.0.2.46456
 static const std::array<spelltext_data_t, 19164> __ptr_spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
@@ -19166,12 +19166,12 @@ static const std::array<spelltext_data_t, 19164> __ptr_spelltext_data { {
   { 397767, "Add a socket to a Dragonflight Season $s2 item that does not already have one. Can be used on Helms, Necks, Bracers, Belts, or Rings.", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.0.2.46420
+// spelltext hotfix entries, wow build 10.0.2.46456
 static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __ptr_spelltext_hotfix_data { {
   {  202028,  0, "Strikes all nearby enemies with a massive slash, inflicting $s2 Physical damage.$?a231063[ Deals $231063s1% increased damage against bleeding targets.][] Deals reduced damage beyond $s3 targets.\r\n\r\n|cFFFFFFFFAwards $s1 combo $lpoint:points;.|r", "Strikes all nearby enemies with a massive slash, inflicting $s2 Physical damage.$?a231063[ Deals $231063s1% increased damage against bleeding targets.][] Deals reduced damage beyond $s3 targets.$?a5487[][\r\n\r\n|cFFFFFFFFAwards $s1 combo $lpoint:points;.|r]" },
 } };
 
-// Spell description variables, wow build 10.0.2.46420
+// Spell description variables, wow build 10.0.2.46456
 static const std::array<spelldesc_vars_data_t, 365> __ptr_spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$pvp=$?a134735[${1.1}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<pvp>*$<weal>}\r\n" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -19540,7 +19540,7 @@ static const std::array<spelldesc_vars_data_t, 365> __ptr_spelldesc_vars_data { 
   {  394354, "$damage=${($AP*1.0)*(1+$@versadmg)}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.0.2.46420
+// spelldesc_vars hotfix entries, wow build 10.0.2.46456
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 
