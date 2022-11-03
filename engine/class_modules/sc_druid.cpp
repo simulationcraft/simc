@@ -2830,9 +2830,8 @@ public:
     // Umbral embrace is heavily scripted so we do all the auto parsing within the action itself
     if ( p->talent.umbral_embrace.ok() )
     {
-      a->parse_conditional_effects( &p->buff.umbral_embrace->data(), [ this ] {
-        return umbral_embrace_check();
-      }, 0U, false, true );
+      a->da_multiplier_buffeffects.emplace_back( p->buff.umbral_embrace, p->buff.umbral_embrace->default_value,
+                                                 false, false, [ this ] { return umbral_embrace_check(); } );
 
       a->force_conditional_effect( ecl, [ this ] { return umbral_embrace_check(); }, 1 );
 
@@ -7695,12 +7694,6 @@ struct starfire_t : public druid_spell_t, public trigger_astral_smolder_t, publi
 
     return cam;
   }
-
-  // TODO: fix/remove when final bugfix of umbral embrace is pushed
-  double composite_da_multiplier( const action_state_t * s ) const override
-  {
-    return druid_spell_t::composite_da_multiplier( s ) * ( 1.0 + p()->buff.umbral_embrace->value() );
-  }
 };
 
 // Starsurge Spell ==========================================================
@@ -8295,12 +8288,6 @@ struct wrath_t : public druid_spell_t, public trigger_astral_smolder_t, public c
     druid_spell_t::impact( s );
 
     trigger_astral_smolder( s );
-  }
-
-  // TODO: fix/remove when final bugfix of umbral embrace is pushed
-  double composite_da_multiplier( const action_state_t * s ) const override
-  {
-    return druid_spell_t::composite_da_multiplier( s ) * ( 1.0 + p()->buff.umbral_embrace->value() );
   }
 };
 
