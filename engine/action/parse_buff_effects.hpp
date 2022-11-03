@@ -149,8 +149,8 @@ public:
   // Example 2: Parse buff2, don't multiply by stacks, use the default value set on the buff instead of effect value:
   //  parse_buff_effects( buff2, false, true );
   template <typename... Ts>
-  void parse_buff_effect( buff_t* buff, bfun f, const spell_data_t* s_data, size_t i, bool use_stacks, bool use_default,
-                          bool force, Ts... mods )
+  void parse_buff_effect( buff_t* buff, const bfun& f, const spell_data_t* s_data, size_t i, bool use_stacks,
+                          bool use_default, bool force, Ts... mods )
   {
     const auto& eff = s_data->effectN( i );
     double val      = eff.base_value();
@@ -330,12 +330,13 @@ public:
     }
   }
 
-  void force_conditional_effect( const spell_data_t* spell, const bfun& func, unsigned idx )
+  void force_conditional_effect( const spell_data_t* spell, const bfun& func, unsigned idx, bool use_stack = true,
+                                 bool use_default = false )
   {
     if ( action_->data().affected_by_all( spell->effectN( idx ) ) )
       return;
 
-    parse_buff_effect( nullptr, func, spell, idx, true, false, true );
+    parse_buff_effect( nullptr, func, spell, idx, use_stack, use_default, true );
   }
 
   void parse_passive_effects( const spell_data_t* spell, unsigned ignore_mask = 0U )
