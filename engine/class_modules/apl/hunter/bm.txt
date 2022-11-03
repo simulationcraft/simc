@@ -1,3 +1,4 @@
+# Executed before combat begins. Accepts non-harmful actions only.
 actions.precombat=flask
 actions.precombat+=/augmentation
 actions.precombat+=/food
@@ -6,7 +7,7 @@ actions.precombat+=/summon_pet
 actions.precombat+=/snapshot_stats
 actions.precombat+=/fleshcraft
 actions.precombat+=/tar_trap,precast_time=1.5,if=runeforge.soulforge_embers|runeforge.nessingwarys_trapping_apparatus
-actions.precombat+=/bestial_wrath,precast_time=1.5,if=!talent.scent_of_blood&!runeforge.soulforge_embers
+actions.precombat+=/wailing_arrow
 
 # Executed every time the actor is available.
 actions=auto_shot
@@ -37,18 +38,17 @@ actions.cleave+=/explosive_shot
 actions.cleave+=/steel_trap
 actions.cleave+=/death_chakram,if=focus+cast_regen<focus.max
 actions.cleave+=/wild_spirits,if=!raid_event.adds.exists|raid_event.adds.remains>=10|active_enemies>=raid_event.adds.count*2
-actions.cleave+=/barbed_shot,target_if=min:dot.barbed_shot.remains,if=full_recharge_time<gcd&cooldown.bestial_wrath.remains|cooldown.bestial_wrath.remains<12+gcd&talent.scent_of_blood
+actions.cleave+=/barbed_shot,target_if=min:dot.barbed_shot.remains,if=full_recharge_time<gcd&cooldown.bestial_wrath.remains|cooldown.bestial_wrath.remains<12+gcd&talent.scent_of_blood|cooldown.kill_command.remains
 actions.cleave+=/bestial_wrath,if=!raid_event.adds.exists|raid_event.adds.remains>=5|active_enemies>=raid_event.adds.count*2
 actions.cleave+=/resonating_arrow,if=!raid_event.adds.exists|raid_event.adds.remains>=5|active_enemies>=raid_event.adds.count*2
 actions.cleave+=/stampede,if=buff.bestial_wrath.up|target.time_to_die<15
-actions.cleave+=/wailing_arrow,if=pet.main.buff.frenzy.remains>execute_time
 actions.cleave+=/flayed_shot
-actions.cleave+=/kill_shot
 actions.cleave+=/serpent_sting,target_if=min:dot.serpent_sting.remains,if=refreshable
 actions.cleave+=/bloodshed
 actions.cleave+=/a_murder_of_crows
 actions.cleave+=/barrage,if=pet.main.buff.frenzy.remains>execute_time
-actions.cleave+=/kill_command,if=focus>cost+action.multishot.cost
+actions.cleave+=/kill_command
+actions.cleave+=/wailing_arrow,if=pet.main.buff.frenzy.remains>execute_time
 actions.cleave+=/bag_of_tricks,if=buff.bestial_wrath.down|target.time_to_die<5
 actions.cleave+=/dire_beast
 actions.cleave+=/barbed_shot,target_if=min:dot.barbed_shot.remains,if=target.time_to_die<9|charges_fractional>1.2&conduit.bloodletting
@@ -66,21 +66,20 @@ actions.st+=/steel_trap
 actions.st+=/bloodshed
 actions.st+=/wild_spirits,if=!raid_event.adds.exists|!raid_event.adds.up&raid_event.adds.duration+raid_event.adds.in<20|raid_event.adds.up&raid_event.adds.remains>19
 actions.st+=/flayed_shot
-actions.st+=/kill_shot
 actions.st+=/explosive_shot
-actions.st+=/wailing_arrow,if=pet.main.buff.frenzy.remains>execute_time&(cooldown.resonating_arrow.remains<gcd&(!talent.explosive_shot|buff.bloodlust.up)|!covenant.kyrian)|target.time_to_die<5
-actions.st+=/barbed_shot,if=cooldown.bestial_wrath.remains<12*charges_fractional+gcd&talent.scent_of_blood|full_recharge_time<gcd&cooldown.bestial_wrath.remains|target.time_to_die<9
 actions.st+=/death_chakram,if=focus+cast_regen<focus.max
 actions.st+=/stampede,if=buff.bestial_wrath.up|target.time_to_die<15
 actions.st+=/a_murder_of_crows
 actions.st+=/resonating_arrow,if=(buff.bestial_wrath.up|target.time_to_die<10)&(!raid_event.adds.exists|!raid_event.adds.up&(raid_event.adds.duration+raid_event.adds.in<20|raid_event.adds.count=1)|raid_event.adds.up&raid_event.adds.remains>19)
 actions.st+=/bestial_wrath,if=(cooldown.wild_spirits.remains>15|covenant.kyrian&(cooldown.resonating_arrow.remains<5|cooldown.resonating_arrow.remains>20)|target.time_to_die<15|(!covenant.night_fae&!covenant.kyrian))&(!raid_event.adds.exists|!raid_event.adds.up&(raid_event.adds.duration+raid_event.adds.in<20|raid_event.adds.count=1)|raid_event.adds.up&raid_event.adds.remains>19)
 actions.st+=/kill_command
+actions.st+=/kill_shot
+actions.st+=/barbed_shot,if=talent.wild_instincts&buff.call_of_the_wild.up|fight_remains<9|talent.wild_call&charges_fractional>1.2|talent.scent_of_blood&cooldown.bestial_wrath.remains<12*(charges_fractional+gcd+(action.barbed_shot.cooldown*0.125))|full_recharge_time<gcd&cooldown.bestial_wrath.remains
 actions.st+=/bag_of_tricks,if=buff.bestial_wrath.down|target.time_to_die<5
 actions.st+=/dire_beast
 actions.st+=/serpent_sting,target_if=min:remains,if=refreshable&target.time_to_die>duration
 actions.st+=/cobra_shot,if=(focus-cost+focus.regen*(cooldown.kill_command.remains-1)>action.kill_command.cost|cooldown.kill_command.remains>1+gcd)|(buff.bestial_wrath.up|buff.nesingwarys_trapping_apparatus.up)&!runeforge.qapla_eredun_war_order|target.time_to_die<3
-actions.st+=/barbed_shot,if=buff.wild_spirits.up|charges_fractional>1.2&conduit.bloodletting
+actions.st+=/wailing_arrow,if=pet.main.buff.frenzy.remains>execute_time&(cooldown.resonating_arrow.remains<gcd&(!talent.explosive_shot|buff.bloodlust.up)|!covenant.kyrian)|target.time_to_die<5
 actions.st+=/arcane_pulse,if=buff.bestial_wrath.down|target.time_to_die<5
 actions.st+=/tar_trap,if=runeforge.soulforge_embers|runeforge.nessingwarys_trapping_apparatus
 actions.st+=/freezing_trap,if=runeforge.nessingwarys_trapping_apparatus
