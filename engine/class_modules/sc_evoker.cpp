@@ -226,7 +226,7 @@ struct evoker_t : public player_t
     player_talent_t honed_aggression;
     player_talent_t eternitys_span;
     player_talent_t eye_of_infinity;
-    player_talent_t casuality;
+    player_talent_t causality;
     player_talent_t catalyze;  // row 7
     player_talent_t tyranny;
     player_talent_t charged_blast;
@@ -604,9 +604,9 @@ public:
   {
     ab::execute();
 
-    if ( p()->talent.casuality.ok() && current_resource() == RESOURCE_ESSENCE )
+    if ( p()->talent.causality.ok() && current_resource() == RESOURCE_ESSENCE )
     {
-      p()->cooldown.eternity_surge->adjust( p()->talent.casuality->effectN( 1 ).trigger()->effectN( 1 ).time_value() );
+      p()->cooldown.eternity_surge->adjust( p()->talent.causality->effectN( 1 ).trigger()->effectN( 1 ).time_value() );
     }
   }
 
@@ -1868,7 +1868,7 @@ void evoker_t::init_spells()
   talent.honed_aggression       = ST( "Honed Aggression" );
   talent.eternitys_span         = ST( "Eternity's Span" );
   talent.eye_of_infinity        = ST( "Eye of Infinity" );
-  talent.casuality              = ST( "Causality" );
+  talent.causality              = ST( "Causality" );
   talent.catalyze               = ST( "Catalyze" );  // Row 7
   talent.tyranny                = ST( "Tyranny" );
   talent.charged_blast          = ST( "Charged Blast" );
