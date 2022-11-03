@@ -23,7 +23,7 @@ namespace pets
 struct denizen_of_the_dream_t;
 }
 
-enum form_e : unsigned int
+enum form_e : unsigned
 {
   CAT_FORM       = 0x1,
   NO_FORM        = 0x2,
@@ -52,21 +52,24 @@ enum eclipse_state_e
   MAX_STATE
 };
 
-enum free_spell_e
+enum free_spell_e : unsigned
 {
-  NONE = 0,
+  NONE =       0x0000,
   // free procs
-  CONVOKE,     // convoke_the_spirits night_fae covenant ability
-  FIRMAMENT,   // sundered firmament talent
-  FLASHING,    // flashing claws talent
-  GALACTIC,    // galactic guardian talent
-  LYCARAS,     // lycaras fleeting glimpse legendary
-  NATURAL,     // natural orders will legendary
-  ORBIT,       // orbit breaker talent
+  CONVOKE =    0x0001,  // convoke_the_spirits night_fae covenant ability
+  FIRMAMENT =  0x0002,  // sundered firmament talent
+  FLASHING =   0x0004,  // flashing claws talent
+  GALACTIC =   0x0008,  // galactic guardian talent
+  LYCARAS =    0x0010,  // lycaras fleeting glimpse legendary
+  NATURAL =    0x0020,  // natural orders will legendary
+  ORBIT =      0x0040,  // orbit breaker talent
   // free casts
-  APEX,        // apex predators's craving
-  COSMOS,      // touch the cosmos 4t29
-  STARWEAVER,  // starweaver talent
+  APEX =       0x0080,  // apex predators's craving
+  COSMOS =     0x0100,  // touch the cosmos 4t29
+  STARWEAVER = 0x0200,  // starweaver talent
+
+  PROCS = CONVOKE | FIRMAMENT | FLASHING | GALACTIC | LYCARAS | NATURAL | ORBIT,
+  CASTS = APEX | COSMOS | STARWEAVER
 };
 
 struct druid_td_t : public actor_target_data_t
@@ -2116,7 +2119,7 @@ public:
   // form spell to automatically cast
   action_t* autoshift;
   // Action is cast as a proc or replaces an existing action with a no-cost/no-cd version
-  free_spell_e free_spell;
+  unsigned free_spell;
   // Restricts use of a spell based on form.
   unsigned form_mask;
   // Allows a spell that may be cast in NO_FORM but not in current form to be cast by exiting form.
@@ -2155,42 +2158,14 @@ public:
 
   base_t* set_free_cast( free_spell_e f )
   {
-    free_spell = f;
+    free_spell |= f;
     ab::cooldown->duration = 0_ms;
     return this;
   }
 
-  bool is_free() const
-  {
-    return free_spell;
-  }
-
-  bool is_free_proc() const
-  {
-    switch ( free_spell )
-    {
-      case free_spell_e::APEX:
-      case free_spell_e::COSMOS:
-      case free_spell_e::STARWEAVER:
-      case free_spell_e::NONE:
-        return false;
-      default:
-        return true;
-    }
-  }
-
-  bool is_free_cast() const
-  {
-    switch ( free_spell )
-    {
-      case free_spell_e::APEX:
-      case free_spell_e::COSMOS:
-      case free_spell_e::STARWEAVER:
-        return true;
-      default:
-        return false;
-    }
-  }
+  bool is_free() const { return free_spell; }
+  bool is_free_proc() const { return free_spell & free_spell_e::PROCS; }
+  bool is_free_cast() const { return free_spell & free_spell_e::CASTS; }
 
   static std::string get_suffix( std::string_view name, std::string_view base )
   {
@@ -2310,7 +2285,7 @@ public:
     }
   }
 
-  virtual void trigger_ravenous_frenzy( free_spell_e f )
+  virtual void trigger_ravenous_frenzy( unsigned f )
   {
     if ( ab::background || ab::trigger_gcd == 0_ms || !p()->buff.ravenous_frenzy->check() )
       return;
@@ -2320,7 +2295,7 @@ public:
       return;
 
     // trigger on non-free_cast or free_cast that requires you to actually cast (or UFR)
-    if ( !f || is_free_cast() || f == free_spell_e::FLASHING || f == free_spell_e::CONVOKE )
+    if ( !f || is_free_cast() || f & free_spell_e::FLASHING || f & free_spell_e::CONVOKE )
       p()->buff.ravenous_frenzy->trigger();
   }
 
@@ -2938,7 +2913,7 @@ struct druid_form_t : public druid_spell_t
     form_mask = ( NO_FORM | BEAR_FORM | CAT_FORM | MOONKIN_FORM ) & ~form;
   }
 
-  void trigger_ravenous_frenzy( free_spell_e ) override { return; }
+  void trigger_ravenous_frenzy( unsigned ) override { return; }
 
   void execute() override
   {
@@ -3528,7 +3503,7 @@ struct cat_finisher_base_t : public cat_attack_t
     p()->buff.sudden_ambush->trigger( 1, buff_t::DEFAULT_VALUE(),
                                       consumed * p()->talent.sudden_ambush->effectN( 1 ).percent() );
 
-    if ( free_spell == free_spell_e::CONVOKE )  // further effects are not processed for convoke fb
+    if ( free_spell & free_spell_e::CONVOKE )  // further effects are not processed for convoke fb
       return;
 
     p()->buff.sharpened_claws->trigger( consumed );
@@ -3876,7 +3851,7 @@ struct ferocious_bite_t : public cat_finisher_t
   int _combo_points() const override
   {
     // special handling for convoke FB
-    return free_spell == free_spell_e::CONVOKE ? 4 : cat_finisher_t::_combo_points();
+    return free_spell & free_spell_e::CONVOKE ? 4 : cat_finisher_t::_combo_points();
   }
 
   bool ready() override
@@ -3933,7 +3908,7 @@ struct ferocious_bite_t : public cat_finisher_t
 
     cat_finisher_t::consume_resource();
 
-    if ( hit_any_target && free_spell == free_spell_e::APEX )
+    if ( hit_any_target && free_spell & free_spell_e::APEX )
       p()->buff.apex_predators_craving->expire();
   }
 
@@ -6570,7 +6545,7 @@ struct heart_of_the_wild_t : public druid_spell_t
     cooldown->duration *= 1.0 + p->conduit.born_of_the_wilds.percent();
   }
 
-  void trigger_ravenous_frenzy( free_spell_e ) override { return; }
+  void trigger_ravenous_frenzy( unsigned ) override { return; }
 
   void execute() override
   {
