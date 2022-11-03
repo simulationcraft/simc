@@ -150,6 +150,9 @@ public:
     buff_t* tornados_eye;
 
     buff_t* dance_of_death_prot;
+    buff_t* seeing_red;
+    buff_t* seeing_red_tracking;
+    buff_t* violent_outburst;
 
     // Legion Legendary
     buff_t* fujiedas_fury;
@@ -178,9 +181,6 @@ public:
     buff_t* show_of_force;
     buff_t* unnerving_focus;
     // Tier
-    buff_t* seeing_red; // old
-    buff_t* seeing_red_tracking; // old
-    buff_t* outburst; // old
     buff_t* strike_vulnerabilities;
 
     // Shadowland Legendary
@@ -279,9 +279,6 @@ public:
     gain_t* simmering_rage;
     gain_t* memory_of_lucid_dreams;
     gain_t* conquerors_banner;
-
-    // t28
-    gain_t* t28_2pc;
   } gain;
 
   // Spells
@@ -315,7 +312,6 @@ public:
     const spell_data_t* siegebreaker_debuff;
     const spell_data_t* whirlwind_buff;
     const spell_data_t* aftershock_duration;
-
   } spell;
 
   // Mastery
@@ -636,7 +632,6 @@ public:
 
   struct tier_set_t
   {
-    const spell_data_t* outburst_4p; // this is old
     const spell_data_t* t29_arms_2pc;
     const spell_data_t* t29_arms_4pc;
     const spell_data_t* t29_fury_2pc;
@@ -1269,14 +1264,7 @@ public:
 
     if ( affected_by.avatar && p()->buff.avatar->up() )
     {
-      double percent_increase = p()->buff.avatar->data().effectN( 1 ).percent();
-
-      if ( p()->specialization() == WARRIOR_PROTECTION && p()->sets->has_set_bonus( WARRIOR_PROTECTION, T28, B4 ) )
-      {
-        percent_increase += p()->tier_set.outburst_4p->effectN( 1 ).percent();
-      }
-
-      dm *= 1.0 + percent_increase;
+      dm *= 1.0 + p()->buff.avatar->data().effectN( 1 ).percent();
     }
 
     if ( affected_by.sweeping_strikes && s->chain_target > 0 )
@@ -1485,9 +1473,8 @@ public:
       }
     }
 
-    // Protection Warrior T28 Tracking
-    if ( p()->specialization() == WARRIOR_PROTECTION && p()->sets->has_set_bonus( WARRIOR_PROTECTION, T28, B2 ) &&
-         rage > 0 )
+    // Protection Warrior Violent Outburst Seeing Red Tracking
+    if ( p()->specialization() == WARRIOR_PROTECTION && rage > 0 )
     {
       // Trigger the buff if this is the first rage consumption of the iteration
       if ( !p()->buff.seeing_red_tracking->check() )
@@ -1513,7 +1500,7 @@ public:
         if( p()->buff.seeing_red->at_max_stacks() )
         {
           p()->buff.seeing_red->expire();
-          p()->buff.outburst->trigger();
+          p()->buff.violent_outburst->trigger();
         }
 
       }
@@ -5197,9 +5184,9 @@ struct shield_slam_t : public warrior_attack_t
       am *= 1.0 + p()->talents.protection.punish->effectN( 1 ).percent();
     }
 
-    if ( p()->buff.outburst->check() )
+    if ( p()->buff.violent_outburst->check() )
     {
-      am *= 1.0 + p()->buff.outburst->data().effectN( 1 ).percent();
+      am *= 1.0 + p()->buff.violent_outburst->data().effectN( 1 ).percent();
     }
 
     return am;
@@ -5224,19 +5211,21 @@ struct shield_slam_t : public warrior_attack_t
           timespan_t::from_seconds( p() -> talents.protection.heavy_repercussions -> effectN( 1 ).percent() ) );
     }
 
-    p()->resource_gain( RESOURCE_RAGE, rage_gain, p() -> gain.shield_slam );
+    auto total_rage_gain = rage_gain;
 
     if ( p() -> azerite.brace_for_impact.enabled() )
     {
       p() -> buff.brace_for_impact -> trigger();
     }
 
-    if ( p()->buff.outburst->check() )
+    if ( p()->buff.violent_outburst->check() )
     {
-      p()->resource_gain( RESOURCE_RAGE, p() -> buff.outburst->data().effectN( 3 ).resource( RESOURCE_RAGE ), p() -> gain.t28_2pc );
       p()->buff.ignore_pain->trigger();
-      p()->buff.outburst->expire();
+      p()->buff.violent_outburst->expire();
+      total_rage_gain *= 1.0 + p() -> buff.violent_outburst->data().effectN( 3 ).percent();
     }
+
+    p()->resource_gain( RESOURCE_RAGE, total_rage_gain, p() -> gain.shield_slam );
   }
 
   void impact( action_state_t* state ) override
@@ -5403,6 +5392,8 @@ struct thunder_clap_t : public warrior_attack_t
     {
     base_costs[ RESOURCE_RAGE ] += p->talents.warrior.blood_and_thunder->effectN( 2 ).resource( RESOURCE_RAGE );
     }
+    if ( p -> spec.thunder_clap_prot_hidden )
+      rage_gain += p -> spec.thunder_clap_prot_hidden -> effectN( 1 ).resource( RESOURCE_RAGE );
     if ( p->talents.arms.rend->ok() && p->talents.warrior.blood_and_thunder.ok() )
     {
       blood_and_thunder = new rend_dot_t( p );
@@ -5423,9 +5414,9 @@ struct thunder_clap_t : public warrior_attack_t
       am *= 1.0 + ( p()-> buff.show_of_force -> stack_value() );
     }
 
-    if ( p()->buff.outburst->check() )
+    if ( p()->buff.violent_outburst->check() )
     {
-      am *= 1.0 + p()->buff.outburst->data().effectN( 1 ).percent();
+      am *= 1.0 + p()->buff.violent_outburst->data().effectN( 1 ).percent();
     }
 
     if ( p()->talents.warrior.blood_and_thunder.ok() )
@@ -5474,14 +5465,16 @@ struct thunder_clap_t : public warrior_attack_t
           std::min( execute_state->n_targets, as<unsigned int>( p() -> talents.protection.thunderlord -> effectN ( 2 ).base_value() ) ) );
     }
 
-    if ( p()->buff.outburst->check() )
+    auto total_rage_gain = rage_gain;
+
+    if ( p()->buff.violent_outburst->check() )
     {
-      p()->resource_gain( RESOURCE_RAGE, p() -> buff.outburst->data().effectN( 4 ).resource( RESOURCE_RAGE ), p() -> gain.t28_2pc );
       p()->buff.ignore_pain->trigger();
-      p()->buff.outburst->expire();
+      p()->buff.violent_outburst->expire();
+      total_rage_gain *= 1.0 + p() -> buff.violent_outburst -> data().effectN( 4 ).percent();
     }
 
-    p()->resource_gain( RESOURCE_RAGE, rage_gain, p() -> gain.thunder_clap );
+    p()->resource_gain( RESOURCE_RAGE, total_rage_gain, p() -> gain.thunder_clap );
   }
 
   double recharge_multiplier( const cooldown_t& cd ) const override
@@ -6508,11 +6501,6 @@ struct avatar_t : public warrior_spell_t
       if ( p() -> specialization() == WARRIOR_PROTECTION )
         p() -> active.bastion_of_might_ip -> execute();
     }
-
-    if ( p()->specialization() == WARRIOR_PROTECTION && p()->sets->has_set_bonus( WARRIOR_PROTECTION, T28, B4 ) )
-    {
-      p()->buff.outburst->trigger();
-    }
   }
 
   bool verify_actor_spec() const override // no longer needed ?
@@ -7446,7 +7434,7 @@ void warrior_t::init_spells()
   talents.warrior.frothing_berserker               = find_talent_spell( talent_tree::CLASS, "Frothing Berserker" );
   talents.warrior.heroic_leap                      = find_talent_spell( talent_tree::CLASS, "Heroic Leap" );
   talents.warrior.intimidating_shout               = find_talent_spell( talent_tree::CLASS, "Intimidating Shout" );
-  talents.warrior.thunder_clap                     = find_talent_spell( talent_tree::CLASS, "Thunder Clap" );
+  talents.warrior.thunder_clap                     = find_talent_spell( talent_tree::CLASS, "Thunder Clap", specialization() );
   talents.warrior.furious_blows                    = find_talent_spell( talent_tree::CLASS, "Furious Blows" );
 
   talents.warrior.wrecking_throw                   = find_talent_spell( talent_tree::CLASS, "Wrecking Throw" );
@@ -7750,7 +7738,6 @@ void warrior_t::init_spells()
   conduit.unnerving_focus             = find_conduit_spell( "Unnerving Focus" );
 
   // Tier Sets
-  tier_set.outburst_4p                = find_spell( 364639 ); // old
   tier_set.t29_arms_2pc               = sets->set( WARRIOR_ARMS, T29, B2 );
   tier_set.t29_arms_4pc               = sets->set( WARRIOR_ARMS, T29, B4 );
   tier_set.t29_fury_2pc               = sets->set( WARRIOR_FURY, T29, B2 );
@@ -8332,22 +8319,23 @@ void warrior_t::apl_prot()
   default_list -> add_action( "berserking,if=buff.avatar.up" );
   default_list -> add_action( "fireblood,if=buff.avatar.up" );
   default_list -> add_action( "ancestral_call,if=buff.avatar.up" );
+  default_list -> add_action( "thunder_clap" );
   //Use TC if we have Outburst and High stacks of Seeing Red to prevent wasting Outburst procs.
-  default_list -> add_action( "thunder_clap,if=buff.outburst.up&((buff.seeing_red.stack>6&cooldown.shield_slam.remains>2))" );
+  default_list -> add_action( "thunder_clap,if=buff.violent_outburst.up&((buff.seeing_red.stack>6&cooldown.shield_slam.remains>2))" );
   // Don't Avatar if we have an Outburst proc so it doesn't get eaten.
-  default_list -> add_action( this, "Avatar", "if=buff.outburst.down" );
+  default_list -> add_action( this, "Avatar", "if=buff.violent_outburst.down" );
   default_list -> add_action( "potion,if=buff.avatar.up|target.time_to_die<25" );
   default_list -> add_action( this, covenant.conquerors_banner, "conquerors_banner" );
   default_list -> add_action( this, covenant.ancient_aftershock, "ancient_aftershock");
   default_list -> add_action( this, covenant.kyrian_spear, "spear_of_bastion");
   //Prioritize Revenge! procs if SS is on cd and not in execute.
   default_list -> add_action( this, "Revenge", "if=buff.revenge.up&(target.health.pct>20|spell_targets.thunder_clap>3)&cooldown.shield_slam.remains" );
-  default_list -> add_action( this, "Ignore Pain", "if=target.health.pct>=20&(target.health.pct>=80&!covenant.venthyr)&(rage>=85&cooldown.shield_slam.ready&buff.shield_block.up|rage>=60&cooldown.demoralizing_shout.ready&talent.booming_voice.enabled|rage>=70&cooldown.avatar.ready|rage>=40&cooldown.demoralizing_shout.ready&talent.booming_voice.enabled&buff.last_stand.up|rage>=55&cooldown.avatar.ready&buff.last_stand.up|rage>=80|rage>=55&cooldown.shield_slam.ready&buff.outburst.up&buff.shield_block.up|rage>=30&cooldown.shield_slam.ready&buff.outburst.up&buff.last_stand.up&buff.shield_block.up),use_off_gcd=1");
+  default_list -> add_action( this, "Ignore Pain", "if=target.health.pct>=20&(target.health.pct>=80&!covenant.venthyr)&(rage>=85&cooldown.shield_slam.ready&buff.shield_block.up|rage>=60&cooldown.demoralizing_shout.ready&talent.booming_voice.enabled|rage>=70&cooldown.avatar.ready|rage>=40&cooldown.demoralizing_shout.ready&talent.booming_voice.enabled&buff.last_stand.up|rage>=55&cooldown.avatar.ready&buff.last_stand.up|rage>=80|rage>=55&cooldown.shield_slam.ready&buff.violent_outburst.up&buff.shield_block.up|rage>=30&cooldown.shield_slam.ready&buff.violent_outburst.up&buff.last_stand.up&buff.shield_block.up),use_off_gcd=1");
   //Shield Block if missing the buff, or SS is about to come off CD, but ignore during execute.
   default_list -> add_action( this, "Shield Block", "if=(buff.shield_block.down|buff.shield_block.remains<cooldown.shield_slam.remains)&target.health.pct>20" );
   default_list -> add_action( this, "Last Stand", "if=target.health.pct>=90|target.health.pct<=20");
   default_list -> add_action( this, "Demoralizing Shout", "if=talent.booming_voice.enabled&rage<60" );
-  default_list -> add_action( this, "Shield Slam", "if=buff.outburst.up&rage<=55");
+  default_list -> add_action( this, "Shield Slam", "if=buff.violent_outburst.up&rage<=55");
   default_list -> add_action( "run_action_list,name=aoe,if=spell_targets.thunder_clap>3" );
   default_list -> add_action( "call_action_list,name=generic" );
   //Lower priority for on GCD racials.
@@ -8360,7 +8348,7 @@ void warrior_t::apl_prot()
   generic -> add_action( this, "Execute" );
   generic -> add_action( this, covenant.condemn, "condemn");
   generic -> add_action( this, "Shield Slam" );
-  generic -> add_action( this, "Thunder Clap", "if=buff.outburst.down" );
+  generic -> add_action( this, "Thunder Clap", "if=buff.violent_outburst.down" );
   generic -> add_action( this, "Revenge" );
   generic -> add_action( this, "Devastate" );
 
@@ -8368,7 +8356,7 @@ void warrior_t::apl_prot()
   //aoe -> add_talent( this, "Dragon Roar" );
   //This only gets called around 1/3 of Outburst procs due to the SS call being higher priority, which is about
   //how often you want to TC on 4+ targets for more damage without sacrificing Banner uptime.
-  aoe -> add_action( this, "Thunder Clap,if=buff.outburst.up" );
+  aoe -> add_action( this, "Thunder Clap,if=buff.violent_outburst.up" );
   aoe -> add_action( this, "Revenge" );
   aoe -> add_action( this, "Thunder Clap" );
   aoe -> add_action( this, "Shield Slam" );
@@ -8763,9 +8751,6 @@ void warrior_t::create_buffs()
     ->set_default_value( find_spell( 383316 )->effectN( 1 ).percent() )
     ->set_duration( find_spell( 383316 )->duration() );
 
-  buff.ravager = make_buff( this, "ravager", talents.fury.ravager )
-    -> set_cooldown( 0_ms ); // handled by the ability
-
   buff.spell_reflection = make_buff( this, "spell_reflection", talents.warrior.spell_reflection )
     -> set_cooldown( 0_ms ); // handled by the ability
 
@@ -8855,6 +8840,17 @@ void warrior_t::create_buffs()
 
   buff.dance_of_death_prot = make_buff( this, "dance_of_death_prot", talents.protection.dance_of_death -> effectN( 1 ).trigger() )
                                           -> set_default_value( talents.protection.dance_of_death -> effectN( 1 ).trigger() -> effectN( 2 ).percent() );
+
+  buff.seeing_red = make_buff( this, "seeing_red", find_spell( 386486 ) );
+
+  buff.seeing_red_tracking =
+      make_buff( this, "seeing_red_tracking", find_spell( 386477 ) )
+          ->set_quiet( true )
+          ->set_duration( timespan_t::zero() )
+          ->set_max_stack( 100 )
+          ->set_default_value( 0 );
+
+  buff.violent_outburst = make_buff( this, "violent_outburst", find_spell( 386478 ) );
 
   // Azerite
   const spell_data_t* crushing_assault_trigger = azerite.crushing_assault.spell()->effectN( 1 ).trigger();
@@ -8961,19 +8957,6 @@ void warrior_t::create_buffs()
                                            find_spell( 394173 ) : spell_data_t::not_found() )
                                ->set_default_value( find_spell( 394173 )->effectN( 1 ).percent() )
                                ->add_invalidate( CACHE_CRIT_CHANCE );
-
-
-  // Protection T28 Set Bonuses ===============================================================================================================
-
-  buff.seeing_red = make_buff( this, "seeing_red", find_spell( 364006 ) );
-
-  buff.seeing_red_tracking =
-      make_buff( this, "seeing_red_tracking", find_spell( 364002 ) )
-          ->set_quiet( true )
-          ->set_duration( timespan_t::zero() )
-          ->set_max_stack( 100 )
-          ->set_default_value( 0 );
-  buff.outburst = make_buff( this, "outburst", find_spell( 364010 ) );
 }
 // warrior_t::init_rng ==================================================
 void warrior_t::init_rng()
@@ -9041,9 +9024,6 @@ void warrior_t::init_gains()
 
   // Azerite
   gain.memory_of_lucid_dreams = get_gain( "memory_of_lucid_dreams_proc" );
-
-  // T28
-  gain.t28_2pc = get_gain( "t28_2pc" );
 }
 
 // warrior_t::init_position ====================================================
