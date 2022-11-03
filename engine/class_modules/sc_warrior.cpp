@@ -7961,7 +7961,7 @@ void warrior_t::init_base_stats()
 
   base_gcd = timespan_t::from_seconds( 1.5 );
 
-  resources.initial_multiplier[ RESOURCE_HEALTH ] *= 1 + talents.protection.indomitable -> effectN( 1 ).percent();
+  resources.initial_multiplier[ RESOURCE_HEALTH ] *= 1 + talents.protection.indomitable -> effectN( 3 ).percent();
 
   // Warriors gets +7% block from their class aura
   base.block += spell.warrior_aura -> effectN( 7 ).percent();
