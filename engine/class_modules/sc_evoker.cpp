@@ -756,12 +756,11 @@ struct empowered_release_spell_t : public empowered_base_t
   {
     empowered_base_t::execute();
 
-    // Scint Procs currently trigger 2pc
-    if ( p()->sets->has_set_bonus( EVOKER_DEVASTATION, T29, B2 ) )
-      p()->buff.limitless_potential->trigger();
-
     if ( background )
       return;
+
+    if ( p()->sets->has_set_bonus( EVOKER_DEVASTATION, T29, B2 ) )
+      p()->buff.limitless_potential->trigger();
 
     if ( p()->talent.animosity.ok() )
     {
