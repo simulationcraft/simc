@@ -570,6 +570,52 @@ struct judgment_prot_t : public judgment_t
   }
 };
 
+struct redoubt_buff_t : public buff_t
+{
+  double health_change;
+  double stacks;
+  redoubt_buff_t( paladin_t* p, util::string_view name, const spell_data_t* s )
+    : buff_t( p, name, s ), health_change( data().effectN( 1 ).percent() )
+  {
+    add_invalidate( CACHE_STRENGTH );
+    add_invalidate( CACHE_STAMINA );
+    set_cooldown( timespan_t::zero() );
+    set_default_value( p->talents.redoubt->effectN( 1 ).trigger()->effectN(1).percent() );
+  }
+  void increment(int stacks, double value, timespan_t duration) override
+  {
+    paladin_t* p    = debug_cast<paladin_t*>( buff_t::source );
+    int stackBefore = p->buffs.redoubt->stack();
+    buff_t::increment(stacks, value, duration);
+    int stackAfter = p->buffs.redoubt->stack();
+    // Redoubt stacks changed, calculate new max HP
+    if (stackBefore != stackAfter)
+    {
+      double oh = p->resources.current[ RESOURCE_HEALTH ];
+      double omh = p->resources.max[ RESOURCE_HEALTH ];
+      double currentPercent = oh / omh;
+      p->recalculate_resource_max( RESOURCE_HEALTH );
+      p->resources.current[ RESOURCE_HEALTH ] = currentPercent * p->resources.max[ RESOURCE_HEALTH ];
+    }
+  }
+  void expire(timespan_t delay) override
+  {
+    paladin_t* p    = debug_cast<paladin_t*>( buff_t::source );
+    int stackBefore = p->buffs.redoubt->stack();
+    buff_t::expire( delay );
+    int stackAfter = p->buffs.redoubt->stack();
+    // Redoubt stacks changed, calculate new max HP
+    if ( stackBefore != stackAfter )
+    {
+      double oh             = p->resources.current[ RESOURCE_HEALTH ];
+      double omh            = p->resources.max[ RESOURCE_HEALTH ];
+      double currentPercent = oh / omh;
+      p->recalculate_resource_max( RESOURCE_HEALTH );
+      p->resources.current[ RESOURCE_HEALTH ] = currentPercent * p->resources.max[ RESOURCE_HEALTH ];
+    }
+  }
+};
+
 // Shield of the Righteous ==================================================
 
 shield_of_the_righteous_buff_t::shield_of_the_righteous_buff_t( paladin_t* p ) :
@@ -997,10 +1043,7 @@ void paladin_t::create_buffs_protection()
         -> set_absorb_gain( get_gain( "blessed_hammer_absorb" ) );
   buffs.bulwark_of_order_absorb = make_buff<absorb_buff_t>( this, "bulwark_of_order", find_spell( 209389 ) )
         -> set_absorb_source( get_stats( "bulwark_of_order_absorb" ) );
-  buffs.redoubt = make_buff( this, "redoubt", talents.redoubt -> effectN( 1 ).trigger() )
-        -> set_default_value( talents.redoubt -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
-        -> add_invalidate( CACHE_STRENGTH )
-        -> add_invalidate( CACHE_STAMINA );
+  buffs.redoubt                 = new redoubt_buff_t( this, "redoubt", find_spell(280375) );
   buffs.shield_of_the_righteous = new shield_of_the_righteous_buff_t( this );
   buffs.moment_of_glory         = make_buff( this, "moment_of_glory", talents.moment_of_glory );
         //-> set_default_value( talents.moment_of_glory -> effectN( 2 ).percent() );

@@ -14,6 +14,7 @@ namespace buffs {
                   struct ardent_defender_buff_t;
                   struct forbearance_t;
                   struct shield_of_vengeance_buff_t;
+                  struct redoubt_buff_t;
                   struct execution_sentence_debuff_t;
                 }
 const int MAX_START_OF_COMBAT_HOLY_POWER = 1;
