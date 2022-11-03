@@ -873,6 +873,7 @@ struct void_tendril_t final : public priest_pet_t
 {
   void_tendril_t( priest_t* owner ) : priest_pet_t( owner->sim, *owner, "void_tendril", true )
   {
+    npc_id = 192337;
   }
 
   void init_action_list() override
@@ -977,6 +978,7 @@ struct void_lasher_t final : public priest_pet_t
 {
   void_lasher_t( priest_t* owner ) : priest_pet_t( owner->sim, *owner, "void_lasher", true )
   {
+    npc_id = 198757;
   }
 
   void init_action_list() override
