@@ -1973,7 +1973,7 @@ void evoker_t::create_buffs()
   buff.iridescence_red->set_initial_stack( buff.iridescence_red->max_stack() );
 
   buff.limitless_potential =
-      make_buff( this, "limitless_potential", sets->set( EVOKER_DEVASTATION, T29, B2 )->effectN( 2 ).trigger() )
+      make_buff( this, "limitless_potential", find_spell( 394402 ) )
           ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
           ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
 
