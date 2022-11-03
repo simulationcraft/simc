@@ -1783,6 +1783,7 @@ struct shadow_weaving_t final : public priest_spell_t
     affected_by_shadow_weaving = false;
     may_crit                   = false;
     may_miss                   = false;
+    //callbacks                  = false;
   }
 
   void trigger( player_t* target, double original_amount )
