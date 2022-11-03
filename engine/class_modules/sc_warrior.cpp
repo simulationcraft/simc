@@ -9479,6 +9479,7 @@ double warrior_t::composite_attribute_multiplier( attribute_e attr ) const
   {
     m *= 1.0 + buff.veterans_repute->value();
     m *= 1.0 + buff.hurricane->check_stack_value();
+    m *= 1.0 + talents.protection.focused_vigor->effectN( 1 ).percent();
   }
 
   // Protection has increased stamina from vanguard
@@ -9543,6 +9544,7 @@ double warrior_t::composite_base_armor_multiplier() const
   double a = player_t::composite_base_armor_multiplier();
 
   a *= 1.0 + talents.protection.enduring_alacrity -> effectN( 3 ).percent();
+  a *= 1.0 + talents.protection.focused_vigor -> effectN( 3 ).percent();
 
   return a;
 }
@@ -9678,6 +9680,8 @@ double warrior_t::composite_melee_crit_chance() const
   {
     c += talents.fury.critical_thinking->effectN( 1 ).percent();
   }
+
+  c += talents.protection.focused_vigor->effectN( 2 ).percent();
 
   return c;
 }
