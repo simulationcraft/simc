@@ -3565,7 +3565,8 @@ void paladin_t::assess_damage( school_e school, result_amount_type dtype, action
     trigger_holy_shield( s );
   }
 
-  if ( buffs.inner_light->up() && !s->action->special && cooldowns.inner_light_icd->up() )
+  // 2022-11-04 Inner Light Talent deals no damage, so reflect that here
+  if (!bugs && buffs.inner_light->up() && !s->action->special && cooldowns.inner_light_icd->up() )
   {
     active.inner_light_damage->set_target( s->action->player );
     active.inner_light_damage->schedule_execute();
