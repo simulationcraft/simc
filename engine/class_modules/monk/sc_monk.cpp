@@ -1954,7 +1954,7 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
     {
 
       if ( p()->talent.windwalker.transfer_the_power->ok() )
-        p()->buff.transfer_the_power->trigger();
+        p()->buff.transfer_the_power->trigger( 2 ); // Not documented anywhere but applying 2 stacks in game
 
       if ( p()->shared.xuens_battlegear && p()->shared.xuens_battlegear->ok() && ( s->result == RESULT_CRIT ) )
       {
@@ -2868,7 +2868,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     }
     else if ( p->specialization() == MONK_WINDWALKER )
     {
-      if ( p->talent.windwalker.jade_ignition->ok() )
+      if ( p->shared.jade_ignition && p->shared.jade_ignition->ok() )
       {
         chi_x = new chi_explosion_t( p );
 
