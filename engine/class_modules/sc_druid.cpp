@@ -7530,24 +7530,17 @@ struct starfall_t : public druid_spell_t
 
   void execute() override
   {
-    if ( p()->buff.touch_the_cosmos->up() && !is_free_cast() )
+    if ( !is_free_cast() && p()->buff.touch_the_cosmos->up() )
     {
       p()->active.starfall_cosmos->execute_on_target( target );
-
       p()->buff.touch_the_cosmos->expire();
-
-      if ( p()->bugs && !is_free_proc() )
-        p()->buff.starweavers_warp->expire();
-
       return;
     }
 
     if ( !is_free() && p()->buff.starweavers_warp->up() )
     {
       p()->active.starfall_starweaver->execute_on_target( target );
-
       p()->buff.starweavers_warp->expire();
-
       return;
     }
 
@@ -7572,18 +7565,13 @@ struct starfall_t : public druid_spell_t
     if ( p()->buff.touch_the_cosmos->check() )
       p()->buff.touch_the_cosmos_starfall->trigger();
 
-    if ( p()->bugs )
-      p()->buff.touch_the_cosmos->expire();
-
     p()->buff.gathering_starstuff->trigger();
 
     if ( is_free_proc() )
       return;
 
     p()->buff.starlord->trigger();
-
     p()->buff.rattled_stars->trigger();
-
     p()->buff.starweavers_weft->trigger();
   }
 };
@@ -7758,31 +7746,21 @@ struct starsurge_t : public druid_spell_t
 
   void execute() override
   {
-    if ( p()->buff.touch_the_cosmos->up() && !is_free_cast() )
+    if ( !is_free_cast() && p()->buff.touch_the_cosmos->up() )
     {
       p()->active.starsurge_cosmos->execute_on_target( target );
-
       p()->buff.touch_the_cosmos->expire();
-
-      if ( p()->bugs && !is_free_proc() )
-        p()->buff.starweavers_weft->expire();
-
       return;
     }
 
     if ( !is_free() && p()->buff.starweavers_weft->up() )
     {
       p()->active.starsurge_starweaver->execute_on_target( target );
-
       p()->buff.starweavers_weft->expire();
-
       return;
     }
 
     druid_spell_t::execute();
-
-    if ( p()->bugs )
-      p()->buff.touch_the_cosmos->expire();
 
     if ( goldrinn && rng().roll( p()->talent.power_of_goldrinn->proc_chance() ) )
       goldrinn->execute_on_target( target );
@@ -7793,9 +7771,7 @@ struct starsurge_t : public druid_spell_t
       return;
 
     p()->buff.starlord->trigger();
-
     p()->buff.rattled_stars->trigger();
-
     p()->buff.starweavers_warp->trigger();
 
     p()->eclipse_handler.cast_starsurge();
