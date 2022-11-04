@@ -774,7 +774,6 @@
       { "data_type": "i", "field": "id_button_file_data" },
       { "data_type": "i", "field": "id_button_small_file_data" },
       { "data_type": "i", "field": "id_lore_file_data" },
-      { "data_type": "B", "field": "order_index" },
       { "data_type": "b", "field": "flags" },
       { "data_type": "H", "field": "area_id" }
     ]
@@ -794,7 +793,8 @@
   "JournalTierXInstance": {
     "fields": [
       { "data_type": "H", "field": "id_journal_tier" },
-      { "data_type": "H", "field": "id_journal_instance", "ref": "JournalInstance" }
+      { "data_type": "H", "field": "id_journal_instance", "ref": "JournalInstance" },
+      { "data_type": "H", "field": "unk_1" }
     ]
   },
   "ManifestInterfaceData": {
