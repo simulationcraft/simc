@@ -10537,9 +10537,8 @@ double monk_t::stagger_base_value()
 double monk_t::stagger_pct( int target_level )
 {
   double stagger_base = stagger_base_value();
-  auto enemy          = new enemy_t( this->sim, "stagger_enemy", race_e::RACE_NONE, player_e::ENEMY );
 
-  double stagger = stagger_base / ( stagger_base + enemy->armor_coefficient( target_level, tank_dummy_e::MYTHIC ) );
+  double stagger = stagger_base / ( stagger_base + enemy->armor_coefficient( target_level, tank_dummy_e::MYTHIC ) );//enemy_t::armor_coefficient( target_level, tank_dummy_e::MYTHIC ) );
 
   return std::min( stagger, 0.99 );
 }
