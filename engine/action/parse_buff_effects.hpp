@@ -149,8 +149,8 @@ public:
   // Example 2: Parse buff2, don't multiply by stacks, use the default value set on the buff instead of effect value:
   //  parse_buff_effects( buff2, false, true );
   template <typename... Ts>
-  void parse_buff_effect( buff_t* buff, bfun f, const spell_data_t* s_data, size_t i, bool use_stacks, bool use_default,
-                          bool force, Ts... mods )
+  void parse_buff_effect( buff_t* buff, const bfun& f, const spell_data_t* s_data, size_t i, bool use_stacks,
+                          bool use_default, bool force, Ts... mods )
   {
     const auto& eff = s_data->effectN( i );
     double val      = eff.base_value();
@@ -315,8 +315,8 @@ public:
     force_buff_effect( buff, idx, true, false, mods... );
   }
 
-  void parse_conditional_effects( const spell_data_t* spell, bfun f, unsigned ignore_mask = 0U, bool use_stack = true,
-                                  bool use_default = false )
+  void parse_conditional_effects( const spell_data_t* spell, const bfun& func, unsigned ignore_mask = 0U,
+                                  bool use_stack = true, bool use_default = false )
   {
     if ( !spell || !spell->ok() )
       return;
@@ -326,8 +326,17 @@ public:
       if ( ignore_mask & 1 << ( i - 1 ) )
         continue;
 
-      parse_buff_effect( nullptr, f, spell, i, use_stack, use_default, false );
+      parse_buff_effect( nullptr, func, spell, i, use_stack, use_default, false );
     }
+  }
+
+  void force_conditional_effect( const spell_data_t* spell, const bfun& func, unsigned idx, bool use_stack = true,
+                                 bool use_default = false )
+  {
+    if ( action_->data().affected_by_all( spell->effectN( idx ) ) )
+      return;
+
+    parse_buff_effect( nullptr, func, spell, idx, use_stack, use_default, true );
   }
 
   void parse_passive_effects( const spell_data_t* spell, unsigned ignore_mask = 0U )
@@ -375,36 +384,52 @@ public:
   //  debuff = spell data of the debuff
   //  spell = optional list of spells with redirect effects that modify the effects on the debuff
   template <typename... Ts>
-  void parse_debuff_effects( const dfun& func, const spell_data_t* s_data, Ts... mods )
+  void parse_debuff_effect( const dfun& func, const spell_data_t* s_data, size_t i, bool force, Ts... mods )
   {
-    if ( !s_data->ok() )
+    const auto& eff = s_data->effectN( i );
+    double val = eff.base_value();
+    double val_mul = 0.01;
+    bool mastery = false;
+
+    if ( eff.type() != E_APPLY_AURA )
       return;
 
-    for ( size_t i = 1; i <= s_data->effect_count(); i++ )
+    if ( i <= 5 )
+      parse_spell_effects_mods( val, mastery, s_data, i, mods... );
+
+    if ( !mastery && !val )
+      return;
+
+    if ( !( eff.subtype() == A_MOD_DAMAGE_FROM_CASTER_SPELLS && action_->data().affected_by_all( eff ) ) &&
+         !( eff.subtype() == A_MOD_AUTO_ATTACK_FROM_CASTER && !action_->special ) && !force )
+      return;
+
+    target_multiplier_dotdebuffs.emplace_back( func, val * val_mul, mastery );
+    action_->sim->print_debug( "dot-debuffs: {} ({}) damage modified by {}{} on targets with dot {} ({}#{})",
+                               action_->name(), action_->id, val * val_mul, mastery ? "+mastery" : "",
+                               s_data->name_cstr(), s_data->id(), i );
+
+  }
+
+  template <typename... Ts>
+  void parse_debuff_effects( const dfun& func, const spell_data_t* spell, Ts... mods )
+  {
+    if ( !spell->ok() )
+      return;
+
+    for ( size_t i = 1; i <= spell->effect_count(); i++ )
     {
-      const auto& eff = s_data->effectN( i );
-      double val      = eff.base_value();
-      double val_mul  = 0.01;
-      bool mastery    = false;
-
-      if ( eff.type() != E_APPLY_AURA )
-        continue;
-
-      if ( i <= 5 )
-        parse_spell_effects_mods( val, mastery, s_data, i, mods... );
-
-      if ( !mastery && !val )
-        continue;
-
-      if ( !( eff.subtype() == A_MOD_DAMAGE_FROM_CASTER_SPELLS && action_->data().affected_by_all( eff ) ) &&
-           !( eff.subtype() == A_MOD_AUTO_ATTACK_FROM_CASTER && !action_->special ) )
-        continue;
-
-      action_->sim->print_debug( "dot-debuffs: {} ({}) damage modified by {}{} on targets with dot {} ({}#{})",
-                             action_->name(), action_->id, val * val_mul, mastery ? "+mastery" : "",
-                             s_data->name_cstr(), s_data->id(), i );
-      target_multiplier_dotdebuffs.emplace_back( func, val * val_mul, mastery );
+      parse_debuff_effect( func, spell, i, false, mods... );
     }
+  }
+
+  template <typename... Ts>
+  void force_debuff_effect( const dfun& func, const spell_data_t* spell, unsigned idx, Ts... mods )
+  {
+    if ( action_->data().affected_by_all( spell->effectN( idx ) ) )
+      return;
+
+    parse_debuff_effect( func, spell, idx, true, mods... );
   }
 
   virtual double get_debuff_effects_value( TD* t ) const

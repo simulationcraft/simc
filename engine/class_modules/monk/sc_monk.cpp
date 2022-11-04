@@ -1954,7 +1954,7 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
     {
 
       if ( p()->talent.windwalker.transfer_the_power->ok() )
-        p()->buff.transfer_the_power->trigger();
+        p()->buff.transfer_the_power->trigger( 2 ); // Not documented anywhere but applying 2 stacks in game
 
       if ( p()->shared.xuens_battlegear && p()->shared.xuens_battlegear->ok() && ( s->result == RESULT_CRIT ) )
       {
@@ -2195,6 +2195,9 @@ struct blackout_kick_totm_proc_t : public monk_melee_attack_t
         {
           if ( p()->talent.windwalker.transfer_the_power->ok() )
             p()->buff.transfer_the_power->trigger();
+
+          if ( p()->talent.windwalker.mark_of_the_crane->ok() )
+            p()->trigger_mark_of_the_crane( s );
         }
 
         break;
@@ -2865,7 +2868,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     }
     else if ( p->specialization() == MONK_WINDWALKER )
     {
-      if ( p->talent.windwalker.jade_ignition->ok() )
+      if ( p->shared.jade_ignition && p->shared.jade_ignition->ok() )
       {
         chi_x = new chi_explosion_t( p );
 
@@ -4104,11 +4107,7 @@ struct resonant_fists_t : public monk_spell_t
   {
     double am = monk_spell_t::action_multiplier();
 
-    // Effect 1 says how much damage the talent actually does
-    // Talent is currently bugged and doing full damage at 1 talent point.
-    // The first talent point should be doing 50% of the total damage
-    if ( !p()->bugs )
-      am *= p()->talent.general.resonant_fists->effectN( 1 ).percent();
+    am *= 1 + p()->talent.general.resonant_fists->effectN( 1 ).percent();
     
     return am;
   }
@@ -7395,6 +7394,7 @@ struct close_to_heart_driver_t : public monk_buff_t<buff_t>
         target->buffs.close_to_heart_leech_aura->trigger( 1, ( leech_increase ), 1, timespan_t::from_seconds( 10 ) );
       } );
     } );
+    set_trigger_spell( p.talent.general.close_to_heart );
     set_cooldown( timespan_t::zero() );
     set_duration( timespan_t::zero() );
     set_period( timespan_t::from_seconds( 1 ) );
@@ -7417,6 +7417,7 @@ struct generous_pour_driver_t : public monk_buff_t<buff_t>
         target->buffs.generous_pour_avoidance_aura->trigger( 1, ( avoidance_increase ), 1, timespan_t::from_seconds( 10 ) );
       } );
     } );
+    set_trigger_spell( p.talent.general.generous_pour );
     set_cooldown( timespan_t::zero() );
     set_duration( timespan_t::zero() );
     set_period( timespan_t::from_seconds( 1 ) );
@@ -7439,6 +7440,7 @@ struct windwalking_driver_t : public monk_buff_t<buff_t>
         target->buffs.windwalking_movement_aura->trigger( 1, ( movement_increase ), 1, timespan_t::from_seconds( 10 ) );
       } );
     } );
+    set_trigger_spell( p.talent.general.windwalking );
     set_cooldown( timespan_t::zero() );
     set_duration( timespan_t::zero() );
     set_period( timespan_t::from_seconds( 1 ) );
@@ -8847,11 +8849,13 @@ void monk_t::create_buffs ()
   auto spec_tree = specialization ();
 
   // General
-  buff.chi_torpedo = make_buff ( this, "chi_torpedo", find_spell ( 119085 ) )->set_default_value_from_effect ( 1 );
+  buff.chi_torpedo = make_buff( this, "chi_torpedo", find_spell( 119085 ) )
+      ->set_trigger_spell(talent.general.chi_torpedo)
+      ->set_default_value_from_effect ( 1 );
 
   buff.close_to_heart_driver = new buffs::close_to_heart_driver_t( *this, "close_to_heart_aura_driver", find_spell( 389684 ) );
 
-  buff.fortifying_brew    = new buffs::fortifying_brew_t( *this, "fortifying_brew", passives.fortifying_brew );
+  buff.fortifying_brew = new buffs::fortifying_brew_t( *this, "fortifying_brew", passives.fortifying_brew );
 
   buff.generous_pour_driver = new buffs::generous_pour_driver_t( *this, "generous_pour_aura_driver", find_spell( 389685 ) );
 
@@ -10532,8 +10536,11 @@ double monk_t::stagger_base_value()
 double monk_t::stagger_pct( int target_level )
 {
   double stagger_base = stagger_base_value();
+  // TODO: somehow pull this from "enemy_t::armor_coefficient( target_level, tank_dummy_e::MYTHIC )" without crashing
+  double k            = dbc->armor_mitigation_constant( target_level );
+  k *= ( is_ptr() ? 1.384 : 1.992 );  // Mythic Raid
 
-  double stagger = stagger_base / ( stagger_base + dbc->armor_mitigation_constant( target_level ) );
+  double stagger = stagger_base / ( stagger_base + k );
 
   return std::min( stagger, 0.99 );
 }

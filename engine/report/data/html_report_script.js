@@ -46,6 +46,9 @@ jQuery(document).ready(function ($) {
             anchor.click();
         }
     }
+    if (!navigator.onLine) {
+        $('iframe').hide();
+    }
     $('.stripetoprow').oddstripe();
     $('.toggle.open').parent('.section').validate_section();
     $('#masthead').next().validate_section();

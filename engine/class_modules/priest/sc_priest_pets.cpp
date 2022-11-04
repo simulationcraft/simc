@@ -873,6 +873,7 @@ struct void_tendril_t final : public priest_pet_t
 {
   void_tendril_t( priest_t* owner ) : priest_pet_t( owner->sim, *owner, "void_tendril", true )
   {
+    npc_id = 192337;
   }
 
   void init_action_list() override
@@ -906,14 +907,15 @@ struct void_tendril_mind_flay_t final : public priest_pet_spell_t
     {
       if ( p.o().level() == 70 )
       {
-        base_td += 1275;
+        base_td += 1667.5;
       }
       else
       {
-        base_td += 219;
+        base_td += 321.5;
       }
 
-      spell_power_mod.tick *= 0.6;
+      // Pulled the 0.6 from Mind Sear and apply the 10% "buff"
+      spell_power_mod.tick *= 0.5454545455;
     }
   }
 
@@ -976,6 +978,7 @@ struct void_lasher_t final : public priest_pet_t
 {
   void_lasher_t( priest_t* owner ) : priest_pet_t( owner->sim, *owner, "void_lasher", true )
   {
+    npc_id = 198757;
   }
 
   void init_action_list() override
@@ -998,6 +1001,7 @@ struct void_lasher_mind_sear_tick_t final : public priest_pet_spell_t
     dual       = true;
     aoe        = -1;
     radius     = data().effectN( 2 ).radius_max();  // base radius is 100yd, actual is stored in effect 2
+    affected_by_shadow_weaving = true;
 
     // BUG: The damage this is dealing is not following spell data
     // https://github.com/SimCMinMax/WoW-BugTracker/issues/1029
@@ -1005,13 +1009,6 @@ struct void_lasher_mind_sear_tick_t final : public priest_pet_spell_t
     {
       spell_power_mod.direct *= 0.6;
       da_multiplier_buffeffects.clear();  // This is in spelldata to scale with things but it does not in game
-    }
-
-    // BUG: This spell is not being affected by Mastery
-    // https://github.com/SimCMinMax/WoW-BugTracker/issues/931
-    if ( !p.o().bugs )
-    {
-      affected_by_shadow_weaving = true;
     }
   }
 

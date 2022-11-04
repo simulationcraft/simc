@@ -1,5 +1,5 @@
-// Spell text, wow build 10.0.0.46366
-static const std::array<spelltext_data_t, 18953> __spelltext_data { {
+// Spell text, wow build 10.0.0.46455
+static const std::array<spelltext_data_t, 18950> __spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -16857,7 +16857,6 @@ static const std::array<spelltext_data_t, 18953> __spelltext_data { {
   { 381727, "$@spelldesc381705", "A mutated tentacle has emerged from your body, lashing out to enemies in front of you.", 0 },
   { 381732, "$@spelldesc364342", "Cooldown of Death's Advance reduced by $s1%.", "Bronze" },
   { 381734, "Taking damage has a chance to increase your Versatility by $381769s1 for $381769d.\r\n\r\nThis effect is increased for every ally within $381769s2 yds, up to $381769s3.", 0, 0 },
-  { 381736, "Get carried away by five dragon whelplings!", "Get carried away by five dragon whelplings!", 0 },
   { 381741, "$@spelldesc364342", "Cooldown of Fel Rush and Infernal Strike reduced by $s1%.", "Bronze" },
   { 381743, "Increases the chance for Earthquake to knock enemies down by ${$s1}.1%.\r\n", 0, 0 },
   { 381746, "$@spelldesc364342", "Cooldown of $?s252216[Tiger Dash][Dash] reduced by $s1%.", "Bronze" },
@@ -18382,8 +18381,6 @@ static const std::array<spelltext_data_t, 18953> __spelltext_data { {
   { 390386, "Increases haste by $s1% for all party and raid members for $d.\r\n\r\nAllies receiving this effect will become Exhausted and unable to benefit from Fury of the Aspects or similar effects again for $57723d.", "Haste increased by $w1%.", 0 },
   { 390414, "An improved Moonkin Form that grants the benefits of Celestial Alignment, and $s2% critical strike chance.\r\n\r\nLasts $d. You may shapeshift in and out of this improved Moonkin Form for its duration.", "Both Eclipses active. Haste increased by $w1% and critical strike chance by $w2%.", "Talent, Shapeshift" },
   { 390420, "Shield an ally for up to $s1 from a great distance and gain up to $s2 bonus movement speed. The shield and bonus movement speed amounts vary depending on the distance between you and your target.", "Absorb $w1 damage.", 0 },
-  { 390444, "Lounge around, Maruuk style!", 0, 0 },
-  { 390453, "Rest like a khanam wherever you go!", 0, 0 },
   { 390458, "Channel torrents around you dealing ${$s1*($390459d/$390459t1)*(1+$@versadmg)} nature damage to nearby enemies over $390459d. Then unleash a powerful blast dealing $s2 nature damage split between all nearby enemies.", 0, 0 },
   { 390563, "While $?s137050[Ravager is active][Bladestorming], every $?c2[$390719t1][$390577t1] sec you gain $s2% movement speed and $s1% Strength, stacking up to $s3 times. Lasts $390581d.", 0, 0 },
   { 390567, "@spelldesc390563", 0, 0 },
@@ -18955,16 +18952,11 @@ static const std::array<spelltext_data_t, 18953> __spelltext_data { {
   { 397708, "Execute no longer has a cooldown and if your foe survives, $163201s2% of the Rage spent is refunded.", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.0.0.46366
-static constexpr std::array<hotfix::client_hotfix_entry_t, 5> __spelltext_hotfix_data { {
-  {   78674,  0, "Launch a surge of stellar energies at the target, dealing $s1 Astral damage, and empowering the damage bonus of any active Eclipse for its duration.", "Launch a surge of stellar energies at the target, dealing $s1 Astral damage." },
-  {  120954,  0, "Turns your skin to stone for $120954d$?$w1>0[, increasing your armor by $s8% and dodge by $s7%][]$?$w1>0[, increasing your current and maximum health by $<health>%][]$?s322960[, increasing the effectiveness of Stagger by $322960s1%][]$?$w1>0[, and reducing all damage you take by $<damage>%][].", "Turns your skin to stone for $120954d$?a388917[, increasing your current and maximum health by $<health>%][]$?s322960[, increasing the effectiveness of Stagger by $322960s1%][]$?a388917[, reducing all damage you take by $<damage>%][]$?a388814[, increasing your armor by $388814s2% and dodge chance by $388814s1%][]." },
-  {  120954,  1, "$?$w1>0[Health increased by $<health>%, damage taken reduced by $<damage>%.][]\r\n$?$w6>0[Effectiveness of Stagger increased by $115203s1%.\r\n\r\n$?$w8>0[Armor increased by $w8%. Dodge increased by $w7%.][]", "$?$w1>0[Health increased by $<health>%, damage taken reduced by $<damage>%.][]$?$w6>0[\r\nEffectiveness of Stagger increased by $115203s1%.][]$?$w8>0[\r\nArmor increased by $w8%. Dodge chance increased by $w7%.][]" },
-  {  197626,  0, "Launch a surge of stellar energies at the target, dealing $s1 Astral damage, and empowering the damage bonus of any active Eclipse for its duration.", "Launch a surge of stellar energies at the target, dealing $s1 Astral damage." },
-  {  385416,  0, "Your $?S53595[Hammer of the Righteous]?S204019[Blessed Hammer][Crusader Strike] now also grants you $385417s1% increased $pri for $385417d. Multiple applications may overlap.", "Your $?S53595[Hammer of the Righteous]?S204019[Blessed Hammer][Crusader Strike] now also grants you $s1% increased $pri for $385417d. Multiple applications may overlap." },
+// spelltext hotfix entries, wow build 10.0.0.46455
+static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 10.0.0.46366
+// Spell description variables, wow build 10.0.0.46455
 static const std::array<spelldesc_vars_data_t, 361> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$pvp=$?a134735[${1.1}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<pvp>*$<weal>}\r\n" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -19329,15 +19321,7 @@ static const std::array<spelldesc_vars_data_t, 361> __spelldesc_vars_data { {
   {  394354, "$damage=${($AP*1.0)*(1+$@versadmg)}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.0.0.46366
-static constexpr std::array<hotfix::client_hotfix_entry_t, 8> __spelldesc_vars_hotfix_data { {
-  {      17,  0, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$pvp=$?a134735[${1.1}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*2.8*(1+$@versadmg)*$<rapture>*$<shadow>*$<pvp>*$<weal>}\r\n", "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$pvp=$?a134735[${1.1}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<pvp>*$<weal>}\r\n" },
-  {   61882,  0, "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$damage=${$SPN*0.176*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>}", "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$damage=${$SPN*0.1936*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>}" },
-  {  115203,  0, "$health=$?s322960[${20}][${15}]\r\n$damage=$?s322960[${20}][${15}]", "$health=$?s322960[${15}][${15}]\r\n$damage=$?c1[${20}][${20}]" },
-  {  120954,  0, "$health=$?s322960[${20}][${15}]\r\n$damage=$?s322960[${20}][${15}]", "$health=$?s322960[${15}][${15}]\r\n$damage=$?c1[${20}][${20}]" },
-  {  298762,  0, "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$damage=${$SPN*0.391*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>*($168534s2/100)*($381726s1/100)}", "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$damage=${$SPN*0.1936*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>*($168534s2/100)*($381726s1/100)}" },
-  {  318038,  0, "$coeff=${0.0264}", "$coeff=${0.0198}" },
-  {  319778,  0, "$coeff=${0.0264}", "$coeff=${0.0198}" },
-  {  388917,  0, "$health=$?s322960[${20}][${15}]\r\n$damage=$?s322960[${20}][${15}]", "$health=$?s322960[${15}][${15}]\r\n$damage=$?c1[${20}][${20}]" },
+// spelldesc_vars hotfix entries, wow build 10.0.0.46455
+static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 

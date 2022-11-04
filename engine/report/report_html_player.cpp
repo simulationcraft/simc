@@ -1905,6 +1905,20 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
 
 // print_html_talents_player ================================================
 
+std::string base64_to_url( std::string_view s )
+{
+  std::string str( s );
+  util::replace_all( str, "+", "%2B" );
+  util::replace_all( str, "/", "%2F" );
+  return str;
+}
+
+std::string raidbots_talent_render_src( std::string_view talent_str, unsigned level, bool mini )
+{
+  return fmt::format( "https://www.raidbots.com/simbot/render/talents/{}?bgcolor=160f0b&level={}&width={}{}",
+                      base64_to_url( talent_str ), level, mini ? 200 : 1000, mini ? "&mini=1" : "" );
+}
+
 void print_html_talents( report::sc_html_stream& os, const player_t& p )
 {
   if ( !p.collected_data.fight_length.mean() || p.player_traits.empty() )
@@ -1942,7 +1956,16 @@ void print_html_talents( report::sc_html_stream& os, const player_t& p )
 
   os << "<div class=\"player-section talents\">\n"
      << "<h3 class=\"toggle\">Talents</h3>\n"
-     << "<div class=\"toggle-content\">\n";
+     << "<div class=\"toggle-content hide\">\n";
+
+  if ( p.dbc->ptr )
+  {
+    os.format( "<iframe src=\"{}\" width=\"1000\" height=\"650\"></iframe>\n",
+               raidbots_talent_render_src( p.talents_str, p.true_level, false ) );
+
+    os << "<h3 class=\"toggle\">Talent Tables</h3>\n"
+       << "<div class=\"toggle-content hide\">\n";
+  }
 
   os.format( "<table class=\"sc\"><tr><th>Row</th><th>{} Talents [{}]</th></tr>\n",
              util::player_type_string_long( p.type ),
@@ -1989,6 +2012,9 @@ void print_html_talents( report::sc_html_stream& os, const player_t& p )
 
   os << "</div>\n"
      << "</div>\n";
+
+  if ( p.dbc->ptr )
+    os << "</div>\n";
 }
 
 // print_html_player_scale_factor_table =====================================
@@ -3931,8 +3957,15 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
   }
 
   // Spec and gear
-  if ( !p.is_pet() )
+  if ( !p.is_pet() && !p.is_enemy() )
   {
+    if ( p.dbc->ptr )
+    {
+      os << "<div>\n";
+      os.format( "<iframe src=\"{}\" width=\"200\" height=\"125\" style=\"float: left; margin-right: 10px; margin-top: 5px;\"></iframe>\n",
+                 raidbots_talent_render_src( p.talents_str, p.true_level, true ) );
+    }
+
     os << "<table class=\"sc spec\">\n";
 
     if ( !p.origin_str.empty() )
@@ -3943,7 +3976,7 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
     }
 
     // Talent Hash
-    os.format( "<tr class=\"left\"><th>Talent String</th><td>{}</td></tr>\n", p.talents_str );
+    os.format( "<tr class=\"left\"><th>Talent</th><td>{}</td></tr>\n", p.talents_str );
 
     // Set Bonuses
     if ( p.sets )
@@ -4021,6 +4054,9 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
     }
 
     os << "</table>\n";
+
+    if ( p.dbc->ptr )
+      os << "</div>\n";
   }
 }
 

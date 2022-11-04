@@ -1,5 +1,5 @@
-// Talent tree specialization abilities, wow build 10.0.2.46420
-static const std::array<specialization_spell_entry_t, 351> __ptr_specialization_spell_data { {
+// Talent tree specialization abilities, wow build 10.0.2.46479
+static const std::array<specialization_spell_entry_t, 352> __ptr_specialization_spell_data { {
   {  0,  535, 264656,      0, "Pathfinding"                       , 0 },
   {  0,  535, 264662,      0, "Endurance Training"                , 0 },
   {  0,  535, 264663,      0, "Predator's Thirst"                 , 0 },
@@ -121,6 +121,7 @@ static const std::array<specialization_spell_entry_t, 351> __ptr_specialization_
   {  5,  256, 162701,      0, "Stat Negation Aura - Intellect Healer", 0 },
   {  5,  256, 212036,      0, "Mass Resurrection"                 , 0 },
   {  5,  256, 271534,      0, "Mastery: Grace"                    , 0 },
+  {  5,  256, 280391,      0, "Sins of the Many"                  , 0 },
   {  5,  257,    527,      0, "Purify"                            , 0 },
   {  5,  257,   2060,      0, "Heal"                              , 0 },
   {  5,  257,  14914,   8092, "Holy Fire"                         , 0 },

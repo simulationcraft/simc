@@ -992,7 +992,7 @@ public:
     // Beast Mastery Tree Passives
     ab::apply_affecting_aura( p -> talents.killer_command );
     ab::apply_affecting_aura( p -> talents.sharp_barbs );
-    ab::apply_affecting_aura( p -> talents.war_orders );
+    ab::apply_affecting_aura( p -> talents.war_orders.ok() ? p -> talents.war_orders : p -> legendary.qapla_eredun_war_order );
 
     // Survival Tree Passives
     ab::apply_affecting_aura( p -> talents.terms_of_engagement );
@@ -3184,7 +3184,7 @@ struct kill_shot_t : hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::snapshot_state( s, type );
     debug_cast<state_t*>( s ) -> razor_fragments_up = p() -> buffs.razor_fragments -> check();
-    // TODO seems to be a bit more complicated but basically only one triggers at once and the talent seems to take precedent over rungeforge
+    // TODO seems to be a bit more complicated but basically only one triggers at once and the talent seems to take precedent over runeforge
     debug_cast<state_t*>( s ) -> flayers_mark_up = p() -> buffs.flayers_mark -> check() && !p() -> buffs.razor_fragments -> check();
     debug_cast<state_t*>( s ) -> coordinated_assault_empower_up = p() -> buffs.coordinated_assault_empower -> check();
   }
@@ -4069,6 +4069,9 @@ struct barbed_shot_t: public hunter_ranged_attack_t
 
     if ( rng().roll( p() -> talents.war_orders -> effectN( 3 ).percent() ) )
       p() -> cooldowns.kill_command -> reset( true );
+
+    if (!p() -> talents.war_orders.ok() && p() -> legendary.qapla_eredun_war_order.ok() )
+      p() -> cooldowns.kill_command -> adjust( -p() -> legendary.qapla_eredun_war_order -> effectN( 1 ).time_value() );
 
     for ( auto pet : pets::active<pets::hunter_main_pet_base_t>( p() -> pets.main, p() -> pets.animal_companion ) )
     {
