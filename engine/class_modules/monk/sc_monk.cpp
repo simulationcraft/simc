@@ -38,6 +38,7 @@ BREWMASTER:
 #include "report/charts.hpp"
 #include "report/highchart.hpp"
 #include "sc_enums.hpp"
+#include "class_modules/sc_enemy.cpp"
 
 #include <deque>
 
@@ -10536,8 +10537,9 @@ double monk_t::stagger_base_value()
 double monk_t::stagger_pct( int target_level )
 {
   double stagger_base = stagger_base_value();
+  auto enemy          = new enemy_t( this->sim, "stagger_enemy", race_e::RACE_NONE, player_e::ENEMY );
 
-  double stagger = stagger_base / ( stagger_base + dbc->armor_mitigation_constant( target_level ) );
+  double stagger = stagger_base / ( stagger_base + enemy->armor_coefficient( target_level, tank_dummy_e::MYTHIC ) );
 
   return std::min( stagger, 0.99 );
 }
