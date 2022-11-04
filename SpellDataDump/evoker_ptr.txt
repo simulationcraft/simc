@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.46366 Live (hotfix 2022-11-02/46366)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.46455 Live (hotfix 2022-11-04/46455)
 Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Orc (0x2)
@@ -2912,14 +2912,11 @@ Effects          :
 Description      : $@spelldesc370888
 Tooltip          : Absorbing $w1 damage.
 
-Name             : Permeating Chill (desc=Blue) (id=370897) [Spell Family (224), Passive] 
+Name             : Permeating Chill (id=370897) [Spell Family (224), Passive] 
 Talent Entry     : Generic [tree=class, row=2, col=2, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Spellfrost
 Spell Type       : None
-Proc Chance      : 100%
-Proc Flags       : ........ ........ x.x..... ........ 
-                 : Magic Hostile Spell, Periodic
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2930,7 +2927,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=982470)   : Apply Aura (6) | Proc Trigger Spell (42): Permeating Chill
+#1 (id=982470)   : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Trigger Spell: 370898 | Target: Self (1)
 #2 (id=1012820)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
@@ -2938,7 +2935,7 @@ Effects          :
                    Family Flags: 48
 Description      : Your damaging Blue spells reduce the target's movement speed by $s1% for $370898d.
 
-Name             : Permeating Chill (desc=Blue) (id=370898) [Spell Family (224)] 
+Name             : Permeating Chill (id=370898) [Spell Family (224)] 
 Class            : Evoker
 School           : Spellfrost
 Spell Type       : None
@@ -3605,8 +3602,8 @@ Spell Level      : 4
 Duration         : 15 seconds
 Stacks           : 1 maximum
 Proc Chance      : 100%
-Proc Flags       : ........ ......x. x....... ........ 
-                 : Magic Heal, Magic Hostile Spell
+Proc Flags       : ........ ......x. ........ ........ 
+                 : Magic Heal
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5368,7 +5365,7 @@ Effects          :
 Description      : $@spelldesc364342
 Tooltip          : Cooldown of Heroic Leap reduced by $s1%.
 
-Name             : Permeating Chill (desc=Blue) (id=381773) [Spell Family (224), Passive, Hidden] 
+Name             : Permeating Chill (id=381773) [Spell Family (224), Passive, Hidden] 
 Class            : Evoker
 School           : Spellfrost
 Spell Type       : None

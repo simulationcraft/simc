@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.46366 Live (hotfix 2022-11-02/46366)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.46455 Live (hotfix 2022-11-04/46455)
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -4414,8 +4414,8 @@ Class            : Hunter
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
-Proc Flags       : ........ ..x...x. ........ ........ 
-                 : Generic Heal, Magic Heal
+Proc Flags       : ........ ......x. ........ ........ 
+                 : Magic Heal
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -15924,7 +15924,6 @@ Effects          :
 Description      : $@spelldesc378207
 
 Name             : Eagletalon's True Focus (id=389449) [Spell Family (9), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Marksmanship [tree=spec, row=9, col=3, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(-12, -25)]
                  : Effect#2 [op=set, values=(1500, 3000)]
