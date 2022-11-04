@@ -1595,7 +1595,7 @@ struct warrior_attack_t : public warrior_action_t<melee_attack_t>
     if ( !special )  // Procs below only trigger on special attacks, not autos
       return;
 
-    if ( ( p()->talents.arms.sudden_death->ok() || p()->talents.fury.sudden_death->ok() ) && p()->buff.sudden_death->trigger() )
+    if ( ( p()->talents.arms.sudden_death->ok() || p()->talents.fury.sudden_death->ok() || p()->talents.protection.sudden_death->ok() ) && p()->buff.sudden_death->trigger() )
     {
       p()->cooldown.execute->reset( true );
       p()->cooldown.condemn->reset( true );
@@ -6418,7 +6418,7 @@ struct fury_condemn_parent_t : public warrior_attack_t
     // Ayala's Stone Heart and Sudden Death allow execution on any target
     bool always = p()->buff.ayalas_stone_heart->check() || p()->buff.sudden_death->check();
 
-if ( ! always && candidate_target->health_percentage() > execute_pct_below && candidate_target->health_percentage() < execute_pct_above )
+    if ( ! always && candidate_target->health_percentage() > execute_pct_below && candidate_target->health_percentage() < execute_pct_above )
     {
       return false;
     }
@@ -8957,7 +8957,7 @@ void warrior_t::create_buffs()
     ->set_duration( talents.fury.titanic_rage->effectN( 1 ).trigger()->duration() )
     ->apply_affecting_conduit( conduit.depths_of_insanity );
 
-  buff.sudden_death = make_buff( this, "sudden_death", specialization() == WARRIOR_FURY ? talents.fury.sudden_death : talents.arms.sudden_death );
+  buff.sudden_death = make_buff( this, "sudden_death", specialization() == WARRIOR_FURY ? talents.fury.sudden_death : specialization() == WARRIOR_ARMS ? talents.arms.sudden_death : talents.protection.sudden_death );
 
   buff.shield_block = make_buff( this, "shield_block", spell.shield_block_buff )
     ->set_cooldown( timespan_t::zero() )
