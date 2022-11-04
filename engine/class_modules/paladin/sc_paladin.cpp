@@ -50,6 +50,7 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
   cooldowns.avengers_shield           = get_cooldown( "avengers_shield" );
   cooldowns.consecration              = get_cooldown( "consecration" );
   cooldowns.inner_light_icd           = get_cooldown( "inner_light_icd" );
+  cooldowns.inner_light_icd->duration = find_spell( 386556 )->internal_cooldown();
   cooldowns.judgment                  = get_cooldown( "judgment" );
   cooldowns.shield_of_the_righteous   = get_cooldown( "shield_of_the_righteous" );
   cooldowns.guardian_of_ancient_kings = get_cooldown( "guardian_of_ancient_kings" );
@@ -1184,6 +1185,7 @@ struct inner_light_damage_t : public paladin_spell_t
   {
     background  = proc = may_crit = true;
     may_miss                      = false;
+    cooldown                      = p->cooldowns.inner_light_icd;
   }
 };
 

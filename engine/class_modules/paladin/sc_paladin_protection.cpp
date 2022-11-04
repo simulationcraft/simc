@@ -274,17 +274,6 @@ struct tyrs_enforcer_damage_t : public paladin_spell_t
   }
 };
 
-// Inner Light damage proc =================================================
-struct inner_light_damage_t : public paladin_spell_t
-{
-  inner_light_damage_t( paladin_t* p )
-    : paladin_spell_t( "inner_light", p, p->talents.inner_light->effectN( 1 ).trigger() )
-  {
-    background = proc = may_crit = true;
-    may_miss                     = false;
-  }
-};
-
 // Blessed Hammer (Protection) ================================================
 struct blessed_hammer_tick_t : public paladin_spell_t
 {
@@ -957,16 +946,6 @@ void paladin_t::trigger_holy_shield( action_state_t* s )
   active.holy_shield_damage -> schedule_execute();
 }
 
-void paladin_t::trigger_inner_light( action_state_t* s )
-{
-  if ( !talents.inner_light->ok() && cooldowns.inner_light_icd -> up() && !buffs.inner_light->check() )
-    return;
-
-  active.inner_light_damage->set_target( s -> action -> player );
-  active.inner_light_damage->execute();
-  cooldowns.inner_light_icd->start();
-}
-
 void paladin_t::trigger_tyrs_enforcer( action_state_t* s )
 {
   // escape if we don't have Tyrs Enforcer
@@ -995,7 +974,6 @@ void paladin_t::create_prot_actions()
   if ( specialization() == PALADIN_PROTECTION )
   {
     active.tyrs_enforcer_damage = new tyrs_enforcer_damage_t( this );
-    active.inner_light_damage   = new inner_light_damage_t( this );
   }
 }
 
