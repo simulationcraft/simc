@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.46366 Live (hotfix 2022-11-01/46366)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.46455 Live (hotfix 2022-11-04/46455)
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -25,7 +25,6 @@ Description      : Automatically shoots the target until cancelled.
 Tooltip          : Firing at the target.
 
 Name             : Mend Pet (id=136) [Spell Family (9)] 
-Hotfixed         : Attributes
 Class            : Hunter
 School           : Nature
 Spell Type       : Magic
@@ -651,7 +650,6 @@ Attributes       : .x..x... ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=10651)    : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.32050 | PvP Coefficient: 1.15000 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (2.73 -> 2.3205)
 #2 (id=101526)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000
 Description      : A powerful aimed shot that deals $s1 Physical damage$?s260240[ and causes your next 1-$260242u ][]$?s342049&s260240[Chimaera Shots]?s260240[Arcane Shots][]$?s260240[ or Multi-Shots to deal $260242s1% more damage][].$?s260228[
@@ -943,7 +941,6 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1038628)  : Apply Aura (6) | Unknown(531)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 Description      : Damage dealt by pets increased by $s1%.
 
 Name             : Intimidation (id=24394) 
@@ -1390,7 +1387,6 @@ Description      : A two-headed shot that hits your primary target and another n
 |cFFFFFFFFGenerates $204304s1 Focus for each target hit.|r][]
 
 Name             : Exotic Beasts (id=53270) [Spell Family (9), Passive] 
-Hotfixed         : Learn Level (39 -> 10), Required Level (39 -> 10)
 Class            : Beast Mastery Hunter
 School           : Physical
 Spell Type       : None
@@ -2712,7 +2708,6 @@ Effects          :
 Description      : Launch fireworks from your gun, bow or crossbow.
 
 Name             : Exhilaration (id=128594) [Spell Family (9)] 
-Hotfixed         : Attributes
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -4909,7 +4904,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=299987)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.39400 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> Unknown(24)
-Hotfixed         : AP Coefficient (0.2625 -> 0.394)
 Description      : $@spelldesc203415
 
 Name             : Fury of the Eagle (id=203415) [Spell Family (9)] 
@@ -6283,7 +6277,6 @@ Attributes       : ....x... ........ x.x..x.. ........   ........ .xx..... .....
 Effects          :
 #1 (id=484009)   : Dummy (3)
                    Base Value: 143 | Scaled Value: 143 | PvP Coefficient: 0.83000 | Target: Enemy (6)
-Hotfixed         : Base Value (95 -> 143)
 #2 (id=484010)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=484059)   : Energize Power (30)
@@ -8692,7 +8685,6 @@ Attributes       : ....x... ........ x.x..x.. ........   ........ .xx..... .....
 Effects          :
 #1 (id=718226)   : Dummy (3)
                    Base Value: 224 | Scaled Value: 224 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Hotfixed         : Base Value (149 -> 224)
 Description      : You and your pet leap to the target and strike it as one, dealing a total of $<damage> Physical damage.
 
 |cFFFFFFFFGenerates $269752s2 Focus for you and your pet.|r
@@ -8720,7 +8712,6 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=718232)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.23500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (1.49 -> 2.235)
 #2 (id=718234)   : Energize Power (30)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: focus | Target: Self (1)
 Description      : $@spelldesc269751
@@ -11440,7 +11431,6 @@ Attributes       : ....x... ........ x....... ........   ........ .x...... .....
 Effects          :
 #1 (id=808381)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.97000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (2.2 -> 2.97)
 #2 (id=808382)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000
 Description      : You attempt to finish off a wounded target, dealing $s1 Physical damage. Only usable on enemies with less than $s2% health.
@@ -14974,12 +14964,10 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Trick Shots (257621)
                    Family Flags: 59
-Hotfixed         : Base Value (25 -> 10)
 #4 (id=1007413)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 5 (33)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 33 | Target: Self (1)
                    Affected Spells: Trick Shots (257621)
                    Family Flags: 59
-Hotfixed         : Base Value (25 -> 10)
 Description      : Trick Shots now ricochets to $s1 fewer targets, but each ricochet deals an additional $s3% damage.
 
 Name             : Light Ammo (id=378913) [Spell Family (9), Passive, Hidden] 
@@ -15500,7 +15488,6 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Fury of the Eagle (203413), Fury of the Eagle (203415)
                    Family Flags: 101
-Hotfixed         : Base Value (5 -> 15)
 #2 (id=1019179)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=1019180)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
@@ -15944,7 +15931,6 @@ Effects          :
                    Base Value: 7 | Scaled Value: 7 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Multi-Shot (2643), Multi-Shot (257620)
                    Family Flags: 12
-Hotfixed         : Base Value (15 -> 7)
 Description      : $@spelldesc389019
 Tooltip          : Multi-Shot damage increased by $s1%.
 
@@ -16247,7 +16233,7 @@ Effects          :
 #1 (id=1026894)  : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.40000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=1026895)  : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
 Description      : $@spelldesc390231
 Tooltip          : Slowed by $s2%.
 
@@ -16594,7 +16580,6 @@ Effects          :
                    Family Flags: 78
 #3 (id=1033179)  : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (50 -> 25)
 Description      : Barbed Shot deals $s2% increased damage, and applying Barbed Shot has a $s3% chance to reset the cooldown of Kill Command.
 
 Name             : Poison Injection (id=393949) [Spell Family (9), Passive] 

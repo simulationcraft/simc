@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.46366 Live (hotfix 2022-11-01/46366)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.46455 Live (hotfix 2022-11-04/46455)
 Name             : Frostbolt of Ages (id=11) 
 Class            : Paladin
 School           : Frost
@@ -146,7 +146,7 @@ Description      : Reduces all damage you take by $s1% for $d.
 Tooltip          : Damage taken reduced by $w1%.
 
 Name             : Lay on Hands (id=633) [Spell Family (10)] 
-Talent Entry     : Generic [free=(Holy, Protection, Protection), tree=class, row=1, col=1, max_rank=1, req_points=0]
+Talent Entry     : Generic [free=(Holy, Protection), tree=class, row=1, col=1, max_rank=1, req_points=0]
 Class            : Paladin
 School           : Holy
 Spell Type       : Magic
@@ -317,7 +317,6 @@ Description      : Blesses a party or raid member, granting immunity to movement
 Tooltip          : Immune to movement impairing effects. $?s199325[Movement speed increased by $199325m1%][]
 
 Name             : Cleanse (id=4987) [Spell Family (10)] 
-Hotfixed         : Learn Level (12 -> 10), Required Level (12 -> 10)
 Class            : Holy Paladin
 School           : Holy
 Spell Type       : Magic
@@ -509,7 +508,6 @@ Attributes       : ........ ........ x.x..x.. ........   ........ .x...... .....
 Effects          :
 #1 (id=11347)    : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.57060 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (0.634 -> 0.5706)
 Description      : Judges the target, dealing $s1 Holy damage$?s231663[, and causing them to take $197277s1% increased damage from your next Holy Power ability.][]$?s315867[
 
 |cFFFFFFFFGenerates $220637s1 Holy Power.][]
@@ -585,7 +583,6 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1038628)  : Apply Aura (6) | Unknown(531)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 Description      : Damage dealt by pets increased by $s1%.
 
 Name             : Hammer of Wrath (id=24275) [Spell Family (10)] 
@@ -692,7 +689,6 @@ Attributes       : ........ ........ x.x..... ...x....   ........ ........ .....
 Effects          :
 #1 (id=15851)    : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.61200 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (0.68 -> 0.612)
 Description      : $@spelldesc20473
 
 Name             : Holy Shock (id=25914) [Spell Family (10)] 
@@ -715,7 +711,6 @@ Attributes       : ........ ........ x.x..... ...x....   ........ ........ .....
 Effects          :
 #1 (id=15852)    : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.39500 | PvP Coefficient: 1.00000 | Target: Friend (21)
-Hotfixed         : SP Coefficient (1.55 -> 1.395)
 Description      : $@spelldesc20473
 
 Name             : Consecration (id=26573) [Spell Family (10)] 
@@ -840,7 +835,7 @@ $@spellname317920: Affected allies immune to interrupts and silences.][]
 Tooltip          : Aura effectiveness increased.
 
 Name             : Ardent Defender (id=31850) [Spell Family (10)] 
-Talent Entry     : Protection [free=(Protection), tree=spec, row=4, col=3, max_rank=1, req_points=0]
+Talent Entry     : Protection [tree=spec, row=4, col=3, max_rank=1, req_points=0]
 Class            : Paladin
 School           : Physical
 Spell Type       : Magic
@@ -937,7 +932,7 @@ $damage=$?a137027[${$s2*$<retribution>}][$s2]
 $crit=$?a137027[${$s4*$<retribution>}][$s4]
 
 Name             : Avenger's Shield (id=31935) [Spell Family (10)] 
-Talent Entry     : Protection [free=(Protection), tree=spec, row=1, col=1, max_rank=1, req_points=0]
+Talent Entry     : Protection [tree=spec, row=1, col=1, max_rank=1, req_points=0]
 Class            : Paladin
 School           : Holy
 Spell Type       : Magic
@@ -1087,7 +1082,7 @@ Effects          :
 Description      : Increases Agility by $s1.
 
 Name             : Sanctified Wrath (id=53376) [Spell Family (10), Passive] 
-Talent Entry     : Generic [tree=class, row=10, col=2, max_rank=1, req_points=20, select_idx=100]
+Talent Entry     : Generic [tree=class, row=10, col=2, max_rank=1, req_points=20, select_idx=100, override="Avenging Wrath" (id=31884)]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -1137,7 +1132,6 @@ Attributes       : ........ ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=157591)   : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.86229 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
-Hotfixed         : AP Coefficient (0.9581 -> 0.86229)
 #2 (id=821259)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 Description      : Unleashes a whirl of divine energy, dealing $s1 Holy damage to all nearby enemies. Deals reduced damage beyond $s2 targets.
@@ -1202,7 +1196,7 @@ Effects          :
 Description      : Your critical Holy Shocks reduce the cost of your next Flash of Light by $54149s1% or cause your next Holy Light to generate $54149s2 Holy Power.
 
 Name             : Hammer of the Righteous (id=53595) [Spell Family (10)] 
-Talent Entry     : Protection [free=(Protection), tree=spec, row=2, col=1, max_rank=1, req_points=0, select_idx=100, replace="Crusader Strike" (id=35395)]
+Talent Entry     : Protection [tree=spec, row=2, col=1, max_rank=1, req_points=0, select_idx=100, replace="Crusader Strike" (id=35395)]
 Class            : Paladin
 School           : Physical
 Spell Type       : Melee
@@ -1708,7 +1702,7 @@ Effects          :
 Description      : An efficient spell, healing a friendly target for $s1.
 
 Name             : Grand Crusader (id=85043) [Spell Family (10), Passive] 
-Talent Entry     : Protection [free=(Protection), tree=spec, row=3, col=2, max_rank=1, req_points=0]
+Talent Entry     : Protection [tree=spec, row=3, col=2, max_rank=1, req_points=0]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -1953,7 +1947,7 @@ Description      : Reduces all damage taken by $s2%.
 Tooltip          : The Guardian of Ancient Kings is protecting you, reducing all damage taken by $s2%.
 
 Name             : Guardian of Ancient Kings (id=86659) [Spell Family (10)] 
-Talent Entry     : Protection [free=(Protection), tree=spec, row=7, col=3, max_rank=1, req_points=8]
+Talent Entry     : Protection [tree=spec, row=7, col=3, max_rank=1, req_points=8]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -3030,7 +3024,6 @@ Effects          :
                    Base Value: -8 | Scaled Value: -8 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Word of Glory (85673)
                    Family Flags: 78
-Hotfixed         : NEW EFFECT
 Description      : Holy Paladin core passive
 
 Name             : Glyph of Pillar of Light (id=146959) [Spell Family (10), Passive, Hidden] 
@@ -3107,7 +3100,7 @@ Description      : Imbue a friendly target with a Barrier of Faith, healing them
 Tooltip          : $w3 healing accumulated from Barrier of Faith.
 
 Name             : Holy Shield (id=152261) [Passive] 
-Talent Entry     : Protection [free=(Protection), tree=spec, row=3, col=1, max_rank=1, req_points=0]
+Talent Entry     : Protection [tree=spec, row=3, col=1, max_rank=1, req_points=0]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -3602,7 +3595,6 @@ Attributes       : ........ ........ ..x..... .....x..   ........ ..x..... .....
 Effects          :
 #1 (id=266292)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.03500 | PvP Coefficient: 1.00000 | Target: Friend (21)
-Hotfixed         : SP Coefficient (0.07 -> 0.035)
 Description      : $@spelldesc183778
 
 Name             : Mastery: Lightbringer (id=183997) [Spell Family (10), Passive] 
@@ -4175,7 +4167,6 @@ Effects          :
 Description      : $@spelldesc200474
 
 Name             : Tyr's Deliverance (id=200654) [Spell Family (10)] 
-Hotfixed         : Affecting Spells
 Class            : Paladin
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Holy
@@ -4349,7 +4340,7 @@ Tooltip          : Immune to magical damage and harmful effects.
 
 Name             : Blessed Hammer (id=204019) [Spell Family (10)] 
 Replaces         : Crusader Strike (id=35395)
-Talent Entry     : Protection [free=(Protection), tree=spec, row=2, col=1, max_rank=1, req_points=0, select_idx=200, replace="Crusader Strike" (id=35395)]
+Talent Entry     : Protection [tree=spec, row=2, col=1, max_rank=1, req_points=0, select_idx=200, replace="Crusader Strike" (id=35395)]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -4379,7 +4370,7 @@ Description      : Throws a Blessed Hammer that spirals outward, dealing $204301
 Variables        : $shield=${$AP*$s1/100}
 
 Name             : Crusader's Judgment (id=204023) [Spell Family (10), Passive] 
-Talent Entry     : Protection [free=(Protection), tree=spec, row=7, col=4, max_rank=1, req_points=8]
+Talent Entry     : Protection [tree=spec, row=7, col=4, max_rank=1, req_points=8]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -4402,7 +4393,7 @@ Effects          :
 Description      : Judgment now has ${1+$s1} charges, and Grand Crusader now also grants a charge of Judgment.
 
 Name             : Consecrated Ground (id=204054) [Spell Family (10), Passive] 
-Talent Entry     : Protection [free=(Protection), tree=spec, row=4, col=1, max_rank=1, req_points=0, select_idx=0]
+Talent Entry     : Protection [tree=spec, row=4, col=1, max_rank=1, req_points=0, select_idx=0]
                  : Retribution [tree=spec, row=7, col=1, max_rank=1, req_points=8, select_idx=100]
 Class            : Paladin
 School           : Physical
@@ -4428,7 +4419,7 @@ Effects          :
 Description      : Your Consecration is $s1% larger, and enemies within it have $s2% reduced movement speed.
 
 Name             : Righteous Protector (id=204074) [Spell Family (10), Passive] 
-Talent Entry     : Protection [free=(Protection), tree=spec, row=8, col=4, max_rank=2, req_points=20]
+Talent Entry     : Protection [tree=spec, row=8, col=4, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(5, 10)]
 Class            : Paladin
 School           : Physical
@@ -4454,7 +4445,7 @@ Description      : Each Holy Power spent reduces the remaining cooldown on Aveng
 Variables        : $reduction=${$m1/10}.1
 
 Name             : Final Stand (id=204077) [Spell Family (10), Passive] 
-Talent Entry     : Protection [free=(Protection), tree=spec, row=9, col=3, max_rank=1, req_points=20]
+Talent Entry     : Protection [tree=spec, row=9, col=3, max_rank=1, req_points=20]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -4683,7 +4674,7 @@ Description      : Truthguard empowers, absorbing $s1% of Avenger's Shield damag
 Tooltip          : Absorbs $w1 damage.
 
 Name             : Bulwark of Order (id=209389) [Spell Family (10), Passive, Hidden] 
-Talent Entry     : Protection [free=(Protection), tree=spec, row=5, col=2, max_rank=2, req_points=8]
+Talent Entry     : Protection [tree=spec, row=5, col=2, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(25, 50)]
 Class            : Paladin
 School           : Physical
@@ -5252,7 +5243,6 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
 Effects          :
 #1 (id=335563)   : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.86229 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (0.9581 -> 0.86229)
 Description      : $@spelldesc53385
 
 Name             : Templar's Verdict (id=224266) [Spell Family (10)] 
@@ -5301,7 +5291,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=337592)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.92400 | PvP Coefficient: 1.00000 | Target: Friend (21)
-Hotfixed         : SP Coefficient (1.05 -> 0.924)
 Description      : $@spelldesc85222
 
 Name             : Cavalier (id=230332) [Passive] 
@@ -5469,7 +5458,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #7 (id=1038644)  : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 395605 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 Description      : Call upon the Light and begin a crusade, increasing your haste $?s384376[and damage ][]by ${$s5/10}% for $d.
 
 Each Holy Power spent during Crusade increases haste $?s384376[and damage ][]by an additional ${$s5/10}%.
@@ -7675,7 +7663,7 @@ Effects          :
 Description      : Your damaging spells and abilities have a chance to fling a dagger at your target, causing them to bleed for ${$s1*$280286d/$280286t1} Physical damage over $280286d, stacking up to $280286u times. Stabbing them in the back applies $s2 stacks.
 
 Name             : Redoubt (id=280373) [Spell Family (10), Passive] 
-Talent Entry     : Protection [free=(Protection), tree=spec, row=2, col=2, max_rank=1, req_points=0, select_idx=200]
+Talent Entry     : Protection [tree=spec, row=2, col=2, max_rank=1, req_points=0, select_idx=200]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -8850,7 +8838,7 @@ Effects          :
 Description      : When you cast Word of Glory on yourself, it is increased by up to $s1% based on your missing health.
 
 Name             : Hand of the Protector (id=315924) [Spell Family (10), Passive] 
-Talent Entry     : Protection [free=(Protection), tree=spec, row=6, col=4, max_rank=1, req_points=8]
+Talent Entry     : Protection [tree=spec, row=6, col=4, max_rank=1, req_points=8]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -9101,7 +9089,7 @@ Description      : Interrupt and Silence effects on party and raid members withi
 Tooltip          : Interrupt and Silence effects reduced by $w1%. $?s339124[Fear effects are reduced by $w4%.][]
 
 Name             : Shining Light (id=321136) [Spell Family (10), Passive] 
-Talent Entry     : Protection [free=(Protection), tree=spec, row=3, col=3, max_rank=1, req_points=0]
+Talent Entry     : Protection [tree=spec, row=3, col=3, max_rank=1, req_points=0]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -9247,7 +9235,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=817884)   : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.13500 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (instant) (16)
-Hotfixed         : AP Coefficient (0.27 -> 0.135)
 Description      : $@spelldesc317866
 
 Name             : Empyrean Power (id=326732) [Spell Family (10), Passive] 
@@ -9331,7 +9318,7 @@ Description      : The cooldown of Lay on Hands is reduced up to $s1%, based on 
 Word of Glory's healing is increased by up to $m3%, based on the target's missing health.
 
 Name             : Moment of Glory (id=327193) [Spell Family (10)] 
-Talent Entry     : Protection [free=(Protection), tree=spec, row=10, col=1, max_rank=1, req_points=20]
+Talent Entry     : Protection [tree=spec, row=10, col=1, max_rank=1, req_points=20]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -11961,7 +11948,7 @@ Effects          :
 Description      : $@spelldesc355100
 
 Name             : Divine Toll (id=375576) [Spell Family (10)] 
-Talent Entry     : Protection [free=(Protection), tree=spec, row=9, col=4, max_rank=1, req_points=20]
+Talent Entry     : Protection [tree=spec, row=9, col=4, max_rank=1, req_points=20]
                  : Retribution [tree=spec, row=9, col=2, max_rank=1, req_points=20]
                  : Holy [tree=spec, row=8, col=1, max_rank=1, req_points=20]
 Class            : Paladin
@@ -12068,12 +12055,10 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Consecration (26573), Consecration (81297)
                    Family Flags: 5
-Hotfixed         : Sub Type (79 -> 108), Misc Value (2 -> 0), Affects Spells, Trigger Spell (81297 -> 0)
 #2 (id=1039657)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Consecration (26573), Consecration (81297)
                    Family Flags: 5
-Hotfixed         : NEW EFFECT
 Description      : Consecration's damage is increased by $s1%.
 
 Name             : Seal of Reprisal (id=377053) [Spell Family (10), Passive] 
@@ -12144,7 +12129,7 @@ Effects          :
 Description      : $@spelldesc377128
 
 Name             : Gift of the Golden Val'kyr (id=378279) [Spell Family (10), Passive] 
-Talent Entry     : Protection [free=(Protection), tree=spec, row=8, col=2, max_rank=2, req_points=20]
+Talent Entry     : Protection [tree=spec, row=8, col=2, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(500, 1000)]
 Class            : Paladin
 School           : Physical
@@ -12173,7 +12158,7 @@ Description      : Each enemy hit by Avenger's Shield reduces the remaining cool
 When you drop below $s2% health, you become infused with Guardian of Ancient Kings for $s3 sec. This cannot occur again for $337852d.
 
 Name             : Tyr's Enforcer (id=378285) [Spell Family (10), Passive] 
-Talent Entry     : Protection [free=(Protection), tree=spec, row=6, col=1, max_rank=2, req_points=8]
+Talent Entry     : Protection [tree=spec, row=6, col=1, max_rank=2, req_points=8]
                  : Effect#2 [op=set, values=(0, 100)]
 Class            : Paladin
 School           : Physical
@@ -12220,7 +12205,7 @@ Effects          :
 Description      : $@spelldesc378285
 
 Name             : Light of the Titans (id=378405) [Spell Family (10), Passive] 
-Talent Entry     : Protection [free=(Protection), tree=spec, row=5, col=4, max_rank=2, req_points=8]
+Talent Entry     : Protection [tree=spec, row=5, col=4, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(0, 100)]
 Class            : Paladin
 School           : Physical
@@ -12272,7 +12257,7 @@ Description      : $@spelldesc378405
 Tooltip          : Healing for $w1 every $t1 sec.
 
 Name             : Uther's Counsel (id=378425) [Spell Family (10), Passive, Hidden] 
-Talent Entry     : Protection [free=(Protection), tree=spec, row=7, col=5, max_rank=1, req_points=8]
+Talent Entry     : Protection [tree=spec, row=7, col=5, max_rank=1, req_points=8]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -12297,7 +12282,7 @@ Effects          :
 Description      : Your Lay on Hands, Divine Shield, Blessing of Protection, and Blessing of Spellwarding have $s1% reduced cooldown.
 
 Name             : Soaring Shield (id=378457) [Spell Family (10), Passive] 
-Talent Entry     : Protection [free=(Protection), tree=spec, row=8, col=1, max_rank=1, req_points=20, select_idx=200]
+Talent Entry     : Protection [tree=spec, row=8, col=1, max_rank=1, req_points=20, select_idx=200]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -12318,7 +12303,7 @@ Effects          :
 Description      : Avenger's Shield jumps to $s1 additional targets.
 
 Name             : Ferren Marcus's Fervor (id=378762) [Spell Family (10), Passive] 
-Talent Entry     : Protection [free=(Protection), tree=spec, row=9, col=1, max_rank=2, req_points=20]
+Talent Entry     : Protection [tree=spec, row=9, col=1, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(10, 20)]
 Class            : Paladin
 School           : Physical
@@ -12338,7 +12323,7 @@ Effects          :
 Description      : Avenger's Shield deals $s1% increased damage to its primary target.
 
 Name             : Focused Enmity (id=378845) [Spell Family (10), Passive] 
-Talent Entry     : Protection [free=(Protection), tree=spec, row=8, col=1, max_rank=1, req_points=20, select_idx=100]
+Talent Entry     : Protection [tree=spec, row=8, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -12365,7 +12350,7 @@ Effects          :
 Description      : Avenger's Shield deals $s2% increased damage but only strikes one target.
 
 Name             : Bastion of Light (id=378974) [Spell Family (10)] 
-Talent Entry     : Protection [free=(Protection), tree=spec, row=7, col=2, max_rank=1, req_points=8]
+Talent Entry     : Protection [tree=spec, row=7, col=2, max_rank=1, req_points=8]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -12390,7 +12375,7 @@ Description      : Your next 3 casts of Shield of the Righteous or Word of Glory
 Tooltip          : Your next cast of Shield of the Righteous or Word of Glory cost no Holy Power.
 
 Name             : Strength of Conviction (id=379008) [Spell Family (10), Passive] 
-Talent Entry     : Protection [free=(Protection), tree=spec, row=6, col=5, max_rank=2, req_points=8]
+Talent Entry     : Protection [tree=spec, row=6, col=5, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(10, 20)]
 Class            : Paladin
 School           : Holy
@@ -12412,7 +12397,7 @@ Effects          :
 Description      : While in your Consecration, your Shield of the Righteous and Word of Glory have $s1% increased damage and healing.
 
 Name             : Faith's Armor (id=379017) [Spell Family (10), Passive, Hidden] 
-Talent Entry     : Protection [free=(Protection), tree=spec, row=9, col=2, max_rank=1, req_points=20]
+Talent Entry     : Protection [tree=spec, row=9, col=2, max_rank=1, req_points=20]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -12454,7 +12439,7 @@ Effects          :
 Description      : While in your Consecration, your damage taken is reduced by an additional $s1%.
 
 Name             : Consecration in Flame (id=379022) [Spell Family (10), Passive, Hidden] 
-Talent Entry     : Protection [free=(Protection), tree=spec, row=4, col=5, max_rank=1, req_points=0]
+Talent Entry     : Protection [tree=spec, row=4, col=5, max_rank=1, req_points=0]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -12500,7 +12485,7 @@ Description      : Casting Word of Glory grants you an additional $s1% block cha
 Tooltip          : Block chance increased by $w1%.
 
 Name             : Faith in the Light (id=379043) [Spell Family (10), Passive] 
-Talent Entry     : Protection [free=(Protection), tree=spec, row=8, col=5, max_rank=2, req_points=20]
+Talent Entry     : Protection [tree=spec, row=8, col=5, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(5, 5, 10)]
 Class            : Paladin
 School           : Physical
@@ -12523,7 +12508,7 @@ Effects          :
 Description      : Casting Word of Glory grants you an additional $s1% block chance for $379041d.
 
 Name             : Quickened Invocations (id=379391) [Spell Family (10), Passive] 
-Talent Entry     : Protection [free=(Protection), tree=spec, row=10, col=3, max_rank=1, req_points=20, select_idx=200]
+Talent Entry     : Protection [tree=spec, row=10, col=3, max_rank=1, req_points=20, select_idx=200]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -12548,7 +12533,7 @@ Effects          :
 Description      : Cooldown of Seraphim is reduced by ${-$s2/1000} sec and Divine Toll by ${-$s1/1000} sec.
 
 Name             : Crusader's Resolve (id=380188) [Spell Family (10), Passive] 
-Talent Entry     : Protection [free=(Protection), tree=spec, row=5, col=5, max_rank=1, req_points=8, select_idx=200]
+Talent Entry     : Protection [tree=spec, row=5, col=5, max_rank=1, req_points=8, select_idx=200]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -12897,7 +12882,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1015123)  : Apply Aura (6) | Dummy (4)
                    Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (20 -> 35)
 Description      : Art of War has a $s1% chance to reset the cooldown of Wake of Ashes instead of Blade of Justice.
 
 Name             : Virtuous Command (id=383304) [Spell Family (10), Passive] 
@@ -13208,7 +13192,7 @@ Description      : $@spelldesc383350
 Tooltip          : Suffering $w1 Radiant damage every $t1 sec.
 
 Name             : Relentless Inquisitor (id=383388) [Spell Family (10), Passive] 
-Talent Entry     : Protection [free=(Protection), tree=spec, row=6, col=2, max_rank=1, req_points=8]
+Talent Entry     : Protection [tree=spec, row=6, col=2, max_rank=1, req_points=8]
                  : Retribution [tree=spec, row=8, col=1, max_rank=2, req_points=20]
                  : Effect#2 [op=set, values=(0, 2)]
                  : Holy [tree=spec, row=9, col=4, max_rank=2, req_points=20]
@@ -13306,7 +13290,6 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
 Effects          :
 #1 (id=1015429)  : School Damage (2): holyfire
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.25000 | PvP Coefficient: 0.68200 | Radius: 12 yards | Target: Cone Front (104)
-Hotfixed         : AP Coefficient (2.5 -> 2.25)
 #2 (id=1015430)  : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Radius: 12 yards | Mechanic: Snare | Target: Cone Front (104)
 #3 (id=1015431)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
@@ -13564,7 +13547,7 @@ Effects          :
 Description      : Hitting an enemy with Templar's Verdict that has an active Execution Sentence, extends the duration of their Execution Sentence by $s1 sec.
 
 Name             : Avenging Wrath (id=384376) [Spell Family (10), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=5, col=2, max_rank=1, req_points=8]
+Talent Entry     : Generic [tree=class, row=5, col=2, max_rank=1, req_points=8, override="Avenging Wrath" (id=31884)]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -13595,7 +13578,7 @@ Description      : Call upon the Light and become an avatar of retribution, incr
 Combines with other Avenging Wrath abilities, granting all known Avenging Wrath effects while active.
 
 Name             : Crusade (id=384392) [Spell Family (10), Passive, Hidden] 
-Talent Entry     : Retribution [tree=spec, row=6, col=4, max_rank=1, req_points=8, select_idx=200]
+Talent Entry     : Retribution [tree=spec, row=6, col=4, max_rank=1, req_points=8, select_idx=200, override="Crusade" (id=231895)]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -13621,9 +13604,9 @@ If $@spellname31884 is known, also grants $s1% damage per stack.
 
 
 Name             : Avenging Wrath: Might (id=384442) [Spell Family (10), Passive, Hidden] 
-Talent Entry     : Protection [free=(Protection), tree=spec, row=6, col=3, max_rank=1, req_points=8, select_idx=100]
-                 : Retribution [tree=spec, row=6, col=4, max_rank=1, req_points=8, select_idx=100]
-                 : Holy [tree=spec, row=8, col=5, max_rank=1, req_points=20, select_idx=100]
+Talent Entry     : Protection [tree=spec, row=6, col=3, max_rank=1, req_points=8, select_idx=100, override="Avenging Wrath" (id=31884)]
+                 : Retribution [tree=spec, row=6, col=4, max_rank=1, req_points=8, select_idx=100, override="Avenging Wrath" (id=31884)]
+                 : Holy [tree=spec, row=8, col=5, max_rank=1, req_points=20, select_idx=100, override="Avenging Wrath" (id=31884)]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -14030,7 +14013,6 @@ Effects          :
 Description      : After you spend $s3 holy power, your next Word of Glory echoes onto a nearby ally at $s1% effectiveness
 
 Name             : Aspiration of Divinity (id=385416) [Spell Family (10), Passive] 
-Hotfixed         : Attributes, Description
 Talent Entry     : Generic [tree=class, row=8, col=2, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(1, 2)]
 Class            : Paladin
@@ -14058,7 +14040,6 @@ Effects          :
 Description      : Your $?S53595[Hammer of the Righteous]?S204019[Blessed Hammer][Crusader Strike] now also grants you $s1% increased $pri for $385417d. Multiple applications may overlap.
 
 Name             : Aspiration of Divinity (id=385417) [Spell Family (10)] 
-Hotfixed         : Attributes, Affecting Spells
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -14079,12 +14060,11 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1018614)  : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value 2: 0x9 | Target: Self (1)
-Hotfixed         : Sub Type (80 -> 137), Misc Value (-2 -> 0), Misc Value 2 (0 -> 9)
 Description      : Increases $pri by $s1%.
 Tooltip          : $pri increased by $s1%.
 
 Name             : Resolute Defender (id=385422) [Spell Family (10), Passive] 
-Talent Entry     : Protection [free=(Protection), tree=spec, row=7, col=1, max_rank=1, req_points=8]
+Talent Entry     : Protection [tree=spec, row=7, col=1, max_rank=1, req_points=8]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -14152,7 +14132,7 @@ Effects          :
 Description      : Speed and Avoidance increased by $s3%.
 
 Name             : Sentinel (id=385438) [Spell Family (10), Passive, Hidden] 
-Talent Entry     : Protection [free=(Protection), tree=spec, row=6, col=3, max_rank=1, req_points=8, select_idx=200, replace="Avenging Wrath" (id=31884), override="Sentinel" (id=385438)]
+Talent Entry     : Protection [tree=spec, row=6, col=3, max_rank=1, req_points=8, select_idx=200, replace="Avenging Wrath" (id=31884), override="Sentinel" (id=389539)]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -14242,7 +14222,7 @@ Effects          :
 Description      : Armor and critical strike chance increased by $s2%.
 
 Name             : Auras of the Resolute (id=385633) [Passive, Hidden] 
-Talent Entry     : Generic [free=(Holy, Protection, Protection), tree=class, row=2, col=1, max_rank=1, req_points=0]
+Talent Entry     : Generic [free=(Holy, Protection), tree=class, row=2, col=1, max_rank=1, req_points=0]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -14328,7 +14308,7 @@ Description      : $@spelldesc385726
 Tooltip          : Block chance increased by $s1%.
 
 Name             : Barricade of Faith (id=385726) [Spell Family (10), Passive] 
-Talent Entry     : Protection [free=(Protection), tree=spec, row=4, col=4, max_rank=1, req_points=0]
+Talent Entry     : Protection [tree=spec, row=4, col=4, max_rank=1, req_points=0]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -14466,7 +14446,7 @@ Description      : $@spelldesc386568
 Tooltip          : Block chance increased by $w1%. Attackers take Holy damage.
 
 Name             : Inner Light (id=386568) [Passive] 
-Talent Entry     : Protection [free=(Protection), tree=spec, row=2, col=2, max_rank=1, req_points=0, select_idx=100]
+Talent Entry     : Protection [tree=spec, row=2, col=2, max_rank=1, req_points=0, select_idx=100]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -14519,7 +14499,7 @@ Description      : $@spelldesc386653
 Tooltip          : Increases your next Shield of the Righteous' damage by $w1% and radius by $s3 yds.
 
 Name             : Bulwark of Righteous Fury (id=386653) [Spell Family (10), Passive] 
-Talent Entry     : Protection [free=(Protection), tree=spec, row=10, col=2, max_rank=1, req_points=20]
+Talent Entry     : Protection [tree=spec, row=10, col=2, max_rank=1, req_points=20]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -14613,7 +14593,7 @@ Effects          :
 Description      : After casting Divine Toll, you instantly cast $?c2[Avenger's Shield]?c1[Holy Shock][Judgment] every $386730t1 sec for $386730s2 sec.
 
 Name             : Divine Resonance (id=386738) [Spell Family (10), Passive, Hidden] 
-Talent Entry     : Protection [free=(Protection), tree=spec, row=10, col=3, max_rank=1, req_points=20, select_idx=100]
+Talent Entry     : Protection [tree=spec, row=10, col=3, max_rank=1, req_points=20, select_idx=100]
 Class            : Paladin
 School           : Arcane
 Spell Type       : None
@@ -14753,7 +14733,7 @@ Tooltip          : Judgment empowers your next $?(c3 & s383327)[Final Verdict to
 This effect can only occur every $387441d.
 
 Name             : Eye of Tyr (id=387174) [Spell Family (10)] 
-Talent Entry     : Protection [free=(Protection), tree=spec, row=8, col=3, max_rank=1, req_points=20]
+Talent Entry     : Protection [tree=spec, row=8, col=3, max_rank=1, req_points=20]
 Class            : Paladin
 School           : Holy
 Spell Type       : Magic
@@ -15033,7 +15013,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1022823)  : Apply Aura (6) | Modify Armor% (101)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Friend (21)
-Hotfixed         : Base Value (15 -> 30)
 Description      : $@spelldesc387791
 Tooltip          : Armor increased by $s1%.
 
@@ -15210,7 +15189,6 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Light of the Martyr (183998)
                    Family Flags: 124
-Hotfixed         : Base Value (8 -> 10)
 Description      : $@spelldesc387814
 Tooltip          : Light of the Martyr damage and healing increased by $s1%.
 
@@ -15720,7 +15698,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #6 (id=1033317)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Type (6 -> 3), Sub Type (108 -> 0), Misc Value (11 -> 0), Affects Spells
 #7 (id=1033318)  : Apply Aura (6) | Unknown(262)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Hammer of Wrath (24275)
@@ -15731,7 +15708,6 @@ Hotfixed         : Type (6 -> 3), Sub Type (108 -> 0), Misc Value (11 -> 0), Aff
                    Family Flags: 98
 #9 (id=1033320)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Type (6 -> 3), Sub Type (285 -> 0), Trigger Spell (395605 -> 0)
 #10 (id=1033321)  : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #11 (id=1033322)  : Apply Aura (6) | Modify Max Health% (133)
@@ -16015,10 +15991,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1031543)  : Apply Aura (6) | Dummy (4)
                    Base Value: 2500 | Scaled Value: 2500 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (2000 -> 2500)
 #2 (id=1031544)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5000 | Scaled Value: 5000 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (4000 -> 5000)
 Description      : Casting Flash of Light on targets affected by Tyr's Deliverance extends the duration of your Tyr's Deliverance by ${$s1/1000}.1 sec.
 
 Casting Holy Light on targets affected by Tyr's Deliverance extends the duration of your Tyr's Deliverance by ${$s2/1000}.1 sec.
@@ -16088,7 +16062,7 @@ Effects          :
 Description      : Grand Crusader's chance is increased to $s2% and it grants you $393019s1% Strength for $393019d.
 
 Name             : Inspiring Vanguard (id=393022) [Spell Family (10), Passive, Hidden] 
-Talent Entry     : Protection [free=(Protection), tree=spec, row=4, col=2, max_rank=1, req_points=0]
+Talent Entry     : Protection [tree=spec, row=4, col=2, max_rank=1, req_points=0]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -16132,7 +16106,7 @@ Effects          :
 Description      : Cleanse additionally removes all Disease and Poison effects.
 
 Name             : Improved Lay on Hands (id=393027) [Spell Family (10), Passive, Hidden] 
-Talent Entry     : Protection [free=(Protection), tree=spec, row=4, col=1, max_rank=1, req_points=0, select_idx=100]
+Talent Entry     : Protection [tree=spec, row=4, col=1, max_rank=1, req_points=0, select_idx=100]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -16194,7 +16168,7 @@ Description      : Parry increased by $s1%.
 Tooltip          : Parry increased by $s1%.
 
 Name             : Strength in Adversity (id=393071) [Spell Family (10), Passive] 
-Talent Entry     : Protection [free=(Protection), tree=spec, row=5, col=5, max_rank=1, req_points=8, select_idx=100]
+Talent Entry     : Protection [tree=spec, row=5, col=5, max_rank=1, req_points=8, select_idx=100]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -16306,7 +16280,7 @@ Description      : $@spelldesc327193
 Tooltip          : Absorbs $w1 damage.
 
 Name             : Avenging Crusader (id=394088) [Spell Family (10), Passive, Hidden] 
-Talent Entry     : Holy [tree=spec, row=8, col=5, max_rank=1, req_points=20, select_idx=200]
+Talent Entry     : Holy [tree=spec, row=8, col=5, max_rank=1, req_points=20, select_idx=200, override="Avenging Crusader" (id=216331)]
 Class            : Paladin
 School           : Physical
 Spell Type       : None

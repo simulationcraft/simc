@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.46366 Live (hotfix 2022-11-01/46366)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.46455 Live (hotfix 2022-11-04/46455)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -58,7 +58,6 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1038628)  : Apply Aura (6) | Unknown(531)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 Description      : Damage dealt by pets increased by $s1%.
 
 Name             : Strength (id=27973) [Passive, Hidden] 
@@ -1195,7 +1194,6 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=293648)   : School Damage (2): chaos
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.64245 | PvP Coefficient: 1.00000 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (0.67626 -> 0.642447)
 Description      : $@spelldesc162794
 
 Name             : Blade Dance (id=199552) [Spell Family (107)] 
@@ -1345,7 +1343,6 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=296759)   : School Damage (2): chaos
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.83518 | PvP Coefficient: 1.00000 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (0.879138 -> 0.835181)
 Description      : $@spelldesc201427
 
 Name             : Metamorphosis (id=201453) [Spell Family (107), Hidden] 
@@ -1478,7 +1475,6 @@ Effects          :
 Description      : $@spelldesc201467
 
 Name             : Sigil of Silence (id=202137) [Spell Family (107)] 
-Hotfixed         : Cooldown (90000 -> 60000), Category Cooldown (90000 -> 60000)
 Talent Entry     : Vengeance [tree=spec, row=4, col=3, max_rank=1, req_points=0, select_idx=200]
 Class            : Demon Hunter
 School           : Physical
@@ -1542,7 +1538,6 @@ Description      : Place a Sigil of Chains at the target location that activates
 All enemies affected by the sigil are pulled to its center and are snared, reducing movement speed by $204843s1% for $204843d.
 
 Name             : Sigil of Misery (id=202140) [Spell Family (107)] 
-Hotfixed         : Cooldown (180000 -> 120000), Category Cooldown (180000 -> 120000)
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -2302,12 +2297,10 @@ Attributes       : ........ ........ ........ x..x....   .....x.x ........ .....
 Effects          :
 #1 (id=301971)   : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.14700 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: AOE enemy (instant) (16)
-Hotfixed         : AP Coefficient (0.1185 -> 0.147)
 #2 (id=301972)   : Apply Aura (6) | Periodic Damage (3): fire every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: AOE enemy (instant) (16)
 #3 (id=738599)   : Apply Aura (6) | Periodic Damage (3): fire every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.13800 | PvP Coefficient: 1.00000
-Hotfixed         : AP Coefficient (0.0974 -> 0.138)
 Description      : $@spelldesc204596
 Tooltip          : Suffering $w2 $@spelldesc395020 damage every $t2 sec.
 
@@ -2426,7 +2419,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=305259)   : Apply Aura (6) | Dummy (4)
                    Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
-Hotfixed         : Base Value (85 -> 75)
 Description      : Blade Dance deals $<firstbloodDmg> Chaos damage to the first target struck.
 Variables        : $mastery=$?s185164[${((100+$185164m1)/100)}][${1.00}]
 $baseDmg=${3*$199552sw2+$200685sw2} 
@@ -3981,7 +3973,6 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=331359)   : School Damage (2): chaos
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.40886 | PvP Coefficient: 1.00000 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (0.43038 -> 0.408861)
 Description      : $@spelldesc162794
 
 Name             : Fel Barrage (desc=Passive) (id=222703) [Spell Family (107), Passive, Hidden] 
@@ -4135,7 +4126,6 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=342015)   : School Damage (2): chaos
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.53147 | PvP Coefficient: 1.00000 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (0.55944 -> 0.531468)
 Description      : $@spelldesc201427
 
 Name             : Soul Cleave (id=228477) [Spell Family (107)] 
@@ -10744,7 +10734,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1023597)  : Apply Aura (6) | Dummy (4)
                    Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (40 -> 35)
 #2 (id=1032987)  : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Each time Immolation Aura deals damage, $s1% of the damage dealt by up to $s2 critical strikes is gathered as Ragefire.
@@ -11472,7 +11461,6 @@ Effects          :
 Description      : All Sigils are now placed at your target's location, and the duration of their effects is increased by ${$s5/1000} sec.
 
 Name             : Sigil of Chains (id=389807) [Spell Family (107)] 
-Hotfixed         : Attributes
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -11503,7 +11491,6 @@ Description      : Place a Sigil of Chains at the target location that activates
 All enemies affected by the sigil are pulled to its center and are snared, reducing movement speed by $204843s1% for $204843d.
 
 Name             : Sigil of Silence (id=389809) [Spell Family (107)] 
-Hotfixed         : Learn Level (39 -> 0), Cooldown (120000 -> 60000), Category Cooldown (120000 -> 60000), Attributes
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -11535,7 +11522,6 @@ Description      : Place a Sigil of Silence at the target location that activate
 Silences all enemies affected by the sigil for $204490d.
 
 Name             : Sigil of Flame (id=389810) [Spell Family (107)] 
-Hotfixed         : Learn Level (12 -> 10), Attributes
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -11591,7 +11577,6 @@ Effects          :
 Description      : Increase the damage over time effect of The Hunt by $s1%.
 
 Name             : Sigil of Misery (id=389813) [Spell Family (107)] 
-Hotfixed         : Cooldown (180000 -> 120000), Category Cooldown (180000 -> 120000), Attributes
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -11622,7 +11607,6 @@ Description      : Place a Sigil of Misery at the target location that activates
 Causes all enemies affected by the sigil to cower in fear, disorienting them for $207685d.
 
 Name             : Elysian Decree (id=389815) [Spell Family (107)] 
-Hotfixed         : Attributes
 Class            : Demon Hunter
 School           : Arcane
 Spell Type       : None
@@ -11969,7 +11953,6 @@ Effects          :
 Description      : Shear generates $s1 additional Fury.
 
 Name             : Inner Demon (id=390137) [Spell Family (107)] 
-Hotfixed         : Affecting Spells
 Class            : Demon Hunter
 School           : Chaos
 Spell Type       : Magic
@@ -11988,7 +11971,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1026750)  : School Damage (2): chaos
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.45000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
-Hotfixed         : AP Coefficient (1.16 -> 1.45)
 Description      : $@spelldesc389693
 
 Name             : Inner Demon (id=390139) [Spell Family (107)] 
@@ -13015,7 +12997,6 @@ Description      : $@spelldesc388111
 Tooltip          : Magic damage dealt to $@auracaster is reduced by $w1%.
 
 Name             : Elysian Decree (id=394985) [Spell Family (107)] 
-Hotfixed         : Attributes
 Class            : Demon Hunter
 School           : Arcane
 Spell Type       : None
