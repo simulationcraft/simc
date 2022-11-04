@@ -1116,6 +1116,7 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     queueing( nullptr ),
     channeling( nullptr ),
     strict_sequence( nullptr ),
+    demise_event(),
     readying( nullptr ),
     off_gcd( nullptr ),
     cast_while_casting_poll_event(),
@@ -5964,6 +5965,7 @@ void player_t::reset()
   executing       = nullptr;
   queueing        = nullptr;
   channeling      = nullptr;
+  demise_event    = nullptr;
   readying        = nullptr;
   strict_sequence = nullptr;
   off_gcd         = nullptr;
@@ -6348,6 +6350,7 @@ void player_t::arise()
 
   cache.invalidate_all();
 
+  demise_event = nullptr;
   readying = nullptr;
   off_gcd  = nullptr;
   cast_while_casting_poll_event = nullptr;
@@ -7677,7 +7680,7 @@ void player_t::do_damage( action_state_t* incoming_state )
   }
 
   // Check if target is dying
-  if ( health_percentage() <= death_pct && !resources.is_infinite( RESOURCE_HEALTH ) )
+  if ( !demise_event && health_percentage() <= death_pct && !resources.is_infinite( RESOURCE_HEALTH ) )
   {
     if ( !try_guardian_spirit( *this, actual_amount ) )
     {  // Player was not saved by guardian spirit, kill him

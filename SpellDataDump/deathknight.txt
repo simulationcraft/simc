@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.46366 Live (hotfix 2022-10-30/46366)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.46455 Live (hotfix 2022-11-04/46455)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -119,7 +119,6 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1038628)  : Apply Aura (6) | Unknown(531)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 Description      : Damage dealt by pets increased by $s1%.
 
 Name             : Shell Shield (desc=Special Ability) (id=26064) [Spell Family (9)] 
@@ -1084,7 +1083,6 @@ The Gargoyle gains $211947s1% increased damage for every $s4 Runic Power you spe
 |cFFFFFFFFGenerates ${$s5/10} Runic Power.|r
 
 Name             : Sudden Doom (id=49530) [Spell Family (15), Passive] 
-Hotfixed         : RPPM (2.875 -> 2.5)
 Talent Entry     : Unholy [tree=spec, row=5, col=6, max_rank=1, req_points=8]
 Class            : Death Knight
 School           : Physical
@@ -1115,6 +1113,7 @@ Spell Type       : Magic
 Spell Level      : 5
 Range            : 30 yards
 GCD              : 0.5 seconds
+Cooldown         : 1 seconds
 Charges          : 1 (25 seconds cooldown)
 Category         : 1428: Blood Death Knight (137008 effect#4), Blood Death Knight (137008 effect#11), Grip of the Everlasting (334724 effect#1), Death's Echo (356367 effect#2)
 Stance Mask      : 0x01000000
@@ -1136,7 +1135,6 @@ Effects          :
 Description      : Harnesses the energy that surrounds and binds all matter, drawing the target toward you$?a389679[ and slowing their movement speed by $389681s1% for $389681d][]$?s137008[ and forcing the enemy to attack you][].
 
 Name             : Death Strike (id=49998) [Spell Family (15)] 
-Hotfixed         : Travel Delay (0.25 -> 0)
 Talent Entry     : Generic [free=(Blood), tree=class, row=1, col=2, max_rank=1, req_points=0]
 Class            : Death Knight
 School           : Physical
@@ -1655,7 +1653,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Unknown(25)
 #6 (id=1038126)  : Apply Aura (6) | Modify Damage Taken% from Caster Guardian (380)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Unknown(25)
-Hotfixed         : NEW EFFECT
 Description      : A shadowy disease that drains $o1 health from the target over $d.  
 Tooltip          : Draining $w1 health from the target every $t1 sec.
 
@@ -1722,7 +1719,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Unknown(25)
 #4 (id=1038128)  : Apply Aura (6) | Modify Damage Taken% from Caster Guardian (380)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Unknown(25)
-Hotfixed         : NEW EFFECT
 Description      : A disease that deals ${$o1*$<CAP>/$AP} Frost damage over $d and has a chance to grant the Death Knight ${$195617m1/10} Runic Power each time it deals damage.
 Tooltip          : Suffering $w1 Frost damage every $t1 sec.
 Variables        : $CAP=$?$OWB==0[${$AP*0.98}][${($AP+$OAP)*2/3}]--2H, DW
@@ -2661,7 +2657,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
 Effects          :
 #1 (id=68730)    : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Death Coil (47541), Death Coil (47632), Death Coil (47633), Remorseless Winter (196771), Epidemic (207317), Epidemic (212739), Epidemic (215969)
+                   Affected Spells: Death Coil (47541), Death Coil (47632), Death Coil (47633), Epidemic (207317), Epidemic (212739), Epidemic (215969)
                    Family Flags: 13, 121
 #2 (id=836283)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -3280,7 +3276,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
 #4 (id=1038123)  : Apply Aura (6) | Modify Damage Taken% from Caster Guardian (380)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
-Hotfixed         : NEW EFFECT
 Description      : $@spelldesc115989
 Tooltip          : Suffering $s1 Shadow damage every $t1 sec.
 
@@ -3449,18 +3444,14 @@ Effects          :
                    Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Death Coil (47632), Howling Blast (49184), Death Strike (49998), Razorice (50401), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Scourge Strike (55090), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Scourge Strike (70890), Outbreak (77575), Festering Strike (85948), Unholy Blight (115989), Unholy Blight (115994), Breath of Sindragosa (155166), Defile (156000), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Marrowrend (195182), Death's Caress (195292), Frozen Pulse (195750), Glacial Advance (195975), Bonestorm (196528), Remorseless Winter (196771), Chill Streak (204167), Heart Strike (206930), Blooddrinker (206931), Avalanche (207150), Frostscythe (207230), Bursting Sores (207267), Clawing Shadows (207311), Epidemic (212739), Epidemic (215969), Obliterate (222024), Frost Strike (222026), Heart Strike (228645), Howling Blast (237680), Inexorable Assault (253597), Horrid Experimentation (273096), Glacial Contagion (274074), Consumption (274156), Apocalypse (275699), Echoing Howl (275918), Harrowing Decay (275931), Frostwyrm's Fury (279303), Cold Heart (281209), Cold Heart (281210), Helchains (286836), Helchains (286954), Helchains (286978), Helchains (286979), Frostwhelp's Indignation (287320), Helchains (290814), Swarming Mist (311730), Shackle the Unworthy (312202), Rune Strike (316239), Unholy Pact (319236), Unholy Pact (319240), Unholy Pact (319245), Abomination Limb (323710), Abomination Limb (323798), Obliterate (325461), Frost Strike (325464), Sacrificial Pact (327611), Death's Due (341340), Soul Reaper (343294), Dark Transformation (344955), Blood Draw (374606), Frostwhelp's Aid (377245), Shattering Bone (377642), Abomination Limb (383312), Abomination Limb (383313)
                    Family Flags: 43
-Hotfixed         : Base Value (0 -> -5)
 #2 (id=191170)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Death Coil (47632), Howling Blast (49184), Death Strike (49998), Razorice (50401), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Scourge Strike (55090), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Scourge Strike (70890), Outbreak (77575), Festering Strike (85948), Unholy Blight (115989), Unholy Blight (115994), Breath of Sindragosa (155166), Defile (156000), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Marrowrend (195182), Death's Caress (195292), Frozen Pulse (195750), Glacial Advance (195975), Bonestorm (196528), Remorseless Winter (196771), Chill Streak (204167), Heart Strike (206930), Blooddrinker (206931), Avalanche (207150), Frostscythe (207230), Bursting Sores (207267), Clawing Shadows (207311), Epidemic (212739), Epidemic (215969), Obliterate (222024), Frost Strike (222026), Heart Strike (228645), Howling Blast (237680), Inexorable Assault (253597), Horrid Experimentation (273096), Glacial Contagion (274074), Consumption (274156), Apocalypse (275699), Echoing Howl (275918), Harrowing Decay (275931), Frostwyrm's Fury (279303), Cold Heart (281209), Cold Heart (281210), Helchains (286836), Helchains (286954), Helchains (286978), Helchains (286979), Frostwhelp's Indignation (287320), Helchains (290814), Swarming Mist (311730), Shackle the Unworthy (312202), Rune Strike (316239), Unholy Pact (319236), Unholy Pact (319240), Unholy Pact (319245), Abomination Limb (323710), Abomination Limb (323798), Obliterate (325461), Frost Strike (325464), Sacrificial Pact (327611), Death's Due (341340), Soul Reaper (343294), Dark Transformation (344955), Blood Draw (374606), Frostwhelp's Aid (377245), Shattering Bone (377642), Abomination Limb (383312), Abomination Limb (383313)
                    Family Flags: 43
-Hotfixed         : Base Value (0 -> -5)
 #3 (id=191171)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (0 -> -5)
 #4 (id=1032341)  : Apply Aura (6) | Unknown(531)
                    Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (0 -> -5)
 
 Name             : Blood Death Knight (id=137008) [Spell Family (15), Passive, Hidden] 
 Class            : Blood Death Knight
@@ -3574,7 +3565,7 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 2077 | Target: Self (1)
                    Affected Spells (Category): Elemental Blast (117014)
 #11 (id=1012734)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 140 | Scaled Value: 140 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 164 | Scaled Value: 164 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Elemental Blast (117014), Elemental Blast Overload (120588)
                    Family Flags: 98, 108
 #12 (id=1012737)  : Apply Aura (6) | Add Flat Modifier (107): Spell Targets (17)
@@ -3582,26 +3573,34 @@ Effects          :
                    Affected Spells: Chain Lightning Overload (45297), Lava Beam (114074), Lava Beam Overload (114738), Chain Lightning (188443)
                    Family Flags: 1, 34, 63, 101
 #13 (id=1026048)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 32 | Scaled Value: 32 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Chain Lightning Overload (45297), Lava Beam (114074), Lava Beam Overload (114738), Chain Lightning (188443)
                    Family Flags: 1, 34, 63, 101
 #14 (id=1026052)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: -11.175 | Scaled Value: -11.175 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Lightning Bolt Overload (45284), Lightning Bolt (188196), Lightning Bolt Overload (214816)
                    Family Flags: 0, 96
 #15 (id=1026055)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Lightning Bolt Overload (45284), Lightning Bolt (188196), Lightning Bolt Overload (214816)
-                   Family Flags: 0, 96
-#16 (id=1026125)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: -5.6 | Scaled Value: -5.6 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Lava Burst (51505), Lava Burst (285452), Lava Burst Overload (285466)
                    Family Flags: 44, 86
-#17 (id=1032430)  : Apply Aura (6) | Unknown(531)
+#16 (id=1026125)  : Apply Aura (6) | Unknown(531)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
-#18 (id=1037726)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
+#17 (id=1032430)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 2389 (Label) | Target: Self (1)
                    Affected Spells (Label): Elemental Blast: Critical Strike (118522), Elemental Blast: Haste (173183), Elemental Blast: Mastery (173184)
+#18 (id=1040490)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Flame Shock (188389)
+                   Family Flags: 28
+#19 (id=1040491)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Flame Shock (188389)
+                   Family Flags: 28
+#20 (id=1040492)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Frost Shock (196840)
+                   Family Flags: 31
 Description      : Elemental Shaman baseline passive
 
 Name             : Anti-Magic Zone (desc=PvP Talent) (id=145629) [Spell Family (15)] 
@@ -4840,9 +4839,9 @@ Name             : Remorseless Winter (id=196771) [Spell Family (15)]
 Class            : Death Knight
 School           : Frost
 Spell Type       : Magic
-Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Sudden Doom (81340 effect#1), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Gathering Storm (211805 effect#1), Frozen Tempest (278487 effects: #2, #3), Biting Cold (334678 effects: #2, #3), Everfrost (337989 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Everfrost (376974 effect#1), Biting Cold (377056 effects: #2, #3)
+Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Gathering Storm (211805 effect#1), Frozen Tempest (278487 effects: #2, #3), Biting Cold (334678 effects: #2, #3), Everfrost (337989 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Everfrost (376974 effect#1), Biting Cold (377056 effects: #2, #3)
 Triggered by     : Remorseless Winter (196770)
-Family Flags     : 43, 120, 121, 126
+Family Flags     : 43, 120, 126
 Attributes       : ........ ........ ........ ..xx....   ........ ........ ........ ........ 
                  : ........ ........ ........ ....x...   .......x .x...... ........ ........ 
                  : x......x ........ ........ ........   ...x.... ........ .xx..... ........ 
@@ -5694,7 +5693,6 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Festering Wound (194311)
                    Family Flags: 119
-Hotfixed         : Base Value (25 -> 20)
 #2 (id=756116)   : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Bursting a Festering Wound deals $s1% more damage, and deals $207267s1 Shadow damage to all nearby enemies. Deals reduced damage beyond $207267s3 targets.
@@ -5720,7 +5718,6 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=306540)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.18000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
-Hotfixed         : AP Coefficient (0.2 -> 0.18)
 #2 (id=338561)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=818620)   : Dummy (3)
@@ -5839,7 +5836,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=324719)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.55862 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
-Hotfixed         : AP Coefficient (0.50784 -> 0.558624)
 Description      : Deals $s2 Shadow damage and causes 1 Festering Wound to burst.
 
 Name             : Sludge Belcher (id=207313) [Spell Family (15), Passive] 
@@ -6222,10 +6218,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=315517)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.22800 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (0.24 -> 0.228)
 #2 (id=872659)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.09120 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
-Hotfixed         : AP Coefficient (0.096 -> 0.0912)
 Description      : $@spelldesc207317
 
 Name             : Epidemic (id=215969) [Spell Family (15)] 
@@ -6250,7 +6244,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=328301)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.09120 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
-Hotfixed         : AP Coefficient (0.096 -> 0.0912)
 Description      : $@spelldesc207317
 
 Name             : Ossuary (id=219786) [Spell Family (15), Passive] 
@@ -8213,7 +8206,6 @@ Effects          :
                    Family Flags: 81
 #2 (id=729402)   : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 18 | Target: Self (1)
-Hotfixed         : Base Value (15 -> 30)
 Description      : Sudden Doom triggers $s2% more often and can accumulate up to ${$m1+1} charges.
 
 Name             : Death's Reach (id=276079) [Spell Family (15), Passive] 
@@ -10041,7 +10033,7 @@ Name             : Strive for Perfection (id=296321) [Passive]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
-Labels           : 640: Cat Form (768 effect#6), Brewmaster Monk (137023 effect#21), Windwalker Monk (137025 effect#15), Rogue (137034 effect#2)
+Labels           : 640: Cat Form (768 effect#6), Brewmaster Monk (137023 effect#21), Windwalker Monk (137025 effect#14), Rogue (137034 effect#2)
 Internal Cooldown: 1 seconds
 Proc Chance      : 101%
 Azerite EssenceId: 22 (Type: Minor/Upgrade, Rank: 2)
@@ -10065,7 +10057,7 @@ Name             : Strive for Perfection (id=296330)
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
-Labels           : 640: Cat Form (768 effect#6), Brewmaster Monk (137023 effect#21), Windwalker Monk (137025 effect#15), Rogue (137034 effect#2)
+Labels           : 640: Cat Form (768 effect#6), Brewmaster Monk (137023 effect#21), Windwalker Monk (137025 effect#14), Rogue (137034 effect#2)
 Proc Chance      : 101%
 Real PPM         : 1
 Proc Flags       : ....x... x.x.x.x. x.x..x.. ........ 
@@ -10089,7 +10081,7 @@ Name             : Vision of Perfection (id=297745)
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
-Labels           : 640: Cat Form (768 effect#6), Brewmaster Monk (137023 effect#21), Windwalker Monk (137025 effect#15), Rogue (137034 effect#2)
+Labels           : 640: Cat Form (768 effect#6), Brewmaster Monk (137023 effect#21), Windwalker Monk (137025 effect#14), Rogue (137034 effect#2)
 Attributes       : ....x... ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10153,7 +10145,7 @@ Name             : Vision of Perfection (id=302656)
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
-Labels           : 640: Cat Form (768 effect#6), Brewmaster Monk (137023 effect#21), Windwalker Monk (137025 effect#15), Rogue (137034 effect#2)
+Labels           : 640: Cat Form (768 effect#6), Brewmaster Monk (137023 effect#21), Windwalker Monk (137025 effect#14), Rogue (137034 effect#2)
 Attributes       : ....x... ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -10883,7 +10875,6 @@ Attributes       : ........ ........ ..x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=803165)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.56160 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (0.624 -> 0.5616)
 Description      : Deals $s1 Shadow damage.
 
 Name             : Frostbolt (id=317792) 
@@ -10909,7 +10900,6 @@ Attributes       : ........ ........ ..x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=803166)   : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.59717 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (0.66352 -> 0.597168)
 #2 (id=803167)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
 Description      : Deals $s1 Frost damage and reduces their movement speed by $s2% for $d.
@@ -11022,7 +11012,6 @@ Attributes       : ........ ........ ........ ........   .......x ........ .....
 Effects          :
 #1 (id=805554)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.14963 | PvP Coefficient: 1.00000 | Target: Unknown(25)
-Hotfixed         : AP Coefficient (0.1575 -> 0.149625)
 Description      : $@spelldesc319230
 Tooltip          : Deals $s1 Shadow damage.
 
@@ -13718,7 +13707,6 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=999681)   : Apply Aura (6) | Modify AoE Damage Taken% (229)
                    Base Value: -3 | Scaled Value: -3 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
-Hotfixed         : Sub Type (189 -> 229), Coefficient (0.046412 -> 0), Base Value (2 -> -3), Misc Value (1048576 -> 127), Unknown(28) (-1 -> 0)
 #2 (id=999745)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000
 Description      : Increases Avoidance by $s2%.
@@ -14948,8 +14936,8 @@ Description      : When a Festering Wound pops it generates an additional ${$s1/
 
 Name             : Ghoulish Frenzy (id=377587) [Spell Family (15), Passive, Hidden] 
 Talent Entry     : Unholy [tree=spec, row=9, col=2, max_rank=2, req_points=20]
-                 : Effect#1 [op=set, values=(6, 10)]
-                 : Effect#2 [op=set, values=(6, 10)]
+                 : Effect#1 [op=set, values=(5, 10)]
+                 : Effect#2 [op=set, values=(5, 10)]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -15102,52 +15090,42 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 33 | Target: Self (1)
                    Affected Spells: Virulent Plague (191587), Virulent Eruption (191685)
                    Family Flags: 40
-Hotfixed         : Misc Value (12 -> 33), Affects Spells
 #4 (id=1005551)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Unholy Blight (115989), Unholy Blight (115994)
                    Family Flags: 93
-Hotfixed         : Misc Value (23 -> 12)
 #5 (id=1005555)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Unholy Blight (115989), Unholy Blight (115994)
                    Family Flags: 93
-Hotfixed         : Affects Spells
 #6 (id=1005556)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Unholy Blight (115989), Unholy Blight (115994)
                    Family Flags: 93
-Hotfixed         : Affects Spells
 #7 (id=1027001)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Blood Plague (55078)
                    Family Flags: 57
-Hotfixed         : Misc Value (12 -> 23), Affects Spells
 #8 (id=1027002)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Blood Plague (55078)
                    Family Flags: 57
-Hotfixed         : Misc Value (23 -> 32), Affects Spells
 #9 (id=1038115)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 5 (33)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 33 | Target: Self (1)
                    Affected Spells: Blood Plague (55078)
                    Family Flags: 57
-Hotfixed         : NEW EFFECT
 #10 (id=1038129)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Frost Fever (55095)
                    Family Flags: 58
-Hotfixed         : NEW EFFECT
 #11 (id=1038130)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Frost Fever (55095)
                    Family Flags: 58
-Hotfixed         : NEW EFFECT
 #12 (id=1038131)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Frost Fever (55095)
                    Family Flags: 58
-Hotfixed         : NEW EFFECT
 Description      : Diseased enemies take $s1% increased damage from you per disease they are affected by.
 
 Name             : Leeching Strike (id=377629) [Spell Family (15), Passive] 
@@ -16277,7 +16255,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Always Hit (114), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1030741)  : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
 #2 (id=1030864)  : Apply Aura (6) | Modify Damage Done% to Caster (269)
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Enemy (6)
                    Affected School(s): All
@@ -16344,7 +16322,6 @@ Effects          :
 Description      : When empowered by Rime, Howling Blast deals $s1% increased damage to your primary target.
 
 Name             : Empower Rune Weapon (id=392962) [Spell Family (15), Passive, Hidden] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=10, col=1, max_rank=1, req_points=20, override="Empower Rune Weapon" (id=47568)]
 Class            : Death Knight
 School           : Frost
@@ -16365,7 +16342,6 @@ Effects          :
 Description      : $@spelltooltip47568
 
 Name             : Empower Rune Weapon (id=392963) [Spell Family (15), Passive, Hidden] 
-Hotfixed         : Attributes
 Talent Entry     : Frost [tree=spec, row=7, col=4, max_rank=1, req_points=8, override="Empower Rune Weapon" (id=47568)]
 Class            : Death Knight
 School           : Frost

@@ -697,6 +697,17 @@ struct sef_blackout_kick_totm_proc_t : public sef_melee_attack_t
       background  = true;
       trigger_gcd = timespan_t::zero();
     }
+
+    void impact( action_state_t* state ) override
+    {
+      sef_melee_attack_t::impact( state );
+
+      if ( result_is_hit( state->result ) )
+      {
+        if ( o()->talent.windwalker.mark_of_the_crane->ok() )
+          o()->trigger_mark_of_the_crane( state );
+      }
+    }
   };
 
   struct sef_blackout_kick_t : public sef_melee_attack_t
@@ -853,6 +864,8 @@ struct sef_blackout_kick_totm_proc_t : public sef_melee_attack_t
     {
       dual = background = true;
       aoe               = -1;
+
+      source_action = player->owner->find_action( "chi_explosion" );
     }
   };
 
@@ -879,15 +892,20 @@ struct sef_blackout_kick_totm_proc_t : public sef_melee_attack_t
 
       tick_action = new sef_spinning_crane_kick_tick_t( player );
 
-      chi_explosion = new sef_chi_explosion_t( player );
+      if ( player->o()->shared.jade_ignition && player->o()->shared.jade_ignition->ok() )
+        chi_explosion = new sef_chi_explosion_t( player );
+
     }
 
     void execute() override
     {
       sef_melee_attack_t::execute();
 
-      if ( o()->buff.chi_energy->up() )
+      if ( chi_explosion && o()->buff.chi_energy->up() )
+      {
+        chi_explosion->set_target( execute_state->target );
         chi_explosion->execute();
+      }
     }
   };
 

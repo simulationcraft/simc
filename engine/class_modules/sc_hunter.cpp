@@ -445,6 +445,7 @@ public:
     buff_t* coordinated_assault;
     buff_t* coordinated_assault_empower;
     buff_t* spearhead;
+    buff_t* deadly_duo;
 
     // Pet family buffs
     buff_t* endurance_training;
@@ -966,7 +967,8 @@ public:
 
     affected_by.spirit_bond           = parse_damage_affecting_aura( this, p -> mastery.spirit_bond );
     affected_by.coordinated_assault   = check_affected_by( this, p -> find_spell( 361738 ) -> effectN( 2 ) );
-    affected_by.spearhead             = check_affected_by( this, p -> talents.spearhead -> effectN( 4 ) );
+    // 1-11-22 TODO remove data check once live has new Deadly Duo
+    affected_by.spearhead             = check_affected_by( this, p -> talents.spearhead -> effectN( 4 ) ) && !p -> buffs.deadly_duo -> data().ok();
     affected_by.t29_sv_4pc_cost       = check_affected_by( this, p -> tier_set.t29_sv_4pc_buff -> effectN( 1 ) );
     affected_by.t29_sv_4pc_dmg        = parse_damage_affecting_aura( this, p -> tier_set.t29_sv_4pc_buff );
 
@@ -2287,6 +2289,15 @@ struct kill_command_sv_t: public kill_command_base_t
 
     o() -> trigger_bloodseeker_update();
   }
+
+  double action_multiplier() const override
+  {
+    double am = kill_command_base_t::action_multiplier();
+
+    am *= 1 + o() -> buffs.deadly_duo -> stack_value();
+
+    return am;
+  }
 };
 
 // Pet Melee ================================================================
@@ -3450,8 +3461,8 @@ struct explosive_shot_background_t : public explosive_shot_t
 
 struct serpent_sting_base_t: public hunter_ranged_attack_t
 {
-  serpent_sting_base_t( hunter_t* p, util::string_view n, util::string_view options_str, const spell_data_t* s ) :
-    hunter_ranged_attack_t( n, p, s )
+  serpent_sting_base_t( hunter_t* p, util::string_view options_str, const spell_data_t* s ) :
+    hunter_ranged_attack_t( "serpent_sting", p, s )
   {
     parse_options( options_str );
 
@@ -3527,7 +3538,7 @@ struct serpent_sting_base_t: public hunter_ranged_attack_t
 struct serpent_sting_t final : public serpent_sting_base_t
 {
   serpent_sting_t( hunter_t* p, util::string_view options_str ):
-    serpent_sting_base_t( p, "serpent_string", options_str, p -> talents.serpent_sting )
+    serpent_sting_base_t( p, options_str, p -> talents.serpent_sting )
   {
   }
 };
@@ -4319,8 +4330,8 @@ struct aimed_shot_t : public aimed_shot_base_t
 
   struct serpent_sting_sst_t final : public serpent_sting_base_t
   {
-    serpent_sting_sst_t( util::string_view n, hunter_t* p ):
-      serpent_sting_base_t( p, n, "", p -> find_spell( 271788 ) )
+    serpent_sting_sst_t( util::string_view /*name*/, hunter_t* p ):
+      serpent_sting_base_t( p, "", p -> find_spell( 271788 ) )
     {
       dual = true;
       base_costs[ RESOURCE_FOCUS ] = 0;
@@ -4949,8 +4960,8 @@ struct melee_focus_spender_t: hunter_melee_attack_t
 
   struct serpent_sting_vv_t final : public serpent_sting_base_t
   {
-    serpent_sting_vv_t( util::string_view n, hunter_t* p ):
-      serpent_sting_base_t( p, n, "", p -> find_spell( 271788 ) )
+    serpent_sting_vv_t( util::string_view /*name*/, hunter_t* p ):
+      serpent_sting_base_t( p, "", p -> find_spell( 271788 ) )
     {
       dual = true;
       base_costs[ RESOURCE_FOCUS ] = 0;
@@ -5018,6 +5029,9 @@ struct melee_focus_spender_t: hunter_melee_attack_t
       p() -> actions.arctic_bola -> execute_on_target( target );
 
     p() -> buffs.bestial_barrage -> trigger();
+
+    if ( p() -> buffs.spearhead -> up() )
+      p() -> buffs.deadly_duo -> trigger();
   }
 
   void impact( action_state_t* s ) override
@@ -5834,7 +5848,7 @@ struct kill_command_t: public hunter_spell_t
 {
   struct arcane_shot_qs_t final : public attacks::arcane_shot_t
   {
-    arcane_shot_qs_t( util::string_view n, hunter_t* p ):
+    arcane_shot_qs_t( util::string_view /*name*/, hunter_t* p ):
       arcane_shot_t( p, "" )
     {
       dual = true;
@@ -5918,6 +5932,9 @@ struct kill_command_t: public hunter_spell_t
       if ( p() -> buffs.spearhead -> check() )
         chance += p() -> talents.spearhead -> effectN( 3 ).percent();
 
+      if ( p() -> buffs.deadly_duo -> check() )
+        chance += p() -> buffs.deadly_duo -> check() * p() -> talents.deadly_duo -> effectN( 3 ).percent();
+
       if ( rng().roll( chance ) )
       {
         reset.proc -> occur();
@@ -5951,6 +5968,7 @@ struct kill_command_t: public hunter_spell_t
       p() -> cooldowns.barbed_shot -> reset( true );
 
     p() -> buffs.lethal_command -> expire();
+    p() -> buffs.deadly_duo -> expire();
   }
 
   double cost() const override
@@ -6110,7 +6128,7 @@ struct aspect_of_the_wild_t: public hunter_spell_t
 {
   struct cobra_shot_aotw_t final : public attacks::cobra_shot_t
   {
-    cobra_shot_aotw_t( util::string_view n, hunter_t* p ):
+    cobra_shot_aotw_t( util::string_view /*name*/, hunter_t* p ):
       cobra_shot_t( p, "" )
     {
       dual = true;
@@ -6550,8 +6568,8 @@ struct wildfire_bomb_t: public hunter_spell_t
   {
     struct serpent_sting_vb_t final : public attacks::serpent_sting_base_t
     {
-      serpent_sting_vb_t( util::string_view n, hunter_t* p ):
-        serpent_sting_base_t( p, n, "", p -> find_spell( 271788 ) )
+      serpent_sting_vb_t( util::string_view /*name*/, hunter_t* p ):
+        serpent_sting_base_t( p, "", p -> find_spell( 271788 ) )
       {
         dual = true;
         base_costs[ RESOURCE_FOCUS ] = 0;
@@ -7599,6 +7617,11 @@ void hunter_t::create_buffs()
   buffs.spearhead =
     make_buff( this, "spearhead", talents.spearhead )
     -> set_default_value_from_effect( 1 );
+
+  buffs.deadly_duo =
+    make_buff( this, "deadly_duo", find_spell( 397568 ) )
+      -> set_chance( talents.deadly_duo.ok() )
+      -> set_default_value( talents.deadly_duo -> effectN( 1 ).percent() );
 
   // Pet family buffs
 

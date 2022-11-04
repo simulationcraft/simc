@@ -7,6 +7,7 @@ action/attack.hpp
 action/dbc_proc_callback.hpp
 action/dot.hpp
 action/heal.hpp
+action/parse_buff_effects.hpp
 action/residual_action.hpp
 action/sequence.hpp
 action/snapshot_stats.hpp
@@ -100,7 +101,6 @@ player/expansion_effects.hpp
 player/gear_stats.hpp
 player/ground_aoe.hpp
 player/instant_absorb.hpp
-player/parse_buff_effects.hpp
 player/pet.hpp
 player/pet_spawner.hpp
 player/pet_spawner_impl.hpp

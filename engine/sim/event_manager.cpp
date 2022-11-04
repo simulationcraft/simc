@@ -206,7 +206,7 @@ bool event_manager_t::execute()
 
   static const unsigned MAX_EVENTS = 500U * (
     sim->single_actor_batch ? 1U : sim->player_no_pet_list.size()
-  ) * ( sim->fight_style == fight_style_e::FIGHT_STYLE_DUNGEON_ROUTE ? 2U : 1U );
+  );
 
   while ( event_t* e = next_event() )
   {

@@ -770,9 +770,7 @@ void to_json( JsonOutput& arr, const ::report::json::report_configuration_t& rep
   root[ "role" ] = util::role_type_string( p.role );
   root[ "specialization" ] = util::specialization_string( p.specialization() );
   root[ "profile_source" ] = util::profile_source_string( p.profile_source_ );
-
-  talents_to_json( root[ "talents" ], p );
-
+  root[ "talents" ] = p.talents_str;
   root[ "party" ] = p.party;
   root[ "ready_type" ] = p.ready_type;
   root[ "bugs" ] = p.bugs;

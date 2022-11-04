@@ -150,11 +150,6 @@ struct mind_sear_t final : public priest_spell_t
     }
 
     priest_spell_t::execute();
-
-    if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T29, B4 ) )
-    {
-      priest().buffs.dark_reveries->trigger();
-    }
   }
 
   void last_tick( dot_t* d ) override
@@ -176,6 +171,11 @@ struct mind_sear_t final : public priest_spell_t
       {
         priest().trigger_shadowy_apparitions( priest().procs.shadowy_apparition_ms, false );
       }
+    }
+
+    if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T29, B4 ) )
+    {
+      priest().buffs.dark_reveries->trigger();
     }
 
     double insanity_after_tick = player->resources.current[ RESOURCE_INSANITY ] - cost_per_tick( RESOURCE_INSANITY );
@@ -1783,6 +1783,7 @@ struct shadow_weaving_t final : public priest_spell_t
     affected_by_shadow_weaving = false;
     may_crit                   = false;
     may_miss                   = false;
+    callbacks                  = false;
   }
 
   void trigger( player_t* target, double original_amount )

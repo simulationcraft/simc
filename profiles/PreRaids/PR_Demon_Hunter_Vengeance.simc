@@ -6,7 +6,7 @@ race=night_elf
 timeofday=night
 role=tank
 position=front
-talents=1233321
+talents=
 covenant=kyrian
 soulbind=pelagos,combat_meditation/repeat_decree:4
 
@@ -35,7 +35,6 @@ actions.precombat+=/fleshcraft,if=soulbind.pustule_eruption|soulbind.volatile_so
 actions=auto_attack
 actions+=/variable,name=brand_build,value=talent.agonizing_flames.enabled&talent.burning_alive.enabled&talent.charred_flesh.enabled
 actions+=/disrupt
-actions+=/consume_magic
 actions+=/throw_glaive,if=buff.fel_bombardment.stack=5&(buff.immolation_aura.up|!buff.metamorphosis.up)
 actions+=/call_action_list,name=brand,if=variable.brand_build
 actions+=/call_action_list,name=defensives
@@ -62,7 +61,6 @@ actions.defensives+=/fiery_brand
 actions.normal=infernal_strike
 actions.normal+=/bulk_extraction
 actions.normal+=/spirit_bomb,if=((buff.metamorphosis.up&talent.fracture.enabled&soul_fragments>=3)|soul_fragments>=4)
-actions.normal+=/fel_devastation
 actions.normal+=/soul_cleave,if=((talent.spirit_bomb.enabled&soul_fragments=0)|!talent.spirit_bomb.enabled)&((talent.fracture.enabled&fury>=55)|(!talent.fracture.enabled&fury>=70)|cooldown.fel_devastation.remains>target.time_to_die|(buff.metamorphosis.up&((talent.fracture.enabled&fury>=35)|(!talent.fracture.enabled&fury>=50))))
 actions.normal+=/immolation_aura,if=((variable.brand_build&cooldown.fiery_brand.remains>10)|!variable.brand_build)&fury<=90
 actions.normal+=/felblade,if=fury<=60

@@ -5,7 +5,7 @@ level=60
 race=blood_elf
 role=attack
 position=back
-talents=1212231
+talents=
 covenant=venthyr
 soulbind=theotar,soothing_shade/templars_vindication:4
 renown=40
@@ -50,8 +50,6 @@ actions.cooldowns+=/seraphim
 
 # High priority SoR action with AW or HA active or when not talented into Awakening
 actions.priority=shield_of_the_righteous,if=buff.avenging_wrath.up|buff.holy_avenger.up|!talent.awakening.enabled
-# Use Hammer of Wrath when fighting 2 melee targets and you are not capped on Holy Power.
-actions.priority+=/hammer_of_wrath,if=holy_power<5&spell_targets.consecration=2
 # High priority Light's Hammer action when fighting 2 or more melee targets.
 actions.priority+=/lights_hammer,if=spell_targets.lights_hammer>=2
 # High priority Consecration refresh when fighting 2 or more targets.
@@ -59,7 +57,6 @@ actions.priority+=/consecration,if=spell_targets.consecration>=2&!consecration.u
 # When talented into Awakening use Light of Dawn when fighting 5 or less targets and you are capped on Holy Power or Holy Avenger is active and you have 3 or more Holy Power.
 actions.priority+=/light_of_dawn,if=talent.awakening.enabled&spell_targets.consecration<=5&(holy_power>=5|(buff.holy_avenger.up&holy_power>=3))
 actions.priority+=/shield_of_the_righteous,if=spell_targets.consecration>5
-actions.priority+=/hammer_of_wrath
 actions.priority+=/judgment
 actions.priority+=/lights_hammer
 # Refresh Consecration if it is not currently active.

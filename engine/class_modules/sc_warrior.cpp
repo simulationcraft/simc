@@ -2895,13 +2895,19 @@ struct onslaught_t : public warrior_attack_t
 
   void execute() override
   {
-    warrior_attack_t::execute();
-
-    p()->buff.meat_cleaver->decrement();
     if ( p()->talents.fury.tenderize->ok() )
     {
       p()->enrage();
+      if ( p()->is_ptr() )
+      {
+        p()->buff.slaughtering_strikes_rb->trigger( p()->talents.fury.tenderize->effectN( 2 ).base_value() );
+      }
     }
+
+    warrior_attack_t::execute();
+
+    p()->buff.meat_cleaver->decrement();
+
   }
 
   bool ready() override
@@ -4335,6 +4341,10 @@ struct odyns_fury_off_hand_t : public warrior_attack_t
   {
     background          = true;
     aoe                 = -1;
+    if ( p->is_ptr() )
+    {
+      base_multiplier *= 1.0 + p->talents.fury.titanic_rage->effectN( 2 ).percent();
+    }
   }
 };
 
@@ -4345,6 +4355,10 @@ struct odyns_fury_main_hand_t : public warrior_attack_t
   {
     background = true;
     aoe        = -1;
+    if ( p->is_ptr() )
+    {
+      base_multiplier *= 1.0 + p->talents.fury.titanic_rage->effectN( 2 ).percent();
+    }
   }
 };
 
@@ -4387,10 +4401,6 @@ struct odyns_fury_t : warrior_attack_t
   void execute() override
   {
     warrior_attack_t::execute();
-    mh_attack->execute();
-    oh_attack->execute();
-    mh_attack2->execute();
-    oh_attack2->execute();
 
     if ( p()->talents.fury.dancing_blades->ok() )
     {
@@ -4400,8 +4410,21 @@ struct odyns_fury_t : warrior_attack_t
     if ( p()->talents.fury.titanic_rage->ok() )
     {
       p()->enrage();
-      p()->buff.titanic_rage->trigger();
+
+      if ( p()->is_ptr() )
+      {
+        p()->buff.meat_cleaver->trigger( p()->buff.meat_cleaver->max_stack() );
+      }
+      else if ( !p()->is_ptr() )
+      {
+        p()->buff.titanic_rage->trigger();
+      }
     }
+
+    mh_attack->execute();
+    oh_attack->execute();
+    mh_attack2->execute();
+    oh_attack2->execute();
 
     if ( p()->talents.warrior.titans_torment->ok() )
     {
@@ -4461,10 +4484,6 @@ struct torment_odyns_fury_t : warrior_attack_t
   void execute() override
   {
     warrior_attack_t::execute();
-    mh_attack->execute();
-    oh_attack->execute();
-    mh_attack2->execute();
-    oh_attack2->execute();
 
     if ( p()->talents.fury.dancing_blades->ok() )
     {
@@ -4473,8 +4492,21 @@ struct torment_odyns_fury_t : warrior_attack_t
     if ( p()->talents.fury.titanic_rage->ok() )
     {
       p()->enrage();
-      p()->buff.titanic_rage->trigger();
+
+      if ( p()->is_ptr() )
+      {
+        p()->buff.meat_cleaver->trigger( p()->buff.meat_cleaver->max_stack() );
+      }
+      else if ( !p()->is_ptr() )
+      {
+        p()->buff.titanic_rage->trigger();
+      }
     }
+
+    mh_attack->execute();
+    oh_attack->execute();
+    mh_attack2->execute();
+    oh_attack2->execute();
   }
 
   bool ready() override
@@ -5665,7 +5697,11 @@ struct fury_whirlwind_parent_t : public warrior_attack_t
   void tick( dot_t* d ) override
   {
     mh_attack->current_tick = d->current_tick;
-    oh_attack->current_tick = d->current_tick;
+    if ( oh_attack )
+    {
+      oh_attack->current_tick = d->current_tick;
+    }
+
     warrior_attack_t::tick( d );
 
     if ( mh_attack )
@@ -5738,6 +5774,11 @@ struct arms_whirlwind_mh_t : public warrior_attack_t
     }
     return am;
   }
+
+  double tactician_cost() const override
+  {
+    return 0;
+  }
 };
 
 struct first_arms_whirlwind_mh_t : public warrior_attack_t
@@ -5759,6 +5800,11 @@ struct first_arms_whirlwind_mh_t : public warrior_attack_t
       am *= 1.0 + p()->conduit.merciless_bonegrinder.percent();
     }
     return am;
+  }
+
+  double tactician_cost() const override
+  {
+    return 0;
   }
 };
 
@@ -6548,8 +6594,21 @@ struct torment_avatar_t : public warrior_spell_t
   {
     warrior_spell_t::execute();
 
-    const timespan_t trigger_duration = timespan_t::from_millis( 4000 ); // avoid talent check - berserker/blademaster/titan all use same value
-    p()->buff.avatar->extend_duration_or_trigger( trigger_duration );
+    if ( p()->talents.warrior.berserkers_torment->ok() )
+    {
+      const timespan_t trigger_duration = p()->talents.warrior.berserkers_torment->effectN( 2 ).time_value();
+      p()->buff.avatar->extend_duration_or_trigger( trigger_duration );
+    }
+    if ( p()->talents.warrior.titans_torment->ok() )
+    {
+      const timespan_t trigger_duration = timespan_t::from_millis( 4000 ); // value not in spell data
+      p()->buff.avatar->extend_duration_or_trigger( trigger_duration );   
+    }
+    if ( p()->talents.warrior.blademasters_torment->ok() )
+    {
+      const timespan_t trigger_duration = p()->talents.warrior.blademasters_torment->effectN( 2 ).time_value();
+      p()->buff.avatar->extend_duration_or_trigger( trigger_duration );
+    }
   }
 };
 

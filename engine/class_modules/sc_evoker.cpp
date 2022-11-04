@@ -5,7 +5,7 @@
 
 #include "config.hpp"
 #include "simulationcraft.hpp"
-#include "player/parse_buff_effects.hpp"
+#include "action/parse_buff_effects.hpp"
 #include "sim/option.hpp"
 #include "class_modules/apl/apl_evoker.hpp"
 
@@ -226,7 +226,7 @@ struct evoker_t : public player_t
     player_talent_t honed_aggression;
     player_talent_t eternitys_span;
     player_talent_t eye_of_infinity;
-    player_talent_t casuality;
+    player_talent_t causality;
     player_talent_t catalyze;  // row 7
     player_talent_t tyranny;
     player_talent_t charged_blast;
@@ -266,6 +266,7 @@ struct evoker_t : public player_t
   // Gains
   struct gains_t
   {
+    propagate_const<gain_t*> eye_of_infinity;
     propagate_const<gain_t*> roar_of_exhilaration;
   } gain;
 
@@ -274,7 +275,6 @@ struct evoker_t : public player_t
   {
     propagate_const<proc_t*> ruby_essence_burst;
     propagate_const<proc_t*> azure_essence_burst;
-    propagate_const<proc_t*> eye_of_infinity;
   } proc;
 
   // RPPMs
@@ -407,12 +407,11 @@ public:
 
   evoker_action_t( std::string_view name, evoker_t* player, const spell_data_t* spell = spell_data_t::nil() )
     : ab( name, player, spell ),
+      parse_buff_effects_t( this ),
       spell_color( SPELL_COLOR_NONE ),
       proc_spell_type( proc_spell_type_e::NONE ),
       move_during_hover( false )
   {
-    action_ = this;
-
     // TODO: find out if there is a better data source for the spell color
     if ( ab::data().ok() )
     {
@@ -605,9 +604,9 @@ public:
   {
     ab::execute();
 
-    if ( p()->talent.casuality.ok() && current_resource() == RESOURCE_ESSENCE )
+    if ( p()->talent.causality.ok() && current_resource() == RESOURCE_ESSENCE )
     {
-      p()->cooldown.eternity_surge->adjust( p()->talent.casuality->effectN( 1 ).trigger()->effectN( 1 ).time_value() );
+      p()->cooldown.eternity_surge->adjust( p()->talent.causality->effectN( 1 ).trigger()->effectN( 1 ).time_value() );
     }
   }
 
@@ -757,28 +756,22 @@ struct empowered_release_spell_t : public empowered_base_t
   {
     empowered_base_t::execute();
 
-    // Scint Procs currently trigger 2pc
-    if ( p()->sets->has_set_bonus( EVOKER_DEVASTATION, T29, B2 ) )
-      p()->buff.limitless_potential->trigger();
-
     if ( background )
       return;
+
+    p()->buff.limitless_potential->trigger();
 
     if ( p()->talent.animosity.ok() )
     {
       p()->buff.dragonrage->extend_duration( p(), p()->talent.animosity->effectN( 1 ).time_value() );
     }
 
-    if ( p()->talent.power_swell.ok() )
-      p()->buff.power_swell->trigger();
+    p()->buff.power_swell->trigger();
 
-    if ( p()->talent.iridescence.ok() )
-    {
-      if ( spell_color == SPELL_BLUE )
-        p()->buff.iridescence_blue->trigger();
-      else if ( spell_color == SPELL_RED )
-        p()->buff.iridescence_red->trigger();
-    }
+    if ( spell_color == SPELL_BLUE )
+      p()->buff.iridescence_blue->trigger();
+    else if ( spell_color == SPELL_RED )
+      p()->buff.iridescence_red->trigger();
 
     if ( rng().roll( p()->sets->set( EVOKER_DEVASTATION, T29, B4 )->effectN( 2 ).percent() ) )
     {
@@ -1014,8 +1007,7 @@ struct fire_breath_t : public empowered_charge_spell_t
     {
       base_t::execute();
 
-      if ( p()->talent.leaping_flames.ok() )
-        p()->buff.leaping_flames->trigger( empower_value( execute_state ) );
+      p()->buff.leaping_flames->trigger( empower_value( execute_state ) );
     }
 
     timespan_t tick_time( const action_state_t* state ) const override
@@ -1058,18 +1050,20 @@ struct eternity_surge_t : public empowered_charge_spell_t
 {
   struct eternity_surge_damage_t : public empowered_release_spell_t
   {
+    double eoi_ess;  // essence gain on crit from Eye of Infinity
+
     eternity_surge_damage_t( evoker_t* p, std::string_view name )
-      : base_t( name, p, p->find_spell( 359077 ) )
+      : base_t( name, p, p->find_spell( 359077 ) ),
+        eoi_ess( p->talent.eye_of_infinity->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_ESSENCE ) )
     {}
 
-    eternity_surge_damage_t( evoker_t* p ) : eternity_surge_damage_t( p, "eternity_surge_damage" )
-    {}
+    eternity_surge_damage_t( evoker_t* p ) : eternity_surge_damage_t( p, "eternity_surge_damage" ) {}
 
     int n_targets() const override
     {
       int n = pre_execute_state ? empower_value( pre_execute_state ) : max_empower;
 
-      n *=  as<int>( 1 + p()->talent.eternitys_span->effectN( 2 ).percent() );
+      n *= as<int>( 1 + p()->talent.eternitys_span->effectN( 2 ).percent() );
 
       return n == 1 ? 0 : n;
     }
@@ -1078,11 +1072,8 @@ struct eternity_surge_t : public empowered_charge_spell_t
     {
       base_t::impact( s );
 
-      if ( p()->talent.eye_of_infinity.ok() && result_is_hit( s->result ) && s->result == RESULT_CRIT )
-      {
-        p()->buff.essence_burst->trigger();
-        p()->proc.eye_of_infinity->occur();
-      }
+      if ( eoi_ess && s->result == RESULT_CRIT )
+        p()->resource_gain( RESOURCE_ESSENCE, eoi_ess, p()->gain.eye_of_infinity );
     }
   };
 
@@ -1327,8 +1318,7 @@ struct living_flame_t : public evoker_spell_t
     {
       Base::impact( s );
 
-      if ( base_t::p()->talent.snapfire.ok() )
-        base_t::p()->buff.snapfire->trigger();
+      base_t::p()->buff.snapfire->trigger();
     }
   };
 
@@ -1363,8 +1353,7 @@ struct living_flame_t : public evoker_spell_t
     {
       base_t::execute();
 
-      if ( p()->talent.ancient_flame.ok() )
-        p()->buff.ancient_flame->trigger();
+      p()->buff.ancient_flame->trigger();
     }
   };
 
@@ -1787,6 +1776,7 @@ void evoker_t::init_gains()
 {
   player_t::init_gains();
 
+  gain.eye_of_infinity      = get_gain( "Eye of Infinity" );
   gain.roar_of_exhilaration = get_gain( "Roar of Exhilaration" );
 }
 
@@ -1796,7 +1786,6 @@ void evoker_t::init_procs()
 
   proc.ruby_essence_burst  = get_proc( "Ruby Essence Burst" );
   proc.azure_essence_burst = get_proc( "Azure Essence Burst" );
-  proc.eye_of_infinity           = get_proc( "eye_of_infinity" );
 }
 
 void evoker_t::init_base_stats()
@@ -1871,7 +1860,7 @@ void evoker_t::init_spells()
   talent.honed_aggression       = ST( "Honed Aggression" );
   talent.eternitys_span         = ST( "Eternity's Span" );
   talent.eye_of_infinity        = ST( "Eye of Infinity" );
-  talent.casuality              = ST( "Causality" );
+  talent.causality              = ST( "Causality" );
   talent.catalyze               = ST( "Catalyze" );  // Row 7
   talent.tyranny                = ST( "Tyranny" );
   talent.charged_blast          = ST( "Charged Blast" );
@@ -1945,22 +1934,26 @@ void evoker_t::create_buffs()
     ->set_default_value_from_effect( 1 );
 
   // Class Traits
-  buff.ancient_flame = make_buff( this, "ancient_flame", find_spell( 375583 ) );
+  buff.ancient_flame = make_buff( this, "ancient_flame", find_spell( 375583 ) )
+    ->set_trigger_spell( talent.ancient_flame );
 
-  buff.leaping_flames = make_buff( this, "leaping_flames", find_spell( 370901 ) );
+  buff.leaping_flames = make_buff( this, "leaping_flames", find_spell( 370901 ) )
+    ->set_trigger_spell( talent.leaping_flames );
 
   buff.obsidian_scales = make_buff( this, "obsidian_scales", talent.obsidian_scales )
     ->set_cooldown( 0_ms );
 
-  buff.scarlet_adaptation = make_buff( this, "scarlet_adaptation", find_spell( 372470 ) );
+  buff.scarlet_adaptation = make_buff( this, "scarlet_adaptation", find_spell( 372470 ) )
+    ->set_trigger_spell( talent.scarlet_adaptation );
 
   buff.tip_the_scales = make_buff( this, "tip_the_scales", talent.tip_the_scales )
     ->set_cooldown( 0_ms );
 
   // Devastation
   buff.burnout = make_buff( this, "burnout", find_spell( 375802 ) )
-                     ->set_cooldown( talent.burnout->internal_cooldown() )
-                     ->set_chance( talent.burnout->effectN( 1 ).percent() );
+    ->set_trigger_spell( talent.burnout )
+    ->set_cooldown( talent.burnout->internal_cooldown() )
+    ->set_chance( talent.burnout->effectN( 1 ).percent() );
 
   buff.charged_blast = make_buff( this, "charged_blast", talent.charged_blast->effectN( 1 ).trigger() )
     ->set_default_value_from_effect( 1 );
@@ -1968,19 +1961,22 @@ void evoker_t::create_buffs()
   buff.dragonrage = make_buff( this, "dragonrage", talent.dragonrage );
 
   buff.iridescence_blue = make_buff( this, "iridescence_blue", find_spell( 386399 ) )
+    ->set_trigger_spell( talent.iridescence )
     ->set_default_value_from_effect( 1 );
   buff.iridescence_blue->set_initial_stack( buff.iridescence_blue->max_stack() );
 
   buff.iridescence_red = make_buff( this, "iridescence_red", find_spell( 386353 ) )
+    ->set_trigger_spell( talent.iridescence )
     ->set_default_value_from_effect( 1 );
   buff.iridescence_red->set_initial_stack( buff.iridescence_red->max_stack() );
 
-  buff.limitless_potential =
-      make_buff( this, "limitless_potential", sets->set( EVOKER_DEVASTATION, T29, B2 )->effectN( 2 ).trigger() )
-          ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
-          ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
+  buff.limitless_potential = make_buff( this, "limitless_potential", find_spell( 394402 ) )
+    ->set_trigger_spell( sets->set( EVOKER_DEVASTATION, T29, B2 ) )
+    ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
+    ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
 
   buff.power_swell = make_buff( this, "power_swell", find_spell( 376850 ) )
+    ->set_trigger_spell( talent.power_swell )
     ->set_affects_regen( true )
     ->set_default_value_from_effect_type( A_MOD_POWER_REGEN_PERCENT )
     ->set_duration( talent.power_swell->effectN( 1 ).time_value() );
