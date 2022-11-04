@@ -4289,7 +4289,10 @@ struct odyns_fury_off_hand_t : public warrior_attack_t
   {
     background          = true;
     aoe                 = -1;
-    base_multiplier *= 1.0 + p->talents.fury.titanic_rage->effectN( 2 ).percent();
+    if ( p->is_ptr() )
+    {
+      base_multiplier *= 1.0 + p->talents.fury.titanic_rage->effectN( 2 ).percent();
+    }
   }
 };
 
@@ -4302,7 +4305,7 @@ struct odyns_fury_main_hand_t : public warrior_attack_t
     aoe        = -1;
     if ( p->is_ptr() )
     {
-    base_multiplier *= 1.0 + p->talents.fury.titanic_rage->effectN( 2 ).percent();
+      base_multiplier *= 1.0 + p->talents.fury.titanic_rage->effectN( 2 ).percent();
     }
   }
 };
