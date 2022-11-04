@@ -642,6 +642,12 @@ struct lay_on_hands_t : public paladin_heal_t
       cooldown->duration *= 1.0 + p->talents.uthers_counsel->effectN( 2 ).percent();
     }
 
+    // Improved Lay on Hands also reduces cooldown
+    if (p->talents.improved_lay_on_hands->ok())
+    {
+      cooldown->duration *= 1.0 + p->talents.improved_lay_on_hands->effectN( 1 ).percent();
+    }
+
     may_crit    = false;
     use_off_gcd = true;
     trigger_gcd = 0_ms;
