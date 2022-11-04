@@ -6997,7 +6997,7 @@ struct last_stand_t : public warrior_spell_t
   {
     warrior_spell_t::execute();
 
-    if ( p()->conduit.unnerving_focus->ok() )
+    if ( p()->talents.protection.unnerving_focus->ok() )
     {
       p()->buff.unnerving_focus->trigger();
     }
@@ -9110,8 +9110,9 @@ void warrior_t::create_buffs()
   buff.show_of_force = make_buff( this, "show_of_force", talents.protection.show_of_force -> effectN( 1 ).trigger() )
                            ->set_default_value( talents.protection.show_of_force -> effectN( 1 ).percent() );
 
+  // Arma: 2022 Nov 4.  Unnerving focus seems to get the value from the parent, not the value set in the buff
   buff.unnerving_focus = make_buff( this, "unnerving_focus", talents.protection.unnerving_focus -> effectN( 1 ).trigger() )
-                           ->set_default_value( talents.protection.unnerving_focus -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
+                           ->set_default_value( talents.protection.unnerving_focus -> effectN( 1 ).percent() );
   // Runeforged Legendary Powers============================================================================================
 
   buff.battlelord = make_buff( this, "battlelord", find_spell( 386631 ) );
