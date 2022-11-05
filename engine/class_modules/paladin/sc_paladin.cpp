@@ -3586,11 +3586,13 @@ void paladin_t::assess_damage( school_e school, result_amount_type dtype, action
   }
 
   // Holy Shield's magic block
-  if ( talents.holy_shield->ok() && school != SCHOOL_PHYSICAL && !s->action->may_block )
+  if ( talents.holy_shield->ok() && school != SCHOOL_PHYSICAL && s->action->harmful )
   {
     // Block code mimics attack_t::block_chance()
     // cache.block() contains our block chance
     double block = cache.block();
+    if (talents.improved_holy_shield->ok())
+      block += talents.improved_holy_shield->effectN( 1 ).percent();
     // add or subtract 1.5% per level difference
     block += ( level() - s->action->player->level() ) * 0.015;
 
