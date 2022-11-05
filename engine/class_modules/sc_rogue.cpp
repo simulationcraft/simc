@@ -3389,8 +3389,7 @@ struct between_the_eyes_t : public rogue_attack_t
 
       if ( p()->spec.greenskins_wickers->ok() )
       {
-        // 2022-05-28 -- Greenskins ignores animacharged CP values for calculating proc chance
-        if ( rng().roll( rs->get_combo_points( p()->bugs ) * p()->spec.greenskins_wickers->effectN( 1 ).percent() ) )
+        if ( rng().roll( rs->get_combo_points() * p()->spec.greenskins_wickers->effectN( 1 ).percent() ) )
           p()->buffs.greenskins_wickers->trigger();
       }
 
@@ -4444,13 +4443,11 @@ struct pistol_shot_t : public rogue_attack_t
     }
   }
 
-  // As of DF Beta neither Blunderbuss or Fan the Hammer trigger this
   bool procs_fatal_flourish() const override
-  { return !is_secondary_action(); }
+  { return true; }
 
-  // As of DF Beta neither Blunderbuss or Fan the Hammer trigger this
   bool procs_blade_flurry() const override
-  { return !is_secondary_action(); }
+  { return true; }
 };
 
 // Main Gauche ==============================================================
@@ -7869,11 +7866,6 @@ void actions::rogue_action_t<Base>::trigger_restless_blades( const action_state_
   p()->cooldowns.killing_spree->adjust( v, false );
   p()->cooldowns.marked_for_death->adjust( v, false );
   p()->cooldowns.roll_the_bones->adjust( v, false );
-  // DFALPHA -- Currently bugged, but may not return
-  if ( !p()->bugs )
-  {
-    p()->cooldowns.sepsis->adjust( v, false );
-  }
   p()->cooldowns.sprint->adjust( v, false );
   p()->cooldowns.vanish->adjust( v, false );
 
