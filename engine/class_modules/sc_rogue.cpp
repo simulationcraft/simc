@@ -9801,7 +9801,7 @@ void rogue_t::init_spells()
   spec.shadow_focus_buff = talent.subtlety.shadow_focus->ok() ? find_spell( 112942 ) : spell_data_t::not_found();
   spec.shadow_techniques_energize = spec.shadow_techniques->ok() ? find_spell( 196911 ) : spell_data_t::not_found();
   spec.shot_in_the_dark_buff = talent.subtlety.shot_in_the_dark->ok() ? find_spell( 257506 ) : spell_data_t::not_found();
-  spec.silent_storm_buff = talent.subtlety.silent_storm->ok() ? find_spell( 385722 ) : spell_data_t::not_found();
+  spec.silent_storm_buff = talent.subtlety.silent_storm->ok() ? find_spell( 385727 ) : spell_data_t::not_found();
 
   // Covenant Abilities =====================================================
 
