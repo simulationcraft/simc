@@ -11777,97 +11777,6 @@ std::unique_ptr<expr_t> druid_t::create_expression( std::string_view name_str )
     } );
   }
 
-  if ( splits[ 0 ] == "action" && splits[ 1 ] == "ferocious_bite_max" && splits[ 2 ] == "damage" )
-  {
-    action_t* action = find_action( "ferocious_bite" );
-
-    return make_fn_expr( name_str, [ action, this ]() -> double {
-      action_state_t* state = action->get_state();
-      state->n_targets      = 1;
-      state->chain_target   = 0;
-      state->result         = RESULT_HIT;
-
-      action->snapshot_state( state, result_amount_type::DMG_DIRECT );
-      state->target = action->target;
-      //  (p()->resources.current[RESOURCE_ENERGY] - cat_attack_t::cost()));
-
-      // combo_points = p()->resources.current[RESOURCE_COMBO_POINT];
-      double current_energy                           = this->resources.current[ RESOURCE_ENERGY ];
-      double current_cp                               = this->resources.current[ RESOURCE_COMBO_POINT ];
-      this->resources.current[ RESOURCE_ENERGY ]      = 50;
-      this->resources.current[ RESOURCE_COMBO_POINT ] = 5;
-
-      double amount;
-      state->result_amount = action->calculate_direct_amount( state );
-      state->target->target_mitigation( action->get_school(), result_amount_type::DMG_DIRECT, state );
-      amount = state->result_amount;
-      amount *= 1.0 + clamp( state->crit_chance + state->target_crit_chance, 0.0, 1.0 ) *
-                          action->composite_player_critical_multiplier( state );
-
-      this->resources.current[ RESOURCE_ENERGY ]      = current_energy;
-      this->resources.current[ RESOURCE_COMBO_POINT ] = current_cp;
-
-      action_state_t::release( state );
-      return amount;
-    } );
-  }
-
-  if ( util::str_compare_ci( name_str, "active_bt_triggers" ) )
-  {
-    return make_fn_expr( "active_bt_triggers", [ this ]() {
-      return buff.bt_rake->check() + buff.bt_shred->check() + buff.bt_swipe->check() + buff.bt_thrash->check() +
-             buff.bt_moonfire->check() + buff.bt_brutal_slash->check();
-    } );
-  }
-
-  if ( util::str_compare_ci( name_str, "bt_trigger_remains" ) )
-  {
-    return make_fn_expr( "bt_trigger_remains", [ this ]() {
-      return std::min( std::initializer_list<double>( {
-          buff.bt_rake->check() ? buff.bt_rake->remains().total_seconds() : 6.0,
-          buff.bt_shred->check() ? buff.bt_shred->remains().total_seconds() : 6.0,
-          buff.bt_moonfire->check() ? buff.bt_moonfire->remains().total_seconds() : 6.0,
-          buff.bt_swipe->check() ? buff.bt_swipe->remains().total_seconds() : 6.0,
-          buff.bt_thrash->check() ? buff.bt_thrash->remains().total_seconds() : 6.0,
-          buff.bt_brutal_slash->check() ? buff.bt_brutal_slash->remains().total_seconds() : 6.0,
-      } ) );
-    } );
-  }
-
-  if ( splits.size() >= 2 && util::str_compare_ci( splits[ 1 ], "bs_inc" ) )
-  {
-    if ( specialization() == DRUID_FERAL )
-    {
-      if ( talent.incarnation_cat.ok() )
-        splits[ 1 ] = "incarnation_king_of_the_jungle";
-      else
-        splits[ 1 ] = "berserk_cat";
-    }
-    else if ( specialization() == DRUID_GUARDIAN )
-    {
-      if ( talent.incarnation_bear.ok() )
-        splits[ 1 ] = "incarnation_guardian_of_ursoc";
-      else
-        splits[ 1 ] = "berserk_bear";
-    }
-    else
-    {
-      splits[ 1 ] = "berserk";
-    }
-
-    return druid_t::create_expression( util::string_join( splits, "." ) );
-  }
-
-  if ( splits.size() >= 2 && util::str_compare_ci( splits[ 1 ], "clearcasting" ) )
-  {
-    if ( specialization() == DRUID_FERAL )
-      splits[ 1 ] = "clearcasting_cat";
-    else
-      splits[ 1 ] = "clearcasting_tree";
-
-    return druid_t::create_expression( util::string_join( splits, "." ) );
-  }
-
   if ( splits.size() >= 2 && util::str_compare_ci( splits[ 0 ], "cooldown" ) &&
        ( util::str_compare_ci( splits[ 1 ], "kindred_spirits" ) ||
          util::str_compare_ci( splits[ 1 ], "kindred_empowerment" ) ||
@@ -11932,53 +11841,105 @@ std::unique_ptr<expr_t> druid_t::create_expression( std::string_view name_str )
         } );
       }
     }
-  }
 
-  if ( splits.size() == 2 && util::str_compare_ci( splits[ 0 ], "eclipse" ) )
-  {
-    if ( util::str_compare_ci( splits[ 1 ], "state" ) )
+    if ( splits.size() == 2 && util::str_compare_ci( splits[ 0 ], "eclipse" ) )
     {
-      return make_fn_expr( name_str, [ this ]() {
-        eclipse_state_e state = eclipse_handler.state;
-        if ( state == ANY_NEXT )
-          return 0;
-        if ( eclipse_handler.state == IN_SOLAR )
-          return 1;
-        if ( eclipse_handler.state == IN_LUNAR )
-          return 2;
-        if ( eclipse_handler.state == IN_BOTH )
-          return 3;
-        return 4;
+      if ( util::str_compare_ci( splits[ 1 ], "state" ) )
+      {
+        return make_fn_expr( name_str, [ this ]() {
+          eclipse_state_e state = eclipse_handler.state;
+          if ( state == ANY_NEXT )
+            return 0;
+          if ( eclipse_handler.state == IN_SOLAR )
+            return 1;
+          if ( eclipse_handler.state == IN_LUNAR )
+            return 2;
+          if ( eclipse_handler.state == IN_BOTH )
+            return 3;
+          return 4;
+        } );
+      }
+      else if ( util::str_compare_ci( splits[ 1 ], "any_next" ) )
+        return make_fn_expr( name_str, [ this ]() { return eclipse_handler.state == ANY_NEXT; } );
+      else if ( util::str_compare_ci( splits[ 1 ], "in_any" ) )
+      {
+        return make_fn_expr( name_str, [ this ]() {
+          return eclipse_handler.state == IN_SOLAR || eclipse_handler.state == IN_LUNAR ||
+                 eclipse_handler.state == IN_BOTH;
+        } );
+      }
+      else if ( util::str_compare_ci( splits[ 1 ], "in_solar" ) )
+        return make_fn_expr( name_str, [ this ]() { return eclipse_handler.state == IN_SOLAR; } );
+      else if ( util::str_compare_ci( splits[ 1 ], "in_lunar" ) )
+        return make_fn_expr( name_str, [ this ]() { return eclipse_handler.state == IN_LUNAR; } );
+      else if ( util::str_compare_ci( splits[ 1 ], "in_both" ) )
+        return make_fn_expr( name_str, [ this ]() { return eclipse_handler.state == IN_BOTH; } );
+    }
+  }
+  else if ( specialization() == DRUID_FERAL )
+  {
+    if ( splits[ 0 ] == "action" && splits[ 1 ] == "ferocious_bite_max" && splits[ 2 ] == "damage" )
+    {
+      action_t* action = find_action( "ferocious_bite" );
+
+      return make_fn_expr( name_str, [ action, this ]() -> double {
+        action_state_t* state = action->get_state();
+        state->n_targets = 1;
+        state->chain_target = 0;
+        state->result = RESULT_HIT;
+
+        action->snapshot_state( state, result_amount_type::DMG_DIRECT );
+        state->target = action->target;
+        //  (p()->resources.current[RESOURCE_ENERGY] - cat_attack_t::cost()));
+
+        // combo_points = p()->resources.current[RESOURCE_COMBO_POINT];
+        double current_energy = this->resources.current[ RESOURCE_ENERGY ];
+        double current_cp = this->resources.current[ RESOURCE_COMBO_POINT ];
+        this->resources.current[ RESOURCE_ENERGY ] = 50;
+        this->resources.current[ RESOURCE_COMBO_POINT ] = 5;
+
+        double amount;
+        state->result_amount = action->calculate_direct_amount( state );
+        state->target->target_mitigation( action->get_school(), result_amount_type::DMG_DIRECT, state );
+        amount = state->result_amount;
+        amount *= 1.0 + clamp( state->crit_chance + state->target_crit_chance, 0.0, 1.0 ) *
+                            action->composite_player_critical_multiplier( state );
+
+        this->resources.current[ RESOURCE_ENERGY ] = current_energy;
+        this->resources.current[ RESOURCE_COMBO_POINT ] = current_cp;
+
+        action_state_t::release( state );
+        return amount;
       } );
     }
-    else if ( util::str_compare_ci( splits[ 1 ], "any_next" ) )
-      return make_fn_expr( name_str, [ this ]() {
-        return eclipse_handler.state == ANY_NEXT;
-      } );
-    else if ( util::str_compare_ci( splits[ 1 ], "in_any" ) )
-      return make_fn_expr( name_str, [ this ]() {
-        return eclipse_handler.state == IN_SOLAR || eclipse_handler.state == IN_LUNAR ||
-               eclipse_handler.state == IN_BOTH;
-      } );
-    else if ( util::str_compare_ci( splits[ 1 ], "in_solar" ) )
-      return make_fn_expr( name_str, [ this ]() {
-        return eclipse_handler.state == IN_SOLAR;
-      } );
-    else if ( util::str_compare_ci( splits[ 1 ], "in_lunar" ) )
-      return make_fn_expr( name_str, [ this ]() {
-        return eclipse_handler.state == IN_LUNAR;
-      } );
-    else if ( util::str_compare_ci( splits[ 1 ], "in_both" ) )
-      return make_fn_expr( name_str, [ this ]() {
-        return eclipse_handler.state == IN_BOTH;
-      } );
-  }
 
-  if ( util::str_compare_ci( name_str, "buff.starfall.refreshable" ) )
-  {
-    return make_fn_expr( name_str, [ this ]() {
-      return !buff.starfall->check() || buff.starfall->remains() <= buff.starfall->buff_duration() * 0.3;
-    } );
+    if ( util::str_compare_ci( name_str, "active_bt_triggers" ) )
+    {
+      return make_fn_expr( "active_bt_triggers", [ this ]() {
+        return buff.bt_rake->check() + buff.bt_shred->check() + buff.bt_swipe->check() + buff.bt_thrash->check() +
+               buff.bt_moonfire->check() + buff.bt_brutal_slash->check();
+      } );
+    }
+
+    if ( util::str_compare_ci( name_str, "bt_trigger_remains" ) )
+    {
+      return make_fn_expr( "bt_trigger_remains", [ this ]() {
+        return std::min( std::initializer_list<double>( {
+            buff.bt_rake->check() ? buff.bt_rake->remains().total_seconds() : 6.0,
+            buff.bt_shred->check() ? buff.bt_shred->remains().total_seconds() : 6.0,
+            buff.bt_moonfire->check() ? buff.bt_moonfire->remains().total_seconds() : 6.0,
+            buff.bt_swipe->check() ? buff.bt_swipe->remains().total_seconds() : 6.0,
+            buff.bt_thrash->check() ? buff.bt_thrash->remains().total_seconds() : 6.0,
+            buff.bt_brutal_slash->check() ? buff.bt_brutal_slash->remains().total_seconds() : 6.0,
+        } ) );
+      } );
+    }
+
+    if ( splits.size() >= 2 && util::str_compare_ci( splits[ 1 ], "moonfire_cat" ) )
+    {
+      splits[ 1 ] = "lunar_inspiration";
+      return druid_t::create_expression( util::string_join( splits, "." ) );
+    }
   }
 
   // Convert [talent/buff/cooldown].incarnation.* to spec-based incarnations
@@ -12006,6 +11967,40 @@ std::unique_ptr<expr_t> druid_t::create_expression( std::string_view name_str )
       splits[ 1 ] = "berserk_bear";
     else
       splits[ 1 ] = "berserk";
+
+    return druid_t::create_expression( util::string_join( splits, "." ) );
+  }
+
+  if ( splits.size() >= 2 && util::str_compare_ci( splits[ 1 ], "bs_inc" ) )
+  {
+    if ( specialization() == DRUID_FERAL )
+    {
+      if ( talent.incarnation_cat.ok() )
+        splits[ 1 ] = "incarnation_king_of_the_jungle";
+      else
+        splits[ 1 ] = "berserk_cat";
+    }
+    else if ( specialization() == DRUID_GUARDIAN )
+    {
+      if ( talent.incarnation_bear.ok() )
+        splits[ 1 ] = "incarnation_guardian_of_ursoc";
+      else
+        splits[ 1 ] = "berserk_bear";
+    }
+    else
+    {
+      splits[ 1 ] = "berserk";
+    }
+
+    return druid_t::create_expression( util::string_join( splits, "." ) );
+  }
+
+  if ( splits.size() >= 2 && util::str_compare_ci( splits[ 1 ], "clearcasting" ) )
+  {
+    if ( specialization() == DRUID_FERAL )
+      splits[ 1 ] = "clearcasting_cat";
+    else
+      splits[ 1 ] = "clearcasting_tree";
 
     return druid_t::create_expression( util::string_join( splits, "." ) );
   }
