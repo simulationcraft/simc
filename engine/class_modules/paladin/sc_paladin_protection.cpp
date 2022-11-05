@@ -1043,6 +1043,7 @@ void paladin_t::create_buffs_protection()
   buffs.shining_light_free = make_buff( this, "shining_light_free", find_spell( 327510 ) );
   buffs.inspiring_vanguard =
       make_buff( this, "inspiring_vanguard", talents.inspiring_vanguard->effectN( 1 ).trigger() )
+          ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
           ->set_default_value( talents.inspiring_vanguard->effectN( 1 ).trigger()->effectN( 1 ).percent() )
           ->add_invalidate( CACHE_STRENGTH );
   buffs.inner_light = make_buff( this, "inner_light", find_spell( 386556 ) )
