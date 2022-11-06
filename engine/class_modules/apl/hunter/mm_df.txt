@@ -30,27 +30,29 @@ actions.cds+=/potion,if=buff.trueshot.up&(buff.bloodlust.up|target.health.pct<20
 actions.st=/steady_shot,if=talent.steady_focus&(steady_focus_count&buff.steady_focus.remains<5|buff.steady_focus.down&!buff.trueshot.up)
 actions.st+=/kill_shot
 actions.st+=/steel_trap
-actions.st+=/serpent_sting,target_if=min:dot.serpent_sting.remains,if=refreshable&!talent.serpentstalkers_trickery
+actions.st+=/serpent_sting,target_if=min:dot.serpent_sting.remains,if=refreshable&!talent.serpentstalkers_trickery&buff.trueshot.down
 actions.st+=/explosive_shot
 # With at least Streamline, save Double Tap for Rapid Fire unless Careful Aim is active.
 actions.st+=/double_tap,if=(cooldown.rapid_fire.remains<gcd|ca_active|!talent.streamline)&(!raid_event.adds.exists|raid_event.adds.up&(raid_event.adds.in<10&raid_event.adds.remains<3|raid_event.adds.in>cooldown|active_enemies>1)|!raid_event.adds.up&(raid_event.adds.count=1|raid_event.adds.in>cooldown))
 actions.st+=/stampede
 actions.st+=/death_chakram
-actions.st+=/wailing_arrow
-actions.st+=/volley,if=buff.precise_shots.down|!talent.chimaera_shot|active_enemies<2
+actions.st+=/wailing_arrow,if=active_enemies>1
+actions.st+=/volley
 # With at least Streamline, Double Tap Rapid Fire unless Careful Aim is active.
 actions.st+=/rapid_fire,if=talent.surging_shots|buff.double_tap.up&talent.streamline&!ca_active
 actions.st+=/trueshot,if=!raid_event.adds.exists|!raid_event.adds.up&(raid_event.adds.duration+raid_event.adds.in<25|raid_event.adds.in>60)|raid_event.adds.up&raid_event.adds.remains>10|active_enemies>1|fight_remains<25
 # Trigger Trick Shots from Bombardment if it isn't already up, or trigger Salvo if Volley isn't being used to trigger it.
 actions.st+=/multishot,if=buff.bombardment.up&buff.trick_shots.down&active_enemies>1|talent.salvo&buff.salvo.down&!talent.volley
-# Target the lowest remaining Serpent Sting duration. On one target don't overwrite Precise Shots unless Trueshot is up or Aimed Shot would cap otherwise. On two targets, don't overwrite Precise Shots if you have Chimaera Shot.
-actions.st+=/aimed_shot,target_if=min:dot.serpent_sting.remains+action.serpent_sting.in_flight_to_target*99,if=(buff.precise_shots.down|(buff.trueshot.up|full_recharge_time<gcd+cast_time)&(!talent.chimaera_shot|active_enemies<2))|buff.trick_shots.remains>execute_time&active_enemies>1
-# Refresh Steady Focus if it would run out during the Steady Shots it needs.
+# For Serpentstalker's Trickery, target the lowest remaining Serpent Sting. On one target don't overwrite Precise Shots unless Trueshot is up or Aimed Shot would cap otherwise, and on two targets don't overwrite Precise Shots if you have Chimaera Shot, but ignore those general rules if we can cleave it.
+actions.st+=/aimed_shot,target_if=min:dot.serpent_sting.remains+action.serpent_sting.in_flight_to_target*99,if=talent.serpentstalkers_trickery&((buff.precise_shots.down|(buff.trueshot.up|full_recharge_time<gcd+cast_time)&(!talent.chimaera_shot|active_enemies<2))|buff.trick_shots.remains>execute_time&active_enemies>1)
+# For no Serpentstalker's Trickery, target the highest Latent Poison stack. Same general rules as the previous line.
+actions.st+=/aimed_shot,target_if=max:debuff.latent_poison.stack,if=(buff.precise_shots.down|(buff.trueshot.up|full_recharge_time<gcd+cast_time)&(!talent.chimaera_shot|active_enemies<2))|buff.trick_shots.remains>execute_time&active_enemies>1
+# Refresh Steady Focus if it would run out while refreshing it.
 actions.st+=/steady_shot,if=talent.steady_focus&buff.steady_focus.remains<execute_time*2
 actions.st+=/rapid_fire
+actions.st+=/wailing_arrow,if=buff.trueshot.down
 actions.st+=/chimaera_shot,if=buff.precise_shots.up|focus>cost+action.aimed_shot.cost
 actions.st+=/arcane_shot,if=buff.precise_shots.up|focus>cost+action.aimed_shot.cost
-actions.st+=/serpent_sting,target_if=min:remains,if=refreshable&target.time_to_die>duration
 actions.st+=/bag_of_tricks,if=buff.trueshot.down
 actions.st+=/steady_shot
 

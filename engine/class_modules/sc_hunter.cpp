@@ -7678,7 +7678,7 @@ void hunter_t::create_buffs()
 
   buffs.bestial_barrage =
     make_buff( this, "bestial_barrage", tier_set.t29_sv_4pc_buff )
-    -> set_chance( tier_set.t29_sv_4pc.ok() ? 0.2 : 0 ); // TODO is 20% in spelldata anywhere
+    -> set_chance( tier_set.t29_sv_4pc -> effectN( 1 ).percent() );
 
   // Conduits
 
