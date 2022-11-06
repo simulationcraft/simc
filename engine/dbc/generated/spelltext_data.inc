@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.0.46455
-static const std::array<spelltext_data_t, 18950> __spelltext_data { {
+static const std::array<spelltext_data_t, 18951> __spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -18820,6 +18820,7 @@ static const std::array<spelltext_data_t, 18950> __spelltext_data { {
   { 393954, "Starsurge and Starfall reduce the cost of Starsurge and Starfall by $393955s1% and increase their damage by $393955s2% for $393955d, stacking up to $393955u times.", 0, 0 },
   { 393955, "$@spelldesc393954", "Cost of Starsurge and Starfall reduced by $w1%, and their damage increased by $w2%.", 0 },
   { 393956, "When you have $s3 periodic effects on a target, your damage and healing on them are increased by $s1%.", 0, 0 },
+  { 393957, "$@spelldesc393956", "Damage and healing from $@auracaster increased by $w1%.", 0 },
   { 393958, "After an Eclipse ends, you gain $393959s1% Haste for $393959d.", 0, 0 },
   { 393959, "$@spelldesc393958", "Haste increased by $s1%.", 0 },
   { 393960, "Every $s1 Astral Power spent grants Celestial Alignment for $s2 sec.", 0, 0 },
