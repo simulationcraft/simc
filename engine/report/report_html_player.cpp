@@ -1913,10 +1913,11 @@ std::string base64_to_url( std::string_view s )
   return str;
 }
 
-std::string raidbots_talent_render_src( std::string_view talent_str, unsigned level, bool mini )
+std::string raidbots_talent_render_src( std::string_view talent_str, unsigned level, bool mini, bool ptr )
 {
-  return fmt::format( "https://www.raidbots.com/simbot/render/talents/{}?bgcolor=160f0b&level={}&width={}{}",
-                      base64_to_url( talent_str ), level, mini ? 200 : 1000, mini ? "&mini=1" : "" );
+  return fmt::format( "https://{}.raidbots.com/simbot/render/talents/{}?bgcolor=160f0b&level={}&width={}{}",
+                      ptr ? "mimiron" : "www", base64_to_url( talent_str ), level, mini ? 200 : 1000,
+                      mini ? "&mini=1" : "" );
 }
 
 void print_html_talents( report::sc_html_stream& os, const player_t& p )
@@ -1958,14 +1959,11 @@ void print_html_talents( report::sc_html_stream& os, const player_t& p )
      << "<h3 class=\"toggle\">Talents</h3>\n"
      << "<div class=\"toggle-content hide\">\n";
 
-  if ( p.dbc->ptr )
-  {
-    os.format( "<iframe src=\"{}\" width=\"1000\" height=\"650\"></iframe>\n",
-               raidbots_talent_render_src( p.talents_str, p.true_level, false ) );
+  os.format( "<iframe src=\"{}\" width=\"1000\" height=\"650\"></iframe>\n",
+             raidbots_talent_render_src( p.talents_str, p.true_level, false, p.dbc->ptr ) );
 
-    os << "<h3 class=\"toggle\">Talent Tables</h3>\n"
-       << "<div class=\"toggle-content hide\">\n";
-  }
+  os << "<h3 class=\"toggle\">Talent Tables</h3>\n"
+     << "<div class=\"toggle-content hide\">\n";
 
   os.format( "<table class=\"sc\"><tr><th>Row</th><th>{} Talents [{}]</th></tr>\n",
              util::player_type_string_long( p.type ),
@@ -2011,10 +2009,8 @@ void print_html_talents( report::sc_html_stream& os, const player_t& p )
   os << "</table>\n";
 
   os << "</div>\n"
+     << "</div>\n"
      << "</div>\n";
-
-  if ( p.dbc->ptr )
-    os << "</div>\n";
 }
 
 // print_html_player_scale_factor_table =====================================
@@ -3959,12 +3955,10 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
   // Spec and gear
   if ( !p.is_pet() && !p.is_enemy() )
   {
-    if ( p.dbc->ptr )
-    {
-      os << "<div>\n";
-      os.format( "<iframe src=\"{}\" width=\"200\" height=\"125\" style=\"float: left; margin-right: 10px; margin-top: 5px;\"></iframe>\n",
-                 raidbots_talent_render_src( p.talents_str, p.true_level, true ) );
-    }
+    os << "<div>\n";
+    os.format(
+      "<iframe src=\"{}\" width=\"200\" height=\"125\" style=\"float: left; margin-right: 10px; margin-top: 5px;\"></iframe>\n",
+      raidbots_talent_render_src( p.talents_str, p.true_level, true, p.dbc->ptr ) );
 
     os << "<table class=\"sc spec\">\n";
 
@@ -4053,10 +4047,8 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
          << "</tr>\n";
     }
 
-    os << "</table>\n";
-
-    if ( p.dbc->ptr )
-      os << "</div>\n";
+    os << "</table>\n"
+       << "</div>\n";
   }
 }
 
