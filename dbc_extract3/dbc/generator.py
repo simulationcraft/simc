@@ -1366,6 +1366,7 @@ class SpellDataGenerator(DataGenerator):
          377458, 377459, 377461, 382133, # All-Totem of the Master
          388608, 388611, 388739,  # Idol of Pure Decay
          389407, # Furious Ragefeather
+         381586, # Erupting Spear Fragment
         ),
 
         # Warrior:

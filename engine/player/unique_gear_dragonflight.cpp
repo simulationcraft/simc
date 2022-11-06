@@ -837,6 +837,40 @@ struct spiteful_storm_initializer_t : public item_targetdata_initializer_t
   }
 };
 
+void erupting_spear_fragment( special_effect_t& effect )
+{
+  struct erupting_spear_fragment_t : public generic_aoe_proc_t
+  {
+    stat_buff_t* buff;
+    double return_speed;
+
+    erupting_spear_fragment_t( const special_effect_t& e )
+      : generic_aoe_proc_t( e, "erupting_spear_fragment", e.trigger() ),
+        return_speed( e.player->find_spell( 381586 )->missile_speed() )
+    {
+      auto values = player->find_spell( 381484 );
+
+      travel_speed = e.driver()->missile_speed();
+      aoe = -1;
+      base_dd_min = base_dd_max = values->effectN( 1 ).average( item );
+
+      buff = create_buff<stat_buff_t>( player, "erupting_flames", player->find_spell( 381476 ) );
+      buff->manual_stats_added = false;
+      buff->add_stat( STAT_CRIT_RATING, values->effectN( 2 ).average( item ) );
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      generic_aoe_proc_t::impact( s );
+
+      make_event( *sim, timespan_t::from_seconds( player->get_player_distance( *s->target ) / return_speed ),
+                  [ this ]() { buff->trigger(); } );
+    }
+  };
+
+  effect.execute_action = create_proc_action<erupting_spear_fragment_t>( "erupting_spear_fragment", effect );
+}
+
 void furious_ragefeather( special_effect_t& effect )
 {
   auto arrow = create_proc_action<generic_proc_t>( "soulseeker_arrow", effect, "soulseeker_arrow", 388755 );
@@ -1893,6 +1927,7 @@ void register_special_effects()
   register_special_effect( 384532, items::darkmoon_deck_watcher );
   register_special_effect( 396391, items::conjured_chillglobe );
   register_special_effect( 383798, items::emerald_coachs_whistle );
+  register_special_effect( 381471, items::erupting_spear_fragment );
   register_special_effect( 383920, items::furious_ragefeather );
   register_special_effect( 388603, items::idol_of_pure_decay );
   register_special_effect( 377466, items::spiteful_storm );
