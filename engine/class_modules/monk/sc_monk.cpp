@@ -2767,14 +2767,6 @@ struct sck_tick_action_t : public monk_melee_attack_t
 
     if ( p()->spec.spinning_crane_kick_2_brm->ok() )
       trigger_shuffle( p()->spec.spinning_crane_kick_2_brm->effectN( 1 ).base_value() );
-
-    if ( p()->buff.kicks_of_flowing_momentum->up() ) {
-      p()->buff.kicks_of_flowing_momentum->decrement();
-
-      if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T29, B4 ) )
-        p()->buff.fists_of_flowing_momentum->trigger();
-    }
-
   }
 
   void impact( action_state_t* s ) override
@@ -2989,6 +2981,14 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 
       if ( p()->buff.chi_energy->up() )
         p()->buff.chi_energy->expire();
+
+      if ( p()->buff.kicks_of_flowing_momentum->up() )
+      {
+        p()->buff.kicks_of_flowing_momentum->decrement();
+
+        if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T29, B4 ) )
+          p()->buff.fists_of_flowing_momentum->trigger();
+      }
     }
     else if ( p()->specialization() == MONK_BREWMASTER )
     {
@@ -3150,9 +3150,6 @@ struct fists_of_fury_t : public monk_melee_attack_t
 
     monk_melee_attack_t::execute();
 
-    if ( p()->buff.transfer_the_power->up() )
-      p()->buff.transfer_the_power->expire();
-
     if ( p()->buff.fury_of_xuen_stacks->up() && rng().roll( p()->buff.fury_of_xuen_stacks->stack_value() ) )
         p()->buff.fury_of_xuen_stacks->expire();
 
@@ -3175,6 +3172,9 @@ struct fists_of_fury_t : public monk_melee_attack_t
 
     if ( p()->shared.xuens_battlegear && p()->shared.xuens_battlegear->ok() )
       p()->buff.pressure_point->trigger();
+
+    if ( p()->buff.transfer_the_power->up() )
+      p()->buff.transfer_the_power->expire();
 
     // If Fists of Fury went the full duration
     if ( dot->current_tick == dot->num_ticks() ) {
