@@ -918,7 +918,7 @@ void spiteful_storm( special_effect_t& effect )
   } );
 
   auto p = effect.player;
-  effect.player->register_on_kill_callback( [ p, stormbolt, gathering ]( player_t* t ) {
+  p->register_on_kill_callback( [ p, stormbolt, gathering ]( player_t* t ) {
     if ( p->sim->event_mgr.canceled )
       return;
 
@@ -929,6 +929,30 @@ void spiteful_storm( special_effect_t& effect )
     }
   } );
   effect.player->register_combat_begin( [ cb ]( player_t* ) { cb->activate(); } );
+}
+
+void umbrelskuls_fractured_heart( special_effect_t& effect )
+{
+  auto dot = create_proc_action<generic_proc_t>( "crystal_sickness", effect, "crystal_sickness", effect.trigger() );
+  dot->base_td = effect.driver()->effectN( 2 ).average( effect.item );
+
+  effect.execute_action = dot;
+
+  new dbc_proc_callback_t( effect.player, effect );
+
+  // TODO: explosion doesn't work. placeholder using existing data (which may be wrong)
+  auto explode = create_proc_action<generic_aoe_proc_t>( "breaking_the_ice", effect, "breaking_the_ice", 388948 );
+  explode->base_dd_min = explode->base_dd_max = effect.driver()->effectN( 3 ).average( effect.item );
+
+  auto p = effect.player;
+  p->register_on_kill_callback( [ p, explode ]( player_t* t ) {
+    if ( p->sim->event_mgr.canceled )
+      return;
+
+    auto d = t->find_dot( "crystal_sickness", p );
+    if ( d && d->remains() > 0_ms )
+      explode->execute();
+  } );
 }
 
 void whispering_incarnate_icon( special_effect_t& effect )
@@ -1220,14 +1244,16 @@ void decoration_of_flame( special_effect_t& effect )
     buff_t* shield;
     double value;
 
-    decoration_of_flame_damage_t( const special_effect_t& e ) :
-      proc_spell_t( "decoration_of_flame", e.player, e.player->find_spell( 377449 ), e.item ), shield( nullptr ), value( e.player -> find_spell( 394393 ) -> effectN( 2 ).average( e.item ) )
+    decoration_of_flame_damage_t( const special_effect_t& e )
+      : proc_spell_t( "decoration_of_flame", e.player, e.player->find_spell( 377449 ), e.item ),
+        shield( nullptr ),
+        value( e.player->find_spell( 394393 )->effectN( 2 ).average( e.item ) )
     {
-      background = true;
-      base_dd_min = base_dd_max = e.player->find_spell( 394393 )->effectN( 1 ).average(e.item);
-      aoe = e.driver()->effectN(3).base_value();
-      radius = 10;
-      shield = make_buff<absorb_buff_t>( e.player, "decoration_of_flame_shield", e.player->find_spell( 382058 ) );
+       background = true;
+       base_dd_min = base_dd_max = e.player->find_spell( 394393 )->effectN( 1 ).average( e.item );
+       aoe = as<int>( e.driver()->effectN( 3 ).base_value() );
+       radius = 10;
+       shield = make_buff<absorb_buff_t>( e.player, "decoration_of_flame_shield", e.player->find_spell( 382058 ) );
     }
 
     double composite_da_multiplier( const action_state_t* s ) const override
@@ -1791,6 +1817,7 @@ void register_special_effects()
   register_special_effect( 396391, items::conjured_chillglobe );
   register_special_effect( 383798, items::emerald_coachs_whistle );
   register_special_effect( 377466, items::spiteful_storm );
+  register_special_effect( 385902, items::umbrelskuls_fractured_heart );
   register_special_effect( 377452, items::whispering_incarnate_icon );
   register_special_effect( 384112, items::the_cartographers_calipers );
   register_special_effect( 377454, items::rumbling_ruby );
