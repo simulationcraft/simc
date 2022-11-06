@@ -1933,7 +1933,7 @@ int raidbots_talent_render_width( specialization_e spec, int height )
     case ROGUE_SUBTLETY:
     case WARLOCK_AFFLICTION:
     case WARLOCK_DESTRUCTION:
-      return height * 1966 / 1333;
+      return height * 59 / 40;
     default:
       return height * 5 / 3;
   }
