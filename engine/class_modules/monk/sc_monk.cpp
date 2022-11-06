@@ -3150,9 +3150,6 @@ struct fists_of_fury_t : public monk_melee_attack_t
 
     monk_melee_attack_t::execute();
 
-    if ( p()->buff.transfer_the_power->up() )
-      p()->buff.transfer_the_power->expire();
-
     if ( p()->buff.fury_of_xuen_stacks->up() && rng().roll( p()->buff.fury_of_xuen_stacks->stack_value() ) )
         p()->buff.fury_of_xuen_stacks->expire();
 
@@ -3175,6 +3172,9 @@ struct fists_of_fury_t : public monk_melee_attack_t
 
     if ( p()->shared.xuens_battlegear && p()->shared.xuens_battlegear->ok() )
       p()->buff.pressure_point->trigger();
+
+    if ( p()->buff.transfer_the_power->up() )
+      p()->buff.transfer_the_power->expire();
 
     // If Fists of Fury went the full duration
     if ( dot->current_tick == dot->num_ticks() ) {
