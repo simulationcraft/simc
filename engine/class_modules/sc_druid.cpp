@@ -2580,7 +2580,7 @@ private:
 
 public:
   trigger_waning_twilight_t( std::string_view n, druid_t* p, const spell_data_t* s, std::string_view o )
-    : BASE( n, p, s, o ), num_dots( as<int>( p->talent.waning_twilight->effectN( 3 ).base_value() ) ), p_( p )
+    : BASE( n, p, s, o ), p_( p ), num_dots( as<int>( p->talent.waning_twilight->effectN( 3 ).base_value() ) )
   {}
 
   void update_waning_twilight( player_t* t )
