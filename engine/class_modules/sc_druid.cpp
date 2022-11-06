@@ -12396,7 +12396,6 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
   debuff.waning_twilight = make_buff( *this, "waning_twilight", source.spec.waning_twilight )
     ->set_chance( 1.0 )
     ->set_duration( 0_ms )
-    ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
     ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER )
     ->apply_affecting_aura( source.talent.waning_twilight );
 
