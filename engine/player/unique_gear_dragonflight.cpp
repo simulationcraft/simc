@@ -351,8 +351,9 @@ void shocking_disclosure( special_effect_t& effect )
   auto buff = buff_t::find( effect.player, "shocking_disclosure" );
   if ( !buff )
   {
-    auto damage = create_proc_action<generic_aoe_proc_t>( "shocking_disclosure", effect, "shocking_disclosure",
-                                                          effect.trigger() );
+    auto damage =
+      create_proc_action<generic_aoe_proc_t>( "shocking_disclosure", effect, "shocking_disclosure", effect.trigger() );
+    damage->split_aoe_damage = false;
     damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
     damage->dual = true;
 
@@ -664,6 +665,7 @@ void darkmoon_deck_rime( special_effect_t& effect )
       : DF_darkmoon_proc_t( e, "awakening_rime", 382958,
                             { 382845, 382846, 382847, 382848, 382849, 382850, 382851, 382844 } )
     {
+      // TODO: determine if damage increased per target hit
       auto explode =
           create_proc_action<generic_aoe_proc_t>( "awakened_rime", e, "awakened_rime", e.player->find_spell( 370880 ) );
 
@@ -892,7 +894,7 @@ void idol_of_pure_decay( special_effect_t& effect )
         dur( e.trigger()->duration() ),
         count( as<int>( e.driver()->effectN( 1 ).base_value() ) )
     {
-      damage = create_proc_action<generic_aoe_proc_t>( "pure_decay", effect, "pure_decay", 388739 );
+      damage = create_proc_action<generic_aoe_proc_t>( "pure_decay", effect, "pure_decay", 388739, true );
       damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 2 ).average( effect.item );
     }
 
@@ -1013,6 +1015,7 @@ void umbrelskuls_fractured_heart( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 
   // TODO: explosion doesn't work. placeholder using existing data (which may be wrong)
+  // TODO: determine if damage increases per target hit
   auto explode = create_proc_action<generic_aoe_proc_t>( "breaking_the_ice", effect, "breaking_the_ice", 388948 );
   explode->base_dd_min = explode->base_dd_max = effect.driver()->effectN( 3 ).average( effect.item );
 
@@ -1658,6 +1661,7 @@ void breath_of_neltharion( special_effect_t& effect )
 
       tick_action = create_proc_action<generic_aoe_proc_t>(
           "breath_of_neltharion_tick", e, "breath_of_neltharion_tick", e.trigger() );
+      tick_action->split_aoe_damage = false;
       tick_action->stats = stats;
       tick_action->dual = true;
     }
@@ -1793,6 +1797,7 @@ void elemental_lariat( special_effect_t& effect )
 void flaring_cowl( special_effect_t& effect )
 {
   auto damage = create_proc_action<generic_aoe_proc_t>( "flaring_cowl", effect, "flaring_cowl", 377079 );
+  damage->split_aoe_damage = false;
   // damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
   // TODO: currently bugged and only doing damage as if the item was at the base ilevel of 350
   damage->base_dd_min = damage->base_dd_max =
