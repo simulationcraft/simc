@@ -48,6 +48,7 @@ void erupting_spear_fragment( special_effect_t& );
 void furious_ragefeather( special_effect_t& );
 void idol_of_pure_decay( special_effect_t& );
 void spiteful_storm( special_effect_t& );
+void spoils_of_neltharus( special_effect_t& );
 void umbrelskuls_fractured_heart( special_effect_t& );
 void whispering_incarnate_icon( special_effect_t& );
 void the_cartographers_calipers( special_effect_t& );

@@ -1038,6 +1038,89 @@ void spiteful_storm( special_effect_t& effect )
   effect.player->register_combat_begin( [ cb ]( player_t* ) { cb->activate(); } );
 }
 
+void spoils_of_neltharus( special_effect_t& effect )
+{
+  if ( create_fallback_buffs( effect, { "spoils_of_neltharus_crit", "spoils_of_neltharus_haste",
+                                        "spoils_of_neltharus_mastery", "spoils_of_neltharus_vers" } ) )
+  {
+    return;
+  }
+
+  struct spoils_of_neltharus_t : public proc_spell_t
+  {
+    using buffs = std::vector<std::pair<buff_t*, buff_t*>>;
+
+    struct spoils_of_neltharus_cb_t : public dbc_proc_callback_t
+    {
+      buffs& buff_list;
+
+      spoils_of_neltharus_cb_t( const special_effect_t& e, buffs* list )
+        : dbc_proc_callback_t( e.player, e ), buff_list( *list )
+      {}
+
+      void execute( action_t*, action_state_t* ) override
+      {
+        buff_list.front().first->expire();
+        std::rotate( buff_list.begin(), buff_list.begin() + rng().range( 1, 4 ), buff_list.end() );
+        buff_list.front().first->trigger();
+      }
+    };
+
+    buffs buff_list;
+    dbc_proc_callback_t* cb;
+
+    spoils_of_neltharus_t( const special_effect_t& e ) : proc_spell_t( e )
+    {
+      auto shuffle = find_special_effect( e.player, 381766 );
+      cb = new spoils_of_neltharus_cb_t( *shuffle, &buff_list );
+      cb->initialize();
+      cb->activate();
+
+      auto init_buff = [ this, shuffle ]( std::string n, unsigned id ) {
+        auto spell = player->find_spell( id );
+
+        auto counter = make_buff<buff_t>( player, "spoils_of_neltharus_" + n, spell )
+          ->set_quiet( true );
+
+        auto stat = make_buff<stat_buff_t>( player, "spoils_of_neltharus_stat_" + n, spell )
+          ->add_stat_from_effect( 1, shuffle->driver()->effectN( 1 ).average( item ) )
+          ->set_name_reporting( util::inverse_tokenize( n ) )
+          ->set_duration( timespan_t::from_seconds( data().effectN( 2 ).base_value() ) );
+
+        buff_list.emplace_back( counter, stat );
+      };
+
+      init_buff( "crit", 381954 );
+      init_buff( "haste", 381955 );
+      init_buff( "mastery", 381956 );
+      init_buff( "vers", 381957 );
+
+      rng().shuffle( buff_list.begin(), buff_list.end() );
+    }
+
+    void reset() override
+    {
+      proc_spell_t::reset();
+
+      cb->activate();
+    }
+
+    void execute() override
+    {
+      proc_spell_t::execute();
+
+      buff_list.front().first->expire();
+      buff_list.front().second->trigger();
+
+      cb->deactivate();
+      // TODO: ~90+s before the counter buff can be proc'd again. Find spell data source for this if possible.
+      make_event( *sim, 90_s, [ this ]() { cb->activate(); } );
+    }
+  };
+
+  effect.execute_action = create_proc_action<spoils_of_neltharus_t>( "spoils_of_neltharus", effect );
+}
+
 void umbrelskuls_fractured_heart( special_effect_t& effect )
 {
   auto dot = create_proc_action<generic_proc_t>( "crystal_sickness", effect, "crystal_sickness", effect.trigger() );
@@ -1928,6 +2011,7 @@ void register_special_effects()
   register_special_effect( 383920, items::furious_ragefeather );
   register_special_effect( 388603, items::idol_of_pure_decay );
   register_special_effect( 377466, items::spiteful_storm );
+  register_special_effect( 381768, items::spoils_of_neltharus );
   register_special_effect( 385902, items::umbrelskuls_fractured_heart );
   register_special_effect( 377452, items::whispering_incarnate_icon );
   register_special_effect( 384112, items::the_cartographers_calipers );
@@ -1961,6 +2045,7 @@ void register_special_effects()
   register_special_effect( 383339, DISABLED_EFFECT );  // sagescale sigil (shuffle on jump) NYI
   register_special_effect( 378758, DISABLED_EFFECT );  // toxified embellishment
   register_special_effect( 371700, DISABLED_EFFECT );  // potion absorption inhibitor embellishment
+  register_special_effect( 381766, DISABLED_EFFECT );
 }
 
 void register_target_data_initializers( sim_t& sim )

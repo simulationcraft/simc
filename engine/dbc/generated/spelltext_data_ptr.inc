@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.2.46479
-static const std::array<spelltext_data_t, 19160> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 19164> __ptr_spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -16896,6 +16896,10 @@ static const std::array<spelltext_data_t, 19160> __ptr_spelltext_data { {
   { 381933, "$@spelldesc381932", "Increases the damage of your next $?s117014[Elemental Blast][Earth Shock] or Earthquake by ${$W1}.1%.", 0 },
   { 381936, "Casting Lightning Bolt or Chain Lightning reduces the cooldown of your Nature spells by ${$381937s1/-1000}.1 sec.", 0, 0 },
   { 381946, "Increases the duration of Riptide by ${$s1/1000} sec.", 0, 0 },
+  { 381954, "$@spelldesc381766", "$?e0[Critical Strike increased by $w1.][Through a crack in the chest you glimpse a ruby sphere, which would increase your Critical Strike when looted.]", 0 },
+  { 381955, "$@spelldesc381766", "$?e0[Haste increased by $w1.][Through a crack in the chest you glimpse a bronze hourglass, which would increase your Haste when looted.]", 0 },
+  { 381956, "$@spelldesc381766", "$?e0[Mastery increased by $w1.][Through a crack in the chest you glimpse an emerald bell, which would increase your Mastery when looted.]", 0 },
+  { 381957, "$@spelldesc381766", "$?e0[Versatility increased by $w1.][Through a crack in the chest you glimpse an azure rod, which would increase your Versatility when looted.]", 0 },
   { 381982, "Ambush and Dispatch have a $s1% chance to grant you a Roll the Bones combat enhancement buff you do not already have for $s2 sec.\r\n\r\nDuration and chance doubled while Stealthed.", 0, 0 },
   { 381985, "Blade Flurry damage is increased by an additional $s1% per missing target below its maximum.", 0, 0 },
   { 381988, "Slice and Dice grants an additional $s1% attack speed per combo point spent.", 0, 0 },

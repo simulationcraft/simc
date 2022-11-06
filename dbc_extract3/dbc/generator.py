@@ -1367,6 +1367,7 @@ class SpellDataGenerator(DataGenerator):
          388608, 388611, 388739,  # Idol of Pure Decay
          389407, # Furious Ragefeather
          381586, # Erupting Spear Fragment
+         381954, 381955, 381956, 381957, # Spoils of Neltharus
         ),
 
         # Warrior:
