@@ -462,15 +462,14 @@ custom_cb_t idol_of_the_aspects( std::string_view type )
         ->add_stat( STAT_MASTERY_RATING, val )
         ->add_stat( STAT_VERSATILITY_RATING, val );
 
-    auto stat = util::translate_rating_mod( effect.trigger()->effectN( 1 ).misc_value1() );
-    auto buff = create_buff<stat_buff_t>( effect.player, effect.trigger() );
-    buff->add_stat( stat, effect.driver()->effectN( 1 ).average( effect.item ) )
-        ->set_max_stack( as<int>( effect.driver()->effectN( 2 ).base_value() ) )
-        ->set_expire_at_max_stack( true )
-        ->set_stack_change_callback( [ gift ]( buff_t*, int, int new_ ) {
-          if ( !new_ )
-            gift->trigger();
-        } );
+    auto buff = create_buff<stat_buff_t>( effect.player, effect.trigger() )
+      ->add_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect.item ) )
+      ->set_max_stack( as<int>( effect.driver()->effectN( 2 ).base_value() ) )
+      ->set_expire_at_max_stack( true )
+      ->set_stack_change_callback( [ gift ]( buff_t*, int, int new_ ) {
+        if ( !new_ )
+          gift->trigger();
+      } );
 
     effect.custom_buff = buff;
 
@@ -1144,10 +1143,9 @@ void whispering_incarnate_icon( special_effect_t& effect )
   auto buff_data = effect.player->find_spell( buff_id );
   auto buff = create_buff<stat_buff_t>( effect.player, buff_data );
   buff->manual_stats_added = false;
-  buff->set_constant_behavior( buff_constant_behavior::ALWAYS_CONSTANT );
-  buff->set_rppm( rppm_scale_e::RPPM_DISABLE );
-  buff->add_stat( util::translate_rating_mod( buff_data->effectN( 1 ).misc_value1() ),
-                  effect.driver()->effectN( 1 ).average( effect.item ) );
+  buff->add_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect.item ) )
+      ->set_constant_behavior( buff_constant_behavior::ALWAYS_CONSTANT )
+      ->set_rppm( rppm_scale_e::RPPM_DISABLE );
 
   effect.player->register_combat_begin( [ buff ]( player_t* ) {
     buff->trigger();
@@ -1158,8 +1156,7 @@ void whispering_incarnate_icon( special_effect_t& effect )
     auto proc_buff_data = effect.player->find_spell( proc_buff_id );
     auto proc_buff = create_buff<stat_buff_t>( effect.player, proc_buff_data );
     proc_buff->manual_stats_added = false;
-    proc_buff->add_stat( util::translate_rating_mod( proc_buff_data->effectN( 1 ).misc_value1() ),
-                         effect.driver()->effectN( 2 ).average( effect.item ) );
+    proc_buff->add_stat_from_effect( 1, effect.driver()->effectN( 2 ).average( effect.item ) );
 
     effect.spell_id = buff_id;
     effect.custom_buff = proc_buff;
