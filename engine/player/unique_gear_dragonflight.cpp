@@ -835,6 +835,34 @@ struct spiteful_storm_initializer_t : public item_targetdata_initializer_t
   }
 };
 
+void idol_of_pure_decay( special_effect_t& effect )
+{
+  struct idol_of_pure_decay_cb_t : public dbc_proc_callback_t
+  {
+    action_t* damage;
+    timespan_t dur;
+    int count;
+
+    idol_of_pure_decay_cb_t( const special_effect_t& e )
+      : dbc_proc_callback_t( e.player, e ),
+        dur( e.trigger()->duration() ),
+        count( as<int>( e.driver()->effectN( 1 ).base_value() ) )
+    {
+      damage = create_proc_action<generic_aoe_proc_t>( "pure_decay", effect, "pure_decay", 388739 );
+      damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 2 ).average( effect.item );
+    }
+
+    void execute( action_t*, action_state_t* ) override
+    {
+      // damage pulses 3 times over 3s.
+      // TODO: confirm if trinket can proc again during the 3s.
+      make_repeating_event( listener->sim, dur / count, [ this ]() { damage->execute(); }, count );
+    }    
+  };
+
+  new idol_of_pure_decay_cb_t( effect );
+}
+
 void spiteful_storm( special_effect_t& effect )
 {
   struct spiteful_stormbolt_t : public generic_proc_t
@@ -1816,6 +1844,7 @@ void register_special_effects()
   register_special_effect( 384532, items::darkmoon_deck_watcher );
   register_special_effect( 396391, items::conjured_chillglobe );
   register_special_effect( 383798, items::emerald_coachs_whistle );
+  register_special_effect( 388603, items::idol_of_pure_decay );
   register_special_effect( 377466, items::spiteful_storm );
   register_special_effect( 385902, items::umbrelskuls_fractured_heart );
   register_special_effect( 377452, items::whispering_incarnate_icon );

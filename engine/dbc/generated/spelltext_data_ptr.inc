@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.2.46479
-static const std::array<spelltext_data_t, 19158> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 19159> __ptr_spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -18065,6 +18065,7 @@ static const std::array<spelltext_data_t, 19158> __ptr_spelltext_data { {
   { 388682, "Renewing Mist's heal over time effect has a $s3% chance to proc Enveloping Mist for $s2 sec.", 0, 0 },
   { 388686, "Summons a White Tiger Statue at the target location for $d, pulsing $389541s1 damage to all enemies every 2 sec for $d.", 0, 0 },
   { 388701, "Renewing Mist has a $s1% chance to immediately spread to an additional target when initially cast or when traveling to a new target.", 0, 0 },
+  { 388739, "$@spelldesc388603", 0, 0 },
   { 388740, "Your Blackout Kicks strike ${$s2+1} targets and have an additional $s1% chance to reset the cooldown of your Rising Sun Kick while within your Faeline Stomp.", 0, 0 },
   { 388755, "@spelldesc383920", "Suffering $w1 Shadow damage every $t1 sec.", 0 },
   { 388779, "Your abilities reset Faeline Stomp $s2% more often. While within Faeline Stomp, your Tiger Palms strike $s3 targets and your Spinning Crane Kick heals $s4 nearby allies for $s1% of the damage done.", 0, 0 },
