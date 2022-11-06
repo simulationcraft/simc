@@ -835,6 +835,50 @@ struct spiteful_storm_initializer_t : public item_targetdata_initializer_t
   }
 };
 
+void furious_ragefeather( special_effect_t& effect )
+{
+  auto arrow = create_proc_action<generic_proc_t>( "soulseeker_arrow", effect, "soulseeker_arrow", 388755 );
+  arrow->base_td = effect.driver()->effectN( 2 ).average( effect.item );
+
+  effect.execute_action = arrow;
+
+  new dbc_proc_callback_t( effect.player, effect );
+
+  unsigned repeat_id = 389407;
+
+  auto repeat = new special_effect_t( effect.player );
+  repeat->type = SPECIAL_EFFECT_EQUIP;
+  repeat->source = SPECIAL_EFFECT_SOURCE_ITEM;
+  repeat->spell_id = repeat_id;
+  repeat->execute_action = arrow;
+  effect.player->special_effects.push_back( repeat );
+
+  auto cb = new dbc_proc_callback_t( effect.player, *repeat );
+  cb->initialize();
+  cb->deactivate();
+
+  auto buff = create_buff<buff_t>( effect.player, effect.player->find_spell( repeat_id ) )
+    ->set_stack_change_callback( [ cb ]( buff_t*, int, int new_ ) {
+      if ( new_ )
+        cb->activate();
+      else
+        cb->deactivate();
+    } );
+
+  effect.player->callbacks.register_callback_execute_function(
+      repeat_id, [ buff ]( const dbc_proc_callback_t*, action_t*, action_state_t* ) { buff->expire(); } );
+
+  auto p = effect.player;
+  p->register_on_kill_callback( [ p, buff ]( player_t* t ) {
+    if ( p->sim->event_mgr.canceled )
+      return;
+
+    auto d = t->find_dot( "soulseeker_arrow", p );
+    if ( d && d->remains() > 0_ms )
+      buff->trigger();
+  } );
+}
+
 void idol_of_pure_decay( special_effect_t& effect )
 {
   struct idol_of_pure_decay_cb_t : public dbc_proc_callback_t
@@ -1844,6 +1888,7 @@ void register_special_effects()
   register_special_effect( 384532, items::darkmoon_deck_watcher );
   register_special_effect( 396391, items::conjured_chillglobe );
   register_special_effect( 383798, items::emerald_coachs_whistle );
+  register_special_effect( 383920, items::furious_ragefeather );
   register_special_effect( 388603, items::idol_of_pure_decay );
   register_special_effect( 377466, items::spiteful_storm );
   register_special_effect( 385902, items::umbrelskuls_fractured_heart );

@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.2.46479
-static const std::array<spelltext_data_t, 19159> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 19160> __ptr_spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -18137,6 +18137,7 @@ static const std::array<spelltext_data_t, 19159> __ptr_spelltext_data { {
   { 389403, "Permanently enchants a cloak to increase your Avoidance by $ec1 and reduce fall damage taken by $ec2s1%.", 0, 0 },
   { 389404, "Permanently enchants a cloak to increase your Leech by $ec1 and heal for $ec2s1 every $389984t1 sec while out of combat.", 0, 0 },
   { 389405, "Permanently enchants a cloak to increase your Speed by $ec1 and reduce the cooldown of your Hearthstone by ${$ec2s1/-60000} minutes while in the Dragon Isles.", 0, 0 },
+  { 389407, "Your damaging spells have a chance to fire a Soulseeker Arrow towards your target, inflicting $s1 Shadow damage over $d to the first enemy hit. If the target dies while affected, your next damaging spells will fire an arrow.\r\n", "Your next damaging spell will fire an arrow.", 0 },
   { 389410, "Permanently enchants a chestpiece to increase your primary stats by $ec1.", 0, 0 },
   { 389416, "Permanently enchants a chestpiece to increase your Agility by $ec1 and Speed by $ec2.", 0, 0 },
   { 389417, "Permanently enchants a chestpiece to increase your Intellect by $ec1 and mana pool by $ec2s1%.", 0, 0 },
