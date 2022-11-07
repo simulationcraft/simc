@@ -803,6 +803,12 @@ void to_json( JsonOutput& arr, const ::report::json::report_configuration_t& rep
     add_non_zero( root, name, p.resources.base_regen_per_second[ r ] );
   }
 
+  root[ "potion" ] = p.potion_str;
+  root[ "flask"] = p.flask_str;
+  root[ "food" ] = p.food_str;
+  root[ "augmentation" ] = p.rune_str;
+  root[ "temporary_enchant" ] = p.temporary_enchant_str;
+
   /* TODO: Not implemented reporting begins here
 
   to_json( root[ "base_stats" ], p.base );
