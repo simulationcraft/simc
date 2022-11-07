@@ -757,6 +757,37 @@ void darkmoon_deck_watcher( special_effect_t& effect )
   effect.buff_disabled = true;
 }
 
+void bottle_of_spiraling_winds( special_effect_t& effect )
+{
+  // TODO: determine what happens on buff refresh
+  auto buff = create_buff<stat_buff_t>( effect.player, effect.trigger() );
+  buff->manual_stats_added = false;
+  // TODO: confirm it continues to use the driver's coeff and not the actual buff's coeff
+  buff->add_stat( STAT_AGILITY, effect.driver()->effectN( 1 ).average( effect.item ) );
+
+  // TODO: this doesn't function in-game atm.
+  /*
+  auto decrement = create_buff<buff_t>( effect.player, effect.player->find_spell( 383758 ) )
+    ->set_quiet( true )
+    ->set_tick_callback( [ buff ]( buff_t*, int, timespan_t ) { buff->decrement(); } );
+
+  buff->set_stack_change_callback( [ decrement ]( buff_t* b, int, int new_ ) {
+    if ( b->at_max_stacks() )
+    {
+      b->freeze_stacks = true;
+      decrement->trigger();
+    }
+    else if ( !new_ )
+    {
+      b->freeze_stacks = false;
+    }
+  } );
+  */
+  effect.custom_buff = buff;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 void conjured_chillglobe( special_effect_t& effect )
 {
   struct conjured_chillglobe_proxy_t : public action_t
@@ -2022,6 +2053,7 @@ void register_special_effects()
   register_special_effect( 382957, items::darkmoon_deck_inferno );
   register_special_effect( 386624, items::darkmoon_deck_rime );
   register_special_effect( 384532, items::darkmoon_deck_watcher );
+  register_special_effect( 383751, items::bottle_of_spiraling_winds );
   register_special_effect( 396391, items::conjured_chillglobe );
   register_special_effect( 383798, items::emerald_coachs_whistle );
   register_special_effect( 381471, items::erupting_spear_fragment );
