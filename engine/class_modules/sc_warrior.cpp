@@ -1095,6 +1095,7 @@ public:
     ab::apply_affecting_aura( p()->talents.fury.storm_of_steel );
     ab::apply_affecting_aura( p()->talents.fury.storm_of_swords ); // rage generation in spell
     ab::apply_affecting_aura( p()->talents.protection.storm_of_steel );
+    ab::apply_affecting_aura( p()->talents.protection.bloodborne );
     ab::apply_affecting_aura( p()->talents.warrior.barbaric_training );
     ab::apply_affecting_aura( p()->talents.warrior.concussive_blows );
     ab::apply_affecting_aura( p()->talents.warrior.cruel_strikes );
