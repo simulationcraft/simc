@@ -8110,8 +8110,6 @@ void monk_t::init_spells()
   // Brewmaster
   // ========
   
-  if ( spec_tree == MONK_BREWMASTER )
-  {
       // Row 1
       talent.brewmaster.keg_smash                           = _ST( "Keg Smash" );
       // Row 2
@@ -8173,14 +8171,11 @@ void monk_t::init_spells()
       talent.brewmaster.stormstouts_last_keg                = _ST( "Stormstout's Last Keg" );
       talent.brewmaster.call_to_arms                        = _ST( "Call to Arms" );
       talent.brewmaster.chi_surge                           = _ST( "Chi Surge" );
-  }
 
   // ========
   // Mistweaver
   // ========
 
-  if ( spec_tree == MONK_MISTWEAVER )
-  {
       // Row 1
       talent.mistweaver.enveloping_mist                     = _ST( "Enveloping Mist" );
       // Row 2
@@ -8246,14 +8241,11 @@ void monk_t::init_spells()
       talent.mistweaver.invokers_delight                    = _ST( "Invoker's Delight" );
       talent.mistweaver.tear_of_morning                     = _ST( "Tear of Morning" );
       talent.mistweaver.rising_mist                         = _ST( "Rising Mist" );
-  }
 
   // ========
   // Windwalker
   // ========
 
-  if ( spec_tree == MONK_WINDWALKER )
-  {
       // Row 1
       talent.windwalker.fists_of_fury                       = _ST( "Fists of Fury" );
       // Row 2
@@ -8313,7 +8305,6 @@ void monk_t::init_spells()
       talent.windwalker.invokers_delight                    = _ST( "Invoker's Delight" );
       talent.windwalker.way_of_the_fae                      = _ST( "Way of the Fae" );
       talent.windwalker.faeline_harmony                     = _ST( "Faeline Harmony" );
-  }
 
   // Specialization spells ====================================
   // Multi-Specialization & Class Spells
@@ -8358,8 +8349,6 @@ void monk_t::init_spells()
   spec.vivify_2_ww               = find_rank_spell( "Vivify", "Rank 2", MONK_WINDWALKER );
 
   // Brewmaster Specialization
-  if ( spec_tree == MONK_BREWMASTER )
-  {
       spec.bladed_armor         = find_specialization_spell( "Bladed Armor" );
       //spec.breath_of_fire      = find_specialization_spell( "Breath of Fire" ); // talent.brewmaster.breath_of_fire
       spec.brewmasters_balance  = find_specialization_spell( "Brewmaster's Balance" );
@@ -8378,11 +8367,8 @@ void monk_t::init_spells()
       //spec.stagger             = find_specialization_spell( "Stagger" ); // talent.brewmaster.stagger
       spec.stagger_2            = find_rank_spell( "Stagger", "Rank 2" );
       //spec.zen_meditation      = find_specialization_spell( "Zen Meditation" ); // talent.brewmaster.zen_meditation
-  }
 
   // Mistweaver Specialization
-  if ( spec_tree == MONK_MISTWEAVER )
-  {
       //spec.detox                      = find_specialization_spell( "Detox" ); // talent.general.detox
       spec.enveloping_mist              = find_specialization_spell( "Enveloping Mist" );
       spec.envoloping_mist_2            = find_rank_spell( "Enveloping Mist", "Rank 2" );
@@ -8401,11 +8387,8 @@ void monk_t::init_spells()
       spec.teachings_of_the_monastery   = find_specialization_spell( "Teachings of the Monastery" );
       spec.thunder_focus_tea            = find_specialization_spell( "Thunder Focus Tea" );
       spec.thunder_focus_tea_2          = find_rank_spell( "Thunder Focus Tea", "Rank 2" );
-  }
 
   // Windwalker Specialization
-  if ( spec_tree == MONK_WINDWALKER )
-  {
       spec.afterlife                    = find_specialization_spell( "Afterlife" );
       spec.afterlife_2                  = find_rank_spell( "Afterlife", "Rank 2" );
       spec.combat_conditioning          = find_specialization_spell( "Combat Conditioning" );
@@ -8425,7 +8408,6 @@ void monk_t::init_spells()
       //spec.touch_of_karma             = find_specialization_spell( "Touch of Karma" ); // talent.windwalker.touch_of_karma
       spec.windwalker_monk = find_specialization_spell( "Windwalker Monk" );
       //spec.windwalking                = find_specialization_spell( "Windwalking" ); // talent.general.windwalking
-  }
 
   // Covenant Abilities ================================
 
@@ -8888,8 +8870,6 @@ void monk_t::create_buffs ()
   buff.windwalking_driver = new buffs::windwalking_driver_t( *this, "windwalking_aura_driver", find_spell( 365080 ) );
 
   // Brewmaster
-  if ( spec_tree == MONK_BREWMASTER )
-  {
     buff.bladed_armor = make_buff( this, "bladed_armor", spec.bladed_armor )
       ->set_default_value_from_effect( 1 )
       ->add_invalidate( CACHE_ATTACK_POWER );
@@ -8898,9 +8878,10 @@ void monk_t::create_buffs ()
 
     buff.celestial_brew = make_buff<absorb_buff_t>( this, "celestial_brew", talent.brewmaster.celestial_brew );
     buff.celestial_brew->set_absorb_source( get_stats( "celestial_brew" ) )
-        ->set_cooldown( timespan_t::zero() );
+      ->set_cooldown( timespan_t::zero() );
 
-    buff.counterstrike = make_buff( this, "counterstrike", talent.brewmaster.counterstrike->effectN( 1 ).trigger() );
+    buff.counterstrike = make_buff( this, "counterstrike", talent.brewmaster.counterstrike->effectN( 1 ).trigger() )
+      ->set_cooldown( talent.brewmaster.counterstrike->internal_cooldown() );
 
     buff.celestial_flames = make_buff( this, "celestial_flames", talent.brewmaster.celestial_flames->effectN( 1 ).trigger() )
       ->set_chance( talent.brewmaster.celestial_flames->proc_chance() )
@@ -8922,7 +8903,8 @@ void monk_t::create_buffs ()
     buff.gift_of_the_ox = new buffs::gift_of_the_ox_buff_t( *this, "gift_of_the_ox", find_spell( 124503 ) );
 
     buff.graceful_exit = make_buff( this, "graceful_exit", talent.brewmaster.graceful_exit->effectN( 1 ).trigger() )
-     ->add_invalidate( CACHE_RUN_SPEED );
+      ->set_trigger_spell( talent.brewmaster.graceful_exit )
+      ->add_invalidate( CACHE_RUN_SPEED );
 
     buff.invoke_niuzao = make_buff( this, "invoke_niuzao_the_black_ox", talent.brewmaster.invoke_niuzao_the_black_ox )
       ->set_default_value_from_effect( 2 )
@@ -8956,11 +8938,8 @@ void monk_t::create_buffs ()
     buff.heavy_stagger = make_buff<buffs::stagger_buff_t>( *this, "heavy_stagger", passives.heavy_stagger )
         ->set_trigger_spell( talent.brewmaster.stagger );
     buff.recent_purifies = new buffs::purifying_buff_t( *this, "recent_purifies", spell_data_t::nil() );
-  }
 
   // Mistweaver
-  if ( spec_tree == MONK_MISTWEAVER )
-  {
     buff.invoke_chiji = make_buff ( this, "invoke_chiji", find_spell ( 343818 ) )
       ->set_trigger_spell( talent.mistweaver.invoke_chi_ji_the_red_crane );
 
@@ -8995,11 +8974,8 @@ void monk_t::create_buffs ()
       ->set_trigger_spell( spec.touch_of_death_3_mw )
       ->set_default_value_from_effect ( 1 )
       ->add_invalidate ( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  }
 
   // Windwalker
-  if ( spec_tree == MONK_WINDWALKER )
-  {
     buff.bok_proc = make_buff( this, "bok_proc", passives.bok_proc )
       ->set_trigger_spell( spec.combo_breaker )
       ->set_chance ( spec.combo_breaker->effectN ( 1 ).percent () );
@@ -9068,7 +9044,6 @@ void monk_t::create_buffs ()
     buff.weapons_of_order_ww = make_buff ( this, "weapons_of_order_ww", find_spell ( 311054 ) )
       ->set_trigger_spell( covenant.kyrian )
       ->set_default_value ( find_spell ( 311054 )->effectN ( 1 ).base_value () );
-  }
 
   buff.windwalking_venthyr = make_buff( this, "windwalking_venthyr", passives.fallen_monk_windwalking )
       ->set_trigger_spell( covenant.venthyr )
@@ -10248,19 +10223,11 @@ void monk_t::combat_begin()
 
 void monk_t::assess_damage( school_e school, result_amount_type dtype, action_state_t* s )
 {
-  buff.fortifying_brew->up();
   if ( specialization() == MONK_BREWMASTER )
   {
     if ( s->result == RESULT_DODGE )
     {
-      if ( buff.elusive_brawler->up() )
-        buff.elusive_brawler->expire();
-
-      if ( talent.brewmaster.counterstrike->ok() && cooldown.counterstrike->up() )
-      {
-        buff.counterstrike->trigger();
-        cooldown.counterstrike->start( talent.brewmaster.counterstrike->internal_cooldown() );
-      }
+      buff.elusive_brawler->expire();
 
       // Saved as 5/10 base values but need it as 0.5 and 1 base values
       if ( talent.brewmaster.anvil_and_stave->ok() && cooldown.anvil_and_stave->up() )
@@ -10270,19 +10237,15 @@ void monk_t::assess_damage( school_e school, result_amount_type dtype, action_st
         brew_cooldown_reduction( talent.brewmaster.anvil_and_stave->effectN( 1 ).base_value() / 10 );
       }
 
-      if ( talent.brewmaster.graceful_exit->ok() )
-        buff.graceful_exit->trigger();
+      buff.counterstrike->trigger();
+
+      buff.graceful_exit->trigger();
     }
     if ( s->result == RESULT_MISS )
     {
-      if ( talent.brewmaster.counterstrike->ok() && cooldown.counterstrike->up() )
-      {
-        buff.counterstrike->trigger();
-        cooldown.counterstrike->start( talent.brewmaster.counterstrike->internal_cooldown() );
-      }
+      buff.counterstrike->trigger();
 
-      if ( talent.brewmaster.graceful_exit->ok() )
-        buff.graceful_exit->trigger();
+      buff.graceful_exit->trigger();
     }
   }
 
@@ -10338,21 +10301,16 @@ void monk_t::target_mitigation( school_e school, result_amount_type dt, action_s
 
   // Stagger is not reduced by damage mitigation effects
   if ( s->action->id == passives.stagger_self_damage->id() )
-  {
     return;
-  }
 
-  if ( spec.brewmasters_balance->ok() )
-  {
-    s->result_amount *= 1.0 + spec.brewmasters_balance->effectN( 2 ).percent();
-  }
+  // Brewmaster's Balance
+  s->result_amount *= 1.0 + spec.brewmasters_balance->effectN( 2 ).percent();
 
   // Calming Presence talent
-  if ( talent.general.calming_presence->ok() )
-    s->result_amount *= 1.0 + talent.general.calming_presence->effectN( 1 ).percent();
+  s->result_amount *= 1.0 + talent.general.calming_presence->effectN( 1 ).percent();
 
   // Diffuse Magic
-  if ( buff.diffuse_magic->up() && school != SCHOOL_PHYSICAL )
+  if ( school != SCHOOL_PHYSICAL )
     s->result_amount *= 1.0 + buff.diffuse_magic->default_value;  // Stored as -60%
 
   // If Breath of Fire is ticking on the source target, the player receives 5% less damage
@@ -10361,29 +10319,20 @@ void monk_t::target_mitigation( school_e school, result_amount_type dt, action_s
     // Saved as -5
     double dmg_reduction = passives.breath_of_fire_dot->effectN( 2 ).percent();
 
-    if ( buff.celestial_flames->up() )
-      dmg_reduction += ( buff.celestial_flames->value() * 0.01 );  // Saved as -5
+    dmg_reduction += ( buff.celestial_flames->value() * 0.01 );  // Saved as -5
 
     s->result_amount *= 1.0 + dmg_reduction;
   }
 
   // Damage Reduction Cooldowns
-  if ( talent.general.fortifying_brew->ok() && buff.fortifying_brew->up() )
-  {
-    double reduction = spec.fortifying_brew->effectN( 2 ).percent();  // Saved as -20%
+  if ( buff.fortifying_brew->up() )
+    s->result_amount *= ( 1.0 + spec.fortifying_brew->effectN( 2 ).percent() ); // Saved as -20%
 
-    s->result_amount *= ( 1.0 + reduction );
-  }
-
-  if ( buff.brewmasters_rhythm->up() )
-  {
-    auto damage_reduction = 1 + ( buff.brewmasters_rhythm->stack() *
-                                  buff.brewmasters_rhythm->data().effectN( 2 ).percent() );  // Saved as -1
-    s->result_amount *= damage_reduction;
-  }
+  s->result_amount *= 1 + ( buff.brewmasters_rhythm->stack() *
+                                buff.brewmasters_rhythm->data().effectN( 2 ).percent() );  // Saved as -1;
 
   // Touch of Karma Absorbtion
-  if ( talent.windwalker.touch_of_karma->ok() && buff.touch_of_karma->up() )
+  if ( buff.touch_of_karma->up() )
   {
     double percent_HP = talent.windwalker.touch_of_karma->effectN( 3 ).percent() * max_health();
     if ( ( buff.touch_of_karma->value() + s->result_amount ) >= percent_HP )
