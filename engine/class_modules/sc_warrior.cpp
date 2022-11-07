@@ -7007,7 +7007,7 @@ struct last_stand_t : public warrior_spell_t
     {
       if ( p()->buff.shield_block->check() )
       {
-        p()->buff.shield_block->extend_duration( p(),data().duration() );
+        p()->buff.shield_block->extend_duration( p(), data().duration() );
       }
       else
       {
@@ -7280,7 +7280,7 @@ struct shield_block_t : public warrior_spell_t
 
     if ( p()->buff.shield_block->check() )
     {
-      p()->buff.shield_block->extend_duration( p(), p()->buff.shield_block->data().duration() );
+      p()->buff.shield_block->extend_duration( p(), p() -> buff.shield_block->buff_duration() );
     }
     else
     {
@@ -8961,6 +8961,7 @@ void warrior_t::create_buffs()
   buff.sudden_death = make_buff( this, "sudden_death", specialization() == WARRIOR_FURY ? talents.fury.sudden_death : specialization() == WARRIOR_ARMS ? talents.arms.sudden_death : talents.protection.sudden_death );
 
   buff.shield_block = make_buff( this, "shield_block", spell.shield_block_buff )
+    ->set_duration( spell.shield_block_buff->duration() + talents.protection.enduring_defenses->effectN( 1 ).time_value() )
     ->set_cooldown( timespan_t::zero() )
     ->add_invalidate( CACHE_BLOCK );
 
