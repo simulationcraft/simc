@@ -273,7 +273,6 @@ public:
 
     // Windwalker
     propagate_const<buff_t*> bok_proc;
-    propagate_const<buff_t*> combo_master;
     propagate_const<buff_t*> combo_strikes;
     propagate_const<buff_t*> dance_of_chiji;
     propagate_const<buff_t*> dance_of_chiji_hidden;  // Used for trigger DoCJ ticks
@@ -419,7 +418,7 @@ public:
       player_talent_t grace_of_the_crane;
       player_talent_t vivacious_vivification;
       player_talent_t ferocity_of_xuen;
-      player_talent_t paralysis_rank_2;
+      player_talent_t improved_paralysis;
       // 8 Required
       // Row 5
       player_talent_t elusive_mists;
@@ -516,7 +515,7 @@ public:
       player_talent_t counterstrike;
       // Row 9
       player_talent_t bonedust_brew;
-      player_talent_t invoke_niuzao_the_black_ox_rank_2;
+      player_talent_t improved_invoke_niuzao_the_black_ox;
       player_talent_t exploding_keg;
       player_talent_t blackout_combo;
       player_talent_t weapons_of_order;
@@ -683,6 +682,7 @@ public:
     const spell_data_t* scalding_brew;
     const spell_data_t* skyreach;
     const spell_data_t* stormstouts_last_keg;
+    const spell_data_t* teachings_of_the_monastery;
     const spell_data_t* walk_with_the_ox;
     const spell_data_t* way_of_the_fae;
     const spell_data_t* weapons_of_order;

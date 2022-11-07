@@ -1566,9 +1566,9 @@ private:
       auto purify_amount = o()->buff.recent_purifies->check_value();
       auto actual_damage = purify_amount;
 
-      if ( o()->talent.brewmaster.invoke_niuzao_the_black_ox_rank_2->ok() )
+      if ( o()->talent.brewmaster.improved_invoke_niuzao_the_black_ox->ok() )
       {
-        actual_damage *= o()->talent.brewmaster.invoke_niuzao_the_black_ox_rank_2->effectN( 1 ).percent();
+        actual_damage *= o()->talent.brewmaster.improved_invoke_niuzao_the_black_ox->effectN( 1 ).percent();
         o()->sim->print_debug( "applying bonus purify damage (base stomp: {}, original: {}, reduced: {})", b,
                                purify_amount, actual_damage );
       }
@@ -1681,9 +1681,9 @@ private:
       auto purify_amount = o()->buff.recent_purifies->check_value();
       auto actual_damage = purify_amount;
 
-      if ( o()->talent.brewmaster.invoke_niuzao_the_black_ox_rank_2->ok() )
+      if ( o()->talent.brewmaster.improved_invoke_niuzao_the_black_ox->ok() )
       {
-        actual_damage *= o()->talent.brewmaster.invoke_niuzao_the_black_ox_rank_2->effectN( 1 ).percent();
+        actual_damage *= o()->talent.brewmaster.improved_invoke_niuzao_the_black_ox->effectN( 1 ).percent();
         o()->sim->print_debug( "applying bonus purify damage (base stomp: {}, original: {}, reduced: {})", b,
                                purify_amount, actual_damage );
       }
