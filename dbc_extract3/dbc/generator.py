@@ -1369,6 +1369,7 @@ class SpellDataGenerator(DataGenerator):
          381586, # Erupting Spear Fragment
          381954, 381955, 381956, 381957, # Spoils of Neltharus
          383758, # Bottle of Spiraling Winds
+         383813, 383814, 389817, 389818, 389820, 390896, 390941, # Ruby Whelp Shell
         ),
 
         # Warrior:
