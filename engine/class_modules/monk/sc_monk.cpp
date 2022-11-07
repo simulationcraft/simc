@@ -8904,13 +8904,12 @@ void monk_t::create_buffs ()
 
     buff.celestial_flames = make_buff( this, "celestial_flames", talent.brewmaster.celestial_flames->effectN( 1 ).trigger() )
       ->set_chance( talent.brewmaster.celestial_flames->proc_chance() )
-      ->set_default_value( talent.brewmaster.celestial_flames->effectN( 2 ).percent() );
+      ->set_default_value_from_effect( 1 );
 
     buff.elusive_brawler = make_buff( this, "elusive_brawler", mastery.elusive_brawler->effectN( 3 ).trigger() )
       ->add_invalidate( CACHE_DODGE );
 
-    buff.exploding_keg = make_buff( this, "exploding_keg", find_spell( 325153 ) )
-      ->set_trigger_spell( talent.brewmaster.exploding_keg )
+    buff.exploding_keg = make_buff( this, "exploding_keg", talent.brewmaster.exploding_keg )
       ->set_default_value_from_effect( 2 );
 
     buff.faeline_stomp_brm = make_buff( this, "faeline_stomp_brm", passives.faeline_stomp_brm )
@@ -10363,7 +10362,8 @@ void monk_t::target_mitigation( school_e school, result_amount_type dt, action_s
     double dmg_reduction = passives.breath_of_fire_dot->effectN( 2 ).percent();
 
     if ( buff.celestial_flames->up() )
-      dmg_reduction -= buff.celestial_flames->value();  // Saved as 5
+      dmg_reduction += ( buff.celestial_flames->value() * 0.01 );  // Saved as -5
+
     s->result_amount *= 1.0 + dmg_reduction;
   }
 
