@@ -2542,7 +2542,9 @@ struct druid_mixin_t : public BASE
 {
   using base_t = druid_mixin_t<BASE>;
 
-  druid_mixin_t( std::string_view n, druid_t* p, const spell_data_t* s, std::string_view o = {} ) : BASE( n, p, s, o ) {}
+  druid_mixin_t( std::string_view n, druid_t* p, const spell_data_t* s, std::string_view o = {} )
+    : BASE( n, p, s, o )
+    {}
 };
 
 template <typename BASE>

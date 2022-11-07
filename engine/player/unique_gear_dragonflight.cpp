@@ -1121,6 +1121,23 @@ void spoils_of_neltharus( special_effect_t& effect )
   effect.execute_action = create_proc_action<spoils_of_neltharus_t>( "spoils_of_neltharus", effect );
 }
 
+void timebreaching_talon( special_effect_t& effect )
+{
+  auto debuff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 384050 ) );
+  debuff->manual_stats_added = false;
+  debuff->add_stat( STAT_INTELLECT, effect.driver()->effectN( 1 ).average( effect.item ) );
+
+  auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 382126 ) );
+  buff->manual_stats_added = false;
+  buff->add_stat( STAT_INTELLECT, effect.driver()->effectN( 2 ).average( effect.item ) )
+      ->set_stack_change_callback( [ debuff ]( buff_t*, int, int new_ ) {
+        if ( !new_ )
+          debuff->trigger();
+      } );
+
+  effect.custom_buff = buff;
+}
+
 void umbrelskuls_fractured_heart( special_effect_t& effect )
 {
   auto dot = create_proc_action<generic_proc_t>( "crystal_sickness", effect, "crystal_sickness", effect.trigger() );
@@ -2012,6 +2029,7 @@ void register_special_effects()
   register_special_effect( 388603, items::idol_of_pure_decay );
   register_special_effect( 377466, items::spiteful_storm );
   register_special_effect( 381768, items::spoils_of_neltharus );
+  register_special_effect( 385884, items::timebreaching_talon );
   register_special_effect( 385902, items::umbrelskuls_fractured_heart );
   register_special_effect( 377452, items::whispering_incarnate_icon );
   register_special_effect( 384112, items::the_cartographers_calipers );
