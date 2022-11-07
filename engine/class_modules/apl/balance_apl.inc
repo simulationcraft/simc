@@ -44,8 +44,8 @@ st->add_action( "convoke_the_spirits,if=buff.ca_inc.remains>4|(cooldown.ca_inc.r
 st->add_action( "astral_communion,if=astral_power.deficit>variable.passive_asp+75" );
 st->add_action( "fury_of_elune,if=astral_power.deficit>variable.passive_asp+8" );
 st->add_action( "new_moon,if=astral_power.deficit>variable.passive_asp+10&(charges=2&recharge_time<5|charges=3)" );
-st->add_action( "half_moon,if=astral_power.deficit>variable.passive_asp+20" );
-st->add_action( "full_moon,if=astral_power.deficit>variable.passive_asp+40" );
+st->add_action( "half_moon,if=astral_power.deficit>variable.passive_asp+20&(buff.eclipse_lunar.remains>execute_time|buff.eclipse_solar.remains>execute_time)" );
+st->add_action( "full_moon,if=astral_power.deficit>variable.passive_asp+40&(buff.eclipse_lunar.remains>execute_time|buff.eclipse_solar.remains>execute_time)" );
 st->add_action( "starfall,if=buff.starweavers_warp.up|variable.4pc_starfall_st&buff.touch_the_cosmos.up" );
 st->add_action( "starfire,if=buff.gathering_starstuff.stack=3&astral_power.deficit>variable.passive_asp+8&buff.eclipse_lunar.up" );
 st->add_action( "starfall,if=buff.primordial_arcanic_pulsar.value>=550&astral_power.deficit<variable.passive_asp" );
