@@ -109,6 +109,7 @@ public:
     buff_t* bladestorm;
     buff_t* bloodcraze;
     buff_t* bounding_stride;
+    buff_t* brace_for_impact;
     buff_t* charge_movement;
     buff_t* concussive_blows;
     buff_t* dancing_blades;
@@ -162,7 +163,7 @@ public:
     buff_t* in_for_the_kill;
     // Azerite Traits
     buff_t* bloodsport;
-    buff_t* brace_for_impact;
+    buff_t* brace_for_impact_az;
     buff_t* crushing_assault;
     buff_t* gathering_storm;
     buff_t* infinite_fury;
@@ -5309,6 +5310,11 @@ struct shield_slam_t : public warrior_attack_t
       am *= 1.0 + p()->buff.violent_outburst->data().effectN( 1 ).percent();
     }
 
+    if ( p() -> buff.brace_for_impact -> up() )
+    {
+      am *= 1.0 + p()->buff.brace_for_impact -> stack_value();
+    }
+
     return am;
   }
 
@@ -5316,7 +5322,7 @@ struct shield_slam_t : public warrior_attack_t
   {
     double da = warrior_attack_t::bonus_da( state );
 
-    da += p() -> buff.brace_for_impact -> check() * p()->azerite.brace_for_impact.value(2);
+    da += p() -> buff.brace_for_impact_az -> check() * p()->azerite.brace_for_impact.value(2);
 
     return da;
   }
@@ -5340,8 +5346,11 @@ struct shield_slam_t : public warrior_attack_t
 
     if ( p() -> azerite.brace_for_impact.enabled() )
     {
-      p() -> buff.brace_for_impact -> trigger();
+      p() -> buff.brace_for_impact_az -> trigger();
     }
+
+    if ( p() -> talents.protection.brace_for_impact->ok() )
+      p() -> buff.brace_for_impact -> trigger();
 
     if ( p()->buff.violent_outburst->check() )
     {
@@ -9043,6 +9052,10 @@ void warrior_t::create_buffs()
 
   buff.violent_outburst = make_buff( this, "violent_outburst", find_spell( 386478 ) );
 
+  buff.brace_for_impact = make_buff( this, "brace_for_impact", talents.protection.brace_for_impact->effectN( 1 ).trigger() )
+                         -> set_default_value( talents.protection.brace_for_impact->effectN( 1 ).trigger()->effectN( 1 ).percent() )
+                         -> set_initial_stack( 1 );
+
   // Azerite
   const spell_data_t* crushing_assault_trigger = azerite.crushing_assault.spell()->effectN( 1 ).trigger();
   const spell_data_t* crushing_assault_buff    = crushing_assault_trigger->effectN( 1 ).trigger();
@@ -9075,7 +9088,7 @@ void warrior_t::create_buffs()
                               ->set_trigger_spell( trample_the_weak_trigger );
   buff.bloodsport = make_buff<stat_buff_t>( this, "bloodsport", azerite.bloodsport.spell() -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() )
                    -> add_stat( STAT_LEECH_RATING, azerite.bloodsport.value( 2 ) );
-  buff.brace_for_impact = make_buff( this, "brace_for_impact", azerite.brace_for_impact.spell() -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() )
+  buff.brace_for_impact_az = make_buff( this, "brace_for_impact_az", azerite.brace_for_impact.spell() -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() )
                          -> set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
                          -> set_default_value( azerite.brace_for_impact.value( 1 ) );
   buff.striking_the_anvil = make_buff( this, "striking_the_anvil", find_spell( 288452 ) )
@@ -9767,9 +9780,14 @@ double warrior_t::composite_block_reduction( action_state_t* s ) const
 {
   double br = player_t::composite_block_reduction( s );
 
+  if ( buff.brace_for_impact_az -> check() )
+  {
+    br += buff.brace_for_impact_az -> check_stack_value();
+  }
+
   if ( buff.brace_for_impact -> check() )
   {
-    br += buff.brace_for_impact -> check_stack_value();
+    br *= 1.0 + buff.brace_for_impact -> check_stack_value();
   }
 
   if ( azerite.iron_fortress.enabled() )
