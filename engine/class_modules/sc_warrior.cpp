@@ -5274,11 +5274,13 @@ struct shield_slam_t : public warrior_attack_t
 {
   double rage_gain;
   shield_slam_t( warrior_t* p, util::string_view options_str )
-    : warrior_attack_t( "shield_slam", p, p->spell.shield_slam )
+    : warrior_attack_t( "shield_slam", p, p->spell.shield_slam ),
+    rage_gain( p->spell.shield_slam->effectN( 3 ).resource( RESOURCE_RAGE ) )
   {
     parse_options( options_str );
     energize_type = action_energize::NONE;
     rage_gain += p->talents.protection.heavy_repercussions->effectN( 2 ).resource( RESOURCE_RAGE );
+    rage_gain += p->talents.protection.impenetrable_wall->effectN( 2 ).resource( RESOURCE_RAGE );
   }
 
     void init() override
@@ -5327,6 +5329,11 @@ struct shield_slam_t : public warrior_attack_t
     {
       p () -> buff.shield_block -> extend_duration( p(),
           timespan_t::from_seconds( p() -> talents.protection.heavy_repercussions -> effectN( 1 ).percent() ) );
+    }
+
+    if ( p()->talents.protection.impenetrable_wall->ok() )
+    {
+      p()->cooldown.shield_wall->adjust( - timespan_t::from_seconds( p()->talents.protection.impenetrable_wall->effectN( 1 ).base_value() ) );
     }
 
     auto total_rage_gain = rage_gain;
