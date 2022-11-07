@@ -5107,6 +5107,7 @@ struct immolation_aura_buff_t : public demon_hunter_buff_t<buff_t>
   {
     set_cooldown( timespan_t::zero() );
     set_default_value_from_effect_type( A_MOD_SPEED_ALWAYS );
+    apply_affecting_aura( p->spec.immolation_aura_3 );
     apply_affecting_aura( p->talent.havoc.felfire_heart );
     apply_affecting_aura( p->talent.vengeance.agonizing_flames );
 
@@ -5633,6 +5634,7 @@ void demon_hunter_t::create_buffs()
     buff.growing_inferno = make_buff<buff_t>( this, "growing_inferno", talent.havoc.growing_inferno )
       ->set_default_value( talent.havoc.growing_inferno->effectN( 1 ).percent() )
       // DFALPHA TOCHECK -- What is the limit for the talent version?
+      ->set_max_stack( (int)( 10 / talent.havoc.growing_inferno->effectN( 1 ).percent() ) )
       ->set_duration( 20_s );
   }
   else
@@ -6048,10 +6050,10 @@ void demon_hunter_t::init_spells()
   // Specialization =========================================================
 
   // General Passives
-  spell.all_demon_hunter        = find_class_spell( "Demon Hunter" );
-  spell.chaos_brand             = find_class_spell( "Chaos Brand" );
-  spell.critical_strikes        = find_class_spell( "Critical Strikes" );
-  spell.leather_specialization  = find_specialization_spell( "Leather Specialization", "Passive" );
+  spell.all_demon_hunter        = dbc::get_class_passive( *this, SPEC_NONE );
+  spell.chaos_brand             = find_spell( 1490 );
+  spell.critical_strikes        = find_spell( 221351 );
+  spell.leather_specialization  = find_specialization_spell( "Leather Specialization" );
 
   spell.demon_soul              = find_spell( 163073 );
   spell.demon_soul_empowered    = find_spell( 347765 );

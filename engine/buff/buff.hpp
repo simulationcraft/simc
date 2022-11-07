@@ -380,12 +380,14 @@ protected:
 
 struct stat_buff_t : public buff_t
 {
+  using stat_check_fn = std::function<bool( const stat_buff_t& )>;
+
   struct buff_stat_t
   {
     stat_e stat;
     double amount;
     double current_value;
-    std::function<bool(const stat_buff_t&)> check_func;
+    stat_check_fn check_func;
 
     buff_stat_t( stat_e s, double a,
                  std::function<bool( const stat_buff_t& )> c = std::function<bool( const stat_buff_t& )>() )
@@ -411,7 +413,8 @@ struct stat_buff_t : public buff_t
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override;
   double value() override { stack(); return stats[ 0 ].current_value; }
 
-  stat_buff_t* add_stat( stat_e s, double a, const std::function<bool(const stat_buff_t&)>& c = std::function<bool(const stat_buff_t&)>() );
+  stat_buff_t* add_stat( stat_e s, double a, const stat_check_fn& c = stat_check_fn() );
+  stat_buff_t* add_stat_from_effect( size_t i, double a, const stat_check_fn& c = stat_check_fn() );
 
   stat_buff_t( actor_pair_t q, util::string_view name );
   stat_buff_t( actor_pair_t q, util::string_view name, const spell_data_t*, const item_t* item = nullptr );

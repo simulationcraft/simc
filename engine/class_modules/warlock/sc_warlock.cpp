@@ -907,7 +907,7 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
   dots_siphon_life         = target->get_dot( "siphon_life", &p );
   dots_seed_of_corruption  = target->get_dot( "seed_of_corruption", &p );
   dots_unstable_affliction = target->get_dot( "unstable_affliction", &p );
-  dots_vile_taint          = target->get_dot( "vile_taint", &p );
+  dots_vile_taint          = target->get_dot( "vile_taint_dot", &p );
 
   debuffs_haunt = make_buff( *this, "haunt", p.talents.haunt )
                       ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
