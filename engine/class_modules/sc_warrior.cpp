@@ -3341,6 +3341,10 @@ struct execute_arms_t : public warrior_attack_t
     {
       execute_pct = p->talents.arms.massacre->effectN( 2 )._base_value;
     }
+    if ( p->talents.protection.massacre->ok() )
+    {
+      execute_pct = p->talents.protection.massacre->effectN( 2 ).base_value();
+    }
   }
 
   double tactician_cost() const override
@@ -6146,6 +6150,10 @@ struct condemn_arms_t : public warrior_attack_t
     if ( p->talents.arms.massacre->ok() )
     {
       execute_pct_below = p->talents.arms.massacre->effectN( 2 ).base_value();
+    }
+    if ( p->talents.protection.massacre->ok() )
+    {
+      execute_pct_below = p->talents.protection.massacre->effectN( 2 ).base_value();
     }
   }
 
