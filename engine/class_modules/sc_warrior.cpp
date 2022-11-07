@@ -9754,6 +9754,10 @@ double warrior_t::composite_block() const
     b += spell.shield_block_buff -> effectN( 1 ).percent();
   }
 
+  // Not affected by DR
+  if ( talents.protection.shield_specialization->ok() )
+    b += talents.protection.shield_specialization->effectN( 1 ).percent();
+
   return b;
 }
 
@@ -9771,6 +9775,15 @@ double warrior_t::composite_block_reduction( action_state_t* s ) const
   if ( azerite.iron_fortress.enabled() )
   {
     br += azerite.iron_fortress.value( 2 );
+  }
+
+  if ( talents.protection.shield_specialization->ok() )
+  {
+    // Live is applying a multiplier, like it should, but ptr/beta is doing a flat modifier
+    if ( is_ptr() )
+      br += talents.protection.shield_specialization->effectN( 2 ).percent();
+    else
+      br *= 1.0 + talents.protection.shield_specialization->effectN( 2 ).percent();
   }
 
   return br;
