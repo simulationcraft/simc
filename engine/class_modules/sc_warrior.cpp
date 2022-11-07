@@ -600,7 +600,7 @@ public:
       player_talent_t enduring_defenses;
       player_talent_t massacre;
       player_talent_t anger_management;
-      player_talent_t unbreakable_will;
+      player_talent_t defenders_aegis;
       player_talent_t impenetrable_wall;
       player_talent_t punish;
       player_talent_t juggernaut;
@@ -1096,6 +1096,7 @@ public:
     ab::apply_affecting_aura( p()->talents.fury.storm_of_swords ); // rage generation in spell
     ab::apply_affecting_aura( p()->talents.protection.storm_of_steel );
     ab::apply_affecting_aura( p()->talents.protection.bloodborne );
+    ab::apply_affecting_aura( p()->talents.protection.defenders_aegis );
     ab::apply_affecting_aura( p()->talents.warrior.barbaric_training );
     ab::apply_affecting_aura( p()->talents.warrior.concussive_blows );
     ab::apply_affecting_aura( p()->talents.warrior.cruel_strikes );
@@ -7814,7 +7815,7 @@ void warrior_t::init_spells()
   talents.protection.enduring_defenses      = find_talent_spell( talent_tree::SPECIALIZATION, "Enduring Defenses" );
   talents.protection.massacre               = find_talent_spell( talent_tree::SPECIALIZATION, "Massacre", WARRIOR_PROTECTION );
   talents.protection.anger_management       = find_talent_spell( talent_tree::SPECIALIZATION, "Anger Management" );
-  talents.protection.unbreakable_will       = find_talent_spell( talent_tree::SPECIALIZATION, "Unbreakable Will" );
+  talents.protection.defenders_aegis        = find_talent_spell( talent_tree::SPECIALIZATION, "Defender's Aegis" );
   talents.protection.impenetrable_wall      = find_talent_spell( talent_tree::SPECIALIZATION, "Impenetrable Wall" );
   talents.protection.punish                 = find_talent_spell( talent_tree::SPECIALIZATION, "Punish" );
   talents.protection.juggernaut             = find_talent_spell( talent_tree::SPECIALIZATION, "Juggernaut", WARRIOR_PROTECTION );
