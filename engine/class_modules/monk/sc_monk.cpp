@@ -8920,7 +8920,7 @@ void monk_t::create_buffs ()
       ->set_default_value_from_effect( 2 );
 
     buff.faeline_stomp_brm = make_buff( this, "faeline_stomp_brm", passives.faeline_stomp_brm )
-      ->set_trigger_spell( shared.faeline_stomp )
+      ->set_trigger_spell( covenant.night_fae )
       ->set_default_value_from_effect( 1 )
       ->set_max_stack( 99 )
       ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
