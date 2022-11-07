@@ -6025,13 +6025,6 @@ struct renewing_mist_t : public monk_heal_t
       p()->buff.thunder_focus_tea->decrement();
     }
   }
-
-  void tick( dot_t* d ) override
-  {
-    monk_heal_t::tick( d );
-
-    p()->buff.uplifting_trance->trigger();
-  }
 };
 
 // ==========================================================================
@@ -6060,9 +6053,6 @@ struct vivify_t : public monk_heal_t
 
     if ( p()->talent.general.improved_vivify->ok() )
       am *= 1 + p()->talent.general.improved_vivify->effectN( 1 ).percent();
-
-    if ( p()->buff.uplifting_trance->check() )
-      am *= 1 + p()->buff.uplifting_trance->check_value();
 
     return am;
   }
@@ -6096,9 +6086,6 @@ struct vivify_t : public monk_heal_t
 
       p()->buff.lifecycles_enveloping_mist->trigger();
     }
-
-    if ( p()->buff.uplifting_trance->up() )
-      p()->buff.uplifting_trance->expire();
 
     if ( p()->mastery.gust_of_mists->ok() )
       mastery->execute();
@@ -8870,9 +8857,12 @@ void monk_t::create_buffs ()
   auto spec_tree = specialization ();
 
   // General
+  buff.channeling_soothing_mist = make_buff( this, "channeling_soothing_mist", passives.soothing_mist_heal )
+    ->set_trigger_spell( talent.general.soothing_mist );
+
   buff.chi_torpedo = make_buff( this, "chi_torpedo", find_spell( 119085 ) )
-      ->set_trigger_spell(talent.general.chi_torpedo)
-      ->set_default_value_from_effect ( 1 );
+    ->set_trigger_spell( talent.general.chi_torpedo )
+    ->set_default_value_from_effect ( 1 );
 
   buff.close_to_heart_driver = new buffs::close_to_heart_driver_t( *this, "close_to_heart_aura_driver", find_spell( 389684 ) );
 
@@ -8885,11 +8875,15 @@ void monk_t::create_buffs ()
   buff.dampen_harm = make_buff ( this, "dampen_harm", talent.general.dampen_harm );
 
   buff.diffuse_magic = make_buff ( this, "diffuse_magic", talent.general.diffuse_magic )
-      ->set_default_value_from_effect ( 1 );
+    ->set_default_value_from_effect ( 1 );
 
   buff.spinning_crane_kick = make_buff ( this, "spinning_crane_kick", spec.spinning_crane_kick )
     ->set_default_value_from_effect ( 2 )
     ->set_refresh_behavior ( buff_refresh_behavior::PANDEMIC );
+
+  buff.teachings_of_the_monastery = make_buff( this, "teachings_of_the_monastery", find_spell( 202090 ) )
+    ->set_trigger_spell( shared.teachings_of_the_monastery )
+    ->set_default_value_from_effect( 1 );
 
   buff.windwalking_driver = new buffs::windwalking_driver_t( *this, "windwalking_aura_driver", find_spell( 365080 ) );
 
@@ -8968,41 +8962,40 @@ void monk_t::create_buffs ()
   // Mistweaver
   if ( spec_tree == MONK_MISTWEAVER )
   {
-    buff.channeling_soothing_mist = make_buff ( this, "channeling_soothing_mist", passives.soothing_mist_heal );
+    buff.invoke_chiji = make_buff ( this, "invoke_chiji", find_spell ( 343818 ) )
+      ->set_trigger_spell( talent.mistweaver.invoke_chi_ji_the_red_crane );
 
-    buff.invoke_chiji = make_buff ( this, "invoke_chiji", find_spell ( 343818 ) );
-
-    buff.invoke_chiji_evm =
-      make_buff ( this, "invoke_chiji_evm", find_spell ( 343820 ) )->set_default_value_from_effect ( 1 );
+    buff.invoke_chiji_evm = make_buff ( this, "invoke_chiji_evm", find_spell ( 343820 ) )
+      ->set_trigger_spell( talent.mistweaver.invoke_chi_ji_the_red_crane )
+      ->set_default_value_from_effect ( 1 );
 
     buff.life_cocoon = make_buff<absorb_buff_t> ( this, "life_cocoon", spec.life_cocoon );
-    buff.life_cocoon->set_absorb_source ( get_stats ( "life_cocoon" ) )->set_cooldown ( timespan_t::zero () );
+    buff.life_cocoon->set_absorb_source( get_stats( "life_cocoon" ) )
+      ->set_trigger_spell( talent.mistweaver.life_cocoon )
+      ->set_cooldown ( timespan_t::zero () );
 
-    buff.mana_tea = make_buff ( this, "mana_tea", talent.mistweaver.mana_tea )->set_default_value_from_effect ( 1 );
+    buff.mana_tea = make_buff( this, "mana_tea", talent.mistweaver.mana_tea )
+      ->set_default_value_from_effect ( 1 );
 
-    buff.lifecycles_enveloping_mist =
-      make_buff ( this, "lifecycles_enveloping_mist", find_spell ( 197919 ) )->set_default_value_from_effect ( 1 );
+    buff.lifecycles_enveloping_mist = make_buff( this, "lifecycles_enveloping_mist", find_spell( 197919 ) )
+      ->set_trigger_spell( talent.mistweaver.lifecycles )
+      ->set_default_value_from_effect ( 1 );
 
-    buff.lifecycles_vivify =
-      make_buff ( this, "lifecycles_vivify", find_spell ( 197916 ) )->set_default_value_from_effect ( 1 );
+    buff.lifecycles_vivify = make_buff( this, "lifecycles_vivify", find_spell( 197916 ) )
+      ->set_trigger_spell( talent.mistweaver.lifecycles )
+      ->set_default_value_from_effect ( 1 );
 
     buff.refreshing_jade_wind = make_buff ( this, "refreshing_jade_wind", talent.mistweaver.refreshing_jade_wind )
       ->set_refresh_behavior ( buff_refresh_behavior::PANDEMIC );
 
-    buff.teachings_of_the_monastery =
-      make_buff ( this, "teachings_of_the_monastery", find_spell ( 202090 ) )->set_default_value_from_effect ( 1 );
-
-    buff.thunder_focus_tea =
-      make_buff ( this, "thunder_focus_tea", spec.thunder_focus_tea )
-      ->modify_max_stack ( (int)( talent.mistweaver.focused_thunder ? talent.mistweaver.focused_thunder->effectN ( 1 ).base_value () : 0 ) );
+    buff.thunder_focus_tea = make_buff ( this, "thunder_focus_tea", spec.thunder_focus_tea )
+      ->set_trigger_spell( talent.mistweaver.thunder_focus_tea )
+      ->modify_max_stack ( (int)( talent.mistweaver.focused_thunder->effectN ( 1 ).base_value() ) );
 
     buff.touch_of_death_mw = make_buff ( this, "touch_of_death_mw", find_spell ( 344361 ) )
+      ->set_trigger_spell( spec.touch_of_death_3_mw )
       ->set_default_value_from_effect ( 1 )
       ->add_invalidate ( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-
-    buff.uplifting_trance = make_buff ( this, "uplifting_trance", find_spell ( 197916 ) )
-      ->set_chance ( spec.renewing_mist->effectN ( 2 ).percent () )
-      ->set_default_value_from_effect ( 1 );
   }
 
   // Windwalker
@@ -9052,10 +9045,6 @@ void monk_t::create_buffs ()
       ->add_invalidate ( CACHE_PLAYER_HEAL_MULTIPLIER )
       ->set_can_cancel ( false )  // Undocumented hotfix 2018-09-28 - SEF can no longer be canceled.
       ->set_cooldown ( timespan_t::zero () );
-
-    buff.teachings_of_the_monastery = make_buff( this, "teachings_of_the_monastery", find_spell( 202090 ) )
-      ->set_trigger_spell( shared.teachings_of_the_monastery )
-      ->set_default_value_from_effect( 1 );
 
     buff.thunderfist = make_buff( this, "thunderfist", passives.thunderfist )
       ->set_trigger_spell( talent.windwalker.thunderfist );

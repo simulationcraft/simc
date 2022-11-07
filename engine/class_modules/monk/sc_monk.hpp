@@ -269,7 +269,6 @@ public:
     propagate_const<buff_t*> teachings_of_the_monastery;
     propagate_const<buff_t*> touch_of_death_mw;
     propagate_const<buff_t*> thunder_focus_tea;
-    propagate_const<buff_t*> uplifting_trance;
 
     // Windwalker
     propagate_const<buff_t*> bok_proc;
