@@ -9087,10 +9087,10 @@ void monk_t::create_buffs ()
       ->set_default_value_from_effect ( 1 );
 
   // Covenant Conduits
-  buff.fortifying_ingrediences = make_buff<absorb_buff_t>( this, "fortifying_ingredients", find_spell( 336874 ) )
-      ->set_trigger_spell( conduit.fortifying_ingredients );
+  buff.fortifying_ingrediences = make_buff<absorb_buff_t>( this, "fortifying_ingredients", find_spell( 336874 ) );
 
   buff.fortifying_ingrediences->set_absorb_source( get_stats( "fortifying_ingredients" ) )
+      ->set_trigger_spell( conduit.fortifying_ingredients )
       ->set_cooldown( timespan_t::zero() );
 
   // Shadowland Legendaries
