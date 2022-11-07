@@ -91,6 +91,7 @@ public:
     action_t* torment_bladestorm;
     action_t* torment_odyns_fury;
     action_t* torment_recklessness;
+    action_t* tough_as_nails;
     action_t* iron_fortress; // Prot azerite trait
     action_t* bastion_of_might_ip; // 0 rage IP from Bastion of Might azerite trait
   } active;
@@ -233,6 +234,7 @@ public:
     cooldown_t* shockwave;
     cooldown_t* skullsplitter;
     cooldown_t* storm_bolt;
+    cooldown_t* tough_as_nails_icd;
     cooldown_t* thunder_clap;
     cooldown_t* warbreaker;
     cooldown_t* ancient_aftershock;
@@ -5502,6 +5504,28 @@ struct storm_bolt_t : public warrior_attack_t
   }
 };
 
+// Tough as Nails ===========================================================
+
+struct tough_as_nails_t : public warrior_attack_t
+{
+
+  tough_as_nails_t( warrior_t* p ) :
+    warrior_attack_t( "tough_as_nails", p, p -> find_spell( 385890 ) )
+  {
+    may_crit = false;
+    ignores_armor = true;
+
+    background = true;
+  }
+
+  void execute() override
+  {
+    warrior_attack_t::execute();
+
+    p() -> cooldown.tough_as_nails_icd -> start();
+  }
+};
+
 // Thunder Clap =============================================================
 
 struct thunder_clap_t : public warrior_attack_t
@@ -8036,6 +8060,10 @@ void warrior_t::init_spells()
   {
     active.iron_fortress = new iron_fortress_t( this );
   }
+  if ( talents.protection.tough_as_nails->ok() )
+  {
+    active.tough_as_nails = new tough_as_nails_t( this );
+  }
   if ( azerite.bastion_of_might.enabled() && specialization() == WARRIOR_PROTECTION )
   {
     active.bastion_of_might_ip = new ignore_pain_bom_t( this );
@@ -8125,6 +8153,8 @@ void warrior_t::init_spells()
   cooldown.skullsplitter                    = get_cooldown( "skullsplitter" );
   cooldown.shockwave                        = get_cooldown( "shockwave" );
   cooldown.storm_bolt                       = get_cooldown( "storm_bolt" );
+  cooldown.tough_as_nails_icd               = get_cooldown( "tough_as_nails" );
+  cooldown.tough_as_nails_icd -> duration   = talents.protection.tough_as_nails->effectN( 1 ).trigger() -> internal_cooldown();
   cooldown.thunder_clap                     = get_cooldown( "thunder_clap" );
   cooldown.warbreaker                       = get_cooldown( "warbreaker" );
 }
@@ -10190,6 +10220,13 @@ void warrior_t::assess_damage( school_e school, result_amount_type type, action_
     iron_fortress_active -> crit_blocked = s -> block_result == BLOCK_RESULT_CRIT_BLOCKED;
     iron_fortress_active -> target = s -> action -> player;
     iron_fortress_active -> execute();
+  }
+
+  if ( talents.protection.tough_as_nails->ok() && cooldown.tough_as_nails_icd -> up() &&
+    ( s -> block_result == BLOCK_RESULT_BLOCKED || s -> block_result == BLOCK_RESULT_CRIT_BLOCKED ) &&
+    s -> action -> player -> is_enemy() )
+  {
+    active.tough_as_nails -> execute_on_target( s -> action -> player );
   }
 }
 
