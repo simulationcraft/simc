@@ -2918,7 +2918,7 @@ public:
   {
     BASE::impact( s );
 
-    if ( !p_->active.astral_smolder || s->result_amount || s->result != RESULT_CRIT )
+    if ( !p_->active.astral_smolder || !s->result_amount || s->result != RESULT_CRIT )
       return;
 
     auto mul = p_->talent.astral_smolder->effectN( 1 ).percent();
