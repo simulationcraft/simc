@@ -284,6 +284,7 @@ public:
     gain_t* revenge;
     gain_t* shield_charge;
     gain_t* shield_slam;
+    gain_t* spear_of_bastion;
     gain_t* whirlwind;
     gain_t* booming_voice;
     gain_t* thunder_clap;
@@ -6714,18 +6715,31 @@ struct conquerors_banner_t : public warrior_spell_t
 
 struct spear_of_bastion_attack_t : public warrior_attack_t
 {
-  spear_of_bastion_attack_t( warrior_t* p ) : warrior_attack_t( "spear_of_bastion_attack", p, p->find_spell( 376080 ) )
+  double rage_gain;
+  spear_of_bastion_attack_t( warrior_t* p ) : warrior_attack_t( "spear_of_bastion_attack", p, p->find_spell( 376080 ) ),
+  rage_gain( p->find_spell( 376080 )->effectN( 3 ).resource( RESOURCE_RAGE ) )
   {
     background = tick_may_crit = true;
     hasted_ticks               = true;
     aoe                        = -1;
     reduced_aoe_targets        = 5.0;
     dual                       = true;
+    energize_type     = action_energize::NONE;
+
+    rage_gain *= 1.0 + p->talents.warrior.piercing_verdict->effectN( 2 ).percent();
+
     // dot_duration += timespan_t::from_millis( p -> find_spell( 357996 ) -> effectN( 1 ).base_value() );
     if ( p->talents.warrior.elysian_might->ok() )
     {
       dot_duration += timespan_t::from_millis( p->find_spell( 386284 )->effectN( 1 ).base_value() );
     }
+  }
+
+  void execute() override
+  {
+    warrior_attack_t::execute();
+
+    p()->resource_gain( RESOURCE_RAGE, rage_gain, p() -> gain.spear_of_bastion );
   }
 };
 
@@ -6741,13 +6755,8 @@ struct spear_of_bastion_t : public warrior_attack_t
       execute_action = p->active.spear_of_bastion_attack;
       add_child( execute_action );
     }
-    //if ( p->conduit.piercing_verdict->ok() )
-    //{
-      //energize_amount =
-          //p->conduit.piercing_verdict.percent() * ( 1 + p->talents.warrior.piercing_verdict->effectN( 3 ).base_value() / 10.0 );
-    //}
-    energize_type     = action_energize::ON_CAST;
-    energize_resource = RESOURCE_RAGE;
+
+    energize_type     = action_energize::NONE;
   }
 
   void execute() override
@@ -6793,9 +6802,9 @@ struct kyrian_spear_t : public warrior_attack_t
       add_child( execute_action );
     }
     if ( p->conduit.piercing_verdict->ok() )
-      {
-        energize_amount = p->conduit.piercing_verdict.percent() * (1 + p->find_spell( 307871 )->effectN( 3 ).base_value() / 10.0 );
-      }
+    {
+      energize_amount = p->conduit.piercing_verdict.percent() * (1 + p->find_spell( 307871 )->effectN( 3 ).base_value() / 10.0 );
+    }
     energize_type     = action_energize::ON_CAST;
     energize_resource = RESOURCE_RAGE;
   }
@@ -7848,7 +7857,7 @@ void warrior_t::init_spells()
   talents.warrior.inspiring_presence               = find_talent_spell( talent_tree::CLASS, "Inspiring Presence" );
   talents.warrior.second_wind                      = find_talent_spell( talent_tree::CLASS, "Second Wind" );
 
-  talents.warrior.frothing_berserker               = find_talent_spell( talent_tree::CLASS, "Frothing Berserker" );
+  talents.warrior.frothing_berserker               = find_talent_spell( talent_tree::CLASS, "Frothing Berserker", specialization() );
   talents.warrior.heroic_leap                      = find_talent_spell( talent_tree::CLASS, "Heroic Leap" );
   talents.warrior.intimidating_shout               = find_talent_spell( talent_tree::CLASS, "Intimidating Shout" );
   talents.warrior.thunder_clap                     = find_talent_spell( talent_tree::CLASS, "Thunder Clap", specialization() );
@@ -9451,6 +9460,7 @@ void warrior_t::init_gains()
   gain.revenge                          = get_gain( "revenge" );
   gain.shield_charge                    = get_gain( "shield_charge" );
   gain.shield_slam                      = get_gain( "shield_slam" );
+  gain.spear_of_bastion                 = get_gain( "spear_of_bastion" );
   gain.booming_voice                    = get_gain( "booming_voice" );
   gain.thunder_clap                     = get_gain( "thunder_clap" );
   gain.whirlwind                        = get_gain( "whirlwind" );
