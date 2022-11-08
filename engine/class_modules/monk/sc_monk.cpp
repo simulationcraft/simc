@@ -1520,6 +1520,8 @@ struct tiger_palm_t : public monk_melee_attack_t
   heal_t* eye_of_the_tiger_heal;
   spell_t* eye_of_the_tiger_damage;
   bool face_palm;
+  bool blackout_combo;
+  bool counterstrike;
   bool power_strikes;
 
   tiger_palm_t( monk_t* p, util::string_view options_str )
@@ -1527,6 +1529,8 @@ struct tiger_palm_t : public monk_melee_attack_t
       eye_of_the_tiger_heal( new eye_of_the_tiger_heal_tick_t( *p, "eye_of_the_tiger_heal" ) ),
       eye_of_the_tiger_damage( new eye_of_the_tiger_dmg_tick_t( p, "eye_of_the_tiger_damage" ) ),
       face_palm( false ),
+      blackout_combo( false ),
+      counterstrike( false ),
       power_strikes( false )
   {
     parse_options( options_str );
@@ -1556,15 +1560,17 @@ struct tiger_palm_t : public monk_melee_attack_t
   {
     double am = monk_melee_attack_t::action_multiplier();
 
-    am *= 1 + p()->buff.blackout_combo->data().effectN( 1 ).percent();
+    if ( blackout_combo )
+        am *= 1 + p()->buff.blackout_combo->data().effectN( 1 ).percent();
 
     if ( face_palm )
-      am *= 1 + p()->shared.face_palm->effectN( 2 ).percent();
+        am *= 1 + p()->shared.face_palm->effectN( 2 ).percent();
 
-    am *= 1 + p()->buff.counterstrike->data().effectN( 1 ).percent();
+    if ( counterstrike )
+        am *= 1 + p()->buff.counterstrike->data().effectN( 1 ).percent();
 
     if ( power_strikes )
-      am *= 1 + p()->talent.windwalker.power_strikes->effectN( 2 ).percent();
+        am *= 1 + p()->talent.windwalker.power_strikes->effectN( 2 ).percent();
 
     am *= 1 + p()->talent.windwalker.touch_of_the_tiger->effectN( 1 ).percent();
 
@@ -1583,8 +1589,22 @@ struct tiger_palm_t : public monk_melee_attack_t
         p()->proc.face_palm->occur();
     }
       
+    if ( p()->buff.blackout_combo->up() )
+    {
+      blackout_combo = true;
+      p()->proc.blackout_combo_tiger_palm->occur();
+      p()->buff.blackout_combo->expire();
+    }
+
+    if ( p()->buff.counterstrike->up() )
+    {
+      counterstrike = true;
+      p()->proc.counterstrike_tp->occur();
+      p()->buff.counterstrike->expire();
+    }
+
     if ( p()->buff.power_strikes->up() )
-        power_strikes = true;
+      power_strikes = true;
 
     //------------
 
@@ -1635,22 +1655,12 @@ struct tiger_palm_t : public monk_melee_attack_t
     // Reduces the remaining cooldown on your Brews by 1 sec
     brew_cooldown_reduction( p()->spec.tiger_palm->effectN( 3 ).base_value() );
 
-    if ( p()->buff.blackout_combo->up() )
-    {
-        p()->proc.blackout_combo_tiger_palm->occur();
-        p()->buff.blackout_combo->expire();
-    }
-
-    if ( p()->buff.counterstrike->up() )
-    {
-        p()->proc.counterstrike_tp->occur();
-        p()->buff.counterstrike->expire();
-    }
-
     if ( face_palm )
         brew_cooldown_reduction( p()->shared.face_palm->effectN( 3 ).base_value() );
 
     face_palm      = false;
+    blackout_combo = false;
+    counterstrike  = false;
     power_strikes  = false;
   }
 
