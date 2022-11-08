@@ -679,6 +679,7 @@ public:
     const spell_data_t* last_emperors_capacitor;
     const spell_data_t* rushing_jade_wind;
     const spell_data_t* scalding_brew;
+    const spell_data_t* shadowboxing_treads;
     const spell_data_t* skyreach;
     const spell_data_t* stormstouts_last_keg;
     const spell_data_t* teachings_of_the_monastery;

@@ -1747,20 +1747,13 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
   {
     double am = monk_melee_attack_t::action_multiplier();
 
-    if ( p()->spec.rising_sun_kick_2->ok() )
-      am *= 1 + p()->spec.rising_sun_kick_2->effectN( 1 ).percent();
+    am *= 1 + p()->spec.rising_sun_kick_2->effectN( 1 ).percent();
 
-    if ( p()->talent.general.fast_feet->ok() )
-      am *= 1 + p()->talent.general.fast_feet->effectN( 1 ).percent();
+    am *= 1 + p()->talent.general.fast_feet->effectN( 1 ).percent();
 
-    if ( p()->specialization() == MONK_WINDWALKER )
-    {
-      if ( p()->talent.windwalker.rising_star->ok() )
-        am *= 1 + p()->talent.windwalker.rising_star->effectN( 1 ).percent();
-    }
+    am *= 1 + p()->talent.windwalker.rising_star->effectN( 1 ).percent();
 
-    if ( p()->buff.kicks_of_flowing_momentum->check() )
-      am *= 1 + p()->buff.kicks_of_flowing_momentum->check_value();
+    am *= 1 + p()->buff.kicks_of_flowing_momentum->check_value();
 
     return am;
   }
@@ -1769,11 +1762,7 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
   {
     double c = monk_melee_attack_t::composite_crit_chance();
 
-    if ( p()->specialization() == MONK_WINDWALKER )
-    {
-      if ( p()->buff.pressure_point->check() )
-        c += p()->buff.pressure_point->check_value();
-    }
+    c += p()->buff.pressure_point->check_value();
 
     return c;
   }
@@ -1782,15 +1771,11 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::execute();
 
-    if ( p()->specialization() == MONK_MISTWEAVER )
+    if ( p()->buff.thunder_focus_tea->up() )
     {
-      if ( p()->buff.thunder_focus_tea->up() )
-      {
-        p()->cooldown.rising_sun_kick->adjust(
-          p()->talent.mistweaver.thunder_focus_tea->effectN( 1 ).time_value(), true );
+        p()->cooldown.rising_sun_kick->adjust( p()->talent.mistweaver.thunder_focus_tea->effectN( 1 ).time_value(), true );
 
         p()->buff.thunder_focus_tea->decrement();
-      }
     }
   }
 
@@ -1798,47 +1783,21 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::impact( s );
 
-    if ( !result_is_hit( s->result ) )
-      return;
+    p()->buff.transfer_the_power->trigger();
 
-    if ( p()->specialization() == MONK_MISTWEAVER )
+    if ( p()->shared.xuens_battlegear->ok() && ( s->result == RESULT_CRIT ) )
     {
-      if ( p()->buff.teachings_of_the_monastery->up() )
-      {
-        p()->buff.teachings_of_the_monastery->expire();
-
-        // Spirit of the Crane does not have a buff associated with it. Since
-        // this is tied with Teachings of the Monastery, tacking
-        // this onto the removal of that buff.
-        if ( p()->talent.mistweaver.spirit_of_the_crane->ok() )
-          p()->resource_gain( RESOURCE_MANA,
-            ( p()->resources.max[RESOURCE_MANA] * p()->passives.spirit_of_the_crane->effectN( 1 ).percent() ),
-            p()->gain.spirit_of_the_crane );
-      }
-    }
-    else if ( p()->specialization() == MONK_WINDWALKER )
-    {
-
-      if ( p()->talent.windwalker.transfer_the_power->ok() )
-        p()->buff.transfer_the_power->trigger( 2 ); // Not documented anywhere but applying 2 stacks in game
-
-      if ( p()->shared.xuens_battlegear && p()->shared.xuens_battlegear->ok() && ( s->result == RESULT_CRIT ) )
-      {
         p()->cooldown.fists_of_fury->adjust( -1 * p()->shared.xuens_battlegear->effectN( 2 ).time_value(), true );
         p()->proc.xuens_battlegear_reduction->occur();
-      }
+    }
 
-      // Apply Mark of the Crane
-      if ( p()->talent.windwalker.mark_of_the_crane->ok() )
-        p()->trigger_mark_of_the_crane( s );
+    // Apply Mark of the Crane
+    p()->trigger_mark_of_the_crane( s );
 
-      if (p()->buff.kicks_of_flowing_momentum->up()) {
+    if ( p()->buff.kicks_of_flowing_momentum->up() ) {
         p()->buff.kicks_of_flowing_momentum->decrement();
 
-        if ( p()->sets->has_set_bonus(MONK_WINDWALKER, T29, B4) ) {
-          p()->buff.fists_of_flowing_momentum->trigger();
-        }
-      }
+        p()->buff.fists_of_flowing_momentum->trigger();
     }
   }
 };
@@ -1879,11 +1838,7 @@ struct rising_sun_kick_t : public monk_melee_attack_t
   {
     double c = monk_melee_attack_t::cost();
 
-    if ( p()->specialization() == MONK_WINDWALKER )
-    {
-      if ( p()->buff.weapons_of_order_ww->check() )
-        c += p()->buff.weapons_of_order_ww->check_value();  // saved as -1
-    }
+    c += p()->buff.weapons_of_order_ww->check_value();  // saved as -1
 
     if ( c < 0 )
       c = 0;
@@ -1895,17 +1850,9 @@ struct rising_sun_kick_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::consume_resource();
 
-    if ( p()->specialization() == MONK_WINDWALKER )
-    {
-      // Register how much chi is saved without actually refunding the chi
-      if ( p()->buff.serenity->up() )
-      {
-        if ( p()->buff.weapons_of_order_ww->up() )
-          p()->gain.serenity->add( RESOURCE_CHI, base_costs[RESOURCE_CHI] + p()->buff.weapons_of_order_ww->value() );
-        else
-          p()->gain.serenity->add( RESOURCE_CHI, base_costs[RESOURCE_CHI] );
-      }
-    }
+    // Register how much chi is saved without actually refunding the chi
+    if ( p()->buff.serenity->up() )
+        p()->gain.serenity->add( RESOURCE_CHI, base_costs[RESOURCE_CHI] + p()->buff.weapons_of_order_ww->value() );
   }
 
   void execute() override
@@ -1915,32 +1862,29 @@ struct rising_sun_kick_t : public monk_melee_attack_t
     trigger_attack->set_target( target );
     trigger_attack->execute();
 
-    if ( p()->specialization() == MONK_WINDWALKER )
+    if ( rng().roll( p()->talent.windwalker.glory_of_the_dawn->effectN( 3 ).percent() ) )
     {
-      if ( p()->talent.windwalker.glory_of_the_dawn->ok() &&
-        rng().roll( p()->talent.windwalker.glory_of_the_dawn->effectN( 3 ).percent() ) )
-      {
-        // TODO check if the damage values are being applied correctly
         gotd->target = p()->target;
         gotd->execute();
-      }
+    }
 
-      if ( p()->talent.windwalker.whirling_dragon_punch->ok() && p()->cooldown.fists_of_fury->down() )
-      {
+    if ( p()->talent.windwalker.whirling_dragon_punch->ok() && p()->cooldown.fists_of_fury->down() )
+    {
         if ( this->cooldown_duration() <= p()->cooldown.fists_of_fury->remains() )
           p()->buff.whirling_dragon_punch->set_duration( this->cooldown_duration() );
         else
           p()->buff.whirling_dragon_punch->set_duration( p()->cooldown.fists_of_fury->remains() );
 
         p()->buff.whirling_dragon_punch->trigger();
-      }
+    }
 
-      if ( p()->talent.windwalker.transfer_the_power->ok() )
+    // Not documented anywhere but applying 2 stacks in game
+    // Setting seconnd trigger as a bug here.
+    if ( p()->bugs )
         p()->buff.transfer_the_power->trigger();
 
-      if ( p()->buff.weapons_of_order->up() )
+    if ( p()->buff.weapons_of_order->up() )
         p()->buff.weapons_of_order_ww->trigger();
-    }
   }
 };
 
@@ -1960,6 +1904,8 @@ struct blackout_kick_totm_proc_t : public monk_melee_attack_t
     background = dual   = true;
     trigger_chiji       = true;
     trigger_gcd         = timespan_t::zero();
+
+    aoe                 = 1 + (int)p->shared.shadowboxing_treads->effectN( 1 ).base_value();
   }
 
   void init_finished() override
@@ -1990,8 +1936,7 @@ struct blackout_kick_totm_proc_t : public monk_melee_attack_t
   {
     double c = monk_melee_attack_t::composite_crit_chance();
 
-    if ( p()->specialization() == MONK_WINDWALKER && p()->talent.windwalker.hardened_soles->ok() )
-      c += p()->talent.windwalker.hardened_soles->effectN( 1 ).percent();
+    c += p()->talent.windwalker.hardened_soles->effectN( 1 ).percent();
 
     return c;
   }
@@ -2000,8 +1945,7 @@ struct blackout_kick_totm_proc_t : public monk_melee_attack_t
   {
     double m = monk_melee_attack_t::composite_crit_damage_bonus_multiplier();
 
-    if ( p()->specialization() == MONK_WINDWALKER && p()->talent.windwalker.hardened_soles->ok() )
-      m *= 1 + p()->talent.windwalker.hardened_soles->effectN( 2 ).percent();
+    m *= 1 + p()->talent.windwalker.hardened_soles->effectN( 2 ).percent();
 
     return m;
   }
@@ -2010,21 +1954,20 @@ struct blackout_kick_totm_proc_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::execute();
 
-    if ( result_is_miss( execute_state->result ) )
-      return;
+    // Transfer the power triggers from ToTM hits but only on the primary target
+    p()->buff.transfer_the_power->trigger();
 
-    if ( p()->conduit.tumbling_technique->ok() &&
-      rng().roll( p()->conduit.tumbling_technique->effectN( 1 ).percent() ) )
+    if ( rng().roll( p()->conduit.tumbling_technique->effectN( 1 ).percent() ) )
     {
-      if ( p()->talent.general.chi_torpedo->ok() )
-      {
-        p()->cooldown.chi_torpedo->reset( true, 1 );
-        p()->proc.tumbling_technique_chi_torpedo->occur();
-      }
-      else
-      {
-        p()->cooldown.roll->reset( true, 1 );
-        p()->proc.tumbling_technique_roll->occur();
+        if ( p()->talent.general.chi_torpedo->ok() )
+        {
+            p()->cooldown.chi_torpedo->reset( true, 1 );
+            p()->proc.tumbling_technique_chi_torpedo->occur();
+        }
+        else
+        {
+            p()->cooldown.roll->reset( true, 1 );
+            p()->proc.tumbling_technique_roll->occur();
       }
     }
   }
@@ -2033,45 +1976,18 @@ struct blackout_kick_totm_proc_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::impact( s );
 
-    switch ( p()->specialization() )
-    {
-      case MONK_MISTWEAVER:
-
-        if ( p()->talent.mistweaver.spirit_of_the_crane->ok() )
-          p()->resource_gain(
-            RESOURCE_MANA,
-            ( p()->resources.max[RESOURCE_MANA] * p()->passives.spirit_of_the_crane->effectN( 1 ).percent() ),
+    if ( p()->talent.mistweaver.spirit_of_the_crane->ok() )
+        p()->resource_gain( RESOURCE_MANA, ( p()->resources.max[RESOURCE_MANA] * p()->passives.spirit_of_the_crane->effectN( 1 ).percent() ),
             p()->gain.spirit_of_the_crane );
-        break;
-  
-      case MONK_BREWMASTER:
 
-        if ( p()->talent.brewmaster.staggering_strikes->ok() )
-        {
-          auto ap = s->composite_attack_power();
-          auto amount_cleared = p()->partial_clear_stagger_amount( ap * p()->talent.brewmaster.staggering_strikes->effectN( 2 ).percent() );
-          p()->sample_datas.staggering_strikes_cleared->add( amount_cleared );
-        }
-        break;
-
-      case MONK_WINDWALKER:
-
-        // Transfer the power triggers from ToTM hits but only on the primary target
-        if ( s->target == target )
-        {
-          if ( p()->talent.windwalker.transfer_the_power->ok() )
-            p()->buff.transfer_the_power->trigger();
-
-          if ( p()->talent.windwalker.mark_of_the_crane->ok() )
-            p()->trigger_mark_of_the_crane( s );
-        }
-
-        break;
-
-      default:
-        assert( 0 );
-        break;
+    if ( p()->talent.brewmaster.staggering_strikes->ok() )
+    {
+        auto ap = s->composite_attack_power();
+        auto amount_cleared = p()->partial_clear_stagger_amount( ap * p()->talent.brewmaster.staggering_strikes->effectN( 2 ).percent() );
+        p()->sample_datas.staggering_strikes_cleared->add( amount_cleared );
     }
+
+    p()->trigger_mark_of_the_crane( s );
   }
 };
 
@@ -2106,49 +2022,35 @@ struct blackout_kick_t : public monk_melee_attack_t
     trigger_faeline_stomp       = true;
     trigger_bountiful_brew      = true;
     cast_during_sck             = true;
-    
+
+    aoe = 1 + (int)p->shared.shadowboxing_treads->effectN( 1 ).base_value();
+    cooldown->duration += p->talent.brewmaster.fluidity_of_motion->effectN( 1 ).time_value();
+
+    if ( p->shared.teachings_of_the_monastery->ok() )
+    {
+      bok_totm_proc = new blackout_kick_totm_proc_t( p );
+
+      add_child( bok_totm_proc );
+    }
+
     switch ( p->specialization() )
     {
-      case MONK_BREWMASTER: {
-        if ( p->talent.brewmaster.shadowboxing_treads->ok() )
-          aoe = 1 + (int)p->talent.brewmaster.shadowboxing_treads->effectN( 1 ).base_value();
-        if ( p->talent.brewmaster.fluidity_of_motion->ok() )
-          cooldown->duration += p->talent.brewmaster.fluidity_of_motion->effectN( 1 ).time_value();
+        case MONK_BREWMASTER: {
 
-        if ( p->talent.brewmaster.charred_passions->ok() )
-        {
-          charred_passions = new charred_passions_bok_t( p );
+            if ( p->talent.brewmaster.charred_passions->ok() )
+            {
+                charred_passions = new charred_passions_bok_t( p );
 
-          add_child( charred_passions );
+                add_child( charred_passions );
+            }
+
+            apply_dual_wield_two_handed_scaling();
+            break;
         }
-
-        apply_dual_wield_two_handed_scaling();
-        break;
-      }
-      case MONK_MISTWEAVER: {
-        if ( p->talent.mistweaver.teachings_of_the_monastery->ok() )
-        {
-          bok_totm_proc = new blackout_kick_totm_proc_t( p );
-
-          add_child( bok_totm_proc );
-        }
-        break;
-      }
       case MONK_WINDWALKER: {
         if ( p->spec.blackout_kick_2 )
           // Saved as -2
-          base_costs[ RESOURCE_CHI ] +=
-              p->spec.blackout_kick_2->effectN( 1 ).base_value();  // Reduce base from 3 chi to 1
-
-        if ( p->talent.windwalker.shadowboxing_treads->ok() )
-          aoe = 1 + (int)p->talent.windwalker.shadowboxing_treads->effectN( 1 ).base_value();
-
-        if ( p->talent.windwalker.teachings_of_the_monastery->ok() )
-        {
-          bok_totm_proc = new blackout_kick_totm_proc_t( p );
-
-          add_child( bok_totm_proc );
-        }
+          base_costs[ RESOURCE_CHI ] += p->spec.blackout_kick_2->effectN( 1 ).base_value();  // Reduce base from 3 chi to 1
 
         apply_dual_wield_two_handed_scaling();
         break;
@@ -2162,11 +2064,7 @@ struct blackout_kick_t : public monk_melee_attack_t
   {
     double c = monk_melee_attack_t::cost();
 
-    if ( p()->specialization() == MONK_WINDWALKER )
-    {
-      if ( p()->buff.weapons_of_order_ww->check() )
-        c += p()->buff.weapons_of_order_ww->check_value();
-    }
+    c += p()->buff.weapons_of_order_ww->check_value();
 
     if ( c < 0 )
       return 0;
@@ -2178,24 +2076,21 @@ struct blackout_kick_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::consume_resource();
 
-    if ( p()->specialization() == MONK_WINDWALKER )
+    // Register how much chi is saved without actually refunding the chi
+    if ( p()->buff.serenity->up() )
     {
-      // Register how much chi is saved without actually refunding the chi
-      if ( p()->buff.serenity->up() )
-      {
         if ( p()->buff.weapons_of_order_ww->up() )
-          p()->gain.serenity->add( RESOURCE_CHI, base_costs[RESOURCE_CHI] + p()->buff.weapons_of_order_ww->value() );
+            p()->gain.serenity->add( RESOURCE_CHI, base_costs[RESOURCE_CHI] + p()->buff.weapons_of_order_ww->value() );
         else
-          p()->gain.serenity->add( RESOURCE_CHI, base_costs[RESOURCE_CHI] );
-      }
+            p()->gain.serenity->add( RESOURCE_CHI, base_costs[RESOURCE_CHI] );
+    }
 
-      // Register how much chi is saved without actually refunding the chi
-      if ( p()->buff.bok_proc->up() )
-      {
+    // Register how much chi is saved without actually refunding the chi
+    if ( p()->buff.bok_proc->up() )
+    {
         p()->buff.bok_proc->expire();
         if ( !p()->buff.serenity->up() )
-          p()->gain.bok_proc->add( RESOURCE_CHI, base_costs[RESOURCE_CHI] );
-      }
+            p()->gain.bok_proc->add( RESOURCE_CHI, base_costs[RESOURCE_CHI] );
     }
   }
 
@@ -2203,8 +2098,7 @@ struct blackout_kick_t : public monk_melee_attack_t
   {
     double c = monk_melee_attack_t::composite_crit_chance();
 
-    if ( p()->specialization() == MONK_WINDWALKER && p()->talent.windwalker.hardened_soles->ok() )
-      c += p()->talent.windwalker.hardened_soles->effectN( 1 ).percent();
+    c += p()->talent.windwalker.hardened_soles->effectN( 1 ).percent();
 
     return c;
   }
@@ -2213,8 +2107,7 @@ struct blackout_kick_t : public monk_melee_attack_t
   {
     double m = monk_melee_attack_t::composite_crit_damage_bonus_multiplier();
 
-    if ( p()->specialization() == MONK_WINDWALKER && p()->talent.windwalker.hardened_soles->ok() )
-      m *= 1 + p()->talent.windwalker.hardened_soles->effectN( 2 ).percent();
+    m *= 1 + p()->talent.windwalker.hardened_soles->effectN( 2 ).percent();
 
     return m;
   }
@@ -2223,32 +2116,12 @@ struct blackout_kick_t : public monk_melee_attack_t
   {
     double am = monk_melee_attack_t::action_multiplier();
 
-    switch ( p()->specialization() )
-    {
-      case MONK_BREWMASTER:
-        if ( p()->talent.brewmaster.shadowboxing_treads->ok() )
-          am *= 1 + p()->talent.brewmaster.shadowboxing_treads->effectN( 2 ).percent();
+    am *= 1 + p()->shared.shadowboxing_treads->effectN( 2 ).percent();
 
-        if ( p()->talent.brewmaster.fluidity_of_motion->ok() )
-          am *= 1 + p()->talent.brewmaster.fluidity_of_motion->effectN( 2 ).percent();
+    am *= 1 + p()->talent.brewmaster.fluidity_of_motion->effectN( 2 ).percent();
 
-        if ( p()->talent.brewmaster.elusive_footwork->ok() )
-          am *= 1 + p()->talent.brewmaster.elusive_footwork->effectN( 3 ).percent();
-        break;
+    am *= 1 + p()->talent.brewmaster.elusive_footwork->effectN( 3 ).percent();
 
-      case MONK_WINDWALKER:
-        if ( p()->talent.windwalker.shadowboxing_treads->ok() )
-          am *= 1 + p()->talent.windwalker.shadowboxing_treads->effectN( 2 ).percent();
-        break;
-
-      case MONK_MISTWEAVER:
-
-        break;
-
-      default:
-        assert( 0 );
-        break;
-    }
     return am;
   }
 
@@ -2256,86 +2129,52 @@ struct blackout_kick_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::execute();
 
-    if ( result_is_miss( execute_state->result ) )
-      return;
+    p()->buff.elusive_brawler->trigger();
 
-    // Teachings of the Monastery
-    // Used by both Windwalker and Mistweaver
-    if ( p()->buff.teachings_of_the_monastery && p()->buff.teachings_of_the_monastery->up() )
-      p()->buff.teachings_of_the_monastery->expire();
+    p()->buff.blackout_combo->trigger();
 
-    switch ( p()->specialization() )
+    trigger_shuffle( p()->talent.brewmaster.shuffle->effectN( 1 ).base_value() );
+
+    p()->buff.hit_scheme->trigger();
+
+    if ( p()->spec.blackout_kick_3->ok() )
     {
-      case MONK_BREWMASTER:
-      {
-        if ( p()->mastery.elusive_brawler->ok() )
-          p()->buff.elusive_brawler->trigger();
-
-        if ( p()->talent.brewmaster.blackout_combo->ok() )
-          p()->buff.blackout_combo->trigger();
-
-        if ( p()->talent.brewmaster.shuffle->ok() )
-          trigger_shuffle( p()->talent.brewmaster.shuffle->effectN( 1 ).base_value() );
-
-        if ( p()->talent.brewmaster.hit_scheme->ok() )
-          p()->buff.hit_scheme->trigger();
-        break;
-      }
-
-      case MONK_MISTWEAVER:
-      {
-        break;
-      }
-
-      case MONK_WINDWALKER:
-      {
-        if ( p()->spec.blackout_kick_3->ok() )
+        // Reduce the cooldown of Rising Sun Kick and Fists of Fury
+        timespan_t cd_reduction = -1 * p()->spec.blackout_kick->effectN( 3 ).time_value();
+        if ( p()->buff.weapons_of_order->up() )
         {
-          // Reduce the cooldown of Rising Sun Kick and Fists of Fury
-          timespan_t cd_reduction = -1 * p()->spec.blackout_kick->effectN( 3 ).time_value();
-          if ( p()->buff.weapons_of_order->up() )
-          {
             cd_reduction += ( -1 * p()->shared.weapons_of_order->effectN( 8 ).time_value() );
             if ( p()->buff.serenity->up() )
-              p()->proc.blackout_kick_cdr_serenity_with_woo->occur();
+                p()->proc.blackout_kick_cdr_serenity_with_woo->occur();
             else
-              p()->proc.blackout_kick_cdr_with_woo->occur();
-          }
-          else
-          {
+                p()->proc.blackout_kick_cdr_with_woo->occur();
+        }
+        else
+        {
             if ( p()->buff.serenity->up() )
-              p()->proc.blackout_kick_cdr_serenity->occur();
+                p()->proc.blackout_kick_cdr_serenity->occur();
             else
-              p()->proc.blackout_kick_cdr->occur();
-          }
-
-          if ( p()->talent.windwalker.transfer_the_power->ok() )
-            p()->buff.transfer_the_power->trigger();
-
-          p()->cooldown.rising_sun_kick->adjust( cd_reduction, true );
-          p()->cooldown.fists_of_fury->adjust( cd_reduction, true );
+                p()->proc.blackout_kick_cdr->occur();
         }
 
-        break;
-      }
-
-      default:
-        assert( 0 );
-        break;
+        p()->cooldown.rising_sun_kick->adjust( cd_reduction, true );
+        p()->cooldown.fists_of_fury->adjust( cd_reduction, true );
     }
 
-    if ( p()->conduit.tumbling_technique->ok() && rng().roll( p()->conduit.tumbling_technique.percent() ) )
+    p()->buff.transfer_the_power->trigger();
+
+    if ( rng().roll( p()->conduit.tumbling_technique.percent() ) )
     {
-      if ( p()->talent.general.chi_torpedo->ok() )
-      {
-        p()->cooldown.chi_torpedo->reset( true, 1 );
-        p()->proc.tumbling_technique_chi_torpedo->occur();
-      }
-      else
-      {
-        p()->cooldown.roll->reset( true, 1 );
-        p()->proc.tumbling_technique_roll->occur();
-      }
+        if ( p()->talent.general.chi_torpedo->ok() )
+        {
+            p()->cooldown.chi_torpedo->reset( true, 1 );
+            p()->proc.tumbling_technique_chi_torpedo->occur();
+        }
+        else
+        {
+            p()->cooldown.roll->reset( true, 1 );
+            p()->proc.tumbling_technique_roll->occur();
+        }
     }
   }
 
@@ -2343,83 +2182,54 @@ struct blackout_kick_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::impact( s );
 
-    if ( !result_is_hit( s->result ) )
-      return;
-
     // Teachings of the Monastery
     // Used by both Windwalker and Mistweaver
-    if ( p()->specialization() == MONK_WINDWALKER || p()->specialization() == MONK_MISTWEAVER )
+    if ( p()->buff.teachings_of_the_monastery->up() )
     {
-      player_talent_t totm = p()->specialization() == MONK_WINDWALKER ? p()->talent.windwalker.teachings_of_the_monastery
-                                                                      : p()->talent.mistweaver.teachings_of_the_monastery;
-      if ( totm->ok()  )
-      {
-        if ( p()->buff.teachings_of_the_monastery->up() )
-        {
-          int stacks = p()->buff.teachings_of_the_monastery->current_stack;
+        bok_totm_proc->set_target( s->target );
 
-          bok_totm_proc->set_target( s->target );
+        int stacks = p()->buff.teachings_of_the_monastery->current_stack;
 
-          for ( int i = 0; i < stacks; i++ )
+        for ( int i = 0; i < stacks; i++ )
             bok_totm_proc->execute();
 
-          // Each initial hit from blackout kick has an individual chance to reset
-          if ( rng().roll( totm->effectN( 1 ).percent() ) )
-          {
+        // Each initial hit from blackout kick has an individual chance to reset
+        if ( rng().roll( p()->shared.teachings_of_the_monastery->effectN( 1 ).percent() ) )
+        {
             p()->cooldown.rising_sun_kick->reset( true );
             p()->proc.rsk_reset_totm->occur();
-          }
         }
-      }
+
+        p()->buff.teachings_of_the_monastery->expire();
     }
 
-    switch ( p()->specialization() )
+    p()->trigger_mark_of_the_crane( s );
+    
+    if ( p()->buff.charred_passions->up() )
     {
-      case MONK_WINDWALKER:
+        double dmg_percent = p()->shared.charred_passions->effectN( 1 ).percent();
 
-        if ( p()->talent.windwalker.mark_of_the_crane->ok() )
-          p()->trigger_mark_of_the_crane( s );
-        break;
+        charred_passions->base_dd_min = s->result_amount * dmg_percent;
+        charred_passions->base_dd_max = s->result_amount * dmg_percent;
+        charred_passions->s_data      = p()->shared.charred_passions->effectN( 1 ).trigger();
+        charred_passions->execute();
 
-      case MONK_BREWMASTER:
+        p()->proc.charred_passions_bok->occur();
 
-        if ( p()->buff.charred_passions->up() )
+        if ( get_td( s->target )->dots.breath_of_fire->is_ticking() && p()->cooldown.charred_passions->up() )
         {
-
-          double dmg_percent = p()->shared.charred_passions->effectN( 1 ).percent();
-
-          charred_passions->base_dd_min = s->result_amount * dmg_percent;
-          charred_passions->base_dd_max = s->result_amount * dmg_percent;
-          charred_passions->s_data = p()->shared.charred_passions->effectN( 1 ).trigger();
-          charred_passions->execute();
-
-          p()->proc.charred_passions_bok->occur();
-
-          if ( get_td( s->target )->dots.breath_of_fire->is_ticking() && p()->cooldown.charred_passions->up() )
-          {
             get_td( s->target )->dots.breath_of_fire->refresh_duration();
 
-            p()->cooldown.charred_passions->start( p()->shared.charred_passions->effectN( 1 ).trigger()->internal_cooldown() );
-          }
+            p()->cooldown.charred_passions->start(
+                p()->shared.charred_passions->effectN( 1 ).trigger()->internal_cooldown() );
         }
-
-        if ( p()->talent.brewmaster.elusive_footwork->ok() && s->result == RESULT_CRIT )
-        {
-          p()->buff.elusive_brawler->trigger( (int)p()->talent.brewmaster.elusive_footwork->effectN( 2 ).base_value() );
-          p()->proc.elusive_footwork_proc->occur();
-        }
-
-        break;
-
-      case MONK_MISTWEAVER:
-
-        break;
-
-      default:
-        assert( 0 );
-        break;
     }
 
+    if ( p()->talent.brewmaster.elusive_footwork->ok() && s->result == RESULT_CRIT )
+    {
+        p()->buff.elusive_brawler->trigger( (int)p()->talent.brewmaster.elusive_footwork->effectN( 2 ).base_value() );
+        p()->proc.elusive_footwork_proc->occur();
+    }
   }
 };
 
@@ -8548,6 +8358,9 @@ void monk_t::init_spells()
 
   shared.scalding_brew =
     _priority( conduit.scalding_brew, talent.brewmaster.scalding_brew );
+
+  shared.shadowboxing_treads = 
+    _priority( talent.brewmaster.shadowboxing_treads, talent.windwalker.shadowboxing_treads );
 
   shared.skyreach =
     _priority( legendary.keefers_skyreach, talent.windwalker.skyreach );
