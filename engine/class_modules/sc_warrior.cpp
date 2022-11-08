@@ -290,6 +290,7 @@ public:
     gain_t* endless_rage;
     gain_t* collateral_damage;
     gain_t* instigate;
+    gain_t* war_machine_demise;
 
     // Legendarys, Azerite, and Special Effects
     gain_t* execute_refund;
@@ -9066,6 +9067,12 @@ void warrior_td_t::target_demise()
   {
     p -> buff.dance_of_death_prot -> trigger();
   }
+
+  if ( p -> talents.warrior.war_machine->ok() )
+  {
+    p->resource_gain( RESOURCE_RAGE, p -> talents.warrior.war_machine -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RAGE ),
+                          p->gain.war_machine_demise );
+  }
 }
 
 // warrior_t::init_buffs ====================================================
@@ -9449,6 +9456,7 @@ void warrior_t::init_gains()
   gain.whirlwind                        = get_gain( "whirlwind" );
   gain.collateral_damage                = get_gain( "collateral_damage" );
   gain.instigate                        = get_gain( "instigate" );
+  gain.war_machine_demise               = get_gain( "war_machine_demise" );
 
   gain.ceannar_rage           = get_gain( "ceannar_rage" );
   gain.cold_steel_hot_blood   = get_gain( "cold_steel_hot_blood" );
