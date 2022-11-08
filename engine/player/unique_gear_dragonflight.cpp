@@ -828,6 +828,44 @@ void conjured_chillglobe( special_effect_t& effect )
   effect.execute_action = create_proc_action<conjured_chillglobe_proxy_t>( "conjured_chillglobe", effect );
 }
 
+void irideus_fragment( special_effect_t& effect )
+{
+  auto reduce = new special_effect_t( effect.player );
+  reduce->type = SPECIAL_EFFECT_EQUIP;
+  reduce->source = SPECIAL_EFFECT_SOURCE_ITEM;
+  reduce->spell_id = effect.spell_id;
+  reduce->cooldown_ = effect.driver()->internal_cooldown();
+  // TODO: determine what exactly the flags are. At bare minimum reduced per cast. Certain other non-cast procs will
+  // also reduce. Maybe require individually tailoring per module a la Bron
+  reduce->proc_flags_ = PF_ALL_DAMAGE | PF_ALL_HEAL;
+  reduce->proc_flags2_ = PF2_CAST | PF2_CAST_DAMAGE | PF2_CAST_HEAL;
+  reduce->set_can_proc_from_procs( true );
+  reduce->set_can_only_proc_from_class_abilites( true );
+  effect.player->special_effects.push_back( reduce );
+
+  auto cb = new dbc_proc_callback_t( effect.player, *reduce );
+  cb->initialize();
+  cb->deactivate();
+
+
+  auto buff = create_buff<stat_buff_t>( effect.player, effect.driver() );
+  buff->manual_stats_added = false;
+  buff->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ),
+                  effect.driver()->effectN( 1 ).average( effect.item ) )
+      ->set_reverse( true )
+      ->set_stack_change_callback( [ cb ]( buff_t*, int old_, int new_ ) {
+    if ( !old_ )
+      cb->activate();
+    else if ( !new_ )
+      cb->deactivate();
+  } );
+
+  effect.custom_buff = buff;
+
+  effect.player->callbacks.register_callback_execute_function(
+      effect.spell_id, [ buff ]( const dbc_proc_callback_t*, action_t*, action_state_t* ) { buff->trigger(); } );
+}
+
 // TODO: Do properly and add both drivers
 // 383798 = Driver for you
 // 386578 = Driver for target
@@ -2055,6 +2093,7 @@ void register_special_effects()
   register_special_effect( 384532, items::darkmoon_deck_watcher );
   register_special_effect( 383751, items::bottle_of_spiraling_winds );
   register_special_effect( 396391, items::conjured_chillglobe );
+  register_special_effect( 383941, items::irideus_fragment );
   register_special_effect( 383798, items::emerald_coachs_whistle );
   register_special_effect( 381471, items::erupting_spear_fragment );
   register_special_effect( 383920, items::furious_ragefeather );
