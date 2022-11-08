@@ -5769,7 +5769,7 @@ struct thunder_clap_t : public warrior_attack_t
     radius *= 1.0 + p->talents.warrior.crackling_thunder->effectN( 1 ).percent();
     energize_type = action_energize::NONE;
 
-    if ( p->specialization() == WARRIOR_ARMS )
+    if ( p->specialization() == WARRIOR_ARMS || p->specialization() == WARRIOR_FURY )
     {
     base_costs[ RESOURCE_RAGE ] += p->talents.warrior.blood_and_thunder->effectN( 2 ).resource( RESOURCE_RAGE );
     }
