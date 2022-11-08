@@ -2672,7 +2672,10 @@ void priest_t::trigger_idol_of_nzoth( player_t* target, proc_t* proc )
     td->buffs.echoing_void->trigger();
     if ( rng().roll( talents.shadow.idol_of_nzoth->proc_chance() ) )
     {
-      td->buffs.echoing_void_collapse->trigger( timespan_t::from_seconds( td->buffs.echoing_void->stack() + 1 ) );
+      int stacks = td->buffs.echoing_void->stack();
+      sim->print_debug( "{} triggered echoing_void_collapse on target {} for {} stacks.", *this, target->name_str,
+                        stacks );
+      td->buffs.echoing_void_collapse->trigger( timespan_t::from_seconds( stacks + 1 ) );
     }
   }
 }
