@@ -811,7 +811,6 @@ public:
     propagate_const<cooldown_t*> breath_of_fire;
     propagate_const<cooldown_t*> chi_torpedo;
     propagate_const<cooldown_t*> celestial_brew;
-    propagate_const<cooldown_t*> counterstrike;
     propagate_const<cooldown_t*> desperate_measure;
     propagate_const<cooldown_t*> drinking_horn_cover;
     propagate_const<cooldown_t*> expel_harm;

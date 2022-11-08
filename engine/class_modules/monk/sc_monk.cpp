@@ -363,20 +363,15 @@ public:
     {
       p()->buff.combo_strikes->trigger();
 
-      if ( p()->talent.windwalker.hit_combo->ok() )
-        p()->buff.hit_combo->trigger();
+      p()->buff.hit_combo->trigger();
 
-      if ( p()->shared.xuens_bond && p()->shared.xuens_bond->ok() )
+      if ( p()->shared.xuens_bond->ok() )
           p()->cooldown.invoke_xuen->adjust( p()->shared.xuens_bond->effectN( 2 ).time_value(), true );  // Saved as -100
 
       if ( p()->talent.windwalker.meridian_strikes->ok() )
           p()->cooldown.touch_of_death->adjust( -10 * p()->talent.windwalker.meridian_strikes->effectN( 2 ).time_value(), true ); // Saved as 35
 
-      if ( p()->talent.windwalker.fury_of_xuen->ok() && p()->cooldown.fury_of_xuen->up() )
-      {
-        p()->cooldown.fury_of_xuen->start( p()->talent.windwalker.fury_of_xuen->internal_cooldown() );
-        p()->buff.fury_of_xuen_stacks->trigger();
-      }
+      p()->buff.fury_of_xuen_stacks->trigger();
     }
     else
     {
@@ -7083,7 +7078,7 @@ struct gift_of_the_ox_buff_t : public monk_buff_t<buff_t>
 };
 
 // ===============================================================================
-// Xuen Rank 2 Empowered Tiger Lightning Buff
+// Invoke Xuen the White Tiger
 // ===============================================================================
 struct invoke_xuen_the_white_tiger_buff_t : public monk_buff_t<buff_t>
 {
@@ -7173,10 +7168,10 @@ struct call_to_arms_xuen_buff_t : public monk_buff_t<buff_t>
   call_to_arms_xuen_buff_t( monk_t& p, util::string_view n, const spell_data_t* s ) : monk_buff_t( p, n, s )
   {
     set_cooldown( timespan_t::zero() );
-    set_duration( p.passives.call_to_arms_invoke_xuen->duration() );
+    set_duration( s->duration() );
     set_trigger_spell( p.covenant.kyrian );
 
-    set_period( timespan_t::from_seconds( p.talent.windwalker.empowered_tiger_lightning->effectN( 1 ).base_value() ) );
+    set_period( timespan_t::from_seconds( s->effectN( 2 ).period() ) );
 
     set_tick_callback( call_to_arm_callback );
   }
@@ -7195,7 +7190,8 @@ struct fury_of_xuen_stacking_buff_t : public monk_buff_t<buff_t>
   fury_of_xuen_stacking_buff_t( monk_t& p, util::string_view n, const spell_data_t* s ) : monk_buff_t( p, n, s )
   {
     // Currently this is saved as 100, but we need to utilize it as a percent so (100 / 100) = 1 * 0.01 = 1%
-    set_default_value( ( p.passives.fury_of_xuen_stacking_buff->effectN( 3 ).base_value() / 100 ) * 0.01 );
+    set_default_value( ( s->effectN( 3 ).base_value() / 100 ) * 0.01 );
+    set_cooldown( p.talent.windwalker.fury_of_xuen->internal_cooldown() );
     set_trigger_spell( p.talent.windwalker.fury_of_xuen );
     set_cooldown( timespan_t::zero() );
   }
@@ -7209,7 +7205,7 @@ struct fury_of_xuen_stacking_buff_t : public monk_buff_t<buff_t>
 };
 
 // ===============================================================================
-// Fury of Xuen Stacking Buff
+// Fury of Xuen Haste Buff
 // ===============================================================================
 struct fury_of_xuen_haste_buff_t : public monk_buff_t<buff_t>
 {
@@ -7255,7 +7251,7 @@ struct fury_of_xuen_haste_buff_t : public monk_buff_t<buff_t>
     add_invalidate( CACHE_HASTE );
     add_invalidate( CACHE_SPELL_HASTE );
 
-    set_period( p.passives.fury_of_xuen_haste_buff->effectN( 3 ).period() );
+    set_period( s->effectN( 3 ).period() );
 
     set_tick_callback( fury_of_xuen_callback );
   }
@@ -7639,7 +7635,6 @@ monk_t::monk_t( sim_t* sim, util::string_view name, race_e r )
   cooldown.breath_of_fire          = get_cooldown( "breath_of_fire" );
   cooldown.celestial_brew          = get_cooldown( "celestial_brew" );
   cooldown.chi_torpedo             = get_cooldown( "chi_torpedo" );
-  cooldown.counterstrike           = get_cooldown( "counterstrike" );
   cooldown.drinking_horn_cover     = get_cooldown( "drinking_horn_cover" );
   cooldown.expel_harm              = get_cooldown( "expel_harm" );
   cooldown.fortifying_brew         = get_cooldown( "fortifying_brew" );
@@ -10311,7 +10306,7 @@ void monk_t::target_mitigation( school_e school, result_amount_type dt, action_s
 
   // Diffuse Magic
   if ( school != SCHOOL_PHYSICAL )
-    s->result_amount *= 1.0 + buff.diffuse_magic->default_value;  // Stored as -60%
+    s->result_amount *= 1.0 + buff.diffuse_magic->value();  // Stored as -60%
 
   // If Breath of Fire is ticking on the source target, the player receives 5% less damage
   if ( target_data->dots.breath_of_fire->is_ticking() )
