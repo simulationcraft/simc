@@ -10552,6 +10552,7 @@ void druid_t::create_actions()
     fm->s_data_reporting = talent.orbit_breaker;
     fm->base_multiplier = talent.orbit_breaker->effectN( 2 ).percent();
     fm->set_free_cast( free_spell_e::ORBIT );
+    fm->background = true;
     active.orbit_breaker = fm;
   }
 
@@ -10595,6 +10596,7 @@ void druid_t::create_actions()
     firmament->damage->base_multiplier = talent.sundered_firmament->effectN( 1 ).percent();
     firmament->s_data_reporting = talent.sundered_firmament;
     firmament->set_free_cast( free_spell_e::FIRMAMENT );
+    firmament->background = true;
     active.sundered_firmament = firmament;
   }
 
