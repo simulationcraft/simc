@@ -7171,7 +7171,7 @@ struct call_to_arms_xuen_buff_t : public monk_buff_t<buff_t>
     set_duration( s->duration() );
     set_trigger_spell( p.covenant.kyrian );
 
-    set_period( timespan_t::from_seconds( s->effectN( 2 ).period() ) );
+    set_period( s->effectN( 2 ).period() );
 
     set_tick_callback( call_to_arm_callback );
   }
@@ -7514,78 +7514,88 @@ namespace monk
 // Debuffs ==================================================================
 monk_td_t::monk_td_t( player_t* target, monk_t* p ) : actor_target_data_t( target, p ), dots(), debuff(), monk( *p )
 {
-  if ( p->specialization() == MONK_WINDWALKER )
-  {
+    // Windwalker
     debuff.flying_serpent_kick = make_buff( *this, "flying_serpent_kick", p->passives.flying_serpent_kick_damage )
-                                     ->set_default_value_from_effect( 2 );
+        ->set_trigger_spell( p->talent.windwalker.flying_serpent_kick )
+        ->set_default_value_from_effect( 2 );
     debuff.empowered_tiger_lightning = make_buff( *this, "empowered_tiger_lightning", spell_data_t::nil() )
-                                           ->set_quiet( true )
-                                           ->set_cooldown( timespan_t::zero() )
-                                           ->set_refresh_behavior( buff_refresh_behavior::NONE )
-                                           ->set_max_stack( 1 )
-                                           ->set_default_value( 0 );
+        ->set_trigger_spell(p->talent.windwalker.empowered_tiger_lightning)
+        ->set_quiet( true )
+        ->set_cooldown( timespan_t::zero() )
+        ->set_refresh_behavior( buff_refresh_behavior::NONE )
+        ->set_max_stack( 1 )
+        ->set_default_value( 0 );
     debuff.fury_of_xuen_empowered_tiger_lightning = make_buff( *this, "empowered_tiger_lightning_fury_of_xuen", spell_data_t::nil() )
-                                                        ->set_quiet( true )
-                                                        ->set_cooldown( timespan_t::zero() )
-                                                        ->set_refresh_behavior( buff_refresh_behavior::NONE )
-                                                        ->set_max_stack( 1 )
-                                                        ->set_default_value( 0 );
+        ->set_trigger_spell(p->talent.windwalker.empowered_tiger_lightning)
+        ->set_quiet( true )
+        ->set_cooldown( timespan_t::zero() )
+        ->set_refresh_behavior( buff_refresh_behavior::NONE )
+        ->set_max_stack( 1 )
+        ->set_default_value( 0 );
 
     debuff.mark_of_the_crane = make_buff( *this, "mark_of_the_crane", p->passives.mark_of_the_crane )
-                                   ->set_default_value( p->passives.cyclone_strikes->effectN( 1 ).percent() )
-                                   ->set_refresh_behavior( buff_refresh_behavior::DURATION );
+        ->set_trigger_spell( p->talent.windwalker.mark_of_the_crane )
+        ->set_default_value( p->passives.cyclone_strikes->effectN( 1 ).percent() )
+        ->set_refresh_behavior( buff_refresh_behavior::DURATION );
     debuff.touch_of_karma = make_buff( *this, "touch_of_karma_debuff", p->talent.windwalker.touch_of_karma )
-                                // set the percent of the max hp as the default value.
-                                ->set_default_value_from_effect( 3 );
-  }
+        // set the percent of the max hp as the default value.
+        ->set_default_value_from_effect( 3 );
 
-  if ( p->specialization() == MONK_BREWMASTER )
-  {
+    // Brewmaster
     debuff.keg_smash = make_buff( *this, "keg_smash", p->talent.brewmaster.keg_smash )
-                           ->set_cooldown( timespan_t::zero() )
-                           ->set_default_value_from_effect( 3 );
-  }
+        ->set_cooldown( timespan_t::zero() )
+        ->set_default_value_from_effect( 3 );
 
-  // Covenant Abilities
-  debuff.bonedust_brew = make_buff( *this, "bonedust_brew_debuff", p->find_spell( 325216 ) )
-                             ->set_chance( 1 )
-                             ->set_cooldown( timespan_t::zero() )
-                             ->set_default_value_from_effect( 3 );
+    // Covenant Abilities
+    debuff.bonedust_brew = make_buff( *this, "bonedust_brew_debuff", p->find_spell( 325216 ) )
+        ->set_trigger_spell( p->shared.bonedust_brew )
+        ->set_chance( 1 )
+        ->set_cooldown( timespan_t::zero() )
+        ->set_default_value_from_effect( 3 );
 
-  debuff.faeline_stomp = make_buff( *this, "faeline_stomp_debuff", p->find_spell( 327257 ) );
+    debuff.faeline_stomp = make_buff( *this, "faeline_stomp_debuff", p->find_spell( 327257 ) )
+        ->set_trigger_spell( p->shared.faeline_stomp );
 
-  debuff.faeline_stomp_brm = make_buff( *this, "faeline_stomp_stagger_debuff", p->passives.faeline_stomp_brm )
-                                 ->set_default_value_from_effect( 1 );
+    debuff.faeline_stomp_brm = make_buff( *this, "faeline_stomp_stagger_debuff", p->passives.faeline_stomp_brm )
+        ->set_trigger_spell( p->covenant.night_fae )
+        ->set_default_value_from_effect( 1 );
 
-  debuff.fallen_monk_keg_smash = make_buff( *this, "fallen_monk_keg_smash", p->passives.fallen_monk_keg_smash )
-                                     ->set_default_value_from_effect( 3 );
+    debuff.fallen_monk_keg_smash = make_buff( *this, "fallen_monk_keg_smash", p->passives.fallen_monk_keg_smash )
+        ->set_trigger_spell( p->covenant.venthyr )
+        ->set_default_value_from_effect( 3 );
 
-  debuff.weapons_of_order =
-      make_buff( *this, "weapons_of_order_debuff", p->find_spell( 312106 ) )->set_default_value_from_effect( 1 );
+    debuff.weapons_of_order = make_buff( *this, "weapons_of_order_debuff", p->find_spell( 312106 ) )
+        ->set_trigger_spell( p->shared.weapons_of_order )
+        ->set_default_value_from_effect( 1 );
 
-  // Shadowland Legendary
-  debuff.call_to_arms_empowered_tiger_lightning =
-      make_buff( *this, "empowered_tiger_lightning_call_to_arms", spell_data_t::nil() )
-          ->set_quiet( true )
-          ->set_cooldown( timespan_t::zero() )
-          ->set_refresh_behavior( buff_refresh_behavior::NONE )
-          ->set_max_stack( 1 )
-          ->set_default_value( 0 );
-  debuff.fae_exposure = make_buff( *this, "fae_exposure_damage", p->passives.fae_exposure_dmg )
-                            ->set_default_value_from_effect( 1 )
-                            ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-                            ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
-  debuff.keefers_skyreach = make_buff( *this, "keefers_skyreach", p->passives.keefers_skyreach_debuff )
-                                ->set_default_value_from_effect( 1 )
-                                ->add_invalidate( CACHE_ATTACK_CRIT_CHANCE )
-                                ->set_refresh_behavior( buff_refresh_behavior::NONE );
-  debuff.sinister_teaching_fallen_monk_keg_smash =
-      make_buff( *this, "sinister_teaching_fallen_monk_keg_smash", p->passives.fallen_monk_keg_smash )
-          ->set_default_value_from_effect( 3 );
-  debuff.skyreach_exhaustion = make_buff( *this, "skyreach_exhaustion", p->find_spell( 337341 ) )
-                                   ->set_refresh_behavior( buff_refresh_behavior::NONE );
+    // Shadowland Legendary
+    debuff.call_to_arms_empowered_tiger_lightning = make_buff( *this, "empowered_tiger_lightning_call_to_arms", spell_data_t::nil() )
+        ->set_trigger_spell( p->covenant.kyrian )
+        ->set_quiet( true )
+        ->set_cooldown( timespan_t::zero() )
+        ->set_refresh_behavior( buff_refresh_behavior::NONE )
+        ->set_max_stack( 1 )
+        ->set_default_value( 0 );
+    debuff.fae_exposure = make_buff( *this, "fae_exposure_damage", p->passives.fae_exposure_dmg )
+        ->set_trigger_spell(p->shared.faeline_harmony)
+        ->set_default_value_from_effect( 1 )
+        ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+        ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
+    debuff.keefers_skyreach = make_buff( *this, "keefers_skyreach", p->passives.keefers_skyreach_debuff )
+        ->set_trigger_spell( p->shared.skyreach )
+        ->set_default_value_from_effect( 1 )
+        ->add_invalidate( CACHE_ATTACK_CRIT_CHANCE )
+        ->set_refresh_behavior( buff_refresh_behavior::NONE );
+    debuff.skyreach_exhaustion = make_buff( *this, "skyreach_exhaustion", p->find_spell( 337341 ) ) // 393050
+        ->set_trigger_spell( p->shared.skyreach )
+        ->set_refresh_behavior( buff_refresh_behavior::NONE );
+    debuff.sinister_teaching_fallen_monk_keg_smash = make_buff( *this, "sinister_teaching_fallen_monk_keg_smash", p->passives.fallen_monk_keg_smash )
+        ->set_trigger_spell( p->covenant.venthyr )
+        ->set_default_value_from_effect( 3 );
 
-  debuff.storm_earth_and_fire = make_buff( *this, "storm_earth_and_fire_target" )->set_cooldown( timespan_t::zero() );
+  debuff.storm_earth_and_fire = make_buff( *this, "storm_earth_and_fire_target", spell_data_t::nil() )
+      ->set_trigger_spell( p->talent.windwalker.storm_earth_and_fire )
+      ->set_cooldown( timespan_t::zero() );
 
   dots.breath_of_fire          = target->get_dot( "breath_of_fire_dot", p );
   dots.enveloping_mist         = target->get_dot( "enveloping_mist", p );
@@ -8531,7 +8541,7 @@ void monk_t::init_spells()
   passives.glory_of_the_dawn_damage         = find_spell( 392959 );
   passives.hidden_masters_forbidden_touch   = find_spell( 213114 );
   passives.hit_combo                        = find_spell( 196741 );
-  passives.keefers_skyreach_debuff          = find_spell( 344021 );
+  passives.keefers_skyreach_debuff          = find_spell( 344021 ); // 393048
   passives.mark_of_the_crane                = find_spell( 228287 );
   passives.power_strikes_chi                = find_spell( 121283 );
   passives.thunderfist                      = find_spell( 242387 );
@@ -8830,8 +8840,6 @@ void monk_t::init_scaling()
 void monk_t::create_buffs ()
 {
   base_t::create_buffs ();
-
-  auto spec_tree = specialization ();
 
   // General
   buff.channeling_soothing_mist = make_buff( this, "channeling_soothing_mist", passives.soothing_mist_heal )

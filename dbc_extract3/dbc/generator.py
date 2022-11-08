@@ -1921,6 +1921,8 @@ class SpellDataGenerator(DataGenerator):
           ( 335913, 3 ), # Empowered Tiger Lightning Damage spell
           ( 396167, 3 ), # Fury of Xuen Stacking Buff
           ( 396168, 3 ), # Fury of Xuen Haste Buff
+          ( 393048, 3 ), # Skyreach Debuff
+          ( 393050, 3 ), # Skyreach Exxhaustion Debuff
 
           # Covenant
           ( 325217, 0 ), # Necrolord Bonedust Brew damage
