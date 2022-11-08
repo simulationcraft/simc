@@ -41,7 +41,7 @@ st->add_action( "force_of_nature,if=astral_power.deficit>variable.passive_asp+20
 st->add_action( "variable,name=enter_lunar,value=eclipse.any_next|buff.eclipse_lunar.up&buff.eclipse_lunar.remains<action.wrath.execute_time" );
 st->add_action( "wrath,if=variable.enter_lunar" );
 st->add_action( "convoke_the_spirits,if=buff.ca_inc.remains>4|(cooldown.ca_inc.remains>30|variable.no_cd_talent)&(buff.eclipse_lunar.remains>4|buff.eclipse_solar.remains>4)" );
-st->add_action( "astral_communion,if=astral_power.deficit>variable.passive_asp+75" );
+st->add_action( "astral_communion,if=astral_power.deficit>variable.passive_asp+55" );
 st->add_action( "fury_of_elune,if=astral_power.deficit>variable.passive_asp+8" );
 st->add_action( "new_moon,if=astral_power.deficit>variable.passive_asp+10&(charges=2&recharge_time<5|charges=3)" );
 st->add_action( "half_moon,if=astral_power.deficit>variable.passive_asp+20&(buff.eclipse_lunar.remains>execute_time|buff.eclipse_solar.remains>execute_time)" );
@@ -49,7 +49,7 @@ st->add_action( "full_moon,if=astral_power.deficit>variable.passive_asp+40&(buff
 st->add_action( "starfall,if=buff.starweavers_warp.up|variable.4pc_starfall_st&buff.touch_the_cosmos.up" );
 st->add_action( "starfire,if=buff.gathering_starstuff.stack=3&astral_power.deficit>variable.passive_asp+8&buff.eclipse_lunar.up" );
 st->add_action( "starfall,if=buff.primordial_arcanic_pulsar.value>=550&astral_power.deficit<variable.passive_asp" );
-st->add_action( "starsurge,if=buff.ca_inc.remains<5&buff.ca_inc.up|buff.starweavers_weft.up|astral_power.deficit<variable.passive_asp|buff.primordial_arcanic_pulsar.value<550&((buff.eclipse_lunar.remains<4&buff.eclipse_lunar.up|buff.eclipse_solar.remains<4&buff.eclipse_solar.up)&astral_power>70|talent.starlord&buff.starlord.stack<3|talent.balance_of_all_things&(buff.balance_of_all_things_arcane.stack>5|buff.balance_of_all_things_nature.stack>5)|talent.rattle_the_stars&buff.rattled_stars.up&buff.rattled_stars.remains<gcd.max)" );
+st->add_action( "starsurge,if=buff.ca_inc.remains<5&buff.ca_inc.up|buff.starweavers_weft.up|astral_power.deficit<variable.passive_asp|buff.primordial_arcanic_pulsar.value<550&((buff.eclipse_lunar.remains<4&buff.eclipse_lunar.up|buff.eclipse_solar.remains<4&buff.eclipse_solar.up)&astral_power>70|talent.starlord&buff.starlord.stack<3|talent.balance_of_all_things&(buff.balance_of_all_things_arcane.stack>5|buff.balance_of_all_things_nature.stack>5)|talent.rattle_the_stars&buff.rattled_stars.up&buff.rattled_stars.remains<gcd.max|talent.astral_communion&cooldown.astral_communion.remains<3)" );
 st->add_action( "new_moon,if=astral_power.deficit>variable.passive_asp+10" );
 st->add_action( "wild_mushroom,if=astral_power.deficit>variable.passive_asp+5&(!talent.fungal_growth|!prev_gcd.1.wild_mushroom&!prev_gcd.2.wild_mushroom&dot.fungal_growth.remains<2)" );
 st->add_action( "starfire,if=eclipse.in_lunar|buff.warrior_of_elune.up&(buff.eclipse_lunar.up|buff.umbral_embrace.react)" );
@@ -69,8 +69,8 @@ aoe->add_action( "ravenous_frenzy,if=buff.ca_inc.remains>15" );
 aoe->add_action( "convoke_the_spirits,if=buff.ca_inc.remains>4|(!talent.primordial_arcanic_pulsar&cooldown.ca_inc.remains>30|variable.no_cd_talent)&(buff.eclipse_lunar.remains>4|buff.eclipse_solar.remains>4)" );
 aoe->add_action( "warrior_of_elune" );
 aoe->add_action( "force_of_nature,if=astral_power.deficit>variable.passive_asp+20" );
-aoe->add_action( "astral_communion,if=astral_power.deficit>variable.passive_asp+75" );
 aoe->add_action( "wrath,if=eclipse.any_next|buff.eclipse_lunar.remains<action.wrath.execute_time" );
+aoe->add_action( "astral_communion,if=astral_power.deficit>variable.passive_asp+55" );
 aoe->add_action( "fury_of_elune,if=astral_power.deficit>variable.passive_asp+8" );
 aoe->add_action( "new_moon,if=astral_power.deficit>variable.passive_asp+10&(charges=2&recharge_time<5|charges=3)" );
 aoe->add_action( "half_moon,if=astral_power.deficit>variable.passive_asp+20&(charges=2&recharge_time<5|charges=3)" );
