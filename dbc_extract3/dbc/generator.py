@@ -1897,6 +1897,7 @@ class SpellDataGenerator(DataGenerator):
           ( 325092, 1 ), # Purified Chi
           ( 383701, 1 ), # Gai Plin's Imperial Brew Heal
           ( 383733, 1 ), # Training of Niuzao Mastery % Buff
+          ( 386959, 1 ), # Charred Passions Damage
 
           # Mistweaver
           ( 228649, 2 ), # Teachings of the Monastery - Blackout Proc
