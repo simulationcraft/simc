@@ -5094,15 +5094,15 @@ struct revenge_t : public warrior_attack_t
       impact_action = p->active.deep_wounds_PROT;
       base_multiplier *= 1.0 + p -> talents.protection.best_served_cold -> effectN( 1 ).percent();
       if ( seismic )
-    {
-      background = proc = true;
-      base_multiplier *= 1.0 + p -> find_spell( 335759 ) -> effectN( 1 ).percent();
-    }
-      else if ( p -> legendary.seismic_reverberation -> ok() )
-    {
-      seismic_action = new revenge_t( p, "", true );
-      add_child( seismic_action );
-    }
+      {
+        background = proc = true;
+        base_multiplier *= 1.0 + p -> find_spell( 382956 ) -> effectN( 3 ).percent();
+      }
+      else if ( p -> talents.warrior.seismic_reverberation -> ok() )
+      {
+        seismic_action = new revenge_t( p, "", true );
+        add_child( seismic_action );
+      }
   }
 
   double cost() const override
@@ -5117,14 +5117,11 @@ struct revenge_t : public warrior_attack_t
   {
     warrior_attack_t::execute();
     p()->buff.revenge->expire();
-    //p()->buff.vengeance_revenge->expire();
-    //p()->buff.vengeance_ignore_pain->trigger();
 
-    if ( p()->legendary.seismic_reverberation->ok() && !background &&
-    execute_state->n_targets >= p()->legendary.seismic_reverberation->effectN( 1 ).base_value() )
+    if ( p()->talents.warrior.seismic_reverberation->ok() && !background &&
+    execute_state->n_targets >= p()->talents.warrior.seismic_reverberation->effectN( 1 ).base_value() )
     {
-      seismic_action->set_target( target );
-      seismic_action->schedule_execute();
+      seismic_action->execute_on_target( target );
     }
 
     if ( rng().roll( shield_slam_reset ) )
