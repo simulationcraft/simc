@@ -714,7 +714,8 @@ public:
     
     if ( p()->specialization() == MONK_MISTWEAVER )
     {
-      p()->buff.invoke_chiji_evm->trigger();
+      if ( trigger_chiji && p()->buff.invoke_chiji->up() )
+        p()->buff.invoke_chiji_evm->trigger();
     }
     else if ( p()->specialization() == MONK_WINDWALKER )
     {
@@ -1156,14 +1157,6 @@ struct storm_earth_and_fire_t : public monk_spell_t
     return monk_spell_t::target_ready( candidate_target );
   }
 
-  bool ready() override
-  {
-    if ( p()->talent.windwalker.serenity->ok() )
-      return false;
-
-    return monk_spell_t::ready();
-  }
-
   // Monk used SEF while pets are up to sticky target them into an enemy
   void sticky_targeting()
   {
@@ -1263,57 +1256,36 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
 
     if ( auto* td = this->find_td( target ) )
     {
-      if ( td->debuff.keefers_skyreach->check() &&
-           base_t::data().affected_by( p()->passives.keefers_skyreach_debuff->effectN( 1 ) ) )
-      {
+      if ( base_t::data().affected_by( p()->passives.keefers_skyreach_debuff->effectN( 1 ) ) )
         c += td->debuff.keefers_skyreach->check_value();
-      }
     }
 
     return c;
-  }
-
-  double composite_persistent_multiplier( const action_state_t* action_state ) const override
-  {
-    double pm = base_t::composite_persistent_multiplier( action_state );
-
-    return pm;
   }
 
   double action_multiplier() const override
   {
     double am = base_t::action_multiplier();
 
-    if ( p()->specialization() == MONK_WINDWALKER )
+    if ( ww_mastery && p()->buff.combo_strikes->check() )
+      am *= 1 + p()->cache.mastery_value();
+
+    // Storm, Earth, and Fire
+    if ( p()->buff.storm_earth_and_fire->check() && p()->affected_by_sef( base_t::data() ) )
+      am *= 1 + p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent();
+
+    // Serenity
+    if ( p()->buff.serenity->check() && base_t::data().affected_by( p()->talent.windwalker.serenity->effectN( 2 ) ) )
     {
-      if ( ww_mastery && p()->buff.combo_strikes->check() )
-        am *= 1 + p()->cache.mastery_value();
+      double serenity_multiplier = p()->talent.windwalker.serenity->effectN( 2 ).percent();
 
-      // Storm, Earth, and Fire
-      if ( p()->buff.storm_earth_and_fire->check() && p()->affected_by_sef( base_t::data() ) )
-        am *= 1 + p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent();
+      serenity_multiplier += p()->conduit.coordinated_offensive.percent();
 
-      // Serenity
-      if ( p()->buff.serenity->check() )
-      {
-        if ( base_t::data().affected_by( p()->talent.windwalker.serenity->effectN( 2 ) ) )
-        {
-          double serenity_multiplier = p()->talent.windwalker.serenity->effectN( 2 ).percent();
-
-          if ( p()->conduit.coordinated_offensive->ok() )
-            serenity_multiplier += p()->conduit.coordinated_offensive.percent();
-
-          am *= 1 + serenity_multiplier;
-        }
-      }
+      am *= 1 + serenity_multiplier;
     }
 
     // Increases just physical damage
-    if ( p()->specialization() == MONK_MISTWEAVER )
-    {
-      if ( p()->buff.touch_of_death_mw->check() )
-        am *= 1 + p()->buff.touch_of_death_mw->check_value();
-    }
+    am *= 1 + p()->buff.touch_of_death_mw->check_value();
 
     return am;
   }
@@ -1501,14 +1473,11 @@ struct eye_of_the_tiger_heal_tick_t : public monk_heal_t
   {
     double am = monk_heal_t::action_multiplier();
 
-    if ( p()->specialization() == MONK_WINDWALKER )
+    if ( p()->buff.storm_earth_and_fire->check() )
     {
-      if ( p()->buff.storm_earth_and_fire->check() )
-      {
-        // Hard code Patch 9.0.5
-        // Eye of the Tiger's heal is now increased by 35% when Storm, Earth, and Fire is out
-        am *= ( 1 + p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent() ) * 3;  // Results in 135%
-      }
+      // Hard code Patch 9.0.5
+      // Eye of the Tiger's heal is now increased by 26% when Storm, Earth, and Fire is out
+      am *= ( 1 + p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent() ) * 3;  // Results in 126%
     }
 
     return am;
@@ -1534,15 +1503,11 @@ struct eye_of_the_tiger_dmg_tick_t : public monk_spell_t
   {
     double am = monk_spell_t::action_multiplier();
 
-    if ( p()->specialization() == MONK_WINDWALKER )
+    if ( p()->buff.storm_earth_and_fire->check() )
     {
-
-      if ( p()->buff.storm_earth_and_fire->check() )
-      {
-        // Hard code Patch 9.0.5
-        // Eye of the Tiger's damage is now increased by 35% when Storm, Earth, and Fire is out
-        am *= ( 1 + p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent() ) * 3;  // Results in 135%
-      }
+      // Hard code Patch 9.0.5
+      // Eye of the Tiger's damage is now increased by 26% when Storm, Earth, and Fire is out
+      am *= ( 1 + p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent() ) * 3;  // Results in 126%
     }
 
     return am;
@@ -1584,33 +1549,24 @@ struct tiger_palm_t : public monk_melee_attack_t
 
     spell_power_mod.direct = 0.0;
 
-    if ( p->shared.skyreach && p->shared.skyreach->ok() )
-      range += p->shared.skyreach->effectN( 1 ).base_value();
+    range += p->shared.skyreach->effectN( 1 ).base_value();
   }
 
   double action_multiplier() const override
   {
     double am = monk_melee_attack_t::action_multiplier();
 
-    if ( p()->specialization() == MONK_BREWMASTER )
-    {
-      if ( p()->buff.blackout_combo->check() )
-        am *= 1 + p()->buff.blackout_combo->data().effectN( 1 ).percent();
+    am *= 1 + p()->buff.blackout_combo->data().effectN( 1 ).percent();
 
-      if ( face_palm )
-        am *= 1 + p()->shared.face_palm->effectN( 2 ).percent();
+    if ( face_palm )
+      am *= 1 + p()->shared.face_palm->effectN( 2 ).percent();
 
-      if ( p()->buff.counterstrike->check() )
-        am *= 1 + p()->buff.counterstrike->data().effectN( 1 ).percent();
-    }
-    else if ( p()->specialization() == MONK_WINDWALKER )
-    {
-      if ( power_strikes )
-        am *= 1 + p()->talent.windwalker.power_strikes->effectN( 2 ).percent();
+    am *= 1 + p()->buff.counterstrike->data().effectN( 1 ).percent();
 
-      if ( p()->talent.windwalker.touch_of_the_tiger->ok() )
-        am *= 1 + p()->talent.windwalker.touch_of_the_tiger->effectN( 1 ).percent();
-    }
+    if ( power_strikes )
+      am *= 1 + p()->talent.windwalker.power_strikes->effectN( 2 ).percent();
+
+    am *= 1 + p()->talent.windwalker.touch_of_the_tiger->effectN( 1 ).percent();
 
     return am;
   }
@@ -1621,19 +1577,14 @@ struct tiger_palm_t : public monk_melee_attack_t
     // Pre-Execute
     //============
 
-    if ( p()->specialization() == MONK_BREWMASTER )
+    if ( rng().roll( p()->shared.face_palm->effectN( 1 ).percent() ) )
     {
-      if ( p()->shared.face_palm && p()->shared.face_palm->ok() && rng().roll( p()->shared.face_palm->effectN( 1 ).percent() ) )
-      {
         face_palm = true;
         p()->proc.face_palm->occur();
-      }
     }
-    else if ( p()->specialization() == MONK_WINDWALKER )
-    {
-        if (p()->buff.power_strikes->up())
-          power_strikes = true;
-    }
+      
+    if ( p()->buff.power_strikes->up() )
+        power_strikes = true;
 
     //------------
 
@@ -1657,68 +1608,47 @@ struct tiger_palm_t : public monk_melee_attack_t
 
     if ( p()->talent.general.eye_of_the_tiger->ok() )
     {
-      // Need to remove any Eye of the Tiger on targets that are not the current target
-      // Only the damage dot needs to be removed. The healing buff gets pandemic refreshed
-      for ( auto non_sleeping_target : p()->sim->target_non_sleeping_list )
-      {
-        if ( target == non_sleeping_target )
-          continue;
+        // Need to remove any Eye of the Tiger on targets that are not the current target
+        // Only the damage dot needs to be removed. The healing buff gets pandemic refreshed
+        for ( auto non_sleeping_target : p()->sim->target_non_sleeping_list )
+        {
+            if ( target == non_sleeping_target )
+                continue;
 
-        get_td( non_sleeping_target )->dots.eye_of_the_tiger_damage->cancel();
-      }
+            get_td( non_sleeping_target )->dots.eye_of_the_tiger_damage->cancel();
+        }
+        eye_of_the_tiger_damage->target = p()->target;
+        eye_of_the_tiger_damage->execute();
 
-      eye_of_the_tiger_heal->execute();
-      eye_of_the_tiger_damage->execute();
+        eye_of_the_tiger_heal->execute();
     }
 
-    switch ( p()->specialization() )
+    p()->buff.teachings_of_the_monastery->trigger();
+
+    // Combo Breaker calculation
+    if ( p()->spec.combo_breaker->ok() && p()->buff.bok_proc->trigger() && p()->buff.storm_earth_and_fire->up() )
     {
-      case MONK_MISTWEAVER:
-      {
-        if ( p()->talent.mistweaver.teachings_of_the_monastery->ok() )
-          p()->buff.teachings_of_the_monastery->trigger();
-        break;
-      }
-      case MONK_WINDWALKER:
-      {
-
-        // Combo Breaker calculation
-        if ( p()->spec.combo_breaker->ok() && p()->buff.bok_proc->trigger() )
-        {
-          if ( p()->buff.storm_earth_and_fire->up() )
-          {
-            p()->trigger_storm_earth_and_fire_bok_proc( sef_pet_e::SEF_FIRE );
-            p()->trigger_storm_earth_and_fire_bok_proc( sef_pet_e::SEF_EARTH );
-          }
-        }
-        if ( p()->talent.windwalker.teachings_of_the_monastery->ok() )
-          p()->buff.teachings_of_the_monastery->trigger();
-        break;
-      }
-      case MONK_BREWMASTER:
-      {
-        // Reduces the remaining cooldown on your Brews by 1 sec
-        brew_cooldown_reduction( p()->spec.tiger_palm->effectN( 3 ).base_value() );
-
-        if ( p()->buff.blackout_combo->up() )
-        {
-          p()->proc.blackout_combo_tiger_palm->occur();
-          p()->buff.blackout_combo->expire();
-        }
-
-        if ( p()->buff.counterstrike->up() )
-        {
-          p()->proc.counterstrike_tp->occur();
-          p()->buff.counterstrike->expire();
-        }
-
-      if ( face_palm )
-          brew_cooldown_reduction( p()->shared.face_palm->effectN( 3 ).base_value() );
-        break;
-      }
-      default:
-        break;
+        p()->trigger_storm_earth_and_fire_bok_proc( sef_pet_e::SEF_FIRE );
+        p()->trigger_storm_earth_and_fire_bok_proc( sef_pet_e::SEF_EARTH );
     }
+
+    // Reduces the remaining cooldown on your Brews by 1 sec
+    brew_cooldown_reduction( p()->spec.tiger_palm->effectN( 3 ).base_value() );
+
+    if ( p()->buff.blackout_combo->up() )
+    {
+        p()->proc.blackout_combo_tiger_palm->occur();
+        p()->buff.blackout_combo->expire();
+    }
+
+    if ( p()->buff.counterstrike->up() )
+    {
+        p()->proc.counterstrike_tp->occur();
+        p()->buff.counterstrike->expire();
+    }
+
+    if ( face_palm )
+        brew_cooldown_reduction( p()->shared.face_palm->effectN( 3 ).base_value() );
 
     face_palm      = false;
     power_strikes  = false;
@@ -1729,26 +1659,13 @@ struct tiger_palm_t : public monk_melee_attack_t
     monk_melee_attack_t::impact( s );
 
     // Apply Mark of the Crane
-    if ( p()->specialization() == MONK_WINDWALKER && result_is_hit( s->result ) &&
-         p()->talent.windwalker.mark_of_the_crane->ok() )
-      p()->trigger_mark_of_the_crane( s );
+    p()->trigger_mark_of_the_crane( s );
 
-    if ( p()->specialization() == MONK_BREWMASTER )
-    {
-      // Bonedust Brew
-      if ( get_td( s->target )->debuff.bonedust_brew->up() )
-      {
-        if ( p()->shared.bonedust_brew && p()->shared.bonedust_brew->ok() )
-          brew_cooldown_reduction( p()->shared.bonedust_brew->effectN( 3 ).base_value() );
-      }
+    // Bonedust Brew
+    if ( get_td( s->target )->debuff.bonedust_brew->up() )
+        brew_cooldown_reduction( p()->shared.bonedust_brew->effectN( 3 ).base_value() );
 
-      if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T29, B2 ) && p()->cooldown.brewmasters_rhythm->up() ) {
-        p()->buff.brewmasters_rhythm->trigger();
-        // ICD on the set bonus is set to 0.1 seconds but in-game testing shows to be a 1 second ICD
-        p()->cooldown.brewmasters_rhythm->start( timespan_t::from_seconds( 1 ) );
-      }
-
-    }
+    p()->buff.brewmasters_rhythm->trigger();
 
     p()->trigger_keefers_skyreach( s );
   }
@@ -7806,6 +7723,12 @@ void monk_t::trigger_celestial_fortune( action_state_t* s )
 
 void monk_t::trigger_mark_of_the_crane( action_state_t* s )
 {
+  if ( !talent.windwalker.mark_of_the_crane->ok() )
+    return;
+
+  if ( !action_t::result_is_hit( s->result ) )
+    return;
+
   if ( get_target_data( s->target )->debuff.mark_of_the_crane->up() ||
        mark_of_the_crane_counter() < as<int>( passives.cyclone_strikes->max_stacks() ) )
     get_target_data( s->target )->debuff.mark_of_the_crane->trigger();
@@ -9106,6 +9029,8 @@ void monk_t::create_buffs ()
 
   buff.brewmasters_rhythm = make_buff( this, "brewmasters_rhythm", find_spell( 394797 ) )
       ->set_trigger_spell( sets->set( MONK_BREWMASTER, T29, B2 ) )
+      // ICD on the set bonus is set to 0.1 seconds but in-game testing shows to be a 1 second ICD
+      ->set_cooldown( timespan_t::from_seconds( 1 ) )
       ->set_default_value_from_effect( 1 )
       ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 }
