@@ -2302,7 +2302,6 @@ struct icicle_t final : public frost_mage_spell_t
   {
     background = track_shatter = triggers.icy_propulsion = true;
     callbacks = false;
-    // TODO: This base damage may have been removed, but this should be verified not just using tooltip values.
     base_dd_min = base_dd_max = 1.0;
     base_multiplier *= 1.0 + p->talents.flash_freeze->effectN( 2 ).percent();
     crit_bonus_multiplier *= 1.0 + p->talents.piercing_cold->effectN( 1 ).percent();
