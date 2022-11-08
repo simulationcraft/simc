@@ -2297,7 +2297,7 @@ void sim_t::init_fight_style()
     break;
     
     case FIGHT_STYLE_LIGHT_MOVEMENT:
-      raid_events_str += "/movement,players_only=1,cooldown=45,cooldown_stddev=5,distance=10,distance_min=5,distance_max=20,first=15";
+      raid_events_str += "/movement,players_only=1,cooldown=45,cooldown_stddev=5,distance=15,distance_min=10,distance_max=20,first=15";
       break;
     
     case FIGHT_STYLE_HEAVY_MOVEMENT:
