@@ -242,6 +242,7 @@ public:
     cooldown_t* avengers_shield; // Grand Crusader
     cooldown_t* consecration; // Precombat shenanigans
     cooldown_t* inner_light_icd;
+    cooldown_t* righteous_protector_icd;
     cooldown_t* judgment; // Crusader's Judgment
     cooldown_t* shield_of_the_righteous; // Judgment
     cooldown_t* guardian_of_ancient_kings; // Righteous Protector
@@ -1331,6 +1332,8 @@ struct holy_power_consumer_t : public Base
     if ( ab::background && is_divine_storm )
       return;
 
+    bool isFreeSLDPSpender = p->buffs.divine_purpose->up() || (is_wog && p->buffs.shining_light_free->up());
+
     // as of 11/8, according to Skeletor, crusade and RI trigger at full value now
     int num_hopo_spent = as<int>( ab::base_costs[ RESOURCE_HOLY_POWER ] );
 
@@ -1367,21 +1370,33 @@ struct holy_power_consumer_t : public Base
       p -> buffs.crusade -> trigger( num_hopo_spent );
     }
 
-    // 2021-08-10 Free sotr from vanq does not proc RP
-    if ( p -> talents.righteous_protector -> ok() && !ab::background )
+    if ( p -> talents.righteous_protector -> ok() 
+      && !ab::background 
+      && p->cooldowns.righteous_protector_icd->up())
     {
-      timespan_t reduction = timespan_t::from_seconds(
-        // Why is this in deciseconds?
-         -1.0 * p -> talents.righteous_protector -> effectN( 1 ).base_value() / 10
-       );
-      reduction *= num_hopo_spent;
-      ab::sim -> print_debug( "Righteous protector reduced the cooldown of Avenging Wrath and Guardian of Ancient Kings by {} sec", num_hopo_spent );
-      // 2022-11-02 RP currently does not, or has ever, reduced Sentinels cooldown 
-      if ( !( p->bugs && p->talents.sentinel->ok() ) )
-      {
-        p->cooldowns.avenging_wrath->adjust( reduction );
+      // Righteous Protector is not triggered by Bastion of Light-spenders. It's still triggered if it was a DP or SL spender
+      if (!(p->bugs 
+         && p->buffs.bastion_of_light->up() 
+         && !isFreeSLDPSpender
+           ))
+        {
+        timespan_t reduction = timespan_t::from_seconds(
+            // Why is this in deciseconds?
+            -1.0 * p->talents.righteous_protector->effectN( 1 ).base_value() / 10 );
+        reduction *= num_hopo_spent;
+        ab::sim->print_debug(
+            "Righteous protector reduced the cooldown of Avenging Wrath and Guardian of Ancient Kings by {} sec",
+            num_hopo_spent );
+
+        // 2022-11-08 Sentinel's cooldown is only reduced if it wasn't a free holy power spender
+        if ( !( p->bugs && p->talents.sentinel->ok() && !isFreeSLDPSpender ) )
+        {
+          p->cooldowns.avenging_wrath->adjust( reduction );
+        }
+        p->cooldowns.guardian_of_ancient_kings->adjust( reduction );
+
+        p->cooldowns.righteous_protector_icd->start();
       }
-      p -> cooldowns.guardian_of_ancient_kings -> adjust( reduction );
     }
 
     // 2022-10-25 Resolute Defender, spend 3 HP to reduce AD/DS cooldown
@@ -1428,26 +1443,15 @@ struct holy_power_consumer_t : public Base
     if ( is_wog && p -> buffs.shining_light_free -> check() )
     {
       should_continue = false;
-      if ( p -> buffs.royal_decree -> check() )
-      {
-        // Outlier (2021-06-22). If RD, SL, DP and 2 stacks of MJ are all up, then
-        // SL and RD both get consumed at the same time.
-        if ( p -> bugs && p -> buffs.the_magistrates_judgment -> stack() > 1
-          && p -> buffs.divine_purpose -> check())
-        {
-          p -> buffs.shining_light_free -> expire();
-        }
-      }
-      else
-      {
         // Shining Light is now consumed before Divine Purpose 2020-11-01
         p -> buffs.shining_light_free -> expire();
-      }
     }
 
-    if ((is_wog || is_sotr) && p -> buffs.bastion_of_light -> check() )
+    if (p -> buffs.bastion_of_light -> check() )
     {
-      p -> buffs.bastion_of_light->decrement();
+      // 2022-08-11 Bastion of Light stacks get eaten despite having a free spender available
+      if (p->bugs || !isFreeSLDPSpender )
+        p -> buffs.bastion_of_light->decrement();
     }
     // For prot (2021-06-22). Magistrate's does not get consumed when DP or SL
     // are up, but does with RD.
@@ -1458,13 +1462,6 @@ struct holy_power_consumer_t : public Base
         && !p -> buffs.divine_purpose -> check() && !ab::background )
     {
       p -> buffs.the_magistrates_judgment -> decrement( 1 );
-    }
-
-    // 2021-06-22 Royal Decree is always consumed first
-    if ( is_wog && p -> buffs.royal_decree -> check() )
-    {
-      p -> buffs.royal_decree -> expire();
-      should_continue = false;
     }
 
     // 2021-08-10 Vanquisher's Hammer's auto-sotr does not consume divine purpose

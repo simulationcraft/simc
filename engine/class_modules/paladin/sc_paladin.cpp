@@ -51,6 +51,8 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
   cooldowns.consecration              = get_cooldown( "consecration" );
   cooldowns.inner_light_icd           = get_cooldown( "inner_light_icd" );
   cooldowns.inner_light_icd->duration = find_spell( 386556 )->internal_cooldown();
+  cooldowns.righteous_protector_icd   = get_cooldown( "righteous_protector_icd" );
+  cooldowns.righteous_protector_icd->duration = find_spell( 204074 )->internal_cooldown();
   cooldowns.judgment                  = get_cooldown( "judgment" );
   cooldowns.shield_of_the_righteous   = get_cooldown( "shield_of_the_righteous" );
   cooldowns.guardian_of_ancient_kings = get_cooldown( "guardian_of_ancient_kings" );
