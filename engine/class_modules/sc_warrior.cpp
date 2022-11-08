@@ -6852,6 +6852,9 @@ struct avatar_t : public warrior_spell_t
   {
     warrior_spell_t::execute();
 
+    if ( p()->talents.warrior.immovable_object->ok() )
+      p()->buff.shield_wall->trigger( p()->talents.warrior.immovable_object->effectN( 2 ).time_value() );
+
     if( signet_triggered )
     {
       if ( p()->buff.avatar->check() )
@@ -7571,6 +7574,9 @@ struct shield_wall_t : public warrior_spell_t
     warrior_spell_t::execute();
 
     p()->buff.shield_wall->trigger( 1, p()->buff.shield_wall->data().effectN( 1 ).percent() );
+
+    if ( p()->talents.warrior.immovable_object->ok() )
+      p()->buff.avatar->trigger( p()->talents.warrior.immovable_object->effectN( 2 ).time_value() );
   }
 };
 
