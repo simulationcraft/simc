@@ -1043,6 +1043,8 @@ struct crusader_strike_t : public paladin_melee_attack_t
   {
     paladin_melee_attack_t::execute();
 
+    p()->trigger_grand_crusader();
+
     if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, T29, B4 ) )
     {
       p()->t29_4p_prot();
