@@ -7837,7 +7837,7 @@ void warrior_t::init_spells()
 
   talents.warrior.berserker_rage                   = find_talent_spell( talent_tree::CLASS, "Berserker Rage" );
   talents.warrior.impending_victory                = find_talent_spell( talent_tree::CLASS, "Impending Victory" );
-  talents.warrior.war_machine                      = find_talent_spell( talent_tree::CLASS, "War Machine" );
+  talents.warrior.war_machine                      = find_talent_spell( talent_tree::CLASS, "War Machine", specialization() );
   talents.warrior.intervene                        = find_talent_spell( talent_tree::CLASS, "Intervene" );
   talents.warrior.rallying_cry                     = find_talent_spell( talent_tree::CLASS, "Rallying Cry" );
 
