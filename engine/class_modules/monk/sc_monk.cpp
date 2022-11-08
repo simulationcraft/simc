@@ -548,7 +548,7 @@ public:
 
   void trigger_shuffle( double time_extension )
   {
-    if ( p()->specialization() == MONK_BREWMASTER && p()->talent.brewmaster.shuffle->ok() )
+    if ( p()->talent.brewmaster.shuffle->ok() )
     {
       timespan_t base_time = timespan_t::from_seconds( time_extension );
 
@@ -582,8 +582,7 @@ public:
         p()->buff.shuffle->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, base_time );
       }
 
-      if ( p()->cooldown.invoke_niuzao->down() )
-        p()->cooldown.invoke_niuzao->adjust( p()->shared.walk_with_the_ox->effectN( 2 ).time_value(), true );
+      p()->cooldown.invoke_niuzao->adjust( p()->shared.walk_with_the_ox->effectN( 2 ).time_value(), true );
     }
   }
 
