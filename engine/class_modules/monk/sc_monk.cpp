@@ -149,9 +149,8 @@ public:
 
   // Utility function to search spell data for matching effect.
   // NOTE: This will return the FIRST effect that matches parameters.
-  const spelleffect_data_t* find_spelleffect( const spell_data_t* spell, effect_subtype_t subtype,
-                                                        int misc_value, const spell_data_t* affected,
-                                                        effect_type_t type )
+  const spelleffect_data_t* find_spelleffect( const spell_data_t* spell, effect_subtype_t subtype, int misc_value,
+                                              const spell_data_t* affected, effect_type_t type )
   {
     for ( size_t i = 1; i <= spell->effect_count(); i++ )
     {
@@ -187,7 +186,6 @@ public:
 
     return find_spell( id );
   }
-
 
   std::unique_ptr<expr_t> create_expression( util::string_view name_str ) override
   {
@@ -248,8 +246,7 @@ public:
     {
       auto trigger = p()->talent.general.resonant_fists.spell();
 
-      trigger_resonant_fists = ab::harmful && ab::may_hit &&
-        ( trigger->proc_flags() & ( 1 << ab::proc_type() ) );
+      trigger_resonant_fists = ab::harmful && ab::may_hit && ( trigger->proc_flags() & ( 1 << ab::proc_type() ) );
     }
   }
 
@@ -366,10 +363,11 @@ public:
       p()->buff.hit_combo->trigger();
 
       if ( p()->shared.xuens_bond->ok() )
-          p()->cooldown.invoke_xuen->adjust( p()->shared.xuens_bond->effectN( 2 ).time_value(), true );  // Saved as -100
+        p()->cooldown.invoke_xuen->adjust( p()->shared.xuens_bond->effectN( 2 ).time_value(), true );  // Saved as -100
 
       if ( p()->talent.windwalker.meridian_strikes->ok() )
-          p()->cooldown.touch_of_death->adjust( -10 * p()->talent.windwalker.meridian_strikes->effectN( 2 ).time_value(), true ); // Saved as 35
+        p()->cooldown.touch_of_death->adjust( -10 * p()->talent.windwalker.meridian_strikes->effectN( 2 ).time_value(),
+                                              true );  // Saved as 35
 
       p()->buff.fury_of_xuen_stacks->trigger();
     }
@@ -404,18 +402,17 @@ public:
 
     if ( p()->shared.bonedust_brew && p()->shared.bonedust_brew->ok() && p()->cooldown.bonedust_brew->down() )
       p()->cooldown.bonedust_brew->adjust( timespan_t::from_seconds( time_reduction ), true );
-
   }
 
- bonedust_brew_zone_results_e bonedust_brew_zone()
+  bonedust_brew_zone_results_e bonedust_brew_zone()
   {
     // This function is derived from the Google collab by Tostad0ra found here
     // https://colab.research.google.com/drive/1IlNnwzigBG_xa0VdXhiofvuy-mgJAhGa?usp=sharing
 
     std::vector<player_t*> target_list = p()->sim->target_non_sleeping_list.data();
 
-    auto target_count           = static_cast<int>( target_list.size() );
-    auto targets_affected       = 0;
+    auto target_count     = static_cast<int>( target_list.size() );
+    auto targets_affected = 0;
 
     if ( p()->specialization() != MONK_WINDWALKER || target_count < 2 )
       return bonedust_brew_zone_results_e::NONE;
@@ -438,19 +435,19 @@ public:
     // Delay when chaining SCK (approximately 200ms from in game testing)
     auto player_delay = 0.2;
 
-    // Tiger Palm 
+    // Tiger Palm
     auto tiger_palm_AP_ratio_by_aura = p()->spec.tiger_palm->effectN( 1 ).ap_coeff() *
                                        ( 1 + p()->spec.windwalker_monk->effectN( 1 ).percent() ) *
                                        ( 1 + p()->spec.windwalker_monk->effectN( 5 ).percent() ) *
                                        ( 1 + p()->spec.windwalker_monk->effectN( 16 ).percent() ) *
                                        ( 1 + p()->spec.windwalker_monk->effectN( 18 ).percent() );
-  
+
     // SCK
     auto SCK_AP_ratio_by_aura = p()->spec.spinning_crane_kick->effectN( 1 ).trigger()->effectN( 1 ).ap_coeff() *
-                                        // 4 ticks
-                                        4 * ( 1 + p()->spec.windwalker_monk->effectN( 2 ).percent() ) *
-                                        ( 1 + p()->spec.windwalker_monk->effectN( 8 ).percent() ) *
-                                        ( 1 + p()->spec.windwalker_monk->effectN( 22 ).percent() );
+                                // 4 ticks
+                                4 * ( 1 + p()->spec.windwalker_monk->effectN( 2 ).percent() ) *
+                                ( 1 + p()->spec.windwalker_monk->effectN( 8 ).percent() ) *
+                                ( 1 + p()->spec.windwalker_monk->effectN( 22 ).percent() );
 
     // SQRT Scaling
     if ( target_count > p()->spec.spinning_crane_kick->effectN( 1 ).base_value() )
@@ -460,7 +457,7 @@ public:
     SCK_AP_ratio_by_aura *= p()->sck_modifier();
 
     auto SCK_dmg_total = ( target_count * SCK_AP_ratio_by_aura );
-    auto tp_over_sck = tiger_palm_AP_ratio_by_aura / SCK_dmg_total;
+    auto tp_over_sck   = tiger_palm_AP_ratio_by_aura / SCK_dmg_total;
 
     // Damage amplifiers
 
@@ -479,18 +476,15 @@ public:
       total_damage_amplifier *= sef_multiplier;
 
       // Coordinated Offensive
-      if ( p()->conduit.coordinated_offensive->ok() )
-        total_damage_amplifier *= ( 2 * ( 1 + p()->conduit.coordinated_offensive.percent() ) + 1 ) / 3;
+      total_damage_amplifier *= ( 2 * ( 1 + p()->conduit.coordinated_offensive.percent() ) + 1 ) / 3;
     }
 
     total_damage_amplifier *=
-        1 + ( p()->covenant.necrolord->proc_chance() *                                                           // Chance for bonus damage from Bonedust Brew
-              p()->covenant.necrolord->effectN( 1 ).percent() *                                                 // Damage amplifier from Bonedust Brew
-              ( 1 + ( p()->conduit.bone_marrow_hops->ok()
-                          ? p()->conduit.bone_marrow_hops.percent()                                            // Damage amplifier from Bone Marrow Hops conduit
-                          : 0 ) ) *  
-          
-              ( static_cast<double>( targets_affected ) / target_count ) );                                   // Delta targets affected by Bonedust Brew
+        1 + ( p()->covenant.necrolord->proc_chance() *           // Chance for bonus damage from Bonedust Brew
+              p()->covenant.necrolord->effectN( 1 ).percent() *  // Damage amplifier from Bonedust Brew
+              ( 1 + p()->conduit.bone_marrow_hops.percent() *    // Damage amplifier from Bone Marrow Hops conduit
+                        ( static_cast<double>( targets_affected ) /
+                          target_count ) ) );  // Delta targets affected by Bonedust Brew
 
     // Generate a lambda to refactor these expressions for ease of use and legibility
     // TODO:
@@ -560,20 +554,20 @@ public:
 
       if ( p()->talent.brewmaster.quick_sip->ok() )
       {
-          p()->shuffle_count_secs += time_extension;
+        p()->shuffle_count_secs += time_extension;
 
-          double quick_sip_seconds = p()->talent.brewmaster.quick_sip->effectN( 2 ).base_value(); // Saved as 3
-     
-          if ( p()->shuffle_count_secs >= quick_sip_seconds )
-          {
-              // Reduce stagger damage
-              auto amount_cleared =
-                  p()->active_actions.stagger_self_damage->clear_partial_damage_pct( p()->talent.brewmaster.quick_sip->effectN(1).percent() );
-              p()->sample_datas.quick_sip_cleared->add( amount_cleared );
-              p()->proc.quick_sip->occur();
+        double quick_sip_seconds = p()->talent.brewmaster.quick_sip->effectN( 2 ).base_value();  // Saved as 3
 
-              p()->shuffle_count_secs -= quick_sip_seconds;
-          }
+        if ( p()->shuffle_count_secs >= quick_sip_seconds )
+        {
+          // Reduce stagger damage
+          auto amount_cleared = p()->active_actions.stagger_self_damage->clear_partial_damage_pct(
+              p()->talent.brewmaster.quick_sip->effectN( 1 ).percent() );
+          p()->sample_datas.quick_sip_cleared->add( amount_cleared );
+          p()->proc.quick_sip->occur();
+
+          p()->shuffle_count_secs -= quick_sip_seconds;
+        }
       }
 
       if ( p()->buff.shuffle->up() )
@@ -588,9 +582,8 @@ public:
         p()->buff.shuffle->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, base_time );
       }
 
-      if ( p()->shared.walk_with_the_ox && p()->shared.walk_with_the_ox->ok() && p()->cooldown.invoke_niuzao->down() )
+      if ( p()->cooldown.invoke_niuzao->down() )
         p()->cooldown.invoke_niuzao->adjust( p()->shared.walk_with_the_ox->effectN( 2 ).time_value(), true );
-      
     }
   }
 
@@ -653,82 +646,66 @@ public:
     if ( !ab::execute_state )  // Fixes rare crashes at combat_end.
       return;
 
-    if (current_resource() == RESOURCE_CHI)
+    if ( current_resource() == RESOURCE_CHI )
     {
-        if ( ab::cost() > 0 )
-        {
-            if ( p()->talent.windwalker.spiritual_focus->ok() )
-            {
-              if ( p()->talent.windwalker.storm_earth_and_fire->ok() )
-              {
-                p()->spiritual_focus_count += ab::cost();
-
-                if ( p()->spiritual_focus_count >= p()->talent.windwalker.spiritual_focus->effectN( 1 ).base_value() )
-                {
-                  p()->cooldown.storm_earth_and_fire->adjust(
-                      -1 * p()->talent.windwalker.spiritual_focus->effectN( 2 ).time_value() );
-                  p()->spiritual_focus_count -= p()->talent.windwalker.spiritual_focus->effectN( 1 ).base_value();
-                }
-              }
-              // Serenity brings all spells down to 0 chi spent so don't reduce while Serenity is up
-              if ( p()->talent.windwalker.serenity->ok() && !p()->buff.serenity->up() )
-              {
-                p()->spiritual_focus_count += ab::cost();
-
-                if ( p()->spiritual_focus_count >= p()->talent.windwalker.spiritual_focus->effectN( 1 ).base_value() )
-                {
-                  p()->cooldown.serenity->adjust( -1 *
-                                                  p()->talent.windwalker.spiritual_focus->effectN( 3 ).time_value() );
-                  p()->spiritual_focus_count -= p()->talent.windwalker.spiritual_focus->effectN( 1 ).base_value();
-                }
-              }
-            }
-
-            if ( p()->talent.windwalker.drinking_horn_cover->ok() && p()->cooldown.drinking_horn_cover->up() )
-            {
-                if ( p()->buff.storm_earth_and_fire->up() )
-                {
-                    auto time_extend = p()->talent.windwalker.drinking_horn_cover->effectN( 1 ).base_value() / 10;
-                    time_extend *= ab::cost();
-
-                    p()->buff.storm_earth_and_fire->extend_duration( p(), timespan_t::from_seconds( time_extend ) );
-
-                    p()->find_pet( "earth_spirit" )->adjust_duration( timespan_t::from_seconds( time_extend ) );
-                    p()->find_pet( "fire_spirit" )->adjust_duration( timespan_t::from_seconds( time_extend ) );
-
-                    p()->cooldown.drinking_horn_cover->start(
-                        p()->talent.windwalker.drinking_horn_cover->internal_cooldown() );
-                }
-                if ( p()->buff.serenity->up() )
-                {
-                  p()->buff.serenity->extend_duration(
-                      p(), timespan_t::from_seconds(
-                               p()->talent.windwalker.drinking_horn_cover->effectN( 2 ).base_value() / 10 ) );
-
-                    p()->cooldown.drinking_horn_cover->start(
-                      p()->talent.windwalker.drinking_horn_cover->internal_cooldown() );
-                }
-            }
-        }
-
-      if ( p()->shared.last_emperors_capacitor && p()->shared.last_emperors_capacitor->ok() )
-        p()->buff.the_emperors_capacitor->trigger();
-
-      // Chi Savings on Dodge & Parry & Miss
-      if ( ab::last_resource_cost > 0 )
+      if ( ab::cost() > 0 )
       {
-        double chi_restored = ab::last_resource_cost;
-        if ( !ab::aoe && ab::result_is_miss( ab::execute_state->result ) )
-          p()->resource_gain( RESOURCE_CHI, chi_restored, p()->gain.chi_refund );
+        if ( p()->talent.windwalker.spiritual_focus->ok() )
+        {
+          p()->spiritual_focus_count += ab::cost();
+
+          if ( p()->spiritual_focus_count >= p()->talent.windwalker.spiritual_focus->effectN( 1 ).base_value() )
+          {
+            if ( p()->talent.windwalker.storm_earth_and_fire->ok() )
+              p()->cooldown.storm_earth_and_fire->adjust( -1 * 
+                  p()->talent.windwalker.spiritual_focus->effectN( 2 ).time_value() );
+
+            // Serenity brings all spells down to 0 chi spent so don't reduce while Serenity is up
+            if ( p()->talent.windwalker.serenity->ok() && !p()->buff.serenity->up() )
+              p()->cooldown.serenity->adjust( -1 * p()->talent.windwalker.spiritual_focus->effectN( 3 ).time_value() );
+
+            p()->spiritual_focus_count -= p()->talent.windwalker.spiritual_focus->effectN( 1 ).base_value();
+          }
+        }
       }
+
+      if ( p()->talent.windwalker.drinking_horn_cover->ok() && p()->cooldown.drinking_horn_cover->up() )
+      {
+        if ( p()->buff.storm_earth_and_fire->up() )
+        {
+          auto time_extend = p()->talent.windwalker.drinking_horn_cover->effectN( 1 ).base_value() / 10;
+          time_extend *= ab::cost();
+
+          p()->buff.storm_earth_and_fire->extend_duration( p(), timespan_t::from_seconds( time_extend ) );
+
+          p()->find_pet( "earth_spirit" )->adjust_duration( timespan_t::from_seconds( time_extend ) );
+          p()->find_pet( "fire_spirit" )->adjust_duration( timespan_t::from_seconds( time_extend ) );
+        }
+        if ( p()->buff.serenity->up() )
+        {
+          p()->buff.serenity->extend_duration( p(), timespan_t::from_seconds( 
+              p()->talent.windwalker.drinking_horn_cover->effectN( 2 ).base_value() / 10 ) );
+        }
+        p()->cooldown.drinking_horn_cover->start( p()->talent.windwalker.drinking_horn_cover->internal_cooldown() );
+      }
+    }
+
+    p()->buff.the_emperors_capacitor->trigger();
+
+    // Chi Savings on Dodge & Parry & Miss
+    if ( ab::last_resource_cost > 0 )
+    {
+      double chi_restored = ab::last_resource_cost;
+      if ( !ab::aoe && ab::result_is_miss( ab::execute_state->result ) )
+        p()->resource_gain( RESOURCE_CHI, chi_restored, p()->gain.chi_refund );
     }
 
     // Energy refund, estimated at 80%
     if ( current_resource() == RESOURCE_ENERGY && ab::last_resource_cost > 0 && !ab::hit_any_target )
     {
-      double energy_restored = ab::last_resource_cost * 0.8;
+        double energy_restored = ab::last_resource_cost * 0.8;
 
-      p()->resource_gain( RESOURCE_ENERGY, energy_restored, p()->gain.energy_refund );
+        p()->resource_gain( RESOURCE_ENERGY, energy_restored, p()->gain.energy_refund );
     }
   }
 
@@ -737,8 +714,7 @@ public:
     
     if ( p()->specialization() == MONK_MISTWEAVER )
     {
-      if ( trigger_chiji && p()->buff.invoke_chiji->up() )
-        p()->buff.invoke_chiji_evm->trigger();
+      p()->buff.invoke_chiji_evm->trigger();
     }
     else if ( p()->specialization() == MONK_WINDWALKER )
     {
@@ -756,15 +732,12 @@ public:
 
     trigger_storm_earth_and_fire( this );
 
-    if ( p()->buff.faeline_stomp )
+    if ( p()->buff.faeline_stomp->up() && trigger_faeline_stomp &&
+      p()->rng().roll( p()->user_options.faeline_stomp_uptime ) )
     {
-      if ( p()->buff.faeline_stomp->up() && trigger_faeline_stomp &&
-        p()->rng().roll( p()->user_options.faeline_stomp_uptime ) )
-      {
         double reset_value = p()->buff.faeline_stomp->value();
 
-        if ( p()->shared.faeline_harmony && p()->shared.faeline_harmony->ok() )
-          reset_value *= 1 + p()->shared.faeline_harmony->effectN( 2 ).percent();
+        reset_value *= 1 + p()->shared.faeline_harmony->effectN( 2 ).percent();
 
         if ( p()->rng().roll( reset_value ) )
         {
@@ -772,7 +745,6 @@ public:
           p()->buff.faeline_stomp_reset->trigger();
         }
       }
-    }
   }
 
   void impact( action_state_t* s ) override
@@ -784,9 +756,7 @@ public:
     if ( current_resource() == RESOURCE_CHI )
     {
       // Dance of Chi-Ji talent triggers from spending chi
-      if ( p()->talent.windwalker.dance_of_chiji->ok() )
-        p()->buff.dance_of_chiji->trigger();
-
+      p()->buff.dance_of_chiji->trigger();
     }
 
     ab::impact( s );
@@ -802,7 +772,7 @@ public:
       }
     }
 
-    if ( p()->shared.bountiful_brew && p()->shared.bountiful_brew->ok() && trigger_bountiful_brew && p()->cooldown.bountiful_brew->up() &&
+    if ( p()->shared.bountiful_brew->ok() && trigger_bountiful_brew && p()->cooldown.bountiful_brew->up() &&
          p()->rppm.bountiful_brew->trigger() )
     {
       p()->cooldown.bountiful_brew->start( p()->shared.bountiful_brew->internal_cooldown() );
@@ -851,8 +821,7 @@ public:
   {
     double pm = ab::composite_persistent_multiplier( action_state );
 
-    if ( p()->talent.general.ferocity_of_xuen->ok() )
-        pm *= 1 + p()->talent.general.ferocity_of_xuen->effectN( 1 ).percent();
+    pm *= 1 + p()->talent.general.ferocity_of_xuen->effectN( 1 ).percent();
 
     return pm;
   }
@@ -861,7 +830,6 @@ public:
   {
     p()->trigger_storm_earth_and_fire( a, sef_ability );
   }
-
 
   void trigger_mystic_touch( action_state_t* s )
   {
@@ -900,7 +868,7 @@ public:
          s->action->id == 325217 || // Bonedust Brew
          s->action->id == 338141 || // Charred Passion
          s->action->id == 387621 || // Dragonfire Brew
-         s->action->id == 393786 // Chi Surge
+         s->action->id == 393786    // Chi Surge
        ) 
       return;
 
@@ -935,11 +903,8 @@ struct monk_spell_t : public monk_action_t<spell_t>
 
     if ( auto* td = this->find_td( target ) )
     {
-      if ( td->debuff.keefers_skyreach->check() &&
-           base_t::data().affected_by( p()->passives.keefers_skyreach_debuff->effectN( 1 ) ) )
-      {
+      if ( base_t::data().affected_by( p()->passives.keefers_skyreach_debuff->effectN( 1 ) ) )
         c += td->debuff.keefers_skyreach->check_value();
-      }
     }
 
     return c;
@@ -950,18 +915,12 @@ struct monk_spell_t : public monk_action_t<spell_t>
     double pm = base_t::composite_persistent_multiplier( action_state );
 
     // Windwalker Mastery: Combo Strikes
-    if ( p()->specialization() == MONK_WINDWALKER )
-    {
-      if ( ww_mastery && p()->buff.combo_strikes->check() )
-        pm *= 1 + p()->cache.mastery_value();
-    }
+    if ( ww_mastery && p()->buff.combo_strikes->check() )
+      pm *= 1 + p()->cache.mastery_value();
 
     // Brewmaster Tier Set
-    if ( p()->specialization() == MONK_BREWMASTER )
-    {
-      if ( p()->buff.brewmasters_rhythm->check() && base_t::data().affected_by( p()->buff.brewmasters_rhythm->data().effectN( 1 ) ) )
-        pm *= 1 + p()->buff.brewmasters_rhythm->check_stack_value();
-    }
+    if ( base_t::data().affected_by( p()->buff.brewmasters_rhythm->data().effectN( 1 ) ) )
+      pm *= 1 + p()->buff.brewmasters_rhythm->check_stack_value();
 
     return pm;
   }
@@ -970,25 +929,18 @@ struct monk_spell_t : public monk_action_t<spell_t>
   {
     double am = base_t::action_multiplier();
 
-    if ( p()->specialization() == MONK_WINDWALKER )
+    // Storm, Earth, and Fire
+    if ( p()->buff.storm_earth_and_fire->check() && p()->affected_by_sef( base_t::data() ) )
+        am *= 1 + p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent();
+
+    // Serenity
+    if ( p()->buff.serenity->check() && base_t::data().affected_by( p()->talent.windwalker.serenity->effectN( 2 ) ) )
     {
-      // Storm, Earth, and Fire
-      if ( p()->buff.storm_earth_and_fire->check() && p()->affected_by_sef( base_t::data() ) )
-          am *= 1 + p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent();
+        double serenity_multiplier = p()->talent.windwalker.serenity->effectN( 2 ).percent();
 
-      // Serenity
-      if ( p()->buff.serenity->check() )
-      {
-        if ( base_t::data().affected_by( p()->talent.windwalker.serenity->effectN( 2 ) ) )
-        {
-          double serenity_multiplier = p()->talent.windwalker.serenity->effectN( 2 ).percent();
+        serenity_multiplier += p()->conduit.coordinated_offensive.percent();
 
-          if ( p()->conduit.coordinated_offensive->ok() )
-            serenity_multiplier += p()->conduit.coordinated_offensive.percent();
-
-          am *= 1 + serenity_multiplier;
-        }
-      }
+        am *= 1 + serenity_multiplier;
     }
 
     return am;
@@ -1016,11 +968,8 @@ struct monk_heal_t : public monk_action_t<heal_t>
 
     if ( auto* td = this->find_td( target ) )
     {
-      if ( td->debuff.keefers_skyreach->check() &&
-           base_t::data().affected_by( p()->passives.keefers_skyreach_debuff->effectN( 1 ) ) )
-      {
+      if ( base_t::data().affected_by( p()->passives.keefers_skyreach_debuff->effectN( 1 ) ) )
         c += td->debuff.keefers_skyreach->check_value();
-      }
     }
 
     return c;
@@ -1030,8 +979,7 @@ struct monk_heal_t : public monk_action_t<heal_t>
   {
     double am = base_t::action_multiplier();
 
-    if ( p()->talent.general.grace_of_the_crane->ok() )
-      am *= 1 + p()->talent.general.grace_of_the_crane->effectN( 1 ).percent();
+    am *= 1 + p()->talent.general.grace_of_the_crane->effectN( 1 ).percent();
 
     player_t* t = ( execute_state ) ? execute_state->target : target;
 
@@ -1066,17 +1014,13 @@ struct monk_heal_t : public monk_action_t<heal_t>
           am *= 1 + p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent();
 
         // Serenity
-        if ( p()->buff.serenity->check() )
+        if ( p()->buff.serenity->check() && base_t::data().affected_by( p()->talent.windwalker.serenity->effectN( 2 ) ) )
         {
-          if ( base_t::data().affected_by( p()->talent.windwalker.serenity->effectN( 2 ) ) )
-          {
-            double serenity_multiplier = p()->talent.windwalker.serenity->effectN( 2 ).percent();
+          double serenity_multiplier = p()->talent.windwalker.serenity->effectN( 2 ).percent();
 
-            if ( p()->conduit.coordinated_offensive->ok() )
-              serenity_multiplier += p()->conduit.coordinated_offensive.percent();
+          serenity_multiplier += p()->conduit.coordinated_offensive.percent();
 
-            am *= 1 + serenity_multiplier;
-          }
+          am *= 1 + serenity_multiplier;
         }
 
         break;
@@ -7519,14 +7463,14 @@ monk_td_t::monk_td_t( player_t* target, monk_t* p ) : actor_target_data_t( targe
         ->set_trigger_spell( p->talent.windwalker.flying_serpent_kick )
         ->set_default_value_from_effect( 2 );
     debuff.empowered_tiger_lightning = make_buff( *this, "empowered_tiger_lightning", spell_data_t::nil() )
-        ->set_trigger_spell(p->talent.windwalker.empowered_tiger_lightning)
+        ->set_trigger_spell( p->talent.windwalker.empowered_tiger_lightning )
         ->set_quiet( true )
         ->set_cooldown( timespan_t::zero() )
         ->set_refresh_behavior( buff_refresh_behavior::NONE )
         ->set_max_stack( 1 )
         ->set_default_value( 0 );
     debuff.fury_of_xuen_empowered_tiger_lightning = make_buff( *this, "empowered_tiger_lightning_fury_of_xuen", spell_data_t::nil() )
-        ->set_trigger_spell(p->talent.windwalker.empowered_tiger_lightning)
+        ->set_trigger_spell( p->talent.windwalker.empowered_tiger_lightning )
         ->set_quiet( true )
         ->set_cooldown( timespan_t::zero() )
         ->set_refresh_behavior( buff_refresh_behavior::NONE )
@@ -7576,26 +7520,30 @@ monk_td_t::monk_td_t( player_t* target, monk_t* p ) : actor_target_data_t( targe
         ->set_refresh_behavior( buff_refresh_behavior::NONE )
         ->set_max_stack( 1 )
         ->set_default_value( 0 );
+
     debuff.fae_exposure = make_buff( *this, "fae_exposure_damage", p->passives.fae_exposure_dmg )
-        ->set_trigger_spell(p->shared.faeline_harmony)
+        ->set_trigger_spell( p->shared.faeline_harmony )
         ->set_default_value_from_effect( 1 )
         ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
         ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
+
     debuff.keefers_skyreach = make_buff( *this, "keefers_skyreach", p->passives.keefers_skyreach_debuff )
         ->set_trigger_spell( p->shared.skyreach )
         ->set_default_value_from_effect( 1 )
         ->add_invalidate( CACHE_ATTACK_CRIT_CHANCE )
         ->set_refresh_behavior( buff_refresh_behavior::NONE );
+
     debuff.skyreach_exhaustion = make_buff( *this, "skyreach_exhaustion", p->find_spell( 337341 ) ) // 393050
         ->set_trigger_spell( p->shared.skyreach )
         ->set_refresh_behavior( buff_refresh_behavior::NONE );
+
     debuff.sinister_teaching_fallen_monk_keg_smash = make_buff( *this, "sinister_teaching_fallen_monk_keg_smash", p->passives.fallen_monk_keg_smash )
         ->set_trigger_spell( p->covenant.venthyr )
         ->set_default_value_from_effect( 3 );
 
-  debuff.storm_earth_and_fire = make_buff( *this, "storm_earth_and_fire_target", spell_data_t::nil() )
-      ->set_trigger_spell( p->talent.windwalker.storm_earth_and_fire )
-      ->set_cooldown( timespan_t::zero() );
+    debuff.storm_earth_and_fire = make_buff( *this, "storm_earth_and_fire_target", spell_data_t::nil() )
+        ->set_trigger_spell( p->talent.windwalker.storm_earth_and_fire )
+        ->set_cooldown( timespan_t::zero() );
 
   dots.breath_of_fire          = target->get_dot( "breath_of_fire_dot", p );
   dots.enveloping_mist         = target->get_dot( "enveloping_mist", p );
