@@ -444,8 +444,8 @@ void completely_safe_rockets( special_effect_t& effect )
   auto missile = effect.trigger();
   auto blast = missile -> effectN( 1 ).trigger();
 
-  auto blast_proc = create_proc_action<generic_aoe_proc_t>( "completely_safe_rocket_blast", effect, "completely_safe_rocket_blast", blast );
-  blast_proc -> split_aoe_damage = false;
+  auto blast_proc = create_proc_action<generic_aoe_proc_t>( "completely_safe_rocket_blast", effect, "completely_safe_rocket_blast", blast, true );
+  blast_proc -> base_dd_min = blast_proc -> base_dd_max = effect.driver() -> effectN( 1 ).average( effect.player );
   blast_proc -> travel_speed = missile -> missile_speed();
 
   effect.execute_action = blast_proc;
