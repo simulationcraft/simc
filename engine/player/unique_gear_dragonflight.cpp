@@ -437,6 +437,23 @@ void wafting_devotion( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 }
+
+void completely_safe_rockets( special_effect_t& effect )
+{
+
+  auto missile = effect.trigger();
+  auto blast = missile -> effectN( 1 ).trigger();
+
+  auto blast_proc = create_proc_action<generic_aoe_proc_t>( "completely_safe_rocket_blast", effect, "completely_safe_rocket_blast", blast );
+  blast_proc -> split_aoe_damage = false;
+  blast_proc -> travel_speed = missile -> missile_speed();
+
+  effect.execute_action = blast_proc;
+  effect.proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 }  // namespace enchants
 
 namespace items
@@ -2081,6 +2098,8 @@ void register_special_effects()
                            enchants::writ_enchant( STAT_STR_AGI_INT, false ) );     // sophic devotion
   register_special_effect( { 390351, 390352, 390353 }, enchants::frozen_devotion );
   register_special_effect( { 390358, 390359, 390360 }, enchants::wafting_devotion );
+
+  register_special_effect( { 386260, 386299, 386305 }, enchants::completely_safe_rockets );
 
   // Trinkets
   register_special_effect( 376636, items::idol_of_the_aspects( "neltharite" ) );     // idol of the earth warder
