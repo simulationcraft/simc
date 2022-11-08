@@ -217,6 +217,14 @@
       { "data_type": "i", "field": "unk_6"}
     ]
   },
+  "CraftingDataEnchantQuality": {
+    "parent": "CraftingData",
+    "fields": [
+      { "data_type": "i", "field": "rank" },
+      { "data_type": "i", "field": "id_spell_item_enchantment" },
+      { "data_type": "i", "field": "id_item" }
+    ]
+  },
   "CraftingQuality": {
     "fields": [
       { "data_type": "i", "field": "tier" }
