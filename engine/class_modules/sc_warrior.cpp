@@ -18,6 +18,22 @@ namespace
 
 struct warrior_t;
 
+// Finds an action with the given name. If no action exists, a new one will
+// be created.
+//
+// Use this with secondary background actions to ensure the player only has
+// one copy of the action.
+// Shamelessly borrowed from the mage module
+template <typename Action, typename Actor, typename... Args>
+action_t* get_action( util::string_view name, Actor* actor, Args&&... args )
+{
+  action_t* a = actor->find_action( name );
+  if ( !a )
+    a = new Action( name, actor, std::forward<Args>( args )... );
+  assert( dynamic_cast<Action*>( a ) && a->name_str == name && a->background );
+  return a;
+}
+
 struct warrior_td_t : public actor_target_data_t
 {
   dot_t* dots_deep_wounds;
@@ -137,6 +153,7 @@ public:
     buff_t* reckless_abandon;
     buff_t* revenge;
     buff_t* shield_block;
+    buff_t* shield_charge_movement;
     buff_t* shield_wall;
     buff_t* slaughtering_strikes_rb;
     buff_t* slaughtering_strikes_an;
@@ -264,6 +281,7 @@ public:
     gain_t* melee_off_hand;
     gain_t* raging_blow;
     gain_t* revenge;
+    gain_t* shield_charge;
     gain_t* shield_slam;
     gain_t* whirlwind;
     gain_t* booming_voice;
@@ -3027,7 +3045,7 @@ struct charge_t : public warrior_attack_t
       return false;
     }
     if ( p()->buff.charge_movement->check() || p()->buff.heroic_leap_movement->check() ||
-         p()->buff.intervene_movement->check() )
+         p()->buff.intervene_movement->check() || p() -> buff.shield_charge_movement->check() )
     {
       return false;
     }
@@ -3756,7 +3774,7 @@ struct heroic_leap_t : public warrior_attack_t
   bool ready() override
   {
     if ( p()->buff.intervene_movement->check() || p()->buff.charge_movement->check() ||
-         p()->buff.intercept_movement->check() )
+         p()->buff.intercept_movement->check() || p()->buff.shield_charge_movement->check() )
     {
       return false;
     }
@@ -5265,6 +5283,142 @@ struct rend_prot_t : public warrior_attack_t
   bool ready() override
   {
     if ( p()->main_hand_weapon.type == WEAPON_NONE )
+    {
+      return false;
+    }
+    return warrior_attack_t::ready();
+  }
+};
+
+// Shield Charge ============================================================
+
+struct shield_charge_damage_t : public warrior_attack_t
+{
+  double rage_gain;
+  shield_charge_damage_t( util::string_view name, warrior_t* p )
+    : warrior_attack_t( name, p, p->find_spell( 385954 ) ),
+    rage_gain( p->find_spell( 385954 )->effectN( 4 ).resource( RESOURCE_RAGE ) )
+  {
+    background = true;
+    may_miss = false;
+    energize_type = action_energize::NONE;
+
+    aoe = 0;
+    // this spell has both coefficients in it, force #1
+    attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
+
+    rage_gain += p->talents.protection.champions_bulwark->effectN( 2 ).resource( RESOURCE_RAGE );
+  }
+
+  double action_multiplier() const override
+  {
+    double am = warrior_attack_t::action_multiplier();
+
+    if ( p()->talents.protection.champions_bulwark->ok() )
+    {
+      am *= 1.0 + p()->talents.protection.champions_bulwark->effectN( 3 ).percent();
+    }
+    return am;
+  }
+
+  void execute() override
+  {
+    warrior_attack_t::execute();
+
+    if ( p()->talents.protection.champions_bulwark->ok() )
+    {
+      p()->buff.shield_block->trigger();
+      p()->buff.revenge->trigger();
+    }
+
+    p()->resource_gain( RESOURCE_RAGE, rage_gain, p() -> gain.shield_charge );
+  }
+};
+
+struct shield_charge_damage_aoe_t : public warrior_attack_t
+{
+  shield_charge_damage_aoe_t( util::string_view name, warrior_t* p )
+    : warrior_attack_t( name, p, p->find_spell( 385954 ) )
+  {
+    background = true;
+    may_miss = false;
+    energize_type = action_energize::NONE;
+
+    aoe = -1;
+
+    // this spell has both coefficients in it, force #2
+    attack_power_mod.direct = data().effectN( 2 ).ap_coeff();
+  }
+
+  size_t available_targets( std::vector< player_t* >& tl ) const override
+  {
+    warrior_attack_t::available_targets( tl );
+    // Remove our main target from the target list, as aoe hits all other mobs
+    auto it = range::find( tl, target );
+    if ( it != tl.end() )
+    {
+      tl.erase( it );
+    }
+
+    return tl.size();
+  }
+
+  double action_multiplier() const override
+  {
+    double am = warrior_attack_t::action_multiplier();
+
+    if ( p()->talents.protection.champions_bulwark->ok() )
+    {
+      am *= 1.0 + p()->talents.protection.champions_bulwark->effectN( 3 ).percent();
+    }
+    return am;
+  }
+};
+
+struct shield_charge_t : public warrior_attack_t
+{
+  double movement_speed_increase;
+  action_t* shield_charge_damage;
+  action_t* shield_charge_damage_aoe;
+  shield_charge_t( warrior_t* p, util::string_view options_str )
+    : warrior_attack_t( "shield_charge", p, p->talents.protection.shield_charge ),
+      movement_speed_increase( 5.0 )
+  {
+    parse_options( options_str );
+    energize_type = action_energize::NONE;
+    movement_directionality = movement_direction_type::OMNI;
+
+    shield_charge_damage = get_action<shield_charge_damage_t>( "shield_charge_main", p );
+    shield_charge_damage_aoe = get_action<shield_charge_damage_aoe_t>( "shield_charge_aoe", p );
+    add_child( shield_charge_damage );
+    add_child( shield_charge_damage_aoe );
+  }
+
+  timespan_t calc_charge_time( double distance )
+  {
+    return timespan_t::from_seconds( distance /
+      ( p()->base_movement_speed * ( 1 + p()->passive_movement_modifier() + movement_speed_increase ) ) );
+  }
+
+  void execute() override
+  {
+    if ( p()->current.distance_to_move > 0 )
+    {
+      p()->buff.shield_charge_movement->trigger( 1, movement_speed_increase, 1, calc_charge_time( p()->current.distance_to_move ) );
+      p()->current.moving_away = 0;
+    }
+    warrior_attack_t::execute();
+
+    shield_charge_damage->execute_on_target( target );
+    // If we have more than one target, trigger aoe as well
+    if ( sim -> target_non_sleeping_list.size() > 1 )
+      shield_charge_damage_aoe->execute_on_target( target );
+  }
+
+  bool ready() override
+  {
+    if ( p()->buff.charge_movement->check() || p()->buff.heroic_leap_movement->check() ||
+         p()->buff.intervene_movement->check() || p()->buff.shield_charge_movement->check() )
     {
       return false;
     }
@@ -7527,6 +7681,8 @@ action_t* warrior_t::create_action( util::string_view name, util::string_view op
     return new shattering_throw_t( this, options_str );
   if ( name == "shield_block" )
     return new shield_block_t( this, options_str );
+  if ( name == "shield_charge" )
+    return new shield_charge_t( this, options_str );
   if ( name == "shield_slam" )
     return new shield_slam_t( this, options_str );
   if ( name == "shield_wall" )
@@ -8947,10 +9103,11 @@ void warrior_t::create_buffs()
                            ->set_default_value( find_spell( 335082 )->effectN( 1 ).percent() )
                            ->add_invalidate( CACHE_ATTACK_HASTE );
 
-  buff.heroic_leap_movement = make_buff( this, "heroic_leap_movement" );
-  buff.charge_movement      = make_buff( this, "charge_movement" );
-  buff.intervene_movement   = make_buff( this, "intervene_movement" );
-  buff.intercept_movement   = make_buff( this, "intercept_movement" );
+  buff.heroic_leap_movement   = make_buff( this, "heroic_leap_movement" );
+  buff.charge_movement        = make_buff( this, "charge_movement" );
+  buff.intervene_movement     = make_buff( this, "intervene_movement" );
+  buff.intercept_movement     = make_buff( this, "intercept_movement" );
+  buff.shield_charge_movement = make_buff( this, "shield_charge_movement" );
 
   buff.into_the_fray = make_buff( this, "into_the_fray", find_spell( 202602 ) )
     ->set_chance( talents.protection.into_the_fray->ok() )
@@ -9239,6 +9396,7 @@ void warrior_t::init_gains()
   gain.melee_main_hand                  = get_gain( "melee_main_hand" );
   gain.melee_off_hand                   = get_gain( "melee_off_hand" );
   gain.revenge                          = get_gain( "revenge" );
+  gain.shield_charge                    = get_gain( "shield_charge" );
   gain.shield_slam                      = get_gain( "shield_slam" );
   gain.booming_voice                    = get_gain( "booming_voice" );
   gain.thunder_clap                     = get_gain( "thunder_clap" );
@@ -9559,6 +9717,7 @@ void warrior_t::interrupt()
   buff.heroic_leap_movement->expire();
   buff.intervene_movement->expire();
   buff.intercept_movement->expire();
+  buff.shield_charge_movement->expire();
 
   player_t::interrupt();
 }
@@ -10036,6 +10195,10 @@ double warrior_t::temporary_movement_modifier() const
   else if ( buff.intercept_movement->up() )
   {
     temporary = std::max( buff.intercept_movement->value(), temporary );
+  }
+  else if ( buff.shield_charge_movement->up() )
+  {
+    temporary = std::max( buff.shield_charge_movement->value(), temporary );
   }
   else if ( buff.bounding_stride->up() )
   {
