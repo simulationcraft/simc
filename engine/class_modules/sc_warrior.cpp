@@ -5699,11 +5699,35 @@ struct storm_bolt_t : public warrior_attack_t
   }
 };
 
+// Titanic Throw ============================================================
+
+struct titanic_throw_t : public warrior_attack_t
+{
+  titanic_throw_t( warrior_t* p, util::string_view options_str )
+    : warrior_attack_t( "titanic_throw", p, p->talents.warrior.titanic_throw )
+    {
+      parse_options( options_str );
+      may_dodge = may_parry = may_block = false;
+      aoe = p->talents.warrior.titanic_throw->effectN( 2 ).base_value();
+    }
+
+  double action_multiplier() const override
+  {
+    double am = warrior_attack_t::action_multiplier();
+
+    if ( p()->talents.protection.improved_heroic_throw->ok() )
+    {
+      am *= 1.0 + p()->talents.protection.improved_heroic_throw->effectN( 2 ).percent();
+    }
+
+    return am;
+  }
+};
+
 // Tough as Nails ===========================================================
 
 struct tough_as_nails_t : public warrior_attack_t
 {
-
   tough_as_nails_t( warrior_t* p ) :
     warrior_attack_t( "tough_as_nails", p, p -> find_spell( 385890 ) )
   {
@@ -7762,6 +7786,8 @@ action_t* warrior_t::create_action( util::string_view name, util::string_view op
     return new taunt_t( this, options_str );
   if ( name == "thunder_clap" )
     return new thunder_clap_t( this, options_str );
+  if ( name == "titanic_throw" )
+    return new titanic_throw_t( this, options_str );
   if ( name == "victory_rush" )
     return new victory_rush_t( this, options_str );
   if ( name == "warbreaker" )
