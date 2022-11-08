@@ -885,7 +885,7 @@ public:
   double composite_melee_crit_chance() const override;
   double composite_melee_crit_rating() const override;
   double composite_player_critical_damage_multiplier( const action_state_t* ) const override;
-  // double composite_leech() const override;
+  double composite_leech() const override;
   double resource_gain( resource_e, double, gain_t* = nullptr, action_t* = nullptr ) override;
   void teleport( double yards, timespan_t duration ) override;
   void trigger_movement( double distance, movement_direction_type direction ) override;
@@ -10235,12 +10235,16 @@ double warrior_t::composite_spell_crit_chance() const
 */
 
 // warrior_t::composite_leech ==============================================
-/*
+
 double warrior_t::composite_leech() const
 {
-  return player_t::composite_leech();
+  double m = player_t::composite_leech();
+
+  m += talents.warrior.leeching_strikes->effectN( 1 ).percent();
+
+  return m;
 }
-*/
+
 
 // warrior_t::resource_gain =================================================
 
