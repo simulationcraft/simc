@@ -7898,7 +7898,7 @@ void warrior_t::init_spells()
   talents.warrior.two_handed_weapon_specialization = find_talent_spell( talent_tree::CLASS, "Two-Handed Weapon Specialization" );
   talents.warrior.dual_wield_specialization        = find_talent_spell( talent_tree::CLASS, "Dual Wield Specialization" );
   talents.warrior.cruel_strikes                    = find_talent_spell( talent_tree::CLASS, "Cruel Strikes" );
-  talents.warrior.endurance_training               = find_talent_spell( talent_tree::CLASS, "Endurance Training" );
+  talents.warrior.endurance_training               = find_talent_spell( talent_tree::CLASS, "Endurance Training", specialization() );
 
   talents.warrior.avatar                           = find_talent_spell( talent_tree::CLASS, "Avatar" );
   talents.warrior.thunderous_roar                  = find_talent_spell( talent_tree::CLASS, "Thunderous Roar" );
@@ -9952,6 +9952,7 @@ double warrior_t::composite_attribute_multiplier( attribute_e attr ) const
   {
     m *= 1.0 + spec.vanguard -> effectN( 2 ).percent();
     m *= 1.0 + talents.protection.enduring_alacrity -> effectN( 1 ).percent();
+    m *= 1.0 + talents.warrior.endurance_training -> effectN( 1 ).percent();
   }
 
   return m;
