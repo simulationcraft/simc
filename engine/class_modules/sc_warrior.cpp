@@ -121,6 +121,7 @@ public:
     buff_t* bastion_of_might; // the mastery buff
     buff_t* bastion_of_might_vop; // bastion of might proc from VoP
     buff_t* battle_stance;
+    buff_t* battering_ram;
     buff_t* berserker_rage;
     buff_t* berserker_stance;
     buff_t* bladestorm;
@@ -1901,6 +1902,8 @@ struct melee_t : public warrior_attack_t
     am *= 1.0 + p()->buff.berserker_stance->check_stack_value();
 
     am *= 1.0 + p()->buff.dancing_blades->check_value();
+
+    am *= 1.0 + p()->buff.battering_ram->check_value();
 
     return am;
   }
@@ -5321,6 +5324,22 @@ struct shield_charge_damage_t : public warrior_attack_t
     return am;
   }
 
+  double composite_crit_chance() const override
+  {
+    double c = warrior_attack_t::composite_crit_chance();
+
+    c += p()->talents.protection.battering_ram->effectN( 2 ).percent();
+
+    return c;
+  }
+
+  double composite_crit_damage_bonus_multiplier() const override
+  {
+    double cm = warrior_attack_t::composite_crit_damage_bonus_multiplier();
+
+    cm += p()->talents.protection.battering_ram->effectN( 3 ).percent();
+  }
+
   void execute() override
   {
     warrior_attack_t::execute();
@@ -5372,6 +5391,22 @@ struct shield_charge_damage_aoe_t : public warrior_attack_t
       am *= 1.0 + p()->talents.protection.champions_bulwark->effectN( 3 ).percent();
     }
     return am;
+  }
+
+  double composite_crit_chance() const override
+  {
+    double c = warrior_attack_t::composite_crit_chance();
+
+    c += p()->talents.protection.battering_ram->effectN( 2 ).percent();
+
+    return c;
+  }
+
+  double composite_crit_damage_bonus_multiplier() const override
+  {
+    double cm = warrior_attack_t::composite_crit_damage_bonus_multiplier();
+
+    cm += p()->talents.protection.battering_ram->effectN( 3 ).percent();
   }
 };
 
@@ -9055,6 +9090,10 @@ void warrior_t::create_buffs()
       ->set_default_value( find_spell( 391688 )->effectN( 1 ).base_value() / 100.0 )
       ->add_invalidate( CACHE_ATTACK_SPEED );
 
+  buff.battering_ram = make_buff( this, "battering_ram", find_spell( 394313 ) )
+      ->set_default_value( find_spell( 394313 )->effectN( 1 ).percent() )
+      ->add_invalidate( CACHE_ATTACK_SPEED );
+
   if ( talents.warrior.unstoppable_force -> ok() )
     buff.avatar -> set_stack_change_callback( [ this ] ( buff_t*, int, int )
     { cooldown.thunder_clap -> adjust_recharge_multiplier(); } );
@@ -9775,6 +9814,8 @@ double warrior_t::composite_melee_speed() const
   s *= 1.0 / ( 1.0 + buff.wild_strikes->check_value() );
 
   s *= 1.0 / ( 1.0 + buff.dancing_blades->check_value() );
+
+  s *= 1.0 / ( 1.0 + buff.battering_ram->check_value() );
 
   return s;
 }
