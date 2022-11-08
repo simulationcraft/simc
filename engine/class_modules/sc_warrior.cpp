@@ -5084,10 +5084,14 @@ struct revenge_t : public warrior_attack_t
 {
   double shield_slam_reset;
   action_t* seismic_action;
+  double frothing_berserker_chance;
+  double rage_from_frothing_berserker;
   revenge_t( warrior_t* p, util::string_view options_str, bool seismic = false )
     : warrior_attack_t( seismic ? "revenge_seismic_reverberation" : "revenge", p, p->talents.protection.revenge ),
       shield_slam_reset( p->talents.protection.strategist->effectN( 1 ).percent() ),
-      seismic_action( nullptr )
+      seismic_action( nullptr ),
+      frothing_berserker_chance( p->talents.warrior.frothing_berserker->proc_chance() ),
+      rage_from_frothing_berserker( p->talents.warrior.frothing_berserker->effectN( 1 ).base_value() / 100.0 )
     {
       parse_options( options_str );
       aoe           = -1;
@@ -5130,6 +5134,11 @@ struct revenge_t : public warrior_attack_t
     if ( p()->talents.protection.show_of_force->ok() )
     {
       p()->buff.show_of_force->trigger();
+    }
+
+    if ( p()->talents.warrior.frothing_berserker->ok() && !background && rng().roll( frothing_berserker_chance ) )
+    {
+      p()->resource_gain(RESOURCE_RAGE, last_resource_cost * rage_from_frothing_berserker, p()->gain.frothing_berserker);
     }
   }
 
