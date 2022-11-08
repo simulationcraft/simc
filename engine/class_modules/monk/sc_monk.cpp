@@ -3784,9 +3784,9 @@ struct touch_of_death_t : public monk_melee_attack_t
         if ( p()->buff.combo_strikes->up() )
           amount *= 1 + p()->cache.mastery_value();
       }
-
-      s->result_total = s->result_raw = amount;
     }
+
+    s->result_total = s->result_raw = amount;
 
     monk_melee_attack_t::impact( s );
 

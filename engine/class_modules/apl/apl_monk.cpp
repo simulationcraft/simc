@@ -601,14 +601,20 @@ void windwalker( player_t* p )
 
   cd_sef->add_action( "storm_earth_and_fire,if=fight_remains<20|!covenant.necrolord&(cooldown.storm_earth_and_fire.charges=2|buff.weapons_of_order.up|covenant.kyrian&cooldown.weapons_of_order.remains>cooldown.storm_earth_and_fire.full_recharge_time|cooldown.invoke_xuen_the_white_tiger.remains>cooldown.storm_earth_and_fire.full_recharge_time)&cooldown.fists_of_fury.remains<=9&chi>=2&cooldown.whirling_dragon_punch.remains<=12" );
 
-  if ( monk->talent.windwalker.invoke_xuen_the_white_tiger->ok() )
-    cd_sef->add_action( p, "Touch of Death",
-                        "if=combo_strike&(fight_remains>60|buff.storm_earth_and_fire.down&pet.xuen_the_white_tiger.active&(!covenant.necrolord|buff.bonedust_brew.up)|(cooldown.invoke_xuen_the_white_tiger.remains>fight_remains)&buff.bonedust_brew.up|fight_remains<10)" );
+  if ( monk->sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE )
+  {
+    cd_sef->add_action( "touch_of_death,target_if=max:target.health,if=combo_strike&(target.health<health|fight_remains>60|buff.bonedust_brew.up)" );
+  }
   else
-    cd_sef->add_action(
+  {
+    if ( monk->talent.windwalker.invoke_xuen_the_white_tiger->ok() )
+      cd_sef->add_action( p, "Touch of Death",
+        "if=combo_strike&(fight_remains>60|buff.storm_earth_and_fire.down&pet.xuen_the_white_tiger.active&(!covenant.necrolord|buff.bonedust_brew.up)|(cooldown.invoke_xuen_the_white_tiger.remains>fight_remains)&buff.bonedust_brew.up|fight_remains<10)" );
+    else
+      cd_sef->add_action(
         p, "Touch of Death",
         "if=combo_strike&(fight_remains>60|buff.storm_earth_and_fire.down&(!covenant.necrolord|buff.bonedust_brew.up)|fight_remains<10)" );
-
+  }
 
   cd_sef->add_action( "fallen_order,if=raid_event.adds.in>30|raid_event.adds.up" );
 
@@ -714,18 +720,26 @@ void windwalker( player_t* p )
   cd_serenity->add_action(
     "serenity,if=pet.xuen_the_white_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>10|!talent.invoke_xuen_the_white_tiger|fight_remains<15");
  
-
-  if ( monk->talent.windwalker.invoke_xuen_the_white_tiger->ok() )
+  cd_serenity->add_action( "touch_of_death,target_if=max:target.health,if=combo_strike&target.health>0&(target.health<health|fight_remains>60)" );
+  
+  if ( monk->sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE )
   {
-    cd_serenity->add_action( p, "Touch of Death",
-      "if=combo_strike&(fight_remains>60|pet.xuen_the_white_tiger.active&(!covenant.necrolord|buff.bonedust_brew.up)|(cooldown.invoke_xuen_the_white_tiger.remains>fight_remains)&buff.bonedust_brew.up|fight_remains<10)" );
-    cd_serenity->add_action( "touch_of_karma,if=fight_remains>90|pet.xuen_the_white_tiger.active|fight_remains<10" );
+    cd_sef->add_action( "touch_of_death,target_if=max:target.health,if=combo_strike&(target.health<health|fight_remains>60|buff.bonedust_brew.up)" );
   }
   else
   {
-    cd_serenity->add_action( p, "Touch of Death", "if=combo_strike&(fight_remains>60|buff.bonedust_brew.up|fight_remains<10)" );
-    cd_serenity->add_action( "touch_of_karma,if=fight_remains>90|fight_remains<16" );
+    if ( monk->talent.windwalker.invoke_xuen_the_white_tiger->ok() )
+    {
+      cd_serenity->add_action( p, "Touch of Death",
+        "if=combo_strike&(fight_remains>60|pet.xuen_the_white_tiger.active&(!covenant.necrolord|buff.bonedust_brew.up)|(cooldown.invoke_xuen_the_white_tiger.remains>fight_remains)&buff.bonedust_brew.up|fight_remains<10)" );
+    }
+    else
+    {
+      cd_serenity->add_action( p, "Touch of Death", "if=combo_strike&target.health=0&(fight_remains>60|buff.bonedust_brew.up|fight_remains<10)" );
+    }
   }
+
+  cd_serenity->add_action( "touch_of_karma,if=fight_remains>90|fight_remains<10" );
 
   cd_serenity->add_action(
     "fallen_order" );
