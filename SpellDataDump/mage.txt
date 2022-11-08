@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.46455 Live (hotfix 2022-11-04/46455)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.46455 Live (hotfix 2022-11-08/46455)
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Talent Entry     : Generic [tree=class, row=2, col=3, max_rank=1, req_points=0]
 Class            : Paladin, Mage
@@ -12416,8 +12416,9 @@ Attributes       : ........ ........ .......x ..x.....   ...x...x ........ .....
                  : ........ ........ ........ ........   
                  : Allow Cast While Dead (23), Aura Is Debuff (26), No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Not In Spellbook (143), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Effects          :
-#1 (id=1007196)  : Apply Aura (6) | Root (26)
+#1 (id=1007196)  : Apply Aura (6) | Root (455)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Root | Target: Unknown(25)
+Hotfixed         : Sub Type (26 -> 455)
 Description      : $@spelldesc378756
 Tooltip          : Frozen.
 

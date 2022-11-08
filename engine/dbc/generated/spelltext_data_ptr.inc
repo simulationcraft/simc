@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.2.46479
-static const std::array<spelltext_data_t, 19171> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 19170> __ptr_spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -16300,7 +16300,7 @@ static const std::array<spelltext_data_t, 19171> __ptr_spelltext_data { {
   { 373129, "Launches a volley of darkness at the target, causing $<penancedamage> Shadow damage over $d. Castable while moving.", 0, 0 },
   { 373130, "$@spelldesc373129", 0, 0 },
   { 373178, "Invoke the Light's wrath, dealing $s1 Radiant damage to the target, increased by $s2% per ally affected by your Atonement.", 0, 0 },
-  { 373180, "When Atonement has healed a total of $s1 times, your next Penance is free and fires $s2 additional bolts.", 0, 0 },
+  { 373180, "Every $s1 casts of Smite, your next Penance is free and fires an additional $s2 bolts.", 0, 0 },
   { 373183, "$@spelldesc373180", "Penance is free and fires $373180s2 additional bolts.", 0 },
   { 373202, "Mind Blast has a $s1% chance to make your next Devouring Plague or Mind Sear cost no insanity.", 0, 0 },
   { 373204, "$@spelldesc373202", "Your next Devouring Plague or Mind Sear costs 0 insanity.", 0 },
@@ -17169,8 +17169,7 @@ static const std::array<spelltext_data_t, 19171> __ptr_spelltext_data { {
   { 383193, "$@spelldesc383192", "Heals $w1 every $t1 sec.", 0 },
   { 383195, "Solar Eclipse increases the damage of Wrath by an additional $s1%. \r\n\r\nLunar Eclipse increases the critical strike chance of Starfire by an additional $s1%.", 0, 0 },
   { 383197, "Every $s1th Shooting Star calls down a Full Moon at $s2% power upon its target.", 0, 0 },
-  { 383200, "Every $q seconds you spend moving increases your intellect by $383201s1, stacking up to 5 times. Casting a spell will consume all stacks of Intellect.", "Your movements will enhance your next spellcast.", 0 },
-  { 383201, "Your next spellcast gains $s1 Intellect.", "Intellect increased by $w1 for the next spellcast.", 0 },
+  { 383200, "Every $q seconds you spend moving increases your Intellect by $s2, stacking up to 5 times. Casting a spell will consume all stacks of Intellect.", "Your movements will enhance your next spellcast.", 0 },
   { 383208, "$@spelldesc383185 ", "Suffering $s1 damage every $t1 sec", 0 },
   { 383212, 0, "Swim speed increased and you can breathe underwater.\r\n\r\nNeither of these things seem appealing right now.", 0 },
   { 383213, "$@spelldesc396920  If you spend at least 10 seconds eating you will become regrettably well fed and gain increased swim speed and the ability to breathe underwater for $383212d... or as long as you can stomach it.", 0, 0 },
@@ -18015,7 +18014,7 @@ static const std::array<spelltext_data_t, 19171> __ptr_spelltext_data { {
   { 388056, "Sentinel Owl now also grants unhindered vision to party members while active.", 0, 0 },
   { 388057, "While the Sentinel Owl is active, your party gains $393777s1% Leech.", 0, 0 },
   { 388061, "Your Azureweave Vestments feel tighter, increasing Intellect by $s1 for $d.", "Intellect increased by $w1.", 0 },
-  { 388064, "Your Azureweave Vestments feel loose, reducing mana cost of spells and abilities by $s1 for $d.", "Mana costs reduced by $s1.", 0 },
+  { 388064, "Your Azureweave Vestments feel loose, reducing mana cost of spells and abilities by $s1 for $d.", "Mana costs reduced by $w1.", 0 },
   { 388068, "$@spelldesc386344", "Observed by an Inquisitor's Eye.", 0 },
   { 388070, "Blasts the enemy target with a bolt of fel magic, causing $s1 Shadowflame damage. ", 0, 0 },
   { 388106, "Throw Glaive causes targets to take an additional $s1% of damage dealt as Chaos over $390181d.", 0, 0 },
@@ -18384,7 +18383,7 @@ static const std::array<spelltext_data_t, 19171> __ptr_spelltext_data { {
   { 390632, "Purify additionally removes all Disease effects.", 0, 0 },
   { 390636, "$@spelldesc390622", "The damage of your next Holy Nova is increased by $w1% and its healing is increased by $w3%.", 0 },
   { 390642, "Shield Slam deals an additional $s1% damage and deals $s2% increased critical strike damage.\r\n\r\n", 0, 0 },
-  { 390643, "Perform the summoning ritual and commune with one of the Primal Turtles to gain its blessing.\r\n\r\nThe ritual site can be found north of Uktulut Pier in The Waking Shores, near the remains of a dragon.", 0, 0 },
+  { 390643, "Perform the summoning ritual and commune with one of the Primal Turtles to gain its blessing.\r\n\r\nThe ritual site can be found south of Uktulut Pier in The Waking Shores, near the remains of a dragon.", 0, 0 },
   { 390667, "Reduces all magic damage taken by $s1%.", 0, 0 },
   { 390668, "Your $?s137031[Holy Fire][Mind Blast] critical strikes reduce your target's movement speed by $390669s1% for $390669d.", 0, 0 },
   { 390669, "$@spelldesc390668", "Movement speed reduced by $s1%.", 0 },
@@ -18779,7 +18778,7 @@ static const std::array<spelltext_data_t, 19171> __ptr_spelltext_data { {
   { 393637, "Using Mangle with Gore also deals $s1% of damage dealt to nearby enemies, damage reduced beyond $s2 targets. It also increases your damage done and reduces damage you take by $395944s1% for 6 sec.", 0, 0 },
   { 393638, "Gore has a $s1% increased chance to trigger. Using Mangle with Gore heals you for ${$394504o1*(1+$@versadmg)} over $394504d.", 0, 0 },
   { 393639, "Rejuvenation, Lifebloom, Wild Growth, Efflorescence, and Tranquility chance to critically heal is increased by $s1%.", 0, 0 },
-  { 393641, "Efflorescence critical heals increase the healing of your next Wild Growth by $394565s1%, stacking up to 5 times. Lifebloom critical heals reduces the cooldown of Nature's Swiftness by $s1.", 0, 0 },
+  { 393641, "Efflorescence critical heals increase the healing of your next Wild Growth by $394565s1%, stacking up to 5 times. Lifebloom critical heals reduces the cooldown of Nature's Swiftness by $s1 sec.", 0, 0 },
   { 393642, "Empower spells have a $s1% increased chance to critically strike and also increase your critical strike chance by $394402s1% for $394402d.\r\n", 0, 0 },
   { 393643, "Empower spells have a $s2% chance to grant you $s1 seconds of Fury of the Aspects without causing Exhaustion.", 0, 0 },
   { 393644, "Empower spells increase Reversion's chance to critically heal by $394544s1% for $394544d.", 0, 0 },
@@ -19174,7 +19173,12 @@ static const std::array<spelltext_data_t, 19171> __ptr_spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 10.0.2.46479
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 5> __ptr_spelltext_hotfix_data { {
+  {  373180,  0, "When Atonement has healed a total of $s1 times, your next Penance is free and fires $s2 additional bolts.", "Every $s1 casts of Smite, your next Penance is free and fires an additional $s2 bolts." },
+  {  383200,  0, "Every $q seconds you spend moving increases your intellect by $383201s1, stacking up to 5 times. Casting a spell will consume all stacks of Intellect.", "Every $q seconds you spend moving increases your Intellect by $s2, stacking up to 5 times. Casting a spell will consume all stacks of Intellect." },
+  {  388064,  1, "Mana costs reduced by $s1.", "Mana costs reduced by $w1." },
+  {  390643,  0, "Perform the summoning ritual and commune with one of the Primal Turtles to gain its blessing.\r\n\r\nThe ritual site can be found north of Uktulut Pier in The Waking Shores, near the remains of a dragon.", "Perform the summoning ritual and commune with one of the Primal Turtles to gain its blessing.\r\n\r\nThe ritual site can be found south of Uktulut Pier in The Waking Shores, near the remains of a dragon." },
+  {  393641,  0, "Efflorescence critical heals increase the healing of your next Wild Growth by $394565s1%, stacking up to 5 times. Lifebloom critical heals reduces the cooldown of Nature's Swiftness by $s1.", "Efflorescence critical heals increase the healing of your next Wild Growth by $394565s1%, stacking up to 5 times. Lifebloom critical heals reduces the cooldown of Nature's Swiftness by $s1 sec." },
 } };
 
 // Spell description variables, wow build 10.0.2.46479

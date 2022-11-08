@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.46455 Live (hotfix 2022-11-04/46455)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.46455 Live (hotfix 2022-11-08/46455)
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -2723,7 +2723,8 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : Is Ability (4), Passive (6), No Aura Icon (60), Can Proc From Procs (122), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=119452)   : Apply Player/Pet Aura (202) | Dummy (4)
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Radius: 100 yards | Target: Self (1)
+                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Radius: 100 yards | Target: Self (1)
+Hotfixed         : Base Value (8 -> 6)
 #2 (id=326363)   : Apply Player/Pet Aura (202) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Radius: 100 yards | Target: Self (1)
 Description      : All single-target damage done by you and your minions grants you and your pet shadowy shields that absorb $s1% of the damage dealt$?s219272[][ for $108366d], up to $?s219272[$219272s2][$s2]% of maximum health.
@@ -2828,6 +2829,9 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | Value Multiplier: 1 | PvP Coefficient: 1.00000 | Misc Value: 127 | Radius: 100 yards | Target: Self (1)
 #3 (id=311358)   : Apply Owner Area Aura (143) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Value Multiplier: 1 | PvP Coefficient: 1.00000 | Misc Value: 127 | Radius: 100 yards | Target: Self (1)
+#4 (id=1041014)  : None (0)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
+Hotfixed         : NEW EFFECT
 Description      : $@spelldesc108415
 Tooltip          : $s1% of all damage taken is split with the Warlock's summoned demon.  
 The Warlock is healed for $s2% and your demon is healed for $s3% of all absorption granted by Soul Leech.
@@ -4134,7 +4138,8 @@ Effects          :
 #2 (id=1030265)  : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value 2: 0x4 | Target: Self (1)
 #3 (id=1039953)  : Apply Aura (6) | Modify Total Stat% (137)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value 2: 0x4 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value 2: 0x4 | Target: Self (1)
+Hotfixed         : Base Value (10 -> 5)
 Description      : $@spelldesc108503
 Tooltip          : Sacrificed your demon pet to gain its command demon ability.
 
@@ -12708,7 +12713,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=1020220)  : School Damage (2): chaos
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.22000 | PvP Coefficient: 1.00000 | Radius: 0 - 6 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.28600 | PvP Coefficient: 1.00000 | Radius: 0 - 6 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+Hotfixed         : SP Coefficient (0.22 -> 0.286)
 Description      : $@spelldesc386244
 
 Name             : Tormented Soul (id=386309) [Spell Family (5), Hidden] 
@@ -12898,7 +12904,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Display Range (126)
 Effects          :
 #1 (id=1020827)  : Apply Aura (6) | Modify Max Health% (133)
-                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Radius: 100 yards | Target: Unknown(120)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Radius: 100 yards | Target: Unknown(120)
+Hotfixed         : Base Value (6 -> 5)
 Description      : Increases you and your pets' maximum health by $s1%.
 
 Name             : Desperate Pact (id=386619) [Spell Family (5), Passive, Hidden] 
@@ -15869,7 +15876,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1023550)  : School Damage (2): shadowflame
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.08750 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.11375 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : SP Coefficient (0.0875 -> 0.11375)
 Description      : Blasts the enemy target with a bolt of fel magic, causing $s1 Shadowflame damage. 
 
 Name             : Drain Soul (id=388667) [Spell Family (5), Passive] 
@@ -15959,7 +15967,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1025475)  : School Damage (2): shadowflame
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.10000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.13000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : SP Coefficient (0.1 -> 0.13)
 Description      : Unleashes a powerful blast of fel magic at the enemy target, dealing $s1 Shadowflame damage.
 
 Name             : Resolute Barrier (id=389359) [Spell Family (5), Passive, Hidden] 
@@ -16019,7 +16028,7 @@ Name             : Profane Bargain (id=389576) [Spell Family (5), Passive, Hidde
 Talent Entry     : Generic [tree=class, row=9, col=3, max_rank=2, req_points=20]
                  : Effect#1 [op=none, values=(1, 2)]
                  : Effect#2 [op=set, values=(5, 10)]
-                 : Effect#3 [op=set, values=(5, 10)]
+                 : Effect#3 [op=set, values=(3, 5)]
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
@@ -16039,8 +16048,9 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 2364 (Label)
                    Affected Spells (Label): Profane Bargain (394747)
 #3 (id=1030612)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 1985 (Label) | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 1985 (Label) | Target: Self (1)
                    Affected Spells (Label): Grimoire of Sacrifice (196099)
+Hotfixed         : Base Value (5 -> 3)
 Description      : When your health drops below $s1%, the percentage of damage shared via your Soul Link is increased by an additional $s2%. $?a137044[][
 
 While Grimoire of Sacrifice is active, your Stamina is increased by $s3%.]
