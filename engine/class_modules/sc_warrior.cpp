@@ -1806,7 +1806,10 @@ struct melee_t : public warrior_attack_t
   double sidearm_chance, enrage_chance;
   devastator_t* devastator;
   melee_t( util::string_view name, warrior_t* p )
-    : warrior_attack_t( name, p, spell_data_t::nil() ), reckless_flurry( nullptr ),
+    : warrior_attack_t( name, p, spell_data_t::nil() ),
+      annihilator( nullptr ),
+      reckless_flurry( nullptr ),
+      sidearm( nullptr),
       mh_lost_melee_contact( true ),
       oh_lost_melee_contact( true ),
       // arms and fury multipliers are both 1, adjusted by the spec scaling auras (x4 for Arms and x1 for Fury)
@@ -1814,9 +1817,9 @@ struct melee_t : public warrior_attack_t
       arms_rage_multiplier( 4.00 ),
       fury_rage_multiplier( 1.00 ),
       seasoned_soldier_crit_mult( p->spec.seasoned_soldier->effectN( 1 ).percent() ),
-      devastator( nullptr ), annihilator( nullptr ), sidearm( nullptr),
       sidearm_chance( p->talents.warrior.sidearm->proc_chance() ),
-      enrage_chance( p->talents.fury.frenzied_flurry->proc_chance() )
+      enrage_chance( p->talents.fury.frenzied_flurry->proc_chance() ),
+      devastator( nullptr )
   {
     background = repeating = may_glance = usable_while_channeling = true;
     allow_class_ability_procs = not_a_proc = true;
@@ -4489,10 +4492,10 @@ struct odyns_fury_t : warrior_attack_t
 
 struct torment_odyns_fury_t : warrior_attack_t
 {
-  odyns_fury_off_hand_t* oh_attack;
-  odyns_fury_off_hand_t* oh_attack2;
   odyns_fury_main_hand_t* mh_attack;
   odyns_fury_main_hand_t* mh_attack2;
+  odyns_fury_off_hand_t* oh_attack;
+  odyns_fury_off_hand_t* oh_attack2;
   torment_odyns_fury_t( warrior_t* p, util::string_view options_str, util::string_view n, const spell_data_t* spell, bool torment_triggered = false )
     : warrior_attack_t( n, p, spell ),
       mh_attack( new odyns_fury_main_hand_t( p, fmt::format( "{}_mh", n ), spell->effectN( 1 ).trigger() ) ),
@@ -5338,6 +5341,8 @@ struct shield_charge_damage_t : public warrior_attack_t
     double cm = warrior_attack_t::composite_crit_damage_bonus_multiplier();
 
     cm += p()->talents.protection.battering_ram->effectN( 3 ).percent();
+
+    return cm;
   }
 
   void execute() override
@@ -5407,6 +5412,8 @@ struct shield_charge_damage_aoe_t : public warrior_attack_t
     double cm = warrior_attack_t::composite_crit_damage_bonus_multiplier();
 
     cm += p()->talents.protection.battering_ram->effectN( 3 ).percent();
+
+    return cm;
   }
 };
 
@@ -8560,7 +8567,7 @@ void warrior_t::apl_fury()
     }
   }
 
-  default_list->add_action( "avatar,if=talent.titans_torment&buff.enrage.up&(buff.elysian_might.up|!covenant.kyrian)" );
+  default_list->add_action( "avatar,if=talent.titans_torment&buff.enrage.up&(buff.elysian_might.up|buff.elysian_might_legendary|!covenant.kyrian)" );
 
   default_list->add_action( "avatar,if=!talent.titans_torment&(buff.recklessness.up|target.time_to_die<20)" );
 
@@ -9346,7 +9353,7 @@ void warrior_t::create_buffs()
 
   buff.conquerors_mastery = make_buff<stat_buff_t>( this, "conquerors_mastery", find_spell( 325862 ) );
 
-  buff.elysian_might_legendary = make_buff( this, "elysian_might", find_spell( 311193 ) )
+  buff.elysian_might_legendary = make_buff( this, "elysian_might_legendary", find_spell( 311193 ) )
                          ->set_default_value( find_spell( 311193 )->effectN( 1 ).percent() );
 
   // Conduits===============================================================================================================
