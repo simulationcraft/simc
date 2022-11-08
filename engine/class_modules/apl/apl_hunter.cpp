@@ -54,40 +54,28 @@ void beast_mastery( player_t* p )
   precombat->add_action( "food" );
   precombat->add_action( "summon_pet" );
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
-  precombat->add_action( "fleshcraft" );
-  precombat->add_action( "tar_trap,precast_time=1.5,if=runeforge.soulforge_embers|runeforge.nessingwarys_trapping_apparatus" );
-  precombat->add_action( "bestial_wrath,precast_time=1.5,if=!talent.scent_of_blood&!runeforge.soulforge_embers" );
 
   default_->add_action( "auto_shot" );
-  default_->add_action( "counter_shot,line_cd=30,if=runeforge.sephuzs_proclamation|soulbind.niyas_tools_poison|(conduit.reversal_of_fortune&!runeforge.sephuzs_proclamation)" );
-  default_->add_action( "newfound_resolve,if=soulbind.newfound_resolve&(buff.resonating_arrow.up|cooldown.resonating_arrow.remains>10|target.time_to_die<16)", "Delay facing your doubt until you have put Resonating Arrow down, or if the cooldown is too long to delay facing your Doubt. If none of these conditions are able to met within the 10 seconds leeway, the sim faces your Doubt automatically." );
-  default_->add_action( "call_action_list,name=trinkets,if=covenant.kyrian&cooldown.aspect_of_the_wild.remains&cooldown.resonating_arrow.remains|!covenant.kyrian&cooldown.aspect_of_the_wild.remains" );
+  default_->add_action( "call_action_list,name=trinkets,if=!cooldown.aspect_of_the_wild.remains" );
   default_->add_action( "call_action_list,name=cds" );
   default_->add_action( "call_action_list,name=st,if=active_enemies<2" );
   default_->add_action( "call_action_list,name=cleave,if=active_enemies>1" );
 
   cds->add_action( "ancestral_call,if=cooldown.bestial_wrath.remains>30" );
   cds->add_action( "fireblood,if=cooldown.bestial_wrath.remains>30" );
-  cds->add_action( "berserking,if=(buff.wild_spirits.up|!covenant.night_fae&buff.aspect_of_the_wild.up&buff.bestial_wrath.up)&(target.time_to_die>cooldown.berserking.duration+duration|(target.health.pct<35|!talent.killer_instinct))|target.time_to_die<13" );
-  cds->add_action( "blood_fury,if=(buff.wild_spirits.up|!covenant.night_fae&buff.aspect_of_the_wild.up&buff.bestial_wrath.up)&(target.time_to_die>cooldown.blood_fury.duration+duration|(target.health.pct<35|!talent.killer_instinct))|target.time_to_die<16" );
+  cds->add_action( "berserking,if=(buff.aspect_of_the_wild.up&buff.bestial_wrath.up)&(target.time_to_die>cooldown.berserking.duration+duration|(target.health.pct<35|!talent.killer_instinct))|target.time_to_die<13" );
+  cds->add_action( "blood_fury,if=(!buff.aspect_of_the_wild.up&buff.bestial_wrath.up)&(target.time_to_die>cooldown.blood_fury.duration+duration|(target.health.pct<35|!talent.killer_instinct))|target.time_to_die<16" );
   cds->add_action( "lights_judgment" );
   cds->add_action( "potion,if=buff.aspect_of_the_wild.up|target.time_to_die<26" );
 
   cleave->add_action( "aspect_of_the_wild,if=!raid_event.adds.exists|raid_event.adds.remains>=10|active_enemies>=raid_event.adds.count*2" );
-  cleave->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<=gcd|buff.wild_spirits.up&charges_fractional>1.4&runeforge.fragments_of_the_elder_antlers" );
+  cleave->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<=gcd" );
   cleave->add_action( "multishot,if=gcd-pet.main.buff.beast_cleave.remains>0.25|buff.killing_frenzy.up&pet.main.buff.beast_cleave.remains<2" );
-  cleave->add_action( "kill_shot,if=runeforge.pouch_of_razor_fragments&buff.flayers_mark.up" );
-  cleave->add_action( "flayed_shot,if=runeforge.pouch_of_razor_fragments" );
-  cleave->add_action( "tar_trap,if=runeforge.soulforge_embers&tar_trap.remains<gcd&cooldown.flare.remains<gcd" );
-  cleave->add_action( "flare,if=tar_trap.up&runeforge.soulforge_embers" );
   cleave->add_action( "death_chakram,if=focus+cast_regen<focus.max" );
-  cleave->add_action( "wild_spirits,if=!raid_event.adds.exists|raid_event.adds.remains>=10|active_enemies>=raid_event.adds.count*2" );
   cleave->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=full_recharge_time<gcd&cooldown.bestial_wrath.remains|cooldown.bestial_wrath.remains<12+gcd&talent.scent_of_blood" );
   cleave->add_action( "bestial_wrath,if=!raid_event.adds.exists|raid_event.adds.remains>=5|active_enemies>=raid_event.adds.count*2" );
-  cleave->add_action( "resonating_arrow,if=!raid_event.adds.exists|raid_event.adds.remains>=5|active_enemies>=raid_event.adds.count*2" );
   cleave->add_action( "stampede,if=buff.aspect_of_the_wild.up|target.time_to_die<15" );
   cleave->add_action( "wailing_arrow,if=pet.main.buff.frenzy.remains>execute_time" );
-  cleave->add_action( "flayed_shot" );
   cleave->add_action( "kill_shot" );
   cleave->add_action( "chimaera_shot" );
   cleave->add_action( "bloodshed" );
@@ -98,17 +86,12 @@ void beast_mastery( player_t* p )
   cleave->add_action( "dire_beast" );
   cleave->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=target.time_to_die<9|charges_fractional>1.2&conduit.bloodletting" );
   cleave->add_action( "cobra_shot,if=focus.time_to_max<gcd*2" );
-  cleave->add_action( "tar_trap,if=runeforge.soulforge_embers|runeforge.nessingwarys_trapping_apparatus" );
   cleave->add_action( "freezing_trap,if=runeforge.nessingwarys_trapping_apparatus" );
   cleave->add_action( "arcane_torrent,if=(focus+focus.regen+30)<focus.max" );
 
-  st->add_action( "aspect_of_the_wild,if=(!covenant.night_fae|cooldown.wild_spirits.remains>20)&(!raid_event.adds.exists|!raid_event.adds.up&(raid_event.adds.duration+raid_event.adds.in<20|(raid_event.adds.count=1&covenant.kyrian))|raid_event.adds.up&raid_event.adds.remains>19)" );
+  st->add_action( "aspect_of_the_wild,if=(!raid_event.adds.exists|!raid_event.adds.up&(raid_event.adds.duration+raid_event.adds.in<20))|raid_event.adds.up&raid_event.adds.remains>19)" );
   st->add_action( "barbed_shot,if=pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<=gcd|buff.wild_spirits.up&charges_fractional>1.4&runeforge.fragments_of_the_elder_antlers" );
-  st->add_action( "tar_trap,if=runeforge.soulforge_embers&tar_trap.remains<gcd&cooldown.flare.remains<gcd" );
-  st->add_action( "flare,if=tar_trap.up&runeforge.soulforge_embers" );
   st->add_action( "bloodshed" );
-  st->add_action( "wild_spirits,if=!raid_event.adds.exists|!raid_event.adds.up&raid_event.adds.duration+raid_event.adds.in<20|raid_event.adds.up&raid_event.adds.remains>19" );
-  st->add_action( "flayed_shot" );
   st->add_action( "kill_shot" );
   st->add_action( "wailing_arrow,if=pet.main.buff.frenzy.remains>execute_time&(cooldown.resonating_arrow.remains<gcd&(!talent.explosive_shot|buff.bloodlust.up)|!covenant.kyrian)|target.time_to_die<5" );
   st->add_action( "barbed_shot,if=cooldown.bestial_wrath.remains<12*charges_fractional+gcd&talent.scent_of_blood|full_recharge_time<gcd&cooldown.bestial_wrath.remains|target.time_to_die<9" );
@@ -124,17 +107,9 @@ void beast_mastery( player_t* p )
   st->add_action( "cobra_shot,if=(focus-cost+focus.regen*(cooldown.kill_command.remains-1)>action.kill_command.cost|cooldown.kill_command.remains>1+gcd)|(buff.bestial_wrath.up|buff.nesingwarys_trapping_apparatus.up)&!runeforge.qapla_eredun_war_order|target.time_to_die<3" );
   st->add_action( "barbed_shot,if=buff.wild_spirits.up|charges_fractional>1.2&conduit.bloodletting" );
   st->add_action( "arcane_pulse,if=buff.bestial_wrath.down|target.time_to_die<5" );
-  st->add_action( "tar_trap,if=runeforge.soulforge_embers|runeforge.nessingwarys_trapping_apparatus" );
   st->add_action( "freezing_trap,if=runeforge.nessingwarys_trapping_apparatus" );
   st->add_action( "arcane_torrent,if=(focus+focus.regen+15)<focus.max" );
 
-  trinkets->add_action( "variable,name=sync_up,value=buff.resonating_arrow.up|buff.aspect_of_the_wild.up" );
-  trinkets->add_action( "variable,name=strong_sync_up,value=covenant.kyrian&buff.resonating_arrow.up&buff.aspect_of_the_wild.up|!covenant.kyrian&buff.aspect_of_the_wild.up" );
-  trinkets->add_action( "variable,name=strong_sync_remains,op=setif,condition=covenant.kyrian,value=cooldown.resonating_arrow.remains<?cooldown.aspect_of_the_wild.remains_guess,value_else=cooldown.aspect_of_the_wild.remains_guess,if=buff.aspect_of_the_wild.down" );
-  trinkets->add_action( "variable,name=strong_sync_remains,op=setif,condition=covenant.kyrian,value=cooldown.resonating_arrow.remains,value_else=cooldown.aspect_of_the_wild.remains_guess,if=buff.aspect_of_the_wild.up" );
-  trinkets->add_action( "variable,name=sync_remains,op=setif,condition=covenant.kyrian,value=cooldown.resonating_arrow.remains>?cooldown.aspect_of_the_wild.remains_guess,value_else=cooldown.aspect_of_the_wild.remains_guess" );
-  trinkets->add_action( "use_items,slots=trinket1,if=((trinket.1.has_use_buff|covenant.kyrian&trinket.1.has_cooldown)&(variable.strong_sync_up&(!covenant.kyrian&!trinket.2.has_use_buff|covenant.kyrian&!trinket.2.has_cooldown|trinket.2.cooldown.remains|trinket.1.has_use_buff&(!trinket.2.has_use_buff|trinket.1.cooldown.duration>=trinket.2.cooldown.duration)|trinket.1.has_cooldown&!trinket.2.has_use_buff&trinket.1.cooldown.duration>=trinket.2.cooldown.duration)|!variable.strong_sync_up&(!trinket.2.has_use_buff&(trinket.1.cooldown.duration-5<variable.sync_remains|variable.sync_remains>trinket.1.cooldown.duration%2)|trinket.2.has_use_buff&(trinket.1.has_use_buff&trinket.1.cooldown.duration>=trinket.2.cooldown.duration&(trinket.1.cooldown.duration-5<variable.sync_remains|variable.sync_remains>trinket.1.cooldown.duration%2)|(!trinket.1.has_use_buff|trinket.2.cooldown.duration>=trinket.1.cooldown.duration)&(trinket.2.cooldown.ready&trinket.2.cooldown.duration-5>variable.sync_remains&variable.sync_remains<trinket.2.cooldown.duration%2|!trinket.2.cooldown.ready&(trinket.2.cooldown.remains-5<variable.strong_sync_remains&variable.strong_sync_remains>20&(trinket.1.cooldown.duration-5<variable.sync_remains|trinket.2.cooldown.remains-5<variable.sync_remains&trinket.2.cooldown.duration-10+variable.sync_remains<variable.strong_sync_remains|variable.sync_remains>trinket.1.cooldown.duration%2|variable.sync_up)|trinket.2.cooldown.remains-5>variable.strong_sync_remains&(trinket.1.cooldown.duration-5<variable.strong_sync_remains|trinket.1.cooldown.duration<fight_remains&variable.strong_sync_remains+trinket.1.cooldown.duration>fight_remains|!trinket.1.has_use_buff&(variable.sync_remains>trinket.1.cooldown.duration%2|variable.sync_up))))))|target.time_to_die<variable.sync_remains)|!trinket.1.has_use_buff&!covenant.kyrian&(trinket.2.has_use_buff&((!variable.sync_up|trinket.2.cooldown.remains>5)&(variable.sync_remains>20|trinket.2.cooldown.remains-5>variable.sync_remains))|!trinket.2.has_use_buff&(!trinket.2.has_cooldown|trinket.2.cooldown.remains|trinket.2.cooldown.duration>=trinket.1.cooldown.duration)))&(!trinket.1.is.cache_of_acquired_treasures|active_enemies<2&buff.acquired_wand.up|active_enemies>1&!buff.acquired_wand.up)" );
-  trinkets->add_action( "use_items,slots=trinket2,if=((trinket.2.has_use_buff|covenant.kyrian&trinket.2.has_cooldown)&(variable.strong_sync_up&(!covenant.kyrian&!trinket.1.has_use_buff|covenant.kyrian&!trinket.1.has_cooldown|trinket.1.cooldown.remains|trinket.2.has_use_buff&(!trinket.1.has_use_buff|trinket.2.cooldown.duration>=trinket.1.cooldown.duration)|trinket.2.has_cooldown&!trinket.1.has_use_buff&trinket.2.cooldown.duration>=trinket.1.cooldown.duration)|!variable.strong_sync_up&(!trinket.1.has_use_buff&(trinket.2.cooldown.duration-5<variable.sync_remains|variable.sync_remains>trinket.2.cooldown.duration%2)|trinket.1.has_use_buff&(trinket.2.has_use_buff&trinket.2.cooldown.duration>=trinket.1.cooldown.duration&(trinket.2.cooldown.duration-5<variable.sync_remains|variable.sync_remains>trinket.2.cooldown.duration%2)|(!trinket.2.has_use_buff|trinket.1.cooldown.duration>=trinket.2.cooldown.duration)&(trinket.1.cooldown.ready&trinket.1.cooldown.duration-5>variable.sync_remains&variable.sync_remains<trinket.1.cooldown.duration%2|!trinket.1.cooldown.ready&(trinket.1.cooldown.remains-5<variable.strong_sync_remains&variable.strong_sync_remains>20&(trinket.2.cooldown.duration-5<variable.sync_remains|trinket.1.cooldown.remains-5<variable.sync_remains&trinket.1.cooldown.duration-10+variable.sync_remains<variable.strong_sync_remains|variable.sync_remains>trinket.2.cooldown.duration%2|variable.sync_up)|trinket.1.cooldown.remains-5>variable.strong_sync_remains&(trinket.2.cooldown.duration-5<variable.strong_sync_remains|trinket.2.cooldown.duration<fight_remains&variable.strong_sync_remains+trinket.2.cooldown.duration>fight_remains|!trinket.2.has_use_buff&(variable.sync_remains>trinket.2.cooldown.duration%2|variable.sync_up))))))|target.time_to_die<variable.sync_remains)|!trinket.2.has_use_buff&!covenant.kyrian&(trinket.1.has_use_buff&((!variable.sync_up|trinket.1.cooldown.remains>5)&(variable.sync_remains>20|trinket.1.cooldown.remains-5>variable.sync_remains))|!trinket.1.has_use_buff&(!trinket.1.has_cooldown|trinket.1.cooldown.remains|trinket.1.cooldown.duration>=trinket.2.cooldown.duration)))&(!trinket.2.is.cache_of_acquired_treasures|active_enemies<2&buff.acquired_wand.up|active_enemies>1&!buff.acquired_wand.up)" );
 }
 //beast_mastery_apl_end
 
@@ -152,39 +127,31 @@ void marksmanship( player_t* p )
   precombat->add_action( "augmentation" );
   precombat->add_action( "food" );
   precombat->add_action( "snapshot_stats" );
-  precombat->add_action( "fleshcraft" );
-  precombat->add_action( "tar_trap,if=runeforge.soulforge_embers" );
-  precombat->add_action( "double_tap,precast_time=10,if=active_enemies>1|!covenant.kyrian&!talent.volley" );
-  precombat->add_action( "aimed_shot,if=active_enemies<3&(!covenant.kyrian&!talent.volley|active_enemies<2)" );
-  precombat->add_action( "steady_shot,if=active_enemies>2|(covenant.kyrian|talent.volley)&active_enemies=2" );
+  precombat->add_action( "double_tap,precast_time=10,if=active_enemies>1|!talent.volley" );
+  precombat->add_action( "aimed_shot,if=active_enemies<3&(!talent.volley|active_enemies<2)" );
+  precombat->add_action( "steady_shot,if=active_enemies>2|talent.volley&active_enemies=2" );
 
   default_->add_action( "auto_shot" );
-  default_->add_action( "counter_shot,line_cd=30,if=runeforge.sephuzs_proclamation|soulbind.niyas_tools_poison|(conduit.reversal_of_fortune&!runeforge.sephuzs_proclamation)" );
-  default_->add_action( "call_action_list,name=trinkets,if=covenant.kyrian&cooldown.trueshot.remains&cooldown.resonating_arrow.remains|!covenant.kyrian&cooldown.trueshot.remains" );
-  default_->add_action( "newfound_resolve,if=soulbind.newfound_resolve&(buff.resonating_arrow.up|cooldown.resonating_arrow.remains>10|fight_remains<16)", "Delay facing your doubt until you have put Resonating Arrow down, or if the cooldown is too long to delay facing your Doubt. If none of these conditions are able to met within the 10 seconds leeway, the sim faces your Doubt automatically." );
   default_->add_action( "call_action_list,name=cds" );
   default_->add_action( "call_action_list,name=st,if=active_enemies<3" );
   default_->add_action( "call_action_list,name=trickshots,if=active_enemies>2" );
 
-  cds->add_action( "berserking,if=(buff.trueshot.up&buff.resonating_arrow.up&covenant.kyrian)|(buff.trueshot.up&buff.wild_spirits.up&covenant.night_fae)|(covenant.venthyr|covenant.necrolord)&buff.trueshot.up|fight_remains<13|(covenant.kyrian&buff.resonating_arrow.up&fight_remains<73)" );
+  cds->add_action( "berserking,if=(buff.trueshot.up&|fight_remains<13)" );
   cds->add_action( "blood_fury,if=buff.trueshot.up|cooldown.trueshot.remains>30|fight_remains<16" );
   cds->add_action( "ancestral_call,if=buff.trueshot.up|cooldown.trueshot.remains>30|fight_remains<16" );
   cds->add_action( "fireblood,if=buff.trueshot.up|cooldown.trueshot.remains>30|fight_remains<9" );
   cds->add_action( "lights_judgment,if=buff.trueshot.down" );
-  cds->add_action( "potion,if=buff.trueshot.up&(buff.bloodlust.up|target.health.pct<20)|fight_remains<26|(covenant.kyrian&buff.resonating_arrow.up&fight_remains<72)" );
+  cds->add_action( "potion,if=buff.trueshot.up&(buff.bloodlust.up|target.health.pct<20)|fight_remains<26)" );
 
-  st->add_action( "steady_shot,if=talent.steady_focus&(prev_gcd.1.steady_shot&buff.steady_focus.remains<5|buff.steady_focus.down)&(buff.resonating_arrow.down|!covenant.kyrian)" );
+  st->add_action( "steady_shot,if=talent.steady_focus&(prev_gcd.1.steady_shot&buff.steady_focus.remains<5|buff.steady_focus.down)" );
   st->add_action( "kill_shot" );
-  st->add_action( "double_tap,if=(covenant.kyrian&(cooldown.resonating_arrow.remains<gcd)|!covenant.kyrian&!covenant.night_fae|covenant.night_fae&(cooldown.wild_spirits.remains<gcd|cooldown.wild_spirits.remains>30)|fight_remains<15)&(!raid_event.adds.exists|raid_event.adds.up&(raid_event.adds.in<10&raid_event.adds.remains<3|raid_event.adds.in>cooldown|active_enemies>1)|!raid_event.adds.up&(raid_event.adds.count=1|raid_event.adds.in>cooldown))" );
-  st->add_action( "flare,if=tar_trap.up&runeforge.soulforge_embers" );
-  st->add_action( "tar_trap,if=runeforge.soulforge_embers&tar_trap.remains<gcd&cooldown.flare.remains<gcd" );
+  st->add_action( "double_tap,if=(fight_remains<15)&(!r!raid_event.adds.up&(raid_event.adds.count=1|raid_event.adds.in>cooldown))" );
+  st->add_action( "double_tap,if=(fight_remains<15)&(!raid_event.adds.exists|raid_event.adds.up&(raid_event.adds.in<10&raid_event.adds.remains<3|raid_event.adds.in>cooldown|active_enemies>1)|!raid_event.adds.up&(raid_event.adds.count=1|raid_event.adds.in>cooldown))" );
+
   st->add_action( "explosive_shot" );
-  st->add_action( "wild_spirits,if=(cooldown.trueshot.remains<gcd|buff.trueshot.up)&(!raid_event.adds.exists|!raid_event.adds.up&(raid_event.adds.duration+raid_event.adds.in<20|raid_event.adds.in>60)|raid_event.adds.up&raid_event.adds.remains>19|active_enemies>1)|fight_remains<20" );
-  st->add_action( "flayed_shot" );
   st->add_action( "death_chakram" );
   st->add_action( "a_murder_of_crows" );
   st->add_action( "wailing_arrow,if=cooldown.resonating_arrow.remains<gcd&(!talent.explosive_shot|buff.bloodlust.up)|!covenant.kyrian|cooldown.resonating_arrow.remains|target.time_to_die<5" );
-  st->add_action( "resonating_arrow,if=(buff.double_tap.up|!talent.double_tap|fight_remains<12)&(!raid_event.adds.exists|!raid_event.adds.up&(raid_event.adds.duration+raid_event.adds.in<10|raid_event.adds.in>40|raid_event.adds.count=1)|raid_event.adds.up&raid_event.adds.remains>9|active_enemies>1)" );
   st->add_action( "volley,if=buff.resonating_arrow.up|!covenant.kyrian&(buff.precise_shots.down|!talent.chimaera_shot|active_enemies<2)&(!talent.double_tap|!set_bonus.tier28_2pc|set_bonus.tier28_4pc|buff.double_tap.up)" );
   st->add_action( "steady_shot,if=covenant.kyrian&focus+cast_regen<focus.max&((cooldown.resonating_arrow.remains<gcd*3&(!soulbind.effusive_anima_accelerator|!talent.double_tap))|talent.double_tap&cooldown.double_tap.remains<3)" );
   st->add_action( "rapid_fire,if=(runeforge.surging_shots|set_bonus.tier28_2pc&buff.trick_shots.up&buff.volley.down)&talent.streamline&(cooldown.resonating_arrow.remains>10|!covenant.kyrian|!talent.double_tap|soulbind.effusive_anima_accelerator)" );
@@ -200,22 +167,15 @@ void marksmanship( player_t* p )
   st->add_action( "barrage,if=active_enemies>1" );
   st->add_action( "rapid_fire,if=(cooldown.resonating_arrow.remains>10&runeforge.surging_shots|!covenant.kyrian|!talent.double_tap|soulbind.effusive_anima_accelerator)&focus+cast_regen<focus.max&(buff.double_tap.down|talent.streamline)" );
   st->add_action( "bag_of_tricks,if=buff.trueshot.down" );
-  st->add_action( "fleshcraft,if=soulbind.pustule_eruption&buff.trueshot.down" );
   st->add_action( "steady_shot" );
 
   trickshots->add_action( "steady_shot,if=talent.steady_focus&in_flight&buff.steady_focus.remains<5" );
   trickshots->add_action( "kill_shot,if=runeforge.pouch_of_razor_fragments&buff.flayers_mark.up" );
-  trickshots->add_action( "flayed_shot,if=runeforge.pouch_of_razor_fragments" );
-  trickshots->add_action( "double_tap,if=(covenant.kyrian&cooldown.resonating_arrow.remains<gcd|!covenant.kyrian&!covenant.night_fae|covenant.night_fae&(cooldown.wild_spirits.remains<gcd|cooldown.wild_spirits.remains>30)|target.time_to_die<10|cooldown.resonating_arrow.remains>10&active_enemies>3)&(!raid_event.adds.exists|raid_event.adds.remains>9|!covenant.kyrian)" );
-  trickshots->add_action( "tar_trap,if=runeforge.soulforge_embers&tar_trap.remains<gcd&cooldown.flare.remains<gcd" );
-  trickshots->add_action( "flare,if=tar_trap.up&runeforge.soulforge_embers" );
+  trickshots->add_action( "double_tap,if=(!raid_event.adds.exists|raid_event.adds.remains>9|!covenant.kyrian)" );
   trickshots->add_action( "explosive_shot" );
-  trickshots->add_action( "wild_spirits,if=!raid_event.adds.exists|raid_event.adds.remains>10|active_enemies>=raid_event.adds.count*2|raid_event.adds.in>60" );
   trickshots->add_action( "wailing_arrow,if=cooldown.resonating_arrow.remains<gcd&(!talent.explosive_shot|buff.bloodlust.up)|!covenant.kyrian|cooldown.resonating_arrow.remains>10|target.time_to_die<5" );
-  trickshots->add_action( "resonating_arrow,if=(cooldown.volley.remains<gcd|!talent.volley|target.time_to_die<12)&(!raid_event.adds.exists|raid_event.adds.remains>9|active_enemies>=raid_event.adds.count*2)" );
   trickshots->add_action( "volley,if=buff.resonating_arrow.up|!covenant.kyrian" );
   trickshots->add_action( "barrage" );
-  trickshots->add_action( "trueshot,if=covenant.kyrian&(buff.resonating_arrow.up|cooldown.resonating_arrow.remains>10)|covenant.night_fae&buff.wild_spirits.up|covenant.venthyr|covenant.necrolord|target.time_to_die<25" );
   trickshots->add_action( "rapid_fire,if=runeforge.surging_shots&(cooldown.resonating_arrow.remains>10|!covenant.kyrian|!talent.double_tap)&buff.trick_shots.remains>=execute_time" );
   trickshots->add_action( "aimed_shot,target_if=min:dot.serpent_sting.remains+action.serpent_sting.in_flight_to_target*99,if=(buff.trick_shots.remains>=execute_time|focused_trickery_count>0)&(buff.precise_shots.down|full_recharge_time<cast_time+gcd|buff.trueshot.up|set_bonus.tier28_4pc&runeforge.secrets_of_the_unblinking_vigil)" );
   trickshots->add_action( "death_chakram,if=focus+cast_regen<focus.max" );
@@ -226,20 +186,9 @@ void marksmanship( player_t* p )
   trickshots->add_action( "a_murder_of_crows" );
   trickshots->add_action( "flayed_shot" );
   trickshots->add_action( "serpent_sting,target_if=min:dot.serpent_sting.remains,if=refreshable" );
-  trickshots->add_action( "multishot,if=focus>cost+action.aimed_shot.cost&(cooldown.resonating_arrow.remains>5|!covenant.kyrian)" );
-  trickshots->add_action( "tar_trap,if=runeforge.nessingwarys_trapping_apparatus" );
-  trickshots->add_action( "freezing_trap,if=runeforge.nessingwarys_trapping_apparatus" );
   trickshots->add_action( "bag_of_tricks,if=buff.trueshot.down" );
-  trickshots->add_action( "fleshcraft,if=soulbind.pustule_eruption&buff.trueshot.down" );
   trickshots->add_action( "steady_shot" );
 
-  trinkets->add_action( "variable,name=sync_up,value=buff.resonating_arrow.up|buff.trueshot.up" );
-  trinkets->add_action( "variable,name=strong_sync_up,value=covenant.kyrian&buff.resonating_arrow.up&buff.trueshot.up|!covenant.kyrian&buff.trueshot.up" );
-  trinkets->add_action( "variable,name=strong_sync_remains,op=setif,condition=covenant.kyrian,value=cooldown.resonating_arrow.remains<?cooldown.trueshot.remains_guess,value_else=cooldown.trueshot.remains_guess,if=buff.trueshot.down" );
-  trinkets->add_action( "variable,name=strong_sync_remains,op=setif,condition=covenant.kyrian,value=cooldown.resonating_arrow.remains,value_else=cooldown.trueshot.remains_guess,if=buff.trueshot.up" );
-  trinkets->add_action( "variable,name=sync_remains,op=setif,condition=covenant.kyrian,value=cooldown.resonating_arrow.remains>?cooldown.trueshot.remains_guess,value_else=cooldown.trueshot.remains_guess" );
-  trinkets->add_action( "use_items,slots=trinket1,if=((trinket.1.has_use_buff|covenant.kyrian&trinket.1.has_cooldown)&(variable.strong_sync_up&(!covenant.kyrian&!trinket.2.has_use_buff|covenant.kyrian&!trinket.2.has_cooldown|trinket.2.cooldown.remains|trinket.1.has_use_buff&(!trinket.2.has_use_buff|trinket.1.cooldown.duration>=trinket.2.cooldown.duration)|trinket.1.has_cooldown&!trinket.2.has_use_buff&trinket.1.cooldown.duration>=trinket.2.cooldown.duration)|!variable.strong_sync_up&(!trinket.2.has_use_buff&(trinket.1.cooldown.duration-5<variable.sync_remains|variable.sync_remains>trinket.1.cooldown.duration%2)|trinket.2.has_use_buff&(trinket.1.has_use_buff&trinket.1.cooldown.duration>=trinket.2.cooldown.duration&(trinket.1.cooldown.duration-5<variable.sync_remains|variable.sync_remains>trinket.1.cooldown.duration%2)|(!trinket.1.has_use_buff|trinket.2.cooldown.duration>=trinket.1.cooldown.duration)&(trinket.2.cooldown.ready&trinket.2.cooldown.duration-5>variable.sync_remains&variable.sync_remains<trinket.2.cooldown.duration%2|!trinket.2.cooldown.ready&(trinket.2.cooldown.remains-5<variable.strong_sync_remains&variable.strong_sync_remains>20&(trinket.1.cooldown.duration-5<variable.sync_remains|trinket.2.cooldown.remains-5<variable.sync_remains&trinket.2.cooldown.duration-10+variable.sync_remains<variable.strong_sync_remains|variable.sync_remains>trinket.1.cooldown.duration%2|variable.sync_up)|trinket.2.cooldown.remains-5>variable.strong_sync_remains&(trinket.1.cooldown.duration-5<variable.strong_sync_remains|trinket.1.cooldown.duration<fight_remains&variable.strong_sync_remains+trinket.1.cooldown.duration>fight_remains|!trinket.1.has_use_buff&(variable.sync_remains>trinket.1.cooldown.duration%2|variable.sync_up))))))|target.time_to_die<variable.sync_remains)|!trinket.1.has_use_buff&!covenant.kyrian&(trinket.2.has_use_buff&((!variable.sync_up|trinket.2.cooldown.remains>5)&(variable.sync_remains>20|trinket.2.cooldown.remains-5>variable.sync_remains))|!trinket.2.has_use_buff&(!trinket.2.has_cooldown|trinket.2.cooldown.remains|trinket.2.cooldown.duration>=trinket.1.cooldown.duration)))&(!trinket.1.is.cache_of_acquired_treasures|!buff.acquired_wand.up)" );
-  trinkets->add_action( "use_items,slots=trinket2,if=((trinket.2.has_use_buff|covenant.kyrian&trinket.2.has_cooldown)&(variable.strong_sync_up&(!covenant.kyrian&!trinket.1.has_use_buff|covenant.kyrian&!trinket.1.has_cooldown|trinket.1.cooldown.remains|trinket.2.has_use_buff&(!trinket.1.has_use_buff|trinket.2.cooldown.duration>=trinket.1.cooldown.duration)|trinket.2.has_cooldown&!trinket.1.has_use_buff&trinket.2.cooldown.duration>=trinket.1.cooldown.duration)|!variable.strong_sync_up&(!trinket.1.has_use_buff&(trinket.2.cooldown.duration-5<variable.sync_remains|variable.sync_remains>trinket.2.cooldown.duration%2)|trinket.1.has_use_buff&(trinket.2.has_use_buff&trinket.2.cooldown.duration>=trinket.1.cooldown.duration&(trinket.2.cooldown.duration-5<variable.sync_remains|variable.sync_remains>trinket.2.cooldown.duration%2)|(!trinket.2.has_use_buff|trinket.1.cooldown.duration>=trinket.2.cooldown.duration)&(trinket.1.cooldown.ready&trinket.1.cooldown.duration-5>variable.sync_remains&variable.sync_remains<trinket.1.cooldown.duration%2|!trinket.1.cooldown.ready&(trinket.1.cooldown.remains-5<variable.strong_sync_remains&variable.strong_sync_remains>20&(trinket.2.cooldown.duration-5<variable.sync_remains|trinket.1.cooldown.remains-5<variable.sync_remains&trinket.1.cooldown.duration-10+variable.sync_remains<variable.strong_sync_remains|variable.sync_remains>trinket.2.cooldown.duration%2|variable.sync_up)|trinket.1.cooldown.remains-5>variable.strong_sync_remains&(trinket.2.cooldown.duration-5<variable.strong_sync_remains|trinket.2.cooldown.duration<fight_remains&variable.strong_sync_remains+trinket.2.cooldown.duration>fight_remains|!trinket.2.has_use_buff&(variable.sync_remains>trinket.2.cooldown.duration%2|variable.sync_up))))))|target.time_to_die<variable.sync_remains)|!trinket.2.has_use_buff&!covenant.kyrian&(trinket.1.has_use_buff&((!variable.sync_up|trinket.1.cooldown.remains>5)&(variable.sync_remains>20|trinket.1.cooldown.remains-5>variable.sync_remains))|!trinket.1.has_use_buff&(!trinket.1.has_cooldown|trinket.1.cooldown.remains|trinket.1.cooldown.duration>=trinket.2.cooldown.duration)))&(!trinket.2.is.cache_of_acquired_treasures|!buff.acquired_wand.up)" );
 }
 //marksmanship_apl_end
 
@@ -261,13 +210,9 @@ void survival( player_t* p )
   precombat -> add_action( "variable,name=mb_rs_cost,op=setif,value=action.mongoose_bite.cost,value_else=action.raptor_strike.cost,condition=talent.mongoose_bite" );
   precombat -> add_action( "summon_pet" );
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
-  precombat -> add_action( "fleshcraft" );
-  precombat -> add_action( "tar_trap,if=runeforge.soulforge_embers" );
   precombat -> add_action( "steel_trap,precast_time=20" );
 
   default_ -> add_action( "auto_attack" );
-  default_ -> add_action( "newfound_resolve,if=soulbind.newfound_resolve&(buff.resonating_arrow.up|cooldown.resonating_arrow.remains>10|target.time_to_die<16)", "Delay facing your doubt until you have put Resonating Arrow down, or if the cooldown is too long to delay facing your Doubt. If none of these conditions are able to met within the 10 seconds leeway, the sim faces your Doubt automatically." ); 
-  default_ -> add_action( "call_action_list,name=trinkets,if=covenant.kyrian&cooldown.coordinated_assault.remains&cooldown.resonating_arrow.remains|!covenant.kyrian&cooldown.coordinated_assault.remains" );
   default_ -> add_action( "call_action_list,name=cds" );
   default_ -> add_action( "call_action_list,name=bop,if=active_enemies<3&talent.birds_of_prey.enabled" );
   default_ -> add_action( "call_action_list,name=st,if=active_enemies<3&!talent.birds_of_prey.enabled" );
@@ -299,6 +244,7 @@ void survival( player_t* p )
   cds -> add_action( "mongoose_bite,if=active_enemies=1&target.time_to_die<focus%(variable.mb_rs_cost-cast_regen)*gcd" );
   cds -> add_action( "raptor_strike,if=active_enemies=1&target.time_to_die<focus%(variable.mb_rs_cost-cast_regen)*gcd" );
   cds -> add_action( "aspect_of_the_eagle,if=target.distance>=6" );
+
   
   nta -> add_action( "steel_trap" );
   nta -> add_action( "freezing_trap,if=!buff.wild_spirits.remains|buff.wild_spirits.remains&cooldown.kill_command.remains" );
