@@ -5,6 +5,7 @@
 
 #include "config.hpp"
 #include "simulationcraft.hpp"
+#include "action/parse_buff_effects.hpp"
 #include "sim/option.hpp"
 #include "class_modules/apl/apl_evoker.hpp"
 
@@ -225,7 +226,7 @@ struct evoker_t : public player_t
     player_talent_t honed_aggression;
     player_talent_t eternitys_span;
     player_talent_t eye_of_infinity;
-    player_talent_t casuality;
+    player_talent_t causality;
     player_talent_t catalyze;  // row 7
     player_talent_t tyranny;
     player_talent_t charged_blast;
@@ -265,6 +266,7 @@ struct evoker_t : public player_t
   // Gains
   struct gains_t
   {
+    propagate_const<gain_t*> eye_of_infinity;
     propagate_const<gain_t*> roar_of_exhilaration;
   } gain;
 
@@ -273,7 +275,6 @@ struct evoker_t : public player_t
   {
     propagate_const<proc_t*> ruby_essence_burst;
     propagate_const<proc_t*> azure_essence_burst;
-    propagate_const<proc_t*> eye_of_infinity;
   } proc;
 
   // RPPMs
@@ -394,53 +395,19 @@ public:
 
 // Template for base evoker action code.
 template <class Base>
-struct evoker_action_t : public Base
+struct evoker_action_t : public Base, public parse_buff_effects_t<evoker_td_t>
 {
 private:
   using ab = Base;  // action base, spell_t/heal_t/etc.
 
 public:
-  // auto parsed dynamic effects
-  using bfun = std::function<bool()>;
-  struct buff_effect_t
-  {
-    buff_t* buff;
-    double value;
-    bool use_stacks;
-    bfun func;
-
-    buff_effect_t( buff_t* b, double v, bool s = true, bfun f = nullptr )
-      : buff( b ), value( v ), use_stacks( s ), func( std::move( f ) )
-    {}
-  };
-
-  using dfun = std::function<buff_t*( evoker_td_t* )>;
-  struct debuff_effect_t
-  {
-    dfun func;
-    double value;
-    bool use_stacks;
-
-    debuff_effect_t( dfun f, double v, bool b )
-      : func( std::move( f ) ), value( v ), use_stacks( b )
-    {}
-  };
-
-  std::vector<buff_effect_t> ta_multiplier_buffeffects;
-  std::vector<buff_effect_t> da_multiplier_buffeffects;
-  std::vector<buff_effect_t> execute_time_buffeffects;
-  std::vector<buff_effect_t> dot_duration_buffeffects;
-  std::vector<buff_effect_t> recharge_multiplier_buffeffects;
-  std::vector<buff_effect_t> cost_buffeffects;
-  std::vector<buff_effect_t> crit_chance_buffeffects;
-  std::vector<debuff_effect_t> target_multiplier_debuffeffects;
-
   spell_color_e spell_color;
   unsigned proc_spell_type;
   bool move_during_hover;
 
   evoker_action_t( std::string_view name, evoker_t* player, const spell_data_t* spell = spell_data_t::nil() )
     : ab( name, player, spell ),
+      parse_buff_effects_t( this ),
       spell_color( SPELL_COLOR_NONE ),
       proc_spell_type( proc_spell_type_e::NONE ),
       move_during_hover( false )
@@ -487,216 +454,6 @@ public:
   bool usable_moving() const override
   { return move_during_hover && p()->buff.hover->check(); }
 
-  template <typename T>
-  void parse_spell_effects_mods( double& val, const spell_data_t* base, size_t idx, T mod )
-  {
-    for ( size_t i = 1; i <= mod->effect_count(); i++ )
-    {
-      const auto& eff = mod->effectN( i );
-
-      if ( eff.type() != E_APPLY_AURA )
-        continue;
-
-      if ( ( base->affected_by_all( eff ) &&
-             ( ( eff.misc_value1() == P_EFFECT_1 && idx == 1 ) || ( eff.misc_value1() == P_EFFECT_2 && idx == 2 ) ||
-               ( eff.misc_value1() == P_EFFECT_3 && idx == 3 ) || ( eff.misc_value1() == P_EFFECT_4 && idx == 4 ) ||
-               ( eff.misc_value1() == P_EFFECT_5 && idx == 5 ) ) ) ||
-           ( eff.subtype() == A_PROC_TRIGGER_SPELL_WITH_VALUE && eff.trigger_spell_id() == base->id() && idx == 1 ) )
-      {
-        double pct = eff.percent();
-
-        if ( eff.subtype() == A_ADD_FLAT_MODIFIER || eff.subtype() == A_ADD_FLAT_LABEL_MODIFIER )
-          val += pct;
-        else if ( eff.subtype() == A_ADD_PCT_MODIFIER || eff.subtype() == A_ADD_PCT_LABEL_MODIFIER )
-          val *= 1.0 + pct;
-        else if ( eff.subtype() == A_PROC_TRIGGER_SPELL_WITH_VALUE )
-          val = pct;
-        else
-          continue;
-      }
-    }
-  }
-
-  void parse_spell_effects_mods( double&, const spell_data_t*, size_t ) {}
-
-  template <typename T, typename... Ts>
-  void parse_spell_effects_mods( double& val, const spell_data_t* base, size_t idx, T mod, Ts... mods )
-  {
-    parse_spell_effects_mods( val, base, idx, mod );
-    parse_spell_effects_mods( val, base, idx, mods... );
-  }
-
-  // Will parse simple buffs that ONLY target the caster and DO NOT have multiple ranks
-  // 1: Add Percent Modifier to Spell Direct Amount
-  // 2: Add Percent Modifier to Spell Periodic Amount
-  // 3: Add Percent Modifier to Spell Cast Time
-  // 4: Add Percent Modifier to Spell Cooldown
-  // 5: Add Percent Modifier to Spell Resource Cost
-  // 6: Add Flat Modifier to Spell Critical Chance
-  template <typename... Ts>
-  void parse_buff_effect( buff_t* buff, bfun f, const spell_data_t* s_data, size_t i, bool use_stacks, bool use_default,
-                          Ts... mods )
-  {
-    const auto& eff = s_data->effectN( i );
-    double val      = eff.percent();
-
-    auto debug_message = [ & ]( std::string_view type ) {
-      if ( buff )
-      {
-        p()->sim->print_debug( "buff-effects: {} ({}) {} modified by {}% with buff {} ({}#{})", ab::name(), ab::id,
-                               type, val * 100.0, buff->name(), buff->data().id(), i );
-      }
-      else if ( f )
-      {
-        p()->sim->print_debug( "conditional-effects: {} ({}) {} modified by {}% with condition from {} ({}#{})",
-                               ab::name(), ab::id, type, val * 100.0, s_data->name_cstr(), s_data->id(), i );
-      }
-      else
-      {
-        p()->sim->print_debug( "passive-effects: {} ({}) {} modified by {}% from {} ({}#{})", ab::name(), ab::id, type,
-                               val * 100.0, s_data->name_cstr(), s_data->id(), i );
-      }
-    };
-
-    // TODO: more robust logic around 'party' buffs with radius
-    if ( !( eff.type() == E_APPLY_AURA || eff.type() == E_APPLY_AREA_AURA_PARTY ) || eff.radius() ) return;
-
-    if ( i <= 5 )
-      parse_spell_effects_mods( val, s_data, i, mods... );
-
-    if ( !ab::data().affected_by_all( eff ) )
-      return;
-
-    if ( use_default && buff)
-      val = buff->default_value;
-
-    if ( !val )
-      return;
-
-    if ( eff.subtype() == A_ADD_PCT_MODIFIER || eff.subtype() == A_ADD_PCT_LABEL_MODIFIER )
-    {
-      switch ( eff.misc_value1() )
-      {
-        case P_GENERIC:
-          da_multiplier_buffeffects.emplace_back( buff, val, use_stacks, f );
-          debug_message( "direct damage" );
-          break;
-        case P_DURATION:
-          dot_duration_buffeffects.emplace_back( buff, val, use_stacks, f );
-          debug_message( "duration" );
-          break;
-        case P_TICK_DAMAGE:
-          ta_multiplier_buffeffects.emplace_back( buff, val, use_stacks, f );
-          debug_message( "tick damage" );
-          break;
-        case P_CAST_TIME:
-          execute_time_buffeffects.emplace_back( buff, val, use_stacks, f );
-          debug_message( "cast time" );
-          break;
-        case P_COOLDOWN:
-          recharge_multiplier_buffeffects.emplace_back( buff, val, use_stacks, f );
-          debug_message( "cooldown" );
-          break;
-        case P_RESOURCE_COST:
-          cost_buffeffects.emplace_back( buff, val, use_stacks, f );
-          debug_message( "cost" );
-          break;
-        default:
-          return;
-      }
-    }
-    else if ( eff.subtype() == A_ADD_FLAT_MODIFIER && eff.misc_value1() == P_CRIT )
-    {
-      crit_chance_buffeffects.emplace_back( buff, val, use_stacks, f );
-      debug_message( "crit chance" );
-    }
-    else
-    {
-      return;
-    }
-  }
-
-  template <typename... Ts>
-  void parse_buff_effects( buff_t* buff, unsigned ignore_mask, bool use_stacks, bool use_default, Ts... mods )
-  {
-    if ( !buff )
-      return;
-
-    const spell_data_t* s_data = &buff->data();
-    for ( size_t i = 1; i <= s_data->effect_count(); i++ )
-    {
-      if ( ignore_mask & 1 << ( i - 1 ) )
-        continue;
-
-      parse_buff_effect( buff, nullptr, s_data, i, use_stacks, use_default, mods... );
-    }
-  }
-
-  template <typename... Ts>
-  void parse_buff_effects( buff_t* buff, unsigned ignore_mask, Ts... mods )
-  { parse_buff_effects<Ts...>( buff, ignore_mask, true, false, mods... ); }
-
-  template <typename... Ts>
-  void parse_buff_effects( buff_t* buff, bool stack, bool use_default, Ts... mods )
-  { parse_buff_effects<Ts...>( buff, 0U, stack, use_default, mods... ); }
-
-  template <typename... Ts>
-  void parse_buff_effects( buff_t* buff, bool stack, Ts... mods )
-  { parse_buff_effects<Ts...>( buff, 0U, stack, false, mods... ); }
-
-  template <typename... Ts>
-  void parse_buff_effects( buff_t* buff, Ts... mods )
-  { parse_buff_effects<Ts...>( buff, 0U, true, false, mods... ); }
-
-  void parse_conditional_effects( const spell_data_t* spell, bfun f, unsigned ignore_mask = 0U )
-  {
-    if ( !spell || !spell->ok() )
-      return;
-
-    for ( size_t i = 1 ; i <= spell->effect_count(); i++ )
-    {
-      if ( ignore_mask & 1 << ( i - 1 ) )
-        continue;
-
-      parse_buff_effect( nullptr, f, spell, i, false, false );
-    }
-  }
-
-  void parse_passive_effects( const spell_data_t* spell, unsigned ignore_mask = 0U )
-  { parse_conditional_effects( spell, nullptr, ignore_mask ); }
-
-  double get_buff_effects_value( const std::vector<buff_effect_t>& buffeffects, bool flat = false,
-                                 bool benefit = true ) const
-  {
-    double return_value = flat ? 0.0 : 1.0;
-
-    for ( const auto& i : buffeffects )
-    {
-      double eff_val = i.value;
-      int mod = 1;
-
-      if ( i.func && !i.func() )
-          continue;  // continue to next effect if conditional effect function is false
-
-      if ( i.buff )
-      {
-        auto stack = benefit ? i.buff->stack() : i.buff->check();
-
-        if ( !stack )
-          continue;  // continue to next effect if stacks == 0 (buff is down)
-
-        mod = i.use_stacks ? stack : 1;
-      }
-
-      if ( flat )
-        return_value += eff_val * mod;
-      else
-        return_value *= 1.0 + eff_val * mod;
-    }
-
-    return return_value;
-  }
-
   // Syntax: parse_buff_effects[<S[,S...]>]( buff[, ignore_mask|use_stacks[, use_default]][, spell1[,spell2...] )
   //  buff = buff to be checked for to see if effect applies
   //  ignore_mask = optional bitmask to skip effect# n corresponding to the n'th bit
@@ -715,54 +472,6 @@ public:
     parse_buff_effects( p()->buff.tip_the_scales );
   }
 
-  template <typename... Ts>
-  void parse_debuff_effects( const dfun& func, bool use_stacks, const spell_data_t* s_data, Ts... mods )
-  {
-    if ( !s_data->ok() )
-      return;
-
-    for ( size_t i = 1; i <= s_data->effect_count(); i++ )
-    {
-      const auto& eff = s_data->effectN( i );
-      double val      = eff.percent();
-
-      if ( eff.type() != E_APPLY_AURA )
-        continue;
-
-      if ( eff.subtype() != A_MOD_DAMAGE_FROM_CASTER_SPELLS || !ab::data().affected_by_all( eff ) )
-        continue;
-
-      if ( i <= 5 )
-        parse_spell_effects_mods( val, s_data, i, mods... );
-
-      if ( !val )
-        continue;
-
-      p()->sim->print_debug( "debuff-effects: {} ({}) damage modified by {}% on targets with debuff {} ({}#{})", ab::name(),
-                             ab::id, val * 100.0, s_data->name_cstr(), s_data->id(), i );
-      target_multiplier_debuffeffects.emplace_back( func, val, use_stacks  );
-    }
-  }
-
-  template <typename... Ts>
-  void parse_debuff_effects( dfun func, const spell_data_t* s_data, Ts... mods )
-  { parse_debuff_effects( func, true, s_data, mods... ); }
-
-  double get_debuff_effect_values( evoker_td_t* t ) const
-  {
-    double return_value = 1.0;
-
-    for ( const auto& i : target_multiplier_debuffeffects )
-    {
-      auto debuff = i.func( t );
-
-      if ( debuff->check() )
-        return_value *= 1.0 + i.value * ( i.use_stacks ? debuff->check() : 1.0 );
-    }
-
-    return return_value;
-  }
-
   // Syntax: parse_dot_debuffs[<S[,S...]>]( func, spell_data_t* dot[, spell_data_t* spell1[,spell2...] )
   //  func = function returning the dot_t* of the dot
   //  dot = spell data of the dot
@@ -772,7 +481,7 @@ public:
   {
     // using S = const spell_data_t*;
 
-    parse_debuff_effects( []( evoker_td_t* t ) -> buff_t* { return t->debuffs.shattering_star; },
+    parse_debuff_effects( []( evoker_td_t* t ) { return t->debuffs.shattering_star->check(); },
         p()->talent.shattering_star );
   }
 
@@ -784,7 +493,7 @@ public:
 
   double composite_target_multiplier( player_t* t ) const override
   {
-    double tm = ab::composite_target_multiplier( t ) * get_debuff_effect_values( td( t ) );
+    double tm = ab::composite_target_multiplier( t ) * get_debuff_effects_value( td( t ) );
     return tm;
   }
 
@@ -895,9 +604,9 @@ public:
   {
     ab::execute();
 
-    if ( p()->talent.casuality.ok() && current_resource() == RESOURCE_ESSENCE )
+    if ( p()->talent.causality.ok() && current_resource() == RESOURCE_ESSENCE )
     {
-      p()->cooldown.eternity_surge->adjust( p()->talent.casuality->effectN( 1 ).trigger()->effectN( 1 ).time_value() );
+      p()->cooldown.eternity_surge->adjust( p()->talent.causality->effectN( 1 ).trigger()->effectN( 1 ).time_value() );
     }
   }
 
@@ -1047,28 +756,22 @@ struct empowered_release_spell_t : public empowered_base_t
   {
     empowered_base_t::execute();
 
-    // Scint Procs currently trigger 2pc
-    if ( p()->sets->has_set_bonus( EVOKER_DEVASTATION, T29, B2 ) )
-      p()->buff.limitless_potential->trigger();
-
     if ( background )
       return;
+
+    p()->buff.limitless_potential->trigger();
 
     if ( p()->talent.animosity.ok() )
     {
       p()->buff.dragonrage->extend_duration( p(), p()->talent.animosity->effectN( 1 ).time_value() );
     }
 
-    if ( p()->talent.power_swell.ok() )
-      p()->buff.power_swell->trigger();
+    p()->buff.power_swell->trigger();
 
-    if ( p()->talent.iridescence.ok() )
-    {
-      if ( spell_color == SPELL_BLUE )
-        p()->buff.iridescence_blue->trigger();
-      else if ( spell_color == SPELL_RED )
-        p()->buff.iridescence_red->trigger();
-    }
+    if ( spell_color == SPELL_BLUE )
+      p()->buff.iridescence_blue->trigger();
+    else if ( spell_color == SPELL_RED )
+      p()->buff.iridescence_red->trigger();
 
     if ( rng().roll( p()->sets->set( EVOKER_DEVASTATION, T29, B4 )->effectN( 2 ).percent() ) )
     {
@@ -1304,8 +1007,7 @@ struct fire_breath_t : public empowered_charge_spell_t
     {
       base_t::execute();
 
-      if ( p()->talent.leaping_flames.ok() )
-        p()->buff.leaping_flames->trigger( empower_value( execute_state ) );
+      p()->buff.leaping_flames->trigger( empower_value( execute_state ) );
     }
 
     timespan_t tick_time( const action_state_t* state ) const override
@@ -1348,18 +1050,20 @@ struct eternity_surge_t : public empowered_charge_spell_t
 {
   struct eternity_surge_damage_t : public empowered_release_spell_t
   {
+    double eoi_ess;  // essence gain on crit from Eye of Infinity
+
     eternity_surge_damage_t( evoker_t* p, std::string_view name )
-      : base_t( name, p, p->find_spell( 359077 ) )
+      : base_t( name, p, p->find_spell( 359077 ) ),
+        eoi_ess( p->talent.eye_of_infinity->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_ESSENCE ) )
     {}
 
-    eternity_surge_damage_t( evoker_t* p ) : eternity_surge_damage_t( p, "eternity_surge_damage" )
-    {}
+    eternity_surge_damage_t( evoker_t* p ) : eternity_surge_damage_t( p, "eternity_surge_damage" ) {}
 
     int n_targets() const override
     {
       int n = pre_execute_state ? empower_value( pre_execute_state ) : max_empower;
 
-      n *=  as<int>( 1 + p()->talent.eternitys_span->effectN( 2 ).percent() );
+      n *= as<int>( 1 + p()->talent.eternitys_span->effectN( 2 ).percent() );
 
       return n == 1 ? 0 : n;
     }
@@ -1368,11 +1072,8 @@ struct eternity_surge_t : public empowered_charge_spell_t
     {
       base_t::impact( s );
 
-      if ( p()->talent.eye_of_infinity.ok() && result_is_hit( s->result ) && s->result == RESULT_CRIT )
-      {
-        p()->buff.essence_burst->trigger();
-        p()->proc.eye_of_infinity->occur();
-      }
+      if ( eoi_ess && s->result == RESULT_CRIT )
+        p()->resource_gain( RESOURCE_ESSENCE, eoi_ess, p()->gain.eye_of_infinity );
     }
   };
 
@@ -1617,8 +1318,7 @@ struct living_flame_t : public evoker_spell_t
     {
       Base::impact( s );
 
-      if ( base_t::p()->talent.snapfire.ok() )
-        base_t::p()->buff.snapfire->trigger();
+      base_t::p()->buff.snapfire->trigger();
     }
   };
 
@@ -1653,8 +1353,7 @@ struct living_flame_t : public evoker_spell_t
     {
       base_t::execute();
 
-      if ( p()->talent.ancient_flame.ok() )
-        p()->buff.ancient_flame->trigger();
+      p()->buff.ancient_flame->trigger();
     }
   };
 
@@ -2011,19 +1710,22 @@ void karnalex_the_first_light( special_effect_t& effect )
         player->schedule_ready( rng().gauss( sim->channel_lag, sim->channel_lag_stddev ) );
       }
     }
-
+    // TODO: As of 30/10/22 this does not scale with mastery at all despite saying it should. TODO: Recheck this.
+    /* 
     double composite_target_multiplier( player_t* t ) const override
     {
       double tm = generic_proc_t::composite_target_multiplier( t );
 
-      // Current testing shadows Kharnalex Gets Full Value Always
       if ( p()->specialization() == EVOKER_DEVASTATION )
       {
-        tm *= 1.0 + p()->cache.mastery_value();
+        if ( !p()->buff.dragonrage->check() || !p()->talent.tyranny.ok() )
+          tm *= 1.0 + p()->cache.mastery_value() * t->health_percentage() / 100;
+        else
+          tm *= 1.0 + p()->cache.mastery_value();
       }
 
       return tm;
-    }
+    }*/
   };
 
   effect.execute_action = unique_gear::create_proc_action<light_of_creation_t>( "light_of_creation", effect );
@@ -2074,6 +1776,7 @@ void evoker_t::init_gains()
 {
   player_t::init_gains();
 
+  gain.eye_of_infinity      = get_gain( "Eye of Infinity" );
   gain.roar_of_exhilaration = get_gain( "Roar of Exhilaration" );
 }
 
@@ -2083,7 +1786,6 @@ void evoker_t::init_procs()
 
   proc.ruby_essence_burst  = get_proc( "Ruby Essence Burst" );
   proc.azure_essence_burst = get_proc( "Azure Essence Burst" );
-  proc.eye_of_infinity           = get_proc( "eye_of_infinity" );
 }
 
 void evoker_t::init_base_stats()
@@ -2158,7 +1860,7 @@ void evoker_t::init_spells()
   talent.honed_aggression       = ST( "Honed Aggression" );
   talent.eternitys_span         = ST( "Eternity's Span" );
   talent.eye_of_infinity        = ST( "Eye of Infinity" );
-  talent.casuality              = ST( "Causality" );
+  talent.causality              = ST( "Causality" );
   talent.catalyze               = ST( "Catalyze" );  // Row 7
   talent.tyranny                = ST( "Tyranny" );
   talent.charged_blast          = ST( "Charged Blast" );
@@ -2232,22 +1934,26 @@ void evoker_t::create_buffs()
     ->set_default_value_from_effect( 1 );
 
   // Class Traits
-  buff.ancient_flame = make_buff( this, "ancient_flame", find_spell( 375583 ) );
+  buff.ancient_flame = make_buff( this, "ancient_flame", find_spell( 375583 ) )
+    ->set_trigger_spell( talent.ancient_flame );
 
-  buff.leaping_flames = make_buff( this, "leaping_flames", find_spell( 370901 ) );
+  buff.leaping_flames = make_buff( this, "leaping_flames", find_spell( 370901 ) )
+    ->set_trigger_spell( talent.leaping_flames );
 
   buff.obsidian_scales = make_buff( this, "obsidian_scales", talent.obsidian_scales )
     ->set_cooldown( 0_ms );
 
-  buff.scarlet_adaptation = make_buff( this, "scarlet_adaptation", find_spell( 372470 ) );
+  buff.scarlet_adaptation = make_buff( this, "scarlet_adaptation", find_spell( 372470 ) )
+    ->set_trigger_spell( talent.scarlet_adaptation );
 
   buff.tip_the_scales = make_buff( this, "tip_the_scales", talent.tip_the_scales )
     ->set_cooldown( 0_ms );
 
   // Devastation
   buff.burnout = make_buff( this, "burnout", find_spell( 375802 ) )
-                     ->set_cooldown( talent.burnout->internal_cooldown() )
-                     ->set_chance( talent.burnout->effectN( 1 ).percent() );
+    ->set_trigger_spell( talent.burnout )
+    ->set_cooldown( talent.burnout->internal_cooldown() )
+    ->set_chance( talent.burnout->effectN( 1 ).percent() );
 
   buff.charged_blast = make_buff( this, "charged_blast", talent.charged_blast->effectN( 1 ).trigger() )
     ->set_default_value_from_effect( 1 );
@@ -2255,19 +1961,22 @@ void evoker_t::create_buffs()
   buff.dragonrage = make_buff( this, "dragonrage", talent.dragonrage );
 
   buff.iridescence_blue = make_buff( this, "iridescence_blue", find_spell( 386399 ) )
+    ->set_trigger_spell( talent.iridescence )
     ->set_default_value_from_effect( 1 );
   buff.iridescence_blue->set_initial_stack( buff.iridescence_blue->max_stack() );
 
   buff.iridescence_red = make_buff( this, "iridescence_red", find_spell( 386353 ) )
+    ->set_trigger_spell( talent.iridescence )
     ->set_default_value_from_effect( 1 );
   buff.iridescence_red->set_initial_stack( buff.iridescence_red->max_stack() );
 
-  buff.limitless_potential =
-      make_buff( this, "limitless_potential", sets->set( EVOKER_DEVASTATION, T29, B2 )->effectN( 2 ).trigger() )
-          ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
-          ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
+  buff.limitless_potential = make_buff( this, "limitless_potential", find_spell( 394402 ) )
+    ->set_trigger_spell( sets->set( EVOKER_DEVASTATION, T29, B2 ) )
+    ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
+    ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
 
   buff.power_swell = make_buff( this, "power_swell", find_spell( 376850 ) )
+    ->set_trigger_spell( talent.power_swell )
     ->set_affects_regen( true )
     ->set_default_value_from_effect_type( A_MOD_POWER_REGEN_PERCENT )
     ->set_duration( talent.power_swell->effectN( 1 ).time_value() );

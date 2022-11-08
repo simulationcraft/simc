@@ -7,6 +7,7 @@ action/attack.hpp
 action/dbc_proc_callback.hpp
 action/dot.hpp
 action/heal.hpp
+action/parse_buff_effects.hpp
 action/residual_action.hpp
 action/sequence.hpp
 action/snapshot_stats.hpp
@@ -20,6 +21,7 @@ class_modules/apl/apl_hunter.hpp
 class_modules/apl/apl_monk.hpp
 class_modules/apl/apl_paladin.hpp
 class_modules/apl/apl_priest.hpp
+class_modules/apl/apl_rogue.hpp
 class_modules/apl/mage.hpp
 class_modules/apl/warlock.hpp
 class_modules/class_module.hpp
@@ -206,6 +208,7 @@ class_modules/apl/apl_hunter.cpp
 class_modules/apl/apl_monk.cpp
 class_modules/apl/apl_paladin.cpp
 class_modules/apl/apl_priest.cpp
+class_modules/apl/apl_rogue.cpp
 class_modules/apl/mage.cpp
 class_modules/apl/warlock.cpp
 class_modules/monk/sc_monk.cpp

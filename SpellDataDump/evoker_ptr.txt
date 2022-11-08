@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.46340 Live (hotfix 2022-10-29/46340)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.46455 Live (hotfix 2022-11-04/46455)
 Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Orc (0x2)
@@ -359,9 +359,9 @@ Attributes       : ........ ........ .......x ........   ........ ........ .....
                  : Allow Cast While Dead (23), Ignore Caster Damage Modifiers (221), Ignore Caster Healing Modifiers (312)
 Effects          :
 #1 (id=479676)   : School Damage (2): holy | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 5627.324 (coefficient=352.5287) | PvP Coefficient: 0.50000 | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 5665.735 (coefficient=352.5287) | PvP Coefficient: 0.50000 | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=479677)   : Direct Heal (10) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 5627.324 (coefficient=352.5287) | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 5665.735 (coefficient=352.5287) | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
 Description      : Deals $s1 Holy Damage to enemies within $A1.
 
 Heals $s2 to allies within $A1. 
@@ -427,7 +427,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : DoT Stacking Rule (103), Extra Initial Period (169), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=885733)   : Apply Aura (6) | Periodic Damage (3): firestorm every 0.5 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.15000 | PvP Coefficient: 1.00000 | Radius: 3 - 6 yards | Target: Unknown(78) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.15000 | PvP Coefficient: 1.40000 | Radius: 3 - 6 yards | Target: Unknown(78) -> AOE enemy (instant) (16)
 Description      : $@spelldesc357210
 Tooltip          : Suffering $w1 Volcanic damage every $t1 sec.
 
@@ -541,9 +541,7 @@ Spell Type       : None
 Resource         : 4.5% Base Mana (0) (id=232309)
 Duration         : 2.5 seconds
 Cooldown         : 30 seconds
-Category         : 2053
 Labels           : 1466: Lush Growth (375561 effect#1), Lush Growth (375561 effect#2)
-Category Cooldown: 0.5 seconds
 Affecting spells : Temporal Compression (362877 effect#1), Tip the Scales (370553 effects: #1, #2), Imminent Destruction (370781 effect#1)
 Family Flags     : 25
 Attributes       : ........ ........ ........ ........   ......x. ........ ........ ....xx.. 
@@ -790,9 +788,7 @@ Spell Type       : None
 Resource         : 2.6% Base Mana (0) (id=232525) w/ Preservation Evoker (id=356810)
 Duration         : 2.5 seconds
 Cooldown         : 30 seconds
-Category         : 2053
 Labels           : 1464: Lifeforce Mender (376179 effect#2)
-Category Cooldown: 0.5 seconds
 Affecting spells : Temporal Compression (362877 effect#1), Tip the Scales (370553 effects: #1, #2), Imminent Destruction (370781 effect#1)
 Family Flags     : 15
 Attributes       : ........ ........ ........ ........   ......x. ........ ........ ....xx.. 
@@ -944,7 +940,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Do Not Display Range (126), Allow Cast While Casting (135), Allow Cast While Channeling (308), Use Spell Base Level For Scaling (332)
 Effects          :
 #1 (id=891602)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.81000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.05000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : $@spelldesc357211
 
 Name             : Hover (id=358267) [Spell Family (224)] 
@@ -1054,23 +1050,21 @@ Spell Type       : None
 Range            : 25 yards
 Duration         : 2.5 seconds
 Cooldown         : 30 seconds
-Category         : 2053
-Category Cooldown: 0.5 seconds
 Affecting spells : Tip the Scales (370553 effects: #1, #2), Imminent Destruction (370781 effect#1)
 Triggered by     : Causality (375778)
 Family Flags     : 16
-Attributes       : ........ ........ ........ ........   ......x. ..x..... ........ .x..xx.. 
-                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ ........ ........   ..x..... ..x..... ........ .x..xx.. 
+                 : ........ x....... ........ ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
                  : ........ ..x..... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   
-                 : Is Self Channelled (38), No Threat (42), Aura Stays After Combat (57), No Aura Icon (60), Name in Channel Bar (61), Include In Advanced Combat Log (72), Force Display Castbar (155), No Aura Log (202), Haste Affects Duration (273), Do Not Allow "Disable Movement Interrupt" (443)
+                 : Is Channelled (34), No Threat (42), Aura Stays After Combat (57), No Aura Icon (60), Name in Channel Bar (61), Include In Advanced Combat Log (72), Always Hit (114), Force Display Castbar (155), No Aura Log (202), Haste Affects Duration (273), Do Not Allow "Disable Movement Interrupt" (443)
 Effects          :
 #1 (id=894877)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=894878)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Focus your energies to release a salvo of pure magic, dealing $<dmg> Spellfrost damage to an enemy. Damages additional enemies within $359077A2 yds of the target when empowered.
@@ -1156,7 +1150,6 @@ Proc Chance      : 100%
 Proc Flags       : ........ ......x. x....... ........ 
                  : Magic Heal, Magic Hostile Spell
 Affecting spells : Essence Attunement (375722 effect#1)
-Triggered by     : Eye of Infinity (369375)
 Family Flags     : 43
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ xx...... ........ 
@@ -1671,6 +1664,7 @@ School           : Firestorm
 Spell Type       : None
 Spell Level      : 60
 Duration         : 12 seconds
+Cooldown         : 1 seconds
 Charges          : 1 (90 seconds cooldown)
 Category         : 2100: Obsidian Bulwark (375406 effect#1)
 Family Flags     : 39
@@ -1944,29 +1938,23 @@ Resource         : 3.8% Base Mana (0) (id=232620)
 Range            : 30 yards
 Duration         : 2.5 seconds
 Cooldown         : 30 seconds
-Category         : 2053
 Labels           : 1466: Lush Growth (375561 effect#1), Lush Growth (375561 effect#2)
-Category Cooldown: 0.5 seconds
 Affecting spells : Temporal Compression (362877 effect#1), Tip the Scales (370553 effects: #1, #2), Imminent Destruction (370781 effect#1), Spiritual Clarity (376150 effect#1)
 Family Flags     : 30
-Attributes       : ........ ........ ........ ........   ......x. ..x..... ........ ....xx.. 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ ........ ........   ..x...x. ..x..... ........ .x..xx.. 
+                 : ........ x....... ........ ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ..x..... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ...x.... 
                  : ........ ........ ........ ........   
-                 : Is Self Channelled (38), No Threat (42), No Aura Icon (60), Name in Channel Bar (61), Force Display Castbar (155), Haste Affects Duration (273), Do Not Enforce Shapeshift Requirements (434), Do Not Allow "Disable Movement Interrupt" (443)
+                 : Is Channelled (34), Is Self Channelled (38), No Threat (42), Aura Stays After Combat (57), No Aura Icon (60), Name in Channel Bar (61), Include In Advanced Combat Log (72), Always Hit (114), Force Display Castbar (155), No Aura Log (202), Haste Affects Duration (273), Do Not Enforce Shapeshift Requirements (434), Do Not Allow "Disable Movement Interrupt" (443)
 Effects          :
 #1 (id=910748)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friend (21)
 #2 (id=910749)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friend (21)
-#3 (id=913967)   : Apply Aura (6) | Add Flat Modifier (107): Spell Targets (17)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 17 | Target: Self (1)
-                   Affected Spells: Spiritbloom (367230)
-                   Family Flags: 27
 Description      : Divert spiritual energy, healing an ally for $367230s1. Splits to injured allies within $<range> yards when empowered.
 
 |cFFFFFFFFI:|r   Heals one ally.
@@ -1984,7 +1972,7 @@ Range            : 40 yards
 Velocity         : 60 yards/sec
 Duration         : 3 seconds
 Labels           : 1466: Lush Growth (375561 effect#1), Lush Growth (375561 effect#2)
-Affecting spells : Devastation Evoker (356809 effects: #5, #6), Preservation Evoker (356810 effects: #1, #2), Spiritbloom (367226 effect#3), Attuned to the Dream (376930 effects: #1, #2), Spiritbloom (382731 effect#3), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1)
+Affecting spells : Devastation Evoker (356809 effects: #5, #6), Preservation Evoker (356810 effects: #1, #2), Attuned to the Dream (376930 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1)
 Family Flags     : 1, 27
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -2145,7 +2133,7 @@ Variables        : $damage=${$369374s1*(1+$369372d/2)}
 
 Name             : Volatility (id=369089) [Spell Family (224), Passive] 
 Talent Entry     : Devastation [tree=spec, row=4, col=1, max_rank=2, req_points=0]
-                 : Effect#1 [op=set, values=(10, 20)]
+                 : Effect#1 [op=set, values=(15, 30)]
 Class            : Evoker
 School           : Fire
 Spell Type       : None
@@ -2160,7 +2148,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=914054)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Pyre has a $s1% chance to flare up and explode again on a nearby target.
 
 Name             : Essence Burst (id=369297) [Spell Family (224), Passive] 
@@ -2279,9 +2267,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=914654)   : Apply Aura (6) | Proc Trigger Spell (42): Essence Burst
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 359618 | Target: Self (1)
-Description      : Eternity Surge critical strikes grant you Essence Burst.
+#1 (id=914654)   : Apply Aura (6) | Proc Trigger Spell (42): Eye of Infinity
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 397565 | Target: Self (1)
+Description      : Eternity Surge critical strikes generate $397565s1 Essence.
 
 Name             : Source of Magic (desc=Blue) (id=369459) [Spell Family (224)] 
 Talent Entry     : Generic [tree=class, row=7, col=3, max_rank=1, req_points=8]
@@ -2588,8 +2576,8 @@ Duration         : Aura (infinite)
 Cooldown         : 120 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
-Proc Flags       : ........ ......x. ........ ........ 
-                 : Magic Heal
+Proc Flags       : ........ ......x. x....... ........ 
+                 : Magic Heal, Magic Hostile Spell
 Attributes       : ........ ........ ..x..... .x......   ........ ..x..... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ xx...... ........ 
                  : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -2924,14 +2912,11 @@ Effects          :
 Description      : $@spelldesc370888
 Tooltip          : Absorbing $w1 damage.
 
-Name             : Permeating Chill (desc=Blue) (id=370897) [Spell Family (224), Passive] 
+Name             : Permeating Chill (id=370897) [Spell Family (224), Passive] 
 Talent Entry     : Generic [tree=class, row=2, col=2, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Spellfrost
 Spell Type       : None
-Proc Chance      : 100%
-Proc Flags       : ........ ........ x.x..... ........ 
-                 : Magic Hostile Spell, Periodic
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2942,7 +2927,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=982470)   : Apply Aura (6) | Proc Trigger Spell (42): Permeating Chill
+#1 (id=982470)   : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Trigger Spell: 370898 | Target: Self (1)
 #2 (id=1012820)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
@@ -2950,7 +2935,7 @@ Effects          :
                    Family Flags: 48
 Description      : Your damaging Blue spells reduce the target's movement speed by $s1% for $370898d.
 
-Name             : Permeating Chill (desc=Blue) (id=370898) [Spell Family (224)] 
+Name             : Permeating Chill (id=370898) [Spell Family (224)] 
 Class            : Evoker
 School           : Spellfrost
 Spell Type       : None
@@ -3617,8 +3602,8 @@ Spell Level      : 4
 Duration         : 15 seconds
 Stacks           : 1 maximum
 Proc Chance      : 100%
-Proc Flags       : ........ ......x. x....... ........ 
-                 : Magic Heal, Magic Hostile Spell
+Proc Flags       : ........ ......x. ........ ........ 
+                 : Magic Heal
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5380,7 +5365,7 @@ Effects          :
 Description      : $@spelldesc364342
 Tooltip          : Cooldown of Heroic Leap reduced by $s1%.
 
-Name             : Permeating Chill (desc=Blue) (id=381773) [Spell Family (224), Passive, Hidden] 
+Name             : Permeating Chill (id=381773) [Spell Family (224), Passive, Hidden] 
 Class            : Evoker
 School           : Spellfrost
 Spell Type       : None
@@ -5450,9 +5435,7 @@ Spell Type       : None
 Resource         : 2.6% Base Mana (0) (id=265448) w/ Preservation Evoker (id=356810)
 Duration         : 3.25 seconds
 Cooldown         : 30 seconds
-Category         : 2053
 Labels           : 1464: Lifeforce Mender (376179 effect#2)
-Category Cooldown: 0.5 seconds
 Affecting spells : Temporal Compression (362877 effect#1), Tip the Scales (370553 effects: #1, #2), Imminent Destruction (370781 effect#1)
 Family Flags     : 15
 Attributes       : ........ ........ ........ ........   ......x. ........ ........ ....xx.. 
@@ -5536,23 +5519,21 @@ Spell Type       : None
 Range            : 25 yards
 Duration         : 3.25 seconds
 Cooldown         : 30 seconds
-Category         : 2053
-Category Cooldown: 0.5 seconds
 Affecting spells : Tip the Scales (370553 effects: #1, #2), Imminent Destruction (370781 effect#1)
 Triggered by     : Causality (375778)
 Family Flags     : 16
-Attributes       : ........ ........ ........ ........   ......x. ..x..... ........ ....xx.. 
-                 : ........ ........ ........ ........   ........ ........ ..x..... ........ 
+Attributes       : ........ ........ ........ ........   ..x..... ..x..... ........ .x..xx.. 
+                 : ........ x....... ........ ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ..x..... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ......x. ........ 
                  : ........ ........ ........ ........   ...x.... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   
-                 : Is Self Channelled (38), No Threat (42), No Aura Icon (60), Name in Channel Bar (61), Always Hit (114), Force Display Castbar (155), Haste Affects Duration (273), Spellcast Override In Spellbook (310), Do Not Log on Learn (355), Do Not Allow "Disable Movement Interrupt" (443)
+                 : Is Channelled (34), No Threat (42), Aura Stays After Combat (57), No Aura Icon (60), Name in Channel Bar (61), Include In Advanced Combat Log (72), Always Hit (114), Force Display Castbar (155), No Aura Log (202), Haste Affects Duration (273), Spellcast Override In Spellbook (310), Do Not Log on Learn (355), Do Not Allow "Disable Movement Interrupt" (443)
 Effects          :
 #1 (id=1013723)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=1013724)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Focus your energies to release a salvo of pure magic, dealing $<dmg> Spellfrost damage to an enemy. Damages additional enemies within $359077A2 yds of the target when empowered.
@@ -5573,9 +5554,7 @@ Spell Type       : None
 Resource         : 4.5% Base Mana (0) (id=265453)
 Duration         : 3.25 seconds
 Cooldown         : 30 seconds
-Category         : 2053
 Labels           : 1466: Lush Growth (375561 effect#1), Lush Growth (375561 effect#2)
-Category Cooldown: 0.5 seconds
 Affecting spells : Temporal Compression (362877 effect#1), Tip the Scales (370553 effects: #1, #2), Imminent Destruction (370781 effect#1)
 Family Flags     : 25
 Attributes       : ........ ........ ........ ........   ......x. ........ ........ ....xx.. 
@@ -5620,29 +5599,23 @@ Resource         : 3.8% Base Mana (0) (id=265456)
 Range            : 30 yards
 Duration         : 3.25 seconds
 Cooldown         : 30 seconds
-Category         : 2053
 Labels           : 1466: Lush Growth (375561 effect#1), Lush Growth (375561 effect#2)
-Category Cooldown: 0.5 seconds
 Affecting spells : Temporal Compression (362877 effect#1), Tip the Scales (370553 effects: #1, #2), Imminent Destruction (370781 effect#1), Spiritual Clarity (376150 effect#1)
 Family Flags     : 30
-Attributes       : ........ ........ ........ ........   ......x. ..x..... ........ ....xx.. 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ ........ ........   ..x..... ..x..... ........ .x..xx.. 
+                 : ........ x....... ........ ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ .x...... ........   ........ ........ ........ ........ 
+                 : ........ ..x..... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ .x...... ........   ........ ........ ......x. ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ...x.... 
                  : ........ ........ ........ ........   
-                 : Is Self Channelled (38), No Threat (42), No Aura Icon (60), Name in Channel Bar (61), Force Display Castbar (155), Haste Affects Duration (273), Do Not Enforce Shapeshift Requirements (434), Do Not Allow "Disable Movement Interrupt" (443)
+                 : Is Channelled (34), No Threat (42), Aura Stays After Combat (57), No Aura Icon (60), Name in Channel Bar (61), Include In Advanced Combat Log (72), Always Hit (114), Force Display Castbar (155), No Aura Log (202), Haste Affects Duration (273), Spellcast Override In Spellbook (310), Do Not Enforce Shapeshift Requirements (434), Do Not Allow "Disable Movement Interrupt" (443)
 Effects          :
 #1 (id=1014217)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friend (21)
 #2 (id=1014218)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friend (21)
-#3 (id=1014219)  : Apply Aura (6) | Add Flat Modifier (107): Spell Targets (17)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 17 | Target: Self (1)
-                   Affected Spells: Spiritbloom (367230)
-                   Family Flags: 27
 Description      : Divert spiritual energy, healing an ally for $367230s1. Splits to injured allies within $<range> yards when empowered.
 
 |cFFFFFFFFI:|r   Heals one ally.
@@ -5672,7 +5645,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1019137)  : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Empower spells cause time to flow $s1% faster for you for $390148d.
+Description      : Empower spells cause time to flow $s1% faster for you, increasing movement speed, cooldown recharge rate, and cast speed. Lasts $390148d.
 
 Name             : Titanic Wrath (id=386272) [Spell Family (224), Passive] 
 Talent Entry     : Devastation [tree=spec, row=6, col=3, max_rank=2, req_points=8]
@@ -6340,7 +6313,6 @@ Name             : Evoker Devastation Class Set 2pc (id=393642) [Spell Family (2
 Class            : Evoker
 School           : Physical
 Spell Type       : None
-Proc Chance      : 100%
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -6355,8 +6327,6 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Fire Breath (357209), Eternity Surge (359077), Full Belly (377087)
                    Family Flags: 18, 35
-#2 (id=1034003)  : Apply Aura (6) | Proc Trigger Spell (42): Limitless Potential
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 394402 | Target: Self (1)
 Description      : Empower spells have a $s1% increased chance to critically strike and also increase your critical strike chance by $394402s1% for $394402d.
 
 
@@ -6427,7 +6397,6 @@ Class            : Evoker
 School           : Physical
 Spell Type       : None
 Duration         : 6 seconds
-Triggered by     : Evoker Devastation Class Set 2pc (393642)
 Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ......x. 
                  : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -6512,5 +6481,24 @@ Effects          :
 #1 (id=1037920)  : Apply Aura (6) | Modify Base Resistance (142)
                    Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
 Description      : Your dragon scales increase your armor by $s1%.
+
+Name             : Eye of Infinity (id=397565) [Spell Family (224)] 
+Class            : Evoker
+School           : Spellfrost
+Spell Type       : None
+Triggered by     : Eye of Infinity (369375)
+Attributes       : ........ ........ ........ ........   ...x...x ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : No Redirection (35), No Reflection (39), No Threat (42), Not In Spellbook (143), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1040015)  : Energize Power (30)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: essence | Target: Self (1)
+Description      : $@spelldesc369375
 
 

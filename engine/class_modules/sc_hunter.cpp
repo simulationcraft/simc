@@ -445,6 +445,7 @@ public:
     buff_t* coordinated_assault;
     buff_t* coordinated_assault_empower;
     buff_t* spearhead;
+    buff_t* deadly_duo;
 
     // Pet family buffs
     buff_t* endurance_training;
@@ -966,7 +967,8 @@ public:
 
     affected_by.spirit_bond           = parse_damage_affecting_aura( this, p -> mastery.spirit_bond );
     affected_by.coordinated_assault   = check_affected_by( this, p -> find_spell( 361738 ) -> effectN( 2 ) );
-    affected_by.spearhead             = check_affected_by( this, p -> talents.spearhead -> effectN( 4 ) );
+    // 1-11-22 TODO remove data check once live has new Deadly Duo
+    affected_by.spearhead             = check_affected_by( this, p -> talents.spearhead -> effectN( 4 ) ) && !p -> buffs.deadly_duo -> data().ok();
     affected_by.t29_sv_4pc_cost       = check_affected_by( this, p -> tier_set.t29_sv_4pc_buff -> effectN( 1 ) );
     affected_by.t29_sv_4pc_dmg        = parse_damage_affecting_aura( this, p -> tier_set.t29_sv_4pc_buff );
 
@@ -990,7 +992,7 @@ public:
     // Beast Mastery Tree Passives
     ab::apply_affecting_aura( p -> talents.killer_command );
     ab::apply_affecting_aura( p -> talents.sharp_barbs );
-    ab::apply_affecting_aura( p -> talents.war_orders );
+    ab::apply_affecting_aura( p -> talents.war_orders.ok() ? p -> talents.war_orders : p -> legendary.qapla_eredun_war_order );
 
     // Survival Tree Passives
     ab::apply_affecting_aura( p -> talents.terms_of_engagement );
@@ -2287,6 +2289,15 @@ struct kill_command_sv_t: public kill_command_base_t
 
     o() -> trigger_bloodseeker_update();
   }
+
+  double action_multiplier() const override
+  {
+    double am = kill_command_base_t::action_multiplier();
+
+    am *= 1 + o() -> buffs.deadly_duo -> stack_value();
+
+    return am;
+  }
 };
 
 // Pet Melee ================================================================
@@ -3139,7 +3150,7 @@ struct kill_shot_t : hunter_ranged_attack_t
       ( candidate_target -> health_percentage() <= health_threshold_pct
         || p() -> buffs.flayers_mark -> check() || p() -> buffs.deathblow -> check()
         || p() -> buffs.hunters_prey -> check()
-        || p() -> talents.coordinated_kill.ok() && p() -> buffs.coordinated_assault -> check() );
+        || ( p() -> talents.coordinated_kill.ok() && p() -> buffs.coordinated_assault -> check() ) );
   }
 
   double action_multiplier() const override
@@ -3173,7 +3184,7 @@ struct kill_shot_t : hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::snapshot_state( s, type );
     debug_cast<state_t*>( s ) -> razor_fragments_up = p() -> buffs.razor_fragments -> check();
-    // TODO seems to be a bit more complicated but basically only one triggers at once and the talent seems to take precedent over rungeforge
+    // TODO seems to be a bit more complicated but basically only one triggers at once and the talent seems to take precedent over runeforge
     debug_cast<state_t*>( s ) -> flayers_mark_up = p() -> buffs.flayers_mark -> check() && !p() -> buffs.razor_fragments -> check();
     debug_cast<state_t*>( s ) -> coordinated_assault_empower_up = p() -> buffs.coordinated_assault_empower -> check();
   }
@@ -4059,6 +4070,9 @@ struct barbed_shot_t: public hunter_ranged_attack_t
     if ( rng().roll( p() -> talents.war_orders -> effectN( 3 ).percent() ) )
       p() -> cooldowns.kill_command -> reset( true );
 
+    if (!p() -> talents.war_orders.ok() && p() -> legendary.qapla_eredun_war_order.ok() )
+      p() -> cooldowns.kill_command -> adjust( -p() -> legendary.qapla_eredun_war_order -> effectN( 1 ).time_value() );
+
     for ( auto pet : pets::active<pets::hunter_main_pet_base_t>( p() -> pets.main, p() -> pets.animal_companion ) )
     {
       if ( p() -> talents.stomp.ok() )
@@ -4234,6 +4248,9 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
 
   void execute() override
   {
+    if ( is_aoe() )
+      target_cache.is_valid = false;
+
     hunter_ranged_attack_t::execute();
 
     if ( p() -> talents.bulletstorm -> ok() && execute_state && execute_state -> chain_target > 0 ) {
@@ -4319,7 +4336,7 @@ struct aimed_shot_t : public aimed_shot_base_t
 
   struct serpent_sting_sst_t final : public serpent_sting_base_t
   {
-    serpent_sting_sst_t( util::string_view n, hunter_t* p ):
+    serpent_sting_sst_t( util::string_view /*name*/, hunter_t* p ):
       serpent_sting_base_t( p, "", p -> find_spell( 271788 ) )
     {
       dual = true;
@@ -4812,7 +4829,7 @@ struct multishot_mm_t: public hunter_ranged_attack_t
 
     p() -> trigger_lethal_shots();
 
-    if ( p() -> talents.trick_shots.ok() && num_targets_hit >= p() -> talents.trick_shots -> effectN( 2 ).base_value() || p() -> buffs.bombardment -> up() )
+    if ( ( p() -> talents.trick_shots.ok() && num_targets_hit >= p() -> talents.trick_shots -> effectN( 2 ).base_value() ) || p() -> buffs.bombardment -> up() )
       p() -> buffs.trick_shots -> trigger();
 
     p() -> buffs.bombardment -> expire();
@@ -4949,7 +4966,7 @@ struct melee_focus_spender_t: hunter_melee_attack_t
 
   struct serpent_sting_vv_t final : public serpent_sting_base_t
   {
-    serpent_sting_vv_t( util::string_view n, hunter_t* p ):
+    serpent_sting_vv_t( util::string_view /*name*/, hunter_t* p ):
       serpent_sting_base_t( p, "", p -> find_spell( 271788 ) )
     {
       dual = true;
@@ -5018,6 +5035,9 @@ struct melee_focus_spender_t: hunter_melee_attack_t
       p() -> actions.arctic_bola -> execute_on_target( target );
 
     p() -> buffs.bestial_barrage -> trigger();
+
+    if ( p() -> buffs.spearhead -> up() )
+      p() -> buffs.deadly_duo -> trigger();
   }
 
   void impact( action_state_t* s ) override
@@ -5834,7 +5854,7 @@ struct kill_command_t: public hunter_spell_t
 {
   struct arcane_shot_qs_t final : public attacks::arcane_shot_t
   {
-    arcane_shot_qs_t( util::string_view n, hunter_t* p ):
+    arcane_shot_qs_t( util::string_view /*name*/, hunter_t* p ):
       arcane_shot_t( p, "" )
     {
       dual = true;
@@ -5918,6 +5938,9 @@ struct kill_command_t: public hunter_spell_t
       if ( p() -> buffs.spearhead -> check() )
         chance += p() -> talents.spearhead -> effectN( 3 ).percent();
 
+      if ( p() -> buffs.deadly_duo -> check() )
+        chance += p() -> buffs.deadly_duo -> check() * p() -> talents.deadly_duo -> effectN( 3 ).percent();
+
       if ( rng().roll( chance ) )
       {
         reset.proc -> occur();
@@ -5951,6 +5974,7 @@ struct kill_command_t: public hunter_spell_t
       p() -> cooldowns.barbed_shot -> reset( true );
 
     p() -> buffs.lethal_command -> expire();
+    p() -> buffs.deadly_duo -> expire();
   }
 
   double cost() const override
@@ -6110,7 +6134,7 @@ struct aspect_of_the_wild_t: public hunter_spell_t
 {
   struct cobra_shot_aotw_t final : public attacks::cobra_shot_t
   {
-    cobra_shot_aotw_t( util::string_view n, hunter_t* p ):
+    cobra_shot_aotw_t( util::string_view /*name*/, hunter_t* p ):
       cobra_shot_t( p, "" )
     {
       dual = true;
@@ -6550,7 +6574,7 @@ struct wildfire_bomb_t: public hunter_spell_t
   {
     struct serpent_sting_vb_t final : public attacks::serpent_sting_base_t
     {
-      serpent_sting_vb_t( util::string_view n, hunter_t* p ):
+      serpent_sting_vb_t( util::string_view /*name*/, hunter_t* p ):
         serpent_sting_base_t( p, "", p -> find_spell( 271788 ) )
       {
         dual = true;
@@ -6851,7 +6875,11 @@ std::unique_ptr<expr_t> hunter_t::create_expression( util::string_view expressio
 {
   auto splits = util::string_split<util::string_view>( expression_str, "." );
 
-  if ( splits.size() == 2 && splits[ 0 ] == "next_wi_bomb" )
+  if ( splits.size() == 1 && splits[ 0 ] == "steady_focus_count" )
+  {
+    return make_fn_expr( expression_str, [ this ] { return state.steady_focus_counter; } );
+  }
+  else if ( splits.size() == 2 && splits[ 0 ] == "next_wi_bomb" )
   {
     if ( splits[ 1 ] == "shrapnel" )
       return make_fn_expr( expression_str, [ this ] { return talents.wildfire_infusion.ok() && state.next_wi_bomb == WILDFIRE_INFUSION_SHRAPNEL; } );
@@ -7055,7 +7083,7 @@ void hunter_t::init_spells()
   talents.explosive_shot                    = find_talent_spell( talent_tree::CLASS, "Explosive Shot" );
   talents.barrage                           = find_talent_spell( talent_tree::CLASS, "Barrage" );
   talents.poison_injection                  = find_talent_spell( talent_tree::CLASS, "Poison Injection" );
-  talents.hydras_bite                       = find_talent_spell( talent_tree::CLASS, "Hydras Bite" );
+  talents.hydras_bite                       = find_talent_spell( talent_tree::CLASS, "Hydra's Bite" );
 
   // Marksmanship Tree
   if (specialization() == HUNTER_MARKSMANSHIP)
@@ -7414,7 +7442,7 @@ void hunter_t::create_buffs()
       -> set_refresh_behavior( buff_refresh_behavior::EXTEND )
       -> set_affects_regen( true )
       -> set_stack_change_callback(
-        [ this ]( buff_t*, int old, int cur ) {
+        [ this ]( buff_t*, int /*ol*/, int cur ) {
           cooldowns.aimed_shot -> adjust_recharge_multiplier();
           cooldowns.rapid_fire -> adjust_recharge_multiplier();
           if ( cur == 0 ) {
@@ -7583,7 +7611,7 @@ void hunter_t::create_buffs()
 
   if ( talents.coordinated_kill.ok() ) {
     buffs.coordinated_assault -> set_stack_change_callback(
-      [ this ]( buff_t*, int old, int cur ) {
+      [ this ]( buff_t*, int /*old*/, int /*cur*/ ) {
         if ( talents.bombardier.ok() )
           cooldowns.wildfire_bomb -> reset( true );
 
@@ -7599,6 +7627,11 @@ void hunter_t::create_buffs()
   buffs.spearhead =
     make_buff( this, "spearhead", talents.spearhead )
     -> set_default_value_from_effect( 1 );
+
+  buffs.deadly_duo =
+    make_buff( this, "deadly_duo", find_spell( 397568 ) )
+      -> set_chance( talents.deadly_duo.ok() )
+      -> set_default_value( talents.deadly_duo -> effectN( 1 ).percent() );
 
   // Pet family buffs
 
@@ -7645,7 +7678,7 @@ void hunter_t::create_buffs()
 
   buffs.bestial_barrage =
     make_buff( this, "bestial_barrage", tier_set.t29_sv_4pc_buff )
-    -> set_chance( tier_set.t29_sv_4pc.ok() ? 0.2 : 0 ); // TODO is 20% in spelldata anywhere
+    -> set_chance( tier_set.t29_sv_4pc -> effectN( 1 ).percent() );
 
   // Conduits
 

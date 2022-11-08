@@ -2987,7 +2987,7 @@ stat_buff_t::stat_buff_t( actor_pair_t q, util::string_view name, const spell_da
   }
 }
 
-stat_buff_t* stat_buff_t::add_stat( stat_e s, double a, const std::function<bool( const stat_buff_t& )>& c )
+stat_buff_t* stat_buff_t::add_stat( stat_e s, double a, const stat_check_fn& c )
 {
   if ( !manual_stats_added )
   {
@@ -2999,6 +2999,18 @@ stat_buff_t* stat_buff_t::add_stat( stat_e s, double a, const std::function<bool
   stats.emplace_back( s, a, c );
 
   return this;
+}
+
+stat_buff_t* stat_buff_t::add_stat_from_effect( size_t i, double a, const stat_check_fn& c )
+{
+  auto stat = util::translate_rating_mod( data().effectN( i ).misc_value1() );
+  if ( stat == STAT_NONE )
+  {
+    sim->error( "{} cannot add stat from effect#{}: STAT_NONE", name(), i );
+    return this;
+  }
+
+  return add_stat( stat, a, c );
 }
 
 void stat_buff_t::bump( int stacks, double /* value */ )

@@ -1905,6 +1905,46 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
 
 // print_html_talents_player ================================================
 
+std::string base64_to_url( std::string_view s )
+{
+  std::string str( s );
+  util::replace_all( str, "+", "%2B" );
+  util::replace_all( str, "/", "%2F" );
+  return str;
+}
+
+// TODO: remove hack when render gets static aspect ratio
+int raidbots_talent_render_width( specialization_e spec, int height )
+{
+  switch ( spec )
+  {
+    case DEMON_HUNTER_HAVOC:
+    case EVOKER_DEVASTATION:
+    case EVOKER_PRESERVATION:
+    case HUNTER_BEAST_MASTERY:
+    case HUNTER_MARKSMANSHIP:
+    case HUNTER_SURVIVAL:
+    case MAGE_ARCANE:
+    case MAGE_FROST:
+    case MONK_BREWMASTER:
+    case MONK_WINDWALKER:
+    case PALADIN_PROTECTION:
+    case ROGUE_ASSASSINATION:
+    case ROGUE_SUBTLETY:
+    case WARLOCK_AFFLICTION:
+    case WARLOCK_DESTRUCTION:
+      return height * 59 / 40;
+    default:
+      return height * 5 / 3;
+  }
+}
+
+std::string raidbots_talent_render_src( std::string_view talent_str, unsigned level, int width, bool mini, bool ptr )
+{
+  return fmt::format( "https://{}.raidbots.com/simbot/render/talents/{}?bgcolor=160f0b&level={}&width={}{}",
+                      ptr ? "mimiron" : "www", base64_to_url( talent_str ), level, width, mini ? "&mini=1" : "" );
+}
+
 void print_html_talents( report::sc_html_stream& os, const player_t& p )
 {
   if ( !p.collected_data.fight_length.mean() || p.player_traits.empty() )
@@ -1942,7 +1982,14 @@ void print_html_talents( report::sc_html_stream& os, const player_t& p )
 
   os << "<div class=\"player-section talents\">\n"
      << "<h3 class=\"toggle\">Talents</h3>\n"
-     << "<div class=\"toggle-content\">\n";
+     << "<div class=\"toggle-content hide\">\n";
+
+  auto w_ = raidbots_talent_render_width( p.specialization(), 600 );
+  os.format( "<iframe src=\"{}\" width=\"{}\" height=\"650\"></iframe>\n",
+             raidbots_talent_render_src( p.talents_str, p.true_level, w_, false, p.dbc->ptr ), w_ );
+
+  os << "<h3 class=\"toggle\">Talent Tables</h3>\n"
+     << "<div class=\"toggle-content hide\">\n";
 
   os.format( "<table class=\"sc\"><tr><th>Row</th><th>{} Talents [{}]</th></tr>\n",
              util::player_type_string_long( p.type ),
@@ -1988,6 +2035,7 @@ void print_html_talents( report::sc_html_stream& os, const player_t& p )
   os << "</table>\n";
 
   os << "</div>\n"
+     << "</div>\n"
      << "</div>\n";
 }
 
@@ -3931,8 +3979,15 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
   }
 
   // Spec and gear
-  if ( !p.is_pet() )
+  if ( !p.is_pet() && !p.is_enemy() )
   {
+    os << "<div>\n";
+
+    auto w_ = raidbots_talent_render_width( p.specialization(), 125 );
+    os.format(
+      "<iframe src=\"{}\" width=\"{}\" height=\"125\" style=\"float: left; margin-right: 10px; margin-top: 5px;\"></iframe>\n",
+      raidbots_talent_render_src( p.talents_str, p.true_level, w_, true, p.dbc->ptr ), w_ );
+
     os << "<table class=\"sc spec\">\n";
 
     if ( !p.origin_str.empty() )
@@ -3943,7 +3998,7 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
     }
 
     // Talent Hash
-    os.format( "<tr class=\"left\"><th>Talent String</th><td>{}</td></tr>\n", p.talents_str );
+    os.format( "<tr class=\"left\"><th>Talent</th><td>{}</td></tr>\n", p.talents_str );
 
     // Set Bonuses
     if ( p.sets )
@@ -4020,7 +4075,8 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
          << "</tr>\n";
     }
 
-    os << "</table>\n";
+    os << "</table>\n"
+       << "</div>\n";
   }
 }
 

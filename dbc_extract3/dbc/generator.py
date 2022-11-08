@@ -1343,7 +1343,7 @@ class SpellDataGenerator(DataGenerator):
          368643, # Chains of Domination AoE damage
          363338, # Jailer fight buff
          373108, 373113, 373116, 373121, # Season 4 M+ Bounty buffs
-         # 10.0 =============================================================
+         # 10.0 Dragonflight ================================================
          371070, # Rotting from Within debuff on 'toxic' consumables
          371348, 371350, 371351, 371353, # Phial of Elemental Chaos
          370772, 370773, # Phial of Static Empowerment
@@ -1362,6 +1362,14 @@ class SpellDataGenerator(DataGenerator):
          382425, 382428, 394864, # Spiteful Storm
          382090, # Storm-Eater's Boon
          382131, 394618, # Iceblood Deathsnare
+         377463, 382135, 382136, 382256, 382257, 394954, 395703, 396434, # Manic Grieftorch
+         377458, 377459, 377461, 382133, # All-Totem of the Master
+         388608, 388611, 388739,  # Idol of Pure Decay
+         389407, # Furious Ragefeather
+         381586, # Erupting Spear Fragment
+         381954, 381955, 381956, 381957, # Spoils of Neltharus
+         383758, # Bottle of Spiraling Winds
+         383813, 383814, 389817, 389818, 389820, 390896, 390941, # Ruby Whelp Shell
         ),
 
         # Warrior:
@@ -2063,6 +2071,7 @@ class SpellDataGenerator(DataGenerator):
           ( 394103, 1 ), ( 394106, 1 ), ( 394108, 1 ), ( 394111, 1 ), # Sundered Firmament
           ( 395110, 1 ), # Parting Skies Sundered Firmament tracker buff
           ( 393869, 1 ), # Lunar Shrapnel damage
+          ( 393957, 1 ), # Waning Twilight
           # Feral
           ( 391710, 2 ), # Ferocious Frenzy damage
           ( 391786, 2 ), # Tear Open Wounds damage
@@ -4525,10 +4534,14 @@ class TraitGenerator(DataGenerator):
             fields += entry['definition'].field('id_override_spell')
             fields += [f'{entry["row"]:2d}', f'{entry["col"]:2d}']
             fields.append(f'{entry["selection_index"]:3d}')
-            if entry['definition'].override_name:
-                fields.append("{:>35s}".format(f'"{entry["definition"].override_name}"'))
-            else:
-                fields.append("{:>35s}".format(f'"{entry["spell"].name}"'))
+
+            _name = entry['spell'].name
+            if override := entry['definition'].override_name:
+                _name = override
+                if override.startswith('$@spellname') and override[11:].isnumeric():
+                    _name = self.db('SpellName')[int(override[11:])].name
+
+            fields.append("{:>35s}".format(f'"{_name}"'))
             fields.append(f'{{ {", ".join(["{:4d}".format(x) for x in sorted(entry["specs"]) + [0] * (constants.MAX_SPECIALIZATION - len(entry["specs"]))])} }}')
             fields.append(f'{{ {", ".join(["{:4d}".format(x) for x in sorted(entry["starter"]) + [0] * (constants.MAX_SPECIALIZATION - len(entry["starter"]))])} }}')
 

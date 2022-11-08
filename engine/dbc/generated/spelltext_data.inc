@@ -1,5 +1,5 @@
-// Spell text, wow build 10.0.0.46340
-static const std::array<spelltext_data_t, 18942> __spelltext_data { {
+// Spell text, wow build 10.0.0.46455
+static const std::array<spelltext_data_t, 18951> __spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -16583,6 +16583,9 @@ static const std::array<spelltext_data_t, 18942> __spelltext_data { {
   { 377455, "Casting spells spins Crystalline Silk, granting [low] mastery per stack.\r\n\r\nAt X stacks, your next single-target spell deals [high] bonus Frost damage, encasing them and enemies within 10 yards in a Crystalline Web for X seconds. While the web persists, a portion of the damage you deal is shared across all enemies in the Web.", 0, 0 },
   { 377456, "Your critical strikes have a chance to build Static Electricity, granting $s2% attack speed per stack.\r\n\r\nAt $s3 stacks lightning surges through you, increasing your movement speed by $s4% for $s1 seconds. While surging, your auto attacks jolt your target and 1 nearby enemy for $s5 Nature damage.", 0, 0 },
   { 377457, "Enter an Elemental Stance. Successfully dodging or parrying an attack has a chance to unleash a powerful Elemental Counterattack to enemies in front of you as you assume the next stance.", 0, 0 },
+  { 377458, "Dodging or parrying an attack has a chance to deal Nature damage to all enemies in front of you, gaining [A Lot Of] Armor and receiving increased healing for 10 seconds.\r\n\r\nNext stance: Fire", 0, 0 },
+  { 377459, "Dodging or parrying an attack has a chance to deal Fire damage to all enemies in front of you, burning them for an additional amount (up to a cap) based on your Maximum Health for 10 seconds.\r\n\r\nNext stance: Ice", 0, 0 },
+  { 377461, "Dodging or parrying an attack has a chance to deal Nature damage to all enemies in front of you, reducing their armor by [amount] for 10 seconds.\r\n\r\nNext stance: Earth", 0, 0 },
   { 377462, "Designate another player to bond with, becoming their Guardian for $382281d.\r\n\r\nWhile bonded, you and your ally gain $382280s1 Versatility and restore $382280s2 health per second. If you are within 15 yards of one another, these bonuses are increased.", 0, 0 },
   { 377463, "Channel for 2 seconds, unleashing a furious volley of flame around your target, dealing [A Lot] fire damage.\r\n\r\nWhenever an allied player dies, this cooldown is reduced by 90 seconds.", 0, 0 },
   { 377464, "Let loose a dangerous current of lightning, dealing [Big Number] Nature damage to your target and [low] damage to yourself. Self-damage increases with your stacks of Hatred.", 0, 0 },
@@ -16854,7 +16857,6 @@ static const std::array<spelltext_data_t, 18942> __spelltext_data { {
   { 381727, "$@spelldesc381705", "A mutated tentacle has emerged from your body, lashing out to enemies in front of you.", 0 },
   { 381732, "$@spelldesc364342", "Cooldown of Death's Advance reduced by $s1%.", "Bronze" },
   { 381734, "Taking damage has a chance to increase your Versatility by $381769s1 for $381769d.\r\n\r\nThis effect is increased for every ally within $381769s2 yds, up to $381769s3.", 0, 0 },
-  { 381736, "Get carried away by five dragon whelplings!", "Get carried away by five dragon whelplings!", 0 },
   { 381741, "$@spelldesc364342", "Cooldown of Fel Rush and Infernal Strike reduced by $s1%.", "Bronze" },
   { 381743, "Increases the chance for Earthquake to knock enemies down by ${$s1}.1%.\r\n", 0, 0 },
   { 381746, "$@spelldesc364342", "Cooldown of $?s252216[Tiger Dash][Dash] reduced by $s1%.", "Bronze" },
@@ -16945,6 +16947,7 @@ static const std::array<spelltext_data_t, 18942> __spelltext_data { {
   { 382083, "Swear your oath to the Primalists to become Marked by Frost, increasing your Critical Strike by [medium amount]. \r\n\r\nFighting alongside allies who are Marked by Earth or Fire has a chance to grant you half of their Mark's stats for $s1 seconds.", 0, 0 },
   { 382086, "Icefury causes your Frost Shocks to damage up to $s1 additional enemies and targets hit take $382089s1% increased Nature damage from your spells for $382089d. Chain Lightning prefers targets with this effect.", 0, 0 },
   { 382089, "$@spelldesc382086", "Damage taken from Nature spells increased by $w1%.", 0 },
+  { 382090, "Accept the storm, becoming a Primal Air Elemental and immobilizing yourself for X seconds.\r\n\r\nWhile in this form, your melee attacks and abilities gain range and have a very high chance to summon Windbursts at your target's location, dealing [low] nature damage around them. ", 0, 0 },
   { 382095, "Your attacks slowly build Concussive Force, granting [low] attack power per stack. \r\n\r\nAt X stacks, your next 3 melee abilities emit a shockwave in front of you, dealing bonus Nature damage to all enemies in a line. Shockwaves deal more damage to enemies at high health.", 0, 0 },
   { 382096, "Your attacks slowly build Concussive Force, granting [low] attack power per stack. \r\n\r\nAt X stacks, your next 3 melee abilities emit a shockwave in front of you, dealing bonus Nature damage to all enemies in a line. Shockwaves deal more damage to enemies at high health.", 0, 0 },
   { 382097, "Your attacks slowly build Concussive Force, granting [low] attack power per stack. \r\n\r\nAt X stacks, your next 3 melee abilities emit a shockwave in front of you, dealing bonus Nature damage to all enemies in a line. Shockwaves deal more damage to enemies at high health.", 0, 0 },
@@ -16956,6 +16959,10 @@ static const std::array<spelltext_data_t, 18942> __spelltext_data { {
   { 382114, "$@spelldesc382110", "Your next Frostbolt or Flurry will also cast a Frozen Orb at your target.", 0 },
   { 382119, "Infrequently summons a gnoll ally to assist you during combat. It may deal $s2 Physical damage to your target and $?134735a[snare][stun] it for 2 sec, poison your target for ${$s3*($384290d/$384290t1)*(1+$@versadmg)} Nature over $384290d, or increase your highest secondary stat by $s1 for $384294d.", "Something is watching you.", 0 },
   { 382126, "$@spelldesc385884.", "You have stolen $w1 Intellect.", 0 },
+  { 382131, "Casting spells spins Crystalline Silk, granting [low] mastery per stack.\r\n\r\nAt X stacks, your next single-target spell deals [high] bonus Frost damage, encasing them and enemies within 10 yards in a Crystalline Web for X seconds. While the web persists, a portion of the damage you deal is shared across all enemies in the Web.", 0, 0 },
+  { 382133, "Dodging or parrying an attack has a chance to deal Frost damage to all enemies in front of you, slowing their cast and attack speeds by [amount] for 10 seconds.\r\n\r\nNext stance: Air", 0, 0 },
+  { 382135, "Channel for 2 seconds, unleashing a furious volley of flame around your target, dealing [A Lot] fire damage.\r\n\r\nWhenever an allied player dies, this cooldown is reduced by 90 seconds.", 0, 0 },
+  { 382136, "Channel for 2 seconds, unleashing a furious volley of flame around your target, dealing [A Lot] fire damage.\r\n\r\nWhenever an allied player dies, this cooldown is reduced by 90 seconds.", 0, 0 },
   { 382139, "Call on the Lost Dwarves to rain down cannon fire at your location dealing $387777s1 Fire damage split between you and all enemies over $d.\r\n\r\nDamage is increased for each target struck, up to $s2 targets.", 0, 0 },
   { 382144, "While Icy Veins is active, each Frostbolt you cast reduces the cast time of Frostbolt by $327509s1% and increases its damage by $327509s2%, stacking up to $327509u times.", 0, 0 },
   { 382145, "Increases Haste by $s1 for $d.", "Haste increased by $w1.", 0 },
@@ -17007,6 +17014,8 @@ static const std::array<spelltext_data_t, 18942> __spelltext_data { {
   { 382247, "Increases Stamina by $s1.", "Stamina increased by $w1.", 0 },
   { 382250, "$@spelldesc369156  If you spend at least 10 seconds eating you will become well fed and gain $382246s1 Stamina for $382246d.", 0, 0 },
   { 382252, "$@spelldesc369159  If you spend at least 10 seconds eating you will become well fed and gain $382247s1 Stamina for $382247d.", 0, 0 },
+  { 382256, "Channel for 2 seconds, unleashing a furious volley of flame around your target, dealing [A Lot] fire damage.\r\n\r\nWhenever an allied player dies, this cooldown is reduced by 90 seconds.", 0, 0 },
+  { 382257, "Channel for 2 seconds, unleashing a furious volley of flame around your target, dealing [A Lot] fire damage.\r\n\r\nWhenever an allied player dies, this cooldown is reduced by 90 seconds.", 0, 0 },
   { 382258, "Leech increased by $s1%.", 0, 0 },
   { 382260, "Movement speed increased by $s1%.", 0, 0 },
   { 382266, "Inhale, stoking your inner flame. Release to exhale, burning enemies in a cone in front of you for $<sOneDmg> Fire damage. Deals reduced damage beyond 5 targets.\r\n\r\n|cFFFFFFFFI:|r   Deals $<sOneDoT> damage over 4 sec.\r\n\r\n|cFFFFFFFFII:|r  Deals $<sTwoDoT> damage over 8 sec.\r\n\r\n|cFFFFFFFFIII:|r Deals $<sThreeDoT> damage over 12 sec.\r\n\r\n|cFFFFFFFFIV:|r Deals $<sFourDoT> damage over 16 sec.", 0, "Red" },
@@ -18372,8 +18381,6 @@ static const std::array<spelltext_data_t, 18942> __spelltext_data { {
   { 390386, "Increases haste by $s1% for all party and raid members for $d.\r\n\r\nAllies receiving this effect will become Exhausted and unable to benefit from Fury of the Aspects or similar effects again for $57723d.", "Haste increased by $w1%.", 0 },
   { 390414, "An improved Moonkin Form that grants the benefits of Celestial Alignment, and $s2% critical strike chance.\r\n\r\nLasts $d. You may shapeshift in and out of this improved Moonkin Form for its duration.", "Both Eclipses active. Haste increased by $w1% and critical strike chance by $w2%.", "Talent, Shapeshift" },
   { 390420, "Shield an ally for up to $s1 from a great distance and gain up to $s2 bonus movement speed. The shield and bonus movement speed amounts vary depending on the distance between you and your target.", "Absorb $w1 damage.", 0 },
-  { 390444, "Lounge around, Maruuk style!", 0, 0 },
-  { 390453, "Rest like a khanam wherever you go!", 0, 0 },
   { 390458, "Channel torrents around you dealing ${$s1*($390459d/$390459t1)*(1+$@versadmg)} nature damage to nearby enemies over $390459d. Then unleash a powerful blast dealing $s2 nature damage split between all nearby enemies.", 0, 0 },
   { 390563, "While $?s137050[Ravager is active][Bladestorming], every $?c2[$390719t1][$390577t1] sec you gain $s2% movement speed and $s1% Strength, stacking up to $s3 times. Lasts $390581d.", 0, 0 },
   { 390567, "@spelldesc390563", 0, 0 },
@@ -18813,6 +18820,7 @@ static const std::array<spelltext_data_t, 18942> __spelltext_data { {
   { 393954, "Starsurge and Starfall reduce the cost of Starsurge and Starfall by $393955s1% and increase their damage by $393955s2% for $393955d, stacking up to $393955u times.", 0, 0 },
   { 393955, "$@spelldesc393954", "Cost of Starsurge and Starfall reduced by $w1%, and their damage increased by $w2%.", 0 },
   { 393956, "When you have $s3 periodic effects on a target, your damage and healing on them are increased by $s1%.", 0, 0 },
+  { 393957, "$@spelldesc393956", "Damage and healing from $@auracaster increased by $w1%.", 0 },
   { 393958, "After an Eclipse ends, you gain $393959s1% Haste for $393959d.", 0, 0 },
   { 393959, "$@spelldesc393958", "Haste increased by $s1%.", 0 },
   { 393960, "Every $s1 Astral Power spent grants Celestial Alignment for $s2 sec.", 0, 0 },
@@ -18942,18 +18950,14 @@ static const std::array<spelltext_data_t, 18942> __spelltext_data { {
   { 396484, "$@spelldesc387474", 0, 0 },
   { 396895, "Hurls a bolt of dark magic at the target, dealing $s1 Shadow damage.", 0, 0 },
   { 397251, "Weapons of Order calls forth $?c1[Niuzao, the Black Ox]?c2&s325197[Chi-Ji, the Red Crane]?c3[Xuen, the White Tiger][Yu'lon, the Jade Serpent] to assist you for ${$s1/1000} sec.", 0, 0 },
+  { 397708, "Execute no longer has a cooldown and if your foe survives, $163201s2% of the Rage spent is refunded.", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.0.0.46340
-static constexpr std::array<hotfix::client_hotfix_entry_t, 5> __spelltext_hotfix_data { {
-  {   78674,  0, "Launch a surge of stellar energies at the target, dealing $s1 Astral damage, and empowering the damage bonus of any active Eclipse for its duration.", "Launch a surge of stellar energies at the target, dealing $s1 Astral damage." },
-  {  120954,  0, "Turns your skin to stone for $120954d$?$w1>0[, increasing your armor by $s8% and dodge by $s7%][]$?$w1>0[, increasing your current and maximum health by $<health>%][]$?s322960[, increasing the effectiveness of Stagger by $322960s1%][]$?$w1>0[, and reducing all damage you take by $<damage>%][].", "Turns your skin to stone for $120954d$?a388917[, increasing your current and maximum health by $<health>%][]$?s322960[, increasing the effectiveness of Stagger by $322960s1%][]$?a388917[, reducing all damage you take by $<damage>%][]$?a388814[, increasing your armor by $388814s2% and dodge chance by $388814s1%][]." },
-  {  120954,  1, "$?$w1>0[Health increased by $<health>%, damage taken reduced by $<damage>%.][]\r\n$?$w6>0[Effectiveness of Stagger increased by $115203s1%.\r\n\r\n$?$w8>0[Armor increased by $w8%. Dodge increased by $w7%.][]", "$?$w1>0[Health increased by $<health>%, damage taken reduced by $<damage>%.][]$?$w6>0[\r\nEffectiveness of Stagger increased by $115203s1%.][]$?$w8>0[\r\nArmor increased by $w8%. Dodge chance increased by $w7%.][]" },
-  {  197626,  0, "Launch a surge of stellar energies at the target, dealing $s1 Astral damage, and empowering the damage bonus of any active Eclipse for its duration.", "Launch a surge of stellar energies at the target, dealing $s1 Astral damage." },
-  {  385416,  0, "Your $?S53595[Hammer of the Righteous]?S204019[Blessed Hammer][Crusader Strike] now also grants you $385417s1% increased $pri for $385417d. Multiple applications may overlap.", "Your $?S53595[Hammer of the Righteous]?S204019[Blessed Hammer][Crusader Strike] now also grants you $s1% increased $pri for $385417d. Multiple applications may overlap." },
+// spelltext hotfix entries, wow build 10.0.0.46455
+static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 10.0.0.46340
+// Spell description variables, wow build 10.0.0.46455
 static const std::array<spelldesc_vars_data_t, 361> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$pvp=$?a134735[${1.1}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<pvp>*$<weal>}\r\n" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -19009,7 +19013,7 @@ static const std::array<spelldesc_vars_data_t, 361> __spelldesc_vars_data { {
   {   51690, "$dmg=${$57841s2*6+$57842s1*6}" },
   {   55095, "$CAP=$?$OWB==0[${$AP*0.98}][${($AP+$OAP)*2/3}]--2H, DW" },
   {   58877, "$percent=$?s63271[${$58877m1*1.4}][${$58877m1}]" },
-  {   61882, "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$damage=${$SPN*0.176*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>}" },
+  {   61882, "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$damage=${$SPN*0.1936*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>}" },
   {   64382, "$damage=${($AP*1.0)*(1+$@versadmg)}" },
   {   77756, "$chance=$?a279830[${$s1+$279830s1}][${$s1}]" },
   {   79096, "$cdr=${$s1/10}" },
@@ -19172,7 +19176,7 @@ static const std::array<spelldesc_vars_data_t, 361> __spelldesc_vars_data { {
   {  296320, "$cooldownValue=${($m1+3320)/-100}.1\r\n$cooldown=${$clamp($<cooldownValue>,10,25)}.1" },
   {  298441, "$points=${$298461s2}" },
   {  298442, "$points=${$298461s2}" },
-  {  298762, "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$damage=${$SPN*0.391*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>*($168534s2/100)*($381726s1/100)}" },
+  {  298762, "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$damage=${$SPN*0.1936*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>*($168534s2/100)*($381726s1/100)}" },
   {  299367, "$cooldownValue=${($m1+3320)/-100}.1\r\n$cooldown=${$clamp($<cooldownValue>,10,25)}.1" },
   {  299369, "$cooldownValue=${($m1+3320)/-100}.1\r\n$cooldown=${$clamp($<cooldownValue>,10,25)}.1" },
   {  299958, "$transfer=${$303448s1*(1+$303463s1/100)*(1+$@versadmg)}" },
@@ -19188,7 +19192,7 @@ static const std::array<spelldesc_vars_data_t, 361> __spelldesc_vars_data { {
   {  315341, "$CAP=${($AP+$OAP)*2/3}\r\n$damage=${$m1*$<CAP>/$AP}" },
   {  317349, "$damage=${2.0*$317483s1}\r\n$absorb=${(($317320s3/100)*$AP)*2.0*(1+$@versadmg)}" },
   {  317485, "$damage=${2.0*$317483s1}\r\n$absorb=${(($317320s3/100)*$AP)*2.0*(1+$@versadmg)}" },
-  {  318038, "$coeff=${0.0264}" },
+  {  318038, "$coeff=${0.0198}" },
   {  318187, "$points=${($s2/100*$max($AP,$SP)*(1+$@versadmg))}" },
   {  318211, "$points=${($s2/100*$max($AP,$SP)*(1+$@versadmg))}" },
   {  318216, "$points=${($s2/100*$max($AP,$SP)*(1+$@versadmg))}" },
@@ -19200,7 +19204,7 @@ static const std::array<spelldesc_vars_data_t, 361> __spelldesc_vars_data { {
   {  318488, "$points=${($s2/100*$max($AP,$SP)*(1+$@versadmg))}" },
   {  319191, "$mod=$?a137005[${0.25}]?a212611[${1.5}]?a137009[${2}]?a137014[${2}]?a137018[${1}]?a137022[${0.5}]?a137026[${0.75}]?a137030[${1.5}]?a137034[${1.5}]?a137038[${2}]?a137042[${1}]?a137047[${1.5}]?a353167[${2}][${1}]" },
   {  319217, "$points=${$cond($gt($SP,$AP),$SP*10,$AP*10)*(1)}" },
-  {  319778, "$coeff=${0.0264}" },
+  {  319778, "$coeff=${0.0198}" },
   {  319978, "$absorb=${($319978s1/100)*$MHP*(1+$@versadmg)}" },
   {  319983, "$mod=$?a137005[${1.0}]?a212611[${1.0}]?a137009[${3.0}]?a137014[${0.5}.1]?a137018[${1.5}.1]?a137022[${3.0}]?a137026[${4.0}]?a137030[${0.8}.2]?a137034[${1.5}]?a137038[${1.4}.1]?a137042[${1.0}]?a137047[${1.0}]?a353167[${2.0}][${1.0}]" },
   {  320659, "$points=${$cond($gt($SP,$AP),$SP*0.3312,$AP*0.3312)*(1+$@versadmg)}" },
@@ -19318,11 +19322,7 @@ static const std::array<spelldesc_vars_data_t, 361> __spelldesc_vars_data { {
   {  394354, "$damage=${($AP*1.0)*(1+$@versadmg)}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.0.0.46340
-static constexpr std::array<hotfix::client_hotfix_entry_t, 4> __spelldesc_vars_hotfix_data { {
-  {      17,  0, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$pvp=$?a134735[${1.1}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*2.8*(1+$@versadmg)*$<rapture>*$<shadow>*$<pvp>*$<weal>}\r\n", "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$pvp=$?a134735[${1.1}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<pvp>*$<weal>}\r\n" },
-  {  115203,  0, "$health=$?s322960[${20}][${15}]\r\n$damage=$?s322960[${20}][${15}]", "$health=$?s322960[${15}][${15}]\r\n$damage=$?c1[${20}][${20}]" },
-  {  120954,  0, "$health=$?s322960[${20}][${15}]\r\n$damage=$?s322960[${20}][${15}]", "$health=$?s322960[${15}][${15}]\r\n$damage=$?c1[${20}][${20}]" },
-  {  388917,  0, "$health=$?s322960[${20}][${15}]\r\n$damage=$?s322960[${20}][${15}]", "$health=$?s322960[${15}][${15}]\r\n$damage=$?c1[${20}][${20}]" },
+// spelldesc_vars hotfix entries, wow build 10.0.0.46455
+static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 

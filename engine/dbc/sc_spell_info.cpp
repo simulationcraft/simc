@@ -2400,6 +2400,7 @@ std::string spell_info::talent_to_str( const dbc_t& /* dbc */, const trait_data_
   s << "Name         : " << talent->name << std::endl;
   s << "Entry        : " << talent->id_trait_node_entry << std::endl;
   s << "Node         : " << talent->id_node << std::endl;
+  s << "Definition   : " << talent->id_trait_definition << std::endl;
   s << "Tree         : " << util::talent_tree_string( static_cast<talent_tree>( talent->tree_index ) ) << std::endl;
   s << "Class        : " << util::player_type_string( util::translate_class_id( talent->id_class ) ) << std::endl;
   s << "Column       : " << talent->col << std::endl;

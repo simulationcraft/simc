@@ -1,4 +1,4 @@
-// 576 talents, wow build 10.0.0.46340
+// 576 talents, wow build 10.0.0.46455
 static std::array<talent_data_t, 576> __talent_data { {
   { "Second Wind"                       , 15757, 0x00, 0x0001,   71,   0,   3,   29838,       0,  0 },
   { "Punish"                            , 15759, 0x00, 0x0001,   73,   1,   0,  275334,       0,  0 },
@@ -526,7 +526,7 @@ static std::array<talent_data_t, 576> __talent_data { {
   { "Demonic Strength"                  , 23138, 0x00, 0x0100,  266,   2,   0,  267171,       0,  0 },
   { "Shadow Embrace"                    , 23139, 0x00, 0x0100,  265,   0,   5,   32388,       0,  0 },
   { "Inevitable Demise"                 , 23140, 0x00, 0x0100,  265,   1,   0,  334319,       0,  0 },
-  { "Drain Soul"                        , 23141, 0x00, 0x0100,  265,   2,   0,  198590,     686,  0 },
+  { "Drain Soul"                        , 23141, 0x00, 0x0100,  265,   2,   0,  198590,       0,  0 },
   { "Cataclysm"                         , 23143, 0x00, 0x0100,  267,   2,   3,  152108,       0,  0 },
   { "Channel Demonfire"                 , 23144, 0x00, 0x0100,  267,   1,   6,  196447,       0,  0 },
   { "Inner Demons"                      , 23146, 0x00, 0x0100,  266,   1,   5,  267216,       0,  0 },

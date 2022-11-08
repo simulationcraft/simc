@@ -101,18 +101,25 @@ public:
       sef_ability( sef_ability_e::SEF_NONE ),
       ww_mastery( false ),
       may_combo_strike( false ),
-      cast_during_sck( false ),
       trigger_chiji( false ),
       trigger_faeline_stomp( false ),
       trigger_bountiful_brew( false ),
       trigger_sinister_teaching_cdr( true ),
       trigger_resonant_fists( false ),
+      cast_during_sck( false ),
       may_proc_bron( false ),
       bron_proc( nullptr ),
       keefers_skyreach_proc( nullptr ),
       affected_by()
   {
     range::fill( _resource_by_stance, RESOURCE_MAX );
+    // Resonant Fists talent
+    if ( player->talent.general.resonant_fists->ok() )
+    {
+      auto trigger = player->talent.general.resonant_fists.spell();
+
+      trigger_resonant_fists = ab::harmful && ab::may_hit && ( trigger->proc_flags() & ( 1 << ab::proc_type() ) );
+    }
   }
 
   std::string full_name() const
@@ -793,6 +800,7 @@ public:
     {
       if ( p()->cooldown.resonant_fists->up() && p()->rng().roll( p()->talent.general.resonant_fists.spell()->proc_chance() ) )
       {
+          p()->active_actions.resonant_fists->set_target( s->target );
           p()->active_actions.resonant_fists->execute();
           p()->proc.resonant_fists->occur();
           p()->cooldown.resonant_fists->start( p()->talent.general.resonant_fists.spell()->internal_cooldown() );
@@ -1946,7 +1954,7 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
     {
 
       if ( p()->talent.windwalker.transfer_the_power->ok() )
-        p()->buff.transfer_the_power->trigger();
+        p()->buff.transfer_the_power->trigger( 2 ); // Not documented anywhere but applying 2 stacks in game
 
       if ( p()->shared.xuens_battlegear && p()->shared.xuens_battlegear->ok() && ( s->result == RESULT_CRIT ) )
       {
@@ -2187,6 +2195,9 @@ struct blackout_kick_totm_proc_t : public monk_melee_attack_t
         {
           if ( p()->talent.windwalker.transfer_the_power->ok() )
             p()->buff.transfer_the_power->trigger();
+
+          if ( p()->talent.windwalker.mark_of_the_crane->ok() )
+            p()->trigger_mark_of_the_crane( s );
         }
 
         break;
@@ -2384,8 +2395,8 @@ struct blackout_kick_t : public monk_melee_attack_t
 
     // Teachings of the Monastery
     // Used by both Windwalker and Mistweaver
-      if ( p()->buff.teachings_of_the_monastery && p()->buff.teachings_of_the_monastery->up() )
-        p()->buff.teachings_of_the_monastery->expire();
+    if ( p()->buff.teachings_of_the_monastery && p()->buff.teachings_of_the_monastery->up() )
+      p()->buff.teachings_of_the_monastery->expire();
 
     switch ( p()->specialization() )
     {
@@ -2756,14 +2767,6 @@ struct sck_tick_action_t : public monk_melee_attack_t
 
     if ( p()->spec.spinning_crane_kick_2_brm->ok() )
       trigger_shuffle( p()->spec.spinning_crane_kick_2_brm->effectN( 1 ).base_value() );
-
-    if ( p()->buff.kicks_of_flowing_momentum->up() ) {
-      p()->buff.kicks_of_flowing_momentum->decrement();
-
-      if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T29, B4 ) )
-        p()->buff.fists_of_flowing_momentum->trigger();
-    }
-
   }
 
   void impact( action_state_t* s ) override
@@ -2821,7 +2824,8 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
   spinning_crane_kick_t( monk_t* p, util::string_view options_str )
     : monk_melee_attack_t(
           "spinning_crane_kick", p,
-          ( p->specialization() == MONK_BREWMASTER ? p->spec.spinning_crane_kick_brm : p->spec.spinning_crane_kick ) )
+          ( p->specialization() == MONK_BREWMASTER ? p->spec.spinning_crane_kick_brm : p->spec.spinning_crane_kick ) ),
+    chi_x( nullptr )
   {
     parse_options( options_str );
 
@@ -2856,7 +2860,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     }
     else if ( p->specialization() == MONK_WINDWALKER )
     {
-      if ( p->talent.windwalker.jade_ignition->ok() )
+      if ( p->shared.jade_ignition && p->shared.jade_ignition->ok() )
       {
         chi_x = new chi_explosion_t( p );
 
@@ -2947,7 +2951,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 
     if ( p()->specialization() == MONK_WINDWALKER )
     {
-      if ( p()->buff.chi_energy->up() )
+      if ( chi_x && p()->buff.chi_energy->up() )
         chi_x->execute();
 
       // Bonedust Brew
@@ -2977,6 +2981,14 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 
       if ( p()->buff.chi_energy->up() )
         p()->buff.chi_energy->expire();
+
+      if ( p()->buff.kicks_of_flowing_momentum->up() )
+      {
+        p()->buff.kicks_of_flowing_momentum->decrement();
+
+        if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T29, B4 ) )
+          p()->buff.fists_of_flowing_momentum->trigger();
+      }
     }
     else if ( p()->specialization() == MONK_BREWMASTER )
     {
@@ -3138,9 +3150,6 @@ struct fists_of_fury_t : public monk_melee_attack_t
 
     monk_melee_attack_t::execute();
 
-    if ( p()->buff.transfer_the_power->up() )
-      p()->buff.transfer_the_power->expire();
-
     if ( p()->buff.fury_of_xuen_stacks->up() && rng().roll( p()->buff.fury_of_xuen_stacks->stack_value() ) )
         p()->buff.fury_of_xuen_stacks->expire();
 
@@ -3163,6 +3172,9 @@ struct fists_of_fury_t : public monk_melee_attack_t
 
     if ( p()->shared.xuens_battlegear && p()->shared.xuens_battlegear->ok() )
       p()->buff.pressure_point->trigger();
+
+    if ( p()->buff.transfer_the_power->up() )
+      p()->buff.transfer_the_power->expire();
 
     // If Fists of Fury went the full duration
     if ( dot->current_tick == dot->num_ticks() ) {
@@ -4084,15 +4096,18 @@ struct resonant_fists_t : public monk_spell_t
     aoe        = -1;
   }
 
+  void init() override
+  {
+    monk_spell_t::init();
+
+    trigger_resonant_fists = false;
+  }
+
   double action_multiplier() const override
   {
     double am = monk_spell_t::action_multiplier();
 
-    // Effect 1 says how much damage the talent actually does
-    // Talent is currently bugged and doing full damage at 1 talent point.
-    // The first talent point should be doing 50% of the total damage
-    if ( !p()->bugs )
-      am *= p()->talent.general.resonant_fists->effectN( 1 ).percent();
+    am *= 1 + p()->talent.general.resonant_fists->effectN( 1 ).percent();
     
     return am;
   }
@@ -6298,7 +6313,6 @@ struct expel_harm_t : public monk_heal_t
       p()->sample_datas.tranquil_spirit->add( amount_cleared );
       p()->proc.tranquil_spirit_expel_harm->occur();
     }
-
   }
 
   void impact( action_state_t* s ) override
@@ -6312,18 +6326,6 @@ struct expel_harm_t : public monk_heal_t
       s->result_total *= 1 + ( health_percent * p()->talent.general.strength_of_spirit->effectN( 1 ).percent() );
     }
 
-    /*
-    *  Unclear if this will be used yet
-    * 
-    if ( p()->specialization() == MONK_BREWMASTER )
-    {
-      if ( p()->talent.brewmaster.strength_of_spirit->ok() )
-      {
-        double health_percent = health_difference / p()->resources.max[RESOURCE_HEALTH];
-        s->result_total *= 1 + ( health_percent * p()->talent.brewmaster.strength_of_spirit->effectN( 1 ).percent() );
-      }
-    }*/
-
     monk_heal_t::impact( s );
 
     double result = s->result_total;
@@ -6331,6 +6333,8 @@ struct expel_harm_t : public monk_heal_t
     // Harm Denial only increases the healing, not the damage
     if ( p()->conduit.harm_denial->ok() )
       result /= 1 + p()->conduit.harm_denial.percent();
+
+    result *= p()->spec.expel_harm->effectN( 2 ).percent();
 
     if ( p()->specialization() == MONK_WINDWALKER )
     {
@@ -6347,14 +6351,10 @@ struct expel_harm_t : public monk_heal_t
         // to zero, we want to use a range of 10 and the result to simulate varying amounts of health.
         result = rng().range( min_amount, result );
       }
-
     }
-
-    result *= p()->spec.expel_harm->effectN( 2 ).percent();
 
     if ( p()->specialization() == MONK_BREWMASTER )
     {
-
       if ( p()->buff.gift_of_the_ox->up() && p()->spec.expel_harm_2_brm->ok() )
       {
         double goto_heal = p()->passives.gift_of_the_ox_heal->effectN( 1 ).ap_coeff();
@@ -6362,15 +6362,15 @@ struct expel_harm_t : public monk_heal_t
         result += goto_heal;
       }
 
-      dmg->base_dd_min = result;
-      dmg->base_dd_max = result;
-      dmg->execute();
-
       for ( int i = 0; i < p()->buff.gift_of_the_ox->check(); i++ )
       {
         p()->buff.gift_of_the_ox->decrement();
       }
     }
+
+    dmg->base_dd_min = result;
+    dmg->base_dd_max = result;
+    dmg->execute();
   }
 };
 
@@ -7394,6 +7394,7 @@ struct close_to_heart_driver_t : public monk_buff_t<buff_t>
         target->buffs.close_to_heart_leech_aura->trigger( 1, ( leech_increase ), 1, timespan_t::from_seconds( 10 ) );
       } );
     } );
+    set_trigger_spell( p.talent.general.close_to_heart );
     set_cooldown( timespan_t::zero() );
     set_duration( timespan_t::zero() );
     set_period( timespan_t::from_seconds( 1 ) );
@@ -7416,6 +7417,7 @@ struct generous_pour_driver_t : public monk_buff_t<buff_t>
         target->buffs.generous_pour_avoidance_aura->trigger( 1, ( avoidance_increase ), 1, timespan_t::from_seconds( 10 ) );
       } );
     } );
+    set_trigger_spell( p.talent.general.generous_pour );
     set_cooldown( timespan_t::zero() );
     set_duration( timespan_t::zero() );
     set_period( timespan_t::from_seconds( 1 ) );
@@ -7438,6 +7440,7 @@ struct windwalking_driver_t : public monk_buff_t<buff_t>
         target->buffs.windwalking_movement_aura->trigger( 1, ( movement_increase ), 1, timespan_t::from_seconds( 10 ) );
       } );
     } );
+    set_trigger_spell( p.talent.general.windwalking );
     set_cooldown( timespan_t::zero() );
     set_duration( timespan_t::zero() );
     set_period( timespan_t::from_seconds( 1 ) );
@@ -8264,7 +8267,7 @@ void monk_t::init_spells()
       talent.windwalker.glory_of_the_dawn                   = _ST( "Glory of the Dawn" );
       // 8 Required
       // Row 5
-      talent.windwalker.shadowboxing_treads                 = find_talent_spell(talent_tree::SPECIALIZATION, 331512);
+      talent.windwalker.shadowboxing_treads                 = _ST( "Shadowboxing Treads" );
       talent.windwalker.inner_peace                         = _ST( "Inner Peace" );
       talent.windwalker.storm_earth_and_fire                = _ST( "Storm, Earth, and Fire" );
       talent.windwalker.serenity                            = _ST( "Serenity" );
@@ -8279,7 +8282,7 @@ void monk_t::init_spells()
      
       // Row 7
       talent.windwalker.rushing_jade_wind                   = _ST( "Rushing Jade Wind" );
-      talent.windwalker.forbidden_technique                     = _ST( "Forbidden Technique" );
+      talent.windwalker.forbidden_technique                 = _ST( "Forbidden Technique" );
       talent.windwalker.invoke_xuen_the_white_tiger         = _ST( "Invoke Xuen, the White Tiger" );
       talent.windwalker.teachings_of_the_monastery          = _ST( "Teachings of the Monastery" );
       talent.windwalker.thunderfist                         = _ST( "Thunderfist" );
@@ -8316,7 +8319,7 @@ void monk_t::init_spells()
   spec.crackling_jade_lightning  = find_class_spell( "Crackling Jade Lightning" );
   spec.critical_strikes          = find_specialization_spell( "Critical Strikes" );
   //spec.detox                     = find_specialization_spell( "Detox" ); // talent.general.detox
-  spec.expel_harm                = find_class_spell( "Expel Harm" ); 
+  spec.expel_harm                = find_spell( 322101 ); 
   spec.expel_harm_2_brm          = find_rank_spell( "Expel Harm", "Rank 2", MONK_BREWMASTER );
   spec.expel_harm_2_mw           = find_rank_spell( "Expel Harm", "Rank 2", MONK_MISTWEAVER );
   spec.expel_harm_2_ww           = find_rank_spell( "Expel Harm", "Rank 2", MONK_WINDWALKER );
@@ -8780,7 +8783,7 @@ void monk_t::init_base_stats()
         base.distance = 5;
       // base_gcd += spec.windwalker_monk->effectN( 14 ).time_value();  // Saved as -500 milliseconds
       base.attack_power_per_agility     = 1.0;
-      base.spell_power_per_attack_power = spec.windwalker_monk->effectN( 14 ).percent();
+      base.spell_power_per_attack_power = spec.windwalker_monk->effectN( 13 ).percent();
       resources.base[ RESOURCE_ENERGY ] = 100;
       resources.base[ RESOURCE_ENERGY ] += talent.windwalker.ascension->effectN( 3 ).base_value();
       resources.base[ RESOURCE_ENERGY ] += talent.windwalker.inner_peace->effectN( 1 ).base_value();
@@ -8846,11 +8849,13 @@ void monk_t::create_buffs ()
   auto spec_tree = specialization ();
 
   // General
-  buff.chi_torpedo = make_buff ( this, "chi_torpedo", find_spell ( 119085 ) )->set_default_value_from_effect ( 1 );
+  buff.chi_torpedo = make_buff( this, "chi_torpedo", find_spell( 119085 ) )
+      ->set_trigger_spell(talent.general.chi_torpedo)
+      ->set_default_value_from_effect ( 1 );
 
   buff.close_to_heart_driver = new buffs::close_to_heart_driver_t( *this, "close_to_heart_aura_driver", find_spell( 389684 ) );
 
-  buff.fortifying_brew    = new buffs::fortifying_brew_t( *this, "fortifying_brew", passives.fortifying_brew );
+  buff.fortifying_brew = new buffs::fortifying_brew_t( *this, "fortifying_brew", passives.fortifying_brew );
 
   buff.generous_pour_driver = new buffs::generous_pour_driver_t( *this, "generous_pour_aura_driver", find_spell( 389685 ) );
 
@@ -9038,10 +9043,10 @@ void monk_t::create_buffs ()
     buff.weapons_of_order_ww = make_buff ( this, "weapons_of_order_ww", find_spell ( 311054 ) )
       ->set_default_value ( find_spell ( 311054 )->effectN ( 1 ).base_value () )
       ->set_chance ( covenant.kyrian->ok () ? 1 : 0 );
-
-    buff.windwalking_venthyr =
-      make_buff ( this, "windwalking_venthyr", passives.fallen_monk_windwalking )->set_default_value_from_effect ( 1 );
   }
+
+  buff.windwalking_venthyr =
+    make_buff ( this, "windwalking_venthyr", passives.fallen_monk_windwalking )->set_default_value_from_effect ( 1 );
 
   // Covenant Conduits
   buff.fortifying_ingrediences = make_buff<absorb_buff_t>( this, "fortifying_ingredients", find_spell( 336874 ) );
@@ -10531,8 +10536,11 @@ double monk_t::stagger_base_value()
 double monk_t::stagger_pct( int target_level )
 {
   double stagger_base = stagger_base_value();
+  // TODO: somehow pull this from "enemy_t::armor_coefficient( target_level, tank_dummy_e::MYTHIC )" without crashing
+  double k            = dbc->armor_mitigation_constant( target_level );
+  k *= ( is_ptr() ? 1.384 : 1.992 );  // Mythic Raid
 
-  double stagger = stagger_base / ( stagger_base + dbc->armor_mitigation_constant( target_level ) );
+  double stagger = stagger_base / ( stagger_base + k );
 
   return std::min( stagger, 0.99 );
 }
