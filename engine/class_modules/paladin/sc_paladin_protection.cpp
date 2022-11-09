@@ -468,6 +468,7 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
     add_child( hotr_aoe );
     // 2022-11-09 Old HotR Rank 2 doesn't seem to exist anymore. New talent only has 1 charge, but it has 2 charges.
     cooldown->charges = 2;
+    cooldown->hasted  = true;
   }
 
   void execute() override
