@@ -9,6 +9,7 @@
 #include "player/unique_gear_shadowlands.hpp"
 #include "dbc/temporary_enchant.hpp"
 #include "dbc/item_set_bonus.hpp"
+#include "dbc/trait_data.hpp"
 #include "reports.hpp"
 #include "report/report_helper.hpp"
 #include "report/decorators.hpp"
@@ -264,12 +265,6 @@ std::string output_action_name( const stats_t& s, const player_t* actor )
   return "<span" + class_attr + ">" + name + "</span>";
 }
 
-// returns the character level required for each talent row. first row == 0.
-unsigned talent_character_level( int row )
-{
-  return row == 0 ? 15 : 20 + row * 5;
-}
-
 // print_html_action_info =================================================
 
 template <typename T>
@@ -377,15 +372,36 @@ double vulnerable_fight_length( player_t* actor )
   return fight_length;
 }
 
-void collect_compound_stats( std::unique_ptr<stats_t>& compound_stats, const stats_t* stats, double& count )
+double target_fight_length( sim_t* sim )
+{
+  double fight_length = 0.0;
+
+  for ( auto t : sim->targets_by_name )
+  {
+    fight_length += vulnerable_fight_length( t );
+
+    for ( auto pet : t->pet_list )
+    {
+      fight_length += vulnerable_fight_length( pet );
+    }
+  }
+
+  return fight_length;
+}
+
+void collect_compound_stats( std::unique_ptr<stats_t>& compound_stats, const stats_t* stats, double& count,
+                             double& tick_time )
 {
   compound_stats->merge( *stats );
   count += stats->has_direct_amount_results()
     ? stats->num_direct_results.mean()
     : stats->num_tick_results.mean();
+  tick_time += stats->has_tick_amount_results()
+    ? stats->total_tick_time.mean()
+    : 0;
 
-  range::for_each( stats->children, [&]( stats_t* s ) {
-    collect_compound_stats( compound_stats, s, count );
+  range::for_each( stats->children, [ & ]( stats_t* s ) {
+    collect_compound_stats( compound_stats, s, count, tick_time );
   } );
 }
 
@@ -403,6 +419,7 @@ void print_html_action_summary( report::sc_html_stream& os, unsigned stats_mask,
   // Strings for merged stat reporting
   std::string count_str;
   std::string critpct_str;
+  std::string uppct_str;
 
   // Create Merged Stat
   if ( !s.children.empty() )
@@ -410,8 +427,9 @@ void print_html_action_summary( report::sc_html_stream& os, unsigned stats_mask,
     auto compound_stats = std::make_unique<stats_t>( s.name_str + "_compound", s.player );
 
     double compound_count = 0.0;
+    double compound_tick_time = 0.0;
 
-    collect_compound_stats( compound_stats, &s, compound_count );
+    collect_compound_stats( compound_stats, &s, compound_count, compound_tick_time );
     compound_stats->analyze();
 
     count_str = "&#160;(" + util::to_string( compound_count, 1 ) + ")";
@@ -423,6 +441,14 @@ void print_html_action_summary( report::sc_html_stream& os, unsigned stats_mask,
                                                : pct_value<full_result_t, full_result_e>( compound_dr,
                                                  { FULLTYPE_CRIT, FULLTYPE_CRIT_BLOCK, FULLTYPE_CRIT_CRITBLOCK } );
     critpct_str = "&#160;(" + util::to_string( compound_critpct, 1 ) + "%)";
+
+
+    if ( player_has_tick_results( p, stats_mask ) && result_type == 1 )
+    {
+      uppct_str = "&#160;(" +
+                  util::to_string( 100 * compound_tick_time / target_fight_length( p.sim ), 1 ) +
+                  "%)";
+    }
   }
 
   // Result type
@@ -485,18 +511,9 @@ void print_html_action_summary( report::sc_html_stream& os, unsigned stats_mask,
   {
     if ( result_type == 1 )
     {
-      double target_fight_length = 0.0;
-
-      for ( auto target : p.sim->targets_by_name )
-      {
-        target_fight_length += vulnerable_fight_length( target );
-
-        for ( auto pet : target->pet_list )
-        {
-          target_fight_length += vulnerable_fight_length( pet );
-        }
-      }
-      os.printf( "<td class=\"right\">%.1f%%</td>\n", 100 * s.total_tick_time.mean() / target_fight_length );
+      os.printf( "<td class=\"right\">%.1f%%%s</td>\n",
+                 100 * s.total_tick_time.mean() / target_fight_length( p.sim ),
+                 uppct_str.c_str() );
     }
     else
     {
@@ -1888,54 +1905,138 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
 
 // print_html_talents_player ================================================
 
+std::string base64_to_url( std::string_view s )
+{
+  std::string str( s );
+  util::replace_all( str, "+", "%2B" );
+  util::replace_all( str, "/", "%2F" );
+  return str;
+}
+
+// TODO: remove hack when render gets static aspect ratio
+int raidbots_talent_render_width( specialization_e spec, int height )
+{
+  switch ( spec )
+  {
+    case DEMON_HUNTER_HAVOC:
+    case EVOKER_DEVASTATION:
+    case EVOKER_PRESERVATION:
+    case HUNTER_BEAST_MASTERY:
+    case HUNTER_MARKSMANSHIP:
+    case HUNTER_SURVIVAL:
+    case MAGE_ARCANE:
+    case MAGE_FROST:
+    case MONK_BREWMASTER:
+    case MONK_WINDWALKER:
+    case PALADIN_PROTECTION:
+    case ROGUE_ASSASSINATION:
+    case ROGUE_SUBTLETY:
+    case WARLOCK_AFFLICTION:
+    case WARLOCK_DESTRUCTION:
+      return height * 59 / 40;
+    default:
+      return height * 5 / 3;
+  }
+}
+
+std::string raidbots_talent_render_src( std::string_view talent_str, unsigned level, int width, bool mini, bool ptr )
+{
+  return fmt::format( "https://{}.raidbots.com/simbot/render/talents/{}?bgcolor=160f0b&level={}&width={}{}",
+                      ptr ? "mimiron" : "www", base64_to_url( talent_str ), level, width, mini ? "&mini=1" : "" );
+}
+
 void print_html_talents( report::sc_html_stream& os, const player_t& p )
 {
-  if ( p.collected_data.fight_length.mean() > 0 )
+  if ( !p.collected_data.fight_length.mean() || p.player_traits.empty() )
+    return;
+
+  static constexpr unsigned TREE_ROWS = 10;
+  using talentrank_t = std::pair<const trait_data_t*, unsigned>;
+
+  std::array<std::vector<talentrank_t>, TREE_ROWS> class_traits;
+  std::array<std::vector<talentrank_t>, TREE_ROWS> spec_traits;
+  size_t class_points = 0;
+  size_t spec_points = 0;
+
+  for ( auto t : p.player_traits )
   {
-    os << "<div class=\"player-section talents\">\n"
-       << "<h3 class=\"toggle\">Talents</h3>\n"
-       << "<div class=\"toggle-content hide\">\n"
-       << "<table class=\"sc\">\n"
-       << "<tr>\n"
-       << "<th>Level</th>\n"
-       << "<th></th>\n"
-       << "<th></th>\n"
-       << "<th></th>\n"
-       << "</tr>\n";
+    std::array<std::vector<talentrank_t>, TREE_ROWS>* tree;
+    auto trait = trait_data_t::find( std::get<1>( t ), maybe_ptr( p.dbc->ptr ) );
+    auto rank = std::get<2>( t );
 
-    for ( uint32_t row = 0; row < MAX_TALENT_ROWS; row++ )
+    switch ( std::get<0>( t ) )
     {
-      os.format( "<tr><th class=\"left\">{}</th>\n", talent_character_level( row ) );
-
-      for ( uint32_t col = 0; col < MAX_TALENT_COLS; col++ )
-      {
-        const talent_data_t* t = talent_data_t::find( p.type, row, col, p.specialization(), p.dbc->ptr );
-        std::string name = "none";
-        if ( t )
-        {
-          if ( t->spell() )
-            name = report_decorators::decorated_spell_data( *p.sim, t->spell() );
-          else if ( t->name_cstr() )
-            name = util::encode_html( t->name_cstr() );
-
-        // Seems unnecessary...
-        /*if ( t->specialization() != SPEC_NONE )
-          {
-            name += " (";
-            name += util::specialization_string( t->specialization() );
-            name += ")";
-          }*/
-        }
-
-        os.format( "<td class=\"nowrap{}\">{}</td>\n", p.talent_points->has_row_col( row, col ) ? " filler" : "", name );
-      }
-      os << "</tr>\n";
+      case talent_tree::CLASS:          tree = &class_traits; class_points += rank; break;
+      case talent_tree::SPECIALIZATION: tree = &spec_traits;  spec_points += rank;  break;
+      default: continue;
     }
 
-    os << "</table>\n"
-       << "</div>\n"
-       << "</div>\n";
+    tree->at( trait->row - 1 ).emplace_back( trait, rank );
   }
+
+  for ( auto &row : class_traits )
+    range::sort( row, []( talentrank_t a, talentrank_t b ) { return a.first->col < b.first->col; } );
+
+  for ( auto &row : spec_traits )
+    range::sort( row, []( talentrank_t a, talentrank_t b ) { return a.first->col < b.first->col; } );
+
+  os << "<div class=\"player-section talents\">\n"
+     << "<h3 class=\"toggle\">Talents</h3>\n"
+     << "<div class=\"toggle-content hide\">\n";
+
+  auto w_ = raidbots_talent_render_width( p.specialization(), 600 );
+  os.format( "<iframe src=\"{}\" width=\"{}\" height=\"650\"></iframe>\n",
+             raidbots_talent_render_src( p.talents_str, p.true_level, w_, false, p.dbc->ptr ), w_ );
+
+  os << "<h3 class=\"toggle\">Talent Tables</h3>\n"
+     << "<div class=\"toggle-content hide\">\n";
+
+  os.format( "<table class=\"sc\"><tr><th>Row</th><th>{} Talents [{}]</th></tr>\n",
+             util::player_type_string_long( p.type ),
+             class_points );
+
+  for ( uint32_t row = 0; row < TREE_ROWS; row++ )
+  {
+    os.format( "<tr><th class=\"left\">{}</th><td><ul class=\"float\">\n", row + 1 );
+
+    for ( auto entry : class_traits[ row ] )
+    {
+      bool partial = entry.second != entry.first->max_ranks;
+
+      os.format( "<li class=\"nowrap{}\">{} [{}]{}</li>\n",
+                 partial ? " filler" : "",
+                 report_decorators::decorated_spell_data( *p.sim, p.find_spell( entry.first->id_spell ) ),
+                 entry.second,
+                 partial ? "<b>*</b>" : "" );
+    }
+    os << "</ul></td></tr>\n";
+  }
+  os << "</table>\n";
+
+  os.format( "<table class=\"sc\"><tr><th>Row</th><th>{} Talents [{}]</th></tr>\n",
+             util::spec_string_no_class( p ), spec_points );
+
+  for ( uint32_t row = 0; row < TREE_ROWS; row++ )
+  {
+    os.format( "<tr><th class=\"left\">{}</th><td><ul class=\"float\">\n", row + 1 );
+
+    for ( auto entry : spec_traits[ row ] )
+    {
+      bool partial = entry.second != entry.first->max_ranks;
+
+      os.format( "<li class=\"nowrap{}\">{} [{}]{}</li>\n",
+                 partial ? " filler" : "",
+                 report_decorators::decorated_spell_data( *p.sim, p.find_spell( entry.first->id_spell ) ),
+                 entry.second,
+                 partial ? "<b>*</b>" : "" );
+    }
+    os << "</ul></td></tr>\n";
+  }
+  os << "</table>\n";
+
+  os << "</div>\n"
+     << "</div>\n"
+     << "</div>\n";
 }
 
 // print_html_player_scale_factor_table =====================================
@@ -2615,8 +2716,8 @@ std::string find_matching_decorator( const player_t& p, std::string_view n )
   if ( buff )
     return report_decorators::decorated_buff( *buff );
 
-  auto spell                = p.find_talent_spell( n );
-  if ( !spell->ok() ) spell = p.find_talent_spell( n_token );
+  auto spell                = static_cast<const spell_data_t*>( p.find_talent_spell( talent_tree::CLASS, n_token, p.specialization(), true ) );
+  if ( !spell->ok() ) spell = static_cast<const spell_data_t*>( p.find_talent_spell( talent_tree::SPECIALIZATION, n_token, p.specialization(), true ) );
   if ( !spell->ok() ) spell = p.find_specialization_spell( n );
   if ( !spell->ok() ) spell = p.find_specialization_spell( n_token );
   if ( !spell->ok() ) spell = p.find_class_spell( n );
@@ -2642,7 +2743,8 @@ void print_html_gain( report::sc_html_stream& os, const player_t& p, const gain_
                  "<td class=\"right\">{:.2f}</td>"
                  "<td class=\"right\">{:.2f}%</td>"
                  "<td class=\"right\">{:.2f}</td>",
-                 find_matching_decorator( p, g.name() ), util::inverse_tokenize( util::resource_type_string( i ) ),
+                 find_matching_decorator( p, g.name() ),
+                 util::inverse_tokenize( util::resource_type_string( i ) ),
                  g.count[ i ],
                  g.actual[ i ],
                  ( g.actual[ i ] ? g.actual[ i ] / total_gains[ i ] * 100.0 : 0.0 ),
@@ -3877,8 +3979,15 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
   }
 
   // Spec and gear
-  if ( !p.is_pet() )
+  if ( !p.is_pet() && !p.is_enemy() )
   {
+    os << "<div>\n";
+
+    auto w_ = raidbots_talent_render_width( p.specialization(), 125 );
+    os.format(
+      "<iframe src=\"{}\" width=\"{}\" height=\"125\" style=\"float: left; margin-right: 10px; margin-top: 5px;\"></iframe>\n",
+      raidbots_talent_render_src( p.talents_str, p.true_level, w_, true, p.dbc->ptr ), w_ );
+
     os << "<table class=\"sc spec\">\n";
 
     if ( !p.origin_str.empty() )
@@ -3888,37 +3997,8 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
                  p.origin_str, util::encode_html( p.origin_str ) );
     }
 
-    if ( !p.talents_str.empty() )
-    {
-      std::string url_string = p.talents_str;
-      if ( !util::str_in_str_ci( url_string, "http" ) )
-        url_string = util::create_blizzard_talent_url( p );
-
-      os.format( "<tr class=\"left\"><th><a href=\"{}\" class=\"ext\">Talents</a></th><td><ul class=\"float\">\n",
-                 util::encode_html( url_string ) );
-
-      for ( uint32_t row = 0; row < MAX_TALENT_ROWS; row++ )
-      {
-        const int col = p.talent_points->choice( row );
-        if ( col < 0 )
-        {
-          os.format( "<li class=\"nowrap\"><strong>{}</strong>: None</li>\n", talent_character_level( row ) );
-          continue;
-        }
-
-        std::string name = "none";
-        if ( const talent_data_t* t = talent_data_t::find( p.type, row, col, p.specialization(), p.dbc->ptr ) )
-        {
-          if ( t->spell() )
-            name = report_decorators::decorated_spell_data( *p.sim, t->spell() );
-          else if ( t->name_cstr() )
-            name = util::encode_html( t->name_cstr() );
-        }
-        os.format( "<li class=\"nowrap\"><strong>{}</strong>: {}</li>\n", talent_character_level( row ), name );
-      }
-
-      os << "</ul></td></tr>\n";
-    }
+    // Talent Hash
+    os.format( "<tr class=\"left\"><th>Talent</th><td>{}</td></tr>\n", p.talents_str );
 
     // Set Bonuses
     if ( p.sets )
@@ -3995,7 +4075,8 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
          << "</tr>\n";
     }
 
-    os << "</table>\n";
+    os << "</table>\n"
+       << "</div>\n";
   }
 }
 
@@ -4381,7 +4462,7 @@ void print_html_proc_table( report::sc_html_stream& os, const player_t& p )
       bool show_count    = !proc->count.simple;
       bool show_interval = !proc->interval_sum.simple;
 
-      std::string name  = util::encode_html( proc->name_str );
+      std::string name  = find_matching_decorator( p, proc->name_str );
       std::string span  = name;
       std::string token = util::tokenize_fn( highchart::build_id( p, "_" + util::remove_special_chars( name ) + "_proc" ) );
 
@@ -4452,9 +4533,10 @@ void print_html_uptime_table( report::sc_html_stream& os, const player_t& p )
     bool show_uptime   = !uptime->uptime_sum.simple;
     bool show_duration = !uptime->uptime_instance.simple;
 
-    std::string name  = util::encode_html( uptime->name_str );
+    std::string name  = find_matching_decorator( p, uptime->name_str );
     std::string span  = name;
-    std::string token = util::tokenize_fn( highchart::build_id( p, "_" + util::remove_special_chars( name ) + "_benefit" ) );
+    std::string token =
+        util::tokenize_fn( highchart::build_id( p, "_" + util::remove_special_chars( name ) + "_benefit" ) );
 
     os << "<tbody>\n";
     if ( p.sim->report_details && ( show_uptime || show_duration ) )

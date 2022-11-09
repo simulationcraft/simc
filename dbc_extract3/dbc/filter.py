@@ -1,3 +1,6 @@
+from collections import defaultdict
+import logging
+
 from dbc import db, util, constants
 
 # Simple cache for raw filter results
@@ -376,4 +379,278 @@ class TemporaryEnchantItemSet(DataSet):
 
     def ids(self):
         return list(set(v[0] for v in self.get()))
+
+class TraitSet(DataSet):
+    def _filter(self, **kwargs):
+        _spec_map = dict(
+            (entry.id_parent, entry.id_spec) for entry in self.db('SpecSetMember').values()
+        )
+
+        # List of SkillLineXTraitTree entries related to player skills
+        _trait_skills = [
+            entry for entry in self.db('SkillLineXTraitTree').values()
+                if util.class_id(player_skill=entry.id_skill_line) != -1
+        ]
+
+        # Map of TraitTree entries
+        _trait_trees = dict(
+            (data.id_trait_tree, (data.ref('id_trait_tree'), data.id_skill_line))
+                for data in _trait_skills
+        )
+
+        # Map TraitTreeNodeGroups to "tree indices" based on the trait tree currency used
+        _trait_node_group_map = dict()
+        for entry in self.db('TraitTreeXTraitCurrency').values():
+            if entry.id_trait_tree not in _trait_trees:
+                continue
+
+            currency = entry.ref('id_trait_currency')
+            if currency.id == 0:
+                continue
+
+            cost = currency.child_ref('TraitCost')
+            if cost.id == 0:
+                continue
+
+            node_groups = cost.child_ref('TraitNodeGroupXTraitCost')
+            if node_groups.id == 0:
+                continue
+
+            index = 0
+            if currency.flags == 0x4:
+                index = 1
+            elif currency.flags == 0x8:
+                index = 2
+            _trait_node_group_map[node_groups.id_trait_node_group] = index
+
+        # Map of trait_node_id, node_data
+        _trait_nodes = dict()
+
+        # Map of trait_node_group_id, group_data
+        _trait_node_groups = dict(
+            (entry.id, {'group': entry, 'nodes': {}, 'cond': set()})
+                for tree, id_skill in _trait_trees.values()
+                    for entry in tree.child_refs('TraitNodeGroup')
+        )
+        _trait_node_groups[0] = {'nodes': {}, 'cond': set()}
+
+        # Map TraitNode entries to TraitNodeGroups
+        for data in self.db('TraitNodeGroupXTraitNode').values():
+            group_id = data.id_trait_node_group
+            node_id = data.id_trait_node
+
+            if group_id not in _trait_node_groups:
+                continue
+
+            if node_id not in _trait_nodes:
+                _trait_nodes[node_id] = {
+                    'node': data.ref('id_trait_node'),
+                    'index': data.index,
+                    'cond': set(),
+                    'entries': set()
+                }
+
+            _trait_node_groups[group_id]['nodes'][node_id] = _trait_nodes[node_id]
+
+        # Add in nodes with no group
+        for data in self.db('TraitNode').values():
+            if data.id_trait_tree not in _trait_trees:
+                continue
+
+            node_id = data.id
+
+            if node_id not in _trait_nodes:
+                _trait_nodes[node_id] = {
+                    'node': data,
+                    'cond': set(),
+                    'entries': set()
+                }
+
+                # Use group 0 to hold the nodes with no group
+                _trait_node_groups[0]['nodes'][node_id] = _trait_nodes[node_id]
+
+        # Collect TraitCond entries for each used TraitNodeGroup
+        for data in self.db('TraitNodeGroupXTraitCond').values():
+            group_id = data.id_trait_node_group
+            if group_id not in _trait_node_groups:
+                continue
+
+            _trait_node_groups[group_id]['cond'].add(data.ref('id_trait_cond'))
+
+        # Collect TraitCond entries for each used TraitNode
+        for data in self.db('TraitNodeXTraitCond').values():
+            node_id = data.id_trait_node
+
+            if node_id not in _trait_nodes:
+                continue
+
+            _trait_nodes[node_id]['cond'].add(data.ref('id_trait_cond'))
+
+        # Collect TraitNodeEntry entries for each used TraitNode
+        for data in self.db('TraitNodeXTraitNodeEntry').values():
+            node_id = data.id_trait_node
+
+            if node_id not in _trait_nodes:
+                continue
+
+            # TraitNodeXTraitNodeEntry.id is needed in order to resolve any selection index clashes
+            entry = (data.ref('id_trait_node_entry'), data.id)
+            _trait_nodes[node_id]['entries'].add(entry)
+
+        # A map of trait_node_entry_id, trait_data
+        _traits = defaultdict(lambda: {
+            'spell': None,
+            'specs': set(),
+            'starter': set(),
+            'class_': 0,
+            'node': None,
+            'definition': None,
+            'entry': None,
+            'groups': set(),
+            'tree': 0,
+            'row': -1,
+            'col': -1,
+            'selection_index': -1,
+            'req_points': 0
+        })
+
+        for group in _trait_node_groups.values():
+            class_id = 0
+            tree_index = 1 # If a node has no groups, assume it is in the class tree.
+            if 'group' in group:
+                class_id = util.class_id(player_skill=_trait_trees[group['group'].id_parent][1])
+                tree_index = _trait_node_group_map.get(group['group'].id, 0)
+
+            group_specs = set(_spec_map.get(cond.id_spec_set, 0)
+                for cond in group['cond'] if cond.type == 1
+            )
+
+            group_starter = set(_spec_map.get(cond.id_spec_set, 0)
+                for cond in group['cond'] if cond.type == 2
+            )
+
+            for node in group['nodes'].values():
+                node_class_id = util.class_id(player_skill=_trait_trees[node['node'].id_parent][1])
+
+                node_specs = set(_spec_map.get(cond.id_spec_set, 0)
+                    for cond in node['cond'] if cond.type == 1
+                )
+
+                node_starter = set(_spec_map.get(cond.id_spec_set, 0)
+                    for cond in node['cond'] if cond.type == 2
+                )
+
+                for entry, db2_id in node['entries']:
+                    key = entry.id
+                    definition = entry.ref('id_trait_definition')
+
+                    if 'group' in group:
+                        _traits[key]['groups'].add(group['group'])
+                    _traits[key]['node'] = node['node']
+                    _traits[key]['entry'] = entry
+                    _traits[key]['definition'] = definition
+                    _traits[key]['spell'] = definition.ref('id_spell')
+                    _traits[key]['class_'] = class_id if class_id else node_class_id
+                    _traits[key]['specs'] |= group_specs | node_specs
+                    _traits[key]['starter'] |= group_starter | node_starter
+
+                    if tree_index != 0 and _traits[key]['tree'] == 0:
+                        _traits[key]['tree'] = tree_index
+
+                    _traits[key]['req_points'] = max([_traits[key]['req_points']] + [cond.req_points for cond in (node['cond'] | group['cond'])])
+
+                    if node['node'].type == 2:
+                        sel_idx = entry.child_ref('TraitNodeXTraitNodeEntry').index
+
+                        # It's possible to have nodes with entries that have the same selection index.
+                        # In such cases, the game seems to assign the first choice to the entry that
+                        # comes earlier in TraitNodeXTraitNodeEntry.db2 itself. As entries are added in
+                        # this same order to _trait_nodes[node_id], we can adjust here by incrementing
+                        # the selection_index on successive entries with the same selection_index as an
+                        # already processed entry that is on the same node.
+
+                        # Iterate through all entries on the node that does not match the current entry
+                        for _e, _id in [(e, i) for e, i in node['entries'] if e.id != entry.id]:
+                            # Check for selection_index clash
+                            if _traits[_e.id]['selection_index'] == sel_idx:
+                                # Adjust the selection_index of the higher TraitNodeXTraitNodeEntry.id by 1
+                                if _id > db2_id:
+                                    _traits[_e.id]['selection_index'] += 1
+                                else:
+                                    sel_idx += 1
+
+                        _traits[key]['selection_index'] = sel_idx
+
+        _coords = {}
+        for entry in _traits.values():
+            if entry['tree'] == 0:
+                continue
+
+            for spec in entry['specs'] | set((0,)):
+                if entry['tree'] == 2 and spec == 0:
+                    continue
+
+                if entry['tree'] == 1 and spec != 0:
+                    continue
+
+                key = (entry['tree'], entry['class_'], spec)
+
+                if key not in _coords:
+                    _coords[key] = {
+                        0: set()
+                    }
+
+                pos_x = round(entry['node'].pos_x, -2)
+                pos_y = round(entry['node'].pos_y, -2)
+
+                # Some trees have unused nodes with negative coordinates.
+                if pos_y < 0:
+                    continue
+
+                _coords[key][0].add(pos_y)
+                if pos_y not in _coords[key]:
+                    _coords[key][pos_y] = set()
+
+                _coords[key][pos_y].add(pos_x)
+
+        for v in _coords.values():
+            for key, data in v.items():
+                v[key] = sorted(list(data))
+
+        """
+        for tree in sorted(_coords.keys()):
+            print(tree)
+            treedata = _coords[tree]
+            for row in sorted(treedata.keys()):
+                rowdata = treedata[row]
+                print(f'  {row}: {rowdata}')
+        """
+
+        for entry in _traits.values():
+            for spec in entry['specs'] | set((0,)):
+                if entry['tree'] == 2 and spec == 0:
+                    continue
+
+                if entry['tree'] == 1 and spec != 0:
+                    continue
+
+                key = (entry['tree'], entry['class_'], spec)
+
+                if key not in _coords:
+                    continue
+
+                pos_x = round(entry['node'].pos_x, -2)
+                pos_y = round(entry['node'].pos_y, -2)
+
+                # Some trees have unused nodes with negative coordinates.
+                if pos_y < 0:
+                    continue
+
+                entry['row'] = _coords[key][0].index(pos_y) + 1
+                entry['col'] = _coords[key][pos_y].index(pos_x) + 1
+
+        return _traits
+
+    def ids(self):
+        return [ v['spell'].id for v in self.get().values() ]
 

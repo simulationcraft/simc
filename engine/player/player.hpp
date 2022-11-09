@@ -19,6 +19,7 @@
 #include "util/cache.hpp"
 #include "dbc/specialization.hpp"
 #include "assessor.hpp"
+#include "talent.hpp"
 #include <map>
 #include <set>
 #include <unordered_map>
@@ -125,7 +126,7 @@ struct player_t : public actor_t
   int          party;
   int          ready_type;
   specialization_e  _spec;
-  bool         bugs; // If true, include known InGame mechanics which are probably the cause of a bug and not inteded
+  bool         bugs; // If true, include known InGame mechanics which are probably the cause of a bug and not intended
   int          disable_hotfixes;
   bool         scale_player;
   double       death_pct; // Player will die if he has equal or less than this value as health-pct
@@ -142,6 +143,7 @@ struct player_t : public actor_t
   std::string talents_str, id_str, target_str;
   std::string region_str, server_str, origin_str;
   std::string race_str, professions_str, position_str;
+  std::string class_talents_str, spec_talents_str;
   enum timeofday_e { NIGHT_TIME, DAY_TIME, } timeofday; // Specify InGame time of day to determine Night Elf racial
   enum zandalari_loa_e {AKUNDA, BWONSAMDI, GONK, KIMBUL, KRAGWA, PAKU} zandalari_loa; //Specify which loa zandalari has chosen to determine racial
   enum vulpera_tricks_e { CORROSIVE, FLAMES, SHADOWS, HEALING, HOLY } vulpera_tricks; //Specify which trick to use for vulpera bag of tricks
@@ -180,6 +182,9 @@ struct player_t : public actor_t
   // Talent Parsing
   std::unique_ptr<player_talent_points_t> talent_points;
   std::string talent_overrides_str;
+
+  // Player selected (trait entry id, rank) tuples
+  std::vector<std::tuple<talent_tree, unsigned, unsigned>> player_traits;
 
   // Profs
   std::array<int, PROFESSION_MAX> profession;
@@ -263,6 +268,7 @@ struct player_t : public actor_t
   action_t* queueing;
   action_t* channeling;
   action_t* strict_sequence; // Strict sequence of actions currently being executed
+  event_t* demise_event;
   event_t* readying;
   event_t* off_gcd;
   event_t* cast_while_casting_poll_event; // Periodically check for something to do while casting
@@ -426,13 +432,14 @@ struct player_t : public actor_t
     buff_t* movement;
     buff_t* stampeding_roar;
     buff_t* shadowmeld;
+    buff_t* close_to_heart_leech_aura;
+    buff_t* generous_pour_avoidance_aura;
     buff_t* windwalking_movement_aura;
     buff_t* stoneform;
     buff_t* stunned;
     std::array<buff_t*, 4> ancestral_call;
     buff_t* fireblood;
     buff_t* embrace_of_paku;
-    buff_t* forced_bloodlust;
 
     buff_t* berserking;
     buff_t* bloodlust;
@@ -566,6 +573,13 @@ struct player_t : public actor_t
     buff_t* bounty_haste;
     buff_t* bounty_mastery;
     buff_t* bounty_vers;
+
+    // 10.0 Buffs
+    buff_t* chilled_clarity;  // potion of chilled clarity
+    buff_t* elemental_chaos_fire;  // phial of elemental chaos
+    buff_t* elemental_chaos_air;
+    buff_t* elemental_chaos_earth;
+    buff_t* elemental_chaos_frost;
   } buffs;
 
   struct debuffs_t
@@ -604,7 +618,6 @@ struct player_t : public actor_t
     std::vector<timespan_t> kindred_affinity;
     std::vector<timespan_t> boon_of_azeroth;
     std::vector<timespan_t> boon_of_azeroth_mythic;
-    std::vector<timespan_t> forced_bloodlust;
     int soleahs_secret_technique;
     std::string elegy_of_the_eternals;
   } external_buffs;
@@ -664,6 +677,7 @@ struct player_t : public actor_t
     const spell_data_t* magical_affinity;
     const spell_data_t* mountaineer;
     const spell_data_t* brush_it_off;
+    const spell_data_t* awakened;
   } racials;
 
   struct antumbra_t
@@ -740,9 +754,6 @@ private:
   std::unique_ptr<dbc_override_t> dbc_override_;
 
 public:
-
-
-
   player_t( sim_t* sim, player_e type, util::string_view name, race_e race_e );
   ~player_t() override;
 
@@ -751,11 +762,9 @@ public:
   static bool _is_enemy( player_e t ) { return t == ENEMY || t == ENEMY_ADD || t == ENEMY_ADD_BOSS || t == TANK_DUMMY; }
   static bool _is_sleeping( const player_t* t ) { return t -> current.sleeping; }
 
-
   // Overrides
   const char* name() const override
   { return name_str.c_str(); }
-
 
   // Normal methods
   void init_character_properties();
@@ -764,7 +773,7 @@ public:
   void stat_loss( stat_e stat, double amount, gain_t* g = nullptr, action_t* a = nullptr, bool temporary = false );
   void create_talents_numbers();
   void create_talents_armory();
-  void create_talents_wowhead();
+  void create_talents_blizzard();
   void clear_action_priority_lists() const;
   void copy_action_priority_list( util::string_view old_list, util::string_view new_list );
   void change_position( position_e );
@@ -832,7 +841,7 @@ public:
   azerite_essence_t find_azerite_essence( util::string_view name, bool tokenized = false ) const;
   azerite_essence_t find_azerite_essence( unsigned power_id ) const;
 
-  item_runeforge_t find_runeforge_legendary( util::string_view name, bool tokenized = false ) const;
+  item_runeforge_t find_runeforge_legendary( util::string_view name, bool tokenized = false, bool force_unity = false ) const;
 
   conduit_data_t find_conduit_spell( util::string_view name ) const;
   const spell_data_t* find_soulbind_spell( util::string_view name ) const;
@@ -844,6 +853,10 @@ public:
                                        specialization_e s = SPEC_NONE ) const;
   const spell_data_t* find_pet_spell( util::string_view name ) const;
   const spell_data_t* find_talent_spell( util::string_view name, specialization_e s = SPEC_NONE, bool name_tokenized = false, bool check_validity = true ) const;
+  player_talent_t find_talent_spell( talent_tree tree, util::string_view name, specialization_e s = SPEC_NONE, bool name_tokenized = false ) const;
+  player_talent_t find_talent_spell( talent_tree tree, unsigned spell_id, specialization_e s = SPEC_NONE  ) const;
+  player_talent_t find_talent_spell( unsigned talent_entry_id, specialization_e s = SPEC_NONE ) const;
+
   const spell_data_t* find_specialization_spell( util::string_view name, specialization_e s = SPEC_NONE ) const;
   const spell_data_t* find_specialization_spell( util::string_view name, util::string_view desc, specialization_e s = SPEC_NONE ) const;
   const spell_data_t* find_specialization_spell( unsigned spell_id, specialization_e s = SPEC_NONE ) const;
@@ -891,6 +904,8 @@ public:
   // Virtual methods
   virtual void invalidate_cache( cache_e c );
   virtual void init();
+  virtual bool validate_fight_style( fight_style_e ) const
+  { return true; }
   virtual void override_talent( util::string_view override_str );
   virtual void init_meta_gem();
   virtual void init_resources( bool force = false );
@@ -1132,7 +1147,7 @@ public:
   virtual std::unique_ptr<expr_t> create_resource_expression( util::string_view expression_str );
 
   virtual void create_options();
-  void recreate_talent_str( talent_format format = talent_format::NUMBERS );
+  void recreate_talent_str( talent_format format = talent_format::BLIZZARD );
   virtual std::string create_profile( save_e = SAVE_ALL );
 
   virtual void copy_from( player_t* source );

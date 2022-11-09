@@ -184,25 +184,6 @@ void writhing_segment_of_drestagath( special_effect_t& );
 
 namespace util
 {
-// feasts initialization helper
-void init_feast( special_effect_t& effect, std::initializer_list<std::pair<stat_e, int>> stat_map )
-{
-  effect.stat = effect.player->convert_hybrid_stat( STAT_STR_AGI_INT );
-  // TODO: Is this actually spec specific?
-  if ( effect.player->role == ROLE_TANK && !effect.player->sim->feast_as_dps )
-    effect.stat = STAT_STAMINA;
-
-  for ( auto&& stat : stat_map )
-  {
-    if ( stat.first == effect.stat )
-    {
-      effect.trigger_spell_id = stat.second;
-      break;
-    }
-  }
-  effect.stat_amount = effect.player->find_spell( effect.trigger_spell_id )->effectN( 1 ).average( effect.player );
-}
-
 std::string tokenized_name( const spell_data_t* spell )
 {
   return ::util::tokenize_fn( spell->name_cstr() );
@@ -235,7 +216,7 @@ void titanic_empowerment( special_effect_t& );
 
 void consumables::galley_banquet( special_effect_t& effect )
 {
-  util::init_feast(
+  init_feast(
       effect, {{STAT_STRENGTH, 259452}, {STAT_AGILITY, 259448}, {STAT_INTELLECT, 259449}, {STAT_STAMINA, 259453}} );
 }
 
@@ -243,7 +224,7 @@ void consumables::galley_banquet( special_effect_t& effect )
 
 void consumables::bountiful_captains_feast( special_effect_t& effect )
 {
-  util::init_feast(
+  init_feast(
       effect, {{STAT_STRENGTH, 259456}, {STAT_AGILITY, 259454}, {STAT_INTELLECT, 259455}, {STAT_STAMINA, 259457}} );
 }
 
@@ -251,7 +232,7 @@ void consumables::bountiful_captains_feast( special_effect_t& effect )
 
 void consumables::famine_evaluator_and_snack_table( special_effect_t& effect )
 {
-  util::init_feast(
+  init_feast(
       effect, {{STAT_STRENGTH, 297118}, {STAT_AGILITY, 297116}, {STAT_INTELLECT, 297117}, {STAT_STAMINA, 297119}} );
 }
 
@@ -259,7 +240,7 @@ void consumables::famine_evaluator_and_snack_table( special_effect_t& effect )
 
 void consumables::boralus_blood_sausage( special_effect_t& effect )
 {
-  util::init_feast( effect, {{STAT_STRENGTH, 290469}, {STAT_AGILITY, 290467}, {STAT_INTELLECT, 290468}} );
+  init_feast( effect, { { STAT_STRENGTH, 290469 }, { STAT_AGILITY, 290467 }, { STAT_INTELLECT, 290468 } } );
 }
 
 // Potion of Rising Death ===================================================
@@ -1924,8 +1905,7 @@ void items::darkmoon_deck_squalls( special_effect_t& effect )
     }
   };
 
-  new bfa_darkmoon_deck_cb_t<squall_damage_t>( effect,
-                                               {276124, 276125, 276126, 276127, 276128, 276129, 276130, 276131} );
+  new darkmoon_deck_cb_t<squall_damage_t>( effect, { 276124, 276125, 276126, 276127, 276128, 276129, 276130, 276131 } );
 }
 
 void items::darkmoon_deck_fathoms( special_effect_t& effect )
@@ -1939,8 +1919,7 @@ void items::darkmoon_deck_fathoms( special_effect_t& effect )
     }
   };
 
-  new bfa_darkmoon_deck_cb_t<fathoms_damage_t>( effect,
-                                                {276187, 276188, 276189, 276190, 276191, 276192, 276193, 276194} );
+  new darkmoon_deck_cb_t<fathoms_damage_t>( effect, { 276187, 276188, 276189, 276190, 276191, 276192, 276193, 276194 } );
 }
 
 // Endless Tincture of Fractional Power =====================================
@@ -3958,18 +3937,14 @@ void items::arcane_tempest( special_effect_t& effect )
     {
       set_refresh_behavior( buff_refresh_behavior::DISABLED );
       set_tick_on_application( true );
+      // Custom stacking logic, ticks are not going to increase stacks
+      set_freeze_stacks( true );
       set_tick_time_callback( []( const buff_t* b, unsigned /* current_tick */ ) {
         timespan_t amplitude = b->data().effectN( 1 ).period();
 
         // TODO: What's the speedup multiplier?
         return amplitude * ( 1.0 / ( 1.0 + ( b->current_stack - 1 ) * 0.5 ) );
       } );
-    }
-
-    // Custom stacking logic, ticks are not going to increase stacks
-    bool freeze_stacks() override
-    {
-      return true;
     }
   };
 
@@ -5557,6 +5532,58 @@ void items::hyperthread_wristwraps( special_effect_t& effect )
         if ( action_t* a = player->find_action( splits[ 1 ] ) )
         {
           if ( splits.size() == 2 || splits.size() == 3 && splits[ 2 ] == "count" )
+          {
+            return make_fn_expr( name_str, [ this, a ] { return tracked_count( a ); } );
+          }
+          else if ( splits.size() == 3 && splits[ 2 ] == "first_remains" )
+          {
+            return make_fn_expr( name_str, [ this, a ] { return tracked_first_remains( a ); } );
+          }
+        }
+      }
+
+      return proc_spell_t::create_expression( name_str );
+    }
+
+    // returns the number of occurrences of an action in the recently used spells of the tracker
+    unsigned tracked_count( action_t* a )
+    {
+      unsigned count = 0;
+      for ( auto tracked_action : tracker->last_used )
+      {
+        if ( tracked_action->id == a->id )
+        {
+          count++;
+        }
+      }
+      return count;
+    }
+
+    // returns the number of spells required to push the oldest occurrence of an action out of the tracker
+    unsigned tracked_first_remains( action_t* a )
+    {
+      for ( unsigned i = 0; i < tracker->last_used.size(); i++ )
+      {
+        if ( tracker->last_used[ i ]->id == a->id )
+        {
+          return i + 1;
+        }
+      }
+      return 0;
+    }
+
+    // This is somewhat of a misuse of action_t::create_expression, but for an item that
+    // is probably going away in a few months it is not worth significantly restructuring
+    // things to make spell_tracker_cb_t and hyperthread_reduction_t accessible elsewhere.
+    std::unique_ptr<expr_t> create_expression( std::string_view name_str ) override
+    {
+      auto splits = ::util::string_split<std::string_view>( name_str, "." );
+
+      if ( splits[ 0 ] == "hyperthread_wristwraps" )
+      {
+        if ( action_t* a = player->find_action( splits[ 1 ] ) )
+        {
+          if ( splits.size() == 2 || ( splits.size() == 3 && splits[ 2 ] == "count" ) )
           {
             return make_fn_expr( name_str, [ this, a ] { return tracked_count( a ); } );
           }

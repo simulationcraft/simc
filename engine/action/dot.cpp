@@ -93,9 +93,12 @@ void dot_t::adjust_duration( timespan_t extra_seconds, timespan_t max_total_time
   if ( state_flags == (uint32_t)-1 )
     state_flags = current_action->snapshot_flags;
 
-  current_action->snapshot_internal(
-      state, state_flags,
-      current_action->type == ACTION_HEAL ? result_amount_type::HEAL_OVER_TIME : result_amount_type::DMG_OVER_TIME );
+  if ( state_flags != 0 )
+  {
+    current_action->snapshot_internal(
+        state, state_flags,
+        current_action->type == ACTION_HEAL ? result_amount_type::HEAL_OVER_TIME : result_amount_type::DMG_OVER_TIME );
+  }
 
   assert( end_event && "Dot is ticking but has no end event." );
   timespan_t remains = end_event->remains();
@@ -233,25 +236,33 @@ void dot_t::increment(int stacks = 1)
   }
 }
 
-// For copying a DoT to a different target.
-void dot_t::copy( player_t* destination, dot_copy_e copy_type ) const
+// For copying a DoT to a different target or cloning one DoT state onto another
+// To copy one DoT state to another DoT on the same target, a copy_action must be provided
+void dot_t::copy( player_t* destination, dot_copy_e copy_type, action_t* copy_action ) const
 {
-  if ( target == destination )
+  if ( target == destination && ( !copy_action || copy_action == current_action ) )
     return;
 
-  dot_t* other_dot = current_action->get_dot( destination );
+  if ( !copy_action )
+  {
+    copy_action = current_action;
+  }
+
+  dot_t* other_dot = copy_action->get_dot( destination );
   // Copied dot, with the DOT_COPY_START method cancels the ongoing dot on the
   // target, and then starts a fresh dot on it with the source dot's (copied)
   // state
   if ( copy_type == DOT_COPY_START && other_dot->is_ticking() )
+  {
     other_dot->cancel();
+  }
 
   // Shared initialize for the target dot state, independent of the copying
   // method
   action_state_t* target_state = nullptr;
   if ( !other_dot->state )
   {
-    target_state     = current_action->get_state( state );
+    target_state     = copy_action->get_state( state );
     other_dot->state = target_state;
   }
   else
@@ -260,9 +271,9 @@ void dot_t::copy( player_t* destination, dot_copy_e copy_type ) const
     target_state->copy_state( state );
   }
   target_state->target = other_dot->target;
-  target_state->action = current_action;
+  target_state->action = copy_action;
 
-  other_dot->current_action = current_action;
+  other_dot->current_action = copy_action;
 
   // Default behavior simply copies the current stat of the source dot
   // (including duration) to the target and starts it
@@ -287,7 +298,7 @@ void dot_t::copy( player_t* destination, dot_copy_e copy_type ) const
       // The new duration is computed through our normal refresh duration
       // method. End result (by default) will be source_remains + min(
       // target_remains, 0.3 * source_remains )
-      new_duration = current_action->calculate_dot_refresh_duration(
+      new_duration = copy_action->calculate_dot_refresh_duration(
           other_dot, remains() );
 
       assert( other_dot->end_event && other_dot->tick_event );
@@ -302,15 +313,12 @@ void dot_t::copy( player_t* destination, dot_copy_e copy_type ) const
       new_duration = remains();
 
       // Add an active dot on the source, since we are starting a new one
-      source->add_active_dot( current_action->internal_id );
+      source->add_active_dot( copy_action->internal_id );
     }
 
-    if ( sim.debug )
-      sim.out_debug.printf(
-          "%s cloning %s from %s to %s: source_remains=%.3f "
-          "target_remains=%.3f target_duration=%.3f",
-          current_action->player->name(), current_action->name(), target->name(), destination->name(),
-          remains().total_seconds(), old_remains.total_seconds(), new_duration.total_seconds() );
+    sim.print_log( "{} cloning {} from {} to {} on {}: source_remains={:.3f} target_remains={:.3f} target_duration={:.3f}",
+                   *current_action->player, *current_action, *target, *copy_action, *destination,
+                   remains().total_seconds(), old_remains.total_seconds(), new_duration.total_seconds() );
 
     other_dot->current_duration = new_duration;
     other_dot->current_tick     = current_tick;
@@ -1091,7 +1099,13 @@ void dot_t::dot_end_event_t::execute()
     dot->tick();
   }
 
-  dot->last_tick();
+  dot->current_action->consume_cost_per_tick( *dot );
+
+  // If consume_cost_per_tick expires the DoT it also calls last_tick so we don't need to do it again
+  if ( dot->state )
+  {
+    dot->last_tick();
+  }
 }
 
 void sc_format_to( const dot_t& dot, fmt::format_context::iterator out )

@@ -5,6 +5,7 @@
 
 #include "dbc.hpp"
 #include "dbc/item_runeforge.hpp"
+#include "dbc/trait_data.hpp"
 #include "specialization_spell.hpp"
 #include "active_spells.hpp"
 #include "covenant_data.hpp"
@@ -17,6 +18,8 @@
 #include "player/covenant.hpp"
 #include "player/runeforge_data.hpp"
 #include "util/util.hpp"
+
+#include <unordered_set>
 
 namespace { // anonymous namespace ==========================================
 
@@ -100,12 +103,14 @@ constexpr sdata_field_t::getter_t::getter_t( nontype_t<Ptr> )
   : type( detail::getter<Ptr>::type ), get( detail::getter<Ptr>::get )
 {}
 
-static constexpr std::array<sdata_field_t, 5> _talent_data_fields { {
-  { "name",  nontype< &talent_data_t::_name > },
-  { "id",    nontype< &talent_data_t::_id > },
-  { "flags", nontype< &talent_data_t::_flags > },
-  { "col",   nontype< &talent_data_t::_col > },
-  { "row",   nontype< &talent_data_t::_row > },
+static constexpr std::array<sdata_field_t, 7> _talent_data_fields { {
+  { "name",  nontype< &trait_data_t::name > },
+  { "id",    nontype< &trait_data_t::id_trait_node_entry > },
+  { "node",  nontype< &trait_data_t::id_node > },
+  { "tree",  nontype< &trait_data_t::tree_index > },
+  { "col",   nontype< &trait_data_t::col > },
+  { "row",   nontype< &trait_data_t::row > },
+  { "max_rank", nontype< &trait_data_t::max_ranks > },
 } };
 
 static constexpr std::array<sdata_field_t, 27> _effect_data_fields { {
@@ -220,7 +225,7 @@ struct class_info_t {
   unsigned mask;
   unsigned spell_family;
 };
-static constexpr std::array<class_info_t, 12> _class_info { {
+static constexpr std::array<class_info_t, 13> _class_info { {
   { "Warrior",       1U <<  0,   4 },
   { "Paladin",       1U <<  1,  10 },
   { "Hunter",        1U <<  2,   9 },
@@ -233,6 +238,7 @@ static constexpr std::array<class_info_t, 12> _class_info { {
   { "Monk",          1U <<  9,  53 },
   { "Druid",         1U << 10,   7 },
   { "DemonHunter",   1U << 11, 107 },
+  { "Evoker",        1U << 12, 224 }
 } };
 
 static constexpr std::array<util::string_view, 33> _race_strings { {
@@ -252,7 +258,7 @@ static constexpr std::array<util::string_view, 33> _race_strings { {
   "vulpera",
   "maghar_orc",
   "mechagnome",
-  "",
+  "dracthyr",
   "",
   "",
   "",
@@ -418,8 +424,8 @@ struct spell_list_expr_t : public spell_data_expr_t
       }
       case DATA_TALENT:
       {
-        for ( const talent_data_t& talent : talent_data_t::data( dbc.ptr ) )
-          result_spell_list.push_back( talent.id() );
+        for ( const trait_data_t& talent : trait_data_t::data( dbc.ptr ) )
+          result_spell_list.push_back( talent.id_trait_node_entry );
         break;
       }
       case DATA_EFFECT:
@@ -430,12 +436,17 @@ struct spell_list_expr_t : public spell_data_expr_t
       }
       case DATA_TALENT_SPELL:
       {
-        for ( const talent_data_t& talent : talent_data_t::data( dbc.ptr ) )
+        std::unordered_set<unsigned> talent_spells;
+        for ( const auto& entry : trait_data_t::data( dbc.ptr ) )
         {
-          if ( ! talent.spell_id() )
-            continue;
-          result_spell_list.push_back( talent.spell_id() );
+          if ( entry.id_spell != 0 )
+          {
+            talent_spells.emplace( entry.id_spell );
+          }
         }
+
+        result_spell_list.insert( result_spell_list.begin(),
+            talent_spells.begin(), talent_spells.end() );
         break;
       }
       case DATA_CLASS_SPELL:
@@ -578,9 +589,9 @@ struct spell_list_expr_t : public spell_data_expr_t
 
     std::vector<uint32_t> res;
     range::copy_if( result_spell_list, std::back_inserter( res ),
-        [&]( uint32_t result_spell ) {
-          const talent_data_t* talent = dbc.talent( result_spell );
-          return talent && filter( *talent );
+        [&]( uint32_t trait_node_entry_id ) {
+          const trait_data_t* talent = trait_data_t::find( trait_node_entry_id, dbc.ptr );
+          return talent->id_trait_node_entry && filter( *talent );
         } );
     return res;
   }
@@ -588,7 +599,7 @@ struct spell_list_expr_t : public spell_data_expr_t
   /* [[noreturn]] */ void throw_invalid_op_arg( util::string_view op, const spell_data_expr_t& other ) const {
     throw std::invalid_argument(
             fmt::format( "Unsupported right side operand '{}' ({}) for operator {}",
-              op, other.name_str, other.result_tok ) );
+              op, other.name_str, static_cast<int>(other.result_tok) ) );
   }
 };
 
@@ -729,7 +740,7 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
       {
         const void* p_data;
         if ( data_type == DATA_TALENT )
-          p_data = dbc.talent( result_spell );
+          p_data = trait_data_t::find( result_spell, dbc.ptr );
         else if ( data_type == DATA_EFFECT )
           p_data = dbc.effect( result_spell );
         else
@@ -809,7 +820,7 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
   /* [[noreturn]] */ void throw_invalid_op_arg( util::string_view op, const spell_data_expr_t& other ) const {
     throw std::invalid_argument(
             fmt::format("Unsupported expression operator {} for left='{}' ({}), right='{}' ({})",
-              op, name_str, result_tok, other.name_str, other.result_tok));
+              op, name_str, static_cast<int>(result_tok), other.name_str, static_cast<int>(other.result_tok)));
   }
 };
 
@@ -854,8 +865,10 @@ struct spell_class_expr_t : public spell_list_expr_t
 
     if ( data_type == DATA_TALENT )
     {
-      return filter_talents( [&]( const talent_data_t& talent ) {
-          return talent.mask_class() & class_mask;
+      return filter_talents( [&]( const trait_data_t& talent ) {
+          auto class_ = util::translate_class_id( talent.id_class );
+          auto talent_class_mask = util::class_id_mask( class_ );
+          return talent_class_mask & class_mask;
         } );
     }
 
@@ -876,8 +889,10 @@ struct spell_class_expr_t : public spell_list_expr_t
 
     if ( data_type == DATA_TALENT )
     {
-      return filter_talents( [&]( const talent_data_t& talent ) {
-          return ( talent.mask_class() & class_mask ) == 0;
+      return filter_talents( [&]( const trait_data_t& talent ) {
+          auto class_ = util::translate_class_id( talent.id_class );
+          auto talent_class_mask = util::class_id_mask( class_ );
+          return ( talent_class_mask & class_mask ) == 0;
         } );
     }
 

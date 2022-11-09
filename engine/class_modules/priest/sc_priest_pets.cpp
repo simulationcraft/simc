@@ -61,6 +61,14 @@ void merge_pet_stats( player_t& owner, pet_t& pet, action_t& action )
   }
 }
 
+namespace actions
+{
+struct shadow_spike_t;
+struct shadow_spike_volley_t;
+struct shadow_sear_t;
+struct shadow_nova_t;
+}  // namespace actions
+
 /**
  * Pet base class
  *
@@ -98,15 +106,62 @@ struct priest_pet_t : public pet_t
   {
     double m = pet_t::composite_player_multiplier( school );
 
-    // Orc racial
-    m *= 1.0 + o().racials.command->effectN( 1 ).percent();
-
     return m;
   }
 
   resource_e primary_resource() const override
   {
     return RESOURCE_ENERGY;
+  }
+
+  void create_buffs() override
+  {
+    pet_t::create_buffs();
+
+    buffs.power_infusion = make_buff( this, "power_infusion", find_spell( 10060 ) )
+                               ->set_default_value_from_effect( 1 )
+                               ->set_cooldown( 0_ms )
+                               ->add_invalidate( CACHE_HASTE );
+  }
+
+  double composite_melee_haste() const override
+  {
+    double h = pet_t::composite_melee_haste();
+
+    if ( buffs.power_infusion )
+      h *= 1.0 / ( 1.0 + buffs.power_infusion->check_value() );
+
+    return h;
+  }
+
+  double composite_spell_haste() const override
+  {
+    double h = pet_t::composite_spell_haste();
+
+    if ( buffs.power_infusion )
+      h *= 1.0 / ( 1.0 + buffs.power_infusion->check_value() );
+
+    return h;
+  }
+
+  double composite_melee_speed() const override
+  {
+    double h = pet_t::composite_melee_speed();
+
+    if ( buffs.power_infusion )
+      h *= 1.0 / ( 1.0 + buffs.power_infusion->check_value() );
+
+    return h;
+  }
+
+  double composite_spell_speed() const override
+  {
+    double h = pet_t::composite_spell_speed();
+
+    if ( buffs.power_infusion )
+      h *= 1.0 / ( 1.0 + buffs.power_infusion->check_value() );
+
+    return h;
   }
 
   priest_t& o()
@@ -167,14 +222,37 @@ struct priest_pet_melee_t : public melee_attack_t
   }
 };
 
-struct priest_pet_spell_t : public spell_t
+struct priest_pet_spell_t : public spell_t, public parse_buff_effects_t<priest_td_t>
 {
   bool affected_by_shadow_weaving;
 
   priest_pet_spell_t( util::string_view token, priest_pet_t& p, const spell_data_t* s )
-    : spell_t( token, &p, s ), affected_by_shadow_weaving( false )
+    : spell_t( token, &p, s ), parse_buff_effects_t( this ), affected_by_shadow_weaving( false )
   {
     may_crit = true;
+
+    if ( data().ok() )
+    {
+      apply_buff_effects();
+    }
+  }
+
+  // Syntax: parse_buff_effects[<S[,S...]>]( buff[, ignore_mask|use_stacks[, use_default]][, spell1[,spell2...] )
+  //  buff = buff to be checked for to see if effect applies
+  //  ignore_mask = optional bitmask to skip effect# n corresponding to the n'th bit
+  //  use_stacks = optional, default true, whether to multiply value by stacks
+  //  use_default = optional, default false, whether to use buff's default value over effect's value
+  //  S = optional list of template parameter(s) to indicate spell(s) with redirect effects
+  //  spell = optional list of spell(s) with redirect effects that modify the effects on the buff
+  void apply_buff_effects()
+  {
+    // using S = const spell_data_t*;
+
+    parse_buff_effects( p().o().buffs.voidform );
+    parse_buff_effects( p().o().buffs.shadowform );
+    parse_buff_effects( p().o().buffs.twist_of_fate, p().o().talents.twist_of_fate );
+    parse_buff_effects( p().o().buffs.devoured_pride );
+    parse_buff_effects( p().o().buffs.dark_ascension, true );  // Buffs corresponding non-periodic spells
   }
 
   priest_pet_t& p()
@@ -184,6 +262,49 @@ struct priest_pet_spell_t : public spell_t
   const priest_pet_t& p() const
   {
     return static_cast<priest_pet_t&>( *player );
+  }
+
+  double cost() const override
+  {
+    double c = spell_t::cost() * std::max( 0.0, get_buff_effects_value( cost_buffeffects, false, false ) );
+    return c;
+  }
+
+  double composite_ta_multiplier( const action_state_t* s ) const override
+  {
+    double ta = spell_t::composite_ta_multiplier( s ) * get_buff_effects_value( ta_multiplier_buffeffects );
+    return ta;
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double da = spell_t::composite_da_multiplier( s ) * get_buff_effects_value( da_multiplier_buffeffects );
+    return da;
+  }
+
+  double composite_crit_chance() const override
+  {
+    double cc = spell_t::composite_crit_chance() + get_buff_effects_value( crit_chance_buffeffects, true );
+    return cc;
+  }
+
+  timespan_t execute_time() const override
+  {
+    timespan_t et = spell_t::execute_time() * get_buff_effects_value( execute_time_buffeffects );
+    return et;
+  }
+
+  timespan_t composite_dot_duration( const action_state_t* s ) const override
+  {
+    timespan_t dd = spell_t::composite_dot_duration( s ) * get_buff_effects_value( dot_duration_buffeffects );
+    return dd;
+  }
+
+  double recharge_multiplier( const cooldown_t& cd ) const override
+  {
+    double rm =
+        action_t::recharge_multiplier( cd ) * get_buff_effects_value( recharge_multiplier_buffeffects, false, false );
+    return rm;
   }
 
   double composite_target_da_multiplier( player_t* t ) const override
@@ -200,7 +321,7 @@ struct priest_pet_spell_t : public spell_t
 
   double composite_target_ta_multiplier( player_t* t ) const override
   {
-    double ttm = action_t::composite_target_ta_multiplier( t );
+    double ttm = spell_t::composite_target_ta_multiplier( t );
 
     if ( affected_by_shadow_weaving )
     {
@@ -215,15 +336,17 @@ namespace fiend
 {
 namespace actions
 {
-struct shadowflame_prism_t;
-}
+struct inescapable_torment_t;
+struct shadowflame_prism_legendary_t;
+}  // namespace actions
 
 /**
  * Abstract base class for Shadowfiend and Mindbender
  */
 struct base_fiend_pet_t : public priest_pet_t
 {
-  propagate_const<actions::shadowflame_prism_t*> shadowflame_prism;
+  propagate_const<actions::inescapable_torment_t*> inescapable_torment;
+  propagate_const<actions::shadowflame_prism_legendary_t*> shadowflame_prism_legendary;
 
   struct gains_t
   {
@@ -240,7 +363,8 @@ struct base_fiend_pet_t : public priest_pet_t
 
   base_fiend_pet_t( sim_t* sim, priest_t& owner, util::string_view name, enum fiend_type type )
     : priest_pet_t( sim, owner, name ),
-      shadowflame_prism( nullptr ),
+      inescapable_torment( nullptr ),
+      shadowflame_prism_legendary( nullptr ),
       gains(),
       fiend_type( type ),
       direct_power_mod( 0.0 )
@@ -262,23 +386,16 @@ struct base_fiend_pet_t : public priest_pet_t
   {
     priest_pet_t::init_gains();
 
-    if ( o().specialization() == PRIEST_SHADOW )
+    switch ( fiend_type )
     {
-      gains.fiend = o().gains.insanity_pet;
-    }
-    else
-    {
-      switch ( fiend_type )
+      case fiend_type::Mindbender:
       {
-        case fiend_type::Mindbender:
-        {
-          gains.fiend = o().gains.mindbender;
-        }
-        break;
-        default:
-          gains.fiend = get_gain( "basefiend" );
-          break;
+        gains.fiend = o().gains.mindbender;
       }
+      break;
+      default:
+        gains.fiend = o().gains.shadowfiend;
+        break;
     }
   }
 
@@ -288,6 +405,17 @@ struct base_fiend_pet_t : public priest_pet_t
 
     resources.initial[ RESOURCE_MANA ] = owner->resources.max[ RESOURCE_MANA ];
     resources.current = resources.max = resources.initial;
+  }
+
+  void arise() override
+  {
+    priest_pet_t::arise();
+  }
+
+  void demise() override
+  {
+    priest_pet_t::demise();
+    o().buffs.devoured_pride->cancel();
   }
 
   action_t* create_action( util::string_view name, util::string_view options_str ) override;
@@ -316,7 +444,14 @@ struct shadowfiend_pet_t final : public base_fiend_pet_t
   }
   double insanity_gain() const override
   {
-    return power_leech_insanity;
+    if ( o().talents.shadowfiend.enabled() )
+    {
+      return power_leech_insanity;
+    }
+    else
+    {
+      return 0;
+    }
   }
 };
 
@@ -347,6 +482,23 @@ struct mindbender_pet_t final : public base_fiend_pet_t
   double insanity_gain() const override
   {
     return power_leech_insanity;
+  }
+
+  void demise() override
+  {
+    base_fiend_pet_t::demise();
+
+    if ( o().talents.shadow.inescapable_torment.enabled() )
+    {
+      if ( o().cooldowns.mind_blast->is_ready() )
+      {
+        o().procs.inescapable_torment_missed_mb->occur();
+      }
+      if ( o().cooldowns.shadow_word_death->is_ready() )
+      {
+        o().procs.inescapable_torment_missed_swd->occur();
+      }
+    }
   }
 };
 
@@ -398,11 +550,6 @@ struct fiend_melee_t : public priest_pet_melee_t
     // Mindbender inherits haste from the player
     timespan_t hasted_time = base_execute_time * player->cache.spell_speed();
 
-    if ( p().o().conduits.rabid_shadows->ok() )
-    {
-      hasted_time /= 1.0 + p().o().conduits.rabid_shadows.percent();
-    }
-
     return hasted_time;
   }
 
@@ -412,26 +559,32 @@ struct fiend_melee_t : public priest_pet_melee_t
 
     if ( result_is_hit( s->result ) )
     {
+      // Insanity generation hack for Shadow Weaving
       if ( p().o().specialization() == PRIEST_SHADOW )
       {
-        double amount = p().insanity_gain();
-        if ( p().o().buffs.surrender_to_madness->check() )
-        {
-          p().o().resource_gain( RESOURCE_INSANITY,
-                                 amount * p().o().talents.surrender_to_madness->effectN( 2 ).percent(),
-                                 p().o().gains.insanity_surrender_to_madness );
-        }
-        p().o().resource_gain( RESOURCE_INSANITY, amount, p().gains.fiend, nullptr );
-
         p().o().trigger_shadow_weaving( s );
       }
-      else
+
+      if ( p().o().talents.shadow.puppet_master.enabled() )
       {
-        double mana_reg_pct = p().mana_return_percent();
-        if ( mana_reg_pct > 0.0 )
+        p().o().buffs.coalescing_shadows->trigger();
+      }
+
+      if ( p().o().talents.shadowfiend.enabled() || p().o().talents.shadow.mindbender.enabled() )
+      {
+        if ( p().o().specialization() == PRIEST_SHADOW )
         {
-          p().o().resource_gain( RESOURCE_MANA, p().o().resources.max[ RESOURCE_MANA ] * p().mana_return_percent(),
-                                 p().gains.fiend );
+          double amount = p().insanity_gain();
+          p().o().resource_gain( RESOURCE_INSANITY, amount, p().gains.fiend, nullptr );
+        }
+        else
+        {
+          double mana_reg_pct = p().mana_return_percent();
+          if ( mana_reg_pct > 0.0 )
+          {
+            p().o().resource_gain( RESOURCE_MANA, p().o().resources.max[ RESOURCE_MANA ] * p().mana_return_percent(),
+                                   p().gains.fiend );
+          }
         }
       }
     }
@@ -439,7 +592,7 @@ struct fiend_melee_t : public priest_pet_melee_t
 };
 
 // ==========================================================================
-// Shadowflame Rift
+// Shadowflame Rift (Shadowlands Legendary)
 // ==========================================================================
 struct shadowflame_rift_t final : public priest_pet_spell_t
 {
@@ -465,20 +618,83 @@ struct shadowflame_rift_t final : public priest_pet_spell_t
 };
 
 // ==========================================================================
-// Shadowflame Prism
+// Inescapable Torment Damage
+// talent=373427
+// ?     =373442
 // ==========================================================================
-struct shadowflame_prism_t final : public priest_pet_spell_t
+struct inescapable_torment_damage_t final : public priest_pet_spell_t
+{
+  inescapable_torment_damage_t( base_fiend_pet_t& p )
+    : priest_pet_spell_t( "inescapable_torment_damage", p, p.o().find_spell( 373442 ) )
+  {
+    background                 = true;
+    affected_by_shadow_weaving = true;
+
+    // This is hard coded in the spell
+    // spcoeff * $?a137032[${0.326139}][${0.442}]
+    if ( p.fiend_type == base_fiend_pet_t::fiend_type::Mindbender )
+    {
+      spell_power_mod.direct *= 0.442;
+    }
+
+    // Negative modifier used for point scaling
+    // Effect#4 [op=set, values=(-50, 0)]
+    spell_power_mod.direct *= ( 1 + p.o().talents.shadow.inescapable_torment->effectN( 4 ).percent() );
+  }
+};
+
+// ==========================================================================
+// Shadowflame Prism (Shadowlands Legendary)
+// ==========================================================================
+struct shadowflame_prism_legendary_t final : public priest_pet_spell_t
 {
   timespan_t duration;
 
-  shadowflame_prism_t( base_fiend_pet_t& p )
-    : priest_pet_spell_t( "shadowflame_prism", p, p.o().find_spell( 336143 ) ),
+  shadowflame_prism_legendary_t( base_fiend_pet_t& p )
+    : priest_pet_spell_t( "shadowflame_prism_legendary", p, p.o().find_spell( 336143 ) ),
       duration( timespan_t::from_seconds( data().effectN( 3 ).base_value() ) )
   {
     background = true;
 
     impact_action = new shadowflame_rift_t( p );
     add_child( impact_action );
+  }
+
+  void execute() override
+  {
+    priest_pet_spell_t::execute();
+
+    auto& current_pet = p();
+
+    if ( !current_pet.is_sleeping() )
+    {
+      auto remaining_duration = current_pet.expiration->remains();
+      auto new_duration       = remaining_duration + duration;
+      sim->print_debug( "Increasing {} duration by {}, new duration is {} up from {}.", current_pet.full_name_str,
+                        duration, new_duration, remaining_duration );
+      current_pet.expiration->reschedule( new_duration );
+    }
+  }
+};
+
+// ==========================================================================
+// Inescapable Torment
+// ==========================================================================
+struct inescapable_torment_t final : public priest_pet_spell_t
+{
+  timespan_t duration;
+
+  inescapable_torment_t( base_fiend_pet_t& p )
+    : priest_pet_spell_t( "inescapable_torment", p, p.o().talents.shadow.inescapable_torment ),
+      duration( timespan_t::from_seconds( data().effectN( 3 ).base_value() ) )
+  {
+    background = true;
+
+    impact_action = new inescapable_torment_damage_t( p );
+    add_child( impact_action );
+
+    // Base spell also has damage values
+    base_dd_min = base_dd_max = spell_power_mod.direct = 0.0;
   }
 
   void execute() override
@@ -521,7 +737,8 @@ void base_fiend_pet_t::init_background_actions()
 {
   priest_pet_t::init_background_actions();
 
-  shadowflame_prism = new fiend::actions::shadowflame_prism_t( *this );
+  inescapable_torment         = new fiend::actions::inescapable_torment_t( *this );
+  shadowflame_prism_legendary = new fiend::actions::shadowflame_prism_legendary_t( *this );
 }
 
 action_t* base_fiend_pet_t::create_action( util::string_view name, util::string_view options_str )
@@ -648,116 +865,15 @@ action_t* priest_pallid_command_t::create_action( util::string_view name, util::
 
   return priest_pet_t::create_action( name, options_str );
 }
-// ==========================================================================
-// Living Shadow T28 4-set (Your Shadow)
-// ==========================================================================
-struct your_shadow_t final : public priest_pet_t
-{
-  your_shadow_t( priest_t* owner ) : priest_pet_t( owner->sim, *owner, "your_shadow", true )
-  {
-  }
-
-  void init_action_list() override
-  {
-    priest_pet_t::init_action_list();
-
-    action_priority_list_t* def = get_action_priority_list( "default" );
-    def->add_action( "torment_mind" );
-  }
-
-  // Tracking buff to easily get pet uptime (especially in AoE this is easier)
-  virtual void arise() override
-  {
-    pet_t::arise();
-
-    o().buffs.living_shadow->trigger();
-  }
-
-  virtual void demise() override
-  {
-    pet_t::demise();
-
-    o().buffs.living_shadow->expire();
-  }
-
-  action_t* create_action( util::string_view name, util::string_view options_str ) override;
-};
-
-struct your_shadow_torment_mind_tick_t final : public priest_pet_spell_t
-{
-  your_shadow_torment_mind_tick_t( your_shadow_t& p, const spell_data_t* s )
-    : priest_pet_spell_t( "torment_mind_tick", p, s )
-  {
-    background                 = true;
-    dual                       = true;
-    affected_by_shadow_weaving = true;
-    aoe                        = -1;
-    radius                     = data().effectN( 2 ).radius();
-    spell_power_mod.tick       = data().effectN( 2 ).sp_coeff();
-  }
-
-  void init() override
-  {
-    priest_pet_spell_t::init();
-
-    merge_pet_stats( p().o(), p(), *this );
-  }
-};
-
-struct your_shadow_torment_mind_t final : public priest_pet_spell_t
-{
-  const spell_data_t* torment_mind_tick_spell;
-
-  your_shadow_torment_mind_t( your_shadow_t& p, util::string_view options )
-    : priest_pet_spell_t( "torment_mind", p, p.o().find_spell( 363656 ) ),
-      torment_mind_tick_spell( p.o().find_spell( 366971 ) )
-  {
-    parse_options( options );
-    channeled   = true;
-    tick_zero   = true;
-    tick_action = new your_shadow_torment_mind_tick_t( p, torment_mind_tick_spell );
-  }
-
-  void init() override
-  {
-    priest_pet_spell_t::init();
-
-    merge_pet_stats( p().o(), p(), *this );
-  }
-
-  timespan_t execute_time() const override
-  {
-    // Right now there is a delay between channels and on spawn time
-    // There is a delay between the last tick of channel 1 and the first tick of channel 2
-    // https://github.com/WarcraftPriests/sl-shadow-priest/issues/229
-    if ( p().o().bugs )
-    {
-      return timespan_t::from_millis( 500 );
-    }
-    else
-    {
-      return priest_pet_spell_t::execute_time();
-    }
-  }
-};
-
-action_t* your_shadow_t::create_action( util::string_view name, util::string_view options_str )
-{
-  if ( name == "torment_mind" )
-  {
-    return new your_shadow_torment_mind_t( *this, options_str );
-  }
-
-  return priest_pet_t::create_action( name, options_str );
-}
 
 // ==========================================================================
-// Eternal Call to the Void
+// Eternal Call to the Void and Idol of C'Thun
 // ==========================================================================
 struct void_tendril_t final : public priest_pet_t
 {
   void_tendril_t( priest_t* owner ) : priest_pet_t( owner->sim, *owner, "void_tendril", true )
   {
+    npc_id = 192337;
   }
 
   void init_action_list() override
@@ -771,25 +887,61 @@ struct void_tendril_t final : public priest_pet_t
   action_t* create_action( util::string_view name, util::string_view options_str ) override;
 };
 
+// Insanity gain (legendary=336214, cthun=377358)
 struct void_tendril_mind_flay_t final : public priest_pet_spell_t
 {
   double void_tendril_insanity_gain;
 
   void_tendril_mind_flay_t( void_tendril_t& p, util::string_view options )
     : priest_pet_spell_t( "mind_flay", p, p.o().find_spell( 193473 ) ),
-      void_tendril_insanity_gain( p.o().find_spell( 336214 )->effectN( 1 ).base_value() )
+      void_tendril_insanity_gain( p.o().find_spell( 377358 )->effectN( 1 ).resource( RESOURCE_INSANITY ) )
   {
     parse_options( options );
     channeled                  = true;
     hasted_ticks               = false;
     affected_by_shadow_weaving = true;
+
+    // BUG: This talent is cursed
+    // https://github.com/SimCMinMax/WoW-BugTracker/issues/1029
+    if ( p.o().bugs )
+    {
+      if ( p.o().level() == 70 )
+      {
+        base_td += 1667.7628;
+      }
+      else
+      {
+        base_td += 321.5;
+      }
+
+      spell_power_mod.tick *= 0.6;
+    }
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = priest_pet_spell_t::composite_da_multiplier( s );
+
+    // BUG: This talent is cursed
+    // https://github.com/SimCMinMax/WoW-BugTracker/issues/1029
+    m *= 1.1;
+
+    return m;
   }
 
   void init() override
   {
     priest_pet_spell_t::init();
 
-    merge_pet_stats_to_owner_action( p().o(), p(), *this, "eternal_call_to_the_void" );
+    // TODO: remove after launch
+    if ( p().o().talents.shadow.idol_of_cthun.enabled() )
+    {
+      merge_pet_stats_to_owner_action( p().o(), p(), *this, "idol_of_cthun" );
+    }
+    else
+    {
+      merge_pet_stats_to_owner_action( p().o(), p(), *this, "eternal_call_to_the_void" );
+    }
   }
 
   timespan_t composite_dot_duration( const action_state_t* ) const override
@@ -808,8 +960,17 @@ struct void_tendril_mind_flay_t final : public priest_pet_spell_t
   {
     priest_pet_spell_t::tick( d );
 
-    p().o().generate_insanity( void_tendril_insanity_gain, p().o().gains.insanity_eternal_call_to_the_void_mind_flay,
-                               d->state->action );
+    // TODO: remove after launch
+    if ( p().o().talents.shadow.idol_of_cthun.enabled() )
+    {
+      p().o().generate_insanity( void_tendril_insanity_gain, p().o().gains.insanity_idol_of_cthun_mind_flay,
+                                 d->state->action );
+    }
+    else
+    {
+      p().o().generate_insanity( void_tendril_insanity_gain, p().o().gains.insanity_eternal_call_to_the_void_mind_flay,
+                                 d->state->action );
+    }
   }
 };
 
@@ -827,6 +988,7 @@ struct void_lasher_t final : public priest_pet_t
 {
   void_lasher_t( priest_t* owner ) : priest_pet_t( owner->sim, *owner, "void_lasher", true )
   {
+    npc_id = 198757;
   }
 
   void init_action_list() override
@@ -840,19 +1002,39 @@ struct void_lasher_t final : public priest_pet_t
   action_t* create_action( util::string_view name, util::string_view options_str ) override;
 };
 
+// Insanity gain (legendary=208232, cthun=377358)
 struct void_lasher_mind_sear_tick_t final : public priest_pet_spell_t
 {
-  const double void_lasher_insanity_gain;
-
-  void_lasher_mind_sear_tick_t( void_lasher_t& p, const spell_data_t* s )
-    : priest_pet_spell_t( "mind_sear_tick", p, s ),
-      void_lasher_insanity_gain( p.o().find_spell( 208232 )->effectN( 1 ).resource( RESOURCE_INSANITY ) )
+  void_lasher_mind_sear_tick_t( void_lasher_t& p, const spell_data_t* s ) : priest_pet_spell_t( "mind_sear_tick", p, s )
   {
     background = true;
     dual       = true;
     aoe        = -1;
     radius     = data().effectN( 2 ).radius_max();  // base radius is 100yd, actual is stored in effect 2
     affected_by_shadow_weaving = true;
+
+    // BUG: The damage this is dealing is not following spell data
+    // https://github.com/SimCMinMax/WoW-BugTracker/issues/1029
+    if ( p.o().bugs )
+    {
+      spell_power_mod.direct *= 0.6;
+      da_multiplier_buffeffects.clear();  // This is in spelldata to scale with things but it does not in game
+    }
+  }
+
+  void init() override
+  {
+    priest_pet_spell_t::init();
+
+    // TODO: remove after launch
+    if ( p().o().talents.shadow.idol_of_cthun.enabled() )
+    {
+      merge_pet_stats_to_owner_action( p().o(), p(), *this, "idol_of_cthun" );
+    }
+    else
+    {
+      merge_pet_stats_to_owner_action( p().o(), p(), *this, "eternal_call_to_the_void" );
+    }
   }
 
   timespan_t composite_dot_duration( const action_state_t* ) const override
@@ -866,20 +1048,17 @@ struct void_lasher_mind_sear_tick_t final : public priest_pet_spell_t
     // Not hasted
     return base_tick_time;
   }
-
-  void impact( action_state_t* s ) override
-  {
-    priest_pet_spell_t::impact( s );
-
-    p().o().generate_insanity( void_lasher_insanity_gain, p().o().gains.insanity_eternal_call_to_the_void_mind_sear,
-                               s->action );
-  }
 };
 
+// Legendary: 344754 -> 344752
+// Idol of C'thun: 394976 -> 394979
 struct void_lasher_mind_sear_t final : public priest_pet_spell_t
 {
+  const double void_lasher_insanity_gain;
+
   void_lasher_mind_sear_t( void_lasher_t& p, util::string_view options )
-    : priest_pet_spell_t( "mind_sear", p, p.o().find_spell( 344754 ) )
+    : priest_pet_spell_t( "mind_sear", p, p.o().find_spell( 394976 ) ),
+      void_lasher_insanity_gain( p.o().find_spell( 377358 )->effectN( 1 ).resource( RESOURCE_INSANITY ) )
   {
     parse_options( options );
     channeled    = true;
@@ -887,11 +1066,22 @@ struct void_lasher_mind_sear_t final : public priest_pet_spell_t
     tick_action  = new void_lasher_mind_sear_tick_t( p, data().effectN( 1 ).trigger() );
   }
 
-  void init() override
+  // You only get the Insanity on your main target
+  void tick( dot_t* d ) override
   {
-    priest_pet_spell_t::init();
+    priest_pet_spell_t::tick( d );
 
-    merge_pet_stats_to_owner_action( p().o(), p(), *this, "eternal_call_to_the_void" );
+    // TODO: remove after launch
+    if ( p().o().talents.shadow.idol_of_cthun.enabled() )
+    {
+      p().o().generate_insanity( void_lasher_insanity_gain, p().o().gains.insanity_idol_of_cthun_mind_sear,
+                                 d->state->action );
+    }
+    else
+    {
+      p().o().generate_insanity( void_lasher_insanity_gain, p().o().gains.insanity_eternal_call_to_the_void_mind_sear,
+                                 d->state->action );
+    }
   }
 };
 
@@ -905,11 +1095,157 @@ action_t* void_lasher_t::create_action( util::string_view name, util::string_vie
   return priest_pet_t::create_action( name, options_str );
 }
 
+// ==========================================================================
+// Thing From Beyond (Idol of Yoggsaron)
+// ==========================================================================
+struct thing_from_beyond_t final : public priest_pet_t
+{
+  thing_from_beyond_t( priest_t* owner ) : priest_pet_t( owner->sim, *owner, "thing_from_beyond", true )
+  {
+  }
+
+  void init_action_list() override
+  {
+    priest_pet_t::init_action_list();
+
+    action_priority_list_t* def = get_action_priority_list( "default" );
+    def->add_action( "void_spike" );
+  }
+
+  // Tracking buff to easily get pet uptime (especially in AoE this is easier)
+  virtual void arise() override
+  {
+    pet_t::arise();
+
+    o().buffs.thing_from_beyond->increment();
+  }
+
+  virtual void demise() override
+  {
+    pet_t::demise();
+
+    o().buffs.thing_from_beyond->decrement();
+  }
+
+  action_t* create_action( util::string_view name, util::string_view options_str ) override;
+};
+
+struct void_spike_cleave_t final : public priest_pet_spell_t
+{
+  void_spike_cleave_t( thing_from_beyond_t& p )
+    : priest_pet_spell_t( "void_spike_cleave", p, p.o().find_spell( 396895 ) )
+  {
+    aoe          = -1;
+    travel_speed = 0;
+
+    // Since we manually remove the main target add 1 to the scaling so it SQRT scales correctly
+    reduced_aoe_targets = data().effectN( 3 ).base_value() + 1;
+    radius              = data().effectN( 1 ).radius_max();
+
+    background = dual = true;
+    may_miss          = false;
+    may_crit          = true;
+
+    // BUG: Instead of triggering for 30% of the damage done it has its own spell power scaling
+    // https://github.com/SimCMinMax/WoW-BugTracker/issues/1000
+    if ( !p.o().bugs )
+    {
+      spell_power_mod.direct = 0.0;
+      may_crit               = false;
+    }
+  }
+
+  void init() override
+  {
+    priest_pet_spell_t::init();
+
+    merge_pet_stats( p().o(), p(), *this );
+  }
+
+  // Does not hit your main target, but uses it to determine radius
+  std::vector<player_t*>& target_list() const override
+  {
+    target_cache.is_valid = false;
+
+    std::vector<player_t*>& tl = priest_pet_spell_t::target_list();
+
+    tl.erase( std::remove( tl.begin(), tl.end(), target ), tl.end() );
+
+    return tl;
+  }
+
+  void trigger( player_t* target, double original_amount )
+  {
+    // BUG: Instead of triggering for 30% of the damage done it has its own spell power scaling
+    // https://github.com/SimCMinMax/WoW-BugTracker/issues/1000
+    if ( !p().o().bugs )
+    {
+      base_dd_min = base_dd_max = original_amount * data().effectN( 2 ).percent();
+    }
+
+    set_target( target );
+    execute();
+  }
+};
+
+struct void_spike_t final : public priest_pet_spell_t
+{
+  propagate_const<void_spike_cleave_t*> child_void_spike_cleave;
+
+  void_spike_t( thing_from_beyond_t& p, util::string_view options )
+    : priest_pet_spell_t( "void_spike", p, p.o().find_spell( 373279 ) ), child_void_spike_cleave( nullptr )
+  {
+    parse_options( options );
+
+    gcd_type = gcd_haste_type::SPELL_HASTE;
+
+    child_void_spike_cleave = new void_spike_cleave_t( p );
+    add_child( child_void_spike_cleave );
+
+    // BUG: Does not scale with Mastery
+    // https://github.com/SimCMinMax/WoW-BugTracker/issues/931
+    // NOTE: a recent blue post said it should, but on beta it is not
+    if ( !p.o().bugs )
+    {
+      affected_by_shadow_weaving = true;
+    }
+  }
+
+  void init() override
+  {
+    priest_pet_spell_t::init();
+
+    merge_pet_stats( p().o(), p(), *this );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    priest_pet_spell_t::impact( s );
+
+    if ( result_is_hit( s->result ) )
+    {
+      child_void_spike_cleave->trigger( s->target, s->result_amount );
+    }
+  }
+};
+
+action_t* thing_from_beyond_t::create_action( util::string_view name, util::string_view options_str )
+{
+  if ( name == "void_spike" )
+  {
+    return new void_spike_t( *this, options_str );
+  }
+
+  return priest_pet_t::create_action( name, options_str );
+}
+
 // Returns mindbender or shadowfiend, depending on talent choice. The returned pointer can be null if no fiend is
 // summoned through the action list, so please check for null.
 fiend::base_fiend_pet_t* get_current_main_pet( priest_t& priest )
 {
-  pet_t* current_main_pet = priest.talents.mindbender->ok() ? priest.pets.mindbender : priest.pets.shadowfiend;
+  pet_t* current_main_pet =
+      priest.talents.shadow.mindbender.enabled() ? priest.pets.mindbender : priest.pets.shadowfiend;
+
   return debug_cast<fiend::base_fiend_pet_t*>( current_main_pet );
 }
 
@@ -943,9 +1279,18 @@ void priest_t::trigger_shadowflame_prism( player_t* target )
   auto current_pet = get_current_main_pet( *this );
   if ( current_pet && !current_pet->is_sleeping() )
   {
-    assert( current_pet->shadowflame_prism );
-    current_pet->shadowflame_prism->set_target( target );
-    current_pet->shadowflame_prism->execute();
+    if ( current_pet->o().talents.shadow.inescapable_torment.enabled() )
+    {
+      assert( current_pet->inescapable_torment );
+      current_pet->inescapable_torment->set_target( target );
+      current_pet->inescapable_torment->execute();
+    }
+    else
+    {
+      assert( current_pet->shadowflame_prism_legendary );
+      current_pet->shadowflame_prism_legendary->set_target( target );
+      current_pet->shadowflame_prism_legendary->execute();
+    }
   }
 }
 
@@ -965,7 +1310,7 @@ std::unique_ptr<expr_t> priest_t::create_pet_expression( util::string_view expre
       pet_t* pet = get_current_main_pet( *this );
       if ( !pet )
       {
-        throw std::invalid_argument( "Cannot find any summoned fiend (shadowfiend/mindbender) pet ." );
+        return expr_t::create_constant( "no_fiend", 0.0 );
       }
       if ( splits.size() == 2 )
       {
@@ -1011,7 +1356,7 @@ std::unique_ptr<expr_t> priest_t::create_pet_expression( util::string_view expre
       pet_t* pet = get_current_main_pet( *this );
       if ( !pet )
       {
-        throw std::invalid_argument( "Cannot find any summoned fiend (shadowfiend/mindbender) pet." );
+        return expr_t::create_constant( "no_fiend", 0.0 );
       }
       if ( cooldown_t* cooldown = get_cooldown( pet->name_str ) )
       {
@@ -1031,25 +1376,21 @@ priest_t::priest_pets_t::priest_pets_t( priest_t& p )
     void_lasher( "void_lasher", &p, []( priest_t* priest ) { return new void_lasher_t( priest ); } ),
     rattling_mage( "rattling_mage", &p, []( priest_t* priest ) { return new rattling_mage_t( priest ); } ),
     cackling_chemist( "cackling_chemist", &p, []( priest_t* priest ) { return new cackling_chemist_t( priest ); } ),
-    your_shadow( "your_shadow", &p, []( priest_t* priest ) { return new your_shadow_t( priest ); } )
+    thing_from_beyond( "thing_from_beyond", &p, []( priest_t* priest ) { return new thing_from_beyond_t( priest ); } )
 {
-  auto void_tendril_spell = p.find_spell( 193473 );
+  // Void Tendril: legendary=193473 | cthun=377355
+  // Void Lasher: legendary=336216 | cthun=377355
+  auto idol_of_cthun = p.find_spell( 377355 );
   // Add 1ms to ensure pet is dismissed after last dot tick.
-  void_tendril.set_default_duration( void_tendril_spell->duration() + timespan_t::from_millis( 1 ) );
-
-  auto void_lasher_spell = p.find_spell( 336216 );
-  // Add 1ms to ensure pet is dismissed after last dot tick.
-  void_lasher.set_default_duration( void_lasher_spell->duration() + timespan_t::from_millis( 1 ) );
+  void_tendril.set_default_duration( idol_of_cthun->duration() + timespan_t::from_millis( 1 ) );
+  void_lasher.set_default_duration( idol_of_cthun->duration() + timespan_t::from_millis( 1 ) );
 
   auto rigor_mortis_duration = p.find_spell( 356467 )->duration();
   rattling_mage.set_default_duration( rigor_mortis_duration );
   cackling_chemist.set_default_duration( rigor_mortis_duration );
 
-  // Add 1ms to ensure pet is dismissed after last dot tick.
-  // Note: this is overriden in mind_blast_t when spawning the pet
-  auto your_shadow_spell = p.find_spell( 363469 );
-  your_shadow.set_default_duration( timespan_t::from_seconds( your_shadow_spell->effectN( 2 ).base_value() ) +
-                                    timespan_t::from_millis( 1 ) );
+  auto thing_from_beyond_spell = p.find_spell( 373277 );
+  thing_from_beyond.set_default_duration( thing_from_beyond_spell->duration() );
 }
 
 }  // namespace priestspace

@@ -1,4 +1,4 @@
-SimulationCraft 920-01 for World of Warcraft 9.2.7.45114 Live (hotfix 2022-08-16/45114)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.46455 Live (hotfix 2022-11-04/46455)
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
 bonus_id={ 3 }, suffix={ of Power }, socket={ 2 }, stats={ 100% StrAgiInt [0.5263] }
@@ -4174,7 +4174,7 @@ bonus_id={ 7470 }, quality={ legendary }, effects={ Sinful Surge (id=364933, ind
 bonus_id={ 7471 }, quality={ legendary }, effects={ Nature's Fury (id=364931, index=0, type=equip) }
 bonus_id={ 7472 }, quality={ legendary }, effects={ Unbridled Swarm (id=364818, index=0, type=equip) }
 bonus_id={ 7473 }, quality={ legendary }, effects={ Harmonic Echo (id=364853, index=0, type=equip) }
-bonus_id={ 7474 }, quality={ legendary }, effects={ Sinful Hysteria (id=364816, index=0, type=equip) }
+bonus_id={ 7474 }, quality={ legendary }, effects={ Sinful Indulgence (id=364816, index=0, type=equip) }
 bonus_id={ 7475 }, quality={ legendary }, effects={ Death's Fathom (id=364855, index=0, type=equip) }
 bonus_id={ 7476 }, quality={ legendary }, effects={ Sinful Delight (id=364854, index=0, type=equip) }
 bonus_id={ 7477 }, quality={ legendary }, effects={ Kindred Affinity (id=364815, index=0, type=equip) }
@@ -4256,16 +4256,38 @@ bonus_id={ 7921 }, ilevel={ 3 @plvl 1 - 147 @plvl 60 }
 bonus_id={ 7922 }, ilevel={ 5 @plvl 1 - 149 @plvl 60 }
 bonus_id={ 7923 }, ilevel={ 4 @plvl 1 - 148 @plvl 60 }
 bonus_id={ 7924 }, ilevel={ 4 @plvl 1 - 148 @plvl 60 }
+bonus_id={ 7930 }, effects={ Unknown Effect (id=0) }
 bonus_id={ 7932 }, effects={ Dimensional Translators (id=363327, index=0, type=use), Dimensional Translators (id=363328, index=0, type=equip) }
 bonus_id={ 7933 }, effects={ Raw Speed (id=363329, index=0, type=equip) }
 bonus_id={ 7934 }, effects={ Autorecreation (id=363330, index=0, type=equip) }
+bonus_id={ 7935 }, socket={ 1 }
+bonus_id={ 7940 }, stats={ 50% StrInt [0.1000], 50% Sta [0.1000] }
+bonus_id={ 7941 }, stats={ 50% StrInt [0.0020], 50% Sta [0.0020] }
+bonus_id={ 7942 }, stats={ 50% StrInt [0.0030], 50% Sta [0.0030] }
+bonus_id={ 7943 }, stats={ 50% StrInt [0.0040], 50% Sta [0.0040] }
+bonus_id={ 7944 }, stats={ 50% StrInt [0.0050], 50% Sta [0.0050] }
 bonus_id={ 7945 }, effects={ Strip Advantage (id=364086, index=0, type=equip) }
 bonus_id={ 7946 }, effects={ Cosmic Boom (id=364087, index=0, type=equip) }
 bonus_id={ 7947 }, socket={ 1 }, effects={ Crystallized (id=364999, index=0, type=equip) }
+bonus_id={ 7953 }, quality={ rare }
+bonus_id={ 7954 }, quality={ epic }
 bonus_id={ 7955 }, effects={ Zereth Vision (id=364480, index=0, type=equip) }
 bonus_id={ 7956 }, effects={ Treasurefinder (id=364478, index=0, type=equip) }
 bonus_id={ 7957 }, effects={ Pocopoc Resonance (id=364477, index=0, type=equip) }
 bonus_id={ 7960 }, effects={ Ephemera Harmonizing Stone (id=365457, index=0, type=equip) }
+bonus_id={ 7962 }, ilevel_adjust={ 3 }
+bonus_id={ 7963 }, ilevel={ 175 @plvl 45 - 350 @plvl 80 }
+bonus_id={ 7964 }, quality={ rare }, ilevel={ 181 @plvl 45 - 363 @plvl 80 }
+bonus_id={ 7965 }, quality={ epic }, ilevel={ 193 @plvl 45 - 376 @plvl 80 }
+bonus_id={ 7966 }, ilevel={ 149 @plvl 50 - 149 @plvl 80 }
+bonus_id={ 7967 }, ilevel={ 169 @plvl 50 - 169 @plvl 80 }
+bonus_id={ 7968 }, ilevel={ 132 @plvl 50 - 296 @plvl 80 }
+bonus_id={ 7969 }, ilevel={ 178 @plvl 50 - 312 @plvl 80 }
+bonus_id={ 7970 }, ilevel={ 265 @plvl 1 - 265 @plvl 80 }
+bonus_id={ 7971 }, ilevel={ 265 @plvl 1 - 265 @plvl 80 }
+bonus_id={ 7972 }, ilevel={ 285 @plvl 1 - 285 @plvl 80 }
+bonus_id={ 7973 }, ilevel={ 285 @plvl 1 - 285 @plvl 80 }
+bonus_id={ 7978 }, ilevel={ 181 @plvl 45 - 356 @plvl 80 }
 bonus_id={ 7985 }, suffix={ of the Quickblade }, stats={ 69% Crit [0.4850], 31% Vers [0.2150] }
 bonus_id={ 7986 }, suffix={ of the Quickblade }, stats={ 67% Crit [0.4700], 33% Vers [0.2300] }
 bonus_id={ 7987 }, suffix={ of the Quickblade }, stats={ 65% Crit [0.4550], 35% Vers [0.2450] }
@@ -4392,9 +4414,15 @@ bonus_id={ 8142 }, quality={ epic }
 bonus_id={ 8143 }, quality={ rare }
 bonus_id={ 8144 }, quality={ rare }
 bonus_id={ 8145 }, quality={ rare }
+bonus_id={ 8147 }, ilevel={ 60 @plvl 60 - 80 @plvl 80 }
 bonus_id={ 8148 }, quality={ epic }
 bonus_id={ 8157 }
 bonus_id={ 8165 }, ilevel={ 5 @plvl 1 - 272 @plvl 60 }
+bonus_id={ 8170 }, quality={ rare }, ilevel={ 181 @plvl 45 - 363 @plvl 80 }
+bonus_id={ 8171 }, desc={ Timewarped }, quality={ rare }, ilevel={ 3 @plvl 1 - 369 @plvl 70 }
+bonus_id={ 8172 }, desc={ Timewarped }, ilevel={ 5 @plvl 1 - 356 @plvl 70 }
+bonus_id={ 8174 }, effects={ Alchemical Flavor Pocket (id=372120, index=0, type=equip) }
+bonus_id={ 8175 }, effects={ Potion Absorption Inhibitor (id=371700, index=0, type=equip) }
 bonus_id={ 8176 }, suffix={ of the Fireflash }, stats={ 71% Crit [0.5000], 29% Haste [0.2000] }
 bonus_id={ 8177 }, suffix={ of the Fireflash }, stats={ 29% Crit [0.2000], 71% Haste [0.5000] }
 bonus_id={ 8178 }, suffix={ of the Peerless }, stats={ 71% Crit [0.5000], 29% Mastery [0.2000] }
@@ -4407,7 +4435,95 @@ bonus_id={ 8184 }, suffix={ of the Aurora }, stats={ 71% Haste [0.5000], 29% Ver
 bonus_id={ 8185 }, suffix={ of the Aurora }, stats={ 29% Haste [0.2000], 71% Vers [0.5000] }
 bonus_id={ 8186 }, suffix={ of the Harmonious }, stats={ 71% Mastery [0.5000], 29% Vers [0.2000] }
 bonus_id={ 8187 }, suffix={ of the Harmonious }, stats={ 29% Mastery [0.2000], 71% Vers [0.5000] }
+bonus_id={ 8188 }, effects={ Armor Spikes (id=372528, index=0, type=equip) }
 bonus_id={ 8289 }, socket={ 1 }
 bonus_id={ 8402 }, desc={ Timewarped }, quality={ rare }, ilevel={ 3 @plvl 1 - 210 @plvl 60 }
 bonus_id={ 8403 }, desc={ Timewarped }, ilevel={ 5 @plvl 1 - 200 @plvl 60 }
 bonus_id={ 8760 }, desc={ Timewarped }, quality={ rare }, ilevel={ 3 @plvl 1 - 236 @plvl 60 }
+bonus_id={ 8766 }, quality={ rare }
+bonus_id={ 8767 }, quality={ epic }
+bonus_id={ 8768 }, ilevel={ 175 @plvl 45 - 346 @plvl 80 }
+bonus_id={ 8769 }, quality={ rare }, ilevel={ 181 @plvl 45 - 360 @plvl 80 }
+bonus_id={ 8770 }, quality={ epic }, ilevel={ 193 @plvl 45 - 373 @plvl 80 }
+bonus_id={ 8771 }, ilevel={ 175 @plvl 45 - 354 @plvl 80 }
+bonus_id={ 8772 }, quality={ rare }, ilevel={ 181 @plvl 45 - 366 @plvl 80 }
+bonus_id={ 8773 }, quality={ epic }, ilevel={ 193 @plvl 45 - 379 @plvl 80 }
+bonus_id={ 8774 }, quality={ rare }, ilevel={ 181 @plvl 45 - 363 @plvl 80 }
+bonus_id={ 8775 }, quality={ epic }, ilevel={ 193 @plvl 45 - 376 @plvl 80 }
+bonus_id={ 8776 }, quality={ rare }, ilevel={ 181 @plvl 45 - 360 @plvl 80 }
+bonus_id={ 8777 }, quality={ epic }, ilevel={ 193 @plvl 45 - 373 @plvl 80 }
+bonus_id={ 8778 }, quality={ rare }, ilevel={ 181 @plvl 45 - 366 @plvl 80 }
+bonus_id={ 8779 }, quality={ epic }, ilevel={ 193 @plvl 45 - 379 @plvl 80 }
+bonus_id={ 8780 }, socket={ 1 }
+bonus_id={ 8781 }, socket={ 2 }
+bonus_id={ 8782 }, socket={ 3 }
+bonus_id={ 8785 }, base_ilevel={ 400 }
+bonus_id={ 8790 }, mod_to_stat={ Crit (100), Haste (100) }
+bonus_id={ 8791 }, mod_to_stat={ Crit (100), Mastery (100) }
+bonus_id={ 8792 }, mod_to_stat={ Vers (100), Haste (100) }
+bonus_id={ 8793 }, mod_to_stat={ Mastery (100), Haste (100) }
+bonus_id={ 8794 }, mod_to_stat={ Mastery (100), Vers (100) }
+bonus_id={ 8795 }, mod_to_stat={ Crit (100), Vers (100) }
+bonus_id={ 8796 }, effects={ Fang Adornments (id=377708, index=0, type=equip) }
+bonus_id={ 8797 }, effects={ Toxified (id=378758, index=0, type=equip) }
+bonus_id={ 8799 }, ilevel_adjust={ 2 }
+bonus_id={ 8800 }, ilevel_adjust={ 4 }
+bonus_id={ 8801 }, ilevel_adjust={ 7 }
+bonus_id={ 8802 }, ilevel_adjust={ 10 }
+bonus_id={ 8804 }, ilevel_adjust={ 3 }
+bonus_id={ 8805 }, ilevel_adjust={ 7 }
+bonus_id={ 8806 }, ilevel_adjust={ 11 }
+bonus_id={ 8807 }, ilevel_adjust={ 15 }
+bonus_id={ 8810 }, socket={ 1 }
+bonus_id={ 8831 }
+bonus_id={ 8832 }, desc={ [PH] Radiant - Equip Limit 2 }, effects={ Dragon Orb Tracker (DNT) (id=381643, index=0, type=equip) }
+bonus_id={ 8833 }, quality={ epic }, effects={ Forgestorm (id=381698, index=0, type=equip) }
+bonus_id={ 8834 }, desc={ [PH] Radiant (2) }, effects={ Dragon Orb Tracker 2H (DNT) (id=381712, index=0, type=equip) }
+bonus_id={ 8836 }, base_ilevel={ 382 }
+bonus_id={ 8837 }, base_ilevel={ 306 }
+bonus_id={ 8839 }, base_ilevel={ 333 }
+bonus_id={ 8841 }, base_ilevel={ 317 }
+bonus_id={ 8843 }, base_ilevel={ 356 }
+bonus_id={ 8844 }, base_ilevel={ 382 }
+bonus_id={ 8845 }, base_ilevel={ 395 }
+bonus_id={ 8846 }, base_ilevel={ 408 }
+bonus_id={ 8847 }, base_ilevel={ 333 }
+bonus_id={ 8848 }, base_ilevel={ 359 }
+bonus_id={ 8849 }, base_ilevel={ 346 }
+bonus_id={ 8850 }, base_ilevel={ 372 }, quality={ epic }
+bonus_id={ 8851 }, base_ilevel={ 333 }
+bonus_id={ 8856 }, effects={ Dragonflight Darkmoon Deck Shuffler (DNT) (id=382958, index=0, type=equip) }
+bonus_id={ 8857 }, effects={ Bronzescale Deckbox (id=382913, index=0, type=equip) }
+bonus_id={ 8858 }, effects={ Emberscale Deckbox (id=383333, index=0, type=equip) }
+bonus_id={ 8859 }, effects={ Azurescale Deckbox (id=383336, index=0, type=equip) }
+bonus_id={ 8860 }, effects={ Jetscale Deckbox (id=383337, index=0, type=equip) }
+bonus_id={ 8861 }, effects={ Sagescale Deckbox (id=383339, index=0, type=equip) }
+bonus_id={ 8862 }, mod_to_stat={ unknown (100) }
+bonus_id={ 8863 }, effects={ Tinker Safety Fuses (id=384338, index=0, type=equip) }
+bonus_id={ 8864 }, effects={ Critical Failure Prevention Unit (id=384341, index=0, type=equip) }
+bonus_id={ 8865 }, effects={ Spring-Loaded Capacitor Casing (id=384489, index=0, type=equip) }
+bonus_id={ 8903 }, base_ilevel={ 1 }
+bonus_id={ 8912 }, effects={ Room for Dessert (id=385336, index=0, type=equip) }
+bonus_id={ 8913 }, effects={ Magazine of Healing Darts (id=385347, index=0, type=equip) }
+bonus_id={ 8932 }, effects={ Blue Silken Lining (id=387335, index=0, type=equip) }
+bonus_id={ 8933 }
+bonus_id={ 8934 }, quality={ legendary }, effects={ Unity (id=387431, index=0, type=equip) }
+bonus_id={ 8935 }, quality={ rare }, ilevel={ 3 @plvl 1 - 252 @plvl 70 }
+bonus_id={ 8936 }, quality={ rare }, ilevel={ 146 @plvl 59 - 252 @plvl 70 }
+bonus_id={ 8937 }, effects={ Bronzed Grip Wrappings (id=388069, index=0, type=equip) }
+bonus_id={ 8948 }, mod_to_stat={ Haste (100) }
+bonus_id={ 8949 }, mod_to_stat={ Crit (100) }
+bonus_id={ 8950 }, mod_to_stat={ Mastery (100) }
+bonus_id={ 8951 }, mod_to_stat={ Vers (100) }
+bonus_id={ 8952 }, mod_to_stat={ unknown (100) }
+bonus_id={ 8953 }, mod_to_stat={ unknown (100) }
+bonus_id={ 8954 }, mod_to_stat={ unknown (100) }
+bonus_id={ 8955 }, mod_to_stat={ unknown (100) }
+bonus_id={ 8956 }, mod_to_stat={ unknown (100) }
+bonus_id={ 8957 }, mod_to_stat={ unknown (100) }
+bonus_id={ 8975 }, stats={ 100% unknown [0.3000] }
+bonus_id={ 8979 }, ilevel={ 5 @plvl 1 - 392 @plvl 70 }
+bonus_id={ 8980 }, ilevel={ 382 @plvl 45 - 382 @plvl 80 }
+bonus_id={ 8981 }, ilevel={ 392 @plvl 45 - 392 @plvl 80 }
+bonus_id={ 8982 }, ilevel={ 395 @plvl 45 - 395 @plvl 80 }
+bonus_id={ 8984 }, quality={ epic }, ilevel={ 193 @plvl 45 - 373 @plvl 80 }

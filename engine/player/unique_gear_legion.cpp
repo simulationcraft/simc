@@ -4,6 +4,7 @@
 // ==========================================================================
 
 #include "darkmoon_deck.hpp"
+#include "player/unique_gear_helper.hpp"
 #include "util/static_map.hpp"
 #include "util/string_view.hpp"
 
@@ -43,6 +44,7 @@ namespace item
   void corrupted_starlight( special_effect_t& );
   void elementium_bomb_squirrel( special_effect_t& );
   void faulty_countermeasures( special_effect_t& );
+  void fel_meteor( special_effect_t& );
   void figurehead_of_the_naglfar( special_effect_t& );
   void giant_ornamental_pearl( special_effect_t& );
   void horn_of_valor( special_effect_t& );
@@ -4209,6 +4211,22 @@ struct figurehead_of_the_naglfar_constructor_t : public item_targetdata_initiali
   }
 };
 
+void item::fel_meteor( special_effect_t& effect )
+{
+  auto n = effect.name();
+  auto meteor = create_proc_action<proc_spell_t>( n, effect );
+
+  n += "_impact";
+  auto impact = create_proc_action<generic_aoe_proc_t>( n, effect, n, meteor->data().effectN( 1 ).trigger(), true );
+  impact->dual = impact->background = true;
+  impact->stats = meteor->stats;
+
+  meteor->impact_action = impact;
+  effect.execute_action = meteor;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 void item::figurehead_of_the_naglfar( special_effect_t& effect )
 {
   action_t* damage_spell = effect.player -> find_action( "taint_of_the_sea" );
@@ -5483,13 +5501,6 @@ void consumables::lavish_suramar_feast( special_effect_t& effect )
       break;
   }
 
-  // TODO: Is this actually spec specific?
-  if ( effect.player -> role == ROLE_TANK && !effect.player->sim->feast_as_dps )
-  {
-    effect.stat = STAT_STAMINA;
-    effect.trigger_spell_id = 201641;
-  }
-
   effect.stat_amount = effect.player -> find_spell( effect.trigger_spell_id ) -> effectN( 1 ).average( effect.player );
 }
 
@@ -5997,7 +6008,7 @@ void unique_gear::register_special_effects_legion()
   register_special_effect( 215127, item::tiny_oozeling_in_a_jar         );
   register_special_effect( 215658, item::tirathons_betrayal             );
   register_special_effect( 214980, item::windscar_whetstone             );
-  register_special_effect( 214054, "214052Trigger"                      );
+  register_special_effect( 214054, item::fel_meteor                     );
   register_special_effect( 215444, item::caged_horror                   );
   register_special_effect( 215813, "ProcOn/Hit_1Tick_215816Trigger"     );
   register_special_effect( 214492, "ProcOn/Hit_1Tick_214494Trigger"     );

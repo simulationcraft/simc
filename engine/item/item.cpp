@@ -627,6 +627,7 @@ void item_t::parse_options()
   std::string remainder;
   std::string DUMMY_REFORGE; // TODO-WOD: Remove once profiles update
   std::string DUMMY_CONTEXT; // not used by simc but used by 3rd parties (raidbots)
+  std::string DUMMY_CRAFTING_QUALITY; // not used by simc but used by 3rd parties (raidbots)
 
   std::string::size_type cut_pt = options_str.find_first_of( ',' );
 
@@ -636,7 +637,7 @@ void item_t::parse_options()
     option_name_str = options_str.substr( 0, cut_pt );
   }
 
-  std::array<std::unique_ptr<option_t>, 33> options { {
+  std::array<std::unique_ptr<option_t>, 34> options { {
     opt_uint("id", parsed.data.id),
     opt_obsoleted("upgrade"),
     opt_string("stats", option_stats_str),
@@ -669,7 +670,8 @@ void item_t::parse_options()
     opt_string("azerite_powers", option_azerite_powers_str),
     opt_string("azerite_level", option_azerite_level_str),
     opt_string("context", DUMMY_CONTEXT),
-    opt_string("crafted_stats", option_crafted_stat_str)
+    opt_string("crafted_stats", option_crafted_stat_str),
+    opt_string("crafting_quality", DUMMY_CRAFTING_QUALITY)
   } };
 
   try

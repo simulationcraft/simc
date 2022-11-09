@@ -326,6 +326,7 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     weapon(),
     default_target( p->target ),
     school( SCHOOL_NONE ),
+    original_school( SCHOOL_NONE ),
     id(),
     internal_id( p->get_action_id( name_str ) ),
     resource_current( RESOURCE_NONE ),
@@ -644,7 +645,7 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
     weapon = &( player->off_hand_weapon );
   }
 
-  if ( spell_data.charges() > 0 && spell_data.charge_cooldown() > timespan_t::zero() )
+  if ( spell_data.charge_cooldown() > timespan_t::zero() )
   {
     cooldown->duration = spell_data.charge_cooldown();
     cooldown->charges  = spell_data.charges();
@@ -871,7 +872,46 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
   }
 }
 
-// action_t::parse_options ==================================================
+// action_t::set_school =====================================================
+
+void action_t::set_school( school_e new_school )
+{
+  if ( school != new_school )
+  {
+    sim->print_debug( "{} changing school for {} from {} to {}", *player, *this, school, new_school );
+    school = new_school;
+  }
+
+  // Decompose school into base types. Note that if get_school() is overridden (e.g., to dynamically
+  // alter spell school), then base_schools must be manually updated, to cover the dynamic case.
+  base_schools.clear();
+  for ( school_e target_school = SCHOOL_ARCANE; target_school < SCHOOL_MAX_PRIMARY; ++target_school )
+  {
+    if ( dbc::is_school( new_school, target_school ) )
+    {
+      base_schools.push_back( target_school );
+    }
+  }
+}
+
+void action_t::set_school_override( school_e new_school )
+{
+  assert( original_school == SCHOOL_NONE && "Cannot override a school that is already overridden." );
+  sim->print_debug( "{} adding school override for {} of {}", *player, *this, new_school );
+  original_school = get_school();
+  set_school( new_school );
+}
+
+void action_t::clear_school_override()
+{
+  assert( original_school != SCHOOL_NONE && "No school override currently exists" );
+  sim->print_debug( "{} clearing school override for {} of {}", *player, *this, get_school() );
+  set_school( original_school );
+  original_school = SCHOOL_NONE;
+}
+
+// action_t::parse_target_str ===============================================
+
 void action_t::parse_target_str()
 {
   // FIXME: Move into constructor when parse_action is called from there.
@@ -1220,7 +1260,7 @@ double action_t::calculate_weapon_damage( double attack_power ) const
   double power_damage     = weapon_speed.total_seconds() * weapon_power_mod * attack_power;
   double total_dmg        = dmg + power_damage;
 
-  sim->print_debug("{} weapon damage for {}: base=({} to {}) total={} weapon_damage={} bonus_damage={} multiplier={}"
+  sim->print_debug("{} weapon damage for {}: base=({} to {}) total={} weapon_damage={} bonus_damage={} multiplier={} "
       "speed={} power_damage={} ap={}",
       *player, *this, weapon->min_dmg, weapon->max_dmg, total_dmg, dmg, weapon->bonus_dmg, capm,
       weapon_speed, power_damage, attack_power );
@@ -2467,11 +2507,24 @@ void action_t::init()
     snapshot_flags |= STATE_MUL_PET | STATE_TGT_MUL_PET;
   }
 
-  if ( data().flags( spell_attribute::SX_DISABLE_PLAYER_MULT ) )
-    snapshot_flags &= ~( STATE_MUL_TA | STATE_MUL_DA | STATE_MUL_PERSISTENT | STATE_VERSATILITY );
-
   if ( school == SCHOOL_PHYSICAL )
     snapshot_flags |= STATE_TGT_ARMOR;
+
+  if ( data().flags( spell_attribute::SX_DISABLE_PLAYER_MULT ) )
+    snapshot_flags &= ~( STATE_VERSATILITY );
+
+  if ( data().flags( spell_attribute::SX_DISABLE_TARGET_MULT ) )
+  {
+    snapshot_flags &= ~( STATE_TGT_MUL_TA | STATE_TGT_MUL_DA | STATE_TGT_ARMOR );
+    update_flags &= ~( STATE_TGT_MUL_TA | STATE_TGT_MUL_DA | STATE_TGT_ARMOR );
+  }
+
+  // TODO: accomodate negative mults such as damage reduction
+  if ( data().flags( spell_attribute::SX_DISABLE_TARGET_POSITIVE_MULT ) )
+  {
+    snapshot_flags &= ~( STATE_TGT_MUL_TA | STATE_TGT_MUL_DA );
+    update_flags &= ~( STATE_TGT_MUL_TA | STATE_TGT_MUL_DA );
+  }
 
   if ( ( spell_power_mod.direct > 0 || spell_power_mod.tick > 0 ) )
   {
@@ -2571,16 +2624,8 @@ void action_t::init()
   // Setup default target in init
   default_target = target;
 
-  // Decompose school into base types. Note that if get_school() is overridden (e.g., to dynamically
-  // alter spell school), then base_schools must be manually updated, to cover the dynamic case.
-  for ( school_e target_school = SCHOOL_ARCANE, action_school = get_school(); target_school < SCHOOL_MAX_PRIMARY;
-        ++target_school )
-  {
-    if ( dbc::is_school( action_school, target_school ) )
-    {
-      base_schools.push_back( target_school );
-    }
-  }
+  // Re-initialize base schools as modules often set schools directly in their constructors
+  set_school( get_school() );
 
   // Initialize dot - so we can access it from expressions
   if ( dot_duration /*composite_dot_duration( nullptr )*/ > timespan_t::zero() ||
@@ -3092,6 +3137,42 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
       }
     };
     return std::make_unique<tick_multiplier_expr_t>( *this );
+  }
+
+  if ( name_str == "energize_amount" )
+  {
+    struct energize_amount_expr_t : public action_state_expr_t
+    {
+      energize_amount_expr_t( action_t& a ) : action_state_expr_t( "energize_amount", a )
+      {
+        state->n_targets = 1;
+        state->chain_target = 0;
+      }
+
+      double evaluate() override
+      {
+        action.snapshot_state( state, result_amount_type::NONE );
+        state->target = action.target;
+
+        int num_targets = state->n_targets;
+
+        if ( action.energize_type_() == action_energize::PER_HIT )
+        {
+          num_targets = action.n_targets();
+          if ( num_targets == -1 || num_targets > 0 )
+          {
+            action.target_cache.is_valid = false;
+            auto max_targets = as<int>( action.target_list().size() );
+            num_targets = ( num_targets < 0 ) ? max_targets : std::min( max_targets, num_targets );
+          }
+
+          state->n_targets = std::max( 1, num_targets );
+        }
+
+        return action.composite_energize_amount( state ) * state->n_targets;
+      }
+    };
+    return std::make_unique<energize_amount_expr_t>( *this );
   }
 
   if ( name_str == "persistent_multiplier" )
@@ -3944,8 +4025,8 @@ void action_t::schedule_travel( action_state_t* s )
 
   execute_state->copy_state( s );
 
-  time_to_travel = distance_targeting_travel_time(
-      s );  // This is used for spells that don't use the typical player ---> main target travel time.
+  // This is used for spells that don't use the typical player ---> main target travel time.
+  time_to_travel = distance_targeting_travel_time( s );
   if ( time_to_travel == timespan_t::zero() )
     time_to_travel = travel_time();
 
@@ -4086,7 +4167,7 @@ timespan_t action_t::calculate_dot_refresh_duration( const dot_t* dot, timespan_
   switch ( dot_behavior )
   {
     case dot_behavior_e::DOT_REFRESH_PANDEMIC:
-      return std::min( triggered_duration * 0.3, dot->remains() ) + triggered_duration;
+      return std::max( dot->remains(), std::min( triggered_duration * 0.3, dot->remains() ) + triggered_duration );
     case dot_behavior_e::DOT_REFRESH_DURATION:
       return dot->time_to_next_full_tick() + triggered_duration;
     case dot_behavior_e::DOT_EXTEND:
@@ -4944,6 +5025,11 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
         }
         break;
 
+      case P_CAST_TIME:
+        base_execute_time += effect.time_value();
+        sim->print_debug( "{} cast time modified by {}", *this, effect.time_value() );
+        break;
+
       case P_RANGE:
         range += effect.base_value();
         sim->print_debug( "{} range modified by {}", *this, effect.base_value() );
@@ -4957,27 +5043,49 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
       case P_COOLDOWN:
         if ( cooldown->action == this )
         {
-          cooldown->duration += effect.time_value();
-          if ( cooldown->duration < timespan_t::zero() )
-            cooldown->duration = timespan_t::zero();
-          sim->print_debug( "{} cooldown duration increase by {} to {}", *this, effect.time_value(), cooldown->duration );
+          if ( data().charge_cooldown() > 0_ms )
+          {
+            sim->print_debug( "{} cooldown duration modifier ({}) ignored due to being a charge cooldown", *this, effect.time_value() );
+          }
+          else
+          {
+            cooldown->duration += effect.time_value();
+            if ( cooldown->duration < timespan_t::zero() )
+              cooldown->duration = timespan_t::zero();
+            sim->print_debug( "{} cooldown duration increase by {} to {}", *this, effect.time_value(), cooldown->duration );
+          }
         }
         break;
 
       case P_RESOURCE_COST:
-        base_costs[ resource_current ] += effect.base_value();
-        sim->print_debug( "{} base resource cost for resource {} modified by {}", *this,
-                          resource_current, effect.base_value() );
+        base_costs[ resource_current ] += effect.resource( current_resource() );
+        sim->print_debug( "{} base resource cost for resource {} modified by {}", *this, resource_current,
+                          effect.resource( current_resource() ) );
         break;
 
       case P_TARGET:
         assert( !( aoe == -1 || ( effect.base_value() < 0 && effect.base_value() > aoe ) ) );
-        // As the aoe value defaults to 0 for ST, increasing directly doesn't always result in the correct value
-        if ( aoe == 0 )
-          aoe = 1 + as<int>( effect.base_value() );
-        else
+        if ( aoe > 0 )
+        {
           aoe += as<int>( effect.base_value() );
-        sim->print_debug( "{} max target count modified by {} to {}", *this, effect.base_value(), aoe );
+          sim->print_debug( "{} max target count modified by {} to {}", *this, effect.base_value(), aoe );
+        }
+        else if( aoe == 0 )
+        {
+          // This behavior depends on if the any effect has chain_targets of 1 defined in spell data or not
+          // A bit roundabout, but we skip storing this in action_t::parse_effect_data() if it is only 1 
+          bool has_chain_target = range::any_of( data().effects(), []( const spelleffect_data_t& effect ) {
+            return effect.chain_target() == 1;
+          } );
+          aoe = as<int>( has_chain_target ) + as<int>( effect.base_value() );
+          sim->print_debug( "{} max target count modified by {} to {}", *this, effect.base_value() - !has_chain_target, aoe );
+        }
+        
+        break;
+
+      case P_TARGET_BONUS:
+        chain_bonus_damage += effect.percent();
+        sim->print_debug( "{} chain target bonus modified by {} to {}", *this, effect.percent(), chain_bonus_damage );
         break;
 
       case P_GCD:
@@ -5034,8 +5142,14 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
 
       case P_RESOURCE_COST:
         base_costs[ resource_current ] *= 1.0 + effect.percent();
-        sim->print_debug( "{} base resource cost for resource {} modified by {}", *this,
+        sim->print_debug( "{} base resource cost for resource {} modified by {}%", *this,
                           resource_current, effect.base_value() );
+        break;
+
+      case P_TARGET_BONUS:
+        // Chain Bonus Damage is base 0.0 and applied as 1.0 + chain_bonus_damage in action_t::calculate_direct_amount
+        chain_bonus_damage = ( ( 1.0 + chain_bonus_damage ) * ( 1.0 + effect.percent() ) ) - 1.0;
+        sim->print_debug( "{} chain target bonus modified by {}% to {}", *this, effect.base_value(), chain_bonus_damage );
         break;
 
       case P_TICK_TIME:
@@ -5081,6 +5195,10 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
       case A_HASTED_COOLDOWN:
         cooldown->hasted = true;
         sim->print_debug( "{} cooldown set to hasted", *this );
+        break;
+
+      case A_MODIFY_SCHOOL:
+        set_school( effect.school_type() );
         break;
 
       case A_ADD_FLAT_MODIFIER:
@@ -5129,10 +5247,17 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
       case A_MODIFY_CATEGORY_COOLDOWN:
         if ( cooldown->action == this )
         {
-          cooldown->duration += effect.time_value();
-          if ( cooldown->duration < timespan_t::zero() )
-            cooldown->duration = timespan_t::zero();
-          sim->print_debug( "{} cooldown duration modified by {}", *this, effect.time_value() );
+          if ( data().charge_cooldown() > 0_ms )
+          {
+            sim->print_debug( "{} cooldown duration modifier ({}) ignored due to being a charge cooldown", *this, effect.time_value() );
+          }
+          else
+          {
+            cooldown->duration += effect.time_value();
+            if ( cooldown->duration < timespan_t::zero() )
+              cooldown->duration = timespan_t::zero();
+            sim->print_debug( "{} cooldown duration modified by {}", *this, effect.time_value() );
+          }
         }
         break;
 
@@ -5152,10 +5277,17 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
       case A_MOD_RECHARGE_TIME:
         if ( cooldown->action == this )
         {
-          cooldown->duration += effect.time_value();
-          if ( cooldown->duration < timespan_t::zero() )
-            cooldown->duration = timespan_t::zero();
-          sim->print_debug( "{} cooldown recharge time modified by {}", *this, effect.time_value() );
+          if ( data().charge_cooldown() <= 0_ms )
+          {
+            sim->print_debug( "{} cooldown recharge time modifier ({}) ignored due to not being a charge cooldown", *this, effect.time_value() );
+          }
+          else
+          {
+            cooldown->duration += effect.time_value();
+            if ( cooldown->duration < timespan_t::zero() )
+              cooldown->duration = timespan_t::zero();
+            sim->print_debug( "{} cooldown recharge time modified by {}", *this, effect.time_value() );
+          }
         }
         break;
 

@@ -201,7 +201,7 @@ struct tick_t : public buff_event_t
       buff->tick_callback( buff, total_ticks, tick_time );
     }
 
-    if ( !buff->freeze_stacks() )
+    if ( !buff->freeze_stacks )
     {
       if ( !buff->reverse )
       {
@@ -632,6 +632,7 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
     tick_zero( false ),
     tick_on_application( false ),
     partial_tick( false ),
+    freeze_stacks( false ),
     last_start(),
     last_trigger(),
     last_expire(),
@@ -1012,6 +1013,12 @@ buff_t* buff_t::set_period( timespan_t period )
   return this;
 }
 
+buff_t* buff_t::modify_period( timespan_t duration )
+{
+  set_period( buff_period + duration );
+  return this;
+}
+
 buff_t* buff_t::add_invalidate( cache_e c )
 {
   if ( c == CACHE_NONE )
@@ -1123,7 +1130,7 @@ buff_t* buff_t::set_default_value_from_effect_type( effect_subtype_t a_type, pro
   {
     sim->error(
         "ERROR SETTING BUFF DEFAULT VALUE: {} (id={}) has no matching effect with subtype:{} property:{} type:{}",
-        name(), s_data->id(), a_type, p_type, e_type );
+        name(), s_data->id(), static_cast<int>(a_type), static_cast<int>(p_type), static_cast<int>(e_type) );
   }
 
   return this;
@@ -1375,6 +1382,11 @@ buff_t* buff_t::apply_affecting_effect( const spelleffect_data_t& effect )
       case P_MAX_STACKS:
         modify_max_stack( as<int>( effect.base_value() ) );
         sim->print_debug( "{} maximum stacks modified by {} to {}", *this, effect.base_value(), max_stack() );
+        break;
+
+      case P_TICK_TIME:
+        modify_period( effect.time_value() );
+        sim->print_debug( "{} tick period modified by {} to {}", *this, effect.time_value(), buff_period );
         break;
 
       case P_EFFECT_1:
@@ -2156,17 +2168,27 @@ void buff_t::start( int stacks, double value, timespan_t duration )
   }
 
   timespan_t period = tick_time();
-  if ( tick_behavior != buff_tick_behavior::NONE && period > timespan_t::zero() &&
-       ( period <= d || d == timespan_t::zero() ) )
+  if ( tick_behavior != buff_tick_behavior::NONE && period > timespan_t::zero() && ( period <= d || d == 0_ms ) )
   {
-    current_tick = 0;
+    // non-async or the first async stack should not have an existing tick_event
+    assert( !tick_event || ( stack_behavior == buff_stack_behavior::ASYNCHRONOUS && current_stack > 1 ) );
 
-    assert( !tick_event );
-    tick_event = make_event<tick_t>( *sim, this, period, current_value, reverse ? reverse_stack_reduction : stacks );
+    // cancel tick_event for buffs that are both async & clip
+    if ( tick_event && tick_behavior == buff_tick_behavior::CLIP )
+    {
+      event_t::cancel( tick_event );
+    }
+
+    // start new tick_event for normal, 1st stack of async, and async & clip buffs
+    if ( !tick_event )
+    {
+      current_tick = 0;
+      tick_event = make_event<tick_t>( *sim, this, period, current_value, reverse ? reverse_stack_reduction : stacks );
+    }
 
     if ( ( tick_zero || ( tick_on_application && before_stacks == 0 ) ) && tick_callback )
     {
-      tick_callback( this, expiration.empty() ? -1 : static_cast<int>( remains() / period ), timespan_t::zero() );
+      tick_callback( this, expiration.empty() ? -1 : static_cast<int>( remains() / period ), 0_ms );
     }
   }
 }
@@ -2965,7 +2987,7 @@ stat_buff_t::stat_buff_t( actor_pair_t q, util::string_view name, const spell_da
   }
 }
 
-stat_buff_t* stat_buff_t::add_stat( stat_e s, double a, const std::function<bool( const stat_buff_t& )>& c )
+stat_buff_t* stat_buff_t::add_stat( stat_e s, double a, const stat_check_fn& c )
 {
   if ( !manual_stats_added )
   {
@@ -2977,6 +2999,18 @@ stat_buff_t* stat_buff_t::add_stat( stat_e s, double a, const std::function<bool
   stats.emplace_back( s, a, c );
 
   return this;
+}
+
+stat_buff_t* stat_buff_t::add_stat_from_effect( size_t i, double a, const stat_check_fn& c )
+{
+  auto stat = util::translate_rating_mod( data().effectN( i ).misc_value1() );
+  if ( stat == STAT_NONE )
+  {
+    sim->error( "{} cannot add stat from effect#{}: STAT_NONE", name(), i );
+    return this;
+  }
+
+  return add_stat( stat, a, c );
 }
 
 void stat_buff_t::bump( int stacks, double /* value */ )
@@ -3317,10 +3351,13 @@ damage_buff_t::damage_buff_t( actor_pair_t q, util::string_view name )
 {
 }
 
-damage_buff_t::damage_buff_t( actor_pair_t q, util::string_view name, const spell_data_t* spell )
+damage_buff_t::damage_buff_t( actor_pair_t q, util::string_view name, const spell_data_t* spell, bool parse_data )
   : buff_t( q, name, spell, nullptr )
 {
-  parse_spell_data( spell );
+  if ( parse_data )
+  {
+    parse_spell_data( spell );
+  }
 }
 
 damage_buff_t::damage_buff_t( actor_pair_t q, util::string_view name, const spell_data_t* spell, const conduit_data_t& conduit )
@@ -3332,7 +3369,13 @@ damage_buff_t::damage_buff_t( actor_pair_t q, util::string_view name, const spel
   }
 }
 
-damage_buff_t* damage_buff_t::parse_spell_data( const spell_data_t* spell, double conduit_value )
+damage_buff_t::damage_buff_t( actor_pair_t q, util::string_view name, const spell_data_t* spell, double talent_value )
+  : buff_t( q, name, spell, nullptr )
+{
+  parse_spell_data( spell, 0.0, talent_value );
+}
+
+damage_buff_t* damage_buff_t::parse_spell_data( const spell_data_t* spell, double conduit_value, double talent_value )
 {
   if ( !spell->ok() )
     return this;
@@ -3343,11 +3386,19 @@ damage_buff_t* damage_buff_t::parse_spell_data( const spell_data_t* spell, doubl
     if ( !e.ok() || e.type() != E_APPLY_AURA )
       continue;
 
-    // Pass down the conduit override value if this is the first effect
-    double multiplier = ( idx == 1 ) ? conduit_value : 0.0;
+    double multiplier = 0.0;
+
+    // Pass down the conduit override value only if this is the first effect
+    if ( conduit_value != 0.0 && idx == 1 )
+      multiplier = conduit_value;
+
+    // If a talent value is supplied, overwrite all entries with it
+    if ( talent_value != 0.0 )
+      multiplier = talent_value;
 
     if ( e.subtype() == A_MOD_AUTO_ATTACK_PCT || e.subtype() == A_MOD_AUTO_ATTACK_FROM_CASTER )
     {
+      assert( auto_attack_mod.multiplier == 1.0 && auto_attack_mod.effect_idx == 0 && "AA multiplier has already been set" );
       set_auto_attack_mod( spell, idx, multiplier );
       sim->print_debug( "{} damage buff AA multiplier initialized to {}", *this, auto_attack_mod.multiplier );
     }
@@ -3355,17 +3406,31 @@ damage_buff_t* damage_buff_t::parse_spell_data( const spell_data_t* spell, doubl
     {
       if ( e.property_type() == P_GENERIC )
       {
+        assert( direct_mod.multiplier == 1.0 && direct_mod.effect_idx == 0 && "Direct multiplier has already been set" );
         set_direct_mod( spell, idx, multiplier );
         sim->print_debug( "{} damage buff direct multiplier initialized to {}", *this, direct_mod.multiplier );
       }
       else if ( e.property_type() == P_TICK_DAMAGE )
       {
+        assert( periodic_mod.multiplier == 1.0 && periodic_mod.effect_idx == 0 && "Periodic multiplier has already been set" );
         set_periodic_mod( spell, idx, multiplier );
         sim->print_debug( "{} damage buff periodic multiplier initialized to {}", *this, periodic_mod.multiplier );
       }
     }
+    else if ( e.subtype() == A_ADD_FLAT_MODIFIER )
+    {
+      if ( e.property_type() == P_CRIT )
+      {
+        assert( crit_chance_mod.multiplier == 1.0 && crit_chance_mod.effect_idx == 0 && "Crit chance multiplier has already been set" );
+        set_crit_chance_mod( spell, idx, multiplier );
+        add_invalidate( CACHE_CRIT_CHANCE );
+        sim->print_debug( "{} damage buff crit chance multiplier initialized to {}", *this, crit_chance_mod.multiplier );
+      }
+    }
     else if ( e.subtype() == A_MOD_DAMAGE_FROM_CASTER_SPELLS )
     {
+      assert( direct_mod.multiplier == 1.0 && direct_mod.effect_idx == 0 && "Direct multiplier has already been set" );
+      assert( periodic_mod.multiplier == 1.0 && periodic_mod.effect_idx == 0 && "Periodic multiplier has already been set" );
       set_direct_mod( spell, idx, multiplier );
       set_periodic_mod( spell, idx, multiplier );
       sim->print_debug( "{} damage buff direct multiplier initialized to {}", *this, direct_mod.multiplier );
@@ -3456,6 +3521,17 @@ damage_buff_t* damage_buff_t::set_auto_attack_mod( double multiplier )
 damage_buff_t* damage_buff_t::set_auto_attack_mod( const spell_data_t* s, size_t effect_idx, double multiplier )
 { return set_buff_mod( auto_attack_mod, s, effect_idx, multiplier ); }
 
+damage_buff_t* damage_buff_t::set_crit_chance_mod( double multiplier )
+{ return set_crit_chance_mod( spell_data_t::nil(), 0, multiplier ); }
+
+damage_buff_t* damage_buff_t::set_crit_chance_mod( const spell_data_t* s, size_t effect_idx, double multiplier )
+{ return set_buff_mod( crit_chance_mod, s, effect_idx, multiplier ); }
+
+bool damage_buff_t::is_affecting( const spell_data_t* s )
+{
+  return is_affecting_direct( s ) || is_affecting_periodic( s ) || is_affecting_crit_chance( s );
+}
+
 bool damage_buff_t::is_affecting_direct( const spell_data_t* s )
 {
   if ( !direct_mod.s_data || !direct_mod.s_data->ok() || direct_mod.effect_idx == 0 )
@@ -3479,6 +3555,20 @@ bool damage_buff_t::is_affecting_periodic( const spell_data_t* s )
     return true;
 
   if ( s->affected_by_label( periodic_mod.s_data->effectN( periodic_mod.effect_idx ) ) )
+    return true;
+
+  return false;
+}
+
+bool damage_buff_t::is_affecting_crit_chance( const spell_data_t* s )
+{
+  if ( !crit_chance_mod.s_data || !crit_chance_mod.s_data->ok() || crit_chance_mod.effect_idx == 0 )
+    return false;
+
+  if ( s->affected_by( crit_chance_mod.s_data->effectN( crit_chance_mod.effect_idx ) ) )
+    return true;
+
+  if ( s->affected_by_label( crit_chance_mod.s_data->effectN( crit_chance_mod.effect_idx ) ) )
     return true;
 
   return false;

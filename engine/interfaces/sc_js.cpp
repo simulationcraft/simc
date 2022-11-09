@@ -308,3 +308,8 @@ namespace js {
     return *this;
   }
 } // js
+
+void rapidjson::sc_format_to( const rapidjson::ParseErrorCode& errorCode, fmt::format_context::iterator out )
+{ 
+  fmt::format_to(out, "{}", rapidjson::GetParseError_En(errorCode));
+}

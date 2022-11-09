@@ -8,6 +8,7 @@
 #include "player/player.hpp"
 #include "sim/sim.hpp"
 #include "util/xml.hpp"
+#include "interfaces/sc_js.hpp"
 
 #include "rapidjson/document.h"
 #include "rapidjson/stringbuffer.h"
@@ -109,15 +110,15 @@ bool wowhead::download_item_data( item_t& item, wowhead_e source, cache::behavio
 
       if (json.HasParseError())
       {
-        item.sim->errorf("Unable to parse JSON data for item id '%u': %s",
-          id, json.GetParseError());
+        item.sim->error("Unable to parse JSON data for item id '{}': {} @ {}",
+          id, json.GetParseError(), json.GetErrorOffset());
         return false;
       }
 
       if (jsonequip.HasParseError())
       {
-        item.sim->errorf("Unable to parse JSON data for item id '%u': %s",
-          id, jsonequip.GetParseError());
+        item.sim->error("Unable to parse JSON data for item id '{}': {} @ {}",
+          id, jsonequip.GetParseError(), json.GetErrorOffset());
         return false;
       }
 

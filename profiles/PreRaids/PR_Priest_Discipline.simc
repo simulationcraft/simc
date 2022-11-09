@@ -5,7 +5,7 @@ level=60
 race=mechagnome
 role=spell
 position=ranged_back
-talents=3020310
+talents=
 covenant=kyrian
 soulbind=pelagos,combat_meditation/courageous_ascension:4
 
@@ -42,14 +42,11 @@ actions+=/divine_star
 actions+=/halo
 actions+=/penance
 actions+=/power_word_solace
-# Hold Shadow Covenant if Boon of the Ascended cooldown is up or the buff is active.
-actions+=/shadow_covenant,if=!covenant.kyrian|(!cooldown.boon_of_the_ascended.up&!buff.boon_of_the_ascended.up)
+actions+=/shadow_covenant
 actions+=/schism
 actions+=/mindgames
 actions+=/fae_guardians
 actions+=/unholy_nova
-actions+=/boon_of_the_ascended
-actions+=/call_action_list,name=boon,if=buff.boon_of_the_ascended.up
 actions+=/mindbender
 actions+=/spirit_shell
 actions+=/purge_the_wicked,if=!ticking
@@ -62,9 +59,6 @@ actions+=/shadow_word_pain,if=refreshable&!talent.purge_the_wicked.enabled
 actions+=/smite,if=spell_targets.holy_nova<3
 actions+=/holy_nova,if=spell_targets.holy_nova>=3
 actions+=/shadow_word_pain
-
-actions.boon=ascended_blast
-actions.boon+=/ascended_nova
 
 actions.racials=arcane_torrent,if=mana.pct<=95
 actions.racials+=/blood_fury

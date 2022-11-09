@@ -39,29 +39,30 @@ enum rppm_modifier_type_e
 {
   RPPM_MODIFIER_HASTE = 1,
   RPPM_MODIFIER_CRIT,
-  RPPM_MODIFIER_CLASS_MASK,
+  RPPM_MODIFIER_CLASS,
   RPPM_MODIFIER_SPEC,
-  RPPM_MODIFIER_UNK,
+  RPPM_MODIFIER_RACE,
   RPPM_MODIFIER_ILEVEL,
   RPPM_MODIFIER_UNK_ADJUST
 };
 
 enum item_bonus_type
 {
-  ITEM_BONUS_ILEVEL    = 1,
-  ITEM_BONUS_MOD       = 2,
-  ITEM_BONUS_QUALITY   = 3,
-  ITEM_BONUS_DESC      = 4,
-  ITEM_BONUS_SUFFIX    = 5,
-  ITEM_BONUS_SOCKET    = 6,
-  ITEM_BONUS_REQ_LEVEL = 8,
-  ITEM_BONUS_SCALING   = 11, // Scaling based on ScalingStatDistribution.db2
-  ITEM_BONUS_SCALING_2 = 13, // Scaling based on ScalingStatDistribution.db2
-  ITEM_BONUS_SET_ILEVEL= 14,
-  ITEM_BONUS_ADD_RANK  = 17, // Add artifact power rank to a specific trait
+  ITEM_BONUS_ILEVEL          = 1,
+  ITEM_BONUS_MOD             = 2,
+  ITEM_BONUS_QUALITY         = 3,
+  ITEM_BONUS_DESC            = 4,
+  ITEM_BONUS_SUFFIX          = 5,
+  ITEM_BONUS_SOCKET          = 6,
+  ITEM_BONUS_REQ_LEVEL       = 8,
+  ITEM_BONUS_SCALING         = 11,  // Scaling based on ScalingStatDistribution.db2
+  ITEM_BONUS_SCALING_2       = 13,  // Scaling based on ScalingStatDistribution.db2
+  ITEM_BONUS_SET_ILEVEL      = 14,
+  ITEM_BONUS_ADD_RANK        = 17,  // Add artifact power rank to a specific trait
   ITEM_BONUS_ADD_ITEM_EFFECT = 23,
-  ITEM_BONUS_MOD_ITEM_STAT = 25, // Modify item stat to type
-  ITEM_BONUS_ILEVEL_IN_PVP = 36,  // Item has a higher level in PvP context
+  ITEM_BONUS_MOD_ITEM_STAT   = 25,  // Modify item stat to type
+  ITEM_BONUS_ILEVEL_IN_PVP   = 36,  // Item has a higher level in PvP context
+  ITEM_BONUS_SET_ILEVEL_2    = 42   // Used in some DF (10.0) crafted items
 };
 
 enum proc_types
@@ -411,34 +412,38 @@ enum item_spell_trigger_type
 /* If you add socket colors here, update dbc::valid_gem_color() too */
 enum item_socket_color
 {
-  SOCKET_COLOR_NONE                 = 0,
-  SOCKET_COLOR_META                 = 1,
-  SOCKET_COLOR_RED                  = 2,
-  SOCKET_COLOR_YELLOW               = 4,
-  SOCKET_COLOR_BLUE                 = 8,
+  SOCKET_COLOR_NONE                 = 0x0000000,
+  SOCKET_COLOR_META                 = 0x0000001,
+  SOCKET_COLOR_RED                  = 0x0000002,
+  SOCKET_COLOR_YELLOW               = 0x0000004,
+  SOCKET_COLOR_BLUE                 = 0x0000008,
   SOCKET_COLOR_ORANGE               = SOCKET_COLOR_RED | SOCKET_COLOR_YELLOW,
   SOCKET_COLOR_PURPLE               = SOCKET_COLOR_RED | SOCKET_COLOR_BLUE,
   SOCKET_COLOR_GREEN                = SOCKET_COLOR_BLUE | SOCKET_COLOR_YELLOW,
-  SOCKET_COLOR_HYDRAULIC            = 16,
+  SOCKET_COLOR_HYDRAULIC            = 0x0000010,
   SOCKET_COLOR_PRISMATIC            = SOCKET_COLOR_RED | SOCKET_COLOR_YELLOW | SOCKET_COLOR_BLUE,
-  SOCKET_COLOR_COGWHEEL             = 32,
-  // Legion relic data begins here
-  SOCKET_COLOR_IRON                 = 64,
-  SOCKET_COLOR_BLOOD                = 128,
-  SOCKET_COLOR_SHADOW               = 256,
-  SOCKET_COLOR_FEL                  = 512,
-  SOCKET_COLOR_ARCANE               = 1024,
-  SOCKET_COLOR_FROST                = 2048,
-  SOCKET_COLOR_FIRE                 = 4096,
-  SOCKET_COLOR_WATER                = 8192,
-  SOCKET_COLOR_LIFE                 = 16384,
-  SOCKET_COLOR_WIND                 = 32768,
-  SOCKET_COLOR_HOLY                 = 65536,
-  SOCKET_COLOR_RED_PUNCHCARD        = 131072,
-  SOCKET_COLOR_YELLOW_PUNCHCARD     = 262144,
-  SOCKET_COLOR_BLUE_PUNCHCARD       = 524288,
-  SOCKET_COLOR_SHARD_OF_DOMINATION  = 1048576,
-  SOCKET_COLOR_CRYSTALLIC           = 8388608,
+  SOCKET_COLOR_COGWHEEL             = 0x0000020,
+  // Legion
+  SOCKET_COLOR_IRON                 = 0x0000040,
+  SOCKET_COLOR_BLOOD                = 0x0000080,
+  SOCKET_COLOR_SHADOW               = 0x0000100,
+  SOCKET_COLOR_FEL                  = 0x0000200,
+  SOCKET_COLOR_ARCANE               = 0x0000400,
+  SOCKET_COLOR_FROST                = 0x0000800,
+  SOCKET_COLOR_FIRE                 = 0x0001000,
+  SOCKET_COLOR_WATER                = 0x0002000,
+  SOCKET_COLOR_LIFE                 = 0x0004000,
+  SOCKET_COLOR_WIND                 = 0x0008000,
+  SOCKET_COLOR_HOLY                 = 0x0010000,
+  // BFA
+  SOCKET_COLOR_RED_PUNCHCARD        = 0x0020000,
+  SOCKET_COLOR_YELLOW_PUNCHCARD     = 0x0040000,
+  SOCKET_COLOR_BLUE_PUNCHCARD       = 0x0080000,
+  // Shadowlands
+  SOCKET_COLOR_SHARD_OF_DOMINATION  = 0x0100000,
+  SOCKET_COLOR_CRYSTALLIC           = 0x0800000,
+  // Dragonflight
+  SOCKET_COLOR_TINKER               = 0x1000000,
   SOCKET_COLOR_MAX,
   SOCKET_COLOR_RELIC                = SOCKET_COLOR_IRON | SOCKET_COLOR_BLOOD  | SOCKET_COLOR_SHADOW |
                                       SOCKET_COLOR_FEL  | SOCKET_COLOR_ARCANE | SOCKET_COLOR_FROST |
@@ -561,39 +566,40 @@ enum rating_mod_type {
 // Property (misc_value) types for
 // A_ADD_PCT_MODIFIER, A_ADD_FLAT_MODIFIER
 enum property_type_t {
-  P_GENERIC           = 0,
-  P_DURATION          = 1,
-  P_THREAT            = 2,
-  P_EFFECT_1          = 3,
-  P_STACK             = 4,
-  P_RANGE             = 5,
-  P_RADIUS            = 6,
-  P_CRIT              = 7,
-  P_EFFECTS           = 8,
-  P_PUSHBACK          = 9,
-  P_CAST_TIME         = 10,
-  P_COOLDOWN          = 11,
-  P_EFFECT_2          = 12,
-  P_UNUSED_1          = 13,
-  P_RESOURCE_COST     = 14,
-  P_CRIT_DAMAGE       = 15,
-  P_PENETRATION       = 16,
-  P_TARGET            = 17,
-  P_PROC_CHANCE       = 18,
-  P_TICK_TIME         = 19,
-  P_TARGET_BONUS      = 20, // Improved Revenge
-  P_GCD               = 21, // Only used for flat modifiers?
-  P_TICK_DAMAGE       = 22,
-  P_EFFECT_3          = 23,
-  P_SPELL_POWER       = 24,
-  P_UNUSED_2          = 25,
-  P_PROC_FREQUENCY    = 26,
-  P_DAMAGE_TAKEN      = 27,
-  P_DISPEL_CHANCE     = 28,
-  P_EFFECT_4          = 32,
-  P_EFFECT_5          = 33,
-  P_RESOURCE_GEN      = 34,
-  P_MAX_STACKS        = 37,
+  P_GENERIC             = 0,
+  P_DURATION            = 1,
+  P_THREAT              = 2,
+  P_EFFECT_1            = 3,
+  P_STACK               = 4,
+  P_RANGE               = 5,
+  P_RADIUS              = 6,
+  P_CRIT                = 7,
+  P_EFFECTS             = 8,
+  P_PUSHBACK            = 9,
+  P_CAST_TIME           = 10,
+  P_COOLDOWN            = 11,
+  P_EFFECT_2            = 12,
+  P_UNUSED_1            = 13,
+  P_RESOURCE_COST       = 14,
+  P_CRIT_DAMAGE         = 15,
+  P_PENETRATION         = 16,
+  P_TARGET              = 17, // Chain Targets
+  P_PROC_CHANCE         = 18,
+  P_TICK_TIME           = 19,
+  P_TARGET_BONUS        = 20, // Improved Revenge
+  P_GCD                 = 21, // Only used for flat modifiers?
+  P_TICK_DAMAGE         = 22,
+  P_EFFECT_3            = 23,
+  P_SPELL_POWER         = 24,
+  P_UNUSED_2            = 25,
+  P_PROC_FREQUENCY      = 26,
+  P_DAMAGE_TAKEN        = 27,
+  P_DISPEL_CHANCE       = 28,
+  P_EFFECT_4            = 32,
+  P_EFFECT_5            = 33,
+  P_RESOURCE_GEN        = 34,
+  P_CHAIN_TARGET_RANGE  = 35,
+  P_MAX_STACKS          = 37,
   P_MAX
 };
 
@@ -808,6 +814,7 @@ enum effect_type_t : unsigned {
     E_254 = 254,
     E_255 = 255,
     E_256 = 256,
+    E_REDUCE_REMAINING_COOLDOWN = 290,
     E_MAX
 };
 
@@ -951,7 +958,7 @@ enum effect_subtype_t : unsigned {
     A_MOD_HEALING_DONE = 135,
     A_MOD_HEALING_DONE_PERCENT = 136,
     A_MOD_TOTAL_STAT_PERCENTAGE = 137,
-    A_MOD_HASTE = 138,
+    A_MOD_MELEE_HASTE = 138,
     A_FORCE_REACTION = 139,
     A_MOD_RANGED_HASTE = 140,
     A_MOD_RANGED_AMMO_HASTE = 141,
@@ -1005,7 +1012,7 @@ enum effect_subtype_t : unsigned {
     A_MOD_RATING = 189,
     A_MOD_FACTION_REPUTATION_GAIN = 190,
     A_USE_NORMAL_MOVEMENT_SPEED = 191,
-    A_HASTE_MELEE = 192,
+    A_MOD_MELEE_RANGED_HASTE = 192,
     A_HASTE_ALL = 193,
     A_MOD_IGNORE_ABSORB_SCHOOL = 194,
     A_MOD_IGNORE_ABSORB_FOR_SPELL = 195,
@@ -1033,7 +1040,7 @@ enum effect_subtype_t : unsigned {
     A_217 = 217,
     A_ADD_PCT_LABEL_MODIFIER = 218,
     A_ADD_FLAT_LABEL_MODIFIER = 219,
-    A_MOD_RATING_FROM_STAT = 220,
+    A_MODIFY_SCHOOL = 220,
     A_221 = 221,
     A_222 = 222,
     A_223 = 223,
@@ -1143,7 +1150,7 @@ enum effect_subtype_t : unsigned {
     A_327 = 327,
     A_328 = 328,
     A_329 = 329,
-    A_330 = 330,
+    A_CAST_WHILE_MOVING_WHITELIST = 330,
     A_331 = 331,
     A_OVERRIDE_ACTION_SPELL = 332,
     A_333 = 333,
@@ -1282,6 +1289,7 @@ enum spell_attribute : unsigned
   SX_REQ_OFF_HAND                   = 120u,
   SX_TREAT_AS_PERIODIC              = 121u,
   SX_CAN_PROC_FROM_PROCS            = 122u,
+  SX_DISABLE_TARGET_MULT            = 136u,
   SX_DISABLE_WEAPON_PROCS           = 151u,
   SX_TICK_ON_APPLICATION            = 169u,
   SX_DOT_HASTED                     = 173u,
@@ -1295,6 +1303,7 @@ enum spell_attribute : unsigned
   SX_DURATION_HASTED                = 273u,
   SX_DOT_HASTED_MELEE               = 278u,
   SX_FIXED_TRAVEL_TIME              = 292u,
+  SX_DISABLE_TARGET_POSITIVE_MULT   = 321u,
   SX_TARGET_SPECIFIC_COOLDOWN       = 330u,
   SX_SCALE_ILEVEL                   = 354u,
   SX_ONLY_PROC_FROM_CLASS_ABILITIES = 415u,

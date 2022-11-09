@@ -18,9 +18,12 @@ SRC += \
     action$(PATHSEP)variable.cpp \
     buff$(PATHSEP)buff.cpp \
     class_modules$(PATHSEP)apl$(PATHSEP)apl_death_knight.cpp \
+    class_modules$(PATHSEP)apl$(PATHSEP)apl_evoker.cpp \
     class_modules$(PATHSEP)apl$(PATHSEP)apl_hunter.cpp \
     class_modules$(PATHSEP)apl$(PATHSEP)apl_monk.cpp \
+    class_modules$(PATHSEP)apl$(PATHSEP)apl_paladin.cpp \
     class_modules$(PATHSEP)apl$(PATHSEP)apl_priest.cpp \
+    class_modules$(PATHSEP)apl$(PATHSEP)apl_rogue.cpp \
     class_modules$(PATHSEP)apl$(PATHSEP)mage.cpp \
     class_modules$(PATHSEP)apl$(PATHSEP)warlock.cpp \
     class_modules$(PATHSEP)monk$(PATHSEP)sc_monk.cpp \
@@ -38,6 +41,7 @@ SRC += \
     class_modules$(PATHSEP)sc_demon_hunter.cpp \
     class_modules$(PATHSEP)sc_druid.cpp \
     class_modules$(PATHSEP)sc_enemy.cpp \
+    class_modules$(PATHSEP)sc_evoker.cpp \
     class_modules$(PATHSEP)sc_hunter.cpp \
     class_modules$(PATHSEP)sc_mage.cpp \
     class_modules$(PATHSEP)sc_rogue.cpp \
@@ -82,6 +86,7 @@ SRC += \
     dbc$(PATHSEP)spelltext_data.cpp \
     dbc$(PATHSEP)talent_data.cpp \
     dbc$(PATHSEP)temporary_enchant.cpp \
+    dbc$(PATHSEP)trait_data.cpp \
     interfaces$(PATHSEP)bcp_api.cpp \
     interfaces$(PATHSEP)sc_http.cpp \
     interfaces$(PATHSEP)sc_http_curl.cpp \
@@ -115,9 +120,11 @@ SRC += \
     player$(PATHSEP)set_bonus.cpp \
     player$(PATHSEP)soulbinds.cpp \
     player$(PATHSEP)spawner_base.cpp \
+    player$(PATHSEP)talent.cpp \
     player$(PATHSEP)target_specific.cpp \
     player$(PATHSEP)unique_gear.cpp \
     player$(PATHSEP)unique_gear_bfa.cpp \
+    player$(PATHSEP)unique_gear_dragonflight.cpp \
     player$(PATHSEP)unique_gear_helper.cpp \
     player$(PATHSEP)unique_gear_legion.cpp \
     player$(PATHSEP)unique_gear_shadowlands.cpp \

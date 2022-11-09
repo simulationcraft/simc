@@ -123,6 +123,7 @@ public:
   bool tick_zero;
   bool tick_on_application; // Immediately tick when the buff first goes up, but not on refreshes
   bool partial_tick; // Allow non-full duration ticks at the end of the buff period
+  bool freeze_stacks; // Do not increment/decrement stack on each tick
 
   // tmp data collection
 protected:
@@ -219,14 +220,6 @@ public:
   double check_stack_value() const
   {
     return current_stack * check_value();
-  }
-
-  /**
-   * Return true if tick should not call bump() or decrement()
-   */
-  virtual bool freeze_stacks()
-  {
-    return false;
   }
 
   // Get the base buff duration modified by the duration multiplier, if applicable
@@ -330,6 +323,7 @@ public:
   buff_t* set_cooldown( timespan_t duration );
   buff_t* modify_cooldown( timespan_t duration );
   buff_t* set_period( timespan_t );
+  buff_t* modify_period( timespan_t );
   //virtual buff_t* set_chance( double chance );
   buff_t* set_quiet( bool quiet );
   buff_t* add_invalidate( cache_e );
@@ -359,6 +353,7 @@ public:
   buff_t* set_tick_zero( bool v ) { tick_zero = v; return this; }
   buff_t* set_tick_on_application( bool v ) { tick_on_application = v; return this; }
   buff_t* set_partial_tick( bool v ) { partial_tick = v; return this; }
+  buff_t* set_freeze_stacks( bool v ) { freeze_stacks = v; return this; }
   buff_t* set_tick_time_behavior( buff_tick_time_behavior b ) { tick_time_behavior = b; return this; }
   buff_t* set_rppm( rppm_scale_e scale = RPPM_NONE, double freq = -1, double mod = -1);
   buff_t* set_trigger_spell( const spell_data_t* s );
@@ -385,12 +380,14 @@ protected:
 
 struct stat_buff_t : public buff_t
 {
+  using stat_check_fn = std::function<bool( const stat_buff_t& )>;
+
   struct buff_stat_t
   {
     stat_e stat;
     double amount;
     double current_value;
-    std::function<bool(const stat_buff_t&)> check_func;
+    stat_check_fn check_func;
 
     buff_stat_t( stat_e s, double a,
                  std::function<bool( const stat_buff_t& )> c = std::function<bool( const stat_buff_t& )>() )
@@ -416,7 +413,8 @@ struct stat_buff_t : public buff_t
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override;
   double value() override { stack(); return stats[ 0 ].current_value; }
 
-  stat_buff_t* add_stat( stat_e s, double a, const std::function<bool(const stat_buff_t&)>& c = std::function<bool(const stat_buff_t&)>() );
+  stat_buff_t* add_stat( stat_e s, double a, const stat_check_fn& c = stat_check_fn() );
+  stat_buff_t* add_stat_from_effect( size_t i, double a, const stat_check_fn& c = stat_check_fn() );
 
   stat_buff_t( actor_pair_t q, util::string_view name );
   stat_buff_t( actor_pair_t q, util::string_view name, const spell_data_t*, const item_t* item = nullptr );
@@ -487,12 +485,14 @@ struct damage_buff_t : public buff_t
   damage_buff_modifier_t direct_mod;
   damage_buff_modifier_t periodic_mod;
   damage_buff_modifier_t auto_attack_mod;
+  damage_buff_modifier_t crit_chance_mod;
 
   damage_buff_t( actor_pair_t q, util::string_view name );
-  damage_buff_t( actor_pair_t q, util::string_view name, const spell_data_t* );
+  damage_buff_t( actor_pair_t q, util::string_view name, const spell_data_t*, bool parse_data = true );
   damage_buff_t( actor_pair_t q, util::string_view name, const spell_data_t*, const conduit_data_t& );
+  damage_buff_t( actor_pair_t q, util::string_view name, const spell_data_t*, double );
 
-  damage_buff_t* parse_spell_data( const spell_data_t*, double = 0.0 );
+  damage_buff_t* parse_spell_data( const spell_data_t*, double = 0.0, double = 0.0 );
   damage_buff_t* apply_mod_affecting_effect( damage_buff_modifier_t&, const spelleffect_data_t& );
 
   buff_t* apply_affecting_effect( const spelleffect_data_t& effect ) override;
@@ -515,66 +515,89 @@ struct damage_buff_t : public buff_t
   damage_buff_t* set_periodic_mod( const spell_data_t*, size_t, double = 0.0 );
   damage_buff_t* set_auto_attack_mod( double );
   damage_buff_t* set_auto_attack_mod( const spell_data_t*, size_t, double = 0.0 );
+  damage_buff_t* set_crit_chance_mod( double );
+  damage_buff_t* set_crit_chance_mod( const spell_data_t*, size_t, double = 0.0 );
 
+  bool is_affecting( const spell_data_t* );
   bool is_affecting_direct( const spell_data_t* );
   bool is_affecting_periodic( const spell_data_t* );
+  bool is_affecting_crit_chance( const spell_data_t* );
 
-  // Get current direct damage buff value + benefit tracking.
+  // Get current direct damage buff multiplier value + benefit tracking.
   double value_direct()
   {
     buff_t::stack();
     return current_stack ? direct_mod.multiplier : 1.0;
   }
 
-  // Get current direct damage buff value multiplied by current stacks + benefit tracking.
+  // Get current direct damage buff multiplier value multiplied by current stacks + benefit tracking.
   double stack_value_direct()
   { return 1.0 + current_stack * ( value_direct() - 1.0 ); }
 
-  // Get current direct damage buff value + NO benefit tracking.
+  // Get current direct damage buff multiplier value + NO benefit tracking.
   double check_value_direct() const
   { return current_stack ? direct_mod.multiplier : 1.0; }
 
-  // Get current direct damage buff value multiplied by current stacks + NO benefit tracking.
+  // Get current direct damage buff multiplier value multiplied by current stacks + NO benefit tracking.
   double check_stack_value_direct() const
   { return 1.0 + current_stack * ( check_value_direct() - 1.0 ); }
 
-  // Get current periodic damage buff value + benefit tracking.
+  // Get current periodic damage buff multiplier value + benefit tracking.
   double value_periodic()
   {
     buff_t::stack();
     return current_stack ? periodic_mod.multiplier : 1.0;
   }
 
-  // Get current periodic damage buff value multiplied by current stacks + benefit tracking.
+  // Get current periodic damage buff multiplier value multiplied by current stacks + benefit tracking.
   double stack_value_periodic()
   { return 1.0 + current_stack * ( value_periodic() - 1.0 ); }
 
-  // Get current periodic damage buff value + NO benefit tracking.
+  // Get current periodic damage buff multiplier value + NO benefit tracking.
   double check_value_periodic() const
   { return current_stack ? periodic_mod.multiplier : 1.0; }
 
-  // Get current periodic damage buff value multiplied by current stacks + NO benefit tracking.
+  // Get current periodic damage buff multiplier value multiplied by current stacks + NO benefit tracking.
   double check_stack_value_periodic() const
   { return 1.0 + current_stack * ( check_value_periodic() - 1.0 ); }
 
-  // Get current AA damage buff value + benefit tracking.
+  // Get current AA damage buff multiplier value + benefit tracking.
   double value_auto_attack()
   {
     buff_t::stack();
     return current_stack ? auto_attack_mod.multiplier : 1.0;
   }
 
-  // Get current AA damage buff value multiplied by current stacks + benefit tracking.
+  // Get current AA damage buff multiplier value multiplied by current stacks + benefit tracking.
   double stack_value_auto_attack()
   { return 1.0 + current_stack * ( value_auto_attack() - 1.0 ); }
 
-  // Get current AA damage buff value + NO benefit tracking.
+  // Get current AA damage buff multiplier value + NO benefit tracking.
   double check_value_auto_attack() const
   { return current_stack ? auto_attack_mod.multiplier : 1.0; }
 
-  // Get current AA damage buff value multiplied by current stacks + NO benefit tracking.
+  // Get current AA damage buff multiplier value multiplied by current stacks + NO benefit tracking.
   double check_stack_value_auto_attack() const
   { return 1.0 + current_stack * ( check_value_auto_attack() - 1.0 ); }
+
+  // Get current additive crit chance buff value + benefit tracking.
+  double value_crit_chance()
+  {
+    buff_t::stack();
+    return current_stack ? crit_chance_mod.multiplier - 1.0 : 0.0;
+  }
+
+  // Get current additive crit chance buff value multiplied by current stacks + benefit tracking.
+  double stack_value_crit_chance()
+  { return current_stack * value_crit_chance(); }
+
+  // Get current additive crit chance buff value + NO benefit tracking.
+  double check_value_crit_chance() const
+  { return current_stack ? crit_chance_mod.multiplier - 1.0 : 0.0; }
+
+  // Get current additive crit chance buff value multiplied by current stacks + NO benefit tracking.
+  double check_stack_value_crit_chance() const
+  { return current_stack * check_value_crit_chance(); }
 
 protected:
   damage_buff_t* set_buff_mod( damage_buff_modifier_t&, double );

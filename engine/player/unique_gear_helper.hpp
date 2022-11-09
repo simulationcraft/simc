@@ -25,12 +25,13 @@
 
 namespace unique_gear
 {
-  
 // Old-style special effect registering functions
 void register_special_effect( unsigned spell_id, const char* encoded_str );
 void register_special_effect( unsigned spell_id, std::function<void( special_effect_t& )> init_callback,
                               bool fallback = false );
-bool create_fallback_buffs( const special_effect_t& effect, const std::vector<util::string_view>& names );
+// register multiple IDs to the same callback
+void register_special_effect( std::initializer_list<unsigned> spell_ids,
+                              std::function<void( special_effect_t& )> init_callback, bool fallback = false );
 
 // New-style special effect registering function
 template <typename T, typename = std::enable_if_t<std::is_base_of<scoped_callback_t, T>::value>>
@@ -43,6 +44,11 @@ void register_special_effect( unsigned spell_id, const T& cb, bool fallback = fa
 
   add_effect( dbitem );
 }
+
+// Utility helpers
+bool create_fallback_buffs( const special_effect_t& effect, const std::vector<util::string_view>& names );
+void init_feast( special_effect_t& effect, std::initializer_list<std::pair<stat_e, int>> stat_map);
+void DISABLED_EFFECT( special_effect_t& effect );
 
 // A scoped special effect callback that validates against a player class or specialization.
 struct class_scoped_callback_t : public scoped_callback_t
@@ -316,7 +322,12 @@ struct proc_action_t : public T_ACTION
     this->may_crit      = !this->data().flags( spell_attribute::SX_CANNOT_CRIT );
 
     if ( this->radius > 0 )
-      this->aoe = -1;
+    {
+      if ( this->data().max_targets() )
+        this->aoe = this->data().max_targets();
+      else
+        this->aoe = -1;
+    }
 
     // Reparse effect data for any item-dependent variables.
     for ( const auto& effect : this->data().effects() )
@@ -593,10 +604,16 @@ BUFF* create_buff( player_t* p, util::string_view name, ARGS&&... args )
   auto b = buff_t::find( p, name );
   if ( b != nullptr )
   {
+    p->sim->error( "Attempting to create buff {} when buff already exists.", b->name() );
     return debug_cast<BUFF*>( b );
   }
 
   return make_buff<BUFF>( p, name, std::forward<ARGS>( args )... );
 }
 
+template <typename BUFF, typename... ARGS>
+BUFF* create_buff( player_t* p, const spell_data_t* s, ARGS&&... args )
+{
+  return create_buff<BUFF>( p, util::tokenize_fn( s->name_cstr() ), s, std::forward<ARGS>( args )... );
+}
 } // unique_gear

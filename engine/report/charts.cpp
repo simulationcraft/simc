@@ -454,7 +454,7 @@ std::string get_metric_value_name( metric_value_e val )
     case VALUE_BURST_MAX:
       return "Maximum Burst";
     default:
-      return "Unknown " + util::to_string( val );
+      return fmt::format("Unknown {}", static_cast<int>( val ) );
   }
 }
 
@@ -1046,7 +1046,7 @@ bool chart::generate_heal_stats_sources( highchart::pie_chart_t& chart, const pl
       return false;
     if ( stat->actual_amount.mean() <= 0 )
       return false;
-    if ( stat->type == STATS_DMG )
+    if ( stat->type == STATS_DMG || stat->type == STATS_NEUTRAL )
       return false;
     return true;
   };

@@ -36,7 +36,9 @@ bool overridable_option( const option_tuple_t& tuple )
   return tuple.value.rfind( '=' ) == std::string::npos &&
          tuple.name.rfind( "actions", 0 ) == std::string::npos &&
          tuple.name.rfind( "items", 0 ) == std::string::npos &&
-         tuple.name.rfind( "raid_events", 0 ) == std::string::npos;
+         tuple.name.rfind( "raid_events", 0 ) == std::string::npos &&
+         tuple.name.rfind( "class_talents", 0 ) == std::string::npos &&
+         tuple.name.rfind( "spec_talents", 0 ) == std::string::npos;
 }
 
 std::string format_time( double seconds, bool milliseconds = true )
@@ -176,8 +178,8 @@ void simulate_profileset( sim_t* parent, profileset::profile_set_t& set, sim_t*&
 // Figure out if the option is the beginning of a player-scope option
 bool in_player_scope( const option_tuple_t& opt )
 {
-  static constexpr std::array<util::string_view, 14> player_scope_opts { {
-    "demonhunter", "deathknight", "druid", "hunter", "mage", "monk",
+  static constexpr std::array<util::string_view, 15> player_scope_opts { {
+    "demonhunter", "deathknight", "druid", "evoker", "hunter", "mage", "monk",
     "paladin", "priest", "rogue", "shaman", "warrior", "warlock",
     "armory", "local_json"
   } };

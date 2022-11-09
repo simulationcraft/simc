@@ -123,9 +123,25 @@ struct pet_melee_attack_t : public pet_action_base_t<melee_attack_t>
     : base_t( n, p, data ), trigger_mystic_touch( false )
   {
     base_t::apply_affecting_aura( p->o()->passives.aura_monk );
-    base_t::apply_affecting_aura( p->o()->spec.windwalker_monk );
-    base_t::apply_affecting_aura( p->o()->spec.brewmaster_monk );
-    base_t::apply_affecting_aura( p->o()->spec.mistweaver_monk );
+
+    switch ( p->o()->specialization() )
+    {
+      case MONK_WINDWALKER:
+        base_t::apply_affecting_aura( p->o()->spec.windwalker_monk );
+        break;
+
+      case MONK_BREWMASTER:
+        base_t::apply_affecting_aura( p->o()->spec.brewmaster_monk );
+        break;
+
+      case MONK_MISTWEAVER:
+        base_t::apply_affecting_aura( p->o()->spec.mistweaver_monk );
+        break;
+
+      default:
+        assert( 0 );
+        break;
+    }
 
     if ( p->o()->main_hand_weapon.group() == weapon_e::WEAPON_1H )
     {
@@ -137,10 +153,13 @@ struct pet_melee_attack_t : public pet_action_base_t<melee_attack_t>
   {
     double am = pet_action_base_t::action_multiplier();
 
-    if ( o()->buff.serenity->check() )
+    if ( o()->specialization() == MONK_WINDWALKER )
     {
-      if ( data().affected_by( o()->talent.serenity->effectN( 2 ) ) )
-        am *= 1 + o()->talent.serenity->effectN( 2 ).percent();
+      if ( o()->buff.serenity->check() )
+      {
+        if ( data().affected_by( o()->talent.windwalker.serenity->effectN( 2 ) ) )
+          am *= 1 + o()->talent.windwalker.serenity->effectN( 2 ).percent();
+      }
     }
 
     return am;
@@ -663,20 +682,42 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     {
       sef_melee_attack_t::impact( state );
 
-      if ( result_is_hit( state->result ) && o()->spec.spinning_crane_kick_2_ww->ok() )
-        o()->trigger_mark_of_the_crane( state );
+      o()->trigger_mark_of_the_crane( state );
 
       o()->trigger_keefers_skyreach( state );
     }
   };
 
+struct sef_blackout_kick_totm_proc_t : public sef_melee_attack_t
+  {
+    sef_blackout_kick_totm_proc_t( storm_earth_and_fire_pet_t* player )
+      : sef_melee_attack_t( "blackout_kick_totm_proc", player, player->o()->passives.totm_bok_proc )
+    {
+      background  = true;
+      trigger_gcd = timespan_t::zero();
+    }
+
+    void impact( action_state_t* state ) override
+    {
+      sef_melee_attack_t::impact( state );
+
+      o()->trigger_mark_of_the_crane( state );
+    }
+  };
+
   struct sef_blackout_kick_t : public sef_melee_attack_t
   {
+    sef_blackout_kick_totm_proc_t* bok_totm_proc;
+
     sef_blackout_kick_t( storm_earth_and_fire_pet_t* player )
       : sef_melee_attack_t( "blackout_kick", player, player->o()->spec.blackout_kick )
     {
-      // Hard Code the divider
-      base_dd_min = base_dd_max = 1;
+      if ( player->o()->talent.windwalker.teachings_of_the_monastery->ok() )
+      {
+        bok_totm_proc = new sef_blackout_kick_totm_proc_t( player );
+
+        add_child( bok_totm_proc );
+      }
     }
 
     void impact( action_state_t* state ) override
@@ -685,11 +726,9 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
 
       if ( result_is_hit( state->result ) )
       {
-        if ( o()->spec.spinning_crane_kick_2_ww->ok() )
-          o()->trigger_mark_of_the_crane( state );
+        o()->trigger_mark_of_the_crane( state );
 
-        if ( p()->buff.bok_proc_sef->up() )
-          p()->buff.bok_proc_sef->expire();
+        p()->buff.bok_proc_sef->expire();
       }
     }
   };
@@ -697,7 +736,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
   struct sef_rising_sun_kick_dmg_t : public sef_melee_attack_t
   {
     sef_rising_sun_kick_dmg_t( storm_earth_and_fire_pet_t* player )
-      : sef_melee_attack_t( "rising_sun_kick_dmg", player, player->o()->spec.rising_sun_kick->effectN( 1 ).trigger() )
+      : sef_melee_attack_t( "rising_sun_kick_dmg", player, player->o()->talent.general.rising_sun_kick->effectN( 1 ).trigger() )
     {
       background = true;
     }
@@ -706,8 +745,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     {
       double c = sef_melee_attack_t::composite_crit_chance();
 
-      if ( o()->buff.pressure_point->check() )
-        c += o()->buff.pressure_point->check_value();
+      c += o()->buff.pressure_point->check_value();
 
       return c;
     }
@@ -716,21 +754,17 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     {
       sef_melee_attack_t::impact( state );
 
-      if ( result_is_hit( state->result ) )
-      {
-        if ( o()->spec.combat_conditioning->ok() )
+      if ( o()->spec.combat_conditioning->ok() )
           state->target->debuffs.mortal_wounds->trigger();
 
-        if ( o()->spec.spinning_crane_kick_2_ww->ok() )
-          o()->trigger_mark_of_the_crane( state );
-      }
+      o()->trigger_mark_of_the_crane( state );
     }
   };
 
   struct sef_rising_sun_kick_t : public sef_melee_attack_t
   {
     sef_rising_sun_kick_t( storm_earth_and_fire_pet_t* player )
-      : sef_melee_attack_t( "rising_sun_kick", player, player->o()->spec.rising_sun_kick )
+      : sef_melee_attack_t( "rising_sun_kick", player, player->o()->talent.general.rising_sun_kick )
     {
       execute_action = new sef_rising_sun_kick_dmg_t( player );
     }
@@ -747,6 +781,17 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
       dot_duration = timespan_t::zero();
       school       = SCHOOL_PHYSICAL;
     }
+
+    double action_multiplier() const override
+    {
+      double am = sef_melee_attack_t::action_multiplier();
+
+      // SEF pets benefit from Transfer the Power
+      am *= 1 + p()->o()->buff.transfer_the_power->check_stack_value();
+
+      return am;
+    }
+
   };
 
   struct sef_fists_of_fury_tick_t : public sef_tick_action_t
@@ -755,7 +800,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
       : sef_tick_action_t( "fists_of_fury_tick", p, p->o()->passives.fists_of_fury_tick )
     {
       aoe                 = -1;
-      reduced_aoe_targets = p->o()->spec.fists_of_fury->effectN( 1 ).base_value();
+      reduced_aoe_targets = p->o()->talent.windwalker.fists_of_fury->effectN( 1 ).base_value();
       full_amount_targets = 1;
     }
   };
@@ -763,12 +808,12 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
   struct sef_fists_of_fury_t : public sef_melee_attack_t
   {
     sef_fists_of_fury_t( storm_earth_and_fire_pet_t* player )
-      : sef_melee_attack_t( "fists_of_fury", player, player->o()->spec.fists_of_fury )
+      : sef_melee_attack_t( "fists_of_fury", player, player->o()->talent.windwalker.fists_of_fury )
     {
       channeled = tick_zero = interrupt_auto_attack = true;
       may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
       // Hard code a 10% reduced cast time to not cause any clipping issues.
-      // Obtained from logs as of 04-05-2022
+      // Obtained from logs as of 2022-04-05
       dot_duration = data().duration() / 1.1;
       // Effect 1 shows a period of 166 milliseconds which appears to refer to the visual and not the tick period
       base_tick_time = ( dot_duration / 4 );
@@ -806,6 +851,8 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     {
       dual = background = true;
       aoe               = -1;
+
+      source_action = player->owner->find_action( "chi_explosion" );
     }
   };
 
@@ -832,32 +879,37 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
 
       tick_action = new sef_spinning_crane_kick_tick_t( player );
 
-      chi_explosion = new sef_chi_explosion_t( player );
+      if ( player->o()->shared.jade_ignition->ok() )
+        chi_explosion = new sef_chi_explosion_t( player );
+
     }
 
     void execute() override
     {
       sef_melee_attack_t::execute();
 
-      if ( o()->buff.chi_energy->up() )
+      if ( chi_explosion && o()->buff.chi_energy->up() )
+      {
+        chi_explosion->set_target( execute_state->target );
         chi_explosion->execute();
+      }
     }
   };
 
   struct sef_rushing_jade_wind_tick_t : public sef_tick_action_t
   {
     sef_rushing_jade_wind_tick_t( storm_earth_and_fire_pet_t* p )
-      : sef_tick_action_t( "rushing_jade_wind_tick", p, p->o()->talent.rushing_jade_wind->effectN( 1 ).trigger() )
+      : sef_tick_action_t( "rushing_jade_wind_tick", p, p->o()->talent.windwalker.rushing_jade_wind->effectN( 1 ).trigger() )
     {
       aoe                 = -1;
-      reduced_aoe_targets = p->o()->talent.rushing_jade_wind->effectN( 1 ).base_value();
+      reduced_aoe_targets = p->o()->talent.windwalker.rushing_jade_wind->effectN( 1 ).base_value();
     }
   };
 
   struct sef_rushing_jade_wind_t : public sef_melee_attack_t
   {
     sef_rushing_jade_wind_t( storm_earth_and_fire_pet_t* player )
-      : sef_melee_attack_t( "rushing_jade_wind", player, player->o()->talent.rushing_jade_wind )
+      : sef_melee_attack_t( "rushing_jade_wind", player, player->o()->talent.windwalker.rushing_jade_wind )
     {
       dual = true;
 
@@ -911,7 +963,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     };
 
     sef_whirling_dragon_punch_t( storm_earth_and_fire_pet_t* player )
-      : sef_melee_attack_t( "whirling_dragon_punch", player, player->o()->talent.whirling_dragon_punch )
+      : sef_melee_attack_t( "whirling_dragon_punch", player, player->o()->talent.windwalker.whirling_dragon_punch )
     {
       channeled = false;
 
@@ -924,6 +976,8 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
         auto delay = base_tick_time * i;
         ticks[i] = 
           new sef_whirling_dragon_punch_tick_t( player, delay );
+          
+        add_child( ticks[ i ] );    
       }
     }
 
@@ -938,37 +992,60 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     }
   };
 
-  struct sef_fist_of_the_white_tiger_oh_t : public sef_melee_attack_t
+  struct sef_strike_of_the_windlord_oh_t : public sef_melee_attack_t
   {
-    sef_fist_of_the_white_tiger_oh_t( storm_earth_and_fire_pet_t* player )
-      : sef_melee_attack_t( "fist_of_the_white_tiger_offhand", player, player->o()->talent.fist_of_the_white_tiger )
+    sef_strike_of_the_windlord_oh_t( storm_earth_and_fire_pet_t* player )
+      : sef_melee_attack_t( "strike_of_the_windlord_offhand", player, player->o()->talent.windwalker.strike_of_the_windlord->effectN( 4 ).trigger() )
     {
       may_dodge = may_parry = may_block = may_miss = true;
       dual                                         = true;
+      aoe                                          = -1;
 
       energize_type = action_energize::NONE;
     }
 
-    void impact( action_state_t* state ) override
+    // Damage must be divided on non-main target by the number of targets
+    double composite_aoe_multiplier( const action_state_t* state ) const override
     {
-      sef_melee_attack_t::impact( state );
-
-      if ( result_is_hit( state->result ) )
+      if ( state->target != target )
       {
-        if ( o()->spec.spinning_crane_kick_2_ww->ok() )
-          o()->trigger_mark_of_the_crane( state );
+        return 1.0 / state->n_targets;
       }
+
+      return 1.0;
+    }
+
+    void execute() override
+    {
+      sef_melee_attack_t::execute();
     }
   };
 
-  struct sef_fist_of_the_white_tiger_t : public sef_melee_attack_t
+  struct sef_strike_of_the_windlord_t : public sef_melee_attack_t
   {
-    sef_fist_of_the_white_tiger_t( storm_earth_and_fire_pet_t* player )
-      : sef_melee_attack_t( "fist_of_the_white_tiger_mainhand", player,
-                            player->o()->talent.fist_of_the_white_tiger->effectN( 2 ).trigger() )
+    sef_strike_of_the_windlord_t( storm_earth_and_fire_pet_t* player )
+      : sef_melee_attack_t( "strike_of_the_windlord_mainhand", player,
+                            player->o()->talent.windwalker.strike_of_the_windlord->effectN( 3 ).trigger() )
     {
       may_dodge = may_parry = may_block = may_miss = true;
       dual                                         = true;
+      aoe                                          = -1;
+    }
+
+    // Damage must be divided on non-main target by the number of targets
+    double composite_aoe_multiplier( const action_state_t* state ) const override
+    {
+      if ( state->target != target )
+      {
+        return 1.0 / state->n_targets;
+      }
+
+      return 1.0;
+    }
+
+    void execute() override
+    {
+      sef_melee_attack_t::execute();
     }
   };
 
@@ -988,7 +1065,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     sef_chi_wave_damage_t* wave;
 
     sef_chi_wave_t( storm_earth_and_fire_pet_t* player )
-      : sef_spell_t( "chi_wave", player, player->o()->talent.chi_wave ), wave( new sef_chi_wave_damage_t( player ) )
+      : sef_spell_t( "chi_wave", player, player->o()->talent.general.chi_wave ), wave( new sef_chi_wave_damage_t( player ) )
     {
       may_crit = may_miss = hasted_ticks = false;
       tick_zero = tick_may_crit = true;
@@ -1108,13 +1185,14 @@ public:
 
     attacks.at( (int)sef_ability_e::SEF_TIGER_PALM ) = new sef_tiger_palm_t( this );
     attacks.at( (int)sef_ability_e::SEF_BLACKOUT_KICK ) = new sef_blackout_kick_t( this );
+    attacks.at( (int)sef_ability_e::SEF_BLACKOUT_KICK_TOTM ) = new sef_blackout_kick_totm_proc_t( this );
     attacks.at( (int)sef_ability_e::SEF_RISING_SUN_KICK ) = new sef_rising_sun_kick_t( this );
     attacks.at( (int)sef_ability_e::SEF_FISTS_OF_FURY )   = new sef_fists_of_fury_t( this );
     attacks.at( (int)sef_ability_e::SEF_SPINNING_CRANE_KICK ) = new sef_spinning_crane_kick_t( this );
     attacks.at( (int)sef_ability_e::SEF_RUSHING_JADE_WIND )   = new sef_rushing_jade_wind_t( this );
     attacks.at( (int)sef_ability_e::SEF_WHIRLING_DRAGON_PUNCH ) = new sef_whirling_dragon_punch_t( this );
-    attacks.at( (int)sef_ability_e::SEF_FIST_OF_THE_WHITE_TIGER ) = new sef_fist_of_the_white_tiger_t( this );
-    attacks.at( (int)sef_ability_e::SEF_FIST_OF_THE_WHITE_TIGER_OH ) = new sef_fist_of_the_white_tiger_oh_t( this );
+    attacks.at( (int)sef_ability_e::SEF_STRIKE_OF_THE_WINDLORD ) = new sef_strike_of_the_windlord_t( this );
+    attacks.at( (int)sef_ability_e::SEF_STRIKE_OF_THE_WINDLORD_OH ) = new sef_strike_of_the_windlord_oh_t( this );
 
     spells.at( sef_spell_index( (int)sef_ability_e::SEF_CHI_WAVE ) ) = new sef_chi_wave_t( this );
     spells.at( sef_spell_index( (int)sef_ability_e::SEF_CRACKLING_JADE_LIGHTNING ) ) = new sef_crackling_jade_lightning_t( this );
@@ -1161,15 +1239,15 @@ public:
   {
     monk_pet_t::create_buffs();
 
-    buff.bok_proc_sef =
-        make_buff( this, "bok_proc_sef", o()->passives.bok_proc )
+    buff.bok_proc_sef = make_buff( this, "bok_proc_sef", o()->passives.bok_proc )
+            ->set_trigger_spell( o()->spec.combo_breaker )
             ->set_quiet( true );  // In-game does not show this buff but I would like to use it for background stuff;
 
-    buff.rushing_jade_wind_sef = make_buff( this, "rushing_jade_wind_sef", o()->talent.rushing_jade_wind )
+    buff.rushing_jade_wind_sef = make_buff( this, "rushing_jade_wind_sef", o()->talent.windwalker.rushing_jade_wind )
                                      ->set_can_cancel( true )
                                      ->set_tick_zero( true )
                                      ->set_cooldown( timespan_t::zero() )
-                                     ->set_period( o()->talent.rushing_jade_wind->effectN( 1 ).period() )
+                                     ->set_period( o()->talent.windwalker.rushing_jade_wind->effectN( 1 ).period() )
                                      ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
                                      ->set_duration( sim->expected_iteration_time * 2 )
                                      ->set_tick_behavior( buff_tick_behavior::CLIP )
@@ -1179,9 +1257,6 @@ public:
                                        else
                                          d->expire( timespan_t::from_millis( 1 ) );
                                      } );
-
-    buff.primordial_power =
-        new buffs::primordial_power_buff_t( *this, "sef_primordial_power", o()->passives.primordial_power );
   }
 
   void trigger_attack( sef_ability_e ability, const action_t* source_action )
@@ -1260,8 +1335,8 @@ private:
       parse_options( options_str );
       s_data_reporting = p->o()->passives.crackling_tiger_lightning;
 
-      dot_duration        = p->o()->spec.invoke_xuen->duration();
-      cooldown->duration  = p->o()->spec.invoke_xuen->duration();                // we're done when Xuen despawns
+      dot_duration        = p->o()->talent.windwalker.invoke_xuen_the_white_tiger->duration();
+      cooldown->duration  = p->o()->talent.windwalker.invoke_xuen_the_white_tiger->duration();                // we're done when Xuen despawns
 
       tick_action = new crackling_tiger_lightning_tick_t( p );
     }
@@ -1299,8 +1374,7 @@ public:
   {
     double cpm = monk_pet_t::composite_player_multiplier( school );
 
-    if ( o()->conduit.xuens_bond->ok() )
-      cpm *= 1 + o()->conduit.xuens_bond.percent();
+    cpm *= 1 + ( o()->conduit.xuens_bond->ok() ? o()->conduit.xuens_bond.percent() : o()->shared.xuens_bond->effectN( 1 ).percent() );
 
     return cpm;
   }
@@ -1412,8 +1486,7 @@ public:
   {
     double cpm = monk_pet_t::composite_player_multiplier( school );
 
-    if ( o()->conduit.xuens_bond->ok() )
-      cpm *= 1 + o()->conduit.xuens_bond.percent();
+    cpm *= 1 + ( o()->conduit.xuens_bond->ok() ? o()->conduit.xuens_bond.percent() : o()->shared.xuens_bond->effectN( 1 ).percent() );
 
     return cpm;
   }
@@ -1468,7 +1541,9 @@ private:
       // goal.
       //
       //  - emallson
-      split_aoe_damage = true;
+      // As a temporary measure only split all damage while the talent is active.
+      if (p->o()->talent.brewmaster.improved_invoke_niuzao_the_black_ox->ok() )
+        split_aoe_damage = true;
     }
 
     double bonus_da( const action_state_t* s ) const override
@@ -1478,9 +1553,9 @@ private:
       auto purify_amount = o()->buff.recent_purifies->check_value();
       auto actual_damage = purify_amount;
 
-      if ( o()->spec.invoke_niuzao_2->ok() )
+      if ( o()->talent.brewmaster.improved_invoke_niuzao_the_black_ox->ok() )
       {
-        actual_damage *= o()->spec.invoke_niuzao_2->effectN( 1 ).percent();
+        actual_damage *= o()->talent.brewmaster.improved_invoke_niuzao_the_black_ox->effectN( 1 ).percent();
         o()->sim->print_debug( "applying bonus purify damage (base stomp: {}, original: {}, reduced: {})", b,
                                purify_amount, actual_damage );
       }
@@ -1492,8 +1567,7 @@ private:
     {
       double am = pet_melee_attack_t::action_multiplier();
 
-      if ( o()->conduit.walk_with_the_ox->ok() )
-        am *= 1 + o()->conduit.walk_with_the_ox.percent();
+      am *= 1 + ( o()->conduit.walk_with_the_ox->ok() ? o()->conduit.walk_with_the_ox.percent() : o()->shared.walk_with_the_ox->effectN( 1 ).percent() );
 
       return am;
     }
@@ -1583,7 +1657,9 @@ private:
       // goal.
       //
       //  - emallson
-      split_aoe_damage = true;
+      // As a temporary measure only split all damage while the talent is active.
+      if ( p->o()->talent.brewmaster.improved_invoke_niuzao_the_black_ox->ok() )
+        split_aoe_damage = true;
     }
 
     double bonus_da( const action_state_t* s ) const override
@@ -1593,9 +1669,9 @@ private:
       auto purify_amount = o()->buff.recent_purifies->check_value();
       auto actual_damage = purify_amount;
 
-      if ( o()->spec.invoke_niuzao_2->ok() )
+      if ( o()->talent.brewmaster.improved_invoke_niuzao_the_black_ox->ok() )
       {
-        actual_damage *= o()->spec.invoke_niuzao_2->effectN( 1 ).percent();
+        actual_damage *= o()->talent.brewmaster.improved_invoke_niuzao_the_black_ox->effectN( 1 ).percent();
         o()->sim->print_debug( "applying bonus purify damage (base stomp: {}, original: {}, reduced: {})", b,
                                purify_amount, actual_damage );
       }
@@ -1607,8 +1683,7 @@ private:
     {
       double am = pet_melee_attack_t::action_multiplier();
 
-      if ( o()->conduit.walk_with_the_ox->ok() )
-        am *= 1 + o()->conduit.walk_with_the_ox.percent();
+      am *= 1 + ( o()->conduit.walk_with_the_ox->ok() ? o()->conduit.walk_with_the_ox.percent() : o()->shared.walk_with_the_ox->effectN( 1 ).percent() );
 
       return am;
     }
@@ -1811,17 +1886,13 @@ public:
   void create_buffs() override
   {
     monk_pet_t::create_buffs();
-
-    buff.primordial_potential =
-        make_buff( this, "fallen_order_primordial_potential", o()->passives.primordial_potential );
   }
 
   double composite_player_multiplier( school_e school ) const override
   {
     double cpm = monk_pet_t::composite_player_multiplier( school );
 
-    if ( o()->conduit.imbued_reflections->ok() )
-      cpm *= 1 + o()->conduit.imbued_reflections.percent();
+    cpm *= 1 + o()->conduit.imbued_reflections.percent();
 
     return cpm;
   }
@@ -2109,8 +2180,7 @@ public:
   {
     double cpm = monk_pet_t::composite_player_multiplier( school );
 
-    if ( o()->conduit.imbued_reflections->ok() )
-      cpm *= 1 + o()->conduit.imbued_reflections.percent();
+    cpm *= 1 + o()->conduit.imbued_reflections.percent();
 
     return cpm;
   }
@@ -2126,7 +2196,7 @@ public:
 
       trigger_mystic_touch    = true;
       aoe                     = -1;
-      reduced_aoe_targets     = o()->spec.keg_smash->effectN( 7 ).base_value();
+      reduced_aoe_targets     = o()->talent.brewmaster.keg_smash->effectN( 7 ).base_value();
       full_amount_targets     = 1;
       attack_power_mod.direct = p->o()->passives.fallen_monk_keg_smash->effectN( 2 ).ap_coeff();
       radius                  = p->o()->passives.fallen_monk_keg_smash->effectN( 2 ).radius();
@@ -2138,14 +2208,14 @@ public:
     {
       double am = pet_melee_attack_t::action_multiplier();
 
-      if ( o()->legendary.stormstouts_last_keg->ok() )
-        am *= 1 + o()->legendary.stormstouts_last_keg->effectN( 1 ).percent();
+      if ( o()->shared.stormstouts_last_keg && o()->shared.stormstouts_last_keg->ok() )
+        am *= 1 + o()->shared.stormstouts_last_keg->effectN( 1 ).percent();
 
-      if ( o()->conduit.scalding_brew->ok() )
+      if ( o()->shared.scalding_brew && o()->shared.scalding_brew->ok() )
       {
         auto td = o()->get_target_data( player->target );
         if ( td->dots.breath_of_fire->is_ticking() )
-          am *= 1 + o()->conduit.scalding_brew.percent();
+          am *= 1 + ( o()->conduit.scalding_brew->ok() ? o()->conduit.scalding_brew.percent() : o()->shared.scalding_brew->effectN( 1 ).percent() );
       }
 
       return am;
@@ -2295,8 +2365,7 @@ public:
   {
     double cpm = monk_pet_t::composite_player_multiplier( school );
 
-    if ( o()->conduit.imbued_reflections->ok() )
-      cpm *= 1 + o()->conduit.imbued_reflections.percent();
+    cpm *= 1 + o()->conduit.imbued_reflections.percent();
 
     return cpm;
   }
@@ -2436,8 +2505,7 @@ public:
   {
     double cpm = monk_pet_t::composite_player_multiplier ( school );
 
-    if ( o()->conduit.imbued_reflections->ok() )
-      cpm *= 1 + o()->conduit.imbued_reflections.percent();
+    cpm *= 1 + o()->conduit.imbued_reflections.percent();
 
     return cpm;
   }
@@ -2722,8 +2790,7 @@ public:
   {
     double cpm = monk_pet_t::composite_player_multiplier( school );
 
-    if ( o()->conduit.imbued_reflections->ok() )
-      cpm *= 1 + o()->conduit.imbued_reflections.percent();
+    cpm *= 1 + o()->conduit.imbued_reflections.percent();
 
     return cpm;
   }
@@ -2739,7 +2806,7 @@ public:
 
       trigger_mystic_touch    = true;
       aoe                     = -1;
-      reduced_aoe_targets     = o()->spec.keg_smash->effectN( 7 ).base_value();
+      reduced_aoe_targets     = o()->talent.brewmaster.keg_smash->effectN( 7 ).base_value();
       full_amount_targets     = 1;
       attack_power_mod.direct = p->o()->passives.fallen_monk_keg_smash->effectN( 2 ).ap_coeff();
       radius                  = p->o()->passives.fallen_monk_keg_smash->effectN( 2 ).radius();
@@ -2751,14 +2818,13 @@ public:
     {
       double am = pet_melee_attack_t::action_multiplier();
 
-      if ( o()->legendary.stormstouts_last_keg->ok() )
-        am *= 1 + o()->legendary.stormstouts_last_keg->effectN( 1 ).percent();
+      am *= 1 + o()->shared.stormstouts_last_keg->effectN( 1 ).percent();
 
-      if ( o()->conduit.scalding_brew->ok() )
+      if ( o()->shared.scalding_brew && o()->shared.scalding_brew->ok() )
       {
-        auto td = o()->find_target_data( player->target );
-        if ( td && td->dots.breath_of_fire->is_ticking() )
-          am *= 1 + o()->conduit.scalding_brew.percent();
+        auto td = o()->get_target_data( player->target );
+        if ( td->dots.breath_of_fire->is_ticking() )
+          am *= 1 + ( o()->conduit.scalding_brew->ok() ? o()->conduit.scalding_brew.percent() : o()->shared.scalding_brew->effectN( 1 ).percent() );
       }
 
       return am;
@@ -2912,8 +2978,7 @@ public:
   {
     double cpm = monk_pet_t::composite_player_multiplier( school );
 
-    if ( o()->conduit.imbued_reflections->ok() )
-      cpm *= 1 + o()->conduit.imbued_reflections.percent();
+    cpm *= 1 + o()->conduit.imbued_reflections.percent();
 
     return cpm;
   }
@@ -2983,6 +3048,155 @@ public:
     return monk_pet_t::create_action( name, options_str );
   }
 };
+
+// ==========================================================================
+// White Tiger Statue
+// ==========================================================================
+struct white_tiger_statue_t : public monk_pet_t
+{
+private:
+  struct claw_of_the_white_tiger_t : public pet_spell_t
+  {
+    claw_of_the_white_tiger_t( white_tiger_statue_t* p, util::string_view options_str )
+      : pet_spell_t( "claw_of_the_white_tiger", p, p->o()->passives.claw_of_the_white_tiger )
+    {
+      parse_options( options_str );
+      aoe = -1;
+    }
+  };
+
+public:
+  white_tiger_statue_t( monk_t* owner ) : monk_pet_t( owner, "white_tiger_statue", PET_MONK_STATUE, false, true )
+  {
+    npc_id                      = (int)o()->find_spell( 388686 )->effectN( 1 ).misc_value1();
+    main_hand_weapon.type       = WEAPON_BEAST;
+    main_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
+    main_hand_weapon.max_dmg    = dbc->spell_scaling( o()->type, level() );
+    main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
+    main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
+    owner_coeff.ap_from_ap      = 1.00;
+  }
+
+  void init_action_list() override
+  {
+    action_list_str = "claw_of_the_white_tiger";
+
+    pet_t::init_action_list();
+  }
+
+  action_t* create_action( util::string_view name, util::string_view options_str ) override
+  {
+    if ( name == "claw_of_the_white_tiger" )
+      return new claw_of_the_white_tiger_t( this, options_str );
+
+    return pet_t::create_action( name, options_str );
+  }
+};
+
+// ==========================================================================
+// Fury of Xuen Tiger
+// ==========================================================================
+struct fury_of_xuen_pet_t : public monk_pet_t
+{
+private:
+    struct melee_t : public pet_melee_t
+    {
+        melee_t(util::string_view n, fury_of_xuen_pet_t* player, weapon_t* weapon) : pet_melee_t(n, player, weapon)
+        {
+        }
+    };
+
+    struct crackling_tiger_lightning_tick_t : public pet_spell_t
+    {
+        crackling_tiger_lightning_tick_t(fury_of_xuen_pet_t* p)
+            : pet_spell_t("crackling_tiger_lightning_tick", p, p->o()->passives.crackling_tiger_lightning)
+        {
+            background = true;
+            merge_report = false;
+        }
+    };
+
+    struct crackling_tiger_lightning_t : public pet_spell_t
+    {
+        crackling_tiger_lightning_t(fury_of_xuen_pet_t* p, util::string_view options_str)
+            : pet_spell_t("crackling_tiger_lightning", p, p->o()->passives.crackling_tiger_lightning_driver)
+        {
+            parse_options(options_str);
+            s_data_reporting = p->o()->passives.crackling_tiger_lightning;
+
+            dot_duration = p->o()->passives.fury_of_xuen_haste_buff->duration();
+            cooldown->duration = p->o()->passives.fury_of_xuen_haste_buff->duration();
+
+            tick_action = new crackling_tiger_lightning_tick_t(p);
+        }
+
+        double last_tick_factor(const dot_t*, timespan_t, timespan_t) const override
+        {
+            return 0.0;
+        }
+
+        void impact( action_state_t* s ) override
+        {
+          auto owner = o();
+          owner->trigger_empowered_tiger_lightning( s, true, false );
+
+          pet_spell_t::impact( s );
+        }
+    };
+
+    struct auto_attack_t : public pet_auto_attack_t
+    {
+        auto_attack_t(fury_of_xuen_pet_t* player, util::string_view options_str) : pet_auto_attack_t(player)
+        {
+            parse_options(options_str);
+
+            player->main_hand_attack = new melee_t("melee_main_hand", player, &(player->main_hand_weapon));
+            player->main_hand_attack->base_execute_time = player->main_hand_weapon.swing_time;
+        }
+    };
+
+public:
+    fury_of_xuen_pet_t(monk_t* owner) : monk_pet_t(owner, "fury_of_xuen_tiger", PET_XUEN, false, true)
+    {
+        //npc_id                      = o()->passives.fury_of_xuen_haste_buff->effectN( 2 ).misc_value1();
+        main_hand_weapon.type       = WEAPON_BEAST;
+        main_hand_weapon.min_dmg    = dbc->spell_scaling(o()->type, level());
+        main_hand_weapon.max_dmg    = dbc->spell_scaling(o()->type, level());
+        main_hand_weapon.damage     = (main_hand_weapon.min_dmg + main_hand_weapon.max_dmg) / 2;
+        main_hand_weapon.swing_time = timespan_t::from_seconds( 1.0 );
+        owner_coeff.ap_from_ap      = 1.00;
+    }
+
+    double composite_player_multiplier(school_e school) const override
+    {
+        double cpm = monk_pet_t::composite_player_multiplier(school);
+
+        cpm *= 1 + ( o()->conduit.xuens_bond->ok() ? o()->conduit.xuens_bond.percent() : o()->shared.xuens_bond->effectN( 1 ).percent() );
+
+        return cpm;
+    }
+
+    void init_action_list() override
+    {
+        action_list_str = "auto_attack";
+        action_list_str += "/crackling_tiger_lightning";
+
+        pet_t::init_action_list();
+    }
+
+    action_t* create_action(util::string_view name, util::string_view options_str) override
+    {
+        
+        if (name == "crackling_tiger_lightning")
+            return new crackling_tiger_lightning_t(this, options_str);
+        
+        if (name == "auto_attack")
+            return new auto_attack_t(this, options_str);
+        
+        return pet_t::create_action(name, options_str);
+    }
+};
+
 }  // end namespace pets
 
 monk_t::pets_t::pets_t( monk_t* p )
@@ -2994,6 +3208,8 @@ monk_t::pets_t::pets_t( monk_t* p )
     tiger_adept( "fallen_monk_windwalker", p, []( monk_t* p ) { return new pets::tiger_adept_pet_t( p ); } ),
     crane_adept( "fallen_monk_mistweaver", p, []( monk_t* p ) { return new pets::crane_adept_pet_t( p ); } ),
     ox_adept( "fallen_monk_brewmaster", p, []( monk_t* p ) { return new pets::ox_adept_pet_t( p ); } ),
+    white_tiger_statue( "white_tiger_statue", p, []( monk_t* p ) { return new pets::white_tiger_statue_t( p ); } ),
+    fury_of_xuen_tiger( "fury_of_xuen_tiger", p, []( monk_t* p ) { return new pets::fury_of_xuen_pet_t( p ); }),
     call_to_arms_xuen( "call_to_arms_xuen", p, []( monk_t* p ) { return new pets::call_to_arms_xuen_pet_t( p ); } ),
     call_to_arms_niuzao( "call_to_arms_niuzao", p, []( monk_t* p ) { return new pets::call_to_arms_niuzao_pet_t( p ); } ),
     sinister_teaching_tiger_adept( "sinister_teaching_tiger_adept", p, []( monk_t* p ) { return new pets::sinister_teaching_tiger_adept_pet_t( p ); } ),
@@ -3010,7 +3226,7 @@ void monk_t::create_pets()
 {
   base_t::create_pets();
 
-/*  if ( spec.invoke_xuen->ok() && ( find_action( "invoke_xuen" ) || find_action( "invoke_xuen_the_white_tiger" ) ) )
+/*  if ( talent.windwalker.invoke_xuen_the_white_tiger->ok() && ( find_action( "invoke_xuen" ) || find_action( "invoke_xuen_the_white_tiger" ) ) )
   {
     pets.xuen = new pets::xuen_pet_t( this );
   }
@@ -3044,20 +3260,17 @@ void monk_t::create_pets()
 
 void monk_t::trigger_storm_earth_and_fire( const action_t* a, sef_ability_e sef_ability )
 {
-  if ( !spec.storm_earth_and_fire->ok() )
-  {
+  if ( specialization() != MONK_WINDWALKER )
     return;
-  }
+
+  if ( !talent.windwalker.storm_earth_and_fire->ok() )
+    return;
 
   if ( sef_ability == sef_ability_e::SEF_NONE )
-  {
     return;
-  }
 
   if ( !buff.storm_earth_and_fire->up() )
-  {
     return;
-  }
 
   // Trigger pet retargeting if sticky target is not defined, and the Monk used one of the Cyclone
   // Strike triggering abilities
@@ -3103,16 +3316,6 @@ bool monk_t::storm_earth_and_fire_fixate_ready( player_t* target )
       return true;
   }
   return false;
-}
-
-// monk_t::storm_earth_and_fire_trigger_primordial_power ==============================
-void monk_t::storm_earth_and_fire_trigger_primordial_power()
-{
-  if ( buff.storm_earth_and_fire->check() )
-  {
-    pets.sef[ (int)sef_pet_e::SEF_EARTH ]->buff.primordial_power->trigger();
-    pets.sef[ (int)sef_pet_e::SEF_FIRE ]->buff.primordial_power->trigger();
-  }
 }
 
 // monk_t::summon_storm_earth_and_fire ================================================

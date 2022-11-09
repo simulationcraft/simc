@@ -1,5 +1,5 @@
 #!/bin/bash
-CLASSES=(warrior hunter monk paladin rogue shaman mage warlock druid deathknight priest demonhunter)
+CLASSES=(warrior hunter monk paladin rogue shaman mage warlock druid deathknight priest demonhunter evoker)
 
 # get directory of this script
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
@@ -20,13 +20,6 @@ done
 
 FILE=SpellDataDump/allspells.txt
 ./engine/simc spell_query="spell" > $FILE.unix
-
-# convert unix line endings to windows since that's been the standard
-sed 's/$'"/`echo \\\r`/" $FILE.unix > $FILE
-rm $FILE.unix
-
-FILE=SpellDataDump/soulbind.txt
-./engine/simc spell_query="soulbind_spell" > $FILE.unix
 
 # convert unix line endings to windows since that's been the standard
 sed 's/$'"/`echo \\\r`/" $FILE.unix > $FILE

@@ -468,9 +468,9 @@ bool parse_talent_format( sim_t*             sim,
   {
     sim -> talent_input_format = talent_format::WOWHEAD;
   }
-  else if ( util::str_compare_ci( value, "numbers" ) || util::str_compare_ci( value, "default" ) )
+  else if ( util::str_compare_ci( value, "blizzard" ) || util::str_compare_ci( value, "default" ) )
   {
-    sim -> talent_input_format = talent_format::NUMBERS;
+    sim -> talent_input_format = talent_format::BLIZZARD;
   }
 
   return true;
@@ -1852,8 +1852,9 @@ void sim_t::combat_begin()
   for ( auto& target : target_list )
     target -> combat_begin();
 
-  if ( overrides.arcane_intellect ) auras.arcane_intellect -> override_buff();
+  if ( overrides.arcane_intellect ) auras.arcane_intellect->override_buff();
   if ( overrides.battle_shout ) auras.battle_shout->override_buff();
+  if ( overrides.mark_of_the_wild ) auras.mark_of_the_wild->override_buff();
   if ( overrides.power_word_fortitude ) auras.power_word_fortitude -> override_buff();
 
   for ( player_e i = PLAYER_NONE; i < PLAYER_MAX; ++i )
@@ -2257,7 +2258,10 @@ void sim_t::init_fight_style()
       max_time = timespan_t::from_seconds( 360.0 );
 
       optimal_raid = 0;
-      // it's reasonable to assume there will be a lust in the group
+      overrides.arcane_intellect = 1;
+      overrides.battle_shout = 1;
+      overrides.mark_of_the_wild = 0;
+      overrides.power_word_fortitude = 1;
       overrides.bloodlust = 1;
 
       shadowlands_opts.enable_rune_words = false;
@@ -2292,7 +2296,7 @@ void sim_t::init_fight_style()
     break;
     
     case FIGHT_STYLE_LIGHT_MOVEMENT:
-      raid_events_str += "/movement,players_only=1,cooldown=45,cooldown_stddev=15,distance=25,distance_min=20,distance_max=30,first=15";
+      raid_events_str += "/movement,players_only=1,cooldown=40,cooldown_stddev=10,distance=15,distance_min=10,distance_max=20,first=15";
       break;
     
     case FIGHT_STYLE_HEAVY_MOVEMENT:
@@ -2657,16 +2661,20 @@ void sim_t::init()
   }
 
   auras.arcane_intellect = make_buff( this, "arcane_intellect", dbc::find_spell( this, 1459 ) )
-                           ->set_default_value( dbc::find_spell( this, 1459 ) -> effectN( 1 ).percent() )
-                           ->add_invalidate( CACHE_INTELLECT );
+                               ->set_default_value( dbc::find_spell( this, 1459 )->effectN( 1 ).percent() )
+                               ->add_invalidate( CACHE_INTELLECT );
 
   auras.battle_shout = make_buff( this, "battle_shout", dbc::find_spell( this, 6673 ) )
-                        ->set_default_value( dbc::find_spell( this, 6673 )->effectN( 1 ).percent() )
-                        ->add_invalidate( CACHE_ATTACK_POWER );
+                           ->set_default_value( dbc::find_spell( this, 6673 )->effectN( 1 ).percent() )
+                           ->add_invalidate( CACHE_ATTACK_POWER );
+
+  auras.mark_of_the_wild = make_buff( this, "mark_of_the_wild", dbc::find_spell( this, 1126 ) )
+                               ->set_default_value( dbc::find_spell( this, 1126 )->effectN( 1 ).percent() )
+                               ->add_invalidate( CACHE_VERSATILITY );
 
   auras.power_word_fortitude = make_buff( this, "power_word_fortitude", dbc::find_spell( this, 21562 ) )
-                           ->set_default_value( dbc::find_spell( this, 21562 ) -> effectN( 1 ).percent() )
-                           ->add_invalidate( CACHE_STAMINA );
+                                   ->set_default_value( dbc::find_spell( this, 21562 )->effectN( 1 ).percent() )
+                                   ->add_invalidate( CACHE_STAMINA );
 
   // Fight style initialization must be performed before target creation and raid event initialization, since fight
   // styles may define/override these things.
@@ -3238,6 +3246,7 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
 
   overrides.arcane_intellect        = optimal_raid;
   overrides.battle_shout            = optimal_raid;
+  overrides.mark_of_the_wild        = optimal_raid;
   overrides.power_word_fortitude    = optimal_raid;
   overrides.windfury_totem          = optimal_raid;
 
@@ -3481,6 +3490,7 @@ void sim_t::create_options()
   add_option( opt_func( "optimal_raid", parse_optimal_raid ) );
   add_option( opt_int( "override.arcane_intellect", overrides.arcane_intellect ) );
   add_option( opt_int( "override.battle_shout", overrides.battle_shout ) );
+  add_option( opt_int( "override.mark_of_the_wild", overrides.mark_of_the_wild ) );
   add_option( opt_int( "override.power_word_fortitude", overrides.power_word_fortitude ) );
   add_option( opt_int( "override.windfury_totem", overrides.windfury_totem ) );
   add_option( opt_int( "override.chaos_brand", overrides.chaos_brand ) );
@@ -3588,6 +3598,7 @@ void sim_t::create_options()
   add_option( opt_func( "deathknight", parse_player ) );
   add_option( opt_func( "demonhunter", parse_player ) );
   add_option( opt_func( "druid", parse_player ) );
+  add_option( opt_func( "evoker", parse_player ) );
   add_option( opt_func( "hunter", parse_player ) );
   add_option( opt_func( "mage", parse_player ) );
   add_option( opt_func( "monk", parse_player ) );
@@ -3824,8 +3835,7 @@ void sim_t::create_options()
   add_option( opt_bool( "bfa.nyalotha", bfa_opts.nyalotha ) );
   add_option( opt_obsoleted( "bfa.infinite_stars_miss_chance" ) );
 
-  // applies to: "lavish_suramar_feast", battle for azeroth feasts
-  add_option( opt_bool( "feast_as_dps", feast_as_dps ) );
+  add_option( opt_deprecated( "feast_as_dps", "no longer necessary" ) );
 
   // Shadowlands
   add_option( opt_float( "shadowlands.combat_meditation_extend_chance", shadowlands_opts.combat_meditation_extend_chance, 0.0, 1.0 ) );
@@ -3877,7 +3887,13 @@ void sim_t::create_options()
   add_option( opt_timespan( "shadowlands.first_strike_period", shadowlands_opts.first_strike_period, 1_s, timespan_t::max() ) );
   add_option( opt_float( "shadowlands.adaptive_armor_fragment_uptime", shadowlands_opts.adaptive_armor_fragment_uptime, 0.0, 0.5 ) );
   add_option( opt_float( "shadowlands.soothing_shade_duration_multiplier", shadowlands_opts.soothing_shade_duration_multiplier, 0.0, 1.0 ) );
-  add_option( opt_timespan("shadowlands.jotungeirr_prepull_seconds", shadowlands_opts.jotungeirr_prepull_seconds, 0_s, 30_s));
+
+  // Dragonflight
+  add_option( opt_timespan( "dragonflight.darkmoon_deck_watcher_deplete", dragonflight_opts.darkmoon_deck_watcher_deplete, 0_ms, timespan_t::max() ) );
+  add_option( opt_string( "dragonflight.whispering_incarnate_icon_roles", dragonflight_opts.whispering_incarnate_icon_roles ) );
+  add_option( opt_float( "dragonflight.decoration_of_flame_miss_chance", dragonflight_opts.decoration_of_flame_miss_chance, 0.0, 1.0 ) );
+  add_option( opt_float( "dragonflight.manic_grieftorch_chance", dragonflight_opts.manic_grieftorch_chance, 0.0, 1.0 ) );
+  add_option( opt_timespan( "dragonflight.alltotem_of_the_master_period", dragonflight_opts.alltotem_of_the_master_period, 0_s, timespan_t::max() ) );
 }
 
 // sim_t::parse_option ======================================================

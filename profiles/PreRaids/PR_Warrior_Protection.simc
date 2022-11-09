@@ -5,7 +5,7 @@ level=60
 race=draenei
 role=tank
 position=front
-talents=3020011
+talents=
 covenant=kyrian
 soulbind=pelagos,combat_meditation/piercing_verdict:4
 
@@ -26,6 +26,7 @@ temporary_enchant=main_hand:shaded_sharpening_stone
 actions.precombat=flask
 actions.precombat+=/food
 actions.precombat+=/augmentation
+actions.precombat+=/battle_stance,toggle=on
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/fleshcraft
@@ -41,14 +42,9 @@ actions+=/berserking,if=buff.avatar.up
 actions+=/fireblood,if=buff.avatar.up
 actions+=/ancestral_call,if=buff.avatar.up
 actions+=/thunder_clap,if=buff.outburst.up&((buff.seeing_red.stack>6&cooldown.shield_slam.remains>2))
-actions+=/avatar,if=buff.outburst.down
 actions+=/potion,if=buff.avatar.up|target.time_to_die<25
 actions+=/spear_of_bastion
-actions+=/revenge,if=buff.revenge.up&(target.health.pct>20|spell_targets.thunder_clap>3)&cooldown.shield_slam.remains
-actions+=/ignore_pain,if=target.health.pct>=20&(target.health.pct>=80&!covenant.venthyr)&(rage>=85&cooldown.shield_slam.ready&buff.shield_block.up|rage>=60&cooldown.demoralizing_shout.ready&talent.booming_voice.enabled|rage>=70&cooldown.avatar.ready|rage>=40&cooldown.demoralizing_shout.ready&talent.booming_voice.enabled&buff.last_stand.up|rage>=55&cooldown.avatar.ready&buff.last_stand.up|rage>=80|rage>=55&cooldown.shield_slam.ready&buff.outburst.up&buff.shield_block.up|rage>=30&cooldown.shield_slam.ready&buff.outburst.up&buff.last_stand.up&buff.shield_block.up),use_off_gcd=1
 actions+=/shield_block,if=(buff.shield_block.down|buff.shield_block.remains<cooldown.shield_slam.remains)&target.health.pct>20
-actions+=/last_stand,if=target.health.pct>=90|target.health.pct<=20
-actions+=/demoralizing_shout,if=talent.booming_voice.enabled&rage<60
 actions+=/shield_slam,if=buff.outburst.up&rage<=55
 actions+=/run_action_list,name=aoe,if=spell_targets.thunder_clap>3
 actions+=/call_action_list,name=generic
@@ -57,17 +53,11 @@ actions+=/arcane_torrent,if=rage<80
 actions+=/lights_judgment
 
 actions.aoe=ravager
-actions.aoe+=/dragon_roar
-actions.aoe+=/revenge
-actions.aoe+=/thunder_clap
 actions.aoe+=/shield_slam
 
 actions.generic=ravager
-actions.generic+=/dragon_roar
 actions.generic+=/execute
 actions.generic+=/shield_slam
-actions.generic+=/thunder_clap,if=buff.outburst.down
-actions.generic+=/revenge
 actions.generic+=/devastate
 
 head=wrathbark_greathelm,id=178694,bonus_id=6807/1498/6646

@@ -334,8 +334,8 @@ struct holy_shock_t : public paladin_spell_t
   {
     double rm = paladin_spell_t::recharge_multiplier( cd );
 
-    if ( p()->buffs.avenging_wrath->check() && p()->talents.holy_sanctified_wrath->ok() )
-      rm *= 1.0 + p()->talents.holy_sanctified_wrath->effectN( 2 ).percent();
+    if ( p()->buffs.avenging_wrath->check() && p()->talents.sanctified_wrath->ok() )
+      rm *= 1.0 + p()->talents.sanctified_wrath->effectN( 2 ).percent();
 
     return rm;
   }
@@ -580,7 +580,6 @@ void paladin_t::init_spells_holy()
 
   talents.rule_of_law = find_talent_spell( "Rule of Law" );
 
-  talents.holy_sanctified_wrath = find_talent_spell( "Sanctified Wrath", PALADIN_HOLY );
   talents.avenging_crusader     = find_talent_spell( "Avenging Crusader" );
   talents.awakening             = find_talent_spell( "Awakening" );
 
@@ -596,7 +595,7 @@ void paladin_t::init_spells_holy()
   {
     spec.judgment_3 = find_specialization_spell( 231644 );
 
-    spells.judgment_debuff = find_spell( 214222 );
+    spells.judgment_debuff = find_spell( 197277 );
     spec.holy_shock_2      = find_spell( 272906 );
   }
 

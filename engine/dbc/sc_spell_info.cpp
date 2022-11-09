@@ -8,6 +8,7 @@
 #include "dbc.hpp"
 #include "dbc/item_set_bonus.hpp"
 #include "dbc/covenant_data.hpp"
+#include "dbc/trait_data.hpp"
 #include "player/covenant.hpp"
 #include "util/static_map.hpp"
 #include "util/string_view.hpp"
@@ -194,6 +195,21 @@ std::string concatenate( Range&& data,
   return s.str();
 }
 
+std::streamsize real_ppm_decimals( const spell_data_t* spell, const rppm_modifier_t& modifier )
+{
+  std::streamsize decimals = 3;
+  double rppm_val = spell->real_ppm() * ( 1.0 + modifier.coefficient );
+  if ( rppm_val >= 10 )
+  {
+    decimals += 2;
+  }
+  else if ( rppm_val >= 1 )
+  {
+    decimals += 1;
+  }
+  return decimals;
+}
+
 struct proc_map_entry_t {
   int flag;
   util::string_view proc;
@@ -231,7 +247,7 @@ struct class_map_entry_t {
   const char* name;
   player_e pt;
 };
-static constexpr std::array<class_map_entry_t, 14> _class_map { {
+static constexpr std::array<class_map_entry_t, 15> _class_map { {
   { nullptr, PLAYER_NONE },
   { "Warrior", WARRIOR },
   { "Paladin", PALADIN },
@@ -245,33 +261,35 @@ static constexpr std::array<class_map_entry_t, 14> _class_map { {
   { "Monk", MONK },
   { "Druid", DRUID },
   { "Demon Hunter", DEMON_HUNTER },
+  { "Evoker", EVOKER },
   { nullptr, PLAYER_NONE },
 } };
 
 static constexpr auto _race_map = util::make_static_map<unsigned, util::string_view>( {
-  {  0, "Human"     },
-  {  1, "Orc"       },
-  {  2, "Dwarf"     },
-  {  3, "Night Elf" },
-  {  4, "Undead"    },
-  {  5, "Tauren"    },
-  {  6, "Gnome"     },
-  {  7, "Troll"     },
-  {  8, "Goblin"    },
-  {  9, "Blood Elf" },
-  { 10, "Draenei"   },
-  { 11, "Dark Iron Dwarf" },
-  { 12, "Vulpera" },
-  { 13, "Mag'har Orc" },
-  { 14, "Mechagnome" },
-  { 21, "Worgen"    },
-  { 24, "Pandaren"  },
-  { 26, "Nightborne" },
+  {  0, "Human"               },
+  {  1, "Orc"                 },
+  {  2, "Dwarf"               },
+  {  3, "Night Elf"           },
+  {  4, "Undead"              },
+  {  5, "Tauren"              },
+  {  6, "Gnome"               },
+  {  7, "Troll"               },
+  {  8, "Goblin"              },
+  {  9, "Blood Elf"           },
+  { 10, "Draenei"             },
+  { 11, "Dark Iron Dwarf"     },
+  { 12, "Vulpera"             },
+  { 13, "Mag'har Orc"         },
+  { 14, "Mechagnome"          },
+  { 15, "Dracthyr"            },
+  { 21, "Worgen"              },
+  { 24, "Pandaren"            },
+  { 26, "Nightborne"          },
   { 27, "Highmountain Tauren" },
   { 28, "Void Elf"            },
   { 29, "Lightforged Draenei" },
-  { 30, "Zandalari Troll" },
-  { 31, "Kul Tiran" }
+  { 30, "Zandalari Troll"     },
+  { 31, "Kul Tiran"           }
 } );
 
 static constexpr auto _targeting_strings = util::make_static_map<unsigned, util::string_view>( {
@@ -314,6 +332,7 @@ static constexpr auto _resource_strings = util::make_static_map<int, util::strin
   { 15, "Demonic Fury",  },
   { 17, "Fury",          },
   { 18, "Pain",          },
+  { 19, "Essence",       },
 } );
 
 // Mappings from Classic EnumeratedString.db2
@@ -800,6 +819,7 @@ static constexpr auto _property_type_strings = util::make_static_map<int, util::
   { 32, "Spell Effect 4"            },
   { 33, "Spell Effect 5"            },
   { 34, "Spell Resource Generation" },
+  { 35, "Spell Chain Target Range"  },
   { 37, "Spell Max Stacks"          },
 } );
 
@@ -896,6 +916,7 @@ static constexpr auto _effect_type_strings = util::make_static_map<unsigned, uti
   { 174, "Apply Aura Pet"           },
   { 179, "Create Area Trigger"      },
   { 202, "Apply Player/Pet Aura"    },
+  { 290, "Reduce Remaining Cooldown"},
 } );
 
 static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, util::string_view>( {
@@ -1028,6 +1049,7 @@ static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, 
   { 216, "Modify Casting Speed"                         },
   { 218, "Apply Percent Modifier w/ Label"              },
   { 219, "Apply Flat Modifier w/ Label"                 },
+  { 220, "Modify Spell School"                          },
   { 224, "Grant Talent"                                 },
   { 226, "Periodic Dummy"                               },
   { 228, "Stealth Detection"                            },
@@ -1605,6 +1627,125 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
   return s;
 }
 
+static std::string trait_data_to_str( const dbc_t&                            dbc,
+                                      const spell_data_t*                     spell,
+                                      const std::vector<const trait_data_t*>& traits )
+{
+  std::vector<std::string> strings;
+
+  for ( const auto trait : traits )
+  {
+    std::vector<std::string> nibbles;
+
+    talent_tree tree = static_cast<talent_tree>( trait->tree_index );
+
+    std::vector<std::string> starters;
+    auto spec_idx = 0U;
+    while ( trait->id_spec_starter[ spec_idx ] != 0 && spec_idx < trait->id_spec_starter.size() )
+    {
+      auto specialization_str = util::inverse_tokenize( dbc::specialization_string(
+            static_cast<specialization_e>( trait->id_spec_starter[ spec_idx ] ) ) );
+      if ( util::str_compare_ci( specialization_str, "Unknown" ) )
+      {
+        starters.emplace_back( fmt::format( "{} ({})", specialization_str,
+          trait->id_spec_starter[ spec_idx ] ) );
+      }
+      else
+      {
+        starters.emplace_back( fmt::format( "{}", specialization_str ) );
+      }
+      ++spec_idx;
+    }
+
+    if ( !starters.empty() )
+    {
+      nibbles.emplace_back( fmt::format( "free=({})", util::string_join( starters, ", " ) ) );
+    }
+
+    nibbles.emplace_back( fmt::format( "tree={}", util::talent_tree_string( tree ) ) );
+    nibbles.emplace_back( fmt::format( "row={}", trait->row ) );
+    nibbles.emplace_back( fmt::format( "col={}", trait->col ) );
+    // Disabled for now as tree changes results in entirely new trees making NodeEntryID an unstable identifier
+    // nibbles.emplace_back( fmt::format( "entry_id={}", trait->id_trait_node_entry ) );
+    nibbles.emplace_back( fmt::format( "max_rank={}", trait->max_ranks ) );
+    nibbles.emplace_back( fmt::format( "req_points={}", trait->req_points ) );
+
+    if ( trait->selection_index != -1 )
+    {
+      nibbles.emplace_back( fmt::format( "select_idx={}", trait->selection_index ) );
+    }
+
+    if ( !util::str_compare_ci( spell->name_cstr(), trait->name ) )
+    {
+      nibbles.emplace_back( fmt::format( "name=\"{}\"", trait->name ) );
+    }
+
+    if ( trait->id_replace_spell > 0 )
+    {
+      const auto replace_spell = dbc.spell( trait->id_replace_spell );
+      nibbles.emplace_back( fmt::format( "replace=\"{}\" (id={})",
+            replace_spell->name_cstr(), trait->id_replace_spell ) );
+    }
+
+    if ( trait->id_override_spell > 0 )
+    {
+      const auto override_spell = dbc.spell( trait->id_override_spell );
+      nibbles.emplace_back( fmt::format( "override=\"{}\" (id={})",
+            override_spell->name_cstr(), trait->id_override_spell ) );
+    }
+
+    spec_idx = 0U;
+    std::vector<std::string> spec_strs;
+    while ( trait->id_spec[ spec_idx ] != 0 && spec_idx < trait->id_spec.size() )
+    {
+      auto specialization_str = util::inverse_tokenize( dbc::specialization_string(
+            static_cast<specialization_e>( trait->id_spec[ spec_idx ] ) ) );
+      if ( util::str_compare_ci( specialization_str, "Unknown" ) )
+      {
+        spec_strs.emplace_back( fmt::format( "{} ({})", specialization_str,
+          trait->id_spec[ spec_idx ] ) );
+      }
+      else
+      {
+        spec_strs.emplace_back( fmt::format( "{}", specialization_str ) );
+      }
+      ++spec_idx;
+    }
+
+    strings.emplace_back( fmt::format( "{} [{}]",
+      !spec_strs.empty() ? util::string_join( spec_strs, ", " ) : "Generic",
+      util::string_join( nibbles, ", " ) ) );
+
+    const auto trait_effects = trait_definition_effect_entry_t::find( trait->id_trait_definition,
+        dbc.ptr );
+
+    for ( const auto trait_effect : trait_effects )
+    {
+      std::vector<std::string> trait_effect_nibbles;
+
+      trait_effect_nibbles.emplace_back( fmt::format( "op={}", util::trait_definition_op_string(
+              static_cast<trait_definition_op>( trait_effect.operation ) ) ) );
+
+      auto curve_data = curve_point_t::find( trait_effect.id_curve, dbc.ptr );
+      if ( !curve_data.empty() )
+      {
+        std::vector<std::string> value_strs;
+        for ( const auto& point : curve_data )
+        {
+          value_strs.emplace_back( fmt::format( "{}", point.primary2 ) );
+        }
+
+        trait_effect_nibbles.emplace_back( fmt::format( "values=({})", util::string_join( value_strs, ", " ) ) );
+      }
+
+      strings.emplace_back( fmt::format( "Effect#{} [{}]", trait_effect.effect_index + 1,
+            util::string_join( trait_effect_nibbles, ", " ) ) );
+    }
+  }
+
+  return util::string_join( strings, "\n                 : " );
+}
+
 std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int level )
 {
   std::ostringstream s;
@@ -1644,6 +1785,12 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
   {
     fmt::print( s, "Replaces         : {} (id={})\n",
                 dbc.spell( replace_spell_id ) -> name_cstr(), replace_spell_id );
+  }
+
+  const auto talents = trait_data_t::find_by_spell( talent_tree::INVALID, spell->id(), 0, SPEC_NONE, dbc.ptr );
+  if ( !talents.empty() )
+  {
+    s << "Talent Entry     : " << trait_data_to_str( dbc, spell, talents ) << std::endl;
   }
 
   if ( spell -> class_mask() )
@@ -1734,7 +1881,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
   {
     s << "Resource         : ";
 
-    if ( pd.type() == POWER_MANA )
+    if ( pd.type() == POWER_MANA && pd._cost == 0 )
       s << pd.cost() * 100.0 << "%";
     else
       s << pd.cost();
@@ -1744,7 +1891,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     if ( pd.max_cost() != 0 )
     {
       s << "- ";
-      if ( pd.type() == POWER_MANA )
+      if ( pd.type() == POWER_MANA && pd._cost_max == 0  )
         s << ( pd.cost() + pd.max_cost() ) * 100.0 << "%";
       else
         s << ( pd.cost() + pd.max_cost() );
@@ -1978,76 +2125,66 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
   if ( spell->real_ppm() != 0 )
   {
     s << "Real PPM         : " << spell->real_ppm();
-    bool has_modifiers = false;
-    auto modifiers = rppm_modifier_t::find( spell->id(), dbc.ptr );
+    auto mod_span = rppm_modifier_t::find( spell->id(), dbc.ptr );
+
+    std::vector<rppm_modifier_t> modifiers( mod_span.begin(), mod_span.end() );
+    range::sort( modifiers, []( rppm_modifier_t a, rppm_modifier_t b ) {
+      return a.modifier_type < b.modifier_type;
+    } );
+
+    std::vector<std::string> mods;
     for ( const auto& modifier : modifiers )
     {
       switch ( modifier.modifier_type )
       {
         case RPPM_MODIFIER_HASTE:
-          if ( !has_modifiers )
-          {
-            s << " (";
-          }
-          s << "Haste multiplier, ";
-          has_modifiers = true;
+          mods.emplace_back( "Haste multiplier" );
           break;
         case RPPM_MODIFIER_CRIT:
-          if ( !has_modifiers )
-          {
-            s << " (";
-          }
-          s << "Crit multiplier, ";
-          has_modifiers = true;
+          mods.emplace_back( "Crit multiplier" );
           break;
         case RPPM_MODIFIER_ILEVEL:
-          if ( !has_modifiers )
-          {
-            s << " (";
-          }
-          s << "Itemlevel multiplier [base=" << modifier.type << "], ";
-          has_modifiers = true;
+          mods.emplace_back( fmt::format( "Itemlevel multiplier [base={}, coeff={}]",
+              modifier.type, modifier.coefficient ) );
           break;
-        case RPPM_MODIFIER_CLASS_MASK:
+        case RPPM_MODIFIER_CLASS:
         {
-          if ( !has_modifiers )
+          std::vector<std::string> class_str;
+          for ( player_e p = PLAYER_NONE; p < PLAYER_MAX; ++p )
           {
-            s << " (";
-          }
-
-          std::streamsize decimals = 3;
-          double rppm_val = spell->real_ppm() * ( 1.0 + modifier.coefficient );
-          if ( rppm_val >= 10 )
-            decimals += 2;
-          else if ( rppm_val >= 1 )
-            decimals += 1;
-          s.precision( decimals );
-          for ( unsigned int i = 1; i < std::size( _class_map ); i++ )
-          {
-            if ( ( modifier.type & ( 1 << ( i - 1 ) ) ) && _class_map[ i ].name )
+            if ( util::class_id_mask( p ) & modifier.type )
             {
-              s << _class_map[ i ].name << ": " << rppm_val << ", ";
+              class_str.emplace_back( util::inverse_tokenize( util::player_type_string( p ) ) );
             }
           }
-          has_modifiers = true;
+
+          s.precision( real_ppm_decimals( spell, modifier ) );
+          mods.emplace_back( fmt::format( "{}: {}", util::string_join( class_str, ", "),
+            ( spell->real_ppm() * ( 1.0 + modifier.coefficient ) ) ) );
           break;
         }
         case RPPM_MODIFIER_SPEC:
         {
-          if ( !has_modifiers )
+          s.precision( real_ppm_decimals( spell, modifier ) );
+          mods.emplace_back( fmt::format( "{}: {}",
+                util::specialization_string( static_cast<specialization_e>( modifier.type ) ),
+                ( spell->real_ppm() * ( 1.0 + modifier.coefficient ) ) ) );
+          break;
+        }
+        case RPPM_MODIFIER_RACE:
+        {
+          std::vector<std::string> race_str;
+          for ( race_e r = RACE_NONE; r < RACE_MAX; ++r )
           {
-            s << " (";
+            if ( util::race_mask( r ) & modifier.type )
+            {
+              race_str.emplace_back( util::inverse_tokenize( util::race_type_string( r ) ) );
+            }
           }
 
-          std::streamsize decimals = 3;
-          double rppm_val = spell->real_ppm() * ( 1.0 + modifier.coefficient );
-          if ( rppm_val >= 10 )
-            decimals += 2;
-          else if ( rppm_val >= 1 )
-            decimals += 1;
-          s.precision( decimals );
-          s << util::specialization_string( static_cast<specialization_e>( modifier.type ) ) << ": " << rppm_val << ", ";
-          has_modifiers = true;
+          s.precision( real_ppm_decimals( spell, modifier ) );
+          mods.emplace_back( fmt::format( "{}: {}", util::string_join( race_str, ", "),
+            ( spell->real_ppm() * ( 1.0 + modifier.coefficient ) ) ) );
           break;
         }
         default:
@@ -2055,10 +2192,9 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
       }
     }
 
-    if ( has_modifiers )
+    if ( !mods.empty() )
     {
-      s.seekp( -2, std::ios_base::cur );
-      s << ")";
+      s << " (" << util::string_join( mods, ", " ) << ")";
     }
     s << std::endl;
   }
@@ -2257,31 +2393,29 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
   return s.str();
 }
 
-std::string spell_info::talent_to_str( const dbc_t& /* dbc */, const talent_data_t* talent, int /* level */ )
+std::string spell_info::talent_to_str( const dbc_t& /* dbc */, const trait_data_t* talent, int /* level */ )
 {
   std::ostringstream s;
 
-  s <<   "Name         : " << talent -> name_cstr() << " (id=" << talent -> id() << ") " << std::endl;
-
-  if ( talent -> mask_class() )
+  s << "Name         : " << talent->name << std::endl;
+  s << "Entry        : " << talent->id_trait_node_entry << std::endl;
+  s << "Node         : " << talent->id_node << std::endl;
+  s << "Definition   : " << talent->id_trait_definition << std::endl;
+  s << "Tree         : " << util::talent_tree_string( static_cast<talent_tree>( talent->tree_index ) ) << std::endl;
+  s << "Class        : " << util::player_type_string( util::translate_class_id( talent->id_class ) ) << std::endl;
+  s << "Column       : " << talent->col << std::endl;
+  s << "Row          : " << talent->row << std::endl;
+  s << "Max Rank     : " << talent->max_ranks << std::endl;
+  s << "Spell        : " << talent->id_spell << std::endl;
+  if ( talent->id_replace_spell > 0 )
   {
-    s << "Class        : ";
-    for ( unsigned int i = 1; i < std::size( _class_map ); i++ )
-    {
-      if ( ( talent -> mask_class() & ( 1 << ( i - 1 ) ) ) && _class_map[ i ].name )
-        s << _class_map[ i ].name << ", ";
-    }
-
-    s.seekp( -2, std::ios_base::cur );
-    s << std::endl;
+    s << "Replaces     : " << talent->id_replace_spell << std::endl;
   }
-
-  s << "Column       : " << talent -> col() + 1    << std::endl;
-  s << "Row          : " << talent -> row() + 1    << std::endl;
-  s << "Spell        : "        << talent -> spell_id()   << std::endl;
-  if ( talent -> replace_id() > 0 )
-    s << "Replaces     : "   << talent -> replace_id() << std::endl;
-  s << "Spec         : " << util::specialization_string( talent -> specialization() ) << std::endl;
+  if ( talent->id_override_spell > 0 )
+  {
+    s << "Overriden by : " << talent->id_override_spell << std::endl;
+  }
+  //s << "Spec         : " << util::specialization_string( talent -> specialization() ) << std::endl;
   s << std::endl;
 
   return s.str();
@@ -2316,7 +2450,7 @@ void spell_info::effect_to_xml( const dbc_t& dbc,
 
   node -> add_parm( "number", e -> index() + 1 );
   node -> add_parm( "id", e -> id() );
-  node -> add_parm( "type", e -> type() );
+  node -> add_parm( "type", static_cast<int>( e -> type() ) );
 
   if ( _effect_type_strings.contains( e -> raw_type() ) )
   {
@@ -2342,7 +2476,7 @@ void spell_info::effect_to_xml( const dbc_t& dbc,
       break;
   }
 
-  node -> add_parm( "sub_type", e -> subtype() );
+  node -> add_parm( "sub_type", static_cast<int>( e -> subtype() ) );
 
   if ( e -> subtype() > 0 )
   {
@@ -2672,27 +2806,28 @@ void spell_info::to_xml( const dbc_t& dbc, const spell_data_t* spell, xml_node_t
     node -> add_child( "variables" ) -> add_parm( ".", spelldesc_vars.desc_vars() );
 }
 
-void spell_info::talent_to_xml( const dbc_t& /* dbc */, const talent_data_t* talent, xml_node_t* parent, int /* level */ )
+void spell_info::talent_to_xml( const dbc_t& /* dbc */, const trait_data_t* talent, xml_node_t* parent, int /* level */ )
 {
-  xml_node_t* node = parent -> add_child( "talent" );
+  xml_node_t* node = parent->add_child( "talent" );
 
-  node -> add_parm( "name", talent -> name_cstr() );
-  node -> add_parm( "id", talent -> id() );
+  node->add_parm( "name", talent->name );
+  node->add_parm( "id", talent->id_trait_node_entry );
+  node->add_parm( "tree", util::talent_tree_string( static_cast<talent_tree>( talent->tree_index ) ) );
+  node->add_child( "class" )
+    ->add_parm( ".", util::player_type_string( util::translate_class_id( talent->id_class ) ) );
 
-  if ( talent -> mask_class() )
+  node->add_parm( "column", talent->col );
+  node->add_parm( "row", talent->row );
+  node->add_parm( "max_rank", talent->max_ranks );
+  node->add_parm( "spell", talent->id_spell );
+  if ( talent->id_replace_spell > 0 )
   {
-    for ( unsigned int i = 1; i < std::size( _class_map ); i++ )
-    {
-      if ( ( talent -> mask_class() & ( 1 << ( i - 1 ) ) ) && _class_map[ i ].name )
-        node -> add_child( "class" ) -> add_parm( ".",  _class_map[ i ].name );
-    }
+    node->add_parm( "replaces", talent->id_replace_spell );
   }
-
-  node -> add_parm( "column", talent -> col() + 1 );
-  node -> add_parm( "row", talent -> row() + 1 );
-  node -> add_parm( "spell", talent -> spell_id() );
-  if ( talent -> replace_id() > 0 )
-    node -> add_parm( "replaces", talent -> replace_id() );
+  if ( talent->id_override_spell > 0 )
+  {
+    node->add_parm( "overridden", talent->id_override_spell );
+  }
 }
 
 void spell_info::set_bonus_to_xml( const dbc_t& /* dbc */, const item_set_bonus_t* set_bonus, xml_node_t* parent, int /* level */ )

@@ -5,7 +5,9 @@ from collections import defaultdict
 import dbc.db, dbc.data, dbc.parser, dbc.file
 
 from dbc import constants, util
+from dbc.constants import Class
 from dbc.filter import ActiveClassSpellSet, PetActiveSpellSet, RacialSpellSet, MasterySpellSet, RankSpellSet, ConduitSet, SoulbindAbilitySet, CovenantAbilitySet, RenownRewardSet, TalentSet, TemporaryEnchantItemSet
+from dbc.filter import TraitSet
 
 # Special hotfix field_id value to indicate an entry is new (added completely through the hotfix entry)
 HOTFIX_MAP_NEW_ENTRY  = 0xFFFFFFFF
@@ -260,10 +262,10 @@ class CSVDataGenerator(object):
         return True
 
 class DataGenerator(object):
-    _class_names = [ None, 'Warrior', 'Paladin', 'Hunter', 'Rogue',     'Priest', 'Death Knight', 'Shaman', 'Mage',  'Warlock', 'Monk',       'Druid', 'Demon Hunter'  ]
-    _class_masks = [ None, 0x1,       0x2,       0x4,      0x8,         0x10,     0x20, 0x40,     0x80,    0x100,     0x200,        0x400, 0x800   ]
-    _race_names  = [ None, 'Human',   'Orc',     'Dwarf',  'Night Elf', 'Undead', 'Tauren',       'Gnome',  'Troll', 'Goblin',  'Blood Elf', 'Draenei', 'Dark Iron Dwarf', 'Vulpera', 'Mag\'har Orc', 'Mechagnome' ] + [ None ] * 6 + [ 'Worgen', None, None, 'Pandaren', None, 'Nightborne', 'Highmountain Tauren', 'Void Elf', 'Lightforged Draenei', 'Zandalari Troll', 'Kul Tiran' ]
-    _race_masks  = [ None, 0x1,       0x2,       0x4,      0x8,         0x10,     0x20,           0x40,     0x80,    0x100,     0x200,       0x400,     0x800,             0x1000, 0x2000, 0x4000       ] + [ None ] * 6 + [ 0x200000, None, None, 0x1000000,  None, 0x4000000,    0x8000000,             0x10000000, 0x20000000,            0x40000000,        0x80000000 ]
+    _class_names = [ None, 'Warrior', 'Paladin', 'Hunter', 'Rogue',     'Priest', 'Death Knight', 'Shaman', 'Mage',  'Warlock', 'Monk',      'Druid',  'Demon Hunter',     'Evoker' ]
+    _class_masks = [ None, 0x1,       0x2,       0x4,      0x8,         0x10,     0x20,           0x40,     0x80,    0x100,     0x200,       0x400,     0x800,             0x1000 ]
+    _race_names  = [ None, 'Human',   'Orc',     'Dwarf',  'Night Elf', 'Undead', 'Tauren',       'Gnome',  'Troll', 'Goblin',  'Blood Elf', 'Draenei', 'Dark Iron Dwarf', 'Vulpera', 'Mag\'har Orc', 'Mechagnome', 'Dracthyr' ] + [ None ] * 5 + [ 'Worgen', None, None, 'Pandaren', None, 'Nightborne', 'Highmountain Tauren', 'Void Elf', 'Lightforged Draenei', 'Zandalari Troll', 'Kul Tiran' ]
+    _race_masks  = [ None, 0x1,       0x2,       0x4,      0x8,         0x10,     0x20,           0x40,     0x80,    0x100,     0x200,       0x400,     0x800,             0x1000,    0x2000,         0x4000,       0x8000,    ] + [ None ] * 5 + [ 0x200000, None, None, 0x1000000,  None, 0x4000000,    0x8000000,             0x10000000, 0x20000000,            0x40000000,        0x80000000  ]
     _pet_names   = [ None, 'Ferocity', 'Tenacity', None, 'Cunning' ]
     _pet_masks   = [ None, 0x1,        0x2,        None, 0x4       ]
 
@@ -447,21 +449,9 @@ class RealPPMModifierGenerator(DataGenerator):
 
 class SpecializationEnumGenerator(DataGenerator):
     def filter(self):
-        enum_ids = [
-            [ None, None, None, None ], # pets come here
-            [ None, None, None, None ],
-            [ None, None, None, None ],
-            [ None, None, None, None ],
-            [ None, None, None, None ],
-            [ None, None, None, None ],
-            [ None, None, None, None ],
-            [ None, None, None, None ],
-            [ None, None, None, None ],
-            [ None, None, None, None ],
-            [ None, None, None, None ],
-            [ None, None, None, None ],
-            [ None, None, None, None ],
-        ]
+        enum_ids = []
+        for idx in range(0, len(constants.CLASS_INFO) + 1):
+            enum_ids.append([None] * constants.MAX_SPECIALIZATION)
 
         max_specialization = 0
         for spec_id, spec_data in sorted(self.db('ChrSpecialization').items()):
@@ -472,7 +462,7 @@ class SpecializationEnumGenerator(DataGenerator):
 
             if spec_data.class_id > 0:
                 spec_name = '%s_%s' % (
-                    DataGenerator._class_names[spec_data.class_id].upper().replace(" ", "_"),
+                    util.class_name(class_id=spec_data.class_id).upper().replace(" ", "_"),
                     spec_data.name.upper().replace(" ", "_"),
                 )
             elif spec_data.name in [ 'Ferocity', 'Cunning', 'Tenacity' ]:
@@ -533,7 +523,7 @@ class TalentDataGenerator(DataGenerator):
             fields = talent.ref('id_spell').field('name')
             fields += talent.field('id')
             fields += [ '%#.2x' % 0 ]
-            fields += [ '%#.04x' % (DataGenerator._class_masks[talent.class_id] or 0) ]
+            fields += [ '%#.04x' % (util.class_mask(class_id=talent.class_id) or 0) ]
             fields += talent.field('spec_id', 'col', 'row', 'id_spell', 'id_replace' )
             # Pad struct with empty pointers for direct rank based spell data access
             fields += [ ' 0' ]
@@ -852,6 +842,7 @@ class ItemDataGenerator(DataGenerator):
                 fields += item.field('class_mask', 'race_mask')
                 fields += [ '{ %s }' % ', '.join(item.field('socket_color_1', 'socket_color_2', 'socket_color_3')) ]
                 fields += item.field('gem_props', 'socket_bonus', 'item_set', 'id_curve', 'id_artifact' )
+                fields += item2.ref('id_crafting_quality').field('tier')
 
                 self.output_record(fields)
 
@@ -1351,8 +1342,34 @@ class SpellDataGenerator(DataGenerator):
          367327, 367455, 367457, 367458, # Gemstone of Prismatic Brilliance
          368643, # Chains of Domination AoE damage
          363338, # Jailer fight buff
-         # Shadowlands Season 4 M+ Shrouded Affix
-         373108, 373113, 373116, 373121, # crit, haste, mastery, versatility
+         373108, 373113, 373116, 373121, # Season 4 M+ Bounty buffs
+         # 10.0 Dragonflight ================================================
+         371070, # Rotting from Within debuff on 'toxic' consumables
+         371348, 371350, 371351, 371353, # Phial of Elemental Chaos
+         370772, 370773, # Phial of Static Empowerment
+         374002, 374037, # Iced Phial of Corrupting Rage
+         371387, # Phial of Charged Isolation
+         382835, 382837, 382838, 382839, 382840, 382841, 382842, 382843, # Darkmoon Deck: Inferno
+         382852, 382853, 382854, 382855, 382856, 382857, 382858, 382859, # Darkmoon Deck: Watcher
+         382844, 382845, 382846, 382847, 382848, 382849, 382850, 382851, # Darkmoon Deck: Rime
+         382860, 382861, 382862, 382863, 382864, 382865, 382866, 382867, # Darkmoon Deck: Dance
+         375335, 375342, 375343, 375345, # Elemental Lariat JC Neck
+         376932, # MAGIC SNOWBALL
+         379403, 379407, # Toxic Thorn Footwraps LW Boots
+         382095, 382096, 382097, # Rumbling Ruby trinket
+         382078, 382079, 382080, 382081, 382082, 382083, 394460, 394461, 394462, # Whispering Incarnate Icon
+         377451, 381824, # Conjured Chillglobe
+         382425, 382428, 394864, # Spiteful Storm
+         382090, # Storm-Eater's Boon
+         382131, 394618, # Iceblood Deathsnare
+         377463, 382135, 382136, 382256, 382257, 394954, 395703, 396434, # Manic Grieftorch
+         377458, 377459, 377461, 382133, # All-Totem of the Master
+         388608, 388611, 388739,  # Idol of Pure Decay
+         389407, # Furious Ragefeather
+         381586, # Erupting Spear Fragment
+         381954, 381955, 381956, 381957, # Spoils of Neltharus
+         383758, # Bottle of Spiraling Winds
+         383813, 383814, 389817, 389818, 389820, 390896, 390941, # Ruby Whelp Shell
         ),
 
         # Warrior:
@@ -1416,6 +1433,11 @@ class SpellDataGenerator(DataGenerator):
             ( 340214, 0 ),          # Hallowed Discernment heal
             ( 355567, 0 ),          # Equinox
             ( 355455, 0 ),          # Divine Resonance
+            ( 387643, 0 ),          # Sealed Verdict buff
+            ( 382522, 0 ),          # Consecrated Blade buff
+            ( 383305, 0 ),          # Virtuous Command damage
+            ( 387178, 0 ),          # Empyrean Legacy buff
+            ( 224239, 0 ),          # Tempest divine storm
         ),
 
         # Hunter:
@@ -1425,10 +1447,14 @@ class SpellDataGenerator(DataGenerator):
           ( 312365, 0 ), # Thrill of the Hunt
           ( 171457, 0 ), # Chimaera Shot - Nature
           ( 201594, 1 ), # Stampede
-          ( 118459, 5 ), # Beast Cleave
+          ( 118455, 5 ), # Beast Cleave
+          ( 389448, 5 ), # Kill Cleave
           ( 186254, 5 ), # Bestial Wrath
+          ( 392054, 5 ), # Piercing Fangs
           ( 257622, 2 ), # Trick Shots buff
           ( 260395, 2 ), # Lethal Shots buff
+          ( 342076, 2 ), # Streamline buff
+          ( 191043, 2 ), # Legacy of the Windrunners
           ( 259516, 3 ), # Flanking Strike
           ( 267666, 3 ), # Chakrams
           ( 265888, 3 ), # Mongoose Bite (AotE version)
@@ -1448,6 +1474,11 @@ class SpellDataGenerator(DataGenerator):
           ( 339061, 0 ), # Empowered Release (Conduit)
           ( 363760, 1 ), # Killing Frenzy (T28 BM 4pc)
           ( 363805, 3 ), # Mad Bombardier (T28 SV 4pc)
+          ( 394388, 3 ), # Bestial Barrage (T29 SV 4pc)
+          ( 378016, 0 ), # Latent Poison Injectors (talent dd action)
+          ( 386875, 2 ), # Bombardment
+          ( 164273, 2 ), # Lone Wolf buff
+          ( 361736, 5 ), # Coordinated Assault (pet buff)
         ),
 
         # Rogue:
@@ -1505,21 +1536,34 @@ class SpellDataGenerator(DataGenerator):
             ( 350964, 0 ),          # Subtlety-specific Deathly Shadows legendary buff
             ( 364234, 0 ), ( 364235, 0 ), ( 364556, 0 ), # T28 Outlaw 4pc Spells
             ( 364668, 0 ),          # T28 Assassination debuff
+            ( 385897, 0 ),          # Hidden Opportunity Ambush
+            ( 386270, 0 ),          # Audacity buff
+            ( 395424, 0 ),          # Improved Adrenaline Rush energize
+            ( 385907, 0 ),          # Take 'em By Surprise buff
+            ( 385794, 0 ), ( 385802, 0 ), ( 385806, 0 ), # Vicious Venoms Ambush/Mutilate variant spells
+            ( 360826, 0 ), ( 360830, 0 ), # Deathmark Cloned Bleeds
+            ( 394324, 0 ), ( 394325, 0 ), ( 394326, 0 ), ( 394327, 0 ), ( 394328, 0 ), # Deathmark Cloned Poisons
+            ( 385754, 0 ), ( 385747, 0 ), # Indiscriminate Carnage bleed jump target spells
+            ( 394031, 0 ),          # Replicating Shadows fake Rupture Shadow tick spell
+            ( 394757, 0 ),          # Flagellation talent damage spell
+            ( 394758, 0 ),          # Flagellation talent persist buff
+            ( 385948, 0 ), ( 385949, 0 ), ( 385951, 0 ), # Finality talent buffs
+            ( 385960, 0 ), ( 386081, 0 ), # Lingering Shadow talent background spells 
+            ( 393724, 0 ), ( 393725, 0 ), # T29 Assassination Set Bonus Spells
+            ( 393727, 0 ), ( 393728, 0 ), ( 394879, 0 ), ( 394888, 0 ), # T29 Outlaw Set Bonus Spells
+            ( 393729, 0 ), ( 393730, 0 ), # T29 Subtlety Set Bonus Spells
         ),
 
         # Priest:
         (   (  63619, 5 ), 			# Shadowfiend "Shadowcrawl"
             (  94472, 0 ), 			# Atonement Crit
             ( 114908, 0, False ), 	# Spirit Shell absorb
-            ( 190714, 3, False ), 	# Shadow Word: Death - Insanity gain
             ( 193473, 5 ),			# Void Tendril "Mind Flay"
             ( 217676, 3 ),			# Mind Spike Detonation
             ( 194249, 3, False ),   # Voidform extra data
             ( 212570, 3, False ),   # Surrendered Soul (Surrender To Madness Death)
             ( 269555, 3 ),          # Azerite Trait Torment of Torments
             ( 280398, 1, False ),   # Sins of the Many buff
-            ( 275725, 0 ),          # Whispers of the Damned trigger effect
-            ( 275726, 0 ),          # Whispers of the damned insanity gain
             ( 288342, 0 ),          # Thought Harvester trigger buff for Mind Sear
             ( 336142, 5 ),          # Shadowflame Prism legendary effect DMG Component
             ( 343144, 0 ),          # Dissonant Echoes free Void Bolt proc
@@ -1540,14 +1584,48 @@ class SpellDataGenerator(DataGenerator):
             ( 357028, 0 ),          # Shadow Word: Manipulation Critical Strike Buff
             (  32409, 0 ),          # Shadow Word: Death self-damage id
             ( 356968, 0 ),          # Haunted Mask from Bwonsamdi's Pact Legendary
+            ( 373442, 5 ),          # Shadowflame Prism Talent damage spell Shadowflame Fissure
+            ( 375981, 0 ),          # Vampiric Insight talent buff
+            ( 375904, 0 ),          # Mindgames Damage reversal healing spell
+            # Shadow Priest
+            ( 373204, 0 ),          # Mind Devourer Talent buff
+            ( 393684, 0 ),          # Priest Shadow Class Set 2-set
+            ( 394961, 0 ),          # Gathering Shadows T29 2-set buff
+            ( 393685, 0 ),          # Priest Shadow Class Set 4-set
+            ( 394963, 0 ),          # Dark Reveries T29 4-set buff
+            ( 377358, 5 ),          # Idol of C'thun Insanity values
+            ( 394976, 5 ),          # Idol of C'thun Void Lasher Mind Sear
+            ( 394979, 5 ),          # Idol of C'thun Void Lasher Mind Sear Tick
+            ( 393919, 0 ),          # Screams of the Void extra data
+            ( 375408, 0 ),          # Screams of the Void extra data
+            ( 390964, 0 ),          # Halo Damage Spell
+            ( 390971, 0 ),          # Halo Heal Spell
+            ( 390845, 0 ),          # Divine Star Damage Spell
+            ( 390981, 0 ),          # Divine Star Heal Spell
+            ( 396895, 5 ),          # Idol of Yogg-Saron Void Spike Cleave
+            ( 373281, 0 ),          # Idol of N'Zoth Echoing Void debuff
             # Holy Priest
             ( 196809, 5 ),          # Healing Light (Divine Image legendary pet spell)
             ( 196810, 5 ),          # Dazzling Light (Divine Image legendary pet spell)
             ( 196810, 5 ),          # Searing Light (Divine Image legendary pet spell)
+            ( 196811, 5 ),          # Searing Light (Divine Image talent pet spell)
             ( 196812, 5 ),          # Light Eruption (Divine Image legendary pet spell)
             ( 196813, 5 ),          # Blessed Light (Divine Image legendary pet spell)
             ( 196816, 5 ),          # Tranquil Light (Divine Image legendary pet spell)
             ( 325315, 0 ),          # Ascended Blast heal
+            ( 394729, 0 ),          # Prayer Focus T29 2-set
+            ( 393682, 0 ),          # Priest Holy Class Set 2-set
+            ( 393683, 0 ),          # Priest Holy Class Set 4-set
+            ( 394745, 0 ),          # Priest Holy Class Set 4-set buff
+            ( 234946, 0 ),          # Trail of Light heal
+            ( 368276, 0 ),          # Binding Heals heal
+            ( 391156, 0 ),          # Holy Mending heal
+            ( 391359, 0 ),          # Empowered Renew heal
+            # Discipline Priest
+            ( 393679, 0 ),          # Priest Discipline Class Set 2-set
+            ( 394609, 0 ),          # Light Weaving 2-set buff
+            ( 393681, 0 ),          # Priest Discipline Class Set 4-set
+            ( 394624, 0 ),          # Shield of Absolution 4-set buff
         ),
 
         # Death Knight:
@@ -1584,11 +1662,16 @@ class SpellDataGenerator(DataGenerator):
           ( 220890, 5 ), # Dancing Rune Weapon's RP generation spell from Heart Strike
           ( 228645, 5 ), # Dancing Rune Weapon's Heart Strike
           ( 334895, 5 ), # Frenzied Monstrosity Buff that appears on the main ghoul pet (different from the player buff)
+          ( 377588, 0 ), ( 377589, 0 ), # Ghoulish Frenzy buffs
+          ( 390271, 0 ), # Coil of Devastation debuff
           ( 193486, 0 ), # Runic Empowerment energize spell
+          ( 377656, 0 ), # Heartrend Buff
+          ( 377633, 0 ), # Leeching Strike
+          ( 377642, 0 ), # Shattering Bone
           ( 364197, 0 ), ( 366008, 0 ), ( 368938, 0 ), # T28 Endless Rune Waltz Blood Set Bonus
           ( 363885, 0 ), ( 364173, 0 ), ( 363887, 0 ), ( 367954, 0 ), # T28 Harvest Time Unholy Set Bonus
           ( 364384, 0 ), # T28 Arctic Assault Frost Set Bonus
-	  ( 368690, 0 ), # T28 Remnant's Despair (DK ring) buff
+          ( 368690, 0 ), # T28 Remnant's Despair (DK ring) buff
         ),
 
         # Shaman:
@@ -1635,8 +1718,11 @@ class SpellDataGenerator(DataGenerator):
           ( 286976, 0 ),                                # Tectonic Thunder Azerite Trait buff
           ( 327164, 0 ),                                # Primordial Wave buff
           ( 336732, 0 ), ( 336733, 0 ),                 # Legendary: Elemental Equilibrium school buffs
-	  ( 336737, 0 ),                                # Runeforged Legendary: Chains of Devastation
+          ( 336737, 0 ),                                # Runeforged Legendary: Chains of Devastation
           ( 354648, 0 ),                                # Runeforged Legendary: Splintered Elements
+          ( 222251, 0 ),                                # Improved Stormbringer damage
+          ( 381725, 0 ), ( 298765, 0 ),                 # Mountains Will Fall Earth Shock and Earthquake Overload
+          ( 390287, 0 ),                                # Improved Stormbringer damage spell
         ),
 
         # Mage:
@@ -1680,6 +1766,13 @@ class SpellDataGenerator(DataGenerator):
           ( 336889, 0 ),                            # Nether Precision
           ( 337090, 0 ),                            # Siphoned Malice
           ( 363685, 0 ),                            # Arcane Lucidity ready buff
+          ( 203277, 0 ),                            # Flame Accelerant
+          ( 384035, 0 ), ( 384038, 0 ),             # Firefall
+          ( 382113, 0 ), ( 382114, 0 ),             # Cold Front
+          ( 365265, 0 ),                            # Arcane Surge energize
+          ( 384859, 0 ), ( 384860, 0 ),             # Orb Barrage
+          ( 383783, 0 ),                            # Nether Precision
+          ( 383882, 0 ),                            # Sun King's Blessing
         ),
 
         # Warlock:
@@ -1758,7 +1851,25 @@ class SpellDataGenerator(DataGenerator):
           ( 367679, 0 ),    # T28 - Summon Blasphemy
           ( 367680, 0 ),    # T28 - Blasphemy
           ( 367819, 0 ),    # T28 - Blasphemous Existence
-          ( 367831, 0 )    # T28 - Deliberate Corruption
+          ( 367831, 0 ),    # T28 - Deliberate Corruption
+          ( 387079, 0 ),    # Tormented Crescendo buff
+          ( 387310, 0 ),    # Haunted Soul buff
+          ( 390097, 0 ),    # Darkglare - Grim Reach
+          ( 387392, 0 ),    # Dread Calling Buff
+          ( 387393, 0 ),    # Dread Calling Buff 2
+          ( 267218, 0 ),    # Nether Portal aura
+          ( 387496, 0 ),    # Antoran Armaments buff
+          ( 387502, 0 ),    # Soul Cleave
+          ( 387552, 0 ),    # Infernal Command pet aura
+          ( 390193, 0 ),    # Demonic Servitude aura
+          ( 387096, 0 ),    # Pyrogenics aura
+          ( 387109, 0 ),    # Conflagration of Chaos aura 1
+          ( 387110, 0 ),    # Conflagration of Chaos aura 2
+          ( 387158, 0 ),    # Impending Ruin talent aura
+          ( 387356, 0 ),    # Crashing Chaos aura
+          ( 387409, 0 ),    # Madness Chaos Bolt aura
+          ( 387413, 0 ),    # Madness Rain of Fire aura
+          ( 387414, 0 ),    # Madness Shadowburn aura
         ),
 
         # Monk:
@@ -1766,6 +1877,12 @@ class SpellDataGenerator(DataGenerator):
           # General
           ( 138311, 0 ), # Energy Sphere energy refund
           ( 163272, 0 ), # Chi Sphere chi refund
+          ( 365080, 0 ), # Windwalking Movement Buff
+          ( 388814, 0 ), # Fortifying Brew Increases Dodge and Armor
+          ( 389541, 0 ), # White Tiger Statue - Claw of the White Tiger
+          ( 389684, 0 ), # Close to Heart Leech Buff
+          ( 389685, 0 ), # Generous Pour Avoidance Buff
+          ( 392883, 0 ), # Vivacious Vivification buff
           # Brewmaster
           ( 195630, 1 ), # Brewmaster Mastery Buff
           ( 115129, 1 ), # Expel Harm Damage
@@ -1775,10 +1892,14 @@ class SpellDataGenerator(DataGenerator):
           ( 124275, 1 ), # Light Stagger
           ( 124274, 1 ), # Medium Stagger
           ( 124273, 1 ), # Heavy Stagger
+          ( 205523, 1 ), # Blackout Kick Brewmaster version
           ( 216521, 1 ), # Celestial Fortune Heal
           ( 227679, 1 ), # Face Palm
           ( 227291, 1 ), # Niuzao pet Stomp
           ( 325092, 1 ), # Purified Chi
+          ( 383701, 1 ), # Gai Plin's Imperial Brew Heal
+          ( 383733, 1 ), # Training of Niuzao Mastery % Buff
+          ( 386959, 1 ), # Charred Passions Damage
 
           # Mistweaver
           ( 228649, 2 ), # Teachings of the Monastery - Blackout Proc
@@ -1791,6 +1912,7 @@ class SpellDataGenerator(DataGenerator):
           ( 125174, 3 ), # Touch of Karma redirect buff
           ( 195651, 3 ), # Crosswinds Artifact trait trigger spell
           ( 196061, 3 ), # Crosswinds Artifact trait damage spell
+          ( 196741, 3 ), # Hit Combo Buff
           ( 196742, 3 ), # Whirling Dragon Punch Buff
           ( 220358, 3 ), # Cyclone Strikes info
           ( 228287, 3 ), # Spinning Crane Kick's Mark of the Crane debuff
@@ -1798,13 +1920,19 @@ class SpellDataGenerator(DataGenerator):
           ( 242387, 3 ), # Thunderfist Artifact trait buff
           ( 261682, 3 ), # Chi Burst Chi generation cap
           ( 285594, 3 ), # Good Karma Healing Spell
-		  ( 290461, 3 ), # Reverse Harm Damage
-		  ( 335913, 3 ), # Empowered Tiger Lightning Damage spell
+          ( 290461, 3 ), # Reverse Harm Damage
+          ( 335913, 3 ), # Empowered Tiger Lightning Damage spell
+          ( 396167, 3 ), # Fury of Xuen Stacking Buff
+          ( 396168, 3 ), # Fury of Xuen Haste Buff
+          ( 393048, 3 ), # Skyreach Debuff
+          ( 393050, 3 ), # Skyreach Exxhaustion Debuff
 
           # Covenant
           ( 325217, 0 ), # Necrolord Bonedust Brew damage
           ( 325218, 0 ), # Necrolord Bonedust Brew heal
           ( 328296, 0 ), # Necrolord Bonedust Chi Refund
+          ( 342330, 0 ), # Necrolord Bonedust Brew Grounding Breath Buff
+          ( 394514, 0 ), # Necrolord Bonedust Brew Attenuation Buff
           ( 327257, 0 ), # Ardenweald Faeline Stomp debuff
           ( 327264, 0 ), # Ardenweald Faeline Stomp damage
           ( 327276, 0 ), # Ardenweald Faeline Stomp reset buff notification
@@ -1856,6 +1984,9 @@ class SpellDataGenerator(DataGenerator):
           ( 366793, 1 ), # BrM 4-piece Keg of the Heavens Heal
           ( 363911, 3 ), # WW 4-piece Primordial Potential
           ( 363924, 3 ), # WW 4-piece Primordial Power
+
+          # Tier 29
+          ( 394951, 3 ) # WW 4-piece Versatility buff
         ),
 
         # Druid:
@@ -1887,7 +2018,8 @@ class SpellDataGenerator(DataGenerator):
           ( 210649, 2 ),       # Feral Instinct (Fangs of Ashamane artifact trait)
           ( 213557, 2 ),       # Protection of Ashamane ICD (Fangs of Ashamane artifact trait)
           ( 211547, 1 ),       # Fury of Elune move spell
-          ( 213771, 3 ),       # Swipe (Bear)
+          ( 106829, 0 ), ( 48629, 0 ), # Bear/Cat form swipe/thrash replacement
+          ( 106899, 0 ), ( 106840, 0 ), # Bear/Cat form stampeding roar replacement
           ( 209406, 1 ),       # Oneth's Intuition buff
           ( 209407, 1 ),       # Oneth's Overconfidence buff
           ( 213666, 1 ),       # Echoing Stars artifact spell
@@ -1928,6 +2060,32 @@ class SpellDataGenerator(DataGenerator):
           ( 365640, 1 ), # tier 28 balance 2pc foe damage spell
           ( 367907, 1 ), # tier 28 balance 2pc foe energize spell
           ( 365476, 1 ), ( 365478, 1 ), # tier 28 balance 2pc ground effect spell
+
+          # Dragonflight
+          ( 340546, 0 ), # Tireless Pursuit buff
+          ( 378989, 0 ), ( 378990, 0 ), ( 378991, 0 ), ( 378992, 0 ), # Lycara's Teachings buffs
+          ( 395336, 0 ), ( 378987, 0 ), # Protector of the Pack
+          # Balance
+          ( 188046, 1 ), # Denizen of the Dream pet attack
+          ( 394049, 1 ), ( 394050, 1 ), # Balance of All Things
+          ( 393942, 1 ), ( 393944, 1 ), # Starweaver
+          ( 395022, 1 ), # Incarnation unknown spell
+          ( 393961, 1 ), # Primordial Arcanic Pulsar counter buff
+          ( 394103, 1 ), ( 394106, 1 ), ( 394108, 1 ), ( 394111, 1 ), # Sundered Firmament
+          ( 395110, 1 ), # Parting Skies Sundered Firmament tracker buff
+          ( 393869, 1 ), # Lunar Shrapnel damage
+          ( 393957, 1 ), # Waning Twilight
+          # Feral
+          ( 391710, 2 ), # Ferocious Frenzy damage
+          ( 391786, 2 ), # Tear Open Wounds damage
+          ( 393617, 2 ), # Primal Claws energize
+          # Guardian
+          ( 370602, 3 ), # Elune's Favored heal
+          ( 372505, 3 ), # Ursoc's Fury absorb
+          ( 372019, 3 ), # Vicious Cycle mangle buff
+          ( 279555, 3 ), # Layered Mane buff
+          ( 395942, 3 ), # 2t29 Mangle AoE
+          # Restoration
         ),
         # Demon Hunter:
         (
@@ -1956,6 +2114,11 @@ class SpellDataGenerator(DataGenerator):
           ( 333105, 1 ), ( 333110, 1 ), # Sigil of the Illidari Legendary fake Fel Devastation spells
           ( 346502, 1 ), ( 346503, 1 ), # New Sigil of the Illidari Legendary fake Fel Devastation spells
           ( 337567, 1 ), # Chaotic Blades legendary buff
+          ( 390197, 1 ), # Ragefire talent damage spell
+          ( 390195, 1 ), # Chaos Theory talent buff
+          ( 390145, 1 ), # Inner Demon talent buff
+          ( 391374, 1 ), ( 391378, 1 ), ( 393054, 1 ), ( 393055, 1 ), # First Blood Chaos spells
+          ( 393628, 0 ), ( 393629, 0 ), # T29 Set Bonus Spells
 
           # Vengeance
           ( 203557, 2 ), # Felblade proc rate
@@ -1965,6 +2128,20 @@ class SpellDataGenerator(DataGenerator):
           ( 207760, 2 ), # Burning Alive spread radius
           ( 333386, 2 ), ( 333389, 2 ), # Sigil of the Illidari Legendary fake Eye Beam spells
           ( 346504, 2 ), ( 346505, 2 ), # New Sigil of the Illidari Legendary fake Eye Beam spells
+       ),
+
+       # Evoker:
+       (
+          # General
+          ( 372470, 0 ), # Scarlet Adaptation buff
+          ( 370901, 0 ), ( 370917, 0 ), # Leaping Flames buff
+          ( 359115, 0),  # Empower Triggered GCD
+          # Devastation
+          ( 386399, 1 ), # Iridescence: Blue buff
+          ( 375802, 1 ), # Burnout buff
+          ( 376850, 1 ), # Power Swell buff
+          # Preservation
+          ( 369299, 2 ), # Preservation Essence Burst
        ),
     ]
 
@@ -1990,60 +2167,62 @@ class SpellDataGenerator(DataGenerator):
         ( 188, 189, 204, 205, 206, 207, 761 ),  # Warlock
         ( ),         # Monk
         ( ),         # Druid
+        ( ),         # Evoker
     ]
 
     # Specialization categories, Spec0 | Spec1 | Spec2
     # Note, these are reset for MoP
     _spec_skill_categories = [
         (),
-        (  71,  72,  73,   0 ), # Warrior
-        (  65,  66,  70,   0 ), # Paladin
-        ( 254, 255, 256,   0 ), # Hunter
-        ( 259, 260, 261,   0 ), # Rogue
-        ( 256, 257, 258,   0 ), # Priest
-        ( 250, 251, 252,   0 ), # Death Knight
-        ( 262, 263, 264,   0 ), # Shaman
-        (  62,  63,  64,   0 ), # Mage
-        ( 265, 266, 267,   0 ), # Warlock
-        ( 268, 270, 269,   0 ), # Monk
-        ( 102, 103, 104, 105 ), # Druid
-        ( 577, 581,   0,   0 ), # Demon Hunter
+        (   71,   72,  73,   0 ), # Warrior
+        (   65,   66,  70,   0 ), # Paladin
+        (  254,  255, 256,   0 ), # Hunter
+        (  259,  260, 261,   0 ), # Rogue
+        (  256,  257, 258,   0 ), # Priest
+        (  250,  251, 252,   0 ), # Death Knight
+        (  262,  263, 264,   0 ), # Shaman
+        (   62,   63,  64,   0 ), # Mage
+        (  265,  266, 267,   0 ), # Warlock
+        (  268,  270, 269,   0 ), # Monk
+        (  102,  103, 104, 105 ), # Druid
+        (  577,  581,   0,   0 ), # Demon Hunter
+        ( 1467, 1468,   0,   0 ), # Evoker
     ]
 
     _race_categories = [
         (),
-        ( 754, ),                # Human     0x0001
-        ( 125, ),                # Orc       0x0002
-        ( 101, ),                # Dwarf     0x0004
-        ( 126, ),                # Night-elf 0x0008
-        ( 220, ),                # Undead    0x0010
-        ( 124, ),                # Tauren    0x0020
-        ( 753, ),                # Gnome     0x0040
-        ( 733, ),                # Troll     0x0080
-        ( 790, ),                # Goblin    0x0100? not defined yet
-        ( 756, ),                # Blood elf 0x0200
-        ( 760, ),                # Draenei   0x0400
+        ( 754, ),                # Human           0x0001
+        ( 125, ),                # Orc             0x0002
+        ( 101, ),                # Dwarf           0x0004
+        ( 126, ),                # Night-elf       0x0008
+        ( 220, ),                # Undead          0x0010
+        ( 124, ),                # Tauren          0x0020
+        ( 753, ),                # Gnome           0x0040
+        ( 733, ),                # Troll           0x0080
+        ( 790, ),                # Goblin          0x0100? not defined yet
+        ( 756, ),                # Blood elf       0x0200
+        ( 760, ),                # Draenei         0x0400
         ( 2597, ),               # Dark Iron Dwarf 0x0800
-        ( 2775, ),               # Vulpera 0x1000
-        ( 2598, ),               # Mag'har Orc 0x2000
-        ( 2774, ),               # Mechagnome 0x4000
-        (),                      # Vrykul
-        (),                      # Tuskarr
-        (),                      # Forest Troll
-        (),                      # Taunka
-        (),                      # Northrend Skeleton
-        (),                      # Ice Troll
-        ( 789, ),                # Worgen   0x200000
-        (),                      # Gilnean
-        (),
-        ( 899, ),                # Pandaren 0x1000000
-        (),
-        ( 2419, ),               # Nightborne 0x4000000
-        ( 2420, ),               # Highmountain Tauren 0x8000000
-        ( 2423, ),               # Void Elf 0x10000000
-        ( 2421, ),               # Lightforged Draenei 0x20000000
+        ( 2775, ),               # Vulpera         0x1000
+        ( 2598, ),               # Mag'har Orc     0x2000
+        ( 2774, ),               # Mechagnome      0x4000
+        ( 2808 ),                # Dracthyr (A)    0x8000
+        (),                      # Dracthyr (H)    0x10000
+        (),                      #
+        (),                      #
+        (),                      #
+        (),                      #
+        ( 789, ),                # Worgen          0x200000
+        (),                      # Gilnean         0x400000
+        (),                      # Pandaren (N)    0x800000
+        ( 899, ),                # Pandaren (A)    0x1000000
+        (),                      # Pandaren (H)    0x2000000
+        ( 2419, ),               # Nightborne      0x4000000
+        ( 2420, ),               # Highmountain    0x8000000
+        ( 2423, ),               # Void Elf        0x10000000
+        ( 2421, ),               # Lightforged     0x20000000
         ( 2721, ),               # Zandalari Troll 0x40000000
-        ( 2723, ),               # Kul Tiran 0x80000000
+        ( 2723, ),               # Kul Tiran       0x80000000
     ]
 
     _skill_category_blacklist = [
@@ -2180,6 +2359,7 @@ class SpellDataGenerator(DataGenerator):
         'deathknight': 15,
         'monk': 53,
         'demonhunter': 107,
+        'evoker' : 224,
     }
 
     def initialize(self):
@@ -2205,26 +2385,26 @@ class SpellDataGenerator(DataGenerator):
     def class_mask_by_skill(self, skill):
         for i in range(0, len(constants.CLASS_SKILL_CATEGORIES)):
             if constants.CLASS_SKILL_CATEGORIES[i] == skill:
-                return DataGenerator._class_masks[i]
+                return util.class_mask(class_id=i)
 
         return 0
 
     def class_mask_by_spec_skill(self, spec_skill):
         for i in range(0, len(self._spec_skill_categories)):
             if spec_skill in self._spec_skill_categories[i]:
-                return DataGenerator._class_masks[i]
+                return util.class_mask(class_id=i)
 
         return 0
 
     def class_mask_by_pet_skill(self, pet_skill):
         for i in range(0, len(self._pet_skill_categories)):
             if pet_skill in self._pet_skill_categories[i]:
-                return DataGenerator._class_masks[i]
+                return util.class_mask(class_id=i)
 
         return 0
 
     def race_mask_by_skill(self, skill):
-        return util.race_mask(skill = skill)
+        return util.race_mask(skill=skill)
 
     def process_spell(self, spell_id, result_dict, mask_class = 0, mask_race = 0, state = True):
         filter_list = { }
@@ -2378,7 +2558,7 @@ class SpellDataGenerator(DataGenerator):
         for talent in TalentSet(self._options).get():
             # These may now be pet talents
             if talent.class_id > 0:
-                mask_class = DataGenerator._class_masks[talent.class_id]
+                mask_class = util.class_mask(class_id=talent.class_id)
                 self.process_spell(talent.id_spell, ids, mask_class, 0, False)
 
         # Get all perks
@@ -2394,7 +2574,7 @@ class SpellDataGenerator(DataGenerator):
             if spec_data.id == 0:
                 continue
 
-            self.process_spell(spell_id, ids, DataGenerator._class_masks[spec_data.class_id], 0, False)
+            self.process_spell(spell_id, ids, util.class_mask(class_id=spec_data.class_id), 0, False)
 
         # Get base skills from SkillLineAbility
         for ability in self.db('SkillLineAbility').values():
@@ -2407,7 +2587,7 @@ class SpellDataGenerator(DataGenerator):
                 continue
 
             # Guess class based on skill category identifier
-            mask_class_category = self.class_mask_by_skill(skill_id)
+            mask_class_category = util.class_mask(skill=skill_id)
             if mask_class_category == 0:
                 mask_class_category = self.class_mask_by_spec_skill(skill_id)
 
@@ -2443,15 +2623,15 @@ class SpellDataGenerator(DataGenerator):
 
             mask_class = 0
             if spec_data.class_id > 0:
-                mask_class = DataGenerator._class_masks[spec_data.class_id]
+                mask_class = util.class_mask(class_id=spec_data.class_id)
             # Hunter pet classes have a class id of 0, tag them as "hunter spells" like before
             else:
-                mask_class = DataGenerator._class_masks[3]
+                mask_class = util.class_mask(class_id=Class.HUNTER)
 
             self.process_spell(spell.id, ids, mask_class, 0, False)
 
         for entry in MasterySpellSet(self._options).get():
-            self.process_spell(entry.id_mastery_1, ids, DataGenerator._class_masks[entry.class_id], 0, False)
+            self.process_spell(entry.id_mastery_1, ids, util.class_mask(class_id=entry.class_id), 0, False)
 
 
         # Get spells relating to item enchants, so we can populate a (nice?) list
@@ -2704,6 +2884,18 @@ class SpellDataGenerator(DataGenerator):
         for entry in self.db('RuneforgeLegendaryAbility').values():
             self.process_spell(entry.id_spell, ids, 0, 0)
 
+        # Dragonflight player traits
+        for data in TraitSet(self._options).get().values():
+            class_mask = util.class_mask(class_id=data['class_'])
+
+            self.process_spell(data['spell'].id, ids, class_mask, 0, False)
+
+            if data['definition'].id_replace_spell > 0:
+                self.process_spell(data['definition'].id_replace_spell, ids, class_mask, 0, False)
+
+            if data['definition'].id_override_spell > 0:
+                self.process_spell(data['definition'].id_override_spell, ids, class_mask, 0, False)
+
         # Temporary item enchants
         for item, spell, enchant_id in TemporaryEnchantItemSet(self._options).get():
             enchant = self.db('SpellItemEnchantment')[enchant_id]
@@ -2741,6 +2933,7 @@ class SpellDataGenerator(DataGenerator):
                 if pattern.match(spell_data.name):
                     self.process_spell(spell_id, ids, 0, 0)
 
+
         # After normal spells have been fetched, go through all spell ids,
         # and get all the relevant aura_ids for selected spells
         more_ids = { }
@@ -2759,6 +2952,7 @@ class SpellDataGenerator(DataGenerator):
             else:
                 ids[id]['mask_class'] |= data['mask_class']
                 ids[id]['mask_race'] |= data['mask_race']
+
 
         #print('filter done', datetime.datetime.now() - _start)
         return ids
@@ -3368,7 +3562,7 @@ class SetBonusListGenerator(DataGenerator):
             'bonuses': [ 1443 ],
             'tier'   : 23
         },
-		{
+        {
             'name'   : 'titanic_empowerment',
             'bonuses': [ 1452 ],
             'tier'   : 24
@@ -3387,6 +3581,16 @@ class SetBonusListGenerator(DataGenerator):
             'name'   : 'ripped_secrets',
             'bonuses': [ 1508 ],
             'tier'   : 28
+        },
+        {
+            'name'   : 'tier29',
+            'bonuses': [ 1526, 1527, 1528, 1529, 1530, 1531, 1532, 1533, 1534, 1535, 1536, 1537, 1538 ],
+            'tier'   : 29
+        },
+        {
+            'name'   : 'playful_spirits_fur',
+            'bonuses': [ 1509 ],
+            'tier'   : 29
         }
     ]
 
@@ -4129,7 +4333,7 @@ class RankSpellGenerator(DataGenerator):
 
         for class_id, spec_id, spell, replace_spell in data:
             fields = []
-            fields += ['{:2d}'.format(class_id), '{:3d}'.format(spec_id)]
+            fields += ['{:2d}'.format(class_id), '{:4d}'.format(spec_id)]
             fields += spell.field('id')
             fields += replace_spell.field('id')
             fields += spell.field('name')
@@ -4312,3 +4516,91 @@ class SoulbindConduitEnhancedSocketGenerator(DataGenerator):
             self.output_record(f[:-1], comment = f[-1].strip('"'))
 
         self.output_footer()
+
+class TraitGenerator(DataGenerator):
+    def filter(self):
+        return TraitSet(self._options).get()
+
+    def _generate_table(self, data):
+        for entry in data:
+            fields = []
+
+            fields.append(f'{entry["tree"]}')
+            fields.append(f'{entry["class_"]:2d}')
+            fields += entry['entry'].field('id')
+            fields += entry['node'].field('id')
+            fields += entry['entry'].field('max_ranks')
+            fields.append(f'{entry["req_points"]:2d}')
+            fields += entry['definition'].field('id')
+            fields += entry['spell'].field('id')
+            fields += entry['definition'].field('id_replace_spell')
+            fields += entry['definition'].field('id_override_spell')
+            fields += [f'{entry["row"]:2d}', f'{entry["col"]:2d}']
+            fields.append(f'{entry["selection_index"]:3d}')
+
+            _name = entry['spell'].name
+            if override := entry['definition'].override_name:
+                _name = override
+                if override.startswith('$@spellname') and override[11:].isnumeric():
+                    _name = self.db('SpellName')[int(override[11:])].name
+
+            fields.append("{:>35s}".format(f'"{_name}"'))
+            fields.append(f'{{ {", ".join(["{:4d}".format(x) for x in sorted(entry["specs"]) + [0] * (constants.MAX_SPECIALIZATION - len(entry["specs"]))])} }}')
+            fields.append(f'{{ {", ".join(["{:4d}".format(x) for x in sorted(entry["starter"]) + [0] * (constants.MAX_SPECIALIZATION - len(entry["starter"]))])} }}')
+
+            self.output_record(fields)
+
+    def generate(self, data=None):
+        sorted_data = sorted(
+            data.values(),
+            key=lambda v: (v['tree'], v['class_'], v['entry'].id)
+        )
+
+        self.output_header(
+                header='Player trait definitions',
+                type='trait_data_t',
+                array='trait_data',
+                length=len(data))
+
+        self._generate_table(sorted_data)
+
+        self.output_footer()
+
+        # Definition effects
+        definition_effects = [
+            e for entry in sorted_data
+                for e in entry['definition'].child_refs('TraitDefinitionEffectPoints')
+        ]
+
+        definition_effects.sort(key=lambda v: (v.id_parent, v.effect_index))
+
+        self.output_header(
+                header='Player trait definition effect entries',
+                type='trait_definition_effect_entry_t',
+                array='trait_definition_effect',
+                length=len(definition_effects)
+        )
+
+        for e in definition_effects:
+            self.output_record(e.field('id_trait_definition', 'effect_index', 'operation', 'id_curve'))
+
+        self.output_footer()
+
+        # Collect spell IDs for indices
+        trait_spell_index = list((v['spell'].id, index) for index, v in enumerate(sorted_data))
+
+        self.output_id_index(
+            index = [ index for _, index in sorted(trait_spell_index) ],
+            array = 'trait_spell')
+
+        """
+        print(
+            f'cls={entry["class_"]} specs={entry["specs"]} starter={entry["starter"]} '
+            f'groups=[{", ".join([str(x.id) for x in sorted(entry["groups"], key=lambda v:v.id)])}] '
+            f'tree={entry["tree"]} node_id={entry["node"].id} node_type={entry["node"].type} '
+            f'entry={entry["entry"].id} '
+            f'replace={entry["definition"].id_replace_spell} '
+            f'override={entry["definition"].id_override_spell} '
+            f'spell={entry["spell"].name} ({entry["spell"].id}) ({util.tokenize(entry["spell"].name)})'
+        )
+        """

@@ -734,32 +734,6 @@ void scale_deltas_to_json( JsonOutput root, const player_t& p )
   }
 }
 
-void talents_to_json( JsonOutput root, const player_t& p )
-{
-  root.make_array();
-
-  for ( auto talent_row = 0; talent_row < MAX_TALENT_ROWS; talent_row++ )
-  {
-    auto talent_col = p.talent_points->choice( talent_row );
-    if ( talent_col == -1 )
-    {
-      continue;
-    }
-
-    auto talent_data = talent_data_t::find( p.type, talent_row, talent_col, p.specialization(), p.dbc->ptr );
-    if ( talent_data == nullptr )
-    {
-      continue;
-    }
-
-    auto entry = root.add();
-    entry[ "tier"     ] = talent_row + 1;
-    entry[ "id"       ] = talent_data -> id();
-    entry[ "spell_id" ] = talent_data -> spell_id();
-    entry[ "name"     ] = talent_data -> name_cstr();
-  }
-}
-
 void to_json( JsonOutput& arr, const ::report::json::report_configuration_t& report_configuration, const player_t& p )
 {
   auto root = arr.add(); // Add a fresh object to the players array and use it as root
@@ -770,9 +744,7 @@ void to_json( JsonOutput& arr, const ::report::json::report_configuration_t& rep
   root[ "role" ] = util::role_type_string( p.role );
   root[ "specialization" ] = util::specialization_string( p.specialization() );
   root[ "profile_source" ] = util::profile_source_string( p.profile_source_ );
-
-  talents_to_json( root[ "talents" ], p );
-
+  root[ "talents" ] = p.talents_str;
   root[ "party" ] = p.party;
   root[ "ready_type" ] = p.ready_type;
   root[ "bugs" ] = p.bugs;
@@ -830,6 +802,12 @@ void to_json( JsonOutput& arr, const ::report::json::report_configuration_t& rep
     name += "_regen_per_second";
     add_non_zero( root, name, p.resources.base_regen_per_second[ r ] );
   }
+
+  root[ "potion" ] = p.potion_str;
+  root[ "flask"] = p.flask_str;
+  root[ "food" ] = p.food_str;
+  root[ "augmentation" ] = p.rune_str;
+  root[ "temporary_enchant" ] = p.temporary_enchant_str;
 
   /* TODO: Not implemented reporting begins here
 

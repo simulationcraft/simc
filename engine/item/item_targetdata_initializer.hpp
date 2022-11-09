@@ -6,6 +6,7 @@
 #pragma once
 
 #include "config.hpp"
+
 #include "sc_enums.hpp"
 #include "util/span.hpp"
 
@@ -30,16 +31,18 @@ struct special_effect_t;
 struct item_targetdata_initializer_t
 {
   unsigned item_id;
-  std::vector< slot_e > slots_;
+  unsigned spell_id;
+  std::vector<slot_e> slots_;
 
-  item_targetdata_initializer_t(unsigned iid, util::span<const slot_e> s);
+  item_targetdata_initializer_t( unsigned iid, util::span<const slot_e> s );
+  item_targetdata_initializer_t( unsigned sid );
 
   virtual ~item_targetdata_initializer_t();
 
-  // Returns the special effect based on item id and slots to source from. Overridable if more
+  // Returns the special effect based on spell id, or item id and slots to source from. Overridable if more
   // esoteric functionality is needed
-  virtual const special_effect_t* find_effect(player_t* player) const;
+  virtual const special_effect_t* find_effect( player_t* player ) const;
 
   // Override to initialize the targetdata object.
-  virtual void operator()(actor_target_data_t*) const = 0;
+  virtual void operator()( actor_target_data_t* ) const = 0;
 };

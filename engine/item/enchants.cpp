@@ -29,7 +29,24 @@ namespace /* ANONYMOUS NAMESPACE */
  * item_enchantment_data_t structs in sc_item_data.inc.
  */
 const enchant_db_item_t __enchant_db[] = {
-    { nullptr, 0 }  // Dummy entry since we can not have a array with size 0.
+  { "completely_safe_rockets_1", 6529 },
+  { "completely_safe_rockets_2", 6530 },
+  { "completely_safe_rockets_3", 6531 },
+  { "endless_stack_of_needles_1", 6532 },
+  { "endless_stack_of_needles_2", 6533 },
+  { "endless_stack_of_needles_3", 6534 },
+  { "primal_weightstone_1", 6696 },
+  { "primal_weightstone_2", 6697 },
+  { "primal_weightstone_3", 6698 },
+  { "primal_whetstone_1", 6379 },
+  { "primal_whetstone_2", 6380 },
+  { "primal_whetstone_3", 6381 },
+  { "howling_rune_1", 6516 },
+  { "howling_rune_2", 6517 },
+  { "howling_rune_3", 6518 },
+  { "buzzing_rune_1", 6512 },
+  { "buzzing_rune_2", 6513 },
+  { "buzzing_rune_3", 6514 },
 };
 
 size_t enchant_map_key( const dbc_t& dbc, const item_enchantment_data_t& enchant )
@@ -69,6 +86,23 @@ std::string enchant::find_enchant_name( unsigned enchant_id )
 
 namespace
 {
+// With the new profession revamp in Dragonflight, enchants have the quality icon present in their name string
+// indicating which of the 3 quality tiers the enchant is.
+void _new_encoded_enchant_name( std::string& name, std::string& rank )
+{
+  static const std::string prof_icon_str = " |A:Professions-Icon-Quality-Tier";
+
+  auto it = name.find( prof_icon_str );
+  if ( it == std::string::npos )
+    return;
+
+  auto r_pos = it + prof_icon_str.size();
+  if ( r_pos != std::string::npos )
+    rank = name.substr( r_pos, 1 );
+
+  name = name.substr( 0, it );
+}
+
 /**
  * Return a "simc-encoded" enchant name for a given DBC item enchantment.
  *
@@ -95,8 +129,12 @@ std::string _encoded_enchant_name( const dbc_t& dbc, const item_enchantment_data
   const spell_data_t* enchant_source = dbc.spell( enchant.id_spell );
   if ( enchant_source->id() > 0 )
   {
-    enchant_name                              = enchant_source->name_cstr();
-    std::string::size_type enchant_pos        = enchant_name.find( "Enchant " );
+    enchant_name = enchant_source->name_cstr();
+
+    // Parse out new enchants that follow the 3-tiered naming from professions revamp
+    _new_encoded_enchant_name( enchant_name, enchant_rank_str );
+
+    std::string::size_type enchant_pos = enchant_name.find( "Enchant " );
     std::string::size_type enchant_hyphen_pos = enchant_name.find( '-' );
 
     // Cut out "Enchant XXX -" from the string, if it exists, also remove any
@@ -123,6 +161,10 @@ std::string _encoded_enchant_name( const dbc_t& dbc, const item_enchantment_data
   else
   {
     enchant_name = enchant.name ? enchant.name : "unknown";
+
+    // Parse out new enchants that follow the 3-tiered naming from professions revamp
+    _new_encoded_enchant_name( enchant_name, enchant_rank_str );
+
     util::tokenize( enchant_name );
 
     for ( size_t i = 0; i < std::size( enchant.ench_prop ); i++ )

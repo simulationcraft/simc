@@ -54,9 +54,20 @@ public:
     {
       if ( p()->buffs.nether_portal->up() )
       {
-        p()->active.summon_random_demon->execute();
-        p()->buffs.portal_summons->trigger();
+        p()->proc_actions.summon_random_demon->execute();
         p()->procs.portal_summon->occur();
+
+        if ( p()->talents.guldans_ambition.ok() )
+          p()->buffs.nether_portal_total->increment();
+
+        if ( p()->talents.nerzhuls_volition.ok() && rng().roll( p()->talents.nerzhuls_volition->effectN( 1 ).percent() ) )
+        {
+          p()->proc_actions.summon_random_demon->execute();
+          p()->procs.nerzhuls_volition->occur();
+
+          if ( p()->talents.guldans_ambition.ok() )
+            p()->buffs.nether_portal_total->increment();
+        }
       }
     }
   }
@@ -72,7 +83,7 @@ public:
 
     auto td = this->td( t );
 
-    if ( td->debuffs_from_the_shadows->check() && data().affected_by( td->debuffs_from_the_shadows->data().effectN( 1 ) ) )
+    if ( td->debuffs_from_the_shadows->check() && data().affected_by( p()->talents.from_the_shadows_debuff->effectN( 1 ) ) )
     {
       m *= 1.0 + td->debuffs_from_the_shadows->check_value();
     }
@@ -84,45 +95,10 @@ public:
   {
     double pm = warlock_spell_t::action_multiplier();
 
-    if ( this->data().affected_by( p()->mastery_spells.master_demonologist->effectN( 2 ) ) )
+    if ( this->data().affected_by( p()->warlock_base.master_demonologist->effectN( 2 ) ) )
       pm *= 1.0 + p()->cache.mastery_value();
 
     return pm;
-  }
-};
-
-struct shadow_bolt_t : public demonology_spell_t
-{
-  shadow_bolt_t( warlock_t* p, util::string_view options_str )
-    : demonology_spell_t( "Shadow Bolt", p, p->find_spell( 686 ) )
-  {
-    parse_options( options_str );
-    energize_type     = action_energize::ON_CAST;
-    energize_resource = RESOURCE_SOUL_SHARD;
-    energize_amount   = 1;
-  }
-
-  void execute() override
-  {
-    demonology_spell_t::execute();
-
-    if ( p()->talents.demonic_calling->ok() )
-      p()->buffs.demonic_calling->trigger();
-
-    if ( p()->legendary.balespiders_burning_core->ok() )
-      p()->buffs.balespiders_burning_core->trigger();
-  }
-
-  double action_multiplier() const override
-  {
-    double m = demonology_spell_t::action_multiplier();
-
-    if ( p()->talents.sacrificed_souls->ok() )
-    {
-      m *= 1.0 + p()->talents.sacrificed_souls->effectN( 1 ).percent() * p()->active_pets;
-    }
-
-    return m;
   }
 };
 
@@ -131,25 +107,18 @@ struct hand_of_guldan_t : public demonology_spell_t
   struct hog_impact_t : public demonology_spell_t
   {
     int shards_used;
-    const spell_data_t* summon_spell;
     timespan_t meteor_time;
 
     hog_impact_t( warlock_t* p, util::string_view options_str )
-      : demonology_spell_t( "Hand of Gul'dan (Impact)", p, p->find_spell( 86040 ) ),
+      : demonology_spell_t( "Hand of Gul'dan (Impact)", p, p->warlock_base.hog_impact ),
         shards_used( 0 ),
-        summon_spell( p->find_spell( 104317 ) ),
         meteor_time( 400_ms )
     {
       parse_options(options_str);
       aoe = -1;
       dual = true;
 
-      parse_effect_data( s_data->effectN( 1 ) );
-    }
-
-    void execute() override
-    {
-      demonology_spell_t::execute();
+      parse_effect_data( s_data->effectN( 1 ) ); // TOCHECK: is this needed?
     }
 
     timespan_t travel_time() const override
@@ -163,7 +132,22 @@ struct hand_of_guldan_t : public demonology_spell_t
 
       m *= shards_used;
 
+      if ( p()->talents.demonic_meteor.ok() )
+        m *= 1.0 + p()->talents.demonic_meteor->effectN( 1 ).percent();
+
+      if ( p()->buffs.blazing_meteor->check() )
+        m *= 1.0 + p()->buffs.blazing_meteor->check_value();
+
       return m;
+    }
+
+    void execute() override
+    {
+      demonology_spell_t::execute();
+
+      // 2022-10-17: NOTE in game the buff is consumed on a delay which can cause Demonbolt -> HoG queuing to consume the buff
+      // If this bug is not fixed closer to release this must be modeled
+      p()->buffs.blazing_meteor->expire();
     }
 
     void impact( action_state_t* s ) override
@@ -183,17 +167,7 @@ struct hand_of_guldan_t : public demonology_spell_t
         {
           auto ev = make_event<imp_delay_event_t>( *sim, p(), rng().gauss( 180.0 * i, 25.0 ), 180.0 * i );
           this->p()->wild_imp_spawns.push_back( ev );
-        }
-
-        // T28 4pc bonus can summon a Malicious Imp using the same behavior as a Wild Imp
-        // Since they are a random proc, there is not currently a need for custom expressions.
-        // Just going to spawn it at meteor impact time for now
-        if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T28, B4 ) && p()->rng().roll( p()->sets->set( WARLOCK_DEMONOLOGY, T28, B4 )->effectN( 1 ).percent() * shards_used ) )
-        {
-          p()->warlock_pet_list.malicious_imps.spawn( 1 );
-          p()->procs.malicious_imp->occur();
-        }
-        
+        }        
       }
     }
   };
@@ -205,9 +179,6 @@ struct hand_of_guldan_t : public demonology_spell_t
       impact_spell( new hog_impact_t( p, options_str ) )
   {
     parse_options( options_str );
-
-    //impact_spell->meteor_time = timespan_t::from_seconds( data().missile_speed() );
-    impact_spell->meteor_time = 400_ms; //See comments in impact spell for current behavior
   }
 
   timespan_t travel_time() const override
@@ -215,9 +186,19 @@ struct hand_of_guldan_t : public demonology_spell_t
     return 0_ms;
   }
 
+  timespan_t execute_time() const override
+  {
+    timespan_t t = demonology_spell_t::execute_time();
+
+    if ( p()->buffs.blazing_meteor->check() )
+      t *= 1.0 + p()->tier.blazing_meteor->effectN( 2 ).percent();
+
+    return t;
+  }
+
   bool ready() override
   {
-    if ( p()->resources.current[ RESOURCE_SOUL_SHARD ] == 0.0 )
+    if ( p()->resources.current[ RESOURCE_SOUL_SHARD ] < 1.0 )
     {
       return false;
     }
@@ -231,11 +212,21 @@ struct hand_of_guldan_t : public demonology_spell_t
 
     demonology_spell_t::execute();
 
-    if ( rng().roll( p()->conduit.borne_of_blood.percent() ) )
+    // TOCHECK: Can additional HoG procs trigger this?
+    if ( p()->talents.demonic_knowledge->ok() && rng().roll( p()->talents.demonic_knowledge->effectN( 1 ).percent() ) )
+    {
       p()->buffs.demonic_core->trigger();
+      p()->procs.demonic_knowledge->occur();
+    }
 
-    if ( p()->legendary.grim_inquisitors_dread_calling.ok() )
-      p()->buffs.dread_calling->increment( shards_used, p()->buffs.dread_calling->default_value );
+    //if ( rng().roll( p()->conduit.borne_of_blood.percent() ) )
+    //  p()->buffs.demonic_core->trigger();
+
+    //if ( p()->legendary.grim_inquisitors_dread_calling.ok() )
+    //  p()->buffs.dread_calling->increment( shards_used, p()->buffs.dread_calling->default_value );
+
+    if ( p()->talents.dread_calling.ok() )
+      p()->buffs.dread_calling->increment( shards_used );
   }
 
   void consume_resource() override
@@ -248,6 +239,12 @@ struct hand_of_guldan_t : public demonology_spell_t
       p()->procs.two_shard_hog->occur();
     if ( last_resource_cost == 3.0 )
       p()->procs.three_shard_hog->occur();
+
+    //if ( p()->talents.demonic_meteor.ok() && rng().roll( last_resource_cost * p()->talents.demonic_meteor->effectN( 2 ).percent() ) )
+    //{
+    //  p()->resource_gain( RESOURCE_SOUL_SHARD, 1, p()->gains.demonic_meteor );
+    //  p()->procs.demonic_meteor->occur();
+    //}
   }
 
   void impact( action_state_t* s ) override
@@ -256,19 +253,26 @@ struct hand_of_guldan_t : public demonology_spell_t
 
     impact_spell->execute_on_target( s->target );
 
-    if ( p()->legendary.forces_of_the_horned_nightmare.ok() &&
-         rng().roll( p()->legendary.forces_of_the_horned_nightmare->effectN( 1 ).percent() ) )
+    //if ( p()->legendary.forces_of_the_horned_nightmare.ok() &&
+    //     rng().roll( p()->legendary.forces_of_the_horned_nightmare->effectN( 1 ).percent() ) )
+    //{
+    //  p()->procs.horned_nightmare->occur();
+    //  make_event( *sim, 400_ms, [ this, t = target ] { impact_spell->execute_on_target( t ); } );
+    //}
+
+    // TOCHECK: Does this extra HoG proc itself, resource consumption, or trigger other procs? Currently implemented as NO.
+    if ( p()->talents.pact_of_the_imp_mother.ok() && rng().roll( p()->talents.pact_of_the_imp_mother->effectN( 1 ).percent() ) )
     {
-      p()->procs.horned_nightmare->occur();
-      make_event( *sim, 400_ms, [ this, t = target ] { impact_spell->execute_on_target( t ); } );
+      // Event seems near-instant, without separate travel time
+      make_event( *sim, 0_ms, [this, t = target ] { impact_spell->execute_on_target( t ); } );
+      p()->procs.pact_of_the_imp_mother->occur();
     }
   }
-
 };
 
 struct demonbolt_t : public demonology_spell_t
 {
-  demonbolt_t( warlock_t* p, util::string_view options_str ) : demonology_spell_t( p, "Demonbolt" )
+  demonbolt_t( warlock_t* p, util::string_view options_str ) : demonology_spell_t( "Demonbolt", p, p->talents.demonbolt )
   {
     parse_options( options_str );
     energize_type     = action_energize::ON_CAST;
@@ -282,7 +286,7 @@ struct demonbolt_t : public demonology_spell_t
 
     if ( p()->buffs.demonic_core->check() )
     {
-      et *= 1.0 + p()->buffs.demonic_core->data().effectN( 1 ).percent();
+      et *= 1.0 + p()->warlock_base.demonic_core_buff->effectN( 1 ).percent();
     }
 
     return et;
@@ -295,21 +299,27 @@ struct demonbolt_t : public demonology_spell_t
     p()->buffs.demonic_core->up();  // benefit tracking
     p()->buffs.demonic_core->decrement();
 
-    if ( p()->talents.power_siphon->ok() )
+    if ( p()->talents.power_siphon.ok() )
       p()->buffs.power_siphon->decrement();
 
-    if ( p()->talents.demonic_calling->ok() )
+    if ( p()->talents.demonic_calling.ok() )
       p()->buffs.demonic_calling->trigger();
 
-    p()->buffs.decimating_bolt->decrement();
-  }
+    if ( p()->talents.hounds_of_war.ok() && rng().roll( p()->talents.hounds_of_war->effectN( 1 ).percent() ) )
+    {
+      p()->cooldowns.call_dreadstalkers->reset( true );
+      p()->procs.hounds_of_war->occur();
+    }
 
-  void impact( action_state_t* s ) override
-  {
-    demonology_spell_t::impact( s );
+    p()->buffs.stolen_power_final->expire();
 
-    if ( p()->legendary.shard_of_annihilation.ok() )
-      p()->buffs.shard_of_annihilation->decrement();
+    // 2022-10-17 Percent chance for this effect is not in spell data!
+    // TOCHECK with further testing.
+    if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T29, B4 ) && rng().roll( 0.15 ) )
+    {
+      p()->buffs.blazing_meteor->trigger();
+      p()->procs.blazing_meteor->occur();
+    }
   }
 
   double action_multiplier() const override
@@ -318,37 +328,27 @@ struct demonbolt_t : public demonology_spell_t
 
     if ( p()->talents.sacrificed_souls->ok() )
     {
-      m *= 1.0 + p()->talents.sacrificed_souls->effectN( 1 ).percent() * p()->active_pets;
+      m *= 1.0 + p()->talents.sacrificed_souls->effectN( 1 ).percent() * p()->active_demon_count();
     }
 
-    if ( p()->talents.power_siphon->ok() && p()->buffs.power_siphon->check() )
+    if ( p()->talents.power_siphon.ok() && p()->buffs.power_siphon->check() )
     {
-      m *= 1.0 + p()->buffs.power_siphon->default_value;
+      m *= 1.0 + p()->buffs.power_siphon->check_value();
     }
 
-    m *= 1.0 + p()->buffs.balespiders_burning_core->check_stack_value();
+    //m *= 1.0 + p()->buffs.balespiders_burning_core->check_stack_value();
 
-    m *= 1 + p()->buffs.decimating_bolt->check_value();
+    if ( p()->talents.shadows_bite.ok() )
+      m *= 1.0 + p()->buffs.shadows_bite->check_value();
 
-    return m;
-  }
+    if ( p()->talents.fel_covenant.ok() )
+      m *= 1.0 + p()->buffs.fel_covenant->check_stack_value();
 
-  double composite_crit_chance() const override
-  {
-    double c = demonology_spell_t::composite_crit_chance();
+    if ( p()->talents.stolen_power.ok() && p()->buffs.stolen_power_final->check() )
+      m *= 1.0 + p()->talents.stolen_power_final_buff->effectN( 2 ).percent();
 
-    if ( p()->buffs.shard_of_annihilation->check() )
-      c += p()->buffs.shard_of_annihilation->data().effectN( 5 ).percent();
-
-    return c;
-  }
-
-  double composite_crit_damage_bonus_multiplier() const override
-  {
-    double m = demonology_spell_t::composite_crit_damage_bonus_multiplier();
-
-    if ( p()->buffs.shard_of_annihilation->check() )
-      m += p()->buffs.shard_of_annihilation->data().effectN( 6 ).percent();
+    if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T29, B2 ) )
+      m *= 1.0 + p()->sets->set( WARLOCK_DEMONOLOGY, T29, B2 )->effectN( 1 ).percent();
 
     return m;
   }
@@ -358,16 +358,17 @@ struct call_dreadstalkers_t : public demonology_spell_t
 {
   int dreadstalker_count;
 
-  call_dreadstalkers_t( warlock_t* p, util::string_view options_str ) : demonology_spell_t( p, "Call Dreadstalkers" )
+  call_dreadstalkers_t( warlock_t* p, util::string_view options_str ) : demonology_spell_t( "Call Dreadstalkers", p, p->talents.call_dreadstalkers )
   {
     parse_options( options_str );
     may_crit           = false;
-    dreadstalker_count = as<int>( data().effectN( 1 ).base_value() );
-    if ( p->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T28, B2 ) )
-    {
-      dreadstalker_count += 1;
-    }
-    base_execute_time += p->spec.call_dreadstalkers_2->effectN( 1 ).time_value();
+
+    //dreadstalker_count = as<int>( data().effectN( 1 ).base_value() );
+    //if ( p->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T28, B2 ) )
+    //{
+    //  dreadstalker_count += 1;
+    //}
+    //base_execute_time += p->spec.call_dreadstalkers_2->effectN( 1 ).time_value();
   }
 
   double cost() const override
@@ -376,7 +377,7 @@ struct call_dreadstalkers_t : public demonology_spell_t
 
     if ( p()->buffs.demonic_calling->check() )
     {
-      c -= p()->talents.demonic_calling->effectN( 1 ).base_value();
+      c *= 1.0 + p()->talents.demonic_calling_buff->effectN( 1 ).percent();
     }
 
     return c;
@@ -384,9 +385,11 @@ struct call_dreadstalkers_t : public demonology_spell_t
 
   timespan_t execute_time() const override
   {
+    timespan_t t = demonology_spell_t::execute_time();
+
     if ( p()->buffs.demonic_calling->check() )
     {
-      return timespan_t::zero();
+      t *= 1.0 + p()->talents.demonic_calling_buff->effectN( 2 ).percent();
     }
 
     return demonology_spell_t::execute_time();
@@ -396,22 +399,38 @@ struct call_dreadstalkers_t : public demonology_spell_t
   {
     demonology_spell_t::execute();
 
-    auto dogs = p()->warlock_pet_list.dreadstalkers.spawn( as<unsigned>( dreadstalker_count ) );
+    unsigned count = as<unsigned>( p()->talents.call_dreadstalkers->effectN( 1 ).base_value() );
+
+    if ( p()->talents.ripped_through_the_portal.ok() && rng().roll( p()->talents.ripped_through_the_portal->effectN( 1 ).percent() ) )
+      count++;
+
+    auto dogs = p()->warlock_pet_list.dreadstalkers.spawn( p()->talents.call_dreadstalkers_2->duration(), count );
 
     if ( p()->buffs.demonic_calling->up() )
     {  // benefit tracking
 
-      //Despite having no cost when Demonic Calling is up, this spell will still proc effects based on shard spending (last checked 2021-03-11)
+      //Despite having no cost when Demonic Calling is up, this spell will still proc effects based on shard spending (last checked 2022-10-04)
       double base_cost = demonology_spell_t::cost();
 
-      if ( p()->legendary.wilfreds_sigil_of_superior_summoning->ok() )
-        p()->cooldowns.demonic_tyrant->adjust( -base_cost * p()->legendary.wilfreds_sigil_of_superior_summoning->effectN( 2 ).time_value(), false );
+      if ( p()->talents.grand_warlocks_design->ok() )
+        p()->cooldowns.demonic_tyrant->adjust( -base_cost * p()->talents.grand_warlocks_design->effectN( 2 ).time_value(), false );
 
       if ( p()->buffs.nether_portal->up() )
       {
-        p()->active.summon_random_demon->execute();
-        p()->buffs.portal_summons->trigger();
+        p()->proc_actions.summon_random_demon->execute();
         p()->procs.portal_summon->occur();
+
+        if ( p()->talents.guldans_ambition.ok() )
+          p()->buffs.nether_portal_total->increment();
+
+        if ( p()->talents.nerzhuls_volition.ok() && rng().roll( p()->talents.nerzhuls_volition->effectN( 1 ).percent() ) )
+        {
+          p()->proc_actions.summon_random_demon->execute();
+          p()->procs.nerzhuls_volition->occur();
+
+          if ( p()->talents.guldans_ambition.ok() )
+            p()->buffs.nether_portal_total->increment();
+        }
       }
 
       if ( p()->talents.soul_conduit->ok() )
@@ -422,15 +441,28 @@ struct call_dreadstalkers_t : public demonology_spell_t
       p()->buffs.demonic_calling->decrement();
     }
 
-    //TOCHECK: Verify only the new pair of dreadstalkers gets the buff
-    if ( p()->legendary.grim_inquisitors_dread_calling.ok() )
+    ////TOCHECK: Verify only the new pair of dreadstalkers gets the buff
+    //if ( p()->legendary.grim_inquisitors_dread_calling.ok() )
+    //{
+    //  for ( auto d : dogs )
+    //  {
+    //    //Only apply buff to dogs without a buff. If no stacks of the buff currently exist on the warlock, apply a buff with value of 0
+    //    if ( d->is_active() && !d->buffs.grim_inquisitors_dread_calling->check() )
+    //    {
+    //      d->buffs.grim_inquisitors_dread_calling->trigger( 1, p()->buffs.dread_calling->check_stack_value() );
+    //    }
+    //  }
+
+    //  p()->buffs.dread_calling->expire();
+    //}
+
+    if ( p()->talents.dread_calling.ok() )
     {
       for ( auto d : dogs )
       {
-        //Only apply buff to dogs without a buff. If no stacks of the buff currently exist on the warlock, apply a buff with value of 0
-        if ( d->is_active() && !d->buffs.grim_inquisitors_dread_calling->check() )
+        if ( d->is_active() && !d->buffs.dread_calling->check() )
         {
-          d->buffs.grim_inquisitors_dread_calling->trigger( 1, p()->buffs.dread_calling->check_stack_value() );
+          d->buffs.dread_calling->trigger( 1, p()->buffs.dread_calling->check_stack_value() );
         }
       }
 
@@ -443,10 +475,10 @@ struct implosion_t : public demonology_spell_t
 {
   struct implosion_aoe_t : public demonology_spell_t
   {
-    double casts_left = 5.0;
+    double energy_remaining = 0.0;
     warlock_pet_t* next_imp;
 
-    implosion_aoe_t( warlock_t* p ) : demonology_spell_t( "implosion_aoe", p, p->find_spell( 196278 ) )
+    implosion_aoe_t( warlock_t* p ) : demonology_spell_t( "implosion_aoe", p, p->talents.implosion_aoe )
     {
       aoe                = -1;
       dual               = true;
@@ -460,7 +492,7 @@ struct implosion_t : public demonology_spell_t
 
       if ( t == this->target )
       {
-        m *= ( casts_left / 5.0 );
+        m *= ( energy_remaining / 100.0 ); // 2022-10-03 - Wild Imps deal 84% damage to primary after first cast, which costs 16 energy
       }
 
       return m;
@@ -476,7 +508,7 @@ struct implosion_t : public demonology_spell_t
   implosion_aoe_t* explosion;
 
   implosion_t( warlock_t* p, util::string_view options_str )
-    : demonology_spell_t( "implosion", p ), explosion( new implosion_aoe_t( p ) )
+    : demonology_spell_t( "implosion", p, p->talents.implosion ), explosion( new implosion_aoe_t( p ) )
   {
     parse_options( options_str );
     add_child( explosion );
@@ -495,13 +527,6 @@ struct implosion_t : public demonology_spell_t
 
   void execute() override
   {
-    p()->buffs.implosive_potential->expire();
-    p()->buffs.implosive_potential_small->expire();
-
-    auto imps_consumed = as<int>( p()->warlock_pet_list.wild_imps.n_active_pets() );
-    if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T28, B4 ) )
-      imps_consumed += as<int>( p()->warlock_pet_list.malicious_imps.n_active_pets() ); // T28 Malicious Imps count for Implosive Potential
-
     // Travel speed is not in spell data, in game test appears to be 65 yds/sec as of 2020-12-04
     timespan_t imp_travel_time = this->calc_imp_travel_time( 65 );
 
@@ -516,6 +541,7 @@ struct implosion_t : public demonology_spell_t
 
         imp->trigger_movement( dist, movement_direction_type::TOWARDS );
         imp->interrupt();
+        imp->imploded = true;
 
         // Imps launched with Implosion appear to be staggered and snapshot when they impact
         // 2020-12-04: Implosion may have been made quicker in Shadowlands, too fast to easily discern with combat log
@@ -524,7 +550,7 @@ struct implosion_t : public demonology_spell_t
         make_event( sim, 10_ms * launch_counter + imp_travel_time, [ ex, tar, imp ] {
           if ( imp && !imp->is_sleeping() )
           {
-            ex->casts_left = ( imp->resources.current[ RESOURCE_ENERGY ] / 20 );
+            ex->energy_remaining = ( imp->resources.current[ RESOURCE_ENERGY ] );
             ex->set_target( tar );
             ex->next_imp = imp;
             ex->execute();
@@ -534,41 +560,6 @@ struct implosion_t : public demonology_spell_t
         launch_counter++;
       }
     }
-
-    if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T28, B4 ) )
-    {
-      launch_counter = 0;
-      for ( auto mimp : p()->warlock_pet_list.malicious_imps )
-      {
-        if ( !mimp->is_sleeping() )
-        {
-          implosion_aoe_t* ex = explosion;
-          player_t* tar = target;
-          double dist = p()->get_player_distance( *tar );
-
-          mimp->trigger_movement( dist, movement_direction_type::TOWARDS );
-          mimp->imploded = true; // Used to trigger Spite
-          mimp->interrupt();
-
-          make_event( sim, 10_ms * launch_counter + imp_travel_time, [ ex, tar, mimp ] {
-            if ( mimp && !mimp->is_sleeping() )
-            {
-              ex->casts_left = ( mimp->resources.current[ RESOURCE_ENERGY ] / 20 );
-              ex->set_target( tar );
-              ex->next_imp = mimp;
-              ex->execute();
-            }
-          } );
-
-          launch_counter++;
-        }
-      }
-    }
-
-    if ( p()->legendary.implosive_potential.ok() && target_list().size() >= as<size_t>( p()->legendary.implosive_potential->effectN( 1 ).base_value() ) )
-      p()->buffs.implosive_potential->trigger( imps_consumed );
-    else if ( p()->legendary.implosive_potential.ok() )
-      p()->buffs.implosive_potential_small->trigger( imps_consumed );
 
     demonology_spell_t::execute();
   }
@@ -600,18 +591,11 @@ struct implosion_t : public demonology_spell_t
 
 struct summon_demonic_tyrant_t : public demonology_spell_t
 {
-  double demonic_consumption_added_damage;
-  double demonic_consumption_health_percentage;
-
   summon_demonic_tyrant_t( warlock_t* p, util::string_view options_str )
-    : demonology_spell_t( "summon_demonic_tyrant", p, p->find_spell( 265187 ) ),
-      demonic_consumption_added_damage( 0 ),
-      demonic_consumption_health_percentage( 0 )
+    : demonology_spell_t( "summon_demonic_tyrant", p, p->talents.summon_demonic_tyrant )
   {
     parse_options( options_str );
     harmful = may_crit = false;
-
-    demonic_consumption_health_percentage = p->find_spell( 267971 )->effectN( 1 ).percent();
   }
 
   void execute() override
@@ -626,11 +610,14 @@ struct summon_demonic_tyrant_t : public demonology_spell_t
 
     p()->buffs.demonic_power->trigger();
 
-    if ( p()->spec.summon_demonic_tyrant_2->ok() )
-      p()->resource_gain( RESOURCE_SOUL_SHARD, p()->spec.summon_demonic_tyrant_2->effectN( 1 ).base_value() / 10.0,
-                          p()->gains.summon_demonic_tyrant );
+    //if ( p()->spec.summon_demonic_tyrant_2->ok() )
+    //  p()->resource_gain( RESOURCE_SOUL_SHARD, p()->spec.summon_demonic_tyrant_2->effectN( 1 ).base_value() / 10.0,
+    //                      p()->gains.summon_demonic_tyrant );
 
-    demonic_consumption_added_damage = 0;
+    if ( p()->talents.soulbound_tyrant.ok() )
+      p()->resource_gain( RESOURCE_SOUL_SHARD, p()->talents.soulbound_tyrant->effectN( 1 ).base_value() / 10.0, p()->gains.soulbound_tyrant );
+
+    timespan_t extension_time = p()->talents.demonic_power_buff->effectN( 3 ).time_value();
 
     for ( auto& pet : p()->pet_list )
     {
@@ -646,46 +633,23 @@ struct summon_demonic_tyrant_t : public demonology_spell_t
 
       if ( lock_pet->expiration )
       {
-        timespan_t new_time = lock_pet->expiration->time + p()->buffs.demonic_power->data().effectN( 3 ).time_value();
-        lock_pet->expiration->reschedule_time = new_time;
-      }
-
-      if ( p()->talents.demonic_consumption->ok() )
-      {
-        //This is a hack to get around the fact we are not currently updating pet HP dynamically
-        //TODO: Pet stats (especially HP) need more reliable modeling of caching/updating
-        double available = p()->max_health() * pet->owner_coeff.health;
-
-        // There is no spelldata for how health is converted into damage, current testing indicates the 15% of hp taken
-        // from pets is divided by 10 and added to base damage 09-05-2020.
-        // TODO - make it properly remove the health.
-        demonic_consumption_added_damage += available * demonic_consumption_health_percentage / 10.0;
-      }
-    }
-
-    if ( p()->talents.demonic_consumption->ok() )
-    {
-      for ( auto dt : p()->warlock_pet_list.demonic_tyrants )
-      {
-        if ( !dt->is_sleeping() )
-        {
-          dt->buffs.demonic_consumption->trigger( 1, demonic_consumption_added_damage );
-        }
+        lock_pet->expiration->reschedule_time = lock_pet->expiration->time + extension_time;
       }
     }
 
     p()->buffs.tyrant->trigger();
+
     if ( p()->buffs.dreadstalkers->check() )
     {
-      p()->buffs.dreadstalkers->extend_duration( p(), p()->buffs.demonic_power->data().effectN( 3 ).time_value() );
+      p()->buffs.dreadstalkers->extend_duration( p(), extension_time );
     }
     if ( p()->buffs.grimoire_felguard->check() )
     {
-      p()->buffs.grimoire_felguard->extend_duration( p(), p()->buffs.demonic_power->data().effectN( 3 ).time_value() );
+      p()->buffs.grimoire_felguard->extend_duration( p(), extension_time );
     }
     if ( p()->buffs.vilefiend->check() )
     {
-      p()->buffs.vilefiend->extend_duration( p(), p()->buffs.demonic_power->data().effectN( 3 ).time_value() );
+      p()->buffs.vilefiend->extend_duration( p(), extension_time );
     }
   }
 };
@@ -699,6 +663,15 @@ struct demonic_strength_t : public demonology_spell_t
     parse_options( options_str );
   }
 
+  // 2022-10-09: Technically, you can activate Demonic Strength during Guillotine, but
+  // it will only apply the buff and will fail to trigger the DS Felstorm. A Felstorm
+  // triggered once Guillotine is over will appropriately utilize the DS buff, but this
+  // will not be considered a "free" Felstorm and will put the ability on cooldown.
+  //
+  // As this is currently beta, we will not implement this for now as it would require
+  // significant changes to the way these spells are built. Instead, we will simply say
+  // Demonic Strength is not ready while the Fiendish Wrath buff is active.
+  // TOCHECK near release to implement final behavior.
   bool ready() override
   {
     auto active_pet = p()->warlock_pet_list.active;
@@ -711,6 +684,8 @@ struct demonic_strength_t : public demonology_spell_t
     if ( active_pet->find_action( "felstorm" )->get_dot()->is_ticking() )
       return false;
     if ( active_pet->find_action( "demonic_strength_felstorm" )->get_dot()->is_ticking() )
+      return false;
+    if ( active_pet->buffs.fiendish_wrath->check() )
       return false;
     return spell_t::ready();
   }
@@ -734,12 +709,12 @@ struct bilescourge_bombers_t : public demonology_spell_t
   struct bilescourge_bombers_tick_t : public demonology_spell_t
   {
     bilescourge_bombers_tick_t( warlock_t* p )
-      : demonology_spell_t( "bilescourge_bombers_tick", p, p->find_spell( 267213 ) )
+      : demonology_spell_t( "bilescourge_bombers_tick", p, p->talents.bilescourge_bombers_aoe )
     {
-      aoe        = -1;
+      aoe = -1;
       background = dual = direct_tick = true;
-      callbacks                       = false;
-      radius                          = p->talents.bilescourge_bombers->effectN( 1 ).radius();
+      callbacks = false;
+      radius = p->talents.bilescourge_bombers->effectN( 1 ).radius();
     }
   };
 
@@ -747,16 +722,21 @@ struct bilescourge_bombers_t : public demonology_spell_t
     : demonology_spell_t( "bilescourge_bombers", p, p->talents.bilescourge_bombers )
   {
     parse_options( options_str );
-    dot_duration = timespan_t::zero();
+    dot_duration = 0_ms;
     may_miss = may_crit = false;
-    base_tick_time      = data().duration() / 12.0;
-    base_execute_time   = timespan_t::zero();
-
-    if ( !p->active.bilescourge_bombers )
+    base_tick_time      = 500_ms;
+    
+    if ( !p->proc_actions.bilescourge_bombers_aoe_tick )
     {
-      p->active.bilescourge_bombers        = new bilescourge_bombers_tick_t( p );
-      p->active.bilescourge_bombers->stats = stats;
+      p->proc_actions.bilescourge_bombers_aoe_tick = new bilescourge_bombers_tick_t( p );
+      p->proc_actions.bilescourge_bombers_aoe_tick->stats = stats;
     }
+    
+    //if ( !p->active.bilescourge_bombers )
+    //{
+    //  p->active.bilescourge_bombers        = new bilescourge_bombers_tick_t( p );
+    //  p->active.bilescourge_bombers->stats = stats;
+    //}
   }
 
   void execute() override
@@ -768,10 +748,10 @@ struct bilescourge_bombers_t : public demonology_spell_t
                                         .target( execute_state->target )
                                         .x( execute_state->target->x_position )
                                         .y( execute_state->target->y_position )
-                                        .pulse_time( base_tick_time * player->cache.spell_haste() )
-                                        .duration( data().duration() * player->cache.spell_haste() )
+                                        .pulse_time( base_tick_time )
+                                        .duration( p()->talents.bilescourge_bombers->duration() )
                                         .start_time( sim->current_time() )
-                                        .action( p()->active.bilescourge_bombers ) );
+                                        .action( p()->proc_actions.bilescourge_bombers_aoe_tick ) );
   }
 };
 
@@ -845,7 +825,7 @@ struct doom_t : public demonology_spell_t
     energize_resource = RESOURCE_SOUL_SHARD;
     energize_amount   = 1;
 
-    //TODO: Verify haste and refresh behaviors with changing stats while dot is already applied 
+    hasted_ticks = true;
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
@@ -853,11 +833,59 @@ struct doom_t : public demonology_spell_t
     return s->action->tick_time( s ); //Doom is a case where dot duration scales with haste so use the tick time to get the current correct value
   }
 
+  double composite_ta_multiplier( const action_state_t* s ) const override
+  {
+    double m = demonology_spell_t::composite_ta_multiplier( s );
+
+    if ( p()->talents.kazaaks_final_curse.ok() )
+      m *= 1.0 + td( s->target )->debuffs_kazaaks_final_curse->check_value();
+
+    return m;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    demonology_spell_t::impact( s );
+
+    if ( p()->talents.kazaaks_final_curse.ok() )
+    {
+      // Count demons
+      int count = pet_counter();
+      td( s->target )->debuffs_kazaaks_final_curse->trigger( 1, count * p()->talents.kazaaks_final_curse->effectN( 1 ).percent() );
+    }
+  }
+
   void last_tick( dot_t* d ) override
   {
+    if ( d->time_to_next_full_tick() > 0_ms )
+      gain_energize_resource( RESOURCE_SOUL_SHARD, energize_amount, p()->gains.doom ); // 2022-10-06: Doom appears to always give a full shard on its partial tick
+
     demonology_spell_t::last_tick( d );
 
-    gain_energize_resource( RESOURCE_SOUL_SHARD, energize_amount, p()->gains.doom ); // 2022-02-17: Doom appears to always give a full shard on its partial tick
+    td( d->target )->debuffs_kazaaks_final_curse->expire();
+  }
+
+private:
+  int pet_counter()
+  {
+    int count = 0;
+
+    for ( auto& pet : p()->pet_list )
+    {
+      auto lock_pet = dynamic_cast<warlock_pet_t*>( pet );
+
+      if ( lock_pet == nullptr )
+        continue;
+      if ( lock_pet->is_sleeping() )
+        continue;
+
+      // 2022-10-07: Kazaak's currently has bugs where not all pets are counted, assuming this will be fixed
+      // Can use if ( lock_pet->pet_type == [enum value] ) to skip if we need to implement this
+
+      count++;
+    }
+
+    return count;
   }
 };
 
@@ -903,7 +931,7 @@ struct summon_vilefiend_t : public demonology_spell_t
   {
     demonology_spell_t::execute();
     p()->buffs.vilefiend->trigger();
-    p()->warlock_pet_list.vilefiends.spawn( data().duration() );
+    p()->warlock_pet_list.vilefiends.spawn( p()->talents.summon_vilefiend->duration() );
   }
 };
 
@@ -920,7 +948,7 @@ struct grimoire_felguard_t : public demonology_spell_t
   {
     demonology_spell_t::execute();
     
-    p()->warlock_pet_list.grimoire_felguards.spawn( data().duration() );
+    p()->warlock_pet_list.grimoire_felguards.spawn( p()->talents.grimoire_felguard->duration() );
     p()->buffs.grimoire_felguard->trigger();
   }
 };
@@ -938,6 +966,54 @@ struct nether_portal_t : public demonology_spell_t
   {
     p()->buffs.nether_portal->trigger();
     demonology_spell_t::execute();
+  }
+};
+
+struct guillotine_t : public demonology_spell_t
+{
+  guillotine_t( warlock_t* p, util::string_view options_str )
+    : demonology_spell_t( "guillotine", p, p->talents.guillotine )
+  {
+    parse_options( options_str );
+    may_crit = false;
+  }
+
+  // Guillotine takes priority over any other actions, so the only requirement is to have a Felguard
+  bool ready() override
+  {
+    auto active_pet = p()->warlock_pet_list.active;
+
+    if ( !active_pet )
+      return false;
+
+    if ( active_pet->pet_type != PET_FELGUARD )
+      return false;
+    
+    return spell_t::ready();
+  }
+
+  void execute() override
+  {
+    auto active_pet = p()->warlock_pet_list.active;
+
+    // 2022-10-09: Activating Guillotine will cancel any active Felstorm
+    if ( active_pet->find_action( "felstorm" )->get_dot()->is_ticking() )
+    {
+      active_pet->find_action( "felstorm" )->cancel();
+    }
+    else if ( active_pet->find_action( "demonic_strength_felstorm" )->get_dot()->is_ticking() )
+    {
+      active_pet->find_action( "demonic_strength_felstorm" )->cancel();
+    }
+
+    demonology_spell_t::execute();
+
+    if ( p()->warlock_pet_list.active->pet_type == PET_FELGUARD )
+    {
+      p()->warlock_pet_list.active->buffs.fiendish_wrath->trigger();
+
+      debug_cast<pets::demonology::felguard_pet_t*>( p()->warlock_pet_list.active )->felguard_guillotine->execute_on_target( execute_state->target );
+    }
   }
 };
 
@@ -959,10 +1035,14 @@ struct summon_random_demon_t : public demonology_spell_t
 
   timespan_t summon_duration;
   summon_random_demon_t( warlock_t* p, util::string_view options_str )
-    : demonology_spell_t( "summon_random_demon", p ), summon_duration( timespan_t::from_seconds( 15 ) )
+    : demonology_spell_t( "summon_random_demon", p ), summon_duration( timespan_t::from_seconds( p->talents.inner_demons->effectN( 2 ).base_value() ) )
   {
     parse_options( options_str );
     background = true;
+
+    // Fallback if Inner Demons data is not present
+    if ( p->talents.nether_portal.ok() )
+      summon_duration = p->talents.nether_portal->duration();
   }
 
   void execute() override
@@ -1074,8 +1154,6 @@ action_t* warlock_t::create_action_demonology( util::string_view action_name, ut
 {
   using namespace actions_demonology;
 
-  if ( action_name == "shadow_bolt" )
-    return new shadow_bolt_t( this, options_str );
   if ( action_name == "demonbolt" )
     return new demonbolt_t( this, options_str );
   if ( action_name == "hand_of_guldan" )
@@ -1105,42 +1183,44 @@ action_t* warlock_t::create_action_demonology( util::string_view action_name, ut
     return new summon_vilefiend_t( this, options_str );
   if ( action_name == "grimoire_felguard" )
     return new grimoire_felguard_t( this, options_str );
+  if ( action_name == "guillotine" )
+    return new guillotine_t( this, options_str );
 
   return nullptr;
 }
 
 void warlock_t::create_buffs_demonology()
 {
-  buffs.demonic_core = make_buff( this, "demonic_core", find_spell( 264173 ) );
+  buffs.demonic_core = make_buff( this, "demonic_core", warlock_base.demonic_core_buff );
 
-  buffs.power_siphon = make_buff( this, "power_siphon", find_spell( 334581 ) )
-                            ->set_default_value( find_spell( 334581 )->effectN( 1 ).percent() );
+  buffs.power_siphon = make_buff( this, "power_siphon", talents.power_siphon_buff )
+                           ->set_default_value_from_effect( 1 );
 
-  buffs.demonic_power = make_buff( this, "demonic_power", find_spell( 265273 ) )
-                            ->set_default_value( find_spell( 265273 )->effectN( 2 ).percent() )
-                            ->set_cooldown( timespan_t::zero() );
+  buffs.demonic_power = make_buff( this, "demonic_power", talents.demonic_power_buff )
+                            ->set_default_value_from_effect( 2 );
 
   // Talents
-  buffs.demonic_calling = make_buff( this, "demonic_calling", talents.demonic_calling->effectN( 1 ).trigger() )
-                              ->set_chance( talents.demonic_calling->proc_chance() );
+  buffs.demonic_calling = make_buff( this, "demonic_calling", talents.demonic_calling_buff )
+                              ->set_chance( talents.demonic_calling->effectN( 3 ).percent() );
 
-  buffs.inner_demons = make_buff( this, "inner_demons", find_spell( 267216 ) )
+  buffs.inner_demons = make_buff( this, "inner_demons", talents.inner_demons )
                            ->set_period( talents.inner_demons->effectN( 1 ).period() )
                            ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED )
                            ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
                              warlock_pet_list.wild_imps.spawn();
                              if ( rng().roll( talents.inner_demons->effectN( 1 ).percent() ) )
                              {
-                               active.summon_random_demon->execute();
+                               proc_actions.summon_random_demon->execute();
                              }
                            } );
 
-  buffs.nether_portal =
-      make_buff( this, "nether_portal", talents.nether_portal )->set_duration( talents.nether_portal->duration() );
-
-  // Conduits
-  buffs.tyrants_soul = make_buff( this, "tyrants_soul", find_spell( 339784 ) )
-                           ->set_default_value( conduit.tyrants_soul.percent() );
+  buffs.nether_portal = make_buff( this, "nether_portal", talents.nether_portal_buff )
+                            ->set_stack_change_callback( [ this ]( buff_t*, int, int cur ) {
+                              if ( cur == 0 && talents.guldans_ambition.ok() )
+                              {
+                                warlock_pet_list.pit_lords.spawn( talents.soul_glutton->duration(), 1u );
+                              };
+                            } );;
 
   // Legendaries
   buffs.balespiders_burning_core =
@@ -1148,28 +1228,14 @@ void warlock_t::create_buffs_demonology()
           ->set_trigger_spell( legendary.balespiders_burning_core )
           ->set_default_value( legendary.balespiders_burning_core->effectN( 1 ).trigger()->effectN( 1 ).percent() );
 
-  //TODO: SL Beta - check max stacks, refresh behavior, etc
-  buffs.implosive_potential = make_buff<buff_t>(this, "implosive_potential", find_spell(337139))
-          ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
-          ->set_default_value( legendary.implosive_potential->effectN( 2 ).percent() )
-          ->set_max_stack( std::max( 1, as<int>( legendary.implosive_potential->effectN( 4 ).base_value() ) ) ); // Hotfixed to cap of 15 on 2022-04-04
-
-  //For ease of use and tracking, the lesser version will have (small) appended to a separate buff
-  buffs.implosive_potential_small = make_buff<buff_t>(this, "implosive_potential_small", find_spell(337139))
-          ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
-          ->set_default_value( legendary.implosive_potential->effectN( 3 ).percent() )
-          ->set_max_stack( std::max( 1, as<int>( legendary.implosive_potential->effectN( 4 ).base_value() ) ) ); // Hotfixed to cap of 15 on 2022-04-04
-
-  buffs.dread_calling = make_buff<buff_t>( this, "dread_calling", find_spell( 342997 ) )
-                            ->set_default_value( legendary.grim_inquisitors_dread_calling->effectN( 1 ).percent() );
+  buffs.dread_calling = make_buff<buff_t>( this, "dread_calling", talents.dread_calling_buff )
+                            ->set_default_value( talents.dread_calling->effectN( 1 ).percent() );
 
   // to track pets
   buffs.wild_imps = make_buff( this, "wild_imps" )->set_max_stack( 40 );
 
-  buffs.malicious_imps = make_buff( this, "malicious_imps" )->set_max_stack( 40 );
-
   buffs.dreadstalkers = make_buff( this, "dreadstalkers" )->set_max_stack( 8 )
-                        ->set_duration( find_spell( 193332 )->duration() );
+                        ->set_duration( talents.call_dreadstalkers_2->duration() );
 
   buffs.vilefiend = make_buff( this, "vilefiend" )->set_max_stack( 1 )
                     ->set_duration( talents.summon_vilefiend->duration() );
@@ -1184,64 +1250,174 @@ void warlock_t::create_buffs_demonology()
 
   buffs.eyes_of_guldan = make_buff( this, "eyes_of_guldan" )->set_max_stack( 4 );
 
-  buffs.portal_summons = make_buff( this, "portal_summons" )
-                             ->set_duration( timespan_t::from_seconds( 15 ) )
-                             ->set_max_stack( 40 )
-                             ->set_refresh_behavior( buff_refresh_behavior::DURATION );
+  buffs.shadows_bite = make_buff( this, "shadows_bite", talents.shadows_bite_buff )
+                           ->set_default_value( talents.shadows_bite->effectN( 1 ).percent() );
+
+  buffs.fel_covenant = make_buff( this, "fel_covenant", talents.fel_covenant_buff )
+                           ->set_default_value( talents.fel_covenant->effectN( 2 ).percent() );
+
+  buffs.stolen_power_building = make_buff( this, "stolen_power_building", talents.stolen_power_stacking_buff )
+                                    ->set_stack_change_callback( [ this ]( buff_t* b, int, int cur )
+                                    {
+                                      if ( cur == b->max_stack() )
+                                      {
+                                        make_event( sim, 0_ms, [ this, b ] { 
+                                          buffs.stolen_power_final->trigger();
+                                          b->expire();
+                                        } );
+                                      };
+                                    } );
+
+  buffs.stolen_power_final = make_buff( this, "stolen_power_final", talents.stolen_power_final_buff );
+
+  buffs.nether_portal_total = make_buff( this, "nether_portal_total" )
+                                  ->set_max_stack( talents.soul_glutton->max_stacks() )
+                                  ->set_refresh_behavior( buff_refresh_behavior::NONE );
+
+  buffs.demonic_servitude = make_buff( this, "demonic_servitude", talents.demonic_servitude )
+                                ->set_default_value( talents.reign_of_tyranny->effectN( 3 ).percent() );
+
+  buffs.blazing_meteor = make_buff( this, "blazing_meteor", tier.blazing_meteor )
+                             ->set_default_value_from_effect( 1 );
 }
 
 void warlock_t::init_spells_demonology()
 {
-  spec.demonology                    = find_specialization_spell( 137044 );
-  mastery_spells.master_demonologist = find_mastery_spell( WARLOCK_DEMONOLOGY );
-
   spec.call_dreadstalkers_2    = find_specialization_spell( 334727 );
   spec.fel_firebolt_2          = find_specialization_spell( 334591 );
   spec.summon_demonic_tyrant_2 = find_specialization_spell( 334585 );
 
   // spells
   // Talents
-  talents.dreadlash           = find_talent_spell( "Dreadlash" );
-  talents.demonic_strength    = find_talent_spell( "Demonic Strength" );
-  talents.bilescourge_bombers = find_talent_spell( "Bilescourge Bombers" );
-  talents.demonic_calling     = find_talent_spell( "Demonic Calling" );
-  talents.power_siphon        = find_talent_spell( "Power Siphon" );
-  talents.doom                = find_talent_spell( "Doom" );
-  talents.from_the_shadows    = find_talent_spell( "From the Shadows" );
-  talents.soul_strike         = find_talent_spell( "Soul Strike" );
-  talents.summon_vilefiend    = find_talent_spell( "Summon Vilefiend" );
-  talents.inner_demons        = find_talent_spell( "Inner Demons" );
-  talents.grimoire_felguard   = find_talent_spell( "Grimoire: Felguard" );
-  talents.sacrificed_souls    = find_talent_spell( "Sacrificed Souls" );
-  talents.demonic_consumption = find_talent_spell( "Demonic Consumption" );
-  talents.nether_portal       = find_talent_spell( "Nether Portal" );
+  talents.call_dreadstalkers = find_talent_spell( talent_tree::SPECIALIZATION, "Call Dreadstalkers" ); // Should be ID 104316
+  talents.call_dreadstalkers_2 = find_spell( 193332 ); // Duration data
+
+  talents.demonbolt = find_talent_spell( talent_tree::SPECIALIZATION, "Demonbolt" ); // Should be ID 264178
+
+  talents.dreadlash = find_talent_spell( talent_tree::SPECIALIZATION, "Dreadlash" ); // Should be ID 264078
+
+  talents.annihilan_training = find_talent_spell( talent_tree::SPECIALIZATION, "Annihilan Training" ); // Should be ID 386174
+  talents.annihilan_training_buff = find_spell( 386176 );
+
+  talents.demonic_knowledge = find_talent_spell( talent_tree::SPECIALIZATION, "Demonic Knowledge" ); // Should be ID 386185
+
+  talents.summon_vilefiend = find_talent_spell( talent_tree::SPECIALIZATION, "Summon Vilefiend" ); // Should be ID 264119
+
+  talents.soul_strike = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Strike" ); // Should be ID 264057
+
+  talents.bilescourge_bombers = find_talent_spell( talent_tree::SPECIALIZATION, "Bilescourge Bombers" ); // Should be ID 267211
+  talents.bilescourge_bombers_aoe = find_spell( 267213 );
+
+  talents.demonic_strength = find_talent_spell( talent_tree::SPECIALIZATION, "Demonic Strength" ); // Should be ID 267171
+
+  talents.from_the_shadows = find_talent_spell( talent_tree::SPECIALIZATION, "From the Shadows" ); // Should be ID 267170
+  talents.from_the_shadows_debuff = find_spell( 270569 );
+
+  talents.implosion = find_talent_spell( talent_tree::SPECIALIZATION, "Implosion" ); // Should be ID 196277
+  talents.implosion_aoe = find_spell( 196278 );
+
+  talents.shadows_bite = find_talent_spell( talent_tree::SPECIALIZATION, "Shadow's Bite" ); // Should be ID 387322
+  talents.shadows_bite_buff = find_spell( 272945 );
+
+  talents.carnivorous_stalkers = find_talent_spell( talent_tree::SPECIALIZATION, "Carnivorous Stalkers" ); // Should be ID 386194
+
+  talents.fel_and_steel = find_talent_spell( talent_tree::SPECIALIZATION, "Fel and Steel" ); // Should be ID 386200
+
+  talents.fel_might = find_talent_spell( talent_tree::SPECIALIZATION, "Fel Might" ); // Should be ID 387338
+
+  talents.power_siphon = find_talent_spell( talent_tree::SPECIALIZATION, "Power Siphon" ); // Should be ID 264130
+  talents.power_siphon_buff = find_spell( 334581 );
+
+  talents.inner_demons = find_talent_spell( talent_tree::SPECIALIZATION, "Inner Demons" ); // Should be ID 267216
+
+  talents.demonic_calling = find_talent_spell( talent_tree::SPECIALIZATION, "Demonic Calling" ); // Should be ID 205145
+  talents.demonic_calling_buff = find_spell( 205146 );
+
+  talents.grimoire_felguard = find_talent_spell( talent_tree::SPECIALIZATION, "Grimoire: Felguard" ); // Should be ID 111898
+
+  talents.bloodbound_imps = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodbound Imps" ); // Should be ID 387349
+
+  talents.dread_calling = find_talent_spell( talent_tree::SPECIALIZATION, "Dread Calling" ); // Should be ID 387391
+  talents.dread_calling_buff = find_spell( 387393 );
+
+  talents.doom = find_talent_spell( talent_tree::SPECIALIZATION, "Doom" ); // Should be ID 603
+
+  talents.demonic_meteor = find_talent_spell( talent_tree::SPECIALIZATION, "Demonic Meteor" ); // Should be ID 387396
+
+  talents.fel_sunder = find_talent_spell( talent_tree::SPECIALIZATION, "Fel Sunder" ); // Should be ID 387399
+  talents.fel_sunder_debuff = find_spell( 387402 );
+
+  talents.fel_covenant = find_talent_spell( talent_tree::SPECIALIZATION, "Fel Covenant" ); // Should be ID 387432
+  talents.fel_covenant_buff = find_spell( 387437 );
+
+  talents.imp_gang_boss = find_talent_spell( talent_tree::SPECIALIZATION, "Imp Gang Boss" ); // Should be ID 387445
+
+  talents.kazaaks_final_curse = find_talent_spell( talent_tree::SPECIALIZATION, "Kazaak's Final Curse" ); // Should be ID 387483
+
+  talents.ripped_through_the_portal = find_talent_spell( talent_tree::SPECIALIZATION, "Ripped Through the Portal" ); // Should be ID 387485
+
+  talents.hounds_of_war = find_talent_spell( talent_tree::SPECIALIZATION, "Hounds of War" ); // Should be ID 387488
+
+  talents.nether_portal = find_talent_spell( talent_tree::SPECIALIZATION, "Nether Portal" ); // Should be ID 267217
+  talents.nether_portal_buff = find_spell( 267218 );
+
+  talents.summon_demonic_tyrant = find_talent_spell( talent_tree::SPECIALIZATION, "Summon Demonic Tyrant" ); // Should be ID 265187
+  talents.demonic_power_buff = find_spell( 265273 );
+
+  talents.antoran_armaments = find_talent_spell( talent_tree::SPECIALIZATION, "Antoran Armaments" ); // Should be ID 387494
+
+  talents.nerzhuls_volition = find_talent_spell( talent_tree::SPECIALIZATION, "Ner'zhul's Volition" ); // Should be ID 387526
+
+  talents.stolen_power = find_talent_spell( talent_tree::SPECIALIZATION, "Stolen Power" ); // Should be ID 387602
+  talents.stolen_power_stacking_buff = find_spell( 387603 );
+  talents.stolen_power_final_buff = find_spell( 387604 );
+
+  talents.sacrificed_souls = find_talent_spell( talent_tree::SPECIALIZATION, "Sacrificed Souls" ); // Should be ID 267214
+
+  talents.soulbound_tyrant = find_talent_spell( talent_tree::SPECIALIZATION, "Soulbound Tyrant" ); // Should be ID 334585
+
+  talents.pact_of_the_imp_mother = find_talent_spell( talent_tree::SPECIALIZATION, "Pact of the Imp Mother" ); // Should be ID 387541
+
+  talents.the_expendables = find_talent_spell( talent_tree::SPECIALIZATION, "The Expendables" ); // Should be ID 387600
+
+  talents.infernal_command = find_talent_spell( talent_tree::SPECIALIZATION, "Infernal Command" ); // Should be ID 387549
+
+  talents.guldans_ambition = find_talent_spell( talent_tree::SPECIALIZATION, "Gul'dan's Ambition" ); // Should be ID 387578
+  talents.soul_glutton = find_spell( 387595 );
+
+  talents.reign_of_tyranny = find_talent_spell( talent_tree::SPECIALIZATION, "Reign of Tyranny" ); // Should be ID 390173
+  talents.demonic_servitude = find_spell( 390193 );
+
+  talents.guillotine = find_talent_spell( talent_tree::SPECIALIZATION, "Guillotine" ); // Should be ID 386833
+
+  // Additional Tier Set spell data
+
+  // T29 (Vault of the Incarnates)
+  tier.blazing_meteor = find_spell( 394776 );
 
   // Legendaries
   legendary.balespiders_burning_core       = find_runeforge_legendary( "Balespider's Burning Core" );
   legendary.forces_of_the_horned_nightmare = find_runeforge_legendary( "Forces of the Horned Nightmare" );
   legendary.grim_inquisitors_dread_calling = find_runeforge_legendary( "Grim Inquisitor's Dread Calling" );
-  legendary.implosive_potential            = find_runeforge_legendary( "Implosive Potential" );
 
   // Conduits
   conduit.borne_of_blood       = find_conduit_spell( "Borne of Blood" );
   conduit.carnivorous_stalkers = find_conduit_spell( "Carnivorous Stalkers" );
   conduit.fel_commando         = find_conduit_spell( "Fel Commando" );
-  conduit.tyrants_soul         = find_conduit_spell( "Tyrant's Soul" );
 
-  active.summon_random_demon = new actions_demonology::summon_random_demon_t( this, "" );
+  proc_actions.summon_random_demon = new actions_demonology::summon_random_demon_t( this, "" );
 
   // Initialize some default values for pet spawners
-  warlock_pet_list.wild_imps.set_default_duration( find_spell( 104317 )->duration() );
+  warlock_pet_list.wild_imps.set_default_duration( warlock_base.wild_imp->duration() );
 
   warlock_pet_list.dreadstalkers.set_default_duration( find_spell( 193332 )->duration() );
-
-  warlock_pet_list.malicious_imps.set_default_duration( find_spell( 364198 )->duration() );
 }
 
 void warlock_t::init_gains_demonology()
 {
-  gains.summon_demonic_tyrant = get_gain( "summon_demonic_tyrant" );
+  gains.soulbound_tyrant = get_gain( "soulbound_tyrant" );
   gains.doom = get_gain( "doom" );
+  gains.demonic_meteor = get_gain( "demonic_meteor" );
 }
 
 void warlock_t::init_rng_demonology()
@@ -1251,6 +1427,13 @@ void warlock_t::init_rng_demonology()
 void warlock_t::init_procs_demonology()
 {
   procs.summon_random_demon = get_proc( "summon_random_demon" );
+  procs.demonic_knowledge = get_proc( "demonic_knowledge" );
+  procs.demonic_meteor = get_proc( "demonic_meteor" );
+  procs.imp_gang_boss = get_proc( "imp_gang_boss" );
+  procs.hounds_of_war = get_proc( "hounds_of_war" );
+  procs.nerzhuls_volition = get_proc( "nerzhuls_volition" );
+  procs.pact_of_the_imp_mother = get_proc( "pact_of_the_imp_mother" );
+  procs.blazing_meteor = get_proc( "blazing_meteor" );
 }
 
 }  // namespace warlock

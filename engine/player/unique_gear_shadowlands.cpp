@@ -87,25 +87,6 @@ struct SL_proc_spell_t : public proc_spell_t
   }
 };
 
-// feasts initialization helper
-void init_feast( special_effect_t& effect, std::initializer_list<std::pair<stat_e, int>> stat_map )
-{
-  effect.stat = effect.player->convert_hybrid_stat( STAT_STR_AGI_INT );
-  // TODO: Is this actually spec specific?
-  if ( effect.player->role == ROLE_TANK && !effect.player->sim->feast_as_dps )
-    effect.stat = STAT_STAMINA;
-
-  for ( auto&& stat : stat_map )
-  {
-    if ( stat.first == effect.stat )
-    {
-      effect.trigger_spell_id = stat.second;
-      break;
-    }
-  }
-  effect.stat_amount = effect.player->find_spell( effect.trigger_spell_id )->effectN( 1 ).average( effect.player );
-}
-
 namespace consumables
 {
 void smothered_shank( special_effect_t& effect )
@@ -330,83 +311,25 @@ void sinful_revelation( special_effect_t& effect )
 
 namespace items
 {
-void DISABLED_EFFECT( special_effect_t& effect )
-{
-  // Disable the effect, as we handle shuffling within the on-use effect
-  effect.type = SPECIAL_EFFECT_NONE;
-}
-
 // Trinkets
-
-struct SL_darkmoon_deck_t : public darkmoon_deck_t
-{
-  std::vector<unsigned> card_ids;
-  std::vector<const spell_data_t*> cards;
-  const spell_data_t* top;
-
-  SL_darkmoon_deck_t( const special_effect_t& e, std::vector<unsigned> c )
-    : darkmoon_deck_t( e ), card_ids( std::move( c ) ), top( spell_data_t::nil() )
-  {}
-
-  void initialize() override
-  {
-    for ( auto c : card_ids )
-    {
-      auto s = player->find_spell( c );
-      if ( s->ok () )
-        cards.push_back( s );
-    }
-
-    top = cards[ player->rng().range( cards.size() ) ];
-
-    player->register_combat_begin( [this]( player_t* ) {
-      make_event<shuffle_event_t>( *player->sim, this, true );
-    } );
-  }
-
-  void shuffle() override
-  {
-    top = cards[ player->rng().range( cards.size() ) ];
-
-    player->sim->print_debug( "{} top card is now {} ({})", player->name(), top->name_cstr(), top->id() );
-  }
-};
-
-struct SL_darkmoon_deck_proc_t : public proc_spell_t
-{
-  std::unique_ptr<SL_darkmoon_deck_t> deck;
-
-  SL_darkmoon_deck_proc_t( const special_effect_t& e, util::string_view n, unsigned shuffle_id,
-                           std::initializer_list<unsigned> card_list )
-    : proc_spell_t( n, e.player, e.trigger(), e.item ), deck()
-  {
-    auto shuffle = unique_gear::find_special_effect( player, shuffle_id );
-    if ( !shuffle )
-      return;
-
-    deck = std::make_unique<SL_darkmoon_deck_t>( *shuffle, card_list );
-    deck->initialize();
-  }
-};
-
 void darkmoon_deck_putrescence( special_effect_t& effect )
 {
-  struct putrid_burst_t : public SL_darkmoon_deck_proc_t
+  struct putrid_burst_t : public darkmoon_deck_proc_t<>
   {
     putrid_burst_t( const special_effect_t& e )
-      : SL_darkmoon_deck_proc_t( e, "putrid_burst", 333885,
-                                 {311464, 311465, 311466, 311467, 311468, 311469, 311470, 311471} )
+      : darkmoon_deck_proc_t( e, "putrid_burst", 333885,
+                              { 311464, 311465, 311466, 311467, 311468, 311469, 311470, 311471 } )
     {
       split_aoe_damage = true;
     }
 
     void impact( action_state_t* s ) override
     {
-      SL_darkmoon_deck_proc_t::impact( s );
+      darkmoon_deck_proc_t::impact( s );
 
       auto td = player->get_target_data( s->target );
       // Crit debuff value is hard coded into each card
-      td->debuff.putrid_burst->trigger( 1, deck->top->effectN( 1 ).base_value() * 0.0001 );
+      td->debuff.putrid_burst->trigger( 1, deck->top_card->effectN( 1 ).base_value() * 0.0001 );
     }
   };
 
@@ -417,13 +340,13 @@ void darkmoon_deck_putrescence( special_effect_t& effect )
 
 void darkmoon_deck_voracity( special_effect_t& effect )
 {
-  struct voracious_hunger_t : public SL_darkmoon_deck_proc_t
+  struct voracious_hunger_t : public darkmoon_deck_proc_t<>
   {
     stat_buff_t* buff;
 
     voracious_hunger_t( const special_effect_t& e )
-      : SL_darkmoon_deck_proc_t( e, "voracious_hunger", 329446,
-                                 {311483, 311484, 311485, 311486, 311487, 311488, 311489, 311490} )
+      : darkmoon_deck_proc_t( e, "voracious_hunger", 329446,
+                              { 311483, 311484, 311485, 311486, 311487, 311488, 311489, 311490 } )
     {
       may_crit = false;
 
@@ -437,9 +360,9 @@ void darkmoon_deck_voracity( special_effect_t& effect )
 
     void execute() override
     {
-      SL_darkmoon_deck_proc_t::execute();
+      darkmoon_deck_proc_t::execute();
 
-      buff->stats[ 0 ].amount = deck->top->effectN( 1 ).average( item );
+      buff->stats[ 0 ].amount = deck->top_card->effectN( 1 ).average( item );
       buff->trigger();
     }
   };
@@ -1375,7 +1298,6 @@ void inscrutable_quantum_device ( special_effect_t& effect )
       bonus_buffs.clear();
 
       bonus_buffs.push_back( player->buffs.bloodlust );
-      bonus_buffs.push_back( player->buffs.forced_bloodlust );
 
       if ( player->type == MAGE )
       {
@@ -4419,29 +4341,6 @@ void cruciform_veinripper(special_effect_t& effect)
   new cruciform_veinripper_cb_t( effect );
 }
 	
-void jotungeirr_destinys_call(special_effect_t& effect)
-{
-    for (auto a : effect.player->action_list)
-    {
-        if (a->action_list && a->action_list->name_str == "precombat" && a->name_str == "use_item_" + effect.item->name_str)
-        {
-            a->harmful = false;  // pass down harmful to allow action_t::init() precombat check bypass
-            break;
-        }
-    }
-
-    effect.player->register_combat_begin([effect](player_t*) {
-        auto precombat_seconds = effect.player->sim->shadowlands_opts.jotungeirr_prepull_seconds;
-        if (precombat_seconds > 0_s)
-        {
-            auto buff = static_cast<stat_buff_t*>(buff_t::find(effect.player, "burden_of_divinity"));
-            buff->extend_duration(effect.player, -1 * precombat_seconds);
-            effect.player->get_cooldown("item_cd_1141")->adjust(-1 * precombat_seconds, false);
-        }
-    });
-
-}
-	
 
 struct singularity_supreme_t : public stat_buff_t
 {
@@ -6156,11 +6055,6 @@ void hack_and_gore( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
-void ripped_secrets( special_effect_t& effect )
-{
-
-}
-
 void branding_blade( special_effect_t& effect )
 {
   auto ripped      = new special_effect_t( effect.player );
@@ -6387,11 +6281,11 @@ void register_special_effects()
     unique_gear::register_special_effect( 357074, items::shard_of_kyr );
 
     // Disabled effects
-    unique_gear::register_special_effect( 329028, items::DISABLED_EFFECT ); // Light-Infused Armor shield
-    unique_gear::register_special_effect( 333885, items::DISABLED_EFFECT ); // Darkmoon Deck: Putrescence shuffler
-    unique_gear::register_special_effect( 329446, items::DISABLED_EFFECT ); // Darkmoon Deck: Voracity shuffler
-    unique_gear::register_special_effect( 364086, items::DISABLED_EFFECT ); // Cypher effect Strip Advantage
-    unique_gear::register_special_effect( 364087, items::DISABLED_EFFECT ); // Cypher effect Cosmic Boom
+    unique_gear::register_special_effect( 329028, DISABLED_EFFECT ); // Light-Infused Armor shield
+    unique_gear::register_special_effect( 333885, DISABLED_EFFECT ); // Darkmoon Deck: Putrescence shuffler
+    unique_gear::register_special_effect( 329446, DISABLED_EFFECT ); // Darkmoon Deck: Voracity shuffler
+    unique_gear::register_special_effect( 364086, DISABLED_EFFECT ); // Cypher effect Strip Advantage
+    unique_gear::register_special_effect( 364087, DISABLED_EFFECT ); // Cypher effect Cosmic Boom
 }
 
 action_t* create_action( player_t* player, util::string_view name, util::string_view options )

@@ -1950,45 +1950,29 @@ double enemy_t::armor_coefficient( int level, tank_dummy_e dungeon_content )
   // than 1.000.
 
   /*
-    9.0 values here
-    Level 60 Base/open world: 2500.000 (Level 60 Armor mitigation constants (K-values))
-    Level 60 M0/M+: 2455.0 (ExpectedStatModID: 176; ArmorConstMod: 0.982)
-    Castle Nathria LFR: 2500.0 (ExpectedStatModID: 181; ArmorConstMod: 1.000)
-    Castle Nathria Normal: 2662.5 (ExpectedStatModID: 177; ArmorConstMod: 1.065)
-    Castle Nathria Heroic: 2845.0 (ExpectedStatModID: 178; ArmorConstMod: 1.138)
-    Castle Nathria Mythic: 3050.0 (ExpectedStatModID: 179; ArmorConstMod: 1.220)
-    Level 60 M0/M+ Season 2: 2785.0 (ExpectedStatModID: 192; ArmorConstMod: 1.114)
-    Tazavesh Mega Dungeon: 3050.0 (ExpectedStatModID: 179; ArmorConstMod: 1.220)
-    Sanctum of Domination LFR: 2845.0 (ExpectedStatModID: 178; ArmorConstMod: 1.138)
-    Sanctum of Domination Normal: 3050.0 (ExpectedStatModID: 179; ArmorConstMod: 1.220)
-    Sanctum of Domination Heroic: 3282.5 (ExpectedStatModID: 189; ArmorConstMod: 1.313)
-    Sanctum of Domination Mythic: 3545.0 (ExpectedStatModID: 190; ArmorConstMod: 1.418)
-    Level 60 M0/M+ Season 3: 3282.5 (ExpectedStatModID: 189; ArmorConstMod: 1.313)
-    Sepulcher of the First Ones LFR: 3282.5 (ExpectedStatModID: 189; ArmorConstMod: 1.313)
-    Sepulcher of the First Ones Normal: 3545.0 (ExpectedStatModID: 190; ArmorConstMod: 1.418)
-    Sepulcher of the First Ones Heroic: 3842.5 (ExpectedStatModID: 198; ArmorConstMod: 1.537)
-    Sepulcher of the First Ones Mythic: 4175.0 (ExpectedStatModID: 199; ArmorConstMod: 1.670)
-    Level 60 M0/M+ Season 4: 3842.5 (ExpectedStatModID: 198; ArmorConstMod: 1.537)
-    Fated Season 4 Raids LFR: 3545.0 (ExpectedStatModID: 190; ArmorConstMod: 1.418)
-    Fated Season 4 Raids Normal: 3842.5 (ExpectedStatModID: 198; ArmorConstMod: 1.537)
-    Fated Season 4 Raids Heroic: 4552.5 (ExpectedStatModID: 206; ArmorConstMod: 1.821)
-    Fated Season 4 Raids Mythic: 4980.0 (ExpectedStatModID: 207; ArmorConstMod: 1.992)
+    10.0 values here
+    Level 70 Base/open world: 11766.000 (Level 70 Armor mitigation constants (K-values))
+    Level 70 M0/M+: 12824.94 (ExpectedStatModID: 216; ArmorConstMod: 1.09)
+    Castle Nathria LFR: 13083.792 (ExpectedStatModID: 212; ArmorConstMod: 1.112)
+    Castle Nathria Normal: 14025.072 (ExpectedStatModID: 213; ArmorConstMod: 1.192)
+    Castle Nathria Heroic: 15084.012 (ExpectedStatModID: 214; ArmorConstMod: 1.282)
+    Castle Nathria Mythic: 16284.144 (ExpectedStatModID: 215; ArmorConstMod: 1.384)
   */
   double k = dbc->armor_mitigation_constant( level );
 
   switch ( dungeon_content )
   {
     case tank_dummy_e::DUNGEON:
-      return k * 1.537;  // M0/M+
+      return k * ( is_ptr() ? 1.09 : 1.537 );  // M0/M+
       break;
     case tank_dummy_e::RAID:
-      return k * 1.537;  // Normal Raid
+      return k * ( is_ptr() ? 1.192 : 1.670 );  // Normal Raid
       break;
     case tank_dummy_e::HEROIC:
-      return k * 1.821;  // Heroic Raid
+      return k * ( is_ptr() ? 1.282 : 1.821 );  // Heroic Raid
       break;
     case tank_dummy_e::MYTHIC:
-      return k * 1.992;  // Mythic Raid
+      return k * ( is_ptr() ? 1.384 : 1.992 );  // Mythic Raid
       break;
     default:
       break;  // tank_dummy_e::NONE

@@ -7,6 +7,7 @@ action/attack.hpp
 action/dbc_proc_callback.hpp
 action/dot.hpp
 action/heal.hpp
+action/parse_buff_effects.hpp
 action/residual_action.hpp
 action/sequence.hpp
 action/snapshot_stats.hpp
@@ -15,9 +16,12 @@ action/spell_base.hpp
 action/variable.hpp
 buff/buff.hpp
 class_modules/apl/apl_death_knight.hpp
+class_modules/apl/apl_evoker.hpp
 class_modules/apl/apl_hunter.hpp
 class_modules/apl/apl_monk.hpp
+class_modules/apl/apl_paladin.hpp
 class_modules/apl/apl_priest.hpp
+class_modules/apl/apl_rogue.hpp
 class_modules/apl/mage.hpp
 class_modules/apl/warlock.hpp
 class_modules/class_module.hpp
@@ -62,6 +66,7 @@ dbc/spell_query/spell_data_expr.hpp
 dbc/spelltext_data.hpp
 dbc/talent_data.hpp
 dbc/temporary_enchant.hpp
+dbc/trait_data.hpp
 interfaces/bcp_api.hpp
 interfaces/sc_http.hpp
 interfaces/sc_http_curl.hpp
@@ -117,8 +122,10 @@ player/soulbinds.hpp
 player/spawner_base.hpp
 player/special_effect_db_item.hpp
 player/stats.hpp
+player/talent.hpp
 player/target_specific.hpp
 player/unique_gear.hpp
+player/unique_gear_dragonflight.hpp
 player/unique_gear_helper.hpp
 player/unique_gear_shadowlands.hpp
 player/weapon.hpp
@@ -196,9 +203,12 @@ action/stats.cpp
 action/variable.cpp
 buff/buff.cpp
 class_modules/apl/apl_death_knight.cpp
+class_modules/apl/apl_evoker.cpp
 class_modules/apl/apl_hunter.cpp
 class_modules/apl/apl_monk.cpp
+class_modules/apl/apl_paladin.cpp
 class_modules/apl/apl_priest.cpp
+class_modules/apl/apl_rogue.cpp
 class_modules/apl/mage.cpp
 class_modules/apl/warlock.cpp
 class_modules/monk/sc_monk.cpp
@@ -216,6 +226,7 @@ class_modules/sc_death_knight.cpp
 class_modules/sc_demon_hunter.cpp
 class_modules/sc_druid.cpp
 class_modules/sc_enemy.cpp
+class_modules/sc_evoker.cpp
 class_modules/sc_hunter.cpp
 class_modules/sc_mage.cpp
 class_modules/sc_rogue.cpp
@@ -260,6 +271,7 @@ dbc/spell_item_enchantment.cpp
 dbc/spelltext_data.cpp
 dbc/talent_data.cpp
 dbc/temporary_enchant.cpp
+dbc/trait_data.cpp
 interfaces/bcp_api.cpp
 interfaces/sc_http.cpp
 interfaces/sc_http_curl.cpp
@@ -293,9 +305,11 @@ player/runeforge_data.cpp
 player/set_bonus.cpp
 player/soulbinds.cpp
 player/spawner_base.cpp
+player/talent.cpp
 player/target_specific.cpp
 player/unique_gear.cpp
 player/unique_gear_bfa.cpp
+player/unique_gear_dragonflight.cpp
 player/unique_gear_helper.cpp
 player/unique_gear_legion.cpp
 player/unique_gear_shadowlands.cpp

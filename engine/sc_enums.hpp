@@ -62,25 +62,24 @@ enum class retarget_source
 };
 
 // Misc Constants
-enum
-{
-  MAX_ARTIFACT_RELIC = 4,
+constexpr auto MAX_ARTIFACT_RELIC = 4;
 
-  // Seemingly hard coded CurvePoint identifier for the data that returns the item level increase of a relic, based on the relic's own item level
-  RELIC_ILEVEL_BONUS_CURVE = 1718,
+// Seemingly hard coded CurvePoint identifier for the data that returns the item level increase of a relic, based on the
+// relic's own item level
+constexpr auto RELIC_ILEVEL_BONUS_CURVE = 1718;
 
-  ITEM_TRINKET_BURST_CATEGORY = 1141, /// Trinket On-Use effect default category (for shared CD)
-  MAX_GEM_SLOTS = 4, /// Global maximum number of gem slots in any specific item
+constexpr auto ITEM_TRINKET_BURST_CATEGORY = 1141;  /// Trinket On-Use effect default category (for shared CD)
+constexpr auto MAX_GEM_SLOTS               = 4;     /// Global maximum number of gem slots in any specific item
 
-  MAX_AZERITE_LEVEL = 300, // Maximum Azerite level (for Heart of Azeroth) at the start of Battle for Azeroth
+constexpr auto MAX_AZERITE_LEVEL =
+    300;  // Maximum Azerite level (for Heart of Azeroth) at the start of Battle for Azeroth
 
-  MAX_AZERITE_ESSENCE_RANK = 4u, // Maximum Azerite Essence power rank for patch BfA 8.2.0
+constexpr auto MAX_AZERITE_ESSENCE_RANK = 4u;  // Maximum Azerite Essence power rank for patch BfA 8.2.0
 
-  // Shadowlands: Curves used to apply diminishing returns to Combat Ratings
-  DIMINISHING_RETURN_SECONDARY_CR_CURVE = 21024u,
-  DIMINISHING_RETURN_TERTIARY_CR_CURVE = 21025u,
-  DIMINISHING_RETURN_VERS_MITIG_CR_CURVE  = 21035u,
-};
+// Shadowlands: Curves used to apply diminishing returns to Combat Ratings
+constexpr auto DIMINISHING_RETURN_SECONDARY_CR_CURVE  = 21024u;
+constexpr auto DIMINISHING_RETURN_TERTIARY_CR_CURVE   = 21025u;
+constexpr auto DIMINISHING_RETURN_VERS_MITIG_CR_CURVE = 21035u;
 
 // Enable/Disable azerite effects
 enum class azerite_control
@@ -190,7 +189,7 @@ enum class movement_direction_type : int
 
 enum class talent_format
 {
-  NUMBERS,
+  BLIZZARD,
   ARMORY,
   WOWHEAD,
   UNCHANGED
@@ -233,6 +232,8 @@ enum race_e
   RACE_KUL_TIRAN,
   RACE_VULPERA,
   RACE_MECHAGNOME,
+  RACE_DRACTHYR_ALLIANCE,
+  RACE_DRACTHYR_HORDE,
 
   RACE_UNKNOWN,
   RACE_MAX
@@ -258,6 +259,7 @@ enum player_e
   DEATH_KNIGHT,
   DEMON_HUNTER,
   DRUID,
+  EVOKER,
   HUNTER,
   MAGE,
   MONK,
@@ -348,10 +350,10 @@ enum pet_e
   PET_SERVICE_FELHUNTER,
   PET_SERVICE_FELGUARD,
   PET_WARLOCK_RANDOM,
+  PET_PIT_LORD,
   PET_DARKGLARE,
   PET_OBSERVER,
   PET_THAL_KIEL,
-  PET_MALICIOUS_IMP,
   PET_WARLOCK,
 
   PET_GHOUL,
@@ -375,6 +377,7 @@ enum pet_e
   PET_CHIJI,
   PET_YULON,
   PET_FALLEN_MONK,
+  PET_MONK_STATUE,
   PET_MONK,
 
   PET_ENEMY,
@@ -457,6 +460,7 @@ enum resource_e
   RESOURCE_PAIN,
   RESOURCE_RUNE,
   RESOURCE_COMBO_POINT,
+  RESOURCE_ESSENCE,
   RESOURCE_MAX
 };
 
@@ -839,6 +843,8 @@ enum set_bonus_type_e
   T26_HACK_AND_GORE,
   T28,
   T28_RIPPED_SECRETS,
+  T29,
+  T29_PLAYFUL_SPIRITS_FUR,
   SET_BONUS_MAX
 };
 
@@ -1299,6 +1305,7 @@ enum power_e
   // Not yet used?
   POWER_FURY          = 17,
   POWER_PAIN          = 18,
+  POWER_ESSENSE       = 19,
   // Helpers
   POWER_MAX,
   POWER_NONE   = 0xFFFFFFFF,  // None.
@@ -1412,4 +1419,19 @@ enum fight_style_e
   FIGHT_STYLE_HELTER_SKELTER,
   FIGHT_STYLE_ULTRAXION,
   FIGHT_STYLE_MAX
+};
+
+// Dragonflight player talent tree indices
+enum class talent_tree : unsigned
+{
+  INVALID = 0,
+  CLASS,
+  SPECIALIZATION
+};
+
+enum trait_definition_op : int
+{
+  TRAIT_OP_NONE = -1,
+  TRAIT_OP_SET,
+  TRAIT_OP_MUL
 };

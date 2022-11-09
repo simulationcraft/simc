@@ -48,7 +48,7 @@ parser.add_argument("-f",            dest = "format",
                     help = "DBC Format file")
 parser.add_argument("--delim",       dest = "delim",        default = ',',
                     help = "Delimiter for -t csv")
-parser.add_argument("-l", "--level", dest = "level",        default = 60, type = int,
+parser.add_argument("-l", "--level", dest = "level",        default = 70, type = int,
                     help = "Scaling values up to level [125]")
 parser.add_argument("-b", "--build", dest = "build",        default = None, type = parse_version,
                     help = "World of Warcraft build version (8.0.1.12345)")
@@ -244,7 +244,7 @@ elif options.type == 'json':
         for entry, hotfix in cache.entries(dbc_file.parser):
             entries[hotfix['record_id']] = (entry, hotfix)
 
-    str_ = '[\n'
+    list_ = []
     logging.debug(dbc_file)
     if id == None:
         replaced_ids = []
@@ -254,9 +254,10 @@ elif options.type == 'json':
                 data_ = entry.obj()
                 data_['hotfixed'] = True
                 replaced_ids.append(record.id)
-                str_ += '\t{},\n'.format(json.dumps(data_))
+                raw_data = data_
             else:
-                str_ += '\t{},\n'.format(json.dumps(record.obj()))
+                raw_data = record.obj()
+            list_.append(raw_data)
 
         for id, item in entries.items():
             entry, hotfix = item
@@ -266,7 +267,7 @@ elif options.type == 'json':
             data_ = entry.obj()
             data_['hotfixed'] = True
 
-            str_ += '\t{},\n'.format(json.dumps(data_))
+            list_.append(data_)
 
     else:
         if id in entries:
@@ -279,14 +280,11 @@ elif options.type == 'json':
             if id in entries:
                 data_['hotfixed'] = True
 
-            str_ += '\t{},\n'.format(json.dumps(data_))
+            list_.append(data_)
         else:
             print('No record for DBC ID {} found'.format(id))
 
-    str_ = str_[:-2] + '\n'
-    str_ += ']\n'
-
-    print(str_)
+    print(json.dumps(list_, indent=4))
 
 elif options.type == 'csv':
     path = os.path.abspath(os.path.join(options.path, options.args[0]))

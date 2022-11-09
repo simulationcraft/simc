@@ -184,12 +184,24 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
         break;
       }
 
-      if ( item.sim -> debug )
-      {
-        item.player -> sim -> print_debug( "Player {} item '{}' adjusting ilevel by {} (old={} new={})",
-            item.player -> name(), item.name(), entry.value_1, item.parsed.data.level, item.parsed.data.level + entry.value_1 );
-      }
+      item.parsed.data.bonus_level += entry.value_1;
+      item.sim->print_debug( "Player {} item '{}' adjusting ilevel by {} (old={} new={})", item.player->name(),
+                             item.name(), entry.value_1, item.parsed.data.level,
+                             item.parsed.data.level + item.parsed.data.bonus_level );
       item.parsed.data.level += entry.value_1;
+      break;
+    case ITEM_BONUS_SET_ILEVEL_2:
+      // TODO: confirm if these ilevel adjust disable IDs also affect type 42 bonus ids
+      if ( range::find( item.parsed.bonus_id, 7215 ) != item.parsed.bonus_id.end() ||
+           range::find( item.parsed.bonus_id, 7250 ) != item.parsed.bonus_id.end() )
+      {
+        break;
+      }
+
+      item.sim->print_debug( "Player {} item '{}' setting ilevel to {} (old={} new={})", item.player->name(),
+                             item.name(), entry.value_1, item.parsed.data.level,
+                             entry.value_1 + item.parsed.data.bonus_level );
+      item.parsed.data.level = entry.value_1 + item.parsed.data.bonus_level;
       break;
     // Add new item stats. Value_1 has the item modifier, value_2 has the
     // allocation percent. This bonus type is the reason we don't really
@@ -1051,7 +1063,9 @@ static std::string get_bonus_id_desc( const dbc_t& dbc, util::span<const item_bo
   {
     if ( entry.type == ITEM_BONUS_DESC )
     {
-      return dbc.item_description( entry.value_1 ).description;
+      const item_name_description_t& desc = dbc.item_description( entry.value_1 );
+      if ( &desc != &item_name_description_t::nil() )
+        return desc.description;
     }
   }
 
@@ -1121,7 +1135,7 @@ static int get_bonus_id_base_ilevel( util::span<const item_bonus_entry_t> entrie
 {
   for ( const auto& entry : entries )
   {
-    if ( entry.type == ITEM_BONUS_SET_ILEVEL )
+    if ( entry.type == ITEM_BONUS_SET_ILEVEL || entry.type == ITEM_BONUS_SET_ILEVEL_2 )
     {
       return entry.value_1;
     }
@@ -1305,7 +1319,8 @@ std::string dbc::bonus_ids_str( const dbc_t& dbc )
          e.type != ITEM_BONUS_SOCKET && e.type != ITEM_BONUS_SCALING &&
          e.type != ITEM_BONUS_SCALING_2 && e.type != ITEM_BONUS_SET_ILEVEL &&
          e.type != ITEM_BONUS_ADD_RANK && e.type != ITEM_BONUS_QUALITY &&
-         e.type != ITEM_BONUS_ADD_ITEM_EFFECT && e.type != ITEM_BONUS_MOD_ITEM_STAT )
+         e.type != ITEM_BONUS_ADD_ITEM_EFFECT && e.type != ITEM_BONUS_MOD_ITEM_STAT &&
+         e.type != ITEM_BONUS_SET_ILEVEL_2 )
     {
       continue;
     }

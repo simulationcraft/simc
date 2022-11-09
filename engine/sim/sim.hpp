@@ -181,7 +181,6 @@ struct sim_t : private sc_thread_t
   unsigned int enable_4_set; // Enables all 4 set bonuses for the tier/integer that this is set as
   const spell_data_t* pvp_rules; // Hidden aura that contains the PvP crit damage reduction
   bool pvp_mode; // Enables PvP mode - reduces crit damage, adjusts PvP gear iLvl
-  bool feast_as_dps = true;
   bool auto_attacks_always_land; /// Allow Auto Attacks (white attacks) to always hit the enemy
   bool log_spell_id; // Add spell data ids to log/debug output where available. (actions, buffs)
 
@@ -212,6 +211,7 @@ struct sim_t : private sc_thread_t
     // Buff overrides
     int arcane_intellect;
     int battle_shout;
+    int mark_of_the_wild;
     int power_word_fortitude;
     int windfury_totem;
 
@@ -230,6 +230,7 @@ struct sim_t : private sc_thread_t
   {
     buff_t* arcane_intellect;
     buff_t* battle_shout;
+    buff_t* mark_of_the_wild;
     buff_t* power_word_fortitude;
   } auras;
 
@@ -468,6 +469,17 @@ struct sim_t : private sc_thread_t
     // Time in seconds before prepull to use Jotungeirr
     timespan_t jotungeirr_prepull_seconds = 0_s;    
   } shadowlands_opts;
+
+  struct dragonflight_opt_t
+  {
+    // Average time before the shield from darkmoon deck: watcher is depleted
+    timespan_t darkmoon_deck_watcher_deplete = 2_s;
+    // Which roles in your group has a Whispering Incarnate Icon trinket
+    std::string whispering_incarnate_icon_roles = "tank/heal/dps";
+    double decoration_of_flame_miss_chance = 0.05;
+    double manic_grieftorch_chance = 0.2;
+    timespan_t alltotem_of_the_master_period = 3_s;
+  } dragonflight_opts;
 
   // Auras and De-Buffs
   auto_dispose<std::vector<buff_t*>> buff_list;

@@ -85,10 +85,13 @@ struct penance_t final : public priest_spell_t
   };
 
   penance_tick_t* penance_tick_action;
+  timespan_t manipulation_cdr;
 
   penance_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "penance", p, p.find_class_spell( "Penance" ) ),
-      penance_tick_action( new penance_tick_t( p, stats ) )
+      penance_tick_action( new penance_tick_t( p, stats ) ),
+      manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() / 2 ) )
+
   {
     parse_options( options_str );
 
@@ -158,6 +161,11 @@ struct penance_t final : public priest_spell_t
 
     priest().buffs.the_penitent_one->up();        // benefit tracking
     priest().buffs.power_of_the_dark_side->up();  // benefit tracking
+
+    if ( priest().talents.manipulation.enabled() )
+    {
+      priest().cooldowns.mindgames->adjust( -manipulation_cdr );
+    }
   }
 };
 
@@ -193,6 +201,8 @@ struct purge_the_wicked_t final : public priest_spell_t
       // tick_zero = false;
       energize_type = action_energize::NONE;  // disable resource generation from spell data
       background    = true;
+
+      apply_affecting_aura( priest().talents.throes_of_pain );
     }
 
     void tick( dot_t* d ) override
@@ -214,6 +224,8 @@ struct purge_the_wicked_t final : public priest_spell_t
     may_crit       = true;
     energize_type  = action_energize::NONE;  // disable resource generation from spell data
     execute_action = new purge_the_wicked_dot_t( p );
+
+    apply_affecting_aura( priest().talents.throes_of_pain );
   }
 };
 
@@ -284,8 +296,8 @@ namespace buffs
 void priest_t::create_buffs_discipline()
 {
   buffs.power_of_the_dark_side =
-      make_buff( this, "power_of_the_dark_side", specs.power_of_the_dark_side->effectN( 1 ).trigger() )
-          ->set_trigger_spell( specs.power_of_the_dark_side );
+      make_buff( this, "power_of_the_dark_side", talents.discipline.power_of_the_dark_side->effectN( 1 ).trigger() )
+          ->set_trigger_spell( talents.discipline.power_of_the_dark_side );
 
   buffs.sins_of_the_many = make_buff( this, "sins_of_the_many", talents.sins_of_the_many->effectN( 1 ).trigger() )
                                ->set_default_value( talents.sins_of_the_many->effectN( 1 ).percent() )
@@ -303,32 +315,25 @@ void priest_t::init_rng_discipline()
 
 void priest_t::init_spells_discipline()
 {
+  auto ST = [ this ]( std::string_view n ) { return find_talent_spell( talent_tree::SPECIALIZATION, n ); };
+
   // Talents
+  // Row 2
+  talents.discipline.power_of_the_dark_side = ST( "Power of the Dark Side" );  // TODO: verify this still works
   // T15
-  talents.castigation   = find_talent_spell( "Castigation" );
-  talents.twist_of_fate = find_talent_spell( "Twist of Fate" );
-  talents.schism        = find_talent_spell( "Schism" );
-  // T25
-  talents.body_and_soul   = find_talent_spell( "Body and Soul" );
-  talents.angelic_feather = find_talent_spell( "Angelic Feather" );
+  talents.castigation = find_talent_spell( "Castigation" );
+  talents.schism      = find_talent_spell( "Schism" );
   // T30
-  talents.mindbender        = find_talent_spell( "Mindbender" );
   talents.power_word_solace = find_talent_spell( "Power Word: Solace" );
   // T35
-  talents.psychic_voice = find_talent_spell( "Psychic Voice" );
   talents.shining_force = find_talent_spell( "Shining Force" );
   // T40
   talents.sins_of_the_many = find_talent_spell( "Sins of the Many" );
   talents.shadow_covenant  = find_talent_spell( "Shadow Covenant" );
   // T45
   talents.purge_the_wicked = find_talent_spell( "Purge the Wicked" );
-  talents.divine_star      = find_talent_spell( "Divine Star" );
-  talents.halo             = find_talent_spell( "Halo" );
   // T50
   talents.spirit_shell = find_talent_spell( "Spirit Shell" );
-
-  // Passive spell data
-  specs.power_of_the_dark_side = find_specialization_spell( "Power of the Dark Side" );
 }
 
 action_t* priest_t::create_action_discipline( util::string_view name, util::string_view options_str )

@@ -70,6 +70,8 @@ const spec_map_t spec_map[] =
   { DEMON_HUNTER_HAVOC,   "Havoc DemonHunter"    },
   { DEMON_HUNTER_VENGEANCE, "Vengeance Demon Hunter" },
   { DEMON_HUNTER_VENGEANCE, "Vengeance DemonHunter"  },
+  { EVOKER_DEVASTATION,   "Devastation Evoker" },
+  { EVOKER_PRESERVATION,   "Preservation Evoker" },
 };
 
 struct html_named_character_t
@@ -452,6 +454,8 @@ const char* util::race_type_string( race_e type )
     case RACE_KUL_TIRAN:           return "kul_tiran";
     case RACE_VULPERA:             return "vulpera";
     case RACE_MECHAGNOME:          return "mechagnome";
+    case RACE_DRACTHYR_ALLIANCE:   return "dracthyr_alliance";
+    case RACE_DRACTHYR_HORDE:      return "dracthyr_horde";
     case RACE_MAX:                 return "unknown";
     case RACE_UNKNOWN:             return "unknown";
     // no default statement so we get warnings if something is missing.
@@ -478,11 +482,7 @@ const char* util::stats_type_string( stats_e type )
 race_e util::parse_race_type( util::string_view name )
 {
   if ( name == "forsaken" )           return RACE_UNDEAD;
-
-  // TODO: Remove these once people had time to update their simc addons.
-  if ( name == "voidelf" )            return RACE_VOID_ELF;
-  if ( name == "lightforgeddraenei" ) return RACE_LIGHTFORGED_DRAENEI;
-  if ( name == "highmountaintauren" ) return RACE_HIGHMOUNTAIN_TAUREN;
+  if ( name == "dracthyr" )           return RACE_DRACTHYR_HORDE;
 
   return parse_enum_with_default<race_e, RACE_NONE, RACE_MAX, RACE_UNKNOWN, race_type_string>( name );
 }
@@ -597,6 +597,7 @@ const char* util::player_type_string( player_e type )
     case DEATH_KNIGHT:    return "deathknight";
     case DEMON_HUNTER:    return "demonhunter";
     case DRUID:           return "druid";
+    case EVOKER:          return "evoker";
     case HUNTER:          return "hunter";
     case MAGE:            return "mage";
     case MONK:            return "monk";
@@ -613,6 +614,36 @@ const char* util::player_type_string( player_e type )
     case ENEMY_ADD_BOSS:  return "add_boss";
     case TANK_DUMMY:      return "tank_dummy";
     default:              return "unknown";
+  }
+}
+
+// player_type_string_long ==================================================
+
+const char* util::player_type_string_long( player_e type )
+{
+  switch ( type )
+  {
+    case PLAYER_NONE:     return "None";
+    case DEATH_KNIGHT:    return "Death Knight";
+    case DEMON_HUNTER:    return "Demon Hunter";
+    case DRUID:           return "Druid";
+    case EVOKER:          return "Evoker";
+    case HUNTER:          return "Hunter";
+    case MAGE:            return "Mage";
+    case MONK:            return "Monk";
+    case PALADIN:         return "Paladin";
+    case PRIEST:          return "Priest";
+    case ROGUE:           return "Rogue";
+    case SHAMAN:          return "Shaman";
+    case WARLOCK:         return "Warlock";
+    case WARRIOR:         return "Warrior";
+    case PLAYER_PET:      return "Pet";
+    case PLAYER_GUARDIAN: return "Guardian";
+    case ENEMY:           return "Enemy";
+    case ENEMY_ADD:       return "Add";
+    case ENEMY_ADD_BOSS:  return "Add Boss";
+    case TANK_DUMMY:      return "Tank Dummy";
+    default:              return "Unknown";
   }
 }
 
@@ -685,10 +716,10 @@ const char* util::pet_type_string( pet_e type )
     case PET_DOOMGUARD:           return "doomguard";
     case PET_WILD_IMP:            return "wild_imp";
     case PET_DREADSTALKER:        return "dreadstalker";
+    case PET_PIT_LORD:            return "pit_lord";
     case PET_SERVICE_IMP:         return "service_imp";
     case PET_SERVICE_FELHUNTER:   return "service_felhunter";
     case PET_OBSERVER:            return "observer";
-    case PET_MALICIOUS_IMP:       return "malicious_imp";
     case PET_GHOUL:               return "ghoul";
     case PET_BLOODWORMS:          return "bloodworms";
     case PET_DANCING_RUNE_WEAPON: return "dancing_rune_weapon";
@@ -927,6 +958,7 @@ const char* util::resource_type_string( resource_e resource_type )
     case RESOURCE_FURY:          return "fury";
     case RESOURCE_PAIN:          return "pain";
     case RESOURCE_INSANITY:      return "insanity";
+    case RESOURCE_ESSENCE:       return "essence";
     default:                     return "unknown";
   }
 }
@@ -1018,6 +1050,7 @@ resource_e util::translate_power_type( power_e pt )
     case POWER_MAELSTROM:     return RESOURCE_MAELSTROM;
     case POWER_FURY:          return RESOURCE_FURY;
     case POWER_PAIN:          return RESOURCE_PAIN;
+    case POWER_ESSENSE:       return RESOURCE_ESSENCE;
     default:                  return RESOURCE_NONE;
   }
 }
@@ -1180,6 +1213,7 @@ item_subclass_armor util::matching_armor_type( player_e ptype )
       return ITEM_SUBCLASS_ARMOR_PLATE;
     case HUNTER:
     case SHAMAN:
+    case EVOKER:
       return ITEM_SUBCLASS_ARMOR_MAIL;
     case DRUID:
     case ROGUE:
@@ -1884,15 +1918,16 @@ int util::class_id( player_e type )
     case MONK:         return 10;
     case DRUID:        return 11;
     case DEMON_HUNTER: return 12;
-    case PLAYER_SPECIAL_SCALE: return 13;
-    case PLAYER_SPECIAL_SCALE2: return 14;
-    case PLAYER_SPECIAL_SCALE3: return 15;
-    case PLAYER_SPECIAL_SCALE4: return 16;
-    case PLAYER_SPECIAL_SCALE5: return 17;
-    case PLAYER_SPECIAL_SCALE6: return 18;
-    case PLAYER_SPECIAL_SCALE7: return 13;
-    case PLAYER_SPECIAL_SCALE8: return 19;
-    case PLAYER_SPECIAL_SCALE9: return 19;
+    case EVOKER:       return 13;
+    case PLAYER_SPECIAL_SCALE: return 14;
+    case PLAYER_SPECIAL_SCALE2: return 15;
+    case PLAYER_SPECIAL_SCALE3: return 16;
+    case PLAYER_SPECIAL_SCALE4: return 17;
+    case PLAYER_SPECIAL_SCALE5: return 18;
+    case PLAYER_SPECIAL_SCALE6: return 19;
+    case PLAYER_SPECIAL_SCALE7: return 14;
+    case PLAYER_SPECIAL_SCALE8: return 20;
+    case PLAYER_SPECIAL_SCALE9: return 20;
     default:           return 0;
   }
 }
@@ -1928,6 +1963,8 @@ unsigned util::race_id( race_e race )
     case RACE_KUL_TIRAN: return 32;
     case RACE_VULPERA: return 13;
     case RACE_MECHAGNOME: return 15;
+    case RACE_DRACTHYR_ALLIANCE: return 17;
+    case RACE_DRACTHYR_HORDE: return 16;
     default: return 0;
   }
 }
@@ -2018,6 +2055,7 @@ player_e util::translate_class_id( int cid )
     case 10: return MONK;
     case 11: return DRUID;
     case 12: return DEMON_HUNTER;
+    case 13: return EVOKER;
     default: return PLAYER_NONE;
   }
 }
@@ -2055,6 +2093,8 @@ race_e util::translate_race_id( int rid )
     case 35: return RACE_VULPERA;
     case 36: return RACE_MAGHAR_ORC;
     case 37: return RACE_MECHAGNOME;
+    case 52: return RACE_DRACTHYR_ALLIANCE;
+    case 70: return RACE_DRACTHYR_HORDE;
   }
 
   return RACE_NONE;
@@ -2537,6 +2577,33 @@ const char* util::action_type_string( action_e type )
   }
 }
 
+const char* util::talent_tree_string( talent_tree tree )
+{
+  switch ( tree )
+  {
+    case talent_tree::CLASS:
+      return "class";
+    case talent_tree::SPECIALIZATION:
+      return "spec";
+    default:
+      return "unknown";
+  }
+}
+
+const char* util::trait_definition_op_string( trait_definition_op op )
+{
+  switch ( op )
+  {
+    case trait_definition_op::TRAIT_OP_NONE:
+      return "none";
+    case trait_definition_op::TRAIT_OP_SET:
+      return "set";
+    case trait_definition_op::TRAIT_OP_MUL:
+      return "mul";
+    default:
+      return "unk";
+  }
+}
 /// Textual representation of rppm scaling bitfield
 std::string util::rppm_scaling_string( unsigned s )
 {
@@ -3375,6 +3442,7 @@ bool is_alliance( race_e race )
     case RACE_DARK_IRON_DWARF:
     case RACE_KUL_TIRAN:
     case RACE_MECHAGNOME:
+    case RACE_DRACTHYR_ALLIANCE:
       return true;
     default:
       return false;
@@ -3397,6 +3465,7 @@ bool is_horde( race_e race )
     case RACE_MAGHAR_ORC:
     case RACE_ZANDALARI_TROLL:
     case RACE_VULPERA:
+    case RACE_DRACTHYR_HORDE:
       return true;
     default:
       return false;

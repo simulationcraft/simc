@@ -90,6 +90,7 @@ struct spellpower_data_t
     switch ( type() )
     {
       case POWER_MANA:
+        return percentage ? 100.0 : 1.0;
       case POWER_INSANITY:
         return 100.0;
       case POWER_RAGE:
@@ -338,6 +339,7 @@ struct spelleffect_data_t
       case 10: return MONK;
       case 11: return DRUID;
       case 12: return DEMON_HUNTER;
+      case 13: return EVOKER;
       default: break;
     }
 

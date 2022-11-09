@@ -336,7 +336,15 @@ void cooldown_t::adjust( timespan_t amount, bool requires_reaction )
 
 void cooldown_t::reset_init()
 {
-  ready = ready_init();
+  if ( charges == 0 )
+  {
+    ready = timespan_t::max();
+  }
+  else
+  {
+    ready = ready_init();
+  }
+
   last_start = 0_ms;
   last_charged = 0_ms;
   reset_react = 0_ms;
