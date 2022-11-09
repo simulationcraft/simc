@@ -466,8 +466,8 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
     hotr_aoe = new hammer_of_the_righteous_aoe_t( p );
     // Attach AoE proc as a child
     add_child( hotr_aoe );
-    if ( p -> spec.hammer_of_the_righteous_2 -> ok() && ! p -> talents.blessed_hammer -> ok() )
-      cooldown -> charges += as<int>( p -> spec.hammer_of_the_righteous_2 -> effectN( 1 ).base_value() );
+    // 2022-11-09 Old HotR Rank 2 doesn't seem to exist anymore. New talent only has 1 charge, but it has 2 charges.
+    cooldown->charges = 2;
   }
 
   void execute() override
@@ -1134,7 +1134,6 @@ void paladin_t::init_spells_protection()
   spec.protection_paladin = find_specialization_spell( "Protection Paladin" );
   mastery.divine_bulwark = find_mastery_spell( PALADIN_PROTECTION );
   mastery.divine_bulwark_2 = find_specialization_spell( "Mastery: Divine Bulwark", "Rank 2" );
-  spec.hammer_of_the_righteous_2 = find_rank_spell( "Hammer of the Righteous", "Rank 2" );
 
   if ( specialization() == PALADIN_PROTECTION )
   {

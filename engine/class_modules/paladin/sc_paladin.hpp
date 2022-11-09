@@ -219,7 +219,6 @@ public:
     const spell_data_t* holy_paladin;
     const spell_data_t* protection_paladin;
     const spell_data_t* retribution_paladin;
-    const spell_data_t* hammer_of_the_righteous_2;
     const spell_data_t* word_of_glory_2;
     const spell_data_t* holy_shock_2;
   } spec;
