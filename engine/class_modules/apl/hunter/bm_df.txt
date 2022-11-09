@@ -53,7 +53,7 @@ actions.st+=/steel_trap
 actions.st+=/explosive_shot
 actions.st+=/bestial_wrath
 actions.st+=/kill_command
-actions.st+=/barbed_shot,if=talent.wild_instincts&buff.call_of_the_wild.up|talent.wild_call&charges_fractional>1.2|talent.scent_of_blood&cooldown.bestial_wrath.remains<12*(charges_fractional+gcd+(action.barbed_shot.cooldown*0.125))|full_recharge_time<gcd&cooldown.bestial_wrath.remains|fight_remains<9
+actions.st+=/barbed_shot,if=talent.wild_instincts&buff.call_of_the_wild.up|talent.wild_call&charges_fractional>1.2|talent.scent_of_blood&cooldown.bestial_wrath.remains<12*charges_fractional+gcd|full_recharge_time<gcd&cooldown.bestial_wrath.remains|fight_remains<9
 actions.st+=/dire_beast
 actions.st+=/serpent_sting,target_if=min:remains,if=refreshable&target.time_to_die>duration
 actions.st+=/kill_shot
