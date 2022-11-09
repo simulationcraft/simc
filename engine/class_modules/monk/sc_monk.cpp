@@ -2012,6 +2012,7 @@ struct blackout_kick_t : public monk_melee_attack_t
   blackout_kick_t( monk_t* p, util::string_view options_str )
     : monk_melee_attack_t( "blackout_kick", p,
           ( p->specialization() == MONK_BREWMASTER ? p->spec.blackout_kick_brm : p->spec.blackout_kick ) ),
+      bok_totm_proc( new blackout_kick_totm_proc_t( p ) ),
       charred_passions( new charred_passions_bok_t( p ) )
   {
     ww_mastery = true;
@@ -2031,11 +2032,7 @@ struct blackout_kick_t : public monk_melee_attack_t
       add_child( charred_passions );
 
     if ( p->shared.teachings_of_the_monastery->ok() )
-    {
-      bok_totm_proc = new blackout_kick_totm_proc_t( p );
-
       add_child( bok_totm_proc );
-    }
 
     switch ( p->specialization() )
     {
