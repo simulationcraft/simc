@@ -618,32 +618,9 @@ public:
     proc_t* searing_flames;
     proc_t* tumbling_waves;
 
-    proc_t* magma_chamber_1;
-    proc_t* magma_chamber_2;
-    proc_t* magma_chamber_3;
-    proc_t* magma_chamber_4;
-    proc_t* magma_chamber_5;
-    proc_t* magma_chamber_6;
-    proc_t* magma_chamber_7;
-    proc_t* magma_chamber_8;
-    proc_t* magma_chamber_9;
-    proc_t* magma_chamber_10;
-    proc_t* magma_chamber_11;
-    proc_t* magma_chamber_12;
-    proc_t* magma_chamber_13;
-    proc_t* magma_chamber_14;
-    proc_t* magma_chamber_15;
-    proc_t* magma_chamber_16;
-    proc_t* magma_chamber_17;
-    proc_t* magma_chamber_18;
-    proc_t* magma_chamber_19;
-    proc_t* magma_chamber_20;
+    std::array<proc_t*, 20> magma_chamber;
 
-    proc_t* t29_2pc_ele_1;
-    proc_t* t29_2pc_ele_2;
-    proc_t* t29_2pc_ele_3;
-    proc_t* t29_2pc_ele_4;
-    proc_t* t29_2pc_ele_5;
+    std::array<proc_t*, 5> t29_2pc_ele;
 
     proc_t* pyroclastic_shock;
 
@@ -9819,94 +9796,21 @@ void shaman_t::summon_storm_elemental( timespan_t duration )
 
 void shaman_t::track_magma_chamber()
 {
-  switch ( buff.magma_chamber->check() )
+  int d = buff.magma_chamber->check();
+  assert( d < as<int>( proc.magma_chamber.size() ) && "The procs.magma_chamber array needs to be expanded." );
+  if ( d >= 0 && d < as<int>( proc.magma_chamber.size() ) )
   {
-    case 1:
-      proc.magma_chamber_1->occur();
-      break;
-    case 2:
-      proc.magma_chamber_2->occur();
-      break;
-    case 3:
-      proc.magma_chamber_3->occur();
-      break;
-    case 4:
-      proc.magma_chamber_4->occur();
-      break;
-    case 5:
-      proc.magma_chamber_5->occur();
-      break;
-    case 6:
-      proc.magma_chamber_6->occur();
-      break;
-    case 7:
-      proc.magma_chamber_7->occur();
-      break;
-    case 8:
-      proc.magma_chamber_8->occur();
-      break;
-    case 9:
-      proc.magma_chamber_9->occur();
-      break;
-    case 10:
-      proc.magma_chamber_10->occur();
-      break;
-    case 11:
-      proc.magma_chamber_11->occur();
-      break;
-    case 12:
-      proc.magma_chamber_12->occur();
-      break;
-    case 13:
-      proc.magma_chamber_13->occur();
-      break;
-    case 14:
-      proc.magma_chamber_14->occur();
-      break;
-    case 15:
-      proc.magma_chamber_15->occur();
-      break;
-    case 16:
-      proc.magma_chamber_16->occur();
-      break;
-    case 17:
-      proc.magma_chamber_17->occur();
-      break;
-    case 18:
-      proc.magma_chamber_18->occur();
-      break;
-    case 19:
-      proc.magma_chamber_19->occur();
-      break;
-    case 20:
-      proc.magma_chamber_20->occur();
-      break;
-    default:
-      break;
+    proc.magma_chamber[ d ]->occur();
   }
 }
 
 void shaman_t::track_t29_2pc_ele()
 {
-  switch ( buff.t29_2pc_ele->check() )
+  int d = buff.t29_2pc_ele->check();
+  assert( d < as<int>( proc.t29_2pc_ele.size() ) && "The procs.t29_2pc_ele array needs to be expanded." );
+  if ( d >= 0 && d < as<int>( proc.magma_chamber.size() ) )
   {
-    case 1:
-      proc.t29_2pc_ele_1->occur();
-      break;
-    case 2:
-      proc.t29_2pc_ele_2->occur();
-      break;
-    case 3:
-      proc.t29_2pc_ele_3->occur();
-      break;
-    case 4:
-      proc.t29_2pc_ele_4->occur();
-      break;
-    case 5:
-      proc.t29_2pc_ele_5->occur();
-      break;
-    default:
-      break;
+    proc.t29_2pc_ele[ d ]->occur();
   }
 }
 
@@ -10875,26 +10779,10 @@ void shaman_t::init_procs()
   proc.further_beyond       = get_proc( "Further Beyond" );
   proc.lightning_rod        = get_proc( "Lightning Rod" );
   proc.searing_flames       = get_proc( "Searing Flames" );
-  proc.magma_chamber_1      = get_proc( "Magma Chamber 1" );
-  proc.magma_chamber_2      = get_proc( "Magma Chamber 2" );
-  proc.magma_chamber_3      = get_proc( "Magma Chamber 3" );
-  proc.magma_chamber_4      = get_proc( "Magma Chamber 4" );
-  proc.magma_chamber_5      = get_proc( "Magma Chamber 5" );
-  proc.magma_chamber_6      = get_proc( "Magma Chamber 6" );
-  proc.magma_chamber_7      = get_proc( "Magma Chamber 7" );
-  proc.magma_chamber_8      = get_proc( "Magma Chamber 8" );
-  proc.magma_chamber_9      = get_proc( "Magma Chamber 9" );
-  proc.magma_chamber_10      = get_proc( "Magma Chamber 10" );
-  proc.magma_chamber_11      = get_proc( "Magma Chamber 11" );
-  proc.magma_chamber_12      = get_proc( "Magma Chamber 12" );
-  proc.magma_chamber_13      = get_proc( "Magma Chamber 13" );
-  proc.magma_chamber_14      = get_proc( "Magma Chamber 14" );
-  proc.magma_chamber_15      = get_proc( "Magma Chamber 15" );
-  proc.magma_chamber_16      = get_proc( "Magma Chamber 16" );
-  proc.magma_chamber_17      = get_proc( "Magma Chamber 17" );
-  proc.magma_chamber_18      = get_proc( "Magma Chamber 18" );
-  proc.magma_chamber_19      = get_proc( "Magma Chamber 19" );
-  proc.magma_chamber_20      = get_proc( "Magma Chamber 20" );
+  for ( size_t i = 0; i < proc.magma_chamber.size(); i++ )
+  {
+    proc.magma_chamber[ i ] = get_proc( fmt::format( "Magma Chamber {}", i + 1 ) );
+  }
 
   proc.pyroclastic_shock    = get_proc( "Pyroclastic Shock" );
 
@@ -10909,12 +10797,11 @@ void shaman_t::init_procs()
   proc.stormflurry            = get_proc( "Stormflurry" );
 
   proc.t28_4pc_enh       = get_proc( "Set Bonus: Tier28 4PC Enhancement" );
-
-  proc.t29_2pc_ele_1 = get_proc( "Set Bonus: Tier29 2PC Elemental spender empowerement, stack 1" );
-  proc.t29_2pc_ele_2 = get_proc( "Set Bonus: Tier29 2PC Elemental spender empowerement, stack 2" );
-  proc.t29_2pc_ele_3 = get_proc( "Set Bonus: Tier29 2PC Elemental spender empowerement, stack 3" );
-  proc.t29_2pc_ele_4 = get_proc( "Set Bonus: Tier29 2PC Elemental spender empowerement, stack 4" );
-  proc.t29_2pc_ele_5 = get_proc( "Set Bonus: Tier29 2PC Elemental spender empowerement, stack 5" );
+ 
+  for ( size_t i = 0; i < proc.magma_chamber.size(); i++ )
+  {
+    proc.t29_2pc_ele[ i ] = get_proc( fmt::format( "Set Bonus: Tier29 2PC Elemental spender empowerement, stack {}", i + 1 ) );
+  }
 }
 
 // shaman_t::init_uptimes ====================================================
