@@ -2056,8 +2056,9 @@ Tooltip          : Armor increased by ${$W2*$AGI/100}.$?s321028[
 Parry chance increased by $w1%.][]
 
 Name             : Fiery Brand (id=204021) [Spell Family (107)] 
+Hotfixed         : Learn Level (1 -> 0)
 Talent Entry     : Vengeance [tree=spec, row=2, col=2, max_rank=1, req_points=0]
-Class            : Vengeance Demon Hunter
+Class            : Demon Hunter
 School           : Fire
 Spell Type       : Magic
 Spell Level      : 1
@@ -4090,6 +4091,7 @@ Effects          :
 Description      : Immolation Aura's initial burst has a chance to shatter Lesser Soul Fragments from enemies.
 
 Name             : Spirit Bomb (id=227255) [Spell Family (107)] 
+Hotfixed         : Attributes
 Class            : Demon Hunter
 School           : Fire
 Spell Type       : Magic
@@ -4098,12 +4100,12 @@ Triggered by     : Frailty (391123)
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ........ ....xx..   ........ .x...... ........ ......x. 
                  : x......x ........ ........ ........   ...x.... ........ .xx..... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : .....x.. ........ ........ ........   ........ ........ ....x... x....... 
+                 : ........ ........ ........ ...x....   ........ ........ ........ ........ 
+                 : .....x.. ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ ......x. ........   ........ ........ ........ ..x..... 
-                 : ........ ........ ........ ........   xx...... ........ ........ ........ 
+                 : ........ ........ ........ ........   xx...... ........ ........ ..x..... 
                  : ........ ........ ........ ........   
-                 : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Not an Action (92), Can't Crit (93), Not a Proc (105), Do Not Display Range (126), No Cast Log (128), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Charmed (261), Allow Cast While Channeling (308), Ignore Caster Healing Modifiers (312), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
+                 : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Not an Action (92), Can't Crit (93), Not a Proc (105), Do Not Display Range (126), No Cast Log (128), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Ignore Healing Modifiers (219), Allow While Charmed (261), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417), Always Allow Negative Healing Percent Modifiers (442)
 Effects          :
 #1 (id=341494)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)

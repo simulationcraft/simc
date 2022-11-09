@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.2.46479
-static const std::array<spelltext_data_t, 19170> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 19172> __ptr_spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -16563,7 +16563,7 @@ static const std::array<spelltext_data_t, 19170> __ptr_spelltext_data { {
   { 377449, "Stomp the ground, commanding flames to radiate outward from your position, dealing $394393s1 Fire damage split between all enemies struck and granting you a $394393s2 shield for $382058d. After a delay, the flames return, dealing the same damage and refreshing the shield.\r\n\r\nDamage and absorption are increased for each enemy struck, up to $s3 enemies.", 0, 0 },
   { 377451, "\r\n\r\n", 0, 0 },
   { 377452, "Succumb to the Icon's whispers and become Infused with $?a137048|a137028|a137023|a137010|a137008|a212613[Earth]?a137039|a137031|a137032|a137029|a137024|a356810|a137012[Fire][Frost], increasing your $?a137048|a137028|a137023|a137010|a137008|a212613[Versatility]?a137039|a137031|a137032|a137029|a137024|a356810|a137012[Haste][Critical Strike] by $s1. \r\n\r\nFighting alongside allies who are Infused with $?a137048|a137028|a137023|a137010|a137008|a212613[Fire or Frost]?a137039|a137031|a137032|a137029|a137024|a356810|a137012[Earth or Frost][Earth or Fire] has a chance to grant you $s2 of their Infusion's stat for $382081d.\r\n\r\nInfusion based on your current specialization.", 0, 0 },
-  { 377453, "Accept the storm, becoming a Primal Air Elemental and immobilizing yourself for $d.\r\n\r\nWhile in this form, the winds around you deal $382092s1 Nature damage per second to all enemies within $s5 yards, intensifying by $s4% each second until the transformation subsides.", "Deal $382092w1 Nature damage per second to all enemies within $s5 yards, intensifying by $s4% each second.", 0 },
+  { 377453, "Accept the storm, becoming a Primal Air Elemental and immobilizing yourself for $d.\r\n\r\nWhile in this form, the winds around you deal $382092s1 Nature damage per second to all enemies within $s5 yards, intensifying by $s4% each second until the transformation subsides.", "Deal $w1 Nature damage per second to all enemies within $s5 yards, intensifying by $s4% each second.", 0 },
   { 377454, "Your attacks slowly build Concussive Force, granting $s1 attack power per stack. \r\n\r\nAt $382094u stacks, your next $s3 melee abilities emit a shockwave in front of you, dealing $s2 bonus Nature damage to all enemies in a line. Shockwaves deal more damage to enemies at high health.", 0, 0 },
   { 377455, "Deal $382132s1 Frost damage to your target, encasing them and nearby enemies in a Crystalline Web for $382130d. Webbed enemies are slowed by $382130s2% and take $382132s2 Frost damage when any enemy in the web is struck. \r\n\r\nDamage is increased for each webbed enemy, up to $s5. Damage per target is reduced beyond $s5 enemies.", 0, 0 },
   { 377456, "Your critical strikes have a chance to build Static Electricity, granting $s2% attack speed per stack. This effect may occur every $proccooldown sec.\r\n\r\nAt $s3 stacks lightning surges through you, increasing your movement speed by $s4% for $s1 seconds. While surging, your auto attacks jolt your target and 1 nearby enemy for $s5 Nature damage.\r\n\r\nWhen this effect fades, you become grounded for $397621d and unable to generate Static Electricity.", 0, 0 },
@@ -17773,6 +17773,7 @@ static const std::array<spelltext_data_t, 19170> __ptr_spelltext_data { {
   { 386941, "Bonedust Brew's Shadow damage or healing is increased by ${$s1}.1%, and when Bonedust Brew deals Shadow damage or healing, its cooldown is reduced by ${$s2/-1000}.1 sec.", 0, 0 },
   { 386949, "Your abilities have a low chance to cast Bonedust Brew at your target's location.", 0, 0 },
   { 386951, "Applies Corruption, Agony, and Unstable Affliction to your target.", 0, 0 },
+  { 386959, "$@spelldesc386965", 0, 0 },
   { 386963, "$@spelldesc386965", "Your Blackout Kick and Spinning Crane Kick deal $w1% increased damage as Fire damage, and their damage refreshes the duration of Breath of Fire on the target.", 0 },
   { 386965, "Your Breath of Fire ignites your right leg in flame for $386963d, causing your Blackout Kick and Spinning Crane Kick to deal $s1% additional damage as Fire damage and refresh the duration of your Breath of Fire on the target.", 0, 0 },
   { 386967, "Increases your Mastery by $s1%.", 0, 0 },
@@ -18073,7 +18074,7 @@ static const std::array<spelltext_data_t, 19170> __ptr_spelltext_data { {
   { 388739, "$@spelldesc388603", 0, 0 },
   { 388740, "Your Blackout Kicks strike ${$s2+1} targets and have an additional $s1% chance to reset the cooldown of your Rising Sun Kick while within your Faeline Stomp.", 0, 0 },
   { 388755, "@spelldesc383920", "Suffering $w1 Shadow damage every $t1 sec.", 0 },
-  { 388779, "Your abilities reset Faeline Stomp $s2% more often. While within Faeline Stomp, your Tiger Palms strike $s3 targets and your Spinning Crane Kick heals $s4 nearby allies for $s1% of the damage done.", 0, 0 },
+  { 388779, "Your abilities reset Faeline Stomp $s2% more often. While within Faeline Stomp, your Tiger Palms strike twice and your Spinning Crane Kick heals $s4 nearby allies for $s1% of the damage done.", 0, 0 },
   { 388807, "Whenever you Parry, you heal for ${$m1}.2% of your maximum health. Can only occur once per second.", 0, 0 },
   { 388808, "$@spelldesc382549", 0, 0 },
   { 388809, "Rising Sun Kick deals $s1% increased damage. Spinning Crane Kick deals $s2% additional damage.\r\n", 0, 0 },
@@ -18724,6 +18725,8 @@ static const std::array<spelltext_data_t, 19170> __ptr_spelltext_data { {
   { 393030, "Your chance to block spells is increased by $s1%.", 0, 0 },
   { 393038, "Parry increased by $s1%.", "Parry increased by $w1%.", 0 },
   { 393039, "$@spelldesc235053", "Damage of next Crackling Jade Lightning increased by $s1%.\r\nEnergy cost of next Crackling Jade Lightning reduced by $s2%.", 0 },
+  { 393048, "$@spelldesc337334", "Chance to be critically hit by the Monk increased by $w1%.", 0 },
+  { 393050, "$@spelldesc392991", "Unable to gain Skyreach from attacking this target for $d.", 0 },
   { 393054, "$@spelldesc210152", 0, 0 },
   { 393055, "$@spelldesc210152", 0, 0 },
   { 393056, "$@spelldesc392979", 0, 0 },
@@ -18908,7 +18911,6 @@ static const std::array<spelltext_data_t, 19170> __ptr_spelltext_data { {
   { 393991, "Incarnation: Chosen of Elune reduces the Astral Power cost of Starsurge by ${$s5*-1/10}, and the Astral Power cost of Starfall by ${$s6*-1/10}.\r\n\r\nConvoke the Spirits' cooldown is reduced by ${($abs($s4)/120000)*100}% and its duration and number of spells cast is reduced by $s1%. Convoke the Spirits has an increased chance to use an exceptional spell or ability.", 0, 0 },
   { 393994, "Slow your body by taking on the weight of time itself.\r\n\r\nDecreases movement speed by $s1% for $d.", "Taking on the heavy weight of time.", 0 },
   { 393995, "Combine $s2 Slumbering Dream Fragments to restore a minor dream, once broken.", 0, 0 },
-  { 394003, 0, "Dressed in Alchemy Equipment.", 0 },
   { 394013, "$@spelldesc102560", 0, 0 },
   { 394023, "Shadow Techniques generates $s1 additional Energy.", 0, 0 },
   { 394026, "$@spelldesc385408", 0, 0 },
@@ -19173,10 +19175,12 @@ static const std::array<spelltext_data_t, 19170> __ptr_spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 10.0.2.46479
-static constexpr std::array<hotfix::client_hotfix_entry_t, 5> __ptr_spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 7> __ptr_spelltext_hotfix_data { {
   {  373180,  0, "When Atonement has healed a total of $s1 times, your next Penance is free and fires $s2 additional bolts.", "Every $s1 casts of Smite, your next Penance is free and fires an additional $s2 bolts." },
+  {  377453,  1, "Deal $382092w1 Nature damage per second to all enemies within $s5 yards, intensifying by $s4% each second.", "Deal $w1 Nature damage per second to all enemies within $s5 yards, intensifying by $s4% each second." },
   {  383200,  0, "Every $q seconds you spend moving increases your intellect by $383201s1, stacking up to 5 times. Casting a spell will consume all stacks of Intellect.", "Every $q seconds you spend moving increases your Intellect by $s2, stacking up to 5 times. Casting a spell will consume all stacks of Intellect." },
   {  388064,  1, "Mana costs reduced by $s1.", "Mana costs reduced by $w1." },
+  {  388779,  0, "Your abilities reset Faeline Stomp $s2% more often. While within Faeline Stomp, your Tiger Palms strike $s3 targets and your Spinning Crane Kick heals $s4 nearby allies for $s1% of the damage done.", "Your abilities reset Faeline Stomp $s2% more often. While within Faeline Stomp, your Tiger Palms strike twice and your Spinning Crane Kick heals $s4 nearby allies for $s1% of the damage done." },
   {  390643,  0, "Perform the summoning ritual and commune with one of the Primal Turtles to gain its blessing.\r\n\r\nThe ritual site can be found north of Uktulut Pier in The Waking Shores, near the remains of a dragon.", "Perform the summoning ritual and commune with one of the Primal Turtles to gain its blessing.\r\n\r\nThe ritual site can be found south of Uktulut Pier in The Waking Shores, near the remains of a dragon." },
   {  393641,  0, "Efflorescence critical heals increase the healing of your next Wild Growth by $394565s1%, stacking up to 5 times. Lifebloom critical heals reduces the cooldown of Nature's Swiftness by $s1.", "Efflorescence critical heals increase the healing of your next Wild Growth by $394565s1%, stacking up to 5 times. Lifebloom critical heals reduces the cooldown of Nature's Swiftness by $s1 sec." },
 } };

@@ -2296,7 +2296,7 @@ Effects          :
 #1 (id=120042)   : Apply Aura (6) | Cast while Moving (Whitelist) (330)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Frostbolt (116), Fireball (133), Conjure Mana Gem (759), Flamestrike (2120), Arcane Missiles (5143), Pyroblast (11366), Evocation (12051), Arcane Blast (30451), Summon Water Elemental (31687), Flurry (44614), Ring of Frost (113724), Rune of Power (116011), Conjure Familiar (126578), Conjure Refreshment (190336), Blizzard (190356), Cinderstorm (198928), Cinderstorm (198929), Glacial Spike (199786), Ray of Frost (205021), Frostbolt (228597), Glacial Spike (228600), Ebonbolt (257537), Radiant Spark (307443), Arcane Echo (342232), Arcane Surge (365350), Radiant Spark (376103)
-                   Family Flags: 0, 2, 5, 11, 22, 24, 26, 29, 30, 43, 44, 56, 64, 76, 86, 92, 98, 107, 110, 112, 116, 127
+                   Family Flags: 0, 2, 5, 11, 22, 24, 26, 29, 30, 43, 44, 56, 62, 64, 69, 76, 86, 92, 98, 107, 110, 112, 116, 127
 Hotfixed         : Affects Spells
 #2 (id=340801)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -3431,7 +3431,8 @@ Attributes       : ........ ........ .......x x..x....   .....x.. ........ .....
                  : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Not an Action (92), DoT Stacking Rule (103), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Do Not Display Duration (170), Treat as Area Effect (175), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Periodic Can Crit (265), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=215526)   : Apply Aura (6) | Periodic Damage (3): fire every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.08250 | PvP Coefficient: 0.80000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.08250 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (0.8 -> 1)
 Description      : $@spelldesc153561
 Tooltip          : Burning for $w1 Fire damage every $t1 sec.
 
@@ -5637,6 +5638,9 @@ Name             : Frigid Winds (id=235224) [Spell Family (3), Passive]
 Talent Entry     : Generic [tree=class, row=8, col=1, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(-5, -10)]
                  : Effect#2 [op=set, values=(-5, -10)]
+                 : Effect#3 [op=set, values=(-5, -10)]
+                 : Effect#4 [op=set, values=(-5, -10)]
+                 : Effect#5 [op=set, values=(-5, -10)]
 Class            : Mage
 School           : Frost
 Spell Type       : None
@@ -5659,6 +5663,17 @@ Effects          :
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 0.50000 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Ray of Frost (205021)
                    Family Flags: 56
+#3 (id=1041319)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
+                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 0.50000 | Misc Value: 23 | Target: Self (1)
+                   Family Flags: 69
+Hotfixed         : NEW EFFECT
+#4 (id=1041320)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
+                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 0.50000 | Misc Value: 32 | Target: Self (1)
+                   Family Flags: 69
+Hotfixed         : NEW EFFECT
+#5 (id=1041484)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
+                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 0.50000 | Misc Value: 12 | Misc Value 2: 2427 (Label)
+Hotfixed         : NEW EFFECT
 Description      : All of your snare effects reduce the target's movement speed by an additional $s1%.
 
 Name             : Glacial Insulation (id=235297) [Spell Family (3), Passive] 
@@ -11709,7 +11724,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Spell Haste Affects Periodic (173), Always AOE Line of Sight (186), Haste Affects Duration (273), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=881233)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 2.60000 | PvP Coefficient: 0.80000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 2.60000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+Hotfixed         : PvP Coefficient (0.8 -> 1)
 Description      : $@spelldesc153561
 
 Name             : Death's Fathom (id=354294) [Spell Family (3), Hidden] 
