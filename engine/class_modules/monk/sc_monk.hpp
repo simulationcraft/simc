@@ -338,6 +338,7 @@ public:
     propagate_const<gain_t*> focus_of_xuen;
     propagate_const<gain_t*> fortuitous_spheres;
     propagate_const<gain_t*> gift_of_the_ox;
+    propagate_const<gain_t*> glory_of_the_dawn;
     propagate_const<gain_t*> healing_elixir;
     propagate_const<gain_t*> rushing_jade_wind_tick;
     propagate_const<gain_t*> serenity;
@@ -346,11 +347,6 @@ public:
     propagate_const<gain_t*> touch_of_death_ww;
     propagate_const<gain_t*> power_strikes;
     propagate_const<gain_t*> open_palm_strikes;
-
-    // Azerite Traits
-    propagate_const<gain_t*> glory_of_the_dawn;
-    propagate_const<gain_t*> memory_of_lucid_dreams;
-    propagate_const<gain_t*> lucid_dreams;
 
     // Covenants
     propagate_const<gain_t*> bonedust_brew;
