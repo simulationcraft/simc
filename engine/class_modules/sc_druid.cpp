@@ -2919,16 +2919,18 @@ struct trigger_astral_smolder_t : public BASE
 private:
   druid_t* p_;
   buff_t* other_ecl;
+  dot_t* druid_td_t::dots_t::* other_dot;
   double mul;
 
 public:
   trigger_astral_smolder_t( std::string_view n, druid_t* p, const spell_data_t* s, std::string_view o )
-    : BASE( n, p, s, o ), p_( p ), other_ecl( nullptr ), mul( p->talent.astral_smolder->effectN( 1 ).percent() )
+    : BASE( n, p, s, o ), p_( p ), other_ecl( nullptr ), other_dot( nullptr ), mul( p->talent.astral_smolder->effectN( 1 ).percent() )
   {}
 
-  void init_astral_smolder( buff_t* b )
+  void init_astral_smolder( buff_t* b, dot_t* druid_td_t::dots_t::*d )
   {
     other_ecl = b;
+    other_dot = d;
   }
 
   void impact( action_state_t* s ) override
@@ -2938,8 +2940,13 @@ public:
     if ( !p_->active.astral_smolder || !s->result_amount || s->result != RESULT_CRIT )
       return;
 
-    assert( other_ecl );
-    auto amount = s->result_amount * mul * ( 1.0 + other_ecl->check_value() );
+    assert( other_ecl && other_dot );
+    auto amount = s->result_amount * mul;
+    amount *= 1.0 + other_ecl->check_value();
+
+    auto dot = std::invoke( other_dot, BASE::td( s->target )->dots );
+    if ( !p_->bugs && dot->is_ticking() )
+      amount *= 1.0 + p_->cache_mastery_value();
 
     residual_action::trigger( p_->active.astral_smolder, s->target, amount );
   }
@@ -7671,7 +7678,7 @@ struct starfire_t : public druid_mixin_t<trigger_astral_smolder_t<consume_umbral
     base_aoe_multiplier = data().effectN( p->specialization() == DRUID_BALANCE ? 3 : 2 ).percent();
 
     init_umbral_embrace( p->spec.eclipse_solar, &druid_td_t::dots_t::sunfire, p->spec.sunfire_dmg );
-    init_astral_smolder( p->buff.eclipse_solar );
+    init_astral_smolder( p->buff.eclipse_solar, &druid_td_t::dots_t::sunfire );
   }
 
   void init_finished() override
@@ -8224,7 +8231,7 @@ struct wrath_t : public druid_mixin_t<trigger_astral_smolder_t<consume_umbral_em
       energize_amount = p->spec.astral_power->effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
 
     init_umbral_embrace( p->spec.eclipse_lunar, &druid_td_t::dots_t::moonfire, p->spec.moonfire_dmg );
-    init_astral_smolder( p->buff.eclipse_lunar );
+    init_astral_smolder( p->buff.eclipse_lunar, &druid_td_t::dots_t::moonfire );
   }
 
   double composite_energize_amount( const action_state_t* s ) const override
