@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.46455 Live (hotfix 2022-11-04/46455)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.46455 Live (hotfix 2022-11-08/46455)
 Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Orc (0x2)
@@ -1043,6 +1043,7 @@ Effects          :
 Description      : Conjure a path of shifting stone towards the target location, rooting enemies for $355689d. Damage may cancel the effect.
 
 Name             : Eternity Surge (desc=Blue) (id=359073) [Spell Family (224)] 
+Hotfixed         : Attributes
 Talent Entry     : Devastation [tree=spec, row=3, col=3, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Spellfrost
@@ -1053,7 +1054,7 @@ Cooldown         : 30 seconds
 Affecting spells : Tip the Scales (370553 effects: #1, #2), Imminent Destruction (370781 effect#1)
 Triggered by     : Causality (375778)
 Family Flags     : 16
-Attributes       : ........ ........ ........ ........   ..x..... ..x..... ........ .x..xx.. 
+Attributes       : ........ ........ ........ .....x..   ..x..... ..x..... ........ .x..xx.. 
                  : ........ x....... ........ ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
                  : ........ ..x..... ........ ........   ........ ........ ........ ........ 
@@ -1061,7 +1062,7 @@ Attributes       : ........ ........ ........ ........   ..x..... ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   
-                 : Is Channelled (34), No Threat (42), Aura Stays After Combat (57), No Aura Icon (60), Name in Channel Bar (61), Include In Advanced Combat Log (72), Always Hit (114), Force Display Castbar (155), No Aura Log (202), Haste Affects Duration (273), Do Not Allow "Disable Movement Interrupt" (443)
+                 : No Immunities (29), Is Channelled (34), No Threat (42), Aura Stays After Combat (57), No Aura Icon (60), Name in Channel Bar (61), Include In Advanced Combat Log (72), Always Hit (114), Force Display Castbar (155), No Aura Log (202), Haste Affects Duration (273), Do Not Allow "Disable Movement Interrupt" (443)
 Effects          :
 #1 (id=894877)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
@@ -1930,6 +1931,7 @@ Effects          :
 Description      : Increases your Intellect by $s1% while wearing only Mail armor.
 
 Name             : Spiritbloom (desc=Green) (id=367226) [Spell Family (224)] 
+Hotfixed         : Attributes
 Talent Entry     : Preservation [tree=spec, row=4, col=1, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Nature
@@ -1941,7 +1943,7 @@ Cooldown         : 30 seconds
 Labels           : 1466: Lush Growth (375561 effect#1), Lush Growth (375561 effect#2)
 Affecting spells : Temporal Compression (362877 effect#1), Tip the Scales (370553 effects: #1, #2), Imminent Destruction (370781 effect#1), Spiritual Clarity (376150 effect#1)
 Family Flags     : 30
-Attributes       : ........ ........ ........ ........   ..x...x. ..x..... ........ .x..xx.. 
+Attributes       : ........ ........ ........ .....x..   ..x...x. ..x..... ........ .x..xx.. 
                  : ........ x....... ........ ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
                  : ........ ..x..... ........ ........   ........ ........ ........ ........ 
@@ -1949,7 +1951,7 @@ Attributes       : ........ ........ ........ ........   ..x...x. ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ...x.... 
                  : ........ ........ ........ ........   
-                 : Is Channelled (34), Is Self Channelled (38), No Threat (42), Aura Stays After Combat (57), No Aura Icon (60), Name in Channel Bar (61), Include In Advanced Combat Log (72), Always Hit (114), Force Display Castbar (155), No Aura Log (202), Haste Affects Duration (273), Do Not Enforce Shapeshift Requirements (434), Do Not Allow "Disable Movement Interrupt" (443)
+                 : No Immunities (29), Is Channelled (34), Is Self Channelled (38), No Threat (42), Aura Stays After Combat (57), No Aura Icon (60), Name in Channel Bar (61), Include In Advanced Combat Log (72), Always Hit (114), Force Display Castbar (155), No Aura Log (202), Haste Affects Duration (273), Do Not Enforce Shapeshift Requirements (434), Do Not Allow "Disable Movement Interrupt" (443)
 Effects          :
 #1 (id=910748)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friend (21)
@@ -4145,6 +4147,7 @@ Description      : Hover increases your movement speed by ${$378105s1+$358267s2}
 Name             : Lush Growth (id=375561) [Spell Family (224), Passive] 
 Talent Entry     : Generic [tree=class, row=8, col=6, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(5, 10)]
+                 : Effect#2 [op=set, values=(5, 10)]
 Class            : Evoker
 School           : Nature
 Spell Type       : None
@@ -5513,6 +5516,7 @@ Description      : $@spelldesc382289
 Tooltip          : Absorbs $w1 damage.
 
 Name             : Eternity Surge (desc=Blue) (id=382411) [Spell Family (224)] 
+Hotfixed         : Attributes
 Class            : Evoker
 School           : Spellfrost
 Spell Type       : None
@@ -5522,7 +5526,7 @@ Cooldown         : 30 seconds
 Affecting spells : Tip the Scales (370553 effects: #1, #2), Imminent Destruction (370781 effect#1)
 Triggered by     : Causality (375778)
 Family Flags     : 16
-Attributes       : ........ ........ ........ ........   ..x..... ..x..... ........ .x..xx.. 
+Attributes       : ........ ........ ........ .....x..   ..x..... ..x..... ........ .x..xx.. 
                  : ........ x....... ........ ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
                  : ........ ..x..... ........ ........   ........ ........ ........ ........ 
@@ -5530,7 +5534,7 @@ Attributes       : ........ ........ ........ ........   ..x..... ..x..... .....
                  : ........ ........ ........ ........   ...x.... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   
-                 : Is Channelled (34), No Threat (42), Aura Stays After Combat (57), No Aura Icon (60), Name in Channel Bar (61), Include In Advanced Combat Log (72), Always Hit (114), Force Display Castbar (155), No Aura Log (202), Haste Affects Duration (273), Spellcast Override In Spellbook (310), Do Not Log on Learn (355), Do Not Allow "Disable Movement Interrupt" (443)
+                 : No Immunities (29), Is Channelled (34), No Threat (42), Aura Stays After Combat (57), No Aura Icon (60), Name in Channel Bar (61), Include In Advanced Combat Log (72), Always Hit (114), Force Display Castbar (155), No Aura Log (202), Haste Affects Duration (273), Spellcast Override In Spellbook (310), Do Not Log on Learn (355), Do Not Allow "Disable Movement Interrupt" (443)
 Effects          :
 #1 (id=1013723)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
@@ -5592,6 +5596,7 @@ $sThreeDur=${8}
 $sFourDur=${4}
 
 Name             : Spiritbloom (desc=Green) (id=382731) [Spell Family (224)] 
+Hotfixed         : Attributes
 Class            : Evoker
 School           : Nature
 Spell Type       : None
@@ -5602,7 +5607,7 @@ Cooldown         : 30 seconds
 Labels           : 1466: Lush Growth (375561 effect#1), Lush Growth (375561 effect#2)
 Affecting spells : Temporal Compression (362877 effect#1), Tip the Scales (370553 effects: #1, #2), Imminent Destruction (370781 effect#1), Spiritual Clarity (376150 effect#1)
 Family Flags     : 30
-Attributes       : ........ ........ ........ ........   ..x..... ..x..... ........ .x..xx.. 
+Attributes       : ........ ........ ........ .....x..   ..x...x. ..x..... ........ .x..xx.. 
                  : ........ x....... ........ ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
                  : ........ ..x..... ........ ........   ........ ........ ........ ........ 
@@ -5610,7 +5615,7 @@ Attributes       : ........ ........ ........ ........   ..x..... ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ...x.... 
                  : ........ ........ ........ ........   
-                 : Is Channelled (34), No Threat (42), Aura Stays After Combat (57), No Aura Icon (60), Name in Channel Bar (61), Include In Advanced Combat Log (72), Always Hit (114), Force Display Castbar (155), No Aura Log (202), Haste Affects Duration (273), Spellcast Override In Spellbook (310), Do Not Enforce Shapeshift Requirements (434), Do Not Allow "Disable Movement Interrupt" (443)
+                 : No Immunities (29), Is Channelled (34), Is Self Channelled (38), No Threat (42), Aura Stays After Combat (57), No Aura Icon (60), Name in Channel Bar (61), Include In Advanced Combat Log (72), Always Hit (114), Force Display Castbar (155), No Aura Log (202), Haste Affects Duration (273), Spellcast Override In Spellbook (310), Do Not Enforce Shapeshift Requirements (434), Do Not Allow "Disable Movement Interrupt" (443)
 Effects          :
 #1 (id=1014217)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friend (21)

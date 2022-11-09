@@ -2726,10 +2726,20 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
 
   struct deaths_caress_t : public drw_action_t<spell_t>
   {
+    int stack_gain;
     deaths_caress_t( dancing_rune_weapon_pet_t* p ) :
-      drw_action_t( p, "deaths_caress", p -> dk() -> talent.blood.deaths_caress )
+      drw_action_t( p, "deaths_caress", p -> dk() -> talent.blood.deaths_caress ),
+      stack_gain( data().effectN( 3 ).base_value() )
+
     {
       this -> impact_action = p -> ability.blood_plague;
+    }
+
+    void impact( action_state_t* state ) override
+    {
+      drw_action_t::impact( state );
+
+      dk() -> buffs.bone_shield -> trigger( stack_gain );
     }
   };
 
@@ -2796,15 +2806,15 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
 
   struct marrowrend_t : public drw_action_t<melee_attack_t>
   {
+    int stack_gain;
     marrowrend_t( dancing_rune_weapon_pet_t* p ) :
-      drw_action_t<melee_attack_t>( p, "marrowrend", p -> dk() -> talent.blood.marrowrend )
+      drw_action_t<melee_attack_t>( p, "marrowrend", p -> dk() -> talent.blood.marrowrend ),
+      stack_gain( data().effectN( 3 ).base_value() )
     { }
 
     void impact( action_state_t* state ) override
     {
       drw_action_t::impact( state );
-
-      int stack_gain = as<int>( data().effectN( 3 ).base_value() );
 
       dk() -> buffs.bone_shield -> trigger( stack_gain );
     }

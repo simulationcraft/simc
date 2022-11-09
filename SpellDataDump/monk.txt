@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.46455 Live (hotfix 2022-11-04/46455)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.46455 Live (hotfix 2022-11-08/46455)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -7009,6 +7009,7 @@ Tooltip          : Increases Mastery by $s1 and Leech by $s2.
 
 Name             : Tiger Tail Sweep (id=264348) [Spell Family (53), Passive] 
 Talent Entry     : Generic [tree=class, row=3, col=1, max_rank=2, req_points=0]
+                 : Effect#2 [op=set, values=(-5000, -10000)]
 Class            : Monk
 School           : Physical
 Spell Type       : None

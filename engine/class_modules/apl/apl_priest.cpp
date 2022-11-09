@@ -89,13 +89,11 @@ void shadow( player_t* p )
       "variable,name=pool_for_cds,op=set,value=(cooldown.void_eruption.remains<=gcd.max*3&talent.void_eruption|"
       "cooldown.dark_ascension.up&talent.dark_ascension)" );
   // Racials
-  default_list->add_action( "fireblood,if=buff.power_infusion.up" );
-  default_list->add_action( "berserking,if=buff.power_infusion.up" );
-  default_list->add_action( "blood_fury,if=buff.power_infusion.up" );
-  default_list->add_action( "ancestral_call,if=buff.power_infusion.up" );
+  default_list->add_action( "fireblood,if=buff.power_infusion.up|fight_remains<=8" );
+  default_list->add_action( "berserking,if=buff.power_infusion.up|fight_remains<=12" );
+  default_list->add_action( "blood_fury,if=buff.power_infusion.up|fight_remains<=15" );
+  default_list->add_action( "ancestral_call,if=buff.power_infusion.up|fight_remains<=15" );
   default_list->add_action( "variable,name=pool_amount,op=set,value=60" );
-  default_list->add_action(
-      "lights_judgment,if=spell_targets.lights_judgment>=2|(!raid_event.adds.exists|raid_event.adds.in>75)" );
   default_list->add_run_action_list( main );
 
   // Trinkets
@@ -175,6 +173,7 @@ void shadow( player_t* p )
       "void)" );
   main->add_action( "halo,if=raid_event.adds.in>20&(spell_targets.halo>1|variable.all_dots_up)" );
   main->add_action( "divine_star,if=spell_targets.divine_star>1" );
+  main->add_action("lights_judgment,if=!raid_event.adds.exists|raid_event.adds.in>75" );
   main->add_action(
       "mind_spike,if=buff.surge_of_darkness.up|!conduit.dissonant_echoes&(!talent.mental_decay|dot.vampiric_touch."
       "remains>=(cooldown.shadow_crash.remains+action.shadow_crash.travel_time))&(talent.mind_melt|!talent.idol_of_"

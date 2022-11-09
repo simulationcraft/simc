@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.46455 Live (hotfix 2022-11-04/46455)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.46455 Live (hotfix 2022-11-08/46455)
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -3746,7 +3746,8 @@ Effects          :
 #2 (id=283620)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
 #3 (id=283621)   : Dummy (3)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (30 -> 35)
 #4 (id=283622)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Viciously strike an enemy, causing ${$s1*$<mult>} Physical damage.$?s279876[
@@ -4335,6 +4336,10 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 35 | Target: Self (1)
                    Affected Spells: Blade Flurry (22482)
                    Family Flags: 93
+#6 (id=1041020)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Range (5)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 5 | Misc Value 2: 2423 (Label)
+                   Affected Spells (Label): Exsanguinate (200806)
+Hotfixed         : NEW EFFECT
 Description      : Increases the range of your melee attacks by $s1 yds.
 
 Name             : Ghostly Strike (id=196937) [Spell Family (8)] 
@@ -4805,6 +4810,7 @@ Resource         : 25 Energy (3) (id=12036)
 Range            : 5 yards
 GCD              : 1 seconds
 Cooldown         : 45 seconds
+Labels           : 2423: Acrobatic Strikes (196924 effect#6)
 Family Flags     : 30
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

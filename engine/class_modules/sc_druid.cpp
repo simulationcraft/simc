@@ -2542,7 +2542,9 @@ struct druid_mixin_t : public BASE
 {
   using base_t = druid_mixin_t<BASE>;
 
-  druid_mixin_t( std::string_view n, druid_t* p, const spell_data_t* s, std::string_view o = {} ) : BASE( n, p, s, o ) {}
+  druid_mixin_t( std::string_view n, druid_t* p, const spell_data_t* s, std::string_view o = {} )
+    : BASE( n, p, s, o )
+    {}
 };
 
 template <typename BASE>
@@ -2916,7 +2918,7 @@ public:
   {
     BASE::impact( s );
 
-    if ( !p_->active.astral_smolder || s->result_amount || s->result != RESULT_CRIT )
+    if ( !p_->active.astral_smolder || !s->result_amount || s->result != RESULT_CRIT )
       return;
 
     auto mul = p_->talent.astral_smolder->effectN( 1 ).percent();
@@ -10550,6 +10552,7 @@ void druid_t::create_actions()
     fm->s_data_reporting = talent.orbit_breaker;
     fm->base_multiplier = talent.orbit_breaker->effectN( 2 ).percent();
     fm->set_free_cast( free_spell_e::ORBIT );
+    fm->background = true;
     active.orbit_breaker = fm;
   }
 
@@ -10593,6 +10596,7 @@ void druid_t::create_actions()
     firmament->damage->base_multiplier = talent.sundered_firmament->effectN( 1 ).percent();
     firmament->s_data_reporting = talent.sundered_firmament;
     firmament->set_free_cast( free_spell_e::FIRMAMENT );
+    firmament->background = true;
     active.sundered_firmament = firmament;
   }
 

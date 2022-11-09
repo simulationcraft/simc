@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.46455 Live (hotfix 2022-11-04/46455)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.46455 Live (hotfix 2022-11-08/46455)
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Talent Entry     : Generic [tree=class, row=2, col=3, max_rank=1, req_points=0]
 Class            : Paladin, Mage
@@ -2295,8 +2295,9 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=120042)   : Apply Aura (6) | Cast while Moving (Whitelist) (330)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Frostbolt (116), Fireball (133), Conjure Mana Gem (759), Flamestrike (2120), Arcane Missiles (5143), Pyroblast (11366), Evocation (12051), Arcane Blast (30451), Summon Water Elemental (31687), Flurry (44614), Ring of Frost (113724), Rune of Power (116011), Conjure Familiar (126578), Conjure Refreshment (190336), Blizzard (190356), Cinderstorm (198928), Cinderstorm (198929), Glacial Spike (199786), Ray of Frost (205021), Frostbolt (228597), Glacial Spike (228600), Ebonbolt (257537), Radiant Spark (307443), Arcane Echo (342232), Radiant Spark (376103)
-                   Family Flags: 0, 2, 5, 11, 22, 24, 26, 29, 30, 43, 44, 56, 64, 76, 86, 92, 98, 110, 112, 116, 127
+                   Affected Spells: Frostbolt (116), Fireball (133), Conjure Mana Gem (759), Flamestrike (2120), Arcane Missiles (5143), Pyroblast (11366), Evocation (12051), Arcane Blast (30451), Summon Water Elemental (31687), Flurry (44614), Ring of Frost (113724), Rune of Power (116011), Conjure Familiar (126578), Conjure Refreshment (190336), Blizzard (190356), Cinderstorm (198928), Cinderstorm (198929), Glacial Spike (199786), Ray of Frost (205021), Frostbolt (228597), Glacial Spike (228600), Ebonbolt (257537), Radiant Spark (307443), Arcane Echo (342232), Arcane Surge (365350), Radiant Spark (376103)
+                   Family Flags: 0, 2, 5, 11, 22, 24, 26, 29, 30, 43, 44, 56, 64, 76, 86, 92, 98, 107, 110, 112, 116, 127
+Hotfixed         : Affects Spells
 #2 (id=340801)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=817013)   : Apply Aura (6) | Unknown(307)
@@ -4898,6 +4899,7 @@ Description      : You are able to comprehend your allies' racial languages.
 Tooltip          : You are able to comprehend your allies' racial languages.
 
 Name             : Arcane Familiar (id=210126) 
+Hotfixed         : Attributes
 Class            : Mage
 School           : Arcane
 Spell Type       : None
@@ -4913,9 +4915,9 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ....x... ..x..... 
+                 : ........ ........ ........ ........   x....... ........ ........ ..x..... 
                  : ........ ........ ........ ........   
-                 : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Ignore Line of Sight (66), No Initial Threat (86), Ignore Caster & Target Restrictions (124), Not In Spellbook (143), Ignore Healing Modifiers (219), Do Not Log Full Overheal (323), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436), Always Allow Negative Healing Percent Modifiers (442)
+                 : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Ignore Line of Sight (66), No Initial Threat (86), Ignore Caster & Target Restrictions (124), Not In Spellbook (143), Ignore Healing Modifiers (219), Do Not Log Full Overheal (323), Allow Class Ability Procs (416), Always Allow Negative Healing Percent Modifiers (442)
 Effects          :
 #1 (id=311103)   : Apply Aura (6) | Modify Max Mana% (178)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -5331,7 +5333,7 @@ Name             : Arcane Assault (id=225119) [Spell Family (3)]
 Class            : Mage
 School           : Arcane
 Spell Type       : Magic
-Range            : 100 yards
+Range            : 40 yards
 Velocity         : 24 yards/sec
 Affecting spells : Shatter (12982 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Radiant Spark Vulnerability (376104 effect#1), Invigorating Powder (384280 effects: #1, #2), Foresight (384865 effect#1), Overflowing Energy (390218 effect#1), Overflowing Energy (394195 effect#1), Touch of Ice (394994 effects: #1, #2)
 Family Flags     : 3
@@ -12133,7 +12135,7 @@ Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
 Cooldown         : 90 seconds
 Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
-Affecting spells : Shatter (12982 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Radiant Spark Vulnerability (376104 effect#1), Invigorating Powder (384280 effects: #1, #2), Foresight (384865 effect#1), Overflowing Energy (390218 effect#1), Overflowing Energy (394195 effect#1), Touch of Ice (394994 effects: #1, #2)
+Affecting spells : Shatter (12982 effect#1), Ice Floes (108839 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Radiant Spark Vulnerability (376104 effect#1), Invigorating Powder (384280 effects: #1, #2), Foresight (384865 effect#1), Overflowing Energy (390218 effect#1), Overflowing Energy (394195 effect#1), Touch of Ice (394994 effects: #1, #2)
 Family Flags     : 3, 107
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12418,8 +12420,9 @@ Attributes       : ........ ........ .......x ..x.....   ...x...x ........ .....
                  : ........ ........ ........ ........   
                  : Allow Cast While Dead (23), Aura Is Debuff (26), No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Not In Spellbook (143), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Effects          :
-#1 (id=1007196)  : Apply Aura (6) | Root (26)
+#1 (id=1007196)  : Apply Aura (6) | Root (455)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Root | Target: Unknown(25)
+Hotfixed         : Sub Type (26 -> 455)
 Description      : $@spelldesc378756
 Tooltip          : Frozen.
 

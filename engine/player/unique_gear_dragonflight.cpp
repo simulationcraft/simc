@@ -437,6 +437,23 @@ void wafting_devotion( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 }
+
+void completely_safe_rockets( special_effect_t& effect )
+{
+
+  auto missile = effect.trigger();
+  auto blast = missile -> effectN( 1 ).trigger();
+
+  auto blast_proc = create_proc_action<generic_aoe_proc_t>( "completely_safe_rocket_blast", effect, "completely_safe_rocket_blast", blast, true );
+  blast_proc -> base_dd_min = blast_proc -> base_dd_max = effect.driver() -> effectN( 1 ).average( effect.player );
+  blast_proc -> travel_speed = missile -> missile_speed();
+
+  effect.execute_action = blast_proc;
+  effect.proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 }  // namespace enchants
 
 namespace items
@@ -757,6 +774,37 @@ void darkmoon_deck_watcher( special_effect_t& effect )
   effect.buff_disabled = true;
 }
 
+void bottle_of_spiraling_winds( special_effect_t& effect )
+{
+  // TODO: determine what happens on buff refresh
+  auto buff = create_buff<stat_buff_t>( effect.player, effect.trigger() );
+  buff->manual_stats_added = false;
+  // TODO: confirm it continues to use the driver's coeff and not the actual buff's coeff
+  buff->add_stat( STAT_AGILITY, effect.driver()->effectN( 1 ).average( effect.item ) );
+
+  // TODO: this doesn't function in-game atm.
+  /*
+  auto decrement = create_buff<buff_t>( effect.player, effect.player->find_spell( 383758 ) )
+    ->set_quiet( true )
+    ->set_tick_callback( [ buff ]( buff_t*, int, timespan_t ) { buff->decrement(); } );
+
+  buff->set_stack_change_callback( [ decrement ]( buff_t* b, int, int new_ ) {
+    if ( b->at_max_stacks() )
+    {
+      b->freeze_stacks = true;
+      decrement->trigger();
+    }
+    else if ( !new_ )
+    {
+      b->freeze_stacks = false;
+    }
+  } );
+  */
+  effect.custom_buff = buff;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 void conjured_chillglobe( special_effect_t& effect )
 {
   struct conjured_chillglobe_proxy_t : public action_t
@@ -795,6 +843,44 @@ void conjured_chillglobe( special_effect_t& effect )
   };
 
   effect.execute_action = create_proc_action<conjured_chillglobe_proxy_t>( "conjured_chillglobe", effect );
+}
+
+void irideus_fragment( special_effect_t& effect )
+{
+  auto reduce = new special_effect_t( effect.player );
+  reduce->type = SPECIAL_EFFECT_EQUIP;
+  reduce->source = SPECIAL_EFFECT_SOURCE_ITEM;
+  reduce->spell_id = effect.spell_id;
+  reduce->cooldown_ = effect.driver()->internal_cooldown();
+  // TODO: determine what exactly the flags are. At bare minimum reduced per cast. Certain other non-cast procs will
+  // also reduce. Maybe require individually tailoring per module a la Bron
+  reduce->proc_flags_ = PF_ALL_DAMAGE | PF_ALL_HEAL;
+  reduce->proc_flags2_ = PF2_CAST | PF2_CAST_DAMAGE | PF2_CAST_HEAL;
+  reduce->set_can_proc_from_procs( true );
+  reduce->set_can_only_proc_from_class_abilites( true );
+  effect.player->special_effects.push_back( reduce );
+
+  auto cb = new dbc_proc_callback_t( effect.player, *reduce );
+  cb->initialize();
+  cb->deactivate();
+
+
+  auto buff = create_buff<stat_buff_t>( effect.player, effect.driver() );
+  buff->manual_stats_added = false;
+  buff->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ),
+                  effect.driver()->effectN( 1 ).average( effect.item ) )
+      ->set_reverse( true )
+      ->set_stack_change_callback( [ cb ]( buff_t*, int old_, int new_ ) {
+    if ( !old_ )
+      cb->activate();
+    else if ( !new_ )
+      cb->deactivate();
+  } );
+
+  effect.custom_buff = buff;
+
+  effect.player->callbacks.register_callback_execute_function(
+      effect.spell_id, [ buff ]( const dbc_proc_callback_t*, action_t*, action_state_t* ) { buff->trigger(); } );
 }
 
 // TODO: Do properly and add both drivers
@@ -1119,6 +1205,23 @@ void spoils_of_neltharus( special_effect_t& effect )
   };
 
   effect.execute_action = create_proc_action<spoils_of_neltharus_t>( "spoils_of_neltharus", effect );
+}
+
+void timebreaching_talon( special_effect_t& effect )
+{
+  auto debuff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 384050 ) );
+  debuff->manual_stats_added = false;
+  debuff->add_stat( STAT_INTELLECT, effect.driver()->effectN( 1 ).average( effect.item ) );
+
+  auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 382126 ) );
+  buff->manual_stats_added = false;
+  buff->add_stat( STAT_INTELLECT, effect.driver()->effectN( 2 ).average( effect.item ) )
+      ->set_stack_change_callback( [ debuff ]( buff_t*, int, int new_ ) {
+        if ( !new_ )
+          debuff->trigger();
+      } );
+
+  effect.custom_buff = buff;
 }
 
 void umbrelskuls_fractured_heart( special_effect_t& effect )
@@ -1996,6 +2099,8 @@ void register_special_effects()
   register_special_effect( { 390351, 390352, 390353 }, enchants::frozen_devotion );
   register_special_effect( { 390358, 390359, 390360 }, enchants::wafting_devotion );
 
+  register_special_effect( { 386260, 386299, 386305 }, enchants::completely_safe_rockets );
+
   // Trinkets
   register_special_effect( 376636, items::idol_of_the_aspects( "neltharite" ) );     // idol of the earth warder
   register_special_effect( 376638, items::idol_of_the_aspects( "ysemerald" ) );      // idol of the dreamer
@@ -2005,13 +2110,16 @@ void register_special_effects()
   register_special_effect( 382957, items::darkmoon_deck_inferno );
   register_special_effect( 386624, items::darkmoon_deck_rime );
   register_special_effect( 384532, items::darkmoon_deck_watcher );
+  register_special_effect( 383751, items::bottle_of_spiraling_winds );
   register_special_effect( 396391, items::conjured_chillglobe );
+  register_special_effect( 383941, items::irideus_fragment );
   register_special_effect( 383798, items::emerald_coachs_whistle );
   register_special_effect( 381471, items::erupting_spear_fragment );
   register_special_effect( 383920, items::furious_ragefeather );
   register_special_effect( 388603, items::idol_of_pure_decay );
   register_special_effect( 377466, items::spiteful_storm );
   register_special_effect( 381768, items::spoils_of_neltharus );
+  register_special_effect( 385884, items::timebreaching_talon );
   register_special_effect( 385902, items::umbrelskuls_fractured_heart );
   register_special_effect( 377452, items::whispering_incarnate_icon );
   register_special_effect( 384112, items::the_cartographers_calipers );

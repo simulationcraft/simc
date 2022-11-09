@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.46455 Live (hotfix 2022-11-04/46455)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.46455 Live (hotfix 2022-11-08/46455)
 Name             : Frostbolt of Ages (id=11) 
 Class            : Paladin
 School           : Frost
@@ -2001,6 +2001,7 @@ Name             : Ancient Fury (id=86704) [Spell Family (10)]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
+Affecting spells : Judgment (197277 effect#1), Reckoning (343724 effect#2)
 Family Flags     : 112
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3908,8 +3909,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=289735)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-                   Affected Spells: Divine Storm (53385), Shield of the Righteous (53600), Justicar's Vengeance (215661), Divine Storm (224239), Templar's Verdict (224266), Final Verdict (336872), Final Verdict (383328)
-                   Family Flags: 44, 49, 52, 88
+                   Affected Spells: Divine Storm (53385), Shield of the Righteous (53600), Ancient Fury (86704), Justicar's Vengeance (215661), Divine Storm (224239), Templar's Verdict (224266), Final Verdict (336872), Final Verdict (383328), Radiant Decree (383469)
+                   Family Flags: 44, 49, 52, 88, 112
+Hotfixed         : Affects Spells
 #2 (id=368486)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000
 Description      : $@spelldesc20271
@@ -5146,7 +5148,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 5 seconds
 Cooldown         : 12 seconds
-Affecting spells : Avenging Wrath (31884 effects: #2, #3, #11), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Rule of Law (214202 effect#1), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Blessing of Dawn (385127 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Paladin Holy Class Set 4pc (393672 effects: #2, #3), Luminous Force (394550 effect#1)
+Affecting spells : Avenging Wrath (31884 effects: #2, #3, #11), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Rule of Law (214202 effect#1), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Blessing of Dusk (385126 effect#3), Blessing of Dawn (385127 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Paladin Holy Class Set 4pc (393672 effects: #2, #3), Luminous Force (394550 effect#1)
 Family Flags     : 46, 97
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11365,8 +11367,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.50000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=845761)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-                   Affected Spells: Divine Storm (53385), Shield of the Righteous (53600), Justicar's Vengeance (215661), Divine Storm (224239), Templar's Verdict (224266), Final Verdict (336872), Final Verdict (383328)
-                   Family Flags: 44, 49, 52, 88
+                   Affected Spells: Divine Storm (53385), Shield of the Righteous (53600), Ancient Fury (86704), Justicar's Vengeance (215661), Divine Storm (224239), Templar's Verdict (224266), Final Verdict (336872), Final Verdict (383328), Radiant Decree (383469)
+                   Family Flags: 44, 49, 52, 88, 112
+Hotfixed         : Affects Spells
 Description      : $@spelldesc343721
 Tooltip          : Taking $w2% increased damage from $@auracaster's next Holy Power ability.
 
@@ -13277,6 +13280,7 @@ Effects          :
 Description      : Divine Storm projects an additional wave of light, striking all enemies up to $s1 yards in front of you for $s2% of Divine Storm's damage.
 
 Name             : Radiant Decree (id=383469) [Spell Family (10)] 
+Hotfixed         : Affecting Spells
 Class            : Paladin
 School           : Holyfire
 Spell Type       : Magic
@@ -13284,8 +13288,8 @@ Resource         : 3 Holy Power (9) (id=265475)
 GCD              : 1.5 seconds
 Duration         : 5 seconds
 Cooldown         : 15 seconds
-Affecting spells : Avenging Wrath (31884 effects: #2, #3, #11), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Holy Paladin (137029 effect#10), Fires of Justice (209785 effect#1), Divine Purpose (223819 effects: #1, #2), Crusade (231895 effects: #1, #2), Ashes to Dust (236106 effect#1), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effects: #1, #2), The Magistrate's Judgment (337682 effect#1), Blessing of Dawn (337747 effects: #1, #2), Final Reckoning (343721 effect#3), Quickened Invocations (379391 effect#2), Radiant Decree (384052 effect#1), Blessing of Dusk (385126 effect#3), Blessing of Dawn (385127 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Paladin Retribution Class Set 2pc (393675 effects: #1, #2), Luminous Force (394550 effect#1)
-Family Flags     : 27, 65, 68, 111
+Affecting spells : Avenging Wrath (31884 effects: #2, #3, #11), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Holy Paladin (137029 effect#10), Judgment (197277 effect#1), Fires of Justice (209785 effect#1), Divine Purpose (223819 effects: #1, #2), Crusade (231895 effects: #1, #2), Ashes to Dust (236106 effect#1), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effects: #1, #2), The Magistrate's Judgment (337682 effect#1), Blessing of Dawn (337747 effects: #1, #2), Final Reckoning (343721 effect#3), Reckoning (343724 effect#2), Quickened Invocations (379391 effect#2), Radiant Decree (384052 effect#1), Blessing of Dusk (385126 effect#3), Blessing of Dawn (385127 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Paladin Retribution Class Set 2pc (393675 effects: #1, #2), Luminous Force (394550 effect#1)
+Family Flags     : 27, 65, 68, 111, 112
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13817,8 +13821,9 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
 #3 (id=1018270)  : Apply Aura (6) | Modify Cooldown Recharge Rate% (286)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Holy Shock (20473), Holy Shock (25912), Crusader Strike (35395), Blade of Justice (184575), Blessed Hammer (204019), Blessed Hammer (204301), Wake of Ashes (255937), Divine Toll (304971), Divine Toll (375576), Radiant Decree (383469), Divine Resonance (386731), Divine Resonance (387896)
-                   Family Flags: 21, 33, 47, 68, 92, 117, 126
+                   Affected Spells: Holy Shock (20473), Holy Shock (25912), Crusader Strike (35395), Blade of Justice (184575), Blessed Hammer (204019), Blessed Hammer (204301), Bestow Faith (223306), Wake of Ashes (255937), Divine Toll (304971), Divine Toll (375576), Radiant Decree (383469), Divine Resonance (386731), Divine Resonance (387896)
+                   Family Flags: 21, 33, 47, 68, 92, 97, 117, 126
+Hotfixed         : Affects Spells
 #4 (id=1034388)  : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 1570 | Target: Self (1)
                    Affected Spells (Category): Hammer of the Righteous (53595)
@@ -16493,14 +16498,15 @@ Description      : $@spelldesc393670
 Tooltip          : Critical Strike chance of your spells increased by $s1%.
 
 Name             : Lightspark (id=394667) [Spell Family (10)] 
+Hotfixed         : Proc Flags (17408 -> 81920)
 Class            : Paladin
 School           : Physical
 Spell Type       : None
 Duration         : 12 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
-Proc Flags       : ........ ..x...x. ........ ........ 
-                 : Generic Heal, Magic Heal
+Proc Flags       : ........ ......x. x....... ........ 
+                 : Magic Heal, Magic Hostile Spell
 Triggered by     : Paladin Holy Class Set 4pc (393672)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ..x..... 

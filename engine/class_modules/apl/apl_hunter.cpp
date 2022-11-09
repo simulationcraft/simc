@@ -522,8 +522,6 @@ void survival_df( player_t* p )
   precombat->add_action( "variable,name=mb_rs_cost,op=setif,value=action.mongoose_bite.cost,value_else=action.raptor_strike.cost,condition=talent.mongoose_bite" );
   precombat->add_action( "summon_pet" );
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
-  precombat->add_action( "fleshcraft" );
-  precombat->add_action( "tar_trap,if=runeforge.soulforge_embers" );
   precombat->add_action( "steel_trap,precast_time=20" );
 
   default_->add_action( "auto_attack" );
@@ -543,19 +541,13 @@ void survival_df( player_t* p )
   cds->add_action( "muzzle" );
   cds->add_action( "potion,if=target.time_to_die<25|buff.coordinated_assault.up|buff.spearhead.up|!talent.spearhead&!talent.coordinated_assault" );
   cds->add_action( "use_items" );
-  cds->add_action( "fleshcraft,cancel_if=channeling&!soulbind.pustule_eruption,if=(focus<70|cooldown.coordinated_assault.remains<gcd)&(soulbind.pustule_eruption|soulbind.volatile_solvent)" );
-  cds->add_action( "tar_trap,if=focus+cast_regen<focus.max&runeforge.soulforge_embers.equipped&tar_trap.remains<gcd&cooldown.flare.remains<gcd&(active_enemies>1|active_enemies=1&time_to_die>5*gcd)" );
-  cds->add_action( "flare,if=focus+cast_regen<focus.max&tar_trap.up&runeforge.soulforge_embers.equipped&time_to_die>4*gcd" );
   cds->add_action( "aspect_of_the_eagle,if=target.distance>=6" );
 
   cleave->add_action( "wildfire_bomb,if=full_recharge_time<gcd" );
-  cleave->add_action( "wild_spirits" );
-  cleave->add_action( "flayed_shot,target_if=max:target.health.pct" );
-  cleave->add_action( "resonating_arrow" );
   cleave->add_action( "death_chakram,if=focus+cast_regen<focus.max" );
   cleave->add_action( "stampede" );
   cleave->add_action( "coordinated_assault" );
-  cleave->add_action( "kill_shot,if=buff.flayers_mark.up|buff.coordinated_assault_empower.up" );
+  cleave->add_action( "kill_shot,if=buff.coordinated_assault_empower.up" );
   cleave->add_action( "explosive_shot" );
   cleave->add_action( "carve,if=cooldown.wildfire_bomb.full_recharge_time>spell_targets%2" );
   cleave->add_action( "butchery,if=full_recharge_time<gcd" );
@@ -581,15 +573,12 @@ void survival_df( player_t* p )
 
   st->add_action( "death_chakram,if=focus+cast_regen<focus.max" );
   st->add_action( "stampede" );
-  st->add_action( "wild_spirits" );
-  st->add_action( "flayed_shot" );
-  st->add_action( "resonating_arrow" );
   st->add_action( "mongoose_bite,if=active_enemies=1&target.time_to_die<focus%(variable.mb_rs_cost-cast_regen)*gcd|buff.spearhead.remains&set_bonus.tier29_4pc|buff.mongoose_fury.up&buff.mongoose_fury.remains<gcd" );
   st->add_action( "raptor_strike,if=active_enemies=1&target.time_to_die<focus%(variable.mb_rs_cost-cast_regen)*gcd" );
   st->add_action( "serpent_sting,target_if=min:remains,if=!dot.serpent_sting.ticking&target.time_to_die>7&!talent.vipers_venom" );
   st->add_action( "flanking_strike,if=focus+cast_regen<focus.max" );
   st->add_action( "coordinated_assault,if=!buff.spearhead.remains&cooldown.spearhead.remains|!talent.spearhead" );
-  st->add_action( "kill_shot,if=buff.coordinated_assault_empower.up|buff.flayers_mark.up" );
+  st->add_action( "kill_shot,if=buff.coordinated_assault_empower.up" );
   st->add_action( "wildfire_bomb,if=next_wi_bomb.pheromone&!buff.mongoose_fury.up&focus+cast_regen<focus.max-action.kill_command.cast_regen*2|full_recharge_time<gcd" );
   st->add_action( "kill_command,target_if=min:bloodseeker.remains,if=full_recharge_time<gcd&focus+cast_regen<focus.max" );
   st->add_action( "mongoose_bite,if=dot.shrapnel_bomb.ticking" );
