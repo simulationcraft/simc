@@ -1766,13 +1766,9 @@ struct celestial_alignment_buff_t : public druid_buff_t
 // Eclipse Buff =============================================================
 struct eclipse_buff_t : public druid_buff_t
 {
-  bool is_lunar;
-  bool is_solar;
+  buff_t** boat;
 
-  eclipse_buff_t( druid_t* p, std::string_view n, const spell_data_t* s )
-    : base_t( p, n, s ),
-      is_lunar( data().id() == p->spec.eclipse_lunar->id() ),
-      is_solar( data().id() == p->spec.eclipse_solar->id() )
+  eclipse_buff_t( druid_t* p, std::string_view n, const spell_data_t* s, buff_t** b ) : base_t( p, n, s ), boat( b )
   {
     set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC );
   }
@@ -1799,12 +1795,10 @@ struct eclipse_buff_t : public druid_buff_t
 
     base_t::execute( s, v, d );
 
-    if ( is_solar )
-      p()->buff.balance_of_all_things_nature->trigger();
-    else if ( is_lunar )
-      p()->buff.balance_of_all_things_arcane->trigger();
+    assert( *boat );
+    ( *boat )->trigger();
 
-     p()->buff.touch_the_cosmos->trigger();
+    p()->buff.touch_the_cosmos->trigger();
 
     if ( !was_active )
       trigger_sundered_firmament();
@@ -10201,9 +10195,11 @@ void druid_t::create_buffs()
     ->set_max_stack( 10 )
     ->set_rppm( rppm_scale_e::RPPM_DISABLE );
 
-  buff.eclipse_lunar = make_buff<eclipse_buff_t>( this, "eclipse_lunar", spec.eclipse_lunar );
+  buff.eclipse_lunar =
+      make_buff<eclipse_buff_t>( this, "eclipse_lunar", spec.eclipse_lunar, &buff.balance_of_all_things_arcane );
 
-  buff.eclipse_solar = make_buff<eclipse_buff_t>( this, "eclipse_solar", spec.eclipse_solar );
+  buff.eclipse_solar =
+      make_buff<eclipse_buff_t>( this, "eclipse_solar", spec.eclipse_solar, &buff.balance_of_all_things_nature );
 
   buff.friend_of_the_fae = make_buff( this, "friend_of_the_fae", find_spell( 394083 ) )
     ->set_trigger_spell( talent.friend_of_the_fae )
