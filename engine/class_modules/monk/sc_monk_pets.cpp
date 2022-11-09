@@ -682,7 +682,8 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     {
       sef_melee_attack_t::impact( state );
 
-      o()->trigger_mark_of_the_crane( state );
+      if ( result_is_hit( state->result ) && o()->talent.windwalker.mark_of_the_crane->ok() )
+        o()->trigger_mark_of_the_crane( state );
 
       o()->trigger_keefers_skyreach( state );
     }
@@ -701,7 +702,11 @@ struct sef_blackout_kick_totm_proc_t : public sef_melee_attack_t
     {
       sef_melee_attack_t::impact( state );
 
-      o()->trigger_mark_of_the_crane( state );
+      if ( result_is_hit( state->result ) )
+      {
+        if ( o()->talent.windwalker.mark_of_the_crane->ok() )
+          o()->trigger_mark_of_the_crane( state );
+      }
     }
   };
 
@@ -726,9 +731,11 @@ struct sef_blackout_kick_totm_proc_t : public sef_melee_attack_t
 
       if ( result_is_hit( state->result ) )
       {
-        o()->trigger_mark_of_the_crane( state );
+        if ( o()->talent.windwalker.mark_of_the_crane->ok() )
+          o()->trigger_mark_of_the_crane( state );
 
-        p()->buff.bok_proc_sef->expire();
+        if ( p()->buff.bok_proc_sef->up() )
+          p()->buff.bok_proc_sef->expire();
       }
     }
   };
@@ -745,7 +752,8 @@ struct sef_blackout_kick_totm_proc_t : public sef_melee_attack_t
     {
       double c = sef_melee_attack_t::composite_crit_chance();
 
-      c += o()->buff.pressure_point->check_value();
+      if ( o()->buff.pressure_point->check() )
+        c += o()->buff.pressure_point->check_value();
 
       return c;
     }
@@ -759,7 +767,8 @@ struct sef_blackout_kick_totm_proc_t : public sef_melee_attack_t
         if ( o()->spec.combat_conditioning->ok() )
           state->target->debuffs.mortal_wounds->trigger();
 
-        o()->trigger_mark_of_the_crane( state );
+        if ( o()->spec.spinning_crane_kick_2_ww->ok() )
+          o()->trigger_mark_of_the_crane( state );
       }
     }
   };
@@ -790,7 +799,8 @@ struct sef_blackout_kick_totm_proc_t : public sef_melee_attack_t
       double am = sef_melee_attack_t::action_multiplier();
 
       // SEF pets benefit from Transfer the Power
-      am *= 1 + p()->o()->buff.transfer_the_power->check_stack_value();
+      if ( p()->o()->buff.transfer_the_power->check() )
+        am *= 1 + p()->o()->buff.transfer_the_power->check_stack_value();
 
       return am;
     }
@@ -882,7 +892,7 @@ struct sef_blackout_kick_totm_proc_t : public sef_melee_attack_t
 
       tick_action = new sef_spinning_crane_kick_tick_t( player );
 
-      if ( player->o()->shared.jade_ignition->ok() )
+      if ( player->o()->shared.jade_ignition && player->o()->shared.jade_ignition->ok() )
         chi_explosion = new sef_chi_explosion_t( player );
 
     }
@@ -1242,12 +1252,11 @@ public:
   {
     monk_pet_t::create_buffs();
 
-    buff.bok_proc_sef = make_buff( this, "bok_proc_sef", o()->passives.bok_proc )
-            ->set_trigger_spell( o()->spec.combo_breaker )
+    buff.bok_proc_sef =
+        make_buff( this, "bok_proc_sef", o()->passives.bok_proc )
             ->set_quiet( true );  // In-game does not show this buff but I would like to use it for background stuff;
 
     buff.rushing_jade_wind_sef = make_buff( this, "rushing_jade_wind_sef", o()->talent.windwalker.rushing_jade_wind )
-
                                      ->set_can_cancel( true )
                                      ->set_tick_zero( true )
                                      ->set_cooldown( timespan_t::zero() )
@@ -1378,7 +1387,8 @@ public:
   {
     double cpm = monk_pet_t::composite_player_multiplier( school );
 
-    cpm *= 1 + ( o()->conduit.xuens_bond->ok() ? o()->conduit.xuens_bond.percent() : o()->shared.xuens_bond->effectN( 1 ).percent() );
+    if ( o()->shared.xuens_bond && o()->shared.xuens_bond->ok() )
+        cpm *= 1 + ( o()->conduit.xuens_bond->ok() ? o()->conduit.xuens_bond.percent() : o()->shared.xuens_bond->effectN( 1 ).percent() );
 
     return cpm;
   }
@@ -1490,7 +1500,8 @@ public:
   {
     double cpm = monk_pet_t::composite_player_multiplier( school );
 
-    cpm *= 1 + ( o()->conduit.xuens_bond->ok() ? o()->conduit.xuens_bond.percent() : o()->shared.xuens_bond->effectN( 1 ).percent() );
+    if ( o()->shared.xuens_bond && o()->shared.xuens_bond->ok() )
+      cpm *= 1 + ( o()->conduit.xuens_bond->ok() ? o()->conduit.xuens_bond.percent() : o()->shared.xuens_bond->effectN( 1 ).percent() );
 
     return cpm;
   }
@@ -1545,7 +1556,9 @@ private:
       // goal.
       //
       //  - emallson
-      split_aoe_damage = true;
+      // As a temporary measure only split all damage while the talent is active.
+      if (p->o()->talent.brewmaster.improved_invoke_niuzao_the_black_ox->ok() )
+        split_aoe_damage = true;
     }
 
     double bonus_da( const action_state_t* s ) const override
@@ -1569,7 +1582,8 @@ private:
     {
       double am = pet_melee_attack_t::action_multiplier();
 
-      am *= 1 + ( o()->conduit.walk_with_the_ox->ok() ? o()->conduit.walk_with_the_ox.percent() : o()->shared.walk_with_the_ox->effectN( 1 ).percent() );
+      if ( o()->shared.walk_with_the_ox && o()->shared.walk_with_the_ox->ok() )
+        am *= 1 + ( o()->conduit.walk_with_the_ox->ok() ? o()->conduit.walk_with_the_ox.percent() : o()->shared.walk_with_the_ox->effectN( 1 ).percent() );
 
       return am;
     }
@@ -1659,7 +1673,9 @@ private:
       // goal.
       //
       //  - emallson
-      split_aoe_damage = true;
+      // As a temporary measure only split all damage while the talent is active.
+      if ( p->o()->talent.brewmaster.improved_invoke_niuzao_the_black_ox->ok() )
+        split_aoe_damage = true;
     }
 
     double bonus_da( const action_state_t* s ) const override
@@ -1683,7 +1699,8 @@ private:
     {
       double am = pet_melee_attack_t::action_multiplier();
 
-      am *= 1 + ( o()->conduit.walk_with_the_ox->ok() ? o()->conduit.walk_with_the_ox.percent() : o()->shared.walk_with_the_ox->effectN( 1 ).percent() );
+      if ( o()->shared.walk_with_the_ox && o()->shared.walk_with_the_ox->ok() )
+        am *= 1 + ( o()->conduit.walk_with_the_ox->ok() ? o()->conduit.walk_with_the_ox.percent() : o()->shared.walk_with_the_ox->effectN( 1 ).percent() );
 
       return am;
     }
@@ -1892,7 +1909,8 @@ public:
   {
     double cpm = monk_pet_t::composite_player_multiplier( school );
 
-    cpm *= 1 + o()->conduit.imbued_reflections.percent();
+    if ( o()->conduit.imbued_reflections->ok() )
+      cpm *= 1 + o()->conduit.imbued_reflections.percent();
 
     return cpm;
   }
@@ -2004,7 +2022,8 @@ public:
     {
       pet_melee_attack_t::impact( s );
 
-      o()->trigger_mark_of_the_crane( s );
+      if ( o()->specialization() == MONK_WINDWALKER )
+        o()->trigger_mark_of_the_crane( s );
     }
   };
 
@@ -2179,7 +2198,8 @@ public:
   {
     double cpm = monk_pet_t::composite_player_multiplier( school );
 
-    cpm *= 1 + o()->conduit.imbued_reflections.percent();
+    if ( o()->conduit.imbued_reflections->ok() )
+      cpm *= 1 + o()->conduit.imbued_reflections.percent();
 
     return cpm;
   }
@@ -2207,7 +2227,8 @@ public:
     {
       double am = pet_melee_attack_t::action_multiplier();
 
-      am *= 1 + o()->shared.stormstouts_last_keg->effectN( 1 ).percent();
+      if ( o()->shared.stormstouts_last_keg && o()->shared.stormstouts_last_keg->ok() )
+        am *= 1 + o()->shared.stormstouts_last_keg->effectN( 1 ).percent();
 
       if ( o()->shared.scalding_brew && o()->shared.scalding_brew->ok() )
       {
@@ -2363,7 +2384,8 @@ public:
   {
     double cpm = monk_pet_t::composite_player_multiplier( school );
 
-    cpm *= 1 + o()->conduit.imbued_reflections.percent();
+    if ( o()->conduit.imbued_reflections->ok() )
+      cpm *= 1 + o()->conduit.imbued_reflections.percent();
 
     return cpm;
   }
@@ -2503,7 +2525,8 @@ public:
   {
     double cpm = monk_pet_t::composite_player_multiplier ( school );
 
-    cpm *= 1 + o()->conduit.imbued_reflections.percent();
+    if ( o()->conduit.imbued_reflections->ok() )
+      cpm *= 1 + o()->conduit.imbued_reflections.percent();
 
     return cpm;
   }
@@ -2614,7 +2637,8 @@ public:
     {
       pet_melee_attack_t::impact( s );
 
-      o()->trigger_mark_of_the_crane( s );
+      if ( o()->specialization() == MONK_WINDWALKER )
+        o()->trigger_mark_of_the_crane( s );
     }
   };
 
@@ -2787,7 +2811,8 @@ public:
   {
     double cpm = monk_pet_t::composite_player_multiplier( school );
 
-    cpm *= 1 + o()->conduit.imbued_reflections.percent();
+    if ( o()->conduit.imbued_reflections->ok() )
+      cpm *= 1 + o()->conduit.imbued_reflections.percent();
 
     return cpm;
   }
@@ -2815,8 +2840,8 @@ public:
     {
       double am = pet_melee_attack_t::action_multiplier();
 
-      if ( o()->shared.stormstouts_last_keg->ok() )
-        am *= 1 + o()->shared.stormstouts_last_keg->effectN( 1 ).percent();
+      if ( o()->legendary.stormstouts_last_keg->ok() )
+        am *= 1 + o()->legendary.stormstouts_last_keg->effectN( 1 ).percent();
 
       if ( o()->shared.scalding_brew && o()->shared.scalding_brew->ok() )
       {
@@ -2976,7 +3001,8 @@ public:
   {
     double cpm = monk_pet_t::composite_player_multiplier( school );
 
-    cpm *= 1 + o()->conduit.imbued_reflections.percent();
+    if ( o()->conduit.imbued_reflections->ok() )
+      cpm *= 1 + o()->conduit.imbued_reflections.percent();
 
     return cpm;
   }
@@ -3169,7 +3195,8 @@ public:
     {
         double cpm = monk_pet_t::composite_player_multiplier(school);
 
-        cpm *= 1 + ( o()->conduit.xuens_bond->ok() ? o()->conduit.xuens_bond.percent() : o()->shared.xuens_bond->effectN( 1 ).percent() );
+        if ( o()->shared.xuens_bond && o()->shared.xuens_bond->ok() )
+          cpm *= 1 + ( o()->conduit.xuens_bond->ok() ? o()->conduit.xuens_bond.percent() : o()->shared.xuens_bond->effectN( 1 ).percent() );
 
         return cpm;
     }
