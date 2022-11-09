@@ -124,19 +124,21 @@ std::string temporary_enchant( const player_t* p )
   switch ( p->specialization() )
   {
     case MONK_BREWMASTER:
-      if ( p->true_level >= 60 )
+      if ( p->true_level > 60 )
+        return "main_hand:buzzing_rune_3/off_hand:buzzing_rune_3";
+      else if ( p->true_level > 50 )
         return "main_hand:shadowcore_oil/off_hand:shadowcore_oil";
       else
         return "disabled";
       break;
     case MONK_MISTWEAVER:
-      if ( p->true_level >= 60 )
+      if ( p->true_level > 50 )
         return "main_hand:shadowcore_oil";
       else
         return "disabled";
       break;
     case MONK_WINDWALKER:
-      if ( p->true_level >= 60 )
+      if ( p->true_level > 50 )
         return "main_hand:shaded_weightstone/off_hand:shaded_weightstone";
       else
         return "disabled";
@@ -184,16 +186,8 @@ void brewmaster( player_t* p )
   // ---------------------------------
   // PRE-COMBAT VARIABLE CONFIGURATION
   // ---------------------------------
-  // Cooldowns
-  pre->add_action( "variable,name=niuzao_score,op=set,value=talent.invoke_niuzao_the_black_ox.enabled+talent.improved_invoke_niuzao_the_black_ox.enabled", "Cooldowns" );
-  pre->add_action( "variable,name=woo_score,op=set,value=talent.weapons_of_order.enabled+(talent.call_to_arms.enabled|covenant.kyrian)" );
-
   // Blackout Combo
   pre->add_action( "variable,name=boc_count,op=set,value=0", "Blackout Combo" );
-  pre->add_action( "variable,name=offset,op=set,value=-0.1" );
-
-  // Base Sal'salabim's Strength + Charred Passions
-  pre->add_action( "variable,name=chp_threshold,op=set,value=6", "Base Sal'salabim's Strength + Charred Passions" );
 
   // ---------------------------------
   // BEGIN ACTIONS
@@ -238,10 +232,12 @@ void brewmaster( player_t* p )
   }
 
   // Cooldown Action Lists
-  def->add_action( "call_action_list,name=cooldowns_improved_niuzao_woo,if=variable.niuzao_score=2&variable.woo_score<=1",
+  // $(niuzao_score)=(talent.invoke_niuzao_the_black_ox.enabled+talent.improved_invoke_niuzao_the_black_ox.enabled)
+  // $(woo_score)=(talent.weapons_of_order.enabled+talent.call_to_arms.enabled)
+  def->add_action( "call_action_list,name=cooldowns_improved_niuzao_woo,if=(talent.invoke_niuzao_the_black_ox.enabled+talent.improved_invoke_niuzao_the_black_ox.enabled)=2&(talent.weapons_of_order.enabled+talent.call_to_arms.enabled)<=1",
                    "Cooldown Action Lists" );
-  def->add_action( "call_action_list,name=cooldowns_improved_niuzao_cta,if=variable.niuzao_score=2&variable.woo_score=2" );
-  def->add_action( "call_action_list,name=cooldowns_niuzao_woo,if=variable.niuzao_score<=1" );
+  def->add_action( "call_action_list,name=cooldowns_improved_niuzao_cta,if=(talent.invoke_niuzao_the_black_ox.enabled+talent.improved_invoke_niuzao_the_black_ox.enabled)=2&(talent.weapons_of_order.enabled+talent.call_to_arms.enabled)=2" );
+  def->add_action( "call_action_list,name=cooldowns_niuzao_woo,if=(talent.invoke_niuzao_the_black_ox.enabled+talent.improved_invoke_niuzao_the_black_ox.enabled)<=1" );
 
   // Rotation Action Lists
   def->add_action( "call_action_list,name=rotation_blackout_combo,if=talent.blackout_combo.enabled&talent.salsalabims_strength.enabled&talent.charred_passions.enabled&!talent.fluidity_of_motion.enabled",
@@ -403,15 +399,16 @@ void brewmaster( player_t* p )
 
   // Name: Salsalabim's Strength Charred Passions
   // Basic Sequence: Keg Smash Breath of Fire x x x x x
-  rotation_salsal_chp->add_action( "keg_smash,if=buff.charred_passions.remains<=variable.chp_threshold", 
+  // $(chp_threshold)=6
+  rotation_salsal_chp->add_action( "keg_smash,if=talent.keg_smash.enabled&buff.charred_passions.remains<=6", 
       "Name: Salsalabim's Strength Charred Passions");
-  rotation_salsal_chp->add_action( "breath_of_fire,if=talent.breath_of_fire.enabled" );
+  rotation_salsal_chp->add_action( "breath_of_fire,if=talent.breath_of_fire.enabled&buff.charred_passions.remains<=0.5" );
   rotation_salsal_chp->add_action( "blackout_kick" );
   rotation_salsal_chp->add_action( "rising_sun_kick,if=talent.rising_sun_kick.enabled" );
   rotation_salsal_chp->add_action( "exploding_keg,if=cooldown.breath_of_fire.remains>=12&talent.exploding_keg.enabled" );
   rotation_salsal_chp->add_action( "rushing_jade_wind,if=buff.rushing_jade_wind.down&talent.rushing_jade_wind.enabled" );
-  rotation_salsal_chp->add_action( "black_ox_brew,if=(energy+(energy.regen*(buff.charred_passions.remains+execute_time-variable.chp_threshold)))>=65&talent.black_ox_brew.enabled" );
-  rotation_salsal_chp->add_action( "spinning_crane_kick,if=(energy+(energy.regen*(buff.charred_passions.remains+execute_time-variable.chp_threshold)))>=65" );
+  rotation_salsal_chp->add_action( "black_ox_brew,if=(energy+(energy.regen*(buff.charred_passions.remains+execute_time-6)))>=65&talent.black_ox_brew.enabled" );
+  rotation_salsal_chp->add_action( "spinning_crane_kick,if=(energy+(energy.regen*(buff.charred_passions.remains+execute_time-6)))>=65" );
   rotation_salsal_chp->add_action( "celestial_brew,if=talent.celestial_brew.enabled&!buff.blackout_combo.up" );
   rotation_salsal_chp->add_action( "chi_wave,if=talent.chi_wave.enabled" );
   rotation_salsal_chp->add_action( "chi_burst,if=talent.chi_burst.enabled" );

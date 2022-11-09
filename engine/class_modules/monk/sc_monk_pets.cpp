@@ -1239,7 +1239,7 @@ public:
   {
     monk_pet_t::create_buffs();
 
-    buff.bok_proc_sef =make_buff( this, "bok_proc_sef", o()->passives.bok_proc )
+    buff.bok_proc_sef = make_buff( this, "bok_proc_sef", o()->passives.bok_proc )
             ->set_trigger_spell( o()->spec.combo_breaker )
             ->set_quiet( true );  // In-game does not show this buff but I would like to use it for background stuff;
 
