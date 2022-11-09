@@ -1470,22 +1470,6 @@ struct druid_buff_base_t : public Base
 protected:
   using base_t = druid_buff_base_t<Base>;
 
-  // Used when shapeshifting to switch to a new attack & schedule it to occur
-  // when the current swing timer would have ended.
-  void swap_melee( attack_t* new_attack, weapon_t& new_weapon )
-  {
-    if ( p()->main_hand_attack && p()->main_hand_attack->execute_event )
-    {
-      new_attack->base_execute_time = new_weapon.swing_time;
-      new_attack->execute_event =
-          new_attack->start_action_execute_event( p()->main_hand_attack->execute_event->remains() );
-      p()->main_hand_attack->cancel();
-    }
-    new_attack->weapon = &new_weapon;
-    p()->main_hand_attack = new_attack;
-    p()->main_hand_weapon = new_weapon;
-  }
-
 public:
   druid_buff_base_t( druid_t* p, std::string_view name, const spell_data_t* s = spell_data_t::nil(),
                      const item_t* item = nullptr )
@@ -1506,13 +1490,39 @@ typedef druid_buff_base_t<> druid_buff_t;
 
 // Shapeshift Form Buffs ====================================================
 
+struct swap_melee_t
+{
+private:
+  druid_t* p_;
+
+public:
+  swap_melee_t( druid_t* p ) : p_( p ) {}
+
+  // Used when shapeshifting to switch to a new attack & schedule it to occur
+  // when the current swing timer would have ended.
+  void swap_melee( attack_t* new_attack, weapon_t& new_weapon )
+  {
+    if ( p_->main_hand_attack && p_->main_hand_attack->execute_event )
+    {
+      new_attack->base_execute_time = new_weapon.swing_time;
+      new_attack->execute_event =
+          new_attack->start_action_execute_event( p_->main_hand_attack->execute_event->remains() );
+      p_->main_hand_attack->cancel();
+    }
+    new_attack->weapon = &new_weapon;
+    p_->main_hand_attack = new_attack;
+    p_->main_hand_weapon = new_weapon;
+  }
+};
+
 // Bear Form ================================================================
-struct bear_form_buff_t : public druid_buff_t
+struct bear_form_buff_t : public druid_buff_t, public swap_melee_t
 {
   double rage_gain;
 
   bear_form_buff_t( druid_t* p )
     : base_t( p, "bear_form", p->find_class_spell( "Bear Form" ) ),
+      swap_melee_t( p ),
       rage_gain( p->find_spell( 17057 )->effectN( 1 ).resource( RESOURCE_RAGE ) )
   {
     add_invalidate( CACHE_ARMOR );
@@ -1550,9 +1560,9 @@ struct bear_form_buff_t : public druid_buff_t
 };
 
 // Cat Form =================================================================
-struct cat_form_buff_t : public druid_buff_t
+struct cat_form_buff_t : public druid_buff_t, public swap_melee_t
 {
-  cat_form_buff_t( druid_t* p ) : base_t( p, "cat_form", p->find_class_spell( "Cat Form" ) )
+  cat_form_buff_t( druid_t* p ) : base_t( p, "cat_form", p->find_class_spell( "Cat Form" ) ), swap_melee_t( p )
   {
     add_invalidate( CACHE_ATTACK_POWER );
     add_invalidate( CACHE_EXP );
