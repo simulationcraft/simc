@@ -618,9 +618,9 @@ public:
     proc_t* searing_flames;
     proc_t* tumbling_waves;
 
-    std::array<proc_t*, 20> magma_chamber;
+    std::array<proc_t*, 21> magma_chamber;
 
-    std::array<proc_t*, 5> t29_2pc_ele;
+    std::array<proc_t*, 6> t29_2pc_ele;
 
     proc_t* pyroclastic_shock;
 
@@ -10781,7 +10781,7 @@ void shaman_t::init_procs()
   proc.searing_flames       = get_proc( "Searing Flames" );
   for ( size_t i = 0; i < proc.magma_chamber.size(); i++ )
   {
-    proc.magma_chamber[ i ] = get_proc( fmt::format( "Magma Chamber {}", i + 1 ) );
+    proc.magma_chamber[ i ] = get_proc( fmt::format( "Magma Chamber {}", i ) );
   }
 
   proc.pyroclastic_shock    = get_proc( "Pyroclastic Shock" );
@@ -10800,7 +10800,7 @@ void shaman_t::init_procs()
  
   for ( size_t i = 0; i < proc.magma_chamber.size(); i++ )
   {
-    proc.t29_2pc_ele[ i ] = get_proc( fmt::format( "Set Bonus: Tier29 2PC Elemental spender empowerement, stack {}", i + 1 ) );
+    proc.t29_2pc_ele[ i ] = get_proc( fmt::format( "Set Bonus: Tier29 2PC Elemental spender empowerement, stack {}", i ) );
   }
 }
 
