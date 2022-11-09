@@ -10798,7 +10798,7 @@ void shaman_t::init_procs()
 
   proc.t28_4pc_enh       = get_proc( "Set Bonus: Tier28 4PC Enhancement" );
  
-  for ( size_t i = 0; i < proc.magma_chamber.size(); i++ )
+  for ( size_t i = 0; i < proc.t29_2pc_ele.size(); i++ )
   {
     proc.t29_2pc_ele[ i ] = get_proc( fmt::format( "Set Bonus: Tier29 2PC Elemental spender empowerement, stack {}", i ) );
   }
