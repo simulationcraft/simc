@@ -9808,7 +9808,7 @@ void shaman_t::track_t29_2pc_ele()
 {
   int d = buff.t29_2pc_ele->check();
   assert( d < as<int>( proc.t29_2pc_ele.size() ) && "The procs.t29_2pc_ele array needs to be expanded." );
-  if ( d >= 0 && d < as<int>( proc.magma_chamber.size() ) )
+  if ( d >= 0 && d < as<int>( proc.t29_2pc_ele.size() ) )
   {
     proc.t29_2pc_ele[ d ]->occur();
   }
