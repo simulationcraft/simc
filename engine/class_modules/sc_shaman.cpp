@@ -6132,14 +6132,8 @@ struct elemental_blast_t : public shaman_spell_t
       p()->buff.surge_of_power->trigger();
     }
 
-    if ( p()->talent.magma_chamber->ok() )
-    {
-      p()->track_magma_chamber();
-      if ( p()->buff.magma_chamber->up() )
-      {
-        p()->buff.magma_chamber->expire();
-      }
-    }
+    p()->track_magma_chamber();
+    p()->buff.magma_chamber->expire();
 
     if ( p()->legendary.windspeakers_lava_resurgence.ok() || p()->talent.windspeakers_lava_resurgence.ok() )
     {
@@ -6158,13 +6152,8 @@ struct elemental_blast_t : public shaman_spell_t
 
       p()->buff.lava_surge->trigger();
     }
-    if (p()->sets->has_set_bonus(SHAMAN_ELEMENTAL, T29, B2)) {
-      p()->track_t29_2pc_ele();
-      if ( p()->buff.t29_2pc_ele->up() )
-      {
-        p()->buff.t29_2pc_ele->expire();
-      }
-    }
+    p()->track_t29_2pc_ele();
+    p()->buff.t29_2pc_ele->expire();
 
 
     p()->buff.t29_4pc_ele->trigger();
@@ -6524,15 +6513,9 @@ struct earthquake_t : public earthquake_base_t
 
     // Note, needs to be decremented after ground_aoe_event_t is created so that the rumble gets the
     // buff multiplier as persistent.
-    if ( p()->talent.magma_chamber->ok() )
-    {
-      p()->track_magma_chamber();
-      if ( p()->buff.magma_chamber->up() )
-      {
-        p()->buff.magma_chamber->expire();
-      }
-    }
-
+    p()->track_magma_chamber();
+    p()->buff.magma_chamber->expire();
+  
     p()->buff.master_of_the_elements->decrement();
     p()->buff.echoes_of_great_sundering->decrement();
 
@@ -6543,13 +6526,8 @@ struct earthquake_t : public earthquake_base_t
       p()->proc.further_beyond->occur();
     }
 
-    if (p()->sets->has_set_bonus(SHAMAN_ELEMENTAL, T29, B2)) {
-      p()->track_t29_2pc_ele();
-      if ( p()->buff.t29_2pc_ele->up() )
-      {
-        p()->buff.t29_2pc_ele->expire();
-      }
-    }
+    p()->track_t29_2pc_ele();
+    p()->buff.t29_2pc_ele->expire();
 
     p()->buff.t29_4pc_ele->trigger();
 
@@ -6785,22 +6763,10 @@ struct earth_shock_t : public shaman_spell_t
       p()->proc.further_beyond->occur();
     }
 
-    if ( p()->talent.magma_chamber->ok() )
-    {
-      p()->track_magma_chamber();
-      if ( p()->buff.magma_chamber->up() )
-      {
-        p()->buff.magma_chamber->expire();
-      }
-    }
-
-    if (p()->sets->has_set_bonus(SHAMAN_ELEMENTAL, T29, B2)) {
-      p()->track_t29_2pc_ele();
-      if ( p()->buff.t29_2pc_ele->up() )
-      {
-        p()->buff.t29_2pc_ele->expire();
-      }
-    }
+    p()->track_magma_chamber();
+    p()->buff.magma_chamber->expire();
+    p()->track_t29_2pc_ele();
+    p()->buff.t29_2pc_ele->expire();
 
     p()->buff.t29_4pc_ele->trigger();
   }
@@ -9843,6 +9809,9 @@ void shaman_t::summon_storm_elemental( timespan_t duration )
 
 void shaman_t::track_magma_chamber()
 {
+  if ( !talent.magma_chamber->ok() )
+    return;
+
   int d = buff.magma_chamber->check();
   assert( d < as<int>( proc.magma_chamber.size() ) && "The procs.magma_chamber array needs to be expanded." );
   if ( d >= 0 && d < as<int>( proc.magma_chamber.size() ) )
@@ -9853,6 +9822,9 @@ void shaman_t::track_magma_chamber()
 
 void shaman_t::track_t29_2pc_ele()
 {
+  if ( !sets->has_set_bonus( SHAMAN_ELEMENTAL, T29, B2 ))
+      return;
+
   int d = buff.t29_2pc_ele->check();
   assert( d < as<int>( proc.t29_2pc_ele.size() ) && "The procs.t29_2pc_ele array needs to be expanded." );
   if ( d >= 0 && d < as<int>( proc.t29_2pc_ele.size() ) )
@@ -10607,7 +10579,7 @@ void shaman_t::create_buffs()
           ->set_tick_callback( [ this ]( buff_t* /* b */, int, timespan_t ) { 
               trigger_lava_surge( true );
               buff.primordial_surge_lava_burst_buff->trigger();
-            } );
+                              } );
 
   buff.magma_chamber = make_buff( this, "magma_chamber", find_spell( 381933 ) )
                             ->set_default_value( talent.magma_chamber->effectN( 1 ).percent() );
