@@ -8007,7 +8007,7 @@ static const std::array<item_effect_t, 8213> __ptr_item_effect_data { {
   { 170091, 383751, 193697,   0,   1,    0,      -1,      -1 }, // Bottle of Spiraling Winds
   { 170141, 384157, 193700,   0,   1,    0,      -1,      -1 }, // Strike Twice
   { 170101, 383781, 193701,   0,   0,    0,      -1,      -1 }, // Algeth'ar Puzzle
-  { 170972, 386578, 193718,   0,   0,    0,      -1,      -1 }, // Coached
+  { 170972, 398396, 193718,   0,   0,    0,      -1,      -1 }, // Emerald Coach's Whistle
   { 170973, 383798, 193718,   1,   1,    0,      -1,      -1 }, // Emerald Coach's Whistle
   { 170128, 383950, 193719,   0,   1,    0,      -1,      -1 }, // Dragon Games Equipment
   { 170694, 386692, 193719,   1,   0,    0,      -1,      -1 }, // Dragon Games Equipment
