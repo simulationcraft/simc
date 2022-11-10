@@ -776,7 +776,7 @@ struct execution_sentence_debuff_t : public buff_t
     paladin_t* p = debug_cast<paladin_t*>( td->source );
 
     // unclear if this is intended
-    if ( p->talents.executioners_wrath->ok() )
+    if ( p->talents.executioners_wrath->ok() && !( p->bugs ) )
       accum_percent = p->talents.executioners_wrath->effectN( 2 ).percent();
   }
 
