@@ -4896,13 +4896,12 @@ struct mangle_t : public bear_attack_t
     if ( !is_free_proc() )
       p()->buff.gore->expire();
 
-    p()->buff.vicious_cycle_mangle->expire();
-
     p()->buff.gory_fur->trigger();
 
-    p()->buff.vicious_cycle_maul->trigger();
-
     p()->buff.guardian_of_elune->trigger();
+
+    p()->buff.vicious_cycle_mangle->expire();
+    p()->buff.vicious_cycle_maul->trigger();
 
     if ( p()->conduit.savage_combatant->ok() )
       p()->buff.savage_combatant->trigger();
@@ -4922,10 +4921,7 @@ struct maul_t : public druid_mixin_t<trigger_gore_t<bear_attack_t>>
       return;
 
     if ( p()->buff.tooth_and_claw->up() )
-    {
       td( s->target )->debuff.tooth_and_claw->trigger();
-      p()->buff.tooth_and_claw->decrement();
-    }
 
     p()->buff.ursocs_fury->trigger( 1, s->result_amount * p()->talent.ursocs_fury->effectN( 1 ).percent() );
   }
@@ -4937,11 +4933,12 @@ struct maul_t : public druid_mixin_t<trigger_gore_t<bear_attack_t>>
     if ( !hit_any_target )
       return;
 
-    p()->buff.savage_combatant->expire();
-
     p()->buff.vicious_cycle_maul->expire();
-
     p()->buff.vicious_cycle_mangle->trigger();
+
+    p()->buff.tooth_and_claw->decrement();
+
+    p()->buff.savage_combatant->expire();
   }
 };
 
