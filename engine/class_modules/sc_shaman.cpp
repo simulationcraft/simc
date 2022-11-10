@@ -6133,7 +6133,7 @@ struct elemental_blast_t : public shaman_spell_t
 
       p()->buff.lava_surge->trigger();
     }
-    if (p()->sets->has_set_bonus(SHAMAN_ELEMENTAL, T29, B2) {
+    if (p()->sets->has_set_bonus(SHAMAN_ELEMENTAL, T29, B2)) {
       p()->track_t29_2pc_ele();
       if ( p()->buff.t29_2pc_ele->up() )
       {
@@ -6518,7 +6518,7 @@ struct earthquake_t : public earthquake_base_t
       p()->proc.further_beyond->occur();
     }
 
-    if (p()->sets->has_set_bonus(SHAMAN_ELEMENTAL, T29, B2) {
+    if (p()->sets->has_set_bonus(SHAMAN_ELEMENTAL, T29, B2)) {
       p()->track_t29_2pc_ele();
       if ( p()->buff.t29_2pc_ele->up() )
       {
@@ -6769,7 +6769,7 @@ struct earth_shock_t : public shaman_spell_t
       }
     }
 
-    if (p()->sets->has_set_bonus(SHAMAN_ELEMENTAL, T29, B2) {
+    if (p()->sets->has_set_bonus(SHAMAN_ELEMENTAL, T29, B2)) {
       p()->track_t29_2pc_ele();
       if ( p()->buff.t29_2pc_ele->up() )
       {
