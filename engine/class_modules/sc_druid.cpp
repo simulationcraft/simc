@@ -1544,6 +1544,7 @@ struct bear_form_buff_t : public druid_buff_t, public swap_melee_t
     p()->recalculate_resource_max( RESOURCE_HEALTH );
 
     p()->buff.ironfur->expire();
+    p()->buff.rage_of_the_sleeper->expire();
   }
 
   void start( int stacks, double value, timespan_t duration ) override
@@ -2379,6 +2380,7 @@ public:
     parse_buff_effects( p()->buff.incarnation_bear, berserk_ignore_mask,
                         p()->talent.berserk_ravage,
                         p()->talent.berserk_unchecked_aggression );
+    parse_buff_effects( p()->buff.dream_of_cenarius );
     parse_buff_effects( p()->buff.gory_fur );
     parse_buff_effects( p()->buff.overpowering_aura );
     parse_passive_effects( p()->talent.reinvigoration, p()->talent.innate_resolve.ok() ? 0b01U : 0b10U );
@@ -5566,11 +5568,12 @@ struct regrowth_t : public druid_heal_t
     if ( target == p() )
       p()->buff.protective_growth->trigger();
 
-    if ( !is_free() )
-    {
-      p()->buff.natures_swiftness->expire();
-      p()->buff.protector_of_the_pack_regrowth->expire();
-    }
+    if ( is_free() )
+      return;
+
+    p()->buff.dream_of_cenarius->expire();
+    p()->buff.natures_swiftness->expire();
+    p()->buff.protector_of_the_pack_regrowth->expire();
   }
 
   void last_tick( dot_t* d ) override
@@ -9092,12 +9095,10 @@ double rage_of_the_sleeper_handler( const action_state_t* s )
   if ( !p->buff.rage_of_the_sleeper->up() )
     return 0;
 
-  double absorb = s->result_amount * p->buff.rage_of_the_sleeper->check_value();
-
   if ( s->action->player != p )
     p->active.rage_of_the_sleeper_reflect->execute_on_target( s->action->player );
 
-  return absorb;
+  return s->result_amount * p->talent.rage_of_the_sleeper->effectN( 3 ).percent();
 }
 
 // Persistent Delay Event ===================================================
@@ -10412,7 +10413,8 @@ void druid_t::create_buffs()
     ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN );
 
   buff.rage_of_the_sleeper = make_buff( this, "rage_of_the_sleeper", talent.rage_of_the_sleeper )
-    ->set_default_value_from_effect( 4, 0.01 );
+    ->set_default_value_from_effect( 5, 0.01 )
+    ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buff.tooth_and_claw = make_buff( this, "tooth_and_claw", talent.tooth_and_claw->effectN( 1 ).trigger() )
     ->set_chance( talent.tooth_and_claw->effectN( 1 ).percent() );
@@ -11558,6 +11560,9 @@ double druid_t::composite_leech() const
 {
   double l = player_t::composite_leech();
 
+  if ( buff.rage_of_the_sleeper->check () )
+    l *= 1.0 + talent.rage_of_the_sleeper->effectN( 3 ).percent();
+
   if ( legendary.legacy_of_the_sleeper->ok() && ( buff.berserk_bear->check() || buff.incarnation_bear->check() ) )
     l *= 1.0 + spec.berserk_bear->effectN( 8 ).percent();
 
@@ -11660,6 +11665,8 @@ double druid_t::composite_spell_power_multiplier() const
 double druid_t::composite_player_multiplier( school_e school ) const
 {
   auto cpm = player_t::composite_player_multiplier( school );
+
+  cpm *= 1.0 + buff.rage_of_the_sleeper->check_value();
 
   if ( dbc::has_common_school( school, SCHOOL_ARCANE ) && get_form() == BEAR_FORM )
   {
@@ -12358,7 +12365,7 @@ void druid_t::assess_damage_imminent_pre_absorb( school_e school, result_amount_
     if ( buff.bristling_fur->up() )  // 1 rage per 1% of maximum health taken
       resource_gain( RESOURCE_RAGE, s->result_amount / expected_max_health * 100, gain.bristling_fur );
 
-    if ( talent.dream_of_cenarius.ok() )
+    if ( talent.dream_of_cenarius.ok() && s->result_type == result_amount_type::DMG_DIRECT )
       buff.dream_of_cenarius->trigger( -1, buff_t::DEFAULT_VALUE(), cache.attack_crit_chance() );
   }
 }
