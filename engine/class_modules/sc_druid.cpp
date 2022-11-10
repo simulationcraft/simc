@@ -2869,8 +2869,8 @@ public:
     // Umbral embrace is heavily scripted so we do all the auto parsing within the action itself
     if ( p_->talent.umbral_embrace.ok() )
     {
-      BASE::da_multiplier_buffeffects.emplace_back( p_->buff.umbral_embrace, p_->buff.umbral_embrace->default_value,
-                                                    false, false, [ this ] { return umbral_embrace_check(); } );
+      BASE::da_multiplier_buffeffects.emplace_back( nullptr, p_->buff.umbral_embrace->default_value, false, false,
+                                                    [ this ] { return umbral_embrace_check(); } );
 
       BASE::sim->print_debug( "buff-effects: {} ({}) direct_damage modified by {} with buff {} ({})", BASE::name(),
                               BASE::id, p_->buff.umbral_embrace->default_value, p_->buff.umbral_embrace->name(),
@@ -8887,6 +8887,16 @@ struct druid_melee_t : public Base
     ab::parse_passive_effects( p->talent.killer_instinct );
     ab::range += p->talent.astral_influence->effectN( 2 ).base_value();
 
+    // Manually add to da_multiplier as Tiger's Fury + Carnivorious Instinct effect on auto attacks is scripted
+    auto val = p->query_aura_effect( &p->buff.tigers_fury->data(), A_MOD_AUTO_ATTACK_PCT )->percent();
+    // Carnivorous Instinct has no curvepoint for effect#3 which modifies AA, so we use effect#1 value instead
+    val += p->talent.carnivorous_instinct->effectN( 1 ).percent();
+
+    ab::da_multiplier_buffeffects.emplace_back( p->buff.tigers_fury, val, false, false, nullptr );
+
+    ab::sim->print_debug( "buff-effects: {} ({}) direct_damage modified by {} with buff {} ({})", ab::name(), ab::id,
+                          val, p->buff.tigers_fury->name(), p->buff.tigers_fury->data().id() );
+
     // 7.00 PPM via community testing (~368k auto attacks)
     // https://docs.google.com/spreadsheets/d/1vMvlq1k3aAuwC1iHyDjqAneojPZusdwkZGmatuWWZWs/edit#gid=1097586165
     if ( p->talent.omen_of_clarity_cat.ok() )
@@ -8925,7 +8935,45 @@ struct druid_melee_t : public Base
   }
 };
 
-// Auto Attack ==============================================================
+// Caster Melee Attack ======================================================
+struct caster_melee_t : public druid_melee_t<druid_attack_t<melee_attack_t>>
+{
+  caster_melee_t( druid_t* p ) : base_t( "caster_melee", p ) {}
+};
+
+// Bear Melee Attack ========================================================
+struct bear_melee_t : public druid_melee_t<bear_attacks::bear_attack_t>
+{
+  bear_melee_t( druid_t* p ) : base_t( "bear_melee", p )
+  {
+    form_mask = form_e::BEAR_FORM;
+
+    energize_type = action_energize::ON_HIT;
+    energize_resource = resource_e::RESOURCE_RAGE;
+    energize_amount = 4.0;
+  }
+
+  void execute() override
+  {
+    base_t::execute();
+
+    if ( hit_any_target )
+      p()->buff.tooth_and_claw->trigger();
+  }
+};
+
+// Cat Melee Attack =========================================================
+struct cat_melee_t : public druid_melee_t<cat_attacks::cat_attack_t>
+{
+  cat_melee_t( druid_t* p ) : base_t( "cat_melee", p )
+  {
+    form_mask = form_e::CAT_FORM;
+
+    snapshots.tigers_fury = true;
+  }
+};
+
+// Auto Attack (Action)========================================================
 struct auto_attack_t : public melee_attack_t
 {
   auto_attack_t( druid_t* player, std::string_view opt ) : melee_attack_t( "auto_attack", player, spell_data_t::nil() )
@@ -8952,46 +9000,6 @@ struct auto_attack_t : public melee_attack_t
       return false;
 
     return ( player->main_hand_attack->execute_event == nullptr );  // not swinging
-  }
-};
-
-// Caster Melee Attack ======================================================
-struct caster_melee_t : public druid_melee_t<druid_attack_t<melee_attack_t>>
-{
-  caster_melee_t( druid_t* p ) : base_t( "caster_melee", p ) {}
-};
-
-// Bear Melee Attack ========================================================
-struct bear_melee_t : public druid_melee_t<bear_attacks::bear_attack_t>
-{
-  bear_melee_t( druid_t* p ) : base_t( "bear_melee", p )
-  {
-    base_t::form_mask = form_e::BEAR_FORM;
-
-    base_t::energize_type = action_energize::ON_HIT;
-    base_t::energize_resource = resource_e::RESOURCE_RAGE;
-    base_t::energize_amount = 4.0;
-  }
-
-  void execute() override
-  {
-    base_t::execute();
-
-    if ( base_t::hit_any_target )
-      base_t::p()->buff.tooth_and_claw->trigger();
-  }
-};
-
-// Cat Melee Attack =========================================================
-struct cat_melee_t : public druid_melee_t<cat_attacks::cat_attack_t>
-{
-  cat_melee_t( druid_t* p ) : base_t( "cat_melee", p )
-  {
-    base_t::form_mask = form_e::CAT_FORM;
-
-    // parse this here so AA modifier gets applied after is_auto_attack is set true
-    base_t::snapshots.tigers_fury = base_t::parse_persistent_buff_effects<const spell_data_t*>(
-        p->buff.tigers_fury, 0U, true, p->talent.carnivorous_instinct );
   }
 };
 }  // namespace auto_attacks
