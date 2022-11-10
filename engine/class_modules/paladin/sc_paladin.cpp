@@ -3590,15 +3590,21 @@ void paladin_t::assess_damage( school_e school, result_amount_type dtype, action
   }
 
   // Holy Shield's magic block
-  if ( talents.holy_shield->ok() && school != SCHOOL_PHYSICAL && s->action->harmful )
+  // 2022-11-10 Holy Shield can now only block direct magical damage, standing in Consecration can reduce damage over time, but doesn't proc damage
+  if ( school != SCHOOL_PHYSICAL && s->action->harmful && 
+       ( ( s->result_type == result_amount_type::DMG_DIRECT && talents.holy_shield->ok() ) ||
+         ( s->result_type == result_amount_type::DMG_OVER_TIME && standing_in_consecration() ) ) )
   {
     // Block code mimics attack_t::block_chance()
     // cache.block() contains our block chance
     double block = cache.block();
-    if (talents.improved_holy_shield->ok())
+    // Not sure if this talent works for Mastery Block
+    if ( talents.improved_holy_shield->ok() && s->result_type != result_amount_type::DMG_OVER_TIME )
       block += talents.improved_holy_shield->effectN( 1 ).percent();
     // add or subtract 1.5% per level difference
     block += ( level() - s->action->player->level() ) * 0.015;
+
+    auto absorbName = s->result_type != result_amount_type::DMG_OVER_TIME ? "Holy Shield" : "Divine Bulwark";
 
     if ( block > 0 )
     {
@@ -3610,7 +3616,7 @@ void paladin_t::assess_damage( school_e school, result_amount_type dtype, action
         double block_amount =
             s->result_amount *
             clamp( block_value / ( block_value + s->action->player->current.armor_coeff ), 0.0, 0.85 );
-        sim->print_debug( "{} Holy Shield absorbs {}", name(), block_amount );
+        sim->print_debug( "{} {} absorbs {}", name(), absorbName, block_amount );
 
         // update the relevant counters
         iteration_absorb_taken += block_amount;
@@ -3619,19 +3625,28 @@ void paladin_t::assess_damage( school_e school, result_amount_type dtype, action
         s->result_absorbed = s->result_amount;
 
         // hack to register this on the abilities table
-        buffs.holy_shield_absorb->trigger( 1, block_amount );
-        buffs.holy_shield_absorb->consume( block_amount );
+        if ( s->result_type != result_amount_type::DMG_OVER_TIME )
+        {
+          buffs.holy_shield_absorb->trigger( 1, block_amount );
+          buffs.holy_shield_absorb->consume( block_amount );
+        }
+        else  
+        {
+          buffs.divine_bulwark_absorb->trigger( 1, block_amount );
+          buffs.divine_bulwark_absorb->consume( block_amount );
+        }
 
         // Trigger the damage event
-        trigger_holy_shield( s );
+        if ( s->result_type != result_amount_type::DMG_OVER_TIME )
+          trigger_holy_shield( s );
       }
       else
       {
-        sim->print_debug( "{} Holy Shield fails to activate", name() );
+        sim->print_debug( "{} {} fails to activate", name(), absorbName );
       }
     }
 
-    sim->print_debug( "Damage to {} after Holy Shield mitigation is {}", name(), s->result_amount );
+    sim->print_debug( "Damage to {} after {} mitigation is {}", name(), absorbName, s->result_amount );
   }
 
   player_t::assess_damage( school, dtype, s );

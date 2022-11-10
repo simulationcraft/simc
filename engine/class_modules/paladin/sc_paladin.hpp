@@ -122,6 +122,7 @@ public:
     // Prot
     absorb_buff_t* holy_shield_absorb; // Dummy buff to trigger spell damage "blocking" absorb effect
     absorb_buff_t* blessed_hammer_absorb; // ^
+    absorb_buff_t* divine_bulwark_absorb; // New Mastery absorb
     buff_t* bulwark_of_order_absorb;
     buff_t* seraphim;
     buff_t* ardent_defender;

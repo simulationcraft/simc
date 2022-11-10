@@ -1021,6 +1021,10 @@ void paladin_t::create_buffs_protection()
   buffs.holy_shield_absorb -> set_absorb_school( SCHOOL_MAGIC )
         -> set_absorb_source( get_stats( "holy_shield_absorb" ) )
         -> set_absorb_gain( get_gain( "holy_shield_absorb" ) );
+  buffs.divine_bulwark_absorb = make_buff<absorb_buff_t>( this, "divine_bulwark", mastery.divine_bulwark );
+  buffs.divine_bulwark_absorb->set_absorb_school( SCHOOL_MAGIC )
+      ->set_absorb_source( get_stats( "divine_bulwark_absorb" ) )
+      ->set_absorb_gain( get_gain( "divine_bulwark_absorb" ) );
   buffs.blessed_hammer_absorb = make_buff<absorb_buff_t>( this, "blessed_hammer_absorb", find_spell( 204301 ) );
   buffs.blessed_hammer_absorb -> set_absorb_source( get_stats( "blessed_hammer_absorb" ) )
         -> set_absorb_gain( get_gain( "blessed_hammer_absorb" ) );
