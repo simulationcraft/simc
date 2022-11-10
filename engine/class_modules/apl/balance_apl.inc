@@ -66,7 +66,6 @@ aoe->add_action( "celestial_alignment,if=variable.cd_condition_aoe" );
 aoe->add_action( "incarnation,if=variable.cd_condition_aoe" );
 aoe->add_action( "empower_bond,if=" );
 aoe->add_action( "ravenous_frenzy,if=buff.ca_inc.remains>15" );
-aoe->add_action( "convoke_the_spirits,if=buff.ca_inc.remains>4|(!talent.primordial_arcanic_pulsar&cooldown.ca_inc.remains>30|variable.no_cd_talent)&(buff.eclipse_lunar.remains>4|buff.eclipse_solar.remains>4)" );
 aoe->add_action( "warrior_of_elune" );
 aoe->add_action( "wrath,if=eclipse.any_next|buff.eclipse_lunar.remains<action.wrath.execute_time" );
 aoe->add_action( "astral_communion,if=astral_power.deficit>variable.passive_asp+55" );
@@ -79,6 +78,7 @@ aoe->add_action( "wild_mushroom,if=astral_power.deficit>variable.passive_asp+20&
 aoe->add_action( "starfire,if=(buff.gathering_starstuff.stack=3|buff.umbral_embrace.up)&astral_power.deficit>variable.passive_asp+(8*(1+0.4*buff.warrior_of_elune.up))" );
 aoe->add_action( "stellar_flare,target_if=refreshable&(target.time_to_die-remains-spell_targets.starfire)>8,if=astral_power.deficit>variable.passive_asp+8" );
 aoe->add_action( "starfall,if=target.time_to_die>4&(buff.ca_inc.remains<12&buff.ca_inc.up|astral_power.deficit<(variable.passive_asp+8+12*(buff.eclipse_lunar.remains<4|buff.eclipse_solar.remains<4))|buff.starweavers_warp.up|talent.starlord&buff.starlord.stack<3)" );
+aoe->add_action( "convoke_the_spirits,if=astral_power<50&spell_targets.starfall<3+talent.elunes_guidance&(buff.eclipse_lunar.remains>4|buff.eclipse_solar.remains>4)" );
 aoe->add_action( "new_moon,if=astral_power.deficit>variable.passive_asp+10" );
 aoe->add_action( "half_moon,if=astral_power.deficit>variable.passive_asp+20" );
 aoe->add_action( "starsurge,if=buff.starweavers_weft.up" );
