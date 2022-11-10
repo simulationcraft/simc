@@ -8789,12 +8789,14 @@ void warrior_t::apl_prot()
   default_list -> add_action( "ancestral_call,if=buff.avatar.up|!talent.avatar" );
   default_list -> add_action( "potion,if=buff.avatar.up|target.time_to_die<25" );
   //Prioritize Revenge! procs if SS is on cd and not in execute.
-  default_list -> add_action( "revenge,if=buff.revenge.up&(target.health.pct>20|spell_targets.thunder_clap>3)&cooldown.shield_slam.remains" );
-  default_list -> add_action( "ignore_pain,if=target.health.pct>=20&(target.health.pct>=80&!covenant.venthyr)&(rage>=85&cooldown.shield_slam.ready&buff.shield_block.up|rage>=60&cooldown.demoralizing_shout.ready&talent.booming_voice.enabled|rage>=70&cooldown.avatar.ready|rage>=40&cooldown.demoralizing_shout.ready&talent.booming_voice.enabled&buff.last_stand.up|rage>=55&cooldown.avatar.ready&buff.last_stand.up|rage>=80|rage>=55&cooldown.shield_slam.ready&buff.violent_outburst.up&buff.shield_block.up|rage>=30&cooldown.shield_slam.ready&buff.violent_outburst.up&buff.last_stand.up&buff.shield_block.up),use_off_gcd=1");
+  default_list -> add_action( this, "Revenge", "if=buff.revenge.up&(((talent.massacre.enabled&target.health.pct>35)|target.health.pct>20)|spell_targets.thunder_clap>3)&cooldown.shield_slam.remains" );
+  default_list -> add_action( this, "Ignore Pain", "if=((talent.massacre.enabled&target.health.pct>=35)|target.health.pct>=20)&(target.health.pct>=80&!covenant.venthyr)&(rage>=85&cooldown.shield_slam.ready&buff.shield_block.up|rage>=60&cooldown.demoralizing_shout.ready&talent.booming_voice.enabled|rage>=70&cooldown.avatar.ready|rage>=40&cooldown.demoralizing_shout.ready&talent.booming_voice.enabled&buff.last_stand.up|rage>=55&cooldown.avatar.ready&buff.last_stand.up|rage>=80|rage>=55&cooldown.shield_slam.ready&buff.outburst.up&buff.shield_block.up|rage>=30&cooldown.shield_slam.ready&buff.outburst.up&buff.last_stand.up&buff.shield_block.up),use_off_gcd=1");
   //Shield Block if missing the buff, or SS is about to come off CD, but ignore during execute.
-  default_list -> add_action( "shield_block,if=(buff.shield_block.down|buff.shield_block.remains<cooldown.shield_slam.remains)&target.health.pct>20" );
+  default_list -> add_action( "revenge,if=buff.revenge.up&(((talent.massacre.enabled&target.health.pct<=35)|target.health.pct<=20)|spell_targets.thunder_clap>3)&cooldown.shield_slam.remains" );
+  default_list -> add_action( "ignore_pain,if=((talent.massacre.enabled&target.health.pct<=35)|target.health.pct<=20)&(target.health.pct>=80&!covenant.venthyr)&(rage>=85&cooldown.shield_slam.ready&buff.shield_block.up|rage>=60&cooldown.demoralizing_shout.ready&talent.booming_voice.enabled|rage>=70&cooldown.avatar.ready|rage>=40&cooldown.demoralizing_shout.ready&talent.booming_voice.enabled&buff.last_stand.up|rage>=55&cooldown.avatar.ready&buff.last_stand.up|rage>=80|rage>=55&cooldown.shield_slam.ready&buff.violent_outburst.up&buff.shield_block.up|rage>=30&cooldown.shield_slam.ready&buff.violent_outburst.up&buff.last_stand.up&buff.shield_block.up),use_off_gcd=1");
+  //Shield Block if missing the buff, or SS is about to come off CD, but ignore during execute.
+  default_list -> add_action( "shield_block,if=(buff.shield_block.down|buff.shield_block.remains<cooldown.shield_slam.remains)&((talent.massacre.enabled&target.health.pct<=35)|target.health.pct<=20)" );
   default_list -> add_action( "shield_slam,if=buff.violent_outburst.up&rage<=55");
-
   //Lower priority for on GCD racials.
   default_list -> add_action( "bag_of_tricks" );
   default_list -> add_action( "arcane_torrent,if=rage<80" );
