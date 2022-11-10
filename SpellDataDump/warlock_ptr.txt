@@ -13158,7 +13158,7 @@ Name             : Pandemic Invocation (id=386759) [Spell Family (5), Passive]
 Talent Entry     : Affliction [tree=spec, row=7, col=1, max_rank=2, req_points=8]
                  : Effect#1 [op=none, values=(1, 2)]
                  : Effect#2 [op=set, values=(333, 666)]
-                 : Effect#3 [op=set, values=(0, 100)]
+                 : Effect#3 [op=set, values=(0, 0, 100)]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -13176,18 +13176,18 @@ Effects          :
                    Base Value: 5000 | Scaled Value: 5000 | PvP Coefficient: 1.00000
 #2 (id=1021051)  : Dummy (3)
                    Base Value: 333 | Scaled Value: 333 | PvP Coefficient: 1.00000
-#3 (id=1021052)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value 2: 1869 (Label) | Target: Self (1)
-                   Affected Spells (Label): Pandemic Invocation (386760)
+#3 (id=1021052)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Sub Type (218 -> 4), Misc Value 2 (1869 -> 0)
 Description      : Refreshing Corruption, Agony, Unstable Affliction, or Siphon Life with less than ${$s1/1000} seconds remaining will deal ${$386760s1*(1+$s3/100)} Shadow damage and has a ${$s2/100}.2% chance to grant you a Soul Shard.
 
 Name             : Pandemic Invocation (id=386760) [Spell Family (5)] 
+Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
 Velocity         : 40 yards/sec
-Labels           : 1869: Pandemic Invocation (386759 effect#3)
 Affecting spells : Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Demonic Synergy (171982 effects: #2, #3), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Wrath of Consumption (387066 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1)
 Family Flags     : 49
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13197,7 +13197,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ..x..... ........ ........ ........   
+                 : ........ ........ ........ ........   
                  : Ignore Line of Sight (66), Do Not Display Range (126), Not In Spellbook (143), Always AOE Line of Sight (186), Aura Points On Client (268)
 Effects          :
 #1 (id=1021053)  : School Damage (2): shadow

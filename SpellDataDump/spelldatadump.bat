@@ -6,4 +6,3 @@ simc spell_query="spell.class=%%i">spelldatadump/%%i.txt
 )
 
 simc spell_query="spell">spelldatadump/allspells.txt
-pause
