@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.46455 Live (hotfix 2022-11-08/46455)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.46597 Live (hotfix 2022-11-10/46597)
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=8, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
@@ -5722,7 +5722,6 @@ Effects          :
 #6 (id=1039935)  : Apply Aura (6) | Modify Damage Done% to Caster (269)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Enemy (6)
                    Affected School(s): All
-Hotfixed         : NEW EFFECT
 Description      : $@spelldesc8921
 Tooltip          : Suffering $w2 Arcane damage every $t2 seconds.
 
@@ -8816,7 +8815,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=360734)   : Apply Aura (6) | Dummy (4)
                    Base Value: -1 | Scaled Value: -1 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Sub Type (107 -> 4), Misc Value (23 -> 0), Affects Spells
 Description      : Moonfire reduces damage dealt to you by ${$s1/1}%.
 
 Name             : Force of Nature (id=248280) [Spell Family (7)] 
