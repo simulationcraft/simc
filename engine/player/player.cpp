@@ -9760,6 +9760,60 @@ struct retarget_auto_attack_t : public action_t
   }
 };
 
+// Invoke External Buff ==================================================
+
+struct invoke_external_buff_t : public action_t
+{
+  std::string buff_str;
+  buff_t* buff;
+
+  invoke_external_buff_t( player_t* player, util::string_view options_str )
+    : action_t( ACTION_OTHER, "invoke_external_buff", player ), buff_str(), buff( nullptr )
+  {
+    add_option( opt_string( "name", buff_str ) );
+    parse_options( options_str );
+
+    trigger_gcd           = timespan_t::zero();
+    ignore_false_positive = true;
+  }
+  
+  void init_finished() override
+  {
+    action_t::init_finished();
+
+    if ( buff_str.empty() )
+    {
+      throw std::invalid_argument( fmt::format(
+          "Player {} uses invoke_external_buff without specifying the name of the buff", player->name() ) );
+    }
+
+    buff = buff_t::find( player, buff_str );
+
+    if ( !buff )
+    {
+      if ( sim->debug )
+      {
+        player->sim->error( "Player {} uses invoke_external_buff with unknown buff {}", player->name(), buff_str );
+      }
+    }
+  }
+
+  bool ready() override
+  {
+    if ( !buff )
+      return false;
+
+    return action_t::ready();
+  }
+
+  void execute() override
+  {
+    if ( sim->log )
+      sim->out_log.printf( "%s invokes buff %s", player->name(), buff->name() );
+    buff->trigger();
+  }
+};
+
 }  // UNNAMED NAMESPACE
 
 action_t* player_t::create_action( util::string_view name, util::string_view options_str )
@@ -9797,6 +9851,8 @@ action_t* player_t::create_action( util::string_view name, util::string_view opt
     return new cancel_action_t( this, options_str );
   if ( name == "cancel_buff" )
     return new cancel_buff_t( this, options_str );
+  if ( name == "invoke_external_buff" )
+    return new invoke_external_buff_t( this, options_str );
   if ( name == "swap_action_list" )
     return new swap_action_list_t( this, options_str );
   if ( name == "run_action_list" )
