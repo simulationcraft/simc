@@ -366,8 +366,9 @@ public:
         p()->cooldown.invoke_xuen->adjust( p()->shared.xuens_bond->effectN( 2 ).time_value(), true );  // Saved as -100
 
       if ( p()->talent.windwalker.meridian_strikes->ok() )
-        p()->cooldown.touch_of_death->adjust( -10 * p()->talent.windwalker.meridian_strikes->effectN( 2 ).time_value(),
-                                              true );  // Saved as 35
+        p()->cooldown.touch_of_death->adjust( 
+            -1 * timespan_t::from_seconds( 
+                p()->talent.windwalker.meridian_strikes->effectN( 2 ).base_value() / 100 ), true );  // Saved as 35
 
       p()->buff.fury_of_xuen_stacks->trigger();
     }
@@ -3326,7 +3327,7 @@ struct touch_of_death_t : public monk_melee_attack_t
     {
         // Damage is associated with the players non-buffed max HP
         // Meaning using Fortifying Brew does not affect ToD's damage
-        double amount = p()->resources.initial[RESOURCE_HEALTH];
+        amount = p()->resources.initial[RESOURCE_HEALTH];
 
         if ( target->true_level > p()->true_level )
             amount *= p()->talent.general.improved_touch_of_death->effectN( 2 ).percent();  // 35% HP
@@ -7763,7 +7764,7 @@ void monk_t::init_spells()
       talent.windwalker.strike_of_the_windlord              = _ST( "Strike of the Windlord" );
       // Row 6
       talent.windwalker.dance_of_chiji                      = _ST( "Dance of Chi-Ji" );
-      talent.windwalker.jade_ignition                       = _ST( "Jade Ignition" );     
+      talent.windwalker.jade_ignition                       = _STID( 392979 );// _ST( "Jade Ignition" );     
       talent.windwalker.drinking_horn_cover                 = _ST( "Drinking Horn Cover" );
       talent.windwalker.spiritual_focus                     = _ST( "Spiritual Focus" );
       talent.windwalker.hit_combo                           = _ST( "Hit Combo" );
