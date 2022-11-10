@@ -675,7 +675,6 @@ public:
   void    trigger_grand_crusader();
   void    trigger_holy_shield( action_state_t* s );
   void    trigger_tyrs_enforcer( action_state_t* s );
-  void    trigger_inner_light( action_state_t* s );
   void    t29_4p_prot();
   void    trigger_forbearance( player_t* target );
   void    trigger_es_explosion( player_t* target );
