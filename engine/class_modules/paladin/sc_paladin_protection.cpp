@@ -58,7 +58,7 @@ struct avengers_shield_base_t : public paladin_spell_t
     else
     {
       aoe = data().effectN( 1 ).chain_target();
-    
+
       //Soaring Shield hits +2 targets
       if ( p->talents.soaring_shield->ok() )
       {
@@ -832,7 +832,7 @@ void paladin_t::trigger_grand_crusader()
   double gc_proc_chance = talents.grand_crusader->effectN( 1 ).percent();
   if ( talents.inspiring_vanguard -> ok() )
   {
-    gc_proc_chance = gc_proc_chance += talents.inspiring_vanguard->effectN( 2 ).percent();
+    gc_proc_chance += talents.inspiring_vanguard->effectN( 2 ).percent();
   }
 
   // The bonus from First Avenger is added after Inspiring Vanguard
