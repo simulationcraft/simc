@@ -676,7 +676,7 @@ struct shadow_word_pain_t final : public priest_spell_t
 
     // BUG: Screams of the Void does not work with Shadow Word: Pain with Mental Decay talented
     // https://github.com/SimCMinMax/WoW-BugTracker/issues/1038
-    if ( ( !priest().bugs || !priest().talents.shadow.mental_decay.enabled() ) &&
+    if ( ( !priest().bugs || !priest().talents.shadow.mental_decay.enabled() || priest().is_ptr() ) &&
          priest().is_screams_of_the_void_up( state->target ) )
     {
       t /= ( 1 + priest().talents.shadow.screams_of_the_void->effectN( 1 ).percent() );
@@ -2672,7 +2672,10 @@ void priest_t::trigger_idol_of_nzoth( player_t* target, proc_t* proc )
     td->buffs.echoing_void->trigger();
     if ( rng().roll( talents.shadow.idol_of_nzoth->proc_chance() ) )
     {
-      td->buffs.echoing_void_collapse->trigger( timespan_t::from_seconds( td->buffs.echoing_void->stack() + 1 ) );
+      int stacks = td->buffs.echoing_void->stack();
+      sim->print_debug( "{} triggered echoing_void_collapse on target {} for {} stacks.", *this, target->name_str,
+                        stacks );
+      td->buffs.echoing_void_collapse->trigger( timespan_t::from_seconds( stacks + 1 ) );
     }
   }
 }

@@ -1,5 +1,5 @@
-// Spell text, wow build 10.0.0.46455
-static const std::array<spelltext_data_t, 18950> __spelltext_data { {
+// Spell text, wow build 10.0.0.46597
+static const std::array<spelltext_data_t, 18966> __spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -16913,6 +16913,10 @@ static const std::array<spelltext_data_t, 18950> __spelltext_data { {
   { 381933, "$@spelldesc381932", "Increases the damage of your next $?s117014[Elemental Blast][Earth Shock] or Earthquake by ${$W1}.1%.", 0 },
   { 381936, "Casting Lightning Bolt or Chain Lightning reduces the cooldown of your Nature spells by ${$381937s1/-1000}.1 sec.", 0, 0 },
   { 381946, "Increases the duration of Riptide by ${$s1/1000} sec.", 0, 0 },
+  { 381954, "$@spelldesc381766", "$?e0[Critical Strike increased by $w1.][Through a crack in the chest you glimpse a ruby sphere, which would increase your Critical Strike when looted.]", 0 },
+  { 381955, "$@spelldesc381766", "$?e0[Haste increased by $w1.][Through a crack in the chest you glimpse a bronze hourglass, which would increase your Haste when looted.]", 0 },
+  { 381956, "$@spelldesc381766", "$?e0[Mastery increased by $w1.][Through a crack in the chest you glimpse an emerald bell, which would increase your Mastery when looted.]", 0 },
+  { 381957, "$@spelldesc381766", "$?e0[Versatility increased by $w1.][Through a crack in the chest you glimpse an azure rod, which would increase your Versatility when looted.]", 0 },
   { 381982, "Ambush and Dispatch have a $s1% chance to grant you a Roll the Bones combat enhancement buff you do not already have for $s2 sec.\r\n\r\nDuration and chance doubled while Stealthed.", 0, 0 },
   { 381985, "Blade Flurry damage is increased by an additional $s1% per missing target below its maximum.", 0, 0 },
   { 381988, "Slice and Dice grants an additional $s1% attack speed per combo point spent.", 0, 0 },
@@ -17290,6 +17294,8 @@ static const std::array<spelltext_data_t, 18950> __spelltext_data { {
   { 383810, "Each consecutive critical strike you deal increases critical strike damage you deal by $s1%, up to ${ $s1*$383811u}% for $383811d.", 0, 0 },
   { 383811, "$@spelldesc383810", "Your spells deal an additional $w1% critical hit damage.", 0 },
   { 383812, "Your spells and abilities have a chance to call a Ruby Whelpling, which will try to be helpful and assist you in combat.\r\n\r\n", 0, 0 },
+  { 383813, "$@spelldesc383812", "The warmth of the Red Dragonflight increases your Critical Strike by $w1.", 0 },
+  { 383814, "$@spelldesc383812", 0, 0 },
   { 383815, "Your healing spells have a chance to put you into a waking dream, granting  additional mana regeneration and increasing your Mastery by $383816s2 for $383816d.", 0, 0 },
   { 383816, "$@spelldesc383815", "Experiencing a waking dream. Regenerating mana, Mastery increased by $s2", 0 },
   { 383817, "Your attacks have a chance for the compass to show you a direction, increasing your Critical Strike, Haste, Mastery, or Versatility by $383818s1 for $383818d.", 0, 0 },
@@ -17778,6 +17784,7 @@ static const std::array<spelltext_data_t, 18950> __spelltext_data { {
   { 386941, "Bonedust Brew's Shadow damage or healing is increased by ${$s1}.1%, and when Bonedust Brew deals Shadow damage or healing, its cooldown is reduced by ${$s2/-1000}.1 sec.", 0, 0 },
   { 386949, "Your abilities have a low chance to cast Bonedust Brew at your target's location.", 0, 0 },
   { 386951, "Applies Corruption, Agony, and Unstable Affliction to your target.", 0, 0 },
+  { 386959, "$@spelldesc386965", 0, 0 },
   { 386963, "$@spelldesc386965", "Your Blackout Kick and Spinning Crane Kick deal $w1% increased damage as Fire damage, and their damage refreshes the duration of Breath of Fire on the target.", 0 },
   { 386965, "Your Breath of Fire ignites your right leg in flame for $386963d, causing your Blackout Kick and Spinning Crane Kick to deal $s1% additional damage as Fire damage and refresh the duration of your Breath of Fire on the target.", 0, 0 },
   { 386967, "Increases your Mastery by $s1%.", 0, 0 },
@@ -18149,6 +18156,7 @@ static const std::array<spelltext_data_t, 18950> __spelltext_data { {
   { 389403, "Permanently enchants a cloak to increase your Avoidance by $ec1 and reduce fall damage taken by $ec2s1%.", 0, 0 },
   { 389404, "Permanently enchants a cloak to increase your Leech by $ec1 and heal for $ec2s1 every $389984t1 sec while out of combat.", 0, 0 },
   { 389405, "Permanently enchants a cloak to increase your Speed by $ec1 and reduce the cooldown of your Hearthstone by ${$ec2s1/-60000} minutes while in the Dragon Isles.", 0, 0 },
+  { 389407, "Your damaging spells have a chance to fire a Soulseeker Arrow towards your target, inflicting $s1 Shadow damage over $d to the first enemy hit. If the target dies while affected, your next damaging spells will fire an arrow.\r\n", "Your next damaging spell will fire an arrow.", 0 },
   { 389410, "Permanently enchants a chestpiece to increase your primary stats by $ec1.", 0, 0 },
   { 389416, "Permanently enchants a chestpiece to increase your Agility by $ec1 and movement speed by $ec2s1%.", 0, 0 },
   { 389417, "Permanently enchants a chestpiece to increase your Intellect by $ec1 and mana pool by $ec2s1%.", 0, 0 },
@@ -18235,7 +18243,10 @@ static const std::array<spelltext_data_t, 18950> __spelltext_data { {
   { 389811, "Increase the damage over time effect of The Hunt by $s1%.", 0, 0 },
   { 389813, "Place a Sigil of Misery at the target location that activates after $d.\r\n\r\nCauses all enemies affected by the sigil to cower in fear, disorienting them for $207685d.", 0, 0 },
   { 389815, "Place a Kyrian Sigil at the target location that activates after $d.\r\n\r\nDetonates to deal $307046s1 $@spelldesc395039 damage and shatter up to $s3 Lesser Soul Fragments from enemies affected by the sigil. Deals reduced damage beyond $s1 targets.", 0, 0 },
+  { 389817, "$@spelldesc383812", 0, 0 },
+  { 389818, "$@spelldesc383812", 0, 0 },
   { 389819, "The cooldown of The Hunt is reduced by $s1 sec whenever an enemy is killed while afflicted by its damage over time effect.", 0, 0 },
+  { 389820, "$@spelldesc383812\r\n", "$@auracaster's Ruby Whelp takes you under their wing, increasing your Haste by $w1.", 0 },
   { 389824, "The healing of Shattered Souls is increased by $s1%.", 0, 0 },
   { 389843, "Call a Ruby Whelpling and instruct them in combat, teaching them how to be helpful.", 0, 0 },
   { 389845, "$@spelldesc389761", "$@auracaster's Unstable Affliction deals $s1% additional damage.", 0 },
@@ -18432,9 +18443,11 @@ static const std::array<spelltext_data_t, 18950> __spelltext_data { {
   { 390864, "Swipe and Thrash damage is increased by $s1%.", 0, 0 },
   { 390881, "Your Renew healing increases the healing done by your next Circle of Healing by $390885s1%, stacking up to $390885U times.", 0, 0 },
   { 390885, "$@spelldesc390881", "The healing of your next Circle of Healing is increased by $w1%.", 0 },
+  { 390896, "$@spelldesc383812", 0, 0 },
   { 390902, "Tiger's Fury's damage bonus is increased by $s1%.", 0, 0 },
   { 390919, "Increases the amount of damage required to break your $?s205369[Mind Bomb][Psychic Scream] by $s1%.", 0, 0 },
   { 390933, "$@spelldesc377438", "Damage and healing of Smite and Holy Nova is increased by $s1%.", 0 },
+  { 390941, "$@spelldesc383812", 0, 0 },
   { 390947, "Circle of Healing heals $s1 additional ally and its cooldown is reduced by ${$s2/-1000} sec.", 0, 0 },
   { 390951, "Temporarily imbues shoulders with a fiery illusion for $ecd.", 0, 0 },
   { 390954, "Increases the critical strike chance of Flash Heal and Heal by $s1%.", 0, 0 },
@@ -18473,7 +18486,7 @@ static const std::array<spelltext_data_t, 18950> __spelltext_data { {
   { 391137, "Your Mind Blast and Mind Spike critical strikes generate an additional ${$s2/100} Insanity.", 0, 0 },
   { 391138, "$@spelldesc391137", 0, 0 },
   { 391140, "$@spelldesc384668", "Bleeding for $w1 damage every $t sec.", 0 },
-  { 391142, "Hammer of Wrath and Judgment deal $s2% additional damage and extend the duration of $?s384092[Crusade]?s394088[Avenging Crusader]?s385438[Sentinel][Avenging Wrath] by $s1 sec.", 0, 0 },
+  { 391142, "Hammer of Wrath and Judgment deal $s2% additional damage and extend the duration of $?s384092[Crusade]?s394088[Avenging Crusader]?s385438[Sentinel][Avenging Wrath] by ${$s4/1000}.1 sec.", 0, 0 },
   { 391154, "When Prayer of Mending jumps to a target affected by your Renew, that target is instantly healed for $196781s1.", 0, 0 },
   { 391156, "$@spelldesc391154", 0, 0 },
   { 391159, "$@spelldesc389729", "Deals $w1 Physical damage back to attackers.", 0 },
@@ -18729,6 +18742,8 @@ static const std::array<spelltext_data_t, 18950> __spelltext_data { {
   { 393030, "Your chance to block spells is increased by $s1%.", 0, 0 },
   { 393038, "Parry increased by $s1%.", "Parry increased by $s1%.", 0 },
   { 393039, "$@spelldesc235053", "Damage of next Crackling Jade Lightning increased by $s1%.\r\nEnergy cost of next Crackling Jade Lightning reduced by $s2%.", 0 },
+  { 393048, "$@spelldesc337334", "Chance to be critically hit by the Monk increased by $w1%.", 0 },
+  { 393050, "$@spelldesc392991", "Unable to gain Skyreach from attacking this target for $d.", 0 },
   { 393054, "$@spelldesc210152", 0, 0 },
   { 393055, "$@spelldesc210152", 0, 0 },
   { 393056, "$@spelldesc392979", 0, 0 },
@@ -18820,6 +18835,7 @@ static const std::array<spelltext_data_t, 18950> __spelltext_data { {
   { 393954, "Starsurge and Starfall reduce the cost of Starsurge and Starfall by $393955s1% and increase their damage by $393955s2% for $393955d, stacking up to $393955u times.", 0, 0 },
   { 393955, "$@spelldesc393954", "Cost of Starsurge and Starfall reduced by $w1%, and their damage increased by $w2%.", 0 },
   { 393956, "When you have $s3 periodic effects on a target, your damage and healing on them are increased by $s1%.", 0, 0 },
+  { 393957, "$@spelldesc393956", "Damage and healing from $@auracaster increased by $w1%.", 0 },
   { 393958, "After an Eclipse ends, you gain $393959s1% Haste for $393959d.", 0, 0 },
   { 393959, "$@spelldesc393958", "Haste increased by $s1%.", 0 },
   { 393960, "Every $s1 Astral Power spent grants Celestial Alignment for $s2 sec.", 0, 0 },
@@ -18952,11 +18968,11 @@ static const std::array<spelltext_data_t, 18950> __spelltext_data { {
   { 397708, "Execute no longer has a cooldown and if your foe survives, $163201s2% of the Rage spent is refunded.", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.0.0.46455
+// spelltext hotfix entries, wow build 10.0.0.46597
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 10.0.0.46455
+// Spell description variables, wow build 10.0.0.46597
 static const std::array<spelldesc_vars_data_t, 361> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$pvp=$?a134735[${1.1}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<pvp>*$<weal>}\r\n" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -19321,7 +19337,7 @@ static const std::array<spelldesc_vars_data_t, 361> __spelldesc_vars_data { {
   {  394354, "$damage=${($AP*1.0)*(1+$@versadmg)}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.0.0.46455
+// spelldesc_vars hotfix entries, wow build 10.0.0.46597
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 

@@ -4248,6 +4248,9 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
 
   void execute() override
   {
+    if ( is_aoe() )
+      target_cache.is_valid = false;
+
     hunter_ranged_attack_t::execute();
 
     if ( p() -> talents.bulletstorm -> ok() && execute_state && execute_state -> chain_target > 0 ) {
@@ -6872,7 +6875,11 @@ std::unique_ptr<expr_t> hunter_t::create_expression( util::string_view expressio
 {
   auto splits = util::string_split<util::string_view>( expression_str, "." );
 
-  if ( splits.size() == 2 && splits[ 0 ] == "next_wi_bomb" )
+  if ( splits.size() == 1 && splits[ 0 ] == "steady_focus_count" )
+  {
+    return make_fn_expr( expression_str, [ this ] { return state.steady_focus_counter; } );
+  }
+  else if ( splits.size() == 2 && splits[ 0 ] == "next_wi_bomb" )
   {
     if ( splits[ 1 ] == "shrapnel" )
       return make_fn_expr( expression_str, [ this ] { return talents.wildfire_infusion.ok() && state.next_wi_bomb == WILDFIRE_INFUSION_SHRAPNEL; } );
@@ -7671,7 +7678,7 @@ void hunter_t::create_buffs()
 
   buffs.bestial_barrage =
     make_buff( this, "bestial_barrage", tier_set.t29_sv_4pc_buff )
-    -> set_chance( tier_set.t29_sv_4pc.ok() ? 0.2 : 0 ); // TODO is 20% in spelldata anywhere
+    -> set_chance( tier_set.t29_sv_4pc -> effectN( 1 ).percent() );
 
   // Conduits
 

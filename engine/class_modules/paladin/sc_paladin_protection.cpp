@@ -58,7 +58,7 @@ struct avengers_shield_base_t : public paladin_spell_t
     else
     {
       aoe = data().effectN( 1 ).chain_target();
-    
+
       //Soaring Shield hits +2 targets
       if ( p->talents.soaring_shield->ok() )
       {

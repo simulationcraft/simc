@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.46455 Live (hotfix 2022-11-04/46455)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.46597 Live (hotfix 2022-11-10/46597)
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -292,7 +292,6 @@ GCD              : 1.5 seconds
 Duration         : 30 seconds
 Proc Chance      : 101%
 Mechanic         : Banish
-Affecting spells : Greater Banish (386651 effect#1)
 Family Flags     : 59
 Attributes       : ........ ........ x....... ......x.   ........ ..x..... x....... .x...... 
                  : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -2722,7 +2721,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : Is Ability (4), Passive (6), No Aura Icon (60), Can Proc From Procs (122), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=119452)   : Apply Player/Pet Aura (202) | Dummy (4)
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Radius: 100 yards | Target: Self (1)
+                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Radius: 100 yards | Target: Self (1)
 #2 (id=326363)   : Apply Player/Pet Aura (202) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Radius: 100 yards | Target: Self (1)
 Description      : All single-target damage done by you and your minions grants you and your pet shadowy shields that absorb $s1% of the damage dealt$?s219272[][ for $108366d], up to $?s219272[$219272s2][$s2]% of maximum health.
@@ -2827,6 +2826,8 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | Value Multiplier: 1 | PvP Coefficient: 1.00000 | Misc Value: 127 | Radius: 100 yards | Target: Self (1)
 #3 (id=311358)   : Apply Owner Area Aura (143) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Value Multiplier: 1 | PvP Coefficient: 1.00000 | Misc Value: 127 | Radius: 100 yards | Target: Self (1)
+#4 (id=1041014)  : None (0)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
 Description      : $@spelldesc108415
 Tooltip          : $s1% of all damage taken is split with the Warlock's summoned demon.  
 The Warlock is healed for $s2% and your demon is healed for $s3% of all absorption granted by Soul Leech.
@@ -4133,7 +4134,7 @@ Effects          :
 #2 (id=1030265)  : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value 2: 0x4 | Target: Self (1)
 #3 (id=1039953)  : Apply Aura (6) | Modify Total Stat% (137)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value 2: 0x4 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value 2: 0x4 | Target: Self (1)
 Description      : $@spelldesc108503
 Tooltip          : Sacrificed your demon pet to gain its command demon ability.
 
@@ -12704,7 +12705,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=1020220)  : School Damage (2): chaos
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.22000 | PvP Coefficient: 1.00000 | Radius: 0 - 6 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.28600 | PvP Coefficient: 1.00000 | Radius: 0 - 6 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : $@spelldesc386244
 
 Name             : Tormented Soul (id=386309) [Spell Family (5), Hidden] 
@@ -12894,7 +12895,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Display Range (126)
 Effects          :
 #1 (id=1020827)  : Apply Aura (6) | Modify Max Health% (133)
-                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Radius: 100 yards | Target: Unknown(120)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Radius: 100 yards | Target: Unknown(120)
 Description      : Increases you and your pets' maximum health by $s1%.
 
 Name             : Desperate Pact (id=386619) [Spell Family (5), Passive, Hidden] 
@@ -13047,10 +13048,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
-#1 (id=1020877)  : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
-                   Base Value: 30000 | Scaled Value: 30000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
-                   Affected Spells: Banish (710)
-                   Family Flags: 59
+#1 (id=1020877)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 30000 | Scaled Value: 30000 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Increases the duration of Banish by ${$s1/1000} sec. Banish now affects Undead.
 
 Name             : Dark Accord (id=386659) [Spell Family (5), Passive, Hidden] 
@@ -15868,7 +15867,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1023550)  : School Damage (2): shadowflame
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.08750 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.11375 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Blasts the enemy target with a bolt of fel magic, causing $s1 Shadowflame damage. 
 
 Name             : Drain Soul (id=388667) [Spell Family (5), Passive] 
@@ -15958,7 +15957,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1025475)  : School Damage (2): shadowflame
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.10000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.13000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Unleashes a powerful blast of fel magic at the enemy target, dealing $s1 Shadowflame damage.
 
 Name             : Resolute Barrier (id=389359) [Spell Family (5), Passive, Hidden] 
@@ -16018,7 +16017,7 @@ Name             : Profane Bargain (id=389576) [Spell Family (5), Passive, Hidde
 Talent Entry     : Generic [tree=class, row=9, col=3, max_rank=2, req_points=20]
                  : Effect#1 [op=none, values=(1, 2)]
                  : Effect#2 [op=set, values=(5, 10)]
-                 : Effect#3 [op=set, values=(5, 10)]
+                 : Effect#3 [op=set, values=(3, 5)]
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
@@ -16038,7 +16037,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 2364 (Label)
                    Affected Spells (Label): Profane Bargain (394747)
 #3 (id=1030612)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 1985 (Label) | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 1985 (Label) | Target: Self (1)
                    Affected Spells (Label): Grimoire of Sacrifice (196099)
 Description      : When your health drops below $s1%, the percentage of damage shared via your Soul Link is increased by an additional $s2%. $?a137044[][
 
@@ -16188,7 +16187,6 @@ Effects          :
 #1 (id=1026219)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effects (8)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 8 | Misc Value 2: 1928 (Label) | Target: Self (1)
                    Affected Spells (Label): Malefic Affliction (389845)
-Hotfixed         : Misc Value (3 -> 8)
 #2 (id=1026353)  : Apply Aura (6) | Proc Trigger Spell (42): Malefic Affliction
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Trigger Spell: 389845 | Target: Self (1)
 Description      : Malefic Rapture causes your active Unstable Affliction to deal $s1% additional damage, up to ${$s1*$389845u}%, for the rest of its duration.
@@ -16238,7 +16236,6 @@ Effects          :
 Description      : If Malefic Affliction exceeds $389845u stacks, the target instead takes $389868s1% additional damage from your damage over time effects for $389868d.
 
 Name             : Malefic Affliction (id=389845) [Spell Family (5)] 
-Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
@@ -16262,12 +16259,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Unstable Affliction (30108), Unstable Affliction (196364), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Unstable Affliction (316099)
                    Family Flags: 40, 43
-Hotfixed         : Sub Type (271 -> 108), Target 1 (6 -> 1)
 #2 (id=1040655)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Unstable Affliction (30108), Unstable Affliction (196364), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Unstable Affliction (316099)
                    Family Flags: 40, 43
-Hotfixed         : NEW EFFECT
 Description      : $@spelldesc389761
 Tooltip          : $@auracaster's Unstable Affliction deals $s1% additional damage.
 

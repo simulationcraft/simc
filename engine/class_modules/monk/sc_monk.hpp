@@ -269,11 +269,9 @@ public:
     propagate_const<buff_t*> teachings_of_the_monastery;
     propagate_const<buff_t*> touch_of_death_mw;
     propagate_const<buff_t*> thunder_focus_tea;
-    propagate_const<buff_t*> uplifting_trance;
 
     // Windwalker
     propagate_const<buff_t*> bok_proc;
-    propagate_const<buff_t*> combo_master;
     propagate_const<buff_t*> combo_strikes;
     propagate_const<buff_t*> dance_of_chiji;
     propagate_const<buff_t*> dance_of_chiji_hidden;  // Used for trigger DoCJ ticks
@@ -340,6 +338,7 @@ public:
     propagate_const<gain_t*> focus_of_xuen;
     propagate_const<gain_t*> fortuitous_spheres;
     propagate_const<gain_t*> gift_of_the_ox;
+    propagate_const<gain_t*> glory_of_the_dawn;
     propagate_const<gain_t*> healing_elixir;
     propagate_const<gain_t*> rushing_jade_wind_tick;
     propagate_const<gain_t*> serenity;
@@ -348,11 +347,6 @@ public:
     propagate_const<gain_t*> touch_of_death_ww;
     propagate_const<gain_t*> power_strikes;
     propagate_const<gain_t*> open_palm_strikes;
-
-    // Azerite Traits
-    propagate_const<gain_t*> glory_of_the_dawn;
-    propagate_const<gain_t*> memory_of_lucid_dreams;
-    propagate_const<gain_t*> lucid_dreams;
 
     // Covenants
     propagate_const<gain_t*> bonedust_brew;
@@ -419,7 +413,7 @@ public:
       player_talent_t grace_of_the_crane;
       player_talent_t vivacious_vivification;
       player_talent_t ferocity_of_xuen;
-      player_talent_t paralysis_rank_2;
+      player_talent_t improved_paralysis;
       // 8 Required
       // Row 5
       player_talent_t elusive_mists;
@@ -516,7 +510,7 @@ public:
       player_talent_t counterstrike;
       // Row 9
       player_talent_t bonedust_brew;
-      player_talent_t invoke_niuzao_the_black_ox_rank_2;
+      player_talent_t improved_invoke_niuzao_the_black_ox;
       player_talent_t exploding_keg;
       player_talent_t blackout_combo;
       player_talent_t weapons_of_order;
@@ -681,8 +675,10 @@ public:
     const spell_data_t* last_emperors_capacitor;
     const spell_data_t* rushing_jade_wind;
     const spell_data_t* scalding_brew;
+    const spell_data_t* shadowboxing_treads;
     const spell_data_t* skyreach;
     const spell_data_t* stormstouts_last_keg;
+    const spell_data_t* teachings_of_the_monastery;
     const spell_data_t* walk_with_the_ox;
     const spell_data_t* way_of_the_fae;
     const spell_data_t* weapons_of_order;
@@ -812,7 +808,6 @@ public:
     propagate_const<cooldown_t*> breath_of_fire;
     propagate_const<cooldown_t*> chi_torpedo;
     propagate_const<cooldown_t*> celestial_brew;
-    propagate_const<cooldown_t*> counterstrike;
     propagate_const<cooldown_t*> desperate_measure;
     propagate_const<cooldown_t*> drinking_horn_cover;
     propagate_const<cooldown_t*> expel_harm;

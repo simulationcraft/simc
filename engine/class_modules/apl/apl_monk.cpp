@@ -124,19 +124,21 @@ std::string temporary_enchant( const player_t* p )
   switch ( p->specialization() )
   {
     case MONK_BREWMASTER:
-      if ( p->true_level >= 60 )
+      if ( p->true_level > 60 )
+        return "main_hand:buzzing_rune_3/off_hand:buzzing_rune_3";
+      else if ( p->true_level > 50 )
         return "main_hand:shadowcore_oil/off_hand:shadowcore_oil";
       else
         return "disabled";
       break;
     case MONK_MISTWEAVER:
-      if ( p->true_level >= 60 )
+      if ( p->true_level > 50 )
         return "main_hand:shadowcore_oil";
       else
         return "disabled";
       break;
     case MONK_WINDWALKER:
-      if ( p->true_level >= 60 )
+      if ( p->true_level > 50 )
         return "main_hand:shaded_weightstone/off_hand:shaded_weightstone";
       else
         return "disabled";
@@ -184,16 +186,8 @@ void brewmaster( player_t* p )
   // ---------------------------------
   // PRE-COMBAT VARIABLE CONFIGURATION
   // ---------------------------------
-  // Cooldowns
-  pre->add_action( "variable,name=niuzao_score,op=set,value=talent.invoke_niuzao_the_black_ox.enabled+talent.improved_invoke_niuzao_the_black_ox.enabled", "Cooldowns" );
-  pre->add_action( "variable,name=woo_score,op=set,value=talent.weapons_of_order.enabled+(talent.call_to_arms.enabled|covenant.kyrian)" );
-
   // Blackout Combo
   pre->add_action( "variable,name=boc_count,op=set,value=0", "Blackout Combo" );
-  pre->add_action( "variable,name=offset,op=set,value=-0.1" );
-
-  // Base Sal'salabim's Strength + Charred Passions
-  pre->add_action( "variable,name=chp_threshold,op=set,value=6", "Base Sal'salabim's Strength + Charred Passions" );
 
   // ---------------------------------
   // BEGIN ACTIONS
@@ -238,10 +232,12 @@ void brewmaster( player_t* p )
   }
 
   // Cooldown Action Lists
-  def->add_action( "call_action_list,name=cooldowns_improved_niuzao_woo,if=variable.niuzao_score=2&variable.woo_score<=1",
+  // $(niuzao_score)=(talent.invoke_niuzao_the_black_ox.enabled+talent.improved_invoke_niuzao_the_black_ox.enabled)
+  // $(woo_score)=(talent.weapons_of_order.enabled+talent.call_to_arms.enabled)
+  def->add_action( "call_action_list,name=cooldowns_improved_niuzao_woo,if=(talent.invoke_niuzao_the_black_ox.enabled+talent.improved_invoke_niuzao_the_black_ox.enabled)=2&(talent.weapons_of_order.enabled+talent.call_to_arms.enabled)<=1",
                    "Cooldown Action Lists" );
-  def->add_action( "call_action_list,name=cooldowns_improved_niuzao_cta,if=variable.niuzao_score=2&variable.woo_score=2" );
-  def->add_action( "call_action_list,name=cooldowns_niuzao_woo,if=variable.niuzao_score<=1" );
+  def->add_action( "call_action_list,name=cooldowns_improved_niuzao_cta,if=(talent.invoke_niuzao_the_black_ox.enabled+talent.improved_invoke_niuzao_the_black_ox.enabled)=2&(talent.weapons_of_order.enabled+talent.call_to_arms.enabled)=2" );
+  def->add_action( "call_action_list,name=cooldowns_niuzao_woo,if=(talent.invoke_niuzao_the_black_ox.enabled+talent.improved_invoke_niuzao_the_black_ox.enabled)<=1" );
 
   // Rotation Action Lists
   def->add_action( "call_action_list,name=rotation_blackout_combo,if=talent.blackout_combo.enabled&talent.salsalabims_strength.enabled&talent.charred_passions.enabled&!talent.fluidity_of_motion.enabled",
@@ -403,15 +399,16 @@ void brewmaster( player_t* p )
 
   // Name: Salsalabim's Strength Charred Passions
   // Basic Sequence: Keg Smash Breath of Fire x x x x x
-  rotation_salsal_chp->add_action( "keg_smash,if=buff.charred_passions.remains<=variable.chp_threshold", 
+  // $(chp_threshold)=6
+  rotation_salsal_chp->add_action( "keg_smash,if=talent.keg_smash.enabled&buff.charred_passions.remains<=6", 
       "Name: Salsalabim's Strength Charred Passions");
-  rotation_salsal_chp->add_action( "breath_of_fire,if=talent.breath_of_fire.enabled" );
+  rotation_salsal_chp->add_action( "breath_of_fire,if=talent.breath_of_fire.enabled&buff.charred_passions.remains<=0.5" );
   rotation_salsal_chp->add_action( "blackout_kick" );
   rotation_salsal_chp->add_action( "rising_sun_kick,if=talent.rising_sun_kick.enabled" );
   rotation_salsal_chp->add_action( "exploding_keg,if=cooldown.breath_of_fire.remains>=12&talent.exploding_keg.enabled" );
   rotation_salsal_chp->add_action( "rushing_jade_wind,if=buff.rushing_jade_wind.down&talent.rushing_jade_wind.enabled" );
-  rotation_salsal_chp->add_action( "black_ox_brew,if=(energy+(energy.regen*(buff.charred_passions.remains+execute_time-variable.chp_threshold)))>=65&talent.black_ox_brew.enabled" );
-  rotation_salsal_chp->add_action( "spinning_crane_kick,if=(energy+(energy.regen*(buff.charred_passions.remains+execute_time-variable.chp_threshold)))>=65" );
+  rotation_salsal_chp->add_action( "black_ox_brew,if=(energy+(energy.regen*(buff.charred_passions.remains+execute_time-6)))>=65&talent.black_ox_brew.enabled" );
+  rotation_salsal_chp->add_action( "spinning_crane_kick,if=(energy+(energy.regen*(buff.charred_passions.remains+execute_time-6)))>=65" );
   rotation_salsal_chp->add_action( "celestial_brew,if=talent.celestial_brew.enabled&!buff.blackout_combo.up" );
   rotation_salsal_chp->add_action( "chi_wave,if=talent.chi_wave.enabled" );
   rotation_salsal_chp->add_action( "chi_burst,if=talent.chi_burst.enabled" );
@@ -601,14 +598,20 @@ void windwalker( player_t* p )
 
   cd_sef->add_action( "storm_earth_and_fire,if=fight_remains<20|!covenant.necrolord&(cooldown.storm_earth_and_fire.charges=2|buff.weapons_of_order.up|covenant.kyrian&cooldown.weapons_of_order.remains>cooldown.storm_earth_and_fire.full_recharge_time|cooldown.invoke_xuen_the_white_tiger.remains>cooldown.storm_earth_and_fire.full_recharge_time)&cooldown.fists_of_fury.remains<=9&chi>=2&cooldown.whirling_dragon_punch.remains<=12" );
 
-  if ( monk->talent.windwalker.invoke_xuen_the_white_tiger->ok() )
-    cd_sef->add_action( p, "Touch of Death",
-                        "if=combo_strike&(fight_remains>60|buff.storm_earth_and_fire.down&pet.xuen_the_white_tiger.active&(!covenant.necrolord|buff.bonedust_brew.up)|(cooldown.invoke_xuen_the_white_tiger.remains>fight_remains)&buff.bonedust_brew.up|fight_remains<10)" );
+  if ( monk->sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE )
+  {
+    cd_sef->add_action( "touch_of_death,target_if=max:target.health,if=combo_strike&(target.health<health|fight_remains>60|buff.bonedust_brew.up)" );
+  }
   else
-    cd_sef->add_action(
+  {
+    if ( monk->talent.windwalker.invoke_xuen_the_white_tiger->ok() )
+      cd_sef->add_action( p, "Touch of Death",
+        "if=combo_strike&(fight_remains>60|buff.storm_earth_and_fire.down&pet.xuen_the_white_tiger.active&(!covenant.necrolord|buff.bonedust_brew.up)|(cooldown.invoke_xuen_the_white_tiger.remains>fight_remains)&buff.bonedust_brew.up|fight_remains<10)" );
+    else
+      cd_sef->add_action(
         p, "Touch of Death",
         "if=combo_strike&(fight_remains>60|buff.storm_earth_and_fire.down&(!covenant.necrolord|buff.bonedust_brew.up)|fight_remains<10)" );
-
+  }
 
   cd_sef->add_action( "fallen_order,if=raid_event.adds.in>30|raid_event.adds.up" );
 
@@ -714,18 +717,26 @@ void windwalker( player_t* p )
   cd_serenity->add_action(
     "serenity,if=pet.xuen_the_white_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>10|!talent.invoke_xuen_the_white_tiger|fight_remains<15");
  
-
-  if ( monk->talent.windwalker.invoke_xuen_the_white_tiger->ok() )
+  cd_serenity->add_action( "touch_of_death,target_if=max:target.health,if=combo_strike&target.health>0&(target.health<health|fight_remains>60)" );
+  
+  if ( monk->sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE )
   {
-    cd_serenity->add_action( p, "Touch of Death",
-      "if=combo_strike&(fight_remains>60|pet.xuen_the_white_tiger.active&(!covenant.necrolord|buff.bonedust_brew.up)|(cooldown.invoke_xuen_the_white_tiger.remains>fight_remains)&buff.bonedust_brew.up|fight_remains<10)" );
-    cd_serenity->add_action( "touch_of_karma,if=fight_remains>90|pet.xuen_the_white_tiger.active|fight_remains<10" );
+    cd_sef->add_action( "touch_of_death,target_if=max:target.health,if=combo_strike&(target.health<health|fight_remains>60|buff.bonedust_brew.up)" );
   }
   else
   {
-    cd_serenity->add_action( p, "Touch of Death", "if=combo_strike&(fight_remains>60|buff.bonedust_brew.up|fight_remains<10)" );
-    cd_serenity->add_action( "touch_of_karma,if=fight_remains>90|fight_remains<16" );
+    if ( monk->talent.windwalker.invoke_xuen_the_white_tiger->ok() )
+    {
+      cd_serenity->add_action( p, "Touch of Death",
+        "if=combo_strike&(fight_remains>60|pet.xuen_the_white_tiger.active&(!covenant.necrolord|buff.bonedust_brew.up)|(cooldown.invoke_xuen_the_white_tiger.remains>fight_remains)&buff.bonedust_brew.up|fight_remains<10)" );
+    }
+    else
+    {
+      cd_serenity->add_action( p, "Touch of Death", "if=combo_strike&target.health=0&(fight_remains>60|buff.bonedust_brew.up|fight_remains<10)" );
+    }
   }
+
+  cd_serenity->add_action( "touch_of_karma,if=fight_remains>90|fight_remains<10" );
 
   cd_serenity->add_action(
     "fallen_order" );
@@ -787,12 +798,12 @@ void windwalker( player_t* p )
 
   // AoE priority
   aoe->add_action( "faeline_stomp,if=combo_strike", "AoE Priority (3+ Targets)");
-  aoe->add_action( "spinning_crane_kick,if=buff.dance_of_chiji.up&active_enemies>3" );
+  aoe->add_action( "spinning_crane_kick,if=combo_strike&buff.dance_of_chiji.up&active_enemies>3" );
   aoe->add_action( "strike_of_the_windlord,if=talent.thunderfist&active_enemies>3" );
   aoe->add_action( "whirling_dragon_punch,if=active_enemies>8" );
   aoe->add_action( "spinning_crane_kick,if=buff.bonedust_brew.up&combo_strike&active_enemies>5&spinning_crane_kick.modifier>=3.2" );
   aoe->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.teachings_of_the_monastery.stack=3&talent.shadowboxing_treads" );
-  aoe->add_action( "spinning_crane_kick,if=buff.dance_of_chiji.up" );
+  aoe->add_action( "spinning_crane_kick,if=combo_strike&buff.dance_of_chiji.up" );
   aoe->add_action( "strike_of_the_windlord,if=talent.thunderfist" );
   aoe->add_action( "whirling_dragon_punch,if=active_enemies>5" );
   aoe->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.teachings_of_the_monastery.up&(buff.teachings_of_the_monastery.stack=2|active_enemies<5)&talent.shadowboxing_treads" );
@@ -806,7 +817,7 @@ void windwalker( player_t* p )
   aoe->add_action( "strike_of_the_windlord" );
   aoe->add_action( "spinning_crane_kick,if=combo_strike&active_enemies>=5" );
   aoe->add_action( "fists_of_fury" );
-  aoe->add_action( "spinning_crane_kick,if=active_enemies>=4&spinning_crane_kick.modifier>=2.5|!talent.shadowboxing_treads" );
+  aoe->add_action( "spinning_crane_kick,if=combo_strike&(active_enemies>=4&spinning_crane_kick.modifier>=2.5|!talent.shadowboxing_treads)" );
   aoe->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike" );
   aoe->add_action( "rushing_jade_wind,if=!buff.rushing_jade_wind.up" );
   aoe->add_action( "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains" );
@@ -815,12 +826,12 @@ void windwalker( player_t* p )
   // ST / Cleave
   st_cleave->add_action( "faeline_stomp,if=combo_strike", "ST Priority (<3 Targets)" );
   st_cleave->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.teachings_of_the_monastery.stack=3&talent.shadowboxing_treads" );
-  st_cleave->add_action( "spinning_crane_kick,if=buff.dance_of_chiji.up" );
+  st_cleave->add_action( "spinning_crane_kick,if=combo_strike&buff.dance_of_chiji.up" );
   st_cleave->add_action( "strike_of_the_windlord,if=talent.thunderfist" );
   st_cleave->add_action( "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=active_enemies=1&buff.kicks_of_flowing_momentum.up" );
   st_cleave->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.teachings_of_the_monastery.stack=2&talent.shadowboxing_treads" );
   st_cleave->add_action( "strike_of_the_windlord" );
-  st_cleave->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.teachings_of_the_monastery.up&talent.shadowboxing_treads" );
+  st_cleave->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.teachings_of_the_monastery.up&(talent.shadowboxing_treads&active_enemies>1|cooldown.rising_sun_kick.remains>1)" );
   st_cleave->add_action( "whirling_dragon_punch,if=active_enemies=2" );
   st_cleave->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.teachings_of_the_monastery.stack=3" );
   st_cleave->add_action( "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=(active_enemies=1|!talent.shadowboxing_treads)&cooldown.fists_of_fury.remains>4&(talent.xuens_battlegear|runeforge.xuens_treasure)" );
@@ -881,11 +892,11 @@ void windwalker( player_t* p )
 
   // Bonedust Brew Setup
   bdb_setup->add_action( "bonedust_brew,if=spinning_crane_kick.max&chi>=4", "Bonedust Brew Setup" );
-  bdb_setup->add_action("rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&chi>=5" );
+  bdb_setup->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&!talent.whirling_dragon_punch" );
+  bdb_setup->add_action( "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&chi>=5" );
   bdb_setup->add_action( p, "Tiger Palm",
     "target_if=min:debuff.mark_of_the_crane.remains+(debuff.skyreach_exhaustion.up*20),if=combo_strike&chi.max-chi>=2" );
-  bdb_setup->add_action( "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&cooldown.fists_of_fury.remains&active_enemies>=2" );
-
+  bdb_setup->add_action( "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&active_enemies>=2" );
 }
 
 void no_spec( player_t* p )

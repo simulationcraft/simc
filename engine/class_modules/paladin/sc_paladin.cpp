@@ -323,7 +323,7 @@ struct consecration_tick_t : public paladin_spell_t
     {
       m *= 1.0 + p()->talents.consecration_in_flame->effectN( 2 ).percent();
     }
-    if ( p()->talents.hallowed_ground->ok() && !(p() -> bugs))
+    if ( p()->talents.hallowed_ground->ok() )
     {
       m *= 1.0 + p()->talents.hallowed_ground->effectN( 1 ).percent();
     }
@@ -2433,7 +2433,7 @@ void paladin_t::init_gains()
   gains.holy_shield   = get_gain( "holy_shield_absorb" );
   gains.bulwark_of_order = get_gain( "bulwark_of_order_absorb" );
   gains.moment_of_glory  = get_gain( "moment_of_glory_absorb" );
-  
+
 
   // Holy Power
   gains.hp_templars_verdict_refund = get_gain( "templars_verdict_refund" );
@@ -3036,10 +3036,6 @@ double paladin_t::composite_player_multiplier( school_e school ) const
     {
       m *= 1.0 + buffs.vanguards_momentum_legendary->stack_value();
     }
-    if ( bugs && talents.hallowed_ground->ok() )
-    {
-      m *= 1.0 + talents.hallowed_ground->effectN( 1 ).percent();
-    }
   }
 
   return m;
@@ -3078,7 +3074,7 @@ double paladin_t::composite_damage_versatility() const
 
   if ( buffs.seraphim->up() )
     cdv += buffs.seraphim->data().effectN( 2 ).percent();
-  
+
   if ( buffs.ally_of_the_light->up() )
     cdv += buffs.ally_of_the_light->data().effectN( 1 ).percent();
 

@@ -5065,12 +5065,22 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
 
       case P_TARGET:
         assert( !( aoe == -1 || ( effect.base_value() < 0 && effect.base_value() > aoe ) ) );
-        // As the aoe value defaults to 0 for ST, increasing directly doesn't always result in the correct value
-        if ( aoe == 0 )
-          aoe = 1 + as<int>( effect.base_value() );
-        else
+        if ( aoe > 0 )
+        {
           aoe += as<int>( effect.base_value() );
-        sim->print_debug( "{} max target count modified by {} to {}", *this, effect.base_value(), aoe );
+          sim->print_debug( "{} max target count modified by {} to {}", *this, effect.base_value(), aoe );
+        }
+        else if( aoe == 0 )
+        {
+          // This behavior depends on if the any effect has chain_targets of 1 defined in spell data or not
+          // A bit roundabout, but we skip storing this in action_t::parse_effect_data() if it is only 1 
+          bool has_chain_target = range::any_of( data().effects(), []( const spelleffect_data_t& effect ) {
+            return effect.chain_target() == 1;
+          } );
+          aoe = as<int>( has_chain_target ) + as<int>( effect.base_value() );
+          sim->print_debug( "{} max target count modified by {} to {}", *this, effect.base_value() - !has_chain_target, aoe );
+        }
+        
         break;
 
       case P_TARGET_BONUS:
