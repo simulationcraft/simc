@@ -4761,6 +4761,13 @@ struct lava_beam_overload_t : public chained_overload_base_t
   {
     affected_by_master_of_the_elements = true;
   }
+
+  void impact( action_state_t* state ) override
+  {
+    chained_overload_base_t::impact( state );
+
+    p()->trigger_lightning_rod_damage( state );
+  }
 };
 
 struct chained_base_t : public shaman_spell_t
@@ -5058,6 +5065,24 @@ struct lava_beam_t : public chained_base_t
     }
 
     return shaman_spell_t::ready();
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    chained_base_t::impact( state );
+
+    p()->trigger_lightning_rod_damage( state );
+  }
+
+  void schedule_travel(action_state_t* s) override
+  {
+    if ( s->chain_target == 0 && p()->buff.power_of_the_maelstrom->up() )
+    {
+      trigger_elemental_overload( s, 1.0 );
+      p()->buff.power_of_the_maelstrom->decrement();
+    }
+
+    chained_base_t::schedule_travel( s );
   }
 };
 
