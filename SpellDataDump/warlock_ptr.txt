@@ -2773,6 +2773,7 @@ Description      : $108446s1% of all damage you take is taken by your demon pet 
 While Grimoire of Sacrifice is active, your Stamina is increased by $108446s4%.]
 
 Name             : Dark Pact (id=108416) [Spell Family (5)] 
+Hotfixed         : Variables
 Talent Entry     : Generic [tree=class, row=6, col=1, max_rank=1, req_points=8]
 Class            : Warlock
 School           : Physical
@@ -2797,12 +2798,13 @@ Effects          :
 #2 (id=180660)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=728489)   : Dummy (3)
-                   Base Value: 250 | Scaled Value: 250 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (250 -> 200)
 #4 (id=817750)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 5.00000 | PvP Coefficient: 1.00000
 Description      : Sacrifices $s2% of your current health to shield you for $s3% of the sacrificed health plus an additional $<points> for $d. Usable while suffering from control impairing effects.
 Tooltip          : Absorbs $w1 damage.
-Variables        : $points=${$SP*5}
+Variables        : $points=${$SP*2.5}
 
 Name             : Soul Link (id=108446) [Spell Family (5)] 
 Class            : Warlock

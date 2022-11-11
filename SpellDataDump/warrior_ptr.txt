@@ -3843,7 +3843,7 @@ Class            : Warrior
 School           : Physical
 Spell Type       : Melee
 Spell Level      : 1
-Range            : 50000 yards
+Range            : 8 yards
 Duration         : 1 seconds
 Proc Chance      : 101%
 Mechanic         : Root
@@ -14403,8 +14403,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1019768)  : Apply Aura (6) | Modify Block% (51)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Self (1)
-#2 (id=1019769)  : Apply Aura (6) | Unknown(274)
+#2 (id=1019769)  : Apply Aura (6) | Unknown(272)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Sub Type (274 -> 272)
 Description      : Increases Block chance by $s1% and your Block value by $s2%.
 
 Name             : Enduring Defenses (id=386027) [Spell Family (4), Passive] 
