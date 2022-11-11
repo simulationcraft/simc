@@ -526,6 +526,7 @@ public:
     const spell_data_t* all_rogue;
     const spell_data_t* critical_strikes;
     const spell_data_t* fleet_footed;           // DFALPHA: Duplicate passive?
+    const spell_data_t* leather_specialization;
 
     // Background Spells
     const spell_data_t* alacrity_buff;
@@ -3388,8 +3389,7 @@ struct between_the_eyes_t : public rogue_attack_t
 
       if ( p()->spec.greenskins_wickers->ok() )
       {
-        // 2022-05-28 -- Greenskins ignores animacharged CP values for calculating proc chance
-        if ( rng().roll( rs->get_combo_points( p()->bugs ) * p()->spec.greenskins_wickers->effectN( 1 ).percent() ) )
+        if ( rng().roll( rs->get_combo_points() * p()->spec.greenskins_wickers->effectN( 1 ).percent() ) )
           p()->buffs.greenskins_wickers->trigger();
       }
 
@@ -4443,13 +4443,11 @@ struct pistol_shot_t : public rogue_attack_t
     }
   }
 
-  // As of DF Beta neither Blunderbuss or Fan the Hammer trigger this
   bool procs_fatal_flourish() const override
-  { return !is_secondary_action(); }
+  { return true; }
 
-  // As of DF Beta neither Blunderbuss or Fan the Hammer trigger this
   bool procs_blade_flurry() const override
-  { return !is_secondary_action(); }
+  { return true; }
 };
 
 // Main Gauche ==============================================================
@@ -6966,6 +6964,7 @@ struct shadow_dance_t : public stealth_like_buff_t<damage_buff_t>
     {
       rogue->buffs.danse_macabre->expire();
       rogue->danse_macabre_tracker.clear();
+      rogue->buffs.danse_macabre->trigger();
     }
   }
 
@@ -7867,11 +7866,6 @@ void actions::rogue_action_t<Base>::trigger_restless_blades( const action_state_
   p()->cooldowns.killing_spree->adjust( v, false );
   p()->cooldowns.marked_for_death->adjust( v, false );
   p()->cooldowns.roll_the_bones->adjust( v, false );
-  // DFALPHA -- Currently bugged, but may not return
-  if ( !p()->bugs )
-  {
-    p()->cooldowns.sepsis->adjust( v, false );
-  }
   p()->cooldowns.sprint->adjust( v, false );
   p()->cooldowns.vanish->adjust( v, false );
 
@@ -8647,7 +8641,7 @@ double rogue_t::composite_leech() const
 double rogue_t::matching_gear_multiplier( attribute_e attr ) const
 {
   if ( attr == ATTR_AGILITY )
-    return 0.05;
+    return spell.leather_specialization->effectN( 1 ).percent();
 
   return 0.0;
 }
@@ -9458,8 +9452,9 @@ void rogue_t::init_spells()
 
   // Class Passives
   spell.all_rogue = find_spell( 137034 );
-  spell.critical_strikes = find_class_spell( "Critical Strikes" );
+  spell.critical_strikes = find_spell( 157442 );
   spell.fleet_footed = find_class_spell( "Fleet Footed" );
+  spell.leather_specialization = find_spell( 86092 );
 
   // Assassination Spells
   spec.assassination_rogue = find_specialization_spell( "Assassination Rogue" );
@@ -9806,7 +9801,7 @@ void rogue_t::init_spells()
   spec.shadow_focus_buff = talent.subtlety.shadow_focus->ok() ? find_spell( 112942 ) : spell_data_t::not_found();
   spec.shadow_techniques_energize = spec.shadow_techniques->ok() ? find_spell( 196911 ) : spell_data_t::not_found();
   spec.shot_in_the_dark_buff = talent.subtlety.shot_in_the_dark->ok() ? find_spell( 257506 ) : spell_data_t::not_found();
-  spec.silent_storm_buff = talent.subtlety.silent_storm->ok() ? find_spell( 385722 ) : spell_data_t::not_found();
+  spec.silent_storm_buff = talent.subtlety.silent_storm->ok() ? find_spell( 385727 ) : spell_data_t::not_found();
 
   // Covenant Abilities =====================================================
 

@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.46455 Live (hotfix 2022-11-04/46455)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.46597 Live (hotfix 2022-11-10/46597)
 Name             : Frostbolt of Ages (id=11) 
 Class            : Paladin
 School           : Frost
@@ -15785,7 +15785,9 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Judgment (20271), Judgment (197277), Judgment (214222), Judgment (275773), Judgment (275779)
                    Family Flags: 23
-Description      : Hammer of Wrath and Judgment deal $s2% additional damage and extend the duration of $?s384092[Crusade]?s394088[Avenging Crusader]?s385438[Sentinel][Avenging Wrath] by $s1 sec.
+#4 (id=1040481)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 500 | Scaled Value: 500 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Hammer of Wrath and Judgment deal $s2% additional damage and extend the duration of $?s384092[Crusade]?s394088[Avenging Crusader]?s385438[Sentinel][Avenging Wrath] by ${$s4/1000}.1 sec.
 
 Name             : Resplendent Light (id=392902) [Spell Family (10), Passive, Hidden] 
 Talent Entry     : Holy [tree=spec, row=4, col=1, max_rank=1, req_points=0, select_idx=200]

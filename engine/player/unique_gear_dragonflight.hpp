@@ -42,9 +42,17 @@ void darkmoon_deck_dance( special_effect_t& );
 void darkmoon_deck_inferno( special_effect_t& );
 void darkmoon_deck_rime( special_effect_t& );
 void darkmoon_deck_watcher( special_effect_t& );
+void bottle_of_spiraling_winds( special_effect_t& );
 void conjured_chillglobe( special_effect_t& );
+void irideus_fragment( special_effect_t& );
 void emerald_coachs_whistle( special_effect_t& );
+void erupting_spear_fragment( special_effect_t& );
+void furious_ragefeather( special_effect_t& );
+void idol_of_pure_decay( special_effect_t& );
 void spiteful_storm( special_effect_t& );
+void spoils_of_neltharus( special_effect_t& );
+void timebreaching_talon( special_effect_t& );
+void umbrelskuls_fractured_heart( special_effect_t& );
 void whispering_incarnate_icon( special_effect_t& );
 void the_cartographers_calipers( special_effect_t& );
 

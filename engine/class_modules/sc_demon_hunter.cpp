@@ -6050,10 +6050,10 @@ void demon_hunter_t::init_spells()
   // Specialization =========================================================
 
   // General Passives
-  spell.all_demon_hunter        = find_class_spell( "Demon Hunter" );
-  spell.chaos_brand             = find_class_spell( "Chaos Brand" );
-  spell.critical_strikes        = find_class_spell( "Critical Strikes" );
-  spell.leather_specialization  = find_specialization_spell( "Leather Specialization", "Passive" );
+  spell.all_demon_hunter        = dbc::get_class_passive( *this, SPEC_NONE );
+  spell.chaos_brand             = find_spell( 1490 );
+  spell.critical_strikes        = find_spell( 221351 );
+  spell.leather_specialization  = find_specialization_spell( "Leather Specialization" );
 
   spell.demon_soul              = find_spell( 163073 );
   spell.demon_soul_empowered    = find_spell( 347765 );

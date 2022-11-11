@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.46455 Live (hotfix 2022-11-04/46455)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.46597 Live (hotfix 2022-11-10/46597)
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=8, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
@@ -159,7 +159,7 @@ Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 12 seconds
-Affecting spells : Incarnation: Tree of Life (5420 effects: #1, #2, #4, #5, #6), Bear Form (5487 effect#8), Nimble Healing Touch (24542 effect#2), Nurturing Instinct (33873 effects: #1, #2), Blessing of Lower City (37878 effect#1), Ironbark (102342 effect#2), Heart of the Wild (108294 effects: #1, #2), Restoration Druid (137012 effects: #1, #2, #16), Germination (155675 effect#1), Starfall (191034 effect#2), Restoration Affinity (197492 effects: #3, #4, #5), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Stellar Drift (202461 effect#1), Essence of G'Hanir (208253 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Improved Rejuvenation (231040 effect#1), Autumn Leaves (287247 effect#1), Heart of the Wild (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325748 effect#2), Circle of Life and Death (338657 effects: #2, #4), Ravenous Frenzy (355315 effects: #1, #4), Natural Recovery (377796 effects: #1, #2), Regenesis (383191 effect#1), Convoke the Spirits (391528 effects: #3, #4), Adaptive Swarm (391891 effect#2), Circle of Life and Death (391969 effects: #2, #4)
+Affecting spells : Incarnation: Tree of Life (5420 effects: #1, #2, #4, #5, #6), Bear Form (5487 effect#8), Nimble Healing Touch (24542 effect#2), Nurturing Instinct (33873 effects: #1, #2), Blessing of Lower City (37878 effect#1), Ironbark (102342 effect#2), Heart of the Wild (108294 effects: #1, #2), Restoration Druid (137012 effects: #1, #2, #16), Germination (155675 effect#1), Starfall (191034 effect#2), Restoration Affinity (197492 effects: #3, #4, #5), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Stellar Drift (202461 effect#1), Essence of G'Hanir (208253 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Improved Rejuvenation (231040 effect#1), Autumn Leaves (287247 effect#1), Heart of the Wild (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325748 effect#2), Circle of Life and Death (338657 effects: #2, #4), Ravenous Frenzy (355315 effects: #1, #4), Natural Recovery (377796 effects: #1, #2), Regenesis (383191 effect#1), Convoke the Spirits (391528 effects: #3, #4), Adaptive Swarm (391891 effect#2), Circle of Life and Death (391969 effects: #2, #4), Waning Twilight (393957 effect#2)
 Family Flags     : 4, 118
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   .......x ........ ........ ........ 
@@ -909,7 +909,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 12 seconds
 Labels           : 802: Devout Spirit (297412 effect#1), Devout Spirit (310530 effect#1)
-Affecting spells : Cat Form (3025 effect#4), Incarnation: Tree of Life (5420 effects: #1, #2), Clearcasting (16870 effects: #1, #2), Nimble Healing Touch (24542 effect#2), Nurturing Instinct (33873 effects: #1, #2), Blessing of Lower City (37878 effect#1), Predatory Swiftness (69369 effects: #1, #2, #3), Incarnation: Tree of Life (81097 effect#1), Ironbark (102342 effect#2), Heart of the Wild (108294 effects: #1, #2), Nature's Swiftness (132158 effects: #1, #2, #3, #4), Guardian Druid (137010 effects: #3, #4, #5), Feral Druid (137011 effects: #4, #5, #6), Restoration Druid (137012 effects: #1, #2, #14, #15), Balance Druid (137013 effects: #4, #5, #6), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Stellar Drift (202461 effect#1), Abundance (207640 effects: #1, #2), Essence of G'Hanir (208253 effect#1), Power of Elune, the Moon Goddess (208284 effects: #2, #3), Ekowraith, Creator of Worlds (210667 effect#1), Rampant Growth (278515 effect#1), Heart of the Wild (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Circle of Life and Death (338657 effects: #2, #4), Ravenous Frenzy (355315 effects: #1, #4), Dream of Cenarius (372152 effects: #1, #2, #3), Natural Recovery (377796 effects: #1, #2), Convoke the Spirits (391528 effects: #3, #4), Circle of Life and Death (391969 effects: #2, #4), Protector of the Pack (395336 effect#1)
+Affecting spells : Cat Form (3025 effect#4), Incarnation: Tree of Life (5420 effects: #1, #2), Clearcasting (16870 effects: #1, #2), Nimble Healing Touch (24542 effect#2), Nurturing Instinct (33873 effects: #1, #2), Blessing of Lower City (37878 effect#1), Predatory Swiftness (69369 effects: #1, #2, #3), Incarnation: Tree of Life (81097 effect#1), Ironbark (102342 effect#2), Heart of the Wild (108294 effects: #1, #2), Nature's Swiftness (132158 effects: #1, #2, #3, #4), Guardian Druid (137010 effects: #3, #4, #5), Feral Druid (137011 effects: #4, #5, #6), Restoration Druid (137012 effects: #1, #2, #14, #15), Balance Druid (137013 effects: #4, #5, #6), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Stellar Drift (202461 effect#1), Abundance (207640 effects: #1, #2), Essence of G'Hanir (208253 effect#1), Power of Elune, the Moon Goddess (208284 effects: #2, #3), Ekowraith, Creator of Worlds (210667 effect#1), Rampant Growth (278515 effect#1), Heart of the Wild (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Circle of Life and Death (338657 effects: #2, #4), Ravenous Frenzy (355315 effects: #1, #4), Dream of Cenarius (372152 effects: #1, #2, #3), Natural Recovery (377796 effects: #1, #2), Convoke the Spirits (391528 effects: #3, #4), Circle of Life and Death (391969 effects: #2, #4), Waning Twilight (393957 effect#2), Protector of the Pack (395336 effect#1)
 Triggered by     : Dream of Cenarius (372152)
 Family Flags     : 6, 118
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -1152,7 +1152,7 @@ GCD              : 1.5 seconds
 Charges          : 1 (15 seconds cooldown)
 Category         : 1576
 Stance Mask      : 0x00000002
-Affecting spells : Incarnation: Tree of Life (5420 effects: #1, #2), Nurturing Instinct (33873 effects: #1, #2), Blessing of Lower City (37878 effect#1), Heart of the Wild (108294 effects: #1, #2), Restoration Druid (137012 effects: #1, #2), Starfall (191034 effect#2), Restoration Affinity (197492 effects: #2, #4), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Heart of the Wild (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4, #5), Circle of Life and Death (338657 effects: #2, #4), Ravenous Frenzy (355315 effects: #1, #4), Natural Recovery (377796 effects: #1, #2), Convoke the Spirits (391528 effects: #3, #4, #5), Circle of Life and Death (391969 effects: #2, #4)
+Affecting spells : Incarnation: Tree of Life (5420 effects: #1, #2), Nurturing Instinct (33873 effects: #1, #2), Blessing of Lower City (37878 effect#1), Heart of the Wild (108294 effects: #1, #2), Restoration Druid (137012 effects: #1, #2), Starfall (191034 effect#2), Restoration Affinity (197492 effects: #2, #4), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Heart of the Wild (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4, #5), Circle of Life and Death (338657 effects: #2, #4), Ravenous Frenzy (355315 effects: #1, #4), Natural Recovery (377796 effects: #1, #2), Convoke the Spirits (391528 effects: #3, #4, #5), Circle of Life and Death (391969 effects: #2, #4), Waning Twilight (393957 effect#2)
 Family Flags     : 33, 118
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -1524,7 +1524,7 @@ Proc Chance      : 100%
 Stance Mask      : 0x00000002
 Proc Flags       : ........ ........ ........ .......x 
                  
-Affecting spells : Incarnation: Tree of Life (5420 effects: #1, #2), Nurturing Instinct (33873 effects: #1, #2), Blessing of Lower City (37878 effect#1), Ironbark (102342 effect#2), Heart of the Wild (108294 effects: #1, #2), Restoration Druid (137012 effects: #1, #2), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Stellar Drift (202461 effect#1), The Dark Titan's Advice (207271 effect#1), Essence of G'Hanir (208253 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Heart of the Wild (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325748 effect#2), Circle of Life and Death (338657 effects: #2, #4), The Dark Titan's Lesson (338831 effects: #1, #2), Ravenous Frenzy (355315 effects: #1, #4), Natural Recovery (377796 effects: #1, #2), Convoke the Spirits (391528 effects: #3, #4), Adaptive Swarm (391891 effect#2), Circle of Life and Death (391969 effects: #2, #4), Undergrowth (392301 effects: #1, #2)
+Affecting spells : Incarnation: Tree of Life (5420 effects: #1, #2), Nurturing Instinct (33873 effects: #1, #2), Blessing of Lower City (37878 effect#1), Ironbark (102342 effect#2), Heart of the Wild (108294 effects: #1, #2), Restoration Druid (137012 effects: #1, #2), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Stellar Drift (202461 effect#1), The Dark Titan's Advice (207271 effect#1), Essence of G'Hanir (208253 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Heart of the Wild (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325748 effect#2), Circle of Life and Death (338657 effects: #2, #4), The Dark Titan's Lesson (338831 effects: #1, #2), Ravenous Frenzy (355315 effects: #1, #4), Natural Recovery (377796 effects: #1, #2), Convoke the Spirits (391528 effects: #3, #4), Adaptive Swarm (391891 effect#2), Circle of Life and Death (391969 effects: #2, #4), Undergrowth (392301 effects: #1, #2), Waning Twilight (393957 effect#2)
 Family Flags     : 36, 44, 118
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ x....... ...x.... ........   ........ ........ ........ ..x..... 
@@ -1552,7 +1552,7 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 26
 Range            : 40 yards
-Affecting spells : Incarnation: Tree of Life (5420 effects: #1, #2), Nurturing Instinct (33873 effects: #1, #2), Blessing of Lower City (37878 effect#1), Heart of the Wild (108294 effects: #1, #2), Restoration Druid (137012 effects: #1, #2), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), The Dark Titan's Advice (207271 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Heart of the Wild (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325748 effect#2), Circle of Life and Death (338657 effects: #2, #4), The Dark Titan's Lesson (338831 effects: #1, #2), Ravenous Frenzy (355315 effects: #1, #4), Natural Recovery (377796 effects: #1, #2), Convoke the Spirits (391528 effects: #3, #4), Adaptive Swarm (391891 effect#2), Circle of Life and Death (391969 effects: #2, #4), Undergrowth (392301 effects: #1, #2)
+Affecting spells : Incarnation: Tree of Life (5420 effects: #1, #2), Nurturing Instinct (33873 effects: #1, #2), Blessing of Lower City (37878 effect#1), Heart of the Wild (108294 effects: #1, #2), Restoration Druid (137012 effects: #1, #2), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), The Dark Titan's Advice (207271 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Heart of the Wild (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325748 effect#2), Circle of Life and Death (338657 effects: #2, #4), The Dark Titan's Lesson (338831 effects: #1, #2), Ravenous Frenzy (355315 effects: #1, #4), Natural Recovery (377796 effects: #1, #2), Convoke the Spirits (391528 effects: #3, #4), Adaptive Swarm (391891 effect#2), Circle of Life and Death (391969 effects: #2, #4), Undergrowth (392301 effects: #1, #2), Waning Twilight (393957 effect#2)
 Family Flags     : 36, 118
 Attributes       : ........ ........ ........ x..x....   .....x.. ..x..... ........ ........ 
                  : ........ ......x. ........ ....x...   ........ ........ ........ ........ 
@@ -1828,7 +1828,7 @@ Duration         : 7 seconds
 Cooldown         : 10 seconds
 Category         : 1237
 Category Cooldown: 10 seconds
-Affecting spells : Incarnation: Tree of Life (5420 effects: #1, #2), Nurturing Instinct (33873 effects: #1, #2), Ironbark (102342 effect#2), Heart of the Wild (108294 effects: #1, #2), Restoration Druid (137012 effects: #1, #2), Starfall (191034 effect#2), Restoration Affinity (197492 effects: #5, #6), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Stellar Drift (202461 effect#1), Essence of G'Hanir (208253 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Heart of the Wild (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325748 effect#2), Improved Wild Growth (328025 effect#1), Circle of Life and Death (338657 effects: #2, #4), Ravenous Frenzy (355315 effects: #1, #4), Natural Recovery (377796 effects: #1, #2), Convoke the Spirits (391528 effects: #3, #4), Adaptive Swarm (391891 effect#2), Circle of Life and Death (391969 effects: #2, #4)
+Affecting spells : Incarnation: Tree of Life (5420 effects: #1, #2), Nurturing Instinct (33873 effects: #1, #2), Ironbark (102342 effect#2), Heart of the Wild (108294 effects: #1, #2), Restoration Druid (137012 effects: #1, #2), Starfall (191034 effect#2), Restoration Affinity (197492 effects: #5, #6), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Stellar Drift (202461 effect#1), Essence of G'Hanir (208253 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Heart of the Wild (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325748 effect#2), Improved Wild Growth (328025 effect#1), Circle of Life and Death (338657 effects: #2, #4), Ravenous Frenzy (355315 effects: #1, #4), Natural Recovery (377796 effects: #1, #2), Convoke the Spirits (391528 effects: #3, #4), Adaptive Swarm (391891 effect#2), Circle of Life and Death (391969 effects: #2, #4), Waning Twilight (393957 effect#2)
 Family Flags     : 58, 118
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ...x.... ........ ........ ........   .......x ........ ........ ........ 
@@ -2185,7 +2185,7 @@ Resource         : 18% Base Mana (0) (id=2290)
 Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
-Affecting spells : Incarnation: Tree of Life (5420 effects: #1, #2), Nurturing Instinct (33873 effects: #1, #2), Heart of the Wild (108294 effects: #1, #2), Restoration Druid (137012 effects: #1, #2), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Heart of the Wild (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Circle of Life and Death (338657 effects: #2, #4), Ravenous Frenzy (355315 effects: #1, #4), Natural Recovery (377796 effects: #1, #2), Convoke the Spirits (391528 effects: #3, #4), Circle of Life and Death (391969 effects: #2, #4)
+Affecting spells : Incarnation: Tree of Life (5420 effects: #1, #2), Nurturing Instinct (33873 effects: #1, #2), Heart of the Wild (108294 effects: #1, #2), Restoration Druid (137012 effects: #1, #2), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Heart of the Wild (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Circle of Life and Death (338657 effects: #2, #4), Ravenous Frenzy (355315 effects: #1, #4), Natural Recovery (377796 effects: #1, #2), Convoke the Spirits (391528 effects: #3, #4), Circle of Life and Death (391969 effects: #2, #4), Waning Twilight (393957 effect#2)
 Family Flags     : 81, 118
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2851,7 +2851,7 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Incarnation: Tree of Life (5420 effects: #1, #2), Nurturing Instinct (33873 effects: #1, #2), Ironbark (102342 effect#2), Heart of the Wild (108294 effects: #1, #2), Restoration Druid (137012 effects: #1, #2), Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Heart of the Wild (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325748 effect#2), Circle of Life and Death (338657 effects: #2, #4), Ravenous Frenzy (355315 effects: #1, #4), Natural Recovery (377796 effects: #1, #2), Convoke the Spirits (391528 effects: #3, #4), Adaptive Swarm (391891 effect#2), Circle of Life and Death (391969 effects: #2, #4)
+Affecting spells : Incarnation: Tree of Life (5420 effects: #1, #2), Nurturing Instinct (33873 effects: #1, #2), Ironbark (102342 effect#2), Heart of the Wild (108294 effects: #1, #2), Restoration Druid (137012 effects: #1, #2), Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Heart of the Wild (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325748 effect#2), Circle of Life and Death (338657 effects: #2, #4), Ravenous Frenzy (355315 effects: #1, #4), Natural Recovery (377796 effects: #1, #2), Convoke the Spirits (391528 effects: #3, #4), Adaptive Swarm (391891 effect#2), Circle of Life and Death (391969 effects: #2, #4), Waning Twilight (393957 effect#2)
 Family Flags     : 65, 118
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -3314,7 +3314,7 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 8 seconds
-Affecting spells : Incarnation: Tree of Life (5420 effects: #1, #2), Bear Form (5487 effect#8), Nurturing Instinct (33873 effects: #1, #2), Ironbark (102342 effect#2), Heart of the Wild (108294 effects: #1, #2), Druid (137009 effect#4), Restoration Druid (137012 effects: #1, #2), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Stellar Drift (202461 effect#1), Essence of G'Hanir (208253 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Heart of the Wild (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325748 effect#2), Circle of Life and Death (338657 effects: #2, #4), Ravenous Frenzy (355315 effects: #1, #4), Natural Recovery (377796 effects: #1, #2), Convoke the Spirits (391528 effects: #3, #4), Adaptive Swarm (391891 effect#2), Circle of Life and Death (391969 effects: #2, #4)
+Affecting spells : Incarnation: Tree of Life (5420 effects: #1, #2), Bear Form (5487 effect#8), Nurturing Instinct (33873 effects: #1, #2), Ironbark (102342 effect#2), Heart of the Wild (108294 effects: #1, #2), Druid (137009 effect#4), Restoration Druid (137012 effects: #1, #2), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Stellar Drift (202461 effect#1), Essence of G'Hanir (208253 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Heart of the Wild (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325748 effect#2), Circle of Life and Death (338657 effects: #2, #4), Ravenous Frenzy (355315 effects: #1, #4), Natural Recovery (377796 effects: #1, #2), Convoke the Spirits (391528 effects: #3, #4), Adaptive Swarm (391891 effect#2), Circle of Life and Death (391969 effects: #2, #4), Waning Twilight (393957 effect#2)
 Triggered by     : Cenarion Ward (102351)
 Family Flags     : 106, 118
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5281,7 +5281,7 @@ Spell Level      : 1
 Range            : 40 yards
 Duration         : 12 seconds
 Stance Mask      : 0x00000002
-Affecting spells : Incarnation: Tree of Life (5420 effects: #1, #2, #4, #5, #6), Bear Form (5487 effect#8), Nimble Healing Touch (24542 effect#2), Nurturing Instinct (33873 effects: #1, #2), Blessing of Lower City (37878 effect#1), Ironbark (102342 effect#2), Heart of the Wild (108294 effects: #1, #2), Restoration Druid (137012 effects: #1, #2, #16), Germination (155675 effect#1), Starfall (191034 effect#2), Restoration Affinity (197492 effects: #3, #4, #5), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Stellar Drift (202461 effect#1), Essence of G'Hanir (208253 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Improved Rejuvenation (231040 effect#1), Autumn Leaves (287247 effect#1), Heart of the Wild (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325748 effect#2), Circle of Life and Death (338657 effects: #2, #4), Ravenous Frenzy (355315 effects: #1, #4), Natural Recovery (377796 effects: #1, #2), Regenesis (383191 effect#1), Convoke the Spirits (391528 effects: #3, #4), Adaptive Swarm (391891 effect#2), Circle of Life and Death (391969 effects: #2, #4)
+Affecting spells : Incarnation: Tree of Life (5420 effects: #1, #2, #4, #5, #6), Bear Form (5487 effect#8), Nimble Healing Touch (24542 effect#2), Nurturing Instinct (33873 effects: #1, #2), Blessing of Lower City (37878 effect#1), Ironbark (102342 effect#2), Heart of the Wild (108294 effects: #1, #2), Restoration Druid (137012 effects: #1, #2, #16), Germination (155675 effect#1), Starfall (191034 effect#2), Restoration Affinity (197492 effects: #3, #4, #5), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Stellar Drift (202461 effect#1), Essence of G'Hanir (208253 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Improved Rejuvenation (231040 effect#1), Autumn Leaves (287247 effect#1), Heart of the Wild (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325748 effect#2), Circle of Life and Death (338657 effects: #2, #4), Ravenous Frenzy (355315 effects: #1, #4), Natural Recovery (377796 effects: #1, #2), Regenesis (383191 effect#1), Convoke the Spirits (391528 effects: #3, #4), Adaptive Swarm (391891 effect#2), Circle of Life and Death (391969 effects: #2, #4), Waning Twilight (393957 effect#2)
 Family Flags     : 4, 118
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ x....... ...x.... ......x.   .......x ........ ........ ........ 
@@ -5419,7 +5419,7 @@ Max Targets      : 60
 Duration         : 8 seconds
 Stacks           : 5 maximum
 Proc Chance      : 101%
-Affecting spells : Incarnation: Tree of Life (5420 effects: #1, #2), Nimble Healing Touch (24542 effect#2), Nurturing Instinct (33873 effects: #1, #2), Blessing of Lower City (37878 effect#1), Ironbark (102342 effect#2), Heart of the Wild (108294 effects: #1, #2), Restoration Druid (137012 effects: #1, #2), Starfall (191034 effect#2), Astral Influence (197524 effect#3), Flourish (197721 effect#2), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#7), Heart of the Wild (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325748 effect#2), Circle of Life and Death (338657 effects: #2, #4), Ravenous Frenzy (355315 effects: #1, #4), Natural Recovery (377796 effects: #1, #2), Regenesis (383191 effect#2), Convoke the Spirits (391528 effects: #3, #4), Adaptive Swarm (391891 effect#2), Circle of Life and Death (391969 effects: #2, #4)
+Affecting spells : Incarnation: Tree of Life (5420 effects: #1, #2), Nimble Healing Touch (24542 effect#2), Nurturing Instinct (33873 effects: #1, #2), Blessing of Lower City (37878 effect#1), Ironbark (102342 effect#2), Heart of the Wild (108294 effects: #1, #2), Restoration Druid (137012 effects: #1, #2), Starfall (191034 effect#2), Astral Influence (197524 effect#3), Flourish (197721 effect#2), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#7), Heart of the Wild (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325748 effect#2), Circle of Life and Death (338657 effects: #2, #4), Ravenous Frenzy (355315 effects: #1, #4), Natural Recovery (377796 effects: #1, #2), Regenesis (383191 effect#2), Convoke the Spirits (391528 effects: #3, #4), Adaptive Swarm (391891 effect#2), Circle of Life and Death (391969 effects: #2, #4), Waning Twilight (393957 effect#2)
 Triggered by     : Tranquility (740)
 Family Flags     : 7, 118
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5722,7 +5722,6 @@ Effects          :
 #6 (id=1039935)  : Apply Aura (6) | Modify Damage Done% to Caster (269)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Enemy (6)
                    Affected School(s): All
-Hotfixed         : NEW EFFECT
 Description      : $@spelldesc8921
 Tooltip          : Suffering $w2 Arcane damage every $t2 seconds.
 
@@ -5934,7 +5933,7 @@ Proc Chance      : 100%
 Stance Mask      : 0x00000002
 Proc Flags       : ........ ........ ........ .......x 
                  
-Affecting spells : Incarnation: Tree of Life (5420 effects: #1, #2), Nurturing Instinct (33873 effects: #1, #2), Blessing of Lower City (37878 effect#1), Ironbark (102342 effect#2), Heart of the Wild (108294 effects: #1, #2), Restoration Druid (137012 effects: #1, #2), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Stellar Drift (202461 effect#1), The Dark Titan's Advice (207271 effect#1), Essence of G'Hanir (208253 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Heart of the Wild (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325748 effect#2), Circle of Life and Death (338657 effects: #2, #4), The Dark Titan's Lesson (338831 effects: #1, #2), Ravenous Frenzy (355315 effects: #1, #4), Natural Recovery (377796 effects: #1, #2), Convoke the Spirits (391528 effects: #3, #4), Adaptive Swarm (391891 effect#2), Circle of Life and Death (391969 effects: #2, #4), Undergrowth (392301 effects: #1, #2)
+Affecting spells : Incarnation: Tree of Life (5420 effects: #1, #2), Nurturing Instinct (33873 effects: #1, #2), Blessing of Lower City (37878 effect#1), Ironbark (102342 effect#2), Heart of the Wild (108294 effects: #1, #2), Restoration Druid (137012 effects: #1, #2), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Stellar Drift (202461 effect#1), The Dark Titan's Advice (207271 effect#1), Essence of G'Hanir (208253 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Heart of the Wild (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325748 effect#2), Circle of Life and Death (338657 effects: #2, #4), The Dark Titan's Lesson (338831 effects: #1, #2), Ravenous Frenzy (355315 effects: #1, #4), Natural Recovery (377796 effects: #1, #2), Convoke the Spirits (391528 effects: #3, #4), Adaptive Swarm (391891 effect#2), Circle of Life and Death (391969 effects: #2, #4), Undergrowth (392301 effects: #1, #2), Waning Twilight (393957 effect#2)
 Family Flags     : 36, 44, 118
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ x....... ...x.... ........   ........ ........ ........ ..x..... 
@@ -6716,7 +6715,7 @@ Spell Type       : None
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 6 seconds
-Affecting spells : Incarnation: Tree of Life (5420 effects: #1, #2), Nurturing Instinct (33873 effects: #1, #2), Ironbark (102342 effect#2), Heart of the Wild (108294 effects: #1, #2), Restoration Druid (137012 effects: #1, #2), Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Heart of the Wild (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325748 effect#2), Circle of Life and Death (338657 effects: #2, #4), Ravenous Frenzy (355315 effects: #1, #4), Natural Recovery (377796 effects: #1, #2), Convoke the Spirits (391528 effects: #3, #4), Adaptive Swarm (391891 effect#2), Circle of Life and Death (391969 effects: #2, #4)
+Affecting spells : Incarnation: Tree of Life (5420 effects: #1, #2), Nurturing Instinct (33873 effects: #1, #2), Ironbark (102342 effect#2), Heart of the Wild (108294 effects: #1, #2), Restoration Druid (137012 effects: #1, #2), Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Heart of the Wild (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325748 effect#2), Circle of Life and Death (338657 effects: #2, #4), Ravenous Frenzy (355315 effects: #1, #4), Natural Recovery (377796 effects: #1, #2), Convoke the Spirits (391528 effects: #3, #4), Adaptive Swarm (391891 effect#2), Circle of Life and Death (391969 effects: #2, #4), Waning Twilight (393957 effect#2)
 Family Flags     : 20, 118
 Attributes       : ........ ........ ..x..... x..x....   ........ ..x..... ........ ........ 
                  : ........ x....... ........ ........   .......x ........ ........ ........ 
@@ -7739,7 +7738,7 @@ Spell Type       : None
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 6 seconds
-Affecting spells : Incarnation: Tree of Life (5420 effects: #1, #2), Nurturing Instinct (33873 effects: #1, #2), Ironbark (102342 effect#2), Heart of the Wild (108294 effects: #1, #2), Restoration Druid (137012 effects: #1, #2), Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Heart of the Wild (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325748 effect#2), Circle of Life and Death (338657 effects: #2, #4), Ravenous Frenzy (355315 effects: #1, #4), Natural Recovery (377796 effects: #1, #2), Convoke the Spirits (391528 effects: #3, #4), Adaptive Swarm (391891 effect#2), Circle of Life and Death (391969 effects: #2, #4)
+Affecting spells : Incarnation: Tree of Life (5420 effects: #1, #2), Nurturing Instinct (33873 effects: #1, #2), Ironbark (102342 effect#2), Heart of the Wild (108294 effects: #1, #2), Restoration Druid (137012 effects: #1, #2), Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Heart of the Wild (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325748 effect#2), Circle of Life and Death (338657 effects: #2, #4), Ravenous Frenzy (355315 effects: #1, #4), Natural Recovery (377796 effects: #1, #2), Convoke the Spirits (391528 effects: #3, #4), Adaptive Swarm (391891 effect#2), Circle of Life and Death (391969 effects: #2, #4), Waning Twilight (393957 effect#2)
 Family Flags     : 118, 121
 Attributes       : ........ ........ ..x..... x..x....   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ......x. 
@@ -8816,7 +8815,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=360734)   : Apply Aura (6) | Dummy (4)
                    Base Value: -1 | Scaled Value: -1 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Sub Type (107 -> 4), Misc Value (23 -> 0), Affects Spells
 Description      : Moonfire reduces damage dealt to you by ${$s1/1}%.
 
 Name             : Force of Nature (id=248280) [Spell Family (7)] 
@@ -12593,7 +12591,7 @@ Duration         : 12 seconds
 Labels           : 1158: Flourish (197721 effect#4)
 Stacks           : 5 maximum
 Proc Chance      : 101%
-Affecting spells : Tiger's Fury (5217 effect#3), Incarnation: Tree of Life (5420 effects: #1, #2), Nurturing Instinct (33873 effects: #1, #2), Heart of the Wild (108294 effects: #1, #2), Restoration Druid (137012 effects: #1, #2), Balance Druid (137013 effects: #8, #9), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Heart of the Wild (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Circle of Life and Death (338657 effects: #2, #4), Evolved Swarm (341447 effect#1), Ravenous Frenzy (355315 effects: #1, #4), Natural Recovery (377796 effects: #1, #2), Convoke the Spirits (391528 effects: #3, #4), Circle of Life and Death (391969 effects: #2, #4)
+Affecting spells : Tiger's Fury (5217 effect#3), Incarnation: Tree of Life (5420 effects: #1, #2), Nurturing Instinct (33873 effects: #1, #2), Heart of the Wild (108294 effects: #1, #2), Restoration Druid (137012 effects: #1, #2), Balance Druid (137013 effects: #8, #9), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Heart of the Wild (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Circle of Life and Death (338657 effects: #2, #4), Evolved Swarm (341447 effect#1), Ravenous Frenzy (355315 effects: #1, #4), Natural Recovery (377796 effects: #1, #2), Convoke the Spirits (391528 effects: #3, #4), Circle of Life and Death (391969 effects: #2, #4), Waning Twilight (393957 effect#2)
 Family Flags     : 22, 118
 Attributes       : ........ ........ .......x .......x   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ....x...   .......x .x...... ........ ..x.x... 
@@ -15128,7 +15126,7 @@ Spell Type       : None
 Range            : 100 yards
 Duration         : 8 seconds
 Labels           : 1422: Flourish (197721 effect#5)
-Affecting spells : Incarnation: Tree of Life (5420 effects: #1, #2), Nurturing Instinct (33873 effects: #1, #2), Heart of the Wild (108294 effects: #1, #2), Restoration Druid (137012 effects: #1, #2), Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Heart of the Wild (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Circle of Life and Death (338657 effects: #2, #4), Ravenous Frenzy (355315 effects: #1, #4), Natural Recovery (377796 effects: #1, #2), Convoke the Spirits (391528 effects: #3, #4), Circle of Life and Death (391969 effects: #2, #4)
+Affecting spells : Incarnation: Tree of Life (5420 effects: #1, #2), Nurturing Instinct (33873 effects: #1, #2), Heart of the Wild (108294 effects: #1, #2), Restoration Druid (137012 effects: #1, #2), Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Heart of the Wild (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Circle of Life and Death (338657 effects: #2, #4), Ravenous Frenzy (355315 effects: #1, #4), Natural Recovery (377796 effects: #1, #2), Convoke the Spirits (391528 effects: #3, #4), Circle of Life and Death (391969 effects: #2, #4), Waning Twilight (393957 effect#2)
 Triggered by     : Renewing Bloom (364365)
 Family Flags     : 118
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -16162,7 +16160,7 @@ School           : Nature
 Spell Type       : None
 Range            : 100 yards
 Duration         : 9 seconds
-Affecting spells : Incarnation: Tree of Life (5420 effects: #1, #2), Nurturing Instinct (33873 effects: #1, #2), Heart of the Wild (108294 effects: #1, #2), Restoration Druid (137012 effects: #1, #2), Starfall (191034 effect#2), Flourish (197721 effect#2), Stellar Drift (202461 effect#1), Heart of the Wild (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325748 effect#2), Circle of Life and Death (338657 effects: #2, #4), Ravenous Frenzy (355315 effects: #1, #4), Natural Recovery (377796 effects: #1, #2), Convoke the Spirits (391528 effects: #3, #4), Adaptive Swarm (391891 effect#2), Circle of Life and Death (391969 effects: #2, #4)
+Affecting spells : Incarnation: Tree of Life (5420 effects: #1, #2), Nurturing Instinct (33873 effects: #1, #2), Heart of the Wild (108294 effects: #1, #2), Restoration Druid (137012 effects: #1, #2), Starfall (191034 effect#2), Flourish (197721 effect#2), Stellar Drift (202461 effect#1), Heart of the Wild (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325748 effect#2), Circle of Life and Death (338657 effects: #2, #4), Ravenous Frenzy (355315 effects: #1, #4), Natural Recovery (377796 effects: #1, #2), Convoke the Spirits (391528 effects: #3, #4), Adaptive Swarm (391891 effect#2), Circle of Life and Death (391969 effects: #2, #4), Waning Twilight (393957 effect#2)
 Triggered by     : Grove Tending (383192)
 Family Flags     : 8, 118
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -17259,7 +17257,7 @@ Duration         : 12 seconds
 Labels           : 1158: Flourish (197721 effect#4)
 Stacks           : 5 maximum
 Proc Chance      : 101%
-Affecting spells : Tiger's Fury (5217 effect#3), Incarnation: Tree of Life (5420 effects: #1, #2), Nurturing Instinct (33873 effects: #1, #2), Heart of the Wild (108294 effects: #1, #2), Restoration Druid (137012 effects: #1, #2), Balance Druid (137013 effects: #8, #9), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Heart of the Wild (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Circle of Life and Death (338657 effects: #2, #4), Evolved Swarm (341447 effect#1), Ravenous Frenzy (355315 effects: #1, #4), Natural Recovery (377796 effects: #1, #2), Convoke the Spirits (391528 effects: #3, #4), Circle of Life and Death (391969 effects: #2, #4)
+Affecting spells : Tiger's Fury (5217 effect#3), Incarnation: Tree of Life (5420 effects: #1, #2), Nurturing Instinct (33873 effects: #1, #2), Heart of the Wild (108294 effects: #1, #2), Restoration Druid (137012 effects: #1, #2), Balance Druid (137013 effects: #8, #9), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Heart of the Wild (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Circle of Life and Death (338657 effects: #2, #4), Evolved Swarm (341447 effect#1), Ravenous Frenzy (355315 effects: #1, #4), Natural Recovery (377796 effects: #1, #2), Convoke the Spirits (391528 effects: #3, #4), Circle of Life and Death (391969 effects: #2, #4), Waning Twilight (393957 effect#2)
 Family Flags     : 22, 118
 Attributes       : ........ ........ .......x .......x   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ....x...   .......x .x...... ........ ..x.x... 
@@ -17530,7 +17528,7 @@ Class            : Druid
 School           : Nature
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Incarnation: Tree of Life (5420 effects: #1, #2), Nurturing Instinct (33873 effects: #1, #2), Heart of the Wild (108294 effects: #1, #2), Restoration Druid (137012 effects: #1, #2), Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Heart of the Wild (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Circle of Life and Death (338657 effects: #2, #4), Ravenous Frenzy (355315 effects: #1, #4), Natural Recovery (377796 effects: #1, #2), Convoke the Spirits (391528 effects: #3, #4), Circle of Life and Death (391969 effects: #2, #4)
+Affecting spells : Incarnation: Tree of Life (5420 effects: #1, #2), Nurturing Instinct (33873 effects: #1, #2), Heart of the Wild (108294 effects: #1, #2), Restoration Druid (137012 effects: #1, #2), Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Heart of the Wild (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Circle of Life and Death (338657 effects: #2, #4), Ravenous Frenzy (355315 effects: #1, #4), Natural Recovery (377796 effects: #1, #2), Convoke the Spirits (391528 effects: #3, #4), Circle of Life and Death (391969 effects: #2, #4), Waning Twilight (393957 effect#2)
 Family Flags     : 118
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
@@ -17555,7 +17553,7 @@ Resource         : 2% Base Mana (0) (id=265630)
 Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 20 seconds
-Affecting spells : Incarnation: Tree of Life (5420 effects: #1, #2), Nurturing Instinct (33873 effects: #1, #2), Heart of the Wild (108294 effects: #1, #2), Restoration Druid (137012 effects: #1, #2), Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Heart of the Wild (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Circle of Life and Death (338657 effects: #2, #4), Ravenous Frenzy (355315 effects: #1, #4), Natural Recovery (377796 effects: #1, #2), Convoke the Spirits (391528 effects: #3, #4), Circle of Life and Death (391969 effects: #2, #4)
+Affecting spells : Incarnation: Tree of Life (5420 effects: #1, #2), Nurturing Instinct (33873 effects: #1, #2), Heart of the Wild (108294 effects: #1, #2), Restoration Druid (137012 effects: #1, #2), Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Heart of the Wild (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Circle of Life and Death (338657 effects: #2, #4), Ravenous Frenzy (355315 effects: #1, #4), Natural Recovery (377796 effects: #1, #2), Convoke the Spirits (391528 effects: #3, #4), Circle of Life and Death (391969 effects: #2, #4), Waning Twilight (393957 effect#2)
 Family Flags     : 118
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -17842,7 +17840,7 @@ Class            : Druid
 School           : Nature
 Spell Type       : None
 Range            : 100 yards
-Affecting spells : Incarnation: Tree of Life (5420 effects: #1, #2), Nurturing Instinct (33873 effects: #1, #2), Heart of the Wild (108294 effects: #1, #2), Restoration Druid (137012 effects: #1, #2), Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Heart of the Wild (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Circle of Life and Death (338657 effects: #2, #4), Ravenous Frenzy (355315 effects: #1, #4), Natural Recovery (377796 effects: #1, #2), Convoke the Spirits (391528 effects: #3, #4), Circle of Life and Death (391969 effects: #2, #4)
+Affecting spells : Incarnation: Tree of Life (5420 effects: #1, #2), Nurturing Instinct (33873 effects: #1, #2), Heart of the Wild (108294 effects: #1, #2), Restoration Druid (137012 effects: #1, #2), Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Heart of the Wild (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Circle of Life and Death (338657 effects: #2, #4), Ravenous Frenzy (355315 effects: #1, #4), Natural Recovery (377796 effects: #1, #2), Convoke the Spirits (391528 effects: #3, #4), Circle of Life and Death (391969 effects: #2, #4), Waning Twilight (393957 effect#2)
 Family Flags     : 118
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ........ ........   ........ ........ ........ ......x. 
@@ -18506,11 +18504,40 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1033221)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 2329 (Label) | Target: Self (1)
+                   Affected Spells (Label): Waning Twilight (393957)
 #2 (id=1033224)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 2329 (Label) | Target: Self (1)
+                   Affected Spells (Label): Waning Twilight (393957)
 #3 (id=1033225)  : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : When you have $s3 periodic effects on a target, your damage and healing on them are increased by $s1%.
+
+Name             : Waning Twilight (id=393957) [Spell Family (7)] 
+Class            : Druid
+School           : Physical
+Spell Type       : None
+Range            : 100 yards
+Duration         : 60 seconds
+Labels           : 2329: Waning Twilight (393956 effect#1), Waning Twilight (393956 effect#2)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ....x... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Do Not Display Duration (170), Aura Points On Client (268), Allow during spell override (404)
+Effects          :
+#1 (id=1033222)  : Apply Aura (6) | Modify Damage Taken% from Caster (270)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Unknown(25)
+                   Affected School(s): All
+#2 (id=1033223)  : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Unknown(25)
+                   Affected Spells: Rejuvenation (774), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Nourish (50464), Efflorescence (81269), Cenarion Ward (102352), Rejuvenation (Germination) (155777), Tranquility (157982), Lifebloom (188550), Cultivation (200389), Reactive Resin (203406), Spring Blossoms (207386), Grove Tending (279793), Adaptive Swarm (325748), Renewing Bloom (364686), Grove Tending (383193), Adaptive Swarm (391891), Embrace of the Dream (392147), Invigorate (392160), Verdancy (392329)
+                   Family Flags: 118
+Description      : $@spelldesc393956
+Tooltip          : Damage and healing from $@auracaster increased by $w1%.
 
 Name             : Nature's Grace (id=393958) [Spell Family (7), Passive] 
 Talent Entry     : Balance [tree=spec, row=7, col=2, max_rank=1, req_points=8]
