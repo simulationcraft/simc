@@ -270,7 +270,9 @@ struct tyrs_enforcer_damage_t : public paladin_spell_t
     : paladin_spell_t( "tyrs_enforcer", p, p->talents.tyrs_enforcer->effectN( 1 ).trigger() )
   {
     background = proc = may_crit = true;
-     may_miss = false;
+    may_miss = false;
+    // 20222-11-11 Rank 2 Tyr's Enforcer doesn't increase it's damage, but sets the dummy effect to 100
+    base_multiplier *= 1.0 + p->talents.tyrs_enforcer->effectN( 2 ).percent();
   }
 };
 
