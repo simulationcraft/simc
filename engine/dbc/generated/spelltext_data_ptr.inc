@@ -1,5 +1,5 @@
-// Spell text, wow build 10.0.2.46479
-static const std::array<spelltext_data_t, 19172> __ptr_spelltext_data { {
+// Spell text, wow build 10.0.2.46619
+static const std::array<spelltext_data_t, 19169> __ptr_spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -17780,7 +17780,7 @@ static const std::array<spelltext_data_t, 19172> __ptr_spelltext_data { {
   { 386976, "Shadow Bolt and Drain Soul deal $s1% increased damage, up to ${$s1*$s2}%, per damage over time effect you have active on the target.", 0, 0 },
   { 386986, "Corruption damage is increased by $s1%, and each time it deals damage any of your Curses active on the target are extended by ${$s2/1000}.1 sec.", 0, 0 },
   { 386997, "Wither away all life force of your current target and up to $s3 additional targets nearby, causing your primary target to suffer ${$o2*(1+$m4/10)} Nature damage and secondary targets to suffer $o2 Nature damage over $d.\r\n\r\nFor the next $d, casting Drain Life will cause you to also Drain Life from any enemy affected by your Soul Rot, and Drain Life will not consume any mana.", "Suffering $s2 Nature damage every $t2 sec.", "Shadowlands" },
-  { 387016, "Each target affected by Soul Rot increases your haste and critical strike chance by ${$387018s3}% for $387018d.", 0, 0 },
+  { 387016, "Each target affected by Soul Rot increases your haste and critical strike chance by ${$s1/10}.1% for $387018d.", 0, 0 },
   { 387018, "$@spelldesc387016", "Haste increased by ${$W1}.1%.\r\nCritical strike chance increased by ${$W2}.1%.", 0 },
   { 387028, "$@spelldesc384649", "Heals yourself and deals Fire damage to nearby enemies upon expiration.", 0 },
   { 387035, "Zen Meditation has $s2% reduced cooldown and is no longer cancelled when you move or when you are hit by melee attacks.", 0, 0 },
@@ -18430,7 +18430,6 @@ static const std::array<spelltext_data_t, 19172> __ptr_spelltext_data { {
   { 390947, "Circle of Healing heals $s1 additional ally and its cooldown is reduced by ${$s2/-1000} sec.", 0, 0 },
   { 390951, "Temporarily imbues shoulders with a fiery illusion for $ecd.", 0, 0 },
   { 390954, "Increases the critical strike chance of Flash Heal and Heal by $s1%.", 0, 0 },
-  { 390961, "$@spelldesc390990", 0, 0 },
   { 390964, "$@spelldesc120517", 0, 0 },
   { 390967, "Increases the healing done by your Mastery: Echo of Light by $s1%.", 0, 0 },
   { 390971, "$@spelldesc120517", 0, 0 },
@@ -18441,12 +18440,10 @@ static const std::array<spelltext_data_t, 19172> __ptr_spelltext_data { {
   { 390980, "Critical heals from Flash Heal and Heal increase your healing done by your next Holy Word spell by $390989s1%, stacking up to $390989U times.", 0, 0 },
   { 390981, "$@spelldesc110744", 0, 0 },
   { 390989, "$@spelldesc390980", "The healing of your next Holy Word spell is increased by $w1%.", 0 },
-  { 390990, "Causes the earth at the target location to tremble and break, dealing Nature damage every $t1 sec to enemies in $r yard radius. Lasts $d.\r\n\r\nUsable in the Obsidian Citadel and adjacent lava fields.", "Suffering Nature damage every $t2 sec.", 0 },
   { 390992, "Flash Heal reduces the cast time of your next Heal within $390993d by $390993s2% and increases its healing done by $390993s1%.\r\n\r\nStacks up to $390993U times.", 0, 0 },
   { 390993, "$@spelldesc390992", "The cast time of your next Heal is reduced by $w2% and its healing is increased by $w1%.", 0 },
   { 390994, "Circle of Healing reduces the cooldown of Holy Word: Sanctify, Prayer of Mending reduces the cooldown of Holy Word: Serenity, and Holy Fire reduces the cooldown of Holy Word: Chastise by $s1 sec.", 0, 0 },
   { 390996, "Your $?a137033[Mind Blast and Mind Spike]?a137031[Smite and Holy Fire][Smite and Penance] casts reduce the cooldown of Mindgames by ${$s1/2}.1 sec.", 0, 0 },
-  { 390997, "Causes the earth at the target location to tremble and break, dealing Nature damage every $t1 sec to enemies in $a1 yard radius. Lasts $d.", "Suffering Nature damage every $t2 sec.", 0 },
   { 391023, "Summons an arcana orb outside of the Cobalt Assembly.", "Summons an arcana orb outside of the Cobalt Assembly.", 0 },
   { 391037, "Your combo point generating abilities have a $s1% chance to generate $s2 extra combo $Lpoint:points;.", 0, 0 },
   { 391045, "Rip damage increased by $s1%.", 0, 0 },
@@ -19174,8 +19171,8 @@ static const std::array<spelltext_data_t, 19172> __ptr_spelltext_data { {
   { 398396, "$@spelldesc386578", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.0.2.46479
-static constexpr std::array<hotfix::client_hotfix_entry_t, 16> __ptr_spelltext_hotfix_data { {
+// spelltext hotfix entries, wow build 10.0.2.46619
+static constexpr std::array<hotfix::client_hotfix_entry_t, 17> __ptr_spelltext_hotfix_data { {
   {  135286,  1, "Your next Maul deals $s1% more damage and reduces the target's damage to you by $135601s1%~ for $135601d.", "Your next Maul deals $s1% more damage, costs $s3% less rage, and reduces the target's damage to you by $135601s1%~ for $135601d." },
   {  135288,  0, "Autoattacks have a $s1% chance to empower your next Maul, stacking up to $135286u times.\r\n\r\nEmpowered Maul deals $135286s1% increased damage and reduces the target's damage to you by $135601s2% for $135601d.", "Autoattacks have a $s1% chance to empower your next Maul, stacking up to $135286u times.\r\n\r\nEmpowered Maul deals $135286s1% increased damage, costs $135286s3% less rage, and reduces the target's damage to you by $135601s2% for $135601d." },
   {  200851,  0, "Unleashes the rage of Ursoc for $d, preventing $s4% of all damage you take and reflecting $219432s1 Nature damage back at your attackers.", "Unleashes the rage of Ursoc for $d, preventing $s3% of all damage you take, increasing your damage done by $s5%, granting you $s3% leech, and reflecting $219432s1 Nature damage back at your attackers." },
@@ -19188,13 +19185,14 @@ static constexpr std::array<hotfix::client_hotfix_entry_t, 16> __ptr_spelltext_h
   {  383200,  0, "Every $q seconds you spend moving increases your intellect by $383201s1, stacking up to 5 times. Casting a spell will consume all stacks of Intellect.", "Every $q seconds you spend moving increases your Intellect by $s2, stacking up to 5 times. Casting a spell will consume all stacks of Intellect." },
   {  383799,  0, "@spelldesc386578", "$@spelldesc386578" },
   {  383799,  1, "Mastery increased by $w3.", "Mastery increased by $w1." },
+  {  387016,  0, "Each target affected by Soul Rot increases your haste and critical strike chance by ${$387018s3}% for $387018d.", "Each target affected by Soul Rot increases your haste and critical strike chance by ${$s1/10}.1% for $387018d." },
   {  388064,  1, "Mana costs reduced by $s1.", "Mana costs reduced by $w1." },
   {  388779,  0, "Your abilities reset Faeline Stomp $s2% more often. While within Faeline Stomp, your Tiger Palms strike $s3 targets and your Spinning Crane Kick heals $s4 nearby allies for $s1% of the damage done.", "Your abilities reset Faeline Stomp $s2% more often. While within Faeline Stomp, your Tiger Palms strike twice and your Spinning Crane Kick heals $s4 nearby allies for $s1% of the damage done." },
   {  390643,  0, "Perform the summoning ritual and commune with one of the Primal Turtles to gain its blessing.\r\n\r\nThe ritual site can be found north of Uktulut Pier in The Waking Shores, near the remains of a dragon.", "Perform the summoning ritual and commune with one of the Primal Turtles to gain its blessing.\r\n\r\nThe ritual site can be found south of Uktulut Pier in The Waking Shores, near the remains of a dragon." },
   {  393641,  0, "Efflorescence critical heals increase the healing of your next Wild Growth by $394565s1%, stacking up to 5 times. Lifebloom critical heals reduces the cooldown of Nature's Swiftness by $s1.", "Efflorescence critical heals increase the healing of your next Wild Growth by $394565s1%, stacking up to 5 times. Lifebloom critical heals reduces the cooldown of Nature's Swiftness by $s1 sec." },
 } };
 
-// Spell description variables, wow build 10.0.2.46479
+// Spell description variables, wow build 10.0.2.46619
 static const std::array<spelldesc_vars_data_t, 365> __ptr_spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$pvp=$?a134735[${1.1}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<pvp>*$<weal>}\r\n" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -19563,7 +19561,7 @@ static const std::array<spelldesc_vars_data_t, 365> __ptr_spelldesc_vars_data { 
   {  394354, "$damage=${($AP*1.0)*(1+$@versadmg)}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.0.2.46479
+// spelldesc_vars hotfix entries, wow build 10.0.2.46619
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 

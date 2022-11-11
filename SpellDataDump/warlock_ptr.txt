@@ -13520,6 +13520,7 @@ For the next $d, casting Drain Life will cause you to also Drain Life from any e
 Tooltip          : Suffering $s2 Nature damage every $t2 sec.
 
 Name             : Dark Harvest (id=387016) [Spell Family (5), Passive] 
+Hotfixed         : Description
 Talent Entry     : Affliction [tree=spec, row=10, col=4, max_rank=1, req_points=20]
 Class            : Warlock
 School           : Physical
@@ -13536,7 +13537,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1021523)  : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Each target affected by Soul Rot increases your haste and critical strike chance by ${$387018s3}% for $387018d.
+Description      : Each target affected by Soul Rot increases your haste and critical strike chance by ${$s1/10}.1% for $387018d.
 
 Name             : Dark Harvest (id=387018) [Spell Family (5)] 
 Class            : Warlock
@@ -13556,9 +13557,11 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Aura Points On Client (268)
 Effects          :
 #1 (id=1021526)  : Apply Aura (6) | Modify All Haste% (193)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 2.5 | Scaled Value: 2.5 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (5 -> 2.5)
 #2 (id=1021527)  : Apply Aura (6) | Modify Critical Strike% (290)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 2.5 | Scaled Value: 2.5 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (5 -> 2.5)
 Description      : $@spelldesc387016
 Tooltip          : Haste increased by ${$W1}.1%.
 Critical strike chance increased by ${$W2}.1%.
