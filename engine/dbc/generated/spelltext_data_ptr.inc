@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.2.46619
-static const std::array<spelltext_data_t, 19169> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 19171> __ptr_spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -18055,8 +18055,10 @@ static const std::array<spelltext_data_t, 19169> __ptr_spelltext_data { {
   { 388551, "Vivify critical strikes and Rising Sun Kicks reduce the remaining cooldown on $?s388615[Restoral][Revival] by ${$s2/1000}.1 sec, and $?s388615[Restoral][Revival] heals targets for ${$s1}.1% of $?s388615[Restoral's][Revival's] heal over $388555d.", 0, 0 },
   { 388555, "$@spelldesc388551", "Restores $w1 health every $t1 sec.", 0 },
   { 388559, "Summon an Unstable Arcane Rune at your location for $d. While standing within, you or your party members gain power but suffer its corruption, increasing primary stat by $391290s1 and decreasing Critical Strike by $391290s2.", 0, 0 },
+  { 388560, "@spelldesc388559", "$pri increased by $w1.", 0 },
   { 388564, "Zen Pulse's damage and healing is increased by $388566s1% each time Soothing Mist heals, up to $388566u times. \r\n\r\nWhen your Soothing Mist channel ends, this effect is canceled.", 0, 0 },
   { 388566, "$@spelldesc388564", "Damage and healing of Zen Pulse increased by $w1%.", 0 },
+  { 388583, "$@spelldesc388559", "$pri increased by $w1.\r\nCritical Strike reduced by $w2.", 0 },
   { 388593, "Allies targeted by Soothing Mist receive $s1% more healing from your Enveloping Mist and Renewing Mist effects.", 0, 0 },
   { 388603, "Your ranged spells and abilities have a chance to unleash a volley of pure decay, dealing up to ${$s2*$s1} Nature damage split between enemies hit and decreasing their movement speed by up to ${$393935s3*$s1}% for $393935d.", 0, 0 },
   { 388604, "Zen Pulse triggers a second time at $s1% effectiveness if cast on targets with both Renewing Mist and Enveloping Mist.", 0, 0 },
