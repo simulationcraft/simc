@@ -9990,12 +9990,6 @@ void shaman_t::trigger_vesper_totem( const action_state_t* state )
     case ACTION_ATTACK:
     case ACTION_SPELL:
     {
-      if ( bugs == true && std::string_view{state->action->name()} == "Fire Nova" )
-      {
-        current_event = ev_vesper_totem_heal;
-        charges = &( vesper_totem_heal_charges );
-        break;
-      }
       current_event = ev_vesper_totem_dmg;
       charges = &( vesper_totem_dmg_charges );
       break;
