@@ -109,6 +109,9 @@ avenging_wrath_buff_t::avenging_wrath_buff_t( paladin_t* p )
     base_buff_duration *= 1.0 + p->talents.sanctified_wrath->effectN( 1 ).percent();
   }
 
+  if ( p->talents.avenging_wrath_might->ok() )
+    crit_bonus = p->talents.avenging_wrath_might->effectN( 1 ).percent();
+
   if ( p->azerite.lights_decree.ok() )
     base_buff_duration += p->spells.lights_decree->effectN( 2 ).time_value();
 
@@ -1250,7 +1253,7 @@ void judgment_t::execute()
       p()->buffs.avenging_wrath->extend_duration(
           p(), timespan_t::from_millis( p()->talents.zealots_paragon->effectN( 1 ).base_value() ) );
     }
-    else if ( p()->buffs.crusade->up() )
+    if ( p()->buffs.crusade->up() )
     {
       p()->buffs.crusade->extend_duration(
           p(), timespan_t::from_millis( p()->talents.zealots_paragon->effectN( 1 ).base_value() ) );
@@ -3103,9 +3106,6 @@ double paladin_t::composite_spell_crit_chance() const
   if ( talents.holy_aegis->ok() )
     h += talents.holy_aegis->effectN( 1 ).percent();
 
-  if ( talents.avenging_wrath_might->ok() && buffs.avenging_wrath->up() )
-    h += talents.avenging_wrath_might->effectN( 1 ).percent();
-
   return h;
 }
 
@@ -3115,9 +3115,6 @@ double paladin_t::composite_melee_crit_chance() const
 
   if ( buffs.seraphim->up() )
     h += buffs.seraphim->data().effectN( 1 ).percent();
-
-  if ( talents.avenging_wrath_might->ok() && buffs.avenging_wrath->up() )
-    h += talents.avenging_wrath_might->effectN( 1 ).percent();
 
   return h;
 }
