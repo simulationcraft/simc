@@ -9684,8 +9684,8 @@ void rogue_t::init_spells()
   talent.subtlety.dark_brew = find_talent_spell( talent_tree::SPECIALIZATION, "Dark Brew" );
 
   // Shared Talents
-  spell.shadow_dance = talent.rogue.shadow_dance.find_override_spell( false );
-  spell.shadowstep = talent.rogue.shadowstep.find_override_spell( false );
+  spell.shadow_dance = find_spell( 185313 );  // Base spell with 0 charges
+  spell.shadowstep = find_spell( 36554 );     // Base spell with 0 charges
 
   auto find_shared_talent = []( std::vector<player_talent_t*> talents ) {
     for ( const auto t : talents )
