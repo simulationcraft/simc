@@ -9068,7 +9068,7 @@ void shaman_t::create_pets()
 
   if ( find_action( "healing_stream_totem" ) )
   {
-    for ( auto i = 0U; i < pet.capacitor_totem.size(); ++i )
+    for ( auto i = 0U; i < pet.healing_stream_totem.size(); ++i )
     {
       pet.healing_stream_totem[ i ] = new healing_stream_totem_t( this );
     }
