@@ -1473,7 +1473,7 @@ public:
       }
     }
 
-    if ( affected_by_crackling_surge_da && p()->buff.crackling_surge->up() )
+    if ( affected_by_crackling_surge_da && p()->buff.crackling_surge->check() )
     {
       for ( int x = 1; x <= p()->buff.crackling_surge->check(); x++ )
       {
@@ -1481,7 +1481,7 @@ public:
       }
     }
 
-    if ( affected_by_icy_edge_da && p()->buff.icy_edge->up() )
+    if ( affected_by_icy_edge_da && p()->buff.icy_edge->check() )
     {
       for ( int x = 1; x <= p()->buff.icy_edge->check(); x++ )
       {
@@ -1489,7 +1489,7 @@ public:
       }
     }
 
-    if ( affected_by_earthen_weapon_da && p()->buff.earthen_weapon->up() )
+    if ( affected_by_earthen_weapon_da && p()->buff.earthen_weapon->check() )
     {
       for ( int x = 1; x <= p()->buff.earthen_weapon->check(); x++ )
       {
@@ -1497,7 +1497,7 @@ public:
       }
     }
 
-    if ( affected_by_enh_t29_2pc && p()->buff.t29_2pc_enh->up() )
+    if ( affected_by_enh_t29_2pc && p()->buff.t29_2pc_enh->check() )
     {
       m *= 1.0 + p()->buff.t29_2pc_enh->value();
     }
@@ -1654,7 +1654,7 @@ public:
     {
       this->p()->buff.maelstrom_weapon->increment( 1 );
       this->p()->buff.t29_2pc_enh->expire();
-    } 
+    }
 
     // TODO: wire up enh MW gains
     // I ended up coding MW gains inside attack since it only procs off melee attacks
@@ -10703,17 +10703,13 @@ void shaman_t::create_buffs()
     ->set_default_value_from_effect_type( A_ADD_FLAT_MODIFIER, P_PROC_CHANCE );
 
   //NYI in game - spell data is lacking.
-  buff.t29_4pc_enh = make_buff<buff_t>( this, "t29_4pc_enh" )  //, find_spell( 393693 ) )
-                         ->set_default_value( 0.01f )
-                         ->set_max_stack( 10 )
-                         ->set_duration( timespan_t::from_seconds( 4 ) )
+  buff.t29_4pc_enh = make_buff<buff_t>( this, "fury_of_the_storm", find_spell( 396006 ) )  //, find_spell( 393693 ) )
                          ->set_default_value_from_effect_type( A_HASTE_ALL )
                          ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
 
-  buff.t29_2pc_enh = make_buff<buff_t>( this, "t29_2pc_enh", find_spell( 394677 ) )
+  buff.t29_2pc_enh = make_buff<buff_t>( this, "maelstrom_of_elements", find_spell( 394677 ) )
                    ->set_default_value_from_effect( 1 )
                    ->set_max_stack( 1 );
-                   
 
   // Buffs stormstrike and lava lash after using crash lightning
   buff.crash_lightning = make_buff( this, "crash_lightning", find_spell( 187878 ) );
