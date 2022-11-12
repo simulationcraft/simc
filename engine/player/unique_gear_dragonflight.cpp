@@ -843,6 +843,58 @@ void conjured_chillglobe( special_effect_t& effect )
   effect.execute_action = create_proc_action<conjured_chillglobe_proxy_t>( "conjured_chillglobe", effect );
 }
 
+struct skewering_cold_initializer_t : public item_targetdata_initializer_t
+{
+  skewering_cold_initializer_t() : item_targetdata_initializer_t( 383931 ) {}
+
+  void operator()( actor_target_data_t* td ) const override
+  {
+    if ( !find_effect( td->source ) )
+    {
+      td->debuff.skewering_cold = make_buff( *td, "skewering_cold" )->set_quiet( true );
+      return;
+    }
+
+    assert( !td->debuff.skewering_cold );
+    td->debuff.skewering_cold =
+        make_buff( *td, "skewering_cold", td->source->find_spell( spell_id )->effectN( 1 ).trigger() );
+    td->debuff.skewering_cold->reset();
+  }
+};
+
+void globe_of_jagged_ice( special_effect_t& effect )
+{
+  auto impale = find_special_effect( effect.player, 383931 );
+  new dbc_proc_callback_t( effect.player, *impale );
+
+  effect.player->callbacks.register_callback_execute_function(
+      impale->spell_id, []( const dbc_proc_callback_t* cb, action_t*, action_state_t* s ) {
+        cb->listener->get_target_data( s->target )->debuff.skewering_cold->trigger();
+      } );
+
+  struct breaking_the_ice_t : public generic_aoe_proc_t
+  {
+    breaking_the_ice_t( const special_effect_t& e ) : generic_aoe_proc_t( e, "breaking_the_ice", 388948, true )
+    {
+      // TODO: tooltip displays values based on the damage spell, but the actual value is from the debuff spell
+      base_dd_min = base_dd_max = e.trigger()->effectN( 1 ).average( e.item ) / data().max_stacks();
+    }
+
+    bool target_ready( player_t* t ) override
+    {
+      return generic_aoe_proc_t::target_ready( t ) && player->get_target_data( t )->debuff.skewering_cold->check();
+    }
+
+    double composite_target_multiplier( player_t* t ) const override
+    {
+      return generic_aoe_proc_t::composite_target_multiplier( t ) *
+             player->get_target_data( t )->debuff.skewering_cold->stack();
+    }
+  };
+
+  effect.execute_action = create_proc_action<breaking_the_ice_t>( "breaking_the_ice", *impale );
+}
+
 void irideus_fragment( special_effect_t& effect )
 {
   auto reduce = new special_effect_t( effect.player );
@@ -2123,6 +2175,7 @@ void register_special_effects()
   register_special_effect( 384532, items::darkmoon_deck_watcher );
   register_special_effect( 383751, items::bottle_of_spiraling_winds );
   register_special_effect( 396391, items::conjured_chillglobe );
+  register_special_effect( 388931, items::globe_of_jagged_ice );
   register_special_effect( 383941, items::irideus_fragment );
   register_special_effect( 383798, items::emerald_coachs_whistle );
   register_special_effect( 381471, items::erupting_spear_fragment );
@@ -2165,12 +2218,14 @@ void register_special_effects()
   register_special_effect( 383339, DISABLED_EFFECT );  // sagescale sigil (shuffle on jump) NYI
   register_special_effect( 378758, DISABLED_EFFECT );  // toxified embellishment
   register_special_effect( 371700, DISABLED_EFFECT );  // potion absorption inhibitor embellishment
-  register_special_effect( 381766, DISABLED_EFFECT );
+  register_special_effect( 381766, DISABLED_EFFECT );  // spoils of neltharius shuffler
+  register_special_effect( 383931, DISABLED_EFFECT );  // globe of jagged ice counter
 }
 
 void register_target_data_initializers( sim_t& sim )
 {
   sim.register_target_data_initializer( items::awakening_rime_initializer_t() );
+  sim.register_target_data_initializer( items::skewering_cold_initializer_t() );
   sim.register_target_data_initializer( items::spiteful_storm_initializer_t() );
 }
 
