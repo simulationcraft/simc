@@ -4448,6 +4448,7 @@ struct blood_boil_t : public death_knight_spell_t
     if ( p() -> buffs.dancing_rune_weapon -> up() )
     {
       p() -> pets.dancing_rune_weapon_pet -> ability.blood_boil -> execute_on_target( target );
+
       if ( p() -> talent.blood.everlasting_bond.ok() )
         p() -> pets.everlasting_bond_pet -> ability.blood_boil -> execute_on_target( target );
     }
@@ -6772,11 +6773,10 @@ struct heart_strike_t : public death_knight_melee_attack_t
 
     if ( p() -> buffs.dancing_rune_weapon -> up() )
     {
+      p() -> pets.dancing_rune_weapon_pet -> ability.heart_strike -> execute_on_target( target );
 
       if ( p() -> talent.blood.everlasting_bond.ok() )
-      {
         p() -> pets.everlasting_bond_pet -> ability.heart_strike -> execute_on_target( target );
-      }
     }
 
     if ( p() -> legendary.gorefiends_domination.ok() )
@@ -7039,7 +7039,7 @@ struct marrowrend_t : public death_knight_melee_attack_t
 
     if ( p() -> buffs.dancing_rune_weapon -> up() )
     {
-      p() -> pets.dancing_rune_weapon_pet -> ability.marrowrend -> execute_on_target(  target );
+      p() -> pets.dancing_rune_weapon_pet -> ability.marrowrend -> execute_on_target( target );
 
       if ( p() -> talent.blood.everlasting_bond.ok() )
         p() -> pets.everlasting_bond_pet -> ability.marrowrend -> execute_on_target( target );

@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.46455 Live (hotfix 2022-11-08/46455)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.46597 Live (hotfix 2022-11-10/46597)
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -816,9 +816,10 @@ Effects          :
 #1 (id=2780)     : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.90000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=126946)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Cleave (845), Mortal Strike (12294)
                    Family Flags: 22, 25
+Hotfixed         : Base Value (20 -> 25)
 Description      : Overpower the enemy, dealing $s1 Physical damage. Cannot be blocked, dodged, or parried.$?s316440&s845[
 
 Increases the damage of your next Mortal Strike or Cleave by $s2%. Stacking up to $u times]?s316440[
@@ -851,7 +852,8 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Discount Power On Miss (59), Chain From Caster (76), Requires Main-Hand Weapon (106), Aura Points On Client (268), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=5274)     : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.69300 | PvP Coefficient: 0.69500 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.77700 | PvP Coefficient: 0.69500 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (1.693 -> 1.777)
 Description      : A vicious strike that deals $s1 Physical damage and reduces the effectiveness of healing on the target by $115804s1% for $115804d.
 Variables        : $mult=${($max(0,$min($pl-5,15))*8+207)/327}
 
@@ -3374,7 +3376,8 @@ Effects          :
 #1 (id=229520)   : Trigger Spell (64): Execute
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 300 | Trigger Spell: 260798 | Target: Enemy (6)
 #2 (id=714082)   : Dummy (3)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : Base Value (20 -> 10)
 Description      : Attempts to finish off a foe, causing up to $<damage> Physical damage based on Rage spent. Only usable on enemies that have less than 20% health.$?s316405[
 
 If your foe survives, $s2% of the Rage spent is refunded.][]
@@ -3840,7 +3843,7 @@ Class            : Warrior
 School           : Physical
 Spell Type       : Melee
 Spell Level      : 1
-Range            : 50000 yards
+Range            : 8 yards
 Duration         : 1 seconds
 Proc Chance      : 101%
 Mechanic         : Root
@@ -5649,6 +5652,7 @@ Description      : Deals $s1 Holy Damage to enemies within $A1.
 Heals $s2 to allies within $A1. 
 
 Name             : Skullsplitter (id=260643) [Spell Family (4)] 
+Hotfixed         : Cooldown (30000 -> 21000)
 Talent Entry     : Arms [tree=spec, row=6, col=1, max_rank=1, req_points=8]
 Class            : Warrior
 School           : Physical
@@ -5657,7 +5661,7 @@ Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Cooldown         : 30 seconds
+Cooldown         : 21 seconds
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effects: #1, #6), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #9), Warrior (137047 effect#2), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Colossus Smash (208086 effect#1), Sweeping Strikes (260708 effect#1), Deep Wounds (262115 effect#2), Siegebreaker (280773 effect#1), Will of the Berserker (335597 effect#1), Unnerving Focus (337155 effect#3), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Impale (383430 effect#1), Unnerving Focus (384043 effect#3), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2)
 Family Flags     : 8, 9, 26, 52
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
@@ -5673,7 +5677,8 @@ Effects          :
 #1 (id=485944)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.20000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=485945)   : Energize Power (30)
-                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Misc Value: rage | Target: Self (1)
+                   Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000 | Misc Value: rage | Target: Self (1)
+Hotfixed         : Base Value (200 -> 150)
 Description      : Bash an enemy's skull, dealing $s1 Physical damage.$?s38635[
 
 Skullsplitter causes your Deep Wounds and Rend effects to expire $386357s1% faster.][]
@@ -5732,7 +5737,8 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Chain From Caster (76), Active Threat (94), Not a Proc (105), Requires Main-Hand Weapon (106), No Cast Log (128), No Attack Miss (249), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=486196)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.05000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.97650 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (1.05 -> 0.9765)
 Description      : $@spelldesc163201
 Variables        : $damage=${2.0*$260798s1}
 
@@ -7250,7 +7256,8 @@ Attributes       : ....x.x. ........ ..x..... ........   ........ ........ .....
                  : Is Ability (4), Passive (6), Do Not Sheath (18), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=735688)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (20 -> 10)
 Description      : Your auto attack critical strikes generate $s1% more Rage.
 
 Name             : Unstable Flames (id=279899) [Passive] 
@@ -8198,7 +8205,8 @@ Effects          :
 #1 (id=738982)   : Trigger Spell (64): Execute
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 300 | Trigger Spell: 260798 | Target: Enemy (6)
 #2 (id=738983)   : Dummy (3)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : Base Value (20 -> 10)
 #3 (id=738984)   : Dummy (3)
                    Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000
 Description      : Attempts to finish off a foe, causing up to $<damage> Physical damage based on Rage spent. Only usable on enemies that have less than $s3% health.$?s316405[
@@ -12563,12 +12571,13 @@ Effects          :
 Description      : Deep Wounds, Rend and Thunderous Roar's Bleed effects deal ${$s2/10}.2% increased damage.
 
 Name             : Juggernaut (id=383290) [Spell Family (4)] 
+Hotfixed         : Max stacks (12 -> 15)
 Class            : Warrior
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
 Duration         : 12 seconds
-Stacks           : 12 maximum
+Stacks           : 15 maximum
 Proc Chance      : 101%
 Triggered by     : Juggernaut (383292)
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
@@ -13683,12 +13692,13 @@ Description      : Roar explosively, dealing $s1 Physical damage to enemies with
 |cFFFFFFFFGenerates ${$m3/10} Rage.
 
 Name             : Bloodsurge (id=384361) [Spell Family (4), Passive, Hidden] 
+Hotfixed         : Proc Chance (10 -> 7)
 Talent Entry     : Arms [tree=spec, row=4, col=2, max_rank=1, req_points=0]
                  : Protection [tree=spec, row=5, col=4, max_rank=1, req_points=8]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Proc Chance      : 10%
+Proc Chance      : 7%
 Proc Flags       : ........ ........ ..x..... ........ 
                  : Periodic
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -13902,7 +13912,7 @@ Max Targets      : Unlimited(-1)
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 45 seconds
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effects: #1, #9), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #9), Warrior (137047 effect#2), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Shield Mastery (184927 effect#3), Colossus Smash (208086 effect#1), Deep Wounds (262115 effect#2), Siegebreaker (280773 effect#1), Will of the Berserker (335597 effect#1), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Impale (383430 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Titanic Rage (394329 effect#1)
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effects: #1, #9), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #9), Warrior (137047 effect#2), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Shield Mastery (184927 effect#3), Colossus Smash (208086 effect#1), Deep Wounds (262115 effect#2), Siegebreaker (280773 effect#1), Will of the Berserker (335597 effect#1), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Impale (383430 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2)
 Family Flags     : 8, 9, 103
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ..x..... 
@@ -13937,7 +13947,7 @@ Max Targets      : Unlimited(-1)
 Duration         : 4 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Mechanic         : Bleed
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #9), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Colossus Smash (208086 effect#1), Deep Wounds (262115 effect#2), Siegebreaker (280773 effect#1), Will of the Berserker (335597 effect#1), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Bloodletting (383154 effects: #1, #2), Bloodborne (383287 effect#1), Impale (383430 effect#1), Thunderous Words (384969 effect#1), Bloodborne (385703 effect#1), Bloodborne (385704 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Titanic Rage (394329 effect#2)
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #9), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Colossus Smash (208086 effect#1), Deep Wounds (262115 effect#2), Siegebreaker (280773 effect#1), Will of the Berserker (335597 effect#1), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Bloodletting (383154 effects: #1, #2), Bloodborne (383287 effect#1), Impale (383430 effect#1), Thunderous Words (384969 effect#1), Bloodborne (385703 effect#1), Bloodborne (385704 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Titanic Rage (394329 effect#1)
 Triggered by     : Odyn's Fury (385059)
 Family Flags     : 9, 104, 120
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
@@ -13963,7 +13973,7 @@ School           : Physical
 Spell Type       : Melee
 Max Targets      : Unlimited(-1)
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #9), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Colossus Smash (208086 effect#1), Deep Wounds (262115 effect#2), Siegebreaker (280773 effect#1), Will of the Berserker (335597 effect#1), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Impale (383430 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Titanic Rage (394329 effect#2)
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #9), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Colossus Smash (208086 effect#1), Deep Wounds (262115 effect#2), Siegebreaker (280773 effect#1), Will of the Berserker (335597 effect#1), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Impale (383430 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Titanic Rage (394329 effect#1)
 Triggered by     : Odyn's Fury (385059)
 Family Flags     : 9, 104
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
@@ -13986,7 +13996,7 @@ School           : Physical
 Spell Type       : Melee
 Max Targets      : Unlimited(-1)
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #9), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Colossus Smash (208086 effect#1), Deep Wounds (262115 effect#2), Siegebreaker (280773 effect#1), Will of the Berserker (335597 effect#1), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Impale (383430 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Titanic Rage (394329 effect#2)
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #9), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Colossus Smash (208086 effect#1), Deep Wounds (262115 effect#2), Siegebreaker (280773 effect#1), Will of the Berserker (335597 effect#1), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Impale (383430 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Titanic Rage (394329 effect#1)
 Triggered by     : Odyn's Fury (385059)
 Family Flags     : 9, 104
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
@@ -14072,9 +14082,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143)
 Effects          :
 #1 (id=1018902)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Overpower (7384)
                    Family Flags: 2
+Hotfixed         : Base Value (10 -> 15)
 Description      : Damage of Overpower increased by $s1%.
 
 Name             : Improved Mortal Strike (id=385573) [Spell Family (4), Passive] 
@@ -14392,8 +14403,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1019768)  : Apply Aura (6) | Modify Block% (51)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Self (1)
-#2 (id=1019769)  : Apply Aura (6) | Unknown(274)
+#2 (id=1019769)  : Apply Aura (6) | Unknown(272)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Sub Type (274 -> 272)
 Description      : Increases Block chance by $s1% and your Block value by $s2%.
 
 Name             : Enduring Defenses (id=386027) [Spell Family (4), Passive] 
@@ -14839,7 +14851,8 @@ Effects          :
 Description      : @spelldesc$386357
 
 
-Name             : Battle-Scarred Veteran (id=386394) [Spell Family (11), Passive] 
+Name             : Battle-Scarred Veteran (id=386394) [Spell Family (4), Passive] 
+Hotfixed         : Spell Family (11 -> 4)
 Talent Entry     : Protection [tree=spec, row=10, col=3, max_rank=1, req_points=20]
 Class            : Warrior
 School           : Physical
@@ -16802,14 +16815,11 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1033879)  : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
-                   Base Value: -10000 | Scaled Value: -10000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
-                   Affected Spells: Odyn's Fury (385059)
-                   Family Flags: 103
-#2 (id=1039931)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+#1 (id=1033879)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Odyn's Fury (385060), Odyn's Fury (385061), Odyn's Fury (385062)
                    Family Flags: 104
+Hotfixed         : Sub Type (107 -> 108), Base Value (-10000 -> 10), Misc Value (11 -> 0), Affects Spells
 Description      : Odyn's Fury's Enrages you, deals $s2% increased damage and grants you $85739u stacks of Whirlwind.
 
 

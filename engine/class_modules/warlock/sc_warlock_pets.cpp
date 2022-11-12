@@ -677,6 +677,9 @@ struct felstorm_t : public warlock_pet_melee_attack_t
     if ( main_pet && p->o()->talents.fel_sunder.ok() )
       debug_cast<felstorm_tick_t*>( tick_action )->applies_fel_sunder = true;
 
+    if ( !main_pet )
+      cooldown->duration = 45_s; // 2022-11-11: GFG does not appear to cast a second Felstorm even if the cooldown would come up, so we will pad this value to be longer than the possible duration.
+
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
@@ -1071,7 +1074,7 @@ action_t* grimoire_felguard_pet_t::create_action( util::string_view name, util::
   if ( name == "legion_strike" )
     return new legion_strike_t( this, options_str );
   if ( name == "felstorm" )
-    return new felstorm_t( this, options_str );
+    return new felstorm_t( this, options_str, false );
 
   return warlock_pet_t::create_action( name, options_str );
 }

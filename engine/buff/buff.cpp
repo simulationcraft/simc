@@ -3003,10 +3003,38 @@ stat_buff_t* stat_buff_t::add_stat( stat_e s, double a, const stat_check_fn& c )
 
 stat_buff_t* stat_buff_t::add_stat_from_effect( size_t i, double a, const stat_check_fn& c )
 {
-  auto stat = util::translate_rating_mod( data().effectN( i ).misc_value1() );
+  auto do_error = [ this, i ]( std::string_view msg ) {
+    sim->error( "{} cannot add stat from effect#{}: {}", name(), i, msg );
+  };
+
+  if ( i > data().effect_count() )
+  {
+    do_error( "index out of bounds" );
+    return this;
+  }
+
+  auto eff = data().effectN( i );
+  stat_e stat = STAT_NONE;
+
+  if ( eff.subtype() == A_MOD_STAT )
+  {
+    auto misc = eff.misc_value1();
+
+    if ( misc >= 0 )
+      stat = static_cast<stat_e>( misc + 1 );
+    else if ( misc == -1 )
+      stat = STAT_ALL;
+    else if ( misc == -2 )
+      stat = player->convert_hybrid_stat( STAT_STR_AGI_INT );
+  }
+  else if ( eff.subtype() == A_MOD_RATING )
+  {
+    stat = util::translate_rating_mod( data().effectN( i ).misc_value1() );
+  }
+
   if ( stat == STAT_NONE )
   {
-    sim->error( "{} cannot add stat from effect#{}: STAT_NONE", name(), i );
+    do_error( "STAT_NONE" );
     return this;
   }
 
