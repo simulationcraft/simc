@@ -3262,6 +3262,7 @@ struct wind_arrow_t final : public hunter_ranged_attack_t
     hunter_ranged_attack_t( n, p, p -> find_spell( 191043 ) )
   {
     dual = true;
+    triggers_wild_spirits = false;
     // LotW arrows behave more like AiS re cast time/speed
     // TODO: RETEST for DL & test its behavior on lnl AiSes
     base_execute_time = p -> talents.aimed_shot -> cast_time();
@@ -6298,8 +6299,6 @@ struct trueshot_t: public hunter_spell_t
     p() -> buffs.trueshot -> expire();
 
     p() -> buffs.trueshot -> trigger();
-    p() -> buffs.eagletalons_true_focus_runeforge -> trigger();
-    p() -> buffs.eagletalons_true_focus -> trigger();
   }
 };
 
@@ -7453,6 +7452,8 @@ void hunter_t::create_buffs()
           }
           else if ( cur == 1 )
             buffs.unerring_vision_hidden -> trigger();
+            buffs.eagletalons_true_focus_runeforge -> trigger();
+            buffs.eagletalons_true_focus -> trigger();
         } )
       -> apply_affecting_aura( talents.eagletalons_true_focus )
       -> apply_affecting_conduit( conduits.sharpshooters_focus );

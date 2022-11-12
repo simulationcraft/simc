@@ -3347,13 +3347,14 @@ struct execute_arms_t : public warrior_attack_t
     trigger_attack->execute();
     if ( p()->talents.arms.improved_execute->ok() && !p()->talents.arms.critical_thinking->ok() )
     {
-    p()->resource_gain( RESOURCE_RAGE, last_resource_cost * 0.2,
-                        p()->gain.execute_refund );  // Not worth the trouble to check if the target died.
+      p()->resource_gain( RESOURCE_RAGE, last_resource_cost * p()->find_spell( 163201 )->effectN( 2 ).percent(),
+                          p()->gain.execute_refund );  // Not worth the trouble to check if the target died.
     }
     if ( p()->talents.arms.improved_execute->ok() && p()->talents.arms.critical_thinking->ok() )
     {
-    p()->resource_gain( RESOURCE_RAGE, last_resource_cost * ( p()->talents.arms.critical_thinking->effectN( 2 ).percent() + 0.2 ),
-                        p()->gain.execute_refund );  // Not worth the trouble to check if the target died.
+      p()->resource_gain( RESOURCE_RAGE, last_resource_cost * ( p()->talents.arms.critical_thinking->effectN( 2 ).percent() +
+                                                 p()->find_spell( 163201 )->effectN( 2 ).percent() ),
+                          p()->gain.execute_refund );  // Not worth the trouble to check if the target died.
     }
 
     if (p()->buff.sudden_death->up())
@@ -4291,7 +4292,7 @@ struct odyns_fury_off_hand_t : public warrior_attack_t
     aoe                 = -1;
     if ( p->is_ptr() )
     {
-      base_multiplier *= 1.0 + p->talents.fury.titanic_rage->effectN( 2 ).percent();
+      base_multiplier *= 1.0 + p->talents.fury.titanic_rage->effectN( 1 ).percent();
     }
   }
 };
@@ -4305,7 +4306,7 @@ struct odyns_fury_main_hand_t : public warrior_attack_t
     aoe        = -1;
     if ( p->is_ptr() )
     {
-      base_multiplier *= 1.0 + p->talents.fury.titanic_rage->effectN( 2 ).percent();
+      base_multiplier *= 1.0 + p->talents.fury.titanic_rage->effectN( 1 ).percent();
     }
   }
 };
@@ -6023,13 +6024,14 @@ struct condemn_arms_t : public warrior_attack_t
     trigger_attack->execute();
     if ( p()->talents.arms.improved_execute->ok() && !p()->talents.arms.critical_thinking->ok() )
     {
-    p()->resource_gain( RESOURCE_RAGE, last_resource_cost * 0.2,
-                        p()->gain.execute_refund );  // Not worth the trouble to check if the target died.
+      p()->resource_gain( RESOURCE_RAGE, last_resource_cost * p()->find_spell( 163201 )->effectN( 2 ).percent(),
+                          p()->gain.execute_refund );  // Not worth the trouble to check if the target died.
     }
     if ( p()->talents.arms.improved_execute->ok() && p()->talents.arms.critical_thinking->ok() )
     {
-    p()->resource_gain( RESOURCE_RAGE, last_resource_cost * ( p()->talents.arms.critical_thinking->effectN( 2 ).percent() + 0.2 ),
-                        p()->gain.execute_refund );  // Not worth the trouble to check if the target died.
+      p()->resource_gain( RESOURCE_RAGE, last_resource_cost * ( p()->talents.arms.critical_thinking->effectN( 2 ).percent() +
+                                                 p()->find_spell( 163201 )->effectN( 2 ).percent() ),
+                          p()->gain.execute_refund );  // Not worth the trouble to check if the target died.
     }
 
     if (p()->buff.sudden_death->up())

@@ -54,22 +54,23 @@ enum eclipse_state_e
 
 enum free_spell_e : unsigned
 {
-  NONE =       0x0000,
+  NONE       = 0x0000,
   // free procs
-  CONVOKE =    0x0001,  // convoke_the_spirits night_fae covenant ability
-  FIRMAMENT =  0x0002,  // sundered firmament talent
-  FLASHING =   0x0004,  // flashing claws talent
-  GALACTIC =   0x0008,  // galactic guardian talent
-  LYCARAS =    0x0010,  // lycaras fleeting glimpse legendary
-  NATURAL =    0x0020,  // natural orders will legendary
-  ORBIT =      0x0040,  // orbit breaker talent
+  CONVOKE    = 0x0001,  // convoke_the_spirits night_fae covenant ability
+  FIRMAMENT  = 0x0002,  // sundered firmament talent
+  FLASHING   = 0x0004,  // flashing claws talent
+  GALACTIC   = 0x0008,  // galactic guardian talent
+  LYCARAS    = 0x0010,  // lycaras fleeting glimpse legendary
+  NATURAL    = 0x0020,  // natural orders will legendary
+  ORBIT      = 0x0040,  // orbit breaker talent
   // free casts
-  APEX =       0x0080,  // apex predators's craving
-  COSMOS =     0x0100,  // touch the cosmos 4t29
+  APEX       = 0x0080,  // apex predators's craving
+  COSMOS     = 0x0100,  // touch the cosmos 4t29
   STARWEAVER = 0x0200,  // starweaver talent
+  TOOTH      = 0x0400,  // tooth and claw talent
 
   PROCS = CONVOKE | FIRMAMENT | FLASHING | GALACTIC | LYCARAS | NATURAL | ORBIT,
-  CASTS = APEX | COSMOS | STARWEAVER
+  CASTS = APEX | COSMOS | STARWEAVER | TOOTH
 };
 
 struct druid_td_t : public actor_target_data_t
@@ -402,6 +403,7 @@ public:
     action_t* brambles;
     action_t* elunes_favored_heal;
     action_t* galactic_guardian;
+    action_t* maul_tooth_and_claw;
     action_t* natures_guardian;
     action_t* rage_of_the_sleeper_reflect;
     action_t* the_natural_orders_will;   // fake holder action for reporting
@@ -638,7 +640,9 @@ public:
     proc_t* primal_fury;
 
     // Guardian
+    proc_t* galactic_guardian;
     proc_t* gore;
+    proc_t* tooth_and_claw;
   } proc;
 
   // Talents
@@ -1003,6 +1007,7 @@ public:
     uptime_t* eclipse_none;
     uptime_t* friend_of_the_fae;
     uptime_t* primordial_arcanic_pulsar;
+    uptime_t* tooth_and_claw_debuff;
   } uptime;
 
   // Covenant
@@ -2322,6 +2327,7 @@ public:
       return;
 
     p()->active.galactic_guardian->execute_on_target( s->target );
+    p()->proc.galactic_guardian->occur();
     make_event( ab::sim, [ this ]() { p()->buff.galactic_guardian->trigger(); } );  // schedule buff after damage execute
   }
 
@@ -4911,7 +4917,9 @@ struct mangle_t : public bear_attack_t
 // Maul =====================================================================
 struct maul_t : public druid_mixin_t<trigger_gore_t<bear_attack_t>>
 {
-  maul_t( druid_t* p, std::string_view opt ) : druid_mixin_t( "maul", p, p->talent.maul, opt ) {}
+  maul_t( druid_t* p, std::string_view opt ) : maul_t( p, "maul", opt ) {}
+
+  maul_t( druid_t* p, std::string_view n, std::string_view opt ) : druid_mixin_t( n, p, p->talent.maul, opt ) {}
 
   void impact( action_state_t* s ) override
   {
@@ -4928,6 +4936,12 @@ struct maul_t : public druid_mixin_t<trigger_gore_t<bear_attack_t>>
 
   void execute() override
   {
+    if ( !is_free() && p()->buff.tooth_and_claw->up() )
+    {
+      p()->active.maul_tooth_and_claw->execute_on_target( target );
+      return;
+    }
+
     base_t::execute();
 
     if ( !hit_any_target )
@@ -8958,7 +8972,8 @@ struct bear_melee_t : public druid_melee_t<bear_attacks::bear_attack_t>
     base_t::execute();
 
     if ( hit_any_target )
-      p()->buff.tooth_and_claw->trigger();
+      if ( p()->buff.tooth_and_claw->trigger() )
+        p()->proc.tooth_and_claw->occur();
   }
 };
 
@@ -10665,6 +10680,15 @@ void druid_t::create_actions()
     active.galactic_guardian = gg;
   }
 
+  if ( talent.maul.ok() && talent.tooth_and_claw.ok() )
+  {
+    auto tnc = get_secondary_action_n<maul_t>( "maul_tooth_and_claw", "" );
+    tnc->s_data_reporting = talent.tooth_and_claw;
+    tnc->name_str_reporting = "tooth_and_claw";
+    tnc->set_free_cast( free_spell_e::TOOTH );
+    active.maul_tooth_and_claw = tnc;
+  }
+
   if ( mastery.natures_guardian->ok() )
     active.natures_guardian = new natures_guardian_t( this );
 
@@ -10715,6 +10739,7 @@ void druid_t::create_actions()
 
   find_parent( active.ferocious_bite_apex, "ferocious_bite" );
   find_parent( active.galactic_guardian, "moonfire" );
+  find_parent( active.maul_tooth_and_claw, "maul" );
   find_parent( active.orbit_breaker, "full_moon" );
   find_parent( active.starsurge_cosmos, "starsurge" );
   find_parent( active.starfall_cosmos, "starfall" );
@@ -11022,7 +11047,9 @@ void druid_t::init_procs()
   proc.clearcasting_wasted  = get_proc( "Clearcasting (Wasted)" );
 
   // Guardian
-  proc.gore                 = get_proc( "Gore" );
+  proc.galactic_guardian    = get_proc( "Galactic Guardian" )->collect_interval();
+  proc.gore                 = get_proc( "Gore" )->collect_interval();
+  proc.tooth_and_claw       = get_proc( "Tooth and Claw" )->collect_interval();
 }
 
 // druid_t::init_uptimes ====================================================
@@ -11030,19 +11057,15 @@ void druid_t::init_uptimes()
 {
   player_t::init_uptimes();
 
-  std::string ca_inc_str;
-
-  if ( talent.incarnation_moonkin.ok() )
-    ca_inc_str = "Incarnation";
-  else
-    ca_inc_str = "Celestial Alignment";
+  std::string ca_inc_str = talent.incarnation_moonkin.ok() ? "Incarnation" : "Celestial Alignment";
 
   uptime.combined_ca_inc           = get_uptime( ca_inc_str + " (Total)" )->collect_uptime( *sim )->collect_duration( *sim );
   uptime.primordial_arcanic_pulsar = get_uptime( ca_inc_str + " (Pulsar)" )->collect_uptime( *sim );
-  uptime.friend_of_the_fae         = get_uptime( "Friend of the Fae" )->collect_uptime( *sim )->collect_duration( *sim );
   uptime.eclipse_lunar             = get_uptime( "Lunar Eclipse Only" )->collect_uptime( *sim )->collect_duration( *sim );
   uptime.eclipse_solar             = get_uptime( "Solar Eclipse Only" )->collect_uptime( *sim );
   uptime.eclipse_none              = get_uptime( "No Eclipse" )->collect_uptime( *sim )->collect_duration( *sim );
+  uptime.friend_of_the_fae         = get_uptime( "Friend of the Fae" )->collect_uptime( *sim )->collect_duration( *sim );
+  uptime.tooth_and_claw_debuff     = get_uptime( "Tooth and Claw Debuff" )->collect_uptime( *sim );
 }
 
 // druid_t::init_resources ==================================================
@@ -12431,7 +12454,10 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
 
   debuff.tooth_and_claw = make_buff( *this, "tooth_and_claw_debuff",
     source.talent.tooth_and_claw->effectN( 1 ).trigger()->effectN( 2 ).trigger() )
-    ->set_default_value_from_effect_type( A_MOD_DAMAGE_TO_CASTER );
+    ->set_default_value_from_effect_type( A_MOD_DAMAGE_TO_CASTER )
+    ->set_stack_change_callback( [ & ]( buff_t* b, int, int new_ ) {
+      source.uptime.tooth_and_claw_debuff->update( new_, b->sim->current_time() );
+    } );
 
   debuff.waning_twilight = make_buff( *this, "waning_twilight", source.spec.waning_twilight )
     ->set_chance( 1.0 )
