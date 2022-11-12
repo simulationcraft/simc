@@ -1248,15 +1248,20 @@ void judgment_t::execute()
 
   if ( p()->talents.zealots_paragon->ok() )
   {
+    auto extension = timespan_t::from_millis( p()->talents.zealots_paragon->effectN( 1 ).base_value() );
+    if ( !(p()->dbc->ptr) )
+    {
+      extension = timespan_t::from_millis( p()->talents.zealots_paragon->effectN( 4 ).base_value() );
+    }
+
     if ( p()->buffs.avenging_wrath->up() )
     {
-      p()->buffs.avenging_wrath->extend_duration(
-          p(), timespan_t::from_millis( p()->talents.zealots_paragon->effectN( 1 ).base_value() ) );
+      p()->buffs.avenging_wrath->extend_duration( p(), extension );
     }
+
     if ( p()->buffs.crusade->up() )
     {
-      p()->buffs.crusade->extend_duration(
-          p(), timespan_t::from_millis( p()->talents.zealots_paragon->effectN( 1 ).base_value() ) );
+      p()->buffs.crusade->extend_duration( p(), extension );
     }
   }
 }
@@ -1853,15 +1858,20 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
 
     if ( p()->talents.zealots_paragon->ok() )
     {
+      auto extension = timespan_t::from_millis( p()->talents.zealots_paragon->effectN( 1 ).base_value() );
+      if ( !(p()->dbc->ptr) )
+      {
+        extension = timespan_t::from_millis( p()->talents.zealots_paragon->effectN( 4 ).base_value() );
+      }
+
       if ( p()->buffs.avenging_wrath->up() )
       {
-        p()->buffs.avenging_wrath->extend_duration(
-            p(), timespan_t::from_millis( p()->talents.zealots_paragon->effectN( 1 ).base_value() ) );
+        p()->buffs.avenging_wrath->extend_duration( p(), extension );
       }
-      else if ( p()->buffs.crusade->up() )
+
+      if ( p()->buffs.crusade->up() )
       {
-        p()->buffs.crusade->extend_duration(
-            p(), timespan_t::from_millis( p()->talents.zealots_paragon->effectN( 1 ).base_value() ) );
+        p()->buffs.crusade->extend_duration( p(), extension );
       }
     }
 
