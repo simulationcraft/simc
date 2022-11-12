@@ -2531,6 +2531,9 @@ struct pet_action_t : public T_ACTION
       }
     }
   }
+
+  double cost() const override
+  { return 0; }
 };
 
 // ==========================================================================
