@@ -1834,6 +1834,22 @@ void alltotem_of_the_master( special_effect_t& effect )
   } );
 }
 
+void tome_of_unstable_power(special_effect_t& effect)
+{
+    //auto buff_spell = effect.driver();
+    auto buff_spell = effect.player->find_spell(388583);
+    auto data_spell = effect.player->find_spell(391290);
+    
+    auto buff = create_buff<stat_buff_t>(effect.player, buff_spell);
+
+    buff->set_duration(effect.driver()->duration());
+    buff->add_stat(effect.player->convert_hybrid_stat(STAT_STR_AGI_INT), data_spell->effectN(1).average(effect.item));
+    buff->add_stat_from_effect(2, data_spell->effectN(2).average(effect.item));
+
+    effect.custom_buff = buff;
+}
+
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -2128,6 +2144,7 @@ void register_special_effects()
   register_special_effect( 377449, items::decoration_of_flame );
   register_special_effect( 377463, items::manic_grieftorch );
   register_special_effect( 377457, items::alltotem_of_the_master );
+  register_special_effect( 388559, items::tome_of_unstable_power );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );  // bronzed grip wrappings embellishment
