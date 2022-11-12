@@ -70,11 +70,11 @@ void phial_of_charged_isolation( special_effect_t& effect )
 
     auto stat_buff =
         make_buff<stat_buff_t>( effect.player, "phial_of_charged_isolation_stats", effect.player->find_spell( 371387 ) )
-            ->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ), amount );
+            ->add_stat_from_effect( 1, amount );
 
     auto linger_buff =
         make_buff<stat_buff_t>( effect.player, "phial_of_charged_isolation_linger", effect.player->find_spell( 384713 ) )
-            ->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ), amount * linger_mul );
+            ->add_stat_from_effect( 1, amount * linger_mul );
 
     buff = make_buff( effect.player, effect.name(), effect.driver() )
       ->set_stack_change_callback( [ stat_buff ]( buff_t*, int, int new_ ) {
@@ -245,9 +245,7 @@ void phial_of_static_empowerment( special_effect_t& effect )
   if ( !buff )
   {
     auto primary = make_buff<stat_buff_t>( effect.player, "static_empowerment", effect.player->find_spell( 370772 ) );
-    primary
-        ->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ),
-                    effect.driver()->effectN( 1 ).average( effect.item ) / primary->max_stack() );
+    primary->add_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect.item ) / primary->max_stack() );
 
     buff = make_buff( effect.player, effect.name(), effect.driver() )
       ->set_stack_change_callback( [ primary ]( buff_t*, int, int new_ ) {
@@ -867,8 +865,7 @@ void irideus_fragment( special_effect_t& effect )
 
   auto buff = create_buff<stat_buff_t>( effect.player, effect.driver() );
   buff->manual_stats_added = false;
-  buff->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ),
-                  effect.driver()->effectN( 1 ).average( effect.item ) )
+  buff->add_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect.item ) )
       ->set_reverse( true )
       ->set_stack_change_callback( [ cb ]( buff_t*, int old_, int new_ ) {
     if ( !old_ )
@@ -1824,31 +1821,29 @@ void alltotem_of_the_master( special_effect_t& effect )
 
   action_t* action = create_proc_action<alltotem_buffs_t>( "alltotem_of_the_master", effect );
 
-  effect.player->register_combat_begin([&effect, action ](player_t*) {
+  effect.player->register_combat_begin( [ &effect, action ]( player_t* ) {
     timespan_t base_period = effect.driver()->internal_cooldown();
-    timespan_t period = base_period + ( effect.player -> sim -> dragonflight_opts.alltotem_of_the_master_period + effect.player -> rng().range( 0_s, 12_s ) / effect.player -> sim -> target_non_sleeping_list.size() );
-    make_repeating_event( effect.player -> sim, period , [ action ]()
-    {
-      action -> execute();
-    } );
+    timespan_t period =
+        base_period + ( effect.player->sim->dragonflight_opts.alltotem_of_the_master_period +
+                        effect.player->rng().range( 0_s, 12_s ) / effect.player->sim->target_non_sleeping_list.size() );
+    make_repeating_event( effect.player->sim, period, [ action ]() { action->execute(); } );
   } );
 }
 
-void tome_of_unstable_power(special_effect_t& effect)
+void tome_of_unstable_power( special_effect_t& effect )
 {
-    auto buff_spell = effect.player->find_spell(388583);
-    auto data_spell = effect.player->find_spell(391290);
-    
-    auto buff = create_buff<stat_buff_t>(effect.player, buff_spell);
+  auto buff_spell = effect.player->find_spell( 388583 );
+  auto data_spell = effect.player->find_spell( 391290 );
 
-    buff->set_duration(effect.driver()->duration());
-    buff->manual_stats_added = false;
-    buff->add_stat(effect.player->convert_hybrid_stat(STAT_STR_AGI_INT), data_spell->effectN(1).average(effect.item));
-    buff->add_stat_from_effect(2, data_spell->effectN(2).average(effect.item));
+  auto buff = create_buff<stat_buff_t>( effect.player, buff_spell );
 
-    effect.custom_buff = buff;
+  buff->set_duration( effect.driver()->duration() );
+  buff->manual_stats_added = false;
+  buff->add_stat_from_effect( 1, data_spell->effectN( 1 ).average( effect.item ) )
+      ->add_stat_from_effect( 2, data_spell->effectN( 2 ).average( effect.item ) );
+
+  effect.custom_buff = buff;
 }
-
 
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
