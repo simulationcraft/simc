@@ -1842,9 +1842,9 @@ void tome_of_unstable_power(special_effect_t& effect)
     auto buff = create_buff<stat_buff_t>(effect.player, buff_spell);
 
     buff->set_duration(effect.driver()->duration());
+    buff->manual_stats_added = false;
     buff->add_stat(effect.player->convert_hybrid_stat(STAT_STR_AGI_INT), data_spell->effectN(1).average(effect.item));
     buff->add_stat_from_effect(2, data_spell->effectN(2).average(effect.item));
-    buff->manual_stats_added = false;
 
     effect.custom_buff = buff;
 }
