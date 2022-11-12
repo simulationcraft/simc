@@ -3177,7 +3177,7 @@ struct stormblast_t : public shaman_attack_t
   {
     shaman_attack_t::init();
 
-    snapshot_flags = update_flags = STATE_MUL_DA | STATE_VERSATILITY | STATE_CRIT;
+    snapshot_flags = update_flags = STATE_MUL_DA | STATE_TGT_MUL_DA;
 
     may_proc_windfury = may_proc_flametongue = may_proc_maelstrom_weapon = may_proc_hot_hand = false;
     may_proc_stormbringer = may_proc_ability_procs = false;
