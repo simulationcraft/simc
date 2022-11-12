@@ -9231,7 +9231,7 @@ struct use_item_t : public action_t
     if ( action )
       return action->target_ready( t );
 
-    return action_t::ready();
+    return action_t::target_ready( t );
   }
 
   std::unique_ptr<expr_t> create_special_effect_expr( util::span<const util::string_view> data_str_split )
