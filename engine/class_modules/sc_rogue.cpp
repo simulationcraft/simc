@@ -450,6 +450,7 @@ public:
     cooldown_t* serrated_bone_spike;
     cooldown_t* shadow_blades;
     cooldown_t* shadow_dance;
+    cooldown_t* shadowstep;
     cooldown_t* shiv;
     cooldown_t* sprint;
     cooldown_t* symbols_of_death;
@@ -1101,6 +1102,7 @@ public:
     cooldowns.serrated_bone_spike       = get_cooldown( "serrated_bone_spike" );
     cooldowns.shadow_blades             = get_cooldown( "shadow_blades" );
     cooldowns.shadow_dance              = get_cooldown( "shadow_dance" );
+    cooldowns.shadowstep                = get_cooldown( "shadowstep" );
     cooldowns.shiv                      = get_cooldown( "shiv" );
     cooldowns.sprint                    = get_cooldown( "sprint" );   
     cooldowns.symbols_of_death          = get_cooldown( "symbols_of_death" );
@@ -1994,6 +1996,10 @@ public:
   virtual bool procs_shadow_blades_damage() const
   { return ab::energize_type != action_energize::NONE && ab::energize_amount > 0 && ab::energize_resource == RESOURCE_COMBO_POINT; }
 
+  // Generic rules for proccing Seal Fate, used by rogue_t::trigger_seal_fate()
+  virtual bool procs_seal_fate() const
+  { return ab::energize_type != action_energize::NONE && ab::energize_resource == RESOURCE_COMBO_POINT; }
+
   // Generic rules for proccing Banshee's Blight, used by rogue_t::trigger_banshees_blight()
   virtual bool procs_banshees_blight() const
   { return ab::base_costs[ RESOURCE_COMBO_POINT ] > 0 && ( ab::attack_power_mod.direct > 0.0 || ab::attack_power_mod.tick > 0.0 ); }
@@ -2383,11 +2389,7 @@ public:
   {
     ab::schedule_travel( state );
 
-    if ( ab::energize_type != action_energize::NONE && ab::energize_resource == RESOURCE_COMBO_POINT )
-    {
-      trigger_seal_fate( state );
-    }
-
+    trigger_seal_fate( state );
     trigger_poisons( state );
   }
 
@@ -3201,10 +3203,10 @@ struct ambush_t : public rogue_attack_t
     }
 
     bool procs_main_gauche() const override
-    { return true; } // TOCHECK DFALPHA
+    { return true; }
 
     bool procs_blade_flurry() const override
-    { return true; } // TOCHECK DFALPHA
+    { return true; }
   };
 
   hidden_opportunity_extra_attack_t* extra_attack;
@@ -3701,7 +3703,6 @@ struct dispatch_t: public rogue_attack_t
   {
     rogue_attack_t::execute();
 
-    // TOCHECK DFALPHA -- Verify Echoing Reprimand works correctly
     if ( p()->talent.outlaw.summarily_dispatched->ok() )
     {
       int cp = cast_state( execute_state )->get_combo_points();
@@ -3713,8 +3714,9 @@ struct dispatch_t: public rogue_attack_t
 
     if ( p()->set_bonuses.t29_outlaw_2pc->ok() )
     {
+      // 2022-11-12 -- Currently does not benefit from animacharged CP
       p()->buffs.t29_outlaw_2pc->expire();
-      p()->buffs.t29_outlaw_2pc->trigger( cast_state( execute_state )->get_combo_points() );
+      p()->buffs.t29_outlaw_2pc->trigger( cast_state( execute_state )->get_combo_points( p()->bugs ) );
     }
 
     trigger_restless_blades( execute_state );
@@ -3748,6 +3750,9 @@ struct dreadblades_t : public rogue_attack_t
 
   bool procs_blade_flurry() const override
   { return true; }
+
+  bool procs_seal_fate() const override
+  { return false; }
 };
 
 // Envenom ==================================================================
@@ -4448,6 +4453,9 @@ struct pistol_shot_t : public rogue_attack_t
 
   bool procs_blade_flurry() const override
   { return true; }
+
+  bool procs_seal_fate() const override
+  { return false; }
 };
 
 // Main Gauche ==============================================================
@@ -4903,7 +4911,7 @@ struct secret_technique_t : public rogue_attack_t
 struct shadow_blades_attack_t : public rogue_attack_t
 {
   shadow_blades_attack_t( util::string_view name, rogue_t* p ) :
-    rogue_attack_t( name, p, p->spec.shadow_blades_attack ) // DFALPHA TOCHECK Toxic Onslaught
+    rogue_attack_t( name, p, p->spec.shadow_blades_attack )
   {
     may_dodge = may_block = may_parry = false;
     attack_power_mod.direct = 0;
@@ -5296,16 +5304,6 @@ struct shuriken_storm_t: public rogue_attack_t
     c += p()->buffs.silent_storm->stack_value();
     return c;
   }
-
-  /* DFALPHA -- This is currently bugged in-game and is a crit multiplier as below
-  *             Likely not intended but leaving this code just in case it makes live
-  double composite_crit_chance_multiplier() const override
-  {
-    double cm = rogue_attack_t::composite_crit_chance_multiplier();
-    cm *= 1.0 + p()->buffs.silent_storm->stack_value();
-    return cm;
-  }
-  */
 
   void execute() override
   {
@@ -6080,16 +6078,6 @@ struct sepsis_t : public rogue_attack_t
       dual = true;
     }
 
-    void impact( action_state_t* state ) override
-    {
-      // TOCHECK DFALPHA
-      // 2020-12-30- Due to flagging as a generator, the final hit can trigger Seal Fate
-      rogue_attack_t::impact( state );
-      trigger_seal_fate( state );
-    }
-
-    // TOCHECK DFALPHA
-    // 2021-04-22-- Confirmed as working in-game
     bool procs_shadow_blades_damage() const override
     { return true; }
   };
@@ -6319,6 +6307,7 @@ struct serrated_bone_spike_t : public rogue_attack_t
     rogue_attack_t( name, p, p->talent.assassination.serrated_bone_spike, options_str )
   {
     // Combo Point generation is in a secondary spell due to scripting logic
+    // However, leave the ON_HIT entry as it can trigger things that proc from CP generators
     energize_type = action_energize::ON_HIT;
     energize_resource = RESOURCE_COMBO_POINT;
     energize_amount = 0.0;
@@ -6743,7 +6732,7 @@ namespace buffs {
 struct adrenaline_rush_t : public buff_t
 {
   adrenaline_rush_t( rogue_t* p ) :
-    buff_t( p, "adrenaline_rush", p->talent.outlaw.adrenaline_rush ) // DFALPHA -- Check RO triggering for other specs
+    buff_t( p, "adrenaline_rush", p->talent.outlaw.adrenaline_rush )
   {
     set_cooldown( timespan_t::zero() );
     set_default_value_from_effect_type( A_MOD_RANGED_AND_MELEE_ATTACK_SPEED );
@@ -6896,17 +6885,16 @@ struct vanish_t : public stealth_like_buff_t<buff_t>
     base_t( r, "vanish", r->spell.vanish_buff ),
     shadowdust_reduction( timespan_t::from_seconds( r->spec.invigorating_shadowdust_cdr->effectN( 1 ).base_value() ) )
   {
-    // TOCHECK DFALPHA -- Make sure this list is updated for Sub
     if ( r->talent.subtlety.invigorating_shadowdust || r->legendary.invigorating_shadowdust.ok() || r->options.prepull_shadowdust )
     {
       shadowdust_cooldowns = { r->cooldowns.adrenaline_rush, r->cooldowns.between_the_eyes, r->cooldowns.blade_flurry,
-        r->cooldowns.blade_rush, r->cooldowns.blind, r->cooldowns.cloak_of_shadows, r->cooldowns.deathmark,
+        r->cooldowns.blade_rush, r->cooldowns.blind, r->cooldowns.cloak_of_shadows, r->cooldowns.cold_blood, r->cooldowns.deathmark,
         r->cooldowns.dreadblades, r->cooldowns.echoing_reprimand, r->cooldowns.flagellation, r->cooldowns.fleshcraft,
         r->cooldowns.garrote, r->cooldowns.ghostly_strike, r->cooldowns.gouge, r->cooldowns.grappling_hook,
         r->cooldowns.indiscriminate_carnage, r->cooldowns.keep_it_rolling, r->cooldowns.killing_spree, r->cooldowns.kingsbane,
         r->cooldowns.marked_for_death, r->cooldowns.riposte, r->cooldowns.roll_the_bones, r->cooldowns.secret_technique,
         r->cooldowns.sepsis, r->cooldowns.serrated_bone_spike, r->cooldowns.shadow_blades, r->cooldowns.shadow_dance,
-        r->cooldowns.shiv, r->cooldowns.sprint, r->cooldowns.symbols_of_death, r->cooldowns.thistle_tea };
+        r->cooldowns.shadowstep, r->cooldowns.shiv, r->cooldowns.sprint, r->cooldowns.symbols_of_death, r->cooldowns.thistle_tea };
     }
   }
 
@@ -7402,16 +7390,10 @@ void rogue_t::trigger_toxic_onslaught( player_t* /*target*/ )
   }
   else if ( specialization() == ROGUE_OUTLAW )
   {
-    /* DFALPHA Deathmark?
-    make_event( *sim, [this, target, trigger_duration] {
-       } ); */
     buffs.shadow_blades->extend_duration_or_trigger( trigger_duration );
   }
   else if ( specialization() == ROGUE_SUBTLETY )
   {
-    /* DFALPHA Deathmark?
-    make_event( *sim, [this, target, trigger_duration] {
-       } ); */
     buffs.adrenaline_rush->extend_duration_or_trigger( trigger_duration );
   }
 }
@@ -7500,6 +7482,9 @@ template <typename Base>
 void actions::rogue_action_t<Base>::trigger_seal_fate( const action_state_t* state )
 {
   if ( !p()->talent.rogue.seal_fate->ok() )
+    return;
+
+  if ( !procs_seal_fate() )
     return;
 
   if ( state->result != RESULT_CRIT )
@@ -7647,13 +7632,6 @@ void actions::rogue_action_t<Base>::trigger_blade_flurry( const action_state_t* 
       multiplier += p()->talent.outlaw.precise_cuts->effectN( 1 ).percent() * ( max_targets - num_targets );
     }
   }
-
-  // DFALPHA TOCHECK
-  // Between the Eyes crit damage multiplier does not transfer across correctly due to a Shadowlands-specific bug
-  //if ( p()->bugs && ab::data().id() == p()->spec.between_the_eyes->id() && state->result == RESULT_CRIT )
-  //{
-  //  multiplier *= 0.5;
-  //}
 
   // Target multipliers do not replicate to secondary targets, need to reverse them out
   const double target_da_multiplier = ( 1.0 / state->target_da_multiplier );
@@ -7823,8 +7801,6 @@ void actions::rogue_action_t<Base>::trigger_alacrity( const action_state_t* stat
   if ( !p()->talent.rogue.alacrity->ok() || !affected_by.alacrity )
     return;
 
-  // TOCHECK -- Double check stack overflow for 5+ CP works correctly
-  // DFALPHA -- This appears very bugged on PTR as the chance seems to be scaling with the Points Per Combo Point value
   double chance = p()->talent.rogue.alacrity->effectN( 2 ).percent() * cast_state( state )->get_combo_points();
   int stacks = 0;
   if ( chance > 1 )
@@ -7850,10 +7826,6 @@ void actions::rogue_action_t<Base>::trigger_restless_blades( const action_state_
   timespan_t v = timespan_t::from_seconds( p()->talent.outlaw.restless_blades->effectN( 1 ).base_value() / 10.0 );
   v += timespan_t::from_seconds( p()->buffs.true_bearing->value() );
   v *= -cast_state( state )->get_combo_points();
-
-  // DFALPHA Tooltip:
-  // Affected skills: Adrenaline Rush, Between the Eyes, Blade Flurry, Blade Rush, Dreadblades, Ghostly Strike, Grappling Hook, 
-  // Keep it Rolling, Killing Spree, Marked for Death, Roll the Bones, Sepsis, Sprint, and Vanish.
 
   p()->cooldowns.adrenaline_rush->adjust( v, false );
   p()->cooldowns.between_the_eyes->adjust( v, false );
@@ -10354,7 +10326,7 @@ void rogue_t::create_buffs()
   buffs.danse_macabre = make_buff<damage_buff_t>( this, "danse_macabre", spec.danse_macabre_buff );
   buffs.danse_macabre->set_refresh_behavior( buff_refresh_behavior::DISABLED );
 
-  buffs.shadow_blades = make_buff( this, "shadow_blades", talent.subtlety.shadow_blades ) // DFALPHA TOCHECK TO Legendary
+  buffs.shadow_blades = make_buff( this, "shadow_blades", talent.subtlety.shadow_blades )
     ->set_default_value_from_effect( 1 ) // Bonus Damage%
     ->set_cooldown( timespan_t::zero() );
 
@@ -11128,8 +11100,6 @@ void rogue_t::break_stealth()
   {
     buffs.subterfuge->trigger();
   }
-
-  // DFALPHA -- Trigger Improved Garrote
 
   // Expiry delayed by 1ms in order to have it processed on the next tick. This seems to be what the server does.
   if ( player_t::buffs.shadowmeld->check() )
