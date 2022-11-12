@@ -385,6 +385,11 @@ public:
 
     pet_t* bron;
 
+    // TODO: Proper dynamic-number-of-totems-spawned system, some day
+    std::array<pet_t*, 2> liquid_magma_totem;
+    std::array<pet_t*, 2> healing_stream_totem;
+    std::array<pet_t*, 2> capacitor_totem;
+
     pets_t( shaman_t* );
   } pet;
 
@@ -1468,7 +1473,7 @@ public:
       }
     }
 
-    if ( affected_by_crackling_surge_da && p()->buff.crackling_surge->up() )
+    if ( affected_by_crackling_surge_da && p()->buff.crackling_surge->check() )
     {
       for ( int x = 1; x <= p()->buff.crackling_surge->check(); x++ )
       {
@@ -1476,7 +1481,7 @@ public:
       }
     }
 
-    if ( affected_by_icy_edge_da && p()->buff.icy_edge->up() )
+    if ( affected_by_icy_edge_da && p()->buff.icy_edge->check() )
     {
       for ( int x = 1; x <= p()->buff.icy_edge->check(); x++ )
       {
@@ -1484,7 +1489,7 @@ public:
       }
     }
 
-    if ( affected_by_earthen_weapon_da && p()->buff.earthen_weapon->up() )
+    if ( affected_by_earthen_weapon_da && p()->buff.earthen_weapon->check() )
     {
       for ( int x = 1; x <= p()->buff.earthen_weapon->check(); x++ )
       {
@@ -1492,7 +1497,7 @@ public:
       }
     }
 
-    if ( affected_by_enh_t29_2pc && p()->buff.t29_2pc_enh->up() )
+    if ( affected_by_enh_t29_2pc && p()->buff.t29_2pc_enh->check() )
     {
       m *= 1.0 + p()->buff.t29_2pc_enh->value();
     }
@@ -1649,7 +1654,7 @@ public:
     {
       this->p()->buff.maelstrom_weapon->increment( 1 );
       this->p()->buff.t29_2pc_enh->expire();
-    } 
+    }
 
     // TODO: wire up enh MW gains
     // I ended up coding MW gains inside attack since it only procs off melee attacks
@@ -2526,6 +2531,9 @@ struct pet_action_t : public T_ACTION
       }
     }
   }
+
+  double cost() const override
+  { return 0; }
 };
 
 // ==========================================================================
@@ -3172,7 +3180,7 @@ struct stormblast_t : public shaman_attack_t
   {
     shaman_attack_t::init();
 
-    snapshot_flags = update_flags = STATE_MUL_DA | STATE_VERSATILITY | STATE_CRIT;
+    snapshot_flags = update_flags = STATE_MUL_DA | STATE_TGT_MUL_DA;
 
     may_proc_windfury = may_proc_flametongue = may_proc_maelstrom_weapon = may_proc_hot_hand = false;
     may_proc_stormbringer = may_proc_ability_procs = false;
@@ -7820,13 +7828,13 @@ struct shaman_totem_pet_t : public pet_t
 template <typename T, typename V>
 struct shaman_totem_t : public V
 {
-  shaman_totem_pet_t<T>* totem_pet;
   timespan_t totem_duration;
+  std::array<pet_t*, 2>& totems;
 
   shaman_totem_t( util::string_view totem_name, shaman_t* player, util::string_view options_str,
-                  const spell_data_t* spell_data ) :
+                  const spell_data_t* spell_data, std::array<pet_t*, 2>& totem_array ) :
     V( totem_name, player, spell_data ),
-    totem_pet( nullptr ), totem_duration( this->data().duration() )
+    totem_duration( this->data().duration() ), totems( totem_array )
   {
     this->parse_options( options_str );
     this->harmful = this->callbacks = this->may_miss = this->may_crit = false;
@@ -7834,17 +7842,18 @@ struct shaman_totem_t : public V
     this->dot_duration = timespan_t::zero();
   }
 
-  void init_finished() override
-  {
-    totem_pet = debug_cast<shaman_totem_pet_t<T>*>( this->player->find_pet( this->name() ) );
-
-    V::init_finished();
-  }
-
   void execute() override
   {
     V::execute();
-    totem_pet->summon( totem_duration );
+
+    for ( auto totem : totems )
+    {
+      if ( totem->is_sleeping() )
+      {
+        totem->summon( totem_duration );
+        break;
+      }
+    }
 
     // Cooldown threshold is hardcoded into the spell description
     if ( this->p()->talent.totemic_recall.ok() && this->data().cooldown() < 180_s )
@@ -7866,16 +7875,6 @@ struct shaman_totem_t : public V
       return make_ref_expr( name, totem_duration );
 
     return V::create_expression( name );
-  }
-
-  bool ready() override
-  {
-    if ( !totem_pet )
-    {
-      return false;
-    }
-
-    return V::ready();
   }
 };
 
@@ -8065,6 +8064,23 @@ struct liquid_magma_totem_pulse_t : public spell_totem_action_t
     dot_duration                = timespan_t::zero();
   }
 
+  void init() override
+  {
+    spell_totem_action_t::init();
+
+    if ( !this->player->sim->report_pets_separately )
+    {
+      auto it = range::find_if( totem->o()->pet_list,
+          [ this ]( pet_t* pet ) { return this->player->name_str == pet->name_str; } );
+
+      if ( it != totem->o()->pet_list.end() && this->player != *it )
+      {
+        this->stats = ( *it )->get_stats( this->name(), this );
+        globule->stats = ( *it )->get_stats( globule->name(), this );
+      }
+    }
+  }
+
   void impact( action_state_t* state ) override
   {
     spell_totem_action_t::impact( state );
@@ -8097,9 +8113,11 @@ struct liquid_magma_totem_spell_t : public shaman_totem_t<spell_t, shaman_spell_
 
   liquid_magma_totem_spell_t( shaman_t* p, util::string_view options_str ) :
     shaman_totem_t<spell_t, shaman_spell_t>( "liquid_magma_totem", p, options_str,
-        p->talent.liquid_magma_totem ),
+        p->talent.liquid_magma_totem, p->pet.liquid_magma_totem ),
     eruption( new magma_eruption_t( p ) )
-  { }
+  {
+    add_child( eruption );
+  }
 
   void execute() override
   {
@@ -8161,6 +8179,22 @@ struct healing_stream_totem_pulse_t : public heal_totem_action_t
     : heal_totem_action_t( "healing_stream_totem_heal", totem, totem->find_spell( 52042 ) )
   { }
 
+  void init() override
+  {
+    heal_totem_action_t::init();
+
+    if ( !this->player->sim->report_pets_separately )
+    {
+      auto it = range::find_if( totem->o()->pet_list,
+          [ this ]( pet_t* pet ) { return this->player->name_str == pet->name_str; } );
+
+      if ( it != totem->o()->pet_list.end() && this->player != *it )
+      {
+        this->stats = ( *it )->get_stats( this->name(), this );
+      }
+    }
+  }
+
   void execute() override
   {
     heal_totem_action_t::execute();
@@ -8193,7 +8227,7 @@ struct healing_stream_totem_spell_t : public shaman_totem_t<heal_t, shaman_heal_
 {
   healing_stream_totem_spell_t( shaman_t* p, util::string_view options_str ) :
     shaman_totem_t<heal_t, shaman_heal_t>( "healing_stream_totem", p, options_str,
-        p->find_spell( 5394 ) )
+        p->find_spell( 5394 ), p->pet.healing_stream_totem )
   { }
 
   void execute() override
@@ -8833,7 +8867,8 @@ action_t* shaman_t::create_action( util::string_view name, util::string_view opt
   if ( name == "bloodlust" )
     return new bloodlust_t( this, options_str );
   if ( name == "capacitor_totem" )
-    return new shaman_totem_t<spell_t, shaman_spell_t>( "capacitor_totem", this, options_str, talent.capacitor_totem );
+    return new shaman_totem_t<spell_t, shaman_spell_t>( "capacitor_totem",
+        this, options_str, talent.capacitor_totem, pet.capacitor_totem );
   if ( name == "elemental_blast" )
     return new elemental_blast_t( this, options_str );
   if ( name == "flame_shock" )
@@ -8972,12 +9007,6 @@ pet_t* shaman_t::create_pet( util::string_view pet_name, util::string_view /* pe
     return new pet::earth_elemental_t( this, false );
   if ( pet_name == "greater_earth_elemental" )
     return new pet::earth_elemental_t( this, true );
-  if ( pet_name == "liquid_magma_totem" )
-    return new liquid_magma_totem_t( this );
-  if ( pet_name == "capacitor_totem" )
-    return new capacitor_totem_t( this );
-  if ( pet_name == "healing_stream_totem" )
-    return new healing_stream_totem_t( this );
 
   return nullptr;
 }
@@ -9023,17 +9052,26 @@ void shaman_t::create_pets()
 
   if ( talent.liquid_magma_totem->ok() && find_action( "liquid_magma_totem" ) )
   {
-    create_pet( "liquid_magma_totem" );
+    for ( auto i = 0U; i < pet.liquid_magma_totem.size(); ++i )
+    {
+      pet.liquid_magma_totem[ i ] = new liquid_magma_totem_t( this );
+    }
   }
 
   if ( find_action( "capacitor_totem" ) )
   {
-    create_pet( "capacitor_totem" );
+    for ( auto i = 0U; i < pet.capacitor_totem.size(); ++i )
+    {
+      pet.capacitor_totem[ i ] = new capacitor_totem_t( this );
+    }
   }
 
   if ( find_action( "healing_stream_totem" ) )
   {
-    create_pet( "healing_stream_totem" );
+    for ( auto i = 0U; i < pet.capacitor_totem.size(); ++i )
+    {
+      pet.healing_stream_totem[ i ] = new healing_stream_totem_t( this );
+    }
   }
 }
 
@@ -9955,12 +9993,6 @@ void shaman_t::trigger_vesper_totem( const action_state_t* state )
     case ACTION_ATTACK:
     case ACTION_SPELL:
     {
-      if ( bugs == true && std::string_view{state->action->name()} == "Fire Nova" )
-      {
-        current_event = ev_vesper_totem_heal;
-        charges = &( vesper_totem_heal_charges );
-        break;
-      }
       current_event = ev_vesper_totem_dmg;
       charges = &( vesper_totem_dmg_charges );
       break;
@@ -10668,17 +10700,13 @@ void shaman_t::create_buffs()
     ->set_default_value_from_effect_type( A_ADD_FLAT_MODIFIER, P_PROC_CHANCE );
 
   //NYI in game - spell data is lacking.
-  buff.t29_4pc_enh = make_buff<buff_t>( this, "t29_4pc_enh" )  //, find_spell( 393693 ) )
-                         ->set_default_value( 0.01f )
-                         ->set_max_stack( 10 )
-                         ->set_duration( timespan_t::from_seconds( 4 ) )
+  buff.t29_4pc_enh = make_buff<buff_t>( this, "fury_of_the_storm", find_spell( 396006 ) )  //, find_spell( 393693 ) )
                          ->set_default_value_from_effect_type( A_HASTE_ALL )
                          ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
 
-  buff.t29_2pc_enh = make_buff<buff_t>( this, "t29_2pc_enh", find_spell( 394677 ) )
+  buff.t29_2pc_enh = make_buff<buff_t>( this, "maelstrom_of_elements", find_spell( 394677 ) )
                    ->set_default_value_from_effect( 1 )
                    ->set_max_stack( 1 );
-                   
 
   // Buffs stormstrike and lava lash after using crash lightning
   buff.crash_lightning = make_buff( this, "crash_lightning", find_spell( 187878 ) );
