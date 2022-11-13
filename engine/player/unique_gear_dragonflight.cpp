@@ -2014,7 +2014,49 @@ void fang_adornments( special_effect_t& effect )
 // 381700 Damage
 void forgestorm( special_effect_t& effect )
 {
-  
+  auto forgestorm_proc = new special_effect_t( effect.player );
+  forgestorm_proc->item = effect.item;
+  forgestorm_proc->spell_id = 381698;
+
+  auto forgestorm_damage = new special_effect_t( effect.player );
+  forgestorm_damage->spell_id = 381699;
+
+  auto buff = buff_t::find( effect.player, "forgestorm_ignited");
+  if ( !buff )
+  {
+    auto buff_spell = effect.player -> find_spell( 381699 );
+    buff = create_buff<buff_t>(effect.player, buff_spell);
+    effect.player -> special_effects.push_back( forgestorm_proc );
+    effect.player -> special_effects.push_back( forgestorm_damage );
+  }
+
+  struct forgestorm_ignited_t : public proc_spell_t
+  {
+    forgestorm_ignited_t( const special_effect_t& e ) :
+      proc_spell_t( "forgestorm_ignited", e.player, e.player -> find_spell( 381700 ), e.item )
+    {
+      base_dd_min = base_dd_max = e.player -> find_spell( 381698 ) -> effectN( 1 ).average( e.item );
+      background = true;
+      aoe = e.player -> find_spell( 381698 ) -> effectN( 2 ).base_value();
+    }
+  };
+
+  auto proc_object = new dbc_proc_callback_t( effect.player, *forgestorm_proc );
+  forgestorm_damage->execute_action = create_proc_action<forgestorm_ignited_t>( "forgestorm_ignited", *forgestorm_damage );
+  buff -> set_stack_change_callback( [ proc_object ]( buff_t* b, int, int new_ )
+    {
+      if (new_ == 0 )
+      {
+        proc_object -> deactivate();
+      }
+      else
+      {
+        proc_object -> activate();
+      }
+    } );
+  effect.custom_buff = buff;
+  new dbc_proc_callback_t( effect.player, effect );
+  effect.player->register_combat_begin( [ proc_object ]( player_t* ) { proc_object->deactivate(); } );
 }
 
 // Armor
@@ -2297,6 +2339,7 @@ void register_special_effects()
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );  // bronzed grip wrappings embellishment
   register_special_effect( 377708, items::fang_adornments );         // fang adornments embellishment
+  register_special_effect( 381698, items::forgestorm );              // Forgestorm Weapon
 
   // Armor
   register_special_effect( 387335, items::blue_silken_lining );    // blue silken lining embellishment
