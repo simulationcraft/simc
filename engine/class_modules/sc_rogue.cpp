@@ -7983,14 +7983,26 @@ void actions::rogue_action_t<Base>::trigger_prey_on_the_weak( const action_state
 template <typename Base>
 void actions::rogue_action_t<Base>::trigger_find_weakness( const action_state_t* state, timespan_t duration )
 {
-  if ( !ab::result_is_hit( state->result ) || !p()->talent.rogue.find_weakness->ok() )
+  if ( !ab::result_is_hit( state->result ) )
+    return;
+
+  if ( !( p()->talent.rogue.find_weakness->ok() || duration > timespan_t::zero() ) )
     return;
 
   // If the new duration (e.g. from Backstab crits) is lower than the existing debuff duration, refresh without change.
-  if ( duration > timespan_t::zero() && duration < td( state->target )->debuffs.find_weakness->remains() )
-    duration = td( state->target )->debuffs.find_weakness->remains();
+  // Additionally, Subtlety-triggered debuffs are triggered with the full 30% value regardless of the talented state
+  if ( duration > timespan_t::zero() )
+  {
+    if ( duration < td( state->target )->debuffs.find_weakness->remains() )
+      duration = td( state->target )->debuffs.find_weakness->remains();
 
-  td( state->target )->debuffs.find_weakness->trigger( duration );
+    const double trigger_value = p()->spell.find_weakness_debuff->effectN( 1 ).percent();
+    td( state->target )->debuffs.find_weakness->trigger( 1, trigger_value, -1.0, duration );
+  }
+  else
+  {
+    td( state->target )->debuffs.find_weakness->trigger( duration );
+  }  
 }
 
 template <typename Base>
@@ -8315,7 +8327,8 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
     ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER )
     ->set_cooldown( timespan_t::zero() );
   debuffs.find_weakness = make_buff( *this, "find_weakness", source->spell.find_weakness_debuff )
-    ->set_default_value( source->talent.rogue.find_weakness->effectN( 1 ).percent() );
+    ->set_default_value( source->talent.rogue.find_weakness->effectN( 1 ).percent() )
+    ->set_refresh_behavior( buff_refresh_behavior::DURATION );
   debuffs.prey_on_the_weak = make_buff( *this, "prey_on_the_weak", source->spell.prey_on_the_weak_debuff )
     ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN );
   debuffs.between_the_eyes = make_buff( *this, "between_the_eyes", source->spec.between_the_eyes )
@@ -9703,7 +9716,7 @@ void rogue_t::init_spells()
 
   // Class Background Spells
   spell.alacrity_buff = talent.rogue.alacrity->ok() ? find_spell( 193538 ) : spell_data_t::not_found();
-  spell.find_weakness_debuff = talent.rogue.find_weakness->ok() ? find_spell( 316220 ) : spell_data_t::not_found();
+  spell.find_weakness_debuff = ( talent.rogue.find_weakness->ok() || specialization() == ROGUE_SUBTLETY ) ? find_spell( 316220 ) : spell_data_t::not_found();
   spell.leeching_poison_buff = talent.rogue.leeching_poison->ok() ? find_spell( 108211 ) : spell_data_t::not_found();
   spell.nightstalker_buff = talent.rogue.nightstalker->ok() ? find_spell( 130493 ) : spell_data_t::not_found();
   spell.prey_on_the_weak_debuff = talent.rogue.prey_on_the_weak->ok() ? find_spell( 255909 ) : spell_data_t::not_found();
