@@ -1,4 +1,4 @@
-// Player trait definitions, wow build 10.0.2.46479
+// Player trait definitions, wow build 10.0.2.46619
 static const std::array<trait_data_t, 2411> __ptr_trait_data_data { {
   { 1,  1, 112108, 90258, 2, 20, 117113, 384124,      0,      0,  8,  1,  -1,              "Armored to the Teeth", {   72,    0,    0,    0 }, {    0,    0,    0,    0 } },
   { 1,  1, 112109, 90259, 2, 20, 117114, 394855,      0,      0,  8,  1,  -1,              "Armored to the Teeth", {   73,    0,    0,    0 }, {    0,    0,    0,    0 } },
@@ -2413,8 +2413,8 @@ static const std::array<trait_data_t, 2411> __ptr_trait_data_data { {
   { 2, 13,  87674, 68648, 1,  8,  92676, 365937,      0,      0,  5,  1, 100,                       "Ruby Embers", { 1467,    0,    0,    0 }, {    0,    0,    0,    0 } },
 } };
 
-// Player trait definition effect entries, wow build 10.0.2.46479
-static const std::array<trait_definition_effect_entry_t, 665> __ptr_trait_definition_effect_data { {
+// Player trait definition effect entries, wow build 10.0.2.46619
+static const std::array<trait_definition_effect_entry_t, 672> __ptr_trait_definition_effect_data { {
   { 85152, 0, 0, 52490 },
   { 85152, 1, 0, 52491 },
   { 85152, 2, 0, 52492 },
@@ -2430,6 +2430,9 @@ static const std::array<trait_definition_effect_entry_t, 665> __ptr_trait_defini
   { 85185, 0, 0, 52502 },
   { 85191, 0, 0, 52503 },
   { 85191, 1, 0, 52504 },
+  { 85191, 2, 0, 62350 },
+  { 85191, 3, 0, 62349 },
+  { 85191, 4, 0, 62348 },
   { 85192, 0, 0, 52505 },
   { 85200, 0, 0, 52507 },
   { 85200, 1, 0, 52506 },
@@ -2480,10 +2483,13 @@ static const std::array<trait_definition_effect_entry_t, 665> __ptr_trait_defini
   { 92665, 0, 0, 54436 },
   { 92674, 0, 0, 54437 },
   { 92680, 0, 0, 54438 },
+  { 92680, 1, 0, 62345 },
   { 92695, 0, 0, 54439 },
   { 92696, 0, 0, 54440 },
   { 92699, 0, 0, 54441 },
   { 92701, 0, 0, 54442 },
+  { 92701, 1, 0, 62356 },
+  { 92701, 2, 0, 62355 },
   { 92706, 0, 0, 54443 },
   { 92708, 0, 0, 54444 },
   { 92712, 0, 0, 54445 },
@@ -2741,6 +2747,7 @@ static const std::array<trait_definition_effect_entry_t, 665> __ptr_trait_defini
   { 106527, 0, 0, 58435 },
   { 106531, 0, 0, 58436 },
   { 106535, 0, 0, 58437 },
+  { 106535, 1, 0, 62357 },
   { 106536, 0, 0, 59020 },
   { 106538, 0, 0, 59345 },
   { 106545, 0, 0, 58439 },

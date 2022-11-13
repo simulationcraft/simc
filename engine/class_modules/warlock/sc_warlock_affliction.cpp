@@ -85,7 +85,6 @@ struct agony_t : public affliction_spell_t
     parse_options( options_str );
     may_crit = false;
 
-    // Unclear in DF beta if Agony Rank 2 is intended to still be learned
     dot_max_stack = as<int>( data().max_stacks() + p->warlock_base.agony_2->effectN( 1 ).base_value() );
   }
 
@@ -274,7 +273,7 @@ struct summon_darkglare_t : public affliction_spell_t
       summon_duration += timespan_t::from_millis( p()->talents.malevolent_visionary->effectN( 2 ).base_value() );
     }
 
-    p()->warlock_pet_list.darkglare.spawn( summon_duration );
+    p()->warlock_pet_list.darkglares.spawn( summon_duration );
 
     timespan_t darkglare_extension = timespan_t::from_seconds( p()->talents.summon_darkglare->effectN( 2 ).base_value() );
 
@@ -755,8 +754,6 @@ void warlock_t::create_buffs_affliction()
   buffs.inevitable_demise = make_buff( this, "inevitable_demise", talents.inevitable_demise_buff )
                                 ->set_default_value( talents.inevitable_demise->effectN( 1 ).percent() ); // There are effects in the buff data, but are they unused for the damage?
 
-  buffs.calamitous_crescendo = make_buff( this, "calamitous_crescendo", find_spell( 364322 ) );
-
   buffs.tormented_crescendo = make_buff( this, "tormented_crescendo", talents.tormented_crescendo_buff );
 
   buffs.haunted_soul = make_buff( this, "haunted_soul", talents.haunted_soul_buff )
@@ -773,12 +770,6 @@ void warlock_t::create_buffs_affliction()
 void warlock_t::init_spells_affliction()
 {
   using namespace actions_affliction;
-
-  // Specialization Spells
-  spec.summon_darkglare    = find_specialization_spell( "Summon Darkglare" );
-  spec.corruption_2        = find_specialization_spell( "Corruption", "Rank 2" );
-  spec.corruption_3        = find_specialization_spell( "Corruption", "Rank 3" );
-  spec.summon_darkglare_2         = find_specialization_spell( "Summon Darkglare", "Rank 2" ); //9.1 PTR - Now a passive learned at level 58
 
   // Talents
   talents.malefic_rapture = find_talent_spell( talent_tree::SPECIALIZATION, "Malefic Rapture" );
@@ -878,16 +869,13 @@ void warlock_t::init_spells_affliction()
   // T29 (Vault of the Incarnates)
   tier.cruel_inspiration = find_spell( 394215 );
   tier.cruel_epiphany = find_spell( 394253 );
-
-  // Conduits
-  conduit.withering_bolt     = find_conduit_spell( "Withering Bolt" ); //9.1 PTR - New, replaces Cold Embrace
 }
 
 void warlock_t::init_gains_affliction()
 {
-  gains.agony                      = get_gain( "agony" );
+  gains.agony = get_gain( "agony" );
   gains.unstable_affliction_refund = get_gain( "unstable_affliction_refund" );
-  gains.drain_soul                 = get_gain( "drain_soul" );
+  gains.drain_soul = get_gain( "drain_soul" );
   gains.soul_tap = get_gain( "soul_tap" );
   gains.pandemic_invocation = get_gain( "pandemic_invocation" );
 }
@@ -898,8 +886,7 @@ void warlock_t::init_rng_affliction()
 
 void warlock_t::init_procs_affliction()
 {
-  procs.nightfall            = get_proc( "nightfall" );
-  procs.calamitous_crescendo = get_proc( "calamitous_crescendo" );
+  procs.nightfall = get_proc( "nightfall" );
   procs.harvester_of_souls = get_proc( "harvester_of_souls" );
   procs.pandemic_invocation_shard = get_proc( "pandemic_invocation_shard" );
   procs.tormented_crescendo = get_proc( "tormented_crescendo" );

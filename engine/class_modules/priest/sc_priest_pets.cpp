@@ -640,6 +640,9 @@ struct inescapable_torment_damage_t final : public priest_pet_spell_t
     // Negative modifier used for point scaling
     // Effect#4 [op=set, values=(-50, 0)]
     spell_power_mod.direct *= ( 1 + p.o().talents.shadow.inescapable_torment->effectN( 4 ).percent() );
+
+    // Tuning modifier effect
+    spell_power_mod.direct *= ( 1 + p.o().specs.shadow_priest->effectN( 14 ).percent() );
   }
 };
 
@@ -907,16 +910,26 @@ struct void_tendril_mind_flay_t final : public priest_pet_spell_t
     {
       if ( p.o().level() == 70 )
       {
-        base_td += 1667.5;
+        base_td += 1667.7628;
       }
       else
       {
         base_td += 321.5;
       }
 
-      // Pulled the 0.6 from Mind Sear and apply the 10% "buff"
-      spell_power_mod.tick *= 0.5454545455;
+      spell_power_mod.tick *= 0.6;
     }
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = priest_pet_spell_t::composite_da_multiplier( s );
+
+    // BUG: This talent is cursed
+    // https://github.com/SimCMinMax/WoW-BugTracker/issues/1029
+    m *= 1.1;
+
+    return m;
   }
 
   void init() override

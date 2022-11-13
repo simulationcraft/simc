@@ -217,6 +217,14 @@
       { "data_type": "i", "field": "unk_6"}
     ]
   },
+  "CraftingDataEnchantQuality": {
+    "parent": "CraftingData",
+    "fields": [
+      { "data_type": "i", "field": "rank" },
+      { "data_type": "i", "field": "id_spell_item_enchantment" },
+      { "data_type": "i", "field": "id_item" }
+    ]
+  },
   "CraftingQuality": {
     "fields": [
       { "data_type": "i", "field": "tier" }
@@ -1481,6 +1489,16 @@
       { "data_type": "i", "field": "id_replace", "formats": { "cpp": "%7u" }, "ref": "SpellName" },
 
       { "data_type": "B", "field": "unk", "elements": 2                      }
+    ]
+  },
+  "TradeSkillCategory": {
+    "fields": [
+      { "data_type": "S", "field": "name" },
+      { "data_type": "S", "field": "horde_name" },
+      { "data_type": "h", "field": "id_skill_line" },
+      { "data_type": "h", "field": "id_parent_trade_skill_category" },
+      { "data_type": "h", "field": "order" },
+      { "data_type": "b", "field": "flags" }
     ]
   },
   "TraitCond": {

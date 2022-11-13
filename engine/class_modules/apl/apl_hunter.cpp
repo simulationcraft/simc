@@ -366,8 +366,8 @@ void beast_mastery_df( player_t* p )
 
   default_->add_action( "auto_shot" );
   default_->add_action( "call_action_list,name=cds" );
-  default_->add_action( "call_action_list,name=st,if=active_enemies<2" );
-  default_->add_action( "call_action_list,name=cleave,if=active_enemies>1" );
+  default_->add_action( "call_action_list,name=st,if=active_enemies<2|!talent.beast_cleave&active_enemies<3" );
+  default_->add_action( "call_action_list,name=cleave,if=active_enemies>2|talent.beast_cleave&active_enemies>1" );
 
   cds->add_action( "berserking,if=!talent.bestial_wrath|buff.bestial_wrath.up|fight_remains<16" );
   cds->add_action( "use_items,slots=trinket1,if=buff.call_of_the_wild.up|!talent.call_of_the_wild&(buff.bestial_wrath.up&(buff.bloodlust.up|target.health.pct<20))|fight_remains<31" );
@@ -377,8 +377,10 @@ void beast_mastery_df( player_t* p )
   cds->add_action( "fireblood,if=buff.call_of_the_wild.up|!talent.call_of_the_wild&(buff.bestial_wrath.up&(buff.bloodlust.up|target.health.pct<20))|fight_remains<10" );
   cds->add_action( "potion,if=buff.call_of_the_wild.up|!talent.call_of_the_wild&(buff.bestial_wrath.up&(buff.bloodlust.up|target.health.pct<20))|fight_remains<31" );
 
-  cleave->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<=gcd+0.25|cooldown.bestial_wrath.remains<12*charges_fractional+gcd&talent.scent_of_blood|full_recharge_time<gcd&cooldown.bestial_wrath.remains" );
+  cleave->add_action( "barbed_shot,target_if=max:debuff.latent_poison.stack,if=debuff.latent_poison.stack>9&(pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<=gcd+0.25|talent.scent_of_blood&cooldown.bestial_wrath.remains<12+gcd|full_recharge_time<gcd&cooldown.bestial_wrath.remains)" );
+  cleave->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<=gcd+0.25|talent.scent_of_blood&cooldown.bestial_wrath.remains<12+gcd|full_recharge_time<gcd&cooldown.bestial_wrath.remains" );
   cleave->add_action( "multishot,if=gcd-pet.main.buff.beast_cleave.remains>0.25" );
+  cleave->add_action( "kill_command,if=full_recharge_time<gcd&talent.alpha_predator&talent.kill_cleave" );
   cleave->add_action( "call_of_the_wild" );
   cleave->add_action( "explosive_shot" );
   cleave->add_action( "stampede,if=buff.bestial_wrath.up|target.time_to_die<15" );
@@ -387,11 +389,12 @@ void beast_mastery_df( player_t* p )
   cleave->add_action( "bestial_wrath" );
   cleave->add_action( "steel_trap" );
   cleave->add_action( "a_murder_of_crows" );
+  cleave->add_action( "barbed_shot,target_if=max:debuff.latent_poison.stack,if=debuff.latent_poison.stack>9&(talent.wild_instincts&buff.call_of_the_wild.up|fight_remains<9|talent.wild_call&charges_fractional>1.2)" );
   cleave->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=talent.wild_instincts&buff.call_of_the_wild.up|fight_remains<9|talent.wild_call&charges_fractional>1.2" );
   cleave->add_action( "kill_command,if=focus>cost+action.multishot.cost" );
   cleave->add_action( "dire_beast" );
-  cleave->add_action( "barrage,if=pet.main.buff.frenzy.remains>execute_time" );
   cleave->add_action( "serpent_sting,target_if=min:remains,if=refreshable&target.time_to_die>duration" );
+  cleave->add_action( "barrage,if=pet.main.buff.frenzy.remains>execute_time" );
   cleave->add_action( "kill_shot" );
   cleave->add_action( "aspect_of_the_wild" );
   cleave->add_action( "cobra_shot,if=focus.time_to_max<gcd*2|buff.aspect_of_the_wild.up&focus.time_to_max<gcd*4" );
@@ -399,7 +402,7 @@ void beast_mastery_df( player_t* p )
   cleave->add_action( "bag_of_tricks,if=buff.bestial_wrath.down|target.time_to_die<5" );
   cleave->add_action( "arcane_torrent,if=(focus+focus.regen+30)<focus.max" );
 
-  st->add_action( "barbed_shot,if=pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<=gcd+0.25|pet.main.buff.frenzy.stack<3&!cooldown.bestial_wrath.remains" );
+  st->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<=gcd+0.25|talent.scent_of_blood&pet.main.buff.frenzy.stack<3&cooldown.bestial_wrath.ready" );
   st->add_action( "kill_command,if=full_recharge_time<gcd&talent.alpha_predator" );
   st->add_action( "call_of_the_wild" );
   st->add_action( "death_chakram" );
@@ -410,7 +413,7 @@ void beast_mastery_df( player_t* p )
   st->add_action( "explosive_shot" );
   st->add_action( "bestial_wrath" );
   st->add_action( "kill_command" );
-  st->add_action( "barbed_shot,if=talent.wild_instincts&buff.call_of_the_wild.up|talent.wild_call&charges_fractional>1.2|talent.scent_of_blood&cooldown.bestial_wrath.remains<12*(charges_fractional+gcd+(action.barbed_shot.cooldown*0.125))|full_recharge_time<gcd&cooldown.bestial_wrath.remains|fight_remains<9" );
+  st->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=talent.wild_instincts&buff.call_of_the_wild.up|talent.wild_call&charges_fractional>1.4|full_recharge_time<gcd&cooldown.bestial_wrath.remains|talent.scent_of_blood&(cooldown.bestial_wrath.remains<12+gcd|full_recharge_time+gcd<8&cooldown.bestial_wrath.remains<24+(8-gcd)+full_recharge_time)|fight_remains<9" );
   st->add_action( "dire_beast" );
   st->add_action( "serpent_sting,target_if=min:remains,if=refreshable&target.time_to_die>duration" );
   st->add_action( "kill_shot" );
@@ -522,8 +525,6 @@ void survival_df( player_t* p )
   precombat->add_action( "variable,name=mb_rs_cost,op=setif,value=action.mongoose_bite.cost,value_else=action.raptor_strike.cost,condition=talent.mongoose_bite" );
   precombat->add_action( "summon_pet" );
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
-  precombat->add_action( "fleshcraft" );
-  precombat->add_action( "tar_trap,if=runeforge.soulforge_embers" );
   precombat->add_action( "steel_trap,precast_time=20" );
 
   default_->add_action( "auto_attack" );
@@ -543,19 +544,13 @@ void survival_df( player_t* p )
   cds->add_action( "muzzle" );
   cds->add_action( "potion,if=target.time_to_die<25|buff.coordinated_assault.up|buff.spearhead.up|!talent.spearhead&!talent.coordinated_assault" );
   cds->add_action( "use_items" );
-  cds->add_action( "fleshcraft,cancel_if=channeling&!soulbind.pustule_eruption,if=(focus<70|cooldown.coordinated_assault.remains<gcd)&(soulbind.pustule_eruption|soulbind.volatile_solvent)" );
-  cds->add_action( "tar_trap,if=focus+cast_regen<focus.max&runeforge.soulforge_embers.equipped&tar_trap.remains<gcd&cooldown.flare.remains<gcd&(active_enemies>1|active_enemies=1&time_to_die>5*gcd)" );
-  cds->add_action( "flare,if=focus+cast_regen<focus.max&tar_trap.up&runeforge.soulforge_embers.equipped&time_to_die>4*gcd" );
   cds->add_action( "aspect_of_the_eagle,if=target.distance>=6" );
 
   cleave->add_action( "wildfire_bomb,if=full_recharge_time<gcd" );
-  cleave->add_action( "wild_spirits" );
-  cleave->add_action( "flayed_shot,target_if=max:target.health.pct" );
-  cleave->add_action( "resonating_arrow" );
   cleave->add_action( "death_chakram,if=focus+cast_regen<focus.max" );
   cleave->add_action( "stampede" );
   cleave->add_action( "coordinated_assault" );
-  cleave->add_action( "kill_shot,if=buff.flayers_mark.up|buff.coordinated_assault_empower.up" );
+  cleave->add_action( "kill_shot,if=buff.coordinated_assault_empower.up" );
   cleave->add_action( "explosive_shot" );
   cleave->add_action( "carve,if=cooldown.wildfire_bomb.full_recharge_time>spell_targets%2" );
   cleave->add_action( "butchery,if=full_recharge_time<gcd" );
@@ -581,15 +576,12 @@ void survival_df( player_t* p )
 
   st->add_action( "death_chakram,if=focus+cast_regen<focus.max" );
   st->add_action( "stampede" );
-  st->add_action( "wild_spirits" );
-  st->add_action( "flayed_shot" );
-  st->add_action( "resonating_arrow" );
   st->add_action( "mongoose_bite,if=active_enemies=1&target.time_to_die<focus%(variable.mb_rs_cost-cast_regen)*gcd|buff.spearhead.remains&set_bonus.tier29_4pc|buff.mongoose_fury.up&buff.mongoose_fury.remains<gcd" );
   st->add_action( "raptor_strike,if=active_enemies=1&target.time_to_die<focus%(variable.mb_rs_cost-cast_regen)*gcd" );
   st->add_action( "serpent_sting,target_if=min:remains,if=!dot.serpent_sting.ticking&target.time_to_die>7&!talent.vipers_venom" );
   st->add_action( "flanking_strike,if=focus+cast_regen<focus.max" );
   st->add_action( "coordinated_assault,if=!buff.spearhead.remains&cooldown.spearhead.remains|!talent.spearhead" );
-  st->add_action( "kill_shot,if=buff.coordinated_assault_empower.up|buff.flayers_mark.up" );
+  st->add_action( "kill_shot,if=buff.coordinated_assault_empower.up" );
   st->add_action( "wildfire_bomb,if=next_wi_bomb.pheromone&!buff.mongoose_fury.up&focus+cast_regen<focus.max-action.kill_command.cast_regen*2|full_recharge_time<gcd" );
   st->add_action( "kill_command,target_if=min:bloodseeker.remains,if=full_recharge_time<gcd&focus+cast_regen<focus.max" );
   st->add_action( "mongoose_bite,if=dot.shrapnel_bomb.ticking" );

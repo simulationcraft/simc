@@ -9,7 +9,7 @@ namespace paladin {
 
 namespace buffs {
   crusade_buff_t::crusade_buff_t( paladin_t* p ) :
-      buff_t( p, "crusade", p -> find_spell( 231895 ) ),
+      buff_t( p, "crusade", p -> spells.crusade ),
       damage_modifier( 0.0 ),
       haste_bonus( 0.0 )
   {
@@ -65,7 +65,7 @@ namespace buffs {
 struct crusade_t : public paladin_spell_t
 {
   crusade_t( paladin_t* p, util::string_view options_str ) :
-    paladin_spell_t( "crusade", p, p -> find_spell( 231895 ) )
+    paladin_spell_t( "crusade", p, p -> spells.crusade )
   {
     parse_options( options_str );
 
@@ -1470,6 +1470,7 @@ void paladin_t::init_spells_retribution()
   spells.lights_decree = find_spell( 286231 );
   spells.reckoning = find_spell( 343724 );
   spells.sanctified_wrath_damage = find_spell( 326731 );
+  spells.crusade = find_spell( 231895 );
 
   // Azerite traits
   azerite.expurgation           = find_azerite_spell( "Expurgation" );

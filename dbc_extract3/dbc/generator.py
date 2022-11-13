@@ -1370,6 +1370,8 @@ class SpellDataGenerator(DataGenerator):
          381954, 381955, 381956, 381957, # Spoils of Neltharus
          383758, # Bottle of Spiraling Winds
          383813, 383814, 389817, 389818, 389820, 390896, 390941, # Ruby Whelp Shell
+         388560, 388583,  # Tome of Unstable Power
+         381965, 381966, 381967, # Controlled Currents Technique
         ),
 
         # Warrior:
@@ -1899,6 +1901,7 @@ class SpellDataGenerator(DataGenerator):
           ( 325092, 1 ), # Purified Chi
           ( 383701, 1 ), # Gai Plin's Imperial Brew Heal
           ( 383733, 1 ), # Training of Niuzao Mastery % Buff
+          ( 386959, 1 ), # Charred Passions Damage
 
           # Mistweaver
           ( 228649, 2 ), # Teachings of the Monastery - Blackout Proc
@@ -1923,6 +1926,8 @@ class SpellDataGenerator(DataGenerator):
           ( 335913, 3 ), # Empowered Tiger Lightning Damage spell
           ( 396167, 3 ), # Fury of Xuen Stacking Buff
           ( 396168, 3 ), # Fury of Xuen Haste Buff
+          ( 393048, 3 ), # Skyreach Debuff
+          ( 393050, 3 ), # Skyreach Exxhaustion Debuff
 
           # Covenant
           ( 325217, 0 ), # Necrolord Bonedust Brew damage

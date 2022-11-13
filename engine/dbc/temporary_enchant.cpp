@@ -1,6 +1,7 @@
 #include "config.hpp"
 
 #include "temporary_enchant.hpp"
+#include "item/enchants.hpp"
 
 #include "generated/temporary_enchant.inc"
 #if SC_USE_PTR == 1
@@ -9,6 +10,10 @@
 
 const temporary_enchant_entry_t& temporary_enchant_entry_t::find( util::string_view name, bool ptr )
 {
+  auto enchant_id = enchant::find_enchant_id( name );
+  if ( enchant_id > 0 )
+    return find_by_enchant_id( enchant_id, ptr );
+
   auto __data = data( ptr );
   auto it = range::lower_bound( __data, name, {}, &temporary_enchant_entry_t::tokenized_name );
   if ( it == __data.end() || !util::str_compare_ci( it->tokenized_name, name ) )
