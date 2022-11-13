@@ -604,14 +604,12 @@ public:
   int initial_soul_shards;
   std::string default_pet;
   shuffled_rng_t* rain_of_chaos_rng;
-  // DF - Possibly add pre-patch spell for automatic switchover for DF
 
   warlock_t( sim_t* sim, util::string_view name, race_e r );
 
   // Character Definition
   void init_spells() override;
   void init_base_stats() override;
-  void init_scaling() override;
   void create_buffs() override;
   void init_gains() override;
   void init_procs() override;
