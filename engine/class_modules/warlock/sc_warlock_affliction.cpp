@@ -85,7 +85,6 @@ struct agony_t : public affliction_spell_t
     parse_options( options_str );
     may_crit = false;
 
-    // Unclear in DF beta if Agony Rank 2 is intended to still be learned
     dot_max_stack = as<int>( data().max_stacks() + p->warlock_base.agony_2->effectN( 1 ).base_value() );
   }
 

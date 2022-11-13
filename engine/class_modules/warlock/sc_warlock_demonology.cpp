@@ -175,7 +175,7 @@ struct hand_of_guldan_t : public demonology_spell_t
   hog_impact_t* impact_spell;
 
   hand_of_guldan_t( warlock_t* p, util::string_view options_str )
-    : demonology_spell_t( p, "Hand of Gul'dan" ),
+    : demonology_spell_t( "Hand of Gul'dan", p, p->warlock_base.hand_of_guldan ),
       impact_spell( new hog_impact_t( p, options_str ) )
   {
     parse_options( options_str );

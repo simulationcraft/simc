@@ -64,7 +64,7 @@ struct warlock_td_t : public actor_target_data_t
   propagate_const<buff_t*> debuffs_fel_sunder; // Done in owner target data for easier handling
   propagate_const<buff_t*> debuffs_kazaaks_final_curse; // Not an actual debuff in-game, but useful as a utility feature for Doom
 
-  double soc_threshold; //Aff - Seed of Corruption counts damage from cross-spec spells such as Drain Life
+  double soc_threshold; // Aff - Seed of Corruption counts damage from cross-spec spells such as Drain Life
 
   warlock_t& warlock;
   warlock_td_t( player_t* target, warlock_t& p );
@@ -84,10 +84,10 @@ struct warlock_t : public player_t
 public:
   player_t* havoc_target;
   player_t* ua_target; // Used for handling Unstable Affliction target swaps
-  std::vector<action_t*> havoc_spells;  // Used for smarter target cache invalidation.
+  std::vector<action_t*> havoc_spells; // Used for smarter target cache invalidation.
   double agony_accumulator;
   double corruption_accumulator;
-  std::vector<event_t*> wild_imp_spawns;      // Used for tracking incoming imps from HoG
+  std::vector<event_t*> wild_imp_spawns; // Used for tracking incoming imps from HoG
 
   unsigned active_pets;
 
@@ -98,11 +98,11 @@ public:
     const spell_data_t* drain_life;
     const spell_data_t* corruption;
     const spell_data_t* shadow_bolt;
-    const spell_data_t* nethermancy; // Int bonus for all cloth slots. TOCHECK: As of 2022-09-21 this is possibly bugged on beta and not working
+    const spell_data_t* nethermancy; // Int bonus for all cloth slots
 
     // Affliction
     const spell_data_t* agony;
-    const spell_data_t* agony_2; // Rank 2 still learned on level up, grants increased max stacks
+    const spell_data_t* agony_2; // Rank 2 still a separate spell (learned automatically). Grants increased max stacks
     const spell_data_t* potent_afflictions; // Affliction Mastery - Increased DoT and Malefic Rapture damage
     const spell_data_t* affliction_warlock; // Spec aura
 

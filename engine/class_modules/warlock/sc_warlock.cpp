@@ -1551,26 +1551,26 @@ void warlock_t::init_spells()
   // Affliction
   warlock_base.agony = find_class_spell( "Agony" ); // Should be ID 980
   warlock_base.agony_2 = find_spell( 231792 ); // Rank 2, +4 to max stacks
-  warlock_base.potent_afflictions = find_mastery_spell( WARLOCK_AFFLICTION );
-  warlock_base.affliction_warlock = find_specialization_spell( "Affliction Warlock" );
+  warlock_base.potent_afflictions = find_mastery_spell( WARLOCK_AFFLICTION ); // Should be ID 77215
+  warlock_base.affliction_warlock = find_specialization_spell( "Affliction Warlock" ); // Should be ID 137043
 
   // Demonology
   warlock_base.hand_of_guldan = find_class_spell( "Hand of Gul'dan" ); // Should be ID 105174
   warlock_base.hog_impact = find_spell( 86040 ); // Contains impact damage data
   warlock_base.wild_imp = find_spell( 104317 ); // Contains pet summoning information
   warlock_base.fel_firebolt_2 = find_spell( 334591 ); // 20% cost reduction for Wild Imps
-  warlock_base.demonic_core = find_specialization_spell( "Demonic Core" ); // Passive. Should be ID 267102
+  warlock_base.demonic_core = find_specialization_spell( "Demonic Core" ); // Should be ID 267102
   warlock_base.demonic_core_buff = find_spell( 264173 ); // Buff data
-  warlock_base.master_demonologist = find_mastery_spell( WARLOCK_DEMONOLOGY );
-  warlock_base.demonology_warlock = find_specialization_spell( "Demonology Warlock" );
+  warlock_base.master_demonologist = find_mastery_spell( WARLOCK_DEMONOLOGY ); // Should be ID 77219
+  warlock_base.demonology_warlock = find_specialization_spell( "Demonology Warlock" ); // Should be ID 137044
 
   // Destruction
   warlock_base.immolate = find_class_spell( "Immolate" ); // Should be ID 348, contains direct damage and cast data
   warlock_base.immolate_dot = find_spell( 157736 ); // DoT data
   warlock_base.incinerate = find_class_spell( "Incinerate" ); // Should be ID 29722
   warlock_base.incinerate_energize = find_spell( 244670 ); // Used for resource gain information
-  warlock_base.chaotic_energies = find_mastery_spell( WARLOCK_DESTRUCTION );
-  warlock_base.destruction_warlock = find_specialization_spell( "Destruction Warlock" );
+  warlock_base.chaotic_energies = find_mastery_spell( WARLOCK_DESTRUCTION ); // Should be ID 77220
+  warlock_base.destruction_warlock = find_specialization_spell( "Destruction Warlock" ); // Should be ID 137046
 
   // DF - REMOVE THESE?
   warlock_t::init_spells_affliction();

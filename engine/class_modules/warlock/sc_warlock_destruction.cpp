@@ -479,7 +479,7 @@ struct incinerate_t : public destruction_spell_t
   incinerate_fnb_t* fnb_action;
 
   incinerate_t( warlock_t* p, util::string_view options_str )
-    : destruction_spell_t( p, "Incinerate" ), fnb_action( new incinerate_fnb_t( p ) )
+    : destruction_spell_t( "Incinerate", p, p->warlock_base.incinerate ), fnb_action( new incinerate_fnb_t( p ) )
   {
     parse_options( options_str );
 
