@@ -2014,19 +2014,17 @@ void fang_adornments( special_effect_t& effect )
 // 381700 Damage
 void forgestorm( special_effect_t& effect )
 {
-  auto forgestorm_proc = new special_effect_t( effect.player );
-  forgestorm_proc->item = effect.item;
-  forgestorm_proc->spell_id = 381698;
-
   auto forgestorm_damage = new special_effect_t( effect.player );
-  forgestorm_damage->spell_id = 381699;
 
   auto buff = buff_t::find( effect.player, "forgestorm_ignited");
   if ( !buff )
   {
     auto buff_spell = effect.player -> find_spell( 381699 );
     buff = create_buff<buff_t>(effect.player, buff_spell);
-    effect.player -> special_effects.push_back( forgestorm_proc );
+
+    forgestorm_damage->spell_id = buff->data().id();
+    forgestorm_damage->type = SPECIAL_EFFECT_EQUIP;
+    forgestorm_damage->source = SPECIAL_EFFECT_SOURCE_ITEM;
     effect.player -> special_effects.push_back( forgestorm_damage );
   }
 
@@ -2040,23 +2038,22 @@ void forgestorm( special_effect_t& effect )
       aoe = e.player -> find_spell( 381698 ) -> effectN( 2 ).base_value();
     }
   };
-
-  auto proc_object = new dbc_proc_callback_t( effect.player, *forgestorm_proc );
+  auto damage = new dbc_proc_callback_t( effect.player, *forgestorm_damage );
   forgestorm_damage->execute_action = create_proc_action<forgestorm_ignited_t>( "forgestorm_ignited", *forgestorm_damage );
-  buff -> set_stack_change_callback( [ proc_object ]( buff_t* b, int, int new_ )
+  buff -> set_stack_change_callback( [ damage ]( buff_t* b, int, int new_ )
     {
-      if (new_ == 0 )
+      if ( new_ )
       {
-        proc_object -> deactivate();
+        damage -> activate();
       }
       else
       {
-        proc_object -> activate();
+        damage -> deactivate();
       }
     } );
   effect.custom_buff = buff;
-  new dbc_proc_callback_t( effect.player, effect );
-  effect.player->register_combat_begin( [ proc_object ]( player_t* ) { proc_object->deactivate(); } );
+  auto cb = new dbc_proc_callback_t( effect.player, effect );
+  cb -> activate();
 }
 
 // Armor
