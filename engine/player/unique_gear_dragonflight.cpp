@@ -1972,7 +1972,7 @@ void alegethar_puzzle_box( special_effect_t& effect )
     solved_the_puzzle_t( const special_effect_t& e ) :
       proc_spell_t( "solved_the_puzzle", e.player, e.player->find_spell( 383781 ), e.item)
     {
-      background = false;
+      background = true;
       auto buff_spell = e.player -> find_spell( 383781 );
       buff = create_buff<stat_buff_t>(e.player, buff_spell);
     }
