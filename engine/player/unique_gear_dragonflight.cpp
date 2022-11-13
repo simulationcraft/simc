@@ -2087,6 +2087,23 @@ void frenzying_signoll_flare(special_effect_t& effect)
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Idol of Trampling Hooves
+// 386175 Driver
+// 392908 Buff
+// 385533 Damage
+void idol_of_trampling_hooves(special_effect_t& effect)
+{
+  auto buff_spell = effect.player->find_spell( 392908 );
+  auto buff = create_buff<stat_buff_t>( effect.player , buff_spell );
+  buff -> set_default_value(effect.driver()->effectN(1).average(effect.item));
+  auto damage = create_proc_action<generic_aoe_proc_t>( "trampling_hooves", effect, "trampling_hooves", 385533 );
+  damage->split_aoe_damage = true;
+  damage->aoe = -1;
+  effect.execute_action = damage;
+  effect.custom_buff = buff;
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -2437,6 +2454,7 @@ void register_special_effects()
   register_special_effect( 388559, items::tome_of_unstable_power );
   register_special_effect( 383781, items::alegethar_puzzle_box );
   register_special_effect( 382119, items::frenzying_signoll_flare );
+  register_special_effect( 386175, items::idol_of_trampling_hooves );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );  // bronzed grip wrappings embellishment
