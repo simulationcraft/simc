@@ -932,8 +932,6 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
   debuffs_eradication = make_buff( *this, "eradication", p.talents.eradication_debuff )
                             ->set_default_value( p.talents.eradication->effectN( 2 ).percent() );
 
-  debuffs_roaring_blaze = make_buff( *this, "roaring_blaze", source->find_spell( 265931 ) );
-
   debuffs_shadowburn    = make_buff( *this, "shadowburn", p.talents.shadowburn )
                               ->set_default_value( p.talents.shadowburn_2->effectN( 1 ).base_value() / 10 );
 

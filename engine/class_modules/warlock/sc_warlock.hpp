@@ -30,9 +30,7 @@ struct warlock_td_t : public actor_target_data_t
 {
   // Cross-spec
   propagate_const<dot_t*> dots_drain_life;
-  propagate_const<dot_t*> dots_drain_life_aoe; // Affliction - Soul Rot effect
-  propagate_const<dot_t*> dots_soul_rot; // DF - Affliction only
-  propagate_const<dot_t*> dots_corruption; // DF - Removed from Destruction
+  propagate_const<dot_t*> dots_corruption;
 
   // Aff
   propagate_const<dot_t*> dots_agony;
@@ -42,6 +40,8 @@ struct warlock_td_t : public actor_target_data_t
   propagate_const<dot_t*> dots_phantom_singularity;
   propagate_const<dot_t*> dots_unstable_affliction;
   propagate_const<dot_t*> dots_vile_taint;
+  propagate_const<dot_t*> dots_drain_life_aoe; // Soul Rot effect
+  propagate_const<dot_t*> dots_soul_rot;
 
   propagate_const<buff_t*> debuffs_haunt;
   propagate_const<buff_t*> debuffs_shadow_embrace;
@@ -53,10 +53,9 @@ struct warlock_td_t : public actor_target_data_t
 
   propagate_const<buff_t*> debuffs_shadowburn;
   propagate_const<buff_t*> debuffs_eradication;
-  propagate_const<buff_t*> debuffs_roaring_blaze;
   propagate_const<buff_t*> debuffs_havoc;
   propagate_const<buff_t*> debuffs_pyrogenics;
-  propagate_const<buff_t*> debuffs_conflagrate; // Artist formerly known as debuffs_roaring_blaze
+  propagate_const<buff_t*> debuffs_conflagrate;
 
   // Demo
   propagate_const<dot_t*> dots_doom;
