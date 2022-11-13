@@ -463,11 +463,10 @@ public:
     propagate_const<cooldown_t*> soul_fire;
   } cooldowns;
 
-  // DF - Many new effects to be added here as talents are implemented
   // Buffs
   struct buffs_t
   {
-    propagate_const<buff_t*> demonic_power; //Buff from Summon Demonic Tyrant (increased demon damage + duration)
+    // Shared Buffs
     propagate_const<buff_t*> grimoire_of_sacrifice; // Buff which grants damage proc
     propagate_const<buff_t*> demonic_synergy;
     propagate_const<buff_t*> tormented_soul; // Hidden stacking buff
@@ -476,14 +475,11 @@ public:
     propagate_const<buff_t*> inquisitors_gaze_buildup; // Dummy buff to trigger Fel Blast at max stacks
 
     // Affliction Buffs
-    propagate_const<buff_t*> drain_life; //Dummy buff used internally for handling Inevitable Demise cases
+    propagate_const<buff_t*> drain_life; // Dummy buff used internally for handling Inevitable Demise cases
     propagate_const<buff_t*> nightfall;
     propagate_const<buff_t*> inevitable_demise;
-    propagate_const<buff_t*> calamitous_crescendo;
-    propagate_const<buff_t*> soul_rot; // DF - Now Affliction only. Buff for determining if Drain Life is zero cost and aoe.
-    propagate_const<buff_t*> wrath_of_consumption; // DF - Now comes from Affliction talent.
-    propagate_const<buff_t*> decaying_soul_satchel_haste; // DF - Now comes from Affliction talent
-    propagate_const<buff_t*> decaying_soul_satchel_crit; // These are one unified buff in-game but splitting them in simc to make it easier to apply stat pcts
+    propagate_const<buff_t*> soul_rot; // Buff for determining if Drain Life is zero cost and aoe.
+    propagate_const<buff_t*> wrath_of_consumption;
     propagate_const<buff_t*> tormented_crescendo;
     propagate_const<buff_t*> haunted_soul;
     propagate_const<buff_t*> dark_harvest_haste; // One buff in game...
@@ -492,20 +488,20 @@ public:
     propagate_const<buff_t*> cruel_epiphany; // T29 4pc
 
     // Demonology Buffs
+    propagate_const<buff_t*> demonic_power; // Buff from Summon Demonic Tyrant (increased demon damage + duration)
     propagate_const<buff_t*> demonic_core;
-    propagate_const<buff_t*> power_siphon; //Hidden buff from Power Siphon that increases damage of successive Demonbolts
+    propagate_const<buff_t*> power_siphon; // Hidden buff from Power Siphon that increases damage of successive Demonbolts
     propagate_const<buff_t*> demonic_calling;
     propagate_const<buff_t*> inner_demons;
     propagate_const<buff_t*> nether_portal;
-    propagate_const<buff_t*> wild_imps; //Buff for tracking how many Wild Imps are currently out (does NOT include imps waiting to be spawned)
-    propagate_const<buff_t*> dreadstalkers; //Buff for tracking number of Dreadstalkers currently out
-    propagate_const<buff_t*> vilefiend; //Buff for tracking if Vilefiend is currently out
-    propagate_const<buff_t*> tyrant; //Buff for tracking if Demonic Tyrant is currently out
-    propagate_const<buff_t*> grimoire_felguard; //Buff for tracking if GFG pet is currently out
-    propagate_const<buff_t*> prince_malchezaar; //Buff for tracking Malchezaar (who is currently disabled in sims)
-    propagate_const<buff_t*> eyes_of_guldan; //Buff for tracking if rare random summon is currently out
-    propagate_const<buff_t*> dread_calling; // DF - Now comes from Demonology talent
-    propagate_const<buff_t*> balespiders_burning_core; // DF - Now comes from Demonology talent
+    propagate_const<buff_t*> wild_imps; // Buff for tracking how many Wild Imps are currently out (does NOT include imps waiting to be spawned)
+    propagate_const<buff_t*> dreadstalkers; // Buff for tracking number of Dreadstalkers currently out
+    propagate_const<buff_t*> vilefiend; // Buff for tracking if Vilefiend is currently out
+    propagate_const<buff_t*> tyrant; // Buff for tracking if Demonic Tyrant is currently out
+    propagate_const<buff_t*> grimoire_felguard; // Buff for tracking if GFG pet is currently out
+    propagate_const<buff_t*> prince_malchezaar; // Buff for tracking Malchezaar (who is currently disabled in sims)
+    propagate_const<buff_t*> eyes_of_guldan; // Buff for tracking if rare random summon is currently out
+    propagate_const<buff_t*> dread_calling;
     propagate_const<buff_t*> shadows_bite;
     propagate_const<buff_t*> fel_covenant;
     propagate_const<buff_t*> stolen_power_building; // Stacking buff, triggers final buff as a separate buff at max stacks
@@ -515,12 +511,11 @@ public:
     propagate_const<buff_t*> blazing_meteor; // T29 4pc buff
 
     // Destruction Buffs
-    propagate_const<buff_t*> backdraft; // DF - Max 2 stacks
+    propagate_const<buff_t*> backdraft;
     propagate_const<buff_t*> reverse_entropy;
     propagate_const<buff_t*> rain_of_chaos;
     propagate_const<buff_t*> impending_ruin;
     propagate_const<buff_t*> ritual_of_ruin;
-    propagate_const<buff_t*> madness_of_the_azjaqir; // DF - Now comes from Destruction talent
     propagate_const<buff_t*> rolling_havoc;
     propagate_const<buff_t*> conflagration_of_chaos_cf;
     propagate_const<buff_t*> conflagration_of_chaos_sb;

@@ -1480,14 +1480,6 @@ void warlock_t::create_buffs()
   buffs.demonic_synergy = make_buff( this, "demonic_synergy", talents.demonic_synergy )
                               ->set_default_value( talents.grimoire_of_synergy->effectN( 2 ).percent() );
 
-  buffs.decaying_soul_satchel_haste = make_buff( this, "decaying_soul_satchel_haste", find_spell( 356369 ) )
-                                          ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
-                                          ->set_default_value( find_spell( 356369 )->effectN( 1 ).percent() );
-
-  buffs.decaying_soul_satchel_crit = make_buff( this, "decaying_soul_satchel_crit", find_spell( 356369 ) )
-                                         ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
-                                         ->set_default_value( find_spell( 356369 )->effectN( 2 ).percent() );
-
   buffs.dark_harvest_haste = make_buff( this, "dark_harvest_haste", talents.dark_harvest_buff )
                                  ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
                                  ->set_default_value( talents.dark_harvest_buff->effectN( 1 ).percent() );

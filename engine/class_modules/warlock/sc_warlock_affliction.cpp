@@ -754,8 +754,6 @@ void warlock_t::create_buffs_affliction()
   buffs.inevitable_demise = make_buff( this, "inevitable_demise", talents.inevitable_demise_buff )
                                 ->set_default_value( talents.inevitable_demise->effectN( 1 ).percent() ); // There are effects in the buff data, but are they unused for the damage?
 
-  buffs.calamitous_crescendo = make_buff( this, "calamitous_crescendo", find_spell( 364322 ) );
-
   buffs.tormented_crescendo = make_buff( this, "tormented_crescendo", talents.tormented_crescendo_buff );
 
   buffs.haunted_soul = make_buff( this, "haunted_soul", talents.haunted_soul_buff )
