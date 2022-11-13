@@ -3382,6 +3382,7 @@ Description      : $@spelldesc5782
 Tooltip          : Disoriented.
 
 Name             : Command Demon (id=119898) [Spell Family (5)] 
+Hotfixed         : Description
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -3402,7 +3403,7 @@ Effects          :
 Description      : Commands your demon to perform its most powerful ability. This spell will transform based on your active pet. 
 $?s30146[
 Felguard: $@spellname89766][]
-Felhunter: $@spellname19505
+Felhunter: $@spellname19647
 Voidwalker: $@spellname17767
 Incubus/Succubus: $@spellname6358
 Imp: $@spellname89808

@@ -2008,6 +2008,15 @@ void fang_adornments( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Forgestorm
+// 381698 Buff Driver
+// 381699 Buff and Damage Driver
+// 381700 Damage
+void forgestorm( special_effect_t& effect )
+{
+  
+}
+
 // Armor
 void blue_silken_lining( special_effect_t& effect )
 {
