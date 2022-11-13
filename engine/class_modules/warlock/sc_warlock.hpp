@@ -160,14 +160,6 @@ public:
 
   std::vector<std::string> pet_name_list;
 
-  //TODO: DF - Rename this section and leverage for some common purpose like 
-  struct active_t
-  {
-    spell_t* rain_of_fire; //TODO: DF - This is the definition for the ground aoe event, how is it used?
-    spell_t* bilescourge_bombers; //TODO: DF - This is the definition for the ground aoe event, how is it used?
-    spell_t* summon_random_demon; //TODO: DF - This is the definition for a helper action for Nether Portal, does it belong here?
-  } active;
-
   // DF - Does everything go in this struct? Probably yes, though spell_data_t could be replaced with player_talent_t
   // Talents
   struct talents_t

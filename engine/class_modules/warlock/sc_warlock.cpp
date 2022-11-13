@@ -1106,7 +1106,6 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
     corruption_accumulator( 0.0 ),
     active_pets( 0 ),
     warlock_pet_list( this ),
-    active(),
     talents(),
     proc_actions(),
     legendary(),
