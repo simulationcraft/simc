@@ -450,28 +450,6 @@ public:
     const spell_data_t* chaos_maelstrom; // 2pc procs crit chance buff
   } tier;
 
-  // DF - This struct will be retired, need to determine if needed for pre-patch
-  struct conduit_t
-  {
-    // Conduits
-    // Affliction
-    conduit_data_t withering_bolt; // DF - Now an Affliction talent
-    // Demonology
-    conduit_data_t borne_of_blood; // DF - Now a Demonology talent
-    conduit_data_t carnivorous_stalkers; // DF - Now a Demonology talent
-    conduit_data_t fel_commando; // DF - Now a Demonology talent
-    // Destruction
-    conduit_data_t ashen_remains; // DF - Now a Destruction talent
-    conduit_data_t infernal_brand; // DF - Now a Destruction talent
-  } conduit;
-
-  // DF - This struct will be retired, need to determine if needed for pre-patch
-  struct covenant_t
-  {
-    // Covenant Abilities
-    const spell_data_t* soul_rot;               // DF - Now an Affliction talent
-  } covenant;
-
   // DF - To review while implementing talents for new additions
   // Cooldowns - Used for accessing cooldowns outside of their respective actions, such as reductions/resets
   struct cooldowns_t

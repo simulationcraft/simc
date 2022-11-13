@@ -1391,11 +1391,6 @@ void warlock_t::init_spells_demonology()
   // T29 (Vault of the Incarnates)
   tier.blazing_meteor = find_spell( 394776 );
 
-  // Conduits
-  conduit.borne_of_blood       = find_conduit_spell( "Borne of Blood" );
-  conduit.carnivorous_stalkers = find_conduit_spell( "Carnivorous Stalkers" );
-  conduit.fel_commando         = find_conduit_spell( "Fel Commando" );
-
   proc_actions.summon_random_demon = new actions_demonology::summon_random_demon_t( this, "" );
 
   // Initialize some default values for pet spawners

@@ -168,9 +168,6 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
 
   m *= 1.0 + buffs.grimoire_of_service->check_value();
 
-  if ( pet_type == PET_FELGUARD && o()->conduit.fel_commando->ok() )
-    m *= 1.0 + o()->conduit.fel_commando.percent();
-
   if ( pet_type == PET_DREADSTALKER && o()->talents.dread_calling.ok() )
     m *= 1.0 + buffs.dread_calling->check_value();
 

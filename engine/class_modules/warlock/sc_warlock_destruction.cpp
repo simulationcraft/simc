@@ -1625,11 +1625,6 @@ void warlock_t::init_spells_destruction()
   // T29 (Vault of the Incarnates)
   tier.chaos_maelstrom = find_spell( 394679 );
 
-  // Conduits
-  conduit.ashen_remains     = find_conduit_spell( "Ashen Remains" );
-  conduit.infernal_brand    = find_conduit_spell( "Infernal Brand" );
-  //conduit.duplicitous_havoc is done in main module
-
   proc_actions.avatar_of_destruction = new avatar_of_destruction_t( this );
 }
 

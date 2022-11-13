@@ -1109,8 +1109,6 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
     talents(),
     proc_actions(),
     tier(),
-    conduit(),
-    covenant(),
     cooldowns(),
     spec(),
     buffs(),
@@ -1609,9 +1607,6 @@ void warlock_t::init_spells()
   talents.inquisitors_gaze_buff = find_spell( 388068 );
   talents.fel_bolt = find_spell( 388070 );
   talents.fel_blast = find_spell( 389277 );
-
-  // Covenant Abilities
-  covenant.soul_rot              = find_covenant_spell( "Soul Rot" );               // Night Fae
 }
 
 void warlock_t::init_rng()
