@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.0.46597
-static const std::array<spelltext_data_t, 18966> __spelltext_data { {
+static const std::array<spelltext_data_t, 18971> __spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -16917,6 +16917,9 @@ static const std::array<spelltext_data_t, 18966> __spelltext_data { {
   { 381955, "$@spelldesc381766", "$?e0[Haste increased by $w1.][Through a crack in the chest you glimpse a bronze hourglass, which would increase your Haste when looted.]", 0 },
   { 381956, "$@spelldesc381766", "$?e0[Mastery increased by $w1.][Through a crack in the chest you glimpse an emerald bell, which would increase your Mastery when looted.]", 0 },
   { 381957, "$@spelldesc381766", "$?e0[Versatility increased by $w1.][Through a crack in the chest you glimpse an azure rod, which would increase your Versatility when looted.]", 0 },
+  { 381965, "$@spelldesc381965", "Attack speed increased by $w1%.", 0 },
+  { 381966, "$@spelldesc377456", "Attack speed increased by #w1%. Movement speed increased by 30%. Auto attacks deal $w2 nature damage to 2 enemies.", 0 },
+  { 381967, "$@spelldesc377456", 0, 0 },
   { 381982, "Ambush and Dispatch have a $s1% chance to grant you a Roll the Bones combat enhancement buff you do not already have for $s2 sec.\r\n\r\nDuration and chance doubled while Stealthed.", 0, 0 },
   { 381985, "Blade Flurry damage is increased by an additional $s1% per missing target below its maximum.", 0, 0 },
   { 381988, "Slice and Dice grants an additional $s1% attack speed per combo point spent.", 0, 0 },
@@ -18066,8 +18069,10 @@ static const std::array<spelltext_data_t, 18966> __spelltext_data { {
   { 388551, "Vivify critical strikes and Rising Sun Kicks reduce the remaining cooldown on $?s388615[Restoral][Revival] by ${$s2/1000}.1 sec, and $?s388615[Restoral][Revival] heals targets for ${$s1}.1% of $?s388615[Restoral's][Revival's] heal over $388555d.", 0, 0 },
   { 388555, "$@spelldesc388551", "Restores $w1 health every $t1 sec.", 0 },
   { 388559, "Summon an Unstable Arcane Rune at your location for $d. While standing within, you or your party members gain power but suffer its corruption, increasing $pri by $s2 and decreasing Critical Strike by $s3.", 0, 0 },
+  { 388560, 0, "Gain $w1 $pri.", 0 },
   { 388564, "Zen Pulse's damage and healing is increased by $388566s1% each time Soothing Mist heals, up to $388566u times. \r\n\r\nWhen your Soothing Mist channel ends, this effect is canceled.", 0, 0 },
   { 388566, "$@spelldesc388564", "Damage and healing of Zen Pulse increased by $w1%.", 0 },
+  { 388583, 0, "Lose $w1 Critical Strike.", 0 },
   { 388593, "Allies targeted by Soothing Mist receive $s1% more healing from your Enveloping Mist and Renewing Mist effects.", 0, 0 },
   { 388603, "Your ranged abilities have a chance to unleash a volley of Rotting Surge, dealing $s2 damage split between enemies hit and decreasing their movement speed by $388739s3% for $388739d, stacking up to 3 times.", 0, 0 },
   { 388604, "Zen Pulse triggers a second time at $s1% effectiveness if cast on targets with both Renewing Mist and Enveloping Mist.", 0, 0 },
@@ -19045,7 +19050,7 @@ static const std::array<spelldesc_vars_data_t, 361> __spelldesc_vars_data { {
   {  100784, "$CAP=$?$OWB==0[${$AP*0.98}][${($AP+$OAP)*2/3}]--2H, DW" },
   {  101546, "$CAP=$?$OWB==0[${$AP*0.98}][${($AP+$OAP)*2/3}]--2H, DW" },
   {  107428, "$CAP=$?$OWB==0[${$AP*0.98}][${($AP+$OAP)*2/3}]--2H, DW" },
-  {  108416, "$points=${$SP*5}" },
+  {  108416, "$points=${$SP*2.5}" },
   {  113656, "$stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]\r\n$dwm=$?a108561|a115697[${1}][${0.857143}]\r\n$offm=$?a108561|a115697[${0}][${1}]\r\n\r\n$offlow=$?s121278[${$mwb/2/$mws}][${$owb/2/$ows}]\r\n$offhigh=$?s121278[${$MWB/2/$mws}][${$OWB/2/$ows}]\r\n\r\n$low=${$<stnc>*($<dwm>*(($mwb)/($MWS)+$<offm>*$<offlow>)+$AP/3.5-1)}\r\n$high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}\r\n" },
   {  114014, "$CAP=$?$OWB==0[${$AP*0.98}][${($AP+$OAP)*2/3}]--2H, DW" },
   {  115057, "$stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]\r\n$dwm=$?a108561|a115697[${1}][${0.857143}]\r\n$offm=$?a108561|a115697[${0}][${1}]\r\n\r\n$offlow=$?s121278[${$mwb/2/$mws}][${$owb/2/$ows}]\r\n$offhigh=$?s121278[${$MWB/2/$mws}][${$OWB/2/$ows}]\r\n\r\n$low=${$<stnc>*($<dwm>*(($mwb)/($MWS)+$<offm>*$<offlow>)+$AP/3.5-1)}\r\n$high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}\r\n" },
@@ -19338,6 +19343,7 @@ static const std::array<spelldesc_vars_data_t, 361> __spelldesc_vars_data { {
 } };
 
 // spelldesc_vars hotfix entries, wow build 10.0.0.46597
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelldesc_vars_hotfix_data { {
+  {  108416,  0, "$points=${$SP*5}", "$points=${$SP*2.5}" },
 } };
 
