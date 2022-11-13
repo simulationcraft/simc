@@ -2032,8 +2032,8 @@ void frenzying_signoll_flare(special_effect_t& effect)
     {
       background = true;
 
-      auto smorfs = create_proc_action<smorfs_ambush_t>( "smorfs_ambush", e );
-      auto barfs = create_proc_action<barfs_ambush_t>( "barfs_ambush", e );
+      smorfs = create_proc_action<smorfs_ambush_t>( "smorfs_ambush", e );
+      barfs = create_proc_action<barfs_ambush_t>( "barfs_ambush", e );
 
       // Use a separate buff for each rating type so that individual uptimes are reported nicely and APLs can easily
       // reference them. Store these in pointers to reduce the size of the events that use them.
