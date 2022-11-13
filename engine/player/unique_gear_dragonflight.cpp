@@ -2022,6 +2022,7 @@ void forgestorm( special_effect_t& effect )
       base_dd_min = base_dd_max = e.player -> find_spell( 381698 ) -> effectN( 1 ).average( e.item );
       background = true;
       aoe = e.player -> find_spell( 381698 ) -> effectN( 2 ).base_value();
+      reduced_aoe_targets = 1.0;
     }
   };
 
@@ -2031,6 +2032,7 @@ void forgestorm( special_effect_t& effect )
     auto buff_spell = effect.trigger();
     buff = create_buff<buff_t>(effect.player, buff_spell);
     auto forgestorm_damage = new special_effect_t( effect.player );
+    forgestorm_damage->name_str = "forgestorm_ignited_damage";
     forgestorm_damage->item = effect.item;
     forgestorm_damage->spell_id = buff->data().id();
     forgestorm_damage->type = SPECIAL_EFFECT_EQUIP;
