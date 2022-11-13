@@ -1622,8 +1622,6 @@ void warlock_t::init_gains()
   if ( specialization() == WARLOCK_DESTRUCTION )
     init_gains_destruction();
 
-  gains.miss_refund  = get_gain( "miss_refund" );
-  gains.shadow_bolt  = get_gain( "shadow_bolt" );
   gains.soul_conduit = get_gain( "soul_conduit" );
 }
 

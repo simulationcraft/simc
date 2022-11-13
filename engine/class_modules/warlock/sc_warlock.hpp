@@ -530,33 +530,28 @@ public:
     propagate_const<buff_t*> chaos_maelstrom; // T29 2pc buff
   } buffs;
 
-  //TODO: Determine if any gains are not currently being tracked
   // Gains - Many of these are automatically handled for resource gains if get_gain( name ) is given the same name as the action source
   struct gains_t
   {
+    // Class Talents
     gain_t* soul_conduit;
 
+    // Affliction
     gain_t* agony;
     gain_t* drain_soul;
     gain_t* unstable_affliction_refund;
     gain_t* soul_tap;
     gain_t* pandemic_invocation;
 
-    gain_t* conflagrate;
-    gain_t* incinerate;
+    // Destruction
     gain_t* incinerate_crits;
-    gain_t* incinerate_fnb;
-    gain_t* incinerate_fnb_crits;
     gain_t* immolate;
     gain_t* immolate_crits;
-    gain_t* soul_fire;
     gain_t* infernal;
     gain_t* shadowburn_refund;
     gain_t* inferno;
 
-    gain_t* miss_refund;
-
-    gain_t* shadow_bolt;
+    // Demonology
     gain_t* doom;
     gain_t* soulbound_tyrant;
     gain_t* demonic_meteor;

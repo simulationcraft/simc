@@ -873,9 +873,9 @@ void warlock_t::init_spells_affliction()
 
 void warlock_t::init_gains_affliction()
 {
-  gains.agony                      = get_gain( "agony" );
+  gains.agony = get_gain( "agony" );
   gains.unstable_affliction_refund = get_gain( "unstable_affliction_refund" );
-  gains.drain_soul                 = get_gain( "drain_soul" );
+  gains.drain_soul = get_gain( "drain_soul" );
   gains.soul_tap = get_gain( "soul_tap" );
   gains.pandemic_invocation = get_gain( "pandemic_invocation" );
 }

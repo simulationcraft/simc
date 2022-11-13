@@ -1623,17 +1623,12 @@ void warlock_t::init_spells_destruction()
 
 void warlock_t::init_gains_destruction()
 {
-  gains.conflagrate          = get_gain( "conflagrate" );
-  gains.immolate             = get_gain( "immolate" );
-  gains.immolate_crits       = get_gain( "immolate_crits" );
-  gains.incinerate           = get_gain( "incinerate" );
-  gains.incinerate_crits     = get_gain( "incinerate_crits" );
-  gains.incinerate_fnb       = get_gain( "incinerate_fnb" );
-  gains.incinerate_fnb_crits = get_gain( "incinerate_fnb_crits" );
-  gains.soul_fire            = get_gain( "soul_fire" );
-  gains.infernal             = get_gain( "infernal" );
-  gains.shadowburn_refund    = get_gain( "shadowburn_refund" );
-  gains.inferno              = get_gain( "inferno" );
+  gains.immolate = get_gain( "immolate" );
+  gains.immolate_crits = get_gain( "immolate_crits" );
+  gains.incinerate_crits = get_gain( "incinerate_crits" );
+  gains.infernal = get_gain( "infernal" );
+  gains.shadowburn_refund = get_gain( "shadowburn_refund" );
+  gains.inferno = get_gain( "inferno" );
 }
 
 void warlock_t::init_rng_destruction()
