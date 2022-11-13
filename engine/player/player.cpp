@@ -4184,6 +4184,9 @@ double player_t::composite_melee_speed() const
   if ( buffs.delirious_frenzy && buffs.delirious_frenzy->check() )
     h *= 1.0 / ( 1.0 + buffs.delirious_frenzy->check_stack_value() );
 
+  if ( buffs.way_of_controlled_currents && buffs.way_of_controlled_currents->check() )
+    h *= 1.0 / ( 1.0 + buffs.way_of_controlled_currents->check_stack_value() );
+
   return h;
 }
 

@@ -2994,9 +2994,10 @@ Effects          :
 #16 (id=1033233)  : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 1.00000 | Target: Self (1)
 #17 (id=1033428)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Execute (5308), Execute (163201), Execute Off-Hand (163558), Execute (260798), Execute (280735), Execute (280849), Execute (281000), Condemn (317349), Condemn (317483), Condemn (317485), Condemn (317488), Condemn Off-Hand (317489), Condemn (330325), Condemn (330334)
                    Family Flags: 29
+Hotfixed         : Base Value (-15 -> 0)
 #18 (id=1036263)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Shockwave (46968)
@@ -4266,6 +4267,7 @@ Description      : $@spelldesc202224
 Tooltip          : Healing of your next Bloodthirst increased by $s1%.
 
 Name             : Fervor of Battle (id=202316) [Spell Family (4), Passive, Hidden] 
+Hotfixed         : Description
 Talent Entry     : Arms [tree=spec, row=4, col=6, max_rank=1, req_points=0]
 Class            : Warrior
 School           : Physical
@@ -4281,8 +4283,9 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=298254)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Whirlwind also Slams your primary target.
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (0 -> 2)
+Description      : If Whirlwind hits $s1 or more targets it also Slams your primary target.
 
 Name             : Best Served Cold (id=202560) [Spell Family (4), Passive, Hidden] 
 Talent Entry     : Protection [tree=spec, row=4, col=2, max_rank=1, req_points=0]
@@ -14851,30 +14854,29 @@ Effects          :
 Description      : @spelldesc$386357
 
 
-Name             : Battle-Scarred Veteran (id=386394) [Spell Family (4), Passive] 
-Hotfixed         : Spell Family (11 -> 4)
+Name             : Battle-Scarred Veteran (id=386394) [Spell Family (4), Passive, Hidden] 
+Hotfixed         : Proc Flags (2148147880 -> 664232), Attributes, Spell Family (11 -> 4)
 Talent Entry     : Protection [tree=spec, row=10, col=3, max_rank=1, req_points=20]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
 Internal Cooldown: 180 seconds
 Proc Chance      : 100%
-Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
+Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
-Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
-                 : ........ .......x ...x.... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... ........ ........ 
+                 : x.x..... ......x. ...x..x. ....x...   ........ ........ xx..x... ..x.x... 
+                 : .......x ........ .......x ........   ...x.... ........ .xx..... ........ 
+                 : ........ .x..x... ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Is Ability (4), Passive (6), Do Not Log (8), Can Proc From Procs (122), Not In Spellbook (143), Allow Proc While Sitting (147), Allow Class Ability Procs (416)
+                 : ...x.... ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Can Proc From Procs (122), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Not In Spellbook Until Learned (269), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1020426)  : Apply Aura (6) | Proc Trigger Spell (42): Battle-Scarred Veteran
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Trigger Spell: 386397 | Target: Self (1)
-#2 (id=1020427)  : Apply Aura (6) | Proc Trigger Spell (42): Battle-Scarred Veteran
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 386397 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Trigger Spell: 386397 | Target: Self (1)
+Hotfixed         : Base Value (25 -> 30)
 #3 (id=1033739)  : Dummy (3)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000
 Description      : When your health is brought below $s3%, you take $386397s1% less damage for $386397d and healing you receive is increased by $386397s2%.

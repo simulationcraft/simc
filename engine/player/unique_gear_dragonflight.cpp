@@ -1298,6 +1298,71 @@ void umbrelskuls_fractured_heart( special_effect_t& effect )
   } );
 }
 
+void way_of_controlled_currents( special_effect_t& effect )
+{
+  auto stack =
+      create_buff<buff_t>( effect.player, "way_of_controlled_currents_stack", effect.player->find_spell( 381965 ) )
+          ->set_name_reporting( "Stack" )
+          ->add_invalidate( CACHE_ATTACK_SPEED );
+  stack->set_default_value( stack->data().effectN( 1 ).average( effect.item ) * 0.01 );
+
+  effect.player->buffs.way_of_controlled_currents = stack;
+
+  auto surge =
+      create_buff<buff_t>( effect.player, "way_of_controlled_currents_surge", effect.player->find_spell( 381966 ) )
+          ->set_name_reporting( "Surge" );
+
+  auto lockout =
+      create_buff<buff_t>( effect.player, "way_of_controlled_currents_lockout", effect.player->find_spell( 397621 ) )
+          ->set_quiet( true );
+
+  auto surge_driver = new special_effect_t( effect.player );
+  surge_driver->type = SPECIAL_EFFECT_EQUIP;
+  surge_driver->source = SPECIAL_EFFECT_SOURCE_ITEM;
+  surge_driver->spell_id = surge->data().id();
+  //surge_driver->cooldown_ = surge->data().internal_cooldown();
+
+  auto surge_damage = create_proc_action<generic_proc_t>( "way_of_controlled_currents", *surge_driver,
+                                                          "way_of_controlled_currents", 381967 );
+
+  surge_damage->base_dd_min = surge_damage->base_dd_max = effect.driver()->effectN( 5 ).average( effect.item );
+
+  surge_driver->execute_action = surge_damage;
+
+  auto surge_cb = new dbc_proc_callback_t( effect.player, *surge_driver );
+  surge_cb->initialize();
+  surge_cb->deactivate();
+
+  stack->set_stack_change_callback( [ surge ]( buff_t* b, int, int ) {
+    if ( b->at_max_stacks() )
+      surge->trigger();
+  } );
+
+  surge->set_stack_change_callback( [ stack, lockout, surge_cb ]( buff_t*, int, int new_ ) {
+    if ( new_ )
+    {
+      surge_cb->activate();
+    }
+    else
+    {
+      surge_cb->deactivate();
+      stack->expire();
+      lockout->trigger();
+    }
+  } );
+
+  effect.custom_buff = stack;
+  effect.proc_flags2_ = PF2_CRIT;
+  auto stack_cb = new dbc_proc_callback_t( effect.player, effect );
+
+  lockout->set_stack_change_callback( [ stack_cb ]( buff_t*, int, int new_ ) {
+    if ( new_ )
+      stack_cb->deactivate();
+    else
+      stack_cb->activate();
+  } );
+}
+
 void whispering_incarnate_icon( special_effect_t& effect )
 {
   bool has_heal = false, has_tank = false, has_dps = false;
@@ -1897,6 +1962,30 @@ void tome_of_unstable_power( special_effect_t& effect )
   effect.custom_buff = buff;
 }
 
+// Alegethar Puzzle Box
+// 383781 Driver and Buff
+// TODO: Cast time is unhasted
+void alegethar_puzzle_box( special_effect_t& effect )
+{
+  struct solved_the_puzzle_t : public proc_spell_t
+  {
+    buff_t* buff;
+    solved_the_puzzle_t( const special_effect_t& e ) :
+      proc_spell_t( "solved_the_puzzle", e.player, e.player->find_spell( 383781 ), e.item)
+    {
+      background = true;
+      auto buff_spell = e.player -> find_spell( 383781 );
+      buff = create_buff<stat_buff_t>(e.player, buff_spell);
+    }
+
+    void impact( action_state_t* a ) override
+    {
+      buff -> trigger();
+    }
+  };
+  effect.execute_action = create_proc_action<solved_the_puzzle_t>( "solved_the_puzzle", effect );
+}
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -1917,6 +2006,57 @@ void fang_adornments( special_effect_t& effect )
   effect.discharge_amount = effect.driver()->effectN( 1 ).average( effect.item );
 
   new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Forgestorm
+// 381698 Buff Driver
+// 381699 Buff and Damage Driver
+// 381700 Damage
+void forgestorm( special_effect_t& effect )
+{
+  struct forgestorm_ignited_t : public proc_spell_t
+  {
+    forgestorm_ignited_t( const special_effect_t& e ) :
+      proc_spell_t( "forgestorm_ignited_damage", e.player, e.player -> find_spell( 381700 ), e.item )
+    {
+      base_dd_min = base_dd_max = e.player -> find_spell( 381698 ) -> effectN( 1 ).average( e.item );
+      background = true;
+      aoe = e.player -> find_spell( 381698 ) -> effectN( 2 ).base_value();
+      reduced_aoe_targets = 1.0;
+    }
+  };
+
+  auto buff = buff_t::find( effect.player, "forgestorm_ignited");
+  if ( !buff )
+  {
+    auto buff_spell = effect.trigger();
+    buff = create_buff<buff_t>(effect.player, buff_spell);
+    auto forgestorm_damage = new special_effect_t( effect.player );
+    forgestorm_damage->name_str = "forgestorm_ignited_damage";
+    forgestorm_damage->item = effect.item;
+    forgestorm_damage->spell_id = buff->data().id();
+    forgestorm_damage->type = SPECIAL_EFFECT_EQUIP;
+    forgestorm_damage->source = SPECIAL_EFFECT_SOURCE_ITEM;
+    forgestorm_damage->execute_action = create_proc_action<forgestorm_ignited_t>( "forgestorm_ignited_damage", *forgestorm_damage );
+    effect.player -> special_effects.push_back( forgestorm_damage );
+    auto damage = new dbc_proc_callback_t( effect.player, *forgestorm_damage );
+    damage->initialize();
+    damage->deactivate();
+ 
+    buff -> set_stack_change_callback( [ damage ]( buff_t* b, int, int new_ )
+    {
+      if ( new_ )
+      {
+        damage -> activate();
+      }
+      else
+      {
+        damage -> deactivate();
+      }
+    } );
+  }
+  effect.custom_buff = buff;
+  auto cb = new dbc_proc_callback_t( effect.player, effect );
 }
 
 // Armor
@@ -2185,6 +2325,7 @@ void register_special_effects()
   register_special_effect( 381768, items::spoils_of_neltharus );
   register_special_effect( 385884, items::timebreaching_talon );
   register_special_effect( 385902, items::umbrelskuls_fractured_heart );
+  register_special_effect( 377456, items::way_of_controlled_currents );
   register_special_effect( 377452, items::whispering_incarnate_icon );
   register_special_effect( 384112, items::the_cartographers_calipers );
   register_special_effect( 377454, items::rumbling_ruby );
@@ -2193,10 +2334,12 @@ void register_special_effects()
   register_special_effect( 377463, items::manic_grieftorch );
   register_special_effect( 377457, items::alltotem_of_the_master );
   register_special_effect( 388559, items::tome_of_unstable_power );
+  register_special_effect( 383781, items::alegethar_puzzle_box );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );  // bronzed grip wrappings embellishment
   register_special_effect( 377708, items::fang_adornments );         // fang adornments embellishment
+  register_special_effect( 381698, items::forgestorm );              // Forgestorm Weapon
 
   // Armor
   register_special_effect( 387335, items::blue_silken_lining );    // blue silken lining embellishment

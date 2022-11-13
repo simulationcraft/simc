@@ -932,8 +932,6 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
   debuffs_eradication = make_buff( *this, "eradication", p.talents.eradication_debuff )
                             ->set_default_value( p.talents.eradication->effectN( 2 ).percent() );
 
-  debuffs_roaring_blaze = make_buff( *this, "roaring_blaze", source->find_spell( 265931 ) );
-
   debuffs_shadowburn    = make_buff( *this, "shadowburn", p.talents.shadowburn )
                               ->set_default_value( p.talents.shadowburn_2->effectN( 1 ).base_value() / 10 );
 
@@ -1108,25 +1106,20 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
     corruption_accumulator( 0.0 ),
     active_pets( 0 ),
     warlock_pet_list( this ),
-    active(),
     talents(),
     proc_actions(),
-    legendary(),
-    conduit(),
-    covenant(),
+    tier(),
     cooldowns(),
-    spec(),
     buffs(),
     gains(),
     procs(),
     initial_soul_shards( 3 ),
     default_pet()
 {
-  cooldowns.haunt               = get_cooldown( "haunt" );
-  cooldowns.phantom_singularity = get_cooldown( "phantom_singularity" );
-  cooldowns.darkglare           = get_cooldown( "summon_darkglare" );
-  cooldowns.demonic_tyrant      = get_cooldown( "summon_demonic_tyrant" );
-  cooldowns.infernal            = get_cooldown( "summon_infernal" );
+  cooldowns.haunt = get_cooldown( "haunt" );
+  cooldowns.darkglare = get_cooldown( "summon_darkglare" );
+  cooldowns.demonic_tyrant = get_cooldown( "summon_demonic_tyrant" );
+  cooldowns.infernal = get_cooldown( "summon_infernal" );
   cooldowns.shadowburn = get_cooldown( "shadowburn" );
   cooldowns.soul_rot = get_cooldown( "soul_rot" );
   cooldowns.call_dreadstalkers = get_cooldown( "call_dreadstalkers" );
@@ -1487,14 +1480,6 @@ void warlock_t::create_buffs()
   buffs.demonic_synergy = make_buff( this, "demonic_synergy", talents.demonic_synergy )
                               ->set_default_value( talents.grimoire_of_synergy->effectN( 2 ).percent() );
 
-  buffs.decaying_soul_satchel_haste = make_buff( this, "decaying_soul_satchel_haste", find_spell( 356369 ) )
-                                          ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
-                                          ->set_default_value( find_spell( 356369 )->effectN( 1 ).percent() );
-
-  buffs.decaying_soul_satchel_crit = make_buff( this, "decaying_soul_satchel_crit", find_spell( 356369 ) )
-                                         ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
-                                         ->set_default_value( find_spell( 356369 )->effectN( 2 ).percent() );
-
   buffs.dark_harvest_haste = make_buff( this, "dark_harvest_haste", talents.dark_harvest_buff )
                                  ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
                                  ->set_default_value( talents.dark_harvest_buff->effectN( 1 ).percent() );
@@ -1553,26 +1538,26 @@ void warlock_t::init_spells()
   // Affliction
   warlock_base.agony = find_class_spell( "Agony" ); // Should be ID 980
   warlock_base.agony_2 = find_spell( 231792 ); // Rank 2, +4 to max stacks
-  warlock_base.potent_afflictions = find_mastery_spell( WARLOCK_AFFLICTION );
-  warlock_base.affliction_warlock = find_specialization_spell( "Affliction Warlock" );
+  warlock_base.potent_afflictions = find_mastery_spell( WARLOCK_AFFLICTION ); // Should be ID 77215
+  warlock_base.affliction_warlock = find_specialization_spell( "Affliction Warlock" ); // Should be ID 137043
 
   // Demonology
   warlock_base.hand_of_guldan = find_class_spell( "Hand of Gul'dan" ); // Should be ID 105174
   warlock_base.hog_impact = find_spell( 86040 ); // Contains impact damage data
   warlock_base.wild_imp = find_spell( 104317 ); // Contains pet summoning information
   warlock_base.fel_firebolt_2 = find_spell( 334591 ); // 20% cost reduction for Wild Imps
-  warlock_base.demonic_core = find_specialization_spell( "Demonic Core" ); // Passive. Should be ID 267102
+  warlock_base.demonic_core = find_specialization_spell( "Demonic Core" ); // Should be ID 267102
   warlock_base.demonic_core_buff = find_spell( 264173 ); // Buff data
-  warlock_base.master_demonologist = find_mastery_spell( WARLOCK_DEMONOLOGY );
-  warlock_base.demonology_warlock = find_specialization_spell( "Demonology Warlock" );
+  warlock_base.master_demonologist = find_mastery_spell( WARLOCK_DEMONOLOGY ); // Should be ID 77219
+  warlock_base.demonology_warlock = find_specialization_spell( "Demonology Warlock" ); // Should be ID 137044
 
   // Destruction
   warlock_base.immolate = find_class_spell( "Immolate" ); // Should be ID 348, contains direct damage and cast data
   warlock_base.immolate_dot = find_spell( 157736 ); // DoT data
   warlock_base.incinerate = find_class_spell( "Incinerate" ); // Should be ID 29722
   warlock_base.incinerate_energize = find_spell( 244670 ); // Used for resource gain information
-  warlock_base.chaotic_energies = find_mastery_spell( WARLOCK_DESTRUCTION );
-  warlock_base.destruction_warlock = find_specialization_spell( "Destruction Warlock" );
+  warlock_base.chaotic_energies = find_mastery_spell( WARLOCK_DESTRUCTION ); // Should be ID 77220
+  warlock_base.destruction_warlock = find_specialization_spell( "Destruction Warlock" ); // Should be ID 137046
 
   // DF - REMOVE THESE?
   warlock_t::init_spells_affliction();
@@ -1612,20 +1597,6 @@ void warlock_t::init_spells()
   talents.inquisitors_gaze_buff = find_spell( 388068 );
   talents.fel_bolt = find_spell( 388070 );
   talents.fel_blast = find_spell( 389277 );
-
-  // Legendaries
-  legendary.claw_of_endereth                     = find_runeforge_legendary( "Claw of Endereth" );
-  legendary.relic_of_demonic_synergy             = find_runeforge_legendary( "Relic of Demonic Synergy" );
-  legendary.wilfreds_sigil_of_superior_summoning = find_runeforge_legendary( "Wilfred's Sigil of Superior Summoning" );
-  // Sacrolash is the only spec-specific legendary that can be used by other specs.
-  legendary.sacrolashs_dark_strike = find_runeforge_legendary( "Sacrolash's Dark Strike" );
-  //Wrath is implemented here to catch any potential cross-spec periodic effects
-  legendary.wrath_of_consumption = find_runeforge_legendary("Wrath of Consumption");
-
-  legendary.decaying_soul_satchel = find_runeforge_legendary( "Decaying Soul Satchel" );
-
-  // Covenant Abilities
-  covenant.soul_rot              = find_covenant_spell( "Soul Rot" );               // Night Fae
 }
 
 void warlock_t::init_rng()
@@ -1651,8 +1622,6 @@ void warlock_t::init_gains()
   if ( specialization() == WARLOCK_DESTRUCTION )
     init_gains_destruction();
 
-  gains.miss_refund  = get_gain( "miss_refund" );
-  gains.shadow_bolt  = get_gain( "shadow_bolt" );
   gains.soul_conduit = get_gain( "soul_conduit" );
 }
 
@@ -1667,15 +1636,14 @@ void warlock_t::init_procs()
   if ( specialization() == WARLOCK_DESTRUCTION )
     init_procs_destruction();
 
-  procs.one_shard_hog   = get_proc( "one_shard_hog" );
-  procs.two_shard_hog   = get_proc( "two_shard_hog" );
+  procs.one_shard_hog = get_proc( "one_shard_hog" );
+  procs.two_shard_hog = get_proc( "two_shard_hog" );
   procs.three_shard_hog = get_proc( "three_shard_hog" );
-  procs.portal_summon   = get_proc( "portal_summon" );
+  procs.portal_summon = get_proc( "portal_summon" );
   procs.demonic_calling = get_proc( "demonic_calling" );
   procs.soul_conduit = get_proc( "soul_conduit" );
   procs.carnivorous_stalkers = get_proc( "carnivorous_stalkers" );
-  procs.horned_nightmare = get_proc( "horned_nightmare" );
-  procs.ritual_of_ruin       = get_proc( "ritual_of_ruin" );
+  procs.ritual_of_ruin = get_proc( "ritual_of_ruin" );
   procs.avatar_of_destruction = get_proc( "avatar_of_destruction" );
   procs.mayhem = get_proc( "mayhem" );
   procs.conflagration_of_chaos_cf = get_proc( "conflagration_of_chaos_cf" );
@@ -1706,14 +1674,6 @@ void warlock_t::init_base_stats()
     else if ( specialization() == WARLOCK_DESTRUCTION )
       default_pet = "imp";
   }
-}
-
-void warlock_t::init_scaling()
-{
-  player_t::init_scaling();
-
-  if ( specialization() == WARLOCK_DEMONOLOGY )
-    scaling->enable( STAT_STAMINA );
 }
 
 void warlock_t::init_assessors()
@@ -2304,10 +2264,9 @@ struct warlock_module_t : public module_t
 
 warlock::warlock_t::pets_t::pets_t( warlock_t* w )
   : active( nullptr ),
-    last( nullptr ),
     infernals( "infernal", w ),
     blasphemy( "blasphemy", w ),
-    darkglare( "darkglare", w ),
+    darkglares( "darkglare", w ),
     dreadstalkers( "dreadstalker", w ),
     vilefiends( "vilefiend", w ),
     demonic_tyrants( "demonic_tyrant", w ),

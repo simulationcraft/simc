@@ -175,7 +175,7 @@ struct hand_of_guldan_t : public demonology_spell_t
   hog_impact_t* impact_spell;
 
   hand_of_guldan_t( warlock_t* p, util::string_view options_str )
-    : demonology_spell_t( p, "Hand of Gul'dan" ),
+    : demonology_spell_t( "Hand of Gul'dan", p, p->warlock_base.hand_of_guldan ),
       impact_spell( new hog_impact_t( p, options_str ) )
   {
     parse_options( options_str );
@@ -1223,10 +1223,6 @@ void warlock_t::create_buffs_demonology()
                             } );;
 
   // Legendaries
-  buffs.balespiders_burning_core =
-      make_buff( this, "balespiders_burning_core", legendary.balespiders_burning_core->effectN( 1 ).trigger() )
-          ->set_trigger_spell( legendary.balespiders_burning_core )
-          ->set_default_value( legendary.balespiders_burning_core->effectN( 1 ).trigger()->effectN( 1 ).percent() );
 
   buffs.dread_calling = make_buff<buff_t>( this, "dread_calling", talents.dread_calling_buff )
                             ->set_default_value( talents.dread_calling->effectN( 1 ).percent() );
@@ -1283,11 +1279,6 @@ void warlock_t::create_buffs_demonology()
 
 void warlock_t::init_spells_demonology()
 {
-  spec.call_dreadstalkers_2    = find_specialization_spell( 334727 );
-  spec.fel_firebolt_2          = find_specialization_spell( 334591 );
-  spec.summon_demonic_tyrant_2 = find_specialization_spell( 334585 );
-
-  // spells
   // Talents
   talents.call_dreadstalkers = find_talent_spell( talent_tree::SPECIALIZATION, "Call Dreadstalkers" ); // Should be ID 104316
   talents.call_dreadstalkers_2 = find_spell( 193332 ); // Duration data
@@ -1394,16 +1385,6 @@ void warlock_t::init_spells_demonology()
 
   // T29 (Vault of the Incarnates)
   tier.blazing_meteor = find_spell( 394776 );
-
-  // Legendaries
-  legendary.balespiders_burning_core       = find_runeforge_legendary( "Balespider's Burning Core" );
-  legendary.forces_of_the_horned_nightmare = find_runeforge_legendary( "Forces of the Horned Nightmare" );
-  legendary.grim_inquisitors_dread_calling = find_runeforge_legendary( "Grim Inquisitor's Dread Calling" );
-
-  // Conduits
-  conduit.borne_of_blood       = find_conduit_spell( "Borne of Blood" );
-  conduit.carnivorous_stalkers = find_conduit_spell( "Carnivorous Stalkers" );
-  conduit.fel_commando         = find_conduit_spell( "Fel Commando" );
 
   proc_actions.summon_random_demon = new actions_demonology::summon_random_demon_t( this, "" );
 

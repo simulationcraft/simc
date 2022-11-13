@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.2.46619
-static const std::array<spelltext_data_t, 19171> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 19175> __ptr_spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -3738,7 +3738,7 @@ static const std::array<spelltext_data_t, 19171> __ptr_spelltext_data { {
   { 119582, "Clears $s1% of your damage delayed with Stagger.$?s322510[\r\n\r\nIncreases the absorption of your next Celestial Brew by up to $322510s1%, based on your current level of Stagger][]$?s383700[\r\n\r\nInstantly heals you for $383700s1% of the damage cleared.][]", 0, 0 },
   { 119607, "$@spelldesc115151", 0, 0 },
   { 119611, "$@spelldesc115151", "Restores $w1 health every $t1 sec.", 0 },
-  { 119898, "Commands your demon to perform its most powerful ability. This spell will transform based on your active pet. \r\n$?s30146[\r\nFelguard: $@spellname89766][]\r\nFelhunter: $@spellname19505\r\nVoidwalker: $@spellname17767\r\nIncubus/Succubus: $@spellname6358\r\nImp: $@spellname89808", 0, 0 },
+  { 119898, "Commands your demon to perform its most powerful ability. This spell will transform based on your active pet. \r\n$?s30146[\r\nFelguard: $@spellname89766][]\r\nFelhunter: $@spellname19647\r\nVoidwalker: $@spellname17767\r\nIncubus/Succubus: $@spellname6358\r\nImp: $@spellname89808", 0, 0 },
   { 119952, "$@spelldesc114158", 0, 0 },
   { 120032, "Strength or Agility increased by $s1.", "$?$w1!=0[Agility increased by $w1.  ][]$?$w2!=0[Strength increased by $w2.][]", 0 },
   { 120086, "$@spelldesc113656", "Stunned.", 0 },
@@ -6649,7 +6649,7 @@ static const std::array<spelltext_data_t, 19171> __ptr_spelltext_data { {
   { 202168, "Instantly attack the target, causing $s1 damage and healing you for $202166s1% of your maximum health.\r\n\r\nKilling an enemy that yields experience or honor resets the cooldown of Impending Victory and makes it cost no Rage.", 0, 0 },
   { 202224, "Charge also increases the healing from your next Bloodthirst by $202225s1%.", 0, 0 },
   { 202225, "$@spelldesc202224", "Healing of your next Bloodthirst increased by $s1%.", 0 },
-  { 202316, "Whirlwind also Slams your primary target.", 0, 0 },
+  { 202316, "If Whirlwind hits $s1 or more targets it also Slams your primary target.", 0, 0 },
   { 202342, "Moonfire, Sunfire, and Stellar Flare damage over time has a chance to call down a falling star, dealing $202497s1 Astral damage and generating ${$202497m2/10} Astral Power.", 0, 0 },
   { 202345, "Starsurge and Starfall grant you $s1% Haste for $279709d.\r\n\r\nStacks up to $279709u times. Gaining a stack does not refresh the duration.", 0, 0 },
   { 202347, "Burns the target for $s1 Astral damage, and then an additional $o2 damage over $d.\r\n\r\n|cFFFFFFFFGenerates ${$m3/10} Astral Power.|r", "Suffering $w2 Astral damage every $t2 sec.", 0 },
@@ -16831,6 +16831,7 @@ static const std::array<spelltext_data_t, 19171> __ptr_spelltext_data { {
   { 381689, "While Reincarnation is off cooldown, your maximum health is increased by $381687s1%. While you are at full health, Reincarnation cools down $381684s1% faster.\r\n\r\n", 0, 0 },
   { 381698, "Your attacks have a chance to ignite Forgestorm for $381699d, causing your attacks to explode for $s1 Fire damage split between all nearby enemies.\r\n\r\nDamage is increased for each enemy struck, up to $s2 enemies.", 0, 0 },
   { 381699, "$@spelldesc381698", "Your attacks have a very high chance to explode for $w1 Fire damage split between all nearby enemies.", 0 },
+  { 381700, "$@spelldesc381698", 0, 0 },
   { 381705, "Your attacks have a chance to cause flaming tentacles to grow from your body for $381727d. The tentacles lash out, dealing $s1 Fire damage every $s3 sec split between enemies in front of you.\r\n\r\nDamage is increased for each enemy struck, up to $s2 enemies.", 0, 0 },
   { 381706, "Blizzard has an $h% chance to increase the damage of your next Cone of Cold by $s2%, stacking up to $381522u times.", 0, 0 },
   { 381707, "Increases your maximum Maelstrom by $s1.", 0, 0 },
@@ -16900,6 +16901,9 @@ static const std::array<spelltext_data_t, 19171> __ptr_spelltext_data { {
   { 381955, "$@spelldesc381766", "$?e0[Haste increased by $w1.][Through a crack in the chest you glimpse a bronze hourglass, which would increase your Haste when looted.]", 0 },
   { 381956, "$@spelldesc381766", "$?e0[Mastery increased by $w1.][Through a crack in the chest you glimpse an emerald bell, which would increase your Mastery when looted.]", 0 },
   { 381957, "$@spelldesc381766", "$?e0[Versatility increased by $w1.][Through a crack in the chest you glimpse an azure rod, which would increase your Versatility when looted.]", 0 },
+  { 381965, "$@spelldesc381965", "Attack speed increased by $w1%.", 0 },
+  { 381966, "$@spelldesc377456", "Movement speed increased by $w1%. Auto attacks deal $w2 bonus Nature damage to your current target and the nearest enemy.", 0 },
+  { 381967, "$@spelldesc377456", 0, 0 },
   { 381982, "Ambush and Dispatch have a $s1% chance to grant you a Roll the Bones combat enhancement buff you do not already have for $s2 sec.\r\n\r\nDuration and chance doubled while Stealthed.", 0, 0 },
   { 381985, "Blade Flurry damage is increased by an additional $s1% per missing target below its maximum.", 0, 0 },
   { 381988, "Slice and Dice grants an additional $s1% attack speed per combo point spent.", 0, 0 },
@@ -19174,11 +19178,13 @@ static const std::array<spelltext_data_t, 19171> __ptr_spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 10.0.2.46619
-static constexpr std::array<hotfix::client_hotfix_entry_t, 17> __ptr_spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 19> __ptr_spelltext_hotfix_data { {
+  {  119898,  0, "Commands your demon to perform its most powerful ability. This spell will transform based on your active pet. \r\n$?s30146[\r\nFelguard: $@spellname89766][]\r\nFelhunter: $@spellname19505\r\nVoidwalker: $@spellname17767\r\nIncubus/Succubus: $@spellname6358\r\nImp: $@spellname89808", "Commands your demon to perform its most powerful ability. This spell will transform based on your active pet. \r\n$?s30146[\r\nFelguard: $@spellname89766][]\r\nFelhunter: $@spellname19647\r\nVoidwalker: $@spellname17767\r\nIncubus/Succubus: $@spellname6358\r\nImp: $@spellname89808" },
   {  135286,  1, "Your next Maul deals $s1% more damage and reduces the target's damage to you by $135601s1%~ for $135601d.", "Your next Maul deals $s1% more damage, costs $s3% less rage, and reduces the target's damage to you by $135601s1%~ for $135601d." },
   {  135288,  0, "Autoattacks have a $s1% chance to empower your next Maul, stacking up to $135286u times.\r\n\r\nEmpowered Maul deals $135286s1% increased damage and reduces the target's damage to you by $135601s2% for $135601d.", "Autoattacks have a $s1% chance to empower your next Maul, stacking up to $135286u times.\r\n\r\nEmpowered Maul deals $135286s1% increased damage, costs $135286s3% less rage, and reduces the target's damage to you by $135601s2% for $135601d." },
   {  200851,  0, "Unleashes the rage of Ursoc for $d, preventing $s4% of all damage you take and reflecting $219432s1 Nature damage back at your attackers.", "Unleashes the rage of Ursoc for $d, preventing $s3% of all damage you take, increasing your damage done by $s5%, granting you $s3% leech, and reflecting $219432s1 Nature damage back at your attackers." },
   {  200851,  1, "Prevents $s4% of all damage you take and reflects $219432s1 Nature damage back at your attackers.", "Prevents $s3% of all damage you take, increases damage done by $s5%, grants $s3% leech, and reflects $219432s1 Nature damage back at your attackers." },
+  {  202316,  0, "Whirlwind also Slams your primary target.", "If Whirlwind hits $s1 or more targets it also Slams your primary target." },
   {  372119,  0, "When you take non-periodic damage, you have a chance equal to your critical strike to cause your next Regrowth to be instant, free, and castable in all forms for $372152d.\r\n\r\nThis effect cannot occur more than once every $372523d.", "When you take non-periodic damage, you have a chance equal to your critical strike to cause your next Regrowth to heal for an additional $372152s4%, and to be instant, free, and castable in all forms for $372152d. \r\n\r\nThis effect cannot occur more than once every $372523d." },
   {  372152,  0, "Your next Regrowth is free, instant, and castable in all forms.", "Your next Regrowth heals for an additional $s4% and is free, instant, and castable in all forms." },
   {  372152,  1, "Your next Regrowth is free, instant, and castable in all forms.", "Your next Regrowth heals for an additional $s4% and is free, instant, and castable in all forms." },

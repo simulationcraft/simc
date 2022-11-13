@@ -1371,6 +1371,8 @@ class SpellDataGenerator(DataGenerator):
          383758, # Bottle of Spiraling Winds
          383813, 383814, 389817, 389818, 389820, 390896, 390941, # Ruby Whelp Shell
          388560, 388583,  # Tome of Unstable Power
+         381965, 381966, 381967, # Controlled Currents Technique
+         381698, 381699, 381700, # Forgestorm
         ),
 
         # Warrior:
