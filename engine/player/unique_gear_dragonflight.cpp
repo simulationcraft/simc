@@ -2023,6 +2023,10 @@ void frenzying_signoll_flare(special_effect_t& effect)
   {
     action_t* smorfs;
     action_t* barfs;
+    std::shared_ptr<std::map<stat_e, buff_t*>> siki_buffs;
+    // When selecting the highest stat, the priority of equal secondary stats is Vers > Mastery > Haste > Crit.
+    std::array<stat_e, 4> ratings;
+
     frenzying_signoll_flare_t(const special_effect_t& e) :
         proc_spell_t("frenzying_signoll_flare", e.player, e.player -> find_spell(382119), e.item)
     {
@@ -2031,13 +2035,9 @@ void frenzying_signoll_flare(special_effect_t& effect)
       auto smorfs = create_proc_action<smorfs_ambush_t>( "smorfs_ambush", e );
       auto barfs = create_proc_action<barfs_ambush_t>( "barfs_ambush", e );
 
-      // When selecting the highest stat, the priority of equal secondary stats is Vers > Mastery > Haste > Crit.
-      static constexpr std::array<stat_e, 4> ratings = { STAT_VERSATILITY_RATING, STAT_MASTERY_RATING, STAT_HASTE_RATING,
-                                                     STAT_CRIT_RATING };
-
       // Use a separate buff for each rating type so that individual uptimes are reported nicely and APLs can easily
       // reference them. Store these in pointers to reduce the size of the events that use them.
-      auto siki_buffs = std::make_shared<std::map<stat_e, buff_t*>>();
+      siki_buffs = std::make_shared<std::map<stat_e, buff_t*>>();
       double amount     = e.driver()->effectN( 1 ).average( e.item );
 
       for ( auto stat : ratings )
@@ -2053,6 +2053,15 @@ void frenzying_signoll_flare(special_effect_t& effect)
         ( *siki_buffs )[ stat ] = buff;
       }
 
+      ratings = { STAT_VERSATILITY_RATING, STAT_MASTERY_RATING, STAT_HASTE_RATING,
+                                                     STAT_CRIT_RATING };
+
+    }
+
+    void execute() override
+    {
+      proc_spell_t::execute();
+
       auto selected_effect = player->sim->rng().range( 3 );
       
       if( selected_effect == 1 )
@@ -2067,7 +2076,7 @@ void frenzying_signoll_flare(special_effect_t& effect)
 
       else if (selected_effect == 3)
       {
-       stat_e max_stat = util::highest_stat( e.player, ratings );
+       stat_e max_stat = util::highest_stat( player, ratings );
         ( *siki_buffs )[ max_stat ]->trigger();
       }
     }
