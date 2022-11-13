@@ -489,12 +489,12 @@ class TraitSet(DataSet):
         # Collect TraitNodeEntry entries for each used TraitNode
         for data in self.db('TraitNodeXTraitNodeEntry').values():
             node_id = data.id_trait_node
+            entry_id = data.id_trait_node_entry
 
             if node_id not in _trait_nodes:
                 continue
 
-            # TraitNodeXTraitNodeEntry.id is needed in order to resolve any selection index clashes
-            entry = (data.ref('id_trait_node_entry'), data.id)
+            entry = data.ref('id_trait_node_entry')
             _trait_nodes[node_id]['entries'].add(entry)
 
         # A map of trait_node_entry_id, trait_data
@@ -540,7 +540,7 @@ class TraitSet(DataSet):
                     for cond in node['cond'] if cond.type == 2
                 )
 
-                for entry, db2_id in node['entries']:
+                for entry in node['entries']:
                     key = entry.id
                     definition = entry.ref('id_trait_definition')
 
@@ -570,14 +570,11 @@ class TraitSet(DataSet):
                         # already processed entry that is on the same node.
 
                         # Iterate through all entries on the node that does not match the current entry
-                        for _e, _id in [(e, i) for e, i in node['entries'] if e.id != entry.id]:
-                            # Check for selection_index clash
+                        for _e in [e for e in node['entries'] if e.id != entry.id]:
+                            # Check if we've already processed the selection_index for an entry on this node
                             if _traits[_e.id]['selection_index'] == sel_idx:
-                                # Adjust the selection_index of the higher TraitNodeXTraitNodeEntry.id by 1
-                                if _id > db2_id:
-                                    _traits[_e.id]['selection_index'] += 1
-                                else:
-                                    sel_idx += 1
+                                # If we have, increment the current entry's selection_index by 1
+                                sel_idx += 1
 
                         _traits[key]['selection_index'] = sel_idx
 
