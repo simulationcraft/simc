@@ -777,7 +777,7 @@ struct warlock_spell_t : public spell_t
 {
 public:
   gain_t* gain;
-  bool can_havoc; // DF - Also need to utilize this for Mayhem
+  bool can_havoc;
 
   warlock_spell_t( warlock_t* p, util::string_view n ) : warlock_spell_t( n, p, p->find_class_spell( n ) )
   {
@@ -1028,13 +1028,6 @@ struct grimoire_of_sacrifice_damage_t : public warlock_spell_t
   {
     background = true;
     proc = true;
-
-    // 2022-09-30 - It seems like the damage is either double dipping on the spec aura effect, or is benefiting from pet damage multiplier as well
-    // 2022-10-17 - Appears to be fixed, leaving for later cleanup
-    //if ( p->specialization() == WARLOCK_AFFLICTION )
-    //  base_dd_multiplier *= 1.0 + p->warlock_base.affliction_warlock->effectN( 3 ).percent();
-    //if ( p->specialization() == WARLOCK_DESTRUCTION )
-    //  base_dd_multiplier *= 1.0 + p->warlock_base.destruction_warlock->effectN( 3 ).percent();
 
     base_dd_multiplier *= 1.0 + p->talents.demonic_inspiration->effectN( 7 ).percent();
     base_dd_multiplier *= 1.0 + p->talents.wrathful_minion->effectN( 7 ).percent();
