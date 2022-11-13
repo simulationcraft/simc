@@ -160,46 +160,45 @@ public:
 
   std::vector<std::string> pet_name_list;
 
-  // DF - Does everything go in this struct? Probably yes, though spell_data_t could be replaced with player_talent_t
   // Talents
   struct talents_t
   {
+    // Class Tree
+
+    player_talent_t demonic_inspiration; // Pet haste on Soul Shard fill
+    player_talent_t wrathful_minion; // Pet damage buff on Soul Shard fill
+    player_talent_t grimoire_of_synergy; // Note: Does not trigger when using Grimoire of Sacrifice
+    const spell_data_t* demonic_synergy; // Buff from Grimoire of Synergy
+    player_talent_t soul_conduit;
+    player_talent_t grim_feast; // Faster Drain Life
+    player_talent_t summon_soulkeeper; // Active ground AoE which spends hidden stacking buff. NOT A PET
+    const spell_data_t* summon_soulkeeper_aoe; // The actual active spell which triggers the AoE
+    const spell_data_t* tormented_soul_buff; // Stacks periodically, duration of Summon Soulkeeper is based on stack count
+    const spell_data_t* soul_combustion; // AoE tick damage for Summon Soulkeeper
+    player_talent_t inquisitors_gaze;
+    const spell_data_t* inquisitors_gaze_buff; // Aura which triggers the damage procs
+    const spell_data_t* fel_bolt; // Inquisitor's Eye spell #1
+    const spell_data_t* fel_blast; // Inquisitor's Eye spell #2
+
+    // Specializations
+
     // Shared
     player_talent_t grimoire_of_sacrifice; // Aff/Destro only
     const spell_data_t* grimoire_of_sacrifice_buff; // 1 hour duration, enables proc functionality, canceled if pet summoned
     const spell_data_t* grimoire_of_sacrifice_proc; // Damage data is here, but RPPM of proc trigger is in buff data
     player_talent_t grand_warlocks_design; // One spell data for all 3 specs
 
-    // Class Tree
-
-    // DF - Demonic Embrace is a stamina talent, may be irrelevant now
-    player_talent_t demonic_inspiration; // Pet haste on Soul Shard fill
-    player_talent_t wrathful_minion; // Pet damage buff on Soul Shard fill
-    // DF - Demonic Fortitude is a health talent, may be irrelevant now
-    player_talent_t grimoire_of_synergy; // DF - Does not trigger when using Grimoire of Sacrifice
-    const spell_data_t* demonic_synergy; // Buff from Grimoire of Synergy
-    player_talent_t soul_conduit;
-    player_talent_t grim_feast; // Faster Drain Life (Formerly SL Legendary)
-    player_talent_t summon_soulkeeper; // Active ground AoE which spends hidden stacking buff. NOT A PET
-    const spell_data_t* summon_soulkeeper_aoe; // The actual active spell which triggers the AoE
-    const spell_data_t* tormented_soul_buff; // Stacks periodically, duration of Summon Soulkeeper is based on stack count
-    const spell_data_t* soul_combustion; // AoE tick damage for Summon Soulkeeper
-    player_talent_t inquisitors_gaze; // Arcane Familiar-like object
-    const spell_data_t* inquisitors_gaze_buff; // Aura which triggers the damage procs
-    const spell_data_t* fel_bolt; // Inquisitor's Eye spell #1
-    const spell_data_t* fel_blast; // Inquisitor's Eye spell #2
-
-    // AFF
+    // Affliction
     player_talent_t malefic_rapture;
     const spell_data_t* malefic_rapture_dmg; // Damage events use this ID, but primary talent contains the spcoeff
 
     player_talent_t unstable_affliction;
-    const spell_data_t* unstable_affliction_2; // Soul Shard on demise, still seems to be separate spell (auto-learned on spec switch?)
-    const spell_data_t* unstable_affliction_3; // +5 seconds to duration, still seems to be separate spell (auto-learned on spec switch?)
+    const spell_data_t* unstable_affliction_2; // Soul Shard on demise, still seems to be separate spell (learned automatically)
+    const spell_data_t* unstable_affliction_3; // +5 seconds to duration, still seems to be separate spell (learned automatically)
     player_talent_t seed_of_corruption;
     const spell_data_t* seed_of_corruption_aoe; // Explosion damage when Seed ticks
 
-    player_talent_t nightfall; //TODO: RNG information is missing from spell data. Confirmed 2022-09-22: Buff stacks to 2, can refresh at max stacks, duration refreshes when proc occurs
+    player_talent_t nightfall;
     const spell_data_t* nightfall_buff;
     player_talent_t xavian_teachings; // Instant cast data in this spell, talent points to base Corruption spell (172) for the direct damage
     player_talent_t sow_the_seeds;
@@ -208,14 +207,14 @@ public:
     const spell_data_t* shadow_embrace_debuff; // Default values set from talent data, but contains debuff info
     player_talent_t harvester_of_souls;
     const spell_data_t* harvester_of_souls_dmg; // Talent only controls proc, damage is in separate spell
-    player_talent_t writhe_in_agony; // 2022-09-23 DF Beta - Writhe In Agony's second point is not registering in-game
+    player_talent_t writhe_in_agony;
     player_talent_t agonizing_corruption; // Only applies to targets which already have Agony
 
-    player_talent_t drain_soul; // This represents the talent node but not much else. 2022-09-25 Some weird behavior with Nightfall has been documented.
+    player_talent_t drain_soul; // This represents the talent node but not much else
     const spell_data_t* drain_soul_dot; // This is the previous talent spell, contains all channel data
-    player_talent_t absolute_corruption; // DF - Now a choice against Siphon Life
-    player_talent_t siphon_life; // DF - Now a choice against Absolute Corruption
-    player_talent_t phantom_singularity; // DF - Now a choice against Vile Taint
+    player_talent_t absolute_corruption;
+    player_talent_t siphon_life;
+    player_talent_t phantom_singularity;
     const spell_data_t* phantom_singularity_tick; // Actual AoE spell information in here
     player_talent_t vile_taint; // Base talent, AoE cast data
     const spell_data_t* vile_taint_dot; // DoT data
@@ -234,10 +233,10 @@ public:
     player_talent_t withering_bolt; // Increased damage on Shadow Bolt/Drain Soul based on active DoT count on target
     player_talent_t sacrolashs_dark_strike; // Increased Corruption ticking damage, and ticks extend Curses (not implemented)
 
-    player_talent_t creeping_death; // DF - No long reduces duration
+    player_talent_t creeping_death;
     player_talent_t haunt;
     player_talent_t summon_darkglare; 
-    player_talent_t soul_rot; // DF - now Affliction only
+    player_talent_t soul_rot;
 
     player_talent_t malefic_affliction; // Stacking damage increase to Unstable Affliction until UA is cancelled/swapped/ends
     const spell_data_t* malefic_affliction_debuff; // Target debuff applied on Malefic Rapture casts
@@ -257,10 +256,10 @@ public:
     const spell_data_t* haunted_soul_buff; // Applied to player while Haunt is active
     // Grand Warlock's Design (formerly Wilfred's). Shared across all 3 specs
     player_talent_t grim_reach; // Darkglare hits all targets affected by DoTs
-    player_talent_t dark_harvest; // Buffs from hitting targets with Soul Rot (Formerly Decaying Soul Satchel)
-    const spell_data_t* dark_harvest_buff; // TOCHECK: As of 2022-10-01, buff data has a different value from talent tooltip, and neither is correct?
+    player_talent_t dark_harvest; // Buffs from hitting targets with Soul Rot
+    const spell_data_t* dark_harvest_buff;
 
-    // DEMO
+    // Demonology
     player_talent_t call_dreadstalkers;
     const spell_data_t* call_dreadstalkers_2; // Contains duration data
 
@@ -288,13 +287,13 @@ public:
 
     player_talent_t power_siphon; // NOTE: Power Siphon WILL consume Imp Gang Boss as if it were a regular imp (last checked 2022-10-04)
     const spell_data_t* power_siphon_buff; // Semi-hidden aura that controls the bonus Demonbolt damage
-    player_talent_t inner_demons; // DF - Now a 2 point talent
-    player_talent_t demonic_calling; // DF - Now a 2 point talent
+    player_talent_t inner_demons;
+    player_talent_t demonic_calling;
     const spell_data_t* demonic_calling_buff;
     player_talent_t grimoire_felguard;
 
     player_talent_t bloodbound_imps; // Increased Demonic Core proc chance from Wild Imps
-    player_talent_t dread_calling; // Stacking buff to next Dreadstalkers damage (Formerly SL Legendary)
+    player_talent_t dread_calling; // Stacking buff to next Dreadstalkers damage
     const spell_data_t* dread_calling_buff; // This buffs stacks on the warlock, a different one applies to the pet
     player_talent_t doom;
     player_talent_t demonic_meteor; // Increased Hand of Gul'dan damage and chance to refund soul shard
@@ -303,15 +302,15 @@ public:
 
     player_talent_t fel_covenant; // Stacking Demonbolt buff when casting Shadow Bolt, not consumed after cast
     const spell_data_t* fel_covenant_buff;
-    player_talent_t imp_gang_boss; // DF - Imp Gang Boss (2 point talent, Wild Imp has chance to be this pet instead)
+    player_talent_t imp_gang_boss;
     player_talent_t kazaaks_final_curse; // Doom deals increased damage based on active demon count
-    player_talent_t ripped_through_the_portal; // Increased Dreadstalker count chance (Formerly SL Tier bonus)
+    player_talent_t ripped_through_the_portal; // Increased Dreadstalker count chance
     player_talent_t hounds_of_war; // Shadow Bolt and Demonbolt have a chance to reset Call Dreadstalkers
     
     player_talent_t nether_portal; // TOCHECK: 2022-10-07 Portal summon damage is possibly slightly above current in-game values (~1% max), full audit needed closer to release
     const spell_data_t* nether_portal_buff; // Aura on player while the portal is active
     player_talent_t summon_demonic_tyrant; // TOCHECK: 2022-10-07 Pit Lord is not currently extendable by Tyrant
-    const spell_data_t* demonic_power_buff; // Buff on player when Tyrant is summoned, should grant 15% damage to pets (TOCHECK: 2022-10-07 - buff is missing guardian aura, only main pet working)
+    const spell_data_t* demonic_power_buff; // Buff on player when Tyrant is summoned, should grant 15% damage to pets
     player_talent_t antoran_armaments; // Increased Felguard damage and Soul Strike cleave (TOCHECK: 2022-10-08 - this is applying to Grimoire: Felguard erratically)
 
     player_talent_t nerzhuls_volition; // Chance to summon additional demon from Nether Portal summons (TOCHECK: It is currently assumed this cannot proc itself)
@@ -320,18 +319,18 @@ public:
     const spell_data_t* stolen_power_final_buff;
     player_talent_t sacrificed_souls;
     player_talent_t soulbound_tyrant; // Soul Shards on Tyrant summons
-    player_talent_t pact_of_the_imp_mother; // Chance for Hand of Gul'dan to proc a second time on execute (Formerly SL Legendary)
+    player_talent_t pact_of_the_imp_mother; // Chance for Hand of Gul'dan to proc a second time on execute
     player_talent_t the_expendables; // Per-pet stacking buff to damage when a Wild Imp expires
-    player_talent_t infernal_command; // Increased Wild Imp and Dreadstalker damage while Felguard active (TOCHECK: 2022-10-08 - this is behaving very buggily on beta)
+    player_talent_t infernal_command; // Increased Wild Imp and Dreadstalker damage while Felguard active
 
     player_talent_t guldans_ambition; // Summons a Pit Lord at end of Nether Portal
     const spell_data_t* soul_glutton; // Buff on Pit Lord based on demons summoned
-    player_talent_t reign_of_tyranny; // Each summoned active gives stacks of Demonic Servitude (Wild Imps give 1, others 2). Tyrant snapshots this buff on summon for more damage
+    player_talent_t reign_of_tyranny; // Each summoned active pet gives stacks of Demonic Servitude. Tyrant snapshots this buff on summon for more damage
     const spell_data_t* demonic_servitude; // TOCHECK: 2022-10-09 - In addition to aura stack bugs, Nether Portal demons are not currently giving stacks in beta (not implemented)
     // Grand Warlock's Design (formerly Wilfred's). Shared across all 3 specs
     player_talent_t guillotine;
 
-    // DESTRO
+    // Destruction
     player_talent_t chaos_bolt;
 
     player_talent_t conflagrate; // Base 2 charges
@@ -343,7 +342,7 @@ public:
     const spell_data_t* rain_of_fire_tick;
 
     player_talent_t backdraft;
-    const spell_data_t* backdraft_buff; // DF - Now affects Soul Fire
+    const spell_data_t* backdraft_buff;
     player_talent_t mayhem; // It appears that the only spells that can proc Mayhem are ones that can be Havoc'd
     player_talent_t havoc; // Talent data for Havoc is both the debuff and the action
     const spell_data_t* havoc_debuff; // This is a second copy of the talent data for use in places that are shared by Havoc and Mayhem
@@ -351,7 +350,7 @@ public:
     const spell_data_t* pyrogenics_debuff;
 
     player_talent_t roaring_blaze;
-    const spell_data_t* conflagrate_debuff; // Formerly called Roaring Blaze
+    const spell_data_t* conflagrate_debuff; // Debuff associated with Roaring Blaze
     player_talent_t improved_conflagrate; // +1 charge for Conflagrate
     player_talent_t explosive_potential; // Reduces base Conflagrate cooldown by 2 seconds
     player_talent_t channel_demonfire;
@@ -384,20 +383,20 @@ public:
     player_talent_t ruin; // Damage increase to several spells
     player_talent_t eradication;
     const spell_data_t* eradication_debuff;
-    player_talent_t ashen_remains; // Increased Chaos Bolt and Incinerate damage to targets afflicted by Immolate (Formerly SL Conduit)
+    player_talent_t ashen_remains; // Increased Chaos Bolt and Incinerate damage to targets afflicted by Immolate
     // Grimoire of Sacrifice (shared with Affliction)
 
     player_talent_t summon_infernal;
     const spell_data_t* summon_infernal_main; // Data for main infernal summoning
     const spell_data_t* infernal_awakening; // AoE on impact is attributed to the Warlock
-    player_talent_t diabolic_embers; // Incinerate generates more Soul Shards (Formerly SL Legendary)
-    player_talent_t ritual_of_ruin; // Formerly SL Tier Bonus
+    player_talent_t diabolic_embers; // Incinerate generates more Soul Shards
+    player_talent_t ritual_of_ruin;
     const spell_data_t* impending_ruin_buff; // Stacking buff, triggers Ritual of Ruin buff at max
     const spell_data_t* ritual_of_ruin_buff;
     
     player_talent_t crashing_chaos; // Summon Infernal reduces cost of next X casts
     const spell_data_t* crashing_chaos_buff;
-    player_talent_t infernal_brand; // Infernal melees increase Infernal AoE damage (Formerly SL Conduit)
+    player_talent_t infernal_brand; // Infernal melees increase Infernal AoE damage
     player_talent_t power_overwhelming; // Stacking mastery buff for spending Soul Shards
     const spell_data_t* power_overwhelming_buff;
     player_talent_t madness_of_the_azjaqir; // Buffs that reward repeating certain spells
@@ -422,7 +421,7 @@ public:
     const spell_data_t* chaos_barrage_tick;
     const spell_data_t* chaos_tear_summon; // This only creates the "pet"
     const spell_data_t* rift_chaos_bolt; // Separate ID from Warlock's Chaos Bolt
-    player_talent_t avatar_of_destruction; // Summons Blasphemy when consuming Ritual of Ruin (Formerly SL Tier Bonus)
+    player_talent_t avatar_of_destruction; // Summons Blasphemy when consuming Ritual of Ruin
   } talents;
 
   struct proc_actions_t
