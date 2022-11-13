@@ -109,6 +109,9 @@ avenging_wrath_buff_t::avenging_wrath_buff_t( paladin_t* p )
     base_buff_duration *= 1.0 + p->talents.sanctified_wrath->effectN( 1 ).percent();
   }
 
+  if ( p->talents.avenging_wrath_might->ok() )
+    crit_bonus = p->talents.avenging_wrath_might->effectN( 1 ).percent();
+
   if ( p->azerite.lights_decree.ok() )
     base_buff_duration += p->spells.lights_decree->effectN( 2 ).time_value();
 
@@ -306,7 +309,7 @@ struct consecration_tick_t : public paladin_spell_t
     {
       m *= 1.0 + p()->talents.consecration_in_flame->effectN( 2 ).percent();
     }
-    if ( p()->talents.hallowed_ground->ok() && !(p() -> bugs))
+    if ( p()->talents.hallowed_ground->ok() )
     {
       m *= 1.0 + p()->talents.hallowed_ground->effectN( 1 ).percent();
     }
@@ -1245,15 +1248,20 @@ void judgment_t::execute()
 
   if ( p()->talents.zealots_paragon->ok() )
   {
+    auto extension = timespan_t::from_millis( p()->talents.zealots_paragon->effectN( 1 ).base_value() );
+    if ( !(p()->dbc->ptr) )
+    {
+      extension = timespan_t::from_millis( p()->talents.zealots_paragon->effectN( 4 ).base_value() );
+    }
+
     if ( p()->buffs.avenging_wrath->up() )
     {
-      p()->buffs.avenging_wrath->extend_duration(
-          p(), timespan_t::from_millis( p()->talents.zealots_paragon->effectN( 1 ).base_value() ) );
+      p()->buffs.avenging_wrath->extend_duration( p(), extension );
     }
-    else if ( p()->buffs.crusade->up() )
+
+    if ( p()->buffs.crusade->up() )
     {
-      p()->buffs.crusade->extend_duration(
-          p(), timespan_t::from_millis( p()->talents.zealots_paragon->effectN( 1 ).base_value() ) );
+      p()->buffs.crusade->extend_duration( p(), extension );
     }
   }
 }
@@ -1850,15 +1858,20 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
 
     if ( p()->talents.zealots_paragon->ok() )
     {
+      auto extension = timespan_t::from_millis( p()->talents.zealots_paragon->effectN( 1 ).base_value() );
+      if ( !(p()->dbc->ptr) )
+      {
+        extension = timespan_t::from_millis( p()->talents.zealots_paragon->effectN( 4 ).base_value() );
+      }
+
       if ( p()->buffs.avenging_wrath->up() )
       {
-        p()->buffs.avenging_wrath->extend_duration(
-            p(), timespan_t::from_millis( p()->talents.zealots_paragon->effectN( 1 ).base_value() ) );
+        p()->buffs.avenging_wrath->extend_duration( p(), extension );
       }
-      else if ( p()->buffs.crusade->up() )
+
+      if ( p()->buffs.crusade->up() )
       {
-        p()->buffs.crusade->extend_duration(
-            p(), timespan_t::from_millis( p()->talents.zealots_paragon->effectN( 1 ).base_value() ) );
+        p()->buffs.crusade->extend_duration( p(), extension );
       }
     }
 
@@ -2406,7 +2419,7 @@ void paladin_t::init_gains()
   gains.holy_shield   = get_gain( "holy_shield_absorb" );
   gains.bulwark_of_order = get_gain( "bulwark_of_order_absorb" );
   gains.moment_of_glory  = get_gain( "moment_of_glory_absorb" );
-  
+
 
   // Holy Power
   gains.hp_templars_verdict_refund = get_gain( "templars_verdict_refund" );
@@ -3003,10 +3016,6 @@ double paladin_t::composite_player_multiplier( school_e school ) const
     {
       m *= 1.0 + buffs.vanguards_momentum_legendary->stack_value();
     }
-    if ( bugs && talents.hallowed_ground->ok() )
-    {
-      m *= 1.0 + talents.hallowed_ground->effectN( 1 ).percent();
-    }
   }
 
   return m;
@@ -3044,7 +3053,7 @@ double paladin_t::composite_damage_versatility() const
 
   if ( buffs.seraphim->up() )
     cdv += buffs.seraphim->data().effectN( 2 ).percent();
-  
+
   if ( buffs.ally_of_the_light->up() )
     cdv += buffs.ally_of_the_light->data().effectN( 1 ).percent();
 
@@ -3107,9 +3116,6 @@ double paladin_t::composite_spell_crit_chance() const
   if ( talents.holy_aegis->ok() )
     h += talents.holy_aegis->effectN( 1 ).percent();
 
-  if ( talents.avenging_wrath_might->ok() && buffs.avenging_wrath->up() )
-    h += talents.avenging_wrath_might->effectN( 1 ).percent();
-
   return h;
 }
 
@@ -3119,9 +3125,6 @@ double paladin_t::composite_melee_crit_chance() const
 
   if ( buffs.seraphim->up() )
     h += buffs.seraphim->data().effectN( 1 ).percent();
-
-  if ( talents.avenging_wrath_might->ok() && buffs.avenging_wrath->up() )
-    h += talents.avenging_wrath_might->effectN( 1 ).percent();
 
   return h;
 }

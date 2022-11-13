@@ -1,5 +1,5 @@
-// Spell text, wow build 10.0.0.46455
-static const std::array<spelltext_data_t, 18963> __spelltext_data { {
+// Spell text, wow build 10.0.0.46597
+static const std::array<spelltext_data_t, 18966> __spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -17784,6 +17784,7 @@ static const std::array<spelltext_data_t, 18963> __spelltext_data { {
   { 386941, "Bonedust Brew's Shadow damage or healing is increased by ${$s1}.1%, and when Bonedust Brew deals Shadow damage or healing, its cooldown is reduced by ${$s2/-1000}.1 sec.", 0, 0 },
   { 386949, "Your abilities have a low chance to cast Bonedust Brew at your target's location.", 0, 0 },
   { 386951, "Applies Corruption, Agony, and Unstable Affliction to your target.", 0, 0 },
+  { 386959, "$@spelldesc386965", 0, 0 },
   { 386963, "$@spelldesc386965", "Your Blackout Kick and Spinning Crane Kick deal $w1% increased damage as Fire damage, and their damage refreshes the duration of Breath of Fire on the target.", 0 },
   { 386965, "Your Breath of Fire ignites your right leg in flame for $386963d, causing your Blackout Kick and Spinning Crane Kick to deal $s1% additional damage as Fire damage and refresh the duration of your Breath of Fire on the target.", 0, 0 },
   { 386967, "Increases your Mastery by $s1%.", 0, 0 },
@@ -18485,7 +18486,7 @@ static const std::array<spelltext_data_t, 18963> __spelltext_data { {
   { 391137, "Your Mind Blast and Mind Spike critical strikes generate an additional ${$s2/100} Insanity.", 0, 0 },
   { 391138, "$@spelldesc391137", 0, 0 },
   { 391140, "$@spelldesc384668", "Bleeding for $w1 damage every $t sec.", 0 },
-  { 391142, "Hammer of Wrath and Judgment deal $s2% additional damage and extend the duration of $?s384092[Crusade]?s394088[Avenging Crusader]?s385438[Sentinel][Avenging Wrath] by $s1 sec.", 0, 0 },
+  { 391142, "Hammer of Wrath and Judgment deal $s2% additional damage and extend the duration of $?s384092[Crusade]?s394088[Avenging Crusader]?s385438[Sentinel][Avenging Wrath] by ${$s4/1000}.1 sec.", 0, 0 },
   { 391154, "When Prayer of Mending jumps to a target affected by your Renew, that target is instantly healed for $196781s1.", 0, 0 },
   { 391156, "$@spelldesc391154", 0, 0 },
   { 391159, "$@spelldesc389729", "Deals $w1 Physical damage back to attackers.", 0 },
@@ -18741,6 +18742,8 @@ static const std::array<spelltext_data_t, 18963> __spelltext_data { {
   { 393030, "Your chance to block spells is increased by $s1%.", 0, 0 },
   { 393038, "Parry increased by $s1%.", "Parry increased by $s1%.", 0 },
   { 393039, "$@spelldesc235053", "Damage of next Crackling Jade Lightning increased by $s1%.\r\nEnergy cost of next Crackling Jade Lightning reduced by $s2%.", 0 },
+  { 393048, "$@spelldesc337334", "Chance to be critically hit by the Monk increased by $w1%.", 0 },
+  { 393050, "$@spelldesc392991", "Unable to gain Skyreach from attacking this target for $d.", 0 },
   { 393054, "$@spelldesc210152", 0, 0 },
   { 393055, "$@spelldesc210152", 0, 0 },
   { 393056, "$@spelldesc392979", 0, 0 },
@@ -18965,11 +18968,11 @@ static const std::array<spelltext_data_t, 18963> __spelltext_data { {
   { 397708, "Execute no longer has a cooldown and if your foe survives, $163201s2% of the Rage spent is refunded.", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.0.0.46455
+// spelltext hotfix entries, wow build 10.0.0.46597
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 10.0.0.46455
+// Spell description variables, wow build 10.0.0.46597
 static const std::array<spelldesc_vars_data_t, 361> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$pvp=$?a134735[${1.1}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<pvp>*$<weal>}\r\n" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -19334,7 +19337,7 @@ static const std::array<spelldesc_vars_data_t, 361> __spelldesc_vars_data { {
   {  394354, "$damage=${($AP*1.0)*(1+$@versadmg)}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.0.0.46455
+// spelldesc_vars hotfix entries, wow build 10.0.0.46597
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 

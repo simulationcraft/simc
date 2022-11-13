@@ -7,4 +7,3 @@ simc %ptr% spell_query="spell.class=%%i">spelldatadump/%%i_ptr.txt
 )
 
 simc %ptr% spell_query="spell">spelldatadump/allspells_ptr.txt
-pause

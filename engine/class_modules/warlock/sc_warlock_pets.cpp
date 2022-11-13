@@ -44,8 +44,6 @@ void warlock_pet_t::create_buffs()
   buffs.grimoire_of_service = make_buff( this, "grimoire_of_service", find_spell( 216187 ) )
                                   ->set_default_value( find_spell( 216187 )->effectN( 1 ).percent() );
 
-  buffs.grim_inquisitors_dread_calling = make_buff( this, "grim_inquisitors_dread_calling", find_spell( 337142 ) );
-
   buffs.demonic_consumption = make_buff( this, "demonic_consumption", find_spell( 267972 ) )
                                   ->set_default_value( find_spell( 267972 )->effectN( 1 ).percent() )
                                   ->set_max_stack( 1 );
@@ -169,12 +167,6 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
   double m = pet_t::composite_player_multiplier( school );
 
   m *= 1.0 + buffs.grimoire_of_service->check_value();
-
-  if ( pet_type == PET_FELGUARD && o()->conduit.fel_commando->ok() )
-    m *= 1.0 + o()->conduit.fel_commando.percent();
-
-  if ( pet_type == PET_DREADSTALKER && o()->legendary.grim_inquisitors_dread_calling->ok() )
-    m *= 1.0 + buffs.grim_inquisitors_dread_calling->check_value();
 
   if ( pet_type == PET_DREADSTALKER && o()->talents.dread_calling.ok() )
     m *= 1.0 + buffs.dread_calling->check_value();
@@ -677,6 +669,9 @@ struct felstorm_t : public warlock_pet_melee_attack_t
     if ( main_pet && p->o()->talents.fel_sunder.ok() )
       debug_cast<felstorm_tick_t*>( tick_action )->applies_fel_sunder = true;
 
+    if ( !main_pet )
+      cooldown->duration = 45_s; // 2022-11-11: GFG does not appear to cast a second Felstorm even if the cooldown would come up, so we will pad this value to be longer than the possible duration.
+
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
@@ -1071,7 +1066,7 @@ action_t* grimoire_felguard_pet_t::create_action( util::string_view name, util::
   if ( name == "legion_strike" )
     return new legion_strike_t( this, options_str );
   if ( name == "felstorm" )
-    return new felstorm_t( this, options_str );
+    return new felstorm_t( this, options_str, false );
 
   return warlock_pet_t::create_action( name, options_str );
 }

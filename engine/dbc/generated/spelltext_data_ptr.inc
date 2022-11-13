@@ -1,5 +1,5 @@
-// Spell text, wow build 10.0.2.46479
-static const std::array<spelltext_data_t, 19172> __ptr_spelltext_data { {
+// Spell text, wow build 10.0.2.46619
+static const std::array<spelltext_data_t, 19175> __ptr_spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -3738,7 +3738,7 @@ static const std::array<spelltext_data_t, 19172> __ptr_spelltext_data { {
   { 119582, "Clears $s1% of your damage delayed with Stagger.$?s322510[\r\n\r\nIncreases the absorption of your next Celestial Brew by up to $322510s1%, based on your current level of Stagger][]$?s383700[\r\n\r\nInstantly heals you for $383700s1% of the damage cleared.][]", 0, 0 },
   { 119607, "$@spelldesc115151", 0, 0 },
   { 119611, "$@spelldesc115151", "Restores $w1 health every $t1 sec.", 0 },
-  { 119898, "Commands your demon to perform its most powerful ability. This spell will transform based on your active pet. \r\n$?s30146[\r\nFelguard: $@spellname89766][]\r\nFelhunter: $@spellname19505\r\nVoidwalker: $@spellname17767\r\nIncubus/Succubus: $@spellname6358\r\nImp: $@spellname89808", 0, 0 },
+  { 119898, "Commands your demon to perform its most powerful ability. This spell will transform based on your active pet. \r\n$?s30146[\r\nFelguard: $@spellname89766][]\r\nFelhunter: $@spellname19647\r\nVoidwalker: $@spellname17767\r\nIncubus/Succubus: $@spellname6358\r\nImp: $@spellname89808", 0, 0 },
   { 119952, "$@spelldesc114158", 0, 0 },
   { 120032, "Strength or Agility increased by $s1.", "$?$w1!=0[Agility increased by $w1.  ][]$?$w2!=0[Strength increased by $w2.][]", 0 },
   { 120086, "$@spelldesc113656", "Stunned.", 0 },
@@ -4323,8 +4323,8 @@ static const std::array<spelltext_data_t, 19172> __ptr_spelltext_data { {
   { 135029, "Channels a jet of icy water at the target, $?s198146[slowing the target by $m2% and ][]dealing $o1 Frost damage to the target over $d.\r\n\r\nWater Jet automatically activates Brain Freeze.", "Taking $w1 damage every $t1 sec.", 0 },
   { 135081, "Restores $s1 health. Only usable in a Brawl arena.", 0, 0 },
   { 135082, "Throw the favor at a Brawl combatant, raising their primary stats slightly. Stacks up to 100 times.", "Strength, Agility, and Intellect increased by $s1.", 0 },
-  { 135286, "$@spelldesc135288", "Your next Maul deals $s1% more damage and reduces the target's damage to you by $135601s1%~ for $135601d.", 0 },
-  { 135288, "Autoattacks have a $s1% chance to empower your next Maul, stacking up to $135286u times.\r\n\r\nEmpowered Maul deals $135286s1% increased damage and reduces the target's damage to you by $135601s2% for $135601d.", 0, 0 },
+  { 135286, "$@spelldesc135288", "Your next Maul deals $s1% more damage, costs $s3% less rage, and reduces the target's damage to you by $135601s1%~ for $135601d.", 0 },
+  { 135288, "Autoattacks have a $s1% chance to empower your next Maul, stacking up to $135286u times.\r\n\r\nEmpowered Maul deals $135286s1% increased damage, costs $135286s3% less rage, and reduces the target's damage to you by $135601s2% for $135601d.", 0, 0 },
   { 135299, "Place a tar trap that creates a slick around itself for $13810d when the first enemy approaches it. All enemies within $13810s1 yards will be slowed by $135299s1% while in the area of effect. Trap will exist for $13809d.", "Movement speed slowed by $s1%.", 0 },
   { 135376, "Throw the bottle.", "They earned it. What a jerk.", 0 },
   { 135445, "Throw the rotten apple.", 0, 0 },
@@ -6531,7 +6531,7 @@ static const std::array<spelltext_data_t, 19172> __ptr_spelltext_data { {
   { 200806, "Twist your blades into the target's wounds, causing your Bleed effects on them to bleed out $s1% faster.", 0, 0 },
   { 200818, "Moonfire deals $s2% increased damage and also hits another nearby enemy within $279620s1 yds of the target.", 0, 0 },
   { 200845, "Rampage and Execute have a chance to activate Berserking, increasing your attack speed and critical strike chance by $200953s1% every $200951t1 sec for $200951d.", 0, 0 },
-  { 200851, "Unleashes the rage of Ursoc for $d, preventing $s4% of all damage you take and reflecting $219432s1 Nature damage back at your attackers.", "Prevents $s4% of all damage you take and reflects $219432s1 Nature damage back at your attackers.", 0 },
+  { 200851, "Unleashes the rage of Ursoc for $d, preventing $s3% of all damage you take, increasing your damage done by $s5%, granting you $s3% leech, and reflecting $219432s1 Nature damage back at your attackers.", "Prevents $s3% of all damage you take, increases damage done by $s5%, grants $s3% leech, and reflects $219432s1 Nature damage back at your attackers.", 0 },
   { 200854, "Mangle has a $h% chance to reduce the Rage cost of your next Ironfur by $s1%.", 0, 0 },
   { 200951, "$@spelldesc200845", 0, 0 },
   { 200953, "$@spelldesc200845", "Attack speed and critical strike chance increased by $s1%.", 0 },
@@ -6649,7 +6649,7 @@ static const std::array<spelltext_data_t, 19172> __ptr_spelltext_data { {
   { 202168, "Instantly attack the target, causing $s1 damage and healing you for $202166s1% of your maximum health.\r\n\r\nKilling an enemy that yields experience or honor resets the cooldown of Impending Victory and makes it cost no Rage.", 0, 0 },
   { 202224, "Charge also increases the healing from your next Bloodthirst by $202225s1%.", 0, 0 },
   { 202225, "$@spelldesc202224", "Healing of your next Bloodthirst increased by $s1%.", 0 },
-  { 202316, "Whirlwind also Slams your primary target.", 0, 0 },
+  { 202316, "If Whirlwind hits $s1 or more targets it also Slams your primary target.", 0, 0 },
   { 202342, "Moonfire, Sunfire, and Stellar Flare damage over time has a chance to call down a falling star, dealing $202497s1 Astral damage and generating ${$202497m2/10} Astral Power.", 0, 0 },
   { 202345, "Starsurge and Starfall grant you $s1% Haste for $279709d.\r\n\r\nStacks up to $279709u times. Gaining a stack does not refresh the duration.", 0, 0 },
   { 202347, "Burns the target for $s1 Astral damage, and then an additional $o2 damage over $d.\r\n\r\n|cFFFFFFFFGenerates ${$m3/10} Astral Power.|r", "Suffering $w2 Astral damage every $t2 sec.", 0 },
@@ -16248,10 +16248,10 @@ static const std::array<spelltext_data_t, 19172> __ptr_spelltext_data { {
   { 372046, "Throw to spread rot and decay, dealing ${$s1*($371991d/$371993t)} Nature damage to enemies over $371991d.|n|n$@spelldesc396981", 0, 0 },
   { 372048, "Let out a bone-shaking roar at enemies in a cone in front of you, increasing the duration of crowd controls that affect them by $s2% in the next $d.$?s374346[\r\n\r\nRemoves $s1 Enrage effect from each enemy. Oppressing Roar's cooldown is reduced by $374346s1 sec for each Enrage dispelled.][]", "The duration of incoming crowd control effects are increased by $s2%.", "Black" },
   { 372091, "Unlocks this customization option if used near the Rostrum of Transformation.", 0, 0 },
-  { 372119, "When you take non-periodic damage, you have a chance equal to your critical strike to cause your next Regrowth to be instant, free, and castable in all forms for $372152d.\r\n\r\nThis effect cannot occur more than once every $372523d.", 0, 0 },
+  { 372119, "When you take non-periodic damage, you have a chance equal to your critical strike to cause your next Regrowth to heal for an additional $372152s4%, and to be instant, free, and castable in all forms for $372152d. \r\n\r\nThis effect cannot occur more than once every $372523d.", 0, 0 },
   { 372120, "Increases duration of Well Fed bonuses from Dragon Isles meals by $M1% and they now persist through death.", "Duration of Dragon Isles meals increased by $w%. Well Fed persists through death.", 0 },
   { 372134, "$@spelldesc372133", "$pri increased by $w1.", 0 },
-  { 372152, "Your next Regrowth is free, instant, and castable in all forms.", "Your next Regrowth is free, instant, and castable in all forms.", 0 },
+  { 372152, "Your next Regrowth heals for an additional $s4% and is free, instant, and castable in all forms.", "Your next Regrowth heals for an additional $s4% and is free, instant, and castable in all forms.", 0 },
   { 372233, "Disintegrate deals $s2% more damage and generates ${$372234s1*4} mana over its duration.", 0, 0 },
   { 372234, "$@spelldesc372233", 0, 0 },
   { 372245, "$@spelldesc371032", "Stunned.", "Black" },
@@ -16831,6 +16831,7 @@ static const std::array<spelltext_data_t, 19172> __ptr_spelltext_data { {
   { 381689, "While Reincarnation is off cooldown, your maximum health is increased by $381687s1%. While you are at full health, Reincarnation cools down $381684s1% faster.\r\n\r\n", 0, 0 },
   { 381698, "Your attacks have a chance to ignite Forgestorm for $381699d, causing your attacks to explode for $s1 Fire damage split between all nearby enemies.\r\n\r\nDamage is increased for each enemy struck, up to $s2 enemies.", 0, 0 },
   { 381699, "$@spelldesc381698", "Your attacks have a very high chance to explode for $w1 Fire damage split between all nearby enemies.", 0 },
+  { 381700, "$@spelldesc381698", 0, 0 },
   { 381705, "Your attacks have a chance to cause flaming tentacles to grow from your body for $381727d. The tentacles lash out, dealing $s1 Fire damage every $s3 sec split between enemies in front of you.\r\n\r\nDamage is increased for each enemy struck, up to $s2 enemies.", 0, 0 },
   { 381706, "Blizzard has an $h% chance to increase the damage of your next Cone of Cold by $s2%, stacking up to $381522u times.", 0, 0 },
   { 381707, "Increases your maximum Maelstrom by $s1.", 0, 0 },
@@ -16900,6 +16901,9 @@ static const std::array<spelltext_data_t, 19172> __ptr_spelltext_data { {
   { 381955, "$@spelldesc381766", "$?e0[Haste increased by $w1.][Through a crack in the chest you glimpse a bronze hourglass, which would increase your Haste when looted.]", 0 },
   { 381956, "$@spelldesc381766", "$?e0[Mastery increased by $w1.][Through a crack in the chest you glimpse an emerald bell, which would increase your Mastery when looted.]", 0 },
   { 381957, "$@spelldesc381766", "$?e0[Versatility increased by $w1.][Through a crack in the chest you glimpse an azure rod, which would increase your Versatility when looted.]", 0 },
+  { 381965, "$@spelldesc381965", "Attack speed increased by $w1%.", 0 },
+  { 381966, "$@spelldesc377456", "Movement speed increased by $w1%. Auto attacks deal $w2 bonus Nature damage to your current target and the nearest enemy.", 0 },
+  { 381967, "$@spelldesc377456", 0, 0 },
   { 381982, "Ambush and Dispatch have a $s1% chance to grant you a Roll the Bones combat enhancement buff you do not already have for $s2 sec.\r\n\r\nDuration and chance doubled while Stealthed.", 0, 0 },
   { 381985, "Blade Flurry damage is increased by an additional $s1% per missing target below its maximum.", 0, 0 },
   { 381988, "Slice and Dice grants an additional $s1% attack speed per combo point spent.", 0, 0 },
@@ -17275,7 +17279,7 @@ static const std::array<spelltext_data_t, 19172> __ptr_spelltext_data { {
   { 383783, "$@spelldesc383782", "Arcane Blast damage increased by $w1%.", 0 },
   { 383785, "Each time you dodge or an enemy misses you, your next Tiger Palm or Spinning Crane Kick deals $383800s1% increased damage.", "Each time you dodge or an enemy misses you,your next Tiger Palm or Spinning Crane Kick deals $383800s1% increased damage.", 0 },
   { 383798, "Your helpful spells and abilities have a chance to pep up you and your Coached ally, granting you both $s2 Mastery for $383803d. \r\n", 0, 0 },
-  { 383799, "@spelldesc386578", "Mastery increased by $w3.", 0 },
+  { 383799, "$@spelldesc386578", "Mastery increased by $w1.", 0 },
   { 383800, 0, "Your next Tiger Palm or Spinning Crane Kick deals $w1% increased damage.", 0 },
   { 383803, 0, "Mastery increased by $s1.", 0 },
   { 383810, "Each consecutive critical strike you deal increases critical strike damage you deal by $s1%, up to ${ $s1*$383811u}% for $383811d.", 0, 0 },
@@ -17780,7 +17784,7 @@ static const std::array<spelltext_data_t, 19172> __ptr_spelltext_data { {
   { 386976, "Shadow Bolt and Drain Soul deal $s1% increased damage, up to ${$s1*$s2}%, per damage over time effect you have active on the target.", 0, 0 },
   { 386986, "Corruption damage is increased by $s1%, and each time it deals damage any of your Curses active on the target are extended by ${$s2/1000}.1 sec.", 0, 0 },
   { 386997, "Wither away all life force of your current target and up to $s3 additional targets nearby, causing your primary target to suffer ${$o2*(1+$m4/10)} Nature damage and secondary targets to suffer $o2 Nature damage over $d.\r\n\r\nFor the next $d, casting Drain Life will cause you to also Drain Life from any enemy affected by your Soul Rot, and Drain Life will not consume any mana.", "Suffering $s2 Nature damage every $t2 sec.", "Shadowlands" },
-  { 387016, "Each target affected by Soul Rot increases your haste and critical strike chance by ${$387018s3}% for $387018d.", 0, 0 },
+  { 387016, "Each target affected by Soul Rot increases your haste and critical strike chance by ${$s1/10}.1% for $387018d.", 0, 0 },
   { 387018, "$@spelldesc387016", "Haste increased by ${$W1}.1%.\r\nCritical strike chance increased by ${$W2}.1%.", 0 },
   { 387028, "$@spelldesc384649", "Heals yourself and deals Fire damage to nearby enemies upon expiration.", 0 },
   { 387035, "Zen Meditation has $s2% reduced cooldown and is no longer cancelled when you move or when you are hit by melee attacks.", 0, 0 },
@@ -18055,8 +18059,10 @@ static const std::array<spelltext_data_t, 19172> __ptr_spelltext_data { {
   { 388551, "Vivify critical strikes and Rising Sun Kicks reduce the remaining cooldown on $?s388615[Restoral][Revival] by ${$s2/1000}.1 sec, and $?s388615[Restoral][Revival] heals targets for ${$s1}.1% of $?s388615[Restoral's][Revival's] heal over $388555d.", 0, 0 },
   { 388555, "$@spelldesc388551", "Restores $w1 health every $t1 sec.", 0 },
   { 388559, "Summon an Unstable Arcane Rune at your location for $d. While standing within, you or your party members gain power but suffer its corruption, increasing primary stat by $391290s1 and decreasing Critical Strike by $391290s2.", 0, 0 },
+  { 388560, "@spelldesc388559", "$pri increased by $w1.", 0 },
   { 388564, "Zen Pulse's damage and healing is increased by $388566s1% each time Soothing Mist heals, up to $388566u times. \r\n\r\nWhen your Soothing Mist channel ends, this effect is canceled.", 0, 0 },
   { 388566, "$@spelldesc388564", "Damage and healing of Zen Pulse increased by $w1%.", 0 },
+  { 388583, "$@spelldesc388559", "$pri increased by $w1.\r\nCritical Strike reduced by $w2.", 0 },
   { 388593, "Allies targeted by Soothing Mist receive $s1% more healing from your Enveloping Mist and Renewing Mist effects.", 0, 0 },
   { 388603, "Your ranged spells and abilities have a chance to unleash a volley of pure decay, dealing up to ${$s2*$s1} Nature damage split between enemies hit and decreasing their movement speed by up to ${$393935s3*$s1}% for $393935d.", 0, 0 },
   { 388604, "Zen Pulse triggers a second time at $s1% effectiveness if cast on targets with both Renewing Mist and Enveloping Mist.", 0, 0 },
@@ -18178,7 +18184,6 @@ static const std::array<spelltext_data_t, 19172> __ptr_spelltext_data { {
   { 389577, "When a hit deals more than $m2% of your maximum health, reduce all damage you take by $s1% for $390239d.\r\n\r\nThis effect cannot occur more than once every $m3  seconds.", "When a hit deals more than 20% of your maximum health, reduce all damage you take by $w1% for $390239d.", 0 },
   { 389578, "Your attacks have a chance to resonate, dealing $391400s1 Nature damage to enemies within $391400a1 yds.", 0, 0 },
   { 389579, "When your healing spells heal an ally whose health is below $s3% maximum health, you gain an additional $s1% healing for the next $390105d.", 0, 0 },
-  { 389581, "@spelldiesc386578", "You are coaching a player. Your helpful spells and abilities have a chance to increase their Mastery as well as your own by $w1 for $383799d1", 0 },
   { 389590, "Reduces the chance you will be critically struck by $s1%. All damage your primary demon takes is reduced by $s3%.", 0, 0 },
   { 389603, "Rampage has a $s1% chance to grant Recklessness for ${$s2/1000} sec.", 0, 0 },
   { 389609, "Using Demonic Circle: Teleport or your Demonic Gateway reduces all damage you take by $389614s1% for $389614d.", 0, 0 },
@@ -18431,7 +18436,6 @@ static const std::array<spelltext_data_t, 19172> __ptr_spelltext_data { {
   { 390947, "Circle of Healing heals $s1 additional ally and its cooldown is reduced by ${$s2/-1000} sec.", 0, 0 },
   { 390951, "Temporarily imbues shoulders with a fiery illusion for $ecd.", 0, 0 },
   { 390954, "Increases the critical strike chance of Flash Heal and Heal by $s1%.", 0, 0 },
-  { 390961, "$@spelldesc390990", 0, 0 },
   { 390964, "$@spelldesc120517", 0, 0 },
   { 390967, "Increases the healing done by your Mastery: Echo of Light by $s1%.", 0, 0 },
   { 390971, "$@spelldesc120517", 0, 0 },
@@ -18442,12 +18446,10 @@ static const std::array<spelltext_data_t, 19172> __ptr_spelltext_data { {
   { 390980, "Critical heals from Flash Heal and Heal increase your healing done by your next Holy Word spell by $390989s1%, stacking up to $390989U times.", 0, 0 },
   { 390981, "$@spelldesc110744", 0, 0 },
   { 390989, "$@spelldesc390980", "The healing of your next Holy Word spell is increased by $w1%.", 0 },
-  { 390990, "Causes the earth at the target location to tremble and break, dealing Nature damage every $t1 sec to enemies in $r yard radius. Lasts $d.\r\n\r\nUsable in the Obsidian Citadel and adjacent lava fields.", "Suffering Nature damage every $t2 sec.", 0 },
   { 390992, "Flash Heal reduces the cast time of your next Heal within $390993d by $390993s2% and increases its healing done by $390993s1%.\r\n\r\nStacks up to $390993U times.", 0, 0 },
   { 390993, "$@spelldesc390992", "The cast time of your next Heal is reduced by $w2% and its healing is increased by $w1%.", 0 },
   { 390994, "Circle of Healing reduces the cooldown of Holy Word: Sanctify, Prayer of Mending reduces the cooldown of Holy Word: Serenity, and Holy Fire reduces the cooldown of Holy Word: Chastise by $s1 sec.", 0, 0 },
   { 390996, "Your $?a137033[Mind Blast and Mind Spike]?a137031[Smite and Holy Fire][Smite and Penance] casts reduce the cooldown of Mindgames by ${$s1/2}.1 sec.", 0, 0 },
-  { 390997, "Causes the earth at the target location to tremble and break, dealing Nature damage every $t1 sec to enemies in $a1 yard radius. Lasts $d.", "Suffering Nature damage every $t2 sec.", 0 },
   { 391023, "Summons an arcana orb outside of the Cobalt Assembly.", "Summons an arcana orb outside of the Cobalt Assembly.", 0 },
   { 391037, "Your combo point generating abilities have a $s1% chance to generate $s2 extra combo $Lpoint:points;.", 0, 0 },
   { 391045, "Rip damage increased by $s1%.", 0, 0 },
@@ -19172,20 +19174,33 @@ static const std::array<spelltext_data_t, 19172> __ptr_spelltext_data { {
   { 397621, "$@spelldesc377456", "Movement speed increased by $w1%. Auto attacks deal $w2 bonus Nature damage to your current target and the nearest enemy.", 0 },
   { 397708, "Execute no longer has a cooldown and if your foe survives, $163201s2% of the Rage spent is refunded.", 0, 0 },
   { 397767, "Add a socket to a Dragonflight Season $s2 item that does not already have one. Can be used on Helms, Necks, Bracers, Belts, or Rings.", 0, 0 },
+  { 398396, "$@spelldesc386578", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.0.2.46479
-static constexpr std::array<hotfix::client_hotfix_entry_t, 7> __ptr_spelltext_hotfix_data { {
+// spelltext hotfix entries, wow build 10.0.2.46619
+static constexpr std::array<hotfix::client_hotfix_entry_t, 19> __ptr_spelltext_hotfix_data { {
+  {  119898,  0, "Commands your demon to perform its most powerful ability. This spell will transform based on your active pet. \r\n$?s30146[\r\nFelguard: $@spellname89766][]\r\nFelhunter: $@spellname19505\r\nVoidwalker: $@spellname17767\r\nIncubus/Succubus: $@spellname6358\r\nImp: $@spellname89808", "Commands your demon to perform its most powerful ability. This spell will transform based on your active pet. \r\n$?s30146[\r\nFelguard: $@spellname89766][]\r\nFelhunter: $@spellname19647\r\nVoidwalker: $@spellname17767\r\nIncubus/Succubus: $@spellname6358\r\nImp: $@spellname89808" },
+  {  135286,  1, "Your next Maul deals $s1% more damage and reduces the target's damage to you by $135601s1%~ for $135601d.", "Your next Maul deals $s1% more damage, costs $s3% less rage, and reduces the target's damage to you by $135601s1%~ for $135601d." },
+  {  135288,  0, "Autoattacks have a $s1% chance to empower your next Maul, stacking up to $135286u times.\r\n\r\nEmpowered Maul deals $135286s1% increased damage and reduces the target's damage to you by $135601s2% for $135601d.", "Autoattacks have a $s1% chance to empower your next Maul, stacking up to $135286u times.\r\n\r\nEmpowered Maul deals $135286s1% increased damage, costs $135286s3% less rage, and reduces the target's damage to you by $135601s2% for $135601d." },
+  {  200851,  0, "Unleashes the rage of Ursoc for $d, preventing $s4% of all damage you take and reflecting $219432s1 Nature damage back at your attackers.", "Unleashes the rage of Ursoc for $d, preventing $s3% of all damage you take, increasing your damage done by $s5%, granting you $s3% leech, and reflecting $219432s1 Nature damage back at your attackers." },
+  {  200851,  1, "Prevents $s4% of all damage you take and reflects $219432s1 Nature damage back at your attackers.", "Prevents $s3% of all damage you take, increases damage done by $s5%, grants $s3% leech, and reflects $219432s1 Nature damage back at your attackers." },
+  {  202316,  0, "Whirlwind also Slams your primary target.", "If Whirlwind hits $s1 or more targets it also Slams your primary target." },
+  {  372119,  0, "When you take non-periodic damage, you have a chance equal to your critical strike to cause your next Regrowth to be instant, free, and castable in all forms for $372152d.\r\n\r\nThis effect cannot occur more than once every $372523d.", "When you take non-periodic damage, you have a chance equal to your critical strike to cause your next Regrowth to heal for an additional $372152s4%, and to be instant, free, and castable in all forms for $372152d. \r\n\r\nThis effect cannot occur more than once every $372523d." },
+  {  372152,  0, "Your next Regrowth is free, instant, and castable in all forms.", "Your next Regrowth heals for an additional $s4% and is free, instant, and castable in all forms." },
+  {  372152,  1, "Your next Regrowth is free, instant, and castable in all forms.", "Your next Regrowth heals for an additional $s4% and is free, instant, and castable in all forms." },
   {  373180,  0, "When Atonement has healed a total of $s1 times, your next Penance is free and fires $s2 additional bolts.", "Every $s1 casts of Smite, your next Penance is free and fires an additional $s2 bolts." },
   {  377453,  1, "Deal $382092w1 Nature damage per second to all enemies within $s5 yards, intensifying by $s4% each second.", "Deal $w1 Nature damage per second to all enemies within $s5 yards, intensifying by $s4% each second." },
   {  383200,  0, "Every $q seconds you spend moving increases your intellect by $383201s1, stacking up to 5 times. Casting a spell will consume all stacks of Intellect.", "Every $q seconds you spend moving increases your Intellect by $s2, stacking up to 5 times. Casting a spell will consume all stacks of Intellect." },
+  {  383799,  0, "@spelldesc386578", "$@spelldesc386578" },
+  {  383799,  1, "Mastery increased by $w3.", "Mastery increased by $w1." },
+  {  387016,  0, "Each target affected by Soul Rot increases your haste and critical strike chance by ${$387018s3}% for $387018d.", "Each target affected by Soul Rot increases your haste and critical strike chance by ${$s1/10}.1% for $387018d." },
   {  388064,  1, "Mana costs reduced by $s1.", "Mana costs reduced by $w1." },
   {  388779,  0, "Your abilities reset Faeline Stomp $s2% more often. While within Faeline Stomp, your Tiger Palms strike $s3 targets and your Spinning Crane Kick heals $s4 nearby allies for $s1% of the damage done.", "Your abilities reset Faeline Stomp $s2% more often. While within Faeline Stomp, your Tiger Palms strike twice and your Spinning Crane Kick heals $s4 nearby allies for $s1% of the damage done." },
   {  390643,  0, "Perform the summoning ritual and commune with one of the Primal Turtles to gain its blessing.\r\n\r\nThe ritual site can be found north of Uktulut Pier in The Waking Shores, near the remains of a dragon.", "Perform the summoning ritual and commune with one of the Primal Turtles to gain its blessing.\r\n\r\nThe ritual site can be found south of Uktulut Pier in The Waking Shores, near the remains of a dragon." },
   {  393641,  0, "Efflorescence critical heals increase the healing of your next Wild Growth by $394565s1%, stacking up to 5 times. Lifebloom critical heals reduces the cooldown of Nature's Swiftness by $s1.", "Efflorescence critical heals increase the healing of your next Wild Growth by $394565s1%, stacking up to 5 times. Lifebloom critical heals reduces the cooldown of Nature's Swiftness by $s1 sec." },
 } };
 
-// Spell description variables, wow build 10.0.2.46479
+// Spell description variables, wow build 10.0.2.46619
 static const std::array<spelldesc_vars_data_t, 365> __ptr_spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$pvp=$?a134735[${1.1}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<pvp>*$<weal>}\r\n" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -19260,7 +19275,7 @@ static const std::array<spelldesc_vars_data_t, 365> __ptr_spelldesc_vars_data { 
   {  100784, "$CAP=$?$OWB==0[${$AP*0.98}][${($AP+$OAP)*2/3}]--2H, DW" },
   {  101546, "$CAP=$?$OWB==0[${$AP*0.98}][${($AP+$OAP)*2/3}]--2H, DW" },
   {  107428, "$CAP=$?$OWB==0[${$AP*0.98}][${($AP+$OAP)*2/3}]--2H, DW" },
-  {  108416, "$points=${$SP*5}" },
+  {  108416, "$points=${$SP*2.5}" },
   {  113656, "$stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]\r\n$dwm=$?a108561|a115697[${1}][${0.857143}]\r\n$offm=$?a108561|a115697[${0}][${1}]\r\n\r\n$offlow=$?s121278[${$mwb/2/$mws}][${$owb/2/$ows}]\r\n$offhigh=$?s121278[${$MWB/2/$mws}][${$OWB/2/$ows}]\r\n\r\n$low=${$<stnc>*($<dwm>*(($mwb)/($MWS)+$<offm>*$<offlow>)+$AP/3.5-1)}\r\n$high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}\r\n" },
   {  114014, "$CAP=$?$OWB==0[${$AP*0.98}][${($AP+$OAP)*2/3}]--2H, DW" },
   {  115057, "$stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]\r\n$dwm=$?a108561|a115697[${1}][${0.857143}]\r\n$offm=$?a108561|a115697[${0}][${1}]\r\n\r\n$offlow=$?s121278[${$mwb/2/$mws}][${$owb/2/$ows}]\r\n$offhigh=$?s121278[${$MWB/2/$mws}][${$OWB/2/$ows}]\r\n\r\n$low=${$<stnc>*($<dwm>*(($mwb)/($MWS)+$<offm>*$<offlow>)+$AP/3.5-1)}\r\n$high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}\r\n" },
@@ -19554,7 +19569,8 @@ static const std::array<spelldesc_vars_data_t, 365> __ptr_spelldesc_vars_data { 
   {  394354, "$damage=${($AP*1.0)*(1+$@versadmg)}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.0.2.46479
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
+// spelldesc_vars hotfix entries, wow build 10.0.2.46619
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __ptr_spelldesc_vars_hotfix_data { {
+  {  108416,  0, "$points=${$SP*5}", "$points=${$SP*2.5}" },
 } };
 

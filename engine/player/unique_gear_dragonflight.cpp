@@ -70,11 +70,11 @@ void phial_of_charged_isolation( special_effect_t& effect )
 
     auto stat_buff =
         make_buff<stat_buff_t>( effect.player, "phial_of_charged_isolation_stats", effect.player->find_spell( 371387 ) )
-            ->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ), amount );
+            ->add_stat_from_effect( 1, amount );
 
     auto linger_buff =
         make_buff<stat_buff_t>( effect.player, "phial_of_charged_isolation_linger", effect.player->find_spell( 384713 ) )
-            ->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ), amount * linger_mul );
+            ->add_stat_from_effect( 1, amount * linger_mul );
 
     buff = make_buff( effect.player, effect.name(), effect.driver() )
       ->set_stack_change_callback( [ stat_buff ]( buff_t*, int, int new_ ) {
@@ -245,9 +245,7 @@ void phial_of_static_empowerment( special_effect_t& effect )
   if ( !buff )
   {
     auto primary = make_buff<stat_buff_t>( effect.player, "static_empowerment", effect.player->find_spell( 370772 ) );
-    primary
-        ->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ),
-                    effect.driver()->effectN( 1 ).average( effect.item ) / primary->max_stack() );
+    primary->add_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect.item ) / primary->max_stack() );
 
     buff = make_buff( effect.player, effect.name(), effect.driver() )
       ->set_stack_change_callback( [ primary ]( buff_t*, int, int new_ ) {
@@ -845,6 +843,58 @@ void conjured_chillglobe( special_effect_t& effect )
   effect.execute_action = create_proc_action<conjured_chillglobe_proxy_t>( "conjured_chillglobe", effect );
 }
 
+struct skewering_cold_initializer_t : public item_targetdata_initializer_t
+{
+  skewering_cold_initializer_t() : item_targetdata_initializer_t( 383931 ) {}
+
+  void operator()( actor_target_data_t* td ) const override
+  {
+    if ( !find_effect( td->source ) )
+    {
+      td->debuff.skewering_cold = make_buff( *td, "skewering_cold" )->set_quiet( true );
+      return;
+    }
+
+    assert( !td->debuff.skewering_cold );
+    td->debuff.skewering_cold =
+        make_buff( *td, "skewering_cold", td->source->find_spell( spell_id )->effectN( 1 ).trigger() );
+    td->debuff.skewering_cold->reset();
+  }
+};
+
+void globe_of_jagged_ice( special_effect_t& effect )
+{
+  auto impale = find_special_effect( effect.player, 383931 );
+  new dbc_proc_callback_t( effect.player, *impale );
+
+  effect.player->callbacks.register_callback_execute_function(
+      impale->spell_id, []( const dbc_proc_callback_t* cb, action_t*, action_state_t* s ) {
+        cb->listener->get_target_data( s->target )->debuff.skewering_cold->trigger();
+      } );
+
+  struct breaking_the_ice_t : public generic_aoe_proc_t
+  {
+    breaking_the_ice_t( const special_effect_t& e ) : generic_aoe_proc_t( e, "breaking_the_ice", 388948, true )
+    {
+      // TODO: tooltip displays values based on the damage spell, but the actual value is from the debuff spell
+      base_dd_min = base_dd_max = e.trigger()->effectN( 1 ).average( e.item ) / data().max_stacks();
+    }
+
+    bool target_ready( player_t* t ) override
+    {
+      return generic_aoe_proc_t::target_ready( t ) && player->get_target_data( t )->debuff.skewering_cold->check();
+    }
+
+    double composite_target_multiplier( player_t* t ) const override
+    {
+      return generic_aoe_proc_t::composite_target_multiplier( t ) *
+             player->get_target_data( t )->debuff.skewering_cold->stack();
+    }
+  };
+
+  effect.execute_action = create_proc_action<breaking_the_ice_t>( "breaking_the_ice", *impale );
+}
+
 void irideus_fragment( special_effect_t& effect )
 {
   auto reduce = new special_effect_t( effect.player );
@@ -867,8 +917,7 @@ void irideus_fragment( special_effect_t& effect )
 
   auto buff = create_buff<stat_buff_t>( effect.player, effect.driver() );
   buff->manual_stats_added = false;
-  buff->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ),
-                  effect.driver()->effectN( 1 ).average( effect.item ) )
+  buff->add_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect.item ) )
       ->set_reverse( true )
       ->set_stack_change_callback( [ cb ]( buff_t*, int old_, int new_ ) {
     if ( !old_ )
@@ -1246,6 +1295,71 @@ void umbrelskuls_fractured_heart( special_effect_t& effect )
     auto d = t->find_dot( "crystal_sickness", p );
     if ( d && d->remains() > 0_ms )
       explode->execute();
+  } );
+}
+
+void way_of_controlled_currents( special_effect_t& effect )
+{
+  auto stack =
+      create_buff<buff_t>( effect.player, "way_of_controlled_currents_stack", effect.player->find_spell( 381965 ) )
+          ->set_name_reporting( "Stack" )
+          ->add_invalidate( CACHE_ATTACK_SPEED );
+  stack->set_default_value( stack->data().effectN( 1 ).average( effect.item ) * 0.01 );
+
+  effect.player->buffs.way_of_controlled_currents = stack;
+
+  auto surge =
+      create_buff<buff_t>( effect.player, "way_of_controlled_currents_surge", effect.player->find_spell( 381966 ) )
+          ->set_name_reporting( "Surge" );
+
+  auto lockout =
+      create_buff<buff_t>( effect.player, "way_of_controlled_currents_lockout", effect.player->find_spell( 397621 ) )
+          ->set_quiet( true );
+
+  auto surge_driver = new special_effect_t( effect.player );
+  surge_driver->type = SPECIAL_EFFECT_EQUIP;
+  surge_driver->source = SPECIAL_EFFECT_SOURCE_ITEM;
+  surge_driver->spell_id = surge->data().id();
+  //surge_driver->cooldown_ = surge->data().internal_cooldown();
+
+  auto surge_damage = create_proc_action<generic_proc_t>( "way_of_controlled_currents", *surge_driver,
+                                                          "way_of_controlled_currents", 381967 );
+
+  surge_damage->base_dd_min = surge_damage->base_dd_max = effect.driver()->effectN( 5 ).average( effect.item );
+
+  surge_driver->execute_action = surge_damage;
+
+  auto surge_cb = new dbc_proc_callback_t( effect.player, *surge_driver );
+  surge_cb->initialize();
+  surge_cb->deactivate();
+
+  stack->set_stack_change_callback( [ surge ]( buff_t* b, int, int ) {
+    if ( b->at_max_stacks() )
+      surge->trigger();
+  } );
+
+  surge->set_stack_change_callback( [ stack, lockout, surge_cb ]( buff_t*, int, int new_ ) {
+    if ( new_ )
+    {
+      surge_cb->activate();
+    }
+    else
+    {
+      surge_cb->deactivate();
+      stack->expire();
+      lockout->trigger();
+    }
+  } );
+
+  effect.custom_buff = stack;
+  effect.proc_flags2_ = PF2_CRIT;
+  auto stack_cb = new dbc_proc_callback_t( effect.player, effect );
+
+  lockout->set_stack_change_callback( [ stack_cb ]( buff_t*, int, int new_ ) {
+    if ( new_ )
+      stack_cb->deactivate();
+    else
+      stack_cb->activate();
   } );
 }
 
@@ -1824,14 +1938,52 @@ void alltotem_of_the_master( special_effect_t& effect )
 
   action_t* action = create_proc_action<alltotem_buffs_t>( "alltotem_of_the_master", effect );
 
-  effect.player->register_combat_begin([&effect, action ](player_t*) {
+  effect.player->register_combat_begin( [ &effect, action ]( player_t* ) {
     timespan_t base_period = effect.driver()->internal_cooldown();
-    timespan_t period = base_period + ( effect.player -> sim -> dragonflight_opts.alltotem_of_the_master_period + effect.player -> rng().range( 0_s, 12_s ) / effect.player -> sim -> target_non_sleeping_list.size() );
-    make_repeating_event( effect.player -> sim, period , [ action ]()
-    {
-      action -> execute();
-    } );
+    timespan_t period =
+        base_period + ( effect.player->sim->dragonflight_opts.alltotem_of_the_master_period +
+                        effect.player->rng().range( 0_s, 12_s ) / effect.player->sim->target_non_sleeping_list.size() );
+    make_repeating_event( effect.player->sim, period, [ action ]() { action->execute(); } );
   } );
+}
+
+void tome_of_unstable_power( special_effect_t& effect )
+{
+  auto buff_spell = effect.player->find_spell( 388583 );
+  auto data_spell = effect.player->find_spell( 391290 );
+
+  auto buff = create_buff<stat_buff_t>( effect.player, buff_spell );
+
+  buff->set_duration( effect.driver()->duration() );
+  buff->manual_stats_added = false;
+  buff->add_stat_from_effect( 1, data_spell->effectN( 1 ).average( effect.item ) )
+      ->add_stat_from_effect( 2, data_spell->effectN( 2 ).average( effect.item ) );
+
+  effect.custom_buff = buff;
+}
+
+// Alegethar Puzzle Box
+// 383781 Driver and Buff
+// TODO: Cast time is unhasted
+void alegethar_puzzle_box( special_effect_t& effect )
+{
+  struct solved_the_puzzle_t : public proc_spell_t
+  {
+    buff_t* buff;
+    solved_the_puzzle_t( const special_effect_t& e ) :
+      proc_spell_t( "solved_the_puzzle", e.player, e.player->find_spell( 383781 ), e.item)
+    {
+      background = true;
+      auto buff_spell = e.player -> find_spell( 383781 );
+      buff = create_buff<stat_buff_t>(e.player, buff_spell);
+    }
+
+    void impact( action_state_t* a ) override
+    {
+      buff -> trigger();
+    }
+  };
+  effect.execute_action = create_proc_action<solved_the_puzzle_t>( "solved_the_puzzle", effect );
 }
 
 // Weapons
@@ -1854,6 +2006,57 @@ void fang_adornments( special_effect_t& effect )
   effect.discharge_amount = effect.driver()->effectN( 1 ).average( effect.item );
 
   new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Forgestorm
+// 381698 Buff Driver
+// 381699 Buff and Damage Driver
+// 381700 Damage
+void forgestorm( special_effect_t& effect )
+{
+  struct forgestorm_ignited_t : public proc_spell_t
+  {
+    forgestorm_ignited_t( const special_effect_t& e ) :
+      proc_spell_t( "forgestorm_ignited_damage", e.player, e.player -> find_spell( 381700 ), e.item )
+    {
+      base_dd_min = base_dd_max = e.player -> find_spell( 381698 ) -> effectN( 1 ).average( e.item );
+      background = true;
+      aoe = e.player -> find_spell( 381698 ) -> effectN( 2 ).base_value();
+      reduced_aoe_targets = 1.0;
+    }
+  };
+
+  auto buff = buff_t::find( effect.player, "forgestorm_ignited");
+  if ( !buff )
+  {
+    auto buff_spell = effect.trigger();
+    buff = create_buff<buff_t>(effect.player, buff_spell);
+    auto forgestorm_damage = new special_effect_t( effect.player );
+    forgestorm_damage->name_str = "forgestorm_ignited_damage";
+    forgestorm_damage->item = effect.item;
+    forgestorm_damage->spell_id = buff->data().id();
+    forgestorm_damage->type = SPECIAL_EFFECT_EQUIP;
+    forgestorm_damage->source = SPECIAL_EFFECT_SOURCE_ITEM;
+    forgestorm_damage->execute_action = create_proc_action<forgestorm_ignited_t>( "forgestorm_ignited_damage", *forgestorm_damage );
+    effect.player -> special_effects.push_back( forgestorm_damage );
+    auto damage = new dbc_proc_callback_t( effect.player, *forgestorm_damage );
+    damage->initialize();
+    damage->deactivate();
+ 
+    buff -> set_stack_change_callback( [ damage ]( buff_t* b, int, int new_ )
+    {
+      if ( new_ )
+      {
+        damage -> activate();
+      }
+      else
+      {
+        damage -> deactivate();
+      }
+    } );
+  }
+  effect.custom_buff = buff;
+  auto cb = new dbc_proc_callback_t( effect.player, effect );
 }
 
 // Armor
@@ -2112,6 +2315,7 @@ void register_special_effects()
   register_special_effect( 384532, items::darkmoon_deck_watcher );
   register_special_effect( 383751, items::bottle_of_spiraling_winds );
   register_special_effect( 396391, items::conjured_chillglobe );
+  register_special_effect( 388931, items::globe_of_jagged_ice );
   register_special_effect( 383941, items::irideus_fragment );
   register_special_effect( 383798, items::emerald_coachs_whistle );
   register_special_effect( 381471, items::erupting_spear_fragment );
@@ -2121,6 +2325,7 @@ void register_special_effects()
   register_special_effect( 381768, items::spoils_of_neltharus );
   register_special_effect( 385884, items::timebreaching_talon );
   register_special_effect( 385902, items::umbrelskuls_fractured_heart );
+  register_special_effect( 377456, items::way_of_controlled_currents );
   register_special_effect( 377452, items::whispering_incarnate_icon );
   register_special_effect( 384112, items::the_cartographers_calipers );
   register_special_effect( 377454, items::rumbling_ruby );
@@ -2128,10 +2333,13 @@ void register_special_effects()
   register_special_effect( 377449, items::decoration_of_flame );
   register_special_effect( 377463, items::manic_grieftorch );
   register_special_effect( 377457, items::alltotem_of_the_master );
+  register_special_effect( 388559, items::tome_of_unstable_power );
+  register_special_effect( 383781, items::alegethar_puzzle_box );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );  // bronzed grip wrappings embellishment
   register_special_effect( 377708, items::fang_adornments );         // fang adornments embellishment
+  register_special_effect( 381698, items::forgestorm );              // Forgestorm Weapon
 
   // Armor
   register_special_effect( 387335, items::blue_silken_lining );    // blue silken lining embellishment
@@ -2153,12 +2361,14 @@ void register_special_effects()
   register_special_effect( 383339, DISABLED_EFFECT );  // sagescale sigil (shuffle on jump) NYI
   register_special_effect( 378758, DISABLED_EFFECT );  // toxified embellishment
   register_special_effect( 371700, DISABLED_EFFECT );  // potion absorption inhibitor embellishment
-  register_special_effect( 381766, DISABLED_EFFECT );
+  register_special_effect( 381766, DISABLED_EFFECT );  // spoils of neltharius shuffler
+  register_special_effect( 383931, DISABLED_EFFECT );  // globe of jagged ice counter
 }
 
 void register_target_data_initializers( sim_t& sim )
 {
   sim.register_target_data_initializer( items::awakening_rime_initializer_t() );
+  sim.register_target_data_initializer( items::skewering_cold_initializer_t() );
   sim.register_target_data_initializer( items::spiteful_storm_initializer_t() );
 }
 

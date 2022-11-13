@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.46455 Live (hotfix 2022-11-08/46455)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.46597 Live (hotfix 2022-11-10/46597)
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -12472,7 +12472,6 @@ Effects          :
 Description      : Smite and Holy Nova deal $s1% additional damage to targets affected by your Holy Fire.
 
 Name             : Empyreal Blaze (id=372616) [Spell Family (6)] 
-Hotfixed         : Cooldown (30000 -> 60000)
 Talent Entry     : Holy [tree=spec, row=4, col=6, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy

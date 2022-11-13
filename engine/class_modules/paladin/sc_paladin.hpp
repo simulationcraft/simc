@@ -319,6 +319,7 @@ public:
     const spell_data_t* ashen_hallow_how;
 
     const spell_data_t* seraphim_buff;
+    const spell_data_t* crusade;
   } spells;
 
   // Talents
@@ -775,7 +776,7 @@ struct execution_sentence_debuff_t : public buff_t
     paladin_t* p = debug_cast<paladin_t*>( td->source );
 
     // unclear if this is intended
-    if ( p->talents.executioners_wrath->ok() )
+    if ( p->talents.executioners_wrath->ok() && !( p->bugs ) )
       accum_percent = p->talents.executioners_wrath->effectN( 2 ).percent();
   }
 
@@ -884,7 +885,7 @@ public:
       this -> affected_by.hand_of_light = this -> data().affected_by( p -> mastery.hand_of_light -> effectN( 1 ) );
 
       // Temporary damage modifiers
-      this -> affected_by.crusade = this -> data().affected_by( p -> talents.crusade -> effectN( 1 ) );
+      this -> affected_by.crusade = this -> data().affected_by( p -> spells.crusade -> effectN( 1 ) );
       this -> affected_by.reckoning = this -> data().affected_by( p -> spells.reckoning -> effectN( 1 ) );
       this -> affected_by.final_reckoning = this -> data().affected_by( p -> talents.final_reckoning -> effectN( 3 ) );
       this -> affected_by.ret_t29_2p = this -> data().affected_by( p -> sets -> set( PALADIN_RETRIBUTION, T29, B2 ) -> effectN( 1 ) );

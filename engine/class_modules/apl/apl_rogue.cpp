@@ -521,8 +521,9 @@ void outlaw_df( player_t* p )
   default_->add_action( "variable,name=finish_condition,value=combo_points>=cp_max_spend-buff.broadside.up-(buff.opportunity.up*(talent.quick_draw|talent.fan_the_hammer))|effective_combo_points>=cp_max_spend", "Finish at max possible CP without overflowing bonus combo points, unless for BtE which always should be 5+ CP" );
   default_->add_action( "variable,name=finish_condition,op=reset,if=cooldown.between_the_eyes.ready&effective_combo_points<5", "Always attempt to use BtE at 5+ CP, regardless of CP gen waste" );
   default_->add_action( "variable,name=blade_flurry_sync,value=spell_targets.blade_flurry<2&raid_event.adds.in>20|buff.blade_flurry.remains>1+talent.killing_spree.enabled", "With multiple targets, this variable is checked to decide whether some CDs should be synced with Blade Flurry" );
-  default_->add_action( "call_action_list,name=stealth,if=stealthed.basic|variable.stealthed_cto", "Higher priority Stealth list for Count the Odds or true Stealth/Vanish that will break in a single global" );
+  default_->add_action( "call_action_list,name=stealth,if=stealthed.basic|buff.shadowmeld.up", "Higher priority Stealth list for Count the Odds or true Stealth/Vanish that will break in a single global" );
   default_->add_action( "call_action_list,name=cds" );
+  default_->add_action( "call_action_list,name=stealth,if=variable.stealthed_cto", "Lower priority Stealth list for Shadow Dance" );
   default_->add_action( "run_action_list,name=finish,if=variable.finish_condition" );
   default_->add_action( "call_action_list,name=build" );
   default_->add_action( "arcane_torrent,if=energy.base_deficit>=15+energy.regen" );
@@ -531,7 +532,7 @@ void outlaw_df( player_t* p )
   default_->add_action( "bag_of_tricks" );
 
   build->add_action( "sepsis,target_if=max:target.time_to_die*debuff.between_the_eyes.up,if=target.time_to_die>11&debuff.between_the_eyes.up|fight_remains<11", "Builders" );
-  build->add_action( "ghostly_strike,if=debuff.ghostly_strike.remains<=3" );
+  build->add_action( "ghostly_strike,if=debuff.ghostly_strike.remains<=3&(spell_targets.blade_flurry<=2|buff.dreadblades.up)&target.time_to_die>=5" );
   build->add_action( "echoing_reprimand,if=!buff.dreadblades.up" );
   build->add_action( "ambush,if=talent.hidden_opportunity&buff.audacity.up|talent.find_weakness&debuff.find_weakness.down", "High priority Ambush line to apply Find Weakness or consume HO+Audacity buff before Pistol Shot" );
   build->add_action( "pistol_shot,if=buff.greenskins_wickers.up&(!talent.fan_the_hammer&buff.opportunity.up|buff.greenskins_wickers.remains<1.5)", "Use Greenskins Wickers buff immediately with Opportunity unless running Fan the Hammer" );
@@ -544,19 +545,19 @@ void outlaw_df( player_t* p )
 
   cds->add_action( "blade_flurry,if=spell_targets>=2&!buff.blade_flurry.up", "Cooldowns  Blade Flurry on 2+ enemies" );
   cds->add_action( "roll_the_bones,if=buff.dreadblades.down&(!buff.roll_the_bones.up|variable.rtb_reroll)" );
-  cds->add_action( "keep_it_rolling,if=!variable.rtb_reroll&(buff.broadside.up+buff.true_bearing.up+buff.skull_and_crossbones.up+buff.ruthless_precision.up)>2" );
+  cds->add_action( "keep_it_rolling,if=!variable.rtb_reroll&(buff.broadside.up+buff.true_bearing.up+buff.skull_and_crossbones.up+buff.ruthless_precision.up)>2&(buff.shadow_dance.down|rtb_buffs>=6)" );
   cds->add_action( "vanish,if=(!stealthed.all|talent.count_the_odds&!variable.stealthed_cto)&!buff.take_em_by_surprise.up&((talent.find_weakness&debuff.find_weakness.down|talent.hidden_opportunity)&variable.ambush_condition|!talent.find_weakness&talent.count_the_odds&variable.finish_condition)&(!talent.shadow_dance|!cooldown.shadow_dance.ready)" );
   cds->add_action( "variable,name=shadow_dance_condition,value=talent.shadow_dance&(!stealthed.all|talent.count_the_odds&!variable.stealthed_cto)&debuff.between_the_eyes.up&(!talent.ghostly_strike|debuff.ghostly_strike.up)&(!talent.dreadblades|!cooldown.dreadblades.ready)" );
   cds->add_action( "shadow_dance,if=!talent.keep_it_rolling&variable.shadow_dance_condition&buff.slice_and_dice.up&(variable.finish_condition|talent.hidden_opportunity)" );
   cds->add_action( "shadow_dance,if=talent.keep_it_rolling&variable.shadow_dance_condition&(cooldown.keep_it_rolling.remains<=30|cooldown.keep_it_rolling.remains>120&(variable.finish_condition|talent.hidden_opportunity))" );
   cds->add_action( "adrenaline_rush,if=!buff.adrenaline_rush.up&(!talent.improved_adrenaline_rush|combo_points<=2)" );
-  cds->add_action( "dreadblades,if=!stealthed.all&combo_points<=2&(!talent.marked_for_death|!cooldown.marked_for_death.ready)" );
-  cds->add_action( "marked_for_death,line_cd=1.5,target_if=min:target.time_to_die,if=raid_event.adds.up&(target.time_to_die<combo_points.deficit|!stealthed.rogue&combo_points.deficit>=cp_max_spend-1)&!buff.dreadblades.up", "If adds are up, snipe the one with lowest TTD. Use when dying faster than CP deficit or without any CP." );
-  cds->add_action( "marked_for_death,if=raid_event.adds.in>30-raid_event.adds.duration&!stealthed.rogue&combo_points.deficit>=cp_max_spend-1&!buff.dreadblades.up", "If no adds will die within the next 30s, use MfD on boss without any CP." );
+  cds->add_action( "dreadblades,if=!stealthed.all&combo_points<=2&(!talent.marked_for_death|!cooldown.marked_for_death.ready)&target.time_to_die>=10" );
+  cds->add_action( "marked_for_death,line_cd=1.5,target_if=min:target.time_to_die,if=raid_event.adds.up&(target.time_to_die<combo_points.deficit|combo_points.deficit>=cp_max_spend-1)&!buff.dreadblades.up", "If adds are up, snipe the one with lowest TTD. Use when dying faster than CP deficit or without any CP." );
+  cds->add_action( "marked_for_death,if=raid_event.adds.in>30-raid_event.adds.duration&combo_points.deficit>=cp_max_spend-1&!buff.dreadblades.up", "If no adds will die within the next 30s, use MfD on boss without any CP." );
   cds->add_action( "killing_spree,if=variable.blade_flurry_sync&!stealthed.rogue&(debuff.between_the_eyes.up&buff.dreadblades.down&energy.base_deficit>(energy.regen*2+15)|spell_targets.blade_flurry>2)", "Use in 1-2T if BtE is up and won't cap Energy, or at 3T+" );
   cds->add_action( "blade_rush,if=variable.blade_flurry_sync&(energy.base_time_to_max>2&!buff.dreadblades.up|energy<=30|spell_targets>2)" );
   cds->add_action( "shadowmeld,if=!stealthed.all&(talent.count_the_odds&variable.finish_condition|!talent.weaponmaster.enabled&variable.ambush_condition)" );
-  cds->add_action( "thistle_tea,if=!buff.thistle_tea.up&(energy.deficit>=100&(charges=3|buff.adrenaline_rush.up)|fight_remains<charges*6)" );
+  cds->add_action( "thistle_tea,if=!buff.thistle_tea.up&(energy.base_deficit>=100|fight_remains<charges*6)" );
   cds->add_action( "potion,if=buff.bloodlust.react|fight_remains<30|buff.adrenaline_rush.up" );
   cds->add_action( "blood_fury" );
   cds->add_action( "berserking" );

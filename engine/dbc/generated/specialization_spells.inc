@@ -1,5 +1,5 @@
-// Talent tree specialization abilities, wow build 10.0.0.46455
-static const std::array<specialization_spell_entry_t, 350> __specialization_spell_data { {
+// Talent tree specialization abilities, wow build 10.0.0.46597
+static const std::array<specialization_spell_entry_t, 349> __specialization_spell_data { {
   {  0,  535, 264656,      0, "Pathfinding"                       , 0 },
   {  0,  535, 264662,      0, "Endurance Training"                , 0 },
   {  0,  535, 264663,      0, "Predator's Thirst"                 , 0 },
@@ -320,7 +320,6 @@ static const std::array<specialization_spell_entry_t, 350> __specialization_spel
   { 12,  581, 203747,      0, "Mastery: Fel Blood"                , 0 },
   { 12,  581, 203782, 344859, "Shear"                             , 0 },
   { 12,  581, 203783,      0, "Shear"                             , 0 },
-  { 12,  581, 204021,      0, "Fiery Brand"                       , 0 },
   { 12,  581, 204157, 185123, "Throw Glaive"                      , 0 },
   { 12,  581, 204254,      0, "Shattered Souls"                   , 0 },
   { 12,  581, 204596,      0, "Sigil of Flame"                    , 0 },

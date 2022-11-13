@@ -3919,6 +3919,28 @@ void player_t::create_buffs()
         }
       }
 
+      if (!external_buffs.tome_of_unstable_power.empty() && external_buffs.tome_of_unstable_power_ilevel)
+      {
+          auto buff_spell = find_spell(388583);
+          auto data_spell = find_spell(391290);
+
+          auto buff = make_buff<stat_buff_t>(this, "tome_of_unstable_power_external", buff_spell);
+
+          auto ilevel = external_buffs.tome_of_unstable_power_ilevel;
+          auto coeff_main_stat = data_spell->effectN(1).m_coefficient();
+          auto coeff_crit = data_spell->effectN(2).m_coefficient();
+          auto points = dbc->random_property(ilevel).p_epic[0];
+          auto mult = dbc->combat_rating_multiplier(ilevel, CR_MULTIPLIER_TRINKET);
+
+          buff->set_duration(find_spell(388559)->duration());
+          buff->manual_stats_added = false;
+          // This is currently scaling class -1, change if this ever changes
+          buff->add_stat(convert_hybrid_stat(STAT_STR_AGI_INT), coeff_main_stat * points);
+          buff->add_stat(STAT_CRIT_RATING, coeff_crit * points * mult);
+
+          buffs.tome_of_unstable_power = buff;
+      }
+
       // 9.2 Jailer raid buff
       // Values are hard-coded because difficulty-specific spell data is not fully extracted.
       buffs.boon_of_azeroth = make_buff<stat_buff_t>( this, "boon_of_azeroth", find_spell( 363338 ) )
@@ -4161,6 +4183,9 @@ double player_t::composite_melee_speed() const
 
   if ( buffs.delirious_frenzy && buffs.delirious_frenzy->check() )
     h *= 1.0 / ( 1.0 + buffs.delirious_frenzy->check_stack_value() );
+
+  if ( buffs.way_of_controlled_currents && buffs.way_of_controlled_currents->check() )
+    h *= 1.0 / ( 1.0 + buffs.way_of_controlled_currents->check_stack_value() );
 
   return h;
 }
@@ -5469,6 +5494,7 @@ void player_t::combat_begin()
   add_timed_buff_triggers( external_buffs.pact_of_the_soulstalkers, buffs.pact_of_the_soulstalkers );
   add_timed_buff_triggers( external_buffs.boon_of_azeroth, buffs.boon_of_azeroth );
   add_timed_buff_triggers( external_buffs.boon_of_azeroth_mythic, buffs.boon_of_azeroth_mythic );
+  add_timed_buff_triggers( external_buffs.tome_of_unstable_power, buffs.tome_of_unstable_power );
 
   auto add_timed_blessing_triggers = [ this, add_timed_buff_triggers ] ( const std::vector<timespan_t>& times, buff_t* buff, timespan_t duration = timespan_t::min() )
   {
@@ -9200,6 +9226,17 @@ struct use_item_t : public action_t
     return action_t::ready();
   }
 
+  bool target_ready( player_t* t ) override
+  {
+    if ( !item )
+      return false;
+
+    if ( action )
+      return action->target_ready( t );
+
+    return action_t::target_ready( t );
+  }
+
   std::unique_ptr<expr_t> create_special_effect_expr( util::span<const util::string_view> data_str_split )
   {
     struct use_item_buff_type_expr_t : public expr_t
@@ -9346,6 +9383,20 @@ struct use_items_t : public action_t
       {
         return true;
       }
+    }
+
+    return false;
+  }
+
+  bool target_ready( player_t* t ) override
+  {
+    if ( !action_t::target_ready( t ) )
+      return false;
+
+    for ( const auto action : use_actions )
+    {
+      if ( action->target_ready( t ) )
+        return true;
     }
 
     return false;
@@ -9760,6 +9811,60 @@ struct retarget_auto_attack_t : public action_t
   }
 };
 
+// Invoke External Buff ==================================================
+
+struct invoke_external_buff_t : public action_t
+{
+  std::string buff_str;
+  buff_t* buff;
+
+  invoke_external_buff_t( player_t* player, util::string_view options_str )
+    : action_t( ACTION_OTHER, "invoke_external_buff", player ), buff_str(), buff( nullptr )
+  {
+    add_option( opt_string( "name", buff_str ) );
+    parse_options( options_str );
+
+    trigger_gcd           = timespan_t::zero();
+    ignore_false_positive = true;
+  }
+  
+  void init_finished() override
+  {
+    action_t::init_finished();
+
+    if ( buff_str.empty() )
+    {
+      throw std::invalid_argument( fmt::format(
+          "Player {} uses invoke_external_buff without specifying the name of the buff", player->name() ) );
+    }
+
+    buff = buff_t::find( player, buff_str );
+
+    if ( !buff )
+    {
+      if ( sim->debug )
+      {
+        player->sim->error( "Player {} uses invoke_external_buff with unknown buff {}", player->name(), buff_str );
+      }
+    }
+  }
+
+  bool ready() override
+  {
+    if ( !buff )
+      return false;
+
+    return action_t::ready();
+  }
+
+  void execute() override
+  {
+    if ( sim->log )
+      sim->out_log.printf( "%s invokes buff %s", player->name(), buff->name() );
+    buff->trigger();
+  }
+};
+
 }  // UNNAMED NAMESPACE
 
 action_t* player_t::create_action( util::string_view name, util::string_view options_str )
@@ -9797,6 +9902,8 @@ action_t* player_t::create_action( util::string_view name, util::string_view opt
     return new cancel_action_t( this, options_str );
   if ( name == "cancel_buff" )
     return new cancel_buff_t( this, options_str );
+  if ( name == "invoke_external_buff" )
+    return new invoke_external_buff_t( this, options_str );
   if ( name == "swap_action_list" )
     return new swap_action_list_t( this, options_str );
   if ( name == "run_action_list" )
@@ -12343,6 +12450,7 @@ void player_t::create_options()
   add_option( opt_external_buff_times( "external_buffs.kindred_affinity", external_buffs.kindred_affinity ) ) ;
   add_option( opt_external_buff_times( "external_buffs.boon_of_azeroth", external_buffs.boon_of_azeroth ) );
   add_option( opt_external_buff_times( "external_buffs.boon_of_azeroth_mythic", external_buffs.boon_of_azeroth_mythic ) );
+  add_option( opt_external_buff_times( "external_buffs.tome_of_unstable_power", external_buffs.tome_of_unstable_power) );
 
   // Additional Options for Timed External Buffs
   add_option( opt_bool( "external_buffs.seasons_of_plenty", external_buffs.seasons_of_plenty ) );
@@ -12363,6 +12471,7 @@ void player_t::create_options()
     external_buffs.blessing_of_summer_duration_multiplier = 0.01 * rank_entry.value;
     return true;
   } ) );
+  add_option(opt_int("external_buffs.tome_of_unstable_power_ilevel", external_buffs.tome_of_unstable_power_ilevel, 1, MAX_ILEVEL));
 
   // Azerite options
   if ( ! is_enemy() && ! is_pet() )
