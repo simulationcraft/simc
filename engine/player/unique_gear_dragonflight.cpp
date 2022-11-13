@@ -2093,20 +2093,13 @@ void frenzying_signoll_flare(special_effect_t& effect)
 // 385533 Damage
 void idol_of_trampling_hooves(special_effect_t& effect)
 {
-  struct trampling_hooves_t : public proc_spell_t
-  {
-    trampling_hooves_t( const special_effect_t& e ) :
-    proc_spell_t( "trampling_hooves", e.player, e.player -> find_spell(385533), e.item)
-    {
-      background = true;
-      aoe = -1;
-      base_dd_min = base_dd_max = e.player -> find_spell( 385533 )->effectN( 1 ).average( e.item );
-    }
-  };
   auto buff_spell = effect.player->find_spell( 392908 );
   auto buff = create_buff<stat_buff_t>( effect.player , buff_spell );
   buff -> set_default_value(effect.driver()->effectN(1).average(effect.item));
-  effect.execute_action = create_proc_action<trampling_hooves_t>( "trampling_hooves", effect );
+  auto damage = create_proc_action<generic_aoe_proc_t>( "trampling_hooves", effect, "trampling_hooves", 385533 );
+  damage->split_aoe_damage = true;
+  damage->aoe = -1;
+  effect.execute_action = damage;
   effect.custom_buff = buff;
   new dbc_proc_callback_t( effect.player, effect );
 }
