@@ -1491,13 +1491,6 @@ void warlock_t::init_spells_destruction()
 {
   using namespace actions_destruction;
 
-  spec.conflagrate       = find_specialization_spell( "Conflagrate" );
-  spec.conflagrate_2     = find_specialization_spell( 231793 );
-  spec.havoc             = find_specialization_spell( "Havoc" );
-  spec.havoc_2           = find_specialization_spell( 335174 );
-  spec.rain_of_fire_2    = find_specialization_spell( 335189 );
-  spec.summon_infernal_2 = find_specialization_spell( 335175 );
-
   // Talents
   talents.chaos_bolt = find_talent_spell( talent_tree::SPECIALIZATION, "Chaos Bolt" ); // Should be ID 116858
 

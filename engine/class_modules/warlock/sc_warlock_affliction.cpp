@@ -773,12 +773,6 @@ void warlock_t::init_spells_affliction()
 {
   using namespace actions_affliction;
 
-  // Specialization Spells
-  spec.summon_darkglare    = find_specialization_spell( "Summon Darkglare" );
-  spec.corruption_2        = find_specialization_spell( "Corruption", "Rank 2" );
-  spec.corruption_3        = find_specialization_spell( "Corruption", "Rank 3" );
-  spec.summon_darkglare_2         = find_specialization_spell( "Summon Darkglare", "Rank 2" ); //9.1 PTR - Now a passive learned at level 58
-
   // Talents
   talents.malefic_rapture = find_talent_spell( talent_tree::SPECIALIZATION, "Malefic Rapture" );
   talents.malefic_rapture_dmg = find_spell( 324540 ); // This spell is the ID seen in logs, but the spcoeff is in the primary talent spell

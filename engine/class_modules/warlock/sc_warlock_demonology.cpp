@@ -1279,11 +1279,6 @@ void warlock_t::create_buffs_demonology()
 
 void warlock_t::init_spells_demonology()
 {
-  spec.call_dreadstalkers_2    = find_specialization_spell( 334727 );
-  spec.fel_firebolt_2          = find_specialization_spell( 334591 );
-  spec.summon_demonic_tyrant_2 = find_specialization_spell( 334585 );
-
-  // spells
   // Talents
   talents.call_dreadstalkers = find_talent_spell( talent_tree::SPECIALIZATION, "Call Dreadstalkers" ); // Should be ID 104316
   talents.call_dreadstalkers_2 = find_spell( 193332 ); // Duration data

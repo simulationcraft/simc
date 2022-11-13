@@ -1110,7 +1110,6 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
     proc_actions(),
     tier(),
     cooldowns(),
-    spec(),
     buffs(),
     gains(),
     procs(),

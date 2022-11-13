@@ -463,29 +463,6 @@ public:
     propagate_const<cooldown_t*> soul_fire;
   } cooldowns;
 
-  // DF - Retire this section, combine remnants with the mastery_spells struct above in a "core" or "base" spells section
-  struct specs_t
-  {
-    // Affliction only
-    const spell_data_t* corruption_2; // DF - Baked into Xavian Teachings talent
-    const spell_data_t* corruption_3; // DF - Baked into Xavian Teachings talent
-    const spell_data_t* summon_darkglare; // DF - Now an Affliction talent
-    const spell_data_t* summon_darkglare_2; // DF - Baked into Affliction talent (2 minute cooldown)
-
-    // Demonology only
-    const spell_data_t* call_dreadstalkers_2; // DF - Partially baked in to Demonology talent (Cast time reduction REMOVED, leap ability retained)
-    const spell_data_t* fel_firebolt_2; // DF - Baked into base Wild Imp behavior (Fel Firebolt energy cost reduction of 20%)
-    const spell_data_t* summon_demonic_tyrant_2; // DF - Baked into Soulbound Tyrant talent
-
-    // Destruction only
-    const spell_data_t* conflagrate; // DF - Now a Destruction talent (base 2 charges)
-    const spell_data_t* conflagrate_2; // DF - Baked into Conflagrate talent (used to be 1->2 charges)
-    const spell_data_t* havoc; // DF - Now a Destruction talent
-    const spell_data_t* havoc_2; // DF - Baked into Havoc talent (12 second total duration)
-    const spell_data_t* rain_of_fire_2; // DF - Should be irrelevant now (used to be increased Rain of Fire damage)
-    const spell_data_t* summon_infernal_2; // DF - Should be irrelevant now (used to be increased impact damage)
-  } spec;
-
   // DF - Many new effects to be added here as talents are implemented
   // Buffs
   struct buffs_t
