@@ -1298,6 +1298,71 @@ void umbrelskuls_fractured_heart( special_effect_t& effect )
   } );
 }
 
+void way_of_controlled_currents( special_effect_t& effect )
+{
+  auto stack =
+      create_buff<buff_t>( effect.player, "way_of_controlled_currents_stack", effect.player->find_spell( 381965 ) )
+          ->set_name_reporting( "Stack" )
+          ->add_invalidate( CACHE_ATTACK_SPEED );
+  stack->set_default_value( stack->data().effectN( 1 ).average( effect.item ) * 0.01 );
+
+  effect.player->buffs.way_of_controlled_currents = stack;
+
+  auto surge =
+      create_buff<buff_t>( effect.player, "way_of_controlled_currents_surge", effect.player->find_spell( 381966 ) )
+          ->set_name_reporting( "Surge" );
+
+  auto lockout =
+      create_buff<buff_t>( effect.player, "way_of_controlled_currents_lockout", effect.player->find_spell( 397621 ) )
+          ->set_quiet( true );
+
+  auto surge_driver = new special_effect_t( effect.player );
+  surge_driver->type = SPECIAL_EFFECT_EQUIP;
+  surge_driver->source = SPECIAL_EFFECT_SOURCE_ITEM;
+  surge_driver->spell_id = surge->data().id();
+  //surge_driver->cooldown_ = surge->data().internal_cooldown();
+
+  auto surge_damage = create_proc_action<generic_proc_t>( "way_of_controlled_currents", *surge_driver,
+                                                          "way_of_controlled_currents", 381967 );
+
+  surge_damage->base_dd_min = surge_damage->base_dd_max = effect.driver()->effectN( 5 ).average( effect.item );
+
+  surge_driver->execute_action = surge_damage;
+
+  auto surge_cb = new dbc_proc_callback_t( effect.player, *surge_driver );
+  surge_cb->initialize();
+  surge_cb->deactivate();
+
+  stack->set_stack_change_callback( [ surge ]( buff_t* b, int, int ) {
+    if ( b->at_max_stacks() )
+      surge->trigger();
+  } );
+
+  surge->set_stack_change_callback( [ stack, lockout, surge_cb ]( buff_t*, int, int new_ ) {
+    if ( new_ )
+    {
+      surge_cb->activate();
+    }
+    else
+    {
+      surge_cb->deactivate();
+      stack->expire();
+      lockout->trigger();
+    }
+  } );
+
+  effect.custom_buff = stack;
+  effect.proc_flags2_ = PF2_CRIT;
+  auto stack_cb = new dbc_proc_callback_t( effect.player, effect );
+
+  lockout->set_stack_change_callback( [ stack_cb ]( buff_t*, int, int new_ ) {
+    if ( new_ )
+      stack_cb->deactivate();
+    else
+      stack_cb->activate();
+  } );
+}
+
 void whispering_incarnate_icon( special_effect_t& effect )
 {
   bool has_heal = false, has_tank = false, has_dps = false;
@@ -2185,6 +2250,7 @@ void register_special_effects()
   register_special_effect( 381768, items::spoils_of_neltharus );
   register_special_effect( 385884, items::timebreaching_talon );
   register_special_effect( 385902, items::umbrelskuls_fractured_heart );
+  register_special_effect( 377456, items::way_of_controlled_currents );
   register_special_effect( 377452, items::whispering_incarnate_icon );
   register_special_effect( 384112, items::the_cartographers_calipers );
   register_special_effect( 377454, items::rumbling_ruby );
