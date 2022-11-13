@@ -9960,6 +9960,8 @@ double warrior_t::composite_attribute( attribute_e attr ) const
 
   if ( attr == ATTR_STRENGTH )
   {
+    // Arma 2022 Nov 9 disable Attt as it ends up looping here.  As Str and armor are both looping in the stat cache
+    // get_attribute -> composite_attribute -> bonus_armor -> composite_bonus_armor -> strength -> get_attribute
     p += ( talents.warrior.armored_to_the_teeth->effectN( 2 ).percent() * cache.armor() );
   }
 
@@ -10020,6 +10022,15 @@ double warrior_t::composite_armor_multiplier() const
 {
   double ar = player_t::composite_armor_multiplier();
 
+  // Arma 2022 Nov 10.  To avoid an infinite loop, we manually calculate the str benefit of armored to the teeth here, and apply the armor we would gain from it
+  // While this version works.  I hate it.  Any external str buffs will cause issues.
+  if ( talents.warrior.armored_to_the_teeth->ok() )
+  {
+    auto dividend = spec.vanguard -> effectN( 1 ).percent() * talents.warrior.armored_to_the_teeth -> effectN( 2 ).percent() * (1 + talents.warrior.reinforced_plates->effectN( 1 ).percent()) * ( 1+talents.protection.focused_vigor->effectN( 3 ).percent());
+    auto divisor = 1 - (spec.vanguard -> effectN( 1 ).percent() * talents.warrior.armored_to_the_teeth -> effectN( 2 ).percent() * (1 + talents.warrior.reinforced_plates->effectN( 1 ).percent()) * ( 1+talents.protection.focused_vigor->effectN( 3 ).percent()));
+    ar *= 1 + (dividend / divisor);
+  }
+
   ar *= 1.0 + talents.warrior.reinforced_plates->effectN( 1 ).percent();
 
   return ar;
@@ -10030,6 +10041,14 @@ double warrior_t::composite_armor_multiplier() const
 double warrior_t::composite_bonus_armor() const
 {
   double ba = player_t::composite_bonus_armor();
+
+  // Arma 2022 Nov 10.
+  // We have to use base strength here, and then multiply by all the various STR buffs, while avoiding multiplying by Armored to the teeth.
+  // This is to prevent an infinite loop between Attt using the cache.armor() and composite_bonus_armor using cache.strength()
+  // We have to add all str buffs to this, if we want to avoid vanguard missing anything.  Not ideal.
+
+  auto base_str = current.stats.attribute[ STAT_STRENGTH ];
+  ba += spec.vanguard -> effectN( 1 ).percent() * base_str * (1.0 + talents.protection.focused_vigor->effectN( 1 ).percent());
 
   //ba += spec.vanguard -> effectN( 1 ).percent() * cache.strength(); //endless looping
 
