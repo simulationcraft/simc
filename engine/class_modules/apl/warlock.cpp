@@ -200,7 +200,7 @@ void destruction( player_t* p )
   cleave->add_action( "soul_fire,if=soul_shard<=4&talent.mayhem" );
   cleave->add_action( "channel_demonfire,if=!(talent.diabolic_embers&talent.avatar_of_destruction&(talent.burn_to_ashes|talent.chaos_incarnate))" );
   cleave->add_action( "dimensional_rift" );
-  cleave->add_action( "shadowburn,if=charges>1&target.health.pct<20&(!talent.eradication&!talent.ashen_remains)&(talent.ruin.rank=2&talent.conflagration_of_chaos.rank=2)" );
+  cleave->add_action( "chaos_bolt,if=soul_shard>3.5" );
   cleave->add_action( "chaos_bolt,if=!variable.pool_soul_shards&(talent.soul_conduit&!talent.madness_of_the_azjaqir|!talent.backdraft)" );
   cleave->add_action( "chaos_bolt,if=time_to_die<5&time_to_die>cast_time+travel_time" );
   cleave->add_action( "conflagrate,if=charges>(max_charges-1)|time_to_die<gcd*charges" );
