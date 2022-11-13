@@ -2014,33 +2014,34 @@ void fang_adornments( special_effect_t& effect )
 // 381700 Damage
 void forgestorm( special_effect_t& effect )
 {
-  auto forgestorm_damage = new special_effect_t( effect.player );
-
-  auto buff = buff_t::find( effect.player, "forgestorm_ignited");
-  if ( !buff )
-  {
-    auto buff_spell = effect.player -> find_spell( 381699 );
-    buff = create_buff<buff_t>(effect.player, buff_spell);
-
-    forgestorm_damage->spell_id = buff->data().id();
-    forgestorm_damage->type = SPECIAL_EFFECT_EQUIP;
-    forgestorm_damage->source = SPECIAL_EFFECT_SOURCE_ITEM;
-    effect.player -> special_effects.push_back( forgestorm_damage );
-  }
-
   struct forgestorm_ignited_t : public proc_spell_t
   {
     forgestorm_ignited_t( const special_effect_t& e ) :
-      proc_spell_t( "forgestorm_ignited", e.player, e.player -> find_spell( 381700 ), e.item )
+      proc_spell_t( "forgestorm_ignited_damage", e.player, e.player -> find_spell( 381700 ), e.item )
     {
       base_dd_min = base_dd_max = e.player -> find_spell( 381698 ) -> effectN( 1 ).average( e.item );
       background = true;
       aoe = e.player -> find_spell( 381698 ) -> effectN( 2 ).base_value();
     }
   };
-  auto damage = new dbc_proc_callback_t( effect.player, *forgestorm_damage );
-  forgestorm_damage->execute_action = create_proc_action<forgestorm_ignited_t>( "forgestorm_ignited", *forgestorm_damage );
-  buff -> set_stack_change_callback( [ damage ]( buff_t* b, int, int new_ )
+
+  auto buff = buff_t::find( effect.player, "forgestorm_ignited");
+  if ( !buff )
+  {
+    auto buff_spell = effect.trigger();
+    buff = create_buff<buff_t>(effect.player, buff_spell);
+    auto forgestorm_damage = new special_effect_t( effect.player );
+    forgestorm_damage->item = effect.item;
+    forgestorm_damage->spell_id = buff->data().id();
+    forgestorm_damage->type = SPECIAL_EFFECT_EQUIP;
+    forgestorm_damage->source = SPECIAL_EFFECT_SOURCE_ITEM;
+    forgestorm_damage->execute_action = create_proc_action<forgestorm_ignited_t>( "forgestorm_ignited_damage", *forgestorm_damage );
+    effect.player -> special_effects.push_back( forgestorm_damage );
+    auto damage = new dbc_proc_callback_t( effect.player, *forgestorm_damage );
+    damage->initialize();
+    damage->deactivate();
+ 
+    buff -> set_stack_change_callback( [ damage ]( buff_t* b, int, int new_ )
     {
       if ( new_ )
       {
@@ -2051,9 +2052,9 @@ void forgestorm( special_effect_t& effect )
         damage -> deactivate();
       }
     } );
+  }
   effect.custom_buff = buff;
   auto cb = new dbc_proc_callback_t( effect.player, effect );
-  cb -> activate();
 }
 
 // Armor
