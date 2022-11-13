@@ -886,8 +886,7 @@ void warlock_t::init_rng_affliction()
 
 void warlock_t::init_procs_affliction()
 {
-  procs.nightfall            = get_proc( "nightfall" );
-  procs.calamitous_crescendo = get_proc( "calamitous_crescendo" );
+  procs.nightfall = get_proc( "nightfall" );
   procs.harvester_of_souls = get_proc( "harvester_of_souls" );
   procs.pandemic_invocation_shard = get_proc( "pandemic_invocation_shard" );
   procs.tormented_crescendo = get_proc( "tormented_crescendo" );

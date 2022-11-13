@@ -1636,15 +1636,14 @@ void warlock_t::init_procs()
   if ( specialization() == WARLOCK_DESTRUCTION )
     init_procs_destruction();
 
-  procs.one_shard_hog   = get_proc( "one_shard_hog" );
-  procs.two_shard_hog   = get_proc( "two_shard_hog" );
+  procs.one_shard_hog = get_proc( "one_shard_hog" );
+  procs.two_shard_hog = get_proc( "two_shard_hog" );
   procs.three_shard_hog = get_proc( "three_shard_hog" );
-  procs.portal_summon   = get_proc( "portal_summon" );
+  procs.portal_summon = get_proc( "portal_summon" );
   procs.demonic_calling = get_proc( "demonic_calling" );
   procs.soul_conduit = get_proc( "soul_conduit" );
   procs.carnivorous_stalkers = get_proc( "carnivorous_stalkers" );
-  procs.horned_nightmare = get_proc( "horned_nightmare" );
-  procs.ritual_of_ruin       = get_proc( "ritual_of_ruin" );
+  procs.ritual_of_ruin = get_proc( "ritual_of_ruin" );
   procs.avatar_of_destruction = get_proc( "avatar_of_destruction" );
   procs.mayhem = get_proc( "mayhem" );
   procs.conflagration_of_chaos_cf = get_proc( "conflagration_of_chaos_cf" );

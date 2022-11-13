@@ -530,7 +530,7 @@ public:
     propagate_const<buff_t*> chaos_maelstrom; // T29 2pc buff
   } buffs;
 
-  // Gains - Many of these are automatically handled for resource gains if get_gain( name ) is given the same name as the action source
+  // Gains - Many are automatically handled
   struct gains_t
   {
     // Class Talents
@@ -560,13 +560,13 @@ public:
   // Procs
   struct procs_t
   {
+    // Class Talents
     proc_t* soul_conduit;
     proc_t* demonic_inspiration;
     proc_t* wrathful_minion;
 
-    // aff
+    // Affliction
     proc_t* nightfall;
-    proc_t* calamitous_crescendo;
     std::array<proc_t*, 8> malefic_rapture; // This length should be at least equal to the maximum number of Affliction DoTs that can be active on a target.
     proc_t* harvester_of_souls;
     proc_t* pandemic_invocation_shard;
@@ -574,7 +574,7 @@ public:
     proc_t* doom_blossom;
     proc_t* cruel_inspiration; // T29 2pc
 
-    // demo
+    // Demonology
     proc_t* demonic_knowledge;
     proc_t* demonic_calling;
     proc_t* one_shard_hog;
@@ -582,16 +582,15 @@ public:
     proc_t* three_shard_hog;
     proc_t* summon_random_demon;
     proc_t* portal_summon;
-    proc_t* carnivorous_stalkers; // DF - Now a Demonology talent
-    proc_t* horned_nightmare; // DF - Now a Demonology talent
+    proc_t* carnivorous_stalkers;
     proc_t* demonic_meteor;
     proc_t* imp_gang_boss;
     proc_t* hounds_of_war;
     proc_t* nerzhuls_volition;
     proc_t* pact_of_the_imp_mother;
-    proc_t* blazing_meteor;
+    proc_t* blazing_meteor; // T29 4pc
 
-    // destro
+    // Destruction
     proc_t* reverse_entropy;
     proc_t* rain_of_chaos;
     proc_t* ritual_of_ruin;
@@ -599,7 +598,7 @@ public:
     proc_t* mayhem;
     proc_t* conflagration_of_chaos_cf;
     proc_t* conflagration_of_chaos_sb;
-    proc_t* chaos_maelstrom;
+    proc_t* chaos_maelstrom; // T29 2pc
   } procs;
 
   int initial_soul_shards;
