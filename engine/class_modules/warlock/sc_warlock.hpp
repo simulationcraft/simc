@@ -450,12 +450,10 @@ public:
     const spell_data_t* chaos_maelstrom; // 2pc procs crit chance buff
   } tier;
 
-  // DF - To review while implementing talents for new additions
   // Cooldowns - Used for accessing cooldowns outside of their respective actions, such as reductions/resets
   struct cooldowns_t
   {
     propagate_const<cooldown_t*> haunt;
-    propagate_const<cooldown_t*> phantom_singularity;
     propagate_const<cooldown_t*> darkglare;
     propagate_const<cooldown_t*> demonic_tyrant;
     propagate_const<cooldown_t*> infernal;

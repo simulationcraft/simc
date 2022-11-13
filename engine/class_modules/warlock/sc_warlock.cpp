@@ -1117,11 +1117,10 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
     initial_soul_shards( 3 ),
     default_pet()
 {
-  cooldowns.haunt               = get_cooldown( "haunt" );
-  cooldowns.phantom_singularity = get_cooldown( "phantom_singularity" );
-  cooldowns.darkglare           = get_cooldown( "summon_darkglare" );
-  cooldowns.demonic_tyrant      = get_cooldown( "summon_demonic_tyrant" );
-  cooldowns.infernal            = get_cooldown( "summon_infernal" );
+  cooldowns.haunt = get_cooldown( "haunt" );
+  cooldowns.darkglare = get_cooldown( "summon_darkglare" );
+  cooldowns.demonic_tyrant = get_cooldown( "summon_demonic_tyrant" );
+  cooldowns.infernal = get_cooldown( "summon_infernal" );
   cooldowns.shadowburn = get_cooldown( "shadowburn" );
   cooldowns.soul_rot = get_cooldown( "soul_rot" );
   cooldowns.call_dreadstalkers = get_cooldown( "call_dreadstalkers" );
