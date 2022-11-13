@@ -479,7 +479,7 @@ struct incinerate_t : public destruction_spell_t
   incinerate_fnb_t* fnb_action;
 
   incinerate_t( warlock_t* p, util::string_view options_str )
-    : destruction_spell_t( p, "Incinerate" ), fnb_action( new incinerate_fnb_t( p ) )
+    : destruction_spell_t( "Incinerate", p, p->warlock_base.incinerate ), fnb_action( new incinerate_fnb_t( p ) )
   {
     parse_options( options_str );
 
@@ -1434,11 +1434,6 @@ void warlock_t::create_buffs_destruction()
 
   buffs.rain_of_chaos = make_buff( this, "rain_of_chaos", talents.rain_of_chaos_buff );
 
-  // Legendaries
-  buffs.madness_of_the_azjaqir =
-      make_buff( this, "madness_of_the_azjaqir", legendary.madness_of_the_azjaqir->effectN( 1 ).trigger() )
-          ->set_trigger_spell( legendary.madness_of_the_azjaqir );
-
   buffs.impending_ruin = make_buff ( this, "impending_ruin", talents.impending_ruin_buff )
                              ->set_max_stack( talents.impending_ruin_buff->max_stacks() + as<int>( talents.master_ritualist->effectN( 2 ).base_value() ) )
                              ->set_stack_change_callback( [ this ]( buff_t* b, int, int cur )
@@ -1495,13 +1490,6 @@ void warlock_t::create_buffs_destruction()
 void warlock_t::init_spells_destruction()
 {
   using namespace actions_destruction;
-
-  spec.conflagrate       = find_specialization_spell( "Conflagrate" );
-  spec.conflagrate_2     = find_specialization_spell( 231793 );
-  spec.havoc             = find_specialization_spell( "Havoc" );
-  spec.havoc_2           = find_specialization_spell( 335174 );
-  spec.rain_of_fire_2    = find_specialization_spell( 335189 );
-  spec.summon_infernal_2 = find_specialization_spell( 335175 );
 
   // Talents
   talents.chaos_bolt = find_talent_spell( talent_tree::SPECIALIZATION, "Chaos Bolt" ); // Should be ID 116858
@@ -1630,32 +1618,17 @@ void warlock_t::init_spells_destruction()
   // T29 (Vault of the Incarnates)
   tier.chaos_maelstrom = find_spell( 394679 );
 
-  // Legendaries
-  legendary.cinders_of_the_azjaqir         = find_runeforge_legendary( "Cinders of the Azj'Aqir" );
-  legendary.embers_of_the_diabolic_raiment = find_runeforge_legendary( "Embers of the Diabolic Raiment" );
-  legendary.madness_of_the_azjaqir         = find_runeforge_legendary( "Madness of the Azj'Aqir" );
-
-  // Conduits
-  conduit.ashen_remains     = find_conduit_spell( "Ashen Remains" );
-  conduit.infernal_brand    = find_conduit_spell( "Infernal Brand" );
-  //conduit.duplicitous_havoc is done in main module
-
   proc_actions.avatar_of_destruction = new avatar_of_destruction_t( this );
 }
 
 void warlock_t::init_gains_destruction()
 {
-  gains.conflagrate          = get_gain( "conflagrate" );
-  gains.immolate             = get_gain( "immolate" );
-  gains.immolate_crits       = get_gain( "immolate_crits" );
-  gains.incinerate           = get_gain( "incinerate" );
-  gains.incinerate_crits     = get_gain( "incinerate_crits" );
-  gains.incinerate_fnb       = get_gain( "incinerate_fnb" );
-  gains.incinerate_fnb_crits = get_gain( "incinerate_fnb_crits" );
-  gains.soul_fire            = get_gain( "soul_fire" );
-  gains.infernal             = get_gain( "infernal" );
-  gains.shadowburn_refund    = get_gain( "shadowburn_refund" );
-  gains.inferno              = get_gain( "inferno" );
+  gains.immolate = get_gain( "immolate" );
+  gains.immolate_crits = get_gain( "immolate_crits" );
+  gains.incinerate_crits = get_gain( "incinerate_crits" );
+  gains.infernal = get_gain( "infernal" );
+  gains.shadowburn_refund = get_gain( "shadowburn_refund" );
+  gains.inferno = get_gain( "inferno" );
 }
 
 void warlock_t::init_rng_destruction()
