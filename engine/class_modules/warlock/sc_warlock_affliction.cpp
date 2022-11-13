@@ -273,7 +273,7 @@ struct summon_darkglare_t : public affliction_spell_t
       summon_duration += timespan_t::from_millis( p()->talents.malevolent_visionary->effectN( 2 ).base_value() );
     }
 
-    p()->warlock_pet_list.darkglare.spawn( summon_duration );
+    p()->warlock_pet_list.darkglares.spawn( summon_duration );
 
     timespan_t darkglare_extension = timespan_t::from_seconds( p()->talents.summon_darkglare->effectN( 2 ).base_value() );
 

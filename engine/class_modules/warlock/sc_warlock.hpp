@@ -110,7 +110,7 @@ public:
     const spell_data_t* hand_of_guldan;
     const spell_data_t* hog_impact; // Secondary spell responsible for impact damage
     const spell_data_t* wild_imp; // Data for pet summoning
-    const spell_data_t* fel_firebolt_2; // 2022-10-03 - This is still a separate spell learned automatically when switching spec?
+    const spell_data_t* fel_firebolt_2; // Still a separate spell (learned automatically). Reduces pet's energy cost
     const spell_data_t* demonic_core; // The passive responsible for the proc chance
     const spell_data_t* demonic_core_buff; // Buff spell data
     const spell_data_t* master_demonologist; // Demonology Mastery - Increased demon damage
@@ -129,25 +129,19 @@ public:
   struct pets_t
   {
     warlock_pet_t* active;
-    warlock_pet_t* last;
 
     spawner::pet_spawner_t<pets::destruction::infernal_t, warlock_t> infernals;
     spawner::pet_spawner_t<pets::destruction::blasphemy_t, warlock_t> blasphemy;
 
-    spawner::pet_spawner_t<pets::affliction::darkglare_t, warlock_t> darkglare;
+    spawner::pet_spawner_t<pets::affliction::darkglare_t, warlock_t> darkglares;
 
     spawner::pet_spawner_t<pets::demonology::dreadstalker_t, warlock_t> dreadstalkers;
     spawner::pet_spawner_t<pets::demonology::vilefiend_t, warlock_t> vilefiends;
     spawner::pet_spawner_t<pets::demonology::demonic_tyrant_t, warlock_t> demonic_tyrants;
     spawner::pet_spawner_t<pets::demonology::grimoire_felguard_pet_t, warlock_t> grimoire_felguards;
-
     spawner::pet_spawner_t<pets::demonology::wild_imp_pet_t, warlock_t> wild_imps;
-    // DF - New Wild Imp variant - Imp Gang Boss
 
-
-    // DF - Soulkeeper and Inquisitor Eye are not guardians (Bilescourge Bombers/Arcane Familiar are more appropriate matches, respectively)
-
-    // DF - Nether Portal demons - check spawn rates
+    // Nether Portal demons (TOCHECK: Are spawn rates still uniform?)
     spawner::pet_spawner_t<pets::demonology::random_demons::shivarra_t, warlock_t> shivarra;
     spawner::pet_spawner_t<pets::demonology::random_demons::darkhound_t, warlock_t> darkhounds;
     spawner::pet_spawner_t<pets::demonology::random_demons::bilescourge_t, warlock_t> bilescourges;
@@ -1268,7 +1262,7 @@ struct summon_main_pet_t : public summon_pet_t
   {
     summon_pet_t::execute();
 
-    p()->warlock_pet_list.active = p()->warlock_pet_list.last = pet;
+    p()->warlock_pet_list.active = pet;
 
     if ( p()->buffs.grimoire_of_sacrifice->check() )
       p()->buffs.grimoire_of_sacrifice->expire();

@@ -2302,10 +2302,9 @@ struct warlock_module_t : public module_t
 
 warlock::warlock_t::pets_t::pets_t( warlock_t* w )
   : active( nullptr ),
-    last( nullptr ),
     infernals( "infernal", w ),
     blasphemy( "blasphemy", w ),
-    darkglare( "darkglare", w ),
+    darkglares( "darkglare", w ),
     dreadstalkers( "dreadstalker", w ),
     vilefiends( "vilefiend", w ),
     demonic_tyrants( "demonic_tyrant", w ),
