@@ -1986,6 +1986,107 @@ void alegethar_puzzle_box( special_effect_t& effect )
   effect.execute_action = create_proc_action<solved_the_puzzle_t>( "solved_the_puzzle", effect );
 }
 
+// Frenzying Signoll Flare
+// 382119 Driver
+// 384290 Smorf's Ambush
+// 384294 Siki's Ambush
+// 386168 Barf's Ambush
+void frenzying_signoll_flare(special_effect_t& effect)
+{
+
+  if ( unique_gear::create_fallback_buffs( effect, { "sikis_ambush_crit_rating", "sikis_ambush_mastery_rating", "sikis_ambush_haste_rating",
+                  "sikis_ambush_versatility_rating" } ) )
+   return;
+
+  struct smorfs_ambush_t : public proc_spell_t
+  {
+    smorfs_ambush_t( const special_effect_t& e ) :
+    proc_spell_t( "smorfs_ambush", e.player, e.player -> find_spell(384290), e.item)
+    {
+      background = true;
+      base_td = e.driver()->effectN( 3 ).average( e.item );
+      base_tick_time = e.player -> find_spell(384290) -> effectN( 1 ).period();
+    }
+  };
+
+  struct barfs_ambush_t : public proc_spell_t
+  {
+    barfs_ambush_t( const special_effect_t& e ) :
+    proc_spell_t( "barfs_ambush", e.player, e.player -> find_spell(386168), e.item)
+    {
+      background = true;
+      base_dd_min = base_dd_max = e.driver() -> effectN( 2 ).average( e.item );
+    }
+  };
+
+  struct frenzying_signoll_flare_t : public proc_spell_t
+  {
+    action_t* smorfs;
+    action_t* barfs;
+    std::shared_ptr<std::map<stat_e, buff_t*>> siki_buffs;
+    // When selecting the highest stat, the priority of equal secondary stats is Vers > Mastery > Haste > Crit.
+    std::array<stat_e, 4> ratings;
+
+    frenzying_signoll_flare_t(const special_effect_t& e) :
+        proc_spell_t("frenzying_signoll_flare", e.player, e.player -> find_spell(382119), e.item)
+    {
+      background = true;
+
+      smorfs = create_proc_action<smorfs_ambush_t>( "smorfs_ambush", e );
+      barfs = create_proc_action<barfs_ambush_t>( "barfs_ambush", e );
+
+      // Use a separate buff for each rating type so that individual uptimes are reported nicely and APLs can easily
+      // reference them. Store these in pointers to reduce the size of the events that use them.
+      siki_buffs = std::make_shared<std::map<stat_e, buff_t*>>();
+      double amount = e.driver()->effectN( 1 ).average( e.item );
+      
+      ratings = { STAT_VERSATILITY_RATING, STAT_MASTERY_RATING, STAT_HASTE_RATING,
+                                                     STAT_CRIT_RATING };
+      for ( auto stat : ratings )
+      {
+        auto name = std::string( "sikis_ambush_" ) + util::stat_type_string( stat );
+        buff_t* buff = buff_t::find( e.player, name );
+
+        if ( !buff )
+        {
+           buff = make_buff<stat_buff_t>( e.player, name, e.player->find_spell( 384294 ), e.item )
+                 ->add_stat( stat, amount );
+         }
+        ( *siki_buffs )[ stat ] = buff;
+      }
+
+      add_child(smorfs);
+      add_child(barfs);
+    }
+
+    void execute() override
+    {
+      proc_spell_t::execute();
+
+      auto selected_effect = player->sim->rng().range( 3 );
+      
+      if( selected_effect == 0 )
+      {
+        smorfs->execute();
+      }
+
+      else if( selected_effect == 1 )
+      {
+        barfs->execute();
+      }
+
+      else if (selected_effect == 2 )
+      {
+        stat_e max_stat = util::highest_stat( player, ratings );
+        ( *siki_buffs )[ max_stat ]->trigger();
+      }
+    }
+  };
+  effect.type = SPECIAL_EFFECT_EQUIP;
+  effect.execute_action = create_proc_action<frenzying_signoll_flare_t>( "frenzying_signoll_flare", effect );
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -2335,6 +2436,7 @@ void register_special_effects()
   register_special_effect( 377457, items::alltotem_of_the_master );
   register_special_effect( 388559, items::tome_of_unstable_power );
   register_special_effect( 383781, items::alegethar_puzzle_box );
+  register_special_effect( 382119, items::frenzying_signoll_flare );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );  // bronzed grip wrappings embellishment
