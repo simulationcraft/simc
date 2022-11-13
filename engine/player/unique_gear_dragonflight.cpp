@@ -1964,6 +1964,7 @@ void tome_of_unstable_power( special_effect_t& effect )
 
 // Alegethar Puzzle Box
 // 383781 Driver and Buff
+// TODO: Cast time is unhasted
 void alegethar_puzzle_box( special_effect_t& effect )
 {
   struct solved_the_puzzle_t : public proc_spell_t
