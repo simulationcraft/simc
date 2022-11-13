@@ -1109,7 +1109,6 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
     talents(),
     proc_actions(),
     tier(),
-    legendary(),
     conduit(),
     covenant(),
     cooldowns(),
@@ -1610,17 +1609,6 @@ void warlock_t::init_spells()
   talents.inquisitors_gaze_buff = find_spell( 388068 );
   talents.fel_bolt = find_spell( 388070 );
   talents.fel_blast = find_spell( 389277 );
-
-  // Legendaries
-  legendary.claw_of_endereth                     = find_runeforge_legendary( "Claw of Endereth" );
-  legendary.relic_of_demonic_synergy             = find_runeforge_legendary( "Relic of Demonic Synergy" );
-  legendary.wilfreds_sigil_of_superior_summoning = find_runeforge_legendary( "Wilfred's Sigil of Superior Summoning" );
-  // Sacrolash is the only spec-specific legendary that can be used by other specs.
-  legendary.sacrolashs_dark_strike = find_runeforge_legendary( "Sacrolash's Dark Strike" );
-  //Wrath is implemented here to catch any potential cross-spec periodic effects
-  legendary.wrath_of_consumption = find_runeforge_legendary("Wrath of Consumption");
-
-  legendary.decaying_soul_satchel = find_runeforge_legendary( "Decaying Soul Satchel" );
 
   // Covenant Abilities
   covenant.soul_rot              = find_covenant_spell( "Soul Rot" );               // Night Fae

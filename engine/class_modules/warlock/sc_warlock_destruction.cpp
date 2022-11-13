@@ -1434,11 +1434,6 @@ void warlock_t::create_buffs_destruction()
 
   buffs.rain_of_chaos = make_buff( this, "rain_of_chaos", talents.rain_of_chaos_buff );
 
-  // Legendaries
-  buffs.madness_of_the_azjaqir =
-      make_buff( this, "madness_of_the_azjaqir", legendary.madness_of_the_azjaqir->effectN( 1 ).trigger() )
-          ->set_trigger_spell( legendary.madness_of_the_azjaqir );
-
   buffs.impending_ruin = make_buff ( this, "impending_ruin", talents.impending_ruin_buff )
                              ->set_max_stack( talents.impending_ruin_buff->max_stacks() + as<int>( talents.master_ritualist->effectN( 2 ).base_value() ) )
                              ->set_stack_change_callback( [ this ]( buff_t* b, int, int cur )
@@ -1629,11 +1624,6 @@ void warlock_t::init_spells_destruction()
 
   // T29 (Vault of the Incarnates)
   tier.chaos_maelstrom = find_spell( 394679 );
-
-  // Legendaries
-  legendary.cinders_of_the_azjaqir         = find_runeforge_legendary( "Cinders of the Azj'Aqir" );
-  legendary.embers_of_the_diabolic_raiment = find_runeforge_legendary( "Embers of the Diabolic Raiment" );
-  legendary.madness_of_the_azjaqir         = find_runeforge_legendary( "Madness of the Azj'Aqir" );
 
   // Conduits
   conduit.ashen_remains     = find_conduit_spell( "Ashen Remains" );

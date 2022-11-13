@@ -44,8 +44,6 @@ void warlock_pet_t::create_buffs()
   buffs.grimoire_of_service = make_buff( this, "grimoire_of_service", find_spell( 216187 ) )
                                   ->set_default_value( find_spell( 216187 )->effectN( 1 ).percent() );
 
-  buffs.grim_inquisitors_dread_calling = make_buff( this, "grim_inquisitors_dread_calling", find_spell( 337142 ) );
-
   buffs.demonic_consumption = make_buff( this, "demonic_consumption", find_spell( 267972 ) )
                                   ->set_default_value( find_spell( 267972 )->effectN( 1 ).percent() )
                                   ->set_max_stack( 1 );
@@ -172,9 +170,6 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
 
   if ( pet_type == PET_FELGUARD && o()->conduit.fel_commando->ok() )
     m *= 1.0 + o()->conduit.fel_commando.percent();
-
-  if ( pet_type == PET_DREADSTALKER && o()->legendary.grim_inquisitors_dread_calling->ok() )
-    m *= 1.0 + buffs.grim_inquisitors_dread_calling->check_value();
 
   if ( pet_type == PET_DREADSTALKER && o()->talents.dread_calling.ok() )
     m *= 1.0 + buffs.dread_calling->check_value();

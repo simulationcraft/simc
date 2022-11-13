@@ -1223,10 +1223,6 @@ void warlock_t::create_buffs_demonology()
                             } );;
 
   // Legendaries
-  buffs.balespiders_burning_core =
-      make_buff( this, "balespiders_burning_core", legendary.balespiders_burning_core->effectN( 1 ).trigger() )
-          ->set_trigger_spell( legendary.balespiders_burning_core )
-          ->set_default_value( legendary.balespiders_burning_core->effectN( 1 ).trigger()->effectN( 1 ).percent() );
 
   buffs.dread_calling = make_buff<buff_t>( this, "dread_calling", talents.dread_calling_buff )
                             ->set_default_value( talents.dread_calling->effectN( 1 ).percent() );
@@ -1394,11 +1390,6 @@ void warlock_t::init_spells_demonology()
 
   // T29 (Vault of the Incarnates)
   tier.blazing_meteor = find_spell( 394776 );
-
-  // Legendaries
-  legendary.balespiders_burning_core       = find_runeforge_legendary( "Balespider's Burning Core" );
-  legendary.forces_of_the_horned_nightmare = find_runeforge_legendary( "Forces of the Horned Nightmare" );
-  legendary.grim_inquisitors_dread_calling = find_runeforge_legendary( "Grim Inquisitor's Dread Calling" );
 
   // Conduits
   conduit.borne_of_blood       = find_conduit_spell( "Borne of Blood" );

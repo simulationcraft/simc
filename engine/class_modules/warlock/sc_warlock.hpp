@@ -451,29 +451,6 @@ public:
   } tier;
 
   // DF - This struct will be retired, need to determine if needed for pre-patch
-  struct legendary_t
-  {
-    // Legendaries
-    // Cross-spec
-    item_runeforge_t claw_of_endereth; // DF - Now class talent
-    item_runeforge_t relic_of_demonic_synergy; // DF - Now class talent
-    item_runeforge_t wilfreds_sigil_of_superior_summoning; // DF - Now a talent in all 3 spec trees
-    // Affliction
-    item_runeforge_t sacrolashs_dark_strike; // DF - Now an Affliction talent
-    item_runeforge_t wrath_of_consumption; // DF - Now an Affliction talent
-    // Demonology
-    item_runeforge_t balespiders_burning_core; // DF - Now a Demonology talent
-    item_runeforge_t forces_of_the_horned_nightmare; // DF - Now a Demonology talent
-    item_runeforge_t grim_inquisitors_dread_calling; // DF - Now a Demonology talent
-    // Destruction
-    item_runeforge_t cinders_of_the_azjaqir; // DF - Reworked into Improved Conflagrate
-    item_runeforge_t embers_of_the_diabolic_raiment; // DF - Now a Destruction talent
-    item_runeforge_t madness_of_the_azjaqir; // DF - Now a Destruction talent
-    // Covenant
-    item_runeforge_t decaying_soul_satchel; // DF - Now an Affliction talent
-  } legendary;
-
-  // DF - This struct will be retired, need to determine if needed for pre-patch
   struct conduit_t
   {
     // Conduits
