@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.2.46619
-static const std::array<spelltext_data_t, 19174> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 19175> __ptr_spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -16831,6 +16831,7 @@ static const std::array<spelltext_data_t, 19174> __ptr_spelltext_data { {
   { 381689, "While Reincarnation is off cooldown, your maximum health is increased by $381687s1%. While you are at full health, Reincarnation cools down $381684s1% faster.\r\n\r\n", 0, 0 },
   { 381698, "Your attacks have a chance to ignite Forgestorm for $381699d, causing your attacks to explode for $s1 Fire damage split between all nearby enemies.\r\n\r\nDamage is increased for each enemy struck, up to $s2 enemies.", 0, 0 },
   { 381699, "$@spelldesc381698", "Your attacks have a very high chance to explode for $w1 Fire damage split between all nearby enemies.", 0 },
+  { 381700, "$@spelldesc381698", 0, 0 },
   { 381705, "Your attacks have a chance to cause flaming tentacles to grow from your body for $381727d. The tentacles lash out, dealing $s1 Fire damage every $s3 sec split between enemies in front of you.\r\n\r\nDamage is increased for each enemy struck, up to $s2 enemies.", 0, 0 },
   { 381706, "Blizzard has an $h% chance to increase the damage of your next Cone of Cold by $s2%, stacking up to $381522u times.", 0, 0 },
   { 381707, "Increases your maximum Maelstrom by $s1.", 0, 0 },
