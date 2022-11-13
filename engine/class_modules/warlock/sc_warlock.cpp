@@ -1108,6 +1108,7 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
     warlock_pet_list( this ),
     talents(),
     proc_actions(),
+    tier(),
     legendary(),
     conduit(),
     covenant(),
