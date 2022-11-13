@@ -1962,6 +1962,30 @@ void tome_of_unstable_power( special_effect_t& effect )
   effect.custom_buff = buff;
 }
 
+// Alegethar Puzzle Box
+// 383781 Driver and Buff
+// TODO: Cast time is unhasted
+void alegethar_puzzle_box( special_effect_t& effect )
+{
+  struct solved_the_puzzle_t : public proc_spell_t
+  {
+    buff_t* buff;
+    solved_the_puzzle_t( const special_effect_t& e ) :
+      proc_spell_t( "solved_the_puzzle", e.player, e.player->find_spell( 383781 ), e.item)
+    {
+      background = true;
+      auto buff_spell = e.player -> find_spell( 383781 );
+      buff = create_buff<stat_buff_t>(e.player, buff_spell);
+    }
+
+    void impact( action_state_t* a ) override
+    {
+      buff -> trigger();
+    }
+  };
+  effect.execute_action = create_proc_action<solved_the_puzzle_t>( "solved_the_puzzle", effect );
+}
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -2259,6 +2283,7 @@ void register_special_effects()
   register_special_effect( 377463, items::manic_grieftorch );
   register_special_effect( 377457, items::alltotem_of_the_master );
   register_special_effect( 388559, items::tome_of_unstable_power );
+  register_special_effect( 383781, items::alegethar_puzzle_box );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );  // bronzed grip wrappings embellishment
