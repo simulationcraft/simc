@@ -2038,11 +2038,13 @@ void frenzying_signoll_flare(special_effect_t& effect)
       // Use a separate buff for each rating type so that individual uptimes are reported nicely and APLs can easily
       // reference them. Store these in pointers to reduce the size of the events that use them.
       siki_buffs = std::make_shared<std::map<stat_e, buff_t*>>();
-      double amount     = e.driver()->effectN( 1 ).average( e.item );
-
+      double amount = e.driver()->effectN( 1 ).average( e.item );
+      
+      ratings = { STAT_VERSATILITY_RATING, STAT_MASTERY_RATING, STAT_HASTE_RATING,
+                                                     STAT_CRIT_RATING };
       for ( auto stat : ratings )
       {
-       auto name    = std::string( "sikis_ambush_" ) + util::stat_type_string( stat );
+        auto name = std::string( "sikis_ambush_" ) + util::stat_type_string( stat );
         buff_t* buff = buff_t::find( e.player, name );
 
         if ( !buff )
@@ -2053,9 +2055,8 @@ void frenzying_signoll_flare(special_effect_t& effect)
         ( *siki_buffs )[ stat ] = buff;
       }
 
-      ratings = { STAT_VERSATILITY_RATING, STAT_MASTERY_RATING, STAT_HASTE_RATING,
-                                                     STAT_CRIT_RATING };
-
+      add_child(smorfs);
+      add_child(barfs);
     }
 
     void execute() override
@@ -2064,19 +2065,19 @@ void frenzying_signoll_flare(special_effect_t& effect)
 
       auto selected_effect = player->sim->rng().range( 3 );
       
-      if( selected_effect == 1 )
+      if( selected_effect == 0 )
       {
         smorfs->execute();
       }
 
-      else if( selected_effect == 2 )
+      else if( selected_effect == 1 )
       {
         barfs->execute();
       }
 
-      else if (selected_effect == 3)
+      else if (selected_effect == 2 )
       {
-       stat_e max_stat = util::highest_stat( player, ratings );
+        stat_e max_stat = util::highest_stat( player, ratings );
         ( *siki_buffs )[ max_stat ]->trigger();
       }
     }
