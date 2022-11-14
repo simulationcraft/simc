@@ -633,10 +633,10 @@ void subtlety_df( player_t* p )
   cds->add_action( "marked_for_death,line_cd=1.5,target_if=min:target.time_to_die,if=raid_event.adds.up&(target.time_to_die<combo_points.deficit|!stealthed.all&combo_points.deficit>=cp_max_spend)", "If adds are up, snipe the one with lowest TTD. Use when dying faster than CP deficit or not stealthed without any CP." );
   cds->add_action( "marked_for_death,if=raid_event.adds.in>30-raid_event.adds.duration&combo_points.deficit>=cp_max_spend", "If no adds will die within the next 30s, use MfD on boss without any CP." );
   cds->add_action( "shadow_blades,if=variable.snd_condition&combo_points.deficit>=2" );
-  cds->add_action( "echoing_reprimand,if=variable.snd_condition&combo_points.deficit>=2&(variable.priority_rotation|spell_targets.shuriken_storm<=4|talent.resounding_clarity)" );
+  cds->add_action( "echoing_reprimand,if=variable.snd_condition&combo_points.deficit>=3&(variable.priority_rotation|spell_targets.shuriken_storm<=4|talent.resounding_clarity)&(buff.shadow_dance.up|!talent.danse_macabre)" );
   cds->add_action( "shuriken_tornado,if=variable.snd_condition&buff.symbols_of_death.up&combo_points<=2&(!buff.premeditation.up|spell_targets.shuriken_storm>4)", "With SF, if not already done, use Tornado with SoD up." );
   cds->add_action( "shadow_dance,if=!buff.shadow_dance.up&fight_remains<=8+talent.subterfuge.enabled" );
-  cds->add_action( "thistle_tea,if=cooldown.symbols_of_death.remains>=3&!buff.thistle_tea.up&(energy.deficit>=100|cooldown.thistle_tea.charges_fractional>=2.75&energy.deficit>=40)" );
+  cds->add_action( "thistle_tea,if=cooldown.symbols_of_death.remains>=3&!buff.thistle_tea.up&(energy.deficit>=100|cooldown.thistle_tea.charges_fractional>=2.75&energy.deficit>=40)|buff.shadow_dance.up&!buff.thistle_tea.up&spell_targets.shuriken_storm>=2" );
   cds->add_action( "potion,if=buff.bloodlust.react|fight_remains<30|buff.symbols_of_death.up&(buff.shadow_blades.up|cooldown.shadow_blades.remains<=10)" );
   cds->add_action( "blood_fury,if=buff.symbols_of_death.up" );
   cds->add_action( "berserking,if=buff.symbols_of_death.up" );
@@ -655,28 +655,28 @@ void subtlety_df( player_t* p )
   finish->add_action( "black_powder,if=!variable.priority_rotation&spell_targets>=(3-talent.dark_brew.enabled)" );
   finish->add_action( "eviscerate" );
 
-  stealth_cds->add_action( "variable,name=shd_threshold,value=cooldown.shadow_dance.charges_fractional>=1.75", "Stealth Cooldowns  Helper Variable" );
+  stealth_cds->add_action( "variable,name=shd_threshold,value=cooldown.shadow_dance.charges_fractional>=1.75-talent.shadow_dance", "Stealth Cooldowns  Helper Variable" );
   stealth_cds->add_action( "vanish,if=!variable.shd_threshold&combo_points.deficit>1", "Vanish if we are capping on Dance charges. Early before first dance if we have no Nightstalker but Dark Shadow in order to get Rupture up (no Master Assassin)." );
   stealth_cds->add_action( "pool_resource,for_next=1,extra_amount=40,if=race.night_elf", "Pool for Shadowmeld + Shadowstrike unless we are about to cap on Dance charges. Only when Find Weakness is about to run out." );
-  stealth_cds->add_action( "shadowmeld,if=energy>=40&energy.deficit>=10&!variable.shd_threshold&combo_points.deficit>1" );
+  stealth_cds->add_action( "shadowmeld,if=energy>=40&energy.deficit>=10&!variable.shd_threshold&combo_points.deficit>4" );
   stealth_cds->add_action( "variable,name=shd_combo_points,value=combo_points<=1", "CP thresholds for entering Shadow Dance  Default to start dance with 0 or 1 combo point" );
   stealth_cds->add_action( "variable,name=shd_combo_points,value=combo_points.deficit>=2,if=spell_targets.shuriken_storm=3", "Use stealth cooldowns with at least 2 combo points missing on 3 targets" );
   stealth_cds->add_action( "variable,name=shd_combo_points,value=combo_points.deficit<=1,if=spell_targets.shuriken_storm>(4-2*talent.shuriken_tornado.enabled)|variable.priority_rotation&spell_targets.shuriken_storm>=4", "Use stealth cooldowns with high combo points when playing shuriken tornado or with high target counts" );
   stealth_cds->add_action( "variable,name=shd_combo_points,value=1,if=spell_targets.shuriken_storm=4", "Use stealth cooldowns on any combo point on 4 targets" );
-  stealth_cds->add_action( "shadow_dance,if=(variable.shd_combo_points&(buff.symbols_of_death.remains>=(2.2-talent.flagellation.enabled)|variable.shd_threshold)|buff.flagellation.up|buff.flagellation_persist.remains>=6|spell_targets.shuriken_storm>=4&cooldown.symbols_of_death.remains>10)", "Dance during Symbols or above threshold." );
-  stealth_cds->add_action( "shadow_dance,if=variable.shd_combo_points&fight_remains<cooldown.symbols_of_death.remains", "Burn Dances charges if before the fight ends if SoD won't be ready in time." );
+  stealth_cds->add_action( "shadow_dance,if=(variable.shd_combo_points&(buff.symbols_of_death.remains>=(2.2-talent.flagellation.enabled)|variable.shd_threshold)|buff.flagellation.up|buff.flagellation_persist.remains>=6|spell_targets.shuriken_storm>=4&cooldown.symbols_of_death.remains>10)&!buff.the_rotten.up", "Dance during Symbols or above threshold." );
+  stealth_cds->add_action( "shadow_dance,if=variable.shd_combo_points&fight_remains<cooldown.symbols_of_death.remains|!talent.shadow_dance&spell_targets.shuriken_storm<=4", "Burn Dances charges if before the fight ends if SoD won't be ready in time." );
 
   stealthed->add_action( "shadowstrike,if=(buff.stealth.up|buff.vanish.up)&(spell_targets.shuriken_storm<4|variable.priority_rotation)", "Stealthed Rotation  If Stealth/vanish are up, use Shadowstrike to benefit from the passive bonus and Find Weakness, even if we are at max CP (unless using Master Assassin)" );
   stealthed->add_action( "gloomblade,if=(combo_points.deficit=2|combo_points.deficit=3)&spell_targets.shuriken_storm<=4", "Gloomblade when on 4 or 5 combo points" );
   stealthed->add_action( "call_action_list,name=finish,if=variable.effective_combo_points>=cp_max_spend" );
   stealthed->add_action( "call_action_list,name=finish,if=buff.shuriken_tornado.up&combo_points.deficit<=2", "Finish earlier with Shuriken tornado up." );
   stealthed->add_action( "call_action_list,name=finish,if=spell_targets.shuriken_storm>=4&variable.effective_combo_points>=4", "Also safe to finish at 4+ CP with exactly 4 targets. (Same as outside stealth.)" );
-  stealthed->add_action( "call_action_list,name=finish,if=combo_points.deficit<=(talent.deeper_stratagem.enabled+talent.secret_stratagem.enabled+talent.seal_fate.enabled)", "Finish at lower combo points if you are talented in DS, SS or Seal Fate" );
+  stealthed->add_action( "call_action_list,name=finish,if=combo_points.deficit<=1+(talent.seal_fate|talent.deeper_stratagem|talent.secret_stratagem)", "Finish at lower combo points if you are talented in DS, SS or Seal Fate" );
   stealthed->add_action( "gloomblade,if=buff.perforated_veins.stack>=5&spell_targets.shuriken_storm<3", "Use Gloomblade or Backstab when close to hitting max PV stacks" );
   stealthed->add_action( "backstab,if=buff.perforated_veins.stack>=5&spell_targets.shuriken_storm<3" );
   stealthed->add_action( "shadowstrike,if=stealthed.sepsis&spell_targets.shuriken_storm<4" );
   stealthed->add_action( "shadowstrike,if=variable.priority_rotation&(debuff.find_weakness.remains<1|spell_targets.shuriken_storm<=4)", "For priority rotation, use Shadowstrike over Storm at up to 4 targets or if FW is running off (on any amount of targets)" );
-  stealthed->add_action( "shuriken_storm,if=spell_targets>=3+(buff.the_rotten.up|runeforge.akaaris_soul_fragment)&(!buff.premeditation.up|spell_targets>=5)" );
+  stealthed->add_action( "shuriken_storm,if=spell_targets>=3+buff.the_rotten.up&(!buff.premeditation.up|spell_targets>=7)" );
   stealthed->add_action( "shadowstrike,if=debuff.find_weakness.remains<=1|cooldown.symbols_of_death.remains<18&debuff.find_weakness.remains<cooldown.symbols_of_death.remains", "Shadowstrike to refresh Find Weakness and to ensure we can carry over a full FW into the next SoD if possible." );
   stealthed->add_action( "shadowstrike" );
 }
