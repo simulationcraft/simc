@@ -7686,10 +7686,8 @@ struct windfury_totem_t : public shaman_spell_t
       }
     }
 
-    // Set the proc-chance of the Windfury Totem buff unconditionally to 1.0 so it will
-    // properly trigger in all situations (i.e., with or without legendary / global
-    // override)
-    wft_buff->set_chance( 1.0 );
+    // Allow Windfury Totem to proc if the actor has the talent or the sim-wide override is used
+    wft_buff->set_chance( player->talent.windfury_totem.ok() || sim->overrides.windfury_totem );
   }
 
   void execute() override
