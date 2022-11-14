@@ -10721,7 +10721,10 @@ void shaman_t::create_buffs()
   buff.maelstrom_weapon = new maelstrom_weapon_buff_t( this );
   buff.hailstorm        = make_buff( this, "hailstorm", find_spell( 334196 ) )
                             ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC )
-                            ->set_max_stack( 10 ); // TODO: Fix hardcoding when client data updates
+                            ->set_max_stack(
+                              talent.overflowing_maelstrom.ok()
+                              ? talent.overflowing_maelstrom->effectN( 1 ).base_value()
+                              : find_spell( 334196 )->max_stacks() );
   buff.static_accumulation = make_buff( this, "static_accumulation", find_spell( 384437 ) )
     ->set_default_value( talent.static_accumulation->effectN( 1 ).base_value() )
     ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
