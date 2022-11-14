@@ -2241,7 +2241,7 @@ void idol_of_trampling_hooves(special_effect_t& effect)
 // 383950 Damage Value
 void dragon_games_equipment(special_effect_t& effect)
 {
-  auto damage = create_proc_action<generic_aoe_proc_t>( "dragon_games_equipment", effect, "dragon_games_equipment", 386708 );
+  auto damage = create_proc_action<generic_proc_t>( "dragon_games_equipment", effect, "dragon_games_equipment", 386708 );
   damage->base_dd_min = damage -> base_dd_max = effect.player->find_spell(383950)->effectN(1).average(effect.item);
   damage->aoe = 0;
 
@@ -2254,6 +2254,28 @@ void dragon_games_equipment(special_effect_t& effect)
         damage->execute_on_target( b->player->target );
       } );
 
+  effect.custom_buff = buff;
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Bonemaw's Big Toe
+// 397400 Driver & Buff
+// 397401 Damage
+void bonemaws_big_toe(special_effect_t& effect)
+{
+  auto buff_spell = effect.player->find_spell( 397400 );
+  auto buff = create_buff<stat_buff_t>( effect.player , buff_spell );
+  auto value = effect.driver()->effectN(1).average(effect.item);
+  buff->add_stat( STAT_CRIT_RATING, value );
+  auto damage = create_proc_action<generic_aoe_proc_t>( "fetid_breath", effect, "fetid_breath", 397401 );
+  buff->set_tick_callback( [ damage ]( buff_t* b, int, timespan_t ) 
+    {
+      damage->execute();
+    } );
+  damage->split_aoe_damage = true;
+  damage->aoe = -1;
+  effect.proc_flags_  = PF_ALL_DAMAGE;
+  effect.proc_flags2_ = PF2_ALL_HIT;
   effect.custom_buff = buff;
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -2614,6 +2636,7 @@ void register_special_effects()
   register_special_effect( 382119, items::frenzying_signoll_flare );
   register_special_effect( 386175, items::idol_of_trampling_hooves );
   register_special_effect( 386692, items::dragon_games_equipment);
+  register_special_effect( 397400, items::bonemaws_big_toe );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );  // bronzed grip wrappings embellishment
