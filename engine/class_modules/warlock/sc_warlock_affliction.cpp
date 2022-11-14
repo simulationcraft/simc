@@ -200,7 +200,7 @@ struct unstable_affliction_t : public affliction_spell_t
     if ( p()->ua_target && p()->ua_target != target )
     {
       td( p()->ua_target )->dots_unstable_affliction->cancel();
-      p()->buffs.malefic_affliction->cancel();
+      p()->buffs.malefic_affliction->expire();
     }
 
     p()->ua_target = target;
@@ -237,7 +237,7 @@ struct unstable_affliction_t : public affliction_spell_t
   {
     affliction_spell_t::last_tick( d );
 
-    p()->buffs.malefic_affliction->cancel();
+    p()->buffs.malefic_affliction->expire();
     p()->ua_target = nullptr;
   }
 
