@@ -631,11 +631,7 @@ struct redoubt_buff_t : public buff_t
     // Redoubt stacks changed, calculate new max HP
     if (stackBefore != stackAfter)
     {
-      double oh = p->resources.current[ RESOURCE_HEALTH ];
-      double omh = p->resources.max[ RESOURCE_HEALTH ];
-      double currentPercent = oh / omh;
-      p->recalculate_resource_max( RESOURCE_HEALTH );
-      p->resources.current[ RESOURCE_HEALTH ] = currentPercent * p->resources.max[ RESOURCE_HEALTH ];
+      p->adjust_health_percent();
     }
   }
   void expire(timespan_t delay) override
@@ -647,11 +643,7 @@ struct redoubt_buff_t : public buff_t
     // Redoubt stacks changed, calculate new max HP
     if ( stackBefore != stackAfter )
     {
-      double oh             = p->resources.current[ RESOURCE_HEALTH ];
-      double omh            = p->resources.max[ RESOURCE_HEALTH ];
-      double currentPercent = oh / omh;
-      p->recalculate_resource_max( RESOURCE_HEALTH );
-      p->resources.current[ RESOURCE_HEALTH ] = currentPercent * p->resources.max[ RESOURCE_HEALTH ];
+      p->adjust_health_percent( );
     }
   }
 };
@@ -681,6 +673,8 @@ struct sentinel_t : public paladin_spell_t
       p()->buffs.sentinel_decay->expire();
 
     p()->buffs.sentinel->trigger();
+    p()->adjust_health_percent();
+
     // Those 15 seconds may be the total stack count, but I won't risk it.
     // First expire is after buff length minus 15 seconds, but at least 1 second (E.g., Retribution Aura-procced Sentinel decays instantly)
     timespan_t firstExpireDuration = std::max(p()->buffs.sentinel->buff_duration() - timespan_t::from_seconds(15), timespan_t::from_seconds(1));
@@ -697,6 +691,7 @@ void buffs::sentinel_buff_t::expire_override( int expiration_stacks, timespan_t 
   {
     p->buffs.sentinel_decay->expire();
   }
+  p->adjust_health_percent();
 }
 
 
@@ -715,6 +710,7 @@ void buffs::sentinel_decay_buff_t::expire_override( int expiration_stacks, times
     {
       p->buffs.sentinel_decay->trigger(timespan_t::from_seconds(1));
     }
+    p->adjust_health_percent();
   }
 }
 
@@ -1085,6 +1081,15 @@ void paladin_t::t29_4p_prot()
   buffs.deflecting_light->trigger();
   if ( buffs.ally_of_the_light->up() )
     buffs.ally_of_the_light->extend_duration( this, tier_sets.ally_of_the_light_4pc->effectN( 1 ).time_value() );
+}
+
+void paladin_t::adjust_health_percent( )
+{
+  double oh             = resources.current[ RESOURCE_HEALTH ];
+  double omh            = resources.max[ RESOURCE_HEALTH ];
+  double currentPercent = oh / omh;
+  recalculate_resource_max( RESOURCE_HEALTH );
+  resources.current[ RESOURCE_HEALTH ] = currentPercent * resources.max[ RESOURCE_HEALTH ];
 }
 
 // Initialization

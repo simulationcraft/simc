@@ -3102,6 +3102,9 @@ double paladin_t::composite_attribute_multiplier( attribute_e attr ) const
     // This literally never gets triggered. Apparently, invalidating the Stamina cache doesn't recalculate Stamina?
     if ( buffs.redoubt->up() )
       m *= 1.0 + buffs.redoubt->stack_value();
+
+    if ( buffs.sentinel->up() )
+      m *= 1.0 + buffs.sentinel->get_health_bonus();
   }
 
   if ( attr == ATTR_STRENGTH )

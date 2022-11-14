@@ -688,6 +688,7 @@ public:
   int     get_local_enemies( double distance ) const;
   bool    standing_in_consecration() const;
   bool    standing_in_hallow() const;
+  void    adjust_health_percent( );
 
   // Returns true if AW/Crusade is up, or if the target is below 20% HP.
   // This isn't in HoW's target_ready() so it can be used in the time_to_hpg expression
