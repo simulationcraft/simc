@@ -2574,6 +2574,9 @@ void register_special_effects()
   register_special_effect( { 390358, 390359, 390360 }, enchants::wafting_devotion );
 
   register_special_effect( { 386260, 386299, 386305 }, enchants::completely_safe_rockets );
+  register_special_effect( { 386156, 386157, 386158 }, enchants::high_intensity_thermal_scanner );
+  register_special_effect( { 385765, 385886, 385892 }, enchants::gyroscopic_kaleidoscope );
+  register_special_effect( { 385939, 386127, 386136 }, enchants::projectile_propulsion_pinion );
 
 
   // Trinkets
