@@ -1,4 +1,4 @@
-# demonhunter="PR_Demon_Hunter_Havoc"
+# demonhunter="T29_Demon_Hunter_Havoc"
 # level="60"
 # race="blood_elf"
 # role="attack"
@@ -23,9 +23,9 @@
 # main_hand=alandiens_tortured_twinblades,id=189846,bonus_id=1524/7187,enchant=sinful_revelation
 # off_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=1592/6536/6646,enchant=celestial_guidance
 
-# save=PR_Demon_Hunter_Havoc.simc
+# save=T29_Demon_Hunter_Havoc.simc
 
-# demonhunter="PR_Demon_Hunter_Vengeance"
+# demonhunter="T29_Demon_Hunter_Vengeance"
 # level=70
 # race=blood_elf
 # spec=vengeance
@@ -50,4 +50,4 @@
 # main_hand=alandiens_tortured_twinblades,id=189846,bonus_id=1524/7187,enchant=lightless_force
 # off_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=1592/6536/6646,enchant=sinful_revelation
 
-# save=PR_Demon_Hunter_Vengeance.simc
+# save=T29_Demon_Hunter_Vengeance.simc

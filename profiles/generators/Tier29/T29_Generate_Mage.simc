@@ -1,4 +1,4 @@
-# mage="PR_Mage_Arcane"
+# mage="T29_Mage_Arcane"
 # spec=arcane
 # level=70
 # race=troll
@@ -23,9 +23,9 @@
 # main_hand=antumbra_shadow_of_the_cosmos,id=189852,bonus_id=1524/7187,enchant=sinful_revelation
 # off_hand=forbidden_truth,id=189860,bonus_id=1524/7187
 
-# save=PR_Mage_Arcane.simc
+# save=T29_Mage_Arcane.simc
 
-# mage="PR_Mage_Fire"
+# mage="T29_Mage_Fire"
 # spec=fire
 # level=70
 # race=dwarf
@@ -50,9 +50,9 @@
 # main_hand=antumbra_shadow_of_the_cosmos,id=189852,bonus_id=1524/7187,enchant=sinful_revelation
 # off_hand=forbidden_truth,id=189860,bonus_id=1524/7187
 
-# save=PR_Mage_Fire.simc
+# save=T29_Mage_Fire.simc
 
-# mage="PR_Mage_Frost"
+# mage="T29_Mage_Frost"
 # spec=frost
 # level=70
 # race=dwarf
@@ -77,4 +77,4 @@
 # main_hand=antumbra_shadow_of_the_cosmos,id=189852,bonus_id=1524/7187,enchant=sinful_revelation
 # off_hand=forbidden_truth,id=189860,bonus_id=1524/7187
 
-# save=PR_Mage_Frost.simc
+# save=T29_Mage_Frost.simc

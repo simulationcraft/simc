@@ -1,4 +1,4 @@
-# rogue="PR_Rogue_Assassination"
+# rogue="T29_Rogue_Assassination"
 # level=70
 # race=mechagnome
 # role=attack
@@ -22,10 +22,10 @@
 # main_hand=observers_umbral_shiv,id=191001,bonus_id=1524/7187,enchant=celestial_guidance
 # off_hand=observers_umbral_shiv,id=191001,bonus_id=1524/7187,enchant=sinful_revelation
 
-# save=PR_Rogue_Assassination.simc
+# save=T29_Rogue_Assassination.simc
 
 
-# rogue="PR_Rogue_Outlaw"
+# rogue="T29_Rogue_Outlaw"
 # spec=outlaw
 # level=70
 # race=dwarf
@@ -52,10 +52,10 @@
 # off_hand=edge_of_night,id=186398,bonus_id=7187/6652/1498/6646,enchant=sinful_revelation
 
 
-# save=PR_Rogue_Outlaw.simc
+# save=T29_Rogue_Outlaw.simc
 
 
-# rogue="PR_Rogue_Subtlety"
+# rogue="T29_Rogue_Subtlety"
 # spec=subtlety
 # level=70
 # race=voidelf
@@ -80,4 +80,4 @@
 # main_hand=observers_umbral_shiv,id=191001,bonus_id=1524/7187,enchant=celestial_guidance
 # off_hand=edge_of_night,id=186398,bonus_id=7187/6652/1498/6646,enchant=sinful_revelation
 
-# save=PR_Rogue_Subtlety.simc
+# save=T29_Rogue_Subtlety.simc

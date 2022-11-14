@@ -1,4 +1,4 @@
-# druid="PR_Druid_Balance"
+# druid="T29_Druid_Balance"
 # level=70
 # race=troll
 # spec=balance
@@ -23,9 +23,9 @@
 # main_hand=antumbra_shadow_of_the_cosmos,id=189852,bonus_id=1524/7187,enchant=sinful_revelation
 # off_hand=forbidden_truth,id=189860,bonus_id=1524/7187
 
-# save=PR_Druid_Balance.simc
+# save=T29_Druid_Balance.simc
 
-# druid="PR_Druid_Feral"
+# druid="T29_Druid_Feral"
 # source=default
 # spec=feral
 # level=70
@@ -53,10 +53,10 @@
 # trinket2=sinful_gladiators_badge_of_ferocity,id=175921,bonus_id=1547
 # main_hand=zovastrum_the_unmaking,id=189861,bonus_id=1524,enchant=sinful_revelation
 
-# save=PR_Druid_Feral.simc
+# save=T29_Druid_Feral.simc
 
 
-# druid=PR_Druid_Guardian
+# druid=T29_Druid_Guardian
 # level=70
 # race=tauren
 # role=tank
@@ -80,4 +80,4 @@
 # trinket1=the_first_sigil,id=188271,bonus_id=4800/4786/1524
 # main_hand=zovastrum_the_unmaking,id=189861,bonus_id=4800/4786/1524,enchant=sinful_revelation
 
-# save=PR_Druid_Guardian.simc
+# save=T29_Druid_Guardian.simc

@@ -1,4 +1,4 @@
-# warrior="PR_Warrior_Arms"
+# warrior="T29_Warrior_Arms"
 # level=70
 # race=orc
 # spec=arms
@@ -22,9 +22,9 @@
 # trinket2=old_warriors_soul,id=186438,bonus_id=7187/1498
 # main_hand=gavel_of_the_first_arbiter,id=189862,bonus_id=7187/1524,enchant=sinful_revelation
 
-# save=PR_Warrior_Arms.simc
+# save=T29_Warrior_Arms.simc
 
-# warrior="PR_Warrior_Fury"
+# warrior="T29_Warrior_Fury"
 # level=70
 # race=mechagnome
 # spec=fury
@@ -49,9 +49,9 @@
 # main_hand=gavel_of_the_first_arbiter,id=189862,bonus_id=7187/1524,enchant=sinful_revelation
 # off_hand=riftscarred_solcrusher,id=189817,bonus_id=7187/1524,enchant=celestial_guidance
 
-# save=PR_Warrior_Fury.simc
+# save=T29_Warrior_Fury.simc
 
-# warrior="PR_Warrior_Protection"
+# warrior="T29_Warrior_Protection"
 # level=70
 # race=draenei
 # spec=protection
@@ -76,4 +76,4 @@
 # main_hand=devastated_worldshard,id=189851,bonus_id=7187/1524,enchant=celestial_guidance
 # off_hand=ruined_crest_of_lordaeron,id=189845,bonus_id=7187/1524
 
-# save=PR_Warrior_Protection.simc
+# save=T29_Warrior_Protection.simc

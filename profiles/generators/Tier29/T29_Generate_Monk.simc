@@ -1,5 +1,5 @@
 # # Kyrian Brewmaster
-# monk="PR_Monk_Brewmaster"
+# monk="T29_Monk_Brewmaster"
 # source=default
 # spec=brewmaster
 # level=70
@@ -25,9 +25,9 @@
 # trinket2=ticking_sack_of_terror,id=190652,bonus_id=1595/6536/6646
 # main_hand=zovastrum_the_unmaking,id=189861,bonus_id=1524/7187,enchant=sinful_revelation
 
-# save=PR_Monk_Brewmaster.simc
+# save=T29_Monk_Brewmaster.simc
 
-# monk="PR_Monk_Windwalker"
+# monk="T29_Monk_Windwalker"
 # spec=windwalker
 # level=70
 # race=mechagnome
@@ -51,4 +51,4 @@
 # trinket2=earthbreakers_impact,id=188264,bonus_id=1524/7187
 # main_hand=zovastrum_the_unmaking,id=189861,bonus_id=1524/7187,enchant_id=6228
 
-# save=PR_Monk_Windwalker.simc
+# save=T29_Monk_Windwalker.simc

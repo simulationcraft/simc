@@ -1,4 +1,4 @@
-# deathknight="PR_Death_Knight_Blood"
+# deathknight="T29_Death_Knight_Blood"
 # level=70
 # race=goblin
 # spec=blood
@@ -22,10 +22,10 @@
 # trinket2=old_warriors_soul,id=186438,bonus_id=7187/6652/1498/6646
 # main_hand=gavel_of_the_first_arbiter,id=189862,bonus_id=7187/1524,enchant=rune_of_the_fallen_crusader
 
-# save=PR_Death_Knight_Blood.simc
+# save=T29_Death_Knight_Blood.simc
 
 
-# deathknight="PR_Death_Knight_Frost"
+# deathknight="T29_Death_Knight_Frost"
 # level=70
 # race=blood_elf
 # spec=frost
@@ -50,9 +50,9 @@
 # main_hand=devastated_worldshard,id=189851,bonus_id=7187/1524,enchant=rune_of_hysteria
 # off_hand=devastated_worldshard,id=189851,bonus_id=7187/1524,enchant=rune_of_the_fallen_crusader
 
-# save="PR_Death_Knight_Frost.simc"
+# save="T29_Death_Knight_Frost.simc"
 
-# deathknight="PR_Death_Knight_Unholy"
+# deathknight="T29_Death_Knight_Unholy"
 # spec=unholy
 # level=70
 # race=troll
@@ -76,4 +76,4 @@
 # trinket2=old_warriors_soul,id=186438,bonus_id=1498/6807
 # main_hand=gavel_of_the_first_arbiter,id=189862,bonus_id=7187/1524,enchant=rune_of_the_fallen_crusader
 
-# save=PR_Death_Knight_Unholy.simc
+# save=T29_Death_Knight_Unholy.simc

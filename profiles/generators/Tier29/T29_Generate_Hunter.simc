@@ -1,4 +1,4 @@
-# hunter="PR_Hunter_Beast_Mastery"
+# hunter="T29_Hunter_Beast_Mastery"
 # level=70
 # race=orc
 # role=attack
@@ -22,10 +22,10 @@
 # trinket2=cache_of_acquired_treasures,id=188265,bonus_id=1524/7187
 # main_hand=astral_verdict,id=189853,bonus_id=1524/7187,enchant=optical_target_embiggener
 
-# save=PR_Hunter_Beast_Mastery.simc
+# save=T29_Hunter_Beast_Mastery.simc
 
 
-# hunter="PR_Hunter_Marksmanship"
+# hunter="T29_Hunter_Marksmanship"
 # level=70
 # race=troll
 # spec=marksmanship
@@ -49,10 +49,10 @@
 # trinket2=cache_of_acquired_treasures,id=188265,bonus_id=1524/7187
 # main_hand=astral_verdict,id=189853,bonus_id=1524/7187,enchant=sinful_revelation
 
-# save=PR_Hunter_Marksmanship.simc
+# save=T29_Hunter_Marksmanship.simc
 
 
-# hunter="PR_Hunter_Survival"
+# hunter="T29_Hunter_Survival"
 # level=70
 # race=troll
 # spec=survival
@@ -76,4 +76,4 @@
 # trinket2=the_first_sigil,id=188271,bonus_id=1524/7187
 # main_hand=zovastrum_the_unmaking,id=189861,bonus_id=1524/7187,enchant=sinful_revelation
 
-# save=PR_Hunter_Survival.simc
+# save=T29_Hunter_Survival.simc

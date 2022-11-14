@@ -352,42 +352,42 @@ std::string report_helper::pretty_spell_text( const spell_data_t& default_spell,
 
 bool report_helper::check_gear( player_t& p, sim_t& sim )
 {
-  // TODO: Add renown check?
   std::string tier_name;
   unsigned int max_ilevel_allowed = 0;
   unsigned int legendary_ilevel   = 0;
   unsigned int max_conduit_rank   = 0;
-  int max_legendary_items         = 1;
-  int equipped_legendaries        = 0; // counter
+  int max_legendary_items         = 0;
+  int equipped_legendaries        = 0;  // counter
 
   if ( p.report_information.save_str.find( "PR" ) != std::string::npos )
   {
     tier_name          = "PR";
-    max_ilevel_allowed = 184;
-    legendary_ilevel   = 190;
-    max_conduit_rank   = 4;
+    max_ilevel_allowed = 372;
   }
   // DS copies T26 ruleset as of 2020-12-01
   else if ( p.report_information.save_str.find( "DS" ) != std::string::npos )
   {
-    tier_name          = "DS";
-    max_ilevel_allowed = 233;
-    legendary_ilevel   = 235;
-    max_conduit_rank   = 7;
+    tier_name               = "DS";
+    max_ilevel_allowed      = 233;
+    legendary_ilevel        = 235;
+    max_conduit_rank        = 7;
+    int max_legendary_items = 1;
   }
   else if ( p.report_information.save_str.find( "T26" ) != std::string::npos )
   {
-    tier_name          = "T26";
-    max_ilevel_allowed = 233;
-    legendary_ilevel   = 235;
-    max_conduit_rank   = 7;
+    tier_name               = "T26";
+    max_ilevel_allowed      = 233;
+    legendary_ilevel        = 235;
+    max_conduit_rank        = 7;
+    int max_legendary_items = 1;
   }
   else if ( p.report_information.save_str.find( "T27" ) != std::string::npos )
   {
-    tier_name           = "T27";
-    max_ilevel_allowed  = 259;
-    legendary_ilevel    = 262;
-    max_conduit_rank    = 11;
+    tier_name               = "T27";
+    max_ilevel_allowed      = 259;
+    legendary_ilevel        = 262;
+    max_conduit_rank        = 11;
+    int max_legendary_items = 1;
   }
   else if ( p.report_information.save_str.find( "T28" ) != std::string::npos )
   {
@@ -396,6 +396,11 @@ bool report_helper::check_gear( player_t& p, sim_t& sim )
     legendary_ilevel    = 291;
     max_conduit_rank    = 13;
     max_legendary_items = 2;
+  }
+  else if ( p.report_information.save_str.find( "T29" ) != std::string::npos )
+  {
+    tier_name           = "T29";
+    max_ilevel_allowed  = 430;
   }
   else
   {
@@ -516,9 +521,17 @@ bool report_helper::check_gear( player_t& p, sim_t& sim )
 
     // Check gem count and gem slot usage
     // Blacklist items here if blizzard adds relevant multi-socket items once more
-    if ( gem_count > 1 )
+    if ( gem_count > 1 && item.slot != SLOT_NECK )
+    {
       sim.error( "Player {} has {} with {} gems slotted. Only one gem per item is allowed.\n",
                  p.name(), util::slot_type_string( slot ), gem_count );
+    }
+      
+    if ( gem_count > 3 && item.slot == SLOT_NECK )
+    {
+      sim.error( "Player {} has {} with {} gems slotted. Only three gems per neck is allowed.\n",
+                 p.name(), util::slot_type_string( slot ), gem_count );
+    }
 
     // Prismatic sockets can only proc (or be added) on head, neck, wrists, belt and rings
     if ( gem_count && !has_dom_gem )
@@ -670,10 +683,6 @@ bool report_helper::check_gear( player_t& p, sim_t& sim )
   if ( p.covenant -> enabled() )
   {
     p.covenant -> check_conduits( tier_name, max_conduit_rank );
-  }
-  else
-  {
-    sim.error( "Player {} doesn't have a covenant selected!\n", p.name() );
   }
 
   return true;

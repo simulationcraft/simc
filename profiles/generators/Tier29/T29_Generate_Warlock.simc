@@ -1,4 +1,4 @@
-# warlock="PR_Warlock_Affliction"
+# warlock="T29_Warlock_Affliction"
 # level=70
 # spec=affliction
 # race=orc
@@ -24,9 +24,9 @@
 # main_hand=antumbra_shadow_of_the_cosmos,id=189852,bonus_id=1524/7187,enchant=celestial_guidance
 # off_hand=forbidden_truth,id=189860,bonus_id=1524/7187
 
-# save=PR_Warlock_Affliction.simc
+# save=T29_Warlock_Affliction.simc
 
-# warlock="PR_Warlock_Demonology"
+# warlock="T29_Warlock_Demonology"
 # level=70
 # race=troll
 # spec=demonology
@@ -51,9 +51,9 @@
 # main_hand=antumbra_shadow_of_the_cosmos,id=189852,bonus_id=1524/7187,enchant=celestial_guidance
 # off_hand=forbidden_truth,id=189860,bonus_id=1524/7187
 
-# save=PR_Warlock_Demonology.simc
+# save=T29_Warlock_Demonology.simc
 
-# warlock="PR_Warlock_Destruction"
+# warlock="T29_Warlock_Destruction"
 # level=70
 # race=mechagnome
 # spec=destruction
@@ -79,4 +79,4 @@
 # main_hand=antumbra_shadow_of_the_cosmos,id=189852,bonus_id=1524/7187,enchant=celestial_guidance
 # off_hand=forbidden_truth,id=189860,bonus_id=1524/7187
 
-# save=PR_Warlock_Destruction.simc
+# save=T29_Warlock_Destruction.simc

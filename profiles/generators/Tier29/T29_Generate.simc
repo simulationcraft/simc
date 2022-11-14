@@ -1,0 +1,59 @@
+# TODO: Remove me when Dragonflight launches
+ptr=1
+# T29
+# Tier 29 Vault of the Incarnates
+# * Using ilevel= is permitted as long as itemlevels and bonus ids aren't stable on test server.
+# * Set pieces are permitted up to the item level cap (415/421/424). ["bonus_id=?" or "bonus_id=?"]
+#   * NOTE: Seal of Filial Duty is permitted up to item level 430.
+# * Raid gear is permitted up to the Mythic item level cap (415/421/424). ["bonus_id=?"]
+# * Mythic+ gear is permitted up to the Mythic+ item level cap (421). ["bonus_id=?"]
+#   * Gear can come from: [Algeth'ar Academy, Ruby Life Pools, The Azure Vault, The Nokhud Offensive, Court of Stars, Halls of Valor, Shadowmoon Burial Grounds, Temple of the Jade Serpent]
+# * Honor PvP gear is permitted up to the item level cap (366). ["bonus_id=?"]
+# * Conquest PvP gear is permitted up to the item level cap (Duelist, 408). ["bonus_id=?"]
+# * Crafted gear is permitted, must be BoE and without profession requirements.
+# * World Bosses gear is permitted.
+# * World Drop gear is permitted.
+# * World Quests gear is permitted as long as item level is only scaled from Renown / Average Character Item Level.
+# * Use sockets on the slots head, neck (x3 with jewelcrafting), wrist, waist, finger1, finger2.
+# * A piece of gear can not have more than one socket, regardless of type.
+# * Must use gem ids (ex: ",gem_id=173127") instead of hardcoded stats.
+# * No Tertiary Stats.
+# * No Hardcoded Stats (generally if an item gives wrong stats: either bonus_id is wrong, or the item no longer exists in-game).
+# * Must use enchant name (ex: ",enchant=tenet_of_haste") instead of ids/hardcoded stats if possible.
+
+
+# Death Knight
+T29_Generate_Death_Knight.simc
+
+# Demon Hunter
+T29_Generate_Demon_Hunter.simc
+
+# Druid
+T29_Generate_Druid.simc
+
+# Hunter
+T29_Generate_Hunter.simc
+
+# Mage
+T29_Generate_Mage.simc
+
+# Monk
+T29_Generate_Monk.simc
+
+# Paladin
+T29_Generate_Paladin.simc
+
+# Priest
+T29_Generate_Priest.simc
+
+# Rogue
+T29_Generate_Rogue.simc
+
+# Shaman
+T29_Generate_Shaman.simc
+
+# Warlock
+T29_Generate_Warlock.simc
+
+# Warrior
+T29_Generate_Warrior.simc

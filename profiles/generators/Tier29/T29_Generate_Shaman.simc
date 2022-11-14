@@ -1,4 +1,4 @@
-# shaman="PR_Shaman_Elemental"
+# shaman="T29_Shaman_Elemental"
 # level=70
 # race=tauren
 # spec=elemental
@@ -26,9 +26,9 @@
 # main_hand=antumbra_shadow_of_the_cosmos,id=189852,bonus_id=1524/7187,enchant=sinful_revelation
 # off_hand=ruined_crest_of_lordaeron,id=189845,bonus_id=1524/7187
 
-# save=PR_Shaman_Elemental.simc
+# save=T29_Shaman_Elemental.simc
 
-# shaman="PR_Shaman_Enhancement"
+# shaman="T29_Shaman_Enhancement"
 # level=70
 # race=troll
 # spec=enhancement
@@ -53,9 +53,9 @@
 # main_hand=dominations_deliverance,id=189818,bonus_id=1524/7187,enchant=sinful_revelation
 # off_hand=dominations_deliverance,id=189818,bonus_id=1524/7187,enchant=celestial_guidance
 
-# save=PR_Shaman_Enhancement.simc
+# save=T29_Shaman_Enhancement.simc
 
-# shaman="PR_Shaman_Restoration"
+# shaman="T29_Shaman_Restoration"
 # level=70
 # race=tauren
 # spec=restoration
@@ -80,4 +80,4 @@
 # main_hand=grasp_from_the_grave,id=184259,bonus_id=4800/4786/1531,enchant=sinful_revelation
 # off_hand=burden_of_the_protectorate,id=184257,bonus_id=4800/4786/1531
 
-# save=PR_Shaman_Restoration.simc
+# save=T29_Shaman_Restoration.simc

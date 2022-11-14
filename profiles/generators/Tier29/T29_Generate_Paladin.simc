@@ -1,4 +1,4 @@
-# paladin="PR_Paladin_Protection"
+# paladin="T29_Paladin_Protection"
 # level=70
 # race=draenei
 # spec=protection
@@ -23,10 +23,10 @@
 # main_hand=Devastated_Worldshard,id=189851,bonus_id=7187/1524,enchant=sinful_revelation
 # off_hand=Ruined_Crest_of_Lordaeron,id=189845,bonus_id=7187/1524
 
-# save=PR_Paladin_Protection.simc
+# save=T29_Paladin_Protection.simc
 
 
-# paladin="PR_Paladin_Retribution"
+# paladin="T29_Paladin_Retribution"
 # spec=retribution
 # level=70
 # race=dark_iron_dwarf
@@ -50,7 +50,7 @@
 # trinket2=the_first_sigil,id=188271,bonus_id=1524/7187
 # main_hand=gavel_of_the_first_arbiter,id=189862,bonus_id=1524/7187,enchant=sinful_revelation
 
-# save=PR_Paladin_Retribution.simc
+# save=T29_Paladin_Retribution.simc
 
 
 # paladin="T27_Paladin_Holy"
