@@ -7354,7 +7354,17 @@ struct ascendance_t : public shaman_spell_t
 
     if ( p()->talent.static_accumulation.ok() )
     {
-      p()->buff.static_accumulation->trigger();
+      if ( background )
+      {
+        p()->buff.static_accumulation->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0,
+            p()->legendary.deeply_rooted_elements.ok()
+            ? p()->legendary.deeply_rooted_elements->effectN( 1 ).time_value()
+            : p()->talent.deeply_rooted_elements->effectN( 1 ).time_value() );
+      }
+      else
+      {
+        p()->buff.static_accumulation->trigger();
+      }
     }
   }
 
