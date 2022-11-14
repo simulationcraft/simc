@@ -1439,7 +1439,7 @@ struct holy_power_consumer_t : public Base
 
           p->cooldowns.avenging_wrath->adjust( reduction );
         // 2022-11-08 Sentinel's cooldown is only reduced if it wasn't a free holy power spender
-        if ( !( p->bugs && !isFreeSLDPSpender ) )
+        if ( !( p->bugs && isFreeSLDPSpender ) )
         {
           p->cooldowns.sentinel->adjust( reduction );
         }
@@ -1503,6 +1503,16 @@ struct holy_power_consumer_t : public Base
       if (p->bugs || !isFreeSLDPSpender )
         p -> buffs.bastion_of_light->decrement();
     }
+
+    if ( p->buffs.sentinel->up() && p->buffs.sentinel_decay->up() )
+    {
+      // 2022-11-14 Free Holy Power spenders do not delay Sentinel's decay
+      if (!(p->bugs && isFreeSLDPSpender))
+      {
+        p->buffs.sentinel_decay->extend_duration( p, timespan_t::from_seconds( 1 ) );
+      }
+    }
+
     // For prot (2021-06-22). Magistrate's does not get consumed when DP or SL
     // are up, but does with RD.
     // (2021-06-26) Vanquisher's hammer's auto-sotr does not interact with magistrate's judgment

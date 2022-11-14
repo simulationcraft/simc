@@ -1294,6 +1294,11 @@ void judgment_t::execute()
     if ( p()->buffs.sentinel->up() )
     {
       p()->buffs.sentinel->extend_duration( p(), extension );
+      // 2022-11-14 If Sentinel is still at max stacks, Zealot's Paragon increases decay length, too.
+      if ( p()->bugs && p()->buffs.sentinel->at_max_stacks() && p()->buffs.sentinel_decay->up())
+      {
+        p()->buffs.sentinel_decay->extend_duration( p(), extension );
+      }
     }
   }
 }
@@ -1890,6 +1895,12 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
       {
         p()->buffs.sentinel->extend_duration(
             p(), timespan_t::from_seconds( p()->legendary.the_mad_paragon->effectN( 1 ).base_value() ) );
+        // 2022-11-14 If Sentinel is still at max stacks, Mad Paragon increases decay length, too.
+        if ( p()->bugs && p()->buffs.sentinel->at_max_stacks() && p()->buffs.sentinel_decay->up() )
+        {
+          p()->buffs.sentinel_decay->extend_duration(
+              p(), timespan_t::from_seconds( p()->legendary.the_mad_paragon->effectN( 1 ).base_value() ) );
+        }
       }
     }
 
@@ -1913,6 +1924,11 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
       if ( p() ->buffs.sentinel->up())
       {
         p()->buffs.sentinel->extend_duration( p(), extension );
+        // 2022-11-14 If Sentinel is still at max stacks, Zealot's Paragon increases decay length, too.
+        if ( p()->bugs && p()->buffs.sentinel->at_max_stacks() && p()->buffs.sentinel_decay->up() )
+        {
+          p()->buffs.sentinel_decay->extend_duration( p(), extension );
+        }
       }
     }
 
