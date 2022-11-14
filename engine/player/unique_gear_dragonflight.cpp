@@ -2280,6 +2280,26 @@ void bonemaws_big_toe(special_effect_t& effect)
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Mutated Magmammoth Scale
+// 381705 Driver
+// 381727 Buff & Damage Driver
+// 381760 Damage
+void mutated_magmammoth_scale(special_effect_t& effect)
+{
+  auto buff_spell = effect.player->find_spell( 381727 );
+  auto buff = create_buff<buff_t>( effect.player , buff_spell );
+  auto damage = create_proc_action<generic_aoe_proc_t>( "mutated_tentacle_slam", effect, "mutated_tentacle_slam", 381760 );
+  buff->set_tick_callback( [ damage ]( buff_t* b, int, timespan_t ) 
+    {
+      damage->execute();
+    } );
+  damage->aoe = effect.driver()->effectN(2).base_value();
+  damage->reduced_aoe_targets = 1;
+  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN(1).average(effect.item);
+  effect.custom_buff = buff;
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -2637,6 +2657,7 @@ void register_special_effects()
   register_special_effect( 386175, items::idol_of_trampling_hooves );
   register_special_effect( 386692, items::dragon_games_equipment);
   register_special_effect( 397400, items::bonemaws_big_toe );
+  register_special_effect( 381705, items::mutated_magmammoth_scale );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );  // bronzed grip wrappings embellishment
