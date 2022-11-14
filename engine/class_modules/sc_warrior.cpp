@@ -1440,6 +1440,28 @@ public:
           p()->cache.damage_versatility() * 100, p()->cache.bonus_armor(), s->composite_ta_multiplier(),
           s->composite_da_multiplier(), s->action->action_multiplier() );
     }
+
+    if( p()->sets->has_set_bonus( WARRIOR_PROTECTION, T29, B4 ) )
+    {
+      double new_ip = s -> result_amount;
+
+      new_ip *= p()->sets->set( WARRIOR_PROTECTION, T29, B4 )->effectN( 1 ).percent();
+
+      double previous_ip = p() -> buff.ignore_pain -> current_value;
+
+      // IP is capped to 30% of max health
+      double ip_max_health_cap = p() -> max_health() * 0.3;
+
+      if ( previous_ip + new_ip > ip_max_health_cap )
+      {
+        new_ip = ip_max_health_cap;
+      }
+
+      if ( new_ip > 0.0 )
+      {
+        p()->buff.ignore_pain->trigger( 1, new_ip );
+      }
+    }
   }
 
   void tick( dot_t* d ) override
