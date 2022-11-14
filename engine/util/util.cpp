@@ -327,6 +327,24 @@ stat_e util::highest_stat( const player_t* p, util::span<const stat_e> stats )
   return stat;
 }
 
+stat_e util::lowest_stat( const player_t* p, util::span<const stat_e> stats )
+{
+  assert( !stats.empty() );
+
+  stat_e stat = stats.front();
+  double value = stat_value( p, stat );
+  for ( stat_e s : stats.subspan( 1 ) )
+  {
+    const double v = stat_value( p, s );
+    if ( value > v )
+    {
+      stat = s;
+      value = v;
+    }
+  }
+
+  return stat;
+}
 
 /// case-insensitive string comparison
 bool util::str_compare_ci( util::string_view l,

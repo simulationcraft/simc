@@ -149,11 +149,28 @@ std::string _encoded_enchant_name( const dbc_t& dbc, const item_enchantment_data
         enchant_name.erase( enchant_name.begin() );
     }
 
+    // Cut out "Apply" from the string.
+    std::string::size_type apply_pos = enchant_name.find( "Apply" );
+    if ( apply_pos != std::string::npos )
+    {
+      enchant_name = enchant_name.substr( apply_pos + 5 );
+      while ( enchant_name[ 0 ] == ' ' )
+        enchant_name.erase( enchant_name.begin() );
+    }
+
     util::tokenize( enchant_name );
 
     const auto& spell_text = dbc.spell_text( enchant_source->id() );
     if ( spell_text.rank() )
       enchant_rank_str = spell_text.rank();
+
+    // Rank could be in the item enchantment data rather than the source spell.
+    if ( enchant_rank_str.empty() && enchant.name )
+    {
+      std::string name = enchant.name;
+      _new_encoded_enchant_name( name, enchant_rank_str );
+    }
+
     util::tokenize( enchant_rank_str );
   }
   // Revert back to figuring out name based on pure item enchantment data. This

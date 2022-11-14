@@ -12496,6 +12496,9 @@ void player_t::create_options()
   // Shadowlands options
   add_option( opt_string( "shadowlands.soleahs_secret_technique_type_override", shadowlands_opts.soleahs_secret_technique_type ) );
 
+  // Dragonflight options
+  add_option( opt_string( "dragonflight.gyroscopic_kaleidoscope_stat", dragonflight_opts.gyroscopic_kaleidoscope_stat ) );
+
   // Obsolete options
 
   // Dummy artifact options

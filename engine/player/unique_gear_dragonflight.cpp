@@ -452,6 +452,136 @@ void completely_safe_rockets( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+void high_intensity_thermal_scanner( special_effect_t& effect )
+{
+  auto crit_buff = create_buff<stat_buff_t>( effect.player, "high_intensity_thermal_scanner_crit", effect.trigger() );
+  double crit = effect.driver() -> effectN( 1 ).average( effect.player );
+  crit = item_database::apply_combat_rating_multiplier( effect.player, CR_MULTIPLIER_WEAPON, effect.player -> level(), crit );
+  crit_buff->add_stat( STAT_CRIT_RATING, crit );
+
+  auto vers_buff = create_buff<stat_buff_t>( effect.player, "high_intensity_thermal_scanner_vers", effect.trigger() );
+  double vers = effect.driver() -> effectN( 1 ).average( effect.player );
+  vers = item_database::apply_combat_rating_multiplier( effect.player, CR_MULTIPLIER_WEAPON, effect.player -> level(), vers );
+  vers_buff->add_stat( STAT_VERSATILITY_RATING, vers );
+
+  auto haste_buff = create_buff<stat_buff_t>( effect.player, "high_intensity_thermal_scanner_haste", effect.trigger() );
+  double haste = effect.driver() -> effectN( 1 ).average( effect.player );
+  haste = item_database::apply_combat_rating_multiplier( effect.player, CR_MULTIPLIER_WEAPON, effect.player -> level(), haste );
+  haste_buff->add_stat( STAT_HASTE_RATING, haste );
+
+  auto mastery_buff = create_buff<stat_buff_t>( effect.player, "high_intensity_thermal_scanner_mastery", effect.trigger() );
+  double mastery = effect.driver() -> effectN( 1 ).average( effect.player );
+  mastery = item_database::apply_combat_rating_multiplier( effect.player, CR_MULTIPLIER_WEAPON, effect.player -> level(), mastery );
+  mastery_buff->add_stat( STAT_MASTERY_RATING, mastery );
+
+  struct buff_cb_t : public dbc_proc_callback_t
+  {
+    buff_t* crit;
+    buff_t* vers;
+    buff_t* haste;
+    buff_t* mastery;
+
+    buff_cb_t( const special_effect_t& e, buff_t* crit, buff_t* vers, buff_t* haste, buff_t* mastery ) : dbc_proc_callback_t( e.player, e ),
+      crit( crit ), vers( vers ), haste( haste ), mastery( mastery )
+    {}
+
+    void execute( action_t* a, action_state_t* s ) override
+    {
+      switch (s -> target -> race)
+      {
+      case RACE_MECHANICAL:
+      case RACE_DRAGONKIN:
+        mastery->trigger();
+        break;
+      case RACE_ELEMENTAL:
+      case RACE_BEAST:
+        crit->trigger();
+        break;
+      case RACE_UNDEAD:
+      case RACE_HUMANOID:
+        vers->trigger();
+        break;
+      case RACE_GIANT:
+      case RACE_DEMON:
+      case RACE_ABERRATION:
+      default:
+        haste->trigger();
+        break;
+      }
+    }
+  };
+
+  new buff_cb_t( effect, crit_buff, vers_buff, haste_buff, mastery_buff );
+}
+
+void gyroscopic_kaleidoscope( special_effect_t& effect )
+{
+  int buff_id;
+  switch ( effect.driver() -> id() )
+  {
+  case 385892:
+    buff_id = 385891;
+    break;
+  case 385886:
+    buff_id = 385885;
+    break;
+  case 385765:
+  default:
+    buff_id = 385860;
+    break;
+  }
+
+  auto buff_data = effect.player -> find_spell( buff_id );
+  double stat = buff_data -> effectN( 1 ).average( effect.player );
+  stat = item_database::apply_combat_rating_multiplier( effect.player, CR_MULTIPLIER_WEAPON, effect.player -> level(), stat );
+
+  auto buff = create_buff<stat_buff_t>( effect.player, "gyroscopic_kaleidoscope", buff_data );
+  buff -> add_stat( util::parse_stat_type( effect.player -> dragonflight_opts.gyroscopic_kaleidoscope_stat ), stat );
+
+  effect.player->register_combat_begin( [ buff ]( player_t* ) {
+    buff -> trigger();
+    make_repeating_event( buff -> player -> sim, buff -> buff_duration() , [ buff ]() { buff -> trigger(); } );
+  } );
+}
+
+void projectile_propulsion_pinion( special_effect_t& effect )
+{
+  auto buff_data = effect.player -> find_spell( 385942 );
+
+  auto crit_buff = create_buff<stat_buff_t>( effect.player, "projectile_propulsion_pinion_crit", buff_data );
+  double crit = effect.driver() -> effectN( 1 ).average( effect.player ) / 2;
+  crit = item_database::apply_combat_rating_multiplier( effect.player, CR_MULTIPLIER_WEAPON, effect.player -> level(), crit );
+  crit_buff->add_stat( STAT_CRIT_RATING, crit );
+
+  auto vers_buff = create_buff<stat_buff_t>( effect.player, "projectile_propulsion_pinion_vers", buff_data );
+  double vers = effect.driver() -> effectN( 1 ).average( effect.player ) / 2;
+  vers = item_database::apply_combat_rating_multiplier( effect.player, CR_MULTIPLIER_WEAPON, effect.player -> level(), vers );
+  vers_buff->add_stat( STAT_VERSATILITY_RATING, vers );
+
+  auto haste_buff = create_buff<stat_buff_t>( effect.player, "projectile_propulsion_pinion_haste", buff_data );
+  double haste = effect.driver() -> effectN( 1 ).average( effect.player ) / 2;
+  haste = item_database::apply_combat_rating_multiplier( effect.player, CR_MULTIPLIER_WEAPON, effect.player -> level(), haste );
+  haste_buff->add_stat( STAT_HASTE_RATING, haste );
+
+  auto mastery_buff = create_buff<stat_buff_t>( effect.player, "projectile_propulsion_pinion_mastery", buff_data );
+  double mastery = effect.driver() -> effectN( 1 ).average( effect.player ) / 2;
+  mastery = item_database::apply_combat_rating_multiplier( effect.player, CR_MULTIPLIER_WEAPON, effect.player -> level(), mastery );
+  mastery_buff->add_stat( STAT_MASTERY_RATING, mastery );
+
+  std::map<stat_e, stat_buff_t*> buffs = {
+    { STAT_CRIT_RATING, crit_buff },
+    { STAT_VERSATILITY_RATING, vers_buff },
+    { STAT_HASTE_RATING, haste_buff },
+    { STAT_MASTERY_RATING, mastery_buff },
+  };
+
+  effect.player->register_combat_begin( [ buffs ]( player_t* p ) {
+    static constexpr std::array<stat_e, 4> ratings = { STAT_VERSATILITY_RATING, STAT_MASTERY_RATING, STAT_HASTE_RATING, STAT_CRIT_RATING };
+    buffs.find( util::highest_stat( p, ratings ) ) -> second -> trigger();
+    buffs.find( util::lowest_stat( p, ratings ) ) -> second -> trigger();
+  } );
+}
+
 }  // namespace enchants
 
 namespace items
@@ -2421,6 +2551,10 @@ void register_special_effects()
   register_special_effect( { 390358, 390359, 390360 }, enchants::wafting_devotion );
 
   register_special_effect( { 386260, 386299, 386305 }, enchants::completely_safe_rockets );
+  register_special_effect( { 386156, 386157, 386158 }, enchants::high_intensity_thermal_scanner );
+  register_special_effect( { 385765, 385886, 385892 }, enchants::gyroscopic_kaleidoscope );
+  register_special_effect( { 385939, 386127, 386136 }, enchants::projectile_propulsion_pinion );
+
 
   // Trinkets
   register_special_effect( 376636, items::idol_of_the_aspects( "neltharite" ) );     // idol of the earth warder

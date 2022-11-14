@@ -739,6 +739,13 @@ struct player_t : public actor_t
     std::string soleahs_secret_technique_type = "";
   } shadowlands_opts;
 
+  struct dragonflight_opt_t
+  {
+    /// Stat to trigger for Gyroscopic Kaleidoscope
+    /// Buff type: "mastery", "haste", "crit", "versatility"
+    std::string gyroscopic_kaleidoscope_stat = "haste";
+  } dragonflight_opts;
+
 private:
   /// Flag to activate/deactive resource callback checks. Motivation: performance.
   bool has_active_resource_callbacks;
