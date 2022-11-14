@@ -35,6 +35,7 @@ BREWMASTER:
 #include "class_modules/apl/apl_monk.hpp"
 #include "player/pet.hpp"
 #include "player/pet_spawner.hpp"
+#include "action/parse_buff_effects.hpp"
 #include "report/charts.hpp"
 #include "report/highchart.hpp"
 #include "sc_enums.hpp"
@@ -120,6 +121,9 @@ public:
 
       trigger_resonant_fists = ab::harmful && ab::may_hit && ( trigger->proc_flags() & ( 1 << ab::proc_type() ) );
     }
+
+    apply_buff_effects();
+    apply_debuffs_effects();
   }
 
   std::string full_name() const
@@ -145,6 +149,49 @@ public:
   const monk_td_t* find_td( player_t* t ) const
   {
     return p()->find_target_data( t );
+  }
+
+  // Action-related parsing of buffs. Does not work on spells
+  // These are action multipliers and what-not that only increase the damage
+  // of abilities. This does not work with tracking buffs or stat-buffs.
+  // Things like SEF and Serenity or buffs that increase the crit chance
+  // of abilities.
+  void apply_buff_effects()
+  {
+//    TODO: only effect 1
+//    parse_buff_effects( p()->buff.brewmasters_rhythm );
+//    parse_buff_effects( p()->buff.storm_earth_and_fire );
+//    parse_buff_effects( p()->buff.serenity );
+//    parse_buff_effects( p()->buff.touch_of_death_mw );
+//    parse_buff_effects( p()->buff.dance_of_chiji_hidden );
+//    parse_buff_effects( p()->buff.counterstrike );
+//    parse_buff_effects( p()->buff.hit_scheme );
+//    TODO: Look into using stack value for both Effect 1 and Effect 2
+//    parse_buff_effects( p()->buff.the_emperors_capacitor );
+//    parse_buff_effects( p()->buff.lifecycles_enveloping_mist );
+//    parse_buff_effects( p()->buff.lifecycles_vivify );
+//    parse_buff_effects( p()->buff.refreshing_jade_wind );
+//    parse_buff_effects( p()->buff.purified_chi );
+//    parse_buff_effects( p()->buff.mighty_pour );
+//    parse_buff_effects( p()->buff.invoke_chiji_evm );
+//    TODO: Look into using stack value for both Effect 1 and Effect 2
+//    parse_buff_effects( p()->buff.hit_combo, true, true );
+//    parse_buff_effects( p()->buff.transfer_the_power, true, true );
+//    parse_buff_effects( p()->buff.chi_energy, true, true );
+//    parse_buff_effects( p()->buff.kicks_of_flowing_momentum );
+//    parse_buff_effects( p()->buff.fists_of_flowing_momentum, true, true );
+//    parse_buff_effects( p()->buff.fists_of_flowing_momentum_fof );
+  }
+
+  // Action-related parsing of debuffs. Does not work on spells
+  // These are action multipliers and what-not that only increase the damage
+  // of abilities. This does not work with tracking buffs or stat-buffs.
+  // Things like SEF and Serenity or debuffs that increase the crit chance
+  // of abilities.
+   void apply_debuffs_effects()
+  {
+//    parse_debuff_effects( []( monk_td_t* t ) { return t->debuffs.weapons_of_order->check(); },
+//                          p()->shared.weapons_of_order ); // True, true
   }
 
   // Utility function to search spell data for matching effect.
