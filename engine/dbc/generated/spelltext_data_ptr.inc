@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.2.46619
-static const std::array<spelltext_data_t, 19176> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 19177> __ptr_spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -16856,6 +16856,7 @@ static const std::array<spelltext_data_t, 19176> __ptr_spelltext_data { {
   { 381756, "$@spelldesc364342", "Cooldown of Spiritwalker's Grace and Spirit Walk reduced by $s1%.", "Bronze" },
   { 381757, "$@spelldesc364342", "Cooldown of Demonic Circle: Teleport reduced by $s1%.", "Bronze" },
   { 381758, "$@spelldesc364342", "Cooldown of Heroic Leap reduced by $s1%.", "Bronze" },
+  { 381760, "$@spelldesc381705", 0, 0 },
   { 381761, "While you have an elemental active, your damage taken is reduced by $s1%.", "Damage taken reduced by $s1%.", 0 },
   { 381764, "$@spelldesc381761", 0, 0 },
   { 381766, "Your spells have a chance to jostle the spoils, reordering the treasure within.", 0, 0 },
