@@ -1997,7 +1997,7 @@ void buff_t::decrement( int stacks, double value )
     if ( as<std::size_t>( current_stack ) < stack_uptime.size() )
       stack_uptime[ current_stack ].update( true, sim->current_time() );
 
-    sim->print_debug( "{} decremented by {} to {} stacks.", *this, stacks, current_stack );
+    sim->print_log( "{} decrements {} by {} to {} stacks", *player, *this, stacks, current_stack );
 
     if ( requires_invalidation )
       invalidate_cache();
@@ -2039,9 +2039,8 @@ void buff_t::extend_duration( player_t* p, timespan_t extra_seconds )
   {
     expiration.front()->reschedule( expiration.front()->remains() + extra_seconds );
 
-    if ( sim->log )
-      sim->print_log( "{} extends {} by {}. New expiration time: {}", *p, *this, extra_seconds,
-                      expiration.front()->occurs() );
+    sim->print_log( "{} extends {} by {}. New expiration time: {}", *p, *this, extra_seconds,
+                    expiration.front()->occurs() );
   }
   else if ( extra_seconds < timespan_t::zero() )
   {
@@ -2062,9 +2061,8 @@ void buff_t::extend_duration( player_t* p, timespan_t extra_seconds )
 
     expiration.push_back( make_event<expiration_t>( *sim, this, reschedule_time ) );
 
-    if ( sim->debug )
-      sim->print_debug( "{} decreases {} by {}. New expiration: {}", *p, *this, -extra_seconds,
-                        expiration.back()->occurs() );
+    sim->print_log( "{} decreases {} by {}. New expiration: {}", *p, *this, -extra_seconds,
+                    expiration.back()->occurs() );
   }
 }
 
@@ -3098,12 +3096,12 @@ void stat_buff_t::decrement( int stacks, double /* value */ )
     if ( as<std::size_t>( current_stack ) < stack_uptime.size() )
       stack_uptime[ current_stack ].update( true, sim->current_time() );
 
-    sim->print_debug( "{} decremented by {} to {} stacks.", *this, stacks, current_stack );
+    sim->print_log( "{} decrements {} by {} to {} stacks", *player, *this, stacks, current_stack );
 
     if ( old_stack != current_stack )
     {
       if ( sim->buff_stack_uptime_timeline )
-        update_stack_uptime_array( sim->current_time(), old_stack );
+        update_stack_uptime_array( sim->current_time(), old_stack ); 
 
       last_stack_change = sim->current_time();
 
@@ -3380,7 +3378,8 @@ damage_buff_t::damage_buff_t( actor_pair_t q, util::string_view name )
 }
 
 damage_buff_t::damage_buff_t( actor_pair_t q, util::string_view name, const spell_data_t* spell, bool parse_data )
-  : buff_t( q, name, spell, nullptr )
+  : buff_t( q, name, spell, nullptr ),
+  is_stacking( true )
 {
   if ( parse_data )
   {
@@ -3389,7 +3388,8 @@ damage_buff_t::damage_buff_t( actor_pair_t q, util::string_view name, const spel
 }
 
 damage_buff_t::damage_buff_t( actor_pair_t q, util::string_view name, const spell_data_t* spell, const conduit_data_t& conduit )
-  : buff_t( q, name, spell, nullptr )
+  : buff_t( q, name, spell, nullptr ),
+  is_stacking( true )
 {
   if ( conduit.ok() )
   {
@@ -3398,7 +3398,8 @@ damage_buff_t::damage_buff_t( actor_pair_t q, util::string_view name, const spel
 }
 
 damage_buff_t::damage_buff_t( actor_pair_t q, util::string_view name, const spell_data_t* spell, double talent_value )
-  : buff_t( q, name, spell, nullptr )
+  : buff_t( q, name, spell, nullptr ),
+  is_stacking( true )
 {
   parse_spell_data( spell, 0.0, talent_value );
 }
