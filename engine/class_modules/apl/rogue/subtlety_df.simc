@@ -102,7 +102,7 @@ actions.finish+=/eviscerate
 
 # Stealth Cooldowns
 # Helper Variable
-actions.stealth_cds=variable,name=shd_threshold,value=cooldown.shadow_dance.charges_fractional>=1.75-talent.shadow_dance
+actions.stealth_cds=variable,name=shd_threshold,value=cooldown.shadow_dance.charges_fractional>=0.75+talent.shadow_dance
 # Vanish if we are capping on Dance charges. Early before first dance if we have no Nightstalker but Dark Shadow in order to get Rupture up (no Master Assassin).
 actions.stealth_cds+=/vanish,if=!variable.shd_threshold&combo_points.deficit>1
 # Pool for Shadowmeld + Shadowstrike unless we are about to cap on Dance charges. Only when Find Weakness is about to run out.

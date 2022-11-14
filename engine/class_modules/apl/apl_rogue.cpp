@@ -655,7 +655,7 @@ void subtlety_df( player_t* p )
   finish->add_action( "black_powder,if=!variable.priority_rotation&spell_targets>=(3-talent.dark_brew.enabled)" );
   finish->add_action( "eviscerate" );
 
-  stealth_cds->add_action( "variable,name=shd_threshold,value=cooldown.shadow_dance.charges_fractional>=1.75-talent.shadow_dance", "Stealth Cooldowns  Helper Variable" );
+  stealth_cds->add_action( "variable,name=shd_threshold,value=cooldown.shadow_dance.charges_fractional>=0.75+talent.shadow_dance", "Stealth Cooldowns  Helper Variable" );
   stealth_cds->add_action( "vanish,if=!variable.shd_threshold&combo_points.deficit>1", "Vanish if we are capping on Dance charges. Early before first dance if we have no Nightstalker but Dark Shadow in order to get Rupture up (no Master Assassin)." );
   stealth_cds->add_action( "pool_resource,for_next=1,extra_amount=40,if=race.night_elf", "Pool for Shadowmeld + Shadowstrike unless we are about to cap on Dance charges. Only when Find Weakness is about to run out." );
   stealth_cds->add_action( "shadowmeld,if=energy>=40&energy.deficit>=10&!variable.shd_threshold&combo_points.deficit>4" );
