@@ -2319,6 +2319,49 @@ void homeland_raid_horn(special_effect_t& effect)
   effect.custom_buff = buff;
 }
 
+// Blazebinder's Hoof
+// 383926 Driver & Buff
+// 389710 Damage
+void blazebinders_hoof(special_effect_t& effect)
+{
+  auto buff = create_buff<stat_buff_t>(effect.player, effect.driver() );
+  auto value = buff -> check_stack_value() * effect.driver()->effectN( 1 ).average( effect.item );
+  buff -> add_stat( STAT_STRENGTH, value );
+  buff->add_invalidate( CACHE_STRENGTH );
+
+  struct burnout_wave_t : public proc_spell_t
+  {
+    buff_t* buff;
+    burnout_wave_t( const special_effect_t& e, buff_t* b ) :
+    proc_spell_t( "burnout_wave", e.player, e.player -> find_spell(389710), e.item), buff(b)
+    {
+      background = true;
+      base_dd_min = base_dd_max = e.driver() -> effectN( 2 ).average( e.item );
+    }
+
+     double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double m = proc_spell_t::composite_da_multiplier( s );
+
+      m *= 1.0 + buff -> check_stack_value();
+
+      return m;
+    }
+  };
+
+  action_t* action = create_proc_action<burnout_wave_t>( "burnout_wave", effect, buff );
+
+  buff->set_stack_change_callback( [ action ](buff_t*, int, int new_) 
+  {
+    if( !new_ )
+    {
+      action->execute();
+    }
+  } );
+  effect.custom_buff = buff;
+}
+
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -2678,6 +2721,7 @@ void register_special_effects()
   register_special_effect( 397400, items::bonemaws_big_toe );
   register_special_effect( 381705, items::mutated_magmammoth_scale );
   register_special_effect( 382139, items::homeland_raid_horn );
+  register_special_effect( 383926, items::blazebinders_hoof );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );  // bronzed grip wrappings embellishment

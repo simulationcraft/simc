@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.2.46619
-static const std::array<spelltext_data_t, 19177> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 19178> __ptr_spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -18212,6 +18212,7 @@ static const std::array<spelltext_data_t, 19177> __ptr_spelltext_data { {
   { 389697, "Increases the duration of Sigil effects by ${$s1/1000} sec.", 0, 0 },
   { 389705, "You take $393009s1% reduced magic damage while Immolation Aura is active.", 0, 0 },
   { 389708, "When Fel Devastation finishes fully channeling, it refreshes $s1-$s2% of its cooldown and refunds $s3-$s4 Fury.", 0, 0 },
+  { 389710, "$@spelldesc383926", 0, 0 },
   { 389711, "When consuming a Soul Fragment would heal you above full health it shields you instead, up to a maximum of ${$MHP*$s1/100}.", 0, 0 },
   { 389713, "Teleports you back to where you last Blinked. Only usable within $389714d of Blinking.", 0, 0 },
   { 389714, "$@spelldesc389713", "Able to teleport back to where last Blinked from.", 0 },
