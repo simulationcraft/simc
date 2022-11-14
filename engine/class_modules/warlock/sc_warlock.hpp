@@ -45,7 +45,6 @@ struct warlock_td_t : public actor_target_data_t
 
   propagate_const<buff_t*> debuffs_haunt;
   propagate_const<buff_t*> debuffs_shadow_embrace;
-  propagate_const<buff_t*> debuffs_malefic_affliction;
   propagate_const<buff_t*> debuffs_dread_touch;
 
   // Destro
@@ -481,6 +480,7 @@ public:
     propagate_const<buff_t*> soul_rot; // Buff for determining if Drain Life is zero cost and aoe.
     propagate_const<buff_t*> wrath_of_consumption;
     propagate_const<buff_t*> tormented_crescendo;
+    propagate_const<buff_t*> malefic_affliction;
     propagate_const<buff_t*> haunted_soul;
     propagate_const<buff_t*> dark_harvest_haste; // One buff in game...
     propagate_const<buff_t*> dark_harvest_crit; // ...but split into two in simc for better handling
