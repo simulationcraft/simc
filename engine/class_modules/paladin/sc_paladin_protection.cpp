@@ -8,6 +8,48 @@
 
 namespace paladin {
 
+
+  namespace buffs
+  {
+  sentinel_buff_t::sentinel_buff_t( paladin_t* p )
+    : buff_t( p, "sentinel", p->spells.sentinel ),
+      damage_modifier( 0.0 ),
+      damage_reduction_modifier( 0.0 ),
+      health_bonus( 0.0 )
+  {
+    if ( !p->talents.sentinel->ok() )
+    {
+      set_chance( 0 );
+    }
+    set_refresh_behavior( buff_refresh_behavior::DISABLED );
+    /* if ( p->talents.avenging_wrath->ok() )
+      damage_modifier = p->talents.avenging_wrath->effectN( 1 ).percent() / 10.0;*/
+    health_bonus              = data().effectN( 11 ).percent();
+    damage_reduction_modifier = data().effectN( 12 ).percent();
+
+    // Sentinel starts at max stacks
+    set_initial_stack( max_stack() );
+
+    set_period( 0_ms );
+
+    // let the ability handle the cooldown
+    cooldown->duration = 0_ms;
+
+    add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+    add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
+    add_invalidate( CACHE_MASTERY );
+  };
+  sentinel_decay_buff_t::sentinel_decay_buff_t( paladin_t* p ) : buff_t( p, "sentinel_decay" )
+  {
+    if ( !p->talents.sentinel->ok() )
+    {
+      set_chance( 0 );
+    }
+    set_refresh_behavior( buff_refresh_behavior::NONE );
+    cooldown->duration = p->spells.sentinel->effectN( 10 ).period();
+  };
+  }  // namespace buffs
+
 // Ardent Defender (Protection) ===============================================
 
 struct ardent_defender_t : public paladin_spell_t
@@ -607,6 +649,68 @@ struct redoubt_buff_t : public buff_t
     }
   }
 };
+// Sentinel
+struct sentinel_t : public paladin_spell_t
+{
+  sentinel_t( paladin_t* p, util::string_view options_str ) : paladin_spell_t( "sentinel", p, p->spells.sentinel)
+  {
+    parse_options( options_str );
+
+    if ( !( p->talents.sentinel->ok() ) )
+      background = true;
+
+    harmful = false;
+    dot_duration   = 0_ms;
+
+    cooldown = p->cooldowns.sentinel; // Link needed for Righteous Protector
+  }
+
+  void execute() override
+  {
+    paladin_spell_t::execute();
+
+    if ( p()->buffs.sentinel->up() )
+      p()->buffs.sentinel->expire();
+    if ( p()->buffs.sentinel_decay->up() )
+      p()->buffs.sentinel_decay->expire();
+
+    p()->buffs.sentinel->trigger();
+    timespan_t firstExpireDuration = timespan_t::from_seconds(5);
+    if ( p()->talents.sanctified_wrath->ok() )
+      firstExpireDuration += timespan_t::from_seconds( 5 );
+    p()->buffs.sentinel_decay->trigger( firstExpireDuration );
+  }
+};
+
+void buffs::sentinel_buff_t::expire_override( int expiration_stacks, timespan_t remaining_duration )
+{
+  buff_t::expire_override( expiration_stacks, remaining_duration );
+
+  auto* p = debug_cast<paladin_t*>( player );
+  if (p-> buffs.sentinel_decay->up())
+  {
+    p->buffs.sentinel_decay->expire();
+  }
+}
+
+
+void buffs::sentinel_decay_buff_t::expire_override( int expiration_stacks, timespan_t remaining_duration )
+{
+  buff_t::expire_override( expiration_stacks, remaining_duration );
+  auto* p = static_cast<paladin_t*>( player );
+  if ( p->buffs.sentinel->up() )
+  {
+    p->buffs.sentinel->decrement();
+    if ( p->buffs.sentinel->current_stack == 0 )
+    {
+      p->buffs.sentinel->expire();
+    }
+    else
+    {
+      p->buffs.sentinel_decay->trigger(timespan_t::from_seconds(1));
+    }
+  }
+}
 
 // Shield of the Righteous ==================================================
 
@@ -775,6 +879,12 @@ void paladin_t::target_mitigation( school_e school,
     sim -> print_debug( "Damage to {} after passive mitigation is {}", s -> target -> name(), s -> result_amount );
 
   // Damage Reduction Cooldowns
+
+  // Sentinel
+  if (buffs.sentinel->up())
+  {
+    s->result_amount *= 1.0 + buffs.sentinel->get_damage_reduction_mod();
+  }
 
   // Guardian of Ancient Kings
   if ( buffs.guardian_of_ancient_kings -> up() )
@@ -987,6 +1097,7 @@ void paladin_t::create_prot_actions()
 action_t* paladin_t::create_action_protection( util::string_view name, util::string_view options_str )
 {
   if ( name == "ardent_defender"           ) return new ardent_defender_t          ( this, options_str );
+  if ( name == "sentinel"                  ) return new sentinel_t                 ( this, options_str );
   if ( name == "avengers_shield"           ) return new avengers_shield_t          ( this, options_str );
   if ( name == "blessed_hammer"            ) return new blessed_hammer_t           ( this, options_str );
   if ( name == "blessing_of_spellwarding"  ) return new blessing_of_spellwarding_t ( this, options_str );
@@ -1067,6 +1178,8 @@ void paladin_t::create_buffs_protection()
   buffs.barricade_of_faith = make_buff( this, "barricade_of_faith", find_spell( 385726 ) )
                                  ->set_default_value( talents.barricade_of_faith->effectN( 1 ).percent() )
                                  ->add_invalidate( CACHE_BLOCK );
+  buffs.sentinel = new buffs::sentinel_buff_t( this );
+  buffs.sentinel_decay = new buffs::sentinel_decay_buff_t( this );
 
 
   if ( specialization() == PALADIN_PROTECTION )
@@ -1164,6 +1277,8 @@ void paladin_t::init_spells_protection()
 
   tier_sets.ally_of_the_light_2pc = find_spell( 394714 );
   tier_sets.ally_of_the_light_4pc = find_spell( 394727 );
+
+  spells.sentinel = find_spell( 389539 );
 }
 
 void paladin_t::generate_action_prio_list_prot()

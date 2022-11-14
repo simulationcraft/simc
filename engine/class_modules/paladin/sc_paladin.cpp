@@ -37,6 +37,7 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
   active_aura         = nullptr;
 
   cooldowns.avenging_wrath               = get_cooldown( "avenging_wrath" );
+  cooldowns.sentinel                     = get_cooldown( "sentinel" );
   cooldowns.hammer_of_justice            = get_cooldown( "hammer_of_justice" );
   cooldowns.judgment_of_light_icd        = get_cooldown( "judgment_of_light_icd" );
   cooldowns.the_magistrates_judgment_icd = get_cooldown( "the_magistrates_judgment_icd" );
@@ -195,6 +196,8 @@ struct avenging_wrath_t : public paladin_spell_t
     if ( p->talents.crusade->ok() )
       background = true;
     if ( p->talents.avenging_crusader->ok() )
+      background = true;
+    if ( p->talents.sentinel->ok() )
       background = true;
     harmful = false;
 
@@ -1287,6 +1290,11 @@ void judgment_t::execute()
     {
       p()->buffs.crusade->extend_duration( p(), extension );
     }
+
+    if ( p()->buffs.sentinel->up() )
+    {
+      p()->buffs.sentinel->extend_duration( p(), extension );
+    }
   }
 }
 
@@ -1878,6 +1886,11 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
         p()->buffs.crusade->extend_duration(
             p(), timespan_t::from_seconds( p()->legendary.the_mad_paragon->effectN( 1 ).base_value() ) );
       }
+      else if ( p()->buffs.sentinel->up() )
+      {
+        p()->buffs.sentinel->extend_duration(
+            p(), timespan_t::from_seconds( p()->legendary.the_mad_paragon->effectN( 1 ).base_value() ) );
+      }
     }
 
     if ( p()->talents.zealots_paragon->ok() )
@@ -1896,6 +1909,10 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
       if ( p()->buffs.crusade->up() )
       {
         p()->buffs.crusade->extend_duration( p(), extension );
+      }
+      if ( p() ->buffs.sentinel->up())
+      {
+        p()->buffs.sentinel->extend_duration( p(), extension );
       }
     }
 
@@ -3134,7 +3151,7 @@ double paladin_t::composite_mastery_value() const
 {
   double m = player_t::composite_mastery_value();
 
-  if ( talents.seal_of_might->ok() && ( buffs.avenging_wrath->up() || buffs.crusade->up() ) )
+  if ( talents.seal_of_might->ok() && ( buffs.avenging_wrath->up() || buffs.crusade->up() || buffs.sentinel->up() ) )
     m += talents.seal_of_might->effectN( 1 ).percent();
 
   return m;
@@ -3753,10 +3770,13 @@ bool paladin_t::standing_in_hallow() const
 
 bool paladin_t::get_how_availability( player_t* t ) const
 {
-  // Health threshold has to be hardcoded :peepocri:
-  bool buffs_ok = talents.hammer_of_wrath->ok() && ( buffs.avenging_wrath->up() || buffs.crusade->up() );
+  // Regardless what buff is up, both Hammer of Wrath Talent and Avenging Wrath Talent have to be talented for Hammer of Wrath to be usable on the target. (You can talent into Crusade/Sentinel without Avenging Wrath)
+  // Maybe ToDo: Do the same for Avenging Wrath: Might
+  // Moved Hammer of Wrath Check to return value
+  bool buffs_ok = talents.avenging_wrath->ok() && (buffs.avenging_wrath->up() || buffs.crusade->up() || buffs.sentinel->up() );
   buffs_ok      = buffs_ok || buffs.final_verdict->up();
-  return ( buffs_ok || standing_in_hallow() || t->health_percentage() <= 20 );
+  // Health threshold has to be hardcoded :peepocri:
+  return ( buffs_ok || standing_in_hallow() || t->health_percentage() <= 20 ) && talents.hammer_of_wrath->ok();
 }
 
 // player_t::create_expression ==============================================

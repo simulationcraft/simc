@@ -15,6 +15,8 @@ namespace buffs {
                   struct forbearance_t;
                   struct shield_of_vengeance_buff_t;
                   struct redoubt_buff_t;
+                  struct sentinel_buff_t;
+                  struct sentinel_decay_buff_t;
                   struct execution_sentence_debuff_t;
                 }
 const int MAX_START_OF_COMBAT_HOLY_POWER = 1;
@@ -123,6 +125,8 @@ public:
     absorb_buff_t* holy_shield_absorb; // Dummy buff to trigger spell damage "blocking" absorb effect
     absorb_buff_t* blessed_hammer_absorb; // ^
     absorb_buff_t* divine_bulwark_absorb; // New Mastery absorb
+    buffs::sentinel_buff_t* sentinel;
+    buffs::sentinel_decay_buff_t* sentinel_decay;
     buff_t* bulwark_of_order_absorb;
     buff_t* seraphim;
     buff_t* ardent_defender;
@@ -228,7 +232,8 @@ public:
   struct cooldowns_t
   {
     // Required to get various cooldown-reducing procs procs working
-    cooldown_t* avenging_wrath; // Righteous Protector (prot)
+    cooldown_t* avenging_wrath; // Righteous Protector (Prot)
+    cooldown_t* sentinel; // Righteous Protector (Prot)
     cooldown_t* hammer_of_justice;
     cooldown_t* judgment_of_light_icd;
     cooldown_t* the_magistrates_judgment_icd;
@@ -330,6 +335,7 @@ public:
 
     const spell_data_t* seraphim_buff;
     const spell_data_t* crusade;
+    const spell_data_t* sentinel;
   } spells;
 
   // Talents
@@ -853,6 +859,37 @@ struct forbearance_t : public buff_t
   }
 };
 
+struct sentinel_buff_t : public buff_t
+{
+  sentinel_buff_t( paladin_t* p );
+
+  double get_damage_mod() const
+  {
+    return damage_modifier;
+  }
+  double get_damage_reduction_mod() const
+  {
+    return damage_reduction_modifier * ( this->check() );
+  }
+
+  double get_health_bonus() const
+  {
+    return health_bonus * ( this->check() );
+  }
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override;
+
+private:
+  double damage_modifier;
+  double damage_reduction_modifier;
+  double health_bonus;
+};
+
+struct sentinel_decay_buff_t : public buff_t
+{
+  sentinel_decay_buff_t( paladin_t* p );
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override;
+};
+
 }  // namespace buffs
 
 // ==========================================================================
@@ -874,9 +911,10 @@ public:
   // Damage increase whitelists
   struct affected_by_t
   {
-    bool avenging_wrath, judgment, blessing_of_dawn, the_magistrates_judgment, seal_of_reprisal, seal_of_order, bastion_of_light; // Shared
-    bool crusade, divine_purpose, divine_purpose_cost, hand_of_light, final_reckoning, reckoning, ret_t29_2p, ret_t29_4p; // Ret
+    bool avenging_wrath, judgment, blessing_of_dawn, the_magistrates_judgment, seal_of_reprisal, seal_of_order, divine_purpose, divine_purpose_cost; // Shared
+    bool crusade, hand_of_light, final_reckoning, reckoning, ret_t29_2p, ret_t29_4p; // Ret
     bool avenging_crusader; // Holy
+    bool bastion_of_light, sentinel; // Prot
   } affected_by;
 
   // haste scaling bools
@@ -908,6 +946,11 @@ public:
     {
       this->affected_by.avenging_crusader = this->data().affected_by( p->talents.avenging_crusader->effectN(1) );
     }
+    if ( p->specialization()  == PALADIN_PROTECTION)
+    {
+      this->affected_by.bastion_of_light = this->data().affected_by( p->talents.bastion_of_light->effectN( 1 ) );
+      this->affected_by.sentinel = this->data().affected_by( p->talents.sentinel->effectN( 1 ) );
+    }
 
     this -> affected_by.judgment = this -> data().affected_by( p -> spells.judgment_debuff -> effectN( 1 ) );
     this -> affected_by.avenging_wrath = this -> data().affected_by( p -> spells.avenging_wrath -> effectN( 2 ) );
@@ -916,7 +959,6 @@ public:
     this -> affected_by.blessing_of_dawn = this -> data().affected_by( p -> talents.of_dusk_and_dawn -> effectN( 1 ).trigger() -> effectN( 1 ) );
     this -> affected_by.the_magistrates_judgment = this -> data().affected_by( p -> buffs.the_magistrates_judgment -> data().effectN( 1 ) );
     this -> affected_by.seal_of_reprisal = this -> data().affected_by( p-> talents.seal_of_reprisal->effectN( 1 ) );
-    this -> affected_by.bastion_of_light = this -> data().affected_by( p->talents.bastion_of_light->effectN( 1 ) );
   }
 
   paladin_t* p()
@@ -1035,6 +1077,13 @@ public:
       if ( affected_by.ret_t29_4p && p() -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T29, B4 ) )
       {
         am *= 1.0 + p() -> sets -> set( PALADIN_RETRIBUTION, T29, B4 ) -> effectN( 1 ).percent();
+      }
+    }
+    if ( p()->specialization()==PALADIN_PROTECTION )
+    {
+      if ( affected_by.sentinel && p()->buffs.sentinel->up() )
+      {
+        am *= 1.0 + p()->buffs.sentinel->get_damage_mod();
       }
     }
 
@@ -1388,10 +1437,11 @@ struct holy_power_consumer_t : public Base
             "Righteous protector reduced the cooldown of Avenging Wrath and Guardian of Ancient Kings by {} sec",
             num_hopo_spent );
 
-        // 2022-11-08 Sentinel's cooldown is only reduced if it wasn't a free holy power spender
-        if ( !( p->bugs && p->talents.sentinel->ok() && !isFreeSLDPSpender ) )
-        {
           p->cooldowns.avenging_wrath->adjust( reduction );
+        // 2022-11-08 Sentinel's cooldown is only reduced if it wasn't a free holy power spender
+        if ( !( p->bugs && !isFreeSLDPSpender ) )
+        {
+          p->cooldowns.sentinel->adjust( reduction );
         }
         p->cooldowns.guardian_of_ancient_kings->adjust( reduction );
 
