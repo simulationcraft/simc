@@ -2325,9 +2325,18 @@ void homeland_raid_horn(special_effect_t& effect)
 void blazebinders_hoof(special_effect_t& effect)
 {
   auto buff = create_buff<stat_buff_t>(effect.player, effect.driver() );
-  auto value = buff -> check_stack_value() * effect.driver()->effectN( 1 ).average( effect.item );
-  buff -> add_stat( STAT_STRENGTH, value );
-  buff->add_invalidate( CACHE_STRENGTH );
+  buff->set_default_value(effect.driver() -> effectN( 1 ).average(effect.item) );
+  auto proc = create_proc_action<generic_proc_t>( "bound_by_fire_and_blaze", effect, "bound_by_fire_and_blaze", 383926 );
+  special_effect_t* bound_by_fire_and_blaze = new special_effect_t( effect.player );
+  bound_by_fire_and_blaze->item = effect.item;
+  bound_by_fire_and_blaze->spell_id = 383926;
+  bound_by_fire_and_blaze->proc_flags_  = PF_ALL_DAMAGE;
+  bound_by_fire_and_blaze->proc_flags2_ = PF2_ALL_HIT;
+  bound_by_fire_and_blaze->execute_action = proc;
+  auto cb = new dbc_proc_callback_t( effect.player, *bound_by_fire_and_blaze );
+  effect.player -> special_effects.push_back( bound_by_fire_and_blaze );
+  cb->initialize();
+  cb->deactivate();
 
   struct burnout_wave_t : public proc_spell_t
   {
@@ -2351,11 +2360,16 @@ void blazebinders_hoof(special_effect_t& effect)
 
   action_t* action = create_proc_action<burnout_wave_t>( "burnout_wave", effect, buff );
 
-  buff->set_stack_change_callback( [ action ](buff_t*, int, int new_) 
+  buff->set_stack_change_callback( [ action, cb ](buff_t*, int, int new_) 
   {
     if( !new_ )
     {
       action->execute();
+      cb->deactivate();
+    }
+    else
+    {
+      cb->activate();
     }
   } );
   effect.custom_buff = buff;
