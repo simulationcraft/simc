@@ -2326,10 +2326,13 @@ void blazebinders_hoof(special_effect_t& effect)
 {
   auto buff = create_buff<stat_buff_t>(effect.player, effect.driver());
   buff->set_default_value(effect.driver()->effectN(1).average(effect.item));
+  buff->set_refresh_behavior(buff_refresh_behavior::DISABLED);
   special_effect_t* bound_by_fire_and_blaze = new special_effect_t(effect.player);
   bound_by_fire_and_blaze->item = effect.item;
   bound_by_fire_and_blaze->source = effect.source;
+  bound_by_fire_and_blaze->spell_id = effect.driver()->id();
   bound_by_fire_and_blaze->custom_buff = buff;
+  bound_by_fire_and_blaze->cooldown_ = 0_ms;
   effect.player->special_effects.push_back(bound_by_fire_and_blaze);
   auto cb = new dbc_proc_callback_t(effect.player, *bound_by_fire_and_blaze);
 
@@ -2347,7 +2350,7 @@ void blazebinders_hoof(special_effect_t& effect)
     {
       double m = proc_spell_t::composite_da_multiplier( s );
 
-      m *= 1.0 + buff -> check_stack_value();
+      m *= buff -> stack();
 
       return m;
     }
@@ -2357,7 +2360,7 @@ void blazebinders_hoof(special_effect_t& effect)
 
   buff->set_stack_change_callback( [ action, cb ](buff_t*, int, int new_) 
   {
-    if( new_ == 0 )
+    if( !new_ )
     {
       action->execute();
       cb->deactivate();
