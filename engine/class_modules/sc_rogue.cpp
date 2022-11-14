@@ -4580,7 +4580,6 @@ struct mutilate_t : public rogue_attack_t
     void impact( action_state_t* state ) override
     {
       rogue_attack_t::impact( state );
-      trigger_seal_fate( state );
 
       if ( doomblade_dot && result_is_hit( state->result ) )
       {
@@ -4593,6 +4592,9 @@ struct mutilate_t : public rogue_attack_t
 
     // 2021-10-07 - Works as of 9.1.5 PTR
     bool procs_shadow_blades_damage() const override
+    { return true; }
+
+    bool procs_seal_fate() const override
     { return true; }
   };
 
@@ -6037,15 +6039,11 @@ struct sepsis_covenant_t : public rogue_attack_t
       dual = true;
     }
 
-    void impact( action_state_t* state ) override
-    {
-      // 2020-12-30- Due to flagging as a generator, the final hit can trigger Seal Fate
-      rogue_attack_t::impact( state );
-      trigger_seal_fate( state );
-    }
-
     // 2021-04-22-- Confirmed as working in-game
     bool procs_shadow_blades_damage() const override
+    { return true; }
+
+    bool procs_seal_fate() const override
     { return true; }
   };
 
