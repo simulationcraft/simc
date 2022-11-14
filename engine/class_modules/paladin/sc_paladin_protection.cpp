@@ -27,6 +27,12 @@ namespace paladin {
     health_bonus              = data().effectN( 11 ).percent();
     damage_reduction_modifier = data().effectN( 12 ).percent();
 
+    if ( p->talents.sanctified_wrath->ok() )
+    {
+      // the tooltip doesn't say this, but the spelldata does
+      base_buff_duration *= 1.0 + p->talents.sanctified_wrath->effectN( 1 ).percent();
+    }
+
     // Sentinel starts at max stacks
     set_initial_stack( max_stack() );
 
@@ -675,9 +681,9 @@ struct sentinel_t : public paladin_spell_t
       p()->buffs.sentinel_decay->expire();
 
     p()->buffs.sentinel->trigger();
-    timespan_t firstExpireDuration = timespan_t::from_seconds(5);
-    if ( p()->talents.sanctified_wrath->ok() )
-      firstExpireDuration += timespan_t::from_seconds( 5 );
+    // Those 15 seconds may be the total stack count, but I won't risk it.
+    // First expire is after buff length minus 15 seconds, but at least 1 second (E.g., Retribution Aura-procced Sentinel decays instantly)
+    timespan_t firstExpireDuration = std::max(p()->buffs.sentinel->buff_duration() - timespan_t::from_seconds(15), timespan_t::from_seconds(1));
     p()->buffs.sentinel_decay->trigger( firstExpireDuration );
   }
 };
