@@ -158,29 +158,32 @@ public:
   // of abilities.
   void apply_buff_effects()
   {
-//    TODO: only effect 1
-//    parse_buff_effects( p()->buff.brewmasters_rhythm );
-//    parse_buff_effects( p()->buff.storm_earth_and_fire );
-//    parse_buff_effects( p()->buff.serenity );
-//    parse_buff_effects( p()->buff.touch_of_death_mw );
-//    parse_buff_effects( p()->buff.dance_of_chiji_hidden );
-//    parse_buff_effects( p()->buff.counterstrike );
-//    parse_buff_effects( p()->buff.hit_scheme );
-//    TODO: Look into using stack value for both Effect 1 and Effect 2
-//    parse_buff_effects( p()->buff.the_emperors_capacitor );
-//    parse_buff_effects( p()->buff.lifecycles_enveloping_mist );
-//    parse_buff_effects( p()->buff.lifecycles_vivify );
-//    parse_buff_effects( p()->buff.refreshing_jade_wind );
-//    parse_buff_effects( p()->buff.purified_chi );
-//    parse_buff_effects( p()->buff.mighty_pour );
-//    parse_buff_effects( p()->buff.invoke_chiji_evm );
-//    TODO: Look into using stack value for both Effect 1 and Effect 2
-//    parse_buff_effects( p()->buff.hit_combo, true, true );
-//    parse_buff_effects( p()->buff.transfer_the_power, true, true );
-//    parse_buff_effects( p()->buff.chi_energy, true, true );
-//    parse_buff_effects( p()->buff.kicks_of_flowing_momentum );
-//    parse_buff_effects( p()->buff.fists_of_flowing_momentum, true, true );
-//    parse_buff_effects( p()->buff.fists_of_flowing_momentum_fof );
+    // Brewmaster
+    //    TODO: only effect 1
+    //    parse_buff_effects( p()->buff.brewmasters_rhythm );
+    //    parse_buff_effects( p()->buff.counterstrike );
+    //    parse_buff_effects( p()->buff.hit_scheme );
+    //    parse_buff_effects( p()->buff.mighty_pour );
+    //    parse_buff_effects( p()->buff.purified_chi );
+    // Mistweaver
+    //    parse_buff_effects( p()->buff.invoke_chiji_evm );
+    //    parse_buff_effects( p()->buff.lifecycles_enveloping_mist );
+    //    parse_buff_effects( p()->buff.lifecycles_vivify );
+    //    parse_buff_effects( p()->buff.refreshing_jade_wind );
+    //    parse_buff_effects( p()->buff.touch_of_death_mw );
+    // Windwalker
+    //    parse_buff_effects( p()->buff.chi_energy, true, true );
+    //    parse_buff_effects( p()->buff.dance_of_chiji_hidden );
+    //    parse_buff_effects( p()->buff.fists_of_flowing_momentum, true, true );
+    //    parse_buff_effects( p()->buff.fists_of_flowing_momentum_fof );
+    //    TODO: Look into using stack value for both Effect 1 and Effect 2
+    //    parse_buff_effects( p()->buff.hit_combo, true, true );
+    //    parse_buff_effects( p()->buff.kicks_of_flowing_momentum );
+    //    parse_buff_effects( p()->buff.storm_earth_and_fire );
+    //    parse_buff_effects( p()->buff.serenity );
+    //    TODO: Look into using stack value for both Effect 1 and Effect 2
+    //    parse_buff_effects( p()->buff.the_emperors_capacitor );
+    //    parse_buff_effects( p()->buff.transfer_the_power, true, true );
   }
 
   // Action-related parsing of debuffs. Does not work on spells
