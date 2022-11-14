@@ -203,6 +203,7 @@ public:
     buff_t* unnerving_focus;
     // Tier
     buff_t* strike_vulnerabilities;
+    buff_t* vanguards_determination;
 
     // Shadowland Legendary
     buff_t* battlelord;
@@ -661,6 +662,8 @@ public:
     const spell_data_t* t29_arms_4pc;
     const spell_data_t* t29_fury_2pc;
     const spell_data_t* t29_fury_4pc;
+    const spell_data_t* t29_prot_2pc;
+    const spell_data_t* t29_prot_4pc;
   } tier_set;
 
   struct legendary_t
@@ -995,6 +998,7 @@ struct warrior_action_t : public Base
     merciless_bonegrinder, juggernaut, juggernaut_prot;
     // tier
     bool t29_arms_4pc;
+    bool t29_prot_2pc;
     // azerite & conduit
     bool crushing_assault, ashen_juggernaut_conduit;
 
@@ -1016,6 +1020,7 @@ struct warrior_action_t : public Base
         juggernaut( false ),
         juggernaut_prot( false ),
         t29_arms_4pc ( false ),
+        t29_prot_2pc( false ),
         crushing_assault( false ),
         ashen_juggernaut_conduit( false )
     {
@@ -1155,6 +1160,7 @@ public:
     affected_by.avatar                   = ab::data().affected_by( p()->talents.warrior.avatar->effectN( 1 ) );
     affected_by.recklessness             = ab::data().affected_by( p()->spell.recklessness_buff->effectN( 1 ) );
     affected_by.t29_arms_4pc             = ab::data().affected_by( p()->find_spell( 394173 )->effectN( 1 ) );
+    affected_by.t29_prot_2pc             = ab::data().affected_by( p()->find_spell( 394056 )->effectN( 1 ) );
 
     initialized = true;
   }
@@ -1332,6 +1338,11 @@ public:
       dm *= 1.0 + p()->buff.strike_vulnerabilities->check_value();
     }
 
+    if ( affected_by.t29_prot_2pc && p()->buff.vanguards_determination->up() )
+    {
+      dm *= 1.0 + p()->buff.vanguards_determination->check_value();
+    }
+
     return dm;
   }
 
@@ -1354,6 +1365,11 @@ public:
     if ( affected_by.t29_arms_4pc && p()->buff.strike_vulnerabilities->up() )
     {
       tm *= 1.0 + p()->buff.strike_vulnerabilities->check_value();
+    }
+
+    if ( affected_by.t29_prot_2pc && p()->buff.vanguards_determination->up() )
+    {
+      tm *= 1.0 + p()->buff.vanguards_determination->check_value();
     }
 
     return tm;
@@ -5141,6 +5157,9 @@ struct revenge_t : public warrior_attack_t
     {
       p()->resource_gain(RESOURCE_RAGE, last_resource_cost * rage_from_frothing_berserker, p()->gain.frothing_berserker);
     }
+
+    if ( p() -> sets->has_set_bonus( WARRIOR_PROTECTION, T29, B2 ) )
+      p()->buff.vanguards_determination->trigger();
   }
 
   void impact( action_state_t* state ) override
@@ -8208,6 +8227,8 @@ void warrior_t::init_spells()
   tier_set.t29_arms_4pc               = sets->set( WARRIOR_ARMS, T29, B4 );
   tier_set.t29_fury_2pc               = sets->set( WARRIOR_FURY, T29, B2 );
   tier_set.t29_fury_4pc               = sets->set( WARRIOR_FURY, T29, B4 );
+  tier_set.t29_prot_2pc               = sets->set( WARRIOR_PROTECTION, T29, B2 );
+  tier_set.t29_prot_4pc               = sets->set( WARRIOR_PROTECTION, T29, B4 );
 
   // Active spells
   //active.ancient_aftershock_pulse = nullptr;
@@ -9451,6 +9472,10 @@ void warrior_t::create_buffs()
                                            find_spell( 394173 ) : spell_data_t::not_found() )
                                ->set_default_value( find_spell( 394173 )->effectN( 1 ).percent() )
                                ->add_invalidate( CACHE_CRIT_CHANCE );
+
+  buff.vanguards_determination = make_buff( this, "vanguards_determination", tier_set.t29_prot_2pc->ok() ?
+                                            find_spell( 394056 ) : spell_data_t::not_found() )
+                                    ->set_default_value( find_spell( 394056 )->effectN( 1 ).percent());
 }
 // warrior_t::init_rng ==================================================
 void warrior_t::init_rng()
@@ -10574,6 +10599,12 @@ void warrior_t::target_mitigation( school_e school, result_amount_type dtype, ac
     {
       s->result_amount *= 1.0 + buff.die_by_the_sword->default_value;
     }
+
+    if ( specialization() == WARRIOR_PROTECTION )
+      s->result_amount *= 1.0 + spec.vanguard -> effectN( 3 ).percent();
+
+    if ( buff.vanguards_determination->up() )
+      s->result_amount *= 1.0 + sets->set( WARRIOR_PROTECTION, T29, B2 )->effectN( 1 ).trigger()->effectN( 2 ).percent();
   }
 }
 
