@@ -195,6 +195,8 @@ public:
   {
 //    parse_debuff_effects( []( monk_td_t* t ) { return t->debuffs.weapons_of_order->check(); },
 //                          p()->shared.weapons_of_order ); // True, true
+//    parse_debuff_effects( []( monk_td_t* t ) { return t->debuffs.keefers_skyreach_debuff->check(); },
+//                          p()->shared.skyreach );
   }
 
   // Utility function to search spell data for matching effect.
