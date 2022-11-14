@@ -240,11 +240,11 @@ struct hand_of_guldan_t : public demonology_spell_t
     if ( last_resource_cost == 3.0 )
       p()->procs.three_shard_hog->occur();
 
-    //if ( p()->talents.demonic_meteor.ok() && rng().roll( last_resource_cost * p()->talents.demonic_meteor->effectN( 2 ).percent() ) )
-    //{
-    //  p()->resource_gain( RESOURCE_SOUL_SHARD, 1, p()->gains.demonic_meteor );
-    //  p()->procs.demonic_meteor->occur();
-    //}
+    if ( p()->talents.demonic_meteor.ok() && rng().roll( last_resource_cost * p()->talents.demonic_meteor->effectN( 2 ).percent() ) )
+    {
+      p()->resource_gain( RESOURCE_SOUL_SHARD, 1, p()->gains.demonic_meteor );
+      p()->procs.demonic_meteor->occur();
+    }
   }
 
   void impact( action_state_t* s ) override
