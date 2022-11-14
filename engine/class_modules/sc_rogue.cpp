@@ -2114,7 +2114,7 @@ public:
 
     // Registered Damage Buffs
     for ( auto damage_buff : direct_damage_buffs )
-      m *= damage_buff->stack_value_direct();
+      m *= damage_buff->is_stacking ? damage_buff->stack_value_direct() : damage_buff->value_direct();
     
     // Mastery
     if ( affected_by.mastery_executioner.direct || affected_by.mastery_potent_assassin.direct )
@@ -2143,7 +2143,7 @@ public:
 
     // Registered Damage Buffs
     for ( auto damage_buff : periodic_damage_buffs )
-      m *= damage_buff->stack_value_periodic();
+      m *= damage_buff->is_stacking ? damage_buff->stack_value_periodic() : damage_buff->value_periodic();
 
     // Masteries for Assassination and Subtlety have periodic damage in a separate effect. Just to be sure, use that instead of direct mastery_value.
     if ( affected_by.mastery_executioner.periodic )
@@ -3067,7 +3067,7 @@ struct melee_t : public rogue_attack_t
 
     // Registered Damage Buffs
     for ( auto damage_buff : auto_attack_damage_buffs )
-      m *= damage_buff->stack_value_auto_attack();
+      m *= damage_buff->is_stacking ? damage_buff->stack_value_auto_attack() : damage_buff->value_auto_attack();
 
     return m;
   }
@@ -3313,7 +3313,13 @@ struct backstab_t : public rogue_attack_t
       p()->buffs.the_rotten->expire( 1_ms );
     }
 
-    p()->buffs.perforated_veins->expire( 1_ms );
+    if ( !is_secondary_action() )
+    {
+      if ( p()->talent.subtlety.perforated_veins->ok() )
+        make_event( *p()->sim, [this] { p()->buffs.perforated_veins->decrement(); } );
+      else
+        p()->buffs.perforated_veins->expire( 1_ms );
+    }
   }
 
   void impact( action_state_t* state ) override
@@ -4170,7 +4176,13 @@ struct gloomblade_t : public rogue_attack_t
       p()->buffs.the_rotten->expire( 1_ms );
     }
 
-    p()->buffs.perforated_veins->expire( 1_ms );
+    if ( !is_secondary_action() )
+    {
+      if ( p()->talent.subtlety.perforated_veins->ok() )
+        make_event( *p()->sim, [this] { p()->buffs.perforated_veins->decrement(); } );
+      else
+        p()->buffs.perforated_veins->expire( 1_ms );
+    }
   }
 
   void impact( action_state_t* state ) override
@@ -4708,6 +4720,23 @@ struct rupture_t : public rogue_attack_t
     }
 
     return n;
+  }
+
+  size_t available_targets( std::vector< player_t* >& tl ) const override
+  {
+    rogue_attack_t::available_targets( tl );
+
+    // Replicating Shadows does not smart target (but is planned to) but prefers the nearest target
+    // As this is somewhat possible to play around, randomize non-primary target order for now
+    if ( p()->talent.subtlety.replicating_shadows->ok() && is_aoe() && tl.size() > 1 )
+    {
+      auto it = std::partition( tl.begin(), tl.end(), [this]( player_t* t ) {
+        return t == this->target;
+      } );
+      rng().shuffle( it, tl.end() );
+    }
+
+    return tl.size();
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
@@ -9957,13 +9986,6 @@ void rogue_t::init_spells()
   else
     spec.invigorating_shadowdust_cdr = spell_data_t::not_found();
 
-  if ( talent.subtlety.invigorating_shadowdust->ok() )
-    spec.invigorating_shadowdust_cdr = talent.subtlety.invigorating_shadowdust;
-  else if ( legendary.invigorating_shadowdust->ok() )
-    spec.invigorating_shadowdust_cdr = find_spell( 340080 );
-  else
-    spec.invigorating_shadowdust_cdr = spell_data_t::not_found();
-
   if ( talent.subtlety.perforated_veins->ok() )
     spec.perforated_veins_buff = talent.subtlety.perforated_veins->effectN( 1 ).trigger();
   else if ( conduit.perforated_veins.ok() )
@@ -10588,8 +10610,12 @@ void rogue_t::create_buffs()
   if ( talent.subtlety.perforated_veins->ok() )
   {
     buffs.perforated_veins = make_buff<damage_buff_t>( this, "perforated_veins",
-                                                       spec.perforated_veins_buff );
-    buffs.perforated_veins->set_cooldown( timespan_t::zero() );
+                                                       spec.perforated_veins_buff,
+                                                       talent.subtlety.perforated_veins->effectN( 1 ).percent() )
+      ->set_is_stacking_mod( false );
+    buffs.perforated_veins
+      ->set_cooldown( timespan_t::zero() )
+      ->set_refresh_behavior( buff_refresh_behavior::DURATION );
     cooldowns.perforated_veins->base_duration = talent.subtlety.perforated_veins->internal_cooldown();
   }
   else
