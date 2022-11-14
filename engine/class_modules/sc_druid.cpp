@@ -508,6 +508,7 @@ public:
     buff_t* bt_thrash;        // dummy buff
     buff_t* bt_moonfire;      // dummy buff
     buff_t* bt_brutal_slash;  // dummy buff
+    buff_t* bt_feral_frenzy;  // dummy buff
     buff_t* clearcasting_cat;
     buff_t* frantic_momentum;
     buff_t* incarnation_cat;
@@ -1695,7 +1696,7 @@ struct bt_dummy_buff_t : public druid_buff_t
 
     if ( ( p()->buff.bt_rake->check() + p()->buff.bt_shred->check() + p()->buff.bt_swipe->check() +
            p()->buff.bt_thrash->check() + p()->buff.bt_moonfire->check() + p()->buff.bt_brutal_slash->check() +
-           !this->check() ) < count )
+           p()->buff.bt_feral_frenzy->check() + !this->check() ) < count )
     {
       return base_t::trigger( s, v, c, d );
     }
@@ -1706,6 +1707,7 @@ struct bt_dummy_buff_t : public druid_buff_t
     p()->buff.bt_thrash->expire();
     p()->buff.bt_moonfire->expire();
     p()->buff.bt_brutal_slash->expire();
+    p()->buff.bt_feral_frenzy->expire();
 
     p()->buff.bloodtalons->trigger();
 
@@ -3874,6 +3876,13 @@ struct feral_frenzy_t : public cat_attack_t
 
     if ( tick_action )
       tick_action->gain = gain;
+  }
+
+  void execute() override
+  {
+    cat_attack_t::execute();
+
+    p()->buff.bt_feral_frenzy->trigger();
   }
 };
 
@@ -10345,6 +10354,7 @@ void druid_t::create_buffs()
   buff.bt_thrash       = make_buff<bt_dummy_buff_t>( this, "bt_thrash" );
   buff.bt_moonfire     = make_buff<bt_dummy_buff_t>( this, "bt_moonfire" );
   buff.bt_brutal_slash = make_buff<bt_dummy_buff_t>( this, "bt_brutal_slash" );
+  buff.bt_feral_frenzy = make_buff<bt_dummy_buff_t>( this, "bt_feral_frenzy" );
 
   // 1.05s ICD per https://github.com/simulationcraft/simc/commit/b06d0685895adecc94e294f4e3fcdd57ac909a10
   buff.clearcasting_cat = make_buff( this, "clearcasting_cat", talent.omen_of_clarity_cat->effectN( 1 ).trigger() )
@@ -12022,7 +12032,7 @@ std::unique_ptr<expr_t> druid_t::create_expression( std::string_view name_str )
     {
       return make_fn_expr( "active_bt_triggers", [ this ]() {
         return buff.bt_rake->check() + buff.bt_shred->check() + buff.bt_swipe->check() + buff.bt_thrash->check() +
-               buff.bt_moonfire->check() + buff.bt_brutal_slash->check();
+               buff.bt_moonfire->check() + buff.bt_brutal_slash->check() + buff.bt_feral_frenzy->check();
       } );
     }
 
@@ -12036,6 +12046,7 @@ std::unique_ptr<expr_t> druid_t::create_expression( std::string_view name_str )
             buff.bt_swipe->check() ? buff.bt_swipe->remains().total_seconds() : 6.0,
             buff.bt_thrash->check() ? buff.bt_thrash->remains().total_seconds() : 6.0,
             buff.bt_brutal_slash->check() ? buff.bt_brutal_slash->remains().total_seconds() : 6.0,
+            buff.bt_feral_frenzy->check() ? buff.bt_feral_frenzy->remains().total_seconds() : 6.0
         } ) );
       } );
     }
