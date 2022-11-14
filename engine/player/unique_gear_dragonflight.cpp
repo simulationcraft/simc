@@ -2249,7 +2249,7 @@ void dragon_games_equipment(special_effect_t& effect)
   auto buff = create_buff<buff_t>( effect.player , buff_spell );
   buff->tick_on_application = false;
   // Override Duration to trigger the correct number of missiles. Testing as of 11-14-2022 shows it only spawning 3, rather than the 4 expected by spell data.
-  buff->set_duration( ( buff_spell->duration() / 4 ) * effect.player->sim->dragonflight_opts.dragon_games_kicks );
+  buff->set_duration( ( buff_spell->duration() / 4 ) * effect.player->sim->dragonflight_opts.dragon_games_kicks * effect.player->rng().range( effect.player->sim->dragonflight_opts.dragon_games_rng, 1.25) );
   buff->set_tick_callback( [ damage ]( buff_t* b, int, timespan_t ) {
         damage->execute_on_target( b->player->target );
       } );

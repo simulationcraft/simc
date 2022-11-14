@@ -482,6 +482,8 @@ struct sim_t : private sc_thread_t
     timespan_t alltotem_of_the_master_period = 3_s;
     // Number of balls spawned by Dragon Games Equipment the player will kick at the target
     unsigned int dragon_games_kicks = 3;
+    // Minimum RNG multiplier for Dragon Games Equipment's number of kicks
+    double dragon_games_rng = 0.75;
   } dragonflight_opts;
 
   // Auras and De-Buffs
