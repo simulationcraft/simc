@@ -8517,6 +8517,12 @@ public:
       .operation( hotfix::HOTFIX_SET )
       .modifier( 20.0 )
       .verification_value( 0.0 );
+
+    hotfix::register_spell( "Mage", "2022-11-14", "Ebonbolt is slower than spell data suggests.", 257537 )
+      .field( "prj_speed" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 20.0 )
+      .verification_value( 30.0 );
   }
 
   bool valid() const override { return true; }
