@@ -2274,10 +2274,7 @@ void bonemaws_big_toe(special_effect_t& effect)
     } );
   damage->split_aoe_damage = true;
   damage->aoe = -1;
-  effect.proc_flags_  = PF_ALL_DAMAGE;
-  effect.proc_flags2_ = PF2_ALL_HIT;
   effect.custom_buff = buff;
-  new dbc_proc_callback_t( effect.player, effect );
 }
 
 // Mutated Magmammoth Scale
@@ -2298,6 +2295,28 @@ void mutated_magmammoth_scale(special_effect_t& effect)
   damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN(1).average(effect.item);
   effect.custom_buff = buff;
   new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Homeland Raid Horn
+// 382139 Driver & Buff
+// 384003 Damage Driver
+// 384004 Damage
+// 387777 Damage value
+void homeland_raid_horn(special_effect_t& effect)
+{
+  auto damage = create_proc_action<generic_aoe_proc_t>( "dwarven_barrage", effect, "dwarven_barrage", 384004 );
+  damage->base_dd_min = damage -> base_dd_max = effect.player->find_spell( 387777 )->effectN( 1 ).average( effect.item );
+  // Up to 5 targets, Including the Player
+  damage->aoe = effect.driver()-> effectN( 2 ).base_value() - 1;
+  damage->reduced_aoe_targets = 1;
+
+  auto buff_spell = effect.player->find_spell( 382139 );
+  auto buff = create_buff<buff_t>( effect.player , buff_spell );
+  buff->set_tick_callback( [ damage ]( buff_t* b, int, timespan_t ) {
+        damage->execute();
+      } );
+
+  effect.custom_buff = buff;
 }
 
 // Weapons
@@ -2658,6 +2677,7 @@ void register_special_effects()
   register_special_effect( 386692, items::dragon_games_equipment);
   register_special_effect( 397400, items::bonemaws_big_toe );
   register_special_effect( 381705, items::mutated_magmammoth_scale );
+  register_special_effect( 382139, items::homeland_raid_horn );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );  // bronzed grip wrappings embellishment
