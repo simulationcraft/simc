@@ -3895,6 +3895,7 @@ void sim_t::create_options()
   add_option( opt_float( "dragonflight.decoration_of_flame_miss_chance", dragonflight_opts.decoration_of_flame_miss_chance, 0.0, 1.0 ) );
   add_option( opt_float( "dragonflight.manic_grieftorch_chance", dragonflight_opts.manic_grieftorch_chance, 0.0, 1.0 ) );
   add_option( opt_timespan( "dragonflight.alltotem_of_the_master_period", dragonflight_opts.alltotem_of_the_master_period, 0_s, timespan_t::max() ) );
+  add_option( opt_uint("dragonflight.dragon_games_kicks", dragonflight_opts.dragon_games_kicks, 0, 3 ) );
 }
 
 // sim_t::parse_option ======================================================

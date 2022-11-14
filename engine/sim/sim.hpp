@@ -477,6 +477,7 @@ struct sim_t : private sc_thread_t
     double decoration_of_flame_miss_chance = 0.05;
     double manic_grieftorch_chance = 0.2;
     timespan_t alltotem_of_the_master_period = 3_s;
+    unsigned int dragon_games_kicks = 3;
   } dragonflight_opts;
 
   // Auras and De-Buffs
