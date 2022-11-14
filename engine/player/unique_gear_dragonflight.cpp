@@ -2326,7 +2326,21 @@ void blazebinders_hoof(special_effect_t& effect)
 {
   auto buff = create_buff<stat_buff_t>(effect.player, effect.driver() );
   buff->set_default_value(effect.driver() -> effectN( 1 ).average(effect.item) );
-  auto proc = create_proc_action<generic_proc_t>( "bound_by_fire_and_blaze", effect, "bound_by_fire_and_blaze", 383926 );
+
+  struct bound_by_fire_and_blaze_t : public proc_spell_t
+  {
+    buff_t* buff;
+    bound_by_fire_and_blaze_t( const special_effect_t& e, buff_t* b ) :
+    proc_spell_t( "bound_by_fire_and_blaze", e.player, e.player -> find_spell(383926), e.item), buff(b)
+    {}
+    
+    void execute() override
+    {
+      buff -> trigger();
+    }
+  };
+
+  auto proc = create_proc_action<bound_by_fire_and_blaze_t>( "bound_by_fire_and_blaze", effect, buff );
   special_effect_t* bound_by_fire_and_blaze = new special_effect_t( effect.player );
   bound_by_fire_and_blaze->item = effect.item;
   bound_by_fire_and_blaze->spell_id = 383926;
@@ -2334,7 +2348,6 @@ void blazebinders_hoof(special_effect_t& effect)
   bound_by_fire_and_blaze->proc_flags2_ = PF2_ALL_HIT;
   bound_by_fire_and_blaze->execute_action = proc;
   auto cb = new dbc_proc_callback_t( effect.player, *bound_by_fire_and_blaze );
-  effect.player -> special_effects.push_back( bound_by_fire_and_blaze );
   cb->initialize();
   cb->deactivate();
 
@@ -2372,7 +2385,8 @@ void blazebinders_hoof(special_effect_t& effect)
       cb->activate();
     }
   } );
-  effect.custom_buff = buff;
+  effect.player -> special_effects.push_back( bound_by_fire_and_blaze );
+  effect.execute_action = proc;
 }
 
 
