@@ -271,8 +271,7 @@ struct corruption_t : public warlock_spell_t
 
         if ( p()->talents.doom_blossom.ok() )
         {
-          auto target_data = td( d->state->target );
-          if ( target_data->debuffs_malefic_affliction->check() && rng().roll( target_data->debuffs_malefic_affliction->check() * p()->talents.doom_blossom->effectN( 1 ).percent() ) )
+          if ( p()->buffs.malefic_affliction->check() && rng().roll( p()->buffs.malefic_affliction->check() * p()->talents.doom_blossom->effectN( 1 ).percent() ) )
           {
             doom_blossom_proc->execute_on_target( d->state->target );
             p()->procs.doom_blossom->occur();
@@ -919,9 +918,6 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
 
   debuffs_shadow_embrace = make_buff( *this, "shadow_embrace", p.talents.shadow_embrace_debuff )
                                ->set_default_value( p.talents.shadow_embrace->effectN( 1 ).percent() );
-
-  debuffs_malefic_affliction = make_buff( *this, "malefic_affliction", p.talents.malefic_affliction_debuff )
-                                   ->set_default_value( p.talents.malefic_affliction->effectN( 1 ).percent() );
 
   debuffs_dread_touch = make_buff( *this, "dread_touch", p.talents.dread_touch_debuff )
                             ->set_default_value( p.talents.dread_touch_debuff->effectN( 1 ).percent() );
