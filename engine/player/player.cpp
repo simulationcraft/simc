@@ -4184,6 +4184,9 @@ double player_t::composite_melee_speed() const
   if ( buffs.delirious_frenzy && buffs.delirious_frenzy->check() )
     h *= 1.0 / ( 1.0 + buffs.delirious_frenzy->check_stack_value() );
 
+  if ( buffs.way_of_controlled_currents && buffs.way_of_controlled_currents->check() )
+    h *= 1.0 / ( 1.0 + buffs.way_of_controlled_currents->check_stack_value() );
+
   return h;
 }
 
@@ -9223,6 +9226,17 @@ struct use_item_t : public action_t
     return action_t::ready();
   }
 
+  bool target_ready( player_t* t ) override
+  {
+    if ( !item )
+      return false;
+
+    if ( action )
+      return action->target_ready( t );
+
+    return action_t::target_ready( t );
+  }
+
   std::unique_ptr<expr_t> create_special_effect_expr( util::span<const util::string_view> data_str_split )
   {
     struct use_item_buff_type_expr_t : public expr_t
@@ -9369,6 +9383,20 @@ struct use_items_t : public action_t
       {
         return true;
       }
+    }
+
+    return false;
+  }
+
+  bool target_ready( player_t* t ) override
+  {
+    if ( !action_t::target_ready( t ) )
+      return false;
+
+    for ( const auto action : use_actions )
+    {
+      if ( action->target_ready( t ) )
+        return true;
     }
 
     return false;

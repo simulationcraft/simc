@@ -1004,6 +1004,7 @@ Class            : Evoker
 School           : Physical
 Spell Type       : None
 Duration         : 6 seconds
+Cooldown         : 1 seconds
 Charges          : 1 (35 seconds cooldown)
 Category         : 1948: Aerial Mastery (365933 effect#1), Blessing of the Bronze (381748 effect#1), Flow State (390148 effect#3)
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11)
