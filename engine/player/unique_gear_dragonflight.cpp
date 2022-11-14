@@ -2242,17 +2242,19 @@ void idol_of_trampling_hooves(special_effect_t& effect)
 // TODO - Add option to modify number of balls kicked. Potentially buff duration modifier?  
 void dragon_games_equipment(special_effect_t& effect)
 {
+  auto damage = create_proc_action<generic_aoe_proc_t>( "dragon_games_equipment", effect, "dragon_games_equipment", 386708 );
+  damage -> base_dd_min = damage -> base_dd_max = effect.player->find_spell(383950)->effectN(1).average(effect.item);
+  damage -> aoe = 0;
+
   auto buff_spell = effect.player->find_spell( 386692 );
   auto buff = create_buff<buff_t>( effect.player , buff_spell );
   buff->tick_on_application = false;
   // Override Duration to trigger the correct number of missiles. Testing as of 11-14-2022 shows it only spawning 3, rather than the 4 expected by spell data.
   buff->set_duration( 750_ms );
-  auto damage = create_proc_action<generic_aoe_proc_t>( "dragon_games_equipment", effect, "dragon_games_equipment", 386708 );
-  damage -> base_dd_min = damage -> base_dd_max = effect.player->find_spell(383950)->effectN(1).average(effect.item);
-  damage -> aoe = 0;
   buff -> set_tick_callback( [ damage ]( buff_t* b, int, timespan_t ) {
         damage->execute_on_target( b->player->target );
       } );
+
   effect.custom_buff = buff;
   new dbc_proc_callback_t( effect.player, effect );
 }
