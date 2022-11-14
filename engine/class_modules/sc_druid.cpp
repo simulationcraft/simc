@@ -2939,7 +2939,7 @@ public:
   {
     BASE::impact( s );
 
-    if ( !p_->active.astral_smolder || !s->result_amount || s->result != RESULT_CRIT )
+    if ( !p_->active.astral_smolder || !s->result_amount || s->result != RESULT_CRIT || BASE::is_free_proc() )
       return;
 
     assert( other_ecl && other_dot );
