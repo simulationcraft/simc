@@ -352,50 +352,26 @@ std::string report_helper::pretty_spell_text( const spell_data_t& default_spell,
 
 bool report_helper::check_gear( player_t& p, sim_t& sim )
 {
-  // TODO: Add renown check?
   std::string tier_name;
   unsigned int max_ilevel_allowed = 0;
   unsigned int legendary_ilevel   = 0;
-  unsigned int max_conduit_rank   = 0;
-  int max_legendary_items         = 1;
-  int equipped_legendaries        = 0; // counter
+  int max_legendary_items         = 0;
+  int equipped_legendaries        = 0;  // counter
 
   if ( p.report_information.save_str.find( "PR" ) != std::string::npos )
   {
     tier_name          = "PR";
-    max_ilevel_allowed = 184;
-    legendary_ilevel   = 190;
-    max_conduit_rank   = 4;
+    max_ilevel_allowed = 372;
   }
-  // DS copies T26 ruleset as of 2020-12-01
   else if ( p.report_information.save_str.find( "DS" ) != std::string::npos )
   {
     tier_name          = "DS";
-    max_ilevel_allowed = 233;
-    legendary_ilevel   = 235;
-    max_conduit_rank   = 7;
+    max_ilevel_allowed = 430;
   }
-  else if ( p.report_information.save_str.find( "T26" ) != std::string::npos )
+  else if ( p.report_information.save_str.find( "T29" ) != std::string::npos )
   {
-    tier_name          = "T26";
-    max_ilevel_allowed = 233;
-    legendary_ilevel   = 235;
-    max_conduit_rank   = 7;
-  }
-  else if ( p.report_information.save_str.find( "T27" ) != std::string::npos )
-  {
-    tier_name           = "T27";
-    max_ilevel_allowed  = 259;
-    legendary_ilevel    = 262;
-    max_conduit_rank    = 11;
-  }
-  else if ( p.report_information.save_str.find( "T28" ) != std::string::npos )
-  {
-    tier_name           = "T28";
-    max_ilevel_allowed  = 285;
-    legendary_ilevel    = 291;
-    max_conduit_rank    = 13;
-    max_legendary_items = 2;
+    tier_name          = "T29";
+    max_ilevel_allowed = 430;
   }
   else
   {
@@ -429,46 +405,12 @@ bool report_helper::check_gear( player_t& p, sim_t& sim )
     SLOT_FINGER_2,
   };
 
-  // Domination socket slot list per armor type, based on wowhead's article:
-  // https://www.wowhead.com/guides/shards-of-domination-overview-effects-sockets-rune-word-set-bonuses#domination-sockets
-  const slot_e SLOT_DOMINATION_CLOTH[] = {
-    SLOT_HEAD,
-    SLOT_SHOULDERS,
-    SLOT_CHEST,
-    SLOT_WAIST,
-    SLOT_WRISTS,
-  };
-
-  const slot_e SLOT_DOMINATION_LEATHER[] = {
-    SLOT_HEAD,
-    SLOT_SHOULDERS,
-    SLOT_CHEST,
-    SLOT_HANDS,
-    SLOT_FEET,
-  };
-
-  const slot_e SLOT_DOMINATION_MAIL[] = {
-    SLOT_HEAD,
-    SLOT_SHOULDERS,
-    SLOT_CHEST,
-    SLOT_WAIST,
-    SLOT_FEET,
-  };
-
-  const slot_e SLOT_DOMINATION_PLATE[] = {
-    SLOT_HEAD,
-    SLOT_SHOULDERS,
-    SLOT_CHEST,
-    SLOT_WRISTS,
-    SLOT_HANDS,
-  };
-
   for ( auto& slot : SLOT_OUT_ORDER )
   {
     item_t& item = p.items[ slot ];
 
-    // Shadowlands legendary item count, ignore Sylvanas bow
-    if ( item.parsed.data.quality == ITEM_QUALITY_LEGENDARY && item.parsed.data.id != 186414 )
+    // Legendary item count
+    if ( item.parsed.data.quality == ITEM_QUALITY_LEGENDARY )
     {
       equipped_legendaries++;
       if ( item.item_level() != legendary_ilevel )
@@ -496,9 +438,8 @@ bool report_helper::check_gear( player_t& p, sim_t& sim )
                    util::slot_type_string( slot ), item.item_level(), tier_name, max_ilevel_allowed );
     }
 
-    // Check gems and domination gems sockets
+    // Check gem sockets
     int gem_count = 0;
-    bool has_dom_gem = false;
 
     for ( size_t jj = 0; jj < item.parsed.gem_id.size(); ++jj )
     {
@@ -507,21 +448,25 @@ bool report_helper::check_gear( player_t& p, sim_t& sim )
       if ( gem.id > 0 )
       {
         gem_count++;
-        if ( gem_prop.id && gem_prop.color == SOCKET_COLOR_SHARD_OF_DOMINATION )
-        {
-          has_dom_gem = true;
-        }
       }
     }
 
     // Check gem count and gem slot usage
-    // Blacklist items here if blizzard adds relevant multi-socket items once more
-    if ( gem_count > 1 )
+    if ( gem_count > 1 && item.slot != SLOT_NECK )
+    {
       sim.error( "Player {} has {} with {} gems slotted. Only one gem per item is allowed.\n",
                  p.name(), util::slot_type_string( slot ), gem_count );
+    }
+    
+    // Jewelcrafting item lets you add 3 sockets on a Neck item
+    if ( gem_count > 3 && item.slot == SLOT_NECK )
+    {
+      sim.error( "Player {} has {} with {} gems slotted. Only three gems per neck is allowed.\n",
+                 p.name(), util::slot_type_string( slot ), gem_count );
+    }
 
     // Prismatic sockets can only proc (or be added) on head, neck, wrists, belt and rings
-    if ( gem_count && !has_dom_gem )
+    if ( gem_count )
     {
       bool valid_gem_slot = false;
       for ( auto& gem_slot : SLOT_GEMS )
@@ -535,66 +480,6 @@ bool report_helper::check_gear( player_t& p, sim_t& sim )
       if ( !valid_gem_slot )
         sim.error( "Player {} has prismatic socket on {}, prismatic sockets are only valid on head, neck, wrists, belts and rings.\n",
                     p.name(), util::slot_type_string( slot ) );
-    }
-
-    // Check domination sockets slots based on their armor class
-    // TODO: check if the item actually comes from sanctum of domination?
-    if ( gem_count && has_dom_gem )
-    {
-      bool valid_dom_slot = false;
-      const slot_e* domination_slot_list = nullptr;
-
-      switch( item.parsed.data.item_subclass )
-      {
-        case ITEM_SUBCLASS_ARMOR_CLOTH:
-          domination_slot_list = SLOT_DOMINATION_CLOTH;
-          break;
-        case ITEM_SUBCLASS_ARMOR_LEATHER:
-          domination_slot_list = SLOT_DOMINATION_LEATHER;
-          break;
-        case ITEM_SUBCLASS_ARMOR_MAIL:
-          domination_slot_list = SLOT_DOMINATION_MAIL;
-          break;
-        case ITEM_SUBCLASS_ARMOR_PLATE:
-          domination_slot_list = SLOT_DOMINATION_PLATE;
-          break;
-        default:
-          domination_slot_list = nullptr;
-          break;
-      }
-
-      if ( domination_slot_list )
-      {
-        // 5 slots for each armor
-        for ( auto dom_slot = 0; dom_slot < 5; dom_slot++ )
-        {
-          if ( item.slot == domination_slot_list[ dom_slot ] )
-          {
-            valid_dom_slot = true;
-            break;
-          }
-        }
-      }
-      if ( !valid_dom_slot )
-        sim.error( "Player {} has invalid domination socket on {}, ensure that domination sockets are only on valid slots, depending on armor class.\n",
-                  p.name(), util::slot_type_string( slot ) );
-    }
-
-    // T28 wants you to use gems on legendaries in the corect slot
-    if ( tier_name == "T28" && !gem_count ) {
-      bool valid_gem_slot = false;
-      for ( auto& gem_slot : SLOT_GEMS )
-      {
-        if ( item.slot == gem_slot )
-        {
-          valid_gem_slot = true;
-          break;
-        }
-      }
-      if ( valid_gem_slot ) {
-        sim.error( "Player {} has no prismatic socket on {}, sockets are buyable for weekly chest currency.\n",
-                    p.name(), util::slot_type_string( slot ) );
-      }
     }
 
     // Check if an unique equipped item is equipped multiple times
@@ -630,22 +515,18 @@ bool report_helper::check_gear( player_t& p, sim_t& sim )
     if ( !item.option_stats_str.empty() )
       sim.errorf( "Player %s has %s with stats=, it is not allowed.\n", p.name(), util::slot_type_string( slot ) );
 
-    // Check allowed enchant slots in Shadowlands: chest/back/fingers/weapons
-    // And feet/hands/wrists depending on main stat
+    // Check allowed enchant slots in Dragonflight: chest/back/fingers/weapons/legs
     // Warns about invalid slots and kindly notices if an item is missing an enchant
-    if ( slot == SLOT_CHEST || slot == SLOT_FINGER_1 || slot == SLOT_FINGER_2 || slot == SLOT_MAIN_HAND ||
+    if ( slot == SLOT_CHEST || slot == SLOT_FINGER_1 || slot == SLOT_FINGER_2 || slot == SLOT_MAIN_HAND || slot == SLOT_LEGS ||
          // Make sure offhand enchants are only on regular weapons, not shields or off-hand stat sticks
-         ( slot == SLOT_OFF_HAND && item.weapon()->type != weapon_e::WEAPON_NONE ) ||
-         ( slot == SLOT_WRISTS && p.convert_hybrid_stat( STAT_STR_AGI_INT ) == STAT_INTELLECT ) ||
-         ( slot == SLOT_HANDS && p.convert_hybrid_stat( STAT_STR_AGI_INT ) == STAT_STRENGTH ) ||
-         ( slot == SLOT_FEET && p.convert_hybrid_stat( STAT_STR_AGI_INT ) == STAT_AGILITY ) )
+         ( slot == SLOT_OFF_HAND && item.weapon()->type != weapon_e::WEAPON_NONE ))
     {
-      if ( item.option_enchant_str.empty() )
+      if ( item.option_enchant_str.empty() && item.option_enchant_id_str.empty() )
         sim.errorf( "Player %s is missing an enchantment on %s, please add one.\n", p.name(),
                     util::slot_type_string( slot ) );
     }
-    // Don't enforce stamina + tertiary cloak enchants
-    else if ( !item.option_enchant_str.empty() && slot != SLOT_BACK )
+    // Don't enforce non-throughput cloak, feet, or wrist enchants
+    else if ( !item.option_enchant_str.empty() && slot != SLOT_BACK && slot != SLOT_WRISTS && slot != SLOT_FEET )
       sim.errorf( "Player %s has an invalid enchantment equipped on %s, please remove it. \n", p.name(),
                   util::slot_type_string( slot ) );
 
@@ -664,16 +545,6 @@ bool report_helper::check_gear( player_t& p, sim_t& sim )
   {
     sim.error( "Player {} has {} legendary items equipped, legendary item count for {} is {}, at item level {}.\n",
                p.name(), equipped_legendaries, tier_name, max_legendary_items, legendary_ilevel );
-  }
-
-  // Check that conduit ranks don't exceed the limit
-  if ( p.covenant -> enabled() )
-  {
-    p.covenant -> check_conduits( tier_name, max_conduit_rank );
-  }
-  else
-  {
-    sim.error( "Player {} doesn't have a covenant selected!\n", p.name() );
   }
 
   return true;

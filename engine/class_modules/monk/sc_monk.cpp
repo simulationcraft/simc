@@ -58,7 +58,7 @@ namespace actions
 // Template for common monk action code. See priest_action_t.
 
 template <class Base>
-struct monk_action_t : public Base
+struct monk_action_t : public Base, public parse_buff_effects_t<monk_td_t>
 {
   sef_ability_e sef_ability;
   // Whether the ability is affected by the Windwalker's Mastery.
@@ -99,6 +99,7 @@ public:
 
   monk_action_t( util::string_view n, monk_t* player, const spell_data_t* s = spell_data_t::nil() )
     : ab( n, player, s ),
+      parse_buff_effects_t( this ),
       sef_ability( sef_ability_e::SEF_NONE ),
       ww_mastery( false ),
       may_combo_strike( false ),
@@ -169,6 +170,7 @@ public:
     //    parse_buff_effects( p()->buff.invoke_chiji_evm );
     //    parse_buff_effects( p()->buff.lifecycles_enveloping_mist );
     //    parse_buff_effects( p()->buff.lifecycles_vivify );
+    //    parse_buff_effects( p()->buff.mana_tea );
     //    parse_buff_effects( p()->buff.refreshing_jade_wind );
     //    parse_buff_effects( p()->buff.touch_of_death_mw );
     // Windwalker
@@ -651,7 +653,7 @@ public:
 
   double cost() const override
   {
-    double c = ab::cost();
+    double c = ab::cost() * std::max( 0.0, get_buff_effects_value( cost_buffeffects, false, false ) );
 
     if ( c == 0 )
       return c;
@@ -682,13 +684,6 @@ public:
     }
 
     return c;
-  }
-
-  double recharge_multiplier( const cooldown_t& cd ) const override
-  {
-    double rm = ab::recharge_multiplier( cd );
-
-    return rm;
   }
 
   void consume_resource() override
@@ -879,6 +874,49 @@ public:
     pm *= 1 + p()->talent.general.ferocity_of_xuen->effectN( 1 ).percent();
 
     return pm;
+  }
+
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    double tm = ab::composite_target_multiplier( t ) * get_debuff_effects_value( get_td( t ) );
+    return tm;
+  }
+
+  double composite_ta_multiplier( const action_state_t* s ) const override
+  {
+    double ta = ab::composite_ta_multiplier( s ) * get_buff_effects_value( ta_multiplier_buffeffects );
+    return ta;
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double da = ab::composite_da_multiplier( s ) * get_buff_effects_value( da_multiplier_buffeffects );
+    return da;
+  }
+
+  double composite_crit_chance() const override
+  {
+    double cc = ab::composite_crit_chance() + get_buff_effects_value( crit_chance_buffeffects, true );
+
+    return cc;
+  }
+
+  timespan_t execute_time() const override
+  {
+    timespan_t et = ab::execute_time() * get_buff_effects_value( execute_time_buffeffects );
+    return std::max( 0_ms, et );
+  }
+
+  timespan_t composite_dot_duration( const action_state_t* s ) const override
+  {
+    timespan_t dd = ab::composite_dot_duration( s ) * get_buff_effects_value( dot_duration_buffeffects );
+    return dd;
+  }
+
+  double recharge_multiplier( const cooldown_t& cd ) const override
+  {
+    double rm = ab::recharge_multiplier( cd ) * get_buff_effects_value( recharge_multiplier_buffeffects, false, false );
+    return rm;
   }
 
   void trigger_storm_earth_and_fire( const action_t* a )
