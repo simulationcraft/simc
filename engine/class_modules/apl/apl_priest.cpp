@@ -174,8 +174,7 @@ void shadow( player_t* p )
   main->add_action( "halo,if=raid_event.adds.in>20&(spell_targets.halo>1|(variable.all_dots_up&!buff.voidform.up))",
                     "Use Halo if all DoTS are active and you are not in Voidform or it will hit at least 2 targets. "
                     "Save up to 20s if adds are coming soon." );
-  main->add_action( "divine_star,if=spell_targets.divine_star>1+talent.dark_ascension",
-                    "Use when it will hit at least 2 targets or 3 targets with Dark Ascension." );
+  main->add_action( "divine_star,if=spell_targets.divine_star>1", "Use when it will hit at least 2 targets." );
   main->add_action( "lights_judgment,if=!raid_event.adds.exists|raid_event.adds.in>75" );
   main->add_action(
       "mind_spike,if=buff.surge_of_darkness.up|!conduit.dissonant_echoes&(!talent.mental_decay|dot.vampiric_touch."

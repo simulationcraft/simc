@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.46597 Live (hotfix 2022-11-10/46597)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.46597 Live (hotfix 2022-11-11/46597)
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Talent Entry     : Generic [tree=class, row=2, col=3, max_rank=1, req_points=0]
 Class            : Paladin, Mage
@@ -6458,7 +6458,7 @@ Spell Type       : Magic
 Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
-Velocity         : 30 yards/sec
+Velocity         : 20 yards/sec
 Cooldown         : 45 seconds
 Affecting spells : Icy Veins (12472 effect#2), Splitting Ice (56377 effect#1), Ice Floes (108839 effect#1), Norgannon's Foresight (236380 effect#1), Foresight (384865 effect#1)
 Family Flags     : 110

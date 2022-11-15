@@ -1729,6 +1729,7 @@ void storm_eaters_boon( special_effect_t& effect )
     {
       background = true;
       base_dd_min = base_dd_max = e.player->find_spell( 382092 )->effectN( 1 ).average(e.item);
+      name_str_reporting = "stormeaters_boon";
     }
 
      double composite_da_multiplier( const action_state_t* s ) const override
@@ -2234,6 +2235,91 @@ void idol_of_trampling_hooves(special_effect_t& effect)
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Dragon Games Equipment
+// 386692 Driver & Buff
+// 386708 Damage Driver
+// 386709 Damage
+// 383950 Damage Value
+void dragon_games_equipment(special_effect_t& effect)
+{
+  auto damage = create_proc_action<generic_proc_t>( "dragon_games_equipment", effect, "dragon_games_equipment", 386708 );
+  damage->base_dd_min = damage -> base_dd_max = effect.player->find_spell(383950)->effectN(1).average(effect.item);
+  damage->aoe = 0;
+
+  auto buff_spell = effect.player->find_spell( 386692 );
+  auto buff = create_buff<buff_t>( effect.player , buff_spell );
+  buff->tick_on_application = false;
+  // Override Duration to trigger the correct number of missiles. Testing as of 11-14-2022 shows it only spawning 3, rather than the 4 expected by spell data.
+  buff->set_duration( ( buff_spell->duration() / 4 ) * effect.player->sim->dragonflight_opts.dragon_games_kicks * effect.player->rng().range( effect.player->sim->dragonflight_opts.dragon_games_rng, 1.25) );
+  buff->set_tick_callback( [ damage ]( buff_t* b, int, timespan_t ) {
+        damage->execute_on_target( b->player->target );
+      } );
+
+  effect.custom_buff = buff;
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Bonemaw's Big Toe
+// 397400 Driver & Buff
+// 397401 Damage
+void bonemaws_big_toe(special_effect_t& effect)
+{
+  auto buff_spell = effect.player->find_spell( 397400 );
+  auto buff = create_buff<stat_buff_t>( effect.player , buff_spell );
+  auto value = effect.driver()->effectN(1).average(effect.item);
+  buff->add_stat( STAT_CRIT_RATING, value );
+  auto damage = create_proc_action<generic_aoe_proc_t>( "fetid_breath", effect, "fetid_breath", 397401 );
+  buff->set_tick_callback( [ damage ]( buff_t* b, int, timespan_t ) 
+    {
+      damage->execute();
+    } );
+  damage->split_aoe_damage = true;
+  damage->aoe = -1;
+  effect.custom_buff = buff;
+}
+
+// Mutated Magmammoth Scale
+// 381705 Driver
+// 381727 Buff & Damage Driver
+// 381760 Damage
+void mutated_magmammoth_scale(special_effect_t& effect)
+{
+  auto buff_spell = effect.player->find_spell( 381727 );
+  auto buff = create_buff<buff_t>( effect.player , buff_spell );
+  auto damage = create_proc_action<generic_aoe_proc_t>( "mutated_tentacle_slam", effect, "mutated_tentacle_slam", 381760 );
+  buff->set_tick_callback( [ damage ]( buff_t* b, int, timespan_t ) 
+    {
+      damage->execute();
+    } );
+  damage->aoe = effect.driver()->effectN(2).base_value();
+  damage->reduced_aoe_targets = 1;
+  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN(1).average(effect.item);
+  effect.custom_buff = buff;
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Homeland Raid Horn
+// 382139 Driver & Buff
+// 384003 Damage Driver
+// 384004 Damage
+// 387777 Damage value
+void homeland_raid_horn(special_effect_t& effect)
+{
+  auto damage = create_proc_action<generic_aoe_proc_t>( "dwarven_barrage", effect, "dwarven_barrage", 384004 );
+  damage->base_dd_min = damage -> base_dd_max = effect.player->find_spell( 387777 )->effectN( 1 ).average( effect.item );
+  // Up to 5 targets, Including the Player
+  damage->aoe = effect.driver()-> effectN( 2 ).base_value() - 1;
+  damage->reduced_aoe_targets = 1;
+
+  auto buff_spell = effect.player->find_spell( 382139 );
+  auto buff = create_buff<buff_t>( effect.player , buff_spell );
+  buff->set_tick_callback( [ damage ]( buff_t* b, int, timespan_t ) {
+        damage->execute();
+      } );
+
+  effect.custom_buff = buff;
+}
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -2589,6 +2675,10 @@ void register_special_effects()
   register_special_effect( 383781, items::alegethar_puzzle_box );
   register_special_effect( 382119, items::frenzying_signoll_flare );
   register_special_effect( 386175, items::idol_of_trampling_hooves );
+  register_special_effect( 386692, items::dragon_games_equipment);
+  register_special_effect( 397400, items::bonemaws_big_toe );
+  register_special_effect( 381705, items::mutated_magmammoth_scale );
+  register_special_effect( 382139, items::homeland_raid_horn );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );  // bronzed grip wrappings embellishment

@@ -1373,6 +1373,9 @@ class SpellDataGenerator(DataGenerator):
          388560, 388583,  # Tome of Unstable Power
          381965, 381966, 381967, # Controlled Currents Technique
          381698, 381699, 381700, # Forgestorm
+         386708, 386709, # Dragon Games Equipment
+         381760, # Mutated Magmammoth Scale
+         
         ),
 
         # Warrior:

@@ -1,85 +1,79 @@
-hunter="PR_Hunter_Beast_Mastery"
-level=60
-race=orc
-spec=beast_mastery
-role=attack
-position=ranged_back
-talents=2102013
-covenant=night_fae
-soulbind=niya,grove_invigoration/spirit_attunement:4
+# hunter="PR_Hunter_Beast_Mastery"
+# level=70
+# race=orc
+# role=attack
+# position=ranged_back
+# spec=beast_mastery
+# talents=2102012
 
-head=nathrian_usurpers_mask,id=178816,bonus_id=6807/1498/6646
-neck=sin_stained_pendant,id=178827,bonus_id=6807/1498/6646
-shoulders=boneshatter_pauldrons,id=172327,bonus_id=6716/7005/6647/6649/1487
-back=drape_of_twisted_loyalties,id=180123,bonus_id=6807/1498/6646
-chest=harness_of_twisted_whims,id=179353,bonus_id=6807/1498/6646,enchant=eternal_skirmish
-wrists=fallen_paragons_armguards,id=180114,bonus_id=6807/1498/6646
-hands=hakkari_revenants_grips,id=179325,bonus_id=6807/1498/6646
-waist=executors_prideful_girdle,id=178843,bonus_id=6807/1498/6646
-legs=lichbone_legguards,id=178778,bonus_id=6807/1498/6646
-feet=spatial_rift_striders,id=179345,bonus_id=6807/1498/6646,enchant=eternal_agility
-finger1=arachnid_cipher_ring,id=178933,bonus_id=6807/1498/6646,enchant=tenet_of_haste
-finger2=bloodoath_signet,id=178871,bonus_id=6807/1498/6646,enchant=tenet_of_haste
-trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646
-trinket2=bottled_flayedwing_toxin,id=178742,bonus_id=6807/1498/6646
-main_hand=the_philosopher,id=180112,bonus_id=6807/1498/6646,enchant=optical_target_embiggener
+# head=boneshatter_helm,id=172325,bonus_id=6649/6650/8122/1588/6935,gem_id=173128
+# neck=worldkiller_iris,id=189859,bonus_id=1524/7187/6935,gem_id=173128
+# shoulders=godstalkers_pauldrons,id=188856,bonus_id=1505/7187
+# back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187
+# chest=godstalkers_hauberk,id=188858,bonus_id=1505/7187,enchant=eternal_skirmish
+# wrists=interdimensional_manica,id=189849,bonus_id=1524/7187/6935,gem_id=173128
+# hands=godstalkers_gauntlets,id=188861,bonus_id=1505/7187
+# waist=godstalkers_fauld,id=188857,bonus_id=1498/7187/6935,gem_id=173128
+# legs=godstalkers_tassets,id=188860,bonus_id=1505/7187
+# feet=boneshatter_treads,id=172323,bonus_id=7010/6649/6650/1588,enchant=eternal_agility
+# finger1=rygelons_heraldric_ring,id=189854,bonus_id=1524/7187/6935,gem_id=173128,enchant=tenet_of_haste
+# finger2=loquacious_keepers_peridot,id=189802,bonus_id=1524/7187/6935,gem_id=173128,enchant=tenet_of_haste
+# trinket1=the_first_sigil,id=188271,bonus_id=1524/7187
+# trinket2=cache_of_acquired_treasures,id=188265,bonus_id=1524/7187
+# main_hand=astral_verdict,id=189853,bonus_id=1524/7187,enchant=optical_target_embiggener
 
-save=PR_Hunter_Beast_Mastery.simc
+# save=PR_Hunter_Beast_Mastery.simc
 
 
-hunter="PR_Hunter_Marksmanship"
-level=60
-race=orc
-spec=marksmanship
-role=attack
-position=ranged_back
-talents=1101032
-covenant=night_fae
-soulbind=niya,grove_invigoration/spirit_attunement:4
+# hunter="PR_Hunter_Marksmanship"
+# level=70
+# race=troll
+# spec=marksmanship
+# role=attack
+# position=ranged_back
+# talents=1102032
 
-head=rattling_deadeye_hood,id=178738,bonus_id=6807/1498/6646
-neck=azurevenom_choker,id=180115,bonus_id=6807/1498/6646
-shoulders=boneshatter_pauldrons,id=172327,bonus_id=6716/7013/6647/6648/1487
-back=cloak_of_enveloping_manifestations,id=178851,bonus_id=6807/1498/6646
-chest=soaring_decimators_hauberk,id=178815,bonus_id=6807/1498/6646,enchant=eternal_skirmish
-wrists=shackles_of_alluring_vitality,id=178846,bonus_id=6807/1498/6646
-hands=iron_spiked_handgrips,id=178841,bonus_id=6807/1498/6646
-waist=dark_praetorians_clasp,id=180110,bonus_id=6807/1498/6646
-legs=blightborne_chain_legguards,id=178762,bonus_id=6807/1498/6646
-feet=shardskin_sabatons,id=178830,bonus_id=6807/1498/6646,enchant=eternal_agility
-finger1=fleshfused_circle,id=178869,bonus_id=6807/1498/6646,enchant=tenet_of_critical_strike
-finger2=ring_of_perpetual_conflict,id=178872,bonus_id=6807/1498/6646,enchant=tenet_of_critical_strike
-trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646
-trinket2=overcharged_anima_battery,id=180116,bonus_id=6807/1498/6646
-main_hand=the_philosopher,id=180112,bonus_id=6807/1498/6646,enchant=sinful_revelation
+# head=boneshatter_helm,id=172325,bonus_id=6647/6648/8122/1588/6935,gem_id=173130
+# neck=worldkiller_iris,id=189859,bonus_id=1524/7187/6935,gem_id=173130
+# shoulders=godstalkers_pauldrons,id=188856,bonus_id=1505/7187
+# back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187
+# chest=godstalkers_hauberk,id=188858,bonus_id=1505/7187,enchant=eternal_skirmish
+# wrists=boneshatter_armguards,id=172329,bonus_id=6647/6648/7014/1588/6935,gem_id=173130
+# hands=godstalkers_gauntlets,id=188861,bonus_id=1505/7187
+# waist=kings_wolfheart_waistband,id=189837,bonus_id=1524/7187/6935,gem_id=173130
+# legs=godstalkers_tassets,id=188860,bonus_id=1505/7187
+# feet=godstalkers_sabatons,id=188862,bonus_id=1498/7187,enchant=eternal_agility
+# finger1=rygelons_heraldric_ring,id=189854,bonus_id=1524/7187/6935,gem_id=173130,enchant=tenet_of_mastery
+# finger2=modified_defense_grid,id=189772,bonus_id=1524/7187/6935,gem_id=173130,enchant=tenet_of_mastery
+# trinket1=the_first_sigil,id=188271,bonus_id=1524/7187
+# trinket2=cache_of_acquired_treasures,id=188265,bonus_id=1524/7187
+# main_hand=astral_verdict,id=189853,bonus_id=1524/7187,enchant=sinful_revelation
 
-save=PR_Hunter_Marksmanship.simc
+# save=PR_Hunter_Marksmanship.simc
 
 
-hunter="PR_Hunter_Survival"
-level=60
-race=mechagnome
-spec=survival
-role=attack
-position=back
-talents=3101012
-covenant=night_fae
-soulbind=niya,grove_invigoration/spirit_attunement:4
+# hunter="PR_Hunter_Survival"
+# level=70
+# race=troll
+# spec=survival
+# role=attack
+# position=back
+# talents=3101012
 
-head=nathrian_usurpers_mask,id=178816,bonus_id=6807/1498/6646
-neck=sin_stained_pendant,id=178827,bonus_id=6807/1498/6646
-shoulders=boneshatter_pauldrons,id=172327,bonus_id=6716/7005/6649/6650/1487
-back=drape_of_twisted_loyalties,id=180123,bonus_id=6807/1498/6646
-chest=harness_of_twisted_whims,id=179353,bonus_id=6807/1498/6646,enchant=eternal_skirmish
-wrists=fallen_paragons_armguards,id=180114,bonus_id=6807/1498/6646
-hands=hakkari_revenants_grips,id=179325,bonus_id=6807/1498/6646
-waist=executors_prideful_girdle,id=178843,bonus_id=6807/1498/6646
-legs=lichbone_legguards,id=178778,bonus_id=6807/1498/6646
-feet=spatial_rift_striders,id=179345,bonus_id=6807/1498/6646,enchant=eternal_agility
-finger1=death_gods_signet,id=179355,bonus_id=6807/1498/6646,enchant=tenet_of_haste
-finger2=bloodoath_signet,id=178871,bonus_id=6807/1498/6646,enchant=tenet_of_haste
-trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646
-trinket2=bottled_flayedwing_toxin,id=178742,bonus_id=6807/1498/6646
-main_hand=halberd_of_the_aranakk,id=178929,bonus_id=6807/1498/6646,enchant=sinful_revelation
+# head=godstalkers_sallet,id=188859,bonus_id=1498/7187/6935,gem_id=173128
+# neck=cabochon_of_the_infinite_flight,id=185820,bonus_id=1595/6536/6646/6935,gem_id=173128
+# shoulders=godstalkers_pauldrons,id=188856,bonus_id=1505/7187
+# back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187
+# chest=godstalkers_hauberk,id=188858,bonus_id=1505/7187,enchant=eternal_stats
+# wrists=interdimensional_manica,id=189849,bonus_id=1524/7187/6935,gem_id=173128
+# hands=godstalkers_gauntlets,id=188861,bonus_id=1505/7187
+# waist=boneshatter_waistguard,id=172328,bonus_id=6649/6650/7015/1588/6935,gem_id=173128
+# legs=epochal_oppressors_greaves,id=189857,bonus_id=1524/7187
+# feet=boneshatter_treads,id=172323,bonus_id=6649/6650/8122/1588,enchant=eternal_agility
+# finger1=loquacious_keepers_peridot,id=189802,bonus_id=1524/7187/6935,gem_id=173128,enchant=tenet_of_haste
+# finger2=bloodoath_signet,id=178871,bonus_id=1592/6536/6646/6935,gem_id=173128,enchant=tenet_of_haste
+# trinket1=shadowgrasp_totem,id=179356,bonus_id=1592/6536/6646
+# trinket2=the_first_sigil,id=188271,bonus_id=1524/7187
+# main_hand=zovastrum_the_unmaking,id=189861,bonus_id=1524/7187,enchant=sinful_revelation
 
-save=PR_Hunter_Survival.simc
+# save=PR_Hunter_Survival.simc

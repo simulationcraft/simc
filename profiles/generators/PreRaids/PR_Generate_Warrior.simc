@@ -1,87 +1,79 @@
-warrior="PR_Warrior_Arms"
-level=60
-race=mechagnome
-spec=arms
-role=attack
-position=back
-talents=3113323
-covenant=venthyr
-soulbind=theotar,soothing_shade/ashen_juggernaut:4
+# warrior="PR_Warrior_Arms"
+# level=70
+# race=orc
+# spec=arms
+# role=attack
+# position=back
+# talents=2133222
 
-head=plague_handlers_greathelm,id=178773,bonus_id=6807/1498/6646
-neck=trailspinner_pendant,id=178707,bonus_id=6807/1498/6646
-shoulders=vile_butchers_pauldrons,id=178749,bonus_id=6807/1498/6646
-back=cloak_of_enveloping_manifestations,id=178851,bonus_id=6807/1498/6646
-chest=breastplate_of_fatal_contrivances,id=179346,bonus_id=6807/1498/6646,enchant=eternal_skirmish
-wrists=shadowghast_armguards,id=171419,bonus_id=6647/6649/6716/1487/6959
-hands=guilewind_stone_talons,id=178840,bonus_id=6807/1498,enchant=eternal_strength
-waist=waistguard_of_expurged_anguish,id=178842,bonus_id=6807/1498/6646
-legs=legplates_of_unholy_frenzy,id=178739,bonus_id=6807/1498/6646
-feet=dynamo_doomstompers,id=179338,bonus_id=6807/1498/6646
-finger1=arachnid_cipher_ring,id=178933,bonus_id=6807/1498/6646,enchant=tenet_of_critical_strike
-finger2=entwined_gorger_tendril,id=178848,bonus_id=6807/1498/6646,enchant=tenet_of_critical_strike
-trinket1=anima_field_emitter,id=180118,bonus_id=6807/1498/6646
-trinket2=decanter_of_animacharged_winds,id=178861,bonus_id=6807/1498/6646
-main_hand=zinkhas_blade_of_the_fallen_god,id=179330,bonus_id=6807/1498/6646,enchant=sinful_revelation
+# head=gaze_of_the_infinite_infantry,id=188942,bonus_id=7187/1498
+# neck=worldkiller_iris,id=189859,bonus_id=7187/1524
+# shoulders=pauldrons_of_the_infinite_infantry,id=188941,bonus_id=1505/7187
+# back=shroud_of_the_sires_chosen,id=189847,bonus_id=7187/1524
+# chest=breastplate_of_the_infinite_infantry,id=188938,bonus_id=1505/7187,enchant=eternal_stats
+# wrists=shadowghast_armguards,id=171419,bonus_id=6648/6649/7451/8130/1588,gem_id=173127
+# hands=grasps_of_the_infinite_infantry,id=188937,bonus_id=7187/1498,enchant=eternal_strength
+# waist=shadowghast_waistguard,id=171418,bonus_id=6648/6649/7451/6962/1588,gem_id=173127
+# legs=legguards_of_the_ultimate_threat,id=189858,bonus_id=7187/1524
+# feet=greatboots_of_the_roaming_goliath,id=189832,bonus_id=7187/1524
+# finger1=loquacious_keepers_peridot,id=189802,bonus_id=7187/1524,enchant=tenet_of_critical_strike
+# finger2=rygelons_heraldric_ring,id=189854,bonus_id=7187/1524,enchant=tenet_of_critical_strike
+# trinket1=scars_of_fraternal_strife,id=188253,bonus_id=7187/1524
+# trinket2=old_warriors_soul,id=186438,bonus_id=7187/1498
+# main_hand=gavel_of_the_first_arbiter,id=189862,bonus_id=7187/1524,enchant=sinful_revelation
 
-save=PR_Warrior_Arms.simc
+# save=PR_Warrior_Arms.simc
 
+# warrior="PR_Warrior_Fury"
+# level=70
+# race=mechagnome
+# spec=fury
+# role=attack
+# position=back
+# talents=2122322
 
-warrior="PR_Warrior_Fury"
-level=60
-race=mechagnome
-spec=fury
-role=attack
-position=back
-talents=2113323
-covenant=venthyr
-soulbind=nadjia_the_mistblade,thrill_seeker/ashen_juggernaut:4
+# head=gaze_of_the_infinite_infantry,id=188942,bonus_id=7187/1498
+# neck=worldkiller_iris,id=189859,bonus_id=7187/1524
+# shoulders=pauldrons_of_the_infinite_infantry,id=188941,bonus_id=1505/7187
+# back=grimveiled_cape,id=173242,bonus_id=6648/6649/6964/7451/1588
+# chest=breastplate_of_the_infinite_infantry,id=188938,bonus_id=1505/7187,enchant=eternal_stats
+# wrists=veiled_auctioneers_vambraces,id=189825,bonus_id=7187/1524
+# hands=handguards_of_hidden_realms,id=189850,bonus_id=7187/1524,enchant=eternal_strength
+# waist=shadowghast_waistguard,id=171418,bonus_id=6648/6649/7451/8130/1588,gem_id=173128
+# legs=legplates_of_the_infinite_infantry,id=188940,bonus_id=7187/1498
+# feet=greatboots_of_the_roaming_goliath,id=189832,bonus_id=7187/1524
+# finger1=loquacious_keepers_peridot,id=189802,bonus_id=7187/1524,enchant=tenet_of_haste
+# finger2=rygelons_heraldric_ring,id=189854,bonus_id=7187/1524,enchant=tenet_of_haste
+# trinket1=scars_of_fraternal_strife,id=188253,bonus_id=7187/1524
+# trinket2=old_warriors_soul,id=186438,bonus_id=7187/1498
+# main_hand=gavel_of_the_first_arbiter,id=189862,bonus_id=7187/1524,enchant=sinful_revelation
+# off_hand=riftscarred_solcrusher,id=189817,bonus_id=7187/1524,enchant=celestial_guidance
 
-head=wrathbark_greathelm,id=178694,bonus_id=6807/1498/6646
-neck=sin_stained_pendant,id=178827,bonus_id=6807/1498/6646
-shoulders=unyielding_combatants_pauldrons,id=178802,bonus_id=6807/1498/6646
-back=grimveiled_cape,id=173242,bonus_id=6648/6649/6716/6964/1487
-chest=breastplate_of_otherworldly_influence,id=178814,bonus_id=6807/1498/6646,enchant=eternal_skirmish
-wrists=vambraces_of_the_depraved_warden,id=178845,bonus_id=6807/1498/6646
-hands=distorted_constructs_gauntlets,id=180104,bonus_id=6807/1498/6646,enchant=eternal_strength
-waist=waistguard_of_expurged_anguish,id=178842,bonus_id=6807/1498/6646
-legs=galvanized_oxxein_legguards,id=178800,bonus_id=6807/1498/6646
-feet=muckwallow_stompers,id=178774,bonus_id=6807/1498/6646
-finger1=death_gods_signet,id=179355,bonus_id=6807/1498/6646,enchant=tenet_of_haste
-finger2=signet_of_the_false_accuser,id=178824,bonus_id=6807/1498/6646,enchant=tenet_of_haste
-trinket1=anima_field_emitter,id=180118,bonus_id=6807/1498/6646
-trinket2=decanter_of_animacharged_winds,id=178861,bonus_id=6807/1498/6646
-main_hand=drustlords_greataxe,id=178713,bonus_id=6964,bonus_id=6807/1498/6646,enchant=sinful_revelation
-off_hand=drustlords_greataxe,id=178713,bonus_id=6807/1498/6646,enchant=celestial_guidance
+# save=PR_Warrior_Fury.simc
 
-save=PR_Warrior_Fury.simc
+# warrior="PR_Warrior_Protection"
+# level=70
+# race=draenei
+# spec=protection
+# role=tank
+# position=front
+# talents=3122011
 
+# head=shadowghast_helm,id=171415,bonus_id=6647/6649/6716/8130/1588/6935,gem_id=173129
+# neck=worldkiller_iris,id=189859,bonus_id=4800/4786/1808/1524,gem_id=173128
+# shoulders=pauldrons_of_the_infinite_infantry,id=188941,bonus_id=1505/7187
+# back=shroud_of_the_sires_chosen,id=189847,bonus_id=7187/1524
+# chest=breastplate_of_the_infinite_infantry,id=188938,bonus_id=1505/7187,enchant=eternal_stats
+# wrists=vambraces_of_the_infinite_infantry,id=188943,bonus_id=1498/7187/6935,gem_id=173128
+# hands=grasps_of_the_infinite_infantry,id=188937,bonus_id=1505/7187,enchant=eternal_strength
+# waist=girdle_of_the_soulflayer,id=179326,bonus_id=1592/6536/6646/6935,gem_id=173128
+# legs=legplates_of_the_infinite_infantry,id=188940,bonus_id=7187/1505
+# feet=shadowghast_sabatons,id=171413,bonus_id=6647/6649/6716/6969/1588
+# finger1=bloodoath_signet,id=178871,bonus_id=1592/6536/6646/6935,gem_id=173128,enchant=tenet_of_critical_strike
+# finger2=ritual_commanders_ring,id=178781,bonus_id=3536/4786/1592/6935,gem_id=173128,enchant=tenet_of_critical_strike
+# trinket1=the_first_sigil,id=188271,bonus_id=1524/7187
+# trinket2=ticking_sack_of_terror,id=185844,bonus_id=1595/6536/6646
+# main_hand=devastated_worldshard,id=189851,bonus_id=7187/1524,enchant=celestial_guidance
+# off_hand=ruined_crest_of_lordaeron,id=189845,bonus_id=7187/1524
 
-warrior="PR_Warrior_Protection"
-level=60
-race=draenei
-spec=protection
-role=tank
-position=front
-talents=3020011
-covenant=kyrian
-soulbind=pelagos,combat_meditation/piercing_verdict:4
-
-head=wrathbark_greathelm,id=178694,bonus_id=6807/1498/6646
-neck=sin_stained_pendant,id=178827,bonus_id=6807/1498/6646
-shoulders=shadowghast_pauldrons,id=171417,bonus_id=6647/6648/6716/6957/1487
-back=drape_of_twisted_loyalties,id=180123,bonus_id=6807/1498/6646
-chest=breastplate_of_otherworldly_influence,id=178814,bonus_id=6807/1498/6646,enchant=eternal_skirmish
-wrists=realityshatter_vambraces,id=179354,bonus_id=6807/1498/6646
-hands=distorted_constructs_gauntlets,id=180104,bonus_id=6807/1498/6646,enchant=eternal_strength
-waist=girdle_of_the_soulflayer,id=179326,bonus_id=6807/1498/6646
-legs=legplates_of_unholy_frenzy,id=178739,bonus_id=6807/1498/6646
-feet=muckwallow_stompers,id=178774,bonus_id=6807/1498/6646
-finger1=bloodoath_signet,id=178871,bonus_id=6807/1498/6646,enchant=tenet_of_haste
-finger2=arachnid_cipher_ring,id=178933,bonus_id=6807/1498/6646,enchant=tenet_of_haste
-trinket1=spare_meat_hook,id=178751,bonus_id=6807/1498/6646
-trinket2=decanter_of_animacharged_winds,id=178861,bonus_id=6807/1498/6646
-main_hand=engorged_worm_smasher,id=178730,bonus_id=6807/1498/6646,enchant=lightless_force
-off_hand=encrusted_canopic_lid,id=178750,bonus_id=6807/1498/6646
-
-save=PR_Warrior_Protection.simc
+# save=PR_Warrior_Protection.simc
