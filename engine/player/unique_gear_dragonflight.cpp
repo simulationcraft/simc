@@ -2334,12 +2334,13 @@ void blazebinders_hoof(special_effect_t& effect)
   effect.custom_buff = buff;
 
   auto damage_buff = create_buff<buff_t>( effect.player, effect.player -> find_spell(389710) );
-  damage_buff->set_max_stack( 6 );
+  damage_buff->set_max_stack( effect.driver()->max_stacks() );
   damage_buff->set_cooldown( 0_ms );
   damage_buff->set_duration( 300_s );
   damage_buff->set_refresh_behavior( buff_refresh_behavior::DURATION );
+  damage_buff->quiet = true;
 
-  special_effect_t* bound_by_fire_and_blaze = new special_effect_t(effect.player);
+  special_effect_t* bound_by_fire_and_blaze = new special_effect_t( effect.player );
   bound_by_fire_and_blaze->source = effect.source;
   bound_by_fire_and_blaze->spell_id = effect.driver()->id();
   bound_by_fire_and_blaze->custom_buff = buff;
@@ -2393,7 +2394,6 @@ void blazebinders_hoof(special_effect_t& effect)
     }
   } );
 }
-
 
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
