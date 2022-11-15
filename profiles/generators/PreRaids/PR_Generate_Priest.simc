@@ -1,30 +1,3 @@
-# Disabled in stacked sims until https://github.com/simulationcraft/simc/issues/5640 is resolved
-# priest="PR_Priest_Discipline"
-# level=70
-# race=mechagnome
-# spec=discipline
-# role=spell
-# position=ranged_back
-# talents=3020310
-
-# head=cocoonsilk_cowl,id=178693,bonus_id=6536/1540/6646/6935,gem_id=173127
-# neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646/6935,gem_id=173127
-# shoulders=shawl_of_the_penitent,id=183020,bonus_id=7187/1498
-# back=crest_of_the_legionnaire_general,id=183032,bonus_id=7187/1498
-# chest=sinister_requiem_vestments,id=180098,bonus_id=6536/1540/6646,enchant=eternal_insight
-# wrists=grim_pursuants_maille,id=182996,bonus_id=7187/1498/6935,gem_id=173127,enchant=eternal_intellect
-# hands=stonefiend_shapers_mitts,id=178833,bonus_id=6536/1540/6646
-# waist=cinch_of_infinite_tightness,id=183028,bonus_id=7187/1498/6935,gem_id=173127
-# legs=leggings_of_lethal_reverberations,id=182981,bonus_id=7187/1498
-# feet=grimveiled_sandals,id=173243,bonus_id=6647/6649/6758/6976/1532
-# finger1=ritual_commanders_ring,id=178781,bonus_id=6536/1540/6646/6935,gem_id=173127,enchant=tenet_of_haste
-# finger2=entwined_gorger_tendril,id=178848,bonus_id=6536/1540/6646/6935,gem_id=173127,enchant=tenet_of_haste
-# trinket1=macabre_sheet_music,id=184024,bonus_id=7187/1498
-# trinket2=cabalists_hymnal,id=184028,bonus_id=7187/1498
-# main_hand=torch_of_fiery_atonement,id=182418,bonus_id=7187/1524,enchant=sinful_revelation
-
-# save=PR_Priest_Discipline.simc
-
 priest="PR_Priest_Shadow"
 level=70
 race=human

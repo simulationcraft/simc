@@ -1,7 +1,5 @@
 optimal_raid=1
 default_actions=1
-bfa.worldvein_allies=5
-
 
 PR_Death_Knight_Blood.simc
 PR_Death_Knight_Frost.simc
@@ -13,6 +11,8 @@ PR_Demon_Hunter_Vengeance.simc
 PR_Druid_Balance.simc
 PR_Druid_Feral.simc
 PR_Druid_Guardian.simc
+
+PR_Evoker_Devastation.simc
 
 PR_Hunter_Beast_Mastery.simc
 PR_Hunter_Marksmanship.simc
@@ -29,7 +29,6 @@ PR_Paladin_Protection.simc
 PR_Paladin_Retribution.simc
 
 PR_Priest_Shadow.simc
-# PR_Priest_Discipline.simc
 
 PR_Rogue_Assassination.simc
 PR_Rogue_Outlaw.simc
