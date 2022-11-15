@@ -3126,6 +3126,9 @@ double paladin_t::composite_melee_crit_chance() const
   if ( buffs.seraphim->up() )
     h += buffs.seraphim->data().effectN( 1 ).percent();
 
+  if ( talents.holy_aegis->ok() )
+    h += talents.holy_aegis->effectN( 1 ).percent();
+  
   return h;
 }
 
