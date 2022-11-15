@@ -2322,20 +2322,21 @@ void homeland_raid_horn(special_effect_t& effect)
 // Blazebinder's Hoof
 // 383926 Driver & Buff
 // 389710 Damage
+// TODO - Figure out why the buff only triggers 50% of the time when it should on both Procs, and Use.
 void blazebinders_hoof(special_effect_t& effect)
 {
-  auto buff = make_buff<stat_buff_t>( effect.player, "bound_by_fire_and_blaze", effect.driver() );
+  auto buff = create_buff<stat_buff_t>( effect.player, effect.driver() );
   buff->set_default_value( effect.driver()->effectN( 1 ).average( effect.item ) );
   buff->set_refresh_behavior( buff_refresh_behavior::DISABLED );
   buff->set_cooldown( 0_ms );
+  effect.source = SPECIAL_EFFECT_SOURCE_ITEM;
+  effect.custom_buff = buff;
 
-  auto damage_buff = create_buff<buff_t>( effect.player, "bound_by_fire_increase" );
+  auto damage_buff = create_buff<buff_t>( effect.player, effect.player -> find_spell(389710) );
   damage_buff->set_max_stack( 6 );
   damage_buff->set_cooldown( 0_ms );
   damage_buff->set_duration( 300_s );
   damage_buff->set_refresh_behavior( buff_refresh_behavior::DURATION );
-  damage_buff->quiet = true;
-  effect.source = SPECIAL_EFFECT_SOURCE_ITEM;
 
   special_effect_t* bound_by_fire_and_blaze = new special_effect_t(effect.player);
   bound_by_fire_and_blaze->source = effect.source;
@@ -2344,7 +2345,8 @@ void blazebinders_hoof(special_effect_t& effect)
   bound_by_fire_and_blaze->cooldown_ = 0_ms;
   effect.player->special_effects.push_back( bound_by_fire_and_blaze );
 
-  auto cb = new dbc_proc_callback_t(effect.player, *bound_by_fire_and_blaze);
+  auto cb = new dbc_proc_callback_t( effect.player, *bound_by_fire_and_blaze );
+  cb -> deactivate();
 
   struct burnout_wave_t : public proc_spell_t
   {
@@ -2389,8 +2391,6 @@ void blazebinders_hoof(special_effect_t& effect)
       damage_buff->trigger();
     }
   } );
-
-  effect.custom_buff = buff;
 }
 
 
