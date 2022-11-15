@@ -1718,10 +1718,8 @@ struct bt_dummy_buff_t : public druid_buff_t
 // Celestial Alignment / Incarn Buff ========================================
 struct celestial_alignment_buff_t : public druid_buff_t
 {
-  bool inc;
-
   celestial_alignment_buff_t( druid_t* p, std::string_view n, const spell_data_t* s, bool b = false )
-    : base_t( p, n, p->apply_override( s, p->talent.orbital_strike ) ), inc( b )
+    : base_t( p, n, p->apply_override( s, p->talent.orbital_strike ) )
   {
     set_cooldown( 0_ms );
 
@@ -1729,11 +1727,6 @@ struct celestial_alignment_buff_t : public druid_buff_t
     {
       set_default_value_from_effect_type( A_HASTE_ALL );
       set_pct_buff_type( STAT_PCT_BUFF_HASTE );
-    }
-
-    if ( inc )
-    {
-      add_invalidate( CACHE_CRIT_CHANCE );
     }
   }
 
@@ -1769,61 +1762,6 @@ struct celestial_alignment_buff_t : public druid_buff_t
     p()->uptime.combined_ca_inc->update( false, sim->current_time() );
   }
 
-};
-
-// Eclipse Buff =============================================================
-struct eclipse_buff_t : public druid_buff_t
-{
-  buff_t** boat;
-
-  eclipse_buff_t( druid_t* p, std::string_view n, const spell_data_t* s, buff_t** b ) : base_t( p, n, s ), boat( b )
-  {
-    set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC );
-  }
-
-  void trigger_sundered_firmament()
-  {
-    if ( !p()->active.sundered_firmament )
-      return;
-
-    if ( p()->buff.parting_skies->check() )
-    {
-      p()->active.sundered_firmament->execute_on_target( p()->target );
-      p()->buff.parting_skies->expire();
-    }
-    else
-    {
-      p()->buff.parting_skies->trigger();
-    }
-  }
-
-  void execute( int s, double v, timespan_t d ) override
-  {
-    bool was_active = check();
-
-    base_t::execute( s, v, d );
-
-    assert( *boat );
-    ( *boat )->trigger();
-
-    p()->buff.touch_the_cosmos->trigger();
-
-    if ( !was_active )
-      trigger_sundered_firmament();
-
-    if ( !was_active )
-      p()->buff.solstice->trigger();
-
-  }
-
-  void expire_override( int s, timespan_t d ) override
-  {
-    base_t::expire_override( s, d );
-
-    p()->buff.natures_grace->trigger();
-
-    p()->eclipse_handler.advance_eclipse();
-  }
 };
 
 // Fury of Elune AP =========================================================
@@ -2857,12 +2795,6 @@ public:
 
       p()->buff.ca_inc->extend_duration_or_trigger( p_time, p() );
       p()->proc.pulsar->occur();
-
-      if ( was_active && p()->active.sundered_firmament )
-        p()->active.sundered_firmament->execute_on_target( target );
-
-      if ( was_active )
-        p()->buff.natures_grace->trigger();
 
       p()->uptime.primordial_arcanic_pulsar->update( true, sim->current_time() );
 
@@ -10238,7 +10170,8 @@ void druid_t::create_buffs()
       make_buff<celestial_alignment_buff_t>( this, "celestial_alignment", spec.celestial_alignment );
 
   buff.incarnation_moonkin =
-      make_buff<celestial_alignment_buff_t>( this, "incarnation_chosen_of_elune", spec.incarnation_moonkin, true );
+      make_buff<celestial_alignment_buff_t>( this, "incarnation_chosen_of_elune", spec.incarnation_moonkin )
+          ->add_invalidate( CACHE_CRIT_CHANCE );
 
   buff.denizen_of_the_dream = make_buff( this, "denizen_of_the_dream", find_spell( 394076 ) )
     ->set_trigger_spell( talent.denizen_of_the_dream )
@@ -10246,11 +10179,19 @@ void druid_t::create_buffs()
     ->set_max_stack( 10 )
     ->set_rppm( rppm_scale_e::RPPM_DISABLE );
 
-  buff.eclipse_lunar =
-      make_buff<eclipse_buff_t>( this, "eclipse_lunar", spec.eclipse_lunar, &buff.balance_of_all_things_arcane );
+  buff.eclipse_lunar = make_buff( this, "eclipse_lunar", spec.eclipse_lunar )
+    ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC )
+    ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
+      if ( !new_ )
+        eclipse_handler.advance_eclipse();
+    } );
 
-  buff.eclipse_solar =
-      make_buff<eclipse_buff_t>( this, "eclipse_solar", spec.eclipse_solar, &buff.balance_of_all_things_nature );
+  buff.eclipse_solar = make_buff( this, "eclipse_solar", spec.eclipse_solar )
+    ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC )
+    ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
+      if ( !new_ )
+        eclipse_handler.advance_eclipse();
+    } );
 
   buff.friend_of_the_fae = make_buff( this, "friend_of_the_fae", find_spell( 394083 ) )
     ->set_trigger_spell( talent.friend_of_the_fae )
@@ -10270,7 +10211,12 @@ void druid_t::create_buffs()
     ->set_refresh_behavior( buff_refresh_behavior::EXTEND );
 
   buff.parting_skies = make_buff( this, "parting_skies", find_spell( 395110 ) )
-    ->set_trigger_spell( talent.sundered_firmament );
+    ->set_trigger_spell( talent.sundered_firmament )
+    ->set_reverse( true )
+    ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ){
+      if ( !new_ )
+        active.sundered_firmament->execute_on_target( target );
+    } );
 
   buff.gathering_starstuff =
       make_buff( this, "gathering_starstuff", sets->set( DRUID_BALANCE, T29, B2 )->effectN( 1 ).trigger() );
@@ -12770,6 +12716,10 @@ void eclipse_handler_t::advance_eclipse()
       if ( !starfire_counter )
       {
         p->buff.eclipse_solar->trigger();
+        p->buff.balance_of_all_things_nature->trigger();
+        p->buff.touch_the_cosmos->trigger();
+        p->buff.parting_skies->trigger();
+        p->buff.solstice->trigger();
 
         state = IN_SOLAR;
         p->uptime.eclipse_none->update( false, p->sim->current_time() );
@@ -12779,6 +12729,10 @@ void eclipse_handler_t::advance_eclipse()
       else if ( !wrath_counter )
       {
         p->buff.eclipse_lunar->trigger();
+        p->buff.balance_of_all_things_arcane->trigger();
+        p->buff.touch_the_cosmos->trigger();
+        p->buff.parting_skies->trigger();
+        p->buff.solstice->trigger();
 
         state = IN_LUNAR;
         p->uptime.eclipse_none->update( false, p->sim->current_time() );
@@ -12788,22 +12742,28 @@ void eclipse_handler_t::advance_eclipse()
       break;
 
     case IN_SOLAR:
+      p->buff.natures_grace->trigger();
+
+      state = ANY_NEXT;
       p->uptime.eclipse_solar->update( false, p->sim->current_time() );
       p->uptime.eclipse_none->update( true, p->sim->current_time() );
-      state = ANY_NEXT;
       break;
 
     case IN_LUNAR:
+      p->buff.natures_grace->trigger();
+
+      state = ANY_NEXT;
       p->uptime.eclipse_lunar->update( false, p->sim->current_time() );
       p->uptime.eclipse_none->update( true, p->sim->current_time() );
-      state = ANY_NEXT;
       break;
 
     case IN_BOTH:
+      p->buff.natures_grace->trigger();
+
+      state = ANY_NEXT;
       p->uptime.eclipse_solar->update( false, p->sim->current_time() );
       p->uptime.eclipse_lunar->update( false, p->sim->current_time() );
       p->uptime.eclipse_none->update( true, p->sim->current_time() );
-      state = ANY_NEXT;
       break;
 
     default:
@@ -12818,6 +12778,23 @@ void eclipse_handler_t::trigger_both( timespan_t d = 0_ms )
 
   p->buff.eclipse_lunar->trigger( d );
   p->buff.eclipse_solar->trigger( d );
+  p->buff.balance_of_all_things_arcane->trigger();
+  p->buff.balance_of_all_things_nature->trigger();
+  p->buff.touch_the_cosmos->trigger();
+  p->buff.parting_skies->trigger();
+  p->buff.parting_skies->trigger();
+  p->buff.solstice->trigger();
+
+  if ( !p->bugs )
+  {
+    if ( state != ANY_NEXT )
+      p->buff.natures_grace->trigger();
+  }
+  else
+  {
+    if ( state == IN_BOTH )
+      p->buff.natures_grace->trigger();
+  }
 
   state = IN_BOTH;
   p->uptime.eclipse_none->update( false, p->sim->current_time() );
@@ -12830,6 +12807,21 @@ void eclipse_handler_t::extend_both( timespan_t d )
 {
   p->buff.eclipse_solar->extend_duration( p, d );
   p->buff.eclipse_lunar->extend_duration( p, d );
+
+  if ( !p->bugs )
+  {
+    p->buff.balance_of_all_things_arcane->trigger();
+    p->buff.balance_of_all_things_nature->trigger();
+  }
+
+  p->buff.touch_the_cosmos->trigger();
+  p->buff.parting_skies->trigger();
+  p->buff.parting_skies->trigger();
+
+  if ( !p->bugs )
+    p->buff.solstice->trigger();
+
+  p->buff.natures_grace->trigger();
 }
 
 void eclipse_handler_t::expire_both()
