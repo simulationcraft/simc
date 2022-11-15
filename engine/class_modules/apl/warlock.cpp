@@ -114,10 +114,10 @@ void destruction( player_t* p )
   action_priority_list_t* default_ = p->get_action_priority_list( "default" );
   action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
   action_priority_list_t* aoe = p->get_action_priority_list( "aoe" );
-  action_priority_list_t* items = p->get_action_priority_list( "items" );
-  action_priority_list_t* ogcd = p->get_action_priority_list( "ogcd" );
   action_priority_list_t* cleave = p->get_action_priority_list( "cleave" );
   action_priority_list_t* havoc = p->get_action_priority_list( "havoc" );
+  action_priority_list_t* items = p->get_action_priority_list( "items" );
+  action_priority_list_t* ogcd = p->get_action_priority_list( "ogcd" );
 
   precombat->add_action( "flask" );
   precombat->add_action( "food" );
@@ -158,25 +158,25 @@ void destruction( player_t* p )
 
   aoe->add_action( "rain_of_fire,if=pet.infernal.active" );
   aoe->add_action( "rain_of_fire,if=talent.avatar_of_destruction" );
+  aoe->add_action( "rain_of_fire,if=soul_shard=5" );
+  aoe->add_action( "chaos_bolt,if=soul_shard>3.5-(0.1*active_enemies)&!talent.rain_of_fire" );
+  aoe->add_action( "cataclysm" );
   aoe->add_action( "channel_demonfire,if=dot.immolate.remains>cast_time" );
-  aoe->add_action( "immolate,cycle_targets=1,if=dot.immolate.remains<5&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>dot.immolate.remains)" );
+  aoe->add_action( "immolate,cycle_targets=1,if=dot.immolate.remains<5&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>dot.immolate.remains)&active_dot.immolate<=6" );
+  aoe->add_action( "havoc,cycle_targets=1,if=!(self.target=target)&!talent.rain_of_fire&!cooldown.summon_infernal.up" );
   aoe->add_action( "call_action_list,name=items" );
+  aoe->add_action( "summon_soulkeeper,if=buff.tormented_soul.stack=10" );
   aoe->add_action( "call_action_list,name=ogcd" );
   aoe->add_action( "summon_infernal" );
   aoe->add_action( "rain_of_fire" );
+  aoe->add_action( "immolate,cycle_targets=1,if=dot.immolate.remains<5&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>dot.immolate.remains)" );
   aoe->add_action( "havoc,cycle_targets=1,if=!(self.target=target)" );
+  aoe->add_action( "soul_fire,if=buff.backdraft.up" );
   aoe->add_action( "incinerate,if=talent.fire_and_brimstone.enabled&buff.backdraft.up" );
-  aoe->add_action( "soul_fire" );
   aoe->add_action( "conflagrate,if=buff.backdraft.down|!talent.backdraft" );
-  aoe->add_action( "immolate,if=refreshable" );
+  aoe->add_action( "dimensional_rift" );
+  aoe->add_action( "immolate,if=dot.immolate.refreshable" );
   aoe->add_action( "incinerate" );
-
-  items->add_action( "use_items,if=pet.infernal.active|!talent.summon_infernal|time_to_die<21" );
-
-  ogcd->add_action( "potion,if=pet.infernal.active|!talent.summon_infernal" );
-  ogcd->add_action( "berserking,if=pet.infernal.active|!talent.summon_infernal" );
-  ogcd->add_action( "blood_fury,if=pet.infernal.active|!talent.summon_infernal" );
-  ogcd->add_action( "fireblood,if=pet.infernal.active|!talent.summon_infernal" );
 
   cleave->add_action( "call_action_list,name=havoc,if=havoc_active&havoc_remains>gcd" );
   cleave->add_action( "variable,name=pool_soul_shards,value=cooldown.havoc.remains<=10|talent.mayhem" );
@@ -209,10 +209,17 @@ void destruction( player_t* p )
   havoc->add_action( "conflagrate,if=talent.backdraft&buff.backdraft.down&soul_shard>=1&soul_shard<=4" );
   havoc->add_action( "soul_fire,if=cast_time<havoc_remains&soul_shard<3" );
   havoc->add_action( "immolate,cycle_targets=1,if=dot.immolate.refreshable" );
-  havoc->add_action( "chaos_bolt,if=cast_time<havoc_remains&!(talent.avatar_of_destruction&active_enemies>1&talent.inferno.enabled)" );
+  havoc->add_action( "chaos_bolt,if=cast_time<havoc_remains" );
   havoc->add_action( "rain_of_fire,if=talent.avatar_of_destruction&active_enemies>1&talent.inferno.enabled" );
   havoc->add_action( "conflagrate,if=!talent.backdraft" );
   havoc->add_action( "incinerate,if=cast_time<havoc_remains" );
+
+  items->add_action( "use_items,if=pet.infernal.active|!talent.summon_infernal|time_to_die<21" );
+
+  ogcd->add_action( "potion,if=pet.infernal.active|!talent.summon_infernal" );
+  ogcd->add_action( "berserking,if=pet.infernal.active|!talent.summon_infernal" );
+  ogcd->add_action( "blood_fury,if=pet.infernal.active|!talent.summon_infernal" );
+  ogcd->add_action( "fireblood,if=pet.infernal.active|!talent.summon_infernal" );
 }
 //destruction_apl_end
 
