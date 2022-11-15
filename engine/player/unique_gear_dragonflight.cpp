@@ -2324,34 +2324,33 @@ void homeland_raid_horn(special_effect_t& effect)
 // 389710 Damage
 void blazebinders_hoof(special_effect_t& effect)
 {
-  auto buff_spell = effect.player -> find_spell(383926);
-  auto buff = make_buff<stat_buff_t>( effect.player, "bound_by_fire_and_blaze", buff_spell );
+  auto buff = make_buff<stat_buff_t>( effect.player, "bound_by_fire_and_blaze", effect.driver() );
   buff->set_default_value( effect.driver()->effectN( 1 ).average( effect.item ) );
   buff->set_refresh_behavior( buff_refresh_behavior::DISABLED );
-  buff->expire_at_max_stack = false;
+  buff->set_cooldown( 0_ms );
+
   auto damage_buff = create_buff<buff_t>( effect.player, "bound_by_fire_increase" );
   damage_buff->set_max_stack( 6 );
+  damage_buff->set_cooldown( 0_ms );
   damage_buff->set_duration( 300_s );
   damage_buff->set_refresh_behavior( buff_refresh_behavior::DURATION );
+  damage_buff->quiet = true;
+  effect.source = SPECIAL_EFFECT_SOURCE_ITEM;
+
   special_effect_t* bound_by_fire_and_blaze = new special_effect_t(effect.player);
-  bound_by_fire_and_blaze->item = effect.item;
   bound_by_fire_and_blaze->source = effect.source;
   bound_by_fire_and_blaze->spell_id = effect.driver()->id();
   bound_by_fire_and_blaze->custom_buff = buff;
   bound_by_fire_and_blaze->cooldown_ = 0_ms;
-  bound_by_fire_and_blaze->proc_chance_ = 1.0;
   effect.player->special_effects.push_back( bound_by_fire_and_blaze );
-  effect.cooldown_ = 0_ms;
-  effect.spell_id = 383926;
+
   auto cb = new dbc_proc_callback_t(effect.player, *bound_by_fire_and_blaze);
-  cb->initialize();
-  cb->deactivate();
 
   struct burnout_wave_t : public proc_spell_t
   {
     buff_t* damage_buff;
     burnout_wave_t( const special_effect_t& e, buff_t* b ) :
-    proc_spell_t( "burnout_wave", e.player, e.player -> find_spell(389710), e.item), damage_buff(b)
+    proc_spell_t( "burnout_wave", e.player, e.player -> find_spell( 389710 ), e.item), damage_buff( b )
     {
       // Value stored in effect 2 appears to be the maximum damage that can be done with 6 stacks. Divide it by max stacks to get damage per stack.
       base_dd_min = base_dd_max = e.driver()->effectN(2).average(e.item) / e.driver()->max_stacks();
@@ -2384,14 +2383,14 @@ void blazebinders_hoof(special_effect_t& effect)
       action->execute();
       cb->deactivate();
     }
-    else
+    else if( new_ > 0 )
     {
       cb->activate();
       damage_buff->trigger();
     }
   } );
+
   effect.custom_buff = buff;
-  effect.player->register_combat_begin( [ cb, damage_buff ]( player_t* ) { cb->deactivate(); damage_buff->expire(); });
 }
 
 
