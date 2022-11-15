@@ -2286,13 +2286,11 @@ void mutated_magmammoth_scale(special_effect_t& effect)
 {
   auto buff_spell = effect.player->find_spell( 381727 );
   auto buff = create_buff<buff_t>( effect.player , buff_spell );
-  auto damage = create_proc_action<generic_aoe_proc_t>( "mutated_tentacle_slam", effect, "mutated_tentacle_slam", 381760 );
+  auto damage = create_proc_action<generic_aoe_proc_t>( "mutated_tentacle_slam", effect, "mutated_tentacle_slam", 381760, true );
   buff->set_tick_callback( [ damage ]( buff_t* b, int, timespan_t ) 
     {
       damage->execute();
     } );
-  damage->aoe = effect.driver()->effectN(2).base_value();
-  damage->reduced_aoe_targets = 1;
   damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN(1).average(effect.item);
   effect.custom_buff = buff;
   new dbc_proc_callback_t( effect.player, effect );
@@ -2305,11 +2303,8 @@ void mutated_magmammoth_scale(special_effect_t& effect)
 // 387777 Damage value
 void homeland_raid_horn(special_effect_t& effect)
 {
-  auto damage = create_proc_action<generic_aoe_proc_t>( "dwarven_barrage", effect, "dwarven_barrage", 384004 );
+  auto damage = create_proc_action<generic_aoe_proc_t>( "dwarven_barrage", effect, "dwarven_barrage", 384004, true );
   damage->base_dd_min = damage -> base_dd_max = effect.player->find_spell( 387777 )->effectN( 1 ).average( effect.item );
-  // Up to 5 targets, Including the Player
-  damage->aoe = effect.driver()-> effectN( 2 ).base_value() - 1;
-  damage->reduced_aoe_targets = 1;
 
   auto buff_spell = effect.player->find_spell( 382139 );
   auto buff = create_buff<buff_t>( effect.player , buff_spell );
