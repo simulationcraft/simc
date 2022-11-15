@@ -9559,7 +9559,7 @@ void druid_t::init_spells()
   talent.natures_grace                  = ST( "Nature's Grace" );
   talent.new_moon                       = ST( "New Moon" );
   talent.orbit_breaker                  = ST( "Orbit Breaker" );
-  talent.orbital_strike                 = ST( maybe_ptr( dbc->ptr ) ? "Orbital Strike" : "Syzygy" );
+  talent.orbital_strike                 = ST( "Orbital Strike" );
   talent.power_of_goldrinn              = ST( "Power of Goldrinn" );
   talent.primordial_arcanic_pulsar      = ST( "Primordial Arcanic Pulsar" );
   talent.radiant_moonlight              = ST( "Radiant Moonlight" );
@@ -9600,7 +9600,7 @@ void druid_t::init_spells()
   talent.infected_wounds_cat            = STS( "Infected Wounds", DRUID_FERAL );
   talent.lions_strength                 = ST( "Lion's Strength" );
   talent.lunar_inspiration              = ST( "Lunar Inspiration" );
-  talent.merciless_claws                = ST( maybe_ptr( dbc->ptr ) ? "Merciless Claws" : "Merciless Strikes" );
+  talent.merciless_claws                = ST( "Merciless Claws" );
   talent.moment_of_clarity              = ST( "Moment of Clarity" );
   talent.omen_of_clarity_cat            = STS( "Omen of Clarity", DRUID_FERAL );
   talent.pouncing_strikes               = ST( "Pouncing Strikes" );
