@@ -2327,6 +2327,7 @@ void blazebinders_hoof(special_effect_t& effect)
   auto buff = create_buff<stat_buff_t>(effect.player, effect.driver());
   buff->set_default_value(effect.driver()->effectN(1).average(effect.item));
   buff->set_refresh_behavior(buff_refresh_behavior::DISABLED);
+  buff->set_cooldown(0_ms);
   auto damage_buff = make_buff<buff_t>( effect.player, "bound_by_fire_increase" );
   damage_buff->set_max_stack( 6 );
   damage_buff->set_duration( 20_s );
@@ -2338,6 +2339,8 @@ void blazebinders_hoof(special_effect_t& effect)
   bound_by_fire_and_blaze->cooldown_ = 0_ms;
   effect.player->special_effects.push_back( bound_by_fire_and_blaze );
   auto cb = new dbc_proc_callback_t(effect.player, *bound_by_fire_and_blaze);
+  cb->initialize();
+  cb->deactivate();
 
   struct burnout_wave_t : public proc_spell_t
   {
@@ -2346,19 +2349,22 @@ void blazebinders_hoof(special_effect_t& effect)
     proc_spell_t( "burnout_wave", e.player, e.player -> find_spell(389710), e.item), damage_buff(b)
     {
       base_dd_min = base_dd_max = e.driver()->effectN(2).average(e.item);
+      split_aoe_damage = true;
     }
 
     double composite_da_multiplier( const action_state_t* s ) const override
     {
       double m = proc_spell_t::composite_da_multiplier( s );
 
-      m *= 1.0 + damage_buff -> stack();
+      m *= damage_buff->stack();
 
       return m;
     }
 
     void execute() override
     {
+      proc_spell_t::execute();
+
       damage_buff -> expire();
     }
   };
@@ -2367,7 +2373,7 @@ void blazebinders_hoof(special_effect_t& effect)
 
   buff->set_stack_change_callback( [ cb, action, damage_buff ](buff_t*, int, int new_) 
   {
-    if( !new_ )
+    if( new_ == 0 )
     {
       action->execute();
       cb->deactivate();
