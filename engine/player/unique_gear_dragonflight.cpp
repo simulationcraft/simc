@@ -2324,9 +2324,36 @@ void homeland_raid_horn(special_effect_t& effect)
 // 389710 Damage
 void blazebinders_hoof(special_effect_t& effect)
 {
-  auto buff = create_buff<stat_buff_t>(effect.player, effect.driver());
-  buff->set_default_value(effect.driver()->effectN(1).average(effect.item));
-  buff->set_refresh_behavior(buff_refresh_behavior::DISABLED);
+  buff_t* buff;
+  auto damage_buff = make_buff<buff_t>( effect.player, "bound_by_fire_increase" );
+  damage_buff->set_max_stack( 6 );
+  damage_buff->set_duration( 5_s );
+
+  struct bound_by_fire_and_blaze_buff_t : public stat_buff_t
+  {
+    buff_t* damage_buff;
+    buff_t* buff;
+
+    bound_by_fire_and_blaze_buff_t( const special_effect_t& e )
+      : stat_buff_t( e.player, "bound_by_fire_and_blaze", e.driver(), e.item )
+    {
+      buff = create_buff<stat_buff_t>( e.player, e.driver() );
+      buff->set_default_value(e.driver()->effectN(1).average(e.item));
+      buff->set_refresh_behavior(buff_refresh_behavior::DISABLED);
+    }
+
+    void expire_override( int s, timespan_t d ) override
+    {
+        stat_buff_t::expire_override( s, d );
+
+        damage_buff->trigger( buff->stack() );
+    }
+  };
+  buff = buff_t::find( effect.player, "bound_by_fire_and_blaze" );
+  if ( !buff )
+  {
+     buff = make_buff<bound_by_fire_and_blaze_buff_t>( effect );
+  }
   special_effect_t* bound_by_fire_and_blaze = new special_effect_t(effect.player);
   bound_by_fire_and_blaze->item = effect.item;
   bound_by_fire_and_blaze->source = effect.source;
@@ -2338,9 +2365,9 @@ void blazebinders_hoof(special_effect_t& effect)
 
   struct burnout_wave_t : public proc_spell_t
   {
-    buff_t* buff;
+    buff_t* damage_buff;
     burnout_wave_t( const special_effect_t& e, buff_t* b ) :
-    proc_spell_t( "burnout_wave", e.player, e.player -> find_spell(389710), e.item), buff(b)
+    proc_spell_t( "burnout_wave", e.player, e.player -> find_spell(389710), e.item), damage_buff(b)
     {
       background = true;
       base_dd_min = base_dd_max = e.driver() -> effectN( 2 ).average( e.item );
@@ -2350,20 +2377,28 @@ void blazebinders_hoof(special_effect_t& effect)
     {
       double m = proc_spell_t::composite_da_multiplier( s );
 
-      m *= buff -> stack();
+      m *= damage_buff -> stack();
 
       return m;
     }
+
+     void execute() override
+     {
+       proc_spell_t::execute();
+
+       damage_buff->expire();
+     }
   };
 
-  action_t* action = create_proc_action<burnout_wave_t>( "burnout_wave", effect, buff );
+  action_t* action = create_proc_action<burnout_wave_t>( "burnout_wave", effect, damage_buff );
 
-  buff->set_stack_change_callback( [ action, cb ](buff_t*, int, int new_) 
+  buff->set_stack_change_callback( [ cb, action, damage_buff, buff ](buff_t*, int, int new_) 
   {
     if( !new_ )
     {
-      action->execute();
       cb->deactivate();
+      action->execute();
+      damage_buff->trigger(buff->stack());
     }
     else
     {
