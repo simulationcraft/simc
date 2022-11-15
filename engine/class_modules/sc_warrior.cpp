@@ -338,6 +338,7 @@ public:
     const spell_data_t* siegebreaker_debuff;
     const spell_data_t* whirlwind_buff;
     const spell_data_t* aftershock_duration;
+    const spell_data_t* shield_wall;
   } spell;
 
   // Mastery
@@ -651,6 +652,8 @@ public:
     struct shared_talents_t
     {
       player_talent_t hurricane;
+      player_talent_t ravager;
+      player_talent_t bloodsurge;
 
     } shared;
 
@@ -1547,7 +1550,7 @@ public:
     }
 
     // Protection Warrior Violent Outburst Seeing Red Tracking
-    if ( p()->specialization() == WARRIOR_PROTECTION && rage > 0 )
+    if ( p()->specialization() == WARRIOR_PROTECTION && p()->talents.protection.violent_outburst.ok() && rage > 0 )
     {
       // Trigger the buff if this is the first rage consumption of the iteration
       if ( !p()->buff.seeing_red_tracking->check() )
@@ -3231,8 +3234,8 @@ struct deep_wounds_ARMS_t : public warrior_attack_t
 {
   double bloodsurge_chance, rage_from_bloodsurge;
   deep_wounds_ARMS_t( warrior_t* p ) : warrior_attack_t( "deep_wounds", p, p->find_spell( 262115 ) ),
-    bloodsurge_chance( p->talents.arms.bloodsurge->proc_chance() ),
-    rage_from_bloodsurge( p->talents.arms.bloodsurge->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_RAGE ) )
+    bloodsurge_chance( p->talents.shared.bloodsurge->proc_chance() ),
+    rage_from_bloodsurge( p->talents.shared.bloodsurge->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_RAGE ) )
   {
     background = tick_may_crit = true;
     hasted_ticks               = true;
@@ -3241,7 +3244,7 @@ struct deep_wounds_ARMS_t : public warrior_attack_t
   void tick( dot_t* d ) override
   {
     warrior_attack_t::tick( d );
-    if ( p()->talents.arms.bloodsurge->ok() && rng().roll( bloodsurge_chance ) )
+    if ( p()->talents.shared.bloodsurge->ok() && rng().roll( bloodsurge_chance ) )
     {
       p()->resource_gain( RESOURCE_RAGE, rage_from_bloodsurge, p()->gain.bloodsurge );
     }
@@ -3255,8 +3258,8 @@ struct deep_wounds_PROT_t : public warrior_attack_t
   double bloodsurge_chance, rage_from_bloodsurge;
   deep_wounds_PROT_t( warrior_t* p )
     : warrior_attack_t( "deep_wounds", p, p->spec.deep_wounds_PROT->effectN( 1 ).trigger() ),
-    bloodsurge_chance( p->talents.protection.bloodsurge->proc_chance() ),
-    rage_from_bloodsurge( p->talents.protection.bloodsurge->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_RAGE ) )
+    bloodsurge_chance( p->talents.shared.bloodsurge->proc_chance() ),
+    rage_from_bloodsurge( p->talents.shared.bloodsurge->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_RAGE ) )
   {
     background = tick_may_crit = true;
     hasted_ticks               = true;
@@ -3265,7 +3268,7 @@ struct deep_wounds_PROT_t : public warrior_attack_t
   void tick( dot_t* d ) override
   {
     warrior_attack_t::tick( d );
-    if ( p()->talents.protection.bloodsurge->ok() && rng().roll( bloodsurge_chance ) )
+    if ( p()->talents.shared.bloodsurge->ok() && rng().roll( bloodsurge_chance ) )
     {
       p()->resource_gain( RESOURCE_RAGE, rage_from_bloodsurge, p()->gain.bloodsurge );
     }
@@ -3310,7 +3313,7 @@ struct thunderous_roar_dot_t : public warrior_attack_t
   double bloodsurge_chance, rage_from_bloodsurge;
   thunderous_roar_dot_t( warrior_t* p )
     : warrior_attack_t( "thunderous_roar_dot", p, p->find_spell( 397364 ) ),
-      bloodsurge_chance( p->talents.arms.bloodsurge->proc_chance() ),
+      bloodsurge_chance( p->talents.shared.bloodsurge->proc_chance() ),
       rage_from_bloodsurge( p->find_spell( 384362 )->effectN( 1 ).base_value() / 10.0 )
   {
     background = tick_may_crit = true;
@@ -3320,7 +3323,7 @@ struct thunderous_roar_dot_t : public warrior_attack_t
   void tick( dot_t* d ) override
   {
     warrior_attack_t::tick( d );
-    if ( p()->talents.arms.bloodsurge->ok() && rng().roll( bloodsurge_chance ) )
+    if ( p()->talents.shared.bloodsurge->ok() && rng().roll( bloodsurge_chance ) )
     {
       p()->resource_gain( RESOURCE_RAGE, rage_from_bloodsurge, p()->gain.bloodsurge );
     }
@@ -3333,7 +3336,7 @@ struct thunderous_roar_t : public warrior_attack_t
   warrior_attack_t* thunderous_roar_dot;
   thunderous_roar_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "thunderous_roar", p, p->talents.warrior.thunderous_roar ),
-      bloodsurge_chance( p->talents.arms.bloodsurge->proc_chance() ),
+      bloodsurge_chance( p->talents.shared.bloodsurge->proc_chance() ),
       rage_from_bloodsurge( p->find_spell( 384362 )->effectN( 1 ).base_value() / 10.0 ),
       thunderous_roar_dot( nullptr )
   {
@@ -5056,7 +5059,7 @@ struct ravager_t : public warrior_attack_t
   ravager_tick_t* ravager;
   // We have to use find_spell here, rather than use the talent lookup, as both fury and protection use the same spell_id
   ravager_t( warrior_t* p, util::string_view options_str )
-    : warrior_attack_t( "ravager", p, p->find_spell( 228920 ) ),
+    : warrior_attack_t( "ravager", p, p->talents.shared.ravager ),
       ravager( new ravager_tick_t( p, "ravager_tick" ) )
   {
     parse_options( options_str );
@@ -5244,8 +5247,8 @@ struct rend_dot_t : public warrior_attack_t
 {
   double bloodsurge_chance, rage_from_bloodsurge;
   rend_dot_t( warrior_t* p ) : warrior_attack_t( "rend", p, p->find_spell( 388539 ) ),
-    bloodsurge_chance( p->talents.arms.bloodsurge->proc_chance() ),
-    rage_from_bloodsurge( p->talents.arms.bloodsurge->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_RAGE ) )
+    bloodsurge_chance( p->talents.shared.bloodsurge->proc_chance() ),
+    rage_from_bloodsurge( p->talents.shared.bloodsurge->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_RAGE ) )
   {
     background = tick_may_crit = true;
     hasted_ticks               = true;
@@ -5254,7 +5257,7 @@ struct rend_dot_t : public warrior_attack_t
   void tick( dot_t* d ) override
   {
     warrior_attack_t::tick( d );
-    if ( p()->talents.arms.bloodsurge->ok() && rng().roll( bloodsurge_chance ) )
+    if ( p()->talents.shared.bloodsurge->ok() && rng().roll( bloodsurge_chance ) )
     {
       p()->resource_gain( RESOURCE_RAGE, rage_from_bloodsurge, p()->gain.bloodsurge );
     }
@@ -5295,8 +5298,8 @@ struct rend_dot_prot_t : public warrior_attack_t
 {
   double bloodsurge_chance, rage_from_bloodsurge;
   rend_dot_prot_t( warrior_t* p ) : warrior_attack_t( "rend", p, p->find_spell( 394063 ) ),
-    bloodsurge_chance( p->talents.protection.bloodsurge->proc_chance() ),
-    rage_from_bloodsurge( p->talents.protection.bloodsurge->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_RAGE ) )
+    bloodsurge_chance( p->talents.shared.bloodsurge->proc_chance() ),
+    rage_from_bloodsurge( p->talents.shared.bloodsurge->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_RAGE ) )
   {
     background = tick_may_crit = true;
     hasted_ticks               = true;
@@ -5305,7 +5308,7 @@ struct rend_dot_prot_t : public warrior_attack_t
   void tick( dot_t* d ) override
   {
     warrior_attack_t::tick( d );
-    if ( p()->talents.protection.bloodsurge->ok() && rng().roll( bloodsurge_chance ) )
+    if ( p()->talents.shared.bloodsurge->ok() && rng().roll( bloodsurge_chance ) )
     {
       p()->resource_gain( RESOURCE_RAGE, rage_from_bloodsurge, p()->gain.bloodsurge );
     }
@@ -7919,6 +7922,7 @@ void warrior_t::init_spells()
   spec.deep_wounds_PROT         = find_specialization_spell("Deep Wounds", WARRIOR_PROTECTION);
   spec.revenge_trigger          = find_specialization_spell("Revenge Trigger");
   spec.shield_block_2           = find_specialization_spell( 231847 ); // extra charge
+  spell.shield_wall             = find_spell( 871 );
 
   // Class Talents
   talents.warrior.battle_stance                    = find_talent_spell( talent_tree::CLASS, "Battle Stance" );
@@ -8179,6 +8183,8 @@ void warrior_t::init_spells()
   };
 
   talents.shared.hurricane = find_shared_talent( { &talents.arms.hurricane, &talents.fury.hurricane } );
+  talents.shared.ravager = find_shared_talent( { &talents.fury.ravager, &talents.protection.ravager } );
+  talents.shared.bloodsurge = find_shared_talent( { &talents.arms.bloodsurge, &talents.protection.bloodsurge } );
 
   // All
   azerite.breach           = find_azerite_spell( "Breach" );
@@ -8825,56 +8831,82 @@ void warrior_t::apl_prot()
   action_priority_list_t* aoe          = get_action_priority_list( "aoe" );
 
   default_list -> add_action( "auto_attack" );
+  default_list -> add_action( "shield_charge,if=time=0" );
   default_list -> add_action( "charge,if=time=0" );
-  default_list -> add_action( "heroic_charge,if=buff.revenge.down&(rage<60|rage<44&buff.last_stand.up)" );
-  default_list -> add_action( "intervene,if=buff.revenge.down&(rage<80|rage<77&buff.last_stand.up)&runeforge.reprisal" );
-  default_list -> add_action( "use_items,if=cooldown.avatar.remains<=gcd|buff.avatar.up" );
-  //use off GCD racial buffs with avatar.
-  default_list -> add_action( "blood_fury,if=buff.avatar.up" );
-  default_list -> add_action( "berserking,if=buff.avatar.up" );
-  default_list -> add_action( "fireblood,if=buff.avatar.up" );
-  default_list -> add_action( "ancestral_call,if=buff.avatar.up" );
-  default_list -> add_action( "thunder_clap" );
-  //Use TC if we have Outburst and High stacks of Seeing Red to prevent wasting Outburst procs.
-  default_list -> add_action( "thunder_clap,if=buff.violent_outburst.up&((buff.seeing_red.stack>6&cooldown.shield_slam.remains>2))" );
-  // Don't Avatar if we have an Outburst proc so it doesn't get eaten.
-  default_list -> add_action( this, "Avatar", "if=buff.violent_outburst.down" );
+  default_list -> add_action( "use_items,if=talent.avatar&(cooldown.avatar.remains<=gcd|buff.avatar.up)|!talent.avatar" );
+  //use off GCD racial buffs with avatar, or rip on cd if no avatar
+  default_list -> add_action( "blood_fury,if=buff.avatar.up|!talent.avatar" );
+  default_list -> add_action( "berserking,if=buff.avatar.up|!talent.avatar" );
+  default_list -> add_action( "fireblood,if=buff.avatar.up|!talent.avatar" );
+  default_list -> add_action( "ancestral_call,if=buff.avatar.up|!talent.avatar" );
   default_list -> add_action( "potion,if=buff.avatar.up|target.time_to_die<25" );
-  default_list -> add_action( this, covenant.conquerors_banner, "conquerors_banner" );
-  default_list -> add_action( this, covenant.ancient_aftershock, "ancient_aftershock");
-  default_list -> add_action( this, covenant.kyrian_spear, "spear_of_bastion");
   //Prioritize Revenge! procs if SS is on cd and not in execute.
-  default_list -> add_action( this, "Revenge", "if=buff.revenge.up&(target.health.pct>20|spell_targets.thunder_clap>3)&cooldown.shield_slam.remains" );
-  default_list -> add_action( this, "Ignore Pain", "if=target.health.pct>=20&(target.health.pct>=80&!covenant.venthyr)&(rage>=85&cooldown.shield_slam.ready&buff.shield_block.up|rage>=60&cooldown.demoralizing_shout.ready&talent.booming_voice.enabled|rage>=70&cooldown.avatar.ready|rage>=40&cooldown.demoralizing_shout.ready&talent.booming_voice.enabled&buff.last_stand.up|rage>=55&cooldown.avatar.ready&buff.last_stand.up|rage>=80|rage>=55&cooldown.shield_slam.ready&buff.violent_outburst.up&buff.shield_block.up|rage>=30&cooldown.shield_slam.ready&buff.violent_outburst.up&buff.last_stand.up&buff.shield_block.up),use_off_gcd=1");
+  default_list -> add_action( "revenge,if=buff.revenge.up&(target.health.pct>20|spell_targets.thunder_clap>3)&cooldown.shield_slam.remains" );
+  default_list -> add_action( "ignore_pain,if=target.health.pct>=20&(target.health.pct>=80&!covenant.venthyr)&(rage>=85&cooldown.shield_slam.ready&buff.shield_block.up|rage>=60&cooldown.demoralizing_shout.ready&talent.booming_voice.enabled|rage>=70&cooldown.avatar.ready|rage>=40&cooldown.demoralizing_shout.ready&talent.booming_voice.enabled&buff.last_stand.up|rage>=55&cooldown.avatar.ready&buff.last_stand.up|rage>=80|rage>=55&cooldown.shield_slam.ready&buff.violent_outburst.up&buff.shield_block.up|rage>=30&cooldown.shield_slam.ready&buff.violent_outburst.up&buff.last_stand.up&buff.shield_block.up),use_off_gcd=1");
   //Shield Block if missing the buff, or SS is about to come off CD, but ignore during execute.
-  default_list -> add_action( this, "Shield Block", "if=(buff.shield_block.down|buff.shield_block.remains<cooldown.shield_slam.remains)&target.health.pct>20" );
-  default_list -> add_action( this, "Last Stand", "if=target.health.pct>=90|target.health.pct<=20");
-  default_list -> add_action( this, "Demoralizing Shout", "if=talent.booming_voice.enabled&rage<60" );
-  default_list -> add_action( this, "Shield Slam", "if=buff.violent_outburst.up&rage<=55");
-  default_list -> add_action( "run_action_list,name=aoe,if=spell_targets.thunder_clap>3" );
-  default_list -> add_action( "call_action_list,name=generic" );
+  default_list -> add_action( "shield_block,if=(buff.shield_block.down|buff.shield_block.remains<cooldown.shield_slam.remains)&target.health.pct>20" );
+  default_list -> add_action( "shield_slam,if=buff.violent_outburst.up&rage<=55");
+
   //Lower priority for on GCD racials.
   default_list -> add_action( "bag_of_tricks" );
   default_list -> add_action( "arcane_torrent,if=rage<80" );
   default_list -> add_action( "lights_judgment" );
+  default_list -> add_action( "shield_wall,if=!buff.last_stand.up&!buff.rallying_cry.up" );
+  default_list -> add_action( "last_stand,if=!buff.shield_wall.up&!buff.rallying_cry.up" );
+  default_list -> add_action( "rallying_cry,if=!buff.last_stand.up&!buff.shield_wall.up" );
+  default_list -> add_action( "demoralizing_shout,if=!buff.last_stand.up&!buff.shield_wall.up&!buff.rallying_cry.up" );
+  // OGCD actions, tossed in here just to run the code
+  default_list -> add_action( "berserker_rage" );
+  default_list -> add_action( "spell_reflection" );
+  // generic -> add_action( "heroic_leap" );  // Uncomment to test
+  // generic -> add_action( "challenging_shout" ); NYI
+  // generic -> add_action( "disrupting_shout" ); NYI
+  default_list -> add_action( "avatar" );
+  default_list -> add_action( "run_action_list,name=aoe,if=spell_targets.thunder_clap>3" );
+  default_list -> add_action( "call_action_list,name=generic" );
 
-  generic -> add_talent( this, "Ravager" );
-  //generic -> add_talent( this, "Dragon Roar" );
-  generic -> add_action( this, "Execute" );
-  generic -> add_action( this, covenant.condemn, "condemn");
-  generic -> add_action( this, "Shield Slam" );
-  generic -> add_action( this, "Thunder Clap", "if=buff.violent_outburst.down" );
-  generic -> add_action( this, "Revenge" );
-  generic -> add_action( this, "Devastate" );
+  // Regular apl continues from here
 
-  aoe -> add_talent( this, "Ravager" );
-  //aoe -> add_talent( this, "Dragon Roar" );
-  //This only gets called around 1/3 of Outburst procs due to the SS call being higher priority, which is about
-  //how often you want to TC on 4+ targets for more damage without sacrificing Banner uptime.
-  aoe -> add_action( this, "Thunder Clap,if=buff.violent_outburst.up" );
-  aoe -> add_action( this, "Revenge" );
-  aoe -> add_action( this, "Thunder Clap" );
-  aoe -> add_action( this, "Shield Slam" );
+  // generic -> add_action( "Intervene" ); Uncomment to test
+  // generic -> add_action( "Intimidating Shout" ); NYI
+  // generic -> add_action( "Bitter Immunity" ); NYI
+
+  generic -> add_action( "ignore_pain,if=rage.deficit>=35&buff.ignore_pain.value<health.max*0.3" );
+  generic -> add_action( "ravager" );
+  generic -> add_action( "thunderous_roar" );
+  generic -> add_action( "spear_of_bastion" );
+
+  generic -> add_action( "shield_charge" );
+  generic -> add_action( "shockwave" );
+  generic -> add_action( "execute" );
+  generic -> add_action( "shield_slam" );
+  generic -> add_action( "thunder_clap,if=active_enemies>=2|(talent.rend&talent.blood_and_thunder)" );
+  generic -> add_action( "revenge,if=rage.deficit>30&active_enemies>=2" );
+
+  generic -> add_action( "devastate" );
+  generic -> add_action( "heroic_throw" );
+  generic -> add_action( "thunder_clap" );  // Does less damage than devastate ST
+  generic -> add_action( "revenge,if=rage.deficit>30" );
+  generic -> add_action( "Impending Victory" );
+  generic -> add_action( "rend,if=!talent.thunderclap&!talent.blood_and_thunder" );
+  generic -> add_action( "titanic_throw" );
+  generic -> add_action( "storm_bolt" );
+
+  aoe -> add_action( "ignore_pain,if=rage.deficit>=35&buff.ignore_pain.value<health.max*0.3" );
+  aoe -> add_action( "spear_of_bastion" );
+  aoe -> add_action( "thunderous_roar" );
+  aoe -> add_action( "ravager" );
+  aoe -> add_action( "shockwave" );
+  aoe -> add_action( "shield_charge" );
+  aoe -> add_action( "revenge,if=rage.deficit>30" );
+  aoe -> add_action( "thunder_clap" );
+  aoe -> add_action( "titanic_throw" );
+  aoe -> add_action( "rend,if=!talent.thunderclap&!talent.blood_and_thunder" );
+  aoe -> add_action( "shield_slam" );
+  aoe -> add_action( "execute" );
+  aoe -> add_action( "devastate" );
+  aoe -> add_action( "Impending Victory" );
+  aoe -> add_action( "storm_bolt" );
 
 }
 // NO Spec Combat Action Priority List
@@ -9183,7 +9215,7 @@ void warrior_t::create_buffs()
       ->set_default_value( find_spell( 5302 )->effectN( 1 ).percent() )
       ->set_cooldown( spec.revenge_trigger -> internal_cooldown() );
 
-  buff.avatar = make_buff( this, "avatar", talents.warrior.avatar )
+  buff.avatar = make_buff( this, "avatar", find_spell( 107574 ) )
       ->set_chance(1)
       ->set_cooldown( timespan_t::zero() );
 
@@ -9322,8 +9354,8 @@ void warrior_t::create_buffs()
     ->set_cooldown( timespan_t::zero() )
     ->add_invalidate( CACHE_BLOCK );
 
-  buff.shield_wall = make_buff( this, "shield_wall", talents.protection.shield_wall )
-    ->set_default_value( talents.protection.shield_wall->effectN( 1 ).percent() )
+  buff.shield_wall = make_buff( this, "shield_wall", spell.shield_wall )
+    ->set_default_value( spell.shield_wall->effectN( 1 ).percent() )
     ->set_cooldown( timespan_t::zero() );
 
   buff.slaughtering_strikes_an = make_buff( this, "slaughtering_strikes_an", find_spell( 393943 ) )
@@ -9540,7 +9572,7 @@ void warrior_t::init_gains()
   gain.conquerors_banner                = get_gain( "conquerors_banner" );
   gain.critical_block                   = get_gain( "critical_block" );
   gain.execute                          = get_gain( "execute" );
-  gain.frothing_berserker               = get_gain(" frothing_berserker" );
+  gain.frothing_berserker               = get_gain( "frothing_berserker" );
   gain.melee_crit                       = get_gain( "melee_crit" );
   gain.melee_main_hand                  = get_gain( "melee_main_hand" );
   gain.melee_off_hand                   = get_gain( "melee_off_hand" );
