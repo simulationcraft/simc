@@ -2378,12 +2378,12 @@ void blazebinders_hoof(special_effect_t& effect)
 
   buff->set_stack_change_callback( [ cb, action, damage_buff ](buff_t*, int, int new_) 
   {
-    if( new_ == 0 )
+    if( !new_ )
     {
       action->execute();
       cb->deactivate();
     }
-    else if( new_ > 0 )
+    else
     {
       cb->activate();
       damage_buff->trigger();
