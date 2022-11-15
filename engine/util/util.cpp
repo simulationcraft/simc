@@ -1704,6 +1704,10 @@ const char* util::spec_string_no_class( const player_t& p )
     return "Guardian";
     case DRUID_RESTORATION:
     return "Restoration";
+    case EVOKER_DEVASTATION:
+    return "Devastation";
+    case EVOKER_PRESERVATION:
+    return "Preservation";
     case HUNTER_BEAST_MASTERY:
     return "BeastMastery";
     case HUNTER_MARKSMANSHIP:
