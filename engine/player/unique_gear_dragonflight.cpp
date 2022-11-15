@@ -2324,10 +2324,11 @@ void homeland_raid_horn(special_effect_t& effect)
 // 389710 Damage
 void blazebinders_hoof(special_effect_t& effect)
 {
-  auto buff = create_buff<stat_buff_t>(effect.player, effect.driver());
-  buff->set_default_value(effect.driver()->effectN(1).average(effect.item));
-  buff->set_refresh_behavior(buff_refresh_behavior::DISABLED);
-  buff->set_cooldown(0_ms);
+  auto buff = create_buff<stat_buff_t>( effect.player, effect.driver() );
+  buff->set_default_value( effect.driver()->effectN( 1 ).average( effect.item ) );
+  buff->set_refresh_behavior( buff_refresh_behavior::DISABLED );
+  buff->expire_at_max_stack = false;
+  buff->set_cooldown( 0_ms );
   auto damage_buff = make_buff<buff_t>( effect.player, "bound_by_fire_increase" );
   damage_buff->set_max_stack( 6 );
   damage_buff->set_duration( 20_s );
@@ -2337,6 +2338,7 @@ void blazebinders_hoof(special_effect_t& effect)
   bound_by_fire_and_blaze->spell_id = effect.driver()->id();
   bound_by_fire_and_blaze->custom_buff = buff;
   bound_by_fire_and_blaze->cooldown_ = 0_ms;
+  bound_by_fire_and_blaze->proc_chance_ = 1.0;
   effect.player->special_effects.push_back( bound_by_fire_and_blaze );
   auto cb = new dbc_proc_callback_t(effect.player, *bound_by_fire_and_blaze);
   cb->initialize();
