@@ -1065,12 +1065,65 @@ struct crusader_strike_t : public paladin_melee_attack_t
   }
 };
 
+struct light_of_the_titans_t : public paladin_heal_t
+{
+  struct light_of_the_titans_hot_t : public paladin_heal_t
+  {
+    light_of_the_titans_hot_t( paladin_t* p )
+      : paladin_heal_t( "Light of the Titans (HoT)", p, p->talents.light_of_the_titans ->effectN( 1 ).trigger() )
+    {
+      tick_zero  = false;
+      background = true;
+    }
+    void tick(dot_t* d) override
+    {
+      paladin_heal_t::tick( d );
+    }
+    double composite_ta_multiplier(const action_state_t* s) const override
+    {
+      double m = paladin_heal_t::composite_ta_multiplier( s );
+      return m;
+    }
+  };
+
+  light_of_the_titans_hot_t* periodic;
+
+  light_of_the_titans_t( paladin_t* p, util::string_view options_str )
+    : paladin_heal_t( "Light of the Titans", p, p->talents.light_of_the_titans ),
+      periodic( new light_of_the_titans_hot_t( p ) )
+  {
+    parse_options( options_str );
+    tick_zero = false;
+    impact_action = periodic;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    paladin_t* p = debug_cast<paladin_t*>( player );
+    for ( size_t i = 0, size = p->dot_list.size(); i < size; i++ )
+    {
+      dot_t* d = p->dot_list[ i ];
+      // If a hostile DoT is ticking on us, Light of the Titans heals for 50% more
+      if ( d->source != p && d->source->is_enemy() && d->is_ticking() )
+      {
+        // ToDo: This actually does nothing, tried different variables, none seem to work.
+        // So... Kinda NYI-ish for now? At least something ticks...
+        periodic->base_multiplier = 1.0 + p->talents.light_of_the_titans->effectN( 2 ).percent();
+        break;
+      }
+    }
+    paladin_heal_t::impact( s );
+  }
+};
+
 // Word of Glory ===================================================
 
 struct word_of_glory_t : public holy_power_consumer_t<paladin_heal_t>
 {
+  light_of_the_titans_t* light_of_the_titans;
   word_of_glory_t( paladin_t* p, util::string_view options_str )
-    : holy_power_consumer_t( "word_of_glory", p, p->find_class_spell( "Word of Glory" ) )
+    : holy_power_consumer_t( "word_of_glory", p, p->find_class_spell( "Word of Glory" ) ),
+      light_of_the_titans( new light_of_the_titans_t( p, "" ) )
   {
     parse_options( options_str );
     target = p;
@@ -1102,6 +1155,10 @@ struct word_of_glory_t : public holy_power_consumer_t<paladin_heal_t>
     if ( p()->conduit.shielding_words->ok() && s->result_amount > 0 )
     {
       p()->buffs.shielding_words->trigger( 1, s->result_amount * p()->conduit.shielding_words.percent() );
+    }
+    if ( p() ->talents.light_of_the_titans->ok())
+    {
+      light_of_the_titans->execute();
     }
   }
 
