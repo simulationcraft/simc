@@ -914,7 +914,7 @@ struct void_tendril_mind_flay_t final : public priest_pet_spell_t
       }
       else
       {
-        base_td += 321.5;
+        base_td += 235.46;
       }
 
       spell_power_mod.tick *= 0.6;
