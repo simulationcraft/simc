@@ -1945,26 +1945,26 @@ double enemy_t::armor_coefficient( int level, tank_dummy_e dungeon_content )
     10.0 values here
     Level 70 Base/open world: 11766.000 (Level 70 Armor mitigation constants (K-values))
     Level 70 M0/M+: 12824.94 (ExpectedStatModID: 216; ArmorConstMod: 1.09)
-    Castle Nathria LFR: 13083.792 (ExpectedStatModID: 212; ArmorConstMod: 1.112)
-    Castle Nathria Normal: 14025.072 (ExpectedStatModID: 213; ArmorConstMod: 1.192)
-    Castle Nathria Heroic: 15084.012 (ExpectedStatModID: 214; ArmorConstMod: 1.282)
-    Castle Nathria Mythic: 16284.144 (ExpectedStatModID: 215; ArmorConstMod: 1.384)
+    Vault of the Incarnates LFR: 13083.792 (ExpectedStatModID: 212; ArmorConstMod: 1.112)
+    Vault of the Incarnates Normal: 14025.072 (ExpectedStatModID: 213; ArmorConstMod: 1.192)
+    Vault of the Incarnates Heroic: 15084.012 (ExpectedStatModID: 214; ArmorConstMod: 1.282)
+    Vault of the Incarnates Mythic: 16284.144 (ExpectedStatModID: 215; ArmorConstMod: 1.384)
   */
   double k = dbc->armor_mitigation_constant( level );
 
   switch ( dungeon_content )
   {
     case tank_dummy_e::DUNGEON:
-      return k * ( is_ptr() ? 1.09 : 1.537 );  // M0/M+
+      return k * ( level == 70 ? 1.09 : 1.537 );  // M0/M+
       break;
     case tank_dummy_e::RAID:
-      return k * ( is_ptr() ? 1.192 : 1.670 );  // Normal Raid
+      return k * ( level == 70 ? 1.192 : 1.670 );  // Normal Raid
       break;
     case tank_dummy_e::HEROIC:
-      return k * ( is_ptr() ? 1.282 : 1.821 );  // Heroic Raid
+      return k * ( level == 70 ? 1.282 : 1.821 );  // Heroic Raid
       break;
     case tank_dummy_e::MYTHIC:
-      return k * ( is_ptr() ? 1.384 : 1.992 );  // Mythic Raid
+      return k * ( level == 70 ? 1.384 : 1.992 );  // Mythic Raid
       break;
     default:
       break;  // tank_dummy_e::NONE
