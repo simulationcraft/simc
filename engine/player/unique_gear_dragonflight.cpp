@@ -2345,7 +2345,6 @@ void blazebinders_hoof(special_effect_t& effect)
   struct bound_by_fire_buff_t : public stat_buff_t
   {
     burnout_wave_t* damage;
-    action_t* action;
 
     bound_by_fire_buff_t( const special_effect_t& e, action_t* a )
         : stat_buff_t( e.player, "bound_by_fire_and_blaze", e.driver(), e.item ),
@@ -2372,14 +2371,19 @@ void blazebinders_hoof(special_effect_t& effect)
 
   auto damage = create_proc_action<burnout_wave_t>( "burnout_wave", effect );
   auto buff = make_buff<bound_by_fire_buff_t>( effect, damage );
+
   special_effect_t* bound_by_fire_and_blaze = new special_effect_t( effect.player );
   bound_by_fire_and_blaze->source = effect.source;
   bound_by_fire_and_blaze->spell_id = effect.driver()->id();
   bound_by_fire_and_blaze->custom_buff = buff;
   bound_by_fire_and_blaze->cooldown_ = 0_ms;
+
+  effect.player->special_effects.push_back( bound_by_fire_and_blaze );
+  effect.proc_chance_ = 1.01;
+  effect.custom_buff = buff;
+
   auto cb = new dbc_proc_callback_t( effect.player, *bound_by_fire_and_blaze );
   cb -> deactivate();
-  effect.player->special_effects.push_back( bound_by_fire_and_blaze );
 
   buff->set_stack_change_callback( [ cb ](buff_t*, int, int new_) 
   {
@@ -2392,8 +2396,6 @@ void blazebinders_hoof(special_effect_t& effect)
       cb->activate();
     }
   } );
-  effect.proc_chance_ = 1.01;
-  effect.custom_buff = buff;
 }
 
 // Weapons
