@@ -1403,14 +1403,17 @@ std::string enemy_t::generate_tank_action_list( tank_dummy_e tank_dummy )
   constexpr size_t numTankDummies = static_cast<size_t>( tank_dummy_e::MAX );
   //                               NONE, WEAK,           DUNGEON,  RAID,   HEROIC, MYTHIC
   //                               NONE, Normal Dungeon, Mythic 0, Normal, Heroic, Mythic
-  // Level 60 Values
+  // Level 70 Values
   // Defaulted to 20-man damage
   // Damage is normally increased from 10-man to 30-man by an average of 10% for every 5 players added.
   // 10-man -> 20-man = 20% increase; 20-man -> 30-man = 20% increase
-  // Raid values using Soulrender Dormazain as a baseline
   std::array<int, numTankDummies> aa_damage               = { 0, 6415, 12300, 24597, 43081, 73742 };  // Base auto attack damage
   std::array<int, numTankDummies> dummy_strike_damage     = { 0, 11000, 21450, 42932, 68189, 123500 };  // Base melee nuke damage (currently set to Soulrender's Ruinblade)
   std::array<int, numTankDummies> background_spell_damage = { 0, 257, 1831, 2396, 3298, 5491 };  // Base background dot damage (currently set to 0.04x auto damage)
+
+  //std::array<int, numTankDummies> aa_damage               = { 0, 102100, 133380, 174241, 240324, 401733 };  // Base auto attack damage
+  //std::array<int, numTankDummies> dummy_strike_damage     = { 0, 204200, 266759, 348483, 480649, 642444 };  // Base melee nuke damage (currently set to Raszageth's Electrified Jaws)
+  //std::array<int, numTankDummies> background_spell_damage = { 0, 4084, 5335, 6970, 9613, 16069 };  // Base background dot damage (currently set to 0.04x auto damage)
 
   size_t tank_dummy_index = static_cast<size_t>( tank_dummy );
   als += "/auto_attack,damage=" + util::to_string( aa_damage[ tank_dummy_index ] ) +
