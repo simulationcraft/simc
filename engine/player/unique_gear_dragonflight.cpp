@@ -2705,8 +2705,6 @@ void broodkeepers_blaze(special_effect_t& effect)
   // callback to trigger debuff on specific schools
   struct broodkeepers_blaze_cb_t : public dbc_proc_callback_t
   {
-    std::vector<int> target_list;
-
     broodkeepers_blaze_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e ) {}
 
     void trigger( action_t* a, action_state_t* s ) override
