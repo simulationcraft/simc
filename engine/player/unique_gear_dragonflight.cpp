@@ -2315,6 +2315,7 @@ void homeland_raid_horn(special_effect_t& effect)
   effect.custom_buff = buff;
 }
 
+
 // Blazebinder's Hoof
 // 383926 Driver & Buff
 // 389710 Damage
@@ -2325,8 +2326,10 @@ void blazebinders_hoof(special_effect_t& effect)
   buff->set_default_value( effect.driver()->effectN( 1 ).average( effect.item ) );
   buff->set_refresh_behavior( buff_refresh_behavior::DISABLED );
   buff->set_cooldown( 0_ms );
+  buff->set_chance( 1.01 );
   effect.source = SPECIAL_EFFECT_SOURCE_ITEM;
   effect.custom_buff = buff;
+  effect.proc_chance_ = 1.01;
 
   auto damage_buff = create_buff<buff_t>( effect.player, effect.player -> find_spell(389710) );
   damage_buff->set_max_stack( effect.driver()->max_stacks() );
