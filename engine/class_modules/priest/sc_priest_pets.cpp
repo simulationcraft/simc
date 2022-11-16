@@ -927,7 +927,10 @@ struct void_tendril_mind_flay_t final : public priest_pet_spell_t
 
     // BUG: This talent is cursed
     // https://github.com/SimCMinMax/WoW-BugTracker/issues/1029
-    m *= 1.1;
+    if ( p().o().is_ptr() )
+    {
+      m *= 1.1;
+    }
 
     return m;
   }
