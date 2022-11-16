@@ -2323,9 +2323,10 @@ void blazebinders_hoof(special_effect_t& effect)
 {
   struct burnout_wave_t : public proc_spell_t
   {
-    buff_t* buff;
-    burnout_wave_t( const special_effect_t& e, buff_t* b ) :
-    proc_spell_t( "burnout_wave", e.player, e.player -> find_spell( 389710 ), e.item), buff( b )
+    double buff_stacks;
+
+    burnout_wave_t( const special_effect_t& e ) :
+    proc_spell_t( "burnout_wave", e.player, e.player -> find_spell( 389710 ), e.item), buff_stacks()
     {
       // Value stored in effect 2 appears to be the maximum damage that can be done with 6 stacks. Divide it by max stacks to get damage per stack.
       base_dd_min = base_dd_max = e.driver()->effectN(2).average(e.item) / e.driver()->max_stacks();
@@ -2336,7 +2337,7 @@ void blazebinders_hoof(special_effect_t& effect)
     {
       double m = proc_spell_t::composite_da_multiplier( s );
 
-      m *= buff->stack();
+      m *= buff_stacks;
 
       return m;
     }
@@ -2344,26 +2345,31 @@ void blazebinders_hoof(special_effect_t& effect)
 
   struct bound_by_fire_buff_t : public stat_buff_t
   {
+    burnout_wave_t* damage;
     action_t* action;
 
-    bound_by_fire_buff_t( const special_effect_t& e )
-        : stat_buff_t( e.player, "bound_by_fire_and_blaze", e.driver(), e.item )
+    bound_by_fire_buff_t( const special_effect_t& e, action_t* a )
+        : stat_buff_t( e.player, "bound_by_fire_and_blaze", e.driver(), e.item ),
+        damage( debug_cast<burnout_wave_t*>( a ) )
     {
       set_default_value( e.driver()->effectN( 1 ).average( e.item ) );
       set_refresh_behavior( buff_refresh_behavior::DISABLED );
       set_cooldown( 0_ms );
       set_chance( 1.01 );
-      action = create_proc_action<burnout_wave_t>( "burnout_wave", e, this );
+      action = create_proc_action<burnout_wave_t>( "burnout_wave", e );
     }
 
     void expire_override( int s, timespan_t d ) override
     {
       stat_buff_t::expire_override( s, d );
 
-      action->execute();
+      damage -> buff_stacks = s;
+      damage -> execute();
     }
   };
-  auto buff = make_buff<bound_by_fire_buff_t>( effect );
+
+  auto damage = create_proc_action<burnout_wave_t>( "burnout_wave", effect );
+  auto buff = make_buff<bound_by_fire_buff_t>( effect, damage );
   special_effect_t* bound_by_fire_and_blaze = new special_effect_t( effect.player );
   bound_by_fire_and_blaze->source = effect.source;
   bound_by_fire_and_blaze->spell_id = effect.driver()->id();
