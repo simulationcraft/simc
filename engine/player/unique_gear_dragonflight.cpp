@@ -2318,7 +2318,6 @@ void homeland_raid_horn(special_effect_t& effect)
 // Blazebinder's Hoof
 // 383926 Driver & Buff
 // 389710 Damage
-// TODO - Figure out why the buff only triggers 50% of the time when it should on both Procs, and Use.
 void blazebinders_hoof(special_effect_t& effect)
 {
   struct burnout_wave_t : public proc_spell_t
@@ -2336,7 +2335,7 @@ void blazebinders_hoof(special_effect_t& effect)
     double composite_da_multiplier( const action_state_t* s ) const override
     {
       double m = proc_spell_t::composite_da_multiplier( s );
-
+      // Damage increased linerally by number of stacks
       m *= buff_stacks;
 
       return m;
@@ -2353,17 +2352,20 @@ void blazebinders_hoof(special_effect_t& effect)
         damage( debug_cast<burnout_wave_t*>( a ) )
     {
       set_default_value( e.driver()->effectN( 1 ).average( e.item ) );
+      // Disable refresh on the buff to model in game behavior
       set_refresh_behavior( buff_refresh_behavior::DISABLED );
+      // Set cooldown on buff to 0 to prevent triggering the cooldown on buff procs
       set_cooldown( 0_ms );
+      // Set chance to prevent using the RPPM chance for buff applications
       set_chance( 1.01 );
-      action = create_proc_action<burnout_wave_t>( "burnout_wave", e );
     }
 
     void expire_override( int s, timespan_t d ) override
     {
       stat_buff_t::expire_override( s, d );
-
+      // Debug cast to pass stack count through to the damage action
       damage -> buff_stacks = s;
+      // Execute the debug cast
       damage -> execute();
     }
   };
