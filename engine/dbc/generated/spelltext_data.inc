@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.2.46658
-static const std::array<spelltext_data_t, 19175> __spelltext_data { {
+static const std::array<spelltext_data_t, 19176> __spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -18059,7 +18059,7 @@ static const std::array<spelltext_data_t, 19175> __spelltext_data { {
   { 388551, "Vivify critical strikes and Rising Sun Kicks reduce the remaining cooldown on $?s388615[Restoral][Revival] by ${$s2/1000}.1 sec, and $?s388615[Restoral][Revival] heals targets for ${$s1}.1% of $?s388615[Restoral's][Revival's] heal over $388555d.", 0, 0 },
   { 388555, "$@spelldesc388551", "Restores $w1 health every $t1 sec.", 0 },
   { 388559, "Summon an Unstable Arcane Rune at your location for $d. While standing within, you or your party members gain power but suffer its corruption, increasing primary stat by $391290s1 and decreasing Critical Strike by $391290s2.", 0, 0 },
-  { 388560, "@spelldesc388559", "$pri increased by $w1.", 0 },
+  { 388560, "$@spelldesc388559", "$pri increased by $w1.", 0 },
   { 388564, "Zen Pulse's damage and healing is increased by $388566s1% each time Soothing Mist heals, up to $388566u times. \r\n\r\nWhen your Soothing Mist channel ends, this effect is canceled.", 0, 0 },
   { 388566, "$@spelldesc388564", "Damage and healing of Zen Pulse increased by $w1%.", 0 },
   { 388583, "$@spelldesc388559", "$pri increased by $w1.\r\nCritical Strike reduced by $w2.", 0 },
@@ -18079,7 +18079,7 @@ static const std::array<spelltext_data_t, 19175> __spelltext_data { {
   { 388701, "Renewing Mist has a $s1% chance to immediately spread to an additional target when initially cast or when traveling to a new target.", 0, 0 },
   { 388739, "$@spelldesc388603", 0, 0 },
   { 388740, "Your Blackout Kicks strike ${$s2+1} targets and have an additional $s1% chance to reset the cooldown of your Rising Sun Kick while within your Faeline Stomp.", 0, 0 },
-  { 388755, "@spelldesc383920", "Suffering $w1 Shadow damage every $t1 sec.", 0 },
+  { 388755, "$@spelldesc383920", "Suffering $w1 Shadow damage every $t1 sec.", 0 },
   { 388779, "Your abilities reset Faeline Stomp $s2% more often. While within Faeline Stomp, your Tiger Palms strike twice and your Spinning Crane Kick heals $s4 nearby allies for $s1% of the damage done.", 0, 0 },
   { 388807, "Whenever you Parry, you heal for ${$m1}.2% of your maximum health. Can only occur once per second.", 0, 0 },
   { 388808, "$@spelldesc382549", 0, 0 },
@@ -18103,7 +18103,7 @@ static const std::array<spelltext_data_t, 19175> __spelltext_data { {
   { 388903, "Whirlwind has a ${$s1/1000}.1 sec cooldown, but deals $s3% increased damage. \r\n\r\nSlam has a ${$s2/1000}.1 sec cooldown and generates ${$s6/10} Rage, but deals $s4% increased damage.", 0, 0 },
   { 388909, "$@spelldesc384791", "Unable to benefit from Salvo.", 0 },
   { 388917, "Turns your skin to stone for $120954d, increasing your current and maximum health by $<health>% and reducing all damage you take by $<damage>%.\r\n\r\nCombines with other Fortifying Brew effects.", 0, 0 },
-  { 388929, "@spelldesc388931", "Shatter to deal up to $w1 Frost damage split between nearby enemies while also decreasing their movement speed by $w2%.", 0 },
+  { 388929, "$@spelldesc388931", "Shatter to deal up to $w1 Frost damage split between nearby enemies while also decreasing their movement speed by $w2%.", 0 },
   { 388930, "Permanently enchants a ring to increase your Critical Strike by $ec1.", 0, 0 },
   { 388931, "Shatter all shards, dealing up to $388948s1 Frost damage split between nearby enemies and decreasing their movement speed by up to $s2% per stack for $s3 sec.", 0, 0 },
   { 388933, "Onslaught Enrages you and grants you $s2 stacks of Slaughtering Strikes.\r\n\r\nEnrage now lasts ${$s1/1000} sec longer.\r\n", 0, 0 },
@@ -18164,7 +18164,7 @@ static const std::array<spelltext_data_t, 19175> __spelltext_data { {
   { 389513, "Permanently enchants a gathering tool to increase your Finesse by $ec1.", 0, 0 },
   { 389519, "Permanently enchants a crafting tool to increase your Inspiration by $ec1.", 0, 0 },
   { 389525, "Permanently enchants a gathering or fishing tool to increase your Perception by $ec1.", 0, 0 },
-  { 389527, "@spelldesc384661", "Armor increased by $w2 and absorb incoming damage up to $w1.", 0 },
+  { 389527, "$@spelldesc384661", "Armor increased by $w2 and absorb incoming damage up to $w1.", 0 },
   { 389530, "Permanently enchants a crafting or cooking tool to increase your Resourcefulness by $ec1.", 0, 0 },
   { 389537, "Permanently enchants a weapon to sometimes incite flames, increasing your Critical Strike by $ec1s1 for $390165d.", 0, 0 },
   { 389539, "Call upon the Light and gain 15 stacks of Divine Resolve, increasing your maximum health by $s11% and reducing your damage taken by $s12% per stack for $d. After ${$d-15} sec, you will begin to lose 1 stack per second, but each 3 Holy Power spent will delay the loss of your next stack by 1 sec.$?s53376&s384376[\r\n\r\nWhile active, your Judgment generates $53376s3 additional Holy Power, your damage and healing is increased by $384376s1%, and Hammer of Wrath may be cast on any target.]?s53376[\r\n\r\nWhile active, your Judgment generates $53376s3 additional Holy Power.]?s384376[\r\n\r\nWhile active, your damage and healing is increased by $384376s1%, and Hammer of Wrath may be cast on any target.][]\r\n\r\nCombines with Avenging Wrath.", "Damage taken reduced by $s12%. Maximum health increased by $s11%.\r\n$?s53376[\r\nJudgment generates $53376s3~ additional Holy Power.][]\r\n$?s384376[\r\nDamage and healing increased by $384376s1~%. Hammer of Wrath may be cast on any target.][]", 0 },
@@ -18210,6 +18210,7 @@ static const std::array<spelltext_data_t, 19175> __spelltext_data { {
   { 389697, "Increases the duration of Sigil effects by ${$s1/1000} sec.", 0, 0 },
   { 389705, "You take $393009s1% reduced magic damage while Immolation Aura is active.", 0, 0 },
   { 389708, "When Fel Devastation finishes fully channeling, it refreshes $s1-$s2% of its cooldown and refunds $s3-$s4 Fury.", 0, 0 },
+  { 389710, "$@spelldesc383926", 0, 0 },
   { 389711, "When consuming a Soul Fragment would heal you above full health it shields you instead, up to a maximum of ${$MHP*$s1/100}.", 0, 0 },
   { 389713, "Teleports you back to where you last Blinked. Only usable within $389714d of Blinking.", 0, 0 },
   { 389714, "$@spelldesc389713", "Able to teleport back to where last Blinked from.", 0 },
@@ -18678,7 +18679,7 @@ static const std::array<spelltext_data_t, 19175> __spelltext_data { {
   { 392902, "Holy Light heals up to $s2 targets within $392903a1 yds for $s1% of its healing.", 0, 0 },
   { 392903, "$@spelldesc392902", 0, 0 },
   { 392907, "Infusion of Light has $s1 additional charge, reduces the cost of Flash of Light by an additional $s2%, and has a $s2% chance to generate an additional Holy Power from Holy Light.", 0, 0 },
-  { 392908, "@spelldesc386175", "Speed increased by $w1.", 0 },
+  { 392908, "$@spelldesc386175", "Speed increased by $w1.", 0 },
   { 392910, "Expel Harm's critical healing is increased by $s1%.", 0, 0 },
   { 392911, "The cooldown of Aura Mastery is reduced by ${$s1/-1000} sec.", 0, 0 },
   { 392914, "Holy Shock's healing and damage is increased by $s1%.", 0, 0 },
@@ -19178,10 +19179,15 @@ static const std::array<spelltext_data_t, 19175> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 10.0.2.46658
-static constexpr std::array<hotfix::client_hotfix_entry_t, 3> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 8> __spelltext_hotfix_data { {
   {  378233,  0, "Whenever a player is slain within $a1 yards of you, you are filled with a burst of tenacity and gain $s3 Versatility for $378238d1.", "Whenever a player is slain within $a1 yards of you, you are filled with a burst of tenacity and gain $s2 Versatility for $378238d1." },
   {  378233,  1, "Whenever a player is slain within $a1 yards of you, you are filled with a burst of tenacity and gain $w3 Versatility for $378238d1.", "Whenever a player is slain within $a1 yards of you, you are filled with a burst of tenacity and gain $w2 Versatility for $378238d1." },
   {  384154,  0, "Attune yourself to the energies of the targeted Vault of the Incarnates raid boss, increasing your Versatility by $311500s1 when fighting that boss. This effect lasts for an entire week.\r\n\r\nYou can only use one Vantus Rune per week.", "Attune yourself to the energies of the targeted Vault of the Incarnates raid boss, increasing your Versatility by $384195s1 when fighting that boss. This effect lasts for an entire week.\r\n\r\nYou can only use one Vantus Rune per week." },
+  {  388560,  0, "@spelldesc388559", "$@spelldesc388559" },
+  {  388755,  0, "@spelldesc383920", "$@spelldesc383920" },
+  {  388929,  0, "@spelldesc388931", "$@spelldesc388931" },
+  {  389527,  0, "@spelldesc384661", "$@spelldesc384661" },
+  {  392908,  0, "@spelldesc386175", "$@spelldesc386175" },
 } };
 
 // Spell description variables, wow build 10.0.2.46658
