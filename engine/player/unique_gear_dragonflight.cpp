@@ -2663,45 +2663,8 @@ void thriving_thorns( special_effect_t& effect )
 // Broodkeepers Blaze
 // 394452 Driver
 // 394453 Damage & Buff
-struct broodkeepers_blaze_initializer_t : public item_targetdata_initializer_t
-{
-  broodkeepers_blaze_initializer_t() : item_targetdata_initializer_t( 394452 ) {}
-
-  void operator()( actor_target_data_t* td ) const override
-  {
-    if ( !find_effect( td->source ) )
-    {
-      td->debuff.broodkeepers_blaze = make_buff( *td, "broodkeepers_blaze" )->set_quiet( true );
-      return;
-    }
-
-    assert( !td->debuff.broodkeepers_blaze );
-    td->debuff.broodkeepers_blaze = make_buff( *td, "broodkeepers_blaze", td->source->find_spell( 394453 ) );
-    td->debuff.broodkeepers_blaze->reset();
-  }
-};
-
 void broodkeepers_blaze(special_effect_t& effect)
 {
-  struct broodkeepers_blaze_t : public generic_proc_t
-  {
-    player_t* broodkeepers_blaze;
-
-    broodkeepers_blaze_t( const special_effect_t& e ) 
-      : generic_proc_t( e, "broodkeepers_blaze", e.player->find_spell( 394453 ) ), broodkeepers_blaze(nullptr) 
-    {
-        base_td = e.driver()->effectN(1).average(e.item);
-    }
-
-    void impact( action_state_t* s ) override
-    {
-      generic_proc_t::impact(s);
-      broodkeepers_blaze = s->target;
-      assert(broodkeepers_blaze);
-      player->get_target_data(broodkeepers_blaze)->debuff.broodkeepers_blaze->trigger();
-    }
-  };
-
   // callback to trigger debuff on specific schools
   struct broodkeepers_blaze_cb_t : public dbc_proc_callback_t
   {
@@ -2716,7 +2679,9 @@ void broodkeepers_blaze(special_effect_t& effect)
     }
   };
 
-  effect.execute_action = create_proc_action<broodkeepers_blaze_t>("broodkeepers_blaze", effect);
+  auto dot = create_proc_action<generic_proc_t>("broodkeepers_blaze", effect, "broodkeepers_blaze", 394453 );
+  dot->base_td = effect.driver()->effectN(1).average(effect.item);
+  effect.execute_action = dot;
   new broodkeepers_blaze_cb_t( effect );
 }
 }  // namespace items
@@ -2854,7 +2819,6 @@ void register_target_data_initializers( sim_t& sim )
   sim.register_target_data_initializer( items::awakening_rime_initializer_t() );
   sim.register_target_data_initializer( items::skewering_cold_initializer_t() );
   sim.register_target_data_initializer( items::spiteful_storm_initializer_t() );
-  sim.register_target_data_initializer( items::broodkeepers_blaze_initializer_t() );
 }
 
 // check and return multiplier for toxified armor patch

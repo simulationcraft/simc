@@ -66,7 +66,6 @@ struct actor_target_data_t : public actor_pair_t, private noncopyable
     buff_t* awakening_rime;  // darkmoon deck: rime
     buff_t* grudge;          // spiteful storm
     buff_t* skewering_cold;  // globe of jagged ice
-    buff_t* broodkeepers_blaze; // broodkeepers's blaze
   } debuff;
 
   struct atd_dot_t
