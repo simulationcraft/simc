@@ -8610,7 +8610,7 @@ void warrior_t::apl_fury()
     }
   }
 
-  default_list->add_action( "avatar,if=talent.titans_torment&buff.enrage.up&(buff.elysian_might.up|!runeforge.elysian_might|!covenant.kyrian)" );
+  default_list->add_action( "avatar,if=talent.titans_torment&buff.enrage.up&(buff.elysian_might.up|buff.elysian_might_legendary.up|(!runeforge.elysian_might&!talent.elysian_might))" );
 
   default_list->add_action( "avatar,if=!talent.titans_torment&(buff.recklessness.up|target.time_to_die<20)" );
 
@@ -9173,7 +9173,8 @@ void warrior_t::create_buffs()
 
   buff.dancing_blades = make_buff( this, "dancing_blades", find_spell( 391688 ) )
       ->set_default_value( find_spell( 391688 )->effectN( 1 ).base_value() / 100.0 )
-      ->add_invalidate( CACHE_ATTACK_SPEED );
+      ->add_invalidate( CACHE_ATTACK_SPEED )
+      ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC);
 
   buff.battering_ram = make_buff( this, "battering_ram", find_spell( 394313 ) )
       ->set_default_value( find_spell( 394313 )->effectN( 1 ).percent() )
