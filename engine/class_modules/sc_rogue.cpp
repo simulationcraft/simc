@@ -1558,7 +1558,14 @@ public:
   std::vector<damage_buff_t*> auto_attack_damage_buffs;
   std::vector<damage_buff_t*> crit_chance_buffs;
   
-  std::vector<std::pair<buff_t*,proc_t*>> consume_buffs;
+  struct consume_buff_t
+  {
+    buff_t* buff = nullptr;
+    proc_t* proc = nullptr;
+    timespan_t delay = timespan_t::zero();
+    bool on_background = false;
+  };
+  std::vector<consume_buff_t> consume_buffs;
 
   // Init =====================================================================
 
@@ -1786,10 +1793,12 @@ public:
     }
 
     // Auto-Consume Buffs on Execute
-    auto register_consume_buff = [this]( buff_t* buff, bool condition, proc_t* proc = nullptr ) {
+    auto register_consume_buff = [this]( buff_t* buff, bool condition, proc_t* proc = nullptr,
+                                         timespan_t delay = timespan_t::zero(), bool on_background = false )
+    {
       if ( condition )
       {
-        consume_buffs.emplace_back( buff, proc );
+        consume_buffs.push_back( { buff, proc, delay, on_background } );
       }
     };
 
@@ -2367,11 +2376,14 @@ public:
     }
 
     // Expire On-Cast Fading Buffs
-    for ( auto consume_buff : consume_buffs )
+    for ( consume_buff_t& consume_buff : consume_buffs )
     {
-      consume_buff.first->expire();
-      if ( consume_buff.second )
-        consume_buff.second->occur();
+      if ( !ab::background || consume_buff.on_background )
+      {
+        consume_buff.buff->expire( consume_buff.delay );
+        if ( consume_buff.proc )
+          consume_buff.proc->occur();
+      }
     }
 
     // Debugging
@@ -4931,7 +4943,7 @@ struct secret_technique_t : public rogue_attack_t
 
     // The clones seem to hit 1s and 1.3s later (no time reference in spell data though)
     // Trigger tracking buff until first clone's damage
-    p()->buffs.secret_technique->trigger( 1_s );
+    p()->buffs.secret_technique->trigger( 1.3_s );
     clone_attack->trigger_secondary_action( execute_state->target, cp, 1_s );
     clone_attack->trigger_secondary_action( execute_state->target, cp, 1.3_s );
   }
@@ -8296,16 +8308,7 @@ void actions::rogue_action_t<Base>::trigger_danse_macabre( const action_state_t*
   if ( !p()->stealthed( STEALTH_SHADOW_DANCE ) )
     return;
 
-  if ( range::contains( p()->danse_macabre_tracker, ab::data().id() ) )
-  {
-    // Beta has been revamped to not clear the debuff on repeats. Not present in prepatch.
-    if ( !p()->is_ptr() )
-    {
-      p()->danse_macabre_tracker.clear();
-      p()->buffs.danse_macabre->expire();
-    }
-  }
-  else
+  if ( !range::contains( p()->danse_macabre_tracker, ab::data().id() ) )
   {
     p()->danse_macabre_tracker.push_back( ab::data().id() );
     p()->buffs.danse_macabre->increment();
