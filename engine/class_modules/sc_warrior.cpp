@@ -8881,15 +8881,16 @@ void warrior_t::apl_prot()
   generic -> add_action( "execute" );
   generic -> add_action( "shield_slam" );
   generic -> add_action( "thunder_clap,if=active_enemies>=2|(talent.rend&talent.blood_and_thunder)" );
+  generic -> add_action( "rend,if=!talent.thunderclap&!talent.blood_and_thunder" );
   generic -> add_action( "revenge,if=rage.deficit>30&active_enemies>=2" );
+  generic -> add_action( "titanic_throw,if=active_enemies>=2" );
 
   generic -> add_action( "devastate" );
   generic -> add_action( "heroic_throw" );
+  generic -> add_action( "titanic_throw" );
   generic -> add_action( "thunder_clap" );  // Does less damage than devastate ST
   generic -> add_action( "revenge,if=rage.deficit>30" );
   generic -> add_action( "Impending Victory" );
-  generic -> add_action( "rend,if=!talent.thunderclap&!talent.blood_and_thunder" );
-  generic -> add_action( "titanic_throw" );
   generic -> add_action( "storm_bolt" );
 
   aoe -> add_action( "ignore_pain,if=rage.deficit>=35&buff.ignore_pain.value<health.max*0.3" );
