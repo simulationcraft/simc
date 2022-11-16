@@ -57,7 +57,8 @@ void umbrelskuls_fractured_heart( special_effect_t& );
 void way_of_controlled_currents( special_effect_t& );
 void whispering_incarnate_icon( special_effect_t& );
 void the_cartographers_calipers( special_effect_t& );
-void tome_of_unstable_power(special_effect_t&);
+void tome_of_unstable_power( special_effect_t& );
+void blazebinders_hoof( special_effect_t& );
 
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& );

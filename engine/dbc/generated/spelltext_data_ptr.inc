@@ -4296,7 +4296,6 @@ static const std::array<spelltext_data_t, 19177> __ptr_spelltext_data { {
   { 132469, "Blasts targets within $61391a1 yards in front of you with a violent Typhoon, knocking them back and dazing them for $61391d. Usable in all shapeshift forms.", 0, 0 },
   { 132578, "Summons an effigy of Niuzao, the Black Ox for $d. Niuzao attacks your primary target, and frequently Stomps, damaging all nearby enemies$?s322740[ for $227291s1 plus $322740s1% of Stagger damage you have recently purified.][.]\r\n\r\nWhile active, $s2% of damage delayed by Stagger is instead Staggered by Niuzao.", "Niuzao is staggering $s2% of the Monk's Stagger damage.", 0 },
   { 132586, "Increases your $pri by $s1 (Unique).", "Increases your $pri by $s1 (Unique).", 0 },
-  { 132603, "Creates a shadowy fiend to attack the target. Lasts $d.", 0, 0 },
   { 133022, "Greatly increase your run speed for $d.", "Speed increased.", 0 },
   { 133024, "Increases haste by $s1 for $d.", "Haste increased by $w1.", 0 },
   { 133630, "Increases Mastery rating by $s1 for $d.", "Increases Mastery rating by $s1.", 0 },
@@ -16647,7 +16646,7 @@ static const std::array<spelltext_data_t, 19177> __ptr_spelltext_data { {
   { 378218, "This item is infused with the power of decay.", 0, 0 },
   { 378225, "The ancestral spirits assist you, causing you to deal $s1% more damage to enemy players who attack you for $378228d1.", 0, 0 },
   { 378228, 0, "Taking $378225s1% increased damage from $@auracaster.", 0 },
-  { 378233, "Whenever a player is slain within $a1 yards of you, you are filled with a burst of tenacity and gain $s3 Versatility for $378238d1.", "Whenever a player is slain within $a1 yards of you, you are filled with a burst of tenacity and gain $w3 Versatility for $378238d1.", 0 },
+  { 378233, "Whenever a player is slain within $a1 yards of you, you are filled with a burst of tenacity and gain $s2 Versatility for $378238d1.", "Whenever a player is slain within $a1 yards of you, you are filled with a burst of tenacity and gain $w2 Versatility for $378238d1.", 0 },
   { 378238, "$@spelldesc378233", "Filled with great tenacity. Versatility is increased by $w1.", 0 },
   { 378241, "Increases the damage of your Lightning Bolt$?c3[ and Chain Lightning] ?c1[, Chain Lightning, and Storm Elemental] by $s1%.", 0, 0 },
   { 378244, "Cobra Shot reduces the cooldown of Kill Command by an additional ${$m1/-1000}.1 sec.", 0, 0 },
@@ -17358,7 +17357,7 @@ static const std::array<spelltext_data_t, 19177> __ptr_spelltext_data { {
   { 384141, "Launch a concealed grenade toward the target location, dealing $s1 Nature damage and coating the ground in a sticky substance for $d that slows enemy units within by $384485M1%.", 0, 0 },
   { 384143, "Maelstrom Weapon can now stack $s1 additional times, and Maelstrom Weapon now increases the damage or healing of spells it affects by an additional $s2% per stack.", 0, 0 },
   { 384149, "Your damage or healing spells will now consume up to $s1 Maelstrom Weapon stacks. ", 0, 0 },
-  { 384154, "Attune yourself to the energies of the targeted Vault of the Incarnates raid boss, increasing your Versatility by $311500s1 when fighting that boss. This effect lasts for an entire week.\r\n\r\nYou can only use one Vantus Rune per week.", 0, 0 },
+  { 384154, "Attune yourself to the energies of the targeted Vault of the Incarnates raid boss, increasing your Versatility by $384195s1 when fighting that boss. This effect lasts for an entire week.\r\n\r\nYou can only use one Vantus Rune per week.", 0, 0 },
   { 384157, "Your attacks have a chance to strike out again, dealing $384177s1 Physical damage.", 0, 0 },
   { 384162, "Templar's Verdict extends the duration of Execution Sentence on the target by $s1 sec.\r\n\r\nThis duration cannot extend beyond an additional $343527d.", 0, 0 },
   { 384163, "Your spells have a chance to increase your Haste by $384165s1 and movement speed by $384165s2% for $384165d.", 0, 0 },
@@ -18212,6 +18211,7 @@ static const std::array<spelltext_data_t, 19177> __ptr_spelltext_data { {
   { 389697, "Increases the duration of Sigil effects by ${$s1/1000} sec.", 0, 0 },
   { 389705, "You take $393009s1% reduced magic damage while Immolation Aura is active.", 0, 0 },
   { 389708, "When Fel Devastation finishes fully channeling, it refreshes $s1-$s2% of its cooldown and refunds $s3-$s4 Fury.", 0, 0 },
+  { 389710, "$@spelldesc383926", 0, 0 },
   { 389711, "When consuming a Soul Fragment would heal you above full health it shields you instead, up to a maximum of ${$MHP*$s1/100}.", 0, 0 },
   { 389713, "Teleports you back to where you last Blinked. Only usable within $389714d of Blinking.", 0, 0 },
   { 389714, "$@spelldesc389713", "Able to teleport back to where last Blinked from.", 0 },
@@ -19180,7 +19180,7 @@ static const std::array<spelltext_data_t, 19177> __ptr_spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 10.0.2.46619
-static constexpr std::array<hotfix::client_hotfix_entry_t, 19> __ptr_spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 22> __ptr_spelltext_hotfix_data { {
   {  119898,  0, "Commands your demon to perform its most powerful ability. This spell will transform based on your active pet. \r\n$?s30146[\r\nFelguard: $@spellname89766][]\r\nFelhunter: $@spellname19505\r\nVoidwalker: $@spellname17767\r\nIncubus/Succubus: $@spellname6358\r\nImp: $@spellname89808", "Commands your demon to perform its most powerful ability. This spell will transform based on your active pet. \r\n$?s30146[\r\nFelguard: $@spellname89766][]\r\nFelhunter: $@spellname19647\r\nVoidwalker: $@spellname17767\r\nIncubus/Succubus: $@spellname6358\r\nImp: $@spellname89808" },
   {  135286,  1, "Your next Maul deals $s1% more damage and reduces the target's damage to you by $135601s1%~ for $135601d.", "Your next Maul deals $s1% more damage, costs $s3% less rage, and reduces the target's damage to you by $135601s1%~ for $135601d." },
   {  135288,  0, "Autoattacks have a $s1% chance to empower your next Maul, stacking up to $135286u times.\r\n\r\nEmpowered Maul deals $135286s1% increased damage and reduces the target's damage to you by $135601s2% for $135601d.", "Autoattacks have a $s1% chance to empower your next Maul, stacking up to $135286u times.\r\n\r\nEmpowered Maul deals $135286s1% increased damage, costs $135286s3% less rage, and reduces the target's damage to you by $135601s2% for $135601d." },
@@ -19192,9 +19192,12 @@ static constexpr std::array<hotfix::client_hotfix_entry_t, 19> __ptr_spelltext_h
   {  372152,  1, "Your next Regrowth is free, instant, and castable in all forms.", "Your next Regrowth heals for an additional $s4% and is free, instant, and castable in all forms." },
   {  373180,  0, "When Atonement has healed a total of $s1 times, your next Penance is free and fires $s2 additional bolts.", "Every $s1 casts of Smite, your next Penance is free and fires an additional $s2 bolts." },
   {  377453,  1, "Deal $382092w1 Nature damage per second to all enemies within $s5 yards, intensifying by $s4% each second.", "Deal $w1 Nature damage per second to all enemies within $s5 yards, intensifying by $s4% each second." },
+  {  378233,  0, "Whenever a player is slain within $a1 yards of you, you are filled with a burst of tenacity and gain $s3 Versatility for $378238d1.", "Whenever a player is slain within $a1 yards of you, you are filled with a burst of tenacity and gain $s2 Versatility for $378238d1." },
+  {  378233,  1, "Whenever a player is slain within $a1 yards of you, you are filled with a burst of tenacity and gain $w3 Versatility for $378238d1.", "Whenever a player is slain within $a1 yards of you, you are filled with a burst of tenacity and gain $w2 Versatility for $378238d1." },
   {  383200,  0, "Every $q seconds you spend moving increases your intellect by $383201s1, stacking up to 5 times. Casting a spell will consume all stacks of Intellect.", "Every $q seconds you spend moving increases your Intellect by $s2, stacking up to 5 times. Casting a spell will consume all stacks of Intellect." },
   {  383799,  0, "@spelldesc386578", "$@spelldesc386578" },
   {  383799,  1, "Mastery increased by $w3.", "Mastery increased by $w1." },
+  {  384154,  0, "Attune yourself to the energies of the targeted Vault of the Incarnates raid boss, increasing your Versatility by $311500s1 when fighting that boss. This effect lasts for an entire week.\r\n\r\nYou can only use one Vantus Rune per week.", "Attune yourself to the energies of the targeted Vault of the Incarnates raid boss, increasing your Versatility by $384195s1 when fighting that boss. This effect lasts for an entire week.\r\n\r\nYou can only use one Vantus Rune per week." },
   {  387016,  0, "Each target affected by Soul Rot increases your haste and critical strike chance by ${$387018s3}% for $387018d.", "Each target affected by Soul Rot increases your haste and critical strike chance by ${$s1/10}.1% for $387018d." },
   {  388064,  1, "Mana costs reduced by $s1.", "Mana costs reduced by $w1." },
   {  388779,  0, "Your abilities reset Faeline Stomp $s2% more often. While within Faeline Stomp, your Tiger Palms strike $s3 targets and your Spinning Crane Kick heals $s4 nearby allies for $s1% of the damage done.", "Your abilities reset Faeline Stomp $s2% more often. While within Faeline Stomp, your Tiger Palms strike twice and your Spinning Crane Kick heals $s4 nearby allies for $s1% of the damage done." },

@@ -2286,13 +2286,11 @@ void mutated_magmammoth_scale(special_effect_t& effect)
 {
   auto buff_spell = effect.player->find_spell( 381727 );
   auto buff = create_buff<buff_t>( effect.player , buff_spell );
-  auto damage = create_proc_action<generic_aoe_proc_t>( "mutated_tentacle_slam", effect, "mutated_tentacle_slam", 381760 );
+  auto damage = create_proc_action<generic_aoe_proc_t>( "mutated_tentacle_slam", effect, "mutated_tentacle_slam", 381760, true );
   buff->set_tick_callback( [ damage ]( buff_t* b, int, timespan_t ) 
     {
       damage->execute();
     } );
-  damage->aoe = effect.driver()->effectN(2).base_value();
-  damage->reduced_aoe_targets = 1;
   damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN(1).average(effect.item);
   effect.custom_buff = buff;
   new dbc_proc_callback_t( effect.player, effect );
@@ -2305,11 +2303,8 @@ void mutated_magmammoth_scale(special_effect_t& effect)
 // 387777 Damage value
 void homeland_raid_horn(special_effect_t& effect)
 {
-  auto damage = create_proc_action<generic_aoe_proc_t>( "dwarven_barrage", effect, "dwarven_barrage", 384004 );
+  auto damage = create_proc_action<generic_aoe_proc_t>( "dwarven_barrage", effect, "dwarven_barrage", 384004, true );
   damage->base_dd_min = damage -> base_dd_max = effect.player->find_spell( 387777 )->effectN( 1 ).average( effect.item );
-  // Up to 5 targets, Including the Player
-  damage->aoe = effect.driver()-> effectN( 2 ).base_value() - 1;
-  damage->reduced_aoe_targets = 1;
 
   auto buff_spell = effect.player->find_spell( 382139 );
   auto buff = create_buff<buff_t>( effect.player , buff_spell );
@@ -2318,6 +2313,89 @@ void homeland_raid_horn(special_effect_t& effect)
       } );
 
   effect.custom_buff = buff;
+}
+
+// Blazebinder's Hoof
+// 383926 Driver & Buff
+// 389710 Damage
+void blazebinders_hoof(special_effect_t& effect)
+{
+  struct burnout_wave_t : public proc_spell_t
+  {
+    double buff_stacks;
+
+    burnout_wave_t( const special_effect_t& e ) :
+    proc_spell_t( "burnout_wave", e.player, e.player -> find_spell( 389710 ), e.item), buff_stacks()
+    {
+      // Value stored in effect 2 appears to be the maximum damage that can be done with 6 stacks. Divide it by max stacks to get damage per stack.
+      base_dd_min = base_dd_max = e.driver()->effectN(2).average(e.item) / e.driver()->max_stacks();
+      split_aoe_damage = true;
+    }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double m = proc_spell_t::composite_da_multiplier( s );
+      // Damage increased linerally by number of stacks
+      m *= buff_stacks;
+
+      return m;
+    }
+  };
+
+  struct bound_by_fire_buff_t : public stat_buff_t
+  {
+    burnout_wave_t* damage;
+
+    bound_by_fire_buff_t( const special_effect_t& e, action_t* a )
+        : stat_buff_t( e.player, "bound_by_fire_and_blaze", e.driver(), e.item ),
+        damage( debug_cast<burnout_wave_t*>( a ) )
+    {
+      set_default_value( e.driver()->effectN( 1 ).average( e.item ) );
+      // Disable refresh on the buff to model in game behavior
+      set_refresh_behavior( buff_refresh_behavior::DISABLED );
+      // Set cooldown on buff to 0 to prevent triggering the cooldown on buff procs
+      set_cooldown( 0_ms );
+      // Set chance to prevent using the RPPM chance for buff applications
+      set_chance( 1.01 );
+    }
+
+    void expire_override( int s, timespan_t d ) override
+    {
+      stat_buff_t::expire_override( s, d );
+      // Debug cast to pass stack count through to the damage action
+      damage -> buff_stacks = s;
+      // Execute the debug cast
+      damage -> execute();
+    }
+  };
+
+  auto damage = create_proc_action<burnout_wave_t>( "burnout_wave", effect );
+  auto buff = make_buff<bound_by_fire_buff_t>( effect, damage );
+
+  special_effect_t* bound_by_fire_and_blaze = new special_effect_t( effect.player );
+  bound_by_fire_and_blaze->source = effect.source;
+  bound_by_fire_and_blaze->spell_id = effect.driver()->id();
+  bound_by_fire_and_blaze->custom_buff = buff;
+  bound_by_fire_and_blaze->cooldown_ = 0_ms;
+
+  effect.player->special_effects.push_back( bound_by_fire_and_blaze );
+  effect.proc_chance_ = 1.01;
+  effect.custom_buff = buff;
+
+  auto cb = new dbc_proc_callback_t( effect.player, *bound_by_fire_and_blaze );
+  cb -> deactivate();
+
+  buff->set_stack_change_callback( [ cb ](buff_t*, int, int new_) 
+  {
+    if( !new_ )
+    {
+      cb->deactivate();
+    }
+    else
+    {
+      cb->activate();
+    }
+  } );
 }
 
 // Weapons
@@ -2679,6 +2757,7 @@ void register_special_effects()
   register_special_effect( 397400, items::bonemaws_big_toe );
   register_special_effect( 381705, items::mutated_magmammoth_scale );
   register_special_effect( 382139, items::homeland_raid_horn );
+  register_special_effect( 383926, items::blazebinders_hoof );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );  // bronzed grip wrappings embellishment
