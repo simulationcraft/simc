@@ -12159,6 +12159,7 @@ void player_t::copy_from( player_t* source )
   parse_talent_url( sim, "talents", source->talents_str );
   class_talents_str = source->class_talents_str;
   spec_talents_str  = source->spec_talents_str;
+  player_traits     = source->player_traits;
 
   if ( azerite )
   {
