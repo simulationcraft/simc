@@ -3181,6 +3181,9 @@ double paladin_t::composite_melee_haste() const
   if ( buffs.relentless_inquisitor_legendary->up() )
     h /= 1.0 + buffs.relentless_inquisitor_legendary->stack_value();
 
+  if ( talents.seal_of_alacrity->ok() )
+    h /= 1.0 + talents.seal_of_alacrity->effectN( 1 ).percent();
+
   return h;
 }
 
@@ -3211,6 +3214,9 @@ double paladin_t::composite_spell_haste() const
 
   if ( buffs.relentless_inquisitor_legendary->up() )
     h /= 1.0 + buffs.relentless_inquisitor_legendary->stack_value();
+
+  if ( talents.seal_of_alacrity->ok() )
+    h /= 1.0 + talents.seal_of_alacrity->effectN( 1 ).percent();
 
   return h;
 }
