@@ -2315,44 +2315,17 @@ void homeland_raid_horn(special_effect_t& effect)
   effect.custom_buff = buff;
 }
 
-
 // Blazebinder's Hoof
 // 383926 Driver & Buff
 // 389710 Damage
 // TODO - Figure out why the buff only triggers 50% of the time when it should on both Procs, and Use.
 void blazebinders_hoof(special_effect_t& effect)
 {
-  auto buff = create_buff<stat_buff_t>( effect.player, effect.driver() );
-  buff->set_default_value( effect.driver()->effectN( 1 ).average( effect.item ) );
-  buff->set_refresh_behavior( buff_refresh_behavior::DISABLED );
-  buff->set_cooldown( 0_ms );
-  buff->set_chance( 1.01 );
-  effect.source = SPECIAL_EFFECT_SOURCE_ITEM;
-  effect.custom_buff = buff;
-  effect.proc_chance_ = 1.01;
-
-  auto damage_buff = create_buff<buff_t>( effect.player, effect.player -> find_spell(389710) );
-  damage_buff->set_max_stack( effect.driver()->max_stacks() );
-  damage_buff->set_cooldown( 0_ms );
-  damage_buff->set_duration( 300_s );
-  damage_buff->set_refresh_behavior( buff_refresh_behavior::DURATION );
-  damage_buff->quiet = true;
-
-  special_effect_t* bound_by_fire_and_blaze = new special_effect_t( effect.player );
-  bound_by_fire_and_blaze->source = effect.source;
-  bound_by_fire_and_blaze->spell_id = effect.driver()->id();
-  bound_by_fire_and_blaze->custom_buff = buff;
-  bound_by_fire_and_blaze->cooldown_ = 0_ms;
-  effect.player->special_effects.push_back( bound_by_fire_and_blaze );
-
-  auto cb = new dbc_proc_callback_t( effect.player, *bound_by_fire_and_blaze );
-  cb -> deactivate();
-
   struct burnout_wave_t : public proc_spell_t
   {
-    buff_t* damage_buff;
+    buff_t* buff;
     burnout_wave_t( const special_effect_t& e, buff_t* b ) :
-    proc_spell_t( "burnout_wave", e.player, e.player -> find_spell( 389710 ), e.item), damage_buff( b )
+    proc_spell_t( "burnout_wave", e.player, e.player -> find_spell( 389710 ), e.item), buff( b )
     {
       // Value stored in effect 2 appears to be the maximum damage that can be done with 6 stacks. Divide it by max stacks to get damage per stack.
       base_dd_min = base_dd_max = e.driver()->effectN(2).average(e.item) / e.driver()->max_stacks();
@@ -2363,34 +2336,56 @@ void blazebinders_hoof(special_effect_t& effect)
     {
       double m = proc_spell_t::composite_da_multiplier( s );
 
-      m *= damage_buff->stack();
+      m *= buff->stack();
 
       return m;
     }
-
-    void execute() override
-    {
-      proc_spell_t::execute();
-
-      damage_buff -> expire();
-    }
   };
 
-  action_t* action = create_proc_action<burnout_wave_t>( "burnout_wave", effect, damage_buff );
+  struct bound_by_fire_buff_t : public stat_buff_t
+  {
+    action_t* action;
 
-  buff->set_stack_change_callback( [ cb, action, damage_buff ](buff_t*, int, int new_) 
+    bound_by_fire_buff_t( const special_effect_t& e )
+        : stat_buff_t( e.player, "bound_by_fire_and_blaze", e.driver(), e.item )
+    {
+      set_default_value( e.driver()->effectN( 1 ).average( e.item ) );
+      set_refresh_behavior( buff_refresh_behavior::DISABLED );
+      set_cooldown( 0_ms );
+      set_chance( 1.01 );
+      action = create_proc_action<burnout_wave_t>( "burnout_wave", e, this );
+    }
+
+    void expire_override( int s, timespan_t d ) override
+    {
+      stat_buff_t::expire_override( s, d );
+
+      action->execute();
+    }
+  };
+  auto buff = make_buff<bound_by_fire_buff_t>( effect );
+  special_effect_t* bound_by_fire_and_blaze = new special_effect_t( effect.player );
+  bound_by_fire_and_blaze->source = effect.source;
+  bound_by_fire_and_blaze->spell_id = effect.driver()->id();
+  bound_by_fire_and_blaze->custom_buff = buff;
+  bound_by_fire_and_blaze->cooldown_ = 0_ms;
+  auto cb = new dbc_proc_callback_t( effect.player, *bound_by_fire_and_blaze );
+  cb -> deactivate();
+  effect.player->special_effects.push_back( bound_by_fire_and_blaze );
+
+  buff->set_stack_change_callback( [ cb ](buff_t*, int, int new_) 
   {
     if( !new_ )
     {
-      action->execute();
       cb->deactivate();
     }
     else
     {
       cb->activate();
-      damage_buff->trigger();
     }
   } );
+  effect.proc_chance_ = 1.01;
+  effect.custom_buff = buff;
 }
 
 // Weapons
