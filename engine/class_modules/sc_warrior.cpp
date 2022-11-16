@@ -8813,13 +8813,11 @@ void warrior_t::apl_prot()
   default_list -> add_action( "run_action_list,name=aoe,if=spell_targets.thunder_clap>3" );
   default_list -> add_action( "call_action_list,name=generic" );
 
-  // Regular apl continues from here
-
   // generic -> add_action( "Intervene" ); Uncomment to test
   // generic -> add_action( "Intimidating Shout" ); NYI
   // generic -> add_action( "Bitter Immunity" ); NYI
 
-  generic -> add_action( "ignore_pain,if=rage.deficit>=35&buff.ignore_pain.value<health.max*0.3" );
+  generic -> add_action( "ignore_pain,if=(rage.deficit>=35&buff.ignore_pain.value<health.max*0.3*0.5)|buff.ignore_pain.remains<gcd" );  // Only IP if we are under half the max value to prevent overcap
   generic -> add_action( "ravager" );
   generic -> add_action( "thunderous_roar" );
   generic -> add_action( "spear_of_bastion" );
