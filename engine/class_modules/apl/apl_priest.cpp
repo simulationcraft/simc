@@ -13,7 +13,6 @@ namespace priest_apl
 {
 std::string potion( const player_t* p )
 {
-
   return ( p->true_level > 60 ) ? "elemental_potion_of_ultimate_power_3" : "potion_of_spectral_intellect" ;
 }
 
