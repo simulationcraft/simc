@@ -119,7 +119,7 @@ void destruction( player_t* p )
   action_priority_list_t* items = p->get_action_priority_list( "items" );
   action_priority_list_t* ogcd = p->get_action_priority_list( "ogcd" );
 
-  precombat->add_action( "flask", "opy="ne oe" );
+  precombat->add_action( "flask" );
   precombat->add_action( "food" );
   precombat->add_action( "augmentation" );
   precombat->add_action( "summon_pet" );
@@ -139,7 +139,7 @@ void destruction( player_t* p )
   default_->add_action( "soul_fire,if=soul_shard<=4" );
   default_->add_action( "immolate,if=((dot.immolate.refreshable&talent.internal_combustion)|dot.immolate.remains<3)&(!talent.cataclysm|cooldown.cataclysm.remains>dot.immolate.remains)&(!talent.soul_fire|cooldown.soul_fire.remains>dot.immolate.remains)" );
   default_->add_action( "chaos_bolt,if=pet.infernal.active|pet.blasphemy.active|soul_shard>=4" );
-  default_->add_action( "use_items,if=pet.infernal.active|!talent.summon_infernal|time_to_die<21" );
+  default_->add_action( "call_action_list,name=items" );
   default_->add_action( "call_action_list,name=ogcd" );
   default_->add_action( "summon_infernal" );
   default_->add_action( "channel_demonfire,if=talent.ruin.rank>1&!(talent.diabolic_embers&talent.avatar_of_destruction&(talent.burn_to_ashes|talent.chaos_incarnate))" );
@@ -165,7 +165,7 @@ void destruction( player_t* p )
   aoe->add_action( "channel_demonfire,if=dot.immolate.remains>cast_time&(talent.raging_demonfire.rank+talent.roaring_blaze.rank)>1" );
   aoe->add_action( "immolate,cycle_targets=1,if=dot.immolate.remains<5&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>dot.immolate.remains)&active_dot.immolate<=6" );
   aoe->add_action( "havoc,cycle_targets=1,if=!(self.target=target)&!talent.rain_of_fire" );
-  aoe->add_action( "use_items,if=pet.infernal.active|!talent.summon_infernal|time_to_die<21" );
+  aoe->add_action( "call_action_list,name=items" );
   aoe->add_action( "summon_soulkeeper,if=buff.tormented_soul.stack=10" );
   aoe->add_action( "call_action_list,name=ogcd" );
   aoe->add_action( "summon_infernal" );
