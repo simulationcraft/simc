@@ -37,7 +37,7 @@ std::string food( const player_t* p )
 {
   std::string frost_food = ( p->true_level >= 60 ) ? "feast_of_gluttonous_hedonism" : "disabled";
 
-  std::string unholy_food = ( p->true_level >= 61 ) ? "thousandbone_tongueslicer" : "feast_of_gluttonous_hedonism";
+  std::string unholy_food = ( p->true_level >= 61 ) ? "fated_fortune_cookie" : "feast_of_gluttonous_hedonism";
 
   std::string blood_food = ( p->true_level >= 60 ) ? "feast_of_gluttonous_hedonism" : "disabled";
 
@@ -55,7 +55,7 @@ std::string food( const player_t* p )
 
 std::string rune( const player_t* p )
 {
-  return ( p->true_level >= 60 ) ? "veiled" : "disabled";
+  return ( p->true_level >= 61 ) ? "draconic" : "veiled";
 }
 
 std::string temporary_enchant( const player_t* p )

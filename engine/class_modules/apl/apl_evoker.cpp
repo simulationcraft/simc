@@ -8,29 +8,27 @@ namespace evoker_apl
 
 std::string potion( const player_t* p )
 {
-  std::string lvl50_potion = ( p->specialization() == EVOKER_DEVASTATION ) ? "unbridled_fury" : "battle_potion_of_intellect";
-
-  return ( p->true_level > 50 ) ? "potion_of_spectral_intellect" : lvl50_potion;
+  return ( p->true_level > 60 ) ? "elemental_potion_of_ultimate_power_3" : "potion_of_spectral_intellect" ;
 }
 
 std::string flask( const player_t* p )
 {
-  return ( p->true_level > 50 ) ? "spectral_flask_of_power" : "greater_flask_of_endless_fathoms";
+  return ( p->true_level > 60 ) ? "phial_of_static_empowerment_3" : "greater_flask_of_endless_fathoms";
 }
 
 std::string food( const player_t* p )
 {
-  return ( p->true_level > 50 ) ? "feast_of_gluttonous_hedonism" : "baked_port_tato";
+  return ( p->true_level > 60 ) ? "fated_fortune_cookie" : "feast_of_gluttonous_hedonism";
 }
 
 std::string rune( const player_t* p )
 {
-  return ( p->true_level > 50 ) ? "veiled_augment_rune" : "battle_scarred";
+  return ( p->true_level > 60 ) ? "draconic_augment_rune" : "veiled_augment_rune";
 }
 
 std::string temporary_enchant( const player_t* p )
 {
-  return ( p->true_level >= 60 ) ? "main_hand:shadowcore_oil" : "disabled";
+  return ( p->true_level > 60 ) ? "main_hand:howling_rune" : "main_hand:shadowcore_oil";
 }
 
 //devastation_apl_start
