@@ -3128,7 +3128,7 @@ double paladin_t::composite_melee_crit_chance() const
 
   if ( talents.holy_aegis->ok() )
     h += talents.holy_aegis->effectN( 1 ).percent();
-  
+
   return h;
 }
 
@@ -3720,6 +3720,10 @@ std::unique_ptr<expr_t> paladin_t::create_consecration_expression( util::string_
     return make_fn_expr( "consecration_remains", [ this ]() {
       return active_consecration == nullptr ? 0 : active_consecration->remaining_time().total_seconds();
     } );
+  }
+  else if ( util::str_compare_ci( expr[ 1U ], "count" ) )
+  {
+    return make_fn_expr( "consecration_count", [ this ]() { return all_active_consecrations.size(); } );
   }
 
   return nullptr;
