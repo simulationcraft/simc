@@ -1376,6 +1376,7 @@ class SpellDataGenerator(DataGenerator):
          386708, 386709, # Dragon Games Equipment
          381760, # Mutated Magmammoth Scale
          389710, 392899, 389707, # Blazebinder's Hoof
+         394453, # Broodkeeper's Blaze
         ),
 
         # Warrior:

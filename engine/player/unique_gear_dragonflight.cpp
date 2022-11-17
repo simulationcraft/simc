@@ -2659,6 +2659,31 @@ void thriving_thorns( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 }
+
+// Broodkeepers Blaze
+// 394452 Driver
+// 394453 Damage & Buff
+void broodkeepers_blaze(special_effect_t& effect)
+{
+  // callback to trigger debuff on specific schools
+  struct broodkeepers_blaze_cb_t : public dbc_proc_callback_t
+  {
+    broodkeepers_blaze_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e ) {}
+
+    void trigger( action_t* a, action_state_t* s ) override
+    {
+      if ( a->get_school() == SCHOOL_FIRE )
+      {
+        dbc_proc_callback_t::trigger( a , s );
+      }
+    }
+  };
+
+  auto dot = create_proc_action<generic_proc_t>("broodkeepers_blaze", effect, "broodkeepers_blaze", 394453 );
+  dot->base_td = effect.driver()->effectN(1).average(effect.item);
+  effect.execute_action = dot;
+  new broodkeepers_blaze_cb_t( effect );
+}
 }  // namespace items
 
 namespace sets
@@ -2771,6 +2796,7 @@ void register_special_effects()
   register_special_effect( 375323, items::elemental_lariat );
   register_special_effect( 381424, items::flaring_cowl );
   register_special_effect( 379396, items::thriving_thorns );
+  register_special_effect( 394452, items::broodkeepers_blaze );
 
   // Sets
   register_special_effect( { 393620, 393982 }, sets::playful_spirits_fur );
