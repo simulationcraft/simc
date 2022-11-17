@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.46597 Live (hotfix 2022-11-10/46597)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46658 Live (hotfix 2022-11-16/46658)
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -7168,7 +7168,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=734717)   : Apply Aura (6) | Unknown(285) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 308.4491 (coefficient=0.68) | PvP Coefficient: 0.50000 | Trigger Spell: 279141 | Target: Self (1)
-#2 (id=734718)   : Apply Aura (6) | Unknown(274) | Scaling Class: -1
+#2 (id=734718)   : Apply Aura (6) | Add Block Value (274) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 290.305 (coefficient=0.64) | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : Increases Block by $s2, and blocking an attack deals $s1 Physical damage to the attacker. Critical blocks deal double damage.
 
@@ -14406,7 +14406,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1019768)  : Apply Aura (6) | Modify Block% (51)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Self (1)
-#2 (id=1019769)  : Apply Aura (6) | Unknown(272)
+#2 (id=1019769)  : Apply Aura (6) | Modify Block Value% (272)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
 Hotfixed         : Sub Type (274 -> 272)
 Description      : Increases Block chance by $s1% and your Block value by $s2%.
@@ -14456,7 +14456,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Shield Slam (23922)
                    Family Flags: 41
-#2 (id=1019800)  : Apply Aura (6) | Unknown(272)
+#2 (id=1019800)  : Apply Aura (6) | Modify Block Value% (272)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc386030
 Tooltip          : Shield Slam deals $w1% increased damage and the amount of damage you block is increased by $w2%.

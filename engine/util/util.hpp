@@ -33,6 +33,7 @@ namespace util
 {
 double stat_value( const player_t* p, stat_e stat );
 stat_e highest_stat( const player_t* p, util::span<const stat_e> stat );
+stat_e lowest_stat( const player_t* p, util::span<const stat_e> stat );
 
 std::string version_info_str( const dbc_t* dbc );
 

@@ -1,118 +1,83 @@
-druid="PR_Druid_Balance"
-level=60
-race=highmountain_tauren
-spec=balance
-role=spell
-position=ranged_back
-talents=3000231
-covenant=night_fae
-soulbind=niya,grove_invigoration/conflux_of_elements:4
+# druid="PR_Druid_Balance"
+# level=70
+# race=troll
+# spec=balance
+# role=spell
+# position=back
+# talents=1000332
 
-head=digested_interrogators_gaze,id=178760,bonus_id=6807/1498/6646
-neck=sin_stained_pendant,id=178827,bonus_id=6807/1498/6646
-shoulders=malodorous_gristlesown_spaulders,id=178763,bonus_id=6807/1498/6646
-back=blighted_margraves_cloak,id=178755,bonus_id=6807/1498/6646
-chest=animasplattered_hide,id=178835,bonus_id=6807/1498/6646,enchant=eternal_insight
-wrists=fastened_venombarb_binds,id=178934,bonus_id=6807/1498/6646,enchant=eternal_intellect
-hands=gloves_of_haunting_fixation,id=178832,bonus_id=6807/1498/6646
-waist=waistcord_of_dark_devotion,id=178823,bonus_id=6807/1498/6646
-legs=umbrahide_leggings,id=172318,bonus_id=6648/6649/6716/7107/1487
-feet=viscerastitched_footpads,id=178731,bonus_id=6807/1498/6646
-finger1=fleshfused_circle,id=178869,bonus_id=6807/1498/6646,enchant=tenet_of_mastery
-finger2=signet_of_the_false_accuser,id=178824,bonus_id=6807/1498/6646,enchant=tenet_of_mastery
-trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646
-trinket2=darkmoon_deck_putrescence,id=173069
-main_hand=whizblast_walking_stick,id=179339,bonus_id=6807/1498/6646,enchant=sinful_revelation
+# head=headpiece_of_the_fixed_stars,id=188847,bonus_id=7187/1498/6935,gem_id=173130
+# neck=worldkiller_iris,id=189859,bonus_id=7187/1524/6935,gem_id=173130
+# shoulders=shoulderpads_of_the_fixed_stars,id=188851,bonus_id=7187/1505
+# back=lurking_predators_camouflage,id=189815,bonus_id=1524/7187
+# chest=chestguard_of_the_fixed_stars,id=188849,bonus_id=7187/1505,enchant=eternal_insight
+# wrists=wrists_of_the_wicked_star,id=189836,bonus_id=1524/7187,gem_id=173130,enchant=eternal_intellect
+# hands=handwraps_of_the_fixed_stars,id=188853,bonus_id=7187/1505
+# waist=runecarvers_twisted_ward,id=189856,bonus_id=7187/1524/6935,gem_id=173130
+# legs=umbrahide_leggings,id=172318,bonus_id=6716/8121/6648/6649/1588
+# feet=treads_of_titanic_curiosity,id=189848,bonus_id=1522/6807
+# finger1=shadowghast_ring,id=178926,bonus_id=6716/7088/6649/6648/1588,gem_id=173130,enchant=tenet_of_mastery
+# finger2=signet_of_the_false_accuser,id=178824,bonus_id=1592/6536/6646,gem_id=173130,enchant=tenet_of_haste
+# trinket1=inscrutable_quantum_device,id=179350,bonus_id=1592/6536/6646
+# trinket2=the_first_sigil,id=188271,bonus_id=1524/7187
+# main_hand=antumbra_shadow_of_the_cosmos,id=189852,bonus_id=1524/7187,enchant=sinful_revelation
+# off_hand=forbidden_truth,id=189860,bonus_id=1524/7187
 
-save=PR_Druid_Balance.simc
+# save=PR_Druid_Balance.simc
 
+# druid="PR_Druid_Feral"
+# source=default
+# spec=feral
+# level=70
+# race=night_elf
+# timeofday=day
+# role=attack
+# position=back
+# professions=alchemy=1/engineering=1
+# talents=2331122
+# druid.owlweave_cat=0
 
-druid="PR_Druid_Feral"
-level=60
-race=night_elf
-timeofday=day
-spec=feral
-role=attack
-position=back
-talents=2331122
-covenant=night_fae
-soulbind=niya,grove_invigoration/taste_for_blood:4
+# head=headpiece_of_the_fixed_stars,id=188847,gem_id=173127,bonus_id=1498
+# neck=beacon_of_stormwind,id=189838,gem_id=173129,bonus_id=1524
+# shoulders=shoulderpads_of_the_fixed_stars,id=188851,bonus_id=1505
+# back=shroud_of_the_sires_chosen,id=189847,enchant=soul_vitality,bonus_id=1524
+# chest=umbrahide_vest,id=172314,bonus_id=7086/6647/6650/1588,enchant=eternal_stats
+# wrists=umbrahide_armguards,id=172321,bonus_id=8121/7451/6647/6650/1588,gem_id=173129
+# hands=handwraps_of_the_fixed_stars,id=188853,bonus_id=1498
+# waist=runecarvers_twisted_ward,id=189856,gem_id=173130,bonus_id=1524
+# legs=leggings_of_the_fixed_stars,id=188848,bonus_id=1498
+# feet=treads_of_titanic_curiosity,id=189848,enchant=eternal_agility,bonus_id=1524
+# finger1=modified_defense_grid,id=189772,bonus_id=7187/1524/6935,gem_id=173127,enchant=tenet_of_critical_strike
+# finger2=rygelons_heraldric_ring,id=189854,bonus_id=7187/1524/6935,gem_id=173127,enchant=tenet_of_critical_strike
+# trinket1=the_first_sigil,id=188271,bonus_id=1524
+# trinket2=sinful_gladiators_badge_of_ferocity,id=175921,bonus_id=1547
+# main_hand=zovastrum_the_unmaking,id=189861,bonus_id=1524,enchant=sinful_revelation
 
-
-head=hood_of_refracted_shadows,id=178817,bonus_id=6807/1498/6646
-neck=trailspinner_pendant,id=178707,bonus_id=6807/1498/6646
-shoulders=far_travelers_shoulderpads,id=179344,bonus_id=6807/1498/6646
-back=cloak_of_enveloping_manifestations,id=178851,bonus_id=6807/1498/6646
-chest=umbrahide_vest,id=172314,bonus_id=6716/7086/6647/6648/1487,enchant=eternal_skirmish
-wrists=bands_of_the_undergrowth,id=178702,bonus_id=6807/1498/6646
-hands=gloves_of_obscure_rituals,id=178757,bonus_id=6807/1498/6646
-waist=girdle_of_shattered_dreams,id=178805,bonus_id=6807/1498/6646
-legs=fearless_challengers_leggings,id=178801,bonus_id=6807/1498/6646
-feet=sinsoaked_waders,id=178837,bonus_id=6807/1498/6646,enchant=eternal_agility
-finger1=ring_of_perpetual_conflict,id=178872,bonus_id=6807/1498/6646,enchant=tenet_of_critical_strike
-finger2=ritual_commanders_ring,id=178781,bonus_id=6807/1498,enchant=tenet_of_critical_strike
-trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646
-trinket2=darkmoon_deck_voracity,id=173087
-main_hand=,id=180097,bonus_id=6807/1498/6646,enchant=sinful_revelation
-
-save=PR_Druid_Feral.simc
-
-druid="PR_Druid_Feral_Owlweave"
-level=60
-race=night_elf
-timeofday=day
-spec=feral
-role=attack
-position=back
-talents=2313122
-covenant=night_fae
-soulbind=niya,grove_invigoration/taste_for_blood:4
+# save=PR_Druid_Feral.simc
 
 
-head=hood_of_refracted_shadows,id=178817,bonus_id=6807/1498/6646
-neck=trailspinner_pendant,id=178707,bonus_id=6807/1498/6646
-shoulders=far_travelers_shoulderpads,id=179344,bonus_id=6807/1498/6646
-back=cloak_of_enveloping_manifestations,id=178851,bonus_id=6807/1498/6646
-chest=umbrahide_vest,id=172314,bonus_id=6716/7086/6647/6648/1487,enchant=eternal_skirmish
-wrists=bands_of_the_undergrowth,id=178702,bonus_id=6807/1498/6646
-hands=gloves_of_obscure_rituals,id=178757,bonus_id=6807/1498/6646
-waist=girdle_of_shattered_dreams,id=178805,bonus_id=6807/1498/6646
-legs=fearless_challengers_leggings,id=178801,bonus_id=6807/1498/6646
-feet=sinsoaked_waders,id=178837,bonus_id=6807/1498/6646,enchant=eternal_agility
-finger1=ring_of_perpetual_conflict,id=178872,bonus_id=6807/1498/6646,enchant=tenet_of_critical_strike
-finger2=ritual_commanders_ring,id=178781,bonus_id=6807/1498,enchant=tenet_of_critical_strike
-trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646
-trinket2=darkmoon_deck_voracity,id=173087
-main_hand=,id=180097,bonus_id=6807/1498/6646,enchant=sinful_revelation
+# druid=PR_Druid_Guardian
+# level=70
+# race=tauren
+# role=tank
+# position=front
+# spec=guardian
+# talents=1013321
 
-save=PR_Druid_Feral_Owlweave.simc
+# head=umbrahide_helm,id=172317,bonus_id=6716/8121/6647/6650/1808/1588,gem_id=173129
+# neck=worldkiller_iris,id=189859,bonus_id=4800/4786/1524,gem_id=173129
+# shoulder=shoulderpads_of_the_fixed_stars,id=188851,bonus_id=4800/4786/1505
+# back=shroud_of_the_sires_chosen,id=189847,bonus_id=4800/4786/1524,enchant=soul_vitality
+# chest=chestguard_of_the_fixed_stars,id=188849,bonus_id=4800/4786/1505,enchant=eternal_skirmish
+# wrist=risen_monstrosity_cuffs,id=178741,bonus_id=3536/4786/1592,gem_id=173129
+# hands=handwraps_of_the_fixed_stars,id=188853,bonus_id=4800/4786/1498
+# waist=runecarvers_twisted_ward,id=189856,bonus_id=4800/4786/1524,gem_id=173129
+# legs=leggings_of_the_fixed_stars,id=188848,bonus_id=4800/4786/1498
+# feet=umbrahide_treads,id=172315,bonus_id=6716/7095/6647/6650/1588,enchant=eternal_agility
+# finger1=taciturn_keepers_lapis,id=189833,bonus_id=4800/4786/1524,gem_id=173129,enchant=tenet_of_critical_strike
+# finger2=rygelons_heraldric_ring,id=189854,bonus_id=4800/4786/1524,gem_id=173129,enchant=tenet_of_critical_strike
+# trinket2=shadowgrasp_totem,id=179356,bonus_id=3536/4786/1592
+# trinket1=the_first_sigil,id=188271,bonus_id=4800/4786/1524
+# main_hand=zovastrum_the_unmaking,id=189861,bonus_id=4800/4786/1524,enchant=sinful_revelation
 
-
-druid="PR_Druid_Guardian"
-level=60
-race=night_elf
-timeofday=day
-spec=guardian
-role=tank
-position=front
-talents=1013221
-covenant=necrolord
-soulbind=emeni,lead_by_example/savage_combatant:4
-
-head=digested_interrogators_gaze,id=178760,bonus_id=6807/1498/6646
-neck=sin_stained_pendant,id=178827,bonus_id=6807/1498/6646
-shoulders=malodorous_gristlesown_spaulders,id=178763,bonus_id=6807/1498/6646
-back=blighted_margraves_cloak,id=178755,bonus_id=6807/1498/6646
-chest=Umbrahide_vest,id=172314,bonus_id=7092/6647/6649/1487,enchant=eternal_skirmish
-wrists=fastened_venombarb_binds,id=178934,bonus_id=6807/1498/6646
-hands=gloves_of_haunting_fixation,id=178832,bonus_id=6807/1498/6646
-waist=waistcord_of_dark_devotion,id=178823,bonus_id=6807/1498/6646
-legs=fearless_challengers_leggings,id=178801,bonus_id=6807/1498/6646
-feet=sinsoaked_waders,id=178837,bonus_id=6807/1498/6646,enchant=eternal_agility
-finger1=fleshfused_circle,id=178869,bonus_id=6807/1498/6646,enchant=tenet_of_versatility
-finger2=Bloodoath_signet,id=178871,bonus_id=6807/1498/6646,enchant=tenet_of_versatility
-trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646
-trinket2=bloodspattered_scale,id=179331,bonus_id=6807/1498/6646
-main_hand=devoss_cacophonous_poleaxe,id=180096,bonus_id=6807/1498/6646,enchant=sinful_revelation
-
-save=PR_Druid_Guardian.simc
+# save=PR_Druid_Guardian.simc

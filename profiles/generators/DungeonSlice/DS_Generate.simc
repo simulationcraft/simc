@@ -22,6 +22,9 @@ DS_Generate_Demon_Hunter.simc
 # Druid
 DS_Generate_Druid.simc
 
+# Evoker
+DS_Generate_Evoker.simc
+
 # Hunter
 DS_Generate_Hunter.simc
 

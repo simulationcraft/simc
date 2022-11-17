@@ -2682,9 +2682,10 @@ void priest_t::trigger_wrathful_faerie_fermata()
 
 void priest_t::init_base_stats()
 {
+  // Halo has a 30 yard range
+  // Divine Star gets two hits if used at or below 24yd, only 1 up to 28yd. 0 hits from 29-30yd
   if ( base.distance < 1 )
   {
-    // Halo does the most damage between 25-30yd
     // Divine Star gets two hits if used at or below 24yd, only 1 up to 28yd. 0 hits from 29-30yd
     if ( talents.divine_star.enabled() )
     {
@@ -2693,7 +2694,7 @@ void priest_t::init_base_stats()
 
     if ( talents.halo.enabled() )
     {
-      base.distance = 28.0;
+      base.distance = 30.0;
     }
   }
 
@@ -2896,8 +2897,9 @@ void priest_t::create_buffs()
                             ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                             ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
   buffs.rhapsody =
-      make_buff( this, "rhapsody", talents.rhapsody_buff )
-          ->set_stack_change_callback( ( [ this ]( buff_t*, int, int ) { buffs.rhapsody_timer->trigger(); } ) );
+      make_buff( this, "rhapsody", talents.rhapsody_buff )->set_stack_change_callback( ( [ this ]( buff_t*, int, int ) {
+        buffs.rhapsody_timer->trigger();
+      } ) );
   buffs.rhapsody_timer = make_buff( this, "rhapsody_timer", talents.rhapsody )
                              ->set_quiet( true )
                              ->set_duration( timespan_t::from_seconds( 5 ) )

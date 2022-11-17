@@ -482,6 +482,7 @@ struct damage_buff_t : public buff_t
     double multiplier = 1.0;
   };
 
+  bool is_stacking;
   damage_buff_modifier_t direct_mod;
   damage_buff_modifier_t periodic_mod;
   damage_buff_modifier_t auto_attack_mod;
@@ -508,6 +509,12 @@ struct damage_buff_t : public buff_t
     buff_t::apply_affecting_conduit( conduit, effect_num );
     return this;
   }
+
+  damage_buff_t* set_is_stacking_mod( bool value )
+  {
+    is_stacking = value;
+    return this;
+  };
 
   damage_buff_t* set_direct_mod( double );
   damage_buff_t* set_direct_mod( const spell_data_t*, size_t, double = 0.0 );

@@ -12159,6 +12159,7 @@ void player_t::copy_from( player_t* source )
   parse_talent_url( sim, "talents", source->talents_str );
   class_talents_str = source->class_talents_str;
   spec_talents_str  = source->spec_talents_str;
+  player_traits     = source->player_traits;
 
   if ( azerite )
   {
@@ -12495,6 +12496,9 @@ void player_t::create_options()
 
   // Shadowlands options
   add_option( opt_string( "shadowlands.soleahs_secret_technique_type_override", shadowlands_opts.soleahs_secret_technique_type ) );
+
+  // Dragonflight options
+  add_option( opt_string( "dragonflight.gyroscopic_kaleidoscope_stat", dragonflight_opts.gyroscopic_kaleidoscope_stat ) );
 
   // Obsolete options
 

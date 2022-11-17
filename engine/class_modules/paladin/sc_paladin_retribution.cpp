@@ -1193,7 +1193,7 @@ struct radiant_decree_t : public holy_power_consumer_t<paladin_spell_t>
     {
       if ( p() -> talents.truths_wake -> ok() )
       {
-        double truths_wake_mul = p() -> talents.truths_wake -> effectN( 1 ).percent();
+        double truths_wake_mul = p() -> talents.truths_wake -> effectN( 1 ).percent() / p() -> talents.truths_wake -> effectN( 2 ).base_value();
         truths_wake -> base_td = s -> result_amount * truths_wake_mul;
         truths_wake -> set_target( s -> target );
         truths_wake -> execute();

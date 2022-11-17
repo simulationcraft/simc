@@ -13,29 +13,27 @@ namespace priest_apl
 {
 std::string potion( const player_t* p )
 {
-  std::string lvl50_potion = ( p->specialization() == PRIEST_SHADOW ) ? "unbridled_fury" : "battle_potion_of_intellect";
-
-  return ( p->true_level > 50 ) ? "potion_of_spectral_intellect" : lvl50_potion;
+  return ( p->true_level > 60 ) ? "elemental_potion_of_ultimate_power_3" : "potion_of_spectral_intellect" ;
 }
 
 std::string flask( const player_t* p )
 {
-  return ( p->true_level > 50 ) ? "spectral_flask_of_power" : "greater_flask_of_endless_fathoms";
+  return ( p->true_level > 60 ) ? "phial_of_static_empowerment_3" : "greater_flask_of_endless_fathoms";
 }
 
 std::string food( const player_t* p )
 {
-  return ( p->true_level > 50 ) ? "feast_of_gluttonous_hedonism" : "baked_port_tato";
+  return ( p->true_level > 60 ) ? "fated_fortune_cookie" : "feast_of_gluttonous_hedonism";
 }
 
 std::string rune( const player_t* p )
 {
-  return ( p->true_level > 50 ) ? "veiled_augment_rune" : "battle_scarred";
+  return ( p->true_level > 60 ) ? "draconic_augment_rune" : "veiled_augment_rune";
 }
 
 std::string temporary_enchant( const player_t* p )
 {
-  return ( p->true_level >= 60 ) ? "main_hand:shadowcore_oil" : "disabled";
+  return ( p->true_level > 60 ) ? "main_hand:howling_rune_3" : "main_hand:shadowcore_oil";
 }
 
 void shadow( player_t* p )
@@ -171,9 +169,11 @@ void shadow( player_t* p )
   main->add_action(
       "mind_flay,if=buff.mind_flay_insanity.up&variable.dots_up&(!buff.surge_of_darkness.up|talent.screams_of_the_"
       "void)" );
-  main->add_action( "halo,if=raid_event.adds.in>20&(spell_targets.halo>1|variable.all_dots_up)" );
-  main->add_action( "divine_star,if=spell_targets.divine_star>1" );
-  main->add_action("lights_judgment,if=!raid_event.adds.exists|raid_event.adds.in>75" );
+  main->add_action( "halo,if=raid_event.adds.in>20&(spell_targets.halo>1|(variable.all_dots_up&!buff.voidform.up))",
+                    "Use Halo if all DoTS are active and you are not in Voidform or it will hit at least 2 targets. "
+                    "Save up to 20s if adds are coming soon." );
+  main->add_action( "divine_star,if=spell_targets.divine_star>1", "Use when it will hit at least 2 targets." );
+  main->add_action( "lights_judgment,if=!raid_event.adds.exists|raid_event.adds.in>75" );
   main->add_action(
       "mind_spike,if=buff.surge_of_darkness.up|!conduit.dissonant_echoes&(!talent.mental_decay|dot.vampiric_touch."
       "remains>=(cooldown.shadow_crash.remains+action.shadow_crash.travel_time))&(talent.mind_melt|!talent.idol_of_"

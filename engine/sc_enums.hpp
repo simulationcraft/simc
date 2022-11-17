@@ -206,6 +206,7 @@ enum race_e
   RACE_DEMON,
   RACE_ELEMENTAL,
   RACE_ABERRATION,
+  RACE_MECHANICAL,
   // Player Races
   RACE_NIGHT_ELF,
   RACE_HUMAN,
@@ -800,9 +801,9 @@ enum slot_e  // these enum values match armory settings
   SLOT_MIN       = 0
 };
 
-// Tiers 14..27 + PVP
-const unsigned N_TIER   = 15;
-const unsigned MIN_TIER = 14;
+// Tiers 14..30 + PVP
+const unsigned N_TIER   = 6;
+const unsigned MIN_TIER = 25;
 
 // Set bonus .. bonus. They map to a vector internally, so each enum value is just the vector
 // element index.

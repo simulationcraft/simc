@@ -200,6 +200,7 @@ struct unstable_affliction_t : public affliction_spell_t
     if ( p()->ua_target && p()->ua_target != target )
     {
       td( p()->ua_target )->dots_unstable_affliction->cancel();
+      p()->buffs.malefic_affliction->expire();
     }
 
     p()->ua_target = target;
@@ -236,7 +237,7 @@ struct unstable_affliction_t : public affliction_spell_t
   {
     affliction_spell_t::last_tick( d );
 
-    td( p()->ua_target )->debuffs_malefic_affliction->cancel();
+    p()->buffs.malefic_affliction->expire();
     p()->ua_target = nullptr;
   }
 
@@ -244,8 +245,8 @@ struct unstable_affliction_t : public affliction_spell_t
   {
     double m = affliction_spell_t::composite_ta_multiplier( s );
 
-    if ( p()->talents.malefic_affliction.ok() && td( s->target )->debuffs_malefic_affliction->check() )
-      m *= 1.0 + td( s->target )->debuffs_malefic_affliction->check_stack_value();
+    if ( p()->talents.malefic_affliction.ok() && p()->buffs.malefic_affliction->check() )
+      m *= 1.0 + p()->buffs.malefic_affliction->check_stack_value();
 
     return m;
   }
@@ -321,10 +322,10 @@ struct malefic_rapture_t : public affliction_spell_t
 
           if ( target_data->dots_unstable_affliction->is_ticking() )
           {
-            if ( p()->talents.dread_touch.ok() && ( target_data->debuffs_malefic_affliction->check() >= (int)p()->talents.malefic_affliction_debuff->max_stacks() ) )
+            if ( p()->talents.dread_touch.ok() && ( p()->buffs.malefic_affliction->check() >= (int)p()->talents.malefic_affliction_buff->max_stacks() ) )
               target_data->debuffs_dread_touch->trigger();
 
-            target_data->debuffs_malefic_affliction->trigger();
+            p()->buffs.malefic_affliction->trigger();
           }
         }
 
@@ -756,6 +757,9 @@ void warlock_t::create_buffs_affliction()
 
   buffs.tormented_crescendo = make_buff( this, "tormented_crescendo", talents.tormented_crescendo_buff );
 
+  buffs.malefic_affliction = make_buff( this, "malefic_affliction", talents.malefic_affliction_buff )
+                                 ->set_default_value( talents.malefic_affliction->effectN( 1 ).percent() );
+
   buffs.haunted_soul = make_buff( this, "haunted_soul", talents.haunted_soul_buff )
                            ->set_default_value( talents.haunted_soul_buff->effectN( 1 ).percent() );
 
@@ -836,7 +840,7 @@ void warlock_t::init_spells_affliction()
   talents.soul_rot = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Rot" ); // Should be ID 386997
  
   talents.malefic_affliction = find_talent_spell( talent_tree::SPECIALIZATION, "Malefic Affliction" ); // Should be ID 389761
-  talents.malefic_affliction_debuff = find_spell( 389845 ); // Debuff data, infinite duration, cancelled by UA ending
+  talents.malefic_affliction_buff = find_spell( 389845 ); // Buff data, infinite duration, cancelled by UA ending
 
   talents.tormented_crescendo = find_talent_spell( talent_tree::SPECIALIZATION, "Tormented Crescendo" ); // Should be ID 387075
   talents.tormented_crescendo_buff = find_spell( 387079 );

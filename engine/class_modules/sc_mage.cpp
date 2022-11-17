@@ -8178,7 +8178,8 @@ bool mage_t::trigger_fof( double chance, proc_t* source, int stacks )
     for ( int i = 0; i < stacks; i++ )
     {
       source->occur();
-      procs.fingers_of_frost->occur();
+      if ( procs.fingers_of_frost )
+        procs.fingers_of_frost->occur();
     }
   }
 
@@ -8517,6 +8518,12 @@ public:
       .operation( hotfix::HOTFIX_SET )
       .modifier( 20.0 )
       .verification_value( 0.0 );
+
+    hotfix::register_spell( "Mage", "2022-11-14", "Ebonbolt is slower than spell data suggests.", 257537 )
+      .field( "prj_speed" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 20.0 )
+      .verification_value( 30.0 );
   }
 
   bool valid() const override { return true; }

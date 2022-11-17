@@ -1,18 +1,17 @@
+# TODO: Remove me when Dragonflight launches
+ptr=1
 # PreRaids
-# Shadowlands Pre-Raids
-# * Mythic dungeon gear should be the default choice, item level cap is 184. ["bonus_id=6807/1498/6646"]
+# Dragonflight Pre-Raids
+# * Mythic dungeon gear should be the default choice, item level cap is 372. ["bonus_id=?"]
+#   * Gear can come from: [Algeth'ar Academy, Brackenhide Hollow, Halls of Infusion, Neltharus, Ruby Life Pools, The Azure Vault, The Nokhud Offensive, Uldaman: Legacy of Tyr]
 # * Honor PvP gear is not permitted since its item level is too low compared to M0 gear due to renown cap.
-# * Crafted gear is permitted up to item level 184, must be BoE and without profession requirements.
-# * Alchemy Stone / Darkmoon trinkets (item level 200) are the only craftable items above item level 184 allowed.
+# * Crafted gear: TBD.
 # * No items from World Bosses / World Quests / World Drop.
 # * No Sockets/Gems (natural / buyable).
 # * No Tertiary Stats.
 # * No Hardcoded Stats (generally if an item gives wrong stats: either bonus_id is wrong, either the item no longer exists in-game).
-# * Renown is considered to be <= 6, so only 1 soulbind ability and 1 potency conduit.
-# * Conduits rank is limited to 4 (item level 184).
-# * One Rank 1 (item level 190) Legendary should be used, even if coming from raid / world boss / higher torghast floor. [Bonus ids can be taken from https://www.wowhead.com/legendary-calc]
-# * Must use enchant name (ex: ",enchant=tenet_of_haste") instead of ids/hardcoded stats.
-# * Must use soulbind npc/ability/conduit name (ex: "soulbind=npc_name,ability1_name/conduit1_name:7/..."") instead of ids.
+# * Must use enchant name (ex: ",enchant=tenet_of_haste") instead of ids/hardcoded stats if possible. Only use Rank 2 enchants.
+
 
 
 # Death Knight
@@ -23,6 +22,9 @@ PR_Generate_Demon_Hunter.simc
 
 # Druid
 PR_Generate_Druid.simc
+
+# Evoker
+PR_Generate_Evoker.simc
 
 # Hunter
 PR_Generate_Hunter.simc

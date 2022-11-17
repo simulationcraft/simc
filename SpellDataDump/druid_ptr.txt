@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.46597 Live (hotfix 2022-11-10/46597)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46658 Live (hotfix 2022-11-16/46658)
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=8, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
@@ -7345,7 +7345,7 @@ Description      : Deals $m1 Arcane damage to the target and empowers Half Moon 
 |cFFFFFFFFGenerates ${$m3/10} Astral Power.|r
 
 Name             : Fury of Elune (id=202770) [Spell Family (7)] 
-Talent Entry     : Balance [tree=spec, row=9, col=5, max_rank=1, req_points=20, select_idx=101]
+Talent Entry     : Balance [tree=spec, row=9, col=5, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
 School           : Astral
 Spell Type       : Magic
@@ -10084,7 +10084,7 @@ Effects          :
 Description      : Your damaging abilities have a chance to invoke a tainted swamp beneath the target, siphoning ${$s1*6} health from them over $273836d.
 
 Name             : New Moon (id=274281) [Spell Family (7)] 
-Talent Entry     : Balance [tree=spec, row=9, col=5, max_rank=1, req_points=20, select_idx=100]
+Talent Entry     : Balance [tree=spec, row=9, col=5, max_rank=1, req_points=20, select_idx=101]
 Class            : Druid
 School           : Astral
 Spell Type       : Magic
