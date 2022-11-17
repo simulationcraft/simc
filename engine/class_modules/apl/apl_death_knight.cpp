@@ -55,7 +55,7 @@ std::string food( const player_t* p )
 
 std::string rune( const player_t* p )
 {
-  return ( p->true_level >= 60 ) ? "veiled" : "disabled";
+  return ( p->true_level >= 61 ) ? "draconic" : "veiled";
 }
 
 std::string temporary_enchant( const player_t* p )
