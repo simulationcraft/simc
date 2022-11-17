@@ -61,15 +61,15 @@ position=back
 talents=BwPAAAAAAAAAAAAAAAAAAAAAAAAIIJJBSAJJRIJSSSkAAAAAAAAAAKJJhIAAgEpkIRSSikA
 
 head=maw_of_the_haunted_frostbrood,id=200408,bonus_id=4800/4786/1498/6935,gem_id=192985
-neck=ukhel_ancestry_beads,id=193676,bonus_id=6808/4786/1643/6935,gem_id=192948
+neck=torc_of_passed_time,id=201759,bonus_id=8836/8840/8902/8784/8782/8801/8791,ilevel=415,gem_id=192948/192948/192948,crafted_stats=32/49
 shoulders=jaws_of_the_haunted_frostbrood,id=200410,bonus_id=4800/4786/1498
 back=fireproof_drape,id=193763,bonus_id=6808/4786/1643
 chest=breastplate_of_the_haunted_frostbrood,id=200405,bonus_id=4800/4786/1498,enchant_id=6625
 wrists=vambraces_of_the_haunted_frostbrood,id=200412,bonus_id=1507/6935,gem_id=192948
 hands=grasps_of_the_haunted_frostbrood,id=200407,bonus_id=4800/4786/1498
-waist=unstable_frostfire_belt,id=191623,bonus_id=8836/8840/8902/8960/8802/8793/6935,ilevel=421,gem_id=192948,crafted_stats=36/40
+waist=unstable_frostfire_belt,id=191623,bonus_id=8836/8840/8902/8960/8802/8793/6935,ilevel=415,gem_id=192948,crafted_stats=36/40
 legs=drake_hunters_greaves,id=193694,bonus_id=6808/4786/1643,enchant_id=6496
-feet=stonestep_boots,id=143974,bonus_id=4177/6808/4786/3311,drop_level=70,ilevel=421
+feet=stonestep_boots,id=143974,bonus_id=4177/6808/4786/3311,ilevel=421,drop_level=70
 finger1=seal_of_filial_duty,id=195526,bonus_id=4800/4786/1498/6935,gem_id=192948,enchant_id=6550
 finger2=jeweled_signet_of_melandrus,id=134542,bonus_id=1795/6808/4786/3300/6935,ilevel=421,gem_id=192948,enchant_id=6550,drop_level=70
 trinket1=blazebinders_hoof,id=193762,bonus_id=6808/4786/1643
