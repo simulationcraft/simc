@@ -2114,7 +2114,9 @@ void alegethar_puzzle_box( special_effect_t& effect )
       buff -> trigger();
     }
   };
-  effect.execute_action = create_proc_action<solved_the_puzzle_t>( "solved_the_puzzle", effect );
+  auto action = create_proc_action<solved_the_puzzle_t>( "solved_the_puzzle", effect );
+  action->use_off_gcd = true;
+  effect.execute_action = action;
 }
 
 // Frenzying Signoll Flare
@@ -2256,7 +2258,6 @@ void dragon_games_equipment(special_effect_t& effect)
       } );
 
   effect.custom_buff = buff;
-  new dbc_proc_callback_t( effect.player, effect );
 }
 
 // Bonemaw's Big Toe
