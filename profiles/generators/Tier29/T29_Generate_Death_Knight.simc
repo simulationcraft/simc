@@ -68,12 +68,12 @@ chest=breastplate_of_the_haunted_frostbrood,id=200405,bonus_id=4800/4786/1498,en
 wrists=vambraces_of_the_haunted_frostbrood,id=200412,bonus_id=1507/6935,gem_id=192948
 hands=grasps_of_the_haunted_frostbrood,id=200407,bonus_id=4800/4786/1498
 waist=primal_molten_greatbelt,id=190501,bonus_id=8836/8840/8902/8802/8793/8932/8960,ilevel=418,gem_id=192948,crafted_stats=36/40
-legs=drake_hunters_greaves,id=193694,bonus_id=6808/4786/1643,enchant_id=6496
+legs=drake_hunters_greaves,id=193694,bonus_id=6808/4786/1643,enchant_id=6490
 feet=stonestep_boots,id=143974,bonus_id=4177/6808/4786/3311,ilevel=421,drop_level=70
-finger1=seal_of_filial_duty,id=195526,bonus_id=4800/4786/1497/6935,gem_id=192948,enchant_id=6550
-finger2=jeweled_signet_of_melandrus,id=134542,bonus_id=1795/6808/4786/3300/6935,ilevel=421,gem_id=192948,enchant_id=6550,drop_level=70
+finger1=seal_of_filial_duty,id=195526,bonus_id=4800/4786/1497/6935,gem_id=192948,enchant_id=6568
+finger2=jeweled_signet_of_melandrus,id=134542,bonus_id=1795/6808/4786/3300/6935,ilevel=421,gem_id=192948,enchant_id=6562,drop_level=70
 trinket1=blazebinders_hoof,id=193762,bonus_id=6808/4786/1643
-trinket2=manic_grieftorch,id=194308,bonus_id=4800/4786/1498
+trinket2=whispering_incarnate_icon,id=194301,bonus_id=4800/4786/1498
 main_hand=incarnate_skysplitter,id=195528,bonus_id=4800/4786/1498,enchant=rune_of_the_fallen_crusader,enchant_id=3368
 
 save=T29_Death_Knight_Unholy.simc
