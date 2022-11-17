@@ -1,6 +1,6 @@
 priest="PR_Priest_Shadow"
 level=70
-race=human
+race=orc
 spec=shadow
 role=spell
 position=ranged_back
@@ -8,20 +8,22 @@ position=ranged_back
 class_talents=dispel_magic:1/improved_flash_heal:1/purify_disease:1/from_darkness_comes_light:1/angelic_feather:1/death_and_madness:1/leap_of_faith:1/shackle_undead:1/dominate_mind:1/mass_dispel:1/power_infusion:1/vampiric_embrace:1/tithe_evasion:1/body_and_soul:1/twins_of_the_sun_priestess:1/sanlayn:1/unwavering_will:2/twist_of_fate:2/throes_of_pain:2/angels_mercy:1/halo:1/translucent_image:1/mindgames:1/lights_inspiration:2/manipulation:2/shattered_perceptions:1/
 spec_talents=devouring_plague:1/dispersion:1/shadowy_apparitions:1/silence:1/mental_fortitude:1/misery:1/coalescing_shadows:1/mind_spike:1/puppet_master:1/mental_decay:1/dark_ascension:1/surge_of_darkness:1/harnessed_shadows:1/shadowy_insight:1/ancient_madness:2/shadow_crash:1/dark_evangelism:2/auspicious_spirits:1/mindbender:1/mind_flay_insanity:1/encroaching_shadows:1/inescapable_torment:2/screams_of_the_void:2/mind_devourer:1/idol_of_yshaarj:1/idol_of_cthun:1
 
+# TODO: use prof items?
+# TODO: use bonus_ids instead
 head=organized_pontificators_mask,id=193703,ilevel=372
-neck=bromachs_disentombed_locket,id=193809,ilevel=372
+neck=ukhel_ancestry_beads,id=193676,ilevel=372
 shoulders=molten_magma_mantle,id=193788,ilevel=372
 back=fireproof_drape,id=193763,ilevel=372
-chest=blessed_ohnir_robes,id=193683,ilevel=372,enchant=waking_stats_3
+chest=bronze_challengers_robe,id=193720,ilevel=372,enchant=waking_stats_2
 wrists=animated_shackles,id=193792,ilevel=372
 hands=azureblades_work_gloves,id=193648,ilevel=372
 waist=sky_saddle_cord,id=193691,ilevel=372
-legs=crazed_travelers_legwraps,id=193799,ilevel=372,enchant=frozen_spellthread_3
+legs=crazed_travelers_legwraps,id=193799,ilevel=372,enchant=frozen_spellthread_2
 feet=ancient_crosswrapped_sandals,id=193806,ilevel=372
 finger1=unstable_arcane_loop,id=193633,ilevel=372,enchant_id=6556
 finger2=circle_of_ascended_frost,id=193731,ilevel=372,enchant_id=6556
-trinket1=horn_of_valor,id=133642,ilevel=372
+trinket1=spoils_of_neltharus,id=193773,ilevel=372
 trinket2=furious_ragefeather,id=193677,ilevel=372
-main_hand=final_grade,id=193707,ilevel=372,enchant=sophic_devotion_3
+main_hand=final_grade,id=193707,ilevel=372,enchant=sophic_devotion_2
 
 save=PR_Priest_Shadow.simc

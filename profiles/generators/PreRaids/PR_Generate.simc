@@ -10,7 +10,8 @@ ptr=1
 # * No Sockets/Gems (natural / buyable).
 # * No Tertiary Stats.
 # * No Hardcoded Stats (generally if an item gives wrong stats: either bonus_id is wrong, either the item no longer exists in-game).
-# * Must use enchant name (ex: ",enchant=tenet_of_haste") instead of ids/hardcoded stats if possible.
+# * Must use enchant name (ex: ",enchant=tenet_of_haste") instead of ids/hardcoded stats if possible. Only use Rank 2 enchants.
+
 
 
 # Death Knight

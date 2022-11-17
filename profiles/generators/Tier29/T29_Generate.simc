@@ -19,7 +19,7 @@ ptr=1
 # * Must use gem ids (ex: ",gem_id=173127") instead of hardcoded stats.
 # * No Tertiary Stats.
 # * No Hardcoded Stats (generally if an item gives wrong stats: either bonus_id is wrong, or the item no longer exists in-game).
-# * Must use enchant name (ex: ",enchant=tenet_of_haste") instead of ids/hardcoded stats if possible.
+# * Must use enchant name (ex: ",enchant=tenet_of_haste") instead of ids/hardcoded stats if possible. Rank 3 enchants are permitted.
 
 
 # Death Knight
