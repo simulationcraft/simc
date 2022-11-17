@@ -9,11 +9,11 @@ class_talents=dispel_magic:1/improved_flash_heal:1/purify_disease:1/from_darknes
 spec_talents=devouring_plague:1/dispersion:1/shadowy_apparitions:1/silence:1/mental_fortitude:1/misery:1/coalescing_shadows:1/mind_spike:1/puppet_master:1/mental_decay:1/dark_ascension:1/surge_of_darkness:1/harnessed_shadows:1/shadowy_insight:1/ancient_madness:2/shadow_crash:1/dark_evangelism:2/auspicious_spirits:1/mindbender:1/mind_flay_insanity:1/encroaching_shadows:1/inescapable_torment:2/screams_of_the_void:2/mind_devourer:1/idol_of_yshaarj:1/idol_of_cthun:1
 
 # Default consumables
-potion=potion_of_spectral_intellect
-flask=spectral_flask_of_power
-food=feast_of_gluttonous_hedonism
-augmentation=veiled_augment_rune
-temporary_enchant=main_hand:shadowcore_oil
+potion=elemental_potion_of_ultimate_power_3
+flask=phial_of_static_empowerment_3
+food=fated_fortune_cookie
+augmentation=draconic_augment_rune
+temporary_enchant=main_hand:howling_rune_3
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -130,7 +130,7 @@ main_hand=final_grade,id=193707,ilevel=372,enchant=sophic_devotion_3
 # gear_stamina=7093
 # gear_intellect=4821
 # gear_crit_rating=1218
-# gear_haste_rating=4591
+# gear_haste_rating=5418
 # gear_mastery_rating=1066
 # gear_versatility_rating=1129
 # gear_armor=1524
