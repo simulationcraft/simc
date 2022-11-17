@@ -10072,7 +10072,8 @@ double warrior_t::composite_bonus_armor() const
   */
 
   // If in the future we want to run the above, the below section should be commented out.
-  ba += spec.vanguard -> effectN( 1 ).percent() * cache.strength();
+  if( specialization() == WARRIOR_PROTECTION )
+    ba += spec.vanguard -> effectN( 1 ).percent() * cache.strength();
 
   return ba;
 }
