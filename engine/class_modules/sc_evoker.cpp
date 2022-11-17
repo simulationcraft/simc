@@ -940,6 +940,9 @@ struct empowered_charge_spell_t : public empowered_base_t
   {
     empowered_base_t::last_tick( d );
 
+    if ( empower_level( d ) == empower_e::EMPOWER_NONE )
+      return;
+
     auto emp_state = release_spell->get_state();
     emp_state->target = d->state->target;
     release_spell->snapshot_state( emp_state, release_spell->amount_type( emp_state ) );
