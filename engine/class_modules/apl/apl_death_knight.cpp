@@ -8,11 +8,11 @@ namespace death_knight_apl {
 
 std::string potion( const player_t* p )
 {
-  std::string frost_potion = ( p->true_level >= 60 ) ? "potion_of_spectral_strength" : "disabled";
+  std::string frost_potion = ( p->true_level >= 61 ) ? "elemental_potion_of_ultimate_power_3" : "potion_of_spectral_strength";
 
-  std::string unholy_potion = ( p->true_level >= 60 ) ? "potion_of_spectral_strength" : "disabled";
+  std::string unholy_potion = ( p->true_level >= 61 ) ? "elemental_potion_of_ultimate_power_3" : "potion_of_spectral_strength";
 
-  std::string blood_potion = ( p->true_level >= 60 ) ? "potion_of_spectral_strength" : "disabled";
+  std::string blood_potion = ( p->true_level >= 61 ) ? "elemental_potion_of_ultimate_power_3" : "potion_of_spectral_strength";
 
   switch ( p->specialization() )
   {
@@ -27,7 +27,7 @@ std::string potion( const player_t* p )
 
 std::string flask( const player_t* p )
 {
-  std::string flask_name = ( p->true_level >= 60 ) ? "spectral_flask_of_power" : "disabled";
+  std::string flask_name = ( p->true_level >= 61 ) ? "phial_of_static_empowerment_3" : "spectral_flask_of_power";
 
   // All specs use a strength flask as default
   return flask_name;
@@ -37,7 +37,7 @@ std::string food( const player_t* p )
 {
   std::string frost_food = ( p->true_level >= 60 ) ? "feast_of_gluttonous_hedonism" : "disabled";
 
-  std::string unholy_food = ( p->true_level >= 60 ) ? "feast_of_gluttonous_hedonism" : "disabled";
+  std::string unholy_food = ( p->true_level >= 61 ) ? "thousandbone_tongueslicer" : "feast_of_gluttonous_hedonism";
 
   std::string blood_food = ( p->true_level >= 60 ) ? "feast_of_gluttonous_hedonism" : "disabled";
 
@@ -63,7 +63,7 @@ std::string temporary_enchant( const player_t* p )
   std::string frost_temporary_enchant =
       ( p->true_level >= 60 ) ? "main_hand:shaded_sharpening_stone/off_hand:shaded_sharpening_stone" : "disabled";
 
-  std::string unholy_temporary_enchant = ( p->true_level >= 60 ) ? "main_hand:shaded_sharpening_stone" : "disabled";
+  std::string unholy_temporary_enchant = ( p->true_level >= 61 ) ? "main_hand:howling_rune" : "main_hand:shaded_sharpening_stone";
 
   std::string blood_temporary_enchant = ( p->true_level >= 60 ) ? "main_hand:shaded_weightstone" : "disabled";
 
