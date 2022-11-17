@@ -63,7 +63,7 @@ std::string temporary_enchant( const player_t* p )
   std::string frost_temporary_enchant =
       ( p->true_level >= 60 ) ? "main_hand:shaded_sharpening_stone/off_hand:shaded_sharpening_stone" : "disabled";
 
-  std::string unholy_temporary_enchant = ( p->true_level >= 61 ) ? "main_hand:howling_rune" : "main_hand:shaded_sharpening_stone";
+  std::string unholy_temporary_enchant = ( p->true_level >= 61 ) ? "main_hand:howling_rune_3" : "main_hand:shaded_sharpening_stone";
 
   std::string blood_temporary_enchant = ( p->true_level >= 60 ) ? "main_hand:shaded_weightstone" : "disabled";
 
