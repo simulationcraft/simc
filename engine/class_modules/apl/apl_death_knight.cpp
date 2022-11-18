@@ -262,7 +262,7 @@ void frost( player_t* p )
   cooldowns->add_action( "abomination_limb_talent,if=!talent.breath_of_sindragosa&!talent.obliteration&(variable.adds_remain|variable.st_planning)" );
   cooldowns->add_action( "chill_streak,if=active_enemies>=2&(!death_and_decay.ticking&talent.cleaving_strikes|!talent.cleaving_strikes|active_enemies<=5)" );
   cooldowns->add_action( "pillar_of_frost,if=talent.obliteration&(variable.adds_remain|variable.st_planning)&(buff.empower_rune_weapon.up|cooldown.empower_rune_weapon.remains)|fight_remains<12" );
-  cooldowns->add_action( "pillar_of_frost,if=talent.breath_of_sindragosa&(variable.adds_remain|variable.st_planning)&(!talent.icecap&runic_power>70|talent.icecap&cooldown.breath_of_sindragosa.remains)" );
+  cooldowns->add_action( "pillar_of_frost,if=talent.breath_of_sindragosa&(variable.adds_remain|variable.st_planning)&(!talent.icecap&runic_power>70|talent.icecap&cooldown.breath_of_sindragosa.remains>20|talent.icecap&buff.breath_of_sindragosa.up)" );
   cooldowns->add_action( "pillar_of_frost,if=talent.icecap&!talent.obliteration&!talent.breath_of_sindragosa&(variable.adds_remain|variable.st_planning)" );
   cooldowns->add_action( "breath_of_sindragosa,if=runic_power>60&(variable.adds_remain|variable.st_planning)|fight_remains<30" );
   cooldowns->add_action( "frostwyrms_fury,if=active_enemies=1&(talent.pillar_of_frost&buff.pillar_of_frost.remains<gcd*2&buff.pillar_of_frost.up&!talent.obliteration|!talent.pillar_of_frost)&(!raid_event.adds.exists|(raid_event.adds.in>15+raid_event.adds.duration|talent.absolute_zero&raid_event.adds.in>15+raid_event.adds.duration))|fight_remains<3" );
