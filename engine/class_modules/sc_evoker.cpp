@@ -1231,7 +1231,7 @@ struct disintegrate_t : public essence_spell_t
   action_state_t* new_state() override
   { return new state_t( this, target ); }
 
-  void snapshot_state( action_state_t* s, result_amount_type rt )
+  void snapshot_state( action_state_t* s, result_amount_type rt ) override
   {
     essence_spell_t::snapshot_state( s, rt );
 
@@ -1644,7 +1644,7 @@ struct pyre_t : public essence_spell_t
     p()->buff.charged_blast->expire();
   }
 
-  void snapshot_state( action_state_t* s, result_amount_type rt )
+  void snapshot_state( action_state_t* s, result_amount_type rt ) override
   {
     essence_spell_t::snapshot_state( s, rt );
 

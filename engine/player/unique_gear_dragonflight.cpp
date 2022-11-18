@@ -485,7 +485,7 @@ void high_intensity_thermal_scanner( special_effect_t& effect )
       crit( crit ), vers( vers ), haste( haste ), mastery( mastery )
     {}
 
-    void execute( action_t* a, action_state_t* s ) override
+    void execute( action_t*, action_state_t* s ) override
     {
       switch (s -> target -> race)
       {
@@ -2109,7 +2109,7 @@ void alegethar_puzzle_box( special_effect_t& effect )
       buff = create_buff<stat_buff_t>(e.player, buff_spell);
     }
 
-    void impact( action_state_t* a ) override
+    void impact( action_state_t* ) override
     {
       buff -> trigger();
     }
@@ -2270,7 +2270,7 @@ void bonemaws_big_toe(special_effect_t& effect)
   auto value = effect.driver()->effectN(1).average(effect.item);
   buff->add_stat( STAT_CRIT_RATING, value );
   auto damage = create_proc_action<generic_aoe_proc_t>( "fetid_breath", effect, "fetid_breath", 397401 );
-  buff->set_tick_callback( [ damage ]( buff_t* b, int, timespan_t ) 
+  buff->set_tick_callback( [ damage ]( buff_t*, int, timespan_t )
     {
       damage->execute();
     } );
@@ -2288,7 +2288,7 @@ void mutated_magmammoth_scale(special_effect_t& effect)
   auto buff_spell = effect.player->find_spell( 381727 );
   auto buff = create_buff<buff_t>( effect.player , buff_spell );
   auto damage = create_proc_action<generic_aoe_proc_t>( "mutated_tentacle_slam", effect, "mutated_tentacle_slam", 381760, true );
-  buff->set_tick_callback( [ damage ]( buff_t* b, int, timespan_t ) 
+  buff->set_tick_callback( [ damage ]( buff_t*, int, timespan_t )
     {
       damage->execute();
     } );
@@ -2309,9 +2309,9 @@ void homeland_raid_horn(special_effect_t& effect)
 
   auto buff_spell = effect.player->find_spell( 382139 );
   auto buff = create_buff<buff_t>( effect.player , buff_spell );
-  buff->set_tick_callback( [ damage ]( buff_t* b, int, timespan_t ) {
-        damage->execute();
-      } );
+  buff->set_tick_callback( [ damage ]( buff_t*, int, timespan_t ) {
+    damage->execute();
+  } );
 
   effect.custom_buff = buff;
 }
@@ -2456,7 +2456,7 @@ void forgestorm( special_effect_t& effect )
     damage->initialize();
     damage->deactivate();
  
-    buff -> set_stack_change_callback( [ damage ]( buff_t* b, int, int new_ )
+    buff -> set_stack_change_callback( [ damage ]( buff_t*, int, int new_ )
     {
       if ( new_ )
       {
@@ -2469,7 +2469,7 @@ void forgestorm( special_effect_t& effect )
     } );
   }
   effect.custom_buff = buff;
-  auto cb = new dbc_proc_callback_t( effect.player, effect );
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 // Armor

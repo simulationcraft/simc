@@ -1720,7 +1720,7 @@ struct bt_dummy_buff_t : public druid_buff_t
 // Celestial Alignment / Incarn Buff ========================================
 struct celestial_alignment_buff_t : public druid_buff_t
 {
-  celestial_alignment_buff_t( druid_t* p, std::string_view n, const spell_data_t* s, bool b = false )
+  celestial_alignment_buff_t( druid_t* p, std::string_view n, const spell_data_t* s )
     : base_t( p, n, p->apply_override( s, p->talent.orbital_strike ) )
   {
     set_cooldown( 0_ms );
@@ -2793,8 +2793,6 @@ public:
         p()->active.shift_to_moonkin->execute();
       }
 
-      bool was_active = p()->buff.ca_inc->check();
-
       p()->buff.ca_inc->extend_duration_or_trigger( p_time, p() );
       p()->proc.pulsar->occur();
 
@@ -2871,7 +2869,11 @@ private:
 
 public:
   trigger_astral_smolder_t( std::string_view n, druid_t* p, const spell_data_t* s, std::string_view o )
-    : BASE( n, p, s, o ), p_( p ), other_ecl( nullptr ), other_dot( nullptr ), mul( p->talent.astral_smolder->effectN( 1 ).percent() )
+    : BASE( n, p, s, o ),
+      p_( p ),
+      other_ecl( nullptr ),
+      other_dot( nullptr ),
+      mul( p->talent.astral_smolder->effectN( 1 ).percent() )
   {}
 
   void init_astral_smolder( buff_t* b, dot_t* druid_td_t::dots_t::*d )
@@ -9266,27 +9268,33 @@ void druid_t::activate()
     }
 
     // Create repeating resource_loss event once OOC for 20s
-    sim->target_non_sleeping_list.register_callback([this](player_t*) {
-        if (sim->target_non_sleeping_list.empty()) {
-            make_event(*sim, 20_s, [this]() {
-                if (sim->target_non_sleeping_list.empty()) {
-                    astral_power_decay_tick_flag = true;
-                    if (!astral_power_decay_tick) {
-                        astral_power_decay_tick = make_repeating_event(*sim, 500_ms, [this]() {
-                            // Add 3 to avoid an infinite back and forth with Nature's Balance
-                            if (astral_power_decay_tick_flag && (!talent.natures_balance->ok() || resources.current[RESOURCE_ASTRAL_POWER] > talent.natures_balance->effectN(2).base_value()+3))
-                            {
-                                resource_loss(RESOURCE_ASTRAL_POWER, 5);
-                            }
-                        });
-                    }
+    sim->target_non_sleeping_list.register_callback( [ this ]( player_t* ) {
+      if ( sim->target_non_sleeping_list.empty() )
+      {
+        make_event( *sim, 20_s, [ this ]() {
+          if ( sim->target_non_sleeping_list.empty() )
+          {
+            astral_power_decay_tick_flag = true;
+            if ( !astral_power_decay_tick )
+            {
+              astral_power_decay_tick = make_repeating_event( *sim, 500_ms, [ this ]() {
+                // Add 3 to avoid an infinite back and forth with Nature's Balance
+                if ( astral_power_decay_tick_flag &&
+                     ( !talent.natures_balance->ok() || resources.current[ RESOURCE_ASTRAL_POWER ] >
+                                                            talent.natures_balance->effectN( 2 ).base_value() + 3 ) )
+                {
+                  resource_loss( RESOURCE_ASTRAL_POWER, 5 );
                 }
-            });
-        }
-        else {
-            astral_power_decay_tick_flag = false;
-        }
-    });
+              } );
+            }
+          }
+        } );
+      }
+      else
+      {
+        astral_power_decay_tick_flag = false;
+      }
+    } );
   }
 
   player_t::activate();
