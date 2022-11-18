@@ -130,7 +130,7 @@ void destruction( player_t* p )
   precombat->add_action( "cataclysm" );
   precombat->add_action( "incinerate" );
 
-  default_->add_action( "call_action_list,name=cleave,if=active_enemies<=2+(!talent.inferno&talent.madness_of_the_azjaqir&talent.ashen_remains)|variable.cleave_apl" );
+  default_->add_action( "call_action_list,name=cleave,if=active_enemies!=1&active_enemies<=2+(!talent.inferno&talent.madness_of_the_azjaqir&talent.ashen_remains)|variable.cleave_apl" );
   default_->add_action( "call_action_list,name=aoe,if=active_enemies>=3" );
   default_->add_action( "conflagrate,if=(talent.roaring_blaze&debuff.conflagrate.remains<1.5)|charges=max_charges" );
   default_->add_action( "dimensional_rift,if=soul_shard<4.7&(charges>2|time_to_die<cooldown.dimensional_rift.duration)" );
