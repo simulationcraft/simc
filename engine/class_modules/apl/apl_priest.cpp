@@ -13,7 +13,7 @@ namespace priest_apl
 {
 std::string potion( const player_t* p )
 {
-  return ( p->true_level > 60 ) ? "elemental_potion_of_ultimate_power_3" : "potion_of_spectral_intellect" ;
+  return ( p->true_level > 60 ) ? "elemental_potion_of_ultimate_power_3" : "potion_of_spectral_intellect";
 }
 
 std::string flask( const player_t* p )
@@ -136,9 +136,8 @@ void shadow( player_t* p )
   main->add_action(
       "damnation,target_if=dot.vampiric_touch.refreshable&variable.is_vt_possible|dot.shadow_word_pain.refreshable" );
   main->add_action( "void_bolt,if=variable.dots_up&insanity<=85" );
-  main->add_action(
-      "mind_sear,target_if=(spell_targets.mind_sear>variable.mind_sear_cutoff|buff.voidform.up)&buff.mind_devourer."
-      "up" );
+  main->add_action( "mind_sear,target_if=(spell_targets.mind_sear>1|buff.voidform.up)&buff.mind_devourer.up",
+                    "Use Mind Devourer Procs on Mind Sear when facing 2 or more targets or Voidform is active." );
   main->add_action(
       "mind_sear,target_if=spell_targets.mind_sear>variable.mind_sear_cutoff,chain=1,interrupt_immediate=1,interrupt_"
       "if=ticks>=2" );
