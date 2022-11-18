@@ -4679,7 +4679,7 @@ Tooltip          : Your next Penance will deal $w1% additional damage or healing
 
 Name             : Psychic Link (id=199484) [Spell Family (6), Passive, Hidden] 
 Talent Entry     : Shadow [tree=spec, row=7, col=4, max_rank=2, req_points=8]
-                 : Effect#1 [op=set, values=(15, 30)]
+                 : Effect#1 [op=set, values=(30, 60)]
 Class            : Priest
 School           : Physical
 Spell Type       : None
