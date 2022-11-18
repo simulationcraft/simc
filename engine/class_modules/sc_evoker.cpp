@@ -2299,7 +2299,7 @@ const spelleffect_data_t* evoker_t::find_spelleffect( const spell_data_t* spell,
 // Return the appropriate spell when `base` is overriden to another spell by `passive`
 const spell_data_t* evoker_t::find_spell_override( const spell_data_t* base, const spell_data_t* passive )
 {
-  if ( !passive->ok() )
+  if ( !passive->ok() || !base->ok() )
     return base;
 
   auto id = as<unsigned>( find_spelleffect( passive, A_OVERRIDE_ACTION_SPELL, base->id() )->base_value() );
