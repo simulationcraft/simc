@@ -311,6 +311,8 @@ public:
   event_t* lycaras_event;
   timespan_t lycaras_event_remains;
   std::vector<event_t*> swarm_tracker;  // 'friendly' targets for healing swarm
+  event_t* astral_power_decay_tick;
+  bool astral_power_decay_tick_flag;
   // !!!==========================================================================!!!
 
   // Options
@@ -9263,16 +9265,28 @@ void druid_t::activate()
       } );
     }
 
-    if ( talent.natures_balance.ok() )
-    {
-      // TODO: make this actually work since buff.nb's tick_callback uses hard coded value instead of default_value()
-      sim->target_non_sleeping_list.register_callback( [ this ]( player_t* ) {
-        if ( sim->target_non_sleeping_list.empty() )
-          buff.natures_balance->current_value *= 3.0;
-        else
-          buff.natures_balance->current_value = buff.natures_balance->default_value;
-      } );
-    }
+    // Create repeating resource_loss event once OOC for 20s
+    sim->target_non_sleeping_list.register_callback([this](player_t*) {
+        if (sim->target_non_sleeping_list.empty()) {
+            make_event(*sim, 20_s, [this]() {
+                if (sim->target_non_sleeping_list.empty()) {
+                    astral_power_decay_tick_flag = true;
+                    if (!astral_power_decay_tick) {
+                        astral_power_decay_tick = make_repeating_event(*sim, 500_ms, [this]() {
+                            // Add 3 to avoid an infinite back and forth with Nature's Balance
+                            if (astral_power_decay_tick_flag && (!talent.natures_balance->ok() || resources.current[RESOURCE_ASTRAL_POWER] > talent.natures_balance->effectN(2).base_value()+3))
+                            {
+                                resource_loss(RESOURCE_ASTRAL_POWER, 5);
+                            }
+                        });
+                    }
+                }
+            });
+        }
+        else {
+            astral_power_decay_tick_flag = false;
+        }
+    });
   }
 
   player_t::activate();
@@ -10226,8 +10240,17 @@ void druid_t::create_buffs()
   buff.natures_balance->set_quiet( true )
     ->set_default_value( nb_eff->resource( RESOURCE_ASTRAL_POWER ) / nb_eff->period().total_seconds() )
     ->set_tick_callback( [ nb_eff, this ]( buff_t* b, int, timespan_t ) {
-      resource_gain( RESOURCE_ASTRAL_POWER, b->check_value() * nb_eff->period().total_seconds(), gain.natures_balance );
-    } );
+      auto tick_gain = b->check_value() * nb_eff->period().total_seconds();
+      if (sim->target_non_sleeping_list.empty()) {
+          if (resources.current[RESOURCE_ASTRAL_POWER] < talent.natures_balance->effectN(2).base_value())
+              tick_gain *= 3.0;
+          else
+              tick_gain = 0;
+
+      }
+      resource_gain(RESOURCE_ASTRAL_POWER, tick_gain, gain.natures_balance);
+  })
+      ->set_freeze_stacks(true);
 
   buff.natures_grace = make_buff( this, "natures_grace", find_spell( 393959 ) )
     ->set_trigger_spell( talent.natures_grace )
@@ -11215,6 +11238,8 @@ void druid_t::reset()
   persistent_event_delay.clear();
   lycaras_event = nullptr;
   lycaras_event_remains = 0_ms;
+  astral_power_decay_tick = nullptr;
+  astral_power_decay_tick_flag = false;
   swarm_tracker.clear();
 }
 
