@@ -4274,6 +4274,8 @@ struct primal_wrath_t : public cat_finisher_t
     {
       background = true;
       round_base_dmg = false;
+      aoe = -1;
+      reduced_aoe_targets = p->talent.tear_open_wounds->effectN( 3 ).base_value();
     }
 
     double _get_amount( const action_state_t* s ) const
@@ -4288,6 +4290,19 @@ struct primal_wrath_t : public cat_finisher_t
 
     double base_da_min( const action_state_t* s ) const override { return _get_amount( s ); }
     double base_da_max( const action_state_t* s ) const override { return _get_amount( s ); }
+
+    std::vector<player_t*>& target_list() const override
+    {
+      target_cache.is_valid = false;
+
+      std::vector<player_t*>& tl = cat_attack_t::target_list();
+
+      tl.erase( std::remove_if( tl.begin(), tl.end(), [ this ]( player_t* t ) {
+        return !td( t )->dots.rip->is_ticking();
+      } ), tl.end() );
+
+      return tl;
+    }
 
     void impact( action_state_t* s ) override
     {
@@ -4339,7 +4354,6 @@ struct primal_wrath_t : public cat_finisher_t
     if ( p->talent.tear_open_wounds.ok() )
     {
       wounds = p->get_secondary_action<tear_open_wounds_t>( "tear_open_wounds" );
-      wounds->background = true;
       add_child( wounds );
     }
   }
@@ -4351,7 +4365,7 @@ struct primal_wrath_t : public cat_finisher_t
 
   void impact( action_state_t* s ) override
   {
-    if ( wounds && td( s->target )->dots.rip->is_ticking() )
+    if ( wounds && s->chain_target == 0 )
       wounds->execute_on_target( s->target );
 
     rip->snapshot_and_execute( s, true );
