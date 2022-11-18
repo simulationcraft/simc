@@ -11055,7 +11055,8 @@ std::string shaman_t::generate_bloodlust_options()
 
 std::string shaman_t::default_potion() const
 {
-  std::string elemental_potion = ( true_level >= 51 ) ? "potion_of_spectral_intellect" :
+  std::string elemental_potion = ( true_level >= 61 ) ? "elemental_potion_of_ultimate_power_3" :
+                                 ( true_level >= 51 ) ? "potion_of_spectral_intellect" :
                                  ( true_level >= 45 ) ? "potion_of_unbridled_fury" :
                                  "disabled";
 
@@ -11083,7 +11084,8 @@ std::string shaman_t::default_potion() const
 
 std::string shaman_t::default_flask() const
 {
-  std::string elemental_flask = ( true_level >= 51 ) ? "spectral_flask_of_power" :
+  std::string elemental_flask = ( true_level >= 61 ) ? "phial_of_static_empowerment_3
+                                ( true_level >= 51 ) ? "spectral_flask_of_power" :
                                 ( true_level >= 45 ) ? "greater_flask_of_endless_fathoms" :
                                 "disabled";
 
@@ -11111,7 +11113,8 @@ std::string shaman_t::default_flask() const
 
 std::string shaman_t::default_food() const
 {
-  std::string elemental_food = ( true_level >= 51 ) ? "feast_of_gluttonous_hedonism" :
+  std::string elemental_food = ( true_level >= 61 ) ? "fated_fortune_cookie" :
+                               ( true_level >= 51 ) ? "feast_of_gluttonous_hedonism" :
                                ( true_level >= 45 ) ? "mechdowels_big_mech" :
                                "disabled";
 
@@ -11139,7 +11142,8 @@ std::string shaman_t::default_food() const
 
 std::string shaman_t::default_rune() const
 {
-  return ( true_level >= 60 ) ? "veiled" :
+  return ( true_level >= 61 ) ? "draconic" :
+         ( true_level >= 60 ) ? "veiled" :
          ( true_level >= 50 ) ? "battle_scarred" :
          ( true_level >= 45 ) ? "defiled" :
          ( true_level >= 40 ) ? "hyper" :
