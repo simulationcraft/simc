@@ -2724,7 +2724,6 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=119452)   : Apply Player/Pet Aura (202) | Dummy (4)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Radius: 100 yards | Target: Self (1)
-Hotfixed         : Base Value (8 -> 6)
 #2 (id=326363)   : Apply Player/Pet Aura (202) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Radius: 100 yards | Target: Self (1)
 Description      : All single-target damage done by you and your minions grants you and your pet shadowy shields that absorb $s1% of the damage dealt$?s219272[][ for $108366d], up to $?s219272[$219272s2][$s2]% of maximum health.
@@ -2773,7 +2772,6 @@ Description      : $108446s1% of all damage you take is taken by your demon pet 
 While Grimoire of Sacrifice is active, your Stamina is increased by $108446s4%.]
 
 Name             : Dark Pact (id=108416) [Spell Family (5)] 
-Hotfixed         : Variables
 Talent Entry     : Generic [tree=class, row=6, col=1, max_rank=1, req_points=8]
 Class            : Warlock
 School           : Physical
@@ -2799,7 +2797,6 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=728489)   : Dummy (3)
                    Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (250 -> 200)
 #4 (id=817750)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 5.00000 | PvP Coefficient: 1.00000
 Description      : Sacrifices $s2% of your current health to shield you for $s3% of the sacrificed health plus an additional $<points> for $d. Usable while suffering from control impairing effects.
@@ -2833,7 +2830,6 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | Value Multiplier: 1 | PvP Coefficient: 1.00000 | Misc Value: 127 | Radius: 100 yards | Target: Self (1)
 #4 (id=1041014)  : None (0)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
-Hotfixed         : NEW EFFECT
 Description      : $@spelldesc108415
 Tooltip          : $s1% of all damage taken is split with the Warlock's summoned demon.  
 The Warlock is healed for $s2% and your demon is healed for $s3% of all absorption granted by Soul Leech.
@@ -3382,7 +3378,6 @@ Description      : $@spelldesc5782
 Tooltip          : Disoriented.
 
 Name             : Command Demon (id=119898) [Spell Family (5)] 
-Hotfixed         : Description
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -3635,7 +3630,6 @@ Attributes       : ........ ........ ........ ..x.....   ........ ........ .....
 Effects          :
 #1 (id=198369)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.13000 | PvP Coefficient: 1.00000 | Target: Unknown(25)
-Hotfixed         : PvP Coefficient (1.45 -> 1)
 Description      : $@spelldesc172
 Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
 
@@ -4143,7 +4137,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value 2: 0x4 | Target: Self (1)
 #3 (id=1039953)  : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value 2: 0x4 | Target: Self (1)
-Hotfixed         : Base Value (10 -> 5)
 Description      : $@spelldesc108503
 Tooltip          : Sacrificed your demon pet to gain its command demon ability.
 
@@ -12718,7 +12711,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1020220)  : School Damage (2): chaos
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.28600 | PvP Coefficient: 1.00000 | Radius: 0 - 6 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
-Hotfixed         : SP Coefficient (0.22 -> 0.286)
 Description      : $@spelldesc386244
 
 Name             : Tormented Soul (id=386309) [Spell Family (5), Hidden] 
@@ -12909,7 +12901,6 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1020827)  : Apply Aura (6) | Modify Max Health% (133)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Radius: 100 yards | Target: Unknown(120)
-Hotfixed         : Base Value (6 -> 5)
 Description      : Increases you and your pets' maximum health by $s1%.
 
 Name             : Desperate Pact (id=386619) [Spell Family (5), Passive, Hidden] 
@@ -13181,11 +13172,9 @@ Effects          :
                    Base Value: 333 | Scaled Value: 333 | PvP Coefficient: 1.00000
 #3 (id=1021052)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Sub Type (218 -> 4), Misc Value 2 (1869 -> 0)
 Description      : Refreshing Corruption, Agony, Unstable Affliction, or Siphon Life with less than ${$s1/1000} seconds remaining will deal ${$386760s1*(1+$s3/100)} Shadow damage and has a ${$s2/100}.2% chance to grant you a Soul Shard.
 
 Name             : Pandemic Invocation (id=386760) [Spell Family (5)] 
-Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -13523,7 +13512,6 @@ For the next $d, casting Drain Life will cause you to also Drain Life from any e
 Tooltip          : Suffering $s2 Nature damage every $t2 sec.
 
 Name             : Dark Harvest (id=387016) [Spell Family (5), Passive] 
-Hotfixed         : Description
 Talent Entry     : Affliction [tree=spec, row=10, col=4, max_rank=1, req_points=20]
 Class            : Warlock
 School           : Physical
@@ -13561,10 +13549,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1021526)  : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 2.5 | Scaled Value: 2.5 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (5 -> 2.5)
 #2 (id=1021527)  : Apply Aura (6) | Modify Critical Strike% (290)
                    Base Value: 2.5 | Scaled Value: 2.5 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (5 -> 2.5)
 Description      : $@spelldesc387016
 Tooltip          : Haste increased by ${$W1}.1%.
 Critical strike chance increased by ${$W2}.1%.
@@ -15884,7 +15870,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1023550)  : School Damage (2): shadowflame
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.11375 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (0.0875 -> 0.11375)
 Description      : Blasts the enemy target with a bolt of fel magic, causing $s1 Shadowflame damage. 
 
 Name             : Drain Soul (id=388667) [Spell Family (5), Passive] 
@@ -15975,7 +15960,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1025475)  : School Damage (2): shadowflame
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.13000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (0.1 -> 0.13)
 Description      : Unleashes a powerful blast of fel magic at the enemy target, dealing $s1 Shadowflame damage.
 
 Name             : Resolute Barrier (id=389359) [Spell Family (5), Passive, Hidden] 
@@ -16057,7 +16041,6 @@ Effects          :
 #3 (id=1030612)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 1985 (Label) | Target: Self (1)
                    Affected Spells (Label): Grimoire of Sacrifice (196099)
-Hotfixed         : Base Value (5 -> 3)
 Description      : When your health drops below $s1%, the percentage of damage shared via your Soul Link is increased by an additional $s2%. $?a137044[][
 
 While Grimoire of Sacrifice is active, your Stamina is increased by $s3%.]

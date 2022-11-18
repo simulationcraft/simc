@@ -367,6 +367,7 @@ Description      : Deals $s1 Holy Damage to enemies within $A1.
 Heals $s2 to allies within $A1. 
 
 Name             : Quell (id=351338) [Spell Family (224)] 
+Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=4, col=1, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Physical
@@ -378,7 +379,7 @@ Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect
 Mechanic         : Interrupt
 Affecting spells : Imposing Presence (371016 effect#1)
 Family Flags     : 33
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -386,7 +387,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x..x.... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Always Hit (114), Taps immediately (215), Allow Class Ability Procs (416), Interrupts Current Cast (419)
+                 : Not Shapeshifted (16), Always Hit (114), Taps immediately (215), Allow Class Ability Procs (416), Interrupts Current Cast (419)
 Effects          :
 #1 (id=881542)   : Interrupt Cast (68)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Interrupt | Target: Enemy (6)
@@ -483,6 +484,7 @@ Description      : $@spelldesc358385
 Tooltip          : Rooted.
 
 Name             : Emerald Blossom (desc=Green) (id=355913) [Spell Family (224)] 
+Hotfixed         : Attributes
 Class            : Evoker
 School           : Nature
 Spell Type       : None
@@ -497,7 +499,7 @@ Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect
                  : 1466: Lush Growth (375561 effect#1), Lush Growth (375561 effect#2)
 Affecting spells : Preservation Evoker (356810 effect#13), Emerald Blossom (365261 effect#1), Improved Emerald Blossom (365262 effect#1), Essence Burst (369299 effects: #1, #2)
 Family Flags     : 3, 10
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -505,7 +507,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416)
+                 : Not Shapeshifted (16), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=889389)   : Create Area Trigger (179)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 23318 | Target: Unknown(132)
@@ -541,7 +543,7 @@ Effects          :
 Description      : $@spelldesc355913
 
 Name             : Dream Breath (desc=Green) (id=355936) [Spell Family (224)] 
-Hotfixed         : GCD (0 -> 500)
+Hotfixed         : Attributes
 Talent Entry     : Preservation [tree=spec, row=2, col=1, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Nature
@@ -554,15 +556,15 @@ Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect
                  : 1466: Lush Growth (375561 effect#1), Lush Growth (375561 effect#2)
 Affecting spells : Temporal Compression (362877 effect#1), Tip the Scales (370553 effects: #1, #2), Imminent Destruction (370781 effect#1), Flow State (390148 effect#10)
 Family Flags     : 25
-Attributes       : ........ ........ ........ ........   ......x. ........ ........ ....xx.. 
+Attributes       : ........ ........ x....... ........   ......x. ........ ........ ....xx.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ..x..... ...x.... 
+                 : ........ ........ ........ ........   x....... ........ ........ ...x.... 
                  : ........ ........ ........ ........   
-                 : Is Self Channelled (38), No Aura Icon (60), Name in Channel Bar (61), Force Display Castbar (155), Haste Affects Duration (273), Allow Class Ability Procs (416), Do Not Enforce Shapeshift Requirements (434), Do Not Allow "Disable Movement Interrupt" (443)
+                 : Not Shapeshifted (16), Is Self Channelled (38), No Aura Icon (60), Name in Channel Bar (61), Force Display Castbar (155), Haste Affects Duration (273), Allow Class Ability Procs (416), Do Not Allow "Disable Movement Interrupt" (443)
 Effects          :
 #1 (id=889431)   : Apply Aura (6) | Unknown(395)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 24231 | Target: Self (1)
@@ -635,12 +637,10 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Deep Breath (353759), Disintegrate (356995), Fire Breath (357209), Pyre (357212), Eternity Surge (359077), Living Flame (361500), Azure Strike (362969), Unravel (368432), Firestorm (369374), Shattering Star (370452)
                    Family Flags: 0
-Hotfixed         : Base Value (0 -> 5)
 #2 (id=910332)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Deep Breath (353759), Disintegrate (356995), Fire Breath (357209), Pyre (357212), Eternity Surge (359077), Living Flame (361500), Azure Strike (362969), Unravel (368432), Firestorm (369374), Shattering Star (370452)
                    Family Flags: 0
-Hotfixed         : Base Value (0 -> 5)
 #3 (id=910333)   : Apply Aura (6) | Modify Mana Pool% (419)
                    Base Value: -80 | Scaled Value: -80 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=910446)   : Apply Aura (6) | Modify Mana Regen% (379)
@@ -655,10 +655,8 @@ Hotfixed         : Base Value (0 -> 5)
                    Family Flags: 1
 #7 (id=1032442)  : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (0 -> 5)
 #8 (id=1032443)  : Apply Aura (6) | Unknown(531)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (0 -> 5)
 #9 (id=1034033)  : Apply Aura (6) | Unknown(188)
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Target: Self (1)
 
@@ -746,33 +744,27 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Deep Breath (353759), Disintegrate (356995), Fire Breath (357209), Pyre (357212), Eternity Surge (359077), Living Flame (361500), Azure Strike (362969), Unravel (368432), Firestorm (369374), Shattering Star (370452)
                    Family Flags: 0
-Hotfixed         : NEW EFFECT
 #5 (id=1041656)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Deep Breath (353759), Disintegrate (356995), Fire Breath (357209), Pyre (357212), Eternity Surge (359077), Living Flame (361500), Azure Strike (362969), Unravel (368432), Firestorm (369374), Shattering Star (370452)
                    Family Flags: 0
-Hotfixed         : NEW EFFECT
 #6 (id=1041657)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Emerald Blossom (355916), Dream Breath (355941), Verdant Embrace (361195), Fluttering Seedlings (361361), Living Flame (361509), Dream Flight (363502), Echo (364343), Reversion (366155), Spiritbloom (367230), Lifebind (373267), Panacea (387763)
                    Family Flags: 1
-Hotfixed         : NEW EFFECT
 #7 (id=1041658)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Emerald Blossom (355916), Dream Breath (355941), Verdant Embrace (361195), Fluttering Seedlings (361361), Living Flame (361509), Dream Flight (363502), Echo (364343), Reversion (366155), Spiritbloom (367230), Lifebind (373267), Panacea (387763)
                    Family Flags: 1
-Hotfixed         : NEW EFFECT
 #8 (id=1041659)  : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 #9 (id=1041660)  : Apply Aura (6) | Unknown(531)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 #10 (id=1041661)  : Apply Aura (6) | Unknown(188)
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 
 Name             : Disintegrate (desc=Blue) (id=356995) [Spell Family (224)] 
+Hotfixed         : Attributes
 Class            : Evoker
 School           : Spellfrost
 Spell Type       : Magic
@@ -783,7 +775,7 @@ Duration         : 3 seconds
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11)
 Affecting spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Initial Evoker (356816 effects: #4, #5), Hover (358267 effect#5), Essence Burst (359618 effect#1), Essence Burst (369299 effects: #1, #2), Natural Convergence (369913 effects: #1, #2), Shattering Star (370452 effect#3), Spellweaver's Dominance (370845 effect#1), Energy Loop (372233 effect#2), Arcane Intensity (375618 effect#1), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1)
 Family Flags     : 0, 2, 3, 6, 38
-Attributes       : ........ ........ ........ ........   ..x..... ......x. ........ .....x.. 
+Attributes       : ........ ........ x....... ........   ..x..... ......x. ........ .....x.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...x.. ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -791,7 +783,7 @@ Attributes       : ........ ........ ........ ........   ..x..... ......x. .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Is Channelled (34), Track Target in Channel (46), Name in Channel Bar (61), Extra Initial Period (169), Spell Haste Affects Periodic (173), No Caster Aura Icon (187), Periodic Can Crit (265), Aura Points On Client (268), Haste Affects Duration (273)
+                 : Not Shapeshifted (16), Is Channelled (34), Track Target in Channel (46), Name in Channel Bar (61), Extra Initial Period (169), Spell Haste Affects Periodic (173), No Caster Aura Icon (187), Periodic Can Crit (265), Aura Points On Client (268), Haste Affects Duration (273)
 Effects          :
 #1 (id=891202)   : Apply Aura (6) | Periodic Damage (3): spellfrost every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.76000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
@@ -831,7 +823,7 @@ Healing a target under the effects of Time Dilation clears a portion of the dela
 Tooltip          : $w1% of damage is being delayed and dealt to you over time.
 
 Name             : Fire Breath (desc=Red) (id=357208) [Spell Family (224)] 
-Hotfixed         : GCD (0 -> 500)
+Hotfixed         : Attributes
 Class            : Evoker
 School           : Fire
 Spell Type       : None
@@ -843,7 +835,7 @@ Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect
                  : 1464: Lifeforce Mender (376179 effect#2)
 Affecting spells : Temporal Compression (362877 effect#1), Tip the Scales (370553 effects: #1, #2), Imminent Destruction (370781 effect#1), Flow State (390148 effect#10)
 Family Flags     : 15
-Attributes       : ........ ........ ........ ........   ......x. ........ ........ ....xx.. 
+Attributes       : ........ ........ x....... ........   ......x. ........ ........ ....xx.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -851,7 +843,7 @@ Attributes       : ........ ........ ........ ........   ......x. ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   
-                 : Is Self Channelled (38), No Aura Icon (60), Name in Channel Bar (61), Force Display Castbar (155), Not In Spellbook Until Learned (269), Haste Affects Duration (273), Do Not Allow "Disable Movement Interrupt" (443)
+                 : Not Shapeshifted (16), Is Self Channelled (38), No Aura Icon (60), Name in Channel Bar (61), Force Display Castbar (155), Not In Spellbook Until Learned (269), Haste Affects Duration (273), Do Not Allow "Disable Movement Interrupt" (443)
 Effects          :
 #1 (id=891596)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -913,6 +905,7 @@ Description      : $@spelldesc357208
 Tooltip          : Burning for $w2 Fire damage every $t2 sec.$?$W3=1[ Silenced.][]
 
 Name             : Deep Breath (desc=Black) (id=357210) [Spell Family (224)] 
+Hotfixed         : Attributes
 Class            : Evoker
 School           : Firestorm
 Spell Type       : Magic
@@ -923,7 +916,7 @@ Cooldown         : 120 seconds
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11)
 Affecting spells : Onyx Legacy (386348 effect#1)
 Family Flags     : 9
-Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
+Attributes       : ........ ........ x....... .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ .x...... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -931,7 +924,7 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
                  : ........ .....x.. ........ ........   ........ ........ ......x. ........ 
                  : ........ ...x.... ........ ........   ........ ........ ........ ........ 
                  : ........ ..x..... ........ ........   
-                 : No Aura Cancel (31), Always Line of Sight (185), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Cheap Missile AOI (374), Face Destination (395)
+                 : Not Shapeshifted (16), No Aura Cancel (31), Always Line of Sight (185), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Cheap Missile AOI (374), Face Destination (395)
 Effects          :
 #1 (id=891598)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 6 yards | Target: Unknown(138)
@@ -949,6 +942,7 @@ Removes all root effects. You are immune to movement impairing and loss of contr
 Tooltip          : Spewing molten cinders. Immune to crowd control.
 
 Name             : Pyre (desc=Red) (id=357211) [Spell Family (224)] 
+Hotfixed         : Attributes
 Talent Entry     : Devastation [tree=spec, row=1, col=1, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Fire
@@ -962,7 +956,7 @@ Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect
 Affecting spells : Essence Burst (359618 effect#1), Dense Energy (370962 effect#1)
 Triggered by     : Charged Blast (370454)
 Family Flags     : 3, 5, 23
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -970,7 +964,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416)
+                 : Not Shapeshifted (16), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=891601)   : Trigger Missiles (32)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 393568 | Target: Enemy (6)
@@ -1000,6 +994,7 @@ Effects          :
 Description      : $@spelldesc357211
 
 Name             : Hover (id=358267) [Spell Family (224)] 
+Hotfixed         : Proc Stacks (1 -> 0), Attributes
 Class            : Evoker
 School           : Physical
 Spell Type       : None
@@ -1008,21 +1003,20 @@ Cooldown         : 1 seconds
 Charges          : 1 (35 seconds cooldown)
 Category         : 1948: Aerial Mastery (365933 effect#1), Blessing of the Bronze (381748 effect#1), Flow State (390148 effect#3)
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11)
-Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : .....x.. .x...x.. .x.x.... ........ 
                  : Yellow Melee Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
 Affecting spells : Extended Flight (375517 effect#1)
 Family Flags     : 13
-Attributes       : ........ ........ ........ ........   ........ .......x ........ ........ 
+Attributes       : ........ ........ x....... ........   ........ .......x ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   .......x ........ ........ ........ 
+                 : ........ ........ ........ ........   .......x ....x... ........ ........ 
                  : ........ ........ ........ ........   
-                 : Immunity Purges Effect (47), Can Proc From Procs (122), Vehicle Immunity Category (218), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423)
+                 : Not Shapeshifted (16), Immunity Purges Effect (47), Can Proc From Procs (122), Vehicle Immunity Category (218), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428)
 Effects          :
 #1 (id=893446)   : Apply Aura (6) | Unknown(235)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -1077,6 +1071,7 @@ Effects          :
 Description      : $@spelldesc358267
 
 Name             : Landslide (desc=Black) (id=358385) [Spell Family (224)] 
+Hotfixed         : Attributes
 Talent Entry     : Generic [free=(Devastation), tree=class, row=1, col=1, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Firestorm
@@ -1088,7 +1083,7 @@ Cooldown         : 90 seconds
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11)
 Affecting spells : Forger of Mountains (375528 effect#1)
 Family Flags     : 40
-Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
+Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ......x. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1096,14 +1091,14 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ..x..... ........ ........   
-                 : No Redirection (35), No Reflection (39), No Initial Threat (86), Always Show Ground Texture (190), Allow Class Ability Procs (416)
+                 : Not Shapeshifted (16), No Redirection (35), No Reflection (39), No Initial Threat (86), Always Show Ground Texture (190), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=893650)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 6 yards | Target: Unknown(87)
 Description      : Conjure a path of shifting stone towards the target location, rooting enemies for $355689d. Damage may cancel the effect.
 
 Name             : Eternity Surge (desc=Blue) (id=359073) [Spell Family (224)] 
-Hotfixed         : GCD (0 -> 500), Attributes
+Hotfixed         : Attributes
 Talent Entry     : Devastation [tree=spec, row=3, col=3, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Spellfrost
@@ -1116,7 +1111,7 @@ Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect
 Affecting spells : Tip the Scales (370553 effects: #1, #2), Imminent Destruction (370781 effect#1)
 Triggered by     : Causality (375778)
 Family Flags     : 16
-Attributes       : ........ ........ ........ .....x..   ..x..... ..x..... ........ .x..xx.. 
+Attributes       : ........ ........ x....... .....x..   ..x..... ..x..... ........ .x..xx.. 
                  : ........ x....... ........ ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
                  : ........ ..x..... ........ ........   ........ ........ ........ ........ 
@@ -1124,7 +1119,7 @@ Attributes       : ........ ........ ........ .....x..   ..x..... ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   
-                 : No Immunities (29), Is Channelled (34), No Threat (42), Aura Stays After Combat (57), No Aura Icon (60), Name in Channel Bar (61), Include In Advanced Combat Log (72), Always Hit (114), Force Display Castbar (155), No Aura Log (202), Haste Affects Duration (273), Do Not Allow "Disable Movement Interrupt" (443)
+                 : Not Shapeshifted (16), No Immunities (29), Is Channelled (34), No Threat (42), Aura Stays After Combat (57), No Aura Icon (60), Name in Channel Bar (61), Include In Advanced Combat Log (72), Always Hit (114), Force Display Castbar (155), No Aura Log (202), Haste Affects Duration (273), Do Not Allow "Disable Movement Interrupt" (443)
 Effects          :
 #1 (id=894877)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
@@ -1261,6 +1256,7 @@ Effects          :
 Description      : Emerald Blossom sends out $s1 flying $Lseedling:seedlings; when it bursts, healing allies up to $s2 yds away for $361361s1.
 
 Name             : Dream Flight (desc=Green) (id=359816) [Spell Family (224)] 
+Hotfixed         : Attributes
 Talent Entry     : Preservation [tree=spec, row=10, col=1, max_rank=1, req_points=20]
 Class            : Evoker
 School           : Nature
@@ -1273,15 +1269,15 @@ Cooldown         : 120 seconds
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11)
                  : 1466: Lush Growth (375561 effect#1), Lush Growth (375561 effect#2)
 Family Flags     : 37
-Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
+Attributes       : ........ ........ x....... .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ......x. ........ 
                  : ........ .....x.. ........ ........   ........ ........ ......x. ........ 
-                 : ........ ........ ........ ........   ........ ........ ..x..... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ..x..... ........ ........   
-                 : No Aura Cancel (31), Aura Points On Client (268), Spellcast Override In Spellbook (310), Reset cooldown upon ending an encounter (333), Cheap Missile AOI (374), Do Not Enforce Shapeshift Requirements (434)
+                 : Not Shapeshifted (16), No Aura Cancel (31), Aura Points On Client (268), Spellcast Override In Spellbook (310), Reset cooldown upon ending an encounter (333), Cheap Missile AOI (374)
 Effects          :
 #1 (id=896508)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 6 yards | Target: Unknown(87)
@@ -1299,6 +1295,7 @@ Removes all root effects. You are immune to movement impairing and loss of contr
 Tooltip          : Releasing healing breath. Immune to crowd control.
 
 Name             : Sleep Walk (desc=Green) (id=360806) [Spell Family (224)] 
+Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=5, col=5, max_rank=1, req_points=8]
 Class            : Evoker
 School           : Nature
@@ -1318,7 +1315,7 @@ Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
 Affecting spells : Hover (358267 effect#5)
 Family Flags     : 2, 26
-Attributes       : ........ ........ ..x..... ........   ........ ..x..... ..x..... ........ 
+Attributes       : ........ ........ x.x..... ........   ........ ..x..... ..x..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -1326,7 +1323,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... ..x..
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x......x ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Do Not Sheath (18), No Threat (42), Prevents Anim (50), Can Proc From Procs (122), Bouncy Chain Missiles (146), Can Proc From Suppressed Target Procs (254), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
+                 : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Prevents Anim (50), Can Proc From Procs (122), Bouncy Chain Missiles (146), Can Proc From Suppressed Target Procs (254), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=898166)   : Apply Aura (6) | Fear (7)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Misc Value: 4 | Mechanic: Sleep | Chain Targets: 1 | Target: Enemy (6)
@@ -1336,6 +1333,7 @@ Description      : Disorient an enemy for $d, causing them to sleep walk towards
 Tooltip          : Asleep.
 
 Name             : Naturalize (desc=Green) (id=360823) [Spell Family (224)] 
+Hotfixed         : Attributes
 Replaces         : Expunge (id=365585)
 Class            : Preservation Evoker
 School           : Nature
@@ -1348,15 +1346,15 @@ Cooldown         : 8 seconds
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11)
                  : 1466: Lush Growth (375561 effect#1), Lush Growth (375561 effect#2)
 Family Flags     : 53
-Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
-                 : ........ ........ ...x.... ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Do Not Sheath (18), Allow While Not Shapeshifted (caster form) (83), Allow Class Ability Procs (416)
+                 : Not Shapeshifted (16), Do Not Sheath (18), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=898186)   : Dispel (38)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Friend (21)
@@ -1365,6 +1363,7 @@ Effects          :
 Description      : Cleanses harmful effects from the target, removing all Magic and Poison effects.
 
 Name             : Verdant Embrace (desc=Green) (id=360995) [Spell Family (224)] 
+Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=2, col=3, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Nature
@@ -1379,7 +1378,7 @@ Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect
 Category Cooldown: 0.5 seconds
 Affecting spells : Preservation Evoker (356810 effects: #6, #9, #13)
 Family Flags     : 24
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ....x... 
+Attributes       : ........ ........ x....... ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1387,7 +1386,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : No Aura Icon (60), Aura Points On Client (268), Allow Class Ability Procs (416)
+                 : Not Shapeshifted (16), No Aura Icon (60), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=898467)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friend (21)
@@ -1420,7 +1419,6 @@ Description      : Brings all dead party members back to life with $s1% health a
 
 
 Name             : Verdant Embrace (id=361195) [Spell Family (224)] 
-Hotfixed         : Attributes
 Class            : Evoker
 School           : Nature
 Spell Type       : None
@@ -1470,6 +1468,7 @@ Description      : Regenerate an ally for the next $d, healing them for $s1 ever
 Tooltip          : Regenerating $s1 every $t1 sec.
 
 Name             : Living Flame (desc=Red) (id=361469) [Spell Family (224)] 
+Hotfixed         : Attributes
 Class            : Evoker
 School           : Fire
 Spell Type       : Magic
@@ -1483,7 +1482,7 @@ Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect
                  : 1464: Lifeforce Mender (376179 effect#2)
 Affecting spells : Preservation Evoker (356810 effect#13), Hover (358267 effect#5), Engulfing Blaze (370837 effects: #1, #2), Enkindled (375554 effects: #1, #2), Ancient Flame (375583 effect#1), Burnout (375802 effect#1), Inner Radiance (386405 effect#1), Lifespark (394552 effect#1)
 Family Flags     : 2, 7, 52
-Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
+Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1491,7 +1490,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : No Threat (42), Heal Prediction (280), Allow Class Ability Procs (416)
+                 : Not Shapeshifted (16), No Threat (42), Heal Prediction (280), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=899400)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Unknown(25)
@@ -1612,6 +1611,7 @@ Description      : $@spelldesc362874
 Tooltip          : Empower spells reach maximum level in $s1% less time.
 
 Name             : Azure Strike (desc=Blue) (id=362969) [Spell Family (224)] 
+Hotfixed         : Attributes
 Class            : Evoker
 School           : Spellfrost
 Spell Type       : Magic
@@ -1621,7 +1621,7 @@ GCD              : 1.5 seconds
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11)
 Affecting spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Initial Evoker (356816 effects: #4, #5), Protracted Talons (369909 effect#1), Shattering Star (370452 effect#3), Spellweaver's Dominance (370845 effect#1), Honed Aggression (371038 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1)
 Family Flags     : 0, 12
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1629,7 +1629,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ....x... ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Aura Points On Client (268), Use Spell Base Level For Scaling (332), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416)
+                 : Not Shapeshifted (16), Aura Points On Client (268), Use Spell Base Level For Scaling (332), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=902036)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Enemy (6)
@@ -1706,6 +1706,7 @@ Effects          :
 Description      : Healing done to allies is increased by $s1% while their health percentage is lower than your own.
 
 Name             : Rewind (desc=Bronze) (id=363534) [Spell Family (224)] 
+Hotfixed         : Attributes
 Talent Entry     : Preservation [tree=spec, row=3, col=3, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Arcane
@@ -1719,7 +1720,7 @@ Category         : 2035: Erasure (376210 effect#1), Temporal Artificer (381922 e
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11)
                  : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
 Family Flags     : 29
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...x.. ........ ........ 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
@@ -1727,7 +1728,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ .....x.. ........ ........   ...x.... ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Ignore Line of Sight (66), Can't Crit (93), Extra Initial Period (169), Spell Haste Affects Periodic (173), Ignore Healing Modifiers (219), Aura Points On Client (268), Haste Affects Duration (273), Reset cooldown upon ending an encounter (333), Do Not Log on Learn (355), Allow Class Ability Procs (416)
+                 : Not Shapeshifted (16), Ignore Line of Sight (66), Can't Crit (93), Extra Initial Period (169), Spell Haste Affects Periodic (173), Ignore Healing Modifiers (219), Aura Points On Client (268), Haste Affects Duration (273), Reset cooldown upon ending an encounter (333), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=902963)   : Apply Aura (6) | Periodic Heal (8): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.40000 | PvP Coefficient: 1.00000 | Radius: 0 - 40 yards | Target: At Caster (22) -> AOE friendly (30)
@@ -1744,6 +1745,7 @@ Tooltip          : Rewinding the last $s2 sec of damage.
 Variables        : $min=${$SP*0.4*($d/$t1)}
 
 Name             : Obsidian Scales (desc=Black) (id=363916) [Spell Family (224)] 
+Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=1, col=2, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Firestorm
@@ -1756,7 +1758,7 @@ Category         : 2100: Symbol of Hope (265144 effect#4), Obsidian Bulwark (375
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11)
                  : 1284: Symbol of Hope (265144 effect#2)
 Family Flags     : 39
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1764,7 +1766,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x......x ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
+                 : Not Shapeshifted (16), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=903598)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
@@ -1780,6 +1782,7 @@ Tooltip          : Damage taken reduced by $w1%.$?$w2=1[
 Immune to interrupt and silence effects.][]
 
 Name             : Blessing of the Bronze (desc=Bronze) (id=364342) [Spell Family (224)] 
+Hotfixed         : Attributes
 Class            : Evoker
 School           : Arcane
 Spell Type       : Magic
@@ -1789,7 +1792,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 15 seconds
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11)
-Attributes       : ........ ........ ........ ........   ........ ..x..... .x...... ........ 
+Attributes       : ........ ........ x....... ........   ........ ..x..... .x...... ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ x....... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1797,7 +1800,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .x...
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : No Threat (42), No AutoCast (AI) (49), Include In Advanced Combat Log (72), Not On Player Controlled NPC (168), Aura Points On Client (268), Newest Exclusive Complete (362), Allow Class Ability Procs (416)
+                 : Not Shapeshifted (16), No Threat (42), No AutoCast (AI) (49), Include In Advanced Combat Log (72), Not On Player Controlled NPC (168), Aura Points On Client (268), Newest Exclusive Complete (362), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=904255)   : Trigger Spell (64): Blessing of the Bronze
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 381732 | Target: Self (1)
@@ -1828,6 +1831,7 @@ Effects          :
 Description      : Weave the threads of time, reducing the cooldown of a major movement ability for all party and raid members by $381732s1% for $381732d.
 
 Name             : Echo (desc=Bronze) (id=364343) [Spell Family (224)] 
+Hotfixed         : Attributes
 Talent Entry     : Preservation [tree=spec, row=1, col=1, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Arcane
@@ -1840,7 +1844,7 @@ Duration         : 15 seconds
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11)
 Affecting spells : Devastation Evoker (356809 effects: #5, #6), Preservation Evoker (356810 effects: #1, #2), Initial Evoker (356816 effects: #6, #7), Hover (358267 effect#5), Essence Burst (369299 effects: #1, #2), Time Lord (372527 effect#1), Timeless Magic (376240 effect#1), Attuned to the Dream (376930 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Ouroboros (387350 effect#1)
 Family Flags     : 1, 2, 3, 11, 38
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1848,7 +1852,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Aura Expires Offline (130), Aura Points On Client (268), Heal Prediction (280), Allow Class Ability Procs (416)
+                 : Not Shapeshifted (16), Aura Expires Offline (130), Aura Points On Client (268), Heal Prediction (280), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=904256)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.20000 | PvP Coefficient: 1.00000 | Target: Friend (21)
@@ -1903,6 +1907,7 @@ Effects          :
 Description      : Emerald Blossom costs $s2 Essence, but no longer has a cooldown.
 
 Name             : Expunge (desc=Green) (id=365585) [Spell Family (224)] 
+Hotfixed         : Attributes
 Talent Entry     : Generic [free=(Preservation), tree=class, row=1, col=3, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Nature
@@ -1916,15 +1921,15 @@ Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect
                  : 1466: Lush Growth (375561 effect#1), Lush Growth (375561 effect#2)
 Affecting spells : Preservation Evoker (356810 effect#13)
 Family Flags     : 57
-Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
-                 : ........ ........ ...x.... ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Do Not Sheath (18), Allow While Not Shapeshifted (caster form) (83), Allow Class Ability Procs (416)
+                 : Not Shapeshifted (16), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=906615)   : Dispel (38)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 4 | Target: Friend (21)
@@ -1972,6 +1977,7 @@ Effects          :
 Description      : Living Flame deals $361500o2 damage over $361500d to enemies, or restores $361509o2 health to allies over $361509d. Stacks $361509u times.
 
 Name             : Reversion (desc=Bronze) (id=366155) [Spell Family (224)] 
+Hotfixed         : Attributes
 Talent Entry     : Preservation [tree=spec, row=2, col=2, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Arcane
@@ -1989,7 +1995,7 @@ Proc Flags       : ........ ........ ........ .......x
                  
 Affecting spells : Devastation Evoker (356809 effects: #5, #6), Preservation Evoker (356810 effects: #1, #2), Initial Evoker (356816 effects: #6, #7), Grace Period (376239 effect#1), Timeless Magic (376240 effect#1), Attuned to the Dream (376930 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Time Bender (394544 effect#1)
 Family Flags     : 1, 8
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1997,7 +2003,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416)
+                 : Not Shapeshifted (16), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=907578)   : Apply Aura (6) | Periodic Heal (8): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.34200 | PvP Coefficient: 1.00000 | Target: Friend (21)
@@ -2027,7 +2033,7 @@ Effects          :
 Description      : Increases your Intellect by $s1% while wearing only Mail armor.
 
 Name             : Spiritbloom (desc=Green) (id=367226) [Spell Family (224)] 
-Hotfixed         : GCD (0 -> 500), Attributes
+Hotfixed         : Attributes
 Talent Entry     : Preservation [tree=spec, row=4, col=1, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Nature
@@ -2041,15 +2047,15 @@ Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect
                  : 1466: Lush Growth (375561 effect#1), Lush Growth (375561 effect#2)
 Affecting spells : Temporal Compression (362877 effect#1), Tip the Scales (370553 effects: #1, #2), Imminent Destruction (370781 effect#1), Spiritual Clarity (376150 effect#1), Flow State (390148 effect#10)
 Family Flags     : 30
-Attributes       : ........ ........ ........ .....x..   ..x...x. ..x..... ........ .x..xx.. 
+Attributes       : ........ ........ x....... .....x..   ..x...x. ..x..... ........ .x..xx.. 
                  : ........ x....... ........ ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
                  : ........ ..x..... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ..x..... ...x.... 
+                 : ........ ........ ........ ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   
-                 : No Immunities (29), Is Channelled (34), Is Self Channelled (38), No Threat (42), Aura Stays After Combat (57), No Aura Icon (60), Name in Channel Bar (61), Include In Advanced Combat Log (72), Always Hit (114), Force Display Castbar (155), No Aura Log (202), Haste Affects Duration (273), Do Not Enforce Shapeshift Requirements (434), Do Not Allow "Disable Movement Interrupt" (443)
+                 : Not Shapeshifted (16), No Immunities (29), Is Channelled (34), Is Self Channelled (38), No Threat (42), Aura Stays After Combat (57), No Aura Icon (60), Name in Channel Bar (61), Include In Advanced Combat Log (72), Always Hit (114), Force Display Castbar (155), No Aura Log (202), Haste Affects Duration (273), Do Not Allow "Disable Movement Interrupt" (443)
 Effects          :
 #1 (id=910748)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friend (21)
@@ -2141,6 +2147,7 @@ Effects          :
 Description      : $@spelldesc368412
 
 Name             : Unravel (desc=Blue) (id=368432) [Spell Family (224)] 
+Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=8, col=1, max_rank=1, req_points=20]
 Class            : Evoker
 School           : Spellfrost
@@ -2153,7 +2160,7 @@ Cooldown         : 9 seconds
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11)
 Affecting spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Initial Evoker (356816 effects: #4, #5), Shattering Star (370452 effect#3), Spellweaver's Dominance (370845 effect#1), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1)
 Family Flags     : 0, 28
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2161,7 +2168,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Allow Class Ability Procs (416)
+                 : Not Shapeshifted (16), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=912826)   : School Damage (2): spellfrost
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 5.00000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
@@ -2209,6 +2216,7 @@ Effects          :
 Description      : Wing Buffet's cooldown is reduced by ${$s1/-1000} sec.
 
 Name             : Firestorm (desc=Red) (id=368847) [Spell Family (224)] 
+Hotfixed         : Attributes
 Talent Entry     : Devastation [tree=spec, row=6, col=1, max_rank=1, req_points=8]
 Class            : Evoker
 School           : Fire
@@ -2223,7 +2231,7 @@ Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect
 Affecting spells : Hover (358267 effect#5), Snapfire (370818 effect#1)
 Triggered by     : Snapfire (370818)
 Family Flags     : 2, 32
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2231,7 +2239,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Allow Class Ability Procs (416)
+                 : Not Shapeshifted (16), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=913562)   : Trigger Missiles (32)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 369372 | Radius: 8 yards | Target: Unknown(87)
@@ -2573,6 +2581,7 @@ Effects          :
 Description      : Gain a $s1% chance for one of your Fluttering Seedlings to grow into a new Emerald Blossom.
 
 Name             : Shattering Star (desc=Blue) (id=370452) [Spell Family (224)] 
+Hotfixed         : Attributes
 Talent Entry     : Devastation [tree=spec, row=7, col=4, max_rank=1, req_points=8]
 Class            : Evoker
 School           : Spellfrost
@@ -2585,7 +2594,7 @@ Cooldown         : 15 seconds
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11)
 Affecting spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Initial Evoker (356816 effects: #4, #5), Essence Burst (359618 effect#1), Spellweaver's Dominance (370845 effect#1), Eternity's Span (375757 effect#2), Focusing Iris (386336 effect#1), Arcane Vigor (386342 effect#1), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1)
 Family Flags     : 0, 20
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2593,7 +2602,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ....x... ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x......x ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Aura Points On Client (268), Use Spell Base Level For Scaling (332), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
+                 : Not Shapeshifted (16), Aura Points On Client (268), Use Spell Base Level For Scaling (332), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=981816)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Enemy (6)
@@ -2660,6 +2669,7 @@ Effects          :
 Description      : Your Blue damage increases the damage of your next Pyre by $370454s1%, stacking $370454u times.
 
 Name             : Stasis (desc=Bronze) (id=370537) [Spell Family (224)] 
+Hotfixed         : Attributes
 Talent Entry     : Preservation [tree=spec, row=10, col=3, max_rank=1, req_points=20]
 Class            : Evoker
 School           : Arcane
@@ -2675,7 +2685,7 @@ Proc Chance      : 100%
 Proc Flags       : ........ ..x...x. .....x.. ........ 
                  : Generic Heal, Magic Heal, Trap Triggered
 Family Flags     : 17
-Attributes       : ........ ........ ........ .x......   ........ ..x..... ........ ........ 
+Attributes       : ........ ........ x....... .x......   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2683,7 +2693,7 @@ Attributes       : ........ ........ ........ .x......   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x......x ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Cooldown On Event (25), No Threat (42), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
+                 : Not Shapeshifted (16), Cooldown On Event (25), No Threat (42), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=981929)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -2693,6 +2703,7 @@ Description      : Causes your next ${$s1*3} helpful spells to be duplicated and
 Tooltip          : Your next $s1 healing $Lspell:spells; will be held in a time lock.
 
 Name             : Tip the Scales (desc=Bronze) (id=370553) [Spell Family (224)] 
+Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=5, col=3, max_rank=1, req_points=8]
 Class            : Evoker
 School           : Arcane
@@ -2704,7 +2715,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ......x. x....... ........ 
                  : Magic Heal, Magic Hostile Spell
-Attributes       : ........ ........ ..x..... .x......   ........ ..x..... .x...... ........ 
+Attributes       : ........ ........ x.x..... .x......   ........ ..x..... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ xx...... ........ 
                  : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2712,7 +2723,7 @@ Attributes       : ........ ........ ..x..... .x......   ........ ..x..... .x...
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Do Not Sheath (18), Cooldown On Event (25), No Threat (42), No AutoCast (AI) (49), Suppress Caster Procs (112), Suppress Target Procs (113), Cannot Be Stolen (134), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
+                 : Not Shapeshifted (16), Do Not Sheath (18), Cooldown On Event (25), No Threat (42), No AutoCast (AI) (49), Suppress Caster Procs (112), Suppress Target Procs (113), Cannot Be Stolen (134), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=981949)   : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
@@ -2726,6 +2737,7 @@ Description      : Compress time to make your next empowered spell cast instantl
 Tooltip          : Your next empowered spell casts instantly at its maximum empower level.
 
 Name             : Rescue (id=370665) [Spell Family (224)] 
+Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=8, col=5, max_rank=1, req_points=20]
 Class            : Evoker
 School           : Physical
@@ -2735,7 +2747,7 @@ GCD              : 1.5 seconds
 Duration         : 1 seconds
 Cooldown         : 60 seconds
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11)
-Attributes       : ........ ........ ........ ..x.....   ........ ........ ...x.... ........ 
+Attributes       : ........ ........ x....... ..x.....   ........ ........ ...x.... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
@@ -2743,7 +2755,7 @@ Attributes       : ........ ........ ........ ..x.....   ........ ........ ...x.
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Aura Is Debuff (26), Exclude Caster (51), Vehicle Immunity Category (218), Aura Points On Client (268), Allow Class Ability Procs (416)
+                 : Not Shapeshifted (16), Aura Is Debuff (26), Exclude Caster (51), Vehicle Immunity Category (218), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=982113)   : Apply Aura (6) | Root (26)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Unknown(57)
@@ -3150,6 +3162,7 @@ Effects          :
 Description      : $@spelldesc369939
 
 Name             : Emerald Communion (desc=Green) (id=370960) [Spell Family (224)] 
+Hotfixed         : Attributes
 Talent Entry     : Preservation [tree=spec, row=5, col=1, max_rank=1, req_points=8]
 Class            : Evoker
 School           : Nature
@@ -3160,7 +3173,7 @@ Cooldown         : 180 seconds
 Labels           : 1466: Lush Growth (375561 effect#1), Lush Growth (375561 effect#2)
 Affecting spells : Dreamwalker (377082 effect#1)
 Family Flags     : 47
-Attributes       : ........ ........ ..x..... x.......   .....xx. ........ ..x..... .....x.. 
+Attributes       : ........ ........ x.x..... x.......   .....xx. ........ ..x..... .....x.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ...x.... .x...x.. .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
@@ -3168,7 +3181,7 @@ Attributes       : ........ ........ ..x..... x.......   .....xx. ........ ..x..
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   xx...... ........ ........ ........ 
                  : ..x..... ........ ........ ........   
-                 : Do Not Sheath (18), Allow While Mounted (24), Allow While Stealthed (37), Is Self Channelled (38), Prevents Anim (50), Name in Channel Bar (61), Allow While Stunned (163), Extra Initial Period (169), Spell Haste Affects Periodic (173), Allow While Fleeing (177), No Client Fail While Stunned, Fleeing, Confused (244), Haste Affects Duration (273), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
+                 : Not Shapeshifted (16), Do Not Sheath (18), Allow While Mounted (24), Allow While Stealthed (37), Is Self Channelled (38), Prevents Anim (50), Name in Channel Bar (61), Allow While Stunned (163), Extra Initial Period (169), Spell Haste Affects Periodic (173), Allow While Fleeing (177), No Client Fail While Stunned, Fleeing, Confused (244), Haste Affects Duration (273), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=982563)   : Apply Aura (6) | Periodic Power% Regen (21)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -3465,6 +3478,7 @@ Effects          :
 Description      : $@spelldesc371832
 
 Name             : Oppressing Roar (desc=Black) (id=372048) [Spell Family (224)] 
+Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=8, col=3, max_rank=1, req_points=20]
 Class            : Evoker
 School           : Physical
@@ -3474,7 +3488,7 @@ GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 120 seconds
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11)
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3482,7 +3496,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   x....... ..x..... ........ ........ 
                  : ........ ........ ........ ........   
-                 : Newest Exclusive Complete (362), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+                 : Not Shapeshifted (16), Newest Exclusive Complete (362), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=996464)   : Dispel (38)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 9 | Radius: 30 yards | Target: Cone Front (104)
@@ -3794,6 +3808,7 @@ Description      : $@spelldesc373834
 Tooltip          : Healing of next Dream Breath increased by $s1%, or next Living Flame by $s2%.
 
 Name             : Temporal Anomaly (desc=Bronze) (id=373861) [Spell Family (224)] 
+Hotfixed         : Attributes
 Talent Entry     : Preservation [tree=spec, row=5, col=7, max_rank=1, req_points=8]
 Class            : Evoker
 School           : Arcane
@@ -3806,7 +3821,7 @@ Cooldown         : 6 seconds
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11)
 Affecting spells : Preservation Evoker (356810 effect#9), Hover (358267 effect#5), Nozdormu's Teachings (376237 effect#1)
 Family Flags     : 2, 45
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ....x... 
+Attributes       : ........ ........ x....... ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3814,7 +3829,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : No Aura Icon (60), Spell Haste Affects Periodic (173), Haste Affects Duration (273)
+                 : Not Shapeshifted (16), No Aura Icon (60), Spell Haste Affects Periodic (173), Haste Affects Duration (273)
 Effects          :
 #1 (id=999377)   : Create Area Trigger (179)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 25294 | Target: Unknown(47)
@@ -3824,6 +3839,7 @@ Description      : Send forward a vortex of temporal energy, absorbing $<shield>
 Variables        : $shield=${$SP*1.75*(1+$@versadmg)}
 
 Name             : Zephyr (id=374227) [Spell Family (224)] 
+Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=10, col=3, max_rank=1, req_points=20]
 Class            : Evoker
 School           : Physical
@@ -3833,7 +3849,7 @@ GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 120 seconds
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11)
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3841,7 +3857,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
+                 : Not Shapeshifted (16), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=999972)   : Apply Aura (6) | Modify AoE Damage Taken% (229)
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 127 | Radius: 0 - 20 yards | Target: Custom (18) -> AOE friendly (31)
@@ -3854,6 +3870,7 @@ Tooltip          : Damage taken from area-of-effect attacks reduced by $w1%.
 Movement speed increased by $w2%.
 
 Name             : Cauterizing Flame (desc=Red) (id=374251) [Spell Family (224)] 
+Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=4, col=5, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Fire
@@ -3867,15 +3884,15 @@ Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect
                  : 1464: Lifeforce Mender (376179 effect#2)
 Affecting spells : Preservation Evoker (356810 effect#13)
 Family Flags     : 61
-Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
-                 : ........ ........ ...x.... ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Do Not Sheath (18), Allow While Not Shapeshifted (caster form) (83), Allow Class Ability Procs (416)
+                 : Not Shapeshifted (16), Do Not Sheath (18), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1000020)  : Unknown(108)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 15 | Target: Friend (21)
@@ -3910,6 +3927,7 @@ Effects          :
 Description      : Oppressing Roar removes $372048s1 Enrage effect from each enemy, and its cooldown is reduced by $s1 sec for each Enrage dispelled.
 
 Name             : Renewing Blaze (desc=Red) (id=374348) [Spell Family (224)] 
+Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=8, col=7, max_rank=1, req_points=20]
 Class            : Evoker
 School           : Fire
@@ -3920,7 +3938,7 @@ Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect
                  : 1464: Lifeforce Mender (376179 effect#2)
 Affecting spells : Fire Within (375577 effect#1)
 Family Flags     : 42
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ......x. ..x.....   ........ ........ ........ ........ 
@@ -3928,7 +3946,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ....x...   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Absorb Cannot Be Ignore (214), Vehicle Immunity Category (218), Aura Points On Client (268), Do Not Log Absorb (348), Hide Damage Absorb UI (380), Allow Class Ability Procs (416)
+                 : Not Shapeshifted (16), Absorb Cannot Be Ignore (214), Vehicle Immunity Category (218), Aura Points On Client (268), Do Not Log Absorb (348), Hide Damage Absorb UI (380), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1000163)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -3963,6 +3981,7 @@ Description      : $@spelldesc374348
 Tooltip          : Restoring $w1 health every $t1 sec.
 
 Name             : Time Spiral (desc=Bronze) (id=374968) [Spell Family (224)] 
+Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=10, col=2, max_rank=1, req_points=20]
 Class            : Evoker
 School           : Arcane
@@ -3970,7 +3989,7 @@ Spell Type       : None
 GCD              : 1.5 seconds
 Cooldown         : 120 seconds
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11)
-Attributes       : ........ ........ ........ ........   ........ ........ .x...... ........ 
+Attributes       : ........ ........ x....... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ x....... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
@@ -3978,13 +3997,14 @@ Attributes       : ........ ........ ........ ........   ........ ........ .x...
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : No AutoCast (AI) (49), Only On Player (104), Vehicle Immunity Category (218), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
+                 : Not Shapeshifted (16), No AutoCast (AI) (49), Only On Player (104), Vehicle Immunity Category (218), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1001114)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 40 yards | Target: Raid Members (56)
 Description      : Bend time, allowing you and your allies to cast their major movement ability once in the next $375226d, even if it is on cooldown.
 
 Name             : Dragonrage (desc=Red) (id=375087) [Spell Family (224)] 
+Hotfixed         : Attributes
 Talent Entry     : Devastation [tree=spec, row=4, col=3, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Physical
@@ -3996,7 +4016,7 @@ Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect
                  : 1464: Lifeforce Mender (376179 effect#2)
                  : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
 Family Flags     : 44
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4004,7 +4024,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x......x ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
+                 : Not Shapeshifted (16), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=1001313)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -5678,7 +5698,7 @@ Effects          :
 Description      : Rewind's cooldown is reduced by ${$s1/-1000} sec.
 
 Name             : Fire Breath (desc=Red) (id=382266) [Spell Family (224)] 
-Hotfixed         : GCD (0 -> 500)
+Hotfixed         : Attributes
 Class            : Evoker
 School           : Fire
 Spell Type       : None
@@ -5690,15 +5710,15 @@ Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect
                  : 1464: Lifeforce Mender (376179 effect#2)
 Affecting spells : Temporal Compression (362877 effect#1), Tip the Scales (370553 effects: #1, #2), Imminent Destruction (370781 effect#1), Flow State (390148 effect#10)
 Family Flags     : 15
-Attributes       : ........ ........ ........ ........   ......x. ........ ........ ....xx.. 
+Attributes       : ........ ........ x....... ........   ......x. ........ ........ ....xx.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .....x.. .x...... ........   ........ ........ ......x. ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ..x..... ...x.... 
+                 : ........ ........ ........ ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   
-                 : Is Self Channelled (38), No Aura Icon (60), Name in Channel Bar (61), Force Display Castbar (155), Not In Spellbook Until Learned (269), Haste Affects Duration (273), Spellcast Override In Spellbook (310), Do Not Enforce Shapeshift Requirements (434), Do Not Allow "Disable Movement Interrupt" (443)
+                 : Not Shapeshifted (16), Is Self Channelled (38), No Aura Icon (60), Name in Channel Bar (61), Force Display Castbar (155), Not In Spellbook Until Learned (269), Haste Affects Duration (273), Spellcast Override In Spellbook (310), Do Not Allow "Disable Movement Interrupt" (443)
 Effects          :
 #1 (id=1013560)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -5765,7 +5785,7 @@ Description      : $@spelldesc382289
 Tooltip          : Absorbs $w1 damage.
 
 Name             : Eternity Surge (desc=Blue) (id=382411) [Spell Family (224)] 
-Hotfixed         : GCD (0 -> 500), Attributes
+Hotfixed         : Attributes
 Class            : Evoker
 School           : Spellfrost
 Spell Type       : None
@@ -5777,7 +5797,7 @@ Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect
 Affecting spells : Tip the Scales (370553 effects: #1, #2), Imminent Destruction (370781 effect#1)
 Triggered by     : Causality (375778)
 Family Flags     : 16
-Attributes       : ........ ........ ........ .....x..   ..x..... ..x..... ........ .x..xx.. 
+Attributes       : ........ ........ x....... .....x..   ..x..... ..x..... ........ .x..xx.. 
                  : ........ x....... ........ ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
                  : ........ ..x..... ........ ........   ........ ........ ........ ........ 
@@ -5785,7 +5805,7 @@ Attributes       : ........ ........ ........ .....x..   ..x..... ..x..... .....
                  : ........ ........ ........ ........   ...x.... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   
-                 : No Immunities (29), Is Channelled (34), No Threat (42), Aura Stays After Combat (57), No Aura Icon (60), Name in Channel Bar (61), Include In Advanced Combat Log (72), Always Hit (114), Force Display Castbar (155), No Aura Log (202), Haste Affects Duration (273), Spellcast Override In Spellbook (310), Do Not Log on Learn (355), Do Not Allow "Disable Movement Interrupt" (443)
+                 : Not Shapeshifted (16), No Immunities (29), Is Channelled (34), No Threat (42), Aura Stays After Combat (57), No Aura Icon (60), Name in Channel Bar (61), Include In Advanced Combat Log (72), Always Hit (114), Force Display Castbar (155), No Aura Log (202), Haste Affects Duration (273), Spellcast Override In Spellbook (310), Do Not Log on Learn (355), Do Not Allow "Disable Movement Interrupt" (443)
 Effects          :
 #1 (id=1013723)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
@@ -5803,7 +5823,7 @@ Description      : Focus your energies to release a salvo of pure magic, dealing
 Variables        : $dmg=${$359077s2}
 
 Name             : Dream Breath (desc=Green) (id=382614) [Spell Family (224)] 
-Hotfixed         : GCD (0 -> 500)
+Hotfixed         : Attributes
 Class            : Evoker
 School           : Nature
 Spell Type       : None
@@ -5815,15 +5835,15 @@ Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect
                  : 1466: Lush Growth (375561 effect#1), Lush Growth (375561 effect#2)
 Affecting spells : Temporal Compression (362877 effect#1), Tip the Scales (370553 effects: #1, #2), Imminent Destruction (370781 effect#1), Flow State (390148 effect#10)
 Family Flags     : 25
-Attributes       : ........ ........ ........ ........   ......x. ........ ........ ....xx.. 
+Attributes       : ........ ........ x....... ........   ......x. ........ ........ ....xx.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ..x..... ...x.... 
+                 : ........ ........ ........ ........   x....... ........ ........ ...x.... 
                  : ........ ........ ........ ........   
-                 : Is Self Channelled (38), No Aura Icon (60), Name in Channel Bar (61), Force Display Castbar (155), Haste Affects Duration (273), Allow Class Ability Procs (416), Do Not Enforce Shapeshift Requirements (434), Do Not Allow "Disable Movement Interrupt" (443)
+                 : Not Shapeshifted (16), Is Self Channelled (38), No Aura Icon (60), Name in Channel Bar (61), Force Display Castbar (155), Haste Affects Duration (273), Allow Class Ability Procs (416), Do Not Allow "Disable Movement Interrupt" (443)
 Effects          :
 #1 (id=1014030)  : Apply Aura (6) | Unknown(395)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 24231 | Target: Self (1)
@@ -5850,7 +5870,7 @@ $sThreeDur=${8}
 $sFourDur=${4}
 
 Name             : Spiritbloom (desc=Green) (id=382731) [Spell Family (224)] 
-Hotfixed         : GCD (0 -> 500), Attributes
+Hotfixed         : Attributes
 Class            : Evoker
 School           : Nature
 Spell Type       : None
@@ -5863,15 +5883,15 @@ Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect
                  : 1466: Lush Growth (375561 effect#1), Lush Growth (375561 effect#2)
 Affecting spells : Temporal Compression (362877 effect#1), Tip the Scales (370553 effects: #1, #2), Imminent Destruction (370781 effect#1), Spiritual Clarity (376150 effect#1), Flow State (390148 effect#10)
 Family Flags     : 30
-Attributes       : ........ ........ ........ .....x..   ..x...x. ..x..... ........ .x..xx.. 
+Attributes       : ........ ........ x....... .....x..   ..x...x. ..x..... ........ .x..xx.. 
                  : ........ x....... ........ ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
                  : ........ ..x..... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ......x. ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ..x..... ...x.... 
+                 : ........ ........ ........ ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   
-                 : No Immunities (29), Is Channelled (34), Is Self Channelled (38), No Threat (42), Aura Stays After Combat (57), No Aura Icon (60), Name in Channel Bar (61), Include In Advanced Combat Log (72), Always Hit (114), Force Display Castbar (155), No Aura Log (202), Haste Affects Duration (273), Spellcast Override In Spellbook (310), Do Not Enforce Shapeshift Requirements (434), Do Not Allow "Disable Movement Interrupt" (443)
+                 : Not Shapeshifted (16), No Immunities (29), Is Channelled (34), Is Self Channelled (38), No Threat (42), Aura Stays After Combat (57), No Aura Icon (60), Name in Channel Bar (61), Include In Advanced Combat Log (72), Always Hit (114), Force Display Castbar (155), No Aura Log (202), Haste Affects Duration (273), Spellcast Override In Spellbook (310), Do Not Allow "Disable Movement Interrupt" (443)
 Effects          :
 #1 (id=1014217)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friend (21)
@@ -6548,48 +6568,37 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1026763)  : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Sub Type (399 -> 129)
 #2 (id=1041802)  : Apply Aura (6) | Modify Cooldown Recharge Rate% (Label) (143)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 1216 | Target: Self (1)
                    Affected Spells (Label): Quell (351338), Evoker (353167), Deep Breath (353759), Azure Strike (355627), Landslide (355689), Emerald Blossom (355913), Emerald Blossom (355916), Dream Breath (355936), Dream Breath (355941), Devastation Evoker (356809), Preservation Evoker (356810), Initial Evoker (356816), Disintegrate (356995), Time Dilation (357170), Fire Breath (357208), Fire Breath (357209), Deep Breath (357210), Pyre (357211), Pyre (357212), Hover (358267), Hover (358268), Landslide (358385), Eternity Surge (359073), Eternity Surge (359077), [DNT] Activate GCD (359115), Essence Burst (359565), Essence Burst (359618), Fluttering Seedlings (359793), Dream Flight (359816), Sleep Walk (360806), Naturalize (360823), Verdant Embrace (360995), Mass Return (361178), Verdant Embrace (361195), Fluttering Seedlings (361361), Living Flame (361469), Living Flame (361500), Living Flame (361509), Temporal Compression (362874), Temporal Compression (362877), Azure Strike (362969), Mastery: Giantkiller (362980), Dream Flight (363502), Mastery: Life-Binder (363510), Rewind (363534), Obsidian Scales (363916), Blessing of the Bronze (364342), Echo (364343), Emerald Blossom (365261), Improved Emerald Blossom (365262), Expunge (365585), Aerial Mastery (365933), Ruby Embers (365937), Reversion (366155), Mail Specialization (366524), Spiritbloom (367226), Spiritbloom (367230), Time of Need (368412), Time of Need (368415), Unravel (368432), Time of Need (368435), Heavy Wingbeats (368838), Firestorm (368847), Volatility (369089), Essence Burst (369297), Essence Burst (369299), Firestorm (369372), Firestorm (369374), Eye of Infinity (369375), Source of Magic (369459), Feed the Flames (369846), Power Nexus (369908), Protracted Talons (369909), Natural Convergence (369913), Leaping Flames (369939), Ancient Flame (369990), Field of Dreams (370062), Shattering Star (370452), Charged Blast (370454), Charged Blast (370455), Stasis (370537), Tip the Scales (370553), Rescue (370665), Imminent Destruction (370781), Snapfire (370783), Snapfire (370818), Everburning Flame (370819), Scintillation (370821), Engulfing Blaze (370837), Power Swell (370839), Empath (370840), Spellweaver's Dominance (370845), Iridescence (370867), Bountiful Bloom (370886), Twin Guardian (370888), Twin Guardian (370889), Permeating Chill (370897), Permeating Chill (370898), Leaping Flames (370901), Leaping Flames (370917), Dense Energy (370962), Imposing Presence (371016), Terror of the Skies (371032), Lay Waste (371034), Honed Aggression (371038), Renewing Breath (371257), Punctuality (371270), Life-Giver's Flame (371426), Recall (371806), Cycle of Life (371832), Cycle of Life (371871), Cycle of Life (371879), Oppressing Roar (372048), Energy Loop (372233), Energy Loop (372234), Terror of the Skies (372245), Scarlet Adaptation (372469), Scarlet Adaptation (372470), Time Lord (372527), Source of Magic (372571), Lifebind (373267), Lifebind (373270), Call of Ysera (373834), Call of Ysera (373835), Temporal Anomaly (373861), Zephyr (374227), Cauterizing Flame (374251), Overawe (374346), Renewing Blaze (374348), Renewing Blaze (374349), Time Spiral (374968), Dragonrage (375087), Dragonrage (375088), Time Spiral (375226), Obsidian Bulwark (375406), Clobbering Sweep (375443), Roar of Exhilaration (375507), Roar of Exhilaration (375508), Blast Furnace (375510), Extended Flight (375517), Innate Magic (375520), Forger of Mountains (375528), Exuberance (375542), Inherent Resistance (375544), Enkindled (375554), Tailwind (375556), Lush Growth (375561), Foci of Life (375574), Fire Within (375577), Ancient Flame (375583), Arcane Intensity (375618), Azure Essence Burst (375721), Essence Attunement (375722), Heat Wave (375725), Eternity's Span (375757), Causality (375777), Causality (375778), Font of Magic (375783), Hoarded Power (375796), Animosity (375797), Burnout (375801), Burnout (375802), Empath (376138), Spiritual Clarity (376150), Instinctive Arcana (376164), Draconic Legacy (376166), Lifeforce Mender (376179), Just in Time (376204), Delay Harm (376207), Erasure (376210), Resonating Sphere (376236), Nozdormu's Teachings (376237), Grace Period (376239), Timeless Magic (376240), Power Swell (376850), Ruby Essence Burst (376872), Tyranny (376888), Attuned to the Dream (376930), Dreamwalker (377082), Rush of Vitality (377086), Rush of Vitality (377088), Spark of Insight (377099), Exhilarating Burst (377100), Exhilarating Burst (377102), Tailwind (378105), Golden Hour (378196), Principles of Soaring (381451), Blessing of the Bronze (381732), Blessing of the Bronze (381741), Blessing of the Bronze (381746), Blessing of the Bronze (381748), Blessing of the Bronze (381749), Blessing of the Bronze (381750), Blessing of the Bronze (381751), Blessing of the Bronze (381752), Blessing of the Bronze (381753), Blessing of the Bronze (381754), Blessing of the Bronze (381756), Blessing of the Bronze (381757), Blessing of the Bronze (381758), Permeating Chill (381773), Ouroboros (381921), Temporal Artificer (381922), Fire Breath (382266), Eternity Surge (382411), Dream Breath (382614), Spiritbloom (382731), Flow State (385696), Titanic Wrath (386272), Catalyze (386283), Focusing Iris (386336), Arcane Vigor (386342), Onyx Legacy (386348), Iridescence: Red (386353), Iridescence: Blue (386399), Inner Radiance (386405), Boon of the Covenants (387168), Boon of the Covenants (387169), Grandiose Boon (387198), Spark of Savagery (387201), Intense Awakening (387202), Bronze Acceleration (387222), Primal Fortitude (387225), Inherent Resistance (387227), Circle of Life (387228), Graceful Stride (387240), Natural Weapons (387267), Legacy of Coldarra (387270), Walloping Blow (387341), Ouroboros (387350), Unity (387431), Panacea (387761), Panacea (387763), Regenerative Magic (387787), Flow State (390148), Fury of the Aspects (390386), Pyre (393568), Tempered Scales (396571), Eye of Infinity (397565)
-Hotfixed         : NEW EFFECT
 #3 (id=1041803)  : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 1948 | Target: Self (1)
                    Affected Spells (Category): Hover (358267), Verdant Embrace (360995)
-Hotfixed         : NEW EFFECT
 #4 (id=1041804)  : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 2100 | Target: Self (1)
                    Affected Spells (Category): Obsidian Scales (363916)
-Hotfixed         : NEW EFFECT
 #5 (id=1041805)  : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 2010 | Target: Self (1)
                    Affected Spells (Category): Reversion (366155)
-Hotfixed         : NEW EFFECT
 #6 (id=1041806)  : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 2035 | Target: Self (1)
                    Affected Spells (Category): Rewind (363534)
-Hotfixed         : NEW EFFECT
 #7 (id=1041807)  : Apply Aura (6) | Modify Cooldown Recharge Rate% (Label) (143)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 1425 | Target: Self (1)
                    Affected Spells (Label): Wing Buffet (357214)
-Hotfixed         : NEW EFFECT
 #8 (id=1041808)  : Apply Aura (6) | Modify Cooldown Recharge Rate% (Label) (143)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 1523 | Target: Self (1)
                    Affected Spells (Label): Tail Swipe (368970)
-Hotfixed         : NEW EFFECT
 #9 (id=1041809)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Global Cooldown (21)
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 21 | Misc Value 2: 1216 (Label) | Target: Self (1)
                    Affected Spells (Label): Quell (351338), Evoker (353167), Deep Breath (353759), Azure Strike (355627), Landslide (355689), Emerald Blossom (355913), Emerald Blossom (355916), Dream Breath (355936), Dream Breath (355941), Devastation Evoker (356809), Preservation Evoker (356810), Initial Evoker (356816), Disintegrate (356995), Time Dilation (357170), Fire Breath (357208), Fire Breath (357209), Deep Breath (357210), Pyre (357211), Pyre (357212), Hover (358267), Hover (358268), Landslide (358385), Eternity Surge (359073), Eternity Surge (359077), [DNT] Activate GCD (359115), Essence Burst (359565), Essence Burst (359618), Fluttering Seedlings (359793), Dream Flight (359816), Sleep Walk (360806), Naturalize (360823), Verdant Embrace (360995), Mass Return (361178), Verdant Embrace (361195), Fluttering Seedlings (361361), Living Flame (361469), Living Flame (361500), Living Flame (361509), Temporal Compression (362874), Temporal Compression (362877), Azure Strike (362969), Mastery: Giantkiller (362980), Dream Flight (363502), Mastery: Life-Binder (363510), Rewind (363534), Obsidian Scales (363916), Blessing of the Bronze (364342), Echo (364343), Emerald Blossom (365261), Improved Emerald Blossom (365262), Expunge (365585), Aerial Mastery (365933), Ruby Embers (365937), Reversion (366155), Mail Specialization (366524), Spiritbloom (367226), Spiritbloom (367230), Time of Need (368412), Time of Need (368415), Unravel (368432), Time of Need (368435), Heavy Wingbeats (368838), Firestorm (368847), Volatility (369089), Essence Burst (369297), Essence Burst (369299), Firestorm (369372), Firestorm (369374), Eye of Infinity (369375), Source of Magic (369459), Feed the Flames (369846), Power Nexus (369908), Protracted Talons (369909), Natural Convergence (369913), Leaping Flames (369939), Ancient Flame (369990), Field of Dreams (370062), Shattering Star (370452), Charged Blast (370454), Charged Blast (370455), Stasis (370537), Tip the Scales (370553), Rescue (370665), Imminent Destruction (370781), Snapfire (370783), Snapfire (370818), Everburning Flame (370819), Scintillation (370821), Engulfing Blaze (370837), Power Swell (370839), Empath (370840), Spellweaver's Dominance (370845), Iridescence (370867), Bountiful Bloom (370886), Twin Guardian (370888), Twin Guardian (370889), Permeating Chill (370897), Permeating Chill (370898), Leaping Flames (370901), Leaping Flames (370917), Dense Energy (370962), Imposing Presence (371016), Terror of the Skies (371032), Lay Waste (371034), Honed Aggression (371038), Renewing Breath (371257), Punctuality (371270), Life-Giver's Flame (371426), Recall (371806), Cycle of Life (371832), Cycle of Life (371871), Cycle of Life (371879), Oppressing Roar (372048), Energy Loop (372233), Energy Loop (372234), Terror of the Skies (372245), Scarlet Adaptation (372469), Scarlet Adaptation (372470), Time Lord (372527), Source of Magic (372571), Lifebind (373267), Lifebind (373270), Call of Ysera (373834), Call of Ysera (373835), Temporal Anomaly (373861), Zephyr (374227), Cauterizing Flame (374251), Overawe (374346), Renewing Blaze (374348), Renewing Blaze (374349), Time Spiral (374968), Dragonrage (375087), Dragonrage (375088), Time Spiral (375226), Obsidian Bulwark (375406), Clobbering Sweep (375443), Roar of Exhilaration (375507), Roar of Exhilaration (375508), Blast Furnace (375510), Extended Flight (375517), Innate Magic (375520), Forger of Mountains (375528), Exuberance (375542), Inherent Resistance (375544), Enkindled (375554), Tailwind (375556), Lush Growth (375561), Foci of Life (375574), Fire Within (375577), Ancient Flame (375583), Arcane Intensity (375618), Azure Essence Burst (375721), Essence Attunement (375722), Heat Wave (375725), Eternity's Span (375757), Causality (375777), Causality (375778), Font of Magic (375783), Hoarded Power (375796), Animosity (375797), Burnout (375801), Burnout (375802), Empath (376138), Spiritual Clarity (376150), Instinctive Arcana (376164), Draconic Legacy (376166), Lifeforce Mender (376179), Just in Time (376204), Delay Harm (376207), Erasure (376210), Resonating Sphere (376236), Nozdormu's Teachings (376237), Grace Period (376239), Timeless Magic (376240), Power Swell (376850), Ruby Essence Burst (376872), Tyranny (376888), Attuned to the Dream (376930), Dreamwalker (377082), Rush of Vitality (377086), Rush of Vitality (377088), Spark of Insight (377099), Exhilarating Burst (377100), Exhilarating Burst (377102), Tailwind (378105), Golden Hour (378196), Principles of Soaring (381451), Blessing of the Bronze (381732), Blessing of the Bronze (381741), Blessing of the Bronze (381746), Blessing of the Bronze (381748), Blessing of the Bronze (381749), Blessing of the Bronze (381750), Blessing of the Bronze (381751), Blessing of the Bronze (381752), Blessing of the Bronze (381753), Blessing of the Bronze (381754), Blessing of the Bronze (381756), Blessing of the Bronze (381757), Blessing of the Bronze (381758), Permeating Chill (381773), Ouroboros (381921), Temporal Artificer (381922), Fire Breath (382266), Eternity Surge (382411), Dream Breath (382614), Spiritbloom (382731), Flow State (385696), Titanic Wrath (386272), Catalyze (386283), Focusing Iris (386336), Arcane Vigor (386342), Onyx Legacy (386348), Iridescence: Red (386353), Iridescence: Blue (386399), Inner Radiance (386405), Boon of the Covenants (387168), Boon of the Covenants (387169), Grandiose Boon (387198), Spark of Savagery (387201), Intense Awakening (387202), Bronze Acceleration (387222), Primal Fortitude (387225), Inherent Resistance (387227), Circle of Life (387228), Graceful Stride (387240), Natural Weapons (387267), Legacy of Coldarra (387270), Walloping Blow (387341), Ouroboros (387350), Unity (387431), Panacea (387761), Panacea (387763), Regenerative Magic (387787), Flow State (390148), Fury of the Aspects (390386), Pyre (393568), Tempered Scales (396571), Eye of Infinity (397565)
-Hotfixed         : NEW EFFECT
 #10 (id=1041836)  : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1)
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Dream Breath (355936), Fire Breath (357208), Spiritbloom (367226), Fire Breath (382266), Dream Breath (382614), Spiritbloom (382731)
                    Family Flags: 15, 25, 30
-Hotfixed         : NEW EFFECT
 #11 (id=1041837)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Cast Time (10)
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 10 | Misc Value 2: 1216 (Label) | Target: Self (1)
                    Affected Spells (Label): Quell (351338), Evoker (353167), Deep Breath (353759), Azure Strike (355627), Landslide (355689), Emerald Blossom (355913), Emerald Blossom (355916), Dream Breath (355936), Dream Breath (355941), Devastation Evoker (356809), Preservation Evoker (356810), Initial Evoker (356816), Disintegrate (356995), Time Dilation (357170), Fire Breath (357208), Fire Breath (357209), Deep Breath (357210), Pyre (357211), Pyre (357212), Hover (358267), Hover (358268), Landslide (358385), Eternity Surge (359073), Eternity Surge (359077), [DNT] Activate GCD (359115), Essence Burst (359565), Essence Burst (359618), Fluttering Seedlings (359793), Dream Flight (359816), Sleep Walk (360806), Naturalize (360823), Verdant Embrace (360995), Mass Return (361178), Verdant Embrace (361195), Fluttering Seedlings (361361), Living Flame (361469), Living Flame (361500), Living Flame (361509), Temporal Compression (362874), Temporal Compression (362877), Azure Strike (362969), Mastery: Giantkiller (362980), Dream Flight (363502), Mastery: Life-Binder (363510), Rewind (363534), Obsidian Scales (363916), Blessing of the Bronze (364342), Echo (364343), Emerald Blossom (365261), Improved Emerald Blossom (365262), Expunge (365585), Aerial Mastery (365933), Ruby Embers (365937), Reversion (366155), Mail Specialization (366524), Spiritbloom (367226), Spiritbloom (367230), Time of Need (368412), Time of Need (368415), Unravel (368432), Time of Need (368435), Heavy Wingbeats (368838), Firestorm (368847), Volatility (369089), Essence Burst (369297), Essence Burst (369299), Firestorm (369372), Firestorm (369374), Eye of Infinity (369375), Source of Magic (369459), Feed the Flames (369846), Power Nexus (369908), Protracted Talons (369909), Natural Convergence (369913), Leaping Flames (369939), Ancient Flame (369990), Field of Dreams (370062), Shattering Star (370452), Charged Blast (370454), Charged Blast (370455), Stasis (370537), Tip the Scales (370553), Rescue (370665), Imminent Destruction (370781), Snapfire (370783), Snapfire (370818), Everburning Flame (370819), Scintillation (370821), Engulfing Blaze (370837), Power Swell (370839), Empath (370840), Spellweaver's Dominance (370845), Iridescence (370867), Bountiful Bloom (370886), Twin Guardian (370888), Twin Guardian (370889), Permeating Chill (370897), Permeating Chill (370898), Leaping Flames (370901), Leaping Flames (370917), Dense Energy (370962), Imposing Presence (371016), Terror of the Skies (371032), Lay Waste (371034), Honed Aggression (371038), Renewing Breath (371257), Punctuality (371270), Life-Giver's Flame (371426), Recall (371806), Cycle of Life (371832), Cycle of Life (371871), Cycle of Life (371879), Oppressing Roar (372048), Energy Loop (372233), Energy Loop (372234), Terror of the Skies (372245), Scarlet Adaptation (372469), Scarlet Adaptation (372470), Time Lord (372527), Source of Magic (372571), Lifebind (373267), Lifebind (373270), Call of Ysera (373834), Call of Ysera (373835), Temporal Anomaly (373861), Zephyr (374227), Cauterizing Flame (374251), Overawe (374346), Renewing Blaze (374348), Renewing Blaze (374349), Time Spiral (374968), Dragonrage (375087), Dragonrage (375088), Time Spiral (375226), Obsidian Bulwark (375406), Clobbering Sweep (375443), Roar of Exhilaration (375507), Roar of Exhilaration (375508), Blast Furnace (375510), Extended Flight (375517), Innate Magic (375520), Forger of Mountains (375528), Exuberance (375542), Inherent Resistance (375544), Enkindled (375554), Tailwind (375556), Lush Growth (375561), Foci of Life (375574), Fire Within (375577), Ancient Flame (375583), Arcane Intensity (375618), Azure Essence Burst (375721), Essence Attunement (375722), Heat Wave (375725), Eternity's Span (375757), Causality (375777), Causality (375778), Font of Magic (375783), Hoarded Power (375796), Animosity (375797), Burnout (375801), Burnout (375802), Empath (376138), Spiritual Clarity (376150), Instinctive Arcana (376164), Draconic Legacy (376166), Lifeforce Mender (376179), Just in Time (376204), Delay Harm (376207), Erasure (376210), Resonating Sphere (376236), Nozdormu's Teachings (376237), Grace Period (376239), Timeless Magic (376240), Power Swell (376850), Ruby Essence Burst (376872), Tyranny (376888), Attuned to the Dream (376930), Dreamwalker (377082), Rush of Vitality (377086), Rush of Vitality (377088), Spark of Insight (377099), Exhilarating Burst (377100), Exhilarating Burst (377102), Tailwind (378105), Golden Hour (378196), Principles of Soaring (381451), Blessing of the Bronze (381732), Blessing of the Bronze (381741), Blessing of the Bronze (381746), Blessing of the Bronze (381748), Blessing of the Bronze (381749), Blessing of the Bronze (381750), Blessing of the Bronze (381751), Blessing of the Bronze (381752), Blessing of the Bronze (381753), Blessing of the Bronze (381754), Blessing of the Bronze (381756), Blessing of the Bronze (381757), Blessing of the Bronze (381758), Permeating Chill (381773), Ouroboros (381921), Temporal Artificer (381922), Fire Breath (382266), Eternity Surge (382411), Dream Breath (382614), Spiritbloom (382731), Flow State (385696), Titanic Wrath (386272), Catalyze (386283), Focusing Iris (386336), Arcane Vigor (386342), Onyx Legacy (386348), Iridescence: Red (386353), Iridescence: Blue (386399), Inner Radiance (386405), Boon of the Covenants (387168), Boon of the Covenants (387169), Grandiose Boon (387198), Spark of Savagery (387201), Intense Awakening (387202), Bronze Acceleration (387222), Primal Fortitude (387225), Inherent Resistance (387227), Circle of Life (387228), Graceful Stride (387240), Natural Weapons (387267), Legacy of Coldarra (387270), Walloping Blow (387341), Ouroboros (387350), Unity (387431), Panacea (387761), Panacea (387763), Regenerative Magic (387787), Flow State (390148), Fury of the Aspects (390386), Pyre (393568), Tempered Scales (396571), Eye of Infinity (397565)
-Hotfixed         : NEW EFFECT
 Description      : $@spelldesc385696
 Tooltip          : Time is moving $s1% faster.
 

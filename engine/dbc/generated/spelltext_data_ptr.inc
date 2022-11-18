@@ -1,5 +1,5 @@
-// Spell text, wow build 10.0.2.46619
-static const std::array<spelltext_data_t, 19178> __ptr_spelltext_data { {
+// Spell text, wow build 10.0.2.46702
+static const std::array<spelltext_data_t, 19177> __ptr_spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -16840,7 +16840,6 @@ static const std::array<spelltext_data_t, 19178> __ptr_spelltext_data { {
   { 381727, "$@spelldesc381705", "A mutated tentacle has emerged from your body, lashing out to enemies in front of you.", 0 },
   { 381732, "$@spelldesc364342", "Cooldown of Death's Advance reduced by $s1%.", "Bronze" },
   { 381734, "Taking damage has a chance to increase your Versatility by $381769s1 for $381769d.\r\n\r\nThis effect is increased for every ally within $381769s2 yds, up to $381769s3.", 0, 0 },
-  { 381736, "Get carried away by five dragon whelplings!", "Get carried away by five dragon whelplings!", 0 },
   { 381741, "$@spelldesc364342", "Cooldown of Fel Rush and Infernal Strike reduced by $s1%.", "Bronze" },
   { 381743, "Increases the chance for Earthquake to knock enemies down by ${$s1}.1%.\r\n", 0, 0 },
   { 381746, "$@spelldesc364342", "Cooldown of $?s252216[Tiger Dash][Dash] reduced by $s1%.", "Bronze" },
@@ -19180,38 +19179,11 @@ static const std::array<spelltext_data_t, 19178> __ptr_spelltext_data { {
   { 398396, "$@spelldesc386578", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.0.2.46619
-static constexpr std::array<hotfix::client_hotfix_entry_t, 27> __ptr_spelltext_hotfix_data { {
-  {  119898,  0, "Commands your demon to perform its most powerful ability. This spell will transform based on your active pet. \r\n$?s30146[\r\nFelguard: $@spellname89766][]\r\nFelhunter: $@spellname19505\r\nVoidwalker: $@spellname17767\r\nIncubus/Succubus: $@spellname6358\r\nImp: $@spellname89808", "Commands your demon to perform its most powerful ability. This spell will transform based on your active pet. \r\n$?s30146[\r\nFelguard: $@spellname89766][]\r\nFelhunter: $@spellname19647\r\nVoidwalker: $@spellname17767\r\nIncubus/Succubus: $@spellname6358\r\nImp: $@spellname89808" },
-  {  135286,  1, "Your next Maul deals $s1% more damage and reduces the target's damage to you by $135601s1%~ for $135601d.", "Your next Maul deals $s1% more damage, costs $s3% less rage, and reduces the target's damage to you by $135601s1%~ for $135601d." },
-  {  135288,  0, "Autoattacks have a $s1% chance to empower your next Maul, stacking up to $135286u times.\r\n\r\nEmpowered Maul deals $135286s1% increased damage and reduces the target's damage to you by $135601s2% for $135601d.", "Autoattacks have a $s1% chance to empower your next Maul, stacking up to $135286u times.\r\n\r\nEmpowered Maul deals $135286s1% increased damage, costs $135286s3% less rage, and reduces the target's damage to you by $135601s2% for $135601d." },
-  {  200851,  0, "Unleashes the rage of Ursoc for $d, preventing $s4% of all damage you take and reflecting $219432s1 Nature damage back at your attackers.", "Unleashes the rage of Ursoc for $d, preventing $s3% of all damage you take, increasing your damage done by $s5%, granting you $s3% leech, and reflecting $219432s1 Nature damage back at your attackers." },
-  {  200851,  1, "Prevents $s4% of all damage you take and reflects $219432s1 Nature damage back at your attackers.", "Prevents $s3% of all damage you take, increases damage done by $s5%, grants $s3% leech, and reflects $219432s1 Nature damage back at your attackers." },
-  {  202316,  0, "Whirlwind also Slams your primary target.", "If Whirlwind hits $s1 or more targets it also Slams your primary target." },
-  {  372119,  0, "When you take non-periodic damage, you have a chance equal to your critical strike to cause your next Regrowth to be instant, free, and castable in all forms for $372152d.\r\n\r\nThis effect cannot occur more than once every $372523d.", "When you take non-periodic damage, you have a chance equal to your critical strike to cause your next Regrowth to heal for an additional $372152s4%, and to be instant, free, and castable in all forms for $372152d. \r\n\r\nThis effect cannot occur more than once every $372523d." },
-  {  372152,  0, "Your next Regrowth is free, instant, and castable in all forms.", "Your next Regrowth heals for an additional $s4% and is free, instant, and castable in all forms." },
-  {  372152,  1, "Your next Regrowth is free, instant, and castable in all forms.", "Your next Regrowth heals for an additional $s4% and is free, instant, and castable in all forms." },
-  {  373180,  0, "When Atonement has healed a total of $s1 times, your next Penance is free and fires $s2 additional bolts.", "Every $s1 casts of Smite, your next Penance is free and fires an additional $s2 bolts." },
-  {  377453,  1, "Deal $382092w1 Nature damage per second to all enemies within $s5 yards, intensifying by $s4% each second.", "Deal $w1 Nature damage per second to all enemies within $s5 yards, intensifying by $s4% each second." },
-  {  378233,  0, "Whenever a player is slain within $a1 yards of you, you are filled with a burst of tenacity and gain $s3 Versatility for $378238d1.", "Whenever a player is slain within $a1 yards of you, you are filled with a burst of tenacity and gain $s2 Versatility for $378238d1." },
-  {  378233,  1, "Whenever a player is slain within $a1 yards of you, you are filled with a burst of tenacity and gain $w3 Versatility for $378238d1.", "Whenever a player is slain within $a1 yards of you, you are filled with a burst of tenacity and gain $w2 Versatility for $378238d1." },
-  {  383200,  0, "Every $q seconds you spend moving increases your intellect by $383201s1, stacking up to 5 times. Casting a spell will consume all stacks of Intellect.", "Every $q seconds you spend moving increases your Intellect by $s2, stacking up to 5 times. Casting a spell will consume all stacks of Intellect." },
-  {  383799,  0, "@spelldesc386578", "$@spelldesc386578" },
-  {  383799,  1, "Mastery increased by $w3.", "Mastery increased by $w1." },
-  {  384154,  0, "Attune yourself to the energies of the targeted Vault of the Incarnates raid boss, increasing your Versatility by $311500s1 when fighting that boss. This effect lasts for an entire week.\r\n\r\nYou can only use one Vantus Rune per week.", "Attune yourself to the energies of the targeted Vault of the Incarnates raid boss, increasing your Versatility by $384195s1 when fighting that boss. This effect lasts for an entire week.\r\n\r\nYou can only use one Vantus Rune per week." },
-  {  387016,  0, "Each target affected by Soul Rot increases your haste and critical strike chance by ${$387018s3}% for $387018d.", "Each target affected by Soul Rot increases your haste and critical strike chance by ${$s1/10}.1% for $387018d." },
-  {  388064,  1, "Mana costs reduced by $s1.", "Mana costs reduced by $w1." },
-  {  388560,  0, "@spelldesc388559", "$@spelldesc388559" },
-  {  388755,  0, "@spelldesc383920", "$@spelldesc383920" },
-  {  388779,  0, "Your abilities reset Faeline Stomp $s2% more often. While within Faeline Stomp, your Tiger Palms strike $s3 targets and your Spinning Crane Kick heals $s4 nearby allies for $s1% of the damage done.", "Your abilities reset Faeline Stomp $s2% more often. While within Faeline Stomp, your Tiger Palms strike twice and your Spinning Crane Kick heals $s4 nearby allies for $s1% of the damage done." },
-  {  388929,  0, "@spelldesc388931", "$@spelldesc388931" },
-  {  389527,  0, "@spelldesc384661", "$@spelldesc384661" },
-  {  390643,  0, "Perform the summoning ritual and commune with one of the Primal Turtles to gain its blessing.\r\n\r\nThe ritual site can be found north of Uktulut Pier in The Waking Shores, near the remains of a dragon.", "Perform the summoning ritual and commune with one of the Primal Turtles to gain its blessing.\r\n\r\nThe ritual site can be found south of Uktulut Pier in The Waking Shores, near the remains of a dragon." },
-  {  392908,  0, "@spelldesc386175", "$@spelldesc386175" },
-  {  393641,  0, "Efflorescence critical heals increase the healing of your next Wild Growth by $394565s1%, stacking up to 5 times. Lifebloom critical heals reduces the cooldown of Nature's Swiftness by $s1.", "Efflorescence critical heals increase the healing of your next Wild Growth by $394565s1%, stacking up to 5 times. Lifebloom critical heals reduces the cooldown of Nature's Swiftness by $s1 sec." },
+// spelltext hotfix entries, wow build 10.0.2.46702
+static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 10.0.2.46619
+// Spell description variables, wow build 10.0.2.46702
 static const std::array<spelldesc_vars_data_t, 365> __ptr_spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$pvp=$?a134735[${1.1}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<pvp>*$<weal>}\r\n" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -19580,8 +19552,7 @@ static const std::array<spelldesc_vars_data_t, 365> __ptr_spelldesc_vars_data { 
   {  394354, "$damage=${($AP*1.0)*(1+$@versadmg)}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.0.2.46619
-static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __ptr_spelldesc_vars_hotfix_data { {
-  {  108416,  0, "$points=${$SP*5}", "$points=${$SP*2.5}" },
+// spelldesc_vars hotfix entries, wow build 10.0.2.46702
+static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 
