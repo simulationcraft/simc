@@ -46,31 +46,6 @@ enum proc_spell_type_e : unsigned
   VOLATILITY    = 0x4   // chained pyre proc'd via volatility
 };
 
-struct empowered_state_t : public action_state_t
-{
-  empower_e empower;
-
-  empowered_state_t( action_t* a, player_t* t ) : action_state_t( a, t ), empower( empower_e::EMPOWER_NONE ) {}
-
-  void initialize() override
-  {
-    action_state_t::initialize();
-    empower = empower_e::EMPOWER_NONE;
-  }
-
-  void copy_state( const action_state_t* s ) override
-  {
-    action_state_t::copy_state( s );
-    empower = debug_cast<const empowered_state_t*>( s )->empower;
-  }
-
-  std::ostringstream& debug_str( std::ostringstream& s ) override
-  {
-    action_state_t::debug_str( s ) << " empower_level=" << static_cast<int>( empower );
-    return s;
-  }
-};
-
 struct evoker_td_t : public actor_target_data_t
 {
   struct dots_t
@@ -85,6 +60,36 @@ struct evoker_td_t : public actor_target_data_t
   } debuffs;
 
   evoker_td_t( player_t* target, evoker_t* source );
+};
+
+template <typename Data, typename Base = action_state_t>
+struct evoker_action_state_t : public Base, public Data
+{
+  static_assert( std::is_base_of_v<action_state_t, Base> );
+  static_assert( std::is_default_constructible_v<Data> );  // required for initialize
+  static_assert( std::is_copy_assignable_v<Data> );  // required for copy_state
+
+  using Base::Base;
+
+  void initialize() override
+  {
+    Base::initialize();
+    *static_cast<Data*>( this ) = Data{};
+  }
+
+  std::ostringstream& debug_str( std::ostringstream& s ) override
+  {
+    Base::debug_str( s );
+    if constexpr ( fmt::is_formattable<Data>::value )
+      fmt::print( s, " {}", *static_cast<const Data*>( this ) );
+    return s;
+  }
+
+  void copy_state( const action_state_t* o ) override
+  {
+    Base::copy_state( o );
+    *static_cast<Data*>( this ) = *static_cast<const Data*>( static_cast<const evoker_action_state_t*>( o ) );
+  }
 };
 
 struct evoker_t : public player_t
@@ -678,43 +683,28 @@ public:
   {
     auto mult = ab::composite_persistent_multiplier( s );
 
-    if ( current_resource() == RESOURCE_ESSENCE && p()->talent.titanic_wrath.ok() &&
-         p()->buff.essence_burst->check() )
-    {
-      mult *= 1.0 + p()->talent.titanic_wrath->effectN( 1 ).percent();
-    }
-
     // iridescence blue affects the entire channel for disintegrate
     if ( spell_color == SPELL_BLUE && !background )
       mult *= 1.0 + p()->buff.iridescence_blue->check_value();
 
     return mult;
   }
+};
 
-  void consume_resource() override
-  {
-    ab::consume_resource();
+struct empower_data_t
+{
+  empower_e empower;
 
-    resource_e cr = current_resource();
-
-    if ( cr != RESOURCE_ESSENCE || base_cost() == 0 || proc )
-      return;
-
-    if ( p()->buff.essence_burst->up() && !rng().roll( p()->talent.hoarded_power->effectN( 1 ).percent() ) )
-    {
-      p()->buff.essence_burst->decrement();
-
-      if ( p()->talent.feed_the_flames.ok() )
-      {
-        p()->cooldown.fire_breath->adjust(
-            -timespan_t::from_seconds( p()->talent.feed_the_flames->effectN( 1 ).base_value() ) );
-      }
-    }
-  }
+  friend void sc_format_to( const empower_data_t& data, fmt::format_context::iterator out )
+  { fmt::format_to( out, "empower_level={}", static_cast<int>( data.empower ) ); }
 };
 
 struct empowered_base_t : public evoker_spell_t
 {
+protected:
+  using state_t = evoker_action_state_t<empower_data_t>;
+
+public:
   empower_e max_empower;
 
   empowered_base_t( std::string_view name, evoker_t* p, const spell_data_t* spell, std::string_view options_str = {} )
@@ -723,7 +713,13 @@ struct empowered_base_t : public evoker_spell_t
   {}
 
   action_state_t* new_state() override
-  { return new empowered_state_t( this, target ); }
+  { return new state_t( this, target ); }
+
+  state_t* cast_state( action_state_t* s )
+  { return static_cast<state_t*>( s ); }
+
+  const state_t* cast_state( const action_state_t* s ) const
+  { return static_cast<const state_t*>( s ); }
 };
 
 struct empowered_release_spell_t : public empowered_base_t
@@ -747,10 +743,10 @@ struct empowered_release_spell_t : public empowered_base_t
   }
 
   empower_e empower_level( const action_state_t* s ) const
-  { return debug_cast<const empowered_state_t*>( s )->empower; }
+  { return cast_state( s )->empower; }
 
   int empower_value( const action_state_t* s ) const
-  { return static_cast<int>( debug_cast<const empowered_state_t*>( s )->empower ); }
+  { return static_cast<int>( cast_state( s )->empower ); }
 
   void execute() override
   {
@@ -950,10 +946,10 @@ struct empowered_charge_spell_t : public empowered_base_t
     if ( p()->buff.tip_the_scales->up() )
     {
       p()->buff.tip_the_scales->expire();
-      debug_cast<empowered_state_t*>( emp_state )->empower = max_empower;
+      cast_state( emp_state )->empower = max_empower;
     }
     else
-      debug_cast<empowered_state_t*>( emp_state )->empower = empower_level( d );
+      cast_state( emp_state )->empower = empower_level( d );
 
     release_spell->schedule_execute( emp_state );
 
@@ -961,6 +957,36 @@ struct empowered_charge_spell_t : public empowered_base_t
     d->current_action = release_spell;
     // hack to prevent channel lag being added when player is schedule_ready()'d after the release spell execution
     p()->last_foreground_action = release_spell;
+  }
+};
+
+struct essence_spell_t : public evoker_spell_t
+{
+  timespan_t ftf_dur;
+  double hoarded_pct;
+  double titanic_mul;
+
+  essence_spell_t( std::string_view n, evoker_t* p, const spell_data_t* s, std::string_view o )
+    : evoker_spell_t( n, p, s, o ),
+      ftf_dur( -timespan_t::from_seconds( p->talent.feed_the_flames->effectN( 1 ).base_value() ) ),
+      hoarded_pct( p->talent.hoarded_power->effectN( 1 ).percent() ),
+      titanic_mul( p->talent.titanic_wrath->effectN( 1 ).percent() )
+  {}
+
+  void consume_resource() override
+  {
+    evoker_spell_t::consume_resource();
+
+    if ( !base_cost() || proc )
+      return;
+
+    if ( p()->buff.essence_burst->up() && !rng().roll( hoarded_pct ) )
+    {
+      p()->buff.essence_burst->decrement();
+
+      if ( p()->talent.feed_the_flames.ok() )
+        p()->cooldown.fire_breath->adjust( ftf_dur );
+    }
   }
 };
 
@@ -1171,12 +1197,25 @@ struct deep_breath_t : public evoker_spell_t
   }
 };
 
-struct disintegrate_t : public evoker_spell_t
+struct disintegrate_data_t
 {
-  action_t* eternity_surge;
+  int titanic_ticks;
+
+  friend void sc_format_to( const disintegrate_data_t& data, fmt::format_context::iterator out )
+  {
+    fmt::format_to( out, "titanic_ticks={}", data.titanic_ticks );
+  }
+};
+
+struct disintegrate_t : public essence_spell_t
+{
+  using state_t = evoker_action_state_t<disintegrate_data_t>;
+
+  eternity_surge_t::eternity_surge_damage_t* eternity_surge;
+  int titanic_ticks;
 
   disintegrate_t( evoker_t* p, std::string_view options_str )
-    : evoker_spell_t( "disintegrate", p, p->find_class_spell( "Disintegrate" ), options_str )
+    : essence_spell_t( "disintegrate", p, p->find_class_spell( "Disintegrate" ), options_str ), titanic_ticks( 0 )
   {
     channeled = tick_zero = true;
 
@@ -1189,9 +1228,41 @@ struct disintegrate_t : public evoker_spell_t
     add_child( eternity_surge );
   }
 
+  action_state_t* new_state() override
+  { return new state_t( this, target ); }
+
+  void snapshot_state( action_state_t* s, result_amount_type rt )
+  {
+    essence_spell_t::snapshot_state( s, rt );
+
+    auto s_ = static_cast<state_t*>( s );
+
+    if ( p()->buff.essence_burst->check() )
+      titanic_ticks += 4;
+
+    s_->titanic_ticks = titanic_ticks;
+  }
+
+  double composite_ta_multiplier( const action_state_t* s ) const override
+  {
+    auto ta = essence_spell_t::composite_ta_multiplier( s );
+
+    if ( static_cast<const state_t*>( s )->titanic_ticks )
+      ta *= 1.0 + titanic_mul;
+
+    return ta;
+  }
+
   void tick( dot_t* d ) override
   {
-    evoker_spell_t::tick( d );
+    essence_spell_t::tick( d );
+
+    auto s_ = static_cast<state_t*>( d->state );
+    if ( s_->titanic_ticks )
+    {
+      s_->titanic_ticks--;
+      titanic_ticks--;
+    }
 
     if ( p()->talent.scintillation.ok() && rng().roll( p()->talent.scintillation->effectN( 2 ).percent() ) )
     {
@@ -1199,10 +1270,17 @@ struct disintegrate_t : public evoker_spell_t
       emp_state->target = d->state->target;
       eternity_surge->snapshot_state( emp_state, eternity_surge->amount_type( emp_state ) );
       emp_state->persistent_multiplier *= p()->talent.scintillation->effectN( 1 ).percent();
-      debug_cast<empowered_state_t*>( emp_state )->empower = EMPOWER_1;
+      eternity_surge->cast_state( emp_state )->empower = EMPOWER_1;
 
       eternity_surge->schedule_execute( emp_state );
     }
+  }
+
+  void last_tick( dot_t* d ) override
+  {
+    essence_spell_t::last_tick( d );
+
+    titanic_ticks = 0;
   }
 };
 
@@ -1481,15 +1559,44 @@ struct tip_the_scales_t : public evoker_spell_t
   }
 };
 
-struct pyre_t : public evoker_spell_t
+struct pyre_data_t
 {
-  struct pyre_damage_t : public evoker_spell_t
+  double charged_blast;
+  double essence_burst;
+  double iridescence;
+
+  friend void sc_format_to( const pyre_data_t& data, fmt::format_context::iterator out )
   {
-    pyre_damage_t( evoker_t* p, std::string_view name_str )
-      : evoker_spell_t( name_str, p, p->talent.pyre_damage )
+    fmt::format_to( out, "charged_blast={}, essence_burst={}, iridescence={}",
+                    data.charged_blast, data.essence_burst, data.iridescence );
+  }
+};
+
+struct pyre_t : public essence_spell_t
+{
+  using state_t = evoker_action_state_t<pyre_data_t>;
+
+  struct pyre_damage_t : public essence_spell_t
+  {
+    pyre_damage_t( evoker_t* p, std::string_view name_str ) : essence_spell_t( name_str, p, p->talent.pyre_damage, "" )
     {
       dual = true;
       aoe  = -1;
+    }
+
+    action_state_t* new_state() override
+    { return new state_t( this, target ); }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      auto da = essence_spell_t::composite_da_multiplier( s );
+      auto s_ = static_cast<const state_t*>( s );
+
+      da *= 1.0 + s_->charged_blast;
+      da *= 1.0 + s_->essence_burst;
+      da *= 1.0 + s_->iridescence;
+
+      return da;
     }
   };
 
@@ -1499,20 +1606,19 @@ struct pyre_t : public evoker_spell_t
   pyre_t( evoker_t* p, std::string_view options_str ) : pyre_t( p, "pyre", p->talent.pyre, options_str ) {}
 
   pyre_t( evoker_t* p, std::string_view n, const spell_data_t* s, std::string_view o = {} )
-    : evoker_spell_t( n, p, s, o ), volatility( nullptr )
+    : essence_spell_t( n, p, s, o ), volatility( nullptr )
   {
     damage = p->get_secondary_action<pyre_damage_t>( name_str + "_damage", name_str + "_damage" );
     damage->stats = stats;
     damage->proc = true;
-
-    // Charged blast is consumed on cast, but we need it to apply to the damage action that is executed on impact. We
-    // snapshot ONLY the da mul from charged blast and iridescence and pass it along to the damage action state.
-    snapshot_flags |= STATE_MUL_DA;
   }
+
+  action_state_t* new_state() override
+  { return new state_t( this, target ); }
 
   void init() override
   {
-    evoker_spell_t::init();
+    essence_spell_t::init();
 
     if ( p()->talent.volatility->ok() )
     {
@@ -1533,31 +1639,29 @@ struct pyre_t : public evoker_spell_t
 
   void execute() override
   {
-    evoker_spell_t::execute();
+    essence_spell_t::execute();
 
     p()->buff.charged_blast->expire();
   }
 
-  double composite_da_multiplier( const action_state_t* /*s*/ ) const override
+  void snapshot_state( action_state_t* s, result_amount_type rt )
   {
-    // The base da_mul is NOT called here since we only want to capture the multiplier from charged blast & iridescence
-    // in order to pass it on to the damage action state.
-    double da = 1.0;
-    da *= 1.0 + p()->buff.charged_blast->check_stack_value();
-    da *= 1.0 + p()->buff.iridescence_red->check_value();
+    essence_spell_t::snapshot_state( s, rt );
 
-    return da;
+    auto s_ = static_cast<state_t*>( s );
+    s_->charged_blast = p()->buff.charged_blast->check_stack_value();
+    s_->essence_burst = p()->buff.essence_burst->check() ? titanic_mul : 0.0;
+    s_->iridescence = p()->buff.iridescence_red->check_value();
   }
 
   void impact( action_state_t* s ) override
   {
-    evoker_spell_t::impact( s );
+    essence_spell_t::impact( s );
 
-    // The captured da mul from charged blast and iridescence is passed along to the damage action state.
+    // The captured da mul is passed along to the damage action state.
     auto state = damage->get_state();
-    state->target = s->target;
+    state->copy_state( s );
     damage->snapshot_state( state, damage->amount_type( state ) );
-    state->da_multiplier *= s->da_multiplier;
     damage->schedule_execute( state );
 
     // TODO: How many times can volatility chain?
