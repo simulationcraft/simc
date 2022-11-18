@@ -68,7 +68,8 @@ actions.main+=/shadow_word_death,if=pet.fiend.active&variable.sfp&(pet.fiend.rem
 actions.main+=/mind_blast,if=(cooldown.mind_blast.full_recharge_time<=gcd.max|pet.fiend.remains<=cast_time+gcd.max)&pet.fiend.active&variable.sfp&pet.fiend.remains>cast_time&spell_targets.mind_sear<=7
 actions.main+=/damnation,target_if=dot.vampiric_touch.refreshable&variable.is_vt_possible|dot.shadow_word_pain.refreshable
 actions.main+=/void_bolt,if=variable.dots_up&insanity<=85
-actions.main+=/mind_sear,target_if=(spell_targets.mind_sear>variable.mind_sear_cutoff|buff.voidform.up)&buff.mind_devourer.up
+# Use Mind Devourer Procs on Mind Sear when facing 2 or more targets or Voidform is active.
+actions.main+=/mind_sear,target_if=(spell_targets.mind_sear>1|buff.voidform.up)&buff.mind_devourer.up
 actions.main+=/mind_sear,target_if=spell_targets.mind_sear>variable.mind_sear_cutoff,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2
 actions.main+=/devouring_plague,if=(refreshable&!variable.pool_for_cds|insanity>75|talent.void_torrent&cooldown.void_torrent.remains<=3*gcd|buff.mind_devourer.up&cooldown.mind_blast.full_recharge_time<=2*gcd.max&!cooldown.void_eruption.up&talent.void_eruption)
 actions.main+=/shadow_word_death,target_if=(target.health.pct<20&spell_targets.mind_sear<4)&(!variable.sfp|cooldown.fiend.remains>=10)|(pet.fiend.active&variable.sfp&spell_targets.mind_sear<=7)|buff.deathspeaker.up&(cooldown.fiend.remains+gcd.max)>buff.deathspeaker.remains
@@ -127,11 +128,11 @@ main_hand=final_grade,id=193707,bonus_id=6808/4786/1643,enchant=sophic_devotion_
 
 # Gear Summary
 # gear_ilvl=421.80
-# gear_stamina=13556
-# gear_intellect=7316
+# gear_stamina=13334
+# gear_intellect=6646
 # gear_crit_rating=1463
-# gear_haste_rating=6876
-# gear_mastery_rating=5325
+# gear_haste_rating=5156
+# gear_mastery_rating=4940
 # gear_versatility_rating=263
 # gear_armor=2037
 # set_bonus=tier29_2pc=1
