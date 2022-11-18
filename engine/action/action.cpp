@@ -4293,7 +4293,10 @@ void run_action_list_t::execute()
         player->readying ? " (off-gcd)" : "");
 
   if ( player->restore_action_list == nullptr )
+  {
     player->restore_action_list = player->active_action_list;
+    player->restore_action_list_type = player->current_execute_type;
+  }
   player->activate_action_list( alist, player->current_execute_type );
 }
 

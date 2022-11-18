@@ -2457,20 +2457,6 @@ void waking_bone_breastplate( special_effect_t& effect )
     } );
 }
 
-// Passive which increases Stamina based on Renown level
-void deepening_bond( special_effect_t& effect )
-{
-  const auto spell = effect.driver();
-
-  if ( effect.player->sim->debug )
-  {
-    effect.player->sim->out_debug.print( "{} increasing stamina by {}% ({})", effect.player->name(),
-                                         spell->effectN( 1 ).base_value(), spell->name_cstr() );
-  }
-
-  effect.player->base.attribute_multiplier[ ATTR_STAMINA ] *= 1.0 + spell->effectN( 1 ).percent();
-}
-
 // Helper function for registering an effect, with autoamtic skipping initialization if soulbind spell is not available
 void register_soulbind_special_effect( unsigned spell_id, const custom_cb_t& init_callback, bool fallback = false )
 {
@@ -2540,27 +2526,6 @@ void register_special_effects()
   register_soulbind_special_effect( 350899, soulbinds::carvers_eye );
   register_soulbind_special_effect( 350935, soulbinds::waking_bone_breastplate );
   register_soulbind_special_effect( 350936, soulbinds::mnemonic_equipment );
-  // Covenant Renown Stamina Passives
-  unique_gear::register_special_effect( 344052, soulbinds::deepening_bond );  // Night Fae Rank 1
-  unique_gear::register_special_effect( 344053, soulbinds::deepening_bond );  // Night Fae Rank 2
-  unique_gear::register_special_effect( 344057, soulbinds::deepening_bond );  // Night Fae Rank 3
-  unique_gear::register_special_effect( 353870, soulbinds::deepening_bond );  // Night Fae Rank 4
-  unique_gear::register_special_effect( 353886, soulbinds::deepening_bond );  // Night Fae Rank 5
-  unique_gear::register_special_effect( 344068, soulbinds::deepening_bond );  // Venthyr Rank 1
-  unique_gear::register_special_effect( 344069, soulbinds::deepening_bond );  // Venthyr Rank 2
-  unique_gear::register_special_effect( 344070, soulbinds::deepening_bond );  // Venthyr Rank 3
-  unique_gear::register_special_effect( 354195, soulbinds::deepening_bond );  // Venthyr Rank 4
-  unique_gear::register_special_effect( 354204, soulbinds::deepening_bond );  // Venthyr Rank 5
-  unique_gear::register_special_effect( 344076, soulbinds::deepening_bond );  // Necrolord Rank 1
-  unique_gear::register_special_effect( 344077, soulbinds::deepening_bond );  // Necrolord Rank 2
-  unique_gear::register_special_effect( 344078, soulbinds::deepening_bond );  // Necrolord Rank 3
-  unique_gear::register_special_effect( 354025, soulbinds::deepening_bond );  // Necrolord Rank 4
-  unique_gear::register_special_effect( 354129, soulbinds::deepening_bond );  // Necrolord Rank 5
-  unique_gear::register_special_effect( 344087, soulbinds::deepening_bond );  // Kyrian Rank 1
-  unique_gear::register_special_effect( 344089, soulbinds::deepening_bond );  // Kyrian Rank 2
-  unique_gear::register_special_effect( 344091, soulbinds::deepening_bond );  // Kyrian Rank 3
-  unique_gear::register_special_effect( 354252, soulbinds::deepening_bond );  // Kyrian Rank 4
-  unique_gear::register_special_effect( 354257, soulbinds::deepening_bond );  // Kyrian Rank 5
 }
 
 action_t* create_action( player_t* player, util::string_view name, util::string_view options )

@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.46597 Live (hotfix 2022-11-11/46597)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46658 Live (hotfix 2022-11-16/46658)
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -117,7 +117,6 @@ Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... .....
 Effects          :
 #1 (id=280)      : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.22045 | PvP Coefficient: 1.00000 | Mechanic: Bleed | Target: Enemy (6)
-Hotfixed         : AP Coefficient (0.20412 -> 0.22045)
 #2 (id=281)      : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=282)      : Energize Power (30)
@@ -1932,7 +1931,6 @@ Attributes       : ....x... ........ x....... ........   ....x... .x...... .....
 Effects          :
 #1 (id=44107)    : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.53000 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
-Hotfixed         : AP Coefficient (0.4416 -> 0.53)
 #2 (id=797538)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000
 #3 (id=819846)   : Dummy (3)
@@ -3753,7 +3751,6 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
 #3 (id=283621)   : Dummy (3)
                    Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (30 -> 35)
 #4 (id=283622)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Viciously strike an enemy, causing ${$s1*$<mult>} Physical damage.$?s279876[
@@ -4338,7 +4335,6 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 6 | Target: Self (1)
                    Affected Spells: Fan of Knives (51723), Crimson Tempest (121411), Shuriken Storm (197835), Poison Bomb (255546), Blade Rush (271877), Blade Rush (271881), Blade Rush (271896), Black Powder (319175), Black Powder (319190), Blade Flurry (331850)
                    Family Flags: 13, 44, 50, 81, 86, 92, 127
-Hotfixed         : Affects Spells
 #5 (id=335443)   : Apply Aura (6) | Add Flat Modifier (107): Spell Chain Target Range (35)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 35 | Target: Self (1)
                    Affected Spells: Blade Flurry (22482)
@@ -4346,7 +4342,6 @@ Hotfixed         : Affects Spells
 #6 (id=1041020)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Range (5)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 5 | Misc Value 2: 2423 (Label)
                    Affected Spells (Label): Exsanguinate (200806)
-Hotfixed         : NEW EFFECT
 Description      : Increases the range of your melee attacks by $s1 yds.
 
 Name             : Ghostly Strike (id=196937) [Spell Family (8)] 
@@ -9365,7 +9360,6 @@ Effects          :
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000
 #3 (id=819939)   : Dummy (3)
                    Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000
-Hotfixed         : Base Value (30 -> 35)
 Description      : Ambush and Mutilate have a $s1% chance to make your next Ambush free and usable without Stealth. Chance increased to $s2% if the target is under $s3% health.
 
 Name             : Sepsis (desc=Night Fae) (id=328305) [Spell Family (8)] 
@@ -11500,7 +11494,6 @@ Attributes       : ....x... ........ x.x..x.. ........   .....x.. .x...... .....
 Effects          :
 #1 (id=898195)   : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.22045 | PvP Coefficient: 1.00000 | Mechanic: Bleed | Target: Enemy (6)
-Hotfixed         : AP Coefficient (0.20412 -> 0.22045)
 #2 (id=898196)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc360194
@@ -12381,10 +12374,8 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 6 | Target: Self (1)
                    Affected Spells: Fan of Knives (51723)
                    Family Flags: 50
-Hotfixed         : Base Value (5 -> 2)
 #4 (id=1012597)  : Dummy (3)
                    Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000
-Hotfixed         : Base Value (15 -> 12)
 Description      : Fan of Knives' radius is increased to $s4 yds and deals $s1% more damage when it strikes $s2 or more targets.
 
 Name             : Improved Garrote (id=381632) [Spell Family (8), Passive] 
@@ -12632,10 +12623,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1012875)  : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (10 -> 15)
 #2 (id=1012876)  : Apply Aura (6) | Dummy (4)
                    Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (30 -> 35)
 Description      : Your Poisons and Bleeds deal $s1% increased damage to targets below $s2% health.
 
 Name             : Scent of Blood (id=381799) [Spell Family (8), Passive] 
@@ -13111,7 +13100,6 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Gouge (1776), Mutilate (5374), Shiv (5938), Ambush (8676), Mutilate (27576), Fan of Knives (51723), Quaking Palm (107079), Shuriken Toss (114014), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Ghostly Strike (196937), Sinister Strike (197834), Shuriken Storm (197835), Gloomblade (200758), Echoing Reprimand (323547), Echoing Reprimand (323558), Echoing Reprimand (323559), Echoing Reprimand (323560), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Sinister Strike (341541), Dreadblades (343142), Echoing Reprimand (354838), Garrote (360830), Sepsis (375936), Sepsis (385408), Serrated Bone Spike (385424), Echoing Reprimand (385616), Kingsbane (385627), Ambush (385794), Mutilate (385802), Mutilate (385806), Ambush (385897), Sepsis (394026), Serrated Bone Spike (394036)
                    Family Flags: 1, 2, 3, 8, 9, 25, 26, 29, 33, 34, 50, 53, 75, 82, 98, 101, 109, 115, 118, 119, 127
-Hotfixed         : Affects Spells
 Description      : Critical strike chance increased by $s1%. Critical strike damage bonus of your attacks that generate combo points increased by $s2%.
 
 Name             : Cold Blood (id=382245) [Spell Family (8)] 
@@ -13802,7 +13790,6 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Garrote (703), Garrote (360830)
                    Family Flags: 8
-Hotfixed         : Base Value (15 -> 20)
 #2 (id=1018750)  : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000
 Description      : Increases Garrote damage by $s1%. Garrote generates $s2 additional combo points when cast from Stealth.
@@ -13874,12 +13861,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=1019023)  : School Damage (2): nature
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.38600 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (1.32 -> 1.386)
 #3 (id=1019024)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #4 (id=1019025)  : Apply Aura (6) | Periodic Damage (3): nature every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.23100 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (0.22 -> 0.231)
 #5 (id=1019026)  : Apply Aura (6) | Proc Trigger Spell (42): Kingsbane
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Trigger Spell: 394095 | Target: Self (1)
 #6 (id=1019027)  : Energize Power (30)
@@ -15256,7 +15241,6 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Garrote (703), Rupture (1943), Crimson Tempest (121411), Internal Bleeding (154953), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Serrated Bone Spike (328547), Deathmark (360194), Rupture (360826), Garrote (360830), Serrated Bone Spike (385424), Rupture (394031), Serrated Bone Spike (394036), Deathmark (394331)
                    Family Flags: 8, 20, 59, 81, 95, 115, 126
-Hotfixed         : Misc Value (0 -> 22), Affects Spells
 Description      : @spelldesc393725
 Tooltip          : Bleed damage increased by $w1%.
 

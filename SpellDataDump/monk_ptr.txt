@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.46597 Live (hotfix 2022-11-11/46597)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46658 Live (hotfix 2022-11-16/46658)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -888,7 +888,6 @@ $high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}
 
 
 Name             : Stagger (id=115069) [Spell Family (53), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Brewmaster [tree=spec, row=2, col=1, max_rank=1, req_points=0]
 Class            : Monk
 School           : Physical
@@ -1264,7 +1263,6 @@ Attributes       : ........ ........ x....... ........   ........ ..x....x .....
 Effects          :
 #1 (id=129071)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 3.25450 | PvP Coefficient: 1.75000 | Radius: 0 - 40 yards | Target: At Caster (22) -> Raid Members (56)
-Hotfixed         : SP Coefficient (2.83 -> 3.2545)
 #2 (id=140011)   : Dispel (38)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 3 | Radius: 0 - 40 yards | Target: At Caster (22) -> Raid Members (56)
 #3 (id=155430)   : Dispel (38)
@@ -1560,7 +1558,6 @@ Description      : $@spelldesc115546
 Tooltip          : Taunted. Movement speed increased by $s3%.
 
 Name             : Teachings of the Monastery (id=116645) [Spell Family (53), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Mistweaver [tree=spec, row=4, col=1, max_rank=1, req_points=0]
                  : Windwalker [tree=spec, row=7, col=4, max_rank=1, req_points=8]
 Class            : Monk
@@ -2204,7 +2201,6 @@ Attributes       : ........ ........ ..x..... x..x....   ........ ........ .....
 Effects          :
 #1 (id=138091)   : Apply Aura (6) | Periodic Heal (8): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.19665 | PvP Coefficient: 1.25000 | Target: Friend (21)
-Hotfixed         : SP Coefficient (0.207 -> 0.19665)
 Description      : $@spelldesc115151
 Tooltip          : Restores $w1 health every $t1 sec.
 
@@ -3001,7 +2997,6 @@ Description      : $@spelldesc122470
 Tooltip          : $w1 Nature damage every $t1 sec.
 
 Name             : Gift of the Ox (id=124502) [Spell Family (53), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Brewmaster [tree=spec, row=4, col=2, max_rank=2, req_points=0]
                  : Effect#2 [op=set, values=(50, 100)]
 Class            : Monk
@@ -3113,14 +3108,12 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=157840)   : Apply Aura (6) | Periodic Heal (8): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.43605 | PvP Coefficient: 1.00000 | Target: Friend (21)
-Hotfixed         : SP Coefficient (0.459 -> 0.43605)
 #2 (id=290817)   : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Friend (21)
                    Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Celestial Breath (325212), Soothing Mist (328283), Gust of Mists (328748), Yu'lon's Whisper (337268), Soothing Breath (343737), Gust of Mists (343819), Enveloping Mist (344008), Faeline Stomp (345727), Yu'lon's Whisper (388044), Faeline Stomp (388207), Restoral (388615)
                    Family Flags: 48, 102
 #3 (id=874900)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.61630 | PvP Coefficient: 1.00000 | Radius: 0 - 60 yards | Target: Unknown(132) -> AOE friendly (31)
-Hotfixed         : SP Coefficient (2.754 -> 2.6163)
 Description      : Wraps the target in healing mists, healing for $o1 over $d, and increasing healing received from your other spells by $m2%. $?a388847[
 
 Applies Renewing Mist for $388847s1 seconds to an ally within $388847r yds.][]
@@ -3987,17 +3980,14 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000
                    Affected Spells: Rising Sun Kick (107428), Rising Sun Kick (185099)
                    Family Flags: 39
-Hotfixed         : Base Value (-12 -> 10)
 #12 (id=260833)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000
                    Affected Spells: Blackout Kick (100784), Blackout Kick (205523), Blackout Kick (228649)
                    Family Flags: 4
-Hotfixed         : Base Value (0 -> -20)
 #13 (id=260834)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 54 | Scaled Value: 54 | PvP Coefficient: 1.00000
                    Affected Spells: Tiger Palm (100780)
                    Family Flags: 10
-Hotfixed         : Base Value (10 -> 54)
 #14 (id=260835)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 125 | Scaled Value: 125 | PvP Coefficient: 1.00000
                    Affected Spells: Spinning Crane Kick (107270)
@@ -4022,12 +4012,10 @@ Hotfixed         : Base Value (10 -> 54)
 #21 (id=1041449)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 2425 (Label) | Target: Self (1)
                    Affected Spells (Label): Teachings of the Monastery (116645)
-Hotfixed         : NEW EFFECT
 #22 (id=1041505)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -29 | Scaled Value: -29 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Vivify (116670)
                    Family Flags: 26
-Hotfixed         : NEW EFFECT
 Description      : Mistweaver Monk core passive
 
 Name             : Windwalker Monk (id=137025) [Spell Family (53), Passive, Hidden] 
@@ -4578,7 +4566,6 @@ Effects          :
                    Base Value: 95 | Scaled Value: 95 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
 
 Name             : Windwalking (id=157411) [Spell Family (53), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=8, col=3, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(2, 4)]
 Class            : Monk
@@ -4660,7 +4647,6 @@ Attributes       : ........ ........ ........ ...x....   ........ ........ .....
 Effects          :
 #1 (id=228215)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.13224 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE friendly (30)
-Hotfixed         : SP Coefficient (0.1392 -> 0.13224)
 Description      : $@spelldesc196725
 
 Name             : Stat Negation Aura - Agility DPS (id=162697) [Passive, Hidden] 
@@ -4891,7 +4877,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=281444)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.40356 | PvP Coefficient: 1.00000 | Radius: 0 - 30 yards | Target: Custom (18) -> AOE friendly (31)
-Hotfixed         : SP Coefficient (0.4248 -> 0.40356)
 #2 (id=289619)   : Apply Aura (6) | Periodic Heal (8): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.03780 | PvP Coefficient: 1.00000 | Radius: 0 - 30 yards | Target: Custom (18) -> AOE friendly (31)
 Description      : $@spelldesc191837
@@ -4920,7 +4905,6 @@ Effects          :
 Description      : $@spelldesc117907
 
 Name             : Inner Peace (id=195243) [Spell Family (53), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Windwalker [tree=spec, row=5, col=2, max_rank=1, req_points=8]
 Class            : Monk
 School           : Physical
@@ -4941,7 +4925,6 @@ Effects          :
 Description      : Increases maximum Energy by $s1.
 
 Name             : Transfer the Power (id=195300) [Spell Family (53), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Windwalker [tree=spec, row=9, col=5, max_rank=1, req_points=20]
 Class            : Monk
 School           : Physical
@@ -5176,7 +5159,6 @@ Description      : Summon a whirling tornado around you, causing ${$162530s1*21}
 Tooltip          : Healing $s2 nearby allies every $116847t1 sec.
 
 Name             : Special Delivery (id=196730) [Spell Family (53), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Brewmaster [tree=spec, row=4, col=5, max_rank=1, req_points=0, select_idx=200]
 Class            : Monk
 School           : Physical
@@ -5257,7 +5239,6 @@ Effects          :
 Description      : $@spelldesc196730
 
 Name             : Blackout Combo (id=196736) [Spell Family (53), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Brewmaster [tree=spec, row=9, col=4, max_rank=1, req_points=20]
 Class            : Monk
 School           : Physical
@@ -5296,7 +5277,6 @@ Celestial Brew: Gain up to $s6 additional stacks of Purified Chi.
 Purifying Brew: Pauses Stagger damage for $s4 sec.
 
 Name             : High Tolerance (id=196737) [Spell Family (53), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Brewmaster [tree=spec, row=8, col=2, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(2, 4)]
                  : Effect#2 [op=set, values=(2, 5)]
@@ -5339,7 +5319,6 @@ Description      : Stagger is $s1% more effective at delaying damage.
 You gain up to $s4% Haste based on your current level of Stagger.
 
 Name             : Hit Combo (id=196740) [Spell Family (53), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Windwalker [tree=spec, row=6, col=5, max_rank=1, req_points=8]
 Class            : Monk
 School           : Physical
@@ -6777,7 +6756,6 @@ Effects          :
 Description      : $@spelldesc123986
 
 Name             : Inner Strength (id=261767) [Spell Family (53), Passive, Hidden] 
-Hotfixed         : Attributes
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -7832,7 +7810,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=726171)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 2.66000 | PvP Coefficient: 1.00000 | Target: Friend (21)
-Hotfixed         : SP Coefficient (2.8 -> 2.66)
 #2 (id=893187)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000
 #3 (id=893188)   : Direct Heal (10)
@@ -7922,7 +7899,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=727565)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.23940 | PvP Coefficient: 1.00000 | Radius: 0 - 60 yards | Target: Custom (18) -> AOE friendly (31)
-Hotfixed         : SP Coefficient (0.252 -> 0.2394)
 Description      : $@spelldesc274909
 
 Name             : Upwelling (id=274963) [Spell Family (53), Passive] 
@@ -8465,7 +8441,6 @@ Effects          :
 Description      : $s1% of the damage redirected by Touch of Karma also heals you.
 
 Name             : Spiritual Focus (id=280197) [Spell Family (53), Passive, Hidden] 
-Hotfixed         : Attributes
 Talent Entry     : Windwalker [tree=spec, row=6, col=4, max_rank=1, req_points=8]
 Class            : Monk
 School           : Physical
@@ -8624,7 +8599,6 @@ Effects          :
 Description      : Your spells and abilities have a chance to conjure Swirling Sands, increasing your Critical Strike by $s1 for $280433d. Your critical effects extend Swirling Sands by ${$s2/1000} sec, up to a maximum duration of ${$280433d+($s3/1000)} sec.
 
 Name             : Bob and Weave (id=280515) [Spell Family (53), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Brewmaster [tree=spec, row=7, col=3, max_rank=1, req_points=8, select_idx=200]
 Class            : Monk
 School           : Physical
@@ -10034,7 +10008,6 @@ Variables        : $absorb=${($AP*6)*(1+$@versadmg)}
 
 
 Name             : Improved Celestial Brew (id=322510) [Spell Family (53), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Brewmaster [tree=spec, row=6, col=2, max_rank=1, req_points=8]
 Class            : Monk
 School           : Physical
@@ -10126,7 +10099,6 @@ Tooltip          : Attacking all nearby enemies for Physical damage every $10154
 Variables        : $CAP=$?$OWB==0[${$AP*0.98}][${($AP+$OAP)*2/3}]--2H, DW
 
 Name             : Improved Invoke Niuzao, the Black Ox (id=322740) [Spell Family (53), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Brewmaster [tree=spec, row=9, col=2, max_rank=1, req_points=20]
 Class            : Monk
 School           : Physical
@@ -10146,7 +10118,6 @@ Effects          :
 Description      : Purifying Stagger damage while Niuzao is active increases the damage of Niuzao's next Stomp by $s1% of damage purified, split between all enemies.
 
 Name             : Fortifying Brew: Determination (id=322960) [Spell Family (53), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Brewmaster [tree=spec, row=7, col=2, max_rank=1, req_points=8]
 Class            : Monk
 School           : Physical
@@ -10241,7 +10212,6 @@ Description      : $@spelldesc119582
 Tooltip          : Increases the absorption of your next Celestial Brew by $w1%.
 
 Name             : Light Brewing (id=325093) [Spell Family (53), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Brewmaster [tree=spec, row=7, col=5, max_rank=1, req_points=8, select_idx=100]
 Class            : Monk
 School           : Physical
@@ -10323,7 +10293,6 @@ Description      : Hurls a flaming keg at the target location, dealing $s1 Fire 
 Tooltip          : Misses melee attacks.
 
 Name             : Celestial Flames (id=325177) [Spell Family (53), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Brewmaster [tree=spec, row=5, col=1, max_rank=1, req_points=8]
 Class            : Monk
 School           : Physical
@@ -10476,7 +10445,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=815359)   : Apply Aura (6) | Periodic Heal (8): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.27000 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: Unknown(132) -> AOE friendly (31)
-Hotfixed         : SP Coefficient (0.3 -> 0.27)
 #2 (id=845650)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friend (21)
 #3 (id=867662)   : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
@@ -10878,7 +10846,6 @@ Effects          :
 Description      : $@spelldesc325216
 
 Name             : Improved Roll (id=328669) [Spell Family (53), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=2, col=1, max_rank=1, req_points=0]
 Class            : Monk
 School           : Physical
@@ -13742,7 +13709,6 @@ Description      : Increase maximum health by $s1.
 Tooltip          : Increases maximum health by $w1.
 
 Name             : Hit Scheme (id=383695) [Spell Family (53), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Brewmaster [tree=spec, row=4, col=1, max_rank=1, req_points=0]
 Class            : Monk
 School           : Physical
@@ -13793,7 +13759,6 @@ Description      : $@spelldesc383695
 Tooltip          : The damage of your next Keg Smash is increased by $w1%.
 
 Name             : Sal'salabim's Strength (id=383697) [Spell Family (53), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Brewmaster [tree=spec, row=7, col=1, max_rank=1, req_points=8, select_idx=200]
 Class            : Monk
 School           : Physical
@@ -13816,7 +13781,6 @@ Effects          :
 Description      : When you use Keg Smash, the remaining cooldown on Breath of Fire is reset.
 
 Name             : Scalding Brew (id=383698) [Spell Family (53), Passive, Hidden] 
-Hotfixed         : Attributes
 Talent Entry     : Brewmaster [tree=spec, row=7, col=1, max_rank=1, req_points=8, select_idx=100]
 Class            : Monk
 School           : Physical
@@ -13837,7 +13801,6 @@ Effects          :
 Description      : Keg Smash deals an additional $s1% damage to targets affected by Breath of Fire.
 
 Name             : Gai Plin's Imperial Brew (id=383700) [Spell Family (53), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Brewmaster [tree=spec, row=6, col=4, max_rank=1, req_points=8, select_idx=200]
 Class            : Monk
 School           : Physical
@@ -13875,7 +13838,6 @@ Effects          :
 Description      : $@spelldesc383700
 
 Name             : Stormstout's Last Keg (id=383707) [Spell Family (53), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Brewmaster [tree=spec, row=10, col=2, max_rank=1, req_points=20]
 Class            : Monk
 School           : Physical
@@ -13903,7 +13865,6 @@ Effects          :
 Description      : Keg Smash deals $m1% additional damage, and has $m2 additional $?m2>1[charge][charges].
 
 Name             : Training of Niuzao (id=383714) [Spell Family (53), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Brewmaster [tree=spec, row=7, col=5, max_rank=1, req_points=8, select_idx=200]
 Class            : Monk
 School           : Physical
@@ -13972,7 +13933,6 @@ Effects          :
 Description      : $@spelldesc388505
 
 Name             : Counterstrike (id=383785) [Spell Family (53), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Brewmaster [tree=spec, row=8, col=6, max_rank=1, req_points=20]
 Class            : Monk
 School           : Physical
@@ -14025,7 +13985,6 @@ Effects          :
 Tooltip          : Your next Tiger Palm or Spinning Crane Kick deals $w1% increased damage.
 
 Name             : Dragonfire Brew (id=383994) [Spell Family (53), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Brewmaster [tree=spec, row=8, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Monk
 School           : Physical
@@ -14094,7 +14053,6 @@ When Bonedust Brew deals Shadow damage or healing, its cooldown is reduced by ${
 Tooltip          : The Monk's abilities have a $h% chance to affect the target a second time at $s1% effectiveness as Shadow damage or healing.
 
 Name             : Anvil & Stave (id=386937) [Spell Family (53), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Brewmaster [tree=spec, row=8, col=5, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(5, 10)]
 Class            : Monk
@@ -14119,7 +14077,6 @@ Effects          :
 Description      : Each time you dodge or an enemy misses you, the remaining cooldown on your Brews is reduced by ${$s1/10}.1 sec. This effect can only occur once every $proccooldown sec.
 
 Name             : Attenuation (id=386941) [Spell Family (53), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Mistweaver [tree=spec, row=9, col=6, max_rank=1, req_points=20, select_idx=200]
                  : Windwalker [tree=spec, row=10, col=1, max_rank=1, req_points=20]
                  : Brewmaster [tree=spec, row=10, col=1, max_rank=1, req_points=20, select_idx=200]
@@ -14143,7 +14100,6 @@ Effects          :
 Description      : Bonedust Brew's Shadow damage or healing is increased by ${$s1}.1%, and when Bonedust Brew deals Shadow damage or healing, its cooldown is reduced by ${$s2/-1000}.1 sec.
 
 Name             : Bountiful Brew (id=386949) [Spell Family (53), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Mistweaver [tree=spec, row=9, col=6, max_rank=1, req_points=20, select_idx=100]
                  : Brewmaster [tree=spec, row=10, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Monk
@@ -14213,7 +14169,6 @@ Description      : $@spelldesc386965
 Tooltip          : Your Blackout Kick and Spinning Crane Kick deal $w1% increased damage as Fire damage, and their damage refreshes the duration of Breath of Fire on the target.
 
 Name             : Charred Passions (id=386965) [Spell Family (53), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Brewmaster [tree=spec, row=8, col=1, max_rank=1, req_points=20, select_idx=200]
 Class            : Monk
 School           : Physical
@@ -14236,7 +14191,6 @@ Effects          :
 Description      : Your Breath of Fire ignites your right leg in flame for $386963d, causing your Blackout Kick and Spinning Crane Kick to deal $s1% additional damage as Fire damage and refresh the duration of your Breath of Fire on the target.
 
 Name             : Fundamental Observation (id=387035) [Spell Family (53), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Brewmaster [tree=spec, row=6, col=5, max_rank=1, req_points=8]
 Class            : Monk
 School           : Physical
@@ -14262,7 +14216,6 @@ Effects          :
 Description      : Zen Meditation has $s2% reduced cooldown and is no longer cancelled when you move or when you are hit by melee attacks.
 
 Name             : Elusive Footwork (id=387046) [Spell Family (53), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Brewmaster [tree=spec, row=8, col=4, max_rank=2, req_points=20]
                  : Effect#2 [op=set, values=(1, 2)]
                  : Effect#3 [op=set, values=(5, 10)]
@@ -14360,7 +14313,6 @@ Description      : For the next $d, your Mastery is increased by $?c1[${$117906b
 Tooltip          : Increases your Mastery by $?c1[${$117906bc1*$w1}]?c2[${$117907bc1*$w1}][${$115636bc1*$w1}]%$?a137025[, Rising Sun Kick reduces Chi costs by $311054s1 for $311054d, and Blackout Kick reduces the cooldown of affected abilities by an additional ${$s8/1000} sec.]?a137023 [ and your Keg Smash increases the damage you deal to those enemies by $312106s1%, up to ${$312106s1*$312106u}% for $312106d.]?a137024[ and your Essence Font heals nearby allies for $311123s1 health on channel start and end.][ and your abilities are enhanced.]
 
 Name             : Walk with the Ox (id=387219) [Spell Family (53), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Brewmaster [tree=spec, row=8, col=3, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(10, 20)]
                  : Effect#2 [op=set, values=(-250, -500)]
@@ -14386,7 +14338,6 @@ Effects          :
 Description      : Abilities that grant Shuffle reduce the cooldown on Invoke Niuzao, the Black Ox by ${$s2/-1000}.2 sec, and Niuzao's Stomp deals an additional $s1% damage. 
 
 Name             : Fluidity of Motion (id=387230) [Spell Family (53), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Brewmaster [tree=spec, row=6, col=6, max_rank=1, req_points=8, select_idx=200]
 Class            : Monk
 School           : Physical
@@ -14437,7 +14388,6 @@ Description      : $@spelldesc387256
 Tooltip          : Increases movement speed by $w1%.
 
 Name             : Graceful Exit (id=387256) [Spell Family (53), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Brewmaster [tree=spec, row=5, col=4, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(5, 10)]
 Class            : Monk
@@ -14461,7 +14411,6 @@ Effects          :
 Description      : After you successfully dodge or an enemy misses you, you gain $s1% increased movement speed for $387254d. Max $387254u stacks.
 
 Name             : Strength of Spirit (id=387276) [Spell Family (53), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=7, col=6, max_rank=1, req_points=8]
 Class            : Monk
 School           : Physical
@@ -14520,7 +14469,6 @@ Description      : Reduces Stagger by $<reduc>.
 Variables        : $reduc=${$AP*$387625s2/100}
 
 Name             : Staggering Strikes (id=387625) [Spell Family (53), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Brewmaster [tree=spec, row=5, col=3, max_rank=2, req_points=8]
                  : Effect#2 [op=set, values=(50, 100)]
 Class            : Monk
@@ -14547,7 +14495,6 @@ Description      : When you Blackout Kick, your Stagger is reduced by $<reduc>.
 Variables        : $reduc=${$AP*$387625s2/100}
 
 Name             : Shadowboxing Treads (id=387638) [Spell Family (53), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Brewmaster [tree=spec, row=6, col=6, max_rank=1, req_points=8, select_idx=100]
 Class            : Monk
 School           : Physical
@@ -14811,7 +14758,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1023503)  : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.42750 | PvP Coefficient: 1.00000 | Radius: 15 yards | Target: Unknown(136)
-Hotfixed         : SP Coefficient (0.45 -> 0.4275)
 Description      : $@spelldesc388038
 
 Name             : Clouded Focus (id=388047) [Spell Family (53), Passive] 
@@ -15138,7 +15084,6 @@ Description      : $@spelldesc388491
 Tooltip          : Haste increased by $w1%.
 
 Name             : Quick Sip (id=388505) [Spell Family (53), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Brewmaster [tree=spec, row=4, col=4, max_rank=2, req_points=0]
                  : Effect#1 [op=set, values=(1, 2)]
 Class            : Monk
@@ -15337,7 +15282,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1024307)  : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (10 -> 15)
 #2 (id=1024308)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Vivify critical strikes and Rising Sun Kicks reduce the remaining cooldown on $?s388615[Restoral][Revival] by ${$s2/1000}.1 sec, and $?s388615[Restoral][Revival] heals targets for ${$s1}.1% of $?s388615[Restoral's][Revival's] heal over $388555d.
@@ -15481,7 +15425,6 @@ Attributes       : ........ ........ x....... ........   ........ ..x....x .....
 Effects          :
 #1 (id=1024408)  : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 3.25450 | PvP Coefficient: 1.75000 | Radius: 0 - 40 yards | Target: At Caster (22) -> Raid Members (56)
-Hotfixed         : SP Coefficient (2.83 -> 3.2545)
 #2 (id=1024409)  : Dispel (38)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 3 | Radius: 0 - 40 yards | Target: At Caster (22) -> Raid Members (56)
 #3 (id=1024410)  : Dispel (38)
@@ -15491,7 +15434,6 @@ Description      : Heals all party and raid members within $A1 yards for $s1 and
 Castable while stunned.
 
 Name             : Invoker's Delight (id=388661) [Spell Family (53), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Mistweaver [tree=spec, row=10, col=4, max_rank=1, req_points=20]
                  : Windwalker [tree=spec, row=10, col=4, max_rank=1, req_points=20]
 Class            : Monk
@@ -15701,7 +15643,6 @@ Effects          :
 Description      : Your Blackout Kicks strike ${$s2+1} targets and have an additional $s1% chance to reset the cooldown of your Rising Sun Kick while within your Faeline Stomp.
 
 Name             : Awakened Faeline (id=388779) [Spell Family (53), Passive] 
-Hotfixed         : Description
 Talent Entry     : Mistweaver [tree=spec, row=10, col=1, max_rank=1, req_points=20]
 Class            : Monk
 School           : Physical
@@ -15780,7 +15721,6 @@ Description      : Increases all healing taken by $s1%.
 Tooltip          : Increases all healing taken  by $w1%.
 
 Name             : Vivacious Vivification (id=388812) [Spell Family (53), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=4, col=2, max_rank=1, req_points=0]
 Class            : Monk
 School           : Frost
@@ -15847,7 +15787,6 @@ Increases Dodge while Fortifying Brew is active by $s1%.
 
 
 Name             : Widening Whirl (id=388846) [Spell Family (53), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Windwalker [tree=spec, row=3, col=1, max_rank=1, req_points=0]
 Class            : Monk
 School           : Physical
@@ -15894,7 +15833,6 @@ Effects          :
 Description      : Rising Sun Kick and Enveloping Mist apply Renewing Mist for $s1 seconds to an ally within $r yds.
 
 Name             : Crane Vortex (id=388848) [Spell Family (53), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Windwalker [tree=spec, row=8, col=1, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(10, 20)]
 Class            : Monk
@@ -15917,7 +15855,6 @@ Effects          :
 Description      : Spinning Crane Kick damage increased by $s1%.
 
 Name             : Rising Star (id=388849) [Spell Family (53), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Windwalker [tree=spec, row=8, col=5, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(5, 10)]
 Class            : Monk
@@ -15940,7 +15877,6 @@ Effects          :
 Description      : Rising Sun Kick damage increased by $s1%.
 
 Name             : Flashing Fists (id=388854) [Spell Family (53), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Windwalker [tree=spec, row=3, col=4, max_rank=2, req_points=0]
                  : Effect#1 [op=set, values=(10, 20)]
 Class            : Monk
@@ -16074,7 +16010,6 @@ Effects          :
 Description      : Deals $s1 Nature damage.
 
 Name             : Close to Heart (id=389574) [Spell Family (53), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=8, col=1, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(4, 8)]
 Class            : Monk
@@ -16098,7 +16033,6 @@ Effects          :
 Description      : You and your allies within $m2 yards have $s1% increased healing taken from all sources.
 
 Name             : Generous Pour (id=389575) [Spell Family (53), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=8, col=5, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(-2, -4)]
 Class            : Monk
@@ -16122,7 +16056,6 @@ Effects          :
 Description      : You and your allies within $m2 yards have $s1% increased avoidance.
 
 Name             : Bounce Back (id=389577) [Spell Family (53), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=9, col=3, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(-10, -20)]
 Class            : Monk
@@ -16155,7 +16088,6 @@ This effect cannot occur more than once every $m3  seconds.
 Tooltip          : When a hit deals more than 20% of your maximum health, reduce all damage you take by $w1% for $390239d.
 
 Name             : Resonant Fists (id=389578) [Spell Family (53), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=9, col=2, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(0, 100)]
 Class            : Monk
@@ -16187,7 +16119,6 @@ Effects          :
 Description      : Your attacks have a chance to resonate, dealing $391400s1 Nature damage to enemies within $391400a1 yds.
 
 Name             : Save Them All (id=389579) [Spell Family (53), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=9, col=1, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(10, 20)]
                  : Effect#2 [op=set, values=(10, 20)]
@@ -16263,7 +16194,6 @@ Effects          :
 Tooltip          : Avoidance increased by $w1%.
 
 Name             : Face Palm (id=389942) [Spell Family (53), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Brewmaster [tree=spec, row=7, col=7, max_rank=1, req_points=8]
 Class            : Monk
 School           : Physical
@@ -16306,12 +16236,10 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Celestial Breath (325212), Soothing Mist (328283), Gust of Mists (328748), Yu'lon's Whisper (337268), Soothing Breath (343737), Gust of Mists (343819), Enveloping Mist (344008), Faeline Stomp (345727), Yu'lon's Whisper (388044), Faeline Stomp (388207), Restoral (388615)
                    Family Flags: 48
-Hotfixed         : Affects Spells
 #2 (id=1041529)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Celestial Breath (325212), Soothing Mist (328283), Gust of Mists (328748), Yu'lon's Whisper (337268), Soothing Breath (343737), Gust of Mists (343819), Enveloping Mist (344008), Faeline Stomp (345727), Yu'lon's Whisper (388044), Faeline Stomp (388207), Restoral (388615)
                    Family Flags: 48
-Hotfixed         : NEW EFFECT
 Description      : Healing increased by $s1%
 Tooltip          : Healing increased by $w1%.
 
@@ -16338,7 +16266,6 @@ Effects          :
 Tooltip          : Reduces damage by $w1%.
 
 Name             : Meridian Strikes (id=391330) [Spell Family (53), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Windwalker [tree=spec, row=5, col=4, max_rank=1, req_points=8]
 Class            : Monk
 School           : Physical
@@ -16389,7 +16316,6 @@ Effects          :
 Description      : The duration of $?s152173[Serenity][Storm, Earth, and Fire] is extended by $?s152173[${$s2/10}.1 sec every time you cast a Chi spender][${$s1/10}.1 sec for every Chi you spend].
 
 Name             : Hardened Soles (id=391383) [Spell Family (53), Passive, Hidden] 
-Hotfixed         : Attributes
 Talent Entry     : Windwalker [tree=spec, row=3, col=3, max_rank=2, req_points=0]
                  : Effect#1 [op=set, values=(2, 4)]
                  : Effect#2 [op=set, values=(4, 8)]
@@ -16439,7 +16365,6 @@ Effects          :
 Description      : Deals $s1 Nature damage.
 
 Name             : Faeline Harmony (id=391412) [Spell Family (53), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Windwalker [tree=spec, row=10, col=6, max_rank=1, req_points=20]
 Class            : Monk
 School           : Physical
@@ -16489,7 +16414,6 @@ Description      : Your next Vivify is instant.
 Tooltip          : Your next Vivify is instant.
 
 Name             : Vigorous Expulsion (id=392900) [Spell Family (53), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=3, col=2, max_rank=1, req_points=0]
 Class            : Monk
 School           : Physical
@@ -16515,7 +16439,6 @@ Effects          :
 Description      : Expel Harm's healing increased by $s1% and critical strike chance increased by $s2%. 
 
 Name             : Profound Rebuttal (id=392910) [Spell Family (53), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=7, col=1, max_rank=1, req_points=8]
 Class            : Monk
 School           : Physical
@@ -16534,11 +16457,9 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Expel Harm (322101)
                    Family Flags: 17
-Hotfixed         : Type (35 -> 6)
 Description      : Expel Harm's critical healing is increased by $s1%.
 
 Name             : Glory of the Dawn (id=392958) [Spell Family (53), Passive, Hidden] 
-Hotfixed         : Attributes
 Talent Entry     : Windwalker [tree=spec, row=4, col=3, max_rank=1, req_points=0]
 Class            : Monk
 School           : Physical
@@ -16588,7 +16509,6 @@ Effects          :
 Description      : Kick upwards, dealing $s1 Physical damage.
 
 Name             : Open Palm Strikes (id=392970) [Spell Family (53), Passive, Hidden] 
-Hotfixed         : Attributes
 Talent Entry     : Windwalker [tree=spec, row=3, col=5, max_rank=1, req_points=0]
 Class            : Monk
 School           : Physical
@@ -16660,7 +16580,6 @@ Description      : $@spelldesc279918
 Tooltip          : Returns $w1 chi.
 
 Name             : Jade Ignition (id=392979) [Spell Family (53), Passive, Hidden] 
-Hotfixed         : Attributes
 Talent Entry     : Windwalker [tree=spec, row=6, col=2, max_rank=1, req_points=8]
 Class            : Monk
 School           : Physical
@@ -16687,7 +16606,6 @@ Description      : Whenever you deal damage to a target with Fists of Fury, you 
 Using Spinning Crane Kick will cause the energy to detonate in a Chi Explosion, dealing $393056s1 Nature damage to all enemies within $393056A1 yards. The damage is increased by $393057m1% for each stack of Chi Energy.
 
 Name             : Shadowboxing Treads (id=392982) [Spell Family (53), Passive, Hidden] 
-Hotfixed         : Attributes
 Talent Entry     : Windwalker [tree=spec, row=5, col=1, max_rank=1, req_points=8]
 Class            : Monk
 School           : Physical
@@ -16748,7 +16666,6 @@ Description      : Strike with both fists at all enemies in front of you, dealin
 Tooltip          : Movement speed reduced by $s2%.
 
 Name             : Thunderfist (id=392985) [Spell Family (53), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Windwalker [tree=spec, row=7, col=5, max_rank=1, req_points=8]
 Class            : Monk
 School           : Physical
@@ -16792,7 +16709,6 @@ Effects          :
 Description      : Abilities that activate Combo Strikes reduce the cooldown of Invoke Xuen, the White Tiger by ${$s2/-1000}.1 sec, and Xuen's damage is increased by ${$s1}.1%.
 
 Name             : Last Emperor's Capacitor (id=392989) [Spell Family (53), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Windwalker [tree=spec, row=9, col=3, max_rank=1, req_points=20]
 Class            : Monk
 School           : Physical
@@ -16815,7 +16731,6 @@ Effects          :
 Description      : Chi spenders increase the damage of your next Crackling Jade Lightning by $393039s1% and reduce its cost by $393039s2%, stacking up to $393039u times.
 
 Name             : Skyreach (id=392991) [Spell Family (53), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Windwalker [tree=spec, row=10, col=3, max_rank=1, req_points=20]
 Class            : Monk
 School           : Physical
@@ -16843,7 +16758,6 @@ Description      : Tiger Palm now has a ${$m1+5} yard range and dashes you to th
 Tiger Palm also applies an effect which increases your critical strike chance by $344021m1% for $344021d on the target. This effect cannot be applied more than once every $337341d per target.
 
 Name             : Xuen's Battlegear (id=392993) [Spell Family (53), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Windwalker [tree=spec, row=9, col=4, max_rank=1, req_points=20]
 Class            : Monk
 School           : Physical
@@ -17012,7 +16926,6 @@ Tooltip          : Increases the damage done by your next Chi Explosion by $s1%.
 Chi Explosion is triggered whenever you use Spinning Crane Kick.
 
 Name             : Forbidden Technique (id=393098) [Spell Family (53), Passive, Hidden] 
-Hotfixed         : Attributes
 Talent Entry     : Windwalker [tree=spec, row=7, col=2, max_rank=1, req_points=8]
 Class            : Monk
 School           : Physical
@@ -17036,7 +16949,6 @@ Effects          :
 Description      : Touch of Death deals $s2% increased damage and can be used a second time within $213114d before its cooldown is triggered.
 
 Name             : Tranquil Spirit (id=393357) [Spell Family (53), Passive, Hidden] 
-Hotfixed         : Attributes
 Talent Entry     : Brewmaster [tree=spec, row=6, col=4, max_rank=1, req_points=8, select_idx=100]
 Class            : Monk
 School           : Physical
@@ -17059,7 +16971,6 @@ Effects          :
 Description      : When a Gift of the Ox Healing Sphere is consumed or you cast Expel Harm, your current Stagger amount is lowered by $s1%.
 
 Name             : Chi Surge (id=393400) [Spell Family (53), Passive, Hidden] 
-Hotfixed         : Attributes
 Talent Entry     : Brewmaster [tree=spec, row=10, col=3, max_rank=1, req_points=20, select_idx=200]
 Class            : Monk
 School           : Nature
@@ -17126,7 +17037,6 @@ Description      : Increases Dodge by $s1%.
 Tooltip          : Increases Dodge by $s1%.
 
 Name             : Pretense of Instability (id=393516) [Spell Family (53), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Brewmaster [tree=spec, row=7, col=6, max_rank=1, req_points=8]
 Class            : Monk
 School           : Physical
@@ -17312,7 +17222,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 
 Name             : Dust in the Wind (id=394093) [Spell Family (53), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Windwalker [tree=spec, row=10, col=2, max_rank=1, req_points=20]
 Class            : Monk
 School           : Physical
@@ -17335,7 +17244,6 @@ Description      : Bonedust Brew's radius increased by $s1%.
 Tooltip          : Bonedust Brew's radius increased by $s1%.
 
 Name             : Escape from Reality (id=394110) [Spell Family (53), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=8, col=2, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(25, 50)]
 Class            : Monk
@@ -17358,7 +17266,6 @@ Description      : After you use Transcendence: Transfer, you can use Transcende
 During this time, if you cast Vivify on yourself, its healing is increased by $s1% and $343249m2% of its cost is refunded.
 
 Name             : Fatal Touch (id=394123) [Spell Family (53), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=8, col=4, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(-45000, -90000)]
 Class            : Monk
@@ -17436,7 +17343,6 @@ Description      : $@spelldesc393659
 Tooltip          : Damage dealt increased by $w1% and damage taken reduced by $w1%.
 
 Name             : Fatal Flying Guillotine (id=394923) [Spell Family (53), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Windwalker [tree=spec, row=9, col=2, max_rank=1, req_points=20]
 Class            : Monk
 School           : Physical
@@ -17529,7 +17435,6 @@ Description      : $@spelldesc393668
 Tooltip          : Fists of Fury damage increased by $w1%.
 
 Name             : Strike of the Windlord (id=395519) [Spell Family (53)] 
-Hotfixed         : Affecting Spells
 Class            : Monk
 School           : Physical
 Spell Type       : Melee
@@ -17552,7 +17457,6 @@ Effects          :
 Description      : $@spelldesc392983
 
 Name             : Strike of the Windlord (id=395521) [Spell Family (53)] 
-Hotfixed         : Affecting Spells
 Class            : Monk
 School           : Physical
 Spell Type       : Melee
@@ -17575,7 +17479,6 @@ Effects          :
 Description      : $@spelldesc392983
 
 Name             : Fury of Xuen (id=396166) [Spell Family (53), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Windwalker [tree=spec, row=8, col=3, max_rank=1, req_points=20]
 Class            : Monk
 School           : Physical

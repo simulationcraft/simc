@@ -8178,7 +8178,8 @@ bool mage_t::trigger_fof( double chance, proc_t* source, int stacks )
     for ( int i = 0; i < stacks; i++ )
     {
       source->occur();
-      procs.fingers_of_frost->occur();
+      if ( procs.fingers_of_frost )
+        procs.fingers_of_frost->occur();
     }
   }
 

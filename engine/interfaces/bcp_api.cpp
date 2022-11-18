@@ -472,16 +472,27 @@ void parse_talents( player_t* p, const player_spec_t& spec_info, const std::stri
       continue;
     }
 
-    if ( !spec_data.HasMember( "selected_class_talents" ) || !spec_data.HasMember( "selected_spec_talents" ) )
+    for ( auto loadoutIdx = 0U, loadoutsEnd = spec_data[ "loadouts" ].Size(); loadoutIdx < loadoutsEnd; ++loadoutIdx )
     {
-      continue;
+      const auto& loadout = spec_data[ "loadouts" ][ loadoutIdx ];
+
+      if ( !loadout[ "is_active" ].GetBool() )
+      {
+        continue;
+      }
+
+      if ( !loadout.HasMember( "selected_class_talents" ) || !loadout.HasMember( "selected_spec_talents" ) )
+      {
+        continue;
+      }
+
+      p->talents_str = loadout[ "talent_loadout_code" ].GetString();
+
+      p->player_traits.clear();
+
+      parse_subtree( p, loadout[ "selected_class_talents" ] );
+      parse_subtree( p, loadout[ "selected_spec_talents" ] );
     }
-
-    p->player_traits.clear();
-
-    parse_subtree( p, spec_data[ "selected_class_talents" ] );
-    parse_subtree( p, spec_data[ "selected_spec_talents" ] );
-
   }
 
   p->recreate_talent_str(talent_format::ARMORY );

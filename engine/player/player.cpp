@@ -191,9 +191,9 @@ struct special_execute_event_t : public player_event_t
 
     action_t* a = p()->select_action( apl(), type() );
 
-    if ( p()->restore_action_list )
+    if ( p()->restore_action_list != nullptr )
     {
-      p()->activate_action_list( p()->restore_action_list, type() );
+      p()->activate_action_list( p()->restore_action_list, p()->restore_action_list_type );
       p()->restore_action_list = nullptr;
     }
 
@@ -1140,6 +1140,7 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     active_off_gcd_list(),
     active_cast_while_casting_list(),
     restore_action_list(),
+    restore_action_list_type( execute_type::FOREGROUND ),
     no_action_list_provided(),
     // Reporting
     quiet( false ),
@@ -3303,15 +3304,14 @@ void player_t::init_actions()
       if ( is_real_action( action ) )
       {
         have_off_gcd_actions = true;
-        auto it = range::find( off_gcd_cd, action -> cooldown );
+
+        auto it = range::find_if( off_gcd_cd, [action]( std::pair<const cooldown_t*, const cooldown_t*> cds ) {
+          return cds.first == action->cooldown && cds.second == action->internal_cooldown; } 
+        );
+
         if ( it == off_gcd_cd.end() )
         {
-          off_gcd_cd.push_back( action -> cooldown );
-        }
-
-        if ( range::find( off_gcd_icd, action->internal_cooldown ) == off_gcd_icd.end() )
-        {
-          off_gcd_icd.push_back( action->internal_cooldown );
+          off_gcd_cd.emplace_back( action->cooldown, action->internal_cooldown );
         }
       }
     }
@@ -3324,16 +3324,14 @@ void player_t::init_actions()
       if ( is_real_action( action ) )
       {
         have_cast_while_casting_actions = true;
-        auto it = range::find( cast_while_casting_cd, action->cooldown );
+
+        auto it = range::find_if( cast_while_casting_cd, [action]( std::pair<const cooldown_t*, const cooldown_t*> cds ) {
+          return cds.first == action->cooldown && cds.second == action->internal_cooldown; }
+        );
+
         if ( it == cast_while_casting_cd.end() )
         {
-          cast_while_casting_cd.push_back( action->cooldown );
-        }
-
-        auto icd_it = range::find( cast_while_casting_icd, action->internal_cooldown );
-        if ( icd_it == cast_while_casting_icd.end() )
-        {
-          cast_while_casting_icd.push_back( action->internal_cooldown );
+          cast_while_casting_cd.emplace_back( action->cooldown, action->internal_cooldown );
         }
       }
     }
@@ -6665,7 +6663,7 @@ action_t* player_t::execute_action()
 
   if ( restore_action_list != nullptr )
   {
-    activate_action_list( restore_action_list );
+    activate_action_list( restore_action_list, restore_action_list_type );
     restore_action_list = nullptr;
   }
 
@@ -12159,6 +12157,7 @@ void player_t::copy_from( player_t* source )
   parse_talent_url( sim, "talents", source->talents_str );
   class_talents_str = source->class_talents_str;
   spec_talents_str  = source->spec_talents_str;
+  player_traits     = source->player_traits;
 
   if ( azerite )
   {
@@ -13787,13 +13786,17 @@ void player_t::adjust_auto_attack( gcd_haste_type type )
   current_attack_speed = cache.attack_speed();
 }
 
-timespan_t find_minimum_cd( const std::vector<const cooldown_t*>& list )
+timespan_t find_minimum_cd( const std::vector<std::pair<const cooldown_t*, const cooldown_t*>>& list )
 {
   timespan_t min_ready = timespan_t::min();
-  range::for_each( list, [ &min_ready ]( const cooldown_t* cd ) {
-    if ( min_ready == timespan_t::min() || cd->queueable() < min_ready )
+
+  range::for_each( list, [ &min_ready ]( std::pair<const cooldown_t*, const cooldown_t*> cds ) {
+    // Take the larger of the primary cooldown and the internal cooldown for a given ability
+    timespan_t action_cd = std::max( cds.first ? cds.first->queueable() : timespan_t::min(),
+                                     cds.second ? cds.second->queueable() : timespan_t::min() );
+    if ( min_ready == timespan_t::min() || action_cd < min_ready )
     {
-      min_ready = cd->queueable();
+      min_ready = action_cd;
     }
   } );
 
@@ -13805,18 +13808,14 @@ timespan_t find_minimum_cd( const std::vector<const cooldown_t*>& list )
 // line_cooldown option, since that is APL-line specific.
 void player_t::update_off_gcd_ready()
 {
-  if ( off_gcd_cd.empty() && off_gcd_icd.empty() )
+  if ( off_gcd_cd.empty() )
   {
     return;
   }
 
-  off_gcd_ready = std::max( find_minimum_cd( off_gcd_cd ), find_minimum_cd( off_gcd_icd ) );
+  off_gcd_ready = find_minimum_cd( off_gcd_cd );
 
-  if ( sim -> debug )
-  {
-    sim -> out_debug.print( "{} next off-GCD cooldown ready at {}",
-      name(), off_gcd_ready.total_seconds() );
-  }
+  sim->print_debug( "{} next off-GCD cooldown ready at {}", *this, off_gcd_ready.total_seconds() );
 
   schedule_off_gcd_ready();
 }
@@ -13826,19 +13825,15 @@ void player_t::update_off_gcd_ready()
 // line_cooldown option, since that is APL-line specific.
 void player_t::update_cast_while_casting_ready()
 {
-  if ( cast_while_casting_cd.empty() && cast_while_casting_icd.empty() )
+  if ( cast_while_casting_cd.empty() )
   {
     return;
   }
 
-  cast_while_casting_ready = std::max( find_minimum_cd( cast_while_casting_cd ),
-      find_minimum_cd( cast_while_casting_icd ) );
+  cast_while_casting_ready = find_minimum_cd( cast_while_casting_cd );
 
-  if ( sim -> debug )
-  {
-    sim -> out_debug.print( "{} next cast while casting cooldown ready at {}",
-      name(), cast_while_casting_ready.total_seconds() );
-  }
+  sim->print_debug( "{} next cast while casting cooldown ready at {}",
+                    *this, cast_while_casting_ready.total_seconds() );
 
   schedule_cwc_ready();
 }

@@ -1,6 +1,6 @@
 priest="T29_Priest_Shadow"
 level=70
-race=human
+race=orc
 spec=shadow
 role=spell
 position=ranged_back
@@ -8,20 +8,23 @@ position=ranged_back
 class_talents=dispel_magic:1/improved_flash_heal:1/purify_disease:1/from_darkness_comes_light:1/angelic_feather:1/death_and_madness:1/leap_of_faith:1/shackle_undead:1/dominate_mind:1/mass_dispel:1/power_infusion:1/vampiric_embrace:1/tithe_evasion:1/body_and_soul:1/twins_of_the_sun_priestess:1/sanlayn:1/unwavering_will:2/twist_of_fate:2/throes_of_pain:2/angels_mercy:1/halo:1/translucent_image:1/mindgames:1/lights_inspiration:2/manipulation:2/shattered_perceptions:1/
 spec_talents=devouring_plague:1/dispersion:1/shadowy_apparitions:1/silence:1/mental_fortitude:1/misery:1/coalescing_shadows:1/mind_spike:1/puppet_master:1/mental_decay:1/dark_ascension:1/surge_of_darkness:1/harnessed_shadows:1/shadowy_insight:1/ancient_madness:2/shadow_crash:1/dark_evangelism:2/auspicious_spirits:1/mindbender:1/mind_flay_insanity:1/encroaching_shadows:1/inescapable_torment:2/screams_of_the_void:2/mind_devourer:1/idol_of_yshaarj:1/idol_of_cthun:1
 
-head=draconic_hierophants_archcowl,id=200327,ilevel=424
-neck=alcs_pendant_of_fiery_dreams,id=109957,ilevel=421
-shoulders=draconic_hierophants_wisdom,id=200329,ilevel=424
-back=fireproof_drape,id=193763,ilevel=421
-chest=arcanists_resonant_robes,id=134415,ilevel=421,enchant_id=6625
-wrists=felflame_bracers,id=109881,ilevel=421
-hands=draconic_hierophants_grips,id=200326,ilevel=415
-waist=sky_saddle_cord,id=193691,ilevel=421
-legs=draconic_hierophants_britches,id=200328,ilevel=415,enchant=frozen_spellthread_3
-feet=sandals_of_the_wild_sovereign,id=195532,ilevel=424
-finger1=seal_of_filial_duty,id=195526,ilevel=430,enchant_id=6556
-finger2=darkflame_loop,id=109766,ilevel=421,enchant_id=6556
-trinket1=conjured_chillglobe,id=194300,ilevel=415
-trinket2=furious_ragefeather,id=193677,ilevel=421
-main_hand=final_grade,id=193707,ilevel=421,enchant=sophic_devotion_3
+# TODO: use prof items?
+head=draconic_hierophants_archcowl,id=200327,bonus_id=4800/4786/1498,gem_id=192948
+neck=eye_of_the_vengeful_hurricane,id=195496,bonus_id=4800/4786/1498,gem_id=192985/192948/192948
+shoulders=draconic_hierophants_wisdom,id=200329,bonus_id=4800/4786/1498
+back=fireproof_drape,id=193763,bonus_id=6808/4786/1643
+chest=arcanists_resonant_robes,id=134415,bonus_id=1795/6808/4786/3300/6935,enchant=waking_stats_3
+wrists=manawracker_bindings,id=134310,bonus_id=1795/6808/4786/3300/6935,gem_id=192948
+hands=draconic_hierophants_grips,id=200326,bonus_id=4800/4786/1498
+waist=sky_saddle_cord,id=193691,bonus_id=6808/4786/1643,gem_id=192948
+legs=draconic_hierophants_britches,id=200328,bonus_id=4800/4786/1498,enchant=frozen_spellthread_3
+feet=sandals_of_the_wild_sovereign,id=195532,bonus_id=4800/4786/1498
+finger1=seal_of_filial_duty,id=195526,bonus_id=4800/4786/1497/6935,enchant_id=6556,gem_id=192948
+finger2=woebearers_band,id=133638,bonus_id=1795/6808/4786/3300/6935,enchant_id=6556,gem_id=192948
+# TODO: use whispering if tank/heals is enabled by default
+# trinket1=whispering_incarnate_icon,id=194301,bonus_id=4800/4786/1498
+trinket1=eye_of_skovald,id=133641,bonus_id=1795/6808/4786/3300/6935
+trinket2=furious_ragefeather,id=193677,bonus_id=6808/4786/1643
+main_hand=final_grade,id=193707,bonus_id=6808/4786/1643,enchant=sophic_devotion_3
 
 save=T29_Priest_Shadow.simc

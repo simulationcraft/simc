@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.46597 Live (hotfix 2022-11-11/46597)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46658 Live (hotfix 2022-11-16/46658)
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -652,7 +652,6 @@ Attributes       : .x..x... ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=10651)    : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.55000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (2.3205 -> 2.55)
 #2 (id=101526)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000
 Description      : A powerful aimed shot that deals $s1 Physical damage$?s260240[ and causes your next 1-$260242u ][]$?s342049&s260240[Chimaera Shots]?s260240[Arcane Shots][]$?s260240[ or Multi-Shots to deal $260242s1% more damage][].$?s260228[
@@ -1118,7 +1117,6 @@ $killerCommand=$?s378740[${1+($378740s1/100)}][${1}]
 $damage=${$ap*($s2/100)*$<bmMastery>*$<trainingExpert>*$<beastMasterTalent>*$<impKC>*$<killerCommand>*(1+$@versadmg)*(1+($137015s1/100))}
 
 Name             : Misdirection (id=34477) [Spell Family (9)] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=4, col=2, max_rank=1, req_points=0]
 Class            : Hunter
 School           : Physical
@@ -1466,7 +1464,6 @@ Attributes       : .x..x... ........ x....... ........   ........ .x...... .....
 Effects          :
 #1 (id=45989)    : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.53000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (2.3 -> 2.53)
 #2 (id=45990)    : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000
 Description      : You attempt to finish off a wounded target, dealing $s1 Physical damage. Only usable on enemies with less than $s2% health.$?s343248[
@@ -5845,7 +5842,6 @@ Attributes       : .x...... ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=479998)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.45600 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (0.38 -> 0.456)
 Description      : $@spelldesc257044
 
 Name             : Hunter's Mark (id=257284) [Spell Family (9)] 
@@ -6465,7 +6461,6 @@ Description      : $@spelldesc260240
 Tooltip          : Damage of $?s342049[Chimaera Shot][Arcane Shot] or Multi-Shot increased by $s1%.
 
 Name             : Volley (id=260243) [Spell Family (9)] 
-Hotfixed         : Attributes
 Talent Entry     : Marksmanship [tree=spec, row=7, col=3, max_rank=1, req_points=8]
 Class            : Hunter
 School           : Physical
@@ -6495,7 +6490,6 @@ Description      : Rain a volley of arrows down over $d, dealing up to ${$260247
 Tooltip          : Raining arrows down in the target area.
 
 Name             : Volley (id=260247) [Spell Family (9)] 
-Hotfixed         : Attributes
 Class            : Hunter
 School           : Physical
 Spell Type       : Ranged
@@ -15657,7 +15651,6 @@ Effects          :
 Description      : $@spelldesc386876
 
 Name             : Fortitude of the Bear (desc=Tenacity Ability) (id=388035) [Spell Family (9)] 
-Hotfixed         : Attributes
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -16397,7 +16390,6 @@ Description      : $@spelldesc378750
 Tooltip          : Your next Kill Command will consume $s1% less Focus.
 
 Name             : Fortitude of the Bear (desc=Tenacity Ability) (id=392956) [Spell Family (9)] 
-Hotfixed         : Attributes
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -16558,7 +16550,6 @@ Effects          :
 Description      : Barbed Shot damage increased by $s1% and Barbed Shot increases damage of your next Kill Command by $394298s1%.
 
 Name             : Hunter Marksmanship Class Set 2pc (id=393648) [Spell Family (9), Passive, Hidden] 
-Hotfixed         : Attributes
 Class            : Hunter
 School           : Physical
 Spell Type       : None

@@ -2,18 +2,18 @@ priest="T29_Priest_Shadow"
 source=default
 spec=shadow
 level=70
-race=human
+race=orc
 role=spell
 position=ranged_back
 class_talents=dispel_magic:1/improved_flash_heal:1/purify_disease:1/from_darkness_comes_light:1/angelic_feather:1/death_and_madness:1/leap_of_faith:1/shackle_undead:1/dominate_mind:1/mass_dispel:1/power_infusion:1/vampiric_embrace:1/tithe_evasion:1/body_and_soul:1/twins_of_the_sun_priestess:1/sanlayn:1/unwavering_will:2/twist_of_fate:2/throes_of_pain:2/angels_mercy:1/halo:1/translucent_image:1/mindgames:1/lights_inspiration:2/manipulation:2/shattered_perceptions:1/
 spec_talents=devouring_plague:1/dispersion:1/shadowy_apparitions:1/silence:1/mental_fortitude:1/misery:1/coalescing_shadows:1/mind_spike:1/puppet_master:1/mental_decay:1/dark_ascension:1/surge_of_darkness:1/harnessed_shadows:1/shadowy_insight:1/ancient_madness:2/shadow_crash:1/dark_evangelism:2/auspicious_spirits:1/mindbender:1/mind_flay_insanity:1/encroaching_shadows:1/inescapable_torment:2/screams_of_the_void:2/mind_devourer:1/idol_of_yshaarj:1/idol_of_cthun:1
 
 # Default consumables
-potion=potion_of_spectral_intellect
-flask=spectral_flask_of_power
-food=feast_of_gluttonous_hedonism
-augmentation=veiled_augment_rune
-temporary_enchant=main_hand:shadowcore_oil
+potion=elemental_potion_of_ultimate_power_3
+flask=phial_of_static_empowerment_3
+food=fated_fortune_cookie
+augmentation=draconic_augment_rune
+temporary_enchant=main_hand:howling_rune_3
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -85,8 +85,8 @@ actions.main+=/vampiric_touch,if=buff.unfurling_darkness.up
 actions.main+=/mind_flay,if=buff.mind_flay_insanity.up&variable.dots_up&(!buff.surge_of_darkness.up|talent.screams_of_the_void)
 # Use Halo if all DoTS are active and you are not in Voidform or it will hit at least 2 targets. Save up to 20s if adds are coming soon.
 actions.main+=/halo,if=raid_event.adds.in>20&(spell_targets.halo>1|(variable.all_dots_up&!buff.voidform.up))
-# Use when it will hit at least 2 targets or 3 targets with Dark Ascension.
-actions.main+=/divine_star,if=spell_targets.divine_star>1+talent.dark_ascension
+# Use when it will hit at least 2 targets.
+actions.main+=/divine_star,if=spell_targets.divine_star>1
 actions.main+=/lights_judgment,if=!raid_event.adds.exists|raid_event.adds.in>75
 actions.main+=/mind_spike,if=buff.surge_of_darkness.up|!conduit.dissonant_echoes&(!talent.mental_decay|dot.vampiric_touch.remains>=(cooldown.shadow_crash.remains+action.shadow_crash.travel_time))&(talent.mind_melt|!talent.idol_of_cthun)
 actions.main+=/mind_flay,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2
@@ -109,30 +109,30 @@ actions.trinkets+=/use_item,name=architects_ingenuity_core
 # Default fallback for usable items: Use on cooldown in order by trinket slot.
 actions.trinkets+=/use_items,if=buff.voidform.up|buff.power_infusion.up|buff.dark_ascension.up|cooldown.void_eruption.remains>10
 
-head=draconic_hierophants_archcowl,id=200327,ilevel=424
-neck=alcs_pendant_of_fiery_dreams,id=109957,ilevel=421
-shoulders=draconic_hierophants_wisdom,id=200329,ilevel=424
-back=fireproof_drape,id=193763,ilevel=421
-chest=arcanists_resonant_robes,id=134415,ilevel=421,enchant_id=6625
-wrists=felflame_bracers,id=109881,ilevel=421
-hands=draconic_hierophants_grips,id=200326,ilevel=415
-waist=sky_saddle_cord,id=193691,ilevel=421
-legs=draconic_hierophants_britches,id=200328,ilevel=415,enchant=frozen_spellthread_3
-feet=sandals_of_the_wild_sovereign,id=195532,ilevel=424
-finger1=seal_of_filial_duty,id=195526,ilevel=430,enchant_id=6556
-finger2=darkflame_loop,id=109766,ilevel=421,enchant_id=6556
-trinket1=conjured_chillglobe,id=194300,ilevel=415
-trinket2=furious_ragefeather,id=193677,ilevel=421
-main_hand=final_grade,id=193707,ilevel=421,enchant=sophic_devotion_3
+head=draconic_hierophants_archcowl,id=200327,bonus_id=4800/4786/1498,gem_id=192948
+neck=eye_of_the_vengeful_hurricane,id=195496,bonus_id=4800/4786/1498,gem_id=192985/192948/192948
+shoulders=draconic_hierophants_wisdom,id=200329,bonus_id=4800/4786/1498
+back=fireproof_drape,id=193763,bonus_id=6808/4786/1643
+chest=arcanists_resonant_robes,id=134415,bonus_id=1795/6808/4786/3300/6935,enchant=waking_stats_3
+wrists=manawracker_bindings,id=134310,bonus_id=1795/6808/4786/3300/6935,gem_id=192948
+hands=draconic_hierophants_grips,id=200326,bonus_id=4800/4786/1498
+waist=sky_saddle_cord,id=193691,bonus_id=6808/4786/1643,gem_id=192948
+legs=draconic_hierophants_britches,id=200328,bonus_id=4800/4786/1498,enchant=frozen_spellthread_3
+feet=sandals_of_the_wild_sovereign,id=195532,bonus_id=4800/4786/1498
+finger1=seal_of_filial_duty,id=195526,bonus_id=4800/4786/1497/6935,gem_id=192948,enchant_id=6556
+finger2=woebearers_band,id=133638,bonus_id=1795/6808/4786/3300/6935,gem_id=192948,enchant_id=6556
+trinket1=eye_of_skovald,id=133641,bonus_id=1795/6808/4786/3300/6935
+trinket2=furious_ragefeather,id=193677,bonus_id=6808/4786/1643
+main_hand=final_grade,id=193707,bonus_id=6808/4786/1643,enchant=sophic_devotion_3
 
 # Gear Summary
-# gear_ilvl=421.00
-# gear_stamina=13484
-# gear_intellect=8103
-# gear_crit_rating=179
-# gear_haste_rating=4111
-# gear_mastery_rating=4398
+# gear_ilvl=421.80
+# gear_stamina=13556
+# gear_intellect=7316
+# gear_crit_rating=1463
+# gear_haste_rating=6876
+# gear_mastery_rating=5325
 # gear_versatility_rating=263
-# gear_armor=2030
+# gear_armor=2037
 # set_bonus=tier29_2pc=1
 # set_bonus=tier29_4pc=1

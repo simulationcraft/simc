@@ -489,12 +489,12 @@ class TraitSet(DataSet):
         # Collect TraitNodeEntry entries for each used TraitNode
         for data in self.db('TraitNodeXTraitNodeEntry').values():
             node_id = data.id_trait_node
-            entry_id = data.id_trait_node_entry
 
             if node_id not in _trait_nodes:
                 continue
 
-            entry = data.ref('id_trait_node_entry')
+            # TraitNodeXTraitNodeEntry.id is needed in order to resolve any selection index clashes
+            entry = (data.ref('id_trait_node_entry'), data.id)
             _trait_nodes[node_id]['entries'].add(entry)
 
         # A map of trait_node_entry_id, trait_data
@@ -540,7 +540,7 @@ class TraitSet(DataSet):
                     for cond in node['cond'] if cond.type == 2
                 )
 
-                for entry in node['entries']:
+                for entry, db2_id in node['entries']:
                     key = entry.id
                     definition = entry.ref('id_trait_definition')
 
@@ -564,14 +564,17 @@ class TraitSet(DataSet):
 
                         # It's possible to have nodes with entries that have the same selection index.
                         # In such cases, the game seems to assign the first choice to the entry that
-                        # has the lower spell id.
+                        # comes earlier in TraitNodeXTraitNodeEntry.db2 itself. As entries are added in
+                        # this same order to _trait_nodes[node_id], we can adjust here by incrementing
+                        # the selection_index on successive entries with the same selection_index as an
+                        # already processed entry that is on the same node.
 
                         # Iterate through all entries on the node that does not match the current entry
-                        for _e in [e for e in node['entries'] if e.id != entry.id]:
-                            # Check for selection index clash
+                        for _e, _id in [(e, i) for e, i in node['entries'] if e.id != entry.id]:
+                            # Check for selection_index clash
                             if _traits[_e.id]['selection_index'] == sel_idx:
-                                # Increment the selection index of the entry with the lower spell id
-                                if _e.ref('id_trait_definition').ref('id_spell').id > _traits[key]['spell'].id:
+                                # Adjust the selection_index of the higher TraitNodeXTraitNodeEntry.id by 1
+                                if _id > db2_id:
                                     _traits[_e.id]['selection_index'] += 1
                                 else:
                                     sel_idx += 1

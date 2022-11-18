@@ -1403,14 +1403,17 @@ std::string enemy_t::generate_tank_action_list( tank_dummy_e tank_dummy )
   constexpr size_t numTankDummies = static_cast<size_t>( tank_dummy_e::MAX );
   //                               NONE, WEAK,           DUNGEON,  RAID,   HEROIC, MYTHIC
   //                               NONE, Normal Dungeon, Mythic 0, Normal, Heroic, Mythic
-  // Level 60 Values
+  // Level 70 Values
   // Defaulted to 20-man damage
   // Damage is normally increased from 10-man to 30-man by an average of 10% for every 5 players added.
   // 10-man -> 20-man = 20% increase; 20-man -> 30-man = 20% increase
-  // Raid values using Soulrender Dormazain as a baseline
   std::array<int, numTankDummies> aa_damage               = { 0, 6415, 12300, 24597, 43081, 73742 };  // Base auto attack damage
   std::array<int, numTankDummies> dummy_strike_damage     = { 0, 11000, 21450, 42932, 68189, 123500 };  // Base melee nuke damage (currently set to Soulrender's Ruinblade)
   std::array<int, numTankDummies> background_spell_damage = { 0, 257, 1831, 2396, 3298, 5491 };  // Base background dot damage (currently set to 0.04x auto damage)
+
+  //std::array<int, numTankDummies> aa_damage               = { 0, 102100, 133380, 174241, 240324, 401733 };  // Base auto attack damage
+  //std::array<int, numTankDummies> dummy_strike_damage     = { 0, 204200, 266759, 348483, 480649, 642444 };  // Base melee nuke damage (currently set to Raszageth's Electrified Jaws)
+  //std::array<int, numTankDummies> background_spell_damage = { 0, 4084, 5335, 6970, 9613, 16069 };  // Base background dot damage (currently set to 0.04x auto damage)
 
   size_t tank_dummy_index = static_cast<size_t>( tank_dummy );
   als += "/auto_attack,damage=" + util::to_string( aa_damage[ tank_dummy_index ] ) +
@@ -1945,26 +1948,26 @@ double enemy_t::armor_coefficient( int level, tank_dummy_e dungeon_content )
     10.0 values here
     Level 70 Base/open world: 11766.000 (Level 70 Armor mitigation constants (K-values))
     Level 70 M0/M+: 12824.94 (ExpectedStatModID: 216; ArmorConstMod: 1.09)
-    Castle Nathria LFR: 13083.792 (ExpectedStatModID: 212; ArmorConstMod: 1.112)
-    Castle Nathria Normal: 14025.072 (ExpectedStatModID: 213; ArmorConstMod: 1.192)
-    Castle Nathria Heroic: 15084.012 (ExpectedStatModID: 214; ArmorConstMod: 1.282)
-    Castle Nathria Mythic: 16284.144 (ExpectedStatModID: 215; ArmorConstMod: 1.384)
+    Vault of the Incarnates LFR: 13083.792 (ExpectedStatModID: 212; ArmorConstMod: 1.112)
+    Vault of the Incarnates Normal: 14025.072 (ExpectedStatModID: 213; ArmorConstMod: 1.192)
+    Vault of the Incarnates Heroic: 15084.012 (ExpectedStatModID: 214; ArmorConstMod: 1.282)
+    Vault of the Incarnates Mythic: 16284.144 (ExpectedStatModID: 215; ArmorConstMod: 1.384)
   */
   double k = dbc->armor_mitigation_constant( level );
 
   switch ( dungeon_content )
   {
     case tank_dummy_e::DUNGEON:
-      return k * ( is_ptr() ? 1.09 : 1.537 );  // M0/M+
+      return k * ( level >= 70 ? 1.09 : 1.537 );  // M0/M+
       break;
     case tank_dummy_e::RAID:
-      return k * ( is_ptr() ? 1.192 : 1.670 );  // Normal Raid
+      return k * ( level >= 70 ? 1.192 : 1.670 );  // Normal Raid
       break;
     case tank_dummy_e::HEROIC:
-      return k * ( is_ptr() ? 1.282 : 1.821 );  // Heroic Raid
+      return k * ( level >= 70 ? 1.282 : 1.821 );  // Heroic Raid
       break;
     case tank_dummy_e::MYTHIC:
-      return k * ( is_ptr() ? 1.384 : 1.992 );  // Mythic Raid
+      return k * ( level >= 70 ? 1.384 : 1.992 );  // Mythic Raid
       break;
     default:
       break;  // tank_dummy_e::NONE

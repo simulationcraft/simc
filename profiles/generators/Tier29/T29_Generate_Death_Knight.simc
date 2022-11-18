@@ -52,28 +52,28 @@
 
 # save="T29_Death_Knight_Frost.simc"
 
-# deathknight="T29_Death_Knight_Unholy"
-# spec=unholy
-# level=70
-# race=troll
-# role=attack
-# position=back
-# talents=2303021
+deathknight="T29_Death_Knight_Unholy"
+spec=unholy
+level=70
+race=troll
+role=attack
+position=back
+talents=BwPAAAAAAAAAAAAAAAAAAAAAAAAIIJJBSAJJRIJSSSkAAAAAAAAAAKJJhIAAgEpkIRSSikA
 
-# head=visage_of_the_first_eidolon,id=188868,bonus_id=7187/1498/6935,gem_id=173127
-# neck=worldkiller_iris,id=189859,bonus_id=7187/1524/6935,gem_id=173127
-# shoulders=shoulderplates_of_the_first_eidolon,id=188867,bonus_id=7187/1505
-# back=grimveiled_cape,id=173242,bonus_id=6716/6952/6649/6647/1588,enchant=soul_vitality
-# chest=carapace_of_the_first_eidolon,id=188864,bonus_id=7187/1505,enchant=eternal_stats
-# wrists=unstable_giants_cuffs,id=189777,bonus_id=7187/1524/6935,gem_id=173128
-# hands=gauntlets_of_the_first_eidolon,id=188863,bonus_id=7187/1505,enchant=eternal_strength
-# waist=shadowghast_waistguard,id=171418,bonus_id=6716/8119/6649/6647/1588,gem_id=173128
-# legs=legguards_of_the_ultimate_threat,id=189858,bonus_id=7187/1524
-# feet=greatboots_of_the_roaming_goliath,id=189832,bonus_id=4800/4786/1524
-# finger1=rygelons_heraldric_ring,id=189854,bonus_id=7187/1524/6935,gem_id=173128,enchant=tenet_of_critical_strike
-# finger2=soulwarped_seal_of_menethil,id=189841,bonus_id=7187/1524/6935,gem_id=173128,enchant=tenet_of_critical_strike
-# trinket1=inscrutable_quantum_device,id=179350,bonus_id=6536/1592/6646
-# trinket2=old_warriors_soul,id=186438,bonus_id=1498/6807
-# main_hand=gavel_of_the_first_arbiter,id=189862,bonus_id=7187/1524,enchant=rune_of_the_fallen_crusader
+head=maw_of_the_haunted_frostbrood,id=200408,bonus_id=4800/4786/1498/6935,gem_id=192985
+neck=elemental_lariat,id=193001,bonus_id=6652/7936/7979/1540/8767/6935/6935,gem_id=192948/192948/192948,crafted_stats=32/49
+shoulders=jaws_of_the_haunted_frostbrood,id=200410,bonus_id=4800/4786/1498
+back=fireproof_drape,id=193763,bonus_id=6808/4786/1643
+chest=breastplate_of_the_haunted_frostbrood,id=200405,bonus_id=4800/4786/1498,enchant_id=6625
+wrists=vambraces_of_the_haunted_frostbrood,id=200412,bonus_id=1507/6935,gem_id=192948
+hands=grasps_of_the_haunted_frostbrood,id=200407,bonus_id=4800/4786/1498
+waist=primal_molten_greatbelt,id=190501,bonus_id=8836/8840/8902/8802/8793/8932/8960,ilevel=418,gem_id=192948,crafted_stats=36/40
+legs=drake_hunters_greaves,id=193694,bonus_id=6808/4786/1643,enchant_id=6490
+feet=stonestep_boots,id=143974,bonus_id=4177/6808/4786/3311,ilevel=421,drop_level=70
+finger1=seal_of_filial_duty,id=195526,bonus_id=4800/4786/1497/6935,gem_id=192948,enchant_id=6568
+finger2=jeweled_signet_of_melandrus,id=134542,bonus_id=1795/6808/4786/3300/6935,ilevel=421,gem_id=192948,enchant_id=6562,drop_level=70
+trinket1=blazebinders_hoof,id=193762,bonus_id=6808/4786/1643
+trinket2=whispering_incarnate_icon,id=194301,bonus_id=4800/4786/1498
+main_hand=incarnate_skysplitter,id=195528,bonus_id=4800/4786/1498,enchant=rune_of_the_fallen_crusader,enchant_id=3368
 
-# save=T29_Death_Knight_Unholy.simc
+save=T29_Death_Knight_Unholy.simc

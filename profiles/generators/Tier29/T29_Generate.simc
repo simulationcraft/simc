@@ -3,10 +3,10 @@ ptr=1
 # T29
 # Tier 29 Vault of the Incarnates
 # * Using ilevel= is permitted as long as itemlevels and bonus ids aren't stable on test server.
-# * Set pieces are permitted up to the item level cap (415/421/424). ["bonus_id=?" or "bonus_id=?"]
+# * Set pieces are permitted up to the item level cap (415/421/424). ["bonus_id=4800/4786/1498"]
 #   * NOTE: Seal of Filial Duty is permitted up to item level 430.
-# * Raid gear is permitted up to the Mythic item level cap (415/421/424). ["bonus_id=?"]
-# * Mythic+ gear is permitted up to the Mythic+ item level cap (421). ["bonus_id=?"]
+# * Raid gear is permitted up to the Mythic item level cap (415/421/424). ["bonus_id=4800/4786/1498"]
+# * Mythic+ gear is permitted up to the Mythic+ item level cap (421). [DF: "bonus_id=6808/4786/1643", MoP: "bonus_id=4177/6808/4786/3311", Legion: "bonus_id=1795/6808/4786/3300/6935"]
 #   * Gear can come from: [Algeth'ar Academy, Ruby Life Pools, The Azure Vault, The Nokhud Offensive, Court of Stars, Halls of Valor, Shadowmoon Burial Grounds, Temple of the Jade Serpent]
 # * Honor PvP gear is permitted up to the item level cap (366). ["bonus_id=?"]
 # * Conquest PvP gear is permitted up to the item level cap (Duelist, 408). ["bonus_id=?"]
@@ -19,7 +19,7 @@ ptr=1
 # * Must use gem ids (ex: ",gem_id=173127") instead of hardcoded stats.
 # * No Tertiary Stats.
 # * No Hardcoded Stats (generally if an item gives wrong stats: either bonus_id is wrong, or the item no longer exists in-game).
-# * Must use enchant name (ex: ",enchant=tenet_of_haste") instead of ids/hardcoded stats if possible.
+# * Must use enchant name (ex: ",enchant=tenet_of_haste") instead of ids/hardcoded stats if possible. Rank 3 enchants are permitted.
 
 
 # Death Knight
