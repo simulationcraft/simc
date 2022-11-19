@@ -3477,6 +3477,7 @@ struct blizzard_shard_t final : public frost_mage_spell_t
     frost_mage_spell_t( n, p, p->find_spell( 190357 ) )
   {
     aoe = -1;
+    reduced_aoe_targets = 8;
     background = ground_aoe = triggers.chill = true;
     triggers.icy_propulsion_conduit = false;
     base_multiplier *= 1.0 + p->conduits.shivering_core.percent();
