@@ -5428,7 +5428,7 @@ struct natures_guardian_t : public druid_heal_t
     druid_heal_t::init();
 
     // Not affected by multipliers of any sort.
-    snapshot_flags &= ~STATE_NO_MULTIPLIER;
+    snapshot_flags &= STATE_NO_MULTIPLIER;
   }
 };
 
