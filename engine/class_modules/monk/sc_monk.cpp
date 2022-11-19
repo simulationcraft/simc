@@ -167,13 +167,13 @@ public:
     //    parse_buff_effects( p()->buff.mighty_pour );
     //    parse_buff_effects( p()->buff.purified_chi );
     // Mistweaver
-    //    parse_buff_effects( p()->buff.invoke_chiji_evm );
-    //    parse_buff_effects( p()->buff.lifecycles_enveloping_mist );
-    //    parse_buff_effects( p()->buff.lifecycles_vivify );
-    //    parse_buff_effects( p()->buff.mana_tea );
-    //    parse_buff_effects( p()->buff.refreshing_jade_wind );
-    //    parse_buff_effects( p()->buff.touch_of_death_mw );
+       parse_buff_effects( p()->buff.invoke_chiji_evm, true, true );
+       parse_buff_effects( p()->buff.lifecycles_enveloping_mist );
+       parse_buff_effects( p()->buff.lifecycles_vivify );
+       parse_buff_effects( p()->buff.mana_tea );
+       parse_buff_effects( p()->buff.touch_of_death_mw );
     // Windwalker
+       parse_buff_effects( p()->buff.bok_proc );
     //    parse_buff_effects( p()->buff.chi_energy, true, true );
     //    parse_buff_effects( p()->buff.dance_of_chiji_hidden );
     //    parse_buff_effects( p()->buff.fists_of_flowing_momentum, true, true );
@@ -669,18 +669,10 @@ public:
   {
     double c = 0.0;
 
-    if ( p()->specialization() == MONK_MISTWEAVER )
-    {
-      if ( p()->buff.mana_tea->check() && ab::data().affected_by( p()->talent.mistweaver.mana_tea->effectN( 1 ) ) )
-        c += p()->buff.mana_tea->check_value();  // saved as -50%
-    }
-
     if ( p()->specialization() == MONK_WINDWALKER )
     {
       if ( p()->buff.serenity->check() && ab::data().affected_by( p()->talent.windwalker.serenity->effectN( 1 ) ) )
         c += p()->talent.windwalker.serenity->effectN( 1 ).percent();  // Saved as -100
-      else if ( p()->buff.bok_proc->check() && ab::data().affected_by( p()->passives.bok_proc->effectN( 1 ) ) )
-        c += p()->passives.bok_proc->effectN( 1 ).percent();  // Saved as -100
     }
 
     return c;
@@ -1375,9 +1367,6 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
 
       am *= 1 + serenity_multiplier;
     }
-
-    // Increases just physical damage
-    am *= 1 + p()->buff.touch_of_death_mw->check_value();
 
     return am;
   }
@@ -3727,6 +3716,7 @@ struct resonant_fists_t : public monk_spell_t
   {
     background = true;
     aoe        = -1;
+    reduced_aoe_targets = 5;
   }
 
   void init() override
@@ -5521,20 +5511,9 @@ struct enveloping_mist_t : public monk_heal_t
     mastery = new gust_of_mists_t( p );
   }
 
-  double cost() const override
-  {
-    double c = monk_heal_t::cost();
-
-    c *= 1 + p()->buff.lifecycles_enveloping_mist->check_value();  // saved as -20%
-
-    return c;
-  }
-
   timespan_t execute_time() const override
   {
     timespan_t et = monk_heal_t::execute_time();
-
-    et *= 1 + p()->buff.invoke_chiji_evm->check_stack_value();
 
     et *= 1 + p()->spec.thunder_focus_tea->effectN( 3 ).percent();  // saved as -100
 
@@ -5632,8 +5611,6 @@ struct vivify_t : public monk_heal_t
     if ( p()->buff.thunder_focus_tea->check() )
       c *= 1 + p()->talent.mistweaver.thunder_focus_tea->effectN( 2 ).percent();  // saved as -100
 
-    c *= 1 + p()->buff.lifecycles_vivify->check_value();  // saved as -25%
-
     return c;
   }
 
@@ -5673,15 +5650,6 @@ struct essence_font_t : public monk_spell_t
     {
       background = dual = true;
       aoe               = (int)p.spec.essence_font->effectN( 1 ).base_value();
-    }
-
-    double action_multiplier() const override
-    {
-      double am = monk_heal_t::action_multiplier();
-
-      am *= 1 + p()->buff.refreshing_jade_wind->check_value();
-
-      return am;
     }
   };
 
