@@ -1249,10 +1249,6 @@ void judgment_t::execute()
   if ( p()->talents.zealots_paragon->ok() )
   {
     auto extension = timespan_t::from_millis( p()->talents.zealots_paragon->effectN( 1 ).base_value() );
-    if ( !(p()->dbc->ptr) )
-    {
-      extension = timespan_t::from_millis( p()->talents.zealots_paragon->effectN( 4 ).base_value() );
-    }
 
     if ( p()->buffs.avenging_wrath->up() )
     {
@@ -1859,10 +1855,6 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
     if ( p()->talents.zealots_paragon->ok() )
     {
       auto extension = timespan_t::from_millis( p()->talents.zealots_paragon->effectN( 1 ).base_value() );
-      if ( !(p()->dbc->ptr) )
-      {
-        extension = timespan_t::from_millis( p()->talents.zealots_paragon->effectN( 4 ).base_value() );
-      }
 
       if ( p()->buffs.avenging_wrath->up() )
       {
