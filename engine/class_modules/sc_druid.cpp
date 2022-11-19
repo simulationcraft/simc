@@ -2796,6 +2796,9 @@ public:
       p()->buff.ca_inc->extend_duration_or_trigger( p_time, p() );
       p()->proc.pulsar->occur();
 
+      // TODO: nature's grace always procs for pulsar
+      p()->buff.natures_grace->trigger();
+
       p()->uptime.primordial_arcanic_pulsar->update( true, sim->current_time() );
 
       make_event( *sim, p_time, [ this ]() {
@@ -6407,6 +6410,10 @@ struct celestial_alignment_base_t : public druid_spell_t
     p()->eclipse_handler.expire_both();
 
     buff->trigger();
+
+    // TODO: nature's grace only procs for CA if an eclipse already exists
+    if ( p()->eclipse_handler.state != eclipse_state_e::ANY_NEXT )
+      p()->buff.natures_grace->trigger();
 
     p()->uptime.primordial_arcanic_pulsar->update( false, sim->current_time() );
   }
@@ -12832,16 +12839,7 @@ void eclipse_handler_t::trigger_both( timespan_t d = 0_ms )
   p->buff.parting_skies->trigger();
   p->buff.solstice->trigger();
 
-  if ( !p->bugs )
-  {
-    if ( state != ANY_NEXT )
-      p->buff.natures_grace->trigger();
-  }
-  else
-  {
-    if ( state == IN_BOTH )
-      p->buff.natures_grace->trigger();
-  }
+  // TODO: nature's grace handled in CA/pulsar as they behave differently
 
   state = IN_BOTH;
   p->uptime.eclipse_none->update( false, p->sim->current_time() );
@@ -12855,19 +12853,12 @@ void eclipse_handler_t::extend_both( timespan_t d )
   p->buff.eclipse_solar->extend_duration( p, d );
   p->buff.eclipse_lunar->extend_duration( p, d );
 
-  if ( !p->bugs )
-  {
-    p->buff.balance_of_all_things_arcane->trigger();
-    p->buff.balance_of_all_things_nature->trigger();
-  }
-
+  p->buff.balance_of_all_things_arcane->trigger();
+  p->buff.balance_of_all_things_nature->trigger();
   p->buff.touch_the_cosmos->trigger();
   p->buff.parting_skies->trigger();
   p->buff.parting_skies->trigger();
-
-  if ( !p->bugs )
-    p->buff.solstice->trigger();
-
+  p->buff.solstice->trigger();
   p->buff.natures_grace->trigger();
 }
 
