@@ -7444,16 +7444,19 @@ void hunter_t::create_buffs()
         [ this ]( buff_t*, int /*ol*/, int cur ) {
           cooldowns.aimed_shot -> adjust_recharge_multiplier();
           cooldowns.rapid_fire -> adjust_recharge_multiplier();
-          if ( cur == 0 ) {
+          if ( cur == 0 ) 
+          {
             buffs.eagletalons_true_focus -> expire();
             buffs.eagletalons_true_focus_runeforge -> expire();
             buffs.unerring_vision_hidden -> expire();
             buffs.unerring_vision -> expire();
           }
-          else if ( cur == 1 )
+          else if ( cur == 1 ) 
+          {
             buffs.unerring_vision_hidden -> trigger();
             buffs.eagletalons_true_focus_runeforge -> trigger();
             buffs.eagletalons_true_focus -> trigger();
+          }
         } )
       -> apply_affecting_aura( talents.eagletalons_true_focus )
       -> apply_affecting_conduit( conduits.sharpshooters_focus );
