@@ -12,7 +12,7 @@ spec_talents=earth_shock:1/earthquake:1/elemental_fury:1/fire_elemental:1/storm_
 potion=elemental_potion_of_ultimate_power_3
 flask=phial_of_static_empowerment_3
 food=fated_fortune_cookie
-augmentation=draconic_augment_rune
+augmentation=draconic
 temporary_enchant=disabled
 
 # This default action priority list is automatically created based on your character.
@@ -70,7 +70,7 @@ actions.aoe+=/ascendance
 # Keep your cooldowns rolling.
 actions.aoe+=/liquid_magma_totem
 # Cast Lava Burst to buff your immediately follow-up Earthquake with Master of the Elements.
-actions.aoe+=/lava_burst,target_if=dot.flame_shock.remains,if=cooldown_react&buff.lava_surge.up&talent.master_of_the_elements.enabled&!buff.master_of_the_elements.up&(maelstrom>=60-5*talent.eye_of_the_storm.rank-2*talent.flow_of_power.enabled)&(!talent.echoes_of_great_sundering.enabled|buff.echoes_of_great_sundering.up)&(!buff.ascendance.up&enemies>3&talent.unrelenting_calamity.enabled|enemies>3&!talent.unrelenting_calamity.enabled|enemies=3)
+actions.aoe+=/lava_burst,target_if=dot.flame_shock.remains,if=cooldown_react&buff.lava_surge.up&talent.master_of_the_elements.enabled&!buff.master_of_the_elements.up&(maelstrom>=60-5*talent.eye_of_the_storm.rank-2*talent.flow_of_power.enabled)&(!talent.echoes_of_great_sundering.enabled|buff.echoes_of_great_sundering.up)&(!buff.ascendance.up&active_enemies>3&talent.unrelenting_calamity.enabled|active_enemies>3&!talent.unrelenting_calamity.enabled|active_enemies=3)
 # Use the talents you selected. Did you invest only 1 point in it? In this case this'll be a DPS decrease.
 actions.aoe+=/earthquake,if=!talent.echoes_of_great_sundering.enabled&active_enemies>3&(spell_targets.chain_lightning>3|spell_targets.lava_beam>3)
 # Use the talents you selected. Did you invest only 1 point in it? In this case this'll be a DPS decrease.
@@ -156,7 +156,7 @@ actions.single_target+=/earthquake,if=active_enemies>1&(spell_targets.chain_ligh
 actions.single_target+=/elemental_blast
 actions.single_target+=/earth_shock
 # Utilize present buffs.
-actions.single_target+=/lava_burst,target_if=dot.flame_shock.remains>2,if=buff.flux_melting.up&enemies>1
+actions.single_target+=/lava_burst,target_if=dot.flame_shock.remains>2,if=buff.flux_melting.up&active_enemies>1
 # Single target Lava Burst is stronk.
 actions.single_target+=/lava_burst,target_if=dot.flame_shock.remains>2,if=enemies=1&talent.deeply_rooted_elements.enabled
 # Spread out your Icefury usage if you can get more use out of accompanied buffs.
