@@ -5719,7 +5719,7 @@ struct lava_burst_t : public shaman_spell_t
 
     if ( p()->talent.primordial_wave.ok() && p()->talent.rolling_magma.ok() )
     {
-      p()->cooldown.primordial_wave->adjust( p()->talent.rolling_magma->effectN( 1 ).time_value() );
+      p()->cooldown.primordial_wave->adjust( p()->talent.rolling_magma->effectN( 1 ).time_value() * num_targets_hit );
     }
 
     if (p()->buff.primordial_surge_lava_burst_buff->up() )
