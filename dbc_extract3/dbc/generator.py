@@ -1377,6 +1377,7 @@ class SpellDataGenerator(DataGenerator):
          381760, # Mutated Magmammoth Scale
          389710, 392899, 389707, # Blazebinder's Hoof
          394453, # Broodkeeper's Blaze
+         397118, 397478, # Neltharax, Enemy of the Sky
         ),
 
         # Warrior:

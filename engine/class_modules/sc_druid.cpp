@@ -311,6 +311,8 @@ public:
   event_t* lycaras_event;
   timespan_t lycaras_event_remains;
   std::vector<event_t*> swarm_tracker;  // 'friendly' targets for healing swarm
+  event_t* astral_power_decay_tick;
+  bool astral_power_decay_tick_flag;
   // !!!==========================================================================!!!
 
   // Options
@@ -1718,7 +1720,7 @@ struct bt_dummy_buff_t : public druid_buff_t
 // Celestial Alignment / Incarn Buff ========================================
 struct celestial_alignment_buff_t : public druid_buff_t
 {
-  celestial_alignment_buff_t( druid_t* p, std::string_view n, const spell_data_t* s, bool b = false )
+  celestial_alignment_buff_t( druid_t* p, std::string_view n, const spell_data_t* s )
     : base_t( p, n, p->apply_override( s, p->talent.orbital_strike ) )
   {
     set_cooldown( 0_ms );
@@ -2791,10 +2793,11 @@ public:
         p()->active.shift_to_moonkin->execute();
       }
 
-      bool was_active = p()->buff.ca_inc->check();
-
       p()->buff.ca_inc->extend_duration_or_trigger( p_time, p() );
       p()->proc.pulsar->occur();
+
+      // TODO: nature's grace always procs for pulsar
+      p()->buff.natures_grace->trigger();
 
       p()->uptime.primordial_arcanic_pulsar->update( true, sim->current_time() );
 
@@ -2869,7 +2872,11 @@ private:
 
 public:
   trigger_astral_smolder_t( std::string_view n, druid_t* p, const spell_data_t* s, std::string_view o )
-    : BASE( n, p, s, o ), p_( p ), other_ecl( nullptr ), other_dot( nullptr ), mul( p->talent.astral_smolder->effectN( 1 ).percent() )
+    : BASE( n, p, s, o ),
+      p_( p ),
+      other_ecl( nullptr ),
+      other_dot( nullptr ),
+      mul( p->talent.astral_smolder->effectN( 1 ).percent() )
   {}
 
   void init_astral_smolder( buff_t* b, dot_t* druid_td_t::dots_t::*d )
@@ -4270,6 +4277,8 @@ struct primal_wrath_t : public cat_finisher_t
     {
       background = true;
       round_base_dmg = false;
+      aoe = -1;
+      reduced_aoe_targets = p->talent.tear_open_wounds->effectN( 3 ).base_value();
     }
 
     double _get_amount( const action_state_t* s ) const
@@ -4284,6 +4293,19 @@ struct primal_wrath_t : public cat_finisher_t
 
     double base_da_min( const action_state_t* s ) const override { return _get_amount( s ); }
     double base_da_max( const action_state_t* s ) const override { return _get_amount( s ); }
+
+    std::vector<player_t*>& target_list() const override
+    {
+      target_cache.is_valid = false;
+
+      std::vector<player_t*>& tl = cat_attack_t::target_list();
+
+      tl.erase( std::remove_if( tl.begin(), tl.end(), [ this ]( player_t* t ) {
+        return !td( t )->dots.rip->is_ticking();
+      } ), tl.end() );
+
+      return tl;
+    }
 
     void impact( action_state_t* s ) override
     {
@@ -4335,7 +4357,6 @@ struct primal_wrath_t : public cat_finisher_t
     if ( p->talent.tear_open_wounds.ok() )
     {
       wounds = p->get_secondary_action<tear_open_wounds_t>( "tear_open_wounds" );
-      wounds->background = true;
       add_child( wounds );
     }
   }
@@ -4347,7 +4368,7 @@ struct primal_wrath_t : public cat_finisher_t
 
   void impact( action_state_t* s ) override
   {
-    if ( wounds && td( s->target )->dots.rip->is_ticking() )
+    if ( wounds && s->chain_target == 0 )
       wounds->execute_on_target( s->target );
 
     rip->snapshot_and_execute( s, true );
@@ -5410,7 +5431,7 @@ struct natures_guardian_t : public druid_heal_t
     druid_heal_t::init();
 
     // Not affected by multipliers of any sort.
-    snapshot_flags &= ~STATE_NO_MULTIPLIER;
+    snapshot_flags &= STATE_NO_MULTIPLIER;
   }
 };
 
@@ -6389,6 +6410,10 @@ struct celestial_alignment_base_t : public druid_spell_t
     p()->eclipse_handler.expire_both();
 
     buff->trigger();
+
+    // TODO: nature's grace only procs for CA if an eclipse already exists
+    if ( p()->eclipse_handler.state != eclipse_state_e::ANY_NEXT )
+      p()->buff.natures_grace->trigger();
 
     p()->uptime.primordial_arcanic_pulsar->update( false, sim->current_time() );
   }
@@ -8156,11 +8181,12 @@ struct wild_mushroom_t : public druid_spell_t
   timespan_t delay;
 
   wild_mushroom_t( druid_t* p, std::string_view opt )
-    : druid_spell_t( "wild_mushroom", p, p->talent.wild_mushroom, opt ), delay( data().duration() )
+    : druid_spell_t( "wild_mushroom", p, p->talent.wild_mushroom, opt ),
+      delay( p->bugs ? data().duration() + 1.5_s : data().duration() )
   {
     harmful = false;
 
-    damage = p->get_secondary_action<wild_mushroom_damage_t>( "wild_mushroom_damage", this );
+    damage        = p->get_secondary_action<wild_mushroom_damage_t>( "wild_mushroom_damage", this );
     damage->stats = stats;
   }
 
@@ -9263,16 +9289,34 @@ void druid_t::activate()
       } );
     }
 
-    if ( talent.natures_balance.ok() )
-    {
-      // TODO: make this actually work since buff.nb's tick_callback uses hard coded value instead of default_value()
-      sim->target_non_sleeping_list.register_callback( [ this ]( player_t* ) {
-        if ( sim->target_non_sleeping_list.empty() )
-          buff.natures_balance->current_value *= 3.0;
-        else
-          buff.natures_balance->current_value = buff.natures_balance->default_value;
-      } );
-    }
+    // Create repeating resource_loss event once OOC for 20s
+    sim->target_non_sleeping_list.register_callback( [ this ]( player_t* ) {
+      if ( sim->target_non_sleeping_list.empty() )
+      {
+        make_event( *sim, 20_s, [ this ]() {
+          if ( sim->target_non_sleeping_list.empty() )
+          {
+            astral_power_decay_tick_flag = true;
+            if ( !astral_power_decay_tick )
+            {
+              astral_power_decay_tick = make_repeating_event( *sim, 500_ms, [ this ]() {
+                // Add 3 to avoid an infinite back and forth with Nature's Balance
+                if ( astral_power_decay_tick_flag &&
+                     ( !talent.natures_balance->ok() || resources.current[ RESOURCE_ASTRAL_POWER ] >
+                                                            talent.natures_balance->effectN( 2 ).base_value() + 3 ) )
+                {
+                  resource_loss( RESOURCE_ASTRAL_POWER, 5 );
+                }
+              } );
+            }
+          }
+        } );
+      }
+      else
+      {
+        astral_power_decay_tick_flag = false;
+      }
+    } );
   }
 
   player_t::activate();
@@ -10226,8 +10270,17 @@ void druid_t::create_buffs()
   buff.natures_balance->set_quiet( true )
     ->set_default_value( nb_eff->resource( RESOURCE_ASTRAL_POWER ) / nb_eff->period().total_seconds() )
     ->set_tick_callback( [ nb_eff, this ]( buff_t* b, int, timespan_t ) {
-      resource_gain( RESOURCE_ASTRAL_POWER, b->check_value() * nb_eff->period().total_seconds(), gain.natures_balance );
-    } );
+      auto tick_gain = b->check_value() * nb_eff->period().total_seconds();
+      if (sim->target_non_sleeping_list.empty()) {
+          if (resources.current[RESOURCE_ASTRAL_POWER] < talent.natures_balance->effectN(2).base_value())
+              tick_gain *= 3.0;
+          else
+              tick_gain = 0;
+
+      }
+      resource_gain(RESOURCE_ASTRAL_POWER, tick_gain, gain.natures_balance);
+  })
+      ->set_freeze_stacks(true);
 
   buff.natures_grace = make_buff( this, "natures_grace", find_spell( 393959 ) )
     ->set_trigger_spell( talent.natures_grace )
@@ -11215,6 +11268,8 @@ void druid_t::reset()
   persistent_event_delay.clear();
   lycaras_event = nullptr;
   lycaras_event_remains = 0_ms;
+  astral_power_decay_tick = nullptr;
+  astral_power_decay_tick_flag = false;
   swarm_tracker.clear();
 }
 
@@ -12785,16 +12840,7 @@ void eclipse_handler_t::trigger_both( timespan_t d = 0_ms )
   p->buff.parting_skies->trigger();
   p->buff.solstice->trigger();
 
-  if ( !p->bugs )
-  {
-    if ( state != ANY_NEXT )
-      p->buff.natures_grace->trigger();
-  }
-  else
-  {
-    if ( state == IN_BOTH )
-      p->buff.natures_grace->trigger();
-  }
+  // TODO: nature's grace handled in CA/pulsar as they behave differently
 
   state = IN_BOTH;
   p->uptime.eclipse_none->update( false, p->sim->current_time() );
@@ -12808,19 +12854,12 @@ void eclipse_handler_t::extend_both( timespan_t d )
   p->buff.eclipse_solar->extend_duration( p, d );
   p->buff.eclipse_lunar->extend_duration( p, d );
 
-  if ( !p->bugs )
-  {
-    p->buff.balance_of_all_things_arcane->trigger();
-    p->buff.balance_of_all_things_nature->trigger();
-  }
-
+  p->buff.balance_of_all_things_arcane->trigger();
+  p->buff.balance_of_all_things_nature->trigger();
   p->buff.touch_the_cosmos->trigger();
   p->buff.parting_skies->trigger();
   p->buff.parting_skies->trigger();
-
-  if ( !p->bugs )
-    p->buff.solstice->trigger();
-
+  p->buff.solstice->trigger();
   p->buff.natures_grace->trigger();
 }
 

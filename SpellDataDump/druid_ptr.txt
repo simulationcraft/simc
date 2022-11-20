@@ -1896,7 +1896,6 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Wrath (5176), Starfall (50286), Starsurge (78674), Fungal Growth (81281), Wild Mushroom (88747), Wild Mushroom (88751), Sunfire (93402), Wrath (190984), Starfall (191034), Starfall (191037), Starsurge (197626), Sunfire (197630), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (202770), Fury of Elune (211545), New Moon (274281), Half Moon (274282), Full Moon (274283), Fury of Elune (365640), Fury of Elune (394111)
                    Family Flags: 0, 23, 55, 63, 88, 89, 102, 105, 116
-Hotfixed         : Affects Spells
 #2 (id=816917)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Wrath (5176), Wrath (190984)
@@ -1925,7 +1924,6 @@ Hotfixed         : Affects Spells
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Wrath (5176), Starfall (50286), Starsurge (78674), Fungal Growth (81281), Wild Mushroom (88747), Wild Mushroom (88751), Sunfire (164815), Wrath (190984), Starfall (191034), Starfall (191037), Starsurge (197626), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (202770), Fury of Elune (211545), New Moon (274281), Half Moon (274282), Full Moon (274283), Fury of Elune (365640), Fury of Elune (394111)
                    Family Flags: 0, 23, 55, 63, 88, 89, 105, 116, 127
-Hotfixed         : Affects Spells
 Description      : $@spelldesc79577
 Tooltip          : Nature spells deal $w1% additional damage$?<$w5>0>[, Astral Power generation increased $w5%,][] and Wrath's damage is increased by $w2%.
 
@@ -1950,7 +1948,6 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Moonfire (8921), Starfall (50286), Starsurge (78674), Fungal Growth (81281), Wild Mushroom (88747), Wild Mushroom (88751), Starfall (191034), Starfall (191037), Starfire (194153), Starsurge (197626), Starfire (197628), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (202770), Fury of Elune (211545), New Moon (274281), Half Moon (274282), Full Moon (274283), Fury of Elune (365640), Fury of Elune (394111)
                    Family Flags: 2, 21, 23, 55, 63, 88, 89, 105, 116
-Hotfixed         : Affects Spells
 #2 (id=816916)   : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Starfire (194153), Starfire (197628)
@@ -1975,7 +1972,6 @@ Hotfixed         : Affects Spells
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Starfall (50286), Starsurge (78674), Fungal Growth (81281), Wild Mushroom (88747), Wild Mushroom (88751), Moonfire (164812), Starfall (191034), Starfall (191037), Starfire (194153), Starsurge (197626), Starfire (197628), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (202770), Fury of Elune (211545), New Moon (274281), Half Moon (274282), Full Moon (274283), Fury of Elune (365640), Fury of Elune (394111)
                    Family Flags: 2, 23, 55, 63, 88, 89, 92, 105, 116
-Hotfixed         : Affects Spells
 Description      : $@spelldesc79577
 Tooltip          : Arcane spells deal $w1% additional damage$?<$w5>0>[, area effect damage increased $w5%,][] and Starfire's critical strike chance is increased by $w2%.
 
@@ -2776,7 +2772,6 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=68522)    : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.35702 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (0.969306 -> 1.35702)
 #2 (id=68523)    : Apply Aura (6) | Modify Damage Done% to Caster (269)
                    Base Value: -35 | Scaled Value: -35 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Enemy (6)
                    Affected School(s): All
@@ -4588,7 +4583,6 @@ Effects          :
 Description      : Blasts targets within $61391a1 yards in front of you with a violent Typhoon, knocking them back and dazing them for $61391d. Usable in all shapeshift forms.
 
 Name             : Tooth and Claw (id=135286) [Spell Family (7)] 
-Hotfixed         : Tooltip
 Class            : Druid
 School           : Physical
 Spell Type       : Melee
@@ -4618,12 +4612,10 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Maul (6807), Strength of the Wild (236716)
                    Family Flags: 11
-Hotfixed         : NEW EFFECT
 Description      : $@spelldesc135288
 Tooltip          : Your next Maul deals $s1% more damage, costs $s3% less rage, and reduces the target's damage to you by $135601s1%~ for $135601d.
 
 Name             : Tooth and Claw (id=135288) [Spell Family (7), Passive] 
-Hotfixed         : Description
 Talent Entry     : Guardian [tree=spec, row=6, col=3, max_rank=1, req_points=8]
 Class            : Druid
 School           : Physical
@@ -4763,12 +4755,10 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Maul (6807), Mangle (33917), Thrash (77758), Pulverize (80313), Thrash (192090), Brambles (203958), Brambles (213709), Swipe (213771), Architect's Aligner (363789)
                    Family Flags: 77
-Hotfixed         : Base Value (0 -> 50)
 #2 (id=191158)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Maul (6807), Mangle (33917), Thrash (77758), Pulverize (80313), Thrash (192090), Brambles (203958), Brambles (213709), Swipe (213771), Architect's Aligner (363789)
                    Family Flags: 77
-Hotfixed         : Base Value (0 -> 50)
 #3 (id=191159)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Regrowth (8936)
@@ -4801,7 +4791,6 @@ Hotfixed         : Base Value (0 -> 50)
                    Family Flags: 38
 #11 (id=1013112)  : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (10 -> 60)
 #12 (id=1032345)  : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #13 (id=1032346)  : Apply Aura (6) | Unknown(531)
@@ -4918,12 +4907,10 @@ Effects          :
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Regrowth (8936)
                    Family Flags: 6
-Hotfixed         : Base Value (-15 -> -10)
 #15 (id=1039259)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Regrowth (8936)
                    Family Flags: 6
-Hotfixed         : Base Value (-15 -> -10)
 #16 (id=1039291)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: -8 | Scaled Value: -8 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rejuvenation (774), Rejuvenation (Germination) (155777)
@@ -6088,7 +6075,6 @@ Attributes       : ........ ........ .......x x..x....   .....x.x ........ .....
 Effects          :
 #1 (id=280158)   : School Damage (2): astral
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.08779 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (0.125418 -> 0.087793)
 Description      : $@spelldesc191034
 
 Name             : Ironfur (id=192081) [Spell Family (7)] 
@@ -6214,7 +6200,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=284976)   : School Damage (2): arcane
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.65025 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
-Hotfixed         : SP Coefficient (0.765 -> 0.65025)
 #2 (id=284977)   : Energize Power (30)
                    Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 1.00000 | Misc Value: astral_power | Target: Self (1)
 #3 (id=295015)   : Dummy (3)
@@ -6729,7 +6714,6 @@ Effects          :
                    Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Wrath (5176), Wrath (190984)
                    Family Flags: 0
-Hotfixed         : Base Value (60 -> 80)
 #3 (id=350584)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Moonfire (8921), Sunfire (93402), Sunfire (197630)
@@ -6804,7 +6788,6 @@ Description      : Switch to your Primary Talent Specialization.
 Tooltip          : Switch to your Primary Talent Specialization.
 
 Name             : Rage of the Sleeper (id=200851) [Spell Family (7)] 
-Hotfixed         : Cooldown (90000 -> 60000), Description, Tooltip
 Talent Entry     : Guardian [tree=spec, row=10, col=3, max_rank=1, req_points=20]
 Class            : Druid
 School           : Physical
@@ -6830,14 +6813,11 @@ Effects          :
                    Affected School(s): All
 #3 (id=297121)   : Apply Aura (6) | Modify Leech% (443)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Sub Type (147 -> 443), Base Value (0 -> 25), Misc Value (2071 -> 0)
 #4 (id=297122)   : Apply Aura (6) | Unknown(147)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 2071 | Target: Self (1)
-Hotfixed         : Sub Type (443 -> 147), Base Value (25 -> 0), Misc Value (0 -> 2071)
 #5 (id=297123)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
-Hotfixed         : Base Value (25 -> 15)
 Description      : Unleashes the rage of Ursoc for $d, preventing $s3% of all damage you take, increasing your damage done by $s5%, granting you $s3% leech, and reflecting $219432s1 Nature damage back at your attackers.
 Tooltip          : Prevents $s3% of all damage you take, increases damage done by $s5%, grants $s3% leech, and reflects $219432s1 Nature damage back at your attackers.
 
@@ -7345,7 +7325,7 @@ Description      : Deals $m1 Arcane damage to the target and empowers Half Moon 
 |cFFFFFFFFGenerates ${$m3/10} Astral Power.|r
 
 Name             : Fury of Elune (id=202770) [Spell Family (7)] 
-Talent Entry     : Balance [tree=spec, row=9, col=5, max_rank=1, req_points=20, select_idx=100]
+Talent Entry     : Balance [tree=spec, row=9, col=5, max_rank=1, req_points=20, select_idx=101]
 Class            : Druid
 School           : Astral
 Spell Type       : Magic
@@ -10084,7 +10064,7 @@ Effects          :
 Description      : Your damaging abilities have a chance to invoke a tainted swamp beneath the target, siphoning ${$s1*6} health from them over $273836d.
 
 Name             : New Moon (id=274281) [Spell Family (7)] 
-Talent Entry     : Balance [tree=spec, row=9, col=5, max_rank=1, req_points=20, select_idx=101]
+Talent Entry     : Balance [tree=spec, row=9, col=5, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
 School           : Astral
 Spell Type       : Magic
@@ -15343,7 +15323,6 @@ Effects          :
 Description      : $@spelldesc370586
 
 Name             : Elune's Favored (id=370602) [Spell Family (7)] 
-Hotfixed         : Attributes
 Class            : Druid
 School           : Nature
 Spell Type       : None
@@ -15421,7 +15400,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=989783)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 6.00000 | PvP Coefficient: 1.00000 | Radius: 0 - 12 yards | Target: Custom (18) -> AOE friendly (31)
-Hotfixed         : AP Coefficient (1.5 -> 6)
 Description      : $@spelldesc371905
 
 Name             : Vicious Cycle (id=371999) [Spell Family (7), Passive] 
@@ -15495,7 +15473,6 @@ Description      : $@spelldesc371999
 Tooltip          : Your next Mangle deals $w1% increased damage.
 
 Name             : Dream of Cenarius (id=372119) [Passive] 
-Hotfixed         : Description
 Talent Entry     : Guardian [tree=spec, row=9, col=2, max_rank=1, req_points=20]
 Class            : Druid
 School           : Physical
@@ -15520,7 +15497,6 @@ Description      : When you take non-periodic damage, you have a chance equal to
 This effect cannot occur more than once every $372523d.
 
 Name             : Dream of Cenarius (id=372152) [Spell Family (7)] 
-Hotfixed         : Description, Tooltip
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -15552,17 +15528,14 @@ Effects          :
                    Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Regrowth (8936)
                    Family Flags: 6
-Hotfixed         : NEW EFFECT
 #5 (id=1041740)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Regrowth (8936)
                    Family Flags: 6
-Hotfixed         : NEW EFFECT
 Description      : Your next Regrowth heals for an additional $s4% and is free, instant, and castable in all forms.
 Tooltip          : Your next Regrowth heals for an additional $s4% and is free, instant, and castable in all forms.
 
 Name             : Ursoc's Fury (id=372505) [Spell Family (7)] 
-Hotfixed         : Attributes
 Class            : Druid
 School           : Physical
 Spell Type       : Melee
@@ -17043,6 +17016,9 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1029485)  : Apply Aura (6) | Dummy (4)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Target: Self (1)
+#3 (id=1042566)  : Dummy (3)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
+Hotfixed         : NEW EFFECT
 Description      : Primal Wrath consumes up to $s1 sec of Rip damage on targets it hits and deals $s2% of it instantly.
 
 Name             : Tear Open Wounds (id=391786) [Spell Family (7)] 
@@ -17517,10 +17493,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1030014)  : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (1 -> 2)
 #2 (id=1030015)  : Apply Aura (6) | Dummy (4)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (3 -> 6)
 Description      : When your Rejuvenation heals a full health target, its duration is increased by $s1 sec, up to a maximum total increase of $s2 sec per cast.
 
 Name             : Regenerative Heartwood (id=392116) [Spell Family (7), Passive] 
@@ -18235,7 +18209,6 @@ Effects          :
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Ironfur (192081)
                    Family Flags: 78
-Hotfixed         : Base Value (4 -> 8)
 #2 (id=1032702)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
                    Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Barkskin (22812)
@@ -18391,7 +18364,6 @@ Effects          :
 Description      : Rejuvenation, Lifebloom, Wild Growth, Efflorescence, and Tranquility chance to critically heal is increased by $s1%.
 
 Name             : Druid Restoration Class Set 4pc (id=393641) [Spell Family (7), Passive, Hidden] 
-Hotfixed         : Description
 Class            : Druid
 School           : Physical
 Spell Type       : None

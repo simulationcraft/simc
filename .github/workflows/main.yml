@@ -2,16 +2,16 @@ name: CI
 
 on:
   pull_request:
-    branches: [ shadowlands, dragonflight ]
+    branches: [ dragonflight ]
   push:
-    branches: [ shadowlands, dragonflight ]
+    branches: [ dragonflight ]
     paths-ignore:
       - 'SpellDataDump/**'
       - 'dbc_extract3/**'
       - 'casc_extract/**'
 
 env:
-  MAIN_BRANCH: shadowlands # env is not accessible at jobs.if context so must be manually editted in ubuntu-clang-run and simc-tests
+  MAIN_BRANCH: dragonflight # env is not accessible at jobs.if context so must be manually edited in ubuntu-clang-run and simc-tests
   SIMC_PROFILE: profiles/CI.simc
   CCACHE_COMPRESS: true # always enable ccache compression
   ccache-generation: 0 # bump if you need to "clean" ccache
@@ -38,9 +38,9 @@ jobs:
             cppVersion: 20   
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         env: { ccache-prefix: 'ubuntu-${{ matrix.cc }}-cpp-${{ matrix.cppVersion }}-ccache-${{ env.ccache-generation }}' }
         with:
           path: ${{ runner.workspace }}/.ccache
@@ -88,9 +88,9 @@ jobs:
         cppVersion: [17, 20]
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         env: { ccache-prefix: 'ubuntu-clang-12-cpp-${{ matrix.cppVersion }}-ccache-${{ env.ccache-generation }}' }
         with:
           path: ${{ runner.workspace }}/.ccache
@@ -125,7 +125,7 @@ jobs:
           ninja -C '${{ runner.workspace }}/b/ninja'
           ccache -s
 
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         if: ${{ github.ref_name == env.MAIN_BRANCH }}
         with:
           path: |
@@ -157,7 +157,7 @@ jobs:
             simc_flags: $SIMC_PROFILE iterations=10 fight_style=DungeonSlice cleanup_threads=1
 
     steps:
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         with:
           path: |
             ${{ runner.workspace }}/b/ninja/simc
@@ -171,7 +171,7 @@ jobs:
         run: ${{ runner.workspace }}/b/ninja/simc output=/dev/null html=/dev/null json2=/dev/null json3=/dev/null ${{ matrix.simc_flags }}
 
   simc-tests:
-    if: ${{ github.ref_name == 'shadowlands' }}
+    # if: ${{ github.ref_name == 'shadowlands' }}
     name: test-${{ matrix.tier }}-${{ matrix.spec }}
     runs-on: ubuntu-20.04
     needs: [ ubuntu-clang-build ]
@@ -180,11 +180,12 @@ jobs:
       fail-fast: false
       matrix:
         cppVersion: [17]
-        tier: [ Tier28 ]
+        tier: [ Tier29 ]
         spec: [
             Death_Knight_Blood, Death_Knight_Frost, Death_Knight_Unholy,
             Demon_Hunter_Havoc, Demon_Hunter_Vengeance,
             Druid_Balance, Druid_Feral, Druid_Guardian,
+            Evoker_Devastation, Evoker_Preservation,
             Hunter_Beast_Mastery, Hunter_Marksmanship, Hunter_Survival,
             Mage_Arcane, Mage_Fire, Mage_Frost,
             Monk_Brewmaster, Monk_Windwalker,
@@ -197,7 +198,7 @@ jobs:
           ]
 
     steps:
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         with:
           path: |
             ${{ runner.workspace }}/b/ninja/simc
@@ -215,13 +216,13 @@ jobs:
           SIMC_PROFILE_DIR: ${{ github.workspace }}/profiles/${{ matrix.tier }}
           SIMC_THREADS: 2
           SIMC_ITERATIONS: 2
-        run: tests/run.py ${{ matrix.spec }} -tests talent trinket covenant legendary soulbind --max-profiles-to-use 1
+        run: tests/run.py ${{ matrix.spec }} -tests trinket --max-profiles-to-use 1
 
   build-osx:
     name: macos-latest
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Build
         run: make SANITIZE=1 -C engine debug -j 2
@@ -245,7 +246,7 @@ jobs:
        CMAKE_BUILD_DIR: ${{ github.workspace }}/builddir/
        
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
        # Setup the build machine with the most recent versions of CMake and Ninja. Both are cached if not already: on subsequent runs both will be quickly restored from GitHub cache service.
       - uses: lukka/get-cmake@latest

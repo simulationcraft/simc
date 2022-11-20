@@ -1,0 +1,123 @@
+# PROFILE FOR TESTING ONLY!
+# This file provides all available trinkets for STR and neutral ones.
+# Use this file to verify whether all trinkets are functioning as expected after changes.
+# No appropriate drop itemlevel required.
+
+
+copy="Bonemaw's Big Toe"
+trinket1=,id=110012,ilevel=44
+
+copy="Eye of Skovald"
+trinket1=,id=133641,ilevel=50
+
+copy="Horn of Valor"
+trinket1=,id=133642,ilevel=50
+
+copy="Mote of Sanctification"
+trinket1=,id=133646,ilevel=50
+
+copy="Gift of Radiance"
+trinket1=,id=133647,ilevel=50
+
+copy="Hunger of the Pack"
+trinket1=,id=136975,ilevel=50
+
+copy="Windscar Whetstone"
+trinket1=,id=137486,ilevel=50
+
+copy="Sustaining Alchemist Stone"
+trinket1=,id=191491,ilevel=306
+
+copy="Alacritous Alchemist Stone"
+trinket1=,id=191492,ilevel=306
+
+copy="Idol of the Lifebinder"
+trinket1=,id=193003,ilevel=306
+
+copy="Idol of the Spell-Weaver"
+trinket1=,id=193004,ilevel=306
+
+copy="Idol of the Dreamer"
+trinket1=,id=193005,ilevel=306
+
+copy="Idol of the Earth Warder"
+trinket1=,id=193006,ilevel=306
+
+copy="Burgeoning Seed"
+trinket1=,id=193634,ilevel=250
+
+copy="Idol of Trampling Hooves"
+trinket1=,id=193679,ilevel=250
+
+copy="Granyth's Enduring Scale"
+trinket1=,id=193689,ilevel=250
+
+copy="Bottle of Spiraling Winds"
+trinket1=,id=193697,ilevel=250
+
+copy="Algeth'ar Puzzle Box"
+trinket1=,id=193701,ilevel=250
+
+copy="Dragon Games Equipment"
+trinket1=,id=193719,ilevel=250
+
+copy="Kyrakka's Searing Embers"
+trinket1=,id=193748,ilevel=250
+
+copy="Ruby Whelp Shell"
+trinket1=,id=193757,ilevel=250
+
+copy="Blazebinder's Hoof"
+trinket1=,id=193762,ilevel=250
+
+copy="Decoration of Flame"
+trinket1=,id=194299,ilevel=376
+
+copy="Whispering Incarnate Icon"
+trinket1=,id=194301,ilevel=376
+
+copy="Storm-Eater's Boon"
+trinket1=,id=194302,ilevel=382
+
+copy="Rumbling Ruby"
+trinket1=,id=194303,ilevel=376
+
+copy="All-Totem of the Master"
+trinket1=,id=194306,ilevel=382
+
+copy="Manic Grieftorch"
+trinket1=,id=194308,ilevel=385
+
+copy="Spiteful Storm"
+trinket1=,id=194309,ilevel=385
+
+copy="Darkmoon Deck Box: Inferno"
+trinket1=,id=194872,ilevel=350
+
+copy="Darkmoon Deck: Inferno"
+trinket1=,id=198086,ilevel=306
+
+copy="Darkmoon Deck: Rime"
+trinket1=,id=198087,ilevel=306
+
+copy="Darkmoon Deck: Dance"
+trinket1=,id=198088,ilevel=306
+
+copy="Darkmoon Deck: Watcher"
+trinket1=,id=198089,ilevel=306
+
+copy="Darkmoon Deck Box: Rime"
+trinket1=,id=198477,ilevel=350
+
+copy="Darkmoon Deck Box: Dance"
+trinket1=,id=198478,ilevel=350
+
+copy="Darkmoon Deck Box: Watcher"
+trinket1=,id=198481,ilevel=350
+
+copy="Static-Charged Scale"
+trinket1=,id=200676,ilevel=389
+
+copy="Alacritous Alchemist Stone"
+trinket1=,id=202116,ilevel=306
+

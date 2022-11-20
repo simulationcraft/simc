@@ -272,8 +272,8 @@ struct player_t : public actor_t
   event_t* readying;
   event_t* off_gcd;
   event_t* cast_while_casting_poll_event; // Periodically check for something to do while casting
-  std::vector<const cooldown_t*> off_gcd_cd, off_gcd_icd;
-  std::vector<const cooldown_t*> cast_while_casting_cd, cast_while_casting_icd;
+  std::vector<std::pair<const cooldown_t*,const cooldown_t*>> off_gcd_cd;
+  std::vector<std::pair<const cooldown_t*, const cooldown_t*>> cast_while_casting_cd;
   timespan_t off_gcd_ready;
   timespan_t cast_while_casting_ready;
   bool in_combat;
@@ -313,6 +313,7 @@ struct player_t : public actor_t
   action_priority_list_t* active_off_gcd_list;
   action_priority_list_t* active_cast_while_casting_list;
   action_priority_list_t* restore_action_list;
+  execute_type restore_action_list_type;
   std::unordered_map<std::string, std::string> alist_map;
   std::string action_list_information; // comment displayed in profile
   bool no_action_list_provided;
@@ -582,6 +583,7 @@ struct player_t : public actor_t
     buff_t* elemental_chaos_frost;
     buff_t* tome_of_unstable_power;
     buff_t* way_of_controlled_currents;
+    buff_t* heavens_nemesis; // Neltharax, Enemy of the Sky
   } buffs;
 
   struct debuffs_t

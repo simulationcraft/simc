@@ -1,4 +1,4 @@
-// Spell text, wow build 10.0.2.46658
+// Spell text, wow build 10.0.2.46702
 static const std::array<spelltext_data_t, 19176> __spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
@@ -16311,7 +16311,7 @@ static const std::array<spelltext_data_t, 19176> __spelltext_data { {
   { 373265, 0, "The inner snowstorm rages on. The damage of Glacial Fury is increased.", 0 },
   { 373266, "Fulfil the destiny of a Fated raid item, upgrading it to Mythic quality.", 0, 0 },
   { 373267, 0, "Sharing $s1% of healing to an ally.", 0 },
-  { 373270, "Verdant Embrace temporarily bonds your life with an ally, causing healing either of you receive to also heal the bonded partner for $s1% of the amount. Lasts $373267d.", 0, 0 },
+  { 373270, "Verdant Embrace temporarily bonds your life with an ally, causing your healing on either partner to heal the other for $s1% of the amount. Lasts $373267d.", 0, 0 },
   { 373273, "After conjuring Shadowy Apparitions, gain a stack of Idol of Yogg-Saron. At $s1 stacks, you summon a Thing from Beyond that serves you for $373277d.\r\n\r\nThe Thing from Beyond blasts enemies for $373279s1 Shadow damage and deals $396895s2% of that damage to all enemies within $396895a1 yards. Damage reduced beyond $396895s3 targets.", 0, 0 },
   { 373276, "$@spelldesc373273", "Conjuring $373273s1 Shadowy Apparitions will summon a Thing from Beyond.", 0 },
   { 373277, "$@spelldesc373273", "A Thing from Beyond serves you in combat, blasting enemies for $373279s1 Shadow damage.", 0 },
@@ -17040,7 +17040,6 @@ static const std::array<spelltext_data_t, 19176> __spelltext_data { {
   { 382430, "Consecration periodic damage has a chance to grant you $s1 Holy Power.\r\n\r\nChances increase up to $s2 targets within Consecration.", 0, 0 },
   { 382440, "Draw power from the Night Fae, dealing ${$382445s1*$d/$t} Nature damage over $d to enemies within $382445A1 yds. \r\n\r\nWhile channeling, your Mage ability cooldowns are reduced by ${-$s2/1000*$d/$t} sec over $d.", "Every $t1 sec, deal $382445s1 Nature damage to enemies within $382445A1 yds and reduce the remaining cooldown of your abilities by ${-$s2/1000} sec.", 0 },
   { 382445, "$@spelldesc382440", 0, 0 },
-  { 382455, "Trigger ", 0, 0 },
   { 382461, "Cooldown of Overpower and Pummel reduced by ${$s2/-1000}.1 sec.", 0, 0 },
   { 382481, "Frost Nova can withstand $s1% more damage before breaking.", 0, 0 },
   { 382482, "Healing Stream Totem heals for $s1% more each time it ticks.", 0, 0 },
@@ -17074,13 +17073,11 @@ static const std::array<spelltext_data_t, 19176> __spelltext_data { {
   { 382569, "Mirror Image's cooldown is reduced by ${$s1/1000} sec whenever a Mirror Image dissipates due to direct damage.", 0, 0 },
   { 382614, "Inhale, gathering the power of the Dream. Release to exhale, healing $s1 injured allies in a 30 yd cone in front of you for ${$355941s3+$355941o1*8}.\r\n\r\n|cFFFFFFFFI:|r   Heals $355941s3 instantly and ${$355941o1*8} over $<sOneDur> sec.\r\n\r\n|cFFFFFFFFII:|r  Heals ${$355941s3+$355941o1*2} instantly and ${$355941o1*6} over $<sTwoDur> sec.\r\n\r\n|cFFFFFFFFIII:|r Heals ${$355941s3+$355941o1*4} instantly and ${$355941o1*4} over $<sThreeDur> sec.\r\n\r\n|cFFFFFFFFIV:|r Heals ${$355941s3+$355941o1*6} instantly and ${$355941o1*2} over $<sFourDur> sec.", 0, "Green" },
   { 382685, "Reduces the cast time of Lightning Bolt and Chain Lightning by ${$s1/-1000}.2 sec.\r\n\r\nIncreases the duration of Earthquake by ${$s2/1000} sec.", 0, 0 },
-  { 382719, "Hurl a Smoldering Inferno at the target that deals between $s1 and $s1 Fire Damage. Damage dealt is determined by the top-most card of the deck.", 0, 0 },
   { 382729, "Yum!", "Enjoying some ice cream... probably a little too quickly.", 0 },
   { 382731, "Divert spiritual energy, healing an ally for $367230s1. Splits to injured allies within $<range> yards when empowered.\r\n\r\n|cFFFFFFFFI:|r   Heals one ally.\r\n\r\n|cFFFFFFFFII:|r  Heals a second ally.\r\n\r\n|cFFFFFFFFIII:|r Heals a third ally.\r\n\r\n|cFFFFFFFFIV:|r Heals a fourth ally.", 0, "Green" },
   { 382732, "Increases the healing of Chain Heal by $s2% and causes it to bounce an additional time.", 0, 0 },
   { 382742, "Haste increased by $s2% while Stealthed and for $s1 sec after leaving Stealth.", 0, 0 },
   { 382746, "Main Gauche has an additional $s1% chance to strike.", 0, 0 },
-  { 382752, 0, "Darkmoon Deck: Voracity is not usable.", 0 },
   { 382764, "Slam deals and additional $s1% damage and has a ${$s3/10}.2% increased critical strike chance.", 0, 0 },
   { 382767, "Maximum Rage increased by ${$s1/10}.", 0, 0 },
   { 382800, "Your barrier's cooldown recharges $s1% faster while the shield persists.", 0, 0 },
@@ -19009,6 +19006,7 @@ static const std::array<spelltext_data_t, 19176> __spelltext_data { {
   { 394412, "$@spellaura393632", "Wrath and Starfire damage increased by $w1%.", 0 },
   { 394414, "$@spelldesc393633", "Starsurge and Starfall cost no Astral Power and deal $s2% increased damage.", 0 },
   { 394452, "Dealing Fire damage has a chance to ignite your enemies, burning them for an additional $s1 damage every $s2 seconds.\r\n\r\n", 0, 0 },
+  { 394453, "\r\n\r\n", "Burning for 6 sec.", 0 },
   { 394455, "Dealing Fire damage has a chance to invigorate you, absorbing $s1 damage for $s2 seconds.\r\n", 0, 0 },
   { 394460, "Swear your oath to the Primalists to become Marked by Frost, increasing your Critical Strike by [medium amount]. \r\n\r\nFighting alongside allies who are Marked by Earth or Fire has a chance to grant you half of their Mark's stats for $s1 seconds.", "Critical Strike and Haste increased by $w1.", 0 },
   { 394461, "Swear your oath to the Primalists to become Marked by Frost, increasing your Critical Strike by [medium amount]. \r\n\r\nFighting alongside allies who are Marked by Earth or Fire has a chance to grant you half of their Mark's stats for $s1 seconds.", "Haste and Versatility increased by $w1.", 0 },
@@ -19164,12 +19162,14 @@ static const std::array<spelltext_data_t, 19176> __spelltext_data { {
   { 397040, "Your damaging spells and abilities have a chance to deal $s1 Arcane damage.", 0, 0 },
   { 397041, "$@spelldesc397040", 0, 0 },
   { 397103, "Shield Wall gains $s2 additional charge, and its cooldown is reduced by ${$s1/-1000} sec.", 0, 0 },
+  { 397118, 0, "Attack speed increased by $w1%. Attacking another target will reset this bonus.", 0 },
   { 397251, "Weapons of Order calls forth $?c1[Niuzao, the Black Ox]?c2&s325197[Chi-Ji, the Red Crane]?c3[Xuen, the White Tiger][Yu'lon, the Jade Serpent] to assist you for ${$s1/1000} sec.", 0, 0 },
   { 397364, "@spelldesc384318", "Bleeding for $w1 damage every $t1 sec.", 0 },
   { 397399, "Embrace the gem to increase your Critical Strike by $s1 for $d. Your healing spells and abilities have a high chance to empower the gem, increasing its effect.", "Critical Strike increased by $w1.", 0 },
   { 397400, "Feast upon the toe, increasing your Critical Strike by $s1 for $d and causing you to exude a fetid breath, dealing ${$397401s1*$d/$t2} Shadow damage split between enemies in front of you.", "Critical Strike increased by $w1. Exuding a fetid breath.", 0 },
   { 397401, "$@spelldesc397400", 0, 0 },
   { 397405, "Casting spells spins Crystalline Silk, granting [low] mastery per stack.\r\n\r\nAt X stacks, your next single-target spell deals [high] bonus Frost damage, encasing them and enemies within 10 yards in a Crystalline Web for X seconds. While the web persists, a portion of the damage you deal is shared across all enemies in the Web.", "Movement Speed reduced by $w2%. Damaging this unit will cause all webbed enemies to take $382132s2 Frost damage.\r\nThis can occur once every 1.5 sec.", 0 },
+  { 397478, "Auto-attacking an enemy grants you $s2% attack speed, stacking $s3 times. This bonus resets upon auto-attacking a different target.", 0, 0 },
   { 397565, "$@spelldesc369375", 0, 0 },
   { 397568, "$@spelldesc378962", "Damage of your next Kill Command increased by $s1%.\r\nKill Command cooldown reset chance increased by $s2%.", 0 },
   { 397621, "$@spelldesc377456", "Movement speed increased by $w1%. Auto attacks deal $w2 bonus Nature damage to your current target and the nearest enemy.", 0 },
@@ -19178,19 +19178,12 @@ static const std::array<spelltext_data_t, 19176> __spelltext_data { {
   { 398396, "$@spelldesc386578", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.0.2.46658
-static constexpr std::array<hotfix::client_hotfix_entry_t, 8> __spelltext_hotfix_data { {
-  {  378233,  0, "Whenever a player is slain within $a1 yards of you, you are filled with a burst of tenacity and gain $s3 Versatility for $378238d1.", "Whenever a player is slain within $a1 yards of you, you are filled with a burst of tenacity and gain $s2 Versatility for $378238d1." },
-  {  378233,  1, "Whenever a player is slain within $a1 yards of you, you are filled with a burst of tenacity and gain $w3 Versatility for $378238d1.", "Whenever a player is slain within $a1 yards of you, you are filled with a burst of tenacity and gain $w2 Versatility for $378238d1." },
-  {  384154,  0, "Attune yourself to the energies of the targeted Vault of the Incarnates raid boss, increasing your Versatility by $311500s1 when fighting that boss. This effect lasts for an entire week.\r\n\r\nYou can only use one Vantus Rune per week.", "Attune yourself to the energies of the targeted Vault of the Incarnates raid boss, increasing your Versatility by $384195s1 when fighting that boss. This effect lasts for an entire week.\r\n\r\nYou can only use one Vantus Rune per week." },
-  {  388560,  0, "@spelldesc388559", "$@spelldesc388559" },
-  {  388755,  0, "@spelldesc383920", "$@spelldesc383920" },
-  {  388929,  0, "@spelldesc388931", "$@spelldesc388931" },
-  {  389527,  0, "@spelldesc384661", "$@spelldesc384661" },
-  {  392908,  0, "@spelldesc386175", "$@spelldesc386175" },
+// spelltext hotfix entries, wow build 10.0.2.46702
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelltext_hotfix_data { {
+  {  373270,  0, "Verdant Embrace temporarily bonds your life with an ally, causing healing either of you receive to also heal the bonded partner for $s1% of the amount. Lasts $373267d.", "Verdant Embrace temporarily bonds your life with an ally, causing your healing on either partner to heal the other for $s1% of the amount. Lasts $373267d." },
 } };
 
-// Spell description variables, wow build 10.0.2.46658
+// Spell description variables, wow build 10.0.2.46702
 static const std::array<spelldesc_vars_data_t, 365> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$pvp=$?a134735[${1.1}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<pvp>*$<weal>}\r\n" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -19559,7 +19552,7 @@ static const std::array<spelldesc_vars_data_t, 365> __spelldesc_vars_data { {
   {  394354, "$damage=${($AP*1.0)*(1+$@versadmg)}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.0.2.46658
+// spelldesc_vars hotfix entries, wow build 10.0.2.46702
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 

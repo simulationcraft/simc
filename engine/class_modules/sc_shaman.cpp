@@ -7305,6 +7305,7 @@ struct ascendance_t : public shaman_spell_t
     if ( lvb )
     {
       lvb->set_target( player->target );
+      lvb->target_cache.is_valid = false;
       if ( !lvb->target_list().empty() )
       {
         lvb->execute();
@@ -11055,7 +11056,8 @@ std::string shaman_t::generate_bloodlust_options()
 
 std::string shaman_t::default_potion() const
 {
-  std::string elemental_potion = ( true_level >= 51 ) ? "potion_of_spectral_intellect" :
+  std::string elemental_potion = ( true_level >= 61 ) ? "elemental_potion_of_ultimate_power_3" :
+                                 ( true_level >= 51 ) ? "potion_of_spectral_intellect" :
                                  ( true_level >= 45 ) ? "potion_of_unbridled_fury" :
                                  "disabled";
 
@@ -11063,7 +11065,8 @@ std::string shaman_t::default_potion() const
                                    ( true_level >= 45 ) ? "potion_of_unbridled_fury" :
                                    "disabled";
 
-  std::string restoration_potion = ( true_level >= 51 ) ? "potion_of_spectral_intellect" :
+  std::string restoration_potion = ( true_level >= 61 ) ? "elemental_potion_of_ultimate_power_3" :
+                                   ( true_level >= 51 ) ? "potion_of_spectral_intellect" :
                                    ( true_level >= 45 ) ? "potion_of_unbridled_fury" :
                                    "disabled";
 
@@ -11083,7 +11086,8 @@ std::string shaman_t::default_potion() const
 
 std::string shaman_t::default_flask() const
 {
-  std::string elemental_flask = ( true_level >= 51 ) ? "spectral_flask_of_power" :
+  std::string elemental_flask = ( true_level >= 61 ) ? "phial_of_static_empowerment_3" :
+                                ( true_level >= 51 ) ? "spectral_flask_of_power" :
                                 ( true_level >= 45 ) ? "greater_flask_of_endless_fathoms" :
                                 "disabled";
 
@@ -11091,7 +11095,8 @@ std::string shaman_t::default_flask() const
                                   ( true_level >= 45 ) ? "greater_flask_of_the_currents" :
                                   "disabled";
 
-  std::string restoration_flask = ( true_level >= 51 ) ? "spectral_flask_of_power" :
+  std::string restoration_flask = ( true_level >= 61 ) ? "phial_of_static_empowerment_3" :
+                                  ( true_level >= 51 ) ? "spectral_flask_of_power" :
                                   ( true_level >= 45 ) ? "greater_flask_of_endless_fathoms" :
                                   "disabled";
 
@@ -11111,7 +11116,8 @@ std::string shaman_t::default_flask() const
 
 std::string shaman_t::default_food() const
 {
-  std::string elemental_food = ( true_level >= 51 ) ? "feast_of_gluttonous_hedonism" :
+  std::string elemental_food = ( true_level >= 61 ) ? "fated_fortune_cookie" :
+                               ( true_level >= 51 ) ? "feast_of_gluttonous_hedonism" :
                                ( true_level >= 45 ) ? "mechdowels_big_mech" :
                                "disabled";
 
@@ -11119,7 +11125,8 @@ std::string shaman_t::default_food() const
                                  ( true_level >= 45 ) ? "baked_port_tato" :
                                  "disabled";
 
-  std::string restoration_food = ( true_level >= 51 ) ? "feast_of_gluttonous_hedonism" :
+  std::string restoration_food = ( true_level >= 61 ) ? "fated_fortune_cookie" :
+                                 ( true_level >= 51 ) ? "feast_of_gluttonous_hedonism" :
                                  ( true_level >= 45 ) ? "baked_port_tato" :
                                  "disabled";
 
@@ -11139,7 +11146,8 @@ std::string shaman_t::default_food() const
 
 std::string shaman_t::default_rune() const
 {
-  return ( true_level >= 60 ) ? "veiled" :
+  return ( true_level >= 61 ) ? "draconic" :
+         ( true_level >= 60 ) ? "veiled" :
          ( true_level >= 50 ) ? "battle_scarred" :
          ( true_level >= 45 ) ? "defiled" :
          ( true_level >= 40 ) ? "hyper" :
@@ -11232,7 +11240,7 @@ void shaman_t::init_action_list_elemental()
                      "Turner)_0-4_screenshot.jpg" );
     aoe->add_action( "liquid_magma_totem", "Keep your cooldowns rolling." );
     aoe->add_action(
-        "lava_burst,target_if=dot.flame_shock.remains,if=cooldown_react&buff.lava_surge.up&talent.master_of_the_elements.enabled&!buff.master_of_the_elements.up&(maelstrom>=60-5*talent.eye_of_the_storm.rank-2*talent.flow_of_power.enabled)&(!talent.echoes_of_great_sundering.enabled|buff.echoes_of_great_sundering.up)&(!buff.ascendance.up&enemies>3&talent.unrelenting_calamity.enabled|enemies>3&!talent.unrelenting_calamity.enabled|enemies=3)",
+        "lava_burst,target_if=dot.flame_shock.remains,if=cooldown_react&buff.lava_surge.up&talent.master_of_the_elements.enabled&!buff.master_of_the_elements.up&(maelstrom>=60-5*talent.eye_of_the_storm.rank-2*talent.flow_of_power.enabled)&(!talent.echoes_of_great_sundering.enabled|buff.echoes_of_great_sundering.up)&(!buff.ascendance.up&active_enemies>3&talent.unrelenting_calamity.enabled|active_enemies>3&!talent.unrelenting_calamity.enabled|active_enemies=3)",
         "Cast Lava Burst to buff your immediately follow-up Earthquake with Master of the Elements." );
     aoe->add_action(
         "earthquake,if=!talent.echoes_of_great_sundering.enabled&active_enemies>3&(spell_targets.chain_lightning>3|spell_targets.lava_beam>3)",
@@ -11273,7 +11281,7 @@ void shaman_t::init_action_list_elemental()
         "chain_lightning,if=active_enemies>=6&buff.surge_of_power.up",
         "Against 6 targets or more Surge of Power should be used with Chain Lightning rather than Lava Burst." );
     aoe->add_action(
-        "lava_burst,target_if=dot.flame_shock.remains,if=buff.lava_surge.up&talent.deeply_rooted_elements.enabled",
+        "lava_burst,target_if=dot.flame_shock.remains,if=buff.lava_surge.up&talent.deeply_rooted_elements.enabled&buff.windspeakers_lava_resurgence.up",
         "Proc Deeply Rooted Elements against 3 targets." );
     aoe->add_action(
         "lava_beam,if=buff.master_of_the_elements.up",
@@ -11323,7 +11331,8 @@ void shaman_t::init_action_list_elemental()
         "Use Earthquake against two enemies unless you have to alternate because of Echoes of Great Sundering." );
     single_target->add_action( "elemental_blast" );
     single_target->add_action( "earth_shock" );
-    single_target->add_action( "lava_burst,if=buff.flux_melting.up", "Utilize present buffs." );
+    single_target->add_action( "lava_burst,target_if=dot.flame_shock.remains>2,if=buff.flux_melting.up&active_enemies>1", "Utilize present buffs." );
+    single_target->add_action( "lava_burst,target_if=dot.flame_shock.remains>2,if=enemies=1&talent.deeply_rooted_elements.enabled", "Single target Lava Burst is stronk." );
     single_target->add_action( "frost_shock,if=buff.icefury.up&talent.flux_melting.enabled&!buff.flux_melting.up",
                                "Spread out your Icefury usage if you can get more use out of accompanied buffs." );
     single_target->add_action( "frost_shock,if=buff.icefury.up&(talent.electrified_shocks.enabled&!debuff.electrified_shocks.up|buff.icefury.remains<6)",

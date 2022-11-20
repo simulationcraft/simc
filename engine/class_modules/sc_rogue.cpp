@@ -7968,13 +7968,13 @@ void actions::rogue_action_t<Base>::spend_combo_points( const action_state_t* st
   p()->sim->print_log( "{} consumes {} {} for {} ({})", *p(), max_spend, util::resource_type_string( RESOURCE_COMBO_POINT ),
                                                         *this, p()->current_cp() );
 
-  if ( ab::name_str != "secret_technique" )
+  // 2018-06-28 -- Secret Technique does not reduce its own cooldown
+  // 2022-11-18 -- Updated to work with Echoing Reprimand via hotfix
+  if ( p()->talent.subtlety.secret_technique->ok() && ab::data().id() != p()->talent.subtlety.secret_technique->id() )
   {
-    // As of 2018-06-28 on beta, Secret Technique does not reduce its own cooldown. May be a bug or the cdr happening
-    // before CD start.
     timespan_t sectec_cdr = timespan_t::from_seconds( p()->talent.subtlety.secret_technique->effectN( 5 ).base_value() );
-    sectec_cdr *= -max_spend;
-    p()->cooldowns.secret_technique->adjust( sectec_cdr, false );
+    sectec_cdr *= rs->get_combo_points();
+    p()->cooldowns.secret_technique->adjust( -sectec_cdr, false );
   }
 
   // Remove Echoing Reprimand Buffs
@@ -10499,7 +10499,7 @@ void rogue_t::create_buffs()
       // This is wonky and set up with a rolling partial stack reduction so it alternates per tick
       // Otherwise we could just use the normal set_reverse_stack_count() functionality
       double stack_reduction = b->max_stack() / talent.subtlety.lingering_shadow->effectN( 3 ).base_value();
-      int target_stacks = std::ceil( b->max_stack() - ( stack_reduction * b->current_tick ) ) - 1;
+      int target_stacks = as<int>( std::ceil( b->max_stack() - ( stack_reduction * b->current_tick ) ) ) - 1;
       make_event( sim, [ b, target_stacks ] { 
         b->decrement( b->check() - target_stacks ); 
       } );
@@ -10636,15 +10636,14 @@ void rogue_t::create_buffs()
 
   buffs.t29_outlaw_2pc = make_buff<damage_buff_t>( this, "vicious_followup", set_bonuses.t29_outlaw_2pc->ok() ?
                                                    find_spell( 394879 ) : spell_data_t::not_found() );
-  buffs.t29_outlaw_2pc->set_max_stack( consume_cp_max() );
+  buffs.t29_outlaw_2pc->set_max_stack( as<int>( consume_cp_max() ) );
 
   buffs.t29_outlaw_4pc = make_buff<damage_buff_t>( this, "brutal_opportunist", set_bonuses.t29_outlaw_4pc->ok() ?
                                                    find_spell( 394888 ) : spell_data_t::not_found() );
 
   buffs.t29_subtlety_2pc = make_buff<damage_buff_t>( this, "honed_blades", set_bonuses.t29_subtlety_2pc->ok() ?
                                                      find_spell( 394894 ) : spell_data_t::not_found() );
-  buffs.t29_subtlety_2pc
-    ->set_max_stack( consume_cp_max() );    
+  buffs.t29_subtlety_2pc->set_max_stack( as<int>( consume_cp_max() ) );
 
   // Cannot fully auto-parse as a single damage_buff_t since it has different mod for Black Powder
   const spell_data_t* t29_buff = ( set_bonuses.t29_subtlety_4pc->ok() ?

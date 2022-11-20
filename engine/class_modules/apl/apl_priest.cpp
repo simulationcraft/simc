@@ -13,7 +13,7 @@ namespace priest_apl
 {
 std::string potion( const player_t* p )
 {
-  return ( p->true_level > 60 ) ? "elemental_potion_of_ultimate_power_3" : "potion_of_spectral_intellect" ;
+  return ( p->true_level > 60 ) ? "elemental_potion_of_ultimate_power_3" : "potion_of_spectral_intellect";
 }
 
 std::string flask( const player_t* p )
@@ -86,6 +86,9 @@ void shadow( player_t* p )
   default_list->add_action(
       "variable,name=pool_for_cds,op=set,value=(cooldown.void_eruption.remains<=gcd.max*3&talent.void_eruption|"
       "cooldown.dark_ascension.up&talent.dark_ascension)" );
+  default_list->add_action(
+      "variable,name=dp_cutoff,op=set,value=!talent.mind_sear|(spell_targets.mind_sear<=variable.mind_sear_cutoff&(!"
+      "buff.mind_devourer.up|spell_targets.mind_sear=1))" );
   // Racials
   default_list->add_action( "fireblood,if=buff.power_infusion.up|fight_remains<=8" );
   default_list->add_action( "berserking,if=buff.power_infusion.up|fight_remains<=12" );
@@ -136,16 +139,15 @@ void shadow( player_t* p )
   main->add_action(
       "damnation,target_if=dot.vampiric_touch.refreshable&variable.is_vt_possible|dot.shadow_word_pain.refreshable" );
   main->add_action( "void_bolt,if=variable.dots_up&insanity<=85" );
-  main->add_action(
-      "mind_sear,target_if=(spell_targets.mind_sear>variable.mind_sear_cutoff|buff.voidform.up)&buff.mind_devourer."
-      "up" );
+  main->add_action( "mind_sear,target_if=(spell_targets.mind_sear>1|buff.voidform.up)&buff.mind_devourer.up",
+                    "Use Mind Devourer Procs on Mind Sear when facing 2 or more targets or Voidform is active." );
   main->add_action(
       "mind_sear,target_if=spell_targets.mind_sear>variable.mind_sear_cutoff,chain=1,interrupt_immediate=1,interrupt_"
       "if=ticks>=2" );
   main->add_action(
       "devouring_plague,if=(refreshable&!variable.pool_for_cds|insanity>75|talent.void_torrent&cooldown.void_torrent."
       "remains<=3*gcd|buff.mind_devourer.up&cooldown.mind_blast.full_recharge_time<=2*gcd.max&!cooldown.void_eruption."
-      "up&talent.void_eruption)" );
+      "up&talent.void_eruption)&variable.dp_cutoff" );
   main->add_action(
       "shadow_word_death,target_if=(target.health.pct<20&spell_targets.mind_sear<4)&(!variable.sfp|cooldown.fiend."
       "remains>=10)|(pet.fiend.active&variable.sfp&spell_targets.mind_sear<=7)|buff.deathspeaker.up&(cooldown.fiend."
@@ -160,7 +162,7 @@ void shadow( player_t* p )
   main->add_action( "mindgames,if=spell_targets.mind_sear<5&variable.all_dots_up" );
   main->add_action( "shadow_crash,if=raid_event.adds.in>10" );
   main->add_action( "dark_void,if=raid_event.adds.in>20" );
-  main->add_action( "devouring_plague,if=buff.voidform.up&variable.dots_up" );
+  main->add_action( "devouring_plague,if=buff.voidform.up&variable.dots_up&variable.dp_cutoff" );
   main->add_action( "void_torrent,if=insanity<=35,target_if=variable.dots_up" );
   main->add_action(
       "mind_blast,if=raid_event.movement.in>cast_time+0.5&(!variable.sfp|!cooldown.fiend.up&variable.sfp|variable.vts_"

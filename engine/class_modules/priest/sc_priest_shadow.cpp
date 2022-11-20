@@ -35,6 +35,7 @@ struct mind_sear_tick_t final : public priest_spell_t
     use_off_gcd                = true;
     dynamic_tick_action        = true;
     radius                     = data().effectN( 2 ).radius();  // base radius is 100yd, actual is stored in effect 2
+    reduced_aoe_targets        = 5;
 
     if ( priest().talents.shadow.coalescing_shadows.enabled() )
     {

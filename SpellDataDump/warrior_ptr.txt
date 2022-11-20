@@ -657,7 +657,6 @@ Attributes       : ....x... ........ x.x..x.. ........   ...x...x .x...... .....
 Effects          :
 #1 (id=2203)     : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.41580 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
-Hotfixed         : AP Coefficient (0.462 -> 0.4158)
 #2 (id=236564)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Mechanic: Snare | Target: At Caster (22) -> AOE enemy (15)
 #3 (id=357188)   : Dummy (3)
@@ -753,7 +752,6 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=2316)     : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.42750 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Cone Front (104)
-Hotfixed         : AP Coefficient (0.45 -> 0.4275)
 Description      : Swing in a wide arc, dealing $s1 Physical damage to all enemies in front of you. Deals reduced damage beyond $<cap> targets.
 
 Your successful dodges and parries have a chance to make your next Revenge cost no Rage.
@@ -819,7 +817,6 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Cleave (845), Mortal Strike (12294)
                    Family Flags: 22, 25
-Hotfixed         : Base Value (20 -> 25)
 Description      : Overpower the enemy, dealing $s1 Physical damage. Cannot be blocked, dodged, or parried.$?s316440&s845[
 
 Increases the damage of your next Mortal Strike or Cleave by $s2%. Stacking up to $u times]?s316440[
@@ -853,7 +850,6 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=5274)     : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.77700 | PvP Coefficient: 0.69500 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (1.693 -> 1.777)
 Description      : A vicious strike that deals $s1 Physical damage and reduces the effectiveness of healing on the target by $115804s1% for $115804d.
 Variables        : $mult=${($max(0,$min($pl-5,15))*8+207)/327}
 
@@ -1486,7 +1482,8 @@ Attributes       : ....x... ........ x.x..... ........   ....x... .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Skill Increase (36), Initiates Combat (Enables Auto-Attack) (41), Not a Proc (105), No Cast Log (128), Allow Cast While Casting (135), Not In Spellbook (143), Treat as Area Effect (175), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=42845)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.50000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.60000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+Hotfixed         : AP Coefficient (0.5 -> 0.6)
 #2 (id=42846)    : Trigger Spell (64): Bladestorm Off-Hand
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 95738 | Target: At Caster (22)
 Description      : You become a whirling storm of destructive force, striking all nearby targets with your main hand weapon for $s1 Physical damage.
@@ -2000,7 +1997,6 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 17 | Target: Self (1)
 #3 (id=349763)   : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (45 -> 50)
 Description      : Causes your next single-target attack to strike up to $s1 additional targets for $s3% damage.
 Tooltip          : Your next single-target attack strikes up to $w1 additional targets for $w3% damage.
 
@@ -2997,7 +2993,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Execute (5308), Execute (163201), Execute Off-Hand (163558), Execute (260798), Execute (280735), Execute (280849), Execute (281000), Condemn (317349), Condemn (317483), Condemn (317485), Condemn (317488), Condemn Off-Hand (317489), Condemn (330325), Condemn (330334)
                    Family Flags: 29
-Hotfixed         : Base Value (-15 -> 0)
 #18 (id=1036263)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Shockwave (46968)
@@ -3378,7 +3373,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 300 | Trigger Spell: 260798 | Target: Enemy (6)
 #2 (id=714082)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Hotfixed         : Base Value (20 -> 10)
 Description      : Attempts to finish off a foe, causing up to $<damage> Physical damage based on Rage spent. Only usable on enemies that have less than 20% health.$?s316405[
 
 If your foe survives, $s2% of the Rage spent is refunded.][]
@@ -4267,7 +4261,6 @@ Description      : $@spelldesc202224
 Tooltip          : Healing of your next Bloodthirst increased by $s1%.
 
 Name             : Fervor of Battle (id=202316) [Spell Family (4), Passive, Hidden] 
-Hotfixed         : Description
 Talent Entry     : Arms [tree=spec, row=4, col=6, max_rank=1, req_points=0]
 Class            : Warrior
 School           : Physical
@@ -4284,7 +4277,6 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=298254)   : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (0 -> 2)
 Description      : If Whirlwind hits $s1 or more targets it also Slams your primary target.
 
 Name             : Best Served Cold (id=202560) [Spell Family (4), Passive, Hidden] 
@@ -5655,7 +5647,6 @@ Description      : Deals $s1 Holy Damage to enemies within $A1.
 Heals $s2 to allies within $A1. 
 
 Name             : Skullsplitter (id=260643) [Spell Family (4)] 
-Hotfixed         : Cooldown (30000 -> 21000)
 Talent Entry     : Arms [tree=spec, row=6, col=1, max_rank=1, req_points=8]
 Class            : Warrior
 School           : Physical
@@ -5681,7 +5672,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.20000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=485945)   : Energize Power (30)
                    Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000 | Misc Value: rage | Target: Self (1)
-Hotfixed         : Base Value (200 -> 150)
 Description      : Bash an enemy's skull, dealing $s1 Physical damage.$?s38635[
 
 Skullsplitter causes your Deep Wounds and Rend effects to expire $386357s1% faster.][]
@@ -5741,7 +5731,6 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=486196)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.97650 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (1.05 -> 0.9765)
 Description      : $@spelldesc163201
 Variables        : $damage=${2.0*$260798s1}
 
@@ -7260,7 +7249,6 @@ Attributes       : ....x.x. ........ ..x..... ........   ........ ........ .....
 Effects          :
 #1 (id=735688)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (20 -> 10)
 Description      : Your auto attack critical strikes generate $s1% more Rage.
 
 Name             : Unstable Flames (id=279899) [Passive] 
@@ -7610,7 +7598,6 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Whirlwind (1680), Whirlwind Off-Hand (44949), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Whirlwind Off-Hand (199851), Whirlwind (199852)
                    Family Flags: 34
-Hotfixed         : Base Value (20 -> 25)
 #2 (id=737899)   : Apply Aura (6) | Add Flat Modifier (107): Spell Max Stacks (37)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 37 | Target: Self (1)
                    Affected Spells: Whirlwind (85739)
@@ -8209,7 +8196,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 300 | Trigger Spell: 260798 | Target: Enemy (6)
 #2 (id=738983)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Hotfixed         : Base Value (20 -> 10)
 #3 (id=738984)   : Dummy (3)
                    Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000
 Description      : Attempts to finish off a foe, causing up to $<damage> Physical damage based on Rage spent. Only usable on enemies that have less than $s3% health.$?s316405[
@@ -12574,7 +12560,6 @@ Effects          :
 Description      : Deep Wounds, Rend and Thunderous Roar's Bleed effects deal ${$s2/10}.2% increased damage.
 
 Name             : Juggernaut (id=383290) [Spell Family (4)] 
-Hotfixed         : Max stacks (12 -> 15)
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -13695,13 +13680,13 @@ Description      : Roar explosively, dealing $s1 Physical damage to enemies with
 |cFFFFFFFFGenerates ${$m3/10} Rage.
 
 Name             : Bloodsurge (id=384361) [Spell Family (4), Passive, Hidden] 
-Hotfixed         : Proc Chance (10 -> 7)
+Hotfixed         : Proc Chance (7 -> 10)
 Talent Entry     : Arms [tree=spec, row=4, col=2, max_rank=1, req_points=0]
                  : Protection [tree=spec, row=5, col=4, max_rank=1, req_points=8]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Proc Chance      : 7%
+Proc Chance      : 10%
 Proc Flags       : ........ ........ ..x..... ........ 
                  : Periodic
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -14088,7 +14073,6 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Overpower (7384)
                    Family Flags: 2
-Hotfixed         : Base Value (10 -> 15)
 Description      : Damage of Overpower increased by $s1%.
 
 Name             : Improved Mortal Strike (id=385573) [Spell Family (4), Passive] 
@@ -14325,7 +14309,6 @@ Effects          :
 Description      : $@spelldesc385888
 
 Name             : Shield Charge (id=385952) [Spell Family (4)] 
-Hotfixed         : Cooldown (0 -> 1000), GCD (0 -> 1500), Category Cooldown (0 -> 1000), Category (0 -> 1865)
 Talent Entry     : Protection [tree=spec, row=9, col=1, max_rank=1, req_points=20]
 Class            : Warrior
 School           : Physical
@@ -14357,7 +14340,6 @@ Also stuns the primary target for $385954d.
 |cFFFFFFFFGenerates ${$385954s4/10} Rage.|r
 
 Name             : Shield Charge (id=385954) [Spell Family (4)] 
-Hotfixed         : Attributes
 Class            : Warrior
 School           : Physical
 Spell Type       : Melee
@@ -14408,7 +14390,6 @@ Effects          :
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1019769)  : Apply Aura (6) | Modify Block Value% (272)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Sub Type (274 -> 272)
 Description      : Increases Block chance by $s1% and your Block value by $s2%.
 
 Name             : Enduring Defenses (id=386027) [Spell Family (4), Passive] 
@@ -14855,7 +14836,6 @@ Description      : @spelldesc$386357
 
 
 Name             : Battle-Scarred Veteran (id=386394) [Spell Family (4), Passive, Hidden] 
-Hotfixed         : Proc Flags (2148147880 -> 664232), Attributes, Spell Family (11 -> 4)
 Talent Entry     : Protection [tree=spec, row=10, col=3, max_rank=1, req_points=20]
 Class            : Warrior
 School           : Physical
@@ -14876,7 +14856,6 @@ Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... .....
 Effects          :
 #1 (id=1020426)  : Apply Aura (6) | Proc Trigger Spell (42): Battle-Scarred Veteran
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Trigger Spell: 386397 | Target: Self (1)
-Hotfixed         : Base Value (25 -> 30)
 #3 (id=1033739)  : Dummy (3)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000
 Description      : When your health is brought below $s3%, you take $386397s1% less damage for $386397d and healing you receive is increased by $386397s2%.
@@ -15130,7 +15109,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1020852)  : Apply Aura (6) | Trigger Spell with Value (231)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.50000 | Trigger Spell: 386633 | Target: Self (1)
+                   Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 0.50000 | Trigger Spell: 386633 | Target: Self (1)
+Hotfixed         : Base Value (30 -> 35)
 Description      : $?a317320[Condemn][Execute] causes the target to take $s1% more damage from your next Mortal Strike, stacking up to $386633u times.
 
 Name             : Slaughtering Strikes (id=388004) [Spell Family (4), Passive] 
@@ -16249,7 +16229,6 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Execute Off-Hand (163558), Execute (260798), Execute (280849), Condemn (317483), Condemn (317488), Condemn Off-Hand (317489)
                    Family Flags: 115, 116
-Hotfixed         : Affects Spells
 Description      : Execute’s chance to critically strike increased by $s1%. 
 
 Name             : Warrior Fury Set 4pc (id=393709) [Spell Family (4), Passive, Hidden] 
@@ -16821,7 +16800,6 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Odyn's Fury (385060), Odyn's Fury (385061), Odyn's Fury (385062)
                    Family Flags: 104
-Hotfixed         : Sub Type (107 -> 108), Base Value (-10000 -> 10), Misc Value (11 -> 0), Affects Spells
 Description      : Odyn's Fury's Enrages you, deals $s2% increased damage and grants you $85739u stacks of Whirlwind.
 
 

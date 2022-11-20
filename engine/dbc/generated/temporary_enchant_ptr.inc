@@ -1,4 +1,4 @@
-// Temporary item enchants, wow build 10.0.2.46619
+// Temporary item enchants, wow build 10.0.2.46702
 static const std::array<temporary_enchant_entry_t, 70> __ptr_temporary_enchant_data { {
   {  2713,  29453, "adamantite_sharpening_stone"  },
   {  2955,  34340, "adamantite_weightstone"       },
