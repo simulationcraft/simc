@@ -38,7 +38,7 @@ jobs:
             cppVersion: 20   
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - uses: actions/cache@v2
         env: { ccache-prefix: 'ubuntu-${{ matrix.cc }}-cpp-${{ matrix.cppVersion }}-ccache-${{ env.ccache-generation }}' }
@@ -88,7 +88,7 @@ jobs:
         cppVersion: [17, 20]
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - uses: actions/cache@v2
         env: { ccache-prefix: 'ubuntu-clang-12-cpp-${{ matrix.cppVersion }}-ccache-${{ env.ccache-generation }}' }
@@ -222,7 +222,7 @@ jobs:
     name: macos-latest
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Build
         run: make SANITIZE=1 -C engine debug -j 2
@@ -246,7 +246,7 @@ jobs:
        CMAKE_BUILD_DIR: ${{ github.workspace }}/builddir/
        
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
        # Setup the build machine with the most recent versions of CMake and Ninja. Both are cached if not already: on subsequent runs both will be quickly restored from GitHub cache service.
       - uses: lukka/get-cmake@latest
