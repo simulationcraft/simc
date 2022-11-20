@@ -2472,6 +2472,80 @@ void forgestorm( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// 394928 driver
+// 397118 player buff
+// 397478 unique target debuff
+void neltharax( special_effect_t& effect )
+{
+  auto buff =
+    create_buff<buff_t>( effect.player, "heavens_nemesis", effect.player->find_spell( 397118 ) )
+      ->set_default_value_from_effect( 1 )
+      ->add_invalidate( CACHE_ATTACK_SPEED );
+
+  effect.player -> buffs.heavens_nemesis = buff;
+
+  struct auto_cb_t : public dbc_proc_callback_t
+  {
+    buff_t* attack_speed;
+
+    auto_cb_t( const special_effect_t& e, buff_t* buff ) : dbc_proc_callback_t( e.player, e ), attack_speed( buff )
+    {}
+
+    void execute( action_t*, action_state_t* s ) override
+    {
+      auto debuff = effect.player -> find_target_data( s -> target ) -> debuff.heavens_nemesis;
+      if ( debuff -> check() )
+      {
+        // Increment the attack speed if target is our current mark.
+        attack_speed -> trigger();
+      }
+      else
+      {
+        attack_speed -> expire();
+        // Find a current mark if there is one and remove the mark on it.
+        auto i = range::find_if( effect.player -> sim -> target_non_sleeping_list, [ this ]( const player_t* t ) {
+          auto td = effect.player -> find_target_data( t );
+          if ( td ) {
+            auto debuff = td -> debuff.heavens_nemesis;
+            if ( debuff -> check() )
+            {
+              debuff -> expire();
+              return true;
+            }
+          }
+          return false;
+        });
+        // Only set a new mark and start stacking the buff if there was no mark cleared on this impact.
+        if ( i == effect.player -> sim -> target_non_sleeping_list.end() )
+        {
+          debuff -> trigger();
+          attack_speed -> trigger();
+        }
+      }
+    }
+  };
+
+  new auto_cb_t( effect, buff );
+}
+
+struct heavens_nemesis_initializer_t : public item_targetdata_initializer_t
+{
+  heavens_nemesis_initializer_t() : item_targetdata_initializer_t( 394928 ) {}
+
+  void operator()( actor_target_data_t* td ) const override
+  {
+    if ( !find_effect( td->source ) )
+    {
+      td->debuff.heavens_nemesis = make_buff( *td, "heavens_nemesis_mark" )->set_quiet( true );
+      return;
+    }
+
+    assert( !td->debuff.heavens_nemesis );
+    td->debuff.heavens_nemesis = make_buff( *td, "heavens_nemesis_mark", td->source->find_spell( 397478 ) );
+    td->debuff.heavens_nemesis->reset();
+  }
+};
+
 // Armor
 void blue_silken_lining( special_effect_t& effect )
 {
@@ -2789,6 +2863,8 @@ void register_special_effects()
   register_special_effect( 396442, items::bronzed_grip_wrappings );  // bronzed grip wrappings embellishment
   register_special_effect( 377708, items::fang_adornments );         // fang adornments embellishment
   register_special_effect( 381698, items::forgestorm );              // Forgestorm Weapon
+  register_special_effect( 394928, items::neltharax );               // Neltharax, Enemy of the Sky
+
 
   // Armor
   register_special_effect( 387335, items::blue_silken_lining );    // blue silken lining embellishment
@@ -2820,6 +2896,7 @@ void register_target_data_initializers( sim_t& sim )
   sim.register_target_data_initializer( items::awakening_rime_initializer_t() );
   sim.register_target_data_initializer( items::skewering_cold_initializer_t() );
   sim.register_target_data_initializer( items::spiteful_storm_initializer_t() );
+  sim.register_target_data_initializer( items::heavens_nemesis_initializer_t() );
 }
 
 // check and return multiplier for toxified armor patch
