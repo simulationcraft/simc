@@ -2901,6 +2901,7 @@ struct immolation_aura_t : public demon_hunter_spell_t
     {
       background = dual = true;
       aoe = -1;
+      reduced_aoe_targets = p->spell.immolation_aura->effectN( 2 ).base_value();
 
       // Rename gain for periodic energizes. Initial hit action doesn't energize.
       // Gains are encoded in the 258922 spell data differently for Havoc vs. Vengeance
@@ -4534,6 +4535,7 @@ struct fel_rush_t : public demon_hunter_attack_t
     {
       background = dual = true;
       aoe = -1;
+      reduced_aoe_targets = p->spec.fel_rush_damage->effectN( 2 ).base_value();
     }
 
     double action_multiplier() const override
@@ -4922,7 +4924,7 @@ struct throw_glaive_t : public demon_hunter_attack_t
     : demon_hunter_attack_t( "throw_glaive", p, p->spell.throw_glaive, options_str ),
     furious_throws( nullptr ), fel_bombardment( nullptr )
   {
-    throw_glaive_damage_t* damage = p->get_background_action<throw_glaive_damage_t>( "throw_glaive" );
+    throw_glaive_damage_t* damage = p->get_background_action<throw_glaive_damage_t>( "throw_glaive_damage" );
     execute_action = damage;
     execute_action->stats = stats;
 
