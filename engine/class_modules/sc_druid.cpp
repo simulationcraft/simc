@@ -10814,6 +10814,7 @@ void druid_t::create_actions()
 // Default Consumables ======================================================
 std::string druid_t::default_flask() const
 {
+  if      ( true_level >= 70 ) return "phial_of_elemental_chaos_3";
   if      ( true_level >= 60 ) return "spectral_flask_of_power";
   else if ( true_level < 40 )  return "disabled";
 
@@ -10836,7 +10837,8 @@ std::string druid_t::default_potion() const
   {
     case DRUID_BALANCE:
     case DRUID_RESTORATION:
-      if      ( true_level >= 60 ) return "spectral_intellect";
+      if      ( true_level >= 70 ) return "elemental_potion_of_ultimate_power_3";
+      else if ( true_level >= 60 ) return "spectral_intellect";
       else if ( true_level >= 40 ) return "superior_battle_potion_of_intellect";
       SC_FALLTHROUGH;
     case DRUID_FERAL:
@@ -10854,7 +10856,8 @@ std::string druid_t::default_potion() const
 
 std::string druid_t::default_food() const
 {
-  if      ( true_level >= 60 ) return "feast_of_gluttonous_hedonism";
+  if      ( true_level >= 70 ) return "fated_fortune_cookie";
+  else if ( true_level >= 60 ) return "feast_of_gluttonous_hedonism";
   else if ( true_level >= 55 ) return "surprisingly_palatable_feast";
   else if ( true_level >= 45 ) return "famine_evaluator_and_snack_table";
   else return "disabled";
@@ -10862,7 +10865,8 @@ std::string druid_t::default_food() const
 
 std::string druid_t::default_rune() const
 {
-  if      ( true_level >= 60 ) return "veiled";
+  if      ( true_level >= 70 ) return "draconic";
+  else if ( true_level >= 60 ) return "veiled";
   else if ( true_level >= 50 ) return "battle_scarred";
   else if ( true_level >= 45 ) return "defiled";
   else return "disabled";
@@ -10870,11 +10874,12 @@ std::string druid_t::default_rune() const
 
 std::string druid_t::default_temporary_enchant() const
 {
-  if ( true_level != 60 ) return "disabled";
+  if ( true_level < 60 ) return "disabled";
 
   switch ( specialization() )
   {
-    case DRUID_BALANCE: return "main_hand:shadowcore_oil";
+    case DRUID_BALANCE:
+      return true_level >= 70 ? "main_hand:howling_rune_3" : "main_hand:shadowcore_oil";
     case DRUID_RESTORATION: return "main_hand:shadowcore_oil";
     case DRUID_GUARDIAN: return "main_hand:shadowcore_oil";
     case DRUID_FERAL: return "main_hand:shaded_sharpening_stone";
