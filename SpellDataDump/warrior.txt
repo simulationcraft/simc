@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46658 Live ()
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46702 Live (hotfix 2022-11-20/46702, no-networking)
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -7156,7 +7156,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=734717)   : Apply Aura (6) | Unknown(285) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 308.4491 (coefficient=0.68) | PvP Coefficient: 0.50000 | Trigger Spell: 279141 | Target: Self (1)
-#2 (id=734718)   : Apply Aura (6) | Unknown(274) | Scaling Class: -1
+#2 (id=734718)   : Apply Aura (6) | Add Block Value (274) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 290.305 (coefficient=0.64) | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : Increases Block by $s2, and blocking an attack deals $s1 Physical damage to the attacker. Critical blocks deal double damage.
 
@@ -13721,6 +13721,7 @@ Effects          :
 Description      : $@spelldesc384361
 
 Name             : Sidearm (id=384391) [Spell Family (4)] 
+Hotfixed         : Attributes
 Class            : Warrior
 School           : Physical
 Spell Type       : Melee
@@ -13737,10 +13738,10 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Allow Class Ability Procs (416)
+                 : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1016967)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Radius: 12 yards | Target: Cone Front (104)
@@ -14386,7 +14387,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1019768)  : Apply Aura (6) | Modify Block% (51)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Self (1)
-#2 (id=1019769)  : Apply Aura (6) | Unknown(272)
+#2 (id=1019769)  : Apply Aura (6) | Modify Block Value% (272)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Increases Block chance by $s1% and your Block value by $s2%.
 
@@ -14435,7 +14436,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Shield Slam (23922)
                    Family Flags: 41
-#2 (id=1019800)  : Apply Aura (6) | Unknown(272)
+#2 (id=1019800)  : Apply Aura (6) | Modify Block Value% (272)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc386030
 Tooltip          : Shield Slam deals $w1% increased damage and the amount of damage you block is increased by $w2%.

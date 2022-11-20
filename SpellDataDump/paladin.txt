@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46658 Live ()
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46702 Live (hotfix 2022-11-20/46702, no-networking)
 Name             : Frostbolt of Ages (id=11) 
 Class            : Paladin
 School           : Frost
@@ -7136,7 +7136,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Do Not Display Range (126), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
-#1 (id=728537)   : Apply Aura (6) | Unknown(274)
+#1 (id=728537)   : Apply Aura (6) | Add Block Value (274)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=728538)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 275477
@@ -16095,7 +16095,8 @@ Effects          :
                    Family Flags: 106
 Description      : $@spelldesc393020
 
-Name             : Improved Cleanse (id=393024) [Passive, Hidden] 
+Name             : Improved Cleanse (id=393024) [Spell Family (10), Passive, Hidden] 
+Hotfixed         : Affecting Spells
 Talent Entry     : Holy [tree=class, row=4, col=1, max_rank=1, req_points=0]
 Class            : Paladin
 School           : Physical
