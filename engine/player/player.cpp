@@ -2507,7 +2507,7 @@ static std::string generate_traits_hash( player_t* player )
     {
       size_t bit = head % byte_size;
       head++;
-      byte += ( value >> i & 0b1 ) << bit;
+      byte += ( ( value >> std::min( i, sizeof( value ) * 8 - 1 ) ) & 0b1 ) << bit;
       if ( bit == byte_size - 1 )
       {
         export_str += base64_char[ byte ];
@@ -2630,7 +2630,7 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
     {
       size_t bit = head % byte_size;
       head++;
-      val += ( byte >> bit & 0b1 ) << i;
+      val += ( byte >> bit & 0b1 ) << std::min( i, sizeof( byte ) * 8 - 1 );
       if ( bit == byte_size - 1 )
       {
         byte = base64_char.find( talents_str[ head / byte_size ] );
