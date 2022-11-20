@@ -40,7 +40,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         env: { ccache-prefix: 'ubuntu-${{ matrix.cc }}-cpp-${{ matrix.cppVersion }}-ccache-${{ env.ccache-generation }}' }
         with:
           path: ${{ runner.workspace }}/.ccache
@@ -90,7 +90,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         env: { ccache-prefix: 'ubuntu-clang-12-cpp-${{ matrix.cppVersion }}-ccache-${{ env.ccache-generation }}' }
         with:
           path: ${{ runner.workspace }}/.ccache
@@ -125,7 +125,7 @@ jobs:
           ninja -C '${{ runner.workspace }}/b/ninja'
           ccache -s
 
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         if: ${{ github.ref_name == env.MAIN_BRANCH }}
         with:
           path: |
@@ -157,7 +157,7 @@ jobs:
             simc_flags: $SIMC_PROFILE iterations=10 fight_style=DungeonSlice cleanup_threads=1
 
     steps:
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         with:
           path: |
             ${{ runner.workspace }}/b/ninja/simc
@@ -198,7 +198,7 @@ jobs:
           ]
 
     steps:
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         with:
           path: |
             ${{ runner.workspace }}/b/ninja/simc
