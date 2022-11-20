@@ -4480,8 +4480,9 @@ class TemporaryEnchantItemGenerator(DataGenerator):
                 array = 'temporary_enchant',
                 length = len(data))
 
-        for item, spell, enchant_id in sorted(data, key = lambda v: (v[0].name, v[2])):
+        for item, spell, enchant_id, rank in sorted(data, key = lambda v: (v[0].name, v[3], v[2])):
             fields = ['{:5d}'.format(enchant_id)]
+            fields += ['{:2d}'.format(rank)]
             fields += spell.field('id')
             fields += ['{:30s}'.format('"{}"'.format(util.tokenize(item.name)))]
             self.output_record(fields)

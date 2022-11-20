@@ -29,24 +29,6 @@ namespace /* ANONYMOUS NAMESPACE */
  * item_enchantment_data_t structs in sc_item_data.inc.
  */
 const enchant_db_item_t __enchant_db[] = {
-  { "completely_safe_rockets_1", 6529 },
-  { "completely_safe_rockets_2", 6530 },
-  { "completely_safe_rockets_3", 6531 },
-  { "endless_stack_of_needles_1", 6532 },
-  { "endless_stack_of_needles_2", 6533 },
-  { "endless_stack_of_needles_3", 6534 },
-  { "primal_weightstone_1", 6696 },
-  { "primal_weightstone_2", 6697 },
-  { "primal_weightstone_3", 6698 },
-  { "primal_whetstone_1", 6379 },
-  { "primal_whetstone_2", 6380 },
-  { "primal_whetstone_3", 6381 },
-  { "howling_rune_1", 6516 },
-  { "howling_rune_2", 6517 },
-  { "howling_rune_3", 6518 },
-  { "buzzing_rune_1", 6512 },
-  { "buzzing_rune_2", 6513 },
-  { "buzzing_rune_3", 6514 },
 };
 
 size_t enchant_map_key( const dbc_t& dbc, const item_enchantment_data_t& enchant )

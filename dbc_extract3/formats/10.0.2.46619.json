@@ -219,6 +219,7 @@
   },
   "CraftingData": {
     "fields": [
+      { "data_type": "i", "field": "id" },
       { "data_type": "i", "field": "unk_1" },
       { "data_type": "i", "field": "id_crafting_difficulty" },
       { "data_type": "i", "field": "id_crafted_item" },
@@ -239,8 +240,8 @@
     "parent": "CraftingData",
     "fields": [
       { "data_type": "i", "field": "rank" },
-      { "data_type": "i", "field": "id_spell_item_enchantment" },
-      { "data_type": "i", "field": "id_item" }
+      { "data_type": "i", "field": "id_spell_item_enchantment", "ref": "SpellitemEnchantment" },
+      { "data_type": "i", "field": "id_item", "ref": "ItemSparse" }
     ]
   },
   "CraftingQuality": {
