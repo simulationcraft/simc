@@ -474,6 +474,7 @@ const char* util::race_type_string( race_e type )
     case RACE_MECHAGNOME:          return "mechagnome";
     case RACE_DRACTHYR_ALLIANCE:   return "dracthyr_alliance";
     case RACE_DRACTHYR_HORDE:      return "dracthyr_horde";
+    case RACE_MECHANICAL:          return "mechanical";
     case RACE_MAX:                 return "unknown";
     case RACE_UNKNOWN:             return "unknown";
     // no default statement so we get warnings if something is missing.
