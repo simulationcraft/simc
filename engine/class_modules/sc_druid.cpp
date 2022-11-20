@@ -8181,11 +8181,12 @@ struct wild_mushroom_t : public druid_spell_t
   timespan_t delay;
 
   wild_mushroom_t( druid_t* p, std::string_view opt )
-    : druid_spell_t( "wild_mushroom", p, p->talent.wild_mushroom, opt ), delay( data().duration() )
+    : druid_spell_t( "wild_mushroom", p, p->talent.wild_mushroom, opt ),
+      delay( p->bugs ? data().duration() + 1.5_s : data().duration() )
   {
     harmful = false;
 
-    damage = p->get_secondary_action<wild_mushroom_damage_t>( "wild_mushroom_damage", this );
+    damage        = p->get_secondary_action<wild_mushroom_damage_t>( "wild_mushroom_damage", this );
     damage->stats = stats;
   }
 
