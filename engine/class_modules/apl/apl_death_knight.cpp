@@ -35,7 +35,7 @@ std::string flask( const player_t* p )
 
 std::string food( const player_t* p )
 {
-  std::string frost_food = ( p->true_level >= 60 ) ? "feast_of_gluttonous_hedonism" : "disabled";
+  std::string frost_food = ( p->true_level >= 61 ) ? "fated_fortune_cookie" : "feast_of_gluttonous_hedonism";
 
   std::string unholy_food = ( p->true_level >= 61 ) ? "fated_fortune_cookie" : "feast_of_gluttonous_hedonism";
 
@@ -61,7 +61,7 @@ std::string rune( const player_t* p )
 std::string temporary_enchant( const player_t* p )
 {
   std::string frost_temporary_enchant =
-      ( p->true_level >= 60 ) ? "main_hand:shaded_sharpening_stone/off_hand:shaded_sharpening_stone" : "disabled";
+      ( p->true_level >= 61 ) ? "main_hand:buzzing_rune_3/off_hand:buzzing_rune_3" : "main_hand:shaded_sharpening_stone/off_hand:shaded_sharpening_stone";
 
   std::string unholy_temporary_enchant = ( p->true_level >= 61 ) ? "main_hand:howling_rune_3" : "main_hand:shaded_sharpening_stone";
 
