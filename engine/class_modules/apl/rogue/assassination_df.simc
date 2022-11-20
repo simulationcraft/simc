@@ -63,6 +63,7 @@ actions.cds+=/berserking,if=debuff.deathmark.up
 actions.cds+=/fireblood,if=debuff.deathmark.up
 actions.cds+=/ancestral_call,if=debuff.deathmark.up
 actions.cds+=/call_action_list,name=vanish,if=!stealthed.all&master_assassin_remains=0
+actions.cds+=/cold_blood,if=combo_points>=4
 
 # Direct damage abilities
 # Envenom at 4+ (5+ with DS) CP. Immediately on 2+ targets, with Deathmark, or with TB; otherwise wait for some energy. Also wait if Exsg combo is coming up.
