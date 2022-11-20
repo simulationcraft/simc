@@ -7314,6 +7314,7 @@ struct ascendance_t : public shaman_spell_t
     if ( lvb )
     {
       lvb->set_target( player->target );
+      lvb->target_cache.is_valid = false;
       if ( !lvb->target_list().empty() )
       {
         lvb->execute();
@@ -11289,7 +11290,7 @@ void shaman_t::init_action_list_elemental()
         "chain_lightning,if=active_enemies>=6&buff.surge_of_power.up",
         "Against 6 targets or more Surge of Power should be used with Chain Lightning rather than Lava Burst." );
     aoe->add_action(
-        "lava_burst,target_if=dot.flame_shock.remains,if=buff.lava_surge.up&talent.deeply_rooted_elements.enabled",
+        "lava_burst,target_if=dot.flame_shock.remains,if=buff.lava_surge.up&talent.deeply_rooted_elements.enabled&buff.windspeakers_lava_resurgence.up",
         "Proc Deeply Rooted Elements against 3 targets." );
     aoe->add_action(
         "lava_beam,if=buff.master_of_the_elements.up",
