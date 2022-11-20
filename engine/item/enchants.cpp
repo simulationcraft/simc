@@ -29,6 +29,7 @@ namespace /* ANONYMOUS NAMESPACE */
  * item_enchantment_data_t structs in sc_item_data.inc.
  */
 const enchant_db_item_t __enchant_db[] = {
+  { 0, 0 }
 };
 
 size_t enchant_map_key( const dbc_t& dbc, const item_enchantment_data_t& enchant )
