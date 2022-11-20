@@ -7968,13 +7968,13 @@ void actions::rogue_action_t<Base>::spend_combo_points( const action_state_t* st
   p()->sim->print_log( "{} consumes {} {} for {} ({})", *p(), max_spend, util::resource_type_string( RESOURCE_COMBO_POINT ),
                                                         *this, p()->current_cp() );
 
-  if ( ab::name_str != "secret_technique" )
+  // 2018-06-28 -- Secret Technique does not reduce its own cooldown
+  // 2022-11-18 -- Updated to work with Echoing Reprimand via hotfix
+  if ( p()->talent.subtlety.secret_technique->ok() && ab::data().id() != p()->talent.subtlety.secret_technique->id() )
   {
-    // As of 2018-06-28 on beta, Secret Technique does not reduce its own cooldown. May be a bug or the cdr happening
-    // before CD start.
     timespan_t sectec_cdr = timespan_t::from_seconds( p()->talent.subtlety.secret_technique->effectN( 5 ).base_value() );
-    sectec_cdr *= -max_spend;
-    p()->cooldowns.secret_technique->adjust( sectec_cdr, false );
+    sectec_cdr *= rs->get_combo_points();
+    p()->cooldowns.secret_technique->adjust( -sectec_cdr, false );
   }
 
   // Remove Echoing Reprimand Buffs
