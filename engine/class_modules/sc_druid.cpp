@@ -1316,12 +1316,14 @@ struct denizen_of_the_dream_t : public pet_t
 {
   struct fey_missile_t : public spell_t
   {
-    fey_missile_t( pet_t* p ) : spell_t( "fey_missile", p, p->find_spell( 188046 ) )
+    druid_t* o;
+
+    fey_missile_t( pet_t* p )
+      : spell_t( "fey_missile", p, p->find_spell( 188046 ) ), o( static_cast<druid_t*>( p->owner ) )
     {
       name_str_reporting = "fey_missile";
-      cooldown->hasted = true;
 
-      auto proxy = static_cast<druid_t*>( p->owner )->active.denizen_of_the_dream;
+      auto proxy = o->active.denizen_of_the_dream;
       auto it = range::find( proxy->child_action, data().id(), &action_t::id );
       if ( it != proxy->child_action.end() )
         stats = ( *it )->stats;
@@ -1331,10 +1333,34 @@ struct denizen_of_the_dream_t : public pet_t
 
     void execute() override
     {
-      // TODO: seems to have a random cooldown, narrow this further and see if hasted
-      cooldown->duration = rng().range( 400_ms, 600_ms );
+      // TODO: has server batching behavior, using a random value for now
+      cooldown->duration = rng().range( 0_ms, 600_ms );
 
       spell_t::execute();
+    }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      auto da = spell_t::composite_da_multiplier( s );
+
+      da *= 1.0 + o->buff.eclipse_lunar->check_value();
+      da *= 1.0 + o->buff.eclipse_solar->check_value();
+
+      return da;
+    }
+
+    double composite_target_multiplier( player_t* t ) const override
+    {
+      auto tm = spell_t::composite_target_multiplier( t );
+      auto td = o->get_target_data( t );
+
+      if ( td->dots.moonfire->is_ticking() )
+        tm *= 1.0 + o->cache_mastery_value();
+
+      if ( td->dots.sunfire->is_ticking() )
+        tm *= 1.0 + o->cache_mastery_value();
+
+      return tm;
     }
   };
 
