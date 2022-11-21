@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.46366 Live (hotfix 2022-11-01/46366)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46702 Live (hotfix 2022-11-20/46702)
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
 bonus_id={ 3 }, suffix={ of Power }, socket={ 2 }, stats={ 100% StrAgiInt [0.5263] }
@@ -970,7 +970,7 @@ bonus_id={ 1718 }, suffix={ of the Decimator }, stats={ 100% Crit [0.7000] }
 bonus_id={ 1719 }, suffix={ of the Adaptable }, stats={ 100% Vers [0.7000] }
 bonus_id={ 1720 }, suffix={ of the Impatient }, stats={ 100% Haste [0.7000] }
 bonus_id={ 1721 }, suffix={ of the Savant }, stats={ 100% Mastery [0.7000] }
-bonus_id={ 1723 }, ilevel={ 5 @plvl 1 - 340 @plvl 72 }
+bonus_id={ 1723 }, ilevel={ 5 @plvl 1 - 178 @plvl 70 }
 bonus_id={ 1724 }, quality={ rare }, ilevel={ 21 @plvl 1 - 194 @plvl 70 }
 bonus_id={ 1725 }, quality={ epic }, ilevel={ 47 @plvl 1 - 220 @plvl 70 }
 bonus_id={ 1726 }, base_ilevel={ 845 }, desc={ Heroic }
@@ -3683,7 +3683,7 @@ bonus_id={ 6496 }, effects={ Unknown Effect (id=116246) }
 bonus_id={ 6497 }, effects={ Unknown Effect (id=116247) }
 bonus_id={ 6498 }, effects={ Unknown Effect (id=116248) }
 bonus_id={ 6499 }, ilevel={ 1 @plvl 1 - 168 @plvl 59 }
-bonus_id={ 6500 }, ilevel={ 21 @plvl 1 - 194 @plvl 70 }
+bonus_id={ 6500 }, ilevel={ 1 @plvl 1 - 170 @plvl 70 }
 bonus_id={ 6514 }, socket={ 1 }
 bonus_id={ 6517 }, desc={ Challenger I }, quality={ epic }
 bonus_id={ 6518 }, desc={ Rival I }, quality={ epic }
@@ -3763,8 +3763,8 @@ bonus_id={ 6649 }, mod_to_stat={ Haste (100) }
 bonus_id={ 6650 }, mod_to_stat={ Vers (100) }
 bonus_id={ 6651 }
 bonus_id={ 6653 }, effects={ Unknown Effect (id=117295) }
-bonus_id={ 6654 }, ilevel={ 1 @plvl 1 - 170 @plvl 59 }
-bonus_id={ 6655 }, ilevel={ 1 @plvl 1 - 170 @plvl 59 }
+bonus_id={ 6654 }, ilevel={ 16 @plvl 1 - 170 @plvl 59 }
+bonus_id={ 6655 }, ilevel={ 16 @plvl 1 - 170 @plvl 59 }
 bonus_id={ 6656 }, ilevel={ 1 @plvl 1 - 160 @plvl 59 }
 bonus_id={ 6657 }, ilevel={ 1 @plvl 1 - 160 @plvl 59 }
 bonus_id={ 6658 }, ilevel={ 14 @plvl 1 - 183 @plvl 59 }
@@ -3805,9 +3805,9 @@ bonus_id={ 6696 }, ilevel={ 47 @plvl 1 - 220 @plvl 70 }
 bonus_id={ 6697 }, quality={ rare }, ilevel={ 7 @plvl 1 - 180 @plvl 70 }
 bonus_id={ 6700 }, quality={ epic }, ilevel={ 17 @plvl 1 - 190 @plvl 70 }
 bonus_id={ 6703 }, quality={ epic }, ilevel={ 17 @plvl 1 - 190 @plvl 70 }
-bonus_id={ 6706 }, ilevel={ 83 @plvl 45 - 146 @plvl 70 }
-bonus_id={ 6707 }, ilevel={ 75 @plvl 45 - 138 @plvl 70 }
-bonus_id={ 6708 }, ilevel={ 95 @plvl 45 - 158 @plvl 70 }
+bonus_id={ 6706 }, ilevel={ 14 @plvl 1 - 187 @plvl 70 }
+bonus_id={ 6707 }, ilevel={ 1 @plvl 1 - 174 @plvl 70 }
+bonus_id={ 6708 }, ilevel={ 27 @plvl 1 - 200 @plvl 70 }
 bonus_id={ 6709 }, quality={ uncommon }, ilevel={ 5 @plvl 1 - 178 @plvl 70 }
 bonus_id={ 6710 }, quality={ rare }, ilevel={ 21 @plvl 1 - 194 @plvl 70 }
 bonus_id={ 6711 }, ilevel={ 6 @plvl 0 - 6 @plvl 13 }
@@ -3849,12 +3849,12 @@ bonus_id={ 6762 }, ilevel={ 108 @plvl 1 - 108 @plvl 108 }
 bonus_id={ 6763 }, ilevel={ 120 @plvl 1 - 120 @plvl 120 }
 bonus_id={ 6764 }, quality={ rare }, ilevel={ 21 @plvl 1 - 194 @plvl 70 }
 bonus_id={ 6765 }, ilevel={ 32 @plvl 1 - 32 @plvl 100 }
-bonus_id={ 6770 }, ilevel={ 75 @plvl 45 - 138 @plvl 70 }
-bonus_id={ 6771 }, ilevel={ 83 @plvl 45 - 146 @plvl 70 }
-bonus_id={ 6772 }, ilevel={ 95 @plvl 45 - 158 @plvl 70 }
-bonus_id={ 6802 }, ilevel={ 75 @plvl 45 - 138 @plvl 70 }
-bonus_id={ 6803 }, ilevel={ 83 @plvl 45 - 146 @plvl 70 }
-bonus_id={ 6804 }, ilevel={ 95 @plvl 45 - 158 @plvl 70 }
+bonus_id={ 6770 }, ilevel={ 5 @plvl 1 - 178 @plvl 70 }
+bonus_id={ 6771 }, ilevel={ 21 @plvl 1 - 194 @plvl 70 }
+bonus_id={ 6772 }, ilevel={ 47 @plvl 1 - 220 @plvl 70 }
+bonus_id={ 6802 }, ilevel={ 5 @plvl 1 - 178 @plvl 70 }
+bonus_id={ 6803 }, ilevel={ 21 @plvl 1 - 194 @plvl 70 }
+bonus_id={ 6804 }, ilevel={ 47 @plvl 1 - 220 @plvl 70 }
 bonus_id={ 6810 }, effects={ Unknown Effect (id=117472) }
 bonus_id={ 6811 }, effects={ Unknown Effect (id=117290) }
 bonus_id={ 6812 }, effects={ Unknown Effect (id=117290) }
@@ -3868,7 +3868,7 @@ bonus_id={ 6820 }, ilevel={ 4 @plvl 1 - 65 @plvl 70 }
 bonus_id={ 6821 }, ilevel={ 6 @plvl 1 - 71 @plvl 70 }
 bonus_id={ 6822 }, ilevel={ 21 @plvl 1 - 194 @plvl 70 }
 bonus_id={ 6823 }, quality={ legendary }, effects={ Slick Ice (id=327508, index=0, type=equip) }
-bonus_id={ 6825 }, ilevel={ 1 @plvl 1 - 170 @plvl 59 }
+bonus_id={ 6825 }, ilevel={ 16 @plvl 1 - 170 @plvl 59 }
 bonus_id={ 6826 }, ilevel={ 50 @plvl 50 - 70 @plvl 70 }
 bonus_id={ 6828 }, quality={ legendary }, effects={ Cold Front (id=327284, index=0, type=equip) }
 bonus_id={ 6829 }, quality={ legendary }, effects={ Freezing Winds (id=327364, index=0, type=equip) }
@@ -3889,20 +3889,20 @@ bonus_id={ 6892 }, ilevel={ 165 @plvl 0 - 165 @plvl 1 }
 bonus_id={ 6893 }, ilevel={ 151 @plvl 0 - 151 @plvl 0 }
 bonus_id={ 6899 }, effects={ Luxurious Feather (id=329049, index=0, type=equip) }
 bonus_id={ 6900 }, effects={ Shadowy Rabbit's Paw (id=329058, index=0, type=equip) }
-bonus_id={ 6901 }, quality={ rare }, ilevel={ 83 @plvl 45 - 146 @plvl 70 }
-bonus_id={ 6902 }, quality={ epic }, ilevel={ 95 @plvl 45 - 158 @plvl 70 }
-bonus_id={ 6903 }, quality={ rare }, ilevel={ 146 @plvl 45 - 146 @plvl 70 }
+bonus_id={ 6901 }, quality={ rare }, ilevel={ 14 @plvl 1 - 187 @plvl 70 }
+bonus_id={ 6902 }, quality={ epic }, ilevel={ 27 @plvl 1 - 200 @plvl 70 }
+bonus_id={ 6903 }, quality={ rare }, ilevel={ 187 @plvl 45 - 187 @plvl 70 }
 bonus_id={ 6904 }, effects={ Unknown Effect (id=117952) }
 bonus_id={ 6905 }, effects={ Hydrodynamic Accelerator (id=329169, index=0, type=equip) }
 bonus_id={ 6906 }, effects={ Unknown Effect (id=117951) }
-bonus_id={ 6907 }, ilevel={ 80 @plvl 1 - 129 @plvl 70 }
-bonus_id={ 6908 }, ilevel={ 81 @plvl 1 - 131 @plvl 70 }
-bonus_id={ 6909 }, ilevel={ 70 @plvl 1 - 132 @plvl 70 }
-bonus_id={ 6910 }, ilevel={ 75 @plvl 1 - 138 @plvl 70 }
-bonus_id={ 6911 }, ilevel={ 176 @plvl 1 - 176 @plvl 70 }
-bonus_id={ 6912 }, ilevel={ 176 @plvl 1 - 176 @plvl 70 }
-bonus_id={ 6913 }, ilevel={ 190 @plvl 1 - 190 @plvl 70 }
-bonus_id={ 6914 }, ilevel={ 190 @plvl 1 - 190 @plvl 70 }
+bonus_id={ 6907 }, ilevel={ 1 @plvl 1 - 170 @plvl 59 }
+bonus_id={ 6908 }, ilevel={ 1 @plvl 1 - 170 @plvl 59 }
+bonus_id={ 6909 }, ilevel={ 1 @plvl 1 - 160 @plvl 59 }
+bonus_id={ 6910 }, ilevel={ 1 @plvl 1 - 160 @plvl 59 }
+bonus_id={ 6911 }, ilevel={ 14 @plvl 1 - 183 @plvl 59 }
+bonus_id={ 6912 }, ilevel={ 14 @plvl 1 - 183 @plvl 59 }
+bonus_id={ 6913 }, ilevel={ 27 @plvl 1 - 196 @plvl 59 }
+bonus_id={ 6914 }, ilevel={ 27 @plvl 1 - 196 @plvl 59 }
 bonus_id={ 6915 }, effects={ Unbound Changeling (id=330765, index=2, type=equip) }
 bonus_id={ 6916 }, effects={ Unbound Changeling (id=330080, index=2, type=equip) }
 bonus_id={ 6917 }, effects={ Unbound Changeling (id=330733, index=2, type=equip) }
@@ -4107,7 +4107,7 @@ bonus_id={ 7123 }, quality={ legendary }, effects={ Finality (id=340089, index=0
 bonus_id={ 7124 }, quality={ legendary }, effects={ Akaari's Soul Fragment (id=340090, index=0, type=equip) }
 bonus_id={ 7125 }, quality={ legendary }, effects={ The Rotten (id=340091, index=0, type=equip) }
 bonus_id={ 7126 }, quality={ legendary }, effects={ Deathly Shadows (id=340092, index=0, type=equip) }
-bonus_id={ 7127 }, quality={ epic }, ilevel={ 158 @plvl 45 - 158 @plvl 70 }
+bonus_id={ 7127 }, quality={ epic }, ilevel={ 200 @plvl 45 - 200 @plvl 70 }
 bonus_id={ 7128 }, quality={ legendary }, effects={ Maraad's Dying Breath (id=340458, index=0, type=equip) }
 bonus_id={ 7129 }, ilevel={ 6 @plvl 0 - 6 @plvl 13 }
 bonus_id={ 7144 }, ilevel={ 85 @plvl 48 - 154 @plvl 60 }
@@ -4124,7 +4124,7 @@ bonus_id={ 7169 }, quality={ epic }, ilevel={ 8 @plvl 1 - 61 @plvl 70 }
 bonus_id={ 7170 }, ilevel={ 10 @plvl 1 - 61 @plvl 70 }
 bonus_id={ 7171 }, ilevel={ 6 @plvl 1 - 61 @plvl 70 }
 bonus_id={ 7172 }, quality={ epic }, ilevel={ 10 @plvl 1 - 61 @plvl 70 }
-bonus_id={ 7173 }, quality={ epic }, ilevel={ 95 @plvl 45 - 158 @plvl 70 }
+bonus_id={ 7173 }, quality={ epic }, ilevel={ 27 @plvl 1 - 200 @plvl 70 }
 bonus_id={ 7174 }, ilevel={ 168 @plvl 0 - 168 @plvl 0 }
 bonus_id={ 7175 }, ilevel={ 19 @plvl 0 - 19 @plvl 1 }
 bonus_id={ 7176 }, ilevel={ 28 @plvl 0 - 28 @plvl 1 }
@@ -4138,10 +4138,10 @@ bonus_id={ 7183 }, ilevel={ 200 @plvl 0 - 200 @plvl 0 }
 bonus_id={ 7184 }, quality={ legendary }, effects={ Escape from Reality (id=343250, index=0, type=equip) }
 bonus_id={ 7185 }, ilevel={ 168 @plvl 0 - 168 @plvl 0 }
 bonus_id={ 7191 }, desc={ Timewarped }, quality={ rare }, ilevel={ 3 @plvl 1 - 158 @plvl 60 }
-bonus_id={ 7192 }, quality={ rare }, ilevel={ 75 @plvl 45 - 138 @plvl 70 }
+bonus_id={ 7192 }, quality={ rare }, ilevel={ 1 @plvl 1 - 174 @plvl 70 }
 bonus_id={ 7202 }, desc={ Heroic }, quality={ epic }, ilevel={ 23 @plvl 1 - 196 @plvl 70 }
 bonus_id={ 7215 }, quality={ epic }, ilevel={ 226 @plvl 50 - 226 @plvl 60 }
-bonus_id={ 7217 }, ilevel={ 83 @plvl 45 - 146 @plvl 70 }
+bonus_id={ 7217 }, ilevel={ 21 @plvl 1 - 194 @plvl 70 }
 bonus_id={ 7218 }, quality={ legendary }, effects={ Darker Nature (id=346264, index=0, type=equip) }
 bonus_id={ 7219 }, quality={ legendary }, effects={ Burning Wound (id=346279, index=0, type=equip) }
 bonus_id={ 7220 }, ilevel={ 1 @plvl 1 - 170 @plvl 70 }
@@ -4244,7 +4244,7 @@ bonus_id={ 7883 }, ilevel={ 5 @plvl 1 - 220 @plvl 60 }
 bonus_id={ 7886 }, stats={ 100% Avoidance [0.3500] }, effects={ Cosmic Protoweave (id=361020, index=0, type=equip) }
 bonus_id={ 7887 }, effects={ Infusion: Corpse Purification (id=360046, index=0, type=equip) }
 bonus_id={ 7888 }, effects={ Magically Regulated Automa Core (id=360072, index=0, type=equip) }
-bonus_id={ 7890 }, quality={ epic }, ilevel={ 95 @plvl 45 - 158 @plvl 70 }
+bonus_id={ 7890 }, quality={ epic }, ilevel={ 27 @plvl 1 - 200 @plvl 70 }
 bonus_id={ 7891 }, effects={ Pure-Air Sail Extensions (id=360367, index=0, type=equip), Pure-Air Sail Extensions (id=360975, index=0, type=equip) }
 bonus_id={ 7892 }, effects={ Erratic Genesis Matrix (id=360370, index=0, type=equip), Erratic Genesis Matrix (id=361287, index=0, type=equip) }
 bonus_id={ 7914 }, effects={ Devourer Essence Stone (id=360980, index=0, type=equip), Devourer Essence Stone (id=368212, index=0, type=equip) }
@@ -4651,3 +4651,5 @@ bonus_id={ 9125 }, desc={ Mythic }, quality={ epic }, ilevel={ 43 @plvl 1 - 216 
 bonus_id={ 9128 }, base_ilevel={ 333 }
 bonus_id={ 9129 }, quality={ rare }
 bonus_id={ 9136 }, quality={ epic }
+bonus_id={ 9156 }, ilevel={ 206 @plvl 45 - 327 @plvl 80 }
+bonus_id={ 9232 }, ilevel={ 249 @plvl 60 - 340 @plvl 72 }

@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46658 Live (hotfix 2022-11-16/46658)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46702 Live (hotfix 2022-11-20/46702)
 Name             : Frostbolt of Ages (id=11) 
 Class            : Paladin
 School           : Frost
@@ -16095,7 +16095,8 @@ Effects          :
                    Family Flags: 106
 Description      : $@spelldesc393020
 
-Name             : Improved Cleanse (id=393024) [Passive, Hidden] 
+Name             : Improved Cleanse (id=393024) [Spell Family (10), Passive, Hidden] 
+Hotfixed         : Affecting Spells
 Talent Entry     : Holy [tree=class, row=4, col=1, max_rank=1, req_points=0]
 Class            : Paladin
 School           : Physical

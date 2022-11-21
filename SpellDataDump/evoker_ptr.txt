@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46658 Live (hotfix 2022-11-16/46658)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46702 Live (hotfix 2022-11-20/46702)
 Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Orc (0x2)
@@ -3730,6 +3730,7 @@ Effects          :
 Tooltip          : Sharing $s1% of healing to an ally.
 
 Name             : Lifebind (id=373270) [Spell Family (224), Passive] 
+Hotfixed         : Description
 Talent Entry     : Preservation [tree=spec, row=7, col=2, max_rank=1, req_points=8]
 Class            : Evoker
 School           : Nature
@@ -3749,7 +3750,7 @@ Attributes       : ......x. ........ ..x..... ........   ........ ........ .....
 Effects          :
 #1 (id=998372)   : Apply Aura (6) | Dummy (4)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Verdant Embrace temporarily bonds your life with an ally, causing healing either of you receive to also heal the bonded partner for $s1% of the amount. Lasts $373267d.
+Description      : Verdant Embrace temporarily bonds your life with an ally, causing your healing on either partner to heal the other for $s1% of the amount. Lasts $373267d.
 
 Name             : Call of Ysera (id=373834) [Spell Family (224), Passive] 
 Talent Entry     : Preservation [tree=spec, row=7, col=1, max_rank=1, req_points=8]

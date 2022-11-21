@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.2.46702
-static const std::array<spelltext_data_t, 19177> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 19175> __ptr_spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -7911,7 +7911,6 @@ static const std::array<spelltext_data_t, 19177> __ptr_spelltext_data { {
   { 226990, "Your attacks have a chance to grant you $226991s1 Agility for $226991d.", 0, 0 },
   { 226991, "$@spelldesc226990", "Agility increased by $s1.", 0 },
   { 227034, "$@spelldesc155783", 0, 0 },
-  { 227041, "Calms the mind, allowing you to adjust talents while not in combat for $d. Cannot affect targets above level $maxcast.", "Able to adjust talents in the field.", 0 },
   { 227057, "Maximum focus increased by $s1%.", 0, "Racial Passive" },
   { 227088, "Throw a spellbomb, inflicting $m1 damage to all enemies within $a1 yds.\r\n", 0, 0 },
   { 227092, "$@spelldesc227088", 0, 0 },
@@ -7948,7 +7947,6 @@ static const std::array<spelltext_data_t, 19177> __ptr_spelltext_data { {
   { 227518, "$@spelldesc201427", 0, 0 },
   { 227561, "Craft a Tome of the Clear Mind.", 0, 0 },
   { 227562, "Craft a Codex of the Clear Mind.", 0, 0 },
-  { 227563, "Calms the mind, allowing you to adjust talents while not in combat for $d. Cannot be used above level $maxcast.", "Able to adjust talents in the field.", 0 },
   { 227564, "Set out a codex, allowing nearby players to adjust their talents. Cannot affect targets above level $maxcast.", 0, 0 },
   { 227679, "$@spelldesc213116", 0, 0 },
   { 227727, "Gain ${$s1/100} Insanity.", 0, 0 },
@@ -9194,7 +9192,6 @@ static const std::array<spelltext_data_t, 19177> __ptr_spelltext_data { {
   { 256171, "$@spelldesc256170", "Your next $?s5171[Slice and Dice will be $w1% more effective][Roll the Bones will grant at least two matches].", 0 },
   { 256188, "Reduces the cooldown of Grappling Hook by ${$s1/-1000} sec, and increases its retraction speed.", 0, 0 },
   { 256230, "Set out a codex, allowing nearby players to adjust their talents and azerite essences. Cannot affect targets above level $maxcast.", 0, 0 },
-  { 256231, "Calms the mind, allowing you to adjust talents and azerite essences while not in combat for $d. Cannot affect targets above level $maxcast.", "Able to adjust talents and azerite essences in the field.", 0 },
   { 256301, "Craft a Sanguine Feather Quill of Lana'thel.", 0, 0 },
   { 256302, "Attune yourself to the energies of the targeted Uldir raid boss, increasing your Versatility by $269268s1 when fighting that boss. This effect lasts for an entire week.\r\n\r\nYou can only use one Vantus Rune per week.", 0, 0 },
   { 256374, "$@spelldesc255669", "Your damage and healing effects deal an additional $w1% as Shadowfrost.", 0 },
@@ -13185,7 +13182,6 @@ static const std::array<spelltext_data_t, 19177> __ptr_spelltext_data { {
   { 321758, "When Clearcast, Arcane Missiles fires $s2 additional $lmissile:missiles;.", 0, "Rank 2" },
   { 321759, "$@spelldesc329779", "Movement speed reduced by $w1%.", 0 },
   { 321792, "Call forth a cloud of chaotic anima that travels to the target enemy, dealing $322167s1 Shadow damage to enemies in its path. When the anima reaches the target it explodes, inflicting either Curse of Weakness or Curse of Tongues, and dealing $322170o1 Shadow damage over $322170d to all nearby enemies.", 0, "Venthyr" },
-  { 321923, "Stills the mind, allowing you to adjust talents while not in combat for $d.", "Able to adjust talents in the field.", 0 },
   { 321937, "Deal $s1 Shadow Fire damage to your current target.", 0, 0 },
   { 321958, "Restores $s1 health to your current target.", 0, 0 },
   { 321973, "$@spelldesc321291", "${$m1/100} Insanity generated every $t1 sec.", 0 },
@@ -16311,7 +16307,7 @@ static const std::array<spelltext_data_t, 19177> __ptr_spelltext_data { {
   { 373265, 0, "The inner snowstorm rages on. The damage of Glacial Fury is increased.", 0 },
   { 373266, "Fulfil the destiny of a Fated raid item, upgrading it to Mythic quality.", 0, 0 },
   { 373267, 0, "Sharing $s1% of healing to an ally.", 0 },
-  { 373270, "Verdant Embrace temporarily bonds your life with an ally, causing healing either of you receive to also heal the bonded partner for $s1% of the amount. Lasts $373267d.", 0, 0 },
+  { 373270, "Verdant Embrace temporarily bonds your life with an ally, causing your healing on either partner to heal the other for $s1% of the amount. Lasts $373267d.", 0, 0 },
   { 373273, "After conjuring Shadowy Apparitions, gain a stack of Idol of Yogg-Saron. At $s1 stacks, you summon a Thing from Beyond that serves you for $373277d.\r\n\r\nThe Thing from Beyond blasts enemies for $373279s1 Shadow damage and deals $396895s2% of that damage to all enemies within $396895a1 yards. Damage reduced beyond $396895s3 targets.", 0, 0 },
   { 373276, "$@spelldesc373273", "Conjuring $373273s1 Shadowy Apparitions will summon a Thing from Beyond.", 0 },
   { 373277, "$@spelldesc373273", "A Thing from Beyond serves you in combat, blasting enemies for $373279s1 Shadow damage.", 0 },
@@ -19165,12 +19161,14 @@ static const std::array<spelltext_data_t, 19177> __ptr_spelltext_data { {
   { 397040, "Your damaging spells and abilities have a chance to deal $s1 Arcane damage.", 0, 0 },
   { 397041, "$@spelldesc397040", 0, 0 },
   { 397103, "Shield Wall gains $s2 additional charge, and its cooldown is reduced by ${$s1/-1000} sec.", 0, 0 },
+  { 397118, 0, "Attack speed increased by $w1%. Attacking another target will reset this bonus.", 0 },
   { 397251, "Weapons of Order calls forth $?c1[Niuzao, the Black Ox]?c2&s325197[Chi-Ji, the Red Crane]?c3[Xuen, the White Tiger][Yu'lon, the Jade Serpent] to assist you for ${$s1/1000} sec.", 0, 0 },
   { 397364, "@spelldesc384318", "Bleeding for $w1 damage every $t1 sec.", 0 },
   { 397399, "Embrace the gem to increase your Critical Strike by $s1 for $d. Your healing spells and abilities have a high chance to empower the gem, increasing its effect.", "Critical Strike increased by $w1.", 0 },
   { 397400, "Feast upon the toe, increasing your Critical Strike by $s1 for $d and causing you to exude a fetid breath, dealing ${$397401s1*$d/$t2} Shadow damage split between enemies in front of you.", "Critical Strike increased by $w1. Exuding a fetid breath.", 0 },
   { 397401, "$@spelldesc397400", 0, 0 },
   { 397405, "Casting spells spins Crystalline Silk, granting [low] mastery per stack.\r\n\r\nAt X stacks, your next single-target spell deals [high] bonus Frost damage, encasing them and enemies within 10 yards in a Crystalline Web for X seconds. While the web persists, a portion of the damage you deal is shared across all enemies in the Web.", "Movement Speed reduced by $w2%. Damaging this unit will cause all webbed enemies to take $382132s2 Frost damage.\r\nThis can occur once every 1.5 sec.", 0 },
+  { 397478, "Auto-attacking an enemy grants you $s2% attack speed, stacking $s3 times. This bonus resets upon auto-attacking a different target.", 0, 0 },
   { 397565, "$@spelldesc369375", 0, 0 },
   { 397568, "$@spelldesc378962", "Damage of your next Kill Command increased by $s1%.\r\nKill Command cooldown reset chance increased by $s2%.", 0 },
   { 397621, "$@spelldesc377456", "Movement speed increased by $w1%. Auto attacks deal $w2 bonus Nature damage to your current target and the nearest enemy.", 0 },
@@ -19180,7 +19178,8 @@ static const std::array<spelltext_data_t, 19177> __ptr_spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 10.0.2.46702
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __ptr_spelltext_hotfix_data { {
+  {  373270,  0, "Verdant Embrace temporarily bonds your life with an ally, causing healing either of you receive to also heal the bonded partner for $s1% of the amount. Lasts $373267d.", "Verdant Embrace temporarily bonds your life with an ally, causing your healing on either partner to heal the other for $s1% of the amount. Lasts $373267d." },
 } };
 
 // Spell description variables, wow build 10.0.2.46702
