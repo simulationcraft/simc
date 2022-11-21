@@ -35,7 +35,7 @@ actions.cleave+=/steel_trap
 actions.cleave+=/a_murder_of_crows
 actions.cleave+=/barbed_shot,target_if=max:debuff.latent_poison.stack,if=debuff.latent_poison.stack>9&(talent.wild_instincts&buff.call_of_the_wild.up|fight_remains<9|talent.wild_call&charges_fractional>1.2)
 actions.cleave+=/barbed_shot,target_if=min:dot.barbed_shot.remains,if=talent.wild_instincts&buff.call_of_the_wild.up|fight_remains<9|talent.wild_call&charges_fractional>1.2
-actions.cleave+=/kill_command,if=focus>cost+action.multishot.cost
+actions.cleave+=/kill_command
 actions.cleave+=/dire_beast
 actions.cleave+=/serpent_sting,target_if=min:remains,if=refreshable&target.time_to_die>duration
 actions.cleave+=/barrage,if=pet.main.buff.frenzy.remains>execute_time
