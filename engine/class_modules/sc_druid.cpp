@@ -12042,6 +12042,10 @@ std::unique_ptr<expr_t> druid_t::create_expression( std::string_view name_str )
         return make_fn_expr( name_str, [ this ]() { return eclipse_handler.state == IN_LUNAR; } );
       else if ( util::str_compare_ci( splits[ 1 ], "in_both" ) )
         return make_fn_expr( name_str, [ this ]() { return eclipse_handler.state == IN_BOTH; } );
+      else if ( util::str_compare_ci( splits[ 1 ], "starfire_counter" ) )
+        return make_fn_expr( name_str, [ this ]() { return eclipse_handler.starfire_counter; } );
+      else if ( util::str_compare_ci( splits[ 1 ], "wrath_counter" ) )
+        return make_fn_expr( name_str, [ this ]() { return eclipse_handler.wrath_counter; } );
     }
   }
   else if ( specialization() == DRUID_FERAL )
