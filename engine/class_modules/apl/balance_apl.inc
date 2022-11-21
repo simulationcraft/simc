@@ -31,6 +31,7 @@ st->add_action( "stellar_flare,target_if=refreshable&astral_power.deficit>variab
 st->add_action( "variable,name=cd_condition_st,value=cooldown.ca_inc.remains<15&!buff.ca_inc.up&(target.1.time_to_die>15|fight_remains<25+10*talent.incarnation_chosen_of_elune)" );
 st->add_action( "wrath,if=variable.cd_condition_st&set_bonus.tier29_4pc&eclipse.any_next" );
 st->add_action( "starsurge,if=variable.cd_condition_st&buff.touch_the_cosmos.up" );
+st->add_action( "wild_mushroom,if=variable.cd_condition_st&cooldown.ca_inc.remains<gcd.max*2&(!prev_gcd.1.wild_mushroom|prev_gcd.1.wild_mushroom&!prev_gcd.2.wild_mushroom)" );
 st->add_action( "celestial_alignment,if=variable.cd_condition_st" );
 st->add_action( "incarnation,if=variable.cd_condition_st" );
 st->add_action( "ravenous_frenzy,if=buff.ca_inc.remains>15" );
@@ -50,7 +51,7 @@ st->add_action( "new_moon,if=astral_power.deficit>variable.passive_asp+10" );
 st->add_action( "half_moon,if=astral_power.deficit>variable.passive_asp+20&(buff.eclipse_lunar.remains>execute_time|buff.eclipse_solar.remains>execute_time)" );
 st->add_action( "full_moon,if=astral_power.deficit>variable.passive_asp+40&(buff.eclipse_lunar.remains>execute_time|buff.eclipse_solar.remains>execute_time)" );
 st->add_action( "starsurge,if=buff.starweavers_weft.up|astral_power.deficit<variable.passive_asp+(8*(1+0.5*talent.soul_of_the_forest*buff.eclipse_solar.up))|talent.astral_communion&cooldown.astral_communion.remains<3|fight_remains<5" );
-st->add_action( "wild_mushroom,if=astral_power.deficit>variable.passive_asp+5&(!talent.primordial_arcanic_pulsar|buff.ca_inc.remains>3)&(!talent.fungal_growth|talent.stellar_flare|!prev_gcd.1.wild_mushroom&!prev_gcd.2.wild_mushroom&dot.fungal_growth.remains<2)|fight_remains<10" );
+st->add_action( "wild_mushroom,if=astral_power.deficit>variable.passive_asp+5&cooldown.ca_inc.remains-30>full_recharge_time&(!talent.primordial_arcanic_pulsar|buff.ca_inc.remains>3)&(!talent.fungal_growth|talent.stellar_flare|!prev_gcd.1.wild_mushroom&!prev_gcd.2.wild_mushroom&dot.fungal_growth.remains<2)|fight_remains<10" );
 st->add_action( "starfire,if=eclipse.in_lunar|buff.warrior_of_elune.up&(buff.eclipse_lunar.up|buff.umbral_embrace.react)" );
 st->add_action( "wrath" );
 st->add_action( "run_action_list,name=fallthru" );
