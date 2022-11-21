@@ -8176,7 +8176,7 @@ struct wild_mushroom_t : public druid_spell_t
         ap_per( 5 ),
         ap_max( data().effectN( 2 ).base_value() )
     {
-      background = true;
+      background = dual = true;
       aoe = -1;
 
       if ( p->talent.fungal_growth.ok() )
