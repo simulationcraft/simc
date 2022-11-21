@@ -2905,7 +2905,7 @@ class SpellDataGenerator(DataGenerator):
                 self.process_spell(data['definition'].id_override_spell, ids, class_mask, 0, False)
 
         # Temporary item enchants
-        for item, spell, enchant_id in TemporaryEnchantItemSet(self._options).get():
+        for item, spell, enchant_id, rank in TemporaryEnchantItemSet(self._options).get():
             enchant = self.db('SpellItemEnchantment')[enchant_id]
             enchant_spells = []
             for index in range(1, 4):
