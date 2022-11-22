@@ -31,7 +31,7 @@ race=blood_elf
 spec=frost
 role=attack
 position=back
-talents=BsPAAAAAAAAAAAAAAAAAAAAAAkIAgkkIBSQkkkEiISSkEEBJkEJJJJJJpFAAAAAAAAAAAAA
+talents=BsPAAAAAAAAAAAAAAAAAAAAAAkIAgkkIBSQkkkEiISSkEEQCJRSSSSSSa5AAAAAAAAAAAAAA
 
 head=maw_of_the_haunted_frostbrood,id=200408,bonus_id=4800/4786/1498/6935,gem_id=192922
 neck=elemental_lariat,id=193001,bonus_id=6652/7936/7979/1540/8767/6935/6935/6935,gem_id=192922/192922/192922,crafted_stats=32/49
@@ -58,7 +58,7 @@ race=tauren
 spec=frost
 role=attack
 position=back
-talents=BsPAAAAAAAAAAAAAAAAAAAAAAkEAgkkIBSQkkkEiISSkkEEkQSCQSSSKJBAAAAAAAAAAAA
+talents=BsPAAAAAAAAAAAAAAAAAAAAAAkEBASSiEIBRSSSIiIJRSSAkQSCQSSSKJBAAAAAAAAAAAA
 
 head=maw_of_the_haunted_frostbrood,id=200408,bonus_id=4800/4786/1498/6935,gem_id=192985
 neck=elemental_lariat,id=193001,bonus_id=6652/7936/7979/1540/8767/6935/6935,gem_id=192948/192948/192948,crafted_stats=32/49
