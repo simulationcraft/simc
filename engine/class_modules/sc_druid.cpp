@@ -2309,8 +2309,6 @@ public:
     // Class
     parse_buff_effects( p()->buff.cat_form );
     parse_buff_effects( p()->buff.moonkin_form );
-    parse_buff_effects( p()->buff.protector_of_the_pack_moonfire, false, true );
-    parse_buff_effects( p()->buff.protector_of_the_pack_regrowth, false, true );
 
     switch( p()->specialization() )
     {
@@ -5539,6 +5537,11 @@ struct regrowth_t : public druid_heal_t
     return druid_heal_t::execute_time();
   }
 
+  double bonus_da( const action_state_t* s ) const override
+  {
+    return druid_heal_t::bonus_da( s ) + p()->buff.protector_of_the_pack_regrowth->check_value();
+  }
+
   double composite_target_crit_chance( player_t* t ) const override
   {
     double tcc = druid_heal_t::composite_target_crit_chance( t );
@@ -6974,6 +6977,11 @@ struct moonfire_t : public druid_spell_t
         feral_override_ta =
             p->query_aura_effect( p->spec.feral_overrides, A_ADD_PCT_MODIFIER, P_TICK_DAMAGE, &data() )->percent();
       }
+    }
+
+    double bonus_da( const action_state_t* s ) const override
+    {
+      return base_t::bonus_da( s ) + p()->buff.protector_of_the_pack_moonfire->check_value();
     }
 
     double composite_da_multiplier( const action_state_t* s ) const override
