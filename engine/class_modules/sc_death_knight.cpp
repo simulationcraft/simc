@@ -6145,13 +6145,15 @@ struct epidemic_damage_aoe_t : public death_knight_spell_t
   double custom_reduced_aoe_targets; // Not in spelldata
   double current_targets;
   epidemic_damage_aoe_t( util::string_view name, death_knight_t* p ) :
-    death_knight_spell_t( name, p, p -> find_spell( 215969 ) ),
+    death_knight_spell_t( name, p, p -> find_spell( 212739 ) ),
     custom_reduced_aoe_targets( 8.0 ),
     current_targets( 1.0 )
   {
     background = true;
     // Main is one target, aoe is the other targets, so we take 1 off the max targets
     aoe = aoe - 1;
+
+    attack_power_mod.direct = data().effectN( 2 ).ap_coeff();
   }
 
   size_t available_targets( std::vector< player_t* >& tl ) const override
