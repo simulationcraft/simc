@@ -1,22 +1,26 @@
 #include "config.hpp"
 
 #include "temporary_enchant.hpp"
-#include "item/enchants.hpp"
 
 #include "generated/temporary_enchant.inc"
 #if SC_USE_PTR == 1
 #include "generated/temporary_enchant_ptr.inc"
 #endif
 
-const temporary_enchant_entry_t& temporary_enchant_entry_t::find( util::string_view name, bool ptr )
+const temporary_enchant_entry_t& temporary_enchant_entry_t::find( util::string_view name, unsigned rank, bool ptr )
 {
-  auto enchant_id = enchant::find_enchant_id( name );
-  if ( enchant_id > 0 )
-    return find_by_enchant_id( enchant_id, ptr );
-
   auto __data = data( ptr );
-  auto it = range::lower_bound( __data, name, {}, &temporary_enchant_entry_t::tokenized_name );
-  if ( it == __data.end() || !util::str_compare_ci( it->tokenized_name, name ) )
+  auto span = range::equal_range( __data, name, {}, &temporary_enchant_entry_t::tokenized_name );
+  if ( span.first == span.second )
+  {
+    return nil();
+  }
+
+  auto it = std::find_if( span.first, span.second, [rank]( const temporary_enchant_entry_t& entry ) {
+    return entry.rank == rank;
+  } );
+
+  if ( it == span.second )
   {
     return nil();
   }

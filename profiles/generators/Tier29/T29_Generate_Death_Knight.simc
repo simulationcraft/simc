@@ -25,32 +25,85 @@
 # save=T29_Death_Knight_Blood.simc
 
 
-# deathknight="T29_Death_Knight_Frost"
-# level=70
-# race=blood_elf
-# spec=frost
-# role=attack
-# position=back
-# talents=2201013
+deathknight="T29_Death_Knight_Frost"
+level=70
+race=blood_elf
+spec=frost
+role=attack
+position=back
+talents=BsPAAAAAAAAAAAAAAAAAAAAAAkIAgkkIBSQkkkEiISSkEEBJkEJJJJJJpEAAAAAAAAAAAAA
 
-# head=visage_of_the_first_eidolon,id=188868,bonus_id=7187/1498/6935,gem_id=173127
-# neck=worldkiller_iris,id=189859,bonus_id=7187/1524/6935,gem_id=173127
-# shoulders=shoulderplates_of_the_first_eidolon,id=188867,bonus_id=7187/1505
-# back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/6807,enchant=soul_vitality
-# chest=carapace_of_the_first_eidolon,id=188864,bonus_id=7187/1505,enchant=eternal_stats
-# wrists=shadowghast_armguards,id=171419,bonus_id=6647/6649/7160/7451/1588,gem_id=173127
-# hands=gauntlets_of_the_first_eidolon,id=188863,bonus_id=7187/1505,enchant=eternal_strength
-# waist=waistguard_of_expurged_anguish,id=178842,bonus_id=6652/1592/6646,gem_id=173127
-# legs=legguards_of_the_ultimate_threat,id=189858,bonus_id=7187/1524
-# feet=shadowghast_sabatons,id=171413,bonus_id=8119/7882/8156/6647/6648/1588
-# finger1=modified_defense_grid,id=189772,bonus_id=7187/1524/6935,gem_id=173127,enchant=tenet_of_critical_strike
-# finger2=soulwarped_seal_of_menethil,id=189841,bonus_id=7187/1524/6935,gem_id=173127,enchant=tenet_of_critical_strike
-# trinket1=inscrutable_quantum_device,id=179350,bonus_id=6652/1592/6646
-# trinket2=old_warriors_soul,id=186438,bonus_id=1498/6807
-# main_hand=devastated_worldshard,id=189851,bonus_id=7187/1524,enchant=rune_of_hysteria
-# off_hand=devastated_worldshard,id=189851,bonus_id=7187/1524,enchant=rune_of_the_fallen_crusader
+head=maw_of_the_haunted_frostbrood,id=200408,bonus_id=4800/4786/1498/6935,gem_id=192922
+neck=elemental_lariat,id=193001,bonus_id=6652/7936/7979/1540/8767/6935/6935/6935,gem_id=192922/192922/192922,crafted_stats=32/49
+shoulders=jaws_of_the_haunted_frostbrood,id=200410,bonus_id=4800/4786/1498
+back=goldscar_pelt,id=133639,bonus_id=1795/6808/4786/3300,ilevel=421,drop_level=70
+chest=breastplate_of_the_haunted_frostbrood,id=200405,bonus_id=4800/4786/1498,enchant_id=6625
+wrists=vambraces_of_the_haunted_frostbrood,id=200412,bonus_id=1507/6935,gem_id=192922
+hands=grasps_of_the_haunted_frostbrood,id=200407,bonus_id=4800/4786/1498
+waist=primal_molten_greatbelt,id=190501,bonus_id=8836/8840/8902/8802/8793/8932/8960/6935,ilevel=418,gem_id=192922,crafted_stats=36/40
+legs=greaves_of_the_godking,id=133630,bonus_id=1795/6808/4786/3300,ilevel=421,enchant_id=6490,drop_level=70
+feet=stonestep_boots,id=143974,bonus_id=4177/6808/4786/3311,ilevel=421,drop_level=70
+finger1=platinum_star_band,id=193708,bonus_id=6808/4786/1643/6935,gem_id=192922,enchant_id=6562
+finger2=jeweled_signet_of_melandrus,id=134542,bonus_id=1795/6808/4786/3300/6935,ilevel=421,gem_id=192922,enchant_id=6562,drop_level=70
+trinket1=blazebinders_hoof,id=193762,bonus_id=6808/4786/1643
+trinket2=whispering_incarnate_icon,id=194301,bonus_id=4800/4786/1498
+main_hand=strike_twice,id=193700,bonus_id=6652/1643/8767,enchant=rune_of_the_fallen_crusader
+off_hand=strike_twice,id=193700,bonus_id=6652/1643/8767,enchant=rune_of_hysteria
 
-# save="T29_Death_Knight_Frost.simc"
+save="T29_Death_Knight_Frost.simc"
+
+deathknight="T29_Death_Knight_Frost_2h"
+level=70
+race=tauren
+spec=frost
+role=attack
+position=back
+talents=BsPAAAAAAAAAAAAAAAAAAAAAAkEAgkkIBSQkkkEiISSkkEEkQSCQSSSKJBAAAAAAAAAAAA
+
+head=maw_of_the_haunted_frostbrood,id=200408,bonus_id=4800/4786/1498/6935,gem_id=192985
+neck=elemental_lariat,id=193001,bonus_id=6652/7936/7979/1540/8767/6935/6935,gem_id=192948/192948/192948,crafted_stats=32/49
+shoulders=jaws_of_the_haunted_frostbrood,id=200410,bonus_id=4800/4786/1498
+back=cloak_of_lost_devotion,id=193629,bonus_id=6808/4786/1643
+chest=breastplate_of_the_haunted_frostbrood,id=200405,bonus_id=4800/4786/1498,enchant_id=6625
+wrists=vambraces_of_the_haunted_frostbrood,id=200412,bonus_id=1507/6935,gem_id=192948
+hands=grasps_of_the_haunted_frostbrood,id=200407,bonus_id=4800/4786/1498
+waist=primal_molten_greatbelt,id=190501,bonus_id=8836/8840/8902/8802/8793/8932/8960,ilevel=418,gem_id=192948,crafted_stats=36/40
+legs=drake_hunters_greaves,id=193694,bonus_id=6808/4786/1643,enchant_id=6490
+feet=duskwatch_guards_boots,id=137482,bonus_id=1795/6808/4786/3300,drop_level=70,ilevel=421
+finger1=seal_of_filial_duty,id=195526,bonus_id=4800/4786/1497/6935,gem_id=192948,enchant_id=6562
+finger2=jeweled_signet_of_melandrus,id=134542,bonus_id=1795/6808/4786/3300/6935,ilevel=421,gem_id=192948,enchant_id=6562,drop_level=70
+trinket1=blazebinders_hoof,id=193762,bonus_id=6808/4786/1643
+trinket2=whispering_incarnate_icon,id=194301,bonus_id=4800/4786/1498
+main_hand=incarnate_skysplitter,id=195528,bonus_id=4800/4786/1498,enchant=rune_of_the_fallen_crusader,enchant_id=3368
+
+save="T29_Death_Knight_Frost_2h.simc"
+
+deathknight="T29_Death_Knight_Frost_DW"
+level=70
+race=tauren
+spec=frost
+role=attack
+position=back
+talents=BsPAAAAAAAAAAAAAAAAAAAAAAcgIBASSiEIBRSSSIiIJRSEASkERkkkkkSSAAAAAAAAAAAAA
+
+head=maw_of_the_haunted_frostbrood,id=200408,bonus_id=4800/4786/1498/6935,gem_id=192985
+neck=elemental_lariat,id=193001,bonus_id=6652/7936/7979/1540/8767/6935/6935,gem_id=192948/192948/192948,crafted_stats=32/49
+shoulders=jaws_of_the_haunted_frostbrood,id=200410,bonus_id=4800/4786/1498
+back=cloak_of_lost_devotion,id=193629,bonus_id=6808/4786/1643
+chest=breastplate_of_the_haunted_frostbrood,id=200405,bonus_id=4800/4786/1498,enchant_id=6625
+wrists=vambraces_of_the_haunted_frostbrood,id=200412,bonus_id=1507/6935,gem_id=192948
+hands=grasps_of_the_haunted_frostbrood,id=200407,bonus_id=4800/4786/1498
+waist=primal_molten_greatbelt,id=190501,bonus_id=8836/8840/8902/8802/8793/8932/8960,ilevel=418,gem_id=192948,crafted_stats=36/40
+legs=drake_hunters_greaves,id=193694,bonus_id=6808/4786/1643,enchant_id=6490
+feet=verdant_plate_treads,id=109794,bonus_id=4238/6808/4786/3306,ilevel=421,drop_level=70
+finger1=seal_of_filial_duty,id=195526,bonus_id=4800/4786/1497/6935,gem_id=192948,enchant_id=6562
+finger2=jeweled_signet_of_melandrus,id=134542,bonus_id=1795/6808/4786/3300/6935,ilevel=421,gem_id=192948,enchant_id=6562,drop_level=70
+trinket1=blazebinders_hoof,id=193762,bonus_id=6808/4786/1643
+trinket2=whispering_incarnate_icon,id=194301,bonus_id=4800/4786/1498
+main_hand=strike_twice,id=193700,bonus_id=6652/1643/8767,enchant=rune_of_the_fallen_crusader
+off_hand=strike_twice,id=193700,bonus_id=6652/1643/8767,enchant=rune_of_razorice
+
+save="T29_Death_Knight_Frost_DW.simc"
 
 deathknight="T29_Death_Knight_Unholy"
 spec=unholy

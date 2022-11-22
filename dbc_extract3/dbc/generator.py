@@ -2905,7 +2905,7 @@ class SpellDataGenerator(DataGenerator):
                 self.process_spell(data['definition'].id_override_spell, ids, class_mask, 0, False)
 
         # Temporary item enchants
-        for item, spell, enchant_id in TemporaryEnchantItemSet(self._options).get():
+        for item, spell, enchant_id, rank in TemporaryEnchantItemSet(self._options).get():
             enchant = self.db('SpellItemEnchantment')[enchant_id]
             enchant_spells = []
             for index in range(1, 4):
@@ -4480,8 +4480,9 @@ class TemporaryEnchantItemGenerator(DataGenerator):
                 array = 'temporary_enchant',
                 length = len(data))
 
-        for item, spell, enchant_id in sorted(data, key = lambda v: (v[0].name, v[2])):
+        for item, spell, enchant_id, rank in sorted(data, key = lambda v: (v[0].name, v[3], v[2])):
             fields = ['{:5d}'.format(enchant_id)]
+            fields += ['{:2d}'.format(rank)]
             fields += spell.field('id')
             fields += ['{:30s}'.format('"{}"'.format(util.tokenize(item.name)))]
             self.output_record(fields)

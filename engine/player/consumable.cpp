@@ -308,6 +308,7 @@ struct health_stone_t : public heal_t
 struct dbc_consumable_base_t : public action_t
 {
   std::string consumable_name;
+  std::unique_ptr<item_t> consumable_item;  // Dummy item used for quality adjustment done via ilevel
   const dbc_item_data_t* item_data;
   item_subclass_consumable type;
 
@@ -442,9 +443,22 @@ struct dbc_consumable_base_t : public action_t
   // the consumable
   virtual special_effect_t* create_special_effect()
   {
-    auto effect = new consumable::consumable_effect_t( player, item_data );
+    auto effect = new special_effect_t( player );
     effect->type = SPECIAL_EFFECT_USE;
     effect->source = SPECIAL_EFFECT_SOURCE_ITEM;
+
+    if ( item_data && item_data->crafting_quality )
+    {
+      // Dragonflight consumables with crafting quality use the items ilevel for action/buff effect values, so if the
+      // item_data has a crafting quality, create an item for the effect to use
+      consumable_item = std::make_unique<item_t>( player, "" );
+      consumable_item->parsed.data.name = item_data->name;
+      consumable_item->parsed.data.id = item_data->id;
+      consumable_item->parsed.data.level = item_data->level;
+      consumable_item->parsed.data.inventory_type = INVTYPE_TRINKET;  // DF consumables use trinket CR multipliers
+
+      effect->item = consumable_item.get();
+    }
 
     return effect;
   }
@@ -1008,23 +1022,6 @@ struct food_t : public dbc_consumable_base_t
 };
 
 }  // END UNNAMED NAMESPACE
-
-consumable::consumable_effect_t::consumable_effect_t( player_t* player, const dbc_item_data_t* item_data )
-  : special_effect_t( player )
-{
-  if ( item_data && item_data->crafting_quality )
-  {
-    // Dragonflight consumables with crafting quality use the items ilevel for action/buff effect values, so if the
-    // item_data has a crafting quality, create an item for the effect to use
-    consumable_item = std::make_unique<item_t>( player, "" );
-    consumable_item->parsed.data.name = item_data->name;
-    consumable_item->parsed.data.id = item_data->id;
-    consumable_item->parsed.data.level = item_data->level;
-    consumable_item->parsed.data.inventory_type = INVTYPE_TRINKET;  // DF consumables use trinket CR multipliers
-
-    item = consumable_item.get();
-  }
-}
 
 // ==========================================================================
 // consumable_t::create_action

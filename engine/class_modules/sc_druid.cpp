@@ -1316,12 +1316,14 @@ struct denizen_of_the_dream_t : public pet_t
 {
   struct fey_missile_t : public spell_t
   {
-    fey_missile_t( pet_t* p ) : spell_t( "fey_missile", p, p->find_spell( 188046 ) )
+    druid_t* o;
+
+    fey_missile_t( pet_t* p )
+      : spell_t( "fey_missile", p, p->find_spell( 188046 ) ), o( static_cast<druid_t*>( p->owner ) )
     {
       name_str_reporting = "fey_missile";
-      cooldown->hasted = true;
 
-      auto proxy = static_cast<druid_t*>( p->owner )->active.denizen_of_the_dream;
+      auto proxy = o->active.denizen_of_the_dream;
       auto it = range::find( proxy->child_action, data().id(), &action_t::id );
       if ( it != proxy->child_action.end() )
         stats = ( *it )->stats;
@@ -1331,10 +1333,34 @@ struct denizen_of_the_dream_t : public pet_t
 
     void execute() override
     {
-      // TODO: seems to have a random cooldown, narrow this further and see if hasted
-      cooldown->duration = rng().range( 400_ms, 600_ms );
+      // TODO: has server batching behavior, using a random value for now
+      cooldown->duration = rng().range( 0_ms, 600_ms );
 
       spell_t::execute();
+    }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      auto da = spell_t::composite_da_multiplier( s );
+
+      da *= 1.0 + o->buff.eclipse_lunar->check_value();
+      da *= 1.0 + o->buff.eclipse_solar->check_value();
+
+      return da;
+    }
+
+    double composite_target_multiplier( player_t* t ) const override
+    {
+      auto tm = spell_t::composite_target_multiplier( t );
+      auto td = o->get_target_data( t );
+
+      if ( td->dots.moonfire->is_ticking() )
+        tm *= 1.0 + o->cache_mastery_value();
+
+      if ( td->dots.sunfire->is_ticking() )
+        tm *= 1.0 + o->cache_mastery_value();
+
+      return tm;
     }
   };
 
@@ -8150,7 +8176,7 @@ struct wild_mushroom_t : public druid_spell_t
         ap_per( 5 ),
         ap_max( data().effectN( 2 ).base_value() )
     {
-      background = true;
+      background = dual = true;
       aoe = -1;
 
       if ( p->talent.fungal_growth.ok() )
@@ -10788,6 +10814,7 @@ void druid_t::create_actions()
 // Default Consumables ======================================================
 std::string druid_t::default_flask() const
 {
+  if      ( true_level >= 70 ) return "phial_of_elemental_chaos_3";
   if      ( true_level >= 60 ) return "spectral_flask_of_power";
   else if ( true_level < 40 )  return "disabled";
 
@@ -10810,7 +10837,8 @@ std::string druid_t::default_potion() const
   {
     case DRUID_BALANCE:
     case DRUID_RESTORATION:
-      if      ( true_level >= 60 ) return "spectral_intellect";
+      if      ( true_level >= 70 ) return "elemental_potion_of_ultimate_power_3";
+      else if ( true_level >= 60 ) return "spectral_intellect";
       else if ( true_level >= 40 ) return "superior_battle_potion_of_intellect";
       SC_FALLTHROUGH;
     case DRUID_FERAL:
@@ -10828,7 +10856,8 @@ std::string druid_t::default_potion() const
 
 std::string druid_t::default_food() const
 {
-  if      ( true_level >= 60 ) return "feast_of_gluttonous_hedonism";
+  if      ( true_level >= 70 ) return "fated_fortune_cookie";
+  else if ( true_level >= 60 ) return "feast_of_gluttonous_hedonism";
   else if ( true_level >= 55 ) return "surprisingly_palatable_feast";
   else if ( true_level >= 45 ) return "famine_evaluator_and_snack_table";
   else return "disabled";
@@ -10836,7 +10865,8 @@ std::string druid_t::default_food() const
 
 std::string druid_t::default_rune() const
 {
-  if      ( true_level >= 60 ) return "veiled";
+  if      ( true_level >= 70 ) return "draconic";
+  else if ( true_level >= 60 ) return "veiled";
   else if ( true_level >= 50 ) return "battle_scarred";
   else if ( true_level >= 45 ) return "defiled";
   else return "disabled";
@@ -10844,11 +10874,12 @@ std::string druid_t::default_rune() const
 
 std::string druid_t::default_temporary_enchant() const
 {
-  if ( true_level != 60 ) return "disabled";
+  if ( true_level < 60 ) return "disabled";
 
   switch ( specialization() )
   {
-    case DRUID_BALANCE: return "main_hand:shadowcore_oil";
+    case DRUID_BALANCE:
+      return true_level >= 70 ? "main_hand:howling_rune_3" : "main_hand:shadowcore_oil";
     case DRUID_RESTORATION: return "main_hand:shadowcore_oil";
     case DRUID_GUARDIAN: return "main_hand:shadowcore_oil";
     case DRUID_FERAL: return "main_hand:shaded_sharpening_stone";
@@ -12011,6 +12042,10 @@ std::unique_ptr<expr_t> druid_t::create_expression( std::string_view name_str )
         return make_fn_expr( name_str, [ this ]() { return eclipse_handler.state == IN_LUNAR; } );
       else if ( util::str_compare_ci( splits[ 1 ], "in_both" ) )
         return make_fn_expr( name_str, [ this ]() { return eclipse_handler.state == IN_BOTH; } );
+      else if ( util::str_compare_ci( splits[ 1 ], "starfire_counter" ) )
+        return make_fn_expr( name_str, [ this ]() { return eclipse_handler.starfire_counter; } );
+      else if ( util::str_compare_ci( splits[ 1 ], "wrath_counter" ) )
+        return make_fn_expr( name_str, [ this ]() { return eclipse_handler.wrath_counter; } );
     }
   }
   else if ( specialization() == DRUID_FERAL )

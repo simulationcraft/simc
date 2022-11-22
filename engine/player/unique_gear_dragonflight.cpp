@@ -959,6 +959,9 @@ void conjured_chillglobe( special_effect_t& effect )
       mana->name_str_reporting = "conjured_chillglobe";
     }
 
+    result_e calculate_result( action_state_t* /* state */ ) const override
+    { return RESULT_HIT; }
+
     void execute() override
     {
       action_t::execute();

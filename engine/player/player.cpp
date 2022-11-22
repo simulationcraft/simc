@@ -1698,7 +1698,18 @@ void player_t::parse_temporary_enchants()
       continue;
     }
     auto slot = util::parse_slot_type( token_split[ 0 ] );
-    const auto& enchant = temporary_enchant_entry_t::find( token_split[ 1 ], dbc->ptr );
+    util::string_view enchant_str = token_split[ 1 ];
+    unsigned rank = 0;
+
+    auto it = token_split[ 1 ].rfind( '_' );
+    if ( it != std::string_view::npos )
+    {
+      auto rank_str = token_split[ 1 ].substr( it + 1 );
+      rank = util::to_unsigned_ignore_error( rank_str, 0 );
+      enchant_str = token_split[ 1 ].substr( 0, it );
+    }
+
+    const auto& enchant = temporary_enchant_entry_t::find( enchant_str, rank, dbc->ptr );
     if ( slot == SLOT_INVALID || enchant.enchant_id == 0 )
     {
       sim->error( "Player {} unknown temporary enchant token '{}' (slot={}, enchant_id={})",
@@ -2496,7 +2507,7 @@ static std::string generate_traits_hash( player_t* player )
     {
       size_t bit = head % byte_size;
       head++;
-      byte += ( value >> i & 0b1 ) << bit;
+      byte += ( ( value >> std::min( i, sizeof( value ) * 8 - 1 ) ) & 0b1 ) << bit;
       if ( bit == byte_size - 1 )
       {
         export_str += base64_char[ byte ];
@@ -2619,7 +2630,7 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
     {
       size_t bit = head % byte_size;
       head++;
-      val += ( byte >> bit & 0b1 ) << i;
+      val += ( byte >> bit & 0b1 ) << std::min( i, sizeof( byte ) * 8 - 1 );
       if ( bit == byte_size - 1 )
       {
         byte = base64_char.find( talents_str[ head / byte_size ] );
