@@ -11417,7 +11417,10 @@ double death_knight_t::composite_player_pet_damage_multiplier( const action_stat
 
   if ( talent.unholy.unholy_aura.ok() )
   {
-    m *= 1.0 + talent.unholy.unholy_aura->effectN( 3 ).percent();
+    if ( guardian )
+      m*= 1.0 + talent.unholy.unholy_aura->effectN( 4 ).percent();
+    else // Pets
+      m *= 1.0 + talent.unholy.unholy_aura->effectN( 3 ).percent();
   }
 
   if ( buffs.vigorous_lifeblood_4pc -> up() )
