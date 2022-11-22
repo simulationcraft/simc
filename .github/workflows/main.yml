@@ -136,7 +136,7 @@ jobs:
 
 
   ubuntu-clang-run:
-    if: ${{ github.ref_name == 'dragonflight' }}
+    # if: ${{ github.ref_name == 'dragonflight' }}
     name: ubuntu-clang-cpp-${{ matrix.cppVersion }}-${{ matrix.type }}
     runs-on: ubuntu-20.04
     needs: [ ubuntu-clang-build ]
