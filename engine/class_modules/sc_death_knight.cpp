@@ -6115,12 +6115,10 @@ struct empower_rune_weapon_t : public death_knight_spell_t
 
 struct epidemic_damage_main_t : public death_knight_spell_t
 {
-  double custom_reduced_aoe_targets; // Not in spelldata
-  double current_targets;
+  double soft_cap_multiplier;
   epidemic_damage_main_t( util::string_view name, death_knight_t* p ) :
     death_knight_spell_t( name, p, p -> find_spell( 212739 ) ),
-    custom_reduced_aoe_targets( 8.0 ),
-    current_targets( 1.0 )
+    soft_cap_multiplier( 1.0 )
   {
     background = true;
     // Ignore spelldata for max targets for the main spell, as it is single target only
@@ -6133,8 +6131,7 @@ struct epidemic_damage_main_t : public death_knight_spell_t
   {
     double cam = death_knight_spell_t::composite_aoe_multiplier( state );
 
-    if ( current_targets > 0.0 && current_targets > custom_reduced_aoe_targets )
-      cam *= sqrt( custom_reduced_aoe_targets / std::min<int>( sim->max_aoe_enemies, current_targets) );
+    cam *= soft_cap_multiplier;
 
     return cam;
   }
@@ -6142,12 +6139,10 @@ struct epidemic_damage_main_t : public death_knight_spell_t
 
 struct epidemic_damage_aoe_t : public death_knight_spell_t
 {
-  double custom_reduced_aoe_targets; // Not in spelldata
-  double current_targets;
+  double soft_cap_multiplier;
   epidemic_damage_aoe_t( util::string_view name, death_knight_t* p ) :
     death_knight_spell_t( name, p, p -> find_spell( 212739 ) ),
-    custom_reduced_aoe_targets( 8.0 ),
-    current_targets( 1.0 )
+    soft_cap_multiplier( 1.0 )
   {
     background = true;
     // Main is one target, aoe is the other targets, so we take 1 off the max targets
@@ -6173,8 +6168,7 @@ struct epidemic_damage_aoe_t : public death_knight_spell_t
   {
     double cam = death_knight_spell_t::composite_aoe_multiplier( state );
 
-    if ( current_targets > 0.0 && current_targets > custom_reduced_aoe_targets )
-      cam *= sqrt( custom_reduced_aoe_targets / std::min<int>( sim->max_aoe_enemies, current_targets) );
+    cam *= soft_cap_multiplier;
 
     return cam;
   }
@@ -6182,8 +6176,12 @@ struct epidemic_damage_aoe_t : public death_knight_spell_t
 
 struct epidemic_t : public death_knight_spell_t
 {
+  double custom_reduced_aoe_targets;  // Not in spelldata
+  double soft_cap_multiplier;
   epidemic_t( death_knight_t* p, util::string_view options_str ) :
-    death_knight_spell_t( "epidemic", p, p -> talent.unholy.epidemic )
+    death_knight_spell_t( "epidemic", p, p -> talent.unholy.epidemic ),
+    custom_reduced_aoe_targets( 8.0 ),
+    soft_cap_multiplier( 1.0 )
   {
     parse_options( options_str );
 
@@ -6241,9 +6239,14 @@ struct epidemic_t : public death_knight_spell_t
 
   void impact( action_state_t* state ) override
   {
-    // Set the number of targets for sqrt aoe scaling
-    debug_cast<epidemic_damage_main_t*>( impact_action ) -> current_targets = state->n_targets;
-    debug_cast<epidemic_damage_aoe_t*>( impact_action -> impact_action ) -> current_targets = state->n_targets;
+    // Set the multiplier for reduced aoe soft cap
+    if ( state->n_targets > 0.0 && state->n_targets > custom_reduced_aoe_targets )
+      soft_cap_multiplier = sqrt( custom_reduced_aoe_targets / std::min<int>( sim->max_aoe_enemies, state->n_targets) );
+    else
+      soft_cap_multiplier = 1.0;
+
+    debug_cast<epidemic_damage_main_t*>( impact_action ) -> soft_cap_multiplier = soft_cap_multiplier;
+    debug_cast<epidemic_damage_aoe_t*>( impact_action -> impact_action ) -> soft_cap_multiplier = soft_cap_multiplier;
 
     death_knight_spell_t::impact( state );
 
