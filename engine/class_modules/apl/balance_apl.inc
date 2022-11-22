@@ -24,10 +24,10 @@ def->add_action( "use_items" );
 def->add_action( "run_action_list,name=aoe,if=variable.is_aoe" );
 def->add_action( "run_action_list,name=st" );
 
-st->add_action( "sunfire,target_if=refreshable&astral_power.deficit>variable.passive_asp+3" );
-st->add_action( "moonfire,target_if=refreshable&astral_power.deficit>variable.passive_asp+3" );
+st->add_action( "sunfire,target_if=refreshable&remains<2" );
+st->add_action( "moonfire,target_if=refreshable&remains<2" );
 st->add_action( "adaptive_swarm,target_if=!dot.adaptive_swarm_damage.ticking&!action.adaptive_swarm_damage.in_flight&(!dot.adaptive_swarm_heal.ticking|dot.adaptive_swarm_heal.remains>5)|dot.adaptive_swarm_damage.stack<3&dot.adaptive_swarm_damage.remains<3&dot.adaptive_swarm_damage.ticking" );
-st->add_action( "stellar_flare,target_if=refreshable&astral_power.deficit>variable.passive_asp+8" );
+st->add_action( "stellar_flare,target_if=refreshable&astral_power.deficit>variable.passive_asp+8&remains<2" );
 st->add_action( "variable,name=cd_condition_st,value=cooldown.ca_inc.remains<15&!buff.ca_inc.up&(target.1.time_to_die>15|fight_remains<25+10*talent.incarnation_chosen_of_elune)" );
 st->add_action( "wrath,if=variable.cd_condition_st&set_bonus.tier29_4pc&eclipse.any_next" );
 st->add_action( "starsurge,if=variable.cd_condition_st&buff.touch_the_cosmos.up" );
@@ -47,6 +47,9 @@ st->add_action( "force_of_nature,if=astral_power.deficit>variable.passive_asp+20
 st->add_action( "fury_of_elune,if=astral_power.deficit>variable.passive_asp+8" );
 st->add_action( "starfall,if=buff.starweavers_warp.up" );
 st->add_action( "starsurge,if=talent.starlord&buff.starlord.stack<3|talent.rattle_the_stars&buff.rattled_stars.up&buff.rattled_stars.remains<gcd.max" );
+st->add_action( "sunfire,target_if=refreshable&astral_power.deficit>variable.passive_asp+3" );
+st->add_action( "moonfire,target_if=refreshable&astral_power.deficit>variable.passive_asp+3" );
+st->add_action( "stellar_flare,target_if=refreshable&astral_power.deficit>variable.passive_asp+8" );
 st->add_action( "new_moon,if=astral_power.deficit>variable.passive_asp+10" );
 st->add_action( "half_moon,if=astral_power.deficit>variable.passive_asp+20&(buff.eclipse_lunar.remains>execute_time|buff.eclipse_solar.remains>execute_time)" );
 st->add_action( "full_moon,if=astral_power.deficit>variable.passive_asp+40&(buff.eclipse_lunar.remains>execute_time|buff.eclipse_solar.remains>execute_time)" );
