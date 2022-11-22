@@ -136,7 +136,7 @@ jobs:
 
 
   ubuntu-clang-run:
-    if: ${{ github.ref_name == 'shadowlands' }}
+    if: ${{ github.ref_name == 'dragonflight' }}
     name: ubuntu-clang-cpp-${{ matrix.cppVersion }}-${{ matrix.type }}
     runs-on: ubuntu-20.04
     needs: [ ubuntu-clang-build ]
@@ -171,7 +171,7 @@ jobs:
         run: ${{ runner.workspace }}/b/ninja/simc output=/dev/null html=/dev/null json2=/dev/null json3=/dev/null ${{ matrix.simc_flags }}
 
   simc-tests:
-    # if: ${{ github.ref_name == 'shadowlands' }}
+    if: ${{ github.ref_name == 'dragonflight' }}
     name: test-${{ matrix.tier }}-${{ matrix.spec }}
     runs-on: ubuntu-20.04
     needs: [ ubuntu-clang-build ]
@@ -205,12 +205,6 @@ jobs:
             profiles
             tests
           key: ubuntu-clang-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
-
-      - name: Where are we?
-        run: pwd
-
-      - name: What is here?
-        run: ls
 
       - name: Install Python dependencies
         run: pip3 install -r ${{ github.workspace }}/tests/requirements.txt

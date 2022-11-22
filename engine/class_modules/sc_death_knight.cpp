@@ -6115,8 +6115,10 @@ struct empower_rune_weapon_t : public death_knight_spell_t
 
 struct epidemic_damage_main_t : public death_knight_spell_t
 {
+  double soft_cap_multiplier;
   epidemic_damage_main_t( util::string_view name, death_knight_t* p ) :
-    death_knight_spell_t( name, p, p -> find_spell( 212739 ) )
+    death_knight_spell_t( name, p, p -> find_spell( 212739 ) ),
+    soft_cap_multiplier( 1.0 )
   {
     background = true;
     // Ignore spelldata for max targets for the main spell, as it is single target only
@@ -6124,16 +6126,29 @@ struct epidemic_damage_main_t : public death_knight_spell_t
     // this spell has both coefficients in it, and it seems like it is reading #2, the aoe portion, instead of #1
     attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
   }
+
+  double composite_aoe_multiplier( const action_state_t* state ) const override
+  {
+    double cam = death_knight_spell_t::composite_aoe_multiplier( state );
+
+    cam *= soft_cap_multiplier;
+
+    return cam;
+  }
 };
 
 struct epidemic_damage_aoe_t : public death_knight_spell_t
 {
+  double soft_cap_multiplier;
   epidemic_damage_aoe_t( util::string_view name, death_knight_t* p ) :
-    death_knight_spell_t( name, p, p -> find_spell( 215969 ) )
+    death_knight_spell_t( name, p, p -> find_spell( 212739 ) ),
+    soft_cap_multiplier( 1.0 )
   {
     background = true;
     // Main is one target, aoe is the other targets, so we take 1 off the max targets
     aoe = aoe - 1;
+
+    attack_power_mod.direct = data().effectN( 2 ).ap_coeff();
   }
 
   size_t available_targets( std::vector< player_t* >& tl ) const override
@@ -6148,12 +6163,25 @@ struct epidemic_damage_aoe_t : public death_knight_spell_t
 
     return tl.size();
   }
+
+  double composite_aoe_multiplier( const action_state_t* state ) const override
+  {
+    double cam = death_knight_spell_t::composite_aoe_multiplier( state );
+
+    cam *= soft_cap_multiplier;
+
+    return cam;
+  }
 };
 
 struct epidemic_t : public death_knight_spell_t
 {
+  double custom_reduced_aoe_targets;  // Not in spelldata
+  double soft_cap_multiplier;
   epidemic_t( death_knight_t* p, util::string_view options_str ) :
-    death_knight_spell_t( "epidemic", p, p -> talent.unholy.epidemic )
+    death_knight_spell_t( "epidemic", p, p -> talent.unholy.epidemic ),
+    custom_reduced_aoe_targets( 8.0 ),
+    soft_cap_multiplier( 1.0 )
   {
     parse_options( options_str );
 
@@ -6211,6 +6239,15 @@ struct epidemic_t : public death_knight_spell_t
 
   void impact( action_state_t* state ) override
   {
+    // Set the multiplier for reduced aoe soft cap
+    if ( state->n_targets > 0.0 && state->n_targets > custom_reduced_aoe_targets )
+      soft_cap_multiplier = sqrt( custom_reduced_aoe_targets / std::min<int>( sim->max_aoe_enemies, state->n_targets) );
+    else
+      soft_cap_multiplier = 1.0;
+
+    debug_cast<epidemic_damage_main_t*>( impact_action ) -> soft_cap_multiplier = soft_cap_multiplier;
+    debug_cast<epidemic_damage_aoe_t*>( impact_action -> impact_action ) -> soft_cap_multiplier = soft_cap_multiplier;
+
     death_knight_spell_t::impact( state );
 
     if ( p() -> talent.unholy.death_rot.ok() && result_is_hit( state -> result ) )
@@ -11380,7 +11417,10 @@ double death_knight_t::composite_player_pet_damage_multiplier( const action_stat
 
   if ( talent.unholy.unholy_aura.ok() )
   {
-    m *= 1.0 + talent.unholy.unholy_aura->effectN( 3 ).percent();
+    if ( guardian )
+      m*= 1.0 + talent.unholy.unholy_aura->effectN( 4 ).percent();
+    else // Pets
+      m *= 1.0 + talent.unholy.unholy_aura->effectN( 3 ).percent();
   }
 
   if ( buffs.vigorous_lifeblood_4pc -> up() )
