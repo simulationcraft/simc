@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.2.46702
-static const std::array<spelltext_data_t, 19176> __spelltext_data { {
+static const std::array<spelltext_data_t, 19172> __spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -7911,7 +7911,6 @@ static const std::array<spelltext_data_t, 19176> __spelltext_data { {
   { 226990, "Your attacks have a chance to grant you $226991s1 Agility for $226991d.", 0, 0 },
   { 226991, "$@spelldesc226990", "Agility increased by $s1.", 0 },
   { 227034, "$@spelldesc155783", 0, 0 },
-  { 227041, "Calms the mind, allowing you to adjust talents while not in combat for $d. Cannot affect targets above level $maxcast.", "Able to adjust talents in the field.", 0 },
   { 227057, "Maximum focus increased by $s1%.", 0, "Racial Passive" },
   { 227088, "Throw a spellbomb, inflicting $m1 damage to all enemies within $a1 yds.\r\n", 0, 0 },
   { 227092, "$@spelldesc227088", 0, 0 },
@@ -7948,7 +7947,6 @@ static const std::array<spelltext_data_t, 19176> __spelltext_data { {
   { 227518, "$@spelldesc201427", 0, 0 },
   { 227561, "Craft a Tome of the Clear Mind.", 0, 0 },
   { 227562, "Craft a Codex of the Clear Mind.", 0, 0 },
-  { 227563, "Calms the mind, allowing you to adjust talents while not in combat for $d. Cannot be used above level $maxcast.", "Able to adjust talents in the field.", 0 },
   { 227564, "Set out a codex, allowing nearby players to adjust their talents. Cannot affect targets above level $maxcast.", 0, 0 },
   { 227679, "$@spelldesc213116", 0, 0 },
   { 227727, "Gain ${$s1/100} Insanity.", 0, 0 },
@@ -9194,7 +9192,6 @@ static const std::array<spelltext_data_t, 19176> __spelltext_data { {
   { 256171, "$@spelldesc256170", "Your next $?s5171[Slice and Dice will be $w1% more effective][Roll the Bones will grant at least two matches].", 0 },
   { 256188, "Reduces the cooldown of Grappling Hook by ${$s1/-1000} sec, and increases its retraction speed.", 0, 0 },
   { 256230, "Set out a codex, allowing nearby players to adjust their talents and azerite essences. Cannot affect targets above level $maxcast.", 0, 0 },
-  { 256231, "Calms the mind, allowing you to adjust talents and azerite essences while not in combat for $d. Cannot affect targets above level $maxcast.", "Able to adjust talents and azerite essences in the field.", 0 },
   { 256301, "Craft a Sanguine Feather Quill of Lana'thel.", 0, 0 },
   { 256302, "Attune yourself to the energies of the targeted Uldir raid boss, increasing your Versatility by $269268s1 when fighting that boss. This effect lasts for an entire week.\r\n\r\nYou can only use one Vantus Rune per week.", 0, 0 },
   { 256374, "$@spelldesc255669", "Your damage and healing effects deal an additional $w1% as Shadowfrost.", 0 },
@@ -13185,7 +13182,6 @@ static const std::array<spelltext_data_t, 19176> __spelltext_data { {
   { 321758, "When Clearcast, Arcane Missiles fires $s2 additional $lmissile:missiles;.", 0, "Rank 2" },
   { 321759, "$@spelldesc329779", "Movement speed reduced by $w1%.", 0 },
   { 321792, "Call forth a cloud of chaotic anima that travels to the target enemy, dealing $322167s1 Shadow damage to enemies in its path. When the anima reaches the target it explodes, inflicting either Curse of Weakness or Curse of Tongues, and dealing $322170o1 Shadow damage over $322170d to all nearby enemies.", 0, "Venthyr" },
-  { 321923, "Stills the mind, allowing you to adjust talents while not in combat for $d.", "Able to adjust talents in the field.", 0 },
   { 321937, "Deal $s1 Shadow Fire damage to your current target.", 0, 0 },
   { 321958, "Restores $s1 health to your current target.", 0, 0 },
   { 321973, "$@spelldesc321291", "${$m1/100} Insanity generated every $t1 sec.", 0 },
@@ -19441,7 +19437,7 @@ static const std::array<spelldesc_vars_data_t, 365> __spelldesc_vars_data { {
   {  321012, "$absorb=${($319978s1/100)*$MHP*(1+$@versadmg)}" },
   {  321530, "$bmMastery=$?s76657[${1+0.01*$76657m1}][${1}]\r\n$damage=${$ap*($s2/100)*($321538d/$321538t1)*$<bmMastery>*(1+$@versadmg)*(1+($137015s1/100))}" },
   {  321538, "$bmMastery=$?s76657[${1+0.01*$76657m1}][${1}]\r\n$damage=${$ap*($s2/100)*($321538d/$321538t1)*$<bmMastery>*(1+$@versadmg)*(1+($137015s1/100))}" },
-  {  322507, "$absorb=${($AP*6)*(1+$@versadmg)}\r\n" },
+  {  322507, "$absorb=${($AP*8.4)*(1+$@versadmg)}\r\n" },
   {  322721, "$mod=$?a137005[${0.25}]?a212611[${1.5}]?a137009[${2}]?a137014[${2}]?a137018[${0.75}]?a137022[${0.5}]?a137026[${0.75}]?a137030[${1.5}]?a137034[${1.5}]?a137038[${2}]?a137042[${1}]?a137047[${1.5}]?a353167[${2}][${1}]" },
   {  322729, "$CAP=$?$OWB==0[${$AP*0.98}][${($AP+$OAP)*2/3}]--2H, DW" },
   {  323673, "$damage=${($SPS*$s2/100)*(1+$@versadmg)*$m3/100}\r\n$healing=${($SPS*$s5/100)*(1+$@versadmg)*$m3/100}" },
@@ -19501,7 +19497,7 @@ static const std::array<spelldesc_vars_data_t, 365> __spelldesc_vars_data { {
   {  358164, "$buff=${$348272s1}\r\n$max=${3*$<buff>}" },
   {  359073, "$dmg=${$359077s2}" },
   {  360952, "$playerDmg=${$360969s1}\r\n$petDmg=${$360969s1*0.6}\r\n$combinedDmg=${$<playerDmg>+$<petDmg>}" },
-  {  363041, "$absorb=${($AP*6)*(1+$@versadmg)}\r\n" },
+  {  363041, "$absorb=${($AP*8.4)*(1+$@versadmg)}\r\n" },
   {  363534, "$min=${$SP*0.4*($d/$t1)}" },
   {  364365, "$heal=${$SP*$s1/100}" },
   {  364416, "$CDR=${s1*0.1}.1" },
@@ -19522,7 +19518,7 @@ static const std::array<spelldesc_vars_data_t, 365> __spelldesc_vars_data { {
   {  377192, "$duration=${$377195d+(($w2-1)*$377190s~2/1000)}" },
   {  378285, "$dmg=${$378286s1*(1+($s2/100))}" },
   {  378405, "$heal=${$378412o1*(1+($s1/100))}" },
-  {  378986, "$cap=${$SP*1.20}" },
+  {  378986, "$cap=${$SP*1.40}" },
   {  382266, "$blastTicks=$?s375510[${$375510s1/2}][${0}]\r\n$dmgI=${$357209s1}\r\n$dotI=${$357209o2*(10+$<blastTicks>)}\r\n$durI=${20+$375510s1}\r\n$dmgII=${$357209s1+($357209o2*3)}\r\n$dotII=${$357209o2*(7+$<blastTicks>)}\r\n$durII=${14+$375510s1}\r\n$dmgIII=${$357209s1+($357209o2*6)}\r\n$dotIII=${$357209o2*(4+$<blastTicks>)}\r\n$durIII=${8+$375510s1}\r\n$dmgIV=${$357209s1+($357209o2*9)}\r\n$dotIV=${$357209o2*(1+$<blastTicks>)}\r\n$durIV=${2+$375510s1}" },
   {  382411, "$dmg=${$359077s2}" },
   {  382614, "$sOneHeal=${2*$355941s1}\r\n$sTwoHeal=${2.25*$355941s1}\r\n$sThreeHeal=${2.5*$355941s1}\r\n$sFourHeal=${2.75*$355941s1}\r\n$sOneDur=${16}\r\n$sTwoDur=${12}\r\n$sThreeDur=${8}\r\n$sFourDur=${4}" },
@@ -19553,6 +19549,9 @@ static const std::array<spelldesc_vars_data_t, 365> __spelldesc_vars_data { {
 } };
 
 // spelldesc_vars hotfix entries, wow build 10.0.2.46702
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 3> __spelldesc_vars_hotfix_data { {
+  {  322507,  0, "$absorb=${($AP*6)*(1+$@versadmg)}\r\n", "$absorb=${($AP*8.4)*(1+$@versadmg)}\r\n" },
+  {  363041,  0, "$absorb=${($AP*6)*(1+$@versadmg)}\r\n", "$absorb=${($AP*8.4)*(1+$@versadmg)}\r\n" },
+  {  378986,  0, "$cap=${$SP*1.20}", "$cap=${$SP*1.40}" },
 } };
 
