@@ -207,7 +207,7 @@ jobs:
           key: ubuntu-clang-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
 
       - name: Install Python dependencies
-        run: pip3 install -r tests/requirements.txt
+        run: pip3 install -r ${{ github.workspace }}/tests/requirements.txt
 
       - name: Run
         env:
@@ -216,7 +216,7 @@ jobs:
           SIMC_PROFILE_DIR: ${{ github.workspace }}/profiles/${{ matrix.tier }}
           SIMC_THREADS: 2
           SIMC_ITERATIONS: 2
-        run: tests/run.py ${{ matrix.spec }} -tests trinket --max-profiles-to-use 1
+        run: ${{ github.workspace }}/tests/run.py ${{ matrix.spec }} -tests trinket --max-profiles-to-use 1
 
   build-osx:
     name: macos-latest
