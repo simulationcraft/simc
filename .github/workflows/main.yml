@@ -206,12 +206,6 @@ jobs:
             tests
           key: ubuntu-clang-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
 
-      - name: Where are we?
-        run: pwd
-
-      - name: What is here?
-        run: ls ${{ runner.workspace }}
-
       - name: Install Python dependencies
         run: pip3 install -r ${{ github.workspace }}/tests/requirements.txt
 
