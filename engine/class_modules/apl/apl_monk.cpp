@@ -569,7 +569,7 @@ void windwalker( player_t* p )
     def->add_action( "call_action_list,name=opener,if=time<4&chi<5&!talent.serenity", "Build Chi at the start of combat" );
 
   // Prioritize Faeline Stomp if playing with Faeline Harmony
-  def->add_action( "faeline_stomp,if=combo_strike&(runeforge.faeline_harmony|talent.faeline_harmony)", "Prioritize Faeline Stomp if playing with Faeline Harmony" );
+  def->add_action( "faeline_stomp,if=combo_strike&(runeforge.faeline_harmony|talent.faeline_harmony)&(!debuff.fae_exposure_damage.up|active_enemies>1)", "Prioritize Faeline Stomp if playing with Faeline Harmony" );
   // Spend excess energy
   def->add_action( "call_action_list,name=spend_energy,if=!buff.bonedust_brew.up&!buff.first_strike.up&!buff.serenity.up", "Spend excess energy" );
   // Use Chi Burst to reset Faeline Stomp
@@ -600,7 +600,8 @@ void windwalker( player_t* p )
 
   if ( monk->sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE )
   {
-    cd_sef->add_action( "touch_of_death,target_if=max:target.health,if=combo_strike&(target.health<health|fight_remains>60|buff.bonedust_brew.up)" );
+    cd_sef->add_action( "touch_of_death,target_if=max:target.health,if=combo_strike&target.health<health" );
+    cd_sef->add_action( "touch_of_death,target_if=max:target.time_to_die,if=combo_strike&(target.time_to_die>60|debuff.bonedust_brew_debuff.up)" );
   }
   else
   {
@@ -717,11 +718,10 @@ void windwalker( player_t* p )
   cd_serenity->add_action(
     "serenity,if=pet.xuen_the_white_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>10|!talent.invoke_xuen_the_white_tiger|fight_remains<15");
  
-  cd_serenity->add_action( "touch_of_death,target_if=max:target.health,if=combo_strike&target.health>0&(target.health<health|fight_remains>60)" );
-  
   if ( monk->sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE )
   {
-    cd_sef->add_action( "touch_of_death,target_if=max:target.health,if=combo_strike&(target.health<health|fight_remains>60|buff.bonedust_brew.up)" );
+    cd_serenity->add_action( "touch_of_death,target_if=max:target.health,if=combo_strike&target.health<health" );
+    cd_serenity->add_action( "touch_of_death,target_if=max:target.time_to_die,if=combo_strike&(target.time_to_die>60|debuff.bonedust_brew_debuff.up)" );
   }
   else
   {
@@ -830,12 +830,12 @@ void windwalker( player_t* p )
   st_cleave->add_action( "strike_of_the_windlord,if=talent.thunderfist" );
   st_cleave->add_action( "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=active_enemies=1&buff.kicks_of_flowing_momentum.up" );
   st_cleave->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.teachings_of_the_monastery.stack=2&talent.shadowboxing_treads" );
+  st_cleave->add_action( "fists_of_fury" );
   st_cleave->add_action( "strike_of_the_windlord" );
   st_cleave->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.teachings_of_the_monastery.up&(talent.shadowboxing_treads&active_enemies>1|cooldown.rising_sun_kick.remains>1)" );
   st_cleave->add_action( "whirling_dragon_punch,if=active_enemies=2" );
   st_cleave->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.teachings_of_the_monastery.stack=3" );
   st_cleave->add_action( "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=(active_enemies=1|!talent.shadowboxing_treads)&cooldown.fists_of_fury.remains>4&(talent.xuens_battlegear|runeforge.xuens_treasure)" );
-  st_cleave->add_action( "fists_of_fury" );
   st_cleave->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&active_enemies=2&cooldown.rising_sun_kick.remains&cooldown.fists_of_fury.remains" );
   st_cleave->add_action( "rushing_jade_wind,if=!buff.rushing_jade_wind.up&active_enemies=2" );
   st_cleave->add_action( "spinning_crane_kick,if=buff.bonedust_brew.up&combo_strike&(active_enemies>1|spinning_crane_kick.modifier>=2.7)" );
