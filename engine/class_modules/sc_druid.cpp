@@ -1888,10 +1888,10 @@ struct kindred_empowerment_buff_t : public druid_buff_t
 struct protector_of_the_pack_buff_t : public druid_buff_t
 {
   double mul;
-  double cap_coeff;  // from tooltip desc
+  double cap_coeff;  // from tooltip desc, TODO: don't hardcode this
 
   protector_of_the_pack_buff_t( druid_t* p, std::string_view n, const spell_data_t* s )
-    : base_t( p, n, s ), mul( p->talent.protector_of_the_pack->effectN( 1 ).percent() ), cap_coeff( 1.2 )
+    : base_t( p, n, s ), mul( p->talent.protector_of_the_pack->effectN( 1 ).percent() ), cap_coeff( 1.4 )
   {
     set_trigger_spell( p->talent.protector_of_the_pack );
     set_name_reporting( "protector_of_the_pack" );
@@ -2309,8 +2309,6 @@ public:
     // Class
     parse_buff_effects( p()->buff.cat_form );
     parse_buff_effects( p()->buff.moonkin_form );
-    parse_buff_effects( p()->buff.protector_of_the_pack_moonfire, false, true );
-    parse_buff_effects( p()->buff.protector_of_the_pack_regrowth, false, true );
 
     switch( p()->specialization() )
     {
@@ -5135,7 +5133,7 @@ struct after_the_wildfire_heal_t : public druid_heal_t
 {
   after_the_wildfire_heal_t( druid_t* p ) : druid_heal_t( "after_the_wildfire", p, p->find_spell( 371982 ) )
   {
-    aoe = -1;
+    aoe = 5;  // TODO: not in known spell data
   }
 };
 
@@ -5537,6 +5535,11 @@ struct regrowth_t : public druid_heal_t
       return 0_ms;
 
     return druid_heal_t::execute_time();
+  }
+
+  double bonus_da( const action_state_t* s ) const override
+  {
+    return druid_heal_t::bonus_da( s ) + p()->buff.protector_of_the_pack_regrowth->check_value();
   }
 
   double composite_target_crit_chance( player_t* t ) const override
@@ -6974,6 +6977,11 @@ struct moonfire_t : public druid_spell_t
         feral_override_ta =
             p->query_aura_effect( p->spec.feral_overrides, A_ADD_PCT_MODIFIER, P_TICK_DAMAGE, &data() )->percent();
       }
+    }
+
+    double bonus_da( const action_state_t* s ) const override
+    {
+      return base_t::bonus_da( s ) + p()->buff.protector_of_the_pack_moonfire->check_value();
     }
 
     double composite_da_multiplier( const action_state_t* s ) const override
