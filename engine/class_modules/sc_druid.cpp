@@ -308,11 +308,10 @@ public:
   double cache_mastery_snapshot;  // for balance mastery snapshot
   double after_the_wildfire_counter;
   std::vector<event_t*> persistent_event_delay;
+  event_t* astral_power_decay;
   event_t* lycaras_event;
   timespan_t lycaras_event_remains;
   std::vector<event_t*> swarm_tracker;  // 'friendly' targets for healing swarm
-  event_t* astral_power_decay_tick;
-  bool astral_power_decay_tick_flag;
   // !!!==========================================================================!!!
 
   // Options
@@ -9157,6 +9156,33 @@ struct persistent_delay_event_t : public event_t
   void execute() override { exec_fn(); }
 };
 
+struct astral_power_decay_event_t : public event_t
+{
+private:
+  druid_t* p_;
+  double nb_cap;
+
+public:
+  astral_power_decay_event_t( druid_t* p )
+    : event_t( *p, 500_ms ), p_( p ), nb_cap( p->talent.natures_balance->effectN( 2 ).base_value() )
+  {}
+
+  const char* name() const override { return "astral_power_decay"; }
+
+  void execute() override
+  {
+    if ( sim().target_non_sleeping_list.empty() )
+    {
+      auto cur = p_->resources.current[ RESOURCE_ASTRAL_POWER ];
+      if ( cur > nb_cap )
+      {
+        p_->resource_loss( RESOURCE_ASTRAL_POWER, std::min( 5.0, cur - nb_cap ) );
+        make_event<astral_power_decay_event_t>( sim(), p_ );
+      }
+    }
+  }
+};
+
 // Denizen of the Dream Proxy Action ========================================
 struct denizen_of_the_dream_t : public action_t
 {
@@ -9327,28 +9353,14 @@ void druid_t::activate()
     sim->target_non_sleeping_list.register_callback( [ this ]( player_t* ) {
       if ( sim->target_non_sleeping_list.empty() )
       {
-        make_event( *sim, 20_s, [ this ]() {
-          if ( sim->target_non_sleeping_list.empty() )
-          {
-            astral_power_decay_tick_flag = true;
-            if ( !astral_power_decay_tick )
-            {
-              astral_power_decay_tick = make_repeating_event( *sim, 500_ms, [ this ]() {
-                // Add 3 to avoid an infinite back and forth with Nature's Balance
-                if ( astral_power_decay_tick_flag &&
-                     ( !talent.natures_balance->ok() || resources.current[ RESOURCE_ASTRAL_POWER ] >
-                                                            talent.natures_balance->effectN( 2 ).base_value() + 3 ) )
-                {
-                  resource_loss( RESOURCE_ASTRAL_POWER, 5 );
-                }
-              } );
-            }
-          }
+        astral_power_decay = make_event( *sim, 20_s, [ this ]() {
+          astral_power_decay = nullptr;
+          make_event<astral_power_decay_event_t>( *sim, this );
         } );
       }
       else
       {
-        astral_power_decay_tick_flag = false;
+        event_t::cancel( astral_power_decay );
       }
     } );
   }
@@ -11305,10 +11317,9 @@ void druid_t::reset()
   cache_mastery_snapshot = cache.mastery_value();
   after_the_wildfire_counter = 0.0;
   persistent_event_delay.clear();
+  astral_power_decay = nullptr;
   lycaras_event = nullptr;
   lycaras_event_remains = 0_ms;
-  astral_power_decay_tick = nullptr;
-  astral_power_decay_tick_flag = false;
   swarm_tracker.clear();
 }
 
