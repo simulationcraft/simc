@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46702 Live (hotfix 2022-11-20/46702)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46658 Live (hotfix 2022-11-16/46658)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -689,7 +689,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 2 | Misc Value 2: 0x4 | Target: Self (1)
 #2 (id=40418)    : Apply Aura (6) | Add Percent Modifier (108): Spell Generated Threat (2)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 2 | Target: Self (1)
-                   Affected Spells: Death Coil (47633), Unholy Strength (53365), Bonestorm (194844), Bonestorm (196528)
+                   Affected Spells: Death Coil (47633), Unholy Strength (53365)
                    Family Flags: 31, 106, 109
 #3 (id=884937)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
@@ -4264,7 +4264,6 @@ Description      : Reduces all damage taken by $s1% for $d.
 Tooltip          : Damage taken reduced by $s1%.
 
 Name             : Bonestorm (id=194844) [Spell Family (15)] 
-Hotfixed         : Affecting Spells
 Talent Entry     : Blood [tree=spec, row=10, col=1, max_rank=1, req_points=20]
 Class            : Death Knight
 School           : Shadow
@@ -4274,8 +4273,6 @@ GCD              : 1.5 seconds
 Duration         : 1 seconds
 Cooldown         : 60 seconds
 Stance Mask      : 0x01000000
-Affecting spells : Veteran of the Third War (48263 effect#2)
-Family Flags     : 109
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4729,13 +4726,12 @@ Effects          :
 Description      : $@spelldesc195679
 
 Name             : Bonestorm (id=196528) [Spell Family (15)] 
-Hotfixed         : Affecting Spells
 Class            : Death Knight
 School           : Shadow
 Spell Type       : Melee
-Affecting spells : Veteran of the Third War (48263 effect#2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3)
+Affecting spells : Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3)
 Triggered by     : Bonestorm (194844)
-Family Flags     : 43, 109
+Family Flags     : 43
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -15796,7 +15792,6 @@ Effects          :
 Description      : Death Coil causes the target to take an additional $s1% of the direct damage dealt over $253367d.
 
 Name             : Coil of Devastation (id=390271) [Spell Family (15)] 
-Hotfixed         : Attributes
 Class            : Death Knight
 School           : Shadow
 Spell Type       : Magic
@@ -15804,13 +15799,13 @@ Range            : 100 yards
 Duration         : 4 seconds
 Attributes       : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ........ x....... ........ .....x..   .......x ........ ........ ........ 
-                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ x....... x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ......x. ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Aura Is Debuff (26), Include In Advanced Combat Log (72), Can't Crit (93), DoT Stacking Rule (103), Ignore Damage Taken Modifiers (136), Ignore Caster Damage Modifiers (221), Aura Points On Client (268), Rolling Periodic (334)
+                 : Aura Is Debuff (26), Include In Advanced Combat Log (72), Can't Crit (93), DoT Stacking Rule (103), Ignore Damage Taken Modifiers (136), Not In Arena or Rated Battleground (144), Ignore Caster Damage Modifiers (221), Aura Points On Client (268), Rolling Periodic (334), Not In Proving Grounds (401)
 Effects          :
 #1 (id=1026973)  : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
