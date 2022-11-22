@@ -210,7 +210,7 @@ jobs:
         run: pwd
 
       - name: What is here?
-        run: ls ${{ github.workspace }}
+        run: ls ${{ runner.workspace }}
 
       - name: Install Python dependencies
         run: pip3 install -r ${{ github.workspace }}/tests/requirements.txt
