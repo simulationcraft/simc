@@ -7406,6 +7406,7 @@ Description      : Consume Magic generates $278326s2 Fury when a beneficial Magi
 Name             : Infernal Armor (id=320331) [Spell Family (107), Passive, Hidden] 
 Talent Entry     : Generic [tree=class, row=6, col=3, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(10, 20)]
+                 : Effect#2 [op=set, values=(0, 100)]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -7423,6 +7424,10 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 33 | Target: Self (1)
                    Affected Spells: Immolation Aura (258920), Immolation Aura (258921), Immolation Aura (258922)
                    Family Flags: 11
+#2 (id=1043571)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value 2: 2432 (Label) | Target: Self (1)
+                   Affected Spells (Label): Infernal Armor (320334)
+Hotfixed         : NEW EFFECT
 Description      : Immolation Aura increases your armor by $s1% and causes melee attackers to suffer $320334s1 $@spelldesc395020 damage.
 
 Name             : Infernal Armor (id=320334) [Spell Family (107)] 
@@ -7430,6 +7435,7 @@ Class            : Demon Hunter
 School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
+Labels           : 2432: Infernal Armor (320331 effect#2)
 Affecting spells : Demon Soul (163073 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effect#1), Burning Blood (390213 effects: #1, #2), Seething Chaos (394934 effects: #1, #2)
 Family Flags     : 16, 70, 72
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
