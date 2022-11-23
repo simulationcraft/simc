@@ -457,6 +457,9 @@ struct death_knight_td_t : public actor_target_data_t {
   death_knight_td_t( player_t* target, death_knight_t* p );
 };
 
+using data_t = std::pair<std::string, simple_sample_data_with_min_max_t>;
+using simple_data_t = std::pair<std::string, simple_sample_data_t>;
+
 struct death_knight_t : public player_t {
 public:
   // Stores the currently active death and decay ground event
@@ -475,6 +478,10 @@ public:
   unsigned int bone_shield_charges_consumed; // Counts how many bone shield charges have been consumed for T29 4pc blood
 
   stats_t* antimagic_shell;
+
+  // Data collection for cooldown waste
+  auto_dispose<std::vector<data_t*>> cd_waste_exec, cd_waste_cumulative;
+  auto_dispose<std::vector<simple_data_t*>> cd_waste_iter;
 
   // Buffs
   struct buffs_t {
@@ -1281,6 +1288,8 @@ public:
   double    resource_loss( resource_e resource_type, double amount, gain_t* g = nullptr, action_t* a = nullptr ) override;
   void      copy_from( player_t* source ) override;
   void      merge( player_t& other ) override;
+  void      datacollection_begin() override;
+  void      datacollection_end() override;
   void      analyze( sim_t& sim ) override;
   void      apply_affecting_auras( action_t& action ) override;
 
@@ -1334,6 +1343,22 @@ public:
       td = new death_knight_td_t( target, const_cast<death_knight_t*>( this ) );
     }
     return td;
+  }
+
+  // Cooldown Tracking
+  template <typename T_CONTAINER, typename T_DATA>
+  T_CONTAINER* get_data_entry( util::string_view name, std::vector<T_DATA*>& entries )
+  {
+    for ( size_t i = 0; i < entries.size(); i++ )
+    {
+      if ( entries[ i ]->first == name )
+      {
+        return &( entries[ i ]->second );
+      }
+    }
+
+    entries.push_back( new T_DATA( name, T_CONTAINER() ) );
+    return &( entries.back()->second );
   }
 };
 
@@ -3182,6 +3207,11 @@ struct death_knight_action_t : public Base
     bool vigorous_lifeblood_4pc;
   } affected_by;
 
+  // Cooldown tracking
+  bool track_cd_waste;
+  simple_sample_data_with_min_max_t *cd_wasted_exec, *cd_wasted_cumulative;
+  simple_sample_data_t* cd_wasted_iter;
+
   bool may_proc_bron;
   proc_t* bron_proc;
 
@@ -3190,6 +3220,10 @@ struct death_knight_action_t : public Base
     hasted_gcd( false ),
     triggers_shackle_the_unworthy( false ),
     affected_by(),
+    track_cd_waste( s->cooldown() > timespan_t::zero() || s->charge_cooldown() > timespan_t::zero() ),
+    cd_wasted_exec( nullptr ),
+    cd_wasted_cumulative( nullptr ),
+    cd_wasted_iter( nullptr ),
     may_proc_bron( false ),
     bron_proc( nullptr )
   {
@@ -3356,6 +3390,16 @@ struct death_knight_action_t : public Base
       ( this->spell_power_mod.direct || this->spell_power_mod.tick ||
         this->attack_power_mod.direct || this->attack_power_mod.tick ||
         this->base_dd_min || this->base_dd_max || this->base_td );
+
+    if ( track_cd_waste )
+    {
+      cd_wasted_exec =
+        p()-> template get_data_entry<simple_sample_data_with_min_max_t, data_t>( Base::name_str, p()->cd_waste_exec );
+      cd_wasted_cumulative = p()-> template get_data_entry<simple_sample_data_with_min_max_t, data_t>(
+        Base::name_str, p()->cd_waste_cumulative );
+      cd_wasted_iter =
+        p()-> template get_data_entry<simple_sample_data_t, simple_data_t>( Base::name_str, p()->cd_waste_iter );
+    }
   }
 
   void init_finished() override
@@ -3444,6 +3488,31 @@ struct death_knight_action_t : public Base
     // For non tank DK's, we proc the ability on CD, attached to thier own executes, to simulate it
     if ( p() -> talent.blood_draw.ok() && p() -> specialization() != DEATH_KNIGHT_BLOOD && p() -> active_spells.blood_draw -> ready() )
       p() -> active_spells.blood_draw -> execute();
+  }
+
+  void update_ready( timespan_t cd ) override
+  {
+    if ( cd_wasted_exec &&
+      ( cd > timespan_t::zero() || ( cd <= timespan_t::zero() && Base::cooldown->duration > timespan_t::zero() ) ) &&
+         Base::cooldown->current_charge == Base::cooldown->charges && Base::cooldown->last_charged > timespan_t::zero() &&
+         Base::cooldown->last_charged < Base::sim->current_time() )
+    {
+      double time_ = ( Base::sim->current_time() - Base::cooldown->last_charged ).total_seconds();
+      if ( p()->sim->debug )
+      {
+        p()->sim->out_debug.printf( "%s %s cooldown waste tracking waste=%.3f exec_time=%.3f", p()->name(), Base::name(),
+                                    time_, Base::time_to_execute.total_seconds() );
+      }
+      time_ -= Base::time_to_execute.total_seconds();
+
+      if ( time_ > 0 )
+      {
+        cd_wasted_exec->add( time_ );
+        cd_wasted_iter->add( time_ );
+      }
+    }
+
+    Base::update_ready( cd );
   }
 };
 
@@ -9181,6 +9250,42 @@ void death_knight_t::merge( player_t& other )
 
   _runes.rune_waste.merge( dk._runes.rune_waste );
   _runes.cumulative_waste.merge( dk._runes.cumulative_waste );
+
+  for ( size_t i = 0, end = cd_waste_exec.size(); i < end; i++ )
+  {
+    cd_waste_exec[ i ]->second.merge( dk.cd_waste_exec[ i ]->second );
+    cd_waste_cumulative[ i ]->second.merge( dk.cd_waste_cumulative[ i ]->second );
+  }
+}
+
+// death_knight_t::datacollection_begin ===========================================
+
+void death_knight_t::datacollection_begin()
+{
+  if ( active_during_iteration )
+  {
+    for ( size_t i = 0, end = cd_waste_iter.size(); i < end; ++i )
+    {
+      cd_waste_iter[ i ]->second.reset();
+    }
+  }
+
+  player_t::datacollection_begin();
+}
+
+// death_knight_t::datacollection_end =============================================
+
+void death_knight_t::datacollection_end()
+{
+  if ( requires_data_collection() )
+  {
+    for ( size_t i = 0, end = cd_waste_iter.size(); i < end; ++i )
+    {
+      cd_waste_cumulative[ i ]->second.add( cd_waste_iter[ i ]->second.sum() );
+    }
+  }
+
+  player_t::datacollection_end();
 }
 
 void death_knight_t::analyze( sim_t& s )
@@ -11756,6 +11861,70 @@ public:
     os << "</div>\n";
   }
 
+  void cdwaste_table_header( report::sc_html_stream& os )
+  {
+    os << "<table class=\"sc\" style=\"float: left;margin-right: 10px;\">\n"
+      << "<tr>\n"
+      << "<th></th>\n"
+      << "<th colspan=\"3\">Seconds per Execute</th>\n"
+      << "<th colspan=\"3\">Seconds per Iteration</th>\n"
+      << "</tr>\n"
+      << "<tr>\n"
+      << "<th>Ability</th>\n"
+      << "<th>Average</th>\n"
+      << "<th>Minimum</th>\n"
+      << "<th>Maximum</th>\n"
+      << "<th>Average</th>\n"
+      << "<th>Minimum</th>\n"
+      << "<th>Maximum</th>\n"
+      << "</tr>\n";
+  }
+
+  void cdwaste_table_footer( report::sc_html_stream& os )
+  {
+    os << "</table>\n";
+  }
+
+  void cdwaste_table_contents( report::sc_html_stream& os )
+  {
+    size_t n = 0;
+    for ( size_t i = 0; i < p.cd_waste_exec.size(); i++ )
+    {
+      const data_t* entry = p.cd_waste_exec[ i ];
+      if ( entry->second.count() == 0 )
+      {
+        continue;
+      }
+
+      const data_t* iter_entry = p.cd_waste_cumulative[ i ];
+
+      action_t* a = p.find_action( entry->first );
+      std::string name_str = entry->first;
+      if ( a )
+      {
+        name_str = report_decorators::decorated_action(*a);
+      }
+      else
+      {
+        name_str = util::encode_html( name_str );
+      }
+
+      std::string row_class_str;
+      if ( ++n & 1 )
+        row_class_str = " class=\"odd\"";
+
+      os.printf( "<tr%s>", row_class_str.c_str() );
+      os << "<td class=\"left\">" << name_str << "</td>";
+      os.printf( "<td class=\"right\">%.3f</td>", entry->second.mean() );
+      os.printf( "<td class=\"right\">%.3f</td>", entry->second.min() );
+      os.printf( "<td class=\"right\">%.3f</td>", entry->second.max() );
+      os.printf( "<td class=\"right\">%.3f</td>", iter_entry->second.mean() );
+      os.printf( "<td class=\"right\">%.3f</td>", iter_entry->second.min() );
+      os.printf( "<td class=\"right\">%.3f</td>", iter_entry->second.max() );
+      os << "</tr>\n";
+    }
+  }
+
   void html_customsection( report::sc_html_stream& os ) override
   {
     if ( p._runes.cumulative_waste.percentile( .5 ) > 0 )
@@ -11763,6 +11932,20 @@ public:
       os << "<div class=\"player-section custom_section\">\n";
       html_rune_waste( os );
       os << "<div class=\"clear\"></div>\n";
+
+      if ( !p.cd_waste_exec.empty() )
+      {
+        os  << "<h3 class=\"toggle open\">Cooldown Waste Details</h3>\n"
+            << "<div class=\"toggle-content\">\n";
+
+        cdwaste_table_header( os );
+        cdwaste_table_contents( os );
+        cdwaste_table_footer( os );
+
+        os << "</div>\n";
+        os << "<div class=\"clear\"></div>\n";
+      }
+
       os << "</div>\n";
     }
   }
