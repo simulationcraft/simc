@@ -5421,6 +5421,13 @@ struct death_strike_heal_t : public death_knight_heal_t
     return m;
   }
 
+  void impact( action_state_t* state ) override
+  {
+    death_knight_heal_t::impact( state );
+
+    trigger_blood_shield( state );
+  }
+
   void trigger_blood_shield( action_state_t* state )
   {
     if ( p() -> specialization() != DEATH_KNIGHT_BLOOD )
