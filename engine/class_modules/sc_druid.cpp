@@ -10502,7 +10502,8 @@ void druid_t::create_buffs()
 
   buff.rage_of_the_sleeper = make_buff( this, "rage_of_the_sleeper", talent.rage_of_the_sleeper )
     ->set_default_value_from_effect( 5, 0.01 )
-    ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+    ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+    ->add_invalidate( CACHE_LEECH );
 
   buff.tooth_and_claw = make_buff( this, "tooth_and_claw", talent.tooth_and_claw->effectN( 1 ).trigger() )
     ->set_chance( talent.tooth_and_claw->effectN( 1 ).percent() );
