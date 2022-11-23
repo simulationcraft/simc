@@ -100,22 +100,26 @@ void blood( player_t* p )
   default_->add_action( "potion,if=buff.dancing_rune_weapon.up", "Since the potion cooldown has changed, we'll sync with DRW" );
   default_->add_action( "use_items" );
   default_->add_action( "raise_dead" );
+  default_->add_action( "icebound_fortitude,if=!(buff.dancing_rune_weapon.up|buff.vampiric_blood.up)&(target.cooldown.pause_action.remains>=8|target.cooldown.pause_action.duration>0)");
+  default_->add_action( "vampiric_blood,if=!(buff.dancing_rune_weapon.up|buff.icebound_fortitude.up)&(target.cooldown.pause_action.remains>=13|target.cooldown.pause_action.duration>0)");
   default_->add_action( "deaths_caress,if=!buff.bone_shield.up" );
   default_->add_action( "blooddrinker,if=!buff.dancing_rune_weapon.up" );
   default_->add_action( "call_action_list,name=racials" );
   default_->add_action( "sacrificial_pact,if=!buff.dancing_rune_weapon.up&(pet.ghoul.remains<2|target.time_to_die<gcd)", "Attempt to sacrifice the ghoul if we predictably will not do much in the near future" );
   default_->add_action( "blood_tap,if=(rune<=2&rune.time_to_4>gcd&charges_fractional>=1.8)|rune.time_to_3>gcd" );
+  default_->add_action( "abomination_limb_talent,if=buff.bone_shield.remains<gcd" );
   default_->add_action( "marrowrend,if=buff.bone_shield.remains<gcd" );
   default_->add_action( "deaths_caress,if=buff.bone_shield.remains<gcd|!buff.bone_shield.up" );
   default_->add_action( "gorefiends_grasp,if=talent.tightening_grasp.enabled" );
   default_->add_action( "deaths_due,if=covenant.night_fae&!death_and_decay.ticking" );
-  default_->add_action( "death_and_decay,if=(talent.unholy_ground|talent.sanguine_ground)&cooldown.dancing_rune_weapon.remains<gcd" );
+  default_->add_action( "death_and_decay,if=!death_and_decay.ticking&(talent.unholy_ground|talent.sanguine_ground)&cooldown.dancing_rune_weapon.remains<gcd" );
   default_->add_action( "dancing_rune_weapon,if=!buff.dancing_rune_weapon.up" );
   default_->add_action( "run_action_list,name=drw_up,if=buff.dancing_rune_weapon.up" );
   default_->add_action( "call_action_list,name=standard" );
 
-  drw_up->add_action( "tombstone,if=buff.bone_shield.stack>5&rune>=2&runic_power.deficit>=30&runeforge.crimson_rune_weapon" );
+  drw_up->add_action( "tombstone,if=buff.bone_shield.stack>5&rune>=2&runic_power.deficit>=30&runeforge.crimson_rune_weapon&((talent.shattering_bone&death_and_decay.ticking)|!talent.shattering_bone)" );
   drw_up->add_action( "empower_rune_weapon,if=rune<6&runic_power.deficit>5" );
+  drw_up->add_action( "marrowrend,if=buff.bone_shield.stack<5&buff.dancing_rune_weapon.remains<gcd" );
   drw_up->add_action( "marrowrend,if=(buff.bone_shield.remains<=rune.time_to_3|(buff.bone_shield.stack<2&buff.abomination_limb_talent.up))&runic_power.deficit>20" );
   drw_up->add_action( "deaths_caress,if=buff.bone_shield.remains<=rune.time_to_3&rune<=1" );
   drw_up->add_action( "death_strike,if=buff.coagulopathy.remains<=gcd|buff.icy_talons.remains<=gcd" );
@@ -127,7 +131,7 @@ void blood( player_t* p )
   drw_up->add_action( "variable,name=heart_strike_rp_drw,value=(25+spell_targets.heart_strike*talent.heartbreaker.enabled*2)" );
   drw_up->add_action( "death_strike,if=runic_power.deficit<=variable.heart_strike_rp_drw" );
   drw_up->add_action( "consumption" );
-  drw_up->add_action( "death_and_decay,if=(spell_targets.death_and_decay==3&buff.crimson_scourge.up)|spell_targets.death_and_decay>=4" );
+  drw_up->add_action( "death_and_decay,if=!death_and_decay.ticking&(spell_targets.death_and_decay==3&buff.crimson_scourge.up)|spell_targets.death_and_decay>=4" );
   drw_up->add_action( "heart_strike,if=rune.time_to_2<gcd|runic_power.deficit>=variable.heart_strike_rp_drw" );
 
   racials->add_action( "blood_fury,if=cooldown.dancing_rune_weapon.ready&(!cooldown.blooddrinker.ready|!talent.blooddrinker.enabled)" );
@@ -139,8 +143,8 @@ void blood( player_t* p )
   racials->add_action( "bag_of_tricks" );
   racials->add_action( "arcane_torrent,if=runic_power.deficit>20" );
 
-  standard->add_action( "tombstone,if=buff.bone_shield.stack>5&rune>=2&runic_power.deficit>=30" );
-  standard->add_action( "abomination_limb_talent,if=buff.bone_shield.stack<6", "Consider adding empower_rune_weapon here, but as it looks, DRW may end up aligning every 2nd drw" );
+  standard->add_action( "tombstone,if=buff.bone_shield.stack>5&rune>=2&runic_power.deficit>=30&((talent.shattering_bone&death_and_decay.ticking)|!talent.shattering_bone)" );
+  standard->add_action( "abomination_limb_talent,if=buff.bone_shield.stack<6" );
   standard->add_action( "marrowrend,if=buff.bone_shield.remains<=rune.time_to_3|buff.bone_shield.remains<=(gcd+cooldown.blooddrinker.ready*talent.blooddrinker.enabled*4)|buff.bone_shield.stack<6&runic_power.deficit>20&!(talent.insatiable_blade&cooldown.dancing_rune_weapon.remains<buff.bone_shield.remains)" );
   standard->add_action( "deaths_caress,if=buff.bone_shield.remains<=rune.time_to_3&rune<=1" );
   standard->add_action( "death_strike,if=buff.coagulopathy.remains<=gcd|buff.icy_talons.remains<=gcd" );
@@ -154,7 +158,7 @@ void blood( player_t* p )
   standard->add_action( "death_and_decay,if=buff.crimson_scourge.up&talent.relish_in_blood.enabled&runic_power.deficit>10" );
   standard->add_action( "variable,name=heart_strike_rp,value=(15+spell_targets.heart_strike*talent.heartbreaker.enabled*2)" );
   standard->add_action( "death_strike,if=(runic_power.deficit<=variable.heart_strike_rp)|target.time_to_die<10" );
-  standard->add_action( "death_and_decay,if=spell_targets.death_and_decay>=3" );
+  standard->add_action( "death_and_decay,if=!death_and_decay.ticking&spell_targets.death_and_decay>=3" );
   standard->add_action( "heart_strike,if=rune.time_to_4<gcd" );
   standard->add_action( "consumption" );
   standard->add_action( "death_and_decay,if=buff.crimson_scourge.up|talent.rapid_decomposition.enabled" );
