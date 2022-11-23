@@ -5893,11 +5893,17 @@ struct death_strike_heal_t : public death_knight_heal_t
     if ( blood_shield -> target_specific[ state -> target ] )
       current_value = blood_shield -> target_specific[ state -> target ] -> current_value;
 
-    double amount = current_value;
+    double amount = state -> result_total;  // Total heal, including hemostasis
+
+    // We first have to remove hemostasis from the heal, as blood shield does not include it
+    amount /= 1.0 + p() -> buffs.hemostasis->stack_value();
+
     if ( p() -> mastery.blood_shield -> ok() )
-      amount += state -> result_total * p() -> cache.mastery_value();
+      amount *= p() -> cache.mastery_value();
 
     amount *= 1.0 + p() -> talent.blood.iron_heart -> effectN( 2 ).percent();
+
+    amount *= 1.0 + p() -> talent.gloom_ward -> effectN( 1 ).percent();
 
     // Blood Shield caps at max health
     if ( amount > player -> resources.max[ RESOURCE_HEALTH ] )
