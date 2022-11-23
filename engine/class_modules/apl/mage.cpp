@@ -70,7 +70,7 @@ void arcane( player_t* p )
   default_->add_action( "time_warp,if=talent.temporal_warp&buff.exhaustion.up&(cooldown.arcane_surge.ready|fight_remains<=40)" );
   default_->add_action( "lights_judgment,if=buff.arcane_surge.down&buff.rune_of_power.down&debuff.touch_of_the_magi.down" );
   default_->add_action( "bag_of_tricks,if=buff.arcane_surge.down&buff.rune_of_power.down&debuff.touch_of_the_magi.down" );
-  default_->add_action( "berserking,if=prev_gcd.1.arcane_surge" );
+  default_->add_action( "berserking,if=(prev_gcd.1.arcane_surge&!(buff.temporal_warp.up&buff.bloodlust.up))|(buff.arcane_surge.up&debuff.touch_of_the_magi.up)" );
   default_->add_action( "blood_fury,if=prev_gcd.1.arcane_surge" );
   default_->add_action( "fireblood,if=prev_gcd.1.arcane_surge" );
   default_->add_action( "ancestral_call,if=prev_gcd.1.arcane_surge" );
@@ -97,7 +97,7 @@ void arcane( player_t* p )
   spark_phase->add_action( "meteor,if=debuff.radiant_spark_vulnerability.stack=2&active_enemies=1" );
   spark_phase->add_action( "nether_tempest,if=(prev_gcd.1.arcane_surge|prev_gcd.1.meteor)&talent.arcane_echo" );
   spark_phase->add_action( "nether_tempest,if=debuff.radiant_spark_vulnerability.stack=3&prev_gcd.1.arcane_blast" );
-  spark_phase->add_action( "arcane_blast,if=spell_haste<1.04&debuff.radiant_spark_vulnerability.stack=(3+talent.nether_tempest)&buff.bloodlust.up&target.health.pct>35&active_enemies<2&!talent.meteor,line_cd=5" );
+  spark_phase->add_action( "arcane_blast,if=spell_haste>0.49&debuff.radiant_spark_vulnerability.stack=(3+talent.nether_tempest)&buff.bloodlust.up&target.health.pct>35&active_enemies<2&!talent.meteor,line_cd=5" );
   spark_phase->add_action( "arcane_barrage,if=debuff.radiant_spark_vulnerability.stack=4" );
   spark_phase->add_action( "touch_of_the_magi,use_off_gcd=1,if=debuff.radiant_spark_vulnerability.stack=4&prev_gcd.1.arcane_barrage" );
   spark_phase->add_action( "arcane_orb,if=debuff.radiant_spark_vulnerability.down&active_enemies>=variable.aoe_target_count" );
