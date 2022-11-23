@@ -1705,8 +1705,13 @@ void player_t::parse_temporary_enchants()
     if ( it != std::string_view::npos )
     {
       auto rank_str = token_split[ 1 ].substr( it + 1 );
-      rank = util::to_unsigned_ignore_error( rank_str, 0 );
-      enchant_str = token_split[ 1 ].substr( 0, it );
+      auto parsed_rank = util::to_unsigned_ignore_error( rank_str, std::numeric_limits<unsigned>::max() );
+
+      if ( parsed_rank != std::numeric_limits<unsigned>::max() )
+      {
+        enchant_str = token_split[ 1 ].substr( 0, it );
+        rank = parsed_rank;
+      }
     }
 
     const auto& enchant = temporary_enchant_entry_t::find( enchant_str, rank, dbc->ptr );
