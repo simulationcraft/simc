@@ -4477,6 +4477,7 @@ struct essence_break_t : public demon_hunter_attack_t
     : demon_hunter_attack_t( "essence_break", p, p->talent.havoc.essence_break, options_str )
   {
     aoe = -1;
+    reduced_aoe_targets = p->talent.havoc.essence_break->effectN( 2 ).base_value();
   }
 
   void impact( action_state_t* s ) override
@@ -4485,7 +4486,9 @@ struct essence_break_t : public demon_hunter_attack_t
 
     if ( result_is_hit( s->result ) )
     {
-      td( s->target )->debuffs.essence_break->trigger();
+      // Debuff application appears to be delayed by 250-300ms according to logs
+      buff_t* debuff = td( s->target )->debuffs.essence_break;
+      make_event( *p()->sim, 250_ms, [ debuff ] { debuff->trigger(); } );
     }
   }
 };
