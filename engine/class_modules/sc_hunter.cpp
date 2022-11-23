@@ -1442,7 +1442,6 @@ struct hunter_main_pet_base_t : public hunter_pet_t
     buff_t* thrill_of_the_hunt = nullptr;
     buff_t* bestial_wrath = nullptr;
     buff_t* piercing_fangs = nullptr;
-    buff_t* rylakstalkers_piercing_fangs = nullptr;
     buff_t* lethal_command = nullptr;
 
     buff_t* bloodseeker = nullptr;
@@ -1492,11 +1491,9 @@ struct hunter_main_pet_base_t : public hunter_pet_t
         -> set_stack_change_callback( [ this ]( buff_t*, int old, int cur ) {
           if ( cur == 0 )
           {
-            buffs.rylakstalkers_piercing_fangs -> expire();
             buffs.piercing_fangs -> expire();
           }
           else if (old == 0) {
-            buffs.rylakstalkers_piercing_fangs -> trigger();
             buffs.piercing_fangs -> trigger();
           }
         } );
@@ -1555,7 +1552,6 @@ struct hunter_main_pet_base_t : public hunter_pet_t
   {
     double m = hunter_pet_t::composite_player_critical_damage_multiplier( s );
 
-    m *= 1 + buffs.rylakstalkers_piercing_fangs -> check_value();
     m *= 1 + buffs.piercing_fangs -> check_value();
 
     return m;
