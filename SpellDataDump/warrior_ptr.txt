@@ -1483,7 +1483,6 @@ Attributes       : ....x... ........ x.x..... ........   ....x... .x...... .....
 Effects          :
 #1 (id=42845)    : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.60000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
-Hotfixed         : AP Coefficient (0.5 -> 0.6)
 #2 (id=42846)    : Trigger Spell (64): Bladestorm Off-Hand
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 95738 | Target: At Caster (22)
 Description      : You become a whirling storm of destructive force, striking all nearby targets with your main hand weapon for $s1 Physical damage.
@@ -13680,7 +13679,6 @@ Description      : Roar explosively, dealing $s1 Physical damage to enemies with
 |cFFFFFFFFGenerates ${$m3/10} Rage.
 
 Name             : Bloodsurge (id=384361) [Spell Family (4), Passive, Hidden] 
-Hotfixed         : Proc Chance (7 -> 10)
 Talent Entry     : Arms [tree=spec, row=4, col=2, max_rank=1, req_points=0]
                  : Protection [tree=spec, row=5, col=4, max_rank=1, req_points=8]
 Class            : Warrior
@@ -13723,7 +13721,6 @@ Effects          :
 Description      : $@spelldesc384361
 
 Name             : Sidearm (id=384391) [Spell Family (4)] 
-Hotfixed         : Attributes
 Class            : Warrior
 School           : Physical
 Spell Type       : Melee
@@ -15111,7 +15108,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1020852)  : Apply Aura (6) | Trigger Spell with Value (231)
                    Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 0.50000 | Trigger Spell: 386633 | Target: Self (1)
-Hotfixed         : Base Value (30 -> 35)
 Description      : $?a317320[Condemn][Execute] causes the target to take $s1% more damage from your next Mortal Strike, stacking up to $386633u times.
 
 Name             : Slaughtering Strikes (id=388004) [Spell Family (4), Passive] 
