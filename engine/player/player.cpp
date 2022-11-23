@@ -10685,6 +10685,11 @@ const spell_data_t* player_t::find_covenant_spell( util::string_view name ) cons
 
 item_runeforge_t player_t::find_runeforge_legendary( util::string_view name, bool tokenized, bool force_unity ) const
 {
+  if ( !sim->shadowlands_opts.enabled )
+  {
+    return item_runeforge_t::nil();
+  }
+
   auto entries = runeforge_legendary_entry_t::find( name, dbc->ptr, tokenized );
   if ( entries.empty() )
   {
