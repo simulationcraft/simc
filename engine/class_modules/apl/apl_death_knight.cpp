@@ -118,7 +118,7 @@ void blood( player_t* p )
   drw_up->add_action( "tombstone,if=buff.bone_shield.stack>5&rune>=2&runic_power.deficit>=30&runeforge.crimson_rune_weapon&((talent.shattering_bone&death_and_decay.ticking)|!talent.shattering_bone)" );
   drw_up->add_action( "empower_rune_weapon,if=rune<6&runic_power.deficit>5" );
   drw_up->add_action( "marrowrend,if=buff.bone_shield.stack<5&buff.dancing_rune_weapon.remains<gcd" );
-  drw_up->add_action( "marrowrend,if=(buff.bone_shield.remains<=rune.time_to_3|(buff.bone_shield.stack<2&buff.abomination_limb_talent.up))&runic_power.deficit>20" );
+  drw_up->add_action( "marrowrend,if=(buff.bone_shield.remains<=rune.time_to_3|(buff.bone_shield.stack<2&buff.abomination_limb.up))&runic_power.deficit>20" );
   drw_up->add_action( "deaths_caress,if=buff.bone_shield.remains<=rune.time_to_3&rune<=1" );
   drw_up->add_action( "death_strike,if=buff.coagulopathy.remains<=gcd|buff.icy_talons.remains<=gcd" );
   drw_up->add_action( "soul_reaper,if=active_enemies=1&target.time_to_pct_35<5&target.time_to_die>(dot.soul_reaper.remains+5)" );

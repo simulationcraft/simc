@@ -434,16 +434,13 @@ struct death_knight_td_t : public actor_target_data_t {
 	
     // Frost
     buff_t* piercing_chill;
+    buff_t* everfrost;
 	
     // Unholy
     buff_t* festering_wound;
     buff_t* unholy_blight;
     buff_t* rotten_touch;
     buff_t* death_rot;
-
-    // Soulbinds
-    buff_t* debilitating_malady;
-    buff_t* everfrost;
 
   } debuff;
 
@@ -3372,16 +3369,6 @@ struct blood_plague_t : public death_knight_disease_t
       if ( p -> bugs )
         base_multiplier *= 0.75;
     }
-  }
-
-  double composite_target_multiplier( player_t* t ) const override
-  {
-    double m = death_knight_spell_t::composite_target_multiplier( t );
-
-    if ( auto td = find_td( t ) )
-      m *= 1.0 + td -> debuff.debilitating_malady -> check_stack_value();
-
-    return m;
   }
 
   double composite_ta_multiplier( const action_state_t* state ) const override
