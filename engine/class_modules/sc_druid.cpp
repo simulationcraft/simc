@@ -8176,7 +8176,7 @@ struct wild_mushroom_t : public druid_spell_t
     double ap_max;
 
     wild_mushroom_damage_t( druid_t* p, action_t* a )
-      : druid_spell_t( "wild_mushroom_damage", p, p->find_spell( 88751 ) ),
+      : druid_spell_t( "wild_mushroom_damage", p, p->talent.wild_mushroom->effectN( 1 ).trigger() ),
         driver( a ),
         fungal( nullptr ),
         fungal_mul( p->talent.fungal_growth->effectN( 1 ).percent() ),
@@ -8215,7 +8215,7 @@ struct wild_mushroom_t : public druid_spell_t
 
   wild_mushroom_t( druid_t* p, std::string_view opt )
     : druid_spell_t( "wild_mushroom", p, p->talent.wild_mushroom, opt ),
-      delay( p->bugs ? data().duration() + 1.5_s : data().duration() )
+      delay( timespan_t::from_millis( data().effectN( 1 ).misc_value1() ) )
   {
     harmful = false;
 
