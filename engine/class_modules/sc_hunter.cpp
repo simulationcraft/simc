@@ -7466,9 +7466,6 @@ void hunter_t::create_options()
   add_option( opt_timespan( "hunter.pet_basic_attack_delay", options.pet_basic_attack_delay,
                             0_ms, 0.6_s ) );
   add_option( opt_bool( "hunter.separate_wfi_stats", options.separate_wfi_stats ) );
-
-  add_option( opt_obsoleted( "hunter_fixed_time" ) );
-  add_option( opt_obsoleted( "hunter.memory_of_lucid_dreams_proc_chance" ) );
 }
 
 // hunter_t::create_profile =================================================
