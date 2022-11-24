@@ -1839,7 +1839,7 @@ void decoration_of_flame( special_effect_t& effect )
 // 382256 AoE Radius
 // 382257 ???
 // 395703 ???
-// 396434 ???
+// 396434 ??? 
 void manic_grieftorch( special_effect_t& effect )
 {
     struct manic_grieftorch_damage_t : public proc_spell_t
@@ -1874,7 +1874,8 @@ void manic_grieftorch( special_effect_t& effect )
         }
         else
         {
-          return !rng().roll( player->sim->dragonflight_opts.manic_grieftorch_chance );
+          // Has very strange scaling behavior, where it scales with targets very slowly. Using this formula to reduce the cleave chance as target count increases
+          return !rng().roll( player->sim->dragonflight_opts.manic_grieftorch_chance * ( sqrt(n_targets()) / n_targets()));
         }
       }), tl.end() );
 
