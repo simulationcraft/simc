@@ -7745,10 +7745,8 @@ struct vampiric_blood_buff_t : public buff_t
 
 struct vampiric_blood_t : public death_knight_spell_t
 {
-  int gorefiends_domination_energize_amount;
   vampiric_blood_t( death_knight_t* p, util::string_view options_str ) :
-    death_knight_spell_t( "vampiric_blood", p, p -> talent.blood.vampiric_blood ),
-    gorefiends_domination_energize_amount( 0 )
+    death_knight_spell_t( "vampiric_blood", p, p -> talent.blood.vampiric_blood )
   {
     parse_options( options_str );
 
