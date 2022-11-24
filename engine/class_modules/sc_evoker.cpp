@@ -1061,15 +1061,9 @@ struct fire_breath_t : public empowered_charge_spell_t
     {
       empowered_release_spell_t::tick( d );
 
-      if ( p()->talent.burnout.ok() )
-      {
-        p()->buff.burnout->trigger();
-        if ( p()->buff.burnout->cooldown->down() )
-        {
-          // TODO: Confirm next build, as of 27/09/2022 the ICD is triggered on attempt not success
-          p()->buff.burnout->cooldown->start();
-        }
-      }
+      // TODO: confirm this doesn't have a target # based DR, or exhibit previously bugged behavior where icd is
+      // triggered on check, not success
+      p()->buff.burnout->trigger();
     }
 
   };
