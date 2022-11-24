@@ -1516,6 +1516,7 @@ public:
     ab::apply_affecting_aura( p->talent.subtlety.quick_decisions );
     ab::apply_affecting_aura( p->talent.subtlety.swift_death );
     ab::apply_affecting_aura( p->talent.subtlety.replicating_shadows );
+    ab::apply_affecting_aura( p->talent.subtlety.improved_shadow_dance );
     ab::apply_affecting_aura( p->talent.subtlety.without_a_trace );
     ab::apply_affecting_aura( p->talent.subtlety.secret_stratagem );
     ab::apply_affecting_aura( p->talent.subtlety.dark_brew );
@@ -6441,6 +6442,7 @@ struct shadow_dance_t : public stealth_like_buff_t<damage_buff_t>
   shadow_dance_t( rogue_t* p ) :
     base_t( p, "shadow_dance", p->spell.shadow_dance )
   {
+    set_cooldown( timespan_t::zero() );
     apply_affecting_aura( p->talent.subtlety.dark_shadow );
     apply_affecting_aura( p->talent.subtlety.improved_shadow_dance );
   }
