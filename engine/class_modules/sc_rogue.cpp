@@ -10378,13 +10378,6 @@ public:
 
   void register_hotfixes() const override
   {
-    // Only need to change the base effect and not also 894305 since we re-use the base effect for the persist
-    // Have to do this manually since it appears this is currently being done with server-side voodoo
-    hotfix::register_effect( "Rogue", "2021-07-08", "Obedience: Versatility granted reduced to 0.5% per stack of Flagellation (was 1% per stack).", 887338 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 0.5 )
-      .verification_value( 1 );
   }
 
   void init( player_t* ) const override {}
