@@ -5288,15 +5288,13 @@ struct death_strike_heal_t : public death_knight_heal_t
   timespan_t interval;
   double min_heal_multiplier;
   double max_heal_multiplier;
-  double last_death_strike_cost;
 
   death_strike_heal_t( util::string_view name, death_knight_t* p ) :
     death_knight_heal_t( name, p, p -> find_spell( 45470 ) ),
     blood_shield( p -> specialization() == DEATH_KNIGHT_BLOOD ? new blood_shield_t( p ) : nullptr ),
     interval( timespan_t::from_seconds( p -> talent.death_strike -> effectN( 4 ).base_value() ) ),
     min_heal_multiplier( p -> talent.death_strike -> effectN( 3 ).percent() ),
-    max_heal_multiplier( p -> talent.death_strike -> effectN( 2 ).percent() ),
-    last_death_strike_cost( 0 )
+    max_heal_multiplier( p -> talent.death_strike -> effectN( 2 ).percent() )
   {
     may_crit = callbacks = false;
     background = true;
