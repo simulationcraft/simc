@@ -4605,6 +4605,10 @@ struct overpower_t : public warrior_attack_t
     parse_options( options_str );
     may_block = may_parry = may_dodge = false;
     weapon                            = &( p->main_hand_weapon );
+    if ( p->talents.arms.battlelord->ok() )
+    {
+      base_multiplier *= 1.0 + p->talents.arms.overpower->effectN( 2 ).percent(); // stand in for new BL effect
+    }
 
     if ( p->talents.arms.dreadnaught->ok() )
     {
