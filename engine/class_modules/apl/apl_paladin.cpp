@@ -258,3 +258,8 @@ void retribution( player_t* p )
 //retribution_apl_end
 
 //protection_apl_start
+void protection( player_t* p )
+{
+}
+//protection_apl_end
+}  // namespace paladin_apl
