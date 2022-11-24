@@ -260,6 +260,47 @@ void retribution( player_t* p )
 //protection_apl_start
 void protection( player_t* p )
 {
+  action_priority_list_t* default_ = p->get_action_priority_list( "default" );
+  action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
+  action_priority_list_t* cooldowns = p->get_action_priority_list( "cooldowns" );
+  action_priority_list_t* standard = p->get_action_priority_list( "standard" );
+
+  default_->add_action( "auto_attack" );
+  default_->add_action( "variable,name=might_or_sentinel,value=(!talent.avenging_wrath.enabled&(!talent.avenging_wrath_might.enabled|talent.sentinel_enabled))" );
+  default_->add_action( "call_action_list,name=cooldowns" );
+  default_->add_action( "call_action_list,name=standard" );
+
+  precombat->add_action( "flask" );
+  precombat->add_action( "food" );
+  precombat->add_action( "augmentation" );
+  precombat->add_action( "snapshot_stats" );
+  precombat->add_action( "lights_judgment" );
+  precombat->add_action( "arcane_torrent" );
+  precombat->add_action( "consecration" );
+
+  cooldowns->add_action( "seraphim" );
+  cooldowns->add_action( "avenging_wrath,if=(buff.seraphim.up|!talent.seraphim.enabled)" );
+  cooldowns->add_action( "use_items,if=buff.avenging_wrath.up|variable.might_or_sentinel" );
+  cooldowns->add_action( "potion,if=buff.avenging_wrath.up|variable.might_or_sentinel" );
+  cooldowns->add_action( "moment_of_glory,if=(buff.avenging_wrath.remains>15|(cooldown.avenging_wrath.remains>15))" );
+  cooldowns->add_action( "holy_avenger,if=buff.avenging_wrath.up|variable.might_or_sentinel|cooldown.avenging_wrath.remains>60" );
+  cooldowns->add_action( "bastion_of_light,if=buff.avenging_wrath.up" );
+
+  standard->add_action( "shield_of_the_righteous,if=(cooldown.seraphim.remains>=5|!talent.seraphim.enabled)&(buff.bastion_of_light.up|((holy_power=3&!buff.blessing_of_dusk.up&!buff.holy_avenger.up)|holy_power=5)|buff.divine_purpose.up)" );
+  standard->add_action( "divine_toll,if=time>20|(buff.seraphim.up&buff.avenging_wrath.up|(!talent.avenging_wrath.enabled&(!talent.avenging_wrath_might.enabled|talent.sentinel_enabled))&(buff.moment_of_glory.up|!talent.moment_of_glory.enabled))" );
+  standard->add_action( "avengers_shield,if=buff.moment_of_glory.up|!talent.moment_of_glory.enabled" );
+  standard->add_action( "hammer_of_wrath,if=buff.avenging_wrath.up|(!talent.avenging_wrath.enabled&(!talent.avenging_wrath_might.enabled|talent.sentinel_enabled))" );
+  standard->add_action( "judgment,target_if=min:debuff.judgment.remains,if=charges=2|!talent.crusaders_judgment.enabled" );
+  standard->add_action( "avengers_shield" );
+  standard->add_action( "hammer_of_wrath" );
+  standard->add_action( "judgment,target_if=min:debuff.judgment.remains" );
+  standard->add_action( "consecration,if=!consecration.up" );
+  standard->add_action( "eye_of_tyr" );
+  standard->add_action( "blessed_hammer" );
+  standard->add_action( "hammer_of_the_righteous" );
+  standard->add_action( "crusader_strike" );
+  standard->add_action( "word_of_glory,if=buff.shining_light_free.up" );
+  standard->add_action( "consecration" );
 }
 //protection_apl_end
 }  // namespace paladin_apl
