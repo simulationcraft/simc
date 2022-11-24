@@ -1707,6 +1707,9 @@ struct dragonrage_t : public evoker_spell_t
     : evoker_spell_t( "dragonrage", p, p->talent.dragonrage, options_str ),
       max_targets( as<unsigned>( data().effectN( 2 ).trigger()->effectN( 1 ).base_value() ) )
   {
+    if ( !data().ok() )
+      return;
+
     damage = p->get_secondary_action<dragonrage_damage_t>( "dragonrage_pyre" );
     add_child( damage );
 
