@@ -3358,7 +3358,7 @@ struct blood_plague_t : public death_knight_disease_t
 
     heal = get_action<blood_plague_heal_t>( "blood_plague_heal", p );
 
-    // The "reduced effectiveness" mentionned in the tooltip is handled server side
+    // The "reduced effectiveness" mentioned in the tooltip is handled server side
     // Value calculated from testing, may change without notice
     if ( superstrain )
     {
@@ -3904,11 +3904,6 @@ struct apocalypse_t : public death_knight_melee_attack_t
 
   }
 
-  void init() override
-  {
-    death_knight_melee_attack_t::init();
-  }
-
   void impact( action_state_t* state ) override
   {
     death_knight_melee_attack_t::impact( state );
@@ -4090,11 +4085,6 @@ struct blood_boil_t : public death_knight_spell_t
     impact_action = get_action<blood_plague_t>( "blood_plague", p );
   }
 
-  void init() override
-  {
-    death_knight_spell_t::init();
-  }
-
   void execute() override
   {
     death_knight_spell_t::execute();
@@ -4196,11 +4186,6 @@ struct blooddrinker_t : public death_knight_spell_t
     base_tick_time = 1.0_s;
   }
 
-  void init() override
-  {
-    death_knight_spell_t::init();
-  }
-
   void tick( dot_t* d ) override
   {
     death_knight_spell_t::tick( d );
@@ -4269,11 +4254,6 @@ struct bonestorm_t : public death_knight_spell_t
     parse_options( options_str );
     hasted_ticks = false;
     tick_action = get_action<bonestorm_damage_t>( "bonestorm_damage", p );
-  }
-
-  void init() override
-  {
-    death_knight_spell_t::init();
   }
 
   timespan_t composite_dot_duration( const action_state_t* ) const override
@@ -4420,11 +4400,6 @@ struct breath_of_sindragosa_t : public death_knight_spell_t
     add_child( get_action<breath_of_sindragosa_tick_t>( "breath_of_sindragosa_tick", p ) );
   }
 
-  void init() override
-  {
-    death_knight_spell_t::init();
-  }
-
   void execute() override
   {
     death_knight_spell_t::execute();
@@ -4476,11 +4451,6 @@ struct chains_of_ice_t : public death_knight_spell_t
     {
       aoe = p -> talent.chains_of_ice -> effectN( 1 ).chain_target() + as<int>( p -> talent.proliferating_chill -> effectN( 1 ).base_value() );
     }
-  }
-
-  void init() override
-  {
-    death_knight_spell_t::init();
   }
 
   void impact( action_state_t* state ) override
@@ -4587,11 +4557,6 @@ struct consumption_t : public death_knight_melee_attack_t
     parse_options( options_str );
     aoe = -1;
     reduced_aoe_targets = data().effectN( 3 ).base_value();
-  }
-
-  void init() override
-  {
-    death_knight_melee_attack_t::init();
   }
 
   void execute() override
@@ -4841,11 +4806,6 @@ struct dark_transformation_t : public death_knight_spell_t
     }
   }
 
-  void init() override
-  {
-    death_knight_spell_t::init();
-  }
-
   bool ready() override
   {
     if ( ! p() -> pets.ghoul_pet || p() -> pets.ghoul_pet -> is_sleeping() )
@@ -4996,12 +4956,6 @@ struct death_and_decay_base_t : public death_knight_spell_t
 
     if ( p -> talent.blood.relish_in_blood.ok() )
       relish_in_blood = get_action<relish_in_blood_t>( "relish_in_blood", p );
-  }
-
-  
-  void init() override
-  {
-    death_knight_spell_t::init();
   }
 
   void init_finished() override
@@ -5155,11 +5109,6 @@ struct deaths_caress_t : public death_knight_spell_t
     impact_action = get_action<blood_plague_t>( "blood_plague", p );
   }
 
-  void init() override
-  {
-    death_knight_spell_t::init();
-  }
-
   void execute() override
   {
     death_knight_spell_t::execute();
@@ -5257,11 +5206,6 @@ struct death_coil_t : public death_knight_spell_t
     double cost = death_knight_spell_t::cost();
 
     return cost;
-  }
-
-  void init() override
-  {
-    death_knight_spell_t::init();
   }
 
   void execute() override
@@ -5503,11 +5447,6 @@ struct death_strike_t : public death_knight_melee_attack_t
     }
   }
 
-  void init() override
-  {
-    death_knight_melee_attack_t::init();
-  }
-
   double action_multiplier() const override
   {
     double m = death_knight_melee_attack_t::action_multiplier();
@@ -5738,11 +5677,6 @@ struct epidemic_t : public death_knight_spell_t
     return tl.size();
   }
 
-  void init() override
-  {
-    death_knight_spell_t::init();
-  }
-
   void execute() override
   {
     // Reset target cache because of smart targetting
@@ -5865,11 +5799,6 @@ struct festering_strike_t : public death_knight_melee_attack_t
     }
   }
 
-  void init() override
-  {
-    death_knight_melee_attack_t::init();
-  }
-
   void impact( action_state_t* s ) override
   {
     static const std::array<unsigned, 2> fw_proc_stacks = { { 2, 3 } };
@@ -5924,11 +5853,6 @@ struct frostscythe_t : public death_knight_melee_attack_t
     reduced_aoe_targets = data().effectN( 5 ).base_value();
     triggers_shackle_the_unworthy = triggers_icecap = true;
     // Crit multipier handled in death_knight_t::apply_affecting_aura()
-  }
-
-  void init() override
-  {
-    death_knight_melee_attack_t::init();
   }
 
   void impact( action_state_t* s ) override
@@ -6020,11 +5944,6 @@ struct frostwyrms_fury_t : public death_knight_spell_t
     }
     // Stun is NYI
   }
-
-  void init() override
-  {
-    death_knight_spell_t::init();
-  }
 };
 
 // Frost Strike =============================================================
@@ -6090,11 +6009,6 @@ struct frost_strike_t : public death_knight_melee_attack_t
       oh = new frost_strike_strike_t( p, "frost_strike_offhand", &( p -> off_hand_weapon ), data().effectN( 3 ).trigger() );
       add_child( oh );
     }
-  }
-
-  void init() override
-  {
-    death_knight_melee_attack_t::init();
   }
 
   void execute() override
@@ -6257,11 +6171,6 @@ struct heart_strike_t : public death_knight_melee_attack_t
     leeching_strike = get_action<leeching_strike_t>("leeching_strike", p);
   }
 
-  void init() override
-  {
-    death_knight_melee_attack_t::init();
-  }
-
   int n_targets() const override
   { return p() -> in_death_and_decay() ? aoe + as<int>( p() -> talent.cleaving_strikes -> effectN( 3 ).base_value() ) : aoe; }
 
@@ -6369,11 +6278,6 @@ struct howling_blast_t : public death_knight_spell_t
       avalanche = get_action<avalanche_t>( "avalanche", p );
       add_child( avalanche );
     }
-  }
-
-  void init() override
-  {
-    death_knight_spell_t::init();
   }
 
   double runic_power_generation_multiplier( const action_state_t* state ) const override
@@ -6489,11 +6393,6 @@ struct marrowrend_t : public death_knight_melee_attack_t
     parse_options( options_str );
     weapon = &( p -> main_hand_weapon );
     triggers_shackle_the_unworthy = true;
-  }
-
-  void init() override
-  {
-    death_knight_melee_attack_t::init();
   }
 
   void execute() override
@@ -6721,11 +6620,6 @@ struct obliterate_t : public death_knight_melee_attack_t
     }
   }
 
-  void init() override
-  {
-    death_knight_melee_attack_t::init();
-  }
-
   void execute() override
   {
     death_knight_melee_attack_t::execute();
@@ -6819,10 +6713,6 @@ struct outbreak_t : public death_knight_spell_t
     parse_options( options_str );
     triggers_shackle_the_unworthy = true;
     impact_action = get_action<virulent_plague_t>( "virulent_plague", p );
-  }
-  void init() override
-  {
-    death_knight_spell_t::init();
   }
 };
 
@@ -6949,11 +6839,6 @@ struct vile_contagion_t : public death_knight_spell_t
   {
     parse_options( options_str );
     aoe = p->talent.unholy.vile_contagion->effectN(1).base_value();
-  }
-
-  void init() override
-  {
-    death_knight_spell_t::init();
   }
 
   size_t available_targets( std::vector< player_t* >& tl ) const override
@@ -7144,11 +7029,6 @@ struct remorseless_winter_t : public death_knight_spell_t
     }
   }
 
-  void init() override
-  {
-    death_knight_spell_t::init();
-  }
-
   void execute() override
   {
     death_knight_spell_t::execute();
@@ -7182,11 +7062,6 @@ struct sacrificial_pact_t : public death_knight_heal_t
     damage = get_action<sacrificial_pact_damage_t>( "sacrificial_pact_damage", p );
   }
 
-  void init() override
-  {
-    death_knight_heal_t::init();
-  }
-
   void execute() override
   {
     death_knight_heal_t::execute();
@@ -7215,11 +7090,6 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
     dnd_cleave_targets( p -> talent.unholy.scourge_strike -> effectN( 4 ).base_value() )
   {
     weapon = &( player -> main_hand_weapon );
-  }
-
-  void init() override
-  {
-    death_knight_melee_attack_t::init();
   }
 
   // The death and decay target cap is displayed both in scourge strike's effects
@@ -7422,11 +7292,6 @@ struct soul_reaper_t : public death_knight_melee_attack_t
     dot_behavior = DOT_EXTEND;
   }
 
-  void init() override
-  {
-    death_knight_melee_attack_t::init();
-  }
-
   double composite_da_multiplier( const action_state_t* state ) const override
   {
     double m = death_knight_melee_attack_t::composite_da_multiplier( state );
@@ -7469,11 +7334,6 @@ struct summon_gargoyle_t : public death_knight_spell_t
     harmful = false;
   }
 
-  void init() override
-  {
-    death_knight_spell_t::init();
-  }
-
   void execute() override
   {
     death_knight_spell_t::execute();
@@ -7493,11 +7353,6 @@ struct tombstone_t : public death_knight_spell_t
     parse_options( options_str );
 
     harmful = may_crit = false;
-  }
-
-  void init() override
-  {
-    death_knight_spell_t::init();
   }
 
   void execute() override
@@ -7627,11 +7482,6 @@ struct unholy_blight_t : public death_knight_spell_t
     }
 
     return base_tick_time;
-  }
-
-  void init() override
-  {
-    death_knight_spell_t::init();
   }
 
   void execute() override
