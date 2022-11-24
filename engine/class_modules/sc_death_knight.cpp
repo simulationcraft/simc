@@ -6141,8 +6141,6 @@ struct heart_strike_t : public death_knight_melee_attack_t
     parse_options( options_str );
     aoe = 2;
     weapon = &( p -> main_hand_weapon );
-    // TODO July 19 2022 Heart Strike is missing rank 2 for the extra rp gain
-    //energize_amount += p -> spec.heart_strike_2 -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER );
     base_multiplier *= 1.0 + p -> talent.blood.improved_heart_strike -> effectN( 1 ).percent();
     leeching_strike = get_action<leeching_strike_t>("leeching_strike", p);
   }
@@ -7682,8 +7680,6 @@ struct rune_tap_t : public death_knight_spell_t
   {
     parse_options( options_str );
     use_off_gcd = true;
-    // TODO July 19 2022 Rank 2 is currently no where to be found
-    //cooldown -> charges += as<int>( p -> spec.rune_tap_2 -> effectN( 1 ).base_value() );
   }
 
   void execute() override
