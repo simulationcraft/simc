@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46702 Live (hotfix 2022-11-22/46702)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46741 Live (hotfix 2022-11-24/46741, git build update_builds 252553004a)
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=8, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
@@ -4260,7 +4260,6 @@ Effects          :
 Description      : Eclipse increases Wrath's Astral power generation $s1%, and increases Starfire's area effect damage by $s2%.
 
 Name             : Soul of the Forest (id=114108) [Spell Family (7)] 
-Hotfixed         : Attributes
 Class            : Druid
 School           : Nature
 Spell Type       : Magic

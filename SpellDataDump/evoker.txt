@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46702 Live (hotfix 2022-11-22/46702)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46741 Live (hotfix 2022-11-24/46741, git build update_builds 252553004a)
 Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Orc (0x2)
@@ -367,7 +367,6 @@ Description      : Deals $s1 Holy Damage to enemies within $A1.
 Heals $s2 to allies within $A1. 
 
 Name             : Quell (id=351338) [Spell Family (224)] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=4, col=1, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Physical
@@ -484,7 +483,6 @@ Description      : $@spelldesc358385
 Tooltip          : Rooted.
 
 Name             : Emerald Blossom (desc=Green) (id=355913) [Spell Family (224)] 
-Hotfixed         : Attributes
 Class            : Evoker
 School           : Nature
 Spell Type       : None
@@ -543,7 +541,6 @@ Effects          :
 Description      : $@spelldesc355913
 
 Name             : Dream Breath (desc=Green) (id=355936) [Spell Family (224)] 
-Hotfixed         : Attributes
 Talent Entry     : Preservation [tree=spec, row=2, col=1, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Nature
@@ -764,7 +761,6 @@ Effects          :
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Target: Self (1)
 
 Name             : Disintegrate (desc=Blue) (id=356995) [Spell Family (224)] 
-Hotfixed         : Attributes
 Class            : Evoker
 School           : Spellfrost
 Spell Type       : Magic
@@ -823,7 +819,6 @@ Healing a target under the effects of Time Dilation clears a portion of the dela
 Tooltip          : $w1% of damage is being delayed and dealt to you over time.
 
 Name             : Fire Breath (desc=Red) (id=357208) [Spell Family (224)] 
-Hotfixed         : Attributes
 Class            : Evoker
 School           : Fire
 Spell Type       : None
@@ -905,7 +900,6 @@ Description      : $@spelldesc357208
 Tooltip          : Burning for $w2 Fire damage every $t2 sec.$?$W3=1[ Silenced.][]
 
 Name             : Deep Breath (desc=Black) (id=357210) [Spell Family (224)] 
-Hotfixed         : Attributes
 Class            : Evoker
 School           : Firestorm
 Spell Type       : Magic
@@ -942,7 +936,6 @@ Removes all root effects. You are immune to movement impairing and loss of contr
 Tooltip          : Spewing molten cinders. Immune to crowd control.
 
 Name             : Pyre (desc=Red) (id=357211) [Spell Family (224)] 
-Hotfixed         : Attributes
 Talent Entry     : Devastation [tree=spec, row=1, col=1, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Fire
@@ -994,7 +987,6 @@ Effects          :
 Description      : $@spelldesc357211
 
 Name             : Hover (id=358267) [Spell Family (224)] 
-Hotfixed         : Proc Stacks (1 -> 0), Attributes
 Class            : Evoker
 School           : Physical
 Spell Type       : None
@@ -1071,7 +1063,6 @@ Effects          :
 Description      : $@spelldesc358267
 
 Name             : Landslide (desc=Black) (id=358385) [Spell Family (224)] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [free=(Devastation), tree=class, row=1, col=1, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Firestorm
@@ -1098,7 +1089,6 @@ Effects          :
 Description      : Conjure a path of shifting stone towards the target location, rooting enemies for $355689d. Damage may cancel the effect.
 
 Name             : Eternity Surge (desc=Blue) (id=359073) [Spell Family (224)] 
-Hotfixed         : Attributes
 Talent Entry     : Devastation [tree=spec, row=3, col=3, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Spellfrost
@@ -1256,7 +1246,6 @@ Effects          :
 Description      : Emerald Blossom sends out $s1 flying $Lseedling:seedlings; when it bursts, healing allies up to $s2 yds away for $361361s1.
 
 Name             : Dream Flight (desc=Green) (id=359816) [Spell Family (224)] 
-Hotfixed         : Attributes
 Talent Entry     : Preservation [tree=spec, row=10, col=1, max_rank=1, req_points=20]
 Class            : Evoker
 School           : Nature
@@ -1295,7 +1284,6 @@ Removes all root effects. You are immune to movement impairing and loss of contr
 Tooltip          : Releasing healing breath. Immune to crowd control.
 
 Name             : Sleep Walk (desc=Green) (id=360806) [Spell Family (224)] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=5, col=5, max_rank=1, req_points=8]
 Class            : Evoker
 School           : Nature
@@ -1333,7 +1321,6 @@ Description      : Disorient an enemy for $d, causing them to sleep walk towards
 Tooltip          : Asleep.
 
 Name             : Naturalize (desc=Green) (id=360823) [Spell Family (224)] 
-Hotfixed         : Attributes
 Replaces         : Expunge (id=365585)
 Class            : Preservation Evoker
 School           : Nature
@@ -1363,7 +1350,6 @@ Effects          :
 Description      : Cleanses harmful effects from the target, removing all Magic and Poison effects.
 
 Name             : Verdant Embrace (desc=Green) (id=360995) [Spell Family (224)] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=2, col=3, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Nature
@@ -1419,6 +1405,7 @@ Description      : Brings all dead party members back to life with $s1% health a
 
 
 Name             : Verdant Embrace (id=361195) [Spell Family (224)] 
+Hotfixed         : Attributes
 Class            : Evoker
 School           : Nature
 Spell Type       : None
@@ -1429,14 +1416,14 @@ Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect
 Affecting spells : Devastation Evoker (356809 effects: #5, #6), Preservation Evoker (356810 effects: #1, #2, #10), Initial Evoker (356816 effects: #6, #7), Attuned to the Dream (376930 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1)
 Family Flags     : 1, 36
 Attributes       : ........ ........ ..x..... x..x....   .....x.. ........ ........ ........ 
-                 : ........ ......x. ...x.... ........   ........ .x...... ........ ......x. 
+                 : ..x..... ......x. ...x.... ........   ........ .x...... ........ ......x. 
                  : .......x ........ ...x.... ........   x..x.... ........ .xx..... ........ 
                  : ........ .x..x... .x...... ........   ........ ........ ........ ........ 
                  : .....x.. ........ ........ ........   ........ ...x.... ....x... ........ 
                  : ........ ........ ......x. ........   ........ ........ ........ ..xx.... 
                  : ........ ........ ........ ........   xx...... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Not a Proc (105), Do Not Display Range (126), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Don't close loot window (379), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
+                 : Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Not a Proc (105), Do Not Display Range (126), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Don't close loot window (379), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=898900)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.09600 | PvP Coefficient: 1.00000 | Target: Friend (21)
@@ -1468,7 +1455,6 @@ Description      : Regenerate an ally for the next $d, healing them for $s1 ever
 Tooltip          : Regenerating $s1 every $t1 sec.
 
 Name             : Living Flame (desc=Red) (id=361469) [Spell Family (224)] 
-Hotfixed         : Attributes
 Class            : Evoker
 School           : Fire
 Spell Type       : Magic
@@ -1611,7 +1597,6 @@ Description      : $@spelldesc362874
 Tooltip          : Empower spells reach maximum level in $s1% less time.
 
 Name             : Azure Strike (desc=Blue) (id=362969) [Spell Family (224)] 
-Hotfixed         : Attributes
 Class            : Evoker
 School           : Spellfrost
 Spell Type       : Magic
@@ -1706,7 +1691,6 @@ Effects          :
 Description      : Healing done to allies is increased by $s1% while their health percentage is lower than your own.
 
 Name             : Rewind (desc=Bronze) (id=363534) [Spell Family (224)] 
-Hotfixed         : Attributes
 Talent Entry     : Preservation [tree=spec, row=3, col=3, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Arcane
@@ -1745,7 +1729,6 @@ Tooltip          : Rewinding the last $s2 sec of damage.
 Variables        : $min=${$SP*0.4*($d/$t1)}
 
 Name             : Obsidian Scales (desc=Black) (id=363916) [Spell Family (224)] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=1, col=2, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Firestorm
@@ -1782,7 +1765,6 @@ Tooltip          : Damage taken reduced by $w1%.$?$w2=1[
 Immune to interrupt and silence effects.][]
 
 Name             : Blessing of the Bronze (desc=Bronze) (id=364342) [Spell Family (224)] 
-Hotfixed         : Attributes
 Class            : Evoker
 School           : Arcane
 Spell Type       : Magic
@@ -1831,7 +1813,6 @@ Effects          :
 Description      : Weave the threads of time, reducing the cooldown of a major movement ability for all party and raid members by $381732s1% for $381732d.
 
 Name             : Echo (desc=Bronze) (id=364343) [Spell Family (224)] 
-Hotfixed         : Attributes
 Talent Entry     : Preservation [tree=spec, row=1, col=1, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Arcane
@@ -1907,7 +1888,6 @@ Effects          :
 Description      : Emerald Blossom costs $s2 Essence, but no longer has a cooldown.
 
 Name             : Expunge (desc=Green) (id=365585) [Spell Family (224)] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [free=(Preservation), tree=class, row=1, col=3, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Nature
@@ -1977,7 +1957,6 @@ Effects          :
 Description      : Living Flame deals $361500o2 damage over $361500d to enemies, or restores $361509o2 health to allies over $361509d. Stacks $361509u times.
 
 Name             : Reversion (desc=Bronze) (id=366155) [Spell Family (224)] 
-Hotfixed         : Attributes
 Talent Entry     : Preservation [tree=spec, row=2, col=2, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Arcane
@@ -2033,7 +2012,6 @@ Effects          :
 Description      : Increases your Intellect by $s1% while wearing only Mail armor.
 
 Name             : Spiritbloom (desc=Green) (id=367226) [Spell Family (224)] 
-Hotfixed         : Attributes
 Talent Entry     : Preservation [tree=spec, row=4, col=1, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Nature
@@ -2147,7 +2125,6 @@ Effects          :
 Description      : $@spelldesc368412
 
 Name             : Unravel (desc=Blue) (id=368432) [Spell Family (224)] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=8, col=1, max_rank=1, req_points=20]
 Class            : Evoker
 School           : Spellfrost
@@ -2216,7 +2193,6 @@ Effects          :
 Description      : Wing Buffet's cooldown is reduced by ${$s1/-1000} sec.
 
 Name             : Firestorm (desc=Red) (id=368847) [Spell Family (224)] 
-Hotfixed         : Attributes
 Talent Entry     : Devastation [tree=spec, row=6, col=1, max_rank=1, req_points=8]
 Class            : Evoker
 School           : Fire
@@ -2581,7 +2557,6 @@ Effects          :
 Description      : Gain a $s1% chance for one of your Fluttering Seedlings to grow into a new Emerald Blossom.
 
 Name             : Shattering Star (desc=Blue) (id=370452) [Spell Family (224)] 
-Hotfixed         : Attributes
 Talent Entry     : Devastation [tree=spec, row=7, col=4, max_rank=1, req_points=8]
 Class            : Evoker
 School           : Spellfrost
@@ -2669,7 +2644,6 @@ Effects          :
 Description      : Your Blue damage increases the damage of your next Pyre by $370454s1%, stacking $370454u times.
 
 Name             : Stasis (desc=Bronze) (id=370537) [Spell Family (224)] 
-Hotfixed         : Attributes
 Talent Entry     : Preservation [tree=spec, row=10, col=3, max_rank=1, req_points=20]
 Class            : Evoker
 School           : Arcane
@@ -2703,7 +2677,6 @@ Description      : Causes your next ${$s1*3} helpful spells to be duplicated and
 Tooltip          : Your next $s1 healing $Lspell:spells; will be held in a time lock.
 
 Name             : Tip the Scales (desc=Bronze) (id=370553) [Spell Family (224)] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=5, col=3, max_rank=1, req_points=8]
 Class            : Evoker
 School           : Arcane
@@ -2737,7 +2710,6 @@ Description      : Compress time to make your next empowered spell cast instantl
 Tooltip          : Your next empowered spell casts instantly at its maximum empower level.
 
 Name             : Rescue (id=370665) [Spell Family (224)] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=8, col=5, max_rank=1, req_points=20]
 Class            : Evoker
 School           : Physical
@@ -3162,7 +3134,6 @@ Effects          :
 Description      : $@spelldesc369939
 
 Name             : Emerald Communion (desc=Green) (id=370960) [Spell Family (224)] 
-Hotfixed         : Attributes
 Talent Entry     : Preservation [tree=spec, row=5, col=1, max_rank=1, req_points=8]
 Class            : Evoker
 School           : Nature
@@ -3478,7 +3449,6 @@ Effects          :
 Description      : $@spelldesc371832
 
 Name             : Oppressing Roar (desc=Black) (id=372048) [Spell Family (224)] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=8, col=3, max_rank=1, req_points=20]
 Class            : Evoker
 School           : Physical
@@ -3730,7 +3700,6 @@ Effects          :
 Tooltip          : Sharing $s1% of healing to an ally.
 
 Name             : Lifebind (id=373270) [Spell Family (224), Passive] 
-Hotfixed         : Description
 Talent Entry     : Preservation [tree=spec, row=7, col=2, max_rank=1, req_points=8]
 Class            : Evoker
 School           : Nature
@@ -3809,7 +3778,6 @@ Description      : $@spelldesc373834
 Tooltip          : Healing of next Dream Breath increased by $s1%, or next Living Flame by $s2%.
 
 Name             : Temporal Anomaly (desc=Bronze) (id=373861) [Spell Family (224)] 
-Hotfixed         : Attributes
 Talent Entry     : Preservation [tree=spec, row=5, col=7, max_rank=1, req_points=8]
 Class            : Evoker
 School           : Arcane
@@ -3840,7 +3808,6 @@ Description      : Send forward a vortex of temporal energy, absorbing $<shield>
 Variables        : $shield=${$SP*1.75*(1+$@versadmg)}
 
 Name             : Zephyr (id=374227) [Spell Family (224)] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=10, col=3, max_rank=1, req_points=20]
 Class            : Evoker
 School           : Physical
@@ -3871,7 +3838,6 @@ Tooltip          : Damage taken from area-of-effect attacks reduced by $w1%.
 Movement speed increased by $w2%.
 
 Name             : Cauterizing Flame (desc=Red) (id=374251) [Spell Family (224)] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=4, col=5, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Fire
@@ -3928,7 +3894,6 @@ Effects          :
 Description      : Oppressing Roar removes $372048s1 Enrage effect from each enemy, and its cooldown is reduced by $s1 sec for each Enrage dispelled.
 
 Name             : Renewing Blaze (desc=Red) (id=374348) [Spell Family (224)] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=8, col=7, max_rank=1, req_points=20]
 Class            : Evoker
 School           : Fire
@@ -3982,7 +3947,6 @@ Description      : $@spelldesc374348
 Tooltip          : Restoring $w1 health every $t1 sec.
 
 Name             : Time Spiral (desc=Bronze) (id=374968) [Spell Family (224)] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=10, col=2, max_rank=1, req_points=20]
 Class            : Evoker
 School           : Arcane
@@ -4005,7 +3969,6 @@ Effects          :
 Description      : Bend time, allowing you and your allies to cast their major movement ability once in the next $375226d, even if it is on cooldown.
 
 Name             : Dragonrage (desc=Red) (id=375087) [Spell Family (224)] 
-Hotfixed         : Attributes
 Talent Entry     : Devastation [tree=spec, row=4, col=3, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Physical
@@ -4676,16 +4639,18 @@ Effects          :
 Description      : Casting an empower spell extends the duration of Dragonrage by ${$s1/1000} sec.
 
 Name             : Burnout (id=375801) [Spell Family (224), Passive] 
+Hotfixed         : Proc Chance (101 -> 100), Internal Cooldown (200 -> 1000), Affecting Spells
 Talent Entry     : Devastation [tree=spec, row=9, col=1, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(8, 16)]
 Class            : Evoker
 School           : Fire
 Spell Type       : None
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11)
-Internal Cooldown: 0.2 seconds
-Proc Chance      : 101%
+Internal Cooldown: 1 seconds
+Proc Chance      : 100%
 Proc Flags       : ........ ........ x.x..... ........ 
                  : Magic Hostile Spell, Periodic
+Family Flags     : 60
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5699,7 +5664,6 @@ Effects          :
 Description      : Rewind's cooldown is reduced by ${$s1/-1000} sec.
 
 Name             : Fire Breath (desc=Red) (id=382266) [Spell Family (224)] 
-Hotfixed         : Attributes
 Class            : Evoker
 School           : Fire
 Spell Type       : None
@@ -5786,7 +5750,6 @@ Description      : $@spelldesc382289
 Tooltip          : Absorbs $w1 damage.
 
 Name             : Eternity Surge (desc=Blue) (id=382411) [Spell Family (224)] 
-Hotfixed         : Attributes
 Class            : Evoker
 School           : Spellfrost
 Spell Type       : None
@@ -5824,7 +5787,6 @@ Description      : Focus your energies to release a salvo of pure magic, dealing
 Variables        : $dmg=${$359077s2}
 
 Name             : Dream Breath (desc=Green) (id=382614) [Spell Family (224)] 
-Hotfixed         : Attributes
 Class            : Evoker
 School           : Nature
 Spell Type       : None
@@ -5871,7 +5833,6 @@ $sThreeDur=${8}
 $sFourDur=${4}
 
 Name             : Spiritbloom (desc=Green) (id=382731) [Spell Family (224)] 
-Hotfixed         : Attributes
 Class            : Evoker
 School           : Nature
 Spell Type       : None

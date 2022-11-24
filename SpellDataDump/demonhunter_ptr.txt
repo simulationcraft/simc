@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46702 Live (hotfix 2022-11-22/46702)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46741 Live (hotfix 2022-11-24/46741, git build update_builds 252553004a)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -7427,7 +7427,6 @@ Effects          :
 #2 (id=1043571)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value 2: 2432 (Label) | Target: Self (1)
                    Affected Spells (Label): Infernal Armor (320334)
-Hotfixed         : NEW EFFECT
 Description      : Immolation Aura increases your armor by $s1% and causes melee attackers to suffer $320334s1 $@spelldesc395020 damage.
 
 Name             : Infernal Armor (id=320334) [Spell Family (107)] 

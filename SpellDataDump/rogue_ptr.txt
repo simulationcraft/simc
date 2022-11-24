@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46702 Live (hotfix 2022-11-22/46702)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46741 Live (hotfix 2022-11-24/46741, git build update_builds 252553004a)
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -9237,7 +9237,7 @@ Effects          :
 #4 (id=881094)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #5 (id=887338)   : Apply Aura (6) | Modify Versatility% (471)
-                   Base Value: 0.5 | Scaled Value: 0.5 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Lash the target for $s1 Shadow damage, causing each combo point spent within $d to lash for an additional $345316s1. Dealing damage with Flagellation increases your Haste by $s2%, persisting $345569d after their torment fades.
 Tooltip          : $?$W2>0[Nearby Rogue is tormenting the target, dealing $345316s1 Shadow damage for each combo point spent.][Combo points spent deal $345316s1 Shadow damage to the Rogue's tormented target. Haste increased by $s3%.]
 
