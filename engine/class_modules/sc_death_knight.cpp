@@ -4894,15 +4894,6 @@ struct defile_damage_t : public death_and_decay_damage_base_t
   }
 };
 
-struct deaths_due_damage_t : public death_and_decay_damage_t
-// Death's due is typed after dnd_damage rather than dnd_damage_base
-// Because it shares the pestilence interaction and is replaced by defile too
-{
-  deaths_due_damage_t( util::string_view name, death_knight_t* p ) :
-    death_and_decay_damage_t( name, p, p -> find_spell( 341340 ) )
-  {}
-};
-
 // Relish in Blood healing and RP generation
 struct relish_in_blood_t : public death_knight_heal_t
 {
@@ -6440,7 +6431,7 @@ struct mind_freeze_t : public death_knight_spell_t
 
 struct obliterate_strike_t : public death_knight_melee_attack_t
 {
-  int deaths_due_cleave_targets;
+  int cleaving_strikes_targets;
   action_t* inexorable_assault;
   obliterate_strike_t( death_knight_t* p, util::string_view name,
                        weapon_t* w, const spell_data_t* s ) :
@@ -6455,7 +6446,7 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
     // - obliterate damage spells have gained a value of 1 in their chain target data
     // - the death and decay buff now has an effect that modifies obliterate's chain target with a value of 0
     // - death's due increases the aforementionned death and decay buff effect by 1
-    deaths_due_cleave_targets = data().effectN ( 1 ).chain_target() +
+    cleaving_strikes_targets = data().effectN ( 1 ).chain_target() +
                                 as<int>( p -> spell.dnd_buff -> effectN ( 4 ).base_value() ) +
                                 as<int>( p -> talent.cleaving_strikes -> effectN( 2 ).base_value() );
 
@@ -6478,7 +6469,7 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
       if ( p() -> in_death_and_decay() )
       {
         if( p() -> talent.cleaving_strikes.ok() )
-          return deaths_due_cleave_targets;
+          return cleaving_strikes_targets;
       }
 
       return death_knight_melee_attack_t::n_targets();
