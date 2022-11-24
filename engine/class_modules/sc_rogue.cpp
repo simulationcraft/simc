@@ -8355,6 +8355,7 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
     ->apply_affecting_conduit( source->conduit.well_placed_steel );
   debuffs.ghostly_strike = make_buff( *this, "ghostly_strike", source->talent.outlaw.ghostly_strike )
     ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER )
+    ->set_tick_behavior( buff_tick_behavior::NONE )
     ->set_cooldown( timespan_t::zero() );
   debuffs.find_weakness = make_buff( *this, "find_weakness", source->spell.find_weakness_debuff )
     ->set_default_value( source->talent.rogue.find_weakness->effectN( 1 ).percent() )

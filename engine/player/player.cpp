@@ -1705,8 +1705,13 @@ void player_t::parse_temporary_enchants()
     if ( it != std::string_view::npos )
     {
       auto rank_str = token_split[ 1 ].substr( it + 1 );
-      rank = util::to_unsigned_ignore_error( rank_str, 0 );
-      enchant_str = token_split[ 1 ].substr( 0, it );
+      auto parsed_rank = util::to_unsigned_ignore_error( rank_str, std::numeric_limits<unsigned>::max() );
+
+      if ( parsed_rank != std::numeric_limits<unsigned>::max() )
+      {
+        enchant_str = token_split[ 1 ].substr( 0, it );
+        rank = parsed_rank;
+      }
     }
 
     const auto& enchant = temporary_enchant_entry_t::find( enchant_str, rank, dbc->ptr );
@@ -5521,18 +5526,6 @@ void player_t::combat_begin()
   add_timed_blessing_triggers( external_buffs.blessing_of_autumn, buffs.blessing_of_autumn );
   add_timed_blessing_triggers( external_buffs.blessing_of_winter, buffs.blessing_of_winter );
   add_timed_blessing_triggers( external_buffs.blessing_of_spring, buffs.blessing_of_spring );
-
-  if ( buffs.kindred_affinity && !external_buffs.kindred_affinity.empty() )
-  {
-    // this is a persistent buff with no proc chance, so trigger() will return false
-    buffs.kindred_affinity->increment();
-
-    for ( auto t : external_buffs.kindred_affinity )
-    {
-      make_event( *sim, t, [ this ] { buffs.kindred_affinity->increment(); } );
-      make_event( *sim, t + 10_s, [ this ] { buffs.kindred_affinity->decrement(); } );
-    }
-  }
 
   if ( buffs.windfury_totem )
   {
@@ -10680,6 +10673,11 @@ const spell_data_t* player_t::find_covenant_spell( util::string_view name ) cons
 
 item_runeforge_t player_t::find_runeforge_legendary( util::string_view name, bool tokenized, bool force_unity ) const
 {
+  if ( !sim->shadowlands_opts.enabled )
+  {
+    return item_runeforge_t::nil();
+  }
+
   auto entries = runeforge_legendary_entry_t::find( name, dbc->ptr, tokenized );
   if ( entries.empty() )
   {
@@ -12460,7 +12458,6 @@ void player_t::create_options()
   add_option( opt_external_buff_times( "external_buffs.conquerors_banner", external_buffs.conquerors_banner ) );
   add_option( opt_external_buff_times( "external_buffs.rallying_cry", external_buffs.rallying_cry ) );
   add_option( opt_external_buff_times( "external_buffs.pact_of_the_soulstalkers", external_buffs.pact_of_the_soulstalkers ) ); // 9.1 Kyrian Hunter Legendary
-  add_option( opt_external_buff_times( "external_buffs.kindred_affinity", external_buffs.kindred_affinity ) ) ;
   add_option( opt_external_buff_times( "external_buffs.boon_of_azeroth", external_buffs.boon_of_azeroth ) );
   add_option( opt_external_buff_times( "external_buffs.boon_of_azeroth_mythic", external_buffs.boon_of_azeroth_mythic ) );
   add_option( opt_external_buff_times( "external_buffs.tome_of_unstable_power", external_buffs.tome_of_unstable_power) );

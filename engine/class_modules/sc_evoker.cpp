@@ -97,7 +97,7 @@ struct evoker_t : public player_t
   // !!!===========================================================================!!!
   // !!! Runtime variables NOTE: these MUST be properly reset in evoker_t::reset() !!!
   // !!!===========================================================================!!!
-
+  bool was_empowering;
   // !!!===========================================================================!!!
 
   // Options
@@ -310,6 +310,8 @@ struct evoker_t : public player_t
   void create_buffs() override;
   void create_options() override;
   //void arise() override;
+  void moving() override;
+  void schedule_ready( timespan_t, bool ) override;
   //void combat_begin() override;
   //void combat_end() override;
   void analyze( sim_t& ) override;
@@ -749,6 +751,8 @@ struct empowered_release_spell_t : public empowered_base_t
 
   void execute() override
   {
+    p()->was_empowering = false;
+
     empowered_base_t::execute();
 
     if ( background )
@@ -936,7 +940,10 @@ struct empowered_charge_spell_t : public empowered_base_t
     empowered_base_t::last_tick( d );
 
     if ( empower_level( d ) == empower_e::EMPOWER_NONE )
+    {
+      p()->was_empowering = false;
       return;
+    }
 
     auto emp_state = release_spell->get_state();
     emp_state->target = d->state->target;
@@ -1742,6 +1749,7 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
 
 evoker_t::evoker_t( sim_t* sim, std::string_view name, race_e r )
   : player_t( sim, EVOKER, name, r ),
+    was_empowering( false ),
     option(),
     action(),
     buff(),
@@ -2123,9 +2131,30 @@ void evoker_t::analyze( sim_t& sim )
   player_t::analyze( sim );
 }
 
+void evoker_t::moving()
+{
+  // If we are mid-empower and forced to move, we don't want player_t::interrupt() to schedule_ready as the release
+  // action will handle that for us. We set the bool here and override player_t::schedule_ready to return if bool is
+  // set.
+  if ( channeling && dynamic_cast<spells::empowered_charge_spell_t*>( channeling ) )
+    was_empowering = true;
+
+  player_t::moving();
+}
+
+void evoker_t::schedule_ready( timespan_t delta_time, bool waiting )
+{
+  if ( was_empowering )
+    return;
+
+  player_t::schedule_ready( delta_time, waiting );
+}
+
 void evoker_t::reset()
 {
   player_t::reset();
+
+  was_empowering = false;
 }
 
 void evoker_t::copy_from( player_t* source )

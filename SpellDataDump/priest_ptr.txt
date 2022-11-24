@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46658 Live (hotfix 2022-11-16/46658)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46702 Live (hotfix 2022-11-22/46702)
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -411,7 +411,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Labels           : 802: Devout Spirit (297412 effect#1), Devout Spirit (310530 effect#1)
 Stance Mask      : 0x88000000
-Affecting spells : Renew (139 effect#2), Rapid Healing (24546 effect#2), Spirit of Redemption (27827 effect#2), Healing Trance (37706 effect#1), Surge of Light (114255 effects: #1, #2), Holy Priest (137031 effects: #1, #2, #16), Discipline Priest (137032 effects: #1, #2), Shadow Priest (137033 effect#16), Complete Healing (184914 effect#1), Light of T'uure (208065 effect#1), Muze's Unwavering Will (210632 effects: #1, #3), Rammal's Ulterior Motive (234711 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Promise of Deliverance (287340 effect#1), Measured Contemplation (341824 effect#1), Divine Conversation (363727 effect#2), Divine Favor: Serenity (372791 effects: #1, #3, #4), Unwavering Will (373456 effects: #1, #3), From Darkness Comes Light (390617 effect#1), Crisis Management (390954 effect#1), Twist of Fate (390978 effects: #1, #2), Improved Flash Heal (393870 effect#1), Light Weaving (394609 effect#1)
+Affecting spells : Renew (139 effect#2), Rapid Healing (24546 effect#2), Spirit of Redemption (27827 effect#2), Healing Trance (37706 effect#1), Surge of Light (114255 effects: #1, #2, #3, #4), Holy Priest (137031 effects: #1, #2, #16), Discipline Priest (137032 effects: #1, #2, #17), Shadow Priest (137033 effect#16), Complete Healing (184914 effect#1), Light of T'uure (208065 effect#1), Muze's Unwavering Will (210632 effects: #1, #3), Rammal's Ulterior Motive (234711 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Promise of Deliverance (287340 effect#1), Measured Contemplation (341824 effect#1), Divine Conversation (363727 effect#2), Divine Favor: Serenity (372791 effects: #1, #3, #4), Unwavering Will (373456 effects: #1, #3), From Darkness Comes Light (390617 effect#1), Crisis Management (390954 effect#1), Twist of Fate (390978 effects: #1, #2), Improved Flash Heal (393870 effect#1), Light Weaving (394609 effect#1)
 Triggered by     : Surge of Light (114255)
 Family Flags     : 11, 126
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -2886,10 +2886,16 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Flash Heal (2061)
                    Family Flags: 11
-#3 (id=164989)   : Apply Aura (6) | Unknown(408)
+#3 (id=164989)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Generation (34)
+                   Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 34 | Target: Self (1)
+                   Affected Spells: Flash Heal (2061)
+                   Family Flags: 11
+#4 (id=164990)   : Apply Aura (6) | Add Percent Modifier (108): Unknown(39)
+                   Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 39 | Target: Self (1)
+                   Affected Spells: Flash Heal (2061)
+                   Family Flags: 11
+#5 (id=1043134)  : Apply Aura (6) | Unknown(408)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 2061 | Target: Self (1)
-#4 (id=164990)   : Apply Aura (6) | Unknown(408)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 101062 | Target: Self (1)
 Description      : $@spelldesc109186
 Tooltip          : Next Flash Heal is instant and costs no mana.
 
@@ -3600,6 +3606,10 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 37 | Target: Self (1)
                    Affected Spells: Focused Will (45242)
                    Family Flags: 111
+#17 (id=1042533)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Flash Heal (2061)
+                   Family Flags: 11
 Description      : Discipline Priest core passive
 
 Name             : Shadow Priest (id=137033) [Spell Family (6), Passive, Hidden] 
@@ -4184,7 +4194,7 @@ Talent Entry     : Discipline [tree=spec, row=2, col=1, max_rank=1, req_points=0
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
-Resource         : 6.5% Base Mana (0) (id=10498)
+Resource         : 5.5% Base Mana (0) (id=10498)
 Spell Level      : 23
 Range            : 40 yards
 Cast Time        : 2 seconds
@@ -13121,7 +13131,7 @@ Description      : Invoke the Light's wrath, dealing $s1 Radiant damage to the t
 
 Name             : Harsh Discipline (id=373180) [Spell Family (6), Passive, Hidden] 
 Talent Entry     : Discipline [tree=spec, row=9, col=4, max_rank=2, req_points=20]
-                 : Effect#1 [op=set, values=(10, 5)]
+                 : Effect#1 [op=set, values=(8, 4)]
 Class            : Priest
 School           : Holy
 Spell Type       : None
