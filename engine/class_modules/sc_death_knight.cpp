@@ -1105,8 +1105,6 @@ public:
   void      init_spells() override;
   void      init_action_list() override;
   void      init_rng() override;
-  void      init_special_effects() override;
-  void      init_special_effect( special_effect_t& effect ) override;
   void      init_base_stats() override;
   void      init_scaling() override;
   void      create_buffs() override;
@@ -8948,18 +8946,6 @@ void death_knight_t::init_rng()
 
   rppm.bloodworms = get_rppm( "bloodworms", talent.blood.bloodworms );
   rppm.runic_attenuation = get_rppm( "runic_attenuation", talent.runic_attenuation );
-}
-
-// death_knight_t::init_special_effects =====================================
-void death_knight_t::init_special_effects()
-{
-  player_t::init_special_effects();
-}
-
-// death_knight_t::init_special_effect ============================================
-
-void death_knight_t::init_special_effect( special_effect_t& effect )
-{
 }
 
 // death_knight_t::init_base ================================================
