@@ -462,7 +462,6 @@ public:
   // Counters
   unsigned int km_proc_attempts; // critical auto attacks since the last KM proc
   unsigned int festering_wounds_target_count; // cached value of the current number of enemies affected by FW
-  double insatiable_hunger_spent_rp_accumulator; // Counts how much RP you spend during swarming mist, used for insatiable hunger explosion
   unsigned int bone_shield_charges_consumed; // Counts how many bone shield charges have been consumed for T29 4pc blood
 
   stats_t* antimagic_shell;
@@ -1066,7 +1065,6 @@ public:
     runeforge_expression_warning( false ),
     km_proc_attempts( 0 ),
     festering_wounds_target_count( 0 ),
-    insatiable_hunger_spent_rp_accumulator( 0 ),
     bone_shield_charges_consumed( 0 ),
     antimagic_shell( nullptr ),
     buffs(),
@@ -9788,7 +9786,6 @@ void death_knight_t::reset()
   _runes.reset();
   active_dnd = nullptr;
   km_proc_attempts = 0;
-  insatiable_hunger_spent_rp_accumulator = 0;
   bone_shield_charges_consumed = 0;
 }
 
