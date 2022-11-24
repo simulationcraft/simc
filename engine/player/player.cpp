@@ -9847,8 +9847,10 @@ struct invoke_external_buff_t : public action_t
   {
     action_t::init_finished();
 
-    if ( !player->external_buffs.invoke )
-        return;
+    // Only continue if the buff is specified in the external_buffs.invoke option
+    if ( player->external_buffs.invoke.empty() ||
+         !range::contains( util::string_split<util::string_view>( player->external_buffs.invoke, "/" ), buff_str ) )
+      return;
 
     if ( buff_str.empty() )
     {
@@ -12439,7 +12441,7 @@ void player_t::create_options()
     } ) );
 
   // Invoke External Buffs
-  add_option( opt_bool( "external_buffs.invoke", external_buffs.invoke ) );
+  add_option( opt_string( "external_buffs.invoke", external_buffs.invoke ) );
 
   // Permanent External Buffs
   add_option( opt_bool( "external_buffs.focus_magic", external_buffs.focus_magic ) );

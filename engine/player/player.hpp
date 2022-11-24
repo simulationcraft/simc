@@ -605,7 +605,7 @@ struct player_t : public actor_t
 
   struct external_buffs_t
   {
-    bool invoke;
+    std::string invoke;
     bool focus_magic;
     bool seasons_of_plenty;
     double blessing_of_summer_duration_multiplier;
