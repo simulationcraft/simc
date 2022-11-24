@@ -13,8 +13,9 @@
 #include "ground_aoe.hpp"
 #include "item/item.hpp"
 #include "item/item_targetdata_initializer.hpp"
-#include "sim/sim.hpp"
 #include "set_bonus.hpp"
+#include "sim/cooldown.hpp"
+#include "sim/sim.hpp"
 #include "stats.hpp"
 #include "unique_gear.hpp"
 #include "unique_gear_helper.hpp"
@@ -902,6 +903,20 @@ void darkmoon_deck_watcher( special_effect_t& effect )
   effect.buff_disabled = true;
 }
 
+void alacritous_alchemist_stone( special_effect_t& effect )
+{
+  new dbc_proc_callback_t( effect.player, effect );
+
+  auto cd = effect.player->get_cooldown( "potion" );
+  auto cd_adj = -timespan_t::from_seconds( effect.driver()->effectN( 1 ).base_value() );
+
+  effect.player->callbacks.register_callback_execute_function(
+      effect.spell_id, [ cd, cd_adj ]( const dbc_proc_callback_t* cb, action_t*, action_state_t* ) {
+        cb->proc_buff->trigger();
+        cd->adjust( cd_adj );
+      } );
+}
+
 void bottle_of_spiraling_winds( special_effect_t& effect )
 {
   // TODO: determine what happens on buff refresh
@@ -1387,6 +1402,14 @@ void spoils_of_neltharus( special_effect_t& effect )
   };
 
   effect.execute_action = create_proc_action<spoils_of_neltharus_t>( "spoils_of_neltharus", effect );
+}
+
+void sustaining_alchemist_stone( special_effect_t& effect )
+{
+  effect.stat = effect.player->convert_hybrid_stat( STAT_STR_AGI_INT );
+  effect.stat_amount = effect.driver()->effectN( 2 ).average( effect.item );
+
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 void timebreaching_talon( special_effect_t& effect )
@@ -2437,7 +2460,7 @@ void forgestorm( special_effect_t& effect )
     {
       base_dd_min = base_dd_max = e.player -> find_spell( 381698 ) -> effectN( 1 ).average( e.item );
       background = true;
-      aoe = e.player -> find_spell( 381698 ) -> effectN( 2 ).base_value();
+      aoe = as<int>( e.player->find_spell( 381698 )->effectN( 2 ).base_value() );
       reduced_aoe_targets = 1.0;
     }
   };
@@ -2832,6 +2855,7 @@ void register_special_effects()
   register_special_effect( 382957, items::darkmoon_deck_inferno );
   register_special_effect( 386624, items::darkmoon_deck_rime );
   register_special_effect( 384532, items::darkmoon_deck_watcher );
+  register_special_effect( 375626, items::alacritous_alchemist_stone );
   register_special_effect( 383751, items::bottle_of_spiraling_winds );
   register_special_effect( 396391, items::conjured_chillglobe );
   register_special_effect( 388931, items::globe_of_jagged_ice );
@@ -2842,6 +2866,7 @@ void register_special_effects()
   register_special_effect( 388603, items::idol_of_pure_decay );
   register_special_effect( 377466, items::spiteful_storm );
   register_special_effect( 381768, items::spoils_of_neltharus );
+  register_special_effect( 375844, items::sustaining_alchemist_stone );
   register_special_effect( 385884, items::timebreaching_talon );
   register_special_effect( 385902, items::umbrelskuls_fractured_heart );
   register_special_effect( 377456, items::way_of_controlled_currents );
