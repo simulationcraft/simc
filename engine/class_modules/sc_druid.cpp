@@ -2817,7 +2817,9 @@ struct druid_heal_t : public druid_spell_base_t<heal_t>
   {
     base_t::assess_damage( t, s );
 
-    if ( !s->result_amount || !( t == result_amount_type::HEAL_DIRECT || t == result_amount_type::HEAL_OVER_TIME ) )
+    auto amt = sim->count_overheal_as_heal ? s->result_total : s->result_amount;
+
+    if ( !amt || !( t == result_amount_type::HEAL_DIRECT || t == result_amount_type::HEAL_OVER_TIME ) )
       return;
 
     if ( p()->talent.protector_of_the_pack.ok() && p()->specialization() == DRUID_RESTORATION )
@@ -2827,7 +2829,7 @@ struct druid_heal_t : public druid_spell_base_t<heal_t>
       if ( !b->check() )
         b->trigger();
 
-      debug_cast<buffs::protector_of_the_pack_buff_t*>( b )->add_amount( s->result_amount );
+      debug_cast<buffs::protector_of_the_pack_buff_t*>( b )->add_amount( amt );
     }
   }
 };
