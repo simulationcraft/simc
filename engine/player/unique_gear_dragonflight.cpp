@@ -1811,7 +1811,7 @@ void decoration_of_flame( special_effect_t& effect )
       double chance = player -> sim -> dragonflight_opts.decoration_of_flame_miss_chance;
       if ( rng().roll( chance ) )
       {
-        return aoe - as<int>( rng().range( 0, n_targets() ) );
+        return aoe - as<int>( rng().range( 0, aoe ) );
       }
       return aoe; 
     }
@@ -1854,8 +1854,8 @@ void manic_grieftorch( special_effect_t& effect )
   
   struct manic_grieftorch_missile_t : public proc_spell_t
   {
-    manic_grieftorch_missile_t( const special_effect_t& e ) :
-      proc_spell_t( "manic_grieftorch_missile", e.player, e.player->find_spell( 382136 ), e.item )
+    manic_grieftorch_missile_t(const special_effect_t& e) :
+        proc_spell_t("manic_grieftorch_missile", e.player, e.player->find_spell(382136), e.item)
     {
       background = true;
       aoe = -1;
@@ -1866,7 +1866,6 @@ void manic_grieftorch( special_effect_t& effect )
     size_t available_targets( std::vector< player_t* >& tl ) const override
     {
     proc_spell_t::available_targets( tl );
-
     tl.erase( std::remove_if( tl.begin(), tl.end(), [ this ]( player_t* t) {
          if( t == target )
         {
@@ -1875,7 +1874,7 @@ void manic_grieftorch( special_effect_t& effect )
         else
         {
           // Has very strange scaling behavior, where it scales with targets very slowly. Using this formula to reduce the cleave chance as target count increases
-          return !rng().roll( player->sim->dragonflight_opts.manic_grieftorch_chance * ( sqrt(n_targets()) / n_targets()));
+             return !rng().roll(0.2 * (sqrt(num_targets()) / num_targets()) );
         }
       }), tl.end() );
 
@@ -2438,7 +2437,7 @@ void forgestorm( special_effect_t& effect )
     {
       base_dd_min = base_dd_max = e.player -> find_spell( 381698 ) -> effectN( 1 ).average( e.item );
       background = true;
-      aoe = e.player -> find_spell( 381698 ) -> effectN( 2 ).base_value();
+      aoe = as<int>(e.player -> find_spell( 381698 ) -> effectN( 2 ).base_value());
       reduced_aoe_targets = 1.0;
     }
   };
