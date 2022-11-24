@@ -5129,12 +5129,7 @@ struct shuriken_storm_t: public rogue_attack_t
   void execute() override
   {
     rogue_attack_t::execute();
-
-    // TOCHECK DFALPHA -- Shuriken Tornado secondary actions do not expire this on beta
-    if ( !is_secondary_action() )
-    {
-      p()->buffs.silent_storm->expire();
-    }
+    p()->buffs.silent_storm->expire();
   }
 
   void impact(action_state_t* state) override
