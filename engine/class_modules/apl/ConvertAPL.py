@@ -10,7 +10,7 @@ specList = ['blood', 'frost', 'unholy',  # Death Knight
             'marksmanship', 'beast_mastery', 'survival', 'marksmanship_df', 'beast_mastery_df', 'survival_df', # Hunter
             'affliction', 'demonology', 'destruction', # Warlock
             'devastation', #Evoker
-            'retribution', # Paladin
+            'retribution', 'protection', # Paladin
             'assassination', 'outlaw', 'subtlety', 'assassination_df', 'outlaw_df', 'subtlety_df', # Rogue
            ]
 
