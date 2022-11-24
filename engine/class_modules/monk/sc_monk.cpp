@@ -7010,10 +7010,10 @@ struct kicks_of_flowing_momentum_t : public monk_buff_t<buff_t>
     set_trigger_spell( p.sets->set( MONK_WINDWALKER, T29, B2 ) );
     set_default_value_from_effect( 1 );
     set_reverse( true );
-    set_max_stack( p.sets->has_set_bonus( MONK_WINDWALKER, T29, B4 ) ? 
-        p.passives.kicks_of_flowing_momentum->max_stacks() : 2 );
-    set_reverse_stack_count( p.sets->has_set_bonus( MONK_WINDWALKER, T29, B4 ) ? 
-        p.passives.kicks_of_flowing_momentum->max_stacks() : 2 );
+    set_max_stack( s->max_stacks() + ( p.sets->has_set_bonus( MONK_WINDWALKER, T29, B4 ) ? 
+        (int)p.sets->set( MONK_WINDWALKER, T29, B4 )->effectN( 2 ).base_value() : 0 ) );
+    set_reverse_stack_count( s->max_stacks() + ( p.sets->has_set_bonus( MONK_WINDWALKER, T29, B4 ) ? 
+        (int)p.sets->set( MONK_WINDWALKER, T29, B4 )->effectN( 2 ).base_value() : 0 ) );
   }
 
   void decrement( int stacks, double value = DEFAULT_VALUE() ) override
