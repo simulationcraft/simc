@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46702 Live (hotfix 2022-11-22/46702)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46741 Live (hotfix 2022-11-24/46741, git build update_builds 252553004a)
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -1376,7 +1376,6 @@ Effects          :
 Description      : Melee attacks against you cause you to gain Focused Will, reducing damage you take by $45242s1% for $45242d$?s137033[][, stacking up to $45242u times].
 
 Name             : Divine Aegis (id=47515) [Spell Family (6), Passive, Hidden] 
-Hotfixed         : Affecting Spells
 Talent Entry     : Discipline [tree=spec, row=9, col=1, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(5, 10)]
                  : Effect#2 [op=set, values=(5, 10)]
@@ -1579,7 +1578,6 @@ Effects          :
 Description      : $@spelldesc47540
 
 Name             : Divine Aegis (id=47753) [Spell Family (6)] 
-Hotfixed         : Affecting Spells
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -14712,7 +14710,6 @@ Description      : Your damaging Shadow spells increase the damage of your next 
 Your damaging Holy spells increase the damage of your next Shadow spell cast within $390707d sec by $390707s1%.
 
 Name             : Twilight Equilibrium (id=390706) [Spell Family (6)] 
-Hotfixed         : Proc Flags (0 -> 81920)
 Class            : Priest
 School           : Physical
 Spell Type       : None

@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46702 Live (hotfix 2022-11-22/46702)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46741 Live (hotfix 2022-11-24/46741, git build update_builds 252553004a)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -16178,7 +16178,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1029154)  : Apply Aura (6) | Trigger Spell with Value (231)
                    Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Trigger Spell: 391568 | Target: Self (1)
-Hotfixed         : Base Value (5 -> -5)
 Description      : Your auto-attacks reduce the target's auto-attack speed by $s1% for $391568d, stacking up to $391568u times.
 
 Name             : Insidious Chill (id=391568) [Spell Family (15)] 

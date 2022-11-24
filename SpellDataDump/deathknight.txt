@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46702 Live (hotfix 2022-11-22/46702)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46741 Live (hotfix 2022-11-24/46741, git build update_builds 252553004a)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -14744,6 +14744,7 @@ Description      : Chill Streak's bounce range is increased by $s2 yds and each 
 Name             : Unholy Aura (id=377440) [Spell Family (15), Passive] 
 Talent Entry     : Unholy [tree=spec, row=9, col=5, max_rank=2, req_points=20]
                  : Effect#3 [op=set, values=(10, 20)]
+                 : Effect#4 [op=set, values=(10, 20)]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -16180,7 +16181,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Allow Aura While Dead (116), Not In Spellbook (143), Disable Aura While Dead (226), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1029154)  : Apply Aura (6) | Trigger Spell with Value (231)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Trigger Spell: 391568 | Target: Self (1)
+                   Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Trigger Spell: 391568 | Target: Self (1)
+Hotfixed         : Base Value (5 -> -5)
 Description      : Your auto-attacks reduce the target's auto-attack speed by $s1% for $391568d, stacking up to $391568u times.
 
 Name             : Insidious Chill (id=391568) [Spell Family (15)] 
