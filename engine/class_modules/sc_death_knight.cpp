@@ -996,14 +996,12 @@ public:
 
     spawner::pet_spawner_t<pets::army_ghoul_pet_t, death_knight_t> army_ghouls;
     spawner::pet_spawner_t<pets::army_ghoul_pet_t, death_knight_t> apoc_ghouls;
-    spawner::pet_spawner_t<pets::army_ghoul_pet_t, death_knight_t> harvest_ghouls;
     spawner::pet_spawner_t<pets::bloodworm_pet_t, death_knight_t> bloodworms;
     spawner::pet_spawner_t<pets::magus_pet_t, death_knight_t> magus_of_the_dead;
 
     pets_t(death_knight_t* p) :
         army_ghouls("army_ghoul", p),
         apoc_ghouls("apoc_ghoul", p),
-        harvest_ghouls("harvest_ghoul", p),
         bloodworms("bloodworm", p),
         magus_of_the_dead("magus_of_the_dead", p)
 
