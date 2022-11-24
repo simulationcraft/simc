@@ -142,4 +142,74 @@ void retribution( player_t* p )
 }
 //retribution_apl_end
 
+//protection_apl_start
+void protection( player_t* p )
+{
+  ///////////////////////
+  // Precombat List
+  ///////////////////////
+
+  action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
+
+  // Flask
+  precombat->add_action( "flask" );
+  precombat->add_action( "food" );
+  precombat->add_action( "augmentation" );
+  precombat->add_action( "devotion_aura" );
+
+  // Snapshot stats
+  precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
+
+  precombat->add_action( "potion" );
+  precombat->add_action( "Consecration" );
+  precombat->add_action( "lights_judgment" );
+  precombat->add_action( "ashen_hallow" );
+
+  ///////////////////////
+  // Action Priority List
+  ///////////////////////
+
+  action_priority_list_t* def = p->get_action_priority_list( "default" );
+  action_priority_list_t* cds = p->get_action_priority_list( "cooldowns" );
+  action_priority_list_t* std = p->get_action_priority_list( "standard" );
+
+  def->add_action( "auto_attack" );
+
+  def->add_action( "call_action_list,name=cooldowns" );
+  def->add_action( "call_action_list,name=standard" );
+
+  cds->add_action( "fireblood,if=buff.avenging_wrath.up" );
+  cds->add_action( "seraphim" );
+  cds->add_action( "avenging_wrath" );
+  cds->add_action( "holy_avenger", "if=buff.avenging_wrath.up|cooldown.avenging_wrath.remains>60" );
+  cds->add_action( "potion,if=buff.avenging_wrath.up" );
+  cds->add_action( "use_items,if=buff.seraphim.up|!talent.seraphim.enabled" );
+  cds->add_action( "moment_of_glory", "if=prev_gcd.1.avengers_shield&cooldown.avengers_shield.remains" );
+
+  std->add_action( "Shield of the Righteous", "if=debuff.judgment.up" );
+  std->add_action(
+      "Shield of the Righteous",
+      "if=holy_power=5|buff.holy_avenger.up|holy_power=4&talent.sanctified_wrath.enabled&buff.avenging_wrath.up" );
+  std->add_action( "Judgment",
+                   "target_if=min:debuff.judgment.remains,if=charges=2|!talent.crusaders_judgment.enabled" );
+  std->add_action( "Hammer of Wrath" );
+  std->add_action( "blessing_of_the_seasons" );
+  std->add_action( "Avenger's Shield" );
+  std->add_action( "Judgment", "target_if=min:debuff.judgment.remains" );
+  std->add_action( "vanquishers_hammer" );
+  std->add_action( "Consecration", "if=!consecration.up" );
+  std->add_action( "divine_toll" );
+  std->add_action( "Blessed Hammer", "strikes=2.4,if=charges=3" );
+  std->add_action( "ashen_hallow" );
+  std->add_action( "Hammer of the Righteous", "if=charges=2" );
+  std->add_action( "Word of Glory", "if=buff.vanquishers_hammer.up" );
+  std->add_action( "Blessed Hammer", "strikes=2.4" );
+  std->add_action( "Hammer of the Righteous" );
+  std->add_action( "lights_judgment" );
+  std->add_action( "arcane_torrent" );
+  std->add_action( "Consecration" );
+  std->add_action( "Word of Glory", "if=buff.shining_light_free.up&!covenant.necrolord" );
 }
+// protection_apl_end
+}
+

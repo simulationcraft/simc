@@ -1,5 +1,6 @@
 #include "simulationcraft.hpp"
 #include "sc_paladin.hpp"
+#include "class_modules/apl/apl_paladin.hpp"
 
 // TODO :
 // Defensive stuff :
@@ -1292,69 +1293,9 @@ void paladin_t::init_spells_protection()
   spells.sentinel = find_spell( 389539 );
 }
 
+// Action Priority List Generation
 void paladin_t::generate_action_prio_list_prot()
 {
-  ///////////////////////
-  // Precombat List
-  ///////////////////////
-
-  action_priority_list_t* precombat = get_action_priority_list( "precombat" );
-
-  //Flask
-  precombat -> add_action( "flask" );
-  precombat -> add_action( "food" );
-  precombat -> add_action( "augmentation" );
-  precombat -> add_action( "devotion_aura" );
-
-  // Snapshot stats
-  precombat -> add_action( "snapshot_stats",  "Snapshot raid buffed stats before combat begins and pre-potting is done." );
-
-  precombat -> add_action( "potion" );
-  precombat -> add_action( this, "Consecration" );
-  precombat -> add_action( "lights_judgment" );
-  precombat -> add_action( "ashen_hallow");
-
-  ///////////////////////
-  // Action Priority List
-  ///////////////////////
-
-  action_priority_list_t* def = get_action_priority_list( "default" );
-  action_priority_list_t* cds = get_action_priority_list( "cooldowns" );
-  action_priority_list_t* std = get_action_priority_list( "standard" );
-
-  def -> add_action( "auto_attack" );
-
-  def -> add_action( "call_action_list,name=cooldowns" );
-  def -> add_action( "call_action_list,name=standard" );
-
-  cds -> add_action( "fireblood,if=buff.avenging_wrath.up" );
-  cds -> add_talent( this, "Seraphim" );
-  cds -> add_action( this, "Avenging Wrath" );
-  cds -> add_talent( this, "Holy Avenger", "if=buff.avenging_wrath.up|cooldown.avenging_wrath.remains>60" );
-  cds -> add_action( "potion,if=buff.avenging_wrath.up" );
-  cds -> add_action( "use_items,if=buff.seraphim.up|!talent.seraphim.enabled" );
-  cds -> add_talent( this, "Moment of Glory", "if=prev_gcd.1.avengers_shield&cooldown.avengers_shield.remains" );
-
-  std -> add_action( this, "Shield of the Righteous" , "if=debuff.judgment.up" );
-  std -> add_action( this, "Shield of the Righteous" , "if=holy_power=5|buff.holy_avenger.up|holy_power=4&talent.sanctified_wrath.enabled&buff.avenging_wrath.up" );
-  std -> add_action( this, "Judgment", "target_if=min:debuff.judgment.remains,if=charges=2|!talent.crusaders_judgment.enabled" );
-  std -> add_action( this, "Hammer of Wrath" );
-  std -> add_action( "blessing_of_the_seasons" );
-  std -> add_action( this, "Avenger's Shield" );
-  std -> add_action( this, "Judgment", "target_if=min:debuff.judgment.remains" );
-  std -> add_action( "vanquishers_hammer" );
-  std -> add_action( this, "Consecration", "if=!consecration.up" );
-  std -> add_action( "divine_toll" );
-  std -> add_talent( this, "Blessed Hammer", "strikes=2.4,if=charges=3" );
-  std -> add_action( "ashen_hallow" );
-  std -> add_action( this, "Hammer of the Righteous", "if=charges=2" );
-  std -> add_action( this, "Word of Glory", "if=buff.vanquishers_hammer.up" );
-  std -> add_talent( this, "Blessed Hammer", "strikes=2.4" );
-  std -> add_action( this, "Hammer of the Righteous" );
-  std -> add_action( "lights_judgment" );
-  std -> add_action( "arcane_torrent" );
-  std -> add_action( this, "Consecration" );
-  std -> add_action( this, "Word of Glory", "if=buff.shining_light_free.up&!covenant.necrolord" );
-
+  paladin_apl::protection( this );
 }
 }
