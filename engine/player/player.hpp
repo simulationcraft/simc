@@ -605,7 +605,8 @@ struct player_t : public actor_t
 
   struct external_buffs_t
   {
-    std::string invoke;
+    std::string pool;
+    std::unordered_map<buff_t*, std::vector<cooldown_t*>> invoke_cds;
     bool focus_magic;
     bool seasons_of_plenty;
     double blessing_of_summer_duration_multiplier;

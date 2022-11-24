@@ -9824,33 +9824,33 @@ struct invoke_external_buff_t : public action_t
 
   timespan_t buff_duration;
   int buff_stacks;
+  bool use_pool;
 
   buff_t* buff;
+  std::vector<cooldown_t*>* invoke_cds;
 
   invoke_external_buff_t( player_t* player, util::string_view options_str )
     : action_t( ACTION_OTHER, "invoke_external_buff", player ),
       buff_str(),
       buff( nullptr ),
       buff_duration( timespan_t::min() ),
-      buff_stacks( -1 )
+      buff_stacks( -1 ),
+      use_pool( true ),
+      invoke_cds( nullptr )
   {
     add_option( opt_string( "name", buff_str ) );
     add_option( opt_timespan( "duration", buff_duration ) );
     add_option( opt_int( "stacks", buff_stacks ) );
+    add_option( opt_bool( "use_pool", buff_stacks ) );
     parse_options( options_str );
 
     trigger_gcd           = timespan_t::zero();
     ignore_false_positive = true;
   }
-  
+
   void init_finished() override
   {
     action_t::init_finished();
-
-    // Only continue if the buff is specified in the external_buffs.invoke option
-    if ( player->external_buffs.invoke.empty() ||
-         !range::contains( util::string_split<util::string_view>( player->external_buffs.invoke, "/" ), buff_str ) )
-      return;
 
     if ( buff_str.empty() )
     {
@@ -9867,6 +9867,63 @@ struct invoke_external_buff_t : public action_t
         player->sim->error( "Player {} uses invoke_external_buff with unknown buff {}", player->name(), buff_str );
       }
     }
+
+    if ( use_pool )
+    {
+      if ( player->external_buffs.invoke_cds.empty() )
+      {
+        // Run initialisation code
+        auto splits_buffs = util::string_split<util::string_view>( player->external_buffs.pool, "/" );
+
+        for ( auto split_buffs : splits_buffs )
+        {
+          auto splits = util::string_split<util::string_view>( split_buffs, ":" );
+          // Min arguments Name and CD - without both, skip
+          if ( splits.size() < 2 )
+            continue;
+
+          // Buff name is empty - skip
+          if ( splits[ 0 ].empty() )
+            continue;
+
+          auto external_buff = buff_t::find( player, splits[ 0 ] );
+
+          // If the buff cannot be found, skip
+          if ( !external_buff )
+            continue;
+
+          // Number of buffs to create (third arugment)
+          int num = splits.size() >= 3 ? util::to_int( splits[ 2 ] ) : 1;
+
+          auto cds = &player->external_buffs.invoke_cds[ external_buff ];
+
+          timespan_t cd_time = timespan_t::from_seconds( util::to_double( splits[ 1 ] ) );
+
+          for ( auto i = 0; i < num; i++ )
+          {
+            auto cd =
+                cds->emplace_back( player->get_cooldown( fmt::format( "invoke_{}_{}", splits[ 0 ], cds->size() ) ) );
+            cd->duration = cd->base_duration = cd_time;
+
+            sim->print_debug( "{} creates cooldown {} with cd {} ", *player, cd->name(),
+                              cd->duration );
+          }
+        }
+      }
+
+      auto cds = &player->external_buffs.invoke_cds[ buff ];
+
+      if ( !cds->empty() )
+      {
+        // External buffs initialised and buff found - set cooldown object to this
+        invoke_cds = cds;
+      }
+      else
+      {
+        // External buffs initialied and buffs not found - set buff to nullptr, this action will never be used.
+        buff = nullptr;
+      }
+    }
   }
 
   bool ready() override
@@ -9877,13 +9934,50 @@ struct invoke_external_buff_t : public action_t
     return action_t::ready();
   }
 
+  cooldown_t* get_shortest_cd()
+  {
+    if ( !use_pool )
+      return nullptr;
+
+    auto comp = []( cooldown_t* a, cooldown_t* b ) {
+      if ( a->remains() < b->remains() )
+        return true;
+      if ( a->remains() > b->remains() )
+        return false;
+
+      return a->duration < b->duration;
+    };
+
+    auto min = min_element( invoke_cds->begin(), invoke_cds->end(), comp );
+    if ( min != invoke_cds->end() )
+      return *min;
+
+    return nullptr;
+  }
+
   void execute() override
   {
     if ( sim->log )
       sim->out_log.printf( "%s invokes buff %s", player->name(), buff->name() );
+
     buff->trigger( buff_stacks, buff_duration );
+
+    if ( use_pool )
+    {
+      auto shortest = get_shortest_cd();
+      if ( shortest )
+        shortest->start();
+
+      shortest = get_shortest_cd();
+      if ( shortest && shortest->remains() > timespan_t::zero() )
+      {
+        cooldown->duration = shortest->remains();
+        cooldown->start();
+      }
+    }
   }
 };
+
 
 }  // UNNAMED NAMESPACE
 
@@ -12441,7 +12535,7 @@ void player_t::create_options()
     } ) );
 
   // Invoke External Buffs
-  add_option( opt_string( "external_buffs.invoke", external_buffs.invoke ) );
+  add_option( opt_string( "external_buffs.pool", external_buffs.pool ) );
 
   // Permanent External Buffs
   add_option( opt_bool( "external_buffs.focus_magic", external_buffs.focus_magic ) );
