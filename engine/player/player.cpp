@@ -9821,12 +9821,22 @@ struct retarget_auto_attack_t : public action_t
 struct invoke_external_buff_t : public action_t
 {
   std::string buff_str;
+
+  timespan_t buff_duration;
+  int buff_stacks;
+
   buff_t* buff;
 
   invoke_external_buff_t( player_t* player, util::string_view options_str )
-    : action_t( ACTION_OTHER, "invoke_external_buff", player ), buff_str(), buff( nullptr )
+    : action_t( ACTION_OTHER, "invoke_external_buff", player ),
+      buff_str(),
+      buff( nullptr ),
+      buff_duration( timespan_t::min() ),
+      buff_stacks( -1 )
   {
     add_option( opt_string( "name", buff_str ) );
+    add_option( opt_timespan( "duration", buff_duration ) );
+    add_option( opt_int( "stacks", buff_stacks ) );
     parse_options( options_str );
 
     trigger_gcd           = timespan_t::zero();
@@ -9836,6 +9846,9 @@ struct invoke_external_buff_t : public action_t
   void init_finished() override
   {
     action_t::init_finished();
+
+    if ( !player->external_buffs.invoke )
+        return;
 
     if ( buff_str.empty() )
     {
@@ -9866,7 +9879,7 @@ struct invoke_external_buff_t : public action_t
   {
     if ( sim->log )
       sim->out_log.printf( "%s invokes buff %s", player->name(), buff->name() );
-    buff->trigger();
+    buff->trigger( buff_stacks, buff_duration );
   }
 };
 
@@ -12424,6 +12437,9 @@ void player_t::create_options()
       precombat_state_map[ splits[ 0 ] ] = splits[ 1 ];
       return true;
     } ) );
+
+  // Invoke External Buffs
+  add_option( opt_bool( "external_buffs.invoke", external_buffs.invoke ) );
 
   // Permanent External Buffs
   add_option( opt_bool( "external_buffs.focus_magic", external_buffs.focus_magic ) );
