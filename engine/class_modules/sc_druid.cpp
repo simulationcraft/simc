@@ -517,8 +517,6 @@ public:
     buff_t* ursocs_fury;
     buff_t* vicious_cycle_mangle;
     buff_t* vicious_cycle_maul;
-    // Guardian Conduits
-    buff_t* savage_combatant;
 
     // Restoration
     buff_t* abundance;
@@ -2022,7 +2020,6 @@ public:
     parse_buff_effects( p()->buff.tooth_and_claw, false );
     parse_buff_effects( p()->buff.vicious_cycle_mangle, true, true );
     parse_buff_effects( p()->buff.vicious_cycle_maul, true, true );
-    parse_buff_effects( p()->buff.savage_combatant );
 
     // Restoration
     parse_buff_effects( p()->buff.abundance );
@@ -4597,8 +4594,6 @@ struct maul_t : public druid_mixin_t<trigger_gore_t<rage_spender_t>>
     p()->buff.vicious_cycle_mangle->trigger();
 
     p()->buff.tooth_and_claw->decrement();
-
-    p()->buff.savage_combatant->expire();
   }
 };
 
