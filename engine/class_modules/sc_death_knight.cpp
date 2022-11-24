@@ -406,8 +406,6 @@ action_t* get_action( util::string_view name, Actor* actor, Args&&... args )
 struct death_knight_td_t : public actor_target_data_t {
   struct
   {
-    // Shared
-    dot_t* shackle_the_unworthy;
     // Blood
     dot_t* blood_plague;
     // Frost
@@ -559,7 +557,6 @@ public:
     // Shared
     cooldown_t* abomination_limb;
     cooldown_t* death_and_decay_dynamic; // Shared cooldown object for death and decay, defile and death's due
-    cooldown_t* shackle_the_unworthy_icd; // internal cooldown between shackle the unworthy's spreading effect
     cooldown_t* mind_freeze;
 
     // Blood
@@ -1099,7 +1096,6 @@ public:
     cooldown.koltiras_favor_icd       = get_cooldown( "koltiras_favor_icd" );
     cooldown.frigid_executioner_icd   = get_cooldown( "frigid_executioner_icd" );
     cooldown.pillar_of_frost          = get_cooldown( "pillar_of_frost" );
-    cooldown.shackle_the_unworthy_icd = get_cooldown( "shackle_the_unworthy_icd" );
     cooldown.vampiric_blood           = get_cooldown( "vampiric_blood" );
     cooldown.enduring_strength_icd    = get_cooldown( "enduring_strength" );
     cooldown.mind_freeze              = get_cooldown( "mind_freeze" );
@@ -1243,7 +1239,6 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
   dot.frost_fever          = target -> get_dot( "frost_fever", p );
   dot.virulent_plague      = target -> get_dot( "virulent_plague", p );
   // Other dots
-  dot.shackle_the_unworthy = target -> get_dot( "shackle_the_unworthy", p );
   dot.soul_reaper          = target -> get_dot( "soul_reaper", p );
   
   // General Talents
@@ -2970,8 +2965,6 @@ struct death_knight_action_t : public Base
 
   bool hasted_gcd;
 
-  bool triggers_shackle_the_unworthy;
-
   struct affected_by_t
   {
     // Masteries
@@ -2994,7 +2987,6 @@ struct death_knight_action_t : public Base
   death_knight_action_t( util::string_view n, death_knight_t* p, const spell_data_t* s = spell_data_t::nil() ) :
     action_base_t( n, p, s ), gain( nullptr ),
     hasted_gcd( false ),
-    triggers_shackle_the_unworthy( false ),
     affected_by(),
     track_cd_waste( s->cooldown() > timespan_t::zero() || s->charge_cooldown() > timespan_t::zero() ),
     cd_wasted_exec( nullptr ),
@@ -5105,7 +5097,6 @@ struct deaths_caress_t : public death_knight_spell_t
     death_knight_spell_t( "deaths_caress", p, p -> talent.blood.deaths_caress )
   {
     parse_options( options_str );
-    triggers_shackle_the_unworthy = true;
     impact_action = get_action<blood_plague_t>( "blood_plague", p );
   }
 
@@ -5791,7 +5782,6 @@ struct festering_strike_t : public death_knight_melee_attack_t
     death_knight_melee_attack_t( "festering_strike", p, p -> talent.unholy.festering_strike )
   {
     parse_options( options_str );
-    triggers_shackle_the_unworthy = true;
 
     if ( p -> talent.unholy.improved_festering_strike -> ok() )
     {
@@ -5851,7 +5841,7 @@ struct frostscythe_t : public death_knight_melee_attack_t
     weapon = &( player -> main_hand_weapon );
     aoe = -1;
     reduced_aoe_targets = data().effectN( 5 ).base_value();
-    triggers_shackle_the_unworthy = triggers_icecap = true;
+    triggers_icecap = true;
     // Crit multipier handled in death_knight_t::apply_affecting_aura()
   }
 
@@ -6162,7 +6152,6 @@ struct heart_strike_t : public death_knight_melee_attack_t
     heartbreaker_rp_gen( p -> talent.blood.heartbreaker -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) )
   {
     parse_options( options_str );
-    triggers_shackle_the_unworthy = true;
     aoe = 2;
     weapon = &( p -> main_hand_weapon );
     // TODO July 19 2022 Heart Strike is missing rank 2 for the extra rp gain
@@ -6257,7 +6246,6 @@ struct howling_blast_t : public death_knight_spell_t
     death_knight_spell_t( "howling_blast", p, p -> talent.frost.howling_blast )
   {
     parse_options( options_str );
-    triggers_shackle_the_unworthy = true;
 
     aoe = -1;
     reduced_aoe_targets = 1.0;
@@ -6392,7 +6380,6 @@ struct marrowrend_t : public death_knight_melee_attack_t
   {
     parse_options( options_str );
     weapon = &( p -> main_hand_weapon );
-    triggers_shackle_the_unworthy = true;
   }
 
   void execute() override
@@ -6594,7 +6581,6 @@ struct obliterate_t : public death_knight_melee_attack_t
   {
     parse_options( options_str );
     dual = true;
-    triggers_shackle_the_unworthy = true;
 
     const spell_data_t* mh_data = p -> main_hand_weapon.group() == WEAPON_2H ? data().effectN( 4 ).trigger() : data().effectN( 2 ).trigger();
 
@@ -6711,7 +6697,6 @@ struct outbreak_t : public death_knight_spell_t
     death_knight_spell_t( "outbreak" ,p , p -> talent.unholy.outbreak )
   {
     parse_options( options_str );
-    triggers_shackle_the_unworthy = true;
     impact_action = get_action<virulent_plague_t>( "virulent_plague", p );
   }
 };
@@ -7160,7 +7145,6 @@ struct clawing_shadows_t : public scourge_strike_base_t
     scourge_strike_base_t( "clawing_shadows", p, p -> talent.unholy.clawing_shadows )
   {
     parse_options( options_str );
-    triggers_shackle_the_unworthy = true;
   }
 };
 
@@ -7205,7 +7189,6 @@ struct scourge_strike_t : public scourge_strike_base_t
     scourge_strike_base_t( "scourge_strike", p, p -> talent.unholy.scourge_strike )
   {
     parse_options( options_str );
-    triggers_shackle_the_unworthy = true;
 
     impact_action = get_action<scourge_strike_shadow_t>( "scourge_strike_shadow", p );
     add_child( impact_action );
@@ -7287,7 +7270,6 @@ struct soul_reaper_t : public death_knight_melee_attack_t
     parse_options( options_str );
     add_child( soul_reaper_execute );
 
-    triggers_shackle_the_unworthy = true;
     hasted_ticks = false;
     dot_behavior = DOT_EXTEND;
   }
