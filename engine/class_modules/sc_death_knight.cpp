@@ -659,7 +659,9 @@ public:
     const spell_data_t* rune_strike;
 
     // Unholy
+    const spell_data_t* dark_transformation_2;
     const spell_data_t* festering_wound;
+    
   } spec;
 
   // Mastery
@@ -4757,12 +4759,12 @@ struct dark_transformation_t : public death_knight_spell_t
 
       p() -> buffs.dark_transformation -> trigger();
 
-      // TODO  July 19 2022.  So far this has not been found in the new spelldata
-      /*if ( p() -> spec.dark_transformation_2 -> ok() )
+      // Rank 2 still exists for unholy as a baseline
+      if ( p() -> spec.dark_transformation_2 -> ok() )
       {
         p() -> pets.ghoul_pet -> resource_gain( RESOURCE_ENERGY, p() -> spec.dark_transformation_2 -> effectN( 1 ).base_value(),
                                                 p() -> pets.ghoul_pet -> dark_transformation_gain, this );
-      }*/
+      }
 
       if ( p() -> talent.unholy.unholy_pact.ok() )
       {
@@ -6440,10 +6442,10 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
     weapon = w;
     triggers_icecap = true;
 
-    // To support Death's Due affecting Obliterate in shadowlands:
+    // To support Cleaving strieks affecting Obliterate in Dragonflight:
     // - obliterate damage spells have gained a value of 1 in their chain target data
     // - the death and decay buff now has an effect that modifies obliterate's chain target with a value of 0
-    // - death's due increases the aforementionned death and decay buff effect by 1
+    // - cleaving strikes increases the aforementionned death and decay buff effect by 1
     cleaving_strikes_targets = data().effectN ( 1 ).chain_target() +
                                 as<int>( p -> spell.dnd_buff -> effectN ( 4 ).base_value() ) +
                                 as<int>( p -> talent.cleaving_strikes -> effectN( 2 ).base_value() );
@@ -9009,6 +9011,7 @@ void death_knight_t::init_spells()
   // Unholy Baselines
   spec.unholy_death_knight = find_specialization_spell( "Unholy Death Knight" );
   spec.festering_wound     = find_spell( 197147 );
+  spec.dark_transformation_2 = find_spell( 325554 );
 
   //////// Class Talent Tree
   // Row 1
