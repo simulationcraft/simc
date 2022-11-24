@@ -1922,9 +1922,6 @@ public:
     if ( !s->result_amount || !( t == result_amount_type::DMG_DIRECT || t == result_amount_type::DMG_OVER_TIME ) )
       return;
 
-    if ( p()->buff.natures_vigil->check() && s->n_targets == 1 )
-      p()->buff.natures_vigil->current_value += s->result_amount;
-
     if ( p()->active.elunes_favored_heal && p()->get_form() == BEAR_FORM &&
          dbc::has_common_school( s->action->get_school(), SCHOOL_ARCANE ) )
     {
@@ -1932,14 +1929,20 @@ public:
           p(), p()->talent.elunes_favored->effectN( 1 ).percent() * s->result_amount );
     }
 
-    if ( p()->talent.protector_of_the_pack.ok() && p()->specialization() != DRUID_RESTORATION )
+    if ( p()->specialization() != DRUID_RESTORATION )
     {
-      auto b = p()->buff.protector_of_the_pack_regrowth;
+      if ( p()->buff.natures_vigil->check() && s->n_targets == 1 )
+        p()->buff.natures_vigil->current_value += s->result_amount;
 
-      if ( !b->check() )
-        b->trigger();
+      if ( p()->talent.protector_of_the_pack.ok() )
+      {
+        auto b = p()->buff.protector_of_the_pack_regrowth;
 
-      debug_cast<buffs::protector_of_the_pack_buff_t*>( b )->add_amount( s->result_amount );
+        if ( !b->check() )
+          b->trigger();
+
+        debug_cast<buffs::protector_of_the_pack_buff_t*>( b )->add_amount( s->result_amount );
+      }
     }
   }
 
@@ -2817,19 +2820,25 @@ struct druid_heal_t : public druid_spell_base_t<heal_t>
   {
     base_t::assess_damage( t, s );
 
-    auto amt = sim->count_overheal_as_heal ? s->result_total : s->result_amount;
-
-    if ( !amt || !( t == result_amount_type::HEAL_DIRECT || t == result_amount_type::HEAL_OVER_TIME ) )
+    if ( !s->result_total || !( t == result_amount_type::HEAL_DIRECT || t == result_amount_type::HEAL_OVER_TIME ) )
       return;
 
-    if ( p()->talent.protector_of_the_pack.ok() && p()->specialization() == DRUID_RESTORATION )
+    if ( p()->specialization() == DRUID_RESTORATION )
     {
-      auto b = p()->buff.protector_of_the_pack_moonfire;
+      if ( p()->buff.natures_vigil->check() && s->n_targets == 1 )
+        p()->buff.natures_vigil->current_value += s->result_total;
 
-      if ( !b->check() )
-        b->trigger();
+      if ( p()->talent.protector_of_the_pack.ok() )
+      {
+        auto b = p()->buff.protector_of_the_pack_moonfire;
 
-      debug_cast<buffs::protector_of_the_pack_buff_t*>( b )->add_amount( amt );
+        if ( !b->check() )
+          b->trigger();
+
+        auto amt = sim->count_overheal_as_heal ? s->result_total : s->result_amount;
+
+        debug_cast<buffs::protector_of_the_pack_buff_t*>( b )->add_amount( amt );
+      }
     }
   }
 };
