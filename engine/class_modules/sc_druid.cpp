@@ -4001,11 +4001,8 @@ struct primal_wrath_t : public cat_finisher_t
   action_t* wounds;
   timespan_t rip_dur;
 
-  primal_wrath_t( druid_t* p, std::string_view opt ) : primal_wrath_t( p, "primal_wrath", p->talent.primal_wrath, opt )
-  {}  // TODO: remove ctor overload when no longer needed
-
-  primal_wrath_t( druid_t* p, std::string_view n, const spell_data_t* s, std::string_view opt )
-    : cat_finisher_t( n, p, s, opt ),
+  primal_wrath_t( druid_t* p, std::string_view opt )
+    : cat_finisher_t( "primal_wrath", p, p->talent.primal_wrath, opt ),
       wounds( nullptr ),
       rip_dur( timespan_t::from_seconds( data().effectN( 2 ).base_value() ) )
   {
