@@ -9439,7 +9439,7 @@ void druid_t::create_buffs()
     ->set_name_reporting( "Vers" );
 
   buff.lycaras_teachings_mast = make_buff( this, "lycaras_teachings_mast", find_spell( 378992 ) )
-    ->set_default_value( talent.lycaras_teachings->effectN( 1 ).percent() )
+    ->set_default_value( talent.lycaras_teachings->effectN( 1 ).base_value() )
     ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
     ->set_name_reporting( "Mastery" );
 
