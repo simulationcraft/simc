@@ -140,14 +140,13 @@ void destruction( player_t* p )
   default_->add_action( "channel_demonfire,if=talent.raging_demonfire" );
   default_->add_action( "soul_fire,if=soul_shard<=4" );
   default_->add_action( "immolate,if=((dot.immolate.refreshable&talent.internal_combustion)|dot.immolate.remains<3)&(!talent.cataclysm|cooldown.cataclysm.remains>dot.immolate.remains)&(!talent.soul_fire|cooldown.soul_fire.remains>dot.immolate.remains)" );
-  default_->add_action( "havoc,if=pet.infernal.active" );
+  default_->add_action( "havoc,if=talent.cry_havoc&(buff.ritual_of_ruin.up|pet.infernal.active)" );
   default_->add_action( "chaos_bolt,if=pet.infernal.active|pet.blasphemy.active|soul_shard>=4" );
   default_->add_action( "summon_infernal" );
   default_->add_action( "channel_demonfire,if=talent.ruin.rank>1&!(talent.diabolic_embers&talent.avatar_of_destruction&(talent.burn_to_ashes|talent.chaos_incarnate))" );
-  default_->add_action( "conflagrate,if=buff.backdraft.down&soul_shard>=1.5" );
+  default_->add_action( "conflagrate,if=buff.backdraft.down&soul_shard>=1.5&!talent.roaring_blaze" );
   default_->add_action( "chaos_bolt,if=buff.rain_of_chaos.remains>cast_time" );
-  default_->add_action( "chaos_bolt,if=buff.backdraft.up" );
-  default_->add_action( "chaos_bolt,if=talent.eradication&debuff.eradication.remains<cast_time&!action.chaos_bolt.in_flight" );
+  default_->add_action( "chaos_bolt,if=buff.backdraft.up&!talent.eradication&!talent.madness_of_the_azjaqir" );
   default_->add_action( "chaos_bolt,if=buff.madness_cb.up" );
   default_->add_action( "channel_demonfire,if=!(talent.diabolic_embers&talent.avatar_of_destruction&(talent.burn_to_ashes|talent.chaos_incarnate))" );
   default_->add_action( "dimensional_rift" );
