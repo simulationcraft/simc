@@ -357,6 +357,8 @@ struct sim_t : private sc_thread_t
 
   struct shadowlands_opt_t
   {
+    /// Global enable/disable shadowlands systems
+    bool enabled = true;
     /// Chance to catch each expelled sorrowful memory to extend the buff duration
     /// TODO: Set this to a reasonable value
     double combat_meditation_extend_chance = 1.0;

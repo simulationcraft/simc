@@ -1,5 +1,5 @@
-// Spell text, wow build 10.0.2.46702
-static const std::array<spelltext_data_t, 19176> __ptr_spelltext_data { {
+// Spell text, wow build 10.0.2.46801
+static const std::array<spelltext_data_t, 19177> __ptr_spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -2461,7 +2461,7 @@ static const std::array<spelltext_data_t, 19176> __ptr_spelltext_data { {
   {  78830, "Deals $s1 Nature damage to an enemy every $t1 sec for $d1.", "Suffering $s1 Nature damage every $t1 sec.", 0 },
   {  78922, "Summons a Goblin nurse that will perform a physical.", 0, 0 },
   {  79008, "Evasion also reduces damage taken by $s2%, and Feint also reduces non-area-of-effect damage taken by $s1%.", 0, 0 },
-  {  79096, "Finishing moves reduce the remaining cooldown of many Rogue skills by $<cdr> sec per combo point spent.\r\n\r\nAffected skills: Adrenaline Rush, Between the Eyes, Blade Flurry, Blade Rush, Dreadblades, Ghostly Strike, Grappling Hook, Keep it Rolling, Killing Spree, Marked for Death, Roll the Bones, Sepsis, Sprint, and Vanish.", 0, 0 },
+  {  79096, "Finishing moves reduce the remaining cooldown of many Rogue skills by $<cdr> sec per combo point spent.\r\n\r\nAffected skills: Adrenaline Rush, Between the Eyes, Blade Flurry, Blade Rush, Dreadblades, Ghostly Strike, Grappling Hook, Keep it Rolling, Killing Spree, Marked for Death, Roll the Bones, Sprint, and Vanish.", 0, 0 },
   {  79134, "You regain $s2 Energy each time your Garrote or Rupture deal Bleed damage to a poisoned target.\r\n\r\nIf an enemy dies while afflicted by your Rupture, you regain energy based on its remaining duration.", 0, 0 },
   {  79206, "Calls upon the guidance of the spirits for $d, permitting movement while casting Shaman spells. Castable while casting.$?a192088[ Increases movement speed by $192088s2%.][]", "Able to move while casting all Shaman spells.", 0 },
   {  79468, "Increases Versatility by $s1 for $d.  Battle Elixir.", "Versatility increased by $w1.  Battle Elixir.", 0 },
@@ -18500,6 +18500,7 @@ static const std::array<spelltext_data_t, 19176> __ptr_spelltext_data { {
   { 391288, "Increases the damage dealt by Shadow Word: Death by $s1%.\r\n\r\nShadow Word: Death deals $s2% of its damage to all targets affected by your Shadow Word: Pain within $391371A1 yards.", 0, 0 },
   { 391296, "Increases the chance for you to gain a Coalescing Shadow when dealing damage with Mind Sear and Shadow Word: Pain by $s2% and Mind Flay by $s3%.\r\n\r\nYou have a $h% chance to gain a Coalescing Shadow when critically hit by any attack. This effect can only occur every $proccooldown sec.", 0, 0 },
   { 391330, "When you Combo Strike, the cooldown of Touch of Death is reduced by ${$s2/100}.2 sec.\r\n\r\nTouch of Death deals an additional $s1% damage.", 0, 0 },
+  { 391331, "Fuel the Engine of Innovation to create a Spark of Ingenuity.", "Fuel the Engine of Innovation to create  Spark of Ingenuity - a unique material that can help an item achieve expertise beyond that of mortal ability.", 0 },
   { 391339, "Renew instantly heals your target for $s1% of its total periodic effect.", 0, 0 },
   { 391347, "Applying Rip to a target also applies a Tear that deals $s1% of the new Rip's damage over $391356d.", 0, 0 },
   { 391356, "$@spelldesc391347", "Bleeding for $w1 damage every $t1 seconds.", 0 },
@@ -19178,12 +19179,12 @@ static const std::array<spelltext_data_t, 19176> __ptr_spelltext_data { {
   { 398396, "$@spelldesc386578", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.0.2.46702
+// spelltext hotfix entries, wow build 10.0.2.46801
 static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __ptr_spelltext_hotfix_data { {
-  {  373270,  0, "Verdant Embrace temporarily bonds your life with an ally, causing healing either of you receive to also heal the bonded partner for $s1% of the amount. Lasts $373267d.", "Verdant Embrace temporarily bonds your life with an ally, causing your healing on either partner to heal the other for $s1% of the amount. Lasts $373267d." },
+  {   79096,  0, "Finishing moves reduce the remaining cooldown of many Rogue skills by $<cdr> sec per combo point spent.\r\n\r\nAffected skills: Adrenaline Rush, Between the Eyes, Blade Flurry, Blade Rush, Dreadblades, Ghostly Strike, Grappling Hook, Keep it Rolling, Killing Spree, Marked for Death, Roll the Bones, Sepsis, Sprint, and Vanish.", "Finishing moves reduce the remaining cooldown of many Rogue skills by $<cdr> sec per combo point spent.\r\n\r\nAffected skills: Adrenaline Rush, Between the Eyes, Blade Flurry, Blade Rush, Dreadblades, Ghostly Strike, Grappling Hook, Keep it Rolling, Killing Spree, Marked for Death, Roll the Bones, Sprint, and Vanish." },
 } };
 
-// Spell description variables, wow build 10.0.2.46702
+// Spell description variables, wow build 10.0.2.46801
 static const std::array<spelldesc_vars_data_t, 365> __ptr_spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$pvp=$?a134735[${1.1}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<pvp>*$<weal>}\r\n" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -19441,7 +19442,7 @@ static const std::array<spelldesc_vars_data_t, 365> __ptr_spelldesc_vars_data { 
   {  321012, "$absorb=${($319978s1/100)*$MHP*(1+$@versadmg)}" },
   {  321530, "$bmMastery=$?s76657[${1+0.01*$76657m1}][${1}]\r\n$damage=${$ap*($s2/100)*($321538d/$321538t1)*$<bmMastery>*(1+$@versadmg)*(1+($137015s1/100))}" },
   {  321538, "$bmMastery=$?s76657[${1+0.01*$76657m1}][${1}]\r\n$damage=${$ap*($s2/100)*($321538d/$321538t1)*$<bmMastery>*(1+$@versadmg)*(1+($137015s1/100))}" },
-  {  322507, "$absorb=${($AP*6)*(1+$@versadmg)}\r\n" },
+  {  322507, "$absorb=${($AP*8.4)*(1+$@versadmg)}\r\n" },
   {  322721, "$mod=$?a137005[${0.25}]?a212611[${1.5}]?a137009[${2}]?a137014[${2}]?a137018[${0.75}]?a137022[${0.5}]?a137026[${0.75}]?a137030[${1.5}]?a137034[${1.5}]?a137038[${2}]?a137042[${1}]?a137047[${1.5}]?a353167[${2}][${1}]" },
   {  322729, "$CAP=$?$OWB==0[${$AP*0.98}][${($AP+$OAP)*2/3}]--2H, DW" },
   {  323673, "$damage=${($SPS*$s2/100)*(1+$@versadmg)*$m3/100}\r\n$healing=${($SPS*$s5/100)*(1+$@versadmg)*$m3/100}" },
@@ -19501,7 +19502,7 @@ static const std::array<spelldesc_vars_data_t, 365> __ptr_spelldesc_vars_data { 
   {  358164, "$buff=${$348272s1}\r\n$max=${3*$<buff>}" },
   {  359073, "$dmg=${$359077s2}" },
   {  360952, "$playerDmg=${$360969s1}\r\n$petDmg=${$360969s1*0.6}\r\n$combinedDmg=${$<playerDmg>+$<petDmg>}" },
-  {  363041, "$absorb=${($AP*6)*(1+$@versadmg)}\r\n" },
+  {  363041, "$absorb=${($AP*8.4)*(1+$@versadmg)}\r\n" },
   {  363534, "$min=${$SP*0.4*($d/$t1)}" },
   {  364365, "$heal=${$SP*$s1/100}" },
   {  364416, "$CDR=${s1*0.1}.1" },
@@ -19522,7 +19523,7 @@ static const std::array<spelldesc_vars_data_t, 365> __ptr_spelldesc_vars_data { 
   {  377192, "$duration=${$377195d+(($w2-1)*$377190s~2/1000)}" },
   {  378285, "$dmg=${$378286s1*(1+($s2/100))}" },
   {  378405, "$heal=${$378412o1*(1+($s1/100))}" },
-  {  378986, "$cap=${$SP*1.20}" },
+  {  378986, "$cap=${$SP*1.40}" },
   {  382266, "$blastTicks=$?s375510[${$375510s1/2}][${0}]\r\n$dmgI=${$357209s1}\r\n$dotI=${$357209o2*(10+$<blastTicks>)}\r\n$durI=${20+$375510s1}\r\n$dmgII=${$357209s1+($357209o2*3)}\r\n$dotII=${$357209o2*(7+$<blastTicks>)}\r\n$durII=${14+$375510s1}\r\n$dmgIII=${$357209s1+($357209o2*6)}\r\n$dotIII=${$357209o2*(4+$<blastTicks>)}\r\n$durIII=${8+$375510s1}\r\n$dmgIV=${$357209s1+($357209o2*9)}\r\n$dotIV=${$357209o2*(1+$<blastTicks>)}\r\n$durIV=${2+$375510s1}" },
   {  382411, "$dmg=${$359077s2}" },
   {  382614, "$sOneHeal=${2*$355941s1}\r\n$sTwoHeal=${2.25*$355941s1}\r\n$sThreeHeal=${2.5*$355941s1}\r\n$sFourHeal=${2.75*$355941s1}\r\n$sOneDur=${16}\r\n$sTwoDur=${12}\r\n$sThreeDur=${8}\r\n$sFourDur=${4}" },
@@ -19552,7 +19553,7 @@ static const std::array<spelldesc_vars_data_t, 365> __ptr_spelldesc_vars_data { 
   {  394354, "$damage=${($AP*1.0)*(1+$@versadmg)}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.0.2.46702
+// spelldesc_vars hotfix entries, wow build 10.0.2.46801
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 

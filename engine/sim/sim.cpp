@@ -3839,6 +3839,7 @@ void sim_t::create_options()
   add_option( opt_deprecated( "feast_as_dps", "no longer necessary" ) );
 
   // Shadowlands
+  add_option( opt_bool( "shadowlands.enabled", shadowlands_opts.enabled ) );
   add_option( opt_float( "shadowlands.combat_meditation_extend_chance", shadowlands_opts.combat_meditation_extend_chance, 0.0, 1.0 ) );
   add_option( opt_uint( "shadowlands.pointed_courage_nearby", shadowlands_opts.pointed_courage_nearby, 0, 3 ) );
   add_option( opt_int( "shadowlands.lead_by_example_nearby", shadowlands_opts.lead_by_example_nearby, 0, 4 ) );

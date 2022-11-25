@@ -5527,18 +5527,6 @@ void player_t::combat_begin()
   add_timed_blessing_triggers( external_buffs.blessing_of_winter, buffs.blessing_of_winter );
   add_timed_blessing_triggers( external_buffs.blessing_of_spring, buffs.blessing_of_spring );
 
-  if ( buffs.kindred_affinity && !external_buffs.kindred_affinity.empty() )
-  {
-    // this is a persistent buff with no proc chance, so trigger() will return false
-    buffs.kindred_affinity->increment();
-
-    for ( auto t : external_buffs.kindred_affinity )
-    {
-      make_event( *sim, t, [ this ] { buffs.kindred_affinity->increment(); } );
-      make_event( *sim, t + 10_s, [ this ] { buffs.kindred_affinity->decrement(); } );
-    }
-  }
-
   if ( buffs.windfury_totem )
   {
     buffs.windfury_totem->trigger();
@@ -9833,18 +9821,33 @@ struct retarget_auto_attack_t : public action_t
 struct invoke_external_buff_t : public action_t
 {
   std::string buff_str;
+
+  timespan_t buff_duration;
+  int buff_stacks;
+  bool use_pool;
+
   buff_t* buff;
+  std::vector<cooldown_t*>* invoke_cds;
 
   invoke_external_buff_t( player_t* player, util::string_view options_str )
-    : action_t( ACTION_OTHER, "invoke_external_buff", player ), buff_str(), buff( nullptr )
+    : action_t( ACTION_OTHER, "invoke_external_buff", player ),
+      buff_str(),
+      buff( nullptr ),
+      buff_duration( timespan_t::min() ),
+      buff_stacks( -1 ),
+      use_pool( true ),
+      invoke_cds( nullptr )
   {
     add_option( opt_string( "name", buff_str ) );
+    add_option( opt_timespan( "duration", buff_duration ) );
+    add_option( opt_int( "stacks", buff_stacks ) );
+    add_option( opt_bool( "use_pool", buff_stacks ) );
     parse_options( options_str );
 
     trigger_gcd           = timespan_t::zero();
     ignore_false_positive = true;
   }
-  
+
   void init_finished() override
   {
     action_t::init_finished();
@@ -9864,6 +9867,63 @@ struct invoke_external_buff_t : public action_t
         player->sim->error( "Player {} uses invoke_external_buff with unknown buff {}", player->name(), buff_str );
       }
     }
+
+    if ( use_pool )
+    {
+      if ( player->external_buffs.invoke_cds.empty() )
+      {
+        // Run initialisation code
+        auto splits_buffs = util::string_split<util::string_view>( player->external_buffs.pool, "/" );
+
+        for ( auto split_buffs : splits_buffs )
+        {
+          auto splits = util::string_split<util::string_view>( split_buffs, ":" );
+          // Min arguments Name and CD - without both, skip
+          if ( splits.size() < 2 )
+            continue;
+
+          // Buff name is empty - skip
+          if ( splits[ 0 ].empty() )
+            continue;
+
+          auto external_buff = buff_t::find( player, splits[ 0 ] );
+
+          // If the buff cannot be found, skip
+          if ( !external_buff )
+            continue;
+
+          // Number of buffs to create (third arugment)
+          int num = splits.size() >= 3 ? util::to_int( splits[ 2 ] ) : 1;
+
+          auto cds = &player->external_buffs.invoke_cds[ external_buff ];
+
+          timespan_t cd_time = timespan_t::from_seconds( util::to_double( splits[ 1 ] ) );
+
+          for ( auto i = 0; i < num; i++ )
+          {
+            auto cd =
+                cds->emplace_back( player->get_cooldown( fmt::format( "invoke_{}_{}", splits[ 0 ], cds->size() ) ) );
+            cd->duration = cd->base_duration = cd_time;
+
+            sim->print_debug( "{} creates cooldown {} with cd {} ", *player, cd->name(),
+                              cd->duration );
+          }
+        }
+      }
+
+      auto cds = &player->external_buffs.invoke_cds[ buff ];
+
+      if ( !cds->empty() )
+      {
+        // External buffs initialised and buff found - set cooldown object to this
+        invoke_cds = cds;
+      }
+      else
+      {
+        // External buffs initialied and buffs not found - set buff to nullptr, this action will never be used.
+        buff = nullptr;
+      }
+    }
   }
 
   bool ready() override
@@ -9874,13 +9934,50 @@ struct invoke_external_buff_t : public action_t
     return action_t::ready();
   }
 
+  cooldown_t* get_shortest_cd()
+  {
+    if ( !use_pool )
+      return nullptr;
+
+    auto comp = []( cooldown_t* a, cooldown_t* b ) {
+      if ( a->remains() < b->remains() )
+        return true;
+      if ( a->remains() > b->remains() )
+        return false;
+
+      return a->duration < b->duration;
+    };
+
+    auto min = min_element( invoke_cds->begin(), invoke_cds->end(), comp );
+    if ( min != invoke_cds->end() )
+      return *min;
+
+    return nullptr;
+  }
+
   void execute() override
   {
     if ( sim->log )
       sim->out_log.printf( "%s invokes buff %s", player->name(), buff->name() );
-    buff->trigger();
+
+    buff->trigger( buff_stacks, buff_duration );
+
+    if ( use_pool )
+    {
+      auto shortest = get_shortest_cd();
+      if ( shortest )
+        shortest->start();
+
+      shortest = get_shortest_cd();
+      if ( shortest && shortest->remains() > timespan_t::zero() )
+      {
+        cooldown->duration = shortest->remains();
+        cooldown->start();
+      }
+    }
   }
 };
+
 
 }  // UNNAMED NAMESPACE
 
@@ -10685,6 +10782,11 @@ const spell_data_t* player_t::find_covenant_spell( util::string_view name ) cons
 
 item_runeforge_t player_t::find_runeforge_legendary( util::string_view name, bool tokenized, bool force_unity ) const
 {
+  if ( !sim->shadowlands_opts.enabled )
+  {
+    return item_runeforge_t::nil();
+  }
+
   auto entries = runeforge_legendary_entry_t::find( name, dbc->ptr, tokenized );
   if ( entries.empty() )
   {
@@ -12432,6 +12534,9 @@ void player_t::create_options()
       return true;
     } ) );
 
+  // Invoke External Buffs
+  add_option( opt_string( "external_buffs.pool", external_buffs.pool ) );
+
   // Permanent External Buffs
   add_option( opt_bool( "external_buffs.focus_magic", external_buffs.focus_magic ) );
   add_option( opt_int( "external_buffs.soleahs_secret_technique_ilevel", external_buffs.soleahs_secret_technique, 1, MAX_ILEVEL ) );
@@ -12465,7 +12570,6 @@ void player_t::create_options()
   add_option( opt_external_buff_times( "external_buffs.conquerors_banner", external_buffs.conquerors_banner ) );
   add_option( opt_external_buff_times( "external_buffs.rallying_cry", external_buffs.rallying_cry ) );
   add_option( opt_external_buff_times( "external_buffs.pact_of_the_soulstalkers", external_buffs.pact_of_the_soulstalkers ) ); // 9.1 Kyrian Hunter Legendary
-  add_option( opt_external_buff_times( "external_buffs.kindred_affinity", external_buffs.kindred_affinity ) ) ;
   add_option( opt_external_buff_times( "external_buffs.boon_of_azeroth", external_buffs.boon_of_azeroth ) );
   add_option( opt_external_buff_times( "external_buffs.boon_of_azeroth_mythic", external_buffs.boon_of_azeroth_mythic ) );
   add_option( opt_external_buff_times( "external_buffs.tome_of_unstable_power", external_buffs.tome_of_unstable_power) );

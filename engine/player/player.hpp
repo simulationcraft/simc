@@ -551,7 +551,6 @@ struct player_t : public actor_t
 
     // 9.1 Legendary Buffs
     buff_t* pact_of_the_soulstalkers; // Kyrian Hunter Legendary
-    buff_t* kindred_affinity;         // Kyrian Druid Legendary
     buff_t* equinox;                  // Night Fae Paladin Legendary
 
     // 9.1 Shards of Domination
@@ -581,6 +580,7 @@ struct player_t : public actor_t
     buff_t* elemental_chaos_air;
     buff_t* elemental_chaos_earth;
     buff_t* elemental_chaos_frost;
+    buff_t* static_empowerment; // phial of static empowerment
     buff_t* tome_of_unstable_power;
     buff_t* way_of_controlled_currents;
     buff_t* heavens_nemesis; // Neltharax, Enemy of the Sky
@@ -606,6 +606,8 @@ struct player_t : public actor_t
 
   struct external_buffs_t
   {
+    std::string pool;
+    std::unordered_map<buff_t*, std::vector<cooldown_t*>> invoke_cds;
     bool focus_magic;
     bool seasons_of_plenty;
     double blessing_of_summer_duration_multiplier;
@@ -619,7 +621,6 @@ struct player_t : public actor_t
     std::vector<timespan_t> conquerors_banner;
     std::vector<timespan_t> rallying_cry;
     std::vector<timespan_t> pact_of_the_soulstalkers;
-    std::vector<timespan_t> kindred_affinity;
     std::vector<timespan_t> boon_of_azeroth;
     std::vector<timespan_t> boon_of_azeroth_mythic;
     std::vector<timespan_t> tome_of_unstable_power;

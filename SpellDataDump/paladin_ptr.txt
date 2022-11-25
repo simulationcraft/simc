@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46702 Live (hotfix 2022-11-22/46702)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46741 Live (hotfix 2022-11-24/46741, git build update_builds 252553004a)
 Name             : Frostbolt of Ages (id=11) 
 Class            : Paladin
 School           : Frost
@@ -955,7 +955,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : Not Shapeshifted (16), Do Not Sheath (18), Active Threat (94), Bouncy Chain Missiles (146), Treat as Area Effect (175), Do Not Chain To Crowd-Controlled Targets (200), Show Mechanic as Combat Text (213), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416), Interrupts Current Cast (419), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=21607)    : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.52416 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 3 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.60280 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 3 | Target: Enemy (6)
 #2 (id=135932)   : Interrupt Cast (68)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.26781 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Mechanic: Interrupt | Target: Enemy (6)
 #3 (id=135933)   : Apply Aura (6) | Silence (27)
@@ -1036,7 +1036,7 @@ Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed M
 Charges          : 1 (6 seconds cooldown)
 Category         : 1627: Paladin (137026 effect#4), Retribution Paladin (137027 effect#5), Fires of Justice (203316 effect#3), Radiant Onslaught (231667 effect#1), Improved Crusader Strike (383254 effect#1), Blessing of Dusk (385126 effect#7)
 Labels           : 189: Avenging Crusader (216331 effect#2)
-Affecting spells : Avenging Wrath (31884 effects: #2, #3, #11), Improved Crusader Strike (44300 effect#1), Retribution Paladin (137027 effects: #1, #2, #3, #4, #12, #14), Protection Paladin (137028 effects: #1, #2, #4, #5), Holy Paladin (137029 effects: #4, #5, #10), Judgment (214222 effect#1), Avenging Crusader (216331 effect#1), Crusade (231895 effects: #1, #2), Wake of Ashes (255937 effect#4), Blessing of Dawn (337747 effects: #1, #2), Crusader Strike (342348 effect#1), Seal of the Templar (377016 effect#1), Seal of Reprisal (377053 effect#1), Radiant Decree (383469 effect#3), Blessing of Dusk (385126 effect#3), Blessing of Dawn (385127 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1)
+Affecting spells : Avenging Wrath (31884 effects: #2, #3, #11), Improved Crusader Strike (44300 effect#1), Retribution Paladin (137027 effects: #1, #2, #3, #4, #12, #14), Protection Paladin (137028 effects: #1, #2, #4, #5, #17), Holy Paladin (137029 effects: #4, #5, #10), Judgment (214222 effect#1), Avenging Crusader (216331 effect#1), Crusade (231895 effects: #1, #2), Wake of Ashes (255937 effect#4), Blessing of Dawn (337747 effects: #1, #2), Crusader Strike (342348 effect#1), Seal of the Templar (377016 effect#1), Seal of Reprisal (377053 effect#1), Radiant Decree (383469 effect#3), Blessing of Dusk (385126 effect#3), Blessing of Dawn (385127 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1)
 Family Flags     : 47, 65
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ....x... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
@@ -1218,7 +1218,7 @@ Attributes       : ........ ........ x.x..... ........   ........ .x...... .....
                  : Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=46252)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.50000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.55000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=171314)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: holy_power | Target: Self (1)
 Description      : Hammers the current target for $53595sw1 Physical damage.$?s26573&s203785[
@@ -2943,7 +2943,7 @@ Effects          :
                    Affected Spells: Flash of Light (19750)
                    Family Flags: 30
 #11 (id=726749)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: -23 | Scaled Value: -23 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Judgment (20271), Judgment (197277), Judgment (214222), Judgment (275773), Judgment (275779)
                    Family Flags: 23
 #12 (id=726750)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -2961,6 +2961,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #16 (id=1032419)  : Apply Aura (6) | Unknown(531)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+#17 (id=1042754)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Crusader Strike (35395)
+                   Family Flags: 47
 
 Name             : Holy Paladin (id=137029) [Spell Family (10), Passive, Hidden] 
 Class            : Holy Paladin
@@ -4487,7 +4491,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : Do Not Sheath (18), Do Not Display Range (126), No Cast Log (128), Treat as Area Effect (175), Aura Points On Client (268), Allow Cast While Channeling (308), Bypass Visibility Check (320), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=301536)   : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.10000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.11000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=303007)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc204019
@@ -14492,7 +14496,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Can Proc From Procs (122), Aura Points On Client (268)
 Effects          :
 #1 (id=1020878)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Shield of the Righteous (53600)
                    Family Flags: 52
 #2 (id=1020879)  : Apply Aura (6) | Add Percent Modifier (108): Spell Radius (6)
@@ -16096,7 +16100,6 @@ Effects          :
 Description      : $@spelldesc393020
 
 Name             : Improved Cleanse (id=393024) [Spell Family (10), Passive, Hidden] 
-Hotfixed         : Affecting Spells
 Talent Entry     : Holy [tree=class, row=4, col=1, max_rank=1, req_points=0]
 Class            : Paladin
 School           : Physical

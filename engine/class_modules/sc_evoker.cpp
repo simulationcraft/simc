@@ -97,13 +97,12 @@ struct evoker_t : public player_t
   // !!!===========================================================================!!!
   // !!! Runtime variables NOTE: these MUST be properly reset in evoker_t::reset() !!!
   // !!!===========================================================================!!!
-
+  bool was_empowering;
   // !!!===========================================================================!!!
 
   // Options
   struct options_t
   {
-    bool post_empower_gcd = true;
   } option;
 
   // Action pointers
@@ -310,6 +309,8 @@ struct evoker_t : public player_t
   void create_buffs() override;
   void create_options() override;
   //void arise() override;
+  void moving() override;
+  void schedule_ready( timespan_t, bool ) override;
   //void combat_begin() override;
   //void combat_end() override;
   void analyze( sim_t& ) override;
@@ -735,7 +736,7 @@ struct empowered_release_spell_t : public empowered_base_t
     // TODO: Continue to check it uses this spell to trigger GCD, as of 28/10/2022 it does. It can still be bypassed via spell queue. Potentally add a better way to model this?
     const spell_data_t* gcd_spell = p->find_spell( 359115 );
     if ( gcd_spell )
-      trigger_gcd = p->option.post_empower_gcd ? gcd_spell->gcd() : 0_s;
+      trigger_gcd = gcd_spell->gcd();
     gcd_type = gcd_haste_type::NONE;
 
     extend_4pc = timespan_t::from_seconds( p->sets->set( EVOKER_DEVASTATION, T29, B4 )->effectN( 1 ).base_value() );
@@ -749,6 +750,8 @@ struct empowered_release_spell_t : public empowered_base_t
 
   void execute() override
   {
+    p()->was_empowering = false;
+
     empowered_base_t::execute();
 
     if ( background )
@@ -936,7 +939,10 @@ struct empowered_charge_spell_t : public empowered_base_t
     empowered_base_t::last_tick( d );
 
     if ( empower_level( d ) == empower_e::EMPOWER_NONE )
+    {
+      p()->was_empowering = false;
       return;
+    }
 
     auto emp_state = release_spell->get_state();
     emp_state->target = d->state->target;
@@ -979,9 +985,10 @@ struct essence_spell_t : public evoker_spell_t
     if ( !base_cost() || proc )
       return;
 
-    if ( p()->buff.essence_burst->up() && !rng().roll( hoarded_pct ) )
+    if ( p()->buff.essence_burst->up() )
     {
-      p()->buff.essence_burst->decrement();
+      if ( !rng().roll( hoarded_pct ) )
+        p()->buff.essence_burst->decrement();
 
       if ( p()->talent.feed_the_flames.ok() )
         p()->cooldown.fire_breath->adjust( ftf_dur );
@@ -1050,19 +1057,22 @@ struct fire_breath_t : public empowered_charge_spell_t
       return t;
     }
 
+    double calculate_tick_amount( action_state_t* s, double m ) const override
+    {
+      auto n = std::clamp( as<double>( s->n_targets ), reduced_aoe_targets, 20.0 );
+
+      m *= std::sqrt( reduced_aoe_targets / n );
+
+      return base_t::calculate_tick_amount( s, m );
+    }
+
     void tick( dot_t* d ) override
     {
       empowered_release_spell_t::tick( d );
 
-      if ( p()->talent.burnout.ok() )
-      {
-        p()->buff.burnout->trigger();
-        if ( p()->buff.burnout->cooldown->down() )
-        {
-          // TODO: Confirm next build, as of 27/09/2022 the ICD is triggered on attempt not success
-          p()->buff.burnout->cooldown->start();
-        }
-      }
+      // TODO: confirm this doesn't have a target # based DR, or exhibit previously bugged behavior where icd is
+      // triggered on check, not success
+      p()->buff.burnout->trigger();
     }
 
   };
@@ -1223,6 +1233,13 @@ struct disintegrate_t : public essence_spell_t
     surge->name_str_reporting = "scintillation";
     surge->proc_spell_type = proc_spell_type_e::SCINTILLATION;
     eternity_surge = surge;
+
+    // 25/11/2022 - Override the lag handling for Disintegrate so that it doesn't use channeled ready behavior
+    //              In-game tests have shown it is possible to cast after faster than the 250ms channel_lag using a
+    //              nochannel macro
+    ability_lag        = p->world_lag;
+    ability_lag_stddev = p->world_lag_stddev;
+
 
     add_child( eternity_surge );
   }
@@ -1706,6 +1723,9 @@ struct dragonrage_t : public evoker_spell_t
     : evoker_spell_t( "dragonrage", p, p->talent.dragonrage, options_str ),
       max_targets( as<unsigned>( data().effectN( 2 ).trigger()->effectN( 1 ).base_value() ) )
   {
+    if ( !data().ok() )
+      return;
+
     damage = p->get_secondary_action<dragonrage_damage_t>( "dragonrage_pyre" );
     add_child( damage );
 
@@ -1742,6 +1762,7 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
 
 evoker_t::evoker_t( sim_t* sim, std::string_view name, race_e r )
   : player_t( sim, EVOKER, name, r ),
+    was_empowering( false ),
     option(),
     action(),
     buff(),
@@ -2105,7 +2126,6 @@ void evoker_t::create_buffs()
 void evoker_t::create_options()
 {
   player_t::create_options();
-  add_option( opt_bool( "evoker.post_empower_gcd", option.post_empower_gcd ) );
 }
 
 void evoker_t::analyze( sim_t& sim )
@@ -2123,9 +2143,30 @@ void evoker_t::analyze( sim_t& sim )
   player_t::analyze( sim );
 }
 
+void evoker_t::moving()
+{
+  // If we are mid-empower and forced to move, we don't want player_t::interrupt() to schedule_ready as the release
+  // action will handle that for us. We set the bool here and override player_t::schedule_ready to return if bool is
+  // set.
+  if ( channeling && dynamic_cast<spells::empowered_charge_spell_t*>( channeling ) )
+    was_empowering = true;
+
+  player_t::moving();
+}
+
+void evoker_t::schedule_ready( timespan_t delta_time, bool waiting )
+{
+  if ( was_empowering )
+    return;
+
+  player_t::schedule_ready( delta_time, waiting );
+}
+
 void evoker_t::reset()
 {
   player_t::reset();
+
+  was_empowering = false;
 }
 
 void evoker_t::copy_from( player_t* source )

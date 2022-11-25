@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46702 Live (hotfix 2022-11-22/46702)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46741 Live (hotfix 2022-11-24/46741, git build update_builds 252553004a)
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Talent Entry     : Generic [tree=class, row=2, col=3, max_rank=1, req_points=0]
 Class            : Paladin, Mage
@@ -736,7 +736,6 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=5692)     : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.66000 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : SP Coefficient (0.75 -> 0.66)
 #2 (id=127998)   : Apply Aura (6) | Dummy (4)
                    Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=290011)   : Apply Aura (6) | Dummy (4)
@@ -2059,7 +2058,6 @@ Attributes       : ........ ........ x......x x..x....   .....x.x ........ .....
 Effects          :
 #1 (id=85629)    : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.10965 | PvP Coefficient: 1.20000 | Radius: 8.5 yards | Target: AOE enemy (instant) (16)
-Hotfixed         : SP Coefficient (0.129 -> 0.10965)
 #2 (id=818474)   : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000
 Description      : $@spelldesc84714
@@ -6565,7 +6563,6 @@ Effects          :
 Tooltip          : Increases haste by $s1.
 
 Name             : Clearcasting (id=263725) [Spell Family (3)] 
-Hotfixed         : Attributes
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -14276,7 +14273,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1016589)  : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (18 -> 15)
 #2 (id=1016595)  : Apply Aura (6) | Dummy (4)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Ignite deals $s1% more damage while Combustion is not active. Fire Blast spreads Ignite to $s2 additional nearby targets during Combustion.

@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46702 Live (hotfix 2022-11-22/46702)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46741 Live (hotfix 2022-11-24/46741, git build update_builds 252553004a)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -4264,7 +4264,6 @@ Description      : Reduces all damage taken by $s1% for $d.
 Tooltip          : Damage taken reduced by $s1%.
 
 Name             : Bonestorm (id=194844) [Spell Family (15)] 
-Hotfixed         : Affecting Spells
 Talent Entry     : Blood [tree=spec, row=10, col=1, max_rank=1, req_points=20]
 Class            : Death Knight
 School           : Shadow
@@ -4729,7 +4728,6 @@ Effects          :
 Description      : $@spelldesc195679
 
 Name             : Bonestorm (id=196528) [Spell Family (15)] 
-Hotfixed         : Affecting Spells
 Class            : Death Knight
 School           : Shadow
 Spell Type       : Melee
@@ -5686,7 +5684,6 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=306540)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.16200 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
-Hotfixed         : AP Coefficient (0.18 -> 0.162)
 #2 (id=338561)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=818620)   : Dummy (3)
@@ -14744,6 +14741,7 @@ Description      : Chill Streak's bounce range is increased by $s2 yds and each 
 Name             : Unholy Aura (id=377440) [Spell Family (15), Passive] 
 Talent Entry     : Unholy [tree=spec, row=9, col=5, max_rank=2, req_points=20]
                  : Effect#3 [op=set, values=(10, 20)]
+                 : Effect#4 [op=set, values=(10, 20)]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -15796,7 +15794,6 @@ Effects          :
 Description      : Death Coil causes the target to take an additional $s1% of the direct damage dealt over $253367d.
 
 Name             : Coil of Devastation (id=390271) [Spell Family (15)] 
-Hotfixed         : Attributes
 Class            : Death Knight
 School           : Shadow
 Spell Type       : Magic
@@ -16180,7 +16177,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Allow Aura While Dead (116), Not In Spellbook (143), Disable Aura While Dead (226), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1029154)  : Apply Aura (6) | Trigger Spell with Value (231)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Trigger Spell: 391568 | Target: Self (1)
+                   Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Trigger Spell: 391568 | Target: Self (1)
 Description      : Your auto-attacks reduce the target's auto-attack speed by $s1% for $391568d, stacking up to $391568u times.
 
 Name             : Insidious Chill (id=391568) [Spell Family (15)] 
