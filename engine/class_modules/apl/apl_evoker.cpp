@@ -28,7 +28,7 @@ std::string rune( const player_t* p )
 
 std::string temporary_enchant( const player_t* p )
 {
-  return ( p->true_level > 60 ) ? "main_hand:howling_rune" : "main_hand:shadowcore_oil";
+  return ( p->true_level > 60 ) ? "main_hand:howling_rune_3" : "main_hand:shadowcore_oil";
 }
 
 //devastation_apl_start
