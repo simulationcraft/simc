@@ -985,9 +985,10 @@ struct essence_spell_t : public evoker_spell_t
     if ( !base_cost() || proc )
       return;
 
-    if ( p()->buff.essence_burst->up() && !rng().roll( hoarded_pct ) )
+    if ( p()->buff.essence_burst->up() )
     {
-      p()->buff.essence_burst->decrement();
+      if ( !rng().roll( hoarded_pct ) )
+        p()->buff.essence_burst->decrement();
 
       if ( p()->talent.feed_the_flames.ok() )
         p()->cooldown.fire_breath->adjust( ftf_dur );
