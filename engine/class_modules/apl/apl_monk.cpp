@@ -786,7 +786,7 @@ void windwalker( player_t* p )
   aoe->add_action( "whirling_dragon_punch" );
 
   // ST / Cleave
-  st_cleave->add_action( "faeline_stomp,if=combo_strike", "ST Priority (<3 Targets)" );
+  st_cleave->add_action( "faeline_stomp,if=combo_strike&(!talent.faeline_harmony|debuff.fae_exposure_damage.remains<1)", "ST Priority (<3 Targets)" );
   st_cleave->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.teachings_of_the_monastery.stack=3&talent.shadowboxing_treads" );
   st_cleave->add_action( "spinning_crane_kick,if=combo_strike&buff.dance_of_chiji.up" );
   st_cleave->add_action( "strike_of_the_windlord,if=talent.thunderfist" );
@@ -820,7 +820,7 @@ void windwalker( player_t* p )
 
   // Serenity Priority
   serenity->add_action( "strike_of_the_windlord,if=active_enemies<3", "Serenity Priority" );
-  serenity->add_action( "faeline_stomp,if=combo_strike" );
+  serenity->add_action( "faeline_stomp,if=combo_strike&(!talent.faeline_harmony|debuff.fae_exposure_damage.remains<1)" );
   serenity->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&buff.teachings_of_the_monastery.stack=3" );
   serenity->add_action( "fists_of_fury,if=buff.serenity.remains<1" );
   serenity->add_action( "fists_of_fury_cancel" );
