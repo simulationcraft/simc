@@ -1057,6 +1057,15 @@ struct fire_breath_t : public empowered_charge_spell_t
       return t;
     }
 
+    double calculate_tick_amount( action_state_t* s, double m ) const override
+    {
+      auto n = std::clamp( as<double>( s->n_targets ), reduced_aoe_targets, 20.0 );
+
+      m *= std::sqrt( reduced_aoe_targets / n );
+
+      return base_t::calculate_tick_amount( s, m );
+    }
+
     void tick( dot_t* d ) override
     {
       empowered_release_spell_t::tick( d );
