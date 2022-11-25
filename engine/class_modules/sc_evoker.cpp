@@ -1531,11 +1531,16 @@ struct living_flame_t : public evoker_spell_t
     p()->buff.leaping_flames->expire();
     p()->buff.scarlet_adaptation->expire();
 
-    if ( p()->talent.ruby_essence_burst.ok() &&
-         ( p()->buff.dragonrage->up() || rng().roll( p()->talent.ruby_essence_burst->effectN( 1 ).percent() ) ) )
+    if ( p()->talent.ruby_essence_burst.ok() )
     {
-      p()->buff.essence_burst->trigger();
-      p()->proc.ruby_essence_burst->occur();
+      for ( size_t i = 0; i < damage->num_targets_hit; i++ )
+      {
+        if ( p()->buff.dragonrage->up() || rng().roll( p()->talent.ruby_essence_burst->effectN( 1 ).percent() ) )
+        {
+          p()->buff.essence_burst->trigger();
+          p()->proc.ruby_essence_burst->occur();
+        }
+      }
     }
 
     if ( p()->buff.burnout->up() )
