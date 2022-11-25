@@ -45,6 +45,8 @@ actions+=/variable,name=pooling_runic_power,value=talent.vile_contagion&cooldown
 actions+=/variable,name=pooling_runes,value=talent.soul_reaper&rune<2&target.time_to_pct_35<5&fight_remains>5
 actions+=/variable,name=st_planning,value=active_enemies<=3&(!raid_event.adds.exists|raid_event.adds.in>15)
 actions+=/variable,name=adds_remain,value=active_enemies>=4&(!raid_event.adds.exists|raid_event.adds.exists&raid_event.adds.remains>6)
+# When using 'external_buffs.invoke', will use this lines logic to determine when to use Power Infusion. Current, cooldown is defined in the line, please do not change this if you do not know what you are doing.
+actions+=/invoke_external_buff,name=power_infusion,line_cd=120,if=variable.st_planning&runic_power.deficit>20&(pet.gargoyle.active&pet.apoc_ghoul.active|!talent.summon_gargoyle&talent.army_of_the_damned&pet.army_ghoul.active&pet.apoc_ghoul.active|!talent.summon_gargoyle&!talent.army_of_the_damned&buff.dark_transformation.up|!talent.summon_gargoyle&!talent.summon_gargoyle&buff.dark_transformation.up)|fight_remains<=21
 # Prioritize Army, Outbreak and Maintaining Plaguebringer
 actions+=/army_of_the_dead,if=talent.commander_of_the_dead&(cooldown.dark_transformation.remains<4|buff.commander_of_the_dead_window.up)|!talent.commander_of_the_dead&talent.unholy_assault&cooldown.unholy_assault.remains<10|!talent.unholy_assault&!talent.commander_of_the_dead|fight_remains<=30
 actions+=/outbreak,target_if=(dot.virulent_plague.refreshable|talent.superstrain&(dot.frost_fever_superstrain.refreshable|dot.blood_plague_superstrain.refreshable))&(!talent.unholy_blight|talent.unholy_blight&cooldown.unholy_blight.remains>15%((talent.superstrain*3)+(talent.plaguebringer*2)))
@@ -128,7 +130,7 @@ main_hand=incarnate_skysplitter,id=195528,bonus_id=4800/4786/1498,enchant=rune_o
 # Gear Summary
 # gear_ilvl=422.00
 # gear_strength=4958
-# gear_stamina=13405
+# gear_stamina=13377
 # gear_crit_rating=2713
 # gear_haste_rating=4598
 # gear_mastery_rating=4097

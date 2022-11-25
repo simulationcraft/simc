@@ -50,6 +50,8 @@ actions+=/variable,name=oblit_pooling_time,op=setif,value=((cooldown.pillar_of_f
 actions+=/variable,name=breath_pooling_time,op=setif,value=((cooldown.breath_of_sindragosa.remains+1)%gcd)%((rune+1)*(runic_power+20))*100,value_else=gcd*2,condition=runic_power.deficit>10&cooldown.breath_of_sindragosa.remains<10
 actions+=/variable,name=pooling_runes,value=talent.obliteration&cooldown.pillar_of_frost.remains_expected<variable.oblit_pooling_time
 actions+=/variable,name=pooling_runic_power,value=talent.breath_of_sindragosa&cooldown.breath_of_sindragosa.remains<variable.breath_pooling_time|talent.obliteration&runic_power<35&cooldown.pillar_of_frost.remains_expected<variable.oblit_pooling_time
+# When using 'external_buffs.invoke', will use this lines logic to determine when to use Power Infusion. Current, cooldown is defined in the line, please do not change this if you do not know what you are doing.
+actions+=/invoke_external_buff,name=power_infusion,line_cd=120,if=(buff.pillar_of_frost.up|!talent.pillar_of_frost)&(talent.obliteration|talent.breath_of_sindragosa&buff.breath_of_sindragosa.up|!talent.breath_of_sindragosa&!talent.obliteration)
 # Interrupt
 actions+=/mind_freeze,if=target.debuff.casting.react
 # Maintain Frost Fever, Icy Talons and Unleashed Frenzy
@@ -203,7 +205,7 @@ off_hand=strike_twice,id=193700,bonus_id=6652/1643/8767,enchant=rune_of_razorice
 # Gear Summary
 # gear_ilvl=421.75
 # gear_strength=4944
-# gear_stamina=13354
+# gear_stamina=13326
 # gear_crit_rating=3130
 # gear_haste_rating=4478
 # gear_mastery_rating=4330
