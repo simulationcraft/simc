@@ -4605,6 +4605,10 @@ struct overpower_t : public warrior_attack_t
     parse_options( options_str );
     may_block = may_parry = may_dodge = false;
     weapon                            = &( p->main_hand_weapon );
+    if ( p->talents.arms.battlelord->ok() )
+    {
+      base_multiplier *= 1.0 + p->talents.arms.overpower->effectN( 2 ).percent(); // stand in for new BL effect
+    }
 
     if ( p->talents.arms.dreadnaught->ok() )
     {
@@ -9283,6 +9287,8 @@ void warrior_t::create_buffs()
   buff.reckless_abandon = make_buff( this, "reckless_abandon", find_spell( 396752 ) );
 
   buff.sudden_death = make_buff( this, "sudden_death", specialization() == WARRIOR_FURY ? talents.fury.sudden_death : specialization() == WARRIOR_ARMS ? talents.arms.sudden_death : talents.protection.sudden_death );
+    if ( tier_set.t29_fury_4pc->ok() )
+    buff.sudden_death->set_rppm( RPPM_NONE, -1, 2.5 ); // hardcode unsupported type 8 modifier
 
   buff.shield_block = make_buff( this, "shield_block", spell.shield_block_buff )
     ->set_duration( spell.shield_block_buff->duration() + talents.protection.enduring_defenses->effectN( 1 ).time_value() )

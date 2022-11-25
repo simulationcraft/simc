@@ -5048,14 +5048,18 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
         {
           if ( data().charge_cooldown() > 0_ms )
           {
-            sim->print_debug( "{} cooldown duration modifier ({}) ignored due to being a charge cooldown", *this, effect.time_value() );
+            internal_cooldown->duration += effect.time_value();
+            if ( internal_cooldown->duration < timespan_t::zero() )
+              internal_cooldown->duration = timespan_t::zero();
+            sim->print_debug( "{} internal cooldown duration modified by {} to {} (due to being a charge cooldown)",
+                              *this, effect.time_value(), internal_cooldown->duration );
           }
           else
           {
             cooldown->duration += effect.time_value();
             if ( cooldown->duration < timespan_t::zero() )
               cooldown->duration = timespan_t::zero();
-            sim->print_debug( "{} cooldown duration increase by {} to {}", *this, effect.time_value(), cooldown->duration );
+            sim->print_debug( "{} cooldown duration modified by {} to {}", *this, effect.time_value(), cooldown->duration );
           }
         }
         break;
@@ -5252,14 +5256,18 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
         {
           if ( data().charge_cooldown() > 0_ms )
           {
-            sim->print_debug( "{} cooldown duration modifier ({}) ignored due to being a charge cooldown", *this, effect.time_value() );
+            internal_cooldown->duration += effect.time_value();
+            if ( internal_cooldown->duration < timespan_t::zero() )
+              internal_cooldown->duration = timespan_t::zero();
+            sim->print_debug( "{} internal cooldown duration modified by {} to {} (due to being a charge cooldown)",
+                              *this, effect.time_value(), internal_cooldown->duration );
           }
           else
           {
             cooldown->duration += effect.time_value();
             if ( cooldown->duration < timespan_t::zero() )
               cooldown->duration = timespan_t::zero();
-            sim->print_debug( "{} cooldown duration modified by {}", *this, effect.time_value() );
+            sim->print_debug( "{} cooldown duration modified by {} to {}", *this, effect.time_value(), cooldown->duration );
           }
         }
         break;

@@ -140,7 +140,7 @@ cooldown_t::cooldown_t( util::string_view n, sim_t& s ) :
  */
 void cooldown_t::adjust_recharge_multiplier()
 {
-  if ( !ongoing() )
+  if ( !ongoing() || charges == 0 )
   {
     return;
   }

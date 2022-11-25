@@ -1,4 +1,4 @@
-// Player trait definitions, wow build 10.0.2.46702
+// Player trait definitions, wow build 10.0.2.46741
 static const std::array<trait_data_t, 2411> __trait_data_data { {
   { 1,  1, 112108, 90258, 2, 20, 117113, 384124,      0,      0,  8,  1,  -1,              "Armored to the Teeth", {   72,    0,    0,    0 }, {    0,    0,    0,    0 } },
   { 1,  1, 112109, 90259, 2, 20, 117114, 394855,      0,      0,  8,  1,  -1,              "Armored to the Teeth", {   73,    0,    0,    0 }, {    0,    0,    0,    0 } },
@@ -2413,8 +2413,8 @@ static const std::array<trait_data_t, 2411> __trait_data_data { {
   { 2, 13,  87674, 68648, 1,  8,  92676, 365937,      0,      0,  5,  1, 100,                       "Ruby Embers", { 1467,    0,    0,    0 }, {    0,    0,    0,    0 } },
 } };
 
-// Player trait definition effect entries, wow build 10.0.2.46702
-static const std::array<trait_definition_effect_entry_t, 672> __trait_definition_effect_data { {
+// Player trait definition effect entries, wow build 10.0.2.46741
+static const std::array<trait_definition_effect_entry_t, 675> __trait_definition_effect_data { {
   { 85152, 0, 0, 52490 },
   { 85152, 1, 0, 52491 },
   { 85152, 2, 0, 52492 },
@@ -2610,6 +2610,7 @@ static const std::array<trait_definition_effect_entry_t, 672> __trait_definition
   { 101274, 1, 0, 56935 },
   { 101274, 2, 0, 56934 },
   { 101286, 2, 0, 56937 },
+  { 101286, 3, 0, 56937 },
   { 101288, 0, 0, 56938 },
   { 101290, 0, 0, 56940 },
   { 101290, 1, 0, 56939 },
@@ -3042,6 +3043,7 @@ static const std::array<trait_definition_effect_entry_t, 672> __trait_definition
   { 117625, 1, 0, 61216 },
   { 117625, 2, 0, 61215 },
   { 117628, 0, 0, 61218 },
+  { 117628, 1, 0, 61218 },
   { 117645, 0, 0, 61220 },
   { 117645, 1, 0, 61219 },
   { 117648, 1, 0, 61221 },
@@ -3079,6 +3081,7 @@ static const std::array<trait_definition_effect_entry_t, 672> __trait_definition
   { 117921, 0, 0, 61285 },
   { 117923, 0, 0, 61286 },
   { 117929, 0, 0, 61287 },
+  { 117929, 1, 0, 62417 },
   { 117939, 0, 0, 61288 },
   { 117941, 0, 0, 61289 },
   { 117947, 1, 0, 61290 },

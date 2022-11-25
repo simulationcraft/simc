@@ -517,8 +517,6 @@ public:
     buff_t* ursocs_fury;
     buff_t* vicious_cycle_mangle;
     buff_t* vicious_cycle_maul;
-    // Guardian Conduits
-    buff_t* savage_combatant;
 
     // Restoration
     buff_t* abundance;
@@ -543,6 +541,7 @@ public:
   {
     cooldown_t* berserk_bear;
     cooldown_t* berserk_cat;
+    cooldown_t* frenzied_regeneration;
     cooldown_t* incarnation_bear;
     cooldown_t* incarnation_cat;
     cooldown_t* incarnation_moonkin;
@@ -1002,19 +1001,20 @@ public:
       spec( specializations_t() ),
       uptime( uptimes_t() )
   {
-    cooldown.berserk_bear        = get_cooldown( "berserk_bear" );
-    cooldown.berserk_cat         = get_cooldown( "berserk_cat" );
-    cooldown.incarnation_bear    = get_cooldown( "incarnation_guardian_of_ursoc" );
-    cooldown.incarnation_cat     = get_cooldown( "incarnation_avatar_of_ashamane" );
-    cooldown.incarnation_moonkin = get_cooldown( "incarnation_chosen_of_elune" );
-    cooldown.incarnation_tree    = get_cooldown( "incarnation_tree_of_life" );
-    cooldown.mangle              = get_cooldown( "mangle" );
-    cooldown.moon_cd             = get_cooldown( "moon_cd" );
-    cooldown.natures_swiftness   = get_cooldown( "natures_swiftness" );
-    cooldown.thrash_bear         = get_cooldown( "thrash_bear" );
-    cooldown.tigers_fury         = get_cooldown( "tigers_fury" );
-    cooldown.warrior_of_elune    = get_cooldown( "warrior_of_elune" );
-    cooldown.rage_from_melees    = get_cooldown( "rage_from_melees" );
+    cooldown.berserk_bear          = get_cooldown( "berserk_bear" );
+    cooldown.berserk_cat           = get_cooldown( "berserk_cat" );
+    cooldown.frenzied_regeneration = get_cooldown( "frenzied_regeneration" );
+    cooldown.incarnation_bear      = get_cooldown( "incarnation_guardian_of_ursoc" );
+    cooldown.incarnation_cat       = get_cooldown( "incarnation_avatar_of_ashamane" );
+    cooldown.incarnation_moonkin   = get_cooldown( "incarnation_chosen_of_elune" );
+    cooldown.incarnation_tree      = get_cooldown( "incarnation_tree_of_life" );
+    cooldown.mangle                = get_cooldown( "mangle" );
+    cooldown.moon_cd               = get_cooldown( "moon_cd" );
+    cooldown.natures_swiftness     = get_cooldown( "natures_swiftness" );
+    cooldown.thrash_bear           = get_cooldown( "thrash_bear" );
+    cooldown.tigers_fury           = get_cooldown( "tigers_fury" );
+    cooldown.warrior_of_elune      = get_cooldown( "warrior_of_elune" );
+    cooldown.rage_from_melees      = get_cooldown( "rage_from_melees" );
     cooldown.rage_from_melees->duration = 1_s;
 
     resource_regeneration = regen_type::DYNAMIC;
@@ -1112,6 +1112,7 @@ public:
   void apply_affecting_auras( action_t& ) override;
   bool check_astral_power( action_t* a, int over );
   double cache_mastery_value() const;  // for balance mastery
+  void snapshot_mastery();
 
   // secondary actions
   std::vector<action_t*> secondary_action_list;
@@ -1924,9 +1925,6 @@ public:
     if ( !s->result_amount || !( t == result_amount_type::DMG_DIRECT || t == result_amount_type::DMG_OVER_TIME ) )
       return;
 
-    if ( p()->buff.natures_vigil->check() && s->n_targets == 1 )
-      p()->buff.natures_vigil->current_value += s->result_amount;
-
     if ( p()->active.elunes_favored_heal && p()->get_form() == BEAR_FORM &&
          dbc::has_common_school( s->action->get_school(), SCHOOL_ARCANE ) )
     {
@@ -1934,14 +1932,20 @@ public:
           p(), p()->talent.elunes_favored->effectN( 1 ).percent() * s->result_amount );
     }
 
-    if ( p()->talent.protector_of_the_pack.ok() && p()->specialization() != DRUID_RESTORATION )
+    if ( p()->specialization() != DRUID_RESTORATION )
     {
-      auto b = p()->buff.protector_of_the_pack_regrowth;
+      if ( p()->buff.natures_vigil->check() && s->n_targets == 1 )
+        p()->buff.natures_vigil->current_value += s->result_amount;
 
-      if ( !b->check() )
-        b->trigger();
+      if ( p()->talent.protector_of_the_pack.ok() )
+      {
+        auto b = p()->buff.protector_of_the_pack_regrowth;
 
-      debug_cast<buffs::protector_of_the_pack_buff_t*>( b )->add_amount( s->result_amount );
+        if ( !b->check() )
+          b->trigger();
+
+        debug_cast<buffs::protector_of_the_pack_buff_t*>( b )->add_amount( s->result_amount );
+      }
     }
   }
 
@@ -2022,7 +2026,6 @@ public:
     parse_buff_effects( p()->buff.tooth_and_claw, false );
     parse_buff_effects( p()->buff.vicious_cycle_mangle, true, true );
     parse_buff_effects( p()->buff.vicious_cycle_maul, true, true );
-    parse_buff_effects( p()->buff.savage_combatant );
 
     // Restoration
     parse_buff_effects( p()->buff.abundance );
@@ -2131,6 +2134,11 @@ public:
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
     return ab::composite_dot_duration( s ) * get_buff_effects_value( dot_duration_buffeffects );
+  }
+
+  timespan_t cooldown_duration() const override
+  {
+    return ab::cooldown_duration() * get_buff_effects_value( recharge_multiplier_buffeffects );
   }
 
   double recharge_multiplier( const cooldown_t& cd ) const override
@@ -2820,17 +2828,25 @@ struct druid_heal_t : public druid_spell_base_t<heal_t>
   {
     base_t::assess_damage( t, s );
 
-    if ( !s->result_amount || !( t == result_amount_type::HEAL_DIRECT || t == result_amount_type::HEAL_OVER_TIME ) )
+    if ( !s->result_total || !( t == result_amount_type::HEAL_DIRECT || t == result_amount_type::HEAL_OVER_TIME ) )
       return;
 
-    if ( p()->talent.protector_of_the_pack.ok() && p()->specialization() == DRUID_RESTORATION )
+    if ( p()->specialization() == DRUID_RESTORATION )
     {
-      auto b = p()->buff.protector_of_the_pack_moonfire;
+      if ( p()->buff.natures_vigil->check() && s->n_targets == 1 )
+        p()->buff.natures_vigil->current_value += s->result_total;
 
-      if ( !b->check() )
-        b->trigger();
+      if ( p()->talent.protector_of_the_pack.ok() )
+      {
+        auto b = p()->buff.protector_of_the_pack_moonfire;
 
-      debug_cast<buffs::protector_of_the_pack_buff_t*>( b )->add_amount( s->result_amount );
+        if ( !b->check() )
+          b->trigger();
+
+        auto amt = sim->count_overheal_as_heal ? s->result_total : s->result_amount;
+
+        debug_cast<buffs::protector_of_the_pack_buff_t*>( b )->add_amount( amt );
+      }
     }
   }
 };
@@ -3986,11 +4002,8 @@ struct primal_wrath_t : public cat_finisher_t
   action_t* wounds;
   timespan_t rip_dur;
 
-  primal_wrath_t( druid_t* p, std::string_view opt ) : primal_wrath_t( p, "primal_wrath", p->talent.primal_wrath, opt )
-  {}  // TODO: remove ctor overload when no longer needed
-
-  primal_wrath_t( druid_t* p, std::string_view n, const spell_data_t* s, std::string_view opt )
-    : cat_finisher_t( n, p, s, opt ),
+  primal_wrath_t( druid_t* p, std::string_view opt )
+    : cat_finisher_t( "primal_wrath", p, p->talent.primal_wrath, opt ),
       wounds( nullptr ),
       rip_dur( timespan_t::from_seconds( data().effectN( 2 ).base_value() ) )
   {
@@ -4297,6 +4310,13 @@ struct berserk_bear_base_t : public bear_attack_t
     bear_attack_t::execute();
 
     buff->trigger();
+
+    // Always resets mangle & thrash CDs, even without berserk: ravage
+    p()->cooldown.mangle->reset( true );
+    p()->cooldown.thrash_bear->reset( true );
+
+    if ( p()->talent.berserk_persistence.ok() )
+      p()->cooldown.frenzied_regeneration->reset( true );
   }
 };
 
@@ -4597,8 +4617,6 @@ struct maul_t : public druid_mixin_t<trigger_gore_t<rage_spender_t>>
     p()->buff.vicious_cycle_mangle->trigger();
 
     p()->buff.tooth_and_claw->decrement();
-
-    p()->buff.savage_combatant->expire();
   }
 };
 
@@ -4920,11 +4938,10 @@ struct frenzied_regeneration_t : public druid_heal_t
   double goe_mul;
 
   frenzied_regeneration_t( druid_t* p, std::string_view opt )
-    : frenzied_regeneration_t( p, "frenzied_regeneration", p->talent.frenzied_regeneration, opt )
-  {}
-
-  frenzied_regeneration_t( druid_t* p, std::string_view n, const spell_data_t* s, std::string_view opt )
-    : druid_heal_t( n, p, s, opt ), dummy_cd( p->get_cooldown( "dummy_cd" ) ), orig_cd( cooldown ), goe_mul( 0.0 )
+    : druid_heal_t( "frenzied_regeneration", p, p->talent.frenzied_regeneration, opt ),
+      dummy_cd( p->get_cooldown( "dummy_cd" ) ),
+      orig_cd( cooldown ),
+      goe_mul( 0.0 )
   {
     target = p;
 
@@ -6749,7 +6766,7 @@ struct moonfire_t : public druid_spell_t
   void execute() override
   {
     p()->cache.invalidate( CACHE_MASTERY );
-    p()->cache_mastery_snapshot = p()->cache.mastery_value();
+    p()->snapshot_mastery();
 
     druid_spell_t::execute();
 
@@ -7582,7 +7599,7 @@ struct sunfire_t : public druid_spell_t
   void execute() override
   {
     p()->cache.invalidate( CACHE_MASTERY );
-    p()->cache_mastery_snapshot = p()->cache.mastery_value();
+    p()->snapshot_mastery();
 
     druid_spell_t::execute();
 
@@ -9423,7 +9440,7 @@ void druid_t::create_buffs()
     ->set_name_reporting( "Vers" );
 
   buff.lycaras_teachings_mast = make_buff( this, "lycaras_teachings_mast", find_spell( 378992 ) )
-    ->set_default_value( talent.lycaras_teachings->effectN( 1 ).percent() )
+    ->set_default_value( talent.lycaras_teachings->effectN( 1 ).base_value() )
     ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
     ->set_name_reporting( "Mastery" );
 
@@ -10488,7 +10505,7 @@ void druid_t::reset()
 
   // Reset runtime variables
   moon_stage = static_cast<moon_stage_e>( options.initial_moon_stage );
-  cache_mastery_snapshot = cache.mastery_value();
+  snapshot_mastery();
   after_the_wildfire_counter = 0.0;
   persistent_event_delay.clear();
   astral_power_decay = nullptr;
@@ -10580,19 +10597,29 @@ void druid_t::arise()
 {
   player_t::arise();
 
-  if ( specialization() == DRUID_BALANCE )
-  {
-    persistent_event_delay.push_back( make_event<persistent_delay_event_t>(
-        *sim, this, [ this ]() { cache_mastery_snapshot = cache.mastery_value(); }, 5.25_s ) );
-  }
-
   if ( talent.lycaras_teachings.ok() )
+  {
     persistent_event_delay.push_back( make_event<persistent_delay_event_t>( *sim, this, buff.lycaras_teachings ) );
+
+    register_combat_begin( [ this ]( player_t* ) { buff.lycaras_teachings->trigger(); } );
+  }
 
   buff.natures_balance->trigger();
 
   if ( buff.yseras_gift )
     persistent_event_delay.push_back( make_event<persistent_delay_event_t>( *sim, this, buff.yseras_gift ) );
+
+  if ( specialization() == DRUID_BALANCE )
+  {
+    persistent_event_delay.push_back( make_event<persistent_delay_event_t>( *sim, this, [ this ]() {
+      snapshot_mastery();
+      make_repeating_event( *sim, 5.25_s, [ this ]() { snapshot_mastery(); } );
+    }, 5.25_s ) );
+
+    // This MUST come last so that any previous changes from other precombat events, such as lycaras update based on
+    // form, happens first
+    register_combat_begin( [ this ]( player_t* ) { snapshot_mastery(); } );
+  }
 }
 
 void druid_t::combat_begin()
@@ -12226,6 +12253,11 @@ bool druid_t::check_astral_power( action_t* a, int over )
 double druid_t::cache_mastery_value() const
 {
   return cache_mastery_snapshot;
+}
+
+void druid_t::snapshot_mastery()
+{
+  cache_mastery_snapshot = cache.mastery_value();
 }
 
 /* Report Extension Class
