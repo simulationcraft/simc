@@ -6071,79 +6071,51 @@ void demon_hunter_t::apl_havoc()
   action_priority_list_t* apl_default = get_action_priority_list( "default" );
   apl_default->add_action( "auto_attack" );
   apl_default->add_action( "retarget_auto_attack,line_cd=1,target_if=min:debuff.burning_wound.remains,if=talent.burning_wound&talent.demon_blades" );
+
   apl_default->add_action( "variable,name=blade_dance,value=talent.first_blood|spell_targets.blade_dance1>=(3-talent.trail_of_ruin)", "Blade Dance with First Blood or at 3+ (2+ with Trail of Ruin) targets" );
   apl_default->add_action( "variable,name=blade_dance,if=talent.chaos_theory,value=buff.chaos_theory.down|talent.first_blood|!talent.cycle_of_hatred&spell_targets.blade_dance1>=(4-talent.trail_of_ruin)", "With Chaos Theory, Blade Dance when the buff is down, with First Blood at 2+ (1+ with Trail of Ruin) or with Essence Break at 4+ (3+ with Trail of Ruin) targets" );
-  apl_default->add_action( "variable,name=pooling_for_meta,value=!talent.demonic&cooldown.metamorphosis.remains<6&fury.deficit>30" );
   apl_default->add_action( "variable,name=pooling_for_blade_dance,value=variable.blade_dance&(fury<75-talent.first_blood*20)" );
   apl_default->add_action( "variable,name=pooling_for_eye_beam,value=talent.demonic&!talent.blind_fury&cooldown.eye_beam.remains<(gcd.max*2)&fury.deficit>20" );
   apl_default->add_action( "variable,name=waiting_for_momentum,value=talent.momentum&!buff.momentum.up" );
+  
   apl_default->add_action( "disrupt");
   apl_default->add_action( "call_action_list,name=cooldown,if=gcd.remains=0" );
   apl_default->add_action( "pick_up_fragment,type=demon,if=demon_soul_fragments>0" );
   apl_default->add_action( "pick_up_fragment,mode=nearest,if=talent.demonic_appetite&fury.deficit>=35&(!cooldown.eye_beam.ready|fury<30)" );
   apl_default->add_action( "vengeful_retreat,if=time>1&(variable.waiting_for_momentum|!talent.momentum&talent.tactical_retreat)&buff.tactical_retreat.down" );
   apl_default->add_action( "fel_rush,if=(buff.unbound_chaos.up|variable.waiting_for_momentum&(!talent.unbound_chaos|!cooldown.immolation_aura.ready))&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))" );
-  apl_default->add_action( "run_action_list,name=demonic,if=talent.demonic" );
-  apl_default->add_action( "run_action_list,name=normal" );
+  apl_default->add_action( "essence_break,if=!variable.waiting_for_momentum&(!cooldown.eye_beam.ready|buff.metamorphosis.up)" );
+  apl_default->add_action( "death_sweep,if=variable.blade_dance" );
+  apl_default->add_action( "fel_barrage,if=active_enemies>desired_targets|raid_event.adds.in>30" );
+  apl_default->add_action( "glaive_tempest,if=active_enemies>desired_targets|raid_event.adds.in>10" );
+  apl_default->add_action( "throw_glaive,if=talent.serrated_glaive&cooldown.eye_beam.remains<6&!buff.metamorphosis.up&!debuff.exposed_wound.up" );
+  apl_default->add_action( "eye_beam,if=active_enemies>desired_targets|raid_event.adds.in>25-talent.cycle_of_hatred*10"
+                           "&(!variable.use_eye_beam_fury_condition|spell_targets>1|fury<70)" );
+  apl_default->add_action( "blade_dance,if=variable.blade_dance&!cooldown.metamorphosis.ready"
+                           "&(cooldown.eye_beam.remains>5|!talent.demonic|(raid_event.adds.in>cooldown&raid_event.adds.in<25))" );
+  apl_default->add_action( "throw_glaive,if=talent.soulrend&spell_targets>(2-talent.furious_throws)" );
+  apl_default->add_action( "annihilation,if=!variable.pooling_for_blade_dance" );
+  apl_default->add_action( "immolation_aura,if=!buff.immolation_aura.up&(!talent.ragefire|active_enemies>desired_targets|raid_event.adds.in>15)" );
+  apl_default->add_action( "felblade,if=fury.deficit>=40" );
+  apl_default->add_action( "sigil_of_flame,if=active_enemies>desired_targets" );
+  apl_default->add_action( "chaos_strike,if=!variable.pooling_for_blade_dance&!variable.pooling_for_eye_beam" );
+  apl_default->add_action( "fel_rush,if=!talent.momentum&talent.demon_blades&!cooldown.eye_beam.ready&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))" );
+  apl_default->add_action( "demons_bite,target_if=min:debuff.burning_wound.remains,if=talent.burning_wound&debuff.burning_wound.remains<4" );
+  apl_default->add_action( "fel_rush,if=!talent.momentum&!talent.demon_blades&spell_targets>1&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))" );
+  apl_default->add_action( "sigil_of_flame,if=raid_event.adds.in>15&fury.deficit>=30" );
+  apl_default->add_action( "demons_bite" );
+  apl_default->add_action( "throw_glaive,if=buff.out_of_range.up" );
+  apl_default->add_action( "fel_rush,if=movement.distance>15|(buff.out_of_range.up&!talent.momentum)" );
+  apl_default->add_action( "vengeful_retreat,if=!talent.momentum&movement.distance>15" );
+  apl_default->add_action( "throw_glaive,if=talent.demon_blades" );
 
   action_priority_list_t* apl_cooldown = get_action_priority_list( "cooldown" );
-  apl_cooldown->add_action( "metamorphosis,if=!talent.demonic&(cooldown.eye_beam.remains>20|fight_remains<25)", "Cast Metamorphosis if we will get a full Eye Beam refresh or if the encounter is almost over" );
-  apl_cooldown->add_action( "metamorphosis,if=talent.demonic&(cooldown.eye_beam.remains>20&(!variable.blade_dance|cooldown.blade_dance.remains>gcd.max)|fight_remains<25)" );
+  apl_cooldown->add_action( "metamorphosis,if=!talent.demonic&((!talent.chaotic_transformation|cooldown.eye_beam.remains>20)&active_enemies>desired_targets|raid_event.adds.in>60|fight_remains<25)", "Cast Metamorphosis if we will get a full Eye Beam refresh or if the encounter is almost over" );
+  apl_cooldown->add_action( "metamorphosis,if=talent.demonic&(!talent.chaotic_transformation|cooldown.eye_beam.remains>20&(!variable.blade_dance|cooldown.blade_dance.remains>gcd.max)|fight_remains<25)" );
   apl_cooldown->add_action( "potion,if=buff.metamorphosis.remains>25|fight_remains<60" );
   add_havoc_use_items( this, apl_cooldown );
-  apl_cooldown->add_action( "the_hunt,if=!talent.demonic&!variable.waiting_for_momentum&!variable.pooling_for_meta|(!talent.furious_gaze|buff.furious_gaze.up)" );
+  apl_cooldown->add_action( "the_hunt,if=!talent.demonic&!variable.waiting_for_momentum|(!talent.furious_gaze|buff.furious_gaze.up)" );
   apl_cooldown->add_action( "elysian_decree,if=(active_enemies>desired_targets|raid_event.adds.in>30)" );
-
-  action_priority_list_t* apl_normal = get_action_priority_list( "normal" );
-  apl_normal->add_action( "essence_break" );
-  apl_normal->add_action( "death_sweep,if=variable.blade_dance" );
-  apl_normal->add_action( "fel_barrage,if=active_enemies>desired_targets|raid_event.adds.in>30" );
-  apl_normal->add_action( "immolation_aura,if=!buff.immolation_aura.up&(!talent.ragefire|active_enemies>desired_targets|raid_event.adds.in>15)" );
-  apl_normal->add_action( "glaive_tempest,if=!variable.waiting_for_momentum&(active_enemies>desired_targets|raid_event.adds.in>10)" );
-  apl_normal->add_action( "throw_glaive,if=talent.serrated_glaive&cooldown.eye_beam.remains<6&!buff.metamorphosis.up&!debuff.exposed_wound.up" );
-  apl_normal->add_action( "eye_beam,if=!variable.waiting_for_momentum&(active_enemies>desired_targets|raid_event.adds.in>15"
-                                    "&(!variable.use_eye_beam_fury_condition|spell_targets>1|fury<70))" );
-  apl_normal->add_action( "blade_dance,if=variable.blade_dance");
-  apl_normal->add_action( "throw_glaive,if=talent.soulrend&spell_targets>(2-talent.furious_throws)" );
-  apl_normal->add_action( "felblade,if=fury.deficit>=40");
-  apl_normal->add_action( "sigil_of_flame,if=active_enemies>desired_targets" );
-  apl_normal->add_action( "annihilation,if=(talent.demon_blades|!variable.waiting_for_momentum|fury.deficit<30|buff.metamorphosis.remains<5)&!variable.pooling_for_blade_dance" );
-  apl_normal->add_action( "chaos_strike,if=(talent.demon_blades|!variable.waiting_for_momentum|fury.deficit<30)&!variable.pooling_for_meta&!variable.pooling_for_blade_dance");
-  apl_normal->add_action( "eye_beam,if=talent.blind_fury&raid_event.adds.in>cooldown" );
-  apl_normal->add_action( "demons_bite,target_if=min:debuff.burning_wound.remains,if=talent.burning_wound&debuff.burning_wound.remains<4" );
-  apl_normal->add_action( "sigil_of_flame,if=raid_event.adds.in>15&fury.deficit>=30" );
-  apl_normal->add_action( "demons_bite" );
-  apl_normal->add_action( "fel_rush,if=!talent.momentum&raid_event.movement.in>charges*10&talent.demon_blades" );
-  apl_normal->add_action( "felblade,if=movement.distance>15|buff.out_of_range.up");
-  apl_normal->add_action( "fel_rush,if=movement.distance>15|(buff.out_of_range.up&!talent.momentum)" );
-  apl_normal->add_action( "vengeful_retreat,if=!talent.momentum&movement.distance>15" );
-  apl_normal->add_action( "throw_glaive,if=talent.demon_blades" );
-
-  action_priority_list_t* apl_demonic = get_action_priority_list( "demonic" );
-  apl_demonic->add_action( "essence_break,if=!variable.waiting_for_momentum&(!cooldown.eye_beam.ready|buff.metamorphosis.up)" );
-  apl_demonic->add_action( "death_sweep,if=variable.blade_dance");
-  apl_demonic->add_action( "fel_barrage,if=active_enemies>desired_targets|raid_event.adds.in>30" );
-  apl_demonic->add_action( "glaive_tempest,if=active_enemies>desired_targets|raid_event.adds.in>10" );
-  apl_demonic->add_action( "throw_glaive,if=talent.serrated_glaive&cooldown.eye_beam.remains<6&!buff.metamorphosis.up&!debuff.exposed_wound.up" );
-  apl_demonic->add_action( "eye_beam,if=active_enemies>desired_targets|raid_event.adds.in>25-talent.cycle_of_hatred*10"
-                                     "&(!variable.use_eye_beam_fury_condition|spell_targets>1|fury<70)" );
-  apl_demonic->add_action( "blade_dance,if=variable.blade_dance&!cooldown.metamorphosis.ready"
-                                        "&(cooldown.eye_beam.remains>5|(raid_event.adds.in>cooldown&raid_event.adds.in<25))" );
-  apl_demonic->add_action( "throw_glaive,if=talent.soulrend&spell_targets>(2-talent.furious_throws)" );
-  apl_demonic->add_action( "annihilation,if=!variable.pooling_for_blade_dance" );
-  apl_demonic->add_action( "immolation_aura,if=!buff.immolation_aura.up&(!talent.ragefire|active_enemies>desired_targets|raid_event.adds.in>15)" );
-  apl_demonic->add_action( "felblade,if=fury.deficit>=40" );
-  apl_demonic->add_action( "sigil_of_flame,if=active_enemies>desired_targets" );
-  apl_demonic->add_action( "chaos_strike,if=!variable.pooling_for_blade_dance&!variable.pooling_for_eye_beam");
-  apl_demonic->add_action( "fel_rush,if=!talent.momentum&talent.demon_blades&!cooldown.eye_beam.ready&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))" );
-  apl_demonic->add_action( "demons_bite,target_if=min:debuff.burning_wound.remains,if=talent.burning_wound&debuff.burning_wound.remains<4" );
-  apl_demonic->add_action( "fel_rush,if=!talent.momentum&!talent.demon_blades&spell_targets>1&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))" );
-  apl_demonic->add_action( "sigil_of_flame,if=raid_event.adds.in>15&fury.deficit>=30" );
-  apl_demonic->add_action( "demons_bite" );
-  apl_demonic->add_action( "throw_glaive,if=buff.out_of_range.up" );
-  apl_demonic->add_action( "fel_rush,if=movement.distance>15|(buff.out_of_range.up&!talent.momentum)" );
-  apl_demonic->add_action( "vengeful_retreat,if=!talent.momentum&movement.distance>15" );
-  apl_demonic->add_action( "throw_glaive,if=talent.demon_blades" );
 }
 
 // demon_hunter_t::apl_vengeance ============================================
@@ -7224,13 +7196,6 @@ public:
 
   void register_hotfixes() const override
   {
-    /*
-    hotfix::register_effect( "Demon Hunter", "2020-10-29", "Prepatch Unbound Chaos Damage", 728000 )
-      .field( "ap_coefficient" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 2.75 )
-      .verification_value( 2.3375 );
-    */
   }
 
   void combat_begin( sim_t* ) const override
