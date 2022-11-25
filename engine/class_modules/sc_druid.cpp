@@ -10596,19 +10596,27 @@ void druid_t::arise()
 {
   player_t::arise();
 
-  if ( specialization() == DRUID_BALANCE )
-  {
-    persistent_event_delay.push_back( make_event<persistent_delay_event_t>(
-        *sim, this, [ this ]() { cache_mastery_snapshot = cache.mastery_value(); }, 5.25_s ) );
-  }
-
   if ( talent.lycaras_teachings.ok() )
+  {
     persistent_event_delay.push_back( make_event<persistent_delay_event_t>( *sim, this, buff.lycaras_teachings ) );
+
+    register_combat_begin( [ this ]( player_t* ) { buff.lycaras_teachings->trigger(); } );
+  }
 
   buff.natures_balance->trigger();
 
   if ( buff.yseras_gift )
     persistent_event_delay.push_back( make_event<persistent_delay_event_t>( *sim, this, buff.yseras_gift ) );
+
+  if ( specialization() == DRUID_BALANCE )
+  {
+    persistent_event_delay.push_back( make_event<persistent_delay_event_t>(
+        *sim, this, [ this ]() { cache_mastery_snapshot = cache.mastery_value(); }, 5.25_s ) );
+
+    // This MUST come last so that any previous changes from other precombat events, such as lycaras update based on
+    // form, happens first
+    register_combat_begin( [ this ]( player_t* ) { cache_mastery_snapshot = cache.mastery_value(); } );
+  }
 }
 
 void druid_t::combat_begin()
