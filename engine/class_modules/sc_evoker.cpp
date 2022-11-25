@@ -1656,7 +1656,6 @@ struct pyre_t : public essence_spell_t
   void execute() override
   {
     essence_spell_t::execute();
-
     p()->buff.charged_blast->expire();
   }
 
@@ -1665,6 +1664,10 @@ struct pyre_t : public essence_spell_t
     essence_spell_t::snapshot_state( s, rt );
 
     auto s_ = static_cast<state_t*>( s );
+
+    if ( (proc_spell_type & proc_spell_type_e::VOLATILITY) != 0 )
+      return;
+
     s_->charged_blast = p()->buff.charged_blast->check_stack_value();
     s_->essence_burst = p()->buff.essence_burst->check() ? titanic_mul : 0.0;
     s_->iridescence = p()->buff.iridescence_red->check_value();
@@ -1703,6 +1706,7 @@ struct dragonrage_t : public evoker_spell_t
       aoe = as<int>( data().effectN( 1 ).base_value() );
 
       proc_spell_type = proc_spell_type_e::DRAGONRAGE;
+      proc = true;
     }
 
     std::vector<player_t*>& target_list() const override
@@ -2026,6 +2030,7 @@ void evoker_t::create_actions()
     vol->s_data_reporting = talent.volatility;
     vol->name_str_reporting = "volatility";
     vol->proc_spell_type = proc_spell_type_e::VOLATILITY;
+    vol->proc               = true;
     action.volatility = vol;
 
     if ( talent.dragonrage.ok() )
@@ -2034,6 +2039,7 @@ void evoker_t::create_actions()
       vol_dr->s_data_reporting = talent.volatility;
       vol_dr->name_str_reporting = "volatility";
       vol_dr->proc_spell_type = proc_spell_type_e::VOLATILITY | proc_spell_type_e::DRAGONRAGE;
+      vol_dr->proc                 = true;
       action.volatility_dragonrage = vol_dr;
     }
   }
