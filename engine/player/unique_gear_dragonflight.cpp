@@ -247,6 +247,7 @@ void phial_of_static_empowerment( special_effect_t& effect )
   {
     auto primary = make_buff<stat_buff_t>( effect.player, "static_empowerment", effect.player->find_spell( 370772 ) );
     primary->add_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect.item ) / primary->max_stack() );
+    primary->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
 
     buff = make_buff( effect.player, effect.name(), effect.driver() )
       ->set_stack_change_callback( [ primary ]( buff_t*, int, int new_ ) {
@@ -268,13 +269,7 @@ void phial_of_static_empowerment( special_effect_t& effect )
         speed->trigger();
     } );
 
-    if ( effect.player->buffs.movement )
-    {
-      effect.player->buffs.movement->set_stack_change_callback( [ primary, buff ]( buff_t*, int, int new_ ) {
-        if ( new_ && buff->check() )
-          primary->expire();
-      } );
-    }
+    effect.player->buffs.static_empowerment = primary;
   }
 
   effect.custom_buff = buff;

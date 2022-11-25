@@ -580,6 +580,7 @@ struct player_t : public actor_t
     buff_t* elemental_chaos_air;
     buff_t* elemental_chaos_earth;
     buff_t* elemental_chaos_frost;
+    buff_t* static_empowerment; // phial of static empowerment
     buff_t* tome_of_unstable_power;
     buff_t* way_of_controlled_currents;
     buff_t* heavens_nemesis; // Neltharax, Enemy of the Sky
