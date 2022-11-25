@@ -541,6 +541,7 @@ public:
   {
     cooldown_t* berserk_bear;
     cooldown_t* berserk_cat;
+    cooldown_t* frenzied_regeneration;
     cooldown_t* incarnation_bear;
     cooldown_t* incarnation_cat;
     cooldown_t* incarnation_moonkin;
@@ -1000,19 +1001,20 @@ public:
       spec( specializations_t() ),
       uptime( uptimes_t() )
   {
-    cooldown.berserk_bear        = get_cooldown( "berserk_bear" );
-    cooldown.berserk_cat         = get_cooldown( "berserk_cat" );
-    cooldown.incarnation_bear    = get_cooldown( "incarnation_guardian_of_ursoc" );
-    cooldown.incarnation_cat     = get_cooldown( "incarnation_avatar_of_ashamane" );
-    cooldown.incarnation_moonkin = get_cooldown( "incarnation_chosen_of_elune" );
-    cooldown.incarnation_tree    = get_cooldown( "incarnation_tree_of_life" );
-    cooldown.mangle              = get_cooldown( "mangle" );
-    cooldown.moon_cd             = get_cooldown( "moon_cd" );
-    cooldown.natures_swiftness   = get_cooldown( "natures_swiftness" );
-    cooldown.thrash_bear         = get_cooldown( "thrash_bear" );
-    cooldown.tigers_fury         = get_cooldown( "tigers_fury" );
-    cooldown.warrior_of_elune    = get_cooldown( "warrior_of_elune" );
-    cooldown.rage_from_melees    = get_cooldown( "rage_from_melees" );
+    cooldown.berserk_bear          = get_cooldown( "berserk_bear" );
+    cooldown.berserk_cat           = get_cooldown( "berserk_cat" );
+    cooldown.frenzied_regeneration = get_cooldown( "frenzied_regeneration" );
+    cooldown.incarnation_bear      = get_cooldown( "incarnation_guardian_of_ursoc" );
+    cooldown.incarnation_cat       = get_cooldown( "incarnation_avatar_of_ashamane" );
+    cooldown.incarnation_moonkin   = get_cooldown( "incarnation_chosen_of_elune" );
+    cooldown.incarnation_tree      = get_cooldown( "incarnation_tree_of_life" );
+    cooldown.mangle                = get_cooldown( "mangle" );
+    cooldown.moon_cd               = get_cooldown( "moon_cd" );
+    cooldown.natures_swiftness     = get_cooldown( "natures_swiftness" );
+    cooldown.thrash_bear           = get_cooldown( "thrash_bear" );
+    cooldown.tigers_fury           = get_cooldown( "tigers_fury" );
+    cooldown.warrior_of_elune      = get_cooldown( "warrior_of_elune" );
+    cooldown.rage_from_melees      = get_cooldown( "rage_from_melees" );
     cooldown.rage_from_melees->duration = 1_s;
 
     resource_regeneration = regen_type::DYNAMIC;
@@ -2131,6 +2133,11 @@ public:
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
     return ab::composite_dot_duration( s ) * get_buff_effects_value( dot_duration_buffeffects );
+  }
+
+  timespan_t cooldown_duration() const override
+  {
+    return ab::cooldown_duration() * get_buff_effects_value( recharge_multiplier_buffeffects );
   }
 
   double recharge_multiplier( const cooldown_t& cd ) const override
@@ -4305,6 +4312,13 @@ struct berserk_bear_base_t : public bear_attack_t
     bear_attack_t::execute();
 
     buff->trigger();
+
+    // Always resets mangle & thrash CDs, even without berserk: ravage
+    p()->cooldown.mangle->reset( true );
+    p()->cooldown.thrash_bear->reset( true );
+
+    if ( p()->talent.berserk_persistence.ok() )
+      p()->cooldown.frenzied_regeneration->reset( true );
   }
 };
 
@@ -4926,11 +4940,10 @@ struct frenzied_regeneration_t : public druid_heal_t
   double goe_mul;
 
   frenzied_regeneration_t( druid_t* p, std::string_view opt )
-    : frenzied_regeneration_t( p, "frenzied_regeneration", p->talent.frenzied_regeneration, opt )
-  {}
-
-  frenzied_regeneration_t( druid_t* p, std::string_view n, const spell_data_t* s, std::string_view opt )
-    : druid_heal_t( n, p, s, opt ), dummy_cd( p->get_cooldown( "dummy_cd" ) ), orig_cd( cooldown ), goe_mul( 0.0 )
+    : druid_heal_t( "frenzied_regeneration", p, p->talent.frenzied_regeneration, opt ),
+      dummy_cd( p->get_cooldown( "dummy_cd" ) ),
+      orig_cd( cooldown ),
+      goe_mul( 0.0 )
   {
     target = p;
 
