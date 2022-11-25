@@ -1112,6 +1112,7 @@ public:
   void apply_affecting_auras( action_t& ) override;
   bool check_astral_power( action_t* a, int over );
   double cache_mastery_value() const;  // for balance mastery
+  void snapshot_mastery();
 
   // secondary actions
   std::vector<action_t*> secondary_action_list;
@@ -6765,7 +6766,7 @@ struct moonfire_t : public druid_spell_t
   void execute() override
   {
     p()->cache.invalidate( CACHE_MASTERY );
-    p()->cache_mastery_snapshot = p()->cache.mastery_value();
+    p()->snapshot_mastery();
 
     druid_spell_t::execute();
 
@@ -7598,7 +7599,7 @@ struct sunfire_t : public druid_spell_t
   void execute() override
   {
     p()->cache.invalidate( CACHE_MASTERY );
-    p()->cache_mastery_snapshot = p()->cache.mastery_value();
+    p()->snapshot_mastery();
 
     druid_spell_t::execute();
 
@@ -10504,7 +10505,7 @@ void druid_t::reset()
 
   // Reset runtime variables
   moon_stage = static_cast<moon_stage_e>( options.initial_moon_stage );
-  cache_mastery_snapshot = cache.mastery_value();
+  snapshot_mastery();
   after_the_wildfire_counter = 0.0;
   persistent_event_delay.clear();
   astral_power_decay = nullptr;
@@ -10610,12 +10611,14 @@ void druid_t::arise()
 
   if ( specialization() == DRUID_BALANCE )
   {
-    persistent_event_delay.push_back( make_event<persistent_delay_event_t>(
-        *sim, this, [ this ]() { cache_mastery_snapshot = cache.mastery_value(); }, 5.25_s ) );
+    persistent_event_delay.push_back( make_event<persistent_delay_event_t>( *sim, this, [ this ]() {
+      snapshot_mastery();
+      make_repeating_event( *sim, 5.25_s, [ this ]() { snapshot_mastery(); } );
+    }, 5.25_s ) );
 
     // This MUST come last so that any previous changes from other precombat events, such as lycaras update based on
     // form, happens first
-    register_combat_begin( [ this ]( player_t* ) { cache_mastery_snapshot = cache.mastery_value(); } );
+    register_combat_begin( [ this ]( player_t* ) { snapshot_mastery(); } );
   }
 }
 
@@ -12250,6 +12253,11 @@ bool druid_t::check_astral_power( action_t* a, int over )
 double druid_t::cache_mastery_value() const
 {
   return cache_mastery_snapshot;
+}
+
+void druid_t::snapshot_mastery()
+{
+  cache_mastery_snapshot = cache.mastery_value();
 }
 
 /* Report Extension Class
