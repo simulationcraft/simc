@@ -103,7 +103,6 @@ struct evoker_t : public player_t
   // Options
   struct options_t
   {
-    bool post_empower_gcd = true;
   } option;
 
   // Action pointers
@@ -737,7 +736,7 @@ struct empowered_release_spell_t : public empowered_base_t
     // TODO: Continue to check it uses this spell to trigger GCD, as of 28/10/2022 it does. It can still be bypassed via spell queue. Potentally add a better way to model this?
     const spell_data_t* gcd_spell = p->find_spell( 359115 );
     if ( gcd_spell )
-      trigger_gcd = p->option.post_empower_gcd ? gcd_spell->gcd() : 0_s;
+      trigger_gcd = gcd_spell->gcd();
     gcd_type = gcd_haste_type::NONE;
 
     extend_4pc = timespan_t::from_seconds( p->sets->set( EVOKER_DEVASTATION, T29, B4 )->effectN( 1 ).base_value() );
@@ -2119,7 +2118,6 @@ void evoker_t::create_buffs()
 void evoker_t::create_options()
 {
   player_t::create_options();
-  add_option( opt_bool( "evoker.post_empower_gcd", option.post_empower_gcd ) );
 }
 
 void evoker_t::analyze( sim_t& sim )
