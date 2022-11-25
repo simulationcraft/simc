@@ -1271,6 +1271,28 @@ item_subclass_armor util::parse_armor_type( util::string_view name )
   return parse_enum<item_subclass_armor, ITEM_SUBCLASS_ARMOR_MISC, ITEM_SUBCLASS_ARMOR_LIBRAM, armor_type_string>( name );
 }
 
+// armor_subclass_string ===================================================
+
+const char* util::armor_subclass_string( item_subclass_armor subclass )
+{
+  switch ( subclass )
+  {
+    case ITEM_SUBCLASS_ARMOR_MISC:      return "Miscellaneous";
+    case ITEM_SUBCLASS_ARMOR_CLOTH: return "Cloth";
+    case ITEM_SUBCLASS_ARMOR_LEATHER: return "Leather";
+    case ITEM_SUBCLASS_ARMOR_MAIL: return "Mail";
+    case ITEM_SUBCLASS_ARMOR_PLATE: return "Plate";
+    case ITEM_SUBCLASS_ARMOR_COSMETIC: return "Cosmetic";
+    case ITEM_SUBCLASS_ARMOR_SHIELD: return "Shield";
+    case ITEM_SUBCLASS_ARMOR_LIBRAM: return "Libram";
+    case ITEM_SUBCLASS_ARMOR_IDOL: return "Idol";
+    case ITEM_SUBCLASS_ARMOR_TOTEM: return "Totem";
+    case ITEM_SUBCLASS_ARMOR_SIGIL: return "Sigil";
+    case ITEM_SUBCLASS_ARMOR_RELIC: return "Relic";
+    default:                            return "Unknown";
+  }
+}
+
 // parse_slot_type ==========================================================
 
 slot_e util::parse_slot_type( util::string_view name )
@@ -2392,6 +2414,45 @@ slot_e util::translate_invtype( inventory_type inv_type )
       return SLOT_SHIRT;
     default:
       return SLOT_INVALID;
+  }
+}
+
+// invtype_string ========================================================
+
+const char* util::invtype_string( inventory_type type )
+{
+  switch ( type )
+  {
+    case INVTYPE_NON_EQUIP: return "Non-equippable";
+    case INVTYPE_HEAD: return "Head";
+    case INVTYPE_NECK: return "Neck";
+    case INVTYPE_SHOULDERS: return "Shoulders";
+    case INVTYPE_BODY: return "Body";
+    case INVTYPE_CHEST: return "Chest";
+    case INVTYPE_WAIST: return "Waist";
+    case INVTYPE_LEGS: return "Legs";
+    case INVTYPE_FEET: return "Feet";
+    case INVTYPE_WRISTS: return "Wrists";
+    case INVTYPE_HANDS: return "Hands";
+    case INVTYPE_FINGER: return "Finger";
+    case INVTYPE_TRINKET: return "Trinket";
+    case INVTYPE_WEAPON: return "Weapon";
+    case INVTYPE_SHIELD: return "Shield";
+    case INVTYPE_RANGED: return "Ranged";
+    case INVTYPE_CLOAK: return "Cloak";
+    case INVTYPE_2HWEAPON: return "Two-handed Weapon";
+    case INVTYPE_BAG: return "Bag";
+    case INVTYPE_TABARD: return "Tabard";
+    case INVTYPE_ROBE: return "Robe";
+    case INVTYPE_WEAPONMAINHAND: return "Main-hand Weapon";
+    case INVTYPE_WEAPONOFFHAND: return "Off-hand Weapon";
+    case INVTYPE_HOLDABLE: return "Off-hand Frills";
+    case INVTYPE_AMMO: return "Ammo";
+    case INVTYPE_THROWN: return "Thrown";
+    case INVTYPE_RANGEDRIGHT: return "Off-hand Ranged";
+    case INVTYPE_QUIVER: return "Quiver";
+    case INVTYPE_RELIC: return "Relic";
+    default: return "Unknown";
   }
 }
 
