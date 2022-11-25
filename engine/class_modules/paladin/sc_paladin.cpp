@@ -2658,10 +2658,16 @@ void paladin_t::create_buffs()
   {
     buffs.blessing_of_dusk->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
         double recharge_mult = 1.0 / ( 1.0 + talents.seal_of_order->effectN( 1 ).percent() );
-        auto label = talents.of_dusk_and_dawn->effectN( 2 ).trigger()->effectN( 3 );
+      for ( size_t i = 3; i < 9; i++ )
+      {
+        // Effects 6 (Blessed Hammer) and 7 (Crusader Strike) are already in Effect 3
+        // Effect 4: Hammer of the Righteous, Effect 5: Judgment, Effect 8: Hammer of Wrath
+        if ( i == 6 )
+          i = 8;
+        auto label = talents.of_dusk_and_dawn->effectN( 2 ).trigger()->effectN( i );
         for ( auto a : action_list )
         {
-          if ( a->cooldown->duration != 0_ms && a->data().affected_by( label ) )
+          if ( a->cooldown->duration != 0_ms && (a->data().affected_by( label ) || a->data().affected_by_category(label) ))
           {
             if ( new_ == 1 )
               a->dynamic_recharge_rate_multiplier *= recharge_mult;
@@ -2675,6 +2681,7 @@ void paladin_t::create_buffs()
               a->internal_cooldown->adjust_recharge_multiplier();
           }
         }
+      }
       } );
   }
 
