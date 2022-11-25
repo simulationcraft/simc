@@ -111,9 +111,9 @@ public:
     buff_t* devotion_aura;
     buff_t* retribution_aura;
     buff_t* blessing_of_protection;
-
     buff_t* avengers_might;
     buff_t* avenging_wrath_might;
+    buff_t* seal_of_clarity;
 
     // Holy
     buff_t* divine_protection;
@@ -330,6 +330,7 @@ public:
     const spell_data_t* improved_avenging_wrath;
     const spell_data_t* hammer_of_wrath_2;
     const spell_data_t* moment_of_glory;
+    const spell_data_t* seal_of_clarity_buff;
 
     const spell_data_t* ashen_hallow_how;
 
@@ -912,7 +913,7 @@ public:
   // Damage increase whitelists
   struct affected_by_t
   {
-    bool avenging_wrath, judgment, blessing_of_dawn, the_magistrates_judgment, seal_of_reprisal, seal_of_order, divine_purpose, divine_purpose_cost; // Shared
+    bool avenging_wrath, judgment, blessing_of_dawn, the_magistrates_judgment, seal_of_reprisal, seal_of_order, divine_purpose, divine_purpose_cost, seal_of_clarity; // Shared
     bool crusade, hand_of_light, final_reckoning, reckoning, ret_t29_2p, ret_t29_4p; // Ret
     bool avenging_crusader; // Holy
     bool bastion_of_light, sentinel; // Prot
@@ -959,7 +960,8 @@ public:
     this -> affected_by.divine_purpose = this -> data().affected_by( p -> spells.divine_purpose_buff -> effectN( 2 ) );
     this -> affected_by.blessing_of_dawn = this -> data().affected_by( p -> talents.of_dusk_and_dawn -> effectN( 1 ).trigger() -> effectN( 1 ) );
     this -> affected_by.the_magistrates_judgment = this -> data().affected_by( p -> buffs.the_magistrates_judgment -> data().effectN( 1 ) );
-    this -> affected_by.seal_of_reprisal = this -> data().affected_by( p-> talents.seal_of_reprisal->effectN( 1 ) );
+    this -> affected_by.seal_of_reprisal = this -> data().affected_by( p -> talents.seal_of_reprisal -> effectN( 1 ) );
+    this -> affected_by.seal_of_clarity = this -> data().affected_by( p -> spells.seal_of_clarity_buff -> effectN( 1 ) );
   }
 
   paladin_t* p()
@@ -1368,6 +1370,21 @@ struct holy_power_consumer_t : public Base
     if ( this -> affected_by.the_magistrates_judgment && ab::p() -> buffs.the_magistrates_judgment -> up() )
       c += ab::p() -> buffs.the_magistrates_judgment -> value();
 
+    if ( ab::p()->buffs.seal_of_clarity->up() )
+    {
+      if ( this->affected_by.seal_of_clarity )
+      {
+        c += ab::p()->spells.seal_of_clarity_buff->effectN( 1 ).base_value();
+      }
+      // 2022-25-11 Seal of Clarity's Buff has no entry as of now, so hardcoding until it's there
+      // That spell also has affected_by whitelist
+      else if ( ab::p()->spells.seal_of_clarity_buff->_id == 0 && (is_wog || is_sotr))
+      {
+        c -= 1;
+      }
+      ab::p()->buffs.seal_of_clarity->expire();
+    }
+
     return std::max( c, 0.0 );
   }
 
@@ -1590,6 +1607,15 @@ struct holy_power_consumer_t : public Base
     if ( p -> talents.sealed_verdict -> ok() )
     {
       p -> buffs.sealed_verdict -> trigger();
+    }
+
+    if ( p->buffs.seal_of_clarity->up() )
+      p->buffs.seal_of_clarity->expire();
+
+    auto foo = p->talents.seal_of_clarity->effectN( 1 ).percent();
+    if (p->talents.seal_of_clarity->ok() && this->rng().roll(p->talents.seal_of_clarity->effectN(1).percent() )) // Or Light of Dawn
+    {
+      p->buffs.seal_of_clarity->trigger();
     }
   }
 
