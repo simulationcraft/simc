@@ -5361,7 +5361,14 @@ struct shield_charge_damage_t : public warrior_attack_t
 
     if ( p()->talents.protection.champions_bulwark->ok() )
     {
+    if ( p()->buff.shield_block->check() )
+    {
+      p()->buff.shield_block->extend_duration( p(), p() -> buff.shield_block->buff_duration() );
+    }
+    else
+    {
       p()->buff.shield_block->trigger();
+    }
       p()->buff.revenge->trigger();
     }
 
