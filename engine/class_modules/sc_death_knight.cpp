@@ -9450,6 +9450,11 @@ void death_knight_t::create_buffs()
               if ( talent.blood.improved_bone_shield.ok() )
                 invalidate_cache( CACHE_HASTE );
             }
+
+            if (!new_stacks)
+            {
+              active_spells.shattering_bone -> execute_on_target( target );
+            }
           } )
         // The internal cd in spelldata is for stack loss, handled in bone_shield_handler
         -> set_cooldown( 0_ms );
