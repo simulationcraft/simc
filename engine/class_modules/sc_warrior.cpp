@@ -5365,6 +5365,11 @@ struct shield_charge_damage_t : public warrior_attack_t
       p()->buff.revenge->trigger();
     }
 
+    if ( p()->talents.protection.battering_ram->ok() )
+    {
+      p()->buff.battering_ram->trigger();
+    }
+
     p()->resource_gain( RESOURCE_RAGE, rage_gain, p() -> gain.shield_charge );
   }
 };
