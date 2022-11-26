@@ -25,55 +25,55 @@
 # save=PR_Death_Knight_Blood.simc
 
 
-# deathknight="PR_Death_Knight_Frost"
-# level=70
-# race=blood_elf
-# spec=frost
-# role=attack
-# position=back
-# talents=2201013
+deathknight="PR_Death_Knight_Frost"
+level=70
+race=blood_elf
+spec=frost
+role=attack
+position=back
+talents=BsPAAAAAAAAAAAAAAAAAAAAAAkIAgkkIBSQkkkEiISSkEEQiIRSSSSSSa5AAAAAAAAAAAAAA
 
-# head=visage_of_the_first_eidolon,id=188868,bonus_id=7187/1498/6935,gem_id=173127
-# neck=worldkiller_iris,id=189859,bonus_id=7187/1524/6935,gem_id=173127
-# shoulders=shoulderplates_of_the_first_eidolon,id=188867,bonus_id=7187/1505
-# back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/6807,enchant=soul_vitality
-# chest=carapace_of_the_first_eidolon,id=188864,bonus_id=7187/1505,enchant=eternal_stats
-# wrists=shadowghast_armguards,id=171419,bonus_id=6647/6649/7160/7451/1588,gem_id=173127
-# hands=gauntlets_of_the_first_eidolon,id=188863,bonus_id=7187/1505,enchant=eternal_strength
-# waist=waistguard_of_expurged_anguish,id=178842,bonus_id=6652/1592/6646,gem_id=173127
-# legs=legguards_of_the_ultimate_threat,id=189858,bonus_id=7187/1524
-# feet=shadowghast_sabatons,id=171413,bonus_id=8119/7882/8156/6647/6648/1588
-# finger1=modified_defense_grid,id=189772,bonus_id=7187/1524/6935,gem_id=173127,enchant=tenet_of_critical_strike
-# finger2=soulwarped_seal_of_menethil,id=189841,bonus_id=7187/1524/6935,gem_id=173127,enchant=tenet_of_critical_strike
-# trinket1=inscrutable_quantum_device,id=179350,bonus_id=6652/1592/6646
-# trinket2=old_warriors_soul,id=186438,bonus_id=1498/6807
-# main_hand=devastated_worldshard,id=189851,bonus_id=7187/1524,enchant=rune_of_hysteria
-# off_hand=devastated_worldshard,id=189851,bonus_id=7187/1524,enchant=rune_of_the_fallen_crusader
+head=earthshakers_steel_visor,id=193735,bonus_id=6808/4786/1594
+neck=ukhel_ancestry_beads,id=193676,bonus_id=6808/4786/1594
+shoulders=nokhud_traditionalists_pauldrons,id=193686,bonus_id=6808/4786/1594
+back=cloak_of_lost_devotion,id=193629,bonus_id=6808/4786/1594,enchant_id=6597
+chest=cuirass_of_irreparable_madness,id=193644,bonus_id=6808/4786/1594,enchant_id=6624
+wrists=thrashing_wind_vambraces,id=193698,bonus_id=6808/4786/1594,enchant_id=6579
+hands=keepers_iron_grips,id=193795,bonus_id=6808/4786/1594
+waist=illusion_breakers_waistguard,id=193650,bonus_id=6808/4786/1594
+legs=drake_hunters_greaves,id=193694,bonus_id=6808/4786/1594,enchant_id=6489
+feet=twentytwoleague_striders,id=193630,bonus_id=6808/4786/1594,enchant_id=6612
+finger1=unstable_arcane_loop,id=193633,bonus_id=6808/4786/1594,enchant_id=6549
+finger2=platinum_star_band,id=193708,bonus_id=6808/4786/1594,enchant_id=6549
+trinket1=blazebinders_hoof,id=193762,bonus_id=6808/4786/1594
+trinket2=dragon_games_equipment,id=193719,bonus_id=6808/4786/1594
+main_hand=strike_twice,id=193700,bonus_id=6808/4786/1594,enchant=rune_of_hysteria
+off_hand=strike_twice,id=193700,bonus_id=6808/4786/1594,enchant=rune_of_the_fallen_crusader
 
-# save="PR_Death_Knight_Frost.simc"
+save="PR_Death_Knight_Frost.simc"
 
-# deathknight="PR_Death_Knight_Unholy"
-# spec=unholy
-# level=70
-# race=troll
-# role=attack
-# position=back
-# talents=2303021
+deathknight="T29_Death_Knight_Unholy"
+spec=unholy
+level=70
+race=troll
+role=attack
+position=back
+talents=BwPAAAAAAAAAAAAAAAAAAAAAAAAIIJJBSAJJRIJSSSkAAAAAAAAAAKJJhIAAgEpkIRSSikA
 
-# head=visage_of_the_first_eidolon,id=188868,bonus_id=7187/1498/6935,gem_id=173127
-# neck=worldkiller_iris,id=189859,bonus_id=7187/1524/6935,gem_id=173127
-# shoulders=shoulderplates_of_the_first_eidolon,id=188867,bonus_id=7187/1505
-# back=grimveiled_cape,id=173242,bonus_id=6716/6952/6649/6647/1588,enchant=soul_vitality
-# chest=carapace_of_the_first_eidolon,id=188864,bonus_id=7187/1505,enchant=eternal_stats
-# wrists=unstable_giants_cuffs,id=189777,bonus_id=7187/1524/6935,gem_id=173128
-# hands=gauntlets_of_the_first_eidolon,id=188863,bonus_id=7187/1505,enchant=eternal_strength
-# waist=shadowghast_waistguard,id=171418,bonus_id=6716/8119/6649/6647/1588,gem_id=173128
-# legs=legguards_of_the_ultimate_threat,id=189858,bonus_id=7187/1524
-# feet=greatboots_of_the_roaming_goliath,id=189832,bonus_id=4800/4786/1524
-# finger1=rygelons_heraldric_ring,id=189854,bonus_id=7187/1524/6935,gem_id=173128,enchant=tenet_of_critical_strike
-# finger2=soulwarped_seal_of_menethil,id=189841,bonus_id=7187/1524/6935,gem_id=173128,enchant=tenet_of_critical_strike
-# trinket1=inscrutable_quantum_device,id=179350,bonus_id=6536/1592/6646
-# trinket2=old_warriors_soul,id=186438,bonus_id=1498/6807
-# main_hand=gavel_of_the_first_arbiter,id=189862,bonus_id=7187/1524,enchant=rune_of_the_fallen_crusader
+head=earthshakers_steel_visor,id=193735,bonus_id=6808/4786/1594
+neck=ukhel_ancestry_beads,id=193676,bonus_id=6808/4786/1594
+shoulders=nokhud_traditionalists_pauldrons,id=193686,bonus_id=6808/4786/1594
+back=fireproof_drape,id=193763,bonus_id=6808/4786/1594,enchant_id=6597
+chest=breastplate_of_soaring_terror,id=193753,bonus_id=6808/4786/1594,enchant_id=6624
+wrists=thrashing_wind_vambraces,id=193698,bonus_id=6808/4786/1594,enchant_id=6579
+hands=keepers_iron_grips,id=193795,bonus_id=6808/4786/1594
+waist=illusion_breakers_waistguard,id=193650,bonus_id=6808/4786/1594
+legs=drake_hunters_greaves,id=193694,bonus_id=6808/4786/1594,enchant_id=6489
+feet=scaleguards_stalwart_greatboots,id=193728,bonus_id=6808/4786/1594
+finger1=unstable_arcane_loop,id=193633,bonus_id=6808/4786/1594,enchant_id=6561
+finger2=platinum_star_band,id=193708,bonus_id=6808/4786/1594,enchant_id=6555
+trinket1=blazebinders_hoof,id=193762,bonus_id=6808/4786/1594
+trinket2=dragon_games_equipment,id=193719,bonus_id=6808/4786/1594
+main_hand=leyline_tracer,id=193638,bonus_id=6808/4786/1594,enchant=rune_of_the_fallen_crusader
 
-# save=PR_Death_Knight_Unholy.simc
+save=PR_Death_Knight_Unholy.simc
