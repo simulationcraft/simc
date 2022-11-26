@@ -6046,7 +6046,6 @@ void demon_hunter_t::apl_precombat()
   {
     pre->add_action( "variable,name=trinket_sync_slot,value=1,if=trinket.1.has_stat.any_dps&(!trinket.2.has_stat.any_dps|trinket.1.cooldown.duration>=trinket.2.cooldown.duration)" );
     pre->add_action( "variable,name=trinket_sync_slot,value=2,if=trinket.2.has_stat.any_dps&(!trinket.1.has_stat.any_dps|trinket.2.cooldown.duration>trinket.1.cooldown.duration)" );
-    pre->add_action( "variable,name=use_eye_beam_fury_condition,value=0" );
     pre->add_action( "arcane_torrent" );
   }
 }
@@ -6071,10 +6070,10 @@ void demon_hunter_t::apl_havoc()
   action_priority_list_t* apl_default = get_action_priority_list( "default" );
   apl_default->add_action( "auto_attack" );
   apl_default->add_action( "retarget_auto_attack,line_cd=1,target_if=min:debuff.burning_wound.remains,if=talent.burning_wound&talent.demon_blades" );
+  apl_default->add_action( "immolation_aura,if=time=0", "Precombat Immolation Aura");
 
-  apl_default->add_action( "variable,name=blade_dance,value=talent.first_blood|spell_targets.blade_dance1>=(3-talent.trail_of_ruin)", "Blade Dance with First Blood or at 3+ (2+ with Trail of Ruin) targets" );
-  apl_default->add_action( "variable,name=blade_dance,if=talent.chaos_theory,value=buff.chaos_theory.down|talent.first_blood|!talent.cycle_of_hatred&spell_targets.blade_dance1>=(4-talent.trail_of_ruin)", "With Chaos Theory, Blade Dance when the buff is down, with First Blood at 2+ (1+ with Trail of Ruin) or with Essence Break at 4+ (3+ with Trail of Ruin) targets" );
-  apl_default->add_action( "variable,name=pooling_for_blade_dance,value=variable.blade_dance&(fury<75-talent.first_blood*20)" );
+  apl_default->add_action( "variable,name=blade_dance,value=talent.first_blood|talent.trail_of_ruin|talent.chaos_theory&buff.chaos_theory.down|spell_targets.blade_dance1>1", "Blade Dance with First Blood, Trail of Ruin, or at 2+ targets" );
+  apl_default->add_action( "variable,name=pooling_for_blade_dance,value=variable.blade_dance&fury<(75-talent.demon_blades*20)&cooldown.blade_dance.remains<gcd.max" );
   apl_default->add_action( "variable,name=pooling_for_eye_beam,value=talent.demonic&!talent.blind_fury&cooldown.eye_beam.remains<(gcd.max*2)&fury.deficit>20" );
   apl_default->add_action( "variable,name=waiting_for_momentum,value=talent.momentum&!buff.momentum.up" );
   
@@ -6082,15 +6081,14 @@ void demon_hunter_t::apl_havoc()
   apl_default->add_action( "call_action_list,name=cooldown,if=gcd.remains=0" );
   apl_default->add_action( "pick_up_fragment,type=demon,if=demon_soul_fragments>0" );
   apl_default->add_action( "pick_up_fragment,mode=nearest,if=talent.demonic_appetite&fury.deficit>=35&(!cooldown.eye_beam.ready|fury<30)" );
-  apl_default->add_action( "vengeful_retreat,if=time>1&(variable.waiting_for_momentum|!talent.momentum&talent.tactical_retreat)&buff.tactical_retreat.down" );
+  apl_default->add_action( "vengeful_retreat,use_off_gcd=1,if=time>1&talent.initiative&(talent.essence_break&(cooldown.essence_break.remains>15|cooldown.essence_break.remains<gcd.max&(!cooldown.eye_beam.ready|buff.metamorphosis.up))|!talent.essence_break&!buff.momentum.up)" );
   apl_default->add_action( "fel_rush,if=(buff.unbound_chaos.up|variable.waiting_for_momentum&(!talent.unbound_chaos|!cooldown.immolation_aura.ready))&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))" );
-  apl_default->add_action( "essence_break,if=!variable.waiting_for_momentum&(!cooldown.eye_beam.ready|buff.metamorphosis.up)" );
+  apl_default->add_action( "essence_break,if=!variable.waiting_for_momentum&(cooldown.eye_beam.remains>4|buff.metamorphosis.up)&(!talent.tactical_retreat|buff.tactical_retreat.up)" );
   apl_default->add_action( "death_sweep,if=variable.blade_dance" );
   apl_default->add_action( "fel_barrage,if=active_enemies>desired_targets|raid_event.adds.in>30" );
   apl_default->add_action( "glaive_tempest,if=active_enemies>desired_targets|raid_event.adds.in>10" );
   apl_default->add_action( "throw_glaive,if=talent.serrated_glaive&cooldown.eye_beam.remains<6&!buff.metamorphosis.up&!debuff.exposed_wound.up" );
-  apl_default->add_action( "eye_beam,if=active_enemies>desired_targets|raid_event.adds.in>25-talent.cycle_of_hatred*10"
-                           "&(!variable.use_eye_beam_fury_condition|spell_targets>1|fury<70)" );
+  apl_default->add_action( "eye_beam,if=active_enemies>desired_targets|raid_event.adds.in>(40-talent.cycle_of_hatred*15)&!debuff.essence_break.up" );
   apl_default->add_action( "blade_dance,if=variable.blade_dance&!cooldown.metamorphosis.ready"
                            "&(cooldown.eye_beam.remains>5|!talent.demonic|(raid_event.adds.in>cooldown&raid_event.adds.in<25))" );
   apl_default->add_action( "throw_glaive,if=talent.soulrend&spell_targets>(2-talent.furious_throws)" );
@@ -6114,7 +6112,7 @@ void demon_hunter_t::apl_havoc()
   apl_cooldown->add_action( "metamorphosis,if=talent.demonic&(!talent.chaotic_transformation|cooldown.eye_beam.remains>20&(!variable.blade_dance|cooldown.blade_dance.remains>gcd.max)|fight_remains<25)" );
   apl_cooldown->add_action( "potion,if=buff.metamorphosis.remains>25|fight_remains<60" );
   add_havoc_use_items( this, apl_cooldown );
-  apl_cooldown->add_action( "the_hunt,if=!talent.demonic&!variable.waiting_for_momentum|(!talent.furious_gaze|buff.furious_gaze.up)" );
+  apl_cooldown->add_action( "the_hunt,if=(!talent.momentum|!buff.momentum.up)" );
   apl_cooldown->add_action( "elysian_decree,if=(active_enemies>desired_targets|raid_event.adds.in>30)" );
 }
 
