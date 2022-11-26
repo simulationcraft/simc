@@ -52,7 +52,7 @@ off_hand=strike_twice,id=193700,bonus_id=6808/4786/1594,enchant=rune_of_the_fall
 
 save="PR_Death_Knight_Frost.simc"
 
-deathknight="T29_Death_Knight_Unholy"
+deathknight="PR_Death_Knight_Unholy"
 spec=unholy
 level=70
 race=troll
