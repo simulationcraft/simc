@@ -3240,9 +3240,7 @@ struct touch_of_death_t : public monk_melee_attack_t
     // or not a health-based fight style
     if ( target->current_health() == 0 || target->current_health() > p()->resources.max[RESOURCE_HEALTH] )
     {
-        // Damage is associated with the players non-buffed max HP
-        // Meaning using Fortifying Brew does not affect ToD's damage
-        amount = p()->resources.initial[RESOURCE_HEALTH];
+        amount = p()->resources.max[RESOURCE_HEALTH];
 
         if ( target->true_level > p()->true_level )
             amount *= p()->talent.general.improved_touch_of_death->effectN( 2 ).percent();  // 35% HP
