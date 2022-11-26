@@ -9232,7 +9232,9 @@ void warrior_t::create_buffs()
 
 
   buff.elysian_might = make_buff( this, "elysian_might", find_spell( 386286 ) )
-     ->set_default_value( find_spell( 386286 )->effectN( 1 ).percent() );
+     ->set_default_value( find_spell( 386286 )->effectN( 1 ).percent() )
+     ->set_duration( find_spell( 376080 )->duration() +
+                     talents.warrior.elysian_might->effectN( 1 ).trigger()->effectN( 1 ).time_value() );
 
   buff.enrage = make_buff( this, "enrage", find_spell( 184362 ) )
      ->add_invalidate( CACHE_ATTACK_HASTE )
