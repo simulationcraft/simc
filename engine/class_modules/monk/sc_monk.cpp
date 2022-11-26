@@ -7439,13 +7439,13 @@ void monk_t::init_spells()
   //================================================================================
 
   // Returns first valid spell in argument list, pass highest priority to first argument
-  // Returns spell_data_t::nil() if none are valid
+  // Returns spell_data_t::not_found() if none are valid
   auto _priority = [ ] ( auto ... spell_list )
   {
     for ( auto spell : { spell_list... } )
       if ( spell && spell->ok() )
         return spell.spell();
-    return spell_data_t::nil();
+    return spell_data_t::not_found();
   };
 
   shared.attenuation =
@@ -7985,11 +7985,12 @@ void monk_t::init_special_effect( special_effect_t& effect )
   // proc flags so we get wider trigger attempts than the core implementation. The
   // overridden proc condition above will take care of filtering out actions that are
   // not allowed to proc it.
-  switch ( effect.driver()->id() )
+
+  /*switch ( effect.driver()->id() )
   {
     default:
       break;
-  }
+  }*/
 }
 
 // monk_t::reset ============================================================
