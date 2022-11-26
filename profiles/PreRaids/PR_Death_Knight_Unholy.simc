@@ -114,25 +114,26 @@ actions.trinkets+=/use_item,slot=trinket2,if=!variable.trinket_2_buffs&(trinket.
 head=earthshakers_steel_visor,id=193735,bonus_id=6808/4786/1594
 neck=ukhel_ancestry_beads,id=193676,bonus_id=6808/4786/1594
 shoulders=nokhud_traditionalists_pauldrons,id=193686,bonus_id=6808/4786/1594
-back=fireproof_drape,id=193763,bonus_id=6808/4786/1594
-chest=breastplate_of_soaring_terror,id=193753,bonus_id=6808/4786/1594
-wrists=thrashing_wind_vambraces,id=193698,bonus_id=6808/4786/1594
+back=fireproof_drape,id=193763,bonus_id=6808/4786/1594,enchant_id=6597
+chest=breastplate_of_soaring_terror,id=193753,bonus_id=6808/4786/1594,enchant_id=6624
+wrists=thrashing_wind_vambraces,id=193698,bonus_id=6808/4786/1594,enchant_id=6579
 hands=keepers_iron_grips,id=193795,bonus_id=6808/4786/1594
 waist=illusion_breakers_waistguard,id=193650,bonus_id=6808/4786/1594
-legs=drake_hunters_greaves,id=193694,bonus_id=6808/4786/1594
+legs=drake_hunters_greaves,id=193694,bonus_id=6808/4786/1594,enchant_id=6489
 feet=scaleguards_stalwart_greatboots,id=193728,bonus_id=6808/4786/1594
-finger1=unstable_arcane_loop,id=193633,bonus_id=6808/4786/1594
-finger2=platinum_star_band,id=193708,bonus_id=6808/4786/1594
+finger1=unstable_arcane_loop,id=193633,bonus_id=6808/4786/1594,enchant_id=6561
+finger2=platinum_star_band,id=193708,bonus_id=6808/4786/1594,enchant_id=6555
 trinket1=blazebinders_hoof,id=193762,bonus_id=6808/4786/1594
 trinket2=dragon_games_equipment,id=193719,bonus_id=6808/4786/1594
 main_hand=leyline_tracer,id=193638,bonus_id=6808/4786/1594,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
 # gear_ilvl=372.00
-# gear_strength=2862
-# gear_stamina=6738
+# gear_strength=3140
+# gear_stamina=6827
 # gear_crit_rating=1504
-# gear_haste_rating=2640
-# gear_mastery_rating=2913
+# gear_haste_rating=2713
+# gear_mastery_rating=2986
 # gear_versatility_rating=818
+# gear_leech_rating=275
 # gear_armor=5338
