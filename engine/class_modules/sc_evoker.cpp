@@ -1533,7 +1533,7 @@ struct living_flame_t : public evoker_spell_t
 
     if ( p()->talent.ruby_essence_burst.ok() )
     {
-      for ( size_t i = 0; i < damage->num_targets_hit; i++ )
+      for ( int i = 0; i < damage->num_targets_hit; i++ )
       {
         if ( p()->buff.dragonrage->up() || rng().roll( p()->talent.ruby_essence_burst->effectN( 1 ).percent() ) )
         {

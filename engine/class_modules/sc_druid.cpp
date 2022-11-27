@@ -5862,7 +5862,7 @@ struct adaptive_swarm_t : public druid_spell_t
         rng().shuffle( tl.begin(), tl.end() );
 
         // prioritize unswarmed over swarmed
-        auto it = range::partition( tl, [ this ]( player_t* t ) {
+        range::partition( tl, [ this ]( player_t* t ) {
           return !p()->get_target_data( t )->hots.adaptive_swarm_heal->is_ticking();
         } );
       }
@@ -10614,7 +10614,7 @@ void druid_t::combat_begin()
         sim->print_debug( "Astral Power capped at combat start to {} (was {})", cap, curr );
     }
   }
-
+/*
   if ( talent.adaptive_swarm.ok() && !prepull_swarm.empty() && find_action( "adaptive_swarm" ) )
   {
     using swarm_t = spells::adaptive_swarm_t::adaptive_swarm_heal_t;
@@ -10633,7 +10633,7 @@ void druid_t::combat_begin()
                                         : rng().gauss( options.adaptive_swarm_jump_distance_ranged,
                                                        options.adaptive_swarm_jump_distance_stddev, true );
     }
-  }
+  }*/
 }
 
 // druid_t::recalculate_resource_max ========================================
