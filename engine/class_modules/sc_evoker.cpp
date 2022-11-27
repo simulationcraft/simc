@@ -678,6 +678,11 @@ public:
     trigger_charged_blast( d->state );
   }
 
+  virtual bool use_full_mastery() const
+  {
+    return p()->talent.tyranny.ok() && p()->buff.dragonrage->check();
+  }
+
   double composite_target_multiplier( player_t* t ) const override
   {
     double tm = ab::composite_target_multiplier( t );
@@ -686,10 +691,10 @@ public:
     // TODO: confirm this applies only to all evoker offensive spells
     if ( p()->specialization() == EVOKER_DEVASTATION )
     {
-      if ( !p()->buff.dragonrage->check() || !p()->talent.tyranny.ok() )
-        tm *= 1.0 + p()->cache.mastery_value() * t->health_percentage() / 100;
-      else
+      if ( use_full_mastery() )
         tm *= 1.0 + p()->cache.mastery_value();
+      else
+        tm *= 1.0 + p()->cache.mastery_value() * t->health_percentage() / 100;
     }
 
     return tm;
@@ -1200,21 +1205,9 @@ struct deep_breath_t : public evoker_spell_t
       return execute_state && execute_state->target ? 0_ms : evoker_spell_t::travel_time();
     }
 
-    double composite_target_multiplier( player_t* t ) const override
+    bool use_full_mastery() const override
     {
-      double tm = evoker_action_t::composite_target_multiplier( t );
-
-      // Preliminary testing shows this is linear with target hp %.
-      // TODO: confirm this applies only to all evoker offensive spells
-      if ( p()->specialization() == EVOKER_DEVASTATION )
-      {
-        if ( !p()->talent.tyranny.ok() )
-          tm *= 1.0 + p()->cache.mastery_value() * t->health_percentage() / 100;
-        else
-          tm *= 1.0 + p()->cache.mastery_value();
-      }
-
-      return tm;
+      return p()->talent.tyranny.ok();
     }
   };
 
