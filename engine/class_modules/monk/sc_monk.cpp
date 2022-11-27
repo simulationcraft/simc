@@ -2785,7 +2785,10 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
   void execute() override
   {
     monk_melee_attack_t::execute();
-
+    
+    if ( p()->buffs.static_empowerment->up() )
+      p()->buffs.static_empowerment->expire();
+      
     for ( auto& tick : ticks )
     {
         make_event<whirling_dragon_punch_tick_event_t>( *sim, tick, tick->delay );
