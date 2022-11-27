@@ -3253,6 +3253,9 @@ void print_html_player_buff_spelldata( report::sc_html_stream& os, const buff_t&
       dbc = b.source -> dbc.get();
     if ( dbc == nullptr && b.sim )
       dbc = b.sim -> dbc.get();
+
+    auto player_ = b.player && b.player->is_enemy() ? b.source : b.player;
+
     const auto& spell_text = dbc ? dbc->spell_text( data.id() ) : spelltext_data_t::nil();
     os.printf( "<h4>%s</h4>\n"
                "<ul>\n"
@@ -3270,10 +3273,10 @@ void print_html_player_buff_spelldata( report::sc_html_stream& os, const buff_t&
                util::encode_html( data_name ).c_str(),
                data.id(),
                util::encode_html( data.name_cstr() ).c_str(),
-               b.player ? util::encode_html( report_helper::pretty_spell_text( data, spell_text.tooltip(), *b.player ) ).c_str()
-                        : util::encode_html( spell_text.tooltip() ).c_str(),
-               b.player ? util::encode_html( report_helper::pretty_spell_text( data, spell_text.desc(), *b.player ) ).c_str()
-                        : util::encode_html( spell_text.desc() ).c_str(),
+               player_ ? util::encode_html( report_helper::pretty_spell_text( data, spell_text.tooltip(), *player_ ) ).c_str()
+                       : util::encode_html( spell_text.tooltip() ).c_str(),
+               player_ ? util::encode_html( report_helper::pretty_spell_text( data, spell_text.desc(), *player_ ) ).c_str()
+                       : util::encode_html( spell_text.desc() ).c_str(),
                data.max_stacks(),
                data.duration().total_seconds(),
                data.cooldown().total_seconds(),
