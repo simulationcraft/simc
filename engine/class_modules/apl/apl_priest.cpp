@@ -144,7 +144,7 @@ void shadow( player_t* p )
       "mind_sear,target_if=spell_targets.mind_sear>variable.mind_sear_cutoff&(insanity>=75|((!set_bonus.tier29_4pc&!"
       "set_bonus.tier29_2pc)|!buff.dark_reveries.up)|(!set_bonus.tier29_2pc|buff.gathering_shadows.stack=3)),chain=1,"
       "interrupt_immediate=1,interrupt_if=ticks>=2",
-      "Use Mind Sear on 3+ targets and either you have more than 75 insanity, 4pc buff is inactive, or 2pc buff is at "
+      "Use Mind Sear on 3+ targets and either you have at least 75 insanity, 4pc buff is inactive, or 2pc buff is at "
       "3 stacks." );
   main->add_action(
       "devouring_plague,if=(refreshable&!variable.pool_for_cds|insanity>75|talent.void_torrent&cooldown.void_torrent."
