@@ -124,6 +124,11 @@ void shadow( player_t* p )
   // Main APL, should cover all ranges of targets and scenarios
   main->add_call_action_list( cds );
   main->add_action(
+      "mind_blast,if=cooldown.mind_blast.charges>=2&talent.mind_devourer&spell_targets.mind_sear>=3&spell_targets.mind_"
+      "sear<=7&!buff.mind_devourer.up",
+      "Use Mind Blast when capped on charges and talented into Mind Devourer to fish for the buff. Only use when "
+      "facing 3-7 targets." );
+  main->add_action(
       "shadow_word_death,if=pet.fiend.active&talent.inescapable_torment&(pet.fiend.remains<=gcd|target.health.pct<20)&"
       "spell_targets."
       "mind_sear<=7" );
@@ -136,8 +141,11 @@ void shadow( player_t* p )
   main->add_action( "mind_sear,target_if=(spell_targets.mind_sear>1|buff.voidform.up)&buff.mind_devourer.up",
                     "Use Mind Devourer Procs on Mind Sear when facing 2 or more targets or Voidform is active." );
   main->add_action(
-      "mind_sear,target_if=spell_targets.mind_sear>variable.mind_sear_cutoff,chain=1,interrupt_immediate=1,interrupt_"
-      "if=ticks>=2" );
+      "mind_sear,target_if=spell_targets.mind_sear>variable.mind_sear_cutoff&(insanity>=75|((!set_bonus.tier29_4pc&!"
+      "set_bonus.tier29_2pc)|!buff.dark_reveries.up)|(!set_bonus.tier29_2pc|buff.gathering_shadows.stack=3)),chain=1,"
+      "interrupt_immediate=1,interrupt_if=ticks>=2",
+      "Use Mind Sear on 3+ targets and either you have more than 75 insanity, 4pc buff is inactive, or 2pc buff is at "
+      "3 stacks." );
   main->add_action(
       "devouring_plague,if=(refreshable&!variable.pool_for_cds|insanity>75|talent.void_torrent&cooldown.void_torrent."
       "remains<=3*gcd|buff.mind_devourer.up&cooldown.mind_blast.full_recharge_time<=2*gcd.max&!cooldown.void_eruption."
