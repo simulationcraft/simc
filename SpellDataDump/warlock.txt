@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46741 Live (hotfix 2022-11-24/46741, git build update_builds 252553004a)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46741 Live (hotfix 2022-11-27/46741)
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -2239,6 +2239,7 @@ Name             : Nethermancy (desc=Passive) (id=86091) [Passive, Hidden]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
+Requires armor   : Cloth Head, Shoulders, Chest, Waist, Legs, Feet, Wrists, Hands, Robe
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 

@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46741 Live (hotfix 2022-11-24/46741, git build update_builds 252553004a)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46741 Live (hotfix 2022-11-27/46741)
 Name             : Frostbolt of Ages (id=11) 
 Class            : Paladin
 School           : Frost
@@ -76,6 +76,7 @@ Name             : Block (desc=Passive) (id=107) [Passive]
 Class            : Warrior, Paladin, Shaman
 School           : Physical
 Spell Type       : Magic
+Requires armor   : Cosmetic, Shield 
 Attributes       : ....x.x. ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -941,6 +942,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Velocity         : 35 yards/sec
 Duration         : 3 seconds
+Requires armor   : Shield 
 Cooldown         : 15 seconds
 Affecting spells : Avenging Wrath (31884 effects: #2, #3, #11), Grand Crusader (85416 effect#1), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2, #4), Holy Paladin (137029 effects: #4, #10), First Avenger (203776 effect#1), Ferren Marcus's Strength (207614 effects: #1, #2), Crusade (231895 effects: #1, #2), Wake of Ashes (255937 effect#4), Soaring Shield (278951 effect#2), Moment of Glory (327193 effects: #1, #2), Blessing of Dawn (337747 effects: #1, #2), Soaring Shield (378457 effect#1), Focused Enmity (378845 effects: #1, #2), Radiant Decree (383469 effect#3), Blessing of Dawn (385127 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1)
 Family Flags     : 14, 65
@@ -1236,6 +1238,7 @@ Spell Type       : Melee
 Resource         : 3 Holy Power (9) (id=192485)
 Spell Level      : 2
 Range            : 5 yards
+Requires armor   : Shield 
 Cooldown         : 1 seconds
 Affecting spells : Avenging Wrath (31884 effects: #2, #3, #11), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2, #4, #5), Holy Paladin (137029 effects: #4, #5, #10), Consecration (188370 effect#3), Judgment (197277 effect#1), Divine Purpose (223819 effects: #1, #2), Crusade (231895 effects: #1, #2), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effects: #1, #2), The Magistrate's Judgment (337682 effect#1), Blessing of Dawn (337747 effects: #1, #2), Bulwark of Righteous Fury (337848 effects: #1, #2), Final Reckoning (343721 effect#3), Reckoning (343724 effect#2), Bastion of Light (378974 effect#1), Radiant Decree (383469 effect#3), Blessing of Dawn (385127 effects: #1, #2, #4), Bulwark of Righteous Fury (386652 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1)
 Family Flags     : 27, 52, 65
@@ -1869,6 +1872,7 @@ Class            : Protection Paladin
 School           : Physical
 Spell Type       : None
 Spell Level      : 27
+Requires armor   : Plate Head, Shoulders, Chest, Waist, Legs, Feet, Wrists, Hands, Robe
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -1888,6 +1892,7 @@ Class            : Holy Paladin
 School           : Physical
 Spell Type       : None
 Spell Level      : 27
+Requires armor   : Plate Head, Shoulders, Chest, Waist, Legs, Feet, Wrists, Hands, Robe
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -1907,6 +1912,7 @@ Class            : Retribution Paladin
 School           : Physical
 Spell Type       : None
 Spell Level      : 27
+Requires armor   : Plate Head, Shoulders, Chest, Waist, Legs, Feet, Wrists, Hands, Robe
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2644,6 +2650,7 @@ Class            : Paladin
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
+Requires armor   : Shield 
 Attributes       : ....x.xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

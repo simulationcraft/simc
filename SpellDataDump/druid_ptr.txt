@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46741 Live (hotfix 2022-11-24/46741, git build update_builds 252553004a)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46741 Live (hotfix 2022-11-27/46741)
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=8, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
@@ -2893,6 +2893,7 @@ Class            : Restoration Druid
 School           : Physical
 Spell Type       : None
 Spell Level      : 27
+Requires armor   : Leather Head, Shoulders, Chest, Waist, Legs, Feet, Wrists, Hands, Robe
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2916,6 +2917,7 @@ Class            : Guardian Druid
 School           : Physical
 Spell Type       : None
 Spell Level      : 27
+Requires armor   : Leather Head, Shoulders, Chest, Waist, Legs, Feet, Wrists, Hands, Robe
 Stance Mask      : 0x00000010
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2940,6 +2942,7 @@ Class            : Feral Druid
 School           : Physical
 Spell Type       : None
 Spell Level      : 27
+Requires armor   : Leather Head, Shoulders, Chest, Waist, Legs, Feet, Wrists, Hands, Robe
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2963,6 +2966,7 @@ Class            : Balance Druid
 School           : Physical
 Spell Type       : None
 Spell Level      : 27
+Requires armor   : Leather Head, Shoulders, Chest, Waist, Legs, Feet, Wrists, Hands, Robe
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 

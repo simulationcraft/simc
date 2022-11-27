@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46741 Live (hotfix 2022-11-24/46741, git build update_builds 252553004a)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46741 Live (hotfix 2022-11-27/46741)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -2254,6 +2254,7 @@ Class            : Mistweaver Monk
 School           : Physical
 Spell Type       : None
 Spell Level      : 27
+Requires armor   : Leather Head, Shoulders, Chest, Waist, Legs, Feet, Wrists, Hands, Robe
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2273,6 +2274,7 @@ Class            : Brewmaster Monk
 School           : Physical
 Spell Type       : None
 Spell Level      : 27
+Requires armor   : Leather Head, Shoulders, Chest, Waist, Legs, Feet, Wrists, Hands, Robe
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2292,6 +2294,7 @@ Class            : Windwalker Monk
 School           : Physical
 Spell Type       : None
 Spell Level      : 27
+Requires armor   : Leather Head, Shoulders, Chest, Waist, Legs, Feet, Wrists, Hands, Robe
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -16155,6 +16158,7 @@ Effects          :
 Description      : When your healing spells heal an ally whose health is below $s3% maximum health, you gain an additional $s1% healing for the next $390105d.
 
 Name             : Close to Heart (id=389684) [Spell Family (53)] 
+Hotfixed         : Attributes
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -16178,6 +16182,7 @@ Effects          :
 Tooltip          : Increases all healing taken by $w1%.
 
 Name             : Generous Pour (id=389685) [Spell Family (53)] 
+Hotfixed         : Attributes
 Class            : Monk
 School           : Physical
 Spell Type       : None
