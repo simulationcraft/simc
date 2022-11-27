@@ -9554,7 +9554,7 @@ void death_knight_t::create_buffs()
   buffs.frostwhelps_aid = make_buff( this, "frostwhelps_aid", find_spell( 377253 ) )
         -> set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
         -> add_invalidate ( CACHE_MASTERY )
-        -> set_default_value( talent.frost.frostwhelps_aid -> effectN( 3 ).base_value() * 2 );
+        -> set_default_value( talent.frost.frostwhelps_aid -> effectN( 3 ).base_value() );
 
   buffs.shattering_blade = make_buff( this, "shattering_blade", talent.frost.shattering_blade )
         -> set_default_value( talent.frost.shattering_blade -> effectN( 1 ).percent() )

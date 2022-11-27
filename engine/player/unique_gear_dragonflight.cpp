@@ -1471,7 +1471,8 @@ void way_of_controlled_currents( special_effect_t& effect )
   surge_driver->type = SPECIAL_EFFECT_EQUIP;
   surge_driver->source = SPECIAL_EFFECT_SOURCE_ITEM;
   surge_driver->spell_id = surge->data().id();
-  //surge_driver->cooldown_ = surge->data().internal_cooldown();
+  surge_driver->cooldown_ = surge->data().internal_cooldown();
+  effect.player->special_effects.push_back( surge_driver );
 
   auto surge_damage = create_proc_action<generic_proc_t>( "way_of_controlled_currents", *surge_driver,
                                                           "way_of_controlled_currents", 381967 );
@@ -2724,8 +2725,7 @@ void elemental_lariat( special_effect_t& effect )
 
 void flaring_cowl( special_effect_t& effect )
 {
-  auto damage = create_proc_action<generic_aoe_proc_t>( "flaring_cowl", effect, "flaring_cowl", 377079 );
-  damage->split_aoe_damage = false;
+  auto damage = create_proc_action<generic_aoe_proc_t>( "flaring_cowl", effect, "flaring_cowl", 377079, true );
   // damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
   // TODO: currently bugged and only doing damage as if the item was at the base ilevel of 350
   damage->base_dd_min = damage->base_dd_max =

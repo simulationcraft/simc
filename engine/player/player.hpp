@@ -522,8 +522,6 @@ struct player_t : public actor_t
     buff_t* rallying_cry; // Warrior spell
 
     // 9.0 class covenant buffs
-    buff_t* benevolent_faerie; // Night Fae Priest spell
-    buff_t* bwonsamdis_pact_benevolent; // Night Fae Priest spell
     buff_t* blessing_of_summer; // Night Fae Paladin spell
     buff_t* blessing_of_autumn; // Night Fae Paladin spell
     buff_t* blessing_of_winter; // Night Fae Paladin spell
@@ -612,8 +610,6 @@ struct player_t : public actor_t
     bool seasons_of_plenty;
     double blessing_of_summer_duration_multiplier;
     std::vector<timespan_t> power_infusion;
-    std::vector<timespan_t> benevolent_faerie;
-    std::vector<timespan_t> bwonsamdis_pact_benevolent;
     std::vector<timespan_t> blessing_of_summer;
     std::vector<timespan_t> blessing_of_autumn;
     std::vector<timespan_t> blessing_of_winter;

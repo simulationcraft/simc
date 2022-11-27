@@ -119,6 +119,7 @@ struct evoker_t : public player_t
   {
     // Baseline Abilities
     propagate_const<buff_t*> essence_burst;
+    propagate_const<buff_t*> essence_burst_titanic_wrath_disintegrate;
     propagate_const<buff_t*> hover;
     propagate_const<buff_t*> leaping_flames;
     propagate_const<buff_t*> tailwind;
@@ -1242,25 +1243,14 @@ struct deep_breath_t : public evoker_spell_t
   }
 };
 
-struct disintegrate_data_t
-{
-  int titanic_ticks;
-
-  friend void sc_format_to( const disintegrate_data_t& data, fmt::format_context::iterator out )
-  {
-    fmt::format_to( out, "titanic_ticks={}", data.titanic_ticks );
-  }
-};
-
 struct disintegrate_t : public essence_spell_t
 {
-  using state_t = evoker_action_state_t<disintegrate_data_t>;
-
   eternity_surge_t::eternity_surge_damage_t* eternity_surge;
-  int titanic_ticks;
+  int num_ticks;
 
   disintegrate_t( evoker_t* p, std::string_view options_str )
-    : essence_spell_t( "disintegrate", p, p->find_class_spell( "Disintegrate" ), options_str ), titanic_ticks( 0 )
+    : essence_spell_t( "disintegrate", p, p->find_class_spell( "Disintegrate" ), options_str ),
+      num_ticks( as<int>( dot_duration / base_tick_time ) + 1 )
   {
     channeled = tick_zero = true;
 
@@ -1279,28 +1269,20 @@ struct disintegrate_t : public essence_spell_t
     add_child( eternity_surge );
   }
 
-  action_state_t* new_state() override
+  void execute() override
   {
-    return new state_t( this, target );
-  }
-
-  void snapshot_state( action_state_t* s, result_amount_type rt ) override
-  {
-    essence_spell_t::snapshot_state( s, rt );
-
-    auto s_ = static_cast<state_t*>( s );
-
+    // trigger the buff first so tick-zero can get buffed
     if ( p()->buff.essence_burst->check() )
-      titanic_ticks += 4;
+      p()->buff.essence_burst_titanic_wrath_disintegrate->trigger( num_ticks );
 
-    s_->titanic_ticks = titanic_ticks;
+    essence_spell_t::execute();
   }
 
   double composite_ta_multiplier( const action_state_t* s ) const override
   {
     auto ta = essence_spell_t::composite_ta_multiplier( s );
 
-    if ( static_cast<const state_t*>( s )->titanic_ticks )
+    if ( p()->buff.essence_burst_titanic_wrath_disintegrate->check() )
       ta *= 1.0 + titanic_mul;
 
     return ta;
@@ -1310,12 +1292,7 @@ struct disintegrate_t : public essence_spell_t
   {
     essence_spell_t::tick( d );
 
-    auto s_ = static_cast<state_t*>( d->state );
-    if ( s_->titanic_ticks )
-    {
-      s_->titanic_ticks--;
-      titanic_ticks--;
-    }
+    p()->buff.essence_burst_titanic_wrath_disintegrate->decrement();
 
     if ( p()->talent.scintillation.ok() && rng().roll( p()->talent.scintillation->effectN( 2 ).percent() ) )
     {
@@ -1327,13 +1304,6 @@ struct disintegrate_t : public essence_spell_t
 
       eternity_surge->schedule_execute( emp_state );
     }
-  }
-
-  void last_tick( dot_t* d ) override
-  {
-    essence_spell_t::last_tick( d );
-
-    titanic_ticks = 0;
   }
 };
 
@@ -1531,11 +1501,16 @@ struct living_flame_t : public evoker_spell_t
     p()->buff.leaping_flames->expire();
     p()->buff.scarlet_adaptation->expire();
 
-    if ( p()->talent.ruby_essence_burst.ok() &&
-         ( p()->buff.dragonrage->up() || rng().roll( p()->talent.ruby_essence_burst->effectN( 1 ).percent() ) ) )
+    if ( p()->talent.ruby_essence_burst.ok() )
     {
-      p()->buff.essence_burst->trigger();
-      p()->proc.ruby_essence_burst->occur();
+      for ( int i = 0; i < damage->num_targets_hit; i++ )
+      {
+        if ( p()->buff.dragonrage->up() || rng().roll( p()->talent.ruby_essence_burst->effectN( 1 ).percent() ) )
+        {
+          p()->buff.essence_burst->trigger();
+          p()->proc.ruby_essence_burst->occur();
+        }
+      }
     }
 
     if ( p()->buff.burnout->up() )
@@ -2108,6 +2083,11 @@ void evoker_t::create_buffs()
   buff.essence_burst =
       make_buff( this, "essence_burst", find_spell( specialization() == EVOKER_DEVASTATION ? 359618 : 369299 ) )
           ->apply_affecting_aura( talent.essence_attunement );
+
+  buff.essence_burst_titanic_wrath_disintegrate =
+      make_buff( this, "essence_burst_titanic_wrath_disintegrate", find_spell( 397870 ) )
+          ->set_quiet( true )
+          ->set_trigger_spell( talent.titanic_wrath );
 
   buff.hover = make_buff( this, "hover", find_class_spell( "Hover" ) )
                    ->set_cooldown( 0_ms )

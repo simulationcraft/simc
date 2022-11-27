@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46702 Live (hotfix 2022-11-22/46702)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46741 Live (hotfix 2022-11-27/46741)
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
 bonus_id={ 3 }, suffix={ of Power }, socket={ 2 }, stats={ 100% StrAgiInt [0.5263] }
@@ -4283,8 +4283,8 @@ bonus_id={ 7966 }, ilevel={ 180 @plvl 50 - 180 @plvl 80 }
 bonus_id={ 7967 }, ilevel={ 193 @plvl 50 - 193 @plvl 80 }
 bonus_id={ 7968 }, ilevel={ 202 @plvl 50 - 292 @plvl 80 }
 bonus_id={ 7969 }, ilevel={ 212 @plvl 50 - 302 @plvl 80 }
-bonus_id={ 7970 }, ilevel={ 265 @plvl 1 - 265 @plvl 80 }
-bonus_id={ 7971 }, ilevel={ 265 @plvl 1 - 265 @plvl 80 }
+bonus_id={ 7970 }, quality={ rare }, ilevel={ 215 @plvl 50 - 305 @plvl 80 }
+bonus_id={ 7971 }, quality={ rare }, ilevel={ 225 @plvl 50 - 315 @plvl 80 }
 bonus_id={ 7972 }, ilevel={ 285 @plvl 1 - 285 @plvl 80 }
 bonus_id={ 7973 }, ilevel={ 285 @plvl 1 - 285 @plvl 80 }
 bonus_id={ 7978 }, ilevel={ 226 @plvl 45 - 346 @plvl 80 }

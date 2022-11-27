@@ -11,25 +11,31 @@ std::string potion( const player_t* p )
   switch ( p->specialization() )
   {
     case MONK_BREWMASTER:
-      if ( p->true_level >= 60 )
+      if ( p->true_level > 60 )
+        return "elemental_potion_of_ultimate_power_3";
+      else if ( p->true_level > 50 )
         return "phantom_fire";
-      else if ( p->true_level >= 50 )
+      else if ( p->true_level > 45 )
         return "unbridled_fury";
       else
         return "disabled";
       break;
     case MONK_MISTWEAVER:
-      if ( p->true_level >= 60 )
+      if ( p->true_level > 60 )
+        return "elemental_potion_of_ultimate_power_3";
+      else if ( p->true_level > 50 )
         return "potion_of_spectral_intellect";
-      else if ( p->true_level >= 50 )
+      else if ( p->true_level > 45 )
         return "superior_battle_potion_of_intellect";
       else
         return "disabled";
       break;
     case MONK_WINDWALKER:
-      if ( p->true_level >= 60 )
+      if ( p->true_level > 60 )
+        return "elemental_potion_of_ultimate_power_3";
+      else if ( p->true_level > 50 )
         return "potion_of_spectral_agility";
-      else if ( p->true_level >= 50 )
+      else if ( p->true_level > 45 )
         return "unbridled_fury";
       else
         return "disabled";
@@ -45,25 +51,31 @@ std::string flask( const player_t* p )
   switch ( p->specialization() )
   {
     case MONK_BREWMASTER:
-      if ( p->true_level >= 60 )
+      if ( p->true_level > 60 )
+        return "phial_of_static_empowerment_3";
+      else if ( p->true_level > 50 )
         return "spectral_flask_of_power";
-      else if ( p->true_level >= 50 )
+      else if ( p->true_level > 45 )
         return "currents";
       else
         return "disabled";
       break;
     case MONK_MISTWEAVER:
-      if ( p->true_level >= 60 )
+      if ( p->true_level > 60 )
+        return "phial_of_elemental_chaos_3";
+      else if ( p->true_level > 50 )
         return "spectral_flask_of_power";
-      else if ( p->true_level >= 50 )
+      else if ( p->true_level > 45 )
         return "greater_flask_of_endless_fathoms";
       else
         return "disabled";
       break;
     case MONK_WINDWALKER:
-      if ( p->true_level >= 60 )
+      if ( p->true_level > 60 )
+        return "phial_of_static_empowerment_3";
+      else if ( p->true_level > 50 )
         return "spectral_flask_of_power";
-      else if ( p->true_level >= 50 )
+      else if ( p->true_level > 45 )
         return "greater_flask_of_the_currents";
       else
         return "disabled";
@@ -79,25 +91,31 @@ std::string food( const player_t* p )
   switch ( p->specialization() )
   {
     case MONK_BREWMASTER:
-      if ( p->true_level >= 60 )
+      if ( p->true_level > 60 )
+        return "fated_fortune_cookie";
+      else if ( p->true_level > 50 )
         return "spinefin_souffle_and_fries";
-      else if ( p->true_level >= 50 )
+      else if ( p->true_level > 45 )
         return "biltong";
       else
         return "disabled";
       break;
     case MONK_MISTWEAVER:
-      if ( p->true_level >= 60 )
+      if ( p->true_level > 60 )
+        return "roast_duck_delight";
+      else if ( p->true_level > 50 )
         return "feast_of_gluttonous_hedonism";
-      else if ( p->true_level >= 50 )
+      else if ( p->true_level > 45 )
         return "famine_evaluator_and_snack_table";
       else
         return "disabled";
       break;
     case MONK_WINDWALKER:
-      if ( p->true_level >= 60 )
+      if ( p->true_level > 60 )
+        return "fated_fortune_cookie";
+      else if ( p->true_level > 50 )
         return "feast_of_gluttonous_hedonism";
-      else if ( p->true_level >= 50 )
+      else if ( p->true_level > 45 )
         return "mechdowels_big_mech";
       else
         return "disabled";
@@ -110,11 +128,13 @@ std::string food( const player_t* p )
 
 std::string rune( const player_t* p )
 {
-  if ( p->true_level >= 60 )
+  if ( p->true_level > 60 )
+    return "draconic";
+  else if ( p->true_level > 50 )
     return "veiled";
-  else if ( p->true_level >= 50 )
+  else if ( p->true_level > 45 )
     return "battle_scarred";
-  else if ( p->true_level >= 45 )
+  else if ( p->true_level > 40 )
     return "defiled";
   return "disabled";
 }
@@ -132,13 +152,17 @@ std::string temporary_enchant( const player_t* p )
         return "disabled";
       break;
     case MONK_MISTWEAVER:
-      if ( p->true_level > 50 )
+      if ( p->true_level > 60 )
+        return "main_hand:howling_rune_3";
+      else if ( p->true_level > 50 )
         return "main_hand:shadowcore_oil";
       else
         return "disabled";
       break;
     case MONK_WINDWALKER:
-      if ( p->true_level > 50 )
+      if ( p->true_level > 60 )
+        return "main_hand:primal_whetstone_3/off_hand:primal_whetstone_3";
+      else if ( p->true_level > 50 )
         return "main_hand:shaded_weightstone/off_hand:shaded_weightstone";
       else
         return "disabled";
@@ -545,7 +569,7 @@ void windwalker( player_t* p )
     def->add_action( "call_action_list,name=opener,if=time<4&chi<5&!talent.serenity", "Build Chi at the start of combat" );
 
   // Prioritize Faeline Stomp if playing with Faeline Harmony
-  def->add_action( "faeline_stomp,if=combo_strike&(runeforge.faeline_harmony|talent.faeline_harmony)&(!debuff.fae_exposure_damage.up|active_enemies>1)", "Prioritize Faeline Stomp if playing with Faeline Harmony" );
+  def->add_action( "faeline_stomp,if=combo_strike&talent.faeline_harmony&(!debuff.fae_exposure_damage.up|active_enemies>1)", "Prioritize Faeline Stomp if playing with Faeline Harmony" );
   // Spend excess energy
   def->add_action( "call_action_list,name=spend_energy,if=!buff.bonedust_brew.up&!buff.first_strike.up&!buff.serenity.up", "Spend excess energy" );
   // Use Chi Burst to reset Faeline Stomp
@@ -609,7 +633,7 @@ void windwalker( player_t* p )
           ",if=pet.xuen_the_white_tiger.active|fight_remains<20" );
       else if ( item.name_str == "shadowgrasp_totem" )
         cd_sef->add_action( "use_item,name=" + item.name_str +
-          ",if=pet.xuen_the_white_tiger.active|fight_remains<20|!runeforge.invokers_delight&!talent.invokers_delight" );
+          ",if=pet.xuen_the_white_tiger.active|fight_remains<20|!talent.invokers_delight" );
       else if ( item.name_str == "overcharged_anima_battery" )
         cd_sef->add_action( "use_item,name=" + item.name_str +
           ",if=pet.xuen_the_white_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>90|fight_remains<20" );
@@ -739,7 +763,7 @@ void windwalker( player_t* p )
       else if ( item.name_str == "overcharged_anima_battery" )
         cd_serenity->add_action( "use_item,name=" + item.name_str + ",if=buff.serenity.up|fight_remains<20" );
       else if ( item.name_str == "shadowgrasp_totem" )
-        cd_serenity->add_action( "use_item,name=" + item.name_str + ",if=pet.xuen_the_white_tiger.active|fight_remains<20|!runeforge.invokers_delight&!talent.invokers_delight" );
+        cd_serenity->add_action( "use_item,name=" + item.name_str + ",if=pet.xuen_the_white_tiger.active|fight_remains<20|!talent.invokers_delight" );
       else if ( (int)item.name_str.find( "gladiators_badge" ) != -1 )
         cd_serenity->add_action( "use_item,name=" + item.name_str + ",if=buff.serenity.up|fight_remains<20" );
       else if ( item.name_str == "the_first_sigil" )
@@ -797,7 +821,7 @@ void windwalker( player_t* p )
   st_cleave->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.teachings_of_the_monastery.up&(talent.shadowboxing_treads&active_enemies>1|cooldown.rising_sun_kick.remains>1)" );
   st_cleave->add_action( "whirling_dragon_punch,if=active_enemies=2" );
   st_cleave->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.teachings_of_the_monastery.stack=3" );
-  st_cleave->add_action( "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=(active_enemies=1|!talent.shadowboxing_treads)&cooldown.fists_of_fury.remains>4&(talent.xuens_battlegear|runeforge.xuens_treasure)" );
+  st_cleave->add_action( "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=(active_enemies=1|!talent.shadowboxing_treads)&cooldown.fists_of_fury.remains>4&talent.xuens_battlegear" );
   st_cleave->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&active_enemies=2&cooldown.rising_sun_kick.remains&cooldown.fists_of_fury.remains" );
   st_cleave->add_action( "rushing_jade_wind,if=!buff.rushing_jade_wind.up&active_enemies=2" );
   st_cleave->add_action( "spinning_crane_kick,if=buff.bonedust_brew.up&combo_strike&(active_enemies>1|spinning_crane_kick.modifier>=2.7)" );

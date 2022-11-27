@@ -3710,7 +3710,7 @@ void print_html_player_description( report::sc_html_stream& os, const player_t& 
              util::encode_html( p.position_str ).c_str(),
              util::profile_source_string( p.profile_source_ ) );
 
-  if ( p.covenant )
+  if ( p.covenant && p.covenant->enabled() )
   {
     os.format( "<li><b>Covenant:</b> {}</li>\n",
                util::inverse_tokenize( util::covenant_type_string( p.covenant->type() ) ) );
@@ -4047,7 +4047,7 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
     }
 
     // Covenant, Soulbinds, and Conduits
-    if ( p.covenant )
+    if ( p.covenant && p.covenant->enabled() )
     {
       p.covenant->generate_report( os );
     }
