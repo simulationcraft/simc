@@ -1,5 +1,5 @@
-// Spell text, wow build 10.0.2.46801
-static const std::array<spelltext_data_t, 19177> __ptr_spelltext_data { {
+// Spell text, wow build 10.0.2.46781
+static const std::array<spelltext_data_t, 19179> __ptr_spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -15558,6 +15558,7 @@ static const std::array<spelltext_data_t, 19177> __ptr_spelltext_data { {
   { 361469, "Send a flickering flame towards your target, $?c2[healing an ally for $361509s1 or dealing $361500s1 Fire damage to an enemy.][dealing $361500s1 Fire damage to an enemy or healing an ally for $361509s1.]", 0, "Red" },
   { 361500, "$@spelldesc361469", "Burning for $w2 Fire damage every $t2 sec.", "Red" },
   { 361509, "$@spelldesc361469", "Healing for $w2 every $t2 sec.", "Red" },
+  { 361519, "$@spelldesc359565", 0, 0 },
   { 361582, "$@spelldesc359844", "Being assisted by a pet from your stable.", 0 },
   { 361695, "Create a soulbound Korthian cloak appropriate for your loot specialization ($@lootspec).", 0, 0 },
   { 361696, "Create a soulbound Korthian chest armor piece appropriate for your loot specialization ($@lootspec).", 0, 0 },
@@ -19176,15 +19177,16 @@ static const std::array<spelltext_data_t, 19177> __ptr_spelltext_data { {
   { 397621, "$@spelldesc377456", "Movement speed increased by $w1%. Auto attacks deal $w2 bonus Nature damage to your current target and the nearest enemy.", 0 },
   { 397708, "Execute no longer has a cooldown and if your foe survives, $163201s2% of the Rage spent is refunded.", 0, 0 },
   { 397767, "Add a socket to a Dragonflight Season $s2 item that does not already have one. Can be used on Helms, Necks, Bracers, Belts, or Rings.", 0, 0 },
+  { 397870, "Essence Burst increases the damage of affected spells by ${$s1}.1%.", 0, 0 },
   { 398396, "$@spelldesc386578", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.0.2.46801
+// spelltext hotfix entries, wow build 10.0.2.46781
 static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __ptr_spelltext_hotfix_data { {
   {   79096,  0, "Finishing moves reduce the remaining cooldown of many Rogue skills by $<cdr> sec per combo point spent.\r\n\r\nAffected skills: Adrenaline Rush, Between the Eyes, Blade Flurry, Blade Rush, Dreadblades, Ghostly Strike, Grappling Hook, Keep it Rolling, Killing Spree, Marked for Death, Roll the Bones, Sepsis, Sprint, and Vanish.", "Finishing moves reduce the remaining cooldown of many Rogue skills by $<cdr> sec per combo point spent.\r\n\r\nAffected skills: Adrenaline Rush, Between the Eyes, Blade Flurry, Blade Rush, Dreadblades, Ghostly Strike, Grappling Hook, Keep it Rolling, Killing Spree, Marked for Death, Roll the Bones, Sprint, and Vanish." },
 } };
 
-// Spell description variables, wow build 10.0.2.46801
+// Spell description variables, wow build 10.0.2.46781
 static const std::array<spelldesc_vars_data_t, 365> __ptr_spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$pvp=$?a134735[${1.1}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<pvp>*$<weal>}\r\n" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -19553,7 +19555,7 @@ static const std::array<spelldesc_vars_data_t, 365> __ptr_spelldesc_vars_data { 
   {  394354, "$damage=${($AP*1.0)*(1+$@versadmg)}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.0.2.46801
+// spelldesc_vars hotfix entries, wow build 10.0.2.46781
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 

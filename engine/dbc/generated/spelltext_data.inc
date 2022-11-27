@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.2.46741
-static const std::array<spelltext_data_t, 19173> __spelltext_data { {
+static const std::array<spelltext_data_t, 19175> __spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -15558,6 +15558,7 @@ static const std::array<spelltext_data_t, 19173> __spelltext_data { {
   { 361469, "Send a flickering flame towards your target, $?c2[healing an ally for $361509s1 or dealing $361500s1 Fire damage to an enemy.][dealing $361500s1 Fire damage to an enemy or healing an ally for $361509s1.]", 0, "Red" },
   { 361500, "$@spelldesc361469", "Burning for $w2 Fire damage every $t2 sec.", "Red" },
   { 361509, "$@spelldesc361469", "Healing for $w2 every $t2 sec.", "Red" },
+  { 361519, "$@spelldesc359565", 0, 0 },
   { 361582, "$@spelldesc359844", "Being assisted by a pet from your stable.", 0 },
   { 361695, "Create a soulbound Korthian cloak appropriate for your loot specialization ($@lootspec).", 0, 0 },
   { 361696, "Create a soulbound Korthian chest armor piece appropriate for your loot specialization ($@lootspec).", 0, 0 },
@@ -19172,6 +19173,7 @@ static const std::array<spelltext_data_t, 19173> __spelltext_data { {
   { 397621, "$@spelldesc377456", "Movement speed increased by $w1%. Auto attacks deal $w2 bonus Nature damage to your current target and the nearest enemy.", 0 },
   { 397708, "Execute no longer has a cooldown and if your foe survives, $163201s2% of the Rage spent is refunded.", 0, 0 },
   { 397767, "Add a socket to a Dragonflight Season $s2 item that does not already have one. Can be used on Helms, Necks, Bracers, Belts, or Rings.", 0, 0 },
+  { 397870, "Essence Burst increases the damage of affected spells by ${$s1}.1%.", 0, 0 },
   { 398396, "$@spelldesc386578", 0, 0 },
 } };
 
