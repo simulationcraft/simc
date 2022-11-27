@@ -2786,6 +2786,8 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::execute();
     
+    // Dragonflight: Phial of Static Empowerment
+    // TODO: I need to replace this with a generic movement buff  
     if ( p()->buffs.static_empowerment->up() )
       p()->buffs.static_empowerment->expire();
       
