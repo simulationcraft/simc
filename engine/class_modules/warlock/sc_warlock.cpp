@@ -15,36 +15,18 @@ namespace actions
 {
 struct drain_life_t : public warlock_spell_t
 {
-  //Note: Soul Rot (Night Fae Covenant) turns Drain Life into a multi-target channeled spell. Nothing else in simc behaves this way and
-  //we currently do not have core support for it. Applying this dot to the secondary targets should cover most of the behavior, although
-  //it will be unable to handle the case where primary channel target dies (in-game, this appears to force-swap primary target to another
-  //target currently affected by Drain Life if possible).
+  // Note: Soul Rot (Affliction talent) turns Drain Life into a multi-target channeled spell. Nothing else in simc behaves this way and
+  // we currently do not have core support for it. Applying this dot to the secondary targets should cover most of the behavior, although
+  // it will be unable to handle the case where primary channel target dies (in-game, this appears to force-swap primary target to another
+  // target currently affected by Drain Life if possible).
   struct drain_life_dot_t : public warlock_spell_t
   {
-    drain_life_dot_t( warlock_t* p, util::string_view options_str) : warlock_spell_t( "Drain Life (AoE)", p, p->warlock_base.drain_life )
+    drain_life_dot_t( warlock_t* p ) : warlock_spell_t( "Drain Life (AoE)", p, p->warlock_base.drain_life )
     {
-      parse_options( options_str );
-      dual = true;
-      background = true;
-      may_crit = false;
-
-      //// SL - Legendary
-      //dot_duration *= 1.0 + p->legendary.claw_of_endereth->effectN( 1 ).percent();
-      //base_tick_time *= 1.0 + p->legendary.claw_of_endereth->effectN( 1 ).percent();
+      dual = background = true;
 
       dot_duration *= 1.0 + p->talents.grim_feast->effectN( 1 ).percent();
       base_tick_time *= 1.0 + p->talents.grim_feast->effectN( 2 ).percent();
-    }
-
-    double bonus_ta( const action_state_t* s ) const override
-    {
-      double ta = warlock_spell_t::bonus_ta( s );
-
-      // This code is currently unneeded, unless a bonus tick amount effect comes back into existence
-      //if ( p()->talents.inevitable_demise->ok() && p()->buffs.inevitable_demise->check() )
-      //  ta = ta / ( 1.0 + p()->buffs.inevitable_demise->check_stack_value() );
-
-      return ta;
     }
 
     double cost_per_tick( resource_e ) const override
@@ -66,7 +48,7 @@ struct drain_life_t : public warlock_spell_t
 
     timespan_t composite_dot_duration(const action_state_t* s) const override
     {
-        return dot_duration * ( tick_time( s ) / base_tick_time);
+        return dot_duration * ( tick_time( s ) / base_tick_time); // We need this to model this as "channel" behavior since we can't actually set it as a channel without breaking things
     }
   };
 
@@ -76,16 +58,10 @@ struct drain_life_t : public warlock_spell_t
   {
     parse_options( options_str );
 
-    aoe_dot = new drain_life_dot_t( p , options_str );
+    aoe_dot = new drain_life_dot_t( p );
     add_child( aoe_dot );
     
-    channeled    = true;
-    hasted_ticks = false;
-    may_crit     = false;
-
-    //// SL - Legendary
-    //dot_duration *= 1.0 + p->legendary.claw_of_endereth->effectN( 1 ).percent();
-    //base_tick_time *= 1.0 + p->legendary.claw_of_endereth->effectN( 1 ).percent();
+    channeled = true;
 
     dot_duration *= 1.0 + p->talents.grim_feast->effectN( 1 ).percent();
     base_tick_time *= 1.0 + p->talents.grim_feast->effectN( 2 ).percent();
@@ -113,11 +89,9 @@ struct drain_life_t : public warlock_spell_t
         if ( t == target )
           continue;
 
-        auto data = td( t );
-        if ( data->dots_soul_rot->is_ticking() )
+        if ( td( t )->dots_soul_rot->is_ticking() )
         {
-          aoe_dot->set_target( t );
-          aoe_dot->execute();
+          aoe_dot->execute_on_target( t );
         }
       }
     }
@@ -164,11 +138,15 @@ struct drain_life_t : public warlock_spell_t
   void last_tick( dot_t* d ) override
   {
     p()->buffs.drain_life->expire();
-    p()->buffs.inevitable_demise->expire();
+    p()->buffs.inevitable_demise->expire( 1_ms ); // Slight delay added so that the AoE version of Drain Life picks up the benefit of Inevitable Demise
+
+    bool early_cancel = d->remains() > 0_ms;
 
     warlock_spell_t::last_tick( d );
 
-    if ( p()->talents.soul_rot->ok() )
+    // If this is the end of the channel, the AoE DoTs will expire correctly
+    // Otherwise, we need to cancel them on the spot
+    if ( p()->talents.soul_rot->ok() && early_cancel )
     {
       const auto& tl = target_list();
 
