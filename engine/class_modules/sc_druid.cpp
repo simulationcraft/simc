@@ -93,6 +93,7 @@ struct druid_td_t : public actor_target_data_t
 
   struct hots_t
   {
+    dot_t* adaptive_swarm_heal;
     dot_t* cenarion_ward;
     dot_t* cultivation;
     dot_t* frenzied_regeneration;
@@ -298,6 +299,7 @@ public:
   std::vector<std::unique_ptr<snapshot_counter_t>> counters;
   double expected_max_health;  // For Bristling Fur calculations.
   std::vector<std::tuple<unsigned, unsigned, timespan_t, timespan_t, double>> prepull_swarm;
+  std::vector<player_t*> swarm_targets;
 
   // !!!==========================================================================!!!
   // !!! Runtime variables NOTE: these MUST be properly reset in druid_t::reset() !!!
@@ -324,7 +326,8 @@ public:
     double adaptive_swarm_jump_distance_melee = 5.0;
     double adaptive_swarm_jump_distance_ranged = 25.0;
     double adaptive_swarm_jump_distance_stddev = 1.0;
-    unsigned adaptive_swarm_friendly_targets = 20;
+    unsigned adaptive_swarm_melee_targets = 7;
+    unsigned adaptive_swarm_ranged_targets = 12;
     std::string adaptive_swarm_prepull_setup = "";
     int convoke_the_spirits_deck = 5;
     double cenarius_guidance_exceptional_chance = 0.85;
@@ -1810,8 +1813,6 @@ public:
       apply_debuffs_effects();
     }
   }
-
-  std::unique_ptr<expr_t> create_expression( std::string_view ) override;
 
   druid_t* p() { return static_cast<druid_t*>( ab::player ); }
 
@@ -5582,33 +5583,14 @@ namespace spells
 // Adaptive Swarm ===========================================================
 struct adaptive_swarm_t : public druid_spell_t
 {
-  struct swarm_target_t
-  {
-    player_t* player;
-    event_t* event;
-
-    swarm_target_t( player_t* p, event_t* e = nullptr ) : player( p ), event( e ) {}
-    swarm_target_t() : player(), event() {}
-
-    operator player_t*() { return player; }
-    operator event_t*() { return event; }
-    bool operator !() { return !player && !event; }
-  };
-
   struct adaptive_swarm_state_t : public action_state_t
   {
-  private:
-    int default_stacks;
-
-  public:
-    swarm_target_t swarm_target;
     double range;
     int stacks;
     bool jump;
 
     adaptive_swarm_state_t( action_t* a, player_t* t )
       : action_state_t( a, t ),
-        default_stacks( as<int>( static_cast<druid_t*>( a->player )->talent.adaptive_swarm->effectN( 1 ).base_value() ) ),
         range( 0.0 ),
         stacks( 0 ),
         jump( false )
@@ -5618,21 +5600,19 @@ struct adaptive_swarm_t : public druid_spell_t
     {
       action_state_t::initialize();
 
-      swarm_target = {};
       range = 0.0;
-      stacks = default_stacks;
+      stacks = as<int>( static_cast<druid_t*>( action->player )->talent.adaptive_swarm->effectN( 1 ).base_value() );
       jump = false;
     }
 
     void copy_state( const action_state_t* s ) override
     {
       action_state_t::copy_state( s );
-      auto swarm_s = static_cast<const adaptive_swarm_state_t*>( s );
+      auto s_ = static_cast<const adaptive_swarm_state_t*>( s );
 
-      swarm_target = swarm_s->swarm_target;
-      range = swarm_s->range;
-      stacks = swarm_s->stacks;
-      jump = swarm_s->jump;
+      range = s_->range;
+      stacks = s_->stacks;
+      jump = s_->jump;
     }
 
     std::ostringstream& debug_str( std::ostringstream& s ) override
@@ -5649,196 +5629,114 @@ struct adaptive_swarm_t : public druid_spell_t
     }
   };
 
-  struct adaptive_swarm_base_t : public druid_spell_t
+  template <typename BASE, typename OTHER>
+  struct adaptive_swarm_base_t : public BASE
   {
-    adaptive_swarm_base_t* other;
+    adaptive_swarm_base_t<OTHER, BASE>* other;
     double tf_mul;
     bool heal;
 
     adaptive_swarm_base_t( druid_t* p, std::string_view n, const spell_data_t* s )
-      : druid_spell_t( n, p, s ),
+      : BASE( n, p, s ),
         other( nullptr ),
-        tf_mul( p->query_aura_effect( p->talent.tigers_fury, A_ADD_PCT_MODIFIER, P_TICK_DAMAGE, &data() )->percent() ),
+        tf_mul( p->query_aura_effect( p->talent.tigers_fury, A_ADD_PCT_MODIFIER, P_TICK_DAMAGE, s )->percent() ),
         heal( false )
     {
-      dual = background = true;
-      dot_behavior = dot_behavior_e::DOT_CLIP;
+      BASE::dual = BASE::background = true;
+      BASE::dot_behavior = dot_behavior_e::DOT_CLIP;
     }
 
     action_state_t* new_state() override
-    {
-      return new adaptive_swarm_state_t( this, target );
-    }
+    { return new adaptive_swarm_state_t( this, BASE::target ); }
 
     adaptive_swarm_state_t* state( action_state_t* s )
-    {
-      return static_cast<adaptive_swarm_state_t*>( s );
-    }
+    { return static_cast<adaptive_swarm_state_t*>( s ); }
 
     const adaptive_swarm_state_t* state( const action_state_t* s ) const
-    {
-      return static_cast<const adaptive_swarm_state_t*>( s );
-    }
+    { return static_cast<const adaptive_swarm_state_t*>( s ); }
 
     timespan_t travel_time() const override
     {
-      auto s_ = state( execute_state );
+      auto s_ = state( BASE::execute_state );
 
       if ( s_->jump )
-        return timespan_t::from_seconds( s_->range / travel_speed );
+        return timespan_t::from_seconds( s_->range / BASE::travel_speed );
 
-      if ( target == player )
+      if ( BASE::target == BASE::player )
         return 0_ms;
 
-      return druid_spell_t::travel_time();
+      return BASE::travel_time();
     }
 
-    virtual swarm_target_t new_swarm_target( swarm_target_t = {} ) = 0;
+    virtual player_t* new_swarm_target( player_t* = nullptr ) const = 0;
 
-    void send_swarm( swarm_target_t swarm_target, int stack, double range )
+    virtual double new_swarm_range( const action_state_t*, player_t* ) const = 0;
+
+    void send_swarm( player_t* t, dot_t* d )
     {
-      auto new_state = state( get_state() );
+      auto new_state = state( BASE::get_state() );
 
-      // healing swarm get a new randomized ranged. damage swarms replicate the range of the preceding healing swarm.
-      if ( heal )
-      {
-        new_state->range = rng().roll( 0.5 ) ? rng().gauss( p()->options.adaptive_swarm_jump_distance_melee,
-                                                            p()->options.adaptive_swarm_jump_distance_stddev, true )
-                                             : rng().gauss( p()->options.adaptive_swarm_jump_distance_ranged,
-                                                            p()->options.adaptive_swarm_jump_distance_stddev, true );
-      }
-      else
-      {
-        new_state->range = range;
-      }
-
-      new_state->stacks = stack;
+      new_state->target = t;
+      new_state->range = new_swarm_range( d->state, t );
+      new_state->stacks = d->current_stack() - 1;
       new_state->jump = true;
-      new_state->swarm_target = swarm_target;
-      new_state->target = swarm_target;
 
-      sim->print_debug( "ADAPTIVE_SWARM: jumping {} {} stacks to {} ({} yd)", stack, heal ? "heal" : "damage",
-                        heal ? swarm_target.event ? "existing target" : "new target" : swarm_target.player->name(),
-                        new_state->range );
+      BASE::sim->print_log( "ADAPTIVE_SWARM: jumping {} {} stacks to {} ({} yd)", new_state->stacks,
+                            heal ? "heal" : "damage", new_state->target->name(), new_state->range );
 
-      schedule_execute( new_state );
+      BASE::schedule_execute( new_state );
     }
 
-    void jump_swarm( int s, double r )
+    void jump_swarm( dot_t* d )
     {
-      auto stacks = s - 1;
-
-      if ( stacks <= 0 )
-      {
-        sim->print_debug( "ADAPTIVE_SWARM: {} expiring on final stack", heal ? "heal" : "damage" );
-        return;
-      }
-
       auto new_target = other->new_swarm_target();
       if ( !new_target )
       {
         new_target = new_swarm_target();
-        assert( !new_target == false );
-        send_swarm( new_target, stacks, r );
+        assert( new_target );
+        send_swarm( new_target, d );
       }
       else
       {
-        other->send_swarm( new_target, stacks, r );
+        other->send_swarm( new_target, d );
       }
 
-      if ( p()->talent.unbridled_swarm.ok() && rng().roll( p()->talent.unbridled_swarm->effectN( 1 ).percent() ) )
+      if ( BASE::p()->talent.unbridled_swarm.ok() &&
+           BASE::rng().roll( BASE::p()->talent.unbridled_swarm->effectN( 1 ).percent() ) )
       {
         auto second_target = other->new_swarm_target( new_target );
         if ( !second_target )
         {
-          second_target = new_swarm_target();
-          assert( !second_target == false );
-          sim->print_debug( "ADAPTIVE_SWARM: splitting off {} swarm", heal ? "heal" : "damage" );
-          send_swarm( second_target, stacks, r );
+          second_target = new_swarm_target( new_target );
+          assert( second_target );
+          BASE::sim->print_log( "ADAPTIVE_SWARM: splitting off {} swarm", heal ? "heal" : "damage" );
+          send_swarm( second_target, d );
         }
         else
         {
-          sim->print_debug( "ADAPTIVE_SWARM: splitting off {} swarm", other->heal ? "heal" : "damage" );
-          other->send_swarm( second_target, stacks, r );
+          BASE::sim->print_log( "ADAPTIVE_SWARM: splitting off {} swarm", other->heal ? "heal" : "damage" );
+          other->send_swarm( second_target, d );
         }
       }
-    }
-  };
-
-  struct adaptive_swarm_damage_t : public adaptive_swarm_base_t
-  {
-    adaptive_swarm_damage_t( druid_t* p )
-      : adaptive_swarm_base_t( p, "adaptive_swarm_damage", p->spec.adaptive_swarm_damage )
-    {}
-
-    bool dots_ticking( const druid_td_t* td ) const
-    {
-      return td->dots.moonfire->is_ticking() || td->dots.rake->is_ticking() || td->dots.rip->is_ticking() ||
-             td->dots.stellar_flare->is_ticking() || td->dots.sunfire->is_ticking() ||
-             td->dots.thrash_bear->is_ticking() || td->dots.thrash_cat->is_ticking();
-    }
-
-    swarm_target_t new_swarm_target( swarm_target_t exclude ) override
-    {
-      auto tl = target_list();
-
-      // because action_t::available_targets() explicitly adds the current action_t::target to the target_cache, we need
-      // to explicitly remove it here as swarm should not pick an invulnerable target whenignore_invulnerable_targets is
-      // enabled.
-      if ( sim->ignore_invulnerable_targets && target->debuffs.invulnerable->check() )
-        tl.erase( std::remove( tl.begin(), tl.end(), target ), tl.end() );
-
-      if ( exclude.player )
-        tl.erase( std::remove( tl.begin(), tl.end(), exclude.player ), tl.end() );
-
-      if ( tl.empty() )
-        return {};
-
-      if ( tl.size() == 1 )
-        return tl[ 0 ];
-
-      rng().shuffle( tl.begin(), tl.end() );
-
-      // prioritize unswarmed over swarmed
-      auto it = range::partition( tl, [ this ]( player_t* t ) {
-        return !p()->get_target_data( t )->dots.adaptive_swarm_damage->is_ticking();
-      } );
-
-      // if unswarmed exists, prioritize dotted over undotted
-      if ( it != tl.begin() )
-      {
-        std::partition( tl.begin(), it, [ this ]( player_t* t ) {
-          return dots_ticking( p()->get_target_data( t ) );
-        } );
-      }
-      // otherwise if swarmed exists, prioritize dotted over undotted
-      else if ( it != tl.end() )
-      {
-        std::partition( it, tl.end(), [ this ]( player_t* t ) {
-          return dots_ticking( p()->get_target_data( t ) );
-        } );
-      }
-
-      return tl[ 0 ];
     }
 
     void impact( action_state_t* s ) override
     {
       auto incoming = state( s )->stacks;
-      auto existing = get_dot( s->target )->current_stack();
+      auto existing = BASE::get_dot( s->target )->current_stack();
 
-      adaptive_swarm_base_t::impact( s );
+      BASE::impact( s );
 
-      auto d = get_dot( s->target );
+      auto d = BASE::get_dot( s->target );
       d->increment( incoming + existing - 1 );
 
-      sim->print_debug( "ADAPTIVE_SWARM: damage incoming:{} existing:{} final:{}", incoming, existing,
-                        d->current_stack() );
+      BASE::sim->print_log( "ADAPTIVE_SWARM: {} incoming:{} existing:{} final:{}", heal ? "heal" : "damage", incoming,
+                            existing, d->current_stack() );
     }
 
     void last_tick( dot_t* d ) override
     {
-      adaptive_swarm_base_t::last_tick( d );
+      BASE::last_tick( d );
 
       // last_tick() is called via dot_t::cancel() when a new swarm CLIPs an existing swarm. As dot_t::last_tick() is
       // called before dot_t::reset(), check the remaining time on the dot to see if we're dealing with a true last_tick
@@ -5849,7 +5747,82 @@ struct adaptive_swarm_t : public druid_spell_t
       if ( d->remains() > 0_ms && !d->target->is_sleeping() )
         return;
 
-      jump_swarm( d->current_stack(), state( d->state )->range );
+      if ( d->current_stack() > 1 )
+        jump_swarm( d );
+      else
+        BASE::sim->print_log( "ADAPTIVE_SWARM: {} expiring on final stack", heal ? "heal" : "damage" );
+    }
+
+    double calculate_tick_amount( action_state_t* s, double m ) const override
+    {
+      auto stack = BASE::find_dot( s->target )->current_stack();
+
+      return BASE::calculate_tick_amount( s, m / stack );
+    }
+  };
+
+  using damage_swarm_t = adaptive_swarm_base_t<druid_spell_t, heals::druid_heal_t>;
+  using healing_swarm_t = adaptive_swarm_base_t<heals::druid_heal_t, druid_spell_t>;
+
+  struct adaptive_swarm_damage_t : public damage_swarm_t
+  {
+    adaptive_swarm_damage_t( druid_t* p ) : damage_swarm_t( p, "adaptive_swarm_damage", p->spec.adaptive_swarm_damage )
+    {}
+
+    bool dots_ticking( const druid_td_t* td ) const
+    {
+      return td->dots.moonfire->is_ticking() || td->dots.rake->is_ticking() || td->dots.rip->is_ticking() ||
+             td->dots.stellar_flare->is_ticking() || td->dots.sunfire->is_ticking() ||
+             td->dots.thrash_bear->is_ticking() || td->dots.thrash_cat->is_ticking();
+    }
+
+    player_t* new_swarm_target( player_t* exclude ) const override
+    {
+      auto tl = target_list();
+
+      // because action_t::available_targets() explicitly adds the current action_t::target to the target_cache, we need
+      // to explicitly remove it here as swarm should not pick an invulnerable target whenignore_invulnerable_targets is
+      // enabled.
+      if ( sim->ignore_invulnerable_targets && target->debuffs.invulnerable->check() )
+        tl.erase( std::remove( tl.begin(), tl.end(), target ), tl.end() );
+
+      if ( exclude )
+        tl.erase( std::remove( tl.begin(), tl.end(), exclude ), tl.end() );
+
+      if ( tl.empty() )
+        return nullptr;
+
+      if ( tl.size() > 1 )
+      {
+        rng().shuffle( tl.begin(), tl.end() );
+
+        // prioritize unswarmed over swarmed
+        auto it = range::partition( tl, [ this ]( player_t* t ) {
+          return !p()->get_target_data( t )->dots.adaptive_swarm_damage->is_ticking();
+        } );
+
+        // if unswarmed exists, prioritize dotted over undotted
+        if ( it != tl.begin() )
+        {
+          std::partition( tl.begin(), it, [ this ]( player_t* t ) {
+            return dots_ticking( p()->get_target_data( t ) );
+          } );
+        }
+        // otherwise if swarmed exists, prioritize dotted over undotted
+        else if ( it != tl.end() )
+        {
+          std::partition( it, tl.end(), [ this ]( player_t* t ) {
+            return dots_ticking( p()->get_target_data( t ) );
+          } );
+        }
+      }
+
+      return tl.front();
+    }
+
+    double new_swarm_range( const action_state_t* s, player_t* ) const override
+    {
+      return state( s )->range;
     }
 
     double composite_persistent_multiplier( const action_state_t* s ) const override
@@ -5862,98 +5835,56 @@ struct adaptive_swarm_t : public druid_spell_t
 
       return pm;
     }
-
-    double calculate_tick_amount( action_state_t* s, double m ) const override
-    {
-      auto stack = find_dot( s->target )->current_stack();
-      assert( stack );
-
-      return adaptive_swarm_base_t::calculate_tick_amount( s, m / stack );
-    }
   };
 
-  struct adaptive_swarm_heal_t : public adaptive_swarm_base_t
+  struct adaptive_swarm_heal_t : public healing_swarm_t
   {
-    struct adaptive_swarm_heal_event_t : public event_t
-    {
-      adaptive_swarm_heal_t* swarm;
-      druid_t* druid;
-      double range;
-      int stacks;
-
-      adaptive_swarm_heal_event_t( druid_t* p, adaptive_swarm_heal_t* a, double r, int s, timespan_t d )
-        : event_t( *p, d ), swarm( a ), druid( p ), range( r ), stacks( s )
-      {}
-
-      const char* name() const override
-      {
-        return "adaptive swarm heal event";
-      }
-
-      void execute() override
-      {
-        auto& tracker = druid->swarm_tracker;
-        tracker.erase( std::remove( tracker.begin(), tracker.end(), this ), tracker.end() );
-
-        swarm->jump_swarm( stacks, range );
-      }
-    };
-
-    adaptive_swarm_heal_t( druid_t* p ) : adaptive_swarm_base_t( p, "adaptive_swarm_heal", p->spec.adaptive_swarm_heal )
+    adaptive_swarm_heal_t( druid_t* p ) : healing_swarm_t( p, "adaptive_swarm_heal", p->spec.adaptive_swarm_heal )
     {
       quiet = heal = true;
       harmful = may_miss = false;
-      base_td = base_td_multiplier = 0.0;
 
       parse_effect_period( data().effectN( 1 ) );
     }
 
-    // TODO: add exclude functionality
-    swarm_target_t new_swarm_target( swarm_target_t /* exclude */) override
+    player_t* new_swarm_target( player_t* exclude ) const override
     {
-      if ( p()->swarm_tracker.size() < p()->options.adaptive_swarm_friendly_targets )
-        return target;
+      auto tl = p()->swarm_targets;
 
-      return { target, p()->swarm_tracker[ rng().range( p()->swarm_tracker.size() ) ] };
+      if ( exclude )
+        tl.erase( std::remove( tl.begin(), tl.end(), exclude ), tl.end() );
+
+      if ( tl.empty() )
+        return nullptr;
+
+      if ( tl.size() > 1 )
+      {
+        rng().shuffle( tl.begin(), tl.end() );
+
+        // prioritize unswarmed over swarmed
+        auto it = range::partition( tl, [ this ]( player_t* t ) {
+          return !p()->get_target_data( t )->hots.adaptive_swarm_heal->is_ticking();
+        } );
+      }
+
+      return tl.front();
     }
 
-    void impact( action_state_t* s ) override
+    double new_swarm_range( const action_state_t*, player_t* t ) const override
     {
-      auto incoming = state( s )->stacks;
-      int existing = 0;
-      int final = incoming;
-      auto swarm_target = state( s )->swarm_target;
+      double dis = 0.0;
 
-      adaptive_swarm_base_t::impact( s );
+      if ( t->role == ROLE_ATTACK )
+        dis = p()->options.adaptive_swarm_jump_distance_melee;
+      else if ( t->role == ROLE_SPELL )
+        dis = p()->options.adaptive_swarm_jump_distance_ranged;
 
-      adaptive_swarm_heal_event_t* swarm_event = nullptr;
-
-      if ( swarm_target.event && swarm_target.event->remains() > 0_ms )
-        swarm_event = dynamic_cast<adaptive_swarm_heal_event_t*>( swarm_target.event );
-
-      if ( swarm_event )
-      {
-        existing = swarm_event->stacks;
-        final = std::min( dot_max_stack, final + existing );
-        swarm_event->stacks = final;
-        swarm_event->reschedule( dot_duration );
-      }
-      else
-      {
-        // TODO: fix edge case where a healing swarm will be sent out while another is in-flight allowing you to end up
-        // with swarm_tracker.size() > adaptive_swarm_friendly_targets
-        p()->swarm_tracker.push_back(
-            make_event<adaptive_swarm_heal_event_t>( *sim, p(), this, state( s )->range, final, dot_duration ) );
-      }
-
-      final = std::min( dot_max_stack, final );
-      sim->print_debug( "ADAPTIVE_SWARM: heal incoming:{} existing:{} final:{} # of heal swarms:{}", incoming, existing,
-                        final, p()->swarm_tracker.size() );
+      return rng().gauss( dis, p()->options.adaptive_swarm_jump_distance_stddev, true );
     }
   };
 
-  adaptive_swarm_base_t* damage;
-  adaptive_swarm_base_t* heal;
+  adaptive_swarm_damage_t* damage;
+  adaptive_swarm_heal_t* heal;
   timespan_t gcd_add;
   bool target_self;
 
@@ -5962,8 +5893,6 @@ struct adaptive_swarm_t : public druid_spell_t
       gcd_add( p->query_aura_effect( p->spec.cat_form_passive, A_ADD_FLAT_LABEL_MODIFIER, P_GCD, &data() )->time_value() ),
       target_self( false )
   {
-    add_option( opt_deprecated( "precombat_seconds", "druid.adaptive_swarm_prepull_setup" ) );
-    add_option( opt_deprecated( "precombat_stacks", "druid.adaptive_swarm_prepull_setup" ) );
     add_option( opt_bool( "target_self", target_self ) );
     parse_options( opt );
 
@@ -8949,6 +8878,31 @@ void druid_t::create_pets()
     for ( pet_t*& pet : pets.force_of_nature )
       pet = new pets::force_of_nature_t( sim, this );
   }
+
+  // not actually pets, but this stage is a good place to create these as all spells & actions have been created
+  if ( talent.adaptive_swarm.ok() )
+  {
+    swarm_targets.push_back( this );
+
+    size_t i = 0;
+    while ( i < options.adaptive_swarm_melee_targets )
+    {
+      auto t = swarm_targets.emplace_back(
+          module_t::heal_enemy()->create_player( sim, "swarm_melee_target_" + util::to_string( ++i ), RACE_NONE ) );
+      t->quiet = true;
+      t->role = ROLE_ATTACK;
+      sim->init_actor( t );
+    }
+
+    while ( i < options.adaptive_swarm_melee_targets + options.adaptive_swarm_ranged_targets )
+    {
+      auto t = swarm_targets.emplace_back(
+          module_t::heal_enemy()->create_player( sim, "swarm_ranged_target_" + util::to_string( ++i ), RACE_NONE ) );
+      t->quiet = true;
+      t->role = ROLE_SPELL;
+      sim->init_actor( t );
+    }
+  }
 }
 
 // druid_t::init_spells =====================================================
@@ -10236,7 +10190,10 @@ void druid_t::init()
 
   if ( sim->fight_style == FIGHT_STYLE_DUNGEON_SLICE || sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE )
   {
-    options.adaptive_swarm_friendly_targets = 5;
+    if ( options.adaptive_swarm_melee_targets == 9 )
+      options.adaptive_swarm_melee_targets = 3;
+    if ( options.adaptive_swarm_ranged_targets == 14 )
+      options.adaptive_swarm_ranged_targets = 1;
   }
 }
 
@@ -10675,9 +10632,6 @@ void druid_t::combat_begin()
                                                        options.adaptive_swarm_jump_distance_stddev, true )
                                         : rng().gauss( options.adaptive_swarm_jump_distance_ranged,
                                                        options.adaptive_swarm_jump_distance_stddev, true );
-
-      swarm_tracker.push_back(
-          make_event<swarm_t::adaptive_swarm_heal_event_t>( *sim, this, heal, range, stacks, duration ) );
     }
   }
 }
@@ -10961,66 +10915,6 @@ double druid_t::composite_player_target_multiplier( player_t* target, school_e s
 }
 
 // Expressions ==============================================================
-template <class Base>
-std::unique_ptr<expr_t> druid_action_t<Base>::create_expression( std::string_view name_str )
-{
-  auto splits = util::string_split<std::string_view>( name_str, "." );
-
-  if ( splits.size() == 3 && util::str_compare_ci( splits[ 0 ], "dot" ) &&
-       util::str_compare_ci( splits[ 1 ], "adaptive_swarm_heal" ) )
-  {
-    using sw_event_t = spells::adaptive_swarm_t::adaptive_swarm_heal_t::adaptive_swarm_heal_event_t;
-
-    struct adaptive_swarm_heal_expr_t : public expr_t
-    {
-      druid_t* player;
-      std::function<double( sw_event_t* )> func;
-
-      adaptive_swarm_heal_expr_t( druid_t* p, std::function<double( sw_event_t* )> f )
-        : expr_t( "dot.adaptive_swarm_heal" ), player( p ), func( std::move( f ) )
-      {}
-
-      double evaluate() override
-      {
-        if ( player->swarm_tracker.empty() )
-          return 0.0;
-
-        auto tracker = player->swarm_tracker;
-        range::sort( tracker, []( const event_t* l, const event_t* r ) {
-          return l->remains() < r->remains();
-        } );
-
-        auto sw_event = dynamic_cast<sw_event_t*>( tracker.front() );
-        if ( sw_event )
-          return func( sw_event );
-        else
-          return 0.0;
-      }
-    };
-
-    if ( util::str_compare_ci( splits[ 2 ], "count" ) )
-    {
-      return make_fn_expr( name_str, [ this ]() {
-        return p()->swarm_tracker.size();
-      } );
-    }
-    else if ( util::str_compare_ci( splits[ 2 ], "remains" ) )
-    {
-      return std::make_unique<adaptive_swarm_heal_expr_t>( p(), []( const sw_event_t* e ) {
-        return e->remains().total_seconds();
-      } );
-    }
-    else if ( util::str_compare_ci( splits[ 2 ], "stack" ) )
-    {
-      return std::make_unique<adaptive_swarm_heal_expr_t>( p(), []( const sw_event_t* e ) {
-        return as<double>( e->stacks );
-      } );
-    }
-  }
-
-  return ab::create_expression( name_str );
-}
-
 std::unique_ptr<expr_t> druid_t::create_action_expression( action_t& a, std::string_view name_str )
 {
   auto splits = util::string_split<std::string_view>( name_str, "." );
@@ -11370,6 +11264,9 @@ std::unique_ptr<expr_t> druid_t::create_expression( std::string_view name_str )
 
 static bool parse_swarm_setup( sim_t* sim, std::string_view, std::string_view setup_str )
 {
+  sim->error( "druid.adaptive_swarm_prepull_setup is temporarily disabled." );
+  return false;
+
   auto entries = util::string_split<std::string_view>( setup_str, "/" );
 
   for ( auto entry : entries )
@@ -11416,7 +11313,8 @@ void druid_t::create_options()
   add_option( opt_float( "druid.adaptive_swarm_jump_distance_melee", options.adaptive_swarm_jump_distance_melee ) );
   add_option( opt_float( "druid.adaptive_swarm_jump_distance_ranged", options.adaptive_swarm_jump_distance_ranged ) );
   add_option( opt_float( "druid.adaptive_swarm_jump_distance_stddev", options.adaptive_swarm_jump_distance_stddev ) );
-  add_option( opt_uint( "druid.adaptive_swarm_friendly_targets", options.adaptive_swarm_friendly_targets, 1U, 20U ) );
+  add_option( opt_uint( "druid.adaptive_swarm_melee_targets", options.adaptive_swarm_melee_targets, 1U, 29U ) );
+  add_option( opt_uint( "druid.adaptive_swarm_ranged_targets", options.adaptive_swarm_ranged_targets, 1U, 29U ) );
   add_option( opt_func( "druid.adaptive_swarm_prepull_setup", parse_swarm_setup ) );
 
   // Balance
@@ -11674,6 +11572,7 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
   dots.thrash_bear           = target.get_dot( "thrash_bear", &source );
   dots.thrash_cat            = target.get_dot( "thrash_cat", &source );
 
+  hots.adaptive_swarm_heal   = target.get_dot( "adaptive_swarm_heal", &source );
   hots.cenarion_ward         = target.get_dot( "cenarion_ward", &source );
   hots.cultivation           = target.get_dot( "cultivation", &source );
   hots.frenzied_regeneration = target.get_dot( "frenzied_regeneration", &source );
@@ -11708,8 +11607,8 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
 
 int druid_td_t::hots_ticking() const
 {
-  auto count = hots.cenarion_ward->is_ticking() + hots.cultivation->is_ticking() +
-               hots.frenzied_regeneration->is_ticking() + hots.germination->is_ticking() + hots.regrowth->is_ticking() +
+  auto count = hots.adaptive_swarm_heal->is_ticking() + hots.cenarion_ward->is_ticking() +
+               hots.cultivation->is_ticking() + hots.germination->is_ticking() + hots.regrowth->is_ticking() +
                hots.rejuvenation->is_ticking() + hots.spring_blossoms->is_ticking() + hots.wild_growth->is_ticking();
 
   auto lb_mul = 1 + as<int>( static_cast<druid_t*>( source )->talent.harmonious_blooming->effectN( 1 ).base_value() );
