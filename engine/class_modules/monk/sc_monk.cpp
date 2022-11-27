@@ -6477,7 +6477,7 @@ struct hidden_masters_forbidden_touch_t : public monk_buff_t<buff_t>
 };
 
 // ===============================================================================
-// Tier 29 Kicks of Floowing Momentum
+// Tier 29 Kicks of Flowing Momentum
 // ===============================================================================
 
 struct kicks_of_flowing_momentum_t : public monk_buff_t<buff_t>
@@ -6491,12 +6491,21 @@ struct kicks_of_flowing_momentum_t : public monk_buff_t<buff_t>
         (int)p.sets->set( MONK_WINDWALKER, T29, B4 )->effectN( 2 ).base_value() : 0 ) );
     set_reverse_stack_count( s->max_stacks() + ( p.sets->has_set_bonus( MONK_WINDWALKER, T29, B4 ) ? 
         (int)p.sets->set( MONK_WINDWALKER, T29, B4 )->effectN( 2 ).base_value() : 0 ) );
+
   }
 
   void decrement( int stacks, double value = DEFAULT_VALUE() ) override
   {
     base_t::decrement( stacks, value );
     p().buff.fists_of_flowing_momentum->trigger();
+  }
+
+  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
+  {
+    if ( p().buff.kicks_of_flowing_momentum->up() )
+      p().buff.kicks_of_flowing_momentum->expire();
+
+    return buff_t::trigger( stacks, value, chance, duration );
   }
 };
 }  // namespace buffs
