@@ -7898,16 +7898,16 @@ void monk_t::create_buffs ()
     // Movement
     // ------------------------------
 
-    movement.flying_serpent_kick = new monk_movement_t( this, "flying_serpent_movement", spell_data_t::nil() );
+    movement.flying_serpent_kick = new monk_movement_t( this, "flying_serpent_movement", 1 );
     movement.flying_serpent_kick->set_trigger_spell( talent.windwalker.flying_serpent_kick )
       ->set_chance( 1.0 )
       ->set_duration( talent.windwalker.flying_serpent_kick.spell()->duration() );
 
-    movement.roll = new monk_movement_t( this, "roll_movement", spell_data_t::nil() );
+    movement.roll = new monk_movement_t( this, "roll_movement", talent.general.chi_torpedo->ok() ? 10 : 8 );
     movement.roll->set_chance( 1.0 )
       ->set_duration( timespan_t::from_seconds( 1 ) );
 
-    movement.whirling_dragon_punch = new monk_movement_t( this, "whirling_dragon_punch_movement", spell_data_t::nil() );
+    movement.whirling_dragon_punch = new monk_movement_t( this, "whirling_dragon_punch_movement", 1 );
     movement.whirling_dragon_punch->set_trigger_spell( talent.windwalker.whirling_dragon_punch )
       ->set_chance( 1.0 )
       ->set_duration( timespan_t::from_seconds( 1 ) );
