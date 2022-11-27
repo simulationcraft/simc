@@ -209,25 +209,31 @@ public:
   public:
     using base_t = monk_movement_t;
 
-    double distance_moved = 0;
+    double distance_moved;
 
-    monk_t& p()
-    {
-      return *debug_cast<monk_t*>( movement_buff_t::source );
-    }
-
-    monk_movement_t( monk_t* player, util::string_view n, const spell_data_t* s = spell_data_t::nil(), const item_t* item = nullptr )
-      : movement_buff_t( player )
+    monk_movement_t( monk_t* player, util::string_view n, double distance = 0 )
+      : movement_buff_t( player ),
+        distance_moved ( distance )
     {
     };
 
     bool trigger( int s = 1, double v = -std::numeric_limits<double>::min(), double c = -1.0, timespan_t d = timespan_t::min() ) override
     {
-      // Dragonflight: Phial of Static Empowerment
-      if ( p().buffs.static_empowerment->up() )
-        p().buffs.static_empowerment->expire();
 
-      return buff_t::trigger( s, v, c, d );
+      // Check if we're already moving away from the target, if so we will now be moving towards it
+      if ( player->current.distance_to_move )
+      {
+        // TODO: Movement speed increase based on distance_moved
+      }
+      else
+      {
+        // TODO: Set out of range
+      }
+
+      if ( distance_moved > 0 )
+        return movement_buff_t::trigger( s, v, c, d );
+
+      return false;
     }
   };
 
