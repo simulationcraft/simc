@@ -2930,9 +2930,6 @@ struct melee_t : public rogue_attack_t
   bool procs_poison() const override
   { return true; }
 
-  bool procs_deadly_poison() const override
-  { return true; }
-
   bool procs_main_gauche() const override
   { return weapon->slot == SLOT_MAIN_HAND; }
 
@@ -5801,16 +5798,11 @@ struct serrated_bone_spike_t : public rogue_attack_t
     serrated_bone_spike_dot_t( util::string_view name, rogue_t* p ) :
       rogue_attack_t( name, p, p->talent.assassination.serrated_bone_spike->effectN( 2 ).trigger() )
     {
-      aoe = 0; // Technically affected by Deathspike, but interferes with our triggering logic
-      hasted_ticks = true; // TOCHECK DFALPHA -- 2021-03-12 - Bone spike dot is hasted, despite not being flagged as such
+      aoe = 0;
+      hasted_ticks = true; // Uses the SX_DOT_HASTED_MELEE
       affected_by.zoldyck_insignia = true; // TOCHECK DFALPHA -- 2021-02-13 - Logs show that the SBS DoT is affected by Zoldyck
       dot_duration = timespan_t::from_seconds( sim->expected_max_time() * 3 );
     }
-
-    // 2021-03-28 -- Testing shows that Nightstalker works if you are very close to the target's hitbox
-    //               This works on both the initial hit and also the DoT, until it is applied again
-    bool snapshots_nightstalker() const override
-    { return p()->bugs; }
 
     bool procs_poison() const override
     { return false; }
@@ -5823,14 +5815,13 @@ struct serrated_bone_spike_t : public rogue_attack_t
     rogue_attack_t( name, p, p->talent.assassination.serrated_bone_spike, options_str )
   {
     // Combo Point generation is in a secondary spell due to scripting logic
-    // However, leave the ON_HIT entry as it can trigger things that proc from CP generators
+    // However, leave the ON_HIT entry as it can trigger things like Seal Fate
     energize_type = action_energize::ON_HIT;
     energize_resource = RESOURCE_COMBO_POINT;
     energize_amount = 0.0;
     base_impact_cp = as<int>( p->spec.serrated_bone_spike_energize->effectN( 1 ).base_value() );
 
     serrated_bone_spike_dot = p->get_background_action<serrated_bone_spike_dot_t>( "serrated_bone_spike_dot" );
-
     add_child( serrated_bone_spike_dot );
   }
 
@@ -5847,48 +5838,22 @@ struct serrated_bone_spike_t : public rogue_attack_t
 
     cp += base_impact_cp;
     cp += p()->get_active_dots( serrated_bone_spike_dot->internal_id );
-    cp += !td( target )->dots.serrated_bone_spike->is_ticking();
 
     return cp;
   }
 
   void impact( action_state_t* state ) override
   {
+    const unsigned active_dots = p()->get_active_dots( serrated_bone_spike_dot->internal_id );
+
     rogue_attack_t::impact( state );
+    serrated_bone_spike_dot->execute_on_target( state->target );
 
-    // 2021-03-04 -- 9.0.5: Bonus CP gain now **supposed to** include the primary target DoT even on first activation
-    unsigned active_dots = p()->get_active_dots( serrated_bone_spike_dot->internal_id );
-
-    // BUG, see https://github.com/SimCMinMax/WoW-BugTracker/issues/823
-    // Race condition on when the spikes are counted. We just make it 50% chance.
-    bool count_after = p()->bugs ? rng().roll( 0.5 ) : true;
-
-    auto tdata = td( state->target );
-    if ( !tdata->dots.serrated_bone_spike->is_ticking() && count_after )
-    {
-      active_dots++;
-    }
-
-    // Due to the Vendetta 4pc, we need to re-apply the DoT to recalculate the haste snapshot
-    serrated_bone_spike_dot->set_target( state->target );
-    serrated_bone_spike_dot->execute();
- 
-    // 2022-01-26 -- PTR shows this happens on impact but only for the primary target
-    //               Deathspiked targets do not generate CP directly
+    // 2022-01-26 -- Deathspike logs shows this only happens on impact for the primary target
     if ( state->chain_target == 0 )
     {
       trigger_combo_point_gain( base_impact_cp + active_dots, p()->gains.serrated_bone_spike );
     }
-  }
-
-  timespan_t travel_time() const override
-  {
-    // 2021-03-28 -- Testing shows that Nightstalker works if you are very close to the target's hitbox
-    // Assume if the player is playing Nightstalker they are getting inside the hitbox to reduce travel time
-    if ( p()->bugs && p()->talent.rogue.nightstalker->ok() && p()->stealthed( STEALTH_BASIC | STEALTH_SHADOW_DANCE ) )
-      return timespan_t::zero();
-
-    return rogue_attack_t::travel_time();
   }
 };
 
@@ -9194,7 +9159,7 @@ void rogue_t::init_gains()
   gains.relentless_strikes        = get_gain( "Relentless Strikes" );
   gains.ruthlessness              = get_gain( "Ruthlessness" );
   gains.seal_fate                 = get_gain( "Seal Fate" );
-  gains.serrated_bone_spike       = get_gain( "Serrated Bone Spike (DoT)" );
+  gains.serrated_bone_spike       = get_gain( "Serrated Bone Spike" );
   gains.shadow_blades             = get_gain( "Shadow Blades" );
   gains.shadow_techniques         = get_gain( "Shadow Techniques" );
   gains.slice_and_dice            = get_gain( "Slice and Dice" );
