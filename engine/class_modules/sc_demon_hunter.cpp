@@ -6129,7 +6129,7 @@ void demon_hunter_t::apl_havoc()
                            "&(cooldown.eye_beam.remains>5|!talent.demonic|(raid_event.adds.in>cooldown&raid_event.adds.in<25))" );
   apl_default->add_action( "throw_glaive,if=talent.soulrend&spell_targets>=(2-talent.furious_throws)&!debuff.essence_break.up" );
   apl_default->add_action( "annihilation,if=!variable.pooling_for_blade_dance" );
-  apl_default->add_action( "throw_glaive,if=talent.serrated_glaive&cooldown.eye_beam.remains<4&!debuff.exposed_wound.up&!debuff.essence_break.up" );
+  apl_default->add_action( "throw_glaive,if=talent.serrated_glaive&cooldown.eye_beam.remains<4&!debuff.serrated_glaive.up&!debuff.essence_break.up" );
   apl_default->add_action( "immolation_aura,if=!buff.immolation_aura.up&(!talent.ragefire|active_enemies>desired_targets|raid_event.adds.in>15)" );
   apl_default->add_action( "felblade,if=fury.deficit>=40" );
   apl_default->add_action( "sigil_of_flame,if=active_enemies>desired_targets" );
