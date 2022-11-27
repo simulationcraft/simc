@@ -2128,7 +2128,9 @@ void alegethar_puzzle_box( special_effect_t& effect )
     {
       background = true;
       auto buff_spell = e.player -> find_spell( 383781 );
-      buff = create_buff<stat_buff_t>(e.player, buff_spell);
+      buff = create_buff<stat_buff_t>(e.player, buff_spell)
+          -> add_stat_from_effect(1, e.driver()->effectN( 1 ).average(e.item));
+      buff -> set_default_value(e.driver()->effectN(1).average(e.item));
     }
 
     void impact( action_state_t* ) override
