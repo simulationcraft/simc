@@ -161,14 +161,12 @@ struct drain_life_t : public warlock_spell_t
 };
 
 // This is the damage spell which can be triggered on Corruption ticks for Harvester of Souls
-// NOTE: As of 2022-09-23 on DF beta, spec aura is not currently affecting this spell
+// NOTE: Spec aura is not affecting this spell. Last checked at end of beta 2022-11-27
 struct harvester_of_souls_t : public warlock_spell_t
 {
-  harvester_of_souls_t( warlock_t* p, util::string_view options_str )
+  harvester_of_souls_t( warlock_t* p )
     : warlock_spell_t( "Harvester of Souls", p, p->talents.harvester_of_souls_dmg )
   {
-    parse_options( options_str );
-
     background = dual = true;
   }
 };
@@ -190,7 +188,7 @@ struct corruption_t : public warlock_spell_t
     doom_blossom_t* doom_blossom_proc;
 
     corruption_dot_t( warlock_t* p ) : warlock_spell_t( "Corruption (DoT)", p, p->warlock_base.corruption->effectN( 1 ).trigger() ),
-      harvester_proc( new harvester_of_souls_t( p, "" ) ),
+      harvester_proc( new harvester_of_souls_t( p ) ),
       doom_blossom_proc( new doom_blossom_t( p ) )
     {
       tick_zero = false;
