@@ -1,5 +1,5 @@
-// Spell text, wow build 10.0.2.46781
-static const std::array<spelltext_data_t, 19179> __ptr_spelltext_data { {
+// Spell text, wow build 10.0.2.46801
+static const std::array<spelltext_data_t, 19180> __ptr_spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -17449,6 +17449,7 @@ static const std::array<spelltext_data_t, 19179> __ptr_spelltext_data { {
   { 384790, "When the Trick Shots effect fades or is consumed, or after gaining Deathblow, your next Kill Shot will deal $388998s1% increased damage, and shred up to $388998s2 targets near your Kill Shot target for $388998s3% of the damage dealt by Kill Shot over $385638d.", 0, 0 },
   { 384791, "Multi-Shot and Volley now also apply Explosive Shot to up to $s1 $Ltarget:targets; hit. This can only occur once every $388909d.", 0, 0 },
   { 384799, "Damage taken from area of effect attacks reduced by $s1%.", 0, 0 },
+  { 384810, "Spending Holy Power has a $s1% chance to reduce the Holy Power cost of your next Word of Glory$?c1[ or Light of Dawn]$?C2[ or Shield of the Righteous] by $s1.", "Holy Power cost of your next Word of Glory$?c1[ or Light of Dawn]$?C2[ or Shield of the Righteous] by $s1.", 0 },
   { 384815, "Spending Holy Power has a $s1% chance to reduce the Holy Power cost of your next Word of Glory$?c1[ or Light of Dawn]$?C2[ or Shield of the Righteous] by 1.", 0, 0 },
   { 384820, "Reduces the cooldown of Blessing of Sacrifice by ${$m1/-1000} sec.", 0, 0 },
   { 384825, "Gather 5 Leaves, then throw at the Playful Prowler!", 0, 0 },
@@ -19181,12 +19182,12 @@ static const std::array<spelltext_data_t, 19179> __ptr_spelltext_data { {
   { 398396, "$@spelldesc386578", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.0.2.46781
+// spelltext hotfix entries, wow build 10.0.2.46801
 static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __ptr_spelltext_hotfix_data { {
   {   79096,  0, "Finishing moves reduce the remaining cooldown of many Rogue skills by $<cdr> sec per combo point spent.\r\n\r\nAffected skills: Adrenaline Rush, Between the Eyes, Blade Flurry, Blade Rush, Dreadblades, Ghostly Strike, Grappling Hook, Keep it Rolling, Killing Spree, Marked for Death, Roll the Bones, Sepsis, Sprint, and Vanish.", "Finishing moves reduce the remaining cooldown of many Rogue skills by $<cdr> sec per combo point spent.\r\n\r\nAffected skills: Adrenaline Rush, Between the Eyes, Blade Flurry, Blade Rush, Dreadblades, Ghostly Strike, Grappling Hook, Keep it Rolling, Killing Spree, Marked for Death, Roll the Bones, Sprint, and Vanish." },
 } };
 
-// Spell description variables, wow build 10.0.2.46781
+// Spell description variables, wow build 10.0.2.46801
 static const std::array<spelldesc_vars_data_t, 365> __ptr_spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$pvp=$?a134735[${1.1}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<pvp>*$<weal>}\r\n" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -19555,7 +19556,7 @@ static const std::array<spelldesc_vars_data_t, 365> __ptr_spelldesc_vars_data { 
   {  394354, "$damage=${($AP*1.0)*(1+$@versadmg)}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.0.2.46781
+// spelldesc_vars hotfix entries, wow build 10.0.2.46801
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 

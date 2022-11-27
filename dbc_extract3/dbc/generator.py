@@ -1446,6 +1446,7 @@ class SpellDataGenerator(DataGenerator):
             ( 383305, 0 ),          # Virtuous Command damage
             ( 387178, 0 ),          # Empyrean Legacy buff
             ( 224239, 0 ),          # Tempest divine storm
+            ( 384810, 0 ),          # Seal of Clarity buff
         ),
 
         # Hunter:
