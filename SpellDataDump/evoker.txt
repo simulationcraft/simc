@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46741 Live (hotfix 2022-11-27/46741)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46741 Live (hotfix 2022-11-27/46741, git build add_paladin_buff 76f8ceaf67)
 Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Orc (0x2)
