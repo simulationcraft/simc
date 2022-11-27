@@ -200,6 +200,52 @@ public:
 
   double gift_of_the_ox_proc_chance;
 
+  //==============================================
+  // Monk Movement
+  //==============================================
+
+  struct monk_movement_t : public movement_buff_t
+  {
+  public:
+    using base_t = monk_movement_t;
+
+    double distance_moved;
+
+    monk_movement_t( monk_t* player, util::string_view n, double distance = 0 )
+      : movement_buff_t( player ),
+        distance_moved ( distance )
+    {
+    };
+
+    bool trigger( int s = 1, double v = -std::numeric_limits<double>::min(), double c = -1.0, timespan_t d = timespan_t::min() ) override
+    {
+
+      // Check if we're already moving away from the target, if so we will now be moving towards it
+      if ( player->current.distance_to_move )
+      {
+        // TODO: Movement speed increase based on distance_moved
+      }
+      else
+      {
+        // TODO: Set out of range
+      }
+
+      if ( distance_moved > 0 )
+        return movement_buff_t::trigger( s, v, c, d );
+
+      return false;
+    }
+  };
+
+  struct movement_t
+  {
+    propagate_const<monk_movement_t*> flying_serpent_kick;
+    propagate_const<monk_movement_t*> roll;
+    propagate_const<monk_movement_t*> whirling_dragon_punch;
+  } movement;
+
+  //=================================================
+
   struct buffs_t
   {
     // General
