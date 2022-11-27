@@ -7,7 +7,7 @@
 
 #include "dbc/dbc.hpp"
 
-darkmoon_deck_t::darkmoon_deck_t( const special_effect_t& e, const std::vector<unsigned> c )
+darkmoon_deck_t::darkmoon_deck_t( const special_effect_t& e, std::vector<unsigned> c )
   : effect( e ),
     player( e.player ),
     card_ids( std::move( c ) ),
