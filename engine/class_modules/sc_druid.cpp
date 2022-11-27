@@ -5849,7 +5849,7 @@ struct adaptive_swarm_t : public druid_spell_t
 
     player_t* new_swarm_target( player_t* exclude ) const override
     {
-      auto tl = p()->swarm_targets;
+      auto tl = target_list();
 
       if ( exclude )
         tl.erase( std::remove( tl.begin(), tl.end(), exclude ), tl.end() );
