@@ -4922,7 +4922,8 @@ struct faeline_stomp_t : public monk_spell_t
     parse_options( options_str );
     may_combo_strike = true;
     cast_during_sck  = true;
-
+    gcd_type = gcd_haste_type::NONE; // Need to define this manually for some reason
+    
     aoe = (int)data().effectN( 3 ).base_value();
 
     trigger_bountiful_brew      = true;
