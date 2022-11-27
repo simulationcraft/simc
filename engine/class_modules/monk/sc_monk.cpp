@@ -2786,10 +2786,7 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::execute();
     
-    // Dragonflight: Phial of Static Empowerment
-    // TODO: I need to replace this with a generic movement buff  
-    if ( p()->buffs.static_empowerment->up() )
-      p()->buffs.static_empowerment->expire();
+    p()->movement.whirling_dragon_punch->trigger();
       
     for ( auto& tick : ticks )
     {
@@ -3529,7 +3526,11 @@ struct flying_serpent_kick_t : public monk_melee_attack_t
     monk_melee_attack_t::execute();
 
     if ( first_charge )
+    {
+      p()->movement.flying_serpent_kick->trigger();
+
       first_charge = !first_charge;
+    }
   }
 
   void impact( action_state_t* state ) override
@@ -3662,6 +3663,12 @@ struct roll_t : public monk_spell_t
     cooldown->charges += (int)player->talent.general.celerity->effectN( 2 ).base_value();
   }
 
+  void execute() override
+  {
+    monk_spell_t::execute();
+
+    p()->movement.roll->trigger();
+  }
 };
 
 // ==========================================================================
@@ -3685,6 +3692,7 @@ struct chi_torpedo_t : public monk_spell_t
     monk_spell_t::execute();
 
     p()->buff.chi_torpedo->trigger();
+    p()->movement.roll->trigger();
   }
 };
 
@@ -6687,6 +6695,7 @@ monk_t::monk_t( sim_t* sim, util::string_view name, race_e r )
   user_options.chi_burst_healing_targets = 8;
   user_options.motc_override             = 0;
   user_options.no_bof_dot                = 0;
+
 }
 
 // monk_t::create_action ====================================================
@@ -7813,7 +7822,7 @@ void monk_t::create_buffs ()
       ->set_trigger_spell( talent.windwalker.faeline_harmony )
       ->set_default_value_from_effect( 1 );
 
-    buff.flying_serpent_kick_movement = make_buff ( this, "flying_serpent_kick_movement" ) // find_spell( 115057 )
+    buff.flying_serpent_kick_movement = make_buff ( this, "flying_serpent_kick_movement_buff" ) // find_spell( 115057 )
       ->set_trigger_spell( talent.windwalker.flying_serpent_kick );
 
     buff.fury_of_xuen_stacks = new buffs::fury_of_xuen_stacking_buff_t ( *this, "fury_of_xuen_stacks", passives.fury_of_xuen_stacking_buff );
@@ -7884,6 +7893,24 @@ void monk_t::create_buffs ()
       ->set_cooldown( timespan_t::from_seconds( 1 ) )
       ->set_default_value_from_effect( 1 )
       ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+
+    // ------------------------------
+    // Movement
+    // ------------------------------
+
+    movement.flying_serpent_kick = new monk_movement_t( this, "flying_serpent_movement", spell_data_t::nil() );
+    movement.flying_serpent_kick->set_trigger_spell( talent.windwalker.flying_serpent_kick )
+      ->set_chance( 1.0 )
+      ->set_duration( talent.windwalker.flying_serpent_kick.spell()->duration() );
+
+    movement.roll = new monk_movement_t( this, "roll_movement", spell_data_t::nil() );
+    movement.roll->set_chance( 1.0 )
+      ->set_duration( timespan_t::from_seconds( 1 ) );
+
+    movement.whirling_dragon_punch = new monk_movement_t( this, "whirling_dragon_punch_movement", spell_data_t::nil() );
+    movement.whirling_dragon_punch->set_trigger_spell( talent.windwalker.whirling_dragon_punch )
+      ->set_chance( 1.0 )
+      ->set_duration( timespan_t::from_seconds( 1 ) );
 }
 
 // monk_t::init_gains =======================================================
