@@ -135,6 +135,7 @@ struct evoker_t : public player_t
     propagate_const<buff_t*> charged_blast;
     propagate_const<buff_t*> dragonrage;
     propagate_const<buff_t*> iridescence_blue;
+    propagate_const<buff_t*> iridescence_blue_disintegrate;
     propagate_const<buff_t*> iridescence_red;
     propagate_const<buff_t*> limitless_potential;
     propagate_const<buff_t*> power_swell;
@@ -693,17 +694,6 @@ public:
 
     return tm;
   }
-
-  double composite_persistent_multiplier( const action_state_t* s ) const override
-  {
-    auto mult = ab::composite_persistent_multiplier( s );
-
-    // iridescence blue affects the entire channel for disintegrate
-    if ( spell_color == SPELL_BLUE && !background )
-      mult *= 1.0 + p()->buff.iridescence_blue->check_value();
-
-    return mult;
-  }
 };
 
 struct empower_data_t
@@ -1180,6 +1170,15 @@ struct azure_strike_t : public evoker_spell_t
       p()->proc.azure_essence_burst->occur();
     }
   }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    auto da = evoker_spell_t::composite_da_multiplier( s );
+
+    da *= 1.0 + p()->buff.iridescence_blue->check_value();
+
+    return da;
+  }
 };
 
 struct deep_breath_t : public evoker_spell_t
@@ -1271,9 +1270,12 @@ struct disintegrate_t : public essence_spell_t
 
   void execute() override
   {
-    // trigger the buff first so tick-zero can get buffed
+    // trigger the buffs first so tick-zero can get buffed
     if ( p()->buff.essence_burst->check() )
       p()->buff.essence_burst_titanic_wrath_disintegrate->trigger( num_ticks );
+
+    if ( p()->buff.iridescence_blue->check() )
+      p()->buff.iridescence_blue_disintegrate->trigger( num_ticks );
 
     essence_spell_t::execute();
   }
@@ -1285,6 +1287,8 @@ struct disintegrate_t : public essence_spell_t
     if ( p()->buff.essence_burst_titanic_wrath_disintegrate->check() )
       ta *= 1.0 + titanic_mul;
 
+    ta *= 1.0 + p()->buff.iridescence_blue_disintegrate->check_value();
+
     return ta;
   }
 
@@ -1293,6 +1297,7 @@ struct disintegrate_t : public essence_spell_t
     essence_spell_t::tick( d );
 
     p()->buff.essence_burst_titanic_wrath_disintegrate->decrement();
+    p()->buff.iridescence_blue_disintegrate->decrement();
 
     if ( p()->talent.scintillation.ok() && rng().roll( p()->talent.scintillation->effectN( 2 ).percent() ) )
     {
@@ -1578,6 +1583,15 @@ struct shattering_star_t : public evoker_spell_t
 
     if ( result_is_hit( s->result ) )
       td( s->target )->debuffs.shattering_star->trigger();
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    auto da = evoker_spell_t::composite_da_multiplier( s );
+
+    da *= 1.0 + p()->buff.iridescence_blue->check_value();
+
+    return da;
   }
 };
 
@@ -2125,6 +2139,11 @@ void evoker_t::create_buffs()
                               ->set_trigger_spell( talent.iridescence )
                               ->set_default_value_from_effect( 1 );
   buff.iridescence_blue->set_initial_stack( buff.iridescence_blue->max_stack() );
+
+  buff.iridescence_blue_disintegrate = make_buff( this, "iridescence_blue_disintegrate", find_spell( 399370 ) )
+                                           ->set_quiet( true )
+                                           ->set_default_value( buff.iridescence_blue->default_value )
+                                           ->set_trigger_spell( talent.iridescence );
 
   buff.iridescence_red = make_buff( this, "iridescence_red", find_spell( 386353 ) )
                              ->set_trigger_spell( talent.iridescence )

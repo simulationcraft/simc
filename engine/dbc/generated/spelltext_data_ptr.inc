@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.2.46801
-static const std::array<spelltext_data_t, 19180> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 19181> __ptr_spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -19180,6 +19180,7 @@ static const std::array<spelltext_data_t, 19180> __ptr_spelltext_data { {
   { 397767, "Add a socket to a Dragonflight Season $s2 item that does not already have one. Can be used on Helms, Necks, Bracers, Belts, or Rings.", 0, 0 },
   { 397870, "Essence Burst increases the damage of affected spells by ${$s1}.1%.", 0, 0 },
   { 398396, "$@spelldesc386578", 0, 0 },
+  { 399370, "$@spelldesc370867", "Your next Blue spell deals $s1% more damage.", 0 },
 } };
 
 // spelltext hotfix entries, wow build 10.0.2.46801
