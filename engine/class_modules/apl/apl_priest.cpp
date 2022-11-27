@@ -82,8 +82,6 @@ void shadow( player_t* p )
   default_list->add_action(
       "variable,name=vts_applied,op=set,value=active_dot.vampiric_touch>=variable.max_vts|!variable.is_vt_possible" );
   default_list->add_action(
-      "variable,name=sfp,op=set,value=runeforge.shadowflame_prism.equipped|talent.inescapable_torment" );
-  default_list->add_action(
       "variable,name=pool_for_cds,op=set,value=(cooldown.void_eruption.remains<=gcd.max*3&talent.void_eruption|"
       "cooldown.dark_ascension.up&talent.dark_ascension)" );
   default_list->add_action(
@@ -114,43 +112,49 @@ void shadow( player_t* p )
   // CDs
   cds->add_action( "power_infusion,if=(buff.voidform.up|buff.dark_ascension.up)" );
   cds->add_action(
-      "void_eruption,if=!cooldown.fiend.up&(pet.fiend.active|!talent.mindbender|covenant.night_fae)&(cooldown.mind_"
+      "void_eruption,if=!cooldown.fiend.up&(pet.fiend.active|!talent.mindbender)&(cooldown.mind_"
       "blast.charges=0|time>15|buff.shadowy_insight.up&cooldown.mind_blast.charges=buff.shadowy_insight.stack)" );
   cds->add_action(
-      "dark_ascension,if=pet.fiend.active&cooldown.mind_blast.charges<2|!talent.mindbender&!cooldown.fiend.up|covenant."
-      "night_fae&cooldown.fiend.remains>=15&cooldown.fae_guardians.remains>=4*gcd.max" );
+      "dark_ascension,if=pet.fiend.active&cooldown.mind_blast.charges<2|!talent.mindbender&!cooldown.fiend.up&cooldown."
+      "fiend.remains>=15" );
   cds->add_call_action_list( trinkets );
-  cds->add_action( "unholy_nova,if=dot.shadow_word_pain.ticking&variable.vts_applied|action.shadow_crash.in_flight" );
-  cds->add_action(
-      "fae_guardians,if=(dot.shadow_word_pain.ticking&variable.vts_applied|action.shadow_crash.in_flight)&(!talent."
-      "void_eruption|buff.voidform.up&!cooldown.void_bolt.up&cooldown.mind_blast.full_recharge_time>gcd.max|!cooldown."
-      "void_eruption.up)" );
   cds->add_action( "mindbender,if=(dot.shadow_word_pain.ticking&variable.vts_applied|action.shadow_crash.in_flight)" );
   cds->add_action( "desperate_prayer,if=health.pct<=75" );
 
   // Main APL, should cover all ranges of targets and scenarios
   main->add_call_action_list( cds );
   main->add_action(
-      "shadow_word_death,if=pet.fiend.active&variable.sfp&(pet.fiend.remains<=gcd|target.health.pct<20)&spell_targets."
+      "mind_blast,if=cooldown.mind_blast.charges>=2&talent.mind_devourer&spell_targets.mind_sear>=3&spell_targets.mind_"
+      "sear<=7&!buff.mind_devourer.up",
+      "Use Mind Blast when capped on charges and talented into Mind Devourer to fish for the buff. Only use when "
+      "facing 3-7 targets." );
+  main->add_action(
+      "shadow_word_death,if=pet.fiend.active&talent.inescapable_torment&(pet.fiend.remains<=gcd|target.health.pct<20)&"
+      "spell_targets."
       "mind_sear<=7" );
   main->add_action(
       "mind_blast,if=(cooldown.mind_blast.full_recharge_time<=gcd.max|pet.fiend.remains<=cast_time+gcd.max)&pet.fiend."
-      "active&variable.sfp&pet.fiend.remains>cast_time&spell_targets.mind_sear<=7" );
+      "active&talent.inescapable_torment&pet.fiend.remains>cast_time&spell_targets.mind_sear<=7" );
   main->add_action(
       "damnation,target_if=dot.vampiric_touch.refreshable&variable.is_vt_possible|dot.shadow_word_pain.refreshable" );
   main->add_action( "void_bolt,if=variable.dots_up&insanity<=85" );
   main->add_action( "mind_sear,target_if=(spell_targets.mind_sear>1|buff.voidform.up)&buff.mind_devourer.up",
                     "Use Mind Devourer Procs on Mind Sear when facing 2 or more targets or Voidform is active." );
   main->add_action(
-      "mind_sear,target_if=spell_targets.mind_sear>variable.mind_sear_cutoff,chain=1,interrupt_immediate=1,interrupt_"
-      "if=ticks>=2" );
+      "mind_sear,target_if=spell_targets.mind_sear>variable.mind_sear_cutoff&(insanity>=75|((!set_bonus.tier29_4pc&!"
+      "set_bonus.tier29_2pc)|!buff.dark_reveries.up)|(!set_bonus.tier29_2pc|buff.gathering_shadows.stack=3)),chain=1,"
+      "interrupt_immediate=1,interrupt_if=ticks>=2",
+      "Use Mind Sear on 3+ targets and either you have at least 75 insanity, 4pc buff is inactive, or 2pc buff is at "
+      "3 stacks." );
   main->add_action(
       "devouring_plague,if=(refreshable&!variable.pool_for_cds|insanity>75|talent.void_torrent&cooldown.void_torrent."
       "remains<=3*gcd|buff.mind_devourer.up&cooldown.mind_blast.full_recharge_time<=2*gcd.max&!cooldown.void_eruption."
       "up&talent.void_eruption)&variable.dp_cutoff" );
   main->add_action(
-      "shadow_word_death,target_if=(target.health.pct<20&spell_targets.mind_sear<4)&(!variable.sfp|cooldown.fiend."
-      "remains>=10)|(pet.fiend.active&variable.sfp&spell_targets.mind_sear<=7)|buff.deathspeaker.up&(cooldown.fiend."
+      "shadow_word_death,target_if=(target.health.pct<20&spell_targets.mind_sear<4)&(!talent.inescapable_torment|"
+      "cooldown.fiend."
+      "remains>=10)|(pet.fiend.active&talent.inescapable_torment&spell_targets.mind_sear<=7)|buff.deathspeaker.up&("
+      "cooldown.fiend."
       "remains+gcd.max)>buff.deathspeaker.remains" );
   main->add_action(
       "vampiric_touch,target_if=(refreshable&target.time_to_die>=18&(dot.vampiric_touch.ticking|!variable.vts_applied)&"
@@ -165,7 +169,8 @@ void shadow( player_t* p )
   main->add_action( "devouring_plague,if=buff.voidform.up&variable.dots_up&variable.dp_cutoff" );
   main->add_action( "void_torrent,if=insanity<=35,target_if=variable.dots_up" );
   main->add_action(
-      "mind_blast,if=raid_event.movement.in>cast_time+0.5&(!variable.sfp|!cooldown.fiend.up&variable.sfp|variable.vts_"
+      "mind_blast,if=raid_event.movement.in>cast_time+0.5&(!talent.inescapable_torment|!cooldown.fiend.up&talent."
+      "inescapable_torment|variable.vts_"
       "applied)" );
   main->add_action( "vampiric_touch,if=buff.unfurling_darkness.up" );
   main->add_action(
@@ -177,9 +182,8 @@ void shadow( player_t* p )
   main->add_action( "divine_star,if=spell_targets.divine_star>1", "Use when it will hit at least 2 targets." );
   main->add_action( "lights_judgment,if=!raid_event.adds.exists|raid_event.adds.in>75" );
   main->add_action(
-      "mind_spike,if=buff.surge_of_darkness.up|!conduit.dissonant_echoes&(!talent.mental_decay|dot.vampiric_touch."
-      "remains>=(cooldown.shadow_crash.remains+action.shadow_crash.travel_time))&(talent.mind_melt|!talent.idol_of_"
-      "cthun)" );
+      "mind_spike,if=buff.surge_of_darkness.up|(!talent.mental_decay|dot.vampiric_touch.remains>=(cooldown.shadow_"
+      "crash.remains+action.shadow_crash.travel_time))&(talent.mind_melt|!talent.idol_of_cthun)" );
   main->add_action( "mind_flay,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2" );
   main->add_action( "shadow_crash,if=raid_event.adds.in>30",
                     "Use Shadow Crash while moving as a low-priority action when adds will not come in 30 seconds." );
@@ -230,8 +234,6 @@ void discipline( player_t* p )
   def->add_action( "shadow_covenant" );
   def->add_action( "schism" );
   def->add_action( "mindgames" );
-  def->add_action( "fae_guardians" );
-  def->add_action( "unholy_nova" );
   def->add_action( "mindbender" );
   def->add_action( "spirit_shell" );
   def->add_action( "purge_the_wicked,if=!ticking" );

@@ -5,7 +5,7 @@ level=70
 race=orc
 role=spell
 position=ranged_back
-class_talents=dispel_magic:1/improved_flash_heal:1/purify_disease:1/from_darkness_comes_light:1/angelic_feather:1/death_and_madness:1/leap_of_faith:1/shackle_undead:1/dominate_mind:1/mass_dispel:1/power_infusion:1/vampiric_embrace:1/tithe_evasion:1/body_and_soul:1/twins_of_the_sun_priestess:1/sanlayn:1/unwavering_will:2/twist_of_fate:2/throes_of_pain:2/angels_mercy:1/halo:1/translucent_image:1/mindgames:1/lights_inspiration:2/manipulation:2/shattered_perceptions:1/
+class_talents=dispel_magic:1/improved_flash_heal:1/protective_light:1/angelic_feather:1/phantasm:1/death_and_madness:1/leap_of_faith:1/dominate_mind:1/mass_dispel:1/power_infusion:1/vampiric_embrace:1/tithe_evasion:1/improved_mass_dispel:1/body_and_soul:1/twins_of_the_sun_priestess:1/sanlayn:1/twist_of_fate:2/throes_of_pain:2/halo:1/translucent_image:1/mindgames:1/lights_inspiration:2/improved_fade:2/manipulation:2/angelic_bulwark:1/shattered_perceptions:1
 spec_talents=devouring_plague:1/dispersion:1/shadowy_apparitions:1/silence:1/mental_fortitude:1/misery:1/coalescing_shadows:1/mind_spike:1/puppet_master:1/mental_decay:1/dark_ascension:1/surge_of_darkness:1/harnessed_shadows:1/shadowy_insight:1/ancient_madness:2/shadow_crash:1/dark_evangelism:2/auspicious_spirits:1/mindbender:1/mind_flay_insanity:1/encroaching_shadows:1/inescapable_torment:2/screams_of_the_void:2/mind_devourer:1/idol_of_yshaarj:1/idol_of_cthun:1
 
 # Default consumables
@@ -45,7 +45,6 @@ actions+=/variable,name=max_vts,op=set,value=(spell_targets.mind_sear<=5)*spell_
 actions+=/variable,name=is_vt_possible,op=set,value=0,default=1
 actions+=/variable,name=is_vt_possible,op=set,value=1,target_if=max:(target.time_to_die*dot.vampiric_touch.refreshable),if=target.time_to_die>=18
 actions+=/variable,name=vts_applied,op=set,value=active_dot.vampiric_touch>=variable.max_vts|!variable.is_vt_possible
-actions+=/variable,name=sfp,op=set,value=runeforge.shadowflame_prism.equipped|talent.inescapable_torment
 actions+=/variable,name=pool_for_cds,op=set,value=(cooldown.void_eruption.remains<=gcd.max*3&talent.void_eruption|cooldown.dark_ascension.up&talent.dark_ascension)
 actions+=/variable,name=dp_cutoff,op=set,value=!talent.mind_sear|(spell_targets.mind_sear<=variable.mind_sear_cutoff&(!buff.mind_devourer.up|spell_targets.mind_sear=1))
 actions+=/fireblood,if=buff.power_infusion.up|fight_remains<=8
@@ -56,24 +55,25 @@ actions+=/variable,name=pool_amount,op=set,value=60
 actions+=/run_action_list,name=main
 
 actions.cds=power_infusion,if=(buff.voidform.up|buff.dark_ascension.up)
-actions.cds+=/void_eruption,if=!cooldown.fiend.up&(pet.fiend.active|!talent.mindbender|covenant.night_fae)&(cooldown.mind_blast.charges=0|time>15|buff.shadowy_insight.up&cooldown.mind_blast.charges=buff.shadowy_insight.stack)
-actions.cds+=/dark_ascension,if=pet.fiend.active&cooldown.mind_blast.charges<2|!talent.mindbender&!cooldown.fiend.up|covenant.night_fae&cooldown.fiend.remains>=15&cooldown.fae_guardians.remains>=4*gcd.max
+actions.cds+=/void_eruption,if=!cooldown.fiend.up&(pet.fiend.active|!talent.mindbender)&(cooldown.mind_blast.charges=0|time>15|buff.shadowy_insight.up&cooldown.mind_blast.charges=buff.shadowy_insight.stack)
+actions.cds+=/dark_ascension,if=pet.fiend.active&cooldown.mind_blast.charges<2|!talent.mindbender&!cooldown.fiend.up&cooldown.fiend.remains>=15
 actions.cds+=/call_action_list,name=trinkets
-actions.cds+=/unholy_nova,if=dot.shadow_word_pain.ticking&variable.vts_applied|action.shadow_crash.in_flight
-actions.cds+=/fae_guardians,if=(dot.shadow_word_pain.ticking&variable.vts_applied|action.shadow_crash.in_flight)&(!talent.void_eruption|buff.voidform.up&!cooldown.void_bolt.up&cooldown.mind_blast.full_recharge_time>gcd.max|!cooldown.void_eruption.up)
 actions.cds+=/mindbender,if=(dot.shadow_word_pain.ticking&variable.vts_applied|action.shadow_crash.in_flight)
 actions.cds+=/desperate_prayer,if=health.pct<=75
 
 actions.main=call_action_list,name=cds
-actions.main+=/shadow_word_death,if=pet.fiend.active&variable.sfp&(pet.fiend.remains<=gcd|target.health.pct<20)&spell_targets.mind_sear<=7
-actions.main+=/mind_blast,if=(cooldown.mind_blast.full_recharge_time<=gcd.max|pet.fiend.remains<=cast_time+gcd.max)&pet.fiend.active&variable.sfp&pet.fiend.remains>cast_time&spell_targets.mind_sear<=7
+# Use Mind Blast when capped on charges and talented into Mind Devourer to fish for the buff. Only use when facing 3-7 targets.
+actions.main+=/mind_blast,if=cooldown.mind_blast.charges>=2&talent.mind_devourer&spell_targets.mind_sear>=3&spell_targets.mind_sear<=7&!buff.mind_devourer.up
+actions.main+=/shadow_word_death,if=pet.fiend.active&talent.inescapable_torment&(pet.fiend.remains<=gcd|target.health.pct<20)&spell_targets.mind_sear<=7
+actions.main+=/mind_blast,if=(cooldown.mind_blast.full_recharge_time<=gcd.max|pet.fiend.remains<=cast_time+gcd.max)&pet.fiend.active&talent.inescapable_torment&pet.fiend.remains>cast_time&spell_targets.mind_sear<=7
 actions.main+=/damnation,target_if=dot.vampiric_touch.refreshable&variable.is_vt_possible|dot.shadow_word_pain.refreshable
 actions.main+=/void_bolt,if=variable.dots_up&insanity<=85
 # Use Mind Devourer Procs on Mind Sear when facing 2 or more targets or Voidform is active.
 actions.main+=/mind_sear,target_if=(spell_targets.mind_sear>1|buff.voidform.up)&buff.mind_devourer.up
-actions.main+=/mind_sear,target_if=spell_targets.mind_sear>variable.mind_sear_cutoff,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2
+# Use Mind Sear on 3+ targets and either you have at least 75 insanity, 4pc buff is inactive, or 2pc buff is at 3 stacks.
+actions.main+=/mind_sear,target_if=spell_targets.mind_sear>variable.mind_sear_cutoff&(insanity>=75|((!set_bonus.tier29_4pc&!set_bonus.tier29_2pc)|!buff.dark_reveries.up)|(!set_bonus.tier29_2pc|buff.gathering_shadows.stack=3)),chain=1,interrupt_immediate=1,interrupt_if=ticks>=2
 actions.main+=/devouring_plague,if=(refreshable&!variable.pool_for_cds|insanity>75|talent.void_torrent&cooldown.void_torrent.remains<=3*gcd|buff.mind_devourer.up&cooldown.mind_blast.full_recharge_time<=2*gcd.max&!cooldown.void_eruption.up&talent.void_eruption)&variable.dp_cutoff
-actions.main+=/shadow_word_death,target_if=(target.health.pct<20&spell_targets.mind_sear<4)&(!variable.sfp|cooldown.fiend.remains>=10)|(pet.fiend.active&variable.sfp&spell_targets.mind_sear<=7)|buff.deathspeaker.up&(cooldown.fiend.remains+gcd.max)>buff.deathspeaker.remains
+actions.main+=/shadow_word_death,target_if=(target.health.pct<20&spell_targets.mind_sear<4)&(!talent.inescapable_torment|cooldown.fiend.remains>=10)|(pet.fiend.active&talent.inescapable_torment&spell_targets.mind_sear<=7)|buff.deathspeaker.up&(cooldown.fiend.remains+gcd.max)>buff.deathspeaker.remains
 actions.main+=/vampiric_touch,target_if=(refreshable&target.time_to_die>=18&(dot.vampiric_touch.ticking|!variable.vts_applied)&variable.max_vts>0|(talent.misery.enabled&dot.shadow_word_pain.refreshable))&cooldown.shadow_crash.remains>=dot.vampiric_touch.remains&!action.shadow_crash.in_flight
 actions.main+=/shadow_word_pain,target_if=refreshable&target.time_to_die>=18&!talent.misery.enabled
 actions.main+=/mind_blast,if=variable.vts_applied&(!buff.mind_devourer.up|cooldown.void_eruption.up&talent.void_eruption)
@@ -82,7 +82,7 @@ actions.main+=/shadow_crash,if=raid_event.adds.in>10
 actions.main+=/dark_void,if=raid_event.adds.in>20
 actions.main+=/devouring_plague,if=buff.voidform.up&variable.dots_up&variable.dp_cutoff
 actions.main+=/void_torrent,if=insanity<=35,target_if=variable.dots_up
-actions.main+=/mind_blast,if=raid_event.movement.in>cast_time+0.5&(!variable.sfp|!cooldown.fiend.up&variable.sfp|variable.vts_applied)
+actions.main+=/mind_blast,if=raid_event.movement.in>cast_time+0.5&(!talent.inescapable_torment|!cooldown.fiend.up&talent.inescapable_torment|variable.vts_applied)
 actions.main+=/vampiric_touch,if=buff.unfurling_darkness.up
 actions.main+=/mind_flay,if=buff.mind_flay_insanity.up&variable.dots_up&(!buff.surge_of_darkness.up|talent.screams_of_the_void)
 # Use Halo if all DoTS are active and you are not in Voidform or it will hit at least 2 targets. Save up to 20s if adds are coming soon.
@@ -90,7 +90,7 @@ actions.main+=/halo,if=raid_event.adds.in>20&(spell_targets.halo>1|(variable.all
 # Use when it will hit at least 2 targets.
 actions.main+=/divine_star,if=spell_targets.divine_star>1
 actions.main+=/lights_judgment,if=!raid_event.adds.exists|raid_event.adds.in>75
-actions.main+=/mind_spike,if=buff.surge_of_darkness.up|!conduit.dissonant_echoes&(!talent.mental_decay|dot.vampiric_touch.remains>=(cooldown.shadow_crash.remains+action.shadow_crash.travel_time))&(talent.mind_melt|!talent.idol_of_cthun)
+actions.main+=/mind_spike,if=buff.surge_of_darkness.up|(!talent.mental_decay|dot.vampiric_touch.remains>=(cooldown.shadow_crash.remains+action.shadow_crash.travel_time))&(talent.mind_melt|!talent.idol_of_cthun)
 actions.main+=/mind_flay,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2
 # Use Shadow Crash while moving as a low-priority action when adds will not come in 30 seconds.
 actions.main+=/shadow_crash,if=raid_event.adds.in>30
@@ -129,7 +129,7 @@ main_hand=final_grade,id=193707,ilevel=372,enchant=sophic_devotion_2
 
 # Gear Summary
 # gear_ilvl=372.00
-# gear_stamina=6851
+# gear_stamina=6827
 # gear_intellect=4527
 # gear_crit_rating=1461
 # gear_haste_rating=3965

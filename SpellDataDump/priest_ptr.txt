@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46702 Live (hotfix 2022-11-22/46702)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46741 Live (hotfix 2022-11-27/46741, git build add_paladin_buff 76f8ceaf67)
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -1385,6 +1385,7 @@ Spell Type       : None
 Proc Chance      : 100%
 Proc Flags       : ........ ..x...x. ..x..x.. ........ 
                  : Generic Heal, Magic Heal, Periodic, Trap Triggered
+Family Flags     : 82
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x...x. 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -1582,8 +1583,7 @@ School           : Holy
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 15 seconds
-Affecting spells : Shadow Covenant (322105 effect#1), Malicious Intent (372969 effect#1), Twilight Equilibrium (390707 effect#1), Light Weaving (394609 effect#1)
-Family Flags     : 56
+Family Flags     : 82
 Attributes       : ........ ........ x.x..... ...x....   ........ ..x..... ........ ........ 
                  : ........ ........ ...x.x.. ........   ........ ........ ........ ..x...x. 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
@@ -2430,6 +2430,7 @@ Class            : Priest
 School           : Physical
 Spell Type       : None
 Spell Level      : 27
+Requires armor   : Cloth Head, Shoulders, Chest, Waist, Legs, Feet, Wrists, Hands, Robe
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -9279,7 +9280,7 @@ Attributes       : ........ ........ x....... .......x   ........ ........ .....
 Effects          :
 #1 (id=810243)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Shadow Word: Pain (589), Mind Blast (8092), Shadow Word: Death (32379), Divine Aegis (47753), Mind Sear (48045), Mind Sear (49821), Schism (214621), Mindgames (323673), Painbreaker Psalm (336167), Mind Sear (344754), Mindgames (375901), Mind Sear (394976)
+                   Affected Spells: Shadow Word: Pain (589), Mind Blast (8092), Shadow Word: Death (32379), Mind Sear (48045), Mind Sear (49821), Schism (214621), Mindgames (323673), Painbreaker Psalm (336167), Mind Sear (344754), Mindgames (375901), Mind Sear (394976)
                    Family Flags: 13, 15, 33, 52, 56, 65, 84
 #2 (id=810244)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
@@ -12812,7 +12813,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=997896)   : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 6000 | Scaled Value: 6000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
-                   Affected Spells: Divine Aegis (47753), Schism (214621)
+                   Affected Spells: Schism (214621)
                    Family Flags: 56
 Description      : Increases the duration of Schism by ${$s1/1000} sec.
 
@@ -13130,12 +13131,15 @@ Effects          :
 Description      : Invoke the Light's wrath, dealing $s1 Radiant damage to the target, increased by $s2% per ally affected by your Atonement.
 
 Name             : Harsh Discipline (id=373180) [Spell Family (6), Passive, Hidden] 
+Hotfixed         : Proc Flags (0 -> 65536)
 Talent Entry     : Discipline [tree=spec, row=9, col=4, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(8, 4)]
 Class            : Priest
 School           : Holy
 Spell Type       : None
 Proc Chance      : 100%
+Proc Flags       : ........ ........ x....... ........ 
+                 : Magic Hostile Spell
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -14713,6 +14717,8 @@ Spell Type       : None
 Duration         : 6 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
+Proc Flags       : ........ ......x. x....... ........ 
+                 : Magic Heal, Magic Hostile Spell
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -14737,6 +14743,8 @@ Spell Type       : None
 Duration         : 6 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
+Proc Flags       : ........ ......x. x....... ........ 
+                 : Magic Heal, Magic Hostile Spell
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -14749,7 +14757,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1027719)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Mind Blast (8092), Shadow Word: Death (32379), Divine Aegis (47753), Schism (214621), Mindgames (323673), Painbreaker Psalm (336167), Mindgames (375901)
+                   Affected Spells: Mind Blast (8092), Shadow Word: Death (32379), Schism (214621), Mindgames (323673), Painbreaker Psalm (336167), Mindgames (375901)
                    Family Flags: 13, 33, 56, 84
 Description      : $@spelldesc390705
 Tooltip          : The damage of your next Shadow spell is increased by $s1%.
@@ -16640,7 +16648,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
 Effects          :
 #1 (id=1034427)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Smite (585), Flash Heal (2061), Mind Blast (8092), Desperate Prayer (19236), Shadow Word: Death (32379), Penance (47666), Penance (47750), Divine Aegis (47753), Power Word: Solace (129250), Holy Nova (132157), Power Word: Radiance (194509), Schism (214621), Holy Nova (281265), Mindgames (323673), Painbreaker Psalm (336167), Dark Reprimand (373130), Light's Wrath (373178), Power Word: Life (373481), Mindgames (375901)
+                   Affected Spells: Smite (585), Flash Heal (2061), Mind Blast (8092), Desperate Prayer (19236), Shadow Word: Death (32379), Penance (47666), Penance (47750), Power Word: Solace (129250), Holy Nova (132157), Power Word: Radiance (194509), Schism (214621), Holy Nova (281265), Mindgames (323673), Painbreaker Psalm (336167), Dark Reprimand (373130), Light's Wrath (373178), Power Word: Life (373481), Mindgames (375901)
                    Family Flags: 7, 11, 13, 22, 24, 26, 33, 41, 47, 48, 49, 56, 79, 84, 108
 Description      : $@spelldesc393679
 Tooltip          : Next direct damage or healing spell increased by $s1%.

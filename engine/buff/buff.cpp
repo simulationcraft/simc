@@ -3359,6 +3359,11 @@ bool movement_buff_t::trigger( int stacks, double value, double chance, timespan
     }
   }
 
+  if ( player->buffs.static_empowerment )
+  {
+    player->buffs.static_empowerment->expire();
+  }
+
   return buff_t::trigger( stacks, value, chance, duration );
 }
 

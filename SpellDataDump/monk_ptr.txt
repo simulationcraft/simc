@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46702 Live (hotfix 2022-11-22/46702)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46741 Live (hotfix 2022-11-27/46741, git build add_paladin_buff 76f8ceaf67)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -2254,6 +2254,7 @@ Class            : Mistweaver Monk
 School           : Physical
 Spell Type       : None
 Spell Level      : 27
+Requires armor   : Leather Head, Shoulders, Chest, Waist, Legs, Feet, Wrists, Hands, Robe
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2273,6 +2274,7 @@ Class            : Brewmaster Monk
 School           : Physical
 Spell Type       : None
 Spell Level      : 27
+Requires armor   : Leather Head, Shoulders, Chest, Waist, Legs, Feet, Wrists, Hands, Robe
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2292,6 +2294,7 @@ Class            : Windwalker Monk
 School           : Physical
 Spell Type       : None
 Spell Level      : 27
+Requires armor   : Leather Head, Shoulders, Chest, Waist, Legs, Feet, Wrists, Hands, Robe
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -16163,7 +16166,7 @@ Range            : 100 yards
 Duration         : Aura (infinite)
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Attributes       : ....x... ........ ..x..... x..x.x.x   .....x.. ..xx.... .x...... ........ 
+Attributes       : ....x... ........ ..x..... x..x.x.x   .....x.. ..x..... .x...... ........ 
                  : x....... x.....x. ...x.... ....x...   ........ ........ xx..x... ..x..... 
                  : x......x ........ ....xx.. ........   ...x.... ........ .xx..... ........ 
                  : ..x..... ..x.x... ........ ........   ........ ........ ........ ......x. 
@@ -16171,7 +16174,7 @@ Attributes       : ....x... ........ ..x..... x..x.x.x   .....x.. ..xx.... .x...
                  : x....... ........ ......x. ........   ........ ........ ........ ..xx.... 
                  : ........ ........ ........ ........   xx...... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Is Ability (4), Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), Aura Unique (43), No AutoCast (AI) (49), Allow Dead Target (64), Include In Advanced Combat Log (72), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Can Proc From Procs (122), No Cast Log (128), Allow Cast While Casting (135), Aura Never Bounces (148), Allow Entering Arena (149), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Not an Attack (194), No Aura Log (202), Allow While Riding Vehicle (204), Can Proc From Suppressed Target Procs (254), Aura Points On Client (268), Do Not Log Aura Refresh (291), Allow Cast While Channeling (308), Bypass Visibility Check (320), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Don't close loot window (379), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
+                 : Is Ability (4), Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), No AutoCast (AI) (49), Allow Dead Target (64), Include In Advanced Combat Log (72), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Can Proc From Procs (122), No Cast Log (128), Allow Cast While Casting (135), Aura Never Bounces (148), Allow Entering Arena (149), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Not an Attack (194), No Aura Log (202), Allow While Riding Vehicle (204), Can Proc From Suppressed Target Procs (254), Aura Points On Client (268), Do Not Log Aura Refresh (291), Allow Cast While Channeling (308), Bypass Visibility Check (320), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Don't close loot window (379), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1026080)  : Apply Aura (6) | Modify Healing Recevied% (118)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Friend (21)
@@ -16186,7 +16189,7 @@ Range            : 100 yards
 Duration         : Aura (infinite)
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Attributes       : ....x... ........ ..x..... x..x.x.x   .....x.. ..xx.... .x...... ........ 
+Attributes       : ....x... ........ ..x..... x..x.x.x   .....x.. ..x..... .x...... ........ 
                  : x....... x.....x. ...x.... ....x...   ........ ........ xx..x... ..x..... 
                  : x......x ........ ....xx.. ........   ...x.... ........ .xx..... ........ 
                  : ..x..... ..x.x... ........ ........   ........ ........ ........ ......x. 
@@ -16194,7 +16197,7 @@ Attributes       : ....x... ........ ..x..... x..x.x.x   .....x.. ..xx.... .x...
                  : x....... ........ ......x. ........   ........ ........ ........ ..xx.... 
                  : ........ ........ ........ ........   xx...... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Is Ability (4), Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), Aura Unique (43), No AutoCast (AI) (49), Allow Dead Target (64), Include In Advanced Combat Log (72), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Can Proc From Procs (122), No Cast Log (128), Allow Cast While Casting (135), Aura Never Bounces (148), Allow Entering Arena (149), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Not an Attack (194), No Aura Log (202), Allow While Riding Vehicle (204), Can Proc From Suppressed Target Procs (254), Aura Points On Client (268), Do Not Log Aura Refresh (291), Allow Cast While Channeling (308), Bypass Visibility Check (320), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Don't close loot window (379), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
+                 : Is Ability (4), Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), No AutoCast (AI) (49), Allow Dead Target (64), Include In Advanced Combat Log (72), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Can Proc From Procs (122), No Cast Log (128), Allow Cast While Casting (135), Aura Never Bounces (148), Allow Entering Arena (149), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Not an Attack (194), No Aura Log (202), Allow While Riding Vehicle (204), Can Proc From Suppressed Target Procs (254), Aura Points On Client (268), Do Not Log Aura Refresh (291), Allow Cast While Channeling (308), Bypass Visibility Check (320), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Don't close loot window (379), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1026081)  : Apply Aura (6) | Modify AoE Damage Taken% (229)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Friend (21)
@@ -17185,6 +17188,10 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1032755)  : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=1043958)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Max Stacks (37)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 37 | Misc Value 2: 2435 (Label) | Target: Self (1)
+                   Affected Spells (Label): Kicks of Flowing Momentum (394944)
+Hotfixed         : NEW EFFECT
 Description      : Fists of Fury now instead enhances your next $s1 Rising Sun Kicks or Spinning Crane Kicks and enhanced kicks increase the damage of your next Fists of Fury by $394949s1%, stacking up to 3 times.
 
 Name             : Chi Surge (id=393786) 
@@ -17372,11 +17379,13 @@ Description      : Touch of Death strikes up to $s1 additional nearby $Ltarget;t
 Tooltip          : Touch of Death strikes up to $s1 additional nearby $Ltarget;targets.
 
 Name             : Kicks of Flowing Momentum (id=394944) [Spell Family (53)] 
+Hotfixed         : Max stacks (3 -> 2)
 Class            : Monk
 School           : Nature
 Spell Type       : None
 Duration         : 30 seconds
-Stacks           : 1 initial, 3 maximum
+Labels           : 2435: Monk Windwalker Class Set 4pc (393668 effect#2)
+Stacks           : 1 initial, 2 maximum
 Proc Chance      : 100%
 Proc Flags       : ....x... ....x... ........ ........ 
                  : Yellow Melee, Generic Hostile Spell

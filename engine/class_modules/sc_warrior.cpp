@@ -2782,7 +2782,7 @@ struct bloodthirst_t : public warrior_attack_t
 
     if ( p()->talents.fury.bloodcraze->ok() )
     {
-      p()->buff.bloodcraze->trigger( num_targets_hit );
+      p()->buff.bloodcraze->trigger();
     }
 
     p()->buff.meat_cleaver->decrement();
@@ -2902,7 +2902,7 @@ struct bloodbath_t : public warrior_attack_t
 
     if ( p()->talents.fury.bloodcraze->ok() )
     {
-      p()->buff.bloodcraze->trigger( num_targets_hit );
+      p()->buff.bloodcraze->trigger();
     }
 
     p()->buff.reckless_abandon->decrement();
@@ -4605,6 +4605,10 @@ struct overpower_t : public warrior_attack_t
     parse_options( options_str );
     may_block = may_parry = may_dodge = false;
     weapon                            = &( p->main_hand_weapon );
+    if ( p->talents.arms.battlelord->ok() )
+    {
+      base_multiplier *= 1.0 + p->talents.arms.overpower->effectN( 2 ).percent(); // stand in for new BL effect
+    }
 
     if ( p->talents.arms.dreadnaught->ok() )
     {
@@ -5357,8 +5361,20 @@ struct shield_charge_damage_t : public warrior_attack_t
 
     if ( p()->talents.protection.champions_bulwark->ok() )
     {
+    if ( p()->buff.shield_block->check() )
+    {
+      p()->buff.shield_block->extend_duration( p(), p() -> buff.shield_block->buff_duration() );
+    }
+    else
+    {
       p()->buff.shield_block->trigger();
+    }
       p()->buff.revenge->trigger();
+    }
+
+    if ( p()->talents.protection.battering_ram->ok() )
+    {
+      p()->buff.battering_ram->trigger();
     }
 
     p()->resource_gain( RESOURCE_RAGE, rage_gain, p() -> gain.shield_charge );
@@ -9216,7 +9232,9 @@ void warrior_t::create_buffs()
 
 
   buff.elysian_might = make_buff( this, "elysian_might", find_spell( 386286 ) )
-     ->set_default_value( find_spell( 386286 )->effectN( 1 ).percent() );
+     ->set_default_value( find_spell( 386286 )->effectN( 1 ).percent() )
+     ->set_duration( find_spell( 376080 )->duration() +
+                     talents.warrior.elysian_might->effectN( 1 ).trigger()->effectN( 1 ).time_value() );
 
   buff.enrage = make_buff( this, "enrage", find_spell( 184362 ) )
      ->add_invalidate( CACHE_ATTACK_HASTE )
@@ -9283,6 +9301,8 @@ void warrior_t::create_buffs()
   buff.reckless_abandon = make_buff( this, "reckless_abandon", find_spell( 396752 ) );
 
   buff.sudden_death = make_buff( this, "sudden_death", specialization() == WARRIOR_FURY ? talents.fury.sudden_death : specialization() == WARRIOR_ARMS ? talents.arms.sudden_death : talents.protection.sudden_death );
+    if ( tier_set.t29_fury_4pc->ok() )
+    buff.sudden_death->set_rppm( RPPM_NONE, -1, 2.5 ); // hardcode unsupported type 8 modifier
 
   buff.shield_block = make_buff( this, "shield_block", spell.shield_block_buff )
     ->set_duration( spell.shield_block_buff->duration() + talents.protection.enduring_defenses->effectN( 1 ).time_value() )

@@ -5,8 +5,8 @@ default_actions=1
 ptr=1
 
 # PR_Death_Knight_Blood.simc
-# PR_Death_Knight_Frost.simc
-# PR_Death_Knight_Unholy.simc
+PR_Death_Knight_Frost.simc
+PR_Death_Knight_Unholy.simc
 
 # PR_Demon_Hunter_Havoc.simc
 # PR_Demon_Hunter_Vengeance.simc
@@ -39,7 +39,8 @@ PR_Priest_Shadow.simc
 # PR_Rogue_Subtlety.simc
 
 # PR_Shaman_Elemental.simc
-# PR_Shaman_Enhancement.simc
+PR_Shaman_Enhancement.simc
+PR_Shaman_Enhancement_Phys.simc
 
 # PR_Warlock_Affliction.simc
 # PR_Warlock_Demonology.simc

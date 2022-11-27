@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46702 Live (hotfix 2022-11-22/46702)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46741 Live (hotfix 2022-11-27/46741, git build add_paladin_buff 76f8ceaf67)
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -1927,6 +1927,7 @@ Class            : Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 27
+Requires armor   : Mail Head, Shoulders, Chest, Waist, Legs, Feet, Wrists, Hands, Robe
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 

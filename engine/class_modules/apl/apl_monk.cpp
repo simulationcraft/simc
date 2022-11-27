@@ -11,25 +11,31 @@ std::string potion( const player_t* p )
   switch ( p->specialization() )
   {
     case MONK_BREWMASTER:
-      if ( p->true_level >= 60 )
+      if ( p->true_level > 60 )
+        return "elemental_potion_of_ultimate_power_3";
+      else if ( p->true_level > 50 )
         return "phantom_fire";
-      else if ( p->true_level >= 50 )
+      else if ( p->true_level > 45 )
         return "unbridled_fury";
       else
         return "disabled";
       break;
     case MONK_MISTWEAVER:
-      if ( p->true_level >= 60 )
+      if ( p->true_level > 60 )
+        return "elemental_potion_of_ultimate_power_3";
+      else if ( p->true_level > 50 )
         return "potion_of_spectral_intellect";
-      else if ( p->true_level >= 50 )
+      else if ( p->true_level > 45 )
         return "superior_battle_potion_of_intellect";
       else
         return "disabled";
       break;
     case MONK_WINDWALKER:
-      if ( p->true_level >= 60 )
+      if ( p->true_level > 60 )
+        return "elemental_potion_of_ultimate_power_3";
+      else if ( p->true_level > 50 )
         return "potion_of_spectral_agility";
-      else if ( p->true_level >= 50 )
+      else if ( p->true_level > 45 )
         return "unbridled_fury";
       else
         return "disabled";
@@ -45,25 +51,31 @@ std::string flask( const player_t* p )
   switch ( p->specialization() )
   {
     case MONK_BREWMASTER:
-      if ( p->true_level >= 60 )
+      if ( p->true_level > 60 )
+        return "phial_of_static_empowerment_3";
+      else if ( p->true_level > 50 )
         return "spectral_flask_of_power";
-      else if ( p->true_level >= 50 )
+      else if ( p->true_level > 45 )
         return "currents";
       else
         return "disabled";
       break;
     case MONK_MISTWEAVER:
-      if ( p->true_level >= 60 )
+      if ( p->true_level > 60 )
+        return "phial_of_elemental_chaos_3";
+      else if ( p->true_level > 50 )
         return "spectral_flask_of_power";
-      else if ( p->true_level >= 50 )
+      else if ( p->true_level > 45 )
         return "greater_flask_of_endless_fathoms";
       else
         return "disabled";
       break;
     case MONK_WINDWALKER:
-      if ( p->true_level >= 60 )
+      if ( p->true_level > 60 )
+        return "phial_of_static_empowerment_3";
+      else if ( p->true_level > 50 )
         return "spectral_flask_of_power";
-      else if ( p->true_level >= 50 )
+      else if ( p->true_level > 45 )
         return "greater_flask_of_the_currents";
       else
         return "disabled";
@@ -79,25 +91,31 @@ std::string food( const player_t* p )
   switch ( p->specialization() )
   {
     case MONK_BREWMASTER:
-      if ( p->true_level >= 60 )
+      if ( p->true_level > 60 )
+        return "fated_fortune_cookie";
+      else if ( p->true_level > 50 )
         return "spinefin_souffle_and_fries";
-      else if ( p->true_level >= 50 )
+      else if ( p->true_level > 45 )
         return "biltong";
       else
         return "disabled";
       break;
     case MONK_MISTWEAVER:
-      if ( p->true_level >= 60 )
+      if ( p->true_level > 60 )
+        return "roast_duck_delight";
+      else if ( p->true_level > 50 )
         return "feast_of_gluttonous_hedonism";
-      else if ( p->true_level >= 50 )
+      else if ( p->true_level > 45 )
         return "famine_evaluator_and_snack_table";
       else
         return "disabled";
       break;
     case MONK_WINDWALKER:
-      if ( p->true_level >= 60 )
+      if ( p->true_level > 60 )
+        return "fated_fortune_cookie";
+      else if ( p->true_level > 50 )
         return "feast_of_gluttonous_hedonism";
-      else if ( p->true_level >= 50 )
+      else if ( p->true_level > 45 )
         return "mechdowels_big_mech";
       else
         return "disabled";
@@ -110,11 +128,13 @@ std::string food( const player_t* p )
 
 std::string rune( const player_t* p )
 {
-  if ( p->true_level >= 60 )
+  if ( p->true_level > 60 )
+    return "draconic";
+  else if ( p->true_level > 50 )
     return "veiled";
-  else if ( p->true_level >= 50 )
+  else if ( p->true_level > 45 )
     return "battle_scarred";
-  else if ( p->true_level >= 45 )
+  else if ( p->true_level > 40 )
     return "defiled";
   return "disabled";
 }
@@ -132,13 +152,17 @@ std::string temporary_enchant( const player_t* p )
         return "disabled";
       break;
     case MONK_MISTWEAVER:
-      if ( p->true_level > 50 )
+      if ( p->true_level > 60 )
+        return "main_hand:howling_rune_3";
+      else if ( p->true_level > 50 )
         return "main_hand:shadowcore_oil";
       else
         return "disabled";
       break;
     case MONK_WINDWALKER:
-      if ( p->true_level > 50 )
+      if ( p->true_level > 60 )
+        return "main_hand:primal_whetstone_3/off_hand:primal_whetstone_3";
+      else if ( p->true_level > 50 )
         return "main_hand:shaded_weightstone/off_hand:shaded_weightstone";
       else
         return "disabled";
@@ -177,10 +201,7 @@ void brewmaster( player_t* p )
 
   pre->add_action( "potion" );
 
-  pre->add_action( "fleshcraft" );
-
-  // TODO: Remove Covenant after Pre-patch
-  pre->add_action( "chi_burst,if=talent.chi_burst.enabled&!covenant.night_fae" );
+  pre->add_action( "chi_burst,if=talent.chi_burst.enabled" );
   pre->add_action( "chi_wave,if=talent.chi_wave.enabled" );
 
   // ---------------------------------
@@ -199,10 +220,7 @@ void brewmaster( player_t* p )
   // Base DPS Cooldowns
   def->add_action( "summon_white_tiger_statue,if=talent.summon_white_tiger_statue.enabled", "Base DPS Cooldowns" );
   def->add_action( "touch_of_death" );
-  // TODO: Remove Covenant after Pre-patch
-  def->add_action( "bonedust_brew,if=!debuff.bonedust_brew_debuff.up&(talent.bonedust_brew.enabled|covenant.necrolord)" );
-  def->add_action( "faeline_stomp,if=covenant.night_fae" );
-  def->add_action( "fallen_order,if=covenant.venthyr" );
+  def->add_action( "bonedust_brew,if=!debuff.bonedust_brew_debuff.up&talent.bonedust_brew.enabled" );
 
   // On-Use Effects
   if ( p->items[ SLOT_MAIN_HAND ].name_str == "jotungeirr_destinys_call" )
@@ -249,8 +267,6 @@ void brewmaster( player_t* p )
   def->add_action( "call_action_list,name=rotation_fallback,if=!talent.salsalabims_strength.enabled|!talent.charred_passions.enabled",
                    "Fallback Rotation" );
 
- def->add_action( "fleshcraft,if=soulbind.volatile_solvent.enabled" );
-
   // ---------------------------------
   // DPS COOLDOWNS
   // ---------------------------------
@@ -259,13 +275,10 @@ void brewmaster( player_t* p )
   // Invoke Niuzao, Invoke Niuzao Rank 2, Weapons of Order, Weapons of Order - Call to Arms, Purifying Brew
 
   // Name: Niuzao + Weapons of Order / Niuzao + Call to Arms
-  // TODO: Remove Covenant after Pre-patch
-  cooldowns_niuzao_woo->add_action( "weapons_of_order,if=talent.weapons_of_order.enabled|covenant.kyrian", 
+  cooldowns_niuzao_woo->add_action( "weapons_of_order,if=talent.weapons_of_order.enabled", 
       "Name: Niuzao + Weapons of Order / Niuzao + Call to Arms" );
-  // TODO: Remove Covenant after Pre-patch
-  cooldowns_niuzao_woo->add_action( "invoke_niuzao_the_black_ox,if=talent.invoke_niuzao_the_black_ox.enabled&buff.weapons_of_order.remains<=16&(talent.weapons_of_order.enabled|covenant.kyrian)" );
-  // TODO: Remove Covenant after Pre-patch
-  cooldowns_niuzao_woo->add_action( "invoke_niuzao_the_black_ox,if=talent.invoke_niuzao_the_black_ox.enabled&!talent.weapons_of_order.enabled&!covenant.kyrian" );
+  cooldowns_niuzao_woo->add_action( "invoke_niuzao_the_black_ox,if=talent.invoke_niuzao_the_black_ox.enabled&buff.weapons_of_order.remains<=16&talent.weapons_of_order.enabled" );
+  cooldowns_niuzao_woo->add_action( "invoke_niuzao_the_black_ox,if=talent.invoke_niuzao_the_black_ox.enabled&!talent.weapons_of_order.enabled" );
   cooldowns_niuzao_woo->add_action( "purifying_brew,if=talent.purifying_brew.enabled&stagger.amounttototalpct>=0.7&!buff.blackout_combo.up" );
   cooldowns_niuzao_woo->add_action( "purifying_brew,if=talent.purifying_brew.enabled&cooldown.purifying_brew.remains_expected<5&!buff.blackout_combo.up" );
 
@@ -319,8 +332,7 @@ void brewmaster( player_t* p )
   cooldowns_improved_niuzao_woo->add_action( "variable,name=pb_in_window,op=set,value=floor(cooldown.purifying_brew.charges_fractional+(20+4*0.05)%cooldown.purifying_brew.duration%0.65),if=prev.invoke_niuzao_the_black_ox" );
   cooldowns_improved_niuzao_woo->add_action( "purifying_brew,if=talent.purifying_brew.enabled&(time-action.purifying_brew.last_used>=20+4*0.05-time+action.invoke_niuzao_the_black_ox.last_used%variable.pb_in_window&time-action.invoke_niuzao_the_black_ox.last_used<=20+4*0.05)" );
   cooldowns_improved_niuzao_woo->add_action( "purifying_brew,use_off_gcd=1,if=talent.purifying_brew.enabled&(variable.pb_in_window=0&20+4*0.05-time+action.invoke_niuzao_the_black_ox.last_used<1&20+4*0.05-time+action.invoke_niuzao_the_black_ox.last_used>0)" );
-  // TODO: Remove Covenant after Pre-patch
-  cooldowns_improved_niuzao_woo->add_action( "weapons_of_order,if=talent.weapons_of_order.enabled|covenant.kyrian" );
+  cooldowns_improved_niuzao_woo->add_action( "weapons_of_order,if=talent.weapons_of_order.enabled" );
   cooldowns_improved_niuzao_woo->add_action( "purifying_brew,if=talent.purifying_brew.enabled&cooldown.invoke_niuzao_the_black_ox.remains<=3.5&time-action.purifying_brew.last_used>=3.5+cooldown.invoke_niuzao_the_black_ox.remains" );
   cooldowns_improved_niuzao_woo->add_action( "invoke_niuzao_the_black_ox,if=talent.invoke_niuzao_the_black_ox.enabled&time-action.purifying_brew.last_used<=5" );
   cooldowns_improved_niuzao_woo->add_action( "purifying_brew,if=talent.purifying_brew.enabled&cooldown.purifying_brew.full_recharge_time*2<=cooldown.invoke_niuzao_the_black_ox.remains-3.5" );
@@ -334,8 +346,7 @@ void brewmaster( player_t* p )
   cooldowns_improved_niuzao_cta->add_action( "purifying_brew,if=talent.purifying_brew.enabled&(time-action.purifying_brew.last_used>=20+4*0.05-time+action.invoke_niuzao_the_black_ox.last_used%variable.pb_in_window&time-action.invoke_niuzao_the_black_ox.last_used<=20+4*0.05)" );
   cooldowns_improved_niuzao_cta->add_action( "purifying_brew,use_off_gcd=1,if=talent.purifying_brew.enabled&(variable.pb_in_window=0&20+4*0.05-time+action.invoke_niuzao_the_black_ox.last_used<1&20+4*0.05-time+action.invoke_niuzao_the_black_ox.last_used>0)" );
   cooldowns_improved_niuzao_cta->add_action( "purifying_brew,if=talent.purifying_brew.enabled&cooldown.weapons_of_order.remains<=3.5&time-action.purifying_brew.last_used>=3.5+cooldown.weapons_of_order.remains" );
-  // TODO: Remove Covenant after Pre-patch
-  cooldowns_improved_niuzao_cta->add_action( "weapons_of_order,if=(talent.weapons_of_order.enabled|covenant.kyrian)&time-action.purifying_brew.last_used<=5" );
+  cooldowns_improved_niuzao_cta->add_action( "weapons_of_order,if=talent.weapons_of_order.enabled&time-action.purifying_brew.last_used<=5" );
   cooldowns_improved_niuzao_cta->add_action( "purifying_brew,if=talent.purifying_brew.enabled&cooldown.invoke_niuzao_the_black_ox.remains<=3.5&time-action.purifying_brew.last_used>=3.5+cooldown.invoke_niuzao_the_black_ox.remains&buff.weapons_of_order.remains<=30-17" );
   cooldowns_improved_niuzao_cta->add_action( "invoke_niuzao_the_black_ox,if=talent.invoke_niuzao_the_black_ox.enabled&buff.weapons_of_order.remains<=30-17&action.purifying_brew.last_used>action.weapons_of_order.last_used+10+2*0.05" );
   cooldowns_improved_niuzao_cta->add_action( "purifying_brew,if=talent.purifying_brew.enabled&cooldown.purifying_brew.full_recharge_time*2<=cooldown.weapons_of_order.remains-3.5&cooldown.purifying_brew.full_recharge_time*2<=cooldown.invoke_niuzao_the_black_ox.remains-3.5" );
@@ -446,8 +457,6 @@ void mistweaver( player_t* p )
 
   pre->add_action( "potion" );
 
-  pre->add_action( "fleshcraft" );
-
   pre->add_action( p, "chi_burst" );
   pre->add_action( p, "chi_wave" );
 
@@ -482,13 +491,8 @@ void mistweaver( player_t* p )
 
   def->add_action( "potion" );
 
-  // Covenant Abilities
-  def->add_action( "weapons_of_order" );
   def->add_action( "faeline_stomp" );
-  def->add_action( "fallen_order" );
   def->add_action( "bonedust_brew" );
-
-  def->add_action( "fleshcraft,if=soulbind.lead_by_example.enabled" );
 
   def->add_action( "call_action_list,name=aoe,if=active_enemies>=3" );
   def->add_action( "call_action_list,name=st,if=active_enemies<3" );
@@ -524,10 +528,9 @@ void windwalker( player_t* p )
   pre->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
   pre->add_action( "variable,name=xuen_on_use_trinket,op=set,value=equipped.inscrutable_quantum_device|equipped.gladiators_badge|equipped.wrathstone|equipped.overcharged_anima_battery|equipped.shadowgrasp_totem|equipped.the_first_sigil|equipped.cache_of_acquired_treasures" );
-  pre->add_action( "fleshcraft" );
   pre->add_action( "summon_white_tiger_statue" );
   pre->add_action( "expel_harm,if=chi<chi.max" );
-  pre->add_action( "chi_burst,if=!covenant.night_fae&!talent.faeline_stomp" );
+  pre->add_action( "chi_burst,if=!talent.faeline_stomp" );
   pre->add_action( "chi_wave" );
 
   std::vector<std::string> racial_actions  = p->get_racial_actions();
@@ -549,9 +552,6 @@ void windwalker( player_t* p )
   def->add_action(
       "variable,name=hold_sef,op=set,value=cooldown.bonedust_brew.up&cooldown.storm_earth_and_fire.charges<2&chi<3|buff.bonedust_brew.remains<8" );
 
-  // Fixate if using Coordinated Offensive conduit
-  def->add_action( "storm_earth_and_fire_fixate,if=conduit.coordinated_offensive.enabled&spinning_crane_kick.max", "Fixate if using Coordinated Offensive conduit" );
-
   // Potion
   if ( p->sim->allow_potions )
   {
@@ -569,11 +569,11 @@ void windwalker( player_t* p )
     def->add_action( "call_action_list,name=opener,if=time<4&chi<5&!talent.serenity", "Build Chi at the start of combat" );
 
   // Prioritize Faeline Stomp if playing with Faeline Harmony
-  def->add_action( "faeline_stomp,if=combo_strike&(runeforge.faeline_harmony|talent.faeline_harmony)&(!debuff.fae_exposure_damage.up|active_enemies>1)", "Prioritize Faeline Stomp if playing with Faeline Harmony" );
+  def->add_action( "faeline_stomp,if=combo_strike&talent.faeline_harmony&(!debuff.fae_exposure_damage.up|active_enemies>1)", "Prioritize Faeline Stomp if playing with Faeline Harmony" );
   // Spend excess energy
   def->add_action( "call_action_list,name=spend_energy,if=!buff.bonedust_brew.up&!buff.first_strike.up&!buff.serenity.up", "Spend excess energy" );
   // Use Chi Burst to reset Faeline Stomp
-  def->add_action( "chi_burst,if=(covenant.night_fae|talent.faeline_stomp)&cooldown.faeline_stomp.remains&(chi.max-chi>=1&active_enemies=1|chi.max-chi>=2&active_enemies>=2)&!buff.first_strike.up", "Use Chi Burst to reset Faeline Stomp" );
+  def->add_action( "chi_burst,if=talent.faeline_stomp&cooldown.faeline_stomp.remains&(chi.max-chi>=1&active_enemies=1|chi.max-chi>=2&active_enemies>=2)&!buff.first_strike.up", "Use Chi Burst to reset Faeline Stomp" );
 
   // Use Cooldowns
   def->add_action( "call_action_list,name=cd_sef,if=!talent.serenity", "Cooldowns" );
@@ -587,16 +587,14 @@ void windwalker( player_t* p )
 
   // Storm, Earth and Fire Cooldowns
   cd_sef->add_action( "summon_white_tiger_statue,if=pet.xuen_the_white_tiger.active", "Storm, Earth and Fire Cooldowns" );
-  cd_sef->add_action( "invoke_xuen_the_white_tiger,if=!variable.hold_xuen&(covenant.necrolord|talent.bonedust_brew)&cooldown.bonedust_brew.remains<=5&(active_enemies<3&chi>=3|active_enemies>=3&chi>=2)|fight_remains<25" );
-  cd_sef->add_action( "invoke_xuen_the_white_tiger,if=!variable.hold_xuen&!(covenant.necrolord|talent.bonedust_brew)&(cooldown.rising_sun_kick.remains<2|!covenant.kyrian)&chi>=3" );
+  cd_sef->add_action( "invoke_xuen_the_white_tiger,if=!variable.hold_xuen&talent.bonedust_brew&cooldown.bonedust_brew.remains<=5&(active_enemies<3&chi>=3|active_enemies>=3&chi>=2)|fight_remains<25" );
+  cd_sef->add_action( "invoke_xuen_the_white_tiger,if=!variable.hold_xuen&!talent.bonedust_brew&(cooldown.rising_sun_kick.remains<2)&chi>=3" );
+  cd_sef->add_action( "storm_earth_and_fire,if=talent.bonedust_brew&(fight_remains<30&cooldown.bonedust_brew.remains<4&chi>=4|buff.bonedust_brew.up&!variable.hold_sef|!spinning_crane_kick.max&active_enemies>=3&cooldown.bonedust_brew.remains<=2&chi>=2)&(pet.xuen_the_white_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>cooldown.storm_earth_and_fire.full_recharge_time)" );
+  cd_sef->add_action( "bonedust_brew,if=(!buff.bonedust_brew.up&buff.storm_earth_and_fire.up&buff.storm_earth_and_fire.remains<11&spinning_crane_kick.max)|(!buff.bonedust_brew.up&fight_remains<30&fight_remains>10&spinning_crane_kick.max&chi>=4)|fight_remains<10" );
   cd_sef->add_action(
-    "weapons_of_order,if=(raid_event.adds.in>45|raid_event.adds.up)&cooldown.rising_sun_kick.remains<execute_time&cooldown.invoke_xuen_the_white_tiger.remains>(20+20*(runeforge.invokers_delight|talent.invokers_delight))&(!runeforge.xuens_treasure&!talent.xuens_battlegear|cooldown.fists_of_fury.remains|pet.xuen_the_white_tiger.active)|fight_remains<35" );
-  cd_sef->add_action( "storm_earth_and_fire,if=(covenant.necrolord|talent.bonedust_brew)&(fight_remains<30&cooldown.bonedust_brew.remains<4&chi>=4|buff.bonedust_brew.up&!variable.hold_sef|!spinning_crane_kick.max&active_enemies>=3&cooldown.bonedust_brew.remains<=2&chi>=2)&(pet.xuen_the_white_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>cooldown.storm_earth_and_fire.full_recharge_time)" );
-  cd_sef->add_action( "bonedust_brew,if=(!buff.bonedust_brew.up&buff.storm_earth_and_fire.up&buff.storm_earth_and_fire.remains<11&spinning_crane_kick.max)|(!buff.bonedust_brew.up&fight_remains<30&fight_remains>10&spinning_crane_kick.max&chi>=4)|fight_remains<10&soulbind.lead_by_example" );
-  cd_sef->add_action(
-      "call_action_list,name=bdb_setup,if=!buff.bonedust_brew.up&(talent.bonedust_brew|covenant.necrolord)&cooldown.bonedust_brew.remains<=2&(fight_remains>60&(cooldown.storm_earth_and_fire.charges>0|cooldown.storm_earth_and_fire.remains>10)&(pet.xuen_the_white_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>10|variable.hold_xuen)|((pet.xuen_the_white_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>13)&(cooldown.storm_earth_and_fire.charges>0|cooldown.storm_earth_and_fire.remains>13|buff.storm_earth_and_fire.up)))" );
+      "call_action_list,name=bdb_setup,if=!buff.bonedust_brew.up&talent.bonedust_brew&cooldown.bonedust_brew.remains<=2&(fight_remains>60&(cooldown.storm_earth_and_fire.charges>0|cooldown.storm_earth_and_fire.remains>10)&(pet.xuen_the_white_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>10|variable.hold_xuen)|((pet.xuen_the_white_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>13)&(cooldown.storm_earth_and_fire.charges>0|cooldown.storm_earth_and_fire.remains>13|buff.storm_earth_and_fire.up)))" );
 
-  cd_sef->add_action( "storm_earth_and_fire,if=fight_remains<20|!covenant.necrolord&(cooldown.storm_earth_and_fire.charges=2|buff.weapons_of_order.up|covenant.kyrian&cooldown.weapons_of_order.remains>cooldown.storm_earth_and_fire.full_recharge_time|cooldown.invoke_xuen_the_white_tiger.remains>cooldown.storm_earth_and_fire.full_recharge_time)&cooldown.fists_of_fury.remains<=9&chi>=2&cooldown.whirling_dragon_punch.remains<=12" );
+  cd_sef->add_action( "storm_earth_and_fire,if=fight_remains<20|(cooldown.storm_earth_and_fire.charges=2&cooldown.invoke_xuen_the_white_tiger.remains>cooldown.storm_earth_and_fire.full_recharge_time)&cooldown.fists_of_fury.remains<=9&chi>=2&cooldown.whirling_dragon_punch.remains<=12" );
 
   if ( monk->sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE )
   {
@@ -607,14 +605,12 @@ void windwalker( player_t* p )
   {
     if ( monk->talent.windwalker.invoke_xuen_the_white_tiger->ok() )
       cd_sef->add_action( p, "Touch of Death",
-        "if=combo_strike&(fight_remains>60|buff.storm_earth_and_fire.down&pet.xuen_the_white_tiger.active&(!covenant.necrolord|buff.bonedust_brew.up)|(cooldown.invoke_xuen_the_white_tiger.remains>fight_remains)&buff.bonedust_brew.up|fight_remains<10)" );
+        "if=combo_strike&(fight_remains>60|buff.storm_earth_and_fire.down&pet.xuen_the_white_tiger.active&buff.bonedust_brew.up|(cooldown.invoke_xuen_the_white_tiger.remains>fight_remains)&buff.bonedust_brew.up|fight_remains<10)" );
     else
       cd_sef->add_action(
         p, "Touch of Death",
-        "if=combo_strike&(fight_remains>60|buff.storm_earth_and_fire.down&(!covenant.necrolord|buff.bonedust_brew.up)|fight_remains<10)" );
+        "if=combo_strike&(fight_remains>60|buff.storm_earth_and_fire.down&buff.bonedust_brew.up|fight_remains<10)" );
   }
-
-  cd_sef->add_action( "fallen_order,if=raid_event.adds.in>30|raid_event.adds.up" );
 
   // Storm, Earth, and Fire on-use trinkets
   
@@ -637,13 +633,13 @@ void windwalker( player_t* p )
           ",if=pet.xuen_the_white_tiger.active|fight_remains<20" );
       else if ( item.name_str == "shadowgrasp_totem" )
         cd_sef->add_action( "use_item,name=" + item.name_str +
-          ",if=pet.xuen_the_white_tiger.active|fight_remains<20|!runeforge.invokers_delight&!talent.invokers_delight" );
+          ",if=pet.xuen_the_white_tiger.active|fight_remains<20|!talent.invokers_delight" );
       else if ( item.name_str == "overcharged_anima_battery" )
         cd_sef->add_action( "use_item,name=" + item.name_str +
           ",if=pet.xuen_the_white_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>90|fight_remains<20" );
       else if ( (int)item.name_str.find( "gladiators_badge" ) != -1 )
         cd_sef->add_action( "use_item,name=" + item.name_str +
-          ",if=covenant.necrolord&(buff.storm_earth_and_fire.remains>10|buff.bonedust_brew.up&cooldown.bonedust_brew.remains>30)|!covenant.necrolord&(cooldown.invoke_xuen_the_white_tiger.remains>55|variable.hold_xuen)|fight_remains<15" );
+          ",if=(buff.storm_earth_and_fire.remains>10|buff.bonedust_brew.up&cooldown.bonedust_brew.remains>30)|(cooldown.invoke_xuen_the_white_tiger.remains>55|variable.hold_xuen)|fight_remains<15" );
       else if ( item.name_str == "the_first_sigil" )
         cd_sef->add_action( "use_item,name=" + item.name_str +
           ",if=pet.xuen_the_white_tiger.remains>15|cooldown.invoke_xuen_the_white_tiger.remains>60&fight_remains>300|fight_remains<20" );
@@ -653,13 +649,13 @@ void windwalker( player_t* p )
       else if ( item.name_str == "scars_of_fraternal_strife" )
         // Scars of Fraternal Strife Final Rune, use in order of trinket slots
         cd_sef->add_action( "use_item,name=" + item.name_str +
-          ",if=(buff.scars_of_fraternal_strife_4.up&(active_enemies>1|raid_event.adds.in<20)&(buff.weapons_of_order.up|(debuff.bonedust_brew_debuff.up&pet.xuen_the_white_tiger.active)))|fight_remains<35" );
+          ",if=(buff.scars_of_fraternal_strife_4.up&(active_enemies>1|raid_event.adds.in<20)&((debuff.bonedust_brew_debuff.up&pet.xuen_the_white_tiger.active)))|fight_remains<35" );
       else if ( item.name_str == "enforcers_stun_grenade" )
         cd_sef->add_action( "use_item,name=" + item.name_str +
-          ",if=!covenant.necrolord&pet.xuen_the_white_tiger.active|buff.storm_earth_and_fire.remains>10|buff.bonedust_brew.up&cooldown.bonedust_brew.remains>30|fight_remains<20" );
+          ",if=pet.xuen_the_white_tiger.active|buff.storm_earth_and_fire.remains>10|buff.bonedust_brew.up&cooldown.bonedust_brew.remains>30|fight_remains<20" );
       else if ( item.name_str == "kihras_adrenaline_injector" )
         cd_sef->add_action( "use_item,name=" + item.name_str +
-          ",if=!covenant.necrolord&pet.xuen_the_white_tiger.active|buff.storm_earth_and_fire.remains>10|buff.bonedust_brew.up&cooldown.bonedust_brew.remains>30|fight_remains<20" );
+          ",if=pet.xuen_the_white_tiger.active|buff.storm_earth_and_fire.remains>10|buff.bonedust_brew.up&cooldown.bonedust_brew.remains>30|fight_remains<20" );
       else if ( item.name_str == "wraps_of_electrostatic_potential" )
         cd_sef->add_action( "use_item,name=" + item.name_str );
       else if ( item.name_str == "ring_of_collapsing_futures" )
@@ -703,17 +699,13 @@ void windwalker( player_t* p )
     }
   }
 
-  cd_sef->add_action( "fleshcraft,if=soulbind.pustule_eruption&!pet.xuen_the_white_tiger.active&buff.storm_earth_and_fire.down&buff.bonedust_brew.down" );
- 
   // Serenity Cooldowns
   cd_serenity->add_action( "summon_white_tiger_statue,if=pet.xuen_the_white_tiger.active", "Serenity Cooldowns" );
-  cd_serenity->add_action( "invoke_xuen_the_white_tiger,if=!variable.hold_xuen&(covenant.necrolord|talent.bonedust_brew)&cooldown.bonedust_brew.remains<=5|fight_remains<25" );
-  cd_serenity->add_action( "invoke_xuen_the_white_tiger,if=!variable.hold_xuen&!(covenant.necrolord|talent.bonedust_brew)&(cooldown.rising_sun_kick.remains<2|!covenant.kyrian)|fight_remains<25" );
+  cd_serenity->add_action( "invoke_xuen_the_white_tiger,if=!variable.hold_xuen&talent.bonedust_brew&cooldown.bonedust_brew.remains<=5|fight_remains<25" );
+  cd_serenity->add_action( "invoke_xuen_the_white_tiger,if=!variable.hold_xuen&!talent.bonedust_brew&(cooldown.rising_sun_kick.remains<2)|fight_remains<25" );
 
   cd_serenity->add_action(
-    "weapons_of_order,if=(raid_event.adds.in>45|raid_event.adds.up)&cooldown.rising_sun_kick.remains<execute_time&cooldown.invoke_xuen_the_white_tiger.remains>(20+20*(runeforge.invokers_delight|talent.invokers_delight))&(!runeforge.xuens_treasure&!talent.xuens_battlegear|cooldown.fists_of_fury.remains|pet.xuen_the_white_tiger.active)|fight_remains<35" );
-  cd_serenity->add_action(
-    "bonedust_brew,if=!buff.bonedust_brew.up&(cooldown.serenity.up|cooldown.serenity.remains>15|fight_remains<30&fight_remains>10)|fight_remains<10&soulbind.lead_by_example" );
+    "bonedust_brew,if=!buff.bonedust_brew.up&(cooldown.serenity.up|cooldown.serenity.remains>15|fight_remains<30&fight_remains>10)|fight_remains<10" );
  
   cd_serenity->add_action(
     "serenity,if=pet.xuen_the_white_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>10|!talent.invoke_xuen_the_white_tiger|fight_remains<15");
@@ -728,7 +720,7 @@ void windwalker( player_t* p )
     if ( monk->talent.windwalker.invoke_xuen_the_white_tiger->ok() )
     {
       cd_serenity->add_action( p, "Touch of Death",
-        "if=combo_strike&(fight_remains>60|pet.xuen_the_white_tiger.active&(!covenant.necrolord|buff.bonedust_brew.up)|(cooldown.invoke_xuen_the_white_tiger.remains>fight_remains)&buff.bonedust_brew.up|fight_remains<10)" );
+        "if=combo_strike&(fight_remains>60|pet.xuen_the_white_tiger.active&buff.bonedust_brew.up|(cooldown.invoke_xuen_the_white_tiger.remains>fight_remains)&buff.bonedust_brew.up|fight_remains<10)" );
     }
     else
     {
@@ -738,9 +730,6 @@ void windwalker( player_t* p )
 
   cd_serenity->add_action( "touch_of_karma,if=fight_remains>90|fight_remains<10" );
 
-  cd_serenity->add_action(
-    "fallen_order" );
-  
   // Serenity Racials
   for ( const auto& racial_action : racial_actions )
   {
@@ -758,9 +747,6 @@ void windwalker( player_t* p )
       cd_serenity->add_action( racial_action );
   }
 
-  cd_serenity->add_action(
-    "fleshcraft,if=soulbind.pustule_eruption&!pet.xuen_the_white_tiger.active&buff.serenity.down&buff.bonedust_brew.down" );
-
   // Serenity On-use items
   if ( p->items[SLOT_MAIN_HAND].name_str == "jotungeirr_destinys_call" )
     cd_serenity->add_action( "use_item,name=" + p->items[SLOT_MAIN_HAND].name_str + ",if=buff.serenity.up|fight_remains<20" );
@@ -777,7 +763,7 @@ void windwalker( player_t* p )
       else if ( item.name_str == "overcharged_anima_battery" )
         cd_serenity->add_action( "use_item,name=" + item.name_str + ",if=buff.serenity.up|fight_remains<20" );
       else if ( item.name_str == "shadowgrasp_totem" )
-        cd_serenity->add_action( "use_item,name=" + item.name_str + ",if=pet.xuen_the_white_tiger.active|fight_remains<20|!runeforge.invokers_delight&!talent.invokers_delight" );
+        cd_serenity->add_action( "use_item,name=" + item.name_str + ",if=pet.xuen_the_white_tiger.active|fight_remains<20|!talent.invokers_delight" );
       else if ( (int)item.name_str.find( "gladiators_badge" ) != -1 )
         cd_serenity->add_action( "use_item,name=" + item.name_str + ",if=buff.serenity.up|fight_remains<20" );
       else if ( item.name_str == "the_first_sigil" )
@@ -824,7 +810,7 @@ void windwalker( player_t* p )
   aoe->add_action( "whirling_dragon_punch" );
 
   // ST / Cleave
-  st_cleave->add_action( "faeline_stomp,if=combo_strike", "ST Priority (<3 Targets)" );
+  st_cleave->add_action( "faeline_stomp,if=combo_strike&(!talent.faeline_harmony|debuff.fae_exposure_damage.remains<1)", "ST Priority (<3 Targets)" );
   st_cleave->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.teachings_of_the_monastery.stack=3&talent.shadowboxing_treads" );
   st_cleave->add_action( "spinning_crane_kick,if=combo_strike&buff.dance_of_chiji.up" );
   st_cleave->add_action( "strike_of_the_windlord,if=talent.thunderfist" );
@@ -835,7 +821,7 @@ void windwalker( player_t* p )
   st_cleave->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.teachings_of_the_monastery.up&(talent.shadowboxing_treads&active_enemies>1|cooldown.rising_sun_kick.remains>1)" );
   st_cleave->add_action( "whirling_dragon_punch,if=active_enemies=2" );
   st_cleave->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.teachings_of_the_monastery.stack=3" );
-  st_cleave->add_action( "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=(active_enemies=1|!talent.shadowboxing_treads)&cooldown.fists_of_fury.remains>4&(talent.xuens_battlegear|runeforge.xuens_treasure)" );
+  st_cleave->add_action( "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=(active_enemies=1|!talent.shadowboxing_treads)&cooldown.fists_of_fury.remains>4&talent.xuens_battlegear" );
   st_cleave->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&active_enemies=2&cooldown.rising_sun_kick.remains&cooldown.fists_of_fury.remains" );
   st_cleave->add_action( "rushing_jade_wind,if=!buff.rushing_jade_wind.up&active_enemies=2" );
   st_cleave->add_action( "spinning_crane_kick,if=buff.bonedust_brew.up&combo_strike&(active_enemies>1|spinning_crane_kick.modifier>=2.7)" );
@@ -845,7 +831,7 @@ void windwalker( player_t* p )
   st_cleave->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike" );
 
   // Fallthru
-  fallthru->add_action( "crackling_jade_lightning,if=buff.the_emperors_capacitor.stack>19&energy.time_to_max>execute_time-1&cooldown.rising_sun_kick.remains>execute_time|buff.the_emperors_capacitor.stack>14&(cooldown.serenity.remains<5&talent.serenity|cooldown.weapons_of_order.remains<5&covenant.kyrian|fight_remains<5)", "Fallthru" );
+  fallthru->add_action( "crackling_jade_lightning,if=buff.the_emperors_capacitor.stack>19&energy.time_to_max>execute_time-1&cooldown.rising_sun_kick.remains>execute_time|buff.the_emperors_capacitor.stack>14&(cooldown.serenity.remains<5&talent.serenity|fight_remains<5)", "Fallthru" );
   fallthru->add_action( "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains+(debuff.skyreach_exhaustion.up*20),if=combo_strike&buff.bonedust_brew.up&chi.max-chi>=(2+buff.power_strikes.up)" );
   fallthru->add_action( "expel_harm,if=chi.max-chi>=1" );
   fallthru->add_action( "chi_burst,if=chi.max-chi>=1&active_enemies=1&raid_event.adds.in>20|chi.max-chi>=2&active_enemies>=2" );
@@ -858,7 +844,7 @@ void windwalker( player_t* p )
 
   // Serenity Priority
   serenity->add_action( "strike_of_the_windlord,if=active_enemies<3", "Serenity Priority" );
-  serenity->add_action( "faeline_stomp,if=combo_strike" );
+  serenity->add_action( "faeline_stomp,if=combo_strike&(!talent.faeline_harmony|debuff.fae_exposure_damage.remains<1)" );
   serenity->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&buff.teachings_of_the_monastery.stack=3" );
   serenity->add_action( "fists_of_fury,if=buff.serenity.remains<1" );
   serenity->add_action( "fists_of_fury_cancel" );
@@ -886,9 +872,9 @@ void windwalker( player_t* p )
     "target_if=min:debuff.mark_of_the_crane.remains+(debuff.skyreach_exhaustion.up*20),if=chi.max-chi>=(2+buff.power_strikes.up)" );
 
   // Excess Energy
-  spend_energy->add_action( p, "Expel Harm", "if=chi.max-chi>=1&(energy.time_to_max<1|cooldown.serenity.remains<2|energy.time_to_max<4&cooldown.fists_of_fury.remains<1.5|cooldown.weapons_of_order.remains<2)&(!buff.bonedust_brew.up|buff.bloodlust.up|buff.invokers_delight.up)", "Excess Energy" );
+  spend_energy->add_action( p, "Expel Harm", "if=chi.max-chi>=1&(energy.time_to_max<1|cooldown.serenity.remains<2|energy.time_to_max<4&cooldown.fists_of_fury.remains<1.5)&(!buff.bonedust_brew.up|buff.bloodlust.up|buff.invokers_delight.up)", "Excess Energy" );
   spend_energy->add_action( p, "Tiger Palm",
-    "target_if=min:debuff.mark_of_the_crane.remains+(debuff.skyreach_exhaustion.up*20),if=buff.teachings_of_the_monastery.stack<3&combo_strike&chi.max-chi>=(2+buff.power_strikes.up)&(energy.time_to_max<1|cooldown.serenity.remains<2|energy.time_to_max<4&cooldown.fists_of_fury.remains<1.5|cooldown.weapons_of_order.remains<2)" );
+    "target_if=min:debuff.mark_of_the_crane.remains+(debuff.skyreach_exhaustion.up*20),if=buff.teachings_of_the_monastery.stack<3&combo_strike&chi.max-chi>=(2+buff.power_strikes.up)&(energy.time_to_max<1|cooldown.serenity.remains<2|energy.time_to_max<4&cooldown.fists_of_fury.remains<1.5)" );
 
   // Bonedust Brew Setup
   bdb_setup->add_action( "bonedust_brew,if=spinning_crane_kick.max&chi>=4", "Bonedust Brew Setup" );

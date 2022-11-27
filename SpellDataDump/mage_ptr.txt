@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46702 Live (hotfix 2022-11-22/46702)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46741 Live (hotfix 2022-11-27/46741, git build add_paladin_buff 76f8ceaf67)
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Talent Entry     : Generic [tree=class, row=2, col=3, max_rank=1, req_points=0]
 Class            : Paladin, Mage
@@ -2213,6 +2213,7 @@ Class            : Mage
 School           : Physical
 Spell Type       : None
 Spell Level      : 27
+Requires armor   : Cloth Head, Shoulders, Chest, Waist, Legs, Feet, Wrists, Hands, Robe
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 

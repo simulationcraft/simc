@@ -4,7 +4,6 @@
 // Wiki: https://github.com/simulationcraft/simc/wiki/Priests
 // ==========================================================================
 
-#include "player/covenant.hpp"
 #include "sc_enums.hpp"
 #include "sc_priest.hpp"
 
@@ -44,30 +43,15 @@ struct penance_t final : public priest_spell_t
   struct penance_tick_t final : public priest_spell_t
   {
     bool first_tick;
-    const conduit_data_t swift_penitence;
 
     penance_tick_t( priest_t& p, stats_t* stats )
-      : priest_spell_t( "penance_tick", p, p.dbc->spell( 47666 ) ),
-        first_tick( false ),
-        swift_penitence( p.find_conduit_spell( "Swift Penitence" ) )
+      : priest_spell_t( "penance_tick", p, p.dbc->spell( 47666 ) ), first_tick( false )
     {
       background  = true;
       dual        = true;
       direct_tick = true;
 
       this->stats = stats;
-    }
-
-    double action_da_multiplier() const override
-    {
-      double m = priest_spell_t::action_da_multiplier();
-
-      if ( first_tick && swift_penitence.ok() )
-      {
-        m *= 1 + swift_penitence.percent();
-      }
-
-      return m;
     }
 
     void execute() override
@@ -124,33 +108,11 @@ struct penance_t final : public priest_spell_t
     return d;
   }
 
-  double cost() const override
-  {
-    auto cost = base_t::cost();
-    if ( priest().buffs.the_penitent_one->check() )
-    {
-      cost *= ( 100 + priest().buffs.the_penitent_one->data().effectN( 2 ).base_value() ) / 100.0;
-    }
-    return cost;
-  }
-
-  timespan_t tick_time( const action_state_t* ) const override
-  {
-    // Do not haste ticks!
-    auto tt = base_tick_time;
-    if ( priest().buffs.the_penitent_one->check() )
-    {
-      tt *= ( 100 + priest().buffs.the_penitent_one->data().effectN( 1 ).base_value() ) / 100.0;
-    }
-    return tt;
-  }
-
   void last_tick( dot_t* d ) override
   {
     priest_spell_t::last_tick( d );
 
     priest().buffs.power_of_the_dark_side->expire();
-    priest().buffs.the_penitent_one->decrement();
   }
 
   void execute() override
@@ -159,7 +121,6 @@ struct penance_t final : public priest_spell_t
 
     priest_spell_t::execute();
 
-    priest().buffs.the_penitent_one->up();        // benefit tracking
     priest().buffs.power_of_the_dark_side->up();  // benefit tracking
 
     if ( priest().talents.manipulation.enabled() )

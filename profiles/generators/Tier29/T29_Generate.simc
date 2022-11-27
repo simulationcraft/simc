@@ -6,7 +6,7 @@ ptr=1
 # * Set pieces are permitted up to the item level cap (415/421/424). ["bonus_id=4800/4786/1498"]
 #   * NOTE: Seal of Filial Duty is permitted up to item level 430.
 # * Raid gear is permitted up to the Mythic item level cap (415/421/424). ["bonus_id=4800/4786/1498"]
-# * Mythic+ gear is permitted up to the Mythic+ item level cap (421). [DF: "bonus_id=6808/4786/1643", MoP: "bonus_id=4177/6808/4786/3311", Legion: "bonus_id=1795/6808/4786/3300/6935"]
+# * Mythic+ gear is permitted up to the Mythic+ item level cap (421). [DF: "bonus_id=6808/4786/1643", MoP: "bonus_id=4177/6808/4786/3311", Legion: "bonus_id=1795/6808/4786/3300"]
 #   * Gear can come from: [Algeth'ar Academy, Ruby Life Pools, The Azure Vault, The Nokhud Offensive, Court of Stars, Halls of Valor, Shadowmoon Burial Grounds, Temple of the Jade Serpent]
 # * Honor PvP gear is permitted up to the item level cap (366). ["bonus_id=?"]
 # * Conquest PvP gear is permitted up to the item level cap (Duelist, 408). ["bonus_id=?"]
