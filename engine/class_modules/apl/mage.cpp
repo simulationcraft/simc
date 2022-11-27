@@ -405,12 +405,13 @@ void frost( player_t* p )
   default_->add_action( "call_action_list,name=st,if=active_enemies<7&(active_enemies<3|!talent.ice_caller)" );
   default_->add_action( "call_action_list,name=movement" );
 
-  aoe->add_action( "cone_of_cold,if=buff.snowstorm.stack=buff.snowstorm.max_stack&debuff.frozen.up&debuff.frozen.remains+debuff.frozen.elapsed>0.5" );
+  aoe->add_action( "cone_of_cold,if=buff.snowstorm.stack=buff.snowstorm.max_stack&debuff.frozen.up&(prev_gcd.1.frost_nova|prev_gcd.1.ice_nova|prev_off_gcd.freeze)" );
   aoe->add_action( "frozen_orb" );
   aoe->add_action( "blizzard" );
   aoe->add_action( "comet_storm" );
-  aoe->add_action( "freeze,if=!talent.snowstorm&debuff.frozen.down|cooldown.cone_of_cold.ready&buff.snowstorm.stack=buff.snowstorm.max_stack" );
-  aoe->add_action( "frost_nova,if=active_enemies>=5&cooldown.cone_of_cold.ready&buff.snowstorm.stack=buff.snowstorm.max_stack&gcd.max<1&(target.level<level+3|target.is_add)" );
+  aoe->add_action( "freeze,if=(target.level<level+3|target.is_add)&(!talent.snowstorm&debuff.frozen.down|cooldown.cone_of_cold.ready&buff.snowstorm.stack=buff.snowstorm.max_stack)" );
+  aoe->add_action( "ice_nova,if=(target.level<level+3|target.is_add)&(prev_gcd.1.comet_storm|cooldown.cone_of_cold.ready&buff.snowstorm.stack=buff.snowstorm.max_stack&gcd.max<1)" );
+  aoe->add_action( "frost_nova,if=(target.level<level+3|target.is_add)&active_enemies>=5&cooldown.cone_of_cold.ready&buff.snowstorm.stack=buff.snowstorm.max_stack&gcd.max<1" );
   aoe->add_action( "cone_of_cold,if=buff.snowstorm.stack=buff.snowstorm.max_stack" );
   aoe->add_action( "flurry,if=cooldown_react&remaining_winters_chill=0&debuff.winters_chill.down&(prev_gcd.1.frostbolt|active_enemies>=7)" );
   aoe->add_action( "ice_lance,if=buff.fingers_of_frost.react|debuff.frozen.remains>travel_time|remaining_winters_chill" );
@@ -443,7 +444,7 @@ void frost( player_t* p )
   st->add_action( "meteor,if=prev_gcd.1.flurry" );
   st->add_action( "comet_storm,if=prev_gcd.1.flurry" );
   st->add_action( "flurry,if=cooldown_react&remaining_winters_chill=0&debuff.winters_chill.down&(prev_gcd.1.frostbolt|prev_gcd.1.glacial_spike)" );
-  st->add_action( "ray_of_frost,if=remaining_winters_chill=1" );
+  st->add_action( "ray_of_frost,if=remaining_winters_chill=1&buff.freezing_winds.down" );
   st->add_action( "glacial_spike,if=remaining_winters_chill" );
   st->add_action( "cone_of_cold,if=buff.snowstorm.stack=buff.snowstorm.max_stack&remaining_winters_chill" );
   st->add_action( "frozen_orb" );
