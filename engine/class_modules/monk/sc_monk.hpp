@@ -200,6 +200,46 @@ public:
 
   double gift_of_the_ox_proc_chance;
 
+  //==============================================
+  // Monk Movement
+  //==============================================
+
+  struct monk_movement_t : public movement_buff_t
+  {
+  public:
+    using base_t = monk_movement_t;
+
+    double distance_moved = 0;
+
+    monk_t& p()
+    {
+      return *debug_cast<monk_t*>( movement_buff_t::source );
+    }
+
+    monk_movement_t( monk_t* player, util::string_view n, const spell_data_t* s = spell_data_t::nil(), const item_t* item = nullptr )
+      : movement_buff_t( player )
+    {
+    };
+
+    bool trigger( int s = 1, double v = -std::numeric_limits<double>::min(), double c = -1.0, timespan_t d = timespan_t::min() ) override
+    {
+      // Dragonflight: Phial of Static Empowerment
+      if ( p().buffs.static_empowerment->up() )
+        p().buffs.static_empowerment->expire();
+
+      return buff_t::trigger( s, v, c, d );
+    }
+  };
+
+  struct movement_t
+  {
+    propagate_const<monk_movement_t*> flying_serpent_kick;
+    propagate_const<monk_movement_t*> roll;
+    propagate_const<monk_movement_t*> whirling_dragon_punch;
+  } movement;
+
+  //=================================================
+
   struct buffs_t
   {
     // General
