@@ -187,13 +187,13 @@ struct corruption_t : public warlock_spell_t
     harvester_of_souls_t* harvester_proc;
     doom_blossom_t* doom_blossom_proc;
 
-    corruption_dot_t( warlock_t* p ) : warlock_spell_t( "Corruption (DoT)", p, p->warlock_base.corruption->effectN( 1 ).trigger() ),
+    corruption_dot_t( warlock_t* p ) : warlock_spell_t( "Corruption", p, p->warlock_base.corruption->effectN( 1 ).trigger() ),
       harvester_proc( new harvester_of_souls_t( p ) ),
       doom_blossom_proc( new doom_blossom_t( p ) )
     {
       tick_zero = false;
       background = dual = true;
-
+      
       add_child( harvester_proc );
       add_child( doom_blossom_proc );
 
@@ -276,14 +276,13 @@ struct corruption_t : public warlock_spell_t
   corruption_dot_t* periodic;
 
   corruption_t( warlock_t* p, util::string_view options_str, bool seed_action )
-    : warlock_spell_t( "Corruption", p, p->warlock_base.corruption ),
-    periodic( new corruption_dot_t( p ) )
+    : warlock_spell_t( "Corruption (Direct)", p, p->warlock_base.corruption )
   {
     parse_options( options_str );
-    tick_zero                  = false;
 
-    // DoT information is in trigger spell (146739)
+    periodic = new corruption_dot_t( p );
     impact_action = periodic;
+    add_child( periodic );
 
     spell_power_mod.direct = 0; // By default, Corruption does not deal instant damage
 
@@ -296,10 +295,8 @@ struct corruption_t : public warlock_spell_t
 
   void impact( action_state_t* s ) override
   {
-    auto dot_data = td( s->target )->dots_corruption;
-
-    bool pi_trigger = p()->talents.pandemic_invocation.ok() && dot_data->is_ticking()
-      && dot_data->remains() < timespan_t::from_millis( p()->talents.pandemic_invocation->effectN( 1 ).base_value() );
+    bool pi_trigger = p()->talents.pandemic_invocation.ok() && td( s->target )->dots_corruption->is_ticking()
+      && td( s->target )->dots_corruption->remains() < p()->talents.pandemic_invocation->effectN( 1 ).time_value();
 
     warlock_spell_t::impact( s );
 
@@ -317,6 +314,11 @@ struct corruption_t : public warlock_spell_t
       pm *= 1.0 + p()->cache.mastery_value();
     }
     return pm;
+  }
+
+  dot_t* get_dot( player_t* t ) override
+  {
+    return periodic->get_dot( t );
   }
 };
 
@@ -875,7 +877,7 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
   dots_soul_rot = target->get_dot( "soul_rot", &p );
 
   // Aff
-  dots_corruption          = target->get_dot( "corruption_dot", &p );
+  dots_corruption = target->get_dot( "corruption", &p );
   dots_agony               = target->get_dot( "agony", &p );
   dots_drain_soul          = target->get_dot( "drain_soul", &p );
   dots_phantom_singularity = target->get_dot( "phantom_singularity", &p );
