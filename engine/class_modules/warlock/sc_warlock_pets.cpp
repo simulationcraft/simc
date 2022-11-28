@@ -2138,12 +2138,11 @@ void infernal_t::arise()
 /// Blasphemy Begin
 blasphemy_t::blasphemy_t( warlock_t* owner, util::string_view name )
   : infernal_t( owner, name )
-{
-}
+{  }
 
 struct blasphemous_existence_t : public warlock_pet_spell_t
 {
-  blasphemous_existence_t( warlock_pet_t* p ) : warlock_pet_spell_t( "blasphemous_existence", p, p->find_spell( 367819 ) )
+  blasphemous_existence_t( warlock_pet_t* p ) : warlock_pet_spell_t( "Blasphemous Existence", p, p->find_spell( 367819 ) )
   {
     aoe = -1;
     background = true;
@@ -2153,9 +2152,6 @@ struct blasphemous_existence_t : public warlock_pet_spell_t
 void blasphemy_t::init_base_stats()
 {
   infernal_t::init_base_stats();
-
-  // 2022-10-17: Blasphemy no longer benefits from Infernal Brand, override with default melee attack
-  melee_attack = new warlock_pet_melee_t( this, 2.0 );
 
   blasphemous_existence = new blasphemous_existence_t( this );
 }

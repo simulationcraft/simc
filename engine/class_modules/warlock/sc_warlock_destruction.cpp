@@ -1203,7 +1203,7 @@ struct avatar_of_destruction_t : public destruction_spell_t
 {
   struct infernal_awakening_proc_t : public destruction_spell_t
   {
-    infernal_awakening_proc_t( warlock_t* p ) : destruction_spell_t( "infernal_awakening_blasphemy", p, p->talents.infernal_awakening )
+    infernal_awakening_proc_t( warlock_t* p ) : destruction_spell_t( "Infernal Awakening (Blasphemy)", p, p->talents.infernal_awakening )
     {
       destro_mastery = false;
       aoe = -1;
