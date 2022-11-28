@@ -1880,22 +1880,6 @@ action_t* warlock_t::pass_corruption_action( warlock_t* p )
   return debug_cast<action_t*>( new actions::corruption_t( p, "", false ) );
 }
 
-// Function for returning the the number of imps that will spawn in a specified time period.
-int warlock_t::imps_spawned_during( timespan_t period )
-{
-  int count = 0;
-
-  for ( auto ev : wild_imp_spawns )
-  {
-    timespan_t ex = debug_cast<actions::imp_delay_event_t*>( ev )->expected_time();
-
-    if ( ex < period )
-      count++;
-  }
-
-  return count;
-}
-
 std::string warlock_t::create_profile( save_e stype )
 {
   std::string profile_str = player_t::create_profile( stype );
@@ -1927,8 +1911,6 @@ stat_e warlock_t::convert_hybrid_stat( stat_e s ) const
   // for certain specs into the appropriate "basic" stats
   switch ( s )
   {
-      // This is all a guess at how the hybrid primaries will work, since they
-      // don't actually appear on cloth gear yet. TODO: confirm behavior
     case STAT_STR_AGI_INT:
     case STAT_AGI_INT:
     case STAT_STR_INT:
@@ -1967,14 +1949,13 @@ pet_t* warlock_t::create_main_pet( util::string_view pet_name, util::string_view
   return nullptr;
 }
 
-//TODO: Are these expressions outdated?
 std::unique_ptr<expr_t> warlock_t::create_pet_expression( util::string_view name_str )
 {
   if ( name_str == "last_cast_imps" )
   {
     return make_fn_expr( "last_cast_imps", [ this ]() {
       return warlock_pet_list.wild_imps.n_active_pets( []( const pets::demonology::wild_imp_pet_t* pet ) {
-        return pet->resources.current[ RESOURCE_ENERGY ] <= 20;
+        return pet->resources.current[ RESOURCE_ENERGY ] < 32;
       } );
     } );
   }
@@ -1982,7 +1963,7 @@ std::unique_ptr<expr_t> warlock_t::create_pet_expression( util::string_view name
   {
     return make_fn_expr( "two_cast_imps", [ this ]() {
       return warlock_pet_list.wild_imps.n_active_pets( []( const pets::demonology::wild_imp_pet_t* pet ) {
-        return pet->resources.current[ RESOURCE_ENERGY ] <= 40;
+        return pet->resources.current[ RESOURCE_ENERGY ] < 48;
       } );
     } );
   }
@@ -2015,11 +1996,9 @@ std::unique_ptr<expr_t> warlock_t::create_expression( util::string_view name_str
       double average =
           1.0 / ( 0.184 * std::pow( active_agonies, -2.0 / 3.0 ) ) * dot_tick_time.total_seconds() / active_agonies;
 
-      if ( talents.creeping_death->ok() )
-        average /= 1.0 + talents.creeping_death->effectN( 1 ).percent();
-
       if ( sim->debug )
         sim->out_debug.printf( "time to shard return: %f", average );
+
       action_state_t::release( agony_state );
       return average;
     } );
@@ -2036,13 +2015,11 @@ std::unique_ptr<expr_t> warlock_t::create_expression( util::string_view name_str
   {
     return create_pet_expression( name_str );
   }
-  // TODO: Remove the deprecated buff expressions once the APL is adjusted for
-  // havoc_active/havoc_remains.
-  else if ( name_str == "havoc_active" || name_str == "buff.active_havoc.up" )
+  else if ( name_str == "havoc_active" )
   {
     return make_fn_expr( name_str, [ this ] { return havoc_target != nullptr; } );
   }
-  else if ( name_str == "havoc_remains" || name_str == "buff.active_havoc.remains" )
+  else if ( name_str == "havoc_remains" )
   {
     return make_fn_expr( name_str, [ this ] {
       return havoc_target ? get_target_data( havoc_target )->debuffs_havoc->remains().total_seconds() : 0.0;
@@ -2110,16 +2087,6 @@ std::unique_ptr<expr_t> warlock_t::create_expression( util::string_view name_str
 
     return make_fn_expr( name_str, [ this, amt ]() {
       return this->time_to_imps( amt );
-    } );
-  }
-  //TODO: Is this outdated in Shadowlands?
-  else if ( splits.size() == 2 && util::str_compare_ci( splits[ 0 ], "imps_spawned_during" ) )
-  {
-    auto period = util::to_double( splits[ 1 ] );
-
-    return make_fn_expr( name_str, [ this, period ]() {
-      // Add a custom split .summon_demonic_tyrant which returns its cast time.
-      return this->imps_spawned_during( timespan_t::from_millis( period ) );
     } );
   }
 

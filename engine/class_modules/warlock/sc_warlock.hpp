@@ -621,7 +621,6 @@ public:
   void create_options() override;
   int get_spawning_imp_count();
   timespan_t time_to_imps( int count );
-  int imps_spawned_during( timespan_t period );
   void darkglare_extension_helper( warlock_t* p, timespan_t darkglare_extension );
   int active_demon_count() const;
   void expendables_trigger_helper( warlock_pet_t* source );
