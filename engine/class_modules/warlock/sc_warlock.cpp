@@ -333,12 +333,13 @@ struct seed_of_corruption_t : public warlock_spell_t
       : warlock_spell_t( "Seed of Corruption (AoE)", p, p->talents.seed_of_corruption_aoe ),
         corruption( new corruption_t( p, "", true ) )
     {
-      aoe                              = -1;
-      background                       = true;
-      base_costs[ RESOURCE_MANA ]      = 0;
+      aoe = -1;
+      background = dual = true;
 
-      corruption->background                  = true;
-      corruption->dual                        = true;
+      // TODO: Figure out how to adjust DPET of SoC to pick up Corruption damage appropriately
+
+      corruption->background = true;
+      corruption->dual = true;
       corruption->base_costs[ RESOURCE_MANA ] = 0;
     }
 
@@ -348,7 +349,7 @@ struct seed_of_corruption_t : public warlock_spell_t
 
       if ( result_is_hit( s->result ) )
       {
-        auto tdata = this->td( s->target );
+        auto tdata = td( s->target );
         if ( tdata->dots_seed_of_corruption->is_ticking() && tdata->soc_threshold > 0 )
         {
           tdata->soc_threshold = 0;
@@ -361,8 +362,7 @@ struct seed_of_corruption_t : public warlock_spell_t
           tdata->dots_agony->increment( (int)p()->talents.agonizing_corruption->effectN( 1 ).base_value() );
         }
 
-        corruption->set_target( s->target );
-        corruption->execute();
+        corruption->execute_on_target( s->target );
       }
     }
 
@@ -386,14 +386,14 @@ struct seed_of_corruption_t : public warlock_spell_t
   seed_of_corruption_aoe_t* explosion;
 
   seed_of_corruption_t( warlock_t* p, util::string_view options_str )
-    : warlock_spell_t( "seed_of_corruption", p, p->talents.seed_of_corruption ),
+    : warlock_spell_t( "Seed of Corruption", p, p->talents.seed_of_corruption ),
       explosion( new seed_of_corruption_aoe_t( p ) )
   {
     parse_options( options_str );
-    may_crit       = false;
-    tick_zero      = false;
+    may_crit = false;
+    tick_zero = false;
     base_tick_time = dot_duration;
-    hasted_ticks   = false;
+    hasted_ticks = false;
 
     add_child( explosion );
 
@@ -442,7 +442,6 @@ struct seed_of_corruption_t : public warlock_spell_t
 
   void impact( action_state_t* s ) override
   {
-    // TOCHECK: Does the threshold reset if the duration is refreshed before explosion?
     if ( result_is_hit( s->result ) )
     {
       td( s->target )->soc_threshold = s->composite_spell_power() * p()->talents.seed_of_corruption->effectN( 1 ).percent();
