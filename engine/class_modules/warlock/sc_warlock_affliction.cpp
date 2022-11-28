@@ -11,25 +11,9 @@ using namespace actions;
 struct affliction_spell_t : public warlock_spell_t
 {
 public:
-  gain_t* gain;
-
-  affliction_spell_t( warlock_t* p, util::string_view n ) : affliction_spell_t( n, p, p->find_class_spell( n ) )
-  {
-  }
-
-  affliction_spell_t( warlock_t* p, util::string_view n, specialization_e s )
-    : affliction_spell_t( n, p, p->find_class_spell( n, s ) )
-  {
-  }
-
-  affliction_spell_t( util::string_view token, warlock_t* p, const spell_data_t* s = spell_data_t::nil() )
-    : warlock_spell_t( token, p, s )
-  {
-    may_crit          = true;
-    tick_may_crit     = true;
-    weapon_multiplier = 0.0;
-    gain              = player->get_gain( name_str );
-  }
+  affliction_spell_t( util::string_view n, warlock_t* p, const spell_data_t* s = spell_data_t::nil() )
+    : warlock_spell_t( n, p, s )
+  {  }
 
   void init() override
   {
@@ -42,14 +26,6 @@ public:
     }
   }
 
-  double action_multiplier() const override
-  {
-    double pm = warlock_spell_t::action_multiplier();
-
-    return pm;
-  }
-
-  // direct action multiplier
   double composite_da_multiplier( const action_state_t* s ) const override
   {
     double pm = warlock_spell_t::composite_da_multiplier( s );
@@ -61,7 +37,6 @@ public:
     return pm;
   }
 
-  // tick action multiplier
   double composite_ta_multiplier( const action_state_t* s ) const override
   {
     double pm = warlock_spell_t::composite_ta_multiplier( s );
@@ -75,11 +50,8 @@ public:
   }
 };
 
-// Dots
 struct agony_t : public affliction_spell_t
 {
-  double chance;
-
   agony_t( warlock_t* p, util::string_view options_str ) : affliction_spell_t( "Agony", p, p->warlock_base.agony )
   {
     parse_options( options_str );
@@ -120,10 +92,8 @@ struct agony_t : public affliction_spell_t
 
   void impact( action_state_t* s ) override
   {
-    auto dot_data = td( s->target )->dots_agony;
-
-    bool pi_trigger = p()->talents.pandemic_invocation.ok() && dot_data->is_ticking()
-      && dot_data->remains() < timespan_t::from_millis( p()->talents.pandemic_invocation->effectN( 1 ).base_value() );
+    bool pi_trigger = p()->talents.pandemic_invocation->ok() && td( s->target )->dots_agony->is_ticking()
+      && td( s->target )->dots_agony->remains() < p()->talents.pandemic_invocation->effectN( 1 ).time_value();
 
     affliction_spell_t::impact( s );
 
@@ -133,8 +103,6 @@ struct agony_t : public affliction_spell_t
 
   void tick( dot_t* d ) override
   {
-    td( d->state->target )->dots_agony->increment( 1 );
-
     // Blizzard has not publicly released the formula for Agony's chance to generate a Soul Shard.
     // This set of code is based on results from 500+ Soul Shard sample sizes, and matches in-game
     // results to within 0.1% of accuracy in all tests conducted on all targets numbers up to 8.
@@ -144,11 +112,6 @@ struct agony_t : public affliction_spell_t
 
     double active_agonies = p()->get_active_dots( internal_id );
     increment_max *= std::pow( active_agonies, -2.0 / 3.0 );
-
-    //if ( p()->talents.creeping_death->ok() )
-    //{
-    //  increment_max *= 1.0 + p()->talents.creeping_death->effectN( 1 ).percent();
-    //}
 
     p()->agony_accumulator += rng().range( 0.0, increment_max );
 
@@ -175,24 +138,25 @@ struct agony_t : public affliction_spell_t
     }
 
     affliction_spell_t::tick( d );
+
+    td( d->state->target )->dots_agony->increment( 1 );
   }
 };
 
 struct unstable_affliction_t : public affliction_spell_t
 {
   unstable_affliction_t( warlock_t* p, util::string_view options_str )
-    : affliction_spell_t( "unstable_affliction", p, p->talents.unstable_affliction )
+    : affliction_spell_t( "Unstable Affliction", p, p->talents.unstable_affliction )
   {
     parse_options( options_str );
 
-    // DF - In beta the rank 3 passive appears to be learned as part of the spec automatically
-    dot_duration += timespan_t::from_millis( p->talents.unstable_affliction_3->effectN( 1 ).base_value() );
+    dot_duration += p->talents.unstable_affliction_3->effectN( 1 ).time_value();
   }
 
   unstable_affliction_t( warlock_t* p )
-    : affliction_spell_t( "unstable_affliction", p, p->talents.soul_swap_ua )
+    : affliction_spell_t( "Unstable Affliction", p, p->talents.soul_swap_ua )
   {
-    dot_duration += timespan_t::from_millis( p->talents.unstable_affliction_3->effectN( 1 ).base_value() );
+    dot_duration += p->talents.unstable_affliction_3->effectN( 1 ).time_value();
   }
 
   void execute() override
@@ -210,10 +174,8 @@ struct unstable_affliction_t : public affliction_spell_t
 
   void impact( action_state_t* s ) override
   {
-    auto dot_data = td( s->target )->dots_unstable_affliction;
-
-    bool pi_trigger = p()->talents.pandemic_invocation.ok() && dot_data->is_ticking()
-      && dot_data->remains() < timespan_t::from_millis( p()->talents.pandemic_invocation->effectN( 1 ).base_value() );
+    bool pi_trigger = p()->talents.pandemic_invocation->ok() && td( s->target )->dots_unstable_affliction->is_ticking()
+      && td( s->target )->dots_unstable_affliction->remains() < p()->talents.pandemic_invocation->effectN( 1 ).time_value();
 
     affliction_spell_t::impact( s );
 
@@ -225,7 +187,7 @@ struct unstable_affliction_t : public affliction_spell_t
   {
     affliction_spell_t::tick( d );
 
-    if ( p()->talents.souleaters_gluttony.ok() )
+    if ( p()->talents.souleaters_gluttony->ok() )
     {
       timespan_t adjustment = timespan_t::from_seconds( p()->talents.souleaters_gluttony->effectN( 1 ).base_value() );
       adjustment = adjustment / p()->talents.souleaters_gluttony->effectN( 2 ).base_value();
@@ -245,19 +207,17 @@ struct unstable_affliction_t : public affliction_spell_t
   {
     double m = affliction_spell_t::composite_ta_multiplier( s );
 
-    if ( p()->talents.malefic_affliction.ok() && p()->buffs.malefic_affliction->check() )
+    if ( p()->talents.malefic_affliction->ok() && p()->buffs.malefic_affliction->check() )
       m *= 1.0 + p()->buffs.malefic_affliction->check_stack_value();
 
     return m;
   }
 };
 
-// TOCHECK: As of 2022-10-01, the damage bonus portion of Malevolent Visionary is not working
-// Data looks fine and is hooked up correctly in simc, most likely a server-side bug
 struct summon_darkglare_t : public affliction_spell_t
 {
   summon_darkglare_t( warlock_t* p, util::string_view options_str )
-    : affliction_spell_t( "summon_darkglare", p, p->talents.summon_darkglare )
+    : affliction_spell_t( "Summon Darkglare", p, p->talents.summon_darkglare )
   {
     parse_options( options_str );
     harmful = may_crit = may_miss = false;
@@ -269,9 +229,9 @@ struct summon_darkglare_t : public affliction_spell_t
 
     timespan_t summon_duration = p()->talents.summon_darkglare->duration();
 
-    if ( p()->talents.malevolent_visionary.ok() )
+    if ( p()->talents.malevolent_visionary->ok() )
     {
-      summon_duration += timespan_t::from_millis( p()->talents.malevolent_visionary->effectN( 2 ).base_value() );
+      summon_duration += p()->talents.malevolent_visionary->effectN( 2 ).time_value();
     }
 
     p()->warlock_pet_list.darkglares.spawn( summon_duration );
@@ -286,15 +246,14 @@ struct summon_darkglare_t : public affliction_spell_t
 
 struct malefic_rapture_t : public affliction_spell_t
 {
-    struct malefic_rapture_damage_instance_t : public affliction_spell_t
+    struct malefic_rapture_damage_t : public affliction_spell_t
     {
-      malefic_rapture_damage_instance_t( warlock_t *p, double spc ) :
-          affliction_spell_t( "malefic_rapture_damage", p, p->talents.malefic_rapture_dmg )
+      malefic_rapture_damage_t( warlock_t* p )
+        : affliction_spell_t( "Malefic Rapture (hit)", p, p->talents.malefic_rapture_dmg )
       {
-        aoe = 1;
-        background = true;
-        spell_power_mod.direct = spc;
-        callbacks = false; //TOCHECK: Malefic Rapture did not proc Psyche Shredder, it may not cause any procs at all
+        background = dual = true;
+        spell_power_mod.direct = p->talents.malefic_rapture->effectN( 1 ).sp_coeff();
+        callbacks = false; // Malefic Rapture did not proc Psyche Shredder, it may not cause any procs at all
       }
 
       double composite_da_multiplier( const action_state_t* s ) const override
@@ -303,13 +262,7 @@ struct malefic_rapture_t : public affliction_spell_t
 
         m *= p()->get_target_data( s->target )->count_affliction_dots();
 
-        //if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T28, B2 ) )
-        //{
-        //  m *= 1.0 + p()->sets->set( WARLOCK_AFFLICTION, T28, B2 )->effectN( 1 ).percent();
-        //}
-
-        if ( p()->buffs.cruel_epiphany->check() )
-          m *= 1.0 + p()->buffs.cruel_epiphany->check_value();
+        m *= 1.0 + p()->buffs.cruel_epiphany->check_value();
 
         return m;
       }
@@ -318,32 +271,18 @@ struct malefic_rapture_t : public affliction_spell_t
       {
         affliction_spell_t::impact( s );
 
-        if ( p()->talents.malefic_affliction.ok() )
+        if ( p()->talents.malefic_affliction->ok() )
         {
           auto target_data = td( s->target );
 
           if ( target_data->dots_unstable_affliction->is_ticking() )
           {
-            if ( p()->talents.dread_touch.ok() && ( p()->buffs.malefic_affliction->check() >= (int)p()->talents.malefic_affliction_buff->max_stacks() ) )
+            if ( p()->talents.dread_touch->ok() && ( p()->buffs.malefic_affliction->check() >= (int)p()->talents.malefic_affliction_buff->max_stacks() ) )
               target_data->debuffs_dread_touch->trigger();
 
             p()->buffs.malefic_affliction->trigger();
           }
         }
-
-        //if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T28, B2 ) )
-        //{
-        //  timespan_t dot_extension =  p()->sets->set( WARLOCK_AFFLICTION, T28, B2 )->effectN( 2 ).time_value() * 1000;
-        //  warlock_td_t* td = p()->get_target_data( s->target );
-
-        //  td->dots_agony->adjust_duration( dot_extension );
-        //  td->dots_unstable_affliction->adjust_duration(dot_extension);
-
-        //  if ( !p()->talents.absolute_corruption->ok() )
-        //  {
-        //    td->dots_corruption->adjust_duration( dot_extension );
-        //  }
-        //}
       }
 
       void execute() override
@@ -361,21 +300,18 @@ struct malefic_rapture_t : public affliction_spell_t
     };
 
     malefic_rapture_t( warlock_t* p, util::string_view options_str )
-      : affliction_spell_t( "malefic_rapture", p, p->talents.malefic_rapture )
+      : affliction_spell_t( "Malefic Rapture", p, p->talents.malefic_rapture )
     {
       parse_options( options_str );
       aoe = -1;
 
-      impact_action = new malefic_rapture_damage_instance_t( p, data().effectN( 1 ).sp_coeff() );
+      impact_action = new malefic_rapture_damage_t( p );
       add_child( impact_action );
     }
 
     double cost() const override
     {
       double c = affliction_spell_t::cost();
-
-      //if ( p()->buffs.calamitous_crescendo->check() )
-      //  c *= 1.0 + p()->buffs.calamitous_crescendo->data().effectN( 4 ).percent();
 
       if ( p()->buffs.tormented_crescendo->check() )
         c *= 1.0 + p()->talents.tormented_crescendo_buff->effectN( 4 ).percent();
@@ -386,9 +322,6 @@ struct malefic_rapture_t : public affliction_spell_t
     timespan_t execute_time() const override
     {
       timespan_t t = affliction_spell_t::execute_time();
-
-      //if ( p()->buffs.calamitous_crescendo->check() )
-      //  t *= 1.0 + p()->buffs.calamitous_crescendo->data().effectN( 3 ).percent();
 
       if ( p()->buffs.tormented_crescendo->check() )
         t *= 1.0 + p()->talents.tormented_crescendo_buff->effectN( 3 ).percent();
@@ -410,7 +343,6 @@ struct malefic_rapture_t : public affliction_spell_t
       affliction_spell_t::execute();
 
       p()->buffs.tormented_crescendo->decrement();
-      //p()->buffs.calamitous_crescendo->expire();
       p()->buffs.cruel_epiphany->decrement();
     }
 
@@ -424,11 +356,8 @@ struct malefic_rapture_t : public affliction_spell_t
     }
 };
 
-// Talents
-
 struct drain_soul_t : public affliction_spell_t
 {
-  // TOCHECK: What happens with chained Drain Soul casts?
   struct drain_soul_state_t : public action_state_t
   {
     double tick_time_multiplier;
@@ -458,10 +387,10 @@ struct drain_soul_t : public affliction_spell_t
   };
 
   drain_soul_t( warlock_t* p, util::string_view options_str )
-    : affliction_spell_t( "drain_soul", p, p->talents.drain_soul.ok() ? p->talents.drain_soul_dot : spell_data_t::not_found() )
+    : affliction_spell_t( "Drain Soul", p, p->talents.drain_soul->ok() ? p->talents.drain_soul_dot : spell_data_t::not_found() )
   {
     parse_options( options_str );
-    channeled    = true;
+    channeled = true;
   }
 
   action_state_t* new_state() override
@@ -508,20 +437,7 @@ struct drain_soul_t : public affliction_spell_t
       if ( p()->talents.shadow_embrace->ok() )
         td( d->target )->debuffs_shadow_embrace->trigger();
 
-      //if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T28, B4 ) )
-      //{
-      //  // TOFIX - As of 2022-02-03 PTR, the bonus appears to still be only checking that *any* target has these dots. May need to implement this behavior.
-      //  bool tierDotsActive = td( d->target )->dots_agony->is_ticking() 
-      //                     && td( d->target )->dots_corruption->is_ticking()
-      //                     && td( d->target )->dots_unstable_affliction->is_ticking();
-
-      //  if ( tierDotsActive && rng().roll( p()->sets->set( WARLOCK_AFFLICTION, T28, B4 )->effectN( 2 ).percent() ) )
-      //  {
-      //    p()->procs.calamitous_crescendo->occur();
-      //    p()->buffs.calamitous_crescendo->trigger();
-      //  }
-      //}
-      if ( p()->talents.tormented_crescendo.ok() )
+      if ( p()->talents.tormented_crescendo->ok() )
       {
         if ( p()->crescendo_check( p() ) && rng().roll( p()->talents.tormented_crescendo->effectN( 2 ).percent() ) )
         {
@@ -537,9 +453,9 @@ struct drain_soul_t : public affliction_spell_t
     double m = affliction_spell_t::composite_target_multiplier( t );
 
     if ( t->health_percentage() < p()->talents.drain_soul_dot->effectN( 3 ).base_value() )
-      m *= 1.0 + p()->talents.drain_soul->effectN( 2 ).percent();
+      m *= 1.0 + p()->talents.drain_soul_dot->effectN( 2 ).percent();
 
-    if ( p()->talents.withering_bolt.ok() )
+    if ( p()->talents.withering_bolt->ok() )
       m *= 1.0 + p()->talents.withering_bolt->effectN( 1 ).percent() * std::min( (int)p()->talents.withering_bolt->effectN( 2 ).base_value(), p()->get_target_data( t )->count_affliction_dots() );
 
     return m;
@@ -548,11 +464,11 @@ struct drain_soul_t : public affliction_spell_t
 
 struct haunt_t : public affliction_spell_t
 {
-  haunt_t( warlock_t* p, util::string_view options_str ) : affliction_spell_t( "haunt", p, p->talents.haunt )
+  haunt_t( warlock_t* p, util::string_view options_str ) : affliction_spell_t( "Haunt", p, p->talents.haunt )
   {
     parse_options( options_str );
 
-    if ( p->talents.seized_vitality.ok() )
+    if ( p->talents.seized_vitality->ok() )
       base_dd_multiplier *= 1.0 + p->talents.seized_vitality->effectN( 1 ).percent();
   }
 
@@ -564,10 +480,10 @@ struct haunt_t : public affliction_spell_t
     {
       td( s->target )->debuffs_haunt->trigger();
 
-      if ( p()->talents.haunted_soul.ok() )
+      if ( p()->talents.haunted_soul->ok() )
         p()->buffs.haunted_soul->trigger();
 
-      if ( p()->talents.shadow_embrace.ok() )
+      if ( p()->talents.shadow_embrace->ok() )
         td( s->target )->debuffs_shadow_embrace->trigger();
     }
   }
@@ -576,17 +492,15 @@ struct haunt_t : public affliction_spell_t
 struct siphon_life_t : public affliction_spell_t
 {
   siphon_life_t( warlock_t* p, util::string_view options_str )
-    : affliction_spell_t( "siphon_life", p, p->talents.siphon_life )
+    : affliction_spell_t( "Siphon Life", p, p->talents.siphon_life )
   {
     parse_options( options_str );
   }
   
   void impact( action_state_t* s ) override
   {
-    auto dot_data = td( s->target )->dots_siphon_life;
-
-    bool pi_trigger = p()->talents.pandemic_invocation.ok() && dot_data->is_ticking()
-      && dot_data->remains() < timespan_t::from_millis( p()->talents.pandemic_invocation->effectN( 1 ).base_value() );
+    bool pi_trigger = p()->talents.pandemic_invocation->ok() && td( s->target )->dots_siphon_life->is_ticking()
+      && td( s->target )->dots_siphon_life->remains() < p()->talents.pandemic_invocation->effectN( 1 ).time_value();
 
     affliction_spell_t::impact( s );
 
@@ -595,27 +509,26 @@ struct siphon_life_t : public affliction_spell_t
   }
 };
 
-struct phantom_singularity_tick_t : public affliction_spell_t
-{
-  phantom_singularity_tick_t( warlock_t* p )
-    : affliction_spell_t( "phantom_singularity_tick", p, p->talents.phantom_singularity_tick )
-  {
-    background = true;
-    may_miss   = false;
-    dual       = true;
-    aoe        = -1;
-  }
-};
-
 struct phantom_singularity_t : public affliction_spell_t
 {
+  struct phantom_singularity_tick_t : public affliction_spell_t
+  {
+    phantom_singularity_tick_t( warlock_t* p )
+      : affliction_spell_t( "Phantom Singularity (tick)", p, p->talents.phantom_singularity_tick )
+    {
+      background = dual = true;
+      may_miss = false;
+      aoe = -1;
+    }
+  };
+  
   phantom_singularity_t( warlock_t* p, util::string_view options_str )
-    : affliction_spell_t( "phantom_singularity", p, p->talents.phantom_singularity )
+    : affliction_spell_t( "Phantom Singularity", p, p->talents.phantom_singularity )
   {
     parse_options( options_str );
-    callbacks    = false;
+    callbacks = false;
     hasted_ticks = true;
-    tick_action  = new phantom_singularity_tick_t( p );
+    tick_action = new phantom_singularity_tick_t( p );
 
     spell_power_mod.tick = 0;
   }
@@ -646,8 +559,7 @@ struct vile_taint_t : public affliction_spell_t
     }
   };
 
-  vile_taint_t( warlock_t* p, util::string_view options_str )
-    : affliction_spell_t( "vile_taint", p, p->talents.vile_taint )
+  vile_taint_t( warlock_t* p, util::string_view options_str ) : affliction_spell_t( "Vile Taint", p, p->talents.vile_taint )
   {
     parse_options( options_str );
 
@@ -658,11 +570,11 @@ struct vile_taint_t : public affliction_spell_t
 
 struct soul_tap_t : public affliction_spell_t
 {
-  soul_tap_t( warlock_t* p, util::string_view options_str )
-    : affliction_spell_t( "Soul Tap", p, p->talents.soul_tap )
+  soul_tap_t( warlock_t* p, util::string_view options_str ) : affliction_spell_t( "Soul Tap", p, p->talents.soul_tap )
   {
     parse_options( options_str );
     harmful = false;
+    cooldown->duration = 30_s; // TODO: Find an appropriate model for usage instead of a hard-coded cooldown
   }
 
   void execute() override
@@ -670,7 +582,7 @@ struct soul_tap_t : public affliction_spell_t
     affliction_spell_t::execute();
 
     // 1 Soul Shard is hardcoded, not in spell data
-    p()->resource_gain( RESOURCE_SOUL_SHARD, 1, p()->gains.soul_tap );
+    p()->resource_gain( RESOURCE_SOUL_SHARD, 1.0, p()->gains.soul_tap );
   }
 };
 
@@ -680,8 +592,7 @@ struct soul_swap_t : public affliction_spell_t
   agony_t* agony;
   unstable_affliction_t* ua;
 
-  soul_swap_t( warlock_t* p, util::string_view options_str )
-    : affliction_spell_t( "Soul Swap", p, p->talents.soul_swap )
+  soul_swap_t( warlock_t* p, util::string_view options_str ) : affliction_spell_t( "Soul Swap", p, p->talents.soul_swap )
   {
     parse_options( options_str );
     may_crit = false;
@@ -708,13 +619,6 @@ struct soul_swap_t : public affliction_spell_t
 
 }  // namespace actions_affliction
 
-namespace buffs_affliction
-{
-using namespace buffs;
-
-}  // namespace buffs_affliction
-
-// add actions
 action_t* warlock_t::create_action_affliction( util::string_view action_name, util::string_view options_str )
 {
   using namespace actions_affliction;
@@ -725,7 +629,6 @@ action_t* warlock_t::create_action_affliction( util::string_view action_name, ut
     return new unstable_affliction_t( this, options_str );
   if ( action_name == "summon_darkglare" )
     return new summon_darkglare_t( this, options_str );
-  // talents
   if ( action_name == "drain_soul" )
     return new drain_soul_t( this, options_str );
   if ( action_name == "haunt" )
@@ -748,14 +651,13 @@ action_t* warlock_t::create_action_affliction( util::string_view action_name, ut
 
 void warlock_t::create_buffs_affliction()
 {
-  // spells
   buffs.drain_life = make_buff( this, "drain_life" );
-  // talents
+
   buffs.nightfall = make_buff( this, "nightfall", talents.nightfall_buff )
                         ->set_trigger_spell( talents.nightfall );
 
   buffs.inevitable_demise = make_buff( this, "inevitable_demise", talents.inevitable_demise_buff )
-                                ->set_default_value( talents.inevitable_demise->effectN( 1 ).percent() ); // There are effects in the buff data, but are they unused for the damage?
+                                ->set_default_value( talents.inevitable_demise->effectN( 1 ).percent() );
 
   buffs.tormented_crescendo = make_buff( this, "tormented_crescendo", talents.tormented_crescendo_buff );
 
@@ -778,10 +680,10 @@ void warlock_t::init_spells_affliction()
   using namespace actions_affliction;
 
   // Talents
-  talents.malefic_rapture = find_talent_spell( talent_tree::SPECIALIZATION, "Malefic Rapture" );
+  talents.malefic_rapture = find_talent_spell( talent_tree::SPECIALIZATION, "Malefic Rapture" ); // Should be ID 324536
   talents.malefic_rapture_dmg = find_spell( 324540 ); // This spell is the ID seen in logs, but the spcoeff is in the primary talent spell
 
-  talents.unstable_affliction = find_talent_spell( talent_tree::SPECIALIZATION, "Unstable Affliction" );
+  talents.unstable_affliction = find_talent_spell( talent_tree::SPECIALIZATION, "Unstable Affliction" ); // Should be ID 316099
   talents.unstable_affliction_2 = find_spell( 231791 ); // Soul Shard on demise
   talents.unstable_affliction_3 = find_spell( 334315 ); // +5 seconds duration
   
