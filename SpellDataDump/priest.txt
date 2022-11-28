@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46801 Live (hotfix 2022-11-28/46801)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46801 Live (hotfix 2022-11-29/46801)
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -13160,7 +13160,7 @@ Name             : Harsh Discipline (id=373183) [Spell Family (6)]
 Class            : Priest
 School           : Physical
 Spell Type       : None
-Duration         : 15 seconds
+Duration         : 30 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
 Proc Flags       : ........ ........ ........ .....x.. 
