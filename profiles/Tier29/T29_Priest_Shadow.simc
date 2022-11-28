@@ -111,8 +111,8 @@ actions.trinkets+=/use_item,name=architects_ingenuity_core
 # Default fallback for usable items: Use on cooldown in order by trinket slot.
 actions.trinkets+=/use_items,if=buff.voidform.up|buff.power_infusion.up|buff.dark_ascension.up|cooldown.void_eruption.remains>10
 
-head=draconic_hierophants_archcowl,id=200327,bonus_id=4800/4786/1498,gem_id=192948
-neck=eye_of_the_vengeful_hurricane,id=195496,bonus_id=4800/4786/1498,gem_id=192985/192948/192948
+head=draconic_hierophants_archcowl,id=200327,bonus_id=4800/4786/1498,gem_id=192985
+neck=elemental_lariat,id=193001,bonus_id=1540/8793/6652/7936/7979/8767/8782,gem_id=192948/192953/192945
 shoulders=draconic_hierophants_wisdom,id=200329,bonus_id=4800/4786/1498
 back=fireproof_drape,id=193763,bonus_id=6808/4786/1643
 chest=arcanists_resonant_robes,id=134415,bonus_id=1795/6808/4786/3300/6935,enchant=waking_stats_3
@@ -128,12 +128,12 @@ trinket2=furious_ragefeather,id=193677,bonus_id=6808/4786/1643
 main_hand=final_grade,id=193707,bonus_id=6808/4786/1643,enchant=sophic_devotion_3
 
 # Gear Summary
-# gear_ilvl=421.80
-# gear_stamina=13306
+# gear_ilvl=421.60
+# gear_stamina=13278
 # gear_intellect=6646
-# gear_crit_rating=910
-# gear_haste_rating=5156
-# gear_mastery_rating=4940
+# gear_crit_rating=731
+# gear_haste_rating=4742
+# gear_mastery_rating=5466
 # gear_versatility_rating=816
 # gear_armor=2037
 # set_bonus=tier29_2pc=1

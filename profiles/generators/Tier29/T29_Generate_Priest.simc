@@ -9,8 +9,8 @@ class_talents=dispel_magic:1/improved_flash_heal:1/protective_light:1/angelic_fe
 spec_talents=devouring_plague:1/dispersion:1/shadowy_apparitions:1/silence:1/mental_fortitude:1/misery:1/coalescing_shadows:1/mind_spike:1/puppet_master:1/mental_decay:1/dark_ascension:1/surge_of_darkness:1/harnessed_shadows:1/shadowy_insight:1/ancient_madness:2/shadow_crash:1/dark_evangelism:2/auspicious_spirits:1/mindbender:1/mind_flay_insanity:1/encroaching_shadows:1/inescapable_torment:2/screams_of_the_void:2/mind_devourer:1/idol_of_yshaarj:1/idol_of_cthun:1
 
 # TODO: use prof items?
-head=draconic_hierophants_archcowl,id=200327,bonus_id=4800/4786/1498,gem_id=192948
-neck=eye_of_the_vengeful_hurricane,id=195496,bonus_id=4800/4786/1498,gem_id=192985/192948/192948
+head=draconic_hierophants_archcowl,id=200327,bonus_id=4800/4786/1498,gem_id=192985
+neck=elemental_lariat,id=193001,bonus_id=1540/8793/6652/7936/7979/8767/8782,gem_id=192948/192953/192945
 shoulders=draconic_hierophants_wisdom,id=200329,bonus_id=4800/4786/1498
 back=fireproof_drape,id=193763,bonus_id=6808/4786/1643
 chest=arcanists_resonant_robes,id=134415,bonus_id=1795/6808/4786/3300/6935,enchant=waking_stats_3
