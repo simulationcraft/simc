@@ -234,7 +234,6 @@ struct shadowburn_t : public destruction_spell_t
   }
 };
 
-// Spells
 struct havoc_t : public destruction_spell_t
 {
   havoc_t( warlock_t* p, util::string_view options_str ) : destruction_spell_t( "Havoc", p, p->talents.havoc )
@@ -255,7 +254,7 @@ struct immolate_t : public destruction_spell_t
 {
   struct immolate_dot_t : public destruction_spell_t
   {
-    immolate_dot_t( warlock_t* p ) : destruction_spell_t( "immolate", p, p->warlock_base.immolate_dot )
+    immolate_dot_t( warlock_t* p ) : destruction_spell_t( "Immolate", p, p->warlock_base.immolate_dot )
     {
       background = dual = true;
       spell_power_mod.tick = p->warlock_base.immolate_dot->effectN( 1 ).sp_coeff();
@@ -274,12 +273,12 @@ struct immolate_t : public destruction_spell_t
 
       p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.immolate );
 
-      if ( p()->talents.flashpoint.ok() && d->state->target->health_percentage() >= p()->talents.flashpoint->effectN( 2 ).base_value() )
+      if ( p()->talents.flashpoint->ok() && d->state->target->health_percentage() >= p()->talents.flashpoint->effectN( 2 ).base_value() )
         p()->buffs.flashpoint->trigger();
     }
   };
 
-  immolate_t( warlock_t* p, util::string_view options_str ) : destruction_spell_t( "immolate_direct", p, p->warlock_base.immolate )
+  immolate_t( warlock_t* p, util::string_view options_str ) : destruction_spell_t( "Immolate (direct)", p, p->warlock_base.immolate )
   {
     parse_options( options_str );
 
@@ -289,6 +288,11 @@ struct immolate_t : public destruction_spell_t
     add_child( impact_action );
 
     base_multiplier *= 1.0 + p->talents.scalding_flames->effectN( 1 ).percent();
+  }
+
+  dot_t* get_dot( player_t* t ) override
+  {
+    return impact_action->get_dot( t );
   }
 };
 
