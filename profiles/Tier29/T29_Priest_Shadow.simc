@@ -116,7 +116,7 @@ neck=elemental_lariat,id=193001,bonus_id=1540/8793/6652/7936/7979/8767/8782,gem_
 shoulders=draconic_hierophants_wisdom,id=200329,bonus_id=4800/4786/1498
 back=fireproof_drape,id=193763,bonus_id=6808/4786/1643
 chest=arcanists_resonant_robes,id=134415,bonus_id=1795/6808/4786/3300/6935,enchant=waking_stats_3
-wrists=manawracker_bindings,id=134310,bonus_id=1795/6808/4786/3300/6935,gem_id=192948
+wrists=vibrant_wildercloth_wristwraps,id=193510,bonus_id=8836/8840/8902/8802/8793/8932,ilevel=418,gem_id=192948
 hands=draconic_hierophants_grips,id=200326,bonus_id=4800/4786/1498
 waist=sky_saddle_cord,id=193691,bonus_id=6808/4786/1643,gem_id=192948
 legs=draconic_hierophants_britches,id=200328,bonus_id=4800/4786/1498,enchant=frozen_spellthread_3
@@ -128,13 +128,13 @@ trinket2=furious_ragefeather,id=193677,bonus_id=6808/4786/1643
 main_hand=final_grade,id=193707,bonus_id=6808/4786/1643,enchant=sophic_devotion_3
 
 # Gear Summary
-# gear_ilvl=421.60
-# gear_stamina=13278
-# gear_intellect=6646
+# gear_ilvl=421.40
+# gear_stamina=13250
+# gear_intellect=6638
 # gear_crit_rating=731
-# gear_haste_rating=4742
-# gear_mastery_rating=5466
+# gear_haste_rating=4795
+# gear_mastery_rating=5407
 # gear_versatility_rating=816
-# gear_armor=2037
+# gear_armor=2034
 # set_bonus=tier29_2pc=1
 # set_bonus=tier29_4pc=1
