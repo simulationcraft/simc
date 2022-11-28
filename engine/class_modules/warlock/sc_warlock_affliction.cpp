@@ -214,12 +214,10 @@ struct unstable_affliction_t : public affliction_spell_t
   }
 };
 
-// TOCHECK: As of 2022-10-01, the damage bonus portion of Malevolent Visionary is not working
-// Data looks fine and is hooked up correctly in simc, most likely a server-side bug
 struct summon_darkglare_t : public affliction_spell_t
 {
   summon_darkglare_t( warlock_t* p, util::string_view options_str )
-    : affliction_spell_t( "summon_darkglare", p, p->talents.summon_darkglare )
+    : affliction_spell_t( "Summon Darkglare", p, p->talents.summon_darkglare )
   {
     parse_options( options_str );
     harmful = may_crit = may_miss = false;
@@ -231,9 +229,9 @@ struct summon_darkglare_t : public affliction_spell_t
 
     timespan_t summon_duration = p()->talents.summon_darkglare->duration();
 
-    if ( p()->talents.malevolent_visionary.ok() )
+    if ( p()->talents.malevolent_visionary->ok() )
     {
-      summon_duration += timespan_t::from_millis( p()->talents.malevolent_visionary->effectN( 2 ).base_value() );
+      summon_duration += p()->talents.malevolent_visionary->effectN( 2 ).time_value();
     }
 
     p()->warlock_pet_list.darkglares.spawn( summon_duration );
