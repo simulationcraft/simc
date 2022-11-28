@@ -592,8 +592,7 @@ struct soul_swap_t : public affliction_spell_t
   agony_t* agony;
   unstable_affliction_t* ua;
 
-  soul_swap_t( warlock_t* p, util::string_view options_str )
-    : affliction_spell_t( "Soul Swap", p, p->talents.soul_swap )
+  soul_swap_t( warlock_t* p, util::string_view options_str ) : affliction_spell_t( "Soul Swap", p, p->talents.soul_swap )
   {
     parse_options( options_str );
     may_crit = false;
