@@ -570,11 +570,11 @@ struct vile_taint_t : public affliction_spell_t
 
 struct soul_tap_t : public affliction_spell_t
 {
-  soul_tap_t( warlock_t* p, util::string_view options_str )
-    : affliction_spell_t( "Soul Tap", p, p->talents.soul_tap )
+  soul_tap_t( warlock_t* p, util::string_view options_str ) : affliction_spell_t( "Soul Tap", p, p->talents.soul_tap )
   {
     parse_options( options_str );
     harmful = false;
+    cooldown->duration = 30_s; // TODO: Find an appropriate model for usage instead of a hard-coded cooldown
   }
 
   void execute() override
@@ -582,7 +582,7 @@ struct soul_tap_t : public affliction_spell_t
     affliction_spell_t::execute();
 
     // 1 Soul Shard is hardcoded, not in spell data
-    p()->resource_gain( RESOURCE_SOUL_SHARD, 1, p()->gains.soul_tap );
+    p()->resource_gain( RESOURCE_SOUL_SHARD, 1.0, p()->gains.soul_tap );
   }
 };
 
