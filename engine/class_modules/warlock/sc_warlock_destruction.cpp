@@ -697,7 +697,7 @@ struct chaos_bolt_t : public destruction_spell_t
 
 struct infernal_awakening_t : public destruction_spell_t
 {
-  infernal_awakening_t( warlock_t* p ) : destruction_spell_t( "infernal_awakening", p, p->talents.infernal_awakening )
+  infernal_awakening_t( warlock_t* p ) : destruction_spell_t( "Infernal Awakening", p, p->talents.infernal_awakening )
   {
     destro_mastery = false;
     aoe = -1;
@@ -715,11 +715,11 @@ struct infernal_awakening_t : public destruction_spell_t
 struct summon_infernal_t : public destruction_spell_t
 {
   summon_infernal_t( warlock_t* p, util::string_view options_str )
-    : destruction_spell_t( "summon_infernal", p, p->talents.summon_infernal )
+    : destruction_spell_t( "Summon Infernal", p, p->talents.summon_infernal )
   {
     parse_options( options_str );
 
-    harmful = may_crit = false;
+    may_crit = false;
     impact_action = new infernal_awakening_t( p );
     add_child( impact_action );
   }
@@ -728,10 +728,10 @@ struct summon_infernal_t : public destruction_spell_t
   {
     destruction_spell_t::execute();
 
-    if ( p()->talents.crashing_chaos.ok() )
+    if ( p()->talents.crashing_chaos->ok() )
       p()->buffs.crashing_chaos->trigger();
 
-    if ( p()->talents.rain_of_chaos.ok() )
+    if ( p()->talents.rain_of_chaos->ok() )
       p()->buffs.rain_of_chaos->trigger();
   }
 };
