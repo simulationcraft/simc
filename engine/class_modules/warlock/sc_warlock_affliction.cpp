@@ -619,13 +619,6 @@ struct soul_swap_t : public affliction_spell_t
 
 }  // namespace actions_affliction
 
-namespace buffs_affliction
-{
-using namespace buffs;
-
-}  // namespace buffs_affliction
-
-// add actions
 action_t* warlock_t::create_action_affliction( util::string_view action_name, util::string_view options_str )
 {
   using namespace actions_affliction;
@@ -636,7 +629,6 @@ action_t* warlock_t::create_action_affliction( util::string_view action_name, ut
     return new unstable_affliction_t( this, options_str );
   if ( action_name == "summon_darkglare" )
     return new summon_darkglare_t( this, options_str );
-  // talents
   if ( action_name == "drain_soul" )
     return new drain_soul_t( this, options_str );
   if ( action_name == "haunt" )
@@ -659,14 +651,13 @@ action_t* warlock_t::create_action_affliction( util::string_view action_name, ut
 
 void warlock_t::create_buffs_affliction()
 {
-  // spells
   buffs.drain_life = make_buff( this, "drain_life" );
-  // talents
+
   buffs.nightfall = make_buff( this, "nightfall", talents.nightfall_buff )
                         ->set_trigger_spell( talents.nightfall );
 
   buffs.inevitable_demise = make_buff( this, "inevitable_demise", talents.inevitable_demise_buff )
-                                ->set_default_value( talents.inevitable_demise->effectN( 1 ).percent() ); // There are effects in the buff data, but are they unused for the damage?
+                                ->set_default_value( talents.inevitable_demise->effectN( 1 ).percent() );
 
   buffs.tormented_crescendo = make_buff( this, "tormented_crescendo", talents.tormented_crescendo_buff );
 
@@ -689,10 +680,10 @@ void warlock_t::init_spells_affliction()
   using namespace actions_affliction;
 
   // Talents
-  talents.malefic_rapture = find_talent_spell( talent_tree::SPECIALIZATION, "Malefic Rapture" );
+  talents.malefic_rapture = find_talent_spell( talent_tree::SPECIALIZATION, "Malefic Rapture" ); // Should be ID 324536
   talents.malefic_rapture_dmg = find_spell( 324540 ); // This spell is the ID seen in logs, but the spcoeff is in the primary talent spell
 
-  talents.unstable_affliction = find_talent_spell( talent_tree::SPECIALIZATION, "Unstable Affliction" );
+  talents.unstable_affliction = find_talent_spell( talent_tree::SPECIALIZATION, "Unstable Affliction" ); // Should be ID 316099
   talents.unstable_affliction_2 = find_spell( 231791 ); // Soul Shard on demise
   talents.unstable_affliction_3 = find_spell( 334315 ); // +5 seconds duration
   
