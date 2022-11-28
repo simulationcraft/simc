@@ -616,11 +616,9 @@ struct soul_flame_t : public warlock_spell_t
   }
 };
 
-// TOCHECK: As of 2022-09-30, talent values are pointing to the incorrect effects
-// Everything should be pointed to the correct effect data but values may be garbage until this is fixed by Blizzard
 struct pandemic_invocation_t : public warlock_spell_t
 {
-  pandemic_invocation_t( warlock_t* p ) : warlock_spell_t( "pandemic_invocation", p, p->talents.pandemic_invocation_proc )
+  pandemic_invocation_t( warlock_t* p ) : warlock_spell_t( "Pandemic Invocation", p, p->talents.pandemic_invocation_proc )
   {
     background = true;
 
