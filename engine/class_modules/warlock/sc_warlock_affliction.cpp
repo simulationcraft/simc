@@ -492,17 +492,15 @@ struct haunt_t : public affliction_spell_t
 struct siphon_life_t : public affliction_spell_t
 {
   siphon_life_t( warlock_t* p, util::string_view options_str )
-    : affliction_spell_t( "siphon_life", p, p->talents.siphon_life )
+    : affliction_spell_t( "Siphon Life", p, p->talents.siphon_life )
   {
     parse_options( options_str );
   }
   
   void impact( action_state_t* s ) override
   {
-    auto dot_data = td( s->target )->dots_siphon_life;
-
-    bool pi_trigger = p()->talents.pandemic_invocation.ok() && dot_data->is_ticking()
-      && dot_data->remains() < timespan_t::from_millis( p()->talents.pandemic_invocation->effectN( 1 ).base_value() );
+    bool pi_trigger = p()->talents.pandemic_invocation->ok() && td( s->target )->dots_siphon_life->is_ticking()
+      && td( s->target )->dots_siphon_life->remains() < p()->talents.pandemic_invocation->effectN( 1 ).time_value();
 
     affliction_spell_t::impact( s );
 
