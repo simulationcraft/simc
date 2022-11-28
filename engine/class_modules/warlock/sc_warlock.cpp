@@ -1673,7 +1673,7 @@ void warlock_t::init_special_effects()
       } );
   }
 
-  if ( talents.grimoire_of_synergy.ok() )
+  if ( talents.grimoire_of_synergy->ok() )
   {
     auto const syn_effect = new special_effect_t( this );
     syn_effect->name_str = "demonic_synergy_effect";
@@ -1690,7 +1690,7 @@ void warlock_t::combat_begin()
 {
   player_t::combat_begin();
 
-  if ( talents.summon_soulkeeper.ok() )
+  if ( talents.summon_soulkeeper->ok() )
     buffs.tormented_soul_generator->trigger();
 
   if ( specialization() == WARLOCK_DEMONOLOGY && buffs.inner_demons && talents.inner_demons->ok() )
@@ -1719,7 +1719,7 @@ void warlock_t::reset()
   havoc_target                       = nullptr;
   ua_target                          = nullptr;
   agony_accumulator                  = rng().range( 0.0, 0.99 );
-  corruption_accumulator             = rng().range( 0.0, 0.99 ); // TOCHECK - Unsure if it procs on application
+  corruption_accumulator             = rng().range( 0.0, 0.99 );
   wild_imp_spawns.clear();
 }
 
