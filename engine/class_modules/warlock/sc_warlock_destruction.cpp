@@ -550,12 +550,15 @@ struct chaos_bolt_t : public destruction_spell_t
   {
     parse_options( options_str );
     can_havoc = true;
-    chaos_incarnate = p->talents.chaos_incarnate.ok();
+    chaos_incarnate = p->talents.chaos_incarnate->ok();
 
-    internal_combustion = new internal_combustion_t( p );
-    add_child( internal_combustion );
+    if ( p->talents.internal_combustion->ok() )
+    {
+      internal_combustion = new internal_combustion_t( p );
+      add_child( internal_combustion );
+    }
 
-    if ( p->talents.cry_havoc.ok() )
+    if ( p->talents.cry_havoc->ok() )
     {
       cry_havoc = new cry_havoc_t( p );
       add_child( cry_havoc );
@@ -569,7 +572,7 @@ struct chaos_bolt_t : public destruction_spell_t
     if ( p()->buffs.ritual_of_ruin->check() )
       c *= 1.0 + p()->talents.ritual_of_ruin_buff->effectN( 2 ).percent();
 
-    if ( c > 0.0 && p()->buffs.crashing_chaos->check() )
+    if ( c > 0.0 && p()->talents.crashing_chaos->ok() )
       c += p()->buffs.crashing_chaos->check_value();
 
     return c;      
@@ -586,10 +589,6 @@ struct chaos_bolt_t : public destruction_spell_t
     if ( p()->buffs.backdraft->check() )
       t *= 1.0 + p()->talents.backdraft_buff->effectN( 1 ).percent();
 
-    //// SL - Legendary
-    //if ( p()->buffs.madness_of_the_azjaqir->check() )
-    //  h *= 1.0 + p()->buffs.madness_of_the_azjaqir->data().effectN( 2 ).percent();
-
     if ( p()->buffs.madness_cb->check() )
       t *= 1.0 + p()->talents.madness_of_the_azjaqir->effectN( 2 ).percent();
 
@@ -600,13 +599,7 @@ struct chaos_bolt_t : public destruction_spell_t
   {
     double m = destruction_spell_t::action_multiplier();
 
-    //// SL - Legendary
-    //if ( p()->buffs.madness_of_the_azjaqir->check() )
-    //{
-    //  m *= 1.0 + p()->buffs.madness_of_the_azjaqir->data().effectN( 1 ).percent();
-    //}
-
-    if ( p()->buffs.madness_cb->check() )
+    if ( p()->talents.madness_of_the_azjaqir->ok() )
       m *= 1.0 + p()->buffs.madness_cb->check_value();
 
     return m;
@@ -616,12 +609,7 @@ struct chaos_bolt_t : public destruction_spell_t
   {
     double m = destruction_spell_t::composite_target_multiplier( t );
 
-    //// SL - Conduit
-    //// TOCHECK - Couldn't find affected_by spelldata to reference the spells 08-24-2020.
-    //if ( td->dots_immolate->is_ticking() && p()->conduit.ashen_remains->ok() )
-    //  m *= 1.0 + p()->conduit.ashen_remains.percent();
-
-    if ( p()->talents.ashen_remains.ok() && td( t )->dots_immolate->is_ticking() )
+    if ( p()->talents.ashen_remains->ok() && td( t )->dots_immolate->is_ticking() )
       m *= 1.0 + p()->talents.ashen_remains->effectN( 1 ).percent();
 
     return m;
@@ -648,12 +636,12 @@ struct chaos_bolt_t : public destruction_spell_t
   {
     destruction_spell_t::impact( s );
 
-    if ( p()->talents.internal_combustion.ok() && result_is_hit( s->result ) && p()->get_target_data( s->target )->dots_immolate->is_ticking() )
+    if ( p()->talents.internal_combustion->ok() && result_is_hit( s->result ) && p()->get_target_data( s->target )->dots_immolate->is_ticking() )
     {
       internal_combustion->execute_on_target( s->target );
     }
 
-    if ( p()->talents.cry_havoc.ok() && td( s->target )->debuffs_havoc->check() )
+    if ( p()->talents.cry_havoc->ok() && td( s->target )->debuffs_havoc->check() )
     {
       cry_havoc->execute_on_target( s->target );
     }
@@ -671,7 +659,7 @@ struct chaos_bolt_t : public destruction_spell_t
     if ( !p()->buffs.ritual_of_ruin->check() )
       p()->buffs.backdraft->decrement();
 
-    if ( p()->talents.avatar_of_destruction.ok() && p()->buffs.ritual_of_ruin->check() )
+    if ( p()->talents.avatar_of_destruction->ok() && p()->buffs.ritual_of_ruin->check() )
     {
       p()->proc_actions.avatar_of_destruction->execute_on_target( target );
     }
@@ -680,57 +668,11 @@ struct chaos_bolt_t : public destruction_spell_t
 
     p()->buffs.crashing_chaos->decrement();
 
-    if ( p()->talents.madness_of_the_azjaqir.ok() )
+    if ( p()->talents.madness_of_the_azjaqir->ok() )
       p()->buffs.madness_cb->trigger();
 
-    if ( p()->talents.burn_to_ashes.ok() )
+    if ( p()->talents.burn_to_ashes->ok() )
       p()->buffs.burn_to_ashes->trigger( as<int>( p()->talents.burn_to_ashes->effectN( 3 ).base_value() ) );
-
-    //// SL - Legendary
-    //if ( p()->legendary.madness_of_the_azjaqir->ok() )
-    //  p()->buffs.madness_of_the_azjaqir->trigger();
-
-    //if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T28, B2 ) )
-    //{
-    //  if ( p()->buffs.ritual_of_ruin->check() )
-    //  {
-    //    if (p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T28, B4 ))
-    //    {
-    //      // Note: Tier set spell (363950) has duration in Effect 1, but there is also a duration adjustment in Ritual of Ruin buff data Effect 4
-    //      // Unsure which is being used at this time
-    //      timespan_t duration = p()->sets->set( WARLOCK_DESTRUCTION, T28, B4 )->effectN( 1 ).time_value() * 1000;
-    //      if ( p()->warlock_pet_list.blasphemy.active_pet() )
-    //      {
-    //        p()->warlock_pet_list.blasphemy.active_pet()->adjust_duration( duration );
-    //      }
-    //      else
-    //      {
-    //        p()->warlock_pet_list.blasphemy.spawn( duration + 1000_ms, 1U ); // 2022-06-29 Animation has 2 second pad at end of lifetime, but safety window for actions is smaller. TOCHECK
-    //      }
-
-    //      if ( p()->talents.rain_of_chaos->ok() )
-    //      {
-    //        p()->buffs.rain_of_chaos->extend_duration_or_trigger( duration );
-    //      }
-
-    //      // TOFIX: As of 2022-02-03 PTR, Blasphemy appears to trigger Infernal Awakening on spawn, and Blasphemous Existence if already out
-    //      // This will require first fixing Infernal Awakening to properly be on Infernal pet
-    //      p()->warlock_pet_list.blasphemy.active_pet()->blasphemous_existence->execute();
-    //      p()->procs.avatar_of_destruction->occur();
-    //    }
-
-    //    p()->buffs.ritual_of_ruin->expire();
-    //  }
-
-    //  // Any changes to Impending Ruin must also be made in rain_of_fire_t!
-    //  if ( shards_used > 0 )
-    //  {
-    //    int overflow = p()->buffs.impending_ruin->check() + shards_used - p()->buffs.impending_ruin->max_stack();
-    //    p()->buffs.impending_ruin->trigger( shards_used ); //Stack change callback should switch Impending Ruin to Ritual of Ruin if max stacks reached
-    //    if ( overflow > 0 )
-    //      make_event( sim, 1_ms, [ this, overflow ] { p()->buffs.impending_ruin->trigger( overflow ); } );
-    //  }
-    //}
   }
 
   // Force spell to always crit
@@ -746,7 +688,7 @@ struct chaos_bolt_t : public destruction_spell_t
     // Can't use player-based crit chance from the state object as it's hardcoded to 1.0. Use cached
     // player spell crit instead. The state target crit chance of the state object is correct.
     // Targeted Crit debuffs function as a separate multiplier.
-    // Updated 06-24-2019: Target crit chance appears to no longer increase Chaos Bolt damage.
+    // 2019-06-24: Target crit chance appears to no longer increase Chaos Bolt damage.
     state->result_total *= 1.0 + player->cache.spell_crit_chance();  //+ state->target_crit_chance;
 
     return state->result_total;
