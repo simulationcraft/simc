@@ -239,13 +239,13 @@ struct corruption_t : public warlock_spell_t
           }
         }
 
-        if ( p()->talents.harvester_of_souls.ok() && rng().roll( p()->talents.harvester_of_souls->effectN( 1 ).percent() ) )
+        if ( p()->talents.harvester_of_souls->ok() && rng().roll( p()->talents.harvester_of_souls->effectN( 1 ).percent() ) )
         {
           harvester_proc->execute_on_target( d->state->target );
           p()->procs.harvester_of_souls->occur();
         }
 
-        if ( p()->talents.doom_blossom.ok() )
+        if ( p()->talents.doom_blossom->ok() )
         {
           if ( p()->buffs.malefic_affliction->check() && rng().roll( p()->buffs.malefic_affliction->check() * p()->talents.doom_blossom->effectN( 1 ).percent() ) )
           {
@@ -286,7 +286,7 @@ struct corruption_t : public warlock_spell_t
 
     spell_power_mod.direct = 0; // By default, Corruption does not deal instant damage
 
-    if ( p->talents.xavian_teachings.ok() && !seed_action )
+    if ( p->talents.xavian_teachings->ok() && !seed_action )
     {
       spell_power_mod.direct = data().effectN( 3 ).sp_coeff(); // Talent uses this effect in base spell for damage
       base_execute_time *= 1.0 + p->talents.xavian_teachings->effectN( 1 ).percent();
@@ -295,7 +295,7 @@ struct corruption_t : public warlock_spell_t
 
   void impact( action_state_t* s ) override
   {
-    bool pi_trigger = p()->talents.pandemic_invocation.ok() && td( s->target )->dots_corruption->is_ticking()
+    bool pi_trigger = p()->talents.pandemic_invocation->ok() && td( s->target )->dots_corruption->is_ticking()
       && td( s->target )->dots_corruption->remains() < p()->talents.pandemic_invocation->effectN( 1 ).time_value();
 
     warlock_spell_t::impact( s );
@@ -357,7 +357,7 @@ struct seed_of_corruption_t : public warlock_spell_t
         }
 
         // 2022-09-24 Agonizing Corruption does not apply Agony, only increments existing ones
-        if ( p()->talents.agonizing_corruption.ok() && tdata->dots_agony->is_ticking() )
+        if ( p()->talents.agonizing_corruption->ok() && tdata->dots_agony->is_ticking() )
         {
           tdata->dots_agony->increment( (int)p()->talents.agonizing_corruption->effectN( 1 ).base_value() );
         }
@@ -473,7 +473,7 @@ struct seed_of_corruption_t : public warlock_spell_t
 struct shadow_bolt_t : public warlock_spell_t
 {
   shadow_bolt_t( warlock_t* p, util::string_view options_str )
-    : warlock_spell_t( "Shadow Bolt", p, p->talents.drain_soul.ok() ? spell_data_t::not_found() : p->warlock_base.shadow_bolt )
+    : warlock_spell_t( "Shadow Bolt", p, p->talents.drain_soul->ok() ? spell_data_t::not_found() : p->warlock_base.shadow_bolt )
   {
     parse_options( options_str );
 
@@ -502,13 +502,13 @@ struct shadow_bolt_t : public warlock_spell_t
     if ( time_to_execute == 0_ms )
       p()->buffs.nightfall->decrement();
     
-    if ( p()->talents.demonic_calling.ok() )
+    if ( p()->talents.demonic_calling->ok() )
       p()->buffs.demonic_calling->trigger();
 
-    if ( p()->talents.fel_covenant.ok() )
+    if ( p()->talents.fel_covenant->ok() )
       p()->buffs.fel_covenant->increment();
 
-    if ( p()->talents.hounds_of_war.ok() && rng().roll( p()->talents.hounds_of_war->effectN( 1 ).percent() ) )
+    if ( p()->talents.hounds_of_war->ok() && rng().roll( p()->talents.hounds_of_war->effectN( 1 ).percent() ) )
     {
       p()->cooldowns.call_dreadstalkers->reset( true );
       p()->procs.hounds_of_war->occur();
@@ -526,7 +526,7 @@ struct shadow_bolt_t : public warlock_spell_t
       if ( p()->talents.shadow_embrace->ok() )
         td( s->target )->debuffs_shadow_embrace->trigger();
 
-      if ( p()->talents.tormented_crescendo.ok() )
+      if ( p()->talents.tormented_crescendo->ok() )
       {
         if ( p()->crescendo_check( p() ) && rng().roll( p()->talents.tormented_crescendo->effectN( 1 ).percent() ) )
         {
@@ -547,7 +547,7 @@ struct shadow_bolt_t : public warlock_spell_t
     if ( p()->talents.sacrificed_souls->ok() )
       m *= 1.0 + p()->talents.sacrificed_souls->effectN( 1 ).percent() * p()->active_demon_count();
 
-    if ( p()->talents.stolen_power.ok() && p()->buffs.stolen_power_final->check() )
+    if ( p()->talents.stolen_power->ok() && p()->buffs.stolen_power_final->check() )
       m *= 1.0 + p()->talents.stolen_power_final_buff->effectN( 1 ).percent();
 
     return m;
@@ -557,7 +557,7 @@ struct shadow_bolt_t : public warlock_spell_t
   {
     double m = warlock_spell_t::composite_target_multiplier( t );
 
-    if ( p()->talents.withering_bolt.ok() )
+    if ( p()->talents.withering_bolt->ok() )
       m *= 1.0 + p()->talents.withering_bolt->effectN( 1 ).percent() * std::min( (int)p()->talents.withering_bolt->effectN( 2 ).base_value(), p()->get_target_data( t )->count_affliction_dots() );
 
     return m;
@@ -584,7 +584,7 @@ struct soul_rot_t : public warlock_spell_t
   {
     warlock_spell_t::impact( s );
 
-    if ( p()->talents.dark_harvest.ok() )
+    if ( p()->talents.dark_harvest->ok() )
     {
       p()->buffs.dark_harvest_haste->trigger();
       p()->buffs.dark_harvest_crit->trigger();
@@ -889,9 +889,9 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
 
   // Use havoc_debuff where we need the data but don't have the active talent
   debuffs_havoc = make_buff( *this, "havoc", p.talents.havoc_debuff )
-                      ->set_duration( p.talents.mayhem.ok() ? p.talents.mayhem->effectN( 3 ).time_value() : p.talents.havoc->duration() + p.talents.pandemonium->effectN( 1 ).time_value() )
-                      ->set_cooldown( p.talents.mayhem.ok() ? p.talents.mayhem->internal_cooldown() : 0_ms )
-                      ->set_chance( p.talents.mayhem.ok() ? p.talents.mayhem->effectN( 1 ).percent() + p.talents.pandemonium->effectN( 2 ).percent() : p.talents.havoc->proc_chance() )
+                      ->set_duration( p.talents.mayhem->ok() ? p.talents.mayhem->effectN( 3 ).time_value() : p.talents.havoc->duration() + p.talents.pandemonium->effectN( 1 ).time_value() )
+                      ->set_cooldown( p.talents.mayhem->ok() ? p.talents.mayhem->internal_cooldown() : 0_ms )
+                      ->set_chance( p.talents.mayhem->ok() ? p.talents.mayhem->effectN( 1 ).percent() + p.talents.pandemonium->effectN( 2 ).percent() : p.talents.havoc->proc_chance() )
                       ->set_stack_change_callback( [ &p ]( buff_t* b, int, int cur ) {
                         if ( cur == 0 )
                         {
@@ -960,28 +960,28 @@ void warlock_td_t::target_demise()
     warlock.resource_gain( RESOURCE_SOUL_SHARD, debuffs_shadowburn->check_value(), warlock.gains.shadowburn_refund );
   }
 
-  if ( dots_agony->is_ticking() && warlock.talents.wrath_of_consumption.ok() )
+  if ( dots_agony->is_ticking() && warlock.talents.wrath_of_consumption->ok() )
   {
     warlock.sim->print_log( "Player {} demised. Warlock {} triggers Wrath of Consumption from Agony.", target->name(), warlock.name() );
 
     warlock.buffs.wrath_of_consumption->trigger();
   }
 
-  if ( dots_corruption->is_ticking() && warlock.talents.wrath_of_consumption.ok() )
+  if ( dots_corruption->is_ticking() && warlock.talents.wrath_of_consumption->ok() )
   {
     warlock.sim->print_log( "Player {} demised. Warlock {} triggers Wrath of Consumption from Corruption.", target->name(), warlock.name() );
 
     warlock.buffs.wrath_of_consumption->trigger();
   }
 
-  if ( warlock.talents.soul_flame.ok() && !warlock.proc_actions.soul_flame_proc->target_list().empty() )
+  if ( warlock.talents.soul_flame->ok() && !warlock.proc_actions.soul_flame_proc->target_list().empty() )
   {
     warlock.sim->print_log( "Player {} demised. Warlock {} triggers Soul Flame on all targets in range.", target->name(), warlock.name() );
 
     warlock.proc_actions.soul_flame_proc->execute();
   }
 
-  if ( warlock.talents.summon_soulkeeper.ok() )
+  if ( warlock.talents.summon_soulkeeper->ok() )
   {
     warlock.sim->print_log( "Player {} demised. Warlock gains 1 stack of Tormented Soul.", target->name(), warlock.name() );
 
@@ -1064,8 +1064,8 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
   cooldowns.call_dreadstalkers = get_cooldown( "call_dreadstalkers" );
   cooldowns.soul_fire = get_cooldown( "soul_fire" );
 
-  resource_regeneration             = regen_type::DYNAMIC;
-  regen_caches[ CACHE_HASTE ]       = true;
+  resource_regeneration = regen_type::DYNAMIC;
+  regen_caches[ CACHE_HASTE ] = true;
   regen_caches[ CACHE_SPELL_HASTE ] = true;
 }
 
@@ -1093,7 +1093,7 @@ double warlock_t::composite_player_target_multiplier( player_t* target, school_e
 
   if ( specialization() == WARLOCK_AFFLICTION )
   {
-    if ( td->debuffs_haunt->check() )
+    if ( talents.haunt->ok() )
       m *= 1.0 + td->debuffs_haunt->check_value();
 
     if ( talents.shadow_embrace->ok() )
@@ -1102,7 +1102,7 @@ double warlock_t::composite_player_target_multiplier( player_t* target, school_e
 
   if ( specialization() == WARLOCK_DESTRUCTION )
   {
-    if ( td->debuffs_eradication->check() )
+    if ( talents.eradication->ok() )
       m *= 1.0 + td->debuffs_eradication->check_value();
 
     if ( td->debuffs_pyrogenics->check() && td->debuffs_pyrogenics->has_common_school( school ) )
