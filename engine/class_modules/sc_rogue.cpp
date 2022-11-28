@@ -7991,24 +7991,15 @@ void rogue_t::init_action_list()
 
   if ( specialization() == ROGUE_ASSASSINATION )
   {
-    if ( true_level > 60 )
-      rogue_apl::assassination_df( this );
-    else
-      rogue_apl::assassination( this );
+    rogue_apl::assassination_df( this );
   }
   else if ( specialization() == ROGUE_OUTLAW )
   {
-    if ( true_level > 60 )
-      rogue_apl::outlaw_df( this );
-    else
-      rogue_apl::outlaw( this );
+    rogue_apl::outlaw_df( this );
   }
   else if ( specialization() == ROGUE_SUBTLETY )
   {
-    if ( true_level > 60 )
-      rogue_apl::subtlety_df( this );
-    else
-      rogue_apl::subtlety( this );
+    rogue_apl::subtlety_df( this );
   }
 
   use_default_action_list = true;

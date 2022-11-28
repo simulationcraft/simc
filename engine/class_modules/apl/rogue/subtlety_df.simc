@@ -15,7 +15,7 @@ actions=stealth
 # Interrupt on cooldown to allow simming interactions with that
 actions+=/kick
 # Wait for for the 3rd Secret Technique attack to trigger when syncing with Cold Blood
-actions+=/wait,sec=0.3,if=talent.cold_blood&talent.secret_technique&buff.cold_blood.up&buff.secret_technique.up
+actions+=/wait,sec=0.3,if=buff.cold_blood.up&buff.secret_technique.up
 # Used to determine whether cooldowns wait for SnD based on targets.
 actions+=/variable,name=snd_condition,value=buff.slice_and_dice.up|spell_targets.shuriken_storm>=cp_max_spend
 # Check to see if the next CP (in the event of a ShT proc) is Animacharged
@@ -39,7 +39,7 @@ actions+=/call_action_list,name=finish,if=variable.effective_combo_points>=cp_ma
 # Finish at maximum or close to maximum combo point value
 actions+=/call_action_list,name=finish,if=combo_points.deficit<=1|fight_remains<=1&variable.effective_combo_points>=3
 # Finish at 4+ against 4 targets (outside stealth)
-actions+=/call_action_list,name=finish,if=spell_targets.shuriken_storm>=4&variable.effective_combo_points>=4
+actions+=/call_action_list,name=finish,if=spell_targets.shuriken_storm>=(4-talent.seal_fate)&variable.effective_combo_points>=4
 # Use a builder when reaching the energy threshold
 actions+=/call_action_list,name=build,if=energy.deficit<=variable.stealth_threshold
 # Lowest priority in all of the APL because it causes a GCD
@@ -63,7 +63,8 @@ actions.cds+=/symbols_of_death,use_off_gcd=1,if=buff.shuriken_tornado.up&buff.sh
 # Cold Blood on 5 combo points when not playing DM or secret technique
 actions.cds+=/cold_blood,if=(!talent.danse_macabre|!talent.secret_technique)&combo_points>=5
 # Cold Blood after secret techniques initial attack
-actions.cds+=/cold_blood,use_off_gcd=1,if=talent.secret_technique&buff.secret_technique.up
+actions.cds+=/cold_blood,use_off_gcd=1,if=buff.secret_technique.up
+actions.cds+=/vanish,if=buff.cold_blood.up&talent.danse_macabre&spell_targets.shuriken_storm<=2
 actions.cds+=/flagellation,target_if=max:target.time_to_die,if=variable.snd_condition&combo_points>=5&target.time_to_die>10
 # Pool for Tornado pre-SoD with ShD ready when not running SF.
 actions.cds+=/pool_resource,for_next=1,if=talent.shuriken_tornado.enabled&!talent.shadow_focus.enabled
@@ -81,7 +82,7 @@ actions.cds+=/echoing_reprimand,if=variable.snd_condition&combo_points.deficit>=
 # With SF, if not already done, use Tornado with SoD up.
 actions.cds+=/shuriken_tornado,if=variable.snd_condition&buff.symbols_of_death.up&combo_points<=2&(!buff.premeditation.up|spell_targets.shuriken_storm>4)
 actions.cds+=/shadow_dance,if=!buff.shadow_dance.up&fight_remains<=8+talent.subterfuge.enabled
-actions.cds+=/thistle_tea,if=cooldown.symbols_of_death.remains>=3&!buff.thistle_tea.up&(energy.deficit>=100|cooldown.thistle_tea.charges_fractional>=2.75&energy.deficit>=40)|buff.shadow_dance.up&!buff.thistle_tea.up&spell_targets.shuriken_storm>=2
+actions.cds+=/thistle_tea,if=cooldown.symbols_of_death.remains>=3&!buff.thistle_tea.up&(energy.deficit>=100|cooldown.thistle_tea.charges_fractional>=2.75&buff.shadow_dance.up)|buff.shadow_dance.up&!buff.thistle_tea.up&spell_targets.shuriken_storm>=3|!buff.thistle_tea.up&fight_remains<=(6*cooldown.thistle_tea.charges)
 actions.cds+=/potion,if=buff.bloodlust.react|fight_remains<30|buff.symbols_of_death.up&(buff.shadow_blades.up|cooldown.shadow_blades.remains<=10)
 actions.cds+=/blood_fury,if=buff.symbols_of_death.up
 actions.cds+=/berserking,if=buff.symbols_of_death.up
@@ -110,18 +111,16 @@ actions.finish+=/eviscerate
 # Helper Variable
 actions.stealth_cds=variable,name=shd_threshold,value=cooldown.shadow_dance.charges_fractional>=0.75+talent.shadow_dance
 # Vanish if we are capping on Dance charges. Early before first dance if we have no Nightstalker but Dark Shadow in order to get Rupture up (no Master Assassin).
-actions.stealth_cds+=/vanish,if=!variable.shd_threshold&combo_points.deficit>1
+actions.stealth_cds+=/vanish,if=(!talent.cold_blood|!talent.danse_macabre|spell_targets.shuriken_storm>=3)&!variable.shd_threshold&combo_points.deficit>1
 # Pool for Shadowmeld + Shadowstrike unless we are about to cap on Dance charges. Only when Find Weakness is about to run out.
 actions.stealth_cds+=/pool_resource,for_next=1,extra_amount=40,if=race.night_elf
 actions.stealth_cds+=/shadowmeld,if=energy>=40&energy.deficit>=10&!variable.shd_threshold&combo_points.deficit>4
 # CP thresholds for entering Shadow Dance Default to start dance with 0 or 1 combo point
 actions.stealth_cds+=/variable,name=shd_combo_points,value=combo_points<=1
-# Use stealth cooldowns with at least 2 combo points missing on 3 targets
-actions.stealth_cds+=/variable,name=shd_combo_points,value=combo_points.deficit>=2,if=spell_targets.shuriken_storm=3
 # Use stealth cooldowns with high combo points when playing shuriken tornado or with high target counts
 actions.stealth_cds+=/variable,name=shd_combo_points,value=combo_points.deficit<=1,if=spell_targets.shuriken_storm>(4-2*talent.shuriken_tornado.enabled)|variable.priority_rotation&spell_targets.shuriken_storm>=4
 # Use stealth cooldowns on any combo point on 4 targets
-actions.stealth_cds+=/variable,name=shd_combo_points,value=1,if=spell_targets.shuriken_storm=4
+actions.stealth_cds+=/variable,name=shd_combo_points,value=1,if=spell_targets.shuriken_storm=(4-talent.seal_fate)
 # Dance during Symbols or above threshold.
 actions.stealth_cds+=/shadow_dance,if=(variable.shd_combo_points&(buff.symbols_of_death.remains>=(2.2-talent.flagellation.enabled)|variable.shd_threshold)|buff.flagellation.up|buff.flagellation_persist.remains>=6|spell_targets.shuriken_storm>=4&cooldown.symbols_of_death.remains>10)&!buff.the_rotten.up
 # Burn Dances charges if before the fight ends if SoD won't be ready in time.
@@ -130,8 +129,9 @@ actions.stealth_cds+=/shadow_dance,if=variable.shd_combo_points&fight_remains<co
 # Stealthed Rotation
 # If Stealth/vanish are up, use Shadowstrike to benefit from the passive bonus and Find Weakness, even if we are at max CP (unless using Master Assassin)
 actions.stealthed=shadowstrike,if=(buff.stealth.up|buff.vanish.up)&(spell_targets.shuriken_storm<4|variable.priority_rotation)
-#Variable to Gloomblade / Backstab when on 4 or 5 combo points with premediation and when the combo point is not anima charged
-actions.stealthed+=/variable,name=gloomblade_condition,value=(combo_points.deficit=2|combo_points.deficit=3)&(buff.premeditation.up|effective_combo_points<7)&(spell_targets.shuriken_storm<=8|talent.lingering_shadow)
+# Variable to Gloomblade / Backstab when on 4 or 5 combo points with premediation and when the combo point is not anima charged
+actions.stealthed+=/variable,name=gloomblade_condition,value=buff.danse_macabre.stack<5&(combo_points.deficit=2|combo_points.deficit=3)&(buff.premeditation.up|effective_combo_points<7)&(spell_targets.shuriken_storm<=8|talent.lingering_shadow)
+actions.stealthed+=/shuriken_storm,if=variable.gloomblade_condition&buff.silent_storm.up&!debuff.find_weakness.remains
 actions.stealthed+=/gloomblade,if=variable.gloomblade_condition
 actions.stealthed+=/backstab,if=variable.gloomblade_condition&talent.danse_macabre&buff.danse_macabre.stack<=2
 actions.stealthed+=/call_action_list,name=finish,if=variable.effective_combo_points>=cp_max_spend
