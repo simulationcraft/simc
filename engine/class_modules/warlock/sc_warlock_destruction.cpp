@@ -1047,7 +1047,7 @@ struct shadowy_tear_t : public destruction_spell_t
 {
   struct rift_shadow_bolt_t : public destruction_spell_t
   {
-    rift_shadow_bolt_t( warlock_t* p ) : destruction_spell_t( "rift_shadow_bolt", p, p->talents.rift_shadow_bolt )
+    rift_shadow_bolt_t( warlock_t* p ) : destruction_spell_t( "Rift Shadow Bolt", p, p->talents.rift_shadow_bolt )
     {
       destro_mastery = false;
       background = dual = true;
@@ -1059,21 +1059,21 @@ struct shadowy_tear_t : public destruction_spell_t
 
   struct shadow_barrage_t : public destruction_spell_t
   {
-    shadow_barrage_t( warlock_t* p ) : destruction_spell_t( "shadow_barrage", p, p->talents.shadow_barrage )
+    shadow_barrage_t( warlock_t* p ) : destruction_spell_t( "Shadow Barrage", p, p->talents.shadow_barrage )
     {
       background = true;
 
       tick_action = new rift_shadow_bolt_t( p );
     }
 
-    double last_tick_factor( const dot_t*, timespan_t /*time_to_tick*/, timespan_t /*duration*/ ) const override
+    double last_tick_factor( const dot_t*, timespan_t, timespan_t ) const override
     {
       // 2022-10-16: Once you pass a haste breakpoint, you always get another full damage Shadow Bolt
       return 1.0;
     }
   };
 
-  shadowy_tear_t( warlock_t* p ) : destruction_spell_t( "shadowy_tear", p, p->talents.shadowy_tear_summon )
+  shadowy_tear_t( warlock_t* p ) : destruction_spell_t( "Shadowy Tear", p, p->talents.shadowy_tear_summon )
   {
     background = true;
 
@@ -1086,7 +1086,7 @@ struct unstable_tear_t : public destruction_spell_t
   // TOCHECK: Partial ticks are not matching up in game!
   struct chaos_barrage_tick_t : public destruction_spell_t
   {
-    chaos_barrage_tick_t( warlock_t* p ) : destruction_spell_t( "chaos_barrage_tick", p, p->talents.chaos_barrage_tick )
+    chaos_barrage_tick_t( warlock_t* p ) : destruction_spell_t( "Chaos Barrage (tick)", p, p->talents.chaos_barrage_tick )
     {
       destro_mastery = false;
       background = dual = true;
@@ -1098,7 +1098,7 @@ struct unstable_tear_t : public destruction_spell_t
 
   struct chaos_barrage_t : public destruction_spell_t
   {
-    chaos_barrage_t( warlock_t* p ) : destruction_spell_t( "chaos_barrage", p, p->talents.chaos_barrage )
+    chaos_barrage_t( warlock_t* p ) : destruction_spell_t( "Chaos Barrage", p, p->talents.chaos_barrage )
     {
       background = true;
 
@@ -1106,7 +1106,7 @@ struct unstable_tear_t : public destruction_spell_t
     }
   };
 
-  unstable_tear_t( warlock_t* p ) : destruction_spell_t( "unstable_tear", p, p->talents.unstable_tear_summon )
+  unstable_tear_t( warlock_t* p ) : destruction_spell_t( "Unstable Tear", p, p->talents.unstable_tear_summon )
   {
     background = true;
 
@@ -1118,7 +1118,7 @@ struct chaos_tear_t : public destruction_spell_t
 {
   struct rift_chaos_bolt_t : public destruction_spell_t
   {
-    rift_chaos_bolt_t( warlock_t* p ) : destruction_spell_t( "rift_chaos_bolt", p, p->talents.rift_chaos_bolt )
+    rift_chaos_bolt_t( warlock_t* p ) : destruction_spell_t( "Rift Chaos Bolt", p, p->talents.rift_chaos_bolt )
     {
       destro_mastery = false;
       background = true;
@@ -1142,7 +1142,7 @@ struct chaos_tear_t : public destruction_spell_t
     }
   };
 
-  chaos_tear_t( warlock_t* p ) : destruction_spell_t( "chaos_tear", p, p->talents.chaos_tear_summon )
+  chaos_tear_t( warlock_t* p ) : destruction_spell_t( "Chaos Tear", p, p->talents.chaos_tear_summon )
   {
     background = true;
 
@@ -1157,7 +1157,7 @@ struct dimensional_rift_t : public destruction_spell_t
   chaos_tear_t* chaos_tear;
 
   dimensional_rift_t( warlock_t* p, util::string_view options_str )
-    : destruction_spell_t( "dimensional_rift", p, p->talents.dimensional_rift )
+    : destruction_spell_t( "Dimensional Rift", p, p->talents.dimensional_rift )
   {
     parse_options( options_str );
 
