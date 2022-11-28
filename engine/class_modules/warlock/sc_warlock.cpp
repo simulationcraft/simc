@@ -772,8 +772,8 @@ struct inquisitors_gaze_t : public warlock_spell_t
   }
 };
 
-//Catchall action to trigger pet interrupt abilities via main APL.
-//Using this should ensure that interrupt callback effects (Sephuz etc) proc correctly for the warlock.
+// Catchall action to trigger pet interrupt abilities via main APL.
+// Using this should ensure that interrupt callback effects (Sephuz etc) proc correctly for the warlock.
 struct interrupt_t : public spell_t
 {
   interrupt_t( util::string_view n, warlock_t* p, util::string_view options_str ) :
@@ -797,8 +797,7 @@ struct interrupt_t : public spell_t
     {
       case PET_FELGUARD:
       case PET_FELHUNTER:
-        pet->special_action->set_target( target );
-        pet->special_action->execute();
+        pet->special_action->execute_on_target( target );
         break;
       default:
         break;
