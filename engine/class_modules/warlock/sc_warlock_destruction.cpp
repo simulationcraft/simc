@@ -99,13 +99,12 @@ public:
   }
 };
 
-// Talents
 struct internal_combustion_t : public destruction_spell_t
 {
   internal_combustion_t( warlock_t* p )
     : destruction_spell_t( "Internal Combustion", p, p->talents.internal_combustion )
   {
-    background     = true;
+    background = dual = true;
     destro_mastery = false;
   }
 
@@ -119,21 +118,21 @@ struct internal_combustion_t : public destruction_spell_t
   void execute() override
   {
     warlock_td_t* td = p()->get_target_data( target );
-    dot_t* dot       = td->dots_immolate;
+    dot_t* dot = td->dots_immolate;
 
     assert( dot->current_action );
     action_state_t* state = dot->current_action->get_state( dot->state );
     dot->current_action->calculate_tick_amount( state, 1.0 );
-    double tick_base_damage  = state->result_raw;
-    timespan_t remaining     = std::min( dot->remains(), timespan_t::from_seconds( p()->talents.internal_combustion->effectN( 1 ).base_value() ) );
-    timespan_t dot_tick_time = dot->current_action->tick_time( state );
-    double ticks_left        = remaining / dot_tick_time;
 
+    double tick_base_damage = state->result_raw;
+    timespan_t remaining = std::min( dot->remains(), timespan_t::from_seconds( p()->talents.internal_combustion->effectN( 1 ).base_value() ) );
+    timespan_t dot_tick_time = dot->current_action->tick_time( state );
+    double ticks_left = remaining / dot_tick_time;
     double total_damage = ticks_left * tick_base_damage;
 
     action_state_t::release( state );
+    
     base_dd_min = base_dd_max = total_damage;
-
     destruction_spell_t::execute();
     td->dots_immolate->adjust_duration( -remaining );
   }
