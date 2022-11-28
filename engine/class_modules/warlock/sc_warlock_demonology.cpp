@@ -222,9 +222,9 @@ struct demonbolt_t : public demonology_spell_t
   demonbolt_t( warlock_t* p, util::string_view options_str ) : demonology_spell_t( "Demonbolt", p, p->talents.demonbolt )
   {
     parse_options( options_str );
-    energize_type     = action_energize::ON_CAST;
+    energize_type = action_energize::ON_CAST;
     energize_resource = RESOURCE_SOUL_SHARD;
-    energize_amount   = 2;
+    energize_amount = 2.0;
   }
 
   timespan_t execute_time() const override
@@ -246,13 +246,13 @@ struct demonbolt_t : public demonology_spell_t
     p()->buffs.demonic_core->up();  // benefit tracking
     p()->buffs.demonic_core->decrement();
 
-    if ( p()->talents.power_siphon.ok() )
+    if ( p()->talents.power_siphon->ok() )
       p()->buffs.power_siphon->decrement();
 
-    if ( p()->talents.demonic_calling.ok() )
+    if ( p()->talents.demonic_calling->ok() )
       p()->buffs.demonic_calling->trigger();
 
-    if ( p()->talents.hounds_of_war.ok() && rng().roll( p()->talents.hounds_of_war->effectN( 1 ).percent() ) )
+    if ( p()->talents.hounds_of_war->ok() && rng().roll( p()->talents.hounds_of_war->effectN( 1 ).percent() ) )
     {
       p()->cooldowns.call_dreadstalkers->reset( true );
       p()->procs.hounds_of_war->occur();
@@ -278,20 +278,16 @@ struct demonbolt_t : public demonology_spell_t
       m *= 1.0 + p()->talents.sacrificed_souls->effectN( 1 ).percent() * p()->active_demon_count();
     }
 
-    if ( p()->talents.power_siphon.ok() && p()->buffs.power_siphon->check() )
-    {
+    if ( p()->talents.power_siphon->ok() )
       m *= 1.0 + p()->buffs.power_siphon->check_value();
-    }
 
-    //m *= 1.0 + p()->buffs.balespiders_burning_core->check_stack_value();
-
-    if ( p()->talents.shadows_bite.ok() )
+    if ( p()->talents.shadows_bite->ok() )
       m *= 1.0 + p()->buffs.shadows_bite->check_value();
 
-    if ( p()->talents.fel_covenant.ok() )
+    if ( p()->talents.fel_covenant->ok() )
       m *= 1.0 + p()->buffs.fel_covenant->check_stack_value();
 
-    if ( p()->talents.stolen_power.ok() && p()->buffs.stolen_power_final->check() )
+    if ( p()->talents.stolen_power->ok() && p()->buffs.stolen_power_final->check() )
       m *= 1.0 + p()->talents.stolen_power_final_buff->effectN( 2 ).percent();
 
     if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T29, B2 ) )
