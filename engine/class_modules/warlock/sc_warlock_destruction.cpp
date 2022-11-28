@@ -855,7 +855,7 @@ struct rain_of_fire_t : public destruction_spell_t
 
 struct channel_demonfire_tick_t : public destruction_spell_t
 {
-  channel_demonfire_tick_t( warlock_t* p ) : destruction_spell_t( "channel_demonfire_tick", p, p->talents.channel_demonfire_tick )
+  channel_demonfire_tick_t( warlock_t* p ) : destruction_spell_t( "Channel Demonfire (tick)", p, p->talents.channel_demonfire_tick )
   {
     background = dual = true;
     may_miss = false;
@@ -872,7 +872,7 @@ struct channel_demonfire_tick_t : public destruction_spell_t
     destruction_spell_t::impact( s );
 
     // Raging Demonfire will adjust the time remaining on all targets hit by an AoE pulse
-    if ( p()->talents.raging_demonfire.ok() && td( s->target )->dots_immolate->is_ticking() )
+    if ( p()->talents.raging_demonfire->ok() && td( s->target )->dots_immolate->is_ticking() )
     {
       td( s->target )->dots_immolate->adjust_duration( p()->talents.raging_demonfire->effectN( 2 ).time_value() );
     }
@@ -885,19 +885,19 @@ struct channel_demonfire_t : public destruction_spell_t
   int immolate_action_id;
 
   channel_demonfire_t( warlock_t* p, util::string_view options_str )
-    : destruction_spell_t( "channel_demonfire", p, p->talents.channel_demonfire ),
+    : destruction_spell_t( "Channel Demonfire", p, p->talents.channel_demonfire ),
       channel_demonfire( new channel_demonfire_tick_t( p ) ),
       immolate_action_id( 0 )
   {
     parse_options( options_str );
-    channeled    = true;
+    channeled = true;
     hasted_ticks = true;
-    may_crit     = false;
+    may_crit = false;
 
     add_child( channel_demonfire );
 
     // We need to fudge the duration to ensure the right number of ticks occur
-    if ( p->talents.raging_demonfire.ok() )
+    if ( p->talents.raging_demonfire->ok() )
     {
       int num_ticks = as<int>( dot_duration / base_tick_time + p->talents.raging_demonfire->effectN( 1 ).base_value() );
       base_tick_time *= 1.0 + p->talents.raging_demonfire->effectN( 3 ).percent();
@@ -909,7 +909,7 @@ struct channel_demonfire_t : public destruction_spell_t
   {
     destruction_spell_t::init();
 
-    cooldown->hasted   = true;
+    cooldown->hasted = true;
     immolate_action_id = p()->find_action_id( "immolate" );
   }
 
