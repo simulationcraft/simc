@@ -141,12 +141,12 @@ struct internal_combustion_t : public destruction_spell_t
 struct shadowburn_t : public destruction_spell_t
 {
   shadowburn_t( warlock_t* p, util::string_view options_str )
-    : destruction_spell_t( "shadowburn", p, p->talents.shadowburn )
+    : destruction_spell_t( "Shadowburn", p, p->talents.shadowburn )
   {
     parse_options( options_str );
     can_havoc = true;
     cooldown->hasted = true;
-    chaos_incarnate = p->talents.chaos_incarnate.ok();
+    chaos_incarnate = p->talents.chaos_incarnate->ok();
 
     base_multiplier *= 1.0 + p->talents.ruin->effectN( 1 ).percent();
   }
@@ -155,7 +155,7 @@ struct shadowburn_t : public destruction_spell_t
   {
     double c = destruction_spell_t::cost();
 
-    if ( c > 0.0 && p()->buffs.crashing_chaos->check() )
+    if ( c > 0.0 && p()->talents.crashing_chaos->ok() )
       c += p()->buffs.crashing_chaos->check_value();
 
     return c;        
@@ -173,41 +173,28 @@ struct shadowburn_t : public destruction_spell_t
 
   void execute() override
   {
-    //int shards_used = as<int>( cost() );
     destruction_spell_t::execute();
 
-    // 2022-10-15 - Conflagration of Chaos can proc from a spell that consumes it
+    // Conflagration of Chaos can proc from a spell that consumes it
     p()->buffs.conflagration_of_chaos_sb->expire();
 
-    if ( p()->talents.conflagration_of_chaos.ok() && rng().roll( p()->talents.conflagration_of_chaos->effectN( 1 ).percent() ) )
+    if ( p()->talents.conflagration_of_chaos->ok() && rng().roll( p()->talents.conflagration_of_chaos->effectN( 1 ).percent() ) )
     {
       p()->buffs.conflagration_of_chaos_sb->trigger();
       p()->procs.conflagration_of_chaos_sb->occur();
     }
 
-    if ( p()->talents.madness_of_the_azjaqir.ok() )
+    if ( p()->talents.madness_of_the_azjaqir->ok() )
       p()->buffs.madness_sb->trigger();
 
     p()->buffs.crashing_chaos->decrement();
-
-    //if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T28, B2 ) )
-    //{
-    //  // Shadowburn is an offensive spell that consumes Soul Shards, so it can trigger Impending Ruin
-    //  if ( shards_used > 0 )
-    //  {
-    //    int overflow = p()->buffs.impending_ruin->check() + shards_used - p()->buffs.impending_ruin->max_stack();
-    //    p()->buffs.impending_ruin->trigger( shards_used ); //Stack change callback should switch Impending Ruin to Ritual of Ruin if max stacks reached
-    //    if ( overflow > 0 )
-    //      make_event( sim, 1_ms, [ this, overflow ] { p()->buffs.impending_ruin->trigger( overflow ); } );
-    //  }
-    //}
   }
 
   double action_multiplier() const override
   {
     double m = destruction_spell_t::action_multiplier();
 
-    if ( p()->buffs.madness_sb->check() )
+    if ( p()->talents.madness_of_the_azjaqir->ok() )
       m *= 1.0 + p()->buffs.madness_sb->check_value();
 
     return m;
@@ -217,8 +204,8 @@ struct shadowburn_t : public destruction_spell_t
   {
     double m = destruction_spell_t::composite_target_crit_chance( target );
 
-    // TOCHECK - Currently no spelldata for the health threshold 2022-10-14
-    if ( target->health_percentage() <= 20 )
+    // No spelldata for the health threshold
+    if ( target->health_percentage() <= 20.0 )
       m += p()->talents.shadowburn->effectN( 3 ).percent();
 
     return m;
