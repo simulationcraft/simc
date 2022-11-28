@@ -7907,19 +7907,17 @@ void monk_t::create_buffs ()
     // Movement
     // ------------------------------
 
-    movement.flying_serpent_kick = new monk_movement_t( this, "flying_serpent_movement", 1 );
-    movement.flying_serpent_kick->set_trigger_spell( talent.windwalker.flying_serpent_kick )
-      ->set_chance( 1.0 )
-      ->set_duration( talent.windwalker.flying_serpent_kick.spell()->duration() );
+    movement.chi_torpedo = new monk_movement_t( this, "chi_torpedo_movement", talent.general.chi_torpedo);
+    movement.chi_torpedo->set_distance( 10 );
 
-    movement.roll = new monk_movement_t( this, "roll_movement", talent.general.chi_torpedo->ok() ? 10 : 8 );
-    movement.roll->set_chance( 1.0 )
-      ->set_duration( timespan_t::from_seconds( 1 ) );
+    movement.flying_serpent_kick = new monk_movement_t( this, "fsk_movement", talent.windwalker.flying_serpent_kick);
+    movement.flying_serpent_kick->set_distance( 1 );
 
-    movement.whirling_dragon_punch = new monk_movement_t( this, "whirling_dragon_punch_movement", 1 );
-    movement.whirling_dragon_punch->set_trigger_spell( talent.windwalker.whirling_dragon_punch )
-      ->set_chance( 1.0 )
-      ->set_duration( timespan_t::from_seconds( 1 ) );
+    movement.roll = new monk_movement_t( this, "roll_movement", spec.roll);
+    movement.roll->set_distance( 8 );
+
+    movement.whirling_dragon_punch = new monk_movement_t( this, "wdp_movement", talent.windwalker.whirling_dragon_punch);
+    movement.whirling_dragon_punch->set_distance( 1 );
 }
 
 // monk_t::init_gains =======================================================
