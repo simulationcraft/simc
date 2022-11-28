@@ -372,8 +372,8 @@ struct incinerate_fnb_t : public destruction_spell_t
 {
   incinerate_fnb_t( warlock_t* p ) : destruction_spell_t( "Incinerate (Fire and Brimstone)", p, p->warlock_base.incinerate )
   {
-    aoe        = -1;
-    background = true;
+    aoe = -1;
+    background = dual = true;
 
     base_multiplier *= p->talents.fire_and_brimstone->effectN( 1 ).percent();
   }
@@ -417,7 +417,7 @@ struct incinerate_fnb_t : public destruction_spell_t
   {
     double m = destruction_spell_t::action_multiplier();
 
-    if ( p()->buffs.burn_to_ashes->check() )
+    if ( p()->talents.burn_to_ashes->ok() )
       m *= 1.0 + p()->buffs.burn_to_ashes->check_value();
 
     return m;
@@ -426,13 +426,6 @@ struct incinerate_fnb_t : public destruction_spell_t
   double composite_target_multiplier( player_t* t ) const override
   {
     double m = destruction_spell_t::composite_target_multiplier( t );
-
-    //auto td = this->td( t );
-
-    //// SL - Conduit
-    //// TOCHECK - Couldn't find affected_by spelldata to reference the spells 08-24-2020.
-    //if ( td->dots_immolate->is_ticking() && p()->conduit.ashen_remains->ok() )
-    //  m *= 1.0 + p()->conduit.ashen_remains.percent();
 
     if ( p()->talents.ashen_remains.ok() && td( t )->dots_immolate->is_ticking() )
       m *= 1.0 + p()->talents.ashen_remains->effectN( 1 ).percent();
