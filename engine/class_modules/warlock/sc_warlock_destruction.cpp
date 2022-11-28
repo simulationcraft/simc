@@ -960,12 +960,12 @@ struct soul_fire_t : public destruction_spell_t
   immolate_t* immolate;
 
   soul_fire_t( warlock_t* p, util::string_view options_str )
-    : destruction_spell_t( "soul_fire", p, p->talents.soul_fire ), immolate( new immolate_t( p, "" ) )
+    : destruction_spell_t( "Soul Fire", p, p->talents.soul_fire ), immolate( new immolate_t( p, "" ) )
   {
     parse_options( options_str );
-    energize_type     = action_energize::PER_HIT;
+    energize_type = action_energize::PER_HIT;
     energize_resource = RESOURCE_SOUL_SHARD;
-    energize_amount   = ( p->talents.soul_fire_2->effectN( 1 ).base_value() ) / 10.0;
+    energize_amount = ( p->talents.soul_fire_2->effectN( 1 ).base_value() ) / 10.0;
 
     base_multiplier *= 1.0 + p->talents.ruin->effectN( 1 ).percent();
 
