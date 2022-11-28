@@ -1140,7 +1140,7 @@ double warlock_t::composite_player_pet_damage_multiplier( const action_state_t* 
     m *= 1.0 + warlock_base.destruction_warlock->effectN( guardian ? 4 : 3 ).percent();
 
     // 2022-11-27 Rolling Havoc is missing the aura for guardians
-    if ( buffs.rolling_havoc->check() && !guardian )
+    if ( talents.rolling_havoc->ok() && !guardian )
       m *= 1.0 + buffs.rolling_havoc->check_stack_value();
   }
 
@@ -1149,7 +1149,7 @@ double warlock_t::composite_player_pet_damage_multiplier( const action_state_t* 
     m *= 1.0 + warlock_base.demonology_warlock->effectN( guardian ? 5 : 3 ).percent();
     m *= 1.0 + cache.mastery_value();
 
-    if ( buffs.demonic_power->check() )
+    if ( talents.summon_demonic_tyrant->ok() )
       m *= 1.0 + buffs.demonic_power->check_value();
   }
 
@@ -1169,7 +1169,7 @@ double warlock_t::composite_player_target_pet_damage_multiplier( player_t* targe
 
   if ( specialization() == WARLOCK_AFFLICTION )
   {
-    if ( td->debuffs_haunt->check() )
+    if ( talents.haunt->ok() && td->debuffs_haunt->check() )
     {
       m *= 1.0 + td->debuffs_haunt->data().effectN( guardian ? 4 : 3 ).percent();
     }
@@ -1182,7 +1182,7 @@ double warlock_t::composite_player_target_pet_damage_multiplier( player_t* targe
 
   if ( specialization() == WARLOCK_DESTRUCTION )
   {
-    if ( td->debuffs_eradication->check() )
+    if ( talents.eradication->ok() )
     {
       m *= 1.0 + td->debuffs_eradication->check_value();
     }
@@ -1190,8 +1190,8 @@ double warlock_t::composite_player_target_pet_damage_multiplier( player_t* targe
 
   if ( specialization() == WARLOCK_DEMONOLOGY )
   {
-    // 2022-10-06: Fel Sunder currently lacks guardian effect, so only main pet is benefitting
-    if ( td->debuffs_fel_sunder->check() && !guardian )
+    // Fel Sunder lacks guardian effect, so only main pet is benefitting. Last checked 2022-11-27
+    if ( talents.fel_sunder->ok() && !guardian )
       m *= 1.0 + td->debuffs_fel_sunder->check_stack_value();
   }
 
