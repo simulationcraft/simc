@@ -2611,10 +2611,7 @@ void paladin_t::create_buffs()
   buffs.avenging_wrath = new buffs::avenging_wrath_buff_t( this );
   //.avenging_wrath_might = new buffs::avenging_wrath_buff_t( this );
   buffs.divine_purpose = make_buff( this, "divine_purpose", spells.divine_purpose_buff );
-  /* buffs.seal_of_clarity = make_buff( this, "seal_of_clarity", spells.seal_of_clarity_buff )
-                              ->set_chance( 1 )
-                              ->set_duration( timespan_t::from_seconds(15) );*/
-  buffs.seal_of_clarity = make_buff( this, "seal_of_clarity", find_spell( 384815 ) );
+  buffs.seal_of_clarity = make_buff( this, "seal_of_clarity", spells.seal_of_clarity_buff );
   buffs.divine_shield  = make_buff( this, "divine_shield", find_class_spell( "Divine Shield" ) )
                             ->set_cooldown( 0_ms );  // Let the ability handle the CD
   buffs.blessing_of_protection = make_buff( this, "blessing_of_protection", find_spell( 1022 ) );

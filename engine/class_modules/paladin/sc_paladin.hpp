@@ -1370,19 +1370,9 @@ struct holy_power_consumer_t : public Base
     if ( this -> affected_by.the_magistrates_judgment && ab::p() -> buffs.the_magistrates_judgment -> up() )
       c += ab::p() -> buffs.the_magistrates_judgment -> value();
 
-    if ( ab::p()->buffs.seal_of_clarity->up() )
+    if ( ab::p()->buffs.seal_of_clarity->up() && this->affected_by.seal_of_clarity )
     {
-      if ( this->affected_by.seal_of_clarity )
-      {
-        c += ab::p()->spells.seal_of_clarity_buff->effectN( 1 ).base_value();
-      }
-      // 2022-25-11 Seal of Clarity's Buff has no entry as of now, so hardcoding until it's there
-      // That spell also has affected_by whitelist
-      else if ( ab::p()->spells.seal_of_clarity_buff->_id == 0 && (is_wog || is_sotr))
-      {
-        c -= 1;
-      }
-      ab::p()->buffs.seal_of_clarity->expire();
+      c += ab::p()->spells.seal_of_clarity_buff->effectN( 1 ).base_value();
     }
 
     return std::max( c, 0.0 );
@@ -1609,14 +1599,12 @@ struct holy_power_consumer_t : public Base
       p -> buffs.sealed_verdict -> trigger();
     }
 
+    // ToDo: This is wrong, Seal of Clarity can stack to two stacks. Chances of happening are very slim, but possible
     if ( p->buffs.seal_of_clarity->up() )
       p->buffs.seal_of_clarity->expire();
 
-    auto foo = p->talents.seal_of_clarity->effectN( 1 ).percent();
-    if (p->talents.seal_of_clarity->ok() && this->rng().roll(p->talents.seal_of_clarity->effectN(1).percent() )) // Or Light of Dawn
-    {
+    if (p->talents.seal_of_clarity->ok() && this->rng().roll(p->talents.seal_of_clarity->effectN(1).percent() ))
       p->buffs.seal_of_clarity->trigger();
-    }
   }
 
   void consume_resource() override
