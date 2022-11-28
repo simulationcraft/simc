@@ -1018,7 +1018,7 @@ struct cataclysm_t : public destruction_spell_t
   immolate_t* immolate;
 
   cataclysm_t( warlock_t* p, util::string_view options_str )
-    : destruction_spell_t( "cataclysm", p, p->talents.cataclysm ), immolate( new immolate_t( p, "" ) )
+    : destruction_spell_t( "Cataclysm", p, p->talents.cataclysm ), immolate( new immolate_t( p, "" ) )
   {
     parse_options( options_str );
     aoe = -1;
