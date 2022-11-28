@@ -5634,16 +5634,6 @@ struct thistle_tea_t : public rogue_spell_t
 
     p()->buffs.thistle_tea->trigger();
   }
-
-
-  bool ready() override
-  {
-    // Cannot use the ability just for the buff if at full energy
-    if ( p()->resources.current[ RESOURCE_ENERGY ] >= p()->resources.max[ RESOURCE_ENERGY ] )
-      return false;
-
-    return rogue_spell_t::ready();
-  }
 };
 
 // Keep it Rolling ==========================================================
