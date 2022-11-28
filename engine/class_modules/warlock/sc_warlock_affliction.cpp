@@ -50,11 +50,8 @@ public:
   }
 };
 
-// Dots
 struct agony_t : public affliction_spell_t
 {
-  double chance;
-
   agony_t( warlock_t* p, util::string_view options_str ) : affliction_spell_t( "Agony", p, p->warlock_base.agony )
   {
     parse_options( options_str );
@@ -95,10 +92,8 @@ struct agony_t : public affliction_spell_t
 
   void impact( action_state_t* s ) override
   {
-    auto dot_data = td( s->target )->dots_agony;
-
-    bool pi_trigger = p()->talents.pandemic_invocation.ok() && dot_data->is_ticking()
-      && dot_data->remains() < timespan_t::from_millis( p()->talents.pandemic_invocation->effectN( 1 ).base_value() );
+    bool pi_trigger = p()->talents.pandemic_invocation->ok() && td( s->target )->dots_agony->is_ticking()
+      && td( s->target )->dots_agony->remains() < p()->talents.pandemic_invocation->effectN( 1 ).time_value();
 
     affliction_spell_t::impact( s );
 
@@ -108,8 +103,6 @@ struct agony_t : public affliction_spell_t
 
   void tick( dot_t* d ) override
   {
-    td( d->state->target )->dots_agony->increment( 1 );
-
     // Blizzard has not publicly released the formula for Agony's chance to generate a Soul Shard.
     // This set of code is based on results from 500+ Soul Shard sample sizes, and matches in-game
     // results to within 0.1% of accuracy in all tests conducted on all targets numbers up to 8.
@@ -119,11 +112,6 @@ struct agony_t : public affliction_spell_t
 
     double active_agonies = p()->get_active_dots( internal_id );
     increment_max *= std::pow( active_agonies, -2.0 / 3.0 );
-
-    //if ( p()->talents.creeping_death->ok() )
-    //{
-    //  increment_max *= 1.0 + p()->talents.creeping_death->effectN( 1 ).percent();
-    //}
 
     p()->agony_accumulator += rng().range( 0.0, increment_max );
 
@@ -150,6 +138,8 @@ struct agony_t : public affliction_spell_t
     }
 
     affliction_spell_t::tick( d );
+
+    td( d->state->target )->dots_agony->increment( 1 );
   }
 };
 
