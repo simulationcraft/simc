@@ -509,27 +509,26 @@ struct siphon_life_t : public affliction_spell_t
   }
 };
 
-struct phantom_singularity_tick_t : public affliction_spell_t
-{
-  phantom_singularity_tick_t( warlock_t* p )
-    : affliction_spell_t( "phantom_singularity_tick", p, p->talents.phantom_singularity_tick )
-  {
-    background = true;
-    may_miss   = false;
-    dual       = true;
-    aoe        = -1;
-  }
-};
-
 struct phantom_singularity_t : public affliction_spell_t
 {
+  struct phantom_singularity_tick_t : public affliction_spell_t
+  {
+    phantom_singularity_tick_t( warlock_t* p )
+      : affliction_spell_t( "Phantom Singularity (tick)", p, p->talents.phantom_singularity_tick )
+    {
+      background = dual = true;
+      may_miss = false;
+      aoe = -1;
+    }
+  };
+  
   phantom_singularity_t( warlock_t* p, util::string_view options_str )
-    : affliction_spell_t( "phantom_singularity", p, p->talents.phantom_singularity )
+    : affliction_spell_t( "Phantom Singularity", p, p->talents.phantom_singularity )
   {
     parse_options( options_str );
-    callbacks    = false;
+    callbacks = false;
     hasted_ticks = true;
-    tick_action  = new phantom_singularity_tick_t( p );
+    tick_action = new phantom_singularity_tick_t( p );
 
     spell_power_mod.tick = 0;
   }
