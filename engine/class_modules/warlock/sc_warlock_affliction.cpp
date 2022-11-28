@@ -356,11 +356,8 @@ struct malefic_rapture_t : public affliction_spell_t
     }
 };
 
-// Talents
-
 struct drain_soul_t : public affliction_spell_t
 {
-  // TOCHECK: What happens with chained Drain Soul casts?
   struct drain_soul_state_t : public action_state_t
   {
     double tick_time_multiplier;
@@ -390,10 +387,10 @@ struct drain_soul_t : public affliction_spell_t
   };
 
   drain_soul_t( warlock_t* p, util::string_view options_str )
-    : affliction_spell_t( "drain_soul", p, p->talents.drain_soul.ok() ? p->talents.drain_soul_dot : spell_data_t::not_found() )
+    : affliction_spell_t( "Drain Soul", p, p->talents.drain_soul->ok() ? p->talents.drain_soul_dot : spell_data_t::not_found() )
   {
     parse_options( options_str );
-    channeled    = true;
+    channeled = true;
   }
 
   action_state_t* new_state() override
@@ -440,20 +437,7 @@ struct drain_soul_t : public affliction_spell_t
       if ( p()->talents.shadow_embrace->ok() )
         td( d->target )->debuffs_shadow_embrace->trigger();
 
-      //if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T28, B4 ) )
-      //{
-      //  // TOFIX - As of 2022-02-03 PTR, the bonus appears to still be only checking that *any* target has these dots. May need to implement this behavior.
-      //  bool tierDotsActive = td( d->target )->dots_agony->is_ticking() 
-      //                     && td( d->target )->dots_corruption->is_ticking()
-      //                     && td( d->target )->dots_unstable_affliction->is_ticking();
-
-      //  if ( tierDotsActive && rng().roll( p()->sets->set( WARLOCK_AFFLICTION, T28, B4 )->effectN( 2 ).percent() ) )
-      //  {
-      //    p()->procs.calamitous_crescendo->occur();
-      //    p()->buffs.calamitous_crescendo->trigger();
-      //  }
-      //}
-      if ( p()->talents.tormented_crescendo.ok() )
+      if ( p()->talents.tormented_crescendo->ok() )
       {
         if ( p()->crescendo_check( p() ) && rng().roll( p()->talents.tormented_crescendo->effectN( 2 ).percent() ) )
         {
@@ -469,9 +453,9 @@ struct drain_soul_t : public affliction_spell_t
     double m = affliction_spell_t::composite_target_multiplier( t );
 
     if ( t->health_percentage() < p()->talents.drain_soul_dot->effectN( 3 ).base_value() )
-      m *= 1.0 + p()->talents.drain_soul->effectN( 2 ).percent();
+      m *= 1.0 + p()->talents.drain_soul_dot->effectN( 2 ).percent();
 
-    if ( p()->talents.withering_bolt.ok() )
+    if ( p()->talents.withering_bolt->ok() )
       m *= 1.0 + p()->talents.withering_bolt->effectN( 1 ).percent() * std::min( (int)p()->talents.withering_bolt->effectN( 2 ).base_value(), p()->get_target_data( t )->count_affliction_dots() );
 
     return m;
