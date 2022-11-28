@@ -246,15 +246,14 @@ struct summon_darkglare_t : public affliction_spell_t
 
 struct malefic_rapture_t : public affliction_spell_t
 {
-    struct malefic_rapture_damage_instance_t : public affliction_spell_t
+    struct malefic_rapture_damage_t : public affliction_spell_t
     {
-      malefic_rapture_damage_instance_t( warlock_t *p, double spc ) :
-          affliction_spell_t( "malefic_rapture_damage", p, p->talents.malefic_rapture_dmg )
+      malefic_rapture_damage_t( warlock_t* p )
+        : affliction_spell_t( "Malefic Rapture (hit)", p, p->talents.malefic_rapture_dmg )
       {
-        aoe = 1;
-        background = true;
-        spell_power_mod.direct = spc;
-        callbacks = false; //TOCHECK: Malefic Rapture did not proc Psyche Shredder, it may not cause any procs at all
+        background = dual = true;
+        spell_power_mod.direct = p->talents.malefic_rapture->effectN( 1 ).sp_coeff();
+        callbacks = false; // Malefic Rapture did not proc Psyche Shredder, it may not cause any procs at all
       }
 
       double composite_da_multiplier( const action_state_t* s ) const override
@@ -263,13 +262,7 @@ struct malefic_rapture_t : public affliction_spell_t
 
         m *= p()->get_target_data( s->target )->count_affliction_dots();
 
-        //if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T28, B2 ) )
-        //{
-        //  m *= 1.0 + p()->sets->set( WARLOCK_AFFLICTION, T28, B2 )->effectN( 1 ).percent();
-        //}
-
-        if ( p()->buffs.cruel_epiphany->check() )
-          m *= 1.0 + p()->buffs.cruel_epiphany->check_value();
+        m *= 1.0 + p()->buffs.cruel_epiphany->check_value();
 
         return m;
       }
@@ -278,32 +271,18 @@ struct malefic_rapture_t : public affliction_spell_t
       {
         affliction_spell_t::impact( s );
 
-        if ( p()->talents.malefic_affliction.ok() )
+        if ( p()->talents.malefic_affliction->ok() )
         {
           auto target_data = td( s->target );
 
           if ( target_data->dots_unstable_affliction->is_ticking() )
           {
-            if ( p()->talents.dread_touch.ok() && ( p()->buffs.malefic_affliction->check() >= (int)p()->talents.malefic_affliction_buff->max_stacks() ) )
+            if ( p()->talents.dread_touch->ok() && ( p()->buffs.malefic_affliction->check() >= (int)p()->talents.malefic_affliction_buff->max_stacks() ) )
               target_data->debuffs_dread_touch->trigger();
 
             p()->buffs.malefic_affliction->trigger();
           }
         }
-
-        //if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T28, B2 ) )
-        //{
-        //  timespan_t dot_extension =  p()->sets->set( WARLOCK_AFFLICTION, T28, B2 )->effectN( 2 ).time_value() * 1000;
-        //  warlock_td_t* td = p()->get_target_data( s->target );
-
-        //  td->dots_agony->adjust_duration( dot_extension );
-        //  td->dots_unstable_affliction->adjust_duration(dot_extension);
-
-        //  if ( !p()->talents.absolute_corruption->ok() )
-        //  {
-        //    td->dots_corruption->adjust_duration( dot_extension );
-        //  }
-        //}
       }
 
       void execute() override
@@ -321,21 +300,18 @@ struct malefic_rapture_t : public affliction_spell_t
     };
 
     malefic_rapture_t( warlock_t* p, util::string_view options_str )
-      : affliction_spell_t( "malefic_rapture", p, p->talents.malefic_rapture )
+      : affliction_spell_t( "Malefic Rapture", p, p->talents.malefic_rapture )
     {
       parse_options( options_str );
       aoe = -1;
 
-      impact_action = new malefic_rapture_damage_instance_t( p, data().effectN( 1 ).sp_coeff() );
+      impact_action = new malefic_rapture_damage_t( p );
       add_child( impact_action );
     }
 
     double cost() const override
     {
       double c = affliction_spell_t::cost();
-
-      //if ( p()->buffs.calamitous_crescendo->check() )
-      //  c *= 1.0 + p()->buffs.calamitous_crescendo->data().effectN( 4 ).percent();
 
       if ( p()->buffs.tormented_crescendo->check() )
         c *= 1.0 + p()->talents.tormented_crescendo_buff->effectN( 4 ).percent();
@@ -346,9 +322,6 @@ struct malefic_rapture_t : public affliction_spell_t
     timespan_t execute_time() const override
     {
       timespan_t t = affliction_spell_t::execute_time();
-
-      //if ( p()->buffs.calamitous_crescendo->check() )
-      //  t *= 1.0 + p()->buffs.calamitous_crescendo->data().effectN( 3 ).percent();
 
       if ( p()->buffs.tormented_crescendo->check() )
         t *= 1.0 + p()->talents.tormented_crescendo_buff->effectN( 3 ).percent();
@@ -370,7 +343,6 @@ struct malefic_rapture_t : public affliction_spell_t
       affliction_spell_t::execute();
 
       p()->buffs.tormented_crescendo->decrement();
-      //p()->buffs.calamitous_crescendo->expire();
       p()->buffs.cruel_epiphany->decrement();
     }
 
