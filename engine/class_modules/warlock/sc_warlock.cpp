@@ -1137,23 +1137,27 @@ double warlock_t::composite_player_pet_damage_multiplier( const action_state_t* 
 
   if ( specialization() == WARLOCK_DESTRUCTION )
   {
-    m *= 1.0 + warlock_base.destruction_warlock->effectN( 3 ).percent();
+    m *= 1.0 + warlock_base.destruction_warlock->effectN( guardian ? 4 : 3 ).percent();
 
-    if ( buffs.rolling_havoc->check() )
+    // 2022-11-27 Rolling Havoc is missing the aura for guardians
+    if ( buffs.rolling_havoc->check() && !guardian )
       m *= 1.0 + buffs.rolling_havoc->check_stack_value();
   }
+
   if ( specialization() == WARLOCK_DEMONOLOGY )
   {
-    m *= 1.0 + warlock_base.demonology_warlock->effectN( 3 ).percent();
+    m *= 1.0 + warlock_base.demonology_warlock->effectN( guardian ? 5 : 3 ).percent();
     m *= 1.0 + cache.mastery_value();
 
     if ( buffs.demonic_power->check() )
       m *= 1.0 + buffs.demonic_power->check_value();
   }
+
   if ( specialization() == WARLOCK_AFFLICTION )
   {
-    m *= 1.0 + warlock_base.affliction_warlock->effectN( 3 ).percent();
+    m *= 1.0 + warlock_base.affliction_warlock->effectN( guardian ? 7 : 3 ).percent();
   }
+
   return m;
 }
 
