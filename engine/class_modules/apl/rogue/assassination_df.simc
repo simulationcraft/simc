@@ -59,7 +59,7 @@ actions.cds+=/exsanguinate,if=variable.exsanguinate_condition&(!dot.garrote.refr
 actions.cds+=/shiv,if=talent.kingsbane&!debuff.shiv.up&dot.kingsbane.ticking&dot.garrote.ticking&dot.rupture.ticking&(!talent.crimson_tempest.enabled|variable.single_target|dot.crimson_tempest.ticking)
 actions.cds+=/shiv,if=!talent.kingsbane&!talent.sepsis&!debuff.shiv.up&dot.garrote.ticking&dot.rupture.ticking&(!talent.crimson_tempest.enabled|variable.single_target|dot.crimson_tempest.ticking)
 actions.cds+=/shiv,if=!talent.kingsbane&talent.sepsis&!debuff.shiv.up&dot.garrote.ticking&dot.rupture.ticking&((cooldown.sepsis.ready|cooldown.sepsis.remains>12)+(cooldown.deathmark.ready|cooldown.deathmark.remains>12)=2)
-actions.cds+=/thistle_tea,if=energy.deficit>=100&!buff.thistle_tea.up&(charges=3|debuff.deathmark.up|fight_remains<cooldown.deathmark.remains)
+actions.cds+=/thistle_tea,if=!buff.thistle_tea.up&(energy.deficit>=100|charges=3&(dot.kingsbane.ticking|debuff.deathmark.up)|fight_remains<charges*6)
 actions.cds+=/indiscriminate_carnage,if=(spell_targets.fan_of_knives>desired_targets|spell_targets.fan_of_knives>1&raid_event.adds.in>60)&(!talent.improved_garrote|cooldown.vanish.remains>45)
 actions.cds+=/potion,if=buff.bloodlust.react|fight_remains<30|debuff.deathmark.up
 actions.cds+=/blood_fury,if=debuff.deathmark.up
@@ -85,9 +85,9 @@ actions.direct+=/fan_of_knives,if=variable.use_filler&(!priority_rotation&spell_
 # Fan of Knives to apply poisons if inactive on any target (or any bleeding targets with priority rotation) at 3T
 actions.direct+=/fan_of_knives,target_if=!dot.deadly_poison_dot.ticking&(!priority_rotation|dot.garrote.ticking|dot.rupture.ticking),if=variable.use_filler&spell_targets.fan_of_knives>=3
 actions.direct+=/echoing_reprimand,if=(!talent.exsanguinate|!talent.resounding_clarity)&variable.use_filler&cooldown.deathmark.remains>10|fight_remains<20
-actions.direct+=/ambush,if=variable.use_filler&(master_assassin_remains=0&!talent.doomblade|buff.blindside.up)
+actions.direct+=/ambush,if=variable.use_filler
 # Tab-Mutilate to apply Deadly Poison at 2 targets
-actions.direct+=/mutilate,target_if=!dot.deadly_poison_dot.ticking,if=variable.use_filler&spell_targets.fan_of_knives=2
+actions.direct+=/mutilate,target_if=!dot.deadly_poison_dot.ticking&!debuff.amplifying_poison.up,if=variable.use_filler&spell_targets.fan_of_knives=2
 actions.direct+=/mutilate,if=variable.use_filler
 
 # Damage over time abilities
@@ -95,8 +95,8 @@ actions.direct+=/mutilate,if=variable.use_filler
 actions.dot=variable,name=skip_cycle_garrote,value=priority_rotation&(dot.garrote.remains<cooldown.garrote.duration|variable.regen_saturated)
 # Limit secondary Ruptures for priority rotation if we have 35 energy regen or Shiv is up on 2T+
 actions.dot+=/variable,name=skip_cycle_rupture,value=priority_rotation&(debuff.shiv.up&spell_targets.fan_of_knives>2|variable.regen_saturated)
-# Limit Ruptures if Deathmark+Shiv/Master Assassin is up and we have 2+ seconds left on the Rupture DoT
-actions.dot+=/variable,name=skip_rupture,value=debuff.deathmark.up&(debuff.shiv.up|master_assassin_remains>0)&dot.rupture.remains>2
+# Limit Ruptures when appropriate, not currently used
+actions.dot+=/variable,name=skip_rupture,value=0
 # Special Garrote and Rupture setup prior to Exsanguinate cast
 actions.dot+=/garrote,if=talent.exsanguinate.enabled&!will_lose_exsanguinate&dot.garrote.pmultiplier<=1&cooldown.exsanguinate.remains<2&spell_targets.fan_of_knives=1&raid_event.adds.in>6&dot.garrote.remains*0.5<target.time_to_die
 actions.dot+=/rupture,if=talent.exsanguinate.enabled&!will_lose_exsanguinate&dot.rupture.pmultiplier<=1&cooldown.exsanguinate.remains<1&effective_combo_points>=variable.exsanguinate_rupture_cp&dot.rupture.remains*0.5<target.time_to_die
