@@ -464,11 +464,11 @@ struct drain_soul_t : public affliction_spell_t
 
 struct haunt_t : public affliction_spell_t
 {
-  haunt_t( warlock_t* p, util::string_view options_str ) : affliction_spell_t( "haunt", p, p->talents.haunt )
+  haunt_t( warlock_t* p, util::string_view options_str ) : affliction_spell_t( "Haunt", p, p->talents.haunt )
   {
     parse_options( options_str );
 
-    if ( p->talents.seized_vitality.ok() )
+    if ( p->talents.seized_vitality->ok() )
       base_dd_multiplier *= 1.0 + p->talents.seized_vitality->effectN( 1 ).percent();
   }
 
@@ -480,10 +480,10 @@ struct haunt_t : public affliction_spell_t
     {
       td( s->target )->debuffs_haunt->trigger();
 
-      if ( p()->talents.haunted_soul.ok() )
+      if ( p()->talents.haunted_soul->ok() )
         p()->buffs.haunted_soul->trigger();
 
-      if ( p()->talents.shadow_embrace.ok() )
+      if ( p()->talents.shadow_embrace->ok() )
         td( s->target )->debuffs_shadow_embrace->trigger();
     }
   }
