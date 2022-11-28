@@ -123,16 +123,16 @@ legs=drake_hunters_greaves,id=193694,bonus_id=6808/4786/1594,enchant_id=6489
 feet=scaleguards_stalwart_greatboots,id=193728,bonus_id=6808/4786/1594
 finger1=unstable_arcane_loop,id=193633,bonus_id=6808/4786/1594,enchant_id=6561
 finger2=platinum_star_band,id=193708,bonus_id=6808/4786/1594,enchant_id=6555
-trinket1=blazebinders_hoof,id=193762,bonus_id=6808/4786/1594
+trinket1=algethar_puzzle_box,id=193701,bonus_id=6808/4786/1594
 trinket2=dragon_games_equipment,id=193719,bonus_id=6808/4786/1594
 main_hand=leyline_tracer,id=193638,bonus_id=6808/4786/1594,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
 # gear_ilvl=372.00
-# gear_strength=3140
+# gear_strength=3440
 # gear_stamina=6827
 # gear_crit_rating=1504
-# gear_haste_rating=2713
+# gear_haste_rating=2293
 # gear_mastery_rating=2986
 # gear_versatility_rating=818
 # gear_leech_rating=275
