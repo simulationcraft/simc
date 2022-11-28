@@ -1,5 +1,5 @@
-// Spell text, wow build 10.0.2.46741
-static const std::array<spelltext_data_t, 19176> __spelltext_data { {
+// Spell text, wow build 10.0.2.46801
+static const std::array<spelltext_data_t, 19177> __spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -19176,14 +19176,15 @@ static const std::array<spelltext_data_t, 19176> __spelltext_data { {
   { 397767, "Add a socket to a Dragonflight Season $s2 item that does not already have one. Can be used on Helms, Necks, Bracers, Belts, or Rings.", 0, 0 },
   { 397870, "Essence Burst increases the damage of affected spells by ${$s1}.1%.", 0, 0 },
   { 398396, "$@spelldesc386578", 0, 0 },
+  { 399370, "$@spelldesc370867", "Your next Blue spell deals $s1% more damage.", 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.0.2.46741
+// spelltext hotfix entries, wow build 10.0.2.46801
 static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelltext_hotfix_data { {
   {   79096,  0, "Finishing moves reduce the remaining cooldown of many Rogue skills by $<cdr> sec per combo point spent.\r\n\r\nAffected skills: Adrenaline Rush, Between the Eyes, Blade Flurry, Blade Rush, Dreadblades, Ghostly Strike, Grappling Hook, Keep it Rolling, Killing Spree, Marked for Death, Roll the Bones, Sepsis, Sprint, and Vanish.", "Finishing moves reduce the remaining cooldown of many Rogue skills by $<cdr> sec per combo point spent.\r\n\r\nAffected skills: Adrenaline Rush, Between the Eyes, Blade Flurry, Blade Rush, Dreadblades, Ghostly Strike, Grappling Hook, Keep it Rolling, Killing Spree, Marked for Death, Roll the Bones, Sprint, and Vanish." },
 } };
 
-// Spell description variables, wow build 10.0.2.46741
+// Spell description variables, wow build 10.0.2.46801
 static const std::array<spelldesc_vars_data_t, 365> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$pvp=$?a134735[${1.1}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<pvp>*$<weal>}\r\n" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -19552,10 +19553,7 @@ static const std::array<spelldesc_vars_data_t, 365> __spelldesc_vars_data { {
   {  394354, "$damage=${($AP*1.0)*(1+$@versadmg)}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.0.2.46741
-static constexpr std::array<hotfix::client_hotfix_entry_t, 3> __spelldesc_vars_hotfix_data { {
-  {  322507,  0, "$absorb=${($AP*6)*(1+$@versadmg)}\r\n", "$absorb=${($AP*8.4)*(1+$@versadmg)}\r\n" },
-  {  363041,  0, "$absorb=${($AP*6)*(1+$@versadmg)}\r\n", "$absorb=${($AP*8.4)*(1+$@versadmg)}\r\n" },
-  {  378986,  0, "$cap=${$SP*1.20}", "$cap=${$SP*1.40}" },
+// spelldesc_vars hotfix entries, wow build 10.0.2.46801
+static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 

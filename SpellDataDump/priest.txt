@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46741 Live (hotfix 2022-11-27/46741, git build add_paladin_buff 76f8ceaf67)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46801 Live (hotfix 2022-11-28/46801)
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -1376,7 +1376,6 @@ Effects          :
 Description      : Melee attacks against you cause you to gain Focused Will, reducing damage you take by $45242s1% for $45242d$?s137033[][, stacking up to $45242u times].
 
 Name             : Divine Aegis (id=47515) [Spell Family (6), Passive, Hidden] 
-Hotfixed         : Affecting Spells
 Talent Entry     : Discipline [tree=spec, row=9, col=1, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(5, 10)]
                  : Effect#2 [op=set, values=(5, 10)]
@@ -1579,7 +1578,6 @@ Effects          :
 Description      : $@spelldesc47540
 
 Name             : Divine Aegis (id=47753) [Spell Family (6)] 
-Hotfixed         : Affecting Spells
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -2893,15 +2891,12 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 34 | Target: Self (1)
                    Affected Spells: Flash Heal (2061)
                    Family Flags: 11
-Hotfixed         : Sub Type (408 -> 108), Base Value (0 -> -100), Misc Value (0 -> 34), Affects Spells, Trigger Spell (2061 -> 0)
 #4 (id=164990)   : Apply Aura (6) | Add Percent Modifier (108): Unknown(39)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 39 | Target: Self (1)
                    Affected Spells: Flash Heal (2061)
                    Family Flags: 11
-Hotfixed         : Sub Type (408 -> 108), Base Value (0 -> -100), Misc Value (0 -> 39), Affects Spells, Trigger Spell (101062 -> 0)
 #5 (id=1043134)  : Apply Aura (6) | Unknown(408)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 2061 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 Description      : $@spelldesc109186
 Tooltip          : Next Flash Heal is instant and costs no mana.
 
@@ -3616,7 +3611,6 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Flash Heal (2061)
                    Family Flags: 11
-Hotfixed         : NEW EFFECT
 Description      : Discipline Priest core passive
 
 Name             : Shadow Priest (id=137033) [Spell Family (6), Passive, Hidden] 
@@ -4201,7 +4195,7 @@ Talent Entry     : Discipline [tree=spec, row=2, col=1, max_rank=1, req_points=0
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
-Resource         : 5.5% Base Mana (0) (id=10498)[Hotfixed: Percent Cost (6.5 -> 5.5)]
+Resource         : 5.5% Base Mana (0) (id=10498)
 Spell Level      : 23
 Range            : 40 yards
 Cast Time        : 2 seconds
@@ -14717,7 +14711,6 @@ Description      : Your damaging Shadow spells increase the damage of your next 
 Your damaging Holy spells increase the damage of your next Shadow spell cast within $390707d sec by $390707s1%.
 
 Name             : Twilight Equilibrium (id=390706) [Spell Family (6)] 
-Hotfixed         : Proc Flags (0 -> 81920)
 Class            : Priest
 School           : Physical
 Spell Type       : None

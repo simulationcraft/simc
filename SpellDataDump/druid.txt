@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46741 Live (hotfix 2022-11-27/46741, git build add_paladin_buff 76f8ceaf67)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46801 Live (hotfix 2022-11-28/46801)
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=8, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
@@ -1948,7 +1948,6 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Moonfire (8921), Starfall (50286), Starsurge (78674), Starfall (191034), Starfall (191037), Starfire (194153), Starsurge (197626), Starfire (197628), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (202770), Fury of Elune (211545), New Moon (274281), Half Moon (274282), Full Moon (274283), Fury of Elune (365640), Fury of Elune (394111)
                    Family Flags: 2, 21, 23, 55, 63, 89, 105, 116
-Hotfixed         : Affects Spells
 #2 (id=816916)   : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Starfire (194153), Starfire (197628)
@@ -3017,7 +3016,6 @@ Effects          :
 Description      : Cures harmful effects on the friendly target, removing all Magic$?s392378[, Curse, and Poison][] effects.
 
 Name             : Wild Mushroom (id=88747) [Spell Family (7)] 
-Hotfixed         : Attributes
 Talent Entry     : Balance [tree=spec, row=7, col=5, max_rank=1, req_points=8]
 Class            : Druid
 School           : Nature
@@ -3043,10 +3041,8 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
 Effects          :
 #1 (id=91238)    : Trigger Spell (64): Wild Mushroom
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 500 | Trigger Spell: 88751 | Target: Unknown(63)
-Hotfixed         : Type (28 -> 64), Base Value (3 -> 0), Misc Value (198051 -> 500), Misc Value 2 (3069 -> 0), Trigger Spell (0 -> 88751)
 #2 (id=1043162)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 Description      : Grow a magical mushroom at the target enemy's location. After $d, the mushroom detonates, dealing $88751s1 Nature damage and generating up to $88751s2 Astral Power based on targets hit.
 
 Name             : Wild Mushroom (id=88751) [Spell Family (7)] 
@@ -3581,11 +3577,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Growl (6795), Frenzied Regeneration (22842), Mangle (33917), Thrash (77758)
                    Family Flags: 35, 38, 62, 91
-Hotfixed         : Base Value (-50 -> 0)
 #2 (id=111384)   : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 1568 | Target: Self (1)
                    Affected Spells (Category): Frenzied Regeneration (22842)
-Hotfixed         : Base Value (-50 -> -100)
 #3 (id=111385)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Ironfur (192081)
@@ -3596,7 +3590,6 @@ Hotfixed         : Base Value (-50 -> -100)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Maul (6807), Strength of the Wild (236716)
                    Family Flags: 11
-Hotfixed         : Misc Value (3 -> 14), Affects Spells, Trigger Spell (6807 -> 0)
 #6 (id=867842)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Rip (1079), Rake (1822), Wrath (5176), Shred (5221), Maul (6807), Ferocious Bite (22568), Maim (22570), Mangle (33917), Thrash (77758), Starsurge (78674), Pulverize (80313), Fungal Growth (81281), Wild Mushroom (88751), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Moonfire (164812), Sunfire (164815), Wrath (190984), Starfall (191037), Thrash (192090), Starfire (194153), Starsurge (197626), Starfire (197628), Sunfire (197630), Brutal Slash (202028), Stellar Flare (202347), Shooting Stars (202497), Brambles (203958), Fury of Elune (211545), Brambles (213709), Swipe (213771), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Feral Frenzy (274838), Lunar Shrapnel (279641), Primal Wrath (285381), Thorns (305496), Adaptive Swarm (325733), Orbital Strike (361237), Architect's Aligner (363789), Sickle of the Lion (363830), Fury of Elune (365640), Adaptive Swarm (391889), Goldrinn's Fang (394047), Fury of Elune (394111)
@@ -5213,10 +5206,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=216287)   : Apply Aura (6) | Periodic Damage (3): arcane every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.12000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (0.198 -> 0.12)
 #2 (id=216288)   : School Damage (2): arcane
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.12000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (0.198 -> 0.12)
 #3 (id=216290)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
 Description      : A quick beam of lunar light burns the enemy for $s2 Arcane damage and then an additional $o1 Arcane damage over $d.
@@ -15403,7 +15394,6 @@ Effects          :
 Description      : Every $s2 Rage you spend causes a burst of restorative energy, healing allies within $371982A1 yds for $371982s1.
 
 Name             : After the Wildfire (id=371982) [Spell Family (7)] 
-Hotfixed         : Affecting Spells
 Class            : Druid
 School           : Nature
 Spell Type       : Magic
@@ -15930,7 +15920,6 @@ Effects          :
 Description      : When you fall below $s2% health, you cast Frenzied Regeneration, up to once every $s1 sec.
 
 Name             : Protector of the Pack (id=378986) [Spell Family (7), Passive] 
-Hotfixed         : Variables
 Talent Entry     : Generic [tree=class, row=10, col=1, max_rank=1, req_points=20]
 Class            : Druid
 School           : Physical
@@ -15951,7 +15940,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1007516)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (10 -> 5)
 #2 (id=1035672)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $?s137012[Store $s1% of your effective healing, up to $<cap>. Your next Moonfire consumes all stored healing to increase its damage dealt.][Store $s1% of your damage, up to $<cap>. Your next Regrowth consumes all stored damage to increase its healing.]
@@ -17041,7 +17029,6 @@ Effects          :
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=1042566)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
-Hotfixed         : NEW EFFECT
 Description      : Primal Wrath consumes up to $s1 sec of Rip damage on targets it hits and deals $s2% of it instantly.
 
 Name             : Tear Open Wounds (id=391786) [Spell Family (7)] 
@@ -18520,7 +18507,6 @@ Effects          :
 Description      : Starfall's stars have a chance to deal an additional $s1% damage to nearby enemies when they damage an enemy afflicted by Moonfire. Deals reduced damage beyond $s2 targets.
 
 Name             : Lunar Shrapnel (id=393869) [Spell Family (7)] 
-Hotfixed         : Attributes, Affecting Spells
 Class            : Druid
 School           : Astral
 Spell Type       : Magic
@@ -19015,7 +19001,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Starfall (50286), Starsurge (78674), Moonfire (164812), Starfall (191034), Starfall (191037), Starfire (194153), Starsurge (197626), Starfire (197628), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (202770), Fury of Elune (211545), New Moon (274281), Half Moon (274282), Full Moon (274283), Fury of Elune (365640), Fury of Elune (394111)
                    Family Flags: 2, 23, 55, 63, 89, 92, 105, 116
-Hotfixed         : Affects Spells
 #2 (id=1033392)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=1038220)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Critical Chance (7)
