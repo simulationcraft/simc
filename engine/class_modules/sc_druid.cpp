@@ -300,7 +300,6 @@ public:
   double after_the_wildfire_counter;
   std::vector<event_t*> persistent_event_delay;
   event_t* astral_power_decay;
-  std::vector<event_t*> swarm_tracker;  // 'friendly' targets for healing swarm
   // !!!==========================================================================!!!
 
   // Options
@@ -500,6 +499,7 @@ public:
     buff_t* bristling_fur;
     buff_t* dream_of_cenarius;
     buff_t* earthwarden;
+    buff_t* elunes_favored;
     buff_t* galactic_guardian;
     buff_t* gore;
     buff_t* gory_fur;
@@ -1909,11 +1909,10 @@ public:
     if ( !s->result_amount || !( t == result_amount_type::DMG_DIRECT || t == result_amount_type::DMG_OVER_TIME ) )
       return;
 
-    if ( p()->active.elunes_favored_heal && p()->get_form() == BEAR_FORM &&
+    if ( p()->buff.elunes_favored->check() && p()->get_form() == BEAR_FORM &&
          dbc::has_common_school( s->action->get_school(), SCHOOL_ARCANE ) )
     {
-      p()->active.elunes_favored_heal->execute_on_target(
-          p(), p()->talent.elunes_favored->effectN( 1 ).percent() * s->result_amount );
+      p()->buff.elunes_favored->current_value += s->result_amount;
     }
 
     if ( p()->specialization() != DRUID_RESTORATION )
@@ -4897,9 +4896,24 @@ struct efflorescence_t : public druid_heal_t
 // Elune's Favored ==========================================================
 struct elunes_favored_heal_t : public druid_heal_t
 {
-  elunes_favored_heal_t( druid_t* p ) : druid_heal_t( "elunes_favored", p, p->find_spell( 370602 ) )
+  double mul;
+
+  elunes_favored_heal_t( druid_t* p )
+    : druid_heal_t( "elunes_favored", p, p->find_spell( 370602 ) ),
+      mul( p->talent.elunes_favored->effectN( 1 ).percent() )
   {
     background = true;
+  }
+
+  double get_amount() const { return p()->buff.elunes_favored->check_value() * mul; }
+  double base_da_min( const action_state_t* ) const override { return get_amount(); }
+  double base_da_max( const action_state_t* ) const override { return get_amount(); }
+
+  void impact( action_state_t* s ) override
+  {
+    druid_heal_t::impact( s );
+
+    p()->buff.elunes_favored->current_value = 0;
   }
 };
 
@@ -9457,22 +9471,23 @@ void druid_t::create_buffs()
   buff.gathering_starstuff =
       make_buff( this, "gathering_starstuff", sets->set( DRUID_BALANCE, T29, B2 )->effectN( 1 ).trigger() );
 
-  buff.natures_balance = make_buff( this, "natures_balance", talent.natures_balance );
+  buff.natures_balance = make_buff( this, "natures_balance", talent.natures_balance )
+    ->set_quiet( true )
+    ->set_freeze_stacks( true );
   auto nb_eff = query_aura_effect( &buff.natures_balance->data(), A_PERIODIC_ENERGIZE, RESOURCE_ASTRAL_POWER );
-  buff.natures_balance->set_quiet( true )
+  buff.natures_balance
     ->set_default_value( nb_eff->resource( RESOURCE_ASTRAL_POWER ) / nb_eff->period().total_seconds() )
     ->set_tick_callback( [ nb_eff, this ]( buff_t* b, int, timespan_t ) {
-      auto tick_gain = b->check_value() * nb_eff->period().total_seconds();
-      if (sim->target_non_sleeping_list.empty()) {
-          if (resources.current[RESOURCE_ASTRAL_POWER] < talent.natures_balance->effectN(2).base_value())
-              tick_gain *= 3.0;
-          else
-              tick_gain = 0;
-
+      auto tick_gain = nb_eff->resource( RESOURCE_ASTRAL_POWER );
+      if ( sim->target_non_sleeping_list.empty() )
+      {
+        if ( resources.current[ RESOURCE_ASTRAL_POWER ] < talent.natures_balance->effectN( 2 ).base_value() )
+          tick_gain *= 3.0;
+        else
+          tick_gain = 0;
       }
-      resource_gain(RESOURCE_ASTRAL_POWER, tick_gain, gain.natures_balance);
-  })
-      ->set_freeze_stacks(true);
+      resource_gain( RESOURCE_ASTRAL_POWER, tick_gain, gain.natures_balance );
+    } );
 
   buff.natures_grace = make_buff( this, "natures_grace", find_spell( 393959 ) )
     ->set_trigger_spell( talent.natures_grace )
@@ -9626,6 +9641,13 @@ void druid_t::create_buffs()
     ->set_trigger_spell( talent.earthwarden )
     ->set_default_value( talent.earthwarden->effectN( 1 ).percent() );
 
+  buff.elunes_favored = make_buff( this, "elunes_favored", spec.elunes_favored )
+    ->set_quiet( true )
+    ->set_freeze_stacks( true )
+    ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
+      active.elunes_favored_heal->execute();
+    } );
+
   // trigger spell handled within druid_action_t::trigger_galactic_guardian()
   buff.galactic_guardian = make_buff( this, "galactic_guardian", find_spell( 213708 ) )
     ->set_cooldown( talent.galactic_guardian->internal_cooldown() )
@@ -9695,16 +9717,13 @@ void druid_t::create_buffs()
     ->set_trigger_spell( talent.soul_of_the_forest_tree )
     ->set_name_reporting( "soul_of_the_forest" );
 
-  if ( talent.yseras_gift.ok() )
-  {
-    buff.yseras_gift = make_buff( this, "yseras_gift_driver", talent.yseras_gift )
-      ->apply_affecting_aura( talent.waking_dream->effectN( 1 ).trigger() )
-      ->set_quiet( true )
-      ->set_tick_zero( true )
-      ->set_tick_callback( [this]( buff_t*, int, timespan_t ) {
-          active.yseras_gift->schedule_execute();
-        } );
-  }
+  buff.yseras_gift = make_buff( this, "yseras_gift_driver", talent.yseras_gift )
+    ->apply_affecting_aura( talent.waking_dream->effectN( 1 ).trigger() )
+    ->set_quiet( true )
+    ->set_tick_zero( true )
+    ->set_tick_callback( [this]( buff_t*, int, timespan_t ) {
+        active.yseras_gift->schedule_execute();
+      } );
 
   // Note you cannot replace buff checking with these, as it's possible to gain incarnation without the talent
   buff.b_inc_cat  = talent.incarnation_cat.ok()     ? buff.incarnation_cat     : buff.berserk_cat;
@@ -10394,7 +10413,6 @@ void druid_t::reset()
   after_the_wildfire_counter = 0.0;
   persistent_event_delay.clear();
   astral_power_decay = nullptr;
-  swarm_tracker.clear();
 }
 
 // druid_t::merge ===========================================================
@@ -10489,9 +10507,10 @@ void druid_t::arise()
     register_combat_begin( [ this ]( player_t* ) { buff.lycaras_teachings->trigger(); } );
   }
 
+  buff.elunes_favored->trigger();
   buff.natures_balance->trigger();
 
-  if ( buff.yseras_gift )
+  if ( active.yseras_gift )
     persistent_event_delay.push_back( make_event<persistent_delay_event_t>( *sim, this, buff.yseras_gift ) );
 
   if ( specialization() == DRUID_BALANCE )
