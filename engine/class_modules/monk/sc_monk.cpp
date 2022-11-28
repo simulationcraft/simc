@@ -3692,7 +3692,7 @@ struct chi_torpedo_t : public monk_spell_t
     monk_spell_t::execute();
 
     p()->buff.chi_torpedo->trigger();
-    p()->movement.roll->trigger();
+    p()->movement.chi_torpedo->trigger();
   }
 };
 
