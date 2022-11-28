@@ -1198,17 +1198,11 @@ double warlock_t::composite_player_target_pet_damage_multiplier( player_t* targe
   return m;
 }
 
-double warlock_t::composite_mastery() const
-{
-  double m = player_t::composite_mastery();
-  return m;
-}
-
 double warlock_t::composite_spell_crit_chance() const
 {
   double m = player_t::composite_spell_crit_chance();
 
-  if ( specialization() == WARLOCK_DESTRUCTION && talents.backlash.ok() )
+  if ( specialization() == WARLOCK_DESTRUCTION && talents.backlash->ok() )
     m += talents.backlash->effectN( 1 ).percent();
 
   return m;
@@ -1218,27 +1212,9 @@ double warlock_t::composite_melee_crit_chance() const
 {
   double m = player_t::composite_melee_crit_chance();
 
-  if ( specialization() == WARLOCK_DESTRUCTION && talents.backlash.ok() )
+  if ( specialization() == WARLOCK_DESTRUCTION && talents.backlash->ok() )
     m += talents.backlash->effectN( 1 ).percent();
 
-  return m;
-}
-
-double warlock_t::composite_rating_multiplier( rating_e rating ) const
-{
-  double m = player_t::composite_rating_multiplier( rating );
-  return m;
-}
-
-double warlock_t::resource_regen_per_second( resource_e r ) const
-{
-  double reg = player_t::resource_regen_per_second( r );
-  return reg;
-}
-
-double warlock_t::composite_attribute_multiplier( attribute_e attr ) const
-{
-  double m = player_t::composite_attribute_multiplier( attr );
   return m;
 }
 
@@ -1252,13 +1228,13 @@ double warlock_t::resource_gain( resource_e resource_type, double amount, gain_t
   {
     bool filled = ( resources.current[ resource_type ] - std::floor( prev ) >= 1.0 );
 
-    if ( filled && talents.demonic_inspiration.ok() && warlock_pet_list.active )
+    if ( filled && talents.demonic_inspiration->ok() && warlock_pet_list.active )
     {
       warlock_pet_list.active->buffs.demonic_inspiration->trigger();
       procs.demonic_inspiration->occur();
     }
 
-    if ( filled && talents.wrathful_minion.ok() && warlock_pet_list.active )
+    if ( filled && talents.wrathful_minion->ok() && warlock_pet_list.active )
     {
       warlock_pet_list.active->buffs.wrathful_minion->trigger();
       procs.wrathful_minion->occur();
@@ -1268,8 +1244,8 @@ double warlock_t::resource_gain( resource_e resource_type, double amount, gain_t
   return amt;
 }
 
-//Note: Level is checked to be >=27 by the function calling this. This is technically wrong for warlocks due to
-//a missing level requirement in data, but correct generally.
+// Note: Level is checked to be >=27 by the function calling this. This is technically wrong for warlocks due to
+// a missing level requirement in data, but correct generally.
 double warlock_t::matching_gear_multiplier( attribute_e attr ) const
 {
   if ( attr == ATTR_INTELLECT )
