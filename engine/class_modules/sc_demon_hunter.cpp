@@ -6465,7 +6465,10 @@ double demon_hunter_t::composite_player_critical_damage_multiplier( const action
 
   if ( talent.havoc.know_your_enemy->ok() )
   {
-    m *= 1.0 + talent.havoc.know_your_enemy->effectN( 2 ).percent() * cache.attack_crit_chance();
+    // 2022-11-28 -- Halving this value as it appears this still uses Modify Crit Damage Done% (163)
+    //               However, it has been scripted to match the value of Spell Critical Damage (15)
+    //               This does affect gear, however, so it is a player rather than spell modifier
+    m *= 1.0 + talent.havoc.know_your_enemy->effectN( 2 ).percent() * cache.attack_crit_chance() * 0.5;
   }
 
   return m;
