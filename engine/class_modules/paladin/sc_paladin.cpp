@@ -37,9 +37,13 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
   active_aura         = nullptr;
 
   cooldowns.avenging_wrath               = get_cooldown( "avenging_wrath" );
+  cooldowns.sentinel                     = get_cooldown( "sentinel" );
   cooldowns.hammer_of_justice            = get_cooldown( "hammer_of_justice" );
   cooldowns.judgment_of_light_icd        = get_cooldown( "judgment_of_light_icd" );
   cooldowns.the_magistrates_judgment_icd = get_cooldown( "the_magistrates_judgment_icd" );
+  cooldowns.blessing_of_protection       = get_cooldown( "blessing_of_protection" );
+  cooldowns.blessing_of_spellwarding     = get_cooldown( "blessing_of_spellwarding" );
+  cooldowns.divine_shield                = get_cooldown( "divine_shield" );
 
   cooldowns.holy_shock    = get_cooldown( "holy_shock" );
   cooldowns.light_of_dawn = get_cooldown( "light_of_dawn" );
@@ -47,6 +51,9 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
   cooldowns.avengers_shield           = get_cooldown( "avengers_shield" );
   cooldowns.consecration              = get_cooldown( "consecration" );
   cooldowns.inner_light_icd           = get_cooldown( "inner_light_icd" );
+  cooldowns.inner_light_icd->duration = find_spell( 386556 )->internal_cooldown();
+  cooldowns.righteous_protector_icd   = get_cooldown( "righteous_protector_icd" );
+  cooldowns.righteous_protector_icd->duration = find_spell( 204074 )->internal_cooldown();
   cooldowns.judgment                  = get_cooldown( "judgment" );
   cooldowns.shield_of_the_righteous   = get_cooldown( "shield_of_the_righteous" );
   cooldowns.guardian_of_ancient_kings = get_cooldown( "guardian_of_ancient_kings" );
@@ -139,6 +146,9 @@ struct blessing_of_protection_t : public paladin_spell_t
     : paladin_spell_t( "blessing_of_protection", p, p->find_talent_spell( talent_tree::CLASS, "Blessing of Protection" ) )
   {
     parse_options( options_str );
+    harmful = false;
+    may_miss = false;
+    cooldown = p->cooldowns.blessing_of_protection; // Used to set it on cooldown via Blessing of Spellwarding
 
     // Uther's Counsel reduces cooldown
     if ( p->talents.uthers_counsel->ok() )
@@ -151,6 +161,11 @@ struct blessing_of_protection_t : public paladin_spell_t
   {
     paladin_spell_t::execute();
 
+    // TODO: Check if target is self, because it's castable on anyone
+    p()->buffs.blessing_of_protection->trigger();
+
+    if ( p()->talents.blessing_of_spellwarding->ok() )
+      p()->cooldowns.blessing_of_spellwarding->start();
     // apply forbearance, track locally for forbearant faithful & force recharge recalculation
     p()->trigger_forbearance( execute_state->target );
   }
@@ -158,6 +173,9 @@ struct blessing_of_protection_t : public paladin_spell_t
   bool target_ready( player_t* candidate_target ) override
   {
     if ( candidate_target->debuffs.forbearance->check() )
+      return false;
+
+    if ( candidate_target->is_enemy() )
       return false;
 
     return paladin_spell_t::target_ready( candidate_target );
@@ -178,6 +196,8 @@ struct avenging_wrath_t : public paladin_spell_t
     if ( p->talents.crusade->ok() )
       background = true;
     if ( p->talents.avenging_crusader->ok() )
+      background = true;
+    if ( p->talents.sentinel->ok() )
       background = true;
     harmful = false;
 
@@ -401,6 +421,9 @@ struct consecration_t : public paladin_spell_t
     if ( precombat_time > 0 )
       cons_duration -= timespan_t::from_seconds( precombat_time + 1 );
 
+    if ( p()->talents.consecration_in_flame->ok() )
+      cons_duration += timespan_t::from_millis( p()->talents.consecration_in_flame->effectN( 1 ).base_value() );
+
     cons_params = ground_aoe_params_t()
                       .duration( cons_duration )
                       .hasted( ground_aoe_params_t::SPELL_HASTE )
@@ -440,12 +463,6 @@ struct consecration_t : public paladin_spell_t
     if ( sim->distance_targeting_enabled )
       cons_params.x( p()->x_position ).y( p()->y_position );
 
-    auto duration = data().duration();
-    if ( p()->talents.consecration_in_flame->ok() )
-    {
-      duration +=  p()->talents.consecration_in_flame->effectN( 1 ).time_value();
-    }
-
     if ( !player->in_combat && precombat_time > 0 )
     {
       // Adjust cooldown if consecration is used in precombat
@@ -476,6 +493,7 @@ struct divine_shield_t : public paladin_spell_t
     parse_options( options_str );
 
     harmful = false;
+    cooldown = p->cooldowns.divine_shield; // Needed for cooldown reduction via Resolute Defender
 
     // unbreakable spirit reduces cooldown
     if ( p->talents.unbreakable_spirit->ok() )
@@ -630,6 +648,12 @@ struct lay_on_hands_t : public paladin_heal_t
     if ( p->talents.uthers_counsel->ok())
     {
       cooldown->duration *= 1.0 + p->talents.uthers_counsel->effectN( 2 ).percent();
+    }
+
+    // Improved Lay on Hands also reduces cooldown
+    if (p->talents.improved_lay_on_hands->ok())
+    {
+      cooldown->duration *= 1.0 + p->talents.improved_lay_on_hands->effectN( 1 ).percent();
     }
 
     may_crit    = false;
@@ -1025,6 +1049,8 @@ struct crusader_strike_t : public paladin_melee_attack_t
   {
     paladin_melee_attack_t::execute();
 
+    p()->trigger_grand_crusader();
+
     if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, T29, B4 ) )
     {
       p()->t29_4p_prot();
@@ -1039,12 +1065,65 @@ struct crusader_strike_t : public paladin_melee_attack_t
   }
 };
 
+struct light_of_the_titans_t : public paladin_heal_t
+{
+  struct light_of_the_titans_hot_t : public paladin_heal_t
+  {
+    light_of_the_titans_hot_t( paladin_t* p )
+      : paladin_heal_t( "Light of the Titans (HoT)", p, p->talents.light_of_the_titans ->effectN( 1 ).trigger() )
+    {
+      tick_zero  = false;
+      background = true;
+    }
+    void tick(dot_t* d) override
+    {
+      paladin_heal_t::tick( d );
+    }
+    double composite_ta_multiplier(const action_state_t* s) const override
+    {
+      double m = paladin_heal_t::composite_ta_multiplier( s );
+      return m;
+    }
+  };
+
+  light_of_the_titans_hot_t* periodic;
+
+  light_of_the_titans_t( paladin_t* p, util::string_view options_str )
+    : paladin_heal_t( "Light of the Titans", p, p->talents.light_of_the_titans ),
+      periodic( new light_of_the_titans_hot_t( p ) )
+  {
+    parse_options( options_str );
+    tick_zero = false;
+    impact_action = periodic;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    paladin_t* p = debug_cast<paladin_t*>( player );
+    for ( size_t i = 0, size = p->dot_list.size(); i < size; i++ )
+    {
+      dot_t* d = p->dot_list[ i ];
+      // If a hostile DoT is ticking on us, Light of the Titans heals for 50% more
+      if ( d->source != p && d->source->is_enemy() && d->is_ticking() )
+      {
+        // ToDo: This actually does nothing, tried different variables, none seem to work.
+        // So... Kinda NYI-ish for now? At least something ticks...
+        periodic->base_multiplier = 1.0 + p->talents.light_of_the_titans->effectN( 2 ).percent();
+        break;
+      }
+    }
+    paladin_heal_t::impact( s );
+  }
+};
+
 // Word of Glory ===================================================
 
 struct word_of_glory_t : public holy_power_consumer_t<paladin_heal_t>
 {
+  light_of_the_titans_t* light_of_the_titans;
   word_of_glory_t( paladin_t* p, util::string_view options_str )
-    : holy_power_consumer_t( "word_of_glory", p, p->find_class_spell( "Word of Glory" ) )
+    : holy_power_consumer_t( "word_of_glory", p, p->find_class_spell( "Word of Glory" ) ),
+      light_of_the_titans( new light_of_the_titans_t( p, "" ) )
   {
     parse_options( options_str );
     target = p;
@@ -1076,6 +1155,10 @@ struct word_of_glory_t : public holy_power_consumer_t<paladin_heal_t>
     if ( p()->conduit.shielding_words->ok() && s->result_amount > 0 )
     {
       p()->buffs.shielding_words->trigger( 1, s->result_amount * p()->conduit.shielding_words.percent() );
+    }
+    if ( p() ->talents.light_of_the_titans->ok())
+    {
+      light_of_the_titans->execute();
     }
   }
 
@@ -1175,6 +1258,7 @@ struct inner_light_damage_t : public paladin_spell_t
   {
     background  = proc = may_crit = true;
     may_miss                      = false;
+    cooldown                      = p->cooldowns.inner_light_icd;
   }
 };
 
@@ -1258,6 +1342,16 @@ void judgment_t::execute()
     if ( p()->buffs.crusade->up() )
     {
       p()->buffs.crusade->extend_duration( p(), extension );
+    }
+
+    if ( p()->buffs.sentinel->up() )
+    {
+      p()->buffs.sentinel->extend_duration( p(), extension );
+      // 2022-11-14 If Sentinel is still at max stacks, Zealot's Paragon increases decay length, too.
+      if ( p()->bugs && p()->buffs.sentinel->at_max_stacks() && p()->buffs.sentinel_decay->up())
+      {
+        p()->buffs.sentinel_decay->extend_duration( p(), extension );
+      }
     }
   }
 }
@@ -1850,6 +1944,17 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
         p()->buffs.crusade->extend_duration(
             p(), timespan_t::from_seconds( p()->legendary.the_mad_paragon->effectN( 1 ).base_value() ) );
       }
+      else if ( p()->buffs.sentinel->up() )
+      {
+        p()->buffs.sentinel->extend_duration(
+            p(), timespan_t::from_seconds( p()->legendary.the_mad_paragon->effectN( 1 ).base_value() ) );
+        // 2022-11-14 If Sentinel is still at max stacks, Mad Paragon increases decay length, too.
+        if ( p()->bugs && p()->buffs.sentinel->at_max_stacks() && p()->buffs.sentinel_decay->up() )
+        {
+          p()->buffs.sentinel_decay->extend_duration(
+              p(), timespan_t::from_seconds( p()->legendary.the_mad_paragon->effectN( 1 ).base_value() ) );
+        }
+      }
     }
 
     if ( p()->talents.zealots_paragon->ok() )
@@ -1864,6 +1969,15 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
       if ( p()->buffs.crusade->up() )
       {
         p()->buffs.crusade->extend_duration( p(), extension );
+      }
+      if ( p() ->buffs.sentinel->up())
+      {
+        p()->buffs.sentinel->extend_duration( p(), extension );
+        // 2022-11-14 If Sentinel is still at max stacks, Zealot's Paragon increases decay length, too.
+        if ( p()->bugs && p()->buffs.sentinel->at_max_stacks() && p()->buffs.sentinel_decay->up() )
+        {
+          p()->buffs.sentinel_decay->extend_duration( p(), extension );
+        }
       }
     }
 
@@ -2079,6 +2193,9 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) : actor_targe
   debuff.sanctify              = make_buff( *this, "sanctify", paladin->find_spell( 382538 ) );
   debuff.eye_of_tyr            = make_buff( *this, "eye_of_tyr", paladin->find_spell( 387174 ) )
                                 ->set_cooldown( 0_ms );
+  debuff.crusaders_resolve     = make_buff( *this, "crusaders_resolve", paladin->find_spell( 383843 ) )
+                                 ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+                                 ->set_max_stack(3);
 }
 
 bool paladin_td_t::standing_in_consecration()
@@ -2494,8 +2611,15 @@ void paladin_t::create_buffs()
   buffs.avenging_wrath = new buffs::avenging_wrath_buff_t( this );
   //.avenging_wrath_might = new buffs::avenging_wrath_buff_t( this );
   buffs.divine_purpose = make_buff( this, "divine_purpose", spells.divine_purpose_buff );
+  buffs.seal_of_clarity = make_buff( this, "seal_of_clarity", spells.seal_of_clarity_buff );
   buffs.divine_shield  = make_buff( this, "divine_shield", find_class_spell( "Divine Shield" ) )
                             ->set_cooldown( 0_ms );  // Let the ability handle the CD
+  buffs.blessing_of_protection = make_buff( this, "blessing_of_protection", find_spell( 1022 ) );
+  buffs.blessing_of_spellwarding = make_buff( this, "blessing_of_spellwarding", find_spell( 204018 ) );
+  buffs.strength_in_adversity    = make_buff( this, "strength_in_adversity", find_spell( 393071 ) )
+                                    ->add_invalidate( CACHE_PARRY )
+                                    ->set_default_value_from_effect(1)
+                                    ->set_max_stack(5); // Buff has no stacks, but can have up to 5 different values.
 
   buffs.avengers_might = make_buff<stat_buff_t>( this, "avengers_might", find_spell( 272903 ) )
                              ->add_stat( STAT_MASTERY_RATING, azerite.avengers_might.value() );
@@ -2531,10 +2655,16 @@ void paladin_t::create_buffs()
   {
     buffs.blessing_of_dusk->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
         double recharge_mult = 1.0 / ( 1.0 + talents.seal_of_order->effectN( 1 ).percent() );
-        auto label = talents.of_dusk_and_dawn->effectN( 2 ).trigger()->effectN( 3 );
+      for ( size_t i = 3; i < 9; i++ )
+      {
+        // Effects 6 (Blessed Hammer) and 7 (Crusader Strike) are already in Effect 3
+        // Effect 4: Hammer of the Righteous, Effect 5: Judgment, Effect 8: Hammer of Wrath
+        if ( i == 6 )
+          i = 8;
+        auto label = talents.of_dusk_and_dawn->effectN( 2 ).trigger()->effectN( i );
         for ( auto a : action_list )
         {
-          if ( a->cooldown->duration != 0_ms && a->data().affected_by( label ) )
+          if ( a->cooldown->duration != 0_ms && (a->data().affected_by( label ) || a->data().affected_by_category(label) ))
           {
             if ( new_ == 1 )
               a->dynamic_recharge_rate_multiplier *= recharge_mult;
@@ -2548,6 +2678,7 @@ void paladin_t::create_buffs()
               a->internal_cooldown->adjust_recharge_multiplier();
           }
         }
+      }
       } );
   }
 
@@ -2842,6 +2973,7 @@ void paladin_t::init_spells()
   spells.hammer_of_wrath_2      = find_rank_spell( "Hammer of Wrath", "Rank 2" );  // 326730
   spec.word_of_glory_2          = find_rank_spell( "Word of Glory", "Rank 2" );
   spells.divine_purpose_buff    = find_spell( 223819 );
+  spells.seal_of_clarity_buff   = find_spell( 384810 );
   spells.seraphim_buff          = find_spell( 152262 );
 
   // Shared Azerite traits
@@ -3025,8 +3157,12 @@ double paladin_t::composite_attribute_multiplier( attribute_e attr ) const
     if ( passives.aegis_of_light -> ok() )
       m *= 1.0 + passives.aegis_of_light -> effectN( 1 ).percent();
 
+    // This literally never gets triggered. Apparently, invalidating the Stamina cache doesn't recalculate Stamina?
     if ( buffs.redoubt->up() )
       m *= 1.0 + buffs.redoubt->stack_value();
+
+    if ( buffs.sentinel->up() )
+      m *= 1.0 + buffs.sentinel->get_health_bonus();
   }
 
   if ( attr == ATTR_STRENGTH )
@@ -3092,7 +3228,7 @@ double paladin_t::composite_mastery_value() const
 {
   double m = player_t::composite_mastery_value();
 
-  if ( talents.seal_of_might->ok() && ( buffs.avenging_wrath->up() || buffs.crusade->up() ) )
+  if ( talents.seal_of_might->ok() && ( buffs.avenging_wrath->up() || buffs.crusade->up() || buffs.sentinel->up() ) )
     m += talents.seal_of_might->effectN( 1 ).percent();
 
   return m;
@@ -3319,19 +3455,9 @@ double paladin_t::composite_block() const
 
   b += talents.holy_shield->effectN( 1 ).percent();
   b += buffs.faith_in_the_light->value();
-
+  b += buffs.barricade_of_faith->value();
+  b += buffs.inner_light->value();
   return b;
-}
-
-// paladin_t::composite_block_reduction =======================================
-
-double paladin_t::composite_block_reduction( action_state_t* s ) const
-{
-  double br = player_t::composite_block_reduction( s );
-
-  br += buffs.inner_light->value();
-
-  return br;
 }
 
 // paladin_t::composite_crit_avoidance ========================================
@@ -3352,6 +3478,18 @@ double paladin_t::composite_parry_rating() const
   // add Riposte
   if ( passives.riposte->ok() )
     p += composite_melee_crit_rating();
+
+  return p;
+}
+
+double paladin_t::composite_parry() const
+{
+  double p = player_t::composite_parry();
+
+  if ( buffs.strength_in_adversity->up())
+  {
+    p += buffs.strength_in_adversity->value()*buffs.strength_in_adversity->stack();
+  }
 
   return p;
 }
@@ -3519,13 +3657,32 @@ void paladin_t::assess_damage( school_e school, result_amount_type dtype, action
     return;
   }
 
+  if (buffs.blessing_of_protection->up() && school == SCHOOL_PHYSICAL)
+  {
+    s->result_amount = 0;
+
+    // Return out, as you don't get to benefit from anything else
+    player_t::assess_damage( school, dtype, s );
+    return;
+  }
+
+  if ( buffs.blessing_of_spellwarding->up() && school != SCHOOL_PHYSICAL )
+  {
+    s->result_amount = 0;
+
+    // Return out, as you don't get to benefit from anything else
+    player_t::assess_damage( school, dtype, s );
+    return;
+  }
+
   // On a block event, trigger Holy Shield
   if ( s->block_result == BLOCK_RESULT_BLOCKED )
   {
     trigger_holy_shield( s );
   }
 
-  if ( buffs.inner_light->up() && !s->action->special && cooldowns.inner_light_icd->up() )
+  // 2022-11-04 Inner Light Talent deals no damage, so reflect that here
+  if (!bugs && buffs.inner_light->up() && !s->action->special && cooldowns.inner_light_icd->up() )
   {
     active.inner_light_damage->set_target( s->action->player );
     active.inner_light_damage->schedule_execute();
@@ -3539,13 +3696,21 @@ void paladin_t::assess_damage( school_e school, result_amount_type dtype, action
   }
 
   // Holy Shield's magic block
-  if ( talents.holy_shield->ok() && school != SCHOOL_PHYSICAL && !s->action->may_block )
+  // 2022-11-10 Holy Shield can now only block direct magical damage, standing in Consecration can reduce damage over time, but doesn't proc damage
+  if ( school != SCHOOL_PHYSICAL && s->action->harmful && 
+       ( ( s->result_type == result_amount_type::DMG_DIRECT && talents.holy_shield->ok() ) ||
+         ( s->result_type == result_amount_type::DMG_OVER_TIME && standing_in_consecration() ) ) )
   {
     // Block code mimics attack_t::block_chance()
     // cache.block() contains our block chance
     double block = cache.block();
+    // Not sure if this talent works for Mastery Block
+    if ( talents.improved_holy_shield->ok() && s->result_type != result_amount_type::DMG_OVER_TIME )
+      block += talents.improved_holy_shield->effectN( 1 ).percent();
     // add or subtract 1.5% per level difference
     block += ( level() - s->action->player->level() ) * 0.015;
+
+    auto absorbName = s->result_type != result_amount_type::DMG_OVER_TIME ? "Holy Shield" : "Divine Bulwark";
 
     if ( block > 0 )
     {
@@ -3557,7 +3722,7 @@ void paladin_t::assess_damage( school_e school, result_amount_type dtype, action
         double block_amount =
             s->result_amount *
             clamp( block_value / ( block_value + s->action->player->current.armor_coeff ), 0.0, 0.85 );
-        sim->print_debug( "{} Holy Shield absorbs {}", name(), block_amount );
+        sim->print_debug( "{} {} absorbs {}", name(), absorbName, block_amount );
 
         // update the relevant counters
         iteration_absorb_taken += block_amount;
@@ -3566,19 +3731,28 @@ void paladin_t::assess_damage( school_e school, result_amount_type dtype, action
         s->result_absorbed = s->result_amount;
 
         // hack to register this on the abilities table
-        buffs.holy_shield_absorb->trigger( 1, block_amount );
-        buffs.holy_shield_absorb->consume( block_amount );
+        if ( s->result_type != result_amount_type::DMG_OVER_TIME )
+        {
+          buffs.holy_shield_absorb->trigger( 1, block_amount );
+          buffs.holy_shield_absorb->consume( block_amount );
+        }
+        else  
+        {
+          buffs.divine_bulwark_absorb->trigger( 1, block_amount );
+          buffs.divine_bulwark_absorb->consume( block_amount );
+        }
 
         // Trigger the damage event
-        trigger_holy_shield( s );
+        if ( s->result_type != result_amount_type::DMG_OVER_TIME )
+          trigger_holy_shield( s );
       }
       else
       {
-        sim->print_debug( "{} Holy Shield fails to activate", name() );
+        sim->print_debug( "{} {} fails to activate", name(), absorbName );
       }
     }
 
-    sim->print_debug( "Damage to {} after Holy Shield mitigation is {}", name(), s->result_amount );
+    sim->print_debug( "Damage to {} after {} mitigation is {}", name(), absorbName, s->result_amount );
   }
 
   player_t::assess_damage( school, dtype, s );
@@ -3682,10 +3856,13 @@ bool paladin_t::standing_in_hallow() const
 
 bool paladin_t::get_how_availability( player_t* t ) const
 {
-  // Health threshold has to be hardcoded :peepocri:
-  bool buffs_ok = talents.hammer_of_wrath->ok() && ( buffs.avenging_wrath->up() || buffs.crusade->up() );
+  // Regardless what buff is up, both Hammer of Wrath Talent and Avenging Wrath Talent have to be talented for Hammer of Wrath to be usable on the target. (You can talent into Crusade/Sentinel without Avenging Wrath)
+  // Maybe ToDo: Do the same for Avenging Wrath: Might
+  // Moved Hammer of Wrath Check to return value
+  bool buffs_ok = talents.avenging_wrath->ok() && (buffs.avenging_wrath->up() || buffs.crusade->up() || buffs.sentinel->up() );
   buffs_ok      = buffs_ok || buffs.final_verdict->up();
-  return ( buffs_ok || standing_in_hallow() || t->health_percentage() <= 20 );
+  // Health threshold has to be hardcoded :peepocri:
+  return ( buffs_ok || standing_in_hallow() || t->health_percentage() <= 20 ) && talents.hammer_of_wrath->ok();
 }
 
 // player_t::create_expression ==============================================
