@@ -536,7 +536,6 @@ namespace monk_apl
     std::vector<std::string> racial_actions = p->get_racial_actions();
     action_priority_list_t* def = p->get_action_priority_list( "default" );
     action_priority_list_t* opener = p->get_action_priority_list( "opener" );
-    action_priority_list_t* spend_energy = p->get_action_priority_list( "spend_energy" );
     action_priority_list_t* bdb_setup = p->get_action_priority_list( "bdb_setup" );
     action_priority_list_t* cd_sef = p->get_action_priority_list( "cd_sef" );
     action_priority_list_t* cd_serenity = p->get_action_priority_list( "cd_serenity" );
