@@ -279,6 +279,8 @@ struct summon_darkglare_t : public affliction_spell_t
     timespan_t darkglare_extension = timespan_t::from_seconds( p()->talents.summon_darkglare->effectN( 2 ).base_value() );
 
     p()->darkglare_extension_helper( p(), darkglare_extension );
+
+    p()->buffs.soul_rot->extend_duration( p(), darkglare_extension ); // This dummy buff is active while Soul Rot is ticking
   }
 };
 

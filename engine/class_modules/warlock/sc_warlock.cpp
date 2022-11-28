@@ -567,8 +567,7 @@ struct shadow_bolt_t : public warlock_spell_t
 struct soul_rot_t : public warlock_spell_t
 {
   soul_rot_t( warlock_t* p, util::string_view options_str )
-    : warlock_spell_t( "soul_rot", p, p->talents.soul_rot )
-
+    : warlock_spell_t( "Soul Rot", p, p->talents.soul_rot )
   {
     parse_options( options_str );
     aoe = 1 + as<int>( p->talents.soul_rot->effectN( 3 ).base_value() );
@@ -585,12 +584,6 @@ struct soul_rot_t : public warlock_spell_t
   {
     warlock_spell_t::impact( s );
 
-    //if ( p()->legendary.decaying_soul_satchel.ok() )
-    //{
-    //  p()->buffs.decaying_soul_satchel_haste->trigger();
-    //  p()->buffs.decaying_soul_satchel_crit->trigger();
-    //}
-
     if ( p()->talents.dark_harvest.ok() )
     {
       p()->buffs.dark_harvest_haste->trigger();
@@ -604,7 +597,7 @@ struct soul_rot_t : public warlock_spell_t
 
     if ( s->chain_target == 0 )
     {
-      m *= 1.0 + p()->talents.soul_rot->effectN( 4 ).base_value() / 10; //Primary takes increased damage
+      m *= 1.0 + p()->talents.soul_rot->effectN( 4 ).base_value() / 10.0; // Primary target takes increased damage
     }
 
     return m;
@@ -1816,9 +1809,8 @@ void warlock_t::darkglare_extension_helper( warlock_t* p, timespan_t darkglare_e
   {
     warlock_td_t* td = p->get_target_data( target );
     if ( !td )
-    {
       continue;
-    }
+
     td->dots_agony->adjust_duration( darkglare_extension );
     td->dots_corruption->adjust_duration( darkglare_extension );
     td->dots_siphon_life->adjust_duration( darkglare_extension );
