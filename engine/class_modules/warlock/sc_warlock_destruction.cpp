@@ -736,25 +736,24 @@ struct summon_infernal_t : public destruction_spell_t
   }
 };
 
-// AOE Spells
 struct rain_of_fire_t : public destruction_spell_t
 {
   struct rain_of_fire_tick_t : public destruction_spell_t
   {
-    rain_of_fire_tick_t( warlock_t* p ) : destruction_spell_t( "rain_of_fire_tick", p, p->talents.rain_of_fire_tick )
+    rain_of_fire_tick_t( warlock_t* p ) : destruction_spell_t( "Rain of Fire (tick)", p, p->talents.rain_of_fire_tick )
     {
-      aoe        = -1;
+      aoe = -1;
       background = dual = direct_tick = true;
       radius = p->talents.rain_of_fire->effectN( 1 ).radius();
       base_multiplier *= 1.0 + p->talents.inferno->effectN( 2 ).percent();
-      chaos_incarnate = p->talents.chaos_incarnate.ok();
+      chaos_incarnate = p->talents.chaos_incarnate->ok();
     }
 
     void impact( action_state_t* s ) override
     {
       destruction_spell_t::impact( s );
 
-      if ( p()->talents.inferno.ok() && result_is_hit( s->result ) )
+      if ( p()->talents.inferno->ok() && result_is_hit( s->result ) )
       {
         if ( rng().roll( p()->talents.inferno->effectN( 1 ).percent() * ( 5.0 / std::max(5u, s->n_targets ) ) ) )
         {
@@ -762,7 +761,7 @@ struct rain_of_fire_t : public destruction_spell_t
         }
       }
 
-      if ( p()->talents.pyrogenics.ok() )
+      if ( p()->talents.pyrogenics->ok() )
         td( s->target )->debuffs_pyrogenics->trigger();
     }
 
@@ -778,7 +777,7 @@ struct rain_of_fire_t : public destruction_spell_t
   };
 
   rain_of_fire_t( warlock_t* p, util::string_view options_str )
-    : destruction_spell_t( "rain_of_fire", p, p->talents.rain_of_fire )
+    : destruction_spell_t( "Rain of Fire", p, p->talents.rain_of_fire )
   {
     parse_options( options_str );
     may_miss = may_crit = false;
@@ -801,7 +800,7 @@ struct rain_of_fire_t : public destruction_spell_t
     if ( p()->buffs.ritual_of_ruin->check() )
       c *= 1.0 + p()->talents.ritual_of_ruin_buff->effectN( 5 ).percent();
     
-    if ( c > 0.0 && p()->buffs.crashing_chaos->check() )
+    if ( c > 0.0 && p()->talents.crashing_chaos->ok() )
       c += p()->buffs.crashing_chaos->check_value();
 
     return c;        
@@ -819,52 +818,11 @@ struct rain_of_fire_t : public destruction_spell_t
     if ( p()->buffs.madness_rof->check() )
       p()->buffs.madness_rof_snapshot->trigger();
 
-    if ( p()->talents.madness_of_the_azjaqir.ok() )
+    if ( p()->talents.madness_of_the_azjaqir->ok() )
       p()->buffs.madness_rof->trigger();
 
-    if ( p()->talents.burn_to_ashes.ok() )
+    if ( p()->talents.burn_to_ashes->ok() )
       p()->buffs.burn_to_ashes->trigger( as<int>( p()->talents.burn_to_ashes->effectN( 3 ).base_value() ) );
-
-    //if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T28, B2 ) )
-    //{
-    //  if ( p()->buffs.ritual_of_ruin->check() )
-    //  {
-    //    if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T28, B4 ) )
-    //    {
-    //      // Note: Tier set spell (363950) has duration in Effect 1, but there is also a duration adjustment in Ritual of Ruin buff data Effect 4
-    //      // Unsure which is being used at this time
-    //      timespan_t duration = p()->sets->set( WARLOCK_DESTRUCTION, T28, B4 )->effectN( 1 ).time_value() * 1000; 
-    //      if ( p()->warlock_pet_list.blasphemy.active_pet() )
-    //      {
-    //        p()->warlock_pet_list.blasphemy.active_pet()->adjust_duration( duration );
-    //      }
-    //      else
-    //      {
-    //        p()->warlock_pet_list.blasphemy.spawn( duration + 1000_ms, 1U ); // 2022-06-29 Animation has 2 second pad at end of lifetime, but safety window for actions is smaller. TOCHECK
-    //      }
-
-    //      if ( p()->talents.rain_of_chaos->ok() )
-    //      {
-    //        p()->buffs.rain_of_chaos->extend_duration_or_trigger( duration );
-    //      }
-
-    //      // TOFIX: As of 2022-02-03 PTR, Blasphemy appears to trigger Infernal Awakening on spawn, and Blasphemous Existence if already out
-    //      // This will require first fixing Infernal Awakening to properly be on Infernal pet
-    //      p()->warlock_pet_list.blasphemy.active_pet()->blasphemous_existence->execute();
-    //      p()->procs.avatar_of_destruction->occur();
-    //    }
-    //    p()->buffs.ritual_of_ruin->expire();
-    //  }
-
-    //  // Any changes to Impending Ruin must also be made in chaos_bolt_t!
-    //  if ( shards_used > 0 )
-    //  {
-    //    int overflow = p()->buffs.impending_ruin->check() + shards_used - p()->buffs.impending_ruin->max_stack();
-    //    p()->buffs.impending_ruin->trigger( shards_used ); //Stack change callback should switch Impending Ruin to Ritual of Ruin if max stacks reached
-    //    if ( overflow > 0 )
-    //      make_event( sim, 1_ms, [ this, overflow ] { p()->buffs.impending_ruin->trigger( overflow ); } );
-    //  }
-    //}
 
     make_event<ground_aoe_event_t>( *sim, p(),
                                     ground_aoe_params_t()
@@ -876,7 +834,7 @@ struct rain_of_fire_t : public destruction_spell_t
                                         .start_time( sim->current_time() )
                                         .action( p()->proc_actions.rain_of_fire_tick ) );
 
-    if ( p()->talents.avatar_of_destruction.ok() && p()->buffs.ritual_of_ruin->check() )
+    if ( p()->talents.avatar_of_destruction->ok() && p()->buffs.ritual_of_ruin->check() )
     {
       p()->proc_actions.avatar_of_destruction->execute_on_target( target );
     }
@@ -890,7 +848,7 @@ struct rain_of_fire_t : public destruction_spell_t
   {
     destruction_spell_t::impact( s );
 
-    if ( p()->talents.pyrogenics.ok() )
+    if ( p()->talents.pyrogenics->ok() )
       td( s->target )->debuffs_pyrogenics->trigger();
   }
 };
