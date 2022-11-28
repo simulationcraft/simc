@@ -1374,34 +1374,12 @@ void warlock_t::create_buffs()
 {
   player_t::create_buffs();
 
-  create_buffs_affliction();
-  create_buffs_demonology();
-  create_buffs_destruction();
-
+  // Shared buffs
   buffs.grimoire_of_sacrifice = make_buff( this, "grimoire_of_sacrifice", talents.grimoire_of_sacrifice_buff )
                                     ->set_chance( 1.0 );
 
-  buffs.soul_rot = make_buff(this, "soul_rot", talents.soul_rot)
-                       ->set_cooldown( 0_ms );
-
-  buffs.rolling_havoc = make_buff( this, "rolling_havoc", talents.rolling_havoc_buff )
-                            ->set_default_value( talents.rolling_havoc->effectN( 1 ).percent() )
-                            ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-
-  // Legendaries
-  buffs.wrath_of_consumption = make_buff( this, "wrath_of_consumption", talents.wrath_of_consumption_buff )
-                               ->set_default_value( talents.wrath_of_consumption->effectN( 2 ).percent() );
-
   buffs.demonic_synergy = make_buff( this, "demonic_synergy", talents.demonic_synergy )
                               ->set_default_value( talents.grimoire_of_synergy->effectN( 2 ).percent() );
-
-  buffs.dark_harvest_haste = make_buff( this, "dark_harvest_haste", talents.dark_harvest_buff )
-                                 ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
-                                 ->set_default_value( talents.dark_harvest_buff->effectN( 1 ).percent() );
-
-  buffs.dark_harvest_crit = make_buff( this, "dark_harvest_crit", talents.dark_harvest_buff )
-                                ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
-                                ->set_default_value( talents.dark_harvest_buff->effectN( 2 ).percent() );
 
   buffs.tormented_soul = make_buff( this, "tormented_soul", talents.tormented_soul_buff );
 
@@ -1430,6 +1408,33 @@ void warlock_t::create_buffs()
 
   buffs.inquisitors_gaze_buildup = make_buff( this, "inquisitors_gaze_buildup" )
                                        ->set_max_stack( 3 );
+
+  // Affliction buffs
+  create_buffs_affliction();
+
+  buffs.soul_rot = make_buff(this, "soul_rot", talents.soul_rot)
+                       ->set_cooldown( 0_ms );
+
+  buffs.wrath_of_consumption = make_buff( this, "wrath_of_consumption", talents.wrath_of_consumption_buff )
+                               ->set_default_value( talents.wrath_of_consumption->effectN( 2 ).percent() );
+
+  buffs.dark_harvest_haste = make_buff( this, "dark_harvest_haste", talents.dark_harvest_buff )
+                                 ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+                                 ->set_default_value( talents.dark_harvest_buff->effectN( 1 ).percent() );
+
+  buffs.dark_harvest_crit = make_buff( this, "dark_harvest_crit", talents.dark_harvest_buff )
+                                ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
+                                ->set_default_value( talents.dark_harvest_buff->effectN( 2 ).percent() );
+
+  // Demonology buffs
+  create_buffs_demonology();
+
+  // Destruction buffs
+  create_buffs_destruction();
+
+  buffs.rolling_havoc = make_buff( this, "rolling_havoc", talents.rolling_havoc_buff )
+                            ->set_default_value( talents.rolling_havoc->effectN( 1 ).percent() )
+                            ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 }
 
 void warlock_t::init_spells()
@@ -1474,13 +1479,12 @@ void warlock_t::init_spells()
   warlock_base.chaotic_energies = find_mastery_spell( WARLOCK_DESTRUCTION ); // Should be ID 77220
   warlock_base.destruction_warlock = find_specialization_spell( "Destruction Warlock" ); // Should be ID 137046
 
-  // DF - REMOVE THESE?
   warlock_t::init_spells_affliction();
   warlock_t::init_spells_demonology();
   warlock_t::init_spells_destruction();
 
   // Talents
-  talents.seed_of_corruption = find_talent_spell( talent_tree::SPECIALIZATION, "Seed of Corruption" );
+  talents.seed_of_corruption = find_talent_spell( talent_tree::SPECIALIZATION, "Seed of Corruption" ); // Should be ID 27243
   talents.seed_of_corruption_aoe = find_spell( 27285 ); // Explosion damage
 
   talents.grimoire_of_sacrifice = find_talent_spell( talent_tree::SPECIALIZATION, "Grimoire of Sacrifice" ); // Aff/Destro only. Should be ID 108503
