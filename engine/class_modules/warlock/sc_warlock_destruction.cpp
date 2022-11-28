@@ -11,27 +11,12 @@ using namespace actions;
 struct destruction_spell_t : public warlock_spell_t
 {
 public:
-  gain_t* gain;
-
   bool destro_mastery;
   bool chaos_incarnate;
-
-  destruction_spell_t( warlock_t* p, util::string_view n ) : destruction_spell_t( n, p, p->find_class_spell( n ) )
-  {
-  }
-
-  destruction_spell_t( warlock_t* p, util::string_view n, specialization_e s )
-    : destruction_spell_t( n, p, p->find_class_spell( n, s ) )
-  {
-  }
 
   destruction_spell_t( util::string_view token, warlock_t* p, const spell_data_t* s = spell_data_t::nil() )
     : warlock_spell_t( token, p, s )
   {
-    may_crit = true;
-    tick_may_crit = true;
-    weapon_multiplier = 0.0;
-    gain = player->get_gain( name_str );
     destro_mastery = true;
     chaos_incarnate = false;
   }
@@ -43,11 +28,11 @@ public:
     int shards_used = as<int>( cost() );
     int base_cost = as<int>( destruction_spell_t::cost() ); // Power Overwhelming is ignoring any cost changes
 
-    // 2022-10-16: The shard cost reduction from Crashing Chaos is "undone" for Impending Ruin stacking
+    // The shard cost reduction from Crashing Chaos is "undone" for Impending Ruin stacking
     // This can be observed during the free Ritual of Ruin cast, which always increments by 1 stack regardless of spell
     // TOCHECK: Does this apply for Rain of Chaos draws?
     if ( p()->buffs.crashing_chaos->check() )
-      shards_used -= p()->buffs.crashing_chaos->check_value();
+      shards_used -= as<int>( p()->buffs.crashing_chaos->check_value() );
 
     // Do cost changes reduce number of draws appropriately? This may be difficult to check
     if ( resource_current == RESOURCE_SOUL_SHARD && p()->buffs.rain_of_chaos->check() && shards_used > 0 )
@@ -62,15 +47,15 @@ public:
       }
     }
 
-    if ( p()->talents.ritual_of_ruin.ok() && resource_current == RESOURCE_SOUL_SHARD && shards_used > 0 )
+    if ( p()->talents.ritual_of_ruin->ok() && resource_current == RESOURCE_SOUL_SHARD && shards_used > 0 )
     {
       int overflow = p()->buffs.impending_ruin->check() + shards_used - p()->buffs.impending_ruin->max_stack();
-      p()->buffs.impending_ruin->trigger( shards_used ); //Stack change callback should switch Impending Ruin to Ritual of Ruin if max stacks reached
+      p()->buffs.impending_ruin->trigger( shards_used ); // Stack change callback should switch Impending Ruin to Ritual of Ruin if max stacks reached
       if ( overflow > 0 )
         make_event( sim, 1_ms, [ this, overflow ] { p()->buffs.impending_ruin->trigger( overflow ); } );
     }
 
-    if ( p()->talents.power_overwhelming.ok() && resource_current == RESOURCE_SOUL_SHARD && base_cost > 0 )
+    if ( p()->talents.power_overwhelming->ok() && resource_current == RESOURCE_SOUL_SHARD && base_cost > 0 )
     {
       p()->buffs.power_overwhelming->trigger( base_cost );
     }
@@ -89,13 +74,12 @@ public:
   {
     double m = warlock_spell_t::composite_target_multiplier( t );
 
-    if ( p()->talents.roaring_blaze.ok() && td( t )->debuffs_conflagrate->check() && data().affected_by( p()->talents.conflagrate_debuff->effectN( 1 ) ) )
+    if ( p()->talents.roaring_blaze->ok() && td( t )->debuffs_conflagrate->check() && data().affected_by( p()->talents.conflagrate_debuff->effectN( 1 ) ) )
       m *= 1.0 + td( t )->debuffs_conflagrate->check_value();
 
     return m;
   }
 
-  // TODO: Check order of multipliers on Havoc'd spells
   double action_multiplier() const override
   {
     double pm = warlock_spell_t::action_multiplier();
