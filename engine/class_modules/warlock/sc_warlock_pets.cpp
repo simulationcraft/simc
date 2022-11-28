@@ -1255,12 +1255,12 @@ double wild_imp_pet_t::composite_player_multiplier( school_e school ) const
 
 dreadstalker_t::dreadstalker_t( warlock_t* owner ) : warlock_pet_t( owner, "dreadstalker", PET_DREADSTALKER )
 {
-  action_list_str        = "travel/dreadbite";
+  action_list_str = "travel/dreadbite";
   resource_regeneration  = regen_type::DISABLED;
 
   // TOCHECK: This has been adjusted through various hotfixes over several years to the current value
   // Last checked 2021-12-02
-  owner_coeff.ap_from_sp = 0.552;
+  owner_coeff.ap_from_sp = 0.55;
 
   owner_coeff.health = 0.4;
 }
@@ -1315,7 +1315,7 @@ struct dreadbite_t : public warlock_pet_melee_attack_t
     warlock_pet_melee_attack_t::impact( s );
 
     if ( p()->o()->talents.from_the_shadows->ok() )
-      this->owner_td( s->target )->debuffs_from_the_shadows->trigger();
+      owner_td( s->target )->debuffs_from_the_shadows->trigger();
   }
 };
 
@@ -1330,18 +1330,7 @@ struct dreadstalker_melee_t : warlock_pet_melee_t
   {
     warlock_pet_melee_t::execute();
 
-    //if ( p()->o()->conduit.carnivorous_stalkers.ok() && rng().roll( p()->o()->conduit.carnivorous_stalkers.percent() ) )
-    //{
-    //  debug_cast< dreadstalker_t* >( p() )->dreadbite_executes++;
-    //  p()->o()->procs.carnivorous_stalkers->occur();
-    //  if ( p()->readying )
-    //  {
-    //    event_t::cancel( p()->readying );
-    //    p()->schedule_ready();
-    //  }
-    //}
-
-    if ( p()->o()->talents.carnivorous_stalkers.ok() && rng().roll( p()->o()->talents.carnivorous_stalkers->effectN( 1 ).percent() ) )
+    if ( p()->o()->talents.carnivorous_stalkers->ok() && rng().roll( p()->o()->talents.carnivorous_stalkers->effectN( 1 ).percent() ) )
     {
       debug_cast<dreadstalker_t*>( p() )->dreadbite_executes++;
       p()->o()->procs.carnivorous_stalkers->occur();
@@ -1357,9 +1346,9 @@ struct dreadstalker_melee_t : warlock_pet_melee_t
 void dreadstalker_t::init_base_stats()
 {
   warlock_pet_t::init_base_stats();
-  resources.base[ RESOURCE_ENERGY ]                  = 0;
+  resources.base[ RESOURCE_ENERGY ] = 0;
   resources.base_regen_per_second[ RESOURCE_ENERGY ] = 0;
-  melee_attack                                       = new dreadstalker_melee_t( this, 0.83 ); // TOCHECK: This number may require tweaking if the AP coeff changes
+  melee_attack = new dreadstalker_melee_t( this, 0.83 ); // TOCHECK: This number may require tweaking if the AP coeff changes
 }
 
 void dreadstalker_t::arise()
@@ -1368,8 +1357,7 @@ void dreadstalker_t::arise()
 
   o()->buffs.dreadstalkers->trigger();
 
-  // TODO: Should we handle cases where the Felguard is summoned while pets are already active?
-  if ( o()->talents.infernal_command.ok() && o()->warlock_pet_list.active && o()->warlock_pet_list.active->pet_type == PET_FELGUARD )
+  if ( o()->talents.infernal_command->ok() && o()->warlock_pet_list.active && o()->warlock_pet_list.active->pet_type == PET_FELGUARD )
   {
     buffs.infernal_command->trigger();
   }
@@ -1384,7 +1372,7 @@ void dreadstalker_t::demise()
     o()->buffs.dreadstalkers->decrement();
     o()->buffs.demonic_core->trigger( 1, buff_t::DEFAULT_VALUE(), o()->warlock_base.demonic_core->effectN( 2 ).percent() );
     
-    if ( o()->talents.shadows_bite.ok() )
+    if ( o()->talents.shadows_bite->ok() )
       o()->buffs.shadows_bite->trigger();
   }
 
@@ -1393,8 +1381,7 @@ void dreadstalker_t::demise()
 
 timespan_t dreadstalker_t::available() const
 {
-  // Dreadstalker does not need to wake up to check for something to do after it has travelled and
-  // done its dreadbite
+  // Dreadstalker does not need to wake up after it has travelled and done its Dreadbite
   return sim->expected_iteration_time * 2;
 }
 

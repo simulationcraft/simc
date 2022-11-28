@@ -299,19 +299,10 @@ struct demonbolt_t : public demonology_spell_t
 
 struct call_dreadstalkers_t : public demonology_spell_t
 {
-  int dreadstalker_count;
-
   call_dreadstalkers_t( warlock_t* p, util::string_view options_str ) : demonology_spell_t( "Call Dreadstalkers", p, p->talents.call_dreadstalkers )
   {
     parse_options( options_str );
-    may_crit           = false;
-
-    //dreadstalker_count = as<int>( data().effectN( 1 ).base_value() );
-    //if ( p->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T28, B2 ) )
-    //{
-    //  dreadstalker_count += 1;
-    //}
-    //base_execute_time += p->spec.call_dreadstalkers_2->effectN( 1 ).time_value();
+    may_crit = false;
   }
 
   double cost() const override
@@ -344,7 +335,7 @@ struct call_dreadstalkers_t : public demonology_spell_t
 
     unsigned count = as<unsigned>( p()->talents.call_dreadstalkers->effectN( 1 ).base_value() );
 
-    if ( p()->talents.ripped_through_the_portal.ok() && rng().roll( p()->talents.ripped_through_the_portal->effectN( 1 ).percent() ) )
+    if ( p()->talents.ripped_through_the_portal->ok() && rng().roll( p()->talents.ripped_through_the_portal->effectN( 1 ).percent() ) )
       count++;
 
     auto dogs = p()->warlock_pet_list.dreadstalkers.spawn( p()->talents.call_dreadstalkers_2->duration(), count );
@@ -363,15 +354,15 @@ struct call_dreadstalkers_t : public demonology_spell_t
         p()->proc_actions.summon_random_demon->execute();
         p()->procs.portal_summon->occur();
 
-        if ( p()->talents.guldans_ambition.ok() )
+        if ( p()->talents.guldans_ambition->ok() )
           p()->buffs.nether_portal_total->increment();
 
-        if ( p()->talents.nerzhuls_volition.ok() && rng().roll( p()->talents.nerzhuls_volition->effectN( 1 ).percent() ) )
+        if ( p()->talents.nerzhuls_volition->ok() && rng().roll( p()->talents.nerzhuls_volition->effectN( 1 ).percent() ) )
         {
           p()->proc_actions.summon_random_demon->execute();
           p()->procs.nerzhuls_volition->occur();
 
-          if ( p()->talents.guldans_ambition.ok() )
+          if ( p()->talents.guldans_ambition->ok() )
             p()->buffs.nether_portal_total->increment();
         }
       }
@@ -384,22 +375,7 @@ struct call_dreadstalkers_t : public demonology_spell_t
       p()->buffs.demonic_calling->decrement();
     }
 
-    ////TOCHECK: Verify only the new pair of dreadstalkers gets the buff
-    //if ( p()->legendary.grim_inquisitors_dread_calling.ok() )
-    //{
-    //  for ( auto d : dogs )
-    //  {
-    //    //Only apply buff to dogs without a buff. If no stacks of the buff currently exist on the warlock, apply a buff with value of 0
-    //    if ( d->is_active() && !d->buffs.grim_inquisitors_dread_calling->check() )
-    //    {
-    //      d->buffs.grim_inquisitors_dread_calling->trigger( 1, p()->buffs.dread_calling->check_stack_value() );
-    //    }
-    //  }
-
-    //  p()->buffs.dread_calling->expire();
-    //}
-
-    if ( p()->talents.dread_calling.ok() )
+    if ( p()->talents.dread_calling->ok() )
     {
       for ( auto d : dogs )
       {
