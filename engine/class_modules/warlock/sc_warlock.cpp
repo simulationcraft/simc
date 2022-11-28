@@ -1459,7 +1459,7 @@ void warlock_t::init_spells()
   warlock_base.agony = find_class_spell( "Agony" ); // Should be ID 980
   warlock_base.agony_2 = find_spell( 231792 ); // Rank 2, +4 to max stacks
   warlock_base.potent_afflictions = find_mastery_spell( WARLOCK_AFFLICTION ); // Should be ID 77215
-  warlock_base.affliction_warlock = find_specialization_spell( "Affliction Warlock" ); // Should be ID 137043
+  warlock_base.affliction_warlock = find_specialization_spell( "Affliction Warlock", WARLOCK_AFFLICTION ); // Should be ID 137043
 
   // Demonology
   warlock_base.hand_of_guldan = find_class_spell( "Hand of Gul'dan" ); // Should be ID 105174
@@ -1469,7 +1469,7 @@ void warlock_t::init_spells()
   warlock_base.demonic_core = find_specialization_spell( "Demonic Core" ); // Should be ID 267102
   warlock_base.demonic_core_buff = find_spell( 264173 ); // Buff data
   warlock_base.master_demonologist = find_mastery_spell( WARLOCK_DEMONOLOGY ); // Should be ID 77219
-  warlock_base.demonology_warlock = find_specialization_spell( "Demonology Warlock" ); // Should be ID 137044
+  warlock_base.demonology_warlock = find_specialization_spell( "Demonology Warlock", WARLOCK_DEMONOLOGY ); // Should be ID 137044
 
   // Destruction
   warlock_base.immolate = find_class_spell( "Immolate" ); // Should be ID 348, contains direct damage and cast data
@@ -1477,7 +1477,7 @@ void warlock_t::init_spells()
   warlock_base.incinerate = find_class_spell( "Incinerate" ); // Should be ID 29722
   warlock_base.incinerate_energize = find_spell( 244670 ); // Used for resource gain information
   warlock_base.chaotic_energies = find_mastery_spell( WARLOCK_DESTRUCTION ); // Should be ID 77220
-  warlock_base.destruction_warlock = find_specialization_spell( "Destruction Warlock" ); // Should be ID 137046
+  warlock_base.destruction_warlock = find_specialization_spell( "Destruction Warlock", WARLOCK_DESTRUCTION ); // Should be ID 137046
 
   warlock_t::init_spells_affliction();
   warlock_t::init_spells_demonology();
