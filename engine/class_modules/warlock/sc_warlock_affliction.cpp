@@ -11,25 +11,9 @@ using namespace actions;
 struct affliction_spell_t : public warlock_spell_t
 {
 public:
-  gain_t* gain;
-
-  affliction_spell_t( warlock_t* p, util::string_view n ) : affliction_spell_t( n, p, p->find_class_spell( n ) )
-  {
-  }
-
-  affliction_spell_t( warlock_t* p, util::string_view n, specialization_e s )
-    : affliction_spell_t( n, p, p->find_class_spell( n, s ) )
-  {
-  }
-
-  affliction_spell_t( util::string_view token, warlock_t* p, const spell_data_t* s = spell_data_t::nil() )
-    : warlock_spell_t( token, p, s )
-  {
-    may_crit          = true;
-    tick_may_crit     = true;
-    weapon_multiplier = 0.0;
-    gain              = player->get_gain( name_str );
-  }
+  affliction_spell_t( util::string_view n, warlock_t* p, const spell_data_t* s = spell_data_t::nil() )
+    : warlock_spell_t( n, p, s )
+  {  }
 
   void init() override
   {
@@ -42,14 +26,6 @@ public:
     }
   }
 
-  double action_multiplier() const override
-  {
-    double pm = warlock_spell_t::action_multiplier();
-
-    return pm;
-  }
-
-  // direct action multiplier
   double composite_da_multiplier( const action_state_t* s ) const override
   {
     double pm = warlock_spell_t::composite_da_multiplier( s );
@@ -61,7 +37,6 @@ public:
     return pm;
   }
 
-  // tick action multiplier
   double composite_ta_multiplier( const action_state_t* s ) const override
   {
     double pm = warlock_spell_t::composite_ta_multiplier( s );
