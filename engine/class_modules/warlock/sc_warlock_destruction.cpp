@@ -491,7 +491,7 @@ struct incinerate_t : public destruction_spell_t
       fnb_action->execute_on_target( target );
     }
 
-    if ( p()->talents.decimation.ok() && target->health_percentage() <= p()->talents.decimation->effectN( 2 ).base_value() )
+    if ( p()->talents.decimation->ok() && target->health_percentage() <= p()->talents.decimation->effectN( 2 ).base_value() )
     {
       p()->cooldowns.soul_fire->adjust( p()->talents.decimation->effectN( 1 ).time_value() );
     }
@@ -511,7 +511,7 @@ struct incinerate_t : public destruction_spell_t
   {
     double m = destruction_spell_t::action_multiplier();
 
-    if ( p()->buffs.burn_to_ashes->check() )
+    if ( p()->talents.burn_to_ashes->ok() )
       m *= 1.0 + p()->buffs.burn_to_ashes->check_value();
 
     return m;
@@ -521,13 +521,7 @@ struct incinerate_t : public destruction_spell_t
   {
     double m = destruction_spell_t::composite_target_multiplier( t );
 
-    //auto td = this->td( t );
-
-    //// SL - Conduit
-    //if ( td->dots_immolate->is_ticking() && p()->conduit.ashen_remains->ok() )
-    //  m *= 1.0 + p()->conduit.ashen_remains.percent();
-
-    if ( p()->talents.ashen_remains.ok() && td( t )->dots_immolate->is_ticking() )
+    if ( p()->talents.ashen_remains->ok() && td( t )->dots_immolate->is_ticking() )
       m *= 1.0 + p()->talents.ashen_remains->effectN( 1 ).percent();
 
     return m;
