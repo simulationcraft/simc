@@ -1314,10 +1314,10 @@ void warlock_t::create_actions()
 {
   if ( specialization() == WARLOCK_AFFLICTION )
   {
-    if ( talents.soul_flame.ok() )
+    if ( talents.soul_flame->ok() )
       proc_actions.soul_flame_proc = new warlock::actions::soul_flame_t( this );
 
-    if ( talents.pandemic_invocation.ok() )
+    if ( talents.pandemic_invocation->ok() )
       proc_actions.pandemic_invocation_proc = new warlock::actions::pandemic_invocation_t( this );
   }
   player_t::create_actions();
@@ -1325,9 +1325,6 @@ void warlock_t::create_actions()
 
 action_t* warlock_t::create_action( util::string_view action_name, util::string_view options_str )
 {
-  // create_action_[specialization] should return a more specialized action if needed (ie Corruption in Affliction)
-  // If no alternate action for the given spec is found, check actions in sc_warlock
-
   if ( specialization() == WARLOCK_AFFLICTION )
   {
     if ( action_t* aff_action = create_action_affliction( action_name, options_str ) )
@@ -1357,7 +1354,6 @@ pet_t* warlock_t::create_pet( util::string_view pet_name, util::string_view pet_
   pet_t* p = find_pet( pet_name );
   if ( p )
     return p;
-  using namespace pets;
 
   pet_t* summon_pet = create_main_pet( pet_name, pet_type );
   if ( summon_pet )
