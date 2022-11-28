@@ -559,8 +559,7 @@ struct vile_taint_t : public affliction_spell_t
     }
   };
 
-  vile_taint_t( warlock_t* p, util::string_view options_str )
-    : affliction_spell_t( "vile_taint", p, p->talents.vile_taint )
+  vile_taint_t( warlock_t* p, util::string_view options_str ) : affliction_spell_t( "Vile Taint", p, p->talents.vile_taint )
   {
     parse_options( options_str );
 
