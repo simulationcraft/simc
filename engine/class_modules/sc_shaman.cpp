@@ -1993,8 +1993,7 @@ public:
 
     m *= 1.0 + mw_multiplier;
 
-    if ( this->p()->main_hand_weapon.buff_type == FLAMETONGUE_IMBUE &&
-         this->p()->talent.improved_flametongue_weapon.ok() &&
+    if ( this->p()->talent.improved_flametongue_weapon.ok() &&
          dbc::is_school( this->school, SCHOOL_FIRE ) )
     {
       // spelldata doesn't have the 5% yet. It's hardcoded in the tooltip.
