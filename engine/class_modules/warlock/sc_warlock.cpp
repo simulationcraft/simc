@@ -841,24 +841,25 @@ struct interrupt_t : public spell_t
 warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
   : actor_target_data_t( target, &p ), soc_threshold( 0.0 ), warlock( p )
 {
+  // Shared
   dots_drain_life = target->get_dot( "drain_life", &p );
   dots_drain_life_aoe = target->get_dot( "drain_life_aoe", &p );
-  dots_soul_rot = target->get_dot( "soul_rot", &p );
 
-  // Aff
+  // Affliction
   dots_corruption = target->get_dot( "corruption", &p );
-  dots_agony               = target->get_dot( "agony", &p );
-  dots_drain_soul          = target->get_dot( "drain_soul", &p );
+  dots_agony = target->get_dot( "agony", &p );
+  dots_drain_soul = target->get_dot( "drain_soul", &p );
   dots_phantom_singularity = target->get_dot( "phantom_singularity", &p );
-  dots_siphon_life         = target->get_dot( "siphon_life", &p );
-  dots_seed_of_corruption  = target->get_dot( "seed_of_corruption", &p );
+  dots_siphon_life = target->get_dot( "siphon_life", &p );
+  dots_seed_of_corruption = target->get_dot( "seed_of_corruption", &p );
   dots_unstable_affliction = target->get_dot( "unstable_affliction", &p );
-  dots_vile_taint          = target->get_dot( "vile_taint_dot", &p );
+  dots_vile_taint = target->get_dot( "vile_taint_dot", &p );
+  dots_soul_rot = target->get_dot( "soul_rot", &p );
 
   debuffs_haunt = make_buff( *this, "haunt", p.talents.haunt )
                       ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
                       ->set_default_value_from_effect( 2 )
-                      ->set_stack_change_callback( [ &p ]( buff_t*, int /*old*/, int cur ) {
+                      ->set_stack_change_callback( [ &p ]( buff_t*, int, int cur ) {
                           if ( cur == 0 )
                             p.buffs.haunted_soul->expire();
                         } );
@@ -869,14 +870,14 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
   debuffs_dread_touch = make_buff( *this, "dread_touch", p.talents.dread_touch_debuff )
                             ->set_default_value( p.talents.dread_touch_debuff->effectN( 1 ).percent() );
 
-  // Destro
-  dots_immolate          = target->get_dot( "immolate", &p );
+  // Destruction
+  dots_immolate = target->get_dot( "immolate", &p );
 
   debuffs_eradication = make_buff( *this, "eradication", p.talents.eradication_debuff )
                             ->set_default_value( p.talents.eradication->effectN( 2 ).percent() );
 
-  debuffs_shadowburn    = make_buff( *this, "shadowburn", p.talents.shadowburn )
-                              ->set_default_value( p.talents.shadowburn_2->effectN( 1 ).base_value() / 10 );
+  debuffs_shadowburn = make_buff( *this, "shadowburn", p.talents.shadowburn )
+                           ->set_default_value( p.talents.shadowburn_2->effectN( 1 ).base_value() / 10 );
 
   debuffs_pyrogenics = make_buff( *this, "pyrogenics", p.talents.pyrogenics_debuff )
                            ->set_default_value( p.talents.pyrogenics->effectN( 1 ).percent() )
@@ -906,7 +907,7 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
                         range::for_each( p.havoc_spells, []( action_t* a ) { a->target_cache.is_valid = false; } );
                       } );
 
-  // Demo
+  // Demonology
   dots_doom = target->get_dot( "doom", &p );
 
   debuffs_from_the_shadows = make_buff( *this, "from_the_shadows", p.talents.from_the_shadows_debuff )
@@ -928,22 +929,17 @@ void warlock_td_t::target_demise()
     return;
   }
 
-  if ( warlock.talents.unstable_affliction->ok() )
+  if ( dots_unstable_affliction->is_ticking() )
   {
-    if ( dots_unstable_affliction->is_ticking() )
-    {
-      warlock.sim->print_log( "Player {} demised. Warlock {} gains {} shard(s) from Unstable Affliction.", target->name(),
-                              warlock.name(), warlock.talents.unstable_affliction_2->effectN( 1 ).base_value() );
+    warlock.sim->print_log( "Player {} demised. Warlock {} gains a shard from Unstable Affliction.", target->name(), warlock.name() );
 
-      warlock.resource_gain( RESOURCE_SOUL_SHARD, warlock.talents.unstable_affliction_2->effectN( 1 ).base_value(), warlock.gains.unstable_affliction_refund );
-    }
+    warlock.resource_gain( RESOURCE_SOUL_SHARD, warlock.talents.unstable_affliction_2->effectN( 1 ).base_value(), warlock.gains.unstable_affliction_refund );
   }
   if ( dots_drain_soul->is_ticking() )
   {
-    warlock.sim->print_log( "Player {} demised. Warlock {} gains a shard from Drain Soul.", target->name(),
-                            warlock.name() );
+    warlock.sim->print_log( "Player {} demised. Warlock {} gains a shard from Drain Soul.", target->name(), warlock.name() );
 
-    warlock.resource_gain( RESOURCE_SOUL_SHARD, 1, warlock.gains.drain_soul );
+    warlock.resource_gain( RESOURCE_SOUL_SHARD, 1.0, warlock.gains.drain_soul );
   }
 
   if ( debuffs_haunt->check() )
@@ -1004,7 +1000,7 @@ static void accumulate_seed_of_corruption( warlock_td_t* td, double amount )
   else
   {
     if ( td->source->sim->log )
-      td->source->sim->out_log.print( "Remaining damage to explode Seed on {} is {}", td->target->name_str, td->soc_threshold );
+      td->source->sim->print_log( "Remaining damage to explode Seed of Corruption on {} is {}.", td->target->name_str, td->soc_threshold );
   }
 }
 
