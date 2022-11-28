@@ -479,9 +479,9 @@ struct shadow_bolt_t : public warlock_spell_t
 
     if ( p->specialization() == WARLOCK_DEMONOLOGY )
     {
-      energize_type     = action_energize::ON_CAST;
+      energize_type = action_energize::ON_CAST;
       energize_resource = RESOURCE_SOUL_SHARD;
-      energize_amount   = 1;
+      energize_amount = 1.0;
     }
   }
 
@@ -505,9 +505,6 @@ struct shadow_bolt_t : public warlock_spell_t
     if ( p()->talents.demonic_calling.ok() )
       p()->buffs.demonic_calling->trigger();
 
-    //if ( p()->legendary.balespiders_burning_core->ok() )
-    //  p()->buffs.balespiders_burning_core->trigger();
-
     if ( p()->talents.fel_covenant.ok() )
       p()->buffs.fel_covenant->increment();
 
@@ -529,20 +526,6 @@ struct shadow_bolt_t : public warlock_spell_t
       if ( p()->talents.shadow_embrace->ok() )
         td( s->target )->debuffs_shadow_embrace->trigger();
 
-    //  if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T28, B4 ) )
-    //  {        
-    //    auto tdata = this->td( s->target );
-    //    // TOFIX - As of 2022-02-03 PTR, the bonus appears to still be only checking that *any* target has these dots. May need to implement this behavior.
-    //    bool tierDotsActive = tdata->dots_agony->is_ticking()
-    //                       && tdata->dots_corruption->is_ticking()
-    //                       && tdata->dots_unstable_affliction->is_ticking();
-
-    //    if ( tierDotsActive && rng().roll( p()->sets->set(WARLOCK_AFFLICTION, T28, B4 )->effectN( 1 ).percent() ) )
-    //    {
-    //      p()->procs.calamitous_crescendo->occur();
-    //      p()->buffs.calamitous_crescendo->trigger();
-    //    }
-    //  }
       if ( p()->talents.tormented_crescendo.ok() )
       {
         if ( p()->crescendo_check( p() ) && rng().roll( p()->talents.tormented_crescendo->effectN( 1 ).percent() ) )
@@ -562,9 +545,7 @@ struct shadow_bolt_t : public warlock_spell_t
       m *= 1.0 + p()->talents.nightfall_buff->effectN( 2 ).percent();
 
     if ( p()->talents.sacrificed_souls->ok() )
-    {
       m *= 1.0 + p()->talents.sacrificed_souls->effectN( 1 ).percent() * p()->active_demon_count();
-    }
 
     if ( p()->talents.stolen_power.ok() && p()->buffs.stolen_power_final->check() )
       m *= 1.0 + p()->talents.stolen_power_final_buff->effectN( 1 ).percent();
@@ -578,13 +559,6 @@ struct shadow_bolt_t : public warlock_spell_t
 
     if ( p()->talents.withering_bolt.ok() )
       m *= 1.0 + p()->talents.withering_bolt->effectN( 1 ).percent() * std::min( (int)p()->talents.withering_bolt->effectN( 2 ).base_value(), p()->get_target_data( t )->count_affliction_dots() );
-
-    //auto td = this->td( t );
-
-    //if ( td->debuffs_from_the_shadows->check() && data().affected_by( td->debuffs_from_the_shadows->data().effectN( 1 ) ) )
-    //{
-    //  m *= 1.0 + td->debuffs_from_the_shadows->check_value();
-    //}
 
     return m;
   }
