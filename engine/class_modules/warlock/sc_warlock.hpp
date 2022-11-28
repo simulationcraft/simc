@@ -621,7 +621,6 @@ public:
   void create_options() override;
   int get_spawning_imp_count();
   timespan_t time_to_imps( int count );
-  int imps_spawned_during( timespan_t period );
   void darkglare_extension_helper( warlock_t* p, timespan_t darkglare_extension );
   int active_demon_count() const;
   void expendables_trigger_helper( warlock_pet_t* source );
@@ -648,13 +647,9 @@ public:
   double composite_player_target_multiplier( player_t* target, school_e school ) const override;
   double composite_player_pet_damage_multiplier( const action_state_t*, bool ) const override;
   double composite_player_target_pet_damage_multiplier( player_t* target, bool guardian ) const override;
-  double composite_rating_multiplier( rating_e rating ) const override;
   void invalidate_cache( cache_e ) override;
-  double composite_mastery() const override;
   double composite_spell_crit_chance() const override;
   double composite_melee_crit_chance() const override;
-  double resource_regen_per_second( resource_e ) const override;
-  double composite_attribute_multiplier( attribute_e attr ) const override;
   double resource_gain( resource_e, double, gain_t* source = nullptr, action_t* action = nullptr ) override;
   void combat_begin() override;
   void init_assessors() override;

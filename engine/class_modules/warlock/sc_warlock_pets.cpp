@@ -44,10 +44,6 @@ void warlock_pet_t::create_buffs()
   buffs.grimoire_of_service = make_buff( this, "grimoire_of_service", find_spell( 216187 ) )
                                   ->set_default_value( find_spell( 216187 )->effectN( 1 ).percent() );
 
-  buffs.demonic_consumption = make_buff( this, "demonic_consumption", find_spell( 267972 ) )
-                                  ->set_default_value( find_spell( 267972 )->effectN( 1 ).percent() )
-                                  ->set_max_stack( 1 );
-
   buffs.annihilan_training = make_buff( this, "annihilan_training", o()->talents.annihilan_training_buff )
                                  ->set_default_value( o()->talents.annihilan_training_buff->effectN( 1 ).percent() );
 
