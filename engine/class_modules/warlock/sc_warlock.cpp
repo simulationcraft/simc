@@ -730,7 +730,7 @@ struct inquisitors_gaze_t : public warlock_spell_t
 {
   struct fel_bolt_t : public warlock_spell_t
   {
-    fel_bolt_t( warlock_t* p ) : warlock_spell_t( "fel_bolt", p, p->talents.fel_bolt )
+    fel_bolt_t( warlock_t* p ) : warlock_spell_t( "Fel Bolt", p, p->talents.fel_bolt )
     {
       background = dual = true;
     }
@@ -738,14 +738,14 @@ struct inquisitors_gaze_t : public warlock_spell_t
 
   struct fel_blast_t : public warlock_spell_t
   {
-    fel_blast_t( warlock_t* p ) : warlock_spell_t( "fel_blast", p, p->talents.fel_blast )
+    fel_blast_t( warlock_t* p ) : warlock_spell_t( "Fel Blast", p, p->talents.fel_blast )
     {
       background = dual = true;
     }
   };
 
   inquisitors_gaze_t( warlock_t* p, util::string_view options_str )
-    : warlock_spell_t( "inquisitors_gaze", p, p->talents.inquisitors_gaze )
+    : warlock_spell_t( "Inquisitor's Gaze", p, p->talents.inquisitors_gaze )
   {
     parse_options( options_str );
     
@@ -1458,7 +1458,7 @@ void warlock_t::create_buffs()
                                  }  );
 
   buffs.inquisitors_gaze_buildup = make_buff( this, "inquisitors_gaze_buildup" )
-                                       ->set_max_stack( 5 );
+                                       ->set_max_stack( 3 );
 }
 
 void warlock_t::init_spells()
