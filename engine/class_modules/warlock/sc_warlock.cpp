@@ -672,7 +672,7 @@ struct summon_soulkeeper_t : public warlock_spell_t
 {
   struct soul_combustion_t : public warlock_spell_t
   {
-    soul_combustion_t( warlock_t* p ) : warlock_spell_t( "soul_combustion", p, p->talents.soul_combustion )
+    soul_combustion_t( warlock_t* p ) : warlock_spell_t( "Soul Combustion", p, p->talents.soul_combustion )
     {
       background = dual = true;
       aoe = -1;
@@ -680,7 +680,7 @@ struct summon_soulkeeper_t : public warlock_spell_t
   };
 
   summon_soulkeeper_t( warlock_t* p, util::string_view options_str )
-    : warlock_spell_t( "summon_soulkeeper", p, p->talents.summon_soulkeeper_aoe )
+    : warlock_spell_t( "Summon Soulkeeper", p, p->talents.summon_soulkeeper_aoe )
   {
     parse_options( options_str );
     harmful = true;
@@ -691,6 +691,11 @@ struct summon_soulkeeper_t : public warlock_spell_t
       p->proc_actions.soul_combustion = new soul_combustion_t( p );
       p->proc_actions.soul_combustion->stats = stats;
     }
+  }
+
+  bool usable_moving() const override
+  {
+    return true; // Last checked 2022-11-27
   }
 
   bool ready() override
