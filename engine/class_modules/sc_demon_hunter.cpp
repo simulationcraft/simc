@@ -658,6 +658,7 @@ public:
     spell_t* collective_anguish = nullptr;
 
     // Havoc
+    spell_t* burning_wound = nullptr;
     attack_t* demon_blades = nullptr;
     spell_t* inner_demon = nullptr;
     spell_t* ragefire = nullptr;
@@ -742,6 +743,7 @@ public:
   double composite_parry() const override;
   double composite_parry_rating() const override;
   double composite_player_multiplier( school_e ) const override;
+  double composite_player_critical_damage_multiplier( const action_state_t* ) const override;
   double composite_spell_crit_chance() const override;
   double composite_mastery() const override;
   double composite_damage_versatility() const override;
@@ -1529,14 +1531,6 @@ public:
   double composite_crit_damage_bonus_multiplier() const override
   {
     double cm = ab::composite_crit_damage_bonus_multiplier();
-
-    if ( p()->talent.havoc.know_your_enemy->ok() )
-    {
-      // DFALPHA TOCHECK -- Double check this uses the correct crit calculations
-      // Does this work on gear?
-      cm += p()->talent.havoc.know_your_enemy->effectN( 2 ).percent() * p()->cache.attack_crit_chance();
-    }
-
     return cm;
   }
 
@@ -4151,7 +4145,7 @@ struct demons_bite_t : public demon_hunter_attack_t
 
     if ( p->spec.burning_wound_debuff->ok() )
     {
-      impact_action = p->get_background_action<burning_wound_t>( "burning_wound" );
+      impact_action = p->active.burning_wound;
     }
   }
 
@@ -4205,7 +4199,7 @@ struct demon_blades_t : public demon_hunter_attack_t
 
     if ( p->spec.burning_wound_debuff->ok() )
     {
-      impact_action = p->get_background_action<burning_wound_t>( "burning_wound" );
+      impact_action = p->active.burning_wound;
     }
   }
 
@@ -4588,11 +4582,10 @@ struct throw_glaive_t : public demon_hunter_attack_t
     };
 
     soulrend_t* soulrend;
-    burning_wound_t* burning_wound;
 
     throw_glaive_damage_t( util::string_view name, demon_hunter_t* p )
       : demon_hunter_attack_t( name, p, p->spell.throw_glaive->effectN( 1 ).trigger() ),
-      soulrend( nullptr ), burning_wound( nullptr )
+      soulrend( nullptr )
     {
       background = dual = true;
       radius = 10.0;
@@ -4600,11 +4593,6 @@ struct throw_glaive_t : public demon_hunter_attack_t
       if ( p->talent.havoc.soulrend->ok() )
       {
         soulrend = p->get_background_action<soulrend_t>( "soulrend" );
-      }
-
-      if ( p->spec.burning_wound_debuff->ok() )
-      {
-        burning_wound = p->get_background_action<burning_wound_t>( "burning_wound" );
       }
     }
 
@@ -4620,9 +4608,9 @@ struct throw_glaive_t : public demon_hunter_attack_t
           residual_action::trigger( soulrend, state->target, dot_damage );
         }
 
-        if ( burning_wound )
+        if ( p()->spec.burning_wound_debuff->ok() )
         {
-          burning_wound->execute_on_target( state->target );
+          p()->active.burning_wound->execute_on_target( state->target );
         }
 
         if ( p()->spec.serrated_glaive_debuff->ok() )
@@ -5924,6 +5912,8 @@ void demon_hunter_t::init_spells()
   active.consume_soul_greater = new consume_soul_t( this, "consume_soul_greater", spec.consume_soul_greater, soul_fragment::GREATER );
   active.consume_soul_lesser = new consume_soul_t( this, "consume_soul_lesser", spec.consume_soul_lesser, soul_fragment::LESSER );
 
+  active.burning_wound = get_background_action<burning_wound_t>( "burning_wound" );
+
   if ( talent.havoc.demon_blades->ok() )
   {
     active.demon_blades = new demon_blades_t( this );
@@ -6463,6 +6453,20 @@ double demon_hunter_t::composite_parry_rating() const
 double demon_hunter_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
+
+  return m;
+}
+
+// demon_hunter_t::composite_player_critical_damage_multiplier ==============
+
+double demon_hunter_t::composite_player_critical_damage_multiplier( const action_state_t* s ) const
+{
+  double m = player_t::composite_player_critical_damage_multiplier( s );
+
+  if ( talent.havoc.know_your_enemy->ok() )
+  {
+    m *= 1.0 + talent.havoc.know_your_enemy->effectN( 2 ).percent() * cache.attack_crit_chance();
+  }
 
   return m;
 }
