@@ -11,40 +11,9 @@ using namespace actions;
 struct demonology_spell_t : public warlock_spell_t
 {
 public:
-  gain_t* gain;
-
-  demonology_spell_t( warlock_t* p, util::string_view n ) : demonology_spell_t( n, p, p->find_class_spell( n ) )
-  {
-  }
-
-  demonology_spell_t( warlock_t* p, util::string_view n, specialization_e s )
-    : demonology_spell_t( n, p, p->find_class_spell( n, s ) )
-  {
-  }
-
   demonology_spell_t( util::string_view token, warlock_t* p, const spell_data_t* s = spell_data_t::nil() )
     : warlock_spell_t( token, p, s )
-  {
-    may_crit          = true;
-    tick_may_crit     = true;
-    weapon_multiplier = 0.0;
-    gain              = player->get_gain( name_str );
-  }
-
-  void reset() override
-  {
-    warlock_spell_t::reset();
-  }
-
-  void init() override
-  {
-    warlock_spell_t::init();
-  }
-
-  void execute() override
-  {
-    warlock_spell_t::execute();
-  }
+  {  }
 
   void consume_resource() override
   {
@@ -57,35 +26,28 @@ public:
         p()->proc_actions.summon_random_demon->execute();
         p()->procs.portal_summon->occur();
 
-        if ( p()->talents.guldans_ambition.ok() )
+        if ( p()->talents.guldans_ambition->ok() )
           p()->buffs.nether_portal_total->increment();
 
-        if ( p()->talents.nerzhuls_volition.ok() && rng().roll( p()->talents.nerzhuls_volition->effectN( 1 ).percent() ) )
+        if ( p()->talents.nerzhuls_volition->ok() && rng().roll( p()->talents.nerzhuls_volition->effectN( 1 ).percent() ) )
         {
           p()->proc_actions.summon_random_demon->execute();
           p()->procs.nerzhuls_volition->occur();
 
-          if ( p()->talents.guldans_ambition.ok() )
+          if ( p()->talents.guldans_ambition->ok() )
             p()->buffs.nether_portal_total->increment();
         }
       }
     }
   }
 
-  void impact( action_state_t* s ) override
-  {
-    warlock_spell_t::impact( s );
-  }
-
   double composite_target_multiplier( player_t* t ) const override
   {
     double m = warlock_spell_t::composite_target_multiplier( t );
 
-    auto td = this->td( t );
-
-    if ( td->debuffs_from_the_shadows->check() && data().affected_by( p()->talents.from_the_shadows_debuff->effectN( 1 ) ) )
+    if ( p()->talents.from_the_shadows->ok() && data().affected_by( p()->talents.from_the_shadows_debuff->effectN( 1 ) ) )
     {
-      m *= 1.0 + td->debuffs_from_the_shadows->check_value();
+      m *= 1.0 + td( t )->debuffs_from_the_shadows->check_value();
     }
 
     return m;
@@ -95,7 +57,7 @@ public:
   {
     double pm = warlock_spell_t::action_multiplier();
 
-    if ( this->data().affected_by( p()->warlock_base.master_demonologist->effectN( 2 ) ) )
+    if ( data().affected_by( p()->warlock_base.master_demonologist->effectN( 2 ) ) )
       pm *= 1.0 + p()->cache.mastery_value();
 
     return pm;
