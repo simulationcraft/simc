@@ -2028,13 +2028,6 @@ public:
       m *= 1.0 + p()->cache.mastery() * p()->mastery.potent_assassin->effectN( 2 ).mastery_value();
     }
 
-    // DFALPHA TOCHECK -- Currently does nothing even after the pmultiplier removal
-    // Apply Nightstalker periodic damage increase via the corresponding driver spell.
-    //if ( affected_by.nightstalker && p()->stealthed( STEALTH_BASIC | STEALTH_SHADOW_DANCE ) )
-    //{
-    //  m *= p()->buffs.nightstalker->periodic_mod.multiplier;
-    //}
-
     return m;
   }
 
@@ -2083,16 +2076,6 @@ public:
   double composite_persistent_multiplier( const action_state_t* state ) const override
   {
     double m = ab::composite_persistent_multiplier( state );
-
-    // DFALPHA TOCHECK -- Persistent multipliers are currently disabled as of the latest build
-    // Apply Nightstalker as a Persistent Multiplier for things that snapshot
-    // This appears to be driven by the dummy effect #2 and there is no whitelist.
-    // This can and will cause double dips on direct damage if a spell is whitelisted in effect #1.
-    //if ( p()->talent.rogue.nightstalker->ok() && snapshots_nightstalker() && p()->stealthed( STEALTH_BASIC | STEALTH_SHADOW_DANCE ) )
-    //{
-    //  m *= p()->buffs.nightstalker->periodic_mod.multiplier;
-    //}
-
     return m;
   }
 
@@ -3729,7 +3712,7 @@ struct eviscerate_t : public rogue_attack_t
   void execute() override
   {
     rogue_attack_t::execute();
-    p()->buffs.deeper_daggers->trigger(); // TOCHECK: Does this happen before or after the bonus damage? Currently before. (-SL Launch)
+    p()->buffs.deeper_daggers->trigger();
 
     if ( bonus_attack && td( target )->debuffs.find_weakness->up() )
     {
@@ -3888,9 +3871,10 @@ struct garrote_t : public rogue_attack_t
   {
     rogue_attack_t::execute();
 
-    // DFALPHA TOCHECK -- Does not work with Shadow Dance currently based on testing but supposed to
+    // 2022-11-28 -- Does not work with Shadow Dance currently based on testing but supposed to
     if ( p()->talent.assassination.shrouded_suffocation->ok() &&
-         p()->stealthed( STEALTH_BASIC | STEALTH_ROGUE | STEALTH_IMPROVED_GARROTE ) )
+         ( p()->stealthed( STEALTH_IMPROVED_GARROTE ) ||
+           ( !p()->bugs && p()->stealthed( STEALTH_BASIC | STEALTH_ROGUE | STEALTH_IMPROVED_GARROTE ) ) ) )
     {
       trigger_combo_point_gain( as<int>( p()->talent.assassination.shrouded_suffocation->effectN( 2 ).base_value() ),
                                 p()->gains.shrouded_suffocation );
@@ -5685,12 +5669,6 @@ struct echoing_reprimand_t : public rogue_attack_t
         unsigned buff_idx = static_cast<int>( rng().range( random_min, random_max ) );
         p()->buffs.echoing_reprimand[ buff_idx ]->trigger();
       }
-
-      // TOCHECK -- Due to beta behavior never removed, Echoing Reprimand can trigger FW from Stealth
-      if ( p()->bugs && p()->stealthed( STEALTH_BASIC | STEALTH_SHADOW_DANCE ) )
-      {
-        trigger_find_weakness( state );
-      }
     }
   }
 
@@ -5762,7 +5740,7 @@ struct sepsis_t : public rogue_attack_t
   sepsis_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
     rogue_attack_t( name, p, p->talent.shared.sepsis, options_str )
   {
-    affected_by.broadside_cp = true; // TOCHECK DFALPHA 2021-04-22 -- Not in the whitelist but confirmed as working in-game
+    affected_by.broadside_cp = true; // 2021-04-22 -- Not in the whitelist but confirmed as working in-game
     sepsis_expire_damage = p->get_background_action<sepsis_expire_damage_t>( "sepsis_expire_damage" );
     sepsis_expire_damage->stats = stats;
   }
@@ -6945,7 +6923,6 @@ void actions::rogue_action_t<Base>::trigger_fatal_flourish( const action_state_t
     return;
 
   double chance = p()->talent.outlaw.fatal_flourish->effectN( 1 ).percent();
-  // BFALPHA TOCHECK: Proc chance is normalized by weapon speed (i.e. penalty for using daggers)
   if ( state->action != p()->active.main_gauche && state->action->weapon )
     chance *= state->action->weapon->swing_time.total_seconds() / 2.6;
   if ( !p()->rng().roll( chance ) )
@@ -7365,11 +7342,6 @@ void actions::rogue_action_t<Base>::trigger_shadow_blades_attack( action_state_t
     return;
 
   double amount = state->result_amount * p()->buffs.shadow_blades->check_value();
-  // Deeper Daggers, despite Shadow Blades having the disable player multipliers flag, affects Shadow Blades with a manual exclusion for Gloomblade.
-  // DFALPHA TOCHECK all shadow damage multipliers for this
-  if ( p()->buffs.deeper_daggers->check() && ab::data().id() != p()->talent.subtlety.gloomblade->id() )
-    amount *= p()->buffs.deeper_daggers->value_direct();
-
   p()->active.shadow_blades_attack->base_dd_min = amount;
   p()->active.shadow_blades_attack->base_dd_max = amount;
   p()->active.shadow_blades_attack->set_target( state->target );
@@ -9065,7 +9037,7 @@ void rogue_t::init_spells()
       secondary_trigger::VICIOUS_VENOMS, "mutilate_mh_vicious_venoms", spec.vicious_venoms_mutilate_mh );
     active.vicious_venoms.mutilate_oh = get_secondary_trigger_action<actions::vicious_venoms_t>(
       secondary_trigger::VICIOUS_VENOMS, "mutilate_oh_vicious_venoms", spec.vicious_venoms_mutilate_oh );
-    active.vicious_venoms.mutilate_oh->weapon = &( off_hand_weapon ); // TOCHECK -- Not in spell data
+    active.vicious_venoms.mutilate_oh->weapon = &( off_hand_weapon ); // Flagged as MH in spell data
   }
 
   if ( talent.assassination.poison_bomb->ok() )
@@ -9396,11 +9368,8 @@ void rogue_t::create_buffs()
   //            2022-10-21 -- Appears hotfixed to not use this value in latest build but unsure how
   buffs.nightstalker = make_buff<damage_buff_t>( this, "nightstalker", spell.nightstalker_buff )
     ->set_periodic_mod( spell.nightstalker_buff, 2 ); // Dummy Value
-  // 2022-10-21 -- Manually overwrite to maintain whitelist until we figure out what is going on
   buffs.nightstalker->direct_mod.multiplier = 1.0 + talent.rogue.nightstalker->effectN( 1 ).percent();
   buffs.nightstalker->periodic_mod.multiplier = 1.0 + talent.rogue.nightstalker->effectN( 1 ).percent();
-  // 2022-10-21 -- Appears non-functional now even though it still exists in the passive
-  //  ->apply_affecting_aura( spec.subtlety_rogue ); // DFALPHA -- Seems messed up
 
   buffs.subterfuge = new buffs::subterfuge_t( this );
 
