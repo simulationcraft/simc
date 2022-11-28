@@ -84,7 +84,7 @@ def->add_action( "adaptive_swarm,target_if=((!dot.adaptive_swarm_damage.ticking|
 def->add_action( "feral_frenzy,if=combo_points<2" );
 def->add_action( "run_action_list,name=aoe,if=spell_targets.swipe_cat>2&talent.primal_wrath.enabled" );
 def->add_action( "ferocious_bite,if=buff.apex_predators_craving.up" );
-def->add_action( "call_action_list,name=bloodtalons,if=variable.need_bt" );
+def->add_action( "call_action_list,name=bloodtalons,if=variable.need_bt&!buff.bs_inc.up" );
 def->add_action( "call_action_list,name=finisher,if=combo_points=5" );
 def->add_action( "call_action_list,name=berserk_builders,if=combo_points<5&buff.bs_inc.up" );
 def->add_action( "call_action_list,name=builder,if=combo_points<5" );
