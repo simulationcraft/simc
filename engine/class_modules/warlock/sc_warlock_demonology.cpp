@@ -71,16 +71,13 @@ struct hand_of_guldan_t : public demonology_spell_t
     int shards_used;
     timespan_t meteor_time;
 
-    hog_impact_t( warlock_t* p, util::string_view options_str )
+    hog_impact_t( warlock_t* p )
       : demonology_spell_t( "Hand of Gul'dan (Impact)", p, p->warlock_base.hog_impact ),
         shards_used( 0 ),
         meteor_time( 400_ms )
     {
-      parse_options(options_str);
       aoe = -1;
       dual = true;
-
-      parse_effect_data( s_data->effectN( 1 ) ); // TOCHECK: is this needed?
     }
 
     timespan_t travel_time() const override
@@ -94,7 +91,7 @@ struct hand_of_guldan_t : public demonology_spell_t
 
       m *= shards_used;
 
-      if ( p()->talents.demonic_meteor.ok() )
+      if ( p()->talents.demonic_meteor->ok() )
         m *= 1.0 + p()->talents.demonic_meteor->effectN( 1 ).percent();
 
       if ( p()->buffs.blazing_meteor->check() )
@@ -116,15 +113,15 @@ struct hand_of_guldan_t : public demonology_spell_t
     {
       demonology_spell_t::impact( s );
 
-      // Only trigger wild imps once for the original target impact.
+      // Only trigger Wild Imps once for the original target impact.
       // Still keep it in impact instead of execute because of travel delay.
       if ( result_is_hit( s->result ) && s->target == target )
       {
 
-        //Wild Imp spawns appear to have been sped up in Shadowlands. Last tested 2021-04-16.
-        //Current behavior: HoG will spawn a meteor on cast finish. Travel time in spell data is 0.7 seconds.
-        //However, damage event occurs before spell effect lands, happening 0.4 seconds after cast.
-        //Imps then spawn roughly every 0.18 seconds seconds after the damage event.
+        // Wild Imp spawns appear to have been sped up in Shadowlands. Last tested 2021-04-16.
+        // Current behavior: HoG will spawn a meteor on cast finish. Travel time in spell data is 0.7 seconds.
+        // However, damage event occurs before spell effect lands, happening 0.4 seconds after cast.
+        // Imps then spawn roughly every 0.18 seconds seconds after the damage event.
         for ( int i = 1; i <= shards_used; i++ )
         {
           auto ev = make_event<imp_delay_event_t>( *sim, p(), rng().gauss( 180.0 * i, 25.0 ), 180.0 * i );
@@ -138,9 +135,11 @@ struct hand_of_guldan_t : public demonology_spell_t
 
   hand_of_guldan_t( warlock_t* p, util::string_view options_str )
     : demonology_spell_t( "Hand of Gul'dan", p, p->warlock_base.hand_of_guldan ),
-      impact_spell( new hog_impact_t( p, options_str ) )
+      impact_spell( new hog_impact_t( p ) )
   {
     parse_options( options_str );
+
+    add_child( impact_spell );
   }
 
   timespan_t travel_time() const override
@@ -164,6 +163,7 @@ struct hand_of_guldan_t : public demonology_spell_t
     {
       return false;
     }
+
     return demonology_spell_t::ready();
   }
 
@@ -174,20 +174,13 @@ struct hand_of_guldan_t : public demonology_spell_t
 
     demonology_spell_t::execute();
 
-    // TOCHECK: Can additional HoG procs trigger this?
     if ( p()->talents.demonic_knowledge->ok() && rng().roll( p()->talents.demonic_knowledge->effectN( 1 ).percent() ) )
     {
       p()->buffs.demonic_core->trigger();
       p()->procs.demonic_knowledge->occur();
     }
 
-    //if ( rng().roll( p()->conduit.borne_of_blood.percent() ) )
-    //  p()->buffs.demonic_core->trigger();
-
-    //if ( p()->legendary.grim_inquisitors_dread_calling.ok() )
-    //  p()->buffs.dread_calling->increment( shards_used, p()->buffs.dread_calling->default_value );
-
-    if ( p()->talents.dread_calling.ok() )
+    if ( p()->talents.dread_calling->ok() )
       p()->buffs.dread_calling->increment( shards_used );
   }
 
@@ -202,7 +195,7 @@ struct hand_of_guldan_t : public demonology_spell_t
     if ( last_resource_cost == 3.0 )
       p()->procs.three_shard_hog->occur();
 
-    if ( p()->talents.demonic_meteor.ok() && rng().roll( last_resource_cost * p()->talents.demonic_meteor->effectN( 2 ).percent() ) )
+    if ( p()->talents.demonic_meteor->ok() && rng().roll( last_resource_cost * p()->talents.demonic_meteor->effectN( 2 ).percent() ) )
     {
       p()->resource_gain( RESOURCE_SOUL_SHARD, 1, p()->gains.demonic_meteor );
       p()->procs.demonic_meteor->occur();
@@ -215,15 +208,7 @@ struct hand_of_guldan_t : public demonology_spell_t
 
     impact_spell->execute_on_target( s->target );
 
-    //if ( p()->legendary.forces_of_the_horned_nightmare.ok() &&
-    //     rng().roll( p()->legendary.forces_of_the_horned_nightmare->effectN( 1 ).percent() ) )
-    //{
-    //  p()->procs.horned_nightmare->occur();
-    //  make_event( *sim, 400_ms, [ this, t = target ] { impact_spell->execute_on_target( t ); } );
-    //}
-
-    // TOCHECK: Does this extra HoG proc itself, resource consumption, or trigger other procs? Currently implemented as NO.
-    if ( p()->talents.pact_of_the_imp_mother.ok() && rng().roll( p()->talents.pact_of_the_imp_mother->effectN( 1 ).percent() ) )
+    if ( p()->talents.pact_of_the_imp_mother->ok() && rng().roll( p()->talents.pact_of_the_imp_mother->effectN( 1 ).percent() ) )
     {
       // Event seems near-instant, without separate travel time
       make_event( *sim, 0_ms, [this, t = target ] { impact_spell->execute_on_target( t ); } );
