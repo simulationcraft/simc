@@ -112,7 +112,7 @@ actions.trinkets+=/use_item,slot=trinket1,if=!variable.trinket_1_buffs&(trinket.
 actions.trinkets+=/use_item,slot=trinket2,if=!variable.trinket_2_buffs&(trinket.1.cooldown.remains|!variable.trinket_1_buffs|!talent.summon_gargoyle|cooldown.summon_gargoyle.remains>20&!pet.gargoyle.active)|fight_remains<15
 
 head=maw_of_the_haunted_frostbrood,id=200408,bonus_id=4800/4786/1498/6935,gem_id=192985
-neck=elemental_lariat,id=193001,bonus_id=6652/7936/7979/1540/8767/8782,gem_id=192948/192948/192948,crafted_stats=32/49
+neck=elemental_lariat,id=193001,bonus_id=6652/7936/7979/1540/8767/8782,gem_id=192961/192948/192948,crafted_stats=32/49
 shoulders=jaws_of_the_haunted_frostbrood,id=200410,bonus_id=4800/4786/1498
 back=fireproof_drape,id=193763,bonus_id=6808/4786/1643
 chest=breastplate_of_the_haunted_frostbrood,id=200405,bonus_id=4800/4786/1498,enchant_id=6625
@@ -123,17 +123,17 @@ legs=drake_hunters_greaves,id=193694,bonus_id=6808/4786/1643,enchant_id=6490
 feet=stonestep_boots,id=143974,bonus_id=4177/6808/4786/3311,ilevel=421,drop_level=70
 finger1=seal_of_filial_duty,id=195526,bonus_id=4800/4786/1497/6935,gem_id=192948,enchant_id=6568
 finger2=jeweled_signet_of_melandrus,id=134542,bonus_id=1795/6808/4786/3300/6935,ilevel=421,gem_id=192948,enchant_id=6562,drop_level=70
-trinket1=blazebinders_hoof,id=193762,bonus_id=6808/4786/1643
-trinket2=whispering_incarnate_icon,id=194301,bonus_id=4800/4786/1498
-main_hand=incarnate_skysplitter,id=195528,bonus_id=4800/4786/1498,enchant=rune_of_the_fallen_crusader,enchant_id=3368
+trinket1=algethar_puzzle_box,id=193701,bonus_id=6808/4786/1643
+trinket2=manic_grieftorch,id=194308,bonus_id=4800/4786/1498
+main_hand=incarnate_skysplitter,id=195528,bonus_id=4800/4786/1498,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_ilvl=422.00
-# gear_strength=4958
+# gear_ilvl=422.20
+# gear_strength=5445
 # gear_stamina=13377
 # gear_crit_rating=2713
-# gear_haste_rating=4598
-# gear_mastery_rating=4097
+# gear_haste_rating=4008
+# gear_mastery_rating=4134
 # gear_versatility_rating=492
 # gear_armor=7154
 # set_bonus=tier29_2pc=1
