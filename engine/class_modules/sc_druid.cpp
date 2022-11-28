@@ -955,6 +955,7 @@ public:
     const spell_data_t* guardian;
     const spell_data_t* bear_form_2;
     const spell_data_t* berserk_bear;  // berserk cast/buff spell
+    const spell_data_t* elunes_favored;
     const spell_data_t* galactic_guardian_buff;
     const spell_data_t* incarnation_bear;
     const spell_data_t* lightning_reflexes;
@@ -9157,6 +9158,7 @@ void druid_t::init_spells()
   spec.berserk_bear             = check( talent.berserk_ravage ||
                                          talent.berserk_unchecked_aggression ||
                                          talent.berserk_persistence, 50334 );
+  spec.elunes_favored           = check( talent.elunes_favored, 370588 );
   spec.incarnation_bear         = check( talent.incarnation_bear, 102558 );
   spec.lightning_reflexes       = find_specialization_spell( "Lightning Reflexes" );
 
@@ -10820,7 +10822,7 @@ double druid_t::composite_player_multiplier( school_e school ) const
 
   if ( dbc::has_common_school( school, SCHOOL_ARCANE ) && get_form() == BEAR_FORM )
   {
-    cpm *= 1.0 + talent.elunes_favored->effectN( 1 ).percent();
+    cpm *= 1.0 + spec.elunes_favored->effectN( 1 ).percent();
     cpm *= 1.0 + talent.fury_of_nature->effectN( 1 ).percent();
   }
 
