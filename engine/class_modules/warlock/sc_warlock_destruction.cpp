@@ -304,28 +304,22 @@ struct conflagrate_t : public destruction_spell_t
     parse_options( options_str );
     can_havoc = true;
 
-    energize_type     = action_energize::PER_HIT;
+    energize_type = action_energize::PER_HIT;
     energize_resource = RESOURCE_SOUL_SHARD;
-    energize_amount   = ( p->talents.conflagrate_2->effectN( 1 ).base_value() ) / 10.0;
+    energize_amount = ( p->talents.conflagrate_2->effectN( 1 ).base_value() ) / 10.0;
 
     cooldown->hasted = true;
     cooldown->charges += as<int>( p->talents.improved_conflagrate->effectN( 1 ).base_value() );
     cooldown->duration += p->talents.explosive_potential->effectN( 1 ).time_value();
 
     base_multiplier *= 1.0 + p->talents.ruin->effectN( 1 ).percent();
-
-    //if ( p->legendary.cinders_of_the_azjaqir->ok() )
-    //{
-    //  cooldown->charges += as<int>( p->legendary.cinders_of_the_azjaqir->effectN( 1 ).base_value() );
-    //  cooldown->duration += p->legendary.cinders_of_the_azjaqir->effectN( 2 ).time_value();
-    //}
   }
 
   void impact( action_state_t* s ) override
   {
     destruction_spell_t::impact( s );
 
-    if ( p()->talents.roaring_blaze.ok() && result_is_hit( s->result ) )
+    if ( p()->talents.roaring_blaze->ok() && result_is_hit( s->result ) )
       td( s->target )->debuffs_conflagrate->trigger();
   }
 
@@ -333,19 +327,19 @@ struct conflagrate_t : public destruction_spell_t
   {
     destruction_spell_t::execute();
 
-    // 2022-10-15 - Conflagration of Chaos can proc from a spell that consumes it
+    // Conflagration of Chaos can proc from a spell that consumes it
     p()->buffs.conflagration_of_chaos_cf->expire();
 
-    if ( p()->talents.conflagration_of_chaos.ok() && rng().roll( p()->talents.conflagration_of_chaos->effectN( 1 ).percent() ) )
+    if ( p()->talents.conflagration_of_chaos->ok() && rng().roll( p()->talents.conflagration_of_chaos->effectN( 1 ).percent() ) )
     {
       p()->buffs.conflagration_of_chaos_cf->trigger();
       p()->procs.conflagration_of_chaos_cf->occur();
     }
 
-    if ( p()->talents.backdraft.ok() )
+    if ( p()->talents.backdraft->ok() )
       p()->buffs.backdraft->trigger();
 
-    if ( p()->talents.decimation.ok() && target->health_percentage() <= p()->talents.decimation->effectN( 2 ).base_value() )
+    if ( p()->talents.decimation->ok() && target->health_percentage() <= p()->talents.decimation->effectN( 2 ).base_value() )
     {
       p()->cooldowns.soul_fire->adjust( p()->talents.decimation->effectN( 1 ).time_value() );
     }
