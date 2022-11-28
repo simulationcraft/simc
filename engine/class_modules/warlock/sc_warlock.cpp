@@ -2122,14 +2122,8 @@ struct warlock_module_t : public module_t
     return new warlock_t( sim, name, r );
   }
 
-  //TODO: Hotfix may not be needed any longer, if so leave this function empty instead
   void register_hotfixes() const override
   {
-    hotfix::register_spell("Warlock", "2020-11-15", "Manually set secondary Malefic Rapture level requirement", 324540)
-      .field( "spell_level" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 11.0 )
-      .verification_value( 43.0 );
   }
 
   bool valid() const override
