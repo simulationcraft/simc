@@ -54,7 +54,7 @@ struct cooldown_t
 
   // Adjust the CD. If "requires_reaction" is true (or not provided), then the CD change is something
   // the user would react to rather than plan ahead for.
-  void adjust( timespan_t, bool requires_reaction = true );
+  void adjust( timespan_t, bool requires_reaction = true, bool apply_recharge_rate = true );
   void adjust_recharge_multiplier(); // Reacquire cooldown recharge multiplier from the action to adjust the cooldown time
   void adjust_base_duration(); // Reacquire base cooldown duration from the action to adjust the cooldown time
   // Instantly recharge a cooldown. For multicharge cooldowns, charges_ specifies how many charges to reset.

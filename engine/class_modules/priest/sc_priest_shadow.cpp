@@ -54,7 +54,6 @@ struct mind_sear_tick_t final : public priest_spell_t
       priest().buffs.gathering_shadows->up();
     }
 
-    priest().trigger_eternal_call_to_the_void( s );
     priest().trigger_idol_of_cthun( s );
 
     if ( priest().talents.shadow.dark_evangelism.enabled() )
@@ -213,29 +212,11 @@ struct mind_flay_base_t final : public priest_spell_t
     }
   }
 
-  void trigger_mind_flay_dissonant_echoes()
-  {
-    if ( !priest().conduits.dissonant_echoes->ok() || !priest().talents.shadow.void_eruption.enabled() ||
-         priest().buffs.voidform->check() )
-    {
-      return;
-    }
-
-    if ( rng().roll( priest().conduits.dissonant_echoes.percent() ) )
-    {
-      priest().buffs.dissonant_echoes->trigger();
-      priest().procs.dissonant_echoes->occur();
-    }
-  }
-
   void tick( dot_t* d ) override
   {
     priest_spell_t::tick( d );
 
-    priest().trigger_eternal_call_to_the_void( d->state );
     priest().trigger_idol_of_cthun( d->state );
-    // Shadowlands only
-    trigger_mind_flay_dissonant_echoes();
 
     if ( priest().talents.shadow.dark_evangelism.enabled() )
     {
@@ -262,17 +243,6 @@ struct mind_flay_base_t final : public priest_spell_t
     {
       priest().trigger_psychic_link( d->state );
     }
-  }
-
-  bool ready() override
-  {
-    // Ascended Blast replaces Mind Flay when Boon of the Ascended is active
-    if ( priest().buffs.boon_of_the_ascended->check() )
-    {
-      return false;
-    }
-
-    return priest_spell_t::ready();
   }
 
   void last_tick( dot_t* d ) override
@@ -404,19 +374,6 @@ struct silence_t final : public priest_spell_t
     apply_affecting_aura( priest().talents.shadow.last_word );
   }
 
-  void impact( action_state_t* state ) override
-  {
-    priest_spell_t::impact( state );
-
-    if ( target->type == ENEMY_ADD || target->level() < sim->max_player_level + 3 )
-    {
-      if ( priest().legendary.sephuzs_proclamation->ok() && priest().buffs.sephuzs_proclamation )
-      {
-        priest().buffs.sephuzs_proclamation->trigger();
-      }
-    }
-  }
-
   bool target_ready( player_t* candidate_target ) override
   {
     if ( !priest_spell_t::target_ready( candidate_target ) )
@@ -497,11 +454,6 @@ struct shadowy_apparition_damage_t final : public priest_spell_t
     may_crit                   = false;
 
     base_dd_multiplier *= 1 + priest().talents.shadow.auspicious_spirits->effectN( 1 ).percent();
-
-    if ( priest().conduits.haunting_apparitions->ok() )
-    {
-      base_dd_multiplier *= ( 1.0 + priest().conduits.haunting_apparitions.percent() );
-    }
 
     if ( priest().talents.shadow.puppet_master.enabled() )
     {
@@ -623,44 +575,12 @@ struct shadow_word_pain_t final : public priest_spell_t
     execute();
   }
 
-  void trigger_heal()
-  {
-    // Use a simple option to dictate how many "allies" this will heal. All healing will go to the actor
-    double amount_to_heal = priest().options.cauterizing_shadows_allies * priest().intellect() *
-                            priest().specs.cauterizing_shadows_health->effectN( 1 ).sp_coeff();
-    priest().resource_gain( RESOURCE_HEALTH, amount_to_heal, priest().gains.cauterizing_shadows_health, this );
-  }
-
-  void last_tick( dot_t* d ) override
-  {
-    // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/789
-    // You only get the heal when the DoT expires naturally, not when a mob dies or you refresh it
-    if ( priest().legendary.cauterizing_shadows->ok() )
-    {
-      trigger_heal();
-    }
-
-    priest_spell_t::last_tick( d );
-  }
-
   void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
 
     if ( result_is_hit( s->result ) )
     {
-      if ( priest().buffs.fae_guardians->check() )
-      {
-        priest_td_t& td = get_td( s->target );
-
-        if ( !td.buffs.wrathful_faerie->up() )
-        {
-          // There can only be one of these out at once so clear it first
-          priest().remove_wrathful_faerie();
-          td.buffs.wrathful_faerie->trigger();
-        }
-      }
-
       if ( priest().talents.shadow.deathspeaker.enabled() && priest().rppm.deathspeaker->trigger() )
       {
         priest().buffs.deathspeaker->trigger();
@@ -1315,35 +1235,11 @@ struct void_bolt_t final : public priest_spell_t
     {
       void_bolt_extension = new void_bolt_extension_t( p, rank2 );
     }
-
-    if ( priest().conduits.dissonant_echoes->ok() )
-    {
-      base_dd_multiplier *= ( 1.0 + priest().conduits.dissonant_echoes->effectN( 2 ).percent() );
-    }
-  }
-
-  void execute() override
-  {
-    priest_spell_t::execute();
-
-    if ( priest().buffs.dissonant_echoes->check() )
-    {
-      priest().buffs.dissonant_echoes->expire();
-    }
-
-    if ( priest().conduits.dissonant_echoes->ok() && priest().buffs.voidform->check() )
-    {
-      if ( rng().roll( priest().conduits.dissonant_echoes.percent() ) )
-      {
-        priest().cooldowns.void_bolt->reset( true );
-        priest().procs.dissonant_echoes->occur();
-      }
-    }
   }
 
   bool ready() override
   {
-    if ( !priest().buffs.voidform->check() && !priest().buffs.dissonant_echoes->check() )
+    if ( !priest().buffs.voidform->check() )
     {
       return false;
     }
@@ -1590,18 +1486,6 @@ struct psychic_horror_t final : public priest_spell_t
 };
 
 // ==========================================================================
-// Eternal Call to the Void (Shadowlands Legendary)
-// ==========================================================================
-struct eternal_call_to_the_void_t final : public priest_spell_t
-{
-  eternal_call_to_the_void_t( priest_t& p )
-    : priest_spell_t( "eternal_call_to_the_void", p, p.find_spell( p.legendary.eternal_call_to_the_void->id() ) )
-  {
-    background = true;
-  }
-};
-
-// ==========================================================================
 // Idol of C'Thun (Talent)
 // ==========================================================================
 struct idol_of_cthun_t final : public priest_spell_t
@@ -1826,7 +1710,7 @@ struct shadow_crash_dots_t final : public priest_spell_t
   {
     may_miss   = false;
     background = true;
-    aoe        = data().effectN( 1 ).base_value();
+    aoe        = as<int>( data().effectN( 1 ).base_value() );
 
     child_vt->background = true;
   }
@@ -2204,20 +2088,9 @@ void priest_t::create_buffs_shadow()
   buffs.surge_of_darkness = make_buff( this, "surge_of_darkness", talents.shadow.surge_of_darkness_buff )
                                 ->set_default_value_from_effect( 2 );  // automagic handles the cast time
   buffs.mind_devourer_ms_active = make_buff( this, "mind_devourer_ms_active" )->set_quiet( true )->set_duration( 0_s );
-  // TODO: Check Buff ID(s) for Mind Devourer
-  if ( talents.shadow.mind_devourer.enabled() )
-  {
-    buffs.mind_devourer = make_buff( this, "mind_devourer", find_spell( 373204 ) )
-                              ->set_trigger_spell( talents.shadow.mind_devourer )
-                              ->set_chance( talents.shadow.mind_devourer->effectN( 1 ).percent() );
-  }
-  else
-  {
-    buffs.mind_devourer = make_buff( this, "mind_devourer", find_spell( 373204 ) )
-                              ->set_trigger_spell( conduits.mind_devourer )
-                              ->set_chance( conduits.mind_devourer->effectN( 2 ).percent() );
-  }
-
+  buffs.mind_devourer           = make_buff( this, "mind_devourer", find_spell( 373204 ) )
+                            ->set_trigger_spell( talents.shadow.mind_devourer )
+                            ->set_chance( talents.shadow.mind_devourer->effectN( 1 ).percent() );
   buffs.shadowy_insight = make_buff<buffs::shadowy_insight_t>( *this );
 
   buffs.mental_fortitude = new buffs::mental_fortitude_buff_t( this );
@@ -2272,13 +2145,6 @@ void priest_t::create_buffs_shadow()
                              ->set_cooldown( 0_s )
                              ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
-  // Conduits (Shadowlands)
-  buffs.dissonant_echoes = make_buff( this, "dissonant_echoes", find_spell( 343144 ) );
-
-  buffs.talbadars_stratagem = make_buff( this, "talbadars_stratagem", find_spell( 342415 ) )
-                                  ->set_duration( timespan_t::zero() )
-                                  ->set_refresh_behavior( buff_refresh_behavior::DURATION );
-
   // Tier Sets
   // 393684 -> 394961
   buffs.gathering_shadows =
@@ -2293,9 +2159,8 @@ void priest_t::create_buffs_shadow()
 
 void priest_t::init_rng_shadow()
 {
-  rppm.eternal_call_to_the_void = get_rppm( "eternal_call_to_the_void", legendary.eternal_call_to_the_void );
-  rppm.idol_of_cthun            = get_rppm( "idol_of_cthun", talents.shadow.idol_of_cthun );
-  rppm.deathspeaker             = get_rppm( "deathspeaker", talents.shadow.deathspeaker );
+  rppm.idol_of_cthun = get_rppm( "idol_of_cthun", talents.shadow.idol_of_cthun );
+  rppm.deathspeaker  = get_rppm( "deathspeaker", talents.shadow.deathspeaker );
 }
 
 void priest_t::init_spells_shadow()
@@ -2377,9 +2242,6 @@ void priest_t::init_spells_shadow()
   specs.void_bolt      = find_spell( 205448 );
   specs.voidform       = find_spell( 194249 );
   specs.hallucinations = find_spell( 280752 );
-
-  // Legendary Effects
-  specs.cauterizing_shadows_health = find_spell( 336373 );
 }
 
 action_t* priest_t::create_action_shadow( util::string_view name, util::string_view options_str )
@@ -2495,12 +2357,6 @@ void priest_t::init_background_actions_shadow()
   if ( talents.shadow.pain_of_death.enabled() )
   {
     background_actions.pain_of_death = new actions::spells::pain_of_death_t( *this );
-  }
-
-  // TODO: does this stack in pre-patch?
-  if ( legendary.eternal_call_to_the_void->ok() )
-  {
-    background_actions.eternal_call_to_the_void = new actions::spells::eternal_call_to_the_void_t( *this );
   }
 
   if ( talents.shadow.idol_of_cthun.enabled() )
@@ -2632,7 +2488,7 @@ bool priest_t::is_screams_of_the_void_up( player_t* target ) const
 // Helper function to refresh talbadars buff
 void priest_t::refresh_insidious_ire_buff( action_state_t* s )
 {
-  if ( !legendary.talbadars_stratagem->ok() && !talents.shadow.insidious_ire.enabled() )
+  if ( !talents.shadow.insidious_ire.enabled() )
     return;
 
   const priest_td_t* td = find_target_data( s->target );
@@ -2648,8 +2504,6 @@ void priest_t::refresh_insidious_ire_buff( action_state_t* s )
 
     if ( min_length >= buffs.insidious_ire->remains() )
     {
-      if ( legendary.talbadars_stratagem->ok() )
-        buffs.talbadars_stratagem->trigger( min_length );
       if ( talents.shadow.insidious_ire.enabled() )
         buffs.insidious_ire->trigger( min_length );
     }

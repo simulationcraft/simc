@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46702 Live (hotfix 2022-11-20/46702, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46801 Live (hotfix 2022-11-28/46801)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -420,6 +420,7 @@ Class            : Havoc Demon Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 27
+Requires armor   : Leather Head, Shoulders, Chest, Waist, Legs, Feet, Wrists, Hands, Robe
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -868,6 +869,8 @@ Attributes       : ....x... ........ ........ ........   ........ .x...... .....
 Effects          :
 #1 (id=282602)   : School Damage (2): chaos
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.27320 | PvP Coefficient: 1.00000 | Radius: 0 - 23 yards | Target: Unknown(87) -> Unknown(134)
+#2 (id=1042646)  : Dummy (3)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Radius: 0 - 23 yards | Target: Unknown(87) -> Unknown(134)
 Description      : $@spelldesc195072
 
 Name             : Chaos Strike (id=193840) [Spell Family (107)] 
@@ -4056,6 +4059,7 @@ Class            : Vengeance Demon Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 27
+Requires armor   : Leather Head, Shoulders, Chest, Waist, Legs, Feet, Wrists, Hands, Robe
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4832,6 +4836,8 @@ Attributes       : ....x... ........ ..x..... ........   ...x...x .x...... .....
 Effects          :
 #1 (id=483170)   : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.29190 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+#2 (id=1042623)  : Dummy (3)
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 Description      : $@spelldesc258920
 
 Name             : Immolation Aura (id=258922) [Spell Family (107)] 
@@ -4857,6 +4863,8 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: fury | Target: Self (1)
 #3 (id=807415)   : Energize Power (30)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: fury | Target: Self (1)
+#4 (id=1042693)  : Dummy (3)
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc258920
 
 Name             : Fel Barrage (id=258925) [Spell Family (107)] 
@@ -7400,6 +7408,7 @@ Description      : Consume Magic generates $278326s2 Fury when a beneficial Magi
 Name             : Infernal Armor (id=320331) [Spell Family (107), Passive, Hidden] 
 Talent Entry     : Generic [tree=class, row=6, col=3, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(10, 20)]
+                 : Effect#2 [op=set, values=(0, 100)]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -7417,6 +7426,9 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 33 | Target: Self (1)
                    Affected Spells: Immolation Aura (258920), Immolation Aura (258921), Immolation Aura (258922)
                    Family Flags: 11
+#2 (id=1043571)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value 2: 2432 (Label) | Target: Self (1)
+                   Affected Spells (Label): Infernal Armor (320334)
 Description      : Immolation Aura increases your armor by $s1% and causes melee attackers to suffer $320334s1 $@spelldesc395020 damage.
 
 Name             : Infernal Armor (id=320334) [Spell Family (107)] 
@@ -7424,6 +7436,7 @@ Class            : Demon Hunter
 School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
+Labels           : 2432: Infernal Armor (320331 effect#2)
 Affecting spells : Demon Soul (163073 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effect#1), Burning Blood (390213 effects: #1, #2), Seething Chaos (394934 effects: #1, #2)
 Family Flags     : 16, 70, 72
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 

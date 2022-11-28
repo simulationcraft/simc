@@ -3839,6 +3839,7 @@ void sim_t::create_options()
   add_option( opt_deprecated( "feast_as_dps", "no longer necessary" ) );
 
   // Shadowlands
+  add_option( opt_bool( "shadowlands.enabled", shadowlands_opts.enabled ) );
   add_option( opt_float( "shadowlands.combat_meditation_extend_chance", shadowlands_opts.combat_meditation_extend_chance, 0.0, 1.0 ) );
   add_option( opt_uint( "shadowlands.pointed_courage_nearby", shadowlands_opts.pointed_courage_nearby, 0, 3 ) );
   add_option( opt_int( "shadowlands.lead_by_example_nearby", shadowlands_opts.lead_by_example_nearby, 0, 4 ) );
@@ -3893,7 +3894,6 @@ void sim_t::create_options()
   add_option( opt_timespan( "dragonflight.darkmoon_deck_watcher_deplete", dragonflight_opts.darkmoon_deck_watcher_deplete, 0_ms, timespan_t::max() ) );
   add_option( opt_string( "dragonflight.whispering_incarnate_icon_roles", dragonflight_opts.whispering_incarnate_icon_roles ) );
   add_option( opt_float( "dragonflight.decoration_of_flame_miss_chance", dragonflight_opts.decoration_of_flame_miss_chance, 0.0, 1.0 ) );
-  add_option( opt_float( "dragonflight.manic_grieftorch_chance", dragonflight_opts.manic_grieftorch_chance, 0.0, 1.0 ) );
   add_option( opt_timespan( "dragonflight.alltotem_of_the_master_period", dragonflight_opts.alltotem_of_the_master_period, 0_s, timespan_t::max() ) );
   add_option( opt_uint( "dragonflight.dragon_games_kicks", dragonflight_opts.dragon_games_kicks, 0, 3 ) );
   add_option( opt_float( "dragonflight.dragon_games_rng", dragonflight_opts.dragon_games_rng, 0.0, 1.0 ) );

@@ -121,6 +121,9 @@ bool covenant_state_t::parse_covenant( sim_t*             sim,
                                        util::string_view /* name */,
                                        util::string_view value )
 {
+  if ( !sim->shadowlands_opts.enabled )
+    return true;
+
   covenant_e covenant = util::parse_covenant_string( value );
   unsigned covenant_id = util::to_unsigned_ignore_error( value, static_cast<unsigned>( covenant_e::INVALID ) );
 
@@ -851,7 +854,7 @@ action_t* create_action( player_t* player, util::string_view name, util::string_
 bool parse_blizzard_covenant_information( player_t*               player,
                                           const rapidjson::Value& covenant_data )
 {
-  if ( !covenant_data.HasMember( "chosen_covenant" ) ||
+  if ( !player->sim->shadowlands_opts.enabled || !covenant_data.HasMember( "chosen_covenant" ) ||
        !covenant_data[ "chosen_covenant" ].HasMember( "name" ) )
   {
     return true;

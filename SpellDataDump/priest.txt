@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46702 Live (hotfix 2022-11-20/46702, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46801 Live (hotfix 2022-11-28/46801)
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -411,7 +411,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Labels           : 802: Devout Spirit (297412 effect#1), Devout Spirit (310530 effect#1)
 Stance Mask      : 0x88000000
-Affecting spells : Renew (139 effect#2), Rapid Healing (24546 effect#2), Spirit of Redemption (27827 effect#2), Healing Trance (37706 effect#1), Surge of Light (114255 effects: #1, #2), Holy Priest (137031 effects: #1, #2, #16), Discipline Priest (137032 effects: #1, #2), Shadow Priest (137033 effect#16), Complete Healing (184914 effect#1), Light of T'uure (208065 effect#1), Muze's Unwavering Will (210632 effects: #1, #3), Rammal's Ulterior Motive (234711 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Promise of Deliverance (287340 effect#1), Measured Contemplation (341824 effect#1), Divine Conversation (363727 effect#2), Divine Favor: Serenity (372791 effects: #1, #3, #4), Unwavering Will (373456 effects: #1, #3), From Darkness Comes Light (390617 effect#1), Crisis Management (390954 effect#1), Twist of Fate (390978 effects: #1, #2), Improved Flash Heal (393870 effect#1), Light Weaving (394609 effect#1)
+Affecting spells : Renew (139 effect#2), Rapid Healing (24546 effect#2), Spirit of Redemption (27827 effect#2), Healing Trance (37706 effect#1), Surge of Light (114255 effects: #1, #2, #3, #4), Holy Priest (137031 effects: #1, #2, #16), Discipline Priest (137032 effects: #1, #2, #17), Shadow Priest (137033 effect#16), Complete Healing (184914 effect#1), Light of T'uure (208065 effect#1), Muze's Unwavering Will (210632 effects: #1, #3), Rammal's Ulterior Motive (234711 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Promise of Deliverance (287340 effect#1), Measured Contemplation (341824 effect#1), Divine Conversation (363727 effect#2), Divine Favor: Serenity (372791 effects: #1, #3, #4), Unwavering Will (373456 effects: #1, #3), From Darkness Comes Light (390617 effect#1), Crisis Management (390954 effect#1), Twist of Fate (390978 effects: #1, #2), Improved Flash Heal (393870 effect#1), Light Weaving (394609 effect#1)
 Triggered by     : Surge of Light (114255)
 Family Flags     : 11, 126
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -1385,6 +1385,7 @@ Spell Type       : None
 Proc Chance      : 100%
 Proc Flags       : ........ ..x...x. ..x..x.. ........ 
                  : Generic Heal, Magic Heal, Periodic, Trap Triggered
+Family Flags     : 82
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x...x. 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -1582,8 +1583,7 @@ School           : Holy
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 15 seconds
-Affecting spells : Shadow Covenant (322105 effect#1), Malicious Intent (372969 effect#1), Twilight Equilibrium (390707 effect#1), Light Weaving (394609 effect#1)
-Family Flags     : 56
+Family Flags     : 82
 Attributes       : ........ ........ x.x..... ...x....   ........ ..x..... ........ ........ 
                  : ........ ........ ...x.x.. ........   ........ ........ ........ ..x...x. 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
@@ -2430,6 +2430,7 @@ Class            : Priest
 School           : Physical
 Spell Type       : None
 Spell Level      : 27
+Requires armor   : Cloth Head, Shoulders, Chest, Waist, Legs, Feet, Wrists, Hands, Robe
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2886,10 +2887,16 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Flash Heal (2061)
                    Family Flags: 11
-#3 (id=164989)   : Apply Aura (6) | Unknown(408)
+#3 (id=164989)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Generation (34)
+                   Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 34 | Target: Self (1)
+                   Affected Spells: Flash Heal (2061)
+                   Family Flags: 11
+#4 (id=164990)   : Apply Aura (6) | Add Percent Modifier (108): Unknown(39)
+                   Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 39 | Target: Self (1)
+                   Affected Spells: Flash Heal (2061)
+                   Family Flags: 11
+#5 (id=1043134)  : Apply Aura (6) | Unknown(408)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 2061 | Target: Self (1)
-#4 (id=164990)   : Apply Aura (6) | Unknown(408)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 101062 | Target: Self (1)
 Description      : $@spelldesc109186
 Tooltip          : Next Flash Heal is instant and costs no mana.
 
@@ -3600,6 +3607,10 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 37 | Target: Self (1)
                    Affected Spells: Focused Will (45242)
                    Family Flags: 111
+#17 (id=1042533)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Flash Heal (2061)
+                   Family Flags: 11
 Description      : Discipline Priest core passive
 
 Name             : Shadow Priest (id=137033) [Spell Family (6), Passive, Hidden] 
@@ -4184,7 +4195,7 @@ Talent Entry     : Discipline [tree=spec, row=2, col=1, max_rank=1, req_points=0
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
-Resource         : 6.5% Base Mana (0) (id=10498)
+Resource         : 5.5% Base Mana (0) (id=10498)
 Spell Level      : 23
 Range            : 40 yards
 Cast Time        : 2 seconds
@@ -4679,7 +4690,7 @@ Tooltip          : Your next Penance will deal $w1% additional damage or healing
 
 Name             : Psychic Link (id=199484) [Spell Family (6), Passive, Hidden] 
 Talent Entry     : Shadow [tree=spec, row=7, col=4, max_rank=2, req_points=8]
-                 : Effect#1 [op=set, values=(15, 30)]
+                 : Effect#1 [op=set, values=(30, 60)]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -9269,7 +9280,7 @@ Attributes       : ........ ........ x....... .......x   ........ ........ .....
 Effects          :
 #1 (id=810243)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Shadow Word: Pain (589), Mind Blast (8092), Shadow Word: Death (32379), Divine Aegis (47753), Mind Sear (48045), Mind Sear (49821), Schism (214621), Mindgames (323673), Painbreaker Psalm (336167), Mind Sear (344754), Mindgames (375901), Mind Sear (394976)
+                   Affected Spells: Shadow Word: Pain (589), Mind Blast (8092), Shadow Word: Death (32379), Mind Sear (48045), Mind Sear (49821), Schism (214621), Mindgames (323673), Painbreaker Psalm (336167), Mind Sear (344754), Mindgames (375901), Mind Sear (394976)
                    Family Flags: 13, 15, 33, 52, 56, 65, 84
 #2 (id=810244)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
@@ -12802,7 +12813,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=997896)   : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 6000 | Scaled Value: 6000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
-                   Affected Spells: Divine Aegis (47753), Schism (214621)
+                   Affected Spells: Schism (214621)
                    Family Flags: 56
 Description      : Increases the duration of Schism by ${$s1/1000} sec.
 
@@ -13120,12 +13131,15 @@ Effects          :
 Description      : Invoke the Light's wrath, dealing $s1 Radiant damage to the target, increased by $s2% per ally affected by your Atonement.
 
 Name             : Harsh Discipline (id=373180) [Spell Family (6), Passive, Hidden] 
+Hotfixed         : Proc Flags (0 -> 65536)
 Talent Entry     : Discipline [tree=spec, row=9, col=4, max_rank=2, req_points=20]
-                 : Effect#1 [op=set, values=(10, 5)]
+                 : Effect#1 [op=set, values=(8, 4)]
 Class            : Priest
 School           : Holy
 Spell Type       : None
 Proc Chance      : 100%
+Proc Flags       : ........ ........ x....... ........ 
+                 : Magic Hostile Spell
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -14703,6 +14717,8 @@ Spell Type       : None
 Duration         : 6 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
+Proc Flags       : ........ ......x. x....... ........ 
+                 : Magic Heal, Magic Hostile Spell
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -14727,6 +14743,8 @@ Spell Type       : None
 Duration         : 6 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
+Proc Flags       : ........ ......x. x....... ........ 
+                 : Magic Heal, Magic Hostile Spell
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -14739,7 +14757,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1027719)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Mind Blast (8092), Shadow Word: Death (32379), Divine Aegis (47753), Schism (214621), Mindgames (323673), Painbreaker Psalm (336167), Mindgames (375901)
+                   Affected Spells: Mind Blast (8092), Shadow Word: Death (32379), Schism (214621), Mindgames (323673), Painbreaker Psalm (336167), Mindgames (375901)
                    Family Flags: 13, 33, 56, 84
 Description      : $@spelldesc390705
 Tooltip          : The damage of your next Shadow spell is increased by $s1%.
@@ -16630,7 +16648,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
 Effects          :
 #1 (id=1034427)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Smite (585), Flash Heal (2061), Mind Blast (8092), Desperate Prayer (19236), Shadow Word: Death (32379), Penance (47666), Penance (47750), Divine Aegis (47753), Power Word: Solace (129250), Holy Nova (132157), Power Word: Radiance (194509), Schism (214621), Holy Nova (281265), Mindgames (323673), Painbreaker Psalm (336167), Dark Reprimand (373130), Light's Wrath (373178), Power Word: Life (373481), Mindgames (375901)
+                   Affected Spells: Smite (585), Flash Heal (2061), Mind Blast (8092), Desperate Prayer (19236), Shadow Word: Death (32379), Penance (47666), Penance (47750), Power Word: Solace (129250), Holy Nova (132157), Power Word: Radiance (194509), Schism (214621), Holy Nova (281265), Mindgames (323673), Painbreaker Psalm (336167), Dark Reprimand (373130), Light's Wrath (373178), Power Word: Life (373481), Mindgames (375901)
                    Family Flags: 7, 11, 13, 22, 24, 26, 33, 41, 47, 48, 49, 56, 79, 84, 108
 Description      : $@spelldesc393679
 Tooltip          : Next direct damage or healing spell increased by $s1%.

@@ -27,28 +27,29 @@
 
 # save=T29_Monk_Brewmaster.simc
 
-# monk="T29_Monk_Windwalker"
-# spec=windwalker
-# level=70
-# race=mechagnome
-# role=dps
-# position=back
-# talents=1020012
+monk="T29_Monk_Windwalker"
+spec=windwalker
+level=70
+race=orc
+role=dps
+position=back
+talents=B0QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEkkkEtIBAAAAAJSSCgkkkEIRIiESkkkkkSCIAAA
 
-# head=umbrahide_helm,id=172317,bonus_id=7082/1588/6650/6647/6935,gem_id=173129
-# neck=azurevenom_choker,id=180115,bonus_id=1592/6536/6646/6935,gem_id=173129
-# shoulders=tassels_of_the_grand_upwelling,id=188914,bonus_id=1505/7187
-# back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187,enchant_id=6208
-# chest=cuirass_of_the_grand_upwelling,id=188912,bonus_id=1505/7187,enchant_id=6230
-# wrists=demigaunts_of_the_grand_upwelling,id=188913,bonus_id=1498/7187/6935,gem_id=173129
-# hands=grips_of_the_grand_upwelling,id=188916,bonus_id=1498/7187
-# waist=umbrahide_waistguard,id=172320,bonus_id=8124/1588/6650/6647/6935,gem_id=173129
-# legs=legguards_of_the_grand_upwelling,id=188911,bonus_id=1498/7187
-# feet=treads_of_titanic_curiosity,id=189848,bonus_id=1524/7187,enchant_id=6211
-# finger1=rygelons_heraldric_ring,id=189854,bonus_id=1524/7187/6935,gem_id=173129,enchant_id=6164
-# finger2=entwined_gorger_tendril,id=178848,bonus_id=1592/6536/6646/6935,gem_id=173129,enchant_id=6164
-# trinket1=inscrutable_quantum_device,id=179350,bonus_id=1592/6536/6646
-# trinket2=earthbreakers_impact,id=188264,bonus_id=1524/7187
-# main_hand=zovastrum_the_unmaking,id=189861,bonus_id=1524/7187,enchant_id=6228
+head=gaze_of_the_waking_fist,id=200363,bonus_id=8780,bonus_id=4800/3524/1498/8767,gem_id=192991
+neck=strand_of_the_stars,id=137487,bonus_id=1795/6808/4786/3300/6935,gem_id=192925/192925/192925
+shoulders=mantle_of_the_waking_fist,id=200365,bonus_id=4800/3524/1498/8767
+back=cape_of_valarjar_courage,id=133765,bonus_id=1795/6808/4786/3300
+chest=chestwrap_of_the_waking_fist,id=200360,bonus_id=4800/3524/1495/8767,enchant=waking_stats_3
+wrists=loyal_flametenders_bracers,id=195525,bonus_id=4800/3524/1498,gem_id=192925
+hands=palms_of_the_waking_fist,id=200362,bonus_id=4800/3524/1495/8767
+waist=bjorns_hunting_strap,id=136776,bonus_id=1795/6808/4786/3300/6935,gem_id=192925
+legs=loathsome_thunderhosen,id=195530,bonus_id=4800/3524/1498,enchant=fierce_armor_kit_3
+feet=treads_of_corrupted_water,id=143973,bonus_id=4177/6808/4786/3311
+finger1=seal_of_filial_duty,id=195526,bonus_id=4800/4786/1497,gem_id=192925,enchant_id=6568
+finger2=seal_of_diurnas_chosen,id=195480,bonus_id=4800/3524/1495,gem_id=192925,enchant_id=6568
+trinket1=irideus_fragment,id=193743,bonus_id=6652/1643/8767
+trinket2=manic_grieftorch,id=194308,bonus_id=4800/4786/1498
+main_hand=primal_molten_mace,id=190509,bonus_id=1540/1686/8937,enchant=frozen_devotion_3
+off_hand=primal_molten_mace,id=190509,bonus_id=1540/1679/8937,enchant=frozen_devotion_3
 
-# save=T29_Monk_Windwalker.simc
+save=T29_Monk_Windwalker.simc

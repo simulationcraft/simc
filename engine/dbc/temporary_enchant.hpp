@@ -13,10 +13,11 @@
 struct temporary_enchant_entry_t
 {
   unsigned enchant_id;
+  unsigned rank;
   unsigned spell_id;
   const char* tokenized_name;
 
-  static const temporary_enchant_entry_t& find( util::string_view name, bool ptr );
+  static const temporary_enchant_entry_t& find( util::string_view name, unsigned rank, bool ptr );
   static const temporary_enchant_entry_t& find_by_enchant_id( unsigned id, bool ptr );
 
   static const temporary_enchant_entry_t& nil()

@@ -1446,6 +1446,7 @@ class SpellDataGenerator(DataGenerator):
             ( 383305, 0 ),          # Virtuous Command damage
             ( 387178, 0 ),          # Empyrean Legacy buff
             ( 224239, 0 ),          # Tempest divine storm
+            ( 384810, 0 ),          # Seal of Clarity buff
         ),
 
         # Hunter:
@@ -2143,11 +2144,13 @@ class SpellDataGenerator(DataGenerator):
           # General
           ( 372470, 0 ), # Scarlet Adaptation buff
           ( 370901, 0 ), ( 370917, 0 ), # Leaping Flames buff
-          ( 359115, 0),  # Empower Triggered GCD
+          ( 359115, 0 ),  # Empower Triggered GCD
+          ( 361519, 0 ), # Essence Burst
           # Devastation
-          ( 386399, 1 ), # Iridescence: Blue buff
+          ( 386399, 1 ), ( 399370, 1 ), # Iridescence: Blue
           ( 375802, 1 ), # Burnout buff
           ( 376850, 1 ), # Power Swell buff
+          ( 397870, 1 ),  # Titanic Wrath
           # Preservation
           ( 369299, 2 ), # Preservation Essence Burst
        ),
@@ -2905,7 +2908,7 @@ class SpellDataGenerator(DataGenerator):
                 self.process_spell(data['definition'].id_override_spell, ids, class_mask, 0, False)
 
         # Temporary item enchants
-        for item, spell, enchant_id in TemporaryEnchantItemSet(self._options).get():
+        for item, spell, enchant_id, rank in TemporaryEnchantItemSet(self._options).get():
             enchant = self.db('SpellItemEnchantment')[enchant_id]
             enchant_spells = []
             for index in range(1, 4):
@@ -4480,8 +4483,9 @@ class TemporaryEnchantItemGenerator(DataGenerator):
                 array = 'temporary_enchant',
                 length = len(data))
 
-        for item, spell, enchant_id in sorted(data, key = lambda v: (v[0].name, v[2])):
+        for item, spell, enchant_id, rank in sorted(data, key = lambda v: (v[0].name, v[3], v[2])):
             fields = ['{:5d}'.format(enchant_id)]
+            fields += ['{:2d}'.format(rank)]
             fields += spell.field('id')
             fields += ['{:30s}'.format('"{}"'.format(util.tokenize(item.name)))]
             self.output_record(fields)

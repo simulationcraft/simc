@@ -10,7 +10,6 @@
 
 #pragma once
 #include "action/parse_buff_effects.hpp"
-#include "player/covenant.hpp"
 #include "player/pet_spawner.hpp"
 #include "sc_enums.hpp"
 
@@ -24,18 +23,11 @@ struct priest_t;
 
 namespace actions::spells
 {
-struct ascended_blast_heal_t;
 struct mind_sear_tick_t;
 struct shadowy_apparition_spell_t;
-struct ascended_eruption_t;
-struct ascended_eruption_heal_t;
-struct wrathful_faerie_t;
-struct wrathful_faerie_fermata_t;
 struct psychic_link_t;
 struct pain_of_death_t;
 struct shadow_weaving_t;
-struct eternal_call_to_the_void_t;
-struct unholy_transfusion_healing_t;
 struct echoing_void_t;
 struct idol_of_cthun_t;
 struct shadow_word_pain_t;
@@ -54,7 +46,6 @@ public:
     propagate_const<dot_t*> shadow_word_pain;
     propagate_const<dot_t*> vampiric_touch;
     propagate_const<dot_t*> devouring_plague;
-    propagate_const<dot_t*> unholy_transfusion;
     propagate_const<dot_t*> mind_flay;
     propagate_const<dot_t*> mind_flay_insanity;
     propagate_const<dot_t*> mind_sear;
@@ -66,8 +57,6 @@ public:
   {
     propagate_const<buff_t*> schism;
     propagate_const<buff_t*> death_and_madness_debuff;
-    propagate_const<buff_t*> wrathful_faerie;
-    propagate_const<buff_t*> wrathful_faerie_fermata;
     propagate_const<buff_t*> echoing_void;
     propagate_const<buff_t*> echoing_void_collapse;
     propagate_const<buff_t*> apathy;
@@ -113,7 +102,6 @@ public:
     propagate_const<buff_t*> death_and_madness_buff;
     propagate_const<buff_t*> death_and_madness_reset;
     propagate_const<buff_t*> vampiric_embrace;
-    propagate_const<buff_t*> translucent_image_conduit;
     propagate_const<buff_t*> words_of_the_pious;
 
     // Discipline
@@ -151,20 +139,6 @@ public:
     propagate_const<buff_t*> dark_ascension;
     propagate_const<buff_t*> coalescing_shadows;
     propagate_const<buff_t*> coalescing_shadows_dot;
-
-    // Runeforge Legendary
-    propagate_const<buff_t*> the_penitent_one;
-    propagate_const<buff_t*> sephuzs_proclamation;
-    propagate_const<buff_t*> talbadars_stratagem;
-    propagate_const<buff_t*> shadow_word_manipulation;
-    propagate_const<buff_t*> rigor_mortis;
-
-    // Conduits
-    propagate_const<buff_t*> dissonant_echoes;
-
-    // Covenants
-    propagate_const<buff_t*> fae_guardians;
-    propagate_const<buff_t*> boon_of_the_ascended;
 
     // Tier Sets
     propagate_const<buff_t*> gathering_shadows;
@@ -236,6 +210,8 @@ public:
     const spell_data_t* divine_star_dmg;
     player_talent_t translucent_image;
     player_talent_t mindgames;
+    const spell_data_t* mindgames_healing_reversal;
+    const spell_data_t* mindgames_damage_reversal;
     // Row 9
     player_talent_t surge_of_light;
     player_talent_t lights_inspiration;
@@ -374,10 +350,6 @@ public:
     const spell_data_t* void_bolt;
     const spell_data_t* voidform;
     const spell_data_t* hallucinations;
-
-    // Legendary Effects
-    const spell_data_t* cauterizing_shadows_health;
-    const spell_data_t* painbreaker_psalm_insanity;
   } specs;
 
   // DoT Spells
@@ -400,8 +372,6 @@ public:
   struct
   {
     // Shared
-    propagate_const<cooldown_t*> wrathful_faerie;
-    propagate_const<cooldown_t*> wrathful_faerie_fermata;
     propagate_const<cooldown_t*> shadow_word_death;
     propagate_const<cooldown_t*> mindgames;
 
@@ -417,7 +387,6 @@ public:
 
   struct realppm_t
   {
-    propagate_const<real_ppm_t*> eternal_call_to_the_void;
     propagate_const<real_ppm_t*> idol_of_cthun;
     propagate_const<real_ppm_t*> deathspeaker;
   } rppm;
@@ -425,15 +394,11 @@ public:
   // Gains
   struct
   {
-    propagate_const<gain_t*> cauterizing_shadows_health;
     propagate_const<gain_t*> insanity_auspicious_spirits;
     propagate_const<gain_t*> insanity_death_and_madness;
-    propagate_const<gain_t*> insanity_eternal_call_to_the_void_mind_flay;
-    propagate_const<gain_t*> insanity_eternal_call_to_the_void_mind_sear;
     propagate_const<gain_t*> insanity_mind_sear;
     propagate_const<gain_t*> mindbender;
     propagate_const<gain_t*> shadowfiend;
-    propagate_const<gain_t*> painbreaker_psalm;
     propagate_const<gain_t*> power_of_the_dark_side;
     propagate_const<gain_t*> power_word_solace;
     propagate_const<gain_t*> throes_of_pain;
@@ -462,12 +427,9 @@ public:
     propagate_const<proc_t*> holy_fire_cd;
     propagate_const<proc_t*> power_of_the_dark_side;
     propagate_const<proc_t*> power_of_the_dark_side_overflow;
-    propagate_const<proc_t*> dissonant_echoes;
     propagate_const<proc_t*> mind_devourer;
     propagate_const<proc_t*> void_tendril;
     propagate_const<proc_t*> void_lasher;
-    propagate_const<proc_t*> void_tendril_ecttv;
-    propagate_const<proc_t*> void_lasher_ecttv;
     propagate_const<proc_t*> shadowy_insight;
     propagate_const<proc_t*> shadowy_insight_overflow;
     propagate_const<proc_t*> shadowy_insight_missed;
@@ -493,16 +455,9 @@ public:
   // Special
   struct
   {
-    propagate_const<actions::spells::ascended_blast_heal_t*> ascended_blast_heal;
-    propagate_const<actions::spells::ascended_eruption_t*> ascended_eruption;
-    propagate_const<actions::spells::ascended_eruption_heal_t*> ascended_eruption_heal;
-    propagate_const<actions::spells::eternal_call_to_the_void_t*> eternal_call_to_the_void;
     propagate_const<actions::spells::psychic_link_t*> psychic_link;
     propagate_const<actions::spells::shadow_weaving_t*> shadow_weaving;
     propagate_const<actions::spells::shadowy_apparition_spell_t*> shadowy_apparitions;
-    propagate_const<actions::spells::unholy_transfusion_healing_t*> unholy_transfusion_healing;
-    propagate_const<actions::spells::wrathful_faerie_t*> wrathful_faerie;
-    propagate_const<actions::spells::wrathful_faerie_fermata_t*> wrathful_faerie_fermata;
     propagate_const<actions::spells::echoing_void_t*> echoing_void;
     propagate_const<actions::spells::idol_of_cthun_t*> idol_of_cthun;
     propagate_const<actions::spells::shadow_word_pain_t*> shadow_word_pain;
@@ -522,8 +477,6 @@ public:
     propagate_const<pet_t*> mindbender;
     spawner::pet_spawner_t<pet_t, priest_t> void_tendril;
     spawner::pet_spawner_t<pet_t, priest_t> void_lasher;
-    spawner::pet_spawner_t<pet_t, priest_t> rattling_mage;
-    spawner::pet_spawner_t<pet_t, priest_t> cackling_chemist;
     spawner::pet_spawner_t<pet_t, priest_t> thing_from_beyond;
 
     priest_pets_t( priest_t& p );
@@ -538,102 +491,14 @@ public:
     // Default param to set if you should cast Power Infusion on yourself
     bool self_power_infusion = true;
 
-    // Add in easy options to change if you are in range or not
-    bool use_ascended_nova     = true;
-    bool use_ascended_eruption = true;
-
     // Add in options to override insanity gained
     // Mindgames gives 20 insanity from the healing and 20 from damage dealt
     // For most content the healing part won't proc, only default damage dealt
     bool mindgames_healing_reversal = false;
     bool mindgames_damage_reversal  = true;
 
-    // Fae Blessings CDR can be given to another player, but you can still get the insanity gen
-    bool self_benevolent_faerie = true;
-
-    // The amount of allies to assume for Cauterizing Shadows healing
-    int cauterizing_shadows_allies = 3;
-
-    // Bwonsamdi's Pact Option
-    // Options: "benevolent" or "wrathful"
-    std::string bwonsamdis_pact_mask_type = "benevolent";
-
-    // Shadow Word: Manipulation expire time
-    // Accepts a range of the amount of time left on Mindgames when the shield expires
-    // Min: 0, Max: 8, Default: 7
-    // Shattered Perception Conduit increase is handled outside of this
-    int shadow_word_manipulation_seconds_remaining = 7;
-
-    // Pallid Command Allies
-    // Sets number of allies to use as an artificial modifier for Rigor Mortis stacks
-    // For each damage ability the priest will do it will add the amount of stacks equal
-    // to the number of allies
-    // 20m raid this stacks in 1-2s
-    int pallid_command_allies = 50;
-
     bool power_infusion_fiend = false;
   } options;
-
-  // Legendaries
-  struct
-  {
-    // Generic
-    item_runeforge_t sephuzs_proclamation;
-    // Shared
-    item_runeforge_t cauterizing_shadows;
-    item_runeforge_t twins_of_the_sun_priestess;
-    item_runeforge_t bwonsamdis_pact;
-    item_runeforge_t shadow_word_manipulation;
-    item_runeforge_t spheres_harmony;
-    item_runeforge_t pallid_command;
-    // Holy
-    item_runeforge_t divine_image;          // NYI
-    item_runeforge_t harmonious_apparatus;  // NYI
-    // Disc
-    item_runeforge_t kiss_of_death;
-    item_runeforge_t the_penitent_one;  // Effect implemented, but not hooked up to PW:Radiance
-    // Shadow
-    item_runeforge_t painbreaker_psalm;
-    item_runeforge_t shadowflame_prism;
-    item_runeforge_t eternal_call_to_the_void;
-    item_runeforge_t talbadars_stratagem;
-  } legendary;
-
-  // Conduits
-  struct
-  {
-    // Generic Priest
-    conduit_data_t power_unto_others;
-    conduit_data_t translucent_image;
-    // Shadow
-    conduit_data_t dissonant_echoes;
-    conduit_data_t mind_devourer;
-    conduit_data_t haunting_apparitions;
-    // Covenant
-    conduit_data_t courageous_ascension;
-    conduit_data_t festering_transfusion;
-    conduit_data_t fae_fermata;
-    conduit_data_t shattered_perceptions;
-  } conduits;
-
-  // Covenants
-  struct
-  {
-    // Night Fae
-    const spell_data_t* fae_guardians;
-    // Necrolord
-    const spell_data_t* unholy_nova;
-    // Venthyr
-    const spell_data_t* mindgames;
-    const spell_data_t* mindgames_healing_reversal;
-    const spell_data_t* mindgames_damage_reversal;
-    // Kyrian
-    const spell_data_t* ascended_blast;
-    const spell_data_t* ascended_blast_heal;
-    const spell_data_t* ascended_eruption;
-    const spell_data_t* ascended_nova;
-    const spell_data_t* boon_of_the_ascended;
-  } covenant;
 
   priest_t( sim_t* sim, util::string_view name, race_e r );
 
@@ -713,8 +578,7 @@ public:
   void generate_insanity( double num_amount, gain_t* g, action_t* action );
   void adjust_holy_word_serenity_cooldown();
   double tick_damage_over_time( timespan_t duration, const dot_t* dot ) const;
-  void trigger_shadowflame_prism( player_t* target );
-  void trigger_eternal_call_to_the_void( action_state_t* );
+  void trigger_inescapable_torment( player_t* target );
   void trigger_idol_of_cthun( action_state_t* );
   void trigger_shadowy_apparitions( proc_t* proc, bool gets_crit_mod );
   int number_of_echoing_voids_active();
@@ -724,15 +588,10 @@ public:
   void trigger_void_shield( double result_amount );
   void refresh_insidious_ire_buff( action_state_t* s );
   bool is_screams_of_the_void_up( player_t* target ) const;
-  void trigger_wrathful_faerie();
-  void trigger_wrathful_faerie_fermata();
-  void remove_wrathful_faerie();
   void spawn_thing_from_beyond();
-  void remove_wrathful_faerie_fermata();
   void trigger_idol_of_nzoth( player_t* target, proc_t* proc );
   int shadow_weaving_active_dots( const player_t* target, const unsigned int spell_id ) const;
   double shadow_weaving_multiplier( const player_t* target, const unsigned int spell_id ) const;
-  void trigger_unholy_transfusion_healing();
 
   std::string default_potion() const override;
   std::string default_flask() const override;
@@ -1037,39 +896,6 @@ struct priest_spell_t : public priest_action_t<spell_t>
            ( save_health_percentage < priest().talents.twist_of_fate->effectN( 3 ).base_value() ) )
       {
         priest().buffs.twist_of_fate->trigger();
-      }
-
-      if ( s->result_amount > 0 )
-      {
-        const priest_td_t* td = find_td( s->target );
-        // Wrathful Faerie works for any direct attacks by anyone, bugging this for now
-        // TODO: maybe rework this to just be a buff that gives insanity every tick instead?
-        // https://github.com/SimCMinMax/WoW-BugTracker/issues/777
-        if ( s->result_type == result_amount_type::DMG_DIRECT || priest().bugs )
-        {
-          if ( td && td->buffs.wrathful_faerie->check() )
-          {
-            priest().trigger_wrathful_faerie();
-          }
-          if ( td && td->buffs.wrathful_faerie_fermata->check() )
-          {
-            priest().trigger_wrathful_faerie_fermata();
-          }
-        }
-
-        if ( td && td->dots.unholy_transfusion->is_ticking() )
-        {
-          priest().trigger_unholy_transfusion_healing();
-
-          if ( priest().legendary.pallid_command->ok() && s->result_type == result_amount_type::DMG_DIRECT )
-          {
-            // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/856
-            if ( priest().options.pallid_command_allies > 0 )
-            {
-              priest().buffs.rigor_mortis->trigger( priest().options.pallid_command_allies );
-            }
-          }
-        }
       }
     }
   }

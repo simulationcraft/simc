@@ -58,6 +58,8 @@ const char* amount_type_string        ( result_amount_type type );
 const char* school_type_string        ( school_e school );
 const char* armor_type_string         ( int type );
 const char* armor_type_string         ( item_subclass_armor type );
+const char* armor_subclass_string     ( item_subclass_armor subclass );
+const char* invtype_string            ( inventory_type type );
 const char* cache_type_string         ( cache_e );
 const char* proc_type_string          ( proc_types type );
 const char* proc_type2_string         ( proc_types2 type );

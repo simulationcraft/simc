@@ -44,10 +44,6 @@ void warlock_pet_t::create_buffs()
   buffs.grimoire_of_service = make_buff( this, "grimoire_of_service", find_spell( 216187 ) )
                                   ->set_default_value( find_spell( 216187 )->effectN( 1 ).percent() );
 
-  buffs.demonic_consumption = make_buff( this, "demonic_consumption", find_spell( 267972 ) )
-                                  ->set_default_value( find_spell( 267972 )->effectN( 1 ).percent() )
-                                  ->set_max_stack( 1 );
-
   buffs.annihilan_training = make_buff( this, "annihilan_training", o()->talents.annihilan_training_buff )
                                  ->set_default_value( o()->talents.annihilan_training_buff->effectN( 1 ).percent() );
 
@@ -2183,7 +2179,7 @@ struct eye_beam_t : public warlock_pet_spell_t
 {
   struct grim_reach_t : public warlock_pet_spell_t
   {
-    grim_reach_t( warlock_pet_t* p ) : warlock_pet_spell_t( "grim_reach", p, p->find_spell( 390097 ) )
+    grim_reach_t( warlock_pet_t* p ) : warlock_pet_spell_t( "Grim Reach", p, p->find_spell( 390097 ) )
     {
       background = dual = true;
 
@@ -2192,7 +2188,7 @@ struct eye_beam_t : public warlock_pet_spell_t
   };
   
   grim_reach_t* grim_reach;
-  eye_beam_t( warlock_pet_t* p ) : warlock_pet_spell_t( "eye_beam", p, p->find_spell( 205231 ) )
+  eye_beam_t( warlock_pet_t* p ) : warlock_pet_spell_t( "Eye Beam", p, p->find_spell( 205231 ) )
   {
     grim_reach = new grim_reach_t( p );
   }
@@ -2210,7 +2206,7 @@ struct eye_beam_t : public warlock_pet_spell_t
 
     double dot_multiplier = p()->o()->talents.summon_darkglare->effectN( 3 ).percent();
 
-    if ( p()->o()->talents.malevolent_visionary.ok() )
+    if ( p()->o()->talents.malevolent_visionary->ok() )
       dot_multiplier += p()->o()->talents.malevolent_visionary->effectN( 1 ).percent();
 
     m *= 1.0 + ( dots * dot_multiplier );
@@ -2235,7 +2231,7 @@ struct eye_beam_t : public warlock_pet_spell_t
 
     warlock_pet_spell_t::impact( s );
 
-    if ( p()->o()->talents.grim_reach.ok() )
+    if ( p()->o()->talents.grim_reach->ok() )
     {
       grim_reach->base_dd_min = grim_reach->base_dd_max = raw_damage * p()->o()->talents.grim_reach->effectN( 1 ).percent();
       for ( player_t* target : sim->target_non_sleeping_list )

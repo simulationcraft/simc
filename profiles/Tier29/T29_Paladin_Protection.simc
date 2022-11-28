@@ -1,0 +1,101 @@
+paladin="T29_Paladin_Protection"
+source=default
+spec=protection
+level=70
+race=draenei
+role=tank
+position=front
+talents=BIEAAAAAAAAAAAAAAAAAAAAAA0iSikikiIJhSTSChESAAAAAAAAAAAAAAARSSaCSSUSRkEloEA
+
+# Default consumables
+potion=spectral_strength
+flask=spectral_flask_of_power
+food=feast_of_gluttonous_hedonism
+augmentation=veiled
+temporary_enchant=main_hand:shaded_sharpening_stone
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/food
+actions.precombat+=/augmentation
+actions.precombat+=/snapshot_stats
+actions.precombat+=/lights_judgment
+actions.precombat+=/arcane_torrent
+actions.precombat+=/consecration
+# Evaluates a trinkets cooldown, divided by moment of glory or avenging wraths's cooldown. If it's value has no remainder return 1, else return 0.5.
+actions.precombat+=/variable,name=trinket_1_sync,op=setif,value=1,value_else=0.5,condition=trinket.1.has_use_buff&(talent.moment_of_glory&trinket.1.cooldown.duration%%cooldown.moment_of_glory.duration=0|(talent.avenging_wrath&!talent.moment_of_glory)&trinket.1.cooldown.duration%%cooldown.avenging_wrath.duration<=20)
+actions.precombat+=/variable,name=trinket_2_sync,op=setif,value=1,value_else=0.5,condition=trinket.2.has_use_buff&(talent.moment_of_glory&trinket.2.cooldown.duration%%cooldown.moment_of_glory.duration=0|(talent.avenging_wrath&!talent.moment_of_glory)&trinket.2.cooldown.duration%%cooldown.avenging_wrath.duration<=20)
+actions.precombat+=/variable,name=trinket_priority,op=setif,value=2,value_else=1,condition=!trinket.1.has_use_buff&trinket.2.has_use_buff|trinket.2.has_use_buff&((trinket.2.cooldown.duration%trinket.2.proc.any_dps.duration)*(1.5+trinket.2.has_buff.strength)*(variable.trinket_2_sync))>((trinket.1.cooldown.duration%trinket.1.proc.any_dps.duration)*(1.5+trinket.1.has_buff.strength)*(variable.trinket_1_sync))
+actions.precombat+=/variable,name=trinket_1_buffs,value=trinket.1.has_buff.strength|trinket.1.has_buff.mastery|trinket.1.has_buff.versatility|trinket.1.has_buff.haste|trinket.1.has_buff.crit
+actions.precombat+=/variable,name=trinket_2_buffs,value=trinket.2.has_buff.strength|trinket.2.has_buff.mastery|trinket.2.has_buff.versatility|trinket.2.has_buff.haste|trinket.2.has_buff.crit
+
+# Executed every time the actor is available.
+actions=auto_attack
+actions+=/variable,name=might_or_sentinel,value=(!talent.avenging_wrath.enabled&(!talent.avenging_wrath_might.enabled|talent.sentinel_enabled))
+actions+=/call_action_list,name=cooldowns
+actions+=/call_action_list,name=trinkets
+actions+=/call_action_list,name=standard
+
+actions.cooldowns=seraphim
+actions.cooldowns+=/avenging_wrath,if=(buff.seraphim.up|!talent.seraphim.enabled)
+actions.cooldowns+=/potion,if=buff.avenging_wrath.up|variable.might_or_sentinel
+actions.cooldowns+=/moment_of_glory,if=(buff.avenging_wrath.remains<15|(time>10|(cooldown.avenging_wrath.remains>15))&(cooldown.avengers_shield.remains&cooldown.judgment.remains&cooldown.hammer_of_wrath.remains))
+actions.cooldowns+=/holy_avenger,if=buff.avenging_wrath.up|variable.might_or_sentinel|cooldown.avenging_wrath.remains>60
+actions.cooldowns+=/bastion_of_light,if=buff.avenging_wrath.up
+
+actions.standard=shield_of_the_righteous,if=(cooldown.seraphim.remains>=5|!talent.seraphim.enabled)&(((holy_power=3&!buff.blessing_of_dusk.up&!buff.holy_avenger.up)|(holy_power=5)|buff.bastion_of_light.up|buff.divine_purpose.up))
+actions.standard+=/avengers_shield,if=buff.moment_of_glory.up|!talent.moment_of_glory.enabled
+actions.standard+=/hammer_of_wrath,if=buff.avenging_wrath.up|(!talent.avenging_wrath.enabled&(!talent.avenging_wrath_might.enabled|talent.sentinel_enabled))
+actions.standard+=/judgment,target_if=min:debuff.judgment.remains,if=charges=2|!talent.crusaders_judgment.enabled
+actions.standard+=/divine_toll,if=time>20|((!talent.seraphim.enabled|buff.seraphim.up)&(buff.avenging_wrath.up|(!talent.avenging_wrath.enabled&(!talent.avenging_wrath_might.enabled|talent.sentinel_enabled)))&(buff.moment_of_glory.up|!talent.moment_of_glory.enabled))
+actions.standard+=/avengers_shield
+actions.standard+=/hammer_of_wrath
+actions.standard+=/judgment,target_if=min:debuff.judgment.remains
+actions.standard+=/consecration,if=!consecration.up
+actions.standard+=/eye_of_tyr
+actions.standard+=/blessed_hammer
+actions.standard+=/hammer_of_the_righteous
+actions.standard+=/crusader_strike
+actions.standard+=/word_of_glory,if=buff.shining_light_free.up
+actions.standard+=/consecration
+
+actions.trinkets=use_item,slot=trinket1,if=buff.moment_of_glory.up&(!trinket.2.has_cooldown|trinket.2.cooldown.remains|variable.trinket_priority=1)|trinket.1.proc.any_dps.duration>=fight_remains
+actions.trinkets+=/use_item,slot=trinket2,if=buff.moment_of_glory.up&(!trinket.1.has_cooldown|trinket.1.cooldown.remains|variable.trinket_priority=2)|trinket.2.proc.any_dps.duration>=fight_remains
+actions.trinkets+=/use_item,slot=trinket1,if=!variable.trinket_1_buffs&(trinket.2.cooldown.remains|!variable.trinket_2_buffs|cooldown.moment_of_glory.remains>20)
+actions.trinkets+=/use_item,slot=trinket2,if=!variable.trinket_2_buffs&(trinket.1.cooldown.remains|!variable.trinket_1_buffs|cooldown.moment_of_glory.remains>20)
+
+head=virtuous_silver_heaume,id=200417,bonus_id=4800/4786/1498,gem_id=192919
+neck=eye_of_the_vengeful_hurricane,id=195496,bonus_id=4800/4786/1498,gem_id=192919/192919/192919
+shoulders=virtuous_silver_pauldrons,id=200419,bonus_id=4800/4786/1498
+back=cape_of_the_duskwatch,id=137483,bonus_id=1795/6808/4786/3300/6935
+chest=datheas_cyclonic_cage,id=195494,bonus_id=4800/4786/1498,enchant_id=6625
+wrists=virtuous_silver_bracers,id=200421,bonus_id=4800/4786/1498,ilevel=424,gem_id=192919
+hands=battleborne_sentinel_gauntlets,id=133628,bonus_id=1795/6808/4786/3300/6935
+waist=virtuous_silver_faulds,id=200420,bonus_id=4800/4786/1507,gem_id=192985
+legs=venerated_professors_greaves,id=193706,bonus_id=6808/4786/1643,enchant=frosted_armor_kit_3
+feet=kurogs_thunderhooves,id=195517,bonus_id=4800/4786/1498
+finger1=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498,gem_id=192919,enchant_id=6556
+finger2=jeweled_signet_of_melandrus,id=134542,bonus_id=1795/6808/4786/3300/6935,gem_id=192919,enchant_id=6556
+trinket1=eye_of_skovald,id=133641,bonus_id=1795/6808/4786/3300/6935
+trinket2=manic_grieftorch,id=194308,bonus_id=4800/4786/1498
+main_hand=strike_twice,id=193700,bonus_id=6808/4786/1643,enchant=sophic_devotion_3
+off_hand=broodsworn_legionnaires_pavise,id=195520,bonus_id=4800/4786/1498
+
+# Gear Summary
+# gear_ilvl=422.13
+# gear_strength=4986
+# gear_stamina=13258
+# gear_attack_power=20
+# gear_crit_rating=3698
+# gear_haste_rating=4503
+# gear_mastery_rating=1627
+# gear_versatility_rating=1641
+# gear_armor=10885
+# gear_bonus_armor=141
+# set_bonus=tier29_2pc=1

@@ -1,11 +1,10 @@
 optimal_raid=1
 default_actions=1
 
-# TODO: Remove me when Dragonflight launches
-ptr=1
-
 # T29_Death_Knight_Blood.simc
-# T29_Death_Knight_Frost.simc
+T29_Death_Knight_Frost.simc
+T29_Death_Knight_Frost_2h.simc
+T29_Death_Knight_Frost_DW.simc
 T29_Death_Knight_Unholy.simc
 
 # T29_Demon_Hunter_Havoc.simc
@@ -39,7 +38,8 @@ T29_Priest_Shadow.simc
 # T29_Rogue_Subtlety.simc
 
 T29_Shaman_Elemental.simc
-# T29_Shaman_Enhancement.simc
+T29_Shaman_Enhancement.simc
+T29_Shaman_Enhancement_Phys.simc
 
 # T29_Warlock_Affliction.simc
 # T29_Warlock_Demonology.simc

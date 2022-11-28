@@ -14,6 +14,9 @@ namespace buffs {
                   struct ardent_defender_buff_t;
                   struct forbearance_t;
                   struct shield_of_vengeance_buff_t;
+                  struct redoubt_buff_t;
+                  struct sentinel_buff_t;
+                  struct sentinel_decay_buff_t;
                   struct execution_sentence_debuff_t;
                 }
 const int MAX_START_OF_COMBAT_HOLY_POWER = 1;
@@ -48,6 +51,7 @@ struct paladin_td_t : public actor_target_data_t
     buff_t* seal_of_the_crusader;
     buff_t* sanctify;
     buff_t* eye_of_tyr;
+    buff_t* crusaders_resolve;
   } debuff;
 
   paladin_td_t( player_t* target, paladin_t* paladin );
@@ -106,9 +110,10 @@ public:
     buff_t* divine_steed;
     buff_t* devotion_aura;
     buff_t* retribution_aura;
-
+    buff_t* blessing_of_protection;
     buff_t* avengers_might;
     buff_t* avenging_wrath_might;
+    buff_t* seal_of_clarity;
 
     // Holy
     buff_t* divine_protection;
@@ -119,6 +124,9 @@ public:
     // Prot
     absorb_buff_t* holy_shield_absorb; // Dummy buff to trigger spell damage "blocking" absorb effect
     absorb_buff_t* blessed_hammer_absorb; // ^
+    absorb_buff_t* divine_bulwark_absorb; // New Mastery absorb
+    buffs::sentinel_buff_t* sentinel;
+    buffs::sentinel_decay_buff_t* sentinel_decay;
     buff_t* bulwark_of_order_absorb;
     buff_t* seraphim;
     buff_t* ardent_defender;
@@ -134,10 +142,13 @@ public:
     buff_t* bastion_of_light;
     buff_t* faith_in_the_light;
     buff_t* moment_of_glory_absorb;
+    buff_t* blessing_of_spellwarding;
+    buff_t* strength_in_adversity;
 
     buff_t* inner_light;
     buff_t* inspiring_vanguard;
     buff_t* soaring_shield;
+    buff_t* barricade_of_faith;
     buff_t* ally_of_the_light; // T29 2pc
     buff_t* deflecting_light; // T29 4pc
 
@@ -213,7 +224,6 @@ public:
     const spell_data_t* holy_paladin;
     const spell_data_t* protection_paladin;
     const spell_data_t* retribution_paladin;
-    const spell_data_t* hammer_of_the_righteous_2;
     const spell_data_t* word_of_glory_2;
     const spell_data_t* holy_shock_2;
   } spec;
@@ -222,10 +232,14 @@ public:
   struct cooldowns_t
   {
     // Required to get various cooldown-reducing procs procs working
-    cooldown_t* avenging_wrath; // Righteous Protector (prot)
+    cooldown_t* avenging_wrath; // Righteous Protector (Prot)
+    cooldown_t* sentinel; // Righteous Protector (Prot)
     cooldown_t* hammer_of_justice;
     cooldown_t* judgment_of_light_icd;
     cooldown_t* the_magistrates_judgment_icd;
+    cooldown_t* blessing_of_protection; // Blessing of Spellwarding Shared CD
+    cooldown_t* blessing_of_spellwarding; // Blessing of Protection Shared CD
+    cooldown_t* divine_shield; // Resolute Defender (Prot)
 
     cooldown_t* holy_shock; // Crusader's Might, Divine Purpose
     cooldown_t* light_of_dawn; // Divine Purpose
@@ -233,6 +247,7 @@ public:
     cooldown_t* avengers_shield; // Grand Crusader
     cooldown_t* consecration; // Precombat shenanigans
     cooldown_t* inner_light_icd;
+    cooldown_t* righteous_protector_icd;
     cooldown_t* judgment; // Crusader's Judgment
     cooldown_t* shield_of_the_righteous; // Judgment
     cooldown_t* guardian_of_ancient_kings; // Righteous Protector
@@ -315,11 +330,13 @@ public:
     const spell_data_t* improved_avenging_wrath;
     const spell_data_t* hammer_of_wrath_2;
     const spell_data_t* moment_of_glory;
+    const spell_data_t* seal_of_clarity_buff;
 
     const spell_data_t* ashen_hallow_how;
 
     const spell_data_t* seraphim_buff;
     const spell_data_t* crusade;
+    const spell_data_t* sentinel;
   } spells;
 
   // Talents
@@ -373,7 +390,6 @@ public:
     const spell_data_t* unbreakable_spirit;
     const spell_data_t* greater_judgment;
     const spell_data_t* seal_of_might;
-    const spell_data_t* blessing_of_spellwarding;
     const spell_data_t* improved_blessing_of_protection;
     const spell_data_t* seal_of_the_crusader;
     const spell_data_t* seal_of_order;
@@ -415,39 +431,44 @@ public:
     const spell_data_t* grand_crusader;
     const spell_data_t* shining_light;
     const spell_data_t* consecrated_ground;
+    const spell_data_t* improved_lay_on_hands;
     const spell_data_t* inspiring_vanguard;
     const spell_data_t* ardent_defender;
-    const spell_data_t* crusaders_judgment;
+    const spell_data_t* barricade_of_faith;
     const spell_data_t* consecration_in_flame;
 
     // 8
-    const spell_data_t* bastion_of_light;
-    const spell_data_t* bulwark_of_order;
-    const spell_data_t* light_of_the_titans;
-    const spell_data_t* uthers_counsel;
-    const spell_data_t* hand_of_the_protector;
-    const spell_data_t* resolute_defender;
-    const spell_data_t* sentinel;
-    const spell_data_t* avenging_wrath_might;
-    const spell_data_t* strength_of_conviction;
-    const spell_data_t* ferren_marcuss_fervor;
-    const spell_data_t* tyrs_enforcer;
-    const spell_data_t* guardian_of_ancient_kings;
     const spell_data_t* sanctuary;
-    const spell_data_t* barricade_of_faith;
+    const spell_data_t* improved_holy_shield;
+    const spell_data_t* bulwark_of_order;
+    const spell_data_t* improved_ardent_defender;
+    const spell_data_t* blessing_of_spellwarding;
+    const spell_data_t* light_of_the_titans;
+    const spell_data_t* strength_in_adversity;
+    const spell_data_t* crusaders_resolve;
+    const spell_data_t* tyrs_enforcer;
+    const spell_data_t* avenging_wrath_might;
+    const spell_data_t* sentinel;
+    const spell_data_t* hand_of_the_protector;
+    const spell_data_t* strength_of_conviction;
+    const spell_data_t* resolute_defender;
+    const spell_data_t* bastion_of_light;
+    const spell_data_t* guardian_of_ancient_kings;
+    const spell_data_t* crusaders_judgment;
+    const spell_data_t* uthers_counsel;
 
     // 20
-    const spell_data_t* soaring_shield;
     const spell_data_t* focused_enmity;
-    const spell_data_t* faiths_armor;
-    const spell_data_t* faith_in_the_light;
-    const spell_data_t* crusaders_resolve;
+    const spell_data_t* soaring_shield;
     const spell_data_t* gift_of_the_golden_valkyr;
-    const spell_data_t* final_stand;
-    const spell_data_t* righteous_protector;
-    const spell_data_t* bulwark_of_righteous_fury;
-    const spell_data_t* moment_of_glory;
     const spell_data_t* eye_of_tyr;
+    const spell_data_t* righteous_protector;
+    const spell_data_t* faith_in_the_light;
+    const spell_data_t* ferren_marcuss_fervor;
+    const spell_data_t* faiths_armor;
+    const spell_data_t* final_stand;
+    const spell_data_t* moment_of_glory;
+    const spell_data_t* bulwark_of_righteous_fury;
     const spell_data_t* quickened_invocations;
 
     // Retribution
@@ -632,9 +653,9 @@ public:
   virtual double    composite_spell_power( school_e school ) const override;
   virtual double    composite_spell_power_multiplier() const override;
   virtual double    composite_crit_avoidance() const override;
+  virtual double    composite_parry() const override;
   virtual double    composite_parry_rating() const override;
   virtual double    composite_block() const override;
-  virtual double    composite_block_reduction( action_state_t* s ) const override;
   virtual double    temporary_movement_modifier() const override;
   virtual double 	  composite_player_target_multiplier ( player_t *target, school_e school ) const override;
   virtual double    composite_base_armor_multiplier() const override;
@@ -662,13 +683,13 @@ public:
   void    trigger_grand_crusader();
   void    trigger_holy_shield( action_state_t* s );
   void    trigger_tyrs_enforcer( action_state_t* s );
-  void    trigger_inner_light( action_state_t* s );
   void    t29_4p_prot();
   void    trigger_forbearance( player_t* target );
   void    trigger_es_explosion( player_t* target );
   int     get_local_enemies( double distance ) const;
   bool    standing_in_consecration() const;
   bool    standing_in_hallow() const;
+  void    adjust_health_percent( );
 
   // Returns true if AW/Crusade is up, or if the target is below 20% HP.
   // This isn't in HoW's target_ready() so it can be used in the time_to_hpg expression
@@ -840,6 +861,37 @@ struct forbearance_t : public buff_t
   }
 };
 
+struct sentinel_buff_t : public buff_t
+{
+  sentinel_buff_t( paladin_t* p );
+
+  double get_damage_mod() const
+  {
+    return damage_modifier;
+  }
+  double get_damage_reduction_mod() const
+  {
+    return damage_reduction_modifier * ( this->check() );
+  }
+
+  double get_health_bonus() const
+  {
+    return health_bonus * ( this->check() );
+  }
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override;
+
+private:
+  double damage_modifier;
+  double damage_reduction_modifier;
+  double health_bonus;
+};
+
+struct sentinel_decay_buff_t : public buff_t
+{
+  sentinel_decay_buff_t( paladin_t* p );
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override;
+};
+
 }  // namespace buffs
 
 // ==========================================================================
@@ -861,9 +913,10 @@ public:
   // Damage increase whitelists
   struct affected_by_t
   {
-    bool avenging_wrath, judgment, blessing_of_dawn, the_magistrates_judgment, seal_of_reprisal, seal_of_order, bastion_of_light; // Shared
-    bool crusade, divine_purpose, divine_purpose_cost, hand_of_light, final_reckoning, reckoning, ret_t29_2p, ret_t29_4p; // Ret
+    bool avenging_wrath, judgment, blessing_of_dawn, the_magistrates_judgment, seal_of_reprisal, seal_of_order, divine_purpose, divine_purpose_cost, seal_of_clarity; // Shared
+    bool crusade, hand_of_light, final_reckoning, reckoning, ret_t29_2p, ret_t29_4p; // Ret
     bool avenging_crusader; // Holy
+    bool bastion_of_light, sentinel; // Prot
   } affected_by;
 
   // haste scaling bools
@@ -895,6 +948,11 @@ public:
     {
       this->affected_by.avenging_crusader = this->data().affected_by( p->talents.avenging_crusader->effectN(1) );
     }
+    if ( p->specialization()  == PALADIN_PROTECTION)
+    {
+      this->affected_by.bastion_of_light = this->data().affected_by( p->talents.bastion_of_light->effectN( 1 ) );
+      this->affected_by.sentinel = this->data().affected_by( p->talents.sentinel->effectN( 1 ) );
+    }
 
     this -> affected_by.judgment = this -> data().affected_by( p -> spells.judgment_debuff -> effectN( 1 ) );
     this -> affected_by.avenging_wrath = this -> data().affected_by( p -> spells.avenging_wrath -> effectN( 2 ) );
@@ -902,8 +960,8 @@ public:
     this -> affected_by.divine_purpose = this -> data().affected_by( p -> spells.divine_purpose_buff -> effectN( 2 ) );
     this -> affected_by.blessing_of_dawn = this -> data().affected_by( p -> talents.of_dusk_and_dawn -> effectN( 1 ).trigger() -> effectN( 1 ) );
     this -> affected_by.the_magistrates_judgment = this -> data().affected_by( p -> buffs.the_magistrates_judgment -> data().effectN( 1 ) );
-    this -> affected_by.seal_of_reprisal = this -> data().affected_by( p-> talents.seal_of_reprisal->effectN( 1 ) );
-    this -> affected_by.bastion_of_light = this -> data().affected_by( p->talents.bastion_of_light->effectN( 1 ) );
+    this -> affected_by.seal_of_reprisal = this -> data().affected_by( p -> talents.seal_of_reprisal -> effectN( 1 ) );
+    this -> affected_by.seal_of_clarity = this -> data().affected_by( p -> spells.seal_of_clarity_buff -> effectN( 1 ) );
   }
 
   paladin_t* p()
@@ -1022,6 +1080,13 @@ public:
       if ( affected_by.ret_t29_4p && p() -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T29, B4 ) )
       {
         am *= 1.0 + p() -> sets -> set( PALADIN_RETRIBUTION, T29, B4 ) -> effectN( 1 ).percent();
+      }
+    }
+    if ( p()->specialization()==PALADIN_PROTECTION )
+    {
+      if ( affected_by.sentinel && p()->buffs.sentinel->up() )
+      {
+        am *= 1.0 + p()->buffs.sentinel->get_damage_mod();
       }
     }
 
@@ -1305,6 +1370,11 @@ struct holy_power_consumer_t : public Base
     if ( this -> affected_by.the_magistrates_judgment && ab::p() -> buffs.the_magistrates_judgment -> up() )
       c += ab::p() -> buffs.the_magistrates_judgment -> value();
 
+    if ( ab::p()->buffs.seal_of_clarity->up() && this->affected_by.seal_of_clarity )
+    {
+      c += ab::p()->spells.seal_of_clarity_buff->effectN( 1 ).base_value();
+    }
+
     return std::max( c, 0.0 );
   }
 
@@ -1318,6 +1388,8 @@ struct holy_power_consumer_t : public Base
     // if this is a vanq-hammer-based DS, don't do this stuff
     if ( ab::background && is_divine_storm )
       return;
+
+    bool isFreeSLDPSpender = p->buffs.divine_purpose->up() || (is_wog && p->buffs.shining_light_free->up());
 
     // as of 11/8, according to Skeletor, crusade and RI trigger at full value now
     int num_hopo_spent = as<int>( ab::base_costs[ RESOURCE_HOLY_POWER ] );
@@ -1355,17 +1427,34 @@ struct holy_power_consumer_t : public Base
       p -> buffs.crusade -> trigger( num_hopo_spent );
     }
 
-    // 2021-08-10 Free sotr from vanq does not proc RP
-    if ( p -> talents.righteous_protector -> ok() && !ab::background )
+    if ( p -> talents.righteous_protector -> ok() 
+      && !ab::background 
+      && p->cooldowns.righteous_protector_icd->up())
     {
-      timespan_t reduction = timespan_t::from_seconds(
-        // Why is this in deciseconds?
-         -1.0 * p -> talents.righteous_protector -> effectN( 1 ).base_value() / 10
-       );
-      reduction *= num_hopo_spent;
-      ab::sim -> print_debug( "Righteous protector reduced the cooldown of Avenging Wrath and Guardian of Ancient Kings by {} sec", num_hopo_spent );
-      p -> cooldowns.avenging_wrath -> adjust( reduction );
-      p -> cooldowns.guardian_of_ancient_kings -> adjust( reduction );
+      // Righteous Protector is not triggered by Bastion of Light-spenders. It's still triggered if it was a DP or SL spender
+      if (!(p->bugs 
+         && p->buffs.bastion_of_light->up() 
+         && !isFreeSLDPSpender
+           ))
+        {
+        timespan_t reduction = timespan_t::from_seconds(
+            // Why is this in deciseconds?
+            -1.0 * p->talents.righteous_protector->effectN( 1 ).base_value() / 10 );
+        reduction *= num_hopo_spent;
+        ab::sim->print_debug(
+            "Righteous protector reduced the cooldown of Avenging Wrath and Guardian of Ancient Kings by {} sec",
+            num_hopo_spent );
+
+          p->cooldowns.avenging_wrath->adjust( reduction );
+        // 2022-11-08 Sentinel's cooldown is only reduced if it wasn't a free holy power spender
+        if ( !( p->bugs && isFreeSLDPSpender ) )
+        {
+          p->cooldowns.sentinel->adjust( reduction );
+        }
+        p->cooldowns.guardian_of_ancient_kings->adjust( reduction );
+
+        p->cooldowns.righteous_protector_icd->start();
+      }
     }
 
     // 2022-10-25 Resolute Defender, spend 3 HP to reduce AD/DS cooldown
@@ -1375,8 +1464,7 @@ struct holy_power_consumer_t : public Base
       timespan_t reduction =
           timespan_t::from_seconds( -1.0 * p->talents.resolute_defender->effectN( 1 ).base_value() / 10 );
       p->cooldowns.ardent_defender->adjust( reduction );
-      // "Let the ability handle the cd", yeah.. But how to reduce it's cd?
-      //p->buffs.divine_shield->cooldown->adjust( reduction );
+      p->cooldowns.divine_shield->adjust( reduction );
     }
 
     // Consume Empyrean Power on Divine Storm, handled here for interaction with DP/FoJ
@@ -1413,27 +1501,26 @@ struct holy_power_consumer_t : public Base
     if ( is_wog && p -> buffs.shining_light_free -> check() )
     {
       should_continue = false;
-      if ( p -> buffs.royal_decree -> check() )
-      {
-        // Outlier (2021-06-22). If RD, SL, DP and 2 stacks of MJ are all up, then
-        // SL and RD both get consumed at the same time.
-        if ( p -> bugs && p -> buffs.the_magistrates_judgment -> stack() > 1
-          && p -> buffs.divine_purpose -> check())
-        {
-          p -> buffs.shining_light_free -> expire();
-        }
-      }
-      else
-      {
         // Shining Light is now consumed before Divine Purpose 2020-11-01
         p -> buffs.shining_light_free -> expire();
+    }
+
+    if (p -> buffs.bastion_of_light -> check() )
+    {
+      // 2022-08-11 Bastion of Light stacks get eaten despite having a free spender available
+      if (p->bugs || !isFreeSLDPSpender )
+        p -> buffs.bastion_of_light->decrement();
+    }
+
+    if ( p->buffs.sentinel->up() && p->buffs.sentinel_decay->up() )
+    {
+      // 2022-11-14 Free Holy Power spenders do not delay Sentinel's decay
+      if (!(p->bugs && isFreeSLDPSpender))
+      {
+        p->buffs.sentinel_decay->extend_duration( p, timespan_t::from_seconds( 1 ) );
       }
     }
 
-    if ((is_wog || is_sotr) && p -> buffs.bastion_of_light -> check() )
-    {
-      p -> buffs.bastion_of_light->decrement();
-    }
     // For prot (2021-06-22). Magistrate's does not get consumed when DP or SL
     // are up, but does with RD.
     // (2021-06-26) Vanquisher's hammer's auto-sotr does not interact with magistrate's judgment
@@ -1443,13 +1530,6 @@ struct holy_power_consumer_t : public Base
         && !p -> buffs.divine_purpose -> check() && !ab::background )
     {
       p -> buffs.the_magistrates_judgment -> decrement( 1 );
-    }
-
-    // 2021-06-22 Royal Decree is always consumed first
-    if ( is_wog && p -> buffs.royal_decree -> check() )
-    {
-      p -> buffs.royal_decree -> expire();
-      should_continue = false;
     }
 
     // 2021-08-10 Vanquisher's Hammer's auto-sotr does not consume divine purpose
@@ -1518,6 +1598,13 @@ struct holy_power_consumer_t : public Base
     {
       p -> buffs.sealed_verdict -> trigger();
     }
+
+    // ToDo: This is wrong, Seal of Clarity can stack to two stacks. Chances of happening are very slim, but possible
+    if ( p->buffs.seal_of_clarity->up() )
+      p->buffs.seal_of_clarity->expire();
+
+    if (p->talents.seal_of_clarity->ok() && this->rng().roll(p->talents.seal_of_clarity->effectN(1).percent() ))
+      p->buffs.seal_of_clarity->trigger();
   }
 
   void consume_resource() override

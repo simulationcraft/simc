@@ -41,11 +41,6 @@ public:
 
     // This was removed from the Mind Blast spell and put on the Shadow Priest spell instead
     energize_amount = mind_blast_insanity;
-
-    if ( priest().conduits.mind_devourer->ok() )
-    {
-      base_dd_multiplier *= ( 1.0 + priest().conduits.mind_devourer.percent() );
-    }
   }
 
   void execute() override
@@ -74,15 +69,8 @@ public:
 
     // Reset charges to initial value, since it can get out of sync when previous iteration ends with charge-giving
     // buffs up.
-    cooldown->charges = data().charges() + priest().talents.shadow.shadowy_insight->effectN( 2 ).base_value();
-  }
-
-  bool talbadars_stratagem_active() const
-  {
-    if ( !priest().legendary.talbadars_stratagem->ok() )
-      return false;
-
-    return priest().buffs.talbadars_stratagem->check();
+    cooldown->charges =
+        data().charges() + as<int>( priest().talents.shadow.shadowy_insight->effectN( 2 ).base_value() );
   }
 
   bool insidious_ire_active() const
@@ -96,11 +84,6 @@ public:
   double composite_da_multiplier( const action_state_t* s ) const override
   {
     double m = priest_spell_t::composite_da_multiplier( s );
-
-    if ( talbadars_stratagem_active() )
-    {
-      m *= 1 + priest().legendary.talbadars_stratagem->effectN( 1 ).percent();
-    }
 
     if ( insidious_ire_active() )
     {
@@ -124,9 +107,9 @@ public:
         priest().buffs.insidious_ire->up();
       }
 
-      if ( priest().legendary.shadowflame_prism->ok() || priest().talents.shadow.inescapable_torment.enabled() )
+      if ( priest().talents.shadow.inescapable_torment.enabled() )
       {
-        priest().trigger_shadowflame_prism( s->target );
+        priest().trigger_inescapable_torment( s->target );
       }
 
       if ( priest().buffs.mind_devourer->trigger() )
@@ -519,17 +502,6 @@ struct smite_t final : public priest_spell_t
                         cooldown_base_reduction );
     }
   }
-
-  bool ready() override
-  {
-    // Ascended Blast replaces Smite when Boon of the Ascended is active
-    if ( priest().buffs.boon_of_the_ascended->check() )
-    {
-      return false;
-    }
-
-    return priest_spell_t::ready();
-  }
 };
 
 // ==========================================================================
@@ -542,28 +514,19 @@ struct power_infusion_t final : public priest_spell_t
   {
     parse_options( options_str );
     harmful = false;
-
-    // Adjust the cooldown if using the conduit and not casting PI on yourself
-    if ( priest().conduits.power_unto_others->ok() &&
-         ( priest().legendary.twins_of_the_sun_priestess->ok() || !priest().options.self_power_infusion ) )
-    {
-      cooldown->duration -= timespan_t::from_seconds( priest().conduits.power_unto_others.value() );
-    }
   }
 
   void execute() override
   {
     priest_spell_t::execute();
 
-    // Trigger PI on the actor only if casting on itself or having the legendary
-    if ( priest().options.self_power_infusion || priest().legendary.twins_of_the_sun_priestess->ok() ||
-         priest().talents.twins_of_the_sun_priestess->ok() )
+    // Trigger PI on the actor only if casting on itself
+    if ( priest().options.self_power_infusion || priest().talents.twins_of_the_sun_priestess->ok() )
     {
       player->buffs.power_infusion->trigger();
 
       if ( priest().options.power_infusion_fiend && priest().options.self_power_infusion &&
-           ( priest().legendary.twins_of_the_sun_priestess->ok() ||
-             priest().talents.twins_of_the_sun_priestess->ok() ) )
+           priest().talents.twins_of_the_sun_priestess->ok() )
       {
         pet_t* current_pet =
             priest().talents.shadow.mindbender.enabled() ? priest().pets.mindbender : priest().pets.shadowfiend;
@@ -577,269 +540,12 @@ struct power_infusion_t final : public priest_spell_t
 };
 
 // ==========================================================================
-// Fae Guardians - Night Fae Covenant
-// ==========================================================================
-struct fae_guardians_t final : public priest_spell_t
-{
-  fae_guardians_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "fae_guardians", p, p.covenant.fae_guardians )
-  {
-    parse_options( options_str );
-    harmful     = false;
-    use_off_gcd = false;
-  }
-
-  void execute() override
-  {
-    priest_spell_t::execute();
-
-    priest().buffs.fae_guardians->trigger();
-    if ( priest().options.self_benevolent_faerie )
-      player->buffs.benevolent_faerie->trigger();
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    // Currently impossible to give someone else the benevolent faeire while still auto applying the wrathful faerie
-    // This will cause the APL to cast Shadow Word: Pain manually to apply the faerie after using Fae Guardians
-    if ( !priest().options.self_benevolent_faerie )
-      return;
-
-    priest_spell_t::impact( s );
-    priest_td_t& td = get_td( s->target );
-    td.buffs.wrathful_faerie->trigger();
-  }
-};
-
-struct wrathful_faerie_t final : public priest_spell_t
-{
-  double insanity_gain;
-  bool bwonsamdis_pact_wrathful;
-
-  wrathful_faerie_t( priest_t& p )
-    : priest_spell_t( "wrathful_faerie", p, p.find_spell( 342132 ) ),
-      insanity_gain( p.find_spell( 327703 )->effectN( 2 ).resource( RESOURCE_INSANITY ) )
-  {
-    energize_type            = action_energize::ON_HIT;
-    energize_resource        = RESOURCE_INSANITY;
-    energize_amount          = insanity_gain;
-    background               = true;
-    cooldown->duration       = data().internal_cooldown();
-    bwonsamdis_pact_wrathful = util::str_compare_ci( priest().options.bwonsamdis_pact_mask_type, "wrathful" );
-  }
-
-  void adjust_energize_amount()
-  {
-    if ( !priest().legendary.bwonsamdis_pact->ok() )
-      return;
-
-    if ( bwonsamdis_pact_wrathful )
-    {
-      energize_amount = insanity_gain * 2;
-      sim->print_debug( "Bwonsamdi's Pact adjusts Wrathful Faerie insanity gain to {}", energize_amount );
-    }
-    else
-    {
-      energize_amount = insanity_gain;
-    }
-  }
-
-  void trigger()
-  {
-    if ( priest().cooldowns.wrathful_faerie->is_ready() )
-    {
-      adjust_energize_amount();
-      execute();
-      priest().cooldowns.wrathful_faerie->start();
-    }
-  }
-};
-
-struct wrathful_faerie_fermata_t final : public priest_spell_t
-{
-  double insanity_gain;
-  wrathful_faerie_fermata_t( priest_t& p )
-    : priest_spell_t( "wrathful_faerie_fermata", p, p.find_spell( 345452 ) ),
-      insanity_gain( data().effectN( 3 ).resource( RESOURCE_INSANITY ) )
-  {
-    energize_type     = action_energize::ON_HIT;
-    energize_resource = RESOURCE_INSANITY;
-    energize_amount   = insanity_gain;
-    background        = true;
-
-    cooldown->duration = data().internal_cooldown();
-  }
-
-  void adjust_energize_amount()
-  {
-    // TODO: check if Bwonsamdi's Pact affects the Fae Fermata faerie
-    energize_amount = insanity_gain;
-  }
-
-  void trigger()
-  {
-    if ( priest().cooldowns.wrathful_faerie_fermata->is_ready() )
-    {
-      adjust_energize_amount();
-      execute();
-      priest().cooldowns.wrathful_faerie_fermata->start();
-    }
-  }
-};
-
-// ==========================================================================
-// Unholy Nova - Necrolord Covenant
-// ==========================================================================
-struct unholy_transfusion_t final : public priest_spell_t
-{
-  double parent_targets = 1;
-
-  unholy_transfusion_t( priest_t& p )
-    : priest_spell_t( "unholy_transfusion", p, p.covenant.unholy_nova->effectN( 2 ).trigger() )
-  {
-    background                 = true;
-    hasted_ticks               = true;
-    tick_may_crit              = true;
-    tick_zero                  = false;
-    affected_by_shadow_weaving = true;
-
-    if ( priest().conduits.festering_transfusion->ok() )
-    {
-      dot_duration += priest().conduits.festering_transfusion->effectN( 2 ).time_value();
-      base_td_multiplier *= ( 1.0 + priest().conduits.festering_transfusion.percent() );
-    }
-  }
-
-  double action_ta_multiplier() const override
-  {
-    double m = priest_spell_t::action_ta_multiplier();
-
-    double scaled_m = m / std::sqrt( parent_targets );
-
-    sim->print_debug( "{} {} updates ta multiplier: Before: {} After: {} with {} targets from the parent spell.",
-                      *player, *this, m, scaled_m, parent_targets );
-
-    return scaled_m;
-  }
-};
-
-struct unholy_transfusion_healing_t final : public priest_heal_t
-{
-  unholy_transfusion_healing_t( priest_t& p )
-    : priest_heal_t( "unholy_transfusion_healing", p,
-                     p.covenant.unholy_nova->effectN( 2 ).trigger()->effectN( 2 ).trigger() )
-  {
-    background = true;
-    harmful    = false;
-
-    if ( priest().conduits.festering_transfusion->ok() )
-    {
-      base_dd_multiplier *= ( 1.0 + priest().conduits.festering_transfusion.percent() );
-    }
-  }
-
-  void trigger()
-  {
-    execute();
-  }
-};
-
-struct unholy_nova_healing_t final : public priest_heal_t
-{
-  unholy_nova_healing_t( priest_t& p )
-    : priest_heal_t( "unholy_nova_healing", p, p.covenant.unholy_nova->effectN( 1 ).trigger() )
-  {
-    background = true;
-    harmful    = false;
-    aoe        = -1;
-
-    if ( priest().conduits.festering_transfusion->ok() )
-    {
-      base_dd_multiplier *= ( 1.0 + priest().conduits.festering_transfusion.percent() );
-    }
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    // Should only heal allies/pets and not enemies, even if you target an enemy
-    if ( s->target->is_enemy() )
-      return;
-
-    priest_heal_t::impact( s );
-  }
-};
-
-struct unholy_nova_t final : public priest_spell_t
-{
-  // DoT spell trigger
-  propagate_const<unholy_transfusion_t*> child_unholy_transfusion;
-  // Healing AoE trigger
-  propagate_const<unholy_nova_healing_t*> child_unholy_nova_healing;
-
-  unholy_nova_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "unholy_nova", p, p.covenant.unholy_nova ),
-      child_unholy_transfusion( new unholy_transfusion_t( p ) ),
-      child_unholy_nova_healing( new unholy_nova_healing_t( p ) )
-  {
-    parse_options( options_str );
-    aoe      = -1;
-    may_crit = false;
-
-    // Radius for damage spell is stored in the DoT's spell radius
-    radius = data().effectN( 2 ).trigger()->effectN( 1 ).radius_max();
-
-    add_child( child_unholy_transfusion );
-    add_child( child_unholy_nova_healing );
-
-    // Unholy Nova itself does NOT do damage, just the DoT
-    base_dd_min = base_dd_max = spell_power_mod.direct = 0;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    // Pass in parent state to the DoT so we know how to scale the damage of the DoT
-    if ( child_unholy_transfusion )
-    {
-      child_unholy_transfusion->target         = s->target;
-      child_unholy_transfusion->parent_targets = s->n_targets;
-      child_unholy_transfusion->execute();
-    }
-
-    // The AoE heal happens at your current target in an AoE radius around them
-    if ( child_unholy_nova_healing )
-    {
-      child_unholy_nova_healing->target = s->target;
-      child_unholy_nova_healing->execute();
-    }
-
-    if ( priest().legendary.pallid_command->ok() && !s->chain_target )
-    {
-      if ( priest().specialization() == PRIEST_SHADOW )
-      {
-        auto spawned_pets = priest().pets.rattling_mage.spawn();
-      }
-      else if ( priest().specialization() == PRIEST_DISCIPLINE )
-      {
-        auto spawned_pets = priest().pets.cackling_chemist.spawn();
-      }
-      else
-      {
-        sim->print_debug( "{} in current spec: {} does not have support for Pallid Command.", priest(),
-                          priest().specialization() );
-      }
-    }
-
-    priest_spell_t::impact( s );
-  }
-};
-
-// ==========================================================================
-// Mindgames - Venthyr Covenant
+// Mindgames
 // ==========================================================================
 struct mindgames_healing_reversal_t final : public priest_spell_t
 {
   mindgames_healing_reversal_t( priest_t& p )
-    : priest_spell_t( "mindgames_healing_reversal", p, p.covenant.mindgames_healing_reversal )
+    : priest_spell_t( "mindgames_healing_reversal", p, p.talents.mindgames_healing_reversal )
   {
     background        = true;
     may_crit          = false;
@@ -852,16 +558,6 @@ struct mindgames_healing_reversal_t final : public priest_spell_t
     spell_power_mod.direct = ( priest().talents.mindgames->effectN( 5 ).base_value() / 100 ) *
                              ( priest().talents.mindgames->effectN( 3 ).base_value() / 100 );
 
-    if ( priest().conduits.shattered_perceptions->ok() )
-    {
-      base_dd_multiplier *= ( 1.0 + priest().conduits.shattered_perceptions.percent() );
-    }
-
-    if ( priest().legendary.shadow_word_manipulation->ok() )
-    {
-      base_dd_multiplier *= ( 1.0 + priest().legendary.shadow_word_manipulation->effectN( 2 ).percent() );
-    }
-
     if ( priest().talents.shattered_perceptions.enabled() )
     {
       base_dd_multiplier *= ( 1.0 + priest().talents.shattered_perceptions->effectN( 1 ).percent() );
@@ -872,7 +568,7 @@ struct mindgames_healing_reversal_t final : public priest_spell_t
 struct mindgames_damage_reversal_t final : public priest_heal_t
 {
   mindgames_damage_reversal_t( priest_t& p )
-    : priest_heal_t( "mindgames_damage_reversal", p, p.covenant.mindgames_damage_reversal )
+    : priest_heal_t( "mindgames_damage_reversal", p, p.talents.mindgames_damage_reversal )
   {
     background        = true;
     harmful           = false;
@@ -886,16 +582,6 @@ struct mindgames_damage_reversal_t final : public priest_heal_t
     spell_power_mod.direct = ( priest().talents.mindgames->effectN( 2 ).base_value() / 100 ) *
                              ( priest().talents.mindgames->effectN( 3 ).base_value() / 100 );
 
-    if ( priest().conduits.shattered_perceptions->ok() )
-    {
-      base_dd_multiplier *= ( 1.0 + priest().conduits.shattered_perceptions.percent() );
-    }
-
-    if ( priest().legendary.shadow_word_manipulation->ok() )
-    {
-      base_dd_multiplier *= ( 1.0 + priest().legendary.shadow_word_manipulation->effectN( 2 ).percent() );
-    }
-
     if ( priest().talents.shattered_perceptions.enabled() )
     {
       base_dd_multiplier *= ( 1.0 + priest().talents.shattered_perceptions->effectN( 1 ).percent() );
@@ -907,22 +593,15 @@ struct mindgames_t final : public priest_spell_t
 {
   propagate_const<mindgames_healing_reversal_t*> child_mindgames_healing_reversal;
   propagate_const<mindgames_damage_reversal_t*> child_mindgames_damage_reversal;
-  timespan_t shattered_perceptions_increase;
 
   mindgames_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "mindgames", p, p.talents.mindgames ),
       child_mindgames_healing_reversal( nullptr ),
-      child_mindgames_damage_reversal( nullptr ),
-      shattered_perceptions_increase( p.conduits.shattered_perceptions->effectN( 3 ).time_value() )
+      child_mindgames_damage_reversal( nullptr )
   {
     parse_options( options_str );
 
     affected_by_shadow_weaving = true;
-
-    if ( priest().conduits.shattered_perceptions->ok() )
-    {
-      base_dd_multiplier *= ( 1.0 + priest().conduits.shattered_perceptions.percent() );
-    }
 
     if ( priest().options.mindgames_healing_reversal )
     {
@@ -958,237 +637,10 @@ struct mindgames_t final : public priest_spell_t
       child_mindgames_damage_reversal->execute();
     }
 
-    // TODO: Determine what happens if you break both shields
-    if ( priest().legendary.shadow_word_manipulation->ok() )
-    {
-      timespan_t max_time_seconds = priest().covenant.mindgames->duration() +
-                                    priest().legendary.shadow_word_manipulation->effectN( 1 ).time_value() +
-                                    ( priest().conduits.shattered_perceptions->ok() * shattered_perceptions_increase );
-      // You get 1 stack for each second remaining on Mindgames as a shield expires
-      timespan_t stacks = timespan_t::from_seconds( priest().options.shadow_word_manipulation_seconds_remaining ) +
-                          ( priest().conduits.shattered_perceptions->ok() * shattered_perceptions_increase );
-      // the delay value is the inverse of how much time is remaining
-      // i.e. if you have 6s remaining we need to delay the buff by 2 seconds
-      timespan_t delay = max_time_seconds - stacks;
-      make_event( *sim, delay,
-                  [ this, stacks ] { priest().buffs.shadow_word_manipulation->trigger( stacks.total_seconds() ); } );
-    }
-
     if ( priest().specialization() == PRIEST_SHADOW && priest().shadow_weaving_active_dots( target, id ) != 3 )
     {
       priest().procs.mindgames_casts_no_mastery->occur();
     }
-  }
-};
-
-// ==========================================================================
-// Boon of the Ascended - Kyrian Covenant
-// ==========================================================================
-struct boon_of_the_ascended_t final : public priest_spell_t
-{
-  boon_of_the_ascended_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "boon_of_the_ascended", p, p.covenant.boon_of_the_ascended )
-  {
-    parse_options( options_str );
-    harmful = false;
-  }
-
-  void execute() override
-  {
-    priest_spell_t::execute();
-
-    priest().buffs.boon_of_the_ascended->trigger();
-  }
-};
-
-struct ascended_nova_heal_t final : public priest_heal_t
-{
-  ascended_nova_heal_t( priest_t& p )
-    : priest_heal_t( "ascended_nova_heal", p, p.covenant.ascended_nova->effectN( 2 ).trigger() )
-  {
-    background = true;
-    aoe        = as<int>( data().effectN( 2 ).base_value() );
-  }
-};
-
-struct ascended_nova_t final : public priest_spell_t
-{
-  propagate_const<ascended_nova_heal_t*> child_ascended_nova_heal;
-  int grants_stacks;
-
-  ascended_nova_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "ascended_nova", p, p.covenant.ascended_nova ),
-      child_ascended_nova_heal( new ascended_nova_heal_t( p ) ),
-      grants_stacks( as<int>( data().effectN( 3 ).base_value() ) )
-  {
-    parse_options( options_str );
-    aoe                        = -1;
-    reduced_aoe_targets        = 1.0;
-    radius                     = data().effectN( 1 ).radius_max();
-    affected_by_shadow_weaving = true;
-
-    add_child( child_ascended_nova_heal );
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    priest_spell_t::impact( s );
-
-    // gain 1 stack for each target damaged
-    if ( priest().buffs.boon_of_the_ascended->check() )
-    {
-      priest().buffs.boon_of_the_ascended->increment( grants_stacks );
-    }
-  }
-
-  bool ready() override
-  {
-    if ( !priest().buffs.boon_of_the_ascended->check() || !priest().options.use_ascended_nova )
-    {
-      return false;
-    }
-
-    return priest_spell_t::ready();
-  }
-
-  void execute() override
-  {
-    priest_spell_t::execute();
-
-    if ( child_ascended_nova_heal )
-    {
-      child_ascended_nova_heal->execute();
-    }
-  }
-};
-
-struct ascended_blast_heal_t final : public priest_heal_t
-{
-  ascended_blast_heal_t( priest_t& p ) : priest_heal_t( "ascended_blast_heal", p, p.covenant.ascended_blast_heal )
-  {
-    background = true;
-    may_crit   = false;
-  }
-
-  void trigger( double original_amount )
-  {
-    base_dd_min = base_dd_max = original_amount * priest().covenant.ascended_blast->effectN( 2 ).percent();
-    execute();
-  }
-};
-
-struct ascended_blast_t final : public priest_spell_t
-{
-  int grants_stacks;
-
-  ascended_blast_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "ascended_blast", p, p.covenant.ascended_blast ),
-      grants_stacks( as<int>( data().effectN( 3 ).base_value() ) )
-  {
-    parse_options( options_str );
-
-    if ( priest().conduits.courageous_ascension->ok() )
-    {
-      base_dd_multiplier *= ( 1.0 + priest().conduits.courageous_ascension.percent() );
-    }
-    cooldown->hasted           = true;
-    affected_by_shadow_weaving = true;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    priest_spell_t::impact( s );
-
-    // gain 5 stacks on impact
-    if ( priest().buffs.boon_of_the_ascended->check() )
-    {
-      priest().buffs.boon_of_the_ascended->increment( grants_stacks );
-    }
-
-    if ( result_is_hit( s->result ) )
-    {
-      priest().background_actions.ascended_blast_heal->trigger( s->result_amount );
-    }
-  }
-
-  bool ready() override
-  {
-    if ( !priest().buffs.boon_of_the_ascended->check() )
-    {
-      return false;
-    }
-
-    return priest_spell_t::ready();
-  }
-};
-
-struct ascended_eruption_heal_t final : public priest_heal_t
-{
-  int trigger_stacks;  // Set as action variable since this will not be triggered multiple times.
-  double base_da_increase;
-
-  ascended_eruption_heal_t( priest_t& p )
-    : priest_heal_t( "ascended_eruption_heal", p, p.covenant.ascended_eruption->effectN( 2 ).trigger() ),
-      base_da_increase( p.covenant.boon_of_the_ascended->effectN( 5 ).percent() +
-                        p.conduits.courageous_ascension->effectN( 2 ).percent() )
-  {
-    aoe                 = -1;
-    reduced_aoe_targets = 1.0;
-    background          = true;
-  }
-
-  void trigger_eruption( int stacks )
-  {
-    assert( stacks > 0 );
-    trigger_stacks = stacks;
-
-    execute();
-  }
-
-  double action_da_multiplier() const override
-  {
-    double m = priest_heal_t::action_da_multiplier();
-
-    m *= 1 + base_da_increase * trigger_stacks;
-
-    return m;
-  }
-};
-
-struct ascended_eruption_t final : public priest_spell_t
-{
-  int trigger_stacks;  // Set as action variable since this will not be triggered multiple times.
-  double base_da_increase;
-
-  ascended_eruption_t( priest_t& p )
-    : priest_spell_t( "ascended_eruption", p, p.covenant.ascended_eruption ),
-      base_da_increase( p.covenant.boon_of_the_ascended->effectN( 5 ).percent() +
-                        p.conduits.courageous_ascension->effectN( 2 ).percent() )
-  {
-    aoe                 = -1;
-    reduced_aoe_targets = 1.0;
-    background          = true;
-    radius              = data().effectN( 1 ).radius_max();
-    // By default the spell tries to use the healing SP Coeff
-    spell_power_mod.direct     = data().effectN( 1 ).sp_coeff();
-    affected_by_shadow_weaving = true;
-  }
-
-  void trigger_eruption( int stacks )
-  {
-    assert( stacks > 0 );
-    trigger_stacks = stacks;
-
-    execute();
-  }
-
-  double action_da_multiplier() const override
-  {
-    double m = priest_spell_t::action_da_multiplier();
-
-    m *= 1 + base_da_increase * trigger_stacks;
-
-    return m;
   }
 };
 
@@ -1357,58 +809,15 @@ struct fade_t final : public priest_spell_t
 
   void execute() override
   {
-    // TODO: determine how these stack in pre-patch
-    if ( priest().conduits.translucent_image->ok() )
-    {
-      priest().buffs.translucent_image_conduit->trigger();
-    }
+    priest_spell_t::execute();
 
     priest().buffs.fade->trigger();
-
-    priest_spell_t::execute();
   }
 };
 
 // ==========================================================================
 // Shadow Word: Death
 // ==========================================================================
-struct painbreaker_psalm_legendary_t final : public priest_spell_t
-{
-  timespan_t consume_time;
-
-  painbreaker_psalm_legendary_t( priest_t& p )
-    : priest_spell_t( "painbreaker_psalm_legendary", p, p.legendary.painbreaker_psalm ),
-      consume_time( timespan_t::from_seconds( data().effectN( 1 ).base_value() ) )
-  {
-    background = true;
-
-    // TODO: check if this double dips from any multipliers or takes 100% exactly the calculated dot values.
-    // also check that the STATE_NO_MULTIPLIER does exactly what we expect.
-    snapshot_flags &= ~STATE_NO_MULTIPLIER;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    priest_td_t& td = get_td( s->target );
-    dot_t* swp      = td.dots.shadow_word_pain;
-    dot_t* vt       = td.dots.vampiric_touch;
-
-    auto swp_damage = priest().tick_damage_over_time( consume_time, td.dots.shadow_word_pain );
-    auto vt_damage  = priest().tick_damage_over_time( consume_time, td.dots.vampiric_touch );
-    base_dd_min = base_dd_max = swp_damage + vt_damage;
-
-    sim->print_debug( "{} {} calculated dot damage sw:p={} vt={} total={}", *player, *this, swp_damage, vt_damage,
-                      swp_damage + vt_damage );
-
-    priest_spell_t::impact( s );
-
-    swp->adjust_duration( -consume_time );
-    vt->adjust_duration( -consume_time );
-
-    priest().refresh_insidious_ire_buff( s );
-  }
-};
-
 struct shadow_word_death_self_damage_t final : public priest_spell_t
 {
   shadow_word_death_self_damage_t( priest_t& p )
@@ -1448,31 +857,17 @@ struct shadow_word_death_t final : public priest_spell_t
 {
   double execute_percent;
   double execute_modifier;
-  double insanity_per_dot;
   propagate_const<shadow_word_death_self_damage_t*> shadow_word_death_self_damage;
 
   shadow_word_death_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "shadow_word_death", p, p.talents.shadow_word_death ),
       execute_percent( data().effectN( 2 ).base_value() ),
       execute_modifier( data().effectN( 3 ).percent() ),
-      insanity_per_dot( p.specs.painbreaker_psalm_insanity->effectN( 2 ).base_value() /
-                        10 ),  // Spell Data stores this as 100 not 1000 or 10
       shadow_word_death_self_damage( new shadow_word_death_self_damage_t( p ) )
   {
     parse_options( options_str );
 
     affected_by_shadow_weaving = true;
-
-    if ( priest().legendary.painbreaker_psalm->ok() )
-    {
-      impact_action = new painbreaker_psalm_legendary_t( p );
-      add_child( impact_action );
-    }
-
-    if ( priest().legendary.kiss_of_death->ok() )
-    {
-      cooldown->duration += priest().legendary.kiss_of_death->effectN( 1 ).time_value();
-    }
 
     // BUG: CD is static 20s and not affected by haste
     // https://github.com/SimCMinMax/WoW-BugTracker/issues/943
@@ -1529,31 +924,14 @@ struct shadow_word_death_t final : public priest_spell_t
   {
     priest_spell_t::impact( s );
 
-    if ( priest().legendary.shadowflame_prism->ok() || priest().talents.shadow.inescapable_torment.enabled() )
+    if ( priest().talents.shadow.inescapable_torment.enabled() )
     {
-      priest().trigger_shadowflame_prism( s->target );
+      priest().trigger_inescapable_torment( s->target );
     }
 
     if ( result_is_hit( s->result ) )
     {
       priest().trigger_pain_of_death( s );
-
-      if ( priest().legendary.painbreaker_psalm->ok() )
-      {
-        int dots = 0;
-
-        if ( const priest_td_t* td = priest().find_target_data( target ) )
-        {
-          bool swp_ticking = td->dots.shadow_word_pain->is_ticking();
-          bool vt_ticking  = td->dots.vampiric_touch->is_ticking();
-
-          dots = swp_ticking + vt_ticking;
-        }
-
-        double insanity_gain = dots * insanity_per_dot;
-
-        priest().generate_insanity( insanity_gain, priest().gains.painbreaker_psalm, s->action );
-      }
 
       double save_health_percentage = s->target->health_percentage();
 
@@ -1913,72 +1291,6 @@ struct desperate_prayer_t final : public priest_buff_t<buff_t>
 };
 
 // ==========================================================================
-// Fae Guardians - Night Fae Covenant
-// ==========================================================================
-struct fae_guardians_t final : public priest_buff_t<buff_t>
-{
-  fae_guardians_t( priest_t& p ) : base_t( p, "fae_guardians", p.covenant.fae_guardians )
-  {
-  }
-
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-  {
-    buff_t::expire_override( expiration_stacks, remaining_duration );
-
-    priest().remove_wrathful_faerie();
-    priest().remove_wrathful_faerie_fermata();
-  }
-};
-
-// ==========================================================================
-// Boon of the Ascended - Kyrian Covenant
-// ==========================================================================
-struct boon_of_the_ascended_t final : public priest_buff_t<buff_t>
-{
-  int stacks;
-  propagate_const<cooldown_t*> boon_of_the_ascended_cooldown;
-
-  boon_of_the_ascended_t( priest_t& p )
-    : base_t( p, "boon_of_the_ascended", p.covenant.boon_of_the_ascended ),
-      stacks( as<int>( data().max_stacks() ) ),
-      boon_of_the_ascended_cooldown( p.get_cooldown( "boon_of_the_ascended" ) )
-  {
-    // Adding stacks should not refresh the duration
-    set_refresh_behavior( buff_refresh_behavior::DISABLED );
-    set_max_stack( stacks >= 1 ? stacks : 1 );
-
-    // Cooldown is handled by the Boon of the Ascended spell
-    set_cooldown( timespan_t::from_seconds( 0 ) );
-  }
-
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-  {
-    priest_buff_t<buff_t>::expire_override( expiration_stacks, remaining_duration );
-
-    if ( priest().legendary.spheres_harmony->ok() && boon_of_the_ascended_cooldown )
-    {
-      auto max_reduction = priest().legendary.spheres_harmony->effectN( 2 ).base_value();
-      auto adjust_amount = priest().legendary.spheres_harmony->effectN( 1 ).base_value() * expiration_stacks;
-
-      if ( adjust_amount > max_reduction )
-      {
-        adjust_amount = max_reduction;
-      }
-      boon_of_the_ascended_cooldown->adjust( -timespan_t::from_seconds( adjust_amount ) );
-      sim->print_debug(
-          "{} adjusted cooldown of Boon of the Ascended, by {}, with Spheres' Harmony after having {} stacks.",
-          priest(), adjust_amount, expiration_stacks );
-    }
-
-    if ( priest().options.use_ascended_eruption )
-    {
-      priest().background_actions.ascended_eruption->trigger_eruption( expiration_stacks );
-      priest().background_actions.ascended_eruption_heal->trigger_eruption( expiration_stacks );
-    }
-  }
-};
-
-// ==========================================================================
 // Death and Madness Debuff
 // ==========================================================================
 struct death_and_madness_debuff_t final : public priest_buff_t<buff_t>
@@ -2000,102 +1312,6 @@ struct death_and_madness_debuff_t final : public priest_buff_t<buff_t>
     }
 
     buff_t::expire_override( expiration_stacks, remaining_duration );
-  }
-};
-
-struct benevolent_faerie_t final : public buff_t
-{
-private:
-  std::vector<action_t*> affected_actions;
-  bool affected_actions_initialized;
-  priest_t* priest;
-
-public:
-  benevolent_faerie_t( player_t* p, util::string_view n )
-    : buff_t( p, n, p->find_spell( 327710 ) ),
-      affected_actions_initialized( false ),
-      priest( dynamic_cast<priest_t*>( player ) )
-  {
-    set_default_value_from_effect( 1 );
-
-    set_stack_change_callback( [ this ]( buff_t*, int /* old_stack */, int current_stack ) {
-      handle_benevolent_faerie_stack_change( current_stack );
-    } );
-  }
-
-private:
-  void handle_benevolent_faerie_stack_change( int new_stack )
-  {
-    double recharge_rate_multiplier = get_recharge_multiplier();
-
-    // When going from 0 to 1 stacks, the recharge rate gets increase
-    // When going back to 0 stacks, the recharge rate decreases again to its original level
-    if ( new_stack == 0 )
-      recharge_rate_multiplier = 1.0 / recharge_rate_multiplier;
-
-    adjust_action_cooldown_rates( recharge_rate_multiplier );
-  }
-
-  void adjust_action_cooldown_rates( double rate_change )
-  {
-    if ( !affected_actions_initialized )
-    {
-      int label = data().effectN( 1 ).misc_value1();
-      affected_actions.clear();
-      for ( auto a : player->action_list )
-      {
-        if ( a->data().affected_by_label( label ) )
-        {
-          if ( range::find( affected_actions, a ) == affected_actions.end() )
-          {
-            affected_actions.push_back( a );
-          }
-        }
-      }
-
-      affected_actions_initialized = true;
-    }
-    for ( auto a : affected_actions )
-    {
-      a->dynamic_recharge_rate_multiplier /= rate_change;
-
-      sim->print_debug( "{} recharge_rate_multiplier set to {}", a->name_str, a->dynamic_recharge_rate_multiplier );
-
-      if ( a->cooldown->action == a )
-        a->cooldown->adjust_recharge_multiplier();
-      if ( a->internal_cooldown->action == a )
-        a->internal_cooldown->adjust_recharge_multiplier();
-    }
-  }
-
-  double get_recharge_multiplier()
-  {
-    double modifier = 1.0;
-    if ( priest != nullptr && priest->legendary.bwonsamdis_pact->ok() &&
-         util::str_compare_ci( priest->options.bwonsamdis_pact_mask_type, "benevolent" ) )
-    {
-      modifier += ( default_value * 2 );
-
-      sim->print_debug( "Bwonsamdi's Pact Modifier set to {}", modifier );
-    }
-    else
-    {
-      modifier += default_value;
-    }
-    return modifier;
-  }
-};
-
-struct rigor_mortis_t final : public priest_buff_t<buff_t>
-{
-  timespan_t rigor_mortis_duration;
-  rigor_mortis_t( priest_t& p )
-    : base_t( p, "rigor_mortis", p.find_spell( 357165 ) ), rigor_mortis_duration( p.find_spell( 356467 )->duration() )
-  {
-    // 1st effect is for healing
-    set_default_value_from_effect( 2 );
-    // Duration is in the legendary spell itself, base aura is infinite
-    set_duration( rigor_mortis_duration );
   }
 };
 }  // namespace buffs
@@ -2133,7 +1349,6 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) : actor_target_data_t(
   dots.shadow_word_pain   = target->get_dot( "shadow_word_pain", &p );
   dots.vampiric_touch     = target->get_dot( "vampiric_touch", &p );
   dots.devouring_plague   = target->get_dot( "devouring_plague", &p );
-  dots.unholy_transfusion = target->get_dot( "unholy_transfusion", &p );
   dots.mind_flay          = target->get_dot( "mind_flay", &p );
   dots.mind_flay_insanity = target->get_dot( "mind_flay_insanity", &p );
   dots.mind_sear          = target->get_dot( "mind_sear", &p );
@@ -2142,11 +1357,7 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) : actor_target_data_t(
 
   buffs.schism                   = make_buff( *this, "schism", p.talents.schism );
   buffs.death_and_madness_debuff = make_buff<buffs::death_and_madness_debuff_t>( *this );
-  buffs.wrathful_faerie          = make_buff( *this, "wrathful_faerie", p.find_spell( 327703 ) );
-  buffs.wrathful_faerie_fermata  = make_buff( *this, "wrathful_faerie_fermata", p.find_spell( 345452 ) )
-                                      ->set_cooldown( timespan_t::zero() )
-                                      ->set_duration( priest().conduits.fae_fermata.time_value() );
-  buffs.echoing_void = make_buff( *this, "echoing_void", p.find_spell( 373281 ) );
+  buffs.echoing_void             = make_buff( *this, "echoing_void", p.find_spell( 373281 ) );
 
   // TODO: stacks generated mid-collapse need to get re-triggered to collapse
   buffs.echoing_void_collapse = make_buff( *this, "echoing_void_collapse" )
@@ -2224,10 +1435,7 @@ priest_t::priest_t( sim_t* sim, util::string_view name, race_e r )
     background_actions(),
     active_items(),
     pets( *this ),
-    options(),
-    legendary(),
-    conduits(),
-    covenant()
+    options()
 {
   create_cooldowns();
   create_gains();
@@ -2240,31 +1448,23 @@ priest_t::priest_t( sim_t* sim, util::string_view name, race_e r )
 /** Construct priest cooldowns */
 void priest_t::create_cooldowns()
 {
-  cooldowns.wrathful_faerie         = get_cooldown( "wrathful_faerie" );
-  cooldowns.wrathful_faerie_fermata = get_cooldown( "wrathful_faerie_fermata" );
-  cooldowns.holy_fire               = get_cooldown( "holy_fire" );
-  cooldowns.holy_word_serenity      = get_cooldown( "holy_word_serenity" );
-  cooldowns.void_bolt               = get_cooldown( "void_bolt" );
-  cooldowns.mind_blast              = get_cooldown( "mind_blast" );
-  cooldowns.void_eruption           = get_cooldown( "void_eruption" );
-  cooldowns.shadow_word_death       = get_cooldown( "shadow_word_death" );
-  cooldowns.mindgames               = get_cooldown( "mindgames" );
+  cooldowns.holy_fire          = get_cooldown( "holy_fire" );
+  cooldowns.holy_word_serenity = get_cooldown( "holy_word_serenity" );
+  cooldowns.void_bolt          = get_cooldown( "void_bolt" );
+  cooldowns.mind_blast         = get_cooldown( "mind_blast" );
+  cooldowns.void_eruption      = get_cooldown( "void_eruption" );
+  cooldowns.shadow_word_death  = get_cooldown( "shadow_word_death" );
+  cooldowns.mindgames          = get_cooldown( "mindgames" );
 }
 
 /** Construct priest gains */
 void priest_t::create_gains()
 {
-  gains.cauterizing_shadows_health  = get_gain( "Cauterizing Shadows" );
-  gains.insanity_auspicious_spirits = get_gain( "Auspicious Spirits" );
-  gains.insanity_death_and_madness  = get_gain( "Death and Madness" );
-  gains.insanity_eternal_call_to_the_void_mind_flay =
-      get_gain( "Insanity Gained from Eternal Call to the Void Mind Flay's" );
-  gains.insanity_eternal_call_to_the_void_mind_sear =
-      get_gain( "Insanity Gained from Eternal Call to the Void Mind Sear's" );
+  gains.insanity_auspicious_spirits      = get_gain( "Auspicious Spirits" );
+  gains.insanity_death_and_madness       = get_gain( "Death and Madness" );
   gains.insanity_mind_sear               = get_gain( "Insanity Gained from Mind Sear" );
   gains.shadowfiend                      = get_gain( "Shadowfiend" );
   gains.mindbender                       = get_gain( "Mindbender" );
-  gains.painbreaker_psalm                = get_gain( "Painbreaker Psalm" );
   gains.power_word_solace                = get_gain( "Mana Gained from Power Word: Solace" );
   gains.throes_of_pain                   = get_gain( "Throes of Pain" );
   gains.insanity_idol_of_cthun_mind_flay = get_gain( "Insanity Gained from Idol of C'thun Mind Flay's" );
@@ -2311,10 +1511,6 @@ void priest_t::create_procs()
   procs.mindgames_casts_no_mastery     = get_proc( "Mindgames casts without full Mastery value" );
   procs.inescapable_torment_missed_mb  = get_proc( "Inescapable Torment expired when Mind Blast was ready" );
   procs.inescapable_torment_missed_swd = get_proc( "Inescapable Torment expired when Shadow Word: Death was ready" );
-  // Shadowlands
-  procs.dissonant_echoes   = get_proc( "Void Bolt resets from Dissonant Echoes" );
-  procs.void_tendril_ecttv = get_proc( "Void Tendril proc from Eternal Call to the Void" );
-  procs.void_lasher_ecttv  = get_proc( "Void Lasher proc from Eternal Call to the Void" );
 }
 
 /** Construct priest benefits */
@@ -2602,29 +1798,9 @@ action_t* priest_t::create_action( util::string_view name, util::string_view opt
   {
     return new power_infusion_t( *this, options_str, "power_infusion_other" );
   }
-  if ( name == "fae_guardians" )
-  {
-    return new fae_guardians_t( *this, options_str );
-  }
-  if ( name == "unholy_nova" )
-  {
-    return new unholy_nova_t( *this, options_str );
-  }
   if ( name == "mindgames" )
   {
     return new mindgames_t( *this, options_str );
-  }
-  if ( name == "boon_of_the_ascended" )
-  {
-    return new boon_of_the_ascended_t( *this, options_str );
-  }
-  if ( name == "ascended_nova" )
-  {
-    return new ascended_nova_t( *this, options_str );
-  }
-  if ( name == "ascended_blast" )
-  {
-    return new ascended_blast_t( *this, options_str );
   }
   if ( name == "shadow_word_death" )
   {
@@ -2663,21 +1839,6 @@ void priest_t::create_pets()
   {
     pets.mindbender = create_pet( "mindbender" );
   }
-}
-
-void priest_t::trigger_unholy_transfusion_healing()
-{
-  background_actions.unholy_transfusion_healing->trigger();
-}
-
-void priest_t::trigger_wrathful_faerie()
-{
-  background_actions.wrathful_faerie->trigger();
-}
-
-void priest_t::trigger_wrathful_faerie_fermata()
-{
-  background_actions.wrathful_faerie_fermata->trigger();
 }
 
 void priest_t::init_base_stats()
@@ -2725,8 +1886,6 @@ void priest_t::init_scaling()
 void priest_t::init_finished()
 {
   base_t::init_finished();
-
-  buffs.sephuzs_proclamation = buff_t::find( this, "sephuzs_proclamation" );
 }
 
 void priest_t::init_spells()
@@ -2742,7 +1901,6 @@ void priest_t::init_spells()
   // Generic Spells
   specs.mind_blast                    = find_class_spell( "Mind Blast" );
   specs.shadow_word_death_self_damage = find_spell( 32409 );
-  specs.painbreaker_psalm_insanity    = find_spell( 336167 );  // SL Legendary
   specs.psychic_scream                = find_class_spell( "Psychic Scream" );
   specs.fade                          = find_class_spell( "Fade" );
 
@@ -2761,49 +1919,6 @@ void priest_t::init_spells()
   mastery_spells.grace          = find_mastery_spell( PRIEST_DISCIPLINE );
   mastery_spells.echo_of_light  = find_mastery_spell( PRIEST_HOLY );
   mastery_spells.shadow_weaving = find_mastery_spell( PRIEST_SHADOW );
-
-  // Generic Legendaries
-  legendary.sephuzs_proclamation = find_runeforge_legendary( "Sephuz's Proclamation" );
-  // Shared Legendaries
-  legendary.cauterizing_shadows        = find_runeforge_legendary( "Cauterizing Shadows" );
-  legendary.twins_of_the_sun_priestess = find_runeforge_legendary( "Twins of the Sun Priestess" );
-  legendary.bwonsamdis_pact            = find_runeforge_legendary( "Bwonsamdi's Pact" );
-  legendary.shadow_word_manipulation   = find_runeforge_legendary( "Shadow Word: Manipulation" );
-  legendary.spheres_harmony            = find_runeforge_legendary( "Spheres' Harmony" );
-  legendary.pallid_command             = find_runeforge_legendary( "Pallid Command" );
-  // Disc legendaries
-  legendary.kiss_of_death    = find_runeforge_legendary( "Kiss of Death" );
-  legendary.the_penitent_one = find_runeforge_legendary( "The Penitent One" );
-  // Shadow Legendaries
-  legendary.eternal_call_to_the_void = find_runeforge_legendary( "Eternal Call to the Void" );
-  legendary.painbreaker_psalm        = find_runeforge_legendary( "Painbreaker Psalm" );
-  legendary.shadowflame_prism        = find_runeforge_legendary( "Shadowflame Prism" );
-  legendary.talbadars_stratagem      = find_runeforge_legendary( "Talbadar's Stratagem" );
-
-  // Generic Conduits
-  conduits.power_unto_others = find_conduit_spell( "Power Unto Others" );
-  conduits.translucent_image = find_conduit_spell( "Translucent Image" );
-  // Shadow Conduits
-  conduits.dissonant_echoes     = find_conduit_spell( "Dissonant Echoes" );
-  conduits.haunting_apparitions = find_conduit_spell( "Haunting Apparitions" );
-  conduits.mind_devourer        = find_conduit_spell( "Mind Devourer" );
-  // Covenant Conduits
-  conduits.courageous_ascension  = find_conduit_spell( "Courageous Ascension" );
-  conduits.festering_transfusion = find_conduit_spell( "Festering Transfusion" );
-  conduits.fae_fermata           = find_conduit_spell( "Fae Fermata" );
-  conduits.shattered_perceptions = find_conduit_spell( "Shattered Perceptions" );
-
-  // Covenant Abilities
-  covenant.ascended_blast             = find_spell( 325283 );
-  covenant.ascended_blast_heal        = find_spell( 325315 );
-  covenant.ascended_eruption          = find_spell( 325326 );
-  covenant.ascended_nova              = find_spell( 325020 );
-  covenant.boon_of_the_ascended       = find_covenant_spell( "Boon of the Ascended" );
-  covenant.fae_guardians              = find_covenant_spell( "Fae Guardians" );
-  covenant.mindgames                  = find_covenant_spell( "Mindgames" );
-  covenant.mindgames_healing_reversal = find_spell( 323707 );  // TODO: Swap to new DF spells
-  covenant.mindgames_damage_reversal  = find_spell( 323706 );  // TODO: Swap to new DF spells 375902 + 375904
-  covenant.unholy_nova                = find_covenant_spell( "Unholy Nova" );
 
   // Priest Tree Talents
   // Row 1
@@ -2857,16 +1972,18 @@ void priest_t::init_spells()
   talents.twist_of_fate   = CT( "Twist of Fate" );
   talents.throes_of_pain  = CT( "Throes of Pain" );
   // Row 8
-  talents.angels_mercy      = CT( "Angel's Mercy" );  // NYI
-  talents.binding_heals     = CT( "Binding Heals" );  // NYI
-  talents.halo              = CT( "Halo" );
-  talents.halo_heal         = specialization() == PRIEST_SHADOW ? find_spell( 390971 ) : find_spell( 120692 );
-  talents.halo_dmg          = specialization() == PRIEST_SHADOW ? find_spell( 390964 ) : find_spell( 120696 );
-  talents.divine_star       = CT( "Divine Star" );
-  talents.divine_star_heal  = specialization() == PRIEST_SHADOW ? find_spell( 390981 ) : find_spell( 110745 );
-  talents.divine_star_dmg   = specialization() == PRIEST_SHADOW ? find_spell( 390845 ) : find_spell( 122128 );
-  talents.translucent_image = CT( "Translucent Image" );
-  talents.mindgames         = CT( "Mindgames" );
+  talents.angels_mercy               = CT( "Angel's Mercy" );  // NYI
+  talents.binding_heals              = CT( "Binding Heals" );  // NYI
+  talents.halo                       = CT( "Halo" );
+  talents.halo_heal                  = specialization() == PRIEST_SHADOW ? find_spell( 390971 ) : find_spell( 120692 );
+  talents.halo_dmg                   = specialization() == PRIEST_SHADOW ? find_spell( 390964 ) : find_spell( 120696 );
+  talents.divine_star                = CT( "Divine Star" );
+  talents.divine_star_heal           = specialization() == PRIEST_SHADOW ? find_spell( 390981 ) : find_spell( 110745 );
+  talents.divine_star_dmg            = specialization() == PRIEST_SHADOW ? find_spell( 390845 ) : find_spell( 122128 );
+  talents.translucent_image          = CT( "Translucent Image" );
+  talents.mindgames                  = CT( "Mindgames" );
+  talents.mindgames_healing_reversal = find_spell( 323707 );  // TODO: Swap to new DF spells
+  talents.mindgames_damage_reversal  = find_spell( 323706 );  // TODO: Swap to new DF spells 375902 + 375904
   // Row 9
   talents.surge_of_light         = CT( "Surge of Light" );  // TODO: find out buff spell ID
   talents.lights_inspiration     = CT( "Light's Inspiration" );
@@ -2920,23 +2037,6 @@ void priest_t::create_buffs()
           ->set_default_value_from_effect( 1 );
   buffs.words_of_the_pious = make_buff( this, "words_of_the_pious", talents.words_of_the_pious->effectN( 1 ).trigger() )
                                  ->set_default_value_from_effect( 1 );
-  // Shared buffs
-  buffs.the_penitent_one = make_buff( this, "the_penitent_one", legendary.the_penitent_one->effectN( 1 ).trigger() )
-                               ->set_trigger_spell( legendary.the_penitent_one );
-
-  // Runeforge Buffs
-  buffs.shadow_word_manipulation = make_buff( this, "shadow_word_manipulation", find_spell( 357028 ) )
-                                       ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
-                                       ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE );
-  buffs.rigor_mortis = make_buff<buffs::rigor_mortis_t>( *this )->set_default_value_from_effect( 2 );
-
-  // Covenant Buffs
-  buffs.fae_guardians        = make_buff<buffs::fae_guardians_t>( *this );
-  buffs.boon_of_the_ascended = make_buff<buffs::boon_of_the_ascended_t>( *this );
-
-  // Conduit Buffs
-  buffs.translucent_image_conduit = make_buff( this, "translucent_image_conduit", find_spell( 337661 ) )
-                                        ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN );
 
   create_buffs_shadow();
   create_buffs_discipline();
@@ -2954,18 +2054,6 @@ void priest_t::init_rng()
 
 void priest_t::init_background_actions()
 {
-  background_actions.ascended_blast_heal = new actions::spells::ascended_blast_heal_t( *this );
-
-  background_actions.ascended_eruption = new actions::spells::ascended_eruption_t( *this );
-
-  background_actions.ascended_eruption_heal = new actions::spells::ascended_eruption_heal_t( *this );
-
-  background_actions.wrathful_faerie = new actions::spells::wrathful_faerie_t( *this );
-
-  background_actions.wrathful_faerie_fermata = new actions::spells::wrathful_faerie_fermata_t( *this );
-
-  background_actions.unholy_transfusion_healing = new actions::spells::unholy_transfusion_healing_t( *this );
-
   background_actions.echoing_void = new actions::spells::echoing_void_t( *this );
 
   init_background_actions_shadow();
@@ -3138,29 +2226,11 @@ void priest_t::create_options()
 {
   base_t::create_options();
 
-  add_option( opt_deprecated( "autounshift", "priest.autounshift" ) );
-  add_option( opt_deprecated( "priest_fixed_time", "priest.fixed_time" ) );
-  add_option( opt_deprecated( "priest_use_ascended_nova", "priest.use_ascended_nova" ) );
-  add_option( opt_deprecated( "priest_use_ascended_eruption", "priest.use_ascended_eruption" ) );
-  add_option( opt_deprecated( "priest_mindgames_healing_reversal", "priest.mindgames_healing_reversal" ) );
-  add_option( opt_deprecated( "priest_mindgames_damage_reversal", "priest.mindgames_damage_reversal" ) );
-  add_option( opt_deprecated( "priest_self_power_infusion", "priest.self_power_infusion" ) );
-  add_option( opt_deprecated( "priest_self_benevolent_faerie", "priest.self_benevolent_faerie" ) );
-  add_option( opt_deprecated( "priest_cauterizing_shadows_allies", "priest.cauterizing_shadows_allies" ) );
-
   add_option( opt_bool( "priest.autounshift", options.autoUnshift ) );
   add_option( opt_bool( "priest.fixed_time", options.fixed_time ) );
-  add_option( opt_bool( "priest.use_ascended_nova", options.use_ascended_nova ) );
-  add_option( opt_bool( "priest.use_ascended_eruption", options.use_ascended_eruption ) );
   add_option( opt_bool( "priest.mindgames_healing_reversal", options.mindgames_healing_reversal ) );
   add_option( opt_bool( "priest.mindgames_damage_reversal", options.mindgames_damage_reversal ) );
   add_option( opt_bool( "priest.self_power_infusion", options.self_power_infusion ) );
-  add_option( opt_bool( "priest.self_benevolent_faerie", options.self_benevolent_faerie ) );
-  add_option( opt_int( "priest.cauterizing_shadows_allies", options.cauterizing_shadows_allies ) );
-  add_option( opt_string( "priest.bwonsamdis_pact_mask_type", options.bwonsamdis_pact_mask_type ) );
-  add_option( opt_int( "priest.shadow_word_manipulation_seconds_remaining",
-                       options.shadow_word_manipulation_seconds_remaining, 0, 8 ) );
-  add_option( opt_int( "priest.pallid_command_allies", options.pallid_command_allies, 0, 50 ) );
   add_option( opt_bool( "priest.power_infusion_fiend", options.power_infusion_fiend ) );
 }
 
@@ -3198,34 +2268,6 @@ void priest_t::arise()
   base_t::arise();
 }
 
-// Legendary Eternal Call to the Void trigger
-void priest_t::trigger_eternal_call_to_the_void( action_state_t* s )
-{
-  auto mind_sear_id = talents.shadow.mind_sear->effectN( 1 ).trigger()->id();
-  auto mind_flay_id = specs.mind_flay->id();
-  auto action_id    = s->action->id;
-  if ( !legendary.eternal_call_to_the_void->ok() )
-    return;
-
-  // To prevent conflict dont spawn ECttV tendrils when also using the talent
-  if ( talents.shadow.idol_of_cthun.enabled() )
-    return;
-
-  if ( rppm.eternal_call_to_the_void->trigger() )
-  {
-    if ( action_id == mind_flay_id )
-    {
-      procs.void_tendril_ecttv->occur();
-      auto spawned_pets = pets.void_tendril.spawn();
-    }
-    else if ( action_id == mind_sear_id )
-    {
-      procs.void_lasher_ecttv->occur();
-      auto spawned_pets = pets.void_lasher.spawn();
-    }
-  }
-}
-
 // Idol of C'Thun Talent Trigger
 void priest_t::trigger_idol_of_cthun( action_state_t* s )
 {
@@ -3247,42 +2289,6 @@ void priest_t::trigger_idol_of_cthun( action_state_t* s )
     {
       procs.void_lasher->occur();
       auto spawned_pets = pets.void_lasher.spawn();
-    }
-  }
-}
-
-// Fae Guardian Wrathful Faerie helper
-void priest_t::remove_wrathful_faerie()
-{
-  for ( priest_td_t* priest_td : _target_data.get_entries() )
-  {
-    if ( priest_td && priest_td->buffs.wrathful_faerie->check() )
-    {
-      priest_td->buffs.wrathful_faerie->expire();
-
-      // If you have the conduit enabled, clear out the conduit buff and trigger it on the old Wrathful Faerie target
-      if ( conduits.fae_fermata->ok() && buffs.fae_guardians->check() )
-      {
-        priest_td->buffs.wrathful_faerie_fermata->trigger();
-      }
-    }
-  }
-}
-
-// Fae Guardian Wrathful Faerie conduit buff helper
-// TODO: this might not be needed anymore
-void priest_t::remove_wrathful_faerie_fermata()
-{
-  if ( !conduits.fae_fermata->ok() )
-  {
-    return;
-  }
-
-  for ( priest_td_t* priest_td : _target_data.get_entries() )
-  {
-    if ( priest_td && priest_td->buffs.wrathful_faerie->check() )
-    {
-      priest_td->buffs.wrathful_faerie_fermata->expire();
     }
   }
 }
@@ -3354,17 +2360,10 @@ struct priest_module_t final : public module_t
   }
   void init( player_t* p ) const override
   {
-    p->buffs.guardian_spirit   = make_buff( p, "guardian_spirit",
+    p->buffs.guardian_spirit  = make_buff( p, "guardian_spirit",
                                           p->find_spell( 47788 ) );  // Let the ability handle the CD
-    p->buffs.pain_suppression  = make_buff( p, "pain_suppression",
+    p->buffs.pain_suppression = make_buff( p, "pain_suppression",
                                            p->find_spell( 33206 ) );  // Let the ability handle the CD
-    p->buffs.benevolent_faerie = make_buff<buffs::benevolent_faerie_t>( p, "benevolent_faerie" );
-    // TODO: Whitelist Buff 356968 instead of hacking this.
-    p->buffs.bwonsamdis_pact_benevolent =
-        make_buff<buffs::benevolent_faerie_t>( p, "bwonsamdis_pact_benevolent_faerie" );
-
-    p->buffs.bwonsamdis_pact_benevolent->default_value_effect_idx = 0;
-    p->buffs.bwonsamdis_pact_benevolent->set_default_value( 0.5, 0 );
   }
   void static_init() const override
   {

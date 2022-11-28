@@ -63,10 +63,6 @@ void merge_pet_stats( player_t& owner, pet_t& pet, action_t& action )
 
 namespace actions
 {
-struct shadow_spike_t;
-struct shadow_spike_volley_t;
-struct shadow_sear_t;
-struct shadow_nova_t;
 }  // namespace actions
 
 /**
@@ -337,7 +333,6 @@ namespace fiend
 namespace actions
 {
 struct inescapable_torment_t;
-struct shadowflame_prism_legendary_t;
 }  // namespace actions
 
 /**
@@ -346,7 +341,6 @@ struct shadowflame_prism_legendary_t;
 struct base_fiend_pet_t : public priest_pet_t
 {
   propagate_const<actions::inescapable_torment_t*> inescapable_torment;
-  propagate_const<actions::shadowflame_prism_legendary_t*> shadowflame_prism_legendary;
 
   struct gains_t
   {
@@ -364,7 +358,6 @@ struct base_fiend_pet_t : public priest_pet_t
   base_fiend_pet_t( sim_t* sim, priest_t& owner, util::string_view name, enum fiend_type type )
     : priest_pet_t( sim, owner, name ),
       inescapable_torment( nullptr ),
-      shadowflame_prism_legendary( nullptr ),
       gains(),
       fiend_type( type ),
       direct_power_mod( 0.0 )
@@ -592,32 +585,6 @@ struct fiend_melee_t : public priest_pet_melee_t
 };
 
 // ==========================================================================
-// Shadowflame Rift (Shadowlands Legendary)
-// ==========================================================================
-struct shadowflame_rift_t final : public priest_pet_spell_t
-{
-  shadowflame_rift_t( base_fiend_pet_t& p ) : priest_pet_spell_t( "shadowflame_rift", p, p.o().find_spell( 344748 ) )
-  {
-    background                 = true;
-    affected_by_shadow_weaving = true;
-
-    // This is hard coded in the spell
-    // Depending on Mindbender or Shadowfiend this hits differently
-    switch ( p.fiend_type )
-    {
-      case base_fiend_pet_t::fiend_type::Mindbender:
-      {
-        spell_power_mod.direct *= 0.442;
-      }
-      break;
-      default:
-        spell_power_mod.direct *= 0.408;
-        break;
-    }
-  }
-};
-
-// ==========================================================================
 // Inescapable Torment Damage
 // talent=373427
 // ?     =373442
@@ -643,40 +610,6 @@ struct inescapable_torment_damage_t final : public priest_pet_spell_t
 
     // Tuning modifier effect
     spell_power_mod.direct *= ( 1 + p.o().specs.shadow_priest->effectN( 14 ).percent() );
-  }
-};
-
-// ==========================================================================
-// Shadowflame Prism (Shadowlands Legendary)
-// ==========================================================================
-struct shadowflame_prism_legendary_t final : public priest_pet_spell_t
-{
-  timespan_t duration;
-
-  shadowflame_prism_legendary_t( base_fiend_pet_t& p )
-    : priest_pet_spell_t( "shadowflame_prism_legendary", p, p.o().find_spell( 336143 ) ),
-      duration( timespan_t::from_seconds( data().effectN( 3 ).base_value() ) )
-  {
-    background = true;
-
-    impact_action = new shadowflame_rift_t( p );
-    add_child( impact_action );
-  }
-
-  void execute() override
-  {
-    priest_pet_spell_t::execute();
-
-    auto& current_pet = p();
-
-    if ( !current_pet.is_sleeping() )
-    {
-      auto remaining_duration = current_pet.expiration->remains();
-      auto new_duration       = remaining_duration + duration;
-      sim->print_debug( "Increasing {} duration by {}, new duration is {} up from {}.", current_pet.full_name_str,
-                        duration, new_duration, remaining_duration );
-      current_pet.expiration->reschedule( new_duration );
-    }
   }
 };
 
@@ -740,8 +673,7 @@ void base_fiend_pet_t::init_background_actions()
 {
   priest_pet_t::init_background_actions();
 
-  inescapable_torment         = new fiend::actions::inescapable_torment_t( *this );
-  shadowflame_prism_legendary = new fiend::actions::shadowflame_prism_legendary_t( *this );
+  inescapable_torment = new fiend::actions::inescapable_torment_t( *this );
 }
 
 action_t* base_fiend_pet_t::create_action( util::string_view name, util::string_view options_str )
@@ -751,126 +683,8 @@ action_t* base_fiend_pet_t::create_action( util::string_view name, util::string_
 
 }  // namespace fiend
 
-struct priest_pallid_command_t : public priest_pet_t
-{
-  priest_pallid_command_t( priest_t* owner, util::string_view pet_name )
-    : priest_pet_t( owner->sim, *owner, pet_name, true )
-  {
-  }
-
-  void demise() override
-  {
-    priest_pet_t::demise();
-    o().buffs.rigor_mortis->expire();
-  }
-
-  action_t* create_action( util::string_view name, util::string_view options_str ) override;
-};
-
-struct rattling_mage_t final : public priest_pallid_command_t
-{
-  rattling_mage_t( priest_t* owner ) : priest_pallid_command_t( owner, "rattling_mage" )
-  {
-  }
-
-  void init_action_list() override
-  {
-    priest_pet_t::init_action_list();
-
-    action_priority_list_t* def = get_action_priority_list( "default" );
-    def->add_action( "unholy_bolt" );
-  }
-};
-
-struct cackling_chemist_t final : public priest_pallid_command_t
-{
-  cackling_chemist_t( priest_t* owner ) : priest_pallid_command_t( owner, "cackling_chemist" )
-  {
-  }
-
-  void init_action_list() override
-  {
-    priest_pet_t::init_action_list();
-
-    action_priority_list_t* def = get_action_priority_list( "default" );
-    def->add_action( "throw_viscous_concoction" );
-  }
-};
-
-struct rattling_mage_unholy_bolt_t final : public priest_pet_spell_t
-{
-  propagate_const<buff_t*> rigor_mortis_buff;
-
-  rattling_mage_unholy_bolt_t( priest_pallid_command_t& p, util::string_view options )
-    : priest_pet_spell_t( "unholy_bolt", p, p.o().find_spell( 356431 ) ), rigor_mortis_buff( p.o().buffs.rigor_mortis )
-  {
-    // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/854
-    affected_by_shadow_weaving = false;
-    parse_options( options );
-  }
-
-  double composite_da_multiplier( const action_state_t* s ) const override
-  {
-    double m = priest_pet_spell_t::composite_da_multiplier( s );
-
-    m *= 1 + rigor_mortis_buff->check_stack_value();
-
-    return m;
-  }
-
-  void init() override
-  {
-    priest_pet_spell_t::init();
-
-    merge_pet_stats( p().o(), p(), *this );
-  }
-};
-
-struct cackling_chemist_throw_viscous_concoction_t final : public priest_pet_spell_t
-{
-  propagate_const<buff_t*> rigor_mortis_buff;
-
-  cackling_chemist_throw_viscous_concoction_t( priest_pallid_command_t& p, util::string_view options )
-    : priest_pet_spell_t( "throw_viscous_concoction", p, p.o().find_spell( 356633 ) ),
-      rigor_mortis_buff( p.o().buffs.rigor_mortis )
-  {
-    parse_options( options );
-  }
-
-  void init() override
-  {
-    priest_pet_spell_t::init();
-
-    merge_pet_stats( p().o(), p(), *this );
-  }
-
-  double composite_da_multiplier( const action_state_t* s ) const override
-  {
-    double m = priest_pet_spell_t::composite_da_multiplier( s );
-
-    m *= 1 + rigor_mortis_buff->check_stack_value();
-
-    return m;
-  }
-};
-
-action_t* priest_pallid_command_t::create_action( util::string_view name, util::string_view options_str )
-{
-  if ( name == "unholy_bolt" )
-  {
-    return new rattling_mage_unholy_bolt_t( *this, options_str );
-  }
-
-  if ( name == "throw_viscous_concoction" )
-  {
-    return new cackling_chemist_throw_viscous_concoction_t( *this, options_str );
-  }
-
-  return priest_pet_t::create_action( name, options_str );
-}
-
 // ==========================================================================
-// Eternal Call to the Void and Idol of C'Thun
+// Idol of C'Thun
 // ==========================================================================
 struct void_tendril_t final : public priest_pet_t
 {
@@ -890,7 +704,7 @@ struct void_tendril_t final : public priest_pet_t
   action_t* create_action( util::string_view name, util::string_view options_str ) override;
 };
 
-// Insanity gain (legendary=336214, cthun=377358)
+// Insanity gain (377358)
 struct void_tendril_mind_flay_t final : public priest_pet_spell_t
 {
   double void_tendril_insanity_gain;
@@ -939,15 +753,7 @@ struct void_tendril_mind_flay_t final : public priest_pet_spell_t
   {
     priest_pet_spell_t::init();
 
-    // TODO: remove after launch
-    if ( p().o().talents.shadow.idol_of_cthun.enabled() )
-    {
-      merge_pet_stats_to_owner_action( p().o(), p(), *this, "idol_of_cthun" );
-    }
-    else
-    {
-      merge_pet_stats_to_owner_action( p().o(), p(), *this, "eternal_call_to_the_void" );
-    }
+    merge_pet_stats_to_owner_action( p().o(), p(), *this, "idol_of_cthun" );
   }
 
   timespan_t composite_dot_duration( const action_state_t* ) const override
@@ -966,17 +772,8 @@ struct void_tendril_mind_flay_t final : public priest_pet_spell_t
   {
     priest_pet_spell_t::tick( d );
 
-    // TODO: remove after launch
-    if ( p().o().talents.shadow.idol_of_cthun.enabled() )
-    {
-      p().o().generate_insanity( void_tendril_insanity_gain, p().o().gains.insanity_idol_of_cthun_mind_flay,
-                                 d->state->action );
-    }
-    else
-    {
-      p().o().generate_insanity( void_tendril_insanity_gain, p().o().gains.insanity_eternal_call_to_the_void_mind_flay,
-                                 d->state->action );
-    }
+    p().o().generate_insanity( void_tendril_insanity_gain, p().o().gains.insanity_idol_of_cthun_mind_flay,
+                               d->state->action );
   }
 };
 
@@ -1008,7 +805,7 @@ struct void_lasher_t final : public priest_pet_t
   action_t* create_action( util::string_view name, util::string_view options_str ) override;
 };
 
-// Insanity gain (legendary=208232, cthun=377358)
+// Insanity gain (377358)
 struct void_lasher_mind_sear_tick_t final : public priest_pet_spell_t
 {
   void_lasher_mind_sear_tick_t( void_lasher_t& p, const spell_data_t* s ) : priest_pet_spell_t( "mind_sear_tick", p, s )
@@ -1032,15 +829,7 @@ struct void_lasher_mind_sear_tick_t final : public priest_pet_spell_t
   {
     priest_pet_spell_t::init();
 
-    // TODO: remove after launch
-    if ( p().o().talents.shadow.idol_of_cthun.enabled() )
-    {
-      merge_pet_stats_to_owner_action( p().o(), p(), *this, "idol_of_cthun" );
-    }
-    else
-    {
-      merge_pet_stats_to_owner_action( p().o(), p(), *this, "eternal_call_to_the_void" );
-    }
+    merge_pet_stats_to_owner_action( p().o(), p(), *this, "idol_of_cthun" );
   }
 
   timespan_t composite_dot_duration( const action_state_t* ) const override
@@ -1056,7 +845,6 @@ struct void_lasher_mind_sear_tick_t final : public priest_pet_spell_t
   }
 };
 
-// Legendary: 344754 -> 344752
 // Idol of C'thun: 394976 -> 394979
 struct void_lasher_mind_sear_t final : public priest_pet_spell_t
 {
@@ -1077,17 +865,8 @@ struct void_lasher_mind_sear_t final : public priest_pet_spell_t
   {
     priest_pet_spell_t::tick( d );
 
-    // TODO: remove after launch
-    if ( p().o().talents.shadow.idol_of_cthun.enabled() )
-    {
-      p().o().generate_insanity( void_lasher_insanity_gain, p().o().gains.insanity_idol_of_cthun_mind_sear,
-                                 d->state->action );
-    }
-    else
-    {
-      p().o().generate_insanity( void_lasher_insanity_gain, p().o().gains.insanity_eternal_call_to_the_void_mind_sear,
-                                 d->state->action );
-    }
+    p().o().generate_insanity( void_lasher_insanity_gain, p().o().gains.insanity_idol_of_cthun_mind_sear,
+                               d->state->action );
   }
 };
 
@@ -1280,7 +1059,7 @@ pet_t* priest_t::create_pet( util::string_view pet_name, util::string_view /* pe
   return nullptr;
 }
 
-void priest_t::trigger_shadowflame_prism( player_t* target )
+void priest_t::trigger_inescapable_torment( player_t* target )
 {
   auto current_pet = get_current_main_pet( *this );
   if ( current_pet && !current_pet->is_sleeping() )
@@ -1290,12 +1069,6 @@ void priest_t::trigger_shadowflame_prism( player_t* target )
       assert( current_pet->inescapable_torment );
       current_pet->inescapable_torment->set_target( target );
       current_pet->inescapable_torment->execute();
-    }
-    else
-    {
-      assert( current_pet->shadowflame_prism_legendary );
-      current_pet->shadowflame_prism_legendary->set_target( target );
-      current_pet->shadowflame_prism_legendary->execute();
     }
   }
 }
@@ -1380,20 +1153,14 @@ priest_t::priest_pets_t::priest_pets_t( priest_t& p )
     mindbender(),
     void_tendril( "void_tendril", &p, []( priest_t* priest ) { return new void_tendril_t( priest ); } ),
     void_lasher( "void_lasher", &p, []( priest_t* priest ) { return new void_lasher_t( priest ); } ),
-    rattling_mage( "rattling_mage", &p, []( priest_t* priest ) { return new rattling_mage_t( priest ); } ),
-    cackling_chemist( "cackling_chemist", &p, []( priest_t* priest ) { return new cackling_chemist_t( priest ); } ),
     thing_from_beyond( "thing_from_beyond", &p, []( priest_t* priest ) { return new thing_from_beyond_t( priest ); } )
 {
-  // Void Tendril: legendary=193473 | cthun=377355
-  // Void Lasher: legendary=336216 | cthun=377355
+  // Void Tendril: 377355
+  // Void Lasher: 377355
   auto idol_of_cthun = p.find_spell( 377355 );
   // Add 1ms to ensure pet is dismissed after last dot tick.
   void_tendril.set_default_duration( idol_of_cthun->duration() + timespan_t::from_millis( 1 ) );
   void_lasher.set_default_duration( idol_of_cthun->duration() + timespan_t::from_millis( 1 ) );
-
-  auto rigor_mortis_duration = p.find_spell( 356467 )->duration();
-  rattling_mage.set_default_duration( rigor_mortis_duration );
-  cackling_chemist.set_default_duration( rigor_mortis_duration );
 
   auto thing_from_beyond_spell = p.find_spell( 373277 );
   thing_from_beyond.set_default_duration( thing_from_beyond_spell->duration() );
