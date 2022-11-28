@@ -2058,7 +2058,7 @@ infernal_t::infernal_t( warlock_t* owner, util::string_view name )
 struct immolation_tick_t : public warlock_pet_spell_t
 {
   immolation_tick_t( warlock_pet_t* p )
-    : warlock_pet_spell_t( "immolation", p, p->find_spell( 20153 ) )
+    : warlock_pet_spell_t( "Immolation", p, p->find_spell( 20153 ) )
   {
     aoe = -1;
     background = may_crit = true;
@@ -2068,7 +2068,7 @@ struct immolation_tick_t : public warlock_pet_spell_t
   {
     double m = warlock_pet_spell_t::composite_target_da_multiplier( t );
 
-    if ( pet_td( t )->debuff_infernal_brand->check() )
+    if ( p()->o()->talents.infernal_brand->ok() )
       m *= 1.0 + pet_td( t )->debuff_infernal_brand->check_stack_value();
 
     return m;
@@ -2085,7 +2085,7 @@ struct infernal_melee_t : warlock_pet_melee_t
   {
     warlock_pet_melee_t::impact( s );
 
-    if ( p()->o()->talents.infernal_brand.ok() )
+    if ( p()->o()->talents.infernal_brand->ok() )
     {
       pet_td( s->target )->debuff_infernal_brand->trigger();
     }
@@ -2107,7 +2107,7 @@ void infernal_t::create_buffs()
 
   immolation = make_buff<buff_t>( this, "immolation", find_spell( 19483 ) )
                    ->set_tick_time_behavior( buff_tick_time_behavior::HASTED )
-                   ->set_tick_callback( [ damage, this ]( buff_t* /* b  */, int /* stacks */, timespan_t /* tick_time */ ) {
+                   ->set_tick_callback( [ damage, this ]( buff_t*, int, timespan_t ) {
                         damage->execute_on_target( target );
                      } );
 }
@@ -2138,12 +2138,11 @@ void infernal_t::arise()
 /// Blasphemy Begin
 blasphemy_t::blasphemy_t( warlock_t* owner, util::string_view name )
   : infernal_t( owner, name )
-{
-}
+{  }
 
 struct blasphemous_existence_t : public warlock_pet_spell_t
 {
-  blasphemous_existence_t( warlock_pet_t* p ) : warlock_pet_spell_t( "blasphemous_existence", p, p->find_spell( 367819 ) )
+  blasphemous_existence_t( warlock_pet_t* p ) : warlock_pet_spell_t( "Blasphemous Existence", p, p->find_spell( 367819 ) )
   {
     aoe = -1;
     background = true;
@@ -2153,9 +2152,6 @@ struct blasphemous_existence_t : public warlock_pet_spell_t
 void blasphemy_t::init_base_stats()
 {
   infernal_t::init_base_stats();
-
-  // 2022-10-17: Blasphemy no longer benefits from Infernal Brand, override with default melee attack
-  melee_attack = new warlock_pet_melee_t( this, 2.0 );
 
   blasphemous_existence = new blasphemous_existence_t( this );
 }
