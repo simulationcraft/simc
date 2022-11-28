@@ -146,18 +146,17 @@ struct agony_t : public affliction_spell_t
 struct unstable_affliction_t : public affliction_spell_t
 {
   unstable_affliction_t( warlock_t* p, util::string_view options_str )
-    : affliction_spell_t( "unstable_affliction", p, p->talents.unstable_affliction )
+    : affliction_spell_t( "Unstable Affliction", p, p->talents.unstable_affliction )
   {
     parse_options( options_str );
 
-    // DF - In beta the rank 3 passive appears to be learned as part of the spec automatically
-    dot_duration += timespan_t::from_millis( p->talents.unstable_affliction_3->effectN( 1 ).base_value() );
+    dot_duration += p->talents.unstable_affliction_3->effectN( 1 ).time_value();
   }
 
   unstable_affliction_t( warlock_t* p )
-    : affliction_spell_t( "unstable_affliction", p, p->talents.soul_swap_ua )
+    : affliction_spell_t( "Unstable Affliction", p, p->talents.soul_swap_ua )
   {
-    dot_duration += timespan_t::from_millis( p->talents.unstable_affliction_3->effectN( 1 ).base_value() );
+    dot_duration += p->talents.unstable_affliction_3->effectN( 1 ).time_value();
   }
 
   void execute() override
@@ -175,10 +174,8 @@ struct unstable_affliction_t : public affliction_spell_t
 
   void impact( action_state_t* s ) override
   {
-    auto dot_data = td( s->target )->dots_unstable_affliction;
-
-    bool pi_trigger = p()->talents.pandemic_invocation.ok() && dot_data->is_ticking()
-      && dot_data->remains() < timespan_t::from_millis( p()->talents.pandemic_invocation->effectN( 1 ).base_value() );
+    bool pi_trigger = p()->talents.pandemic_invocation->ok() && td( s->target )->dots_unstable_affliction->is_ticking()
+      && td( s->target )->dots_unstable_affliction->remains() < p()->talents.pandemic_invocation->effectN( 1 ).time_value();
 
     affliction_spell_t::impact( s );
 
@@ -190,7 +187,7 @@ struct unstable_affliction_t : public affliction_spell_t
   {
     affliction_spell_t::tick( d );
 
-    if ( p()->talents.souleaters_gluttony.ok() )
+    if ( p()->talents.souleaters_gluttony->ok() )
     {
       timespan_t adjustment = timespan_t::from_seconds( p()->talents.souleaters_gluttony->effectN( 1 ).base_value() );
       adjustment = adjustment / p()->talents.souleaters_gluttony->effectN( 2 ).base_value();
@@ -210,7 +207,7 @@ struct unstable_affliction_t : public affliction_spell_t
   {
     double m = affliction_spell_t::composite_ta_multiplier( s );
 
-    if ( p()->talents.malefic_affliction.ok() && p()->buffs.malefic_affliction->check() )
+    if ( p()->talents.malefic_affliction->ok() && p()->buffs.malefic_affliction->check() )
       m *= 1.0 + p()->buffs.malefic_affliction->check_stack_value();
 
     return m;
