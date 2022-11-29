@@ -4607,7 +4607,7 @@ struct overpower_t : public warrior_attack_t
     weapon                            = &( p->main_hand_weapon );
     if ( p->talents.arms.battlelord->ok() )
     {
-      base_multiplier *= 1.0 + p->talents.arms.overpower->effectN( 2 ).percent(); // stand in for new BL effect
+      base_multiplier *= 1.0 + p->talents.arms.battlelord->effectN( 1 ).percent();
     }
 
     if ( p->talents.arms.dreadnaught->ok() )
