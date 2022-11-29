@@ -885,13 +885,13 @@ struct nether_portal_t : public demonology_spell_t
 struct guillotine_t : public demonology_spell_t
 {
   guillotine_t( warlock_t* p, util::string_view options_str )
-    : demonology_spell_t( "guillotine", p, p->talents.guillotine )
+    : demonology_spell_t( "Guillotine", p, p->talents.guillotine )
   {
     parse_options( options_str );
     may_crit = false;
   }
 
-  // Guillotine takes priority over any other actions, so the only requirement is to have a Felguard
+  // Guillotine takes priority over any other actions except Demonic Strength Felstorm
   bool ready() override
   {
     auto active_pet = p()->warlock_pet_list.active;
@@ -901,6 +901,9 @@ struct guillotine_t : public demonology_spell_t
 
     if ( active_pet->pet_type != PET_FELGUARD )
       return false;
+
+    if ( active_pet->find_action( "demonic_strength_felstorm" )->get_dot()->is_ticking() )
+      return false;
     
     return spell_t::ready();
   }
@@ -909,7 +912,8 @@ struct guillotine_t : public demonology_spell_t
   {
     auto active_pet = p()->warlock_pet_list.active;
 
-    // 2022-10-09: Activating Guillotine will cancel any active Felstorm
+    // Activating Guillotine will cancel any active Felstorm
+    // Since Guillotine should not be usable when Demonic Strength Felstorm is active, we shouldn't hit that code, but keep it to be safe
     if ( active_pet->find_action( "felstorm" )->get_dot()->is_ticking() )
     {
       active_pet->find_action( "felstorm" )->cancel();
