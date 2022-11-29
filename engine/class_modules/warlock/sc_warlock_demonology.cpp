@@ -806,20 +806,22 @@ struct soul_strike_t : public demonology_spell_t
     : demonology_spell_t( "Soul Strike", p, p->talents.soul_strike )
   {
     parse_options( options_str );
-    energize_type     = action_energize::ON_CAST;
+    energize_type = action_energize::ON_CAST;
     energize_resource = RESOURCE_SOUL_SHARD;
-    energize_amount   = 1;
+    energize_amount = 1.0;
   }
+
   void execute() override
   {
     demonology_spell_t::execute();
+
     if ( p()->warlock_pet_list.active->pet_type == PET_FELGUARD )
     {
       auto pet = debug_cast<pets::demonology::felguard_pet_t*>( p()->warlock_pet_list.active );
-      pet->soul_strike->set_target( execute_state->target );
-      pet->soul_strike->execute();
+      pet->soul_strike->execute_on_target( execute_state->target );
     }
   }
+
   bool ready() override
   {
     if ( p()->warlock_pet_list.active->pet_type == PET_FELGUARD )

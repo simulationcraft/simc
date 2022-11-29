@@ -753,7 +753,7 @@ struct soul_strike_t : public warlock_pet_melee_attack_t
 
     warlock_pet_melee_attack_t::impact( s );
     
-    if ( p()->o()->talents.antoran_armaments.ok() )
+    if ( p()->o()->talents.antoran_armaments->ok() )
       soul_cleave->execute_on_target( s->target, amount );
   }
 };
