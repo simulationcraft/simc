@@ -8835,86 +8835,51 @@ void warrior_t::apl_prot()
   default_apl_dps_precombat();
 
   action_priority_list_t* default_list = get_action_priority_list( "default" );
-  action_priority_list_t* generic      = get_action_priority_list( "generic" );
   action_priority_list_t* aoe          = get_action_priority_list( "aoe" );
+  action_priority_list_t* generic      = get_action_priority_list( "generic" );
 
   default_list -> add_action( "auto_attack" );
-  default_list -> add_action( "shield_charge,if=time=0" );
-  default_list -> add_action( "charge,if=time=0" );
-  default_list -> add_action( "use_items,if=talent.avatar&(cooldown.avatar.remains<=gcd|buff.avatar.up)|!talent.avatar" );
-  //use off GCD racial buffs with avatar, or rip on cd if no avatar
-  default_list -> add_action( "blood_fury,if=buff.avatar.up|!talent.avatar" );
-  default_list -> add_action( "berserking,if=buff.avatar.up|!talent.avatar" );
-  default_list -> add_action( "fireblood,if=buff.avatar.up|!talent.avatar" );
-  default_list -> add_action( "ancestral_call,if=buff.avatar.up|!talent.avatar" );
-  default_list -> add_action( "potion,if=buff.avatar.up|target.time_to_die<25" );
-  //Prioritize Revenge! procs if SS is on cd and not in execute.
-  default_list -> add_action( "revenge,if=buff.revenge.up&(target.health.pct>20|spell_targets.thunder_clap>3)&cooldown.shield_slam.remains" );
-  default_list -> add_action( "ignore_pain,if=target.health.pct>=20&(target.health.pct>=80&!covenant.venthyr)&(rage>=85&cooldown.shield_slam.ready&buff.shield_block.up|rage>=60&cooldown.demoralizing_shout.ready&talent.booming_voice.enabled|rage>=70&cooldown.avatar.ready|rage>=40&cooldown.demoralizing_shout.ready&talent.booming_voice.enabled&buff.last_stand.up|rage>=55&cooldown.avatar.ready&buff.last_stand.up|rage>=80|rage>=55&cooldown.shield_slam.ready&buff.violent_outburst.up&buff.shield_block.up|rage>=30&cooldown.shield_slam.ready&buff.violent_outburst.up&buff.last_stand.up&buff.shield_block.up),use_off_gcd=1");
-  //Shield Block if missing the buff, or SS is about to come off CD, but ignore during execute.
-  default_list -> add_action( "shield_block,if=(buff.shield_block.down|buff.shield_block.remains<cooldown.shield_slam.remains)&target.health.pct>20" );
-  default_list -> add_action( "shield_slam,if=buff.violent_outburst.up&rage<=55");
+  default_list -> add_action( "actions+=/charge,if=time=0" );
+  default_list -> add_action( "actions+=/use_items" );
+  default_list -> add_action( "actions+=/avatar" );
+  default_list -> add_action( "actions+=/shield_wall,if=talent.immovable_object.enabled&buff.avatar.down" );
+  default_list -> add_action( "actions+=/blood_fury" );
+  default_list -> add_action( "actions+=/berserking" );
+  default_list -> add_action( "actions+=/arcane_torrent" );
+  default_list -> add_action( "actions+=/lights_judgment" );
+  default_list -> add_action( "actions+=/fireblood" );
+  default_list -> add_action( "actions+=/ancestral_call" );
+  default_list -> add_action( "actions+=/bag_of_tricks" );
+  default_list -> add_action( "actions+=/potion,if=buff.avatar.up|buff.avatar.up&target.health.pct<=20" );
+  default_list -> add_action( "actions+=/ignore_pain,if=target.health.pct>=20&(rage.deficit<=15&cooldown.shield_slam.ready|rage.deficit<=40&cooldown.shield_charge.ready&talent.champions_bulwark.enabled|rage.deficit<=20&cooldown.shield_charge.ready|rage.deficit<=30&cooldown.demoralizing_shout.ready&talent.booming_voice.enabled|rage.deficit<=20&cooldown.avatar.ready|rage.deficit<=45&cooldown.demoralizing_shout.ready&talent.booming_voice.enabled&buff.last_stand.up&talent.unnerving_focus.enabled|rage.deficit<=30&cooldown.avatar.ready&buff.last_stand.up&talent.unnerving_focus.enabled|rage.deficit<=20|rage.deficit<=40&cooldown.shield_slam.ready&buff.violent_outburst.up&talent.heavy_repercussions.enabled&talent.impenetrable_wall.enabled|rage.deficit<=55&cooldown.shield_slam.ready&buff.violent_outburst.up&buff.last_stand.up&talent.unnerving_focus.enabled&talent.heavy_repercussions.enabled&talent.impenetrable_wall.enabled|rage.deficit<=17&cooldown.shield_slam.ready&talent.heavy_repercussions.enabled|rage.deficit<=18&cooldown.shield_slam.ready&talent.impenetrable_wall.enabled),use_off_gcd=1" );
+  default_list -> add_action( "actions+=/last_stand,if=(target.health.pct>=90&talent.unnerving_focus.enabled|target.health.pct<=20&talent.unnerving_focus.enabled)|talent.bolster.enabled" );
+  default_list -> add_action( "actions+=/ravager" );
+  default_list -> add_action( "actions+=/demoralizing_shout,if=talent.booming_voice.enabled" );
+  default_list -> add_action( "actions+=/spear_of_bastion" );
+  default_list -> add_action( "actions+=/thunderous_roar" );
+  default_list -> add_action( "actions+=/shockwave,if=talent.sonic_boom.enabled&buff.avatar.up&talent.unstoppable_force.enabled&!talent.rumbling_earth.enabled" );
+  default_list -> add_action( "actions+=/shield_charge" );
+  default_list -> add_action( "actions+=/shield_block,if=buff.shield_block.duration<=18&talent.enduring_defenses.enabled|buff.shield_block.duration<=12" );
+  default_list -> add_action( "actions+=/run_action_list,name=aoe,if=spell_targets.thunder_clap>=3" );
+  default_list -> add_action( "actions+=/call_action_list,name=generic" );
 
-  //Lower priority for on GCD racials.
-  default_list -> add_action( "bag_of_tricks" );
-  default_list -> add_action( "arcane_torrent,if=rage<80" );
-  default_list -> add_action( "lights_judgment" );
-  default_list -> add_action( "shield_wall,if=!buff.last_stand.up&!buff.rallying_cry.up" );
-  default_list -> add_action( "last_stand,if=!buff.shield_wall.up&!buff.rallying_cry.up" );
-  default_list -> add_action( "rallying_cry,if=!buff.last_stand.up&!buff.shield_wall.up" );
-  default_list -> add_action( "demoralizing_shout,if=!buff.last_stand.up&!buff.shield_wall.up&!buff.rallying_cry.up" );
-  // OGCD actions, tossed in here just to run the code
-  default_list -> add_action( "berserker_rage" );
-  default_list -> add_action( "spell_reflection" );
-  // generic -> add_action( "heroic_leap" );  // Uncomment to test
-  // generic -> add_action( "challenging_shout" ); NYI
-  // generic -> add_action( "disrupting_shout" ); NYI
-  default_list -> add_action( "avatar" );
-  default_list -> add_action( "run_action_list,name=aoe,if=spell_targets.thunder_clap>3" );
-  default_list -> add_action( "call_action_list,name=generic" );
+  aoe -> add_action( "actions.aoe=thunder_clap,if=dot.rend.remains<=1" );
+  aoe -> add_action( "actions.aoe+=/thunder_clap,if=buff.violent_outburst.up&spell_targets.thunderclap>5&buff.avatar.up&talent.unstoppable_force.enabled" );
+  aoe -> add_action( "actions.aoe+=/revenge,if=rage>=70&talent.seismic_reverberation.enabled&spell_targets.revenge>=3" );
+  aoe -> add_action( "actions.aoe+=/shield_slam,if=rage<=60|buff.violent_outburst.up&spell_targets.thunderclap<=4" );
+  aoe -> add_action( "actions.aoe+=/thunder_clap" );
+  aoe -> add_action( "actions.aoe+=/revenge,if=rage>=30|rage>=40&talent.barbaric_training.enabled" );
 
-  // generic -> add_action( "Intervene" ); Uncomment to test
-  // generic -> add_action( "Intimidating Shout" ); NYI
-  // generic -> add_action( "Bitter Immunity" ); NYI
-
-  generic -> add_action( "ignore_pain,if=(rage.deficit>=35&buff.ignore_pain.value<health.max*0.3*0.5)|buff.ignore_pain.remains<gcd" );  // Only IP if we are under half the max value to prevent overcap
-  generic -> add_action( "ravager" );
-  generic -> add_action( "thunderous_roar" );
-  generic -> add_action( "spear_of_bastion" );
-
-  generic -> add_action( "shield_charge" );
-  generic -> add_action( "shockwave" );
-  generic -> add_action( "execute" );
-  generic -> add_action( "shield_slam" );
-  generic -> add_action( "thunder_clap,if=active_enemies>=2|(talent.rend&talent.blood_and_thunder)" );
-  generic -> add_action( "rend,if=!talent.thunderclap&!talent.blood_and_thunder" );
-  generic -> add_action( "revenge,if=rage.deficit>30&active_enemies>=2" );
-  generic -> add_action( "titanic_throw,if=active_enemies>=2" );
-
-  generic -> add_action( "devastate" );
-  generic -> add_action( "heroic_throw" );
-  generic -> add_action( "titanic_throw" );
-  generic -> add_action( "thunder_clap" );  // Does less damage than devastate ST
-  generic -> add_action( "revenge,if=rage.deficit>30" );
-  generic -> add_action( "Impending Victory" );
-  generic -> add_action( "storm_bolt" );
-
-  aoe -> add_action( "ignore_pain,if=rage.deficit>=35&buff.ignore_pain.value<health.max*0.3" );
-  aoe -> add_action( "spear_of_bastion" );
-  aoe -> add_action( "thunderous_roar" );
-  aoe -> add_action( "ravager" );
-  aoe -> add_action( "shockwave" );
-  aoe -> add_action( "shield_charge" );
-  aoe -> add_action( "revenge,if=rage.deficit>30" );
-  aoe -> add_action( "thunder_clap" );
-  aoe -> add_action( "titanic_throw" );
-  aoe -> add_action( "rend,if=!talent.thunderclap&!talent.blood_and_thunder" );
-  aoe -> add_action( "shield_slam" );
-  aoe -> add_action( "execute" );
-  aoe -> add_action( "devastate" );
-  aoe -> add_action( "Impending Victory" );
-  aoe -> add_action( "storm_bolt" );
-
+  generic -> add_action( "actions.generic=shield_slam" );
+  generic -> add_action( "actions.generic+=/thunder_clap,if=dot.rend.remains<=1&buff.violent_outburst.down" );
+  generic -> add_action( "actions.generic+=/execute,if=buff.sudden_death.up&talent.sudden_death.enabled" );
+  generic -> add_action( "actions.generic+=/revenge,if=buff.vanguards_determination.down" );
+  generic -> add_action( "actions.generic+=/thunder_clap,if=(spell_targets.thunder_clap>1|cooldown.shield_slam.remains&!buff.violent_outburst.up)" );
+  generic -> add_action( "actions.generic+=/revenge,if=(rage>=60&target.health.pct>20|buff.revenge.up&target.health.pct<=20&rage<=18&cooldown.shield_slam.remains|buff.revenge.up&target.health.pct>20)|(rage>=60&target.health.pct>35|buff.revenge.up&target.health.pct<=35&rage<=18&cooldown.shield_slam.remains|buff.revenge.up&target.health.pct>35)&talent.massacre.enabled" );
+  generic -> add_action( "actions.generic+=/execute,if=spell_targets.revenge=1" );
+  generic -> add_action( "actions.generic+=/revenge" );
+  generic -> add_action( "actions.generic+=/thunder_clap,if=(spell_targets.thunder_clap>=1|cooldown.shield_slam.remains&buff.violent_outburst.up)" );
+  generic -> add_action( "actions.generic+=/devastate" );
 }
 // NO Spec Combat Action Priority List
 
