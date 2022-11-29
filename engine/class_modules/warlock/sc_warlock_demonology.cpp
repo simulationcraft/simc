@@ -620,7 +620,7 @@ struct bilescourge_bombers_t : public demonology_spell_t
   struct bilescourge_bombers_tick_t : public demonology_spell_t
   {
     bilescourge_bombers_tick_t( warlock_t* p )
-      : demonology_spell_t( "bilescourge_bombers_tick", p, p->talents.bilescourge_bombers_aoe )
+      : demonology_spell_t( "Bilescourge Bombers (tick)", p, p->talents.bilescourge_bombers_aoe )
     {
       aoe = -1;
       background = dual = direct_tick = true;
@@ -630,24 +630,18 @@ struct bilescourge_bombers_t : public demonology_spell_t
   };
 
   bilescourge_bombers_t( warlock_t* p, util::string_view options_str )
-    : demonology_spell_t( "bilescourge_bombers", p, p->talents.bilescourge_bombers )
+    : demonology_spell_t( "Bilescourge Bombers", p, p->talents.bilescourge_bombers )
   {
     parse_options( options_str );
     dot_duration = 0_ms;
     may_miss = may_crit = false;
-    base_tick_time      = 500_ms;
+    base_tick_time = 500_ms;
     
     if ( !p->proc_actions.bilescourge_bombers_aoe_tick )
     {
       p->proc_actions.bilescourge_bombers_aoe_tick = new bilescourge_bombers_tick_t( p );
       p->proc_actions.bilescourge_bombers_aoe_tick->stats = stats;
     }
-    
-    //if ( !p->active.bilescourge_bombers )
-    //{
-    //  p->active.bilescourge_bombers        = new bilescourge_bombers_tick_t( p );
-    //  p->active.bilescourge_bombers->stats = stats;
-    //}
   }
 
   void execute() override
