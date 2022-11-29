@@ -1,29 +1,28 @@
-# druid="T29_Druid_Balance"
-# level=70
-# race=troll
-# spec=balance
-# role=spell
-# position=back
-# talents=1000332
+druid="T29_Druid_Balance"
+level=70
+race=troll
+spec=balance
+role=spell
+position=back
+talents=BYGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAoAQSiIQChkkIJSDaJSSSokgI5AJ0SKRCRSDgA
+4800/4786/1498
+head=lost_landcallers_antlers,id=200354,bonus_id=4800/4786/1498/6935,gem_id=192961
+neck=elemental_lariat,id=193001,bonus_id=6652/7936/7979/1540/8767/8782/8793,gem_id=192948/192948/192988
+shoulders=lost_landcallers_mantle,id=200356,bonus_id=4800/4786/1498
+back=fireproof_drape,id=193763,bonus_id=6808/4786/1643
+chest=lost_landcallers_robes,id=200351,bonus_id=4800/4786/1498,enchant_id=6625
+wrists=loyal_flametenders_bracers,id=195525,bonus_id=4800/3524/1498,gem_id=192961
+hands=treacherous_totem_wraps,id=195514,bonus_id=4800/4786/1498
+waist=bjorns_hunting_strap,id=136776,bonus_id=1795/6808/4786/3156/6935,gem_id=192961
+legs=lost_landcallers_leggings,id=200355,bonus_id=4800/4786/1498,enchant=frozen_spellthread_3
+feet=blackwater_boots,id=109799,bonus_id=4177/6808/4786/6072
+finger1=ringbound_hourglass,id=193000,bonus_id=8780/8793,ilevel=418,enchant_id=6562,gem_id=192961
+finger2=seal_of_filial_duty,id=195526,bonus_id=4800/4786/1497/6935,enchant_id=6556,gem_id=192961
+trinket1=whispering_incarnate_icon,id=194301,bonus_id=4800/4786/1498
+trinket2=furious_ragefeather,id=193677,bonus_id=6808/4786/1643
+main_hand=final_grade,id=193707,bonus_id=6808/4786/1643,enchant=sophic_devotion_3
 
-# head=headpiece_of_the_fixed_stars,id=188847,bonus_id=7187/1498/6935,gem_id=173130
-# neck=worldkiller_iris,id=189859,bonus_id=7187/1524/6935,gem_id=173130
-# shoulders=shoulderpads_of_the_fixed_stars,id=188851,bonus_id=7187/1505
-# back=lurking_predators_camouflage,id=189815,bonus_id=1524/7187
-# chest=chestguard_of_the_fixed_stars,id=188849,bonus_id=7187/1505,enchant=eternal_insight
-# wrists=wrists_of_the_wicked_star,id=189836,bonus_id=1524/7187,gem_id=173130,enchant=eternal_intellect
-# hands=handwraps_of_the_fixed_stars,id=188853,bonus_id=7187/1505
-# waist=runecarvers_twisted_ward,id=189856,bonus_id=7187/1524/6935,gem_id=173130
-# legs=umbrahide_leggings,id=172318,bonus_id=6716/8121/6648/6649/1588
-# feet=treads_of_titanic_curiosity,id=189848,bonus_id=1522/6807
-# finger1=shadowghast_ring,id=178926,bonus_id=6716/7088/6649/6648/1588,gem_id=173130,enchant=tenet_of_mastery
-# finger2=signet_of_the_false_accuser,id=178824,bonus_id=1592/6536/6646,gem_id=173130,enchant=tenet_of_haste
-# trinket1=inscrutable_quantum_device,id=179350,bonus_id=1592/6536/6646
-# trinket2=the_first_sigil,id=188271,bonus_id=1524/7187
-# main_hand=antumbra_shadow_of_the_cosmos,id=189852,bonus_id=1524/7187,enchant=sinful_revelation
-# off_hand=forbidden_truth,id=189860,bonus_id=1524/7187
-
-# save=T29_Druid_Balance.simc
+save=T29_Druid_Balance.simc
 
 # druid="T29_Druid_Feral"
 # source=default
