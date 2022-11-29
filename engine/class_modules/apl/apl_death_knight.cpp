@@ -115,7 +115,7 @@ void blood( player_t* p )
   default_->add_action( "run_action_list,name=drw_up,if=buff.dancing_rune_weapon.up" );
   default_->add_action( "call_action_list,name=standard" );
 
-  drw_up->add_action( "tombstone,if=buff.bone_shield.stack>5&rune>=2&runic_power.deficit>=30&runeforge.crimson_rune_weapon&((talent.shattering_bone&death_and_decay.ticking)|!talent.shattering_bone)" );
+  drw_up->add_action( "tombstone,if=buff.bone_shield.stack>5&rune>=2&runic_power.deficit>=30&((talent.shattering_bone&death_and_decay.ticking)|!talent.shattering_bone)" );
   drw_up->add_action( "empower_rune_weapon,if=rune<6&runic_power.deficit>5" );
   drw_up->add_action( "marrowrend,if=buff.bone_shield.stack<5&buff.dancing_rune_weapon.remains<gcd" );
   drw_up->add_action( "marrowrend,if=(buff.bone_shield.remains<=rune.time_to_3|(buff.bone_shield.stack<2&buff.abomination_limb.up))&runic_power.deficit>20" );
