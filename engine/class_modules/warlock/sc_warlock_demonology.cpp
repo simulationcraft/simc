@@ -726,23 +726,23 @@ struct doom_t : public demonology_spell_t
   {
     parse_options( options_str );
 
-    energize_type     = action_energize::PER_TICK;
+    energize_type = action_energize::PER_TICK;
     energize_resource = RESOURCE_SOUL_SHARD;
-    energize_amount   = 1;
+    energize_amount = 1;
 
     hasted_ticks = true;
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
-    return s->action->tick_time( s ); //Doom is a case where dot duration scales with haste so use the tick time to get the current correct value
+    return s->action->tick_time( s ); // Doom is a case where dot duration scales with haste so use the tick time to get the current correct value
   }
 
   double composite_ta_multiplier( const action_state_t* s ) const override
   {
     double m = demonology_spell_t::composite_ta_multiplier( s );
 
-    if ( p()->talents.kazaaks_final_curse.ok() )
+    if ( p()->talents.kazaaks_final_curse->ok() )
       m *= 1.0 + td( s->target )->debuffs_kazaaks_final_curse->check_value();
 
     return m;
@@ -752,7 +752,7 @@ struct doom_t : public demonology_spell_t
   {
     demonology_spell_t::impact( s );
 
-    if ( p()->talents.kazaaks_final_curse.ok() )
+    if ( p()->talents.kazaaks_final_curse->ok() )
     {
       // Count demons
       int count = pet_counter();
@@ -784,8 +784,14 @@ private:
       if ( lock_pet->is_sleeping() )
         continue;
 
-      // 2022-10-07: Kazaak's currently has bugs where not all pets are counted, assuming this will be fixed
-      // Can use if ( lock_pet->pet_type == [enum value] ) to skip if we need to implement this
+      // 2022-11-28: Many pets are not currently counted
+      if ( lock_pet->pet_type == PET_DEMONIC_TYRANT || lock_pet->pet_type == PET_PIT_LORD || lock_pet->pet_type == PET_WARLOCK_RANDOM )
+        continue;
+
+      if ( lock_pet->pet_type == PET_VILEFIEND )
+        continue;
+
+      // Note: Some Wild Imps (possibly due to the Inner Demons NPC ID being different) aren't counting, but we won't model that... yet
 
       count++;
     }
