@@ -582,15 +582,7 @@ struct demonic_strength_t : public demonology_spell_t
     parse_options( options_str );
   }
 
-  // 2022-10-09: Technically, you can activate Demonic Strength during Guillotine, but
-  // it will only apply the buff and will fail to trigger the DS Felstorm. A Felstorm
-  // triggered once Guillotine is over will appropriately utilize the DS buff, but this
-  // will not be considered a "free" Felstorm and will put the ability on cooldown.
-  //
-  // As this is currently beta, we will not implement this for now as it would require
-  // significant changes to the way these spells are built. Instead, we will simply say
-  // Demonic Strength is not ready while the Fiendish Wrath buff is active.
-  // TOCHECK near release to implement final behavior.
+  // If you have Guillotine or regular Felstorm active, attempting to activate Demonic Strength will fail
   bool ready() override
   {
     auto active_pet = p()->warlock_pet_list.active;

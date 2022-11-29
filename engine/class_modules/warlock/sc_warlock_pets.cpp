@@ -602,12 +602,12 @@ struct felstorm_t : public warlock_pet_melee_attack_t
     bool applies_fel_sunder; // Fel Sunder is applied only by primary pet using Felstorm
 
     felstorm_tick_t( warlock_pet_t* p, const spell_data_t *s )
-      : warlock_pet_melee_attack_t( "felstorm_tick", p, s )
+      : warlock_pet_melee_attack_t( "Felstorm (tick)", p, s )
     {
       aoe = -1;
       reduced_aoe_targets = data().effectN( 3 ).base_value();
       background = true;
-      weapon     = &( p->main_hand_weapon );
+      weapon = &( p->main_hand_weapon );
       applies_fel_sunder = false;
     }
 
@@ -617,12 +617,10 @@ struct felstorm_t : public warlock_pet_melee_attack_t
 
       if ( p()->buffs.demonic_strength->check() )
       {
-        m *= p()->buffs.demonic_strength->default_value;
+        m *= 1.0 + p()->buffs.demonic_strength->check_value();
       }
 
-      // 2022-10-04: NOTE there is a bug on beta where Demonic Strength's bonus is being canceled when
-      // Fel and Steel is talented. Not going to implement this right now as it is clearly a bug.
-      if ( p()->o()->talents.fel_and_steel.ok() )
+      if ( p()->o()->talents.fel_and_steel->ok() )
       {
         m *= 1.0 + p()->o()->talents.fel_and_steel->effectN( 1 ).percent();
       }
@@ -642,27 +640,27 @@ struct felstorm_t : public warlock_pet_melee_attack_t
     }
   };
 
-  felstorm_t( warlock_pet_t* p, util::string_view options_str, const std::string n = "felstorm" )
+  felstorm_t( warlock_pet_t* p, util::string_view options_str, const std::string n = "Felstorm" )
     : warlock_pet_melee_attack_t( n, p, p->find_spell( 89751 ) )
   {
     parse_options( options_str );
-    tick_zero    = true;
+    tick_zero = true;
     hasted_ticks = true;
-    may_miss     = false;
-    may_crit     = false;
-    channeled    = true;
+    may_miss = false;
+    may_crit = false;
+    channeled = true;
 
     dynamic_tick_action = true;
-    tick_action         = new felstorm_tick_t( p, p->find_spell( 89753 ));
+    tick_action = new felstorm_tick_t( p, p->find_spell( 89753 ));
   }
 
-  felstorm_t( warlock_pet_t* p, util::string_view options_str, bool main_pet, const std::string n = "felstorm" )
+  felstorm_t( warlock_pet_t* p, util::string_view options_str, bool main_pet, const std::string n = "Felstorm" )
     : felstorm_t( p, options_str, n )
   {
-    if ( main_pet && p->o()->talents.fel_might.ok() )
-      cooldown->duration += timespan_t::from_millis( p->o()->talents.fel_might->effectN( 1 ).base_value() );
+    if ( main_pet && p->o()->talents.fel_might->ok() )
+      cooldown->duration += p->o()->talents.fel_might->effectN( 1 ).time_value();
 
-    if ( main_pet && p->o()->talents.fel_sunder.ok() )
+    if ( main_pet && p->o()->talents.fel_sunder->ok() )
       debug_cast<felstorm_tick_t*>( tick_action )->applies_fel_sunder = true;
 
     if ( !main_pet )
@@ -679,9 +677,9 @@ struct felstorm_t : public warlock_pet_melee_attack_t
 struct demonic_strength_t : public felstorm_t
 {
   demonic_strength_t( warlock_pet_t* p, util::string_view options_str )
-    : felstorm_t( p, options_str, std::string( "demonic_strength_felstorm" ) )
+    : felstorm_t( p, options_str, std::string( "Felstorm (D. Str.)" ) )
   {
-    if ( p->o()->talents.fel_sunder.ok() )
+    if ( p->o()->talents.fel_sunder->ok() )
       debug_cast<felstorm_tick_t*>( tick_action )->applies_fel_sunder = true;
   }
 
@@ -821,7 +819,7 @@ timespan_t felguard_pet_t::available() const
 
   // Demonic Strength Felstorms do not have an energy requirement, so Felguard must be ready at any time it is up
   // If Demonic Strength will be available before regular Felstorm but before energy threshold, we will check at that time
-  if ( o()->talents.demonic_strength.ok() )
+  if ( o()->talents.demonic_strength->ok() )
   {
     double time_to_dstr = ( dstr_cd->ready - sim->current_time() ).total_seconds();
     if ( time_to_dstr <= 0 )
@@ -886,12 +884,12 @@ void felguard_pet_t::init_base_stats()
   melee_attack->base_dd_multiplier *= 1.1;
   special_action = new axe_toss_t( this, "" );
 
-  if ( o()->talents.soul_strike.ok() )
+  if ( o()->talents.soul_strike->ok() )
   {
     soul_strike = new soul_strike_t( this );
   }
 
-  if ( o()->talents.guillotine.ok() )
+  if ( o()->talents.guillotine->ok() )
   {
     felguard_guillotine = new felguard_guillotine_t( this );
   }
@@ -925,10 +923,10 @@ void felguard_pet_t::arise()
 {
   warlock_pet_t::arise();
 
-  if ( o()->talents.annihilan_training.ok() )
+  if ( o()->talents.annihilan_training->ok() )
     buffs.annihilan_training->trigger();
 
-  if ( o()->talents.antoran_armaments.ok() )
+  if ( o()->talents.antoran_armaments->ok() )
     buffs.antoran_armaments->trigger();
 }
 
@@ -936,10 +934,10 @@ double felguard_pet_t::composite_player_multiplier( school_e school ) const
 {
   double m = warlock_pet_t::composite_player_multiplier( school );
 
-  if ( buffs.annihilan_training->check() )
+  if ( o()->talents.annihilan_training->ok() )
     m *= 1.0 + buffs.annihilan_training->check_value();
 
-  if ( buffs.antoran_armaments->check() )
+  if ( o()->talents.antoran_armaments->ok() )
     m *= 1.0 + buffs.antoran_armaments->check_value();
 
   return m;
@@ -949,8 +947,7 @@ double felguard_pet_t::composite_melee_haste() const
 {
   double m = warlock_pet_t::composite_melee_haste();
 
-  if ( buffs.fiendish_wrath->check() )
-    m *= 1.0 + buffs.fiendish_wrath->check_value();
+  m *= 1.0 + buffs.fiendish_wrath->check_value();
 
   return m;
 }
@@ -959,8 +956,7 @@ double felguard_pet_t::composite_melee_speed() const
 {
   double m = warlock_pet_t::composite_melee_speed();
 
-  if ( buffs.fiendish_wrath->check() )
-     m /= 1.0 + buffs.fiendish_wrath->check_value();
+  m /= 1.0 + buffs.fiendish_wrath->check_value();
 
   return m;
 }
