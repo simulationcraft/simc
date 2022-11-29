@@ -663,10 +663,10 @@ struct bilescourge_bombers_t : public demonology_spell_t
 struct power_siphon_t : public demonology_spell_t
 {
   power_siphon_t( warlock_t* p, util::string_view options_str )
-    : demonology_spell_t( "power_siphon", p, p->talents.power_siphon )
+    : demonology_spell_t( "Power Siphon", p, p->talents.power_siphon )
   {
     parse_options( options_str );
-    harmful               = false;
+    harmful = false;
     ignore_false_positive = true;
   }
 
