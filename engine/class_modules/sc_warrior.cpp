@@ -10114,7 +10114,11 @@ double warrior_t::composite_armor_multiplier() const
   }
   */
 
+ // Generally Modify Armor% (101)
+
   ar *= 1.0 + talents.warrior.reinforced_plates->effectN( 1 ).percent();
+  ar *= 1.0 + talents.protection.enduring_alacrity -> effectN( 3 ).percent();
+  ar *= 1.0 + talents.protection.focused_vigor -> effectN( 3 ).percent();
 
   return ar;
 }
@@ -10145,10 +10149,8 @@ double warrior_t::composite_bonus_armor() const
 // warrior_t::composite_base_armor_multiplier ================================
 double warrior_t::composite_base_armor_multiplier() const
 {
+  // Generally Modify Base Resistance (142)
   double a = player_t::composite_base_armor_multiplier();
-
-  a *= 1.0 + talents.protection.enduring_alacrity -> effectN( 3 ).percent();
-  a *= 1.0 + talents.protection.focused_vigor -> effectN( 3 ).percent();
 
   return a;
 }
