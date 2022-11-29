@@ -255,8 +255,10 @@ void warlock_pet_t::arise()
     }
     else if ( pet_type != PET_DEMONIC_TYRANT )
     {
-      // Exclusion for Nether Portal summons can also be added to this block if needed
-      o()->buffs.demonic_servitude->increment( as<int>( o()->talents.reign_of_tyranny->effectN( 2 ).base_value() ) );
+      if ( !( pet_type == PET_PIT_LORD || pet_type == PET_WARLOCK_RANDOM ) )
+      {
+        o()->buffs.demonic_servitude->increment( as<int>( o()->talents.reign_of_tyranny->effectN( 2 ).base_value() ) );
+      }
     }
   }
 }
@@ -273,7 +275,10 @@ void warlock_pet_t::demise()
     }
     else if ( pet_type != PET_DEMONIC_TYRANT )
     {
-      o()->buffs.demonic_servitude->decrement( as<int>( o()->talents.reign_of_tyranny->effectN( 2 ).base_value() ) );
+      if ( !( pet_type == PET_PIT_LORD || pet_type == PET_WARLOCK_RANDOM ) )
+      {
+        o()->buffs.demonic_servitude->decrement( as<int>( o()->talents.reign_of_tyranny->effectN( 2 ).base_value() ) );
+      }
     }
   }
 }
