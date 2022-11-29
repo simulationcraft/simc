@@ -1481,7 +1481,7 @@ demonic_tyrant_t::demonic_tyrant_t( warlock_t* owner, util::string_view name )
 struct demonfire_t : public warlock_pet_spell_t
 {
   demonfire_t( warlock_pet_t* p, util::string_view options_str )
-    : warlock_pet_spell_t( "demonfire", p, p->find_spell( 270481 ) )
+    : warlock_pet_spell_t( "Demonfire", p, p->find_spell( 270481 ) )
   {
     parse_options( options_str );
   }
@@ -1499,7 +1499,7 @@ void demonic_tyrant_t::arise()
 {
   warlock_pet_t::arise();
 
-  if ( o()->talents.reign_of_tyranny.ok() )
+  if ( o()->talents.reign_of_tyranny->ok() )
   {
     buffs.demonic_servitude->trigger( 1, o()->buffs.demonic_servitude->check_stack_value() );
   }
@@ -1509,7 +1509,7 @@ double demonic_tyrant_t::composite_player_multiplier( school_e school ) const
 {
   double m = warlock_pet_t::composite_player_multiplier( school );
 
-  if ( buffs.demonic_servitude->check() )
+  if ( o()->talents.reign_of_tyranny->ok() )
     m *= 1.0 + buffs.demonic_servitude->check_value();
 
   return m;

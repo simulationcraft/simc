@@ -397,12 +397,11 @@ struct implosion_t : public demonology_spell_t
     double energy_remaining = 0.0;
     warlock_pet_t* next_imp;
 
-    implosion_aoe_t( warlock_t* p ) : demonology_spell_t( "implosion_aoe", p, p->talents.implosion_aoe )
+    implosion_aoe_t( warlock_t* p ) : demonology_spell_t( "Implosion (AoE)", p, p->talents.implosion_aoe )
     {
-      aoe                = -1;
-      dual               = true;
-      background         = true;
-      callbacks          = false;
+      aoe = -1;
+      background = dual = true;
+      callbacks = false;
     }
 
     double composite_target_multiplier( player_t* t ) const override
@@ -427,7 +426,7 @@ struct implosion_t : public demonology_spell_t
   implosion_aoe_t* explosion;
 
   implosion_t( warlock_t* p, util::string_view options_str )
-    : demonology_spell_t( "implosion", p, p->talents.implosion ), explosion( new implosion_aoe_t( p ) )
+    : demonology_spell_t( "Implosion", p, p->talents.implosion ), explosion( new implosion_aoe_t( p ) )
   {
     parse_options( options_str );
     add_child( explosion );
@@ -441,13 +440,14 @@ struct implosion_t : public demonology_spell_t
     {
       return p()->warlock_pet_list.wild_imps.n_active_pets() > 0;
     }
+
     return false;
   }
 
   void execute() override
   {
     // Travel speed is not in spell data, in game test appears to be 65 yds/sec as of 2020-12-04
-    timespan_t imp_travel_time = this->calc_imp_travel_time( 65 );
+    timespan_t imp_travel_time = calc_imp_travel_time( 65 );
 
     int launch_counter = 0;
     for ( auto imp : p()->warlock_pet_list.wild_imps )
@@ -455,8 +455,8 @@ struct implosion_t : public demonology_spell_t
       if ( !imp->is_sleeping() )
       {
         implosion_aoe_t* ex = explosion;
-        player_t* tar       = this->target;
-        double dist         = p()->get_player_distance( *tar );
+        player_t* tar = this->target;
+        double dist = p()->get_player_distance( *tar );
 
         imp->trigger_movement( dist, movement_direction_type::TOWARDS );
         imp->interrupt();
@@ -511,7 +511,7 @@ struct implosion_t : public demonology_spell_t
 struct summon_demonic_tyrant_t : public demonology_spell_t
 {
   summon_demonic_tyrant_t( warlock_t* p, util::string_view options_str )
-    : demonology_spell_t( "summon_demonic_tyrant", p, p->talents.summon_demonic_tyrant )
+    : demonology_spell_t( "Summon Demonic Tyrant", p, p->talents.summon_demonic_tyrant )
   {
     parse_options( options_str );
     harmful = may_crit = false;
@@ -529,11 +529,7 @@ struct summon_demonic_tyrant_t : public demonology_spell_t
 
     p()->buffs.demonic_power->trigger();
 
-    //if ( p()->spec.summon_demonic_tyrant_2->ok() )
-    //  p()->resource_gain( RESOURCE_SOUL_SHARD, p()->spec.summon_demonic_tyrant_2->effectN( 1 ).base_value() / 10.0,
-    //                      p()->gains.summon_demonic_tyrant );
-
-    if ( p()->talents.soulbound_tyrant.ok() )
+    if ( p()->talents.soulbound_tyrant->ok() )
       p()->resource_gain( RESOURCE_SOUL_SHARD, p()->talents.soulbound_tyrant->effectN( 1 ).base_value() / 10.0, p()->gains.soulbound_tyrant );
 
     timespan_t extension_time = p()->talents.demonic_power_buff->effectN( 3 ).time_value();
@@ -548,6 +544,10 @@ struct summon_demonic_tyrant_t : public demonology_spell_t
         continue;
 
       if ( lock_pet->pet_type == PET_DEMONIC_TYRANT )
+        continue;
+
+      // Pit Lord is not extended by Demonic Tyrant
+      if ( lock_pet->pet_type == PET_PIT_LORD )
         continue;
 
       if ( lock_pet->expiration )
