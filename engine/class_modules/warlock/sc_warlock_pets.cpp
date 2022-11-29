@@ -255,8 +255,10 @@ void warlock_pet_t::arise()
     }
     else if ( pet_type != PET_DEMONIC_TYRANT )
     {
-      // Exclusion for Nether Portal summons can also be added to this block if needed
-      o()->buffs.demonic_servitude->increment( as<int>( o()->talents.reign_of_tyranny->effectN( 2 ).base_value() ) );
+      if ( !( pet_type == PET_PIT_LORD || pet_type == PET_WARLOCK_RANDOM ) )
+      {
+        o()->buffs.demonic_servitude->increment( as<int>( o()->talents.reign_of_tyranny->effectN( 2 ).base_value() ) );
+      }
     }
   }
 }
@@ -273,7 +275,10 @@ void warlock_pet_t::demise()
     }
     else if ( pet_type != PET_DEMONIC_TYRANT )
     {
-      o()->buffs.demonic_servitude->decrement( as<int>( o()->talents.reign_of_tyranny->effectN( 2 ).base_value() ) );
+      if ( !( pet_type == PET_PIT_LORD || pet_type == PET_WARLOCK_RANDOM ) )
+      {
+        o()->buffs.demonic_servitude->decrement( as<int>( o()->talents.reign_of_tyranny->effectN( 2 ).base_value() ) );
+      }
     }
   }
 }
@@ -602,12 +607,12 @@ struct felstorm_t : public warlock_pet_melee_attack_t
     bool applies_fel_sunder; // Fel Sunder is applied only by primary pet using Felstorm
 
     felstorm_tick_t( warlock_pet_t* p, const spell_data_t *s )
-      : warlock_pet_melee_attack_t( "felstorm_tick", p, s )
+      : warlock_pet_melee_attack_t( "Felstorm (tick)", p, s )
     {
       aoe = -1;
       reduced_aoe_targets = data().effectN( 3 ).base_value();
       background = true;
-      weapon     = &( p->main_hand_weapon );
+      weapon = &( p->main_hand_weapon );
       applies_fel_sunder = false;
     }
 
@@ -617,12 +622,10 @@ struct felstorm_t : public warlock_pet_melee_attack_t
 
       if ( p()->buffs.demonic_strength->check() )
       {
-        m *= p()->buffs.demonic_strength->default_value;
+        m *= 1.0 + p()->buffs.demonic_strength->check_value();
       }
 
-      // 2022-10-04: NOTE there is a bug on beta where Demonic Strength's bonus is being canceled when
-      // Fel and Steel is talented. Not going to implement this right now as it is clearly a bug.
-      if ( p()->o()->talents.fel_and_steel.ok() )
+      if ( p()->o()->talents.fel_and_steel->ok() )
       {
         m *= 1.0 + p()->o()->talents.fel_and_steel->effectN( 1 ).percent();
       }
@@ -642,27 +645,27 @@ struct felstorm_t : public warlock_pet_melee_attack_t
     }
   };
 
-  felstorm_t( warlock_pet_t* p, util::string_view options_str, const std::string n = "felstorm" )
+  felstorm_t( warlock_pet_t* p, util::string_view options_str, const std::string n = "Felstorm" )
     : warlock_pet_melee_attack_t( n, p, p->find_spell( 89751 ) )
   {
     parse_options( options_str );
-    tick_zero    = true;
+    tick_zero = true;
     hasted_ticks = true;
-    may_miss     = false;
-    may_crit     = false;
-    channeled    = true;
+    may_miss = false;
+    may_crit = false;
+    channeled = true;
 
     dynamic_tick_action = true;
-    tick_action         = new felstorm_tick_t( p, p->find_spell( 89753 ));
+    tick_action = new felstorm_tick_t( p, p->find_spell( 89753 ));
   }
 
-  felstorm_t( warlock_pet_t* p, util::string_view options_str, bool main_pet, const std::string n = "felstorm" )
+  felstorm_t( warlock_pet_t* p, util::string_view options_str, bool main_pet, const std::string n = "Felstorm" )
     : felstorm_t( p, options_str, n )
   {
-    if ( main_pet && p->o()->talents.fel_might.ok() )
-      cooldown->duration += timespan_t::from_millis( p->o()->talents.fel_might->effectN( 1 ).base_value() );
+    if ( main_pet && p->o()->talents.fel_might->ok() )
+      cooldown->duration += p->o()->talents.fel_might->effectN( 1 ).time_value();
 
-    if ( main_pet && p->o()->talents.fel_sunder.ok() )
+    if ( main_pet && p->o()->talents.fel_sunder->ok() )
       debug_cast<felstorm_tick_t*>( tick_action )->applies_fel_sunder = true;
 
     if ( !main_pet )
@@ -679,9 +682,9 @@ struct felstorm_t : public warlock_pet_melee_attack_t
 struct demonic_strength_t : public felstorm_t
 {
   demonic_strength_t( warlock_pet_t* p, util::string_view options_str )
-    : felstorm_t( p, options_str, std::string( "demonic_strength_felstorm" ) )
+    : felstorm_t( p, options_str, std::string( "Felstorm (D. Str.)" ) )
   {
-    if ( p->o()->talents.fel_sunder.ok() )
+    if ( p->o()->talents.fel_sunder->ok() )
       debug_cast<felstorm_tick_t*>( tick_action )->applies_fel_sunder = true;
   }
 
@@ -755,7 +758,7 @@ struct soul_strike_t : public warlock_pet_melee_attack_t
 
     warlock_pet_melee_attack_t::impact( s );
     
-    if ( p()->o()->talents.antoran_armaments.ok() )
+    if ( p()->o()->talents.antoran_armaments->ok() )
       soul_cleave->execute_on_target( s->target, amount );
   }
 };
@@ -821,7 +824,7 @@ timespan_t felguard_pet_t::available() const
 
   // Demonic Strength Felstorms do not have an energy requirement, so Felguard must be ready at any time it is up
   // If Demonic Strength will be available before regular Felstorm but before energy threshold, we will check at that time
-  if ( o()->talents.demonic_strength.ok() )
+  if ( o()->talents.demonic_strength->ok() )
   {
     double time_to_dstr = ( dstr_cd->ready - sim->current_time() ).total_seconds();
     if ( time_to_dstr <= 0 )
@@ -886,12 +889,12 @@ void felguard_pet_t::init_base_stats()
   melee_attack->base_dd_multiplier *= 1.1;
   special_action = new axe_toss_t( this, "" );
 
-  if ( o()->talents.soul_strike.ok() )
+  if ( o()->talents.soul_strike->ok() )
   {
     soul_strike = new soul_strike_t( this );
   }
 
-  if ( o()->talents.guillotine.ok() )
+  if ( o()->talents.guillotine->ok() )
   {
     felguard_guillotine = new felguard_guillotine_t( this );
   }
@@ -925,10 +928,10 @@ void felguard_pet_t::arise()
 {
   warlock_pet_t::arise();
 
-  if ( o()->talents.annihilan_training.ok() )
+  if ( o()->talents.annihilan_training->ok() )
     buffs.annihilan_training->trigger();
 
-  if ( o()->talents.antoran_armaments.ok() )
+  if ( o()->talents.antoran_armaments->ok() )
     buffs.antoran_armaments->trigger();
 }
 
@@ -936,10 +939,10 @@ double felguard_pet_t::composite_player_multiplier( school_e school ) const
 {
   double m = warlock_pet_t::composite_player_multiplier( school );
 
-  if ( buffs.annihilan_training->check() )
+  if ( o()->talents.annihilan_training->ok() )
     m *= 1.0 + buffs.annihilan_training->check_value();
 
-  if ( buffs.antoran_armaments->check() )
+  if ( o()->talents.antoran_armaments->ok() )
     m *= 1.0 + buffs.antoran_armaments->check_value();
 
   return m;
@@ -949,8 +952,7 @@ double felguard_pet_t::composite_melee_haste() const
 {
   double m = warlock_pet_t::composite_melee_haste();
 
-  if ( buffs.fiendish_wrath->check() )
-    m *= 1.0 + buffs.fiendish_wrath->check_value();
+  m *= 1.0 + buffs.fiendish_wrath->check_value();
 
   return m;
 }
@@ -959,8 +961,7 @@ double felguard_pet_t::composite_melee_speed() const
 {
   double m = warlock_pet_t::composite_melee_speed();
 
-  if ( buffs.fiendish_wrath->check() )
-     m /= 1.0 + buffs.fiendish_wrath->check_value();
+  m /= 1.0 + buffs.fiendish_wrath->check_value();
 
   return m;
 }
@@ -990,7 +991,7 @@ grimoire_felguard_pet_t::grimoire_felguard_pet_t( warlock_t* owner )
    buffs.grimoire_of_service->trigger();
  }
 
- // TOCHECK: Does Grimoire: Felguard only due a single Felstorm at most, rendering some of this unnecessary?
+ // TODO: Grimoire: Felguard only does a single Felstorm at most, rendering some of this unnecessary
 timespan_t grimoire_felguard_pet_t::available() const
 {
   double energy_threshold = max_energy_threshold;
@@ -1000,7 +1001,7 @@ timespan_t grimoire_felguard_pet_t::available() const
     energy_threshold = min_energy_threshold;
   }
 
-  double deficit           = resources.current[ RESOURCE_ENERGY ] - energy_threshold;
+  double deficit = resources.current[ RESOURCE_ENERGY ] - energy_threshold;
   double time_to_threshold = 0;
   // Not enough energy, figure out how many milliseconds it'll take to get
   if ( deficit < 0 )
@@ -1048,10 +1049,10 @@ void grimoire_felguard_pet_t::init_base_stats()
 
   // Felguard is the only warlock pet type to use an actual weapon.
   main_hand_weapon.type = WEAPON_AXE_2H;
-  melee_attack          = new warlock_pet_melee_t( this );
+  melee_attack = new warlock_pet_melee_t( this );
 
-  owner_coeff.ap_from_sp = 0.575;
-  owner_coeff.sp_from_sp = 1.15;
+  owner_coeff.ap_from_sp = 0.65;
+  owner_coeff.sp_from_sp = 1.3;
 
   // TOCHECK Grimoire Felguard also has a hardcoded 10% multiplier for its auto attack damage. Seems to still be in effect as of 2021-12-01
   melee_attack->base_dd_multiplier *= 1.1;
@@ -1255,12 +1256,12 @@ double wild_imp_pet_t::composite_player_multiplier( school_e school ) const
 
 dreadstalker_t::dreadstalker_t( warlock_t* owner ) : warlock_pet_t( owner, "dreadstalker", PET_DREADSTALKER )
 {
-  action_list_str        = "travel/dreadbite";
+  action_list_str = "travel/dreadbite";
   resource_regeneration  = regen_type::DISABLED;
 
   // TOCHECK: This has been adjusted through various hotfixes over several years to the current value
   // Last checked 2021-12-02
-  owner_coeff.ap_from_sp = 0.552;
+  owner_coeff.ap_from_sp = 0.55;
 
   owner_coeff.health = 0.4;
 }
@@ -1315,7 +1316,7 @@ struct dreadbite_t : public warlock_pet_melee_attack_t
     warlock_pet_melee_attack_t::impact( s );
 
     if ( p()->o()->talents.from_the_shadows->ok() )
-      this->owner_td( s->target )->debuffs_from_the_shadows->trigger();
+      owner_td( s->target )->debuffs_from_the_shadows->trigger();
   }
 };
 
@@ -1330,18 +1331,7 @@ struct dreadstalker_melee_t : warlock_pet_melee_t
   {
     warlock_pet_melee_t::execute();
 
-    //if ( p()->o()->conduit.carnivorous_stalkers.ok() && rng().roll( p()->o()->conduit.carnivorous_stalkers.percent() ) )
-    //{
-    //  debug_cast< dreadstalker_t* >( p() )->dreadbite_executes++;
-    //  p()->o()->procs.carnivorous_stalkers->occur();
-    //  if ( p()->readying )
-    //  {
-    //    event_t::cancel( p()->readying );
-    //    p()->schedule_ready();
-    //  }
-    //}
-
-    if ( p()->o()->talents.carnivorous_stalkers.ok() && rng().roll( p()->o()->talents.carnivorous_stalkers->effectN( 1 ).percent() ) )
+    if ( p()->o()->talents.carnivorous_stalkers->ok() && rng().roll( p()->o()->talents.carnivorous_stalkers->effectN( 1 ).percent() ) )
     {
       debug_cast<dreadstalker_t*>( p() )->dreadbite_executes++;
       p()->o()->procs.carnivorous_stalkers->occur();
@@ -1357,9 +1347,9 @@ struct dreadstalker_melee_t : warlock_pet_melee_t
 void dreadstalker_t::init_base_stats()
 {
   warlock_pet_t::init_base_stats();
-  resources.base[ RESOURCE_ENERGY ]                  = 0;
+  resources.base[ RESOURCE_ENERGY ] = 0;
   resources.base_regen_per_second[ RESOURCE_ENERGY ] = 0;
-  melee_attack                                       = new dreadstalker_melee_t( this, 0.83 ); // TOCHECK: This number may require tweaking if the AP coeff changes
+  melee_attack = new dreadstalker_melee_t( this, 0.83 ); // TOCHECK: This number may require tweaking if the AP coeff changes
 }
 
 void dreadstalker_t::arise()
@@ -1368,8 +1358,7 @@ void dreadstalker_t::arise()
 
   o()->buffs.dreadstalkers->trigger();
 
-  // TODO: Should we handle cases where the Felguard is summoned while pets are already active?
-  if ( o()->talents.infernal_command.ok() && o()->warlock_pet_list.active && o()->warlock_pet_list.active->pet_type == PET_FELGUARD )
+  if ( o()->talents.infernal_command->ok() && o()->warlock_pet_list.active && o()->warlock_pet_list.active->pet_type == PET_FELGUARD )
   {
     buffs.infernal_command->trigger();
   }
@@ -1384,7 +1373,7 @@ void dreadstalker_t::demise()
     o()->buffs.dreadstalkers->decrement();
     o()->buffs.demonic_core->trigger( 1, buff_t::DEFAULT_VALUE(), o()->warlock_base.demonic_core->effectN( 2 ).percent() );
     
-    if ( o()->talents.shadows_bite.ok() )
+    if ( o()->talents.shadows_bite->ok() )
       o()->buffs.shadows_bite->trigger();
   }
 
@@ -1393,8 +1382,7 @@ void dreadstalker_t::demise()
 
 timespan_t dreadstalker_t::available() const
 {
-  // Dreadstalker does not need to wake up to check for something to do after it has travelled and
-  // done its dreadbite
+  // Dreadstalker does not need to wake up after it has travelled and done its Dreadbite
   return sim->expected_iteration_time * 2;
 }
 
@@ -1425,7 +1413,7 @@ vilefiend_t::vilefiend_t( warlock_t* owner )
 
 struct bile_spit_t : public warlock_pet_spell_t
 {
-  bile_spit_t( warlock_pet_t* p ) : warlock_pet_spell_t( "bile_spit", p, p->find_spell( 267997 ) )
+  bile_spit_t( warlock_pet_t* p ) : warlock_pet_spell_t( "Bile Spit", p, p->find_spell( 267997 ) )
   {
     tick_may_crit = false;
     hasted_ticks  = false;
@@ -1449,7 +1437,7 @@ struct bile_spit_t : public warlock_pet_spell_t
 
 struct headbutt_t : public warlock_pet_melee_attack_t
 {
-  headbutt_t( warlock_pet_t* p ) : warlock_pet_melee_attack_t( "headbutt", p, p->find_spell( 267999 ) )
+  headbutt_t( warlock_pet_t* p ) : warlock_pet_melee_attack_t( "Headbutt", p, p->find_spell( 267999 ) )
   {
     cooldown->duration = 5_s;
   }
@@ -1494,7 +1482,7 @@ demonic_tyrant_t::demonic_tyrant_t( warlock_t* owner, util::string_view name )
 struct demonfire_t : public warlock_pet_spell_t
 {
   demonfire_t( warlock_pet_t* p, util::string_view options_str )
-    : warlock_pet_spell_t( "demonfire", p, p->find_spell( 270481 ) )
+    : warlock_pet_spell_t( "Demonfire", p, p->find_spell( 270481 ) )
   {
     parse_options( options_str );
   }
@@ -1512,7 +1500,7 @@ void demonic_tyrant_t::arise()
 {
   warlock_pet_t::arise();
 
-  if ( o()->talents.reign_of_tyranny.ok() )
+  if ( o()->talents.reign_of_tyranny->ok() )
   {
     buffs.demonic_servitude->trigger( 1, o()->buffs.demonic_servitude->check_stack_value() );
   }
@@ -1522,7 +1510,7 @@ double demonic_tyrant_t::composite_player_multiplier( school_e school ) const
 {
   double m = warlock_pet_t::composite_player_multiplier( school );
 
-  if ( buffs.demonic_servitude->check() )
+  if ( o()->talents.reign_of_tyranny->ok() )
     m *= 1.0 + buffs.demonic_servitude->check_value();
 
   return m;
@@ -1534,8 +1522,8 @@ double demonic_tyrant_t::composite_player_multiplier( school_e school ) const
 
 pit_lord_t::pit_lord_t( warlock_t* owner, util::string_view name ) : warlock_pet_t( owner, name, PET_PIT_LORD, name != "pit_lord" )
 {
-  owner_coeff.ap_from_sp = 1.0;
-  owner_coeff.sp_from_sp = 1.0;
+  owner_coeff.ap_from_sp = 1.21;
+  owner_coeff.sp_from_sp = 1.21;
 
   soul_glutton_damage_bonus = owner->talents.soul_glutton->effectN( 1 ).percent();
 }
@@ -1544,7 +1532,7 @@ void pit_lord_t::init_base_stats()
 {
   warlock_pet_t::init_base_stats();
 
-  melee_attack = new warlock_pet_melee_t( this, 4.34 );
+  melee_attack = new warlock_pet_melee_t( this, 4.35 );
 }
 
 void pit_lord_t::arise()
