@@ -3316,7 +3316,7 @@ struct brutal_slash_t : public cat_attack_t
 
   brutal_slash_t( druid_t* p, std::string_view opt )
     : cat_attack_t( "brutal_slash", p, p->talent.brutal_slash, opt ),
-      berserk_swipe_cp( p->spec.berserk_cat->effectN( 3 ).base_value() )
+      berserk_swipe_cp( p->spec.berserk_cat->effectN( 2 ).base_value() )
   {
     aoe = -1;
     reduced_aoe_targets = data().effectN( 3 ).base_value();
@@ -4108,7 +4108,7 @@ struct swipe_cat_t : public cat_attack_t
 
   swipe_cat_t( druid_t* p, std::string_view opt )
     : cat_attack_t( "swipe_cat", p, p->apply_override( p->talent.swipe, p->spec.cat_form_override ), opt ),
-      berserk_swipe_cp( p->spec.berserk_cat->effectN( 3 ).base_value() )
+      berserk_swipe_cp( p->spec.berserk_cat->effectN( 2 ).base_value() )
   {
     aoe = -1;
     reduced_aoe_targets = data().effectN( 4 ).base_value();
