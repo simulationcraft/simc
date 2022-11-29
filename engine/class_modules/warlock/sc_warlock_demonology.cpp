@@ -834,7 +834,7 @@ struct soul_strike_t : public demonology_spell_t
 struct summon_vilefiend_t : public demonology_spell_t
 {
   summon_vilefiend_t( warlock_t* p, util::string_view options_str )
-    : demonology_spell_t( "summon_vilefiend", p, p->talents.summon_vilefiend )
+    : demonology_spell_t( "Summon Vilefiend", p, p->talents.summon_vilefiend )
   {
     parse_options( options_str );
     harmful = may_crit = false;

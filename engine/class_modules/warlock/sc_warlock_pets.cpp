@@ -1408,7 +1408,7 @@ vilefiend_t::vilefiend_t( warlock_t* owner )
 
 struct bile_spit_t : public warlock_pet_spell_t
 {
-  bile_spit_t( warlock_pet_t* p ) : warlock_pet_spell_t( "bile_spit", p, p->find_spell( 267997 ) )
+  bile_spit_t( warlock_pet_t* p ) : warlock_pet_spell_t( "Bile Spit", p, p->find_spell( 267997 ) )
   {
     tick_may_crit = false;
     hasted_ticks  = false;
@@ -1432,7 +1432,7 @@ struct bile_spit_t : public warlock_pet_spell_t
 
 struct headbutt_t : public warlock_pet_melee_attack_t
 {
-  headbutt_t( warlock_pet_t* p ) : warlock_pet_melee_attack_t( "headbutt", p, p->find_spell( 267999 ) )
+  headbutt_t( warlock_pet_t* p ) : warlock_pet_melee_attack_t( "Headbutt", p, p->find_spell( 267999 ) )
   {
     cooldown->duration = 5_s;
   }
