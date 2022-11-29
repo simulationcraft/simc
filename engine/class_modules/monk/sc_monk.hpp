@@ -216,23 +216,21 @@ public:
   public:
     double distance_moved;
 
-    monk_movement_t( monk_t* player, util::string_view n )
-      : buff_t( player, n ), p( player ), base_movement( find( player, "movement" ) )
+    monk_movement_t( monk_t* player, util::string_view n, const spell_data_t* s = spell_data_t::not_found() )
+      : buff_t( player, n ), p( player ), data( s ), base_movement( find( player, "movement" ) )
     {
       set_chance( 1 );
       set_max_stack( 1 );
+      set_duration( timespan_t::from_seconds( 1 ) );
 
       if ( base_movement == nullptr )
         base_movement = new movement_buff_t( p );
-    };
 
-    monk_movement_t( monk_t* player, util::string_view n, const spell_data_t* s )
-      : monk_movement_t( player, n )
-    {
-      data = s;
-
-      set_trigger_spell( s );
-      set_duration( s->duration() );
+      if ( s->ok() )
+      {
+        set_trigger_spell( s );
+        set_duration( s->duration() );
+      }
     };
 
     void set_distance( double distance )
@@ -261,8 +259,8 @@ public:
           p->current.moving_away = distance_moved;
           p->current.movement_direction = movement_direction_type::AWAY;
         }
-        
-        return base_movement->trigger( s, v, c, d );
+
+        return base_movement->trigger( s, v, c, this->buff_duration() );
       }
 
       return false;
