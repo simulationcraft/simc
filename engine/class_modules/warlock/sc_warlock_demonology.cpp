@@ -1140,25 +1140,6 @@ void warlock_t::create_buffs_demonology()
   buffs.dread_calling = make_buff<buff_t>( this, "dread_calling", talents.dread_calling_buff )
                             ->set_default_value( talents.dread_calling->effectN( 1 ).percent() );
 
-  // Pet tracking buffs
-  buffs.wild_imps = make_buff( this, "wild_imps" )->set_max_stack( 40 );
-
-  buffs.dreadstalkers = make_buff( this, "dreadstalkers" )->set_max_stack( 8 )
-                        ->set_duration( talents.call_dreadstalkers_2->duration() );
-
-  buffs.vilefiend = make_buff( this, "vilefiend" )->set_max_stack( 1 )
-                    ->set_duration( talents.summon_vilefiend->duration() );
-
-  buffs.tyrant = make_buff( this, "tyrant" )->set_max_stack( 1 )
-                 ->set_duration( find_spell( 265187 )->duration() );
-
-  buffs.grimoire_felguard = make_buff( this, "grimoire_felguard" )->set_max_stack( 1 )
-                            ->set_duration( talents.grimoire_felguard->duration() );
-
-  buffs.prince_malchezaar = make_buff( this, "prince_malchezaar" )->set_max_stack( 1 );
-
-  buffs.eyes_of_guldan = make_buff( this, "eyes_of_guldan" )->set_max_stack( 4 );
-
   buffs.shadows_bite = make_buff( this, "shadows_bite", talents.shadows_bite_buff )
                            ->set_default_value( talents.shadows_bite->effectN( 1 ).percent() );
 
@@ -1188,6 +1169,25 @@ void warlock_t::create_buffs_demonology()
 
   buffs.blazing_meteor = make_buff( this, "blazing_meteor", tier.blazing_meteor )
                              ->set_default_value_from_effect( 1 );
+
+  // Pet tracking buffs
+  buffs.wild_imps = make_buff( this, "wild_imps" )->set_max_stack( 40 );
+
+  buffs.dreadstalkers = make_buff( this, "dreadstalkers" )->set_max_stack( 8 )
+                        ->set_duration( talents.call_dreadstalkers_2->duration() );
+
+  buffs.vilefiend = make_buff( this, "vilefiend" )->set_max_stack( 1 )
+                    ->set_duration( talents.summon_vilefiend->duration() );
+
+  buffs.tyrant = make_buff( this, "tyrant" )->set_max_stack( 1 )
+                 ->set_duration( find_spell( 265187 )->duration() );
+
+  buffs.grimoire_felguard = make_buff( this, "grimoire_felguard" )->set_max_stack( 1 )
+                            ->set_duration( talents.grimoire_felguard->duration() );
+
+  buffs.prince_malchezaar = make_buff( this, "prince_malchezaar" )->set_max_stack( 1 );
+
+  buffs.eyes_of_guldan = make_buff( this, "eyes_of_guldan" )->set_max_stack( 4 );
 }
 
 void warlock_t::init_spells_demonology()
