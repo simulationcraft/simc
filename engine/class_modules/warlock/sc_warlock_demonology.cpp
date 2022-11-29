@@ -577,7 +577,7 @@ struct summon_demonic_tyrant_t : public demonology_spell_t
 struct demonic_strength_t : public demonology_spell_t
 {
   demonic_strength_t( warlock_t* p, util::string_view options_str )
-    : demonology_spell_t( "demonic_strength", p, p->talents.demonic_strength )
+    : demonology_spell_t( "Demonic Strength", p, p->talents.demonic_strength )
   {
     parse_options( options_str );
   }
@@ -594,7 +594,7 @@ struct demonic_strength_t : public demonology_spell_t
       return false;
     if ( active_pet->find_action( "felstorm" )->get_dot()->is_ticking() )
       return false;
-    if ( active_pet->find_action( "demonic_strength_felstorm" )->get_dot()->is_ticking() )
+    if ( active_pet->find_action( "felstorm_demonic_strength" )->get_dot()->is_ticking() )
       return false;
     if ( active_pet->buffs.fiendish_wrath->check() )
       return false;
@@ -902,7 +902,7 @@ struct guillotine_t : public demonology_spell_t
     if ( active_pet->pet_type != PET_FELGUARD )
       return false;
 
-    if ( active_pet->find_action( "demonic_strength_felstorm" )->get_dot()->is_ticking() )
+    if ( active_pet->find_action( "felstorm_demonic_strength" )->get_dot()->is_ticking() )
       return false;
     
     return spell_t::ready();
@@ -918,9 +918,9 @@ struct guillotine_t : public demonology_spell_t
     {
       active_pet->find_action( "felstorm" )->cancel();
     }
-    else if ( active_pet->find_action( "demonic_strength_felstorm" )->get_dot()->is_ticking() )
+    else if ( active_pet->find_action( "felstorm_demonic_strength" )->get_dot()->is_ticking() )
     {
-      active_pet->find_action( "demonic_strength_felstorm" )->cancel();
+      active_pet->find_action( "felstorm_demonic_strength" )->cancel();
     }
 
     demonology_spell_t::execute();

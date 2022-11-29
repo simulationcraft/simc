@@ -520,12 +520,12 @@ felguard_pet_t::felguard_pet_t( warlock_t* owner, util::string_view name )
     max_energy_threshold( 100 )
 {
   action_list_str = "travel";
-  action_list_str += "/demonic_strength_felstorm";
+  action_list_str += "/felstorm_demonic_strength";
   action_list_str += "/felstorm";
   action_list_str += "/legion_strike,if=energy>=" + util::to_string( max_energy_threshold );
 
   felstorm_cd = get_cooldown( "felstorm" );
-  dstr_cd = get_cooldown( "demonic_strength_felstorm" );
+  dstr_cd = get_cooldown( "felstorm_demonic_strength" );
 
   owner_coeff.health = 0.75;
 
@@ -682,7 +682,7 @@ struct felstorm_t : public warlock_pet_melee_attack_t
 struct demonic_strength_t : public felstorm_t
 {
   demonic_strength_t( warlock_pet_t* p, util::string_view options_str )
-    : felstorm_t( p, options_str, std::string( "Felstorm (D. Str.)" ) )
+    : felstorm_t( p, options_str, std::string( "Felstorm (Demonic Strength)" ) )
   {
     if ( p->o()->talents.fel_sunder->ok() )
       debug_cast<felstorm_tick_t*>( tick_action )->applies_fel_sunder = true;
@@ -908,7 +908,7 @@ action_t* felguard_pet_t::create_action( util::string_view name, util::string_vi
     return new felstorm_t( this, options_str, true );
   if ( name == "axe_toss" )
     return new axe_toss_t( this, options_str );
-  if ( name == "demonic_strength_felstorm" )
+  if ( name == "felstorm_demonic_strength" )
     return new demonic_strength_t( this, options_str );
 
   return warlock_pet_t::create_action( name, options_str );
