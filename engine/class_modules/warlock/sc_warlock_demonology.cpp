@@ -951,10 +951,9 @@ struct summon_random_demon_t : public demonology_spell_t
   };
 
   timespan_t summon_duration;
-  summon_random_demon_t( warlock_t* p, util::string_view options_str )
-    : demonology_spell_t( "summon_random_demon", p ), summon_duration( timespan_t::from_seconds( p->talents.inner_demons->effectN( 2 ).base_value() ) )
+  summon_random_demon_t( warlock_t* p )
+    : demonology_spell_t( "Summon Random Demon", p ), summon_duration( timespan_t::from_seconds( p->talents.inner_demons->effectN( 2 ).base_value() ) )
   {
-    parse_options( options_str );
     background = true;
 
     // Fallback if Inner Demons data is not present
@@ -1077,7 +1076,6 @@ action_t* warlock_t::create_action_demonology( util::string_view action_name, ut
     return new hand_of_guldan_t( this, options_str );
   if ( action_name == "implosion" )
     return new implosion_t( this, options_str );
-
   if ( action_name == "demonic_strength" )
     return new demonic_strength_t( this, options_str );
   if ( action_name == "bilescourge_bombers" )
@@ -1139,12 +1137,10 @@ void warlock_t::create_buffs_demonology()
                               };
                             } );;
 
-  // Legendaries
-
   buffs.dread_calling = make_buff<buff_t>( this, "dread_calling", talents.dread_calling_buff )
                             ->set_default_value( talents.dread_calling->effectN( 1 ).percent() );
 
-  // to track pets
+  // Pet tracking buffs
   buffs.wild_imps = make_buff( this, "wild_imps" )->set_max_stack( 40 );
 
   buffs.dreadstalkers = make_buff( this, "dreadstalkers" )->set_max_stack( 8 )
@@ -1303,12 +1299,12 @@ void warlock_t::init_spells_demonology()
   // T29 (Vault of the Incarnates)
   tier.blazing_meteor = find_spell( 394776 );
 
-  proc_actions.summon_random_demon = new actions_demonology::summon_random_demon_t( this, "" );
+  proc_actions.summon_random_demon = new actions_demonology::summon_random_demon_t( this );
 
   // Initialize some default values for pet spawners
   warlock_pet_list.wild_imps.set_default_duration( warlock_base.wild_imp->duration() );
 
-  warlock_pet_list.dreadstalkers.set_default_duration( find_spell( 193332 )->duration() );
+  warlock_pet_list.dreadstalkers.set_default_duration( talents.call_dreadstalkers_2->duration() );
 }
 
 void warlock_t::init_gains_demonology()
