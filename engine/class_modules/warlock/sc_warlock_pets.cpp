@@ -1517,8 +1517,8 @@ double demonic_tyrant_t::composite_player_multiplier( school_e school ) const
 
 pit_lord_t::pit_lord_t( warlock_t* owner, util::string_view name ) : warlock_pet_t( owner, name, PET_PIT_LORD, name != "pit_lord" )
 {
-  owner_coeff.ap_from_sp = 1.0;
-  owner_coeff.sp_from_sp = 1.0;
+  owner_coeff.ap_from_sp = 1.21;
+  owner_coeff.sp_from_sp = 1.21;
 
   soul_glutton_damage_bonus = owner->talents.soul_glutton->effectN( 1 ).percent();
 }
@@ -1527,7 +1527,7 @@ void pit_lord_t::init_base_stats()
 {
   warlock_pet_t::init_base_stats();
 
-  melee_attack = new warlock_pet_melee_t( this, 4.34 );
+  melee_attack = new warlock_pet_melee_t( this, 4.35 );
 }
 
 void pit_lord_t::arise()

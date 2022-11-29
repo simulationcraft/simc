@@ -869,7 +869,7 @@ struct grimoire_felguard_t : public demonology_spell_t
 struct nether_portal_t : public demonology_spell_t
 {
   nether_portal_t( warlock_t* p, util::string_view options_str )
-    : demonology_spell_t( "nether_portal", p, p->talents.nether_portal )
+    : demonology_spell_t( "Nether Portal", p, p->talents.nether_portal )
   {
     parse_options( options_str );
     harmful = may_crit = may_miss = false;
