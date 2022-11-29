@@ -986,7 +986,7 @@ grimoire_felguard_pet_t::grimoire_felguard_pet_t( warlock_t* owner )
    buffs.grimoire_of_service->trigger();
  }
 
- // TOCHECK: Does Grimoire: Felguard only due a single Felstorm at most, rendering some of this unnecessary?
+ // TODO: Grimoire: Felguard only does a single Felstorm at most, rendering some of this unnecessary
 timespan_t grimoire_felguard_pet_t::available() const
 {
   double energy_threshold = max_energy_threshold;
@@ -996,7 +996,7 @@ timespan_t grimoire_felguard_pet_t::available() const
     energy_threshold = min_energy_threshold;
   }
 
-  double deficit           = resources.current[ RESOURCE_ENERGY ] - energy_threshold;
+  double deficit = resources.current[ RESOURCE_ENERGY ] - energy_threshold;
   double time_to_threshold = 0;
   // Not enough energy, figure out how many milliseconds it'll take to get
   if ( deficit < 0 )
@@ -1044,10 +1044,10 @@ void grimoire_felguard_pet_t::init_base_stats()
 
   // Felguard is the only warlock pet type to use an actual weapon.
   main_hand_weapon.type = WEAPON_AXE_2H;
-  melee_attack          = new warlock_pet_melee_t( this );
+  melee_attack = new warlock_pet_melee_t( this );
 
-  owner_coeff.ap_from_sp = 0.575;
-  owner_coeff.sp_from_sp = 1.15;
+  owner_coeff.ap_from_sp = 0.65;
+  owner_coeff.sp_from_sp = 1.3;
 
   // TOCHECK Grimoire Felguard also has a hardcoded 10% multiplier for its auto attack damage. Seems to still be in effect as of 2021-12-01
   melee_attack->base_dd_multiplier *= 1.1;

@@ -851,7 +851,7 @@ struct summon_vilefiend_t : public demonology_spell_t
 struct grimoire_felguard_t : public demonology_spell_t
 {
   grimoire_felguard_t( warlock_t* p, util::string_view options_str )
-    : demonology_spell_t( "grimoire_felguard", p, p->talents.grimoire_felguard )
+    : demonology_spell_t( "Grimoire: Felguard", p, p->talents.grimoire_felguard )
   {
     parse_options( options_str );
     harmful = may_crit = false;
