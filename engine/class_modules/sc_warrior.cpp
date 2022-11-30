@@ -4607,7 +4607,7 @@ struct overpower_t : public warrior_attack_t
     weapon                            = &( p->main_hand_weapon );
     if ( p->talents.arms.battlelord->ok() )
     {
-      base_multiplier *= 1.0 + p->talents.arms.overpower->effectN( 2 ).percent(); // stand in for new BL effect
+      base_multiplier *= 1.0 + p->talents.arms.battlelord->effectN( 1 ).percent();
     }
 
     if ( p->talents.arms.dreadnaught->ok() )
@@ -10079,7 +10079,11 @@ double warrior_t::composite_armor_multiplier() const
   }
   */
 
+ // Generally Modify Armor% (101)
+
   ar *= 1.0 + talents.warrior.reinforced_plates->effectN( 1 ).percent();
+  ar *= 1.0 + talents.protection.enduring_alacrity -> effectN( 3 ).percent();
+  ar *= 1.0 + talents.protection.focused_vigor -> effectN( 3 ).percent();
 
   return ar;
 }
@@ -10110,10 +10114,8 @@ double warrior_t::composite_bonus_armor() const
 // warrior_t::composite_base_armor_multiplier ================================
 double warrior_t::composite_base_armor_multiplier() const
 {
+  // Generally Modify Base Resistance (142)
   double a = player_t::composite_base_armor_multiplier();
-
-  a *= 1.0 + talents.protection.enduring_alacrity -> effectN( 3 ).percent();
-  a *= 1.0 + talents.protection.focused_vigor -> effectN( 3 ).percent();
 
   return a;
 }

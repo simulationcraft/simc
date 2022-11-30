@@ -515,6 +515,77 @@ namespace monk_apl
   {
     auto monk = debug_cast<monk::monk_t*>( p );
 
+    //============================================================================
+    // On-use Items
+    //============================================================================
+    auto _WW_ON_USE = [ monk ] ( const item_t& item )
+    {
+      //-------------------------------------------
+      // Serenity item map
+      //-------------------------------------------
+      const static std::unordered_map<std::string, std::string> serenity_trinkets {
+        // name_str -> APL
+        { "horn_of_valor",",if=pet.xuen_the_white_tiger.active|!talent.invoke_xuen_the_white_tiger&buff.serenity.up|fight_remains<30" },
+
+        // Defaults: 
+        { "ITEM_STAT_BUFF", ",if=buff.serenity.remains>10" },
+        { "ITEM_DMG_BUFF", ",if=cooldown.invoke_xuen_the_white_tiger.remains>cooldown%%120|cooldown<=60&variable.hold_xuen|!talent.invoke_xuen_the_white_tiger" },
+      };
+
+      //-------------------------------------------
+      // SEF item map
+      //-------------------------------------------
+      const static std::unordered_map<std::string, std::string> sef_trinkets {
+        // name_str -> APL
+        { "horn_of_valor",",if=pet.xuen_the_white_tiger.active|!talent.invoke_xuen_the_white_tiger&buff.storm_earth_and_fire.up|fight_remains<30" },
+
+        // Defaults: 
+        { "ITEM_STAT_BUFF", ",if=cooldown.invoke_xuen_the_white_tiger.remains>cooldown%%120|cooldown<=60&variable.hold_xuen|cooldown<=60&buff.storm_earth_and_fire.remains>10|!talent.invoke_xuen_the_white_tiger" },
+        { "ITEM_DMG_BUFF", ",if=cooldown.invoke_xuen_the_white_tiger.remains>cooldown%%120|cooldown<=60&variable.hold_xuen|!talent.invoke_xuen_the_white_tiger" },
+      };
+
+      // -----------------------------------------
+
+      std::string concat = "";
+      auto talent_map = monk->talent.windwalker.serenity->ok() ? serenity_trinkets : sef_trinkets;
+      try { concat = talent_map.at( item.name_str ); }
+      catch ( ... )
+      {
+
+        int duration = 0;
+
+        for ( auto e : item.parsed.special_effects )
+        {
+
+          int duration = (int) floor( e->duration().total_seconds() );
+
+          // Ignore items that have a 30 second or shorter cooldown (or no cooldown)
+          // Unless defined in the map above these will be used on cooldown.
+          if ( e->type == SPECIAL_EFFECT_USE && e->cooldown() > timespan_t::from_seconds( 30 ) )
+          {
+
+            if ( e->is_stat_buff() || e->buff_type() == SPECIAL_EFFECT_BUFF_STAT )
+            {
+              // This item grants a stat buff on use
+              concat = talent_map.at( "ITEM_STAT_BUFF" );
+
+              break;
+            }
+            else
+              // This item has a generic damage effect
+              concat = talent_map.at( "ITEM_DMG_BUFF" );
+          }
+        }
+
+        if ( concat.length() > 0 && duration > 0 )
+          concat = concat + "|fight_remains<" + std::to_string( duration );
+      }
+
+      return concat;
+    };
+
+    //============================================================================
+
     action_priority_list_t* pre = p->get_action_priority_list( "precombat" );
 
     // Flask
@@ -527,7 +598,6 @@ namespace monk_apl
     // Snapshot stats
     pre->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
-    pre->add_action( "variable,name=xuen_on_use_trinket,op=set,value=equipped.inscrutable_quantum_device|equipped.gladiators_badge|equipped.wrathstone|equipped.overcharged_anima_battery|equipped.shadowgrasp_totem|equipped.the_first_sigil|equipped.cache_of_acquired_treasures" );
     pre->add_action( "summon_white_tiger_statue" );
     pre->add_action( "expel_harm,if=chi<chi.max" );
     pre->add_action( "chi_burst,if=!talent.faeline_stomp" );
@@ -548,8 +618,6 @@ namespace monk_apl
     def->add_action( p, "Spear Hand Strike", "if=target.debuff.casting.react" );
     def->add_action(
       "variable,name=hold_xuen,op=set,value=!talent.invoke_xuen_the_white_tiger|cooldown.invoke_xuen_the_white_tiger.remains>fight_remains|fight_remains-cooldown.invoke_xuen_the_white_tiger.remains<120&((talent.serenity&fight_remains>cooldown.serenity.remains&cooldown.serenity.remains>10)|(cooldown.storm_earth_and_fire.full_recharge_time<fight_remains&cooldown.storm_earth_and_fire.full_recharge_time>15)|(cooldown.storm_earth_and_fire.charges=0&cooldown.storm_earth_and_fire.remains<fight_remains))" );
-    def->add_action(
-      "variable,name=hold_sef,op=set,value=cooldown.bonedust_brew.up&cooldown.storm_earth_and_fire.charges<2&chi<3|buff.bonedust_brew.remains<8" );
 
     // Potion
     if ( p->sim->allow_potions )
@@ -570,9 +638,9 @@ namespace monk_apl
     // Prioritize Faeline Stomp if playing with Faeline Harmony
     def->add_action( "faeline_stomp,target_if=min:debuff.fae_exposure_damage.remains,if=combo_strike&talent.faeline_harmony&debuff.fae_exposure_damage.remains<1", "Prioritize Faeline Stomp if playing with Faeline Harmony" );
     // Spend excess energy
-    def->add_action( "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains+(debuff.skyreach_exhaustion.up*20),if=!buff.serenity.up&buff.teachings_of_the_monastery.stack<3&combo_strike&chi.max-chi>=(2+buff.power_strikes.up)", "TP if not overcapping Chi or TotM" );
+    def->add_action( "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains+(debuff.skyreach_exhaustion.up*20),if=!buff.serenity.up&buff.teachings_of_the_monastery.stack<3&combo_strike&chi.max-chi>=(2+buff.power_strikes.up)&(!talent.invoke_xuen_the_white_tiger&!talent.serenity|(!talent.skyreach|time>5|pet.xuen_the_white_tiger.active))", "TP if not overcapping Chi or TotM" );
     // Use Chi Burst to reset Faeline Stomp
-    def->add_action( "chi_burst,if=talent.faeline_stomp&cooldown.faeline_stomp.remains&(chi.max-chi>=1&active_enemies=1|chi.max-chi>=2&active_enemies>=2)&!buff.first_strike.up", "Use Chi Burst to reset Faeline Stomp" );
+    def->add_action( "chi_burst,if=talent.faeline_stomp&cooldown.faeline_stomp.remains&(chi.max-chi>=1&active_enemies=1|chi.max-chi>=2&active_enemies>=2)", "Use Chi Burst to reset Faeline Stomp" );
 
     // Use Cooldowns
     def->add_action( "call_action_list,name=cd_sef,if=!talent.serenity", "Cooldowns" );
@@ -588,7 +656,7 @@ namespace monk_apl
     cd_sef->add_action( "summon_white_tiger_statue,if=pet.xuen_the_white_tiger.active", "Storm, Earth and Fire Cooldowns" );
     cd_sef->add_action( "invoke_xuen_the_white_tiger,if=!variable.hold_xuen&talent.bonedust_brew&cooldown.bonedust_brew.remains<=5&(active_enemies<3&chi>=3|active_enemies>=3&chi>=2)|fight_remains<25" );
     cd_sef->add_action( "invoke_xuen_the_white_tiger,if=!variable.hold_xuen&!talent.bonedust_brew&(cooldown.rising_sun_kick.remains<2)&chi>=3" );
-    cd_sef->add_action( "storm_earth_and_fire,if=talent.bonedust_brew&(fight_remains<30&cooldown.bonedust_brew.remains<4&chi>=4|buff.bonedust_brew.up&!variable.hold_sef|!spinning_crane_kick.max&active_enemies>=3&cooldown.bonedust_brew.remains<=2&chi>=2)&(pet.xuen_the_white_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>cooldown.storm_earth_and_fire.full_recharge_time)" );
+    cd_sef->add_action( "storm_earth_and_fire,if=talent.bonedust_brew&(fight_remains<30&cooldown.bonedust_brew.remains<4&chi>=4|buff.bonedust_brew.up|!spinning_crane_kick.max&active_enemies>=3&cooldown.bonedust_brew.remains<=2&chi>=2)&(pet.xuen_the_white_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>cooldown.storm_earth_and_fire.full_recharge_time)" );
     cd_sef->add_action( "bonedust_brew,if=(!buff.bonedust_brew.up&buff.storm_earth_and_fire.up&buff.storm_earth_and_fire.remains<11&spinning_crane_kick.max)|(!buff.bonedust_brew.up&fight_remains<30&fight_remains>10&spinning_crane_kick.max&chi>=4)|fight_remains<10" );
     cd_sef->add_action(
       "call_action_list,name=bdb_setup,if=!buff.bonedust_brew.up&talent.bonedust_brew&cooldown.bonedust_brew.remains<=2&(fight_remains>60&(cooldown.storm_earth_and_fire.charges>0|cooldown.storm_earth_and_fire.remains>10)&(pet.xuen_the_white_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>10|variable.hold_xuen)|((pet.xuen_the_white_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>13)&(cooldown.storm_earth_and_fire.charges>0|cooldown.storm_earth_and_fire.remains>13|buff.storm_earth_and_fire.up)))" );
@@ -603,61 +671,11 @@ namespace monk_apl
     else
       cd_sef->add_action( "touch_of_death,cycle_targets=1,if=combo_strike" );
 
-    // Storm, Earth, and Fire on-use trinkets
-
-    // Scars of Fraternal Strife 1st-4th Rune, always used first
-    if ( p->items[SLOT_TRINKET_1].name_str == "scars_of_fraternal_strife" || p->items[SLOT_TRINKET_2].name_str == "scars_of_fraternal_strife" )
-      cd_sef->add_action( "use_item,name=scars_of_fraternal_strife,if=!buff.scars_of_fraternal_strife_4.up" );
-
-    if ( p->items[SLOT_MAIN_HAND].name_str == "jotungeirr_destinys_call" )
-      cd_sef->add_action( "use_item,name=" + p->items[SLOT_MAIN_HAND].name_str + ",if=pet.xuen_the_white_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>60&fight_remains>180|fight_remains<20" );
 
     for ( const auto& item : p->items )
     {
       if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
-      {
-        if ( item.name_str == "inscrutable_quantum_device" )
-          cd_sef->add_action( "use_item,name=" + item.name_str +
-            ",if=pet.xuen_the_white_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>60&fight_remains>180|fight_remains<20" );
-        else if ( item.name_str == "wrathstone" )
-          cd_sef->add_action( "use_item,name=" + item.name_str +
-            ",if=pet.xuen_the_white_tiger.active|fight_remains<20" );
-        else if ( item.name_str == "shadowgrasp_totem" )
-          cd_sef->add_action( "use_item,name=" + item.name_str +
-            ",if=pet.xuen_the_white_tiger.active|fight_remains<20|!talent.invokers_delight" );
-        else if ( item.name_str == "overcharged_anima_battery" )
-          cd_sef->add_action( "use_item,name=" + item.name_str +
-            ",if=pet.xuen_the_white_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>90|fight_remains<20" );
-        else if ( (int)item.name_str.find( "gladiators_badge" ) != -1 )
-          cd_sef->add_action( "use_item,name=" + item.name_str +
-            ",if=(buff.storm_earth_and_fire.remains>10|buff.bonedust_brew.up&cooldown.bonedust_brew.remains>30)|(cooldown.invoke_xuen_the_white_tiger.remains>55|variable.hold_xuen)|fight_remains<15" );
-        else if ( item.name_str == "the_first_sigil" )
-          cd_sef->add_action( "use_item,name=" + item.name_str +
-            ",if=pet.xuen_the_white_tiger.remains>15|cooldown.invoke_xuen_the_white_tiger.remains>60&fight_remains>300|fight_remains<20" );
-        else if ( item.name_str == "cache_of_acquired_treasures" )
-          cd_sef->add_action( "use_item,name=" + item.name_str +
-            ",if=active_enemies<2&buff.acquired_wand.up|active_enemies>1&buff.acquired_axe.up|fight_remains<20" );
-        else if ( item.name_str == "scars_of_fraternal_strife" )
-          // Scars of Fraternal Strife Final Rune, use in order of trinket slots
-          cd_sef->add_action( "use_item,name=" + item.name_str +
-            ",if=(buff.scars_of_fraternal_strife_4.up&(active_enemies>1|raid_event.adds.in<20)&((debuff.bonedust_brew_debuff.up&pet.xuen_the_white_tiger.active)))|fight_remains<35" );
-        else if ( item.name_str == "enforcers_stun_grenade" )
-          cd_sef->add_action( "use_item,name=" + item.name_str +
-            ",if=pet.xuen_the_white_tiger.active|buff.storm_earth_and_fire.remains>10|buff.bonedust_brew.up&cooldown.bonedust_brew.remains>30|fight_remains<20" );
-        else if ( item.name_str == "kihras_adrenaline_injector" )
-          cd_sef->add_action( "use_item,name=" + item.name_str +
-            ",if=pet.xuen_the_white_tiger.active|buff.storm_earth_and_fire.remains>10|buff.bonedust_brew.up&cooldown.bonedust_brew.remains>30|fight_remains<20" );
-        else if ( item.name_str == "wraps_of_electrostatic_potential" )
-          cd_sef->add_action( "use_item,name=" + item.name_str );
-        else if ( item.name_str == "ring_of_collapsing_futures" )
-          cd_sef->add_action( "use_item,name=" + item.name_str +
-            ",if=buff.temptation.down|fight_remains<30" );
-        else if ( item.name_str == "jotungeirr_destinys_call" )
-          continue;
-        else
-          cd_sef->add_action( "use_item,name=" + item.name_str +
-            ",if=!variable.xuen_on_use_trinket|cooldown.invoke_xuen_the_white_tiger.remains>20&pet.xuen_the_white_tiger.remains<20|variable.hold_xuen" );
-      }
+        cd_sef->add_action( "use_item,name=" + item.name_str + _WW_ON_USE( item ) );
     }
 
 
@@ -728,39 +746,10 @@ namespace monk_apl
         cd_serenity->add_action( racial_action );
     }
 
-    // Serenity On-use items
-    if ( p->items[SLOT_MAIN_HAND].name_str == "jotungeirr_destinys_call" )
-      cd_serenity->add_action( "use_item,name=" + p->items[SLOT_MAIN_HAND].name_str + ",if=buff.serenity.up|fight_remains<20" );
-
     for ( const auto& item : p->items )
     {
-      std::string name_str;
       if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
-      {
-        if ( item.name_str == "inscrutable_quantum_device" )
-          cd_serenity->add_action( "use_item,name=" + item.name_str + ",if=buff.serenity.up|fight_remains<20" );
-        else if ( item.name_str == "wrathstone" )
-          cd_serenity->add_action( "use_item,name=" + item.name_str + ",if=buff.serenity.up|fight_remains<20" );
-        else if ( item.name_str == "overcharged_anima_battery" )
-          cd_serenity->add_action( "use_item,name=" + item.name_str + ",if=buff.serenity.up|fight_remains<20" );
-        else if ( item.name_str == "shadowgrasp_totem" )
-          cd_serenity->add_action( "use_item,name=" + item.name_str + ",if=pet.xuen_the_white_tiger.active|fight_remains<20|!talent.invokers_delight" );
-        else if ( (int)item.name_str.find( "gladiators_badge" ) != -1 )
-          cd_serenity->add_action( "use_item,name=" + item.name_str + ",if=buff.serenity.up|fight_remains<20" );
-        else if ( item.name_str == "the_first_sigil" )
-          cd_serenity->add_action( "use_item,name=" + item.name_str + ",if=buff.serenity.up|fight_remains<20" );
-        else if ( item.name_str == "wraps_of_electrostatic_potential" )
-          cd_serenity->add_action( "use_item,name=" + item.name_str );
-        else if ( item.name_str == "ring_of_collapsing_futures" )
-          cd_serenity->add_action( "use_item,name=" + item.name_str +
-            ",if=buff.temptation.down|fight_remains<30" );
-        else if ( item.name_str == "jotungeirr_destinys_call" )
-          continue;
-        else
-          cd_serenity->add_action(
-            "use_item,name=" + item.name_str +
-            ",if=!variable.xuen_on_use_trinket|cooldown.invoke_xuen_the_white_tiger.remains>20|variable.hold_xuen" );
-      }
+        cd_serenity->add_action( "use_item,name=" + item.name_str + _WW_ON_USE( item ) );
     }
 
     // AoE priority
@@ -781,9 +770,8 @@ namespace monk_apl
     aoe->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.teachings_of_the_monastery.up&active_enemies>=5&talent.shadowboxing_treads" );
     aoe->add_action( "spinning_crane_kick,if=combo_strike&(active_enemies>=7|active_enemies=6&spinning_crane_kick.modifier>=2.7|active_enemies=5&spinning_crane_kick.modifier>=2.9)" );
     aoe->add_action( "strike_of_the_windlord" );
-    aoe->add_action( "spinning_crane_kick,if=combo_strike&active_enemies>=5" );
+    aoe->add_action( "spinning_crane_kick,if=combo_strike&active_enemies>=5|active_enemies=4&spinning_crane_kick.modifier>=2.5|!talent.shadowboxing_treads" );
     aoe->add_action( "fists_of_fury" );
-    aoe->add_action( "spinning_crane_kick,if=combo_strike&(active_enemies>=4&spinning_crane_kick.modifier>=2.5|!talent.shadowboxing_treads)" );
     aoe->add_action( "faeline_stomp,if=combo_strike");
     aoe->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike" );
     aoe->add_action( "rushing_jade_wind,if=!buff.rushing_jade_wind.up" );
@@ -812,16 +800,16 @@ namespace monk_apl
 
     // Fallthru
     fallthru->add_action( "crackling_jade_lightning,if=buff.the_emperors_capacitor.stack>19&energy.time_to_max>execute_time-1&cooldown.rising_sun_kick.remains>execute_time|buff.the_emperors_capacitor.stack>14&(cooldown.serenity.remains<5&talent.serenity|fight_remains<5)", "Fallthru" );
-    fallthru->add_action( "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains+(debuff.skyreach_exhaustion.up*20),if=combo_strike&buff.bonedust_brew.up&chi.max-chi>=(2+buff.power_strikes.up)" );
+    fallthru->add_action( "faeline_stomp,if=combo_strike" );
+    fallthru->add_action( "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains+(debuff.skyreach_exhaustion.up*20),if=combo_strike&chi.max-chi>=(2+buff.power_strikes.up)" );
     fallthru->add_action( "expel_harm,if=chi.max-chi>=1&active_enemies>2" );
     fallthru->add_action( "chi_burst,if=chi.max-chi>=1&active_enemies=1&raid_event.adds.in>20|chi.max-chi>=2&active_enemies>=2" );
     fallthru->add_action( "chi_wave" );
-    fallthru->add_action( "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains+(debuff.skyreach_exhaustion.up*20),if=combo_strike&chi.max-chi>=(2+buff.power_strikes.up)" );
     fallthru->add_action( "expel_harm,if=chi.max-chi>=1" );
     fallthru->add_action( "spinning_crane_kick,if=combo_strike&buff.chi_energy.stack>30-5*active_enemies&buff.storm_earth_and_fire.down&(cooldown.rising_sun_kick.remains>2&cooldown.fists_of_fury.remains>2|cooldown.rising_sun_kick.remains<3&cooldown.fists_of_fury.remains>3&chi>3|cooldown.rising_sun_kick.remains>3&cooldown.fists_of_fury.remains<3&chi>4|chi.max-chi<=1&energy.time_to_max<2)|buff.chi_energy.stack>10&fight_remains<7" );
-    fallthru->add_action( "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains+(debuff.skyreach_exhaustion.up*20),if=combo_strike&chi.max-chi>=(2+buff.power_strikes.up)" );
     fallthru->add_action( "arcane_torrent,if=chi.max-chi>=1" );
     fallthru->add_action( "flying_serpent_kick,interrupt=1" );
+    fallthru->add_action( "tiger_palm" );
 
     // Serenity Priority
     serenity->add_action( "strike_of_the_windlord,if=active_enemies<3", "Serenity Priority" );
