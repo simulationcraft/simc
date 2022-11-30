@@ -27,7 +27,7 @@
 
 # save=T29_Monk_Brewmaster.simc
 
-monk="T29_Monk_Windwalker"
+monk="T29_Monk_Windwalker_Serenity"
 spec=windwalker
 level=70
 race=orc
@@ -35,21 +35,48 @@ role=dps
 position=back
 talents=B0QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEkkkEtIBAAAAAJSSCgkkkEIRIiESkkkkkSCIAAA
 
-head=gaze_of_the_waking_fist,id=200363,bonus_id=8780,bonus_id=4800/3524/1498/8767,gem_id=192991
-neck=strand_of_the_stars,id=137487,bonus_id=1795/6808/4786/3300/6935,gem_id=192925/192925/192925
-shoulders=mantle_of_the_waking_fist,id=200365,bonus_id=4800/3524/1498/8767
-back=cape_of_valarjar_courage,id=133765,bonus_id=1795/6808/4786/3300
-chest=chestwrap_of_the_waking_fist,id=200360,bonus_id=4800/3524/1495/8767,enchant=waking_stats_3
-wrists=loyal_flametenders_bracers,id=195525,bonus_id=4800/3524/1498,gem_id=192925
-hands=palms_of_the_waking_fist,id=200362,bonus_id=4800/3524/1495/8767
-waist=bjorns_hunting_strap,id=136776,bonus_id=1795/6808/4786/3300/6935,gem_id=192925
-legs=loathsome_thunderhosen,id=195530,bonus_id=4800/3524/1498,enchant=fierce_armor_kit_3
-feet=treads_of_corrupted_water,id=143973,bonus_id=4177/6808/4786/3311
-finger1=seal_of_filial_duty,id=195526,bonus_id=4800/4786/1497,gem_id=192925,enchant_id=6568
-finger2=seal_of_diurnas_chosen,id=195480,bonus_id=4800/3524/1495,gem_id=192925,enchant_id=6568
-trinket1=irideus_fragment,id=193743,bonus_id=6652/1643/8767
-trinket2=manic_grieftorch,id=194308,bonus_id=4800/4786/1498
-main_hand=primal_molten_mace,id=190509,bonus_id=1540/1686/8937,enchant=frozen_devotion_3
-off_hand=primal_molten_mace,id=190509,bonus_id=1540/1679/8937,enchant=frozen_devotion_3
+head=,id=200363,bonus_id=8780,gem_id=192982,ilevel=424
+neck=,id=193647,bonus_id=3524/8782,gem_id=192932/192932/192932,ilevel=421
+shoulder=,id=200365,ilevel=424
+back=,id=133765,bonus_id=3524,ilevel=421
+chest=,id=200360,enchant_id=6625,ilevel=421
+wrist=,id=195525,bonus_id=3524/8780,gem_id=192932,ilevel=424
+hands=,id=200362,ilevel=421
+waist=,id=136776,bonus_id=3524/8780,gem_id=192932,ilevel=421
+legs=,id=195530,bonus_id=3524,enchant_id=6490,ilevel=424
+feet=,id=134193,bonus_id=3524,ilevel=421
+finger1=,id=134542,bonus_id=3524/8780,enchant_id=6568,gem_id=192932,ilevel=421
+finger2=,id=195480,bonus_id=3524/8780,enchant_id=6568,gem_id=192932,ilevel=421
+trinket1=,id=137486,bonus_id=3524,ilevel=421
+trinket2=,id=194308,bonus_id=3524,ilevel=424
+main_hand=,id=190509,bonus_id=3524/1679/8937,enchant_id=6649,ilevel=418
+off_hand=,id=190509,bonus_id=3524/1679/8937,enchant_id=6649,ilevel=418
 
 save=T29_Monk_Windwalker.simc
+
+monk="T29_Monk_Windwalker_SEF"
+spec=windwalker
+level=70
+race=orc
+role=dps
+position=back
+talents=B0QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEEJJJlkEAAAAAkIJJASSSSgEhISIRSSSSKJgAAA
+
+head=,id=200363,bonus_id=8780,gem_id=192991,ilevel=424
+neck=,id=193647,bonus_id=3524/8782,gem_id=192925/192925/192925,ilevel=421
+shoulder=,id=200365,ilevel=424
+back=,id=133765,bonus_id=3524,ilevel=421
+chest=,id=200360,enchant_id=6625,ilevel=421
+wrist=,id=195525,bonus_id=3524/8780,gem_id=192925,ilevel=424
+hands=,id=200362,ilevel=421
+waist=,id=136776,bonus_id=3524/8780,gem_id=192925,ilevel=421
+legs=,id=195530,bonus_id=3524,enchant_id=6490,ilevel=424
+feet=,id=134193,bonus_id=3524,ilevel=421
+finger1=,id=134542,bonus_id=3524/8780,enchant_id=6550,gem_id=192925,ilevel=421
+finger2=,id=195480,bonus_id=3524/8780,enchant_id=6550,gem_id=192925,ilevel=421
+trinket1=,id=137486,bonus_id=3524,ilevel=421
+trinket2=,id=194308,bonus_id=3524,ilevel=424
+main_hand=,id=190509,bonus_id=3524/1679/8937,enchant_id=6649,ilevel=418
+off_hand=,id=190509,bonus_id=3524/1679/8937,enchant_id=6649,ilevel=418
+
+save=T29_Monk_Windwalker_SEF.simc
