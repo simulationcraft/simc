@@ -1,11 +1,11 @@
-monk="T29_Monk_Windwalker_Serenity"
+monk="T29_Monk_Windwalker_SEF"
 source=default
 spec=windwalker
 level=70
 race=orc
 role=hybrid
 position=back
-talents=B0QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEkkkEtIBAAAAAJSSCgkkkEIRIiESkkkkkSCIAAA
+talents=B0QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEEJJJlkEAAAAAkIJJASSSSgEhISIRSSSSKJgAAA
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
@@ -180,18 +180,18 @@ actions.st_cleave+=/whirling_dragon_punch
 actions.st_cleave+=/rushing_jade_wind,if=!buff.rushing_jade_wind.up
 actions.st_cleave+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike
 
-head=gaze_of_the_waking_fist,id=200363,bonus_id=8780,ilevel=424,gem_id=192982
-neck=custodians_medallion_of_delusion,id=193647,bonus_id=3524/8782,ilevel=421,gem_id=192932/192932/192932
+head=gaze_of_the_waking_fist,id=200363,bonus_id=8780,ilevel=424,gem_id=192991
+neck=custodians_medallion_of_delusion,id=193647,bonus_id=3524/8782,ilevel=421,gem_id=192925/192925/192925
 shoulders=mantle_of_the_waking_fist,id=200365,ilevel=424
 back=cape_of_valarjar_courage,id=133765,bonus_id=3524,ilevel=421
 chest=chestwrap_of_the_waking_fist,id=200360,ilevel=421,enchant_id=6625
-wrists=loyal_flametenders_bracers,id=195525,bonus_id=3524/8780,ilevel=424,gem_id=192932
+wrists=loyal_flametenders_bracers,id=195525,bonus_id=3524/8780,ilevel=424,gem_id=192925
 hands=palms_of_the_waking_fist,id=200362,ilevel=421
-waist=bjorns_hunting_strap,id=136776,bonus_id=3524/8780,ilevel=421,gem_id=192932
+waist=bjorns_hunting_strap,id=136776,bonus_id=3524/8780,ilevel=421,gem_id=192925
 legs=loathsome_thunderhosen,id=195530,bonus_id=3524,ilevel=424,enchant_id=6490
 feet=biornskin_moccasins,id=134193,bonus_id=3524,ilevel=421
-finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=3524/8780,ilevel=421,gem_id=192932,enchant_id=6568
-finger2=seal_of_diurnas_chosen,id=195480,bonus_id=3524/8780,ilevel=421,gem_id=192932,enchant_id=6568
+finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=3524/8780,ilevel=421,gem_id=192925,enchant_id=6550
+finger2=seal_of_diurnas_chosen,id=195480,bonus_id=3524/8780,ilevel=421,gem_id=192925,enchant_id=6550
 trinket1=windscar_whetstone,id=137486,bonus_id=3524,ilevel=421
 trinket2=manic_grieftorch,id=194308,bonus_id=3524,ilevel=424
 main_hand=primal_molten_mace,id=190509,bonus_id=3524/1679/8937,ilevel=418,enchant_id=6649
@@ -202,10 +202,10 @@ off_hand=primal_molten_mace,id=190509,bonus_id=3524/1679/8937,ilevel=418,enchant
 # gear_agility=4969
 # gear_stamina=13301
 # gear_attack_power=270
-# gear_crit_rating=2789
+# gear_crit_rating=3146
 # gear_haste_rating=2201
 # gear_mastery_rating=2067
-# gear_versatility_rating=4399
+# gear_versatility_rating=4042
 # gear_armor=3363
 # set_bonus=tier29_2pc=1
 # set_bonus=tier29_4pc=1
