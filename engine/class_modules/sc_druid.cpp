@@ -2951,9 +2951,10 @@ public:
       persistent_multiplier_buffeffects.push_back( ta_multiplier_buffeffects.back() );
       ta_multiplier_buffeffects.pop_back();
 
-      p()->sim->print_debug( "persistent-buffs: {} ({}) damage modified by {}% with buff {} ({}), tick table has {} entries.", name(), id,
-                             ta_val * 100.0, buff->name(), buff->data().id(), ta_multiplier_buffeffects.size() );
-
+      p()->sim->print_debug(
+          "persistent-buffs: {} ({}) damage modified by {}% with buff {} ({}), tick table has {} entries.", name(), id,
+          persistent_multiplier_buffeffects.back().value * 100.0, buff->name(), buff->data().id(),
+          ta_multiplier_buffeffects.size() );
 
       return true;
     }
