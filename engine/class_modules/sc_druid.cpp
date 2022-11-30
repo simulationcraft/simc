@@ -10212,9 +10212,12 @@ void druid_t::init_procs()
 {
   player_t::init_procs();
 
+  // TODO: temporarily remove advanced data collection until issues with profilesets & merge() showing one sim with
+  // simple=true and other with simple=false is resolved
+
   // Balance
-  proc.denizen_of_the_dream = get_proc( "Denizen of the Dream" )->collect_count();
-  proc.pulsar               = get_proc( "Primordial Arcanic Pulsar" )->collect_interval();
+  proc.denizen_of_the_dream = get_proc( "Denizen of the Dream" );//->collect_count();
+  proc.pulsar               = get_proc( "Primordial Arcanic Pulsar" );//->collect_interval();
 
   // Feral
   proc.predator             = get_proc( "Predator" );
@@ -10225,9 +10228,9 @@ void druid_t::init_procs()
   proc.clearcasting_wasted  = get_proc( "Clearcasting (Wasted)" );
 
   // Guardian
-  proc.galactic_guardian    = get_proc( "Galactic Guardian" )->collect_interval();
-  proc.gore                 = get_proc( "Gore" )->collect_interval();
-  proc.tooth_and_claw       = get_proc( "Tooth and Claw" )->collect_interval();
+  proc.galactic_guardian    = get_proc( "Galactic Guardian" );//->collect_interval();
+  proc.gore                 = get_proc( "Gore" );//->collect_interval();
+  proc.tooth_and_claw       = get_proc( "Tooth and Claw" );//->collect_interval();
 }
 
 // druid_t::init_uptimes ====================================================
@@ -10235,15 +10238,18 @@ void druid_t::init_uptimes()
 {
   player_t::init_uptimes();
 
+  // TODO: temporarily remove advanced data collection until issues with profilesets & merge() showing one sim with
+  // simple=true and other with simple=false is resolved
+
   std::string ca_inc_str = talent.incarnation_moonkin.ok() ? "Incarnation" : "Celestial Alignment";
 
-  uptime.combined_ca_inc           = get_uptime( ca_inc_str + " (Total)" )->collect_uptime( *sim )->collect_duration( *sim );
-  uptime.primordial_arcanic_pulsar = get_uptime( ca_inc_str + " (Pulsar)" )->collect_uptime( *sim );
-  uptime.eclipse_lunar             = get_uptime( "Lunar Eclipse Only" )->collect_uptime( *sim )->collect_duration( *sim );
-  uptime.eclipse_solar             = get_uptime( "Solar Eclipse Only" )->collect_uptime( *sim );
-  uptime.eclipse_none              = get_uptime( "No Eclipse" )->collect_uptime( *sim )->collect_duration( *sim );
-  uptime.friend_of_the_fae         = get_uptime( "Friend of the Fae" )->collect_uptime( *sim )->collect_duration( *sim );
-  uptime.tooth_and_claw_debuff     = get_uptime( "Tooth and Claw Debuff" )->collect_uptime( *sim );
+  uptime.combined_ca_inc           = get_uptime( ca_inc_str + " (Total)" );//->collect_uptime( *sim )->collect_duration( *sim );
+  uptime.primordial_arcanic_pulsar = get_uptime( ca_inc_str + " (Pulsar)" );//->collect_uptime( *sim );
+  uptime.eclipse_lunar             = get_uptime( "Lunar Eclipse Only" );//->collect_uptime( *sim )->collect_duration( *sim );
+  uptime.eclipse_solar             = get_uptime( "Solar Eclipse Only" );//->collect_uptime( *sim );
+  uptime.eclipse_none              = get_uptime( "No Eclipse" );//->collect_uptime( *sim )->collect_duration( *sim );
+  uptime.friend_of_the_fae         = get_uptime( "Friend of the Fae" );//->collect_uptime( *sim )->collect_duration( *sim );
+  uptime.tooth_and_claw_debuff     = get_uptime( "Tooth and Claw Debuff" );//->collect_uptime( *sim );
 }
 
 // druid_t::init_resources ==================================================
