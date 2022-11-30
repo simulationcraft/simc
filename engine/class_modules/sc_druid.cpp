@@ -5684,7 +5684,9 @@ struct adaptive_swarm_t : public druid_spell_t
         if ( !second_target )
         {
           second_target = new_swarm_target( new_target );
-          assert( second_target );
+          if ( !second_target )
+            return;
+
           BASE::sim->print_log( "ADAPTIVE_SWARM: splitting off {} swarm", heal ? "heal" : "damage" );
           send_swarm( second_target, d );
         }
