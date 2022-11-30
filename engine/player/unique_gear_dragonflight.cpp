@@ -1809,6 +1809,7 @@ void decoration_of_flame( special_effect_t& effect )
         value( e.player->find_spell( 394393 )->effectN( 2 ).average( e.item ) )
     {
        background = true;
+       split_aoe_damage = true;
        base_dd_min = base_dd_max = e.player->find_spell( 394393 )->effectN( 1 ).average( e.item );
        aoe = as<int>( e.driver()->effectN( 3 ).base_value() );
        radius = 10;
