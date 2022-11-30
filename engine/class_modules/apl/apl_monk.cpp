@@ -516,32 +516,32 @@ namespace monk_apl
     auto monk = debug_cast<monk::monk_t*>( p );
 
     //============================================================================
-    // On-use Trinkets
+    // On-use Items
     //============================================================================
     auto _WW_ON_USE = [ monk ] ( const item_t& item )
     {
       //-------------------------------------------
-      // Serenity trinket map
+      // Serenity item map
       //-------------------------------------------
       const static std::unordered_map<std::string, std::string> serenity_trinkets {
         // name_str -> APL
         { "horn_of_valor",",if=pet.xuen_the_white_tiger.active|!talent.invoke_xuen_the_white_tiger&buff.serenity.up|fight_remains<30" },
 
         // Defaults: 
-        { "ITEM_STAT_BUFF", ",if=buff.serenity.up|fight_remains<20" },
-        { "ITEM_DMG_BUFF", ",if=pet.xuen_the_white_tiger.active|!talent.invoke_xuen_the_white_tiger|fight_remains<20" },
+        { "ITEM_STAT_BUFF", ",if=buff.serenity.remains>10" },
+        { "ITEM_DMG_BUFF", ",if=cooldown.invoke_xuen_the_white_tiger.remains>cooldown%%120|cooldown<=60&variable.hold_xuen|!talent.invoke_xuen_the_white_tiger" },
       };
 
       //-------------------------------------------
-      // SEF trinket map
+      // SEF item map
       //-------------------------------------------
       const static std::unordered_map<std::string, std::string> sef_trinkets {
         // name_str -> APL
         { "horn_of_valor",",if=pet.xuen_the_white_tiger.active|!talent.invoke_xuen_the_white_tiger&buff.storm_earth_and_fire.up|fight_remains<30" },
 
         // Defaults: 
-        { "ITEM_STAT_BUFF", ",if=pet.xuen_the_white_tiger.active|!talent.invoke_xuen_the_white_tiger|fight_remains<20" },
-        { "ITEM_DMG_BUFF", ",if=pet.xuen_the_white_tiger.active|!talent.invoke_xuen_the_white_tiger|fight_remains<20" },
+        { "ITEM_STAT_BUFF", ",if=cooldown.invoke_xuen_the_white_tiger.remains>cooldown%%120|cooldown<=60&variable.hold_xuen|cooldown<=60&buff.storm_earth_and_fire.remains>10|!talent.invoke_xuen_the_white_tiger" },
+        { "ITEM_DMG_BUFF", ",if=cooldown.invoke_xuen_the_white_tiger.remains>cooldown%%120|cooldown<=60&variable.hold_xuen|!talent.invoke_xuen_the_white_tiger" },
       };
 
       // -----------------------------------------
@@ -551,25 +551,34 @@ namespace monk_apl
       try { concat = talent_map.at( item.name_str ); }
       catch ( ... )
       {
-        bool STAT_BUFF = false;
+
+        int duration = 0;
+
         for ( auto e : item.parsed.special_effects )
-        {       
-          if ( e->type == SPECIAL_EFFECT_USE )
+        {
+
+          int duration = (int) floor( e->duration().total_seconds() );
+
+          // Ignore items that have a 30 second or shorter cooldown (or no cooldown)
+          // Unless defined in the map above these will be used on cooldown.
+          if ( e->type == SPECIAL_EFFECT_USE && e->cooldown() > timespan_t::from_seconds( 30 ) )
           {
+
             if ( e->is_stat_buff() || e->buff_type() == SPECIAL_EFFECT_BUFF_STAT )
             {
-              STAT_BUFF = true;
+              // This item grants a stat buff on use
+              concat = talent_map.at( "ITEM_STAT_BUFF" );
+
               break;
             }
+            else
+              // This item has a generic damage effect
+              concat = talent_map.at( "ITEM_DMG_BUFF" );
           }
         }
 
-        if ( STAT_BUFF )
-          // This item grants a stat buff on use
-          concat = talent_map.at( "ITEM_STAT_BUFF" );
-        else
-          // This item has a generic damage effect
-          concat = talent_map.at( "ITEM_DMG_BUFF" );
+        if ( concat.length() > 0 && duration > 0 )
+          concat = concat + "|fight_remains<" + std::to_string( duration );
       }
 
       return concat;
@@ -791,7 +800,7 @@ namespace monk_apl
 
     // Fallthru
     fallthru->add_action( "crackling_jade_lightning,if=buff.the_emperors_capacitor.stack>19&energy.time_to_max>execute_time-1&cooldown.rising_sun_kick.remains>execute_time|buff.the_emperors_capacitor.stack>14&(cooldown.serenity.remains<5&talent.serenity|fight_remains<5)", "Fallthru" );
-    fallthru->add_action( "faeline_stomp" );
+    fallthru->add_action( "faeline_stomp,if=combo_strike" );
     fallthru->add_action( "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains+(debuff.skyreach_exhaustion.up*20),if=combo_strike&chi.max-chi>=(2+buff.power_strikes.up)" );
     fallthru->add_action( "expel_harm,if=chi.max-chi>=1&active_enemies>2" );
     fallthru->add_action( "chi_burst,if=chi.max-chi>=1&active_enemies=1&raid_event.adds.in>20|chi.max-chi>=2&active_enemies>=2" );
