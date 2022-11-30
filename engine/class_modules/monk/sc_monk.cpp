@@ -3183,7 +3183,6 @@ struct touch_of_death_t : public monk_melee_attack_t
     cooldown->duration += p.talent.general.fatal_touch->effectN( 1 ).time_value(); // -45000, -90000
 
     aoe = 1 + (int)p.talent.windwalker.fatal_flying_guillotine->effectN( 1 ).base_value();
-
   }
 
   void init() override
@@ -3235,6 +3234,7 @@ struct touch_of_death_t : public monk_melee_attack_t
 
   void impact( action_state_t* s ) override
   {
+
     // In execute range ToD deals the target health in damage
     double amount = target->current_health();
 
@@ -6704,7 +6704,17 @@ monk_t::monk_t( sim_t* sim, util::string_view name, race_e r )
   user_options.chi_burst_healing_targets = 8;
   user_options.motc_override             = 0;
   user_options.no_bof_dot                = 0;
+  user_options.squirm_frequency          = 15;
+}
 
+void monk_t::moving()
+{
+  if ( ( executing && !executing->usable_moving() )
+    || ( queueing && !queueing->usable_moving() )
+    || ( channeling && !channeling->usable_moving() ) )
+  {
+    player_t::moving();
+  }
 }
 
 // monk_t::create_action ====================================================
@@ -7885,9 +7895,8 @@ void monk_t::create_buffs ()
       ->set_trigger_spell( talent.windwalker.power_strikes )
       ->set_default_value_from_effect( 1 );
 
-  // Tier 29 Set Bonus
-    buff.kicks_of_flowing_momentum = new buffs::kicks_of_flowing_momentum_t( 
-      *this, "kicks_of_flowing_momentum", passives.kicks_of_flowing_momentum );
+    // Tier 29 Set Bonus
+    buff.kicks_of_flowing_momentum = new buffs::kicks_of_flowing_momentum_t( *this, "kicks_of_flowing_momentum", passives.kicks_of_flowing_momentum );
 
     buff.fists_of_flowing_momentum = make_buff( this, "fists_of_flowing_momentum", passives.fists_of_flowing_momentum )
       ->set_trigger_spell( sets->set( MONK_WINDWALKER, T29, B4 ) )
@@ -7912,6 +7921,9 @@ void monk_t::create_buffs ()
 
     movement.flying_serpent_kick = new monk_movement_t( this, "fsk_movement", talent.windwalker.flying_serpent_kick);
     movement.flying_serpent_kick->set_distance( 1 );
+
+    movement.melee_squirm = new monk_movement_t( this, "melee_squirm" );
+    movement.melee_squirm->set_distance( 1 );
 
     movement.roll = new monk_movement_t( this, "roll_movement", spec.roll);
     movement.roll->set_distance( 8 );
@@ -8660,6 +8672,7 @@ void monk_t::create_options()
   add_option( opt_int( "monk.chi_burst_healing_targets", user_options.chi_burst_healing_targets, 0, 30 ) );
   add_option( opt_int( "monk.motc_override", user_options.motc_override, 0, 5 ) );
   add_option( opt_int( "monk.no_bof_dot", user_options.no_bof_dot, 0, 1 ) );
+  add_option( opt_float( "monk.squirm_frequency", user_options.squirm_frequency, 0, 30 ) );
 }
 
 // monk_t::copy_from =========================================================
@@ -8838,6 +8851,24 @@ void monk_t::combat_begin()
     make_repeating_event( sim, talent.windwalker.power_strikes->effectN( 2 ).period(),
                             [ this ]() { buff.power_strikes->trigger(); } );
   }
+
+  // Melee Squirm
+  // Periodic 1 YD movement to simulate combat movement 
+  make_repeating_event( sim, timespan_t::from_seconds( 1 ), [ this ] () {
+
+    // Do not interrupt a cast 
+    if ( ( executing && !executing->usable_moving() )
+      || ( queueing && !queueing->usable_moving() )
+      || ( channeling && !channeling->usable_moving() ) )
+    {
+      if ( user_options.squirm_frequency > 0 )
+      {
+        if ( rng().roll( 1 / user_options.squirm_frequency ) )
+          movement.melee_squirm->trigger();
+      }
+    }
+
+  } );
 }
 
 // monk_t::assess_damage ====================================================

@@ -276,6 +276,7 @@ public:
   {
     propagate_const<monk_movement_t*> chi_torpedo;
     propagate_const<monk_movement_t*> flying_serpent_kick;
+    propagate_const<monk_movement_t*> melee_squirm;
     propagate_const<monk_movement_t*> roll;
     propagate_const<monk_movement_t*> whirling_dragon_punch;
   } movement;
@@ -934,6 +935,7 @@ public:
     int chi_burst_healing_targets;
     int motc_override;
     int no_bof_dot;
+    double squirm_frequency;
   } user_options;
 
   // Blizzard rounds it's stagger damage; anything higher than half a percent beyond
@@ -1030,6 +1032,7 @@ public:
   const spell_data_t* find_spell_override( const spell_data_t* base, const spell_data_t* passive );
   void apply_affecting_auras( action_t& ) override;
   void merge( player_t& other ) override;
+  void moving() override;
 
   // Custom Monk Functions
   void stagger_damage_changed( bool last_tick = false );
