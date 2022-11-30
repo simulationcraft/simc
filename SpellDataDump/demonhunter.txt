@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46801 Live (hotfix 2022-11-29/46801)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46879 Live (hotfix 2022-11-30/46879)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -2564,7 +2564,6 @@ Description      : Consuming a Soul Fragment reduces all damage you take by $s1%
 Multiple applications may overlap.
 
 Name             : Soul Carver (id=207407) [Spell Family (107)] 
-Hotfixed         : Affecting Spells
 Talent Entry     : Vengeance [tree=spec, row=10, col=2, max_rank=1, req_points=20]
 Class            : Demon Hunter
 School           : Fire
@@ -10973,7 +10972,6 @@ Effects          :
                    Affected School(s): All
 #2 (id=1028587)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (50 -> 40)
 Description      : Gain critical strike damage equal to $s2% of your critical strike chance.
 
 Name             : Fiery Demise (id=389220) [Spell Family (107), Passive] 
@@ -12554,7 +12552,6 @@ Effects          :
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Enemy (6)
                    Affected Spells: Immolation Aura (258921), Immolation Aura (258922)
                    Family Flags: 49, 61
-Hotfixed         : Base Value (50 -> 40)
 Description      : $@spelldesc391189
 Tooltip          : Taking $w1 Chaos damage every $t1 seconds.
 Damage taken from $@auracaster's Immolation Aura increased by $s2%.
@@ -13089,11 +13086,9 @@ Effects          :
 #1 (id=1034170)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12)
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 2356 (Label) | Target: Self (1)
                    Affected Spells (Label): Any Means Necessary (388114), Any Means Necessary (395020), Any Means Necessary (395039), Any Means Necessary (395041), Any Means Necessary (395042)
-Hotfixed         : Base Value (0 -> -20)
 #2 (id=1034379)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 3 (23)
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 23 | Misc Value 2: 2356 (Label) | Target: Self (1)
                    Affected Spells (Label): Any Means Necessary (388114), Any Means Necessary (395020), Any Means Necessary (395039), Any Means Necessary (395041), Any Means Necessary (395042)
-Hotfixed         : Base Value (0 -> -20)
 #3 (id=1035202)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 2356 (Label) | Target: Self (1)
                    Affected Spells (Label): Any Means Necessary (388114), Any Means Necessary (395020), Any Means Necessary (395039), Any Means Necessary (395041), Any Means Necessary (395042)

@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46801 Live (hotfix 2022-11-29/46801)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46879 Live (hotfix 2022-11-30/46879)
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -593,7 +593,6 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=622)      : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.28500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (0.3 -> 0.285)
 Description      : Finishing move that dispatches the enemy, dealing damage per combo point:
    1 point  : ${$m1*1} damage
    2 points: ${$m1*2} damage
@@ -1182,7 +1181,6 @@ Effects          :
                    Base Value: -200 | Scaled Value: -200 | PvP Coefficient: 1.00000 | Misc Value: 21 | Target: Self (1)
                    Affected Spells: Dispatch (2098), Slice and Dice (5171), Shiv (5938), Ambush (8676), Blade Flurry (13877), Pistol Shot (185763), Sinister Strike (193315), Ghostly Strike (196937), Sinister Strike (197834), Between the Eyes (315341), Slice and Dice (315496), Roll the Bones (315508), Blade Flurry (319606), Echoing Reprimand (323547), Echoing Reprimand (323558), Echoing Reprimand (323559), Echoing Reprimand (323560), Sepsis (328305), Sepsis (328306), Sinister Strike (341541), Dreadblades (343142), Echoing Reprimand (354838), Sepsis (375936), Keep It Rolling (381989), Sepsis (385408), Echoing Reprimand (385616), Kingsbane (385627), Ambush (385794), Ambush (385897), Sepsis (394026)
                    Family Flags: 9, 18, 26, 29, 43, 60, 82, 98, 101, 111, 112, 113, 118, 119
-Hotfixed         : Affects Spells
 #4 (id=762250)   : Apply Aura (6) | Modify Max Resource (418)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
 #5 (id=840599)   : Apply Aura (6) | Modify Damage Done% (79)
@@ -2005,7 +2003,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 57842 | Target: Enemy (6)
 #2 (id=51140)    : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.32000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (0.8 -> 1)
 Description      : $@spelldesc51690
 
 Name             : Killing Spree (id=57842) [Spell Family (8)] 
@@ -2031,7 +2028,6 @@ Attributes       : ....x... ........ x.x..x.. ........   ....x... ........ .....
 Effects          :
 #1 (id=51141)    : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.64000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (0.8 -> 1)
 Description      : $@spelldesc51690
 
 Name             : Tricks of the Trade (id=57934) [Spell Family (8)] 
@@ -2305,12 +2301,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.45000 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Rupture (1943), Envenom (32645), Eviscerate (196819), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Black Powder (319175), Black Powder (319190), Eviscerate (328082), Rupture (360826), Rupture (394031)
                    Family Flags: 17, 20, 32, 35, 44, 92
-Hotfixed         : PvP Coefficient (0.8 -> 1)
 #2 (id=87762)    : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.45000 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rupture (1943), Envenom (32645), Restless Blades (79096), Eviscerate (196819), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Black Powder (319175), Black Powder (319190), Eviscerate (328082), Rupture (360826), Rupture (394031)
                    Family Flags: 17, 20, 32, 35, 44, 77
-Hotfixed         : PvP Coefficient (0.8 -> 1)
 Description      : Increases the damage done by your finishing moves by ${$76808m1}.1%.
 
 Name             : Elusiveness (id=79008) [Spell Family (8), Passive] 
@@ -2339,7 +2333,6 @@ Effects          :
 Description      : Evasion also reduces damage taken by $s2%, and Feint also reduces non-area-of-effect damage taken by $s1%.
 
 Name             : Restless Blades (id=79096) [Spell Family (8), Passive] 
-Hotfixed         : Description
 Talent Entry     : Outlaw [tree=spec, row=4, col=4, max_rank=1, req_points=8]
 Class            : Rogue
 School           : Physical
@@ -3490,7 +3483,6 @@ Description      : Drink an alchemical concoction that heals you for $?a354425&a
 Tooltip          : Healing for $?a354425|a193546[${$W1}.2][$w1]% of maximum health every $t1 sec.
 
 Name             : Shadow Dance (id=185313) [Spell Family (8)] 
-Hotfixed         : Cooldown (8000 -> 6000)
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -3678,7 +3670,6 @@ Attributes       : ........ ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=269972)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.40000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (0.833333 -> 1)
 #2 (id=269973)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.19656 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
 #3 (id=269974)   : Apply Aura (6) | Decrease Movement Speed% (33)
@@ -10884,7 +10875,7 @@ Talent Entry     : Outlaw [tree=spec, row=8, col=4, max_rank=1, req_points=20, s
 Class            : Rogue
 School           : Physical
 Spell Type       : Melee
-Resource         : 40 Energy (3) (id=215327)[Hotfixed: Cost (50 -> 40)]
+Resource         : 40 Energy (3) (id=215327)
 Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 8 seconds
@@ -11424,7 +11415,6 @@ Description      : An intense application of Numbing Poison reduces the target's
 Tooltip          : Casting slowed by $s1%.
 
 Name             : Deathmark (id=360194) [Spell Family (8)] 
-Hotfixed         : Attributes
 Talent Entry     : Assassination [tree=spec, row=5, col=3, max_rank=1, req_points=8]
 Class            : Rogue
 School           : Physical
@@ -12077,7 +12067,6 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Slice and Dice (5171), Slice and Dice (315496)
                    Family Flags: 18
-Hotfixed         : PvP Coefficient (0.5 -> 1)
 Description      : Slice and Dice heals you for up to $s1% of your maximum health per 2 sec.
 
 Name             : Blackjack (id=379005) [Spell Family (8), Passive] 
@@ -13607,7 +13596,6 @@ Effects          :
 Description      : Effects that grant a chance for Sinister Strike to strike an additional time also apply to Ambush.
 
 Name             : Deeper Daggers (id=383405) [Spell Family (8)] 
-Hotfixed         : Learn Level (60 -> 0)
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -13832,7 +13820,6 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=1018994)  : School Damage (2): arcane
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.32000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (0.5 -> 1)
 #2 (id=1018995)  : Dummy (3)
                    Base Value: 7 | Scaled Value: 7 | PvP Coefficient: 1.00000
 #3 (id=1018996)  : Energize Power (30)
@@ -13910,7 +13897,6 @@ Effects          :
 Description      : Gaining Stealth, Vanish, or Shadow Dance causes your next Shuriken Storm to have $385727s1% increased chance to critically strike.
 
 Name             : Silent Storm (id=385727) [Spell Family (8)] 
-Hotfixed         : Attributes
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -14655,7 +14641,6 @@ Effects          :
                    Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Shadow Dance (185313), Shadow Dance (185422)
                    Family Flags: 57, 103
-Hotfixed         : NEW EFFECT
 Description      : Shadow Dance has ${$s1/1000} sec increased duration.
 
 Name             : Improved Shadow Techniques (id=394023) [Spell Family (8), Passive] 
@@ -15192,7 +15177,6 @@ Effects          :
                    Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Echoing Reprimand (323547), Echoing Reprimand (323558), Echoing Reprimand (323559), Echoing Reprimand (323560), Echoing Reprimand (354838), Echoing Reprimand (385616)
                    Family Flags: 82
-Hotfixed         : PvP Coefficient (0.666667 -> 1)
 Description      : Echoing Reprimand's damage is increased by $s1%.
 
 Name             : Flagellation (id=394757) [Spell Family (8)] 

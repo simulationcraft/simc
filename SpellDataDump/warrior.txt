@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46801 Live (hotfix 2022-11-29/46801)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46879 Live (hotfix 2022-11-30/46879)
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -410,12 +410,10 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Whirlwind (190411), Ravager (248439), War Machine (262232), Onslaught (315720), Ancient Aftershock (326076), Ravager (334934), Onslaught (396718)
                    Family Flags: 20, 37, 39, 55, 76, 77
-Hotfixed         : Affects Spells
 #6 (id=737893)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 2 (12)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Charge (100), Slam (1464), Bloodthirst (23881), Shield Slam (23922), Raging Blow (85288), Avatar (107574), Dragon Roar (118000), Whirlwind (190411), Skullsplitter (260643), Siegebreaker (280772), Siegebreaker (280773), Bloodbath (335096), Crushing Blow (335097), Annihilator (383915)
                    Family Flags: 0, 21, 26, 32, 41, 42, 49, 53, 55, 69, 101, 106
-Hotfixed         : Affects Spells
 #7 (id=737894)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 3 (23)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Execute (5308), Execute (163201), Execute (280735), Execute (281000), Spear of Bastion (307871), Condemn (317349), Condemn (317485), Condemn (330325), Condemn (330334), Spear of Bastion (376080), Thunderous Roar (384318), Thunderous Roar (397364)
@@ -821,7 +819,6 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Cleave (845), Mortal Strike (12294)
                    Family Flags: 22, 25
-Hotfixed         : Base Value (25 -> 30)
 Description      : Overpower the enemy, dealing $s1 Physical damage. Cannot be blocked, dodged, or parried.$?s316440&s845[
 
 Increases the damage of your next Mortal Strike or Cleave by $s2%. Stacking up to $u times]?s316440[
@@ -855,7 +852,6 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=5274)     : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.84000 | PvP Coefficient: 0.69500 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (1.777 -> 1.84)
 Description      : A vicious strike that deals $s1 Physical damage and reduces the effectiveness of healing on the target by $115804s1% for $115804d.
 Variables        : $mult=${($max(0,$min($pl-5,15))*8+207)/327}
 
@@ -3003,7 +2999,6 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Execute (5308), Execute (163201), Execute Off-Hand (163558), Execute (260798), Execute (280735), Execute (280849), Execute (281000), Condemn (317349), Condemn (317483), Condemn (317485), Condemn (317488), Condemn Off-Hand (317489), Condemn (330325), Condemn (330334)
                    Family Flags: 29
-Hotfixed         : Base Value (0 -> 30)
 #18 (id=1036263)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Shockwave (46968)
@@ -7245,7 +7240,6 @@ Effects          :
 Description      : Ignore Pain prevents $s3 additional damage, and grants you $s2 Leech for $279194d.
 
 Name             : Seasoned Soldier (id=279423) [Spell Family (4), Passive] 
-Hotfixed         : Description
 Class            : Arms Warrior
 School           : Physical
 Spell Type       : None
@@ -7264,7 +7258,6 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1043935)  : Apply Aura (6) | Modify AoE Damage Taken% (229)
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 Description      : Your auto attack critical strikes generate $s1% more Rage and damage taken from area of effect attacks reduced by $s2%.
 
 Name             : Unstable Flames (id=279899) [Passive] 
@@ -8948,7 +8941,6 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=799630)   : Energize Power (30)
                    Base Value: 250 | Scaled Value: 250 | PvP Coefficient: 1.00000 | Misc Value: rage | Target: Self (1)
-Hotfixed         : Base Value (300 -> 250)
 #2 (id=799631)   : Trigger Spell (64): Onslaught
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 20 | Trigger Spell: 396718 | Target: Enemy (6)
 Description      : Brutally attack an enemy for $396718s1 Physical damage$?s388933[ and become Enraged for 5 sec.][.]
@@ -12429,7 +12421,6 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1014807)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 65 | Scaled Value: 65 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (50 -> 65)
 Description      : You are healed for $s1% of the damage dealt by Deep Wounds.
 
 Name             : Concussive Blows (id=383115) [Spell Family (4), Passive] 
@@ -12510,7 +12501,6 @@ Effects          :
 Description      : Deep Wounds, Rend and Thunderous Roar's Bleed effects last ${$s1/1000}.1 sec longer and have a $s2% increased critical strike chance.
 
 Name             : Exhilarating Blows (id=383219) [Spell Family (4), Passive] 
-Hotfixed         : Proc Chance (15 -> 20)
 Talent Entry     : Arms [tree=spec, row=6, col=3, max_rank=1, req_points=8]
 Class            : Warrior
 School           : Physical
@@ -13013,7 +13003,6 @@ Attributes       : ........ ........ .......x x..x....   .....x.. ........ .....
 Effects          :
 #1 (id=1015780)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.40000 | PvP Coefficient: 0.33000 | Target: Unknown(25)
-Hotfixed         : AP Coefficient (2 -> 2.4)
 #2 (id=1015781)  : Cancel Aura (164)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 383704 | Target: Unknown(25)
 Description      : $@spelldesc383703
@@ -13419,12 +13408,10 @@ Effects          :
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Charge (100), Avatar (107574), Whirlwind (190411)
                    Family Flags: 0, 32, 55
-Hotfixed         : Affects Spells
 #4 (id=1016334)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 3 (23)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Execute (5308), Devastate (20243), Shield Slam (23922), Warrior (137047), Execute (163201), Devastator (236282), Execute (280735), Execute (281000), Spear of Bastion (307871), Condemn (317349), Condemn (317485), Condemn (330325), Condemn (330334), Spear of Bastion (376080), Thunderous Roar (384318), Thunderous Roar (397364)
                    Family Flags: 31, 38, 41, 57, 59, 91
-Hotfixed         : Affects Spells
 #5 (id=1016335)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 4 (32)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Thunder Clap (6343), Bladestorm (46924), Bladestorm (50622), Bladestorm Off-Hand (95738), Bladestorm (227847), Shield Charge (385954), Bladestorm (389774), Thunder Clap (396719)
@@ -13433,7 +13420,6 @@ Hotfixed         : Affects Spells
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Misc Value: 33 | Target: Self (1)
                    Affected Spells: Demoralizing Shout (1160), Shockwave (46968)
                    Family Flags: 17, 47
-Hotfixed         : Affects Spells
 Description      : $@spelldesc384042
 Tooltip          : Rage generation increased by $w1%.
 
@@ -13458,7 +13444,6 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000
 #3 (id=1022037)  : Apply Aura (6) | Modify Armor% (101)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
-Hotfixed         : Sub Type (142 -> 101)
 Description      : Increases Stamina and Armor by $s1% and your Haste by $s2%.
 
 Name             : Focused Vigor (id=384067) [Spell Family (4), Passive, Hidden] 
@@ -13482,7 +13467,6 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000
 #3 (id=1022025)  : Apply Aura (6) | Modify Armor% (101)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
-Hotfixed         : Sub Type (142 -> 101)
 Description      : Increases Strength and Armor by $s1% and your critical strike chance by $s2%.
 
 
@@ -13952,7 +13936,6 @@ Description      : Unleashes your power, dealing ${$385060sw1+$385062sw1+$385061
 
 
 Name             : Odyn's Fury (id=385060) [Spell Family (4)] 
-Hotfixed         : Attributes
 Class            : Warrior
 School           : Physical
 Spell Type       : Melee
@@ -14469,7 +14452,6 @@ Description      : $@spelldesc386030
 Tooltip          : Shield Slam deals $w1% increased damage and the amount of damage you block is increased by $w2%.
 
 Name             : Brace For Impact (id=386030) [Spell Family (4), Passive] 
-Hotfixed         : Description
 Talent Entry     : Protection [tree=spec, row=4, col=4, max_rank=1, req_points=0]
 Class            : Warrior
 School           : Physical
@@ -15018,7 +15000,6 @@ Description      : While $?s152277[Ravager][Bladestorm] is active, you automatic
 
 
 Name             : Battlelord (id=386630) [Spell Family (4), Passive] 
-Hotfixed         : Description
 Talent Entry     : Arms [tree=spec, row=9, col=2, max_rank=1, req_points=20]
 Class            : Warrior
 School           : Physical
@@ -15041,13 +15022,10 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Overpower (7384)
                    Family Flags: 2
-Hotfixed         : Sub Type (42 -> 108), Base Value (0 -> 25), Affects Spells, Trigger Spell (386631 -> 0)
 #2 (id=1020848)  : Apply Aura (6) | Proc Trigger Spell (42): Battlelord
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 386631 | Target: Self (1)
-Hotfixed         : Trigger Spell (386632 -> 386631)
 #3 (id=1043896)  : Apply Aura (6) | Proc Trigger Spell (42): Battlelord
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 386632 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 Description      : Overpower deals $s1% increased damage, has a $h% chance to reset the cooldown of Mortal Strike and Cleave and reduces their Rage costs by ${$386631s1/-10}.
 
 Name             : Battlelord (id=386631) [Spell Family (4)] 
@@ -16708,7 +16686,6 @@ Effects          :
 Description      : Activating Avatar or Shield Wall casts the other at reduced effectiveness.
 
 Name             : Instigate (id=394311) [Spell Family (4), Passive] 
-Hotfixed         : Affecting Spells
 Talent Entry     : Protection [tree=spec, row=5, col=2, max_rank=1, req_points=8]
 Class            : Warrior
 School           : Physical

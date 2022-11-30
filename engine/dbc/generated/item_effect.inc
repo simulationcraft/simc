@@ -1,4 +1,4 @@
-// Item effects, wow build 10.0.2.46801
+// Item effects, wow build 10.0.2.46879
 static const std::array<item_effect_t, 8208> __item_effect_data { {
   { 116657, 317388,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116658, 317389,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
@@ -8149,7 +8149,7 @@ static const std::array<item_effect_t, 8208> __item_effect_data { {
   { 170143, 384163, 198539,   0,   1,    0,      -1,      -1 }, // Breath of the Plains
   { 170144, 384191, 198542,   0,   1,    0,      -1,      -1 }, // Shikaari Huntress' Arrowhead
   { 170204, 384594, 198627,   0,   1,    0,      -1,      -1 }, // Blood of the Khanguard
-  { 170282, 384849, 198695,   0,   0,    0,      -1,      -1 },
+  { 170282, 384849, 198695,   0,   0,    0,      -1,      -1 }, // Bottomless Reliquary Satchel
   { 171278, 390039, 198715,   0,   1,    0,      -1,      -1 }, // +6 Enchanting
   { 172162, 395398, 198715,   1,   1,    0,      -1,      -1 }, // Enchanting Tool Equipped (DNT)
   { 171292, 390009, 198716,   0,   1,    0,      -1,      -1 }, // +10 Enchanting

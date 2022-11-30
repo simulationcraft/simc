@@ -1,5 +1,5 @@
-// Spell text, wow build 10.0.2.46801
-static const std::array<spelltext_data_t, 19177> __spelltext_data { {
+// Spell text, wow build 10.0.2.46879
+static const std::array<spelltext_data_t, 19178> __spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -17449,6 +17449,7 @@ static const std::array<spelltext_data_t, 19177> __spelltext_data { {
   { 384815, "Spending Holy Power has a $s1% chance to reduce the Holy Power cost of your next Word of Glory$?c1[ or Light of Dawn]$?C2[ or Shield of the Righteous] by 1.", 0, 0 },
   { 384820, "Reduces the cooldown of Blessing of Sacrifice by ${$m1/-1000} sec.", 0, 0 },
   { 384825, "Gather 5 Leaves, then throw at the Playful Prowler!", 0, 0 },
+  { 384849, "Reach into the satchel and pull out something, anything that might help you out.", 0, 0 },
   { 384858, "Consuming Clearcasting reduces the cooldown of Arcane Orb by ${$s3/1000} sec.\r\n\r\nAdditionally, casting Arcane Missiles $s1 times fires an Arcane Orb toward your target. Clearcast Arcane Missiles count as $s2.", 0, 0 },
   { 384859, "$@spelldesc384858", "Building up an Arcane Orb", 0 },
   { 384860, "$@spelldesc384858", "Your next Arcane Missiles will fire an Arcane Orb at your target.", 0 },
@@ -19179,25 +19180,11 @@ static const std::array<spelltext_data_t, 19177> __spelltext_data { {
   { 399370, "$@spelldesc370867", "Your next Blue spell deals $s1% more damage.", 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.0.2.46801
-static constexpr std::array<hotfix::client_hotfix_entry_t, 14> __spelltext_hotfix_data { {
-  {   79096,  0, "Finishing moves reduce the remaining cooldown of many Rogue skills by $<cdr> sec per combo point spent.\r\n\r\nAffected skills: Adrenaline Rush, Between the Eyes, Blade Flurry, Blade Rush, Dreadblades, Ghostly Strike, Grappling Hook, Keep it Rolling, Killing Spree, Marked for Death, Roll the Bones, Sepsis, Sprint, and Vanish.", "Finishing moves reduce the remaining cooldown of many Rogue skills by $<cdr> sec per combo point spent.\r\n\r\nAffected skills: Adrenaline Rush, Between the Eyes, Blade Flurry, Blade Rush, Dreadblades, Ghostly Strike, Grappling Hook, Keep it Rolling, Killing Spree, Marked for Death, Roll the Bones, Sprint, and Vanish." },
-  {  279423,  0, "Your auto attack critical strikes generate $s1% more Rage.", "Your auto attack critical strikes generate $s1% more Rage and damage taken from area of effect attacks reduced by $s2%." },
-  {  377462,  0, "Designate another player to bond with, becoming their Guardian for $382281d.\r\n\r\nWhile bonded, you and your ally gain $382280s1 Versatility and restore $382280s2 health per second. If you are within 15 yards of one another, these bonuses are increased.", "Designate another player to bond with, becoming their Guardian for $382281d.\r\n\r\nWhile bonded, you and your ally gain $382280s1 Versatility and restore $382280s2 health per second. If you are within 15 yards of one another, these bonuses are increased. $?(a137012|a137024|a137031|a137032|a137029|a137039|a356810)[][\r\n\r\n|CFF808080Valid only for healer specializations.|R]\r\n" },
-  {  385325,  0, "Imbue your weapon with the energy of a Dragonfly, increasing Critical Strike Rating by $ec1 for 2 hours.", "Imbue your weapon with the energy of a Dragonfly, increasing Critical Strike Rating by $ec1 for 2 hours. \r\n\r\nFauna Runes cannot be applied to Ranged weapons." },
-  {  385326,  0, "Imbue your weapon with the energy of a Dragonfly, increasing Critical Strike Rating by $ec1 for 2 hours.", "Imbue your weapon with the energy of a Dragonfly, increasing Critical Strike Rating by $ec1 for 2 hours.\r\n\r\nFauna Runes cannot be applied to Ranged weapons." },
-  {  385327,  0, "Imbue your weapon with the energy of a Dragonfly, increasing Critical Strike Rating by $ec1 for 2 hours.", "Imbue your weapon with the energy of a Dragonfly, increasing Critical Strike Rating by $ec1 for 2 hours.\r\n\r\nFauna Runes cannot be applied to Ranged weapons." },
-  {  385330,  0, "Imbue your weapon with the energy of an Ohuna. Your healing spells have a high chance to heal your target for an additional $396142s1 healing for 2 hours.", "Imbue your weapon with the energy of an Ohuna. Your healing spells have a high chance to heal your target for an additional $396142s1 healing for 2 hours.\r\n\r\nFauna Runes cannot be applied to Ranged weapons." },
-  {  385575,  0, "Imbue your weapon with the energy of a Bakar, increasing Haste by $ec1 for 2 hours.", "Imbue your weapon with the energy of a Bakar, increasing Haste by $ec1 for 2 hours.\r\n\r\nFauna Runes cannot be applied to Ranged weapons." },
-  {  385576,  0, "Imbue your weapon with the energy of a Bakar, increasing Haste by $ec1 for 2 hours.", "Imbue your weapon with the energy of a Bakar, increasing Haste by $ec1 for 2 hours.\r\n\r\nFauna Runes cannot be applied to Ranged weapons." },
-  {  385577,  0, "Imbue your weapon with the energy of a Bakar, increasing Haste by $ec1 for 2 hours.", "Imbue your weapon with the energy of a Bakar, increasing Haste by $ec1 for 2 hours.\r\n\r\nFauna Runes cannot be applied to Ranged weapons." },
-  {  386030,  0, "Using Shield Slam increases the damage of Shield Slam by $386029s1% for $386029d, and it increases the amount of damage you block by $386029s2%. Stacking up to $s2 times.", "Using Shield Slam increases the damage of Shield Slam by $386029s1% for $386029d, and it increases the block value of your shield by $386029s2%. Stacking up to $s2 times." },
-  {  386630,  0, "Your Overpower has a $h% chance to reset the cooldown of Mortal Strike and  Cleave and reduces their Rage costs by ${$386631s1/-10}.", "Overpower deals $s1% increased damage, has a $h% chance to reset the cooldown of Mortal Strike and Cleave and reduces their Rage costs by ${$386631s1/-10}." },
-  {  396147,  0, "Imbue your weapon with the energy of an Ohuna. Your healing spells have a high chance to heal your target for an additional $396144s1 healing for 2 hours.", "Imbue your weapon with the energy of an Ohuna. Your healing spells have a high chance to heal your target for an additional $396144s1 healing for 2 hours.\r\n\r\nFauna Runes cannot be applied to Ranged weapons." },
-  {  396148,  0, "Imbue your weapon with the energy of an Ohuna. Your healing spells have a high chance to heal your target for an additional $385582s1 healing for 2 hours.", "Imbue your weapon with the energy of an Ohuna. Your healing spells have a high chance to heal your target for an additional $385582s1 healing for 2 hours.\r\n\r\nFauna Runes cannot be applied to Ranged weapons." },
+// spelltext hotfix entries, wow build 10.0.2.46879
+static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 10.0.2.46801
+// Spell description variables, wow build 10.0.2.46879
 static const std::array<spelldesc_vars_data_t, 365> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$pvp=$?a134735[${1.1}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<pvp>*$<weal>}\r\n" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -19566,7 +19553,7 @@ static const std::array<spelldesc_vars_data_t, 365> __spelldesc_vars_data { {
   {  394354, "$damage=${($AP*1.0)*(1+$@versadmg)}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.0.2.46801
+// spelldesc_vars hotfix entries, wow build 10.0.2.46879
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 

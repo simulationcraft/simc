@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46801 Live (hotfix 2022-11-29/46801)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46879 Live (hotfix 2022-11-30/46879)
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -1195,8 +1195,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=111848)   : Trigger Spell (64): (41967)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 41967 | Target: Self (1)
-#4 (id=1040021)  : Dummy (3)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
+#4 (id=1040021)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Type (3 -> 6), Sub Type (0 -> 4), Target 1 (0 -> 1)
 Description      : Summons a shadowy fiend to attack the target for $d.$?s137033[
 
 |cFFFFFFFFGenerates ${$262485s1/100} Insanity each time the Shadowfiend attacks.|r][
@@ -13131,7 +13132,6 @@ Effects          :
 Description      : Invoke the Light's wrath, dealing $s1 Radiant damage to the target, increased by $s2% per ally affected by your Atonement.
 
 Name             : Harsh Discipline (id=373180) [Spell Family (6), Passive, Hidden] 
-Hotfixed         : Proc Flags (0 -> 65536)
 Talent Entry     : Discipline [tree=spec, row=9, col=4, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(8, 4)]
 Class            : Priest
