@@ -532,6 +532,7 @@ public:
     // Havoc
     const spell_data_t* demonic_presence;
     const spell_data_t* any_means_necessary;
+    const spell_data_t* any_means_necessary_tuning;
     // Vengeance
     const spell_data_t* fel_blood;
     const spell_data_t* fel_blood_rank_2;
@@ -1483,7 +1484,7 @@ public:
 
     if ( affected_by.any_means_necessary.direct )
     {
-      m *= 1.0 + p()->cache.mastery_value();
+      m *= 1.0 + p()->cache.mastery_value() * ( 1.0 + p()->mastery.any_means_necessary_tuning->effectN( 1 ).percent() );
     }
 
     return m;
@@ -1504,7 +1505,7 @@ public:
 
     if ( affected_by.any_means_necessary.periodic )
     {
-      m *= 1.0 + p()->cache.mastery_value();
+      m *= 1.0 + p()->cache.mastery_value() * ( 1.0 + p()->mastery.any_means_necessary_tuning->effectN( 2 ).percent() );
     }
 
     return m;
@@ -4142,11 +4143,6 @@ struct demons_bite_t : public demon_hunter_attack_t
     : demon_hunter_attack_t( "demons_bite", p, p->spec.demons_bite, options_str )
   {
     energize_delta = energize_amount * data().effectN( 3 ).m_delta();
-
-    if ( p->spec.burning_wound_debuff->ok() )
-    {
-      impact_action = p->active.burning_wound;
-    }
   }
 
   double composite_energize_amount( const action_state_t* s ) const override
@@ -4176,6 +4172,11 @@ struct demons_bite_t : public demon_hunter_attack_t
   {
     demon_hunter_attack_t::impact( s );
     trigger_felblade( s );
+
+    if ( p()->spec.burning_wound_debuff->ok() )
+    {
+      p()->active.burning_wound->execute_on_target( s->target );
+    }
   }
 
   bool verify_actor_spec() const override
@@ -4196,17 +4197,17 @@ struct demon_blades_t : public demon_hunter_attack_t
   {
     background = true;
     energize_delta = energize_amount * data().effectN( 2 ).m_delta();
-
-    if ( p->spec.burning_wound_debuff->ok() )
-    {
-      impact_action = p->active.burning_wound;
-    }
   }
 
   void impact( action_state_t* s ) override
   {
     demon_hunter_attack_t::impact( s );
     trigger_felblade( s );
+
+    if ( p()->spec.burning_wound_debuff->ok() )
+    {
+      p()->active.burning_wound->execute_on_target( s->target );
+    }
   }
 };
 
@@ -5834,6 +5835,7 @@ void demon_hunter_t::init_spells()
 
   // Spec Background Spells
   mastery.any_means_necessary = talent.havoc.any_means_necessary;
+  mastery.any_means_necessary_tuning = talent.havoc.any_means_necessary->ok() ? find_spell( 394486 ) : spell_data_t::not_found();
 
   spec.burning_wound_debuff = talent.havoc.burning_wound->effectN( 1 ).trigger();
   spec.chaos_theory_buff = talent.havoc.chaos_theory->ok() ? find_spell( 390195 ) : spell_data_t::not_found();
