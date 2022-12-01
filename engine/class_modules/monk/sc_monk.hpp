@@ -221,7 +221,7 @@ public:
     {
       set_chance( 1 );
       set_max_stack( 1 );
-      set_duration( timespan_t::from_seconds( 1 ) );
+      set_duration( timespan_t::from_seconds(1 ) );
 
       if ( base_movement == nullptr )
         base_movement = new movement_buff_t( p );
@@ -891,6 +891,7 @@ public:
     const spell_data_t* glory_of_the_dawn_damage;
     const spell_data_t* hidden_masters_forbidden_touch;
     const spell_data_t* hit_combo;
+    const spell_data_t* improved_touch_of_death;
     const spell_data_t* keefers_skyreach_debuff;
     const spell_data_t* mark_of_the_crane;
     const spell_data_t* power_strikes_chi;
