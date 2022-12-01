@@ -2153,7 +2153,7 @@ struct blackout_kick_t : public monk_melee_attack_t
     
     if ( p()->buff.charred_passions->up() )
     {
-        double dmg_percent = p()->buff.charred_passions->value() * 0.1;
+        double dmg_percent = p()->buff.charred_passions->value();
 
         charred_passions->base_dd_min = s->result_amount * dmg_percent;
         charred_passions->base_dd_max = s->result_amount * dmg_percent;
@@ -2365,7 +2365,7 @@ struct sck_tick_action_t : public monk_melee_attack_t
 
     if ( p()->buff.charred_passions->up() )
     {
-        double dmg_percent = p()->buff.charred_passions->value() * 0.1;
+        double dmg_percent = p()->buff.charred_passions->value();
 
         p()->active_actions.charred_passions->base_dd_min = s->result_amount * dmg_percent;
         p()->active_actions.charred_passions->base_dd_max = s->result_amount * dmg_percent;
@@ -3183,7 +3183,6 @@ struct touch_of_death_t : public monk_melee_attack_t
     cooldown->duration += p.talent.general.fatal_touch->effectN( 1 ).time_value(); // -45000, -90000
 
     aoe = 1 + (int)p.talent.windwalker.fatal_flying_guillotine->effectN( 1 ).base_value();
-
   }
 
   void init() override
@@ -3240,12 +3239,12 @@ struct touch_of_death_t : public monk_melee_attack_t
 
     // Not in execute range
     // or not a health-based fight style
-    if ( target->current_health() == 0 || target->current_health() > p()->resources.max[RESOURCE_HEALTH] )
+    // or a secondary target... these always get hit for the 35% from Improved Touch of Death regardless if you're talented into it or not
+    if ( s->chain_target > 0 || target->current_health() == 0 || target->current_health() > p()->resources.max[RESOURCE_HEALTH] )
     {
         amount = p()->resources.max[RESOURCE_HEALTH];
 
-        if ( target->true_level > p()->true_level )
-            amount *= p()->talent.general.improved_touch_of_death->effectN( 2 ).percent();  // 35% HP
+        amount *= p()->passives.improved_touch_of_death->effectN( 2 ).percent();  // 0.35
 
         amount *= 1 + p()->talent.windwalker.meridian_strikes->effectN( 1 ).percent();
 
@@ -3692,7 +3691,7 @@ struct chi_torpedo_t : public monk_spell_t
     monk_spell_t::execute();
 
     p()->buff.chi_torpedo->trigger();
-    p()->movement.roll->trigger();
+    p()->movement.chi_torpedo->trigger();
   }
 };
 
@@ -3834,10 +3833,13 @@ struct breath_of_fire_dot_t : public monk_spell_t
 struct breath_of_fire_t : public monk_spell_t
 {
   dragonfire_brew_t* dragonfire;
+  bool no_bof_hit;
+
   breath_of_fire_t( monk_t& p, util::string_view options_str )
     : monk_spell_t( "breath_of_fire", &p, p.talent.brewmaster.breath_of_fire ), 
       dragonfire( new dragonfire_brew_t( p ) )
   {
+    add_option( opt_bool( "no_bof_hit", no_bof_hit ));
     parse_options( options_str );
     gcd_type = gcd_haste_type::NONE;
 
@@ -3871,6 +3873,9 @@ struct breath_of_fire_t : public monk_spell_t
   {
     double am = monk_spell_t::action_multiplier();
 
+    if ( no_bof_hit == true )
+      am *= 0;
+
     if ( p()->talent.brewmaster.dragonfire_brew->ok() )
     {
       // Currently value is saved as 100% and each of the values is a divisable of 33%
@@ -3896,14 +3901,14 @@ struct breath_of_fire_t : public monk_spell_t
 
   void impact( action_state_t* s ) override
   {
-    if ( p()->user_options.no_bof_dot == 1 )
+    if ( no_bof_hit == true )
       s->result_amount = 0;
 
     monk_spell_t::impact( s );
 
     monk_td_t& td = *this->get_td( s->target );
 
-    if ( p()->user_options.no_bof_dot == 0 && td.debuff.keg_smash->up() )
+    if ( no_bof_hit == false && td.debuff.keg_smash->up() )
     {
       p()->active_actions.breath_of_fire->target = s->target;
       p()->active_actions.breath_of_fire->base_multiplier = 1 + p()->buff.blackout_combo->data().effectN( 5 ).percent();
@@ -3911,7 +3916,7 @@ struct breath_of_fire_t : public monk_spell_t
       p()->active_actions.breath_of_fire->execute();
     }
 
-    if ( p()->talent.brewmaster.dragonfire_brew->ok() )
+    if ( no_bof_hit == false && p()->talent.brewmaster.dragonfire_brew->ok() )
     {
       for ( int i = 0; i < (int)p()->talent.brewmaster.dragonfire_brew->effectN( 1 ).base_value(); i++ )
         dragonfire->execute();
@@ -6703,8 +6708,17 @@ monk_t::monk_t( sim_t* sim, util::string_view name, race_e r )
   user_options.faeline_stomp_uptime      = 1.0;
   user_options.chi_burst_healing_targets = 8;
   user_options.motc_override             = 0;
-  user_options.no_bof_dot                = 0;
+  user_options.squirm_frequency          = 15;
+}
 
+void monk_t::moving()
+{
+  if ( ( executing && !executing->usable_moving() )
+    || ( queueing && !queueing->usable_moving() )
+    || ( channeling && !channeling->usable_moving() ) )
+  {
+    player_t::moving();
+  }
 }
 
 // monk_t::create_action ====================================================
@@ -7430,6 +7444,7 @@ void monk_t::init_spells()
   passives.glory_of_the_dawn_damage                     = find_spell( 392959 );
   passives.hidden_masters_forbidden_touch               = find_spell( 213114 );
   passives.hit_combo                                    = find_spell( 196741 );
+  passives.improved_touch_of_death                      = find_spell( 322113 );
   passives.keefers_skyreach_debuff                      = find_spell( 393048 );
   passives.mark_of_the_crane                            = find_spell( 228287 );
   passives.power_strikes_chi                            = find_spell( 121283 );
@@ -7885,9 +7900,8 @@ void monk_t::create_buffs ()
       ->set_trigger_spell( talent.windwalker.power_strikes )
       ->set_default_value_from_effect( 1 );
 
-  // Tier 29 Set Bonus
-    buff.kicks_of_flowing_momentum = new buffs::kicks_of_flowing_momentum_t( 
-      *this, "kicks_of_flowing_momentum", passives.kicks_of_flowing_momentum );
+    // Tier 29 Set Bonus
+    buff.kicks_of_flowing_momentum = new buffs::kicks_of_flowing_momentum_t( *this, "kicks_of_flowing_momentum", passives.kicks_of_flowing_momentum );
 
     buff.fists_of_flowing_momentum = make_buff( this, "fists_of_flowing_momentum", passives.fists_of_flowing_momentum )
       ->set_trigger_spell( sets->set( MONK_WINDWALKER, T29, B4 ) )
@@ -7907,19 +7921,20 @@ void monk_t::create_buffs ()
     // Movement
     // ------------------------------
 
-    movement.flying_serpent_kick = new monk_movement_t( this, "flying_serpent_movement", 1 );
-    movement.flying_serpent_kick->set_trigger_spell( talent.windwalker.flying_serpent_kick )
-      ->set_chance( 1.0 )
-      ->set_duration( talent.windwalker.flying_serpent_kick.spell()->duration() );
+    movement.chi_torpedo = new monk_movement_t( this, "chi_torpedo_movement", talent.general.chi_torpedo);
+    movement.chi_torpedo->set_distance( 10 );
 
-    movement.roll = new monk_movement_t( this, "roll_movement", talent.general.chi_torpedo->ok() ? 10 : 8 );
-    movement.roll->set_chance( 1.0 )
-      ->set_duration( timespan_t::from_seconds( 1 ) );
+    movement.flying_serpent_kick = new monk_movement_t( this, "fsk_movement", talent.windwalker.flying_serpent_kick);
+    movement.flying_serpent_kick->set_distance( 1 );
 
-    movement.whirling_dragon_punch = new monk_movement_t( this, "whirling_dragon_punch_movement", 1 );
-    movement.whirling_dragon_punch->set_trigger_spell( talent.windwalker.whirling_dragon_punch )
-      ->set_chance( 1.0 )
-      ->set_duration( timespan_t::from_seconds( 1 ) );
+    movement.melee_squirm = new monk_movement_t( this, "melee_squirm" );
+    movement.melee_squirm->set_distance( 1 );
+
+    movement.roll = new monk_movement_t( this, "roll_movement", spec.roll);
+    movement.roll->set_distance( 8 );
+
+    movement.whirling_dragon_punch = new monk_movement_t( this, "wdp_movement", talent.windwalker.whirling_dragon_punch);
+    movement.whirling_dragon_punch->set_distance( 1 );
 }
 
 // monk_t::init_gains =======================================================
@@ -8661,7 +8676,7 @@ void monk_t::create_options()
   add_option( opt_float( "monk.faeline_stomp_uptime", user_options.faeline_stomp_uptime, 0.0, 1.0 ) );
   add_option( opt_int( "monk.chi_burst_healing_targets", user_options.chi_burst_healing_targets, 0, 30 ) );
   add_option( opt_int( "monk.motc_override", user_options.motc_override, 0, 5 ) );
-  add_option( opt_int( "monk.no_bof_dot", user_options.no_bof_dot, 0, 1 ) );
+  add_option( opt_float( "monk.squirm_frequency", user_options.squirm_frequency, 0, 30 ) );
 }
 
 // monk_t::copy_from =========================================================
@@ -8840,6 +8855,24 @@ void monk_t::combat_begin()
     make_repeating_event( sim, talent.windwalker.power_strikes->effectN( 2 ).period(),
                             [ this ]() { buff.power_strikes->trigger(); } );
   }
+
+  // Melee Squirm
+  // Periodic 1 YD movement to simulate combat movement 
+  make_repeating_event( sim, timespan_t::from_seconds( 1 ), [ this ] () {
+
+    // Do not interrupt a cast 
+    if ( ( executing && !executing->usable_moving() )
+      || ( queueing && !queueing->usable_moving() )
+      || ( channeling && !channeling->usable_moving() ) )
+    {
+      if ( user_options.squirm_frequency > 0 )
+      {
+        if ( rng().roll( 1 / user_options.squirm_frequency ) )
+          movement.melee_squirm->trigger();
+      }
+    }
+
+  } );
 }
 
 // monk_t::assess_damage ====================================================
@@ -9419,8 +9452,6 @@ std::unique_ptr<expr_t> monk_t::create_expression( util::string_view name_str )
     else if ( splits[1] == "max" )
       return make_fn_expr( name_str, [ this ] { return mark_of_the_crane_max(); } );
   }
-  else if ( splits.size() == 1 && splits[ 0 ] == "no_bof_dot" )
-    return make_fn_expr( name_str, [ this ] { return user_options.no_bof_dot; } );
 
   return base_t::create_expression( name_str );
 }

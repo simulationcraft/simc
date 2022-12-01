@@ -2951,9 +2951,10 @@ public:
       persistent_multiplier_buffeffects.push_back( ta_multiplier_buffeffects.back() );
       ta_multiplier_buffeffects.pop_back();
 
-      p()->sim->print_debug( "persistent-buffs: {} ({}) damage modified by {}% with buff {} ({}), tick table has {} entries.", name(), id,
-                             ta_val * 100.0, buff->name(), buff->data().id(), ta_multiplier_buffeffects.size() );
-
+      p()->sim->print_debug(
+          "persistent-buffs: {} ({}) damage modified by {}% with buff {} ({}), tick table has {} entries.", name(), id,
+          persistent_multiplier_buffeffects.back().value * 100.0, buff->name(), buff->data().id(),
+          ta_multiplier_buffeffects.size() );
 
       return true;
     }
@@ -3316,7 +3317,7 @@ struct brutal_slash_t : public cat_attack_t
 
   brutal_slash_t( druid_t* p, std::string_view opt )
     : cat_attack_t( "brutal_slash", p, p->talent.brutal_slash, opt ),
-      berserk_swipe_cp( p->spec.berserk_cat->effectN( 3 ).base_value() )
+      berserk_swipe_cp( p->spec.berserk_cat->effectN( 2 ).base_value() )
   {
     aoe = -1;
     reduced_aoe_targets = data().effectN( 3 ).base_value();
@@ -4108,7 +4109,7 @@ struct swipe_cat_t : public cat_attack_t
 
   swipe_cat_t( druid_t* p, std::string_view opt )
     : cat_attack_t( "swipe_cat", p, p->apply_override( p->talent.swipe, p->spec.cat_form_override ), opt ),
-      berserk_swipe_cp( p->spec.berserk_cat->effectN( 3 ).base_value() )
+      berserk_swipe_cp( p->spec.berserk_cat->effectN( 2 ).base_value() )
   {
     aoe = -1;
     reduced_aoe_targets = data().effectN( 4 ).base_value();
@@ -5684,7 +5685,9 @@ struct adaptive_swarm_t : public druid_spell_t
         if ( !second_target )
         {
           second_target = new_swarm_target( new_target );
-          assert( second_target );
+          if ( !second_target )
+            return;
+
           BASE::sim->print_log( "ADAPTIVE_SWARM: splitting off {} swarm", heal ? "heal" : "damage" );
           send_swarm( second_target, d );
         }
@@ -10210,9 +10213,12 @@ void druid_t::init_procs()
 {
   player_t::init_procs();
 
+  // TODO: temporarily remove advanced data collection until issues with profilesets & merge() showing one sim with
+  // simple=true and other with simple=false is resolved
+
   // Balance
-  proc.denizen_of_the_dream = get_proc( "Denizen of the Dream" )->collect_count();
-  proc.pulsar               = get_proc( "Primordial Arcanic Pulsar" )->collect_interval();
+  proc.denizen_of_the_dream = get_proc( "Denizen of the Dream" );//->collect_count();
+  proc.pulsar               = get_proc( "Primordial Arcanic Pulsar" );//->collect_interval();
 
   // Feral
   proc.predator             = get_proc( "Predator" );
@@ -10223,9 +10229,9 @@ void druid_t::init_procs()
   proc.clearcasting_wasted  = get_proc( "Clearcasting (Wasted)" );
 
   // Guardian
-  proc.galactic_guardian    = get_proc( "Galactic Guardian" )->collect_interval();
-  proc.gore                 = get_proc( "Gore" )->collect_interval();
-  proc.tooth_and_claw       = get_proc( "Tooth and Claw" )->collect_interval();
+  proc.galactic_guardian    = get_proc( "Galactic Guardian" );//->collect_interval();
+  proc.gore                 = get_proc( "Gore" );//->collect_interval();
+  proc.tooth_and_claw       = get_proc( "Tooth and Claw" );//->collect_interval();
 }
 
 // druid_t::init_uptimes ====================================================
@@ -10233,15 +10239,18 @@ void druid_t::init_uptimes()
 {
   player_t::init_uptimes();
 
+  // TODO: temporarily remove advanced data collection until issues with profilesets & merge() showing one sim with
+  // simple=true and other with simple=false is resolved
+
   std::string ca_inc_str = talent.incarnation_moonkin.ok() ? "Incarnation" : "Celestial Alignment";
 
-  uptime.combined_ca_inc           = get_uptime( ca_inc_str + " (Total)" )->collect_uptime( *sim )->collect_duration( *sim );
-  uptime.primordial_arcanic_pulsar = get_uptime( ca_inc_str + " (Pulsar)" )->collect_uptime( *sim );
-  uptime.eclipse_lunar             = get_uptime( "Lunar Eclipse Only" )->collect_uptime( *sim )->collect_duration( *sim );
-  uptime.eclipse_solar             = get_uptime( "Solar Eclipse Only" )->collect_uptime( *sim );
-  uptime.eclipse_none              = get_uptime( "No Eclipse" )->collect_uptime( *sim )->collect_duration( *sim );
-  uptime.friend_of_the_fae         = get_uptime( "Friend of the Fae" )->collect_uptime( *sim )->collect_duration( *sim );
-  uptime.tooth_and_claw_debuff     = get_uptime( "Tooth and Claw Debuff" )->collect_uptime( *sim );
+  uptime.combined_ca_inc           = get_uptime( ca_inc_str + " (Total)" );//->collect_uptime( *sim )->collect_duration( *sim );
+  uptime.primordial_arcanic_pulsar = get_uptime( ca_inc_str + " (Pulsar)" );//->collect_uptime( *sim );
+  uptime.eclipse_lunar             = get_uptime( "Lunar Eclipse Only" );//->collect_uptime( *sim )->collect_duration( *sim );
+  uptime.eclipse_solar             = get_uptime( "Solar Eclipse Only" );//->collect_uptime( *sim );
+  uptime.eclipse_none              = get_uptime( "No Eclipse" );//->collect_uptime( *sim )->collect_duration( *sim );
+  uptime.friend_of_the_fae         = get_uptime( "Friend of the Fae" );//->collect_uptime( *sim )->collect_duration( *sim );
+  uptime.tooth_and_claw_debuff     = get_uptime( "Tooth and Claw Debuff" );//->collect_uptime( *sim );
 }
 
 // druid_t::init_resources ==================================================

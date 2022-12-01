@@ -13,6 +13,7 @@
 
 namespace monk
 {
+
 namespace actions::spells
 {
 struct stagger_self_damage_t;
@@ -204,42 +205,78 @@ public:
   // Monk Movement
   //==============================================
 
-  struct monk_movement_t : public movement_buff_t
+  struct monk_movement_t : public buff_t
   {
-  public:
-    using base_t = monk_movement_t;
+  private:
+    monk_t* p;
 
+    propagate_const<buff_t*> base_movement;
+    const spell_data_t* data;
+
+  public:
     double distance_moved;
 
-    monk_movement_t( monk_t* player, util::string_view n, double distance = 0 )
-      : movement_buff_t( player ),
-        distance_moved ( distance )
+    monk_movement_t( monk_t* player, util::string_view n, const spell_data_t* s = spell_data_t::not_found() )
+      : buff_t( player, n ), p( player ), data( s ), base_movement( find( player, "movement" ) )
     {
+      set_chance( 1 );
+      set_max_stack( 1 );
+      set_duration( timespan_t::from_seconds(1 ) );
+
+      if ( base_movement == nullptr )
+        base_movement = new movement_buff_t( p );
+
+      if ( s->ok() )
+      {
+        set_trigger_spell( s );
+        set_duration( s->duration() );
+      }
     };
+
+    void set_distance( double distance )
+    {
+      distance_moved = distance;
+    }
 
     bool trigger( int s = 1, double v = -std::numeric_limits<double>::min(), double c = -1.0, timespan_t d = timespan_t::min() ) override
     {
-
-      // Check if we're already moving away from the target, if so we will now be moving towards it
-      if ( player->current.distance_to_move )
-      {
-        // TODO: Movement speed increase based on distance_moved
-      }
-      else
-      {
-        // TODO: Set out of range
-      }
-
       if ( distance_moved > 0 )
-        return movement_buff_t::trigger( s, v, c, d );
+      {
+        // Check if we're already moving away from the target, if so we will now be moving towards it
+        if ( p->current.distance_to_move )
+        {
+          // TODO: Movement speed increase based on distance_moved for roll / fsk style abilities
+          if ( data->ok() )
+          {
+
+          }
+          p->current.distance_to_move = distance_moved;
+          p->current.movement_direction = movement_direction_type::TOWARDS;
+        }
+        else
+        {
+          // TODO: Set melee out of range
+          p->current.moving_away = distance_moved;
+          p->current.movement_direction = movement_direction_type::AWAY;
+        }
+
+        return base_movement->trigger( s, v, c, this->buff_duration() );
+      }
 
       return false;
+    }
+
+    void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+    {
+      base_movement->expire_override( expiration_stacks, remaining_duration );
     }
   };
 
   struct movement_t
   {
+    propagate_const<monk_movement_t*> chi_torpedo;
     propagate_const<monk_movement_t*> flying_serpent_kick;
+    propagate_const<monk_movement_t*> melee_squirm;
     propagate_const<monk_movement_t*> roll;
     propagate_const<monk_movement_t*> whirling_dragon_punch;
   } movement;
@@ -854,6 +891,7 @@ public:
     const spell_data_t* glory_of_the_dawn_damage;
     const spell_data_t* hidden_masters_forbidden_touch;
     const spell_data_t* hit_combo;
+    const spell_data_t* improved_touch_of_death;
     const spell_data_t* keefers_skyreach_debuff;
     const spell_data_t* mark_of_the_crane;
     const spell_data_t* power_strikes_chi;
@@ -897,7 +935,7 @@ public:
     double faeline_stomp_uptime;
     int chi_burst_healing_targets;
     int motc_override;
-    int no_bof_dot;
+    double squirm_frequency;
   } user_options;
 
   // Blizzard rounds it's stagger damage; anything higher than half a percent beyond
@@ -994,6 +1032,7 @@ public:
   const spell_data_t* find_spell_override( const spell_data_t* base, const spell_data_t* passive );
   void apply_affecting_auras( action_t& ) override;
   void merge( player_t& other ) override;
+  void moving() override;
 
   // Custom Monk Functions
   void stagger_damage_changed( bool last_tick = false );

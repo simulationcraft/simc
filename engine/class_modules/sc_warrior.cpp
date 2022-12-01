@@ -4607,7 +4607,7 @@ struct overpower_t : public warrior_attack_t
     weapon                            = &( p->main_hand_weapon );
     if ( p->talents.arms.battlelord->ok() )
     {
-      base_multiplier *= 1.0 + p->talents.arms.overpower->effectN( 2 ).percent(); // stand in for new BL effect
+      base_multiplier *= 1.0 + p->talents.arms.battlelord->effectN( 1 ).percent();
     }
 
     if ( p->talents.arms.dreadnaught->ok() )
@@ -8518,12 +8518,6 @@ void warrior_t::default_apl_dps_precombat()
   }
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
-  if ( specialization() == WARRIOR_FURY )
-  precombat->add_action( "recklessness,if=!runeforge.signet_of_tormented_kings.equipped" );
-
-  precombat->add_action( this, covenant.conquerors_banner, "conquerors_banner" );
-  precombat->add_action( "fleshcraft" );
-
 }
 
 // Fury Warrior Action Priority List ========================================
@@ -8535,7 +8529,7 @@ void warrior_t::apl_fury()
   default_apl_dps_precombat();
   action_priority_list_t* default_list  = get_action_priority_list( "default" );
   //action_priority_list_t* movement      = get_action_priority_list( "movement" );
-  //action_priority_list_t* aoe           = get_action_priority_list( "aoe" );
+  action_priority_list_t* multi_target  = get_action_priority_list( "multi_target" );
   action_priority_list_t* single_target = get_action_priority_list( "single_target" );
 
   default_list->add_action( "auto_attack" );
@@ -8626,46 +8620,74 @@ void warrior_t::apl_fury()
     }
   }
 
-  default_list->add_action( "avatar,if=talent.titans_torment&buff.enrage.up&(buff.elysian_might.up|buff.elysian_might_legendary.up|(!runeforge.elysian_might&!talent.elysian_might))" );
+  default_list->add_action( "avatar,if=talent.titans_torment&buff.enrage.up&raid_event.adds.in>15|!talent.titans_torment&(buff.recklessness.up|target.time_to_die<20)" );
 
-  default_list->add_action( "avatar,if=!talent.titans_torment&(buff.recklessness.up|target.time_to_die<20)" );
+  default_list->add_action( "recklessness,if=!raid_event.adds.exists&(talent.annihilator&cooldown.avatar.remains<1|cooldown.avatar.remains>40|!talent.avatar|target.time_to_die<12)" );
 
-  default_list->add_action( "recklessness,if=talent.annihilator&cooldown.avatar.remains<1|cooldown.avatar.remains>40|!talent.avatar|target.time_to_die<20" );
+  default_list->add_action( "recklessness,if=!raid_event.adds.exists&!talent.annihilator|target.time_to_die<12" );
 
-  default_list->add_action( "recklessness,if=!talent.annihilator" );
+  default_list->add_action( "spear_of_bastion,if=buff.enrage.up&(buff.recklessness.up|buff.avatar.up|target.time_to_die<20|active_enemies>1)&raid_event.adds.in>15" );
 
-  default_list->add_action( this, covenant.kyrian_spear, "kyrian_spear", "if=buff.enrage.up&(buff.recklessness.up|buff.avatar.up|target.time_to_die<20)" );
+  //default_list->add_action( "whirlwind,if=spell_targets.whirlwind>1&talent.improved_whirlwind&!buff.meat_cleaver.up|raid_event.adds.in<2&talent.improved_whirlwind&!buff.meat_cleaver.up" );
 
-  default_list->add_action( "spear_of_bastion,if=buff.enrage.up&(buff.recklessness.up|buff.avatar.up|target.time_to_die<20)" );
+  default_list->add_action( "call_action_list,name=multi_target,if=raid_event.adds.exists|active_enemies>2" );
 
-  default_list->add_action( "whirlwind,if=spell_targets.whirlwind>1&!buff.meat_cleaver.up|raid_event.adds.in<2&!buff.meat_cleaver.up" );
-
-  default_list->add_action( "call_action_list,name=single_target" );
+  default_list->add_action( "call_action_list,name=single_target,if=!raid_event.adds.exists" );
 
   //movement->add_action( this, "Heroic Leap" );
 
+  multi_target->add_action( "recklessness,if=raid_event.adds.in>15|active_enemies>1|target.time_to_die<12" );
+  multi_target->add_action( "odyns_fury,if=active_enemies>1&talent.titanic_rage&(!buff.meat_cleaver.up|buff.avatar.up|buff.recklessness.up)" );
+  multi_target->add_action( "whirlwind,if=spell_targets.whirlwind>1&talent.improved_whirlwind&!buff.meat_cleaver.up|raid_event.adds.in<2&talent.improved_whirlwind&!buff.meat_cleaver.up" );
+  multi_target->add_action( "execute,if=buff.ashen_juggernaut.up&buff.ashen_juggernaut.remains<gcd" );
+  multi_target->add_action( "thunderous_roar,if=buff.enrage.up&(spell_targets.whirlwind>1|raid_event.adds.in>15)" );
+  multi_target->add_action( "odyns_fury,if=active_enemies>1&buff.enrage.up&raid_event.adds.in>15" );
+  multi_target->add_action( this, spec.crushing_blow, "crushing_blow,if=talent.wrath_and_fury&buff.enrage.up" );
+  multi_target->add_action( "execute,if=buff.enrage.up" );
+  multi_target->add_action( "odyns_fury,if=buff.enrage.up&raid_event.adds.in>15" );
+  multi_target->add_action( "rampage,if=buff.recklessness.up|buff.enrage.remains<gcd|(rage>110&talent.overwhelming_rage)|(rage>80&!talent.overwhelming_rage)" );
+  multi_target->add_action( "execute" );
+  multi_target->add_action( this, spec.bloodbath, "bloodbath,if=buff.enrage.up&talent.reckless_abandon&!talent.wrath_and_fury" );
+  multi_target->add_action( "bloodthirst,if=buff.enrage.down|(talent.annihilator&!buff.recklessness.up)" );
+  multi_target->add_action( "onslaught,if=!talent.annihilator&buff.enrage.up|talent.tenderize" );
+  multi_target->add_action( "raging_blow,if=charges>1&talent.wrath_and_fury" );
+  multi_target->add_action( this, spec.crushing_blow, "crushing_blow,if=charges>1&talent.wrath_and_fury" );
+  multi_target->add_action( this, spec.bloodbath, "bloodbath,if=buff.enrage.down|!talent.wrath_and_fury" );
+  multi_target->add_action( this, spec.crushing_blow, "crushing_blow,if=buff.enrage.up&talent.reckless_abandon" );
+  multi_target->add_action( "bloodthirst,if=!talent.wrath_and_fury" );
+  multi_target->add_action( "raging_blow,if=charges>=1" );
+  multi_target->add_action( "rampage" );
+  multi_target->add_action( "slam,if=talent.annihilator" );
+  multi_target->add_action( this, spec.bloodbath, "bloodbath" );
+  multi_target->add_action( "raging_blow" );
+  multi_target->add_action( this, spec.crushing_blow, "crushing_blow" );
+  multi_target->add_action( "whirlwind" );
+
+  single_target->add_action( "whirlwind,if=spell_targets.whirlwind>1&talent.improved_whirlwind&!buff.meat_cleaver.up|raid_event.adds.in<2&talent.improved_whirlwind&!buff.meat_cleaver.up" );
   single_target->add_action( "execute,if=buff.ashen_juggernaut.up&buff.ashen_juggernaut.remains<gcd" );
   single_target->add_action( "thunderous_roar,if=buff.enrage.up&(spell_targets.whirlwind>1|raid_event.adds.in>15)" );
-  single_target->add_action( this, spec.crushing_blow, "crushing_blow", "if=talent.wrath_and_fury" );
+  single_target->add_action( this, spec.crushing_blow, "crushing_blow,if=talent.wrath_and_fury&buff.enrage.up" );
   single_target->add_action( "execute,if=buff.enrage.up" );
-  single_target->add_action( "odyns_fury,if=!talent.annihilator&buff.enrage.up&(spell_targets.whirlwind>1|raid_event.adds.in>15)" );
-  single_target->add_action( "rampage,if=buff.recklessness.up|buff.enrage.remains<gcd|(rage>110&talent.overwhelming_rage)|(rage>80&!talent.overwhelming_rage)|buff.frenzy.remains<gcd" );
-  single_target->add_action( this, covenant.condemn, "condemn" );
+  single_target->add_action( "odyns_fury,if=buff.enrage.up&(spell_targets.whirlwind>1|raid_event.adds.in>15)&(talent.dancing_blades&buff.dancing_blades.remains<5|!talent.dancing_blades)" );
+  single_target->add_action( "rampage,if=buff.recklessness.up|buff.enrage.remains<gcd|(rage>110&talent.overwhelming_rage)|(rage>80&!talent.overwhelming_rage)" );
   single_target->add_action( "execute" );
+  single_target->add_action( this, spec.bloodbath, "bloodbath,if=buff.enrage.up&talent.reckless_abandon&!talent.wrath_and_fury" );
   single_target->add_action( "bloodthirst,if=buff.enrage.down|(talent.annihilator&!buff.recklessness.up)" );
-  single_target->add_action( "odyns_fury,if=talent.annihilator&buff.enrage.up&(spell_targets.whirlwind>1|raid_event.adds.in>15)" );
   single_target->add_action( "onslaught,if=!talent.annihilator&buff.enrage.up|talent.tenderize" );
   single_target->add_action( "raging_blow,if=charges>1&talent.wrath_and_fury" );
-  single_target->add_action( this, spec.bloodbath, "bloodbath", "if=buff.enrage.down|!talent.wrath_and_fury" );
+  single_target->add_action( this, spec.crushing_blow, "crushing_blow,if=charges>1&talent.wrath_and_fury" );
+  single_target->add_action( this, spec.bloodbath, "bloodbath,if=buff.enrage.down|!talent.wrath_and_fury" );
+  single_target->add_action( this, spec.crushing_blow, "crushing_blow,if=buff.enrage.up&talent.reckless_abandon" );
   single_target->add_action( "bloodthirst,if=!talent.wrath_and_fury" );
   single_target->add_action( "raging_blow,if=charges>1" );
   single_target->add_action( "rampage" );
-  single_target->add_action( "slam,if=talent.storm_of_swords" );
+  single_target->add_action( "slam,if=talent.annihilator" );
   single_target->add_action( this, spec.bloodbath, "bloodbath" );
   single_target->add_action( "raging_blow" );
   single_target->add_action( this, spec.crushing_blow, "crushing_blow" );
   single_target->add_action( "whirlwind" );
   single_target->add_action( "wrecking_throw" );
+  single_target->add_action( "storm_bolt" );
 
 }
 
@@ -8677,7 +8699,7 @@ void warrior_t::apl_arms()
 
   default_apl_dps_precombat();
   action_priority_list_t* default_list  = get_action_priority_list( "default" );
-  //action_priority_list_t* hac           = get_action_priority_list( "hac" );
+  action_priority_list_t* hac           = get_action_priority_list( "hac" );
   //action_priority_list_t* five_target   = get_action_priority_list( "five_target" );
   action_priority_list_t* execute       = get_action_priority_list( "execute" );
   action_priority_list_t* single_target = get_action_priority_list( "single_target" );
@@ -8726,29 +8748,23 @@ void warrior_t::apl_arms()
     }
   }
 
-  default_list->add_action( "sweeping_strikes,if=spell_targets.whirlwind>1&(cooldown.bladestorm.remains>15)" );
+  //default_list->add_action( "sweeping_strikes,if=spell_targets.whirlwind>1&(cooldown.bladestorm.remains>15)" );
 
   default_list->add_action( "call_action_list,name=execute,target_if=max:target.health.pct,if=target.health.pct>80&covenant.venthyr" );
   default_list->add_action( "call_action_list,name=execute,target_if=min:target.health.pct,if=(talent.massacre.enabled&target.health.pct<35)|target.health.pct<20" );
-  //default_list->add_action( "run_action_list,name=hac,if=raid_event.adds.up|spell_targets.whirlwind>1" );
-  default_list->add_action( "run_action_list,name=single_target" );
+  default_list->add_action( "run_action_list,name=hac,if=raid_event.adds.exists|active_enemies>2" );
+  default_list->add_action( "run_action_list,name=single_target,if=!raid_event.adds.exists" );
 
 
   execute->add_action( "sweeping_strikes,if=spell_targets.whirlwind>1" );
   execute->add_action( "rend,if=remains<=gcd&(!talent.warbreaker&cooldown.colossus_smash.remains<4|talent.warbreaker&cooldown.warbreaker.remains<4)&target.time_to_die>12" );
-  execute->add_action( "avatar,if=gcd.remains=0|target.time_to_die<20" );
-  execute->add_action( this, covenant.conquerors_banner, "conquerors_banner" );
-  execute->add_action( this, covenant.condemn, "condemn", "if=buff.ashen_juggernaut.up&buff.ashen_juggernaut.remains<gcd|buff.juggernaut.up&buff.juggernaut.remains<gcd" );
-  execute->add_action( "thunderous_roar,if=buff.test_of_might.up|!talent.test_of_might&debuff.colossus_smash.up" );
+  execute->add_action( "avatar,if=cooldown.colossus_smash.ready|debuff.colossus_smash.up|target.time_to_die<20" );
   execute->add_action( "warbreaker" );
   execute->add_action( "colossus_smash" );
+  execute->add_action( "thunderous_roar,if=buff.test_of_might.up|!talent.test_of_might&debuff.colossus_smash.up" );
   execute->add_action( "spear_of_bastion,if=debuff.colossus_smash.up|buff.test_of_might.up" );
-  execute->add_action( this, covenant.kyrian_spear, "kyrian_spear,if=debuff.colossus_smash.up|buff.test_of_might.up" );
-  execute->add_action( this, covenant.ancient_aftershock, "ancient_aftershock", ",if=debuff.colossus_smash.up|buff.test_of_might.up" );
-  execute->add_action( "mortal_strike,if=dot.deep_wounds.remains<=gcd" );
-  execute->add_action( "cleave,if=spell_targets.whirlwind>1&dot.deep_wounds.remains<gcd" );
-  execute->add_action( this, covenant.condemn, "condemn" );
   execute->add_action( "skullsplitter,if=rage<40" );
+  execute->add_action( "cleave,if=spell_targets.whirlwind>2&dot.deep_wounds.remains<gcd" );
   execute->add_action( "mortal_strike,if=debuff.executioners_precision.stack=2|dot.deep_wounds.remains<=gcd" );
   execute->add_action( "rend,if=remains<duration*0.3&debuff.colossus_smash.down" );
   execute->add_action( "execute" );
@@ -8756,30 +8772,58 @@ void warrior_t::apl_arms()
   execute->add_action( "overpower" );
   execute->add_action( "bladestorm" );
 
+  hac->add_action( "execute,if=buff.juggernaut.up&buff.juggernaut.remains<gcd" );
+  hac->add_action( "sweeping_strikes,if=active_enemies>=2&(cooldown.bladestorm.remains>15|!talent.bladestorm)" );
+  hac->add_action( "thunder_clap,if=active_enemies>2&talent.thunder_clap&talent.blood_and_thunder&talent.rend&dot.rend.remains<=duration*0.3" );
+  hac->add_action( "rend,if=active_enemies=1&remains<=gcd&(target.health.pct>20|talent.massacre&target.health.pct>35)|talent.tide_of_blood&cooldown.skullsplitter.remains<=gcd&(cooldown.colossus_smash.remains<=gcd|debuff.colossus_smash.up)&dot.rend.remains<duration*0.85" );
+  hac->add_action( "avatar,if=raid_event.adds.in>15|talent.blademasters_torment&active_enemies>1|target.time_to_die<20" );
+  hac->add_action( "warbreaker,if=raid_event.adds.in>22|active_enemies>1" );
+  hac->add_action( "colossus_smash" );
+  hac->add_action( "thunderous_roar,if=(buff.test_of_might.up|!talent.test_of_might&debuff.colossus_smash.up)&raid_event.adds.in>15|active_enemies>1&dot.deep_wounds.remains" );
+  hac->add_action( "spear_of_bastion,if=(buff.test_of_might.up|!talent.test_of_might&debuff.colossus_smash.up)&raid_event.adds.in>15" );
+  hac->add_action( "bladestorm,if=talent.unhinged&(buff.test_of_might.up|!talent.test_of_might&debuff.colossus_smash.up)" );
+  hac->add_action( "bladestorm,if=active_enemies>1&(buff.test_of_might.up|!talent.test_of_might&debuff.colossus_smash.up)&raid_event.adds.in>30|active_enemies>1&dot.deep_wounds.remains" );
+  hac->add_action( "execute,if=active_enemies<=2&buff.hurricane.up" );
+  hac->add_action( "cleave,if=active_enemies>2|buff.merciless_bonegrinder.up&cooldown.mortal_strike.remains>gcd" );
+  hac->add_action( "whirlwind,if=active_enemies>2|talent.storm_of_swords&(buff.merciless_bonegrinder.up|buff.hurricane.up)" );
+  hac->add_action( "skullsplitter,if=rage<40|talent.tide_of_blood&dot.rend.remains&(buff.sweeping_strikes.up&active_enemies>=2|debuff.colossus_smash.up|buff.test_of_might.up)" );
+  hac->add_action( "mortal_strike,if=debuff.executioners_precision.stack=2|dot.deep_wounds.remains<=gcd|talent.dreadnaught&talent.battlelord&active_enemies<=2&rage.pct>70" );
+  hac->add_action( "execute,if=buff.sudden_death.react|active_enemies<=2&(target.health.pct<20|talent.massacre&target.health.pct<35)|buff.sweeping_strikes.up" );
+  hac->add_action( "thunderous_roar,if=raid_event.adds.in>15" );
+  hac->add_action( "shockwave,if=active_enemies>2&talent.sonic_boom" );
+  hac->add_action( "whirlwind,if=talent.storm_of_swords&talent.dreadnaught&talent.battlelord&rage.pct>70" );
+  hac->add_action( "slam,if=active_enemies=1&talent.crushing_force&talent.dreadnaught&talent.battlelord&rage.pct>70" );
+  hac->add_action( "overpower,if=charges=2&(!talent.test_of_might|talent.test_of_might&debuff.colossus_smash.down|talent.battlelord)|rage<70" );
+  hac->add_action( "thunder_clap,if=active_enemies>2" );
+  hac->add_action( "mortal_strike" );
+  hac->add_action( "rend,if=active_enemies=1&dot.rend.remains<duration*0.3" );
+  hac->add_action( "whirlwind,if=talent.storm_of_swords|talent.fervor_of_battle&active_enemies>1" );
+  hac->add_action( "cleave,if=!talent.crushing_force" );
+  hac->add_action( "slam,if=talent.crushing_force&rage>30&(talent.fervor_of_battle&active_enemies=1|!talent.fervor_of_battle)" );
+  hac->add_action( "shockwave,if=talent.sonic_boom" );
+  hac->add_action( "bladestorm,if=raid_event.adds.in>30" );
+  hac->add_action( "wrecking_throw" );
+
   single_target->add_action( "sweeping_strikes,if=spell_targets.whirlwind>1" );
   single_target->add_action( "rend,if=remains<=gcd|talent.tide_of_blood&cooldown.skullsplitter.remains<=gcd&(cooldown.colossus_smash.remains<=gcd|debuff.colossus_smash.up)&dot.rend.remains<duration*0.85" );
-  single_target->add_action( this, covenant.conquerors_banner, "conquerors_banner", "if=target.time_to_die>140" );
-  single_target->add_action( "avatar,if=gcd.remains=0" );
+  single_target->add_action( "avatar,if=talent.warlords_torment&rage.pct<33&(cooldown.colossus_smash.ready|debuff.colossus_smash.up|buff.test_of_might.up)|!talent.warlords_torment&(cooldown.colossus_smash.ready|debuff.colossus_smash.up)" );
   single_target->add_action( "warbreaker" );
   single_target->add_action( "colossus_smash" );
-  single_target->add_action( "thunderous_roar,if=debuff.colossus_smash.up|buff.test_of_might.up" );
-  single_target->add_action( "spear_of_bastion,if=debuff.colossus_smash.up|buff.test_of_might.up" );
-  single_target->add_action( this, covenant.kyrian_spear, "kyrian_spear" ",if=debuff.colossus_smash.up|buff.test_of_might.up" );
-  single_target->add_action( this, covenant.ancient_aftershock, "ancient_aftershock", "if=debuff.colossus_smash.up|buff.test_of_might.up" );
-  single_target->add_action( "bladestorm,if=talent.hurricane&(buff.test_of_might.up|!talent.test_of_might&debuff.colossus_smash.up)|debuff.colossus_smash.up&talent.unhinged" );
-  single_target->add_action( "skullsplitter,if=talent.tide_of_blood&dot.rend.remains&(buff.sweeping_strikes.up&active_enemies>=2|debuff.colossus_smash.up|buff.test_of_might.up)|rage<40" );
-  single_target->add_action( "mortal_strike,if=runeforge.enduring_blow|runeforge.battlelord|dot.deep_wounds.remains<=gcd|debuff.executioners_precision.stack=2" );
+  single_target->add_action( "thunderous_roar,if=buff.test_of_might.up|!talent.test_of_might&debuff.colossus_smash.up" );
+  single_target->add_action( "spear_of_bastion,if=buff.test_of_might.up|!talent.test_of_might&debuff.colossus_smash.up" );
+  single_target->add_action( "bladestorm,if=talent.hurricane&(buff.test_of_might.up|!talent.test_of_might&debuff.colossus_smash.up)|talent.unhinged&(buff.test_of_might.up|!talent.test_of_might&debuff.colossus_smash.up)" );
+  single_target->add_action( "skullsplitter,if=talent.tide_of_blood&dot.rend.remains&(debuff.colossus_smash.up|cooldown.colossus_smash.remains>gcd*4&buff.test_of_might.up|!talent.test_of_might&cooldown.colossus_smash.remains>gcd*4)|rage<30" );
+  single_target->add_action( "mortal_strike,if=dot.deep_wounds.remains<=gcd|debuff.executioners_precision.stack=2" );
   single_target->add_action( "execute,if=buff.sudden_death.react" );
-  single_target->add_action( this, covenant.condemn, "condemn", "if=buff.sudden_death.react" );
   single_target->add_action( "shockwave,if=talent.sonic_boom.enabled" );
-  single_target->add_action( "whirlwind,if=spell_targets.whirlwind>1&buff.merciless_bonegrinder.up" );
-  single_target->add_action( "overpower,if=charges=2&(!talent.test_of_might|talent.test_of_might&debuff.colossus_smash.down)" );
+  single_target->add_action( "overpower,if=charges=2&(debuff.colossus_smash.down|rage.pct<25)" );
   single_target->add_action( "mortal_strike" );
   single_target->add_action( "rend,if=remains<duration*0.3" );
-  single_target->add_action( "cleave" );
-  single_target->add_action( "overpower,if=rage<70&debuff.colossus_smash.down|rage<30" );
-  single_target->add_action( "slam,if=!talent.fervor_of_battle.enabled|spell_targets.whirlwind=1" );
-  single_target->add_action( "whirlwind,if=talent.fervor_of_battle.enabled&spell_targets.whirlwind>1" );
+  single_target->add_action( "whirlwind,if=talent.storm_of_swords" );
+  single_target->add_action( "overpower,if=debuff.colossus_smash.down&rage.pct<50|rage.pct<25" );
+  single_target->add_action( "whirlwind,if=buff.merciless_bonegrinder.up" );
+  single_target->add_action( "cleave,if=set_bonus.tier29_2pc&!talent.crushing_force" );
+  single_target->add_action( "slam,if=rage>30" );
   single_target->add_action( "wrecking_throw" );
 }
 
@@ -8791,86 +8835,53 @@ void warrior_t::apl_prot()
   default_apl_dps_precombat();
 
   action_priority_list_t* default_list = get_action_priority_list( "default" );
-  action_priority_list_t* generic      = get_action_priority_list( "generic" );
   action_priority_list_t* aoe          = get_action_priority_list( "aoe" );
+  action_priority_list_t* generic      = get_action_priority_list( "generic" );
 
   default_list -> add_action( "auto_attack" );
-  default_list -> add_action( "shield_charge,if=time=0" );
   default_list -> add_action( "charge,if=time=0" );
-  default_list -> add_action( "use_items,if=talent.avatar&(cooldown.avatar.remains<=gcd|buff.avatar.up)|!talent.avatar" );
-  //use off GCD racial buffs with avatar, or rip on cd if no avatar
-  default_list -> add_action( "blood_fury,if=buff.avatar.up|!talent.avatar" );
-  default_list -> add_action( "berserking,if=buff.avatar.up|!talent.avatar" );
-  default_list -> add_action( "fireblood,if=buff.avatar.up|!talent.avatar" );
-  default_list -> add_action( "ancestral_call,if=buff.avatar.up|!talent.avatar" );
-  default_list -> add_action( "potion,if=buff.avatar.up|target.time_to_die<25" );
-  //Prioritize Revenge! procs if SS is on cd and not in execute.
-  default_list -> add_action( "revenge,if=buff.revenge.up&(target.health.pct>20|spell_targets.thunder_clap>3)&cooldown.shield_slam.remains" );
-  default_list -> add_action( "ignore_pain,if=target.health.pct>=20&(target.health.pct>=80&!covenant.venthyr)&(rage>=85&cooldown.shield_slam.ready&buff.shield_block.up|rage>=60&cooldown.demoralizing_shout.ready&talent.booming_voice.enabled|rage>=70&cooldown.avatar.ready|rage>=40&cooldown.demoralizing_shout.ready&talent.booming_voice.enabled&buff.last_stand.up|rage>=55&cooldown.avatar.ready&buff.last_stand.up|rage>=80|rage>=55&cooldown.shield_slam.ready&buff.violent_outburst.up&buff.shield_block.up|rage>=30&cooldown.shield_slam.ready&buff.violent_outburst.up&buff.last_stand.up&buff.shield_block.up),use_off_gcd=1");
-  //Shield Block if missing the buff, or SS is about to come off CD, but ignore during execute.
-  default_list -> add_action( "shield_block,if=(buff.shield_block.down|buff.shield_block.remains<cooldown.shield_slam.remains)&target.health.pct>20" );
-  default_list -> add_action( "shield_slam,if=buff.violent_outburst.up&rage<=55");
-
-  //Lower priority for on GCD racials.
-  default_list -> add_action( "bag_of_tricks" );
-  default_list -> add_action( "arcane_torrent,if=rage<80" );
-  default_list -> add_action( "lights_judgment" );
-  default_list -> add_action( "shield_wall,if=!buff.last_stand.up&!buff.rallying_cry.up" );
-  default_list -> add_action( "last_stand,if=!buff.shield_wall.up&!buff.rallying_cry.up" );
-  default_list -> add_action( "rallying_cry,if=!buff.last_stand.up&!buff.shield_wall.up" );
-  default_list -> add_action( "demoralizing_shout,if=!buff.last_stand.up&!buff.shield_wall.up&!buff.rallying_cry.up" );
-  // OGCD actions, tossed in here just to run the code
-  default_list -> add_action( "berserker_rage" );
-  default_list -> add_action( "spell_reflection" );
-  // generic -> add_action( "heroic_leap" );  // Uncomment to test
-  // generic -> add_action( "challenging_shout" ); NYI
-  // generic -> add_action( "disrupting_shout" ); NYI
+  default_list -> add_action( "use_items" );
   default_list -> add_action( "avatar" );
-  default_list -> add_action( "run_action_list,name=aoe,if=spell_targets.thunder_clap>3" );
+  default_list -> add_action( "shield_wall,if=talent.immovable_object.enabled&buff.avatar.down" );
+  default_list -> add_action( "blood_fury" );
+  default_list -> add_action( "berserking" );
+  default_list -> add_action( "arcane_torrent" );
+  default_list -> add_action( "lights_judgment" );
+  default_list -> add_action( "fireblood" );
+  default_list -> add_action( "ancestral_call" );
+  default_list -> add_action( "bag_of_tricks" );
+  default_list -> add_action( "potion,if=buff.avatar.up|buff.avatar.up&target.health.pct<=20" );
+  default_list -> add_action( "ignore_pain,if=target.health.pct>=20&(rage.deficit<=15&cooldown.shield_slam.ready|rage.deficit<=40&cooldown.shield_charge.ready&talent.champions_bulwark.enabled|rage.deficit<=20&cooldown.shield_charge.ready|rage.deficit<=30&cooldown.demoralizing_shout.ready&talent.booming_voice.enabled|rage.deficit<=20&cooldown.avatar.ready|rage.deficit<=45&cooldown.demoralizing_shout.ready&talent.booming_voice.enabled&buff.last_stand.up&talent.unnerving_focus.enabled|rage.deficit<=30&cooldown.avatar.ready&buff.last_stand.up&talent.unnerving_focus.enabled|rage.deficit<=20|rage.deficit<=40&cooldown.shield_slam.ready&buff.violent_outburst.up&talent.heavy_repercussions.enabled&talent.impenetrable_wall.enabled|rage.deficit<=55&cooldown.shield_slam.ready&buff.violent_outburst.up&buff.last_stand.up&talent.unnerving_focus.enabled&talent.heavy_repercussions.enabled&talent.impenetrable_wall.enabled|rage.deficit<=17&cooldown.shield_slam.ready&talent.heavy_repercussions.enabled|rage.deficit<=18&cooldown.shield_slam.ready&talent.impenetrable_wall.enabled),use_off_gcd=1" );
+  default_list -> add_action( "last_stand,if=(target.health.pct>=90&talent.unnerving_focus.enabled|target.health.pct<=20&talent.unnerving_focus.enabled)|talent.bolster.enabled" );
+  default_list -> add_action( "ravager" );
+  default_list -> add_action( "demoralizing_shout,if=talent.booming_voice.enabled" );
+  default_list -> add_action( "spear_of_bastion" );
+  default_list -> add_action( "thunderous_roar" );
+  default_list -> add_action( "shockwave,if=talent.sonic_boom.enabled&buff.avatar.up&talent.unstoppable_force.enabled&!talent.rumbling_earth.enabled" );
+  default_list -> add_action( "shield_charge" );
+  default_list -> add_action( "shield_block,if=buff.shield_block.duration<=18&talent.enduring_defenses.enabled|buff.shield_block.duration<=12" );
+  default_list -> add_action( "run_action_list,name=aoe,if=spell_targets.thunder_clap>=3" );
   default_list -> add_action( "call_action_list,name=generic" );
 
-  // generic -> add_action( "Intervene" ); Uncomment to test
-  // generic -> add_action( "Intimidating Shout" ); NYI
-  // generic -> add_action( "Bitter Immunity" ); NYI
-
-  generic -> add_action( "ignore_pain,if=(rage.deficit>=35&buff.ignore_pain.value<health.max*0.3*0.5)|buff.ignore_pain.remains<gcd" );  // Only IP if we are under half the max value to prevent overcap
-  generic -> add_action( "ravager" );
-  generic -> add_action( "thunderous_roar" );
-  generic -> add_action( "spear_of_bastion" );
-
-  generic -> add_action( "shield_charge" );
-  generic -> add_action( "shockwave" );
-  generic -> add_action( "execute" );
-  generic -> add_action( "shield_slam" );
-  generic -> add_action( "thunder_clap,if=active_enemies>=2|(talent.rend&talent.blood_and_thunder)" );
-  generic -> add_action( "rend,if=!talent.thunderclap&!talent.blood_and_thunder" );
-  generic -> add_action( "revenge,if=rage.deficit>30&active_enemies>=2" );
-  generic -> add_action( "titanic_throw,if=active_enemies>=2" );
-
-  generic -> add_action( "devastate" );
-  generic -> add_action( "heroic_throw" );
-  generic -> add_action( "titanic_throw" );
-  generic -> add_action( "thunder_clap" );  // Does less damage than devastate ST
-  generic -> add_action( "revenge,if=rage.deficit>30" );
-  generic -> add_action( "Impending Victory" );
-  generic -> add_action( "storm_bolt" );
-
-  aoe -> add_action( "ignore_pain,if=rage.deficit>=35&buff.ignore_pain.value<health.max*0.3" );
-  aoe -> add_action( "spear_of_bastion" );
-  aoe -> add_action( "thunderous_roar" );
-  aoe -> add_action( "ravager" );
-  aoe -> add_action( "shockwave" );
-  aoe -> add_action( "shield_charge" );
-  aoe -> add_action( "revenge,if=rage.deficit>30" );
+  aoe -> add_action( "thunder_clap,if=dot.rend.remains<=1" );
+  aoe -> add_action( "thunder_clap,if=buff.violent_outburst.up&spell_targets.thunderclap>5&buff.avatar.up&talent.unstoppable_force.enabled" );
+  aoe -> add_action( "revenge,if=rage>=70&talent.seismic_reverberation.enabled&spell_targets.revenge>=3" );
+  aoe -> add_action( "shield_slam,if=rage<=60|buff.violent_outburst.up&spell_targets.thunderclap<=4" );
   aoe -> add_action( "thunder_clap" );
-  aoe -> add_action( "titanic_throw" );
-  aoe -> add_action( "rend,if=!talent.thunderclap&!talent.blood_and_thunder" );
-  aoe -> add_action( "shield_slam" );
-  aoe -> add_action( "execute" );
-  aoe -> add_action( "devastate" );
-  aoe -> add_action( "Impending Victory" );
-  aoe -> add_action( "storm_bolt" );
+  aoe -> add_action( "revenge,if=rage>=30|rage>=40&talent.barbaric_training.enabled" );
 
+  generic -> add_action( "shield_slam" );
+  generic -> add_action( "thunder_clap,if=dot.rend.remains<=1&buff.violent_outburst.down" );
+  generic -> add_action( "execute,if=buff.sudden_death.up&talent.sudden_death.enabled" );
+  generic -> add_action( "execute,if=spell_targets.revenge=1&(talent.massacre.enabled|talent.juggernaut.enabled)&rage>=50" );
+  generic -> add_action( "revenge,if=buff.vanguards_determination.down&rage>=40" );
+  generic -> add_action( "execute,if=spell_targets.revenge=1&rage>=50" );
+  generic -> add_action( "thunder_clap,if=(spell_targets.thunder_clap>1|cooldown.shield_slam.remains&!buff.violent_outburst.up)" );
+  generic -> add_action( "revenge,if=(rage>=60&target.health.pct>20|buff.revenge.up&target.health.pct<=20&rage<=18&cooldown.shield_slam.remains|buff.revenge.up&target.health.pct>20)|(rage>=60&target.health.pct>35|buff.revenge.up&target.health.pct<=35&rage<=18&cooldown.shield_slam.remains|buff.revenge.up&target.health.pct>35)&talent.massacre.enabled" );
+  generic -> add_action( "execute,if=spell_targets.revenge=1" );
+  generic -> add_action( "revenge" );
+  generic -> add_action( "thunder_clap,if=(spell_targets.thunder_clap>=1|cooldown.shield_slam.remains&buff.violent_outburst.up)" );
+  generic -> add_action( "devastate" );
 }
 // NO Spec Combat Action Priority List
 
@@ -9590,24 +9601,24 @@ void warrior_t::init_resources( bool force )
 std::string warrior_t::default_potion() const
 {
   std::string fury_pot =
-      ( true_level > 50 )
-          ? "spectral_strength"
-          : ( true_level > 40 )
-                ? "potion_of_unbridled_fury"
+      ( true_level > 60 )
+          ? "elemental_potion_of_ultimate_power_3"
+          : ( true_level > 50 )
+                ? "spectral_strength"
                 : "disabled";
 
   std::string arms_pot =
-      ( true_level > 50 )
-          ? "spectral_strength"
-          : ( true_level > 40 )
-                ? "potion_of_unbridled_fury"
+      ( true_level > 60 )
+          ? "elemental_potion_of_ultimate_power_3"
+          : ( true_level > 50 )
+                ? "spectral_strength"
                 : "disabled";
 
   std::string protection_pot =
-      ( true_level > 50 )
-          ? "spectral_strength"
-          : ( true_level > 40 )
-                ? "potion_of_unbridled_fury"
+      ( true_level > 60 )
+          ? "elemental_potion_of_ultimate_power_3"
+          : ( true_level > 50 )
+                ? "spectral_strength"
                 : "disabled";
 
   switch ( specialization() )
@@ -9627,10 +9638,10 @@ std::string warrior_t::default_potion() const
 
 std::string warrior_t::default_flask() const
 {
-  return ( true_level > 50 )
-             ? "spectral_flask_of_power"
-             : ( true_level > 40 )
-                   ? "greater_flask_of_the_undertow"
+  return ( true_level > 60 )
+             ? "phial_of_tepid_versatility_3"
+             : ( true_level > 50 )
+                   ? "spectral_flask_of_power"
                    : "disabled";
 }
 
@@ -9638,22 +9649,22 @@ std::string warrior_t::default_flask() const
 
 std::string warrior_t::default_food() const
 {
-  std::string fury_food = ( true_level > 50 )
-                              ? "feast_of_gluttonous_hedonism"
-                              : ( true_level > 40 )
-                                    ? "mechdowels_big_mech"
+  std::string fury_food = ( true_level > 60 )
+                              ? "fated_fortune_cookie"
+                              : ( true_level > 50 )
+                                    ? "feast_of_gluttonous_hedonism"
                                     : "disabled";
 
-  std::string arms_food = ( true_level > 50 )
-                              ? "feast_of_gluttonous_hedonism"
-                              : ( true_level > 40 )
-                                    ? "baked_port_tato"
+  std::string arms_food = ( true_level > 60 )
+                              ? "fated_fortune_cookie"
+                              : ( true_level > 50 )
+                                    ? "feast_of_gluttonous_hedonism"
                                     : "disabled";
 
-  std::string protection_food = ( true_level > 50 )
-                              ? "feast_of_gluttonous_hedonism"
-                              : ( true_level > 40 )
-                                    ? "mechdowels_big_mech"
+  std::string protection_food = ( true_level > 60 )
+                              ? "fated_fortune_cookie"
+                              : ( true_level > 50 )
+                                    ? "feast_of_gluttonous_hedonism"
                                     : "disabled";
 
   switch ( specialization() )
@@ -9673,8 +9684,8 @@ std::string warrior_t::default_food() const
 
 std::string warrior_t::default_rune() const
 {
-  return ( true_level >= 60 ) ? "veiled"
-                               : ( true_level >= 50 ) ? "battle_scarred" : "disabled";
+  return ( true_level >= 60 ) ? "draconic"
+                               : ( true_level >= 50 ) ? "veiled" : "disabled";
 }
 
 // warrior_t::default_temporary_enchant =====================================
@@ -9682,15 +9693,15 @@ std::string warrior_t::default_rune() const
 std::string warrior_t::default_temporary_enchant() const
 {
   std::string fury_temporary_enchant = ( true_level >= 60 )
-                              ? "main_hand:shaded_sharpening_stone/off_hand:shaded_sharpening_stone"
+                              ? "main_hand:howling_rune_3/off_hand:howling_rune_3"
                               : "disabled";
 
   std::string arms_temporary_enchant = ( true_level >= 60 )
-                              ? "main_hand:shaded_sharpening_stone"
+                              ? "main_hand:howling_rune_3"
                               : "disabled";
 
   std::string protection_temporary_enchant = ( true_level >= 60 )
-                              ? "main_hand:shaded_sharpening_stone"
+                              ? "main_hand:howling_rune_3"
                               : "disabled";
   switch ( specialization() )
   {
@@ -10070,7 +10081,11 @@ double warrior_t::composite_armor_multiplier() const
   }
   */
 
+ // Generally Modify Armor% (101)
+
   ar *= 1.0 + talents.warrior.reinforced_plates->effectN( 1 ).percent();
+  ar *= 1.0 + talents.protection.enduring_alacrity -> effectN( 3 ).percent();
+  ar *= 1.0 + talents.protection.focused_vigor -> effectN( 3 ).percent();
 
   return ar;
 }
@@ -10101,10 +10116,8 @@ double warrior_t::composite_bonus_armor() const
 // warrior_t::composite_base_armor_multiplier ================================
 double warrior_t::composite_base_armor_multiplier() const
 {
+  // Generally Modify Base Resistance (142)
   double a = player_t::composite_base_armor_multiplier();
-
-  a *= 1.0 + talents.protection.enduring_alacrity -> effectN( 3 ).percent();
-  a *= 1.0 + talents.protection.focused_vigor -> effectN( 3 ).percent();
 
   return a;
 }

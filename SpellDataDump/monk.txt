@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46801 Live (hotfix 2022-11-28/46801)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46879 Live (hotfix 2022-11-30/46879)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -17188,7 +17188,6 @@ Effects          :
 #2 (id=1043958)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Max Stacks (37)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 37 | Misc Value 2: 2435 (Label) | Target: Self (1)
                    Affected Spells (Label): Kicks of Flowing Momentum (394944)
-Hotfixed         : NEW EFFECT
 Description      : Fists of Fury now instead enhances your next $s1 Rising Sun Kicks or Spinning Crane Kicks and enhanced kicks increase the damage of your next Fists of Fury by $394949s1%, stacking up to 3 times.
 
 Name             : Chi Surge (id=393786) 
@@ -17376,7 +17375,6 @@ Description      : Touch of Death strikes up to $s1 additional nearby $Ltarget;t
 Tooltip          : Touch of Death strikes up to $s1 additional nearby $Ltarget;targets.
 
 Name             : Kicks of Flowing Momentum (id=394944) [Spell Family (53)] 
-Hotfixed         : Max stacks (3 -> 2)
 Class            : Monk
 School           : Nature
 Spell Type       : None

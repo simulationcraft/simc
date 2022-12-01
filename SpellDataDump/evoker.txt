@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46801 Live (hotfix 2022-11-28/46801)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46879 Live (hotfix 2022-11-30/46879)
 Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Orc (0x2)
@@ -1405,7 +1405,6 @@ Description      : Brings all dead party members back to life with $s1% health a
 
 
 Name             : Verdant Embrace (id=361195) [Spell Family (224)] 
-Hotfixed         : Attributes
 Class            : Evoker
 School           : Nature
 Spell Type       : None
