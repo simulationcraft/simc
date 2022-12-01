@@ -63,7 +63,7 @@ race=troll
 spec=enhancement
 role=attack
 position=back
-talents=BcQAAAAAAAAAAAAAAAAAAAAAAIJJpAJRSSiAJJSAAAAAAAAAAAAAAtIEhEtUEgUSSSBQJRSgC
+talents=BcQAfcj78nJtvjmejSqe5Zhm9IJJHAkcARSSSQSiECAAAAAAAAAAAAAlIEhkIFBIlkkUAUSkEoB
 class_talents=lava_burst:1/chain_lightning:1/earth_elemental:1/frost_shock:1/maelstrom_weapon:1/fire_and_ice:1/natures_fury:2/improved_lightning_bolt:2
 
 head=collar_of_honorable_exultation,id=136777,bonus_id=1795/3251/657/7977
@@ -84,6 +84,34 @@ main_hand=forgestorm,id=193785,bonus_id=1594/657/7977,enchant=sophic_devotion_2
 off_hand=bouldersplitter,id=193797,bonus_id=1594/657/7977,enchant=sophic_devotion_2
 
 save=PR_Shaman_Enhancement_Phys.simc
+
+shaman="PR_Shaman_Enhancement_Gamba"
+level=70
+race=troll
+spec=enhancement
+role=attack
+position=back
+talents=BcQAfcj78nJtvjmejSqe5Zhm9IJJHAkcARSSSQSiECAAAAAAAAAAAAAlIEhkIFBIlkkUAUSkEoA
+class_talents=lava_burst:1/chain_lightning:1/earth_elemental:1/frost_shock:1/maelstrom_weapon:1/fire_and_ice:1/natures_fury:2/improved_lightning_bolt:2
+
+head=collar_of_honorable_exultation,id=136777,bonus_id=1795/3251/657/7977
+neck=wolfstride_pendant,id=133633,bonus_id=1795/3251/657/7977
+shoulders=neverdare_shoulders,id=143970,bonus_id=1795/3262/657/7977
+back=cloak_of_violent_harmony,id=109906,bonus_id=1795/3257/657/7977
+chest=thunderfused_valkyr_hauberk,id=133622,bonus_id=1795/3251/657/7977,enchant=waking_stats_2
+wrists=shikaar_ranger_bracers,id=193693,bonus_id=1594/657/7977
+hands=sharpeye_gauntlets,id=109853,bonus_id=1795/3257/657/7977
+waist=morningscale_waistguard,id=109843,bonus_id=1795/3257/657/7977
+legs=stasisfreed_leggings,id=193643,bonus_id=1594/657/7977,enchant_id=6495
+feet=lightningcharged_striders,id=193685,bonus_id=1594/657/7977
+finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=1795/3251/657/7977,enchant_id=6555
+finger2=unstable_arcane_loop,id=193633,bonus_id=1594/657/7977,enchant_id=6555
+trinket1=irideus_fragment,id=193743,bonus_id=1594/657/7977
+trinket2=bottle_of_spiraling_winds,id=193697,bonus_id=1594/657/7977
+main_hand=forgestorm,id=193785,bonus_id=1594/657/7977,enchant=sophic_devotion_2
+off_hand=bouldersplitter,id=193797,bonus_id=1594/657/7977,enchant=sophic_devotion_2
+
+save=PR_Shaman_Enhancement_Gamba.simc
 
 # shaman="PR_Shaman_Restoration"
 # level=70

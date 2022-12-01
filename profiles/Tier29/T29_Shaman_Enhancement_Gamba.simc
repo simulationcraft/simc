@@ -1,12 +1,11 @@
-shaman="PR_Shaman_Enhancement_Phys"
+shaman="T29_Shaman_Enhancement_Gamba"
 source=default
 spec=enhancement
 level=70
 race=troll
 role=attack
 position=back
-talents=BcQAAAAAAAAAAAAAAAAAAAAAAIJJHAkcARSSSQSiECAAAAAAAAAAAAAlIJRIJSRASJJJFAlEJBa
-class_talents=lava_burst:1/chain_lightning:1/earth_elemental:1/frost_shock:1/maelstrom_weapon:1/fire_and_ice:1/natures_fury:2/improved_lightning_bolt:2
+talents=BcQAAAAAAAAAAAAAAAAAAAAAAIJJHAkcARSSSQSiECAAAAAAAAAAAAAlIEhkIFBIlkkUAUSkEoA
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
@@ -126,29 +125,31 @@ actions.single+=/earth_elemental
 actions.single+=/flame_shock
 actions.single+=/windfury_totem,if=buff.windfury_totem.remains<30
 
-head=collar_of_honorable_exultation,id=136777,bonus_id=1795/3251/657/7977
-neck=wolfstride_pendant,id=133633,bonus_id=1795/3251/657/7977
-shoulders=neverdare_shoulders,id=143970,bonus_id=1795/3262/657/7977
-back=cloak_of_violent_harmony,id=109906,bonus_id=1795/3257/657/7977
-chest=thunderfused_valkyr_hauberk,id=133622,bonus_id=1795/3251/657/7977,enchant=waking_stats_2
-wrists=shikaar_ranger_bracers,id=193693,bonus_id=1594/657/7977
-hands=sharpeye_gauntlets,id=109853,bonus_id=1795/3257/657/7977
-waist=morningscale_waistguard,id=109843,bonus_id=1795/3257/657/7977
-legs=stasisfreed_leggings,id=193643,bonus_id=1594/657/7977,enchant_id=6495
-feet=lightningcharged_striders,id=193685,bonus_id=1594/657/7977
-finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=1795/3251/657/7977,enchant_id=6555
-finger2=unstable_arcane_loop,id=193633,bonus_id=1594/657/7977,enchant_id=6555
-trinket1=irideus_fragment,id=193743,bonus_id=1594/657/7977
-trinket2=bottle_of_spiraling_winds,id=193697,bonus_id=1594/657/7977
-main_hand=forgestorm,id=193785,bonus_id=1594/657/7977,enchant=sophic_devotion_2
-off_hand=bouldersplitter,id=193797,bonus_id=1594/657/7977,enchant=sophic_devotion_2
+head=faceguard_of_infused_earth,id=200399,bonus_id=4800/4786/1498/6935,gem_id=192985
+neck=elemental_lariat,id=193001,bonus_id=6652/7936/7979/1540/8767/6935/6935,gem_id=192948/192948/192948,crafted_stats=49/36
+shoulders=calderas_of_infused_earth,id=200401,bonus_id=4800/4786/1498
+back=vibrant_wildercloth_shawl,id=193511,bonus_id=6652/7936/7979/1540/8767,enchant_id=6643,crafted_stats=49/36
+chest=robe_of_infused_earth,id=200396,bonus_id=4800/4786/1498,enchant=waking_stats_3
+wrists=shikaar_ranger_bracers,id=193693,bonus_id=6808/4786/1643,gem_id=192948
+hands=gauntlets_of_infused_earth,id=200398,bonus_id=4800/4786/1501
+waist=morningscale_waistguard,id=109843,bonus_id=4238/4786/6808/3306,gem_id=192948
+legs=tassets_of_the_tarasek_legion,id=195522,bonus_id=4800/4786/1498,enchant_id=6496
+feet=daring_chasmleapers,id=195495,bonus_id=4800/4786/1498
+finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=1795/6808/4786/3300,gem_id=192948,enchant_id=6556
+finger2=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498,gem_id=192948,enchant_id=6556
+trinket1=manic_grieftorch,id=194308,bonus_id=4800/4786/1498
+trinket2=whispering_incarnate_icon,id=194301,bonus_id=4800/4786/1498
+main_hand=fist_of_the_grand_summoner,id=195512,bonus_id=4800/4786/1498,enchant=sophic_devotion_3
+off_hand=fist_of_the_grand_summoner,id=195512,bonus_id=4800/4786/1498,enchant=sophic_devotion_3
 
 # Gear Summary
-# gear_ilvl=372.00
-# gear_agility=2683
-# gear_stamina=6737
-# gear_crit_rating=1013
-# gear_haste_rating=3656
-# gear_mastery_rating=3246
-# gear_versatility_rating=191
-# gear_armor=3603
+# gear_ilvl=421.56
+# gear_agility=5450
+# gear_stamina=13199
+# gear_crit_rating=1543
+# gear_haste_rating=4406
+# gear_mastery_rating=3657
+# gear_versatility_rating=1263
+# gear_armor=4851
+# set_bonus=tier29_2pc=1
+# set_bonus=tier29_4pc=1

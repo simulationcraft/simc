@@ -1,11 +1,11 @@
-shaman="PR_Shaman_Enhancement_Phys"
+shaman="PR_Shaman_Enhancement_Gamba"
 source=default
 spec=enhancement
 level=70
 race=troll
 role=attack
 position=back
-talents=BcQAAAAAAAAAAAAAAAAAAAAAAIJJHAkcARSSSQSiECAAAAAAAAAAAAAlIJRIJSRASJJJFAlEJBa
+talents=BcQAAAAAAAAAAAAAAAAAAAAAAIJJHAkcARSSSQSiECAAAAAAAAAAAAAlIJRIJSRASJJJFAlEJBK
 class_talents=lava_burst:1/chain_lightning:1/earth_elemental:1/frost_shock:1/maelstrom_weapon:1/fire_and_ice:1/natures_fury:2/improved_lightning_bolt:2
 
 # Default consumables
