@@ -1257,7 +1257,7 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
       
     // These abilities are able to be used during Spinning Crane Kick
     if ( cast_during_sck )
-      usable_while_casting = p()->channeling && ( p()->channeling->id == 101546 /* Windwalker + Mistweaver */ || p()->channeling->id == 322729 /* Brewmaster */ );
+      usable_while_casting = p()->channeling && p()->channeling->id == p()->find_action( "spinning_crane_kick" )->id;
       
     return monk_action_t::ready();
   }
@@ -2274,9 +2274,7 @@ struct charred_passions_sck_t : public monk_spell_t
   }
 };
 
-struct sck_tick_action_t : public monk_melee_attack_t
-{
-  sck_tick_action_t( util::string_view name, monk_t* p, const spell_data_t* data )
+  sck_tick_action_t( util::string_view name, monk_t* p, const spell_data_t* data, const spell_data_t parent )
     : monk_melee_attack_t( name, p, data )
   {
     ww_mastery    = true;
@@ -2284,7 +2282,7 @@ struct sck_tick_action_t : public monk_melee_attack_t
 
     dual = background   = true;
     aoe                 = -1;
-    reduced_aoe_targets = p->spec.spinning_crane_kick->effectN( 1 ).base_value();
+    reduced_aoe_targets = ( p->specialization() == MONK_BREWMASTER ? 5.0 : parent.effectN( 1 ).base_value() ); // Missing from spell data for Brewmaster
     radius              = data->effectN( 1 ).radius();
 
     if ( p->talent.windwalker.widening_whirl.ok() )
@@ -2424,9 +2422,9 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     ability_lag_stddev              = p->world_lag_stddev;
 
     spell_power_mod.direct = 0.0;
-
+    
     tick_action =
-        new sck_tick_action_t( "spinning_crane_kick_tick", p, p->spec.spinning_crane_kick->effectN( 1 ).trigger() );
+        new sck_tick_action_t( "spinning_crane_kick_tick", p, data().effectN( 1 ).trigger(), data() );
 
     // Brewmaster can use SCK again after the GCD
     if ( p->specialization() == MONK_BREWMASTER )
