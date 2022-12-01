@@ -50,7 +50,7 @@ void affliction( player_t* p )
   default_->add_action( "unstable_affliction,if=remains<5" );
   default_->add_action( "agony,if=remains<5" );
   default_->add_action( "siphon_life,if=remains<5" );
-  default_->add_action( "corruption,if=dot.corruption_dot.remains<5" );
+  default_->add_action( "corruption,if=remains<5" );
   default_->add_action( "soul_tap,line_cd=30" );
   default_->add_action( "phantom_singularity" );
   default_->add_action( "vile_taint" );
@@ -59,7 +59,7 @@ void affliction( player_t* p )
   default_->add_action( "summon_darkglare" );
   default_->add_action( "malefic_rapture" );
   default_->add_action( "agony,if=refreshable" );
-  default_->add_action( "corruption,if=dot.corruption_dot.refreshable" );
+  default_->add_action( "corruption,if=refreshable" );
   default_->add_action( "drain_soul,interrupt=1" );
   default_->add_action( "shadow_bolt" );
 }
