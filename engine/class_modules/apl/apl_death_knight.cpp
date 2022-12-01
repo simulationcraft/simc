@@ -332,6 +332,7 @@ void unholy( player_t* p )
   action_priority_list_t* aoe = p->get_action_priority_list( "aoe" );
   action_priority_list_t* cooldowns = p->get_action_priority_list( "cooldowns" );
   action_priority_list_t* generic = p->get_action_priority_list( "generic" );
+  action_priority_list_t* opener = p->get_action_priority_list( "opener" );
   action_priority_list_t* racials = p->get_action_priority_list( "racials" );
   action_priority_list_t* trinkets = p->get_action_priority_list( "trinkets" );
 
@@ -346,6 +347,7 @@ void unholy( player_t* p )
   precombat->add_action( "variable,name=trinket_priority,op=setif,value=2,value_else=1,condition=!trinket.1.has_use_buff&trinket.2.has_use_buff|trinket.2.has_use_buff&((trinket.2.cooldown.duration%trinket.2.proc.any_dps.duration)*(1.5+trinket.2.has_buff.strength)*(variable.trinket_2_sync))>((trinket.1.cooldown.duration%trinket.1.proc.any_dps.duration)*(1.5+trinket.1.has_buff.strength)*(variable.trinket_1_sync))" );
   precombat->add_action( "variable,name=trinket_1_buffs,value=trinket.1.has_buff.strength|trinket.1.has_buff.mastery|trinket.1.has_buff.versatility|trinket.1.has_buff.haste|trinket.1.has_buff.crit" );
   precombat->add_action( "variable,name=trinket_2_buffs,value=trinket.2.has_buff.strength|trinket.2.has_buff.mastery|trinket.2.has_buff.versatility|trinket.2.has_buff.haste|trinket.2.has_buff.crit" );
+  precombat->add_action( "variable,name=opener_done,value=0" );
 
   default_->add_action( "auto_attack" );
   default_->add_action( "mind_freeze,if=target.debuff.casting.react" );
@@ -361,7 +363,8 @@ void unholy( player_t* p )
   default_->add_action( "army_of_the_dead,if=talent.commander_of_the_dead&(cooldown.dark_transformation.remains<4|buff.commander_of_the_dead_window.up)|!talent.commander_of_the_dead&talent.unholy_assault&cooldown.unholy_assault.remains<10|!talent.unholy_assault&!talent.commander_of_the_dead|fight_remains<=30", "Prioritize Army, Outbreak and Maintaining Plaguebringer" );
   default_->add_action( "outbreak,target_if=(dot.virulent_plague.refreshable|talent.superstrain&(dot.frost_fever_superstrain.refreshable|dot.blood_plague_superstrain.refreshable))&(!talent.unholy_blight|talent.unholy_blight&cooldown.unholy_blight.remains>15%((talent.superstrain*3)+(talent.plaguebringer*2)))" );
   default_->add_action( "wound_spender,if=cooldown.apocalypse.remains>variable.apoc_timing&talent.plaguebringer&talent.superstrain&buff.plaguebringer.remains<gcd" );
-  default_->add_action( "call_action_list,name=trinkets", "Call Action Lists" );
+  default_->add_action( "run_action_list,name=opener,if=variable.opener_done=0", "Call Action Lists" );
+  default_->add_action( "call_action_list,name=trinkets" );
   default_->add_action( "call_action_list,name=racials" );
   default_->add_action( "call_action_list,name=cooldowns" );
   default_->add_action( "run_action_list,name=aoe,if=active_enemies>=4" );
@@ -399,6 +402,12 @@ void unholy( player_t* p )
   generic->add_action( "wound_spender,target_if=max:debuff.festering_wound.stack,if=variable.pop_wounds|active_enemies>=2&death_and_decay.ticking" );
   generic->add_action( "festering_strike,target_if=min:debuff.festering_wound.stack,if=!variable.pop_wounds" );
   generic->add_action( "death_coil" );
+
+  opener->add_action( "festering_strike,target_if=min:debuff.festering_wound.stack,if=!variable.pop_wounds", "Opener" );
+  opener->add_action( "summon_gargoyle,use_off_gcd=1,if=buff.commander_of_the_dead_window.up" );
+  opener->add_action( "apocalypse,if=buff.commander_of_the_dead_window.up" );
+  opener->add_action( "dark_transformation,if=debuff.festering_wound.stack>=4" );
+  opener->add_action( "variable,name=opener_done,op=setif,value=1,value_else=0,condition=cooldown.apocalypse.remains" );
 
   racials->add_action( "arcane_torrent,if=runic_power.deficit>20&(cooldown.summon_gargoyle.remains<gcd|!talent.summon_gargoyle.enabled|pet.gargoyle.active&rune<2&debuff.festering_wound.stack<1)", "Racials" );
   racials->add_action( "blood_fury,if=(buff.blood_fury.duration>=pet.gargoyle.remains&pet.gargoyle.active)|(!talent.summon_gargoyle|cooldown.summon_gargoyle.remains>60)&(buff.dark_transformation.up&buff.blood_fury.duration>=buff.dark_transformation.remains|pet.army_ghoul.active&pet.army_ghoul.remains<=buff.blood_fury.duration|pet.apoc_ghoul.active&pet.apoc_ghoul.remains<=buff.blood_fury.duration|active_enemies>=2&death_and_decay.ticking)|fight_remains<=buff.blood_fury.duration" );
