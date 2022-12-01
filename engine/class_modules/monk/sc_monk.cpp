@@ -3234,18 +3234,17 @@ struct touch_of_death_t : public monk_melee_attack_t
 
   void impact( action_state_t* s ) override
   {
-
     // In execute range ToD deals the target health in damage
     double amount = target->current_health();
 
     // Not in execute range
     // or not a health-based fight style
-    if ( target->current_health() == 0 || target->current_health() > p()->resources.max[RESOURCE_HEALTH] )
+    // or a secondary target... these always get hit for the 35% from Improved Touch of Death regardless if you're talented into it or not
+    if ( s->chain_target > 0 || target->current_health() == 0 || target->current_health() > p()->resources.max[RESOURCE_HEALTH] )
     {
         amount = p()->resources.max[RESOURCE_HEALTH];
 
-        if ( target->true_level > p()->true_level )
-            amount *= p()->talent.general.improved_touch_of_death->effectN( 2 ).percent();  // 35% HP
+        amount *= p()->passives.improved_touch_of_death->effectN( 2 ).percent();  // 0.35
 
         amount *= 1 + p()->talent.windwalker.meridian_strikes->effectN( 1 ).percent();
 
@@ -7440,6 +7439,7 @@ void monk_t::init_spells()
   passives.glory_of_the_dawn_damage                     = find_spell( 392959 );
   passives.hidden_masters_forbidden_touch               = find_spell( 213114 );
   passives.hit_combo                                    = find_spell( 196741 );
+  passives.improved_touch_of_death                      = find_spell( 322113 );
   passives.keefers_skyreach_debuff                      = find_spell( 393048 );
   passives.mark_of_the_crane                            = find_spell( 228287 );
   passives.power_strikes_chi                            = find_spell( 121283 );
