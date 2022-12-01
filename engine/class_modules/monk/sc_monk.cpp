@@ -2153,7 +2153,7 @@ struct blackout_kick_t : public monk_melee_attack_t
     
     if ( p()->buff.charred_passions->up() )
     {
-        double dmg_percent = p()->buff.charred_passions->value() * 0.1;
+        double dmg_percent = p()->buff.charred_passions->value();
 
         charred_passions->base_dd_min = s->result_amount * dmg_percent;
         charred_passions->base_dd_max = s->result_amount * dmg_percent;
@@ -2365,7 +2365,7 @@ struct sck_tick_action_t : public monk_melee_attack_t
 
     if ( p()->buff.charred_passions->up() )
     {
-        double dmg_percent = p()->buff.charred_passions->value() * 0.1;
+        double dmg_percent = p()->buff.charred_passions->value();
 
         p()->active_actions.charred_passions->base_dd_min = s->result_amount * dmg_percent;
         p()->active_actions.charred_passions->base_dd_max = s->result_amount * dmg_percent;
@@ -3834,10 +3834,13 @@ struct breath_of_fire_dot_t : public monk_spell_t
 struct breath_of_fire_t : public monk_spell_t
 {
   dragonfire_brew_t* dragonfire;
+  bool no_bof_hit;
+
   breath_of_fire_t( monk_t& p, util::string_view options_str )
     : monk_spell_t( "breath_of_fire", &p, p.talent.brewmaster.breath_of_fire ), 
       dragonfire( new dragonfire_brew_t( p ) )
   {
+    add_option( opt_bool( "no_bof_hit", no_bof_hit ));
     parse_options( options_str );
     gcd_type = gcd_haste_type::NONE;
 
@@ -3871,6 +3874,9 @@ struct breath_of_fire_t : public monk_spell_t
   {
     double am = monk_spell_t::action_multiplier();
 
+    if ( no_bof_hit == true )
+      am *= 0;
+
     if ( p()->talent.brewmaster.dragonfire_brew->ok() )
     {
       // Currently value is saved as 100% and each of the values is a divisable of 33%
@@ -3896,14 +3902,14 @@ struct breath_of_fire_t : public monk_spell_t
 
   void impact( action_state_t* s ) override
   {
-    if ( p()->user_options.no_bof_dot == 1 )
+    if ( no_bof_hit == true )
       s->result_amount = 0;
 
     monk_spell_t::impact( s );
 
     monk_td_t& td = *this->get_td( s->target );
 
-    if ( p()->user_options.no_bof_dot == 0 && td.debuff.keg_smash->up() )
+    if ( no_bof_hit == false && td.debuff.keg_smash->up() )
     {
       p()->active_actions.breath_of_fire->target = s->target;
       p()->active_actions.breath_of_fire->base_multiplier = 1 + p()->buff.blackout_combo->data().effectN( 5 ).percent();
@@ -3911,7 +3917,7 @@ struct breath_of_fire_t : public monk_spell_t
       p()->active_actions.breath_of_fire->execute();
     }
 
-    if ( p()->talent.brewmaster.dragonfire_brew->ok() )
+    if ( no_bof_hit == false && p()->talent.brewmaster.dragonfire_brew->ok() )
     {
       for ( int i = 0; i < (int)p()->talent.brewmaster.dragonfire_brew->effectN( 1 ).base_value(); i++ )
         dragonfire->execute();
@@ -6703,7 +6709,6 @@ monk_t::monk_t( sim_t* sim, util::string_view name, race_e r )
   user_options.faeline_stomp_uptime      = 1.0;
   user_options.chi_burst_healing_targets = 8;
   user_options.motc_override             = 0;
-  user_options.no_bof_dot                = 0;
   user_options.squirm_frequency          = 15;
 }
 
@@ -8671,7 +8676,6 @@ void monk_t::create_options()
   add_option( opt_float( "monk.faeline_stomp_uptime", user_options.faeline_stomp_uptime, 0.0, 1.0 ) );
   add_option( opt_int( "monk.chi_burst_healing_targets", user_options.chi_burst_healing_targets, 0, 30 ) );
   add_option( opt_int( "monk.motc_override", user_options.motc_override, 0, 5 ) );
-  add_option( opt_int( "monk.no_bof_dot", user_options.no_bof_dot, 0, 1 ) );
   add_option( opt_float( "monk.squirm_frequency", user_options.squirm_frequency, 0, 30 ) );
 }
 
@@ -9448,8 +9452,6 @@ std::unique_ptr<expr_t> monk_t::create_expression( util::string_view name_str )
     else if ( splits[1] == "max" )
       return make_fn_expr( name_str, [ this ] { return mark_of_the_crane_max(); } );
   }
-  else if ( splits.size() == 1 && splits[ 0 ] == "no_bof_dot" )
-    return make_fn_expr( name_str, [ this ] { return user_options.no_bof_dot; } );
 
   return base_t::create_expression( name_str );
 }

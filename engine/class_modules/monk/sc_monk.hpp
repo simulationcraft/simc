@@ -934,7 +934,6 @@ public:
     double faeline_stomp_uptime;
     int chi_burst_healing_targets;
     int motc_override;
-    int no_bof_dot;
     double squirm_frequency;
   } user_options;
 
