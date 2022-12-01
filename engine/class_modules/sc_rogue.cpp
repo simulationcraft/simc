@@ -155,7 +155,6 @@ public:
     buff_t* prey_on_the_weak;
     damage_buff_t* shiv;
     buff_t* wound_poison;
-    buff_t* banshees_blight; // Slyvanas Dagger
   } debuffs;
 
   rogue_td_t( player_t* target, rogue_t* source );
@@ -265,9 +264,6 @@ public:
     actions::shadow_blades_attack_t* shadow_blades_attack = nullptr;
     actions::rogue_attack_t* triple_threat_mh = nullptr;
     actions::rogue_attack_t* triple_threat_oh = nullptr;
-
-    // Shadowlands
-    action_t* banshees_blight = nullptr; // Slyvanas Dagger
     
     struct
     {
@@ -890,8 +886,6 @@ public:
   // Legendary effects
   struct legendary_t
   {
-    // Slyvanas Dagger
-    const spell_data_t* banshees_blight = nullptr;
   } legendary;
 
   // Procs
@@ -1875,10 +1869,6 @@ public:
   virtual bool procs_seal_fate() const
   { return ab::energize_type != action_energize::NONE && ab::energize_resource == RESOURCE_COMBO_POINT; }
 
-  // Generic rules for proccing Banshee's Blight, used by rogue_t::trigger_banshees_blight()
-  virtual bool procs_banshees_blight() const
-  { return ab::base_costs[ RESOURCE_COMBO_POINT ] > 0 && ( ab::attack_power_mod.direct > 0.0 || ab::attack_power_mod.tick > 0.0 ); }
-
   // Generic rules for snapshotting the Nightstalker pmultiplier, default to DoTs only.
   // If a DoT with DD component is whitelisted in the direct damage effect #1 on 130493 this can double dip.
   virtual bool snapshots_nightstalker() const
@@ -1942,7 +1932,6 @@ public:
   void trigger_keep_it_rolling();
   void trigger_flagellation( const action_state_t* state );
   void trigger_perforated_veins( const action_state_t* state );
-  void trigger_banshees_blight( const action_state_t* state );
   void trigger_lingering_shadow( const action_state_t* state );
   void trigger_danse_macabre( const action_state_t* state );
 
@@ -2199,7 +2188,6 @@ public:
       trigger_alacrity( ab::execute_state );
       trigger_deepening_shadows( ab::execute_state );
       trigger_flagellation( ab::execute_state );
-      trigger_banshees_blight( ab::execute_state );
     }
 
     // Trigger the 1ms delayed breaking of all stealth buffs
@@ -7503,33 +7491,6 @@ void actions::rogue_action_t<Base>::trigger_perforated_veins( const action_state
 }
 
 template <typename Base>
-void actions::rogue_action_t<Base>::trigger_banshees_blight( const action_state_t* state )
-{
-  if ( !p()->legendary.banshees_blight || !procs_banshees_blight() )
-    return;
-
-  // 2022-08-04 -- Further S4 testing shows BtE 4pc procs do not actually trigger the dagger
-  if ( is_secondary_action() )
-    return;
-
-  const auto rs = cast_state( state );
-  int stack_count = td( rs->target )->debuffs.banshees_blight->check();
-  if ( stack_count > 0 && p()->rng().roll( rs->get_combo_points() * p()->legendary.banshees_blight->effectN( 2 ).percent() ) )
-  {
-    // Only executes on the "primary" target of AoE finishers
-    player_t* proc_target = rs->target;
-    for ( int i = 0; i < stack_count; ++i )
-    {
-      make_event( *ab::sim, i * 150_ms, [this, proc_target]
-      {
-        p()->active.banshees_blight->set_target( proc_target );
-        p()->active.banshees_blight->execute();
-      } );
-    }
-  }
-}
-
-template <typename Base>
 void actions::rogue_action_t<Base>::trigger_lingering_shadow( const action_state_t* state )
 {
   if ( !p()->talent.subtlety.lingering_shadow->ok() || !ab::result_is_hit( state->result ) )
@@ -7621,12 +7582,6 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
     ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
     ->set_period( timespan_t::zero() )
     ->set_cooldown( timespan_t::zero() );
-
-  // Slyvanas Dagger
-  if ( source->legendary.banshees_blight )
-    debuffs.banshees_blight = make_buff( *this, "banshees_blight", source->find_spell( 358090 ) );
-  else
-    debuffs.banshees_blight = make_buff( *this, "banshees_blight" )->set_quiet( true );
 
   // Type-Based Tracking for Accumulators
   bleeds = { dots.deathmark, dots.garrote, dots.garrote_deathmark, dots.internal_bleeding,
@@ -9822,91 +9777,6 @@ void rogue_t::init_items()
 
 // rogue_t::init_special_effects ============================================
 
-// Sylvanas Dagger
-struct banshees_blight_t : public unique_gear::scoped_actor_callback_t<rogue_t>
-{
-  // Debuff trigger spell from the driver 357595
-  // This has a 0.5s ICD and triggers from both yellow and white direct attacks
-  // Triggers the debuff 358090 which applies stacks based on remaining health
-  // If the target heals for any reason, the stack does not regress (as seen on dummies)
-  struct banshees_blight_debuff_t : public unique_gear::proc_spell_t
-  {
-    rogue_t* rogue;
-
-    banshees_blight_debuff_t( const special_effect_t& e )
-      : proc_spell_t( "banshees_blight_debuff", e.player, e.driver(), e.item ),
-      rogue( debug_cast<rogue_t*>( e.player ) )
-    {
-      quiet = dual = true;
-    }
-
-    void impact( action_state_t* s ) override
-    {
-      rogue_td_t* td = rogue->get_target_data( s->target );
-      double health_percentage = s->target->health_percentage();
-      int current_stacks = td->debuffs.banshees_blight->check();
-      int desired_stacks = health_percentage < 25 ? 4 :
-                           health_percentage < 50 ? 3 :
-                           health_percentage < 75 ? 2 : 1;
-
-      if ( current_stacks < desired_stacks )
-      {
-        td->debuffs.banshees_blight->trigger( desired_stacks - current_stacks );
-      }
-    }
-  };
-
-  // Damage trigger spell from 358126
-  // Damage values are stored on both the item driver 357595 and hotfixed spell 359180
-  // This attack triggers multiple times based on target stack count, handled in trigger_banshees_blight
-  // When dual-wielding, the item damage amounts from both weapons are added together
-  struct banshees_blight_damage_t : public unique_gear::proc_spell_t
-  {
-    double scaled_dmg;
-
-    banshees_blight_damage_t( const special_effect_t& e )
-      : proc_spell_t( "banshees_blight", e.player, e.player->find_spell( 358126 ), e.item ),
-      scaled_dmg( e.driver()->effectN( 1 ).average( e.item ) )
-    {
-      base_dd_min = base_dd_max = scaled_dmg;
-    }
-
-    double base_da_min( const action_state_t* ) const override
-    { return scaled_dmg; }
-
-    double base_da_max( const action_state_t* ) const override
-    { return scaled_dmg; }
-  };
-
-  banshees_blight_t() : super( ROGUE )
-  {}
-
-  void initialize( special_effect_t& e ) override
-  {
-    unique_gear::scoped_actor_callback_t<rogue_t>::initialize( e );
-
-    // Create callback action to proc debuff stacks on the target
-    // Only create one instance of this, as dual-wielding does not change the application of the debuff
-    if ( e.player->find_action( "banshees_blight_debuff" ) )
-      return;
-
-    e.execute_action = unique_gear::create_proc_action<banshees_blight_debuff_t>( "banshees_blight_debuff", e );
-    new dbc_proc_callback_t( e.player, e );
-  }
-
-  void manipulate( rogue_t* rogue, const special_effect_t& e ) override
-  {
-    rogue->legendary.banshees_blight = e.driver();
-
-    // Create damage action triggered by actions::rogue_action_t<Base>::trigger_banshees_blight
-    auto banshees_blight_damage = static_cast<banshees_blight_damage_t*>( e.player->find_action( "banshees_blight" ) );
-    if ( !banshees_blight_damage )
-      rogue->active.banshees_blight = unique_gear::create_proc_action<banshees_blight_damage_t>( "banshees_blight", e );
-    else
-      banshees_blight_damage->scaled_dmg += e.driver()->effectN( 1 ).average( e.item );
-  }
-};
-
 void rogue_t::init_special_effects()
 {
   player_t::init_special_effects();
@@ -10285,7 +10155,6 @@ public:
 
   void static_init() const override
   {
-    unique_gear::register_special_effect( 357595, banshees_blight_t() ); // Sylvanas Dagger
   }
 
   void register_hotfixes() const override
