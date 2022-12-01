@@ -67,6 +67,8 @@ void bronzed_grip_wrappings( special_effect_t& );
 void fang_adornments( special_effect_t& );
 
 // Armor
+void assembly_guardians_ring( special_effect_t& );
+void assembly_scholars_loop( special_effect_t& );
 void blue_silken_lining( special_effect_t& );
 void breath_of_neltharion( special_effect_t& );
 void coated_in_slime( special_effect_t& );

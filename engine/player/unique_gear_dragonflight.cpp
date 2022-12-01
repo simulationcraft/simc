@@ -2572,6 +2572,21 @@ struct heavens_nemesis_initializer_t : public item_targetdata_initializer_t
 };
 
 // Armor
+void assembly_guardians_ring( special_effect_t& effect )
+{
+  auto cb = new dbc_proc_callback_t( effect.player, effect );
+  cb->initialize();
+
+  cb->proc_buff->set_default_value( effect.driver()->effectN( 1 ).average( effect.item ) );
+}
+
+void assembly_scholars_loop( special_effect_t& effect )
+{
+  effect.discharge_amount = effect.driver()->effectN( 1 ).average( effect.item );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 void blue_silken_lining( special_effect_t& effect )
 {
   auto buff = create_buff<stat_buff_t>( effect.player, effect.trigger()->effectN( 1 ).trigger() );
@@ -2894,6 +2909,8 @@ void register_special_effects()
 
 
   // Armor
+  register_special_effect( 397038, items::assembly_guardians_ring );
+  register_special_effect( 397040, items::assembly_scholars_loop );
   register_special_effect( 387335, items::blue_silken_lining );    // blue silken lining embellishment
   register_special_effect( 385520, items::breath_of_neltharion );  // breath of neltharion tinker
   register_special_effect( 378423, items::coated_in_slime );
