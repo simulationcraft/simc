@@ -1033,12 +1033,6 @@ void globe_of_jagged_ice( special_effect_t& effect )
       return generic_aoe_proc_t::composite_target_multiplier( t ) *
              player->get_target_data( t )->debuff.skewering_cold->stack();
     }
-
-    void impact( action_state_t* s ) override
-    {
-      generic_aoe_proc_t::impact( s );
-      player->get_target_data( s->target )->debuff.skewering_cold->expire();
-    }
   };
 
   effect.execute_action = create_proc_action<breaking_the_ice_t>( "breaking_the_ice", *impale );
