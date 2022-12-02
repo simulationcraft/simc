@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46879 Live (hotfix 2022-12-02/46879)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46924 Live (hotfix 2022-12-02/46924)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -5319,7 +5319,6 @@ Effects          :
                    Family Flags: 26
 #2 (id=1005705)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Sub Type (219 -> 4), Misc Value (3 -> 0), Misc Value 2 (1629 -> 0)
 Description      : Enemies hit by Gorefiend's Grasp take $s2% increased damage from you for $374776d. Additionally, reduces the cooldown on Gorefiend's Grasp by ${$m1/-1000} sec.
 
 Name             : Foul Bulwark (id=206974) [Spell Family (15), Passive] 
@@ -14114,7 +14113,6 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=1044558)  : Apply Aura (6) | Modify Auto Attack Damage Taken% from Caster (343)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Hotfixed         : NEW EFFECT
 Description      : $@spelldesc206970
 
 Tooltip          : Damage taken from $@auracaster increased by $s1%.
