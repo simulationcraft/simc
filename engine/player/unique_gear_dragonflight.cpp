@@ -2430,6 +2430,16 @@ void blazebinders_hoof(special_effect_t& effect)
   } );
 }
 
+void primal_ritual_shell( special_effect_t& effect )
+{
+  // TODO: This only implements and assumed the player has chosen "Sea Turtle's Blessing" option from this trinket
+  auto buff = create_buff<stat_buff_t>( effect.player, effect.trigger() );
+  buff->manual_stats_added = false;
+  buff->add_stat( STAT_MASTERY_RATING, effect.driver()->effectN( 1 ).average( effect.item ) );
+  effect.custom_buff = buff;
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -2906,6 +2916,7 @@ void register_special_effects()
   register_special_effect( 381705, items::mutated_magmammoth_scale );
   register_special_effect( 382139, items::homeland_raid_horn );
   register_special_effect( 383926, items::blazebinders_hoof );
+  register_special_effect( 390899, items::primal_ritual_shell );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );  // bronzed grip wrappings embellishment
