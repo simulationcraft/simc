@@ -42,7 +42,7 @@ talents=BcQAAAAAAAAAAAAAAAAAAAAAAIJJpEJgkEikkQJhAAAAAAAAAAAAAQLCRIRLFBIlkkUAUSkE
 head=faceguard_of_infused_earth,id=200399,bonus_id=4800/4786/1498/6935,gem_id=192988
 neck=elemental_lariat,id=193001,bonus_id=6652/7936/7979/1540/8767/6935/6935,gem_id=192961/192961/192961,crafted_stats=49/36
 shoulders=calderas_of_infused_earth,id=200401,bonus_id=4800/4786/1498
-back=vibrant_wildercloth_shawl,id=193511,bonus_id=6652/7936/7979/1540/8767,enchant_id=6643,crafted_stats=49/36
+back=vibrant_wildercloth_shawl,id=193511,bonus_id=6652/7936/7979/1540/8767/8932,crafted_stats=49/36
 chest=robe_of_infused_earth,id=200396,bonus_id=4800/4786/1498,enchant=waking_stats_3
 wrists=shikaar_ranger_bracers,id=193693,bonus_id=6808/4786/1643,gem_id=192961
 hands=gauntlets_of_infused_earth,id=200398,bonus_id=4800/4786/1501
@@ -69,7 +69,7 @@ talents=BcQAfcj78nJtvjmejSqe5Zhm9IJJHAkcARSSSQSiECAAAAAAAAAAAAAlIEhkIFBIlkkUAUSk
 head=faceguard_of_infused_earth,id=200399,bonus_id=4800/4786/1498/6935,gem_id=192985
 neck=elemental_lariat,id=193001,bonus_id=6652/7936/7979/1540/8767/6935/6935,gem_id=192948/192948/192948,crafted_stats=49/36
 shoulders=calderas_of_infused_earth,id=200401,bonus_id=4800/4786/1498
-back=vibrant_wildercloth_shawl,id=193511,bonus_id=6652/7936/7979/1540/8767,enchant_id=6643,crafted_stats=49/36
+back=vibrant_wildercloth_shawl,id=193511,bonus_id=6652/7936/7979/1540/8767/8932,crafted_stats=49/36
 chest=robe_of_infused_earth,id=200396,bonus_id=4800/4786/1498,enchant=waking_stats_3
 wrists=shikaar_ranger_bracers,id=193693,bonus_id=6808/4786/1643,gem_id=192948
 hands=gauntlets_of_infused_earth,id=200398,bonus_id=4800/4786/1501
@@ -96,7 +96,7 @@ talents=BcQAfcj78nJtvjmejSqe5Zhm9IJJHAkcARSSSQSiECAAAAAAAAAAAAAlIEhkIFBIlkkUAUSk
 head=faceguard_of_infused_earth,id=200399,bonus_id=4800/4786/1498/6935,gem_id=192985
 neck=elemental_lariat,id=193001,bonus_id=6652/7936/7979/1540/8767/6935/6935,gem_id=192948/192948/192948,crafted_stats=49/36
 shoulders=calderas_of_infused_earth,id=200401,bonus_id=4800/4786/1498
-back=vibrant_wildercloth_shawl,id=193511,bonus_id=6652/7936/7979/1540/8767,enchant_id=6643,crafted_stats=49/36
+back=vibrant_wildercloth_shawl,id=193511,bonus_id=6652/7936/7979/1540/8767/8932,crafted_stats=49/36
 chest=robe_of_infused_earth,id=200396,bonus_id=4800/4786/1498,enchant=waking_stats_3
 wrists=shikaar_ranger_bracers,id=193693,bonus_id=6808/4786/1643,gem_id=192948
 hands=gauntlets_of_infused_earth,id=200398,bonus_id=4800/4786/1501
