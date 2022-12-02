@@ -4,6 +4,7 @@
 // ==========================================================================
 
 #include "simulationcraft.hpp"
+#include "class_modules/apl/apl_demon_hunter.hpp"
 
 namespace
 {  // UNNAMED NAMESPACE
@@ -715,7 +716,6 @@ private:
   void apl_precombat();
   void apl_default();
   void apl_havoc();
-  void apl_vengeance();
   void create_cooldowns();
   void create_gains();
   void create_benefits();
@@ -5492,7 +5492,7 @@ void demon_hunter_t::init_action_list()
       apl_havoc();
       break;
     case DEMON_HUNTER_VENGEANCE:
-      apl_vengeance();
+      demon_hunter_apl::vengeance( this );
       break;
     default:
       apl_default();  // DEFAULT
@@ -6142,51 +6142,6 @@ void demon_hunter_t::apl_havoc()
   add_havoc_use_items( this, apl_cooldown );
   apl_cooldown->add_action( "the_hunt,if=(!talent.momentum|!buff.momentum.up)" );
   apl_cooldown->add_action( "elysian_decree,if=(active_enemies>desired_targets|raid_event.adds.in>30)" );
-}
-
-// demon_hunter_t::apl_vengeance ============================================
-
-void demon_hunter_t::apl_vengeance()
-{
-  action_priority_list_t* apl_default = get_action_priority_list( "default" );
-
-  apl_default->add_action( "auto_attack" );
-  apl_default->add_action( "variable,name=brand_build,value=talent.agonizing_flames&talent.burning_alive&talent.charred_flesh" );
-  apl_default->add_action( this, "Disrupt" );
-  // Only triggers if there is something to steal
-  apl_default->add_action( this, "Consume Magic" );
-  apl_default->add_action( "call_action_list,name=brand,if=variable.brand_build" );
-  apl_default->add_action( "call_action_list,name=defensives" );
-  apl_default->add_action( "call_action_list,name=cooldowns" );
-  apl_default->add_action( "call_action_list,name=normal" );
-
-  action_priority_list_t* apl_defensives = get_action_priority_list( "defensives", "Defensives" );
-  apl_defensives->add_action( this, "Demon Spikes" );
-  apl_defensives->add_action( this, "Metamorphosis", "if=!buff.metamorphosis.up|target.time_to_die<15" );
-  apl_defensives->add_action( this, "Fiery Brand" );
-
-  action_priority_list_t* cooldowns = get_action_priority_list( "cooldowns" );
-  cooldowns->add_action( "potion" );
-  cooldowns->add_action( "use_items", "Default fallback for usable items." );
-  cooldowns->add_action( "the_hunt" );
-  cooldowns->add_action( "elysian_decree" );
-
-  action_priority_list_t* apl_brand = get_action_priority_list( "brand", "Fiery Brand Rotation" );
-  apl_brand->add_action( this, "Fiery Brand" );
-  apl_brand->add_action( this, "Immolation Aura", "if=dot.fiery_brand.ticking" );
-
-  action_priority_list_t* apl_normal = get_action_priority_list( "normal", "Normal Rotation" );
-  apl_normal->add_action( this, "Infernal Strike" );
-  apl_normal->add_talent( this, "Bulk Extraction" );
-  apl_normal->add_talent( this, "Spirit Bomb", "if=((buff.metamorphosis.up&talent.fracture.enabled&soul_fragments>=3)|soul_fragments>=4)" );
-  apl_normal->add_action( this, "Fel Devastation" );
-  apl_normal->add_action( this, "Soul Cleave", "if=((talent.spirit_bomb.enabled&soul_fragments=0)|!talent.spirit_bomb.enabled)&((talent.fracture.enabled&fury>=55)|(!talent.fracture.enabled&fury>=70)|cooldown.fel_devastation.remains>target.time_to_die|(buff.metamorphosis.up&((talent.fracture.enabled&fury>=35)|(!talent.fracture.enabled&fury>=50))))" );
-  apl_normal->add_action( this, "Immolation Aura", "if=((variable.brand_build&cooldown.fiery_brand.remains>10)|!variable.brand_build)&fury<=90" );
-  apl_normal->add_talent( this, "Felblade", "if=fury<=60" );
-  apl_normal->add_talent( this, "Fracture", "if=((talent.spirit_bomb.enabled&soul_fragments<=3)|(!talent.spirit_bomb.enabled&((buff.metamorphosis.up&fury<=55)|(buff.metamorphosis.down&fury<=70))))" );
-  apl_normal->add_action( this, "Sigil of Flame" );
-  apl_normal->add_action( this, "Shear" );
-  apl_normal->add_action( this, "Throw Glaive" );
 }
 
 // demon_hunter_t::create_cooldowns =========================================

@@ -18,6 +18,7 @@ SRC += \
     action$(PATHSEP)variable.cpp \
     buff$(PATHSEP)buff.cpp \
     class_modules$(PATHSEP)apl$(PATHSEP)apl_death_knight.cpp \
+    class_modules$(PATHSEP)apl$(PATHSEP)apl_demon_hunter.cpp \
     class_modules$(PATHSEP)apl$(PATHSEP)apl_evoker.cpp \
     class_modules$(PATHSEP)apl$(PATHSEP)apl_hunter.cpp \
     class_modules$(PATHSEP)apl$(PATHSEP)apl_monk.cpp \
