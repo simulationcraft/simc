@@ -1378,6 +1378,7 @@ class SpellDataGenerator(DataGenerator):
          389710, 392899, 389707, # Blazebinder's Hoof
          394453, # Broodkeeper's Blaze
          397118, 397478, # Neltharax, Enemy of the Sky
+         390899, 390869, 390835, 390655 # Primal Ritual Shell
         ),
 
         # Warrior:
