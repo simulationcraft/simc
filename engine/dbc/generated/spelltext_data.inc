@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.2.46879
-static const std::array<spelltext_data_t, 19178> __spelltext_data { {
+static const std::array<spelltext_data_t, 19179> __spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -16927,9 +16927,9 @@ static const std::array<spelltext_data_t, 19178> __spelltext_data { {
   { 382045, "Every $s1 casts of Riptide also applies Riptide to another friendly target near your Riptide target.", 0, 0 },
   { 382046, "Reduces the cooldown of Primordial Wave by ${$s1/-1000} sec.", 0, 0 },
   { 382058, "Stomp the ground, commanding flames to radiate outward from your position, dealing [medium] Fire damage to enemies struck and granting you a [medium] shield for $d. After a delay, the flames return, dealing the same damage and refreshing the shield.\r\n\r\nDamage and absorption are increased for each enemy struck, up to 5 enemies.", "Absorb up to $w1 incoming damage.", 0 },
-  { 382078, "Swear your oath to the Primalists to become Marked by Frost, increasing your Critical Strike by [medium amount]. \r\n\r\nFighting alongside allies who are Marked by Earth or Fire has a chance to grant you half of their Mark's stats for $s1 seconds.", "Versatility increased by $w1. Taking damage as well as dealing harmful spells and abilities has a chance to grant you an additional $377452w2 Critical Strike or Haste if any nearby allies are Marked by Frost or Fire.", 0 },
-  { 382079, "Swear your oath to the Primalists to become Marked by Frost, increasing your Critical Strike by [medium amount]. \r\n\r\nFighting alongside allies who are Marked by Earth or Fire has a chance to grant you half of their Mark's stats for $s1 seconds.", "Critical Strike increased by $w1. Dealing harmful spells and abilities has a chance to grant you an additional $377452w2 Versatility or Haste if any nearby allies are Marked by Earth or Fire.", 0 },
-  { 382080, "Swear your oath to the Primalists to become Marked by Frost, increasing your Critical Strike by [medium amount]. \r\n\r\nFighting alongside allies who are Marked by Earth or Fire has a chance to grant you half of their Mark's stats for $s1 seconds.", "Haste increased by $w1. Dealing harmful spells and abilities has a chance to grant you an additional $377452w2 Versatility or Critical Strike if any nearby allies are Marked by Frost or Fire.", 0 },
+  { 382078, "Swear your oath to the Primalists to become Marked by Frost, increasing your Critical Strike by [medium amount]. \r\n\r\nFighting alongside allies who are Marked by Earth or Fire has a chance to grant you half of their Mark's stats for $s1 seconds.", "Versatility increased by $w1. Taking damage as well as dealing harmful spells and abilities has a chance to grant you an additional ${$w1/2} Critical Strike or Haste if any nearby allies are Marked by Frost or Fire.", 0 },
+  { 382079, "Swear your oath to the Primalists to become Marked by Frost, increasing your Critical Strike by [medium amount]. \r\n\r\nFighting alongside allies who are Marked by Earth or Fire has a chance to grant you half of their Mark's stats for $s1 seconds.", "Critical Strike increased by $w1. Dealing harmful spells and abilities has a chance to grant you an additional ${$w1/2} Versatility or Haste if any nearby allies are Marked by Earth or Fire.", 0 },
+  { 382080, "Swear your oath to the Primalists to become Marked by Frost, increasing your Critical Strike by [medium amount]. \r\n\r\nFighting alongside allies who are Marked by Earth or Fire has a chance to grant you half of their Mark's stats for $s1 seconds.", "Haste increased by $w1. Dealing harmful spells and abilities has a chance to grant you an additional ${$w1/2} Versatility or Critical Strike if any nearby allies are Marked by Frost or Fire.", 0 },
   { 382081, "Swear your oath to the Primalists to become Marked by Frost, increasing your Critical Strike by [medium amount]. \r\n\r\nFighting alongside allies who are Marked by Earth or Fire has a chance to grant you half of their Mark's stats for $s1 seconds.", "Versatility increased by $w1.", 0 },
   { 382082, "Swear your oath to the Primalists to become Marked by Frost, increasing your Critical Strike by [medium amount]. \r\n\r\nFighting alongside allies who are Marked by Earth or Fire has a chance to grant you half of their Mark's stats for $s1 seconds.", "Critical Strike increased by $w1.", 0 },
   { 382083, "Swear your oath to the Primalists to become Marked by Frost, increasing your Critical Strike by [medium amount]. \r\n\r\nFighting alongside allies who are Marked by Earth or Fire has a chance to grant you half of their Mark's stats for $s1 seconds.", "Haste increased by $w1.", 0 },
@@ -19178,10 +19178,14 @@ static const std::array<spelltext_data_t, 19178> __spelltext_data { {
   { 397870, "Essence Burst increases the damage of affected spells by ${$s1}.1%.", 0, 0 },
   { 398396, "$@spelldesc386578", 0, 0 },
   { 399370, "$@spelldesc370867", "Your next Blue spell deals $s1% more damage.", 0 },
+  { 400006, "Living Flame restores $s1% of its mana cost when striking an enemy.", 0, 0 },
 } };
 
 // spelltext hotfix entries, wow build 10.0.2.46879
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 3> __spelltext_hotfix_data { {
+  {  382078,  1, "Versatility increased by $w1. Taking damage as well as dealing harmful spells and abilities has a chance to grant you an additional $377452w2 Critical Strike or Haste if any nearby allies are Marked by Frost or Fire.", "Versatility increased by $w1. Taking damage as well as dealing harmful spells and abilities has a chance to grant you an additional ${$w1/2} Critical Strike or Haste if any nearby allies are Marked by Frost or Fire." },
+  {  382079,  1, "Critical Strike increased by $w1. Dealing harmful spells and abilities has a chance to grant you an additional $377452w2 Versatility or Haste if any nearby allies are Marked by Earth or Fire.", "Critical Strike increased by $w1. Dealing harmful spells and abilities has a chance to grant you an additional ${$w1/2} Versatility or Haste if any nearby allies are Marked by Earth or Fire." },
+  {  382080,  1, "Haste increased by $w1. Dealing harmful spells and abilities has a chance to grant you an additional $377452w2 Versatility or Critical Strike if any nearby allies are Marked by Frost or Fire.", "Haste increased by $w1. Dealing harmful spells and abilities has a chance to grant you an additional ${$w1/2} Versatility or Critical Strike if any nearby allies are Marked by Frost or Fire." },
 } };
 
 // Spell description variables, wow build 10.0.2.46879

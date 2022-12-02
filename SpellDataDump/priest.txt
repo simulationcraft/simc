@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46879 Live (hotfix 2022-11-30/46879)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46879 Live (hotfix 2022-12-02/46879)
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -15359,11 +15359,14 @@ Description      : $@spelldesc390980
 Tooltip          : The healing of your next Holy Word spell is increased by $w1%.
 
 Name             : Lightweaver (id=390992) [Spell Family (6), Passive, Hidden] 
+Hotfixed         : Proc Flags (0 -> 16384)
 Talent Entry     : Holy [tree=spec, row=10, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Priest
 School           : Holy
 Spell Type       : None
 Proc Chance      : 101%
+Proc Flags       : ........ ......x. ........ ........ 
+                 : Magic Heal
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

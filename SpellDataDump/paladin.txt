@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46879 Live (hotfix 2022-11-30/46879)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46879 Live (hotfix 2022-12-02/46879)
 Name             : Frostbolt of Ages (id=11) 
 Class            : Paladin
 School           : Frost
@@ -16083,8 +16083,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Do Not Display Range (126), Aura Points On Client (268)
 Effects          :
-#1 (id=1031665)  : Apply Aura (6) | Modify Attribute% (80)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
+#1 (id=1031665)  : Apply Aura (6) | Modify Total Stat% (137)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value 2: 0x1 | Target: Self (1)
+Hotfixed         : Sub Type (80 -> 137), Misc Value 2 (0 -> 1)
 #2 (id=1031666)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 393020
 Description      : $@spelldesc393020
