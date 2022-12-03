@@ -4717,7 +4717,9 @@ struct weapons_of_order_t : public monk_spell_t
         chi_surge->execute();
     }
 
+    if ( p()->talent.brewmaster.call_to_arms->ok() )
     p()->pets.call_to_arms_niuzao.spawn( p()->passives.call_to_arms_invoke_niuzao->duration(), 1 );
+
     p()->buff.invoke_niuzao->trigger( p()->passives.call_to_arms_invoke_niuzao->duration() );
   }
 };
