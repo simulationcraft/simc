@@ -962,6 +962,7 @@ public:
 
     // Resto
     const spell_data_t* restoration;
+    const spell_data_t* cenarius_guidance;
   } spec;
 
   struct uptimes_t
@@ -9181,6 +9182,7 @@ void druid_t::init_spells()
 
   // Restoration Abilities
   spec.restoration              = find_specialization_spell( "Restoration Druid" );
+  spec.cenarius_guidance        = check( talent.cenarius_guidance, talent.convoke_the_spirits.ok() ? 393374 : 393381 );
 
   // Masteries ==============================================================
   mastery.harmony             = find_mastery_spell( DRUID_RESTORATION );
@@ -12078,6 +12080,7 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( sets->set( DRUID_GUARDIAN, T29, B4 ) );
 
   // Restoration
+  action.apply_affecting_aura( spec.cenarius_guidance );
   action.apply_affecting_aura( talent.germination );
   action.apply_affecting_aura( talent.improved_ironbark );
   action.apply_affecting_aura( talent.inner_peace );
