@@ -1427,12 +1427,6 @@ struct holy_power_consumer_t : public Base
       && !ab::background 
       && p->cooldowns.righteous_protector_icd->up())
     {
-      // Righteous Protector is not triggered by Bastion of Light-spenders. It's still triggered if it was a DP or SL spender
-      if (!(p->bugs 
-         && p->buffs.bastion_of_light->up() 
-         && !isFreeSLDPSpender
-           ))
-        {
         timespan_t reduction = timespan_t::from_seconds(
             // Why is this in deciseconds?
             -1.0 * p->talents.righteous_protector->effectN( 1 ).base_value() / 10 );
@@ -1441,16 +1435,11 @@ struct holy_power_consumer_t : public Base
             "Righteous protector reduced the cooldown of Avenging Wrath and Guardian of Ancient Kings by {} sec",
             num_hopo_spent );
 
-          p->cooldowns.avenging_wrath->adjust( reduction );
-        // 2022-11-08 Sentinel's cooldown is only reduced if it wasn't a free holy power spender
-        if ( !( p->bugs && isFreeSLDPSpender ) )
-        {
-          p->cooldowns.sentinel->adjust( reduction );
-        }
+        p->cooldowns.avenging_wrath->adjust( reduction );
+        p->cooldowns.sentinel->adjust( reduction );
         p->cooldowns.guardian_of_ancient_kings->adjust( reduction );
 
         p->cooldowns.righteous_protector_icd->start();
-      }
     }
 
     // 2022-10-25 Resolute Defender, spend 3 HP to reduce AD/DS cooldown
