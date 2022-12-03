@@ -2434,9 +2434,9 @@ void blazebinders_hoof(special_effect_t& effect)
 // Buff: 390936
 void primal_ritual_shell( special_effect_t& effect )
 {
+  effect.stat_amount = effect.driver()->effectN( 5 ).average( effect.item );
   effect.spell_id = 390899;
   effect.stat = STAT_MASTERY_RATING;
-  effect.stat_amount = effect.player->find_spell( 390764 )->effectN( 5 ).average( effect.item );
 
   new dbc_proc_callback_t( effect.player, effect );
 }
