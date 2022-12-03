@@ -2487,6 +2487,50 @@ void integrated_primal_fire( special_effect_t& effect )
   effect.execute_action = create_proc_action<cataclysmic_punch_t>( "cataclysmic_punch", effect );
 }
 
+// Bushwhacker's Compass
+// 383817 Driver
+// 383818 Buffs
+// North = Crit, South = Haste, East = Vers, West = Mastery
+void bushwhackers_compass(special_effect_t& effect)
+{
+  struct cb_t : public dbc_proc_callback_t
+  {
+    std::vector<buff_t*> buffs;
+    cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e )
+    {
+      auto the_path_to_survival_mastery = create_buff<stat_buff_t>(effect.player, "the_path_to_survival_mastery", effect.trigger() )
+        -> add_stat( STAT_MASTERY_RATING, effect.trigger()->effectN( 5 ).average( effect.item ));
+
+      auto the_path_to_survival_haste = create_buff<stat_buff_t>(effect.player, "the_path_to_survival_haste", effect.trigger() )
+        -> add_stat( STAT_HASTE_RATING, effect.trigger()->effectN( 5 ).average( effect.item ));
+
+      auto the_path_to_survival_crit = create_buff<stat_buff_t>(effect.player, "the_path_to_survival_crit", effect.trigger() )
+        -> add_stat( STAT_CRIT_RATING, effect.trigger()->effectN( 5 ).average( effect.item ));
+
+      auto the_path_to_survival_vers = create_buff<stat_buff_t>(effect.player, "the_path_to_survival_vers", effect.trigger() )
+        -> add_stat( STAT_VERSATILITY_RATING, effect.trigger()->effectN( 5 ).average( effect.item ));
+
+      buffs =
+      {
+        the_path_to_survival_mastery,
+        the_path_to_survival_haste,
+        the_path_to_survival_crit,
+        the_path_to_survival_vers
+      };
+    }
+
+    void execute( action_t* a, action_state_t* s ) override
+    {
+      dbc_proc_callback_t::execute( a, s );
+
+      auto buff = effect.player -> sim -> rng().range( buffs.size() );
+      buffs[ buff ] -> trigger();
+    }
+  };
+  effect.buff_disabled = true;
+  new cb_t( effect );
+}
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -2966,6 +3010,7 @@ void register_special_effects()
   register_special_effect( 390764, items::primal_ritual_shell );
   register_special_effect( 383611, items::spinerippers_fang );
   register_special_effect( 392359, items::integrated_primal_fire );
+  register_special_effect( 383817, items::bushwhackers_compass );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );  // bronzed grip wrappings embellishment
