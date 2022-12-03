@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46924 Live (hotfix 2022-12-02/46924)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46924 Live (hotfix 2022-12-03/46924, no-networking)
 Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Orc (0x2)
@@ -1018,7 +1018,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1013 | Target: Self (1)
 #5 (id=893450)   : Apply Aura (6) | Cast while Moving (Whitelist) (330)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Disintegrate (356995), Sleep Walk (360806), Living Flame (361469), Echo (364343), Firestorm (368847), Temporal Anomaly (373861)
+                   Affected Spells: Disintegrate (356995), Sleep Walk (360806), Living Flame (361469), Echo (364343), Firestorm (368847), Emerald Communion (370960), Temporal Anomaly (373861)
                    Family Flags: 2
 #6 (id=893451)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -3154,6 +3154,7 @@ Effects          :
 Description      : $@spelldesc369939
 
 Name             : Emerald Communion (desc=Green) (id=370960) [Spell Family (224)] 
+Hotfixed         : Affecting Spells
 Talent Entry     : Preservation [tree=spec, row=5, col=1, max_rank=1, req_points=8]
 Class            : Evoker
 School           : Nature
@@ -3162,8 +3163,8 @@ GCD              : 1.5 seconds
 Duration         : 5 seconds
 Cooldown         : 180 seconds
 Labels           : 1466: Lush Growth (375561 effect#1), Lush Growth (375561 effect#2)
-Affecting spells : Dreamwalker (377082 effect#1)
-Family Flags     : 47
+Affecting spells : Hover (358267 effect#5), Dreamwalker (377082 effect#1)
+Family Flags     : 2, 47
 Attributes       : ........ ........ x.x..... x.......   .....xx. ........ ..x..... .....x.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ...x.... .x...x.. .x...... ........ 
