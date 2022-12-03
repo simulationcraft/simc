@@ -847,7 +847,6 @@ public:
     // surv
     damage_affected_by spirit_bond;
     bool coordinated_assault = false;
-    bool spearhead = false;
     bool t29_sv_4pc_cost = false;
     damage_affected_by t29_sv_4pc_dmg;
   } affected_by;
@@ -877,8 +876,7 @@ public:
 
     affected_by.spirit_bond           = parse_damage_affecting_aura( this, p -> mastery.spirit_bond );
     affected_by.coordinated_assault   = check_affected_by( this, p -> find_spell( 361738 ) -> effectN( 2 ) );
-    // 1-11-22 TODO remove data check once live has new Deadly Duo
-    affected_by.spearhead             = check_affected_by( this, p -> talents.spearhead -> effectN( 4 ) ) && !p -> buffs.deadly_duo -> data().ok();
+
     affected_by.t29_sv_4pc_cost       = check_affected_by( this, p -> tier_set.t29_sv_4pc_buff -> effectN( 1 ) );
     affected_by.t29_sv_4pc_dmg        = parse_damage_affecting_aura( this, p -> tier_set.t29_sv_4pc_buff );
 
@@ -1054,9 +1052,6 @@ public:
   double cost() const override
   {
     double c = ab::cost();
-
-    if ( affected_by.spearhead && p() -> buffs.spearhead -> check() )
-      c += p() -> talents.deadly_duo -> effectN( 1 ).base_value();
 
     if ( affected_by.t29_sv_4pc_cost && p() -> buffs.bestial_barrage -> check() )
       c *= 1 + p() -> tier_set.t29_sv_4pc_buff -> effectN( 1 ).percent();
@@ -2134,7 +2129,8 @@ struct kill_command_sv_t: public kill_command_base_t
   {
     double am = kill_command_base_t::action_multiplier();
 
-    am *= 1 + o() -> buffs.deadly_duo -> stack_value();
+    if ( !p() -> bugs )
+      am *= 1 + o() -> buffs.deadly_duo -> stack_value();
 
     return am;
   }
@@ -3026,16 +3022,6 @@ struct wind_arrow_t final : public hunter_ranged_attack_t
     }
 
     return m;
-  }
-
-  double composite_da_multiplier( const action_state_t* s ) const override
-  {
-    double am = hunter_ranged_attack_t::composite_da_multiplier( s );
-
-    // 14-10-22 TODO Affected by mastery twice.
-    am *= 1 + p() -> cache.mastery() * p() -> mastery.sniper_training -> effectN( affected_by.sniper_training.direct ).mastery_value();
-
-    return am;
   }
 
   void impact( action_state_t* s ) override
@@ -4848,8 +4834,10 @@ struct fury_of_the_eagle_t: public hunter_melee_attack_t
       reduced_aoe_targets = aoe_cap;
       health_threshold = p -> talents.fury_of_the_eagle -> effectN( 4 ).base_value() + p -> talents.ruthless_marauder -> effectN( 1 ).base_value();
       crit_chance_bonus = p -> talents.fury_of_the_eagle -> effectN( 3 ).percent();
+
       // TODO 25-10-22 Ruthless Marauder says nothing about increasing damage but is adding the cdr value data to the tick dmg as well.
-      base_dd_adder += p -> talents.ruthless_marauder -> effectN( 3 ).base_value();
+      if ( p -> bugs )
+        base_dd_adder += p -> talents.ruthless_marauder -> effectN( 3 ).base_value();
 
       if ( p -> talents.ruthless_marauder )
         ruthless_marauder_adjust = p -> talents.ruthless_marauder -> effectN( 3 ).time_value();
@@ -4860,7 +4848,13 @@ struct fury_of_the_eagle_t: public hunter_melee_attack_t
       double c = hunter_melee_attack_t::composite_target_crit_chance( target );
 
       if ( target -> health_percentage() < health_threshold )
+      {
         c += crit_chance_bonus;
+
+        // TODO 2-12-22 Ruthless Marauder also adds to crit rate.
+        if ( p() -> bugs )
+          c += p() -> talents.ruthless_marauder -> effectN( 1 ).percent();
+      }
 
       return c;
     }
