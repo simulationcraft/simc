@@ -1,4 +1,4 @@
-// Spell text, wow build 10.0.2.46879
+// Spell text, wow build 10.0.2.46924
 static const std::array<spelltext_data_t, 19179> __spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
@@ -19181,14 +19181,11 @@ static const std::array<spelltext_data_t, 19179> __spelltext_data { {
   { 400006, "Living Flame restores $s1% of its mana cost when striking an enemy.", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.0.2.46879
-static constexpr std::array<hotfix::client_hotfix_entry_t, 3> __spelltext_hotfix_data { {
-  {  382078,  1, "Versatility increased by $w1. Taking damage as well as dealing harmful spells and abilities has a chance to grant you an additional $377452w2 Critical Strike or Haste if any nearby allies are Marked by Frost or Fire.", "Versatility increased by $w1. Taking damage as well as dealing harmful spells and abilities has a chance to grant you an additional ${$w1/2} Critical Strike or Haste if any nearby allies are Marked by Frost or Fire." },
-  {  382079,  1, "Critical Strike increased by $w1. Dealing harmful spells and abilities has a chance to grant you an additional $377452w2 Versatility or Haste if any nearby allies are Marked by Earth or Fire.", "Critical Strike increased by $w1. Dealing harmful spells and abilities has a chance to grant you an additional ${$w1/2} Versatility or Haste if any nearby allies are Marked by Earth or Fire." },
-  {  382080,  1, "Haste increased by $w1. Dealing harmful spells and abilities has a chance to grant you an additional $377452w2 Versatility or Critical Strike if any nearby allies are Marked by Frost or Fire.", "Haste increased by $w1. Dealing harmful spells and abilities has a chance to grant you an additional ${$w1/2} Versatility or Critical Strike if any nearby allies are Marked by Frost or Fire." },
+// spelltext hotfix entries, wow build 10.0.2.46924
+static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 10.0.2.46879
+// Spell description variables, wow build 10.0.2.46924
 static const std::array<spelldesc_vars_data_t, 365> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$pvp=$?a134735[${1.1}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<pvp>*$<weal>}\r\n" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -19557,7 +19554,7 @@ static const std::array<spelldesc_vars_data_t, 365> __spelldesc_vars_data { {
   {  394354, "$damage=${($AP*1.0)*(1+$@versadmg)}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.0.2.46879
+// spelldesc_vars hotfix entries, wow build 10.0.2.46924
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 
