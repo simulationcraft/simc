@@ -2478,33 +2478,31 @@ void integrated_primal_fire( special_effect_t& effect )
 // North = Crit, South = Haste, East = Vers, West = Mastery
 void bushwhackers_compass(special_effect_t& effect)
 {
-  std::vector<buff_t*> buffs;
-
-  auto the_path_to_survival_mastery = make_buff<stat_buff_t>(effect.player, "the_path_to_survival_mastery", effect.trigger() )
-    -> add_stat( STAT_MASTERY_RATING, effect.trigger()->effectN( 5 ).average( effect.item ));
-
-  auto the_path_to_survival_haste = make_buff<stat_buff_t>(effect.player, "the_path_to_survival_haste", effect.trigger() )
-    -> add_stat( STAT_HASTE_RATING, effect.trigger()->effectN( 5 ).average( effect.item ));
-
-  auto the_path_to_survival_crit = make_buff<stat_buff_t>(effect.player, "the_path_to_survival_crit", effect.trigger() )
-    -> add_stat( STAT_CRIT_RATING, effect.trigger()->effectN( 5 ).average( effect.item ));
-
-  auto the_path_to_survival_vers = make_buff<stat_buff_t>(effect.player, "the_path_to_survival_vers", effect.trigger() )
-    -> add_stat( STAT_VERSATILITY_RATING, effect.trigger()->effectN( 5 ).average( effect.item ));
-
-  buffs =
-  {
-    the_path_to_survival_mastery,
-    the_path_to_survival_haste,
-    the_path_to_survival_crit,
-    the_path_to_survival_vers
-  };
-
   struct cb_t : public dbc_proc_callback_t
   {
     std::vector<buff_t*> buffs;
-    cb_t( const special_effect_t& e, std::vector<buff_t*> b ) : dbc_proc_callback_t( e.player, e ), buffs( b )
-    {}
+    cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e )
+    {
+      auto the_path_to_survival_mastery = create_buff<stat_buff_t>(effect.player, "the_path_to_survival_mastery", effect.trigger() )
+        -> add_stat( STAT_MASTERY_RATING, effect.trigger()->effectN( 5 ).average( effect.item ));
+
+      auto the_path_to_survival_haste = create_buff<stat_buff_t>(effect.player, "the_path_to_survival_haste", effect.trigger() )
+        -> add_stat( STAT_HASTE_RATING, effect.trigger()->effectN( 5 ).average( effect.item ));
+
+      auto the_path_to_survival_crit = create_buff<stat_buff_t>(effect.player, "the_path_to_survival_crit", effect.trigger() )
+        -> add_stat( STAT_CRIT_RATING, effect.trigger()->effectN( 5 ).average( effect.item ));
+
+      auto the_path_to_survival_vers = create_buff<stat_buff_t>(effect.player, "the_path_to_survival_vers", effect.trigger() )
+        -> add_stat( STAT_VERSATILITY_RATING, effect.trigger()->effectN( 5 ).average( effect.item ));
+
+      buffs =
+      {
+        the_path_to_survival_mastery,
+        the_path_to_survival_haste,
+        the_path_to_survival_crit,
+        the_path_to_survival_vers
+      };
+    }
 
     void execute( action_t* a, action_state_t* s ) override
     {
@@ -2514,8 +2512,8 @@ void bushwhackers_compass(special_effect_t& effect)
       buffs[ buff ] -> trigger();
     }
   };
-
-  new cb_t( effect, buffs );
+  effect.buff_disabled = true;
+  new cb_t( effect );
 }
 
 // Weapons
