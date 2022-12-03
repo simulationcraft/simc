@@ -2430,6 +2430,48 @@ void blazebinders_hoof(special_effect_t& effect)
   } );
 }
 
+// Spineripper's Fang
+// 383611 Driver
+// 383612 Damage spell (damage value is in the driver effect)
+// Double damage bonus from behind, not in spell data anywhere
+void spinerippers_fang( special_effect_t& effect )
+{
+  auto action = create_proc_action<generic_proc_t>( "Cataclysmic Punch", effect, "rip_spine",
+                                                    effect.driver()->effectN( 1 ).trigger() );
+  
+  double damage = effect.driver()->effectN( 1 ).average( effect.item );
+  if ( effect.player->position() == POSITION_BACK ||
+       effect.player->position() == POSITION_RANGED_BACK )
+  {
+    damage *= 2.0;
+  }
+  action->base_dd_min = action->base_dd_max = damage;
+
+  effect.execute_action = action;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Integrated Primal Fire
+// 392359 Driver and fire damage impact
+// 392376 Physical damage impact spell, damage in driver effect 2
+void integrated_primal_fire( special_effect_t& effect )
+{
+  struct cataclysmic_punch_t : public generic_proc_t
+  {
+    cataclysmic_punch_t( const special_effect_t& e ) : generic_proc_t( e, "cataclysmic_punch", e.driver() )
+    {
+      // Physical Damage
+      impact_action = create_proc_action<generic_proc_t>(
+        "cataclysmic_punch_knock", e, "cataclysmic_punch_knock", e.driver()->effectN( 4 ).trigger() );
+      impact_action->base_dd_min = impact_action->base_dd_max = e.driver()->effectN( 2 ).average( e.item );
+      add_child( impact_action );
+    }
+  };
+
+  effect.execute_action = create_proc_action<cataclysmic_punch_t>( "cataclysmic_punch", effect );
+}
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -2906,6 +2948,8 @@ void register_special_effects()
   register_special_effect( 381705, items::mutated_magmammoth_scale );
   register_special_effect( 382139, items::homeland_raid_horn );
   register_special_effect( 383926, items::blazebinders_hoof );
+  register_special_effect( 383611, items::spinerippers_fang );
+  register_special_effect( 392359, items::integrated_primal_fire );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );  // bronzed grip wrappings embellishment
