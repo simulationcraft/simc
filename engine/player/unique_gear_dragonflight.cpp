@@ -2472,6 +2472,72 @@ void integrated_primal_fire( special_effect_t& effect )
   effect.execute_action = create_proc_action<cataclysmic_punch_t>( "cataclysmic_punch", effect );
 }
 
+// Bushwhacker's Compass
+// 383817 Driver
+// 383818 Buffs
+// North = Crit, South = Haste, East = Vers, West = Mastery
+void bushwhackers_compass(special_effect_t& effect)
+{
+  struct the_path_to_survival_t : public generic_proc_t
+  {
+    std::vector<buff_t*> buffs;
+
+    the_path_to_survival_t(const special_effect_t& e) : generic_proc_t(e, "the_path_to_survival", e.driver())
+    {
+      auto the_path_to_survival_mastery = buff_t::find( e.player, "path_to_survival_mastery" );
+      if ( !the_path_to_survival_mastery )
+      {
+          the_path_to_survival_mastery = make_buff<stat_buff_t>(e.player, "the_path_to_survival_mastery", e.trigger() )
+              -> add_stat( STAT_MASTERY_RATING, e.trigger()->effectN( 5 ).average( e.item ))
+              -> set_default_value_from_effect( 3 );
+      }
+
+      auto the_path_to_survival_haste = buff_t::find( e.player, "the_path_to_survival_haste" );
+      if ( !the_path_to_survival_haste )
+      {
+          the_path_to_survival_haste = make_buff<stat_buff_t>(e.player, "the_path_to_survival_haste", e.trigger() )
+              -> add_stat( STAT_HASTE_RATING, e.trigger()->effectN( 5 ).average( e.item ))
+              -> set_default_value_from_effect( 2 );
+      }
+
+      auto the_path_to_survival_crit = buff_t::find( e.player, "the_path_to_survival_crit" );
+      if ( !the_path_to_survival_crit )
+      {
+          the_path_to_survival_crit = make_buff<stat_buff_t>(e.player, "the_path_to_survival_crit", e.trigger() )
+              -> add_stat( STAT_CRIT_RATING, e.trigger()->effectN( 5 ).average( e.item ))
+              -> set_default_value_from_effect( 1 );
+      }
+
+      auto the_path_to_survival_vers = buff_t::find( e.player, "the_path_to_survival_vers" );
+      if ( !the_path_to_survival_vers )
+      {
+          the_path_to_survival_vers = make_buff<stat_buff_t>(e.player, "the_path_to_survival_vers", e.trigger() )
+              -> add_stat( STAT_VERSATILITY_RATING, e.trigger()->effectN( 5 ).average( e.item ))
+              -> set_default_value_from_effect( 4 );
+      }
+
+      buffs =
+      {
+        the_path_to_survival_mastery,
+        the_path_to_survival_haste,
+        the_path_to_survival_crit,
+        the_path_to_survival_vers
+      };
+    }
+
+    void execute() override
+    {
+      generic_proc_t::execute();
+      auto buff = player->sim->rng().range( buffs.size() );
+      buffs[ buff ] -> trigger();
+    }
+  };
+
+  effect.execute_action = create_proc_action<the_path_to_survival_t>( "the_path_to_survival", effect );
+  effect.type = SPECIAL_EFFECT_NONE;
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -2950,6 +3016,7 @@ void register_special_effects()
   register_special_effect( 383926, items::blazebinders_hoof );
   register_special_effect( 383611, items::spinerippers_fang );
   register_special_effect( 392359, items::integrated_primal_fire );
+  register_special_effect( 383817, items::bushwhackers_compass );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );  // bronzed grip wrappings embellishment
