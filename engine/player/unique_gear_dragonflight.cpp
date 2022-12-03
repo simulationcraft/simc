@@ -2433,10 +2433,13 @@ void blazebinders_hoof(special_effect_t& effect)
 // Spinerippers Fang
 // 383611 Driver 
 // 383612 Damage
+// TODO: Adjust for when not behind target
 void spinerippers_fang(special_effect_t& effect)
 {
   auto damage = create_proc_action<generic_proc_t>( "RIP_SPINE", effect, "RIP_SPINE", 383612 );
-  damage->base_dd_min = damage -> base_dd_max = effect.player->find_spell( 383611 )->effectN( 1 ).average( effect.item );
+  // Damage right now assumes youre always behind the target. 
+  damage->base_dd_min = damage -> base_dd_max = effect.player->find_spell( 383611 )->effectN( 1 ).average( effect.item ) * 2;
+
   effect.execute_action = damage;
   new dbc_proc_callback_t(effect.player, effect);
 }
