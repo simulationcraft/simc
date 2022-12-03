@@ -405,7 +405,7 @@ public:
       player_talent_t charred_flesh;              // NYI
 
       player_talent_t soulcrush;                  // NYI
-      player_talent_t soul_carver;                // NYI
+      player_talent_t soul_carver;
       player_talent_t last_resort;                // NYI
       player_talent_t fodder_to_the_flame;        // NYI
       player_talent_t elysian_decree;
@@ -4723,6 +4723,43 @@ struct vengeful_retreat_t : public demon_hunter_spell_t
   }
 };
 
+// Soul Carver =========================================================
+struct soul_carver_t : public demon_hunter_attack_t
+{
+  struct soul_carver_oh_t : public demon_hunter_attack_t
+  {
+    soul_carver_oh_t( util::string_view name, demon_hunter_t* p )
+      : demon_hunter_attack_t( name, p, p->talent.vengeance.soul_carver->effectN( 3 ).trigger() )
+    {
+      background = dual = true;
+      may_miss = may_parry = may_dodge = false;  // TOCHECK
+    }
+  };
+
+  soul_carver_t( demon_hunter_t* p, util::string_view options_str )
+    : demon_hunter_attack_t( "soul_carver", p, p->talent.vengeance.soul_carver, options_str )
+  {
+    impact_action = p->get_background_action<soul_carver_oh_t>( "soul_carver_oh" );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    demon_hunter_attack_t::impact( s );
+
+    if ( !result_is_hit( s->result ) )
+      return;
+
+    p()->spawn_soul_fragment( soul_fragment::LESSER, data().effectN( 3 ).base_value() );
+  }
+
+  void tick( dot_t* d ) override
+  {
+    demon_hunter_attack_t::tick( d );
+
+    p()->spawn_soul_fragment( soul_fragment::LESSER, data().effectN( 4 ).base_value() );
+  }
+};
+
 }  // end namespace attacks
 
 }  // end namespace actions
@@ -5176,6 +5213,7 @@ action_t* demon_hunter_t::create_action( util::string_view name, util::string_vi
   if ( name == "soul_cleave" )        return new soul_cleave_t( this, options_str );
   if ( name == "throw_glaive" )       return new throw_glaive_t( this, options_str );
   if ( name == "vengeful_retreat" )   return new vengeful_retreat_t( this, options_str );
+  if ( name == "soul_carver" )        return new soul_carver_t( this, options_str );
 
   return base_t::create_action( name, options_str );
 }
@@ -5823,6 +5861,10 @@ void demon_hunter_t::init_spells()
   talent.havoc.shattered_destiny = find_talent_spell( talent_tree::SPECIALIZATION, "Shattered Destiny" );
   talent.havoc.any_means_necessary = find_talent_spell( talent_tree::SPECIALIZATION, "Any Means Necessary" );
 
+  // Vengeance Talents
+
+  talent.vengeance.soul_carver = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Carver" );
+
   // Class Background Spells
   spell.felblade_damage = talent.demon_hunter.felblade->ok() ? find_spell( 213243 ) : spell_data_t::not_found();
   spell.felblade_reset_havoc = talent.demon_hunter.felblade->ok() ? find_spell( 236167 ) : spell_data_t::not_found();
@@ -6170,10 +6212,12 @@ void demon_hunter_t::apl_vengeance()
   cooldowns->add_action( "use_items", "Default fallback for usable items." );
   cooldowns->add_action( "the_hunt" );
   cooldowns->add_action( "elysian_decree" );
+  cooldowns->add_action( "soul_carver" );
 
   action_priority_list_t* apl_brand = get_action_priority_list( "brand", "Fiery Brand Rotation" );
   apl_brand->add_action( this, "Fiery Brand" );
   apl_brand->add_action( this, "Immolation Aura", "if=dot.fiery_brand.ticking" );
+  apl_brand->add_action( "soul_carver,if=dot.fiery_brand.ticking" );
 
   action_priority_list_t* apl_normal = get_action_priority_list( "normal", "Normal Rotation" );
   apl_normal->add_action( this, "Infernal Strike" );
