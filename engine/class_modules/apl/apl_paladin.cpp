@@ -136,7 +136,7 @@ void protection( player_t* p )
   precombat->add_action( "variable,name=trinket_2_buffs,value=trinket.2.has_buff.strength|trinket.2.has_buff.mastery|trinket.2.has_buff.versatility|trinket.2.has_buff.haste|trinket.2.has_buff.crit" );
 
   default_->add_action( "auto_attack" );
-  default_->add_action( "variable,name=might_or_sentinel,value=(!talent.avenging_wrath.enabled&(!talent.avenging_wrath_might.enabled|talent.sentinel_enabled))" );
+  default_->add_action( "variable,name=might_or_sentinel,value=(!talent.avenging_wrath.enabled&(!talent.avenging_wrath_might.enabled|talent.sentinel.enabled))" );
   default_->add_action( "call_action_list,name=cooldowns" );
   default_->add_action( "call_action_list,name=trinkets" );
   default_->add_action( "call_action_list,name=standard" );
