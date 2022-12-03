@@ -2478,64 +2478,44 @@ void integrated_primal_fire( special_effect_t& effect )
 // North = Crit, South = Haste, East = Vers, West = Mastery
 void bushwhackers_compass(special_effect_t& effect)
 {
-  struct the_path_to_survival_t : public generic_proc_t
+  std::vector<buff_t*> buffs;
+
+  auto the_path_to_survival_mastery = make_buff<stat_buff_t>(effect.player, "the_path_to_survival_mastery", effect.trigger() )
+    -> add_stat( STAT_MASTERY_RATING, effect.trigger()->effectN( 5 ).average( effect.item ));
+
+  auto the_path_to_survival_haste = make_buff<stat_buff_t>(effect.player, "the_path_to_survival_haste", effect.trigger() )
+    -> add_stat( STAT_HASTE_RATING, effect.trigger()->effectN( 5 ).average( effect.item ));
+
+  auto the_path_to_survival_crit = make_buff<stat_buff_t>(effect.player, "the_path_to_survival_crit", effect.trigger() )
+    -> add_stat( STAT_CRIT_RATING, effect.trigger()->effectN( 5 ).average( effect.item ));
+
+  auto the_path_to_survival_vers = make_buff<stat_buff_t>(effect.player, "the_path_to_survival_vers", effect.trigger() )
+    -> add_stat( STAT_VERSATILITY_RATING, effect.trigger()->effectN( 5 ).average( effect.item ));
+
+  buffs =
+  {
+    the_path_to_survival_mastery,
+    the_path_to_survival_haste,
+    the_path_to_survival_crit,
+    the_path_to_survival_vers
+  };
+
+  struct cb_t : public dbc_proc_callback_t
   {
     std::vector<buff_t*> buffs;
+    cb_t( const special_effect_t& e, std::vector<buff_t*> b ) : dbc_proc_callback_t( e.player, e ), buffs( b )
+    {}
 
-    the_path_to_survival_t(const special_effect_t& e) : generic_proc_t(e, "the_path_to_survival", e.driver())
+    void execute( action_t* a, action_state_t* s ) override
     {
-      auto the_path_to_survival_mastery = buff_t::find( e.player, "path_to_survival_mastery" );
-      if ( !the_path_to_survival_mastery )
-      {
-          the_path_to_survival_mastery = make_buff<stat_buff_t>(e.player, "the_path_to_survival_mastery", e.trigger() )
-              -> add_stat( STAT_MASTERY_RATING, e.trigger()->effectN( 5 ).average( e.item ))
-              -> set_default_value_from_effect( 3 );
-      }
+      dbc_proc_callback_t::execute( a, s );
 
-      auto the_path_to_survival_haste = buff_t::find( e.player, "the_path_to_survival_haste" );
-      if ( !the_path_to_survival_haste )
-      {
-          the_path_to_survival_haste = make_buff<stat_buff_t>(e.player, "the_path_to_survival_haste", e.trigger() )
-              -> add_stat( STAT_HASTE_RATING, e.trigger()->effectN( 5 ).average( e.item ))
-              -> set_default_value_from_effect( 2 );
-      }
-
-      auto the_path_to_survival_crit = buff_t::find( e.player, "the_path_to_survival_crit" );
-      if ( !the_path_to_survival_crit )
-      {
-          the_path_to_survival_crit = make_buff<stat_buff_t>(e.player, "the_path_to_survival_crit", e.trigger() )
-              -> add_stat( STAT_CRIT_RATING, e.trigger()->effectN( 5 ).average( e.item ))
-              -> set_default_value_from_effect( 1 );
-      }
-
-      auto the_path_to_survival_vers = buff_t::find( e.player, "the_path_to_survival_vers" );
-      if ( !the_path_to_survival_vers )
-      {
-          the_path_to_survival_vers = make_buff<stat_buff_t>(e.player, "the_path_to_survival_vers", e.trigger() )
-              -> add_stat( STAT_VERSATILITY_RATING, e.trigger()->effectN( 5 ).average( e.item ))
-              -> set_default_value_from_effect( 4 );
-      }
-
-      buffs =
-      {
-        the_path_to_survival_mastery,
-        the_path_to_survival_haste,
-        the_path_to_survival_crit,
-        the_path_to_survival_vers
-      };
-    }
-
-    void execute() override
-    {
-      generic_proc_t::execute();
-      auto buff = player->sim->rng().range( buffs.size() );
+      auto buff = effect.player -> sim -> rng().range( buffs.size() );
       buffs[ buff ] -> trigger();
     }
   };
 
-  effect.execute_action = create_proc_action<the_path_to_survival_t>( "the_path_to_survival", effect );
-  effect.type = SPECIAL_EFFECT_NONE;
-  new dbc_proc_callback_t( effect.player, effect );
+  new cb_t( effect, buffs );
 }
 
 // Weapons
