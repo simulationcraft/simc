@@ -1490,11 +1490,10 @@ struct holy_power_consumer_t : public Base
         p -> buffs.shining_light_free -> expire();
     }
 
-    if (p -> buffs.bastion_of_light -> check() )
+    if (p -> buffs.bastion_of_light -> check() && should_continue)
     {
-      // 2022-08-11 Bastion of Light stacks get eaten despite having a free spender available
-      if (p->bugs || !isFreeSLDPSpender )
-        p -> buffs.bastion_of_light->decrement();
+      p -> buffs.bastion_of_light->decrement();
+      should_continue = false;
     }
 
     if ( p->buffs.sentinel->up() && p->buffs.sentinel_decay->up() )
