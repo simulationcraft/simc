@@ -13,7 +13,7 @@ precombat->add_action( "cat_form" );
 precombat->add_action( "prowl" );
 
 clearcasting->add_action( "thrash_cat,if=refreshable" );
-clearcasting->add_action( "swipe_cat,if=spell_targets.swipe_cat>2" );
+clearcasting->add_action( "swipe_cat,if=spell_targets.swipe_cat>1" );
 clearcasting->add_action( "brutal_slash,if=spell_targets.brutal_slash>5&talent.moment_of_clarity.enabled" );
 clearcasting->add_action( "shred" );
 
@@ -25,7 +25,7 @@ aoe->add_action( "pool_resource,for_next=1" );
 aoe->add_action( "thrash_cat,target_if=refreshable" );
 aoe->add_action( "brutal_slash","At this target count BRS also crushes everything except full thrashes" );
 aoe->add_action( "pool_resource,for_next=1","This means that a full rake (5.5+ ticks) is stronger up to 10ish targets" );
-aoe->add_action( "rake,target_if=max:((dot.rake.ticks_gained_on_refresh.pmult*(1+talent.doubleclawed_rake.enabled))-(spell_targets.swipe_cat*0.216+3.32))" );
+aoe->add_action( "rake,target_if=max:dot.rake.ticks_gained_on_refresh.pmult,if=((dot.rake.ticks_gained_on_refresh.pmult*(1+talent.doubleclawed_rake.enabled))>(spell_targets.swipe_cat*0.216+3.32))" );
 aoe->add_action( "lunar_inspiration,target_if=max:((ticks_gained_on_refresh+1)-(spell_targets.swipe_cat*2.492))","Full Lis beat Swipe up til around 3-ish targets depending on haste" );
 aoe->add_action( "swipe_cat" );
 aoe->add_action( "shred,if=action.shred.damage>action.thrash_cat.damage","If we have BrS and nothing better to cast, check if Thrash DD beats Shred" );
@@ -67,8 +67,8 @@ bloodtalons->add_action( "rake,target_if=max:druid.rake.ticks_gained_on_refresh,
 bloodtalons->add_action( "lunar_inspiration,if=refreshable&buff.bt_moonfire.down" );
 bloodtalons->add_action( "brutal_slash,if=buff.bt_brutal_slash.down" );
 bloodtalons->add_action( "thrash_cat,target_if=refreshable&buff.bt_thrash.down" );
+bloodtalons->add_action( "swipe_cat,if=spell_targets.swipe_cat>1&buff.bt_swipe.down" );
 bloodtalons->add_action( "shred,if=buff.bt_shred.down" );
-bloodtalons->add_action( "swipe_cat,if=buff.bt_swipe.down" );
 bloodtalons->add_action( "swipe_cat,if=buff.bt_swipe.down" );
 bloodtalons->add_action( "thrash_cat,if=buff.bt_thrash.down" );
 bloodtalons->add_action( "rake,if=buff.bt_rake.down&combo_points>4" );
@@ -82,7 +82,7 @@ def->add_action( "auto_attack,if=!buff.prowl.up&!buff.shadowmeld.up" );
 def->add_action( "call_action_list,name=cooldown" );
 def->add_action( "adaptive_swarm,target_if=((!dot.adaptive_swarm_damage.ticking|dot.adaptive_swarm_damage.remains<2)&(dot.adaptive_swarm_damage.stack<3|!dot.adaptive_swarm_heal.stack>1)&!action.adaptive_swarm_heal.in_flight&!action.adaptive_swarm_damage.in_flight&!action.adaptive_swarm.in_flight)&target.time_to_die>5|active_enemies>2&!dot.adaptive_swarm_damage.ticking&energy<35&target.time_to_die>5" );
 def->add_action( "feral_frenzy,if=combo_points<2" );
-def->add_action( "run_action_list,name=aoe,if=spell_targets.swipe_cat>2&talent.primal_wrath.enabled" );
+def->add_action( "run_action_list,name=aoe,if=spell_targets.swipe_cat>1&talent.primal_wrath.enabled" );
 def->add_action( "ferocious_bite,if=buff.apex_predators_craving.up" );
 def->add_action( "call_action_list,name=bloodtalons,if=variable.need_bt&!buff.bs_inc.up" );
 def->add_action( "call_action_list,name=finisher,if=combo_points=5" );
