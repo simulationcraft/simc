@@ -142,6 +142,7 @@ void protection( player_t* p )
 
   cooldowns->add_action( "seraphim" );
   cooldowns->add_action( "avenging_wrath,if=(buff.seraphim.up|!talent.seraphim.enabled)" );
+  cooldowns->add_action( "sentinel,if=(buff.seraphim.up|!talent.seraphim.enabled)" );
   cooldowns->add_action( "potion,if=buff.avenging_wrath.up|variable.might_or_sentinel" );
   cooldowns->add_action( "moment_of_glory,if=(buff.avenging_wrath.remains<15|(time>10|(cooldown.avenging_wrath.remains>15))&(cooldown.avengers_shield.remains&cooldown.judgment.remains&cooldown.hammer_of_wrath.remains))" );
   cooldowns->add_action( "holy_avenger,if=buff.avenging_wrath.up|variable.might_or_sentinel|cooldown.avenging_wrath.remains>60" );

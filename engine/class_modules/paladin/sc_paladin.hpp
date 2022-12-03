@@ -1082,17 +1082,13 @@ public:
         am *= 1.0 + p() -> sets -> set( PALADIN_RETRIBUTION, T29, B4 ) -> effectN( 1 ).percent();
       }
     }
-    if ( p()->specialization()==PALADIN_PROTECTION )
-    {
-      if ( affected_by.sentinel && p()->buffs.sentinel->up() )
-      {
-        am *= 1.0 + p()->buffs.sentinel->get_damage_mod();
-      }
-    }
 
-    if ( affected_by.avenging_wrath && p() -> buffs.avenging_wrath -> up() )
+    // Class talent's Avenging Wrath damage multiplier affects only if base talent is talented (Could still use AW with
+    // only Sentinel/AWM/Crusade/AC talented)
+    if ( affected_by.avenging_wrath && p()->talents.avenging_wrath->ok() &&
+         ( p()->buffs.avenging_wrath->up() || p()->buffs.sentinel->up() ) )
     {
-      am *= 1.0 + p() -> buffs.avenging_wrath -> get_damage_mod();
+      am *= 1.0 + p()->buffs.avenging_wrath->get_damage_mod();
     }
 
     if ( affected_by.avenging_crusader )
