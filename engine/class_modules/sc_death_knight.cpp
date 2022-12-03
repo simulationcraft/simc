@@ -1247,7 +1247,6 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
   debuff.mark_of_blood    = make_buff( *this, "mark_of_blood", p -> talent.blood.mark_of_blood )
                            -> set_cooldown( 0_ms );  // Handled by the action
 
-  // Sep 19 2022.  Currently bugged, providing 10% instead of 5% as it's adding the spell, and debuff values
   debuff.tightening_grasp = make_buff( *this, "tightening_grasp", p -> spell.tightening_grasp_debuff )
                               -> set_default_value( p -> spell.tightening_grasp_debuff -> effectN( 1 ).percent() );
   // Frost
