@@ -2430,6 +2430,17 @@ void blazebinders_hoof(special_effect_t& effect)
   } );
 }
 
+// Spinerippers Fang
+// 383611 Driver 
+// 383612 Damage
+void spinerippers_fang(special_effect_t& effect)
+{
+  auto damage = create_proc_action<generic_proc_t>( "RIP_SPINE", effect, "RIP_SPINE", 383612 );
+  damage->base_dd_min = damage -> base_dd_max = effect.player->find_spell( 383611 )->effectN( 1 ).average( effect.item );
+  effect.execute_action = damage;
+  new dbc_proc_callback_t(effect.player, effect);
+}
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -2906,6 +2917,7 @@ void register_special_effects()
   register_special_effect( 381705, items::mutated_magmammoth_scale );
   register_special_effect( 382139, items::homeland_raid_horn );
   register_special_effect( 383926, items::blazebinders_hoof );
+  register_special_effect( 383611, items::spinerippers_fang );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );  // bronzed grip wrappings embellishment
