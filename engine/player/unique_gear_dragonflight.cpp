@@ -2430,6 +2430,21 @@ void blazebinders_hoof(special_effect_t& effect)
   } );
 }
 
+void primal_ritual_shell( special_effect_t& effect )
+{
+  // TODO: This is assuming players are using the "Wing Turtle's Blessing"
+  // This is the mastery proc and it is the default blessing you get when the item is first equiped
+  effect.stat_amount = effect.driver()->effectN( 5 ).average( effect.item );
+  effect.spell_id = 390899;
+  effect.stat = STAT_MASTERY_RATING;
+
+  // TODO: Implement Stone Turtle's Blessing - Absorb-Shield Proc [390655]
+  // TODO: Implement Flame Turtle's Blessing - Fire Damage Proc [390835]
+  // TODO: Implement Sea Turtle's Blessing - Heal Proc [390869]
+  
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Spineripper's Fang
 // 383611 Driver
 // 383612 Damage spell (damage value is in the driver effect)
@@ -2948,6 +2963,7 @@ void register_special_effects()
   register_special_effect( 381705, items::mutated_magmammoth_scale );
   register_special_effect( 382139, items::homeland_raid_horn );
   register_special_effect( 383926, items::blazebinders_hoof );
+  register_special_effect( 390764, items::primal_ritual_shell );
   register_special_effect( 383611, items::spinerippers_fang );
   register_special_effect( 392359, items::integrated_primal_fire );
 
