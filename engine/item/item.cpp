@@ -609,11 +609,168 @@ weapon_t* item_t::weapon() const
   return nullptr;
 }
 
-// item_t::inv_type =========================================================
+// item_t::dbc_inventory_type ===============================================
 
-inventory_type item_t::inv_type() const
+inventory_type item_t::dbc_inventory_type() const
 {
-  return static_cast<inventory_type>( parsed.data.inventory_type );
+  if ( parsed.data.id )
+  {
+    return static_cast<inventory_type>( parsed.data.inventory_type );
+  }
+
+  switch ( slot )
+  {
+    case SLOT_HEAD: return INVTYPE_HEAD;
+    case SLOT_NECK: return INVTYPE_NECK;
+    case SLOT_SHOULDERS: return INVTYPE_SHOULDERS;
+    case SLOT_SHIRT: return INVTYPE_BODY;
+    case SLOT_CHEST: return INVTYPE_CHEST;
+    case SLOT_WAIST: return INVTYPE_WAIST;
+    case SLOT_LEGS: return INVTYPE_LEGS;
+    case SLOT_FEET: return INVTYPE_FEET;
+    case SLOT_WRISTS: return INVTYPE_WRISTS;
+    case SLOT_HANDS: return INVTYPE_HANDS;
+    case SLOT_FINGER_1: return INVTYPE_FINGER;
+    case SLOT_FINGER_2: return INVTYPE_FINGER;
+    case SLOT_TRINKET_1: return INVTYPE_TRINKET;
+    case SLOT_TRINKET_2: return INVTYPE_TRINKET;
+    case SLOT_BACK: return INVTYPE_CLOAK;
+    // Note, can't strictly be figured out from non-item data info,
+    // so just return a one-hand or two-hand invtype in this case
+    case SLOT_MAIN_HAND:
+    {
+      switch ( player->main_hand_weapon.type )
+      {
+        case WEAPON_DAGGER:
+        case WEAPON_SMALL:
+        case WEAPON_SWORD:
+        case WEAPON_MACE:
+        case WEAPON_AXE:
+        case WEAPON_FIST:
+        case WEAPON_WARGLAIVE:
+          return INVTYPE_WEAPON;
+        case WEAPON_BEAST_2H:
+        case WEAPON_SWORD_2H:
+        case WEAPON_MACE_2H:
+        case WEAPON_AXE_2H:
+        case WEAPON_STAFF:
+        case WEAPON_POLEARM:
+          return INVTYPE_2HWEAPON;
+        case WEAPON_THROWN:
+          return INVTYPE_THROWN;
+        default:
+          return INVTYPE_NON_EQUIP;
+      }
+    }
+    case SLOT_OFF_HAND:
+    {
+      switch ( player->off_hand_weapon.type )
+      {
+        case WEAPON_DAGGER:
+        case WEAPON_SMALL:
+        case WEAPON_SWORD:
+        case WEAPON_MACE:
+        case WEAPON_AXE:
+        case WEAPON_FIST:
+        case WEAPON_WARGLAIVE:
+          return INVTYPE_WEAPON;
+        case WEAPON_THROWN:
+          return INVTYPE_THROWN;
+        default:
+        {
+          if ( parsed.data.item_subclass == ITEM_SUBCLASS_ARMOR_SHIELD )
+          {
+            return INVTYPE_SHIELD;
+          }
+          else
+          {
+            return INVTYPE_HOLDABLE;
+          }
+        }
+      }
+    }
+    case SLOT_RANGED: return INVTYPE_RANGED;
+    case SLOT_TABARD: return INVTYPE_TABARD;
+
+    default: return INVTYPE_NON_EQUIP;
+  }
+}
+
+// item_t::dbc_item_class ===================================================
+
+item_class item_t::dbc_item_class() const
+{
+  if ( parsed.data.id != 0 )
+  {
+    return static_cast<item_class>( parsed.data.item_class );
+  }
+
+  switch ( slot )
+  {
+    case SLOT_HEAD:
+    case SLOT_NECK:
+    case SLOT_SHOULDERS:
+    case SLOT_SHIRT:
+    case SLOT_CHEST:
+    case SLOT_WAIST:
+    case SLOT_LEGS:
+    case SLOT_FEET:
+    case SLOT_WRISTS:
+    case SLOT_HANDS:
+    case SLOT_FINGER_1:
+    case SLOT_FINGER_2:
+    case SLOT_TRINKET_1:
+    case SLOT_TRINKET_2:
+    case SLOT_BACK:
+    case SLOT_TABARD:
+      return ITEM_CLASS_ARMOR;
+    case SLOT_MAIN_HAND:
+    case SLOT_OFF_HAND:
+    case SLOT_RANGED:
+      return ITEM_CLASS_WEAPON;
+    // No good default value, so just use Miscellaneous
+    default:
+      return ITEM_CLASS_MISC;
+  }
+}
+
+// item_t::dbc_item_class ===================================================
+
+int item_t::dbc_item_subclass() const
+{
+  if ( parsed.data.id != 0 )
+  {
+    return static_cast<item_class>( parsed.data.item_subclass );
+  }
+
+  switch ( dbc_item_class() )
+  {
+    case ITEM_CLASS_ARMOR:return parsed.data.item_subclass;
+    case ITEM_CLASS_WEAPON:
+    {
+      switch( weapon()->type )
+      {
+        case WEAPON_DAGGER: return ITEM_SUBCLASS_WEAPON_DAGGER;
+        case WEAPON_SWORD: return ITEM_SUBCLASS_WEAPON_SWORD;
+        case WEAPON_MACE: return ITEM_SUBCLASS_WEAPON_MACE;
+        case WEAPON_AXE: return ITEM_SUBCLASS_WEAPON_AXE;
+        case WEAPON_FIST: return ITEM_SUBCLASS_WEAPON_FIST;
+        case WEAPON_WARGLAIVE: return ITEM_SUBCLASS_WEAPON_WARGLAIVE;
+        case WEAPON_SWORD_2H: return ITEM_SUBCLASS_WEAPON_SWORD2;
+        case WEAPON_MACE_2H: return ITEM_SUBCLASS_WEAPON_MACE2;
+        case WEAPON_AXE_2H: return ITEM_SUBCLASS_WEAPON_AXE2;
+        case WEAPON_STAFF: return ITEM_SUBCLASS_WEAPON_STAFF;
+        case WEAPON_POLEARM: return ITEM_SUBCLASS_WEAPON_POLEARM;
+        case WEAPON_BOW: return ITEM_SUBCLASS_WEAPON_BOW;
+        case WEAPON_CROSSBOW: return ITEM_SUBCLASS_WEAPON_CROSSBOW;
+        case WEAPON_GUN: return ITEM_SUBCLASS_WEAPON_GUN;
+        case WEAPON_WAND: return ITEM_SUBCLASS_WEAPON_WAND;
+        case WEAPON_THROWN: return ITEM_SUBCLASS_WEAPON_THROWN;
+        default: return -1;
+      }
+    }
+    default: return -1;
+  }
 }
 
 // item_t::parse_options ====================================================

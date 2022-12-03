@@ -10,14 +10,14 @@ head=lost_landcallers_antlers,id=200354,bonus_id=4800/4786/1498/6935,gem_id=1929
 neck=elemental_lariat,id=193001,bonus_id=6652/7936/7979/1540/8767/8782/8793,gem_id=192948/192948/192988
 shoulders=lost_landcallers_mantle,id=200356,bonus_id=4800/4786/1498
 back=fireproof_drape,id=193763,bonus_id=6808/4786/1643
-chest=lost_landcallers_robes,id=200351,bonus_id=4800/4786/1498,enchant_id=6625
+chest=lost_landcallers_robes,id=200351,bonus_id=4800/4786/1498,enchant=waking_stats_3
 wrists=loyal_flametenders_bracers,id=195525,bonus_id=4800/3524/1498,gem_id=192961
 hands=treacherous_totem_wraps,id=195514,bonus_id=4800/4786/1498
 waist=bjorns_hunting_strap,id=136776,bonus_id=1795/6808/4786/3156/6935,gem_id=192961
 legs=lost_landcallers_leggings,id=200355,bonus_id=4800/4786/1498,enchant=frozen_spellthread_3
 feet=blackwater_boots,id=109799,bonus_id=4177/6808/4786/6072
-finger1=ringbound_hourglass,id=193000,bonus_id=8780/8793,ilevel=418,enchant_id=6562,gem_id=192961
-finger2=seal_of_filial_duty,id=195526,bonus_id=4800/4786/1497/6935,enchant_id=6556,gem_id=192961
+finger1=ringbound_hourglass,id=193000,bonus_id=8780/8793,ilevel=418,enchant=devotion_of_mastery_3,gem_id=192961
+finger2=seal_of_filial_duty,id=195526,bonus_id=4800/4786/1497/6935,enchant=devotion_of_haste_3,gem_id=192961
 trinket1=whispering_incarnate_icon,id=194301,bonus_id=4800/4786/1498
 trinket2=furious_ragefeather,id=193677,bonus_id=6808/4786/1643
 main_hand=final_grade,id=193707,bonus_id=6808/4786/1643,enchant=sophic_devotion_3

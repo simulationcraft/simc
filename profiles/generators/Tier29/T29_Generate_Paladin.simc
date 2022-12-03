@@ -12,14 +12,14 @@ head=,id=200417,bonus_id=4800/4786/1498,gem_id=192919
 neck=,id=195496,bonus_id=4800/4786/1498,gem_id=192919/192919/192919
 shoulder=,id=200419,bonus_id=4800/4786/1498
 back=,id=137483,bonus_id=1795/6808/4786/3300/6935
-chest=,id=195494,bonus_id=4800/4786/1498,enchant_id=6625
+chest=,id=195494,bonus_id=4800/4786/1498,enchant=waking_stats_3
 wrist=,id=200421,ilevel=424,bonus_id=4800/4786/1498,gem_id=192919
 hands=,id=133628,bonus_id=1795/6808/4786/3300/6935
 waist=,id=200420,bonus_id=4800/4786/1507,gem_id=192985
 legs=,id=193706,bonus_id=6808/4786/1643,enchant=frosted_armor_kit_3
 feet=,id=195517,bonus_id=4800/4786/1498
-finger1=,id=195480,bonus_id=4800/4786/1498,gem_id=192919,enchant_id=6556
-finger2=,id=134542,bonus_id=1795/6808/4786/3300/6935,gem_id=192919,enchant_id=6556
+finger1=,id=195480,bonus_id=4800/4786/1498,gem_id=192919,enchant=devotion_of_haste_3
+finger2=,id=134542,bonus_id=1795/6808/4786/3300/6935,gem_id=192919,enchant=devotion_of_haste_3
 trinket1=,id=133641,bonus_id=1795/6808/4786/3300/6935
 trinket2=,id=194308,bonus_id=4800/4786/1498
 main_hand=,id=193700,bonus_id=6808/4786/1643,enchant=sophic_devotion_3

@@ -8,6 +8,7 @@
 #include "dbc/dbc.hpp"
 #include "dbc/gem_data.hpp"
 #include "dbc/item_database.hpp"
+#include "dbc/permanent_enchant.hpp"
 #include "dbc/spell_item_enchantment.hpp"
 #include "item/item.hpp"
 #include "player/player.hpp"
@@ -15,12 +16,18 @@
 #include "sim/sim.hpp"
 #include "special_effect.hpp"
 
-using namespace enchant;
+//using namespace enchant;
 
 // TODO: Check if Power Torrent, Jade Spirit share buffs, or allow separate
 
 namespace /* ANONYMOUS NAMESPACE */
 {
+struct enchant_db_item_t
+{
+  const char* enchant_name;
+  unsigned enchant_id;
+};
+
 /**
  * Additional translation mappings for enchant names. We use shorthands for
  * certain enchants (listed here), that cannot be deduced from the item
@@ -28,244 +35,46 @@ namespace /* ANONYMOUS NAMESPACE */
  * applicable. The enchant ID (number) maps to the array of
  * item_enchantment_data_t structs in sc_item_data.inc.
  */
-const enchant_db_item_t __enchant_db[] = {
-  { 0, 0 }
+static const enchant_db_item_t __enchant_db[] = {
+  { nullptr, 0 }
 };
 
-size_t enchant_map_key( const dbc_t& dbc, const item_enchantment_data_t& enchant )
+unsigned find_override_enchant_id( util::string_view name )
 {
-  return static_cast<unsigned>( dbc.ptr ) << 31 | enchant.id;
-}
-
-thread_local std::unordered_map<size_t, std::string> cached_enchant_names;
-
-} /* ANONYMOUS NAMESPACE */
-
-unsigned enchant::find_enchant_id( util::string_view name )
-{
-  for ( auto& enchant_entry : __enchant_db )
+  for ( const auto& enchant_entry : __enchant_db )
   {
     if ( !enchant_entry.enchant_name )
+    {
       continue;
+    }
+
     if ( util::str_compare_ci( enchant_entry.enchant_name, name ) )
+    {
       return enchant_entry.enchant_id;
+    }
   }
 
   return 0;
 }
 
-std::string enchant::find_enchant_name( unsigned enchant_id )
+std::string find_override_enchant_name( unsigned enchant_id )
 {
-  for ( auto& enchant_entry : __enchant_db )
+  for ( const auto& enchant_entry : __enchant_db )
   {
     if ( !enchant_entry.enchant_name )
+    {
       continue;
+    }
+
     if ( enchant_entry.enchant_id == enchant_id )
+    {
       return enchant_entry.enchant_name;
+    }
   }
 
   return {};
 }
-
-namespace
-{
-// With the new profession revamp in Dragonflight, enchants have the quality icon present in their name string
-// indicating which of the 3 quality tiers the enchant is.
-void _new_encoded_enchant_name( std::string& name, std::string& rank )
-{
-  static const std::string prof_icon_str = " |A:Professions-Icon-Quality-Tier";
-
-  auto it = name.find( prof_icon_str );
-  if ( it == std::string::npos )
-    return;
-
-  auto r_pos = it + prof_icon_str.size();
-  if ( r_pos != std::string::npos )
-    rank = name.substr( r_pos, 1 );
-
-  name = name.substr( 0, it );
-}
-
-/**
- * Return a "simc-encoded" enchant name for a given DBC item enchantment.
- *
- * This function simply encodes the item enchantment name (given in
- * SpellItemEnchantment.dbc) that is exported to simc. Normal simc tokenization
- * rules are applied on the enchant name, and any possible rank string (without
- * the "rank) is applied as a suffix. Rank information is found in the spell
- * that the enchant uses.
- *
- * Simc needs this information to save actor profiles with meaningful enchant
- * names (if the enchant is not a stat enchant), instead of enchant ids. When a
- * profile is loaded, the enchant name translates to a item enchantment entry
- * in the DBC data through the enchant::find_item_enchant() function.
- *
- * TODO: In the off chance blizzard makes item enchants with 2 spell ids, that
- * both have ranks, and there also is a "lower rank" item enchant of the same
- * name, we need to somehow cover that case. Highly unlikely in practice.
- */
-std::string _encoded_enchant_name( const dbc_t& dbc, const item_enchantment_data_t& enchant )
-{
-  std::string enchant_name;
-  std::string enchant_rank_str;
-
-  const spell_data_t* enchant_source = dbc.spell( enchant.id_spell );
-  if ( enchant_source->id() > 0 )
-  {
-    enchant_name = enchant_source->name_cstr();
-
-    // Parse out new enchants that follow the 3-tiered naming from professions revamp
-    _new_encoded_enchant_name( enchant_name, enchant_rank_str );
-
-    std::string::size_type enchant_pos = enchant_name.find( "Enchant " );
-    std::string::size_type enchant_hyphen_pos = enchant_name.find( '-' );
-
-    // Cut out "Enchant XXX -" from the string, if it exists, also remove any
-    // following whitespace. Consider that to be the enchant name. If "Enchant
-    // XXX -" is not found, just consider the linked spell's full name to be
-    // the enchant name.
-    if ( enchant_pos != std::string::npos && enchant_hyphen_pos != std::string::npos &&
-         enchant_hyphen_pos > enchant_pos )
-    {
-      enchant_name = enchant_name.substr( enchant_hyphen_pos + 1 );
-      while ( enchant_name[ 0 ] == ' ' )
-        enchant_name.erase( enchant_name.begin() );
-    }
-
-    // Cut out "Apply" from the string.
-    std::string::size_type apply_pos = enchant_name.find( "Apply" );
-    if ( apply_pos != std::string::npos )
-    {
-      enchant_name = enchant_name.substr( apply_pos + 5 );
-      while ( enchant_name[ 0 ] == ' ' )
-        enchant_name.erase( enchant_name.begin() );
-    }
-
-    util::tokenize( enchant_name );
-
-    const auto& spell_text = dbc.spell_text( enchant_source->id() );
-    if ( spell_text.rank() )
-      enchant_rank_str = spell_text.rank();
-
-    // Rank could be in the item enchantment data rather than the source spell.
-    if ( enchant_rank_str.empty() && enchant.name )
-    {
-      std::string name = enchant.name;
-      _new_encoded_enchant_name( name, enchant_rank_str );
-    }
-
-    util::tokenize( enchant_rank_str );
-  }
-  // Revert back to figuring out name based on pure item enchantment data. This
-  // will probably be wrong in many cases, but what can we do.
-  else
-  {
-    enchant_name = enchant.name ? enchant.name : "unknown";
-
-    // Parse out new enchants that follow the 3-tiered naming from professions revamp
-    _new_encoded_enchant_name( enchant_name, enchant_rank_str );
-
-    util::tokenize( enchant_name );
-
-    for ( size_t i = 0; i < std::size( enchant.ench_prop ); i++ )
-    {
-      if ( enchant.ench_prop[ i ] == 0 || enchant.ench_type[ i ] == 0 )
-        continue;
-
-      const auto& spell_text = dbc.spell_text( enchant.ench_prop[ i ] );
-      if ( spell_text.rank() )
-        enchant_rank_str = spell_text.rank();
-      util::tokenize( enchant_rank_str );
-    }
-  }
-
-  // Erase "rank_"
-  std::string::size_type rank_offset = enchant_rank_str.find( "rank_" );
-  if ( rank_offset != std::string::npos )
-    enchant_rank_str.erase( rank_offset, 5 );
-
-  if ( !enchant_rank_str.empty() )
-    enchant_name += "_" + enchant_rank_str;
-
-  return enchant_name;
-}
-}  // namespace
-
-/**
- * Return a "simc-encoded" enchant name for a given DBC item enchantment.
- *
- * This function simply encodes the item enchantment name (given in
- * SpellItemEnchantment.dbc) that is exported to simc. Normal simc tokenization
- * rules are applied on the enchant name, and any possible rank string (without
- * the "rank) is applied as a suffix. Rank information is found in the spell
- * that the enchant uses.
- *
- * Simc needs this information to save actor profiles with meaningful enchant
- * names (if the enchant is not a stat enchant), instead of enchant ids. When a
- * profile is loaded, the enchant name translates to a item enchantment entry
- * in the DBC data through the enchant::find_item_enchant() function.
- *
- * TODO: In the off chance blizzard makes item enchants with 2 spell ids, that
- * both have ranks, and there also is a "lower rank" item enchant of the same
- * name, we need to somehow cover that case. Highly unlikely in practice.
- */
-const std::string& enchant::encoded_enchant_name( const dbc_t& dbc, const item_enchantment_data_t& enchant )
-{
-  auto key = enchant_map_key( dbc, enchant );
-  auto it  = cached_enchant_names.find( key );
-  if ( it == cached_enchant_names.end() )
-  {
-    it = cached_enchant_names.emplace( key, _encoded_enchant_name( dbc, enchant ) ).first;
-  }
-  return ( *it ).second;
-}
-
-/**
- * Deduce DBC enchant data from user given enchant option value.
- *
- * The function loops through all item enchantments in the exported game client
- * data and checks if the item enchant name (and possibly rank) match the user
- * input enchant name. The function matches un-ranked enchants (for example
- * Dancing Steel), and ranked enchants in two ways. First, the full name
- * including the full rank string is checked (i.e.,
- * lightweave_embroidery_rank_2). If this is not a match, the function
- * additionally checks against the full name, where "rank_" is removed. Returns
- * an invalid item enchantment (with id of 0) if nothing is found.
- *
- * TODO: We could additionally check against the spell name (and rank) that the
- * enchant procs for even more detection. This would remove the need for
- * Tailoring enchant mappings in the array above.
- */
-const item_enchantment_data_t& enchant::find_item_enchant( const item_t& item, util::string_view name )
-{
-  auto enchant_id = find_enchant_id( name );
-  // Check additional mapping table first
-  if ( enchant_id > 0 )
-  {
-    return item.player->dbc->item_enchantment( enchant_id );
-  }
-
-  for ( const auto& item_enchant : item_enchantment_data_t::data( item.player->dbc->ptr ) )
-  {
-    if ( !item_enchant.name && !item_enchant.id_spell )
-    {
-      continue;
-    }
-
-    const spell_data_t* enchant_spell = item.player->dbc->spell( item_enchant.id_spell );
-    if ( !enchant_spell->valid_item_enchantment( item.inv_type() ) )
-    {
-      continue;
-    }
-
-    if ( util::str_compare_ci( name, encoded_enchant_name( *item.player->dbc, item_enchant ) ) )
-    {
-      return item_enchant;
-    }
-  }
-
-  return item_enchantment_data_t::nil();
-}
+} /* ANONYMOUS NAMESPACE */
 
 /**
  * Initialize an item enchant from DBC data.
@@ -313,14 +122,14 @@ void enchant::initialize_item_enchant( item_t& item, std::vector<stat_pair_t>& s
 
   if ( enchant.min_ilevel > 0 && item.item_level() < enchant.min_ilevel )
   {
-    item.sim->error( "Player {} enchant '{}' requires a minimum ilevel of {}, item '{}' has {}",
-      item.player->name(), enchant.name, enchant.min_ilevel, item.name(), item.item_level() );
+    item.sim->error( "Player {} enchant '{}' (id={}) requires a minimum ilevel of {}, item '{}' has {}",
+      item.player->name(), enchant.name, enchant.id, enchant.min_ilevel, item.name(), item.item_level() );
   }
 
   if ( enchant.max_ilevel > 0 && item.item_level() > enchant.max_ilevel )
   {
-    item.sim->error( "Player {} enchant '{}' requires a maximum ilevel of {}, item '{}' has {}",
-      item.player->name(), enchant.name, enchant.max_ilevel, item.name(), item.item_level() );
+    item.sim->error( "Player {} enchant '{}' (id={}) requires a maximum ilevel of {}, item '{}' has {}",
+      item.player->name(), enchant.name, enchant.id, enchant.max_ilevel, item.name(), item.item_level() );
   }
 
   for ( size_t i = 0; i < std::size( enchant.ench_prop ); i++ )
@@ -346,10 +155,6 @@ void enchant::initialize_item_enchant( item_t& item, std::vector<stat_pair_t>& s
         // name, instead of a bunch of stats.
         if ( passive_enchant( item, enchant.ench_prop[ i ] ) )
         {
-          if ( source == SPECIAL_EFFECT_SOURCE_ENCHANT )
-            item.parsed.encoded_enchant = encoded_enchant_name( *item.player->dbc, enchant );
-          else if ( source == SPECIAL_EFFECT_SOURCE_ADDON )
-            item.parsed.encoded_addon = encoded_enchant_name( *item.player->dbc, enchant );
           continue;
         }
         else
@@ -382,21 +187,23 @@ void enchant::initialize_item_enchant( item_t& item, std::vector<stat_pair_t>& s
         break;
     }
 
+    // Prefer to use the actual tokenized permanent enchant name if we can find it from our local
+    // permanent enchant client data export
+    auto tokenized_name = encoded_enchant_name( *item.player->dbc, enchant );
+    if ( !tokenized_name.empty() &&
+         ( source == SPECIAL_EFFECT_SOURCE_ENCHANT || source == SPECIAL_EFFECT_SOURCE_ADDON ) )
+    {
+      item.parsed.encoded_enchant = tokenized_name;
+    }
+
     // First phase initialize the spell effect
     if ( effect.type != SPECIAL_EFFECT_NONE )
     {
       unique_gear::initialize_special_effect( effect, enchant.ench_prop[ i ] );
     }
 
-    // If this enchant has any kind of special effect, we need to encode it's
-    // name in the saved profiles, so when the profile is loaded, it's loaded
-    // through the enchant init system.
     if ( effect.type != SPECIAL_EFFECT_NONE )
     {
-      if ( source == SPECIAL_EFFECT_SOURCE_ENCHANT )
-        item.parsed.encoded_enchant = encoded_enchant_name( *item.player->dbc, enchant );
-      else if ( source == SPECIAL_EFFECT_SOURCE_ADDON )
-        item.parsed.encoded_addon = encoded_enchant_name( *item.player->dbc, enchant );
       item.parsed.special_effects.push_back( new special_effect_t( effect ) );
     }
   }
@@ -673,4 +480,80 @@ item_socket_color enchant::initialize_relic( item_t& item, size_t relic_idx, con
   // item.parsed.data.level += as<int>(util::floor( ilevel_value ));
 
   return SOCKET_COLOR_RELIC;
+}
+
+const item_enchantment_data_t& enchant::find_item_enchant(
+    const item_t&     item,
+    util::string_view name )
+{
+  util::string_view enchant_str = name;
+  unsigned rank = 0;
+  int item_class = -1;
+  int inventory_type = -1;
+  int item_subclass = -1;
+
+  auto enchant_id = find_override_enchant_id( name );
+  // Check additional mapping table first
+  if ( enchant_id > 0 )
+  {
+    return item.player->dbc->item_enchantment( enchant_id );
+  }
+
+  auto it = name.rfind( '_' );
+  if ( it != std::string_view::npos )
+  {
+    auto rank_str = name.substr( it + 1 );
+    auto parsed_rank = util::to_unsigned_ignore_error( rank_str, std::numeric_limits<unsigned>::max() );
+
+    if ( parsed_rank != std::numeric_limits<unsigned>::max() )
+    {
+      enchant_str = name.substr( 0, it );
+      rank = parsed_rank;
+    }
+  }
+
+  item_class = item.dbc_item_class();
+  inventory_type = item.dbc_inventory_type();
+  item_subclass = item.dbc_item_subclass();
+
+  const auto& entry = permanent_enchant_entry_t::find( enchant_str, rank, item_class,
+      inventory_type, item_subclass, item.player->dbc->ptr );
+  if ( entry.enchant_id == 0 )
+  {
+    return item_enchantment_data_t::nil();
+  }
+
+  return item_enchantment_data_t::find( entry.enchant_id, item.player->dbc->ptr );
+}
+
+std::string enchant::encoded_enchant_name(
+    const dbc_t&                   dbc,
+    const item_enchantment_data_t& enchant )
+{
+  if ( enchant.id == 0 )
+  {
+    return {};
+  }
+
+  auto enchant_name_override = find_override_enchant_name( enchant.id );
+  // Check additional mapping table first
+  if ( !enchant_name_override.empty() )
+  {
+    return enchant_name_override;
+  }
+
+  const auto& entry = permanent_enchant_entry_t::find( enchant.id, dbc.ptr );
+  if ( entry.enchant_id == 0 )
+  {
+    return {};
+  }
+
+  if ( entry.rank != 0 )
+  {
+    return fmt::format( "{}_{}", entry.tokenized_name, entry.rank );
+  }
+  else
+  {
+    return entry.tokenized_name;
+  }
 }

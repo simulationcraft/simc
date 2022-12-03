@@ -3528,13 +3528,13 @@ void generic::windfury_totem( special_effect_t& effect )
       dbc_proc_callback_t( effect.player, effect ), proc_mh( nullptr ), proc_oh( nullptr )
     {
       if ( effect.player->items[ SLOT_MAIN_HAND ].active() &&
-           effect.player->items[ SLOT_MAIN_HAND ].inv_type() != INVTYPE_RANGED )
+           effect.player->items[ SLOT_MAIN_HAND ].dbc_inventory_type() != INVTYPE_RANGED )
       {
         proc_mh = effect.player->get_proc( "windfury_totem_extra_attack_mh" );
       }
 
       if ( effect.player->items[ SLOT_OFF_HAND ].active() &&
-           effect.player->items[ SLOT_OFF_HAND ].inv_type() != INVTYPE_RANGED )
+           effect.player->items[ SLOT_OFF_HAND ].dbc_inventory_type() != INVTYPE_RANGED )
       {
         proc_oh = effect.player->get_proc( "windfury_totem_extra_attack_oh" );
       }

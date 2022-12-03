@@ -1,3 +1,7 @@
+#!/usr/bin/env sh
+
+SIMC=${SIMC:-../../engine/simc}
+
 if [ ! -d "profiles" ]; then
   echo 'You must run this script with simc root as current working directory.'
   exit 0
@@ -8,7 +12,7 @@ PROFDIR='PreRaids'
 echo "---$PROFDIR---"
 if [ -d $PROFDIR ]; then
   cd $PROFDIR/
-  ../../engine/simc "../generators/$PROFDIR/PR_Generate.simc"
+  ${SIMC} "../generators/$PROFDIR/PR_Generate.simc"
   cd ../
 else
   echo 'Skipped PreRaids, directory not found.'
@@ -33,7 +37,7 @@ do
     continue
   fi
   cd $PROFDIR/
-  ../../engine/simc '../generators/Tier'$tier'/T'$tier'_Generate.simc'
+  ${SIMC} '../generators/Tier'$tier'/T'$tier'_Generate.simc'
   cd ../
 done
 echo 'done'

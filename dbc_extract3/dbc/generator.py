@@ -6,7 +6,7 @@ import dbc.db, dbc.data, dbc.parser, dbc.file
 
 from dbc import constants, util
 from dbc.constants import Class
-from dbc.filter import ActiveClassSpellSet, PetActiveSpellSet, RacialSpellSet, MasterySpellSet, RankSpellSet, ConduitSet, SoulbindAbilitySet, CovenantAbilitySet, RenownRewardSet, TalentSet, TemporaryEnchantItemSet
+from dbc.filter import ActiveClassSpellSet, PetActiveSpellSet, RacialSpellSet, MasterySpellSet, RankSpellSet, ConduitSet, SoulbindAbilitySet, CovenantAbilitySet, RenownRewardSet, TalentSet, TemporaryEnchantItemSet, PermanentEnchantItemSet
 from dbc.filter import TraitSet
 
 # Special hotfix field_id value to indicate an entry is new (added completely through the hotfix entry)
@@ -4617,3 +4617,24 @@ class TraitGenerator(DataGenerator):
             f'spell={entry["spell"].name} ({entry["spell"].id}) ({util.tokenize(entry["spell"].name)})'
         )
         """
+
+class PermanentEnchantItemGenerator(DataGenerator):
+    def filter(self):
+        return PermanentEnchantItemSet(self._options).get()
+
+    def generate(self, data=None):
+        self.output_header(
+                header = 'Permanent item enchants',
+                type = 'permanent_enchant_entry_t',
+                array = 'permanent_enchant',
+                length = len(data))
+
+        for spell_name, rank, _, _, _, _, enchant, sei in sorted(data, key=lambda v: (v[0], v[1], v[3], v[4], v[5])):
+            fields = enchant.field('id')
+            fields += ['{:2d}'.format(rank)]
+            fields += sei.field('item_class', 'mask_inv_type', 'mask_sub_class')
+            fields += ['{:35s}'.format('"{}"'.format(spell_name))]
+            self.output_record(fields)
+
+        self.output_footer()
+
