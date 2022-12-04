@@ -484,6 +484,8 @@ struct sim_t : private sc_thread_t
     unsigned int dragon_games_kicks = 3;
     // Minimum RNG multiplier for Dragon Games Equipment's number of kicks
     double dragon_games_rng = 0.75;
+    // The Blessing the player will receive if they have Primal Ritual Shell trinket equiped (wind,stone,flame,sea)
+    std::string primal_ritual_shell_blessing = "wind";
   } dragonflight_opts;
 
   // Auras and De-Buffs
