@@ -1429,19 +1429,17 @@ private:
 
     double bonus_da( const action_state_t* s ) const override
     {
+      if ( o()->talent.brewmaster.improved_invoke_niuzao_the_black_ox->ok() )
+    {
       auto b = pet_melee_attack_t::bonus_da( s );
-
       auto purify_amount = o()->buff.recent_purifies->check_value();
       auto actual_damage = purify_amount;
-
-      if ( o()->talent.brewmaster.improved_invoke_niuzao_the_black_ox->ok() )
-      {
         actual_damage *= o()->talent.brewmaster.improved_invoke_niuzao_the_black_ox->effectN( 1 ).percent();
         o()->sim->print_debug( "applying bonus purify damage (base stomp: {}, original: {}, reduced: {})", b,
                                purify_amount, actual_damage );
-      }
-
       return b + actual_damage;
+    }
+      return 0;
     }
 
     void execute() override
@@ -1536,19 +1534,17 @@ private:
 
     double bonus_da( const action_state_t* s ) const override
     {
+      if ( o()->talent.brewmaster.improved_invoke_niuzao_the_black_ox->ok() )
+    {
       auto b = pet_melee_attack_t::bonus_da( s );
-
       auto purify_amount = o()->buff.recent_purifies->check_value();
       auto actual_damage = purify_amount;
-
-      if ( o()->talent.brewmaster.improved_invoke_niuzao_the_black_ox->ok() )
-      {
         actual_damage *= o()->talent.brewmaster.improved_invoke_niuzao_the_black_ox->effectN( 1 ).percent();
         o()->sim->print_debug( "applying bonus purify damage (base stomp: {}, original: {}, reduced: {})", b,
                                purify_amount, actual_damage );
-      }
-
       return b + actual_damage;
+    }
+      return 0;
     }
 
     void execute() override
