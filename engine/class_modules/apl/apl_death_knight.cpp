@@ -404,6 +404,7 @@ void unholy( player_t* p )
   generic->add_action( "death_coil" );
 
   opener->add_action( "summon_gargoyle,use_off_gcd=1,if=buff.commander_of_the_dead_window.up", "Opener" );
+  opener->add_action( "potion,if=pet.gargoyle.active|!talent.summon_gargoyle&pet.army_ghoul.active|!talent.summon_gargoyle&!talent.army_of_the_dead&buff.dark_transformation.up" );
   opener->add_action( "death_coil,if=pet.gargoyle.active&!prev_gcd.1.death_coil" );
   opener->add_action( "apocalypse,if=buff.commander_of_the_dead_window.up" );
   opener->add_action( "dark_transformation,if=debuff.festering_wound.stack>=4" );
