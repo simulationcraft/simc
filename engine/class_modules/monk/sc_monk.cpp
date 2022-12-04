@@ -1977,9 +1977,10 @@ struct charred_passions_bok_t : public monk_spell_t
 {
   charred_passions_bok_t( monk_t* p ) : monk_spell_t( "charred_passions_bok", p, p->passives.charred_passions_dmg )
   {
-    background = dual = true;
-    proc              = true;
-    may_crit          = false;
+    background = dual      = true;
+    proc                   = true;
+    may_crit               = false;
+    trigger_resonant_fists = false;
   }
 };
 
@@ -2284,7 +2285,7 @@ struct sck_tick_action_t : public monk_melee_attack_t
 
     dual = background   = true;
     aoe                 = -1;
-    reduced_aoe_targets = p->spec.spinning_crane_kick->effectN( 1 ).base_value();
+    reduced_aoe_targets = p->specialization() == MONK_BREWMASTER ? 5.0 : p->spec.spinning_crane_kick->effectN( 1 ).base_value();
     radius              = data->effectN( 1 ).radius();
 
     if ( p->talent.windwalker.widening_whirl.ok() )
@@ -3881,13 +3882,12 @@ struct breath_of_fire_t : public monk_spell_t
       // Currently value is saved as 100% and each of the values is a divisable of 33%
       auto bof_stagger_bonus = p()->talent.brewmaster.dragonfire_brew->effectN( 2 ).percent();
       if ( p()->buff.light_stagger->check() )
-        am *= 1 + ( ( 1 / 3 ) * bof_stagger_bonus);
+        am *= 1 + ( ( 1.0 / 3.0 ) * bof_stagger_bonus );
       if ( p()->buff.moderate_stagger->check() )
-        am *= 1 + ( ( 2 / 3 ) * bof_stagger_bonus );
+        am *= 1 + ( ( 2.0 / 3.0 ) * bof_stagger_bonus );
       if ( p()->buff.heavy_stagger->check() )
         am *= 1 + bof_stagger_bonus;
     }
-    am *= p()->cache.mastery_value();
 
     return am;
   }
