@@ -5498,10 +5498,12 @@ struct wild_growth_t : public druid_heal_t
 // Ysera's Gift =============================================================
 struct yseras_gift_t : public druid_heal_t
 {
-  yseras_gift_t( druid_t* p ) : druid_heal_t( "yseras_gift", p, p->find_spell( 145109 ) )
+  double mul;
+
+  yseras_gift_t( druid_t* p )
+    : druid_heal_t( "yseras_gift", p, p->find_spell( 145109 ) ), mul( p->talent.yseras_gift->effectN( 1 ).percent() )
   {
     background = dual = true;
-    base_pct_heal = p->talent.yseras_gift->effectN( 1 ).percent();
   }
 
   void init() override
@@ -5509,6 +5511,11 @@ struct yseras_gift_t : public druid_heal_t
     druid_heal_t::init();
 
     snapshot_flags &= ~STATE_VERSATILITY;  // Is not affected by versatility.
+  }
+
+  double bonus_da( const action_state_t* ) const override
+  {
+    return p()->resources.max[ RESOURCE_HEALTH ] * mul;
   }
 
   void execute() override
