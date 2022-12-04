@@ -2436,6 +2436,7 @@ void primal_ritual_shell( special_effect_t& effect )
   {
     if ( util::str_compare_ci( blessing, "wind" ) )
     {
+      // Wind Turtle's Blessing - Mastery Proc [390899]
       effect.stat_amount = effect.driver()->effectN( 5 ).average( effect.item );
       effect.spell_id = 390899;
       effect.stat = STAT_MASTERY_RATING;
@@ -2447,8 +2448,9 @@ void primal_ritual_shell( special_effect_t& effect )
     }
     else if ( util::str_compare_ci( blessing, "flame" ) )
     {
-      // TODO: Implement Flame Turtle's Blessing - Fire Damage Proc [390835]
-      effect.player->sim->error( "Flame Turtle's Blessing is not implemented yet" );
+      // Flame Turtle's Blessing - Fire Damage Proc [390835]
+      effect.discharge_amount = effect.driver()->effectN( 3 ).average( effect.item );
+      effect.spell_id = 390835;
     }
     else if ( util::str_compare_ci( blessing, "sea" ) )
     {
