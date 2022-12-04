@@ -403,11 +403,11 @@ void unholy( player_t* p )
   generic->add_action( "festering_strike,target_if=min:debuff.festering_wound.stack,if=!variable.pop_wounds" );
   generic->add_action( "death_coil" );
 
-  opener->add_action( "festering_strike,target_if=min:debuff.festering_wound.stack,if=!variable.pop_wounds", "Opener" );
-  opener->add_action( "summon_gargoyle,use_off_gcd=1,if=buff.commander_of_the_dead_window.up" );
-  opener->add_action( "death_coil,if=pet.gargoyle.active&runic_power.deficit=0" );
+  opener->add_action( "summon_gargoyle,use_off_gcd=1,if=buff.commander_of_the_dead_window.up", "Opener" );
+  opener->add_action( "death_coil,if=pet.gargoyle.active&!prev_gcd.1.death_coil" );
   opener->add_action( "apocalypse,if=buff.commander_of_the_dead_window.up" );
   opener->add_action( "dark_transformation,if=debuff.festering_wound.stack>=4" );
+  opener->add_action( "festering_strike,target_if=min:debuff.festering_wound.stack,if=!variable.pop_wounds" );
   opener->add_action( "variable,name=opener_done,op=setif,value=1,value_else=0,condition=cooldown.apocalypse.remains|!talent.apocalypse&(cooldown.dark_transformation.remains|cooldown.summon_gargoyle.remains)" );
 
   racials->add_action( "arcane_torrent,if=runic_power.deficit>20&(cooldown.summon_gargoyle.remains<gcd|!talent.summon_gargoyle.enabled|pet.gargoyle.active&rune<2&debuff.festering_wound.stack<1)", "Racials" );
