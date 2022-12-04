@@ -2285,13 +2285,13 @@ struct sck_tick_action_t : public monk_melee_attack_t
 
     dual = background   = true;
     aoe                 = -1;
-    reduced_aoe_targets = p->specialization() == MONK_BREWMASTER ? 5.0 : p->spec.spinning_crane_kick->effectN( 1 ).base_value();
+    reduced_aoe_targets = p->spec.spinning_crane_kick->effectN( 1 ).base_value();
     radius              = data->effectN( 1 ).radius();
 
     if ( p->talent.windwalker.widening_whirl.ok() )
         radius *= 1 + p->talent.windwalker.widening_whirl->effectN( 1 ).percent();
 
-    if ( p->specialization() == MONK_WINDWALKER )
+    if ( p->specialization() == MONK_WINDWALKER || p->specialization() == MONK_BREWMASTER )
       apply_dual_wield_two_handed_scaling();
 
     // Reset some variables to ensure proper execution
@@ -7340,7 +7340,7 @@ void monk_t::init_spells()
   spec.provoke                                          = find_class_spell( "Provoke" );
   spec.resuscitate                                      = find_class_spell( "Resuscitate" );
   spec.roll                                             = find_class_spell( "Roll" );
-  spec.spinning_crane_kick                              = find_class_spell( "Spinning Crane Kick" );
+  spec.spinning_crane_kick                              = find_spell( 101546 );
   spec.tiger_palm                                       = find_class_spell( "Tiger Palm" );
   spec.touch_of_death                                   = find_spell( 322109 );
   spec.vivify                                           = find_class_spell( "Vivify" );
