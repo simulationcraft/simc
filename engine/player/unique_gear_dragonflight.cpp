@@ -2432,7 +2432,7 @@ void blazebinders_hoof(special_effect_t& effect)
 
 void primal_ritual_shell( special_effect_t& effect )
 {
-  auto blessing = effect.player->sim->dragonflight_opts.primal_ritual_shell_blessing;
+  const auto& blessing = effect.player->sim->dragonflight_opts.primal_ritual_shell_blessing;
   {
     if ( util::str_compare_ci( blessing, "wind" ) )
     {
