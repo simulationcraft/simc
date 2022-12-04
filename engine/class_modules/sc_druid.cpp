@@ -7969,6 +7969,11 @@ struct convoke_the_spirits_t : public druid_spell_t
 
     // create deck for exceptional spell cast
     deck = p->get_shuffled_rng( "convoke_the_spirits", 1, guidance ? 2 : p->options.convoke_the_spirits_deck );
+  }
+
+  void init() override
+  {
+    druid_spell_t::init();
 
     using namespace bear_attacks;
     using namespace cat_attacks;
@@ -7976,17 +7981,17 @@ struct convoke_the_spirits_t : public druid_spell_t
     // Create actions used by all specs
     actions.conv_wrath       = get_convoke_action<wrath_t>( "wrath", "" );
     actions.conv_moonfire    = get_convoke_action<moonfire_t>( "moonfire", "" );
-    actions.conv_rake        = get_convoke_action<rake_t>( "rake", p->find_spell( 1822 ), "" );
-    actions.conv_thrash_bear = get_convoke_action<thrash_bear_t>( "thrash_bear", p->find_spell( 77758 ), "" );
+    actions.conv_rake        = get_convoke_action<rake_t>( "rake", p()->find_spell( 1822 ), "" );
+    actions.conv_thrash_bear = get_convoke_action<thrash_bear_t>( "thrash_bear", p()->find_spell( 77758 ), "" );
 
     // Call form-specific initialization to create necessary actions & setup variables
-    if ( p->find_action( "moonkin_form" ) )
+    if ( p()->find_action( "moonkin_form" ) )
       _init_moonkin();
 
-    if ( p->find_action( "bear_form" ) )
+    if ( p()->find_action( "bear_form" ) )
       _init_bear();
 
-    if ( p->find_action( "cat_form" ) )
+    if ( p()->find_action( "cat_form" ) )
       _init_cat();
   }
 
