@@ -5504,8 +5504,6 @@ void player_t::combat_begin()
   };
 
   add_timed_buff_triggers( external_buffs.power_infusion, buffs.power_infusion );
-  add_timed_buff_triggers( external_buffs.benevolent_faerie, buffs.benevolent_faerie );
-  add_timed_buff_triggers( external_buffs.bwonsamdis_pact_benevolent, buffs.bwonsamdis_pact_benevolent );
   add_timed_buff_triggers( external_buffs.conquerors_banner, buffs.conquerors_banner );
   add_timed_buff_triggers( external_buffs.rallying_cry, buffs.rallying_cry );
   add_timed_buff_triggers( external_buffs.pact_of_the_soulstalkers, buffs.pact_of_the_soulstalkers );
@@ -6332,7 +6330,7 @@ void player_t::schedule_ready( timespan_t delta_time, bool waiting )
     delta_time += lag;
   }
 
-  if ( last_foreground_action )
+  if ( last_foreground_action && last_foreground_action->gcd() > timespan_t::zero() )
   {
     // This is why "total_execute_time" is not tracked per-target!
     last_foreground_action->stats->iteration_total_execute_time += delta_time;
@@ -12561,8 +12559,6 @@ void player_t::create_options()
   };
 
   add_option( opt_external_buff_times( "external_buffs.power_infusion", external_buffs.power_infusion ) );
-  add_option( opt_external_buff_times( "external_buffs.benevolent_faerie", external_buffs.benevolent_faerie ) );
-  add_option( opt_external_buff_times( "external_buffs.bwonsamdis_pact_benevolent", external_buffs.bwonsamdis_pact_benevolent ) );
   add_option( opt_external_buff_times( "external_buffs.blessing_of_summer", external_buffs.blessing_of_summer ) );
   add_option( opt_external_buff_times( "external_buffs.blessing_of_autumn", external_buffs.blessing_of_autumn ) );
   add_option( opt_external_buff_times( "external_buffs.blessing_of_winter", external_buffs.blessing_of_winter ) );

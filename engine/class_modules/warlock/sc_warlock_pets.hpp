@@ -18,8 +18,6 @@ struct warlock_pet_td_t : public actor_target_data_t
 {
   propagate_const<buff_t*> debuff_infernal_brand;
   propagate_const<buff_t*> debuff_whiplash;
-  // DF - Should From the Shadows be added here or only on owner target data?
-  // DF - Should Fel Sunder be added here or only on owner target data?
 
   warlock_pet_t& pet;
   warlock_pet_td_t( player_t*, warlock_pet_t& );
@@ -35,9 +33,7 @@ struct warlock_pet_t : public pet_t
   {
     propagate_const<buff_t*> embers;  // Infernal Shard Generation
     propagate_const<buff_t*> demonic_strength; // Talent that buffs Felguard
-    propagate_const<buff_t*> demonic_consumption; // DF - REMOVED (Replace with Reign of Tyranny buffs)
     propagate_const<buff_t*> grimoire_of_service; // Buff used by Grimoire: Felguard talent
-    propagate_const<buff_t*> grim_inquisitors_dread_calling; // DF - REMOVED (talent is new spell IDs)
     propagate_const<buff_t*> demonic_synergy;
     propagate_const<buff_t*> annihilan_training; // Permanent aura when talented, 10% increased damage to all abilities
     propagate_const<buff_t*> dread_calling;
@@ -50,8 +46,6 @@ struct warlock_pet_t : public pet_t
     propagate_const<buff_t*> fiendish_wrath; // Guillotine talent buff, causes AoE melee attacks and prevents Felstorm
     propagate_const<buff_t*> demonic_inspiration; // Haste buff triggered by filling a Soul Shard
     propagate_const<buff_t*> wrathful_minion; // Damage buff triggered by filling a Soul Shard
-    // DF - Guillotine + Fiendish Wrath (Guillotine talent)
-    // DF - Review permanent passive pet buffs and determine if they should be implemented or just assumed based on presence of talents
   } buffs;
 
   bool is_main_pet          = false;
@@ -428,28 +422,6 @@ struct wild_imp_pet_t : public warlock_pet_t
 private:
   void reschedule_firebolt();
 };
-
-// DF - Determine if still available (comes from SL Tier Set)
-struct malicious_imp_pet_t : public warlock_pet_t
-{
-  action_t* firebolt;
-  action_t* doombolt;
-  action_t* spite;
-  bool imploded;
-
-  malicious_imp_pet_t( warlock_t* );
-  void init_base_stats() override;
-  void create_actions() override;
-  void schedule_ready( timespan_t, bool ) override;
-  void arise() override;
-  void demise() override;
-  void finish_moving() override;
-
-private:
-  void reschedule_firebolt();
-};
-
-// DF - Imp Gang Boss is treated as buffed Wild Imp for now
 
 struct dreadstalker_t : public warlock_pet_t
 {

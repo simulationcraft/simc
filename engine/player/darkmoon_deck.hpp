@@ -27,7 +27,7 @@ struct darkmoon_deck_t
   timespan_t shuffle_period;
   size_t top_index;
 
-  darkmoon_deck_t( const special_effect_t& e, const std::vector<unsigned> c );
+  darkmoon_deck_t( const special_effect_t& e, std::vector<unsigned> c );
 
   virtual ~darkmoon_deck_t() = default;
 
@@ -42,7 +42,7 @@ struct darkmoon_buff_deck_t : public darkmoon_deck_t
   std::vector<BUFF_TYPE*> cards;
   BUFF_TYPE* top_card;
 
-  darkmoon_buff_deck_t( const special_effect_t& effect, const std::vector<unsigned> c )
+  darkmoon_buff_deck_t( const special_effect_t& effect, std::vector<unsigned> c )
     : darkmoon_deck_t( effect, std::move( c ) ), top_card( nullptr )
   {}
 

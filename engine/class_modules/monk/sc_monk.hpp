@@ -13,6 +13,7 @@
 
 namespace monk
 {
+
 namespace actions::spells
 {
 struct stagger_self_damage_t;
@@ -21,17 +22,10 @@ namespace pets
 {
 struct storm_earth_and_fire_pet_t;
 struct xuen_pet_t;
-struct call_to_arms_xuen_pet_t;
 struct niuzao_pet_t;
 struct call_to_arms_niuzao_pet_t;
 struct chiji_pet_t;
 struct yulon_pet_t;
-struct tiger_adept_pet_t;
-struct ox_adept_pet_t;
-struct crane_adept_pet_t;
-struct sinister_teaching_tiger_adept_pet_t;
-struct sinister_teaching_ox_adept_pet_t;
-struct sinister_teaching_crane_adept_pet_t;
 struct white_tiger_statue_t;
 struct fury_of_xuen_pet_t;
 }
@@ -104,7 +98,6 @@ public:
     propagate_const<dot_t*> renewing_mist;
     propagate_const<dot_t*> rushing_jade_wind;
     propagate_const<dot_t*> soothing_mist;
-    propagate_const<dot_t*> touch_of_death;
     propagate_const<dot_t*> touch_of_karma;
   } dots;
 
@@ -124,15 +117,11 @@ public:
     // Covenant Abilities
     propagate_const<buff_t*> bonedust_brew;
     propagate_const<buff_t*> faeline_stomp;
-    propagate_const<buff_t*> faeline_stomp_brm;
-    propagate_const<buff_t*> fallen_monk_keg_smash;
     propagate_const<buff_t*> weapons_of_order;
 
     // Shadowland Legendaries
-    propagate_const<buff_t*> call_to_arms_empowered_tiger_lightning;
     propagate_const<buff_t*> fae_exposure;
     propagate_const<buff_t*> keefers_skyreach;
-    propagate_const<buff_t*> sinister_teaching_fallen_monk_keg_smash;
     propagate_const<buff_t*> skyreach_exhaustion;
   } debuff;
 
@@ -170,10 +159,13 @@ public:
 
   struct active_actions_t
   {
-    action_t* rushing_jade_wind;
 
     // General
+    propagate_const<action_t*> bonedust_brew_dmg;
+    propagate_const<action_t*> bonedust_brew_heal;
+    propagate_const<action_t*> bountiful_brew;
     propagate_const<action_t*> resonant_fists;
+    propagate_const<action_t*> rushing_jade_wind;
 
     // Brewmaster
     propagate_const<action_t*> breath_of_fire;
@@ -187,17 +179,6 @@ public:
     // Windwalker
     propagate_const<action_t*> empowered_tiger_lightning;
     propagate_const<action_t*> fury_of_xuen_empowered_tiger_lightning;
-
-    // Conduit
-    propagate_const<heal_t*> evasive_stride;
-
-    // Covenant
-    propagate_const<action_t*> bonedust_brew_dmg;
-    propagate_const<action_t*> bonedust_brew_heal;
-
-    // Legendary
-    propagate_const<action_t*> bountiful_brew;
-    propagate_const<action_t*> call_to_arms_empowered_tiger_lightning;
   } active_actions;
 
   struct passive_actions_t
@@ -220,14 +201,101 @@ public:
 
   double gift_of_the_ox_proc_chance;
 
+  //==============================================
+  // Monk Movement
+  //==============================================
+
+  struct monk_movement_t : public buff_t
+  {
+  private:
+    monk_t* p;
+
+    propagate_const<buff_t*> base_movement;
+    const spell_data_t* data;
+
+  public:
+    double distance_moved;
+
+    monk_movement_t( monk_t* player, util::string_view n, const spell_data_t* s = spell_data_t::not_found() )
+      : buff_t( player, n ), p( player ), data( s ), base_movement( find( player, "movement" ) )
+    {
+      set_chance( 1 );
+      set_max_stack( 1 );
+      set_duration( timespan_t::from_seconds(1 ) );
+
+      if ( base_movement == nullptr )
+        base_movement = new movement_buff_t( p );
+
+      if ( s->ok() )
+      {
+        set_trigger_spell( s );
+        set_duration( s->duration() );
+      }
+    };
+
+    void set_distance( double distance )
+    {
+      distance_moved = distance;
+    }
+
+    bool trigger( int s = 1, double v = -std::numeric_limits<double>::min(), double c = -1.0, timespan_t d = timespan_t::min() ) override
+    {
+      if ( distance_moved > 0 )
+      {
+        // Check if we're already moving away from the target, if so we will now be moving towards it
+        if ( p->current.distance_to_move )
+        {
+          // TODO: Movement speed increase based on distance_moved for roll / fsk style abilities
+          if ( data->ok() )
+          {
+
+          }
+          p->current.distance_to_move = distance_moved;
+          p->current.movement_direction = movement_direction_type::TOWARDS;
+        }
+        else
+        {
+          // TODO: Set melee out of range
+          p->current.moving_away = distance_moved;
+          p->current.movement_direction = movement_direction_type::AWAY;
+        }
+
+        return base_movement->trigger( s, v, c, this->buff_duration() );
+      }
+
+      return false;
+    }
+
+    void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+    {
+      base_movement->expire_override( expiration_stacks, remaining_duration );
+    }
+  };
+
+  struct movement_t
+  {
+    propagate_const<monk_movement_t*> chi_torpedo;
+    propagate_const<monk_movement_t*> flying_serpent_kick;
+    propagate_const<monk_movement_t*> melee_squirm;
+    propagate_const<monk_movement_t*> roll;
+    propagate_const<monk_movement_t*> whirling_dragon_punch;
+  } movement;
+
+  //=================================================
+
   struct buffs_t
   {
     // General
+    propagate_const<buff_t*> bonedust_brew;
+    propagate_const<buff_t*> bonedust_brew_attenuation_hidden;
     propagate_const<buff_t*> chi_torpedo;
     propagate_const<buff_t*> close_to_heart_driver;
     propagate_const<buff_t*> dampen_harm;
     propagate_const<buff_t*> diffuse_magic;
+    propagate_const<buff_t*> faeline_stomp;
+    propagate_const<buff_t*> faeline_stomp_reset;
     propagate_const<buff_t*> generous_pour_driver;
+    propagate_const<buff_t*> invokers_delight;
     propagate_const<buff_t*> rushing_jade_wind;
     propagate_const<buff_t*> spinning_crane_kick;
     propagate_const<buff_t*> windwalking_driver;
@@ -237,6 +305,7 @@ public:
     propagate_const<buff_t*> blackout_combo;
     propagate_const<absorb_buff_t*> celestial_brew;
     propagate_const<buff_t*> celestial_flames;
+    propagate_const<buff_t*> charred_passions;
     propagate_const<buff_t*> counterstrike;
     propagate_const<buff_t*> elusive_brawler;
     propagate_const<buff_t*> exploding_keg;
@@ -249,6 +318,7 @@ public:
     propagate_const<buff_t*> purified_chi;
     propagate_const<buff_t*> shuffle;
     propagate_const<buff_t*> training_of_niuzao;
+    propagate_const<buff_t*> weapons_of_order;
     propagate_const<buff_t*> zen_meditation;
     // niuzao r2 recent purifies fake buff
     propagate_const<buff_t*> recent_purifies;
@@ -272,49 +342,28 @@ public:
 
     // Windwalker
     propagate_const<buff_t*> bok_proc;
+    propagate_const<buff_t*> chi_energy;
     propagate_const<buff_t*> combo_strikes;
     propagate_const<buff_t*> dance_of_chiji;
     propagate_const<buff_t*> dance_of_chiji_hidden;  // Used for trigger DoCJ ticks
     propagate_const<buff_t*> dizzying_kicks;
+    propagate_const<buff_t*> fae_exposure;
     propagate_const<buff_t*> flying_serpent_kick_movement;
     propagate_const<buff_t*> fury_of_xuen_stacks;
     propagate_const<buff_t*> fury_of_xuen_haste;
     propagate_const<buff_t*> hidden_masters_forbidden_touch;
     propagate_const<buff_t*> hit_combo;
     propagate_const<buff_t*> invoke_xuen;
+    propagate_const<buff_t*> pressure_point;
     propagate_const<buff_t*> storm_earth_and_fire;
     propagate_const<buff_t*> serenity;
+    propagate_const<buff_t*> the_emperors_capacitor;
     propagate_const<buff_t*> thunderfist;
     propagate_const<buff_t*> touch_of_death_ww;
     propagate_const<buff_t*> touch_of_karma;
     propagate_const<buff_t*> transfer_the_power;
     propagate_const<buff_t*> whirling_dragon_punch;
     propagate_const<buff_t*> power_strikes;
-
-    // Covenant Abilities
-    propagate_const<buff_t*> bonedust_brew;
-    propagate_const<buff_t*> bonedust_brew_grounding_breath_hidden;
-    propagate_const<buff_t*> bonedust_brew_attenuation_hidden;
-    propagate_const<buff_t*> weapons_of_order;
-    propagate_const<buff_t*> weapons_of_order_ww;
-    propagate_const<buff_t*> faeline_stomp;
-    propagate_const<buff_t*> faeline_stomp_brm;
-    propagate_const<buff_t*> faeline_stomp_reset;
-    propagate_const<buff_t*> fallen_order;
-    propagate_const<buff_t*> windwalking_venthyr;
-
-    // Covenant Conduits
-    propagate_const<absorb_buff_t*> fortifying_ingrediences;
-
-    // Shadowland Legendary
-    propagate_const<buff_t*> chi_energy;
-    propagate_const<buff_t*> charred_passions;
-    propagate_const<buff_t*> fae_exposure;
-    propagate_const<buff_t*> invokers_delight;
-    propagate_const<buff_t*> mighty_pour;
-    propagate_const<buff_t*> pressure_point;
-    propagate_const<buff_t*> the_emperors_capacitor;
-    propagate_const<buff_t*> invoke_xuen_call_to_arms;
 
     // T29 Set Bonus
     propagate_const<buff_t*> kicks_of_flowing_momentum;
@@ -327,6 +376,7 @@ public:
   struct gains_t
   {
     propagate_const<gain_t*> black_ox_brew_energy;
+    propagate_const<gain_t*> bonedust_brew;
     propagate_const<gain_t*> chi_refund;
     propagate_const<gain_t*> bok_proc;
     propagate_const<gain_t*> chi_burst;
@@ -340,17 +390,15 @@ public:
     propagate_const<gain_t*> gift_of_the_ox;
     propagate_const<gain_t*> glory_of_the_dawn;
     propagate_const<gain_t*> healing_elixir;
+    propagate_const<gain_t*> open_palm_strikes;
+    propagate_const<gain_t*> power_strikes;
     propagate_const<gain_t*> rushing_jade_wind_tick;
     propagate_const<gain_t*> serenity;
     propagate_const<gain_t*> spirit_of_the_crane;
     propagate_const<gain_t*> tiger_palm;
     propagate_const<gain_t*> touch_of_death_ww;
-    propagate_const<gain_t*> power_strikes;
-    propagate_const<gain_t*> open_palm_strikes;
-
-    // Covenants
-    propagate_const<gain_t*> bonedust_brew;
     propagate_const<gain_t*> weapons_of_order;
+
   } gain;
 
   struct procs_t
@@ -366,7 +414,6 @@ public:
     propagate_const<proc_t*> blackout_kick_cdr;
     propagate_const<proc_t*> blackout_kick_cdr_serenity_with_woo;
     propagate_const<proc_t*> blackout_kick_cdr_serenity;
-    propagate_const<proc_t*> boiling_brew_healing_sphere;
     propagate_const<proc_t*> bonedust_brew_reduction;
     propagate_const<proc_t*> bountiful_brew_proc;
     propagate_const<proc_t*> charred_passions_bok;
@@ -382,11 +429,8 @@ public:
     propagate_const<proc_t*> resonant_fists;
     propagate_const<proc_t*> rsk_reset_totm;
     propagate_const<proc_t*> salsalabim_bof_reset;
-    propagate_const<proc_t*> sinister_teaching_reduction;
     propagate_const<proc_t*> tranquil_spirit_expel_harm;
     propagate_const<proc_t*> tranquil_spirit_goto;
-    propagate_const<proc_t*> tumbling_technique_chi_torpedo;
-    propagate_const<proc_t*> tumbling_technique_roll;
     propagate_const<proc_t*> xuens_battlegear_reduction;
   } proc;
 
@@ -408,6 +452,7 @@ public:
       player_talent_t vigorous_expulsion;
       player_talent_t improved_vivify;
       player_talent_t detox;
+      player_talent_t improved_detox;
       player_talent_t paralysis;
       // Row 4
       player_talent_t grace_of_the_crane;
@@ -663,27 +708,12 @@ public:
     const spell_data_t* attenuation;
     const spell_data_t* bonedust_brew;
     const spell_data_t* bountiful_brew;
-    const spell_data_t* call_to_arms;
-    const spell_data_t* charred_passions;
-    const spell_data_t* face_palm;
-    const spell_data_t* fatal_touch;
-    const spell_data_t* faeline_harmony;
     const spell_data_t* faeline_stomp;
     const spell_data_t* healing_elixir;
     const spell_data_t* invokers_delight;
-    const spell_data_t* jade_ignition;
-    const spell_data_t* last_emperors_capacitor;
     const spell_data_t* rushing_jade_wind;
-    const spell_data_t* scalding_brew;
     const spell_data_t* shadowboxing_treads;
-    const spell_data_t* skyreach;
-    const spell_data_t* stormstouts_last_keg;
     const spell_data_t* teachings_of_the_monastery;
-    const spell_data_t* walk_with_the_ox;
-    const spell_data_t* way_of_the_fae;
-    const spell_data_t* weapons_of_order;
-    const spell_data_t* xuens_battlegear;
-    const spell_data_t* xuens_bond;
   } shared;
 
   // Specialization
@@ -691,104 +721,56 @@ public:
   {
     // GENERAL
     const spell_data_t* blackout_kick;
-    const spell_data_t* blackout_kick_2;
-    const spell_data_t* blackout_kick_3;
-    const spell_data_t* blackout_kick_brm;
     const spell_data_t* crackling_jade_lightning;
     const spell_data_t* critical_strikes;
-    //const spell_data_t* detox;
     const spell_data_t* expel_harm;
-    const spell_data_t* expel_harm_2_brm;
-    const spell_data_t* expel_harm_2_mw;
-    const spell_data_t* expel_harm_2_ww;
-    const spell_data_t* fortifying_brew;
-    const spell_data_t* leather_specialization;
     const spell_data_t* leg_sweep;
     const spell_data_t* mystic_touch;
-    //const spell_data_t* paralysis;
     const spell_data_t* provoke;
-    const spell_data_t* provoke_2;
     const spell_data_t* resuscitate;
-    //const spell_data_t* rising_sun_kick;
-    const spell_data_t* rising_sun_kick_2;
     const spell_data_t* roll;
-    //const spell_data_t* roll_2;
-    //const spell_data_t* spear_hand_strike;
     const spell_data_t* spinning_crane_kick;
-    const spell_data_t* spinning_crane_kick_brm;
-    const spell_data_t* spinning_crane_kick_2_brm;
-    const spell_data_t* spinning_crane_kick_2_ww;
     const spell_data_t* tiger_palm;
     const spell_data_t* touch_of_death;
-    const spell_data_t* touch_of_death_2;
-    const spell_data_t* touch_of_death_3_brm;
-    const spell_data_t* touch_of_death_3_mw;
-    const spell_data_t* touch_of_death_3_ww;
-    const spell_data_t* two_hand_adjustment;
+    const spell_data_t* touch_of_fatality;
     const spell_data_t* vivify;
-    const spell_data_t* vivify_2_brm;
-    const spell_data_t* vivify_2_mw;
-    const spell_data_t* vivify_2_ww;
 
     // Brewmaster
-    const spell_data_t* bladed_armor;
-    //const spell_data_t* breath_of_fire;
+    const spell_data_t* blackout_kick_brm;
     const spell_data_t* brewmasters_balance;
     const spell_data_t* brewmaster_monk;
-    //const spell_data_t* celestial_brew;
-    //const spell_data_t* celestial_brew_2;
     const spell_data_t* celestial_fortune;
-    //const spell_data_t* clash;
-    //const spell_data_t* gift_of_the_ox;
-    //const spell_data_t* invoke_niuzao;
-    //const spell_data_t* invoke_niuzao_2;
-    //const spell_data_t* keg_smash;
-    //const spell_data_t* purifying_brew;
-    //const spell_data_t* purifying_brew_2;
-    //const spell_data_t* shuffle;
-    //const spell_data_t* stagger;
-    const spell_data_t* stagger_2;
-    //const spell_data_t* zen_meditation;
+    const spell_data_t* expel_harm_2_brm;
+    const spell_data_t* leather_specialization_brm;
+    const spell_data_t* spinning_crane_kick_brm;
+    const spell_data_t* spinning_crane_kick_2_brm;
+    const spell_data_t* touch_of_death_3_brm;
+    const spell_data_t* two_hand_adjustment_brm;
 
     // Mistweaver
-    const spell_data_t* enveloping_mist;
-    const spell_data_t* envoloping_mist_2;
-    const spell_data_t* essence_font;
-    const spell_data_t* essence_font_2;
-    const spell_data_t* invoke_yulon;
-    const spell_data_t* life_cocoon;
-    const spell_data_t* life_cocoon_2;
+    const spell_data_t* detox;
+    const spell_data_t* expel_harm_2_mw;
+    const spell_data_t* expel_harm_3_mw;
+    const spell_data_t* leather_specialization_mw;
     const spell_data_t* mistweaver_monk;
     const spell_data_t* reawaken;
-    const spell_data_t* renewing_mist;
-    const spell_data_t* renewing_mist_2;
-    const spell_data_t* revival;
-    const spell_data_t* revival_2;
-    const spell_data_t* soothing_mist;
-    const spell_data_t* teachings_of_the_monastery;
-    const spell_data_t* thunder_focus_tea;
-    const spell_data_t* thunder_focus_tea_2;
+    const spell_data_t* touch_of_death_3_mw;
 
     // Windwalker
     const spell_data_t* afterlife;
     const spell_data_t* afterlife_2;
-    const spell_data_t* combat_conditioning;  // Possibly will get removed
+    const spell_data_t* blackout_kick_2;
+    const spell_data_t* blackout_kick_3;
+    const spell_data_t* combat_conditioning;
     const spell_data_t* combo_breaker;
-    const spell_data_t* cyclone_strikes;
-    //const spell_data_t* disable;
     const spell_data_t* disable_2;
-    //const spell_data_t* fists_of_fury;
-    //const spell_data_t* flying_serpent_kick;
+    const spell_data_t* expel_harm_2_ww;
     const spell_data_t* flying_serpent_kick_2;
-    //const spell_data_t* invoke_xuen;
-    const spell_data_t* invoke_xuen_2;
-    const spell_data_t* reverse_harm;
-    const spell_data_t* stance_of_the_fierce_tiger;
-    const spell_data_t* storm_earth_and_fire;
-    const spell_data_t* storm_earth_and_fire_2;
-    //const spell_data_t* touch_of_karma;
+    const spell_data_t* leather_specialization_ww;
+    const spell_data_t* spinning_crane_kick_2_ww;
+    const spell_data_t* touch_of_death_3_ww;
+    const spell_data_t* two_hand_adjustment_ww;
     const spell_data_t* windwalker_monk;
-    const spell_data_t* windwalking;
   } spec;
 
   struct mastery_spells_t
@@ -805,12 +787,17 @@ public:
     propagate_const<cooldown_t*> blackout_kick;
     propagate_const<cooldown_t*> black_ox_brew;
     propagate_const<cooldown_t*> brewmaster_attack;
+    propagate_const<cooldown_t*> bonedust_brew;
+    propagate_const<cooldown_t*> bountiful_brew;
     propagate_const<cooldown_t*> breath_of_fire;
     propagate_const<cooldown_t*> chi_torpedo;
     propagate_const<cooldown_t*> celestial_brew;
+    propagate_const<cooldown_t*> charred_passions;
     propagate_const<cooldown_t*> desperate_measure;
     propagate_const<cooldown_t*> drinking_horn_cover;
     propagate_const<cooldown_t*> expel_harm;
+    propagate_const<cooldown_t*> faeline_stomp;
+    propagate_const<cooldown_t*> fallen_order;
     propagate_const<cooldown_t*> fists_of_fury;
     propagate_const<cooldown_t*> flying_serpent_kick;
     propagate_const<cooldown_t*> fortifying_brew;
@@ -832,17 +819,7 @@ public:
     propagate_const<cooldown_t*> thunder_focus_tea;
     propagate_const<cooldown_t*> touch_of_death;
     propagate_const<cooldown_t*> serenity;
-
-    // Covenants
     propagate_const<cooldown_t*> weapons_of_order;
-    propagate_const<cooldown_t*> bonedust_brew;
-    propagate_const<cooldown_t*> faeline_stomp;
-    propagate_const<cooldown_t*> fallen_order;
-
-    // Legendary
-    propagate_const<cooldown_t*> charred_passions;
-    propagate_const<cooldown_t*> bountiful_brew;
-    propagate_const<cooldown_t*> sinister_teachings;
 
     // T29
     propagate_const<cooldown_t*> brewmasters_rhythm;
@@ -852,25 +829,34 @@ public:
   {
     // General
     const spell_data_t* aura_monk;
+    const spell_data_t* bonedust_brew_dmg;
+    const spell_data_t* bonedust_brew_heal;
+    const spell_data_t* bonedust_brew_chi;
+    const spell_data_t* bonedust_brew_attenuation;
     const spell_data_t* chi_burst_damage;
     const spell_data_t* chi_burst_energize;
     const spell_data_t* chi_burst_heal;
     const spell_data_t* chi_wave_damage;
     const spell_data_t* chi_wave_heal;
     const spell_data_t* claw_of_the_white_tiger;
+    const spell_data_t* faeline_stomp_damage;
+    const spell_data_t* faeline_stomp_ww_damage;
     const spell_data_t* fortifying_brew;
     const spell_data_t* healing_elixir;
     const spell_data_t* mystic_touch;
 
     // Brewmaster
     const spell_data_t* breath_of_fire_dot;
+    const spell_data_t* call_to_arms_invoke_niuzao;
     const spell_data_t* celestial_fortune;
+    const spell_data_t* charred_passions_dmg;
     const spell_data_t* dragonfire_brew;
     const spell_data_t* elusive_brawler;
     const spell_data_t* face_palm;
     const spell_data_t* gai_plins_imperial_brew_heal;
     const spell_data_t* gift_of_the_ox_heal;
     const spell_data_t* keg_smash_buff;
+    const spell_data_t* shaohaos_might;
     const spell_data_t* shuffle;
     const spell_data_t* special_delivery;
     const spell_data_t* stagger_self_damage;
@@ -887,6 +873,7 @@ public:
 
     // Windwalker
     const spell_data_t* bok_proc;
+    const spell_data_t* chi_explosion;
     const spell_data_t* crackling_tiger_lightning;
     const spell_data_t* crackling_tiger_lightning_driver;
     const spell_data_t* cyclone_strikes;
@@ -894,6 +881,8 @@ public:
     const spell_data_t* dance_of_chiji_bug;
     const spell_data_t* dizzying_kicks;
     const spell_data_t* empowered_tiger_lightning;
+    const spell_data_t* fae_exposure_dmg;
+    const spell_data_t* fae_exposure_heal;
     const spell_data_t* fists_of_fury_tick;
     const spell_data_t* flying_serpent_kick_damage;
     const spell_data_t* focus_of_xuen;
@@ -902,6 +891,7 @@ public:
     const spell_data_t* glory_of_the_dawn_damage;
     const spell_data_t* hidden_masters_forbidden_touch;
     const spell_data_t* hit_combo;
+    const spell_data_t* improved_touch_of_death;
     const spell_data_t* keefers_skyreach_debuff;
     const spell_data_t* mark_of_the_crane;
     const spell_data_t* power_strikes_chi;
@@ -909,44 +899,6 @@ public:
     const spell_data_t* touch_of_karma_tick;
     const spell_data_t* whirling_dragon_punch_tick;
 
-    // Covenants
-    const spell_data_t* bonedust_brew_dmg;
-    const spell_data_t* bonedust_brew_heal;
-    const spell_data_t* bonedust_brew_chi;
-    const spell_data_t* bonedust_brew_grounding_breath;
-    const spell_data_t* bonedust_brew_attenuation;
-    const spell_data_t* faeline_stomp_damage;
-    const spell_data_t* faeline_stomp_ww_damage;
-    const spell_data_t* faeline_stomp_brm;
-    const spell_data_t* fallen_monk_breath_of_fire;
-    const spell_data_t* fallen_monk_clash;
-    const spell_data_t* fallen_monk_enveloping_mist;
-    const spell_data_t* fallen_monk_fallen_brew;
-    const spell_data_t* fallen_monk_fists_of_fury;
-    const spell_data_t* fallen_monk_fists_of_fury_tick;
-    const spell_data_t* fallen_monk_keg_smash;
-    const spell_data_t* fallen_monk_soothing_mist;
-    const spell_data_t* fallen_monk_spec_duration;
-    const spell_data_t* fallen_monk_spinning_crane_kick;
-    const spell_data_t* fallen_monk_spinning_crane_kick_tick;
-    const spell_data_t* fallen_monk_tiger_palm;
-    const spell_data_t* fallen_monk_windwalking;
-
-    // Conduits
-    const spell_data_t* fortifying_ingredients;
-    const spell_data_t* evasive_stride;
-
-    // Shadowland Legendary
-    const spell_data_t* chi_explosion;
-    const spell_data_t* fae_exposure_dmg;
-    const spell_data_t* fae_exposure_heal;
-    const spell_data_t* shaohaos_might;
-    const spell_data_t* charred_passions_dmg;
-    const spell_data_t* call_to_arms_invoke_xuen;
-    const spell_data_t* call_to_arms_invoke_niuzao;
-    const spell_data_t* call_to_arms_invoke_yulon;
-    const spell_data_t* call_to_arms_invoke_chiji;
-    const spell_data_t* call_to_arms_empowered_tiger_lightning;
 
     // Tier 29
     const spell_data_t* kicks_of_flowing_momentum;
@@ -956,114 +908,8 @@ public:
   // RPPM objects
   struct rppms_t
   {
-    // Shadowland Legendary
     real_ppm_t* bountiful_brew;
   } rppm;
-
-  // Covenant
-  struct covenant_t
-  {
-    // Kyrian:
-    // Weapons of Order - Increases your Mastery by X% and your
-    // Windwalker - Rising Sun Kick reduces the cost of your Chi Abilities by 1 for 5 sec
-    // Mistweaver - Essence Font heals nearby allies for (30% of Spell power) health on channel start and end
-    // Brewmaster - Keg Smash increases the damage you deal to those enemies by X%, up to 5*X% for 8 sec.
-    const spell_data_t* kyrian;
-
-    // Night Fae
-    // Faeline Stomp - Strike the ground fiercely to expose a faeline for 30 sec, dealing (X% of Attack power) Nature
-    // damage Brewmaster - and igniting enemies with Breath of Fire Mistweaver - and healing allies with an Essence Font
-    // bolt Windwalker - and ripping Chi and Energy Spheres out of enemies Your abilities have a 6% chance of resetting
-    // the cooldown of Faeline Stomp while fighting on a faeline.
-    const spell_data_t* night_fae;
-
-    // Venthyr
-    // Fallen Order
-    // Opens a mystic portal for 24 sec. Every 2 sec, it summons a spirit of your order's fallen Ox, Crane, or Tiger
-    // adepts for 4 sec. Fallen [Ox][Crane][Tiger] adepts assist for an additional 2 sec, and will [attack your enemies
-    // with Breath of Fire][heal with Enveloping Mist][assault with Fists of Fury].
-    const spell_data_t* venthyr;
-
-    // Necrolord
-    // Bonedust Brew
-    // Hurl a brew created from the bones of your enemies at the ground, coating all targets struck for 10 sec.  Your
-    // abilities have a 35% chance to affect the target a second time at 35% effectiveness as Shadow damage or healing.
-    // Mistweaver - Gust of Mists heals targets with your Bonedust Brew active for an additional (42% of Attack power)
-    // Brewmaster - Tiger Palm and Keg Smash reduces the cooldown of your brews by an additional 1 sec. when striking
-    // enemies with your Bonedust Brew active Windwalker - Spinning Crane Kick refunds 1 Chi when striking enemies with
-    // your Bonedust Brew active
-    const spell_data_t* necrolord;
-  } covenant;
-
-  // Conduits
-  struct conduit_t
-  {
-    // General
-    conduit_data_t dizzying_tumble;
-    conduit_data_t fortifying_ingredients;
-    conduit_data_t grounding_breath;
-    conduit_data_t harm_denial;
-    conduit_data_t lingering_numbness;
-    conduit_data_t swift_transference;
-    conduit_data_t tumbling_technique;
-
-    // Brewmaster
-    conduit_data_t celestial_effervescence;
-    conduit_data_t evasive_stride;
-    conduit_data_t scalding_brew;
-    conduit_data_t walk_with_the_ox;
-
-    // Mistweaver
-    conduit_data_t jade_bond;
-    conduit_data_t nourishing_chi;
-    conduit_data_t rising_sun_revival;
-    conduit_data_t resplendent_mist;
-
-    // Windwalker
-    conduit_data_t calculated_strikes;
-    conduit_data_t coordinated_offensive;
-    conduit_data_t inner_fury;
-    conduit_data_t xuens_bond;
-
-    // Covenant
-    conduit_data_t strike_with_clarity;
-    conduit_data_t imbued_reflections;
-    conduit_data_t bone_marrow_hops;
-    conduit_data_t way_of_the_fae;
-  } conduit;
-
-  struct legendary_t
-  {
-    // General
-    item_runeforge_t fatal_touch;          // 7081
-    item_runeforge_t invokers_delight;     // 7082
-    item_runeforge_t swiftsure_wraps;      // 7080
-    item_runeforge_t escape_from_reality;  // 7184
-
-    // Brewmaster
-    item_runeforge_t charred_passions;      // 7076
-    item_runeforge_t celestial_infusion;    // 7078
-    item_runeforge_t shaohaos_might;        // 7079
-    item_runeforge_t stormstouts_last_keg;  // 7077
-
-    // Mistweaver
-    item_runeforge_t ancient_teachings_of_the_monastery;  // 7075
-    item_runeforge_t clouded_focus;                       // 7074
-    item_runeforge_t tear_of_morning;                     // 7072
-    item_runeforge_t yulons_whisper;                      // 7073
-
-    // Windwalker
-    item_runeforge_t jade_ignition;            // 7071
-    item_runeforge_t keefers_skyreach;         // 7068
-    item_runeforge_t last_emperors_capacitor;  // 7069
-    item_runeforge_t xuens_battlegear;         // 7070
-
-    // Covenant
-    item_runeforge_t bountiful_brew;       // 7707; Necrolord Covenant
-    item_runeforge_t call_to_arms;         // 7718; Bastion Covenant
-    item_runeforge_t faeline_harmony;      // 7721; Night Fae Covenant
-    item_runeforge_t sinister_teachings;   // 7726; Venthyr Covenant
-  } legendary;
 
   struct pets_t
   {
@@ -1072,16 +918,9 @@ public:
     spawner::pet_spawner_t<pet_t, monk_t> niuzao;
     spawner::pet_spawner_t<pet_t, monk_t> yulon;
     spawner::pet_spawner_t<pet_t, monk_t> chiji;
-    spawner::pet_spawner_t<pet_t, monk_t> tiger_adept;
-    spawner::pet_spawner_t<pet_t, monk_t> crane_adept;
-    spawner::pet_spawner_t<pet_t, monk_t> ox_adept;
     spawner::pet_spawner_t<pet_t, monk_t> white_tiger_statue;
     spawner::pet_spawner_t<pet_t, monk_t> fury_of_xuen_tiger;
-    spawner::pet_spawner_t<pet_t, monk_t> call_to_arms_xuen;
     spawner::pet_spawner_t<pet_t, monk_t> call_to_arms_niuzao;
-    spawner::pet_spawner_t<pet_t, monk_t> sinister_teaching_tiger_adept;
-    spawner::pet_spawner_t<pet_t, monk_t> sinister_teaching_crane_adept;
-    spawner::pet_spawner_t<pet_t, monk_t> sinister_teaching_ox_adept;
 
     pet_t* bron;
 
@@ -1096,7 +935,7 @@ public:
     double faeline_stomp_uptime;
     int chi_burst_healing_targets;
     int motc_override;
-    int no_bof_dot;
+    double squirm_frequency;
   } user_options;
 
   // Blizzard rounds it's stagger damage; anything higher than half a percent beyond
@@ -1193,6 +1032,7 @@ public:
   const spell_data_t* find_spell_override( const spell_data_t* base, const spell_data_t* passive );
   void apply_affecting_auras( action_t& ) override;
   void merge( player_t& other ) override;
+  void moving() override;
 
   // Custom Monk Functions
   void stagger_damage_changed( bool last_tick = false );
@@ -1209,7 +1049,7 @@ public:
   void trigger_bonedust_brew( const action_state_t* );
   void trigger_keefers_skyreach( action_state_t* );
   void trigger_mark_of_the_crane( action_state_t* );
-  void trigger_empowered_tiger_lightning( action_state_t*, bool trigger_invoke_xuen, bool trigger_call_to_arms );
+  void trigger_empowered_tiger_lightning( action_state_t*, bool, bool );
   void trigger_bonedust_brew( action_state_t* );
   player_t* next_mark_of_the_crane_target( action_state_t* );
   int mark_of_the_crane_counter();

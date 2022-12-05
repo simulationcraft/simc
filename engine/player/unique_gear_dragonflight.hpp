@@ -42,6 +42,7 @@ void darkmoon_deck_dance( special_effect_t& );
 void darkmoon_deck_inferno( special_effect_t& );
 void darkmoon_deck_rime( special_effect_t& );
 void darkmoon_deck_watcher( special_effect_t& );
+void alacritous_alchemist_stone( special_effect_t& );
 void bottle_of_spiraling_winds( special_effect_t& );
 void conjured_chillglobe( special_effect_t& );
 void irideus_fragment( special_effect_t& );
@@ -52,6 +53,7 @@ void globe_of_jagged_ice( special_effect_t& );
 void idol_of_pure_decay( special_effect_t& );
 void spiteful_storm( special_effect_t& );
 void spoils_of_neltharus( special_effect_t& );
+void sustaining_alchemist_stone( special_effect_t& );
 void timebreaching_talon( special_effect_t& );
 void umbrelskuls_fractured_heart( special_effect_t& );
 void way_of_controlled_currents( special_effect_t& );
@@ -59,12 +61,15 @@ void whispering_incarnate_icon( special_effect_t& );
 void the_cartographers_calipers( special_effect_t& );
 void tome_of_unstable_power( special_effect_t& );
 void blazebinders_hoof( special_effect_t& );
+void primal_ritual_shell( special_effect_t& );
 
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& );
 void fang_adornments( special_effect_t& );
 
 // Armor
+void assembly_guardians_ring( special_effect_t& );
+void assembly_scholars_loop( special_effect_t& );
 void blue_silken_lining( special_effect_t& );
 void breath_of_neltharion( special_effect_t& );
 void coated_in_slime( special_effect_t& );

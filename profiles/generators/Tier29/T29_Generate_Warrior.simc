@@ -51,29 +51,31 @@
 
 # save=T29_Warrior_Fury.simc
 
-# warrior="T29_Warrior_Protection"
-# level=70
-# race=draenei
-# spec=protection
-# role=tank
-# position=front
-# talents=3122011
+warrior="T29_Warrior_Protection"
+source=default
+spec=protection
+level=70
+race=dwarf
+role=tank
+position=front
+professions=blacksmithing=100/jewelcrafting=100
+talents=BkEAAAAAAAAAAAAAAAAAAAAAAIECAAAAIJJSSCSLpkkkWDRgQRAlkEAikkQLkkAEOQIAAAAAAAQEAAKlCA
 
-# head=shadowghast_helm,id=171415,bonus_id=6647/6649/6716/8130/1588/6935,gem_id=173129
-# neck=worldkiller_iris,id=189859,bonus_id=4800/4786/1808/1524,gem_id=173128
-# shoulders=pauldrons_of_the_infinite_infantry,id=188941,bonus_id=1505/7187
-# back=shroud_of_the_sires_chosen,id=189847,bonus_id=7187/1524
-# chest=breastplate_of_the_infinite_infantry,id=188938,bonus_id=1505/7187,enchant=eternal_stats
-# wrists=vambraces_of_the_infinite_infantry,id=188943,bonus_id=1498/7187/6935,gem_id=173128
-# hands=grasps_of_the_infinite_infantry,id=188937,bonus_id=1505/7187,enchant=eternal_strength
-# waist=girdle_of_the_soulflayer,id=179326,bonus_id=1592/6536/6646/6935,gem_id=173128
-# legs=legplates_of_the_infinite_infantry,id=188940,bonus_id=7187/1505
-# feet=shadowghast_sabatons,id=171413,bonus_id=6647/6649/6716/6969/1588
-# finger1=bloodoath_signet,id=178871,bonus_id=1592/6536/6646/6935,gem_id=173128,enchant=tenet_of_critical_strike
-# finger2=ritual_commanders_ring,id=178781,bonus_id=3536/4786/1592/6935,gem_id=173128,enchant=tenet_of_critical_strike
-# trinket1=the_first_sigil,id=188271,bonus_id=1524/7187
-# trinket2=ticking_sack_of_terror,id=185844,bonus_id=1595/6536/6646
-# main_hand=devastated_worldshard,id=189851,bonus_id=7187/1524,enchant=celestial_guidance
-# off_hand=ruined_crest_of_lordaeron,id=189845,bonus_id=7187/1524
+head=infurious_helm_of_vengeance,id=190522,bonus_id=8836/8840/8902/8960/8809/8801,ilevel=418,gem_id=192919
+neck=eye_of_the_vengeful_hurricane,id=195496,bonus_id=4800/4786/1498,gem_id=192919/192919/192919
+shoulders=peaks_of_the_walking_mountain,id=200428,bonus_id=1463/8767,ilevel=421
+back=cape_of_the_duskwatch,id=137483,bonus_id=1795/6808/4786/3300,ilevel=421,drop_level=70
+chest=husk_of_the_walking_mountain,id=200423,bonus_id=1466/8767,ilevel=421,enchant=waking_stats_3
+wrists=virtuous_silver_bracers,id=200421,bonus_id=4800/4786/1498,ilevel=424,gem_id=192919
+hands=gauntlets_of_the_walking_mountain,id=200425,bonus_id=1466/8767,ilevel=421
+waist=unstable_frostfire_belt,id=191623,bonus_id=8836/8840/8902/8960/8801,ilevel=418,gem_id=192985
+legs=poleyns_of_the_walking_mountain,id=200427,bonus_id=1472/8767,ilevel=421,enchant=frosted_armor_kit_3
+feet=kurogs_thunderhooves,id=195517,bonus_id=4800/4786/1498
+finger1=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498,gem_id=192919,enchant=devotion_of_haste_3
+finger2=jeweled_signet_of_melandrus,id=134542,bonus_id=1795/6808/4786/3300/6935,ilevel=421,gem_id=192919,enchant=devotion_of_haste_3,drop_level=70
+trinket1=manic_grieftorch,id=194308,bonus_id=7979/6652/1472/8767,ilevel=421
+trinket2=windscar_whetstone,id=137486,bonus_id=6652/3300/8767
+main_hand=strike_twice,id=193700,bonus_id=6808/4786/1643,enchant=frozen_devotion_3
+off_hand=broodsworn_legionnaires_pavise,id=195520,bonus_id=4800/4786/1498
 
-# save=T29_Warrior_Protection.simc
+save=T29_Warrior_Protection.simc

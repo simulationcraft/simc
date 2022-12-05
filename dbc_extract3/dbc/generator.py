@@ -6,7 +6,7 @@ import dbc.db, dbc.data, dbc.parser, dbc.file
 
 from dbc import constants, util
 from dbc.constants import Class
-from dbc.filter import ActiveClassSpellSet, PetActiveSpellSet, RacialSpellSet, MasterySpellSet, RankSpellSet, ConduitSet, SoulbindAbilitySet, CovenantAbilitySet, RenownRewardSet, TalentSet, TemporaryEnchantItemSet
+from dbc.filter import ActiveClassSpellSet, PetActiveSpellSet, RacialSpellSet, MasterySpellSet, RankSpellSet, ConduitSet, SoulbindAbilitySet, CovenantAbilitySet, RenownRewardSet, TalentSet, TemporaryEnchantItemSet, PermanentEnchantItemSet
 from dbc.filter import TraitSet
 
 # Special hotfix field_id value to indicate an entry is new (added completely through the hotfix entry)
@@ -1378,6 +1378,7 @@ class SpellDataGenerator(DataGenerator):
          389710, 392899, 389707, # Blazebinder's Hoof
          394453, # Broodkeeper's Blaze
          397118, 397478, # Neltharax, Enemy of the Sky
+         390899, 390869, 390835, 390655, # Primal Ritual Shell
         ),
 
         # Warrior:
@@ -1446,6 +1447,7 @@ class SpellDataGenerator(DataGenerator):
             ( 383305, 0 ),          # Virtuous Command damage
             ( 387178, 0 ),          # Empyrean Legacy buff
             ( 224239, 0 ),          # Tempest divine storm
+            ( 384810, 0 ),          # Seal of Clarity buff
         ),
 
         # Hunter:
@@ -2143,11 +2145,13 @@ class SpellDataGenerator(DataGenerator):
           # General
           ( 372470, 0 ), # Scarlet Adaptation buff
           ( 370901, 0 ), ( 370917, 0 ), # Leaping Flames buff
-          ( 359115, 0),  # Empower Triggered GCD
+          ( 359115, 0 ),  # Empower Triggered GCD
+          ( 361519, 0 ), # Essence Burst
           # Devastation
-          ( 386399, 1 ), # Iridescence: Blue buff
+          ( 386399, 1 ), ( 399370, 1 ), # Iridescence: Blue
           ( 375802, 1 ), # Burnout buff
           ( 376850, 1 ), # Power Swell buff
+          ( 397870, 1 ),  # Titanic Wrath
           # Preservation
           ( 369299, 2 ), # Preservation Essence Burst
        ),
@@ -4613,3 +4617,24 @@ class TraitGenerator(DataGenerator):
             f'spell={entry["spell"].name} ({entry["spell"].id}) ({util.tokenize(entry["spell"].name)})'
         )
         """
+
+class PermanentEnchantItemGenerator(DataGenerator):
+    def filter(self):
+        return PermanentEnchantItemSet(self._options).get()
+
+    def generate(self, data=None):
+        self.output_header(
+                header = 'Permanent item enchants',
+                type = 'permanent_enchant_entry_t',
+                array = 'permanent_enchant',
+                length = len(data))
+
+        for spell_name, rank, _, _, _, _, enchant, sei in sorted(data, key=lambda v: (v[0], v[1], v[3], v[4], v[5])):
+            fields = enchant.field('id')
+            fields += ['{:2d}'.format(rank)]
+            fields += sei.field('item_class', 'mask_inv_type', 'mask_sub_class')
+            fields += ['{:35s}'.format('"{}"'.format(spell_name))]
+            self.output_record(fields)
+
+        self.output_footer()
+

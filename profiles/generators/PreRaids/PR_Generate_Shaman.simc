@@ -28,32 +28,90 @@
 
 # save=PR_Shaman_Elemental.simc
 
-# shaman="PR_Shaman_Enhancement"
-# level=70
-# race=troll
-# spec=enhancement
-# role=attack
-# position=back
-# talents=3221131
+shaman="PR_Shaman_Enhancement"
+level=70
+race=troll
+spec=enhancement
+role=attack
+position=back
+talents=BcQAAAAAAAAAAAAAAAAAAAAAAIJJpEJgkEikkQJhAAAAAAAAAAAAAQLCRIRLFBIlkkUAUSkEA
+# class_talents=lava_burst:1/chain_lightning:1/earth_elemental:1/frost_shock:1/maelstrom_weapon:1/fire_and_ice:1/natures_fury:2/improved_lightning_bolt:2
+# spec_talents=stormstrike:1/windfury_weapon:1/lava_lash:1/improved_maelstrom_weapon:2/molten_assault:2/raging_maelstrom:1/ice_strike:1/hailstorm:1/sundering:1/overflowing_maelstrom:1/windfury_totem:1/swirling_maelstrom:1/hot_hand:2/storms_wrath:1/ashen_catalyst:1/elemental_blast:1/elemental_weapons:2/lashing_flames:1/primordial_wave:1/feral_spirit:1/primal_maelstrom:2/witch_doctors_ancestry:2/splintered_elements:1/elemental_spirits:1
 
-# head=boneshatter_helm,id=172325,bonus_id=8128/7451/6649/6648/1588,gem_id=173128
-# neck=worldkiller_iris,id=189859,bonus_id=1524/7187,gem_id=173128
-# shoulder=theurgic_starspeakers_adornment,id=188920,bonus_id=1505/7187
-# back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187,enchant=fortified_avoidance
-# chest=theurgic_starspeakers_ringmail,id=188922,bonus_id=1505/7187,enchant=eternal_stats
-# wrist=interdimensional_manica,id=189849,bonus_id=1524/7187,gem_id=173128
-# hands=theurgic_starspeakers_runebindings,id=188925,bonus_id=1505/7187
-# waist=girdle_of_the_first_gate,id=189776,bonus_id=1524/7187,gem_id=173130
-# legs=theurgic_starspeakers_tassets,id=188924,bonus_id=1505/7187
-# feet=winters_stampeding_striders,id=189795,bonus_id=1524/7187,enchant=eternal_agility
-# finger1=shadowghast_ring,id=178926,bonus_id=6995/7451/6649/6648/1588/6935,gem_id=173130,enchant=tenet_of_haste
-# finger2=rygelons_heraldric_ring,id=189854,bonus_id=1524/7187,gem_id=173130,enchant=tenet_of_haste
-# trinket1=elegy_of_the_eternals,id=188270,bonus_id=1524/7187
-# trinket2=the_first_sigil,id=188271,bonus_id=1524/7187
-# main_hand=dominations_deliverance,id=189818,bonus_id=1524/7187,enchant=sinful_revelation
-# off_hand=dominations_deliverance,id=189818,bonus_id=1524/7187,enchant=celestial_guidance
+head=collar_of_honorable_exultation,id=136777,bonus_id=1795/3251/657/7977
+neck=wolfstride_pendant,id=133633,bonus_id=1795/3251/657/7977
+shoulders=neverdare_shoulders,id=143970,bonus_id=1795/3262/657/7977
+back=cloak_of_violent_harmony,id=109906,bonus_id=1795/3257/657/7977
+chest=thunderfused_valkyr_hauberk,id=133622,bonus_id=1795/3251/657/7977,enchant=waking_stats_2
+wrists=shikaar_ranger_bracers,id=193693,bonus_id=1594/657/7977
+hands=sharpeye_gauntlets,id=109853,bonus_id=1795/3257/657/7977
+waist=morningscale_waistguard,id=109843,bonus_id=1795/3257/657/7977
+legs=stasisfreed_leggings,id=193643,bonus_id=1594/657/7977,enchant=frosted_armor_kit_2
+feet=lightningcharged_striders,id=193685,bonus_id=1594/657/7977
+finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=1795/3251/657/7977,enchant=devotion_of_mastery_2
+finger2=woebearers_band,id=133638,bonus_id=1795/3251/657/7977,enchant=devotion_of_mastery_2
+trinket1=irideus_fragment,id=193743,bonus_id=1594/657/7977
+trinket2=bottle_of_spiraling_winds,id=193697,bonus_id=1594/657/7977
+main_hand=forgestorm,id=193785,bonus_id=1594/657/7977,enchant=sophic_devotion_2
+off_hand=bouldersplitter,id=193797,bonus_id=1594/657/7977,enchant=sophic_devotion_2
 
-# save=PR_Shaman_Enhancement.simc
+save=PR_Shaman_Enhancement.simc
+
+shaman="PR_Shaman_Enhancement_Phys"
+level=70
+race=troll
+spec=enhancement
+role=attack
+position=back
+talents=BcQAfcj78nJtvjmejSqe5Zhm9IJJHAkcARSSSQSiECAAAAAAAAAAAAAlIEhkIFBIlkkUAUSkEoB
+class_talents=lava_burst:1/chain_lightning:1/earth_elemental:1/frost_shock:1/maelstrom_weapon:1/fire_and_ice:1/natures_fury:2/improved_lightning_bolt:2
+
+head=collar_of_honorable_exultation,id=136777,bonus_id=1795/3251/657/7977
+neck=wolfstride_pendant,id=133633,bonus_id=1795/3251/657/7977
+shoulders=neverdare_shoulders,id=143970,bonus_id=1795/3262/657/7977
+back=cloak_of_violent_harmony,id=109906,bonus_id=1795/3257/657/7977
+chest=thunderfused_valkyr_hauberk,id=133622,bonus_id=1795/3251/657/7977,enchant=waking_stats_2
+wrists=shikaar_ranger_bracers,id=193693,bonus_id=1594/657/7977
+hands=sharpeye_gauntlets,id=109853,bonus_id=1795/3257/657/7977
+waist=morningscale_waistguard,id=109843,bonus_id=1795/3257/657/7977
+legs=stasisfreed_leggings,id=193643,bonus_id=1594/657/7977,enchant=frosted_armor_kit_2
+feet=lightningcharged_striders,id=193685,bonus_id=1594/657/7977
+finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=1795/3251/657/7977,enchant=devotion_of_haste_2
+finger2=unstable_arcane_loop,id=193633,bonus_id=1594/657/7977,enchant=devotion_of_haste_2
+trinket1=irideus_fragment,id=193743,bonus_id=1594/657/7977
+trinket2=bottle_of_spiraling_winds,id=193697,bonus_id=1594/657/7977
+main_hand=forgestorm,id=193785,bonus_id=1594/657/7977,enchant=sophic_devotion_2
+off_hand=bouldersplitter,id=193797,bonus_id=1594/657/7977,enchant=sophic_devotion_2
+
+save=PR_Shaman_Enhancement_Phys.simc
+
+shaman="PR_Shaman_Enhancement_Gamba"
+level=70
+race=troll
+spec=enhancement
+role=attack
+position=back
+talents=BcQAfcj78nJtvjmejSqe5Zhm9IJJHAkcARSSSQSiECAAAAAAAAAAAAAlIEhkIFBIlkkUAUSkEoA
+class_talents=lava_burst:1/chain_lightning:1/earth_elemental:1/frost_shock:1/maelstrom_weapon:1/fire_and_ice:1/natures_fury:2/improved_lightning_bolt:2
+
+head=collar_of_honorable_exultation,id=136777,bonus_id=1795/3251/657/7977
+neck=wolfstride_pendant,id=133633,bonus_id=1795/3251/657/7977
+shoulders=neverdare_shoulders,id=143970,bonus_id=1795/3262/657/7977
+back=cloak_of_violent_harmony,id=109906,bonus_id=1795/3257/657/7977
+chest=thunderfused_valkyr_hauberk,id=133622,bonus_id=1795/3251/657/7977,enchant=waking_stats_2
+wrists=shikaar_ranger_bracers,id=193693,bonus_id=1594/657/7977
+hands=sharpeye_gauntlets,id=109853,bonus_id=1795/3257/657/7977
+waist=morningscale_waistguard,id=109843,bonus_id=1795/3257/657/7977
+legs=stasisfreed_leggings,id=193643,bonus_id=1594/657/7977,enchant=frosted_armor_kit_2
+feet=lightningcharged_striders,id=193685,bonus_id=1594/657/7977
+finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=1795/3251/657/7977,enchant=devotion_of_haste_2
+finger2=unstable_arcane_loop,id=193633,bonus_id=1594/657/7977,enchant=devotion_of_haste_2
+trinket1=irideus_fragment,id=193743,bonus_id=1594/657/7977
+trinket2=bottle_of_spiraling_winds,id=193697,bonus_id=1594/657/7977
+main_hand=forgestorm,id=193785,bonus_id=1594/657/7977,enchant=sophic_devotion_2
+off_hand=bouldersplitter,id=193797,bonus_id=1594/657/7977,enchant=sophic_devotion_2
+
+save=PR_Shaman_Enhancement_Gamba.simc
 
 # shaman="PR_Shaman_Restoration"
 # level=70

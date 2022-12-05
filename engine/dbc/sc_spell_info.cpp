@@ -2029,6 +2029,44 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     }
     s << std::endl;
   }
+  else if ( spell->equipped_class() == ITEM_CLASS_ARMOR )
+  {
+    std::vector<std::string> armor_types, armor_invtypes;
+    if ( spell->equipped_subclass_mask() == 0x1f )
+    {
+      armor_types.emplace_back( "Any" );
+    }
+    else
+    {
+      for ( auto at = ITEM_SUBCLASS_ARMOR_MISC; at < ITEM_SUBCLASS_ARMOR_RELIC; ++at )
+      {
+        if ( spell->equipped_subclass_mask() & ( 1U << static_cast<unsigned>( at ) ) )
+        {
+          armor_types.emplace_back( util::armor_subclass_string( at ) );
+        }
+      }
+    }
+
+    for ( auto it = INVTYPE_HEAD; it < INVTYPE_MAX; ++it )
+    {
+      if ( spell->equipped_invtype_mask() & ( 1U << static_cast<unsigned>( it ) ) )
+      {
+        armor_invtypes.emplace_back( util::invtype_string( it ) );
+      }
+    }
+
+    if ( !armor_types.empty() || !armor_invtypes.empty() )
+    {
+      s << "Requires armor   : ";
+      s << util::string_join( armor_types );
+      if ( !armor_types.empty() )
+      {
+        s << " ";
+      }
+      s << util::string_join( armor_invtypes );
+      s << std::endl;
+    }
+  }
 
   if ( spell -> cooldown() > timespan_t::zero() )
     s << "Cooldown         : " << spell -> cooldown().total_seconds() << " seconds" << std::endl;

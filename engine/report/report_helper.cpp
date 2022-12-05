@@ -119,13 +119,10 @@ class tooltip_parser_t
     if ( effect_number == 0 || effect_number > spell.effect_count() )
       throw error();
 
-    if ( level > MAX_LEVEL )
-      throw error();
-
     const spelleffect_data_t& effect = spell.effectN( effect_number );
     bool show_scale_factor           = effect.type() != E_APPLY_AURA;
-    double s_min                     = dbc.effect_min( effect.id(), level );
-    double s_max                     = dbc.effect_max( effect.id(), level );
+    double s_min                     = dbc.effect_min( effect.id(), std::min( MAX_SCALING_LEVEL, level ) );
+    double s_max                     = dbc.effect_max( effect.id(), std::min( MAX_SCALING_LEVEL, level ) );
     if ( s_min < 0 && s_max == s_min )
       s_max = s_min = -s_min;
     else if ( ( player && effect.type() == E_SCHOOL_DAMAGE && ( spell.get_school_type() & SCHOOL_MAGIC_MASK ) != 0 ) ||
@@ -254,16 +251,25 @@ std::string tooltip_parser_t::parse()
         case '?':
         {
           ++pos;
-          if ( pos == text.end() || *pos != 's' )
-            throw error();
-          ++pos;
-          spell          = parse_spell();
-          bool has_spell = false;
-          if ( player )
+          if ( *pos == 's' || *pos == 'a' )
           {
-            has_spell = player->find_class_spell( spell->name_cstr() )->ok();
+            ++pos;
+            spell = parse_spell();
+            bool has_spell = false;
+            if ( player )
+            {
+              auto n = spell->name_cstr();
+
+              has_spell = player->find_class_spell( n )->ok();
+              if ( !has_spell )
+                has_spell = player->find_specialization_spell( n )->ok();
+              if ( !has_spell )
+                has_spell = player->find_talent_spell( talent_tree::CLASS, n )->ok();
+              if ( !has_spell )
+                has_spell = player->find_talent_spell( talent_tree::SPECIALIZATION, n )->ok();
+            }
+            replacement_text = has_spell ? "true" : "false";
           }
-          replacement_text = has_spell ? "true" : "false";
           break;
         }
 
@@ -296,21 +302,22 @@ std::string tooltip_parser_t::parse()
         case '@':
         {
           ++pos;
-          if ( text.compare( pos - text.begin(), 9, "spelldesc" ) )
-            throw error();
-          pos += 9;
-
-          spell = parse_spell();
-          if ( !spell )
-            throw error();
-          assert( player );
-
-          // References in tooltips/descriptions don't seem to form DAG, check
-          // for cycles of length 1 here (which should hopefully be enough).
-          if ( spell->id() != default_spell.id() )
+          if ( text.compare( pos - text.begin(), 9, "spelldesc" ) == 0 )
           {
-            const auto& spell_text = dbc.spell_text( spell->id() );
-            replacement_text = report_helper::pretty_spell_text( *spell, spell_text.desc(), *player );
+            pos += 9;
+
+            spell = parse_spell();
+            if ( !spell )
+              throw error();
+            assert( player );
+
+            // References in tooltips/descriptions don't seem to form DAG, check for cycles of length 1 here (which
+            // should hopefully be enough).
+            if ( spell->id() != default_spell.id() )
+            {
+              const auto& spell_text = dbc.spell_text( spell->id() );
+              replacement_text = report_helper::pretty_spell_text( *spell, spell_text.desc(), *player );
+            }
           }
           break;
         }

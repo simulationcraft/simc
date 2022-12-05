@@ -18,7 +18,7 @@
 # hands=umbrahide_gauntlets,id=172316,bonus_id=7077/1588/6650/6647
 # waist=runecarvers_twisted_ward,id=189856,bonus_id=1524/7187/6935,gem_id=173127
 # legs=legguards_of_the_grand_upwelling,id=188911,bonus_id=1498/7187
-# feet=viscerastitched_footpads,id=178731,bonus_id=1592/6536/6646,enchant_id=6211
+# feet=viscerastitched_footpads,id=178731,bonus_id=1592/6536/6646,enchant=eternal_agility
 # finger1=entwined_gorger_tendril,id=178848,bonus_id=1592/6536/6646/6935,gem_id=173129,enchant=tenet_of_critical_strike
 # finger2=shadowghast_ring,id=178926,bonus_id=8124/1588/6650/6647/6935,gem_id=173129,enchant=tenet_of_critical_strike
 # trinket1=shadowgrasp_totem,id=179356,bonus_id=1592/6536/6646
@@ -27,28 +27,56 @@
 
 # save=T29_Monk_Brewmaster.simc
 
-# monk="T29_Monk_Windwalker"
-# spec=windwalker
-# level=70
-# race=mechagnome
-# role=dps
-# position=back
-# talents=1020012
+monk="T29_Monk_Windwalker_Serenity"
+spec=windwalker
+level=70
+race=orc
+role=dps
+position=back
+talents=B0QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEkkkEtIBAAAAAJSSCgkkkEIRIiESkkkkkSCIAAA
 
-# head=umbrahide_helm,id=172317,bonus_id=7082/1588/6650/6647/6935,gem_id=173129
-# neck=azurevenom_choker,id=180115,bonus_id=1592/6536/6646/6935,gem_id=173129
-# shoulders=tassels_of_the_grand_upwelling,id=188914,bonus_id=1505/7187
-# back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187,enchant_id=6208
-# chest=cuirass_of_the_grand_upwelling,id=188912,bonus_id=1505/7187,enchant_id=6230
-# wrists=demigaunts_of_the_grand_upwelling,id=188913,bonus_id=1498/7187/6935,gem_id=173129
-# hands=grips_of_the_grand_upwelling,id=188916,bonus_id=1498/7187
-# waist=umbrahide_waistguard,id=172320,bonus_id=8124/1588/6650/6647/6935,gem_id=173129
-# legs=legguards_of_the_grand_upwelling,id=188911,bonus_id=1498/7187
-# feet=treads_of_titanic_curiosity,id=189848,bonus_id=1524/7187,enchant_id=6211
-# finger1=rygelons_heraldric_ring,id=189854,bonus_id=1524/7187/6935,gem_id=173129,enchant_id=6164
-# finger2=entwined_gorger_tendril,id=178848,bonus_id=1592/6536/6646/6935,gem_id=173129,enchant_id=6164
-# trinket1=inscrutable_quantum_device,id=179350,bonus_id=1592/6536/6646
-# trinket2=earthbreakers_impact,id=188264,bonus_id=1524/7187
-# main_hand=zovastrum_the_unmaking,id=189861,bonus_id=1524/7187,enchant_id=6228
+head=,id=200363,bonus_id=8780,gem_id=192982,ilevel=424
+neck=,id=193647,bonus_id=3524/8782,gem_id=192932/192932/192932,ilevel=421
+shoulder=,id=200365,ilevel=424
+back=,id=133765,bonus_id=3524,ilevel=421
+chest=,id=200360,enchant=waking_stats_3,ilevel=421
+wrist=,id=195525,bonus_id=3524/8780,gem_id=192932,ilevel=424
+hands=,id=200362,ilevel=421
+waist=,id=136776,bonus_id=3524/8780,gem_id=192932,ilevel=421
+legs=,id=195530,bonus_id=3524,enchant=fierce_armor_kit_3,ilevel=424
+feet=,id=134193,bonus_id=3524,ilevel=421
+finger1=,id=134542,bonus_id=3524/8780,enchant=devotion_of_versatility_3,gem_id=192932,ilevel=421
+finger2=,id=195480,bonus_id=3524/8780,enchant=devotion_of_versatility_3,gem_id=192932,ilevel=421
+trinket1=,id=137486,bonus_id=3524,ilevel=421
+trinket2=,id=194308,bonus_id=3524,ilevel=424
+main_hand=,id=190509,bonus_id=3524/1679/8937,enchant=frozen_devotion_3,ilevel=418
+off_hand=,id=190509,bonus_id=3524/1679/8937,enchant=frozen_devotion_3,ilevel=418
 
-# save=T29_Monk_Windwalker.simc
+save=T29_Monk_Windwalker.simc
+
+monk="T29_Monk_Windwalker_SEF"
+spec=windwalker
+level=70
+race=orc
+role=dps
+position=back
+talents=B0QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEEJJJlkEAAAAAkIJJASSSSgEhISIRSSSSKJgAAA
+
+head=,id=200363,bonus_id=8780,gem_id=192991,ilevel=424
+neck=,id=193647,bonus_id=3524/8782,gem_id=192925/192925/192925,ilevel=421
+shoulder=,id=200365,ilevel=424
+back=,id=133765,bonus_id=3524,ilevel=421
+chest=,id=200360,enchant=waking_stats_3,ilevel=421
+wrist=,id=195525,bonus_id=3524/8780,gem_id=192925,ilevel=424
+hands=,id=200362,ilevel=421
+waist=,id=136776,bonus_id=3524/8780,gem_id=192925,ilevel=421
+legs=,id=195530,bonus_id=3524,enchant=fierce_armor_kit_3,ilevel=424
+feet=,id=134193,bonus_id=3524,ilevel=421
+finger1=,id=134542,bonus_id=3524/8780,enchant=devotion_of_critical_strike_3,gem_id=192925,ilevel=421
+finger2=,id=195480,bonus_id=3524/8780,enchant=devotion_of_critical_strike_3,gem_id=192925,ilevel=421
+trinket1=,id=137486,bonus_id=3524,ilevel=421
+trinket2=,id=194308,bonus_id=3524,ilevel=424
+main_hand=,id=190509,bonus_id=3524/1679/8937,enchant=frozen_devotion_3,ilevel=418
+off_hand=,id=190509,bonus_id=3524/1679/8937,enchant=frozen_devotion_3,ilevel=418
+
+save=T29_Monk_Windwalker_SEF.simc

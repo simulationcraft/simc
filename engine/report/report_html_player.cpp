@@ -1295,6 +1295,12 @@ void print_html_gear( report::sc_html_stream& os, const player_t& p )
     {
       item_sim_desc += ", enchant: { ";
       item_sim_desc += item.enchant_stats_str();
+      if ( !item.parsed.encoded_enchant.empty() )
+      {
+        item_sim_desc += " (";
+        item_sim_desc += item.parsed.encoded_enchant;
+        item_sim_desc += ")";
+      }
       item_sim_desc += " }";
     }
     else if ( !item.parsed.encoded_enchant.empty() )
@@ -3253,6 +3259,9 @@ void print_html_player_buff_spelldata( report::sc_html_stream& os, const buff_t&
       dbc = b.source -> dbc.get();
     if ( dbc == nullptr && b.sim )
       dbc = b.sim -> dbc.get();
+
+    auto player_ = b.player && b.player->is_enemy() ? b.source : b.player;
+
     const auto& spell_text = dbc ? dbc->spell_text( data.id() ) : spelltext_data_t::nil();
     os.printf( "<h4>%s</h4>\n"
                "<ul>\n"
@@ -3270,10 +3279,10 @@ void print_html_player_buff_spelldata( report::sc_html_stream& os, const buff_t&
                util::encode_html( data_name ).c_str(),
                data.id(),
                util::encode_html( data.name_cstr() ).c_str(),
-               b.player ? util::encode_html( report_helper::pretty_spell_text( data, spell_text.tooltip(), *b.player ) ).c_str()
-                        : util::encode_html( spell_text.tooltip() ).c_str(),
-               b.player ? util::encode_html( report_helper::pretty_spell_text( data, spell_text.desc(), *b.player ) ).c_str()
-                        : util::encode_html( spell_text.desc() ).c_str(),
+               player_ ? util::encode_html( report_helper::pretty_spell_text( data, spell_text.tooltip(), *player_ ) ).c_str()
+                       : util::encode_html( spell_text.tooltip() ).c_str(),
+               player_ ? util::encode_html( report_helper::pretty_spell_text( data, spell_text.desc(), *player_ ) ).c_str()
+                       : util::encode_html( spell_text.desc() ).c_str(),
                data.max_stacks(),
                data.duration().total_seconds(),
                data.cooldown().total_seconds(),
@@ -3710,7 +3719,7 @@ void print_html_player_description( report::sc_html_stream& os, const player_t& 
              util::encode_html( p.position_str ).c_str(),
              util::profile_source_string( p.profile_source_ ) );
 
-  if ( p.covenant )
+  if ( p.covenant && p.covenant->enabled() )
   {
     os.format( "<li><b>Covenant:</b> {}</li>\n",
                util::inverse_tokenize( util::covenant_type_string( p.covenant->type() ) ) );
@@ -4047,7 +4056,7 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
     }
 
     // Covenant, Soulbinds, and Conduits
-    if ( p.covenant )
+    if ( p.covenant && p.covenant->enabled() )
     {
       p.covenant->generate_report( os );
     }

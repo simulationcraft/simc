@@ -1,29 +1,31 @@
-# paladin="T29_Paladin_Protection"
-# level=70
-# race=draenei
-# spec=protection
-# role=tank
-# position=front
-# talents=2200302
+paladin="T29_Paladin_Protection"
+level=70
+race=draenei
+region=us
+server=valdrakken
+role=tank
+spec=protection
 
-# head=Luminous_Chevaliers_Casque,id=188933,bonus_id=7187/1498/6935,gem_id=173128
-# neck=Worldkiller_Iris,id=189859,bonus_id=7187/1524/6935,gem_id=173128
-# shoulder=Luminous_Chevaliers_Epaulettes,id=188932,bonus_id=7187/1505
-# back=Shroud_of_the_Sires_Chosen,id=189847,bonus_id=7187/1524,enchant=soul_vitality
-# chest=Luminous_Chevaliers_Plackart,id=188929,bonus_id=7187/1505,enchant=eternal_stats
-# wrist=Veiled_Auctioneers_Vambraces,id=189825,bonus_id=7187/1524/6935,gem_id=173128
-# hands=Luminous_Chevaliers_Gauntlets,id=188928,bonus_id=7187/1505,enchant=eternal_strength
-# waist=Shadowghast_Waistguard,id=171418,bonus_id=6648/6649/8125/6716/1588/6935,gem_id=173128
-# legs=Legguards_of_the_Ultimate_Threat,id=189858,bonus_id=7187/1524
-# feet=Shadowghast_Sabatons,id=171413,bonus_id=6648/6649/7054/6716/1588
-# finger1=Rygelons_Heraldric_Ring,id=189854,bonus_id=7187/1524/6935,enchant=tenet_of_haste,gem_id=173128
-# finger2=Loquacious_Keepers_Peridot,id=189802,bonus_id=7187/1524/6935,enchant=tenet_of_haste,gem_id=173128
-# trinket1=the_first_sigil,id=188271,bonus_id=7187/1524
-# trinket2=Phial_of_Putrefaction,id=178771,bonus_id=6536/1592/6646
-# main_hand=Devastated_Worldshard,id=189851,bonus_id=7187/1524,enchant=sinful_revelation
-# off_hand=Ruined_Crest_of_Lordaeron,id=189845,bonus_id=7187/1524
+talents=BIEAwtJ2KpR8WbGzhz/jy2AP80iSikikiIJhSTSChESAAAAAAAAAAAAAAARSSaCSSUSRkEloEA
 
-# save=T29_Paladin_Protection.simc
+head=,id=200417,bonus_id=4800/4786/1498,gem_id=192919
+neck=,id=195496,bonus_id=4800/4786/1498,gem_id=192919/192919/192919
+shoulder=,id=200419,bonus_id=4800/4786/1498
+back=,id=137483,bonus_id=1795/6808/4786/3300/6935
+chest=,id=195494,bonus_id=4800/4786/1498,enchant=waking_stats_3
+wrist=,id=200421,ilevel=424,bonus_id=4800/4786/1498,gem_id=192919
+hands=,id=133628,bonus_id=1795/6808/4786/3300/6935
+waist=,id=200420,bonus_id=4800/4786/1507,gem_id=192985
+legs=,id=193706,bonus_id=6808/4786/1643,enchant=frosted_armor_kit_3
+feet=,id=195517,bonus_id=4800/4786/1498
+finger1=,id=195480,bonus_id=4800/4786/1498,gem_id=192919,enchant=devotion_of_haste_3
+finger2=,id=134542,bonus_id=1795/6808/4786/3300/6935,gem_id=192919,enchant=devotion_of_haste_3
+trinket1=,id=133641,bonus_id=1795/6808/4786/3300/6935
+trinket2=,id=194308,bonus_id=4800/4786/1498
+main_hand=,id=193700,bonus_id=6808/4786/1643,enchant=sophic_devotion_3
+off_hand=,id=195520,bonus_id=4800/4786/1498
+
+save=T29_Paladin_Protection.simc
 
 
 # paladin="T29_Paladin_Retribution"

@@ -1,5 +1,5 @@
-// Spell text, wow build 10.0.2.46741
-static const std::array<spelltext_data_t, 19173> __spelltext_data { {
+// Spell text, wow build 10.0.2.46924
+static const std::array<spelltext_data_t, 19185> __spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -10715,7 +10715,7 @@ static const std::array<spelltext_data_t, 19173> __spelltext_data { {
   { 279397, "$@spelldesc278609", "Strength increased by $w1.", 0 },
   { 279406, "$@spelldesc278594", 0, 0 },
   { 279416, "Your melee attacks have a chance to strike your enemy with a powerful blow, dealing ${$s1*4} Physical damage over $d.", 0, 0 },
-  { 279423, "Your auto attack critical strikes generate $s1% more Rage.", 0, 0 },
+  { 279423, "Your auto attack critical strikes generate $s1% more Rage and damage taken from area of effect attacks reduced by $s2%.", 0, 0 },
   { 279426, "$@spelldesc279416", 0, 0 },
   { 279442, "$@spelldesc278500", 0, 0 },
   { 279449, "$@spelldesc278501", 0, 0 },
@@ -15558,6 +15558,7 @@ static const std::array<spelltext_data_t, 19173> __spelltext_data { {
   { 361469, "Send a flickering flame towards your target, $?c2[healing an ally for $361509s1 or dealing $361500s1 Fire damage to an enemy.][dealing $361500s1 Fire damage to an enemy or healing an ally for $361509s1.]", 0, "Red" },
   { 361500, "$@spelldesc361469", "Burning for $w2 Fire damage every $t2 sec.", "Red" },
   { 361509, "$@spelldesc361469", "Healing for $w2 every $t2 sec.", "Red" },
+  { 361519, "$@spelldesc359565", 0, 0 },
   { 361582, "$@spelldesc359844", "Being assisted by a pet from your stable.", 0 },
   { 361695, "Create a soulbound Korthian cloak appropriate for your loot specialization ($@lootspec).", 0, 0 },
   { 361696, "Create a soulbound Korthian chest armor piece appropriate for your loot specialization ($@lootspec).", 0, 0 },
@@ -16566,7 +16567,7 @@ static const std::array<spelltext_data_t, 19173> __spelltext_data { {
   { 377458, "$@spelldesc377457\r\n", "Your Armor is increased by $w3.", 0 },
   { 377459, "$@spelldesc377457", "Primal flames scorch you for $w3 Fire damage per second.", 0 },
   { 377461, "$@spelldesc377457\r\n", "Primal winds increase your Haste by $w3.", 0 },
-  { 377462, "Designate another player to bond with, becoming their Guardian for $382281d.\r\n\r\nWhile bonded, you and your ally gain $382280s1 Versatility and restore $382280s2 health per second. If you are within 15 yards of one another, these bonuses are increased.", 0, 0 },
+  { 377462, "Designate another player to bond with, becoming their Guardian for $382281d.\r\n\r\nWhile bonded, you and your ally gain $382280s1 Versatility and restore $382280s2 health per second. If you are within 15 yards of one another, these bonuses are increased. $?(a137012|a137024|a137031|a137032|a137029|a137039|a356810)[][\r\n\r\n|CFF808080Valid only for healer specializations.|R]\r\n", 0, 0 },
   { 377463, "Channel for $d, unleashing a furious volley of flame around your target, dealing ${$394954s1*($d/$t)*(1+$@versadmg)} Fire damage to your target with a chance to strike nearby enemies for additional damage.\r\n\r\nWhenever an allied player dies, this cooldown is reduced by $s2 seconds.", 0, 0 },
   { 377464, "Let loose a dangerous current of lightning, dealing $377465s2 Nature damage to your target and $377465s3 Nature damage to yourself. Self-damage increases with your stacks of Hatred.", 0, 0 },
   { 377465, "Casting spells grants stacks of Hatred, permanently lowering this trinket's cooldown by $382419s1 second until combat ends. This effect stacks up to 180 times.\r\n\r\n", 0, 0 },
@@ -16926,9 +16927,9 @@ static const std::array<spelltext_data_t, 19173> __spelltext_data { {
   { 382045, "Every $s1 casts of Riptide also applies Riptide to another friendly target near your Riptide target.", 0, 0 },
   { 382046, "Reduces the cooldown of Primordial Wave by ${$s1/-1000} sec.", 0, 0 },
   { 382058, "Stomp the ground, commanding flames to radiate outward from your position, dealing [medium] Fire damage to enemies struck and granting you a [medium] shield for $d. After a delay, the flames return, dealing the same damage and refreshing the shield.\r\n\r\nDamage and absorption are increased for each enemy struck, up to 5 enemies.", "Absorb up to $w1 incoming damage.", 0 },
-  { 382078, "Swear your oath to the Primalists to become Marked by Frost, increasing your Critical Strike by [medium amount]. \r\n\r\nFighting alongside allies who are Marked by Earth or Fire has a chance to grant you half of their Mark's stats for $s1 seconds.", "Versatility increased by $w1. Taking damage as well as dealing harmful spells and abilities has a chance to grant you an additional $377452w2 Critical Strike or Haste if any nearby allies are Marked by Frost or Fire.", 0 },
-  { 382079, "Swear your oath to the Primalists to become Marked by Frost, increasing your Critical Strike by [medium amount]. \r\n\r\nFighting alongside allies who are Marked by Earth or Fire has a chance to grant you half of their Mark's stats for $s1 seconds.", "Critical Strike increased by $w1. Dealing harmful spells and abilities has a chance to grant you an additional $377452w2 Versatility or Haste if any nearby allies are Marked by Earth or Fire.", 0 },
-  { 382080, "Swear your oath to the Primalists to become Marked by Frost, increasing your Critical Strike by [medium amount]. \r\n\r\nFighting alongside allies who are Marked by Earth or Fire has a chance to grant you half of their Mark's stats for $s1 seconds.", "Haste increased by $w1. Dealing harmful spells and abilities has a chance to grant you an additional $377452w2 Versatility or Critical Strike if any nearby allies are Marked by Frost or Fire.", 0 },
+  { 382078, "Swear your oath to the Primalists to become Marked by Frost, increasing your Critical Strike by [medium amount]. \r\n\r\nFighting alongside allies who are Marked by Earth or Fire has a chance to grant you half of their Mark's stats for $s1 seconds.", "Versatility increased by $w1. Taking damage as well as dealing harmful spells and abilities has a chance to grant you an additional ${$w1/2} Critical Strike or Haste if any nearby allies are Marked by Frost or Fire.", 0 },
+  { 382079, "Swear your oath to the Primalists to become Marked by Frost, increasing your Critical Strike by [medium amount]. \r\n\r\nFighting alongside allies who are Marked by Earth or Fire has a chance to grant you half of their Mark's stats for $s1 seconds.", "Critical Strike increased by $w1. Dealing harmful spells and abilities has a chance to grant you an additional ${$w1/2} Versatility or Haste if any nearby allies are Marked by Earth or Fire.", 0 },
+  { 382080, "Swear your oath to the Primalists to become Marked by Frost, increasing your Critical Strike by [medium amount]. \r\n\r\nFighting alongside allies who are Marked by Earth or Fire has a chance to grant you half of their Mark's stats for $s1 seconds.", "Haste increased by $w1. Dealing harmful spells and abilities has a chance to grant you an additional ${$w1/2} Versatility or Critical Strike if any nearby allies are Marked by Frost or Fire.", 0 },
   { 382081, "Swear your oath to the Primalists to become Marked by Frost, increasing your Critical Strike by [medium amount]. \r\n\r\nFighting alongside allies who are Marked by Earth or Fire has a chance to grant you half of their Mark's stats for $s1 seconds.", "Versatility increased by $w1.", 0 },
   { 382082, "Swear your oath to the Primalists to become Marked by Frost, increasing your Critical Strike by [medium amount]. \r\n\r\nFighting alongside allies who are Marked by Earth or Fire has a chance to grant you half of their Mark's stats for $s1 seconds.", "Critical Strike increased by $w1.", 0 },
   { 382083, "Swear your oath to the Primalists to become Marked by Frost, increasing your Critical Strike by [medium amount]. \r\n\r\nFighting alongside allies who are Marked by Earth or Fire has a chance to grant you half of their Mark's stats for $s1 seconds.", "Haste increased by $w1.", 0 },
@@ -17444,9 +17445,11 @@ static const std::array<spelltext_data_t, 19173> __spelltext_data { {
   { 384790, "When the Trick Shots effect fades or is consumed, or after gaining Deathblow, your next Kill Shot will deal $388998s1% increased damage, and shred up to $388998s2 targets near your Kill Shot target for $388998s3% of the damage dealt by Kill Shot over $385638d.", 0, 0 },
   { 384791, "Multi-Shot and Volley now also apply Explosive Shot to up to $s1 $Ltarget:targets; hit. This can only occur once every $388909d.", 0, 0 },
   { 384799, "Damage taken from area of effect attacks reduced by $s1%.", 0, 0 },
+  { 384810, "Spending Holy Power has a $s1% chance to reduce the Holy Power cost of your next Word of Glory$?c1[ or Light of Dawn]$?C2[ or Shield of the Righteous] by $s1.", "Holy Power cost of your next Word of Glory$?c1[ or Light of Dawn]$?C2[ or Shield of the Righteous] by $s1.", 0 },
   { 384815, "Spending Holy Power has a $s1% chance to reduce the Holy Power cost of your next Word of Glory$?c1[ or Light of Dawn]$?C2[ or Shield of the Righteous] by 1.", 0, 0 },
   { 384820, "Reduces the cooldown of Blessing of Sacrifice by ${$m1/-1000} sec.", 0, 0 },
   { 384825, "Gather 5 Leaves, then throw at the Playful Prowler!", 0, 0 },
+  { 384849, "Reach into the satchel and pull out something, anything that might help you out.", 0, 0 },
   { 384858, "Consuming Clearcasting reduces the cooldown of Arcane Orb by ${$s3/1000} sec.\r\n\r\nAdditionally, casting Arcane Missiles $s1 times fires an Arcane Orb toward your target. Clearcast Arcane Missiles count as $s2.", 0, 0 },
   { 384859, "$@spelldesc384858", "Building up an Arcane Orb", 0 },
   { 384860, "$@spelldesc384858", "Your next Arcane Missiles will fire an Arcane Orb at your target.", 0 },
@@ -17475,10 +17478,10 @@ static const std::array<spelltext_data_t, 19173> __spelltext_data { {
   { 385129, "In the Dawn, your Holy Power-spending abilities deal $s2% increased damage and healing. In the Dusk, your armor is increased by $s3% and your Holy Power generating abilities cool down $s1% faster.", 0, 0 },
   { 385149, "$@spelldesc383185", "Stunned.", 0 },
   { 385167, "Frozen Orb deals an additional $s1% damage and its duration is increased by ${$s2/1000} sec.", 0, 0 },
-  { 385325, "Imbue your weapon with the energy of a Dragonfly, increasing Critical Strike Rating by $ec1 for 2 hours.", 0, 0 },
-  { 385326, "Imbue your weapon with the energy of a Dragonfly, increasing Critical Strike Rating by $ec1 for 2 hours.", 0, 0 },
-  { 385327, "Imbue your weapon with the energy of a Dragonfly, increasing Critical Strike Rating by $ec1 for 2 hours.", 0, 0 },
-  { 385330, "Imbue your weapon with the energy of an Ohuna. Your healing spells have a high chance to heal your target for an additional $396142s1 healing for 2 hours.", 0, 0 },
+  { 385325, "Imbue your weapon with the energy of a Dragonfly, increasing Critical Strike Rating by $ec1 for 2 hours. \r\n\r\nFauna Runes cannot be applied to Ranged weapons.", 0, 0 },
+  { 385326, "Imbue your weapon with the energy of a Dragonfly, increasing Critical Strike Rating by $ec1 for 2 hours.\r\n\r\nFauna Runes cannot be applied to Ranged weapons.", 0, 0 },
+  { 385327, "Imbue your weapon with the energy of a Dragonfly, increasing Critical Strike Rating by $ec1 for 2 hours.\r\n\r\nFauna Runes cannot be applied to Ranged weapons.", 0, 0 },
+  { 385330, "Imbue your weapon with the energy of an Ohuna. Your healing spells have a high chance to heal your target for an additional $396142s1 healing for 2 hours.\r\n\r\nFauna Runes cannot be applied to Ranged weapons.", 0, 0 },
   { 385336, "$?pc95778[Whenever you gain Well Fed, you conjure a Dragonflight Dessert from among the recipes you have learned.][]", 0, 0 },
   { 385347, "Your healing spells and abilities have a chance to fire a Healing Dart toward an ally target. The first ally hit will be healed for $s1.", 0, 0 },
   { 385349, "Your spells and abilities have a chance to cause your target to erupt in a blinding light dealing $385354s1 Holy damage or healing an ally for $385352s1 health.", 0, 0 },
@@ -17507,9 +17510,9 @@ static const std::array<spelltext_data_t, 19173> __spelltext_data { {
   { 385540, "$@spelldesc385539", "Heals you for $w1 every $t sec.", 0 },
   { 385571, "Damage of Overpower increased by $s1%.", 0, 0 },
   { 385573, "Damage of Mortal Strike increased by $s1%.", 0, 0 },
-  { 385575, "Imbue your weapon with the energy of a Bakar, increasing Haste by $ec1 for 2 hours.", "Imbue your weapon with the energy of a Bakar, increasing Haste by $ec1 for 1 hour.", 0 },
-  { 385576, "Imbue your weapon with the energy of a Bakar, increasing Haste by $ec1 for 2 hours.", 0, 0 },
-  { 385577, "Imbue your weapon with the energy of a Bakar, increasing Haste by $ec1 for 2 hours.", 0, 0 },
+  { 385575, "Imbue your weapon with the energy of a Bakar, increasing Haste by $ec1 for 2 hours.\r\n\r\nFauna Runes cannot be applied to Ranged weapons.", "Imbue your weapon with the energy of a Bakar, increasing Haste by $ec1 for 1 hour.", 0 },
+  { 385576, "Imbue your weapon with the energy of a Bakar, increasing Haste by $ec1 for 2 hours.\r\n\r\nFauna Runes cannot be applied to Ranged weapons.", 0, 0 },
+  { 385577, "Imbue your weapon with the energy of a Bakar, increasing Haste by $ec1 for 2 hours.\r\n\r\nFauna Runes cannot be applied to Ranged weapons.", 0, 0 },
   { 385581, "Imbue your weapon with the energy of an Ohuna. Your healing spells have a high chance to heal your target for an additional $385580s1 healing.", 0, 0 },
   { 385582, "Imbue your weapon with the energy of an Ohuna. Your healing spells have a high chance to heal your target for an additional $ec1 healing.", 0, 0 },
   { 385583, "Imbue your weapon with the energy of an Ohuna. Your healing spells have a high chance to heal your target for an additional $385582s1 healing.", 0, 0 },
@@ -17591,7 +17594,7 @@ static const std::array<spelltext_data_t, 19173> __spelltext_data { {
   { 386011, "Increases Block chance by $s1% and your Block value by $s2%.", 0, 0 },
   { 386027, "Shield Block lasts ${$s1/1000} sec longer.", 0, 0 },
   { 386029, "$@spelldesc386030", "Shield Slam deals $w1% increased damage and the amount of damage you block is increased by $w2%.", 0 },
-  { 386030, "Using Shield Slam increases the damage of Shield Slam by $386029s1% for $386029d, and it increases the amount of damage you block by $386029s2%. Stacking up to $s2 times.", 0, 0 },
+  { 386030, "Using Shield Slam increases the damage of Shield Slam by $386029s1% for $386029d, and it increases the block value of your shield by $386029s2%. Stacking up to $s2 times.", 0, 0 },
   { 386034, "Heroic Throw deals $s2% increased damage and inflicts Deep Wounds.", 0, 0 },
   { 386045, "Damage of Raging Blow increased by $s1%.", 0, 0 },
   { 386071, "Taunts all enemies within $A1 yds to attack you for $d, interrupts all spellcasting within $A1 yds and prevents any spell in that school from being cast for $d.\r\n", "Taunted.", 0 },
@@ -17700,7 +17703,7 @@ static const std::array<spelltext_data_t, 19173> __spelltext_data { {
   { 386620, "Your Healthstone heals you for an additional $s1% of your maximum health. Any party or raid member using a Healthstone also heals you for that amount.", 0, 0 },
   { 386624, "Deal $386623s2 Frost damage and apply Awakening Rime to your target for 4-12s. If the target dies while Awakening Rime is active, it explodes for $370880s Frost damage split between enemies in a 10 yard radius. Duration is determined by the top-most card of the deck.\r\n", 0, 0 },
   { 386628, "While $?s152277[Ravager][Bladestorm] is active, you automatically cast a total of $?s152277[$s2 Mortal Strike][$s1 Mortal Strikes] at random nearby enemies.\r\n", 0, 0 },
-  { 386630, "Your Overpower has a $h% chance to reset the cooldown of Mortal Strike and  Cleave and reduces their Rage costs by ${$386631s1/-10}.", 0, 0 },
+  { 386630, "Overpower deals $s1% increased damage, has a $h% chance to reset the cooldown of Mortal Strike and Cleave and reduces their Rage costs by ${$386631s1/-10}.", 0, 0 },
   { 386631, "$@spelldesc386630", "Your next Mortal Strike or Cleave costs ${$w1/10} less Rage.", 0 },
   { 386632, "$@spelldesc386630", 0, 0 },
   { 386633, "$@spelldesc386634", "Damage from $@auracaster's next Mortal Strike increased by $w1%.", 0 },
@@ -18384,6 +18387,7 @@ static const std::array<spelltext_data_t, 19173> __spelltext_data { {
   { 390636, "$@spelldesc390622", "The damage of your next Holy Nova is increased by $w1% and its healing is increased by $w3%.", 0 },
   { 390642, "Shield Slam deals an additional $s1% damage and deals $s2% increased critical strike damage.\r\n\r\n", 0, 0 },
   { 390643, "Perform the summoning ritual and commune with one of the Primal Turtles to gain its blessing.\r\n\r\nThe ritual site can be found south of Uktulut Pier in The Waking Shores, near the remains of a dragon.", 0, 0 },
+  { 390655, "@spelldesc390643", "Taking damage as well as dealing harmful and helpful abilities have a chance to shield you for $390764w1 for $390785d.", 0 },
   { 390667, "Reduces all magic damage taken by $s1%.", 0, 0 },
   { 390668, "Your $?s137031[Holy Fire][Mind Blast] critical strikes reduce your target's movement speed by $390669s1% for $390669d.", 0, 0 },
   { 390669, "$@spelldesc390668", "Movement speed reduced by $s1%.", 0 },
@@ -18414,18 +18418,23 @@ static const std::array<spelltext_data_t, 19173> __spelltext_data { {
   { 390781, "Reduces the cast time of Light's Wrath by ${$s1/-1000} sec and increases its critical strike chance by $s2%.\r\n\r\nSmite deals $390782s1% additional damage for $390782d after casting Light's Wrath.", 0, 0 },
   { 390782, "$@spelldesc390781", "Smite damage increased by $s1%.", 0 },
   { 390783, "Return to the Aylaag camp, wherever they happen to be. Not available while the clan is moving.", 0, 0 },
+  { 390785, "@spelldesc390643", "Absorb $w1 damage.", 0 },
   { 390786, "Your Penance bolts increase the damage of your next Smite by $390787s1% or the absorb of your next Power Word: Shield by $390787s2%.\r\n\r\nStacks up to $390787U times.", 0, 0 },
   { 390787, "$@spelldesc390786", "The damage of your next Smite is increased by $w1% or the absorb of your next Power Word: Shield is increased by $w2%.", 0 },
   { 390808, "Immolation Aura generates $m-$M Fury when it deals critical damage.\r\n\r\nThis effect may only occur once per ${$proccooldown+0.1}.1 sec.", 0, 0 },
   { 390832, "Increases the damage of Mind Blast and Shadow Word: Death by $s1%.\r\n\r\nMind Blast and Shadow Word: Death consume $s2 sec of Shadow Word: Pain or Purge the Wicked, instantly dealing that damage.", 0, 0 },
+  { 390835, "@spelldesc390643", "Your harmful spells and abilities have a chance to deal an extra $390764w3 fire damage.", 0 },
   { 390845, "$@spelldesc110744", 0, 0 },
   { 390864, "Swipe and Thrash damage is increased by $s1%.", 0, 0 },
+  { 390869, "@spelldesc390643", "Your helpful and harmful abilities have a chance to heal you or an ally near your target for $390764w4.", 0 },
   { 390881, "Your Renew healing increases the healing done by your next Circle of Healing by $390885s1%, stacking up to $390885U times.", 0, 0 },
   { 390885, "$@spelldesc390881", "The healing of your next Circle of Healing is increased by $w1%.", 0 },
   { 390896, "$@spelldesc383812", 0, 0 },
+  { 390899, "@spelldesc390643", "Your harmful spells and abilities have a chance to grant you $390764w5 mastery for $390936d.", 0 },
   { 390902, "Tiger's Fury's damage bonus is increased by $s1%.", 0, 0 },
   { 390919, "Increases the amount of damage required to break your $?s205369[Mind Bomb][Psychic Scream] by $s1%.", 0, 0 },
   { 390933, "$@spelldesc377438", "Damage and healing of Smite and Holy Nova is increased by $s1%.", 0 },
+  { 390936, "@spelldesc390643", "Mastery increased by $w1.", 0 },
   { 390941, "$@spelldesc383812", 0, 0 },
   { 390947, "Circle of Healing heals $s1 additional ally and its cooldown is reduced by ${$s2/-1000} sec.", 0, 0 },
   { 390951, "Temporarily imbues shoulders with a fiery illusion for $ecd.", 0, 0 },
@@ -19106,8 +19115,8 @@ static const std::array<spelltext_data_t, 19173> __spelltext_data { {
   { 396142, "Imbue your weapon with the energy of an Ohuna. Your healing spells have a high chance to heal your target for an additional $396142s1 healing.", 0, 0 },
   { 396143, "Imbue your weapon with the energy of an Ohuna. Your healing spells have a high chance to heal your target for an additional $385580s1 healing.", 0, 0 },
   { 396144, "Imbue your weapon with the energy of an Ohuna. Your healing spells have a high chance to heal your target for an additional $396144s1 healing.", 0, 0 },
-  { 396147, "Imbue your weapon with the energy of an Ohuna. Your healing spells have a high chance to heal your target for an additional $396144s1 healing for 2 hours.", 0, 0 },
-  { 396148, "Imbue your weapon with the energy of an Ohuna. Your healing spells have a high chance to heal your target for an additional $385582s1 healing for 2 hours.", 0, 0 },
+  { 396147, "Imbue your weapon with the energy of an Ohuna. Your healing spells have a high chance to heal your target for an additional $396144s1 healing for 2 hours.\r\n\r\nFauna Runes cannot be applied to Ranged weapons.", 0, 0 },
+  { 396148, "Imbue your weapon with the energy of an Ohuna. Your healing spells have a high chance to heal your target for an additional $385582s1 healing for 2 hours.\r\n\r\nFauna Runes cannot be applied to Ranged weapons.", 0, 0 },
   { 396155, "Sharpens your bladed weapon, increasing Attack Power by $ec1 for 1 hour.", 0, 0 },
   { 396156, "Sharpens your bladed weapon, increasing Attack Power by $ec1 for 1 hour.", 0, 0 },
   { 396157, "Sharpens your bladed weapon, increasing Attack Power by $ec1 for 1 hour.", 0, 0 },
@@ -19172,15 +19181,17 @@ static const std::array<spelltext_data_t, 19173> __spelltext_data { {
   { 397621, "$@spelldesc377456", "Movement speed increased by $w1%. Auto attacks deal $w2 bonus Nature damage to your current target and the nearest enemy.", 0 },
   { 397708, "Execute no longer has a cooldown and if your foe survives, $163201s2% of the Rage spent is refunded.", 0, 0 },
   { 397767, "Add a socket to a Dragonflight Season $s2 item that does not already have one. Can be used on Helms, Necks, Bracers, Belts, or Rings.", 0, 0 },
+  { 397870, "Essence Burst increases the damage of affected spells by ${$s1}.1%.", 0, 0 },
   { 398396, "$@spelldesc386578", 0, 0 },
+  { 399370, "$@spelldesc370867", "Your next Blue spell deals $s1% more damage.", 0 },
+  { 400006, "Living Flame restores $s1% of its mana cost when striking an enemy.", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.0.2.46741
-static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelltext_hotfix_data { {
-  {   79096,  0, "Finishing moves reduce the remaining cooldown of many Rogue skills by $<cdr> sec per combo point spent.\r\n\r\nAffected skills: Adrenaline Rush, Between the Eyes, Blade Flurry, Blade Rush, Dreadblades, Ghostly Strike, Grappling Hook, Keep it Rolling, Killing Spree, Marked for Death, Roll the Bones, Sepsis, Sprint, and Vanish.", "Finishing moves reduce the remaining cooldown of many Rogue skills by $<cdr> sec per combo point spent.\r\n\r\nAffected skills: Adrenaline Rush, Between the Eyes, Blade Flurry, Blade Rush, Dreadblades, Ghostly Strike, Grappling Hook, Keep it Rolling, Killing Spree, Marked for Death, Roll the Bones, Sprint, and Vanish." },
+// spelltext hotfix entries, wow build 10.0.2.46924
+static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 10.0.2.46741
+// Spell description variables, wow build 10.0.2.46924
 static const std::array<spelldesc_vars_data_t, 365> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$pvp=$?a134735[${1.1}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<pvp>*$<weal>}\r\n" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -19549,10 +19560,7 @@ static const std::array<spelldesc_vars_data_t, 365> __spelldesc_vars_data { {
   {  394354, "$damage=${($AP*1.0)*(1+$@versadmg)}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.0.2.46741
-static constexpr std::array<hotfix::client_hotfix_entry_t, 3> __spelldesc_vars_hotfix_data { {
-  {  322507,  0, "$absorb=${($AP*6)*(1+$@versadmg)}\r\n", "$absorb=${($AP*8.4)*(1+$@versadmg)}\r\n" },
-  {  363041,  0, "$absorb=${($AP*6)*(1+$@versadmg)}\r\n", "$absorb=${($AP*8.4)*(1+$@versadmg)}\r\n" },
-  {  378986,  0, "$cap=${$SP*1.20}", "$cap=${$SP*1.40}" },
+// spelldesc_vars hotfix entries, wow build 10.0.2.46924
+static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 

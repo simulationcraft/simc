@@ -71,6 +71,7 @@ SRC += \
     dbc$(PATHSEP)item_set_bonus.cpp \
     dbc$(PATHSEP)item_weapon.cpp \
     dbc$(PATHSEP)mastery_spells.cpp \
+    dbc$(PATHSEP)permanent_enchant.cpp \
     dbc$(PATHSEP)racial_spells.cpp \
     dbc$(PATHSEP)rand_prop_points.cpp \
     dbc$(PATHSEP)rank_spells.cpp \

@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46741 Live (hotfix 2022-11-24/46741, git build update_builds 252553004a)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46924 Live (hotfix 2022-12-03/46924, no-networking)
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -734,6 +734,7 @@ Description      : Silences the target, preventing them from casting spells for 
 Tooltip          : Silenced.
 
 Name             : Desperate Prayer (id=19236) [Spell Family (6)] 
+Hotfixed         : Attributes
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -752,9 +753,9 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ..x..... 
+                 : ........ ........ ........ ........   x......x ........ ........ ..x..... 
                  : ........ ........ ........ ........   
-                 : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Can't Crit (93), Ignore Caster Modifiers (125), Ignore Healing Modifiers (219), Aura Points On Client (268), Allow Class Ability Procs (416), Always Allow Negative Healing Percent Modifiers (442)
+                 : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Can't Crit (93), Ignore Caster Modifiers (125), Ignore Healing Modifiers (219), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Always Allow Negative Healing Percent Modifiers (442)
 Effects          :
 #1 (id=10552)    : Apply Aura (6) | Modify Max Health% (133)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -1195,8 +1196,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=111848)   : Trigger Spell (64): (41967)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 41967 | Target: Self (1)
-#4 (id=1040021)  : Dummy (3)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
+#4 (id=1040021)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Summons a shadowy fiend to attack the target for $d.$?s137033[
 
 |cFFFFFFFFGenerates ${$262485s1/100} Insanity each time the Shadowfiend attacks.|r][
@@ -1376,7 +1377,6 @@ Effects          :
 Description      : Melee attacks against you cause you to gain Focused Will, reducing damage you take by $45242s1% for $45242d$?s137033[][, stacking up to $45242u times].
 
 Name             : Divine Aegis (id=47515) [Spell Family (6), Passive, Hidden] 
-Hotfixed         : Affecting Spells
 Talent Entry     : Discipline [tree=spec, row=9, col=1, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(5, 10)]
                  : Effect#2 [op=set, values=(5, 10)]
@@ -1579,7 +1579,6 @@ Effects          :
 Description      : $@spelldesc47540
 
 Name             : Divine Aegis (id=47753) [Spell Family (6)] 
-Hotfixed         : Affecting Spells
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -2432,6 +2431,7 @@ Class            : Priest
 School           : Physical
 Spell Type       : None
 Spell Level      : 27
+Requires armor   : Cloth Head, Shoulders, Chest, Waist, Legs, Feet, Wrists, Hands, Robe
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2892,15 +2892,12 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 34 | Target: Self (1)
                    Affected Spells: Flash Heal (2061)
                    Family Flags: 11
-Hotfixed         : Sub Type (408 -> 108), Base Value (0 -> -100), Misc Value (0 -> 34), Affects Spells, Trigger Spell (2061 -> 0)
 #4 (id=164990)   : Apply Aura (6) | Add Percent Modifier (108): Unknown(39)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 39 | Target: Self (1)
                    Affected Spells: Flash Heal (2061)
                    Family Flags: 11
-Hotfixed         : Sub Type (408 -> 108), Base Value (0 -> -100), Misc Value (0 -> 39), Affects Spells, Trigger Spell (101062 -> 0)
 #5 (id=1043134)  : Apply Aura (6) | Unknown(408)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 2061 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 Description      : $@spelldesc109186
 Tooltip          : Next Flash Heal is instant and costs no mana.
 
@@ -3615,7 +3612,6 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Flash Heal (2061)
                    Family Flags: 11
-Hotfixed         : NEW EFFECT
 Description      : Discipline Priest core passive
 
 Name             : Shadow Priest (id=137033) [Spell Family (6), Passive, Hidden] 
@@ -4200,7 +4196,7 @@ Talent Entry     : Discipline [tree=spec, row=2, col=1, max_rank=1, req_points=0
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
-Resource         : 5.5% Base Mana (0) (id=10498)[Hotfixed: Percent Cost (6.5 -> 5.5)]
+Resource         : 5.5% Base Mana (0) (id=10498)
 Spell Level      : 23
 Range            : 40 yards
 Cast Time        : 2 seconds
@@ -12513,6 +12509,7 @@ Description      : Refreshes Holy Fire. Your next $s1 casts of Holy Fire cost no
 Whenever Holy Fire is reapplied, its duration is now extended instead.
 
 Name             : Empyreal Blaze (id=372617) [Spell Family (6)] 
+Hotfixed         : Attributes
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -12526,9 +12523,9 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   x......x ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Not Shapeshifted (16), Not In Spellbook (143), Allow Class Ability Procs (416)
+                 : Not Shapeshifted (16), Not In Spellbook (143), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=997346)   : Apply Aura (6) | Ignore Spell Cooldown (383)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -13136,7 +13133,6 @@ Effects          :
 Description      : Invoke the Light's wrath, dealing $s1 Radiant damage to the target, increased by $s2% per ally affected by your Atonement.
 
 Name             : Harsh Discipline (id=373180) [Spell Family (6), Passive, Hidden] 
-Hotfixed         : Proc Flags (0 -> 65536)
 Talent Entry     : Discipline [tree=spec, row=9, col=4, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(8, 4)]
 Class            : Priest
@@ -13165,7 +13161,7 @@ Name             : Harsh Discipline (id=373183) [Spell Family (6)]
 Class            : Priest
 School           : Physical
 Spell Type       : None
-Duration         : 15 seconds
+Duration         : 30 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
 Proc Flags       : ........ ........ ........ .....x.. 
@@ -14716,7 +14712,6 @@ Description      : Your damaging Shadow spells increase the damage of your next 
 Your damaging Holy spells increase the damage of your next Shadow spell cast within $390707d sec by $390707s1%.
 
 Name             : Twilight Equilibrium (id=390706) [Spell Family (6)] 
-Hotfixed         : Proc Flags (0 -> 81920)
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -15365,11 +15360,14 @@ Description      : $@spelldesc390980
 Tooltip          : The healing of your next Holy Word spell is increased by $w1%.
 
 Name             : Lightweaver (id=390992) [Spell Family (6), Passive, Hidden] 
+Hotfixed         : Proc Flags (0 -> 16384)
 Talent Entry     : Holy [tree=spec, row=10, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Priest
 School           : Holy
 Spell Type       : None
 Proc Chance      : 101%
+Proc Flags       : ........ ......x. ........ ........ 
+                 : Magic Heal
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -15387,6 +15385,7 @@ Description      : Flash Heal reduces the cast time of your next Heal within $39
 Stacks up to $390993U times.
 
 Name             : Lightweaver (id=390993) [Spell Family (6)] 
+Hotfixed         : Attributes
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -15400,9 +15399,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Aura Points On Client (268)
+                 : Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=1028207)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -15592,6 +15591,7 @@ Description      : $@spelldesc391095
 Tooltip          : Periodic Shadow damage increased by $w1%.
 
 Name             : Dark Ascension (id=391109) [Spell Family (6)] 
+Hotfixed         : Attributes
 Talent Entry     : Shadow [tree=spec, row=5, col=3, max_rank=1, req_points=8, select_idx=200]
 Class            : Priest
 School           : Shadow
@@ -15608,9 +15608,9 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   x......x ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Ignore Line of Sight (66), Aura Points On Client (268), Allow Class Ability Procs (416)
+                 : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Ignore Line of Sight (66), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=1028403)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -16377,6 +16377,7 @@ Effects          :
 Description      : Your Shadow Word: Pain damage has a chance to reset the cooldown of Shadow Word: Death and enable $s1% additional damage regardless of the target's health.
 
 Name             : Deathspeaker (id=392511) [Spell Family (6)] 
+Hotfixed         : Attributes
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -16392,9 +16393,9 @@ Attributes       : ....x... ........ ........ .....x..   ........ ..x..... .....
                  : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Is Ability (4), No Immunities (29), No Threat (42), Floating Combat Text On Cast (198)
+                 : Is Ability (4), No Immunities (29), No Threat (42), Floating Combat Text On Cast (198), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=1030778)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)

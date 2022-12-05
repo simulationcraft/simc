@@ -655,3 +655,160 @@ class TraitSet(DataSet):
     def ids(self):
         return [ v['spell'].id for v in self.get().values() ]
 
+class PermanentEnchantItemSet(DataSet):
+    def _get_enchant_effect(self, spell_id, effect_type):
+        _spell = self.db('SpellName')[spell_id]
+        if _spell.id == 0:
+            return None
+
+        _spell_effects = _spell.children('SpellEffect')
+        _effects = [e.type == effect_type for e in _spell_effects]
+
+        if True not in _effects:
+            return None
+
+        return _spell_effects[_effects.index(True)]
+
+    def _get_item_enchant(self, item_id):
+        _item = self.db('ItemSparse')[item_id]
+        if _item.id == 0:
+            return None, None
+
+        for effect_map_ref in _item.children('ItemXItemEffect'):
+            _effect = self.get_unranked_enchant_effect(effect_map_ref.ref('id_item_effect').id_spell)
+            if _effect is None:
+                continue
+
+            _enchant = self.db('SpellItemEnchantment')[_effect.misc_value_1]
+            if _enchant.id == 0:
+                continue
+
+            _enchant_sei = _spell.child_ref('SpellEquippedItems')
+            if _enchant_sei.id == 0:
+                continue
+
+            return _enchant, _enchant_sei
+
+        return None, None
+
+    def _filter(self, **kwargs):
+        items = set()
+
+        # Professions + "Runeforging"
+        _skill_line_ids = [ 164, 165, 171, 197, 202, 333, 755, 773, 960 ]
+        _spells = []
+
+        enchants = {}
+
+        for skill in self.db('SkillLineAbility').values():
+            if skill.id_skill not in _skill_line_ids:
+                continue
+
+            enchant_spell = skill.ref('id_spell')
+            if enchant_spell.id == 0:
+                continue
+
+            tokenized_name = util.tokenize(enchant_spell.name)
+
+            unranked_effect = self._get_enchant_effect(enchant_spell.id, 53)
+            unranked_item = self._get_enchant_effect(enchant_spell.id, 24)
+            ranked_effect = self._get_enchant_effect(enchant_spell.id, 301)
+            ranked_item = self._get_enchant_effect(enchant_spell.id, 288)
+
+            if unranked_effect is not None:
+                _enchant = self.db('SpellItemEnchantment')[unranked_effect.misc_value_1]
+                if _enchant.id == 0:
+                    continue
+
+                _enchant_sei = enchant_spell.child_ref('SpellEquippedItems')
+                if _enchant_sei.id == 0:
+                    continue
+
+                _key = (tokenized_name, 0, _enchant.id, _enchant_sei.item_class,
+                        _enchant_sei.mask_inv_type, _enchant_sei.mask_sub_class)
+
+                if _key not in enchants:
+                    enchants[_key] = (_enchant, _enchant_sei)
+
+            elif unranked_item is not None:
+                for item_effect_map_ref in unranked_item.ref('item_type').children('ItemXItemEffect'):
+                    _spell = item_effect_map_ref.ref('id_item_effect').ref('id_spell')
+                    if _spell.id == 0:
+                        continue
+
+                    _effect = self._get_enchant_effect(_spell.id, 53)
+                    if _effect is None:
+                        continue
+
+                    _enchant = self.db('SpellItemEnchantment')[_effect.misc_value_1]
+                    if _enchant.id == 0:
+                        continue
+
+                    _enchant_sei = _spell.child_ref('SpellEquippedItems')
+                    if _enchant_sei.id == 0:
+                        continue
+
+                    _key = (tokenized_name, 0, _enchant.id, _enchant_sei.item_class,
+                            _enchant_sei.mask_inv_type, _enchant_sei.mask_sub_class)
+
+                    if _key not in enchants:
+                        enchants[_key] = (_enchant, _enchant_sei)
+
+            elif ranked_effect is not None:
+                _crafting_data = self.db('CraftingData')[ranked_effect.misc_value_1]
+                if _crafting_data.id == 0:
+                    continue
+
+                for _entry in _crafting_data.children('CraftingDataEnchantQuality'):
+                    _enchant = _entry.ref('id_spell_item_enchantment')
+                    if _enchant.id == 0:
+                        continue
+
+                    _enchant_sei = enchant_spell.child_ref('SpellEquippedItems')
+                    if _enchant_sei.id == 0:
+                        continue
+
+                    _key = (tokenized_name, _entry.rank, _enchant.id, _enchant_sei.item_class,
+                            _enchant_sei.mask_inv_type, _enchant_sei.mask_sub_class)
+
+                    if _key not in enchants:
+                        enchants[_key] = (_enchant, _enchant_sei)
+
+            elif ranked_item is not None:
+                _crafting_data = self.db('CraftingData')[ranked_item.misc_value_1]
+                if _crafting_data.id == 0:
+                    continue
+
+                for entry in _crafting_data.children('CraftingDataItemQuality'):
+                    _item2 = self.db('Item')[entry.id_item]
+                    if _item2.id == 0:
+                        continue
+
+                    for item_effect_map_ref in entry.ref('id_item').children('ItemXItemEffect'):
+                        _spell = item_effect_map_ref.ref('id_item_effect').ref('id_spell')
+                        _spell_effects = _spell.children('SpellEffect')
+                        _effects = [e.type == 53 for e in _spell_effects]
+
+                        if True not in _effects:
+                            continue
+
+                        _id_value = _spell_effects[_effects.index(True)].misc_value_1
+                        _enchant = self.db('SpellItemEnchantment')[_id_value]
+                        if _enchant.id == 0:
+                            continue
+
+                        _enchant_sei = _spell.child_ref('SpellEquippedItems')
+                        if _enchant_sei.id == 0:
+                            continue
+
+                        _key = (tokenized_name, _item2.id_crafting_quality, _enchant.id, _enchant_sei.item_class,
+                                _enchant_sei.mask_inv_type, _enchant_sei.mask_sub_class)
+
+                        if _key not in enchants:
+                            enchants[_key] = (_enchant, _enchant_sei)
+
+        return [k + v for k, v in enchants.items()]
+
+    def ids(self):
+        return list(set(v[0] for v in self.get()))
+

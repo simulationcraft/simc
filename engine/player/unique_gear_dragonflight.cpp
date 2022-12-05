@@ -13,8 +13,9 @@
 #include "ground_aoe.hpp"
 #include "item/item.hpp"
 #include "item/item_targetdata_initializer.hpp"
-#include "sim/sim.hpp"
 #include "set_bonus.hpp"
+#include "sim/cooldown.hpp"
+#include "sim/sim.hpp"
 #include "stats.hpp"
 #include "unique_gear.hpp"
 #include "unique_gear_helper.hpp"
@@ -246,6 +247,7 @@ void phial_of_static_empowerment( special_effect_t& effect )
   {
     auto primary = make_buff<stat_buff_t>( effect.player, "static_empowerment", effect.player->find_spell( 370772 ) );
     primary->add_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect.item ) / primary->max_stack() );
+    primary->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
 
     buff = make_buff( effect.player, effect.name(), effect.driver() )
       ->set_stack_change_callback( [ primary ]( buff_t*, int, int new_ ) {
@@ -267,13 +269,7 @@ void phial_of_static_empowerment( special_effect_t& effect )
         speed->trigger();
     } );
 
-    if ( effect.player->buffs.movement )
-    {
-      effect.player->buffs.movement->set_stack_change_callback( [ primary, buff ]( buff_t*, int, int new_ ) {
-        if ( new_ && buff->check() )
-          primary->expire();
-      } );
-    }
+    effect.player->buffs.static_empowerment = primary;
   }
 
   effect.custom_buff = buff;
@@ -902,6 +898,20 @@ void darkmoon_deck_watcher( special_effect_t& effect )
   effect.buff_disabled = true;
 }
 
+void alacritous_alchemist_stone( special_effect_t& effect )
+{
+  new dbc_proc_callback_t( effect.player, effect );
+
+  auto cd = effect.player->get_cooldown( "potion" );
+  auto cd_adj = -timespan_t::from_seconds( effect.driver()->effectN( 1 ).base_value() );
+
+  effect.player->callbacks.register_callback_execute_function(
+      effect.spell_id, [ cd, cd_adj ]( const dbc_proc_callback_t* cb, action_t*, action_state_t* ) {
+        cb->proc_buff->trigger();
+        cd->adjust( cd_adj );
+      } );
+}
+
 void bottle_of_spiraling_winds( special_effect_t& effect )
 {
   // TODO: determine what happens on buff refresh
@@ -1022,6 +1032,12 @@ void globe_of_jagged_ice( special_effect_t& effect )
     {
       return generic_aoe_proc_t::composite_target_multiplier( t ) *
              player->get_target_data( t )->debuff.skewering_cold->stack();
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      generic_aoe_proc_t::impact( s );
+      player->get_target_data( s->target )->debuff.skewering_cold->expire();
     }
   };
 
@@ -1389,6 +1405,14 @@ void spoils_of_neltharus( special_effect_t& effect )
   effect.execute_action = create_proc_action<spoils_of_neltharus_t>( "spoils_of_neltharus", effect );
 }
 
+void sustaining_alchemist_stone( special_effect_t& effect )
+{
+  effect.stat = effect.player->convert_hybrid_stat( STAT_STR_AGI_INT );
+  effect.stat_amount = effect.driver()->effectN( 2 ).average( effect.item );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 void timebreaching_talon( special_effect_t& effect )
 {
   auto debuff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 384050 ) );
@@ -1453,7 +1477,8 @@ void way_of_controlled_currents( special_effect_t& effect )
   surge_driver->type = SPECIAL_EFFECT_EQUIP;
   surge_driver->source = SPECIAL_EFFECT_SOURCE_ITEM;
   surge_driver->spell_id = surge->data().id();
-  //surge_driver->cooldown_ = surge->data().internal_cooldown();
+  surge_driver->cooldown_ = surge->data().internal_cooldown();
+  effect.player->special_effects.push_back( surge_driver );
 
   auto surge_damage = create_proc_action<generic_proc_t>( "way_of_controlled_currents", *surge_driver,
                                                           "way_of_controlled_currents", 381967 );
@@ -1790,6 +1815,7 @@ void decoration_of_flame( special_effect_t& effect )
         value( e.player->find_spell( 394393 )->effectN( 2 ).average( e.item ) )
     {
        background = true;
+       split_aoe_damage = true;
        base_dd_min = base_dd_max = e.player->find_spell( 394393 )->effectN( 1 ).average( e.item );
        aoe = as<int>( e.driver()->effectN( 3 ).base_value() );
        radius = 10;
@@ -1811,7 +1837,7 @@ void decoration_of_flame( special_effect_t& effect )
       double chance = player -> sim -> dragonflight_opts.decoration_of_flame_miss_chance;
       if ( rng().roll( chance ) )
       {
-        return aoe - as<int>( rng().range( 0, n_targets() ) );
+        return aoe - as<int>( rng().range( 0, aoe ) );
       }
       return aoe; 
     }
@@ -1839,7 +1865,7 @@ void decoration_of_flame( special_effect_t& effect )
 // 382256 AoE Radius
 // 382257 ???
 // 395703 ???
-// 396434 ???
+// 396434 ??? 
 void manic_grieftorch( special_effect_t& effect )
 {
     struct manic_grieftorch_damage_t : public proc_spell_t
@@ -1854,8 +1880,8 @@ void manic_grieftorch( special_effect_t& effect )
   
   struct manic_grieftorch_missile_t : public proc_spell_t
   {
-    manic_grieftorch_missile_t( const special_effect_t& e ) :
-      proc_spell_t( "manic_grieftorch_missile", e.player, e.player->find_spell( 382136 ), e.item )
+    manic_grieftorch_missile_t(const special_effect_t& e) :
+        proc_spell_t("manic_grieftorch_missile", e.player, e.player->find_spell(382136), e.item)
     {
       background = true;
       aoe = -1;
@@ -1866,7 +1892,6 @@ void manic_grieftorch( special_effect_t& effect )
     size_t available_targets( std::vector< player_t* >& tl ) const override
     {
     proc_spell_t::available_targets( tl );
-
     tl.erase( std::remove_if( tl.begin(), tl.end(), [ this ]( player_t* t) {
          if( t == target )
         {
@@ -1874,7 +1899,8 @@ void manic_grieftorch( special_effect_t& effect )
         }
         else
         {
-          return !rng().roll( player->sim->dragonflight_opts.manic_grieftorch_chance );
+          // Has very strange scaling behavior, where it scales with targets very slowly. Using this formula to reduce the cleave chance as target count increases
+             return !rng().roll(0.2 * (sqrt(num_targets()) / num_targets()) );
         }
       }), tl.end() );
 
@@ -2109,7 +2135,9 @@ void alegethar_puzzle_box( special_effect_t& effect )
     {
       background = true;
       auto buff_spell = e.player -> find_spell( 383781 );
-      buff = create_buff<stat_buff_t>(e.player, buff_spell);
+      buff = create_buff<stat_buff_t>(e.player, buff_spell)
+          -> add_stat_from_effect(1, e.driver()->effectN( 1 ).average(e.item));
+      buff -> set_default_value(e.driver()->effectN(1).average(e.item));
     }
 
     void impact( action_state_t* ) override
@@ -2402,6 +2430,129 @@ void blazebinders_hoof(special_effect_t& effect)
   } );
 }
 
+void primal_ritual_shell( special_effect_t& effect )
+{
+  const auto& blessing = effect.player->sim->dragonflight_opts.primal_ritual_shell_blessing;
+  {
+    if ( util::str_compare_ci( blessing, "wind" ) )
+    {
+      // Wind Turtle's Blessing - Mastery Proc [390899]
+      effect.stat_amount = effect.driver()->effectN( 5 ).average( effect.item );
+      effect.spell_id = 390899;
+      effect.stat = STAT_MASTERY_RATING;
+      effect.name_str = effect.trigger()->name_cstr();
+    }
+    else if ( util::str_compare_ci( blessing, "stone" ) )
+    {
+      // TODO: Implement Stone Turtle's Blessing - Absorb-Shield Proc [390655]
+      effect.player->sim->error( "Stone Turtle's Blessing is not implemented yet" );
+    }
+    else if ( util::str_compare_ci( blessing, "flame" ) )
+    {
+      // Flame Turtle's Blessing - Fire Damage Proc [390835]
+      effect.discharge_amount = effect.driver()->effectN( 3 ).average( effect.item );
+      effect.spell_id = 390835;
+      effect.name_str = effect.trigger()->name_cstr();
+    }
+    else if ( util::str_compare_ci( blessing, "sea" ) )
+    {
+      // TODO: Implement Sea Turtle's Blessing - Heal Proc [390869]
+      effect.player->sim->error( "Sea Turtle's Blessing is not implemented yet" );
+    }
+    else
+    {
+      throw std::invalid_argument( "Invalid string for dragonflight.primal_ritual_shell_blessing. Valid strings: wind,flame,sea,stone" );
+    }
+  }
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Spineripper's Fang
+// 383611 Driver
+// 383612 Damage spell (damage value is in the driver effect)
+// Double damage bonus from behind, not in spell data anywhere
+void spinerippers_fang( special_effect_t& effect )
+{
+  auto action = create_proc_action<generic_proc_t>( "Cataclysmic Punch", effect, "rip_spine",
+                                                    effect.driver()->effectN( 1 ).trigger() );
+  
+  double damage = effect.driver()->effectN( 1 ).average( effect.item );
+  if ( effect.player->position() == POSITION_BACK ||
+       effect.player->position() == POSITION_RANGED_BACK )
+  {
+    damage *= 2.0;
+  }
+  action->base_dd_min = action->base_dd_max = damage;
+
+  effect.execute_action = action;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Integrated Primal Fire
+// 392359 Driver and fire damage impact
+// 392376 Physical damage impact spell, damage in driver effect 2
+void integrated_primal_fire( special_effect_t& effect )
+{
+  struct cataclysmic_punch_t : public generic_proc_t
+  {
+    cataclysmic_punch_t( const special_effect_t& e ) : generic_proc_t( e, "cataclysmic_punch", e.driver() )
+    {
+      // Physical Damage
+      impact_action = create_proc_action<generic_proc_t>(
+        "cataclysmic_punch_knock", e, "cataclysmic_punch_knock", e.driver()->effectN( 4 ).trigger() );
+      impact_action->base_dd_min = impact_action->base_dd_max = e.driver()->effectN( 2 ).average( e.item );
+      add_child( impact_action );
+    }
+  };
+
+  effect.execute_action = create_proc_action<cataclysmic_punch_t>( "cataclysmic_punch", effect );
+}
+
+// Bushwhacker's Compass
+// 383817 Driver
+// 383818 Buffs
+// North = Crit, South = Haste, East = Vers, West = Mastery
+void bushwhackers_compass(special_effect_t& effect)
+{
+  struct cb_t : public dbc_proc_callback_t
+  {
+    std::vector<buff_t*> buffs;
+    cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e )
+    {
+      auto the_path_to_survival_mastery = create_buff<stat_buff_t>(effect.player, "the_path_to_survival_mastery", effect.trigger() )
+        -> add_stat( STAT_MASTERY_RATING, effect.trigger()->effectN( 5 ).average( effect.item ));
+
+      auto the_path_to_survival_haste = create_buff<stat_buff_t>(effect.player, "the_path_to_survival_haste", effect.trigger() )
+        -> add_stat( STAT_HASTE_RATING, effect.trigger()->effectN( 5 ).average( effect.item ));
+
+      auto the_path_to_survival_crit = create_buff<stat_buff_t>(effect.player, "the_path_to_survival_crit", effect.trigger() )
+        -> add_stat( STAT_CRIT_RATING, effect.trigger()->effectN( 5 ).average( effect.item ));
+
+      auto the_path_to_survival_vers = create_buff<stat_buff_t>(effect.player, "the_path_to_survival_vers", effect.trigger() )
+        -> add_stat( STAT_VERSATILITY_RATING, effect.trigger()->effectN( 5 ).average( effect.item ));
+
+      buffs =
+      {
+        the_path_to_survival_mastery,
+        the_path_to_survival_haste,
+        the_path_to_survival_crit,
+        the_path_to_survival_vers
+      };
+    }
+
+    void execute( action_t* a, action_state_t* s ) override
+    {
+      dbc_proc_callback_t::execute( a, s );
+
+      auto buff = effect.player -> sim -> rng().range( buffs.size() );
+      buffs[ buff ] -> trigger();
+    }
+  };
+  effect.buff_disabled = true;
+  new cb_t( effect );
+}
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -2437,7 +2588,7 @@ void forgestorm( special_effect_t& effect )
     {
       base_dd_min = base_dd_max = e.player -> find_spell( 381698 ) -> effectN( 1 ).average( e.item );
       background = true;
-      aoe = e.player -> find_spell( 381698 ) -> effectN( 2 ).base_value();
+      aoe = as<int>( e.player->find_spell( 381698 )->effectN( 2 ).base_value() );
       reduced_aoe_targets = 1.0;
     }
   };
@@ -2550,11 +2701,27 @@ struct heavens_nemesis_initializer_t : public item_targetdata_initializer_t
 };
 
 // Armor
+void assembly_guardians_ring( special_effect_t& effect )
+{
+  auto cb = new dbc_proc_callback_t( effect.player, effect );
+  cb->initialize();
+
+  cb->proc_buff->set_default_value( effect.driver()->effectN( 1 ).average( effect.item ) );
+}
+
+void assembly_scholars_loop( special_effect_t& effect )
+{
+  effect.discharge_amount = effect.driver()->effectN( 1 ).average( effect.item );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 void blue_silken_lining( special_effect_t& effect )
 {
   auto buff = create_buff<stat_buff_t>( effect.player, effect.trigger()->effectN( 1 ).trigger() );
   buff->manual_stats_added = false;
   buff->add_stat( STAT_MASTERY_RATING, effect.driver()->effectN( 1 ).average( effect.item ) );
+  buff->set_max_stack( 2 );
 
   // TODO: implement losing buff when hp < 90%
   effect.player->register_combat_begin( [ buff ]( player_t* ) { buff->trigger(); } );
@@ -2706,8 +2873,7 @@ void elemental_lariat( special_effect_t& effect )
 
 void flaring_cowl( special_effect_t& effect )
 {
-  auto damage = create_proc_action<generic_aoe_proc_t>( "flaring_cowl", effect, "flaring_cowl", 377079 );
-  damage->split_aoe_damage = false;
+  auto damage = create_proc_action<generic_aoe_proc_t>( "flaring_cowl", effect, "flaring_cowl", 377079, true );
   // damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
   // TODO: currently bugged and only doing damage as if the item was at the base ilevel of 350
   damage->base_dd_min = damage->base_dd_max =
@@ -2832,6 +2998,7 @@ void register_special_effects()
   register_special_effect( 382957, items::darkmoon_deck_inferno );
   register_special_effect( 386624, items::darkmoon_deck_rime );
   register_special_effect( 384532, items::darkmoon_deck_watcher );
+  register_special_effect( 375626, items::alacritous_alchemist_stone );
   register_special_effect( 383751, items::bottle_of_spiraling_winds );
   register_special_effect( 396391, items::conjured_chillglobe );
   register_special_effect( 388931, items::globe_of_jagged_ice );
@@ -2842,6 +3009,7 @@ void register_special_effects()
   register_special_effect( 388603, items::idol_of_pure_decay );
   register_special_effect( 377466, items::spiteful_storm );
   register_special_effect( 381768, items::spoils_of_neltharus );
+  register_special_effect( 375844, items::sustaining_alchemist_stone );
   register_special_effect( 385884, items::timebreaching_talon );
   register_special_effect( 385902, items::umbrelskuls_fractured_heart );
   register_special_effect( 377456, items::way_of_controlled_currents );
@@ -2861,6 +3029,10 @@ void register_special_effects()
   register_special_effect( 381705, items::mutated_magmammoth_scale );
   register_special_effect( 382139, items::homeland_raid_horn );
   register_special_effect( 383926, items::blazebinders_hoof );
+  register_special_effect( 390764, items::primal_ritual_shell );
+  register_special_effect( 383611, items::spinerippers_fang );
+  register_special_effect( 392359, items::integrated_primal_fire );
+  register_special_effect( 383817, items::bushwhackers_compass );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );  // bronzed grip wrappings embellishment
@@ -2870,6 +3042,8 @@ void register_special_effects()
 
 
   // Armor
+  register_special_effect( 397038, items::assembly_guardians_ring );
+  register_special_effect( 397040, items::assembly_scholars_loop );
   register_special_effect( 387335, items::blue_silken_lining );    // blue silken lining embellishment
   register_special_effect( 385520, items::breath_of_neltharion );  // breath of neltharion tinker
   register_special_effect( 378423, items::coated_in_slime );

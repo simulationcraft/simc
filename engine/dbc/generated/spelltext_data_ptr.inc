@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.2.46801
-static const std::array<spelltext_data_t, 19177> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 19181> __ptr_spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -15558,6 +15558,7 @@ static const std::array<spelltext_data_t, 19177> __ptr_spelltext_data { {
   { 361469, "Send a flickering flame towards your target, $?c2[healing an ally for $361509s1 or dealing $361500s1 Fire damage to an enemy.][dealing $361500s1 Fire damage to an enemy or healing an ally for $361509s1.]", 0, "Red" },
   { 361500, "$@spelldesc361469", "Burning for $w2 Fire damage every $t2 sec.", "Red" },
   { 361509, "$@spelldesc361469", "Healing for $w2 every $t2 sec.", "Red" },
+  { 361519, "$@spelldesc359565", 0, 0 },
   { 361582, "$@spelldesc359844", "Being assisted by a pet from your stable.", 0 },
   { 361695, "Create a soulbound Korthian cloak appropriate for your loot specialization ($@lootspec).", 0, 0 },
   { 361696, "Create a soulbound Korthian chest armor piece appropriate for your loot specialization ($@lootspec).", 0, 0 },
@@ -17448,6 +17449,7 @@ static const std::array<spelltext_data_t, 19177> __ptr_spelltext_data { {
   { 384790, "When the Trick Shots effect fades or is consumed, or after gaining Deathblow, your next Kill Shot will deal $388998s1% increased damage, and shred up to $388998s2 targets near your Kill Shot target for $388998s3% of the damage dealt by Kill Shot over $385638d.", 0, 0 },
   { 384791, "Multi-Shot and Volley now also apply Explosive Shot to up to $s1 $Ltarget:targets; hit. This can only occur once every $388909d.", 0, 0 },
   { 384799, "Damage taken from area of effect attacks reduced by $s1%.", 0, 0 },
+  { 384810, "Spending Holy Power has a $s1% chance to reduce the Holy Power cost of your next Word of Glory$?c1[ or Light of Dawn]$?C2[ or Shield of the Righteous] by $s1.", "Holy Power cost of your next Word of Glory$?c1[ or Light of Dawn]$?C2[ or Shield of the Righteous] by $s1.", 0 },
   { 384815, "Spending Holy Power has a $s1% chance to reduce the Holy Power cost of your next Word of Glory$?c1[ or Light of Dawn]$?C2[ or Shield of the Righteous] by 1.", 0, 0 },
   { 384820, "Reduces the cooldown of Blessing of Sacrifice by ${$m1/-1000} sec.", 0, 0 },
   { 384825, "Gather 5 Leaves, then throw at the Playful Prowler!", 0, 0 },
@@ -19176,7 +19178,9 @@ static const std::array<spelltext_data_t, 19177> __ptr_spelltext_data { {
   { 397621, "$@spelldesc377456", "Movement speed increased by $w1%. Auto attacks deal $w2 bonus Nature damage to your current target and the nearest enemy.", 0 },
   { 397708, "Execute no longer has a cooldown and if your foe survives, $163201s2% of the Rage spent is refunded.", 0, 0 },
   { 397767, "Add a socket to a Dragonflight Season $s2 item that does not already have one. Can be used on Helms, Necks, Bracers, Belts, or Rings.", 0, 0 },
+  { 397870, "Essence Burst increases the damage of affected spells by ${$s1}.1%.", 0, 0 },
   { 398396, "$@spelldesc386578", 0, 0 },
+  { 399370, "$@spelldesc370867", "Your next Blue spell deals $s1% more damage.", 0 },
 } };
 
 // spelltext hotfix entries, wow build 10.0.2.46801

@@ -358,7 +358,7 @@ struct sim_t : private sc_thread_t
   struct shadowlands_opt_t
   {
     /// Global enable/disable shadowlands systems
-    bool enabled = true;
+    bool enabled = false;
     /// Chance to catch each expelled sorrowful memory to extend the buff duration
     /// TODO: Set this to a reasonable value
     double combat_meditation_extend_chance = 1.0;
@@ -478,14 +478,14 @@ struct sim_t : private sc_thread_t
     std::string whispering_incarnate_icon_roles = "tank/heal/dps";
     // Chance for Decoration of Flame's AoE damage to miss a target
     double decoration_of_flame_miss_chance = 0.05;
-    // Chance for Manic Grieftorch's AoE damage to hit a target
-    double manic_grieftorch_chance = 0.2;
     // Minimum time after alltotem of the master comes off cooldown that it will trigger again
     timespan_t alltotem_of_the_master_period = 3_s;
     // Number of balls spawned by Dragon Games Equipment the player will kick at the target
     unsigned int dragon_games_kicks = 3;
     // Minimum RNG multiplier for Dragon Games Equipment's number of kicks
     double dragon_games_rng = 0.75;
+    // The Blessing the player will receive if they have Primal Ritual Shell trinket equiped (wind,stone,flame,sea)
+    std::string primal_ritual_shell_blessing = "wind";
   } dragonflight_opts;
 
   // Auras and De-Buffs

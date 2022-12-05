@@ -4,26 +4,26 @@ race=orc
 spec=shadow
 role=spell
 position=ranged_back
-# BIQAAAAAAAAAAAAAAAAAAAAAAIINOQAAAAAAAAAAAAAkIJpEhU0SSkUSIBKpRSkIRCRQi0kWIJAA
-class_talents=dispel_magic:1/improved_flash_heal:1/purify_disease:1/from_darkness_comes_light:1/angelic_feather:1/death_and_madness:1/leap_of_faith:1/shackle_undead:1/dominate_mind:1/mass_dispel:1/power_infusion:1/vampiric_embrace:1/tithe_evasion:1/body_and_soul:1/twins_of_the_sun_priestess:1/sanlayn:1/unwavering_will:2/twist_of_fate:2/throes_of_pain:2/angels_mercy:1/halo:1/translucent_image:1/mindgames:1/lights_inspiration:2/manipulation:2/shattered_perceptions:1/
+# BIQAAAAAAAAAAAAAAAAAAAAAAIk04ABAAAAAAAAAAAAQikkSESRLJRSJhEBpRSSiECSQIFpFSCA
+class_talents=dispel_magic:1/improved_flash_heal:1/protective_light:1/angelic_feather:1/phantasm:1/death_and_madness:1/leap_of_faith:1/dominate_mind:1/mass_dispel:1/power_infusion:1/vampiric_embrace:1/tithe_evasion:1/improved_mass_dispel:1/body_and_soul:1/twins_of_the_sun_priestess:1/sanlayn:1/twist_of_fate:2/throes_of_pain:2/halo:1/translucent_image:1/mindgames:1/lights_inspiration:2/improved_fade:2/manipulation:2/angelic_bulwark:1/shattered_perceptions:1
 spec_talents=devouring_plague:1/dispersion:1/shadowy_apparitions:1/silence:1/mental_fortitude:1/misery:1/coalescing_shadows:1/mind_spike:1/puppet_master:1/mental_decay:1/dark_ascension:1/surge_of_darkness:1/harnessed_shadows:1/shadowy_insight:1/ancient_madness:2/shadow_crash:1/dark_evangelism:2/auspicious_spirits:1/mindbender:1/mind_flay_insanity:1/encroaching_shadows:1/inescapable_torment:2/screams_of_the_void:2/mind_devourer:1/idol_of_yshaarj:1/idol_of_cthun:1
 
 # TODO: use prof items?
-head=draconic_hierophants_archcowl,id=200327,bonus_id=4800/4786/1498,gem_id=192948
-neck=eye_of_the_vengeful_hurricane,id=195496,bonus_id=4800/4786/1498,gem_id=192985/192948/192948
+head=draconic_hierophants_archcowl,id=200327,bonus_id=4800/4786/1498,gem_id=192985
+neck=elemental_lariat,id=193001,bonus_id=1540/8793/6652/7936/7979/8767/8782,gem_id=192948/192953/192945
 shoulders=draconic_hierophants_wisdom,id=200329,bonus_id=4800/4786/1498
 back=fireproof_drape,id=193763,bonus_id=6808/4786/1643
 chest=arcanists_resonant_robes,id=134415,bonus_id=1795/6808/4786/3300/6935,enchant=waking_stats_3
-wrists=manawracker_bindings,id=134310,bonus_id=1795/6808/4786/3300/6935,gem_id=192948
+wrists=vibrant_wildercloth_wristwraps,id=193510,bonus_id=8836/8840/8902/8802/8793/8932,ilevel=418,gem_id=192948
 hands=draconic_hierophants_grips,id=200326,bonus_id=4800/4786/1498
 waist=sky_saddle_cord,id=193691,bonus_id=6808/4786/1643,gem_id=192948
 legs=draconic_hierophants_britches,id=200328,bonus_id=4800/4786/1498,enchant=frozen_spellthread_3
 feet=sandals_of_the_wild_sovereign,id=195532,bonus_id=4800/4786/1498
-finger1=seal_of_filial_duty,id=195526,bonus_id=4800/4786/1497/6935,enchant_id=6556,gem_id=192948
-finger2=woebearers_band,id=133638,bonus_id=1795/6808/4786/3300/6935,enchant_id=6556,gem_id=192948
+finger1=seal_of_filial_duty,id=195526,bonus_id=4800/4786/1497/6935,enchant=devotion_of_haste_3,gem_id=192948
+finger2=woebearers_band,id=133638,bonus_id=1795/6808/4786/3300/6935,enchant=devotion_of_haste_3,gem_id=192948
 # TODO: use whispering if tank/heals is enabled by default
 # trinket1=whispering_incarnate_icon,id=194301,bonus_id=4800/4786/1498
-trinket1=eye_of_skovald,id=133641,bonus_id=1795/6808/4786/3300/6935
+trinket1=horn_of_valor,id=133642,bonus_id=1795/6808/4786/3300/6935
 trinket2=furious_ragefeather,id=193677,bonus_id=6808/4786/1643
 main_hand=final_grade,id=193707,bonus_id=6808/4786/1643,enchant=sophic_devotion_3
 

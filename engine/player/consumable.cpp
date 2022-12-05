@@ -504,10 +504,19 @@ struct dbc_consumable_base_t : public action_t
     }
 
     // And then, grab the action and buff from the special effect, if they are enabled
+    // Cooldowns are handled via potion_t::cooldown so we 0 out any on the action/buff
     consumable_action = effect->create_action();
+    if ( consumable_action )
+    {
+      consumable_action->cooldown->duration = 0_ms;
+    }
+
     consumable_buff = effect->create_buff();
     if ( consumable_buff )
+    {
+      consumable_buff->set_cooldown( 0_ms );
       consumable_buff->s_data_reporting = s_data_reporting;
+    }
   }
 
   bool ready() override

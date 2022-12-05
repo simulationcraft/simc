@@ -157,7 +157,10 @@ struct item_t
   void init();
   void parse_options();
   bool initialize_data(); // Initializes item data from a data source
-  inventory_type inv_type() const;
+  inventory_type dbc_inventory_type() const;
+  item_class dbc_item_class() const;
+  // Varies by item type, so return the enum value as integer
+  int dbc_item_subclass() const;
 
   bool is_matching_type() const;
   bool is_valid_type() const;

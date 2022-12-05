@@ -91,6 +91,7 @@ public:
   std::vector<dot_debuff_t> target_multiplier_dotdebuffs;
 
   parse_buff_effects_t( action_t* a ) : action_( a ) {}
+  virtual ~parse_buff_effects_t() = default;
 
   double mod_spell_effects_value( const spell_data_t*, const spelleffect_data_t& e ) { return e.base_value(); }
 

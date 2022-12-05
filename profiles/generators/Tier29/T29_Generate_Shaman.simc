@@ -19,10 +19,10 @@ wrist=,id=195516,ilevel=421,gem_id=192948
 hands=,id=200398,ilevel=424
 waist=,id=109843,ilevel=421,gem_id=192948
 legs=,id=200400,ilevel=424,enchant=frozen_spellthread_3
-feet=,id=193685,ilevel=421,enchant_id=6607
-finger1=,id=195526,ilevel=430,gem_id=192948,enchant_id=6562
+feet=,id=193685,ilevel=421,enchant=plainsrunners_breeze_3
+finger1=,id=195526,ilevel=430,gem_id=192948,enchant=devotion_of_mastery_3
 # ,enchant=devotion_of_mastery_3
-finger2=,id=109780,ilevel=421,gem_id=192948,enchant_id=6562
+finger2=,id=109780,ilevel=421,gem_id=192948,enchant=devotion_of_mastery_3
 # ,enchant=devotion_of_mastery_3
 trinket1=,id=133642,ilevel=421
 trinket2=,id=137485,ilevel=421
@@ -31,32 +31,86 @@ off_hand=,id=195520,ilevel=424
 
 save=T29_Shaman_Elemental.simc
 
-# shaman="T29_Shaman_Enhancement"
-# level=70
-# race=troll
-# spec=enhancement
-# role=attack
-# position=back
-# talents=3221131
+shaman="T29_Shaman_Enhancement"
+level=70
+race=troll
+spec=enhancement
+role=attack
+position=back
+talents=BcQAAAAAAAAAAAAAAAAAAAAAAIJJpEJgkEikkQJhAAAAAAAAAAAAAQLCRIRLFBIlkkUAUSkEA
 
-# head=boneshatter_helm,id=172325,bonus_id=8128/7451/6649/6648/1588,gem_id=173128
-# neck=worldkiller_iris,id=189859,bonus_id=1524/7187,gem_id=173128
-# shoulder=theurgic_starspeakers_adornment,id=188920,bonus_id=1505/7187
-# back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187,enchant=fortified_avoidance
-# chest=theurgic_starspeakers_ringmail,id=188922,bonus_id=1505/7187,enchant=eternal_stats
-# wrist=interdimensional_manica,id=189849,bonus_id=1524/7187,gem_id=173128
-# hands=theurgic_starspeakers_runebindings,id=188925,bonus_id=1505/7187
-# waist=girdle_of_the_first_gate,id=189776,bonus_id=1524/7187,gem_id=173130
-# legs=theurgic_starspeakers_tassets,id=188924,bonus_id=1505/7187
-# feet=winters_stampeding_striders,id=189795,bonus_id=1524/7187,enchant=eternal_agility
-# finger1=shadowghast_ring,id=178926,bonus_id=6995/7451/6649/6648/1588/6935,gem_id=173130,enchant=tenet_of_haste
-# finger2=rygelons_heraldric_ring,id=189854,bonus_id=1524/7187,gem_id=173130,enchant=tenet_of_haste
-# trinket1=elegy_of_the_eternals,id=188270,bonus_id=1524/7187
-# trinket2=the_first_sigil,id=188271,bonus_id=1524/7187
-# main_hand=dominations_deliverance,id=189818,bonus_id=1524/7187,enchant=sinful_revelation
-# off_hand=dominations_deliverance,id=189818,bonus_id=1524/7187,enchant=celestial_guidance
+head=faceguard_of_infused_earth,id=200399,bonus_id=4800/4786/1498/6935,gem_id=192988
+neck=elemental_lariat,id=193001,bonus_id=6652/7936/7979/1540/8767/6935/6935,gem_id=192961/192961/192961,crafted_stats=49/36
+shoulders=calderas_of_infused_earth,id=200401,bonus_id=4800/4786/1498
+back=vibrant_wildercloth_shawl,id=193511,bonus_id=6652/7936/7979/1540/8767/8932,crafted_stats=49/36
+chest=robe_of_infused_earth,id=200396,bonus_id=4800/4786/1498,enchant=waking_stats_3
+wrists=shikaar_ranger_bracers,id=193693,bonus_id=6808/4786/1643,gem_id=192961
+hands=gauntlets_of_infused_earth,id=200398,bonus_id=4800/4786/1501
+waist=morningscale_waistguard,id=109843,bonus_id=4238/4786/6808/3306,gem_id=192961
+legs=tassets_of_the_tarasek_legion,id=195522,bonus_id=4800/4786/1498,enchant=frosted_armor_kit_3
+feet=lightningcharged_striders,id=193685,bonus_id=6808/4786/1643
+finger1=seal_of_filial_duty,id=195526,bonus_id=4800/4786/1498,gem_id=192961,enchant=devotion_of_mastery_3
+finger2=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498,gem_id=192961,enchant=devotion_of_mastery_3
+trinket1=manic_grieftorch,id=194308,bonus_id=4800/4786/1498
+trinket2=whispering_incarnate_icon,id=194301,bonus_id=4800/4786/1498
+main_hand=fist_of_the_grand_summoner,id=195512,bonus_id=4800/4786/1498,enchant=sophic_devotion_3
+off_hand=fist_of_the_grand_summoner,id=195512,bonus_id=4800/4786/1498,enchant=sophic_devotion_3
 
-# save=T29_Shaman_Enhancement.simc
+save=T29_Shaman_Enhancement.simc
+
+shaman="T29_Shaman_Enhancement_Phys"
+level=70
+race=troll
+spec=enhancement
+role=attack
+position=back
+talents=BcQAfcj78nJtvjmejSqe5Zhm9IJJHAkcARSSSQSiECAAAAAAAAAAAAAlIEhkIFBIlkkUAUSkEoB
+
+head=faceguard_of_infused_earth,id=200399,bonus_id=4800/4786/1498/6935,gem_id=192985
+neck=elemental_lariat,id=193001,bonus_id=6652/7936/7979/1540/8767/6935/6935,gem_id=192948/192948/192948,crafted_stats=49/36
+shoulders=calderas_of_infused_earth,id=200401,bonus_id=4800/4786/1498
+back=vibrant_wildercloth_shawl,id=193511,bonus_id=6652/7936/7979/1540/8767/8932,crafted_stats=49/36
+chest=robe_of_infused_earth,id=200396,bonus_id=4800/4786/1498,enchant=waking_stats_3
+wrists=shikaar_ranger_bracers,id=193693,bonus_id=6808/4786/1643,gem_id=192948
+hands=gauntlets_of_infused_earth,id=200398,bonus_id=4800/4786/1501
+waist=morningscale_waistguard,id=109843,bonus_id=4238/4786/6808/3306,gem_id=192948
+legs=tassets_of_the_tarasek_legion,id=195522,bonus_id=4800/4786/1498,enchant=frosted_armor_kit_3
+feet=daring_chasmleapers,id=195495,bonus_id=4800/4786/1498
+finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=1795/6808/4786/3300,gem_id=192948,enchant=devotion_of_haste_3
+finger2=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498,gem_id=192948,enchant=devotion_of_haste_3
+trinket1=manic_grieftorch,id=194308,bonus_id=4800/4786/1498
+trinket2=whispering_incarnate_icon,id=194301,bonus_id=4800/4786/1498
+main_hand=fist_of_the_grand_summoner,id=195512,bonus_id=4800/4786/1498,enchant=sophic_devotion_3
+off_hand=fist_of_the_grand_summoner,id=195512,bonus_id=4800/4786/1498,enchant=sophic_devotion_3
+
+save=T29_Shaman_Enhancement_Phys.simc
+
+shaman="T29_Shaman_Enhancement_Gamba"
+level=70
+race=troll
+spec=enhancement
+role=attack
+position=back
+talents=BcQAfcj78nJtvjmejSqe5Zhm9IJJHAkcARSSSQSiECAAAAAAAAAAAAAlIEhkIFBIlkkUAUSkEoA
+
+head=faceguard_of_infused_earth,id=200399,bonus_id=4800/4786/1498/6935,gem_id=192985
+neck=elemental_lariat,id=193001,bonus_id=6652/7936/7979/1540/8767/6935/6935,gem_id=192948/192948/192948,crafted_stats=49/36
+shoulders=calderas_of_infused_earth,id=200401,bonus_id=4800/4786/1498
+back=vibrant_wildercloth_shawl,id=193511,bonus_id=6652/7936/7979/1540/8767/8932,crafted_stats=49/36
+chest=robe_of_infused_earth,id=200396,bonus_id=4800/4786/1498,enchant=waking_stats_3
+wrists=shikaar_ranger_bracers,id=193693,bonus_id=6808/4786/1643,gem_id=192948
+hands=gauntlets_of_infused_earth,id=200398,bonus_id=4800/4786/1501
+waist=morningscale_waistguard,id=109843,bonus_id=4238/4786/6808/3306,gem_id=192948
+legs=tassets_of_the_tarasek_legion,id=195522,bonus_id=4800/4786/1498,enchant=frosted_armor_kit_3
+feet=daring_chasmleapers,id=195495,bonus_id=4800/4786/1498
+finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=1795/6808/4786/3300,gem_id=192948,enchant=devotion_of_haste_3
+finger2=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498,gem_id=192948,enchant=devotion_of_haste_3
+trinket1=manic_grieftorch,id=194308,bonus_id=4800/4786/1498
+trinket2=whispering_incarnate_icon,id=194301,bonus_id=4800/4786/1498
+main_hand=fist_of_the_grand_summoner,id=195512,bonus_id=4800/4786/1498,enchant=sophic_devotion_3
+off_hand=fist_of_the_grand_summoner,id=195512,bonus_id=4800/4786/1498,enchant=sophic_devotion_3
+
+save=T29_Shaman_Enhancement_Gamba.simc
 
 # shaman="T29_Shaman_Restoration"
 # level=70

@@ -155,7 +155,6 @@ public:
     buff_t* prey_on_the_weak;
     damage_buff_t* shiv;
     buff_t* wound_poison;
-    buff_t* banshees_blight; // Slyvanas Dagger
   } debuffs;
 
   rogue_td_t( player_t* target, rogue_t* source );
@@ -265,9 +264,6 @@ public:
     actions::shadow_blades_attack_t* shadow_blades_attack = nullptr;
     actions::rogue_attack_t* triple_threat_mh = nullptr;
     actions::rogue_attack_t* triple_threat_oh = nullptr;
-
-    // Shadowlands
-    action_t* banshees_blight = nullptr; // Slyvanas Dagger
     
     struct
     {
@@ -890,8 +886,6 @@ public:
   // Legendary effects
   struct legendary_t
   {
-    // Slyvanas Dagger
-    const spell_data_t* banshees_blight = nullptr;
   } legendary;
 
   // Procs
@@ -1875,10 +1869,6 @@ public:
   virtual bool procs_seal_fate() const
   { return ab::energize_type != action_energize::NONE && ab::energize_resource == RESOURCE_COMBO_POINT; }
 
-  // Generic rules for proccing Banshee's Blight, used by rogue_t::trigger_banshees_blight()
-  virtual bool procs_banshees_blight() const
-  { return ab::base_costs[ RESOURCE_COMBO_POINT ] > 0 && ( ab::attack_power_mod.direct > 0.0 || ab::attack_power_mod.tick > 0.0 ); }
-
   // Generic rules for snapshotting the Nightstalker pmultiplier, default to DoTs only.
   // If a DoT with DD component is whitelisted in the direct damage effect #1 on 130493 this can double dip.
   virtual bool snapshots_nightstalker() const
@@ -1942,7 +1932,6 @@ public:
   void trigger_keep_it_rolling();
   void trigger_flagellation( const action_state_t* state );
   void trigger_perforated_veins( const action_state_t* state );
-  void trigger_banshees_blight( const action_state_t* state );
   void trigger_lingering_shadow( const action_state_t* state );
   void trigger_danse_macabre( const action_state_t* state );
 
@@ -2028,13 +2017,6 @@ public:
       m *= 1.0 + p()->cache.mastery() * p()->mastery.potent_assassin->effectN( 2 ).mastery_value();
     }
 
-    // DFALPHA TOCHECK -- Currently does nothing even after the pmultiplier removal
-    // Apply Nightstalker periodic damage increase via the corresponding driver spell.
-    //if ( affected_by.nightstalker && p()->stealthed( STEALTH_BASIC | STEALTH_SHADOW_DANCE ) )
-    //{
-    //  m *= p()->buffs.nightstalker->periodic_mod.multiplier;
-    //}
-
     return m;
   }
 
@@ -2083,16 +2065,6 @@ public:
   double composite_persistent_multiplier( const action_state_t* state ) const override
   {
     double m = ab::composite_persistent_multiplier( state );
-
-    // DFALPHA TOCHECK -- Persistent multipliers are currently disabled as of the latest build
-    // Apply Nightstalker as a Persistent Multiplier for things that snapshot
-    // This appears to be driven by the dummy effect #2 and there is no whitelist.
-    // This can and will cause double dips on direct damage if a spell is whitelisted in effect #1.
-    //if ( p()->talent.rogue.nightstalker->ok() && snapshots_nightstalker() && p()->stealthed( STEALTH_BASIC | STEALTH_SHADOW_DANCE ) )
-    //{
-    //  m *= p()->buffs.nightstalker->periodic_mod.multiplier;
-    //}
-
     return m;
   }
 
@@ -2216,7 +2188,6 @@ public:
       trigger_alacrity( ab::execute_state );
       trigger_deepening_shadows( ab::execute_state );
       trigger_flagellation( ab::execute_state );
-      trigger_banshees_blight( ab::execute_state );
     }
 
     // Trigger the 1ms delayed breaking of all stealth buffs
@@ -2928,9 +2899,6 @@ struct melee_t : public rogue_attack_t
   }
 
   bool procs_poison() const override
-  { return true; }
-
-  bool procs_deadly_poison() const override
   { return true; }
 
   bool procs_main_gauche() const override
@@ -3732,7 +3700,7 @@ struct eviscerate_t : public rogue_attack_t
   void execute() override
   {
     rogue_attack_t::execute();
-    p()->buffs.deeper_daggers->trigger(); // TOCHECK: Does this happen before or after the bonus damage? Currently before. (-SL Launch)
+    p()->buffs.deeper_daggers->trigger();
 
     if ( bonus_attack && td( target )->debuffs.find_weakness->up() )
     {
@@ -3891,9 +3859,10 @@ struct garrote_t : public rogue_attack_t
   {
     rogue_attack_t::execute();
 
-    // DFALPHA TOCHECK -- Does not work with Shadow Dance currently based on testing but supposed to
+    // 2022-11-28 -- Does not work with Shadow Dance currently based on testing but supposed to
     if ( p()->talent.assassination.shrouded_suffocation->ok() &&
-         p()->stealthed( STEALTH_BASIC | STEALTH_ROGUE | STEALTH_IMPROVED_GARROTE ) )
+         ( p()->stealthed( STEALTH_IMPROVED_GARROTE ) ||
+           ( !p()->bugs && p()->stealthed( STEALTH_BASIC | STEALTH_ROGUE | STEALTH_IMPROVED_GARROTE ) ) ) )
     {
       trigger_combo_point_gain( as<int>( p()->talent.assassination.shrouded_suffocation->effectN( 2 ).base_value() ),
                                 p()->gains.shrouded_suffocation );
@@ -5129,12 +5098,7 @@ struct shuriken_storm_t: public rogue_attack_t
   void execute() override
   {
     rogue_attack_t::execute();
-
-    // TOCHECK DFALPHA -- Shuriken Tornado secondary actions do not expire this on beta
-    if ( !is_secondary_action() )
-    {
-      p()->buffs.silent_storm->expire();
-    }
+    p()->buffs.silent_storm->expire();
   }
 
   void impact(action_state_t* state) override
@@ -5642,16 +5606,6 @@ struct thistle_tea_t : public rogue_spell_t
 
     p()->buffs.thistle_tea->trigger();
   }
-
-
-  bool ready() override
-  {
-    // Cannot use the ability just for the buff if at full energy
-    if ( p()->resources.current[ RESOURCE_ENERGY ] >= p()->resources.max[ RESOURCE_ENERGY ] )
-      return false;
-
-    return rogue_spell_t::ready();
-  }
 };
 
 // Keep it Rolling ==========================================================
@@ -5702,12 +5656,6 @@ struct echoing_reprimand_t : public rogue_attack_t
       {
         unsigned buff_idx = static_cast<int>( rng().range( random_min, random_max ) );
         p()->buffs.echoing_reprimand[ buff_idx ]->trigger();
-      }
-
-      // TOCHECK -- Due to beta behavior never removed, Echoing Reprimand can trigger FW from Stealth
-      if ( p()->bugs && p()->stealthed( STEALTH_BASIC | STEALTH_SHADOW_DANCE ) )
-      {
-        trigger_find_weakness( state );
       }
     }
   }
@@ -5780,7 +5728,7 @@ struct sepsis_t : public rogue_attack_t
   sepsis_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
     rogue_attack_t( name, p, p->talent.shared.sepsis, options_str )
   {
-    affected_by.broadside_cp = true; // TOCHECK DFALPHA 2021-04-22 -- Not in the whitelist but confirmed as working in-game
+    affected_by.broadside_cp = true; // 2021-04-22 -- Not in the whitelist but confirmed as working in-game
     sepsis_expire_damage = p->get_background_action<sepsis_expire_damage_t>( "sepsis_expire_damage" );
     sepsis_expire_damage->stats = stats;
   }
@@ -5806,16 +5754,11 @@ struct serrated_bone_spike_t : public rogue_attack_t
     serrated_bone_spike_dot_t( util::string_view name, rogue_t* p ) :
       rogue_attack_t( name, p, p->talent.assassination.serrated_bone_spike->effectN( 2 ).trigger() )
     {
-      aoe = 0; // Technically affected by Deathspike, but interferes with our triggering logic
-      hasted_ticks = true; // TOCHECK DFALPHA -- 2021-03-12 - Bone spike dot is hasted, despite not being flagged as such
+      aoe = 0;
+      hasted_ticks = true; // Uses the SX_DOT_HASTED_MELEE
       affected_by.zoldyck_insignia = true; // TOCHECK DFALPHA -- 2021-02-13 - Logs show that the SBS DoT is affected by Zoldyck
       dot_duration = timespan_t::from_seconds( sim->expected_max_time() * 3 );
     }
-
-    // 2021-03-28 -- Testing shows that Nightstalker works if you are very close to the target's hitbox
-    //               This works on both the initial hit and also the DoT, until it is applied again
-    bool snapshots_nightstalker() const override
-    { return p()->bugs; }
 
     bool procs_poison() const override
     { return false; }
@@ -5828,14 +5771,13 @@ struct serrated_bone_spike_t : public rogue_attack_t
     rogue_attack_t( name, p, p->talent.assassination.serrated_bone_spike, options_str )
   {
     // Combo Point generation is in a secondary spell due to scripting logic
-    // However, leave the ON_HIT entry as it can trigger things that proc from CP generators
+    // However, leave the ON_HIT entry as it can trigger things like Seal Fate
     energize_type = action_energize::ON_HIT;
     energize_resource = RESOURCE_COMBO_POINT;
     energize_amount = 0.0;
     base_impact_cp = as<int>( p->spec.serrated_bone_spike_energize->effectN( 1 ).base_value() );
 
     serrated_bone_spike_dot = p->get_background_action<serrated_bone_spike_dot_t>( "serrated_bone_spike_dot" );
-
     add_child( serrated_bone_spike_dot );
   }
 
@@ -5852,48 +5794,22 @@ struct serrated_bone_spike_t : public rogue_attack_t
 
     cp += base_impact_cp;
     cp += p()->get_active_dots( serrated_bone_spike_dot->internal_id );
-    cp += !td( target )->dots.serrated_bone_spike->is_ticking();
 
     return cp;
   }
 
   void impact( action_state_t* state ) override
   {
+    const unsigned active_dots = p()->get_active_dots( serrated_bone_spike_dot->internal_id );
+
     rogue_attack_t::impact( state );
+    serrated_bone_spike_dot->execute_on_target( state->target );
 
-    // 2021-03-04 -- 9.0.5: Bonus CP gain now **supposed to** include the primary target DoT even on first activation
-    unsigned active_dots = p()->get_active_dots( serrated_bone_spike_dot->internal_id );
-
-    // BUG, see https://github.com/SimCMinMax/WoW-BugTracker/issues/823
-    // Race condition on when the spikes are counted. We just make it 50% chance.
-    bool count_after = p()->bugs ? rng().roll( 0.5 ) : true;
-
-    auto tdata = td( state->target );
-    if ( !tdata->dots.serrated_bone_spike->is_ticking() && count_after )
-    {
-      active_dots++;
-    }
-
-    // Due to the Vendetta 4pc, we need to re-apply the DoT to recalculate the haste snapshot
-    serrated_bone_spike_dot->set_target( state->target );
-    serrated_bone_spike_dot->execute();
- 
-    // 2022-01-26 -- PTR shows this happens on impact but only for the primary target
-    //               Deathspiked targets do not generate CP directly
+    // 2022-01-26 -- Deathspike logs shows this only happens on impact for the primary target
     if ( state->chain_target == 0 )
     {
       trigger_combo_point_gain( base_impact_cp + active_dots, p()->gains.serrated_bone_spike );
     }
-  }
-
-  timespan_t travel_time() const override
-  {
-    // 2021-03-28 -- Testing shows that Nightstalker works if you are very close to the target's hitbox
-    // Assume if the player is playing Nightstalker they are getting inside the hitbox to reduce travel time
-    if ( p()->bugs && p()->talent.rogue.nightstalker->ok() && p()->stealthed( STEALTH_BASIC | STEALTH_SHADOW_DANCE ) )
-      return timespan_t::zero();
-
-    return rogue_attack_t::travel_time();
   }
 };
 
@@ -6995,7 +6911,6 @@ void actions::rogue_action_t<Base>::trigger_fatal_flourish( const action_state_t
     return;
 
   double chance = p()->talent.outlaw.fatal_flourish->effectN( 1 ).percent();
-  // BFALPHA TOCHECK: Proc chance is normalized by weapon speed (i.e. penalty for using daggers)
   if ( state->action != p()->active.main_gauche && state->action->weapon )
     chance *= state->action->weapon->swing_time.total_seconds() / 2.6;
   if ( !p()->rng().roll( chance ) )
@@ -7415,11 +7330,6 @@ void actions::rogue_action_t<Base>::trigger_shadow_blades_attack( action_state_t
     return;
 
   double amount = state->result_amount * p()->buffs.shadow_blades->check_value();
-  // Deeper Daggers, despite Shadow Blades having the disable player multipliers flag, affects Shadow Blades with a manual exclusion for Gloomblade.
-  // DFALPHA TOCHECK all shadow damage multipliers for this
-  if ( p()->buffs.deeper_daggers->check() && ab::data().id() != p()->talent.subtlety.gloomblade->id() )
-    amount *= p()->buffs.deeper_daggers->value_direct();
-
   p()->active.shadow_blades_attack->base_dd_min = amount;
   p()->active.shadow_blades_attack->base_dd_max = amount;
   p()->active.shadow_blades_attack->set_target( state->target );
@@ -7581,33 +7491,6 @@ void actions::rogue_action_t<Base>::trigger_perforated_veins( const action_state
 }
 
 template <typename Base>
-void actions::rogue_action_t<Base>::trigger_banshees_blight( const action_state_t* state )
-{
-  if ( !p()->legendary.banshees_blight || !procs_banshees_blight() )
-    return;
-
-  // 2022-08-04 -- Further S4 testing shows BtE 4pc procs do not actually trigger the dagger
-  if ( is_secondary_action() )
-    return;
-
-  const auto rs = cast_state( state );
-  int stack_count = td( rs->target )->debuffs.banshees_blight->check();
-  if ( stack_count > 0 && p()->rng().roll( rs->get_combo_points() * p()->legendary.banshees_blight->effectN( 2 ).percent() ) )
-  {
-    // Only executes on the "primary" target of AoE finishers
-    player_t* proc_target = rs->target;
-    for ( int i = 0; i < stack_count; ++i )
-    {
-      make_event( *ab::sim, i * 150_ms, [this, proc_target]
-      {
-        p()->active.banshees_blight->set_target( proc_target );
-        p()->active.banshees_blight->execute();
-      } );
-    }
-  }
-}
-
-template <typename Base>
 void actions::rogue_action_t<Base>::trigger_lingering_shadow( const action_state_t* state )
 {
   if ( !p()->talent.subtlety.lingering_shadow->ok() || !ab::result_is_hit( state->result ) )
@@ -7699,12 +7582,6 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
     ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
     ->set_period( timespan_t::zero() )
     ->set_cooldown( timespan_t::zero() );
-
-  // Slyvanas Dagger
-  if ( source->legendary.banshees_blight )
-    debuffs.banshees_blight = make_buff( *this, "banshees_blight", source->find_spell( 358090 ) );
-  else
-    debuffs.banshees_blight = make_buff( *this, "banshees_blight" )->set_quiet( true );
 
   // Type-Based Tracking for Accumulators
   bleeds = { dots.deathmark, dots.garrote, dots.garrote_deathmark, dots.internal_bleeding,
@@ -8069,24 +7946,15 @@ void rogue_t::init_action_list()
 
   if ( specialization() == ROGUE_ASSASSINATION )
   {
-    if ( true_level > 60 )
-      rogue_apl::assassination_df( this );
-    else
-      rogue_apl::assassination( this );
+    rogue_apl::assassination_df( this );
   }
   else if ( specialization() == ROGUE_OUTLAW )
   {
-    if ( true_level > 60 )
-      rogue_apl::outlaw_df( this );
-    else
-      rogue_apl::outlaw( this );
+    rogue_apl::outlaw_df( this );
   }
   else if ( specialization() == ROGUE_SUBTLETY )
   {
-    if ( true_level > 60 )
-      rogue_apl::subtlety_df( this );
-    else
-      rogue_apl::subtlety( this );
+    rogue_apl::subtlety_df( this );
   }
 
   use_default_action_list = true;
@@ -9115,7 +8983,7 @@ void rogue_t::init_spells()
       secondary_trigger::VICIOUS_VENOMS, "mutilate_mh_vicious_venoms", spec.vicious_venoms_mutilate_mh );
     active.vicious_venoms.mutilate_oh = get_secondary_trigger_action<actions::vicious_venoms_t>(
       secondary_trigger::VICIOUS_VENOMS, "mutilate_oh_vicious_venoms", spec.vicious_venoms_mutilate_oh );
-    active.vicious_venoms.mutilate_oh->weapon = &( off_hand_weapon ); // TOCHECK -- Not in spell data
+    active.vicious_venoms.mutilate_oh->weapon = &( off_hand_weapon ); // Flagged as MH in spell data
   }
 
   if ( talent.assassination.poison_bomb->ok() )
@@ -9199,7 +9067,7 @@ void rogue_t::init_gains()
   gains.relentless_strikes        = get_gain( "Relentless Strikes" );
   gains.ruthlessness              = get_gain( "Ruthlessness" );
   gains.seal_fate                 = get_gain( "Seal Fate" );
-  gains.serrated_bone_spike       = get_gain( "Serrated Bone Spike (DoT)" );
+  gains.serrated_bone_spike       = get_gain( "Serrated Bone Spike" );
   gains.shadow_blades             = get_gain( "Shadow Blades" );
   gains.shadow_techniques         = get_gain( "Shadow Techniques" );
   gains.slice_and_dice            = get_gain( "Slice and Dice" );
@@ -9446,11 +9314,8 @@ void rogue_t::create_buffs()
   //            2022-10-21 -- Appears hotfixed to not use this value in latest build but unsure how
   buffs.nightstalker = make_buff<damage_buff_t>( this, "nightstalker", spell.nightstalker_buff )
     ->set_periodic_mod( spell.nightstalker_buff, 2 ); // Dummy Value
-  // 2022-10-21 -- Manually overwrite to maintain whitelist until we figure out what is going on
   buffs.nightstalker->direct_mod.multiplier = 1.0 + talent.rogue.nightstalker->effectN( 1 ).percent();
   buffs.nightstalker->periodic_mod.multiplier = 1.0 + talent.rogue.nightstalker->effectN( 1 ).percent();
-  // 2022-10-21 -- Appears non-functional now even though it still exists in the passive
-  //  ->apply_affecting_aura( spec.subtlety_rogue ); // DFALPHA -- Seems messed up
 
   buffs.subterfuge = new buffs::subterfuge_t( this );
 
@@ -9912,91 +9777,6 @@ void rogue_t::init_items()
 
 // rogue_t::init_special_effects ============================================
 
-// Sylvanas Dagger
-struct banshees_blight_t : public unique_gear::scoped_actor_callback_t<rogue_t>
-{
-  // Debuff trigger spell from the driver 357595
-  // This has a 0.5s ICD and triggers from both yellow and white direct attacks
-  // Triggers the debuff 358090 which applies stacks based on remaining health
-  // If the target heals for any reason, the stack does not regress (as seen on dummies)
-  struct banshees_blight_debuff_t : public unique_gear::proc_spell_t
-  {
-    rogue_t* rogue;
-
-    banshees_blight_debuff_t( const special_effect_t& e )
-      : proc_spell_t( "banshees_blight_debuff", e.player, e.driver(), e.item ),
-      rogue( debug_cast<rogue_t*>( e.player ) )
-    {
-      quiet = dual = true;
-    }
-
-    void impact( action_state_t* s ) override
-    {
-      rogue_td_t* td = rogue->get_target_data( s->target );
-      double health_percentage = s->target->health_percentage();
-      int current_stacks = td->debuffs.banshees_blight->check();
-      int desired_stacks = health_percentage < 25 ? 4 :
-                           health_percentage < 50 ? 3 :
-                           health_percentage < 75 ? 2 : 1;
-
-      if ( current_stacks < desired_stacks )
-      {
-        td->debuffs.banshees_blight->trigger( desired_stacks - current_stacks );
-      }
-    }
-  };
-
-  // Damage trigger spell from 358126
-  // Damage values are stored on both the item driver 357595 and hotfixed spell 359180
-  // This attack triggers multiple times based on target stack count, handled in trigger_banshees_blight
-  // When dual-wielding, the item damage amounts from both weapons are added together
-  struct banshees_blight_damage_t : public unique_gear::proc_spell_t
-  {
-    double scaled_dmg;
-
-    banshees_blight_damage_t( const special_effect_t& e )
-      : proc_spell_t( "banshees_blight", e.player, e.player->find_spell( 358126 ), e.item ),
-      scaled_dmg( e.driver()->effectN( 1 ).average( e.item ) )
-    {
-      base_dd_min = base_dd_max = scaled_dmg;
-    }
-
-    double base_da_min( const action_state_t* ) const override
-    { return scaled_dmg; }
-
-    double base_da_max( const action_state_t* ) const override
-    { return scaled_dmg; }
-  };
-
-  banshees_blight_t() : super( ROGUE )
-  {}
-
-  void initialize( special_effect_t& e ) override
-  {
-    unique_gear::scoped_actor_callback_t<rogue_t>::initialize( e );
-
-    // Create callback action to proc debuff stacks on the target
-    // Only create one instance of this, as dual-wielding does not change the application of the debuff
-    if ( e.player->find_action( "banshees_blight_debuff" ) )
-      return;
-
-    e.execute_action = unique_gear::create_proc_action<banshees_blight_debuff_t>( "banshees_blight_debuff", e );
-    new dbc_proc_callback_t( e.player, e );
-  }
-
-  void manipulate( rogue_t* rogue, const special_effect_t& e ) override
-  {
-    rogue->legendary.banshees_blight = e.driver();
-
-    // Create damage action triggered by actions::rogue_action_t<Base>::trigger_banshees_blight
-    auto banshees_blight_damage = static_cast<banshees_blight_damage_t*>( e.player->find_action( "banshees_blight" ) );
-    if ( !banshees_blight_damage )
-      rogue->active.banshees_blight = unique_gear::create_proc_action<banshees_blight_damage_t>( "banshees_blight", e );
-    else
-      banshees_blight_damage->scaled_dmg += e.driver()->effectN( 1 ).average( e.item );
-  }
-};
-
 void rogue_t::init_special_effects()
 {
   player_t::init_special_effects();
@@ -10375,7 +10155,6 @@ public:
 
   void static_init() const override
   {
-    unique_gear::register_special_effect( 357595, banshees_blight_t() ); // Sylvanas Dagger
   }
 
   void register_hotfixes() const override
