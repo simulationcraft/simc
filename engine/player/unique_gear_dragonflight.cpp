@@ -2440,6 +2440,7 @@ void primal_ritual_shell( special_effect_t& effect )
       effect.stat_amount = effect.driver()->effectN( 5 ).average( effect.item );
       effect.spell_id = 390899;
       effect.stat = STAT_MASTERY_RATING;
+      effect.name_str = effect.trigger()->name_cstr();
     }
     else if ( util::str_compare_ci( blessing, "stone" ) )
     {
