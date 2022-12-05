@@ -6330,7 +6330,7 @@ void player_t::schedule_ready( timespan_t delta_time, bool waiting )
     delta_time += lag;
   }
 
-  if ( last_foreground_action )
+  if ( last_foreground_action && last_foreground_action->gcd() > timespan_t::zero() )
   {
     // This is why "total_execute_time" is not tracked per-target!
     last_foreground_action->stats->iteration_total_execute_time += delta_time;

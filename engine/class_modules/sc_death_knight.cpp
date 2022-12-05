@@ -1247,9 +1247,8 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
   debuff.mark_of_blood    = make_buff( *this, "mark_of_blood", p -> talent.blood.mark_of_blood )
                            -> set_cooldown( 0_ms );  // Handled by the action
 
-  // Sep 19 2022.  Currently bugged, providing 10% instead of 5% as it's adding the spell, and debuff values
   debuff.tightening_grasp = make_buff( *this, "tightening_grasp", p -> spell.tightening_grasp_debuff )
-                              -> set_default_value( p -> talent.blood.tightening_grasp -> effectN( 2 ).percent() + p -> spell.tightening_grasp_debuff -> effectN( 1 ).percent() );
+                              -> set_default_value( p -> spell.tightening_grasp_debuff -> effectN( 1 ).percent() );
   // Frost
   debuff.razorice         = make_buff( *this, "razorice", p -> spell.razorice_debuff )
                             -> set_default_value_from_effect( 1 )
@@ -3668,6 +3667,19 @@ struct melee_t : public death_knight_melee_attack_t
     if ( p() -> buffs.vigorous_lifeblood_4pc -> up() )
     {
       m *= 1.0 + p() -> spell.vigorous_lifeblood_4pc -> effectN ( 5 ).percent();
+    }
+
+    return m;
+  }
+
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = death_knight_melee_attack_t::composite_target_multiplier( target );
+
+    const death_knight_td_t* td = find_td( target );
+    if ( td && p() -> talent.blood.tightening_grasp.ok() )
+    {
+      m *= 1.0 + td -> debuff.tightening_grasp -> check_stack_value();
     }
 
     return m;

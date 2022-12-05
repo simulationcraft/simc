@@ -11449,7 +11449,7 @@ void shaman_t::init_action_list_enhancement()
     def->add_action( "call_action_list,name=single,if=active_enemies=1", "If_only_one_enemy,_priority_follows_the_'single'_action_list." );
     def->add_action( "call_action_list,name=aoe,if=active_enemies>1", "On_multiple_enemies,_the_priority_follows_the_'aoe'_action_list." );
 
-    single->add_action( "windstrike" );
+    single->add_action( "windstrike,if=talent.thorims_invocation.enabled&buff.maelstrom_weapon.stack>=1" );
     single->add_action( "lava_lash,if=buff.hot_hand.up|buff.ashen_catalyst.stack=8" );
     single->add_action( "windfury_totem,if=!buff.windfury_totem.up" );
     single->add_action( "stormstrike,if=buff.doom_winds_talent.up" );
@@ -11462,10 +11462,12 @@ void shaman_t::init_action_list_enhancement()
     single->add_action( "ice_strike,if=talent.hailstorm.enabled" );
     single->add_action( "frost_shock,if=buff.hailstorm.up" );
     single->add_action( "lava_lash,if=dot.flame_shock.refreshable" );
-    single->add_action( "stormstrike,if=talent.stormflurry.enabled&buff.stormbringer.up" );
+    single->add_action( "windstrike,if=talent.deeply_rooted_elements.enabled|buff.earthen_weapon.up|buff.legacy_of_the_frost_witch.up" );
+    single->add_action( "stormstrike,if=talent.deeply_rooted_elements.enabled|buff.earthen_weapon.up|buff.legacy_of_the_frost_witch.up" );
     single->add_action( "elemental_blast,if=(!talent.elemental_spirits.enabled|(talent.elemental_spirits.enabled&(charges=max_charges|buff.feral_spirit.up)))&buff.maelstrom_weapon.stack>=5" );
     single->add_action( "lava_burst,if=buff.maelstrom_weapon.stack>=5" );
     single->add_action( "lightning_bolt,if=buff.maelstrom_weapon.stack=10&buff.primordial_wave.down" );
+    single->add_action( "windstrike" );
     single->add_action( "stormstrike" );
     single->add_action( "windfury_totem,if=buff.windfury_totem.remains<10" );
     single->add_action( "ice_strike" );

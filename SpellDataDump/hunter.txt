@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46879 Live (hotfix 2022-11-30/46879)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.46924 Live (hotfix 2022-12-03/46924, no-networking)
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -4353,7 +4353,8 @@ Effects          :
 #2 (id=283906)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.40000 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Shot (53351), Steady Shot (56641), Barrage (120361), A Murder of Crows (131894), A Murder of Crows (131900), Arcane Shot (185358), Bursting Shot (186387), Wind Arrow (191043), Explosive Shot (212680), Scatter Shot (213691), Bursting Shot (224729), Rapid Fire (257045), Multi-Shot (257620), Volley (260247), Resonating Arrow (308495), Kill Shot (320976), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Wild Spirits (328757), Wild Spirits (328837), Chimaera Shot (342049), Chimaera Shot (344120), Chimaera Shot (344121), Wailing Arrow (354831), Coordinated Assault (361738), Death Chakram (361756), Death Chakram (375891), Death Chakram (375893), Wailing Arrow (392058)
-                   Family Flags: 3, 5, 11, 12, 17, 32, 34, 70, 73, 74, 76, 79, 93, 99, 105, 119
+                   Family Flags: 3, 5, 11, 12, 17, 32, 34, 70, 73, 74, 76, 79, 99, 105, 119
+Hotfixed         : Affects Spells
 #3 (id=316221)   : Apply Aura (6) | Add Percent Modifier (108): Spell Radius (6)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.62500 | PvP Coefficient: 1.00000 | Misc Value: 6 | Target: Self (1)
                    Affected Spells: Barrage (120361)
@@ -13703,6 +13704,7 @@ $petDmg=${$360969s1*0.6}
 $combinedDmg=${$<playerDmg>+$<petDmg>}
 
 Name             : Spearhead (id=360966) [Spell Family (9)] 
+Hotfixed         : Proc Flags (16 -> 272), Attributes
 Talent Entry     : Survival [tree=spec, row=9, col=5, max_rank=1, req_points=20]
 Class            : Hunter
 School           : Physical
@@ -13714,19 +13716,19 @@ Duration         : 12 seconds
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
 Cooldown         : 90 seconds
 Proc Chance      : 101%
-Proc Flags       : ....x... ........ ........ ........ 
-                 : Yellow Melee
+Proc Flags       : ....x... x....... ........ ........ 
+                 : Yellow Melee, Yellow Ranged
 Affecting spells : Deadly Duo (378962 effect#2)
 Family Flags     : 94
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   .x...... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : No Aura Cancel (31), Aura Points On Client (268)
+                 : No Aura Cancel (31), No Proc Equip Requirement (97), Aura Points On Client (268)
 Effects          :
 #1 (id=898397)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -15876,6 +15878,7 @@ Effects          :
 Description      : Each additional target your Rapid Fire or Aimed Shot ricochets to from Trick Shots increases the damage of Multi-Shot by $389020s1% for $389020d, stacking up to $389020u times. The duration of this effect is not refreshed when gaining a stack.
 
 Name             : Bulletstorm (id=389020) [Spell Family (9)] 
+Hotfixed         : Proc Flags (256 -> 0)
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -15883,8 +15886,6 @@ Spell Level      : 1
 Duration         : 15 seconds
 Stacks           : 10 maximum
 Proc Chance      : 101%
-Proc Flags       : ........ x....... ........ ........ 
-                 : Yellow Ranged
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

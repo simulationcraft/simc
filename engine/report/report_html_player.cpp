@@ -1295,6 +1295,12 @@ void print_html_gear( report::sc_html_stream& os, const player_t& p )
     {
       item_sim_desc += ", enchant: { ";
       item_sim_desc += item.enchant_stats_str();
+      if ( !item.parsed.encoded_enchant.empty() )
+      {
+        item_sim_desc += " (";
+        item_sim_desc += item.parsed.encoded_enchant;
+        item_sim_desc += ")";
+      }
       item_sim_desc += " }";
     }
     else if ( !item.parsed.encoded_enchant.empty() )

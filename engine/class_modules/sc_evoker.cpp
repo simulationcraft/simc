@@ -333,6 +333,7 @@ struct evoker_t : public player_t
   std::unique_ptr<expr_t> create_expression( std::string_view expr_str ) override;
 
   // Stat & Multiplier overrides
+  double matching_gear_multiplier( attribute_e ) const override;
   double composite_armor() const override;
   double composite_attribute_multiplier( attribute_e ) const override;
   double composite_player_multiplier( school_e ) const override;
@@ -2352,6 +2353,10 @@ std::unique_ptr<expr_t> evoker_t::create_expression( std::string_view expr_str )
 }
 
 // Stat & Multiplier overrides ==============================================
+double evoker_t::matching_gear_multiplier( attribute_e attr ) const
+{
+  return attr == ATTR_INTELLECT ? 0.05 : 0.0;
+}
 
 double evoker_t::composite_armor() const
 {

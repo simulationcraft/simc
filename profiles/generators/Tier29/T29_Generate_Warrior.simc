@@ -65,14 +65,14 @@ head=infurious_helm_of_vengeance,id=190522,bonus_id=8836/8840/8902/8960/8809/880
 neck=eye_of_the_vengeful_hurricane,id=195496,bonus_id=4800/4786/1498,gem_id=192919/192919/192919
 shoulders=peaks_of_the_walking_mountain,id=200428,bonus_id=1463/8767,ilevel=421
 back=cape_of_the_duskwatch,id=137483,bonus_id=1795/6808/4786/3300,ilevel=421,drop_level=70
-chest=husk_of_the_walking_mountain,id=200423,bonus_id=1466/8767,ilevel=421,enchant_id=6625
+chest=husk_of_the_walking_mountain,id=200423,bonus_id=1466/8767,ilevel=421,enchant=waking_stats_3
 wrists=virtuous_silver_bracers,id=200421,bonus_id=4800/4786/1498,ilevel=424,gem_id=192919
 hands=gauntlets_of_the_walking_mountain,id=200425,bonus_id=1466/8767,ilevel=421
 waist=unstable_frostfire_belt,id=191623,bonus_id=8836/8840/8902/8960/8801,ilevel=418,gem_id=192985
 legs=poleyns_of_the_walking_mountain,id=200427,bonus_id=1472/8767,ilevel=421,enchant=frosted_armor_kit_3
 feet=kurogs_thunderhooves,id=195517,bonus_id=4800/4786/1498
-finger1=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498,gem_id=192919,enchant_id=6556
-finger2=jeweled_signet_of_melandrus,id=134542,bonus_id=1795/6808/4786/3300/6935,ilevel=421,gem_id=192919,enchant_id=6556,drop_level=70
+finger1=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498,gem_id=192919,enchant=devotion_of_haste_3
+finger2=jeweled_signet_of_melandrus,id=134542,bonus_id=1795/6808/4786/3300/6935,ilevel=421,gem_id=192919,enchant=devotion_of_haste_3,drop_level=70
 trinket1=manic_grieftorch,id=194308,bonus_id=7979/6652/1472/8767,ilevel=421
 trinket2=windscar_whetstone,id=137486,bonus_id=6652/3300/8767
 main_hand=strike_twice,id=193700,bonus_id=6808/4786/1643,enchant=frozen_devotion_3

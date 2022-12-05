@@ -124,7 +124,7 @@ actions.cd_serenity+=/use_item,name=manic_grieftorch,if=cooldown.invoke_xuen_the
 
 # Fallthru
 actions.fallthru=crackling_jade_lightning,if=buff.the_emperors_capacitor.stack>19&energy.time_to_max>execute_time-1&cooldown.rising_sun_kick.remains>execute_time|buff.the_emperors_capacitor.stack>14&(cooldown.serenity.remains<5&talent.serenity|fight_remains<5)
-actions.fallthru+=/faeline_stomp
+actions.fallthru+=/faeline_stomp,if=combo_strike
 actions.fallthru+=/tiger_palm,target_if=min:debuff.mark_of_the_crane.remains+(debuff.skyreach_exhaustion.up*20),if=combo_strike&chi.max-chi>=(2+buff.power_strikes.up)
 actions.fallthru+=/expel_harm,if=chi.max-chi>=1&active_enemies>2
 actions.fallthru+=/chi_burst,if=chi.max-chi>=1&active_enemies=1&raid_event.adds.in>20|chi.max-chi>=2&active_enemies>=2
@@ -184,28 +184,28 @@ head=gaze_of_the_waking_fist,id=200363,bonus_id=8780,ilevel=424,gem_id=192991
 neck=custodians_medallion_of_delusion,id=193647,bonus_id=3524/8782,ilevel=421,gem_id=192925/192925/192925
 shoulders=mantle_of_the_waking_fist,id=200365,ilevel=424
 back=cape_of_valarjar_courage,id=133765,bonus_id=3524,ilevel=421
-chest=chestwrap_of_the_waking_fist,id=200360,ilevel=421,enchant_id=6625
+chest=chestwrap_of_the_waking_fist,id=200360,ilevel=421,enchant=waking_stats_3
 wrists=loyal_flametenders_bracers,id=195525,bonus_id=3524/8780,ilevel=424,gem_id=192925
 hands=palms_of_the_waking_fist,id=200362,ilevel=421
 waist=bjorns_hunting_strap,id=136776,bonus_id=3524/8780,ilevel=421,gem_id=192925
-legs=loathsome_thunderhosen,id=195530,bonus_id=3524,ilevel=424,enchant_id=6490
+legs=loathsome_thunderhosen,id=195530,bonus_id=3524,ilevel=424,enchant=fierce_armor_kit_3
 feet=biornskin_moccasins,id=134193,bonus_id=3524,ilevel=421
-finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=3524/8780,ilevel=421,gem_id=192925,enchant_id=6550
-finger2=seal_of_diurnas_chosen,id=195480,bonus_id=3524/8780,ilevel=421,gem_id=192925,enchant_id=6550
+finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=3524/8780,ilevel=421,gem_id=192925,enchant=devotion_of_critical_strike_3
+finger2=seal_of_diurnas_chosen,id=195480,bonus_id=3524/8780,ilevel=421,gem_id=192925,enchant=devotion_of_critical_strike_3
 trinket1=windscar_whetstone,id=137486,bonus_id=3524,ilevel=421
 trinket2=manic_grieftorch,id=194308,bonus_id=3524,ilevel=424
-main_hand=primal_molten_mace,id=190509,bonus_id=3524/1679/8937,ilevel=418,enchant_id=6649
-off_hand=primal_molten_mace,id=190509,bonus_id=3524/1679/8937,ilevel=418,enchant_id=6649
+main_hand=primal_molten_mace,id=190509,bonus_id=3524/1679/8937,ilevel=418,enchant=frozen_devotion_3
+off_hand=primal_molten_mace,id=190509,bonus_id=3524/1679/8937,ilevel=418,enchant=frozen_devotion_3
 
 # Gear Summary
 # gear_ilvl=421.56
 # gear_agility=4969
 # gear_stamina=13301
 # gear_attack_power=270
-# gear_crit_rating=3146
-# gear_haste_rating=2201
-# gear_mastery_rating=2067
-# gear_versatility_rating=4042
+# gear_crit_rating=3735
+# gear_haste_rating=1973
+# gear_mastery_rating=2445
+# gear_versatility_rating=3302
 # gear_armor=3363
 # set_bonus=tier29_2pc=1
 # set_bonus=tier29_4pc=1

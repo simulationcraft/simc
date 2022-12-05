@@ -18,7 +18,7 @@
 # hands=umbrahide_gauntlets,id=172316,bonus_id=7077/1588/6650/6647
 # waist=runecarvers_twisted_ward,id=189856,bonus_id=1524/7187/6935,gem_id=173127
 # legs=legguards_of_the_grand_upwelling,id=188911,bonus_id=1498/7187
-# feet=viscerastitched_footpads,id=178731,bonus_id=1592/6536/6646,enchant_id=6211
+# feet=viscerastitched_footpads,id=178731,bonus_id=1592/6536/6646,enchant=eternal_agility
 # finger1=entwined_gorger_tendril,id=178848,bonus_id=1592/6536/6646/6935,gem_id=173129,enchant=tenet_of_critical_strike
 # finger2=shadowghast_ring,id=178926,bonus_id=8124/1588/6650/6647/6935,gem_id=173129,enchant=tenet_of_critical_strike
 # trinket1=shadowgrasp_totem,id=179356,bonus_id=1592/6536/6646
@@ -39,18 +39,18 @@ head=,id=200363,bonus_id=8780,gem_id=192982,ilevel=424
 neck=,id=193647,bonus_id=3524/8782,gem_id=192932/192932/192932,ilevel=421
 shoulder=,id=200365,ilevel=424
 back=,id=133765,bonus_id=3524,ilevel=421
-chest=,id=200360,enchant_id=6625,ilevel=421
+chest=,id=200360,enchant=waking_stats_3,ilevel=421
 wrist=,id=195525,bonus_id=3524/8780,gem_id=192932,ilevel=424
 hands=,id=200362,ilevel=421
 waist=,id=136776,bonus_id=3524/8780,gem_id=192932,ilevel=421
-legs=,id=195530,bonus_id=3524,enchant_id=6490,ilevel=424
+legs=,id=195530,bonus_id=3524,enchant=fierce_armor_kit_3,ilevel=424
 feet=,id=134193,bonus_id=3524,ilevel=421
-finger1=,id=134542,bonus_id=3524/8780,enchant_id=6568,gem_id=192932,ilevel=421
-finger2=,id=195480,bonus_id=3524/8780,enchant_id=6568,gem_id=192932,ilevel=421
+finger1=,id=134542,bonus_id=3524/8780,enchant=devotion_of_versatility_3,gem_id=192932,ilevel=421
+finger2=,id=195480,bonus_id=3524/8780,enchant=devotion_of_versatility_3,gem_id=192932,ilevel=421
 trinket1=,id=137486,bonus_id=3524,ilevel=421
 trinket2=,id=194308,bonus_id=3524,ilevel=424
-main_hand=,id=190509,bonus_id=3524/1679/8937,enchant_id=6649,ilevel=418
-off_hand=,id=190509,bonus_id=3524/1679/8937,enchant_id=6649,ilevel=418
+main_hand=,id=190509,bonus_id=3524/1679/8937,enchant=frozen_devotion_3,ilevel=418
+off_hand=,id=190509,bonus_id=3524/1679/8937,enchant=frozen_devotion_3,ilevel=418
 
 save=T29_Monk_Windwalker.simc
 
@@ -66,17 +66,17 @@ head=,id=200363,bonus_id=8780,gem_id=192991,ilevel=424
 neck=,id=193647,bonus_id=3524/8782,gem_id=192925/192925/192925,ilevel=421
 shoulder=,id=200365,ilevel=424
 back=,id=133765,bonus_id=3524,ilevel=421
-chest=,id=200360,enchant_id=6625,ilevel=421
+chest=,id=200360,enchant=waking_stats_3,ilevel=421
 wrist=,id=195525,bonus_id=3524/8780,gem_id=192925,ilevel=424
 hands=,id=200362,ilevel=421
 waist=,id=136776,bonus_id=3524/8780,gem_id=192925,ilevel=421
-legs=,id=195530,bonus_id=3524,enchant_id=6490,ilevel=424
+legs=,id=195530,bonus_id=3524,enchant=fierce_armor_kit_3,ilevel=424
 feet=,id=134193,bonus_id=3524,ilevel=421
-finger1=,id=134542,bonus_id=3524/8780,enchant_id=6550,gem_id=192925,ilevel=421
-finger2=,id=195480,bonus_id=3524/8780,enchant_id=6550,gem_id=192925,ilevel=421
+finger1=,id=134542,bonus_id=3524/8780,enchant=devotion_of_critical_strike_3,gem_id=192925,ilevel=421
+finger2=,id=195480,bonus_id=3524/8780,enchant=devotion_of_critical_strike_3,gem_id=192925,ilevel=421
 trinket1=,id=137486,bonus_id=3524,ilevel=421
 trinket2=,id=194308,bonus_id=3524,ilevel=424
-main_hand=,id=190509,bonus_id=3524/1679/8937,enchant_id=6649,ilevel=418
-off_hand=,id=190509,bonus_id=3524/1679/8937,enchant_id=6649,ilevel=418
+main_hand=,id=190509,bonus_id=3524/1679/8937,enchant=frozen_devotion_3,ilevel=418
+off_hand=,id=190509,bonus_id=3524/1679/8937,enchant=frozen_devotion_3,ilevel=418
 
 save=T29_Monk_Windwalker_SEF.simc

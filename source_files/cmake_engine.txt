@@ -53,6 +53,7 @@ dbc/item_scaling.hpp
 dbc/item_set_bonus.hpp
 dbc/item_weapon.hpp
 dbc/mastery_spells.hpp
+dbc/permanent_enchant.hpp
 dbc/racial_spells.hpp
 dbc/rand_prop_points.hpp
 dbc/rank_spells.hpp
@@ -256,6 +257,7 @@ dbc/item_scaling.cpp
 dbc/item_set_bonus.cpp
 dbc/item_weapon.cpp
 dbc/mastery_spells.cpp
+dbc/permanent_enchant.cpp
 dbc/racial_spells.cpp
 dbc/rand_prop_points.cpp
 dbc/rank_spells.cpp

@@ -59,6 +59,7 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\dbc\item_set_bonus.hpp" />
 		<ClInclude Include="..\engine\dbc\item_weapon.hpp" />
 		<ClInclude Include="..\engine\dbc\mastery_spells.hpp" />
+		<ClInclude Include="..\engine\dbc\permanent_enchant.hpp" />
 		<ClInclude Include="..\engine\dbc\racial_spells.hpp" />
 		<ClInclude Include="..\engine\dbc\rand_prop_points.hpp" />
 		<ClInclude Include="..\engine\dbc\rank_spells.hpp" />
@@ -262,6 +263,7 @@ To change the list of source files run synchronize.py
 		<ClCompile Include="..\engine\dbc\item_set_bonus.cpp" />
 		<ClCompile Include="..\engine\dbc\item_weapon.cpp" />
 		<ClCompile Include="..\engine\dbc\mastery_spells.cpp" />
+		<ClCompile Include="..\engine\dbc\permanent_enchant.cpp" />
 		<ClCompile Include="..\engine\dbc\racial_spells.cpp" />
 		<ClCompile Include="..\engine\dbc\rand_prop_points.cpp" />
 		<ClCompile Include="..\engine\dbc\rank_spells.cpp" />

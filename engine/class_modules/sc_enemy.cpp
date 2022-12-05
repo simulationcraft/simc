@@ -1407,13 +1407,9 @@ std::string enemy_t::generate_tank_action_list( tank_dummy_e tank_dummy )
   // Defaulted to 20-man damage
   // Damage is normally increased from 10-man to 30-man by an average of 10% for every 5 players added.
   // 10-man -> 20-man = 20% increase; 20-man -> 30-man = 20% increase
-  std::array<int, numTankDummies> aa_damage               = { 0, 6415, 12300, 24597, 43081, 73742 };  // Base auto attack damage
-  std::array<int, numTankDummies> dummy_strike_damage     = { 0, 11000, 21450, 42932, 68189, 123500 };  // Base melee nuke damage (currently set to Soulrender's Ruinblade)
-  std::array<int, numTankDummies> background_spell_damage = { 0, 257, 1831, 2396, 3298, 5491 };  // Base background dot damage (currently set to 0.04x auto damage)
-
-  //std::array<int, numTankDummies> aa_damage               = { 0, 102100, 133380, 174241, 240324, 401733 };  // Base auto attack damage
-  //std::array<int, numTankDummies> dummy_strike_damage     = { 0, 204200, 266759, 348483, 480649, 642444 };  // Base melee nuke damage (currently set to Raszageth's Electrified Jaws)
-  //std::array<int, numTankDummies> background_spell_damage = { 0, 4084, 5335, 6970, 9613, 16069 };  // Base background dot damage (currently set to 0.04x auto damage)
+  std::array<int, numTankDummies> aa_damage               = { 0, 102100, 133380, 174241, 240324, 401733 };  // Base auto attack damage
+  std::array<int, numTankDummies> dummy_strike_damage     = { 0, 204200, 266759, 348483, 480649, 642444 };  // Base melee nuke damage (currently set to Raszageth's Electrified Jaws)
+  std::array<int, numTankDummies> background_spell_damage = { 0, 4084, 5335, 6970, 9613, 16069 };  // Base background dot damage (currently set to 0.04x auto damage)
 
   size_t tank_dummy_index = static_cast<size_t>( tank_dummy );
   als += "/auto_attack,damage=" + util::to_string( aa_damage[ tank_dummy_index ] ) +
@@ -1958,16 +1954,16 @@ double enemy_t::armor_coefficient( int level, tank_dummy_e dungeon_content )
   switch ( dungeon_content )
   {
     case tank_dummy_e::DUNGEON:
-      return k * ( level >= 70 ? 1.09 : 1.537 );  // M0/M+
+      return k * 1.09;  // M0/M+
       break;
     case tank_dummy_e::RAID:
-      return k * ( level >= 70 ? 1.192 : 1.670 );  // Normal Raid
+      return k * 1.192;  // Normal Raid
       break;
     case tank_dummy_e::HEROIC:
-      return k * ( level >= 70 ? 1.282 : 1.821 );  // Heroic Raid
+      return k * 1.282;  // Heroic Raid
       break;
     case tank_dummy_e::MYTHIC:
-      return k * ( level >= 70 ? 1.384 : 1.992 );  // Mythic Raid
+      return k * 1.384;  // Mythic Raid
       break;
     default:
       break;  // tank_dummy_e::NONE

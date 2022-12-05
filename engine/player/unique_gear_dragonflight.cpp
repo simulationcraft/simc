@@ -1033,6 +1033,12 @@ void globe_of_jagged_ice( special_effect_t& effect )
       return generic_aoe_proc_t::composite_target_multiplier( t ) *
              player->get_target_data( t )->debuff.skewering_cold->stack();
     }
+
+    void impact( action_state_t* s ) override
+    {
+      generic_aoe_proc_t::impact( s );
+      player->get_target_data( s->target )->debuff.skewering_cold->expire();
+    }
   };
 
   effect.execute_action = create_proc_action<breaking_the_ice_t>( "breaking_the_ice", *impale );
@@ -2424,6 +2430,107 @@ void blazebinders_hoof(special_effect_t& effect)
   } );
 }
 
+void primal_ritual_shell( special_effect_t& effect )
+{
+  // TODO: This is assuming players are using the "Wing Turtle's Blessing"
+  // This is the mastery proc and it is the default blessing you get when the item is first equiped
+  effect.stat_amount = effect.driver()->effectN( 5 ).average( effect.item );
+  effect.spell_id = 390899;
+  effect.stat = STAT_MASTERY_RATING;
+
+  // TODO: Implement Stone Turtle's Blessing - Absorb-Shield Proc [390655]
+  // TODO: Implement Flame Turtle's Blessing - Fire Damage Proc [390835]
+  // TODO: Implement Sea Turtle's Blessing - Heal Proc [390869]
+  
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Spineripper's Fang
+// 383611 Driver
+// 383612 Damage spell (damage value is in the driver effect)
+// Double damage bonus from behind, not in spell data anywhere
+void spinerippers_fang( special_effect_t& effect )
+{
+  auto action = create_proc_action<generic_proc_t>( "Cataclysmic Punch", effect, "rip_spine",
+                                                    effect.driver()->effectN( 1 ).trigger() );
+  
+  double damage = effect.driver()->effectN( 1 ).average( effect.item );
+  if ( effect.player->position() == POSITION_BACK ||
+       effect.player->position() == POSITION_RANGED_BACK )
+  {
+    damage *= 2.0;
+  }
+  action->base_dd_min = action->base_dd_max = damage;
+
+  effect.execute_action = action;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Integrated Primal Fire
+// 392359 Driver and fire damage impact
+// 392376 Physical damage impact spell, damage in driver effect 2
+void integrated_primal_fire( special_effect_t& effect )
+{
+  struct cataclysmic_punch_t : public generic_proc_t
+  {
+    cataclysmic_punch_t( const special_effect_t& e ) : generic_proc_t( e, "cataclysmic_punch", e.driver() )
+    {
+      // Physical Damage
+      impact_action = create_proc_action<generic_proc_t>(
+        "cataclysmic_punch_knock", e, "cataclysmic_punch_knock", e.driver()->effectN( 4 ).trigger() );
+      impact_action->base_dd_min = impact_action->base_dd_max = e.driver()->effectN( 2 ).average( e.item );
+      add_child( impact_action );
+    }
+  };
+
+  effect.execute_action = create_proc_action<cataclysmic_punch_t>( "cataclysmic_punch", effect );
+}
+
+// Bushwhacker's Compass
+// 383817 Driver
+// 383818 Buffs
+// North = Crit, South = Haste, East = Vers, West = Mastery
+void bushwhackers_compass(special_effect_t& effect)
+{
+  struct cb_t : public dbc_proc_callback_t
+  {
+    std::vector<buff_t*> buffs;
+    cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e )
+    {
+      auto the_path_to_survival_mastery = create_buff<stat_buff_t>(effect.player, "the_path_to_survival_mastery", effect.trigger() )
+        -> add_stat( STAT_MASTERY_RATING, effect.trigger()->effectN( 5 ).average( effect.item ));
+
+      auto the_path_to_survival_haste = create_buff<stat_buff_t>(effect.player, "the_path_to_survival_haste", effect.trigger() )
+        -> add_stat( STAT_HASTE_RATING, effect.trigger()->effectN( 5 ).average( effect.item ));
+
+      auto the_path_to_survival_crit = create_buff<stat_buff_t>(effect.player, "the_path_to_survival_crit", effect.trigger() )
+        -> add_stat( STAT_CRIT_RATING, effect.trigger()->effectN( 5 ).average( effect.item ));
+
+      auto the_path_to_survival_vers = create_buff<stat_buff_t>(effect.player, "the_path_to_survival_vers", effect.trigger() )
+        -> add_stat( STAT_VERSATILITY_RATING, effect.trigger()->effectN( 5 ).average( effect.item ));
+
+      buffs =
+      {
+        the_path_to_survival_mastery,
+        the_path_to_survival_haste,
+        the_path_to_survival_crit,
+        the_path_to_survival_vers
+      };
+    }
+
+    void execute( action_t* a, action_state_t* s ) override
+    {
+      dbc_proc_callback_t::execute( a, s );
+
+      auto buff = effect.player -> sim -> rng().range( buffs.size() );
+      buffs[ buff ] -> trigger();
+    }
+  };
+  effect.buff_disabled = true;
+  new cb_t( effect );
+}
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -2900,6 +3007,10 @@ void register_special_effects()
   register_special_effect( 381705, items::mutated_magmammoth_scale );
   register_special_effect( 382139, items::homeland_raid_horn );
   register_special_effect( 383926, items::blazebinders_hoof );
+  register_special_effect( 390764, items::primal_ritual_shell );
+  register_special_effect( 383611, items::spinerippers_fang );
+  register_special_effect( 392359, items::integrated_primal_fire );
+  register_special_effect( 383817, items::bushwhackers_compass );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );  // bronzed grip wrappings embellishment

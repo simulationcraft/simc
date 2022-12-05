@@ -1,0 +1,107 @@
+warrior="T29_Warrior_Protection"
+source=default
+spec=protection
+level=70
+race=dwarf
+role=tank
+position=front
+professions=blacksmithing=100/jewelcrafting=100
+talents=BkEAAAAAAAAAAAAAAAAAAAAAAIECAAAAIJJSSCSLpkkkWDRgQRAlkEAikkQLkkAEOQIAAAAAAAQEAAKlCA
+
+# Default consumables
+potion=elemental_potion_of_ultimate_power_3
+flask=phial_of_tepid_versatility_3
+food=fated_fortune_cookie
+augmentation=draconic
+temporary_enchant=main_hand:howling_rune_3
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/food
+actions.precombat+=/augmentation
+actions.precombat+=/battle_stance,toggle=on
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+
+# Executed every time the actor is available.
+actions=auto_attack
+actions+=/charge,if=time=0
+actions+=/use_items
+actions+=/avatar
+actions+=/shield_wall,if=talent.immovable_object.enabled&buff.avatar.down
+actions+=/blood_fury
+actions+=/berserking
+actions+=/arcane_torrent
+actions+=/lights_judgment
+actions+=/fireblood
+actions+=/ancestral_call
+actions+=/bag_of_tricks
+actions+=/potion,if=buff.avatar.up|buff.avatar.up&target.health.pct<=20
+actions+=/ignore_pain,if=target.health.pct>=20&(rage.deficit<=15&cooldown.shield_slam.ready|rage.deficit<=40&cooldown.shield_charge.ready&talent.champions_bulwark.enabled|rage.deficit<=20&cooldown.shield_charge.ready|rage.deficit<=30&cooldown.demoralizing_shout.ready&talent.booming_voice.enabled|rage.deficit<=20&cooldown.avatar.ready|rage.deficit<=45&cooldown.demoralizing_shout.ready&talent.booming_voice.enabled&buff.last_stand.up&talent.unnerving_focus.enabled|rage.deficit<=30&cooldown.avatar.ready&buff.last_stand.up&talent.unnerving_focus.enabled|rage.deficit<=20|rage.deficit<=40&cooldown.shield_slam.ready&buff.violent_outburst.up&talent.heavy_repercussions.enabled&talent.impenetrable_wall.enabled|rage.deficit<=55&cooldown.shield_slam.ready&buff.violent_outburst.up&buff.last_stand.up&talent.unnerving_focus.enabled&talent.heavy_repercussions.enabled&talent.impenetrable_wall.enabled|rage.deficit<=17&cooldown.shield_slam.ready&talent.heavy_repercussions.enabled|rage.deficit<=18&cooldown.shield_slam.ready&talent.impenetrable_wall.enabled),use_off_gcd=1
+actions+=/last_stand,if=(target.health.pct>=90&talent.unnerving_focus.enabled|target.health.pct<=20&talent.unnerving_focus.enabled)|talent.bolster.enabled
+actions+=/ravager
+actions+=/demoralizing_shout,if=talent.booming_voice.enabled
+actions+=/spear_of_bastion
+actions+=/thunderous_roar
+actions+=/shockwave,if=talent.sonic_boom.enabled&buff.avatar.up&talent.unstoppable_force.enabled&!talent.rumbling_earth.enabled
+actions+=/shield_charge
+actions+=/shield_block,if=buff.shield_block.duration<=18&talent.enduring_defenses.enabled|buff.shield_block.duration<=12
+actions+=/run_action_list,name=aoe,if=spell_targets.thunder_clap>=3
+actions+=/call_action_list,name=generic
+
+actions.aoe=thunder_clap,if=dot.rend.remains<=1
+actions.aoe+=/thunder_clap,if=buff.violent_outburst.up&spell_targets.thunderclap>5&buff.avatar.up&talent.unstoppable_force.enabled
+actions.aoe+=/revenge,if=rage>=70&talent.seismic_reverberation.enabled&spell_targets.revenge>=3
+actions.aoe+=/shield_slam,if=rage<=60|buff.violent_outburst.up&spell_targets.thunderclap<=4
+actions.aoe+=/thunder_clap
+actions.aoe+=/revenge,if=rage>=30|rage>=40&talent.barbaric_training.enabled
+
+actions.generic=shield_slam
+actions.generic+=/thunder_clap,if=dot.rend.remains<=1&buff.violent_outburst.down
+actions.generic+=/execute,if=buff.sudden_death.up&talent.sudden_death.enabled
+actions.generic+=/execute,if=spell_targets.revenge=1&(talent.massacre.enabled|talent.juggernaut.enabled)&rage>=50
+actions.generic+=/revenge,if=buff.vanguards_determination.down&rage>=40
+actions.generic+=/execute,if=spell_targets.revenge=1&rage>=50
+actions.generic+=/thunder_clap,if=(spell_targets.thunder_clap>1|cooldown.shield_slam.remains&!buff.violent_outburst.up)
+actions.generic+=/revenge,if=(rage>=60&target.health.pct>20|buff.revenge.up&target.health.pct<=20&rage<=18&cooldown.shield_slam.remains|buff.revenge.up&target.health.pct>20)|(rage>=60&target.health.pct>35|buff.revenge.up&target.health.pct<=35&rage<=18&cooldown.shield_slam.remains|buff.revenge.up&target.health.pct>35)&talent.massacre.enabled
+actions.generic+=/execute,if=spell_targets.revenge=1
+actions.generic+=/revenge
+actions.generic+=/thunder_clap,if=(spell_targets.thunder_clap>=1|cooldown.shield_slam.remains&buff.violent_outburst.up)
+actions.generic+=/devastate
+
+head=infurious_helm_of_vengeance,id=190522,bonus_id=8836/8840/8902/8960/8809/8801,ilevel=418,gem_id=192919
+neck=eye_of_the_vengeful_hurricane,id=195496,bonus_id=4800/4786/1498,gem_id=192919/192919/192919
+shoulders=peaks_of_the_walking_mountain,id=200428,bonus_id=1463/8767,ilevel=421
+back=cape_of_the_duskwatch,id=137483,bonus_id=1795/6808/4786/3300,ilevel=421,drop_level=70
+chest=husk_of_the_walking_mountain,id=200423,bonus_id=1466/8767,ilevel=421,enchant=waking_stats_3
+wrists=virtuous_silver_bracers,id=200421,bonus_id=4800/4786/1498,ilevel=424,gem_id=192919
+hands=gauntlets_of_the_walking_mountain,id=200425,bonus_id=1466/8767,ilevel=421
+waist=unstable_frostfire_belt,id=191623,bonus_id=8836/8840/8902/8960/8801,ilevel=418,gem_id=192985
+legs=poleyns_of_the_walking_mountain,id=200427,bonus_id=1472/8767,ilevel=421,enchant=frosted_armor_kit_3
+feet=kurogs_thunderhooves,id=195517,bonus_id=4800/4786/1498
+finger1=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498,gem_id=192919,enchant=devotion_of_haste_3
+finger2=jeweled_signet_of_melandrus,id=134542,bonus_id=1795/6808/4786/3300/6935,ilevel=421,gem_id=192919,enchant=devotion_of_haste_3,drop_level=70
+trinket1=manic_grieftorch,id=194308,bonus_id=7979/6652/1472/8767,ilevel=421
+trinket2=windscar_whetstone,id=137486,bonus_id=6652/3300/8767
+main_hand=strike_twice,id=193700,bonus_id=6808/4786/1643,enchant=frozen_devotion_3
+off_hand=broodsworn_legionnaires_pavise,id=195520,bonus_id=4800/4786/1498
+
+# Gear Summary
+# gear_ilvl=421.00
+# gear_strength=4913
+# gear_stamina=13046
+# gear_intellect=786
+# gear_crit_rating=3647
+# gear_haste_rating=3648
+# gear_mastery_rating=2076
+# gear_versatility_rating=2358
+# gear_armor=10805
+# gear_bonus_armor=141
+# set_bonus=tier29_2pc=1
+# set_bonus=tier29_4pc=1

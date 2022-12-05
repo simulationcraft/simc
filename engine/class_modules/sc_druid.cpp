@@ -962,6 +962,7 @@ public:
 
     // Resto
     const spell_data_t* restoration;
+    const spell_data_t* cenarius_guidance;
   } spec;
 
   struct uptimes_t
@@ -5497,10 +5498,12 @@ struct wild_growth_t : public druid_heal_t
 // Ysera's Gift =============================================================
 struct yseras_gift_t : public druid_heal_t
 {
-  yseras_gift_t( druid_t* p ) : druid_heal_t( "yseras_gift", p, p->find_spell( 145109 ) )
+  double mul;
+
+  yseras_gift_t( druid_t* p )
+    : druid_heal_t( "yseras_gift", p, p->find_spell( 145109 ) ), mul( p->talent.yseras_gift->effectN( 1 ).percent() )
   {
     background = dual = true;
-    base_pct_heal = p->talent.yseras_gift->effectN( 1 ).percent();
   }
 
   void init() override
@@ -5508,6 +5511,11 @@ struct yseras_gift_t : public druid_heal_t
     druid_heal_t::init();
 
     snapshot_flags &= ~STATE_VERSATILITY;  // Is not affected by versatility.
+  }
+
+  double bonus_da( const action_state_t* ) const override
+  {
+    return p()->resources.max[ RESOURCE_HEALTH ] * mul;
   }
 
   void execute() override
@@ -7961,6 +7969,11 @@ struct convoke_the_spirits_t : public druid_spell_t
 
     // create deck for exceptional spell cast
     deck = p->get_shuffled_rng( "convoke_the_spirits", 1, guidance ? 2 : p->options.convoke_the_spirits_deck );
+  }
+
+  void init() override
+  {
+    druid_spell_t::init();
 
     using namespace bear_attacks;
     using namespace cat_attacks;
@@ -7968,17 +7981,17 @@ struct convoke_the_spirits_t : public druid_spell_t
     // Create actions used by all specs
     actions.conv_wrath       = get_convoke_action<wrath_t>( "wrath", "" );
     actions.conv_moonfire    = get_convoke_action<moonfire_t>( "moonfire", "" );
-    actions.conv_rake        = get_convoke_action<rake_t>( "rake", p->find_spell( 1822 ), "" );
-    actions.conv_thrash_bear = get_convoke_action<thrash_bear_t>( "thrash_bear", p->find_spell( 77758 ), "" );
+    actions.conv_rake        = get_convoke_action<rake_t>( "rake", p()->find_spell( 1822 ), "" );
+    actions.conv_thrash_bear = get_convoke_action<thrash_bear_t>( "thrash_bear", p()->find_spell( 77758 ), "" );
 
     // Call form-specific initialization to create necessary actions & setup variables
-    if ( p->find_action( "moonkin_form" ) )
+    if ( p()->find_action( "moonkin_form" ) )
       _init_moonkin();
 
-    if ( p->find_action( "bear_form" ) )
+    if ( p()->find_action( "bear_form" ) )
       _init_bear();
 
-    if ( p->find_action( "cat_form" ) )
+    if ( p()->find_action( "cat_form" ) )
       _init_cat();
   }
 
@@ -9181,6 +9194,7 @@ void druid_t::init_spells()
 
   // Restoration Abilities
   spec.restoration              = find_specialization_spell( "Restoration Druid" );
+  spec.cenarius_guidance        = check( talent.cenarius_guidance, talent.convoke_the_spirits.ok() ? 393374 : 393381 );
 
   // Masteries ==============================================================
   mastery.harmony             = find_mastery_spell( DRUID_RESTORATION );
@@ -10217,8 +10231,8 @@ void druid_t::init_procs()
   // simple=true and other with simple=false is resolved
 
   // Balance
-  proc.denizen_of_the_dream = get_proc( "Denizen of the Dream" );//->collect_count();
-  proc.pulsar               = get_proc( "Primordial Arcanic Pulsar" );//->collect_interval();
+  proc.denizen_of_the_dream = get_proc( "Denizen of the Dream" )->collect_count();
+  proc.pulsar               = get_proc( "Primordial Arcanic Pulsar" )->collect_interval();
 
   // Feral
   proc.predator             = get_proc( "Predator" );
@@ -10229,9 +10243,9 @@ void druid_t::init_procs()
   proc.clearcasting_wasted  = get_proc( "Clearcasting (Wasted)" );
 
   // Guardian
-  proc.galactic_guardian    = get_proc( "Galactic Guardian" );//->collect_interval();
-  proc.gore                 = get_proc( "Gore" );//->collect_interval();
-  proc.tooth_and_claw       = get_proc( "Tooth and Claw" );//->collect_interval();
+  proc.galactic_guardian    = get_proc( "Galactic Guardian" )->collect_interval();
+  proc.gore                 = get_proc( "Gore" )->collect_interval();
+  proc.tooth_and_claw       = get_proc( "Tooth and Claw" )->collect_interval();
 }
 
 // druid_t::init_uptimes ====================================================
@@ -10244,13 +10258,13 @@ void druid_t::init_uptimes()
 
   std::string ca_inc_str = talent.incarnation_moonkin.ok() ? "Incarnation" : "Celestial Alignment";
 
-  uptime.combined_ca_inc           = get_uptime( ca_inc_str + " (Total)" );//->collect_uptime( *sim )->collect_duration( *sim );
-  uptime.primordial_arcanic_pulsar = get_uptime( ca_inc_str + " (Pulsar)" );//->collect_uptime( *sim );
-  uptime.eclipse_lunar             = get_uptime( "Lunar Eclipse Only" );//->collect_uptime( *sim )->collect_duration( *sim );
-  uptime.eclipse_solar             = get_uptime( "Solar Eclipse Only" );//->collect_uptime( *sim );
-  uptime.eclipse_none              = get_uptime( "No Eclipse" );//->collect_uptime( *sim )->collect_duration( *sim );
-  uptime.friend_of_the_fae         = get_uptime( "Friend of the Fae" );//->collect_uptime( *sim )->collect_duration( *sim );
-  uptime.tooth_and_claw_debuff     = get_uptime( "Tooth and Claw Debuff" );//->collect_uptime( *sim );
+  uptime.combined_ca_inc           = get_uptime( ca_inc_str + " (Total)" )->collect_uptime( *sim )->collect_duration( *sim );
+  uptime.primordial_arcanic_pulsar = get_uptime( ca_inc_str + " (Pulsar)" )->collect_uptime( *sim );
+  uptime.eclipse_lunar             = get_uptime( "Lunar Eclipse Only" )->collect_uptime( *sim )->collect_duration( *sim );
+  uptime.eclipse_solar             = get_uptime( "Solar Eclipse Only" )->collect_uptime( *sim );
+  uptime.eclipse_none              = get_uptime( "No Eclipse" )->collect_uptime( *sim )->collect_duration( *sim );
+  uptime.friend_of_the_fae         = get_uptime( "Friend of the Fae" )->collect_uptime( *sim )->collect_duration( *sim );
+  uptime.tooth_and_claw_debuff     = get_uptime( "Tooth and Claw Debuff" )->collect_uptime( *sim );
 }
 
 // druid_t::init_resources ==================================================
@@ -12078,6 +12092,7 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( sets->set( DRUID_GUARDIAN, T29, B4 ) );
 
   // Restoration
+  action.apply_affecting_aura( spec.cenarius_guidance );
   action.apply_affecting_aura( talent.germination );
   action.apply_affecting_aura( talent.improved_ironbark );
   action.apply_affecting_aura( talent.inner_peace );

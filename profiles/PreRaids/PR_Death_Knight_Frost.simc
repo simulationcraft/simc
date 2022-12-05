@@ -29,12 +29,11 @@ actions.precombat+=/snapshot_stats
 # Evaluates a trinkets cooldown, divided by pillar of frost, empower rune weapon, or breath of sindragosa's cooldown. If it's value has no remainder return 1, else return 0.5.
 actions.precombat+=/variable,name=trinket_1_sync,op=setif,value=1,value_else=0.5,condition=trinket.1.has_use_buff&(talent.pillar_of_frost&!talent.breath_of_sindragosa&(trinket.1.cooldown.duration%%cooldown.pillar_of_frost.duration=0)|talent.breath_of_sindragosa&(cooldown.breath_of_sindragosa.duration%%trinket.1.cooldown.duration=0))
 actions.precombat+=/variable,name=trinket_2_sync,op=setif,value=1,value_else=0.5,condition=trinket.2.has_use_buff&(talent.pillar_of_frost&!talent.breath_of_sindragosa&(trinket.2.cooldown.duration%%cooldown.pillar_of_frost.duration=0)|talent.breath_of_sindragosa&(cooldown.breath_of_sindragosa.duration%%trinket.2.cooldown.duration=0))
-# Estimates a trinkets value by comparing the cooldown of the trinket, divided by the duration of the buff it provides. Has a strength modifier to give a higher priority to strength trinkets, as well as a modifier for if a trinket will or will not sync with cooldowns.
-actions.precombat+=/variable,name=trinket_priority,op=setif,value=2,value_else=1,condition=!trinket.1.has_use_buff&trinket.2.has_use_buff|trinket.2.has_use_buff&((trinket.2.cooldown.duration%trinket.2.proc.any_dps.duration)*(1.5+trinket.2.has_buff.strength)*(variable.trinket_2_sync))>((trinket.1.cooldown.duration%trinket.1.proc.any_dps.duration)*(1.5+trinket.1.has_buff.strength)*(variable.trinket_1_sync))
-actions.precombat+=/variable,name=rw_buffs,value=talent.gathering_storm|talent.everfrost
-actions.precombat+=/variable,name=2h_check,value=main_hand.2h&talent.might_of_the_frozen_wastes
 actions.precombat+=/variable,name=trinket_1_buffs,value=trinket.1.has_buff.strength|trinket.1.has_buff.mastery|trinket.1.has_buff.versatility|trinket.1.has_buff.haste|trinket.1.has_buff.crit
 actions.precombat+=/variable,name=trinket_2_buffs,value=trinket.2.has_buff.strength|trinket.2.has_buff.mastery|trinket.2.has_buff.versatility|trinket.2.has_buff.haste|trinket.2.has_buff.crit
+actions.precombat+=/variable,name=trinket_priority,op=setif,value=2,value_else=1,condition=!variable.trinket_1_buffs&variable.trinket_2_buffs|variable.trinket_2_buffs&((trinket.2.cooldown.duration%trinket.2.proc.any_dps.duration)*(1.5+trinket.2.has_buff.strength)*(variable.trinket_2_sync))>((trinket.1.cooldown.duration%trinket.1.proc.any_dps.duration)*(1.5+trinket.1.has_buff.strength)*(variable.trinket_1_sync))
+actions.precombat+=/variable,name=rw_buffs,value=talent.gathering_storm|talent.everfrost
+actions.precombat+=/variable,name=2h_check,value=main_hand.2h&talent.might_of_the_frozen_wastes
 
 # Executed every time the actor is available.
 actions=auto_attack
@@ -188,15 +187,15 @@ actions.trinkets+=/use_item,slot=trinket2,if=(!variable.trinket_2_buffs&(trinket
 head=earthshakers_steel_visor,id=193735,bonus_id=6808/4786/1594
 neck=ukhel_ancestry_beads,id=193676,bonus_id=6808/4786/1594
 shoulders=nokhud_traditionalists_pauldrons,id=193686,bonus_id=6808/4786/1594
-back=cloak_of_lost_devotion,id=193629,bonus_id=6808/4786/1594,enchant_id=6597
-chest=cuirass_of_irreparable_madness,id=193644,bonus_id=6808/4786/1594,enchant_id=6624
-wrists=thrashing_wind_vambraces,id=193698,bonus_id=6808/4786/1594,enchant_id=6579
+back=cloak_of_lost_devotion,id=193629,bonus_id=6808/4786/1594,enchant=regenerative_leech_2
+chest=cuirass_of_irreparable_madness,id=193644,bonus_id=6808/4786/1594,enchant=waking_stats_2
+wrists=thrashing_wind_vambraces,id=193698,bonus_id=6808/4786/1594,enchant=devotion_of_leech_2
 hands=keepers_iron_grips,id=193795,bonus_id=6808/4786/1594
 waist=illusion_breakers_waistguard,id=193650,bonus_id=6808/4786/1594
-legs=drake_hunters_greaves,id=193694,bonus_id=6808/4786/1594,enchant_id=6489
-feet=twentytwoleague_striders,id=193630,bonus_id=6808/4786/1594,enchant_id=6612
-finger1=unstable_arcane_loop,id=193633,bonus_id=6808/4786/1594,enchant_id=6549
-finger2=platinum_star_band,id=193708,bonus_id=6808/4786/1594,enchant_id=6549
+legs=drake_hunters_greaves,id=193694,bonus_id=6808/4786/1594,enchant=fierce_armor_kit_2
+feet=twentytwoleague_striders,id=193630,bonus_id=6808/4786/1594,enchant=watchers_loam_2
+finger1=unstable_arcane_loop,id=193633,bonus_id=6808/4786/1594,enchant=devotion_of_critical_strike_2
+finger2=platinum_star_band,id=193708,bonus_id=6808/4786/1594,enchant=devotion_of_critical_strike_2
 trinket1=blazebinders_hoof,id=193762,bonus_id=6808/4786/1594
 trinket2=dragon_games_equipment,id=193719,bonus_id=6808/4786/1594
 main_hand=strike_twice,id=193700,bonus_id=6808/4786/1594,enchant=rune_of_hysteria
