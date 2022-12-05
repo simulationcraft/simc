@@ -1130,11 +1130,11 @@ void warlock_t::create_buffs_demonology()
 
   buffs.nether_portal = make_buff( this, "nether_portal", talents.nether_portal_buff )
                             ->set_stack_change_callback( [ this ]( buff_t*, int, int cur ) {
-                              if ( cur == 0 && talents.guldans_ambition.ok() )
+                              if ( !sim->event_mgr.canceled && cur == 0 && talents.guldans_ambition.ok() )
                               {
                                 warlock_pet_list.pit_lords.spawn( talents.soul_glutton->duration(), 1u );
                               };
-                            } );;
+                            } );
 
   buffs.dread_calling = make_buff<buff_t>( this, "dread_calling", talents.dread_calling_buff )
                             ->set_default_value( talents.dread_calling->effectN( 1 ).percent() );
