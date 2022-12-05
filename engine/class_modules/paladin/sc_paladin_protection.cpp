@@ -603,7 +603,7 @@ struct judgment_prot_t : public judgment_t
       int hopo = 0;
       if ( p() -> spec.judgment_3 -> ok() )
         hopo += judge_holy_power;
-      if ( p() -> talents.sanctified_wrath -> ok() && p() -> buffs.avenging_wrath -> up() )
+      if ( p() -> talents.sanctified_wrath -> ok() && (p() -> buffs.avenging_wrath -> up() || p() -> buffs.sentinel -> up() ))
         hopo += sw_holy_power;
       if( hopo > 0 )
         p() -> resource_gain( RESOURCE_HOLY_POWER, hopo, p() -> gains.judgment );
