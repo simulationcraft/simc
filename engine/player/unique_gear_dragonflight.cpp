@@ -2432,16 +2432,38 @@ void blazebinders_hoof(special_effect_t& effect)
 
 void primal_ritual_shell( special_effect_t& effect )
 {
-  // TODO: This is assuming players are using the "Wing Turtle's Blessing"
-  // This is the mastery proc and it is the default blessing you get when the item is first equiped
-  effect.stat_amount = effect.driver()->effectN( 5 ).average( effect.item );
-  effect.spell_id = 390899;
-  effect.stat = STAT_MASTERY_RATING;
-
-  // TODO: Implement Stone Turtle's Blessing - Absorb-Shield Proc [390655]
-  // TODO: Implement Flame Turtle's Blessing - Fire Damage Proc [390835]
-  // TODO: Implement Sea Turtle's Blessing - Heal Proc [390869]
-  
+  const auto& blessing = effect.player->sim->dragonflight_opts.primal_ritual_shell_blessing;
+  {
+    if ( util::str_compare_ci( blessing, "wind" ) )
+    {
+      // Wind Turtle's Blessing - Mastery Proc [390899]
+      effect.stat_amount = effect.driver()->effectN( 5 ).average( effect.item );
+      effect.spell_id = 390899;
+      effect.stat = STAT_MASTERY_RATING;
+      effect.name_str = effect.trigger()->name_cstr();
+    }
+    else if ( util::str_compare_ci( blessing, "stone" ) )
+    {
+      // TODO: Implement Stone Turtle's Blessing - Absorb-Shield Proc [390655]
+      effect.player->sim->error( "Stone Turtle's Blessing is not implemented yet" );
+    }
+    else if ( util::str_compare_ci( blessing, "flame" ) )
+    {
+      // Flame Turtle's Blessing - Fire Damage Proc [390835]
+      effect.discharge_amount = effect.driver()->effectN( 3 ).average( effect.item );
+      effect.spell_id = 390835;
+      effect.name_str = effect.trigger()->name_cstr();
+    }
+    else if ( util::str_compare_ci( blessing, "sea" ) )
+    {
+      // TODO: Implement Sea Turtle's Blessing - Heal Proc [390869]
+      effect.player->sim->error( "Sea Turtle's Blessing is not implemented yet" );
+    }
+    else
+    {
+      throw std::invalid_argument( "Invalid string for dragonflight.primal_ritual_shell_blessing. Valid strings: wind,flame,sea,stone" );
+    }
+  }
   new dbc_proc_callback_t( effect.player, effect );
 }
 
