@@ -2459,7 +2459,7 @@ void primal_ritual_shell( special_effect_t& effect )
     }
     else
     {
-      throw std::invalid_argument( "Invalid string for dragonflight.primal_ritual_shell_blessing." );
+      throw std::invalid_argument( "Invalid string for dragonflight.primal_ritual_shell_blessing. Valid strings: wind,flame,sea,stone" );
     }
   }
   new dbc_proc_callback_t( effect.player, effect );
