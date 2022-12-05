@@ -6,26 +6,31 @@
 namespace warlock_apl{
   std::string potion( const player_t* p )
   {
+    if ( p->true_level >= 70 ) return "elemental_potion_of_ultimate_power_3";
     return ( p->true_level >= 60 ) ? "spectral_intellect" : "disabled";
   }
 
   std::string flask( const player_t* p )
   {
+    if ( p->true_level >= 70 ) return "phial_of_static_empowerment_3";
     return ( p->true_level >= 60 ) ? "spectral_flask_of_power" : "disabled";
   }
 
   std::string food( const player_t* p )
   {
+    if ( p->true_level >= 70 ) return "fated_fortune_cookie";
     return ( p->true_level >= 60 ) ? "feast_of_gluttonous_hedonism" : "disabled";
   }
 
   std::string rune( const player_t* p )
   {
+    if ( p->true_level >= 70 ) return "draconic_augment_rune";
     return ( p->true_level >= 60 ) ? "veiled" : "disabled";
   }
 
   std::string temporary_enchant( const player_t* p )
   {
+    if ( p->true_level >= 70 ) return "main_hand:howling_rune_3";
     return ( p->true_level >= 60 ) ? "main_hand:shadowcore_oil" : "disabled";
   }
 
