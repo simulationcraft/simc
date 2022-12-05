@@ -201,9 +201,9 @@ wrists=surgingsong_conductors,id=195516,ilevel=421,gem_id=192948
 hands=gauntlets_of_infused_earth,id=200398,ilevel=424
 waist=morningscale_waistguard,id=109843,ilevel=421,gem_id=192948
 legs=leggings_of_infused_earth,id=200400,ilevel=424,enchant=frozen_spellthread_3
-feet=lightningcharged_striders,id=193685,ilevel=421,enchant_id=6607
-finger1=seal_of_filial_duty,id=195526,ilevel=430,gem_id=192948,enchant_id=6562
-finger2=signet_of_shifting_magics,id=109780,ilevel=421,gem_id=192948,enchant_id=6562
+feet=lightningcharged_striders,id=193685,ilevel=421,enchant=plainsrunners_breeze_3
+finger1=seal_of_filial_duty,id=195526,ilevel=430,gem_id=192948,enchant=devotion_of_mastery_3
+finger2=signet_of_shifting_magics,id=109780,ilevel=421,gem_id=192948,enchant=devotion_of_mastery_3
 trinket1=horn_of_valor,id=133642,ilevel=421
 trinket2=infernal_writ,id=137485,ilevel=421
 main_hand=stormlashs_last_resort,id=195529,ilevel=424,enchant=sophic_devotion_3
@@ -214,10 +214,10 @@ off_hand=broodsworn_legionnaires_pavise,id=195520,ilevel=424
 # gear_strength=256
 # gear_stamina=13551
 # gear_intellect=7044
-# gear_crit_rating=1675
-# gear_haste_rating=2450
-# gear_mastery_rating=5598
-# gear_versatility_rating=1065
+# gear_crit_rating=1229
+# gear_haste_rating=3275
+# gear_mastery_rating=4770
+# gear_versatility_rating=1515
 # gear_speed_rating=250
 # gear_armor=8575
 # set_bonus=tier29_2pc=1

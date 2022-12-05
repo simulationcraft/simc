@@ -133,10 +133,10 @@ chest=thunderfused_valkyr_hauberk,id=133622,bonus_id=1795/3251/657/7977,enchant=
 wrists=shikaar_ranger_bracers,id=193693,bonus_id=1594/657/7977
 hands=sharpeye_gauntlets,id=109853,bonus_id=1795/3257/657/7977
 waist=morningscale_waistguard,id=109843,bonus_id=1795/3257/657/7977
-legs=stasisfreed_leggings,id=193643,bonus_id=1594/657/7977,enchant_id=6495
+legs=stasisfreed_leggings,id=193643,bonus_id=1594/657/7977,enchant=frosted_armor_kit_2
 feet=lightningcharged_striders,id=193685,bonus_id=1594/657/7977
-finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=1795/3251/657/7977,enchant_id=6561
-finger2=woebearers_band,id=133638,bonus_id=1795/3251/657/7977,enchant_id=6561
+finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=1795/3251/657/7977,enchant=devotion_of_mastery_2
+finger2=woebearers_band,id=133638,bonus_id=1795/3251/657/7977,enchant=devotion_of_mastery_2
 trinket1=irideus_fragment,id=193743,bonus_id=1594/657/7977
 trinket2=bottle_of_spiraling_winds,id=193697,bonus_id=1594/657/7977
 main_hand=forgestorm,id=193785,bonus_id=1594/657/7977,enchant=sophic_devotion_2

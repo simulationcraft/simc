@@ -133,10 +133,10 @@ chest=robe_of_infused_earth,id=200396,bonus_id=4800/4786/1498,enchant=waking_sta
 wrists=shikaar_ranger_bracers,id=193693,bonus_id=6808/4786/1643,gem_id=192948
 hands=gauntlets_of_infused_earth,id=200398,bonus_id=4800/4786/1501
 waist=morningscale_waistguard,id=109843,bonus_id=4238/4786/6808/3306,gem_id=192948
-legs=tassets_of_the_tarasek_legion,id=195522,bonus_id=4800/4786/1498,enchant_id=6496
+legs=tassets_of_the_tarasek_legion,id=195522,bonus_id=4800/4786/1498,enchant=frosted_armor_kit_3
 feet=daring_chasmleapers,id=195495,bonus_id=4800/4786/1498
-finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=1795/6808/4786/3300,gem_id=192948,enchant_id=6556
-finger2=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498,gem_id=192948,enchant_id=6556
+finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=1795/6808/4786/3300,gem_id=192948,enchant=devotion_of_haste_3
+finger2=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498,gem_id=192948,enchant=devotion_of_haste_3
 trinket1=manic_grieftorch,id=194308,bonus_id=4800/4786/1498
 trinket2=whispering_incarnate_icon,id=194301,bonus_id=4800/4786/1498
 main_hand=fist_of_the_grand_summoner,id=195512,bonus_id=4800/4786/1498,enchant=sophic_devotion_3
@@ -146,10 +146,10 @@ off_hand=fist_of_the_grand_summoner,id=195512,bonus_id=4800/4786/1498,enchant=so
 # gear_ilvl=421.56
 # gear_agility=5450
 # gear_stamina=13199
-# gear_crit_rating=1543
-# gear_haste_rating=4406
-# gear_mastery_rating=3657
-# gear_versatility_rating=1263
+# gear_crit_rating=1075
+# gear_haste_rating=5223
+# gear_mastery_rating=3084
+# gear_versatility_rating=1488
 # gear_armor=4851
 # set_bonus=tier29_2pc=1
 # set_bonus=tier29_4pc=1
