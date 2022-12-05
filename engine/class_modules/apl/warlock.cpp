@@ -145,6 +145,8 @@ void demonology( player_t* p )
   action_priority_list_t* default_ = p->get_action_priority_list( "default" );
   action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
   action_priority_list_t* tyrant = p->get_action_priority_list( "tyrant" );
+  action_priority_list_t* ogcd = p->get_action_priority_list( "ogcd" );
+  action_priority_list_t* items = p->get_action_priority_list( "items" );
 
   precombat->add_action( "flask" );
   precombat->add_action( "food" );
@@ -162,7 +164,8 @@ void demonology( player_t* p )
   default_->add_action( "call_dreadstalkers,if=cooldown.summon_demonic_tyrant.remains_expected>cooldown+variable.tyrant_prep_start" );
   default_->add_action( "grimoire_felguard,if=!talent.summon_demonic_tyrant" );
   default_->add_action( "summon_vilefiend,if=!talent.summon_demonic_tyrant|cooldown.summon_demonic_tyrant.remains_expected>cooldown+variable.tyrant_prep_start" );
-  default_->add_action( "use_items,if=!talent.summon_demonic_tyrant|buff.demonic_power.up" );
+  default_->add_action( "call_action_list,name=ogcd,if=!talent.summon_demonic_tyrant" );
+  default_->add_action( "call_action_list,name=items,if=!talent.summon_demonic_tyrant" );
   default_->add_action( "guillotine" );
   default_->add_action( "demonic_strength" );
   default_->add_action( "bilescourge_bombers,if=!pet.demonic_tyrant.active" );
@@ -182,9 +185,18 @@ void demonology( player_t* p )
   tyrant->add_action( "call_dreadstalkers,if=variable.next_tyrant-time<12" );
   tyrant->add_action( "hand_of_guldan,if=buff.nether_portal.up|soul_shard>2&variable.next_tyrant-time<12|soul_shard=5" );
   tyrant->add_action( "hand_of_guldan,if=talent.soulbound_tyrant&variable.next_tyrant-time<4" );
+  tyrant->add_action( "call_action_list,name=ogcd,if=variable.next_tyrant-time<3" );
+  tyrant->add_action( "call_action_list,name=items,if=variable.next_tyrant-time<3" );
   tyrant->add_action( "summon_demonic_tyrant,if=variable.next_tyrant-time<3" );
   tyrant->add_action( "demonbolt,if=buff.demonic_core.up" );
   tyrant->add_action( "shadow_bolt" );
+
+  ogcd->add_action( "potion" );
+  ogcd->add_action( "berserking" );
+  ogcd->add_action( "blood_fury" );
+  ogcd->add_action( "fireblood" );
+
+  items->add_action( "use_items" );
 }
 //demonology_apl_end
 
