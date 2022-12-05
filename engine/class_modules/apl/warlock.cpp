@@ -153,10 +153,11 @@ void demonology( player_t* p )
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "inquisitors_gaze" );
   precombat->add_action( "variable,name=tyrant_prep_start,op=set,value=12" );
+  precombat->add_action( "variable,name=next_tyrant,op=set,value=15" );
   precombat->add_action( "demonbolt" );
 
-  default_->add_action( "call_action_list,name=tyrant,if=time<15&talent.summon_demonic_tyrant&cooldown.summon_demonic_tyrant.up" );
-  default_->add_action( "call_action_list,name=tyrant,if=talent.summon_demonic_tyrant&cooldown.summon_demonic_tyrant.remains_expected<variable.tyrant_prep_start" );
+  default_->add_action( "call_action_list,name=tyrant,if=(time-variable.next_tyrant)<=15&talent.summon_demonic_tyrant&cooldown.summon_demonic_tyrant.up" );
+  default_->add_action( "call_action_list,name=tyrant,if=talent.summon_demonic_tyrant&cooldown.summon_demonic_tyrant.remains_expected<=variable.tyrant_prep_start" );
   default_->add_action( "nether_portal,if=!talent.summon_demonic_tyrant&soul_shard>2" );
   default_->add_action( "call_dreadstalkers,if=cooldown.summon_demonic_tyrant.remains_expected>cooldown+variable.tyrant_prep_start" );
   default_->add_action( "grimoire_felguard,if=!talent.summon_demonic_tyrant" );
@@ -164,19 +165,24 @@ void demonology( player_t* p )
   default_->add_action( "use_items,if=!talent.summon_demonic_tyrant|buff.demonic_power.up" );
   default_->add_action( "guillotine" );
   default_->add_action( "demonic_strength" );
+  default_->add_action( "bilescourge_bombers,if=!pet.demonic_tyrant.active" );
   default_->add_action( "power_siphon" );
+  default_->add_action( "implosion,if=active_enemies>2&buff.wild_imps.stack>=6" );
+  default_->add_action( "shadow_bolt,if=talent.fel_covenant&buff.fel_covenant.remains<4" );
   default_->add_action( "demonbolt,if=buff.demonic_core.up&soul_shard<4" );
   default_->add_action( "hand_of_guldan,if=soul_shard>2" );
   default_->add_action( "doom,if=refreshable" );
   default_->add_action( "soul_strike" );
   default_->add_action( "shadow_bolt" );
 
+  tyrant->add_action( "variable,name=next_tyrant,op=set,value=time+15,if=variable.next_tyrant<=time" );
   tyrant->add_action( "nether_portal" );
   tyrant->add_action( "grimoire_felguard" );
   tyrant->add_action( "summon_vilefiend" );
-  tyrant->add_action( "call_dreadstalkers" );
-  tyrant->add_action( "hand_of_guldan,if=buff.nether_portal.up|soul_shard>2" );
-  tyrant->add_action( "summon_demonic_tyrant,if=buff.dreadstalkers.remains<3" );
+  tyrant->add_action( "call_dreadstalkers,if=variable.next_tyrant-time<12" );
+  tyrant->add_action( "hand_of_guldan,if=buff.nether_portal.up|soul_shard>2&variable.next_tyrant-time<12|soul_shard=5" );
+  tyrant->add_action( "hand_of_guldan,if=talent.soulbound_tyrant&variable.next_tyrant-time<4" );
+  tyrant->add_action( "summon_demonic_tyrant,if=variable.next_tyrant-time<3" );
   tyrant->add_action( "demonbolt,if=buff.demonic_core.up" );
   tyrant->add_action( "shadow_bolt" );
 }
