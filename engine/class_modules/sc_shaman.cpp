@@ -8252,23 +8252,40 @@ struct healing_stream_totem_spell_t : public shaman_totem_t<heal_t, shaman_heal_
 // PvP talents/abilities
 // ==========================================================================
 
-struct lightning_lasso_t : public shaman_spell_t
+ struct lightning_lasso_t : public shaman_spell_t
 {
-  lightning_lasso_t( shaman_t* player, util::string_view options_str ) :
-    shaman_spell_t( "lightning_lasso", player, player->talent.lightning_lasso )
+  lightning_lasso_t( shaman_t* player, util::string_view options_str )
+    : shaman_spell_t( "lightning_lasso", player, player->find_spell( 305485 ) )
   {
     parse_options( options_str );
-    affected_by_master_of_the_elements = false;
-    // if the major effect is not available the action is a background action, thus can't be used in the apl
-    background         = true;
-    channeled          = true;
-    tick_may_crit      = true;
-    may_crit           = false;
+    affected_by_master_of_the_elements = true;
+    cooldown->duration                 = p()->find_spell( 305483 )->cooldown();
+    trigger_gcd                        = p()->find_spell( 305483 )->gcd();
+    channeled                          = true;
+    tick_may_crit                      = true;
+  }
+
+  bool ready() override
+  {
+    if ( !p()->talent.lightning_lasso.ok() )
+    {
+      return false;
+    }
+    return shaman_spell_t::ready();
   }
 
   timespan_t tick_time( const action_state_t* /* s */ ) const override
   {
     return base_tick_time;
+  }
+  double composite_persistent_multiplier( const action_state_t* state ) const override
+  {
+    double m = shaman_spell_t::composite_persistent_multiplier( state );
+    if ( p()->buff.master_of_the_elements->up() )
+    {
+      m *= 1.0 + p()->buff.master_of_the_elements->default_value;
+    }
+    return m;
   }
 };
 
