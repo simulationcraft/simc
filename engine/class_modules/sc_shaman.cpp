@@ -8258,7 +8258,6 @@ struct healing_stream_totem_spell_t : public shaman_totem_t<heal_t, shaman_heal_
       shaman_spell_t( "lightning_lasso", player, player->find_spell( 305485 ) )
   {
     parse_options( options_str );
-    affected_by_master_of_the_elements = false;
     affected_by_master_of_the_elements = true;
     cooldown->duration                 = p()->find_spell( 305483 )->cooldown();
     trigger_gcd                        = p()->find_spell( 305483 )->gcd();
