@@ -277,10 +277,10 @@ void survival( player_t* p )
   st->add_action( "serpent_sting,target_if=min:remains,if=refreshable&!talent.vipers_venom" );
   st->add_action( "wildfire_bomb,if=full_recharge_time<gcd&!set_bonus.tier29_2pc" );
   st->add_action( "mongoose_bite,target_if=max:debuff.latent_poison.stack,if=buff.mongoose_fury.up" );
+  st->add_action( "explosive_shot,if=talent.ranger" );
   st->add_action( "wildfire_bomb,if=full_recharge_time<gcd" );
   st->add_action( "mongoose_bite,target_if=max:debuff.latent_poison.stack,if=focus+action.kill_command.cast_regen>focus.max-10" );
   st->add_action( "stampede" );
-  st->add_action( "explosive_shot,if=talent.ranger" );
   st->add_action( "raptor_strike,target_if=max:debuff.latent_poison.stack" );
   st->add_action( "steel_trap" );
   st->add_action( "wildfire_bomb,if=!dot.wildfire_bomb.ticking" );
