@@ -8254,8 +8254,8 @@ struct healing_stream_totem_spell_t : public shaman_totem_t<heal_t, shaman_heal_
 
  struct lightning_lasso_t : public shaman_spell_t
 {
-  lightning_lasso_t( shaman_t* player, util::string_view options_str ) :
-      shaman_spell_t( "lightning_lasso", player, player->find_spell( 305485 ) )
+  lightning_lasso_t( shaman_t* player, util::string_view options_str )
+    : shaman_spell_t( "lightning_lasso", player, player->find_spell( 305485 ) )
   {
     parse_options( options_str );
     affected_by_master_of_the_elements = true;
@@ -8269,7 +8269,7 @@ struct healing_stream_totem_spell_t : public shaman_totem_t<heal_t, shaman_heal_
   {
     if ( !p()->talent.lightning_lasso.ok() )
     {
-       return false;
+      return false;
     }
     return shaman_spell_t::ready();
   }
@@ -8285,7 +8285,7 @@ struct healing_stream_totem_spell_t : public shaman_totem_t<heal_t, shaman_heal_
     {
       m *= 1.0 + p()->buff.master_of_the_elements->default_value;
     }
-      return m;
+    return m;
   }
 };
 
