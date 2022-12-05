@@ -150,8 +150,8 @@ void demonology( player_t* p )
   precombat->add_action( "food" );
   precombat->add_action( "augmentation" );
   precombat->add_action( "summon_pet" );
-  precombat->add_action( "grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled" );
   precombat->add_action( "snapshot_stats" );
+  precombat->add_action( "inquisitors_gaze" );
   precombat->add_action( "variable,name=tyrant_prep_start,op=set,value=12" );
   precombat->add_action( "demonbolt" );
 
@@ -200,6 +200,7 @@ void destruction( player_t* p )
   precombat->add_action( "variable,name=cleave_apl,default=0,op=reset" );
   precombat->add_action( "grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled" );
   precombat->add_action( "snapshot_stats" );
+  precombat->add_action( "inquisitors_gaze" );
   precombat->add_action( "soul_fire" );
   precombat->add_action( "cataclysm" );
   precombat->add_action( "incinerate" );
