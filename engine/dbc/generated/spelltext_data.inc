@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.2.46924
-static const std::array<spelltext_data_t, 19185> __spelltext_data { {
+static const std::array<spelltext_data_t, 19189> __spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -19127,10 +19127,14 @@ static const std::array<spelltext_data_t, 19185> __spelltext_data { {
   { 396255, 0, "Damage taken increased by $w1%.", 0 },
   { 396256, 0, "Damage taken increased by $w1%.", 0 },
   { 396257, 0, "Damage taken increased by $w1%.", 0 },
+  { 396363, "Raszageth marks players with $@spellname396364 or $@spellname396369, granting them $396364s3% increased damage and healing done for $396364d. Coming into contact with the opposing mark neutralizes the effect on both players.\r\n\r\nAfter $396364d marked players are afflicted with $@spellname396411, stunning them and inflicting $396411s1 Nature damage every $396411t1 sec for $396411d.", 0, 0 },
+  { 396364, "Overloads a player with primal power, increasing their damage and healing by $s3% for $d.\r\n\r\nUpon expiration, if a player with $@spellname396369 is within $s10 yards a $@spellname396411 occurs, stunning marked players and inflicting $396411s1 Nature damage every $396411t1 sec for $396411d.\r\n\r\nComing into contact with a $@spellname396369 removes this effect.", "Increases damage and healing done by $s3%.\r\n\r\nImmune to root effects and movement speed cannot be reduced below $s8%.\r\n\r\nUpon expiration, stuns and inflicts $396411s1 Nature damage every $396411t1 sec for $396411d if a $@spellname396369 is found.\r\n\r\nComing into contact with a $@spellname396369 removes this effect.", 0 },
+  { 396369, "Overloads a player with primal power, increasing their damage and healing by $s3% for $d.\r\n\r\nUpon expiration, if a player with $@spellname396364 is within $s10 yards a $@spellname396411 occurs, stunning marked players and inflicting $396411s1 Nature damage every $396411t1 sec for $396411d.\r\n\r\nComing into contact with a $@spellname396364 removes this effect.", "Increases damage and healing done by $s3%\r\n\r\nImmune to root effects and movement speed cannot be reduced below $s8%.\r\n\r\nUpon expiration, stuns and inflicts $396411s1 Nature damage every $396411t1 sec for $396411d if a $@spellname396364 is found.\r\n\r\nComing into contact with a $@spellname396364 removes this effect.", 0 },
   { 396377, "$@spelldesc387335", 0, 0 },
   { 396381, "Restores $s1% of your health per second for $d.  Must remain seated while eating.\r\n\r\nNote: May cause excitability.", "Restores $s1% of your health per second.", 0 },
   { 396391, "If your mana is above $377450s1%, toss the Chillglobe at your target, inflicting $377450s2 Frost damage.\r\n\r\nIf your mana is below $377450s1%, instead drink from the Chillglobe to restore $377450s3 mana instantly.", 0, 0 },
   { 396407, "Increases movement speed by $s1.\r\n\r\nOnly useable in the Dragon Isles.", "Movement speed increased by $s1%.\r\n\r\nSlippery speed!", 0 },
+  { 396411, "$@spelldesc396363", "$s1 Nature damage every $t1 sec.\r\nStunned.", 0 },
   { 396425, "$@spelldesc340553", 0, 0 },
   { 396442, "Your damaging and healing spells and abilities have a chance to echo in time, dealing up to $s2 Arcane damage or $s3 healing with their echo.", 0, 0 },
   { 396484, "$@spelldesc387474", 0, 0 },
