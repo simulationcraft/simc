@@ -1,4 +1,4 @@
-SimulationCraft 1002-01 for World of Warcraft 10.0.2.46924 Live (hotfix 2022-12-05/46924, no-networking)
+SimulationCraft 1002-01 for World of Warcraft 10.0.2.46924 Live (hotfix 2022-12-06/46924)
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -4805,6 +4805,7 @@ Effects          :
 Description      : You heal $s1% of your maximum health every $158188t2 sec while Stealth or Shadow Dance is active.
 
 Name             : Exsanguinate (id=200806) [Spell Family (8)] 
+Hotfixed         : Cooldown (45000 -> 180000)
 Talent Entry     : Assassination [tree=spec, row=5, col=5, max_rank=1, req_points=8]
 Class            : Rogue
 School           : Physical
@@ -4812,7 +4813,7 @@ Spell Type       : Melee
 Resource         : 25 Energy (3) (id=12036)
 Range            : 5 yards
 GCD              : 1 seconds
-Cooldown         : 45 seconds
+Cooldown         : 180 seconds
 Labels           : 2423: Acrobatic Strikes (196924 effect#6)
 Family Flags     : 30
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -4826,7 +4827,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=295690)   : Dummy (3)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : Base Value (100 -> 80)
 Description      : Twist your blades into the target's wounds, causing your Bleed effects on them to bleed out $s1% faster.
 
 Name             : Blunderbuss (id=202848) [Spell Family (8)] 
@@ -13796,6 +13798,7 @@ Effects          :
 Description      : Increases Garrote damage by $s1%. Garrote generates $s2 additional combo points when cast from Stealth.
 
 Name             : Echoing Reprimand (id=385616) [Spell Family (8)] 
+Hotfixed         : Learn Level (48 -> 0)
 Talent Entry     : Generic [tree=class, row=9, col=3, max_rank=1, req_points=20]
 Class            : Rogue
 School           : Arcane
@@ -13819,7 +13822,8 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Requires Main-Hand Weapon (106), No Helpful Threat (131), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1018994)  : School Damage (2): arcane
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.32000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.32000 | PvP Coefficient: 0.70000 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1 -> 0.7)
 #2 (id=1018995)  : Dummy (3)
                    Base Value: 7 | Scaled Value: 7 | PvP Coefficient: 1.00000
 #3 (id=1018996)  : Energize Power (30)
