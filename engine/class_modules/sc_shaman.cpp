@@ -7290,12 +7290,13 @@ struct ascendance_t : public shaman_spell_t
 
     p()->cooldown.strike->reset( false );
 
+    auto dre_duration = p()->legendary.deeply_rooted_elements.ok()
+      ? p()->legendary.deeply_rooted_elements->effectN( 1 ).time_value()
+      : p()->talent.deeply_rooted_elements->effectN( 1 ).time_value();
+
     if ( background )
     {
-      p()->buff.ascendance->extend_duration_or_trigger(
-          p()->legendary.deeply_rooted_elements.ok()
-          ? p()->legendary.deeply_rooted_elements->effectN( 1 ).time_value()
-          : p()->talent.deeply_rooted_elements->effectN( 1 ).time_value(), player );
+      p()->buff.ascendance->extend_duration_or_trigger( dre_duration, player );
     }
     else
     {
@@ -7335,21 +7336,17 @@ struct ascendance_t : public shaman_spell_t
           fs_dot->adjust_duration( new_duration, -1 );
         }
       } );
+    }
 
-      if ( p()->talent.oath_of_the_far_seer.ok() )
+    if ( p()->talent.oath_of_the_far_seer.ok() )
+    {
+      if ( background )
       {
-        if ( background )
-        {
-            p()->buff.oath_of_the_far_seer->extend_duration_or_trigger(
-                p()->legendary.deeply_rooted_elements.ok()
-                    ? p()->legendary.deeply_rooted_elements->effectN( 1 ).time_value()
-                    : p()->talent.deeply_rooted_elements->effectN( 1 ).time_value(),
-                player );
-        }
-        else
-        {
-            p()->buff.oath_of_the_far_seer->trigger();
-        }
+        p()->buff.oath_of_the_far_seer->extend_duration_or_trigger( dre_duration, player );
+      }
+      else
+      {
+        p()->buff.oath_of_the_far_seer->trigger();
       }
     }
 
@@ -7357,10 +7354,18 @@ struct ascendance_t : public shaman_spell_t
     {
       if ( background )
       {
-        p()->buff.static_accumulation->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0,
-            p()->legendary.deeply_rooted_elements.ok()
-            ? p()->legendary.deeply_rooted_elements->effectN( 1 ).time_value()
-            : p()->talent.deeply_rooted_elements->effectN( 1 ).time_value() );
+        // Static Accumulation is intended to match Ascendance duration, but is currently bugged
+        // in-game and simply overwrites a long-duration Static Accumulation (sourced from
+        // Ascendance, the button press) with a short duration Static Accumulation (sourced from
+        // DRE).
+        if ( player->bugs )
+        {
+          p()->buff.static_accumulation->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, dre_duration );
+        }
+        else
+        {
+          p()->buff.static_accumulation->extend_duration_or_trigger( dre_duration, player );
+        }
       }
       else
       {
