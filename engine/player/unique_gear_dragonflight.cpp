@@ -403,12 +403,12 @@ custom_cb_t writ_enchant( stat_e stat, bool cr )
 void frozen_devotion( special_effect_t& effect )
 {
   auto proc = create_proc_action<generic_aoe_proc_t>( "frozen_devotion", effect, "frozen_devotion", 390350, true );
-  proc->base_dd_min = proc->base_dd_max = effect.driver()->effectN( 1 ).average( effect.player );
+  proc -> base_dd_min = proc -> base_dd_max = effect.driver() -> effectN( 1 ).average( effect.player );
 
-  auto new_driver = effect.player->find_spell( 396826 );
+  auto new_driver = effect.player -> find_spell( 396826 );
 
   effect.execute_action = proc;
-  effect.spell_id       = new_driver->id();
+  effect.spell_id = new_driver -> id();
 
   new dbc_proc_callback_t( effect.player, effect );
 }
