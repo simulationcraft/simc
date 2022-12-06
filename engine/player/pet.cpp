@@ -65,6 +65,7 @@ pet_t::pet_t( sim_t* sim, player_t* owner, util::string_view name, pet_e pet_typ
 {
   target = owner -> target;
   true_level = owner -> true_level;
+  bugs = owner -> bugs;
 
   owner -> pet_list.push_back( this );
 
