@@ -3075,7 +3075,7 @@ void register_special_effects()
   register_special_effect( 383920, items::furious_ragefeather );
   register_special_effect( 388603, items::idol_of_pure_decay );
   register_special_effect( 377466, items::spiteful_storm );
-  register_special_effect( 381768, items::spoils_of_neltharus );
+  register_special_effect( 381768, items::spoils_of_neltharus, true );
   register_special_effect( 375844, items::sustaining_alchemist_stone );
   register_special_effect( 385884, items::timebreaching_talon );
   register_special_effect( 385902, items::umbrelskuls_fractured_heart );
