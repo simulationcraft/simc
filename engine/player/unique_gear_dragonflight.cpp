@@ -400,10 +400,13 @@ custom_cb_t writ_enchant( stat_e stat, bool cr )
 
 void frozen_devotion( special_effect_t& effect )
 {
-  effect.discharge_amount = effect.driver()->effectN( 1 ).average( effect.player );
-  effect.aoe = -1;
-  effect.spell_id = effect.trigger()->id();
-  effect.trigger_spell_id = effect.trigger()->effectN( 1 ).trigger()->id();
+  auto proc = create_proc_action<generic_aoe_proc_t>( "frozen_devotion", effect, "frozen_devotion", 390350, true );
+  proc -> base_dd_min = proc -> base_dd_max = effect.driver() -> effectN( 1 ).average( effect.player );
+
+  auto new_driver = effect.player -> find_spell( 396826 );
+
+  effect.execute_action = proc;
+  effect.spell_id = new_driver -> id();
 
   new dbc_proc_callback_t( effect.player, effect );
 }
