@@ -2780,11 +2780,7 @@ struct immolation_aura_t : public demon_hunter_spell_t
           }
         }
 
-        // DFALPHA TOCHECK -- Does this accumulate from the initial hit?
-        if ( !initial )
-        {
-          accumulate_ragefire( s );
-        }
+        accumulate_ragefire( s );
       }
     }
 
