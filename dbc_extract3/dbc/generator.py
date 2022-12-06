@@ -1380,6 +1380,7 @@ class SpellDataGenerator(DataGenerator):
          397118, 397478, # Neltharax, Enemy of the Sky
          390899, 390869, 390835, 390655, # Primal Ritual Shell
          396369, # Season 1 Thundering M+ Affix
+         392271, 392275, # Seasoned Hunter's Trophy stat buffs
         ),
 
         # Warrior:

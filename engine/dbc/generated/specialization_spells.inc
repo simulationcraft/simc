@@ -1,5 +1,5 @@
 // Talent tree specialization abilities, wow build 10.0.2.46924
-static const std::array<specialization_spell_entry_t, 351> __specialization_spell_data { {
+static const std::array<specialization_spell_entry_t, 352> __specialization_spell_data { {
   {  0,  535, 264656,      0, "Pathfinding"                       , 0 },
   {  0,  535, 264662,      0, "Endurance Training"                , 0 },
   {  0,  535, 264663,      0, "Predator's Thirst"                 , 0 },
@@ -192,6 +192,7 @@ static const std::array<specialization_spell_entry_t, 351> __specialization_spel
   {  8,   63,  44448,      0, "Pyroblast Clearcasting Driver"     , 0 },
   {  8,   63, 137019,      0, "Fire Mage"                         , 0 },
   {  8,   63, 162699,      0, "Stat Negation Aura - Intellect DPS", 0 },
+  {  8,   63, 195283,      0, "Hot Streak"                        , 0 },
   {  8,   64,  76613,      0, "Mastery: Icicles"                  , 0 },
   {  8,   64, 137020,      0, "Frost Mage"                        , 0 },
   {  8,   64, 162699,      0, "Stat Negation Aura - Intellect DPS", 0 },

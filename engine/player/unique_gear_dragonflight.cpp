@@ -14,6 +14,7 @@
 #include "item/item.hpp"
 #include "item/item_targetdata_initializer.hpp"
 #include "set_bonus.hpp"
+#include "player/pet.hpp"
 #include "sim/cooldown.hpp"
 #include "sim/sim.hpp"
 #include "stats.hpp"
@@ -2553,6 +2554,69 @@ void bushwhackers_compass(special_effect_t& effect)
   new cb_t( effect );
 }
 
+void seasoned_hunters_trophy( special_effect_t& effect )
+{
+  struct seasoned_hunters_trophy_cb_t : public dbc_proc_callback_t
+  {
+    buff_t *mastery, *haste, *crit;
+
+    seasoned_hunters_trophy_cb_t( const special_effect_t& e, buff_t* m, buff_t* h, buff_t* c ) :
+      dbc_proc_callback_t( e.player, e ), mastery( m ), haste( h ), crit( c )
+    { }
+
+    void execute( action_t* /* a */, action_state_t* /* s */ ) override
+    {
+      mastery->expire();
+      haste->expire();
+      crit->expire();
+
+      auto pet_count = range::count_if( listener->active_pets, []( const pet_t* pet ) {
+        return pet->type == PLAYER_PET;
+      } );
+
+      switch ( pet_count )
+      {
+        case 0:
+          mastery->trigger();
+          break;
+        case 1:
+          haste->trigger();
+          break;
+        default:
+          crit->trigger();
+          break;
+      }
+    }
+  };
+
+  buff_t* mastery = buff_t::find( effect.player, "hunter_versus_wild" );
+  buff_t* haste = buff_t::find( effect.player, "hunters_best_friend" );
+  buff_t* crit = buff_t::find( effect.player, "pack_mentality" );
+
+  if ( !mastery )
+  {
+    mastery = create_buff<stat_buff_t>( effect.player, "hunter_versus_wild",
+        effect.player->find_spell( 392271 ) )
+      ->add_stat( STAT_MASTERY_RATING, effect.driver()->effectN( 1 ).average( effect.item ) );
+  }
+
+  if ( !haste )
+  {
+    haste = create_buff<stat_buff_t>( effect.player, "hunters_best_friend",
+        effect.player->find_spell( 392275 ) )
+      ->add_stat( STAT_HASTE_RATING, effect.driver()->effectN( 1 ).average( effect.item ) );
+  }
+
+  if ( !crit )
+  {
+    crit = create_buff<stat_buff_t>( effect.player, "pack_mentality",
+        effect.player->find_spell( 392248 ) )
+      ->add_stat( STAT_CRIT_RATING, effect.driver()->effectN( 1 ).average( effect.item ) );
+  }
+
+  new seasoned_hunters_trophy_cb_t( effect, mastery, haste, crit );
+}
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -3033,6 +3097,7 @@ void register_special_effects()
   register_special_effect( 383611, items::spinerippers_fang );
   register_special_effect( 392359, items::integrated_primal_fire );
   register_special_effect( 383817, items::bushwhackers_compass );
+  register_special_effect( 392237, items::seasoned_hunters_trophy );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );  // bronzed grip wrappings embellishment

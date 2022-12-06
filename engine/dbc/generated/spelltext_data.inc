@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.2.46924
-static const std::array<spelltext_data_t, 19189> __spelltext_data { {
+static const std::array<spelltext_data_t, 19191> __spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -18633,6 +18633,8 @@ static const std::array<spelltext_data_t, 19189> __spelltext_data { {
   { 392237, "Your harmful spells and abilities have a chance to grant you $s1 Critical Strike, Mastery, or Haste for $392248d depending on how many pets you control.", 0, 0 },
   { 392248, "@spelldesc392237", "Critical strike increased by $w1.", 0 },
   { 392256, "Lifebloom counts for ${$s1+1} stacks of Mastery: Harmony.", 0, 0 },
+  { 392271, "@spelldesc392237", "Mastery increased by $w1.", 0 },
+  { 392275, "@spelldesc392237", "Haste increased by $w1.", 0 },
   { 392288, "The healing bonus to Regrowth from Nature's Swiftness is increased by $s1%.", 0, 0 },
   { 392296, "$@spelldesc378750", "Your next Kill Command will consume $s1% less Focus.", 0 },
   { 392301, "You may Lifebloom two targets at once, but Lifebloom's healing is reduced by $s1%.", 0, 0 },
