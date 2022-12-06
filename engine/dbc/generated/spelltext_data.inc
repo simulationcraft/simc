@@ -18799,7 +18799,7 @@ static const std::array<spelltext_data_t, 19194> __spelltext_data { {
   { 393645, "Reversion healing has a chance to cause your next Living Flame to cast instant and deal $s2% increased healing or damage. Stacks up to $394552u times.", 0, 0 },
   { 393646, "Kill Command damage increased by $s1% and it has a $h% chance to reset the cooldown on Barbed Shot.", 0, 0 },
   { 393647, "Barbed Shot damage increased by $s1% and Barbed Shot increases damage of your next Kill Command by $394298s1%.", 0, 0 },
-  { 393648, "$?s342049[Chimaera Shot][Arcane Shot] and Multi Shot critical hits cause your next Aimed Shot to cause the target to bleed for $394366s1% of damage dealt over $394371d sec.", 0, 0 },
+  { 393648, "$?s342049[Chimaera Shot][Arcane Shot] and Multi-Shot critical hits cause your next Aimed Shot to cause the target to bleed for $394366s1% of damage dealt over $394371d sec.", 0, 0 },
   { 393649, "Ranged auto-attacks have a $s1% chance to increase the critical strike chance of your next $?s342049[Chimaera Shot][Arcane Shot] or Multi-Shot by $394384s1%.", 0, 0 },
   { 393650, "$?s259387[Mongoose Bite][Raptor Strike], Carve, and Butchery damage increased by $s1%.", 0, 0 },
   { 393652, "$?s259387[Mongoose Bite][Raptor Strike], Carve, and Butchery have a $s1% chance to make your next $?s259387[Mongoose Bite][Raptor Strike], Carve, or Butchery cost no Focus and deal $394388s2% increased damage.\r\n", 0, 0 },
@@ -19197,7 +19197,8 @@ static const std::array<spelltext_data_t, 19194> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 10.0.2.46924
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelltext_hotfix_data { {
+  {  393648,  0, "$?s342049[Chimaera Shot][Arcane Shot] and Multi Shot critical hits cause your next Aimed Shot to cause the target to bleed for $394366s1% of damage dealt over $394371d sec.", "$?s342049[Chimaera Shot][Arcane Shot] and Multi-Shot critical hits cause your next Aimed Shot to cause the target to bleed for $394366s1% of damage dealt over $394371d sec." },
 } };
 
 // Spell description variables, wow build 10.0.2.46924

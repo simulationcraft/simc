@@ -2785,7 +2785,7 @@ void assembly_scholars_loop( special_effect_t& effect )
 
 void blue_silken_lining( special_effect_t& effect )
 {
-  auto buff = create_buff<stat_buff_t>( effect.player, effect.trigger()->effectN( 1 ).trigger() );
+  auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 387336 ) );
   buff->manual_stats_added = false;
   buff->add_stat( STAT_MASTERY_RATING, effect.driver()->effectN( 1 ).average( effect.item ) );
   buff->set_max_stack( 2 );

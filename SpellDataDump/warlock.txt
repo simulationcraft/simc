@@ -1,4 +1,4 @@
-SimulationCraft 1002-01 for World of Warcraft 10.0.2.46924 Live (hotfix 2022-12-06/46924)
+SimulationCraft 1002-01 for World of Warcraft 10.0.2.46924 Live (hotfix 2022-12-07/46924)
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -445,7 +445,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 60 seconds
 Proc Chance      : 101%
-Affecting spells : Amplify Curse (328774 effect#1)
+Affecting spells : Amplify Curse (328774 effect#4)
 Family Flags     : 102
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -458,7 +458,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), No Partial Immunity (139), Aura Bounce Fails Spell (157), Taps immediately (215), Aura Points On Client (268), Nameplate Enemy Debuffs (426), Aura Always Shown (438)
 Effects          :
 #1 (id=521)      : Apply Aura (6) | Modify Casting Speed (216)
-                   Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 0.50000 | Target: Enemy (6)
+                   Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 0.33340 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (0.5 -> 0.3334)
 Description      : Forces the target to speak in Demonic, increasing the casting time of all spells by $s1% for $d.$?s103112[
 
 |CFFE55BB0Soulburn: Your Curse of Tongues will affect all enemies in a $104224A yard radius around your target.|R][]
@@ -10410,10 +10411,9 @@ Attributes       : ........ ........ x....... .x......   ........ ..x..... .....
                  : ........ ........ ........ ........   
                  : Not Shapeshifted (16), Cooldown On Event (25), No Threat (42), Can Proc From Procs (122), Cannot Be Stolen (134), Allow Proc While Sitting (147), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=821519)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
-                   Base Value: -40 | Scaled Value: -40 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
-                   Affected Spells: Curse of Tongues (1714)
-                   Family Flags: 102
+#1 (id=821519)   : Apply Aura (6) | Dummy (4)
+                   Base Value: -40 | Scaled Value: -40 | PvP Coefficient: 0.25000 | Target: Self (1)
+Hotfixed         : Sub Type (107 -> 4), Misc Value (3 -> 0), Affects Spells, PvP Coefficient (1 -> 0.25)
 #2 (id=824005)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Curse of Weakness (702)
@@ -10422,6 +10422,11 @@ Effects          :
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Curse of Exhaustion (334275)
                    Family Flags: 113
+#4 (id=1044979)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
+                   Base Value: -40 | Scaled Value: -40 | PvP Coefficient: 0.75000 | Misc Value: 3 | Target: Self (1)
+                   Affected Spells: Curse of Tongues (1714)
+                   Family Flags: 102
+Hotfixed         : NEW EFFECT
 Description      : Your next Curse of Exhaustion, Curse of Tongues or Curse of Weakness cast within $d is amplified.
 
 $@spellname334275

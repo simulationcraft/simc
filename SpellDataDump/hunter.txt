@@ -1,4 +1,4 @@
-SimulationCraft 1002-01 for World of Warcraft 10.0.2.46924 Live (hotfix 2022-12-06/46924)
+SimulationCraft 1002-01 for World of Warcraft 10.0.2.46924 Live (hotfix 2022-12-07/46924)
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -16565,6 +16565,7 @@ Effects          :
 Description      : Barbed Shot damage increased by $s1% and Barbed Shot increases damage of your next Kill Command by $394298s1%.
 
 Name             : Hunter Marksmanship Class Set 2pc (id=393648) [Spell Family (9), Passive, Hidden] 
+Hotfixed         : Description
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -16583,7 +16584,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1032733)  : Apply Aura (6) | Proc Trigger Spell (42): Find The Mark
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 394366 | Target: Self (1)
-Description      : $?s342049[Chimaera Shot][Arcane Shot] and Multi Shot critical hits cause your next Aimed Shot to cause the target to bleed for $394366s1% of damage dealt over $394371d sec.
+Description      : $?s342049[Chimaera Shot][Arcane Shot] and Multi-Shot critical hits cause your next Aimed Shot to cause the target to bleed for $394366s1% of damage dealt over $394371d sec.
 
 Name             : Hunter Marksmanship Class Set 4pc (id=393649) [Passive, Hidden] 
 Class            : Hunter

@@ -1,4 +1,4 @@
-SimulationCraft 1002-01 for World of Warcraft 10.0.2.46924 Live (hotfix 2022-12-06/46924)
+SimulationCraft 1002-01 for World of Warcraft 10.0.2.46924 Live (hotfix 2022-12-07/46924)
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
