@@ -56,28 +56,25 @@ void devastation( player_t* p )
   precombat->add_action( "living_flame,if=!talent.firestorm" );
 
   default_->add_action( "potion,if=buff.dragonrage.up|fight_remains<35" );
-  default_->add_action( "variable,name=next_dragonrage,value=cooldown.dragonrage.remains<?(cooldown.eternity_surge.remains-2*gcd.max)<?(cooldown.fire_breath.remains-gcd.max)" );
+  default_->add_action( "variable,name=next_dragonrage,value=cooldown.dragonrage.remains<?(cooldown.eternity_surge.remains-2*gcd.max)<?(cooldown.fire_breath.remains-gcd.max)", "Variable that evaluates when next dragonrage is by working out the maximum between the dragonrage cd and your empowers, ignoring CDR effect estimates." );
+  default_->add_action( "variable,name=r1_cast_time,value=1.3*spell_haste", "Rank 1 empower spell cast time TODO: multiplier should be 1.0 but 1.3 results in more dps for EBF builds" );
   default_->add_action( "call_action_list,name=trinkets" );
   default_->add_action( "run_action_list,name=aoe,if=spell_targets.pyre>=3" );
   default_->add_action( "run_action_list,name=st" );
 
   st->add_action( "dragonrage,if=cooldown.fire_breath.remains<gcd.max&cooldown.eternity_surge.remains<2*gcd.max|fight_remains<30", "ST Action List, it's a mess" );
-  st->add_action( "tip_the_scales,if=buff.dragonrage.up&(buff.dragonrage.remains<0.87*gcd.max&(buff.dragonrage.remains>cooldown.fire_breath.remains|buff.dragonrage.remains>cooldown.eternity_surge.remains)|talent.feed_the_flames&!cooldown.fire_breath.up)" );
+  st->add_action( "tip_the_scales,if=buff.dragonrage.up&(buff.dragonrage.remains<variable.r1_cast_time&(buff.dragonrage.remains>cooldown.fire_breath.remains|buff.dragonrage.remains>cooldown.eternity_surge.remains)|talent.feed_the_flames&!cooldown.fire_breath.up)", "Use to extend DR when an empower cast won't fit inside the DR window anymore. When running FTF use on ES at the start of DR to maximize uses" );
   st->add_action( "call_action_list,name=fb,if=!talent.dragonrage|variable.next_dragonrage>15|!talent.animosity" );
   st->add_action( "call_action_list,name=es,if=!talent.dragonrage|variable.next_dragonrage>15|!talent.animosity" );
-  st->add_action( "wait,sec=cooldown.fire_breath.remains,if=buff.dragonrage.up&buff.dragonrage.remains<(1+0.87*buff.tip_the_scales.down)*gcd.max&buff.dragonrage.remains-cooldown.fire_breath.remains>=0.87*buff.tip_the_scales.down*gcd.max" );
-  st->add_action( "wait,sec=cooldown.eternity_surge.remains,if=buff.dragonrage.up&buff.dragonrage.remains<(1+0.87*buff.tip_the_scales.down)*gcd.max&buff.dragonrage.remains-cooldown.eternity_surge.remains>=0.87*buff.tip_the_scales.down*gcd.max" );
-  st->add_action( "shattering_star,if=!buff.dragonrage.up|essence%3+buff.essence_burst.stack>=2+0.5*talent.feed_the_flames|buff.bloodlust.down" );
-  st->add_action( "living_flame,if=buff.dragonrage.up&buff.dragonrage.remains<(buff.essence_burst.max_stack-buff.essence_burst.stack)*gcd.max&buff.burnout.up" );
+  st->add_action( "wait,sec=cooldown.fire_breath.remains,if=talent.animosity&buff.dragonrage.up&buff.dragonrage.remains<gcd.max+variable.r1_cast_time*buff.tip_the_scales.down&buff.dragonrage.remains-cooldown.fire_breath.remains>=variable.r1_cast_time*buff.tip_the_scales.down", "Wait for FB/ES to be ready if spending another GCD would result in the cast no longer fitting inside of DR" );
+  st->add_action( "wait,sec=cooldown.eternity_surge.remains,if=talent.animosity&buff.dragonrage.up&buff.dragonrage.remains<gcd.max+variable.r1_cast_time&buff.dragonrage.remains-cooldown.eternity_surge.remains>variable.r1_cast_time*buff.tip_the_scales.down" );
+  st->add_action( "shattering_star,if=!buff.dragonrage.up|buff.essence_burst.stack==buff.essence_burst.max_stack|talent.eye_of_infinity", "Wait for 2 EBs to use SS while inside DR, otherwise use on CD" );
+  st->add_action( "living_flame,if=buff.dragonrage.up&buff.dragonrage.remains<(buff.essence_burst.max_stack-buff.essence_burst.stack)*gcd.max&buff.burnout.up", "Spend the last 1 or 2 GCDs of DR on fillers to exit with 2 EBs" );
   st->add_action( "azure_strike,if=buff.dragonrage.up&buff.dragonrage.remains<(buff.essence_burst.max_stack-buff.essence_burst.stack)*gcd.max" );
-  st->add_action( "pyre,if=(talent.volatility|!talent.eternitys_span|!talent.scintillation)&buff.charged_blast.stack==20&spell_targets.pyre>1" );
-  st->add_action( "firestorm,if=!buff.dragonrage.up&dot.fire_breath_damage.remains>3&debuff.shattering_star_debuff.down|buff.snapfire.up" );
-  st->add_action( "living_flame,if=!buff.dragonrage.up&buff.burnout.stack==buff.burnout.max_stack" );
-  st->add_action( "living_flame,if=buff.dragonrage.up&(buff.burnout.up|talent.ruby_embers&dot.living_flame_damage.remains<4&!prev_gcd.1.living_flame)&buff.essence_burst.stack<buff.essence_burst.max_stack&essence<essence.max-1" );
-  st->add_action( "azure_strike,if=buff.dragonrage.up&essence<3&!buff.essence_burst.up" );
-  st->add_action( "disintegrate,chain=1,if=!buff.dragonrage.up&(!talent.shattering_star|cooldown.shattering_star.remains>6|essence>essence.max-1|buff.essence_burst.stack==buff.essence_burst.max_stack)" );
-  st->add_action( "disintegrate,chain=1,early_chain_if=ticks>=2,interrupt_if=ticks>=2,if=buff.dragonrage.up&(!talent.shattering_star|cooldown.shattering_star.remains>(buff.essence_burst.max_stack-buff.essence_burst.stack)*gcd.max|essence>essence.max-1|buff.essence_burst.stack==buff.essence_burst.max_stack)" );
-  st->add_action( "azure_strike,if=buff.dragonrage.up" );
+  st->add_action( "firestorm,if=!buff.dragonrage.up&debuff.shattering_star_debuff.down|buff.snapfire.up", "Hard cast only outside of SS and DR windows, always spend snapfire procs" );
+  st->add_action( "living_flame,if=buff.burnout.up&buff.essence_burst.stack<buff.essence_burst.max_stack&essence<essence.max-1", "Spend burnout procs without overcapping resources" );
+  st->add_action( "azure_strike,if=buff.dragonrage.up&(essence<3&!buff.essence_burst.up|(talent.shattering_star&cooldown.shattering_star.remains<=(buff.essence_burst.max_stack-buff.essence_burst.stack)*gcd.max))", "Ensure we clip Disintegrate inside DR even with our fillers, Pool 1-2 GCDs before SS is up inside DR" );
+  st->add_action( "disintegrate,chain=1,early_chain_if=buff.dragonrage.up&ticks>=2,interrupt_if=buff.dragonrage.up&ticks>=2,if=buff.dragonrage.up|(!talent.shattering_star|cooldown.shattering_star.remains>6|essence>essence.max-1|buff.essence_burst.stack==buff.essence_burst.max_stack)", "In DR chain/clip after the 3rd damage tick, Outside of DR pool 6 seconds before SS unless it would result in overcapping resources TODO: revisit pooling conditions" );
   st->add_action( "deep_breath,if=!buff.dragonrage.up&spell_targets.deep_breath>1" );
   st->add_action( "use_item,name=kharnalex_the_first_light,if=!buff.dragonrage.up&debuff.shattering_star_debuff.down" );
   st->add_action( "living_flame" );
@@ -117,7 +114,6 @@ void devastation( player_t* p )
   trinkets->add_action( "use_item,slot=trinket2,if=buff.dragonrage.up&(!trinket.1.has_cooldown|trinket.1.cooldown.remains|variable.trinket_priority=2)|trinket.2.proc.any_dps.duration>=fight_remains|trinket.2.cooldown.duration<=60&(variable.next_dragonrage>20|!talent.dragonrage)&(!buff.dragonrage.up|variable.trinket_priority=2)" );
   trinkets->add_action( "use_item,slot=trinket1,if=!variable.trinket_1_buffs&(trinket.2.cooldown.remains|!variable.trinket_2_buffs)&(variable.next_dragonrage>20|!talent.dragonrage)", "If only one on use trinket provides a buff, use the other on cooldown. Or if neither trinket provides a buff, use both on cooldown." );
   trinkets->add_action( "use_item,slot=trinket2,if=!variable.trinket_2_buffs&(trinket.1.cooldown.remains|!variable.trinket_1_buffs)&(variable.next_dragonrage>20|!talent.dragonrage)" );
-  trinkets->add_action( "invoke_external_buff,name=power_infusion,if=!buff.power_infusion.up&buff.dragonrage.up" );
 }
 //devastation_apl_end
 
