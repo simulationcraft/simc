@@ -380,18 +380,32 @@ custom_cb_t writ_enchant( stat_e stat, bool cr )
     auto new_driver = effect.trigger();
     auto new_trigger = new_driver->effectN( 1 ).trigger();
 
+    std::string buff_name = new_trigger->name_cstr();
+    util::tokenize( buff_name );
+    auto buff = debug_cast<stat_buff_t*>( buff_t::find( effect.player, buff_name ) );
+    auto buff_stat = STAT_NONE;
+
     if ( stat == STAT_NONE )
     {
-      effect.stat = util::translate_rating_mod( new_trigger->effectN( 1 ).misc_value1() );
+      buff_stat = util::translate_rating_mod( new_trigger->effectN( 1 ).misc_value1() );
     }
     else
     {
-      effect.stat = effect.player->convert_hybrid_stat( stat );
+      buff_stat = effect.player->convert_hybrid_stat( stat );
     }
 
-    effect.stat_amount = amount;
+    if ( buff == nullptr )
+    {
+      buff = create_buff<stat_buff_t>( effect.player, buff_name, new_trigger );
+      buff->add_stat( buff_stat, amount );
+    }
+    else
+    {
+      buff->add_stat( buff_stat, amount );
+    }
+
+    effect.custom_buff = buff;
     effect.spell_id = new_driver->id();
-    effect.trigger_spell_id = new_trigger->id();
 
     new dbc_proc_callback_t( effect.player, effect );
   };
