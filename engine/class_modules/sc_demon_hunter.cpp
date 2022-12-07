@@ -2780,11 +2780,7 @@ struct immolation_aura_t : public demon_hunter_spell_t
           }
         }
 
-        // DFALPHA TOCHECK -- Does this accumulate from the initial hit?
-        if ( !initial )
-        {
-          accumulate_ragefire( s );
-        }
+        accumulate_ragefire( s );
       }
     }
 
@@ -4801,6 +4797,12 @@ struct immolation_aura_buff_t : public demon_hunter_buff_t<buff_t>
   {
     demon_hunter_buff_t<buff_t>::start( stacks, value, duration );
 
+    if ( p()->talent.havoc.ragefire->ok() )
+    {
+      p()->ragefire_accumulator = 0.0;
+      p()->ragefire_crit_accumulator = 0;
+    }
+
     if ( p()->active.immolation_aura_initial )
     {
       p()->active.immolation_aura_initial->set_target( p()->target );
@@ -4810,12 +4812,6 @@ struct immolation_aura_buff_t : public demon_hunter_buff_t<buff_t>
     if ( p()->talent.havoc.unbound_chaos->ok() )
     {
       p()->buff.unbound_chaos->trigger();
-    }
-
-    if ( p()->talent.havoc.ragefire->ok() )
-    {
-      p()->ragefire_accumulator = 0.0;
-      p()->ragefire_crit_accumulator = 0;
     }
   }
 

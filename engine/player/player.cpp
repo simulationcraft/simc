@@ -3971,59 +3971,10 @@ void player_t::create_buffs()
         ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY )
         ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
 
-      // 9.2 Encrypted Affix Buffs
-      auto urh_restoration = find_spell( 368494 );
-      buffs.decrypted_urh_cypher = make_buff( this, "decrypted_urh_cypher", find_spell( 368239 ) );
-      buffs.decrypted_urh_cypher->set_period( buffs.decrypted_urh_cypher->data().effectN( 2 ).period() );
-      buffs.decrypted_urh_cypher->set_refresh_behavior( buff_refresh_behavior::DURATION );
-      buffs.decrypted_urh_cypher->set_tick_callback( [ this, urh_restoration ]( buff_t*, int, timespan_t ) {
-        double gain = resources.max[ RESOURCE_MANA ] * urh_restoration->effectN( 2 ).percent();
-        resource_gain( RESOURCE_MANA, gain, gains.urh_restoration );
-      } );
-      buffs.decrypted_urh_cypher->set_stack_change_callback( [ this ]( buff_t* b, int, int new_ ) {
-        double recharge_mult = 1.0 / ( 1.0 + b->data().effectN( 1 ).percent() );
-        int label = b->data().effectN( 1 ).misc_value1();
-        for ( auto a : action_list )
-        {
-          if ( a->cooldown->duration != 0_ms && a->data().affected_by_label( label ) )
-          {
-            if ( new_ == 1 )
-              a->dynamic_recharge_rate_multiplier *= recharge_mult;
-            else
-              a->dynamic_recharge_rate_multiplier /= recharge_mult;
-
-            if ( a->cooldown->action == a )
-              a->cooldown->adjust_recharge_multiplier();
-
-            if ( a->internal_cooldown->action == a )
-              a->internal_cooldown->adjust_recharge_multiplier();
-          }
-        }
-      } );
-
-      buffs.decrypted_vy_cypher = make_buff<stat_buff_t>( this, "decrypted_vy_cypher", find_spell( 368240 ) )
-          ->set_default_value_from_effect( 1 )
-          ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
-
-      // 9.2.5 M+ S4 Shrouded Affix Buffs
-      buffs.bounty_crit = make_buff( this, "bounty_crit", find_spell( 373108 ) )
-        ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
-        ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
-        ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
-        ->set_period( 0_ms );
-      buffs.bounty_haste = make_buff( this, "bounty_haste", find_spell( 373113 ) )
-        ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
-        ->set_default_value_from_effect_type( A_HASTE_ALL )
-        ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
-        ->set_period( 0_ms );
-      buffs.bounty_mastery = make_buff<stat_buff_t>( this, "bounty_mastery", find_spell( 373116 ) )
-        ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
-        ->set_period( 0_ms );
-      buffs.bounty_vers = make_buff( this, "bounty_vers", find_spell( 373121 ) )
-        ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
-        ->set_default_value_from_effect_type( A_MOD_VERSATILITY_PCT )
-        ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY )
-        ->set_period( 0_ms );
+      // 10.0 M+ Affix Thundering
+      buffs.mark_of_lightning = make_buff( this, "mark_of_lightning", find_spell( 396369 ) )
+        ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+        ->set_default_value_from_effect( 3 );
     }
   }
   // .. for enemies
@@ -4780,6 +4731,9 @@ double player_t::composite_player_pet_damage_multiplier( const action_state_t*, 
 
   m *= 1.0 + racials.command->effectN(1).percent();
 
+  if (buffs.mark_of_lightning && buffs.mark_of_lightning->check())
+    m *= 1.0 + buffs.mark_of_lightning->check_value();
+
   if (!guardian)
   {
     if (buffs.coldhearted && buffs.coldhearted->check())
@@ -4834,6 +4788,9 @@ double player_t::composite_player_multiplier( school_e school ) const
 
   if ( buffs.coldhearted && buffs.coldhearted->check() )
     m *= 1.0 + buffs.coldhearted->check_value();
+
+  if ( buffs.mark_of_lightning && buffs.mark_of_lightning->check() )
+    m *= 1.0 + buffs.mark_of_lightning->check_value();
 
   return m;
 }

@@ -1479,7 +1479,6 @@ sim_t::sim_t() :
   scale_to_itemlevel( -1 ),
   keystone_level( 10 ),
   keystone_pct_hp( 27 ),
-  keystone_bounty( "haste"),
   challenge_mode( false ),
   scale_itemlevel_down_only( false ),
   disable_set_bonuses( false ),
@@ -3593,7 +3592,6 @@ void sim_t::create_options()
   add_option( opt_bool( "use_item_verification", use_item_verification ) );
   add_option( opt_int( "keystone_level", keystone_level, 1, 50 ) );
   add_option( opt_int( "keystone_pct_hp", keystone_pct_hp, 1, 100 ) );
-  add_option( opt_string( "keystone_bounty", keystone_bounty ) );
 
   // Character Creation
   add_option( opt_func( "deathknight", parse_player ) );
