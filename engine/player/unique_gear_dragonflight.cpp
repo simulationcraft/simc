@@ -397,13 +397,11 @@ custom_cb_t writ_enchant( stat_e stat, bool cr )
     if ( buff == nullptr )
     {
       buff = create_buff<stat_buff_t>( effect.player, buff_name, new_trigger );
-      buff->add_stat( buff_stat, amount );
-    }
-    else
-    {
-      buff->add_stat( buff_stat, amount );
     }
 
+    buff->add_stat( buff_stat, amount );
+
+    effect.name_str = buff_name;
     effect.custom_buff = buff;
     effect.spell_id = new_driver->id();
 
