@@ -713,9 +713,6 @@ public:
 
   // custom demon_hunter_t init functions
 private:
-  void apl_precombat();
-  void apl_default();
-  void apl_havoc();
   void create_cooldowns();
   void create_gains();
   void create_benefits();
@@ -5518,19 +5515,13 @@ void demon_hunter_t::init_action_list()
   }
   clear_action_priority_lists();
 
-  apl_precombat();  // PRE-COMBAT
-
-  switch ( specialization() )
+  if ( specialization() == DEMON_HUNTER_HAVOC )
   {
-    case DEMON_HUNTER_HAVOC:
-      apl_havoc();
-      break;
-    case DEMON_HUNTER_VENGEANCE:
-      demon_hunter_apl::vengeance( this );
-      break;
-    default:
-      apl_default();  // DEFAULT
-      break;
+    demon_hunter_apl::havoc( this );
+  }
+  else if ( specialization() == DEMON_HUNTER_VENGEANCE )
+  {
+    demon_hunter_apl::vengeance( this );
   }
 
   use_default_action_list = true;
@@ -6049,138 +6040,40 @@ role_e demon_hunter_t::primary_role() const
 
 std::string demon_hunter_t::default_flask() const
 {
-  return ( true_level >= 51 ) ? "spectral_flask_of_power" :
-         ( true_level >= 40 ) ? "greater_flask_of_the_currents" :
-         ( true_level >= 35 ) ? "greater_draenic_agility_flask" :
-         "disabled";
+  return demon_hunter_apl::flask( this );
 }
 
 // demon_hunter_t::default_potion ==================================================
 
 std::string demon_hunter_t::default_potion() const
 {
-  return ( true_level >= 51 ) ? "phantom_fire" :
-         ( true_level >= 40 ) ? "potion_of_unbridled_fury" :
-         ( true_level >= 35 ) ? "draenic_agility" :
-         "disabled";
+  return demon_hunter_apl::potion( this );
 }
 
 // demon_hunter_t::default_food ====================================================
 
 std::string demon_hunter_t::default_food() const
 {
-  return ( true_level >= 51 ) ? "feast_of_gluttonous_hedonism" :
-         ( true_level >= 45 ) ? "famine_evaluator_and_snack_table" :
-         ( true_level >= 40 ) ? "lavish_suramar_feast" :
-         "disabled";
+  return demon_hunter_apl::food( this );
 }
 
 // demon_hunter_t::default_rune ====================================================
 
 std::string demon_hunter_t::default_rune() const
 {
-  return ( true_level >= 60 ) ? "veiled" :
-         ( true_level >= 50 ) ? "battle_scarred" :
-         ( true_level >= 45 ) ? "defiled" :
-         ( true_level >= 40 ) ? "hyper" :
-         "disabled";
+  return demon_hunter_apl::rune( this );
 }
 
 // demon_hunter_t::default_temporary_enchant =======================================
 
 std::string demon_hunter_t::default_temporary_enchant() const
 {
-  return ( true_level >= 60 ) ? "main_hand:shaded_sharpening_stone/off_hand:shaded_sharpening_stone" :
-         "disabled";
+  return demon_hunter_apl::temporary_enchant( this );
 }
 
 // ==========================================================================
 // custom demon_hunter_t init functions
 // ==========================================================================
-
-// demon_hunter_t::apl_precombat ============================================
-
-void demon_hunter_t::apl_precombat()
-{
-  action_priority_list_t* pre = get_action_priority_list( "precombat" );
-
-  pre->add_action( "flask" );
-  pre->add_action( "augmentation" );
-  pre->add_action( "food" );
-  pre->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
-
-  if ( specialization() == DEMON_HUNTER_HAVOC )
-  {
-    pre->add_action( "variable,name=trinket_sync_slot,value=1,if=trinket.1.has_stat.any_dps&(!trinket.2.has_stat.any_dps|trinket.1.cooldown.duration>=trinket.2.cooldown.duration)" );
-    pre->add_action( "variable,name=trinket_sync_slot,value=2,if=trinket.2.has_stat.any_dps&(!trinket.1.has_stat.any_dps|trinket.2.cooldown.duration>trinket.1.cooldown.duration)" );
-    pre->add_action( "arcane_torrent" );
-  }
-}
-
-// demon_hunter_t::apl_default ==============================================
-
-void demon_hunter_t::apl_default()
-{
-  // action_priority_list_t* def = get_action_priority_list( "default" );
-}
-
-// demon_hunter_t::apl_havoc ================================================
-
-void add_havoc_use_items( demon_hunter_t*, action_priority_list_t* apl )
-{
-  apl->add_action( "use_items,slots=trinket1,if=variable.trinket_sync_slot=1&(buff.metamorphosis.up|(!talent.demonic.enabled&cooldown.metamorphosis.remains>(fight_remains>?trinket.1.cooldown.duration%2))|fight_remains<=20)|(variable.trinket_sync_slot=2&!trinket.2.cooldown.ready)|!variable.trinket_sync_slot", "Default use item logic" );
-  apl->add_action( "use_items,slots=trinket2,if=variable.trinket_sync_slot=2&(buff.metamorphosis.up|(!talent.demonic.enabled&cooldown.metamorphosis.remains>(fight_remains>?trinket.2.cooldown.duration%2))|fight_remains<=20)|(variable.trinket_sync_slot=1&!trinket.1.cooldown.ready)|!variable.trinket_sync_slot" );
-}
-
-void demon_hunter_t::apl_havoc()
-{
-  action_priority_list_t* apl_default = get_action_priority_list( "default" );
-  apl_default->add_action( "auto_attack" );
-  apl_default->add_action( "retarget_auto_attack,line_cd=1,target_if=min:debuff.burning_wound.remains,if=talent.burning_wound&talent.demon_blades&active_dot.burning_wound<(spell_targets>?3)" );
-  apl_default->add_action( "immolation_aura,if=time=0", "Precombat Immolation Aura");
-
-  apl_default->add_action( "variable,name=blade_dance,value=talent.first_blood|talent.trail_of_ruin|talent.chaos_theory&buff.chaos_theory.down|spell_targets.blade_dance1>1", "Blade Dance with First Blood, Trail of Ruin, or at 2+ targets" );
-  apl_default->add_action( "variable,name=pooling_for_blade_dance,value=variable.blade_dance&fury<(75-talent.demon_blades*20)&cooldown.blade_dance.remains<gcd.max" );
-  apl_default->add_action( "variable,name=pooling_for_eye_beam,value=talent.demonic&!talent.blind_fury&cooldown.eye_beam.remains<(gcd.max*2)&fury.deficit>20" );
-  apl_default->add_action( "variable,name=waiting_for_momentum,value=talent.momentum&!buff.momentum.up" );
-  
-  apl_default->add_action( "disrupt");
-  apl_default->add_action( "call_action_list,name=cooldown,if=gcd.remains=0" );
-  apl_default->add_action( "pick_up_fragment,type=demon,if=demon_soul_fragments>0" );
-  apl_default->add_action( "pick_up_fragment,mode=nearest,if=talent.demonic_appetite&fury.deficit>=35&(!cooldown.eye_beam.ready|fury<30)" );
-  apl_default->add_action( "vengeful_retreat,use_off_gcd=1,if=time>1&talent.initiative&(talent.essence_break&(cooldown.essence_break.remains>15|cooldown.essence_break.remains<gcd.max&(!cooldown.eye_beam.ready|buff.metamorphosis.up))|!talent.essence_break&!buff.momentum.up)" );
-  apl_default->add_action( "fel_rush,if=(buff.unbound_chaos.up|variable.waiting_for_momentum&(!talent.unbound_chaos|!cooldown.immolation_aura.ready))&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))" );
-  apl_default->add_action( "essence_break,if=!variable.waiting_for_momentum&(cooldown.eye_beam.remains>4|buff.metamorphosis.up)&(!talent.tactical_retreat|buff.tactical_retreat.up)" );
-  apl_default->add_action( "death_sweep,if=variable.blade_dance" );
-  apl_default->add_action( "fel_barrage,if=active_enemies>desired_targets|raid_event.adds.in>30" );
-  apl_default->add_action( "glaive_tempest,if=active_enemies>desired_targets|raid_event.adds.in>10" );
-  apl_default->add_action( "eye_beam,if=active_enemies>desired_targets|raid_event.adds.in>(40-talent.cycle_of_hatred*15)&!debuff.essence_break.up" );
-  apl_default->add_action( "blade_dance,if=variable.blade_dance&!cooldown.metamorphosis.ready"
-                           "&(cooldown.eye_beam.remains>5|!talent.demonic|(raid_event.adds.in>cooldown&raid_event.adds.in<25))" );
-  apl_default->add_action( "throw_glaive,if=talent.soulrend&spell_targets>=(2-talent.furious_throws)&!debuff.essence_break.up" );
-  apl_default->add_action( "annihilation,if=!variable.pooling_for_blade_dance" );
-  apl_default->add_action( "throw_glaive,if=talent.serrated_glaive&cooldown.eye_beam.remains<4&!debuff.serrated_glaive.up&!debuff.essence_break.up" );
-  apl_default->add_action( "immolation_aura,if=!buff.immolation_aura.up&(!talent.ragefire|active_enemies>desired_targets|raid_event.adds.in>15)" );
-  apl_default->add_action( "felblade,if=fury.deficit>=40" );
-  apl_default->add_action( "sigil_of_flame,if=active_enemies>desired_targets" );
-  apl_default->add_action( "chaos_strike,if=!variable.pooling_for_blade_dance&!variable.pooling_for_eye_beam" );
-  apl_default->add_action( "fel_rush,if=!talent.momentum&talent.demon_blades&!cooldown.eye_beam.ready&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))" );
-  apl_default->add_action( "demons_bite,target_if=min:debuff.burning_wound.remains,if=talent.burning_wound&debuff.burning_wound.remains<4&active_dot.burning_wound<(spell_targets>?3)" );
-  apl_default->add_action( "fel_rush,if=!talent.momentum&!talent.demon_blades&spell_targets>1&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))" );
-  apl_default->add_action( "sigil_of_flame,if=raid_event.adds.in>15&fury.deficit>=30" );
-  apl_default->add_action( "demons_bite" );
-  apl_default->add_action( "fel_rush,if=movement.distance>15|(buff.out_of_range.up&!talent.momentum)" );
-  apl_default->add_action( "vengeful_retreat,if=!talent.initiative&movement.distance>15" );
-  apl_default->add_action( "throw_glaive,if=talent.demon_blades|buff.out_of_range.up" );
-
-  action_priority_list_t* apl_cooldown = get_action_priority_list( "cooldown" );
-  apl_cooldown->add_action( "metamorphosis,if=!talent.demonic&((!talent.chaotic_transformation|cooldown.eye_beam.remains>20)&active_enemies>desired_targets|raid_event.adds.in>60|fight_remains<25)", "Cast Metamorphosis if we will get a full Eye Beam refresh or if the encounter is almost over" );
-  apl_cooldown->add_action( "metamorphosis,if=talent.demonic&(!talent.chaotic_transformation|cooldown.eye_beam.remains>20&(!variable.blade_dance|cooldown.blade_dance.remains>gcd.max)|fight_remains<25)" );
-  apl_cooldown->add_action( "potion,if=buff.metamorphosis.remains>25|fight_remains<60" );
-  add_havoc_use_items( this, apl_cooldown );
-  apl_cooldown->add_action( "the_hunt,if=(!talent.momentum|!buff.momentum.up)" );
-  apl_cooldown->add_action( "elysian_decree,if=(active_enemies>desired_targets|raid_event.adds.in>30)" );
-}
 
 // demon_hunter_t::create_cooldowns =========================================
 
