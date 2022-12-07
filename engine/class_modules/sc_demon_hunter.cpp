@@ -362,23 +362,23 @@ public:
       player_talent_t frailty;                    // NYI
       player_talent_t fiery_brand;                // NYI
 
-      player_talent_t perfectly_balanced_glaive;  // NYI
+      player_talent_t perfectly_balanced_glaive;
       player_talent_t deflecting_spikes;          // NYI
-      player_talent_t meteoric_spikes;            // NYI
+      player_talent_t meteoric_strikes;
 
-      player_talent_t shear_fury;                 // NYI
+      player_talent_t shear_fury;
       player_talent_t fracture;                   // NYI
       player_talent_t calcified_spikes;           // NYI
-      player_talent_t roaring_fire;               // NYI
+      player_talent_t roaring_fire;
       player_talent_t sigil_of_silence;           // NYI
       player_talent_t retaliation;                // NYI
       player_talent_t fel_flame_fortification;    // NYI
 
       player_talent_t spirit_bomb;                // NYI
       player_talent_t feast_of_souls;             // NYI
-      player_talent_t agonizing_flames;           // NYI
-      player_talent_t extended_spikes;            // NYI
-      player_talent_t burning_blood;              // NYI
+      player_talent_t agonizing_flames;
+      player_talent_t extended_spikes;
+      player_talent_t burning_blood;
       player_talent_t soul_barrier;               // NYI
       player_talent_t bulk_extraction;            // NYI
       player_talent_t sigil_of_chains;            // NYI
@@ -386,18 +386,18 @@ public:
       player_talent_t void_reaver;                // NYI
       player_talent_t fallout;                    // NYI
       player_talent_t ruinous_bulwark;            // NYI
-      player_talent_t volatile_flameblood;        // NYI
+      player_talent_t volatile_flameblood;
       player_talent_t revel_in_pain;              // NYI
 
       player_talent_t soul_furnace;               // NYI
       player_talent_t painbringer;                // NYI
       player_talent_t darkglare_boon;             // NYI
       player_talent_t fiery_demise;               // NYI
-      player_talent_t chains_of_anger;            // NYI
+      player_talent_t chains_of_anger;
 
       player_talent_t focused_cleave;             // NYI
       player_talent_t soulmonger;                 // NYI
-      player_talent_t stoke_the_flames;           // NYI
+      player_talent_t stoke_the_flames;
       player_talent_t burning_alive;              // NYI
       player_talent_t cycle_of_binding;           // NYI
 
@@ -410,7 +410,7 @@ public:
       player_talent_t last_resort;                // NYI
       player_talent_t fodder_to_the_flame;        // NYI
       player_talent_t elysian_decree;
-      player_talent_t down_in_flames;             // NYI
+      player_talent_t down_in_flames;
 
     } vengeance;
 
@@ -1341,6 +1341,19 @@ public:
     ab::apply_affecting_aura( p->talent.havoc.accelerating_blade );
     ab::apply_affecting_aura( p->talent.havoc.any_means_necessary );
     ab::apply_affecting_aura( p->talent.havoc.dancing_with_fate );
+
+    ab::apply_affecting_aura( p->talent.vengeance.perfectly_balanced_glaive );
+    ab::apply_affecting_aura( p->talent.vengeance.meteoric_strikes );
+    ab::apply_affecting_aura( p->talent.vengeance.shear_fury );
+    ab::apply_affecting_aura( p->talent.vengeance.roaring_fire );
+    ab::apply_affecting_aura( p->talent.vengeance.agonizing_flames );
+    ab::apply_affecting_aura( p->talent.vengeance.extended_spikes );
+    ab::apply_affecting_aura( p->talent.vengeance.burning_blood );
+    ab::apply_affecting_aura( p->talent.vengeance.ruinous_bulwark );
+    ab::apply_affecting_aura( p->talent.vengeance.volatile_flameblood );
+    ab::apply_affecting_aura( p->talent.vengeance.chains_of_anger );
+    ab::apply_affecting_aura( p->talent.vengeance.stoke_the_flames );
+    ab::apply_affecting_aura( p->talent.vengeance.down_in_flames );
 
     // Rank Passives
     if ( p->specialization() == DEMON_HUNTER_HAVOC )
@@ -5850,7 +5863,62 @@ void demon_hunter_t::init_spells()
 
   // Vengeance Talents
 
-  talent.vengeance.soul_carver = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Carver" );
+  talent.vengeance.fel_devastation = find_talent_spell( talent_tree::SPECIALIZATION, "Fel Devastation" );
+
+  talent.vengeance.frailty     = find_talent_spell( talent_tree::SPECIALIZATION, "Frailty" );
+  talent.vengeance.fiery_brand = find_talent_spell( talent_tree::SPECIALIZATION, "Fiery Brand" );
+
+  talent.vengeance.perfectly_balanced_glaive =
+      find_talent_spell( talent_tree::SPECIALIZATION, "Perfectly Balanced Glaive" );
+  talent.vengeance.deflecting_spikes = find_talent_spell( talent_tree::SPECIALIZATION, "Deflecting Spikes" );
+  talent.vengeance.meteoric_strikes  = find_talent_spell( talent_tree::SPECIALIZATION, "Meteoric Strikes" );
+
+  talent.vengeance.shear_fury       = find_talent_spell( talent_tree::SPECIALIZATION, "Shear Fury" );
+  talent.vengeance.fracture         = find_talent_spell( talent_tree::SPECIALIZATION, "Fracture" );
+  talent.vengeance.calcified_spikes = find_talent_spell( talent_tree::SPECIALIZATION, "Calcified Spikes" );
+  talent.vengeance.roaring_fire     = find_talent_spell( talent_tree::SPECIALIZATION, "Roaring Fire" );
+  talent.vengeance.sigil_of_silence = find_talent_spell( talent_tree::SPECIALIZATION, "Sigil of Silence" );
+  talent.vengeance.retaliation      = find_talent_spell( talent_tree::SPECIALIZATION, "Retaliation" );
+  talent.vengeance.fel_flame_fortification =
+      find_talent_spell( talent_tree::SPECIALIZATION, "Fel Flame Fortification" );
+
+  talent.vengeance.spirit_bomb      = find_talent_spell( talent_tree::SPECIALIZATION, "Spirit Bomb" );
+  talent.vengeance.feast_of_souls   = find_talent_spell( talent_tree::SPECIALIZATION, "Feast of Souls" );
+  talent.vengeance.agonizing_flames = find_talent_spell( talent_tree::SPECIALIZATION, "Agonizing Flames" );
+  talent.vengeance.extended_spikes  = find_talent_spell( talent_tree::SPECIALIZATION, "Extended Spikes" );
+  talent.vengeance.burning_blood    = find_talent_spell( talent_tree::SPECIALIZATION, "Burning Blood" );
+  talent.vengeance.soul_barrier     = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Barrier" );
+  talent.vengeance.bulk_extraction  = find_talent_spell( talent_tree::SPECIALIZATION, "Bulk Extraction" );
+  talent.vengeance.sigil_of_chains  = find_talent_spell( talent_tree::SPECIALIZATION, "Sigil of Chains" );
+
+  talent.vengeance.void_reaver         = find_talent_spell( talent_tree::SPECIALIZATION, "Void Reaver" );
+  talent.vengeance.fallout             = find_talent_spell( talent_tree::SPECIALIZATION, "Fallout" );
+  talent.vengeance.ruinous_bulwark     = find_talent_spell( talent_tree::SPECIALIZATION, "Ruinous Bulwark" );
+  talent.vengeance.volatile_flameblood = find_talent_spell( talent_tree::SPECIALIZATION, "Volatile Flameblood" );
+  talent.vengeance.revel_in_pain       = find_talent_spell( talent_tree::SPECIALIZATION, "Revel in Pain" );
+
+  talent.vengeance.soul_furnace    = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Furnace" );
+  talent.vengeance.painbringer     = find_talent_spell( talent_tree::SPECIALIZATION, "Painbringer" );
+  talent.vengeance.darkglare_boon  = find_talent_spell( talent_tree::SPECIALIZATION, "Darkglare Boon" );
+  talent.vengeance.fiery_demise    = find_talent_spell( talent_tree::SPECIALIZATION, "Fiery Demise" );
+  talent.vengeance.chains_of_anger = find_talent_spell( talent_tree::SPECIALIZATION, "Chains of Anger" );
+
+  talent.vengeance.focused_cleave   = find_talent_spell( talent_tree::SPECIALIZATION, "Focused Cleave" );
+  talent.vengeance.soulmonger       = find_talent_spell( talent_tree::SPECIALIZATION, "Soulmonger" );
+  talent.vengeance.stoke_the_flames = find_talent_spell( talent_tree::SPECIALIZATION, "Stoke the Flames" );
+  talent.vengeance.burning_alive    = find_talent_spell( talent_tree::SPECIALIZATION, "Burning Alive" );
+  talent.vengeance.cycle_of_binding = find_talent_spell( talent_tree::SPECIALIZATION, "Cycle of Binding" );
+
+  talent.vengeance.vulnerability  = find_talent_spell( talent_tree::SPECIALIZATION, "Vulnerability" );
+  talent.vengeance.feed_the_demon = find_talent_spell( talent_tree::SPECIALIZATION, "Feed the Demon" );
+  talent.vengeance.charred_flesh  = find_talent_spell( talent_tree::SPECIALIZATION, "Charred Flesh" );
+
+  talent.vengeance.soulcrush           = find_talent_spell( talent_tree::SPECIALIZATION, "Soulcrush" );
+  talent.vengeance.soul_carver         = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Carver" );
+  talent.vengeance.last_resort         = find_talent_spell( talent_tree::SPECIALIZATION, "Last Resort" );
+  talent.vengeance.fodder_to_the_flame = find_talent_spell( talent_tree::SPECIALIZATION, "Fodder to the Flame" );
+  talent.vengeance.elysian_decree      = find_talent_spell( talent_tree::SPECIALIZATION, "Elysian Decree" );
+  talent.vengeance.down_in_flames      = find_talent_spell( talent_tree::SPECIALIZATION, "Down in Flames" );
 
   // Class Background Spells
   spell.felblade_damage = talent.demon_hunter.felblade->ok() ? find_spell( 213243 ) : spell_data_t::not_found();
