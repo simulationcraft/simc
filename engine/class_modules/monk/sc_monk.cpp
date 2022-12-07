@@ -1669,7 +1669,7 @@ struct tiger_palm_t : public monk_melee_attack_t
     brew_cooldown_reduction( p()->spec.tiger_palm->effectN( 3 ).base_value() );
 
     if ( face_palm )
-        brew_cooldown_reduction( p()->talent.brewmaster.face_palm->effectN( 3 ).base_value() );
+        brew_cooldown_reduction( p()->talent.brewmaster.face_palm->effectN( 3 ).base_value() / 1000.0 );
 
     face_palm      = false;
     blackout_combo = false;
