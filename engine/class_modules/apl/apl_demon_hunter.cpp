@@ -127,7 +127,7 @@ void vengeance( player_t* p )
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
   default_->add_action( "auto_attack" );
-  default_->add_action( "variable,name=brand_build,value=talent.agonizing_flames&talent.burning_alive&talent.charred_flesh" );
+  default_->add_action( "variable,name=brand_build,value=talent.fiery_demise" );
   default_->add_action( "disrupt" );
   default_->add_action( "call_action_list,name=brand,if=variable.brand_build" );
   default_->add_action( "call_action_list,name=defensives" );
@@ -136,6 +136,7 @@ void vengeance( player_t* p )
 
   brand->add_action( "fiery_brand" );
   brand->add_action( "immolation_aura,if=dot.fiery_brand.ticking" );
+  brand->add_action( "soul_carver,if=dot.fiery_brand.ticking" );
 
   defensives->add_action( "demon_spikes" );
   defensives->add_action( "metamorphosis,if=!buff.metamorphosis.up|target.time_to_die<15" );
@@ -145,6 +146,7 @@ void vengeance( player_t* p )
   cooldowns->add_action( "use_items" );
   cooldowns->add_action( "the_hunt" );
   cooldowns->add_action( "elysian_decree" );
+  cooldowns->add_action( "soul_carver" );
 
   normal->add_action( "infernal_strike" );
   normal->add_action( "bulk_extraction" );
