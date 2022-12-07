@@ -121,8 +121,8 @@ hands=azureblades_work_gloves,id=193648,ilevel=372
 waist=sky_saddle_cord,id=193691,ilevel=372
 legs=crazed_travelers_legwraps,id=193799,ilevel=372,enchant=frozen_spellthread_2
 feet=ancient_crosswrapped_sandals,id=193806,ilevel=372
-finger1=unstable_arcane_loop,id=193633,ilevel=372,enchant_id=6556
-finger2=circle_of_ascended_frost,id=193731,ilevel=372,enchant_id=6556
+finger1=unstable_arcane_loop,id=193633,ilevel=372,enchant=devotion_of_haste_3
+finger2=circle_of_ascended_frost,id=193731,ilevel=372,enchant=devotion_of_haste_3
 trinket1=spoils_of_neltharus,id=193773,ilevel=372
 trinket2=furious_ragefeather,id=193677,ilevel=372
 main_hand=final_grade,id=193707,ilevel=372,enchant=sophic_devotion_2

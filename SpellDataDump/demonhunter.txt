@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46924 Live (hotfix 2022-12-03/46924, no-networking)
+SimulationCraft 1002-01 for World of Warcraft 10.0.2.46924 Live (hotfix 2022-12-07/46924)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -813,7 +813,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=278012)   : Apply Aura (6) | Threat (10)
-                   Base Value: 550 | Scaled Value: 550 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 650 | Scaled Value: 650 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
+Hotfixed         : Base Value (550 -> 650)
 
 Name             : Metamorphosis (id=191427) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -10549,6 +10550,7 @@ Effects          :
 Description      : $@spelldesc355893
 
 Name             : The Hunt (id=370965) [Spell Family (107)] 
+Hotfixed         : Learn Level (48 -> 0)
 Talent Entry     : Generic [tree=class, row=9, col=3, max_rank=1, req_points=20]
 Class            : Demon Hunter
 School           : Nature
@@ -10581,6 +10583,7 @@ Description      : Charge to your target, striking them for $370966s1 $@spelldes
 The pursuit invigorates your soul, healing you for $?c1[$370968s1%][$370968s2%] of the damage you deal to your Hunt target for $370966d.
 
 Name             : The Hunt (id=370966) [Spell Family (107)] 
+Hotfixed         : Learn Level (48 -> 0)
 Class            : Demon Hunter
 School           : Nature
 Spell Type       : Melee
@@ -10601,7 +10604,8 @@ Attributes       : ....x... ........ ..x..... ........   ........ ........ .....
                  : Is Ability (4), Do Not Sheath (18), Not In Spellbook Until Learned (269), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=982578)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 4.09500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 3.68550 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (4.095 -> 3.6855)
 #2 (id=982579)   : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=982580)   : Trigger Spell (64): The Hunt
@@ -10663,6 +10667,7 @@ Effects          :
 Description      : $@spelldesc370965
 
 Name             : The Hunt (id=370969) [Spell Family (107)] 
+Hotfixed         : Learn Level (48 -> 0)
 Class            : Demon Hunter
 School           : Nature
 Spell Type       : Magic
@@ -10683,7 +10688,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Extra Initial Period (169), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Not In Spellbook Until Learned (269), Bypass Visibility Check (320), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=982586)   : Apply Aura (6) | Periodic Damage (3): nature every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.68310 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.61480 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (0.6831 -> 0.6148)
 Description      : $@spelldesc370965
 Tooltip          : Suffering $w1 $@spelldesc395042 damage every $t1 sec.
 
@@ -12725,7 +12731,7 @@ Spell Type       : None
 Spell Level      : 1
 Internal Cooldown: 25 seconds
 Proc Chance      : 100%
-Real PPM         : 1.58 (Haste multiplier)
+Real PPM         : 1.58
 Proc Flags       : ....x.x. ....x... x....... ........ 
                  : Yellow Melee, White Ranged, Generic Hostile Spell, Magic Hostile Spell
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 

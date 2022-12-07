@@ -7,35 +7,44 @@ namespace mage_apl {
 
 std::string potion( const player_t* p )
 {
-  return p->true_level >= 60 ? "spectral_intellect"
+  return p->true_level >= 70 ? "elemental_potion_of_ultimate_power_3"
+       : p->true_level >= 60 ? "spectral_intellect"
        : p->true_level >= 50 ? "superior_battle_potion_of_intellect"
        :                       "disabled";
 }
 
 std::string flask( const player_t* p )
 {
-  return p->true_level >= 60 ? "spectral_flask_of_power"
+  std::string lvl70_flask = p->specialization() == MAGE_FIRE ? "phial_of_elemental_chaos_3" : "iced_phial_of_corrupting_rage_3";
+
+  return p->true_level >= 70 ? lvl70_flask
+       : p->true_level >= 60 ? "spectral_flask_of_power"
        : p->true_level >= 50 ? "greater_flask_of_endless_fathoms"
        :                       "disabled";
 }
 
 std::string food( const player_t* p )
 {
-  return p->true_level >= 60 ? "feast_of_gluttonous_hedonism"
+  return p->true_level >= 70 ? "fated_fortune_cookie"
+       : p->true_level >= 60 ? "feast_of_gluttonous_hedonism"
        : p->true_level >= 50 ? "famine_evaluator_and_snack_table"
        :                       "disabled";
 }
 
 std::string rune( const player_t* p )
 {
-  return p->true_level >= 60 ? "veiled"
+  return p->true_level >= 70 ? "draconic"
+       : p->true_level >= 60 ? "veiled"
        : p->true_level >= 50 ? "battle_scarred"
        :                       "disabled";
 }
 
 std::string temporary_enchant( const player_t* p )
 {
-  return p->true_level >= 60 ? "main_hand:shadowcore_oil"
+  std::string lvl70_temp_enchant = p->specialization() == MAGE_FIRE ? "main_hand:howling_rune_3" : "main_hand:buzzing_rune_3";
+
+  return p->true_level >= 70 ? lvl70_temp_enchant
+       : p->true_level >= 60 ? "main_hand:shadowcore_oil"
        :                       "disabled";
 }
 
@@ -385,7 +394,7 @@ void frost( player_t* p )
   aoe->add_action( "ice_nova,if=(target.level<level+3|target.is_add)&(prev_gcd.1.comet_storm|cooldown.cone_of_cold.ready&buff.snowstorm.stack=buff.snowstorm.max_stack&gcd.max<1)" );
   aoe->add_action( "frost_nova,if=(target.level<level+3|target.is_add)&active_enemies>=5&cooldown.cone_of_cold.ready&buff.snowstorm.stack=buff.snowstorm.max_stack&gcd.max<1" );
   aoe->add_action( "cone_of_cold,if=buff.snowstorm.stack=buff.snowstorm.max_stack" );
-  aoe->add_action( "flurry,if=cooldown_react&remaining_winters_chill=0&debuff.winters_chill.down&(prev_gcd.1.frostbolt|active_enemies>=7)" );
+  aoe->add_action( "flurry,if=cooldown_react&remaining_winters_chill=0&debuff.winters_chill.down&(prev_gcd.1.frostbolt|active_enemies>=7&buff.fingers_of_frost.react=0)" );
   aoe->add_action( "ice_lance,if=buff.fingers_of_frost.react|debuff.frozen.remains>travel_time|remaining_winters_chill" );
   aoe->add_action( "shifting_power" );
   aoe->add_action( "ice_nova" );

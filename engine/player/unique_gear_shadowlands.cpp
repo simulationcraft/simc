@@ -5044,73 +5044,6 @@ void vitality_sacrifice( special_effect_t& /* effect */ )
 
 }
 
-void decrypted_vy_cypher( special_effect_t& effect )
-{
-  struct vy_proc_callback_t : public dbc_proc_callback_t
-  {
-    struct decrypted_vy_cypher_damage_t : public proc_spell_t
-    {
-      decrypted_vy_cypher_damage_t( const special_effect_t& effect )
-        : proc_spell_t( "decrypted_vy_cypher", effect.player, effect.player->find_spell( 368495 ) )
-      {
-        attack_power_mod.direct = spell_power_mod.direct = data().effectN( 2 ).percent();
-      }
-
-      double attack_direct_power_coefficient( const action_state_t* s ) const override
-      {
-        const double ap = attack_power_mod.direct * s->composite_attack_power();
-        const double sp = spell_power_mod.direct * s->composite_spell_power();
-
-        if ( ap <= sp )
-          return 0;
-
-        return spell_t::attack_direct_power_coefficient( s );
-      }
-
-      double spell_direct_power_coefficient( const action_state_t* s ) const override
-      {
-        const double ap = attack_power_mod.direct * s->composite_attack_power();
-        const double sp = spell_power_mod.direct * s->composite_spell_power();
-
-        if ( ap > sp )
-          return 0;
-
-        return spell_t::spell_direct_power_coefficient( s );
-      }
-    };
-
-    action_t* damage;
-
-    vy_proc_callback_t( const special_effect_t& effect )
-      : dbc_proc_callback_t( effect.player, effect ),
-        damage( create_proc_action<decrypted_vy_cypher_damage_t>( "decrypted_vy_cypher", effect ) )
-    {
-    }
-
-    void execute( action_t*, action_state_t* state ) override
-    {
-      damage->execute_on_target( state->target );
-    }
-  };
-
-  auto proc = new vy_proc_callback_t( effect );
-
-  auto vy_buff = buff_t::find( effect.player, "decrypted_vy_cypher" );
-  assert( vy_buff );
-  vy_buff->set_stack_change_callback( [ proc ]( buff_t*, int /* old_ */, int new_ ) {
-    if ( new_ == 1 )
-    {
-      proc->activate();
-    }
-    else
-    {
-      proc->deactivate();
-    }
-  } );
-
-  proc->deactivate();
-}
-
 namespace shards_of_domination
 {
   using id_rank_pair_t = std::pair<int, unsigned>;
@@ -6191,9 +6124,6 @@ void register_special_effects()
     unique_gear::register_special_effect( 339348, items::sephuzs_proclamation );
     unique_gear::register_special_effect( 339058, items::third_eye_of_the_jailer );
     unique_gear::register_special_effect( 338743, items::vitality_sacrifice );
-
-    // 9.2 Encrypted Affixes
-    unique_gear::register_special_effect( 368240, items::decrypted_vy_cypher );
 
     // 9.1 Shards of Domination
     unique_gear::register_special_effect( 357347, items::blood_link ); // Rune Word: Blood

@@ -7290,12 +7290,13 @@ struct ascendance_t : public shaman_spell_t
 
     p()->cooldown.strike->reset( false );
 
+    auto dre_duration = p()->legendary.deeply_rooted_elements.ok()
+      ? p()->legendary.deeply_rooted_elements->effectN( 1 ).time_value()
+      : p()->talent.deeply_rooted_elements->effectN( 1 ).time_value();
+
     if ( background )
     {
-      p()->buff.ascendance->extend_duration_or_trigger(
-          p()->legendary.deeply_rooted_elements.ok()
-          ? p()->legendary.deeply_rooted_elements->effectN( 1 ).time_value()
-          : p()->talent.deeply_rooted_elements->effectN( 1 ).time_value(), player );
+      p()->buff.ascendance->extend_duration_or_trigger( dre_duration, player );
     }
     else
     {
@@ -7335,21 +7336,17 @@ struct ascendance_t : public shaman_spell_t
           fs_dot->adjust_duration( new_duration, -1 );
         }
       } );
+    }
 
-      if ( p()->talent.oath_of_the_far_seer.ok() )
+    if ( p()->talent.oath_of_the_far_seer.ok() )
+    {
+      if ( background )
       {
-        if ( background )
-        {
-            p()->buff.oath_of_the_far_seer->extend_duration_or_trigger(
-                p()->legendary.deeply_rooted_elements.ok()
-                    ? p()->legendary.deeply_rooted_elements->effectN( 1 ).time_value()
-                    : p()->talent.deeply_rooted_elements->effectN( 1 ).time_value(),
-                player );
-        }
-        else
-        {
-            p()->buff.oath_of_the_far_seer->trigger();
-        }
+        p()->buff.oath_of_the_far_seer->extend_duration_or_trigger( dre_duration, player );
+      }
+      else
+      {
+        p()->buff.oath_of_the_far_seer->trigger();
       }
     }
 
@@ -7357,10 +7354,18 @@ struct ascendance_t : public shaman_spell_t
     {
       if ( background )
       {
-        p()->buff.static_accumulation->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0,
-            p()->legendary.deeply_rooted_elements.ok()
-            ? p()->legendary.deeply_rooted_elements->effectN( 1 ).time_value()
-            : p()->talent.deeply_rooted_elements->effectN( 1 ).time_value() );
+        // Static Accumulation is intended to match Ascendance duration, but is currently bugged
+        // in-game and simply overwrites a long-duration Static Accumulation (sourced from
+        // Ascendance, the button press) with a short duration Static Accumulation (sourced from
+        // DRE).
+        if ( player->bugs )
+        {
+          p()->buff.static_accumulation->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, dre_duration );
+        }
+        else
+        {
+          p()->buff.static_accumulation->extend_duration_or_trigger( dre_duration, player );
+        }
       }
       else
       {
@@ -8252,23 +8257,40 @@ struct healing_stream_totem_spell_t : public shaman_totem_t<heal_t, shaman_heal_
 // PvP talents/abilities
 // ==========================================================================
 
-struct lightning_lasso_t : public shaman_spell_t
+ struct lightning_lasso_t : public shaman_spell_t
 {
-  lightning_lasso_t( shaman_t* player, util::string_view options_str ) :
-    shaman_spell_t( "lightning_lasso", player, player->talent.lightning_lasso )
+  lightning_lasso_t( shaman_t* player, util::string_view options_str )
+    : shaman_spell_t( "lightning_lasso", player, player->find_spell( 305485 ) )
   {
     parse_options( options_str );
-    affected_by_master_of_the_elements = false;
-    // if the major effect is not available the action is a background action, thus can't be used in the apl
-    background         = true;
-    channeled          = true;
-    tick_may_crit      = true;
-    may_crit           = false;
+    affected_by_master_of_the_elements = true;
+    cooldown->duration                 = p()->find_spell( 305483 )->cooldown();
+    trigger_gcd                        = p()->find_spell( 305483 )->gcd();
+    channeled                          = true;
+    tick_may_crit                      = true;
+  }
+
+  bool ready() override
+  {
+    if ( !p()->talent.lightning_lasso.ok() )
+    {
+      return false;
+    }
+    return shaman_spell_t::ready();
   }
 
   timespan_t tick_time( const action_state_t* /* s */ ) const override
   {
     return base_tick_time;
+  }
+  double composite_persistent_multiplier( const action_state_t* state ) const override
+  {
+    double m = shaman_spell_t::composite_persistent_multiplier( state );
+    if ( p()->buff.master_of_the_elements->up() )
+    {
+      m *= 1.0 + p()->buff.master_of_the_elements->default_value;
+    }
+    return m;
   }
 };
 
@@ -11431,7 +11453,7 @@ void shaman_t::init_action_list_enhancement()
     def->add_action( "call_action_list,name=single,if=active_enemies=1", "If_only_one_enemy,_priority_follows_the_'single'_action_list." );
     def->add_action( "call_action_list,name=aoe,if=active_enemies>1", "On_multiple_enemies,_the_priority_follows_the_'aoe'_action_list." );
 
-    single->add_action( "windstrike" );
+    single->add_action( "windstrike,if=talent.thorims_invocation.enabled&buff.maelstrom_weapon.stack>=1" );
     single->add_action( "lava_lash,if=buff.hot_hand.up|buff.ashen_catalyst.stack=8" );
     single->add_action( "windfury_totem,if=!buff.windfury_totem.up" );
     single->add_action( "stormstrike,if=buff.doom_winds_talent.up" );
@@ -11444,10 +11466,12 @@ void shaman_t::init_action_list_enhancement()
     single->add_action( "ice_strike,if=talent.hailstorm.enabled" );
     single->add_action( "frost_shock,if=buff.hailstorm.up" );
     single->add_action( "lava_lash,if=dot.flame_shock.refreshable" );
-    single->add_action( "stormstrike,if=talent.stormflurry.enabled&buff.stormbringer.up" );
+    single->add_action( "windstrike,if=talent.deeply_rooted_elements.enabled|buff.earthen_weapon.up|buff.legacy_of_the_frost_witch.up" );
+    single->add_action( "stormstrike,if=talent.deeply_rooted_elements.enabled|buff.earthen_weapon.up|buff.legacy_of_the_frost_witch.up" );
     single->add_action( "elemental_blast,if=(!talent.elemental_spirits.enabled|(talent.elemental_spirits.enabled&(charges=max_charges|buff.feral_spirit.up)))&buff.maelstrom_weapon.stack>=5" );
     single->add_action( "lava_burst,if=buff.maelstrom_weapon.stack>=5" );
     single->add_action( "lightning_bolt,if=buff.maelstrom_weapon.stack=10&buff.primordial_wave.down" );
+    single->add_action( "windstrike" );
     single->add_action( "stormstrike" );
     single->add_action( "windfury_totem,if=buff.windfury_totem.remains<10" );
     single->add_action( "ice_strike" );

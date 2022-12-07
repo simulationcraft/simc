@@ -354,22 +354,6 @@ struct pull_event_t final : raid_event_t
   struct mob_t : public pet_t
   {
     pull_event_t* pull_event;
-    unsigned bounty;
-
-    void trigger_bounty( player_t* p )
-    {
-      if ( sim->keystone_bounty == "haste" )
-        p->buffs.bounty_haste->increment( bounty );
-
-      if ( sim->keystone_bounty == "crit" )
-        p->buffs.bounty_crit->increment( bounty );
-
-      if ( sim->keystone_bounty == "mastery" )
-        p->buffs.bounty_mastery->increment( bounty );
-
-      if ( sim->keystone_bounty == "vers" )
-        p->buffs.bounty_vers->increment( bounty );
-    }
 
     mob_t( player_t* o, util::string_view n = "Mob", pet_e pt = PET_ENEMY ) : pet_t( o->sim, o, n, pt ),
       pull_event( nullptr )
@@ -413,26 +397,6 @@ struct pull_event_t final : raid_event_t
 
     void demise() override
     {
-      if ( bounty > 0 && !is_sleeping() )
-      {
-        if ( !sim->single_actor_batch )
-        {
-          for ( auto* p : sim->player_non_sleeping_list )
-          {
-            if ( p->is_pet() )
-              continue;
-
-            trigger_bounty( p );
-          }
-        }
-        else
-        {
-          auto p = sim->player_no_pet_list[ sim->current_index ];
-          if ( p )
-            trigger_bounty( p );
-        }
-      }
-
       pet_t::demise();
       
       if ( pull_event )
@@ -456,16 +420,18 @@ struct pull_event_t final : raid_event_t
   timespan_t spawn_time;
   int pull;
   bool bloodlust;
+  timespan_t mark_duration;
   bool spawned;
   bool demised;
   event_t* spawn_event;
+  event_t* thundering_event;
 
   struct spawn_parameter
   {
     std::string name;
     bool boss = false;
     double health = 0;
-    unsigned bounty = 0;
+    race_e race = RACE_HUMANOID;
   };
   std::vector<spawn_parameter> spawn_parameters;
 
@@ -477,13 +443,17 @@ struct pull_event_t final : raid_event_t
       delay( 0_s ),
       spawn_time( 0_s ),
       pull( 0 ),
+      bloodlust( false ),
+      mark_duration( 15_s ),
       spawned( false ),
-      spawn_event( nullptr )
+      spawn_event( nullptr ),
+      thundering_event( nullptr )
   {
     add_option( opt_string( "enemies", enemies_str ) );
     add_option( opt_timespan( "delay", delay ) );
     add_option( opt_int( "pull", pull ) );
     add_option( opt_bool( "bloodlust", bloodlust ) );
+    add_option( opt_timespan( "mark_duration", mark_duration ) );
 
     parse_options( options_str );
 
@@ -493,6 +463,8 @@ struct pull_event_t final : raid_event_t
       first = timespan_t::max();
 
     cooldown = sim->max_time * 2;
+
+    mark_duration = clamp<timespan_t>(mark_duration, 0_s, 15_s);
 
     master = sim->target_list.data().front();
     if ( !master )
@@ -536,13 +508,12 @@ struct pull_event_t final : raid_event_t
             if ( util::starts_with( splits[ 0 ], "BOSS_" ) )
               spawn.boss = true;
 
-            if ( util::starts_with( splits[ 0 ], "BOUNTY1_" ) )
-              spawn.bounty = 1;
-            else if ( util::starts_with( splits[ 0 ], "BOUNTY3_" ) )
-              spawn.bounty = 3;
-
             spawn.name = splits[ 0 ];
             spawn.health = util::to_double( splits[ 1 ] );
+            
+            if ( splits.size() > 2 )
+              spawn.race = util::parse_race_type( util::tokenize_fn( splits[ 2 ] ) );
+
             spawn_parameters.emplace_back( spawn );
           }
         }
@@ -570,10 +541,13 @@ struct pull_event_t final : raid_event_t
     demised = true;
     sim->print_log( "Finished Pull {} in {:.1f} seconds", pull, ( sim->current_time() - spawn_time ).total_seconds() );
 
+    timespan_t thundering_timer = thundering_event->remains();
+    event_t::cancel(thundering_event);
+
     // find the next pull and spawn it
     if ( auto next = next_pull() )
     {
-      make_event( *sim, next->delay, [ next ] { next->spawn_pull(); } );
+      make_event( *sim, next->delay, [ next, thundering_timer ] { next->spawn_pull( thundering_timer ); } );
       return;
     }
 
@@ -592,8 +566,8 @@ struct pull_event_t final : raid_event_t
 
   void _start() override
   {
-    if (!spawned)
-      make_event( *sim, delay, [ this ] { spawn_pull(); } );
+    if ( !spawned )
+      make_event( *sim, delay, [ this ] { spawn_pull( 20_s ); } );
   }
 
   void _finish() override
@@ -649,13 +623,39 @@ struct pull_event_t final : raid_event_t
     return nullptr;
   }
 
-  void spawn_pull()
+  void trigger_thundering()
+  {
+    if ( !sim->single_actor_batch )
+    {
+      for ( auto* p : sim->player_non_sleeping_list )
+      {
+        if ( p->is_pet() )
+          continue;
+
+        p->buffs.mark_of_lightning->trigger(mark_duration);
+      }
+    }
+    else
+    {
+      auto p = sim->player_no_pet_list[ sim->current_index ];
+      if ( p )
+      {
+        p->buffs.mark_of_lightning->trigger(mark_duration);
+      }
+    }
+
+    thundering_event = make_event( sim, 70_s, [this] { trigger_thundering(); });
+  }
+
+  void spawn_pull( timespan_t thundering_timer )
   {
     if ( spawned )
       return;
     
     spawned = true;
     spawn_time = sim->current_time();
+
+    thundering_event = make_event( sim, thundering_timer, [this] { trigger_thundering(); });
 
     if ( bloodlust )
     {
@@ -687,8 +687,8 @@ struct pull_event_t final : raid_event_t
       adds[ i ]->resources.infinite_resource[ RESOURCE_HEALTH ] = false;
       adds[ i ]->init_resources( true );
       adds[ i ]->pull_event = this;
-      adds[ i ]->bounty = spawn_parameters[ i ].bounty;
       adds[ i ]->type = spawn_parameters[ i ].boss ? ENEMY_ADD_BOSS : ENEMY_ADD;
+      adds[ i ]->race = spawn_parameters[ i ].race;
 
       // Only for use with log output options as it makes the report strange but log much better
       if ( sim->log )

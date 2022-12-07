@@ -595,10 +595,7 @@ struct shadow_word_pain_t final : public priest_spell_t
   {
     timespan_t t = priest_spell_t::tick_time( state );
 
-    // BUG: Screams of the Void does not work with Shadow Word: Pain with Mental Decay talented
-    // https://github.com/SimCMinMax/WoW-BugTracker/issues/1038
-    if ( ( !priest().bugs || !priest().talents.shadow.mental_decay.enabled() || priest().is_ptr() ) &&
-         priest().is_screams_of_the_void_up( state->target ) )
+    if ( priest().is_screams_of_the_void_up( state->target ) )
     {
       t /= ( 1 + priest().talents.shadow.screams_of_the_void->effectN( 1 ).percent() );
     }

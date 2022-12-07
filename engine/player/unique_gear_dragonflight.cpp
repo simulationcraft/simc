@@ -14,6 +14,7 @@
 #include "item/item.hpp"
 #include "item/item_targetdata_initializer.hpp"
 #include "set_bonus.hpp"
+#include "player/pet.hpp"
 #include "sim/cooldown.hpp"
 #include "sim/sim.hpp"
 #include "stats.hpp"
@@ -142,12 +143,11 @@ void phial_of_elemental_chaos( special_effect_t& effect )
 void phial_of_glacial_fury( special_effect_t& effect )
 {
   // Damage proc
-  struct glacial_fury_t : public proc_spell_t
+  struct glacial_fury_t : public generic_aoe_proc_t
   {
     const buff_t* buff;
-
     glacial_fury_t( const special_effect_t& e, const buff_t* b )
-      : proc_spell_t( "glacial_fury", e.player, e.driver()->effectN( 2 ).trigger() ), buff( b )
+      : generic_aoe_proc_t( e, "glacial_fury", e.driver()->effectN( 2 ).trigger(), true ), buff( b )
     {
       base_dd_min = base_dd_max = e.driver()->effectN( 3 ).average( e.item );
     }
@@ -157,7 +157,7 @@ void phial_of_glacial_fury( special_effect_t& effect )
       // spell data is flagged to ignore all caster multpliers, so da_multiplier is not snapshot. however, the 15% per
       // buff does take effect and as this is an aoe action, we can use composite_aoe_multiplier without having  to
       // adjust snapshot flags.
-      return proc_spell_t::composite_aoe_multiplier( s ) * ( 1.0 + buff->check_stack_value() );
+      return generic_aoe_proc_t::composite_aoe_multiplier( s ) * ( 1.0 + buff->check_stack_value() );
     }
   };
 
@@ -399,10 +399,13 @@ custom_cb_t writ_enchant( stat_e stat, bool cr )
 
 void frozen_devotion( special_effect_t& effect )
 {
-  effect.discharge_amount = effect.driver()->effectN( 1 ).average( effect.player );
-  effect.aoe = -1;
-  effect.spell_id = effect.trigger()->id();
-  effect.trigger_spell_id = effect.trigger()->effectN( 1 ).trigger()->id();
+  auto proc = create_proc_action<generic_aoe_proc_t>( "frozen_devotion", effect, "frozen_devotion", 390350, true );
+  proc -> base_dd_min = proc -> base_dd_max = effect.driver() -> effectN( 1 ).average( effect.player );
+
+  auto new_driver = effect.player -> find_spell( 396826 );
+
+  effect.execute_action = proc;
+  effect.spell_id = new_driver -> id();
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -2432,16 +2435,38 @@ void blazebinders_hoof(special_effect_t& effect)
 
 void primal_ritual_shell( special_effect_t& effect )
 {
-  // TODO: This is assuming players are using the "Wing Turtle's Blessing"
-  // This is the mastery proc and it is the default blessing you get when the item is first equiped
-  effect.stat_amount = effect.driver()->effectN( 5 ).average( effect.item );
-  effect.spell_id = 390899;
-  effect.stat = STAT_MASTERY_RATING;
-
-  // TODO: Implement Stone Turtle's Blessing - Absorb-Shield Proc [390655]
-  // TODO: Implement Flame Turtle's Blessing - Fire Damage Proc [390835]
-  // TODO: Implement Sea Turtle's Blessing - Heal Proc [390869]
-  
+  const auto& blessing = effect.player->sim->dragonflight_opts.primal_ritual_shell_blessing;
+  {
+    if ( util::str_compare_ci( blessing, "wind" ) )
+    {
+      // Wind Turtle's Blessing - Mastery Proc [390899]
+      effect.stat_amount = effect.driver()->effectN( 5 ).average( effect.item );
+      effect.spell_id = 390899;
+      effect.stat = STAT_MASTERY_RATING;
+      effect.name_str = effect.trigger()->name_cstr();
+    }
+    else if ( util::str_compare_ci( blessing, "stone" ) )
+    {
+      // TODO: Implement Stone Turtle's Blessing - Absorb-Shield Proc [390655]
+      effect.player->sim->error( "Stone Turtle's Blessing is not implemented yet" );
+    }
+    else if ( util::str_compare_ci( blessing, "flame" ) )
+    {
+      // Flame Turtle's Blessing - Fire Damage Proc [390835]
+      effect.discharge_amount = effect.driver()->effectN( 3 ).average( effect.item );
+      effect.spell_id = 390835;
+      effect.name_str = effect.trigger()->name_cstr();
+    }
+    else if ( util::str_compare_ci( blessing, "sea" ) )
+    {
+      // TODO: Implement Sea Turtle's Blessing - Heal Proc [390869]
+      effect.player->sim->error( "Sea Turtle's Blessing is not implemented yet" );
+    }
+    else
+    {
+      throw std::invalid_argument( "Invalid string for dragonflight.primal_ritual_shell_blessing. Valid strings: wind,flame,sea,stone" );
+    }
+  }
   new dbc_proc_callback_t( effect.player, effect );
 }
 
@@ -2531,6 +2556,69 @@ void bushwhackers_compass(special_effect_t& effect)
   new cb_t( effect );
 }
 
+void seasoned_hunters_trophy( special_effect_t& effect )
+{
+  struct seasoned_hunters_trophy_cb_t : public dbc_proc_callback_t
+  {
+    buff_t *mastery, *haste, *crit;
+
+    seasoned_hunters_trophy_cb_t( const special_effect_t& e, buff_t* m, buff_t* h, buff_t* c ) :
+      dbc_proc_callback_t( e.player, e ), mastery( m ), haste( h ), crit( c )
+    { }
+
+    void execute( action_t* /* a */, action_state_t* /* s */ ) override
+    {
+      mastery->expire();
+      haste->expire();
+      crit->expire();
+
+      auto pet_count = range::count_if( listener->active_pets, []( const pet_t* pet ) {
+        return pet->type == PLAYER_PET;
+      } );
+
+      switch ( pet_count )
+      {
+        case 0:
+          mastery->trigger();
+          break;
+        case 1:
+          haste->trigger();
+          break;
+        default:
+          crit->trigger();
+          break;
+      }
+    }
+  };
+
+  buff_t* mastery = buff_t::find( effect.player, "hunter_versus_wild" );
+  buff_t* haste = buff_t::find( effect.player, "hunters_best_friend" );
+  buff_t* crit = buff_t::find( effect.player, "pack_mentality" );
+
+  if ( !mastery )
+  {
+    mastery = create_buff<stat_buff_t>( effect.player, "hunter_versus_wild",
+        effect.player->find_spell( 392271 ) )
+      ->add_stat( STAT_MASTERY_RATING, effect.driver()->effectN( 1 ).average( effect.item ) );
+  }
+
+  if ( !haste )
+  {
+    haste = create_buff<stat_buff_t>( effect.player, "hunters_best_friend",
+        effect.player->find_spell( 392275 ) )
+      ->add_stat( STAT_HASTE_RATING, effect.driver()->effectN( 1 ).average( effect.item ) );
+  }
+
+  if ( !crit )
+  {
+    crit = create_buff<stat_buff_t>( effect.player, "pack_mentality",
+        effect.player->find_spell( 392248 ) )
+      ->add_stat( STAT_CRIT_RATING, effect.driver()->effectN( 1 ).average( effect.item ) );
+  }
+
+  new seasoned_hunters_trophy_cb_t( effect, mastery, haste, crit );
+}
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -2559,44 +2647,37 @@ void fang_adornments( special_effect_t& effect )
 // 381700 Damage
 void forgestorm( special_effect_t& effect )
 {
-  struct forgestorm_ignited_t : public proc_spell_t
-  {
-    forgestorm_ignited_t( const special_effect_t& e ) :
-      proc_spell_t( "forgestorm_ignited_damage", e.player, e.player -> find_spell( 381700 ), e.item )
-    {
-      base_dd_min = base_dd_max = e.player -> find_spell( 381698 ) -> effectN( 1 ).average( e.item );
-      background = true;
-      aoe = as<int>( e.player->find_spell( 381698 )->effectN( 2 ).base_value() );
-      reduced_aoe_targets = 1.0;
-    }
-  };
-
-  auto buff = buff_t::find( effect.player, "forgestorm_ignited");
+  auto buff = buff_t::find( effect.player, "forgestorm_ignited" );
   if ( !buff )
   {
     auto buff_spell = effect.trigger();
-    buff = create_buff<buff_t>(effect.player, buff_spell);
+    buff = create_buff<buff_t>( effect.player, buff_spell );
+    
     auto forgestorm_damage = new special_effect_t( effect.player );
     forgestorm_damage->name_str = "forgestorm_ignited_damage";
     forgestorm_damage->item = effect.item;
     forgestorm_damage->spell_id = buff->data().id();
     forgestorm_damage->type = SPECIAL_EFFECT_EQUIP;
     forgestorm_damage->source = SPECIAL_EFFECT_SOURCE_ITEM;
-    forgestorm_damage->execute_action = create_proc_action<forgestorm_ignited_t>( "forgestorm_ignited_damage", *forgestorm_damage );
+    forgestorm_damage->execute_action = create_proc_action<generic_aoe_proc_t>(
+      "forgestorm_ignited_damage", *forgestorm_damage, "forgestorm_ignited_damage", effect.player->find_spell( 381700 ), true );
+    forgestorm_damage->execute_action->base_dd_min = forgestorm_damage->execute_action->base_dd_max
+      = effect.player->find_spell( 381698 )->effectN( 1 ).average( effect.item );
     effect.player -> special_effects.push_back( forgestorm_damage );
+    
     auto damage = new dbc_proc_callback_t( effect.player, *forgestorm_damage );
     damage->initialize();
     damage->deactivate();
  
-    buff -> set_stack_change_callback( [ damage ]( buff_t*, int, int new_ )
+    buff->set_stack_change_callback( [damage]( buff_t*, int, int new_ )
     {
       if ( new_ )
       {
-        damage -> activate();
+        damage->activate();
       }
       else
       {
-        damage -> deactivate();
+        damage->deactivate();
       }
     } );
   }
@@ -2696,7 +2777,7 @@ void assembly_scholars_loop( special_effect_t& effect )
 
 void blue_silken_lining( special_effect_t& effect )
 {
-  auto buff = create_buff<stat_buff_t>( effect.player, effect.trigger()->effectN( 1 ).trigger() );
+  auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 387336 ) );
   buff->manual_stats_added = false;
   buff->add_stat( STAT_MASTERY_RATING, effect.driver()->effectN( 1 ).average( effect.item ) );
   buff->set_max_stack( 2 );
@@ -2906,6 +2987,15 @@ void broodkeepers_blaze(special_effect_t& effect)
   effect.execute_action = dot;
   new broodkeepers_blaze_cb_t( effect );
 }
+
+void amice_of_the_blue( special_effect_t& effect )
+{
+  auto damage = create_proc_action<generic_aoe_proc_t>( "amice_of_the_blue", effect, "amice_of_the_blue", effect.trigger() );
+  damage->split_aoe_damage = true;
+  damage->aoe = -1;
+  effect.execute_action = damage;
+  new dbc_proc_callback_t( effect.player, effect );
+}
 }  // namespace items
 
 namespace sets
@@ -2986,7 +3076,7 @@ void register_special_effects()
   register_special_effect( 383920, items::furious_ragefeather );
   register_special_effect( 388603, items::idol_of_pure_decay );
   register_special_effect( 377466, items::spiteful_storm );
-  register_special_effect( 381768, items::spoils_of_neltharus );
+  register_special_effect( 381768, items::spoils_of_neltharus, true );
   register_special_effect( 375844, items::sustaining_alchemist_stone );
   register_special_effect( 385884, items::timebreaching_talon );
   register_special_effect( 385902, items::umbrelskuls_fractured_heart );
@@ -3011,6 +3101,7 @@ void register_special_effects()
   register_special_effect( 383611, items::spinerippers_fang );
   register_special_effect( 392359, items::integrated_primal_fire );
   register_special_effect( 383817, items::bushwhackers_compass );
+  register_special_effect( 392237, items::seasoned_hunters_trophy );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );  // bronzed grip wrappings embellishment
@@ -3029,6 +3120,7 @@ void register_special_effects()
   register_special_effect( 381424, items::flaring_cowl );
   register_special_effect( 379396, items::thriving_thorns );
   register_special_effect( 394452, items::broodkeepers_blaze );
+  register_special_effect( 387144, items::amice_of_the_blue );
 
   // Sets
   register_special_effect( { 393620, 393982 }, sets::playful_spirits_fur );

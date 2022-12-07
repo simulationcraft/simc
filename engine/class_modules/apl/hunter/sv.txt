@@ -69,10 +69,10 @@ actions.st+="/mongoose_bite,if=dot.shrapnel_bomb.ticking"
 actions.st+="/serpent_sting,target_if=min:remains,if=refreshable&!talent.vipers_venom"
 actions.st+="/wildfire_bomb,if=full_recharge_time<gcd&!set_bonus.tier29_2pc
 actions.st+="/mongoose_bite,target_if=max:debuff.latent_poison.stack,if=buff.mongoose_fury.up
+actions.st+="/explosive_shot,if=talent.ranger
 actions.st+="/wildfire_bomb,if=full_recharge_time<gcd
 actions.st+="/mongoose_bite,target_if=max:debuff.latent_poison.stack,if=focus+action.kill_command.cast_regen>focus.max-10
 actions.st+="/stampede"
-actions.st+="/explosive_shot,if=talent.ranger
 actions.st+="/raptor_strike,target_if=max:debuff.latent_poison.stack"
 actions.st+="/steel_trap"
 actions.st+="/wildfire_bomb,if=!dot.wildfire_bomb.ticking"

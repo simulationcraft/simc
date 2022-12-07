@@ -327,6 +327,7 @@ public:
   // Cooldowns
   struct cooldowns_t
   {
+    cooldown_t* arcane_orb;
     cooldown_t* combustion;
     cooldown_t* cone_of_cold;
     cooldown_t* fervent_flickering;
@@ -1694,10 +1695,14 @@ struct arcane_mage_spell_t : public mage_spell_t
       if ( before )
       {
         cr->decrement();
-        // Nether Precision is only triggered if the buff was actually decremented.
-        // This is relevant when the player uses Concentration.
+        // Effects that trigger when Clearcasting is consumed do not trigger
+        // if the buff decrement is skipped because of Concentration.
         if ( cr == p()->buffs.clearcasting && cr->check() < before )
+        {
           p()->buffs.nether_precision->trigger();
+          p()->cooldowns.arcane_orb->adjust( -p()->talents.orb_barrage->effectN( 3 ).time_value() );
+          trigger_tracking_buff( p()->buffs.orb_barrage, p()->buffs.orb_barrage_ready, 2 );
+        }
         break;
       }
     }
@@ -2828,8 +2833,7 @@ struct arcane_missiles_t final : public arcane_mage_spell_t
 
   void execute() override
   {
-    int stacks = p()->buffs.clearcasting->check() ? as<int>( p()->talents.orb_barrage->effectN( 2 ).base_value() ) : 1;
-    trigger_tracking_buff( p()->buffs.orb_barrage, p()->buffs.orb_barrage_ready, 2, stacks );
+    trigger_tracking_buff( p()->buffs.orb_barrage, p()->buffs.orb_barrage_ready, 2 );
 
     // Set up the hidden Clearcasting buff before executing the spell
     // so that tick time and dot duration have the correct values.
@@ -5676,6 +5680,7 @@ mage_t::mage_t( sim_t* sim, std::string_view name, race_e r ) :
   talents()
 {
   // Cooldowns
+  cooldowns.arcane_orb           = get_cooldown( "arcane_orb"           );
   cooldowns.combustion           = get_cooldown( "combustion"           );
   cooldowns.cone_of_cold         = get_cooldown( "cone_of_cold"         );
   cooldowns.fervent_flickering   = get_cooldown( "fervent_flickering"   );

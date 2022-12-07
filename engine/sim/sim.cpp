@@ -1479,7 +1479,6 @@ sim_t::sim_t() :
   scale_to_itemlevel( -1 ),
   keystone_level( 10 ),
   keystone_pct_hp( 27 ),
-  keystone_bounty( "haste"),
   challenge_mode( false ),
   scale_itemlevel_down_only( false ),
   disable_set_bonuses( false ),
@@ -3593,7 +3592,6 @@ void sim_t::create_options()
   add_option( opt_bool( "use_item_verification", use_item_verification ) );
   add_option( opt_int( "keystone_level", keystone_level, 1, 50 ) );
   add_option( opt_int( "keystone_pct_hp", keystone_pct_hp, 1, 100 ) );
-  add_option( opt_string( "keystone_bounty", keystone_bounty ) );
 
   // Character Creation
   add_option( opt_func( "deathknight", parse_player ) );
@@ -3897,6 +3895,7 @@ void sim_t::create_options()
   add_option( opt_timespan( "dragonflight.alltotem_of_the_master_period", dragonflight_opts.alltotem_of_the_master_period, 0_s, timespan_t::max() ) );
   add_option( opt_uint( "dragonflight.dragon_games_kicks", dragonflight_opts.dragon_games_kicks, 0, 3 ) );
   add_option( opt_float( "dragonflight.dragon_games_rng", dragonflight_opts.dragon_games_rng, 0.0, 1.0 ) );
+  add_option( opt_string( "dragonflight.primal_ritual_shell_blessing", dragonflight_opts.primal_ritual_shell_blessing ) );
 }
 
 // sim_t::parse_option ======================================================
