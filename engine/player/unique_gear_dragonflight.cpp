@@ -2995,6 +2995,15 @@ void broodkeepers_blaze(special_effect_t& effect)
   effect.execute_action = dot;
   new broodkeepers_blaze_cb_t( effect );
 }
+
+void amice_of_the_blue( special_effect_t& effect )
+{
+  auto damage = create_proc_action<generic_aoe_proc_t>( "amice_of_the_blue", effect, "amice_of_the_blue", effect.trigger() );
+  damage->split_aoe_damage = true;
+  damage->aoe = -1;
+  effect.execute_action = damage;
+  new dbc_proc_callback_t( effect.player, effect );
+}
 }  // namespace items
 
 namespace sets
@@ -3119,6 +3128,7 @@ void register_special_effects()
   register_special_effect( 381424, items::flaring_cowl );
   register_special_effect( 379396, items::thriving_thorns );
   register_special_effect( 394452, items::broodkeepers_blaze );
+  register_special_effect( 387144, items::amice_of_the_blue );
 
   // Sets
   register_special_effect( { 393620, 393982 }, sets::playful_spirits_fur );
