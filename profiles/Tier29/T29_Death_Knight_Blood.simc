@@ -10,9 +10,9 @@ talents=BoPAAAAAAAAAAAAAAAAAAAAAAACJRgkEJiEBJikIkkkEBAAAAAQikEEJNJiEAAgIJJJAAAA
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
 flask=phial_of_static_empowerment_3
-food=feast_of_gluttonous_hedonism
+food=fated_fortune_cookie
 augmentation=draconic
-temporary_enchant=main_hand:shaded_weightstone
+temporary_enchant=main_hand:primal_whetstone_3
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -108,7 +108,7 @@ main_hand=incarnate_skysplitter,id=195528,bonus_id=4800/4786/1498,enchant=rune_o
 # gear_ilvl=422.00
 # gear_strength=4983
 # gear_stamina=13352
-# gear_attack_power=20
+# gear_attack_power=135
 # gear_crit_rating=4324
 # gear_haste_rating=1904
 # gear_mastery_rating=2777

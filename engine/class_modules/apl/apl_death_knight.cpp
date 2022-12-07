@@ -39,7 +39,7 @@ std::string food( const player_t* p )
 
   std::string unholy_food = ( p->true_level >= 61 ) ? "fated_fortune_cookie" : "feast_of_gluttonous_hedonism";
 
-  std::string blood_food = ( p->true_level >= 60 ) ? "feast_of_gluttonous_hedonism" : "disabled";
+  std::string blood_food = ( p->true_level >= 60 ) ? "fated_fortune_cookie" : "disabled";
 
   switch ( p->specialization() )
   {
@@ -65,7 +65,7 @@ std::string temporary_enchant( const player_t* p )
 
   std::string unholy_temporary_enchant = ( p->true_level >= 61 ) ? "main_hand:howling_rune_3" : "main_hand:shaded_sharpening_stone";
 
-  std::string blood_temporary_enchant = ( p->true_level >= 60 ) ? "main_hand:shaded_weightstone" : "disabled";
+  std::string blood_temporary_enchant = ( p->true_level >= 60 ) ? "main_hand:primal_whetstone_3" : "disabled";
 
   switch ( p->specialization() )
   {
