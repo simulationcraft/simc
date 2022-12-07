@@ -7,7 +7,7 @@ actions.precombat+=/snapshot_stats
 
 # Executed every time the actor is available.
 actions=auto_attack
-actions+=/variable,name=brand_build,value=talent.agonizing_flames&talent.burning_alive&talent.charred_flesh
+actions+=/variable,name=brand_build,value=talent.fiery_demise
 actions+=/disrupt
 actions+=/call_action_list,name=brand,if=variable.brand_build
 actions+=/call_action_list,name=defensives
@@ -16,6 +16,7 @@ actions+=/call_action_list,name=normal
 
 actions.brand=fiery_brand
 actions.brand+=/immolation_aura,if=dot.fiery_brand.ticking
+actions.brand+=/soul_carver,if=dot.fiery_brand.ticking
 
 actions.defensives=demon_spikes
 actions.defensives+=/metamorphosis,if=!buff.metamorphosis.up|target.time_to_die<15
@@ -25,6 +26,7 @@ actions.cooldowns=potion
 actions.cooldowns+=/use_items
 actions.cooldowns+=/the_hunt
 actions.cooldowns+=/elysian_decree
+actions.cooldowns+=/soul_carver
 
 actions.normal=infernal_strike
 actions.normal+=/bulk_extraction
