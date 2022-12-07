@@ -143,12 +143,11 @@ void phial_of_elemental_chaos( special_effect_t& effect )
 void phial_of_glacial_fury( special_effect_t& effect )
 {
   // Damage proc
-  struct glacial_fury_t : public proc_spell_t
+  struct glacial_fury_t : public generic_aoe_proc_t
   {
     const buff_t* buff;
-
     glacial_fury_t( const special_effect_t& e, const buff_t* b )
-      : proc_spell_t( "glacial_fury", e.player, e.driver()->effectN( 2 ).trigger() ), buff( b )
+      : generic_aoe_proc_t( e, "glacial_fury", e.driver()->effectN( 2 ).trigger(), true ), buff( b )
     {
       base_dd_min = base_dd_max = e.driver()->effectN( 3 ).average( e.item );
     }
@@ -158,7 +157,7 @@ void phial_of_glacial_fury( special_effect_t& effect )
       // spell data is flagged to ignore all caster multpliers, so da_multiplier is not snapshot. however, the 15% per
       // buff does take effect and as this is an aoe action, we can use composite_aoe_multiplier without having  to
       // adjust snapshot flags.
-      return proc_spell_t::composite_aoe_multiplier( s ) * ( 1.0 + buff->check_stack_value() );
+      return generic_aoe_proc_t::composite_aoe_multiplier( s ) * ( 1.0 + buff->check_stack_value() );
     }
   };
 
