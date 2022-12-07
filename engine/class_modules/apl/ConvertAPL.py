@@ -12,6 +12,7 @@ specList = ['blood', 'frost', 'unholy',  # Death Knight
             'devastation', #Evoker
             'retribution', 'protection', # Paladin
             'assassination', 'outlaw', 'subtlety', 'assassination_df', 'outlaw_df', 'subtlety_df', # Rogue
+            'vengeance', # Demon Hunter
            ]
 
 ignored_comments = [

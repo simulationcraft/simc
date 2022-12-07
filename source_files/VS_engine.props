@@ -22,6 +22,7 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\action\variable.hpp" />
 		<ClInclude Include="..\engine\buff\buff.hpp" />
 		<ClInclude Include="..\engine\class_modules\apl\apl_death_knight.hpp" />
+		<ClInclude Include="..\engine\class_modules\apl\apl_demon_hunter.hpp" />
 		<ClInclude Include="..\engine\class_modules\apl\apl_evoker.hpp" />
 		<ClInclude Include="..\engine\class_modules\apl\apl_hunter.hpp" />
 		<ClInclude Include="..\engine\class_modules\apl\apl_monk.hpp" />
@@ -210,6 +211,7 @@ To change the list of source files run synchronize.py
 		<ClCompile Include="..\engine\action\variable.cpp" />
 		<ClCompile Include="..\engine\buff\buff.cpp" />
 		<ClCompile Include="..\engine\class_modules\apl\apl_death_knight.cpp" />
+		<ClCompile Include="..\engine\class_modules\apl\apl_demon_hunter.cpp" />
 		<ClCompile Include="..\engine\class_modules\apl\apl_evoker.cpp" />
 		<ClCompile Include="..\engine\class_modules\apl\apl_hunter.cpp" />
 		<ClCompile Include="..\engine\class_modules\apl\apl_monk.cpp" />
