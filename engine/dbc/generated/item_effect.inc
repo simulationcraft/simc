@@ -7471,7 +7471,7 @@ static const std::array<item_effect_t, 8208> __item_effect_data { {
   { 136065, 345533, 180118,   0,   1,    0,      -1,      -1 }, // Anima Field Emitter
   { 136052, 345474, 180119,   0,   1,    0,      -1,      -1 }, // Boon of the Archon
   { 136053, 345502, 180119,   1,   1,    0,      -1,      -1 }, // Boon of the Archon
-  { 118025, 224781, 180136,   0,   1,    0,      -1,      -1 }, // +15 Fishing
+  { 118025,   8083, 180136,   0,   1,    0,      -1,      -1 }, // +5 Fishing
   { 126777, 310674, 180136,   1,   1,    0,      -1,      -1 }, // The Brokers Angle'r - Bait Aura
   { 172321, 395369, 180136,   2,   1,    0,      -1,      -1 }, // Fishing Tool Equipped (DNT)
   { 126046, 335840, 180273,   0,   1,    0,      -1,      -1 }, // Sorrowbane
@@ -8115,7 +8115,7 @@ static const std::array<item_effect_t, 8208> __item_effect_data { {
   { 172186, 395470, 198205,   1,   1,    0,      -1,      -1 }, // Engineering Gear Equipped (DNT)
   { 171282, 390041, 198225,   0,   1,    0,      -1,      -1 }, // +6 Fishing
   { 172138, 395369, 198225,   1,   1,    0,      -1,      -1 }, // Fishing Tool Equipped (DNT)
-  { 171295, 390011, 198226,   0,   1,    0,      -1,      -1 }, // +10 Fishing
+  { 171295, 224781, 198226,   0,   1,    0,      -1,      -1 }, // +15 Fishing
   { 172137, 395369, 198226,   1,   1,    0,      -1,      -1 }, // Fishing Tool Equipped (DNT)
   { 171280, 390044, 198234,   0,   1,    0,      -1,      -1 }, // +6 Jewelcrafting
   { 172161, 395399, 198234,   1,   1,    0,      -1,      -1 }, // Jewelcrafting Tool Equipped (DNT)

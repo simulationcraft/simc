@@ -1,4 +1,4 @@
-SimulationCraft 1002-01 for World of Warcraft 10.0.2.46924 Live (hotfix 2022-12-07/46924)
+SimulationCraft 1002-01 for World of Warcraft 10.0.2.46924 Live (hotfix 2022-12-08/46924)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -17333,7 +17333,7 @@ Name             : Brewmaster's Rhythm (id=394797) [Spell Family (53)]
 Class            : Monk
 School           : Physical
 Spell Type       : None
-Duration         : 10 seconds
+Duration         : 15 seconds
 Stacks           : 4 maximum
 Proc Chance      : 101%
 Triggered by     : Monk Brewmaster Class Set 2pc (393659)

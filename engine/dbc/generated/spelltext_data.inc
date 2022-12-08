@@ -16575,7 +16575,7 @@ static const std::array<spelltext_data_t, 19194> __spelltext_data { {
   { 377514, "Your Soul Reaper, Scourge Strike, Festering Strike, and Death Coil deal $s1% addtional damage to enemies below $s2% health.", 0, 0 },
   { 377537, "Death Coil and Epidemic debilitate your enemy applying Death Rot causing them to take $377540s1% increased Shadow damage, up to ${$377540s1*$377540u}% for $377540d. If Death Coil or Epidemic consume Sudden Doom it applies two stacks of Death Rot.", 0, 0 },
   { 377540, "$@spelldesc377537", "Shadow damage taken from $@auracaster is increased by $s1%.", 0 },
-  { 377544, "$@spelldesc376801", "Spells deal $s1 additional Fire damage to enemies or healing to allies.", 0 },
+  { 377544, "$@spelldesc376801", "Spells deal $376801w1 additional Fire damage to enemies or healing to allies.", 0 },
   { 377546, "$@spelldesc376801", 0, 0 },
   { 377580, "Death Coil deals $s1% additional damage and seeks out $s2 additional nearby enemy.", 0, 0 },
   { 377585, "When a Festering Wound pops it generates an additional ${$s1/10} Runic Power.", 0, 0 },
@@ -18820,7 +18820,7 @@ static const std::array<spelltext_data_t, 19194> __spelltext_data { {
   { 393672, "Holy Light, Flash of Light, Light of Dawn, Word of Glory, and Bestow Faith healing is increased by $s2% and their critical effects increase the damage or healing of your next Holy Shock by $394667s1%.", 0, 0 },
   { 393673, "Avenger's Shield grants you and your closest ally Ally of the Light, increasing Versatility by $394714s1% for $394714d.", 0, 0 },
   { 393674, "$?s53595[Hammer of the Righteous]?s204019[Blessed Hammer][Crusader Strike] increases your Parry by $394727s1% for $394727d, and extends the duration of Ally of the Light by ${$m1/1000}.1 sec.", 0, 0 },
-  { 393675, "Judgment, Blade of Justice, and $?s383469[Radiant Decree][Wake of Ashes] damage increased by $s1%.", 0, 0 },
+  { 393675, "Judgment, Blade of Justice, and $?a384052[Radiant Decree][Wake of Ashes] damage increased by $s1%.", 0, 0 },
   { 393677, "$?s383327[Final Verdict][Templar's Verdict] and Divine Storm damage increased by 10%.", 0, 0 },
   { 393679, "Power Word: Shield increases the effectiveness of your next direct damage or healing spell by $s1%.", 0, 0 },
   { 393681, "Penance increases the strength of your next Power Word: Shield by $s1% of its damage or $s2% of its healing.", 0, 0 },
@@ -19197,8 +19197,10 @@ static const std::array<spelltext_data_t, 19194> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 10.0.2.46924
-static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 3> __spelltext_hotfix_data { {
+  {  377544,  1, "Spells deal $s1 additional Fire damage to enemies or healing to allies.", "Spells deal $376801w1 additional Fire damage to enemies or healing to allies." },
   {  393648,  0, "$?s342049[Chimaera Shot][Arcane Shot] and Multi Shot critical hits cause your next Aimed Shot to cause the target to bleed for $394366s1% of damage dealt over $394371d sec.", "$?s342049[Chimaera Shot][Arcane Shot] and Multi-Shot critical hits cause your next Aimed Shot to cause the target to bleed for $394366s1% of damage dealt over $394371d sec." },
+  {  393675,  0, "Judgment, Blade of Justice, and $?s383469[Radiant Decree][Wake of Ashes] damage increased by $s1%.", "Judgment, Blade of Justice, and $?a384052[Radiant Decree][Wake of Ashes] damage increased by $s1%." },
 } };
 
 // Spell description variables, wow build 10.0.2.46924

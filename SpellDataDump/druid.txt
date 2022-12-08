@@ -1,4 +1,4 @@
-SimulationCraft 1002-01 for World of Warcraft 10.0.2.46924 Live (hotfix 2022-12-07/46924)
+SimulationCraft 1002-01 for World of Warcraft 10.0.2.46924 Live (hotfix 2022-12-08/46924)
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=8, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
@@ -19389,7 +19389,8 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : Is Ability (4), Include In Advanced Combat Log (72), Can't Crit (93), Spell Haste Affects Periodic (173), Aura Points On Client (268), Haste Affects Duration (273), Heal Prediction (280)
 Effects          :
 #1 (id=1034209)  : Apply Aura (6) | Periodic Heal (8): every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.25000 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.45000 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : AP Coefficient (1.25 -> 0.45)
 Description      : $@spelldesc393638
 Tooltip          : Healing $w1 every $t1 sec.
 
