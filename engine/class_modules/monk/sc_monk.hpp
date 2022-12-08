@@ -68,19 +68,6 @@ enum class sef_ability_e
   SEF_MAX
 };
 
-enum class bonedust_brew_zone_results_e
-{
-  NONE = 0,
-  TP_FILL1,
-  TP_FILL2,
-  NO_CAP,
-  CAP,
-  BLUE = TP_FILL1,
-  GREEN = TP_FILL2,
-  RED = NO_CAP,
-  PURPLE = CAP
-};
-
 inline int sef_spell_index( int x )
 {
   return x - static_cast<int>( sef_ability_e::SEF_SPELL_MIN );
