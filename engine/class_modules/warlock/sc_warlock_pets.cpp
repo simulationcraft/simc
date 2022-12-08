@@ -1224,7 +1224,7 @@ void wild_imp_pet_t::demise()
 
       if ( imploded && buffs.imp_gang_boss->check() )
       {
-        o()->warlock_pet_list.wild_imps.spawn();
+        make_event( sim, 0_ms, [ this ] { this->o()->warlock_pet_list.wild_imps.spawn(); } );
       }
     }
 
