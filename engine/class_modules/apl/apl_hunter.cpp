@@ -144,7 +144,7 @@ void marksmanship( player_t* p )
   default_->add_action( "call_action_list,name=st,if=active_enemies<3|!talent.trick_shots" );
   default_->add_action( "call_action_list,name=trickshots,if=active_enemies>2" );
 
-  cds->add_action( "berserking,if=fight_remains<13" );
+  cds->add_action( "berserking,if=buff.trueshot.up|fight_remains<13" );
   cds->add_action( "blood_fury,if=buff.trueshot.up|cooldown.trueshot.remains>30|fight_remains<16" );
   cds->add_action( "ancestral_call,if=buff.trueshot.up|cooldown.trueshot.remains>30|fight_remains<16" );
   cds->add_action( "fireblood,if=buff.trueshot.up|cooldown.trueshot.remains>30|fight_remains<9" );
@@ -181,7 +181,7 @@ void marksmanship( player_t* p )
   trickshots->add_action( "death_chakram" );
   trickshots->add_action( "stampede" );
   trickshots->add_action( "wailing_arrow" );
-  trickshots->add_action( "serpent_sting,target_if=min:dot.serpent_sting.remains,if=refreshable&talent.hydras_bite" );
+  trickshots->add_action( "serpent_sting,target_if=min:dot.serpent_sting.remains,if=refreshable&talent.hydras_bite&!talent.serpentstalkers_trickery" );
   trickshots->add_action( "barrage,if=active_enemies>7" );
   trickshots->add_action( "volley" );
   trickshots->add_action( "trueshot" );
@@ -255,7 +255,7 @@ void survival( player_t* p )
   cleave->add_action( "carve" );
   cleave->add_action( "kill_shot" );
   cleave->add_action( "steel_trap,if=focus+cast_regen<focus.max" );
-  cleave->add_action( "serpent_sting,target_if=min:remains,if=refreshable&target.time_to_die>12&(!talent.vipers_venom|talent.hydras_bite)" );
+  cleave->add_action( "serpent_sting,target_if=min:remains,if=refreshable&target.time_to_die>8" );
   cleave->add_action( "mongoose_bite,target_if=min:dot.serpent_sting.remains" );
   cleave->add_action( "raptor_strike,target_if=min:dot.serpent_sting.remains" );
 
