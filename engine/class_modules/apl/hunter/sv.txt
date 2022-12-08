@@ -47,7 +47,7 @@ actions.cleave+="/kill_command,target_if=min:bloodseeker.remains,if=focus+cast_r
 actions.cleave+="/carve"
 actions.cleave+="/kill_shot"
 actions.cleave+="/steel_trap,if=focus+cast_regen<focus.max"
-actions.cleave+="/serpent_sting,target_if=min:remains,if=refreshable&target.time_to_die>8"
+actions.cleave+="/serpent_sting,target_if=min:remains,if=refreshable&target.time_to_die>12&(!talent.vipers_venom|talent.hydras_bite)"
 actions.cleave+="/mongoose_bite,target_if=min:dot.serpent_sting.remains"
 actions.cleave+="/raptor_strike,target_if=min:dot.serpent_sting.remains"
 

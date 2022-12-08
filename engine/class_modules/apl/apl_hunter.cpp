@@ -255,7 +255,7 @@ void survival( player_t* p )
   cleave->add_action( "carve" );
   cleave->add_action( "kill_shot" );
   cleave->add_action( "steel_trap,if=focus+cast_regen<focus.max" );
-  cleave->add_action( "serpent_sting,target_if=min:remains,if=refreshable&target.time_to_die>8" );
+  cleave->add_action( "serpent_sting,target_if=min:remains,if=refreshable&target.time_to_die>12&(!talent.vipers_venom|talent.hydras_bite)" );
   cleave->add_action( "mongoose_bite,target_if=min:dot.serpent_sting.remains" );
   cleave->add_action( "raptor_strike,target_if=min:dot.serpent_sting.remains" );
 
