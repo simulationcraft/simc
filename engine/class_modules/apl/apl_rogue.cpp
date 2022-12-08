@@ -14,7 +14,7 @@ std::string potion( const player_t* p )
 
 std::string flask( const player_t* p )
 {
-  return ( ( p->true_level >= 61 ) ? "phial_of_glacial_fury_3" :
+  return ( ( p->true_level >= 61 ) ? "phial_of_tepid_versatility_3" :
            ( p->true_level >= 51 ) ? "spectral_flask_of_power" :
            ( p->true_level >= 40 ) ? "greater_flask_of_the_currents" :
            ( p->true_level >= 35 ) ? "greater_draenic_agility_flask" :
