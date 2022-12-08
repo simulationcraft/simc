@@ -116,9 +116,9 @@ back=fireproof_drape,id=193763,bonus_id=6808/4786/1643
 chest=lost_landcallers_robes,id=200351,bonus_id=4800/4786/1498,enchant=waking_stats_3
 wrists=loyal_flametenders_bracers,id=195525,bonus_id=4800/3524/1498,gem_id=192961
 hands=treacherous_totem_wraps,id=195514,bonus_id=4800/4786/1498
-waist=bjorns_hunting_strap,id=136776,bonus_id=1795/6808/4786/3156/6935,gem_id=192961
+waist=bjorns_hunting_strap,id=136776,bonus_id=1795/6808/4786/3300/6935,gem_id=192961
 legs=lost_landcallers_leggings,id=200355,bonus_id=4800/4786/1498,enchant=frozen_spellthread_3
-feet=blackwater_boots,id=109799,bonus_id=4177/6808/4786/6072
+feet=blackwater_boots,id=109799,ilevel=421
 finger1=ringbound_hourglass,id=193000,bonus_id=8780/8793,ilevel=418,gem_id=192961,enchant=devotion_of_mastery_3
 finger2=seal_of_filial_duty,id=195526,bonus_id=4800/4786/1497/6935,gem_id=192961,enchant=devotion_of_haste_3
 trinket1=whispering_incarnate_icon,id=194301,bonus_id=4800/4786/1498
@@ -126,13 +126,13 @@ trinket2=furious_ragefeather,id=193677,bonus_id=6808/4786/1643
 main_hand=final_grade,id=193707,bonus_id=6808/4786/1643,enchant=sophic_devotion_3
 
 # Gear Summary
-# gear_ilvl=401.80
-# gear_stamina=11675
-# gear_intellect=6559
-# gear_crit_rating=1100
-# gear_haste_rating=3768
-# gear_mastery_rating=4872
+# gear_ilvl=421.40
+# gear_stamina=13241
+# gear_intellect=7117
+# gear_crit_rating=1374
+# gear_haste_rating=4028
+# gear_mastery_rating=5222
 # gear_versatility_rating=561
-# gear_armor=2833
+# gear_armor=3335
 # set_bonus=tier29_2pc=1
 # set_bonus=tier29_4pc=1
