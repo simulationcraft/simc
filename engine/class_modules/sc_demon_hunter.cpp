@@ -221,6 +221,7 @@ public:
 
     // Vengeance
     buff_t* demon_spikes;
+    buff_t* painbringer;
     absorb_buff_t* soul_barrier;
 
     // Set Bonuses
@@ -388,7 +389,7 @@ public:
       player_talent_t revel_in_pain;              // NYI
 
       player_talent_t soul_furnace;               // NYI
-      player_talent_t painbringer;                // NYI
+      player_talent_t painbringer;
       player_talent_t darkglare_boon;             // NYI
       player_talent_t fiery_demise;               // NYI
       player_talent_t chains_of_anger;
@@ -514,7 +515,7 @@ public:
     const spell_data_t* riposte;
     const spell_data_t* soul_cleave_2;
     const spell_data_t* thick_skin;
-
+    const spell_data_t* painbringer_buff;
   } spec;
 
   // Set Bonus effects
@@ -5347,6 +5348,12 @@ void demon_hunter_t::create_buffs()
 
   buff.demon_spikes = new buffs::demon_spikes_t(this);
 
+  buff.painbringer = make_buff( this, "painbringer", spec.painbringer_buff )
+                         ->set_default_value( talent.vengeance.painbringer->effectN( 1 ).percent() )
+                         ->set_refresh_behavior( buff_refresh_behavior::DURATION )
+                         ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+                         ->set_period( 0_ms );
+
   buff.soul_barrier = make_buff<absorb_buff_t>( this, "soul_barrier", talent.vengeance.soul_barrier );
   buff.soul_barrier->set_absorb_source( get_stats( "soul_barrier" ) )
     ->set_absorb_gain( get_gain( "soul_barrier" ) )
@@ -5770,7 +5777,8 @@ void demon_hunter_t::init_spells()
   spec.infernal_strike        = find_specialization_spell( "Infernal Strike" );
   spec.soul_cleave            = find_specialization_spell( "Soul Cleave" );
   spec.soul_cleave_2          = find_rank_spell( "Soul Cleave", "Rank 2" );
-  spec.riposte                = find_specialization_spell( "Riposte" ); 
+  spec.riposte                = find_specialization_spell( "Riposte" );
+  spec.painbringer_buff       = find_spell( 212988, DEMON_HUNTER_VENGEANCE );
 
   // Masteries ==============================================================
 
@@ -6752,6 +6760,8 @@ void demon_hunter_t::target_mitigation( school_e school, result_amount_type dt, 
       + spec.demonic_wards_2->effectN( 1 ).percent()
       + spec.demonic_wards_3->effectN( 1 ).percent();
 
+    s->result_amount *= 1.0 + buff.painbringer->check_stack_value();
+
     const demon_hunter_td_t* td = get_target_data( s->action->player );
     if ( td->dots.fiery_brand && td->dots.fiery_brand->is_ticking() )
     {
@@ -6914,6 +6924,11 @@ unsigned demon_hunter_t::consume_soul_fragments( soul_fragment type, bool heal, 
     sim->out_debug.printf( "%s consumes %u %ss. remaining=%u", name(), souls_consumed,
                            get_soul_fragment_str( type ), 0,
                            get_total_soul_fragments( type ) );
+  }
+
+  if ( souls_consumed > 0 )
+  {
+    buff.painbringer->trigger( souls_consumed );
   }
 
   return souls_consumed;
