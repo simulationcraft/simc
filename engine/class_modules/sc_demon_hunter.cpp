@@ -367,7 +367,7 @@ public:
       player_talent_t shear_fury;
       player_talent_t fracture;                   // NYI
       player_talent_t calcified_spikes;           // NYI
-      player_talent_t roaring_fire;
+      player_talent_t roaring_fire;               // NYI
       player_talent_t sigil_of_silence;           // NYI
       player_talent_t retaliation;                // NYI
       player_talent_t fel_flame_fortification;    // NYI
@@ -384,7 +384,7 @@ public:
       player_talent_t void_reaver;
       player_talent_t fallout;                    // NYI
       player_talent_t ruinous_bulwark;            // NYI
-      player_talent_t volatile_flameblood;
+      player_talent_t volatile_flameblood;        // NYI
       player_talent_t revel_in_pain;              // NYI
 
       player_talent_t soul_furnace;               // NYI
@@ -1345,13 +1345,8 @@ public:
 
     ab::apply_affecting_aura( p->talent.vengeance.perfectly_balanced_glaive );
     ab::apply_affecting_aura( p->talent.vengeance.meteoric_strikes );
-    ab::apply_affecting_aura( p->talent.vengeance.shear_fury );
-    ab::apply_affecting_aura( p->talent.vengeance.roaring_fire );
-    ab::apply_affecting_aura( p->talent.vengeance.agonizing_flames );
-    ab::apply_affecting_aura( p->talent.vengeance.extended_spikes );
     ab::apply_affecting_aura( p->talent.vengeance.burning_blood );
     ab::apply_affecting_aura( p->talent.vengeance.ruinous_bulwark );
-    ab::apply_affecting_aura( p->talent.vengeance.volatile_flameblood );
     ab::apply_affecting_aura( p->talent.vengeance.chains_of_anger );
     ab::apply_affecting_aura( p->talent.vengeance.stoke_the_flames );
     ab::apply_affecting_aura( p->talent.vengeance.down_in_flames );
@@ -1482,7 +1477,7 @@ public:
 
     if ( affected_by.frailty )
     {
-      m *= 1.0 + p()->spec.frailty_debuff->effectN( 4 ).percent() * td( target )->debuffs.frailty->stack();
+      m *= 1.0 + p()->spec.frailty_debuff->effectN( 4 ).percent() * td( target )->debuffs.frailty->check();
     }
 
     return m;
@@ -4523,6 +4518,10 @@ struct shear_t : public demon_hunter_attack_t
     {
       ea += p()->spec.metamorphosis_buff->effectN( 4 ).resource( RESOURCE_FURY );
     }
+    if ( p()->talent.vengeance.shear_fury->ok() )
+    {
+      ea += p()->talent.vengeance.shear_fury->effectN( 1 ).resource( RESOURCE_FURY );
+    }
 
     return ea;
   }
@@ -4996,6 +4995,7 @@ struct demon_spikes_t : public demon_hunter_buff_t<buff_t>
   {
     set_default_value_from_effect_type( A_MOD_PARRY_PERCENT );
     set_refresh_behavior( buff_refresh_behavior::EXTEND );
+    apply_affecting_aura( p->talent.vengeance.extended_spikes );
     add_invalidate( CACHE_PARRY );
     add_invalidate( CACHE_ARMOR );
   }
@@ -6758,7 +6758,7 @@ void demon_hunter_t::target_mitigation( school_e school, result_amount_type dt, 
       s->result_amount *= 1.0 + spec.fiery_brand_dr->effectN( 1 ).percent();
     }
 
-    if ( td->debuffs.frailty->up() && talent.vengeance.void_reaver )
+    if ( td->debuffs.frailty->check() && talent.vengeance.void_reaver )
     {
       s->result_amount *= 1.0 + spec.frailty_debuff->effectN( 3 ).percent() * td->debuffs.frailty->stack();
     }
