@@ -3747,7 +3747,6 @@ struct breath_of_fire_t : public monk_spell_t
     if ( no_bof_hit == false && td.debuff.keg_smash->up() )
     {
       p()->active_actions.breath_of_fire->target = s->target;
-      // p()->active_actions.breath_of_fire->base_multiplier = 1 + p()->buff.blackout_combo->data().effectN( 5 ).percent();
 
       p()->active_actions.breath_of_fire->execute();
     }
