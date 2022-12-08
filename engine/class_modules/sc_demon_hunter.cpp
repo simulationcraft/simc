@@ -81,8 +81,6 @@ public:
 
     // Vengeance
     buff_t* frailty;
-    buff_t* void_reaver;
-
   } debuffs;
 
   demon_hunter_td_t( player_t* target, demon_hunter_t& p );
@@ -383,7 +381,7 @@ public:
       player_talent_t bulk_extraction;            // NYI
       player_talent_t sigil_of_chains;            // NYI
 
-      player_talent_t void_reaver;                // NYI
+      player_talent_t void_reaver;
       player_talent_t fallout;                    // NYI
       player_talent_t ruinous_bulwark;            // NYI
       player_talent_t volatile_flameblood;
@@ -401,11 +399,11 @@ public:
       player_talent_t burning_alive;              // NYI
       player_talent_t cycle_of_binding;           // NYI
 
-      player_talent_t vulnerability;              // NYI
+      player_talent_t vulnerability;
       player_talent_t feed_the_demon;             // NYI
       player_talent_t charred_flesh;              // NYI
 
-      player_talent_t soulcrush;                  // NYI
+      player_talent_t soulcrush;
       player_talent_t soul_carver;
       player_talent_t last_resort;                // NYI
       player_talent_t fodder_to_the_flame;        // NYI
@@ -512,6 +510,7 @@ public:
     const spell_data_t* demonic_wards_2;
     const spell_data_t* demonic_wards_3;
     const spell_data_t* fiery_brand_dr;
+    const spell_data_t* frailty_debuff;
     const spell_data_t* riposte;
     const spell_data_t* soul_cleave_2;
     const spell_data_t* thick_skin;
@@ -1273,6 +1272,8 @@ public:
     bool essence_break = false;
     bool burning_wound = false;
 
+    // Vengeance
+    bool frailty = false;
   } affected_by;
 
   std::vector<damage_buff_t*> direct_damage_buffs;
@@ -1386,7 +1387,10 @@ public:
     else // DEMON_HUNTER_VENGEANCE
     {
       // Rank Passives
-
+      if ( p->talent.vengeance.vulnerability->ok() )
+      {
+        affected_by.frailty = ab::data().affected_by( p->spec.frailty_debuff->effectN( 4 ) );
+      }
     }
   }
 
@@ -1474,6 +1478,11 @@ public:
     if ( affected_by.burning_wound )
     {
       m *= 1.0 + td( target )->debuffs.burning_wound->check_value();
+    }
+
+    if ( affected_by.frailty )
+    {
+      m *= 1.0 + p()->spec.frailty_debuff->effectN( 4 ).percent() * td( target )->debuffs.frailty->stack();
     }
 
     return m;
@@ -1668,7 +1677,7 @@ public:
       return;
 
     const demon_hunter_td_t* target_data = td( s->target );
-    if ( !target_data->debuffs.frailty->check() )
+    if ( !target_data->debuffs.frailty->up() )
       return;
 
     const double multiplier = target_data->debuffs.frailty->stack_value();
@@ -2571,6 +2580,17 @@ struct sigil_of_flame_damage_t : public demon_hunter_sigil_t
     }
   }
 
+  void impact( action_state_t* s ) override
+  {
+    // Sigil of Flame can apply Frailty if Frailty is talented
+    if ( result_is_hit( s->result ) && p()->talent.vengeance.frailty->ok() )
+    {
+      td( s->target )->debuffs.frailty->trigger();
+    }
+
+    demon_hunter_sigil_t::impact( s );
+  }
+
   dot_t* get_dot( player_t* t ) override
   {
     if ( !t ) t = target;
@@ -3164,6 +3184,12 @@ struct spirit_bomb_t : public demon_hunter_spell_t
       if (result_is_hit(s->result))
       {
         td(s->target)->debuffs.frailty->trigger();
+      }
+      // Spirit Bomb applies a second stack of Frailty to the primary target if Soulcrush is talented,
+      // doesn't need to be a hit.
+      if ( s->chain_target == 0 && p()->talent.vengeance.soulcrush->ok() )
+      {
+        td( s->target )->debuffs.frailty->trigger();
       }
 
       demon_hunter_spell_t::impact(s);
@@ -4528,9 +4554,16 @@ struct soul_cleave_t : public demon_hunter_attack_t
     {
       demon_hunter_attack_t::impact( s );
 
+      // Soul Cleave can apply Frailty if Void Reaver is talented
       if ( result_is_hit( s->result ) && p()->talent.vengeance.void_reaver->ok() )
       {
-        td( s->target )->debuffs.void_reaver->trigger();
+        td( s->target )->debuffs.frailty->trigger();
+      }
+      // Soul Cleave applies a stack of Frailty to the primary target if Soulcrush is talented,
+      // doesn't need to hit.
+      if ( s->chain_target == 0 && p()->talent.vengeance.soulcrush->ok() )
+      {
+        td( s->target )->debuffs.frailty->trigger();
       }
     }
   };
@@ -5063,10 +5096,12 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
   else // DEMON_HUNTER_VENGEANCE
   {
     dots.fiery_brand = target->get_dot("fiery_brand", &p);
-    debuffs.frailty = make_buff( *this, "frailty", p.find_spell( 247456 ) )
-      ->set_default_value_from_effect( 1 );
-    debuffs.void_reaver = make_buff( *this, "void_reaver", p.find_spell( 268178 ) )
-      ->set_default_value_from_effect_type( A_MOD_DAMAGE_TO_CASTER );
+    debuffs.frailty  = make_buff( *this, "frailty", p.spec.frailty_debuff )
+                          ->set_default_value_from_effect( 1 )
+                          ->set_refresh_behavior( buff_refresh_behavior::DURATION )
+                          ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+                          ->set_period( 0_ms )
+                          ->apply_affecting_aura( p.talent.vengeance.soulcrush );
   }
 
   dots.sigil_of_flame = target->get_dot( "sigil_of_flame", &p );
@@ -5957,8 +5992,9 @@ void demon_hunter_t::init_spells()
   spec.soulrend_debuff = talent.havoc.soulrend->ok() ? find_spell( 390181 ) : spell_data_t::not_found();
   spec.tactical_retreat_buff = talent.havoc.tactical_retreat->ok() ? find_spell( 389890 ) : spell_data_t::not_found();
   spec.unbound_chaos_buff = talent.havoc.unbound_chaos->ok() ? find_spell( 347462 ) : spell_data_t::not_found();
-  
+
   spec.fiery_brand_dr = talent.vengeance.fiery_brand->ok() ? find_spell( 207744 ) : spell_data_t::not_found();
+  spec.frailty_debuff = talent.vengeance.frailty->ok() ? find_spell( 247456 ) : spell_data_t::not_found();
 
   if ( talent.havoc.elysian_decree->ok() || talent.vengeance.elysian_decree->ok() )
   {
@@ -6722,9 +6758,9 @@ void demon_hunter_t::target_mitigation( school_e school, result_amount_type dt, 
       s->result_amount *= 1.0 + spec.fiery_brand_dr->effectN( 1 ).percent();
     }
 
-    if ( td->debuffs.void_reaver )
+    if ( td->debuffs.frailty->up() && talent.vengeance.void_reaver )
     {
-      s->result_amount *= 1.0 + td->debuffs.void_reaver->stack_value();
+      s->result_amount *= 1.0 + spec.frailty_debuff->effectN( 3 ).percent() * td->debuffs.frailty->stack();
     }
   }
 }
