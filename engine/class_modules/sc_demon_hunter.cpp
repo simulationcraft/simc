@@ -390,7 +390,7 @@ public:
       player_talent_t soul_furnace;               // NYI
       player_talent_t painbringer;                // NYI
       player_talent_t darkglare_boon;             // NYI
-      player_talent_t fiery_demise;               // NYI
+      player_talent_t fiery_demise;
       player_talent_t chains_of_anger;
 
       player_talent_t focused_cleave;             // NYI
@@ -509,7 +509,8 @@ public:
 
     const spell_data_t* demonic_wards_2;
     const spell_data_t* demonic_wards_3;
-    const spell_data_t* fiery_brand_dr;
+    const spell_data_t* fiery_brand_debuff;
+    const spell_data_t* fiery_brand_dot_damage;
     const spell_data_t* frailty_debuff;
     const spell_data_t* riposte;
     const spell_data_t* soul_cleave_2;
@@ -1274,6 +1275,7 @@ public:
 
     // Vengeance
     bool frailty = false;
+    bool fiery_demise = false;
   } affected_by;
 
   std::vector<damage_buff_t*> direct_damage_buffs;
@@ -1386,6 +1388,10 @@ public:
       {
         affected_by.frailty = ab::data().affected_by( p->spec.frailty_debuff->effectN( 4 ) );
       }
+      if ( p->talent.vengeance.fiery_demise->ok() )
+      {
+        affected_by.fiery_demise = ab::data().affected_by( p->spec.fiery_brand_debuff->effectN( 2 ) );
+      }
     }
   }
 
@@ -1478,6 +1484,11 @@ public:
     if ( affected_by.frailty )
     {
       m *= 1.0 + p()->spec.frailty_debuff->effectN( 4 ).percent() * td( target )->debuffs.frailty->check();
+    }
+
+    if ( affected_by.fiery_demise && td(target)->dots.fiery_brand->is_ticking() )
+    {
+      m *= 1.0 + p()->talent.vengeance.fiery_demise->effectN( 1 ).percent();
     }
 
     return m;
@@ -2410,7 +2421,7 @@ struct fiery_brand_t : public demon_hunter_spell_t
   struct fiery_brand_dot_t : public demon_hunter_spell_t
   {
     fiery_brand_dot_t( util::string_view name, demon_hunter_t* p )
-      : demon_hunter_spell_t( name, p, p->find_spell( 207771 ) )
+      : demon_hunter_spell_t( name, p, p->spec.fiery_brand_dot_damage )
     {
       background = dual = true;
 
@@ -2473,22 +2484,14 @@ struct fiery_brand_t : public demon_hunter_spell_t
 
   fiery_brand_dot_t* dot_action;
 
-  fiery_brand_t( util::string_view name, demon_hunter_t* p, util::string_view options_str = {} )
-    : demon_hunter_spell_t( name, p, p->talent.vengeance.fiery_brand, options_str ),
-    dot_action( nullptr )
+  fiery_brand_t( demon_hunter_t* p, util::string_view options_str = {} )
+    : demon_hunter_spell_t( "fiery_brand", p, p->talent.vengeance.fiery_brand, options_str ),
+      dot_action( nullptr )
   {
     use_off_gcd = true;
 
-    /* NYI
-    if ( p->spec.fiery_brand_rank_2->ok() )
-    {
-      dot_action = p->get_background_action<fiery_brand_dot_t>( "fiery_brand_dot" );
-      if ( p->specialization() == DEMON_HUNTER_HAVOC || !from_demonic_oath )
-      {
-        dot_action->stats = stats;
-      }
-    }
-    */
+    dot_action = p->get_background_action<fiery_brand_dot_t>( "fiery_brand_dot" );
+    dot_action->stats = stats;
   }
 
   void impact( action_state_t* s ) override
@@ -2499,7 +2502,6 @@ struct fiery_brand_t : public demon_hunter_spell_t
       return;
 
     // Technically 207744 is a variant of the DR debuff without the Rank 2 effect from the DoT
-    // This is only used at max level for Havoc via the Demonic Oath legendary and is not relevant for sims
     if ( dot_action )
     {
       // Trigger the initial DoT action and set the primary flag for use with Burning Alive
@@ -5226,7 +5228,7 @@ action_t* demon_hunter_t::create_action( util::string_view name, util::string_vi
   if ( name == "fel_barrage" )        return new fel_barrage_t( this, options_str );
   if ( name == "fel_eruption" )       return new fel_eruption_t( this, options_str );
   if ( name == "fel_devastation" )    return new fel_devastation_t( this, options_str );
-  if ( name == "fiery_brand" )        return new fiery_brand_t( "fiery_brand", this, options_str );
+  if ( name == "fiery_brand" )        return new fiery_brand_t( this, options_str );
   if ( name == "glaive_tempest" )     return new glaive_tempest_t( this, options_str );
   if ( name == "infernal_strike" )    return new infernal_strike_t( this, options_str );
   if ( name == "immolation_aura" )    return new immolation_aura_t( this, options_str );
@@ -5993,7 +5995,8 @@ void demon_hunter_t::init_spells()
   spec.tactical_retreat_buff = talent.havoc.tactical_retreat->ok() ? find_spell( 389890 ) : spell_data_t::not_found();
   spec.unbound_chaos_buff = talent.havoc.unbound_chaos->ok() ? find_spell( 347462 ) : spell_data_t::not_found();
 
-  spec.fiery_brand_dr = talent.vengeance.fiery_brand->ok() ? find_spell( 207744 ) : spell_data_t::not_found();
+  spec.fiery_brand_debuff = talent.vengeance.fiery_brand->ok() ? find_spell( 207744 ) : spell_data_t::not_found();
+  spec.fiery_brand_dot_damage = talent.vengeance.fiery_brand->ok() ? find_spell( 207771 ) : spell_data_t::not_found();
   spec.frailty_debuff = talent.vengeance.frailty->ok() ? find_spell( 247456 ) : spell_data_t::not_found();
 
   if ( talent.havoc.elysian_decree->ok() || talent.vengeance.elysian_decree->ok() )
@@ -6755,7 +6758,7 @@ void demon_hunter_t::target_mitigation( school_e school, result_amount_type dt, 
     const demon_hunter_td_t* td = get_target_data( s->action->player );
     if ( td->dots.fiery_brand && td->dots.fiery_brand->is_ticking() )
     {
-      s->result_amount *= 1.0 + spec.fiery_brand_dr->effectN( 1 ).percent();
+      s->result_amount *= 1.0 + spec.fiery_brand_debuff->effectN( 1 ).percent();
     }
 
     if ( td->debuffs.frailty->check() && talent.vengeance.void_reaver->ok() )
