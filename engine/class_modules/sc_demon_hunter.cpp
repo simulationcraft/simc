@@ -6758,9 +6758,9 @@ void demon_hunter_t::target_mitigation( school_e school, result_amount_type dt, 
       s->result_amount *= 1.0 + spec.fiery_brand_dr->effectN( 1 ).percent();
     }
 
-    if ( td->debuffs.frailty->check() && talent.vengeance.void_reaver )
+    if ( td->debuffs.frailty->check() && talent.vengeance.void_reaver->ok() )
     {
-      s->result_amount *= 1.0 + spec.frailty_debuff->effectN( 3 ).percent() * td->debuffs.frailty->stack();
+      s->result_amount *= 1.0 + spec.frailty_debuff->effectN( 3 ).percent() * td->debuffs.frailty->check();
     }
   }
 }
