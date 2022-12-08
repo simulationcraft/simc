@@ -4627,9 +4627,6 @@ struct bonedust_brew_t : public monk_spell_t
 
     if ( p.talent.windwalker.dust_in_the_wind->ok() )
       radius *= 1 + p.talent.windwalker.dust_in_the_wind->effectN( 1 ).percent();
-
-    radius = radius;
-
   }
 
   void execute() override
