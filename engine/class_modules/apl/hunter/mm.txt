@@ -63,7 +63,7 @@ actions.trickshots+=/explosive_shot
 actions.trickshots+=/death_chakram
 actions.trickshots+=/stampede
 actions.trickshots+=/wailing_arrow
-actions.trickshots+=/serpent_sting,target_if=min:dot.serpent_sting.remains,if=refreshable&talent.hydras_bite
+actions.trickshots+=/serpent_sting,target_if=min:dot.serpent_sting.remains,if=refreshable&talent.hydras_bite&!talent.serpentstalkers_trickery
 actions.trickshots+=/barrage,if=active_enemies>7
 actions.trickshots+=/volley
 actions.trickshots+=/trueshot
