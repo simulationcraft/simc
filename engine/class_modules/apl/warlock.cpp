@@ -48,6 +48,8 @@ void affliction( player_t* p )
   precombat->add_action( "food" );
   precombat->add_action( "augmentation" );
   precombat->add_action( "summon_pet" );
+  precombat->add_action( "soul_tap, if=talent.demon_skin" );
+  precombat->add_action( "soul_tap, if=talent.demon_skin" );
   precombat->add_action( "variable,name=cleave_apl,default=0,op=reset" );
   precombat->add_action( "grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled" );
   precombat->add_action( "snapshot_stats" );
@@ -61,14 +63,14 @@ void affliction( player_t* p )
   default_->add_action( "call_action_list,name=aoe,if=active_enemies>3" );
   default_->add_action( "call_action_list,name=ogcd" );
   default_->add_action( "call_action_list,name=items" );
-  default_->add_action( "malefic_rapture,if=soul_shard=5" );
   default_->add_action( "haunt" );
+  default_->add_action( "malefic_rapture,if=soul_shard=5" );
   default_->add_action( "soul_swap,if=dot.unstable_affliction.remains<5" );
   default_->add_action( "unstable_affliction,if=remains<5" );
   default_->add_action( "agony,if=remains<5" );
   default_->add_action( "siphon_life,if=remains<5" );
   default_->add_action( "corruption,if=remains<5" );
-  default_->add_action( "soul_tap" );
+  default_->add_action( "soul_tap, if=sould_shard < 2" );
   default_->add_action( "phantom_singularity" );
   default_->add_action( "vile_taint" );
   default_->add_action( "soul_rot" );
