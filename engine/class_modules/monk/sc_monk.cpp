@@ -1875,11 +1875,6 @@ struct rising_sun_kick_t : public monk_melee_attack_t
 
         p()->buff.whirling_dragon_punch->trigger();
     }
-
-    // Not documented anywhere but applying 2 stacks in game
-    // Setting seconnd trigger as a bug here.
-    if ( p()->bugs )
-        p()->buff.transfer_the_power->trigger();
   }
 };
 
