@@ -81,8 +81,6 @@ public:
 
     // Vengeance
     buff_t* frailty;
-    buff_t* void_reaver;
-
   } debuffs;
 
   demon_hunter_td_t( player_t* target, demon_hunter_t& p );
@@ -362,11 +360,11 @@ public:
       player_talent_t frailty;                    // NYI
       player_talent_t fiery_brand;                // NYI
 
-      player_talent_t perfectly_balanced_glaive;  // NYI
+      player_talent_t perfectly_balanced_glaive;
       player_talent_t deflecting_spikes;          // NYI
-      player_talent_t meteoric_spikes;            // NYI
+      player_talent_t meteoric_strikes;
 
-      player_talent_t shear_fury;                 // NYI
+      player_talent_t shear_fury;
       player_talent_t fracture;                   // NYI
       player_talent_t calcified_spikes;           // NYI
       player_talent_t roaring_fire;               // NYI
@@ -376,14 +374,14 @@ public:
 
       player_talent_t spirit_bomb;                // NYI
       player_talent_t feast_of_souls;             // NYI
-      player_talent_t agonizing_flames;           // NYI
-      player_talent_t extended_spikes;            // NYI
-      player_talent_t burning_blood;              // NYI
+      player_talent_t agonizing_flames;
+      player_talent_t extended_spikes;
+      player_talent_t burning_blood;
       player_talent_t soul_barrier;               // NYI
       player_talent_t bulk_extraction;            // NYI
       player_talent_t sigil_of_chains;            // NYI
 
-      player_talent_t void_reaver;                // NYI
+      player_talent_t void_reaver;
       player_talent_t fallout;                    // NYI
       player_talent_t ruinous_bulwark;            // NYI
       player_talent_t volatile_flameblood;        // NYI
@@ -393,24 +391,24 @@ public:
       player_talent_t painbringer;                // NYI
       player_talent_t darkglare_boon;             // NYI
       player_talent_t fiery_demise;               // NYI
-      player_talent_t chains_of_anger;            // NYI
+      player_talent_t chains_of_anger;
 
       player_talent_t focused_cleave;             // NYI
       player_talent_t soulmonger;                 // NYI
-      player_talent_t stoke_the_flames;           // NYI
+      player_talent_t stoke_the_flames;
       player_talent_t burning_alive;              // NYI
       player_talent_t cycle_of_binding;           // NYI
 
-      player_talent_t vulnerability;              // NYI
+      player_talent_t vulnerability;
       player_talent_t feed_the_demon;             // NYI
       player_talent_t charred_flesh;              // NYI
 
-      player_talent_t soulcrush;                  // NYI
+      player_talent_t soulcrush;
       player_talent_t soul_carver;
       player_talent_t last_resort;                // NYI
       player_talent_t fodder_to_the_flame;        // NYI
       player_talent_t elysian_decree;
-      player_talent_t down_in_flames;             // NYI
+      player_talent_t down_in_flames;
 
     } vengeance;
 
@@ -512,6 +510,7 @@ public:
     const spell_data_t* demonic_wards_2;
     const spell_data_t* demonic_wards_3;
     const spell_data_t* fiery_brand_dr;
+    const spell_data_t* frailty_debuff;
     const spell_data_t* riposte;
     const spell_data_t* soul_cleave_2;
     const spell_data_t* thick_skin;
@@ -1273,6 +1272,8 @@ public:
     bool essence_break = false;
     bool burning_wound = false;
 
+    // Vengeance
+    bool frailty = false;
   } affected_by;
 
   std::vector<damage_buff_t*> direct_damage_buffs;
@@ -1342,6 +1343,14 @@ public:
     ab::apply_affecting_aura( p->talent.havoc.any_means_necessary );
     ab::apply_affecting_aura( p->talent.havoc.dancing_with_fate );
 
+    ab::apply_affecting_aura( p->talent.vengeance.perfectly_balanced_glaive );
+    ab::apply_affecting_aura( p->talent.vengeance.meteoric_strikes );
+    ab::apply_affecting_aura( p->talent.vengeance.burning_blood );
+    ab::apply_affecting_aura( p->talent.vengeance.ruinous_bulwark );
+    ab::apply_affecting_aura( p->talent.vengeance.chains_of_anger );
+    ab::apply_affecting_aura( p->talent.vengeance.stoke_the_flames );
+    ab::apply_affecting_aura( p->talent.vengeance.down_in_flames );
+
     // Rank Passives
     if ( p->specialization() == DEMON_HUNTER_HAVOC )
     {
@@ -1373,7 +1382,10 @@ public:
     else // DEMON_HUNTER_VENGEANCE
     {
       // Rank Passives
-
+      if ( p->talent.vengeance.vulnerability->ok() )
+      {
+        affected_by.frailty = ab::data().affected_by( p->spec.frailty_debuff->effectN( 4 ) );
+      }
     }
   }
 
@@ -1461,6 +1473,11 @@ public:
     if ( affected_by.burning_wound )
     {
       m *= 1.0 + td( target )->debuffs.burning_wound->check_value();
+    }
+
+    if ( affected_by.frailty )
+    {
+      m *= 1.0 + p()->spec.frailty_debuff->effectN( 4 ).percent() * td( target )->debuffs.frailty->check();
     }
 
     return m;
@@ -1655,7 +1672,7 @@ public:
       return;
 
     const demon_hunter_td_t* target_data = td( s->target );
-    if ( !target_data->debuffs.frailty->check() )
+    if ( !target_data->debuffs.frailty->up() )
       return;
 
     const double multiplier = target_data->debuffs.frailty->stack_value();
@@ -2558,6 +2575,17 @@ struct sigil_of_flame_damage_t : public demon_hunter_sigil_t
     }
   }
 
+  void impact( action_state_t* s ) override
+  {
+    // Sigil of Flame can apply Frailty if Frailty is talented
+    if ( result_is_hit( s->result ) && p()->talent.vengeance.frailty->ok() )
+    {
+      td( s->target )->debuffs.frailty->trigger();
+    }
+
+    demon_hunter_sigil_t::impact( s );
+  }
+
   dot_t* get_dot( player_t* t ) override
   {
     if ( !t ) t = target;
@@ -3151,6 +3179,12 @@ struct spirit_bomb_t : public demon_hunter_spell_t
       if (result_is_hit(s->result))
       {
         td(s->target)->debuffs.frailty->trigger();
+      }
+      // Spirit Bomb applies a second stack of Frailty to the primary target if Soulcrush is talented,
+      // doesn't need to be a hit.
+      if ( s->chain_target == 0 && p()->talent.vengeance.soulcrush->ok() )
+      {
+        td( s->target )->debuffs.frailty->trigger();
       }
 
       demon_hunter_spell_t::impact(s);
@@ -4484,6 +4518,10 @@ struct shear_t : public demon_hunter_attack_t
     {
       ea += p()->spec.metamorphosis_buff->effectN( 4 ).resource( RESOURCE_FURY );
     }
+    if ( p()->talent.vengeance.shear_fury->ok() )
+    {
+      ea += p()->talent.vengeance.shear_fury->effectN( 1 ).resource( RESOURCE_FURY );
+    }
 
     return ea;
   }
@@ -4515,9 +4553,16 @@ struct soul_cleave_t : public demon_hunter_attack_t
     {
       demon_hunter_attack_t::impact( s );
 
+      // Soul Cleave can apply Frailty if Void Reaver is talented
       if ( result_is_hit( s->result ) && p()->talent.vengeance.void_reaver->ok() )
       {
-        td( s->target )->debuffs.void_reaver->trigger();
+        td( s->target )->debuffs.frailty->trigger();
+      }
+      // Soul Cleave applies a stack of Frailty to the primary target if Soulcrush is talented,
+      // doesn't need to hit.
+      if ( s->chain_target == 0 && p()->talent.vengeance.soulcrush->ok() )
+      {
+        td( s->target )->debuffs.frailty->trigger();
       }
     }
   };
@@ -4950,6 +4995,7 @@ struct demon_spikes_t : public demon_hunter_buff_t<buff_t>
   {
     set_default_value_from_effect_type( A_MOD_PARRY_PERCENT );
     set_refresh_behavior( buff_refresh_behavior::EXTEND );
+    apply_affecting_aura( p->talent.vengeance.extended_spikes );
     add_invalidate( CACHE_PARRY );
     add_invalidate( CACHE_ARMOR );
   }
@@ -5050,10 +5096,12 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
   else // DEMON_HUNTER_VENGEANCE
   {
     dots.fiery_brand = target->get_dot("fiery_brand", &p);
-    debuffs.frailty = make_buff( *this, "frailty", p.find_spell( 247456 ) )
-      ->set_default_value_from_effect( 1 );
-    debuffs.void_reaver = make_buff( *this, "void_reaver", p.find_spell( 268178 ) )
-      ->set_default_value_from_effect_type( A_MOD_DAMAGE_TO_CASTER );
+    debuffs.frailty  = make_buff( *this, "frailty", p.spec.frailty_debuff )
+                          ->set_default_value_from_effect( 1 )
+                          ->set_refresh_behavior( buff_refresh_behavior::DURATION )
+                          ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+                          ->set_period( 0_ms )
+                          ->apply_affecting_aura( p.talent.vengeance.soulcrush );
   }
 
   dots.sigil_of_flame = target->get_dot( "sigil_of_flame", &p );
@@ -5850,7 +5898,62 @@ void demon_hunter_t::init_spells()
 
   // Vengeance Talents
 
-  talent.vengeance.soul_carver = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Carver" );
+  talent.vengeance.fel_devastation = find_talent_spell( talent_tree::SPECIALIZATION, "Fel Devastation" );
+
+  talent.vengeance.frailty     = find_talent_spell( talent_tree::SPECIALIZATION, "Frailty" );
+  talent.vengeance.fiery_brand = find_talent_spell( talent_tree::SPECIALIZATION, "Fiery Brand" );
+
+  talent.vengeance.perfectly_balanced_glaive =
+      find_talent_spell( talent_tree::SPECIALIZATION, "Perfectly Balanced Glaive" );
+  talent.vengeance.deflecting_spikes = find_talent_spell( talent_tree::SPECIALIZATION, "Deflecting Spikes" );
+  talent.vengeance.meteoric_strikes  = find_talent_spell( talent_tree::SPECIALIZATION, "Meteoric Strikes" );
+
+  talent.vengeance.shear_fury       = find_talent_spell( talent_tree::SPECIALIZATION, "Shear Fury" );
+  talent.vengeance.fracture         = find_talent_spell( talent_tree::SPECIALIZATION, "Fracture" );
+  talent.vengeance.calcified_spikes = find_talent_spell( talent_tree::SPECIALIZATION, "Calcified Spikes" );
+  talent.vengeance.roaring_fire     = find_talent_spell( talent_tree::SPECIALIZATION, "Roaring Fire" );
+  talent.vengeance.sigil_of_silence = find_talent_spell( talent_tree::SPECIALIZATION, "Sigil of Silence" );
+  talent.vengeance.retaliation      = find_talent_spell( talent_tree::SPECIALIZATION, "Retaliation" );
+  talent.vengeance.fel_flame_fortification =
+      find_talent_spell( talent_tree::SPECIALIZATION, "Fel Flame Fortification" );
+
+  talent.vengeance.spirit_bomb      = find_talent_spell( talent_tree::SPECIALIZATION, "Spirit Bomb" );
+  talent.vengeance.feast_of_souls   = find_talent_spell( talent_tree::SPECIALIZATION, "Feast of Souls" );
+  talent.vengeance.agonizing_flames = find_talent_spell( talent_tree::SPECIALIZATION, "Agonizing Flames" );
+  talent.vengeance.extended_spikes  = find_talent_spell( talent_tree::SPECIALIZATION, "Extended Spikes" );
+  talent.vengeance.burning_blood    = find_talent_spell( talent_tree::SPECIALIZATION, "Burning Blood" );
+  talent.vengeance.soul_barrier     = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Barrier" );
+  talent.vengeance.bulk_extraction  = find_talent_spell( talent_tree::SPECIALIZATION, "Bulk Extraction" );
+  talent.vengeance.sigil_of_chains  = find_talent_spell( talent_tree::SPECIALIZATION, "Sigil of Chains" );
+
+  talent.vengeance.void_reaver         = find_talent_spell( talent_tree::SPECIALIZATION, "Void Reaver" );
+  talent.vengeance.fallout             = find_talent_spell( talent_tree::SPECIALIZATION, "Fallout" );
+  talent.vengeance.ruinous_bulwark     = find_talent_spell( talent_tree::SPECIALIZATION, "Ruinous Bulwark" );
+  talent.vengeance.volatile_flameblood = find_talent_spell( talent_tree::SPECIALIZATION, "Volatile Flameblood" );
+  talent.vengeance.revel_in_pain       = find_talent_spell( talent_tree::SPECIALIZATION, "Revel in Pain" );
+
+  talent.vengeance.soul_furnace    = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Furnace" );
+  talent.vengeance.painbringer     = find_talent_spell( talent_tree::SPECIALIZATION, "Painbringer" );
+  talent.vengeance.darkglare_boon  = find_talent_spell( talent_tree::SPECIALIZATION, "Darkglare Boon" );
+  talent.vengeance.fiery_demise    = find_talent_spell( talent_tree::SPECIALIZATION, "Fiery Demise" );
+  talent.vengeance.chains_of_anger = find_talent_spell( talent_tree::SPECIALIZATION, "Chains of Anger" );
+
+  talent.vengeance.focused_cleave   = find_talent_spell( talent_tree::SPECIALIZATION, "Focused Cleave" );
+  talent.vengeance.soulmonger       = find_talent_spell( talent_tree::SPECIALIZATION, "Soulmonger" );
+  talent.vengeance.stoke_the_flames = find_talent_spell( talent_tree::SPECIALIZATION, "Stoke the Flames" );
+  talent.vengeance.burning_alive    = find_talent_spell( talent_tree::SPECIALIZATION, "Burning Alive" );
+  talent.vengeance.cycle_of_binding = find_talent_spell( talent_tree::SPECIALIZATION, "Cycle of Binding" );
+
+  talent.vengeance.vulnerability  = find_talent_spell( talent_tree::SPECIALIZATION, "Vulnerability" );
+  talent.vengeance.feed_the_demon = find_talent_spell( talent_tree::SPECIALIZATION, "Feed the Demon" );
+  talent.vengeance.charred_flesh  = find_talent_spell( talent_tree::SPECIALIZATION, "Charred Flesh" );
+
+  talent.vengeance.soulcrush           = find_talent_spell( talent_tree::SPECIALIZATION, "Soulcrush" );
+  talent.vengeance.soul_carver         = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Carver" );
+  talent.vengeance.last_resort         = find_talent_spell( talent_tree::SPECIALIZATION, "Last Resort" );
+  talent.vengeance.fodder_to_the_flame = find_talent_spell( talent_tree::SPECIALIZATION, "Fodder to the Flame" );
+  talent.vengeance.elysian_decree      = find_talent_spell( talent_tree::SPECIALIZATION, "Elysian Decree" );
+  talent.vengeance.down_in_flames      = find_talent_spell( talent_tree::SPECIALIZATION, "Down in Flames" );
 
   // Class Background Spells
   spell.felblade_damage = talent.demon_hunter.felblade->ok() ? find_spell( 213243 ) : spell_data_t::not_found();
@@ -5889,8 +5992,9 @@ void demon_hunter_t::init_spells()
   spec.soulrend_debuff = talent.havoc.soulrend->ok() ? find_spell( 390181 ) : spell_data_t::not_found();
   spec.tactical_retreat_buff = talent.havoc.tactical_retreat->ok() ? find_spell( 389890 ) : spell_data_t::not_found();
   spec.unbound_chaos_buff = talent.havoc.unbound_chaos->ok() ? find_spell( 347462 ) : spell_data_t::not_found();
-  
+
   spec.fiery_brand_dr = talent.vengeance.fiery_brand->ok() ? find_spell( 207744 ) : spell_data_t::not_found();
+  spec.frailty_debuff = talent.vengeance.frailty->ok() ? find_spell( 247456 ) : spell_data_t::not_found();
 
   if ( talent.havoc.elysian_decree->ok() || talent.vengeance.elysian_decree->ok() )
   {
@@ -6654,9 +6758,9 @@ void demon_hunter_t::target_mitigation( school_e school, result_amount_type dt, 
       s->result_amount *= 1.0 + spec.fiery_brand_dr->effectN( 1 ).percent();
     }
 
-    if ( td->debuffs.void_reaver )
+    if ( td->debuffs.frailty->check() && talent.vengeance.void_reaver->ok() )
     {
-      s->result_amount *= 1.0 + td->debuffs.void_reaver->stack_value();
+      s->result_amount *= 1.0 + spec.frailty_debuff->effectN( 3 ).percent() * td->debuffs.frailty->check();
     }
   }
 }
