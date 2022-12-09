@@ -1034,8 +1034,8 @@ void globe_of_jagged_ice( special_effect_t& effect )
   {
     breaking_the_ice_t( const special_effect_t& e ) : generic_aoe_proc_t( e, "breaking_the_ice", 388948, true )
     {
-      // TODO: tooltip displays values based on the damage spell, but the actual value is from the debuff spell
-      base_dd_min = base_dd_max = e.trigger()->effectN( 1 ).average( e.item ) / data().max_stacks();
+      // Tooltip and damage value is based on max stacks
+      base_dd_min = base_dd_max = data().effectN( 1 ).average( e.item ) / data().max_stacks();
     }
 
     bool target_ready( player_t* t ) override
