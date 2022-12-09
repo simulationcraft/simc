@@ -772,6 +772,20 @@ struct inquisitors_gaze_t : public warlock_spell_t
   }
 };
 
+struct soulburn_t : public warlock_spell_t
+{
+  soulburn_t( warlock_t* p, util::string_view options_str )
+    : warlock_spell_t( "Soulburn", p, p->talents.soulburn )
+  {
+    parse_options( options_str );
+    harmful = false;
+    may_crit = false;
+  }
+
+  // We could put an execute here to trigger a buff, but the only use for Soulburn from a DPS perspective is
+  // to trigger it for the shard spending and then cancelaura the buff so it can be used again after the cooldown
+};
+
 // Catchall action to trigger pet interrupt abilities via main APL.
 // Using this should ensure that interrupt callback effects (Sephuz etc) proc correctly for the warlock.
 struct interrupt_t : public spell_t
@@ -1306,6 +1320,8 @@ action_t* warlock_t::create_action_warlock( util::string_view action_name, util:
     return new summon_soulkeeper_t( this, options_str );
   if ( action_name == "inquisitors_gaze" )
     return new inquisitors_gaze_t( this, options_str );
+  if ( action_name == "soulburn" )
+    return new soulburn_t( this, options_str );
 
   return nullptr;
 }
@@ -1516,6 +1532,8 @@ void warlock_t::init_spells()
   talents.inquisitors_gaze_buff = find_spell( 388068 );
   talents.fel_bolt = find_spell( 388070 );
   talents.fel_blast = find_spell( 389277 );
+
+  talents.soulburn = find_talent_spell( talent_tree::CLASS, "Soulburn" ); // Should be ID 385899
 }
 
 void warlock_t::init_rng()
