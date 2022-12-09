@@ -178,6 +178,7 @@ public:
     const spell_data_t* inquisitors_gaze_buff; // Aura which triggers the damage procs
     const spell_data_t* fel_bolt; // Inquisitor's Eye spell #1
     const spell_data_t* fel_blast; // Inquisitor's Eye spell #2
+    player_talent_t soulburn;
 
     // Specializations
 
