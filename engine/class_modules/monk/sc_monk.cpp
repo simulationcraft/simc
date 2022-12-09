@@ -3736,6 +3736,12 @@ struct breath_of_fire_t : public monk_spell_t
     monk_spell_t::execute();
 
     p()->buff.charred_passions->trigger();
+
+    if ( no_bof_hit == false && p()->talent.brewmaster.dragonfire_brew->ok() )
+    {
+      dragonfire->execute();
+      dragonfire->execute();
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -3754,13 +3760,13 @@ struct breath_of_fire_t : public monk_spell_t
       p()->active_actions.breath_of_fire->execute();
     }
 
-    if ( no_bof_hit == false && p()->talent.brewmaster.dragonfire_brew->ok() )
-    {
-      dragonfire->execute();
-      dragonfire->execute();
-      // for ( int i = 0; i < (int)p()->talent.brewmaster.dragonfire_brew->effectN( 1 ).base_value(); i++ )
-      //   dragonfire->execute();
-    }
+    // if ( no_bof_hit == false && p()->talent.brewmaster.dragonfire_brew->ok() )
+    // {
+    //   dragonfire->execute();
+    //   dragonfire->execute();
+    //   // for ( int i = 0; i < (int)p()->talent.brewmaster.dragonfire_brew->effectN( 1 ).base_value(); i++ )
+    //   //   dragonfire->execute();
+    // }
   }
 };
 
