@@ -3036,17 +3036,17 @@ struct touch_of_death_t : public monk_melee_attack_t
     return 0;
   }
 
-  bool ready() override
+  bool target_ready( player_t* target_) override
   {
     // Deals damage equal to 35% of your maximum health against players and stronger creatures under 15% health
     if ( target->true_level > p()->true_level && p()->talent.general.improved_touch_of_death->ok() &&
          ( target->health_percentage() < p()->talent.general.improved_touch_of_death->effectN( 1 ).base_value() ) )
-      return monk_melee_attack_t::ready();
+      return monk_melee_attack_t::target_ready( target );
 
     // You exploit the enemy target's weakest point, instantly killing creatures if they have less health than you
     // Only applicable in health based sims
     if ( target->current_health() > 0 && target->current_health() <= p()->resources.max[ RESOURCE_HEALTH ] )
-      return monk_melee_attack_t::ready();
+      return monk_melee_attack_t::target_ready( target );
 
     return false;
   }
@@ -4627,6 +4627,9 @@ struct bonedust_brew_t : public monk_spell_t
 
     if ( p.talent.windwalker.dust_in_the_wind->ok() )
       radius *= 1 + p.talent.windwalker.dust_in_the_wind->effectN( 1 ).percent();
+
+    radius = radius;
+
   }
 
   void execute() override
