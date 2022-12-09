@@ -3760,6 +3760,7 @@ struct breath_of_fire_t : public monk_spell_t
     if ( no_bof_hit == false && p()->talent.brewmaster.dragonfire_brew->ok() )
     {
       dragonfire->execute();
+      dragonfire->execute();
       // for ( int i = 0; i < (int)p()->talent.brewmaster.dragonfire_brew->effectN( 1 ).base_value(); i++ )
       //   dragonfire->execute();
     }
