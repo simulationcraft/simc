@@ -220,16 +220,6 @@ double warlock_pet_t::composite_spell_speed() const
   return m;
 }
 
-double warlock_pet_t::composite_melee_haste() const
-{
-  double m = pet_t::composite_melee_haste();
-
-  if ( buffs.demonic_inspiration->check() )
-    m *= 1.0 + buffs.demonic_inspiration->check_value();
-
-  return m;
-}
-
 double warlock_pet_t::composite_melee_speed() const
 {
   double m = pet_t::composite_melee_speed();
@@ -944,15 +934,6 @@ double felguard_pet_t::composite_player_multiplier( school_e school ) const
 
   if ( o()->talents.antoran_armaments->ok() )
     m *= 1.0 + buffs.antoran_armaments->check_value();
-
-  return m;
-}
-
-double felguard_pet_t::composite_melee_haste() const
-{
-  double m = warlock_pet_t::composite_melee_haste();
-
-  m *= 1.0 + buffs.fiendish_wrath->check_value();
 
   return m;
 }
