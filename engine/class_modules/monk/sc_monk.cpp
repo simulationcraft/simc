@@ -620,10 +620,12 @@ public:
     {
       if ( p()->cooldown.resonant_fists->up() && p()->rng().roll( p()->talent.general.resonant_fists.spell()->proc_chance() ) )
       {
+          p()->cooldown.resonant_fists->start( p()->talent.general.resonant_fists.spell()->internal_cooldown() );
+          p()->sim->print_debug("rf procced by {}",s->action->name_str);
           p()->active_actions.resonant_fists->set_target( s->target );
           p()->active_actions.resonant_fists->execute();
           p()->proc.resonant_fists->occur();
-          p()->cooldown.resonant_fists->start( p()->talent.general.resonant_fists.spell()->internal_cooldown() );
+          p()->sim->print_debug("rf proc finished");
       }
     }
 
@@ -2023,6 +2025,7 @@ struct blackout_kick_t : public monk_melee_attack_t
 
 struct rjw_tick_action_t : public monk_melee_attack_t
 {
+  double test_softcap;
   rjw_tick_action_t( util::string_view name, monk_t* p, const spell_data_t* data )
     : monk_melee_attack_t( name, p, data )
   {
@@ -2030,7 +2033,7 @@ struct rjw_tick_action_t : public monk_melee_attack_t
 
     dual = background   = true;
     aoe                 = -1;
-    reduced_aoe_targets = data->effectN( 1 ).base_value();
+    reduced_aoe_targets = p->talent.brewmaster.rushing_jade_wind->effectN( 1 ).base_value();
     radius              = data->effectN( 1 ).radius();
 
     // Reset some variables to ensure proper execution
@@ -3756,8 +3759,9 @@ struct breath_of_fire_t : public monk_spell_t
 
     if ( no_bof_hit == false && p()->talent.brewmaster.dragonfire_brew->ok() )
     {
-      for ( int i = 0; i < (int)p()->talent.brewmaster.dragonfire_brew->effectN( 1 ).base_value(); i++ )
-        dragonfire->execute();
+      dragonfire->execute();
+      // for ( int i = 0; i < (int)p()->talent.brewmaster.dragonfire_brew->effectN( 1 ).base_value(); i++ )
+      //   dragonfire->execute();
     }
   }
 };
@@ -3833,6 +3837,7 @@ struct exploding_keg_t : public monk_spell_t
     aoe             = -1;
     radius          = data().effectN( 1 ).radius();
     range           = data().max_range();
+    gcd_type        = gcd_haste_type::NONE;
 
     add_child( p.active_actions.exploding_keg );
   }
