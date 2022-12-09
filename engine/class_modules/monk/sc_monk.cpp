@@ -2124,7 +2124,7 @@ struct sck_tick_action_t : public monk_melee_attack_t
     dual = background   = true;
     aoe                 = -1;
     reduced_aoe_targets = p->spec.spinning_crane_kick->effectN( 1 ).base_value();
-    radius              = data->effectN( 1 ).radius();
+    radius              = data->effectN( 1 ).radius_max();
 
     if ( p->talent.windwalker.widening_whirl.ok() )
         radius *= 1 + p->talent.windwalker.widening_whirl->effectN( 1 ).percent();
@@ -4627,8 +4627,6 @@ struct bonedust_brew_t : public monk_spell_t
 
     if ( p.talent.windwalker.dust_in_the_wind->ok() )
       radius *= 1 + p.talent.windwalker.dust_in_the_wind->effectN( 1 ).percent();
-
-    radius = radius;
 
   }
 
