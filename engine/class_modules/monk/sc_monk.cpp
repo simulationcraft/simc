@@ -2033,7 +2033,7 @@ struct rjw_tick_action_t : public monk_melee_attack_t
 
     dual = background   = true;
     aoe                 = -1;
-    reduced_aoe_targets = p->talent.brewmaster.rushing_jade_wind->effectN( 1 ).base_value();
+    reduced_aoe_targets = p->shared.rushing_jade_wind->effectN( 1 ).base_value();
     radius              = data->effectN( 1 ).radius();
 
     // Reset some variables to ensure proper execution
