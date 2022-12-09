@@ -2644,10 +2644,8 @@ void bronzed_grip_wrappings( special_effect_t& effect )
   // unknown reason.
   //
   // For now we err on the side of undersimming and disable all procs except for white hits. If this is not fixed by the
-  // time it is available with raid launch, each spec will need to explicitly allow which abilities can proc the damage
-  // via effect_callback_t::register_callback_trigger_function() to driver id 396442.
-  effect.proc_flags_ = PF_MELEE;
-
+  // time it is available with raid launch, each spec will need to explicitly determine whether an ability will execute
+  // the damage or heal on proc via effect_callback_t::register_callback_execute_function() to driver id 396442.
   auto amount = effect.driver()->effectN( 2 ).average( effect.item );
 
   effect.trigger_spell_id = effect.driver()->effectN( 2 ).trigger_spell_id();
@@ -2655,6 +2653,13 @@ void bronzed_grip_wrappings( special_effect_t& effect )
   effect.discharge_amount = amount;
 
   new dbc_proc_callback_t( effect.player, effect );
+
+  effect.player->callbacks.register_callback_execute_function(
+      effect.driver()->id(), []( const dbc_proc_callback_t* cb, action_t* a, action_state_t* s ) {
+        assert( cb->proc_action );
+        if ( !a->special )
+          cb->proc_action->execute_on_target( s->target );
+      } );
 }
 
 void fang_adornments( special_effect_t& effect )
