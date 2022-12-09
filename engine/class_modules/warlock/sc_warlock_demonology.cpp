@@ -689,7 +689,7 @@ struct power_siphon_t : public demonology_spell_t
 
     if ( is_precombat )
     {
-      p()->buffs.power_siphon->trigger( 2 , p()->talents.power_siphon_buff->duration() );
+      p()->buffs.power_siphon->trigger( 2, p()->talents.power_siphon_buff->duration() );
       p()->buffs.demonic_core->trigger( 2, p()->warlock_base.demonic_core_buff->duration() );
       return;
     }
