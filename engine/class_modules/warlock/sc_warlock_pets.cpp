@@ -1542,6 +1542,15 @@ double pit_lord_t::composite_player_multiplier( school_e school ) const
   return m;
 }
 
+double pit_lord_t::composite_melee_speed() const
+{
+  double m = warlock_pet_t::composite_melee_speed();
+
+  m /= 1.0 + buffs.soul_glutton->check_stack_value();
+
+  return m;
+}
+
 /// Pit Lord End
 
 namespace random_demons

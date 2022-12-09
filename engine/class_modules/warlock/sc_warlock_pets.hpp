@@ -459,6 +459,7 @@ struct pit_lord_t : public warlock_pet_t
   void init_base_stats() override;
   void arise() override;
   double composite_player_multiplier( school_e ) const override;
+  double composite_melee_speed() const override;
 };
 
 namespace random_demons
