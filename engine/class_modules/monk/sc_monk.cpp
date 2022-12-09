@@ -620,10 +620,12 @@ public:
     {
       if ( p()->cooldown.resonant_fists->up() && p()->rng().roll( p()->talent.general.resonant_fists.spell()->proc_chance() ) )
       {
+          p()->cooldown.resonant_fists->start( p()->talent.general.resonant_fists.spell()->internal_cooldown() );
+          p()->sim->print_debug("rf procced by {}",s->action->name_str);
           p()->active_actions.resonant_fists->set_target( s->target );
           p()->active_actions.resonant_fists->execute();
           p()->proc.resonant_fists->occur();
-          p()->cooldown.resonant_fists->start( p()->talent.general.resonant_fists.spell()->internal_cooldown() );
+          p()->sim->print_debug("rf proc finished");
       }
     }
 
@@ -2023,6 +2025,7 @@ struct blackout_kick_t : public monk_melee_attack_t
 
 struct rjw_tick_action_t : public monk_melee_attack_t
 {
+  double test_softcap;
   rjw_tick_action_t( util::string_view name, monk_t* p, const spell_data_t* data )
     : monk_melee_attack_t( name, p, data )
   {
@@ -2030,7 +2033,7 @@ struct rjw_tick_action_t : public monk_melee_attack_t
 
     dual = background   = true;
     aoe                 = -1;
-    reduced_aoe_targets = data->effectN( 1 ).base_value();
+    reduced_aoe_targets = p->talent.brewmaster.rushing_jade_wind->effectN( 1 ).base_value();
     radius              = data->effectN( 1 ).radius();
 
     // Reset some variables to ensure proper execution
@@ -3673,10 +3676,12 @@ struct breath_of_fire_t : public monk_spell_t
 {
   dragonfire_brew_t* dragonfire;
   bool no_bof_hit;
+  bool blackout_combo;
 
   breath_of_fire_t( monk_t& p, util::string_view options_str )
     : monk_spell_t( "breath_of_fire", &p, p.talent.brewmaster.breath_of_fire ),
-      dragonfire( new dragonfire_brew_t( p ) )
+      dragonfire( new dragonfire_brew_t( p ) ),
+      blackout_combo( false )
   {
     add_option( opt_bool( "no_bof_hit", no_bof_hit ));
     parse_options( options_str );
@@ -3692,28 +3697,17 @@ struct breath_of_fire_t : public monk_spell_t
     add_child( p.active_actions.breath_of_fire );
   }
 
-  void update_ready( timespan_t ) override
-  {
-    timespan_t cd = cooldown->duration;
-
-    // Update the cooldown if Blackout Combo is up
-    if ( p()->buff.blackout_combo->up() )
-    {
-      // Saved as 3 seconds
-      cd += ( -1 * timespan_t::from_seconds( p()->buff.blackout_combo->data().effectN( 2 ).base_value() ) );
-      p()->proc.blackout_combo_breath_of_fire->occur();
-      p()->buff.blackout_combo->expire();
-    }
-
-    monk_spell_t::update_ready( cd );
-  }
-
   double action_multiplier() const override
   {
     double am = monk_spell_t::action_multiplier();
 
     if ( no_bof_hit == true )
-      am *= 0;
+      return 0;
+
+    if ( blackout_combo )
+    {
+      am *= 1 + p()->talent.brewmaster.blackout_combo->effectN( 5 ).percent();
+    }
 
     if ( p()->talent.brewmaster.dragonfire_brew->ok() )
     {
@@ -3732,9 +3726,22 @@ struct breath_of_fire_t : public monk_spell_t
 
   void execute() override
   {
+    if ( p()->buff.blackout_combo->up() )
+    {
+      blackout_combo = true;
+      p()->proc.blackout_combo_breath_of_fire->occur();
+      p()->buff.blackout_combo->expire();
+    }
+
     monk_spell_t::execute();
 
     p()->buff.charred_passions->trigger();
+
+    if ( no_bof_hit == false && p()->talent.brewmaster.dragonfire_brew->ok() )
+    {
+      dragonfire->execute();
+      dragonfire->execute();
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -3749,16 +3756,17 @@ struct breath_of_fire_t : public monk_spell_t
     if ( no_bof_hit == false && td.debuff.keg_smash->up() )
     {
       p()->active_actions.breath_of_fire->target = s->target;
-      p()->active_actions.breath_of_fire->base_multiplier = 1 + p()->buff.blackout_combo->data().effectN( 5 ).percent();
 
       p()->active_actions.breath_of_fire->execute();
     }
 
-    if ( no_bof_hit == false && p()->talent.brewmaster.dragonfire_brew->ok() )
-    {
-      for ( int i = 0; i < (int)p()->talent.brewmaster.dragonfire_brew->effectN( 1 ).base_value(); i++ )
-        dragonfire->execute();
-    }
+    // if ( no_bof_hit == false && p()->talent.brewmaster.dragonfire_brew->ok() )
+    // {
+    //   dragonfire->execute();
+    //   dragonfire->execute();
+    //   // for ( int i = 0; i < (int)p()->talent.brewmaster.dragonfire_brew->effectN( 1 ).base_value(); i++ )
+    //   //   dragonfire->execute();
+    // }
   }
 };
 
@@ -3833,6 +3841,7 @@ struct exploding_keg_t : public monk_spell_t
     aoe             = -1;
     radius          = data().effectN( 1 ).radius();
     range           = data().max_range();
+    gcd_type        = gcd_haste_type::NONE;
 
     add_child( p.active_actions.exploding_keg );
   }
