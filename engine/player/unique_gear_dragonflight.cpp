@@ -2634,7 +2634,19 @@ void seasoned_hunters_trophy( special_effect_t& effect )
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
-  // TODO: implement heal
+  // TODO: currently whether the proc is damage or heal seems arbitrarily based on the spell that proc'd it, with no
+  // discernable pattern as of yet.
+  // * white melee hits will always proc damage
+  // * white ranged hit will not proc anything
+  // * heals will always proc heal
+  // * yellow attacks and spells varies depending on the spell that procs it. some abilities always proc heal, others
+  // always proc damage, yet others almost always proc only one type but have exceptions where it procs the other for
+  // unknown reason.
+  //
+  // For now we err on the side of undersimming and disable all procs except for white hits. If this is not fixed by the
+  // time it is available with raid launch, each spec will need to explicitly allow which abilities can proc the damage
+  // via effect_callback_t::register_callback_trigger_function() to driver id 396442.
+  effect.proc_flags_ = PF_MELEE;
 
   auto amount = effect.driver()->effectN( 2 ).average( effect.item );
 
