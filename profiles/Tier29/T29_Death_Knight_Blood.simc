@@ -89,13 +89,13 @@ actions.standard+=/blood_boil,if=charges_fractional>=1.1
 actions.standard+=/heart_strike,if=(rune>1&(rune.time_to_3<gcd|buff.bone_shield.stack>7))
 
 head=maw_of_the_haunted_frostbrood,id=200408,bonus_id=4800/4786/1498/1808,gem_id=192925
-neck=elemental_lariat,id=193001,bonus_id=8836/8840/8902/8960/8783/8782/8801/8793,ilevel=421,gem_id=192991/192925/192925,crafted_stats=32/36
+neck=elemental_lariat,id=193001,bonus_id=8836/8840/8902/8960/8783/8782/8801/8793,ilevel=418,gem_id=192991/192925/192925,crafted_stats=32/36
 shoulders=jaws_of_the_haunted_frostbrood,id=200410,bonus_id=4800/4786/1498
 back=cape_of_valarjar_courage,id=133765,bonus_id=1795/6808/4786/3156,drop_level=70
 chest=breastplate_of_the_haunted_frostbrood,id=200405,bonus_id=1466/8767,ilevel=421,enchant=waking_stats_3
 wrists=shackles_of_titanic_failure,id=195533,bonus_id=4800/4786/1498/1808,gem_id=192925
 hands=grasps_of_the_haunted_frostbrood,id=200407,bonus_id=1466/8767,ilevel=421
-waist=unstable_frostfire_belt,id=191623,bonus_id=8836/8840/8902/8960/8802/8793/1808,ilevel=421,gem_id=192925,crafted_stats=40/49
+waist=unstable_frostfire_belt,id=191623,bonus_id=8836/8840/8902/8960/8802/8793/1808,ilevel=418,gem_id=192925,crafted_stats=40/49
 legs=greaves_of_the_godking,id=133630,bonus_id=1795/6808/4786/3156,enchant=frosted_armor_kit_3,drop_level=70
 feet=stonestep_boots,id=143974,bonus_id=4177/6808/4786/3156,enchant=watchers_loam_3,drop_level=70
 finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=1795/6808/4786/3156/1808,gem_id=192925,enchant=devotion_of_haste_3,drop_level=70
@@ -105,15 +105,15 @@ trinket2=windscar_whetstone,id=137486,bonus_id=6652/3300/8767
 main_hand=incarnate_skysplitter,id=195528,bonus_id=4800/4786/1498,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_ilvl=422.00
-# gear_strength=4983
-# gear_stamina=13352
+# gear_ilvl=421.60
+# gear_strength=4972
+# gear_stamina=13286
 # gear_attack_power=135
-# gear_crit_rating=4324
-# gear_haste_rating=1904
-# gear_mastery_rating=2777
+# gear_crit_rating=4318
+# gear_haste_rating=1891
+# gear_mastery_rating=2762
 # gear_versatility_rating=2543
-# gear_armor=7167
+# gear_armor=7154
 # gear_bonus_armor=141
 # set_bonus=tier29_2pc=1
 # set_bonus=tier29_4pc=1
