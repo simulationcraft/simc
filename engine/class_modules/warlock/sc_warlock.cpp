@@ -782,6 +782,50 @@ struct soulburn_t : public warlock_spell_t
     may_crit = false;
   }
 
+  void consume_resource() override
+  {
+    warlock_spell_t::consume_resource();
+
+    if ( p()->specialization() == WARLOCK_DEMONOLOGY )
+    {
+      if ( resource_current == RESOURCE_SOUL_SHARD && p()->in_combat )
+      {
+        if ( p()->buffs.nether_portal->up() )
+        {
+          p()->proc_actions.summon_random_demon->execute();
+          p()->procs.portal_summon->occur();
+
+          if ( p()->talents.guldans_ambition->ok() )
+            p()->buffs.nether_portal_total->increment();
+
+          if ( p()->talents.nerzhuls_volition->ok() && rng().roll( p()->talents.nerzhuls_volition->effectN( 1 ).percent() ) )
+          {
+            p()->proc_actions.summon_random_demon->execute();
+            p()->procs.nerzhuls_volition->occur();
+
+            if ( p()->talents.guldans_ambition->ok() )
+              p()->buffs.nether_portal_total->increment();
+          }
+        }
+      }
+    }
+    else if ( p()->specialization() == WARLOCK_DESTRUCTION )
+    {
+      int shards_used = as<int>( cost() );
+      if ( resource_current == RESOURCE_SOUL_SHARD && p()->buffs.rain_of_chaos->check() && shards_used > 0 )
+      {
+        for ( int i = 0; i < shards_used; i++ )
+        {
+          if ( p()->rain_of_chaos_rng->trigger() )
+          {
+            p()->warlock_pet_list.infernals.spawn( p()->talents.summon_infernal_roc->duration() );
+            p()->procs.rain_of_chaos->occur();
+          }
+        }
+      }
+    }
+  }
+
   // We could put an execute here to trigger a buff, but the only use for Soulburn from a DPS perspective is
   // to trigger it for the shard spending and then cancelaura the buff so it can be used again after the cooldown
 };
