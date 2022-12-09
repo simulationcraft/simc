@@ -14,6 +14,8 @@
 #include "item/item.hpp"
 #include "item/item_targetdata_initializer.hpp"
 #include "set_bonus.hpp"
+#include "player/action_priority_list.hpp"
+#include "player/action_variable.hpp"
 #include "player/pet.hpp"
 #include "sim/cooldown.hpp"
 #include "sim/sim.hpp"
@@ -2137,31 +2139,149 @@ void tome_of_unstable_power( special_effect_t& effect )
   effect.custom_buff = buff;
 }
 
-// Alegethar Puzzle Box
+// Algethar Puzzle Box
 // 383781 Driver and Buff
-// TODO: Cast time is unhasted
-void alegethar_puzzle_box( special_effect_t& effect )
+void algethar_puzzle_box( special_effect_t& effect )
 {
   struct solved_the_puzzle_t : public proc_spell_t
   {
     buff_t* buff;
-    solved_the_puzzle_t( const special_effect_t& e ) :
-      proc_spell_t( "solved_the_puzzle", e.player, e.player->find_spell( 383781 ), e.item)
+    action_t* use_action;  // if this exists, then we're prechanneling via the APL
+
+    solved_the_puzzle_t( const special_effect_t& e, buff_t* b )
+      : proc_spell_t( "solved_the_puzzle", e.player, e.driver(), e.item ), buff( b ), use_action( nullptr )
     {
-      background = true;
-      auto buff_spell = e.player -> find_spell( 383781 );
-      buff = create_buff<stat_buff_t>(e.player, buff_spell)
-          -> add_stat_from_effect(1, e.driver()->effectN( 1 ).average(e.item));
-      buff -> set_default_value(e.driver()->effectN(1).average(e.item));
+      background   = true;
+      effect       = &e;
+      harmful = false;
+
+      for ( auto a : player->action_list )
+      {
+        if ( a->action_list && a->action_list->name_str == "precombat" && a->name_str == "use_item_" + item->name_str )
+        {
+          a->harmful = harmful;  // pass down harmful to allow action_t::init() precombat check bypass
+          use_action = a;
+          use_action->base_execute_time = 2_s;
+          break;
+        }
+      }
     }
 
-    void impact( action_state_t* ) override
+    void precombat_buff()
     {
-      buff -> trigger();
+      timespan_t time = 0_ms;
+
+      if ( time == 0_ms )  // No global override, check for an override from an APL variable
+      {
+        for ( auto v : player->variables )
+        {
+          if ( v->name_ == "algethar_puzzle_box_precombat_cast" )
+          {
+            time = timespan_t::from_seconds( v->value() );
+            break;
+          }
+        }
+      }
+
+      // shared cd (other trinkets & on-use items)
+      auto cdgrp = player->get_cooldown( effect->cooldown_group_name() );
+
+      if ( time == 0_ms )  // No hardcoded override, so dynamically calculate timing via the precombat APL
+      {
+        time            = 2_s;  // base 2s cast
+        const auto& apl = player->precombat_action_list;
+
+        auto it = range::find( apl, use_action );
+        if ( it == apl.end() )
+        {
+          sim->print_debug(
+              "WARNING: Precombat /use_item for Algethar Puzzle Box exists but not found in precombat APL!" );
+          return;
+        }
+
+        cdgrp->start( 1_ms );  // tap the shared group cd so we can get accurate action_ready() checks
+
+        // add cast time or gcd for any following precombat action
+        std::for_each( it + 1, apl.end(), [ &time, this ]( action_t* a ) {
+          if ( a->action_ready() )
+          {
+            timespan_t delta =
+                std::max( std::max( a->base_execute_time, a->trigger_gcd ) * a->composite_haste(), a->min_gcd );
+            sim->print_debug( "PRECOMBAT: Algethar Puzzle Box precast timing pushed by {} for {}", delta,
+                              a->name() );
+            time += delta;
+
+            return a->harmful;  // stop processing after first valid harmful spell
+          }
+          return false;
+        } );
+      }
+      else if ( time < 2_s )  // If APL variable can't set to less than cast time
+      {
+        time = 2_s;
+      }
+
+      // how long you cast for
+      auto cast = 2_s;
+      // total duration of the buff
+      auto total = buff->buff_duration();
+      // actual duration of the buff you'll get in combat
+      auto actual = total + cast - time;
+      // cooldown on effect/trinket at start of combat
+      auto cd_dur = cooldown->duration + cast - time;
+      // shared cooldown at start of combat
+      auto cdgrp_dur = std::max( 0_ms, effect->cooldown_group_duration() + cast - time );
+
+      sim->print_debug(
+          "PRECOMBAT: Algethar Puzzle Box started {}s before combat via {}, {}s in-combat buff",
+          time, use_action ? "APL" : "DRAGONFLIGHT_OPT", actual );
+
+      buff->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, actual );
+
+      if ( use_action )  // from the apl, so cooldowns will be started by use_item_t. adjust. we are still in precombat.
+      {
+        make_event( *sim, [ this, cast, time, cdgrp ] {  // make an event so we adjust after cooldowns are started
+          cooldown->adjust( cast - time );
+
+          if ( use_action )
+            use_action->cooldown->adjust( cast - time );
+
+          cdgrp->adjust( cast - time );
+        } );
+      }
+      else  // via bfa. option override, start cooldowns. we are in-combat.
+      {
+        cooldown->start( cd_dur );
+
+        if ( use_action )
+          use_action->cooldown->start( cd_dur );
+
+        if ( cdgrp_dur > 0_ms )
+          cdgrp->start( cdgrp_dur );
+      }
+    }
+
+    void execute() override
+    {
+      proc_spell_t::execute();
+
+      if ( !player->in_combat )  // if precombat...
+      {
+        if ( use_action )  // ...and use_item exists in the precombat apl
+        {
+          precombat_buff();
+        }
+      }
     }
   };
-  auto action = create_proc_action<solved_the_puzzle_t>( "solved_the_puzzle", effect );
-  action->use_off_gcd = true;
+
+  auto buff_spell = effect.player->find_spell( 383781 );
+  buff_t* buff    = create_buff<stat_buff_t>( effect.player, buff_spell )
+             ->add_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect.item ) );
+  buff->set_default_value( effect.driver()->effectN( 1 ).average( effect.item ) );
+
+  auto action           = new solved_the_puzzle_t( effect, buff );
+  action->use_off_gcd   = true;
   effect.execute_action = action;
 }
 
@@ -3118,7 +3238,7 @@ void register_special_effects()
   register_special_effect( 377463, items::manic_grieftorch );
   register_special_effect( 377457, items::alltotem_of_the_master );
   register_special_effect( 388559, items::tome_of_unstable_power );
-  register_special_effect( 383781, items::alegethar_puzzle_box );
+  register_special_effect( 383781, items::algethar_puzzle_box );
   register_special_effect( 382119, items::frenzying_signoll_flare );
   register_special_effect( 386175, items::idol_of_trampling_hooves );
   register_special_effect( 386692, items::dragon_games_equipment);
