@@ -116,9 +116,9 @@ void vengeance( player_t* p )
 {
   action_priority_list_t* default_ = p->get_action_priority_list( "default" );
   action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
-  action_priority_list_t* brand = p->get_action_priority_list( "brand" );
-  action_priority_list_t* defensives = p->get_action_priority_list( "defensives" );
-  action_priority_list_t* cooldowns = p->get_action_priority_list( "cooldowns" );
+  action_priority_list_t* rampH = p->get_action_priority_list( "rampH" );
+  action_priority_list_t* rampED = p->get_action_priority_list( "rampED" );
+  action_priority_list_t* rampSC = p->get_action_priority_list( "rampSC" );
   action_priority_list_t* normal = p->get_action_priority_list( "normal" );
 
   precombat->add_action( "flask" );
@@ -127,36 +127,47 @@ void vengeance( player_t* p )
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
   default_->add_action( "auto_attack" );
-  default_->add_action( "variable,name=brand_build,value=talent.fiery_demise" );
-  default_->add_action( "disrupt" );
-  default_->add_action( "call_action_list,name=brand,if=variable.brand_build" );
-  default_->add_action( "call_action_list,name=defensives" );
-  default_->add_action( "call_action_list,name=cooldowns" );
+  default_->add_action( "variable,name=rampH_done,value=0,op=setif,value_else=1,condition=talent.the_hunt.enabled&cooldown.the_hunt.up" );
+  default_->add_action( "variable,name=rampED_done,value=0,op=setif,value_else=1,condition=talent.elysian_decree.enabled&cooldown.elysian_decree.up" );
+  default_->add_action( "variable,name=rampSC_done,value=0,op=setif,value_else=1,condition=talent.soul_carver.enabled&cooldown.soul_carver.up&!talent.fiery_demise.enabled" );
+  default_->add_action( "potion" );
+  default_->add_action( "use_item,slot=trinket1" );
+  default_->add_action( "use_item,slot=trinket2" );
+  default_->add_action( "run_action_list,name=rampH,if=variable.rampH_done=0" );
+  default_->add_action( "run_action_list,name=rampED,if=variable.rampED_done=0" );
+  default_->add_action( "run_action_list,name=rampSC,if=variable.rampSC_done=0" );
   default_->add_action( "call_action_list,name=normal" );
 
-  brand->add_action( "fiery_brand" );
-  brand->add_action( "immolation_aura,if=dot.fiery_brand.ticking" );
-  brand->add_action( "soul_carver,if=dot.fiery_brand.ticking" );
+  rampH->add_action( "shear,if=fury.deficit<=90&debuff.frailty.stack>=0" );
+  rampH->add_action( "spirit_bomb,if=soul_fragments>=4&active_enemies>1" );
+  rampH->add_action( "soul_cleave,if=(soul_fragments=0&active_enemies>1)|(active_enemies<2)" );
+  rampH->add_action( "the_hunt" );
+  rampH->add_action( "variable,name=rampH_done,op=setif,value=1,value_else=0,condition=talent.the_hunt.enabled&cooldown.the_hunt.remains" );
 
-  defensives->add_action( "demon_spikes" );
-  defensives->add_action( "metamorphosis,if=!buff.metamorphosis.up|target.time_to_die<15" );
-  defensives->add_action( "fiery_brand" );
+  rampED->add_action( "shear,if=fury.deficit<=90&debuff.frailty.stack>=0" );
+  rampED->add_action( "spirit_bomb,if=soul_fragments>=4&active_enemies>1" );
+  rampED->add_action( "soul_cleave,if=(soul_fragments=0&active_enemies>1)|(active_enemies<2)" );
+  rampED->add_action( "elysian_decree" );
+  rampED->add_action( "variable,name=rampED_done,op=setif,value=1,value_else=0,condition=talent.elysian_decree.enabled&cooldown.elysian_decree.remains" );
 
-  cooldowns->add_action( "potion" );
-  cooldowns->add_action( "use_items" );
-  cooldowns->add_action( "the_hunt" );
-  cooldowns->add_action( "elysian_decree" );
-  cooldowns->add_action( "soul_carver" );
+  rampSC->add_action( "shear,if=fury.deficit<=90&debuff.frailty.stack>=0" );
+  rampSC->add_action( "spirit_bomb,if=soul_fragments>=4&active_enemies>1" );
+  rampSC->add_action( "soul_cleave,if=(soul_fragments=0&active_enemies>1)|(active_enemies<2)" );
+  rampSC->add_action( "soul_carver" );
+  rampSC->add_action( "variable,name=rampSC_done,op=setif,value=1,value_else=0,condition=talent.soul_carver.enabled&cooldown.soul_carver.remains&!talent.fiery_demise.enabled" );
 
   normal->add_action( "infernal_strike" );
+  normal->add_action( "demon_spikes,if=!buff.demon_spikes.up&!cooldown.pause_action.remains" );
+  normal->add_action( "fiery_brand,if=!talent.fiery_demise.enabled" );
+  normal->add_action( "metamorphosis,if=!buff.metamorphosis.up&!cooldown.pause_action.remains&!dot.fiery_brand.ticking" );
   normal->add_action( "bulk_extraction" );
-  normal->add_action( "spirit_bomb,if=((buff.metamorphosis.up&talent.fracture.enabled&soul_fragments>=3)|soul_fragments>=4)" );
-  normal->add_action( "fel_devastation" );
-  normal->add_action( "soul_cleave,if=((talent.spirit_bomb.enabled&soul_fragments=0)|!talent.spirit_bomb.enabled)&((talent.fracture.enabled&fury>=55)|(!talent.fracture.enabled&fury>=70)|cooldown.fel_devastation.remains>target.time_to_die|(buff.metamorphosis.up&((talent.fracture.enabled&fury>=35)|(!talent.fracture.enabled&fury>=50))))" );
-  normal->add_action( "immolation_aura,if=((variable.brand_build&cooldown.fiery_brand.remains>10)|!variable.brand_build)&fury.deficit>=10" );
+  normal->add_action( "spirit_bomb,if=((buff.metamorphosis.up&talent.fracture.enabled&soul_fragments>=3)|soul_fragments>=4&active_enemies>1)" );
+  normal->add_action( "fel_devastation,if=(!talent.down_in_flames.enabled)" );
+  normal->add_action( "soul_cleave,if=(talent.spirit_bomb.enabled&soul_fragments=0&target>1)|(active_enemies<2&((talent.fracture.enabled&fury>=55)|(!talent.fracture.enabled&fury>=70)|(buff.metamorphosis.up&((talent.fracture.enabled&fury>=35)|(!talent.fracture.enabled&fury>=50)))))|(!talent.spirit_bomb.enabled)&((talent.fracture.enabled&fury>=55)|(!talent.fracture.enabled&fury>=70)|(buff.metamorphosis.up&((talent.fracture.enabled&fury>=35)|(!talent.fracture.enabled&fury>=50))))" );
+  normal->add_action( "immolation_aura,if=(talent.fiery_demise.enabled&fury.deficit>=10&cooldown.fiery_brand.remains>10)|(!talent.fiery_demise.enabled&fury.deficit>=10)" );
   normal->add_action( "felblade,if=fury.deficit>=40" );
-  normal->add_action( "fracture,if=((talent.spirit_bomb.enabled&soul_fragments<=3)|(!talent.spirit_bomb.enabled&((buff.metamorphosis.up&fury.deficit>=45)|(buff.metamorphosis.down&fury.deficit>=30))))" );
-  normal->add_action( "sigil_of_flame" );
+  normal->add_action( "fracture,if=(talent.spirit_bomb.enabled&(soul_fragments<=3&target>1|target<2&fury.deficit>=30))|(!talent.spirit_bomb.enabled&((buff.metamorphosis.up&fury.deficit>=45)|(buff.metamorphosis.down&fury.deficit>=30)))" );
+  normal->add_action( "sigil_of_flame,if=fury.deficit>=30" );
   normal->add_action( "shear" );
   normal->add_action( "throw_glaive" );
 }
