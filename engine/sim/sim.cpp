@@ -3896,6 +3896,7 @@ void sim_t::create_options()
   add_option( opt_uint( "dragonflight.dragon_games_kicks", dragonflight_opts.dragon_games_kicks, 0, 3 ) );
   add_option( opt_float( "dragonflight.dragon_games_rng", dragonflight_opts.dragon_games_rng, 0.0, 1.0 ) );
   add_option( opt_string( "dragonflight.primal_ritual_shell_blessing", dragonflight_opts.primal_ritual_shell_blessing ) );
+  add_option( opt_uint( "dragonflight.allied_wristguards_allies", dragonflight_opts.allied_wristguards_allies, 0, 4 ) );
 }
 
 // sim_t::parse_option ======================================================
