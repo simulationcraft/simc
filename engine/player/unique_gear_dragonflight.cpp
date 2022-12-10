@@ -648,7 +648,7 @@ void consume_pods( special_effect_t& effect )
 
     bool ready() override
     {
-      return ( pods && pods->up() );
+      return ( pods && pods->check() );
     }
 
     void execute() override
