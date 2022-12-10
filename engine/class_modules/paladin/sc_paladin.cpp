@@ -290,8 +290,8 @@ struct consecration_tick_t : public paladin_spell_t
 {
   golden_path_t* heal_tick;
 
-  consecration_tick_t( paladin_t* p )
-    : paladin_spell_t( "consecration_tick", p, p->find_spell( 81297 ) ), heal_tick( new golden_path_t( p ) )
+  consecration_tick_t( util::string_view name, paladin_t* p )
+    : paladin_spell_t( name, p, p->find_spell( 81297 ) ), heal_tick( new golden_path_t( p ) )
   {
     aoe         = -1;
     dual        = true;
@@ -357,7 +357,7 @@ struct consecration_t : public paladin_spell_t
 
   consecration_t( paladin_t* p, util::string_view options_str )
     : paladin_spell_t( "consecration", p, p->find_spell( "Consecration" ) ),
-      damage_tick( new consecration_tick_t( p ) ),
+      damage_tick( new consecration_tick_t( "consecration_tick", p ) ),
       precombat_time( 2.0 )
   {
     add_option( opt_float( "precombat_time", precombat_time ) );
@@ -372,8 +372,8 @@ struct consecration_t : public paladin_spell_t
   }
 
   consecration_t( paladin_t* p )
-    : paladin_spell_t( "consecration", p, p->find_spell( "Consecration" ) ),
-      damage_tick( new consecration_tick_t( p ) )
+    : paladin_spell_t( "background_consecration", p, p->find_spell( "Consecration" ) ),
+      damage_tick( new consecration_tick_t( "background_consecration_tick", p ) )
   {
     dot_duration = 0_ms;  // the periodic event is handled by ground_aoe_event_t
     may_miss = harmful = false;
@@ -3697,7 +3697,7 @@ void paladin_t::assess_damage( school_e school, result_amount_type dtype, action
 
   // Holy Shield's magic block
   // 2022-11-10 Holy Shield can now only block direct magical damage, standing in Consecration can reduce damage over time, but doesn't proc damage
-  if ( school != SCHOOL_PHYSICAL && s->action->harmful && 
+  if ( school != SCHOOL_PHYSICAL && s->action->harmful &&
        ( ( s->result_type == result_amount_type::DMG_DIRECT && talents.holy_shield->ok() ) ||
          ( s->result_type == result_amount_type::DMG_OVER_TIME && standing_in_consecration() ) ) )
   {
@@ -3736,7 +3736,7 @@ void paladin_t::assess_damage( school_e school, result_amount_type dtype, action
           buffs.holy_shield_absorb->trigger( 1, block_amount );
           buffs.holy_shield_absorb->consume( block_amount );
         }
-        else  
+        else
         {
           buffs.divine_bulwark_absorb->trigger( 1, block_amount );
           buffs.divine_bulwark_absorb->consume( block_amount );
