@@ -3233,7 +3233,6 @@ void allied_wristguards_of_companionship( special_effect_t& effect )
   auto buff = create_buff<stat_buff_t>( effect.player, effect.trigger() );
   buff -> add_stat( STAT_VERSATILITY_RATING, effect.driver() -> effectN( 1 ).average( effect.item ) );
 
-
   effect.player->register_combat_begin( [ buff, period ]( player_t* p ) {
   buff -> trigger( p -> rng().range( 1, 1 + p -> sim -> dragonflight_opts.allied_wristguards_allies ) );
   make_repeating_event( p -> sim, period, [ buff, p ]() { buff -> expire(), buff -> trigger( 1 + p -> sim -> dragonflight_opts.allied_wristguards_allies ); } );
