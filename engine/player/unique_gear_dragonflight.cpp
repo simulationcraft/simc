@@ -612,6 +612,50 @@ void projectile_propulsion_pinion( special_effect_t& effect )
 namespace items
 {
 // Trinkets
+  
+/* Burgeoning Seed
+  * id=193634
+  * trigger = 382108
+  * consume = 384636
+  * buff = 384658 
+*/
+
+void brimming_life_pod( special_effect_t& effect )
+{
+  effect.custom_buff = make_buff( effect.player, "brimming_life_pod", effect.trigger(), effect.item);
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+void consume_pods( special_effect_t& effect )
+{
+
+  struct burgeoning_seed_t : generic_proc_t
+  {
+    buff_t* supernatural;
+
+    burgeoning_seed_t( const special_effect_t& effect )
+      : generic_proc_t( effect, "burgeoning_seed", effect.trigger() ),
+      supernatural( buff_t::find( effect.player, "supernatural" ) )
+    {
+      if ( !supernatural )
+        supernatural = make_buff( effect.player, "supernatural", effect.player->find_spell( 384658 ) );
+    }
+
+    void execute() override
+    {
+      auto pods = buff_t::find( player, "brimming_life_pod" );
+
+      if ( pods->up() )
+      {
+        supernatural->trigger( pods->stack() );
+        pods->expire();
+      }
+    }
+  };
+
+  effect.execute_action = create_proc_action<burgeoning_seed_t>( "burgeoning_seed", effect );
+}
+  
 custom_cb_t idol_of_the_aspects( std::string_view type )
 {
   return [ type ]( special_effect_t& effect ) {
@@ -3311,6 +3355,8 @@ void register_special_effects()
 
 
   // Trinkets
+  register_special_effect( 384636, items::consume_pods );
+  register_special_effect( 382108, items::brimming_life_pod);
   register_special_effect( 376636, items::idol_of_the_aspects( "neltharite" ) );     // idol of the earth warder
   register_special_effect( 376638, items::idol_of_the_aspects( "ysemerald" ) );      // idol of the dreamer
   register_special_effect( 376640, items::idol_of_the_aspects( "malygite" ) );       // idol of the spellweaver
