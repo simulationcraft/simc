@@ -32,6 +32,7 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
     next_season( SUMMER )
 {
   active_consecration = nullptr;
+  all_active_consecrations.clear();
   active_hallow_damaging       = nullptr;
   active_hallow_healing     = nullptr;
   active_aura         = nullptr;
@@ -2508,6 +2509,7 @@ void paladin_t::reset()
   player_t::reset();
 
   active_consecration = nullptr;
+  all_active_consecrations.clear();
   active_hallow_damaging       = nullptr;
   active_hallow_healing     = nullptr;
   active_aura         = nullptr;
