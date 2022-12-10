@@ -368,8 +368,7 @@ void unholy( player_t* p )
   default_->add_action( "call_action_list,name=opener,if=variable.opener_done=0", "Call Action Lists" );
   default_->add_action( "call_action_list,name=cooldowns" );
   default_->add_action( "call_action_list,name=trinkets" );
-
-  aoe->add_action( "any_dnd,if=!death_and_decay.ticking&variable.adds_remain&(talent.festermight&buff.festermight.remains<3|!talent.festermight)&(death_knight.fwounded_targets=active_enemies|death_knight.fwounded_targets=8|!talent.bursting_sores&!talent.vile_contagion|raid_event.a  default_->add_action( "call_action_list,name=racials" );
+  default_->add_action( "call_action_list,name=racials" );
   default_->add_action( "run_action_list,name=aoe,if=active_enemies>=4" );
   default_->add_action( "run_action_list,name=generic,if=active_enemies<=3" );
 
