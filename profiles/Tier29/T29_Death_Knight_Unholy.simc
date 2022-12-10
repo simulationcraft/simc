@@ -88,6 +88,7 @@ actions.cooldowns+=/unholy_blight,if=variable.st_planning&((!talent.apocalypse|c
 actions.cooldowns+=/unholy_blight,if=variable.adds_remain|fight_remains<21
 actions.cooldowns+=/abomination_limb,if=rune<3&variable.st_planning
 actions.cooldowns+=/unholy_assault,if=variable.st_planning
+actions.cooldowns+=/unholy_assault,target_if=min:debuff.festering_wound.stack,if=variable.adds_remain&debuff.festering_wound.stack<2
 actions.cooldowns+=/soul_reaper,if=active_enemies=1&target.time_to_pct_35<5&target.time_to_die>5
 actions.cooldowns+=/soul_reaper,target_if=min:dot.soul_reaper.remains,if=target.time_to_pct_35<5&active_enemies>=2&target.time_to_die>(dot.soul_reaper.remains+5)
 actions.cooldowns+=/sacrificial_pact,if=active_enemies>=2&!buff.dark_transformation.up&cooldown.dark_transformation.remains>6|fight_remains<gcd
@@ -125,17 +126,17 @@ actions.trinkets+=/use_item,slot=trinket1,if=!variable.trinket_1_buffs&(trinket.
 actions.trinkets+=/use_item,slot=trinket2,if=!variable.trinket_2_buffs&(trinket.1.cooldown.remains|!variable.trinket_1_buffs|!talent.summon_gargoyle|cooldown.summon_gargoyle.remains>20&!pet.gargoyle.active)|fight_remains<15
 
 head=maw_of_the_haunted_frostbrood,id=200408,bonus_id=4800/4786/1498/6935,gem_id=192985
-neck=elemental_lariat,id=193001,bonus_id=6652/7936/7979/1540/8767/8782,gem_id=192961/192948/192948,crafted_stats=32/49
+neck=elemental_lariat,id=193001,bonus_id=6652/7936/7979/1540/8767/8782,gem_id=192961/192948/192948,crafted_stats=36/49
 shoulders=jaws_of_the_haunted_frostbrood,id=200410,bonus_id=4800/4786/1498
 back=fireproof_drape,id=193763,bonus_id=6808/4786/1643
-chest=breastplate_of_the_haunted_frostbrood,id=200405,bonus_id=4800/4786/1498,enchant=waking_stats_3
+chest=cuirass_of_irreparable_madness,id=193644,bonus_id=6652/8783/8784/7936/7937/6808/4786/1643,enchant=waking_stats_3
 wrists=vambraces_of_the_haunted_frostbrood,id=200412,bonus_id=1507/6935,gem_id=192948
 hands=grasps_of_the_haunted_frostbrood,id=200407,bonus_id=4800/4786/1498
-waist=primal_molten_greatbelt,id=190501,bonus_id=8836/8840/8902/8802/8793/8932/8960,ilevel=418,gem_id=192948,crafted_stats=36/40
-legs=drake_hunters_greaves,id=193694,bonus_id=6808/4786/1643,enchant=fierce_armor_kit_3
-feet=stonestep_boots,id=143974,bonus_id=4177/6808/4786/3311,ilevel=421,drop_level=70
-finger1=seal_of_filial_duty,id=195526,bonus_id=4800/4786/1497/6935,gem_id=192948,enchant=devotion_of_versatility_3
-finger2=jeweled_signet_of_melandrus,id=134542,bonus_id=1795/6808/4786/3300/6935,ilevel=421,gem_id=192948,enchant=devotion_of_mastery_3,drop_level=70
+waist=primal_molten_greatbelt,id=190501,bonus_id=8836/8840/8902/8802/8793/8932/8960/1498,gem_id=192948
+legs=greaves_of_the_haunted_frostbrood,id=200409,bonus_id=4800/4786/1504,enchant=fierce_armor_kit_3
+feet=stonestep_boots,id=143974,bonus_id=4177/6808/4786/3311
+finger1=seal_of_filial_duty,id=195526,bonus_id=4800/4786/1497/6935,gem_id=192948,enchant=devotion_of_critical_strike_3
+finger2=jeweled_signet_of_melandrus,id=134542,bonus_id=1795/6808/4786/3300/6935,gem_id=192948,enchant=devotion_of_critical_strike_3
 trinket1=algethar_puzzle_box,id=193701,bonus_id=6808/4786/1643
 trinket2=manic_grieftorch,id=194308,bonus_id=4800/4786/1498
 main_hand=incarnate_skysplitter,id=195528,bonus_id=4800/4786/1498,enchant=rune_of_the_fallen_crusader
@@ -144,10 +145,10 @@ main_hand=incarnate_skysplitter,id=195528,bonus_id=4800/4786/1498,enchant=rune_o
 # gear_ilvl=422.20
 # gear_strength=5445
 # gear_stamina=13377
-# gear_crit_rating=2783
-# gear_haste_rating=3728
-# gear_mastery_rating=3625
-# gear_versatility_rating=1210
+# gear_crit_rating=2134
+# gear_haste_rating=4824
+# gear_mastery_rating=3814
+# gear_versatility_rating=575
 # gear_armor=7154
 # set_bonus=tier29_2pc=1
 # set_bonus=tier29_4pc=1
