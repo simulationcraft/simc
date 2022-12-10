@@ -4696,15 +4696,6 @@ struct secret_technique_t : public rogue_attack_t
     add_child( clone_attack );
   }
 
-  void init() override
-  {
-    rogue_attack_t::init();
-
-    // BUG: Does not trigger alacrity, see https://github.com/SimCMinMax/WoW-BugTracker/issues/816
-    if ( p()->bugs )
-      affected_by.alacrity = false;
-  }
-
   void execute() override
   {
     rogue_attack_t::execute();
@@ -7405,10 +7396,6 @@ void actions::rogue_action_t<Base>::trigger_count_the_odds( const action_state_t
     return;
 
   if ( !ab::result_is_hit( state->result ) )
-    return;
-
-  // Currently it appears all Rogues can trigger this with Ambush
-  if ( !p()->bugs && p()->specialization() != ROGUE_OUTLAW )
     return;
 
   // Confirmed via logs this works with Shadowmeld and Shadow Dance
