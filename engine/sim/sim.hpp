@@ -485,6 +485,10 @@ struct sim_t : private sc_thread_t
     double dragon_games_rng = 0.75;
     // The Blessing the player will receive if they have Primal Ritual Shell trinket equiped (wind,stone,flame,sea)
     std::string primal_ritual_shell_blessing = "wind";
+    // Number of nearby allies for the effect of Allied Wristguards of Companionship
+    unsigned int allied_wristguards_allies = 4;
+    // Chance for nearby enemies to move out of range for Allied Wristguards of Companionship
+    double allied_wristguards_ally_leave_chance = 0.05;
   } dragonflight_opts;
 
   // Auras and De-Buffs

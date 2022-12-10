@@ -3224,6 +3224,55 @@ void potent_venom( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Allied Wristguards of Companionship
+// 395959 Driver
+// 395965 Buff
+void allied_wristguards_of_companionship( special_effect_t& effect )
+{
+  auto buff = create_buff<stat_buff_t>( effect.player, effect.trigger() );
+  buff -> add_stat( STAT_VERSATILITY_RATING, effect.driver() -> effectN( 1 ).average( effect.item ) );
+
+  timespan_t period = effect.driver() -> effectN( 1 ).period();
+
+  effect.player->register_combat_begin( [ buff, period ]( player_t* p ) {
+  buff -> trigger( p -> sim -> rng().range( 1, 1 + p -> sim -> dragonflight_opts.allied_wristguards_allies ) );
+  make_repeating_event( p -> sim, period, [ buff, p ]() 
+    {
+      auto allies = 1 + p -> sim -> dragonflight_opts.allied_wristguards_allies;
+
+      if( p -> rng().roll( p -> sim -> dragonflight_opts.allied_wristguards_ally_leave_chance ) )
+      {
+        allies = p -> sim -> rng().range( 1, 1 + p -> sim -> dragonflight_opts.allied_wristguards_allies );
+        buff -> expire();
+        buff -> trigger( allies );
+      }
+      else if( buff -> stack() < 1 + p -> sim -> dragonflight_opts.allied_wristguards_allies )
+      {
+        buff -> expire();
+        buff -> trigger( allies );
+      }
+      else if( buff -> stack() == 1 + p->sim->dragonflight_opts.allied_wristguards_allies)
+      {
+        return;
+      }
+    } );
+  } );
+}
+
+// Allied Chestplate of Generosity
+// 378134 Driver
+// 378139 Buff 
+// TODO: Potentially model allies recieving the buff as well? 
+void allied_chestplate_of_generosity(special_effect_t& effect)
+{
+  auto buff = create_buff<stat_buff_t>( effect.player, effect.trigger() );
+  buff -> set_default_value( effect.driver() -> effectN( 1 ).average( effect.item ) );
+
+  effect.custom_buff = buff;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 }  // namespace items
 
 namespace sets
@@ -3379,6 +3428,8 @@ void register_special_effects()
   register_special_effect( 378134, items::rallied_to_victory );
   register_special_effect( 380717, items::deep_chill );
   register_special_effect( 379985, items::potent_venom );
+  register_special_effect( 395959, items::allied_wristguards_of_companionship );
+  register_special_effect( 378134, items::allied_chestplate_of_generosity );
   
   // Sets
   register_special_effect( { 393620, 393982 }, sets::playful_spirits_fur );
