@@ -5,37 +5,45 @@ namespace hunter_apl {
 
 std::string potion( const player_t* p )
 {
-  return ( p -> true_level >  50 ) ? "spectral_agility" :
+  return ( p -> true_level > 60 ) ? "elemental_potion_of_ultimate_power_3" : 
+         ( p -> true_level > 50 ) ? "spectral_agility" :
          ( p -> true_level >= 40 ) ? "unbridled_fury" :
          "disabled";
 }
 
 std::string flask( const player_t* p )
 {
-  return ( p -> true_level >= 51 ) ? "spectral_flask_of_power" :
+  return ( p -> true_level > 60 && p -> specialization() == HUNTER_BEAST_MASTERY ) ? "phial_of_tepid_versatility_3" :
+         ( p -> true_level > 60 && p -> specialization() == HUNTER_MARKSMANSHIP ) ? "iced_phial_of_corrupting_rage_3" :
+         ( p -> true_level > 60 && p -> specialization() == HUNTER_SURVIVAL ) ? "phial_of_static_empowerment_3" : 
+         ( p -> true_level >= 51 ) ? "spectral_flask_of_power" :
          ( p -> true_level >= 40 ) ? "greater_flask_of_the_currents" :
          "disabled";
 }
 
 std::string food( const player_t* p )
 {
-  return ( p -> true_level >= 60 ) ? "feast_of_gluttonous_hedonism" :
+  return ( p -> true_level >= 70 ) ? "fated_fortune_cookie" : 
+         ( p -> true_level >= 60 ) ? "feast_of_gluttonous_hedonism" :
          ( p -> true_level >= 45 ) ? "bountiful_captains_feast" :
          "disabled";
 }
 
 std::string rune( const player_t* p )
 {
-  return ( p -> true_level >= 60 ) ? "veiled" :
+  return ( p -> true_level >= 70 ) ? "draconic" :
+         ( p -> true_level >= 60 ) ? "veiled" :
          ( p -> true_level >= 50 ) ? "battle_scarred" :
          "disabled";
 }
 
 std::string temporary_enchant( const player_t* p )
 {
+  std::string lvl70_temp_enchant = ( p -> specialization() == HUNTER_SURVIVAL ) ? "main_hand:primal_whetstone_3" : "main_hand:completely_safe_rockets_3";
   std::string lvl60_temp_enchant = ( p -> specialization() == HUNTER_SURVIVAL ) ? "main_hand:shaded_sharpening_stone" : "main_hand:shadowcore_oil";
 
-  return ( p -> true_level >= 60 ) ? lvl60_temp_enchant :
+  return ( p -> true_level >= 70 ) ? lvl70_temp_enchant :
+         ( p -> true_level >= 60 ) ? lvl60_temp_enchant :
          "disabled";
 }
 
