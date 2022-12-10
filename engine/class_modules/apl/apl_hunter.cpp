@@ -61,6 +61,7 @@ void beast_mastery( player_t* p )
   precombat->add_action( "food" );
   precombat->add_action( "summon_pet" );
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
+  precombat->add_action( "use_item,name=algethar_puzzle_box" );
   precombat->add_action( "steel_trap,precast_time=1.5,if=!talent.wailing_arrow&talent.steel_trap" );
 
   default_->add_action( "auto_shot" );
@@ -71,6 +72,15 @@ void beast_mastery( player_t* p )
   cds->add_action( "berserking,if=!talent.bestial_wrath|buff.bestial_wrath.up|fight_remains<16" );
   cds->add_action( "use_items,slots=trinket1,if=buff.call_of_the_wild.up|!talent.call_of_the_wild&(buff.bestial_wrath.up&(buff.bloodlust.up|target.health.pct<20))|fight_remains<31" );
   cds->add_action( "use_items,slots=trinket2,if=buff.call_of_the_wild.up|!talent.call_of_the_wild&(buff.bestial_wrath.up&(buff.bloodlust.up|target.health.pct<20))|fight_remains<31" );
+  cds->add_action( "use_item,name=manic_grieftorch,if=pet.main.buff.frenzy.remains>execute_time" );
+  cds->add_action( "use_item,name=darkmoon_deck_box_rime" );
+  cds->add_action( "use_item,name=darkmoon_deck_box_inferno" );
+  cds->add_action( "use_item,name=darkmoon_deck_box_dance" );
+  cds->add_action( "use_item,name=darkmoon_deck_box_watcher" );
+  cds->add_action( "use_item,name=decoration_of_flame" );
+  cds->add_action( "use_item,name=stormeaters_boon" );
+  cds->add_action( "use_item,name=windscar_whetstone" );
+  cds->add_action( "use_item,name=globe_of_jagged_ice" );
   cds->add_action( "blood_fury,if=buff.call_of_the_wild.up|!talent.call_of_the_wild&(buff.bestial_wrath.up&(buff.bloodlust.up|target.health.pct<20))|fight_remains<16" );
   cds->add_action( "ancestral_call,if=buff.call_of_the_wild.up|!talent.call_of_the_wild&(buff.bestial_wrath.up&(buff.bloodlust.up|target.health.pct<20))|fight_remains<16" );
   cds->add_action( "fireblood,if=buff.call_of_the_wild.up|!talent.call_of_the_wild&(buff.bestial_wrath.up&(buff.bloodlust.up|target.health.pct<20))|fight_remains<10" );
