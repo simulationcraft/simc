@@ -3178,19 +3178,12 @@ struct spirit_bomb_t : public demon_hunter_spell_t
 
     void impact(action_state_t* s) override
     {
-      // Spirit Bomb benefits from its own Frailty debuff
+      demon_hunter_spell_t::impact(s);
+
       if (result_is_hit(s->result))
       {
         td(s->target)->debuffs.frailty->trigger();
       }
-      // Spirit Bomb applies a second stack of Frailty to the primary target if Soulcrush is talented,
-      // doesn't need to be a hit.
-      if ( s->chain_target == 0 && p()->talent.vengeance.soulcrush->ok() )
-      {
-        td( s->target )->debuffs.frailty->trigger();
-      }
-
-      demon_hunter_spell_t::impact(s);
     }
   };
 
