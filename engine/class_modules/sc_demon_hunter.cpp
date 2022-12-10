@@ -394,7 +394,7 @@ public:
       player_talent_t fiery_demise;
       player_talent_t chains_of_anger;
 
-      player_talent_t focused_cleave;             // NYI
+      player_talent_t focused_cleave;
       player_talent_t soulmonger;                 // NYI
       player_talent_t stoke_the_flames;
       player_talent_t burning_alive;              // NYI
@@ -1385,6 +1385,8 @@ public:
     else // DEMON_HUNTER_VENGEANCE
     {
       // Rank Passives
+
+      // Talents
       if ( p->talent.vengeance.vulnerability->ok() )
       {
         affected_by.frailty = ab::data().affected_by( p->spec.frailty_debuff->effectN( 4 ) );
@@ -4561,12 +4563,22 @@ struct soul_cleave_t : public demon_hunter_attack_t
         td( s->target )->debuffs.frailty->trigger();
       }
     }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double m = demon_hunter_action_t::composite_da_multiplier( s );
+
+      if ( s->chain_target == 0 && p()->talent.vengeance.focused_cleave->ok() )
+      {
+        m *= 1.0 + p()->talent.vengeance.focused_cleave->effectN( 1 ).percent();
+      }
+
+      return m;
+    }
   };
 
   heals::soul_cleave_heal_t* heal;
   std::vector<cooldown_t*> sigil_cooldowns;
-  timespan_t sigil_cooldown_adjust;
-  timespan_t decree_cooldown_adjust;
 
   soul_cleave_t( demon_hunter_t* p, util::string_view options_str )
     : demon_hunter_attack_t( "soul_cleave", p, p->spec.soul_cleave, options_str ),
