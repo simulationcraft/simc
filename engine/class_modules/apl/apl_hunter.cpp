@@ -270,6 +270,7 @@ void survival( player_t* p )
   st->add_action( "serpent_sting,target_if=min:remains,if=!dot.serpent_sting.ticking&target.time_to_die>7&!talent.vipers_venom" );
   st->add_action( "mongoose_bite,if=talent.alpha_predator&buff.mongoose_fury.up&buff.mongoose_fury.remains<focus%(variable.mb_rs_cost-cast_regen)*gcd" );
   st->add_action( "flanking_strike,if=focus+cast_regen<focus.max" );
+  st->add_action( "stampede" );
   st->add_action( "coordinated_assault,if=!talent.coordinated_kill&target.health.pct<20&(!buff.spearhead.remains&cooldown.spearhead.remains|!talent.spearhead)|talent.coordinated_kill&(!buff.spearhead.remains&cooldown.spearhead.remains|!talent.spearhead)" );
   st->add_action( "wildfire_bomb,if=next_wi_bomb.pheromone&!buff.mongoose_fury.up&focus+cast_regen<focus.max-action.kill_command.cast_regen*2" );
   st->add_action( "kill_command,target_if=min:bloodseeker.remains,if=full_recharge_time<gcd&focus+cast_regen<focus.max" );
@@ -280,7 +281,6 @@ void survival( player_t* p )
   st->add_action( "explosive_shot,if=talent.ranger" );
   st->add_action( "wildfire_bomb,if=full_recharge_time<gcd" );
   st->add_action( "mongoose_bite,target_if=max:debuff.latent_poison.stack,if=focus+action.kill_command.cast_regen>focus.max-10" );
-  st->add_action( "stampede" );
   st->add_action( "raptor_strike,target_if=max:debuff.latent_poison.stack" );
   st->add_action( "steel_trap" );
   st->add_action( "wildfire_bomb,if=!dot.wildfire_bomb.ticking" );
