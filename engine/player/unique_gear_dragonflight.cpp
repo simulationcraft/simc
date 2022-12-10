@@ -3248,7 +3248,7 @@ void allied_wristguards_of_companionship( special_effect_t& effect )
 void allied_chestplate_of_generosity(special_effect_t& effect)
 {
   auto buff = create_buff<stat_buff_t>( effect.player, effect.trigger() );
-  buff -> add_stat( STAT_VERSATILITY_RATING, effect.driver() -> effectN( 1 ).average( effect.item ) );
+  buff -> set_default_value( effect.driver() -> effectN( 1 ).average( effect.item ) );
 
   effect.custom_buff = buff;
 
