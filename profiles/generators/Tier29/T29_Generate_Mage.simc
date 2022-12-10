@@ -52,29 +52,29 @@
 
 # save=T29_Mage_Fire.simc
 
-# mage="T29_Mage_Frost"
-# spec=frost
-# level=70
-# race=dwarf
-# role=spell
-# position=ranged_back
-# talents=2032031
+mage="T29_Mage_Frost"
+spec=frost
+level=70
+race=dwarf
+role=spell
+position=ranged_back
+talents=BAEAAAAAAAAAAAAAAAAAAAAAAIESolIhkUAJtEiIiEBAAAJJRiEJJhkSSSSJAAAAAAAAAAC
 
-# head=grimveiled_hood,id=173245,bonus_id=1588/8123/6647/6649/6935,gem_id=173128
-# neck=ornately_engraved_amplifier,id=185842,bonus_id=1595/6536/6646/6935,gem_id=173127
-# shoulder=erudite_occultists_mantle,id=188843,bonus_id=1505/7187
-# back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187
-# chest=erudite_occultists_robes,id=188839,bonus_id=1505/7187,enchant=eternal_stats
-# wrist=cuffs_of_the_covert_commander,id=189842,bonus_id=1524/7187/6935,gem_id=173128,enchant=eternal_intellect
-# hands=erudite_occultists_handwraps,id=188845,bonus_id=1498/7187
-# waist=grimveiled_belt,id=173248,bonus_id=1588/6823/6647/6649/6935,gem_id=173128
-# legs=erudite_occultists_leggings,id=188842,bonus_id=1498/7187
-# feet=erudite_occultists_treads,id=188838,bonus_id=1498/7187
-# finger1=entwined_gorger_tendril,id=178848,bonus_id=1592/6536/6646/6935,gem_id=173127,enchant=tenet_of_critical_strike
-# finger2=arachnid_cipher_ring,id=178933,bonus_id=1592/6536/6646/6935,gem_id=173128,enchant=tenet_of_haste
-# trinket1=infinitely_divisible_ooze,id=178769,bonus_id=1592/6536/6646
-# trinket2=the_first_sigil,id=188271,bonus_id=1524/7187
-# main_hand=antumbra_shadow_of_the_cosmos,id=189852,bonus_id=1524/7187,enchant=sinful_revelation
-# off_hand=forbidden_truth,id=189860,bonus_id=1524/7187
+head=,id=200318,bonus_id=523,gem_id=192961,ilevel=424
+neck=,id=193001,gem_id=192988/192961/192961,crafted_stats=32/49,ilevel=418
+shoulders=,id=193526,ilevel=418
+back=,id=193763,ilevel=421
+chest=,id=200315,enchant=waking_stats_3,ilevel=421
+wrists=,id=134222,gem_id=192961,ilevel=421
+hands=,id=200317,ilevel=421
+waist=,id=195515,gem_id=192961,ilevel=421
+legs=,id=200319,enchant=temporal_spellthread_3,ilevel=421
+feet=,id=195532,ilevel=424
+finger1=,id=133638,gem_id=192961,enchant=devotion_of_mastery_3,ilevel=421
+finger2=,id=195526,gem_id=192961,enchant=devotion_of_mastery_3,ilevel=430
+trinket1=,id=194301,ilevel=421
+trinket2=,id=193677,ilevel=421
+main_hand=,id=195529,ilevel=424,enchant=sophic_devotion_3
+off_hand=,id=195513,ilevel=421
 
-# save=T29_Mage_Frost.simc
+save=T29_Mage_Frost.simc
