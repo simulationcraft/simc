@@ -45,7 +45,7 @@ actions.cleave+="/mongoose_bite,target_if=max:debuff.latent_poison.stack,if=debu
 actions.cleave+="/raptor_strike,target_if=max:debuff.latent_poison.stack,if=debuff.latent_poison.stack>8"
 actions.cleave+="/kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max&full_recharge_time<gcd
 actions.cleave+="/carve"
-actions.cleave+="/kill_shot"
+actions.cleave+="/kill_shot,if=!buff.coordinated_assault.up"
 actions.cleave+="/steel_trap,if=focus+cast_regen<focus.max"
 actions.cleave+="/serpent_sting,target_if=min:remains,if=refreshable&target.time_to_die>12&(!talent.vipers_venom|talent.hydras_bite)"
 actions.cleave+="/mongoose_bite,target_if=min:dot.serpent_sting.remains"
@@ -57,11 +57,12 @@ actions.st+="/kill_shot,if=buff.coordinated_assault_empower.up
 actions.st+="/kill_command,target_if=min:bloodseeker.remains,if=full_recharge_time<gcd&focus+cast_regen<focus.max&buff.deadly_duo.stack>1"
 actions.st+="/mongoose_bite,if=buff.spearhead.remains"
 actions.st+="/mongoose_bite,if=active_enemies=1&target.time_to_die<focus%(variable.mb_rs_cost-cast_regen)*gcd|buff.mongoose_fury.up&buff.mongoose_fury.remains<gcd"
-actions.st+="/kill_shot"
+actions.st+="/kill_shot,if=!buff.coordinated_assault.up"
 actions.st+="/raptor_strike,if=active_enemies=1&target.time_to_die<focus%(variable.mb_rs_cost-cast_regen)*gcd"
 actions.st+="/serpent_sting,target_if=min:remains,if=!dot.serpent_sting.ticking&target.time_to_die>7&!talent.vipers_venom"
 actions.st+="/mongoose_bite,if=talent.alpha_predator&buff.mongoose_fury.up&buff.mongoose_fury.remains<focus%(variable.mb_rs_cost-cast_regen)*gcd"
 actions.st+="/flanking_strike,if=focus+cast_regen<focus.max"
+actions.st+="/stampede"
 actions.st+="/coordinated_assault,if=!talent.coordinated_kill&target.health.pct<20&(!buff.spearhead.remains&cooldown.spearhead.remains|!talent.spearhead)|talent.coordinated_kill&(!buff.spearhead.remains&cooldown.spearhead.remains|!talent.spearhead)"
 actions.st+="/wildfire_bomb,if=next_wi_bomb.pheromone&!buff.mongoose_fury.up&focus+cast_regen<focus.max-action.kill_command.cast_regen*2
 actions.st+="/kill_command,target_if=min:bloodseeker.remains,if=full_recharge_time<gcd&focus+cast_regen<focus.max"
@@ -72,7 +73,6 @@ actions.st+="/mongoose_bite,target_if=max:debuff.latent_poison.stack,if=buff.mon
 actions.st+="/explosive_shot,if=talent.ranger
 actions.st+="/wildfire_bomb,if=full_recharge_time<gcd
 actions.st+="/mongoose_bite,target_if=max:debuff.latent_poison.stack,if=focus+action.kill_command.cast_regen>focus.max-10
-actions.st+="/stampede"
 actions.st+="/raptor_strike,target_if=max:debuff.latent_poison.stack"
 actions.st+="/steel_trap"
 actions.st+="/wildfire_bomb,if=!dot.wildfire_bomb.ticking"
