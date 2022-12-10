@@ -4558,7 +4558,9 @@ struct soul_cleave_t : public demon_hunter_attack_t
       // doesn't need to hit.
       if ( s->chain_target == 0 && p()->talent.vengeance.soulcrush->ok() )
       {
-        td( s->target )->debuffs.frailty->trigger();
+        td( s->target )
+            ->debuffs.frailty->trigger(
+                timespan_t::from_seconds( p()->talent.vengeance.soulcrush->effectN( 2 ).base_value() ) );
       }
     }
   };
