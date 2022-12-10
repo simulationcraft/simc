@@ -638,7 +638,9 @@ void consume_pods( special_effect_t& effect )
       supernatural( buff_t::find( effect.player, "supernatural" ) )
     {
       if ( !supernatural )
-        supernatural = make_buff( effect.player, "supernatural", effect.player->find_spell( 384658 ) );
+        supernatural = create_buff<stat_buff_t>( effect.player, "supernatural", effect.player->find_spell( 384658 ) )
+        ->add_stat( STAT_VERSATILITY_RATING, effect.player->find_spell( 384658 )->effectN( 1 ).average( effect.item ) )
+        ->add_stat( STAT_MAX_HEALTH, effect.player->find_spell( 384658 )->effectN( 3 ).average( effect.item ) );
     }
 
     void execute() override
