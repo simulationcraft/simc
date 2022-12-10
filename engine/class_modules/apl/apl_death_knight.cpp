@@ -87,11 +87,14 @@ void blood( player_t* p )
   action_priority_list_t* drw_up = p->get_action_priority_list( "drw_up" );
   action_priority_list_t* racials = p->get_action_priority_list( "racials" );
   action_priority_list_t* standard = p->get_action_priority_list( "standard" );
+  action_priority_list_t* trinkets = p->get_action_priority_list( "trinkets" );
 
   precombat->add_action( "flask" );
   precombat->add_action( "food" );
   precombat->add_action( "augmentation" );
   precombat->add_action( "snapshot_stats" );
+  precombat->add_action( "variable,name=trinket_1_buffs,value=trinket.1.has_buff.strength|trinket.1.has_buff.mastery|trinket.1.has_buff.versatility|trinket.1.has_buff.haste|trinket.1.has_buff.crit" );
+  precombat->add_action( "variable,name=trinket_2_buffs,value=trinket.2.has_buff.strength|trinket.2.has_buff.mastery|trinket.2.has_buff.versatility|trinket.2.has_buff.haste|trinket.2.has_buff.crit" );
 
   default_->add_action( "auto_attack" );
   default_->add_action( "variable,name=death_strike_dump_amount,value=65" );
@@ -99,7 +102,7 @@ void blood( player_t* p )
   default_->add_action( "mind_freeze,if=target.debuff.casting.react" );
   default_->add_action( "invoke_external_buff,name=power_infusion,if=buff.dancing_rune_weapon.up|!talent.dancing_rune_weapon" );
   default_->add_action( "potion,if=buff.dancing_rune_weapon.up" );
-  default_->add_action( "use_items" );
+  default_->add_action( "call_action_list,name=trinkets" );
   default_->add_action( "raise_dead" );
   default_->add_action( "icebound_fortitude,if=!(buff.dancing_rune_weapon.up|buff.vampiric_blood.up)&(target.cooldown.pause_action.remains>=8|target.cooldown.pause_action.duration>0)");
   default_->add_action( "vampiric_blood,if=!(buff.dancing_rune_weapon.up|buff.icebound_fortitude.up)&(target.cooldown.pause_action.remains>=13|target.cooldown.pause_action.duration>0)");
@@ -154,6 +157,11 @@ void blood( player_t* p )
   standard->add_action( "heart_strike,if=rune.time_to_4<gcd" );
   standard->add_action( "blood_boil,if=charges_fractional>=1.1" );
   standard->add_action( "heart_strike,if=(rune>1&(rune.time_to_3<gcd|buff.bone_shield.stack>7))" );
+
+  trinkets->add_action( "use_item,slot=trinket1,if=!variable.trinket_1_buffs", "Prioritize damange dealing on use trinkets over trinkets that give buffs" );
+  trinkets->add_action( "use_item,slot=trinket2,if=!variable.trinket_2_buffs" );
+  trinkets->add_action( "use_item,slot=trinket1,if=variable.trinket_1_buffs&(buff.dancing_rune_weapon.up|!talent.dancing_rune_weapon)&(trinket.2.cooldown.remains|variable.trinket_2_buffs)" );
+  trinkets->add_action( "use_item,slot=trinket2,if=variable.trinket_2_buffs&(buff.dancing_rune_weapon.up|!talent.dancing_rune_weapon)&(trinket.1.cooldown.remains|variable.trinket_1_buffs)" );
 }
 //blood_apl_end
 
@@ -195,7 +203,7 @@ void frost( player_t* p )
   default_->add_action( "variable,name=breath_pooling_time,op=setif,value=((cooldown.breath_of_sindragosa.remains+1)%gcd)%((rune+1)*(runic_power+20))*100,value_else=gcd*2,condition=runic_power.deficit>10&cooldown.breath_of_sindragosa.remains<10" );
   default_->add_action( "variable,name=pooling_runes,value=talent.obliteration&cooldown.pillar_of_frost.remains_expected<variable.oblit_pooling_time" );
   default_->add_action( "variable,name=pooling_runic_power,value=talent.breath_of_sindragosa&cooldown.breath_of_sindragosa.remains<variable.breath_pooling_time|talent.obliteration&runic_power<35&cooldown.pillar_of_frost.remains_expected<variable.oblit_pooling_time" );
-  default_->add_action( "invoke_external_buff,name=power_infusion,if=(buff.pillar_of_frost.up|!talent.pillar_of_frost)&(talent.obliteration|talent.breath_of_sindragosa&buff.breath_of_sindragosa.up|!talent.breath_of_sindragosa&!talent.obliteration)", "When using 'external_buffs.invoke', will use this lines logic to determine when to use Power Infusion. Current, cooldown is defined in the line, please do not change this if you do not know what you are doing." );
+  default_->add_action( "invoke_external_buff,name=power_infusion,if=(buff.pillar_of_frost.up|!talent.pillar_of_frost)&(talent.obliteration|talent.breath_of_sindragosa&buff.breath_of_sindragosa.up|!talent.breath_of_sindragosa&!talent.obliteration)", "When using 'external_buffs.pool', will use this lines logic to determine when to use Power Infusion." );
   default_->add_action( "mind_freeze,if=target.debuff.casting.react", "Interrupt" );
   default_->add_action( "howling_blast,if=!dot.frost_fever.ticking&active_enemies>=2&(!talent.obliteration|talent.obliteration&(!buff.pillar_of_frost.up|buff.pillar_of_frost.up&!buff.killing_machine.react))", "Maintain Frost Fever, Icy Talons and Unleashed Frenzy" );
   default_->add_action( "glacial_advance,if=active_enemies>=2&variable.rp_buffs&talent.obliteration&talent.breath_of_sindragosa&!buff.pillar_of_frost.up&!buff.breath_of_sindragosa.up&cooldown.breath_of_sindragosa.remains>variable.breath_pooling_time" );
@@ -353,14 +361,15 @@ void unholy( player_t* p )
   default_->add_action( "variable,name=pooling_runes,value=talent.soul_reaper&rune<2&target.time_to_pct_35<5&fight_remains>5" );
   default_->add_action( "variable,name=st_planning,value=active_enemies<=3&(!raid_event.adds.exists|raid_event.adds.in>15)" );
   default_->add_action( "variable,name=adds_remain,value=active_enemies>=4&(!raid_event.adds.exists|raid_event.adds.exists&raid_event.adds.remains>6)" );
-  default_->add_action( "invoke_external_buff,name=power_infusion,if=variable.st_planning&(pet.gargoyle.active&pet.apoc_ghoul.active|!talent.summon_gargoyle&talent.army_of_the_damned&pet.army_ghoul.active&pet.apoc_ghoul.active|!talent.summon_gargoyle&!talent.army_of_the_damned&buff.dark_transformation.up|!talent.summon_gargoyle&!talent.summon_gargoyle&buff.dark_transformation.up|cooldown.summon_gargoyle.remains+5>cooldown.invoke_external_buff.duration)|fight_remains<=21", "When using 'external_buffs.invoke', will use this lines logic to determine when to use Power Infusion." );
+  default_->add_action( "invoke_external_buff,name=power_infusion,if=variable.st_planning&(pet.gargoyle.active&pet.apoc_ghoul.active|!talent.summon_gargoyle&talent.army_of_the_damned&pet.army_ghoul.active&pet.apoc_ghoul.active|!talent.summon_gargoyle&!talent.army_of_the_damned&buff.dark_transformation.up|!talent.summon_gargoyle&!talent.summon_gargoyle&buff.dark_transformation.up|cooldown.summon_gargoyle.remains+5>cooldown.invoke_external_buff.duration)|fight_remains<=21", "When using 'external_buffs.pool', will use this lines logic to determine when to use Power Infusion." );
   default_->add_action( "army_of_the_dead,if=talent.commander_of_the_dead&(cooldown.dark_transformation.remains<4|buff.commander_of_the_dead_window.up)|!talent.commander_of_the_dead&talent.unholy_assault&cooldown.unholy_assault.remains<10|!talent.unholy_assault&!talent.commander_of_the_dead|fight_remains<=30", "Prioritize Army, Outbreak and Maintaining Plaguebringer" );
   default_->add_action( "outbreak,target_if=(dot.virulent_plague.refreshable|talent.superstrain&(dot.frost_fever_superstrain.refreshable|dot.blood_plague_superstrain.refreshable))&(!talent.unholy_blight|talent.unholy_blight&cooldown.unholy_blight.remains>15%((talent.superstrain*3)+(talent.plaguebringer*2)))" );
   default_->add_action( "wound_spender,if=cooldown.apocalypse.remains>variable.apoc_timing&talent.plaguebringer&talent.superstrain&buff.plaguebringer.remains<gcd" );
   default_->add_action( "call_action_list,name=opener,if=variable.opener_done=0", "Call Action Lists" );
   default_->add_action( "call_action_list,name=cooldowns" );
   default_->add_action( "call_action_list,name=trinkets" );
-  default_->add_action( "call_action_list,name=racials" );
+
+  aoe->add_action( "any_dnd,if=!death_and_decay.ticking&variable.adds_remain&(talent.festermight&buff.festermight.remains<3|!talent.festermight)&(death_knight.fwounded_targets=active_enemies|death_knight.fwounded_targets=8|!talent.bursting_sores&!talent.vile_contagion|raid_event.a  default_->add_action( "call_action_list,name=racials" );
   default_->add_action( "run_action_list,name=aoe,if=active_enemies>=4" );
   default_->add_action( "run_action_list,name=generic,if=active_enemies<=3" );
 
