@@ -5787,7 +5787,6 @@ void demon_hunter_t::init_spells()
   spec.soul_cleave            = find_specialization_spell( "Soul Cleave" );
   spec.soul_cleave_2          = find_rank_spell( "Soul Cleave", "Rank 2" );
   spec.riposte                = find_specialization_spell( "Riposte" );
-  spec.painbringer_buff       = find_spell( 212988, DEMON_HUNTER_VENGEANCE );
 
   // Masteries ==============================================================
 
@@ -6013,6 +6012,7 @@ void demon_hunter_t::init_spells()
   spec.fiery_brand_debuff = talent.vengeance.fiery_brand->ok() ? find_spell( 207744 ) : spell_data_t::not_found();
   spec.fiery_brand_dot_damage = talent.vengeance.fiery_brand->ok() ? find_spell( 207771 ) : spell_data_t::not_found();
   spec.frailty_debuff = talent.vengeance.frailty->ok() ? find_spell( 247456 ) : spell_data_t::not_found();
+  spec.painbringer_buff = talent.vengeance.painbringer->ok() ? find_spell( 212988 ) : spell_data_t::not_found();
 
   if ( talent.havoc.elysian_decree->ok() || talent.vengeance.elysian_decree->ok() )
   {
