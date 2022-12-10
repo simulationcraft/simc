@@ -620,21 +620,24 @@ namespace items
   * buff = 384658 
 */
 
-void brimming_life_pod( special_effect_t& effect )
-{
-  effect.custom_buff = make_buff( effect.player, "brimming_life_pod", effect.trigger(), effect.item);
-  new dbc_proc_callback_t( effect.player, effect );
-}
-
 void consume_pods( special_effect_t& effect )
 {
+  auto life_pod = find_special_effect( effect.player, 382108 );
+
+  if ( life_pod != nullptr )
+  {
+    life_pod->custom_buff = make_buff( effect.player, "brimming_life_pod", life_pod->trigger(), effect.item );
+    new dbc_proc_callback_t( effect.player, *life_pod );
+  }
 
   struct burgeoning_seed_t : generic_proc_t
   {
+    buff_t* pods;
     buff_t* supernatural;
 
     burgeoning_seed_t( const special_effect_t& effect )
       : generic_proc_t( effect, "burgeoning_seed", effect.trigger() ),
+      pods ( buff_t::find( effect.player, "brimming_life_pod" ) ),
       supernatural( buff_t::find( effect.player, "supernatural" ) )
     {
       if ( !supernatural )
@@ -643,15 +646,15 @@ void consume_pods( special_effect_t& effect )
         ->add_stat( STAT_MAX_HEALTH, effect.player->find_spell( 384658 )->effectN( 3 ).average( effect.item ) );
     }
 
+    bool ready() override
+    {
+      return ( pods && pods->up() );
+    }
+
     void execute() override
     {
-      auto pods = buff_t::find( player, "brimming_life_pod" );
-
-      if ( pods->up() )
-      {
-        supernatural->trigger( pods->stack() );
-        pods->expire();
-      }
+      supernatural->trigger( pods->stack() );
+      pods->expire();
     }
   };
 
@@ -3357,8 +3360,7 @@ void register_special_effects()
 
 
   // Trinkets
-  register_special_effect( 384636, items::consume_pods );
-  register_special_effect( 382108, items::brimming_life_pod);
+  register_special_effect( 384636, items::consume_pods );                            // burgeoning seed
   register_special_effect( 376636, items::idol_of_the_aspects( "neltharite" ) );     // idol of the earth warder
   register_special_effect( 376638, items::idol_of_the_aspects( "ysemerald" ) );      // idol of the dreamer
   register_special_effect( 376640, items::idol_of_the_aspects( "malygite" ) );       // idol of the spellweaver
@@ -3431,6 +3433,7 @@ void register_special_effects()
   register_special_effect( { 393983, 393762 }, sets::horizon_striders_garments );
 
   // Disabled
+  register_special_effect( 382108, DISABLED_EFFECT );  // burgeoning seed
   register_special_effect( 382958, DISABLED_EFFECT );  // df darkmoon deck shuffler
   register_special_effect( 382913, DISABLED_EFFECT );  // bronzescale sigil (faster shuffle)
   register_special_effect( 383336, DISABLED_EFFECT );  // azurescale sigil (shuffle greatest to least)
