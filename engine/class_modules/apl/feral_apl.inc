@@ -74,6 +74,7 @@ bloodtalons->add_action( "thrash_cat,if=buff.bt_thrash.down" );
 bloodtalons->add_action( "rake,if=buff.bt_rake.down&combo_points>4" );
 
 def->add_action( "prowl" );
+def->add_action( "invoke_external_buff,name=power_infusion,if=buff.bs_inc.up|fight_remains<cooldown.bs_inc.remains" );
 def->add_action( "variable,name=need_bt,value=talent.bloodtalons.enabled&buff.bloodtalons.down" );
 def->add_action( "tigers_fury" );
 def->add_action( "rake,if=buff.prowl.up|buff.shadowmeld.up" );
