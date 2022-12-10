@@ -413,13 +413,16 @@ custom_cb_t writ_enchant( stat_e stat, bool cr )
 
 void frozen_devotion( special_effect_t& effect )
 {
-  auto proc = create_proc_action<generic_aoe_proc_t>( "frozen_devotion", effect, "frozen_devotion", 390350, true );
-  proc -> base_dd_min = proc -> base_dd_max = effect.driver() -> effectN( 1 ).average( effect.player );
+  auto new_driver = effect.driver()->effectN( 1 ).trigger();
+  auto proc = create_proc_action<generic_aoe_proc_t>( "frozen_devotion", effect, "frozen_devotion",
+                                                      new_driver->effectN( 1 ).trigger(), true );
 
-  auto new_driver = effect.player -> find_spell( 396826 );
-
+  proc->base_dd_min += effect.driver()->effectN( 1 ).average( effect.player );
+  proc->base_dd_max += effect.driver()->effectN( 1 ).average( effect.player );
+  
+  effect.name_str = new_driver->name_cstr();
+  effect.spell_id = new_driver->id();
   effect.execute_action = proc;
-  effect.spell_id = new_driver -> id();
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -437,11 +440,20 @@ void wafting_devotion( special_effect_t& effect )
   speed = item_database::apply_combat_rating_multiplier( effect.player, CR_MULTIPLIER_WEAPON,
                                                          effect.player->level(), speed );
 
-  auto buff = create_buff<stat_buff_t>( effect.player, new_trigger );
-  buff->manual_stats_added = false;
+  std::string buff_name = new_trigger->name_cstr();
+  util::tokenize( buff_name );
+
+  auto buff = debug_cast<stat_buff_t*>( buff_t::find( effect.player, buff_name ) );
+  if ( buff == nullptr )
+  {
+    buff = create_buff<stat_buff_t>( effect.player, buff_name, new_trigger );
+    buff->manual_stats_added = false;
+  }
+  
   buff->add_stat( STAT_HASTE_RATING, haste )
       ->add_stat( STAT_SPEED_RATING, speed );
-
+  
+  effect.name_str = buff_name;
   effect.custom_buff = buff;
   effect.spell_id = new_driver->id();
   effect.trigger_spell_id = new_trigger->id();
