@@ -3606,6 +3606,11 @@ class SetBonusListGenerator(DataGenerator):
             'name'   : 'playful_spirits_fur',
             'bonuses': [ 1509 ],
             'tier'   : 29
+        },
+        {
+            'name'   : 'horizon_striders_garments',
+            'bonuses': [ 1510 ],
+            'tier'   : 29
         }
     ]
 

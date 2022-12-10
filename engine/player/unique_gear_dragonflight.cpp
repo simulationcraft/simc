@@ -3157,6 +3157,71 @@ void amice_of_the_blue( special_effect_t& effect )
   effect.execute_action = damage;
   new dbc_proc_callback_t( effect.player, effect );
 }
+
+void rallied_to_victory( special_effect_t& effect )
+{
+  effect.custom_buff = create_buff<stat_buff_t>(effect.player, effect.trigger())
+    ->add_stat(STAT_VERSATILITY_RATING, effect.driver()->effectN(1).average(effect.item));
+
+  new dbc_proc_callback_t(effect.player, effect);
+}
+
+void deep_chill( special_effect_t& effect )
+{
+  effect.trigger_spell_id = 381006;
+  effect.discharge_amount = effect.driver()->effectN(3).average(effect.item) * toxified_mul(effect.player);
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+void potent_venom( special_effect_t& effect )
+{
+  double mult = toxified_mul(effect.player);
+  double gain = effect.driver()->effectN(3).average(effect.item) * mult;
+  double loss = abs(effect.driver()->effectN(2).average(effect.item)) * mult;
+
+  struct potent_venom_t : public buff_t
+  {
+    stat_e gain = STAT_NONE;
+    stat_e loss = STAT_NONE;
+
+    potent_venom_t(player_t* p, util::string_view name, const spell_data_t* spell, const special_effect_t& effect) :
+      buff_t(p, name, spell, effect.item)
+    {
+    }
+
+    void reset() override
+    {
+      buff_t::reset();
+
+      gain = STAT_NONE;
+      loss = STAT_NONE;
+    }
+  };
+  
+  auto buff = create_buff<potent_venom_t>(effect.player, effect.driver()->effectN(3).trigger(), effect);
+  buff->set_stack_change_callback( [effect, buff, gain, loss] ( buff_t*, int, int new_ )
+    {
+      static constexpr std::array<stat_e, 4> ratings = { STAT_VERSATILITY_RATING, STAT_MASTERY_RATING, STAT_HASTE_RATING, STAT_CRIT_RATING };
+      if ( new_ )
+      {
+        buff->gain = util::highest_stat(effect.player, ratings);
+        buff->loss = util::lowest_stat(effect.player, ratings);
+
+        buff->player->stat_gain(buff->gain, gain);
+        buff->player->stat_loss(buff->loss, loss);
+      }
+      else
+      {
+        buff->player->stat_loss(buff->gain, gain);
+        buff->player->stat_gain(buff->loss, loss);
+      }
+    } );
+  effect.custom_buff = buff;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 }  // namespace items
 
 namespace sets
@@ -3180,6 +3245,33 @@ void playful_spirits_fur( special_effect_t& effect )
         effect.driver()->effectN( 1 ).average( effect.item );
   }
 }
+
+void horizon_striders_garments( special_effect_t& effect )
+{
+  if ( !effect.player->sets->has_set_bonus( effect.player->specialization(), T29_HORIZON_STRIDERS_GARMENTS, B2 ) )
+    return;
+
+  auto set_driver_id = effect.player->sets->set( effect.player->specialization(), T29_HORIZON_STRIDERS_GARMENTS, B2 )->id();
+
+  if (effect.driver()->id() == set_driver_id)
+  {
+    effect.proc_flags2_ = PF2_CRIT;
+
+    new dbc_proc_callback_t(effect.player, effect);
+  }
+  else
+  {
+    auto buff = buff_t::find( effect.player, effect.name() );
+    if (!buff)
+    {
+      buff = create_buff<stat_buff_t>(effect.player, effect.player->find_spell(377143))
+        ->add_stat(STAT_HASTE_RATING, effect.driver()->effectN(1).average(effect.item));
+    }
+    auto driver = unique_gear::find_special_effect(effect.player, set_driver_id);
+    driver->custom_buff = buff;
+  }
+}
+
 }  // namespace sets
 
 void register_special_effects()
@@ -3282,9 +3374,13 @@ void register_special_effects()
   register_special_effect( 379396, items::thriving_thorns );
   register_special_effect( 394452, items::broodkeepers_blaze );
   register_special_effect( 387144, items::amice_of_the_blue );
-
+  register_special_effect( 378134, items::rallied_to_victory );
+  register_special_effect( 380717, items::deep_chill );
+  register_special_effect( 379985, items::potent_venom );
+  
   // Sets
   register_special_effect( { 393620, 393982 }, sets::playful_spirits_fur );
+  register_special_effect( { 393983, 393762 }, sets::horizon_striders_garments );
 
   // Disabled
   register_special_effect( 382958, DISABLED_EFFECT );  // df darkmoon deck shuffler
