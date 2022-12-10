@@ -1076,6 +1076,7 @@ void globe_of_jagged_ice( special_effect_t& effect )
 void irideus_fragment( special_effect_t& effect )
 {
   auto reduce = new special_effect_t( effect.player );
+  reduce->name_str = "crumbling_power_reduce";
   reduce->type = SPECIAL_EFFECT_EQUIP;
   reduce->source = SPECIAL_EFFECT_SOURCE_ITEM;
   reduce->spell_id = effect.spell_id;
@@ -1097,6 +1098,7 @@ void irideus_fragment( special_effect_t& effect )
   buff->manual_stats_added = false;
   buff->add_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect.item ) )
       ->set_reverse( true )
+      ->set_cooldown( 0_ms )
       ->set_stack_change_callback( [ cb ]( buff_t*, int old_, int new_ ) {
     if ( !old_ )
       cb->activate();
