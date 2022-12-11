@@ -3372,6 +3372,73 @@ void horizon_striders_garments( special_effect_t& effect )
   }
 }
 
+// Damage buff - 388061
+// TODO: Healing buff - 388064
+void azureweave_vestments( special_effect_t& effect )
+{
+  if ( !effect.player->sets->has_set_bonus( effect.player->specialization(), T29_AZUREWEAVE_VESTMENTS, B2 ) )
+    return;
+
+  auto set_driver_id = effect.player->sets->set( effect.player->specialization(), T29_AZUREWEAVE_VESTMENTS, B2 )->id();
+
+  if ( effect.driver()->id() == set_driver_id )
+  {
+    // effect.proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE;
+
+    new dbc_proc_callback_t( effect.player, effect );
+  }
+  else
+  {
+    auto buff = buff_t::find( effect.player, effect.name() );
+    if ( !buff )
+    {
+      buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 388061 ) )
+                 ->add_stat( STAT_INTELLECT, effect.driver()->effectN( 1 ).average( effect.item ) );
+    }
+    auto driver         = unique_gear::find_special_effect( effect.player, set_driver_id );
+    driver->custom_buff = buff;
+  }
+}
+
+// building stacks - 387141 (moment_of_time)
+// haste - 387142 (unleashed_time)
+void woven_chronocloth( special_effect_t& effect )
+{
+  if ( !effect.player->sets->has_set_bonus( effect.player->specialization(), T29_WOVEN_CHRONOCLOTH, B2 ) )
+    return;
+
+  auto set_driver_id = effect.player->sets->set( effect.player->specialization(), T29_WOVEN_CHRONOCLOTH, B2 )->id();
+
+  if ( effect.driver()->id() == set_driver_id )
+  {
+    new dbc_proc_callback_t( effect.player, effect );
+  }
+  else
+  {
+    auto haste_buff = buff_t::find( effect.player, "unleashed_time" );
+    if ( !haste_buff )
+    {
+      haste_buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 387142 ) )
+                       ->add_stat( STAT_HASTE_RATING, effect.driver()->effectN( 1 ).average( effect.item ) );
+    }
+
+    auto buff = buff_t::find( effect.player, effect.name() );
+    if ( !buff )
+    {
+      buff = create_buff<buff_t>( effect.player, effect.player->find_spell( 387141 ) )
+                 ->set_expire_at_max_stack( true )
+                 ->set_stack_change_callback( [ haste_buff ]( buff_t* b, int, int new_ ) {
+                   if ( b->at_max_stacks() )
+                   {
+                     haste_buff->trigger();
+                   }
+                 } );
+    }
+    auto driver         = unique_gear::find_special_effect( effect.player, set_driver_id );
+    driver->custom_buff = buff;
+  }
+}
+
 }  // namespace sets
 
 void register_special_effects()
@@ -3484,6 +3551,8 @@ void register_special_effects()
   // Sets
   register_special_effect( { 393620, 393982 }, sets::playful_spirits_fur );
   register_special_effect( { 393983, 393762 }, sets::horizon_striders_garments );
+  register_special_effect( { 393987, 393768 }, sets::azureweave_vestments );
+  register_special_effect( { 393993, 393818 }, sets::woven_chronocloth );
 
   // Disabled
   register_special_effect( 382108, DISABLED_EFFECT );  // burgeoning seed
