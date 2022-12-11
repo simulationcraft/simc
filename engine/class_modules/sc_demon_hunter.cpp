@@ -521,6 +521,7 @@ public:
     const spell_data_t* painbringer_buff;
     const spell_data_t* soul_furnace_damage_amp;
     const spell_data_t* soul_furnace_stack;
+    const spell_data_t* immolation_aura_cdr;
   } spec;
 
   // Set Bonus effects
@@ -2829,6 +2830,8 @@ struct immolation_aura_t : public demon_hunter_spell_t
   {
     may_miss = false;
     dot_duration = timespan_t::zero();
+
+    apply_affecting_aura(p->spec.immolation_aura_cdr);
 
     if ( !p->active.immolation_aura )
     {
@@ -5778,11 +5781,11 @@ void demon_hunter_t::init_spells()
   spell.immolation_aura_2       = find_rank_spell( "Immolation Aura", "Rank 2" ); 
 
   // Spec-Overriden Passives
-  spec.demonic_wards      = find_specialization_spell( "Demonic Wards" );
-  spec.demonic_wards_2    = find_rank_spell( "Demonic Wards", "Rank 2" );
-  spec.demonic_wards_3    = find_rank_spell( "Demonic Wards", "Rank 3" );
-  // spec.immolation_aura_2  = find_spell( 320378, DEMON_HUNTER_VENGEANCE ); TOCHECK passive CDR
-  spec.thick_skin         = find_specialization_spell( "Thick Skin" );
+  spec.demonic_wards       = find_specialization_spell( "Demonic Wards" );
+  spec.demonic_wards_2     = find_rank_spell( "Demonic Wards", "Rank 2" );
+  spec.demonic_wards_3     = find_rank_spell( "Demonic Wards", "Rank 3" );
+  spec.immolation_aura_cdr = find_spell( 320378, DEMON_HUNTER_VENGEANCE );
+  spec.thick_skin          = find_specialization_spell( "Thick Skin" );
 
   if ( specialization() == DEMON_HUNTER_HAVOC )
   {
