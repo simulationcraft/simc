@@ -59,12 +59,14 @@ void iced_phial_of_corrupting_rage( special_effect_t& effect )
         debuff->trigger();
     } );
 
-    if ( effect.player->sim->dragonflight_opts.corrupting_rage_disable_chance > 0 )
+    if ( effect.player->sim->dragonflight_opts.corrupting_rage_uptime < 1 )
     {
       crit->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
-      effect.player->register_combat_begin( [ crit ]( player_t* ) {
-        make_repeating_event( crit->player->sim, 1_s, [ crit ]() {
-          if ( crit->rng().roll( crit->player->sim->dragonflight_opts.corrupting_rage_disable_chance ) )
+      effect.player->register_combat_begin( [ crit, debuff ]( player_t* ) {
+        make_repeating_event( crit->player->sim, 1_s, [ crit, debuff ]() {
+          double debuff_uptime = 1 - crit->player->sim->dragonflight_opts.corrupting_rage_uptime;
+          double disable_chance = debuff_uptime / ( debuff->buff_duration() - debuff->buff_duration() * debuff_uptime ).total_seconds();
+          if ( crit->rng().roll( disable_chance ) )
             crit->expire();
         } );
       } );
