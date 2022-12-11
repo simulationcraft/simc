@@ -120,8 +120,34 @@ void devastation( player_t* p )
 }
 //devastation_apl_end
 
-void preservation( player_t* /*p*/ )
+void preservation( player_t* p )
 {
+  action_priority_list_t* default_list  = p->get_action_priority_list( "default" );
+  action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
+  action_priority_list_t* healing = p->get_action_priority_list( "healing" );
+  action_priority_list_t* dpsing = p->get_action_priority_list( "dpsing" );
+
+  precombat->add_action( "flask" );
+  precombat->add_action( "food" );
+  precombat->add_action( "augmentation" );
+  precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
+
+  default_list->add_action( "use_items" );
+  default_list->add_action( "call_action_list,name=healing,if=evoker.time_spend_healing,line_cd=15" );
+  default_list->add_action( "call_action_list,name=dpsing" );
+
+  dpsing->add_action( "fire_breath,empower_to=1,if=active_enemies<2" );
+  dpsing->add_action( "fire_breath,empower_to=2,if=active_enemies<3" );
+  dpsing->add_action( "fire_breath,empower_to=3,if=active_enemies<4" );
+  dpsing->add_action( "fire_breath,empower_to=4" );
+  dpsing->add_action( "deep_breath,if=spell_targets.deep_breath>1" );
+  dpsing->add_action( "azure_strike,if=active_enemies>3" );
+  dpsing->add_action( "living_flame" );
+
+  healing->add_action( "verdant_embrace,target=self" );
+  healing->add_action( "dream_breath,empower_to=2,if=health.pct<=60" );
+  healing->add_action( "dream_breath,empower_to=1" );
+  healing->add_action( "spiritbloom,empower_to=3,if=health.pct<=40" );
 }
 
 void no_spec( player_t* /*p*/ )

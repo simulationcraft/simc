@@ -56,6 +56,11 @@ struct evoker_td_t : public actor_target_data_t
     dot_t* disintegrate;
   } dots;
 
+  struct hots_t
+  {
+    dot_t* dream_breath;
+  } hots;
+
   struct debuffs_t
   {
     buff_t* shattering_star;
@@ -105,7 +110,9 @@ struct evoker_t : public player_t
   // Options
   struct options_t
   {
-  } option;
+    // Preservation
+    double time_spend_healing = 0.0;
+  } options;
 
   // Action pointers
   struct actions_t
@@ -143,6 +150,7 @@ struct evoker_t : public player_t
     propagate_const<buff_t*> fury_of_the_aspects;
 
     // Preservation
+    propagate_const<buff_t*> call_of_ysera;
   } buff;
 
   // Specialization Spell Data
@@ -210,6 +218,11 @@ struct evoker_t : public player_t
     player_talent_t time_spiral;
     player_talent_t zephyr;
 
+    // Common Specialization Traits
+    player_talent_t essence_attunement; // row 5 (devastation) || row 4 (preservation)
+    player_talent_t power_nexus; // row 4 (devastation) || row 8 (preservation)
+    player_talent_t font_of_magic; // row 8 (devastation) || row 8 (preservation)
+
     // Devastation Traits
     player_talent_t pyre;                // row 1
     player_talent_t ruby_essence_burst;  // row 2
@@ -219,14 +232,12 @@ struct evoker_t : public player_t
     player_talent_t inner_radiance;
     player_talent_t eternity_surge;
     player_talent_t volatility;  // row 4
-    player_talent_t power_nexus;
     player_talent_t dragonrage;
     player_talent_t lay_waste;
     player_talent_t arcane_intensity;
     player_talent_t ruby_embers;  // row 5
     player_talent_t engulfing_blaze;
     player_talent_t animosity;
-    player_talent_t essence_attunement;
     player_talent_t firestorm;  // row 6
     player_talent_t heat_wave;
     player_talent_t titanic_wrath;
@@ -239,7 +250,6 @@ struct evoker_t : public player_t
     player_talent_t charged_blast;
     player_talent_t shattering_star;
     player_talent_t snapfire;  // row 8
-    player_talent_t font_of_magic;
     player_talent_t onyx_legacy;
     player_talent_t spellweavers_dominance;
     player_talent_t focusing_iris;
@@ -254,6 +264,47 @@ struct evoker_t : public player_t
     player_talent_t iridescence;
 
     // Preservation Traits
+    player_talent_t echo; // row 1
+    player_talent_t dream_breath; // row 2
+    player_talent_t reversion;
+    player_talent_t temporal_compression; // row 3
+    player_talent_t essence_burst;
+    player_talent_t rewind;
+    player_talent_t spiritbloom; // row 4
+    player_talent_t time_dilation;
+    player_talent_t emerald_communion;  // row 5
+    player_talent_t empath;
+    player_talent_t spiritual_clarity;
+    player_talent_t fluttering_seedlings;
+    player_talent_t life_givers_flame;
+    player_talent_t golden_hour;
+    player_talent_t delay_harm;
+    player_talent_t just_in_time;
+    player_talent_t temporal_anomaly;
+    player_talent_t dreamwalker; // row 6
+    player_talent_t rush_of_vitality;
+    player_talent_t exhilarating_burst;
+    player_talent_t field_of_dreams;
+    player_talent_t lifeforce_mender;
+    player_talent_t time_lord;
+    player_talent_t flow_state;
+    player_talent_t resonating_sphere;
+    player_talent_t nozdormus_teachings;
+    player_talent_t call_of_ysera; // row 7
+    player_talent_t lifebind;
+    player_talent_t punctuality;
+    player_talent_t spark_of_insight; // row 8
+    player_talent_t ouroboros;
+    player_talent_t erasure;
+    player_talent_t temporal_artificer;
+    player_talent_t energy_loop;
+    player_talent_t time_of_need;
+    player_talent_t renewing_breath; // row 9
+    player_talent_t grace_period;
+    player_talent_t timeless_magic;
+    player_talent_t dream_flight; // row 10
+    player_talent_t cycle_of_life;
+    player_talent_t stasis;
   } talent;
 
   // Benefits
@@ -264,9 +315,13 @@ struct evoker_t : public player_t
   // Cooldowns
   struct cooldowns_t
   {
+    // Devastation
     propagate_const<cooldown_t*> eternity_surge;
     propagate_const<cooldown_t*> fire_breath;
     propagate_const<cooldown_t*> firestorm;
+
+    // Preservation
+    propagate_const<cooldown_t*> verdant_embrace;
   } cooldown;
 
   // Gains
@@ -609,6 +664,19 @@ namespace spells
 
 // Base Classes =============================================================
 
+struct evoker_heal_t : public evoker_action_t<heal_t>
+{
+private:
+  using ab = evoker_action_t<heal_t>;
+public:
+  evoker_heal_t( std::string_view name, evoker_t* player, const spell_data_t* spell = spell_data_t::nil(),
+                  std::string_view options_str = {} )
+    : ab( name, player, spell )
+  {
+    parse_options( options_str );
+  }
+};
+
 struct evoker_spell_t : public evoker_action_t<spell_t>
 {
 private:
@@ -712,7 +780,7 @@ struct empower_data_t
   }
 };
 
-struct empowered_base_t : public evoker_spell_t
+struct empowered_heal_base_t : public evoker_heal_t
 {
 protected:
   using state_t = evoker_action_state_t<empower_data_t>;
@@ -720,8 +788,9 @@ protected:
 public:
   empower_e max_empower;
 
-  empowered_base_t( std::string_view name, evoker_t* p, const spell_data_t* spell, std::string_view options_str = {} )
-    : evoker_spell_t( name, p, spell, options_str ),
+  empowered_heal_base_t( std::string_view name, evoker_t* p, const spell_data_t* spell,
+                          std::string_view options_str = {} )
+    : evoker_heal_t( name, p, spell, options_str ),
       max_empower( p->talent.font_of_magic.ok() ? empower_e::EMPOWER_4 : empower_e::EMPOWER_3 )
   {
   }
@@ -742,14 +811,14 @@ public:
   }
 };
 
-struct empowered_release_spell_t : public empowered_base_t
+struct empowered_release_heal_t : public empowered_heal_base_t
 {
-  using base_t = empowered_release_spell_t;
+  using base_t = empowered_release_heal_t;
 
   timespan_t extend_4pc;
 
-  empowered_release_spell_t( std::string_view name, evoker_t* p, const spell_data_t* spell )
-    : empowered_base_t( name, p, spell )
+  empowered_release_heal_t( std::string_view name, evoker_t* p, const spell_data_t* spell )
+    : empowered_heal_base_t( name, p, spell )
   {
     dual = true;
 
@@ -777,7 +846,7 @@ struct empowered_release_spell_t : public empowered_base_t
   {
     p()->was_empowering = false;
 
-    empowered_base_t::execute();
+    empowered_heal_base_t::execute();
 
     if ( background )
       return;
@@ -808,7 +877,291 @@ struct empowered_release_spell_t : public empowered_base_t
   }
 };
 
-struct empowered_charge_spell_t : public empowered_base_t
+struct empowered_charge_heal_t : public empowered_heal_base_t
+{
+  using base_t = empowered_charge_heal_t;
+
+  action_t* release_heal;
+  stats_t* dummy_stat;  // used to hack channel tick time into execute time
+  stats_t* orig_stat;
+  int empower_to;
+  timespan_t base_empower_duration;
+  timespan_t lag;
+
+  empowered_charge_heal_t( std::string_view name, evoker_t* p, const spell_data_t* spell,
+                            std::string_view options_str )
+    : empowered_heal_base_t( name, p, p->find_spell_override( spell, p->talent.font_of_magic ) ),
+      release_heal( nullptr ),
+      dummy_stat( p->get_stats( "dummy_stat" ) ),
+      orig_stat( stats ),
+      empower_to( max_empower ),
+      base_empower_duration( 0_ms ),
+      lag( 0_ms )
+  {
+    channeled = true;
+
+    // TODO: convert to full empower expression support
+    add_option( opt_int( "empower_to", empower_to, EMPOWER_1, EMPOWER_MAX ) );
+
+    parse_options( options_str );
+
+    empower_to = std::min( static_cast<int>( max_empower ), empower_to );
+
+    dot_duration = base_tick_time = base_empower_duration =
+        base_time_to_empower( static_cast<empower_e>( empower_to ) );
+
+    apply_affecting_aura( p->talent.imminent_destruction );
+  }
+
+  template <typename T>
+  void create_release_heal( std::string_view n )
+  {
+    static_assert( std::is_base_of_v<empowered_release_heal_t, T>,
+                   "Empowered release spell must be dervied from empowered_release_heal_t." );
+
+    release_heal             = p()->get_secondary_action<T>( n );
+    release_heal->stats       = stats;
+    release_heal->background = false;
+  }
+
+  timespan_t base_time_to_empower( empower_e emp ) const
+  {
+    // TODO: confirm these values and determine if they're set values or adjust based on a formula
+    // Currently all empowered spells are 2.5s base and 3.25s with empower 4
+    switch ( emp )
+    {
+      case empower_e::EMPOWER_1:
+        return 1000_ms;
+      case empower_e::EMPOWER_2:
+        return 1750_ms;
+      case empower_e::EMPOWER_3:
+        return 2500_ms;
+      case empower_e::EMPOWER_4:
+        return 3250_ms;
+      default:
+        break;
+    }
+
+    return 0_ms;
+  }
+
+  timespan_t max_hold_time() const
+  {
+    // TODO: confirm if this is affected by duration mods/haste
+    return base_time_to_empower( max_empower ) + 2_s;
+  }
+
+  timespan_t tick_time( const action_state_t* s ) const override
+  {
+    // we need to have the tick time match duration.
+    // NOTE: composite_dot_duration CANNOT reference parent method as spell_t::composite_dot_duration calls tick_time()
+    return composite_dot_duration( s );
+  }
+
+  timespan_t base_composite_dot_duration( const action_state_t* s ) const
+  {
+    return dot_duration * s->haste * get_buff_effects_value( dot_duration_buffeffects );
+  }
+
+  timespan_t composite_dot_duration( const action_state_t* s ) const override
+  {
+    // NOTE: DO NOT reference parent method as spell_t::composite_dot_duration calls tick_time()
+    auto dur = base_composite_dot_duration( s );
+
+    // hack so we always have a non-zero duration in order to trigger last_tick()
+    if ( dur == 0_ms )
+      return 1_ms;
+
+    return dur + lag;
+  }
+
+  timespan_t composite_time_to_empower( const action_state_t* s, empower_e emp ) const
+  {
+    auto base = base_time_to_empower( emp );
+    auto mult = base_composite_dot_duration( s ) / base_empower_duration;
+
+    return base * mult;
+  }
+
+  empower_e empower_level( const dot_t* d ) const
+  {
+    auto emp = empower_e::EMPOWER_NONE;
+
+    if ( !d->is_ticking() )
+      return emp;
+
+    auto s       = d->state;
+    auto elapsed = tick_time( s ) - d->time_to_next_full_tick();
+
+    if ( elapsed >= composite_time_to_empower( s, empower_e::EMPOWER_4 ) )
+      emp = empower_e::EMPOWER_4;
+    else if ( elapsed >= composite_time_to_empower( s, empower_e::EMPOWER_3 ) )
+      emp = empower_e::EMPOWER_3;
+    else if ( elapsed >= composite_time_to_empower( s, empower_e::EMPOWER_2 ) )
+      emp = empower_e::EMPOWER_2;
+    else if ( elapsed >= composite_time_to_empower( s, empower_e::EMPOWER_1 ) )
+      emp = empower_e::EMPOWER_1;
+
+    return std::min( max_empower, emp );
+  }
+
+  void init() override
+  {
+    empowered_heal_base_t::init();
+    assert( release_heal && "Empowered charge heal must have a release heal." );
+  }
+
+  void execute() override
+  {
+    // pre-determine lag here per every execute
+    lag = rng().gauss( sim->channel_lag, sim->channel_lag_stddev );
+
+    empowered_heal_base_t::execute();
+  }
+
+  void tick( dot_t* d ) override
+  {
+    // For proper DPET analysis, we need to treat charge spells as non-channel, since channelled spells sum up tick
+    // times to get the execute time, but this does not work for fire breath which also has a dot component. Instead we
+    // hijack the stat obj during action_t:tick() causing the channel's tick to be recorded onto a throwaway stat obj.
+    // We then record the corresponding tick time as execute time onto the original real stat obj. See further notes in
+    // evoker_t::analyze().
+    stats = dummy_stat;
+    empowered_heal_base_t::tick( d );
+    stats = orig_stat;
+
+    stats->iteration_total_execute_time += d->time_to_tick();
+  }
+
+  void last_tick( dot_t* d ) override
+  {
+    empowered_heal_base_t::last_tick( d );
+
+    if ( empower_level( d ) == empower_e::EMPOWER_NONE )
+    {
+      p()->was_empowering = false;
+      return;
+    }
+
+    auto emp_state    = release_heal->get_state();
+    emp_state->target = d->state->target;
+    release_heal->snapshot_state( emp_state, release_heal->amount_type( emp_state ) );
+
+    if ( p()->buff.tip_the_scales->up() )
+    {
+      p()->buff.tip_the_scales->expire();
+      cast_state( emp_state )->empower = max_empower;
+    }
+    else
+      cast_state( emp_state )->empower = empower_level( d );
+
+    release_heal->schedule_execute( emp_state );
+
+    // hack to prevent dot_t::last_tick() from schedule_ready()'ing the player
+    d->current_action = release_heal;
+    // hack to prevent channel lag being added when player is schedule_ready()'d after the release spell execution
+    p()->last_foreground_action = release_heal;
+  }
+};
+
+struct empowered_spell_base_t : public evoker_spell_t
+{
+protected:
+  using state_t = evoker_action_state_t<empower_data_t>;
+
+public:
+  empower_e max_empower;
+
+  empowered_spell_base_t( std::string_view name, evoker_t* p, const spell_data_t* spell,
+                          std::string_view options_str = {} )
+    : evoker_spell_t( name, p, spell, options_str ),
+      max_empower( p->talent.font_of_magic.ok() ? empower_e::EMPOWER_4 : empower_e::EMPOWER_3 )
+  {
+  }
+
+  action_state_t* new_state() override
+  {
+    return new state_t( this, target );
+  }
+
+  state_t* cast_state( action_state_t* s )
+  {
+    return static_cast<state_t*>( s );
+  }
+
+  const state_t* cast_state( const action_state_t* s ) const
+  {
+    return static_cast<const state_t*>( s );
+  }
+};
+
+struct empowered_release_spell_t : public empowered_spell_base_t
+{
+  using base_t = empowered_release_spell_t;
+
+  timespan_t extend_4pc;
+
+  empowered_release_spell_t( std::string_view name, evoker_t* p, const spell_data_t* spell )
+    : empowered_spell_base_t( name, p, spell )
+  {
+    dual = true;
+
+    // TODO: Continue to check it uses this spell to trigger GCD, as of 28/10/2022 it does. It can still be bypassed via
+    // spell queue. Potentally add a better way to model this?
+    const spell_data_t* gcd_spell = p->find_spell( 359115 );
+    if ( gcd_spell )
+      trigger_gcd = gcd_spell->gcd();
+    gcd_type = gcd_haste_type::NONE;
+
+    extend_4pc = timespan_t::from_seconds( p->sets->set( EVOKER_DEVASTATION, T29, B4 )->effectN( 1 ).base_value() );
+  }
+
+  empower_e empower_level( const action_state_t* s ) const
+  {
+    return cast_state( s )->empower;
+  }
+
+  int empower_value( const action_state_t* s ) const
+  {
+    return static_cast<int>( cast_state( s )->empower );
+  }
+
+  void execute() override
+  {
+    p()->was_empowering = false;
+
+    empowered_spell_base_t::execute();
+
+    if ( background )
+      return;
+
+    p()->buff.limitless_potential->trigger();
+
+    if ( p()->talent.animosity.ok() )
+    {
+      p()->buff.dragonrage->extend_duration( p(), p()->talent.animosity->effectN( 1 ).time_value() );
+    }
+
+    p()->buff.power_swell->trigger();
+
+    if ( spell_color == SPELL_BLUE )
+      p()->buff.iridescence_blue->trigger();
+    else if ( spell_color == SPELL_RED )
+      p()->buff.iridescence_red->trigger();
+
+    if ( rng().roll( p()->sets->set( EVOKER_DEVASTATION, T29, B4 )->effectN( 2 ).percent() ) )
+    {
+      if ( p()->buffs.bloodlust->check() )
+        p()->buffs.bloodlust->extend_duration( p(), extend_4pc );
+      else if ( p()->buff.fury_of_the_aspects->check() )
+        p()->buff.fury_of_the_aspects->extend_duration( p(), extend_4pc );
+      else
+        p()->buff.fury_of_the_aspects->trigger( extend_4pc );
+    }
+  }
+};
+
+struct empowered_charge_spell_t : public empowered_spell_base_t
 {
   using base_t = empowered_charge_spell_t;
 
@@ -821,7 +1174,7 @@ struct empowered_charge_spell_t : public empowered_base_t
 
   empowered_charge_spell_t( std::string_view name, evoker_t* p, const spell_data_t* spell,
                             std::string_view options_str )
-    : empowered_base_t( name, p, p->find_spell_override( spell, p->talent.font_of_magic ) ),
+    : empowered_spell_base_t( name, p, p->find_spell_override( spell, p->talent.font_of_magic ) ),
       release_spell( nullptr ),
       dummy_stat( p->get_stats( "dummy_stat" ) ),
       orig_stat( stats ),
@@ -938,7 +1291,7 @@ struct empowered_charge_spell_t : public empowered_base_t
 
   void init() override
   {
-    empowered_base_t::init();
+    empowered_spell_base_t::init();
     assert( release_spell && "Empowered charge spell must have a release spell." );
   }
 
@@ -947,7 +1300,7 @@ struct empowered_charge_spell_t : public empowered_base_t
     // pre-determine lag here per every execute
     lag = rng().gauss( sim->channel_lag, sim->channel_lag_stddev );
 
-    empowered_base_t::execute();
+    empowered_spell_base_t::execute();
   }
 
   void tick( dot_t* d ) override
@@ -958,7 +1311,7 @@ struct empowered_charge_spell_t : public empowered_base_t
     // We then record the corresponding tick time as execute time onto the original real stat obj. See further notes in
     // evoker_t::analyze().
     stats = dummy_stat;
-    empowered_base_t::tick( d );
+    empowered_spell_base_t::tick( d );
     stats = orig_stat;
 
     stats->iteration_total_execute_time += d->time_to_tick();
@@ -966,7 +1319,7 @@ struct empowered_charge_spell_t : public empowered_base_t
 
   void last_tick( dot_t* d ) override
   {
-    empowered_base_t::last_tick( d );
+    empowered_spell_base_t::last_tick( d );
 
     if ( empower_level( d ) == empower_e::EMPOWER_NONE )
     {
@@ -1029,6 +1382,7 @@ struct essence_spell_t : public evoker_spell_t
 
 // Empowered Spells =========================================================
 
+// Damage
 struct fire_breath_t : public empowered_charge_spell_t
 {
   struct fire_breath_damage_t : public empowered_release_spell_t
@@ -1155,8 +1509,65 @@ struct eternity_surge_t : public empowered_charge_spell_t
   }
 };
 
+// Heal
+struct dream_breath_t : public empowered_charge_heal_t
+{
+  struct dream_breath_healing_t : public empowered_release_heal_t
+  {
+    timespan_t hot_dur_per_emp;
+
+    dream_breath_healing_t( evoker_t* p )
+      : base_t( "dream_breath_healing", p, p->find_spell( 355941 ) ), hot_dur_per_emp( 4_s )
+    {
+      aoe = -1;  // TODO: actually a cone so we need to model it if possible
+      dot_duration = 16_s;
+    }
+
+    void execute() override
+    {
+      base_t::execute();
+
+      p()->buff.call_of_ysera->expire();
+    }
+  };
+
+  dream_breath_t( evoker_t* p, std::string_view options_str )
+    : base_t( "dream_breath", p, p->talent.dream_breath, options_str )
+  {
+    create_release_heal<dream_breath_healing_t>( "dream_breath_healing" );
+  }
+};
+
+struct spiritbloom_t : public empowered_charge_heal_t
+{
+  struct spiritbloom_healing_t : public empowered_release_heal_t
+  {
+    spiritbloom_healing_t( evoker_t* p )
+      : base_t( "spiritbloom_healing", p, p->find_spell( 367226 ) )
+    {
+    }
+
+    int n_targets() const override
+    {
+      return pre_execute_state ? empower_value( pre_execute_state ) : max_empower;
+    }
+
+    void execute() override
+    {
+      base_t::execute();
+    }
+  };
+
+  spiritbloom_t( evoker_t* p, std::string_view options_str )
+    : base_t( "spiritbloom", p, p->talent.spiritbloom, options_str )
+  {
+    create_release_heal<spiritbloom_healing_t>( "spiritbloom_healing" );
+  }
+};
+
 // Spells ===================================================================
 
+// Damage
 struct azure_strike_t : public evoker_spell_t
 {
   azure_strike_t( evoker_t* p, std::string_view options_str )
@@ -1793,6 +2204,26 @@ struct dragonrage_t : public evoker_spell_t
   }
 };
 
+// Heal
+
+struct verdant_embrace_t : public evoker_heal_t
+{
+  verdant_embrace_t( evoker_t* p, std::string_view options_str )
+    : evoker_heal_t( "verdant_embrace", p, p->talent.verdant_embrace, options_str )
+  {
+  }
+
+  void execute() override
+  {
+    evoker_heal_t::execute();
+
+    if ( p()->talent.call_of_ysera.ok() )
+    {
+      p()->buff.call_of_ysera->trigger();
+    }
+  }
+};
+
 }  // end namespace spells
 
 // ==========================================================================
@@ -1813,7 +2244,7 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
 evoker_t::evoker_t( sim_t* sim, std::string_view name, race_e r )
   : player_t( sim, EVOKER, name, r ),
     was_empowering( false ),
-    option(),
+    options(),
     action(),
     buff(),
     spec(),
@@ -1992,6 +2423,7 @@ void evoker_t::init_spells()
   talent.obsidian_scales      = CT( "Obsidian Scales" );
   talent.expunge              = CT( "Expunge" );
   talent.natural_convergence  = CT( "Natural Convergence" );  // Row 2
+  talent.verdant_embrace      = CT( "Verdant Embrace" );
   talent.forger_of_mountains  = CT( "Forger of Mountains" );  // Row 3
   talent.innate_magic         = CT( "Innate Magic" );
   talent.obsidian_bulwark     = CT( "Obsidian Bulwark" );
@@ -2056,6 +2488,51 @@ void evoker_t::init_spells()
   talent.hoarded_power          = ST( "Hoarded Power" );
   talent.iridescence            = ST( "Iridescence" );
   // Preservation Traits
+  talent.echo = ST( "Echo" );    // row 1
+  talent.dream_breath = ST( "Dream Breath" );  // row 2
+  talent.reversion = ST( "Reversion" );
+  talent.temporal_compression = ST( "Temporal Compression" );  // row 3
+  talent.essence_burst = ST( "Essence Burst" );
+  talent.rewind = ST( "Rewind" );
+  talent.spiritbloom = ST( "Spiritbloom" );  // row 4
+  talent.essence_attunement = ST( "Essence Attunement" );
+  talent.time_dilation = ST( "Time Dilation" );
+  talent.emerald_communion = ST( "Emerald Communion" );  // row 5
+  talent.empath = ST( "Empath" );
+  talent.spiritual_clarity = ST( "Spiritual Clarity" );
+  talent.fluttering_seedlings = ST( "Fluttering Seedlings" );
+  talent.life_givers_flame = ST( "Life-Giver's Flame" );
+  talent.golden_hour = ST( "Golden Hourd" );
+  talent.delay_harm = ST( "Delay Harm" );
+  talent.just_in_time = ST( "Just in Time" );
+  talent.temporal_anomaly = ST( "Temporal Anomaly" );
+  talent.dreamwalker = ST( "Dreamwalker" );  // row 6
+  talent.rush_of_vitality = ST( "Rush of Vitality" );
+  talent.exhilarating_burst = ST( "Exhilarating Burst" );
+  talent.field_of_dreams = ST( "Field of Dreams" );
+  talent.lifeforce_mender = ST( "Lifeforce Mender" );
+  talent.time_lord = ST( "Time Lord" );
+  talent.flow_state = ST( "Flow State" );
+  talent.resonating_sphere = ST( "Resonating Sphere" );
+  talent.nozdormus_teachings = ST( "Nozdormus Teachings" );
+  talent.call_of_ysera = ST( "Call of Ysera" );  // row 7
+  talent.lifebind = ST( "Lifebind" );
+  talent.punctuality = ST( "Punctuality" );
+  talent.spark_of_insight = ST( "Spark of Insight" );  // row 8
+  talent.power_nexus = ST( "Power Nexus" );
+  talent.ouroboros = ST( "Ouroboros" );
+  talent.font_of_magic = ST( "Font of Magic" );
+  talent.erasure = ST( "Erasure" );
+  talent.temporal_artificer = ST( "Temporal Artificer" );
+  talent.energy_loop = ST( "Energy Loop" );
+  talent.time_of_need = ST( "Time of Need" );
+  talent.renewing_breath = ST( "Renewing Breath" );  // row 9
+  talent.grace_period = ST( "Grace Period" );
+  talent.timeless_magic = ST( "Timeless Magic" );
+  talent.dream_flight = ST( "Dream Flight" );  // row 10
+  talent.cycle_of_life = ST( "Cycle of Life" );
+  talent.stasis = ST( "Stasis" );
+
 
   // Evoker Specialization Spells
   spec.evoker              = find_spell( 353167 );  // TODO: confirm this is the class aura
@@ -2182,11 +2659,15 @@ void evoker_t::create_buffs()
                                  ->add_invalidate( CACHE_HASTE );
 
   // Preservation
+  buff.call_of_ysera = make_buff( this, "call_of_ysera", talent.call_of_ysera );
 }
 
 void evoker_t::create_options()
 {
   player_t::create_options();
+
+  // Restoration
+  add_option( opt_float( "evoker.time_spend_healing", options.time_spend_healing ) );
 }
 
 void evoker_t::analyze( sim_t& sim )
@@ -2234,7 +2715,7 @@ void evoker_t::copy_from( player_t* source )
 {
   player_t::copy_from( source );
 
-  option = debug_cast<evoker_t*>( source )->option;
+  options = debug_cast<evoker_t*>( source )->options;
 }
 
 void evoker_t::merge( player_t& other )
@@ -2351,6 +2832,12 @@ action_t* evoker_t::create_action( std::string_view name, std::string_view optio
     return new shattering_star_t( this, options_str );
   if ( name == "tip_the_scales" )
     return new tip_the_scales_t( this, options_str );
+  if ( name == "verdant_embrace" )
+    return new verdant_embrace_t( this, options_str );
+  if ( name == "dream_breath" )
+    return new dream_breath_t( this, options_str );
+  if ( name == "spiritbloom" )
+    return new spiritbloom_t( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -2361,6 +2848,11 @@ std::unique_ptr<expr_t> evoker_t::create_expression( std::string_view expr_str )
 
   if ( util::str_compare_ci( expr_str, "essense" ) || util::str_compare_ci( expr_str, "essences" ) )
     return make_ref_expr( expr_str, resources.current[ RESOURCE_ESSENCE ] );
+  if ( util::str_compare_ci( splits[ 0 ], "evoker" ) && splits.size() > 1 )
+  {
+    if ( util::str_compare_ci( splits[ 1 ], "time_spend_healing" ) && splits.size() == 2 )
+      return make_fn_expr( "time_spend_healing", [ this ]() { return options.time_spend_healing; } );
+  }
 
   return player_t::create_expression( expr_str );
 }

@@ -22,3 +22,28 @@
 # main_hand=,id=194522,bonus_id=8942/3209
 
 # save=PR_Evoker_Devastation.simc
+
+evoker="PR_Evoker_Preservation"
+level=70
+race=dracthyr
+role=spell
+spec=preservation
+talents=BwbBAAAAAAAAAAAAAAAAAAAAAABCCiIIJJJtQSSSSCAAAAAAJSkIhkAJJJEikE
+
+head=amphibians_bellowing_crown,id=193726,bonus_id=6808/4786/1594,gem_id=192958
+neck=ukhel_ancestry_beads,id=193676,bonus_id=6808/4786/1594,gem_id=192958
+shoulder=scaled_commencement_spaulders,id=193704,bonus_id=6808/4786/1594
+back=mammothtrainers_drape,id=193787,bonus_id=6808/4786/1594,enchant=regenerative_leech_2
+chest=emberguard_harness,id=193782,bonus_id=6808/4786/1594,enchant=waking_stats_2
+wrist=shikaar_ranger_bracers,id=193693,bonus_id=6808/4786/1594,enchant=devotion_of_leech_2,gem_id=192958
+hands=galerattle_gauntlets,id=193752,bonus_id=6808/4786/1594
+waist=azure_belt_of_competition,id=193722,bonus_id=6808/4786/1594,gem_id=192958
+legs=tassets_of_densified_ooze,id=193662,bonus_id=6808/4786/1594,enchant=temporal_spellthread_2
+feet=lightningcharged_striders,id=193685,bonus_id=6808/4786/1594
+finger1=platinum_star_band,id=193708,bonus_id=6808/4786/1594,enchant=devotion_of_mastery_2,gem_id=192958
+finger2=scalebane_signet,id=193768,bonus_id=6808/4786/1594,enchant=devotion_of_mastery_2,gem_id=192958
+trinket1=spoils_of_neltharus,id=193773,bonus_id=6808/4786/1594
+trinket2=alacritous_alchemist_stone,id=191492,bonus_id=6808/4786/1594
+main_hand=chillworns_infusion_staff,id=193761,bonus_id=6808/4786/1594,enchant=sophic_devotion_2
+
+save=PR_Evoker_Preservation.simc
