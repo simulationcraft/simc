@@ -8699,8 +8699,9 @@ void monk_t::combat_begin()
       sim->print_debug( "Combat starting chi has been set to {}", resources.current[RESOURCE_CHI] );
     }
 
-    make_repeating_event( sim, talent.windwalker.power_strikes->effectN( 2 ).period(),
-                            [ this ]() { buff.power_strikes->trigger(); } );
+    if ( talent.windwalker.power_strikes->ok() )
+        make_repeating_event( sim, talent.windwalker.power_strikes->effectN( 2 ).period(),
+                                [ this ]() { buff.power_strikes->trigger(); } );
   }
 
   // Melee Squirm
