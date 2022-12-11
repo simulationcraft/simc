@@ -1604,7 +1604,7 @@ public:
         // Arcane Echo doesn't use the normal callbacks system (both in simc and in game). To prevent
         // loops, we need to explicitly check that the triggering action wasn't Arcane Echo.
         if ( p()->talents.arcane_echo.ok() && this != p()->action.arcane_echo )
-          make_event( *sim, [ this, t = s->target ] { p()->action.arcane_echo->execute_on_target( t ); } );
+          make_event( *sim, [ this, t = p()->bugs && p()->target ? p()->target : s->target ] { p()->action.arcane_echo->execute_on_target( t ); } );
       }
     }
   }
@@ -2630,6 +2630,14 @@ struct arcane_explosion_t final : public arcane_mage_spell_t
     cost_reductions = { p->buffs.clearcasting };
     affected_by.savant = triggers.radiant_spark = true;
     base_multiplier *= 1.0 + p->talents.crackling_energy->effectN( 1 ).percent();
+  }
+
+  void consume_cost_reductions() override
+  {
+    if ( p()->bugs && p()->buffs.clearcasting->check() && p()->buffs.concentration->check() )
+      return;
+
+    arcane_mage_spell_t::consume_cost_reductions();
   }
 
   void execute() override
@@ -5235,6 +5243,7 @@ struct radiant_spark_t final : public mage_spell_t
   {
     parse_options( options_str );
     affected_by.ice_floes = affected_by.savant = true;
+    if ( p->bugs ) affected_by.shifting_power = false;
   }
 
   void impact( action_state_t* s ) override
