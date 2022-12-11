@@ -8,11 +8,11 @@ talents=B4DAAAAAAAAAAAAAAAAAAAAAAIJQolIhkUAJtEiIikIhEaBSLJAAAAAAAAAAAAJJJJhkkkcA
 
 head=crystal_scholars_cowl,id=200318,bonus_id=4800/4786/1498,gem_id=192961
 neck=elemental_lariat,id=193001,bonus_id=6652/7936/7979/1540/8767/8782/8793,gem_id=192982/192932/192932
-shoulder=crystal_scholars_beacons,id=200320,bonus_id=4800/4786/1498
+shoulder=amice_of_the_blue,id=193526,ilevel=418
 back=cloak_of_lost_devotion,id=193629,bonus_id=6808/4786/1643
 chest=crystal_scholars_tunic,id=200315,bonus_id=4800/4786/1498,enchant=waking_stats_3
 wrists=infused_elemental_bands,id=193635,bonus_id=6808/4786/1643,gem_id=192961
-hands=eggtenders_safety_mitts,id=195523,bonus_id=4800/4786/1498
+hands=crystal_scholars_pageturners,id=200317,bonus_id=4800/4786/1498
 waist=solstens_arcing_runecord,id=133613,bonus_id=1795/6808/4786/3300,gem_id=192961
 legs=crystal_scholars_britches,id=200319,bonus_id=4800/4786/1498,enchant=temporal_spellthread_3
 feet=sandals_of_the_wild_sovereign,id=195532,bonus_id=4800/4786/1498
