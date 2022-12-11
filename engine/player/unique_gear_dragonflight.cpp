@@ -1736,8 +1736,8 @@ void rumbling_ruby( special_effect_t& effect )
   if ( !power_buff )
   {
     auto power_proc_spell = effect.player->find_spell( 382094 );
-    power_buff = make_buff<stat_buff_t>(effect.player, "rumbling_power", power_proc_spell)
-                   ->add_stat( STAT_STRENGTH, effect.driver() -> effectN( 1 ).average( effect.item ));
+    power_buff = make_buff<stat_buff_t>(effect.player, "concussive_force", power_proc_spell)
+                   ->add_stat( STAT_ATTACK_POWER, effect.driver() -> effectN( 1 ).average( effect.item ));
   }
 
   struct rumbling_ruby_damage_t : public proc_spell_t
