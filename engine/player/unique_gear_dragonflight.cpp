@@ -35,7 +35,8 @@ void iced_phial_of_corrupting_rage( special_effect_t& effect )
   if ( !buff )
   {
     auto crit = make_buff<stat_buff_t>( effect.player, "corrupting_rage", effect.player->find_spell( 374002 ) )
-      ->add_stat( STAT_CRIT_RATING, effect.driver()->effectN( 2 ).average( effect.item ) );
+                    ->add_stat( STAT_CRIT_RATING, effect.driver()->effectN( 2 ).average( effect.item ) )
+                    ->set_quiet( false );
 
     buff = make_buff( effect.player, "iced_phial_of_corrupting_rage", effect.driver() )
       ->set_cooldown( 0_ms )
@@ -57,6 +58,17 @@ void iced_phial_of_corrupting_rage( special_effect_t& effect )
       if ( !new_ && buff->check() )
         debuff->trigger();
     } );
+
+    if ( effect.player->sim->dragonflight_opts.corrupting_rage_disable_chance_per_second > 0 )
+    {
+      crit->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
+      effect.player->register_combat_begin( [ crit ]( player_t* ) {
+        make_repeating_event( crit->player->sim, 1_s, [ crit ]() {
+          if ( crit->rng().roll( crit->player->sim->dragonflight_opts.corrupting_rage_disable_chance_per_second ) )
+            crit->expire();
+        } );
+      } );
+    }
   }
 
   effect.custom_buff = buff;
