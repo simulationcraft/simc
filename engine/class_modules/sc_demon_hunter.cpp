@@ -223,6 +223,8 @@ public:
     buff_t* demon_spikes;
     buff_t* painbringer;
     absorb_buff_t* soul_barrier;
+    buff_t* soul_furnace_damage_amp;
+    buff_t* soul_furnace_stack;
 
     // Set Bonuses
     damage_buff_t* t29_havoc_4pc;
@@ -388,7 +390,7 @@ public:
       player_talent_t volatile_flameblood;        // NYI
       player_talent_t revel_in_pain;              // NYI
 
-      player_talent_t soul_furnace;               // NYI
+      player_talent_t soul_furnace;
       player_talent_t painbringer;
       player_talent_t darkglare_boon;             // NYI
       player_talent_t fiery_demise;
@@ -517,6 +519,8 @@ public:
     const spell_data_t* soul_cleave_2;
     const spell_data_t* thick_skin;
     const spell_data_t* painbringer_buff;
+    const spell_data_t* soul_furnace_damage_amp;
+    const spell_data_t* soul_furnace_stack;
   } spec;
 
   // Set Bonus effects
@@ -3178,6 +3182,13 @@ struct spirit_bomb_t : public demon_hunter_spell_t
       reduced_aoe_targets = p->talent.vengeance.spirit_bomb->effectN( 2 ).base_value();
     }
 
+    void execute() override
+    {
+      demon_hunter_spell_t::execute();
+
+      p()->buff.soul_furnace_damage_amp->expire();
+    }
+
     void impact(action_state_t* s) override
     {
       demon_hunter_spell_t::impact(s);
@@ -3186,6 +3197,18 @@ struct spirit_bomb_t : public demon_hunter_spell_t
       {
         td(s->target)->debuffs.frailty->trigger();
       }
+    }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double m = demon_hunter_spell_t::composite_da_multiplier( s );
+
+      if ( p()->buff.soul_furnace_damage_amp->up() )
+      {
+        m *= 1.0 + p()->buff.soul_furnace_damage_amp->check_value();
+      }
+
+      return m;
     }
   };
 
@@ -4566,13 +4589,25 @@ struct soul_cleave_t : public demon_hunter_attack_t
       }
     }
 
+    void execute() override
+    {
+      demon_hunter_attack_t::execute();
+
+      p()->buff.soul_furnace_damage_amp->expire();
+    }
+
     double composite_da_multiplier( const action_state_t* s ) const override
     {
-      double m = demon_hunter_action_t::composite_da_multiplier( s );
+      double m = demon_hunter_attack_t::composite_da_multiplier( s );
 
       if ( s->chain_target == 0 && p()->talent.vengeance.focused_cleave->ok() )
       {
         m *= 1.0 + p()->talent.vengeance.focused_cleave->effectN( 1 ).percent();
+      }
+
+      if ( p()->buff.soul_furnace_damage_amp->up() )
+      {
+        m *= 1.0 + p()->buff.soul_furnace_damage_amp->check_value();
       }
 
       return m;
@@ -5363,6 +5398,9 @@ void demon_hunter_t::create_buffs()
                          ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
                          ->set_period( 0_ms );
 
+  buff.soul_furnace_damage_amp = make_buff( this, "soul_furnace_damage_amp", spec.soul_furnace_damage_amp )->set_default_value_from_effect( 1 );
+  buff.soul_furnace_stack = make_buff( this, "soul_furnace_stack", spec.soul_furnace_stack );
+
   buff.soul_barrier = make_buff<absorb_buff_t>( this, "soul_barrier", talent.vengeance.soul_barrier );
   buff.soul_barrier->set_absorb_source( get_stats( "soul_barrier" ) )
     ->set_absorb_gain( get_gain( "soul_barrier" ) )
@@ -6013,6 +6051,8 @@ void demon_hunter_t::init_spells()
   spec.fiery_brand_dot_damage = talent.vengeance.fiery_brand->ok() ? find_spell( 207771 ) : spell_data_t::not_found();
   spec.frailty_debuff = talent.vengeance.frailty->ok() ? find_spell( 247456 ) : spell_data_t::not_found();
   spec.painbringer_buff = talent.vengeance.painbringer->ok() ? find_spell( 212988 ) : spell_data_t::not_found();
+  spec.soul_furnace_damage_amp = talent.vengeance.soul_furnace->ok() ? find_spell( 391172 ): spell_data_t::not_found();
+  spec.soul_furnace_stack = talent.vengeance.soul_furnace->ok() ? find_spell( 391166 ): spell_data_t::not_found();
 
   if ( talent.havoc.elysian_decree->ok() || talent.vengeance.elysian_decree->ok() )
   {
@@ -6791,15 +6831,15 @@ void demon_hunter_t::reset()
 {
   base_t::reset();
 
-  soul_fragment_pick_up             = nullptr;
-  spirit_bomb_driver                = nullptr;
-  exit_melee_event                  = nullptr;
-  next_fragment_spawn               = 0;
-  metamorphosis_health              = 0;
-  spirit_bomb_accumulator           = 0.0;
-  ragefire_accumulator              = 0.0;
-  ragefire_crit_accumulator         = 0;
-  shattered_destiny_accumulator     = 0.0;
+  soul_fragment_pick_up         = nullptr;
+  spirit_bomb_driver            = nullptr;
+  exit_melee_event              = nullptr;
+  next_fragment_spawn           = 0;
+  metamorphosis_health          = 0;
+  spirit_bomb_accumulator       = 0.0;
+  ragefire_accumulator          = 0.0;
+  ragefire_crit_accumulator     = 0;
+  shattered_destiny_accumulator = 0.0;
 
   for ( size_t i = 0; i < soul_fragments.size(); i++ )
   {
@@ -6925,6 +6965,13 @@ unsigned demon_hunter_t::consume_soul_fragments( soul_fragment type, bool heal, 
   {
     it->consume( heal );
     souls_consumed++;
+    if (talent.vengeance.soul_furnace->ok()) {
+      buff.soul_furnace_stack->trigger();
+      if (buff.soul_furnace_stack->at_max_stacks()) {
+        buff.soul_furnace_stack->expire();
+        buff.soul_furnace_damage_amp->trigger();
+      }
+    }
     if ( souls_consumed >= max )
       break;
   }
