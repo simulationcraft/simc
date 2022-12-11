@@ -1,4 +1,4 @@
-SimulationCraft 1002-01 for World of Warcraft 10.0.2.46924 Live (hotfix 2022-12-09/46924, no-networking)
+SimulationCraft 1002-01 for World of Warcraft 10.0.2.46924 Live (hotfix 2022-12-11/46924)
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -15555,14 +15555,15 @@ Description      : Increases the damage of Demonbolt by $s2% and Shadow Bolt by 
 Tooltip          : Increases the damage of Demonbolt by $s2% and Shadow Bolt by $s1%.
 
 Name             : Soulburn (id=387626) [Spell Family (5)] 
+Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
-Duration         : Aura (infinite)
+Duration         : 20 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
 Triggered by     : Soulburn (385899)
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -15570,6 +15571,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
+                 : No Aura Cancel (31)
 Effects          :
 #1 (id=1022531)  : Apply Aura (6) | Dummy (4)
                    Base Value: 140 | Scaled Value: 140 | PvP Coefficient: 1.00000 | Target: Self (1)

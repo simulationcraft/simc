@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.2.46924
-static const std::array<spelltext_data_t, 19192> __spelltext_data { {
+static const std::array<spelltext_data_t, 19194> __spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -18916,8 +18916,10 @@ static const std::array<spelltext_data_t, 19192> __spelltext_data { {
   { 393979, "This sand will let you borrow time, but take it back after.\r\n\r\nIncreases movement speed by $s1% for $d, then reduces movement speed by $393978s1% for $393978d.", "Movement speed increased by $s1%.\r\nDoes not function in Raids, Dungeons, or instanced content.", 0 },
   { 393982, "Your spells and abilities have a chance to pelt your target with a magic snowball, causing enemies to take Frost damage or allies to receive healing.", 0, 0 },
   { 393983, "Critical damage and healing have a chance to spur you on, granting Haste for $377143d. This effect stacks up to $377143U times.\r\n", "Critical damage and healing have a chance to spur you on, granting $w1 Haste for $377143d. This effect stacks up to $377143U times.", 0 },
+  { 393987, "Dealing damage has a chance to grant Piercing Azureweave, increasing Intellect for $388061d. Healing has a chance to grant Flowing Azureweave, reducing the Mana cost of spells for $388064d.", "Dealing damage has a chance to grant Piercing Azureweave, increasing Intellect by $w1 for $388061d. Healing has a chance to grant Flowing Azureweave, reducing Mana cost by $w2 per cast for $388064d.", 0 },
   { 393989, "Recreate the Temporal Conflux's security measures on yourself!\r\n\r\nGet temporally locked in a bubble for $d!", "Locked in a temporal bubble! But without the disturbing side effects!", 0 },
   { 393991, "Incarnation: Chosen of Elune reduces the Astral Power cost of Starsurge by ${$s5*-1/10}, and the Astral Power cost of Starfall by ${$s6*-1/10}.\r\n\r\nConvoke the Spirits' cooldown is reduced by ${($abs($s4)/120000)*100}% and its duration and number of spells cast is reduced by $s1%. Convoke the Spirits has an increased chance to use an exceptional spell or ability.", 0, 0 },
+  { 393993, "Your spells and abilities have a chance to store away moments of time. Upon reaching $387141u stacks, release your stored time and gain a burst of Haste.\r\n\r\n", "Your spells and abilities have a chance to store away moments of time. Upon reaching $387141u stacks, release your stored time and gain $w1 Haste.", 0 },
   { 393994, "Slow your body by taking on the weight of time itself.\r\n\r\nDecreases movement speed by $s1% for $d.", "Taking on the heavy weight of time.", 0 },
   { 393995, "Combine $s2 Slumbering Dream Fragments to restore a minor dream, once broken.", 0, 0 },
   { 394013, "$@spelldesc102560", 0, 0 },
