@@ -387,7 +387,7 @@ public:
       player_talent_t void_reaver;
       player_talent_t fallout;
       player_talent_t ruinous_bulwark;            // NYI
-      player_talent_t volatile_flameblood;        // NYI
+      player_talent_t volatile_flameblood;
       player_talent_t revel_in_pain;              // NYI
 
       player_talent_t soul_furnace;
@@ -580,7 +580,7 @@ public:
     cooldown_t* sigil_of_flame;
     cooldown_t* sigil_of_misery;
     cooldown_t* sigil_of_silence;
-
+    cooldown_t* volatile_flameblood_icd;
   } cooldown;
 
   // Gains
@@ -598,6 +598,7 @@ public:
 
     // Vengeance
     gain_t* metamorphosis;
+    gain_t* volatile_flameblood;
     gain_t* darkglare_boon;
   } gain;
 
@@ -2835,6 +2836,15 @@ struct immolation_aura_t : public demon_hunter_spell_t
           {
             target_data->dots.fiery_brand->adjust_duration( p()->talent.vengeance.charred_flesh->effectN( 1 ).time_value() );
           }
+        }
+
+        if ( s->result == RESULT_CRIT && p()->talent.vengeance.volatile_flameblood->ok() &&
+             p()->cooldown.volatile_flameblood_icd->up() )
+        {
+          p()->resource_gain( RESOURCE_FURY, p()->talent.vengeance.volatile_flameblood->effectN( 1 ).base_value(),
+                              p()->talent.vengeance.volatile_flameblood->effectN( 1 ).m_delta(),
+                              p()->gain.volatile_flameblood );
+          p()->cooldown.volatile_flameblood_icd->start();
         }
 
         accumulate_ragefire( s );
@@ -6296,13 +6306,15 @@ void demon_hunter_t::create_cooldowns()
   cooldown.movement_shared      = get_cooldown( "movement_shared" );
 
   // Vengeance
-  cooldown.demon_spikes         = get_cooldown( "demon_spikes" );
-  cooldown.fiery_brand          = get_cooldown( "fiery_brand" );
-  cooldown.sigil_of_chains      = get_cooldown( "sigil_of_chains" );
-  cooldown.sigil_of_flame       = get_cooldown( "sigil_of_flame" );
-  cooldown.sigil_of_misery      = get_cooldown( "sigil_of_misery" );
-  cooldown.sigil_of_silence     = get_cooldown( "sigil_of_silence" );
-  cooldown.fel_devastation      = get_cooldown( "fel_devastation" );
+  cooldown.demon_spikes                      = get_cooldown( "demon_spikes" );
+  cooldown.fiery_brand                       = get_cooldown( "fiery_brand" );
+  cooldown.sigil_of_chains                   = get_cooldown( "sigil_of_chains" );
+  cooldown.sigil_of_flame                    = get_cooldown( "sigil_of_flame" );
+  cooldown.sigil_of_misery                   = get_cooldown( "sigil_of_misery" );
+  cooldown.sigil_of_silence                  = get_cooldown( "sigil_of_silence" );
+  cooldown.fel_devastation                   = get_cooldown( "fel_devastation" );
+  cooldown.volatile_flameblood_icd           = get_cooldown( "volatile_flameblood_icd" );
+  cooldown.volatile_flameblood_icd->duration = 1_s;
 }
 
 // demon_hunter_t::create_gains =============================================
@@ -6320,6 +6332,7 @@ void demon_hunter_t::create_gains()
   // Vengeance
   gain.metamorphosis          = get_gain( "metamorphosis" );
   gain.darkglare_boon         = get_gain( "darkglare_boon" );
+  gain.volatile_flameblood    = get_gain( "volatile_flameblood" );
 }
 
 // demon_hunter_t::create_benefits ==========================================
