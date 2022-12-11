@@ -358,24 +358,24 @@ public:
 
     struct vengeance_talents_t
     {
-      player_talent_t fel_devastation;            // NYI
+      player_talent_t fel_devastation;
 
-      player_talent_t frailty;                    // NYI
-      player_talent_t fiery_brand;                // NYI
+      player_talent_t frailty;
+      player_talent_t fiery_brand;
 
       player_talent_t perfectly_balanced_glaive;
       player_talent_t deflecting_spikes;          // NYI
       player_talent_t meteoric_strikes;
 
       player_talent_t shear_fury;
-      player_talent_t fracture;                   // NYI
+      player_talent_t fracture;
       player_talent_t calcified_spikes;           // NYI
       player_talent_t roaring_fire;               // NYI
       player_talent_t sigil_of_silence;           // NYI
       player_talent_t retaliation;                // NYI
       player_talent_t fel_flame_fortification;    // NYI
 
-      player_talent_t spirit_bomb;                // NYI
+      player_talent_t spirit_bomb;
       player_talent_t feast_of_souls;             // NYI
       player_talent_t agonizing_flames;
       player_talent_t extended_spikes;
@@ -385,14 +385,14 @@ public:
       player_talent_t sigil_of_chains;            // NYI
 
       player_talent_t void_reaver;
-      player_talent_t fallout;                    // NYI
+      player_talent_t fallout;
       player_talent_t ruinous_bulwark;            // NYI
       player_talent_t volatile_flameblood;        // NYI
       player_talent_t revel_in_pain;              // NYI
 
       player_talent_t soul_furnace;
       player_talent_t painbringer;
-      player_talent_t darkglare_boon;             // NYI
+      player_talent_t darkglare_boon;
       player_talent_t fiery_demise;
       player_talent_t chains_of_anger;
 
@@ -598,7 +598,7 @@ public:
 
     // Vengeance
     gain_t* metamorphosis;
-
+    gain_t* darkglare_boon;
   } gain;
 
   // Benefits
@@ -2369,6 +2369,28 @@ struct fel_devastation_t : public demon_hunter_spell_t
     {
       p()->active.collective_anguish->set_target( target );
       p()->active.collective_anguish->execute();
+    }
+  }
+
+  void last_tick( dot_t* d ) override
+  {
+    demon_hunter_spell_t::last_tick( d );
+
+    if ( p()->talent.vengeance.darkglare_boon->ok() )
+    {
+      // CDR reduction and Fury refund are separate rolls per Realz
+      double base_cooldown = p()->talent.vengeance.fel_devastation->cooldown().total_seconds();
+      timespan_t minimum_cdr_reduction =
+          timespan_t::from_seconds( p()->talent.vengeance.darkglare_boon->effectN( 1 ).percent() * base_cooldown );
+      timespan_t maximum_cdr_reduction =
+          timespan_t::from_seconds( p()->talent.vengeance.darkglare_boon->effectN( 2 ).percent() * base_cooldown );
+      timespan_t cdr_reduction   = rng().range( minimum_cdr_reduction, maximum_cdr_reduction );
+      double minimum_fury_refund = p()->talent.vengeance.darkglare_boon->effectN( 3 ).base_value();
+      double maximum_fury_refund = p()->talent.vengeance.darkglare_boon->effectN( 4 ).base_value();
+      double fury_refund         = rng().range( minimum_fury_refund, maximum_fury_refund );
+
+      p()->cooldown.fel_devastation->adjust( cdr_reduction );
+      p()->resource_gain( RESOURCE_FURY, fury_refund, p()->gain.darkglare_boon );
     }
   }
 
@@ -6291,6 +6313,7 @@ void demon_hunter_t::create_gains()
 
   // Vengeance
   gain.metamorphosis          = get_gain( "metamorphosis" );
+  gain.darkglare_boon         = get_gain( "darkglare_boon" );
 }
 
 // demon_hunter_t::create_benefits ==========================================
