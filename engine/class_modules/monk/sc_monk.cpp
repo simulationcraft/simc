@@ -1785,6 +1785,15 @@ struct blackout_kick_totm_proc_t : public monk_melee_attack_t
     return m;
   }
 
+  double action_multiplier() const override
+  {
+    double am = monk_melee_attack_t::action_multiplier();
+
+    am *= 1 + p()->shared.shadowboxing_treads->effectN( 2 ).percent();
+
+    return am;
+  }
+
   void execute() override
   {
     monk_melee_attack_t::execute();
