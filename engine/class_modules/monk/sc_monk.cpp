@@ -2035,6 +2035,14 @@ struct blackout_kick_t : public monk_melee_attack_t
         p()->buff.elusive_brawler->trigger( (int)p()->talent.brewmaster.elusive_footwork->effectN( 2 ).base_value() );
         p()->proc.elusive_footwork_proc->occur();
     }
+
+    if ( p()->talent.brewmaster.staggering_strikes->ok() )
+    {
+        auto ap = s->composite_attack_power();
+        auto amount_cleared =
+            p()->partial_clear_stagger_amount( ap * p()->talent.brewmaster.staggering_strikes->effectN( 2 ).percent() );
+        p()->sample_datas.staggering_strikes_cleared->add( amount_cleared );
+    }
   }
 };
 
