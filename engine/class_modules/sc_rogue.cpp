@@ -6536,7 +6536,12 @@ struct roll_the_bones_t : public buff_t
   {
     for ( auto buff : buffs )
     {
-      buff->extend_duration( rogue, duration );
+      // 2022-12-12 -- Keep it Rolling does not appear to be able to extend buffs past 60s
+      auto extend_duration = rogue->bugs ?
+        std::max( 0_s, std::min( duration, ( 60_s - buff->remains() ) ) ) :
+        duration;
+
+      buff->extend_duration( rogue, extend_duration );
     }
   }
 
