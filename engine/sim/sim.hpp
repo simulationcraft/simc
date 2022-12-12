@@ -489,6 +489,8 @@ struct sim_t : private sc_thread_t
     unsigned int allied_wristguards_allies = 4;
     // Chance for nearby enemies to move out of range for Allied Wristguards of Companionship
     double allied_wristguards_ally_leave_chance = 0.05;
+    // Corrupting Rages Average Uptime
+    double corrupting_rage_uptime = 0.7;
     // Hood of Surging Time proc chance when the period is set
     double hood_of_surging_time_chance = 0.0;
     // Hood of Surging Time proc period

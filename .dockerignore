@@ -1,2 +1,7 @@
 **/*.o
 **/*.d
+.github/
+.vs/
+casc_extract/
+dbc_extract3/
+logos/

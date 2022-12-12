@@ -35,7 +35,8 @@ void iced_phial_of_corrupting_rage( special_effect_t& effect )
   if ( !buff )
   {
     auto crit = make_buff<stat_buff_t>( effect.player, "corrupting_rage", effect.player->find_spell( 374002 ) )
-      ->add_stat( STAT_CRIT_RATING, effect.driver()->effectN( 2 ).average( effect.item ) );
+                    ->add_stat( STAT_CRIT_RATING, effect.driver()->effectN( 2 ).average( effect.item ) )
+                    ->set_quiet( false );
 
     buff = make_buff( effect.player, "iced_phial_of_corrupting_rage", effect.driver() )
       ->set_cooldown( 0_ms )
@@ -57,6 +58,19 @@ void iced_phial_of_corrupting_rage( special_effect_t& effect )
       if ( !new_ && buff->check() )
         debuff->trigger();
     } );
+
+    if ( effect.player->sim->dragonflight_opts.corrupting_rage_uptime < 1 )
+    {
+      crit->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
+      effect.player->register_combat_begin( [ crit, debuff ]( player_t* ) {
+        make_repeating_event( crit->player->sim, 1_s, [ crit, debuff ]() {
+          double debuff_uptime = 1 - crit->player->sim->dragonflight_opts.corrupting_rage_uptime;
+          double disable_chance = debuff_uptime / ( debuff->buff_duration() - debuff->buff_duration() * debuff_uptime ).total_seconds();
+          if ( crit->rng().roll( disable_chance ) )
+            crit->expire();
+        } );
+      } );
+    }
   }
 
   effect.custom_buff = buff;
@@ -2849,6 +2863,8 @@ void fang_adornments( special_effect_t& effect )
 {
   effect.school = effect.driver()->get_school_type();
   effect.discharge_amount = effect.driver()->effectN( 1 ).average( effect.item );
+  effect.override_result_es_mask |= RESULT_CRIT_MASK;
+  effect.result_es_mask &= ~RESULT_CRIT_MASK;
 
   new dbc_proc_callback_t( effect.player, effect );
 }

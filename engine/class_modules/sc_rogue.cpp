@@ -5613,6 +5613,12 @@ struct keep_it_rolling_t : public rogue_spell_t
   {
     rogue_spell_t::execute();
     trigger_keep_it_rolling();
+
+    // 2022-12-12 -- Casting Keep it Rolling consumes the Loaded Dice buff due to a bug
+    if ( p()->bugs )
+    {
+      p()->buffs.loaded_dice->expire();
+    }
   }
 };
 
