@@ -159,8 +159,8 @@ actions.touch_phase+=/arcane_blast
 actions.touch_phase+=/arcane_barrage
 
 head=crystal_scholars_cowl,id=200318,bonus_id=4800/4786/1498,gem_id=192961
-neck=elemental_lariat,id=193001,bonus_id=6652/7936/7979/1540/8767/8782/8793,gem_id=192982/192932/192932
-shoulders=amice_of_the_blue,id=193526,ilevel=418
+neck=elemental_lariat,id=193001,bonus_id=8960/8840/8836/8902/8783/8784/8780/1508,gem_id=192982/192932/192932,crafted_stats=32/40
+shoulders=amice_of_the_blue,id=193526,bonus_id=8960/8840/8836/8902/1508
 back=cloak_of_lost_devotion,id=193629,bonus_id=6808/4786/1643
 chest=crystal_scholars_tunic,id=200315,bonus_id=4800/4786/1498,enchant=waking_stats_3
 wrists=infused_elemental_bands,id=193635,bonus_id=6808/4786/1643,gem_id=192961
@@ -168,7 +168,7 @@ hands=crystal_scholars_pageturners,id=200317,bonus_id=4800/4786/1498
 waist=solstens_arcing_runecord,id=133613,bonus_id=1795/6808/4786/3300,gem_id=192961
 legs=crystal_scholars_britches,id=200319,bonus_id=4800/4786/1498,enchant=temporal_spellthread_3
 feet=sandals_of_the_wild_sovereign,id=195532,bonus_id=4800/4786/1498
-finger1=seal_of_filial_duty,id=195526,bonus_id=4800/4786/1498,gem_id=192961,enchant=devotion_of_versatility_3
+finger1=seal_of_filial_duty,id=195526,ilevel=430,gem_id=192961,enchant=devotion_of_versatility_3
 finger2=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498,gem_id=192961,enchant=devotion_of_critical_strike_3
 trinket1=timebreaching_talon,id=193791,bonus_id=7977/6652/8816/1594/8767
 trinket2=furious_ragefeather,id=193677,bonus_id=6808/4786/1643
@@ -176,13 +176,13 @@ main_hand=stormlashs_last_resort,id=195529,bonus_id=4800/4786/1498,enchant=sophi
 off_hand=kokias_burnout_rod,id=193766,bonus_id=6808/4786/1643
 
 # Gear Summary
-# gear_ilvl=418.38
-# gear_stamina=13133
+# gear_ilvl=418.31
+# gear_stamina=13122
 # gear_intellect=6666
-# gear_crit_rating=2335
-# gear_haste_rating=2845
-# gear_mastery_rating=4092
-# gear_versatility_rating=2385
+# gear_crit_rating=2927
+# gear_haste_rating=2251
+# gear_mastery_rating=3493
+# gear_versatility_rating=2977
 # gear_armor=2029
 # set_bonus=tier29_2pc=1
 # set_bonus=tier29_4pc=1
