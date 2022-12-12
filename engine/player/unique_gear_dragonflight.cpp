@@ -3441,12 +3441,12 @@ void horizon_striders_garments( special_effect_t& effect )
   }
   else
   {
-    auto buff = buff_t::find( effect.player, effect.name() );
+    auto buff = debug_cast<stat_buff_t*>(buff_t::find(effect.player, effect.name()));
     if (!buff)
     {
-      buff = create_buff<stat_buff_t>(effect.player, effect.player->find_spell(377143))
-        ->add_stat(STAT_HASTE_RATING, effect.driver()->effectN(1).average(effect.item));
+      buff = create_buff<stat_buff_t>(effect.player, effect.player->find_spell(377143));
     }
+    buff->add_stat(STAT_HASTE_RATING, effect.driver()->effectN(1).average(effect.item));
     auto driver = unique_gear::find_special_effect(effect.player, set_driver_id);
     driver->custom_buff = buff;
   }
