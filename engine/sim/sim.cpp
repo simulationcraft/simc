@@ -3899,6 +3899,9 @@ void sim_t::create_options()
   add_option( opt_uint( "dragonflight.allied_wristguards_allies", dragonflight_opts.allied_wristguards_allies, 0, 4 ) );
   add_option( opt_float( "dragonflight.allied_wristguards_ally_leave_chance", dragonflight_opts.allied_wristguards_ally_leave_chance, 0.0, 1.0 ) );
   add_option( opt_float( "dragonflight.corrupting_rage_uptime", dragonflight_opts.corrupting_rage_uptime, 0.1, 1.0 ) );
+  add_option( opt_float( "dragonflight.hood_of_surging_time_chance", dragonflight_opts.hood_of_surging_time_chance, 0.0, 1.0 ) );
+  add_option( opt_timespan( "dragonflight.hood_of_surging_time_period", dragonflight_opts.hood_of_surging_time_period, 1_s, timespan_t::max() ) );
+  add_option( opt_uint( "dragonflight.dragon_games_kicks", dragonflight_opts.hood_of_surging_time_stacks, 0, 5 ) );
 }
 
 // sim_t::parse_option ======================================================
