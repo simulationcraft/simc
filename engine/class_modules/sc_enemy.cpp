@@ -1432,7 +1432,7 @@ void enemy_t::add_tank_heal_raid_event( tank_dummy_e tank_dummy )
 {
   constexpr size_t numTankDummies = static_cast<size_t>( tank_dummy_e::MAX );
   //                                           NONE, WEAK, DUNGEON, RAID,  HEROIC, MYTHIC
-  std::array<int, numTankDummies> heal_value = { 0, 5000, 10000, 12500, 20000, 25000 };
+  std::array<int, numTankDummies> heal_value = { 0, 12000, 24000, 36000, 48000, 60000 };
   size_t tank_dummy_index                    = static_cast<size_t>( tank_dummy );
   std::string heal_raid_event = fmt::format( "heal,name=tank_heal,amount={},period=0.5,duration=0,player_if=role.tank",
                                              heal_value[ tank_dummy_index ] );
