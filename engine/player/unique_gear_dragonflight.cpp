@@ -2863,6 +2863,8 @@ void fang_adornments( special_effect_t& effect )
 {
   effect.school = effect.driver()->get_school_type();
   effect.discharge_amount = effect.driver()->effectN( 1 ).average( effect.item );
+  effect.override_result_es_mask |= RESULT_CRIT_MASK;
+  effect.result_es_mask &= ~RESULT_CRIT_MASK;
 
   new dbc_proc_callback_t( effect.player, effect );
 }
