@@ -9968,6 +9968,7 @@ std::string druid_t::default_flask() const
     case DRUID_RESTORATION:
     case DRUID_GUARDIAN:
     default:
+      break;
   }
   
   if      ( true_level >= 70 ) return "phial_of_elemental_chaos_3";
