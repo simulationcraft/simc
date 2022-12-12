@@ -9970,6 +9970,7 @@ std::string druid_t::default_flask() const
     case DRUID_RESTORATION:
       return "greater_flask_of_endless_fathoms";
     case DRUID_FERAL:
+      return "iced_phial_of_corrupting_rage_3";
     case DRUID_GUARDIAN:
       return "greater_flask_of_the_currents";
     default:
@@ -9988,7 +9989,8 @@ std::string druid_t::default_potion() const
       else if ( true_level >= 40 ) return "superior_battle_potion_of_intellect";
       SC_FALLTHROUGH;
     case DRUID_FERAL:
-      if      ( true_level >= 60 ) return "spectral_agility";
+      if      ( true_level >= 70 ) return "elemental_potion_of_ultimate_power_3";
+      else if ( true_level >= 60 ) return "spectral_agility";
       else if ( true_level >= 40 ) return "superior_battle_potion_of_agility";
       SC_FALLTHROUGH;
     case DRUID_GUARDIAN:
@@ -10028,7 +10030,8 @@ std::string druid_t::default_temporary_enchant() const
       return true_level >= 70 ? "main_hand:howling_rune_3" : "main_hand:shadowcore_oil";
     case DRUID_RESTORATION: return "main_hand:shadowcore_oil";
     case DRUID_GUARDIAN: return "main_hand:shadowcore_oil";
-    case DRUID_FERAL: return "main_hand:shaded_sharpening_stone";
+    case DRUID_FERAL:
+      return true_level >= 70 ? "main_hand:buzzing_rune_3" : "main_hand:shaded_sharpening_stone";
     default: return "disabled";
   }
 }
