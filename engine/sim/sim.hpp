@@ -495,6 +495,8 @@ struct sim_t : private sc_thread_t
     double hood_of_surging_time_chance = 0.0;
     // Hood of Surging Time proc period
     timespan_t hood_of_surging_time_period = 5_s;
+    // Hood of Surging Time stacks to grant when the period is set
+    unsigned int hood_of_surging_time_stacks = 1;
   } dragonflight_opts;
 
   // Auras and De-Buffs

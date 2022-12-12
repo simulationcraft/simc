@@ -3391,11 +3391,12 @@ void hood_of_surging_time( special_effect_t& effect )
   // while contuining your single target rotation
   effect.player->register_combat_begin( [ buff ]( player_t* ) {
     if ( buff->sim->dragonflight_opts.hood_of_surging_time_chance > 0.0 &&
-         buff->sim->dragonflight_opts.hood_of_surging_time_period > 0_s )
+         buff->sim->dragonflight_opts.hood_of_surging_time_period > 0_s &&
+         buff->sim->dragonflight_opts.hood_of_surging_time_stacks > 0 )
     {
       make_repeating_event( buff->sim, buff->sim->dragonflight_opts.hood_of_surging_time_period, [ buff ] {
         if ( buff->rng().roll( buff->sim->dragonflight_opts.hood_of_surging_time_chance ) )
-          buff->trigger();
+          buff->trigger( buff->sim->dragonflight_opts.hood_of_surging_time_stacks );
       } );
     }
   } );
