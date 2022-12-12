@@ -344,6 +344,7 @@ void unholy( player_t* p )
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "raise_dead" );
   precombat->add_action( "fleshcraft" );
+  precombat->add_action( "army_of_the_dead,precombat_time=2" );
   precombat->add_action( "variable,name=trinket_1_sync,op=setif,value=1,value_else=0.5,condition=trinket.1.has_use_buff&(trinket.1.cooldown.duration%%45=0)" );
   precombat->add_action( "variable,name=trinket_2_sync,op=setif,value=1,value_else=0.5,condition=trinket.2.has_use_buff&(trinket.2.cooldown.duration%%45=0)" );
   precombat->add_action( "variable,name=trinket_1_buffs,value=trinket.1.has_buff.strength|trinket.1.has_buff.mastery|trinket.1.has_buff.versatility|trinket.1.has_buff.haste|trinket.1.has_buff.crit" );
@@ -353,7 +354,7 @@ void unholy( player_t* p )
 
   default_->add_action( "auto_attack" );
   default_->add_action( "mind_freeze,if=target.debuff.casting.react" );
-  default_->add_action( "variable,name=apoc_timing,op=setif,value=8,value_else=4,condition=cooldown.apocalypse.remains<10&debuff.festering_wound.stack<4", "Variables" );
+  default_->add_action( "variable,name=apoc_timing,op=setif,value=10,value_else=4,condition=cooldown.apocalypse.remains<10&debuff.festering_wound.stack<4", "Variables" );
   default_->add_action( "variable,name=garg_pooling,op=setif,value=(((cooldown.summon_gargoyle.remains+1)%gcd)%((rune+1)*(runic_power+20)))*100,value_else=gcd,condition=cooldown.summon_gargoyle.remains<gcd*2" );
   default_->add_action( "variable,name=festermight_tracker,op=setif,value=debuff.festering_wound.stack>=1,value_else=debuff.festering_wound.stack>=(2-talent.infected_claws),condition=talent.festermight&buff.festermight.up&(buff.festermight.remains%(4*gcd))>=1" );
   default_->add_action( "variable,name=pop_wounds,value=(cooldown.apocalypse.remains>variable.apoc_timing|!talent.apocalypse)&(variable.festermight_tracker|debuff.festering_wound.stack>=1&!talent.apocalypse|debuff.festering_wound.stack>=1&cooldown.unholy_assault.remains<20&talent.unholy_assault&!talent.summon_gargoyle&variable.st_planning|debuff.festering_wound.stack>4|fight_remains<debuff.festering_wound.stack*gcd)" );
@@ -362,7 +363,9 @@ void unholy( player_t* p )
   default_->add_action( "variable,name=st_planning,value=active_enemies<=3&(!raid_event.adds.exists|raid_event.adds.in>15)" );
   default_->add_action( "variable,name=adds_remain,value=active_enemies>=4&(!raid_event.adds.exists|raid_event.adds.exists&raid_event.adds.remains>6)" );
   default_->add_action( "invoke_external_buff,name=power_infusion,if=variable.st_planning&(pet.gargoyle.active&pet.apoc_ghoul.active|!talent.summon_gargoyle&talent.army_of_the_damned&pet.army_ghoul.active&pet.apoc_ghoul.active|!talent.summon_gargoyle&!talent.army_of_the_damned&buff.dark_transformation.up|!talent.summon_gargoyle&!talent.summon_gargoyle&buff.dark_transformation.up|cooldown.summon_gargoyle.remains+5>cooldown.invoke_external_buff.duration)|fight_remains<=21", "When using 'external_buffs.pool', will use this lines logic to determine when to use Power Infusion." );
-  default_->add_action( "army_of_the_dead,if=talent.commander_of_the_dead&(cooldown.dark_transformation.remains<4|buff.commander_of_the_dead_window.up)|!talent.commander_of_the_dead&talent.unholy_assault&cooldown.unholy_assault.remains<10|!talent.unholy_assault&!talent.commander_of_the_dead|fight_remains<=30", "Prioritize Army, Outbreak and Maintaining Plaguebringer" );
+  default_->add_action( "army_of_the_dead,if=talent.commander_of_the_dead&(cooldown.dark_transformation.remains<3|buff.commander_of_the_dead_window.up)|!talent.commander_of_the_dead&talent.unholy_assault&cooldown.unholy_assault.remains<10|!talent.unholy_assault&!talent.commander_of_the_dead|fight_remains<=34", "Prioritize Army, Outbreak and Maintaining Plaguebringer" );
+  default_->add_action( "wait_for_cooldown,name=apocalypse,if=cooldown.apocalypse.remains<gcd&buff.commander_of_the_dead_window.up" );
+  default_->add_action( "death_coil,if=pet.gargoyle.active&!prev_gcd.1.death_coil&cooldown.apocalypse.remains<gcd" );
   default_->add_action( "outbreak,target_if=(dot.virulent_plague.refreshable|talent.superstrain&(dot.frost_fever_superstrain.refreshable|dot.blood_plague_superstrain.refreshable))&(!talent.unholy_blight|talent.unholy_blight&cooldown.unholy_blight.remains>15%((talent.superstrain*3)+(talent.plaguebringer*2)))" );
   default_->add_action( "wound_spender,if=cooldown.apocalypse.remains>variable.apoc_timing&talent.plaguebringer&talent.superstrain&buff.plaguebringer.remains<gcd" );
   default_->add_action( "call_action_list,name=opener,if=variable.opener_done=0", "Call Action Lists" );
@@ -380,40 +383,39 @@ void unholy( player_t* p )
   aoe->add_action( "wound_spender,target_if=max:debuff.festering_wound.stack,if=death_and_decay.ticking" );
   aoe->add_action( "death_coil,if=!variable.pooling_runic_power&!talent.epidemic" );
   aoe->add_action( "epidemic,if=!variable.pooling_runic_power" );
-  aoe->add_action( "wound_spender,target_if=max:debuff.festering_wound.stack,if=cooldown.death_and_decay.remains>10" );
+  aoe->add_action( "wound_spender,target_if=max:debuff.festering_wound.stack,if=cooldown.death_and_decay.remains>10|cooldown.death_and_decay.remains>5&death_knight.fwounded_targets=active_enemies" );
 
   cooldowns->add_action( "potion,if=(30>=pet.gargoyle.remains&pet.gargoyle.active)|(!talent.summon_gargoyle|cooldown.summon_gargoyle.remains>60)&(buff.dark_transformation.up&30>=buff.dark_transformation.remains|pet.army_ghoul.active&pet.army_ghoul.remains<=30|pet.apoc_ghoul.active&pet.apoc_ghoul.remains<=30)|fight_remains<=30", "Potion" );
-  cooldowns->add_action( "vile_contagion,target_if=max:debuff.festering_wound.stack,if=active_enemies>=2&debuff.festering_wound.stack>=4&cooldown.any_dnd.remains<3", "Cooldowns" );
+  cooldowns->add_action( "summon_gargoyle,if=buff.commander_of_the_dead_window.up|!talent.commander_of_the_dead&runic_power>=40", "Cooldowns" );
+  cooldowns->add_action( "vile_contagion,target_if=max:debuff.festering_wound.stack,if=active_enemies>=2&debuff.festering_wound.stack>=4&cooldown.any_dnd.remains<3" );
   cooldowns->add_action( "abomination_limb,if=rune<2&variable.adds_remain" );
   cooldowns->add_action( "raise_dead,if=!pet.ghoul.active" );
-  cooldowns->add_action( "dark_transformation,if=variable.st_planning&(talent.commander_of_the_dead&cooldown.apocalypse.remains<gcd|!talent.commander_of_the_dead)" );
+  cooldowns->add_action( "dark_transformation,if=variable.st_planning&(talent.commander_of_the_dead&cooldown.apocalypse.remains<gcd|cooldown.apocalypse.remains>30|!talent.commander_of_the_dead)" );
   cooldowns->add_action( "dark_transformation,if=variable.adds_remain&(cooldown.any_dnd.remains<10&talent.infected_claws&((cooldown.vile_contagion.remains|raid_event.adds.exists&raid_event.adds.in>10)&death_knight.fwounded_targets<active_enemies|!talent.vile_contagion)&(raid_event.adds.remains>5|!raid_event.adds.exists)|!talent.infected_claws)|fight_remains<25" );
-  cooldowns->add_action( "apocalypse,target_if=max:debuff.festering_wound.stack,if=active_enemies<=3&cooldown.dark_transformation.remains" );
+  cooldowns->add_action( "apocalypse,target_if=max:debuff.festering_wound.stack,if=active_enemies<=3&(buff.commander_of_the_dead_window.up|!talent.commander_of_the_dead|cooldown.dark_transformation.remains>30)" );
   cooldowns->add_action( "apocalypse,target_if=min:debuff.festering_wound.stack,if=debuff.festering_wound.up&variable.adds_remain&(!death_and_decay.ticking&cooldown.death_and_decay.remains&rune<3|death_and_decay.ticking&rune=0)" );
   cooldowns->add_action( "empower_rune_weapon,if=variable.st_planning&(pet.gargoyle.active&pet.apoc_ghoul.active|!talent.summon_gargoyle&talent.army_of_the_damned&pet.army_ghoul.active&pet.apoc_ghoul.active|!talent.summon_gargoyle&!talent.army_of_the_damned&buff.dark_transformation.up|!talent.summon_gargoyle&!talent.summon_gargoyle&buff.dark_transformation.up)|fight_remains<=21" );
   cooldowns->add_action( "empower_rune_weapon,if=variable.adds_remain&buff.dark_transformation.up" );
-  cooldowns->add_action( "summon_gargoyle,if=buff.commander_of_the_dead_window.up|!talent.commander_of_the_dead&runic_power>=40" );
   cooldowns->add_action( "unholy_blight,if=variable.st_planning&((!talent.apocalypse|cooldown.apocalypse.remains)&talent.morbidity|!talent.morbidity)" );
   cooldowns->add_action( "unholy_blight,if=variable.adds_remain|fight_remains<21" );
   cooldowns->add_action( "abomination_limb,if=rune<3&variable.st_planning" );
   cooldowns->add_action( "unholy_assault,if=variable.st_planning" );
   cooldowns->add_action( "unholy_assault,target_if=min:debuff.festering_wound.stack,if=variable.adds_remain&debuff.festering_wound.stack<2" );
-  cooldowns->add_action( "soul_reaper,if=active_enemies=1&target.time_to_pct_35<5&target.time_to_die>5" );
+  cooldowns->add_action( "soul_reaper,if=active_enemies=1&target.time_to_pct_35<5&target.time_to_die>5&(!buff.commander_of_the_dead_window.up|cooldown.apocalypse.remains>3)" );
   cooldowns->add_action( "soul_reaper,target_if=min:dot.soul_reaper.remains,if=target.time_to_pct_35<5&active_enemies>=2&target.time_to_die>(dot.soul_reaper.remains+5)" );
   cooldowns->add_action( "sacrificial_pact,if=active_enemies>=2&!buff.dark_transformation.up&cooldown.dark_transformation.remains>6|fight_remains<gcd" );
 
-  generic->add_action( "death_coil,if=!variable.pooling_runic_power&(rune<3|pet.gargoyle.active|buff.sudden_doom.react)", "Generic" );
+  generic->add_action( "death_coil,if=!variable.pooling_runic_power&(rune<3|pet.gargoyle.active|buff.sudden_doom.react|cooldown.apocalypse.remains<10&debuff.festering_wound.stack>3)", "Generic" );
   generic->add_action( "any_dnd,if=!death_and_decay.ticking&active_enemies>=2&death_knight.fwounded_targets=active_enemies" );
   generic->add_action( "wound_spender,target_if=max:debuff.festering_wound.stack,if=variable.pop_wounds|active_enemies>=2&death_and_decay.ticking" );
   generic->add_action( "festering_strike,target_if=min:debuff.festering_wound.stack,if=!variable.pop_wounds" );
   generic->add_action( "death_coil" );
 
-  opener->add_action( "summon_gargoyle,use_off_gcd=1,if=buff.commander_of_the_dead_window.up", "Opener" );
-  opener->add_action( "potion,if=pet.gargoyle.active|!talent.summon_gargoyle&pet.army_ghoul.active|!talent.summon_gargoyle&!talent.army_of_the_dead&buff.dark_transformation.up" );
-  opener->add_action( "death_coil,if=pet.gargoyle.active&!prev_gcd.1.death_coil" );
-  opener->add_action( "apocalypse,if=buff.commander_of_the_dead_window.up" );
-  opener->add_action( "dark_transformation,if=debuff.festering_wound.stack>=4" );
-  opener->add_action( "festering_strike,target_if=min:debuff.festering_wound.stack,if=!variable.pop_wounds" );
+  opener->add_action( "summon_gargoyle,use_off_gcd=1,if=buff.commander_of_the_dead_window.up|!talent.commander_of_the_dead&runic_power>40", "Opener" );
+  opener->add_action( "potion,if=(30>=pet.gargoyle.remains&pet.gargoyle.active)|(!talent.summon_gargoyle|cooldown.summon_gargoyle.remains>60)&(buff.dark_transformation.up&30>=buff.dark_transformation.remains|pet.army_ghoul.active&pet.army_ghoul.remains<=30|pet.apoc_ghoul.active&pet.apoc_ghoul.remains<=30)" );
+  opener->add_action( "apocalypse,if=buff.commander_of_the_dead_window.up|!talent.commander_of_the_dead&debuff.festering_wound.stack>=4" );
+  opener->add_action( "dark_transformation,if=talent.commander_of_the_dead&debuff.festering_wound.stack>=4|!talent.commander_of_the_dead" );
+  opener->add_action( "festering_strike,target_if=min:debuff.festering_wound.stack,if=!variable.pop_wounds&debuff.festering_wound.stack<4" );
   opener->add_action( "variable,name=opener_done,op=setif,value=1,value_else=0,condition=cooldown.apocalypse.remains|!talent.apocalypse&(cooldown.dark_transformation.remains|cooldown.summon_gargoyle.remains)" );
 
   racials->add_action( "arcane_torrent,if=runic_power.deficit>20&(cooldown.summon_gargoyle.remains<gcd|!talent.summon_gargoyle.enabled|pet.gargoyle.active&rune<2&debuff.festering_wound.stack<1)", "Racials" );
