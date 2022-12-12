@@ -82,7 +82,7 @@ def->add_action( "cat_form,if=!buff.cat_form.up" );
 def->add_action( "auto_attack,if=!buff.prowl.up&!buff.shadowmeld.up" );
 def->add_action( "call_action_list,name=cooldown" );
 def->add_action( "adaptive_swarm,target_if=((!dot.adaptive_swarm_damage.ticking|dot.adaptive_swarm_damage.remains<2)&(dot.adaptive_swarm_damage.stack<3|!dot.adaptive_swarm_heal.stack>1)&!action.adaptive_swarm_heal.in_flight&!action.adaptive_swarm_damage.in_flight&!action.adaptive_swarm.in_flight)&target.time_to_die>5|active_enemies>2&!dot.adaptive_swarm_damage.ticking&energy<35&target.time_to_die>5" );
-def->add_action( "feral_frenzy,if=combo_points<2" );
+def->add_action( "feral_frenzy,if=combo_points<2|combo_points=2&buff.bs_inc.up" );
 def->add_action( "run_action_list,name=aoe,if=spell_targets.swipe_cat>1&talent.primal_wrath.enabled" );
 def->add_action( "ferocious_bite,if=buff.apex_predators_craving.up" );
 def->add_action( "call_action_list,name=bloodtalons,if=variable.need_bt&!buff.bs_inc.up" );
