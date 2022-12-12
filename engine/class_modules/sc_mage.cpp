@@ -443,6 +443,7 @@ public:
     timespan_t last_enlightened_update;
     player_t* last_bomb_target;
     int frostbolt_counter;
+    bool trigger_cc_channel;
   } state;
 
   struct expression_support_t
@@ -1059,6 +1060,18 @@ struct clearcasting_buff_t : public buff_t
     modify_max_stack( as<int>( p->talents.improved_clearcasting->effectN( 1 ).base_value() ) );
   }
 
+  void execute( int stacks, double value, timespan_t duration ) override
+  {
+    buff_t::execute( stacks, value, duration );
+    debug_cast<mage_t*>( player )->state.trigger_cc_channel = check() != 0;
+  }
+
+  void expire_override( int stacks, timespan_t duration ) override
+  {
+    buff_t::expire_override( stacks, duration );
+    debug_cast<mage_t*>( player )->state.trigger_cc_channel = false;
+  }
+
   void decrement( int stacks, double value ) override
   {
     auto p = debug_cast<mage_t*>( player );
@@ -1066,6 +1079,8 @@ struct clearcasting_buff_t : public buff_t
       p->buffs.concentration->expire();
     else
       buff_t::decrement( stacks, value );
+
+    p->state.trigger_cc_channel = check() != 0;
   }
 };
 
@@ -2655,6 +2670,8 @@ struct arcane_explosion_t final : public arcane_mage_spell_t
 
     if ( num_targets_crit > 0 )
       p()->buffs.bursting_energy->trigger();
+
+    p()->state.trigger_cc_channel = false;
   }
 
   double composite_crit_chance() const override
@@ -2847,7 +2864,8 @@ struct arcane_missiles_t final : public arcane_mage_spell_t
     // so that tick time and dot duration have the correct values.
     if ( p()->buffs.clearcasting->check() )
     {
-      p()->buffs.clearcasting_channel->trigger();
+      if ( !p()->bugs || p()->state.trigger_cc_channel )
+        p()->buffs.clearcasting_channel->trigger();
       p()->trigger_time_manipulation();
     }
     else
@@ -3310,7 +3328,11 @@ struct use_mana_gem_t final : public mage_spell_t
     p()->buffs.invigorating_powder->trigger();
     // TODO: In game, this is bugged and will not properly apply buffs.clearcasting_channel when triggered from 0 stacks.
     if ( p()->talents.cascading_power.ok() )
+    {
+      bool old_state = p()->state.trigger_cc_channel;
       p()->buffs.clearcasting->trigger( as<int>( p()->talents.cascading_power->effectN( 1 ).base_value() ) );
+      p()->state.trigger_cc_channel = old_state;
+    }
 
     p()->state.mana_gem_charges--;
     assert( p()->state.mana_gem_charges >= 0 );
@@ -6893,6 +6915,12 @@ std::unique_ptr<expr_t> mage_t::create_expression( std::string_view name )
   {
     return make_fn_expr( name, [ this ]
     { return state.mana_gem_charges; } );
+  }
+
+  if ( util::str_compare_ci( name, "bugged_clearcasting" ) )
+  {
+    return make_fn_expr( name, [ this ]
+    { return bugs && !state.trigger_cc_channel; } );
   }
 
   // Incanters flow direction
