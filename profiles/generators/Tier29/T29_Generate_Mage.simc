@@ -23,6 +23,8 @@ trinket2=furious_ragefeather,id=193677,bonus_id=6808/4786/1643
 main_hand=stormlashs_last_resort,id=195529,bonus_id=4800/4786/1498,enchant=sophic_devotion_3
 off_hand=kokias_burnout_rod,id=193766,bonus_id=6808/4786/1643
 
+flask=phial_of_static_empowerment_3
+
 save=T29_Mage_Arcane.simc
 
 # mage="T29_Mage_Fire"
@@ -76,5 +78,7 @@ trinket1=,id=194301,ilevel=421
 trinket2=,id=193677,ilevel=421
 main_hand=,id=195529,ilevel=424,enchant=sophic_devotion_3
 off_hand=,id=195513,ilevel=421
+
+flask=phial_of_static_empowerment_3
 
 save=T29_Mage_Frost.simc
