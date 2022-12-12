@@ -1810,11 +1810,16 @@ struct blackout_kick_totm_proc_t : public monk_melee_attack_t
         p()->resource_gain( RESOURCE_MANA, ( p()->resources.max[RESOURCE_MANA] * p()->passives.spirit_of_the_crane->effectN( 1 ).percent() ),
             p()->gain.spirit_of_the_crane );
 
-    if ( p()->talent.brewmaster.staggering_strikes->ok() )
+    // The initial hit along with each individual TotM hits has a chance to reset the cooldown
+    auto totmResetChance = p()->shared.teachings_of_the_monastery->effectN( 1 ).percent();
+
+    if ( p()->specialization() == MONK_MISTWEAVER )
+        totmResetChance += p()->spec.mistweaver_monk->effectN( 21 ).percent();
+
+    if ( rng().roll( totmResetChance ) )
     {
-        auto ap = s->composite_attack_power();
-        auto amount_cleared = p()->partial_clear_stagger_amount( ap * p()->talent.brewmaster.staggering_strikes->effectN( 2 ).percent() );
-        p()->sample_datas.staggering_strikes_cleared->add( amount_cleared );
+        p()->cooldown.rising_sun_kick->reset( true );
+        p()->proc.rsk_reset_totm->occur();
     }
 
     p()->trigger_mark_of_the_crane( s );
@@ -1989,8 +1994,13 @@ struct blackout_kick_t : public monk_melee_attack_t
         for ( int i = 0; i < stacks; i++ )
             bok_totm_proc->execute();
 
-        // Each initial hit from blackout kick has an individual chance to reset
-        if ( rng().roll( p()->shared.teachings_of_the_monastery->effectN( 1 ).percent() ) )
+        // The initial hit along with each individual TotM hits has a chance to reset the cooldown
+        auto totmResetChance = p()->shared.teachings_of_the_monastery->effectN( 1 ).percent();
+
+        if ( p()->specialization() == MONK_MISTWEAVER )
+            totmResetChance += p()->spec.mistweaver_monk->effectN( 21 ).percent();
+
+        if ( rng().roll( totmResetChance ) )
         {
             p()->cooldown.rising_sun_kick->reset( true );
             p()->proc.rsk_reset_totm->occur();
