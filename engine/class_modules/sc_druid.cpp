@@ -9960,22 +9960,19 @@ void druid_t::create_actions()
 // Default Consumables ======================================================
 std::string druid_t::default_flask() const
 {
+  switch ( specialization() )
+  {
+    case DRUID_FERAL:
+      return "iced_phial_of_corrupting_rage_3";
+    case DRUID_BALANCE:
+    case DRUID_RESTORATION:
+    case DRUID_GUARDIAN:
+    default:
+  }
+  
   if      ( true_level >= 70 ) return "phial_of_elemental_chaos_3";
   if      ( true_level >= 60 ) return "spectral_flask_of_power";
   else if ( true_level < 40 )  return "disabled";
-
-  switch ( specialization() )
-  {
-    case DRUID_BALANCE:
-    case DRUID_RESTORATION:
-      return "greater_flask_of_endless_fathoms";
-    case DRUID_FERAL:
-      return "iced_phial_of_corrupting_rage_3";
-    case DRUID_GUARDIAN:
-      return "greater_flask_of_the_currents";
-    default:
-      return "disabled";
-  }
 }
 
 std::string druid_t::default_potion() const
