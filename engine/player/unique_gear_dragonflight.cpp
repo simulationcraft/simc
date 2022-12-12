@@ -3322,6 +3322,69 @@ void allied_chestplate_of_generosity(special_effect_t& effect)
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// 395601 Driver
+// 395603 Buff
+void hood_of_surging_time( special_effect_t& effect )
+{
+  if ( unique_gear::create_fallback_buffs( effect, { "prepared_time" } ) )
+    return;
+
+  struct hood_of_surging_time_cb_t : public dbc_proc_callback_t
+  {
+    std::vector<int> target_list;
+
+    hood_of_surging_time_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e ), target_list()
+    {
+    }
+
+    void execute( action_t* a, action_state_t* s ) override
+    {
+      if ( range::contains( target_list, s->target->actor_spawn_index ) )
+        return;
+
+      dbc_proc_callback_t::execute( a, s );
+      target_list.push_back( s->target->actor_spawn_index );
+    }
+
+    void reset() override
+    {
+      dbc_proc_callback_t::reset();
+      target_list.clear();
+    }
+  };
+
+  auto buff = buff_t::find( effect.player, "prepared_time" );
+  if ( !buff )
+  {
+    buff =
+        create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 395603 ) )
+            ->add_stat( STAT_HASTE_RATING, effect.player->find_spell( 395603 )->effectN( 1 ).average( effect.item ) );
+  }
+
+  effect.custom_buff = buff;
+
+  // TODO: Check if this procs off of periodic, First Strike did not
+  effect.proc_flags_ = effect.proc_flags() & ~PF_PERIODIC;
+
+  // The effect procs when damage actually happens.
+  effect.proc_flags2_ = PF2_ALL_HIT;
+
+  new hood_of_surging_time_cb_t( effect );
+
+  // Create repeating combat even to easier simulate increased uptime on encounters where you can get first strike procs
+  // while contuining your single target rotation
+  effect.player->register_combat_begin( [ buff ]( player_t* ) {
+    if ( buff->sim->dragonflight_opts.hood_of_surging_time_chance > 0.0 &&
+         buff->sim->dragonflight_opts.hood_of_surging_time_period > 0_s )
+    {
+      make_repeating_event( buff->sim, buff->sim->dragonflight_opts.hood_of_surging_time_period, [ buff ] {
+        if ( buff->rng().roll( buff->sim->dragonflight_opts.hood_of_surging_time_chance ) )
+          buff->trigger();
+      } );
+    }
+  } );
+}
+
 }  // namespace items
 
 namespace sets
@@ -3547,6 +3610,7 @@ void register_special_effects()
   register_special_effect( 379985, items::potent_venom );
   register_special_effect( 395959, items::allied_wristguards_of_companionship );
   register_special_effect( 378134, items::allied_chestplate_of_generosity );
+  register_special_effect( 395601, items::hood_of_surging_time, true );
   
   // Sets
   register_special_effect( { 393620, 393982 }, sets::playful_spirits_fur );
