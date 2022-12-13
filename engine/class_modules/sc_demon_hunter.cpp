@@ -3200,25 +3200,51 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
 
 struct spirit_bomb_t : public demon_hunter_spell_t
 {
+  struct spirit_bomb_state_t : public action_state_t
+  {
+    bool t29_vengeance_4pc_proc;
+
+    spirit_bomb_state_t(action_t* a, player_t* target): action_state_t(a, target), t29_vengeance_4pc_proc(false)
+    {
+    }
+
+    void initialize() override
+    {
+      action_state_t::initialize();
+      t29_vengeance_4pc_proc = false;
+    }
+
+    void copy_state(const action_state_t* s) override
+    {
+      action_state_t::initialize();
+      t29_vengeance_4pc_proc = debug_cast<const spirit_bomb_state_t*>(s)->t29_vengeance_4pc_proc;
+    }
+
+    std::ostringstream& debug_str( std::ostringstream& s ) override
+    {
+      action_state_t::debug_str( s );
+      s << " t29_vengeance_4pc_proc=" << t29_vengeance_4pc_proc;
+      return s;
+    }
+  };
+
   struct spirit_bomb_damage_t : public demon_hunter_spell_t
   {
-    bool t29_proc;
-
     spirit_bomb_damage_t( util::string_view name, demon_hunter_t* p )
-      : demon_hunter_spell_t( name, p, p->find_spell( 247455 ) ), t29_proc(false)
+      : demon_hunter_spell_t( name, p, p->find_spell( 247455 ) )
     {
       background = dual = true;
       aoe = -1;
       reduced_aoe_targets = p->talent.vengeance.spirit_bomb->effectN( 2 ).base_value();
     }
 
+    action_state_t* new_state() override
+    {
+      return new spirit_bomb_state_t(this, target);
+    }
+
     void execute() override
     {
-      if ( p()->set_bonuses.t29_vengeance_4pc->ok() )
-      {
-        t29_proc = rng().roll( p()->set_bonuses.t29_vengeance_4pc->effectN( 2 ).percent() );
-      }
-
       demon_hunter_spell_t::execute();
 
       p()->buff.soul_furnace_damage_amp->expire();
@@ -3231,7 +3257,7 @@ struct spirit_bomb_t : public demon_hunter_spell_t
       if ( result_is_hit( s->result ) )
       {
         td( s->target )->debuffs.frailty->trigger();
-        if ( t29_proc )
+        if ( debug_cast<spirit_bomb_state_t*>( s )->t29_vengeance_4pc_proc )
         {
           td( s->target )->debuffs.t29_vengeance_4pc->trigger();
         }
@@ -3247,7 +3273,7 @@ struct spirit_bomb_t : public demon_hunter_spell_t
         m *= 1.0 + p()->buff.soul_furnace_damage_amp->check_value();
       }
 
-      if ( t29_proc )
+      if ( debug_cast<const spirit_bomb_state_t*>( s )->t29_vengeance_4pc_proc )
       {
         m *= 1.0 + p()->set_bonuses.t29_vengeance_4pc->effectN( 1 ).percent();
       }
@@ -3283,7 +3309,8 @@ struct spirit_bomb_t : public demon_hunter_spell_t
     if ( fragments_consumed > 0 )
     {
       damage->set_target( target );
-      action_state_t* damage_state = damage->get_state();
+      spirit_bomb_state_t* damage_state = debug_cast<spirit_bomb_state_t*>(damage->get_state());
+      damage_state->t29_vengeance_4pc_proc = rng().roll( p()->set_bonuses.t29_vengeance_4pc->effectN( 2 ).percent() );
       damage->snapshot_state( damage_state, result_amount_type::DMG_DIRECT );
       damage_state->da_multiplier *= fragments_consumed;
       damage->schedule_execute( damage_state );
@@ -4643,16 +4670,47 @@ struct shear_t : public demon_hunter_attack_t
 
 struct soul_cleave_t : public demon_hunter_attack_t
 {
+  struct soul_cleave_state_t : public action_state_t
+  {
+    bool t29_vengeance_4pc_proc;
+
+    soul_cleave_state_t(action_t* a, player_t* target): action_state_t(a, target), t29_vengeance_4pc_proc(false)
+    {
+    }
+
+    void initialize() override
+    {
+      action_state_t::initialize();
+      t29_vengeance_4pc_proc = false;
+    }
+
+    void copy_state(const action_state_t* s) override
+    {
+      action_state_t::initialize();
+      t29_vengeance_4pc_proc = debug_cast<const soul_cleave_state_t*>(s)->t29_vengeance_4pc_proc;
+    }
+
+    std::ostringstream& debug_str( std::ostringstream& s ) override
+    {
+      action_state_t::debug_str( s );
+      s << " t29_vengeance_4pc_proc=" << t29_vengeance_4pc_proc;
+      return s;
+    }
+  };
+
   struct soul_cleave_damage_t : public demon_hunter_attack_t
   {
-    bool t29_proc;
-
     soul_cleave_damage_t( util::string_view name, demon_hunter_t* p, const spell_data_t* s )
-      : demon_hunter_attack_t( name, p, s ), t29_proc( false )
+      : demon_hunter_attack_t( name, p, s )
     {
       dual                = true;
       aoe                 = -1;
       reduced_aoe_targets = data().effectN( 2 ).base_value();
+    }
+
+    action_state_t* new_state() override
+    {
+      return new soul_cleave_state_t(this, target);
     }
 
     void impact( action_state_t* s ) override
@@ -4673,7 +4731,7 @@ struct soul_cleave_t : public demon_hunter_attack_t
                 timespan_t::from_seconds( p()->talent.vengeance.soulcrush->effectN( 2 ).base_value() ) );
       }
 
-      if ( t29_proc )
+      if ( debug_cast<soul_cleave_state_t*>( s )->t29_vengeance_4pc_proc )
       {
         td( s->target )->debuffs.t29_vengeance_4pc->trigger();
       }
@@ -4681,11 +4739,6 @@ struct soul_cleave_t : public demon_hunter_attack_t
 
     void execute() override
     {
-      if ( p()->set_bonuses.t29_vengeance_4pc->ok() )
-      {
-        t29_proc = rng().roll( p()->set_bonuses.t29_vengeance_4pc->effectN( 2 ).percent() );
-      }
-
       demon_hunter_attack_t::execute();
 
       p()->buff.soul_furnace_damage_amp->expire();
@@ -4705,7 +4758,7 @@ struct soul_cleave_t : public demon_hunter_attack_t
         m *= 1.0 + p()->buff.soul_furnace_damage_amp->check_value();
       }
 
-      if ( t29_proc )
+      if ( debug_cast<const soul_cleave_state_t*>( s )->t29_vengeance_4pc_proc )
       {
         m *= 1.0 + p()->set_bonuses.t29_vengeance_4pc->effectN( 1 ).percent();
       }
@@ -4737,6 +4790,10 @@ struct soul_cleave_t : public demon_hunter_attack_t
 
   void execute() override
   {
+    soul_cleave_state_t* soul_cleave_state = debug_cast<soul_cleave_state_t*>(execute_action->get_state());
+    soul_cleave_state->t29_vengeance_4pc_proc = rng().roll( p()->set_bonuses.t29_vengeance_4pc->effectN( 2 ).percent() );
+    execute_action->snapshot_state(soul_cleave_state, result_amount_type::DMG_DIRECT);
+
     demon_hunter_attack_t::execute();
 
     if ( heal )
