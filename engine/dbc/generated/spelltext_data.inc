@@ -18385,7 +18385,7 @@ static const std::array<spelltext_data_t, 19193> __spelltext_data { {
   { 390636, "$@spelldesc390622", "The damage of your next Holy Nova is increased by $w1% and its healing is increased by $w3%.", 0 },
   { 390642, "Shield Slam deals an additional $s1% damage and deals $s2% increased critical strike damage.\r\n\r\n", 0, 0 },
   { 390643, "Perform the summoning ritual and commune with one of the Primal Turtles to gain its blessing.\r\n\r\nThe ritual site can be found south of Uktulut Pier in The Waking Shores, near the remains of a dragon.", 0, 0 },
-  { 390655, "@spelldesc390643", "Taking damage as well as dealing harmful and helpful abilities have a chance to shield you for $390764w1 for $390785d.", 0 },
+  { 390655, "@spelldesc390643", "Taking damage as well as dealing harmful and helpful abilities have a chance to shield you for $w1 for $390785d.", 0 },
   { 390667, "Reduces all magic damage taken by $s1%.", 0, 0 },
   { 390668, "Your $?s137031[Holy Fire][Mind Blast] critical strikes reduce your target's movement speed by $390669s1% for $390669d.", 0, 0 },
   { 390669, "$@spelldesc390668", "Movement speed reduced by $s1%.", 0 },
@@ -18421,14 +18421,14 @@ static const std::array<spelltext_data_t, 19193> __spelltext_data { {
   { 390787, "$@spelldesc390786", "The damage of your next Smite is increased by $w1% or the absorb of your next Power Word: Shield is increased by $w2%.", 0 },
   { 390808, "Immolation Aura generates $m-$M Fury when it deals critical damage.\r\n\r\nThis effect may only occur once per ${$proccooldown+0.1}.1 sec.", 0, 0 },
   { 390832, "Increases the damage of Mind Blast and Shadow Word: Death by $s1%.\r\n\r\nMind Blast and Shadow Word: Death consume $s2 sec of Shadow Word: Pain or Purge the Wicked, instantly dealing that damage.", 0, 0 },
-  { 390835, "@spelldesc390643", "Your harmful spells and abilities have a chance to deal an extra $390764w3 fire damage.", 0 },
+  { 390835, "@spelldesc390643", "Your harmful spells and abilities have a chance to deal an extra $w1 fire damage.", 0 },
   { 390845, "$@spelldesc110744", 0, 0 },
   { 390864, "Swipe and Thrash damage is increased by $s1%.", 0, 0 },
-  { 390869, "@spelldesc390643", "Your helpful and harmful abilities have a chance to heal you or an ally near your target for $390764w4.", 0 },
+  { 390869, "@spelldesc390643", "Your helpful and harmful abilities have a chance to heal you or an ally near your target for $w1.", 0 },
   { 390881, "Your Renew healing increases the healing done by your next Circle of Healing by $390885s1%, stacking up to $390885U times.", 0, 0 },
   { 390885, "$@spelldesc390881", "The healing of your next Circle of Healing is increased by $w1%.", 0 },
   { 390896, "$@spelldesc383812", 0, 0 },
-  { 390899, "@spelldesc390643", "Your harmful spells and abilities have a chance to grant you $390764w5 mastery for $390936d.", 0 },
+  { 390899, "@spelldesc390643", "Your harmful spells and abilities have a chance to grant you $w1 mastery for $390936d.", 0 },
   { 390902, "Tiger's Fury's damage bonus is increased by $s1%.", 0, 0 },
   { 390919, "Increases the amount of damage required to break your $?s205369[Mind Bomb][Psychic Scream] by $s1%.", 0, 0 },
   { 390933, "$@spelldesc377438", "Damage and healing of Smite and Holy Nova is increased by $s1%.", 0 },
@@ -19196,7 +19196,7 @@ static const std::array<spelltext_data_t, 19193> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 10.0.2.47067
-static constexpr std::array<hotfix::client_hotfix_entry_t, 7> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 11> __spelltext_hotfix_data { {
   {      71,  0, "Hardened by battle, all damage taken is reduced by $s3%, your Stamina is increased by $s2% and your Armor is increased by $s1% of your Strength.", "Hardened by battle, your Stamina is increased by $s2% and your Armor is increased by $s1% of your Strength." },
   {  245013,  0, "All damage taken is reduced by $s2% and your Armor is increased by $s1%.\r\n\r\nStamina increased by $s3%.", "Your Armor is increased by $s1% and Stamina increased by $s3%." },
   {  300346,  0, "Moonfire, Soothe, Remove Corruption, and Rebirth are usable in Bear Form. Multiple uses of Ironfur may overlap.\r\n\r\nAll damage taken in Bear Form reduced by $s2%.", "Moonfire, Soothe, Remove Corruption, and Rebirth are usable in Bear Form. Multiple uses of Ironfur may overlap." },
@@ -19204,6 +19204,10 @@ static constexpr std::array<hotfix::client_hotfix_entry_t, 7> __spelltext_hotfix
   {  374721,  0, "Stamina increased by $s1%.\r\nDamage taken reduced by $s2%.", "Stamina increased by $s1%." },
   {  377462,  0, "Designate another player to bond with, becoming their Guardian for $382281d.\r\n\r\nWhile bonded, you and your ally gain $382280s1 Versatility and restore $382280s2 health per second. If you are within 15 yards of one another, these bonuses are increased. $?(a137012|a137024|a137031|a137032|a137029|a137039|a356810)[][\r\n\r\n|CFF808080Valid only for healer specializations.|R]\r\n", "Designate another player to bond with, becoming their Guardian for $394457d.\r\n\r\nWhile bonded, you and your ally gain $382280s1 Versatility and restore $382280s2 health per second. If you are within 15 yards of one another, these bonuses are increased. $?(a137012|a137024|a137031|a137032|a137029|a137039|a356810)[][\r\n\r\n|CFF808080Valid only for healer specializations.|R]\r\n" },
   {  389697,  0, "Increases the duration of Sigil effects by ${$s1/1000} sec.", "Increases the duration of Sigil effects by ${$s1/1000}.1 sec." },
+  {  390655,  1, "Taking damage as well as dealing harmful and helpful abilities have a chance to shield you for $390764w1 for $390785d.", "Taking damage as well as dealing harmful and helpful abilities have a chance to shield you for $w1 for $390785d." },
+  {  390835,  1, "Your harmful spells and abilities have a chance to deal an extra $390764w3 fire damage.", "Your harmful spells and abilities have a chance to deal an extra $w1 fire damage." },
+  {  390869,  1, "Your helpful and harmful abilities have a chance to heal you or an ally near your target for $390764w4.", "Your helpful and harmful abilities have a chance to heal you or an ally near your target for $w1." },
+  {  390899,  1, "Your harmful spells and abilities have a chance to grant you $390764w5 mastery for $390936d.", "Your harmful spells and abilities have a chance to grant you $w1 mastery for $390936d." },
 } };
 
 // Spell description variables, wow build 10.0.2.47067
