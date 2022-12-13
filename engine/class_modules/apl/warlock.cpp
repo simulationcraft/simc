@@ -145,9 +145,9 @@ void demonology( player_t* p )
 {
   action_priority_list_t* default_ = p->get_action_priority_list( "default" );
   action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
-  action_priority_list_t* items = p->get_action_priority_list( "items" );
-  action_priority_list_t* ogcd = p->get_action_priority_list( "ogcd" );
   action_priority_list_t* tyrant = p->get_action_priority_list( "tyrant" );
+  action_priority_list_t* ogcd = p->get_action_priority_list( "ogcd" );
+  action_priority_list_t* items = p->get_action_priority_list( "items" );
 
   precombat->add_action( "flask" );
   precombat->add_action( "food" );
@@ -156,6 +156,7 @@ void demonology( player_t* p )
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "inquisitors_gaze" );
   precombat->add_action( "variable,name=tyrant_prep_start,op=set,value=12" );
+
   precombat->add_action( "variable,name=next_tyrant,op=set,value=14+talent.grimoire_felguard+talent.summon_vilefiend" );
   precombat->add_action( "power_siphon" );
   precombat->add_action( "demonbolt,if=!buff.power_siphon.up" );
