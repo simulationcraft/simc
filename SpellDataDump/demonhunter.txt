@@ -1,4 +1,4 @@
-SimulationCraft 1002-01 for World of Warcraft 10.0.2.46924 Live (hotfix 2022-12-11/46924)
+SimulationCraft 1002-01 for World of Warcraft 10.0.2.46924 Live (hotfix 2022-12-13/46924)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -11130,6 +11130,7 @@ Effects          :
 Description      : Reduces magic damage taken by $s1%.
 
 Name             : Extended Sigils (id=389697) [Spell Family (107), Passive] 
+Hotfixed         : Description
 Talent Entry     : Generic [tree=class, row=9, col=5, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(1000, 2000)]
 Class            : Demon Hunter
@@ -11149,7 +11150,7 @@ Effects          :
                    Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Sigil of Silence (204490), Sigil of Flame (204598), Sigil of Chains (204843), Sigil of Misery (207685), Elysian Decree (307046), Elysian Decree (339893), Elysian Decree (339894), Blind Faith (355894), Elysian Decree (389860)
                    Family Flags: 33
-Description      : Increases the duration of Sigil effects by ${$s1/1000} sec.
+Description      : Increases the duration of Sigil effects by ${$s1/1000}.1 sec.
 
 Name             : Fel Flame Fortification (id=389705) [Spell Family (107), Passive] 
 Talent Entry     : Vengeance [tree=spec, row=4, col=5, max_rank=1, req_points=0]

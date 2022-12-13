@@ -2999,6 +2999,13 @@ stat_buff_t* stat_buff_t::add_stat( stat_e s, double a, const stat_check_fn& c )
   return this;
 }
 
+stat_buff_t* stat_buff_t::set_stat( stat_e s, double a, const stat_check_fn& c )
+{
+  manual_stats_added = false;
+
+  return add_stat( s, a, c );
+}
+
 stat_buff_t* stat_buff_t::add_stat_from_effect( size_t i, double a, const stat_check_fn& c )
 {
   auto do_error = [ this, i ]( std::string_view msg ) {
@@ -3037,6 +3044,13 @@ stat_buff_t* stat_buff_t::add_stat_from_effect( size_t i, double a, const stat_c
   }
 
   return add_stat( stat, a, c );
+}
+
+stat_buff_t* stat_buff_t::set_stat_from_effect( size_t i, double a, const stat_check_fn& c )
+{
+  manual_stats_added = false;
+
+  return add_stat_from_effect( i, a, c );
 }
 
 void stat_buff_t::bump( int stacks, double /* value */ )

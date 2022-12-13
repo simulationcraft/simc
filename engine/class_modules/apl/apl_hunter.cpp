@@ -150,12 +150,14 @@ void marksmanship( player_t* p )
   precombat->add_action( "summon_pet,if=talent.kill_command|talent.beast_master" );
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "double_tap,precast_time=10" );
+  precombat->add_action( "use_item,name=algethar_puzzle_box" );
   precombat->add_action( "aimed_shot,if=active_enemies<3&(!talent.volley|active_enemies<2)", "Precast Aimed Shot on one or two targets unless we could cleave it with Volley on two targets." );
   precombat->add_action( "wailing_arrow,if=active_enemies>2|!talent.steady_focus" );
   precombat->add_action( "steady_shot,if=active_enemies>2|talent.volley&active_enemies=2", "Precast Steady Shot on two targets if we are saving Aimed Shot to cleave with Volley, otherwise on three or more targets." );
 
   default_->add_action( "auto_shot" );
-  default_->add_action( "use_items,slots=trinket1,if=!trinket.1.has_use_buff|buff.trueshot.up", "New trinket lines are under construction." );
+  default_->add_action( "use_item,name=algethar_puzzle_box,if=cooldown.trueshot.remains<2|fight_remains<22", "New trinket lines are under construction." );
+  default_->add_action( "use_items,slots=trinket1,if=!trinket.1.has_use_buff|buff.trueshot.up" );
   default_->add_action( "use_items,slots=trinket2,if=!trinket.2.has_use_buff|buff.trueshot.up" );
   default_->add_action( "use_items" );
   default_->add_action( "call_action_list,name=cds" );

@@ -64,7 +64,7 @@ actions.st+="/mongoose_bite,if=talent.alpha_predator&buff.mongoose_fury.up&buff.
 actions.st+="/flanking_strike,if=focus+cast_regen<focus.max"
 actions.st+="/stampede"
 actions.st+="/coordinated_assault,if=!talent.coordinated_kill&target.health.pct<20&(!buff.spearhead.remains&cooldown.spearhead.remains|!talent.spearhead)|talent.coordinated_kill&(!buff.spearhead.remains&cooldown.spearhead.remains|!talent.spearhead)"
-actions.st+="/wildfire_bomb,if=next_wi_bomb.pheromone&!buff.mongoose_fury.up&focus+cast_regen<focus.max-action.kill_command.cast_regen*2
+actions.st+="/wildfire_bomb,if=next_wi_bomb.pheromone&!buff.mongoose_fury.up&focus+cast_regen<focus.max-action.kill_command.cast_regen*2|buff.coordinated_assault.up&focus+cast_regen<focus.max&talent.coordinated_kill.rank>1
 actions.st+="/kill_command,target_if=min:bloodseeker.remains,if=full_recharge_time<gcd&focus+cast_regen<focus.max"
 actions.st+="/mongoose_bite,if=dot.shrapnel_bomb.ticking"
 actions.st+="/serpent_sting,target_if=min:remains,if=refreshable&!talent.vipers_venom"
