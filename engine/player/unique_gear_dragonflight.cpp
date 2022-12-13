@@ -3153,6 +3153,7 @@ void elemental_lariat( special_effect_t& effect )
 
   effect.player->callbacks.register_callback_execute_function(
       effect.driver()->id(), [ buffs ]( const dbc_proc_callback_t* cb, action_t*, action_state_t* ) {
+        range::for_each( buffs, []( buff_t* b ) { b->expire(); } );
         buffs[ cb->rng().range( buffs.size() ) ]->trigger();
       } );
 }
@@ -3654,6 +3655,15 @@ void register_target_data_initializers( sim_t& sim )
   sim.register_target_data_initializer( items::skewering_cold_initializer_t() );
   sim.register_target_data_initializer( items::spiteful_storm_initializer_t() );
   sim.register_target_data_initializer( items::heavens_nemesis_initializer_t() );
+}
+
+void register_hotfixes()
+{
+  hotfix::register_effect( "Gear", "2022-12-12", "Temporarily apply elemental lariat hotfix coming with 2022-12-13 reset", 1001676 )
+    .field( "coefficient" )
+    .operation( hotfix::HOTFIX_MUL )
+    .modifier( 0.95 )
+    .verification_value( 0.482408 );
 }
 
 // check and return multiplier for toxified armor patch

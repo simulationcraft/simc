@@ -4839,6 +4839,7 @@ void unique_gear::register_hotfixes()
   register_hotfixes_legion();
   register_hotfixes_bfa();
   shadowlands::register_hotfixes();
+  dragonflight::register_hotfixes();
 }
 
 void unique_gear::register_target_data_initializers( sim_t* sim )
