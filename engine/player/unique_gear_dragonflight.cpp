@@ -1319,8 +1319,8 @@ void shikaari_huntress_arrowhead( special_effect_t& effect )
 {
   // against elite enemies, gives 10% more stats (default)
   // against normal enemies, gives 10% less stats (NYI)
-  effect.custom_buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 384193 ) )
-    ->set_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect.item ) * 1.1 );
+  effect.stat = util::translate_rating_mod( effect.trigger()->effectN( 1 ).misc_value1() );
+  effect.stat_amount = effect.trigger()->effectN( 1 ).average( effect.item ) * 1.1;
 
   new dbc_proc_callback_t( effect.player, effect );
 }
