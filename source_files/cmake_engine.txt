@@ -16,6 +16,7 @@ action/spell_base.hpp
 action/variable.hpp
 buff/buff.hpp
 class_modules/apl/apl_death_knight.hpp
+class_modules/apl/apl_demon_hunter.hpp
 class_modules/apl/apl_evoker.hpp
 class_modules/apl/apl_hunter.hpp
 class_modules/apl/apl_monk.hpp
@@ -204,6 +205,7 @@ action/stats.cpp
 action/variable.cpp
 buff/buff.cpp
 class_modules/apl/apl_death_knight.cpp
+class_modules/apl/apl_demon_hunter.cpp
 class_modules/apl/apl_evoker.cpp
 class_modules/apl/apl_hunter.cpp
 class_modules/apl/apl_monk.cpp

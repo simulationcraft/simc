@@ -7290,12 +7290,13 @@ struct ascendance_t : public shaman_spell_t
 
     p()->cooldown.strike->reset( false );
 
+    auto dre_duration = p()->legendary.deeply_rooted_elements.ok()
+      ? p()->legendary.deeply_rooted_elements->effectN( 1 ).time_value()
+      : p()->talent.deeply_rooted_elements->effectN( 1 ).time_value();
+
     if ( background )
     {
-      p()->buff.ascendance->extend_duration_or_trigger(
-          p()->legendary.deeply_rooted_elements.ok()
-          ? p()->legendary.deeply_rooted_elements->effectN( 1 ).time_value()
-          : p()->talent.deeply_rooted_elements->effectN( 1 ).time_value(), player );
+      p()->buff.ascendance->extend_duration_or_trigger( dre_duration, player );
     }
     else
     {
@@ -7335,21 +7336,17 @@ struct ascendance_t : public shaman_spell_t
           fs_dot->adjust_duration( new_duration, -1 );
         }
       } );
+    }
 
-      if ( p()->talent.oath_of_the_far_seer.ok() )
+    if ( p()->talent.oath_of_the_far_seer.ok() )
+    {
+      if ( background )
       {
-        if ( background )
-        {
-            p()->buff.oath_of_the_far_seer->extend_duration_or_trigger(
-                p()->legendary.deeply_rooted_elements.ok()
-                    ? p()->legendary.deeply_rooted_elements->effectN( 1 ).time_value()
-                    : p()->talent.deeply_rooted_elements->effectN( 1 ).time_value(),
-                player );
-        }
-        else
-        {
-            p()->buff.oath_of_the_far_seer->trigger();
-        }
+        p()->buff.oath_of_the_far_seer->extend_duration_or_trigger( dre_duration, player );
+      }
+      else
+      {
+        p()->buff.oath_of_the_far_seer->trigger();
       }
     }
 
@@ -7357,10 +7354,7 @@ struct ascendance_t : public shaman_spell_t
     {
       if ( background )
       {
-        p()->buff.static_accumulation->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0,
-            p()->legendary.deeply_rooted_elements.ok()
-            ? p()->legendary.deeply_rooted_elements->effectN( 1 ).time_value()
-            : p()->talent.deeply_rooted_elements->effectN( 1 ).time_value() );
+        p()->buff.static_accumulation->extend_duration_or_trigger( dre_duration, player );
       }
       else
       {
@@ -11459,8 +11453,9 @@ void shaman_t::init_action_list_enhancement()
     single->add_action( "flame_shock,if=!ticking" );
     single->add_action( "lightning_bolt,if=buff.maelstrom_weapon.stack>=5&buff.primordial_wave.up&raid_event.adds.in>buff.primordial_wave.remains&(!buff.splintered_elements.up|fight_remains<=12)" );
     single->add_action( "ice_strike,if=talent.hailstorm.enabled" );
+    single->add_action( "stormstrike,if=set_bonus.tier29_2pc&buff.maelstrom_of_elements.down&buff.maelstrom_weapon.stack<=5" );
     single->add_action( "frost_shock,if=buff.hailstorm.up" );
-    single->add_action( "lava_lash,if=dot.flame_shock.refreshable" );
+    single->add_action( "lava_lash,if=talent.molten_assault.enabled&dot.flame_shock.refreshable" );
     single->add_action( "windstrike,if=talent.deeply_rooted_elements.enabled|buff.earthen_weapon.up|buff.legacy_of_the_frost_witch.up" );
     single->add_action( "stormstrike,if=talent.deeply_rooted_elements.enabled|buff.earthen_weapon.up|buff.legacy_of_the_frost_witch.up" );
     single->add_action( "elemental_blast,if=(!talent.elemental_spirits.enabled|(talent.elemental_spirits.enabled&(charges=max_charges|buff.feral_spirit.up)))&buff.maelstrom_weapon.stack>=5" );
@@ -11485,12 +11480,13 @@ void shaman_t::init_action_list_enhancement()
     aoe->add_action( "crash_lightning,if=buff.doom_winds_talent.up|!buff.crash_lightning.up" );
     aoe->add_action( "lightning_bolt,if=(active_dot.flame_shock=active_enemies|active_dot.flame_shock=6)&buff.primordial_wave.up&buff.maelstrom_weapon.stack>=(5+5*talent.overflowing_maelstrom.enabled)&(!buff.splintered_elements.up|fight_remains<=12|raid_event.adds.remains<=gcd)" );
     aoe->add_action( "sundering,if=buff.doom_winds_talent.up" );
-    aoe->add_action( "fire_nova,if=active_dot.flame_shock>=6|(active_dot.flame_shock>=4&active_dot.flame_shock=active_enemies)" );
+    aoe->add_action( "fire_nova,if=active_dot.flame_shock=6|(active_dot.flame_shock>=4&active_dot.flame_shock=active_enemies)" );
     aoe->add_action( "primordial_wave,target_if=min:dot.flame_shock.remains,cycle_targets=1,if=!buff.primordial_wave.up" );
     aoe->add_action( "windstrike,if=talent.thorims_invocation.enabled&ti_chain_lightning&buff.maelstrom_weapon.stack>1" );
-    aoe->add_action( "lava_lash,target_if=min:debuff.lashing_flames.remains,cycle_targets=1,if=dot.flame_shock.ticking&(active_dot.flame_shock<active_enemies&active_dot.flame_shock<6)" );
+    aoe->add_action( "lava_lash,target_if=min:debuff.lashing_flames.remains,cycle_targets=1,if=talent.lashing_flames.enabled&dot.flame_shock.ticking&(active_dot.flame_shock<active_enemies)&active_dot.flame_shock<6" );
+    aoe->add_action( "lava_lash,if=talent.molten_assault.enabled&dot.flame_shock.ticking&(active_dot.flame_shock<active_enemies)&active_dot.flame_shock<6" );
     aoe->add_action( "flame_shock,if=!ticking" );
-    aoe->add_action( "flame_shock,target_if=min:dot.flame_shock.remains,cycle_targets=1,if=talent.fire_nova.enabled&active_dot.flame_shock<active_enemies&active_dot.flame_shock<6" );
+    aoe->add_action( "flame_shock,target_if=min:dot.flame_shock.remains,cycle_targets=1,if=talent.fire_nova.enabled&(active_dot.flame_shock<active_enemies)&active_dot.flame_shock<6" );
     aoe->add_action( "ice_strike,if=talent.hailstorm.enabled" );
     aoe->add_action( "frost_shock,if=talent.hailstorm.enabled&buff.hailstorm.up" );
     aoe->add_action( "sundering" );
@@ -11502,17 +11498,21 @@ void shaman_t::init_action_list_enhancement()
     aoe->add_action( "crash_lightning,if=buff.cl_crash_lightning.up" );
     aoe->add_action( "lava_lash,if=buff.crash_lightning.up&buff.ashen_catalyst.stack=8" );
     aoe->add_action( "windstrike,if=buff.crash_lightning.up" );
-    aoe->add_action( "stormstrike,if=buff.crash_lightning.up&buff.converging_storms.stack=6" );
-    aoe->add_action( "lava_lash,if=buff.crash_lightning.up" );
-    aoe->add_action( "ice_strike,if=buff.crash_lightning.up" );
+    aoe->add_action( "stormstrike,if=buff.crash_lightning.up&(buff.converging_storms.stack=6|(set_bonus.tier29_2pc&buff.maelstrom_of_elements.down&buff.maelstrom_weapon.stack<=5))" );
+    aoe->add_action( "lava_lash,if=buff.crash_lightning.up,if=talent.molten_assault.enabled" );
+    aoe->add_action( "ice_strike,if=buff.crash_lightning.up,if=talent.swirling_maelstrom.enabled" );
     aoe->add_action( "stormstrike,if=buff.crash_lightning.up" );
+    aoe->add_action( "ice_strike,if=buff.crash_lightning.up" );
+    aoe->add_action( "lava_lash,if=buff.crash_lightning.up" );
     aoe->add_action( "elemental_blast,if=(!talent.elemental_spirits.enabled|(talent.elemental_spirits.enabled&(charges=max_charges|buff.feral_spirit.up)))&buff.maelstrom_weapon.stack>=5&(!talent.crashing_storms.enabled|active_enemies<=3)" );
     aoe->add_action( "fire_nova,if=active_dot.flame_shock>=2" );
     aoe->add_action( "crash_lightning" );
     aoe->add_action( "windstrike" );
-    aoe->add_action( "lava_lash" );
-    aoe->add_action( "ice_strike" );
+    aoe->add_action( "lava_lash,if=talent.molten_assault.enabled" );
+    aoe->add_action( "ice_strike,if=talent.swirling_maelstrom.enabled" );
     aoe->add_action( "stormstrike" );
+    aoe->add_action( "ice_strike" );
+    aoe->add_action( "lava_lash" );
     aoe->add_action( "flame_shock,target_if=refreshable,cycle_targets=1" );
     aoe->add_action( "frost_shock" );
     aoe->add_action( "chain_lightning,if=buff.maelstrom_weapon.stack>=5" );

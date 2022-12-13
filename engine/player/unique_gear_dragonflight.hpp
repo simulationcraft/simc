@@ -51,6 +51,7 @@ void erupting_spear_fragment( special_effect_t& );
 void furious_ragefeather( special_effect_t& );
 void globe_of_jagged_ice( special_effect_t& );
 void idol_of_pure_decay( special_effect_t& );
+void shikaari_huntress_arrowhead( special_effect_t& );
 void spiteful_storm( special_effect_t& );
 void spoils_of_neltharus( special_effect_t& );
 void sustaining_alchemist_stone( special_effect_t& );
@@ -62,6 +63,7 @@ void the_cartographers_calipers( special_effect_t& );
 void tome_of_unstable_power( special_effect_t& );
 void blazebinders_hoof( special_effect_t& );
 void primal_ritual_shell( special_effect_t& );
+void seasoned_hunters_trophy( special_effect_t& );
 
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& );
@@ -85,6 +87,7 @@ void playful_spirits_fur( special_effect_t& );
 
 void register_special_effects();
 void register_target_data_initializers( sim_t& );
+void register_hotfixes();
 double toxified_mul( player_t* );
 double inhibitor_mul( player_t* );
 }

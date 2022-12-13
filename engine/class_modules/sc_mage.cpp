@@ -327,6 +327,7 @@ public:
   // Cooldowns
   struct cooldowns_t
   {
+    cooldown_t* arcane_orb;
     cooldown_t* combustion;
     cooldown_t* cone_of_cold;
     cooldown_t* fervent_flickering;
@@ -442,6 +443,7 @@ public:
     timespan_t last_enlightened_update;
     player_t* last_bomb_target;
     int frostbolt_counter;
+    bool trigger_cc_channel;
   } state;
 
   struct expression_support_t
@@ -1058,6 +1060,18 @@ struct clearcasting_buff_t : public buff_t
     modify_max_stack( as<int>( p->talents.improved_clearcasting->effectN( 1 ).base_value() ) );
   }
 
+  void execute( int stacks, double value, timespan_t duration ) override
+  {
+    buff_t::execute( stacks, value, duration );
+    debug_cast<mage_t*>( player )->state.trigger_cc_channel = check() != 0;
+  }
+
+  void expire_override( int stacks, timespan_t duration ) override
+  {
+    buff_t::expire_override( stacks, duration );
+    debug_cast<mage_t*>( player )->state.trigger_cc_channel = false;
+  }
+
   void decrement( int stacks, double value ) override
   {
     auto p = debug_cast<mage_t*>( player );
@@ -1065,6 +1079,8 @@ struct clearcasting_buff_t : public buff_t
       p->buffs.concentration->expire();
     else
       buff_t::decrement( stacks, value );
+
+    p->state.trigger_cc_channel = check() != 0;
   }
 };
 
@@ -1603,7 +1619,7 @@ public:
         // Arcane Echo doesn't use the normal callbacks system (both in simc and in game). To prevent
         // loops, we need to explicitly check that the triggering action wasn't Arcane Echo.
         if ( p()->talents.arcane_echo.ok() && this != p()->action.arcane_echo )
-          make_event( *sim, [ this, t = s->target ] { p()->action.arcane_echo->execute_on_target( t ); } );
+          make_event( *sim, [ this, t = p()->bugs && p()->target ? p()->target : s->target ] { p()->action.arcane_echo->execute_on_target( t ); } );
       }
     }
   }
@@ -1694,10 +1710,14 @@ struct arcane_mage_spell_t : public mage_spell_t
       if ( before )
       {
         cr->decrement();
-        // Nether Precision is only triggered if the buff was actually decremented.
-        // This is relevant when the player uses Concentration.
+        // Effects that trigger when Clearcasting is consumed do not trigger
+        // if the buff decrement is skipped because of Concentration.
         if ( cr == p()->buffs.clearcasting && cr->check() < before )
+        {
           p()->buffs.nether_precision->trigger();
+          p()->cooldowns.arcane_orb->adjust( -p()->talents.orb_barrage->effectN( 3 ).time_value() );
+          trigger_tracking_buff( p()->buffs.orb_barrage, p()->buffs.orb_barrage_ready, 2 );
+        }
         break;
       }
     }
@@ -2627,6 +2647,14 @@ struct arcane_explosion_t final : public arcane_mage_spell_t
     base_multiplier *= 1.0 + p->talents.crackling_energy->effectN( 1 ).percent();
   }
 
+  void consume_cost_reductions() override
+  {
+    if ( p()->bugs && p()->buffs.clearcasting->check() && p()->buffs.concentration->check() )
+      return;
+
+    arcane_mage_spell_t::consume_cost_reductions();
+  }
+
   void execute() override
   {
     arcane_mage_spell_t::execute();
@@ -2642,6 +2670,8 @@ struct arcane_explosion_t final : public arcane_mage_spell_t
 
     if ( num_targets_crit > 0 )
       p()->buffs.bursting_energy->trigger();
+
+    p()->state.trigger_cc_channel = false;
   }
 
   double composite_crit_chance() const override
@@ -2828,14 +2858,14 @@ struct arcane_missiles_t final : public arcane_mage_spell_t
 
   void execute() override
   {
-    int stacks = p()->buffs.clearcasting->check() ? as<int>( p()->talents.orb_barrage->effectN( 2 ).base_value() ) : 1;
-    trigger_tracking_buff( p()->buffs.orb_barrage, p()->buffs.orb_barrage_ready, 2, stacks );
+    trigger_tracking_buff( p()->buffs.orb_barrage, p()->buffs.orb_barrage_ready, 2 );
 
     // Set up the hidden Clearcasting buff before executing the spell
     // so that tick time and dot duration have the correct values.
     if ( p()->buffs.clearcasting->check() )
     {
-      p()->buffs.clearcasting_channel->trigger();
+      if ( !p()->bugs || p()->state.trigger_cc_channel )
+        p()->buffs.clearcasting_channel->trigger();
       p()->trigger_time_manipulation();
     }
     else
@@ -3298,7 +3328,11 @@ struct use_mana_gem_t final : public mage_spell_t
     p()->buffs.invigorating_powder->trigger();
     // TODO: In game, this is bugged and will not properly apply buffs.clearcasting_channel when triggered from 0 stacks.
     if ( p()->talents.cascading_power.ok() )
+    {
+      bool old_state = p()->state.trigger_cc_channel;
       p()->buffs.clearcasting->trigger( as<int>( p()->talents.cascading_power->effectN( 1 ).base_value() ) );
+      p()->state.trigger_cc_channel = old_state;
+    }
 
     p()->state.mana_gem_charges--;
     assert( p()->state.mana_gem_charges >= 0 );
@@ -5231,6 +5265,7 @@ struct radiant_spark_t final : public mage_spell_t
   {
     parse_options( options_str );
     affected_by.ice_floes = affected_by.savant = true;
+    if ( p->bugs ) affected_by.shifting_power = false;
   }
 
   void impact( action_state_t* s ) override
@@ -5676,6 +5711,7 @@ mage_t::mage_t( sim_t* sim, std::string_view name, race_e r ) :
   talents()
 {
   // Cooldowns
+  cooldowns.arcane_orb           = get_cooldown( "arcane_orb"           );
   cooldowns.combustion           = get_cooldown( "combustion"           );
   cooldowns.cone_of_cold         = get_cooldown( "cone_of_cold"         );
   cooldowns.fervent_flickering   = get_cooldown( "fervent_flickering"   );
@@ -6879,6 +6915,12 @@ std::unique_ptr<expr_t> mage_t::create_expression( std::string_view name )
   {
     return make_fn_expr( name, [ this ]
     { return state.mana_gem_charges; } );
+  }
+
+  if ( util::str_compare_ci( name, "bugged_clearcasting" ) )
+  {
+    return make_fn_expr( name, [ this ]
+    { return bugs && !state.trigger_cc_channel; } );
   }
 
   // Incanters flow direction

@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46924 Live (hotfix 2022-12-03/46924, no-networking)
+SimulationCraft 1002-01 for World of Warcraft 10.0.2.46924 Live (hotfix 2022-12-13/46924)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -3613,7 +3613,7 @@ While active, $s2% of damage delayed by Stagger is instead Staggered by Niuzao.
 Tooltip          : Niuzao is staggering $s2% of the Monk's Stagger damage.
 
 Name             : Battle Fatigue (id=134732) [Passive, Hidden] 
-Class            : Paladin, Priest, Mage, Monk
+Class            : Paladin, Priest, Mage, Monk, Evoker
 School           : Physical
 Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -3631,7 +3631,7 @@ Effects          :
 Description      : Dealing damage to another player in battle causes them to receive $134735m1% less healing from critical heals.
 
 Name             : PvP Rules Enabled (HARDCODED) (id=134735) [Hidden] 
-Class            : Paladin, Priest, Mage, Monk
+Class            : Paladin, Priest, Mage, Monk, Evoker
 School           : Physical
 Spell Type       : None
 Duration         : 20 seconds
@@ -3899,9 +3899,11 @@ Effects          :
 #10 (id=260841)   : Apply Aura (6) | Unknown(312)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 116 | Target: Self (1)
 #11 (id=260842)   : Apply Aura (6) | Modify Total Stat% (137)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value 2: 0x4 | Target: Self (1)
+                   Base Value: 45 | Scaled Value: 45 | PvP Coefficient: 1.00000 | Misc Value 2: 0x4 | Target: Self (1)
+Hotfixed         : Base Value (30 -> 45)
 #12 (id=260843)   : Apply Aura (6) | Threat (10)
-                   Base Value: 550 | Scaled Value: 550 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 650 | Scaled Value: 650 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
+Hotfixed         : Base Value (550 -> 650)
 #13 (id=260844)   : Apply Aura (6) | Modify Attacker Melee Crit Chance (187)
                    Base Value: -6 | Scaled Value: -6 | PvP Coefficient: 1.00000 | Target: Self (1)
 #14 (id=260845)   : Apply Aura (6) | Add Flat Modifier (107): Spell Global Cooldown (21)
@@ -6541,7 +6543,8 @@ Effects          :
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
 #3 (id=892663)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 45 | Scaled Value: 45 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (30 -> 45)
 Description      : All damage taken is reduced by $s2% and your Armor is increased by $s1%.
 
 Stamina increased by $s3%.
@@ -14617,6 +14620,7 @@ Effects          :
 Description      : Gust of Mists has a $s2% chance to do $s1% more healing.
 
 Name             : Ancient Teachings (id=388023) [Spell Family (53), Passive] 
+Hotfixed         : Variables
 Talent Entry     : Mistweaver [tree=spec, row=8, col=2, max_rank=1, req_points=20, select_idx=100]
 Class            : Monk
 School           : Physical
@@ -14637,7 +14641,7 @@ Effects          :
 #1 (id=1023472)  : Apply Aura (6) | Dummy (4)
                    Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : After casting Essence Font or Faeline Stomp, your Tiger Palm, Blackout Kick, and Rising Sun Kick heal an injured ally within $388024A1 yards for $<healing>% of the damage done. Lasts $388026d.
-Variables        : $pvp=$?a134735[${1.6}][${1}]}
+Variables        : $pvp=$?a134735[${2.5}][${1}]}
 $healing=[${$s1*$<pvp>}]
 
 Name             : Ancient Teachings (id=388024) [Spell Family (53)] 
@@ -14656,10 +14660,12 @@ Attributes       : ........ ........ .......x x..x....   .....x.. ........ .....
                  : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Ignore Line of Sight (66), Allow While Invisible (78), Do Not Reset Combat Timers (81), Allow While Not Shapeshifted (caster form) (83), Can't Crit (93), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Ignore School Lockout (306), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1023473)  : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.60000 | Radius: 0 - 30 yards | Target: At Caster (22) -> AOE friendly (30)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 2.50000 | Radius: 0 - 30 yards | Target: At Caster (22) -> AOE friendly (30)
+Hotfixed         : PvP Coefficient (1.6 -> 2.5)
 Description      : $@spelldesc388023
 
 Name             : Ancient Teachings (id=388026) [Spell Family (53)] 
+Hotfixed         : Variables
 Class            : Monk
 School           : Nature
 Spell Type       : None
@@ -14678,7 +14684,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc388023
 Tooltip          : Tiger Palm, Blackout Kick, and Rising Sun Kick heal injured ally within $388024A1 yards for $<healing>% of the damage done.
-Variables        : $pvp=$?a134735[${1.6}][${1}]}
+Variables        : $pvp=$?a134735[${2.5}][${1}]}
 $healing=[${$388023s1*$<pvp>}]
 
 Name             : Jade Bond (id=388031) [Spell Family (53), Passive] 
@@ -14722,7 +14728,8 @@ Attributes       : ......x. ........ ........ .......x   ........ ........ .....
                  : Passive (6), No Aura Cancel (31), No Aura Icon (60), Do Not Display Range (126), Not In Spellbook (143), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1023496)  : Apply Aura (6) | Proc Trigger Spell (42): Yu'lon's Whisper
-                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Trigger Spell: 388040 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Trigger Spell: 388040 | Target: Self (1)
+Hotfixed         : Base Value (6 -> 5)
 Description      : Activating Thunder Focus Tea causes you to exhale the breath of Yu'lon, healing up to $s1 allies within $388044a1 yards for ${$388044s1*($388040d/$388040t1+1)} over $388040d.
 
 Name             : Yu'lon's Whisper (id=388040) [Spell Family (53), Hidden] 
@@ -14764,7 +14771,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Do Not Display Range (126)
 Effects          :
 #1 (id=1023503)  : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.42750 | PvP Coefficient: 1.00000 | Radius: 15 yards | Target: Unknown(136)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.49162 | PvP Coefficient: 1.00000 | Radius: 15 yards | Target: Unknown(136)
+Hotfixed         : SP Coefficient (0.4275 -> 0.491625)
 Description      : $@spelldesc388038
 
 Name             : Clouded Focus (id=388047) [Spell Family (53), Passive] 
@@ -15367,7 +15375,7 @@ Tooltip          : Damage and healing of Zen Pulse increased by $w1%.
 
 Name             : Peaceful Mending (id=388593) [Spell Family (53), Passive] 
 Talent Entry     : Mistweaver [tree=spec, row=9, col=5, max_rank=2, req_points=20]
-                 : Effect#1 [op=set, values=(10, 20)]
+                 : Effect#1 [op=set, values=(15, 30)]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -15668,7 +15676,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143)
 Effects          :
 #1 (id=1024677)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (50 -> 60)
 #2 (id=1024678)  : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000
 #3 (id=1024679)  : Apply Aura (6) | Dummy (4)
@@ -17324,7 +17333,7 @@ Name             : Brewmaster's Rhythm (id=394797) [Spell Family (53)]
 Class            : Monk
 School           : Physical
 Spell Type       : None
-Duration         : 10 seconds
+Duration         : 15 seconds
 Stacks           : 4 maximum
 Proc Chance      : 101%
 Triggered by     : Monk Brewmaster Class Set 2pc (393659)

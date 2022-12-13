@@ -735,12 +735,31 @@ struct sef_blackout_kick_totm_proc_t : public sef_melee_attack_t
     }
   };
 
+  struct sef_glory_of_the_dawn_t : public sef_melee_attack_t
+  {
+    sef_glory_of_the_dawn_t( storm_earth_and_fire_pet_t* player )
+      : sef_melee_attack_t( "glory_of_the_dawn", player, player->o()->passives.glory_of_the_dawn_damage )
+    {
+      background  = true;
+      trigger_gcd = timespan_t::zero();
+    }
+  };
+
   struct sef_rising_sun_kick_dmg_t : public sef_melee_attack_t
   {
+    sef_glory_of_the_dawn_t* glory_of_the_dawn;
+
     sef_rising_sun_kick_dmg_t( storm_earth_and_fire_pet_t* player )
       : sef_melee_attack_t( "rising_sun_kick_dmg", player, player->o()->talent.general.rising_sun_kick->effectN( 1 ).trigger() )
     {
       background = true;
+
+      if ( player->o()->talent.windwalker.glory_of_the_dawn->ok() )
+      {
+        glory_of_the_dawn = new sef_glory_of_the_dawn_t( player );
+
+        add_child( glory_of_the_dawn );
+      }
     }
 
     double composite_crit_chance() const override
@@ -765,6 +784,7 @@ struct sef_blackout_kick_totm_proc_t : public sef_melee_attack_t
 
   struct sef_rising_sun_kick_t : public sef_melee_attack_t
   {
+
     sef_rising_sun_kick_t( storm_earth_and_fire_pet_t* player )
       : sef_melee_attack_t( "rising_sun_kick", player, player->o()->talent.general.rising_sun_kick )
     {
@@ -1189,6 +1209,7 @@ public:
     attacks.at( (int)sef_ability_e::SEF_BLACKOUT_KICK ) = new sef_blackout_kick_t( this );
     attacks.at( (int)sef_ability_e::SEF_BLACKOUT_KICK_TOTM ) = new sef_blackout_kick_totm_proc_t( this );
     attacks.at( (int)sef_ability_e::SEF_RISING_SUN_KICK ) = new sef_rising_sun_kick_t( this );
+    attacks.at( (int)sef_ability_e::SEF_GLORY_OF_THE_DAWN ) = new sef_glory_of_the_dawn_t( this );
     attacks.at( (int)sef_ability_e::SEF_FISTS_OF_FURY )   = new sef_fists_of_fury_t( this );
     attacks.at( (int)sef_ability_e::SEF_SPINNING_CRANE_KICK ) = new sef_spinning_crane_kick_t( this );
     attacks.at( (int)sef_ability_e::SEF_RUSHING_JADE_WIND )   = new sef_rushing_jade_wind_t( this );

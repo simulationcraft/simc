@@ -169,7 +169,6 @@ struct sim_t : private sc_thread_t
   int scale_to_itemlevel; //itemlevel to scale to. if -1, we don't scale down
   int keystone_level; // keystone difficulty for scaling purposes
   int keystone_pct_hp;     // keystone mob health percent
-  std::string keystone_bounty; // Shrouded bounty stat type
   bool challenge_mode; // if active, players will get scaled down to 620 and set bonuses are deactivated
   bool scale_itemlevel_down_only; // Items below the value of scale_to_itemlevel will not be scaled up.
   bool disable_set_bonuses; // Disables all set bonuses.
@@ -486,6 +485,18 @@ struct sim_t : private sc_thread_t
     double dragon_games_rng = 0.75;
     // The Blessing the player will receive if they have Primal Ritual Shell trinket equiped (wind,stone,flame,sea)
     std::string primal_ritual_shell_blessing = "wind";
+    // Number of nearby allies for the effect of Allied Wristguards of Companionship
+    unsigned int allied_wristguards_allies = 4;
+    // Chance for nearby enemies to move out of range for Allied Wristguards of Companionship
+    double allied_wristguards_ally_leave_chance = 0.05;
+    // Corrupting Rages Average Uptime
+    double corrupting_rage_uptime = 0.7;
+    // Hood of Surging Time proc chance when the period is set
+    double hood_of_surging_time_chance = 0.0;
+    // Hood of Surging Time proc period
+    timespan_t hood_of_surging_time_period = 5_s;
+    // Hood of Surging Time stacks to grant when the period is set
+    unsigned int hood_of_surging_time_stacks = 1;
   } dragonflight_opts;
 
   // Auras and De-Buffs

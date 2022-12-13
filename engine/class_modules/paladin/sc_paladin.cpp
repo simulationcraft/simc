@@ -32,6 +32,7 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
     next_season( SUMMER )
 {
   active_consecration = nullptr;
+  all_active_consecrations.clear();
   active_hallow_damaging       = nullptr;
   active_hallow_healing     = nullptr;
   active_aura         = nullptr;
@@ -290,8 +291,8 @@ struct consecration_tick_t : public paladin_spell_t
 {
   golden_path_t* heal_tick;
 
-  consecration_tick_t( paladin_t* p )
-    : paladin_spell_t( "consecration_tick", p, p->find_spell( 81297 ) ), heal_tick( new golden_path_t( p ) )
+  consecration_tick_t( util::string_view name, paladin_t* p )
+    : paladin_spell_t( name, p, p->find_spell( 81297 ) ), heal_tick( new golden_path_t( p ) )
   {
     aoe         = -1;
     dual        = true;
@@ -357,7 +358,7 @@ struct consecration_t : public paladin_spell_t
 
   consecration_t( paladin_t* p, util::string_view options_str )
     : paladin_spell_t( "consecration", p, p->find_spell( "Consecration" ) ),
-      damage_tick( new consecration_tick_t( p ) ),
+      damage_tick( new consecration_tick_t( "consecration_tick", p ) ),
       precombat_time( 2.0 )
   {
     add_option( opt_float( "precombat_time", precombat_time ) );
@@ -372,8 +373,8 @@ struct consecration_t : public paladin_spell_t
   }
 
   consecration_t( paladin_t* p )
-    : paladin_spell_t( "consecration", p, p->find_spell( "Consecration" ) ),
-      damage_tick( new consecration_tick_t( p ) )
+    : paladin_spell_t( "background_consecration", p, p->find_spell( "Consecration" ) ),
+      damage_tick( new consecration_tick_t( "background_consecration_tick", p ) )
   {
     dot_duration = 0_ms;  // the periodic event is handled by ground_aoe_event_t
     may_miss = harmful = false;
@@ -2508,6 +2509,7 @@ void paladin_t::reset()
   player_t::reset();
 
   active_consecration = nullptr;
+  all_active_consecrations.clear();
   active_hallow_damaging       = nullptr;
   active_hallow_healing     = nullptr;
   active_aura         = nullptr;
@@ -2708,8 +2710,7 @@ void paladin_t::create_buffs()
 
   buffs.aspiration_of_divinity = make_buff<stat_buff_t>( this, "aspiration_of_divinity", find_spell( 385417 ) )
     ->set_pct_buff_type( specialization() == PALADIN_HOLY ? STAT_PCT_BUFF_INTELLECT : STAT_PCT_BUFF_STRENGTH )
-    ->modify_default_value( talents.aspiration_of_divinity->effectN( 1 ).percent() )
-    ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+    ->modify_default_value( talents.aspiration_of_divinity->effectN( 1 ).percent() );
 
   // Covenants
   buffs.vanquishers_hammer = make_buff( this, "vanquishers_hammer", covenant.necrolord )->set_cooldown( 0_ms )
@@ -3697,7 +3698,7 @@ void paladin_t::assess_damage( school_e school, result_amount_type dtype, action
 
   // Holy Shield's magic block
   // 2022-11-10 Holy Shield can now only block direct magical damage, standing in Consecration can reduce damage over time, but doesn't proc damage
-  if ( school != SCHOOL_PHYSICAL && s->action->harmful && 
+  if ( school != SCHOOL_PHYSICAL && s->action->harmful &&
        ( ( s->result_type == result_amount_type::DMG_DIRECT && talents.holy_shield->ok() ) ||
          ( s->result_type == result_amount_type::DMG_OVER_TIME && standing_in_consecration() ) ) )
   {
@@ -3736,7 +3737,7 @@ void paladin_t::assess_damage( school_e school, result_amount_type dtype, action
           buffs.holy_shield_absorb->trigger( 1, block_amount );
           buffs.holy_shield_absorb->consume( block_amount );
         }
-        else  
+        else
         {
           buffs.divine_bulwark_absorb->trigger( 1, block_amount );
           buffs.divine_bulwark_absorb->consume( block_amount );

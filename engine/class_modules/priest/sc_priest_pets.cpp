@@ -739,13 +739,6 @@ struct void_tendril_mind_flay_t final : public priest_pet_spell_t
   {
     double m = priest_pet_spell_t::composite_da_multiplier( s );
 
-    // BUG: This talent is cursed
-    // https://github.com/SimCMinMax/WoW-BugTracker/issues/1029
-    if ( p().o().is_ptr() )
-    {
-      m *= 1.1;
-    }
-
     return m;
   }
 

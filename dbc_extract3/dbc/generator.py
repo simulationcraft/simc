@@ -1354,6 +1354,7 @@ class SpellDataGenerator(DataGenerator):
          382844, 382845, 382846, 382847, 382848, 382849, 382850, 382851, # Darkmoon Deck: Rime
          382860, 382861, 382862, 382863, 382864, 382865, 382866, 382867, # Darkmoon Deck: Dance
          375335, 375342, 375343, 375345, # Elemental Lariat JC Neck
+         387336, # Blue Silk Lining
          376932, # MAGIC SNOWBALL
          379403, 379407, # Toxic Thorn Footwraps LW Boots
          382095, 382096, 382097, # Rumbling Ruby trinket
@@ -1379,6 +1380,9 @@ class SpellDataGenerator(DataGenerator):
          394453, # Broodkeeper's Blaze
          397118, 397478, # Neltharax, Enemy of the Sky
          390899, 390869, 390835, 390655, # Primal Ritual Shell
+         396369, # Season 1 Thundering M+ Affix
+         392271, 392275, # Seasoned Hunter's Trophy stat buffs
+         393987, # Azureweave Vestments set bonus driver
         ),
 
         # Warrior:
@@ -3602,6 +3606,21 @@ class SetBonusListGenerator(DataGenerator):
         {
             'name'   : 'playful_spirits_fur',
             'bonuses': [ 1509 ],
+            'tier'   : 29
+        },
+        {
+            'name'   : 'horizon_striders_garments',
+            'bonuses': [ 1510 ],
+            'tier'   : 29
+        },
+        {
+            'name'   : 'azureweave_vestments',
+            'bonuses': [ 1516 ],
+            'tier'   : 29
+        },
+        {
+            'name'   : 'woven_chronocloth',
+            'bonuses': [ 1515 ],
             'tier'   : 29
         }
     ]

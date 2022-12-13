@@ -29,6 +29,7 @@ st->add_action( "moonfire,target_if=refreshable&remains<2" );
 st->add_action( "stellar_flare,target_if=refreshable&astral_power.deficit>variable.passive_asp+8&remains<2" );
 st->add_action( "variable,name=cd_condition_st,value=cooldown.ca_inc.remains<15&!buff.ca_inc.up&(target.1.time_to_die>15|fight_remains<25+10*talent.incarnation_chosen_of_elune)" );
 st->add_action( "wrath,if=variable.cd_condition_st&set_bonus.tier29_4pc&eclipse.any_next" );
+st->add_action( "starfall,if=buff.primordial_arcanic_pulsar.value>=550&!buff.ca_inc.up" );
 st->add_action( "starsurge,if=variable.cd_condition_st&buff.touch_the_cosmos.up" );
 st->add_action( "celestial_alignment,if=variable.cd_condition_st" );
 st->add_action( "incarnation,if=variable.cd_condition_st" );

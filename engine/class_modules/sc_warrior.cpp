@@ -9638,6 +9638,9 @@ std::string warrior_t::default_potion() const
 
 std::string warrior_t::default_flask() const
 {
+  if ( specialization() == WARRIOR_PROTECTION && true_level > 60 )
+    return "phial_of_static_empowerment_3";
+
   return ( true_level > 60 )
              ? "phial_of_tepid_versatility_3"
              : ( true_level > 50 )

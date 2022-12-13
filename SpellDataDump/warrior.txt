@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46924 Live (hotfix 2022-12-03/46924, no-networking)
+SimulationCraft 1002-01 for World of Warcraft 10.0.2.46924 Live (hotfix 2022-12-13/46924)
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -816,9 +816,10 @@ Effects          :
 #1 (id=2780)     : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.90000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=126946)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Cleave (845), Mortal Strike (12294)
                    Family Flags: 22, 25
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : Overpower the enemy, dealing $s1 Physical damage. Cannot be blocked, dodged, or parried.$?s316440&s845[
 
 Increases the damage of your next Mortal Strike or Cleave by $s2%. Stacking up to $u times]?s316440[
@@ -851,7 +852,8 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Discount Power On Miss (59), Chain From Caster (76), Requires Main-Hand Weapon (106), Aura Points On Client (268), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=5274)     : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.84000 | PvP Coefficient: 0.69500 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.84000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (0.695 -> 1)
 Description      : A vicious strike that deals $s1 Physical damage and reduces the effectiveness of healing on the target by $115804s1% for $115804d.
 Variables        : $mult=${($max(0,$min($pl-5,15))*8+207)/327}
 
@@ -2964,7 +2966,8 @@ Effects          :
                    Affected Spells: Heroic Throw (57755), Titanic Throw (384090), Improved Heroic Throw (386034)
                    Family Flags: 14
 #4 (id=191018)   : Apply Aura (6) | Threat (10)
-                   Base Value: 550 | Scaled Value: 550 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 650 | Scaled Value: 650 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
+Hotfixed         : Base Value (550 -> 650)
 #5 (id=191019)   : Apply Aura (6) | Unknown(213)
                    Base Value: -56 | Scaled Value: -56 | PvP Coefficient: 1.00000 | Target: Self (1)
 #6 (id=261027)   : Apply Aura (6) | Modify Attacker Melee Crit Chance (187)
@@ -12420,7 +12423,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook Until Learned (269)
 Effects          :
 #1 (id=1014807)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
-                   Base Value: 65 | Scaled Value: 65 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 85 | Scaled Value: 85 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (65 -> 85)
 Description      : You are healed for $s1% of the damage dealt by Deep Wounds.
 
 Name             : Concussive Blows (id=383115) [Spell Family (4), Passive] 
@@ -12779,9 +12783,10 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Update Passives on Apply/Remove (344)
 Effects          :
 #1 (id=1015194)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Damage (15)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 15 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.50000 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Cleave (845), Execute (5308), Mortal Strike (12294), Execute (163201), Execute Off-Hand (163558), Execute (260798), Execute (280735), Execute (280849), Execute (281000), Condemn (317349), Condemn (317483), Condemn (317485), Condemn (317488), Condemn Off-Hand (317489), Condemn (330325), Condemn (330334)
                    Family Flags: 22, 25, 29
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=1015203)  : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Execute (5308), Execute (163201), Execute Off-Hand (163558), Execute (260798), Execute (280735), Execute (280849), Execute (281000), Condemn (317349), Condemn (317483), Condemn (317485), Condemn (317488), Condemn Off-Hand (317489), Condemn (330325), Condemn (330334)
@@ -13337,7 +13342,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook Until Learned (269)
 Effects          :
 #1 (id=1016319)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (30 -> 15)
 Description      : $s1% of damage you deal adds to your active Ignore Pain.
 
 Name             : Strategist (id=384041) [Spell Family (4), Passive] 
@@ -15192,7 +15198,8 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ ........ .....
                  : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Ignore Line of Sight (66), Do Not Report Spell Failure (71), Requires Main-Hand Weapon (106), Always Hit (114), Can Proc From Procs (122), Do Not Display Range (126), Not In Spellbook (143), Aura Never Bounces (148), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=1024287)  : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.21500 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Mechanic: Bleed | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.21500 | PvP Coefficient: 0.85000 | Chain Multiplier: 1 | Mechanic: Bleed | Chain Targets: 1 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1 -> 0.85)
 Description      : @spelldesc772
 Tooltip          : Bleeding for $w1 damage every $t1 sec.
 

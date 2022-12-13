@@ -4,6 +4,7 @@ actions.precombat+=/food
 actions.precombat+=/summon_pet,if=talent.kill_command|talent.beast_master
 actions.precombat+=/snapshot_stats
 actions.precombat+=/double_tap,precast_time=10
+actions.precombat+=/use_item,name=algethar_puzzle_box
 # Precast Aimed Shot on one or two targets unless we could cleave it with Volley on two targets.
 actions.precombat+=/aimed_shot,if=active_enemies<3&(!talent.volley|active_enemies<2)
 actions.precombat+=/wailing_arrow,if=active_enemies>2|!talent.steady_focus
@@ -13,6 +14,7 @@ actions.precombat+=/steady_shot,if=active_enemies>2|talent.volley&active_enemies
 # Executed every time the actor is available.
 actions=/auto_shot
 # New trinket lines are under construction.
+actions+=/use_item,name=algethar_puzzle_box,if=cooldown.trueshot.remains<2|fight_remains<22
 actions+=/use_items,slots=trinket1,if=!trinket.1.has_use_buff|buff.trueshot.up
 actions+=/use_items,slots=trinket2,if=!trinket.2.has_use_buff|buff.trueshot.up
 actions+=/use_items
@@ -20,7 +22,7 @@ actions+=/call_action_list,name=cds
 actions+=/call_action_list,name=st,if=active_enemies<3|!talent.trick_shots
 actions+=/call_action_list,name=trickshots,if=active_enemies>2
 
-actions.cds=/berserking,if=fight_remains<13
+actions.cds=/berserking,if=buff.trueshot.up|fight_remains<13
 actions.cds+=/blood_fury,if=buff.trueshot.up|cooldown.trueshot.remains>30|fight_remains<16
 actions.cds+=/ancestral_call,if=buff.trueshot.up|cooldown.trueshot.remains>30|fight_remains<16
 actions.cds+=/fireblood,if=buff.trueshot.up|cooldown.trueshot.remains>30|fight_remains<9
@@ -63,7 +65,7 @@ actions.trickshots+=/explosive_shot
 actions.trickshots+=/death_chakram
 actions.trickshots+=/stampede
 actions.trickshots+=/wailing_arrow
-actions.trickshots+=/serpent_sting,target_if=min:dot.serpent_sting.remains,if=refreshable&talent.hydras_bite
+actions.trickshots+=/serpent_sting,target_if=min:dot.serpent_sting.remains,if=refreshable&talent.hydras_bite&!talent.serpentstalkers_trickery
 actions.trickshots+=/barrage,if=active_enemies>7
 actions.trickshots+=/volley
 actions.trickshots+=/trueshot
