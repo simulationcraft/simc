@@ -3734,7 +3734,7 @@ struct breath_of_fire_t : public monk_spell_t
 
     if ( blackout_combo )
     {
-      am *= 1 + p()->talent.brewmaster.blackout_combo->effectN( 5 ).percent();
+      am *= 1 + p()->buff.blackout_combo->data().effectN( 5 ).percent();
     }
 
     if ( p()->talent.brewmaster.dragonfire_brew->ok() )
