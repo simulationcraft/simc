@@ -160,6 +160,7 @@ double attack_t::bonus_da( const action_state_t* s ) const
   if ( !special )
   {
     da += player->auto_attack_modifier;
+    da += player->auto_attack_base_modifier;
   }
 
   return da;

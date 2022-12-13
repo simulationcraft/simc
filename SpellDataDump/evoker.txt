@@ -1,4 +1,4 @@
-SimulationCraft 1002-01 for World of Warcraft 10.0.2.46924 Live (hotfix 2022-12-07/46924)
+SimulationCraft 1002-01 for World of Warcraft 10.0.2.46924 Live (hotfix 2022-12-11/46924)
 Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Orc (0x2)
@@ -715,6 +715,15 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 #9 (id=1034033)  : Apply Aura (6) | Unknown(188)
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Target: Self (1)
+#10 (id=1045262)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 2444 (Label) | Target: Self (1)
+                   Affected Spells (Label): Energizing Flame (400006)
+Hotfixed         : NEW EFFECT
+#11 (id=1045271)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Living Flame (361509)
+                   Family Flags: 22
+Hotfixed         : NEW EFFECT
 
 Name             : Preservation Evoker (id=356810) [Spell Family (224), Passive, Hidden] 
 Class            : Preservation Evoker
@@ -818,6 +827,11 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #10 (id=1041661)  : Apply Aura (6) | Unknown(188)
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Target: Self (1)
+#11 (id=1045272)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Living Flame (361509)
+                   Family Flags: 22
+Hotfixed         : NEW EFFECT
 
 Name             : Disintegrate (desc=Blue) (id=356995) [Spell Family (224)] 
 Class            : Evoker
@@ -1520,14 +1534,14 @@ Class            : Evoker
 School           : Fire
 Spell Type       : Magic
 Resource         : 2% Base Mana (0) (id=232472) w/ Preservation Evoker (id=356810)
-Resource         : 2% Base Mana (0) (id=232606) w/ Devastation Evoker (id=356809)
+Resource         : 4% Base Mana (0) (id=232606) w/ Devastation Evoker (id=356809)[Hotfixed: Percent Cost (2 -> 4)]
 Resource         : 2% Base Mana (0) (id=265450) w/ Initial Evoker (id=356816)
 Range            : 25 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11)
                  : 1464: Lifeforce Mender (376179 effect#2)
-Affecting spells : Preservation Evoker (356810 effect#13), Hover (358267 effect#5), Engulfing Blaze (370837 effects: #1, #2), Enkindled (375554 effects: #1, #2), Ancient Flame (375583 effect#1), Burnout (375802 effect#1), Inner Radiance (386405 effect#1), Lifespark (394552 effect#1)
+Affecting spells : Preservation Evoker (356810 effect#13), Hover (358267 effect#5), Engulfing Blaze (370837 effects: #1, #2), Enkindled (375554 effects: #1, #2), Ancient Flame (375583 effects: #1, #2), Burnout (375802 effect#1), Inner Radiance (386405 effect#1), Lifespark (394552 effect#1)
 Family Flags     : 2, 7, 52
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1555,7 +1569,7 @@ Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect
                  : 1464: Lifeforce Mender (376179 effect#2)
 Stacks           : 3 maximum
 Proc Chance      : 101%
-Affecting spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Initial Evoker (356816 effects: #4, #5), Shattering Star (370452 effect#3), Engulfing Blaze (370837 effect#2), Spellweaver's Dominance (370845 effect#1), Honed Aggression (371038 effects: #1, #2), Enkindled (375554 effects: #1, #2), Ancient Flame (375583 effect#1), Inner Radiance (386405 effect#1), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Lifespark (394552 effect#2)
+Affecting spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Initial Evoker (356816 effects: #4, #5), Shattering Star (370452 effect#3), Engulfing Blaze (370837 effect#2), Spellweaver's Dominance (370845 effect#1), Honed Aggression (371038 effects: #1, #2), Enkindled (375554 effects: #1, #2), Ancient Flame (375583 effects: #1, #2), Inner Radiance (386405 effect#1), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Lifespark (394552 effect#2)
 Family Flags     : 0, 7, 50
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ......x.   .......x .x...... ........ ......x. 
@@ -1585,7 +1599,7 @@ Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect
                  : 1464: Lifeforce Mender (376179 effect#2)
 Stacks           : 3 maximum
 Proc Chance      : 101%
-Affecting spells : Devastation Evoker (356809 effects: #5, #6), Preservation Evoker (356810 effects: #1, #2), Initial Evoker (356816 effects: #6, #7), Engulfing Blaze (370837 effect#2), Call of Ysera (373835 effect#2), Enkindled (375554 effects: #1, #2), Ancient Flame (375583 effect#1), Attuned to the Dream (376930 effects: #1, #2), Inner Radiance (386405 effect#1), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Lifespark (394552 effect#2)
+Affecting spells : Devastation Evoker (356809 effects: #5, #6, #11), Preservation Evoker (356810 effects: #1, #2), Initial Evoker (356816 effects: #6, #7, #11), Engulfing Blaze (370837 effect#2), Call of Ysera (373835 effect#2), Enkindled (375554 effects: #1, #2), Ancient Flame (375583 effects: #1, #2), Attuned to the Dream (376930 effects: #1, #2), Inner Radiance (386405 effect#1), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Lifespark (394552 effect#2)
 Family Flags     : 1, 7, 22
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ......x.   .......x .x...... ........ ......x. 
@@ -4489,6 +4503,11 @@ Effects          :
                    Base Value: -40 | Scaled Value: -40 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Living Flame (361469), Living Flame (361500), Living Flame (361509)
                    Family Flags: 7
+#2 (id=1045273)  : Apply Aura (6) | Add Percent Modifier (108): Spell Global Cooldown (21)
+                   Base Value: -40 | Scaled Value: -40 | PvP Coefficient: 1.00000 | Misc Value: 21 | Target: Self (1)
+                   Affected Spells: Living Flame (361469), Living Flame (361500), Living Flame (361509)
+                   Family Flags: 7
+Hotfixed         : NEW EFFECT
 Description      : $@spelldesc369990
 Tooltip          : The cast time of your next Living Flame is reduced by $w1%.
 
@@ -6944,6 +6963,7 @@ School           : Fire
 Spell Type       : None
 Spell Level      : 58
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11)
+                 : 2444: Devastation Evoker (356809 effect#10)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

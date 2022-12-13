@@ -16575,7 +16575,7 @@ static const std::array<spelltext_data_t, 19194> __spelltext_data { {
   { 377514, "Your Soul Reaper, Scourge Strike, Festering Strike, and Death Coil deal $s1% addtional damage to enemies below $s2% health.", 0, 0 },
   { 377537, "Death Coil and Epidemic debilitate your enemy applying Death Rot causing them to take $377540s1% increased Shadow damage, up to ${$377540s1*$377540u}% for $377540d. If Death Coil or Epidemic consume Sudden Doom it applies two stacks of Death Rot.", 0, 0 },
   { 377540, "$@spelldesc377537", "Shadow damage taken from $@auracaster is increased by $s1%.", 0 },
-  { 377544, "$@spelldesc376801", "Spells deal $s1 additional Fire damage to enemies or healing to allies.", 0 },
+  { 377544, "$@spelldesc376801", "Spells deal $376801w1 additional Fire damage to enemies or healing to allies.", 0 },
   { 377546, "$@spelldesc376801", 0, 0 },
   { 377580, "Death Coil deals $s1% additional damage and seeks out $s2 additional nearby enemy.", 0, 0 },
   { 377585, "When a Festering Wound pops it generates an additional ${$s1/10} Runic Power.", 0, 0 },
@@ -18439,7 +18439,6 @@ static const std::array<spelltext_data_t, 19194> __spelltext_data { {
   { 390947, "Circle of Healing heals $s1 additional ally and its cooldown is reduced by ${$s2/-1000} sec.", 0, 0 },
   { 390951, "Temporarily imbues shoulders with a fiery illusion for $ecd.", 0, 0 },
   { 390954, "Increases the critical strike chance of Flash Heal and Heal by $s1%.", 0, 0 },
-  { 390961, "$@spelldesc390990", 0, 0 },
   { 390964, "$@spelldesc120517", 0, 0 },
   { 390967, "Increases the healing done by your Mastery: Echo of Light by $s1%.", 0, 0 },
   { 390971, "$@spelldesc120517", 0, 0 },
@@ -18450,12 +18449,10 @@ static const std::array<spelltext_data_t, 19194> __spelltext_data { {
   { 390980, "Critical heals from Flash Heal and Heal increase your healing done by your next Holy Word spell by $390989s1%, stacking up to $390989U times.", 0, 0 },
   { 390981, "$@spelldesc110744", 0, 0 },
   { 390989, "$@spelldesc390980", "The healing of your next Holy Word spell is increased by $w1%.", 0 },
-  { 390990, "Causes the earth at the target location to tremble and break, dealing Nature damage every $t1 sec to enemies in $r yard radius. Lasts $d.\r\n\r\nUsable in the Obsidian Citadel and adjacent lava fields.", "Suffering Nature damage every $t2 sec.", 0 },
   { 390992, "Flash Heal reduces the cast time of your next Heal within $390993d by $390993s2% and increases its healing done by $390993s1%.\r\n\r\nStacks up to $390993U times.", 0, 0 },
   { 390993, "$@spelldesc390992", "The cast time of your next Heal is reduced by $w2% and its healing is increased by $w1%.", 0 },
   { 390994, "Circle of Healing reduces the cooldown of Holy Word: Sanctify, Prayer of Mending reduces the cooldown of Holy Word: Serenity, and Holy Fire reduces the cooldown of Holy Word: Chastise by $s1 sec.", 0, 0 },
   { 390996, "Your $?a137033[Mind Blast and Mind Spike]?a137031[Smite and Holy Fire][Smite and Penance] casts reduce the cooldown of Mindgames by ${$s1/2}.1 sec.", 0, 0 },
-  { 390997, "Causes the earth at the target location to tremble and break, dealing Nature damage every $t1 sec to enemies in $a1 yard radius. Lasts $d.", "Suffering Nature damage every $t2 sec.", 0 },
   { 391023, "Summons an arcana orb outside of the Cobalt Assembly.", "Summons an arcana orb outside of the Cobalt Assembly.", 0 },
   { 391037, "Your combo point generating abilities have a $s1% chance to generate $s2 extra combo $Lpoint:points;.", 0, 0 },
   { 391045, "Rip damage increased by $s1%.", 0, 0 },
@@ -18820,7 +18817,7 @@ static const std::array<spelltext_data_t, 19194> __spelltext_data { {
   { 393672, "Holy Light, Flash of Light, Light of Dawn, Word of Glory, and Bestow Faith healing is increased by $s2% and their critical effects increase the damage or healing of your next Holy Shock by $394667s1%.", 0, 0 },
   { 393673, "Avenger's Shield grants you and your closest ally Ally of the Light, increasing Versatility by $394714s1% for $394714d.", 0, 0 },
   { 393674, "$?s53595[Hammer of the Righteous]?s204019[Blessed Hammer][Crusader Strike] increases your Parry by $394727s1% for $394727d, and extends the duration of Ally of the Light by ${$m1/1000}.1 sec.", 0, 0 },
-  { 393675, "Judgment, Blade of Justice, and $?s383469[Radiant Decree][Wake of Ashes] damage increased by $s1%.", 0, 0 },
+  { 393675, "Judgment, Blade of Justice, and $?a384052[Radiant Decree][Wake of Ashes] damage increased by $s1%.", 0, 0 },
   { 393677, "$?s383327[Final Verdict][Templar's Verdict] and Divine Storm damage increased by 10%.", 0, 0 },
   { 393679, "Power Word: Shield increases the effectiveness of your next direct damage or healing spell by $s1%.", 0, 0 },
   { 393681, "Penance increases the strength of your next Power Word: Shield by $s1% of its damage or $s2% of its healing.", 0, 0 },
@@ -18918,8 +18915,11 @@ static const std::array<spelltext_data_t, 19194> __spelltext_data { {
   { 393978, "The sands are taking their time back.\r\n\r\nReduces movement speed by $s1% for $d.", "Movement speed reduced by $s1%.", 0 },
   { 393979, "This sand will let you borrow time, but take it back after.\r\n\r\nIncreases movement speed by $s1% for $d, then reduces movement speed by $393978s1% for $393978d.", "Movement speed increased by $s1%.\r\nDoes not function in Raids, Dungeons, or instanced content.", 0 },
   { 393982, "Your spells and abilities have a chance to pelt your target with a magic snowball, causing enemies to take Frost damage or allies to receive healing.", 0, 0 },
+  { 393983, "Critical damage and healing have a chance to spur you on, granting Haste for $377143d. This effect stacks up to $377143U times.\r\n", "Critical damage and healing have a chance to spur you on, granting $w1 Haste for $377143d. This effect stacks up to $377143U times.", 0 },
+  { 393987, "Dealing damage has a chance to grant Piercing Azureweave, increasing Intellect for $388061d. Healing has a chance to grant Flowing Azureweave, reducing the Mana cost of spells for $388064d.", "Dealing damage has a chance to grant Piercing Azureweave, increasing Intellect by $w1 for $388061d. Healing has a chance to grant Flowing Azureweave, reducing Mana cost by $w2 per cast for $388064d.", 0 },
   { 393989, "Recreate the Temporal Conflux's security measures on yourself!\r\n\r\nGet temporally locked in a bubble for $d!", "Locked in a temporal bubble! But without the disturbing side effects!", 0 },
   { 393991, "Incarnation: Chosen of Elune reduces the Astral Power cost of Starsurge by ${$s5*-1/10}, and the Astral Power cost of Starfall by ${$s6*-1/10}.\r\n\r\nConvoke the Spirits' cooldown is reduced by ${($abs($s4)/120000)*100}% and its duration and number of spells cast is reduced by $s1%. Convoke the Spirits has an increased chance to use an exceptional spell or ability.", 0, 0 },
+  { 393993, "Your spells and abilities have a chance to store away moments of time. Upon reaching $387141u stacks, release your stored time and gain a burst of Haste.\r\n\r\n", "Your spells and abilities have a chance to store away moments of time. Upon reaching $387141u stacks, release your stored time and gain $w1 Haste.", 0 },
   { 393994, "Slow your body by taking on the weight of time itself.\r\n\r\nDecreases movement speed by $s1% for $d.", "Taking on the heavy weight of time.", 0 },
   { 393995, "Combine $s2 Slumbering Dream Fragments to restore a minor dream, once broken.", 0, 0 },
   { 394013, "$@spelldesc102560", 0, 0 },
@@ -19197,8 +19197,10 @@ static const std::array<spelltext_data_t, 19194> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 10.0.2.46924
-static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 3> __spelltext_hotfix_data { {
+  {  377544,  1, "Spells deal $s1 additional Fire damage to enemies or healing to allies.", "Spells deal $376801w1 additional Fire damage to enemies or healing to allies." },
   {  393648,  0, "$?s342049[Chimaera Shot][Arcane Shot] and Multi Shot critical hits cause your next Aimed Shot to cause the target to bleed for $394366s1% of damage dealt over $394371d sec.", "$?s342049[Chimaera Shot][Arcane Shot] and Multi-Shot critical hits cause your next Aimed Shot to cause the target to bleed for $394366s1% of damage dealt over $394371d sec." },
+  {  393675,  0, "Judgment, Blade of Justice, and $?s383469[Radiant Decree][Wake of Ashes] damage increased by $s1%.", "Judgment, Blade of Justice, and $?a384052[Radiant Decree][Wake of Ashes] damage increased by $s1%." },
 } };
 
 // Spell description variables, wow build 10.0.2.46924

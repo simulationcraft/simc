@@ -672,6 +672,11 @@ struct power_siphon_t : public demonology_spell_t
 
   bool ready() override
   {
+    if ( is_precombat && p()->talents.inner_demons->ok() )
+    {
+      return demonology_spell_t::ready(); // Since Inner Demons spawns Wild Imps out of combat, this can be used to pre-stack Demonic Cores before combat
+    }
+
     if ( p()->warlock_pet_list.wild_imps.n_active_pets() < 1 )
       return false;
 
@@ -681,6 +686,13 @@ struct power_siphon_t : public demonology_spell_t
   void execute() override
   {
     demonology_spell_t::execute();
+
+    if ( is_precombat )
+    {
+      p()->buffs.power_siphon->trigger( 2, p()->talents.power_siphon_buff->duration() );
+      p()->buffs.demonic_core->trigger( 2, p()->warlock_base.demonic_core_buff->duration() );
+      return;
+    }
 
     auto imps = p()->warlock_pet_list.wild_imps.active_pets();
 

@@ -47,6 +47,7 @@ enum class sef_ability_e
   SEF_BLACKOUT_KICK,
   SEF_BLACKOUT_KICK_TOTM,
   SEF_RISING_SUN_KICK,
+  SEF_GLORY_OF_THE_DAWN,
   SEF_FISTS_OF_FURY,
   SEF_SPINNING_CRANE_KICK,
   SEF_RUSHING_JADE_WIND,
@@ -66,19 +67,6 @@ enum class sef_ability_e
   SEF_SPELL_MIN  = SEF_CHI_WAVE,
   SEF_ATTACK_MIN = SEF_TIGER_PALM,
   SEF_MAX
-};
-
-enum class bonedust_brew_zone_results_e
-{
-  NONE = 0,
-  TP_FILL1,
-  TP_FILL2,
-  NO_CAP,
-  CAP,
-  BLUE = TP_FILL1,
-  GREEN = TP_FILL2,
-  RED = NO_CAP,
-  PURPLE = CAP
 };
 
 inline int sef_spell_index( int x )

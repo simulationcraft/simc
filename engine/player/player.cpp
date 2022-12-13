@@ -1180,6 +1180,7 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     warlords_unseeing_eye( 0.0 ),
     warlords_unseeing_eye_stats(),
     auto_attack_modifier( 0.0 ),
+    auto_attack_base_modifier( 0.0 ),
     auto_attack_multiplier( 1.0 ),
     scaling( ( !is_pet() || sim->report_pets_separately ) ? new player_scaling_t() : nullptr ),
     // Movement & Position
@@ -4216,23 +4217,24 @@ double player_t::composite_melee_attack_power_by_type( attack_power_type type ) 
       break;
   }
 
-  // 2022-08-25 -- Recent logs have shown that player->auto_attack_modifier now works as a general AP modifier
+  // 2022-08-25 -- Aura type 141 works as a general base weapon damage modifier which affects AP calculations
   //               This is normalized to AP based on weapon speed in a similar way as base weapon DPS above
+  //               Aura type 530 does not apply to this, as it is only added to the result of white hits
   double aa_bonus_ap = 0;
-  if ( auto_attack_modifier > 0 )
+  if ( auto_attack_base_modifier > 0 )
   {
     if ( type == attack_power_type::WEAPON_MAINHAND )
     {
-      aa_bonus_ap = auto_attack_modifier / main_hand_weapon.swing_time.total_seconds();
+      aa_bonus_ap = auto_attack_base_modifier / main_hand_weapon.swing_time.total_seconds();
     }
     else if ( type == attack_power_type::WEAPON_OFFHAND )
     {
-      aa_bonus_ap = auto_attack_modifier / off_hand_weapon.swing_time.total_seconds();
+      aa_bonus_ap = auto_attack_base_modifier / off_hand_weapon.swing_time.total_seconds();
     }
     else if ( type == attack_power_type::WEAPON_BOTH )
     {
-      aa_bonus_ap = ( auto_attack_modifier / main_hand_weapon.swing_time.total_seconds()
-              + auto_attack_modifier / off_hand_weapon.swing_time.total_seconds() * 0.5 ) * ( 2.0 / 3.0 );
+      aa_bonus_ap = ( auto_attack_base_modifier / main_hand_weapon.swing_time.total_seconds()
+              + auto_attack_base_modifier / off_hand_weapon.swing_time.total_seconds() * 0.5 ) * ( 2.0 / 3.0 );
     }
     aa_bonus_ap *= WEAPON_POWER_COEFFICIENT;
   }

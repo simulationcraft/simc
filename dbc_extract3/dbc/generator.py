@@ -1382,6 +1382,7 @@ class SpellDataGenerator(DataGenerator):
          390899, 390869, 390835, 390655, # Primal Ritual Shell
          396369, # Season 1 Thundering M+ Affix
          392271, 392275, # Seasoned Hunter's Trophy stat buffs
+         393987, # Azureweave Vestments set bonus driver
         ),
 
         # Warrior:
@@ -3605,6 +3606,21 @@ class SetBonusListGenerator(DataGenerator):
         {
             'name'   : 'playful_spirits_fur',
             'bonuses': [ 1509 ],
+            'tier'   : 29
+        },
+        {
+            'name'   : 'horizon_striders_garments',
+            'bonuses': [ 1510 ],
+            'tier'   : 29
+        },
+        {
+            'name'   : 'azureweave_vestments',
+            'bonuses': [ 1516 ],
+            'tier'   : 29
+        },
+        {
+            'name'   : 'woven_chronocloth',
+            'bonuses': [ 1515 ],
             'tier'   : 29
         }
     ]

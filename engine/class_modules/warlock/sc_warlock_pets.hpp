@@ -59,7 +59,6 @@ struct warlock_pet_t : public pet_t
   double composite_player_target_multiplier( player_t*, school_e ) const override;
   double composite_spell_haste() const override;
   double composite_spell_speed() const override;
-  double composite_melee_haste() const override;
   double composite_melee_speed() const override;
   void init_special_effects() override;
   void arise() override;
@@ -380,7 +379,6 @@ struct felguard_pet_t : public warlock_pet_t
   timespan_t available() const override;
   void arise() override;
   double composite_player_multiplier( school_e ) const override;
-  double composite_melee_haste() const override;
   double composite_melee_speed() const override;
 
   void queue_ds_felstorm();
@@ -461,6 +459,7 @@ struct pit_lord_t : public warlock_pet_t
   void init_base_stats() override;
   void arise() override;
   double composite_player_multiplier( school_e ) const override;
+  double composite_melee_speed() const override;
 };
 
 namespace random_demons

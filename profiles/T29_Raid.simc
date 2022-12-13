@@ -7,11 +7,12 @@ T29_Death_Knight_Frost_2h.simc
 T29_Death_Knight_Frost_DW.simc
 T29_Death_Knight_Unholy.simc
 
-# T29_Demon_Hunter_Havoc.simc
+T29_Demon_Hunter_Havoc.simc
 # T29_Demon_Hunter_Vengeance.simc
 
 T29_Druid_Balance.simc
-# T29_Druid_Feral.simc
+T29_Druid_Feral.simc
+T29_Druid_Feral_SI.simc
 # T29_Druid_Guardian.simc
 
 # T29_Evoker_Devastation.simc
@@ -21,8 +22,8 @@ T29_Druid_Balance.simc
 # T29_Hunter_Survival.simc
 
 # T29_Mage_Fire.simc
-# T29_Mage_Frost.simc
-# T29_Mage_Arcane.simc
+T29_Mage_Frost.simc
+T29_Mage_Arcane.simc
 
 # T29_Monk_Brewmaster.simc
 # T29_Monk_Windwalker.simc
@@ -34,9 +35,9 @@ T29_Paladin_Protection.simc
 
 T29_Priest_Shadow.simc
 
-# T29_Rogue_Assassination.simc
-# T29_Rogue_Outlaw.simc
-# T29_Rogue_Subtlety.simc
+T29_Rogue_Assassination.simc
+T29_Rogue_Outlaw.simc
+T29_Rogue_Subtlety.simc
 
 T29_Shaman_Elemental.simc
 T29_Shaman_Enhancement.simc

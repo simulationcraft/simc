@@ -7354,18 +7354,7 @@ struct ascendance_t : public shaman_spell_t
     {
       if ( background )
       {
-        // Static Accumulation is intended to match Ascendance duration, but is currently bugged
-        // in-game and simply overwrites a long-duration Static Accumulation (sourced from
-        // Ascendance, the button press) with a short duration Static Accumulation (sourced from
-        // DRE).
-        if ( player->bugs )
-        {
-          p()->buff.static_accumulation->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, dre_duration );
-        }
-        else
-        {
-          p()->buff.static_accumulation->extend_duration_or_trigger( dre_duration, player );
-        }
+        p()->buff.static_accumulation->extend_duration_or_trigger( dre_duration, player );
       }
       else
       {

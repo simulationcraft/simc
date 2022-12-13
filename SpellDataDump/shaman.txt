@@ -1,4 +1,4 @@
-SimulationCraft 1002-01 for World of Warcraft 10.0.2.46924 Live (hotfix 2022-12-07/46924)
+SimulationCraft 1002-01 for World of Warcraft 10.0.2.46924 Live (hotfix 2022-12-11/46924)
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -11569,6 +11569,7 @@ Spell Type       : None
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 20 seconds
+Labels           : 2446: Overflowing Maelstrom (384149 effect#3)
 Stacks           : 5 maximum
 Proc Chance      : 101%
 Proc Flags       : ........ ........ x....... ........ 
@@ -16327,18 +16328,20 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1016544)  : Apply Aura (6) | Add Flat Modifier (107): Spell Max Stacks (37)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.60000 | Misc Value: 37 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 37 | Target: Self (1)
                    Affected Spells: Maelstrom Weapon (344179)
                    Family Flags: 49
-Hotfixed         : PvP Coefficient (1 -> 0.6)
+Hotfixed         : PvP Coefficient (0.6 -> 1)
 #2 (id=1030571)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.60000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Maelstrom Weapon (187881)
                    Family Flags: 100
+Hotfixed         : PvP Coefficient (1 -> 0.6)
 #3 (id=1030572)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.60000 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Maelstrom Weapon (187881)
                    Family Flags: 100
+Hotfixed         : PvP Coefficient (1 -> 0.6)
 Description      : Maelstrom Weapon can now stack $s1 additional times, and Maelstrom Weapon now increases the damage or healing of spells it affects by an additional $s2% per stack.
 
 Name             : Overflowing Maelstrom (id=384149) [Spell Family (11), Passive, Hidden] 
@@ -16357,13 +16360,17 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1016558)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.80000 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.8)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : PvP Coefficient (0.8 -> 1)
 #2 (id=1033577)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.60000 | Misc Value: 12 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Maelstrom Weapon (187880)
                    Family Flags: 73
-Hotfixed         : PvP Coefficient (1 -> 0.6)
+Hotfixed         : PvP Coefficient (0.6 -> 1)
+#3 (id=1045499)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Max Stacks (37)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 37 | Misc Value 2: 2446 (Label) | Target: Self (1)
+                   Affected Spells (Label): Hailstorm (334196)
+Hotfixed         : NEW EFFECT
 Description      : Your damage or healing spells will now consume up to $s1 Maelstrom Weapon stacks. 
 
 Name             : Doom Winds (id=384352) [Spell Family (11)] 

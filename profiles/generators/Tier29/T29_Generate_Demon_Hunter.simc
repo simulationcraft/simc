@@ -1,29 +1,30 @@
-# demonhunter="T29_Demon_Hunter_Havoc"
-# level="60"
-# race="blood_elf"
-# role="attack"
-# position="back"
-# spec="havoc"
-# talents="1121121"
+demonhunter="T29 Havoc Demon Hunter"
+spec=havoc
+level=70
+race=night_elf
+timeofday=day
+role=attack
+position=back
+talents=BEkAAAAAAAAAAAAAAAAAAAAAAQCIhUC0SSkkINEAAAAAAAkEkWKRSSBCplESSkkkE
 
-# head=mercurial_punishers_hood,id=188892,bonus_id=1498/7187/6935,gem_id=173127
-# neck=shadowghast_necklace,id=178927,bonus_id=6716/7043/6650/6649/1808/1588/6935,gem_id=173127
-# shoulders=mercurial_punishers_shoulderpads,id=188896,bonus_id=1505/7187
-# back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187
-# chest=mercurial_punishers_jerkin,id=188894,bonus_id=1505/7187,enchant=eternal_skirmish
-# wrists=devourers_sandblown_hidebinders,id=189812,bonus_id=1524/7187/6935,gem_id=173127
-# hands=grasps_of_abducted_fate,id=189843,bonus_id=1524/7187
-# waist=runecarvers_twisted_ward,id=189856,bonus_id=1524/7187/6935,gem_id=173127
-# legs=mercurial_punishers_breeches,id=188893,bonus_id=1498/7187
-# feet=mercurial_punishers_boots,id=188899,bonus_id=1505/7187,enchant=eternal_agility
-# finger1=shadowghast_ring,id=178926,bonus_id=6716/8120/6650/6649/1808/1588/6935,gem_id=173127,enchant=tenet_of_critical_strike
-# finger2=ritual_commanders_ring,id=178781,bonus_id=1592/6536/6646/6935,gem_id=173127,enchant=tenet_of_critical_strike
-# trinket1=cache_of_acquired_treasures,id=188265,bonus_id=1524/7187
-# trinket2=phial_of_putrefaction,id=178771,bonus_id=1592/6536/6646/6935
-# main_hand=alandiens_tortured_twinblades,id=189846,bonus_id=1524/7187,enchant=sinful_revelation
-# off_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=1592/6536/6646,enchant=celestial_guidance
+head=skybound_avengers_visor,id=200345,bonus_id=4800/4786/1498,gem_id=192958
+neck=elemental_lariat,id=193001,ilevel=418,gem_id=192982/192958/192958,crafted_stats=32/49
+shoulders=skybound_avengers_ailerons,id=200347,bonus_id=4800/4786/1498
+back=cloak_of_lost_devotion,id=193629,bonus_id=6808/4786/1643
+chest=lifebound_chestpiece,id=193399,bonus_id=3524/8836/8840/8902/8960/8932/8780,ilevel=418,enchant_id=6625,crafted_stats=32/36
+wrists=loyal_flametenders_bracers,id=195525,bonus_id=4800/4786/1498,gem_id=192958
+hands=skybound_avengers_grips,id=200344,bonus_id=4800/4786/1498
+waist=bjorns_hunting_strap,id=136776,bonus_id=1795/6808/4786/3300,gem_id=192958
+legs=skybound_avengers_legguards,id=200346,bonus_id=4800/4786/1498,ilevel=424,enchant_id=6496
+feet=biornskin_moccasins,id=134193,bonus_id=1795/6808/4786/3300
+finger1=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498,gem_id=192958,enchant_id=6550
+finger2=jeweled_signet_of_melandrus,id=134542,bonus_id=1795/6808/4786/3300,gem_id=192958,enchant_id=6550
+trinket1=manic_grieftorch,id=194308,bonus_id=4800/4786/1498
+trinket2=whispering_incarnate_icon,id=194301,bonus_id=4800/4786/1498
+main_hand=stormslash,id=193688,bonus_id=6808/4786/1643,enchant_id=6649
+off_hand=stormslash,id=193688,bonus_id=6808/4786/1643,enchant_id=6649
 
-# save=T29_Demon_Hunter_Havoc.simc
+save=T29_Demon_Hunter_Havoc.simc
 
 # demonhunter="T29_Demon_Hunter_Vengeance"
 # level=70

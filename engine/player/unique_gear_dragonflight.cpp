@@ -14,6 +14,8 @@
 #include "item/item.hpp"
 #include "item/item_targetdata_initializer.hpp"
 #include "set_bonus.hpp"
+#include "player/action_priority_list.hpp"
+#include "player/action_variable.hpp"
 #include "player/pet.hpp"
 #include "sim/cooldown.hpp"
 #include "sim/sim.hpp"
@@ -33,7 +35,8 @@ void iced_phial_of_corrupting_rage( special_effect_t& effect )
   if ( !buff )
   {
     auto crit = make_buff<stat_buff_t>( effect.player, "corrupting_rage", effect.player->find_spell( 374002 ) )
-      ->add_stat( STAT_CRIT_RATING, effect.driver()->effectN( 2 ).average( effect.item ) );
+                    ->add_stat( STAT_CRIT_RATING, effect.driver()->effectN( 2 ).average( effect.item ) )
+                    ->set_quiet( false );
 
     buff = make_buff( effect.player, "iced_phial_of_corrupting_rage", effect.driver() )
       ->set_cooldown( 0_ms )
@@ -55,6 +58,19 @@ void iced_phial_of_corrupting_rage( special_effect_t& effect )
       if ( !new_ && buff->check() )
         debuff->trigger();
     } );
+
+    if ( effect.player->sim->dragonflight_opts.corrupting_rage_uptime < 1 )
+    {
+      crit->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
+      effect.player->register_combat_begin( [ crit, debuff ]( player_t* ) {
+        make_repeating_event( crit->player->sim, 1_s, [ crit, debuff ]() {
+          double debuff_uptime = 1 - crit->player->sim->dragonflight_opts.corrupting_rage_uptime;
+          double disable_chance = debuff_uptime / ( debuff->buff_duration() - debuff->buff_duration() * debuff_uptime ).total_seconds();
+          if ( crit->rng().roll( disable_chance ) )
+            crit->expire();
+        } );
+      } );
+    }
   }
 
   effect.custom_buff = buff;
@@ -119,6 +135,7 @@ void phial_of_elemental_chaos( special_effect_t& effect )
         make_buff<stat_buff_t>( effect.player, "elemental_chaos_air", effect.player->find_spell( 371350 ) )
             ->add_stat( STAT_HASTE_RATING, amount )
             ->set_default_value_from_effect_type( A_MOD_SPEED_ALWAYS )
+            ->add_invalidate( CACHE_RUN_SPEED )
             ->set_duration( duration ) );
     effect.player->buffs.elemental_chaos_earth = buff_list.emplace_back(
         make_buff<stat_buff_t>( effect.player, "elemental_chaos_earth", effect.player->find_spell( 371351 ) )
@@ -411,13 +428,16 @@ custom_cb_t writ_enchant( stat_e stat, bool cr )
 
 void frozen_devotion( special_effect_t& effect )
 {
-  auto proc = create_proc_action<generic_aoe_proc_t>( "frozen_devotion", effect, "frozen_devotion", 390350, true );
-  proc -> base_dd_min = proc -> base_dd_max = effect.driver() -> effectN( 1 ).average( effect.player );
+  auto new_driver = effect.driver()->effectN( 1 ).trigger();
+  auto proc = create_proc_action<generic_aoe_proc_t>( "frozen_devotion", effect, "frozen_devotion",
+                                                      new_driver->effectN( 1 ).trigger(), true );
 
-  auto new_driver = effect.player -> find_spell( 396826 );
-
+  proc->base_dd_min += effect.driver()->effectN( 1 ).average( effect.player );
+  proc->base_dd_max += effect.driver()->effectN( 1 ).average( effect.player );
+  
+  effect.name_str = new_driver->name_cstr();
+  effect.spell_id = new_driver->id();
   effect.execute_action = proc;
-  effect.spell_id = new_driver -> id();
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -435,11 +455,19 @@ void wafting_devotion( special_effect_t& effect )
   speed = item_database::apply_combat_rating_multiplier( effect.player, CR_MULTIPLIER_WEAPON,
                                                          effect.player->level(), speed );
 
-  auto buff = create_buff<stat_buff_t>( effect.player, new_trigger );
-  buff->manual_stats_added = false;
-  buff->add_stat( STAT_HASTE_RATING, haste )
-      ->add_stat( STAT_SPEED_RATING, speed );
+  std::string buff_name = new_trigger->name_cstr();
+  util::tokenize( buff_name );
 
+  auto buff = debug_cast<stat_buff_t*>( buff_t::find( effect.player, buff_name ) );
+  if ( buff == nullptr )
+  {
+    buff = create_buff<stat_buff_t>( effect.player, buff_name, new_trigger );
+  }
+  
+  buff->set_stat( STAT_HASTE_RATING, haste )
+      ->add_stat( STAT_SPEED_RATING, speed );
+  
+  effect.name_str = buff_name;
   effect.custom_buff = buff;
   effect.spell_id = new_driver->id();
   effect.trigger_spell_id = new_trigger->id();
@@ -598,6 +626,55 @@ void projectile_propulsion_pinion( special_effect_t& effect )
 namespace items
 {
 // Trinkets
+  
+/* Burgeoning Seed
+  * id=193634
+  * trigger = 382108
+  * consume = 384636
+  * buff = 384658 
+*/
+
+void consume_pods( special_effect_t& effect )
+{
+  auto life_pod = find_special_effect( effect.player, 382108 );
+
+  if ( life_pod != nullptr )
+  {
+    life_pod->custom_buff = make_buff( effect.player, "brimming_life_pod", life_pod->trigger(), effect.item );
+    new dbc_proc_callback_t( effect.player, *life_pod );
+  }
+
+  struct burgeoning_seed_t : generic_proc_t
+  {
+    buff_t* pods;
+    buff_t* supernatural;
+
+    burgeoning_seed_t( const special_effect_t& effect )
+      : generic_proc_t( effect, "burgeoning_seed", effect.trigger() ),
+      pods ( buff_t::find( effect.player, "brimming_life_pod" ) ),
+      supernatural( buff_t::find( effect.player, "supernatural" ) )
+    {
+      if ( !supernatural )
+        supernatural = create_buff<stat_buff_t>( effect.player, "supernatural", effect.player->find_spell( 384658 ) )
+        ->add_stat( STAT_VERSATILITY_RATING, effect.player->find_spell( 384658 )->effectN( 1 ).average( effect.item ) )
+        ->add_stat( STAT_MAX_HEALTH, effect.player->find_spell( 384658 )->effectN( 3 ).average( effect.item ) );
+    }
+
+    bool ready() override
+    {
+      return ( pods && pods->check() );
+    }
+
+    void execute() override
+    {
+      supernatural->trigger( pods->stack() );
+      pods->expire();
+    }
+  };
+
+  effect.execute_action = create_proc_action<burgeoning_seed_t>( "burgeoning_seed", effect );
+}
+  
 custom_cb_t idol_of_the_aspects( std::string_view type )
 {
   return [ type ]( special_effect_t& effect ) {
@@ -612,8 +689,7 @@ custom_cb_t idol_of_the_aspects( std::string_view type )
 
     auto val = effect.driver()->effectN( 3 ).average( effect.item ) / 4;
     auto gift = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 376643 ) );
-    gift->manual_stats_added = false;
-    gift->add_stat( STAT_CRIT_RATING, val )
+    gift->set_stat( STAT_CRIT_RATING, val )
         ->add_stat( STAT_HASTE_RATING, val )
         ->add_stat( STAT_MASTERY_RATING, val )
         ->add_stat( STAT_VERSATILITY_RATING, val );
@@ -931,9 +1007,8 @@ void bottle_of_spiraling_winds( special_effect_t& effect )
 {
   // TODO: determine what happens on buff refresh
   auto buff = create_buff<stat_buff_t>( effect.player, effect.trigger() );
-  buff->manual_stats_added = false;
   // TODO: confirm it continues to use the driver's coeff and not the actual buff's coeff
-  buff->add_stat( STAT_AGILITY, effect.driver()->effectN( 1 ).average( effect.item ) );
+  buff->set_stat( STAT_AGILITY, effect.driver()->effectN( 1 ).average( effect.item ) );
 
   // TODO: this doesn't function in-game atm.
   /*
@@ -1034,8 +1109,8 @@ void globe_of_jagged_ice( special_effect_t& effect )
   {
     breaking_the_ice_t( const special_effect_t& e ) : generic_aoe_proc_t( e, "breaking_the_ice", 388948, true )
     {
-      // TODO: tooltip displays values based on the damage spell, but the actual value is from the debuff spell
-      base_dd_min = base_dd_max = e.trigger()->effectN( 1 ).average( e.item ) / data().max_stacks();
+      // Tooltip and damage value is based on max stacks
+      base_dd_min = base_dd_max = data().effectN( 1 ).average( e.item ) / data().max_stacks();
     }
 
     bool target_ready( player_t* t ) override
@@ -1062,6 +1137,7 @@ void globe_of_jagged_ice( special_effect_t& effect )
 void irideus_fragment( special_effect_t& effect )
 {
   auto reduce = new special_effect_t( effect.player );
+  reduce->name_str = "crumbling_power_reduce";
   reduce->type = SPECIAL_EFFECT_EQUIP;
   reduce->source = SPECIAL_EFFECT_SOURCE_ITEM;
   reduce->spell_id = effect.spell_id;
@@ -1080,9 +1156,9 @@ void irideus_fragment( special_effect_t& effect )
 
 
   auto buff = create_buff<stat_buff_t>( effect.player, effect.driver() );
-  buff->manual_stats_added = false;
-  buff->add_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect.item ) )
+  buff->set_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect.item ) )
       ->set_reverse( true )
+      ->set_cooldown( 0_ms )
       ->set_stack_change_callback( [ cb ]( buff_t*, int old_, int new_ ) {
     if ( !old_ )
       cb->activate();
@@ -1105,8 +1181,7 @@ void emerald_coachs_whistle( special_effect_t& effect )
 {
   auto buff_spell = effect.player->find_spell( 383803 );
   auto buff = create_buff<stat_buff_t>( effect.player, buff_spell );
-  buff->manual_stats_added = false;
-  buff->add_stat( STAT_MASTERY_RATING, buff_spell->effectN( 1 ).average( effect.item ) );
+  buff->set_stat( STAT_MASTERY_RATING, buff_spell->effectN( 1 ).average( effect.item ) );
 
   effect.custom_buff  = buff;
 
@@ -1153,8 +1228,7 @@ void erupting_spear_fragment( special_effect_t& effect )
       base_dd_min = base_dd_max = values->effectN( 1 ).average( item );
 
       buff = create_buff<stat_buff_t>( player, "erupting_flames", player->find_spell( 381476 ) );
-      buff->manual_stats_added = false;
-      buff->add_stat( STAT_CRIT_RATING, values->effectN( 2 ).average( item ) );
+      buff->set_stat( STAT_CRIT_RATING, values->effectN( 2 ).average( item ) );
     }
 
     void impact( action_state_t* s ) override
@@ -1239,6 +1313,16 @@ void idol_of_pure_decay( special_effect_t& effect )
   };
 
   new idol_of_pure_decay_cb_t( effect );
+}
+
+void shikaari_huntress_arrowhead( special_effect_t& effect )
+{
+  // against elite enemies, gives 10% more stats (default)
+  // against normal enemies, gives 10% less stats (NYI)
+  effect.custom_buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 384193 ) )
+    ->set_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect.item ) * 1.1 );
+
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 void spiteful_storm( special_effect_t& effect )
@@ -1431,12 +1515,10 @@ void sustaining_alchemist_stone( special_effect_t& effect )
 void timebreaching_talon( special_effect_t& effect )
 {
   auto debuff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 384050 ) );
-  debuff->manual_stats_added = false;
-  debuff->add_stat( STAT_INTELLECT, effect.driver()->effectN( 1 ).average( effect.item ) );
+  debuff->set_stat( STAT_INTELLECT, effect.driver()->effectN( 1 ).average( effect.item ) );
 
   auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 382126 ) );
-  buff->manual_stats_added = false;
-  buff->add_stat( STAT_INTELLECT, effect.driver()->effectN( 2 ).average( effect.item ) )
+  buff->set_stat( STAT_INTELLECT, effect.driver()->effectN( 2 ).average( effect.item ) )
       ->set_stack_change_callback( [ debuff ]( buff_t*, int, int new_ ) {
         if ( !new_ )
           debuff->trigger();
@@ -1615,8 +1697,7 @@ void whispering_incarnate_icon( special_effect_t& effect )
 
   auto buff_data = effect.player->find_spell( buff_id );
   auto buff = create_buff<stat_buff_t>( effect.player, buff_data );
-  buff->manual_stats_added = false;
-  buff->add_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect.item ) )
+  buff->set_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect.item ) )
       ->set_constant_behavior( buff_constant_behavior::ALWAYS_CONSTANT )
       ->set_rppm( rppm_scale_e::RPPM_DISABLE );
 
@@ -1628,8 +1709,7 @@ void whispering_incarnate_icon( special_effect_t& effect )
   {
     auto proc_buff_data = effect.player->find_spell( proc_buff_id );
     auto proc_buff = create_buff<stat_buff_t>( effect.player, proc_buff_data );
-    proc_buff->manual_stats_added = false;
-    proc_buff->add_stat_from_effect( 1, effect.driver()->effectN( 2 ).average( effect.item ) );
+    proc_buff->set_stat_from_effect( 1, effect.driver()->effectN( 2 ).average( effect.item ) );
 
     effect.spell_id = buff_id;
     effect.custom_buff = proc_buff;
@@ -1671,8 +1751,8 @@ void rumbling_ruby( special_effect_t& effect )
   if ( !power_buff )
   {
     auto power_proc_spell = effect.player->find_spell( 382094 );
-    power_buff = make_buff<stat_buff_t>(effect.player, "rumbling_power", power_proc_spell)
-                   ->add_stat( STAT_STRENGTH, effect.driver() -> effectN( 1 ).average( effect.item ));
+    power_buff = make_buff<stat_buff_t>(effect.player, "concussive_force", power_proc_spell)
+                   ->add_stat( STAT_ATTACK_POWER, effect.driver() -> effectN( 1 ).average( effect.item ));
   }
 
   struct rumbling_ruby_damage_t : public proc_spell_t
@@ -2130,38 +2210,155 @@ void tome_of_unstable_power( special_effect_t& effect )
   auto buff = create_buff<stat_buff_t>( effect.player, buff_spell );
 
   buff->set_duration( effect.driver()->duration() );
-  buff->manual_stats_added = false;
-  buff->add_stat_from_effect( 1, data_spell->effectN( 1 ).average( effect.item ) )
+  buff->set_stat_from_effect( 1, data_spell->effectN( 1 ).average( effect.item ) )
       ->add_stat_from_effect( 2, data_spell->effectN( 2 ).average( effect.item ) );
 
   effect.custom_buff = buff;
 }
 
-// Alegethar Puzzle Box
+// Algethar Puzzle Box
 // 383781 Driver and Buff
-// TODO: Cast time is unhasted
-void alegethar_puzzle_box( special_effect_t& effect )
+void algethar_puzzle_box( special_effect_t& effect )
 {
   struct solved_the_puzzle_t : public proc_spell_t
   {
     buff_t* buff;
-    solved_the_puzzle_t( const special_effect_t& e ) :
-      proc_spell_t( "solved_the_puzzle", e.player, e.player->find_spell( 383781 ), e.item)
+    action_t* use_action;  // if this exists, then we're prechanneling via the APL
+
+    solved_the_puzzle_t( const special_effect_t& e, buff_t* b )
+      : proc_spell_t( "solved_the_puzzle", e.player, e.driver(), e.item ), buff( b ), use_action( nullptr )
     {
-      background = true;
-      auto buff_spell = e.player -> find_spell( 383781 );
-      buff = create_buff<stat_buff_t>(e.player, buff_spell)
-          -> add_stat_from_effect(1, e.driver()->effectN( 1 ).average(e.item));
-      buff -> set_default_value(e.driver()->effectN(1).average(e.item));
+      background   = true;
+      effect       = &e;
+      harmful = false;
+
+      for ( auto a : player->action_list )
+      {
+        if ( a->action_list && a->action_list->name_str == "precombat" && a->name_str == "use_item_" + item->name_str )
+        {
+          a->harmful = harmful;  // pass down harmful to allow action_t::init() precombat check bypass
+          use_action = a;
+          use_action->base_execute_time = 2_s;
+          break;
+        }
+      }
     }
 
-    void impact( action_state_t* ) override
+    void precombat_buff()
     {
-      buff -> trigger();
+      timespan_t time = 0_ms;
+
+      if ( time == 0_ms )  // No global override, check for an override from an APL variable
+      {
+        for ( auto v : player->variables )
+        {
+          if ( v->name_ == "algethar_puzzle_box_precombat_cast" )
+          {
+            time = timespan_t::from_seconds( v->value() );
+            break;
+          }
+        }
+      }
+
+      // shared cd (other trinkets & on-use items)
+      auto cdgrp = player->get_cooldown( effect->cooldown_group_name() );
+
+      if ( time == 0_ms )  // No hardcoded override, so dynamically calculate timing via the precombat APL
+      {
+        time            = 2_s;  // base 2s cast
+        const auto& apl = player->precombat_action_list;
+
+        auto it = range::find( apl, use_action );
+        if ( it == apl.end() )
+        {
+          sim->print_debug(
+              "WARNING: Precombat /use_item for Algethar Puzzle Box exists but not found in precombat APL!" );
+          return;
+        }
+
+        cdgrp->start( 1_ms );  // tap the shared group cd so we can get accurate action_ready() checks
+
+        // add cast time or gcd for any following precombat action
+        std::for_each( it + 1, apl.end(), [ &time, this ]( action_t* a ) {
+          if ( a->action_ready() )
+          {
+            timespan_t delta =
+                std::max( std::max( a->base_execute_time, a->trigger_gcd ) * a->composite_haste(), a->min_gcd );
+            sim->print_debug( "PRECOMBAT: Algethar Puzzle Box precast timing pushed by {} for {}", delta,
+                              a->name() );
+            time += delta;
+
+            return a->harmful;  // stop processing after first valid harmful spell
+          }
+          return false;
+        } );
+      }
+      else if ( time < 2_s )  // If APL variable can't set to less than cast time
+      {
+        time = 2_s;
+      }
+
+      // how long you cast for
+      auto cast = 2_s;
+      // total duration of the buff
+      auto total = buff->buff_duration();
+      // actual duration of the buff you'll get in combat
+      auto actual = total + cast - time;
+      // cooldown on effect/trinket at start of combat
+      auto cd_dur = cooldown->duration + cast - time;
+      // shared cooldown at start of combat
+      auto cdgrp_dur = std::max( 0_ms, effect->cooldown_group_duration() + cast - time );
+
+      sim->print_debug(
+          "PRECOMBAT: Algethar Puzzle Box started {}s before combat via {}, {}s in-combat buff",
+          time, use_action ? "APL" : "DRAGONFLIGHT_OPT", actual );
+
+      buff->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, actual );
+
+      if ( use_action )  // from the apl, so cooldowns will be started by use_item_t. adjust. we are still in precombat.
+      {
+        make_event( *sim, [ this, cast, time, cdgrp ] {  // make an event so we adjust after cooldowns are started
+          cooldown->adjust( cast - time );
+
+          if ( use_action )
+            use_action->cooldown->adjust( cast - time );
+
+          cdgrp->adjust( cast - time );
+        } );
+      }
+      else  // via bfa. option override, start cooldowns. we are in-combat.
+      {
+        cooldown->start( cd_dur );
+
+        if ( use_action )
+          use_action->cooldown->start( cd_dur );
+
+        if ( cdgrp_dur > 0_ms )
+          cdgrp->start( cdgrp_dur );
+      }
+    }
+
+    void execute() override
+    {
+      proc_spell_t::execute();
+
+      if ( !player->in_combat )  // if precombat...
+      {
+        if ( use_action )  // ...and use_item exists in the precombat apl
+        {
+          precombat_buff();
+        }
+      }
     }
   };
-  auto action = create_proc_action<solved_the_puzzle_t>( "solved_the_puzzle", effect );
-  action->use_off_gcd = true;
+
+  auto buff_spell = effect.player->find_spell( 383781 );
+  buff_t* buff    = create_buff<stat_buff_t>( effect.player, buff_spell )
+             ->add_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect.item ) );
+  buff->set_default_value( effect.driver()->effectN( 1 ).average( effect.item ) );
+
+  auto action           = new solved_the_puzzle_t( effect, buff );
+  action->use_off_gcd   = true;
   effect.execute_action = action;
 }
 
@@ -2634,8 +2831,18 @@ void seasoned_hunters_trophy( special_effect_t& effect )
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
-  // TODO: implement heal
-
+  // TODO: currently whether the proc is damage or heal seems arbitrarily based on the spell that proc'd it, with no
+  // discernable pattern as of yet.
+  // * white melee hits will always proc damage
+  // * white ranged hit will not proc anything
+  // * heals will always proc heal
+  // * yellow attacks and spells varies depending on the spell that procs it. some abilities always proc heal, others
+  // always proc damage, yet others almost always proc only one type but have exceptions where it procs the other for
+  // unknown reason.
+  //
+  // For now we err on the side of undersimming and disable all procs except for white hits. If this is not fixed by the
+  // time it is available with raid launch, each spec will need to explicitly determine whether an ability will execute
+  // the damage or heal on proc via effect_callback_t::register_callback_execute_function() to driver id 396442.
   auto amount = effect.driver()->effectN( 2 ).average( effect.item );
 
   effect.trigger_spell_id = effect.driver()->effectN( 2 ).trigger_spell_id();
@@ -2643,12 +2850,21 @@ void bronzed_grip_wrappings( special_effect_t& effect )
   effect.discharge_amount = amount;
 
   new dbc_proc_callback_t( effect.player, effect );
+
+  effect.player->callbacks.register_callback_execute_function(
+      effect.driver()->id(), []( const dbc_proc_callback_t* cb, action_t* a, action_state_t* s ) {
+        assert( cb->proc_action );
+        if ( !a->special )
+          cb->proc_action->execute_on_target( s->target );
+      } );
 }
 
 void fang_adornments( special_effect_t& effect )
 {
   effect.school = effect.driver()->get_school_type();
   effect.discharge_amount = effect.driver()->effectN( 1 ).average( effect.item );
+  effect.override_result_es_mask |= RESULT_CRIT_MASK;
+  effect.result_es_mask &= ~RESULT_CRIT_MASK;
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -2790,8 +3006,7 @@ void assembly_scholars_loop( special_effect_t& effect )
 void blue_silken_lining( special_effect_t& effect )
 {
   auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 387336 ) );
-  buff->manual_stats_added = false;
-  buff->add_stat( STAT_MASTERY_RATING, effect.driver()->effectN( 1 ).average( effect.item ) );
+  buff->set_stat( STAT_MASTERY_RATING, effect.driver()->effectN( 1 ).average( effect.item ) );
   buff->set_max_stack( 2 );
 
   // TODO: implement losing buff when hp < 90%
@@ -2938,6 +3153,7 @@ void elemental_lariat( special_effect_t& effect )
 
   effect.player->callbacks.register_callback_execute_function(
       effect.driver()->id(), [ buffs ]( const dbc_proc_callback_t* cb, action_t*, action_state_t* ) {
+        range::for_each( buffs, []( buff_t* b ) { b->expire(); } );
         buffs[ cb->rng().range( buffs.size() ) ]->trigger();
       } );
 }
@@ -2987,7 +3203,7 @@ void broodkeepers_blaze(special_effect_t& effect)
 
     void trigger( action_t* a, action_state_t* s ) override
     {
-      if ( a->get_school() == SCHOOL_FIRE )
+      if ( dbc::is_school( a->get_school(), SCHOOL_FIRE ) )
       {
         dbc_proc_callback_t::trigger( a , s );
       }
@@ -3008,6 +3224,183 @@ void amice_of_the_blue( special_effect_t& effect )
   effect.execute_action = damage;
   new dbc_proc_callback_t( effect.player, effect );
 }
+
+void rallied_to_victory( special_effect_t& effect )
+{
+  effect.custom_buff = create_buff<stat_buff_t>(effect.player, effect.trigger())
+    ->add_stat(STAT_VERSATILITY_RATING, effect.driver()->effectN(1).average(effect.item));
+
+  new dbc_proc_callback_t(effect.player, effect);
+}
+
+void deep_chill( special_effect_t& effect )
+{
+  effect.trigger_spell_id = 381006;
+  effect.discharge_amount = effect.driver()->effectN(3).average(effect.item) * toxified_mul(effect.player);
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+void potent_venom( special_effect_t& effect )
+{
+  double mult = toxified_mul(effect.player);
+  double gain = effect.driver()->effectN(3).average(effect.item) * mult;
+  double loss = abs(effect.driver()->effectN(2).average(effect.item)) * mult;
+
+  struct potent_venom_t : public buff_t
+  {
+    stat_e gain = STAT_NONE;
+    stat_e loss = STAT_NONE;
+
+    potent_venom_t(player_t* p, util::string_view name, const spell_data_t* spell, const special_effect_t& effect) :
+      buff_t(p, name, spell, effect.item)
+    {
+    }
+
+    void reset() override
+    {
+      buff_t::reset();
+
+      gain = STAT_NONE;
+      loss = STAT_NONE;
+    }
+  };
+  
+  auto buff = create_buff<potent_venom_t>(effect.player, effect.driver()->effectN(3).trigger(), effect);
+  buff->set_stack_change_callback( [effect, buff, gain, loss] ( buff_t*, int, int new_ )
+    {
+      static constexpr std::array<stat_e, 4> ratings = { STAT_VERSATILITY_RATING, STAT_MASTERY_RATING, STAT_HASTE_RATING, STAT_CRIT_RATING };
+      if ( new_ )
+      {
+        buff->gain = util::highest_stat(effect.player, ratings);
+        buff->loss = util::lowest_stat(effect.player, ratings);
+
+        buff->player->stat_gain(buff->gain, gain);
+        buff->player->stat_loss(buff->loss, loss);
+      }
+      else
+      {
+        buff->player->stat_loss(buff->gain, gain);
+        buff->player->stat_gain(buff->loss, loss);
+      }
+    } );
+  effect.custom_buff = buff;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Allied Wristguards of Companionship
+// 395959 Driver
+// 395965 Buff
+void allied_wristguards_of_companionship( special_effect_t& effect )
+{
+  auto buff = create_buff<stat_buff_t>( effect.player, effect.trigger() );
+  buff->add_stat( STAT_VERSATILITY_RATING, effect.driver()->effectN( 1 ).average( effect.item ) );
+
+  timespan_t period = effect.driver()->effectN( 1 ).period();
+
+  effect.player->register_combat_begin( [ buff, period ]( player_t* p ) {
+    int allies = 1 + p->sim->dragonflight_opts.allied_wristguards_allies;
+
+    buff->trigger( p->sim->rng().range( 1, allies ) );
+
+    make_repeating_event( p->sim, period, [ buff, p, allies ]() {
+      if ( p->rng().roll( p->sim->dragonflight_opts.allied_wristguards_ally_leave_chance ) )
+      {
+        buff->expire();
+        buff->trigger( p->sim->rng().range( 1, allies ) );
+      }
+      else if ( buff->check() < allies )
+      {
+        buff->expire();
+        buff->trigger( allies );
+      }
+      else if ( buff->check() == allies )
+      {
+        return;
+      }
+    } );
+  } );
+}
+
+// Allied Chestplate of Generosity
+// 378134 Driver
+// 378139 Buff 
+// TODO: Potentially model allies recieving the buff as well? 
+void allied_chestplate_of_generosity(special_effect_t& effect)
+{
+  auto buff = create_buff<stat_buff_t>( effect.player, effect.trigger() );
+  buff -> set_default_value( effect.driver() -> effectN( 1 ).average( effect.item ) );
+
+  effect.custom_buff = buff;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// 395601 Driver
+// 395603 Buff
+void hood_of_surging_time( special_effect_t& effect )
+{
+  if ( unique_gear::create_fallback_buffs( effect, { "prepared_time" } ) )
+    return;
+
+  struct hood_of_surging_time_cb_t : public dbc_proc_callback_t
+  {
+    std::vector<int> target_list;
+
+    hood_of_surging_time_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e ), target_list()
+    {
+    }
+
+    void execute( action_t* a, action_state_t* s ) override
+    {
+      if ( range::contains( target_list, s->target->actor_spawn_index ) )
+        return;
+
+      dbc_proc_callback_t::execute( a, s );
+      target_list.push_back( s->target->actor_spawn_index );
+    }
+
+    void reset() override
+    {
+      dbc_proc_callback_t::reset();
+      target_list.clear();
+    }
+  };
+
+  auto buff = buff_t::find( effect.player, "prepared_time" );
+  if ( !buff )
+  {
+    buff =
+        create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 395603 ) )
+            ->add_stat( STAT_HASTE_RATING, effect.player->find_spell( 395603 )->effectN( 1 ).average( effect.item ) );
+  }
+
+  effect.custom_buff = buff;
+
+  // TODO: Check if this procs off of periodic, First Strike did not
+  effect.proc_flags_ = effect.proc_flags() & ~PF_PERIODIC;
+
+  // The effect procs when damage actually happens.
+  effect.proc_flags2_ = PF2_ALL_HIT;
+
+  new hood_of_surging_time_cb_t( effect );
+
+  // Create repeating combat even to easier simulate increased uptime on encounters where you can get first strike procs
+  // while contuining your single target rotation
+  effect.player->register_combat_begin( [ buff ]( player_t* ) {
+    if ( buff->sim->dragonflight_opts.hood_of_surging_time_chance > 0.0 &&
+         buff->sim->dragonflight_opts.hood_of_surging_time_period > 0_s &&
+         buff->sim->dragonflight_opts.hood_of_surging_time_stacks > 0 )
+    {
+      make_repeating_event( buff->sim, buff->sim->dragonflight_opts.hood_of_surging_time_period, [ buff ] {
+        if ( buff->rng().roll( buff->sim->dragonflight_opts.hood_of_surging_time_chance ) )
+          buff->trigger( buff->sim->dragonflight_opts.hood_of_surging_time_stacks );
+      } );
+    }
+  } );
+}
+
 }  // namespace items
 
 namespace sets
@@ -3031,6 +3424,100 @@ void playful_spirits_fur( special_effect_t& effect )
         effect.driver()->effectN( 1 ).average( effect.item );
   }
 }
+
+void horizon_striders_garments( special_effect_t& effect )
+{
+  if ( !effect.player->sets->has_set_bonus( effect.player->specialization(), T29_HORIZON_STRIDERS_GARMENTS, B2 ) )
+    return;
+
+  auto set_driver_id = effect.player->sets->set( effect.player->specialization(), T29_HORIZON_STRIDERS_GARMENTS, B2 )->id();
+
+  if (effect.driver()->id() == set_driver_id)
+  {
+    effect.proc_flags2_ = PF2_CRIT;
+
+    new dbc_proc_callback_t(effect.player, effect);
+  }
+  else
+  {
+    auto buff = debug_cast<stat_buff_t*>(buff_t::find(effect.player, effect.name()));
+    if (!buff)
+    {
+      buff = create_buff<stat_buff_t>(effect.player, effect.player->find_spell(377143));
+    }
+    buff->add_stat(STAT_HASTE_RATING, effect.driver()->effectN(1).average(effect.item));
+    auto driver = unique_gear::find_special_effect(effect.player, set_driver_id);
+    driver->custom_buff = buff;
+  }
+}
+
+// Damage buff - 388061
+// TODO: Healing buff - 388064
+void azureweave_vestments( special_effect_t& effect )
+{
+  if ( !effect.player->sets->has_set_bonus( effect.player->specialization(), T29_AZUREWEAVE_VESTMENTS, B2 ) )
+    return;
+
+  auto set_driver_id = effect.player->sets->set( effect.player->specialization(), T29_AZUREWEAVE_VESTMENTS, B2 )->id();
+
+  if ( effect.driver()->id() == set_driver_id )
+  {
+    // effect.proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE;
+
+    new dbc_proc_callback_t( effect.player, effect );
+  }
+  else
+  {
+    auto buff = buff_t::find( effect.player, effect.name() );
+    if ( !buff )
+    {
+      buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 388061 ) )
+                 ->add_stat( STAT_INTELLECT, effect.driver()->effectN( 1 ).average( effect.item ) );
+    }
+    auto driver         = unique_gear::find_special_effect( effect.player, set_driver_id );
+    driver->custom_buff = buff;
+  }
+}
+
+// building stacks - 387141 (moment_of_time)
+// haste - 387142 (unleashed_time)
+void woven_chronocloth( special_effect_t& effect )
+{
+  if ( !effect.player->sets->has_set_bonus( effect.player->specialization(), T29_WOVEN_CHRONOCLOTH, B2 ) )
+    return;
+
+  auto set_driver_id = effect.player->sets->set( effect.player->specialization(), T29_WOVEN_CHRONOCLOTH, B2 )->id();
+
+  if ( effect.driver()->id() == set_driver_id )
+  {
+    new dbc_proc_callback_t( effect.player, effect );
+  }
+  else
+  {
+    auto haste_buff = buff_t::find( effect.player, "unleashed_time" );
+    if ( !haste_buff )
+    {
+      haste_buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 387142 ) )
+                       ->add_stat( STAT_HASTE_RATING, effect.driver()->effectN( 1 ).average( effect.item ) );
+    }
+
+    auto buff = buff_t::find( effect.player, effect.name() );
+    if ( !buff )
+    {
+      buff = create_buff<buff_t>( effect.player, effect.player->find_spell( 387141 ) )
+                 ->set_expire_at_max_stack( true )
+                 ->set_stack_change_callback( [ haste_buff ]( buff_t* b, int, int new_ ) {
+                   if ( b->at_max_stacks() )
+                   {
+                     haste_buff->trigger();
+                   }
+                 } );
+    }
+    auto driver         = unique_gear::find_special_effect( effect.player, set_driver_id );
+    driver->custom_buff = buff;
+  }
+}
+
 }  // namespace sets
 
 void register_special_effects()
@@ -3070,6 +3557,7 @@ void register_special_effects()
 
 
   // Trinkets
+  register_special_effect( 384636, items::consume_pods );                            // burgeoning seed
   register_special_effect( 376636, items::idol_of_the_aspects( "neltharite" ) );     // idol of the earth warder
   register_special_effect( 376638, items::idol_of_the_aspects( "ysemerald" ) );      // idol of the dreamer
   register_special_effect( 376640, items::idol_of_the_aspects( "malygite" ) );       // idol of the spellweaver
@@ -3087,6 +3575,7 @@ void register_special_effects()
   register_special_effect( 381471, items::erupting_spear_fragment );
   register_special_effect( 383920, items::furious_ragefeather );
   register_special_effect( 388603, items::idol_of_pure_decay );
+  register_special_effect( 384191, items::shikaari_huntress_arrowhead );
   register_special_effect( 377466, items::spiteful_storm );
   register_special_effect( 381768, items::spoils_of_neltharus, true );
   register_special_effect( 375844, items::sustaining_alchemist_stone );
@@ -3101,7 +3590,7 @@ void register_special_effects()
   register_special_effect( 377463, items::manic_grieftorch );
   register_special_effect( 377457, items::alltotem_of_the_master );
   register_special_effect( 388559, items::tome_of_unstable_power );
-  register_special_effect( 383781, items::alegethar_puzzle_box );
+  register_special_effect( 383781, items::algethar_puzzle_box );
   register_special_effect( 382119, items::frenzying_signoll_flare );
   register_special_effect( 386175, items::idol_of_trampling_hooves );
   register_special_effect( 386692, items::dragon_games_equipment);
@@ -3133,11 +3622,21 @@ void register_special_effects()
   register_special_effect( 379396, items::thriving_thorns );
   register_special_effect( 394452, items::broodkeepers_blaze );
   register_special_effect( 387144, items::amice_of_the_blue );
-
+  register_special_effect( 378134, items::rallied_to_victory );
+  register_special_effect( 380717, items::deep_chill );
+  register_special_effect( 379985, items::potent_venom );
+  register_special_effect( 395959, items::allied_wristguards_of_companionship );
+  register_special_effect( 378134, items::allied_chestplate_of_generosity );
+  register_special_effect( 395601, items::hood_of_surging_time, true );
+  
   // Sets
   register_special_effect( { 393620, 393982 }, sets::playful_spirits_fur );
+  register_special_effect( { 393983, 393762 }, sets::horizon_striders_garments );
+  register_special_effect( { 393987, 393768 }, sets::azureweave_vestments );
+  register_special_effect( { 393993, 393818 }, sets::woven_chronocloth );
 
   // Disabled
+  register_special_effect( 382108, DISABLED_EFFECT );  // burgeoning seed
   register_special_effect( 382958, DISABLED_EFFECT );  // df darkmoon deck shuffler
   register_special_effect( 382913, DISABLED_EFFECT );  // bronzescale sigil (faster shuffle)
   register_special_effect( 383336, DISABLED_EFFECT );  // azurescale sigil (shuffle greatest to least)
@@ -3156,6 +3655,15 @@ void register_target_data_initializers( sim_t& sim )
   sim.register_target_data_initializer( items::skewering_cold_initializer_t() );
   sim.register_target_data_initializer( items::spiteful_storm_initializer_t() );
   sim.register_target_data_initializer( items::heavens_nemesis_initializer_t() );
+}
+
+void register_hotfixes()
+{
+  hotfix::register_effect( "Gear", "2022-12-12", "Temporarily apply elemental lariat hotfix coming with 2022-12-13 reset", 1001676 )
+    .field( "coefficient" )
+    .operation( hotfix::HOTFIX_MUL )
+    .modifier( 0.95 )
+    .verification_value( 0.4582 );
 }
 
 // check and return multiplier for toxified armor patch

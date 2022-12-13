@@ -5,37 +5,45 @@ namespace hunter_apl {
 
 std::string potion( const player_t* p )
 {
-  return ( p -> true_level >  50 ) ? "spectral_agility" :
+  return ( p -> true_level > 60 ) ? "elemental_potion_of_ultimate_power_3" : 
+         ( p -> true_level > 50 ) ? "spectral_agility" :
          ( p -> true_level >= 40 ) ? "unbridled_fury" :
          "disabled";
 }
 
 std::string flask( const player_t* p )
 {
-  return ( p -> true_level >= 51 ) ? "spectral_flask_of_power" :
+  return ( p -> true_level > 60 && p -> specialization() == HUNTER_BEAST_MASTERY ) ? "phial_of_tepid_versatility_3" :
+         ( p -> true_level > 60 && p -> specialization() == HUNTER_MARKSMANSHIP ) ? "iced_phial_of_corrupting_rage_3" :
+         ( p -> true_level > 60 && p -> specialization() == HUNTER_SURVIVAL ) ? "phial_of_static_empowerment_3" : 
+         ( p -> true_level >= 51 ) ? "spectral_flask_of_power" :
          ( p -> true_level >= 40 ) ? "greater_flask_of_the_currents" :
          "disabled";
 }
 
 std::string food( const player_t* p )
 {
-  return ( p -> true_level >= 60 ) ? "feast_of_gluttonous_hedonism" :
+  return ( p -> true_level >= 70 ) ? "fated_fortune_cookie" : 
+         ( p -> true_level >= 60 ) ? "feast_of_gluttonous_hedonism" :
          ( p -> true_level >= 45 ) ? "bountiful_captains_feast" :
          "disabled";
 }
 
 std::string rune( const player_t* p )
 {
-  return ( p -> true_level >= 60 ) ? "veiled" :
+  return ( p -> true_level >= 70 ) ? "draconic" :
+         ( p -> true_level >= 60 ) ? "veiled" :
          ( p -> true_level >= 50 ) ? "battle_scarred" :
          "disabled";
 }
 
 std::string temporary_enchant( const player_t* p )
 {
+  std::string lvl70_temp_enchant = ( p -> specialization() == HUNTER_SURVIVAL ) ? "main_hand:primal_whetstone_3" : "main_hand:completely_safe_rockets_3";
   std::string lvl60_temp_enchant = ( p -> specialization() == HUNTER_SURVIVAL ) ? "main_hand:shaded_sharpening_stone" : "main_hand:shadowcore_oil";
 
-  return ( p -> true_level >= 60 ) ? lvl60_temp_enchant :
+  return ( p -> true_level >= 70 ) ? lvl70_temp_enchant :
+         ( p -> true_level >= 60 ) ? lvl60_temp_enchant :
          "disabled";
 }
 
@@ -53,6 +61,7 @@ void beast_mastery( player_t* p )
   precombat->add_action( "food" );
   precombat->add_action( "summon_pet" );
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
+  precombat->add_action( "use_item,name=algethar_puzzle_box" );
   precombat->add_action( "steel_trap,precast_time=1.5,if=!talent.wailing_arrow&talent.steel_trap" );
 
   default_->add_action( "auto_shot" );
@@ -63,6 +72,15 @@ void beast_mastery( player_t* p )
   cds->add_action( "berserking,if=!talent.bestial_wrath|buff.bestial_wrath.up|fight_remains<16" );
   cds->add_action( "use_items,slots=trinket1,if=buff.call_of_the_wild.up|!talent.call_of_the_wild&(buff.bestial_wrath.up&(buff.bloodlust.up|target.health.pct<20))|fight_remains<31" );
   cds->add_action( "use_items,slots=trinket2,if=buff.call_of_the_wild.up|!talent.call_of_the_wild&(buff.bestial_wrath.up&(buff.bloodlust.up|target.health.pct<20))|fight_remains<31" );
+  cds->add_action( "use_item,name=manic_grieftorch,if=pet.main.buff.frenzy.remains>execute_time" );
+  cds->add_action( "use_item,name=darkmoon_deck_box_rime" );
+  cds->add_action( "use_item,name=darkmoon_deck_box_inferno" );
+  cds->add_action( "use_item,name=darkmoon_deck_box_dance" );
+  cds->add_action( "use_item,name=darkmoon_deck_box_watcher" );
+  cds->add_action( "use_item,name=decoration_of_flame" );
+  cds->add_action( "use_item,name=stormeaters_boon" );
+  cds->add_action( "use_item,name=windscar_whetstone" );
+  cds->add_action( "use_item,name=globe_of_jagged_ice" );
   cds->add_action( "blood_fury,if=buff.call_of_the_wild.up|!talent.call_of_the_wild&(buff.bestial_wrath.up&(buff.bloodlust.up|target.health.pct<20))|fight_remains<16" );
   cds->add_action( "ancestral_call,if=buff.call_of_the_wild.up|!talent.call_of_the_wild&(buff.bestial_wrath.up&(buff.bloodlust.up|target.health.pct<20))|fight_remains<16" );
   cds->add_action( "fireblood,if=buff.call_of_the_wild.up|!talent.call_of_the_wild&(buff.bestial_wrath.up&(buff.bloodlust.up|target.health.pct<20))|fight_remains<10" );
@@ -132,19 +150,21 @@ void marksmanship( player_t* p )
   precombat->add_action( "summon_pet,if=talent.kill_command|talent.beast_master" );
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "double_tap,precast_time=10" );
+  precombat->add_action( "use_item,name=algethar_puzzle_box" );
   precombat->add_action( "aimed_shot,if=active_enemies<3&(!talent.volley|active_enemies<2)", "Precast Aimed Shot on one or two targets unless we could cleave it with Volley on two targets." );
   precombat->add_action( "wailing_arrow,if=active_enemies>2|!talent.steady_focus" );
   precombat->add_action( "steady_shot,if=active_enemies>2|talent.volley&active_enemies=2", "Precast Steady Shot on two targets if we are saving Aimed Shot to cleave with Volley, otherwise on three or more targets." );
 
   default_->add_action( "auto_shot" );
-  default_->add_action( "use_items,slots=trinket1,if=!trinket.1.has_use_buff|buff.trueshot.up", "New trinket lines are under construction." );
+  default_->add_action( "use_item,name=algethar_puzzle_box,if=cooldown.trueshot.remains<2|fight_remains<22", "New trinket lines are under construction." );
+  default_->add_action( "use_items,slots=trinket1,if=!trinket.1.has_use_buff|buff.trueshot.up" );
   default_->add_action( "use_items,slots=trinket2,if=!trinket.2.has_use_buff|buff.trueshot.up" );
   default_->add_action( "use_items" );
   default_->add_action( "call_action_list,name=cds" );
   default_->add_action( "call_action_list,name=st,if=active_enemies<3|!talent.trick_shots" );
   default_->add_action( "call_action_list,name=trickshots,if=active_enemies>2" );
 
-  cds->add_action( "berserking,if=fight_remains<13" );
+  cds->add_action( "berserking,if=buff.trueshot.up|fight_remains<13" );
   cds->add_action( "blood_fury,if=buff.trueshot.up|cooldown.trueshot.remains>30|fight_remains<16" );
   cds->add_action( "ancestral_call,if=buff.trueshot.up|cooldown.trueshot.remains>30|fight_remains<16" );
   cds->add_action( "fireblood,if=buff.trueshot.up|cooldown.trueshot.remains>30|fight_remains<9" );
@@ -181,7 +201,7 @@ void marksmanship( player_t* p )
   trickshots->add_action( "death_chakram" );
   trickshots->add_action( "stampede" );
   trickshots->add_action( "wailing_arrow" );
-  trickshots->add_action( "serpent_sting,target_if=min:dot.serpent_sting.remains,if=refreshable&talent.hydras_bite" );
+  trickshots->add_action( "serpent_sting,target_if=min:dot.serpent_sting.remains,if=refreshable&talent.hydras_bite&!talent.serpentstalkers_trickery" );
   trickshots->add_action( "barrage,if=active_enemies>7" );
   trickshots->add_action( "volley" );
   trickshots->add_action( "trueshot" );
@@ -253,7 +273,7 @@ void survival( player_t* p )
   cleave->add_action( "raptor_strike,target_if=max:debuff.latent_poison.stack,if=debuff.latent_poison.stack>8" );
   cleave->add_action( "kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max&full_recharge_time<gcd" );
   cleave->add_action( "carve" );
-  cleave->add_action( "kill_shot" );
+  cleave->add_action( "kill_shot,if=!buff.coordinated_assault.up" );
   cleave->add_action( "steel_trap,if=focus+cast_regen<focus.max" );
   cleave->add_action( "serpent_sting,target_if=min:remains,if=refreshable&target.time_to_die>12&(!talent.vipers_venom|talent.hydras_bite)" );
   cleave->add_action( "mongoose_bite,target_if=min:dot.serpent_sting.remains" );
@@ -265,13 +285,14 @@ void survival( player_t* p )
   st->add_action( "kill_command,target_if=min:bloodseeker.remains,if=full_recharge_time<gcd&focus+cast_regen<focus.max&buff.deadly_duo.stack>1" );
   st->add_action( "mongoose_bite,if=buff.spearhead.remains" );
   st->add_action( "mongoose_bite,if=active_enemies=1&target.time_to_die<focus%(variable.mb_rs_cost-cast_regen)*gcd|buff.mongoose_fury.up&buff.mongoose_fury.remains<gcd" );
-  st->add_action( "kill_shot" );
+  st->add_action( "kill_shot,if=!buff.coordinated_assault.up" );
   st->add_action( "raptor_strike,if=active_enemies=1&target.time_to_die<focus%(variable.mb_rs_cost-cast_regen)*gcd" );
   st->add_action( "serpent_sting,target_if=min:remains,if=!dot.serpent_sting.ticking&target.time_to_die>7&!talent.vipers_venom" );
   st->add_action( "mongoose_bite,if=talent.alpha_predator&buff.mongoose_fury.up&buff.mongoose_fury.remains<focus%(variable.mb_rs_cost-cast_regen)*gcd" );
   st->add_action( "flanking_strike,if=focus+cast_regen<focus.max" );
+  st->add_action( "stampede" );
   st->add_action( "coordinated_assault,if=!talent.coordinated_kill&target.health.pct<20&(!buff.spearhead.remains&cooldown.spearhead.remains|!talent.spearhead)|talent.coordinated_kill&(!buff.spearhead.remains&cooldown.spearhead.remains|!talent.spearhead)" );
-  st->add_action( "wildfire_bomb,if=next_wi_bomb.pheromone&!buff.mongoose_fury.up&focus+cast_regen<focus.max-action.kill_command.cast_regen*2" );
+  st->add_action( "wildfire_bomb,if=next_wi_bomb.pheromone&!buff.mongoose_fury.up&focus+cast_regen<focus.max-action.kill_command.cast_regen*2|buff.coordinated_assault.up&focus+cast_regen<focus.max&talent.coordinated_kill.rank>1" );
   st->add_action( "kill_command,target_if=min:bloodseeker.remains,if=full_recharge_time<gcd&focus+cast_regen<focus.max" );
   st->add_action( "mongoose_bite,if=dot.shrapnel_bomb.ticking" );
   st->add_action( "serpent_sting,target_if=min:remains,if=refreshable&!talent.vipers_venom" );
@@ -280,7 +301,6 @@ void survival( player_t* p )
   st->add_action( "explosive_shot,if=talent.ranger" );
   st->add_action( "wildfire_bomb,if=full_recharge_time<gcd" );
   st->add_action( "mongoose_bite,target_if=max:debuff.latent_poison.stack,if=focus+action.kill_command.cast_regen>focus.max-10" );
-  st->add_action( "stampede" );
   st->add_action( "raptor_strike,target_if=max:debuff.latent_poison.stack" );
   st->add_action( "steel_trap" );
   st->add_action( "wildfire_bomb,if=!dot.wildfire_bomb.ticking" );

@@ -238,10 +238,6 @@ public:
       return make_mem_fn_expr( name_str, *this, &monk_action_t::is_combo_strike );
     else if ( name_str == "combo_break" )
       return make_mem_fn_expr( name_str, *this, &monk_action_t::is_combo_break );
-    else if ( name_str == "cap_energy" )
-      return make_mem_fn_expr( name_str, *this, &monk_action_t::cap_energy );
-    else if ( name_str == "tp_fill" )
-      return make_mem_fn_expr( name_str, *this, &monk_action_t::tp_fill );
     return ab::create_expression( name_str );
   }
 
@@ -341,20 +337,6 @@ public:
     return resource_by_stance;
   }
 
-  // Allow resource capping during BDB
-  bool cap_energy()
-  {
-    return bonedust_brew_zone() == bonedust_brew_zone_results_e::CAP;
-  }
-
-  // Break mastery during BDB
-  bool tp_fill()
-  {
-    auto result = bonedust_brew_zone();
-    return ( ( result == bonedust_brew_zone_results_e::TP_FILL1 ) ||
-             ( result == bonedust_brew_zone_results_e::TP_FILL2 ) );
-  }
-
   // Check if the combo ability under consideration is different from the last
   bool is_combo_strike()
   {
@@ -422,6 +404,9 @@ public:
   // Reduces Brewmaster Brew cooldowns by the time given
   void brew_cooldown_reduction( double time_reduction )
   {
+    if ( p()->specialization() != MONK_BREWMASTER )
+      return;
+
     // we need to adjust the cooldown time DOWNWARD instead of UPWARD so multiply the time_reduction by -1
     time_reduction *= -1;
 
@@ -439,138 +424,6 @@ public:
 
     if ( p()->shared.bonedust_brew && p()->shared.bonedust_brew->ok() && p()->cooldown.bonedust_brew->down() )
       p()->cooldown.bonedust_brew->adjust( timespan_t::from_seconds( time_reduction ), true );
-  }
-
-  bonedust_brew_zone_results_e bonedust_brew_zone()
-  {
-    // This function is derived from the Google collab by Tostad0ra found here
-    // https://colab.research.google.com/drive/1IlNnwzigBG_xa0VdXhiofvuy-mgJAhGa?usp=sharing
-
-    std::vector<player_t*> target_list = p()->sim->target_non_sleeping_list.data();
-
-    auto target_count     = static_cast<int>( target_list.size() );
-    auto targets_affected = 0;
-
-    if ( p()->specialization() != MONK_WINDWALKER || target_count < 2 )
-      return bonedust_brew_zone_results_e::NONE;
-
-    for ( player_t* target : target_list )
-    {
-      if ( auto td = p()->find_target_data( target ) )
-      {
-        if ( td->debuff.bonedust_brew->check() )
-          targets_affected++;
-      }
-    }
-
-    if ( targets_affected == 0 )
-      return bonedust_brew_zone_results_e::NONE;
-
-    auto haste_bonus   = 1 / p()->composite_melee_haste();
-    auto mastery_bonus = 1 + p()->composite_mastery_value();
-
-    // Delay when chaining SCK (approximately 200ms from in game testing)
-    auto player_delay = 0.2;
-
-    // Tiger Palm
-    auto tiger_palm_AP_ratio_by_aura = p()->spec.tiger_palm->effectN( 1 ).ap_coeff() *
-                                       ( 1 + p()->spec.windwalker_monk->effectN( 1 ).percent() ) *
-                                       ( 1 + p()->spec.windwalker_monk->effectN( 5 ).percent() ) *
-                                       ( 1 + p()->spec.windwalker_monk->effectN( 16 ).percent() ) *
-                                       ( 1 + p()->spec.windwalker_monk->effectN( 18 ).percent() );
-
-    // SCK
-    auto SCK_AP_ratio_by_aura = p()->spec.spinning_crane_kick->effectN( 1 ).trigger()->effectN( 1 ).ap_coeff() *
-                                // 4 ticks
-                                4 * ( 1 + p()->spec.windwalker_monk->effectN( 2 ).percent() ) *
-                                ( 1 + p()->spec.windwalker_monk->effectN( 8 ).percent() ) *
-                                ( 1 + p()->spec.windwalker_monk->effectN( 22 ).percent() );
-
-    // SQRT Scaling
-    if ( target_count > p()->spec.spinning_crane_kick->effectN( 1 ).base_value() )
-      SCK_AP_ratio_by_aura *= std::sqrt( p()->spec.spinning_crane_kick->effectN( 1 ).base_value() /
-                                         std::min<int>( p()->sim->max_aoe_enemies, target_count ) );
-
-    SCK_AP_ratio_by_aura *= p()->sck_modifier();
-
-    auto SCK_dmg_total = ( target_count * SCK_AP_ratio_by_aura );
-    auto tp_over_sck   = tiger_palm_AP_ratio_by_aura / SCK_dmg_total;
-
-    // Damage amplifiers
-
-    auto total_damage_amplifier = 1 + p()->composite_damage_versatility();
-
-    if ( p()->buff.invoke_xuen->check() )
-    {
-      // Tiger Lightning
-      total_damage_amplifier *= ( 1 + p()->talent.windwalker.empowered_tiger_lightning->effectN( 2 ).percent() );
-    }
-
-    if ( p()->buff.storm_earth_and_fire->check() )
-      // Base 135% from SEF
-      total_damage_amplifier *= ( 1 + p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent() ) * 3;
-
-    total_damage_amplifier *=
-        1 + ( static_cast<double>( targets_affected ) / target_count );  // Delta targets affected by Bonedust Brew
-
-    // Generate a lambda to refactor these expressions for ease of use and legibility
-    // TODO:
-    // all of this could maybe be automated to recieve
-    // any combination of monk_spell_t structures but we only care about these 3 scenarios currently
-
-    struct Action
-    {
-      double idps;
-      double rdps;
-    };
-
-    auto DefineAction = [ &, this ]( auto damage, auto execution_time, auto net_chi, auto net_energy,
-                                     bool capped = false ) {
-      Action new_action;
-      auto eps = ( capped ? net_energy
-                          : net_energy + ( p()->resource_regen_per_second( RESOURCE_ENERGY ) * execution_time ) ) /
-                 execution_time;
-
-      new_action.idps = damage / execution_time;
-      new_action.rdps = new_action.idps + 0.5 * mastery_bonus * ( net_chi / execution_time ) +
-                        0.02 * mastery_bonus * ( 1 + tp_over_sck ) * eps;
-
-      return new_action;
-    };
-
-    // TP->SCK
-    Action TP_SCK = DefineAction( total_damage_amplifier * mastery_bonus * ( 1 + tp_over_sck ), 2.0, 1,
-                                  -1 * p()->spec.tiger_palm->powerN( power_e::POWER_ENERGY ).cost() );
-
-    // SCK->SCK (capped)
-    Action rSCK_cap = DefineAction( total_damage_amplifier, 1.5 / haste_bonus + player_delay, -1, 0, true );
-
-    // SCK->SCK (uncapped)
-    Action rSCK_unc = DefineAction( total_damage_amplifier, 1.5 / haste_bonus + player_delay, -1, 0 );
-
-    if ( rSCK_unc.rdps > TP_SCK.rdps )
-    {
-      auto regen      = p()->resource_regen_per_second( RESOURCE_ENERGY ) * 2;
-      auto N_oc_expr  = ( 1 - 2 * regen ) / ( 1.5 + haste_bonus * player_delay ) / ( regen / haste_bonus );
-      auto w_oc_expr  = 1 / ( 1 + N_oc_expr );
-      auto rdps_nocap = w_oc_expr * TP_SCK.rdps + ( 1 - w_oc_expr ) * rSCK_unc.rdps;
-
-      // Purple
-      if ( rSCK_cap.rdps > rdps_nocap )
-        return bonedust_brew_zone_results_e::CAP;
-
-      // Red
-      return bonedust_brew_zone_results_e::NO_CAP;
-    }
-    else
-    {
-      // Blue
-      if ( rSCK_unc.idps < TP_SCK.idps )
-        return bonedust_brew_zone_results_e::TP_FILL1;
-
-      // Green
-      return bonedust_brew_zone_results_e::TP_FILL2;
-    }
   }
 
   void trigger_shuffle( double time_extension )
@@ -611,16 +464,6 @@ public:
 
       p()->cooldown.invoke_niuzao->adjust( p()->talent.brewmaster.walk_with_the_ox->effectN( 2 ).time_value(), true );
     }
-  }
-
-  bool has_covenant()
-  {
-    if ( p()->covenant.kyrian->ok() || p()->covenant.necrolord->ok() || p()->covenant.night_fae->ok() ||
-         p()->covenant.venthyr->ok() )
-    {
-      return true;
-    }
-    return false;
   }
 
   double cost() const override
@@ -777,10 +620,12 @@ public:
     {
       if ( p()->cooldown.resonant_fists->up() && p()->rng().roll( p()->talent.general.resonant_fists.spell()->proc_chance() ) )
       {
+          p()->cooldown.resonant_fists->start( p()->talent.general.resonant_fists.spell()->internal_cooldown() );
+          p()->sim->print_debug("rf procced by {}",s->action->name_str);
           p()->active_actions.resonant_fists->set_target( s->target );
           p()->active_actions.resonant_fists->execute();
           p()->proc.resonant_fists->occur();
-          p()->cooldown.resonant_fists->start( p()->talent.general.resonant_fists.spell()->internal_cooldown() );
+          p()->sim->print_debug("rf proc finished");
       }
     }
 
@@ -1257,7 +1102,7 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
 
     // These abilities are able to be used during Spinning Crane Kick
     if ( cast_during_sck )
-      usable_while_casting = p()->channeling && ( p()->channeling->id == 101546 /* Windwalker + Mistweaver */ || p()->channeling->id == 322729 /* Brewmaster */ );
+      usable_while_casting = p()->channeling && p()->channeling->id == p()->find_action_id( "spinning_crane_kick" );
 
     return monk_action_t::ready();
   }
@@ -1706,6 +1551,7 @@ struct glory_of_the_dawn_t : public monk_melee_attack_t
   {
     background                = true;
     ww_mastery                = true;
+    sef_ability               = sef_ability_e::SEF_GLORY_OF_THE_DAWN;
     //trigger_faeline_stomp   = TODO;
     //trigger_bountiful_brew  = TODO;
 
@@ -1940,6 +1786,15 @@ struct blackout_kick_totm_proc_t : public monk_melee_attack_t
     return m;
   }
 
+  double action_multiplier() const override
+  {
+    double am = monk_melee_attack_t::action_multiplier();
+
+    am *= 1 + p()->shared.shadowboxing_treads->effectN( 2 ).percent();
+
+    return am;
+  }
+
   void execute() override
   {
     monk_melee_attack_t::execute();
@@ -1956,11 +1811,16 @@ struct blackout_kick_totm_proc_t : public monk_melee_attack_t
         p()->resource_gain( RESOURCE_MANA, ( p()->resources.max[RESOURCE_MANA] * p()->passives.spirit_of_the_crane->effectN( 1 ).percent() ),
             p()->gain.spirit_of_the_crane );
 
-    if ( p()->talent.brewmaster.staggering_strikes->ok() )
+    // The initial hit along with each individual TotM hits has a chance to reset the cooldown
+    auto totmResetChance = p()->shared.teachings_of_the_monastery->effectN( 1 ).percent();
+
+    if ( p()->specialization() == MONK_MISTWEAVER )
+        totmResetChance += p()->spec.mistweaver_monk->effectN( 21 ).percent();
+
+    if ( rng().roll( totmResetChance ) )
     {
-        auto ap = s->composite_attack_power();
-        auto amount_cleared = p()->partial_clear_stagger_amount( ap * p()->talent.brewmaster.staggering_strikes->effectN( 2 ).percent() );
-        p()->sample_datas.staggering_strikes_cleared->add( amount_cleared );
+        p()->cooldown.rising_sun_kick->reset( true );
+        p()->proc.rsk_reset_totm->occur();
     }
 
     p()->trigger_mark_of_the_crane( s );
@@ -2135,8 +1995,13 @@ struct blackout_kick_t : public monk_melee_attack_t
         for ( int i = 0; i < stacks; i++ )
             bok_totm_proc->execute();
 
-        // Each initial hit from blackout kick has an individual chance to reset
-        if ( rng().roll( p()->shared.teachings_of_the_monastery->effectN( 1 ).percent() ) )
+        // The initial hit along with each individual TotM hits has a chance to reset the cooldown
+        auto totmResetChance = p()->shared.teachings_of_the_monastery->effectN( 1 ).percent();
+
+        if ( p()->specialization() == MONK_MISTWEAVER )
+            totmResetChance += p()->spec.mistweaver_monk->effectN( 21 ).percent();
+
+        if ( rng().roll( totmResetChance ) )
         {
             p()->cooldown.rising_sun_kick->reset( true );
             p()->proc.rsk_reset_totm->occur();
@@ -2171,6 +2036,14 @@ struct blackout_kick_t : public monk_melee_attack_t
         p()->buff.elusive_brawler->trigger( (int)p()->talent.brewmaster.elusive_footwork->effectN( 2 ).base_value() );
         p()->proc.elusive_footwork_proc->occur();
     }
+
+    if ( p()->talent.brewmaster.staggering_strikes->ok() )
+    {
+        auto ap = s->composite_attack_power();
+        auto amount_cleared =
+            p()->partial_clear_stagger_amount( ap * p()->talent.brewmaster.staggering_strikes->effectN( 2 ).percent() );
+        p()->sample_datas.staggering_strikes_cleared->add( amount_cleared );
+    }
   }
 };
 
@@ -2180,6 +2053,7 @@ struct blackout_kick_t : public monk_melee_attack_t
 
 struct rjw_tick_action_t : public monk_melee_attack_t
 {
+  double test_softcap;
   rjw_tick_action_t( util::string_view name, monk_t* p, const spell_data_t* data )
     : monk_melee_attack_t( name, p, data )
   {
@@ -2187,7 +2061,7 @@ struct rjw_tick_action_t : public monk_melee_attack_t
 
     dual = background   = true;
     aoe                 = -1;
-    reduced_aoe_targets = data->effectN( 1 ).base_value();
+    reduced_aoe_targets = p->shared.rushing_jade_wind->effectN( 1 ).base_value();
     radius              = data->effectN( 1 ).radius();
 
     // Reset some variables to ensure proper execution
@@ -2281,7 +2155,7 @@ struct sck_tick_action_t : public monk_melee_attack_t
     dual = background   = true;
     aoe                 = -1;
     reduced_aoe_targets = p->spec.spinning_crane_kick->effectN( 1 ).base_value();
-    radius              = data->effectN( 1 ).radius();
+    radius              = data->effectN( 1 ).radius_max();
 
     if ( p->talent.windwalker.widening_whirl.ok() )
         radius *= 1 + p->talent.windwalker.widening_whirl->effectN( 1 ).percent();
@@ -3193,17 +3067,17 @@ struct touch_of_death_t : public monk_melee_attack_t
     return 0;
   }
 
-  bool ready() override
+  bool target_ready( player_t* target_) override
   {
     // Deals damage equal to 35% of your maximum health against players and stronger creatures under 15% health
     if ( target->true_level > p()->true_level && p()->talent.general.improved_touch_of_death->ok() &&
          ( target->health_percentage() < p()->talent.general.improved_touch_of_death->effectN( 1 ).base_value() ) )
-      return monk_melee_attack_t::ready();
+      return monk_melee_attack_t::target_ready( target );
 
     // You exploit the enemy target's weakest point, instantly killing creatures if they have less health than you
     // Only applicable in health based sims
     if ( target->current_health() > 0 && target->current_health() <= p()->resources.max[ RESOURCE_HEALTH ] )
-      return monk_melee_attack_t::ready();
+      return monk_melee_attack_t::target_ready( target );
 
     return false;
   }
@@ -3830,10 +3704,12 @@ struct breath_of_fire_t : public monk_spell_t
 {
   dragonfire_brew_t* dragonfire;
   bool no_bof_hit;
+  bool blackout_combo;
 
   breath_of_fire_t( monk_t& p, util::string_view options_str )
     : monk_spell_t( "breath_of_fire", &p, p.talent.brewmaster.breath_of_fire ),
-      dragonfire( new dragonfire_brew_t( p ) )
+      dragonfire( new dragonfire_brew_t( p ) ),
+      blackout_combo( false )
   {
     add_option( opt_bool( "no_bof_hit", no_bof_hit ));
     parse_options( options_str );
@@ -3849,28 +3725,17 @@ struct breath_of_fire_t : public monk_spell_t
     add_child( p.active_actions.breath_of_fire );
   }
 
-  void update_ready( timespan_t ) override
-  {
-    timespan_t cd = cooldown->duration;
-
-    // Update the cooldown if Blackout Combo is up
-    if ( p()->buff.blackout_combo->up() )
-    {
-      // Saved as 3 seconds
-      cd += ( -1 * timespan_t::from_seconds( p()->buff.blackout_combo->data().effectN( 2 ).base_value() ) );
-      p()->proc.blackout_combo_breath_of_fire->occur();
-      p()->buff.blackout_combo->expire();
-    }
-
-    monk_spell_t::update_ready( cd );
-  }
-
   double action_multiplier() const override
   {
     double am = monk_spell_t::action_multiplier();
 
     if ( no_bof_hit == true )
-      am *= 0;
+      return 0;
+
+    if ( blackout_combo )
+    {
+      am *= 1 + p()->talent.brewmaster.blackout_combo->effectN( 5 ).percent();
+    }
 
     if ( p()->talent.brewmaster.dragonfire_brew->ok() )
     {
@@ -3889,9 +3754,22 @@ struct breath_of_fire_t : public monk_spell_t
 
   void execute() override
   {
+    if ( p()->buff.blackout_combo->up() )
+    {
+      blackout_combo = true;
+      p()->proc.blackout_combo_breath_of_fire->occur();
+      p()->buff.blackout_combo->expire();
+    }
+
     monk_spell_t::execute();
 
     p()->buff.charred_passions->trigger();
+
+    if ( no_bof_hit == false && p()->talent.brewmaster.dragonfire_brew->ok() )
+    {
+      dragonfire->execute();
+      dragonfire->execute();
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -3906,16 +3784,17 @@ struct breath_of_fire_t : public monk_spell_t
     if ( no_bof_hit == false && td.debuff.keg_smash->up() )
     {
       p()->active_actions.breath_of_fire->target = s->target;
-      p()->active_actions.breath_of_fire->base_multiplier = 1 + p()->buff.blackout_combo->data().effectN( 5 ).percent();
 
       p()->active_actions.breath_of_fire->execute();
     }
 
-    if ( no_bof_hit == false && p()->talent.brewmaster.dragonfire_brew->ok() )
-    {
-      for ( int i = 0; i < (int)p()->talent.brewmaster.dragonfire_brew->effectN( 1 ).base_value(); i++ )
-        dragonfire->execute();
-    }
+    // if ( no_bof_hit == false && p()->talent.brewmaster.dragonfire_brew->ok() )
+    // {
+    //   dragonfire->execute();
+    //   dragonfire->execute();
+    //   // for ( int i = 0; i < (int)p()->talent.brewmaster.dragonfire_brew->effectN( 1 ).base_value(); i++ )
+    //   //   dragonfire->execute();
+    // }
   }
 };
 
@@ -3990,6 +3869,7 @@ struct exploding_keg_t : public monk_spell_t
     aoe             = -1;
     radius          = data().effectN( 1 ).radius();
     range           = data().max_range();
+    gcd_type        = gcd_haste_type::NONE;
 
     add_child( p.active_actions.exploding_keg );
   }
@@ -4772,6 +4652,7 @@ struct bonedust_brew_t : public monk_spell_t
       : monk_spell_t( "bonedust_brew", &p, p.shared.bonedust_brew )
   {
     parse_options( options_str );
+    radius                      = data().effectN( 1 ).radius();
     may_combo_strike            = true;
     harmful                     = false;
     aoe                         = -1;
@@ -4783,6 +4664,7 @@ struct bonedust_brew_t : public monk_spell_t
 
     if ( p.talent.windwalker.dust_in_the_wind->ok() )
       radius *= 1 + p.talent.windwalker.dust_in_the_wind->effectN( 1 ).percent();
+
   }
 
   void execute() override
@@ -8190,26 +8072,19 @@ void monk_t::bonedust_brew_assessor(action_state_t* s)
         break; // Until whitelist is populated for 10.0 let spells that aren't blacklisted pass through
     }
 
-    double proc_chance = 0;
-    double percent = 0;
-
-    auto bonedust_brew = shared.bonedust_brew;
-    if ( bonedust_brew && bonedust_brew->ok() )
+    if ( shared.bonedust_brew->ok() )
     {
-      proc_chance = bonedust_brew->proc_chance();
-      percent     = bonedust_brew->effectN( 1 ).percent();
-    }
+      if ( rng().roll( shared.bonedust_brew->proc_chance() ) )
+      {
+        double damage = s->result_amount * shared.bonedust_brew->effectN( 1 ).percent();
 
-    if ( rng().roll( proc_chance ) )
-    {
-      double damage = s->result_amount * percent;
+        damage *= 1 + shared.attenuation->effectN( 1 ).percent();
 
-      damage *= 1 + shared.attenuation->effectN( 1 ).percent();
-
-      active_actions.bonedust_brew_dmg->base_dd_min = damage;
-      active_actions.bonedust_brew_dmg->base_dd_max = damage;
-      active_actions.bonedust_brew_dmg->target = s->target;
-      active_actions.bonedust_brew_dmg->execute();
+        active_actions.bonedust_brew_dmg->base_dd_min = damage;
+        active_actions.bonedust_brew_dmg->base_dd_max = damage;
+        active_actions.bonedust_brew_dmg->target = s->target;
+        active_actions.bonedust_brew_dmg->execute();
+      }
     }
 }
 
@@ -8327,21 +8202,24 @@ double shared_composite_haste_modifiers( const monk_t& p, double h )
 
 // Reduces Brewmaster Brew cooldowns by the time given
 void monk_t::brew_cooldown_reduction( double time_reduction )
-  {
-    // we need to adjust the cooldown time DOWNWARD instead of UPWARD so multiply the time_reduction by -1
-    time_reduction *= -1;
+{
+  if ( specialization() != MONK_BREWMASTER )
+    return;
 
-    cooldown.purifying_brew->adjust( timespan_t::from_seconds( time_reduction ), true );
+  // we need to adjust the cooldown time DOWNWARD instead of UPWARD so multiply the time_reduction by -1
+  time_reduction *= -1;
 
-    cooldown.celestial_brew->adjust( timespan_t::from_seconds( time_reduction ), true );
+  cooldown.purifying_brew->adjust( timespan_t::from_seconds( time_reduction ), true );
 
-    cooldown.fortifying_brew->adjust( timespan_t::from_seconds( time_reduction ), true );
+  cooldown.celestial_brew->adjust( timespan_t::from_seconds( time_reduction ), true );
 
-    cooldown.black_ox_brew->adjust( timespan_t::from_seconds( time_reduction ), true );
+  cooldown.fortifying_brew->adjust( timespan_t::from_seconds( time_reduction ), true );
 
-    cooldown.bonedust_brew->adjust( timespan_t::from_seconds( time_reduction ), true );
+  cooldown.black_ox_brew->adjust( timespan_t::from_seconds( time_reduction ), true );
 
-  }
+  cooldown.bonedust_brew->adjust( timespan_t::from_seconds( time_reduction ), true );
+
+}
 
 // monk_t::composite_spell_haste =========================================
 
@@ -8849,8 +8727,9 @@ void monk_t::combat_begin()
       sim->print_debug( "Combat starting chi has been set to {}", resources.current[RESOURCE_CHI] );
     }
 
-    make_repeating_event( sim, talent.windwalker.power_strikes->effectN( 2 ).period(),
-                            [ this ]() { buff.power_strikes->trigger(); } );
+    if ( talent.windwalker.power_strikes->ok() )
+        make_repeating_event( sim, talent.windwalker.power_strikes->effectN( 2 ).period(),
+                                [ this ]() { buff.power_strikes->trigger(); } );
   }
 
   // Melee Squirm

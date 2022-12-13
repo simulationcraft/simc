@@ -126,6 +126,7 @@ void affliction( player_t* p )
   aoe->add_action( "seed_of_corruption,if=talent.sow_the_seeds" );
   aoe->add_action( "malefic_rapture" );
   aoe->add_action( "drain_life,if=(buff.soul_rot.up|!talent.soul_rot)&buff.inevitable_demise.stack>10" );
+  aoe->add_action( "summon_soulkeeper,if=buff.tormented_soul.stack=10" );
   aoe->add_action( "siphon_life,target_if=remains<5,if=active_dot.siphon_life<3" );
   aoe->add_action( "drain_soul,interrupt_global=1" );
   aoe->add_action( "shadow_bolt" );
@@ -162,6 +163,7 @@ void demonology( player_t* p )
   default_->add_action( "call_action_list,name=tyrant,if=talent.summon_demonic_tyrant&cooldown.summon_demonic_tyrant.remains_expected<=variable.tyrant_prep_start" );
   default_->add_action( "nether_portal,if=!talent.summon_demonic_tyrant&soul_shard>2" );
   default_->add_action( "call_dreadstalkers,if=cooldown.summon_demonic_tyrant.remains_expected>cooldown+variable.tyrant_prep_start" );
+  default_->add_action( "call_dreadstalkers,if=!talent.summon_demonic_tyrant" );
   default_->add_action( "grimoire_felguard,if=!talent.summon_demonic_tyrant" );
   default_->add_action( "summon_vilefiend,if=!talent.summon_demonic_tyrant|cooldown.summon_demonic_tyrant.remains_expected>cooldown+variable.tyrant_prep_start" );
   default_->add_action( "call_action_list,name=ogcd,if=!talent.summon_demonic_tyrant" );
@@ -171,6 +173,7 @@ void demonology( player_t* p )
   default_->add_action( "bilescourge_bombers,if=!pet.demonic_tyrant.active" );
   default_->add_action( "power_siphon" );
   default_->add_action( "implosion,if=active_enemies>2&buff.wild_imps.stack>=6" );
+  default_->add_action( "summon_soulkeeper,if=active_enemies>1&buff.tormented_soul.stack=10" );
   default_->add_action( "shadow_bolt,if=talent.fel_covenant&buff.fel_covenant.remains<4" );
   default_->add_action( "demonbolt,if=buff.demonic_core.up&soul_shard<4" );
   default_->add_action( "hand_of_guldan,if=soul_shard>2" );
