@@ -3663,7 +3663,7 @@ void register_hotfixes()
     .field( "coefficient" )
     .operation( hotfix::HOTFIX_MUL )
     .modifier( 0.95 )
-    .verification_value( 0.482408 );
+    .verification_value( 0.4582 );
 }
 
 // check and return multiplier for toxified armor patch
