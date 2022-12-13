@@ -462,10 +462,9 @@ void wafting_devotion( special_effect_t& effect )
   if ( buff == nullptr )
   {
     buff = create_buff<stat_buff_t>( effect.player, buff_name, new_trigger );
-    buff->manual_stats_added = false;
   }
   
-  buff->add_stat( STAT_HASTE_RATING, haste )
+  buff->set_stat( STAT_HASTE_RATING, haste )
       ->add_stat( STAT_SPEED_RATING, speed );
   
   effect.name_str = buff_name;
@@ -690,8 +689,7 @@ custom_cb_t idol_of_the_aspects( std::string_view type )
 
     auto val = effect.driver()->effectN( 3 ).average( effect.item ) / 4;
     auto gift = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 376643 ) );
-    gift->manual_stats_added = false;
-    gift->add_stat( STAT_CRIT_RATING, val )
+    gift->set_stat( STAT_CRIT_RATING, val )
         ->add_stat( STAT_HASTE_RATING, val )
         ->add_stat( STAT_MASTERY_RATING, val )
         ->add_stat( STAT_VERSATILITY_RATING, val );
@@ -1009,9 +1007,8 @@ void bottle_of_spiraling_winds( special_effect_t& effect )
 {
   // TODO: determine what happens on buff refresh
   auto buff = create_buff<stat_buff_t>( effect.player, effect.trigger() );
-  buff->manual_stats_added = false;
   // TODO: confirm it continues to use the driver's coeff and not the actual buff's coeff
-  buff->add_stat( STAT_AGILITY, effect.driver()->effectN( 1 ).average( effect.item ) );
+  buff->set_stat( STAT_AGILITY, effect.driver()->effectN( 1 ).average( effect.item ) );
 
   // TODO: this doesn't function in-game atm.
   /*
@@ -1159,8 +1156,7 @@ void irideus_fragment( special_effect_t& effect )
 
 
   auto buff = create_buff<stat_buff_t>( effect.player, effect.driver() );
-  buff->manual_stats_added = false;
-  buff->add_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect.item ) )
+  buff->set_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect.item ) )
       ->set_reverse( true )
       ->set_cooldown( 0_ms )
       ->set_stack_change_callback( [ cb ]( buff_t*, int old_, int new_ ) {
@@ -1185,8 +1181,7 @@ void emerald_coachs_whistle( special_effect_t& effect )
 {
   auto buff_spell = effect.player->find_spell( 383803 );
   auto buff = create_buff<stat_buff_t>( effect.player, buff_spell );
-  buff->manual_stats_added = false;
-  buff->add_stat( STAT_MASTERY_RATING, buff_spell->effectN( 1 ).average( effect.item ) );
+  buff->set_stat( STAT_MASTERY_RATING, buff_spell->effectN( 1 ).average( effect.item ) );
 
   effect.custom_buff  = buff;
 
@@ -1233,8 +1228,7 @@ void erupting_spear_fragment( special_effect_t& effect )
       base_dd_min = base_dd_max = values->effectN( 1 ).average( item );
 
       buff = create_buff<stat_buff_t>( player, "erupting_flames", player->find_spell( 381476 ) );
-      buff->manual_stats_added = false;
-      buff->add_stat( STAT_CRIT_RATING, values->effectN( 2 ).average( item ) );
+      buff->set_stat( STAT_CRIT_RATING, values->effectN( 2 ).average( item ) );
     }
 
     void impact( action_state_t* s ) override
@@ -1511,12 +1505,10 @@ void sustaining_alchemist_stone( special_effect_t& effect )
 void timebreaching_talon( special_effect_t& effect )
 {
   auto debuff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 384050 ) );
-  debuff->manual_stats_added = false;
-  debuff->add_stat( STAT_INTELLECT, effect.driver()->effectN( 1 ).average( effect.item ) );
+  debuff->set_stat( STAT_INTELLECT, effect.driver()->effectN( 1 ).average( effect.item ) );
 
   auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 382126 ) );
-  buff->manual_stats_added = false;
-  buff->add_stat( STAT_INTELLECT, effect.driver()->effectN( 2 ).average( effect.item ) )
+  buff->set_stat( STAT_INTELLECT, effect.driver()->effectN( 2 ).average( effect.item ) )
       ->set_stack_change_callback( [ debuff ]( buff_t*, int, int new_ ) {
         if ( !new_ )
           debuff->trigger();
@@ -1695,8 +1687,7 @@ void whispering_incarnate_icon( special_effect_t& effect )
 
   auto buff_data = effect.player->find_spell( buff_id );
   auto buff = create_buff<stat_buff_t>( effect.player, buff_data );
-  buff->manual_stats_added = false;
-  buff->add_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect.item ) )
+  buff->set_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect.item ) )
       ->set_constant_behavior( buff_constant_behavior::ALWAYS_CONSTANT )
       ->set_rppm( rppm_scale_e::RPPM_DISABLE );
 
@@ -1708,8 +1699,7 @@ void whispering_incarnate_icon( special_effect_t& effect )
   {
     auto proc_buff_data = effect.player->find_spell( proc_buff_id );
     auto proc_buff = create_buff<stat_buff_t>( effect.player, proc_buff_data );
-    proc_buff->manual_stats_added = false;
-    proc_buff->add_stat_from_effect( 1, effect.driver()->effectN( 2 ).average( effect.item ) );
+    proc_buff->set_stat_from_effect( 1, effect.driver()->effectN( 2 ).average( effect.item ) );
 
     effect.spell_id = buff_id;
     effect.custom_buff = proc_buff;
@@ -2210,8 +2200,7 @@ void tome_of_unstable_power( special_effect_t& effect )
   auto buff = create_buff<stat_buff_t>( effect.player, buff_spell );
 
   buff->set_duration( effect.driver()->duration() );
-  buff->manual_stats_added = false;
-  buff->add_stat_from_effect( 1, data_spell->effectN( 1 ).average( effect.item ) )
+  buff->set_stat_from_effect( 1, data_spell->effectN( 1 ).average( effect.item ) )
       ->add_stat_from_effect( 2, data_spell->effectN( 2 ).average( effect.item ) );
 
   effect.custom_buff = buff;
@@ -3007,8 +2996,7 @@ void assembly_scholars_loop( special_effect_t& effect )
 void blue_silken_lining( special_effect_t& effect )
 {
   auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 387336 ) );
-  buff->manual_stats_added = false;
-  buff->add_stat( STAT_MASTERY_RATING, effect.driver()->effectN( 1 ).average( effect.item ) );
+  buff->set_stat( STAT_MASTERY_RATING, effect.driver()->effectN( 1 ).average( effect.item ) );
   buff->set_max_stack( 2 );
 
   // TODO: implement losing buff when hp < 90%
