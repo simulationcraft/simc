@@ -1319,8 +1319,8 @@ void shikaari_huntress_arrowhead( special_effect_t& effect )
 {
   // against elite enemies, gives 10% more stats (default)
   // against normal enemies, gives 10% less stats (NYI)
-  effect.custom_buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 384193 ) )
-    ->set_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect.item ) * 1.1 );
+  effect.stat = util::translate_rating_mod( effect.trigger()->effectN( 1 ).misc_value1() );
+  effect.stat_amount = effect.trigger()->effectN( 1 ).average( effect.item ) * 1.1;
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -2652,7 +2652,7 @@ void primal_ritual_shell( special_effect_t& effect )
       effect.stat_amount = effect.driver()->effectN( 5 ).average( effect.item );
       effect.spell_id = 390899;
       effect.stat = STAT_MASTERY_RATING;
-      effect.name_str = effect.trigger()->name_cstr();
+      effect.name_str = util::tokenize_fn( effect.trigger()->name_cstr() );
     }
     else if ( util::str_compare_ci( blessing, "stone" ) )
     {
@@ -2664,7 +2664,7 @@ void primal_ritual_shell( special_effect_t& effect )
       // Flame Turtle's Blessing - Fire Damage Proc [390835]
       effect.discharge_amount = effect.driver()->effectN( 3 ).average( effect.item );
       effect.spell_id = 390835;
-      effect.name_str = effect.trigger()->name_cstr();
+      effect.name_str = util::tokenize_fn( effect.trigger()->name_cstr() );
     }
     else if ( util::str_compare_ci( blessing, "sea" ) )
     {
@@ -2828,11 +2828,11 @@ void seasoned_hunters_trophy( special_effect_t& effect )
   new seasoned_hunters_trophy_cb_t( effect, mastery, haste, crit );
 }
 
-// Gnarl's Discarded Tooth
+// Gral's Discarded Tooth
 // 374233 Driver
 // 374249 Damage Driver
 // 374250 Damage
-void gnarls_discarded_tooth( special_effect_t& effect )
+void grals_discarded_tooth( special_effect_t& effect )
 {
   auto missile = effect.trigger();
   auto trigger = missile -> effectN( 1 ).trigger();
@@ -3620,7 +3620,7 @@ void register_special_effects()
   register_special_effect( 392359, items::integrated_primal_fire );
   register_special_effect( 383817, items::bushwhackers_compass );
   register_special_effect( 392237, items::seasoned_hunters_trophy );
-  register_special_effect( 374233, items::gnarls_discarded_tooth );
+  register_special_effect( 374233, items::grals_discarded_tooth );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );  // bronzed grip wrappings embellishment
