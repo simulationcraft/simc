@@ -2330,7 +2330,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
   {
     double c = monk_melee_attack_t::cost();
 
-    if ( p()->buff.dance_of_chiji_hidden->check() )
+    if ( p()->buff.dance_of_chiji->check() )
         c += p()->passives.dance_of_chiji->effectN( 1 ).base_value();  // saved as -2
 
     if ( c < 0 )
