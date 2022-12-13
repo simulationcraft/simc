@@ -290,7 +290,7 @@ void survival( player_t* p )
   st->add_action( "flanking_strike,if=focus+cast_regen<focus.max" );
   st->add_action( "stampede" );
   st->add_action( "coordinated_assault,if=!talent.coordinated_kill&target.health.pct<20&(!buff.spearhead.remains&cooldown.spearhead.remains|!talent.spearhead)|talent.coordinated_kill&(!buff.spearhead.remains&cooldown.spearhead.remains|!talent.spearhead)" );
-  st->add_action( "wildfire_bomb,if=next_wi_bomb.pheromone&!buff.mongoose_fury.up&focus+cast_regen<focus.max-action.kill_command.cast_regen*2" );
+  st->add_action( "wildfire_bomb,if=next_wi_bomb.pheromone&!buff.mongoose_fury.up&focus+cast_regen<focus.max-action.kill_command.cast_regen*2|buff.coordinated_assault.up&focus+cast_regen<focus.max&talent.coordinated_kill.rank>1" );
   st->add_action( "kill_command,target_if=min:bloodseeker.remains,if=full_recharge_time<gcd&focus+cast_regen<focus.max" );
   st->add_action( "mongoose_bite,if=dot.shrapnel_bomb.ticking" );
   st->add_action( "serpent_sting,target_if=min:remains,if=refreshable&!talent.vipers_venom" );
