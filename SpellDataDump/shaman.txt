@@ -1,4 +1,4 @@
-SimulationCraft 1002-01 for World of Warcraft 10.0.2.46924 Live (hotfix 2022-12-11/46924)
+SimulationCraft 1002-01 for World of Warcraft 10.0.2.46924 Live (hotfix 2022-12-13/46924)
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -1116,7 +1116,7 @@ GCD              : 1.5 seconds
 Velocity         : 50 yards/sec
 Charges          : 1 (8 seconds cooldown)
 Category         : 1536: Echo of the Elements (108283 effect#1), Ascendance (114050 effect#3), Echo of the Elements (333919 effect#1)
-Affecting spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Lava Surge (77762 effects: #1, #2), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4, #11), Elemental Shaman (137040 effects: #1, #2, #15), Enhancement Shaman (137041 effects: #1, #2, #5), Maelstrom Weapon (187881 effect#1), Flames of the Forefathers (264113 effect#1), Igneous Potential (279829 effect#2), Windspeaker's Lava Resurgence (336065 effect#1), Maelstrom (343725 effect#3), Fireheart (364523 effect#2), Call of Fire (378255 effect#1), Windspeaker's Lava Resurgence (378269 effect#1), Flux Melting (381777 effect#1), Improved Flametongue Weapon (382028 effect#1), Fire and Ice (382886 effect#1), Elemental Blast (394152 effect#1), Maelstrom of Elements (394677 effect#1)
+Affecting spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Lava Surge (77762 effects: #1, #2), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4, #11), Elemental Shaman (137040 effects: #1, #2, #15), Enhancement Shaman (137041 effects: #1, #2, #5), Maelstrom Weapon (187881 effect#1), Flames of the Forefathers (264113 effect#1), Igneous Potential (279829 effect#2), Windspeaker's Lava Resurgence (336065 effect#1), Maelstrom (343725 effect#3), Fireheart (364523 effect#2), Call of Fire (378255 effect#1), Windspeaker's Lava Resurgence (378269 effect#1), Flux Melting (381777 effect#1), Improved Flametongue Weapon (382028 effect#1), Fire and Ice (382886 effect#1), Elemental Blast (394152 effect#1), Maelstrom of Elements (394677 effects: #1, #3)
 Family Flags     : 39, 44, 56
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
@@ -1643,7 +1643,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon, Off Hand
 Cooldown         : 18 seconds
-Affecting spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effects: #2, #3), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Hot Hand (215785 effects: #1, #2), Molten Weapon (224125 effects: #1, #2), Molten Assault (334033 effects: #1, #2), Primal Lava Actuators (335896 effect#1), Fire and Ice (382886 effect#1), Ashen Catalyst (390371 effect#1), Maelstrom of Elements (394677 effect#1)
+Affecting spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effects: #2, #3), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Hot Hand (215785 effects: #1, #2), Molten Weapon (224125 effects: #1, #2), Molten Assault (334033 effects: #1, #2), Primal Lava Actuators (335896 effect#1), Fire and Ice (382886 effect#1), Ashen Catalyst (390371 effect#1), Maelstrom of Elements (394677 effects: #1, #3)
 Family Flags     : 39, 56, 66, 103
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ .x...... ........ x....... 
@@ -2674,7 +2674,7 @@ Spell Level      : 50
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 180 seconds
-Affecting spells : Oath of the Far Seer (381785 effects: #2, #3)
+Affecting spells : Oath of the Far Seer (381785 effects: #2, #3), Maelstrom of Elements (394677 effect#1)
 Family Flags     : 102
 Attributes       : ........ ........ x....... .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2714,7 +2714,7 @@ GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 180 seconds
 Labels           : 2339: Static Accumulation (384411 effect#1)
-Affecting spells : Oath of the Far Seer (381785 effects: #2, #3)
+Affecting spells : Oath of the Far Seer (381785 effects: #2, #3), Maelstrom of Elements (394677 effect#1)
 Family Flags     : 102
 Attributes       : ........ ........ x....... .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2763,7 +2763,7 @@ Cooldown         : 180 seconds
 Proc Chance      : 100%
 Proc Flags       : ........ ......x. .....x.. ........ 
                  : Magic Heal, Trap Triggered
-Affecting spells : Oath of the Far Seer (381785 effects: #2, #3)
+Affecting spells : Oath of the Far Seer (381785 effects: #2, #3), Maelstrom of Elements (394677 effect#1)
 Family Flags     : 102
 Attributes       : ........ ........ x....... .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -3103,7 +3103,7 @@ GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
 Charges          : 1 (12 seconds cooldown)
 Category         : 2077: Elemental Shaman (137040 effect#10), Elemental Blast (394152 effect#2)
-Affecting spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #9, #11), Enhancement Shaman (137041 effects: #1, #2, #5, #12), Maelstrom Weapon (187881 effects: #1, #2), Molten Weapon (224125 effects: #1, #2), Icy Edge (224126 effects: #1, #2), Crackling Surge (224127 effects: #1, #2), Nature's Swiftness (378081 effects: #1, #2), Nature's Fury (381655 effect#1), Eye of the Storm (381708 effect#3), Improved Flametongue Weapon (382028 effect#1), Fire and Ice (382886 effect#1), Maelstrom of Elements (394677 effect#1)
+Affecting spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #9, #11), Enhancement Shaman (137041 effects: #1, #2, #5, #12), Maelstrom Weapon (187881 effects: #1, #2), Molten Weapon (224125 effects: #1, #2), Icy Edge (224126 effects: #1, #2), Crackling Surge (224127 effects: #1, #2), Nature's Swiftness (378081 effects: #1, #2), Nature's Fury (381655 effect#1), Eye of the Storm (381708 effect#3), Improved Flametongue Weapon (382028 effect#1), Fire and Ice (382886 effect#1), Maelstrom of Elements (394677 effects: #1, #3)
 Family Flags     : 24, 39, 56, 98, 103, 126
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4188,7 +4188,7 @@ GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear, Off Hand
 Cooldown         : 12 seconds
 Labels           : 1183: Crash Lightning (333964 effect#1)
-Affecting spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effects: #2, #3), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Crackling Surge (224127 effects: #1, #2), Storm's Eye (263795 effect#1), Crashing Storms (334308 effect#1), Nature's Fury (381655 effect#1), Maelstrom of Elements (394677 effect#1)
+Affecting spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effects: #2, #3), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Crackling Surge (224127 effects: #1, #2), Storm's Eye (263795 effect#1), Crashing Storms (334308 effect#1), Nature's Fury (381655 effect#1), Maelstrom of Elements (394677 effects: #1, #3)
 Family Flags     : 39, 56, 85, 126
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -4302,7 +4302,7 @@ Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Restoration Shaman (137039 effects: #3, #4, #18), Elemental Shaman (137040 effects: #1, #2, #14), Enhancement Shaman (137041 effects: #1, #2, #5), Maelstrom Weapon (187881 effects: #1, #2), Stormkeeper (191634 effects: #1, #2), Stormkeeper (205495 effects: #1, #3), Crackling Surge (224127 effects: #1, #2), Wind Gust (263806 effects: #1, #2), Lightning Bolt (318044 effect#1), Nature's Swiftness (378081 effects: #2, #3), Call of Thunder (378241 effect#1), Nature's Fury (381655 effect#1), Improved Lightning Bolt (381674 effect#1), Unrelenting Calamity (382685 effect#1), Stormkeeper (383009 effects: #1, #2), Maelstrom of Elements (394677 effect#1)
+Affecting spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Restoration Shaman (137039 effects: #3, #4, #18), Elemental Shaman (137040 effects: #1, #2, #14), Enhancement Shaman (137041 effects: #1, #2, #5), Maelstrom Weapon (187881 effects: #1, #2), Stormkeeper (191634 effects: #1, #2), Stormkeeper (205495 effects: #1, #3), Crackling Surge (224127 effects: #1, #2), Wind Gust (263806 effects: #1, #2), Lightning Bolt (318044 effect#1), Nature's Swiftness (378081 effects: #2, #3), Call of Thunder (378241 effect#1), Nature's Fury (381655 effect#1), Improved Lightning Bolt (381674 effect#1), Unrelenting Calamity (382685 effect#1), Stormkeeper (383009 effects: #1, #2), Maelstrom of Elements (394677 effects: #1, #3)
 Family Flags     : 0, 39, 56, 126
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4365,7 +4365,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Category         : 85
-Affecting spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Ascendance (114050 effect#2), Restoration Shaman (137039 effects: #3, #4, #7), Elemental Shaman (137040 effects: #1, #2, #12, #13), Enhancement Shaman (137041 effects: #1, #2, #5), Maelstrom Weapon (187881 effects: #1, #2), Stormkeeper (191634 effect#1), Stormkeeper (205495 effects: #1, #3), Al'Akir's Acrimony (208699 effect#1), Crackling Surge (224127 effects: #1, #2), Lightningburn (263792 effect#1), Wind Gust (263806 effects: #1, #2), Surge of Power (285514 effect#2), Tectonic Thunder (286976 effect#1), Stormkeeper (320137 effects: #1, #2), Crashing Storms (334308 effect#2), Chains of Devastation (336736 effects: #1, #2), Nature's Swiftness (378081 effects: #2, #3), Call of Thunder (378241 effect#1), Nature's Fury (381655 effect#1), Unrelenting Calamity (382685 effect#1), Stormkeeper (383009 effects: #1, #2), Maelstrom of Elements (394677 effect#1)
+Affecting spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Ascendance (114050 effect#2), Restoration Shaman (137039 effects: #3, #4, #7), Elemental Shaman (137040 effects: #1, #2, #12, #13), Enhancement Shaman (137041 effects: #1, #2, #5), Maelstrom Weapon (187881 effects: #1, #2), Stormkeeper (191634 effect#1), Stormkeeper (205495 effects: #1, #3), Al'Akir's Acrimony (208699 effect#1), Crackling Surge (224127 effects: #1, #2), Lightningburn (263792 effect#1), Wind Gust (263806 effects: #1, #2), Surge of Power (285514 effect#2), Tectonic Thunder (286976 effect#1), Stormkeeper (320137 effects: #1, #2), Crashing Storms (334308 effect#2), Chains of Devastation (336736 effects: #1, #2), Nature's Swiftness (378081 effects: #2, #3), Call of Thunder (378241 effect#1), Nature's Fury (381655 effect#1), Unrelenting Calamity (382685 effect#1), Stormkeeper (383009 effects: #1, #2), Maelstrom of Elements (394677 effects: #1, #3)
 Family Flags     : 1, 39, 56, 126
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5067,7 +5067,7 @@ Spell Type       : Melee
 Spell Level      : 1
 Range            : 5 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effects: #2, #3), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Crackling Surge (224127 effects: #1, #2), Storm's Eye (263795 effect#1), Crashing Storms (334308 effect#1), Nature's Fury (381655 effect#1), Maelstrom of Elements (394677 effect#1)
+Affecting spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effects: #2, #3), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Crackling Surge (224127 effects: #1, #2), Storm's Eye (263795 effect#1), Crashing Storms (334308 effect#1), Nature's Fury (381655 effect#1), Maelstrom of Elements (394677 effects: #1, #3)
 Triggered by     : Crash Lightning (187878)
 Family Flags     : 39, 56, 85, 126
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
@@ -5094,7 +5094,7 @@ Spell Level      : 17
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 6 seconds
-Affecting spells : Shaman Shock Range Bonus (32973 effect#1), Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #20), Enhancement Shaman (137041 effects: #1, #2, #7, #8, #14, #15), Icefury (210714 effect#2), Icy Edge (224126 effects: #1, #2), Hailstorm (334196 effect#1), Fire and Ice (382886 effect#1), Ice Strike (384357 effect#1), Maelstrom of Elements (394677 effect#1)
+Affecting spells : Shaman Shock Range Bonus (32973 effect#1), Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #20), Enhancement Shaman (137041 effects: #1, #2, #7, #8, #14, #15), Icefury (210714 effect#2), Icy Edge (224126 effects: #1, #2), Hailstorm (334196 effect#1), Fire and Ice (382886 effect#1), Ice Strike (384357 effect#1), Maelstrom of Elements (394677 effects: #1, #3)
 Family Flags     : 24, 31, 39, 56
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5196,7 +5196,7 @@ GCD              : 1.5 seconds
 Duration         : 2 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 40 seconds
-Affecting spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#3), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Molten Weapon (224125 effects: #1, #2), Fire and Ice (382886 effect#1), Legacy of the Frost Witch (384451 effects: #1, #2), Earthen Weapon (392375 effects: #1, #2), Maelstrom of Elements (394677 effect#1)
+Affecting spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#3), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Molten Weapon (224125 effects: #1, #2), Fire and Ice (382886 effect#1), Legacy of the Frost Witch (384451 effects: #1, #2), Earthen Weapon (392375 effects: #1, #2), Maelstrom of Elements (394677 effects: #1, #3)
 Family Flags     : 16, 39, 56, 58, 103, 122
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -6555,7 +6555,7 @@ Spell Type       : None
 Spell Level      : 1
 Range            : 30 yards
 Cast Time        : 2 seconds
-Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Restoration Shaman (137039 effect#18), Elemental Shaman (137040 effect#14), Enhancement Shaman (137041 effect#5), Maelstrom Weapon (187881 effects: #1, #2), Stormkeeper (191634 effects: #1, #2), Stormkeeper (205495 effects: #1, #3), Wind Gust (263806 effects: #1, #2), Lightning Bolt (318044 effect#1), Nature's Swiftness (378081 effects: #2, #3), Call of Thunder (378241 effect#1), Nature's Fury (381655 effect#1), Improved Lightning Bolt (381674 effect#1), Unrelenting Calamity (382685 effect#1), Stormkeeper (383009 effects: #1, #2), Maelstrom of Elements (394677 effect#1)
+Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Restoration Shaman (137039 effect#18), Elemental Shaman (137040 effect#14), Enhancement Shaman (137041 effect#5), Maelstrom Weapon (187881 effects: #1, #2), Stormkeeper (191634 effects: #1, #2), Stormkeeper (205495 effects: #1, #3), Wind Gust (263806 effects: #1, #2), Lightning Bolt (318044 effect#1), Nature's Swiftness (378081 effects: #2, #3), Call of Thunder (378241 effect#1), Nature's Fury (381655 effect#1), Improved Lightning Bolt (381674 effect#1), Unrelenting Calamity (382685 effect#1), Stormkeeper (383009 effects: #1, #2), Maelstrom of Elements (394677 effects: #1, #3)
 Family Flags     : 0
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9854,7 +9854,7 @@ Class            : Shaman
 School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Lava Surge (77762 effects: #1, #2), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4, #11), Elemental Shaman (137040 effects: #1, #2, #15), Enhancement Shaman (137041 effects: #1, #2, #5), Maelstrom Weapon (187881 effect#1), Molten Weapon (224125 effects: #1, #2), Flames of the Forefathers (264113 effect#1), Igneous Potential (279829 effect#2), Windspeaker's Lava Resurgence (336065 effect#1), Maelstrom (343725 effect#3), Fireheart (364523 effect#2), Call of Fire (378255 effect#1), Windspeaker's Lava Resurgence (378269 effect#1), Flux Melting (381777 effect#1), Improved Flametongue Weapon (382028 effect#1), Fire and Ice (382886 effect#1), Elemental Blast (394152 effect#1), Maelstrom of Elements (394677 effect#1)
+Affecting spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Lava Surge (77762 effects: #1, #2), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4, #11), Elemental Shaman (137040 effects: #1, #2, #15), Enhancement Shaman (137041 effects: #1, #2, #5), Maelstrom Weapon (187881 effect#1), Molten Weapon (224125 effects: #1, #2), Flames of the Forefathers (264113 effect#1), Igneous Potential (279829 effect#2), Windspeaker's Lava Resurgence (336065 effect#1), Maelstrom (343725 effect#3), Fireheart (364523 effect#2), Call of Fire (378255 effect#1), Windspeaker's Lava Resurgence (378269 effect#1), Flux Melting (381777 effect#1), Improved Flametongue Weapon (382028 effect#1), Fire and Ice (382886 effect#1), Elemental Blast (394152 effect#1), Maelstrom of Elements (394677 effects: #1, #3)
 Triggered by     : Lava Burst (51505)
 Family Flags     : 39, 44, 56, 103
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10517,7 +10517,7 @@ Spell Level      : 5
 Range            : 20 yards
 GCD              : 1.5 seconds
 Cooldown         : 45 seconds
-Affecting spells : Elemental Fury (60188 effect#1), Crackling Surge (224127 effects: #1, #2)
+Affecting spells : Elemental Fury (60188 effect#1), Crackling Surge (224127 effects: #1, #2), Maelstrom of Elements (394677 effects: #1, #3)
 Family Flags     : 82, 121, 126
 Attributes       : ........ ........ x....... ........   ........ ......x. ........ ....x... 
                  : ........ ........ ........ ......x.   ........ ........ ........ ........ 
@@ -10542,7 +10542,7 @@ Range            : 20 yards
 Duration         : 5 seconds
 Labels           : 1679: Nature's Fury (381655 effect#2)
 Mechanic         : Stun
-Affecting spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Crackling Surge (224127 effects: #1, #2)
+Affecting spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Crackling Surge (224127 effects: #1, #2), Maelstrom of Elements (394677 effects: #1, #3)
 Family Flags     : 56, 82, 121, 126
 Attributes       : ........ ........ x....... ........   ..x..... ........ ........ .....x.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11038,7 +11038,7 @@ Velocity         : 45 yards/sec
 Charges          : 1 (45 seconds cooldown)
 Category         : 1893: Continuous Waves (382046 effect#1)
 Labels           : 976
-Affecting spells : Maelstrom Weapon (187881 effect#2), Primal Maelstrom (384405 effect#1), Maelstrom of Elements (394677 effect#1)
+Affecting spells : Maelstrom Weapon (187881 effect#2), Primal Maelstrom (384405 effect#1)
 Family Flags     : 25
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11416,7 +11416,7 @@ Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 15 seconds
-Affecting spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effects: #2, #3), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Fire and Ice (382886 effect#1)
+Affecting spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effects: #2, #3), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Fire and Ice (382886 effect#1), Maelstrom of Elements (394677 effects: #1, #3)
 Family Flags     : 27, 39, 56
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11441,7 +11441,7 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Max Targets      : 6
-Affecting spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effects: #2, #3), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Molten Weapon (224125 effects: #1, #2), Fire and Ice (382886 effect#1)
+Affecting spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effects: #2, #3), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Molten Weapon (224125 effects: #1, #2), Fire and Ice (382886 effect#1), Maelstrom of Elements (394677 effects: #1, #3)
 Family Flags     : 27, 39, 56, 103
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11496,7 +11496,7 @@ Requires weapon  : One-handed Axe, One-handed Mace, Fist Weapon, Dagger
 Proc Chance      : 101%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
-Affecting spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effects: #2, #3), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Fire and Ice (382886 effect#1)
+Affecting spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effects: #2, #3), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Fire and Ice (382886 effect#1), Maelstrom of Elements (394677 effects: #1, #3)
 Family Flags     : 27, 39, 56
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -11544,7 +11544,7 @@ School           : Fire
 Spell Type       : None
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effects: #2, #3), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Fire and Ice (382886 effect#1)
+Affecting spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effects: #2, #3), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Fire and Ice (382886 effect#1), Maelstrom of Elements (394677 effects: #1, #3)
 Family Flags     : 27, 39, 56
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -11574,7 +11574,7 @@ Stacks           : 5 maximum
 Proc Chance      : 101%
 Proc Flags       : ........ ........ x....... ........ 
                  : Magic Hostile Spell
-Affecting spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effects: #2, #3), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Fire and Ice (382886 effect#1)
+Affecting spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effects: #2, #3), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Fire and Ice (382886 effect#1), Maelstrom of Elements (394677 effects: #1, #3)
 Family Flags     : 27, 39, 56
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -12836,7 +12836,7 @@ GCD              : 1.5 seconds
 Duration         : 6 seconds
 Requires weapon  : One-handed Axe, One-handed Mace, Fist Weapon
 Cooldown         : 15 seconds
-Affecting spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effects: #2, #3), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Icy Edge (224126 effects: #1, #2), Fire and Ice (382886 effect#1), Maelstrom of Elements (394677 effect#1)
+Affecting spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effects: #2, #3), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Icy Edge (224126 effects: #1, #2), Fire and Ice (382886 effect#1), Maelstrom of Elements (394677 effects: #1, #3)
 Family Flags     : 24, 39, 56, 75
 Attributes       : ....x... ........ x....... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -12990,7 +12990,7 @@ School           : Fire
 Spell Type       : None
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effects: #2, #3), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Fire and Ice (382886 effect#1)
+Affecting spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effects: #2, #3), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Fire and Ice (382886 effect#1), Maelstrom of Elements (394677 effects: #1, #3)
 Family Flags     : 27, 39, 56
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -13014,7 +13014,7 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 50
 Labels           : 1679: Nature's Fury (381655 effect#2)
-Affecting spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Crackling Surge (224127 effects: #1, #2), Oath of the Far Seer (381785 effects: #2, #3)
+Affecting spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Crackling Surge (224127 effects: #1, #2), Oath of the Far Seer (381785 effects: #2, #3), Maelstrom of Elements (394677 effect#1)
 Triggered by     : Ascendance (114051)
 Family Flags     : 39, 56, 102, 126
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13435,7 +13435,7 @@ GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
 Charges          : 1 (45 seconds cooldown)
 Category         : 1893: Continuous Waves (382046 effect#1)
-Affecting spells : Maelstrom Weapon (187881 effect#2), Primal Maelstrom (384405 effect#1), Maelstrom of Elements (394677 effect#1)
+Affecting spells : Maelstrom Weapon (187881 effect#2), Primal Maelstrom (384405 effect#1)
 Family Flags     : 25
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -16331,7 +16331,6 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 37 | Target: Self (1)
                    Affected Spells: Maelstrom Weapon (344179)
                    Family Flags: 49
-Hotfixed         : PvP Coefficient (0.6 -> 1)
 #2 (id=1030571)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.60000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Maelstrom Weapon (187881)
@@ -16361,12 +16360,10 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1016558)  : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : PvP Coefficient (0.8 -> 1)
 #2 (id=1033577)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Maelstrom Weapon (187880)
                    Family Flags: 73
-Hotfixed         : PvP Coefficient (0.6 -> 1)
 #3 (id=1045499)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Max Stacks (37)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 37 | Misc Value 2: 2446 (Label) | Target: Self (1)
                    Affected Spells (Label): Hailstorm (334196)
@@ -17314,10 +17311,16 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
 Effects          :
 #1 (id=1034576)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Lava Burst (51505), Lava Lash (60103), Elemental Blast (117014), Crash Lightning (187874), Lightning Bolt (188196), Chain Lightning (188443), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Lightning Bolt Overload (214816), Lava Burst (285452), Primordial Wave (326059), Ice Strike (342240), Primordial Wave (375982)
-                   Family Flags: 0, 1, 25, 31, 44, 50, 66, 75, 85, 98, 122
+                   Affected Spells: Lava Burst (51505), Lava Lash (60103), Ascendance (114050), Ascendance (114051), Ascendance (114052), Elemental Blast (117014), Crash Lightning (187874), Lightning Bolt (188196), Chain Lightning (188443), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Lightning Bolt Overload (214816), Lava Burst (285452), Lightning Lasso (305483), Lightning Lasso (305485), Fire Nova (333974), Fire Nova (333977), Lashing Flames (334046), Hailstorm (334195), Hailstorm (334196), Ice Strike (342240), Stormflurry (344357), Ascendance (344548)
+                   Family Flags: 0, 1, 27, 31, 44, 66, 75, 82, 85, 98, 102, 122
+Hotfixed         : Affects Spells
 #2 (id=1034577)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
+#3 (id=1045352)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Lava Burst (51505), Lava Lash (60103), Elemental Blast (117014), Crash Lightning (187874), Lightning Bolt (188196), Chain Lightning (188443), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Lightning Bolt Overload (214816), Lava Burst (285452), Lightning Lasso (305483), Lightning Lasso (305485), Fire Nova (333974), Fire Nova (333977), Lashing Flames (334046), Hailstorm (334195), Hailstorm (334196), Ice Strike (342240), Stormflurry (344357)
+                   Family Flags: 0, 1, 27, 31, 44, 66, 75, 82, 85, 98, 122
+Hotfixed         : NEW EFFECT
 Description      : $@spelldesc393691
 Tooltip          : Fire, Frost, and Nature ability damage increased by $w1% and generates $w2 additional stack of Maelstrom Weapon.
 

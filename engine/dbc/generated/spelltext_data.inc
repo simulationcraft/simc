@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.2.46924
-static const std::array<spelltext_data_t, 19194> __spelltext_data { {
+static const std::array<spelltext_data_t, 19195> __spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -16567,7 +16567,7 @@ static const std::array<spelltext_data_t, 19194> __spelltext_data { {
   { 377458, "$@spelldesc377457\r\n", "Your Armor is increased by $w3.", 0 },
   { 377459, "$@spelldesc377457", "Primal flames scorch you for $w3 Fire damage per second.", 0 },
   { 377461, "$@spelldesc377457\r\n", "Primal winds increase your Haste by $w3.", 0 },
-  { 377462, "Designate another player to bond with, becoming their Guardian for $382281d.\r\n\r\nWhile bonded, you and your ally gain $382280s1 Versatility and restore $382280s2 health per second. If you are within 15 yards of one another, these bonuses are increased. $?(a137012|a137024|a137031|a137032|a137029|a137039|a356810)[][\r\n\r\n|CFF808080Valid only for healer specializations.|R]\r\n", 0, 0 },
+  { 377462, "Designate another player to bond with, becoming their Guardian for $394457d.\r\n\r\nWhile bonded, you and your ally gain $382280s1 Versatility and restore $382280s2 health per second. If you are within 15 yards of one another, these bonuses are increased. $?(a137012|a137024|a137031|a137032|a137029|a137039|a356810)[][\r\n\r\n|CFF808080Valid only for healer specializations.|R]\r\n", 0, 0 },
   { 377463, "Channel for $d, unleashing a furious volley of flame around your target, dealing ${$394954s1*($d/$t)*(1+$@versadmg)} Fire damage to your target with a chance to strike nearby enemies for additional damage.\r\n\r\nWhenever an allied player dies, this cooldown is reduced by $s2 seconds.", 0, 0 },
   { 377464, "Let loose a dangerous current of lightning, dealing $377465s2 Nature damage to your target and $377465s3 Nature damage to yourself. Self-damage increases with your stacks of Hatred.", 0, 0 },
   { 377465, "Casting spells grants stacks of Hatred, permanently lowering this trinket's cooldown by $382419s1 second until combat ends. This effect stacks up to 180 times.\r\n\r\n", 0, 0 },
@@ -18203,7 +18203,7 @@ static const std::array<spelltext_data_t, 19194> __spelltext_data { {
   { 389694, "Sigil of Flame generates 2 additional Fury per target hit.", 0, 0 },
   { 389695, "Increases maximum health by $s1%.", 0, 0 },
   { 389696, "Reduces magic damage taken by $s1%.", 0, 0 },
-  { 389697, "Increases the duration of Sigil effects by ${$s1/1000} sec.", 0, 0 },
+  { 389697, "Increases the duration of Sigil effects by ${$s1/1000}.1 sec.", 0, 0 },
   { 389705, "You take $393009s1% reduced magic damage while Immolation Aura is active.", 0, 0 },
   { 389708, "When Fel Devastation finishes fully channeling, it refreshes $s1-$s2% of its cooldown and refunds $s3-$s4 Fury.", 0, 0 },
   { 389710, "$@spelldesc383926", 0, 0 },
@@ -19019,6 +19019,7 @@ static const std::array<spelltext_data_t, 19194> __spelltext_data { {
   { 394452, "Dealing Fire damage has a chance to ignite your enemies, burning them for an additional $s1 damage every $s2 seconds.\r\n\r\n", 0, 0 },
   { 394453, "\r\n\r\n", "Burning for 6 sec.", 0 },
   { 394455, "Dealing Fire damage has a chance to invigorate you, absorbing $s1 damage for $s2 seconds.\r\n", 0, 0 },
+  { 394457, "$@spelldesc377462\r\n", "Your Versatility is increased by $w1 and you are healed for $w2 per second.", 0 },
   { 394460, "Swear your oath to the Primalists to become Marked by Frost, increasing your Critical Strike by [medium amount]. \r\n\r\nFighting alongside allies who are Marked by Earth or Fire has a chance to grant you half of their Mark's stats for $s1 seconds.", "Critical Strike and Haste increased by $w1.", 0 },
   { 394461, "Swear your oath to the Primalists to become Marked by Frost, increasing your Critical Strike by [medium amount]. \r\n\r\nFighting alongside allies who are Marked by Earth or Fire has a chance to grant you half of their Mark's stats for $s1 seconds.", "Haste and Versatility increased by $w1.", 0 },
   { 394462, "Swear your oath to the Primalists to become Marked by Frost, increasing your Critical Strike by [medium amount]. \r\n\r\nFighting alongside allies who are Marked by Earth or Fire has a chance to grant you half of their Mark's stats for $s1 seconds.", "Critical Strike and Versatility increased by $w1.", 0 },
@@ -19197,8 +19198,10 @@ static const std::array<spelltext_data_t, 19194> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 10.0.2.46924
-static constexpr std::array<hotfix::client_hotfix_entry_t, 3> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 5> __spelltext_hotfix_data { {
+  {  377462,  0, "Designate another player to bond with, becoming their Guardian for $382281d.\r\n\r\nWhile bonded, you and your ally gain $382280s1 Versatility and restore $382280s2 health per second. If you are within 15 yards of one another, these bonuses are increased. $?(a137012|a137024|a137031|a137032|a137029|a137039|a356810)[][\r\n\r\n|CFF808080Valid only for healer specializations.|R]\r\n", "Designate another player to bond with, becoming their Guardian for $394457d.\r\n\r\nWhile bonded, you and your ally gain $382280s1 Versatility and restore $382280s2 health per second. If you are within 15 yards of one another, these bonuses are increased. $?(a137012|a137024|a137031|a137032|a137029|a137039|a356810)[][\r\n\r\n|CFF808080Valid only for healer specializations.|R]\r\n" },
   {  377544,  1, "Spells deal $s1 additional Fire damage to enemies or healing to allies.", "Spells deal $376801w1 additional Fire damage to enemies or healing to allies." },
+  {  389697,  0, "Increases the duration of Sigil effects by ${$s1/1000} sec.", "Increases the duration of Sigil effects by ${$s1/1000}.1 sec." },
   {  393648,  0, "$?s342049[Chimaera Shot][Arcane Shot] and Multi Shot critical hits cause your next Aimed Shot to cause the target to bleed for $394366s1% of damage dealt over $394371d sec.", "$?s342049[Chimaera Shot][Arcane Shot] and Multi-Shot critical hits cause your next Aimed Shot to cause the target to bleed for $394366s1% of damage dealt over $394371d sec." },
   {  393675,  0, "Judgment, Blade of Justice, and $?s383469[Radiant Decree][Wake of Ashes] damage increased by $s1%.", "Judgment, Blade of Justice, and $?a384052[Radiant Decree][Wake of Ashes] damage increased by $s1%." },
 } };

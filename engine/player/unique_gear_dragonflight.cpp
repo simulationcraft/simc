@@ -3659,11 +3659,6 @@ void register_target_data_initializers( sim_t& sim )
 
 void register_hotfixes()
 {
-  hotfix::register_effect( "Gear", "2022-12-12", "Temporarily apply elemental lariat hotfix coming with 2022-12-13 reset", 1001676 )
-    .field( "coefficient" )
-    .operation( hotfix::HOTFIX_MUL )
-    .modifier( 0.95 )
-    .verification_value( 0.4582 );
 }
 
 // check and return multiplier for toxified armor patch
