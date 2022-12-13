@@ -1551,6 +1551,7 @@ struct glory_of_the_dawn_t : public monk_melee_attack_t
   {
     background                = true;
     ww_mastery                = true;
+    sef_ability               = sef_ability_e::SEF_GLORY_OF_THE_DAWN;
     //trigger_faeline_stomp   = TODO;
     //trigger_bountiful_brew  = TODO;
 
