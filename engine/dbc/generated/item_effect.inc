@@ -1,5 +1,5 @@
-// Item effects, wow build 10.0.2.46924
-static const std::array<item_effect_t, 8204> __item_effect_data { {
+// Item effects, wow build 10.0.2.47067
+static const std::array<item_effect_t, 8207> __item_effect_data { {
   { 116657, 317388,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116658, 317389,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116661, 317407,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
@@ -8204,9 +8204,12 @@ static const std::array<item_effect_t, 8204> __item_effect_data { {
   { 172387, 397035, 202117,   0,   1,    0,      -1,      -1 }, // Aligning Matter
   { 172388, 397038, 202118,   0,   1,    0,      -1,      -1 }, // Arcane Bubble
   { 172389, 397040, 202119,   0,   1,    0,      -1,      -1 }, // Corporeal Tear
+  { 173307, 336126, 203375,   0,   0,    0,      -1,      -1 }, // Gladiator's Medallion
+  { 173308, 345229, 203376,   0,   1,    0,      -1,      -1 }, // Gladiator's Insignia
+  { 173309, 345231, 203377,   0,   0, 1141,  120000,   20000 }, // Gladiator's Emblem
 } };
 
-static const std::array<uint16_t, 8204> __item_effect_id_index { {
+static const std::array<uint16_t, 8207> __item_effect_id_index { {
     409,   410,   411,   412,   413,   414,   415,   418,
     419,   420,   421,   422,   423,   424,   425,   426,
     427,   428,   429,   430,   433,   434,   435,   436,
@@ -9232,6 +9235,6 @@ static const std::array<uint16_t, 8204> __item_effect_id_index { {
    7930,  7937,  7939,  7896,  7900,  7959,  2115,  7074,
    7469,  7869,  7997,  8098,  8099,  8122,  8125,  8200,
    8201,  8202,  8203,  4685,  4686,  6650,  6651,  3441,
-   3442,  6639,  6640,  7921,
+   3442,  6639,  6640,  7921,  8204,  8205,  8206,
 } };
 

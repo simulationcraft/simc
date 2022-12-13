@@ -1,12 +1,12 @@
-// Spell text, wow build 10.0.2.46924
-static const std::array<spelltext_data_t, 19198> __spelltext_data { {
+// Spell text, wow build 10.0.2.47067
+static const std::array<spelltext_data_t, 19193> __spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
   {     65, "Increases your melee haste by $s1 for $d.", 0, 0 },
   {     66, "Turns you invisible over $66d, reducing threat each second. While invisible, you are untargetable by enemies. Lasts $32612d. Taking any action cancels the effect.$?a382293[\r\n\r\nIncreases your movement speed by $382293s1% for $337278d.][]", "Fading.", 0 },
-  {     71, "Hardened by battle, all damage taken is reduced by $s3%, your Stamina is increased by $s2% and your Armor is increased by $s1% of your Strength.", 0, 0 },
+  {     71, "Hardened by battle, your Stamina is increased by $s2% and your Armor is increased by $s1% of your Strength.", 0, 0 },
   {     75, "Automatically shoots the target until cancelled.", "Firing at the target.", 0 },
   {     99, "Shift into Bear Form and invoke the spirit of Ursol to let loose a deafening roar, incapacitating all enemies within $A1 yards for $d. Damage will cancel the effect.", "Incapacitated.", 0 },
   {    100, "Charge to an enemy, dealing $126664s2 Physical damage, rooting it for $105771d$?s103828[, and stunning it for $7922d][].\r\n\r\n|cFFFFFFFFGenerates $/10;s2 Rage.|r", 0, 0 },
@@ -8707,7 +8707,7 @@ static const std::array<spelltext_data_t, 19198> __spelltext_data { {
   { 244670, "$@spelldesc29722", 0, 0 },
   { 244813, "$@spelldesc44457", "Causes $w1 Fire damage every $t1 sec. After $d, the target explodes, causing $w2 Fire damage to the target and all other enemies within $44461A2 yards.", 0 },
   { 244846, "Sets a Sethrak Tent on fire.", 0, 0 },
-  { 245013, "All damage taken is reduced by $s2% and your Armor is increased by $s1%.\r\n\r\nStamina increased by $s3%.", 0, 0 },
+  { 245013, "Your Armor is increased by $s1% and Stamina increased by $s3%.", 0, 0 },
   { 245330, "$@spelldesc17962", 0, 0 },
   { 245388, "Stab your enemy with a toxic poisoned blade, dealing $s2 Nature damage.\r\n\r\nYour Nature damage done against the target is increased by $245389s1% for $245389d.\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   { 245389, "$@spelldesc245388", "$s1% increased damage taken from poisons from the casting Rogue.", 0 },
@@ -12107,7 +12107,7 @@ static const std::array<spelltext_data_t, 19198> __spelltext_data { {
   { 300170, "Once per minute while in combat, gain $s1 Haste, Critical Strike, Mastery, and Versatility for $300174d.", 0, 0 },
   { 300173, "$@spelldesc300170", 0, 0 },
   { 300174, "$@spelldesc300170", "Haste, Critical Strike, Mastery, and Versatility increased by $w1.", 0 },
-  { 300346, "Moonfire, Soothe, Remove Corruption, and Rebirth are usable in Bear Form. Multiple uses of Ironfur may overlap.\r\n\r\nAll damage taken in Bear Form reduced by $s2%.", 0, 0 },
+  { 300346, "Moonfire, Soothe, Remove Corruption, and Rebirth are usable in Bear Form. Multiple uses of Ironfur may overlap.", 0, 0 },
   { 300349, "Soothe and Remove Corruption are usable in Cat Form.", 0, 0 },
   { 300470, 0, "Reduces Sanity loss within Visions of N'Zoth by $m1%.", 0 },
   { 300539, "Allows the detection of otherwise unseen treasures buried beneath the wet sands of Nazjatar for $300135d.", "Detecting hidden treasures.", 0 },
@@ -13086,8 +13086,6 @@ static const std::array<spelltext_data_t, 19198> __spelltext_data { {
   { 320378, "Reduces the cooldown of Immolation Aura by ${$abs($s0/1000)} sec.", 0, 0 },
   { 320379, "Reduces the cooldown of Spectral Sight by ${$abs($s0/1000)} sec.", 0, "Rank 2" },
   { 320380, "Fel energy thickens your skin to demonic proportions, increasing your Stamina by $s1% and your Armor by $s2%.", 0, 0 },
-  { 320381, "Your tattoos reduce all damage taken by ${$abs($203513s1+$s1)}%.", 0, "Rank 2" },
-  { 320382, "Your tattoos reduce all damage taken by ${$abs($203513s1+$320381s1+$s1)}%.", 0, "Rank 3" },
   { 320386, "Throw Glaive ricochets to $s1 additional $ltarget:targets;.", 0, 0 },
   { 320387, "Reduces the cooldown of Throw Glaive by ${$abs($s0/1000)} sec.", 0, 0 },
   { 320402, "Reduces the cooldown of Blade Dance by ${$abs($s0/1000)} sec.", 0, "Rank 2" },
@@ -15142,7 +15140,7 @@ static const std::array<spelltext_data_t, 19198> __spelltext_data { {
   { 353334, "$@spelldesc351747", "Heailng for $w1 health every $t1 sec.\r\nDamage taken reduced by $s2%.", 0 },
   { 353354, "$@spelldesc352786", "Taking $w1% more damage from $@auracaster.", 0 },
   { 353365, "$@spelldesc351748", "Avoidance increased by $w1.\r\nSpeed increased by $w2.", 0 },
-  { 353367, "Stamina increased by $s1%.\r\n\r\nArmor increased by $s2%.$?a358934[\r\n\r\nAll damage taken reduced by $s3%.][]", 0, 0 },
+  { 353367, "Stamina increased by $s1%.\r\n\r\nArmor increased by $s2%.", 0, 0 },
   { 353447, "Abomination Limb's duration is increased by ${$s1/1000} sec and the frequency it grants $?a137008[Bone Shield][]$?a137006[Rime][]$?a137007[Runic Corruption][] is increased by $s2 sec. The first time an enemy is damaged by Abomination Limb they take $353546s1% increased damage from you for $353546d.", 0, 0 },
   { 353466, "$@spelldesc357588", "Suffering $w1 Physical damage every $t1 sec.", 0 },
   { 353472, "$@spelldesc352782", "Movement speed reduced by $w1%.", 0 },
@@ -16368,7 +16366,7 @@ static const std::array<spelltext_data_t, 19198> __spelltext_data { {
   { 374609, "$@spelldesc374598", "You may not benefit from the effects of Blood Draw.", 0 },
   { 374715, "Bone Shield increases your Haste by $s1%.", 0, 0 },
   { 374717, "Heart Strike damage increased by $s1%.", 0, 0 },
-  { 374721, "Stamina increased by $s1%.\r\nDamage taken reduced by $s2%.", 0, 0 },
+  { 374721, "Stamina increased by $s1%.", 0, 0 },
   { 374737, "Increases Armor gained from Bone Shield by $s1%.", 0, 0 },
   { 374747, "When Crimson Scourge is consumed, you gain $s1% Versatility for $374748d.", 0, 0 },
   { 374748, "$@spelldesc374747", "Versatility increased by $w1%", 0 },
@@ -18439,7 +18437,6 @@ static const std::array<spelltext_data_t, 19198> __spelltext_data { {
   { 390947, "Circle of Healing heals $s1 additional ally and its cooldown is reduced by ${$s2/-1000} sec.", 0, 0 },
   { 390951, "Temporarily imbues shoulders with a fiery illusion for $ecd.", 0, 0 },
   { 390954, "Increases the critical strike chance of Flash Heal and Heal by $s1%.", 0, 0 },
-  { 390961, "$@spelldesc390990", 0, 0 },
   { 390964, "$@spelldesc120517", 0, 0 },
   { 390967, "Increases the healing done by your Mastery: Echo of Light by $s1%.", 0, 0 },
   { 390971, "$@spelldesc120517", 0, 0 },
@@ -18450,12 +18447,10 @@ static const std::array<spelltext_data_t, 19198> __spelltext_data { {
   { 390980, "Critical heals from Flash Heal and Heal increase your healing done by your next Holy Word spell by $390989s1%, stacking up to $390989U times.", 0, 0 },
   { 390981, "$@spelldesc110744", 0, 0 },
   { 390989, "$@spelldesc390980", "The healing of your next Holy Word spell is increased by $w1%.", 0 },
-  { 390990, "Causes the earth at the target location to tremble and break, dealing Nature damage every $t1 sec to enemies in $r yard radius. Lasts $d.\r\n\r\nUsable in the Obsidian Citadel and adjacent lava fields.", "Suffering Nature damage every $t2 sec.", 0 },
   { 390992, "Flash Heal reduces the cast time of your next Heal within $390993d by $390993s2% and increases its healing done by $390993s1%.\r\n\r\nStacks up to $390993U times.", 0, 0 },
   { 390993, "$@spelldesc390992", "The cast time of your next Heal is reduced by $w2% and its healing is increased by $w1%.", 0 },
   { 390994, "Circle of Healing reduces the cooldown of Holy Word: Sanctify, Prayer of Mending reduces the cooldown of Holy Word: Serenity, and Holy Fire reduces the cooldown of Holy Word: Chastise by $s1 sec.", 0, 0 },
   { 390996, "Your $?a137033[Mind Blast and Mind Spike]?a137031[Smite and Holy Fire][Smite and Penance] casts reduce the cooldown of Mindgames by ${$s1/2}.1 sec.", 0, 0 },
-  { 390997, "Causes the earth at the target location to tremble and break, dealing Nature damage every $t1 sec to enemies in $a1 yard radius. Lasts $d.", "Suffering Nature damage every $t2 sec.", 0 },
   { 391023, "Summons an arcana orb outside of the Cobalt Assembly.", "Summons an arcana orb outside of the Cobalt Assembly.", 0 },
   { 391037, "Your combo point generating abilities have a $s1% chance to generate $s2 extra combo $Lpoint:points;.", 0, 0 },
   { 391045, "Rip damage increased by $s1%.", 0, 0 },
@@ -19200,16 +19195,18 @@ static const std::array<spelltext_data_t, 19198> __spelltext_data { {
   { 400006, "Living Flame restores $s1% of its mana cost when striking an enemy.", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.0.2.46924
-static constexpr std::array<hotfix::client_hotfix_entry_t, 5> __spelltext_hotfix_data { {
+// spelltext hotfix entries, wow build 10.0.2.47067
+static constexpr std::array<hotfix::client_hotfix_entry_t, 7> __spelltext_hotfix_data { {
+  {      71,  0, "Hardened by battle, all damage taken is reduced by $s3%, your Stamina is increased by $s2% and your Armor is increased by $s1% of your Strength.", "Hardened by battle, your Stamina is increased by $s2% and your Armor is increased by $s1% of your Strength." },
+  {  245013,  0, "All damage taken is reduced by $s2% and your Armor is increased by $s1%.\r\n\r\nStamina increased by $s3%.", "Your Armor is increased by $s1% and Stamina increased by $s3%." },
+  {  300346,  0, "Moonfire, Soothe, Remove Corruption, and Rebirth are usable in Bear Form. Multiple uses of Ironfur may overlap.\r\n\r\nAll damage taken in Bear Form reduced by $s2%.", "Moonfire, Soothe, Remove Corruption, and Rebirth are usable in Bear Form. Multiple uses of Ironfur may overlap." },
+  {  353367,  0, "Stamina increased by $s1%.\r\n\r\nArmor increased by $s2%.$?a358934[\r\n\r\nAll damage taken reduced by $s3%.][]", "Stamina increased by $s1%.\r\n\r\nArmor increased by $s2%." },
+  {  374721,  0, "Stamina increased by $s1%.\r\nDamage taken reduced by $s2%.", "Stamina increased by $s1%." },
   {  377462,  0, "Designate another player to bond with, becoming their Guardian for $382281d.\r\n\r\nWhile bonded, you and your ally gain $382280s1 Versatility and restore $382280s2 health per second. If you are within 15 yards of one another, these bonuses are increased. $?(a137012|a137024|a137031|a137032|a137029|a137039|a356810)[][\r\n\r\n|CFF808080Valid only for healer specializations.|R]\r\n", "Designate another player to bond with, becoming their Guardian for $394457d.\r\n\r\nWhile bonded, you and your ally gain $382280s1 Versatility and restore $382280s2 health per second. If you are within 15 yards of one another, these bonuses are increased. $?(a137012|a137024|a137031|a137032|a137029|a137039|a356810)[][\r\n\r\n|CFF808080Valid only for healer specializations.|R]\r\n" },
-  {  377544,  1, "Spells deal $s1 additional Fire damage to enemies or healing to allies.", "Spells deal $376801w1 additional Fire damage to enemies or healing to allies." },
   {  389697,  0, "Increases the duration of Sigil effects by ${$s1/1000} sec.", "Increases the duration of Sigil effects by ${$s1/1000}.1 sec." },
-  {  393648,  0, "$?s342049[Chimaera Shot][Arcane Shot] and Multi Shot critical hits cause your next Aimed Shot to cause the target to bleed for $394366s1% of damage dealt over $394371d sec.", "$?s342049[Chimaera Shot][Arcane Shot] and Multi-Shot critical hits cause your next Aimed Shot to cause the target to bleed for $394366s1% of damage dealt over $394371d sec." },
-  {  393675,  0, "Judgment, Blade of Justice, and $?s383469[Radiant Decree][Wake of Ashes] damage increased by $s1%.", "Judgment, Blade of Justice, and $?a384052[Radiant Decree][Wake of Ashes] damage increased by $s1%." },
 } };
 
-// Spell description variables, wow build 10.0.2.46924
+// Spell description variables, wow build 10.0.2.47067
 static const std::array<spelldesc_vars_data_t, 365> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$pvp=$?a134735[${1.1}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<pvp>*$<weal>}\r\n" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -19578,10 +19575,7 @@ static const std::array<spelldesc_vars_data_t, 365> __spelldesc_vars_data { {
   {  394354, "$damage=${($AP*1.0)*(1+$@versadmg)}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.0.2.46924
-static constexpr std::array<hotfix::client_hotfix_entry_t, 3> __spelldesc_vars_hotfix_data { {
-  {  372469,  0, "$cap=${$SP*1.61}", "$pvp=$?a134735[${0.7}][${1}]\r\n$cap=${$SP*1.61*$<pvp>}" },
-  {  388023,  0, "$pvp=$?a134735[${1.6}][${1}]}\r\n$healing=[${$s1*$<pvp>}]", "$pvp=$?a134735[${2.5}][${1}]}\r\n$healing=[${$s1*$<pvp>}]" },
-  {  388026,  0, "$pvp=$?a134735[${1.6}][${1}]}\r\n$healing=[${$388023s1*$<pvp>}]", "$pvp=$?a134735[${2.5}][${1}]}\r\n$healing=[${$388023s1*$<pvp>}]" },
+// spelldesc_vars hotfix entries, wow build 10.0.2.47067
+static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 
