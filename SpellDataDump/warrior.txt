@@ -1,5 +1,6 @@
-SimulationCraft 1002-01 for World of Warcraft 10.0.2.46924 Live (hotfix 2022-12-13/46924)
+SimulationCraft 1002-01 for World of Warcraft 10.0.2.47067 Live (hotfix 2022-12-13/47067, git build dragonflight e3e07da2a9)
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
+Hotfixed         : Description
 Class            : Protection Warrior
 School           : Physical
 Spell Type       : None
@@ -24,12 +25,13 @@ Effects          :
 #2 (id=217521)   : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 2 | Misc Value 2: 0x4 | Target: Self (1)
 #3 (id=884933)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
+Hotfixed         : Base Value (-5 -> 0)
 #4 (id=982928)   : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: -5000 | Scaled Value: -5000 | PvP Coefficient: 1.00000 | Misc Value: 1692 | Target: Self (1)
                    Affected Spells (Category): Spell Reflection (23920), Spell Reflection (335255)
-Description      : Hardened by battle, all damage taken is reduced by $s3%, your Stamina is increased by $s2% and your Armor is increased by $s1% of your Strength.
+Description      : Hardened by battle, your Stamina is increased by $s2% and your Armor is increased by $s1% of your Strength.
 
 Name             : Charge (id=100) [Spell Family (4)] 
 Class            : Warrior
@@ -240,15 +242,17 @@ Attributes       : ....x... ........ x.x..... ........   ........ ........ .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Always Hit (114), Taps immediately (215), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=423)      : Apply Aura (6) | Modify Damage Done% to Caster (269)
-                   Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
                    Affected School(s): All
+Hotfixed         : Base Value (-25 -> -20)
 #2 (id=159300)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
                    Affected School(s): All
 #3 (id=292881)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.50000 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
                    Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Thunder Clap (6343), Revenge (6572), Overpower (7384), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Shattering Throw (64382), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Whirlwind Off-Hand (199851), Whirlwind (199852), Rampage (201363), Rampage (201364), Impending Victory (202168), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Seismic Wave (278497), Iron Fortress (279142), Siegebreaker (280772), Execute (280849), Reckless Flurry (283810), Gushing Wound (288091), Spear of Bastion (307871), Onslaught (315720), Dreadnaught (315961), Condemn (317483), Condemn (317488), Condemn Off-Hand (317489), Ancient Aftershock (325886), Ancient Aftershock (326062), Repulsive Pennant (333860), Bloodbath (335096), Crushing Blow (335098), Crushing Blow (335100), Nature's Fury (354163), Spear of Bastion (376080), Annihilator (383915), Titanic Throw (384090), Wrecking Throw (384110), Thunderous Roar (384318), Sidearm (384391), Gushing Wound (385042), Odyn's Fury (385059), Odyn's Fury (385060), Odyn's Fury (385061), Odyn's Fury (385062), Shield Charge (385954), Rend (388539), Rend (394062), Rend (394063), Shattering Throw (394352), Wrecking Throw (394354), Onslaught (396718), Thunder Clap (396719), Thunderous Roar (397364)
                    Family Flags: 9
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #4 (id=298857)   : Apply Aura (6) | Modify Auto Attack Damage Taken% from Caster (343)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
 #5 (id=298858)   : Energize Power (30)
@@ -819,7 +823,6 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Cleave (845), Mortal Strike (12294)
                    Family Flags: 22, 25
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : Overpower the enemy, dealing $s1 Physical damage. Cannot be blocked, dodged, or parried.$?s316440&s845[
 
 Increases the damage of your next Mortal Strike or Cleave by $s2%. Stacking up to $u times]?s316440[
@@ -853,7 +856,6 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=5274)     : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.84000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (0.695 -> 1)
 Description      : A vicious strike that deals $s1 Physical damage and reduces the effectiveness of healing on the target by $115804s1% for $115804d.
 Variables        : $mult=${($max(0,$min($pl-5,15))*8+207)/327}
 
@@ -1067,7 +1069,8 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Discount Power On Miss (59), Chain From Caster (76), Requires Main-Hand Weapon (106), Aura Points On Client (268), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=14120)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.72000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.73000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (0.72 -> 0.73)
 #2 (id=134421)   : Energize Power (30)
                    Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 1.00000 | Misc Value: rage | Target: Self (1)
 Description      : Assault the target in a bloodthirsty craze, dealing $s1 Physical damage and restoring $117313s1% of your health.$?s385735[
@@ -2623,7 +2626,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Can't Crit (93), Ignore Healing Modifiers (219), Not In Spellbook Until Learned (269), Do Not Log Full Overheal (323), Allow Class Ability Procs (416), Always Allow Negative Healing Percent Modifiers (442)
 Effects          :
 #1 (id=132982)   : Direct Heal% (136)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 0.66667 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.666667)
 Description      : Bloodthirst heals the Warrior for $s1% of their health.
 
 Name             : Dragon Roar (id=118000) [Spell Family (4)] 
@@ -2967,7 +2971,6 @@ Effects          :
                    Family Flags: 14
 #4 (id=191018)   : Apply Aura (6) | Threat (10)
                    Base Value: 650 | Scaled Value: 650 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
-Hotfixed         : Base Value (550 -> 650)
 #5 (id=191019)   : Apply Aura (6) | Unknown(213)
                    Base Value: -56 | Scaled Value: -56 | PvP Coefficient: 1.00000 | Target: Self (1)
 #6 (id=261027)   : Apply Aura (6) | Modify Attacker Melee Crit Chance (187)
@@ -3730,7 +3733,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 3.50000 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
 #2 (id=299580)   : Dummy (3)
-                   Base Value: 55 | Scaled Value: 55 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (55 -> 50)
 #3 (id=342429)   : Apply Aura (6) | Modify Base Resistance (142)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
 Description      : Fight through the pain, ignoring $s2% of damage taken, up to $<absorb> total damage prevented.
@@ -10136,7 +10140,8 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Discount Power On Miss (59), Chain From Caster (76), Requires Main-Hand Weapon (106), Spellcast Override In Spellbook (310), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=831435)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.01000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (1 -> 1.01)
 #2 (id=831436)   : Energize Power (30)
                    Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 1.00000 | Misc Value: rage | Target: Self (1)
 Description      : Assault the target in a bloodthirsty craze, dealing $s1 Physical damage and restoring $117313s1% of your health.
@@ -12424,7 +12429,6 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1014807)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 85 | Scaled Value: 85 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (65 -> 85)
 Description      : You are healed for $s1% of the damage dealt by Deep Wounds.
 
 Name             : Concussive Blows (id=383115) [Spell Family (4), Passive] 
@@ -12786,7 +12790,6 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.50000 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Cleave (845), Execute (5308), Mortal Strike (12294), Execute (163201), Execute Off-Hand (163558), Execute (260798), Execute (280735), Execute (280849), Execute (281000), Condemn (317349), Condemn (317483), Condemn (317485), Condemn (317488), Condemn Off-Hand (317489), Condemn (330325), Condemn (330334)
                    Family Flags: 22, 25, 29
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=1015203)  : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Execute (5308), Execute (163201), Execute Off-Hand (163558), Execute (260798), Execute (280735), Execute (280849), Execute (281000), Condemn (317349), Condemn (317483), Condemn (317485), Condemn (317488), Condemn Off-Hand (317489), Condemn (330325), Condemn (330334)
@@ -13343,7 +13346,6 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1016319)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (30 -> 15)
 Description      : $s1% of damage you deal adds to your active Ignore Pain.
 
 Name             : Strategist (id=384041) [Spell Family (4), Passive] 
@@ -13899,7 +13901,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=1018044)  : Apply Aura (6) | Periodic Health Leech (53): every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | AP Coefficient: 0.30000 | PvP Coefficient: 1.00000 | Mechanic: Bleed | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | AP Coefficient: 0.27000 | PvP Coefficient: 1.00000 | Mechanic: Bleed | Target: Enemy (6)
+Hotfixed         : AP Coefficient (0.3 -> 0.27)
 #2 (id=1018045)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 383959
 Description      : $@spelldesc288080
@@ -14374,7 +14377,8 @@ Attributes       : ....x... ........ x....... ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Allow While Not Shapeshifted (caster form) (83), Always Hit (114), Do Not Display Range (126), Aura Never Bounces (148), Taps immediately (215), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=1019549)  : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.75000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.75000 | PvP Coefficient: 0.75000 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1 -> 0.75)
 #2 (id=1019559)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.10000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 #3 (id=1020442)  : Apply Aura (6) | Stun (12)
@@ -14651,8 +14655,9 @@ Attributes       : ........ ........ x.x..... x..x....   ........ ........ .....
                  : Not Shapeshifted (16), Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), Use Shapeshift Bar (68), Allow Aura While Dead (116), Allow Entering Arena (149), Allow While Riding Vehicle (204), Vehicle Immunity Category (218), Aura Points On Client (268), Do Not Cancel Area Aura on Spec Switch (389), Allow Aura On Level Scale (444)
 Effects          :
 #1 (id=1020125)  : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 0.50000 | Misc Value: 0x7f | Target: Self (1)
+                   Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 0.66666 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
+Hotfixed         : Base Value (-20 -> -15), PvP Coefficient (0.5 -> 0.66666)
 #2 (id=1020126)  : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 2.00000 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
@@ -15199,7 +15204,6 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ ........ .....
 Effects          :
 #1 (id=1024287)  : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.21500 | PvP Coefficient: 0.85000 | Chain Multiplier: 1 | Mechanic: Bleed | Chain Targets: 1 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 0.85)
 Description      : @spelldesc772
 Tooltip          : Bleeding for $w1 damage every $t1 sec.
 

@@ -1,4 +1,4 @@
-SimulationCraft 1002-01 for World of Warcraft 10.0.2.46924 Live (hotfix 2022-12-13/46924)
+SimulationCraft 1002-01 for World of Warcraft 10.0.2.47067 Live (hotfix 2022-12-13/47067, git build dragonflight e3e07da2a9)
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -734,7 +734,6 @@ Description      : Silences the target, preventing them from casting spells for 
 Tooltip          : Silenced.
 
 Name             : Desperate Prayer (id=19236) [Spell Family (6)] 
-Hotfixed         : Attributes
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -1252,7 +1251,7 @@ GCD              : 1.5 seconds
 Duration         : 21 seconds
 Proc Chance      : 101%
 Stance Mask      : 0x08000000
-Affecting spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13), Shadow Priest (137033 effects: #1, #2, #4, #5), Voidform (194249 effects: #1, #2, #10), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Thought Harvester (288340 effect#2), Unfurling Darkness (341282 effect#1), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Evangelism (391099 effect#1), Coalescing Shadows (391244 effect#1), Screams of the Void (393919 effect#1)
+Affecting spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13), Shadow Priest (137033 effects: #1, #2, #4, #5, #17, #18), Voidform (194249 effects: #1, #2, #10), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Thought Harvester (288340 effect#2), Unfurling Darkness (341282 effect#1), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Evangelism (391099 effect#1), Coalescing Shadows (391244 effect#1), Screams of the Void (393919 effect#1)
 Family Flags     : 42, 72
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ x....... ...x.... ........   ........ ........ ........ ..x..... 
@@ -1267,7 +1266,8 @@ Effects          :
 #1 (id=25009)    : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=25010)    : Apply Aura (6) | Periodic Health Leech (53): every 3 seconds
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 0.5 | SP Coefficient: 0.20196 | PvP Coefficient: 1.10000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 0.3 | SP Coefficient: 0.20196 | PvP Coefficient: 1.10000 | Target: Enemy (6)
+Hotfixed         : Value Multiplier (0.5 -> 0.3)
 #3 (id=323673)   : Energize Power (30)
                    Base Value: 400 | Scaled Value: 400 | PvP Coefficient: 1.00000 | Misc Value: insanity | Target: Self (1)
 #4 (id=841601)   : School Damage (2): shadow
@@ -3687,6 +3687,16 @@ Effects          :
                    Base Value: 36 | Scaled Value: 36 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Flash Heal (2061)
                    Family Flags: 11
+#17 (id=1045166)  : Apply Aura (6) | Add Flat Modifier (107): Spell Damage Taken (27)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.00000 | Misc Value: 27 | Target: Self (1)
+                   Affected Spells: Vampiric Touch (34914), Devouring Plague (335467)
+                   Family Flags: 42, 87
+Hotfixed         : NEW EFFECT
+#18 (id=1045167)  : Apply Aura (6) | Add Flat Modifier (107): Spell Damage Taken (27)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 27 | Target: Self (1)
+                   Affected Spells: Vampiric Touch (34914), Devouring Plague (335467)
+                   Family Flags: 42, 87
+Hotfixed         : NEW EFFECT
 
 Name             : Glyph of Inspired Hymns (desc=Holy) (id=147072) [Spell Family (6), Passive, Hidden] 
 Class            : Priest
@@ -9889,7 +9899,7 @@ GCD              : 1.5 seconds
 Duration         : 6 seconds
 Category         : 691
 Stance Mask      : 0x08000000
-Affecting spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Mind Devourer (373204 effect#1), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Evangelism (391099 effect#1), Dark Ascension (391109 effect#1), Encroaching Shadows (391235 effect#1), Coalescing Shadows (391244 effect#1)
+Affecting spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13), Shadow Priest (137033 effects: #1, #2, #17, #18), Voidform (194249 effects: #1, #2), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Mind Devourer (373204 effect#1), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Evangelism (391099 effect#1), Dark Ascension (391109 effect#1), Encroaching Shadows (391235 effect#1), Coalescing Shadows (391244 effect#1)
 Family Flags     : 72, 87
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9902,9 +9912,11 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Discount Power On Miss (59), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Rolling Periodic (334), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=832086)   : Health Leech (9)
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 0.5 | SP Coefficient: 0.70122 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 0.3 | SP Coefficient: 0.70122 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : Value Multiplier (0.5 -> 0.3)
 #2 (id=832087)   : Apply Aura (6) | Periodic Health Leech (53): every 3 seconds
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 0.5 | SP Coefficient: 0.58281 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 0.3 | SP Coefficient: 0.58281 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : Value Multiplier (0.5 -> 0.3)
 #3 (id=832088)   : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #4 (id=832089)   : Dummy (3)
@@ -12509,7 +12521,6 @@ Description      : Refreshes Holy Fire. Your next $s1 casts of Holy Fire cost no
 Whenever Holy Fire is reapplied, its duration is now extended instead.
 
 Name             : Empyreal Blaze (id=372617) [Spell Family (6)] 
-Hotfixed         : Attributes
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -15360,7 +15371,6 @@ Description      : $@spelldesc390980
 Tooltip          : The healing of your next Holy Word spell is increased by $w1%.
 
 Name             : Lightweaver (id=390992) [Spell Family (6), Passive, Hidden] 
-Hotfixed         : Proc Flags (0 -> 16384)
 Talent Entry     : Holy [tree=spec, row=10, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Priest
 School           : Holy
@@ -15385,7 +15395,6 @@ Description      : Flash Heal reduces the cast time of your next Heal within $39
 Stacks up to $390993U times.
 
 Name             : Lightweaver (id=390993) [Spell Family (6)] 
-Hotfixed         : Attributes
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -15591,7 +15600,6 @@ Description      : $@spelldesc391095
 Tooltip          : Periodic Shadow damage increased by $w1%.
 
 Name             : Dark Ascension (id=391109) [Spell Family (6)] 
-Hotfixed         : Attributes
 Talent Entry     : Shadow [tree=spec, row=5, col=3, max_rank=1, req_points=8, select_idx=200]
 Class            : Priest
 School           : Shadow
@@ -16377,7 +16385,6 @@ Effects          :
 Description      : Your Shadow Word: Pain damage has a chance to reset the cooldown of Shadow Word: Death and enable $s1% additional damage regardless of the target's health.
 
 Name             : Deathspeaker (id=392511) [Spell Family (6)] 
-Hotfixed         : Attributes
 Class            : Priest
 School           : Shadow
 Spell Type       : None

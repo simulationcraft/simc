@@ -1,4 +1,4 @@
-SimulationCraft 1002-01 for World of Warcraft 10.0.2.46924 Live (hotfix 2022-12-13/46924)
+SimulationCraft 1002-01 for World of Warcraft 10.0.2.47067 Live (hotfix 2022-12-13/47067, git build dragonflight e3e07da2a9)
 Name             : Frostbolt of Ages (id=11) 
 Class            : Paladin
 School           : Frost
@@ -665,7 +665,6 @@ Attributes       : ......xx ........ x.x..... ........   ........ ..x..... .x...
 Effects          :
 #1 (id=15691)    : Apply Aura (6) | Threat (10)
                    Base Value: 650 | Scaled Value: 650 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
-Hotfixed         : Base Value (550 -> 650)
 #2 (id=15692)    : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
@@ -11506,6 +11505,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 
 Name             : Aegis of Light (id=353367) [Spell Family (10), Passive] 
+Hotfixed         : Description
 Class            : Protection Paladin
 School           : Physical
 Spell Type       : None
@@ -11524,18 +11524,14 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=885104)   : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value 2: 0x4 | Target: Self (1)
-Hotfixed         : Base Value (45 -> 50)
 #2 (id=894604)   : Apply Aura (6) | Modify Base Resistance (142)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
-Hotfixed         : Base Value (15 -> 30)
 #3 (id=894606)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
 Description      : Stamina increased by $s1%.
 
-Armor increased by $s2%.$?a358934[
-
-All damage taken reduced by $s3%.][]
+Armor increased by $s2%.
 
 Name             : Divine Resonance (id=355098) [Hidden] 
 Class            : Paladin
@@ -11735,9 +11731,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Only In Spellbook Until Learned (240), Cooldown Shared With AI Group (418)
 Effects          :
 #1 (id=894605)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
-                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Aegis of Light (353367)
                    Family Flags: 53
+Hotfixed         : Base Value (-10 -> 0)
 Description      : Additionally reduces damage taken by $s1%.
 
 Name             : Dawn Will Come (id=363674) [Spell Family (10), Passive, Hidden] 
@@ -12277,7 +12274,8 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : No Threat (42), Include In Advanced Combat Log (72), DoT Stacking Rule (103), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Heal Prediction (280), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=1006803)  : Apply Aura (6) | Periodic Heal (8): every 3 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.21000 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.21000 | PvP Coefficient: 0.60000 | Target: Friend (21)
+Hotfixed         : PvP Coefficient (1 -> 0.6)
 Description      : $@spelldesc378405
 Tooltip          : Healing for $w1 every $t1 sec.
 
@@ -14334,7 +14332,6 @@ Effects          :
 #1 (id=1019186)  : Apply Aura (6) | Modify Damage Taken% from Caster (270)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x2 | Target: Enemy (6)
                    Affected School(s): Holy
-Hotfixed         : Sub Type (87 -> 270)
 Description      : $@spelldesc385728
 Tooltip          : $@spellaura385728
 
@@ -16089,7 +16086,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1031665)  : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value 2: 0x1 | Target: Self (1)
-Hotfixed         : Sub Type (80 -> 137), Misc Value 2 (0 -> 1)
 #2 (id=1031666)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 393020
 Description      : $@spelldesc393020
@@ -16380,7 +16376,6 @@ Effects          :
 Description      : $?s53595[Hammer of the Righteous]?s204019[Blessed Hammer][Crusader Strike] increases your Parry by $394727s1% for $394727d, and extends the duration of Ally of the Light by ${$m1/1000}.1 sec.
 
 Name             : Paladin Retribution Class Set 2pc (id=393675) [Spell Family (10), Passive, Hidden] 
-Hotfixed         : Description
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -16582,7 +16577,6 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
 Effects          :
 #1 (id=1034635)  : Apply Aura (6) | Modify Versatility% (471)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (5 -> 6)
 Description      : $@spelldesc393673
 Tooltip          : Versatility increased by $s1%.
 
@@ -16604,7 +16598,6 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
 Effects          :
 #1 (id=1034654)  : Apply Aura (6) | Modify Parry% (47)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (4 -> 5)
 Description      : $@spelldesc393674
 Tooltip          : Parry chance increased by $s1%.
 

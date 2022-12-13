@@ -1,4 +1,4 @@
-SimulationCraft 1002-01 for World of Warcraft 10.0.2.46924 Live (hotfix 2022-12-13/46924)
+SimulationCraft 1002-01 for World of Warcraft 10.0.2.47067 Live (hotfix 2022-12-13/47067, git build dragonflight e3e07da2a9)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -641,8 +641,6 @@ Attributes       : ....x... ........ ..x..... ........   ........ ........ .x...
                  : x....... ........ ........ ........   
                  : Is Ability (4), Do Not Sheath (18), No AutoCast (AI) (49), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436), Prevent Jumping During Precast (448)
 Effects          :
-#1 (id=273949)   : Apply Aura (6) | Change Model (56)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 104712 | Misc Value 2: 0x6 | Target: Self (1)
 #2 (id=273950)   : Apply Aura (6) | Modify Max Health% (133)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=283617)   : Apply Aura (6) | Modify Leech% (443)
@@ -814,7 +812,6 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=278012)   : Apply Aura (6) | Threat (10)
                    Base Value: 650 | Scaled Value: 650 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
-Hotfixed         : Base Value (550 -> 650)
 
 Name             : Metamorphosis (id=191427) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -1665,7 +1662,7 @@ Race             : Blood Elf (0x200)
 School           : Physical
 Spell Type       : None
 Spell Level      : 13
-Affecting spells : Demonic Wards (320381 effects: #1, #2), Demonic Wards (320382 effects: #1, #2), Viscous Ink (338682 effect#1)
+Affecting spells : Viscous Ink (338682 effect#1)
 Family Flags     : 63
 Attributes       : ....x.x. ........ ..x..... x..x.x.x   ........ ..x..... .x...... ....x... 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
@@ -2693,9 +2690,10 @@ Effects          :
 #4 (id=307163)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 202140 | Scaled Value: 202140 | PvP Coefficient: 1.00000 | Misc Value: 207684 | Misc Value 2: 0x2 | Target: Self (1)
 #5 (id=309811)   : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
-                   Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+                   Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 0.50000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Sigil of Silence (204490), Sigil of Flame (204598), Sigil of Chains (204843), Sigil of Misery (207685), Elysian Decree (307046), Elysian Decree (339893), Elysian Decree (339894), Blind Faith (355894), Elysian Decree (389860)
                    Family Flags: 33
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #6 (id=819508)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 327839 | Scaled Value: 327839 | PvP Coefficient: 1.00000 | Misc Value: 306830 | Misc Value 2: 0x2 | Target: Self (1)
 #7 (id=1034501)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
@@ -3652,7 +3650,8 @@ Attributes       : ......x. ........ ........ .......x   ........ ........ .....
                  : Passive (6), No Aura Cancel (31), Can Proc From Procs (122), Not In Spellbook (143), No Aura Log (202), Do Not Log on Learn (355), Only Proc From Class Abilities (415), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=315975)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+Hotfixed         : Base Value (5 -> 3)
 Description      : You heal for $s1% of all Fire damage you deal.
 
 Name             : Charred Warblades (id=213011) [Spell Family (107)] 
@@ -4666,7 +4665,8 @@ Attributes       : ....x... ........ x....... ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Requires Main-Hand Weapon (106), Do Not Display Range (126), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=483076)   : School Damage (2): chromatic
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.72160 | PvP Coefficient: 1.00000 | Radius: 10 yards | Target: Cone Front (104)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.50000 | PvP Coefficient: 0.80000 | Radius: 10 yards | Target: Cone Front (104)
+Hotfixed         : AP Coefficient (2.7216 -> 2.5), PvP Coefficient (1 -> 0.8)
 #2 (id=1028999)  : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000
 Description      : Slash all enemies in front of you for $s1 Chaos damage, and increase the damage your Chaos Strike and Blade Dance deal to them by $320338s1% for $320338d. Deals reduced damage beyond $s2 targets.
@@ -6035,7 +6035,7 @@ Class            : Havoc Demon Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 13
-Affecting spells : Demonic Wards (320381 effects: #1, #2), Demonic Wards (320382 effects: #1, #2), Viscous Ink (338682 effect#1)
+Affecting spells : Viscous Ink (338682 effect#1)
 Family Flags     : 63
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7648,56 +7648,6 @@ Effects          :
 #4 (id=807422)   : Apply Aura (6) | Modify Attacker Melee Crit Chance (187)
                    Base Value: -6 | Scaled Value: -6 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Fel energy thickens your skin to demonic proportions, increasing your Stamina by $s1% and your Armor by $s2%.
-
-Name             : Demonic Wards (desc=Rank 2) (id=320381) [Spell Family (107), Passive] 
-Class            : Vengeance Demon Hunter
-School           : Physical
-Spell Type       : None
-Spell Level      : 28
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ x....... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Passive (6), Only In Spellbook Until Learned (240), Cooldown Shared With AI Group (418)
-Effects          :
-#1 (id=807423)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
-                   Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
-                   Affected Spells: Demonic Wards (203513), Demonic Wards (278386)
-                   Family Flags: 63
-#2 (id=872125)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
-                   Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
-                   Affected Spells: Demonic Wards (203513), Demonic Wards (278386)
-                   Family Flags: 63
-Description      : Your tattoos reduce all damage taken by ${$abs($203513s1+$s1)}%.
-
-Name             : Demonic Wards (desc=Rank 3) (id=320382) [Spell Family (107), Passive] 
-Class            : Vengeance Demon Hunter
-School           : Physical
-Spell Type       : None
-Spell Level      : 43
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ x....... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Passive (6), Only In Spellbook Until Learned (240), Cooldown Shared With AI Group (418)
-Effects          :
-#1 (id=807424)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
-                   Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
-                   Affected Spells: Demonic Wards (203513), Demonic Wards (278386)
-                   Family Flags: 63
-#2 (id=872126)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
-                   Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
-                   Affected Spells: Demonic Wards (203513), Demonic Wards (278386)
-                   Family Flags: 63
-Description      : Your tattoos reduce all damage taken by ${$abs($203513s1+$320381s1+$s1)}%.
 
 Name             : Bouncing Glaives (id=320386) [Spell Family (107), Passive] 
 Talent Entry     : Generic [tree=class, row=3, col=3, max_rank=1, req_points=0]
@@ -10084,7 +10034,8 @@ Effects          :
 #1 (id=880357)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.92500 | PvP Coefficient: 1.00000 | Radius: 10 yards | Target: AOE enemy (instant) (16)
 #2 (id=880360)   : Direct Heal% (136)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.60000 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.6)
 #3 (id=880382)   : Trigger Spell (64): Fodder to the Flame
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 350644 | Target: Self (1)
 Description      : Your damaging abilities have a chance to call forth a demon from the Theater of Pain for $329554d. Throw Glaive deals lethal damage to the demon, which explodes on death, dealing $s1 $@spelldesc395041 damage to nearby enemies and healing you for $s2% of your maximum health. The explosion deals reduced damage beyond 5 targets.
@@ -10550,7 +10501,6 @@ Effects          :
 Description      : $@spelldesc355893
 
 Name             : The Hunt (id=370965) [Spell Family (107)] 
-Hotfixed         : Learn Level (48 -> 0)
 Talent Entry     : Generic [tree=class, row=9, col=3, max_rank=1, req_points=20]
 Class            : Demon Hunter
 School           : Nature
@@ -10583,13 +10533,12 @@ Description      : Charge to your target, striking them for $370966s1 $@spelldes
 The pursuit invigorates your soul, healing you for $?c1[$370968s1%][$370968s2%] of the damage you deal to your Hunt target for $370966d.
 
 Name             : The Hunt (id=370966) [Spell Family (107)] 
-Hotfixed         : Learn Level (48 -> 0)
 Class            : Demon Hunter
 School           : Nature
 Spell Type       : Melee
 Spell Level      : 48
 Range            : 100 yards
-Duration         : 30 seconds
+Duration         : 20 seconds
 Affecting spells : Demon Soul (163073 effects: #1, #2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #2, #3), Seething Chaos (394934 effects: #1, #2)
 Triggered by     : The Hunt (370965)
 Family Flags     : 16, 70, 82
@@ -10605,7 +10554,6 @@ Attributes       : ....x... ........ ..x..... ........   ........ ........ .....
 Effects          :
 #1 (id=982578)   : School Damage (2): nature
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 3.68550 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (4.095 -> 3.6855)
 #2 (id=982579)   : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=982580)   : Trigger Spell (64): The Hunt
@@ -10643,7 +10591,7 @@ Class            : Demon Hunter
 School           : Nature
 Spell Type       : Magic
 Spell Level      : 48
-Duration         : 30 seconds
+Duration         : 20 seconds
 Proc Chance      : 100%
 Proc Flags       : ..x.x.x. x.x.x.x. x.x..x.. ........ 
                  : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Trap Triggered
@@ -10661,13 +10609,14 @@ Attributes       : .......x ........ ........ ........   ........ ........ .....
                  : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Not In Spellbook Until Learned (269)
 Effects          :
 #1 (id=982584)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 22058 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 22058 | Target: Self (1)
+Hotfixed         : Base Value (25 -> 10)
 #2 (id=982585)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 22058 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 22058 | Target: Self (1)
+Hotfixed         : Base Value (50 -> 20)
 Description      : $@spelldesc370965
 
 Name             : The Hunt (id=370969) [Spell Family (107)] 
-Hotfixed         : Learn Level (48 -> 0)
 Class            : Demon Hunter
 School           : Nature
 Spell Type       : Magic
@@ -10689,7 +10638,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=982586)   : Apply Aura (6) | Periodic Damage (3): nature every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.61480 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (0.6831 -> 0.6148)
 Description      : $@spelldesc370965
 Tooltip          : Suffering $w1 $@spelldesc395042 damage every $t1 sec.
 
@@ -11147,9 +11095,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1026103)  : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
-                   Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+                   Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 0.50000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Sigil of Silence (204490), Sigil of Flame (204598), Sigil of Chains (204843), Sigil of Misery (207685), Elysian Decree (307046), Elysian Decree (339893), Elysian Decree (339894), Blind Faith (355894), Elysian Decree (389860)
                    Family Flags: 33
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : Increases the duration of Sigil effects by ${$s1/1000}.1 sec.
 
 Name             : Fel Flame Fortification (id=389705) [Spell Family (107), Passive] 
@@ -11478,9 +11427,10 @@ Effects          :
 #4 (id=1026286)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 389813 | Scaled Value: 389813 | PvP Coefficient: 1.00000 | Misc Value: 207684 | Misc Value 2: 0x2 | Target: Self (1)
 #5 (id=1026287)  : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
-                   Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+                   Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 0.50000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Sigil of Silence (204490), Sigil of Flame (204598), Sigil of Chains (204843), Sigil of Misery (207685), Elysian Decree (307046), Elysian Decree (339893), Elysian Decree (339894), Blind Faith (355894), Elysian Decree (389860)
                    Family Flags: 33
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #6 (id=1033914)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 394985 | Scaled Value: 394985 | PvP Coefficient: 1.00000 | Misc Value: 306830 | Misc Value 2: 0x2 | Target: Self (1)
 #7 (id=1034461)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)

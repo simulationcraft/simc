@@ -1,4 +1,4 @@
-SimulationCraft 1002-01 for World of Warcraft 10.0.2.46924 Live (hotfix 2022-12-13/46924)
+SimulationCraft 1002-01 for World of Warcraft 10.0.2.47067 Live (hotfix 2022-12-13/47067, git build dragonflight e3e07da2a9)
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -459,7 +459,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=521)      : Apply Aura (6) | Modify Casting Speed (216)
                    Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 0.33340 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (0.5 -> 0.3334)
 Description      : Forces the target to speak in Demonic, increasing the casting time of all spells by $s1% for $d.$?s103112[
 
 |CFFE55BB0Soulburn: Your Curse of Tongues will affect all enemies in a $104224A yard radius around your target.|R][]
@@ -2726,9 +2725,9 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=119452)   : Apply Player/Pet Aura (202) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Radius: 100 yards | Target: Self (1)
-Hotfixed         : Base Value (6 -> 3)
 #2 (id=326363)   : Apply Player/Pet Aura (202) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Radius: 100 yards | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Radius: 100 yards | Target: Self (1)
+Hotfixed         : Base Value (10 -> 5)
 Description      : All single-target damage done by you and your minions grants you and your pet shadowy shields that absorb $s1% of the damage dealt$?s219272[][ for $108366d], up to $?s219272[$219272s2][$s2]% of maximum health.
 
 Name             : Mortal Coil (desc=Talent) (id=108396) [Spell Family (5)] 
@@ -2828,7 +2827,8 @@ Effects          :
 #1 (id=119566)   : Apply Owner Area Aura (143) | Transfer Damage% (81)
                    Base Value: 10 | Scaled Value: 10 | Value Multiplier: 1 | PvP Coefficient: 1.00000 | Misc Value: 127 | Radius: 100 yards | Target: Self (1)
 #2 (id=119569)   : Apply Owner Area Aura (143) | Dummy (4)
-                   Base Value: 25 | Scaled Value: 25 | Value Multiplier: 1 | PvP Coefficient: 1.00000 | Misc Value: 127 | Radius: 100 yards | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | Value Multiplier: 1 | PvP Coefficient: 1.00000 | Misc Value: 127 | Radius: 100 yards | Target: Self (1)
+Hotfixed         : Base Value (25 -> 15)
 #3 (id=311358)   : Apply Owner Area Aura (143) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Value Multiplier: 1 | PvP Coefficient: 1.00000 | Misc Value: 127 | Radius: 100 yards | Target: Self (1)
 #4 (id=1041014)  : None (0)
@@ -5377,7 +5377,8 @@ Effects          :
 #1 (id=326663)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=326664)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (15 -> 10)
 #3 (id=326678)   : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: -15001 | Scaled Value: -15001 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Soul Leech (108366)
@@ -10413,7 +10414,6 @@ Attributes       : ........ ........ x....... .x......   ........ ..x..... .....
 Effects          :
 #1 (id=821519)   : Apply Aura (6) | Dummy (4)
                    Base Value: -40 | Scaled Value: -40 | PvP Coefficient: 0.25000 | Target: Self (1)
-Hotfixed         : Sub Type (107 -> 4), Misc Value (3 -> 0), Affects Spells, PvP Coefficient (1 -> 0.25)
 #2 (id=824005)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Curse of Weakness (702)
@@ -10426,7 +10426,6 @@ Hotfixed         : Sub Type (107 -> 4), Misc Value (3 -> 0), Affects Spells, PvP
                    Base Value: -40 | Scaled Value: -40 | PvP Coefficient: 0.75000 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Curse of Tongues (1714)
                    Family Flags: 102
-Hotfixed         : NEW EFFECT
 Description      : Your next Curse of Exhaustion, Curse of Tongues or Curse of Weakness cast within $d is amplified.
 
 $@spellname334275
@@ -15555,7 +15554,6 @@ Description      : Increases the damage of Demonbolt by $s2% and Shadow Bolt by 
 Tooltip          : Increases the damage of Demonbolt by $s2% and Shadow Bolt by $s1%.
 
 Name             : Soulburn (id=387626) [Spell Family (5)] 
-Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
@@ -16048,7 +16046,6 @@ Effects          :
 #2 (id=1025902)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effects (8)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 8 | Misc Value 2: 2364 (Label)
                    Affected Spells (Label): Profane Bargain (394747)
-Hotfixed         : Misc Value (3 -> 8)
 #3 (id=1030612)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 1985 (Label) | Target: Self (1)
                    Affected Spells (Label): Grimoire of Sacrifice (196099)
@@ -16735,7 +16732,6 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=1034733)  : Apply Aura (6) | Dummy (4)
                    Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (50 -> 150)
 #2 (id=1034734)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Hand of Gul'dan (105174)
