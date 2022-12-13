@@ -2828,6 +2828,23 @@ void seasoned_hunters_trophy( special_effect_t& effect )
   new seasoned_hunters_trophy_cb_t( effect, mastery, haste, crit );
 }
 
+// Gnarl's Discarded Tooth
+// 374233 Driver
+// 374249 Damage Driver
+// 374250 Damage
+void gnarls_discarded_tooth( special_effect_t& effect )
+{
+  auto missile = effect.trigger();
+  auto trigger = missile -> effectN( 1 ).trigger();
+
+  auto damage = create_proc_action<generic_aoe_proc_t>( "chill_of_the_depths", effect, "chill_of_the_depths", trigger -> id(), true);
+  damage -> base_dd_min = damage -> base_dd_max = effect.driver()->effectN(1).average(effect.item);
+  damage -> travel_speed = missile -> missile_speed();
+
+  effect.execute_action = damage;
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -3603,6 +3620,7 @@ void register_special_effects()
   register_special_effect( 392359, items::integrated_primal_fire );
   register_special_effect( 383817, items::bushwhackers_compass );
   register_special_effect( 392237, items::seasoned_hunters_trophy );
+  register_special_effect( 374233, items::gnarls_discarded_tooth );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );  // bronzed grip wrappings embellishment
