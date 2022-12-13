@@ -3203,7 +3203,7 @@ void broodkeepers_blaze(special_effect_t& effect)
 
     void trigger( action_t* a, action_state_t* s ) override
     {
-      if ( a->get_school() == SCHOOL_FIRE )
+      if ( dbc::is_school( a->get_school(), SCHOOL_FIRE ) )
       {
         dbc_proc_callback_t::trigger( a , s );
       }
