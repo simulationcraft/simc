@@ -2652,7 +2652,7 @@ void primal_ritual_shell( special_effect_t& effect )
       effect.stat_amount = effect.driver()->effectN( 5 ).average( effect.item );
       effect.spell_id = 390899;
       effect.stat = STAT_MASTERY_RATING;
-      effect.name_str = effect.trigger()->name_cstr();
+      effect.name_str = util::tokenize_fn( effect.trigger()->name_cstr() );
     }
     else if ( util::str_compare_ci( blessing, "stone" ) )
     {
@@ -2664,7 +2664,7 @@ void primal_ritual_shell( special_effect_t& effect )
       // Flame Turtle's Blessing - Fire Damage Proc [390835]
       effect.discharge_amount = effect.driver()->effectN( 3 ).average( effect.item );
       effect.spell_id = 390835;
-      effect.name_str = effect.trigger()->name_cstr();
+      effect.name_str = util::tokenize_fn( effect.trigger()->name_cstr() );
     }
     else if ( util::str_compare_ci( blessing, "sea" ) )
     {
