@@ -192,19 +192,19 @@ legs=loathsome_thunderhosen,id=195530,bonus_id=4800/4786/1498,enchant=fierce_arm
 feet=biornskin_moccasins,id=134193,bonus_id=1795/6808/4786/3300
 finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=1795/6808/4786/3300,gem_id=192932,enchant=devotion_of_versatility_3
 finger2=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498,gem_id=192932,enchant=devotion_of_versatility_3
-trinket1=windscar_whetstone,id=137486,bonus_id=4800/4786/1498
-trinket2=manic_grieftorch,id=194308,bonus_id=1795/6808/4786/3300
+trinket1=windscar_whetstone,id=137486,bonus_id=1795/6808/4786/3300
+trinket2=manic_grieftorch,id=194308,bonus_id=4800/4786/1498
 main_hand=primal_molten_mace,id=190509,bonus_id=3524/1679/8937/1540,enchant=frozen_devotion_3
 off_hand=primal_molten_mace,id=190509,bonus_id=3524/1679/8937/1540,enchant=frozen_devotion_3
 
 # Gear Summary
 # gear_ilvl=422.25
-# gear_agility=16641
+# gear_agility=5009
 # gear_stamina=13451
 # gear_attack_power=270
 # gear_crit_rating=3397
 # gear_haste_rating=1973
-# gear_mastery_rating=1921
+# gear_mastery_rating=2458
 # gear_versatility_rating=3659
 # gear_armor=3387
 # set_bonus=tier29_2pc=1
