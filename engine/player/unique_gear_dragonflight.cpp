@@ -1315,6 +1315,16 @@ void idol_of_pure_decay( special_effect_t& effect )
   new idol_of_pure_decay_cb_t( effect );
 }
 
+void shikaari_huntress_arrowhead( special_effect_t& effect )
+{
+  // against elite enemies, gives 10% more stats (default)
+  // against normal enemies, gives 10% less stats (NYI)
+  effect.custom_buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 384193 ) )
+    ->set_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect.item ) * 1.1 );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 void spiteful_storm( special_effect_t& effect )
 {
   struct spiteful_stormbolt_t : public generic_proc_t
@@ -3565,6 +3575,7 @@ void register_special_effects()
   register_special_effect( 381471, items::erupting_spear_fragment );
   register_special_effect( 383920, items::furious_ragefeather );
   register_special_effect( 388603, items::idol_of_pure_decay );
+  register_special_effect( 384191, items::shikaari_huntress_arrowhead );
   register_special_effect( 377466, items::spiteful_storm );
   register_special_effect( 381768, items::spoils_of_neltharus, true );
   register_special_effect( 375844, items::sustaining_alchemist_stone );
