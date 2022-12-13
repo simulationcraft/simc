@@ -3294,28 +3294,27 @@ void potent_venom( special_effect_t& effect )
 void allied_wristguards_of_companionship( special_effect_t& effect )
 {
   auto buff = create_buff<stat_buff_t>( effect.player, effect.trigger() );
-  buff -> add_stat( STAT_VERSATILITY_RATING, effect.driver() -> effectN( 1 ).average( effect.item ) );
+  buff->add_stat( STAT_VERSATILITY_RATING, effect.driver()->effectN( 1 ).average( effect.item ) );
 
-  timespan_t period = effect.driver() -> effectN( 1 ).period();
+  timespan_t period = effect.driver()->effectN( 1 ).period();
 
   effect.player->register_combat_begin( [ buff, period ]( player_t* p ) {
-  buff -> trigger( p -> sim -> rng().range( 1, 1 + p -> sim -> dragonflight_opts.allied_wristguards_allies ) );
-  make_repeating_event( p -> sim, period, [ buff, p ]() 
-    {
-      auto allies = 1 + p -> sim -> dragonflight_opts.allied_wristguards_allies;
+    int allies = 1 + p->sim->dragonflight_opts.allied_wristguards_allies;
 
-      if( p -> rng().roll( p -> sim -> dragonflight_opts.allied_wristguards_ally_leave_chance ) )
+    buff->trigger( p->sim->rng().range( 1, allies ) );
+
+    make_repeating_event( p->sim, period, [ buff, p, allies ]() {
+      if ( p->rng().roll( p->sim->dragonflight_opts.allied_wristguards_ally_leave_chance ) )
       {
-        allies = p -> sim -> rng().range( 1, 1 + p -> sim -> dragonflight_opts.allied_wristguards_allies );
-        buff -> expire();
-        buff -> trigger( allies );
+        buff->expire();
+        buff->trigger( p->sim->rng().range( 1, allies ) );
       }
-      else if( buff -> stack() < 1 + p -> sim -> dragonflight_opts.allied_wristguards_allies )
+      else if ( buff->check() < allies )
       {
-        buff -> expire();
-        buff -> trigger( allies );
+        buff->expire();
+        buff->trigger( allies );
       }
-      else if( buff -> stack() == 1 + p->sim->dragonflight_opts.allied_wristguards_allies)
+      else if ( buff->check() == allies )
       {
         return;
       }
