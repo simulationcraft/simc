@@ -52,6 +52,8 @@ trinket2=,id=193677,ilevel=421
 main_hand=,id=195529,ilevel=424,enchant=sophic_devotion_3
 off_hand=,id=195513,ilevel=421
 
+flask=phial_of_static_empowerment_3
+
 save=T29_Mage_Fire.simc
 
 mage="T29_Mage_Frost"
