@@ -94,18 +94,18 @@ legs=suramar_magistrate_leggings,id=137496,ilevel=421,enchant_id=6541
 feet=sandals_of_the_wild_sovereign,id=195532,ilevel=424,enchant_id=6607
 finger1=seal_of_filial_duty,id=195526,bonus_id=6514,ilevel=430,gem_id=192919,enchant_id=6556
 finger2=unstable_arcane_loop,id=193633,bonus_id=6514,ilevel=421,gem_id=192919,enchant_id=6556
-trinket1=irideus_fragment,id=193743,bonus_id=6652/1643/8767
+trinket1=timebreaching_talon,id=193791,bonus_id=7977/6652/8816/1594/8767
 trinket2=furious_ragefeather,id=193677,ilevel=421
 main_hand=stormlashs_last_resort,id=195529,ilevel=424,enchant_id=6643
 off_hand=scripture_of_primal_devotion,id=195513,ilevel=421
 
 # Gear Summary
-# gear_ilvl=421.94
+# gear_ilvl=418.88
 # gear_stamina=13370
 # gear_intellect=6698
 # gear_crit_rating=2838
-# gear_haste_rating=5434
-# gear_mastery_rating=2581
+# gear_haste_rating=5854
+# gear_mastery_rating=2028
 # gear_versatility_rating=982
 # gear_speed_rating=375
 # gear_avoidance_rating=200
