@@ -16732,4 +16732,34 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=1034733)  : Apply Aura (6) | Dummy (4)
                    Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000 | Target: Self (1)
-#2 (id=1034734)  : Apply Aura (6) | Add Percent Modifier (108): S
+#2 (id=1034734)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
+                   Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
+                   Affected Spells: Hand of Gul'dan (105174)
+                   Family Flags: 21
+Description      : $@spelldesc393702
+Tooltip          : Your next Hand of Gul'dan is instant cast and deals $s1% increased damage.
+
+Name             : Soul Flame (id=395157) [Spell Family (5), Hidden] 
+Class            : Warlock
+School           : Shadow
+Spell Type       : None
+Range            : 100 yards
+Duration         : 180 seconds
+Stacks           : 1 maximum
+Proc Chance      : 101%
+Triggered by     : Soul Flame (199471)
+Attributes       : .......x x....... ........ ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), No Threat (42), Allow Aura While Dead (116), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1035400)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Description      : $@spelldesc199471
+
+
