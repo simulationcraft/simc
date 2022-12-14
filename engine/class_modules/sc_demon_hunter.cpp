@@ -2389,7 +2389,7 @@ struct fel_devastation_t : public demon_hunter_spell_t
       double maximum_fury_refund = p()->talent.vengeance.darkglare_boon->effectN( 4 ).base_value();
       double fury_refund         = rng().range( minimum_fury_refund, maximum_fury_refund );
 
-      p()->cooldown.fel_devastation->adjust( cdr_reduction );
+      p()->cooldown.fel_devastation->adjust( -cdr_reduction );
       p()->resource_gain( RESOURCE_FURY, fury_refund, p()->gain.darkglare_boon );
     }
   }
