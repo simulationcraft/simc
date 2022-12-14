@@ -3216,7 +3216,7 @@ struct spirit_bomb_t : public demon_hunter_spell_t
 
     void copy_state(const action_state_t* s) override
     {
-      action_state_t::initialize();
+      action_state_t::copy_state(s);
       t29_vengeance_4pc_proc = debug_cast<const spirit_bomb_state_t*>(s)->t29_vengeance_4pc_proc;
     }
 
@@ -4686,7 +4686,7 @@ struct soul_cleave_t : public demon_hunter_attack_t
 
     void copy_state(const action_state_t* s) override
     {
-      action_state_t::initialize();
+      action_state_t::copy_state(s);
       t29_vengeance_4pc_proc = debug_cast<const soul_cleave_state_t*>(s)->t29_vengeance_4pc_proc;
     }
 
