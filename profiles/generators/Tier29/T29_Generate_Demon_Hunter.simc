@@ -42,7 +42,7 @@ chest=skybound_avengers_harness,id=200342,bonus_id=4800/4786/1498,enchant_id=662
 wrists=skybound_avengers_wristbands,id=200349,bonus_id=4800/4786/1498,gem_id=192945
 hands=skybound_avengers_grips,id=200344,bonus_id=4800/4786/1498
 waist=skybound_avengers_waistwrap,id=200348,bonus_id=4800/4786/1498,gem_id=192985
-legs=skybound_avengers_legguards,id=200346,bonus_id=4800/4786/1498,ilevel=424,enchant_id=6496
+legs=skybound_avengers_legguards,id=200346,bonus_id=4800/4786/1498,enchant_id=6496
 feet=iceclimbers_cleats,id=195509,bonus_id=4800/4786/1498
 finger1=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498,gem_id=192952,enchant_id=6556
 finger2=jeweled_signet_of_melandrus,id=134542,bonus_id=1795/6808/4786/3300,gem_id=192952,enchant_id=6556

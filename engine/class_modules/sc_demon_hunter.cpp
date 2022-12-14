@@ -6233,7 +6233,13 @@ std::string demon_hunter_t::default_rune() const
 
 std::string demon_hunter_t::default_temporary_enchant() const
 {
-  return demon_hunter_apl::temporary_enchant( this );
+  switch (specialization())
+  {
+    case DEMON_HUNTER_VENGEANCE:
+      return demon_hunter_apl::temporary_enchant_vengeance( this );
+    default:
+      return demon_hunter_apl::temporary_enchant_havoc( this );
+  }
 }
 
 // ==========================================================================
