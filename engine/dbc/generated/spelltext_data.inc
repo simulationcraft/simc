@@ -17413,7 +17413,7 @@ static const std::array<spelltext_data_t, 19193> __spelltext_data { {
   { 384584, "$@spelldesc383611", "Suffering ${$w1*($d/$t1)} Nature damage over $d.", 0 },
   { 384590, "While active, you automatically assume your Visage when you leave combat or after Soaring.\r\n\r\nActivate to disable this effect.", 0, "Racial" },
   { 384594, "Taking damage has a chance to increase your primary stat by $384598s1 and grant $384598s2 armor to yourself and $384605i closest allies for $384598d.", 0, 0 },
-  { 384598, "$@spelldesc384594", "Strength increased by $w1. Armor increased by $w2.", 0 },
+  { 384598, "$@spelldesc384594", "$pri increased by $w1. Armor increased by $w2.", 0 },
   { 384605, "$@spelldesc384594", "Armor increased by $w1.", 0 },
   { 384607, "Throw at a location, attaching itself to the surface or a nearby enemy. Detonates after $s1 sec, swapping your position with itself and any attached enemy.\r\n\r\nItem quality affects the distance this can be thrown. Only usable outdoors.", 0, 0 },
   { 384608, "Throw at a location, attaching itself to the surface or a nearby enemy. Detonates after $s1 sec, swapping your position with itself and any attached enemy.\r\n\r\nItem quality affects the distance this can be thrown. Only usable outdoors.", 0, 0 },
@@ -19196,13 +19196,14 @@ static const std::array<spelltext_data_t, 19193> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 10.0.2.47067
-static constexpr std::array<hotfix::client_hotfix_entry_t, 11> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 12> __spelltext_hotfix_data { {
   {      71,  0, "Hardened by battle, all damage taken is reduced by $s3%, your Stamina is increased by $s2% and your Armor is increased by $s1% of your Strength.", "Hardened by battle, your Stamina is increased by $s2% and your Armor is increased by $s1% of your Strength." },
   {  245013,  0, "All damage taken is reduced by $s2% and your Armor is increased by $s1%.\r\n\r\nStamina increased by $s3%.", "Your Armor is increased by $s1% and Stamina increased by $s3%." },
   {  300346,  0, "Moonfire, Soothe, Remove Corruption, and Rebirth are usable in Bear Form. Multiple uses of Ironfur may overlap.\r\n\r\nAll damage taken in Bear Form reduced by $s2%.", "Moonfire, Soothe, Remove Corruption, and Rebirth are usable in Bear Form. Multiple uses of Ironfur may overlap." },
   {  353367,  0, "Stamina increased by $s1%.\r\n\r\nArmor increased by $s2%.$?a358934[\r\n\r\nAll damage taken reduced by $s3%.][]", "Stamina increased by $s1%.\r\n\r\nArmor increased by $s2%." },
   {  374721,  0, "Stamina increased by $s1%.\r\nDamage taken reduced by $s2%.", "Stamina increased by $s1%." },
   {  377462,  0, "Designate another player to bond with, becoming their Guardian for $382281d.\r\n\r\nWhile bonded, you and your ally gain $382280s1 Versatility and restore $382280s2 health per second. If you are within 15 yards of one another, these bonuses are increased. $?(a137012|a137024|a137031|a137032|a137029|a137039|a356810)[][\r\n\r\n|CFF808080Valid only for healer specializations.|R]\r\n", "Designate another player to bond with, becoming their Guardian for $394457d.\r\n\r\nWhile bonded, you and your ally gain $382280s1 Versatility and restore $382280s2 health per second. If you are within 15 yards of one another, these bonuses are increased. $?(a137012|a137024|a137031|a137032|a137029|a137039|a356810)[][\r\n\r\n|CFF808080Valid only for healer specializations.|R]\r\n" },
+  {  384598,  1, "Strength increased by $w1. Armor increased by $w2.", "$pri increased by $w1. Armor increased by $w2." },
   {  389697,  0, "Increases the duration of Sigil effects by ${$s1/1000} sec.", "Increases the duration of Sigil effects by ${$s1/1000}.1 sec." },
   {  390655,  1, "Taking damage as well as dealing harmful and helpful abilities have a chance to shield you for $390764w1 for $390785d.", "Taking damage as well as dealing harmful and helpful abilities have a chance to shield you for $w1 for $390785d." },
   {  390835,  1, "Your harmful spells and abilities have a chance to deal an extra $390764w3 fire damage.", "Your harmful spells and abilities have a chance to deal an extra $w1 fire damage." },

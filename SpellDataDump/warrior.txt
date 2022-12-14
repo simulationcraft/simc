@@ -1,4 +1,4 @@
-SimulationCraft 1002-01 for World of Warcraft 10.0.2.47067 Live (hotfix 2022-12-14/47067)
+SimulationCraft 1002-01 for World of Warcraft 10.0.2.47067 Live (hotfix 2022-12-15/47067)
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Hotfixed         : Description
 Class            : Protection Warrior
@@ -2803,6 +2803,7 @@ Spell Type       : None
 Range            : 50000 yards
 Duration         : 2 seconds
 Proc Chance      : 101%
+Mechanic         : Stun
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ..x..... ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 

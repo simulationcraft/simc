@@ -1,4 +1,4 @@
-SimulationCraft 1002-01 for World of Warcraft 10.0.2.47067 Live (hotfix 2022-12-14/47067)
+SimulationCraft 1002-01 for World of Warcraft 10.0.2.47067 Live (hotfix 2022-12-15/47067)
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=8, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
@@ -6224,7 +6224,7 @@ Range            : 40 yards
 Duration         : 20 seconds
 Cooldown         : 180 seconds
 Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
-Affecting spells : Starfall (191034 effect#2), Astral Influence (197524 effects: #1, #3), Stellar Drift (202461 effect#1), Precise Alignment (340706 effect#1), Orbital Strike (390378 effects: #1, #3)
+Affecting spells : Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Precise Alignment (340706 effect#1), Orbital Strike (390378 effects: #1, #3)
 Family Flags     : 113
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6461,8 +6461,9 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=317501)   : Apply Aura (6) | Add Flat Modifier (107): Spell Radius (6)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 6 | Target: Self (1)
-                   Affected Spells: Incapacitating Roar (99), Tranquility (740), Starfall (50286), Typhoon (61391), Thrash (77758), Stampeding Roar (77761), Stampeding Roar (77764), Fungal Growth (81281), Wild Mushroom (88747), Wild Mushroom (88751), Swipe (106785), Thrash (106830), Stampeding Roar (106898), Typhoon (132469), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Tranquility (157982), Starfall (191034), Starfall (191037), Celestial Alignment (194223), Brutal Slash (202028), Overgrowth (203651), Brambles (213709), Swipe (213771), Primal Wrath (285381), Thorns (305497), Berserk (343216), After the Wildfire (371982), Celestial Alignment (383410)
-                   Family Flags: 3, 7, 10, 27, 32, 52, 53, 54, 55, 56, 72, 74, 82, 87, 88, 91, 93, 99, 100, 113, 126
+                   Affected Spells: Incapacitating Roar (99), Tranquility (740), Starfall (50286), Typhoon (61391), Thrash (77758), Stampeding Roar (77761), Stampeding Roar (77764), Fungal Growth (81281), Wild Mushroom (88747), Wild Mushroom (88751), Swipe (106785), Thrash (106830), Stampeding Roar (106898), Typhoon (132469), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Tranquility (157982), Starfall (191034), Starfall (191037), Brutal Slash (202028), Overgrowth (203651), Brambles (213709), Swipe (213771), Primal Wrath (285381), Thorns (305497), Berserk (343216), After the Wildfire (371982)
+                   Family Flags: 3, 7, 10, 27, 32, 52, 53, 54, 55, 56, 72, 74, 82, 87, 88, 91, 93, 99, 100, 126
+Hotfixed         : Affects Spells
 #4 (id=340874)   : Apply Aura (6) | Unknown(188)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
 #5 (id=874468)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Range (5)
@@ -16290,7 +16291,7 @@ GCD              : 1.5 seconds
 Duration         : 20 seconds
 Cooldown         : 180 seconds
 Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
-Affecting spells : Starfall (191034 effect#2), Astral Influence (197524 effects: #1, #3), Stellar Drift (202461 effect#1), Precise Alignment (340706 effect#1), Orbital Strike (390378 effects: #1, #3)
+Affecting spells : Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Precise Alignment (340706 effect#1), Orbital Strike (390378 effects: #1, #3)
 Family Flags     : 113
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -16303,7 +16304,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : No Threat (42), Aura Points On Client (268), Spellcast Override In Spellbook (310), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=1015322)  : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 6 - 20 yards | Target: AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 6 yards | Target: AOE enemy (instant) (16)
 #2 (id=1015323)  : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Bring the celestial bodies into alignment over the target area, blasting all enemies for $361237s1 Astral damage and applying Stellar Flare to them.
@@ -16556,7 +16557,7 @@ Effects          :
                    Affected Spells: Starfall (191034)
                    Family Flags: 119
 #5 (id=1039813)  : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 6 - 20 yards | Target: AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 6 yards | Target: AOE enemy (instant) (16)
 Description      : An improved Moonkin Form that grants the benefits of Celestial Alignment, and $s2% critical strike chance.
 
 Lasts $d. You may shapeshift in and out of this improved Moonkin Form for its duration.
@@ -18426,6 +18427,7 @@ Effects          :
 Description      : Dealing Astral damage has a chance to cause your next Wrath or Starfire cast during an Eclipse to become Astral and deal $s1% additional damage.
 
 Name             : Umbral Embrace (id=393763) [Spell Family (7)] 
+Hotfixed         : Attributes
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -18441,9 +18443,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ....x... ........ ........ 
+                 : ........ ........ ........ ........   .......x ....x... ........ ........ 
                  : ........ ........ ........ ........   
-                 : Can Proc From Procs (122), Aura Points On Client (268), Do Not Consume Aura Stack On Proc (428)
+                 : Can Proc From Procs (122), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428)
 Effects          :
 #1 (id=1032879)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)

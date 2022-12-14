@@ -1,4 +1,4 @@
-SimulationCraft 1002-01 for World of Warcraft 10.0.2.47067 Live (hotfix 2022-12-14/47067)
+SimulationCraft 1002-01 for World of Warcraft 10.0.2.47067 Live (hotfix 2022-12-15/47067)
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -13627,7 +13627,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=1021623)  : Dummy (3)
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (8 -> 5)
 Description      : Sacrifice $s1% of your Soul Leech to gain a Soul Shard.
 
 
