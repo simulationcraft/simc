@@ -26,29 +26,29 @@ off_hand=stormslash,id=193688,bonus_id=6808/4786/1643,enchant_id=6649
 
 save=T29_Demon_Hunter_Havoc.simc
 
-# demonhunter="T29_Demon_Hunter_Vengeance"
-# level=70
-# race=blood_elf
-# spec=vengeance
-# role=tank
-# position=front
-# talents=2233221
+demonhunter="T29_Demon_Hunter_Vengeance"
+level=70
+race=blood_elf
+spec=vengeance
+role=tank
+position=front
+talents=2233221
 
-# head=mercurial_punishers_hood,id=188892,bonus_id=1498/7187/6935,gem_id=173129
-# neck=cabochon_of_the_infinite_flight,id=185820,bonus_id=1595/6536/6646/6935,gem_id=173129
-# shoulders=mercurial_punishers_shoulderpads,id=188896,bonus_id=1505/7187
-# back=blighted_margraves_cloak,id=178755,bonus_id=1592/6536/6646,enchant=soul_vitality
-# chest=mercurial_punishers_jerkin,id=188894,bonus_id=1505/7187,enchant=eternal_skirmish
-# wrists=umbrahide_armguards,id=172321,bonus_id=1588/7046/6649/6650/6935,gem_id=173129
-# hands=gloves_of_haunting_fixation,id=178832,bonus_id=1592/6536/6646
-# waist=umbrahide_waistguard,id=172320,bonus_id=1588/8120/6649/6650/6935,gem_id=173129
-# legs=mercurial_punishers_breeches,id=188893,bonus_id=1498/7187
-# feet=moccasins_of_dreadful_absolution,id=189798,bonus_id=1524/7187,enchant=eternal_agility
-# finger1=signet_of_collapsing_stars,id=185813,bonus_id=1595/6536/6646/6935,gem_id=173129,enchant=tenet_of_versatility
-# finger2=stitchfleshs_misplaced_signet,id=178736,bonus_id=1592/6536/6646/6935,gem_id=173129,enchant=tenet_of_versatility
-# trinket1=phial_of_putrefaction,id=178771,bonus_id=1592/6536/6646
-# trinket2=ticking_sack_of_terror,id=190652,bonus_id=1595/6536/6646
-# main_hand=alandiens_tortured_twinblades,id=189846,bonus_id=1524/7187,enchant=lightless_force
-# off_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=1592/6536/6646,enchant=sinful_revelation
+head=windborne_hatsuburi,id=195492,bonus_id=4800/4786/1498/7187/6935,gem_id=192945
+neck=elemental_lariat,id=193001,bonus_id=8836/8840/8902/8960/8783/8782/8802/8790,gem_id=192945/192945/192945
+shoulders=skybound_avengers_ailerons,id=200347,bonus_id=4800/4786/1498
+back=decorated_commanders_cindercloak,id=195482,bonus_id=4800/4786/1498
+chest=skybound_avengers_harness,id=200342,bonus_id=4800/4786/1498,enchant_id=6625
+wrists=skybound_avengers_wristbands,id=200349,bonus_id=4800/4786/1498,gem_id=192945
+hands=skybound_avengers_grips,id=200344,bonus_id=4800/4786/1498
+waist=skybound_avengers_waistwrap,id=200348,bonus_id=4800/4786/1498,gem_id=192985
+legs=skybound_avengers_legguards,id=200346,bonus_id=4800/4786/1498,ilevel=424,enchant_id=6496
+feet=iceclimbers_cleats,id=195509,bonus_id=4800/4786/1498
+finger1=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498,gem_id=192952,enchant_id=6556
+finger2=jeweled_signet_of_melandrus,id=134542,bonus_id=1795/6808/4786/3300,gem_id=192952,enchant_id=6556
+trinket1=manic_grieftorch,id=194308,bonus_id=4800/4786/1498
+trinket2=whispering_incarnate_icon,id=194301,bonus_id=4800/4786/1498
+main_hand=infused_stormglaives,id=195491,bonus_id=4800/4786/1498/6808,enchant_id=6649
+off_hand=infused_stormglaives,id=195491,bonus_id=4800/4786/1498/6808,enchant_id=6649
 
-# save=T29_Demon_Hunter_Vengeance.simc
+save=T29_Demon_Hunter_Vengeance.simc
