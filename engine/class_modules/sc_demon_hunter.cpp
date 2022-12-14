@@ -6314,7 +6314,8 @@ void demon_hunter_t::create_cooldowns()
   cooldown.sigil_of_silence                  = get_cooldown( "sigil_of_silence" );
   cooldown.fel_devastation                   = get_cooldown( "fel_devastation" );
   cooldown.volatile_flameblood_icd           = get_cooldown( "volatile_flameblood_icd" );
-  cooldown.volatile_flameblood_icd->duration = 1_s;
+  cooldown.volatile_flameblood_icd->duration =
+      timespan_t::from_seconds( talent.vengeance.volatile_flameblood->internal_cooldown().total_seconds() );
 }
 
 // demon_hunter_t::create_gains =============================================
