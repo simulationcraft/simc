@@ -162,6 +162,7 @@ void marksmanship( player_t* p )
   default_->add_action( "call_action_list,name=st,if=active_enemies<3|!talent.trick_shots" );
   default_->add_action( "call_action_list,name=trickshots,if=active_enemies>2" );
 
+  cds->add_action( "invoke_external_buff,name=power_infusion,if=buff.trueshot.remains>12" );
   cds->add_action( "berserking,if=buff.trueshot.up|fight_remains<13" );
   cds->add_action( "blood_fury,if=buff.trueshot.up|cooldown.trueshot.remains>30|fight_remains<16" );
   cds->add_action( "ancestral_call,if=buff.trueshot.up|cooldown.trueshot.remains>30|fight_remains<16" );
