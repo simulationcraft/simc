@@ -384,15 +384,10 @@ void shocking_disclosure( special_effect_t& effect )
 
 namespace enchants
 {
-custom_cb_t writ_enchant( stat_e stat, bool cr )
+custom_cb_t writ_enchant( stat_e stat )
 {
-  return [ stat, cr ]( special_effect_t& effect ) {
+  return [ stat ]( special_effect_t& effect ) {
     auto amount = effect.driver()->effectN( 1 ).average( effect.player );
-    if ( cr )
-    {
-      amount = item_database::apply_combat_rating_multiplier( effect.player, CR_MULTIPLIER_WEAPON,
-                                                              effect.player->level(), amount );
-    }
 
     auto new_driver = effect.trigger();
     auto new_trigger = new_driver->effectN( 1 ).trigger();
@@ -448,12 +443,7 @@ void wafting_devotion( special_effect_t& effect )
   auto new_trigger = new_driver->effectN( 1 ).trigger();
 
   auto haste = effect.driver()->effectN( 1 ).average( effect.player );
-  haste = item_database::apply_combat_rating_multiplier( effect.player, CR_MULTIPLIER_WEAPON,
-                                                         effect.player->level(), haste );
-
   auto speed = effect.driver()->effectN( 2 ).average( effect.player );
-  speed = item_database::apply_combat_rating_multiplier( effect.player, CR_MULTIPLIER_WEAPON,
-                                                         effect.player->level(), speed );
 
   std::string buff_name = new_trigger->name_cstr();
   util::tokenize( buff_name );
@@ -493,25 +483,19 @@ void completely_safe_rockets( special_effect_t& effect )
 
 void high_intensity_thermal_scanner( special_effect_t& effect )
 {
+  double value = effect.driver()->effectN( 1 ).average( effect.player );
+
   auto crit_buff = create_buff<stat_buff_t>( effect.player, "high_intensity_thermal_scanner_crit", effect.trigger() );
-  double crit = effect.driver() -> effectN( 1 ).average( effect.player );
-  crit = item_database::apply_combat_rating_multiplier( effect.player, CR_MULTIPLIER_WEAPON, effect.player -> level(), crit );
-  crit_buff->add_stat( STAT_CRIT_RATING, crit );
+  crit_buff->add_stat( STAT_CRIT_RATING, value );
 
   auto vers_buff = create_buff<stat_buff_t>( effect.player, "high_intensity_thermal_scanner_vers", effect.trigger() );
-  double vers = effect.driver() -> effectN( 1 ).average( effect.player );
-  vers = item_database::apply_combat_rating_multiplier( effect.player, CR_MULTIPLIER_WEAPON, effect.player -> level(), vers );
-  vers_buff->add_stat( STAT_VERSATILITY_RATING, vers );
+  vers_buff->add_stat( STAT_VERSATILITY_RATING, value );
 
   auto haste_buff = create_buff<stat_buff_t>( effect.player, "high_intensity_thermal_scanner_haste", effect.trigger() );
-  double haste = effect.driver() -> effectN( 1 ).average( effect.player );
-  haste = item_database::apply_combat_rating_multiplier( effect.player, CR_MULTIPLIER_WEAPON, effect.player -> level(), haste );
-  haste_buff->add_stat( STAT_HASTE_RATING, haste );
+  haste_buff->add_stat( STAT_HASTE_RATING, value );
 
   auto mastery_buff = create_buff<stat_buff_t>( effect.player, "high_intensity_thermal_scanner_mastery", effect.trigger() );
-  double mastery = effect.driver() -> effectN( 1 ).average( effect.player );
-  mastery = item_database::apply_combat_rating_multiplier( effect.player, CR_MULTIPLIER_WEAPON, effect.player -> level(), mastery );
-  mastery_buff->add_stat( STAT_MASTERY_RATING, mastery );
+  mastery_buff->add_stat( STAT_MASTERY_RATING, value );
 
   struct buff_cb_t : public dbc_proc_callback_t
   {
@@ -572,7 +556,6 @@ void gyroscopic_kaleidoscope( special_effect_t& effect )
 
   auto buff_data = effect.player -> find_spell( buff_id );
   double stat = buff_data -> effectN( 1 ).average( effect.player );
-  stat = item_database::apply_combat_rating_multiplier( effect.player, CR_MULTIPLIER_WEAPON, effect.player -> level(), stat );
 
   auto buff = create_buff<stat_buff_t>( effect.player, "gyroscopic_kaleidoscope", buff_data );
   buff -> add_stat( util::parse_stat_type( effect.player -> dragonflight_opts.gyroscopic_kaleidoscope_stat ), stat );
@@ -586,26 +569,19 @@ void gyroscopic_kaleidoscope( special_effect_t& effect )
 void projectile_propulsion_pinion( special_effect_t& effect )
 {
   auto buff_data = effect.player -> find_spell( 385942 );
+  double value = effect.driver()->effectN( 1 ).average( effect.player ) / 2;
 
   auto crit_buff = create_buff<stat_buff_t>( effect.player, "projectile_propulsion_pinion_crit", buff_data );
-  double crit = effect.driver() -> effectN( 1 ).average( effect.player ) / 2;
-  crit = item_database::apply_combat_rating_multiplier( effect.player, CR_MULTIPLIER_WEAPON, effect.player -> level(), crit );
-  crit_buff->add_stat( STAT_CRIT_RATING, crit );
+  crit_buff->add_stat( STAT_CRIT_RATING, value );
 
   auto vers_buff = create_buff<stat_buff_t>( effect.player, "projectile_propulsion_pinion_vers", buff_data );
-  double vers = effect.driver() -> effectN( 1 ).average( effect.player ) / 2;
-  vers = item_database::apply_combat_rating_multiplier( effect.player, CR_MULTIPLIER_WEAPON, effect.player -> level(), vers );
-  vers_buff->add_stat( STAT_VERSATILITY_RATING, vers );
+  vers_buff->add_stat( STAT_VERSATILITY_RATING, value );
 
   auto haste_buff = create_buff<stat_buff_t>( effect.player, "projectile_propulsion_pinion_haste", buff_data );
-  double haste = effect.driver() -> effectN( 1 ).average( effect.player ) / 2;
-  haste = item_database::apply_combat_rating_multiplier( effect.player, CR_MULTIPLIER_WEAPON, effect.player -> level(), haste );
-  haste_buff->add_stat( STAT_HASTE_RATING, haste );
+  haste_buff->add_stat( STAT_HASTE_RATING, value );
 
   auto mastery_buff = create_buff<stat_buff_t>( effect.player, "projectile_propulsion_pinion_mastery", buff_data );
-  double mastery = effect.driver() -> effectN( 1 ).average( effect.player ) / 2;
-  mastery = item_database::apply_combat_rating_multiplier( effect.player, CR_MULTIPLIER_WEAPON, effect.player -> level(), mastery );
-  mastery_buff->add_stat( STAT_MASTERY_RATING, mastery );
+  mastery_buff->add_stat( STAT_MASTERY_RATING, value );
 
   std::map<stat_e, stat_buff_t*> buffs = {
     { STAT_CRIT_RATING, crit_buff },
@@ -3559,11 +3535,11 @@ void register_special_effects()
   register_special_effect( { 390243, 390244, 390246 }, enchants::writ_enchant() );  // frozen writ
   register_special_effect( { 390248, 390249, 390251 }, enchants::writ_enchant() );  // wafting writ
   register_special_effect( { 390215, 390217, 390219 },
-                           enchants::writ_enchant( STAT_STR_AGI_INT, false ) );     // sophic writ
+                           enchants::writ_enchant( STAT_STR_AGI_INT ) );     // sophic writ
   register_special_effect( { 390346, 390347, 390348 },
                            enchants::writ_enchant( STAT_BONUS_ARMOR ) );            // earthen devotion
   register_special_effect( { 390222, 390227, 390229 },
-                           enchants::writ_enchant( STAT_STR_AGI_INT, false ) );     // sophic devotion
+                           enchants::writ_enchant( STAT_STR_AGI_INT ) );     // sophic devotion
   register_special_effect( { 390351, 390352, 390353 }, enchants::frozen_devotion );
   register_special_effect( { 390358, 390359, 390360 }, enchants::wafting_devotion );
 

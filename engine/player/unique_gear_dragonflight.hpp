@@ -29,7 +29,7 @@ void shocking_disclosure( special_effect_t& );
 
 namespace enchants
 {
-std::function<void( special_effect_t& )> writ_enchant( stat_e stat = STAT_NONE, bool cr = true );
+std::function<void( special_effect_t& )> writ_enchant( stat_e stat = STAT_NONE );
 void frozen_devotion( special_effect_t& );
 void wafting_devotion( special_effect_t& );
 }
