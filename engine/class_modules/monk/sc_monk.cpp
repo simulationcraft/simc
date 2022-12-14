@@ -276,6 +276,21 @@ public:
       }
     }
 
+    // Allow this ability to be cast during SCK
+    if ( this->cast_during_sck && !this->background && !this->dual )
+    {
+      if ( this->usable_while_casting )
+      {
+        this->cast_during_sck = false;
+        p()->sim->print_debug( "{}: cast_during_sck ignored because usable_while_casting = true", this->full_name() );
+      }
+      else
+      {
+        this->usable_while_casting = true;
+        this->use_while_casting = true;
+      }
+    }
+
     // Resonant Fists talent
     if ( p()->talent.general.resonant_fists->ok() )
     {
@@ -288,21 +303,6 @@ public:
   void init_finished() override
   {
     ab::init_finished();
-
-    // Allow this ability to be cast during SCK
-    if ( this->cast_during_sck && !this->background && !this->dual )
-    {
-      if ( this->usable_while_casting )
-      {
-        this->cast_during_sck = false;
-        p()->sim->print_debug( "{}: cast_during_sck ignored because usable_while_casting = true", this->full_name() );
-      }
-      else
-      {
-        this->usable_while_casting = true;
-        this->use_while_casting    = true;
-      }
-    }
 
     if ( ab::data().affected_by( p()->passives.keefers_skyreach_debuff->effectN( 1 ) ) )
       keefers_skyreach_proc = p()->get_proc( std::string( "Keefer's Skyreach: " ) + full_name() );
@@ -1102,7 +1102,7 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
 
     // These abilities are able to be used during Spinning Crane Kick
     if ( cast_during_sck )
-      usable_while_casting = p()->channeling && p()->channeling->id == p()->find_action_id( "spinning_crane_kick" );
+      usable_while_casting = p()->channeling && p()->channeling->id == p()->find_action( "spinning_crane_kick" )->id;
 
     return monk_action_t::ready();
   }
@@ -2209,7 +2209,8 @@ struct sck_tick_action_t : public monk_melee_attack_t
     if ( motc_stacks > 0 )
         am *= 1 + ( motc_stacks * p()->passives.cyclone_strikes->effectN( 1 ).percent() );
 
-    am *= 1 + p()->buff.dance_of_chiji_hidden->check_value();
+    if ( p()->buff.dance_of_chiji_hidden->check() )
+      am *= p()->talent.windwalker.dance_of_chiji->effectN( 1 ).percent();
 
     am *= 1 + p()->talent.windwalker.crane_vortex->effectN( 1 ).percent();
 
@@ -2330,8 +2331,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
   {
     double c = monk_melee_attack_t::cost();
 
-    if ( p()->buff.dance_of_chiji->check() )
-        c += p()->passives.dance_of_chiji->effectN( 1 ).base_value();  // saved as -2
+    c += p()->buff.dance_of_chiji->check_value();  // saved as -2
 
     if ( c < 0 )
       c = 0;
@@ -2348,8 +2348,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     {
         double cost = base_costs[RESOURCE_CHI];
 
-        if ( p()->buff.dance_of_chiji_hidden->up() )
-            cost += p()->buff.dance_of_chiji->value();
+        cost += p()->buff.dance_of_chiji->check_value();
 
         if ( cost < 0 )
             cost = 0;
@@ -2367,10 +2366,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     if ( p()->specialization() == MONK_WINDWALKER )
     {
       if ( p()->buff.dance_of_chiji->up() )
-      {
-        p()->buff.dance_of_chiji->expire();
         p()->buff.dance_of_chiji_hidden->trigger();
-      }
     }
 
     monk_melee_attack_t::execute();
@@ -2396,6 +2392,13 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
         p()->active_actions.breath_of_fire->target = execute_state->target;
         p()->active_actions.breath_of_fire->execute();
     }
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    p()->buff.dance_of_chiji->expire();
+
+    monk_melee_attack_t::impact( s );
   }
 
   void last_tick( dot_t* dot ) override
@@ -7712,14 +7715,14 @@ void monk_t::create_buffs ()
       ->set_quiet ( true )  // In-game does not show this buff but I would like to use it for background stuff
       ->add_invalidate ( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
-    buff.dance_of_chiji = make_buff ( this, "dance_of_chiji", passives.dance_of_chiji )
-      ->set_trigger_spell ( talent.windwalker.dance_of_chiji );
+    buff.dance_of_chiji = make_buff( this, "dance_of_chiji", passives.dance_of_chiji )
+      ->set_trigger_spell( talent.windwalker.dance_of_chiji )
+      ->set_default_value_from_effect( 1 );
 
-    buff.dance_of_chiji_hidden = make_buff ( this, "dance_of_chiji_hidden" )
-      ->set_trigger_spell ( talent.windwalker.dance_of_chiji )
-      ->set_duration ( timespan_t::from_seconds ( 1.5 ) )
-      ->set_quiet ( true )
-      ->set_default_value ( talent.windwalker.dance_of_chiji->effectN ( 1 ).percent() );
+    buff.dance_of_chiji_hidden = make_buff( this, "dance_of_chiji_hidden" )
+      ->set_trigger_spell( talent.windwalker.dance_of_chiji )
+      ->set_duration( timespan_t::from_seconds( 1.5 ) )
+      ->set_quiet( true );
 
     buff.fae_exposure = make_buff( this, "fae_exposure_heal", passives.fae_exposure_heal )
       ->set_trigger_spell( talent.windwalker.faeline_harmony )
