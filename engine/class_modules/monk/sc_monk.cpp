@@ -2371,6 +2371,8 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 
     monk_melee_attack_t::execute();
 
+    p()->buff.dance_of_chiji->expire();
+
     //===========
     // Post-Execute
     //===========
@@ -2398,7 +2400,6 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::last_tick( dot );
 
-    p()->buff.dance_of_chiji->expire();
     p()->buff.dance_of_chiji_hidden->expire();
 
     p()->buff.chi_energy->expire();
