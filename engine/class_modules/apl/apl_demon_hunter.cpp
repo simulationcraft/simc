@@ -42,11 +42,18 @@ std::string rune( const player_t* p )
            "disabled" );
 }
 
-std::string temporary_enchant( const player_t* p )
+std::string temporary_enchant_havoc( const player_t* p )
 {
-  return ( ( p->true_level >= 61 ) ? "main_hand:buzzing_rune_3/off_hand:buzzing_rune_3" :
-           ( p->true_level >= 51 ) ? "main_hand:shaded_sharpening_stone/off_hand:shaded_sharpening_stone" :
-           "disabled" );
+  return ( ( p->true_level >= 61 )   ? "main_hand:buzzing_rune_3/off_hand:buzzing_rune_3"
+           : ( p->true_level >= 51 ) ? "main_hand:shaded_sharpening_stone/off_hand:shaded_sharpening_stone"
+                                     : "disabled" );
+}
+
+std::string temporary_enchant_vengeance( const player_t* p )
+{
+  return ( ( p->true_level >= 61 )   ? "main_hand:howling_rune_3/off_hand:howling_rune_3"
+           : ( p->true_level >= 51 ) ? "main_hand:shaded_sharpening_stone/off_hand:shaded_sharpening_stone"
+                                     : "disabled" );
 }
 
 //havoc_apl_start
