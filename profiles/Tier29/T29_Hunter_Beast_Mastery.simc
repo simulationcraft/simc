@@ -1,0 +1,129 @@
+hunter="T29_Hunter_Beast_Mastery"
+source=default
+spec=beast_mastery
+level=70
+race=orc
+role=attack
+position=ranged_back
+talents=B0PAAAAAAAAAAAAAAAAAAAAAA4AgWSAIEAAAAAAAAAAAaEHoIhmEJkIRCaSkWIJkIkoRSE
+
+# Default consumables
+potion=elemental_potion_of_ultimate_power_3
+flask=phial_of_tepid_versatility_3
+food=fated_fortune_cookie
+augmentation=draconic
+temporary_enchant=main_hand:completely_safe_rockets_3
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/augmentation
+actions.precombat+=/food
+actions.precombat+=/summon_pet
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/use_item,name=algethar_puzzle_box
+actions.precombat+=/steel_trap,precast_time=1.5,if=!talent.wailing_arrow&talent.steel_trap
+
+# Executed every time the actor is available.
+actions=auto_shot
+actions+=/call_action_list,name=cds
+actions+=/call_action_list,name=st,if=active_enemies<2|!talent.beast_cleave&active_enemies<3
+actions+=/call_action_list,name=cleave,if=active_enemies>2|talent.beast_cleave&active_enemies>1
+
+actions.cds=berserking,if=!talent.bestial_wrath|buff.bestial_wrath.up|fight_remains<16
+actions.cds+=/use_items,slots=trinket1,if=buff.call_of_the_wild.up|!talent.call_of_the_wild&(buff.bestial_wrath.up&(buff.bloodlust.up|target.health.pct<20))|fight_remains<31
+actions.cds+=/use_items,slots=trinket2,if=buff.call_of_the_wild.up|!talent.call_of_the_wild&(buff.bestial_wrath.up&(buff.bloodlust.up|target.health.pct<20))|fight_remains<31
+actions.cds+=/use_item,name=manic_grieftorch,if=pet.main.buff.frenzy.remains>execute_time
+actions.cds+=/use_item,name=darkmoon_deck_box_rime
+actions.cds+=/use_item,name=darkmoon_deck_box_inferno
+actions.cds+=/use_item,name=darkmoon_deck_box_dance
+actions.cds+=/use_item,name=darkmoon_deck_box_watcher
+actions.cds+=/use_item,name=decoration_of_flame
+actions.cds+=/use_item,name=stormeaters_boon
+actions.cds+=/use_item,name=windscar_whetstone
+actions.cds+=/use_item,name=globe_of_jagged_ice
+actions.cds+=/blood_fury,if=buff.call_of_the_wild.up|!talent.call_of_the_wild&(buff.bestial_wrath.up&(buff.bloodlust.up|target.health.pct<20))|fight_remains<16
+actions.cds+=/ancestral_call,if=buff.call_of_the_wild.up|!talent.call_of_the_wild&(buff.bestial_wrath.up&(buff.bloodlust.up|target.health.pct<20))|fight_remains<16
+actions.cds+=/fireblood,if=buff.call_of_the_wild.up|!talent.call_of_the_wild&(buff.bestial_wrath.up&(buff.bloodlust.up|target.health.pct<20))|fight_remains<10
+actions.cds+=/potion,if=buff.call_of_the_wild.up|!talent.call_of_the_wild&(buff.bestial_wrath.up&(buff.bloodlust.up|target.health.pct<20))|fight_remains<31
+
+actions.cleave=barbed_shot,target_if=max:debuff.latent_poison.stack,if=debuff.latent_poison.stack>9&(pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<=gcd+0.25|talent.scent_of_blood&cooldown.bestial_wrath.remains<12+gcd|full_recharge_time<gcd&cooldown.bestial_wrath.remains)
+actions.cleave+=/barbed_shot,target_if=min:dot.barbed_shot.remains,if=pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<=gcd+0.25|talent.scent_of_blood&cooldown.bestial_wrath.remains<12+gcd|full_recharge_time<gcd&cooldown.bestial_wrath.remains
+actions.cleave+=/multishot,if=gcd-pet.main.buff.beast_cleave.remains>0.25
+actions.cleave+=/kill_command,if=full_recharge_time<gcd&talent.alpha_predator&talent.kill_cleave
+actions.cleave+=/call_of_the_wild
+actions.cleave+=/explosive_shot
+actions.cleave+=/stampede,if=buff.bestial_wrath.up|target.time_to_die<15
+actions.cleave+=/bloodshed
+actions.cleave+=/death_chakram
+actions.cleave+=/bestial_wrath
+actions.cleave+=/steel_trap
+actions.cleave+=/a_murder_of_crows
+actions.cleave+=/barbed_shot,target_if=max:debuff.latent_poison.stack,if=debuff.latent_poison.stack>9&(talent.wild_instincts&buff.call_of_the_wild.up|fight_remains<9|talent.wild_call&charges_fractional>1.2)
+actions.cleave+=/barbed_shot,target_if=min:dot.barbed_shot.remains,if=talent.wild_instincts&buff.call_of_the_wild.up|fight_remains<9|talent.wild_call&charges_fractional>1.2
+actions.cleave+=/kill_command
+actions.cleave+=/dire_beast
+actions.cleave+=/serpent_sting,target_if=min:remains,if=refreshable&target.time_to_die>duration
+actions.cleave+=/barrage,if=pet.main.buff.frenzy.remains>execute_time
+actions.cleave+=/kill_shot
+actions.cleave+=/aspect_of_the_wild
+actions.cleave+=/cobra_shot,if=focus.time_to_max<gcd*2|buff.aspect_of_the_wild.up&focus.time_to_max<gcd*4
+actions.cleave+=/wailing_arrow,if=pet.main.buff.frenzy.remains>execute_time|fight_remains<5
+actions.cleave+=/bag_of_tricks,if=buff.bestial_wrath.down|target.time_to_die<5
+actions.cleave+=/arcane_torrent,if=(focus+focus.regen+30)<focus.max
+
+actions.st=barbed_shot,target_if=min:dot.barbed_shot.remains,if=pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<=gcd+0.25|talent.scent_of_blood&pet.main.buff.frenzy.stack<3&cooldown.bestial_wrath.ready
+actions.st+=/kill_command,if=full_recharge_time<gcd&talent.alpha_predator
+actions.st+=/call_of_the_wild
+actions.st+=/death_chakram
+actions.st+=/bloodshed
+actions.st+=/stampede
+actions.st+=/a_murder_of_crows
+actions.st+=/steel_trap
+actions.st+=/explosive_shot
+actions.st+=/bestial_wrath
+actions.st+=/kill_command
+actions.st+=/barbed_shot,target_if=min:dot.barbed_shot.remains,if=talent.wild_instincts&buff.call_of_the_wild.up|talent.wild_call&charges_fractional>1.4|full_recharge_time<gcd&cooldown.bestial_wrath.remains|talent.scent_of_blood&(cooldown.bestial_wrath.remains<12+gcd|full_recharge_time+gcd<8&cooldown.bestial_wrath.remains<24+(8-gcd)+full_recharge_time)|fight_remains<9
+actions.st+=/dire_beast
+actions.st+=/serpent_sting,target_if=min:remains,if=refreshable&target.time_to_die>duration
+actions.st+=/kill_shot
+actions.st+=/aspect_of_the_wild
+actions.st+=/cobra_shot
+actions.st+=/wailing_arrow,if=pet.main.buff.frenzy.remains>execute_time|target.time_to_die<5
+actions.st+=/bag_of_tricks,if=buff.bestial_wrath.down|target.time_to_die<5
+actions.st+=/arcane_pulse,if=buff.bestial_wrath.down|target.time_to_die<5
+actions.st+=/arcane_torrent,if=(focus+focus.regen+15)<focus.max
+
+head=stormwing_harriers_skullmask,id=200390,bonus_id=4800/4786/1498,gem_id=192945
+neck=eye_of_the_vengeful_hurricane,id=195496,bonus_id=4800/4786/1498,gem_id=192945/192945/192945
+shoulders=stormwing_harriers_pinions,id=200392,bonus_id=4800/4786/1498
+back=acidproof_webbing,id=195511,bonus_id=4800/4786/1498
+chest=stormwing_harriers_cuirass,id=200387,bonus_id=4800/4786/1498,enchant=waking_stats_3
+wrists=surgingsong_conductors,id=195516,bonus_id=4800/4786/1498,gem_id=192945
+hands=stormwing_harriers_handguards,id=200389,bonus_id=4800/4786/1498
+waist=unnatural_dripstone_cinch,id=195507,bonus_id=4800/4786/1498,gem_id=192945
+legs=stormwing_harriers_greaves,id=200391,bonus_id=4800/4786/1498,enchant=fierce_armor_kit_3
+feet=daring_chasmleapers,id=195495,bonus_id=4800/4786/1498
+finger1=seal_of_filial_duty,id=195526,bonus_id=4800/4786/1497,gem_id=192945,enchant=devotion_of_haste_3
+finger2=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498,gem_id=192945,enchant=devotion_of_haste_3
+trinket1=decoration_of_flame,id=194299,bonus_id=4800/4786/1498
+trinket2=manic_grieftorch,id=194308,bonus_id=4800/4786/1498
+main_hand=neltharax_enemy_of_the_sky,id=195527,bonus_id=4800/4786/1497,enchant=high_intensity_thermal_scanner_3
+
+# Gear Summary
+# gear_ilvl=421.20
+# gear_agility=5315
+# gear_stamina=13304
+# gear_crit_rating=2864
+# gear_haste_rating=4132
+# gear_mastery_rating=2161
+# gear_versatility_rating=1831
+# gear_armor=4778
+# set_bonus=tier29_2pc=1
+# set_bonus=tier29_4pc=1
