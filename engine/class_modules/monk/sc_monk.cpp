@@ -2371,8 +2371,6 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 
     monk_melee_attack_t::execute();
 
-    p()->buff.dance_of_chiji->expire();
-
     //===========
     // Post-Execute
     //===========
@@ -2394,6 +2392,13 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
         p()->active_actions.breath_of_fire->target = execute_state->target;
         p()->active_actions.breath_of_fire->execute();
     }
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    p()->buff.dance_of_chiji->expire();
+
+    monk_melee_attack_t::impact( s );
   }
 
   void last_tick( dot_t* dot ) override
