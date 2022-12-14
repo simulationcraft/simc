@@ -3243,6 +3243,17 @@ struct spirit_bomb_t : public demon_hunter_spell_t
       return new spirit_bomb_state_t(this, target);
     }
 
+    void snapshot_state( action_state_t* state, result_amount_type rt ) override
+    {
+      if ( p()->set_bonuses.t29_vengeance_4pc->ok() &&
+           rng().roll( p()->set_bonuses.t29_vengeance_4pc->effectN( 2 ).percent() ) )
+      {
+        debug_cast<spirit_bomb_state_t*>( state )->t29_vengeance_4pc_proc = true;
+      }
+      // snapshot_state after so that it includes the DA multiplier from the proc
+      demon_hunter_spell_t::snapshot_state( state, rt );
+    }
+
     void execute() override
     {
       demon_hunter_spell_t::execute();
@@ -3309,8 +3320,7 @@ struct spirit_bomb_t : public demon_hunter_spell_t
     if ( fragments_consumed > 0 )
     {
       damage->set_target( target );
-      spirit_bomb_state_t* damage_state = debug_cast<spirit_bomb_state_t*>(damage->get_state());
-      damage_state->t29_vengeance_4pc_proc = rng().roll( p()->set_bonuses.t29_vengeance_4pc->effectN( 2 ).percent() );
+      action_state_t* damage_state = damage->get_state();
       damage->snapshot_state( damage_state, result_amount_type::DMG_DIRECT );
       damage_state->da_multiplier *= fragments_consumed;
       damage->schedule_execute( damage_state );
@@ -4713,6 +4723,17 @@ struct soul_cleave_t : public demon_hunter_attack_t
       return new soul_cleave_state_t(this, target);
     }
 
+    void snapshot_state( action_state_t* state, result_amount_type rt ) override
+    {
+      if ( p()->set_bonuses.t29_vengeance_4pc->ok() &&
+           rng().roll( p()->set_bonuses.t29_vengeance_4pc->effectN( 2 ).percent() ) )
+      {
+        debug_cast<soul_cleave_state_t*>( state )->t29_vengeance_4pc_proc = true;
+      }
+      // snapshot_state after so that it includes the DA multiplier from the proc
+      demon_hunter_attack_t::snapshot_state( state, rt );
+    }
+
     void impact( action_state_t* s ) override
     {
       demon_hunter_attack_t::impact( s );
@@ -4790,10 +4811,6 @@ struct soul_cleave_t : public demon_hunter_attack_t
 
   void execute() override
   {
-    soul_cleave_state_t* soul_cleave_state = debug_cast<soul_cleave_state_t*>(execute_action->get_state());
-    soul_cleave_state->t29_vengeance_4pc_proc = rng().roll( p()->set_bonuses.t29_vengeance_4pc->effectN( 2 ).percent() );
-    execute_action->snapshot_state(soul_cleave_state, result_amount_type::DMG_DIRECT);
-
     demon_hunter_attack_t::execute();
 
     if ( heal )
