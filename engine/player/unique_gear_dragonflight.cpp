@@ -1898,7 +1898,7 @@ void decoration_of_flame( special_effect_t& effect )
       double m = proc_spell_t::composite_da_multiplier( s );
 
      // Damage increases by 10% per target based on in game testing
-      m *= 1.0 + ( n_targets() - 1 ) * 0.1;
+      m *= 1.0 + ( s -> n_targets - 1 ) * 0.1;
 
       return m;
     }
