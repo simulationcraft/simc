@@ -502,6 +502,10 @@ public:
 
     if ( current_resource() == RESOURCE_CHI )
     {
+      // Dance of Chi-Ji talent triggers from spending chi
+      if ( current_resource() == RESOURCE_CHI )
+        p()->buff.dance_of_chiji->trigger();
+
         if ( ab::cost() > 0 )
         {
             if ( p()->talent.windwalker.spiritual_focus->ok() )
@@ -600,19 +604,13 @@ public:
           p()->buff.faeline_stomp_reset->trigger();
         }
       }
+
   }
 
   void impact( action_state_t* s ) override
   {
     if ( s->action->school == SCHOOL_PHYSICAL )
       trigger_mystic_touch( s );
-
-    // Don't want to cause the buff to be cast and then used up immediately.
-    if ( current_resource() == RESOURCE_CHI )
-    {
-      // Dance of Chi-Ji talent triggers from spending chi
-      p()->buff.dance_of_chiji->trigger();
-    }
 
     ab::impact( s );
 
@@ -2331,7 +2329,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
   {
     double c = monk_melee_attack_t::cost();
 
-    c += p()->buff.dance_of_chiji->check_value();  // saved as -2
+    c += p()->buff.dance_of_chiji_hidden->check_value();  // saved as -2
 
     if ( c < 0 )
       c = 0;
@@ -2348,7 +2346,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     {
         double cost = base_costs[RESOURCE_CHI];
 
-        cost += p()->buff.dance_of_chiji->check_value();
+        cost += p()->buff.dance_of_chiji_hidden->check_value();
 
         if ( cost < 0 )
             cost = 0;
@@ -2366,7 +2364,10 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     if ( p()->specialization() == MONK_WINDWALKER )
     {
       if ( p()->buff.dance_of_chiji->up() )
+      {
+        p()->buff.dance_of_chiji->expire();
         p()->buff.dance_of_chiji_hidden->trigger();
+      }
     }
 
     monk_melee_attack_t::execute();
@@ -2392,13 +2393,6 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
         p()->active_actions.breath_of_fire->target = execute_state->target;
         p()->active_actions.breath_of_fire->execute();
     }
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    p()->buff.dance_of_chiji->expire();
-
-    monk_melee_attack_t::impact( s );
   }
 
   void last_tick( dot_t* dot ) override
@@ -7716,11 +7710,10 @@ void monk_t::create_buffs ()
       ->add_invalidate ( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
     buff.dance_of_chiji = make_buff( this, "dance_of_chiji", passives.dance_of_chiji )
-      ->set_trigger_spell( talent.windwalker.dance_of_chiji )
-      ->set_default_value_from_effect( 1 );
+      ->set_trigger_spell( talent.windwalker.dance_of_chiji );
 
     buff.dance_of_chiji_hidden = make_buff( this, "dance_of_chiji_hidden" )
-      ->set_trigger_spell( talent.windwalker.dance_of_chiji )
+      ->set_default_value( passives.dance_of_chiji->effectN( 1 ).base_value() )
       ->set_duration( timespan_t::from_seconds( 1.5 ) )
       ->set_quiet( true );
 
