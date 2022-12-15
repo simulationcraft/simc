@@ -4696,15 +4696,6 @@ struct secret_technique_t : public rogue_attack_t
     add_child( clone_attack );
   }
 
-  void init() override
-  {
-    rogue_attack_t::init();
-
-    // BUG: Does not trigger alacrity, see https://github.com/SimCMinMax/WoW-BugTracker/issues/816
-    if ( p()->bugs )
-      affected_by.alacrity = false;
-  }
-
   void execute() override
   {
     rogue_attack_t::execute();
@@ -5622,6 +5613,12 @@ struct keep_it_rolling_t : public rogue_spell_t
   {
     rogue_spell_t::execute();
     trigger_keep_it_rolling();
+
+    // 2022-12-12 -- Casting Keep it Rolling consumes the Loaded Dice buff due to a bug
+    if ( p()->bugs )
+    {
+      p()->buffs.loaded_dice->expire();
+    }
   }
 };
 
@@ -6508,6 +6505,7 @@ struct roll_the_bones_t : public buff_t
   rogue_t* rogue;
   std::array<buff_t*, 6> buffs;
   std::array<proc_t*, 6> procs;
+  std::array<proc_t*, 6> loss_procs;
 
   struct overflow_state
   {
@@ -6534,34 +6532,33 @@ struct roll_the_bones_t : public buff_t
     };
   }
 
-  void set_procs()
-  {
-    procs = {
-      rogue->procs.roll_the_bones_1,
-      rogue->procs.roll_the_bones_2,
-      rogue->procs.roll_the_bones_3,
-      rogue->procs.roll_the_bones_4,
-      rogue->procs.roll_the_bones_5,
-      rogue->procs.roll_the_bones_6
-    };
-  }
-
   void extend_secondary_buffs( timespan_t duration )
   {
     for ( auto buff : buffs )
     {
-      buff->extend_duration( rogue, duration );
-    }
+      // 2022-12-12 -- Keep it Rolling does not appear to be able to extend buffs past 60s
+      auto extend_duration = rogue->bugs ?
+        std::max( 0_s, std::min( duration, ( 60_s - buff->remains() ) ) ) :
+        duration;
 
-    // TOCHECK -- Extend the current container buff to match
-    this->extend_duration( rogue, duration );
+      buff->extend_duration( rogue, extend_duration );
+    }
   }
 
   void expire_secondary_buffs()
   {
-    for ( auto buff : buffs )
+    for ( int i = 0; i < buffs.size(); i++ )
     {
-      buff->expire();
+      if ( buffs[ i ]->check() )
+      {
+        // If we don't have a buff in the overflow list, assume it is lost
+        if ( !range::contains( overflow_states, buffs[ i ], []( const auto& state ) { return state.buff; } ) )
+        {
+          loss_procs[ i ]->occur();
+        }
+
+        buffs[ i ]->expire();
+      }
     }
   }
 
@@ -7412,10 +7409,6 @@ void actions::rogue_action_t<Base>::trigger_count_the_odds( const action_state_t
   if ( !ab::result_is_hit( state->result ) )
     return;
 
-  // Currently it appears all Rogues can trigger this with Ambush
-  if ( !p()->bugs && p()->specialization() != ROGUE_OUTLAW )
-    return;
-
   // Confirmed via logs this works with Shadowmeld and Shadow Dance
   double stealth_bonus = 1.0;
   if ( p()->stealthed( STEALTH_BASIC | STEALTH_SHADOWMELD | STEALTH_SHADOW_DANCE ) )
@@ -8037,7 +8030,7 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
 {
   auto split = util::string_split<util::string_view>( name_str, "." );
 
-  if ( split[0] == "combo_points" )
+  if ( split[ 0 ] == "combo_points" )
   {
     if ( split.size() == 1 )
     {
@@ -8160,23 +8153,72 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
       return get_active_dots( action->internal_id );
     } );
   }
-  else if ( util::str_compare_ci( name_str, "rtb_buffs" ) )
+  else if ( util::str_compare_ci( split[ 0 ], "rtb_buffs" ) )
   {
-    if ( specialization() != ROGUE_OUTLAW )
-    {
+    if ( !talent.outlaw.roll_the_bones->ok() )
       return expr_t::create_constant( name_str, 0 );
-    }
 
-    return make_fn_expr( name_str, [ this ]() {
-      double n_buffs = 0;
-      n_buffs += buffs.skull_and_crossbones->check() != 0;
-      n_buffs += buffs.grand_melee->check() != 0;
-      n_buffs += buffs.ruthless_precision->check() != 0;
-      n_buffs += buffs.true_bearing->check() != 0;
-      n_buffs += buffs.broadside->check() != 0;
-      n_buffs += buffs.buried_treasure->check() != 0;
-      return n_buffs;
-    } );
+    buffs::roll_the_bones_t* primary = static_cast<buffs::roll_the_bones_t*>( buffs.roll_the_bones );
+    if ( split.size() == 1 || ( split.size() == 2 && util::str_compare_ci( split[ 1 ], "total" ) ) )
+    {
+      return make_fn_expr( name_str, [ this, primary ]() {
+        double n_buffs = 0;
+        for ( auto buff : primary->buffs )
+          n_buffs += buff->check();
+        return n_buffs;
+      } );
+    }
+    else if ( split.size() == 2 && util::str_compare_ci( split[ 1 ], "longer" ) )
+    {
+      return make_fn_expr( name_str, [ this, primary ]() {
+        double n_buffs = 0;
+        for ( auto buff : primary->buffs )
+          n_buffs += ( buff->check() && buff->remains_gt( primary->remains() ) );
+        return n_buffs;
+      } );
+    }
+    else if ( split.size() == 2 && util::str_compare_ci( split[ 1 ], "shorter" ) )
+    {
+      return make_fn_expr( name_str, [ this, primary ]() {
+        double n_buffs = 0;
+        for ( auto buff : primary->buffs )
+          n_buffs += ( buff->check() && buff->remains_lt( primary->remains() ) );
+        return n_buffs;
+      } );
+    }
+    else if ( split.size() == 2 && util::str_compare_ci( split[ 1 ], "normal" ) )
+    {
+      return make_fn_expr( name_str, [ this, primary ]() {
+        double n_buffs = 0;
+        for ( auto buff : primary->buffs )
+          n_buffs += ( buff->check() && buff->remains() == primary->remains() );
+        return n_buffs;
+      } );
+    }
+    else if ( split.size() == 3 && ( util::str_compare_ci( split[ 1 ], "will_lose" ) ||
+                                     util::str_compare_ci( split[ 1 ], "will_retain" ) ) )
+    {
+      util::string_view buff_name = split[ 2 ];
+      auto it = range::find_if( primary->buffs, [buff_name]( const buff_t* buff ) { 
+        return util::str_compare_ci( buff->name_str, buff_name ); } );
+
+      if ( it == primary->buffs.end() )
+      {
+        throw std::invalid_argument( fmt::format( "Invalid rtb_buffs.{} buff name given '{}'.", split[ 1 ], buff_name ) );
+      }
+      else
+      {
+        const buff_t* rtb_buff = ( *it );
+        if( util::str_compare_ci( split[ 1 ], "will_lose" ) )
+          return make_fn_expr( name_str, [ this, primary, rtb_buff ]() {
+            return rtb_buff->check() && !rtb_buff->remains_gt( primary->remains() );
+          } );
+        else
+          return make_fn_expr( name_str, [ this, primary, rtb_buff ]() {
+            return rtb_buff->check() && rtb_buff->remains_gt( primary->remains() );
+          } );
+      }
+    }
   }
   else if ( util::str_compare_ci(name_str, "priority_rotation") )
   {
@@ -9093,13 +9135,16 @@ void rogue_t::init_procs()
 
   procs.weaponmaster        = get_proc( "Weaponmaster"                 );
 
-  procs.roll_the_bones_1    = get_proc( "Roll the Bones: 1 buff"       );
-  procs.roll_the_bones_2    = get_proc( "Roll the Bones: 2 buffs"      );
-  procs.roll_the_bones_3    = get_proc( "Roll the Bones: 3 buffs"      );
-  procs.roll_the_bones_4    = get_proc( "Roll the Bones: 4 buffs"      );
-  procs.roll_the_bones_5    = get_proc( "Roll the Bones: 5 buffs"      );
-  procs.roll_the_bones_6    = get_proc( "Roll the Bones: 6 buffs"      );
-  static_cast<buffs::roll_the_bones_t*>( buffs.roll_the_bones )->set_procs();
+  // Roll the Bones Procs, two loops for display purposes in the HTML report
+  auto roll_the_bones = static_cast<buffs::roll_the_bones_t*>( buffs.roll_the_bones );
+  for ( int i = 0; i < roll_the_bones->buffs.size(); i++ )
+  {
+    roll_the_bones->procs[ i ] = get_proc( fmt::format( "Roll the Bones Buffs: {}", i + 1 ) );
+  }
+  for ( int i = 0; i < roll_the_bones->buffs.size(); i++ )
+  {
+    roll_the_bones->loss_procs[ i ] = get_proc( "Roll the Bones Buff Lost: " + roll_the_bones->buffs[ i ]->name_str );
+  }
 
   procs.deepening_shadows   = get_proc( "Deepening Shadows"            );
 

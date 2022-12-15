@@ -414,7 +414,9 @@ struct stat_buff_t : public buff_t
   double value() override { stack(); return stats[ 0 ].current_value; }
 
   stat_buff_t* add_stat( stat_e s, double a, const stat_check_fn& c = stat_check_fn() );
+  stat_buff_t* set_stat( stat_e s, double a, const stat_check_fn& c = stat_check_fn() );
   stat_buff_t* add_stat_from_effect( size_t i, double a, const stat_check_fn& c = stat_check_fn() );
+  stat_buff_t* set_stat_from_effect( size_t i, double a, const stat_check_fn& c = stat_check_fn() );
 
   stat_buff_t( actor_pair_t q, util::string_view name );
   stat_buff_t( actor_pair_t q, util::string_view name, const spell_data_t*, const item_t* item = nullptr );

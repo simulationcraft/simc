@@ -112,29 +112,29 @@ actions.trinkets+=/use_item,name=architects_ingenuity_core
 actions.trinkets+=/use_items,if=buff.voidform.up|buff.power_infusion.up|buff.dark_ascension.up|cooldown.void_eruption.remains>10
 
 head=draconic_hierophants_archcowl,id=200327,bonus_id=4800/4786/1498,gem_id=192985
-neck=elemental_lariat,id=193001,bonus_id=1540/8793/6652/7936/7979/8767/8782,gem_id=192948/192953/192945
+neck=elemental_lariat,id=193001,bonus_id=1540/8793/6652/7936/7979/8767/8782,gem_id=192961/192961/192961
 shoulders=draconic_hierophants_wisdom,id=200329,bonus_id=4800/4786/1498
 back=fireproof_drape,id=193763,bonus_id=6808/4786/1643
-chest=arcanists_resonant_robes,id=134415,bonus_id=1795/6808/4786/3300/6935,enchant=waking_stats_3
+chest=draconic_hierophants_vestment,id=200324,bonus_id=4800/4786/1498,enchant=waking_stats_3
 wrists=vibrant_wildercloth_wristwraps,id=193510,bonus_id=8836/8840/8902/8802/8793/8932,ilevel=418,gem_id=192948
 hands=draconic_hierophants_grips,id=200326,bonus_id=4800/4786/1498
 waist=sky_saddle_cord,id=193691,bonus_id=6808/4786/1643,gem_id=192948
-legs=draconic_hierophants_britches,id=200328,bonus_id=4800/4786/1498,enchant=frozen_spellthread_3
+legs=leggings_of_swirling_runes,id=133610,bonus_id=1795/6808/4786/3300/6935,enchant=frozen_spellthread_3
 feet=sandals_of_the_wild_sovereign,id=195532,bonus_id=4800/4786/1498
-finger1=seal_of_filial_duty,id=195526,bonus_id=4800/4786/1497/6935,gem_id=192948,enchant=devotion_of_haste_3
-finger2=woebearers_band,id=133638,bonus_id=1795/6808/4786/3300/6935,gem_id=192948,enchant=devotion_of_haste_3
+finger1=seal_of_filial_duty,id=195526,bonus_id=4800/4786/1497/6935,gem_id=192961,enchant=devotion_of_haste_3
+finger2=woebearers_band,id=133638,bonus_id=1795/6808/4786/3300/6935,gem_id=192961,enchant=devotion_of_haste_3
 trinket1=horn_of_valor,id=133642,bonus_id=1795/6808/4786/3300/6935
 trinket2=furious_ragefeather,id=193677,bonus_id=6808/4786/1643
 main_hand=final_grade,id=193707,bonus_id=6808/4786/1643,enchant=sophic_devotion_3
 
 # Gear Summary
-# gear_ilvl=421.40
-# gear_stamina=13250
-# gear_intellect=6638
-# gear_crit_rating=1291
-# gear_haste_rating=4724
-# gear_mastery_rating=4573
-# gear_versatility_rating=1160
-# gear_armor=2034
+# gear_ilvl=421.80
+# gear_stamina=13346
+# gear_intellect=6665
+# gear_crit_rating=942
+# gear_haste_rating=5167
+# gear_mastery_rating=4758
+# gear_versatility_rating=945
+# gear_armor=2045
 # set_bonus=tier29_2pc=1
 # set_bonus=tier29_4pc=1

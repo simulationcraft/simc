@@ -1,4 +1,4 @@
-SimulationCraft 1002-01 for World of Warcraft 10.0.2.46924 Live (hotfix 2022-12-07/46924)
+SimulationCraft 1002-01 for World of Warcraft 10.0.2.47067 Live (hotfix 2022-12-14/47067)
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Talent Entry     : Generic [tree=class, row=2, col=3, max_rank=1, req_points=0]
 Class            : Paladin, Mage
@@ -162,7 +162,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=91)       : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.80652 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (0.7332 -> 0.80652)
 Description      : Throws a fiery ball that causes $s1 Fire damage.$?a157642[
 
 Each time your Fireball fails to critically strike a target, it gains a stacking $157644s1% increased critical strike chance. Effect ends when Fireball critically strikes.][]
@@ -360,7 +359,6 @@ Attributes       : ........ ........ x....... ........   ...x...x ........ .....
 Effects          :
 #1 (id=126904)   : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.55590 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: AOE enemy (instant) (16)
-Hotfixed         : SP Coefficient (0.514706 -> 0.5559)
 #2 (id=630)      : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Radius: 8 yards | Mechanic: Snare | Target: AOE enemy (instant) (16)
 Description      : Calls down a pillar of fire, burning all enemies within the area for $s1 Fire damage and reducing their movement speed by $s2% for $d.$?a205037[
@@ -420,7 +418,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=882)      : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.18302 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (0.16638 -> 0.18302)
 Description      : Scorches an enemy for $s1 Fire damage. Castable while moving.$?a383604[
 
 Scorch critical strikes increase your movement speed by $236060s1% for $236060d.][]
@@ -556,7 +553,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=4785)     : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.34763 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (1.28346 -> 1.34763)
 Description      : Hurls an immense fiery boulder that causes $s1 Fire damage$?a321711[ and an additional $321712o2 Fire damage over $321712d][].$?a383669[
 
 Pyroblast's initial damage is increased by $383669s1% when the target is above $383669s3% health or below $383669s2% health.][]
@@ -740,7 +736,6 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=5692)     : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.69300 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : SP Coefficient (0.66 -> 0.693)
 #2 (id=127998)   : Apply Aura (6) | Dummy (4)
                    Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=290011)   : Apply Aura (6) | Dummy (4)
@@ -5477,7 +5472,6 @@ Attributes       : ........ ........ x.x....x x..x....   .....x.. ........ .....
 Effects          :
 #1 (id=344285)   : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.30960 | PvP Coefficient: 1.20000 | Chain Multiplier: 0.65 | Chain Targets: 1 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 1.2)
 #2 (id=344286)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000
 Description      : $@spelldesc30455
@@ -5664,17 +5658,25 @@ Effects          :
                    Affected Spells: Blizzard (12486), Slow (31589), Ray of Frost (205021), Chilled (205708), Cone of Cold (212792), Flurry (228354), Frozen Orb (289308), Mass Slow (391104)
                    Family Flags: 20, 72
 #2 (id=740367)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
-                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 0.50000 | Misc Value: 32 | Target: Self (1)
+                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Ray of Frost (205021)
                    Family Flags: 56
+Hotfixed         : PvP Coefficient (0.5 -> 1)
 #3 (id=1041319)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
-                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 0.50000 | Misc Value: 23 | Target: Self (1)
+                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
                    Family Flags: 69
+Hotfixed         : PvP Coefficient (0.5 -> 1)
 #4 (id=1041320)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
-                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 0.50000 | Misc Value: 32 | Target: Self (1)
+                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
                    Family Flags: 69
+Hotfixed         : PvP Coefficient (0.5 -> 1)
 #5 (id=1041484)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
-                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 0.50000 | Misc Value: 12 | Misc Value 2: 2427 (Label)
+                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 2427 (Label)
+Hotfixed         : PvP Coefficient (0.5 -> 1)
+#6 (id=1045601)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 2449 (Label) | Target: Self (1)
+                   Affected Spells (Label): Freezing Cold (394255)
+Hotfixed         : NEW EFFECT
 Description      : All of your snare effects reduce the target's movement speed by an additional $s1%.
 
 Name             : Glacial Insulation (id=235297) [Spell Family (3), Passive] 
@@ -12501,7 +12503,6 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.50000 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Frostbolt (116), Icicle (148022), Glacial Spike (199786), Frostbolt (228597), Glacial Spike (228600)
                    Family Flags: 5, 64, 115
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : Frostbolt and $?s199786[Glacial Spike][Icicle] critical strike damage increased by $s1%.
 
 Name             : Glacial Assault (id=378947) [Spell Family (3), Passive] 
@@ -13916,7 +13917,6 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1015922)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.75000 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.75)
 Description      : Consuming Clearcasting increases the damage of your next 2 Arcane Blasts by $s1%.
 
 Name             : Nether Precision (id=383783) [Spell Family (3)] 
@@ -14524,7 +14524,6 @@ Effects          :
                    Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1017270)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.65000 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.65)
 Description      : Arcane Barrage deals an additional $s2% damage against targets below $s1% health.
 
 Name             : Prodigious Savant (id=384612) [Spell Family (3), Passive] 
@@ -14547,11 +14546,9 @@ Effects          :
 #1 (id=1017321)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.80000 | Misc Value: 12 | Misc Value 2: 1759 (Label) | Target: Self (1)
                    Affected Spells (Label): Mastery: Savant (190740)
-Hotfixed         : PvP Coefficient (1 -> 0.8)
 #2 (id=1017322)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 3 (23)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.80000 | Misc Value: 23 | Misc Value 2: 1759 (Label) | Target: Self (1)
                    Affected Spells (Label): Mastery: Savant (190740)
-Hotfixed         : PvP Coefficient (1 -> 0.8)
 Description      : Arcane Charges further increase Mastery effectiveness of Arcane Blast and Arcane Barrage by $s1%.
 
 Name             : Charged Orb (id=384651) [Spell Family (3), Passive] 
@@ -15254,6 +15251,7 @@ School           : Frost
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 3 seconds
+Labels           : 2449: Frigid Winds (235224 effect#6)
 Mechanic         : Snare
 Attributes       : ........ x....... .......x x..x....   .....x.. ..x..... ........ ........ 
                  : ..x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ..x.x... 

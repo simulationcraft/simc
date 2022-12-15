@@ -394,6 +394,7 @@ struct player_t : public actor_t
   // Misc Multipliers
   // auto attack modifier and multiplier (for Jeweled Signet of Melandrus and similar effects)
   double auto_attack_modifier;
+  double auto_attack_base_modifier;
   double auto_attack_multiplier;
 
   // Scale Factors

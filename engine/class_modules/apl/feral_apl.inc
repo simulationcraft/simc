@@ -59,6 +59,7 @@ cooldown->add_action( "convoke_the_spirits,if=buff.tigers_fury.up&combo_points<3
 cooldown->add_action( "berserking" );
 cooldown->add_action( "shadowmeld,if=buff.tigers_fury.up&buff.bs_inc.down&combo_points<4&buff.sudden_ambush.down&dot.rake.pmultiplier<1.6&energy>40&druid.rake.ticks_gained_on_refresh>spell_targets.swipe_cat*2-2&target.time_to_die>5" );
 cooldown->add_action( "potion,if=buff.bs_inc.up|fight_remains<cooldown.bs_inc.remains|fight_remains<35" );
+cooldown->add_action( "use_item,name=manic_grieftorch,if=energy.deficit>40" );
 cooldown->add_action( "use_items" );
 
 owlweaving->add_action( "sunfire,line_cd=4*gcd" );
@@ -74,6 +75,7 @@ bloodtalons->add_action( "thrash_cat,if=buff.bt_thrash.down" );
 bloodtalons->add_action( "rake,if=buff.bt_rake.down&combo_points>4" );
 
 def->add_action( "prowl" );
+def->add_action( "invoke_external_buff,name=power_infusion,if=buff.bs_inc.up|fight_remains<cooldown.bs_inc.remains" );
 def->add_action( "variable,name=need_bt,value=talent.bloodtalons.enabled&buff.bloodtalons.down" );
 def->add_action( "tigers_fury" );
 def->add_action( "rake,if=buff.prowl.up|buff.shadowmeld.up" );
@@ -81,7 +83,7 @@ def->add_action( "cat_form,if=!buff.cat_form.up" );
 def->add_action( "auto_attack,if=!buff.prowl.up&!buff.shadowmeld.up" );
 def->add_action( "call_action_list,name=cooldown" );
 def->add_action( "adaptive_swarm,target_if=((!dot.adaptive_swarm_damage.ticking|dot.adaptive_swarm_damage.remains<2)&(dot.adaptive_swarm_damage.stack<3|!dot.adaptive_swarm_heal.stack>1)&!action.adaptive_swarm_heal.in_flight&!action.adaptive_swarm_damage.in_flight&!action.adaptive_swarm.in_flight)&target.time_to_die>5|active_enemies>2&!dot.adaptive_swarm_damage.ticking&energy<35&target.time_to_die>5" );
-def->add_action( "feral_frenzy,if=combo_points<2" );
+def->add_action( "feral_frenzy,if=combo_points<2|combo_points=2&buff.bs_inc.up" );
 def->add_action( "run_action_list,name=aoe,if=spell_targets.swipe_cat>1&talent.primal_wrath.enabled" );
 def->add_action( "ferocious_bite,if=buff.apex_predators_craving.up" );
 def->add_action( "call_action_list,name=bloodtalons,if=variable.need_bt&!buff.bs_inc.up" );

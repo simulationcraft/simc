@@ -1,4 +1,4 @@
-SimulationCraft 1002-01 for World of Warcraft 10.0.2.46924 Live (hotfix 2022-12-07/46924)
+SimulationCraft 1002-01 for World of Warcraft 10.0.2.47067 Live (hotfix 2022-12-14/47067)
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=8, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
@@ -1252,7 +1252,6 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=12001)    : Apply Aura (6) | Threat (10)
                    Base Value: 650 | Scaled Value: 650 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
-Hotfixed         : Base Value (550 -> 650)
 #2 (id=12002)    : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 16979 | Scaled Value: 16979 | PvP Coefficient: 1.00000 | Misc Value 2: 0x3 | Target: Self (1)
                    Affected Spells: Wild Charge (102401)
@@ -4609,9 +4608,10 @@ Attributes       : ....x... ........ ........ ........   ........ ..x..... .....
                  : Is Ability (4), No Threat (42), Floating Combat Text On Cast (198), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=176510)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Maul (6807), Strength of the Wild (236716)
                    Family Flags: 11
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=870292)   : Apply Aura (6) | Proc Trigger Spell (42): Tooth and Claw
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 135601 | Target: Self (1)
 #3 (id=1041475)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
@@ -4913,12 +4913,10 @@ Effects          :
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Regrowth (8936)
                    Family Flags: 6
-Hotfixed         : Base Value (-10 -> -15)
 #15 (id=1039259)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Regrowth (8936)
                    Family Flags: 6
-Hotfixed         : Base Value (-10 -> -15)
 #16 (id=1039291)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: -8 | Scaled Value: -8 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rejuvenation (774), Rejuvenation (Germination) (155777)
@@ -5767,7 +5765,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
                    Affected Spells: Wrath (5176), Starfall (50286), Starsurge (78674), Fungal Growth (81281), Wild Mushroom (88747), Wild Mushroom (88751), Sunfire (164815), Wrath (190984), Starfall (191034), Starfall (191037), Starsurge (197626), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (202770), Fury of Elune (211545), New Moon (274281), Half Moon (274282), Full Moon (274283), Fury of Elune (365640), Fury of Elune (394111)
                    Family Flags: 0, 23, 55, 63, 88, 89, 105, 116, 127
-Hotfixed         : Target 1 (6 -> 53), Target 2 (0 -> 16)
 Description      : $@spelldesc93402
 Tooltip          : Suffering $w2 Nature damage every $t2 seconds.
 
@@ -7510,7 +7507,8 @@ Attributes       : ........ ........ ........ ........   .......x ........ .....
                  : No Reflection (39), Suppress Caster Procs (112), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=300967)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.50000 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : $@spelldesc203953
 
 Name             : Blood Frenzy (id=203961) [Spell Family (7)] 
@@ -8351,7 +8349,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Suppress Caster Procs (112), Always AOE Line of Sight (186), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=317117)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.02621 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.02621 | PvP Coefficient: 0.50000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : $@spelldesc203953
 
 Name             : Swipe (id=213764) [Spell Family (7)] 
@@ -8493,7 +8492,8 @@ Attributes       : ........ ........ ..x..... x..x....   ........ ..x..... .....
                  : Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), No Threat (42), Can't Crit (93), Suppress Target Procs (113), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=326922)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.47250 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.47250 | PvP Coefficient: 0.50000 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : Deals $s1 Nature damage.
 
 Name             : Nature's Guardian (id=227034) [Spell Family (7)] 
@@ -12092,6 +12092,7 @@ Effects          :
 Description      : Once per minute while in combat, gain $s1 Haste, Critical Strike, Mastery, and Versatility for $300174d.
 
 Name             : Ursine Adept (id=300346) [Spell Family (7), Passive] 
+Hotfixed         : Description
 Talent Entry     : Guardian [tree=spec, row=3, col=2, max_rank=1, req_points=0]
 Class            : Druid
 School           : Physical
@@ -12110,16 +12111,15 @@ Effects          :
 #1 (id=773723)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
 #2 (id=885105)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
-                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Bear Form Passive (1178)
                    Family Flags: 122
+Hotfixed         : Base Value (-10 -> 0)
 #3 (id=1007397)  : Apply Aura (6) | Add Flat Modifier (107): Spell Max Stacks (37)
                    Base Value: 19 | Scaled Value: 19 | PvP Coefficient: 1.00000 | Misc Value: 37 | Target: Self (1)
                    Affected Spells: Ironfur (192081)
                    Family Flags: 78
-Description      : Moonfire, Soothe, Remove Corruption, and Rebirth are usable in Bear Form. Multiple uses of Ironfur may overlap.
-
-All damage taken in Bear Form reduced by $s2%.
+Description      : Moonfire, Soothe, Remove Corruption, and Rebirth are usable in Bear Form. Multiple uses of Ironfur may overlap.
 
 Name             : Feline Adept (id=300349) [Spell Family (7), Passive] 
 Class            : Feral Druid
@@ -15410,7 +15410,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Allow Class Ability Procs (416), Always Require PvP Target Match (430), Always Allow Negative Healing Percent Modifiers (442)
 Effects          :
 #1 (id=989783)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 6.00000 | PvP Coefficient: 1.00000 | Radius: 0 - 12 yards | Target: Custom (18) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 6.00000 | PvP Coefficient: 0.60000 | Radius: 0 - 12 yards | Target: Custom (18) -> AOE friendly (31)
+Hotfixed         : PvP Coefficient (1 -> 0.6)
 Description      : $@spelldesc371905
 
 Name             : Vicious Cycle (id=371999) [Spell Family (7), Passive] 
@@ -17641,15 +17642,12 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1030137)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.70000 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.7)
 #2 (id=1030140)  : Apply Aura (6) | Dummy (4)
                    Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 0.70000 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.7)
 #3 (id=1030644)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.70000 | Target: Self (1)
                    Affected Spells: Lifebloom (33763), Lifebloom (33778), Lifebloom (188550)
                    Family Flags: 36
-Hotfixed         : PvP Coefficient (1 -> 0.7)
 Description      : Lifebloom's healing is increased by ${$s1}.1% each time it heals, up to $s2%. Also increases Lifebloom's final bloom amount by $s3%.
 
 Name             : Flash of Clarity (id=392220) [Spell Family (7), Passive, Hidden] 
@@ -19389,7 +19387,7 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : Is Ability (4), Include In Advanced Combat Log (72), Can't Crit (93), Spell Haste Affects Periodic (173), Aura Points On Client (268), Haste Affects Duration (273), Heal Prediction (280)
 Effects          :
 #1 (id=1034209)  : Apply Aura (6) | Periodic Heal (8): every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.25000 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.45000 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc393638
 Tooltip          : Healing $w1 every $t1 sec.
 

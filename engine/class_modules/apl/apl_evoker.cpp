@@ -64,7 +64,8 @@ void devastation( player_t* p )
   default_->add_action( "run_action_list,name=aoe,if=spell_targets.pyre>=3" );
   default_->add_action( "run_action_list,name=st" );
 
-  st->add_action( "dragonrage,if=cooldown.fire_breath.remains<gcd.max&cooldown.eternity_surge.remains<2*gcd.max|fight_remains<30", "ST Action List, it's a mess" );
+  st->add_action( "use_item,name=kharnalex_the_first_light,if=!buff.dragonrage.up&debuff.shattering_star_debuff.down", "ST Action List, it's a mess" );
+  st->add_action( "dragonrage,if=cooldown.fire_breath.remains<gcd.max&cooldown.eternity_surge.remains<2*gcd.max|fight_remains<30" );
   st->add_action( "tip_the_scales,if=buff.dragonrage.up&(buff.dragonrage.remains<variable.r1_cast_time&(buff.dragonrage.remains>cooldown.fire_breath.remains|buff.dragonrage.remains>cooldown.eternity_surge.remains)|talent.feed_the_flames&!cooldown.fire_breath.up)", "Use to extend DR when an empower cast won't fit inside the DR window anymore. When running FTF use on ES at the start of DR to maximize uses" );
   st->add_action( "call_action_list,name=fb,if=!talent.dragonrage|variable.next_dragonrage>15|!talent.animosity" );
   st->add_action( "call_action_list,name=es,if=!talent.dragonrage|variable.next_dragonrage>15|!talent.animosity" );
@@ -78,7 +79,6 @@ void devastation( player_t* p )
   st->add_action( "azure_strike,if=buff.dragonrage.up&(essence<3&!buff.essence_burst.up|(talent.shattering_star&cooldown.shattering_star.remains<=(buff.essence_burst.max_stack-buff.essence_burst.stack)*gcd.max))", "Ensure we clip Disintegrate inside DR even with our fillers, Pool 1-2 GCDs before SS is up inside DR" );
   st->add_action( "disintegrate,chain=1,early_chain_if=buff.dragonrage.up&ticks>=2,interrupt_if=buff.dragonrage.up&ticks>=2,if=buff.dragonrage.up|(!talent.shattering_star|cooldown.shattering_star.remains>6|essence>essence.max-1|buff.essence_burst.stack==buff.essence_burst.max_stack)", "In DR chain/clip after the 3rd damage tick, Outside of DR pool 6 seconds before SS unless it would result in overcapping resources TODO: revisit pooling conditions" );
   st->add_action( "deep_breath,if=!buff.dragonrage.up&spell_targets.deep_breath>1" );
-  st->add_action( "use_item,name=kharnalex_the_first_light,if=!buff.dragonrage.up&debuff.shattering_star_debuff.down" );
   st->add_action( "living_flame" );
 
   aoe->add_action( "dragonrage,if=cooldown.fire_breath.remains<=gcd.max&cooldown.eternity_surge.remains<3*gcd.max", "AOE action list, also a mess." );

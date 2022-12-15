@@ -884,6 +884,16 @@
       { "data_type": "i", "field": "index" }
     ]
   },
+  "ModifiedCraftingSpellSlot": {
+    "fields": [
+      { "data_type": "i", "field": "id_spell", "ref": "SpellName" },
+      { "data_type": "i", "field": "slot" },
+      { "data_type": "i", "field": "id_modified_crafting_reagent_slot", "ref": "ModifiedCraftingReagentSlot" },
+      { "data_type": "i", "field": "unk_1" },
+      { "data_type": "i", "field": "reagent_count" },
+      { "data_type": "i", "field": "reagent_recraft_count" }
+    ]
+  },
   "PlayerCondition": {
     "fields": [
       { "data_type": "Q", "field": "race_mask" },

@@ -169,7 +169,16 @@ double spelleffect_data_t::average( const player_t* p, unsigned level ) const
     if ( _spell->max_scaling_level() > 0 )
       level = std::min( level, _spell->max_scaling_level() );
 
-    return _m_coeff * p->dbc->spell_scaling( scale, level );
+    double value = _m_coeff * p->dbc->spell_scaling( scale, level );
+
+    // This seems to have been added in Dragonflight. Spell effects that have -7 scaling class
+    // and no associated item will still attempt to apply the combat rating multiplier.
+    // We don't know what type of CR multiplier it is or what item level is used, as all the
+    // multipliers are 1.5 for levels this low. This should be updated if it ever becomes testable.
+    if ( scale == PLAYER_SPECIAL_SCALE7 )
+      value = item_database::apply_combat_rating_multiplier( p, CR_MULTIPLIER_ARMOR, 1U, value );
+
+    return value;
   }
   else if ( _real_ppl != 0 )
   {

@@ -1,12 +1,12 @@
-// Spell text, wow build 10.0.2.46924
-static const std::array<spelltext_data_t, 19194> __spelltext_data { {
+// Spell text, wow build 10.0.2.47067
+static const std::array<spelltext_data_t, 19193> __spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
   {     65, "Increases your melee haste by $s1 for $d.", 0, 0 },
   {     66, "Turns you invisible over $66d, reducing threat each second. While invisible, you are untargetable by enemies. Lasts $32612d. Taking any action cancels the effect.$?a382293[\r\n\r\nIncreases your movement speed by $382293s1% for $337278d.][]", "Fading.", 0 },
-  {     71, "Hardened by battle, all damage taken is reduced by $s3%, your Stamina is increased by $s2% and your Armor is increased by $s1% of your Strength.", 0, 0 },
+  {     71, "Hardened by battle, your Stamina is increased by $s2% and your Armor is increased by $s1% of your Strength.", 0, 0 },
   {     75, "Automatically shoots the target until cancelled.", "Firing at the target.", 0 },
   {     99, "Shift into Bear Form and invoke the spirit of Ursol to let loose a deafening roar, incapacitating all enemies within $A1 yards for $d. Damage will cancel the effect.", "Incapacitated.", 0 },
   {    100, "Charge to an enemy, dealing $126664s2 Physical damage, rooting it for $105771d$?s103828[, and stunning it for $7922d][].\r\n\r\n|cFFFFFFFFGenerates $/10;s2 Rage.|r", 0, 0 },
@@ -8707,7 +8707,7 @@ static const std::array<spelltext_data_t, 19194> __spelltext_data { {
   { 244670, "$@spelldesc29722", 0, 0 },
   { 244813, "$@spelldesc44457", "Causes $w1 Fire damage every $t1 sec. After $d, the target explodes, causing $w2 Fire damage to the target and all other enemies within $44461A2 yards.", 0 },
   { 244846, "Sets a Sethrak Tent on fire.", 0, 0 },
-  { 245013, "All damage taken is reduced by $s2% and your Armor is increased by $s1%.\r\n\r\nStamina increased by $s3%.", 0, 0 },
+  { 245013, "Your Armor is increased by $s1% and Stamina increased by $s3%.", 0, 0 },
   { 245330, "$@spelldesc17962", 0, 0 },
   { 245388, "Stab your enemy with a toxic poisoned blade, dealing $s2 Nature damage.\r\n\r\nYour Nature damage done against the target is increased by $245389s1% for $245389d.\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   { 245389, "$@spelldesc245388", "$s1% increased damage taken from poisons from the casting Rogue.", 0 },
@@ -12107,7 +12107,7 @@ static const std::array<spelltext_data_t, 19194> __spelltext_data { {
   { 300170, "Once per minute while in combat, gain $s1 Haste, Critical Strike, Mastery, and Versatility for $300174d.", 0, 0 },
   { 300173, "$@spelldesc300170", 0, 0 },
   { 300174, "$@spelldesc300170", "Haste, Critical Strike, Mastery, and Versatility increased by $w1.", 0 },
-  { 300346, "Moonfire, Soothe, Remove Corruption, and Rebirth are usable in Bear Form. Multiple uses of Ironfur may overlap.\r\n\r\nAll damage taken in Bear Form reduced by $s2%.", 0, 0 },
+  { 300346, "Moonfire, Soothe, Remove Corruption, and Rebirth are usable in Bear Form. Multiple uses of Ironfur may overlap.", 0, 0 },
   { 300349, "Soothe and Remove Corruption are usable in Cat Form.", 0, 0 },
   { 300470, 0, "Reduces Sanity loss within Visions of N'Zoth by $m1%.", 0 },
   { 300539, "Allows the detection of otherwise unseen treasures buried beneath the wet sands of Nazjatar for $300135d.", "Detecting hidden treasures.", 0 },
@@ -13086,8 +13086,6 @@ static const std::array<spelltext_data_t, 19194> __spelltext_data { {
   { 320378, "Reduces the cooldown of Immolation Aura by ${$abs($s0/1000)} sec.", 0, 0 },
   { 320379, "Reduces the cooldown of Spectral Sight by ${$abs($s0/1000)} sec.", 0, "Rank 2" },
   { 320380, "Fel energy thickens your skin to demonic proportions, increasing your Stamina by $s1% and your Armor by $s2%.", 0, 0 },
-  { 320381, "Your tattoos reduce all damage taken by ${$abs($203513s1+$s1)}%.", 0, "Rank 2" },
-  { 320382, "Your tattoos reduce all damage taken by ${$abs($203513s1+$320381s1+$s1)}%.", 0, "Rank 3" },
   { 320386, "Throw Glaive ricochets to $s1 additional $ltarget:targets;.", 0, 0 },
   { 320387, "Reduces the cooldown of Throw Glaive by ${$abs($s0/1000)} sec.", 0, 0 },
   { 320402, "Reduces the cooldown of Blade Dance by ${$abs($s0/1000)} sec.", 0, "Rank 2" },
@@ -15142,7 +15140,7 @@ static const std::array<spelltext_data_t, 19194> __spelltext_data { {
   { 353334, "$@spelldesc351747", "Heailng for $w1 health every $t1 sec.\r\nDamage taken reduced by $s2%.", 0 },
   { 353354, "$@spelldesc352786", "Taking $w1% more damage from $@auracaster.", 0 },
   { 353365, "$@spelldesc351748", "Avoidance increased by $w1.\r\nSpeed increased by $w2.", 0 },
-  { 353367, "Stamina increased by $s1%.\r\n\r\nArmor increased by $s2%.$?a358934[\r\n\r\nAll damage taken reduced by $s3%.][]", 0, 0 },
+  { 353367, "Stamina increased by $s1%.\r\n\r\nArmor increased by $s2%.", 0, 0 },
   { 353447, "Abomination Limb's duration is increased by ${$s1/1000} sec and the frequency it grants $?a137008[Bone Shield][]$?a137006[Rime][]$?a137007[Runic Corruption][] is increased by $s2 sec. The first time an enemy is damaged by Abomination Limb they take $353546s1% increased damage from you for $353546d.", 0, 0 },
   { 353466, "$@spelldesc357588", "Suffering $w1 Physical damage every $t1 sec.", 0 },
   { 353472, "$@spelldesc352782", "Movement speed reduced by $w1%.", 0 },
@@ -16368,7 +16366,7 @@ static const std::array<spelltext_data_t, 19194> __spelltext_data { {
   { 374609, "$@spelldesc374598", "You may not benefit from the effects of Blood Draw.", 0 },
   { 374715, "Bone Shield increases your Haste by $s1%.", 0, 0 },
   { 374717, "Heart Strike damage increased by $s1%.", 0, 0 },
-  { 374721, "Stamina increased by $s1%.\r\nDamage taken reduced by $s2%.", 0, 0 },
+  { 374721, "Stamina increased by $s1%.", 0, 0 },
   { 374737, "Increases Armor gained from Bone Shield by $s1%.", 0, 0 },
   { 374747, "When Crimson Scourge is consumed, you gain $s1% Versatility for $374748d.", 0, 0 },
   { 374748, "$@spelldesc374747", "Versatility increased by $w1%", 0 },
@@ -16567,7 +16565,7 @@ static const std::array<spelltext_data_t, 19194> __spelltext_data { {
   { 377458, "$@spelldesc377457\r\n", "Your Armor is increased by $w3.", 0 },
   { 377459, "$@spelldesc377457", "Primal flames scorch you for $w3 Fire damage per second.", 0 },
   { 377461, "$@spelldesc377457\r\n", "Primal winds increase your Haste by $w3.", 0 },
-  { 377462, "Designate another player to bond with, becoming their Guardian for $382281d.\r\n\r\nWhile bonded, you and your ally gain $382280s1 Versatility and restore $382280s2 health per second. If you are within 15 yards of one another, these bonuses are increased. $?(a137012|a137024|a137031|a137032|a137029|a137039|a356810)[][\r\n\r\n|CFF808080Valid only for healer specializations.|R]\r\n", 0, 0 },
+  { 377462, "Designate another player to bond with, becoming their Guardian for $394457d.\r\n\r\nWhile bonded, you and your ally gain $382280s1 Versatility and restore $382280s2 health per second. If you are within 15 yards of one another, these bonuses are increased. $?(a137012|a137024|a137031|a137032|a137029|a137039|a356810)[][\r\n\r\n|CFF808080Valid only for healer specializations.|R]\r\n", 0, 0 },
   { 377463, "Channel for $d, unleashing a furious volley of flame around your target, dealing ${$394954s1*($d/$t)*(1+$@versadmg)} Fire damage to your target with a chance to strike nearby enemies for additional damage.\r\n\r\nWhenever an allied player dies, this cooldown is reduced by $s2 seconds.", 0, 0 },
   { 377464, "Let loose a dangerous current of lightning, dealing $377465s2 Nature damage to your target and $377465s3 Nature damage to yourself. Self-damage increases with your stacks of Hatred.", 0, 0 },
   { 377465, "Casting spells grants stacks of Hatred, permanently lowering this trinket's cooldown by $382419s1 second until combat ends. This effect stacks up to 180 times.\r\n\r\n", 0, 0 },
@@ -16575,7 +16573,7 @@ static const std::array<spelltext_data_t, 19194> __spelltext_data { {
   { 377514, "Your Soul Reaper, Scourge Strike, Festering Strike, and Death Coil deal $s1% addtional damage to enemies below $s2% health.", 0, 0 },
   { 377537, "Death Coil and Epidemic debilitate your enemy applying Death Rot causing them to take $377540s1% increased Shadow damage, up to ${$377540s1*$377540u}% for $377540d. If Death Coil or Epidemic consume Sudden Doom it applies two stacks of Death Rot.", 0, 0 },
   { 377540, "$@spelldesc377537", "Shadow damage taken from $@auracaster is increased by $s1%.", 0 },
-  { 377544, "$@spelldesc376801", "Spells deal $s1 additional Fire damage to enemies or healing to allies.", 0 },
+  { 377544, "$@spelldesc376801", "Spells deal $376801w1 additional Fire damage to enemies or healing to allies.", 0 },
   { 377546, "$@spelldesc376801", 0, 0 },
   { 377580, "Death Coil deals $s1% additional damage and seeks out $s2 additional nearby enemy.", 0, 0 },
   { 377585, "When a Festering Wound pops it generates an additional ${$s1/10} Runic Power.", 0, 0 },
@@ -18203,7 +18201,7 @@ static const std::array<spelltext_data_t, 19194> __spelltext_data { {
   { 389694, "Sigil of Flame generates 2 additional Fury per target hit.", 0, 0 },
   { 389695, "Increases maximum health by $s1%.", 0, 0 },
   { 389696, "Reduces magic damage taken by $s1%.", 0, 0 },
-  { 389697, "Increases the duration of Sigil effects by ${$s1/1000} sec.", 0, 0 },
+  { 389697, "Increases the duration of Sigil effects by ${$s1/1000}.1 sec.", 0, 0 },
   { 389705, "You take $393009s1% reduced magic damage while Immolation Aura is active.", 0, 0 },
   { 389708, "When Fel Devastation finishes fully channeling, it refreshes $s1-$s2% of its cooldown and refunds $s3-$s4 Fury.", 0, 0 },
   { 389710, "$@spelldesc383926", 0, 0 },
@@ -18387,7 +18385,7 @@ static const std::array<spelltext_data_t, 19194> __spelltext_data { {
   { 390636, "$@spelldesc390622", "The damage of your next Holy Nova is increased by $w1% and its healing is increased by $w3%.", 0 },
   { 390642, "Shield Slam deals an additional $s1% damage and deals $s2% increased critical strike damage.\r\n\r\n", 0, 0 },
   { 390643, "Perform the summoning ritual and commune with one of the Primal Turtles to gain its blessing.\r\n\r\nThe ritual site can be found south of Uktulut Pier in The Waking Shores, near the remains of a dragon.", 0, 0 },
-  { 390655, "@spelldesc390643", "Taking damage as well as dealing harmful and helpful abilities have a chance to shield you for $390764w1 for $390785d.", 0 },
+  { 390655, "@spelldesc390643", "Taking damage as well as dealing harmful and helpful abilities have a chance to shield you for $w1 for $390785d.", 0 },
   { 390667, "Reduces all magic damage taken by $s1%.", 0, 0 },
   { 390668, "Your $?s137031[Holy Fire][Mind Blast] critical strikes reduce your target's movement speed by $390669s1% for $390669d.", 0, 0 },
   { 390669, "$@spelldesc390668", "Movement speed reduced by $s1%.", 0 },
@@ -18423,14 +18421,14 @@ static const std::array<spelltext_data_t, 19194> __spelltext_data { {
   { 390787, "$@spelldesc390786", "The damage of your next Smite is increased by $w1% or the absorb of your next Power Word: Shield is increased by $w2%.", 0 },
   { 390808, "Immolation Aura generates $m-$M Fury when it deals critical damage.\r\n\r\nThis effect may only occur once per ${$proccooldown+0.1}.1 sec.", 0, 0 },
   { 390832, "Increases the damage of Mind Blast and Shadow Word: Death by $s1%.\r\n\r\nMind Blast and Shadow Word: Death consume $s2 sec of Shadow Word: Pain or Purge the Wicked, instantly dealing that damage.", 0, 0 },
-  { 390835, "@spelldesc390643", "Your harmful spells and abilities have a chance to deal an extra $390764w3 fire damage.", 0 },
+  { 390835, "@spelldesc390643", "Your harmful spells and abilities have a chance to deal an extra $w1 fire damage.", 0 },
   { 390845, "$@spelldesc110744", 0, 0 },
   { 390864, "Swipe and Thrash damage is increased by $s1%.", 0, 0 },
-  { 390869, "@spelldesc390643", "Your helpful and harmful abilities have a chance to heal you or an ally near your target for $390764w4.", 0 },
+  { 390869, "@spelldesc390643", "Your helpful and harmful abilities have a chance to heal you or an ally near your target for $w1.", 0 },
   { 390881, "Your Renew healing increases the healing done by your next Circle of Healing by $390885s1%, stacking up to $390885U times.", 0, 0 },
   { 390885, "$@spelldesc390881", "The healing of your next Circle of Healing is increased by $w1%.", 0 },
   { 390896, "$@spelldesc383812", 0, 0 },
-  { 390899, "@spelldesc390643", "Your harmful spells and abilities have a chance to grant you $390764w5 mastery for $390936d.", 0 },
+  { 390899, "@spelldesc390643", "Your harmful spells and abilities have a chance to grant you $w1 mastery for $390936d.", 0 },
   { 390902, "Tiger's Fury's damage bonus is increased by $s1%.", 0, 0 },
   { 390919, "Increases the amount of damage required to break your $?s205369[Mind Bomb][Psychic Scream] by $s1%.", 0, 0 },
   { 390933, "$@spelldesc377438", "Damage and healing of Smite and Holy Nova is increased by $s1%.", 0 },
@@ -18439,7 +18437,6 @@ static const std::array<spelltext_data_t, 19194> __spelltext_data { {
   { 390947, "Circle of Healing heals $s1 additional ally and its cooldown is reduced by ${$s2/-1000} sec.", 0, 0 },
   { 390951, "Temporarily imbues shoulders with a fiery illusion for $ecd.", 0, 0 },
   { 390954, "Increases the critical strike chance of Flash Heal and Heal by $s1%.", 0, 0 },
-  { 390961, "$@spelldesc390990", 0, 0 },
   { 390964, "$@spelldesc120517", 0, 0 },
   { 390967, "Increases the healing done by your Mastery: Echo of Light by $s1%.", 0, 0 },
   { 390971, "$@spelldesc120517", 0, 0 },
@@ -18450,12 +18447,10 @@ static const std::array<spelltext_data_t, 19194> __spelltext_data { {
   { 390980, "Critical heals from Flash Heal and Heal increase your healing done by your next Holy Word spell by $390989s1%, stacking up to $390989U times.", 0, 0 },
   { 390981, "$@spelldesc110744", 0, 0 },
   { 390989, "$@spelldesc390980", "The healing of your next Holy Word spell is increased by $w1%.", 0 },
-  { 390990, "Causes the earth at the target location to tremble and break, dealing Nature damage every $t1 sec to enemies in $r yard radius. Lasts $d.\r\n\r\nUsable in the Obsidian Citadel and adjacent lava fields.", "Suffering Nature damage every $t2 sec.", 0 },
   { 390992, "Flash Heal reduces the cast time of your next Heal within $390993d by $390993s2% and increases its healing done by $390993s1%.\r\n\r\nStacks up to $390993U times.", 0, 0 },
   { 390993, "$@spelldesc390992", "The cast time of your next Heal is reduced by $w2% and its healing is increased by $w1%.", 0 },
   { 390994, "Circle of Healing reduces the cooldown of Holy Word: Sanctify, Prayer of Mending reduces the cooldown of Holy Word: Serenity, and Holy Fire reduces the cooldown of Holy Word: Chastise by $s1 sec.", 0, 0 },
   { 390996, "Your $?a137033[Mind Blast and Mind Spike]?a137031[Smite and Holy Fire][Smite and Penance] casts reduce the cooldown of Mindgames by ${$s1/2}.1 sec.", 0, 0 },
-  { 390997, "Causes the earth at the target location to tremble and break, dealing Nature damage every $t1 sec to enemies in $a1 yard radius. Lasts $d.", "Suffering Nature damage every $t2 sec.", 0 },
   { 391023, "Summons an arcana orb outside of the Cobalt Assembly.", "Summons an arcana orb outside of the Cobalt Assembly.", 0 },
   { 391037, "Your combo point generating abilities have a $s1% chance to generate $s2 extra combo $Lpoint:points;.", 0, 0 },
   { 391045, "Rip damage increased by $s1%.", 0, 0 },
@@ -18820,7 +18815,7 @@ static const std::array<spelltext_data_t, 19194> __spelltext_data { {
   { 393672, "Holy Light, Flash of Light, Light of Dawn, Word of Glory, and Bestow Faith healing is increased by $s2% and their critical effects increase the damage or healing of your next Holy Shock by $394667s1%.", 0, 0 },
   { 393673, "Avenger's Shield grants you and your closest ally Ally of the Light, increasing Versatility by $394714s1% for $394714d.", 0, 0 },
   { 393674, "$?s53595[Hammer of the Righteous]?s204019[Blessed Hammer][Crusader Strike] increases your Parry by $394727s1% for $394727d, and extends the duration of Ally of the Light by ${$m1/1000}.1 sec.", 0, 0 },
-  { 393675, "Judgment, Blade of Justice, and $?s383469[Radiant Decree][Wake of Ashes] damage increased by $s1%.", 0, 0 },
+  { 393675, "Judgment, Blade of Justice, and $?a384052[Radiant Decree][Wake of Ashes] damage increased by $s1%.", 0, 0 },
   { 393677, "$?s383327[Final Verdict][Templar's Verdict] and Divine Storm damage increased by 10%.", 0, 0 },
   { 393679, "Power Word: Shield increases the effectiveness of your next direct damage or healing spell by $s1%.", 0, 0 },
   { 393681, "Penance increases the strength of your next Power Word: Shield by $s1% of its damage or $s2% of its healing.", 0, 0 },
@@ -18918,8 +18913,11 @@ static const std::array<spelltext_data_t, 19194> __spelltext_data { {
   { 393978, "The sands are taking their time back.\r\n\r\nReduces movement speed by $s1% for $d.", "Movement speed reduced by $s1%.", 0 },
   { 393979, "This sand will let you borrow time, but take it back after.\r\n\r\nIncreases movement speed by $s1% for $d, then reduces movement speed by $393978s1% for $393978d.", "Movement speed increased by $s1%.\r\nDoes not function in Raids, Dungeons, or instanced content.", 0 },
   { 393982, "Your spells and abilities have a chance to pelt your target with a magic snowball, causing enemies to take Frost damage or allies to receive healing.", 0, 0 },
+  { 393983, "Critical damage and healing have a chance to spur you on, granting Haste for $377143d. This effect stacks up to $377143U times.\r\n", "Critical damage and healing have a chance to spur you on, granting $w1 Haste for $377143d. This effect stacks up to $377143U times.", 0 },
+  { 393987, "Dealing damage has a chance to grant Piercing Azureweave, increasing Intellect for $388061d. Healing has a chance to grant Flowing Azureweave, reducing the Mana cost of spells for $388064d.", "Dealing damage has a chance to grant Piercing Azureweave, increasing Intellect by $w1 for $388061d. Healing has a chance to grant Flowing Azureweave, reducing Mana cost by $w2 per cast for $388064d.", 0 },
   { 393989, "Recreate the Temporal Conflux's security measures on yourself!\r\n\r\nGet temporally locked in a bubble for $d!", "Locked in a temporal bubble! But without the disturbing side effects!", 0 },
   { 393991, "Incarnation: Chosen of Elune reduces the Astral Power cost of Starsurge by ${$s5*-1/10}, and the Astral Power cost of Starfall by ${$s6*-1/10}.\r\n\r\nConvoke the Spirits' cooldown is reduced by ${($abs($s4)/120000)*100}% and its duration and number of spells cast is reduced by $s1%. Convoke the Spirits has an increased chance to use an exceptional spell or ability.", 0, 0 },
+  { 393993, "Your spells and abilities have a chance to store away moments of time. Upon reaching $387141u stacks, release your stored time and gain a burst of Haste.\r\n\r\n", "Your spells and abilities have a chance to store away moments of time. Upon reaching $387141u stacks, release your stored time and gain $w1 Haste.", 0 },
   { 393994, "Slow your body by taking on the weight of time itself.\r\n\r\nDecreases movement speed by $s1% for $d.", "Taking on the heavy weight of time.", 0 },
   { 393995, "Combine $s2 Slumbering Dream Fragments to restore a minor dream, once broken.", 0, 0 },
   { 394013, "$@spelldesc102560", 0, 0 },
@@ -19019,6 +19017,7 @@ static const std::array<spelltext_data_t, 19194> __spelltext_data { {
   { 394452, "Dealing Fire damage has a chance to ignite your enemies, burning them for an additional $s1 damage every $s2 seconds.\r\n\r\n", 0, 0 },
   { 394453, "\r\n\r\n", "Burning for 6 sec.", 0 },
   { 394455, "Dealing Fire damage has a chance to invigorate you, absorbing $s1 damage for $s2 seconds.\r\n", 0, 0 },
+  { 394457, "$@spelldesc377462\r\n", "Your Versatility is increased by $w1 and you are healed for $w2 per second.", 0 },
   { 394460, "Swear your oath to the Primalists to become Marked by Frost, increasing your Critical Strike by [medium amount]. \r\n\r\nFighting alongside allies who are Marked by Earth or Fire has a chance to grant you half of their Mark's stats for $s1 seconds.", "Critical Strike and Haste increased by $w1.", 0 },
   { 394461, "Swear your oath to the Primalists to become Marked by Frost, increasing your Critical Strike by [medium amount]. \r\n\r\nFighting alongside allies who are Marked by Earth or Fire has a chance to grant you half of their Mark's stats for $s1 seconds.", "Haste and Versatility increased by $w1.", 0 },
   { 394462, "Swear your oath to the Primalists to become Marked by Frost, increasing your Critical Strike by [medium amount]. \r\n\r\nFighting alongside allies who are Marked by Earth or Fire has a chance to grant you half of their Mark's stats for $s1 seconds.", "Critical Strike and Versatility increased by $w1.", 0 },
@@ -19196,12 +19195,22 @@ static const std::array<spelltext_data_t, 19194> __spelltext_data { {
   { 400006, "Living Flame restores $s1% of its mana cost when striking an enemy.", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.0.2.46924
-static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelltext_hotfix_data { {
-  {  393648,  0, "$?s342049[Chimaera Shot][Arcane Shot] and Multi Shot critical hits cause your next Aimed Shot to cause the target to bleed for $394366s1% of damage dealt over $394371d sec.", "$?s342049[Chimaera Shot][Arcane Shot] and Multi-Shot critical hits cause your next Aimed Shot to cause the target to bleed for $394366s1% of damage dealt over $394371d sec." },
+// spelltext hotfix entries, wow build 10.0.2.47067
+static constexpr std::array<hotfix::client_hotfix_entry_t, 11> __spelltext_hotfix_data { {
+  {      71,  0, "Hardened by battle, all damage taken is reduced by $s3%, your Stamina is increased by $s2% and your Armor is increased by $s1% of your Strength.", "Hardened by battle, your Stamina is increased by $s2% and your Armor is increased by $s1% of your Strength." },
+  {  245013,  0, "All damage taken is reduced by $s2% and your Armor is increased by $s1%.\r\n\r\nStamina increased by $s3%.", "Your Armor is increased by $s1% and Stamina increased by $s3%." },
+  {  300346,  0, "Moonfire, Soothe, Remove Corruption, and Rebirth are usable in Bear Form. Multiple uses of Ironfur may overlap.\r\n\r\nAll damage taken in Bear Form reduced by $s2%.", "Moonfire, Soothe, Remove Corruption, and Rebirth are usable in Bear Form. Multiple uses of Ironfur may overlap." },
+  {  353367,  0, "Stamina increased by $s1%.\r\n\r\nArmor increased by $s2%.$?a358934[\r\n\r\nAll damage taken reduced by $s3%.][]", "Stamina increased by $s1%.\r\n\r\nArmor increased by $s2%." },
+  {  374721,  0, "Stamina increased by $s1%.\r\nDamage taken reduced by $s2%.", "Stamina increased by $s1%." },
+  {  377462,  0, "Designate another player to bond with, becoming their Guardian for $382281d.\r\n\r\nWhile bonded, you and your ally gain $382280s1 Versatility and restore $382280s2 health per second. If you are within 15 yards of one another, these bonuses are increased. $?(a137012|a137024|a137031|a137032|a137029|a137039|a356810)[][\r\n\r\n|CFF808080Valid only for healer specializations.|R]\r\n", "Designate another player to bond with, becoming their Guardian for $394457d.\r\n\r\nWhile bonded, you and your ally gain $382280s1 Versatility and restore $382280s2 health per second. If you are within 15 yards of one another, these bonuses are increased. $?(a137012|a137024|a137031|a137032|a137029|a137039|a356810)[][\r\n\r\n|CFF808080Valid only for healer specializations.|R]\r\n" },
+  {  389697,  0, "Increases the duration of Sigil effects by ${$s1/1000} sec.", "Increases the duration of Sigil effects by ${$s1/1000}.1 sec." },
+  {  390655,  1, "Taking damage as well as dealing harmful and helpful abilities have a chance to shield you for $390764w1 for $390785d.", "Taking damage as well as dealing harmful and helpful abilities have a chance to shield you for $w1 for $390785d." },
+  {  390835,  1, "Your harmful spells and abilities have a chance to deal an extra $390764w3 fire damage.", "Your harmful spells and abilities have a chance to deal an extra $w1 fire damage." },
+  {  390869,  1, "Your helpful and harmful abilities have a chance to heal you or an ally near your target for $390764w4.", "Your helpful and harmful abilities have a chance to heal you or an ally near your target for $w1." },
+  {  390899,  1, "Your harmful spells and abilities have a chance to grant you $390764w5 mastery for $390936d.", "Your harmful spells and abilities have a chance to grant you $w1 mastery for $390936d." },
 } };
 
-// Spell description variables, wow build 10.0.2.46924
+// Spell description variables, wow build 10.0.2.47067
 static const std::array<spelldesc_vars_data_t, 365> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$pvp=$?a134735[${1.1}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<pvp>*$<weal>}\r\n" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -19570,10 +19579,7 @@ static const std::array<spelldesc_vars_data_t, 365> __spelldesc_vars_data { {
   {  394354, "$damage=${($AP*1.0)*(1+$@versadmg)}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.0.2.46924
-static constexpr std::array<hotfix::client_hotfix_entry_t, 3> __spelldesc_vars_hotfix_data { {
-  {  372469,  0, "$cap=${$SP*1.61}", "$pvp=$?a134735[${0.7}][${1}]\r\n$cap=${$SP*1.61*$<pvp>}" },
-  {  388023,  0, "$pvp=$?a134735[${1.6}][${1}]}\r\n$healing=[${$s1*$<pvp>}]", "$pvp=$?a134735[${2.5}][${1}]}\r\n$healing=[${$s1*$<pvp>}]" },
-  {  388026,  0, "$pvp=$?a134735[${1.6}][${1}]}\r\n$healing=[${$388023s1*$<pvp>}]", "$pvp=$?a134735[${2.5}][${1}]}\r\n$healing=[${$388023s1*$<pvp>}]" },
+// spelldesc_vars hotfix entries, wow build 10.0.2.47067
+static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 

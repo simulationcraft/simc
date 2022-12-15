@@ -220,16 +220,6 @@ double warlock_pet_t::composite_spell_speed() const
   return m;
 }
 
-double warlock_pet_t::composite_melee_haste() const
-{
-  double m = pet_t::composite_melee_haste();
-
-  if ( buffs.demonic_inspiration->check() )
-    m *= 1.0 + buffs.demonic_inspiration->check_value();
-
-  return m;
-}
-
 double warlock_pet_t::composite_melee_speed() const
 {
   double m = pet_t::composite_melee_speed();
@@ -948,15 +938,6 @@ double felguard_pet_t::composite_player_multiplier( school_e school ) const
   return m;
 }
 
-double felguard_pet_t::composite_melee_haste() const
-{
-  double m = warlock_pet_t::composite_melee_haste();
-
-  m *= 1.0 + buffs.fiendish_wrath->check_value();
-
-  return m;
-}
-
 double felguard_pet_t::composite_melee_speed() const
 {
   double m = warlock_pet_t::composite_melee_speed();
@@ -1224,7 +1205,7 @@ void wild_imp_pet_t::demise()
 
       if ( imploded && buffs.imp_gang_boss->check() )
       {
-        o()->warlock_pet_list.wild_imps.spawn();
+        make_event( sim, 0_ms, [ this ] { this->o()->warlock_pet_list.wild_imps.spawn(); } );
       }
     }
 
@@ -1557,6 +1538,15 @@ double pit_lord_t::composite_player_multiplier( school_e school ) const
   {
     m *= 1.0 + soul_glutton_damage_bonus * buffs.soul_glutton->current_stack;
   }
+
+  return m;
+}
+
+double pit_lord_t::composite_melee_speed() const
+{
+  double m = warlock_pet_t::composite_melee_speed();
+
+  m /= 1.0 + buffs.soul_glutton->check_stack_value();
 
   return m;
 }

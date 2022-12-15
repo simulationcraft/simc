@@ -1,0 +1,110 @@
+demonhunter="T29 Havoc Demon Hunter"
+source=default
+spec=havoc
+level=70
+race=night_elf
+timeofday=day
+role=attack
+position=back
+talents=BEkAAAAAAAAAAAAAAAAAAAAAAQCIhUC0SSkkINEAAAAAAAkEkWKRSSBCplESSkkkE
+
+# Default consumables
+potion=elemental_potion_of_ultimate_power_3
+flask=phial_of_elemental_chaos_3
+food=fated_fortune_cookie
+augmentation=draconic
+temporary_enchant=main_hand:buzzing_rune_3/off_hand:buzzing_rune_3
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/augmentation
+actions.precombat+=/food
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/variable,name=trinket_sync_slot,value=1,if=trinket.1.has_stat.any_dps&(!trinket.2.has_stat.any_dps|trinket.1.cooldown.duration>=trinket.2.cooldown.duration)
+actions.precombat+=/variable,name=trinket_sync_slot,value=2,if=trinket.2.has_stat.any_dps&(!trinket.1.has_stat.any_dps|trinket.2.cooldown.duration>trinket.1.cooldown.duration)
+actions.precombat+=/arcane_torrent
+
+# Executed every time the actor is available.
+actions=auto_attack
+actions+=/retarget_auto_attack,line_cd=1,target_if=min:debuff.burning_wound.remains,if=talent.burning_wound&talent.demon_blades&active_dot.burning_wound<(spell_targets>?3)
+# Precombat Immolation Aura
+actions+=/immolation_aura,if=time=0
+# Blade Dance with First Blood, Trail of Ruin, or at 2+ targets
+actions+=/variable,name=blade_dance,value=talent.first_blood|talent.trail_of_ruin|talent.chaos_theory&buff.chaos_theory.down|spell_targets.blade_dance1>1
+actions+=/variable,name=pooling_for_blade_dance,value=variable.blade_dance&fury<(75-talent.demon_blades*20)&cooldown.blade_dance.remains<gcd.max
+actions+=/variable,name=pooling_for_eye_beam,value=talent.demonic&!talent.blind_fury&cooldown.eye_beam.remains<(gcd.max*2)&fury.deficit>20
+actions+=/variable,name=waiting_for_momentum,value=talent.momentum&!buff.momentum.up
+actions+=/disrupt
+actions+=/call_action_list,name=cooldown,if=gcd.remains=0
+actions+=/pick_up_fragment,type=demon,if=demon_soul_fragments>0
+actions+=/pick_up_fragment,mode=nearest,if=talent.demonic_appetite&fury.deficit>=35&(!cooldown.eye_beam.ready|fury<30)
+actions+=/vengeful_retreat,use_off_gcd=1,if=talent.initiative&talent.essence_break&time>1&(cooldown.essence_break.remains>15|cooldown.essence_break.remains<gcd.max&(!talent.demonic|buff.metamorphosis.up|cooldown.eye_beam.remains>15+(10*talent.cycle_of_hatred)))
+actions+=/vengeful_retreat,use_off_gcd=1,if=talent.initiative&!talent.essence_break&time>1&!buff.momentum.up
+actions+=/fel_rush,if=(buff.unbound_chaos.up|variable.waiting_for_momentum&(!talent.unbound_chaos|!cooldown.immolation_aura.ready))&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))
+actions+=/essence_break,if=(active_enemies>desired_targets|raid_event.adds.in>40)&!variable.waiting_for_momentum&fury>40&(cooldown.eye_beam.remains>8|buff.metamorphosis.up)&(!talent.tactical_retreat|buff.tactical_retreat.up)
+actions+=/death_sweep,if=variable.blade_dance&(!talent.essence_break|cooldown.essence_break.remains>(cooldown.death_sweep.duration-4))
+actions+=/fel_barrage,if=active_enemies>desired_targets|raid_event.adds.in>30
+actions+=/glaive_tempest,if=active_enemies>desired_targets|raid_event.adds.in>10
+actions+=/eye_beam,if=active_enemies>desired_targets|raid_event.adds.in>(40-talent.cycle_of_hatred*15)&!debuff.essence_break.up
+actions+=/blade_dance,if=variable.blade_dance&!cooldown.metamorphosis.ready&(cooldown.eye_beam.remains>5|!talent.demonic|(raid_event.adds.in>cooldown&raid_event.adds.in<25))
+actions+=/throw_glaive,if=talent.soulrend&(active_enemies>desired_targets|raid_event.adds.in>full_recharge_time+9)&spell_targets>=(2-talent.furious_throws)&!debuff.essence_break.up
+actions+=/annihilation,if=!variable.pooling_for_blade_dance
+actions+=/throw_glaive,if=talent.serrated_glaive&cooldown.eye_beam.remains<4&!debuff.serrated_glaive.up&!debuff.essence_break.up
+actions+=/immolation_aura,if=!buff.immolation_aura.up&(!talent.ragefire|active_enemies>desired_targets|raid_event.adds.in>15)
+actions+=/felblade,if=fury.deficit>=40
+actions+=/sigil_of_flame,if=active_enemies>desired_targets
+actions+=/chaos_strike,if=!variable.pooling_for_blade_dance&!variable.pooling_for_eye_beam
+actions+=/fel_rush,if=!talent.momentum&talent.demon_blades&!cooldown.eye_beam.ready&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))
+actions+=/demons_bite,target_if=min:debuff.burning_wound.remains,if=talent.burning_wound&debuff.burning_wound.remains<4&active_dot.burning_wound<(spell_targets>?3)
+actions+=/fel_rush,if=!talent.momentum&!talent.demon_blades&spell_targets>1&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))
+actions+=/sigil_of_flame,if=raid_event.adds.in>15&fury.deficit>=30
+actions+=/demons_bite
+actions+=/fel_rush,if=movement.distance>15|(buff.out_of_range.up&!talent.momentum)
+actions+=/vengeful_retreat,if=!talent.initiative&movement.distance>15
+actions+=/throw_glaive,if=(talent.demon_blades|buff.out_of_range.up)&!debuff.essence_break.up
+
+# Cast Metamorphosis if we will get a full Eye Beam refresh or if the encounter is almost over
+actions.cooldown=metamorphosis,if=!talent.demonic&((!talent.chaotic_transformation|cooldown.eye_beam.remains>20)&active_enemies>desired_targets|raid_event.adds.in>60|fight_remains<25)
+actions.cooldown+=/metamorphosis,if=talent.demonic&(!talent.chaotic_transformation|cooldown.eye_beam.remains>20&(!variable.blade_dance|cooldown.blade_dance.remains>gcd.max)|fight_remains<25)
+actions.cooldown+=/potion,if=buff.metamorphosis.remains>25|buff.metamorphosis.up&cooldown.metamorphosis.ready|fight_remains<60
+# Default use item logic
+actions.cooldown+=/use_items,slots=trinket1,if=variable.trinket_sync_slot=1&(buff.metamorphosis.up|(!talent.demonic.enabled&cooldown.metamorphosis.remains>(fight_remains>?trinket.1.cooldown.duration%2))|fight_remains<=20)|(variable.trinket_sync_slot=2&!trinket.2.cooldown.ready)|!variable.trinket_sync_slot
+actions.cooldown+=/use_items,slots=trinket2,if=variable.trinket_sync_slot=2&(buff.metamorphosis.up|(!talent.demonic.enabled&cooldown.metamorphosis.remains>(fight_remains>?trinket.2.cooldown.duration%2))|fight_remains<=20)|(variable.trinket_sync_slot=1&!trinket.1.cooldown.ready)|!variable.trinket_sync_slot
+actions.cooldown+=/the_hunt,if=(!talent.momentum|!buff.momentum.up)
+actions.cooldown+=/elysian_decree,if=(active_enemies>desired_targets|raid_event.adds.in>30)
+
+head=skybound_avengers_visor,id=200345,bonus_id=4800/4786/1498,gem_id=192958
+neck=elemental_lariat,id=193001,ilevel=418,gem_id=192982/192958/192958,crafted_stats=32/49
+shoulders=skybound_avengers_ailerons,id=200347,bonus_id=4800/4786/1498
+back=cloak_of_lost_devotion,id=193629,bonus_id=6808/4786/1643
+chest=lifebound_chestpiece,id=193399,bonus_id=3524/8836/8840/8902/8960/8932/8780,ilevel=418,enchant_id=6625,crafted_stats=32/36
+wrists=loyal_flametenders_bracers,id=195525,bonus_id=4800/4786/1498,gem_id=192958
+hands=skybound_avengers_grips,id=200344,bonus_id=4800/4786/1498
+waist=bjorns_hunting_strap,id=136776,bonus_id=1795/6808/4786/3300,gem_id=192958
+legs=skybound_avengers_legguards,id=200346,bonus_id=4800/4786/1498,ilevel=424,enchant_id=6496
+feet=biornskin_moccasins,id=134193,bonus_id=1795/6808/4786/3300
+finger1=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498,gem_id=192958,enchant_id=6550
+finger2=jeweled_signet_of_melandrus,id=134542,bonus_id=1795/6808/4786/3300,gem_id=192958,enchant_id=6550
+trinket1=manic_grieftorch,id=194308,bonus_id=4800/4786/1498
+trinket2=whispering_incarnate_icon,id=194301,bonus_id=4800/4786/1498
+main_hand=stormslash,id=193688,bonus_id=6808/4786/1643,enchant_id=6649
+off_hand=stormslash,id=193688,bonus_id=6808/4786/1643,enchant_id=6649
+
+# Gear Summary
+# gear_ilvl=421.56
+# gear_agility=5442
+# gear_stamina=13168
+# gear_crit_rating=5174
+# gear_haste_rating=2342
+# gear_mastery_rating=2579
+# gear_versatility_rating=1399
+# gear_armor=3352
+# set_bonus=tier29_2pc=1
+# set_bonus=tier29_4pc=1

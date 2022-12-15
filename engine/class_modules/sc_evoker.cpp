@@ -1470,10 +1470,13 @@ struct living_flame_t : public evoker_spell_t
 
   action_t* damage;
   action_t* heal;
+  double gcd_mul;
   bool cast_heal;
 
   living_flame_t( evoker_t* p, std::string_view options_str )
-    : evoker_spell_t( "living_flame", p, p->find_class_spell( "Living Flame" ) ), cast_heal( false )
+    : evoker_spell_t( "living_flame", p, p->find_class_spell( "Living Flame" ) ),
+      gcd_mul( p->find_spelleffect( &p->buff.ancient_flame->data(), A_ADD_PCT_MODIFIER, P_GCD, &data() )->percent() ),
+      cast_heal( false )
   {
     damage        = p->get_secondary_action<living_flame_damage_t>( "living_flame_damage" );
     damage->stats = stats;
@@ -1488,6 +1491,16 @@ struct living_flame_t : public evoker_spell_t
   bool has_amount_result() const override
   {
     return damage->has_amount_result();
+  }
+
+  timespan_t gcd() const override
+  {
+    auto g = evoker_spell_t::gcd();
+
+    if ( p()->buff.ancient_flame->check() )
+      g *= 1.0 + gcd_mul;
+
+    return std::max( min_gcd, g );
   }
 
   void execute() override
@@ -1874,8 +1887,7 @@ void karnalex_the_first_light( special_effect_t& effect )
         player->schedule_ready( rng().gauss( sim->channel_lag, sim->channel_lag_stddev ) );
       }
     }
-    // TODO: As of 30/10/22 this does not scale with mastery at all despite saying it should. TODO: Recheck this.
-    /*
+
     double composite_target_multiplier( player_t* t ) const override
     {
       double tm = generic_proc_t::composite_target_multiplier( t );
@@ -1889,7 +1901,7 @@ void karnalex_the_first_light( special_effect_t& effect )
       }
 
       return tm;
-    }*/
+    }
   };
 
   effect.execute_action = unique_gear::create_proc_action<light_of_creation_t>( "light_of_creation", effect );

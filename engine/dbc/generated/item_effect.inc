@@ -1,5 +1,5 @@
-// Item effects, wow build 10.0.2.46924
-static const std::array<item_effect_t, 8208> __item_effect_data { {
+// Item effects, wow build 10.0.2.47067
+static const std::array<item_effect_t, 8211> __item_effect_data { {
   { 116657, 317388,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116658, 317389,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116661, 317407,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
@@ -7471,7 +7471,7 @@ static const std::array<item_effect_t, 8208> __item_effect_data { {
   { 136065, 345533, 180118,   0,   1,    0,      -1,      -1 }, // Anima Field Emitter
   { 136052, 345474, 180119,   0,   1,    0,      -1,      -1 }, // Boon of the Archon
   { 136053, 345502, 180119,   1,   1,    0,      -1,      -1 }, // Boon of the Archon
-  { 118025, 224781, 180136,   0,   1,    0,      -1,      -1 }, // +15 Fishing
+  { 118025,   8083, 180136,   0,   1,    0,      -1,      -1 }, // +5 Fishing
   { 126777, 310674, 180136,   1,   1,    0,      -1,      -1 }, // The Brokers Angle'r - Bait Aura
   { 172321, 395369, 180136,   2,   1,    0,      -1,      -1 }, // Fishing Tool Equipped (DNT)
   { 126046, 335840, 180273,   0,   1,    0,      -1,      -1 }, // Sorrowbane
@@ -8115,7 +8115,7 @@ static const std::array<item_effect_t, 8208> __item_effect_data { {
   { 172186, 395470, 198205,   1,   1,    0,      -1,      -1 }, // Engineering Gear Equipped (DNT)
   { 171282, 390041, 198225,   0,   1,    0,      -1,      -1 }, // +6 Fishing
   { 172138, 395369, 198225,   1,   1,    0,      -1,      -1 }, // Fishing Tool Equipped (DNT)
-  { 171295, 390011, 198226,   0,   1,    0,      -1,      -1 }, // +10 Fishing
+  { 171295, 224781, 198226,   0,   1,    0,      -1,      -1 }, // +15 Fishing
   { 172137, 395369, 198226,   1,   1,    0,      -1,      -1 }, // Fishing Tool Equipped (DNT)
   { 171280, 390044, 198234,   0,   1,    0,      -1,      -1 }, // +6 Jewelcrafting
   { 172161, 395399, 198234,   1,   1,    0,      -1,      -1 }, // Jewelcrafting Tool Equipped (DNT)
@@ -8208,9 +8208,12 @@ static const std::array<item_effect_t, 8208> __item_effect_data { {
   { 172387, 397035, 202117,   0,   1,    0,      -1,      -1 }, // Aligning Matter
   { 172388, 397038, 202118,   0,   1,    0,      -1,      -1 }, // Arcane Bubble
   { 172389, 397040, 202119,   0,   1,    0,      -1,      -1 }, // Corporeal Tear
+  { 173307, 336126, 203375,   0,   0,    0,      -1,      -1 }, // Gladiator's Medallion
+  { 173308, 345229, 203376,   0,   1,    0,      -1,      -1 }, // Gladiator's Insignia
+  { 173309, 345231, 203377,   0,   0, 1141,  120000,   20000 }, // Gladiator's Emblem
 } };
 
-static const std::array<uint16_t, 8208> __item_effect_id_index { {
+static const std::array<uint16_t, 8211> __item_effect_id_index { {
     409,   410,   411,   412,   413,   414,   415,   418,
     419,   420,   421,   422,   423,   424,   425,   426,
     427,   428,   429,   430,   433,   434,   435,   436,
@@ -9237,5 +9240,6 @@ static const std::array<uint16_t, 8208> __item_effect_id_index { {
    7904,  7963,  2115,  7078,  7473,  7873,  8001,  8102,
    8103,  8126,  8129,  8204,  8205,  8206,  8207,  4685,
    4686,  6650,  6651,  3441,  3442,  6639,  6640,  7925,
+   8208,  8209,  8210,
 } };
 

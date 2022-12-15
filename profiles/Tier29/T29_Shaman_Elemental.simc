@@ -5,8 +5,7 @@ level=70
 race=tauren
 role=spell
 position=ranged_back
-class_talents=improved_lightning_bolt:2/natures_fury:2/frost_shock:1/totemic_surge:2/fire_and_ice:1/totemic_recall:1/call_of_the_elements:1
-spec_talents=earth_shock:1/earthquake:1/elemental_fury:1/fire_elemental:1/storm_elemental:0/inundate:0/call_of_thunder:0/flow_of_power:1/lava_surge:1/unrelenting_calamity:0/icefury:1/swelling_maelstrom:1/echo_of_the_elements:1/call_of_fire:1/stormkeeper:0/flux_melting:1/electrified_shocks:0/aftershock:1/surge_of_power:0/flames_of_the_cauldron:1/flash_of_lightning:0/eye_of_the_storm:2/power_of_the_maelstrom:0/master_of_the_elements:2/improved_flametongue_weapon:1/elemental_blast:1/primordial_wave:1/deeply_rooted_elements:1/ascendance:0/primal_elementalist:0/liquid_magma_totem:0/echoes_of_great_sundering:0/elemental_equilibrium:0/rolling_magma:2/echo_chamber:2/oath_of_the_far_seer:0/magma_chamber:1/searing_flames:0/lightning_rod:0/primordial_surge:1/splintered_elements:0/mountains_will_fall:1/further_beyond:0/windspeakers_lava_resurgence:0/skybreakers_fiery_demise:0
+talents=BYQAAAAAAAAAAAAAAAAAAAAAAAAAAAAgUSp0SCAJlkUSKBlkQEAAAAAAUCQKJBEFiIJJtUC0SSAA
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
@@ -192,33 +191,33 @@ actions.single_target+=/flame_shock,moving=1,if=movement.distance>6
 # Frost Shock is our movement filler.
 actions.single_target+=/frost_shock,moving=1
 
-head=faceguard_of_infused_earth,id=200399,ilevel=424,gem_id=192948
-neck=ukhel_ancestry_beads,id=193676,ilevel=421,gem_id=192985/192948/192948
+head=faceguard_of_infused_earth,id=200399,bonus_id=8780,ilevel=424,gem_id=192985
+neck=eye_of_the_vengeful_hurricane,id=195496,bonus_id=7935,ilevel=421,gem_id=192948/192948/192948
 shoulders=calderas_of_infused_earth,id=200401,ilevel=424
-back=cloak_of_failing_will,id=144115,ilevel=421
-chest=robe_of_infused_earth,id=200396,ilevel=424,enchant=waking_stats_3
-wrists=surgingsong_conductors,id=195516,ilevel=421,gem_id=192948
+back=vibrant_wildercloth_shawl,id=193511,bonus_id=6652/7936/7979/1540/8767/8932/8960,ilevel=418,crafted_stats=49/36
+chest=robe_of_infused_earth,id=200396,ilevel=421,enchant_id=6625
+wrists=shikaar_ranger_bracers,id=193693,bonus_id=7974,ilevel=421,gem_id=192948,enchant_id=6573
 hands=gauntlets_of_infused_earth,id=200398,ilevel=424
-waist=morningscale_waistguard,id=109843,ilevel=421,gem_id=192948
-legs=leggings_of_infused_earth,id=200400,ilevel=424,enchant=frozen_spellthread_3
-feet=lightningcharged_striders,id=193685,ilevel=421,enchant=plainsrunners_breeze_3
-finger1=seal_of_filial_duty,id=195526,ilevel=430,gem_id=192948,enchant=devotion_of_mastery_3
-finger2=signet_of_shifting_magics,id=109780,ilevel=421,gem_id=192948,enchant=devotion_of_mastery_3
-trinket1=horn_of_valor,id=133642,ilevel=421
-trinket2=infernal_writ,id=137485,ilevel=421
-main_hand=stormlashs_last_resort,id=195529,ilevel=424,enchant=sophic_devotion_3
+waist=flametouched_chain,id=193425,bonus_id=3524/8836/8840/8902/8960/8932,ilevel=418,gem_id=192948,crafted_stats=49/36
+legs=tassets_of_the_tarasek_legion,id=195522,ilevel=424,enchant_id=6541
+feet=lightningcharged_striders,id=193685,ilevel=421
+finger1=seal_of_filial_duty,id=195526,bonus_id=8780,ilevel=430,gem_id=192948,enchant_id=6556
+finger2=seal_of_diurnas_chosen,id=195480,bonus_id=8780,ilevel=421,gem_id=192948,enchant_id=6556
+trinket1=whispering_incarnate_icon,id=194301,bonus_id=4800/4786/1498
+trinket2=furious_ragefeather,id=193677,ilevel=421
+main_hand=stormlashs_last_resort,id=195529,ilevel=424,enchant_id=6655
 off_hand=broodsworn_legionnaires_pavise,id=195520,ilevel=424
 
 # Gear Summary
-# gear_ilvl=422.88
+# gear_ilvl=422.31
 # gear_strength=256
-# gear_stamina=13551
-# gear_intellect=7044
-# gear_crit_rating=1229
-# gear_haste_rating=3275
-# gear_mastery_rating=4770
-# gear_versatility_rating=1515
-# gear_speed_rating=250
-# gear_armor=8575
+# gear_stamina=13435
+# gear_intellect=7204
+# gear_crit_rating=1011
+# gear_haste_rating=4934
+# gear_mastery_rating=3728
+# gear_versatility_rating=1315
+# gear_avoidance_rating=175
+# gear_armor=8546
 # set_bonus=tier29_2pc=1
 # set_bonus=tier29_4pc=1

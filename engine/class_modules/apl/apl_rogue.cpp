@@ -14,7 +14,7 @@ std::string potion( const player_t* p )
 
 std::string flask( const player_t* p )
 {
-  return ( ( p->true_level >= 61 ) ? "phial_of_glacial_fury_3" :
+  return ( ( p->true_level >= 61 ) ? "phial_of_tepid_versatility_3" :
            ( p->true_level >= 51 ) ? "spectral_flask_of_power" :
            ( p->true_level >= 40 ) ? "greater_flask_of_the_currents" :
            ( p->true_level >= 35 ) ? "greater_draenic_agility_flask" :
@@ -436,8 +436,8 @@ void assassination_df( player_t* p )
   cds->add_action( "variable,name=deathmark_ma_condition,value=!talent.master_assassin.enabled|dot.garrote.ticking", "Wait on Deathmark for Garrote with MA" );
   cds->add_action( "sepsis,if=!stealthed.rogue&dot.garrote.ticking&(target.time_to_die>10|fight_remains<10)" );
   cds->add_action( "variable,name=deathmark_condition,value=!stealthed.rogue&dot.rupture.ticking&!debuff.deathmark.up&variable.deathmark_exsanguinate_condition&variable.deathmark_ma_condition", "Deathmark to be used if not stealthed, Rupture is up, and all other talent conditions are satisfied" );
-  cds->add_action( "use_items,slots=trinket1,if=(variable.trinket_sync_slot=1&(debuff.deathmark.up|fight_remains<=20)|(variable.trinket_sync_slot=2&(!trinket.2.cooldown.ready|cooldown.deathmark.remains>20))|!variable.trinket_sync_slot)", "Sync the priority stat buff trinket with Deathmark, otherwise use on cooldown" );
-  cds->add_action( "use_items,slots=trinket2,if=(variable.trinket_sync_slot=2&(debuff.deathmark.up|fight_remains<=20)|(variable.trinket_sync_slot=1&(!trinket.1.cooldown.ready|cooldown.deathmark.remains>20))|!variable.trinket_sync_slot)" );
+  cds->add_action( "use_items,slots=trinket1,if=(variable.trinket_sync_slot=1&(debuff.deathmark.up|fight_remains<=20)|(variable.trinket_sync_slot=2&(!trinket.2.cooldown.ready|!debuff.deathmark.up&cooldown.deathmark.remains>20))|!variable.trinket_sync_slot)", "Sync the priority stat buff trinket with Deathmark, otherwise use on cooldown" );
+  cds->add_action( "use_items,slots=trinket2,if=(variable.trinket_sync_slot=2&(debuff.deathmark.up|fight_remains<=20)|(variable.trinket_sync_slot=1&(!trinket.1.cooldown.ready|!debuff.deathmark.up&cooldown.deathmark.remains>20))|!variable.trinket_sync_slot)" );
   cds->add_action( "deathmark,if=variable.deathmark_condition" );
   cds->add_action( "kingsbane,if=(debuff.shiv.up|cooldown.shiv.remains<6)&buff.envenom.up&(cooldown.deathmark.remains>=50|dot.deathmark.ticking)" );
   cds->add_action( "variable,name=exsanguinate_condition,value=talent.exsanguinate&!stealthed.rogue&!stealthed.improved_garrote&!dot.deathmark.ticking&target.time_to_die>cooldown.exsanguinate.remains+4", "Exsanguinate when not stealthed and both Rupture and Garrote are up for long enough. Attempt to sync with Echoing Reprimand if using Resounding Clarity." );
@@ -527,6 +527,7 @@ void outlaw_df( player_t* p )
   default_->add_action( "kick", "Interrupt on cooldown to allow simming interactions with that" );
   default_->add_action( "variable,name=stealthed_cto,value=talent.count_the_odds&(stealthed.basic|buff.shadowmeld.up|buff.shadow_dance.up)", "Checks if we are in an appropriate Stealth state for triggering the Count the Odds bonus" );
   default_->add_action( "variable,name=rtb_reroll,value=rtb_buffs<2&(!buff.broadside.up&(!talent.fan_the_hammer|!buff.skull_and_crossbones.up)&!buff.true_bearing.up|buff.loaded_dice.up)|rtb_buffs=2&(buff.buried_treasure.up&buff.grand_melee.up|!buff.broadside.up&!buff.true_bearing.up&buff.loaded_dice.up)", "Roll the Bones Reroll Conditions" );
+  default_->add_action( "variable,name=rtb_reroll_kir_cto,if=talent.keep_it_rolling|talent.count_the_odds,value=(rtb_buffs.normal=0&rtb_buffs.longer>=1)&!(buff.broadside.up&buff.true_bearing.up&buff.skull_and_crossbones.up)&!(buff.broadside.remains>39|buff.true_bearing.remains>39|buff.ruthless_precision.remains>39|buff.skull_and_crossbones.remains>39)" );
   default_->add_action( "variable,name=ambush_condition,value=combo_points.deficit>=2+talent.improved_ambush+buff.broadside.up&energy>=50&(!talent.count_the_odds|buff.roll_the_bones.remains>=10)", "Ensure we get full Ambush CP gains and aren't rerolling Count the Odds buffs away" );
   default_->add_action( "variable,name=finish_condition,value=combo_points>=cp_max_spend-buff.broadside.up-(buff.opportunity.up*(talent.quick_draw|talent.fan_the_hammer))|effective_combo_points>=cp_max_spend", "Finish at max possible CP without overflowing bonus combo points, unless for BtE which always should be 5+ CP" );
   default_->add_action( "variable,name=finish_condition,op=reset,if=cooldown.between_the_eyes.ready&effective_combo_points<5", "Always attempt to use BtE at 5+ CP, regardless of CP gen waste" );
@@ -554,7 +555,7 @@ void outlaw_df( player_t* p )
   build->add_action( "sinister_strike" );
 
   cds->add_action( "blade_flurry,if=spell_targets>=2&!buff.blade_flurry.up", "Cooldowns  Blade Flurry on 2+ enemies" );
-  cds->add_action( "roll_the_bones,if=buff.dreadblades.down&(!buff.roll_the_bones.up|variable.rtb_reroll)" );
+  cds->add_action( "roll_the_bones,if=buff.dreadblades.down&(rtb_buffs.total=0|variable.rtb_reroll|variable.rtb_reroll_kir_cto)" );
   cds->add_action( "keep_it_rolling,if=!variable.rtb_reroll&(buff.broadside.up+buff.true_bearing.up+buff.skull_and_crossbones.up+buff.ruthless_precision.up)>2&(buff.shadow_dance.down|rtb_buffs>=6)" );
   cds->add_action( "call_action_list,name=stealth_cds,if=!stealthed.all|talent.count_the_odds&!variable.stealthed_cto" );
   cds->add_action( "adrenaline_rush,if=!buff.adrenaline_rush.up&(!talent.improved_adrenaline_rush|combo_points<=2)" );
@@ -576,9 +577,9 @@ void outlaw_df( player_t* p )
 
   stealth_cds->add_action( "variable,name=vanish_condition,value=talent.hidden_opportunity|!talent.shadow_dance|!cooldown.shadow_dance.ready", "Stealth Cooldowns" );
   stealth_cds->add_action( "variable,name=vanish_opportunity_condition,value=!talent.shadow_dance&talent.fan_the_hammer.rank+talent.quick_draw+talent.audacity<talent.count_the_odds+talent.keep_it_rolling" );
-  stealth_cds->add_action( "vanish,if=talent.find_weakness&debuff.find_weakness.down&variable.ambush_condition&variable.vanish_condition" );
+  stealth_cds->add_action( "vanish,if=talent.find_weakness&!talent.audacity&debuff.find_weakness.down&variable.ambush_condition&variable.vanish_condition" );
   stealth_cds->add_action( "vanish,if=talent.hidden_opportunity&!buff.audacity.up&(variable.vanish_opportunity_condition|buff.opportunity.stack<buff.opportunity.max_stack)&variable.ambush_condition&variable.vanish_condition" );
-  stealth_cds->add_action( "vanish,if=!talent.find_weakness&!talent.hidden_opportunity&variable.finish_condition&variable.vanish_condition" );
+  stealth_cds->add_action( "vanish,if=(!talent.find_weakness|talent.audacity)&!talent.hidden_opportunity&variable.finish_condition&variable.vanish_condition" );
   stealth_cds->add_action( "variable,name=shadow_dance_condition,value=talent.shadow_dance&debuff.between_the_eyes.up&(!talent.ghostly_strike|debuff.ghostly_strike.up)&(!talent.dreadblades|!cooldown.dreadblades.ready)&(!talent.hidden_opportunity|!buff.audacity.up&(talent.fan_the_hammer.rank<2|!buff.opportunity.up))" );
   stealth_cds->add_action( "shadow_dance,if=!talent.keep_it_rolling&variable.shadow_dance_condition&buff.slice_and_dice.up&(variable.finish_condition|talent.hidden_opportunity)&(!talent.hidden_opportunity|!cooldown.vanish.ready)" );
   stealth_cds->add_action( "shadow_dance,if=talent.keep_it_rolling&variable.shadow_dance_condition&(cooldown.keep_it_rolling.remains<=30|cooldown.keep_it_rolling.remains>120&(variable.finish_condition|talent.hidden_opportunity))" );
@@ -657,6 +658,7 @@ void subtlety_df( player_t* p )
   cds->add_action( "shadow_blades,if=variable.snd_condition&combo_points.deficit>=2" );
   cds->add_action( "echoing_reprimand,if=variable.snd_condition&combo_points.deficit>=3&(variable.priority_rotation|spell_targets.shuriken_storm<=4|talent.resounding_clarity)&(buff.shadow_dance.up|!talent.danse_macabre)" );
   cds->add_action( "shuriken_tornado,if=variable.snd_condition&buff.symbols_of_death.up&combo_points<=2&(!buff.premeditation.up|spell_targets.shuriken_storm>4)", "With SF, if not already done, use Tornado with SoD up." );
+  cds->add_action( "shuriken_tornado,if=cooldown.shadow_dance.ready&!stealthed.all&spell_targets.shuriken_storm>=3&!talent.flagellation.enabled" );
   cds->add_action( "shadow_dance,if=!buff.shadow_dance.up&fight_remains<=8+talent.subterfuge.enabled" );
   cds->add_action( "thistle_tea,if=cooldown.symbols_of_death.remains>=3&!buff.thistle_tea.up&(energy.deficit>=100|cooldown.thistle_tea.charges_fractional>=2.75&buff.shadow_dance.up)|buff.shadow_dance.up&!buff.thistle_tea.up&spell_targets.shuriken_storm>=3|!buff.thistle_tea.up&fight_remains<=(6*cooldown.thistle_tea.charges)" );
   cds->add_action( "potion,if=buff.bloodlust.react|fight_remains<30|buff.symbols_of_death.up&(buff.shadow_blades.up|cooldown.shadow_blades.remains<=10)" );
@@ -671,10 +673,11 @@ void subtlety_df( player_t* p )
   finish->add_action( "slice_and_dice,if=variable.premed_snd_condition&cooldown.shadow_dance.charges_fractional<1.75&buff.slice_and_dice.remains<cooldown.symbols_of_death.remains&(cooldown.shadow_dance.ready&buff.symbols_of_death.remains-buff.shadow_dance.remains<1.2)" );
   finish->add_action( "variable,name=skip_rupture,value=buff.thistle_tea.up&spell_targets.shuriken_storm=1|buff.shadow_dance.up&(spell_targets.shuriken_storm=1|dot.rupture.ticking&spell_targets.shuriken_storm>=2)" );
   finish->add_action( "rupture,if=(!variable.skip_rupture|variable.priority_rotation)&target.time_to_die-remains>6&refreshable", "Keep up Rupture if it is about to run out." );
+  finish->add_action( "rupture,if=!variable.skip_rupture&buff.finality_rupture.up&cooldown.shadow_dance.remains<12&cooldown.shadow_dance.charges_fractional<=1&spell_targets.shuriken_storm=1&(talent.dark_brew|talent.danse_macabre)", "Refresh Rupture early for Finality" );
   finish->add_action( "secret_technique,if=buff.shadow_dance.up&(buff.danse_macabre.stack>=3|!talent.danse_macabre)" );
   finish->add_action( "rupture,cycle_targets=1,if=!variable.skip_rupture&!variable.priority_rotation&spell_targets.shuriken_storm>=2&target.time_to_die>=(2*combo_points)&refreshable", "Multidotting targets that will live for the duration of Rupture, refresh during pandemic." );
   finish->add_action( "rupture,if=!variable.skip_rupture&remains<cooldown.symbols_of_death.remains+10&cooldown.symbols_of_death.remains<=5&target.time_to_die-remains>cooldown.symbols_of_death.remains+5", "Refresh Rupture early if it will expire during Symbols. Do that refresh if SoD gets ready in the next 5s." );
-  finish->add_action( "black_powder,if=!variable.priority_rotation&spell_targets>=(3-talent.dark_brew.enabled)" );
+  finish->add_action( "black_powder,if=!variable.priority_rotation&spell_targets>=3" );
   finish->add_action( "eviscerate" );
 
   stealth_cds->add_action( "variable,name=shd_threshold,value=cooldown.shadow_dance.charges_fractional>=0.75+talent.shadow_dance", "Stealth Cooldowns  Helper Variable" );
@@ -691,7 +694,7 @@ void subtlety_df( player_t* p )
   stealthed->add_action( "variable,name=gloomblade_condition,value=buff.danse_macabre.stack<5&(combo_points.deficit=2|combo_points.deficit=3)&(buff.premeditation.up|effective_combo_points<7)&(spell_targets.shuriken_storm<=8|talent.lingering_shadow)", "Variable to Gloomblade / Backstab when on 4 or 5 combo points with premediation and when the combo point is not anima charged" );
   stealthed->add_action( "shuriken_storm,if=variable.gloomblade_condition&buff.silent_storm.up&!debuff.find_weakness.remains" );
   stealthed->add_action( "gloomblade,if=variable.gloomblade_condition" );
-  stealthed->add_action( "backstab,if=variable.gloomblade_condition&talent.danse_macabre&buff.danse_macabre.stack<=2" );
+  stealthed->add_action( "backstab,if=variable.gloomblade_condition&talent.danse_macabre&buff.danse_macabre.stack<=2&spell_targets.shuriken_storm<=2" );
   stealthed->add_action( "call_action_list,name=finish,if=variable.effective_combo_points>=cp_max_spend" );
   stealthed->add_action( "call_action_list,name=finish,if=buff.shuriken_tornado.up&combo_points.deficit<=2", "Finish earlier with Shuriken tornado up." );
   stealthed->add_action( "call_action_list,name=finish,if=spell_targets.shuriken_storm>=4-talent.seal_fate&variable.effective_combo_points>=4", "Also safe to finish at 4+ CP with exactly 4 targets. (Same as outside stealth.)" );

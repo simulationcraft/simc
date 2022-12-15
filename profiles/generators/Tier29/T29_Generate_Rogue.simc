@@ -1,83 +1,80 @@
-# rogue="T29_Rogue_Assassination"
-# level=70
-# race=mechagnome
-# role=attack
-# spec=assassination
-# talents=2330023
+rogue="T29_Rogue_Assassination"
+spec=assassination
+level=70
+race=tauren
+role=attack
+position=back
+talents=BMQAAAAAAAAAAAAAAAAAAAAAAINRSCSClEAAAAAAAJBQiAAAAAAAIBp5AlkQSSSaJJikgQIWQA
 
-# head=soulblade_guise,id=188901,bonus_id=1498/7187/6935,gem_id=173129
-# neck=worldkiller_iris,id=189859,bonus_id=1524/7187/6935,gem_id=173127
-# shoulders=soulblade_nightwings,id=188905,bonus_id=1505/7187
-# back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187
-# chest=soulblade_leathers,id=188903,bonus_id=1505/7187,enchant=eternal_skirmish
-# wrists=bracers_of_autonomous_classification,id=185817,bonus_id=1595/6536/6646/6935,gem_id=173127
-# hands=soulblade_grasps,id=188907,bonus_id=1505/7187
-# waist=runecarvers_twisted_ward,id=189856,bonus_id=1524/7187/6935,gem_id=173127
-# legs=umbrahide_leggings,id=172318,bonus_id=6716/8127/6647/6649/1588
-# feet=soulblade_footpads,id=188908,bonus_id=1505/7187,enchant=eternal_agility
-# finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=6652/7579/7749/7798/3151/6646/6935,gem_id=173129,enchant=tenet_of_critical_strike
-# finger2=shadowghast_ring,id=178926,bonus_id=6716/7118/6647/6649/1808/1588/6935,gem_id=173127,enchant=tenet_of_critical_strike
-# trinket1=the_first_sigil,id=188271,bonus_id=1524/7187
-# trinket2=phial_of_putrefaction,id=178771,bonus_id=1592/6536/6646
-# main_hand=observers_umbral_shiv,id=191001,bonus_id=1524/7187,enchant=celestial_guidance
-# off_hand=observers_umbral_shiv,id=191001,bonus_id=1524/7187,enchant=sinful_revelation
+head=vault_delvers_vizard,id=200372,bonus_id=6652/8783/8784/8828/8826/8830/8829/8827/7936/7937/4800/4786/1498,gem_id=192982
+neck=elemental_lariat,id=193001,bonus_id=8960/8840/8836/8902/8783/8784/8780/1508,crafted_stats=32/40,gem_id=192922/192922/192922
+shoulder=vault_delvers_epaulets,id=200374,bonus_id=6652/8783/8784/8828/8826/8830/8829/8827/7936/7937/4800/4786/1498
+back=vibrant_wildercloth_shawl,id=193511,bonus_id=3524/8932,ilevel=418,crafted_stats=32/49
+chest=vault_delvers_brigandine,id=200369,bonus_id=6652/8783/8784/8828/8826/8830/8829/8827/7936/7937/4800/4786/1498,enchant=waking_stats_3
+wrist=loyal_flametenders_bracers,id=195525,bonus_id=6652/8783/8784/7936/7937/4800/4786/1498,gem_id=192922
+hands=cruel_vice_grips,id=133617,bonus_id=6652/8811/8812/6808/4786/3300
+waist=bjorns_hunting_strap,id=136776,bonus_id=6652/8811/8812/6808/4786/1808/3300,gem_id=192922
+legs=vault_delvers_pantaloons,id=200373,enchant=fierce_armor_kit_3,ilevel=424
+feet=footpads_of_the_swift_balestra,id=137497,bonus_id=6652/8811/8812/6808/4786/3300
+finger1=seal_of_filial_duty,id=195526,bonus_id=6652/8783/8784/7936/7937/4800/4786/1498,enchant=devotion_of_mastery_3,gem_id=192922
+finger2=jeweled_signet_of_melandrus,id=134542,bonus_id=6652/8811/8812/6808/4786/1808/3300,enchant=devotion_of_critical_strike_3,gem_id=192922
+trinket1=controlled_current_technique,id=194305,bonus_id=6652/8783/8784/7936/7937/4800/4786/1498
+trinket2=manic_grieftorch,id=194308,bonus_id=6652/8783/8784/7936/7937/4800/4786/1498
+main_hand=ornamental_drakonid_claw,id=195521,bonus_id=6652/8783/8784/7936/7937/4800/4786/1498,enchant=sophic_devotion_3
+off_hand=nerzhuls_ritual_blade,id=110038,bonus_id=6652/8811/8812/6808/4786/3306,enchant=sophic_devotion_3
 
-# save=T29_Rogue_Assassination.simc
+save=T29_Rogue_Assassination.simc
 
+rogue="T29_Rogue_Outlaw"
+level=70
+race=tauren
+role=attack
+position=back
+spec=outlaw
+talents=BQQAAAAAAAAAAAAAAAAAAAAAAAAAgEkEgDkkEJlEBkkWSkISSSSIAAAAAAARiAlIkkEpEAAAA
 
-# rogue="T29_Rogue_Outlaw"
-# spec=outlaw
-# level=70
-# race=dwarf
-# role=attack
-# position=back
-# professions=engineering=80/enchanting=125
-# talents=1020022
+head=flaring_cowl,id=193494,bonus_id=8960/8840/8836/8902/1508,gem_id=192925
+neck=elemental_lariat,id=193001,bonus_id=8960/8840/8836/8902/8783/8784/8780/1508,crafted_stats=32/40,gem_id=192982/192925/192925
+shoulder=vault_delvers_epaulets,id=200374,bonus_id=6652/8783/8784/8828/8826/8830/8829/8827/7936/7937/4800/4786/1498
+back=potionstained_cloak,id=193712,bonus_id=6652/8783/8784/7936/7937/6808/4786/1643
+chest=vault_delvers_brigandine,id=200369,bonus_id=6652/8783/8784/8828/8826/8830/8829/8827/7936/7937/4800/4786/1498,enchant=waking_stats_3
+wrists=loyal_flametenders_bracers,id=195525,bonus_id=6652/8783/8784/7936/7937/4800/4786/1498,gem_id=192925
+hands=vault_delvers_lockbreakers,id=200371,bonus_id=6652/8783/8784/8828/8826/8830/8829/8827/7936/7937/4800/4786/1498
+waist=leafmender_girdle,id=109832,bonus_id=6652/8811/8812/6808/4786/1808/3306,gem_id=192925
+legs=vault_delvers_pantaloons,id=200373,enchant=fierce_armor_kit_3,ilevel=424
+feet=biornskin_moccasins,id=134193,bonus_id=6652/8811/8812/6808/4786/3300
+finger1=seal_of_diurnas_chosen,id=195480,bonus_id=6652/8783/8784/7936/7937/4800/4786/1498,enchant=devotion_of_critical_strike_3,gem_id=192925
+finger2=crystallized_droplet,id=144112,bonus_id=6652/8811/8812/6808/4786/1808/3311,enchant=devotion_of_critical_strike_3,gem_id=192925
+trinket1=windscar_whetstone,id=137486,bonus_id=6652/8811/8812/6808/4786/3300
+trinket2=manic_grieftorch,id=194308,bonus_id=6652/8783/8784/7936/7937/4800/4786/1498
+main_hand=refractions_edge,id=193646,bonus_id=6652/8783/8784/7936/7937/6808/4786/1643,enchant=sophic_devotion_3
+off_hand=ornamental_drakonid_claw,id=195521,bonus_id=6652/8783/8784/7936/7937/4800/4786/1498,enchant=sophic_devotion_3
 
-# head=soulblade_guise,id=188901,bonus_id=1498/7187/6935,gem_id=173127
-# neck=azurevenom_choker,id=180115,bonus_id=1592/6536/6646/6935,gem_id=173127
-# shoulders=soulblade_nightwings,id=188905,bonus_id=1505/7187
-# back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187
-# chest=soulblade_leathers,id=188903,bonus_id=1505/7187,enchant=eternal_skirmish
-# wrists=umbrahide_armguards,id=172321,bonus_id=6716/7122/6647/6650/1808/1588/6935,gem_id=173127
-# hands=umbrahide_gauntlets,id=172316,bonus_id=6716/8127/6647/6650/1808/1588/6935
-# waist=soulblade_baldric,id=188906,bonus_id=1505/7187/6935,gem_id=173127
-# legs=soulblade_leggings,id=188902,bonus_id=1498/7187
-# feet=soulblade_footpads,id=188908,bonus_id=1505/7187,enchant=eternal_agility
-# finger1=ritual_commanders_ring,id=178781,bonus_id=1592/6536/6646/6935,gem_id=173127,enchant=tenet_of_versatility
-# finger2=jeweled_signet_of_melandrus,id=134542,bonus_id=6652/7579/7749/7798/3151/6646/6935,gem_id=173127,enchant=tenet_of_critical_strike
-# trinket1=cache_of_acquired_treasures,id=188265,bonus_id=1524/7187
-# trinket2=phial_of_putrefaction,id=178771,bonus_id=1592/6536/6646
-# main_hand=dominations_deliverance,id=189818,bonus_id=1524/7187,enchant=celestial_guidance
-# off_hand=edge_of_night,id=186398,bonus_id=7187/6652/1498/6646,enchant=sinful_revelation
+save=T29_Rogue_Outlaw.simc
 
+rogue="T29_Rogue_Subtlety"
+level=70
+race=tauren
+role=attack
+position=back
+spec=subtlety
+talents=BUQAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAECkkICBIhkgkkEJkEpkkEJQSJCJJJpFAAAA
 
-# save=T29_Rogue_Outlaw.simc
+head=flaring_cowl,id=193494,bonus_id=8960/8840/8836/8902/1508,gem_id=192925
+neck=elemental_lariat,id=193001,bonus_id=8960/8840/8836/8902/8783/8784/8780/1508,crafted_stats=32/40,gem_id=192982/192925/192925
+shoulder=vault_delvers_epaulets,id=200374,bonus_id=6652/8783/8784/8828/8826/8830/8829/8827/7936/7937/4800/4786/1498
+back=sootscarred_longcloak,id=109918,bonus_id=6652/8811/8812/6808/4786/3306
+chest=vault_delvers_brigandine,id=200369,bonus_id=6652/8783/8784/8828/8826/8830/8829/8827/7936/7937/4800/4786/1498,enchant=waking_stats_3
+wrists=loyal_flametenders_bracers,id=195525,bonus_id=6652/8783/8784/7936/7937/4800/4786/1498,gem_id=192925
+hands=vault_delvers_lockbreakers,id=200371,bonus_id=6652/8783/8784/8828/8826/8830/8829/8827/7936/7937/4800/4786/1498
+waist=bjorns_hunting_strap,id=136776,bonus_id=6652/8811/8812/6808/4786/1808/3300,gem_id=192925
+legs=vault_delvers_pantaloons,id=200373,enchant=fierce_armor_kit_3,ilevel=424
+feet=biornskin_moccasins,id=134193,bonus_id=6652/8811/8812/6808/4786/3300
+finger1=valkyr_ascension_signet,id=133679,bonus_id=6652/8811/8812/6808/4786/1808/3300,enchant=devotion_of_critical_strike_3,gem_id=192925
+finger2=seal_of_diurnas_chosen,id=195480,bonus_id=6652/8783/8784/7936/7937/4800/4786/1498,enchant=devotion_of_critical_strike_3,gem_id=192925
+trinket1=controlled_current_technique,id=194305,bonus_id=6652/8783/8784/7936/7937/4800/4786/1498
+trinket2=manic_grieftorch,id=194308,bonus_id=6652/8783/8784/7936/7937/4800/4786/1498
+main_hand=ornamental_drakonid_claw,id=195521,bonus_id=6652/8783/8784/7936/7937/4800/4786/1498,enchant=sophic_devotion_3
+off_hand=fenryrs_bloodstained_fang,id=201998,bonus_id=6652/8783/8784/7936/7937/6808/4786/1643,enchant=sophic_devotion_3
 
-
-# rogue="T29_Rogue_Subtlety"
-# spec=subtlety
-# level=70
-# race=voidelf
-# role=attack
-# position=back
-# talents=1320031
-
-# head=umbrahide_helm,id=172317,bonus_id=7124/6716/6647/6650/1588/6935,gem_id=173129
-# neck=azurevenom_choker,id=180115,bonus_id=1592/6536/6646/6935,gem_id=173129
-# shoulders=soulblade_nightwings,id=188905,bonus_id=1505/7187
-# back=drape_of_mournful_melodies,id=189791,bonus_id=1524/7187
-# chest=soulblade_leathers,id=188903,bonus_id=1505/7187,enchant=eternal_skirmish
-# wrists=bands_of_the_undergrowth,id=178702,bonus_id=1592/6536/6646/6935,gem_id=173129
-# hands=soulblade_grasps,id=188907,bonus_id=1505/7187
-# waist=soulblade_baldric,id=188906,bonus_id=1505/7187/6935,gem_id=173129
-# legs=soulblade_leggings,id=188902,bonus_id=1498/7187
-# feet=umbrahide_treads,id=172315,bonus_id=6716/8127/6647/6650/1588,enchant=eternal_agility
-# finger1=ritual_commanders_ring,id=178781,bonus_id=1592/6536/6646/6935,gem_id=173129,enchant=tenet_of_versatility
-# finger2=entwined_gorger_tendril,id=178848,bonus_id=1592/6536/6646/6935,gem_id=173129,enchant=tenet_of_versatility
-# trinket1=chains_of_domination,id=188252,bonus_id=1524/7187
-# trinket2=earthbreakers_impact,id=188264,bonus_id=1524/7187
-# main_hand=observers_umbral_shiv,id=191001,bonus_id=1524/7187,enchant=celestial_guidance
-# off_hand=edge_of_night,id=186398,bonus_id=7187/6652/1498/6646,enchant=sinful_revelation
-
-# save=T29_Rogue_Subtlety.simc
+save=T29_Rogue_Subtlety.simc

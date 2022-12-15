@@ -181,9 +181,10 @@ namespace monk_apl
     action_priority_list_t* cooldowns_improved_niuzao_woo = p->get_action_priority_list( "cooldowns_improved_niuzao_woo" );
     action_priority_list_t* cooldowns_improved_niuzao_cta = p->get_action_priority_list( "cooldowns_improved_niuzao_cta" );
     action_priority_list_t* cooldowns_niuzao_woo = p->get_action_priority_list( "cooldowns_niuzao_woo" );
-    action_priority_list_t* rotation_blackout_combo = p->get_action_priority_list( "rotation_blackout_combo" );
-    action_priority_list_t* rotation_fom_boc = p->get_action_priority_list( "rotation_fom_boc" );
-    action_priority_list_t* rotation_salsal_chp = p->get_action_priority_list( "rotation_salsal_chp" );
+
+    action_priority_list_t* rotation_boc      = p->get_action_priority_list( "rotation_boc" );
+    action_priority_list_t* rotation_fom_boc  = p->get_action_priority_list( "rotation_fom_boc" );
+    action_priority_list_t* rotation_chp_dfb  = p->get_action_priority_list( "rotation_chp_dfb" );
     action_priority_list_t* rotation_fallback = p->get_action_priority_list( "rotation_fallback" );
 
 
@@ -209,6 +210,10 @@ namespace monk_apl
     // ---------------------------------
     // Blackout Combo
     pre->add_action( "variable,name=boc_count,op=set,value=0", "Blackout Combo" );
+    pre->add_action( "variable,op=set,name=rotation_selection,value=0", "Rotation Selection" );
+    pre->add_action( "variable,op=set,name=rotation_selection,value=1,if=(talent.charred_passions.enabled|talent.dragonfire_brew.enabled)&talent.salsalabims_strength.enabled" );
+    pre->add_action( "variable,op=set,name=rotation_selection,value=2,if=talent.charred_passions.enabled&talent.salsalabims_strength.enabled&talent.blackout_combo.enabled" );
+    pre->add_action( "variable,op=set,name=rotation_selection,value=3-variable.rotation_selection" );
 
     // ---------------------------------
     // BEGIN ACTIONS
@@ -250,29 +255,20 @@ namespace monk_apl
     }
 
     // Cooldown Action Lists
-    // $(niuzao_score)=(talent.invoke_niuzao_the_black_ox.enabled+talent.improved_invoke_niuzao_the_black_ox.enabled)
-    // $(woo_score)=(talent.weapons_of_order.enabled+talent.call_to_arms.enabled)
     def->add_action( "call_action_list,name=cooldowns_improved_niuzao_woo,if=(talent.invoke_niuzao_the_black_ox.enabled+talent.improved_invoke_niuzao_the_black_ox.enabled)=2&(talent.weapons_of_order.enabled+talent.call_to_arms.enabled)<=1",
       "Cooldown Action Lists" );
     def->add_action( "call_action_list,name=cooldowns_improved_niuzao_cta,if=(talent.invoke_niuzao_the_black_ox.enabled+talent.improved_invoke_niuzao_the_black_ox.enabled)=2&(talent.weapons_of_order.enabled+talent.call_to_arms.enabled)=2" );
     def->add_action( "call_action_list,name=cooldowns_niuzao_woo,if=(talent.invoke_niuzao_the_black_ox.enabled+talent.improved_invoke_niuzao_the_black_ox.enabled)<=1" );
 
     // Rotation Action Lists
-    def->add_action( "call_action_list,name=rotation_blackout_combo,if=talent.blackout_combo.enabled&talent.salsalabims_strength.enabled&talent.charred_passions.enabled&!talent.fluidity_of_motion.enabled",
-      "Rotation Action Lists" );
-    def->add_action( "call_action_list,name=rotation_fom_boc,if=talent.blackout_combo.enabled&talent.salsalabims_strength.enabled&talent.charred_passions.enabled&talent.fluidity_of_motion.enabled" );
-    def->add_action( "call_action_list,name=rotation_salsal_chp,if=!talent.blackout_combo.enabled&talent.salsalabims_strength.enabled&talent.charred_passions.enabled" );
-
-    // Fallback Rotation
-    def->add_action( "call_action_list,name=rotation_fallback,if=!talent.salsalabims_strength.enabled|!talent.charred_passions.enabled",
-      "Fallback Rotation" );
+    def->add_action("call_action_list,name=rotation_boc,if=variable.rotation_selection=1&(((1%spell_haste-1)*100>=1%3&talent.fluidity_of_motion.enabled)|!talent.fluidity_of_motion.enabled)", "Rotation Action Lists" );
+    def->add_action("call_action_list,name=rotation_fom_boc,if=variable.rotation_selection=1&((1%spell_haste-1)*100<1%3&talent.fluidity_of_motion.enabled)" );
+    def->add_action("call_action_list,name=rotation_chp_dfb,if=variable.rotation_selection=2" );
+    def->add_action("call_action_list,name=rotation_fallback,if=variable.rotation_selection=3", "Fallback Rotation" );
 
     // ---------------------------------
     // DPS COOLDOWNS
     // ---------------------------------
-
-    // Includes abilities:
-    // Invoke Niuzao, Invoke Niuzao Rank 2, Weapons of Order, Weapons of Order - Call to Arms, Purifying Brew
 
     // Name: Niuzao + Weapons of Order / Niuzao + Call to Arms
     cooldowns_niuzao_woo->add_action( "weapons_of_order,if=talent.weapons_of_order.enabled",
@@ -283,37 +279,6 @@ namespace monk_apl
     cooldowns_niuzao_woo->add_action( "purifying_brew,if=talent.purifying_brew.enabled&cooldown.purifying_brew.remains_expected<5&!buff.blackout_combo.up" );
 
     /*
-     * magic numbers being used in Improved Niuzao + [Weapons of Order / Call to Arms]
-     * important tweakables
-     * if pre purify > cd cast, decrease this value
-     * $(pre_pb_wiggle)=3.5
-     * increase this until window PBs go down
-     * $(excess_pb_multiplier)=2
-     * if ogcd burnt pbs > 0, decrease this value
-     * $(brew_cdr)=0.65
-
-     * less important tweakables
-     * x\in[0,0.2]
-     * probably don't touch this
-     * $(stomp_wiggle_per_stomp)=0.05
-
-     * x\in[10,20]
-     * increase this until last stomp of invoke niuzao is out of WoO
-     * $(niuzao_delay)=30-17
-
-     * macros for my sanity
-     * $(total_time_for_cta_stomps)=10+2*$(stomp_wiggle_per_stomp)
-     * $(total_time_for_niu_stomps)=20+4*$(stomp_wiggle_per_stomp)
-
-     * cta_window, niu_window
-     * $(cta_window)=time-action.weapons_of_order.last_used <= $( total_time_for_cta_stomps )
-     * $(niu_window)=time-action.invoke_niuzao_the_black_ox.last_used <= $( total_time_for_niu_stomps )
-
-     * $(cta_window_remains)=$(total_time_for_cta_stomps)-time+action.weapons_of_order.last_used
-     * $(niu_window_remains)=$(total_time_for_niu_stomps)-time+action.invoke_niuzao_the_black_ox.last_used
-
-     * #########
-
      * Process Overview:
      * snapshot purifies in cta, or niuzao into pb_in_window
      * decrement pb_in_window if a pb is cast in window
@@ -355,40 +320,25 @@ namespace monk_apl
     // ROTATIONS
     // ---------------------------------
 
-    /*
-     * macros
-     * several fragments are placed here either due to repeated usage, or similarity to another string that should remain (nearly) identical
-
-     * Blackout Combo
-     * $(ttsks3)=cooldown.blackout_kick.duration_expected*(1-(variable.boc_count)%%3)+cooldown.blackout_kick.remains+1
-     * $(ttsks2)=cooldown.blackout_kick.duration_expected*(1-(variable.boc_count)%%2)+cooldown.blackout_kick.remains+1
-     * $(etks)=energy+energy.regen*(variable.time_to_scheduled_ks+execute_time)
-
-     * Includes abilities :
-     * Blackout Kick, Rising Sun Kick, Keg Smash, Breath of Fire, Exploding Keg, Rushing Jade Wind, Black Ox Brew, Spinning Crane Kick, Chi Wave, Chi Burst
-
-     * Missing Considerations:
-     * Fortifying Brew, Expel Harm
-
-     * Name: Blackout Combo Salsalabim's Strength Charred Passions [Shadowboxing Treads or high haste Fluidity of Motion]
-     * Basic Sequence: Blackout Kick Breath of Fire x x Blackout Kick Keg Smash x x
-     * Fluidity of Motion Sequence: Blackout Kick Breath of Fire x Blackout Kick Keg Smash x
-    */
-    rotation_blackout_combo->add_action( "variable,name=boc_count,op=add,value=1,if=prev.blackout_kick",
+    // Name: Blackout Combo Salsalabim's Strength Charred Passions [Shadowboxing Treads or high haste Fluidity of Motion]
+    // Basic Sequence: Blackout Kick Breath of Fire x x Blackout Kick Keg Smash x x
+    // Fluidity of Motion Sequence: Blackout Kick Breath of Fire x Blackout Kick Keg Smash x
+    rotation_boc->add_action( "variable,name=boc_count,op=add,value=1,if=prev.blackout_kick",
       "Name: Blackout Combo Salsalabim's Strength Charred Passions [Shadowboxing Treads or high haste Fluidity of Motion]" );
-    rotation_blackout_combo->add_action( "variable,name=time_to_scheduled_ks,op=set,value=cooldown.blackout_kick.duration_expected*(1-(variable.boc_count)%%2)+cooldown.blackout_kick.remains+1" );
-    rotation_blackout_combo->add_action( "blackout_kick" );
-    rotation_blackout_combo->add_action( "rising_sun_kick,if=talent.rising_sun_kick.enabled" );
-    rotation_blackout_combo->add_action( "keg_smash,if=buff.blackout_combo.up&variable.boc_count%%2=0" );
-    rotation_blackout_combo->add_action( "breath_of_fire,if=talent.breath_of_fire.enabled&buff.blackout_combo.up&variable.boc_count%%2=1" );
-    rotation_blackout_combo->add_action( "exploding_keg,if=talent.exploding_keg.enabled" );
-    rotation_blackout_combo->add_action( "rushing_jade_wind,if=buff.rushing_jade_wind.down&talent.rushing_jade_wind.enabled" );
-    rotation_blackout_combo->add_action( "black_ox_brew,if=energy+energy.regen*(variable.time_to_scheduled_ks+execute_time)>=65&talent.black_ox_brew.enabled" );
-    rotation_blackout_combo->add_action( "keg_smash,if=cooldown.keg_smash.charges_fractional>1&cooldown.keg_smash.full_recharge_time<=variable.time_to_scheduled_ks&energy+energy.regen*(variable.time_to_scheduled_ks+execute_time)>=80" );
-    rotation_blackout_combo->add_action( "spinning_crane_kick,if=energy+energy.regen*(variable.time_to_scheduled_ks+execute_time)>=65" );
-    rotation_blackout_combo->add_action( "celestial_brew,if=talent.celestial_brew.enabled&!buff.blackout_combo.up" );
-    rotation_blackout_combo->add_action( "chi_wave,if=talent.chi_wave.enabled" );
-    rotation_blackout_combo->add_action( "chi_burst,if=talent.chi_burst.enabled" );
+    rotation_boc->add_action( "variable,name=time_to_scheduled_ks,op=set,value=cooldown.blackout_kick.duration_expected*(1-(variable.boc_count)%%2)+cooldown.blackout_kick.remains+1" );
+    rotation_boc->add_action( "blackout_kick" );
+    rotation_boc->add_action( "rising_sun_kick,if=talent.rising_sun_kick.enabled" );
+    rotation_boc->add_action( "keg_smash,if=buff.blackout_combo.up&variable.boc_count%%2=0" );
+    rotation_boc->add_action( "breath_of_fire,if=buff.blackout_combo.up&variable.boc_count%%2=1" );
+    rotation_boc->add_action( "exploding_keg,if=talent.exploding_keg.enabled" );
+    rotation_boc->add_action( "rushing_jade_wind,if=buff.rushing_jade_wind.down&talent.rushing_jade_wind.enabled" );
+    rotation_boc->add_action( "black_ox_brew,if=energy+energy.regen*(variable.time_to_scheduled_ks+execute_time)>=65&talent.black_ox_brew.enabled" );
+    rotation_boc->add_action( "keg_smash,if=cooldown.keg_smash.charges_fractional>1&cooldown.keg_smash.full_recharge_time<=variable.time_to_scheduled_ks&energy+energy.regen*(variable.time_to_scheduled_ks+execute_time)>=80" );
+    rotation_boc->add_action( "spinning_crane_kick,if=energy+energy.regen*(variable.time_to_scheduled_ks+execute_time)>=65&active_enemies>1" );
+    rotation_boc->add_action( "tiger_palm,if=energy+energy.regen*(variable.time_to_scheduled_ks+execute_time)>=65&active_enemies=1&!buff.blackout_combo.up" );
+    rotation_boc->add_action( "celestial_brew,if=talent.celestial_brew.enabled&!buff.blackout_combo.up" );
+    rotation_boc->add_action( "chi_wave,if=talent.chi_wave.enabled" );
+    rotation_boc->add_action( "chi_burst,if=talent.chi_burst.enabled" );
 
     // Name: Blackout Combo Salsalabim's Strength Chared Passions Fluidity of Motion Not High Haste
     // Basic Sequence: Blackout Kick Breath of Fire x Blackout Kick (Keg Smash / x) x Blackout Kick Keg Smash x
@@ -397,32 +347,35 @@ namespace monk_apl
     rotation_fom_boc->add_action( "variable,name=time_to_scheduled_ks,op=set,value=cooldown.blackout_kick.duration_expected*(1-(variable.boc_count)%%3)+cooldown.blackout_kick.remains+1" );
     rotation_fom_boc->add_action( "blackout_kick" );
     rotation_fom_boc->add_action( "rising_sun_kick,if=variable.boc_count%%3=1&talent.rising_sun_kick.enabled" );
-    rotation_fom_boc->add_action( "breath_of_fire,if=talent.breath_of_fire.enabled&buff.blackout_combo.up&variable.boc_count%%3=1" );
+    rotation_fom_boc->add_action( "breath_of_fire,if=buff.blackout_combo.up&variable.boc_count%%3=1" );
     rotation_fom_boc->add_action( "keg_smash,if=buff.blackout_combo.up&variable.boc_count%%3=2" );
     rotation_fom_boc->add_action( "keg_smash,if=buff.blackout_combo.up&variable.boc_count%%3=0&cooldown.keg_smash.charges_fractional>1&cooldown.keg_smash.full_recharge_time<=variable.time_to_scheduled_ks&energy+energy.regen*(variable.time_to_scheduled_ks+execute_time)>=80" );
     rotation_fom_boc->add_action( "cancel_buff,name=blackout_combo,if=variable.boc_count%%3=0" );
+    rotation_fom_boc->add_action( "exploding_keg,if=talent.exploding_keg.enabled" );
     rotation_fom_boc->add_action( "rushing_jade_wind,if=buff.rushing_jade_wind.down&talent.rushing_jade_wind.enabled" );
+    rotation_fom_boc->add_action( "black_ox_brew,if=energy+energy.regen*(variable.time_to_scheduled_ks+execute_time)>=65&talent.black_ox_brew.enabled" );
     rotation_fom_boc->add_action( "rising_sun_kick,if=talent.rising_sun_kick.enabled" );
-    rotation_fom_boc->add_action( "spinning_crane_kick,if=energy+energy.regen*(variable.time_to_scheduled_ks+execute_time)>=65&buff.charred_passions.up" );
-    rotation_fom_boc->add_action( "celestial_brew,if=talent.celestial_brew.enabled&!buff.blackout_combo.up" );
+    rotation_fom_boc->add_action( "spinning_crane_kick,if=energy+energy.regen*(variable.time_to_scheduled_ks+execute_time)>=65&buff.charred_passions.up&active_enemies>1" );
+    rotation_fom_boc->add_action( "tiger_palm,if=energy+energy.regen*(variable.time_to_scheduled_ks+execute_time)>=65&active_enemies=1&!buff.blackout_combo.up" );
+    rotation_fom_boc->add_action( "celestial_brew,if=!buff.blackout_combo.up" );
     rotation_fom_boc->add_action( "chi_wave,if=talent.chi_wave.enabled" );
     rotation_fom_boc->add_action( "chi_burst,if=talent.chi_burst.enabled" );
 
-    // Name: Salsalabim's Strength Charred Passions
+    // Name: Salsalabim's Strength Charred Passions / Dragonfire Brew
     // Basic Sequence: Keg Smash Breath of Fire x x x x x
-    // $(chp_threshold)=6
-    rotation_salsal_chp->add_action( "keg_smash,if=talent.keg_smash.enabled&buff.charred_passions.remains<=6",
-      "Name: Salsalabim's Strength Charred Passions" );
-    rotation_salsal_chp->add_action( "breath_of_fire,if=talent.breath_of_fire.enabled&buff.charred_passions.remains<=0.5" );
-    rotation_salsal_chp->add_action( "blackout_kick" );
-    rotation_salsal_chp->add_action( "rising_sun_kick,if=talent.rising_sun_kick.enabled" );
-    rotation_salsal_chp->add_action( "exploding_keg,if=cooldown.breath_of_fire.remains>=12&talent.exploding_keg.enabled" );
-    rotation_salsal_chp->add_action( "rushing_jade_wind,if=buff.rushing_jade_wind.down&talent.rushing_jade_wind.enabled" );
-    rotation_salsal_chp->add_action( "black_ox_brew,if=(energy+(energy.regen*(buff.charred_passions.remains+execute_time-6)))>=65&talent.black_ox_brew.enabled" );
-    rotation_salsal_chp->add_action( "spinning_crane_kick,if=(energy+(energy.regen*(buff.charred_passions.remains+execute_time-6)))>=65" );
-    rotation_salsal_chp->add_action( "celestial_brew,if=talent.celestial_brew.enabled&!buff.blackout_combo.up" );
-    rotation_salsal_chp->add_action( "chi_wave,if=talent.chi_wave.enabled" );
-    rotation_salsal_chp->add_action( "chi_burst,if=talent.chi_burst.enabled" );
+    rotation_chp_dfb->add_action( "breath_of_fire,if=talent.charred_passions.enabled&buff.charred_passions.remains<1.5|talent.dragonfire_brew.enabled",
+      "Name: Salsalabim's Strength Charred Passions / Dragonfire Brew" );
+    rotation_chp_dfb->add_action( "blackout_kick" );
+    rotation_chp_dfb->add_action( "keg_smash" );
+    rotation_chp_dfb->add_action( "exploding_keg,if=talent.exploding_keg.enabled" );
+    rotation_chp_dfb->add_action( "rushing_jade_wind,if=buff.rushing_jade_wind.down&talent.rushing_jade_wind.enabled" );
+    rotation_chp_dfb->add_action( "black_ox_brew,if=energy+energy.regen*(variable.time_to_scheduled_ks+execute_time)>=65&talent.black_ox_brew.enabled" );
+    rotation_chp_dfb->add_action( "rising_sun_kick" );
+    rotation_chp_dfb->add_action( "spinning_crane_kick,if=energy+energy.regen*(cooldown.keg_smash.remains+execute_time)>=65&active_enemies>1" );
+    rotation_chp_dfb->add_action( "tiger_palm,if=energy+energy.regen*(cooldown.keg_smash.remains+execute_time)>=65&active_enemies=1" );
+    rotation_chp_dfb->add_action( "chi_wave,if=talent.chi_wave.enabled" );
+    rotation_chp_dfb->add_action( "chi_burst,if=talent.chi_burst.enabled" );
+    rotation_chp_dfb->add_action( "celestial_brew" );
 
     // Name: Fallback
     rotation_fallback->add_action( "rising_sun_kick,if=talent.rising_sun_kick.enabled",
@@ -431,9 +384,9 @@ namespace monk_apl
     rotation_fallback->add_action( "breath_of_fire,if=talent.breath_of_fire.enabled" );
     rotation_fallback->add_action( "blackout_kick" );
     rotation_fallback->add_action( "exploding_keg,if=talent.exploding_keg.enabled" );
-    rotation_fallback->add_action( "black_ox_brew,if=(energy+(energy.regen*(cooldown.keg_smash.remains+execute_time)))>=65&talent.black_ox_brew.enabled" );
+    rotation_fallback->add_action( "black_ox_brew,if=energy+energy.regen*(cooldown.keg_smash.remains+execute_time)>=65&talent.black_ox_brew.enabled" );
     rotation_fallback->add_action( "rushing_jade_wind,if=talent.rushing_jade_wind.enabled" );
-    rotation_fallback->add_action( "spinning_crane_kick,if=(energy+(energy.regen*(cooldown.keg_smash.remains+execute_time)))>=65" );
+    rotation_fallback->add_action( "spinning_crane_kick,if=energy+energy.regen*(cooldown.keg_smash.remains+execute_time)>=65" );
     rotation_fallback->add_action( "celestial_brew,if=!buff.blackout_combo.up&talent.celestial_brew.enabled" );
     rotation_fallback->add_action( "chi_wave,if=talent.chi_wave.enabled" );
     rotation_fallback->add_action( "chi_burst,if=talent.chi_burst.enabled" );
@@ -527,7 +480,7 @@ namespace monk_apl
         // name_str -> APL
         { "horn_of_valor",",if=pet.xuen_the_white_tiger.active|!talent.invoke_xuen_the_white_tiger&buff.serenity.up|fight_remains<30" },
 
-        // Defaults: 
+        // Defaults:
         { "ITEM_STAT_BUFF", ",if=buff.serenity.remains>10" },
         { "ITEM_DMG_BUFF", ",if=cooldown.invoke_xuen_the_white_tiger.remains>cooldown%%120|cooldown<=60&variable.hold_xuen|!talent.invoke_xuen_the_white_tiger" },
       };
@@ -539,7 +492,7 @@ namespace monk_apl
         // name_str -> APL
         { "horn_of_valor",",if=pet.xuen_the_white_tiger.active|!talent.invoke_xuen_the_white_tiger&buff.storm_earth_and_fire.up|fight_remains<30" },
 
-        // Defaults: 
+        // Defaults:
         { "ITEM_STAT_BUFF", ",if=cooldown.invoke_xuen_the_white_tiger.remains>cooldown%%120|cooldown<=60&variable.hold_xuen|cooldown<=60&buff.storm_earth_and_fire.remains>10|!talent.invoke_xuen_the_white_tiger" },
         { "ITEM_DMG_BUFF", ",if=cooldown.invoke_xuen_the_white_tiger.remains>cooldown%%120|cooldown<=60&variable.hold_xuen|!talent.invoke_xuen_the_white_tiger" },
       };

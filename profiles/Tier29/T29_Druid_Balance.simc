@@ -5,7 +5,7 @@ level=70
 race=troll
 role=spell
 position=back
-talents=BYGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAoAQSiIQChkkIJSDaJSSSokgI5AJ0SKRCRSDgA
+talents=BYGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAoAQSiIQChkkIJSDaJSSSolgI5AJ0SKRCRSDgA
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
@@ -83,6 +83,7 @@ actions.st+=/moonfire,target_if=refreshable&remains<2
 actions.st+=/stellar_flare,target_if=refreshable&astral_power.deficit>variable.passive_asp+8&remains<2
 actions.st+=/variable,name=cd_condition_st,value=cooldown.ca_inc.remains<15&!buff.ca_inc.up&(target.1.time_to_die>15|fight_remains<25+10*talent.incarnation_chosen_of_elune)
 actions.st+=/wrath,if=variable.cd_condition_st&set_bonus.tier29_4pc&eclipse.any_next
+actions.st+=/starfall,if=buff.primordial_arcanic_pulsar.value>=550&!buff.ca_inc.up
 actions.st+=/starsurge,if=variable.cd_condition_st&buff.touch_the_cosmos.up
 actions.st+=/celestial_alignment,if=variable.cd_condition_st
 actions.st+=/incarnation,if=variable.cd_condition_st
@@ -110,29 +111,29 @@ actions.st+=/wrath
 actions.st+=/run_action_list,name=fallthru
 
 head=lost_landcallers_antlers,id=200354,bonus_id=4800/4786/1498/6935,gem_id=192961
-neck=elemental_lariat,id=193001,bonus_id=6652/7936/7979/1540/8767/8782/8793,gem_id=192948/192948/192988
+neck=elemental_lariat,id=193001,bonus_id=6652/7936/7979/1540/8767/8782/8793/8960,gem_id=192948/192948/192988
 shoulders=lost_landcallers_mantle,id=200356,bonus_id=4800/4786/1498
 back=fireproof_drape,id=193763,bonus_id=6808/4786/1643
 chest=lost_landcallers_robes,id=200351,bonus_id=4800/4786/1498,enchant=waking_stats_3
 wrists=loyal_flametenders_bracers,id=195525,bonus_id=4800/3524/1498,gem_id=192961
 hands=treacherous_totem_wraps,id=195514,bonus_id=4800/4786/1498
-waist=bjorns_hunting_strap,id=136776,bonus_id=1795/6808/4786/3156/6935,gem_id=192961
+waist=bjorns_hunting_strap,id=136776,bonus_id=1795/6808/4786/3300/6935,gem_id=192961
 legs=lost_landcallers_leggings,id=200355,bonus_id=4800/4786/1498,enchant=frozen_spellthread_3
-feet=blackwater_boots,id=109799,bonus_id=4177/6808/4786/6072
-finger1=ringbound_hourglass,id=193000,bonus_id=8780/8793,ilevel=418,gem_id=192961,enchant=devotion_of_mastery_3
+feet=blackwater_boots,id=109799,ilevel=421
+finger1=ringbound_hourglass,id=193000,bonus_id=8780/8793/8932/8960,ilevel=418,gem_id=192961,enchant=devotion_of_mastery_3
 finger2=seal_of_filial_duty,id=195526,bonus_id=4800/4786/1497/6935,gem_id=192961,enchant=devotion_of_haste_3
 trinket1=whispering_incarnate_icon,id=194301,bonus_id=4800/4786/1498
 trinket2=furious_ragefeather,id=193677,bonus_id=6808/4786/1643
 main_hand=final_grade,id=193707,bonus_id=6808/4786/1643,enchant=sophic_devotion_3
 
 # Gear Summary
-# gear_ilvl=401.80
-# gear_stamina=11675
-# gear_intellect=6559
-# gear_crit_rating=1100
-# gear_haste_rating=3768
-# gear_mastery_rating=4872
+# gear_ilvl=421.40
+# gear_stamina=13241
+# gear_intellect=7117
+# gear_crit_rating=1374
+# gear_haste_rating=4028
+# gear_mastery_rating=5222
 # gear_versatility_rating=561
-# gear_armor=2833
+# gear_armor=3335
 # set_bonus=tier29_2pc=1
 # set_bonus=tier29_4pc=1

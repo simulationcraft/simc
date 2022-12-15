@@ -552,8 +552,9 @@ struct vile_taint_t : public affliction_spell_t
   {
     vile_taint_dot_t( warlock_t* p ) : affliction_spell_t( "Vile Taint (DoT)", p, p->talents.vile_taint_dot )
     {
-      tick_zero = true;
+      tick_zero = background = true;
       execute_action = new agony_t( p, "" );
+      execute_action->background = true;
       execute_action->dual = true;
       execute_action->base_costs[ RESOURCE_MANA ] = 0.0;
     }

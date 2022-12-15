@@ -5,6 +5,7 @@ actions.precombat+=/food
 actions.precombat+=/summon_pet
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
+actions.precombat+=/use_item,name=algethar_puzzle_box
 actions.precombat+=/steel_trap,precast_time=1.5,if=!talent.wailing_arrow&talent.steel_trap
 
 # Executed every time the actor is available.
@@ -16,6 +17,15 @@ actions+=/call_action_list,name=cleave,if=active_enemies>2|talent.beast_cleave&a
 actions.cds=berserking,if=!talent.bestial_wrath|buff.bestial_wrath.up|fight_remains<16
 actions.cds+=/use_items,slots=trinket1,if=buff.call_of_the_wild.up|!talent.call_of_the_wild&(buff.bestial_wrath.up&(buff.bloodlust.up|target.health.pct<20))|fight_remains<31
 actions.cds+=/use_items,slots=trinket2,if=buff.call_of_the_wild.up|!talent.call_of_the_wild&(buff.bestial_wrath.up&(buff.bloodlust.up|target.health.pct<20))|fight_remains<31
+actions.cds+=/use_item,name=manic_grieftorch,if=pet.main.buff.frenzy.remains>execute_time
+actions.cds+=/use_item,name=darkmoon_deck_box_rime
+actions.cds+=/use_item,name=darkmoon_deck_box_inferno
+actions.cds+=/use_item,name=darkmoon_deck_box_dance
+actions.cds+=/use_item,name=darkmoon_deck_box_watcher
+actions.cds+=/use_item,name=decoration_of_flame
+actions.cds+=/use_item,name=stormeaters_boon
+actions.cds+=/use_item,name=windscar_whetstone
+actions.cds+=/use_item,name=globe_of_jagged_ice
 actions.cds+=/blood_fury,if=buff.call_of_the_wild.up|!talent.call_of_the_wild&(buff.bestial_wrath.up&(buff.bloodlust.up|target.health.pct<20))|fight_remains<16
 actions.cds+=/ancestral_call,if=buff.call_of_the_wild.up|!talent.call_of_the_wild&(buff.bestial_wrath.up&(buff.bloodlust.up|target.health.pct<20))|fight_remains<16
 actions.cds+=/fireblood,if=buff.call_of_the_wild.up|!talent.call_of_the_wild&(buff.bestial_wrath.up&(buff.bloodlust.up|target.health.pct<20))|fight_remains<10
