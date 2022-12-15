@@ -113,6 +113,7 @@ void arcane( player_t* p )
   spark_phase->add_action( "arcane_missiles,if=talent.arcane_harmony&buff.arcane_harmony.stack<15&(buff.bloodlust.up|buff.clearcasting.react&cooldown.radiant_spark.remains<5)&cooldown.arcane_surge.remains<30&(buff.rune_of_power.up|!talent.rune_of_power),chain=1" );
   spark_phase->add_action( "rune_of_power" );
   spark_phase->add_action( "radiant_spark" );
+  spark_phase->add_action( "use_item,name=timebreaching_talon,if=cooldown.arcane_surge.remains<=(gcd.max*3)" );
   spark_phase->add_action( "arcane_surge,if=prev_gcd.4.radiant_spark" );
   spark_phase->add_action( "nether_tempest,if=prev_gcd.5.radiant_spark" );
   spark_phase->add_action( "meteor,if=(talent.nether_tempest&prev_gcd.6.radiant_spark)|(!talent.nether_tempest&prev_gcd.5.radiant_spark)" );
@@ -125,6 +126,7 @@ void arcane( player_t* p )
   aoe_spark_phase->add_action( "cancel_buff,name=presence_of_mind,if=prev_gcd.1.arcane_blast&cooldown.arcane_surge.remains>75" );
   aoe_spark_phase->add_action( "rune_of_power,if=cooldown.arcane_surge.remains<75&cooldown.arcane_surge.remains>30" );
   aoe_spark_phase->add_action( "radiant_spark" );
+  aoe_spark_phase->add_action( "use_item,name=timebreaching_talon,if=cooldown.arcane_surge.remains<=(gcd.max*2)" );
   aoe_spark_phase->add_action( "arcane_explosion,if=buff.arcane_charge.stack>=3&prev_gcd.1.radiant_spark" );
   aoe_spark_phase->add_action( "arcane_orb,if=buff.arcane_charge.stack<3,line_cd=15" );
   aoe_spark_phase->add_action( "nether_tempest,if=talent.arcane_echo,line_cd=15" );
