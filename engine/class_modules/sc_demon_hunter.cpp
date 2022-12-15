@@ -81,6 +81,9 @@ public:
 
     // Vengeance
     buff_t* frailty;
+
+    // Set Bonuses
+    buff_t* t29_vengeance_4pc;
   } debuffs;
 
   demon_hunter_td_t( player_t* target, demon_hunter_t& p );
@@ -529,8 +532,8 @@ public:
   {
     const spell_data_t* t29_havoc_2pc;
     const spell_data_t* t29_havoc_4pc;
-    const spell_data_t* t29_vengeance_2pc;          // NYI
-    const spell_data_t* t29_vengeance_4pc;          // NYI
+    const spell_data_t* t29_vengeance_2pc;
+    const spell_data_t* t29_vengeance_4pc;
   } set_bonuses;
 
   // Mastery Spells
@@ -638,7 +641,7 @@ public:
     proc_t* soul_fragment_from_hunger;
 
     // Set Bonuses
-
+    proc_t* soul_fragment_from_t29_2pc;
   } proc;
 
   // RPPM objects
@@ -3197,6 +3200,34 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
 
 struct spirit_bomb_t : public demon_hunter_spell_t
 {
+  struct spirit_bomb_state_t : public action_state_t
+  {
+    bool t29_vengeance_4pc_proc;
+
+    spirit_bomb_state_t(action_t* a, player_t* target): action_state_t(a, target), t29_vengeance_4pc_proc(false)
+    {
+    }
+
+    void initialize() override
+    {
+      action_state_t::initialize();
+      t29_vengeance_4pc_proc = false;
+    }
+
+    void copy_state(const action_state_t* s) override
+    {
+      action_state_t::copy_state(s);
+      t29_vengeance_4pc_proc = debug_cast<const spirit_bomb_state_t*>(s)->t29_vengeance_4pc_proc;
+    }
+
+    std::ostringstream& debug_str( std::ostringstream& s ) override
+    {
+      action_state_t::debug_str( s );
+      s << " t29_vengeance_4pc_proc=" << t29_vengeance_4pc_proc;
+      return s;
+    }
+  };
+
   struct spirit_bomb_damage_t : public demon_hunter_spell_t
   {
     spirit_bomb_damage_t( util::string_view name, demon_hunter_t* p )
@@ -3205,6 +3236,22 @@ struct spirit_bomb_t : public demon_hunter_spell_t
       background = dual = true;
       aoe = -1;
       reduced_aoe_targets = p->talent.vengeance.spirit_bomb->effectN( 2 ).base_value();
+    }
+
+    action_state_t* new_state() override
+    {
+      return new spirit_bomb_state_t(this, target);
+    }
+
+    void snapshot_state( action_state_t* state, result_amount_type rt ) override
+    {
+      if ( p()->set_bonuses.t29_vengeance_4pc->ok() &&
+           rng().roll( p()->set_bonuses.t29_vengeance_4pc->effectN( 2 ).percent() ) )
+      {
+        debug_cast<spirit_bomb_state_t*>( state )->t29_vengeance_4pc_proc = true;
+      }
+      // snapshot_state after so that it includes the DA multiplier from the proc
+      demon_hunter_spell_t::snapshot_state( state, rt );
     }
 
     void execute() override
@@ -3218,9 +3265,13 @@ struct spirit_bomb_t : public demon_hunter_spell_t
     {
       demon_hunter_spell_t::impact(s);
 
-      if (result_is_hit(s->result))
+      if ( result_is_hit( s->result ) )
       {
-        td(s->target)->debuffs.frailty->trigger();
+        td( s->target )->debuffs.frailty->trigger();
+        if ( debug_cast<spirit_bomb_state_t*>( s )->t29_vengeance_4pc_proc )
+        {
+          td( s->target )->debuffs.t29_vengeance_4pc->trigger();
+        }
       }
     }
 
@@ -3231,6 +3282,11 @@ struct spirit_bomb_t : public demon_hunter_spell_t
       if ( p()->buff.soul_furnace_damage_amp->up() )
       {
         m *= 1.0 + p()->buff.soul_furnace_damage_amp->check_value();
+      }
+
+      if ( debug_cast<const spirit_bomb_state_t*>( s )->t29_vengeance_4pc_proc )
+      {
+        m *= 1.0 + p()->set_bonuses.t29_vengeance_4pc->effectN( 1 ).percent();
       }
 
       return m;
@@ -4478,8 +4534,24 @@ struct fracture_t : public demon_hunter_attack_t
     {
       ea += p()->spec.metamorphosis_buff->effectN( 9 ).resource( RESOURCE_FURY );
     }
+    if ( p()->set_bonuses.t29_vengeance_2pc->ok() )
+    {
+      ea *= 1.0 + p()->set_bonuses.t29_vengeance_2pc->effectN( 2 ).percent();
+    }
 
     return ea;
+  }
+
+  double composite_da_multiplier(const action_state_t* s) const override
+  {
+    double m = demon_hunter_attack_t::composite_da_multiplier(s);
+
+    if ( p()->set_bonuses.t29_vengeance_2pc->ok() )
+    {
+      m *= 1.0 + p()->set_bonuses.t29_vengeance_2pc->effectN( 1 ).percent();
+    }
+
+    return m;
   }
 
   void impact( action_state_t* s ) override
@@ -4502,6 +4574,13 @@ struct fracture_t : public demon_hunter_attack_t
       {
         p()->spawn_soul_fragment( soul_fragment::LESSER );
         p()->proc.soul_fragment_from_meta->occur();
+      }
+
+      // 15% chance to generate an extra soul fragment not included in spell data
+      if ( p()->set_bonuses.t29_vengeance_2pc->ok() && rng().roll( 0.15 ) )
+      {
+        p()->spawn_soul_fragment( soul_fragment::LESSER );
+        p()->proc.soul_fragment_from_t29_2pc->occur();
       }
     }
   }
@@ -4568,8 +4647,24 @@ struct shear_t : public demon_hunter_attack_t
     {
       ea += p()->talent.vengeance.shear_fury->effectN( 1 ).resource( RESOURCE_FURY );
     }
+    if ( p()->set_bonuses.t29_vengeance_2pc->ok() )
+    {
+      ea *= 1.0 + p()->set_bonuses.t29_vengeance_2pc->effectN( 2 ).percent();
+    }
 
     return ea;
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = demon_hunter_attack_t::composite_da_multiplier( s );
+
+    if ( p()->set_bonuses.t29_vengeance_2pc->ok() )
+    {
+      m *= 1.0 + p()->set_bonuses.t29_vengeance_2pc->effectN( 1 ).percent();
+    }
+
+    return m;
   }
 
   bool verify_actor_spec() const override
@@ -4585,14 +4680,58 @@ struct shear_t : public demon_hunter_attack_t
 
 struct soul_cleave_t : public demon_hunter_attack_t
 {
+  struct soul_cleave_state_t : public action_state_t
+  {
+    bool t29_vengeance_4pc_proc;
+
+    soul_cleave_state_t(action_t* a, player_t* target): action_state_t(a, target), t29_vengeance_4pc_proc(false)
+    {
+    }
+
+    void initialize() override
+    {
+      action_state_t::initialize();
+      t29_vengeance_4pc_proc = false;
+    }
+
+    void copy_state(const action_state_t* s) override
+    {
+      action_state_t::copy_state(s);
+      t29_vengeance_4pc_proc = debug_cast<const soul_cleave_state_t*>(s)->t29_vengeance_4pc_proc;
+    }
+
+    std::ostringstream& debug_str( std::ostringstream& s ) override
+    {
+      action_state_t::debug_str( s );
+      s << " t29_vengeance_4pc_proc=" << t29_vengeance_4pc_proc;
+      return s;
+    }
+  };
+
   struct soul_cleave_damage_t : public demon_hunter_attack_t
   {
     soul_cleave_damage_t( util::string_view name, demon_hunter_t* p, const spell_data_t* s )
       : demon_hunter_attack_t( name, p, s )
     {
-      dual = true;
-      aoe = -1;
+      dual                = true;
+      aoe                 = -1;
       reduced_aoe_targets = data().effectN( 2 ).base_value();
+    }
+
+    action_state_t* new_state() override
+    {
+      return new soul_cleave_state_t(this, target);
+    }
+
+    void snapshot_state( action_state_t* state, result_amount_type rt ) override
+    {
+      if ( p()->set_bonuses.t29_vengeance_4pc->ok() &&
+           rng().roll( p()->set_bonuses.t29_vengeance_4pc->effectN( 2 ).percent() ) )
+      {
+        debug_cast<soul_cleave_state_t*>( state )->t29_vengeance_4pc_proc = true;
+      }
+      // snapshot_state after so that it includes the DA multiplier from the proc
+      demon_hunter_attack_t::snapshot_state( state, rt );
     }
 
     void impact( action_state_t* s ) override
@@ -4611,6 +4750,11 @@ struct soul_cleave_t : public demon_hunter_attack_t
         td( s->target )
             ->debuffs.frailty->trigger(
                 timespan_t::from_seconds( p()->talent.vengeance.soulcrush->effectN( 2 ).base_value() ) );
+      }
+
+      if ( debug_cast<soul_cleave_state_t*>( s )->t29_vengeance_4pc_proc )
+      {
+        td( s->target )->debuffs.t29_vengeance_4pc->trigger();
       }
     }
 
@@ -4633,6 +4777,11 @@ struct soul_cleave_t : public demon_hunter_attack_t
       if ( p()->buff.soul_furnace_damage_amp->up() )
       {
         m *= 1.0 + p()->buff.soul_furnace_damage_amp->check_value();
+      }
+
+      if ( debug_cast<const soul_cleave_state_t*>( s )->t29_vengeance_4pc_proc )
+      {
+        m *= 1.0 + p()->set_bonuses.t29_vengeance_4pc->effectN( 1 ).percent();
       }
 
       return m;
@@ -5172,6 +5321,11 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
                           ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
                           ->set_period( 0_ms )
                           ->apply_affecting_aura( p.talent.vengeance.soulcrush );
+    debuffs.t29_vengeance_4pc =
+        make_buff( *this, "decrepit_souls",
+                   p.set_bonuses.t29_vengeance_4pc->ok() ? p.find_spell( 394958 ) : spell_data_t::not_found() )
+            ->set_default_value_from_effect( 1 )
+            ->set_refresh_behavior( buff_refresh_behavior::DURATION );
   }
 
   dots.sigil_of_flame = target->get_dot( "sigil_of_flame", &p );
@@ -5714,7 +5868,7 @@ void demon_hunter_t::init_procs()
   proc.soul_fragment_from_hunger      = get_proc( "soul_fragment_from_hunger" );
 
   // Set Bonuses
-
+  proc.soul_fragment_from_t29_2pc     = get_proc( "soul_fragment_from_t29_2pc" );
 }
 
 // demon_hunter_t::init_resources ===========================================
@@ -6853,6 +7007,10 @@ void demon_hunter_t::target_mitigation( school_e school, result_amount_type dt, 
     if ( td->debuffs.frailty->check() && talent.vengeance.void_reaver->ok() )
     {
       s->result_amount *= 1.0 + spec.frailty_debuff->effectN( 3 ).percent() * td->debuffs.frailty->check();
+    }
+
+    if ( td->debuffs.t29_vengeance_4pc->check() ) {
+      s->result_amount *= 1.0 + td->debuffs.t29_vengeance_4pc->check_value();
     }
   }
 }
