@@ -10009,8 +10009,8 @@ double warrior_t::composite_attribute( attribute_e attr ) const
   {
     // Arma 2022 Nov 13 disable Attt for prot as it ends up looping here.  As Str and armor are both looping in the stat cache
     // get_attribute -> composite_attribute -> bonus_armor -> composite_bonus_armor -> strength -> get_attribute
-    if ( specialization() != WARRIOR_PROTECTION )
-      p += ( talents.warrior.armored_to_the_teeth->effectN( 2 ).percent() * cache.armor() );
+    //if ( specialization() != WARRIOR_PROTECTION )
+    p += ( talents.warrior.armored_to_the_teeth->effectN( 2 ).percent() * cache.armor() );
   }
 
   return p;
@@ -10071,15 +10071,12 @@ double warrior_t::composite_armor_multiplier() const
   double ar = player_t::composite_armor_multiplier();
 
   // Arma 2022 Nov 10.  To avoid an infinite loop, we manually calculate the str benefit of armored to the teeth here, and apply the armor we would gain from it
-  // While this version works.  It does have issues, where it does not account for all str buffs.
-  /*
-  if ( talents.warrior.armored_to_the_teeth->ok() )
+  if ( talents.warrior.armored_to_the_teeth->ok() && specialization() == WARRIOR_PROTECTION )
   {
     auto dividend = spec.vanguard -> effectN( 1 ).percent() * talents.warrior.armored_to_the_teeth -> effectN( 2 ).percent() * (1 + talents.warrior.reinforced_plates->effectN( 1 ).percent()) * ( 1+talents.protection.focused_vigor->effectN( 3 ).percent());
     auto divisor = 1 - (spec.vanguard -> effectN( 1 ).percent() * talents.warrior.armored_to_the_teeth -> effectN( 2 ).percent() * (1 + talents.warrior.reinforced_plates->effectN( 1 ).percent()) * ( 1+talents.protection.focused_vigor->effectN( 3 ).percent()));
     ar *= 1 + (dividend / divisor);
   }
-  */
 
  // Generally Modify Armor% (101)
 
@@ -10101,14 +10098,19 @@ double warrior_t::composite_bonus_armor() const
   // This is to prevent an infinite loop between Attt using the cache.armor() and composite_bonus_armor using cache.strength()
   // We have to add all str buffs to this, if we want to avoid vanguard missing anything.  Not ideal.
 
-  /*
-  auto base_str = current.stats.attribute[ STAT_STRENGTH ];
-  ba += spec.vanguard -> effectN( 1 ).percent() * base_str * (1.0 + talents.protection.focused_vigor->effectN( 1 ).percent());
-  */
+  if ( specialization() == WARRIOR_PROTECTION )
+  {
+    // Pulls strength using the base player_t functions.  We call these directly to avoid using the warrior_t versions, as armor contribution from 
+    // attt is calculated during composite_armor_multiplier
+    auto current_str = util::floor( player_t::composite_attribute( ATTR_STRENGTH ) * player_t::composite_attribute_multiplier( ATTR_STRENGTH ) );
+    // if there is anything else in warrior_t::composite_attribute_multiplier that applies to str, like focused_vigor for instance
+    // it needs to be added here as well
+    ba += spec.vanguard -> effectN( 1 ).percent() * current_str * (1.0 + talents.protection.focused_vigor->effectN( 1 ).percent());
+  }
 
-  // If in the future we want to run the above, the below section should be commented out.
-  if( specialization() == WARRIOR_PROTECTION )
-    ba += spec.vanguard -> effectN( 1 ).percent() * cache.strength();
+  // If in the future if blizz changes behavior, and we want to go back to using the two caches, we can use the below code
+  //if( specialization() == WARRIOR_PROTECTION )
+  //  ba += spec.vanguard -> effectN( 1 ).percent() * cache.strength();
 
   return ba;
 }
