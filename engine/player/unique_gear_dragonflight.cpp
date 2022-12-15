@@ -1877,54 +1877,58 @@ void decoration_of_flame( special_effect_t& effect )
 
   struct decoration_of_flame_damage_t : public proc_spell_t
   {
-    buff_t* shield;
-    double value;
+     buff_t* shield;
+     double value;
+     unsigned cap;
 
-    decoration_of_flame_damage_t( const special_effect_t& e )
-      : proc_spell_t( "decoration_of_flame", e.player, e.player->find_spell( 377449 ), e.item ),
-        shield( nullptr ),
-        value( e.player->find_spell( 394393 )->effectN( 2 ).average( e.item ) )
-    {
+     decoration_of_flame_damage_t( const special_effect_t& e )
+       : proc_spell_t( "decoration_of_flame", e.player, e.player->find_spell( 377449 ), e.item ),
+         shield( nullptr ),
+         value( e.player->find_spell( 394393 )->effectN( 2 ).average( e.item ) ),
+         cap( as<int>( e.driver()->effectN( 3 ).base_value() ) )
+     {
        background = true;
        split_aoe_damage = true;
        base_dd_min = base_dd_max = e.player->find_spell( 394393 )->effectN( 1 ).average( e.item );
-       aoe = as<int>( e.driver()->effectN( 3 ).base_value() );
+       aoe = -1;
        radius = 10;
        shield = make_buff<absorb_buff_t>( e.player, "decoration_of_flame_shield", e.player->find_spell( 382058 ) );
-    }
+     }
 
-    double composite_da_multiplier( const action_state_t* s ) const override
+    std::vector<player_t*>& target_list() const override
     {
-      double m = proc_spell_t::composite_da_multiplier( s );
+      target_cache.is_valid = false;
 
-     // Damage increases by 10% per target based on in game testing
-      m *= 1.0 + ( s -> n_targets - 1 ) * 0.1;
+      auto& tl = proc_spell_t::target_list();
 
-      return m;
+      tl.erase( std::remove_if( tl.begin(), tl.end(), [ this ]( player_t* ) {
+        return rng().roll( sim->dragonflight_opts.decoration_of_flame_miss_chance );
+      } ), tl.end() );
+
+      return tl;
     }
 
-    int n_targets() const override
-    { 
-      double chance = player -> sim -> dragonflight_opts.decoration_of_flame_miss_chance;
-      if ( rng().roll( chance ) )
-      {
-        return aoe - as<int>( rng().range( 0, aoe ) );
-      }
-      return aoe; 
-    }
+     double composite_da_multiplier( const action_state_t* s ) const override
+     {
+       double m = proc_spell_t::composite_da_multiplier( s );
 
-    void execute() override
-    {
-      proc_spell_t::execute();
+       // Damage increases by 10% per target based on in game testing
+       m *= 1.0 + ( std::min( cap, s->n_targets ) - 1 ) * 0.1;
 
-      shield->trigger( -1, value * ( 1.0 + ( num_targets_hit - 1 ) * 0.05 ) );
-    }
+       return m;
+     }
+
+     void execute() override
+     {
+       proc_spell_t::execute();
+
+       shield->trigger( -1, value * ( 1.0 + ( num_targets_hit - 1 ) * 0.05 ) );
+     }
   };
 
   action_t* action = create_proc_action<decoration_of_flame_damage_t>( "decoration_of_flame", effect );
-  buff->set_stack_change_callback( [ action ](buff_t*, int, int ) 
-  {
-    action -> execute();
+  buff->set_stack_change_callback( [ action ]( buff_t*, int, int ) {
+    action->execute();
   } );
 }
 
