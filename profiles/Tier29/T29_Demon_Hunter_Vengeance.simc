@@ -1,0 +1,121 @@
+demonhunter="T29_Demon_Hunter_Vengeance"
+source=default
+spec=vengeance
+level=70
+race=blood_elf
+role=tank
+position=front
+talents=BUkAAAAAAAAAAAAAAAAAAAAAAAAQJCSSQS0QSiAJlEQ0CJSkESSJJIJJhSQAAAAA
+
+# Default consumables
+potion=elemental_potion_of_ultimate_power_3
+flask=phial_of_elemental_chaos_3
+food=fated_fortune_cookie
+augmentation=draconic
+temporary_enchant=main_hand:howling_rune_3/off_hand:howling_rune_3
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/augmentation
+actions.precombat+=/food
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+
+# Executed every time the actor is available.
+actions=auto_attack
+actions+=/variable,name=rampH_done,value=0,op=setif,value_else=1,condition=talent.the_hunt.enabled&cooldown.the_hunt.remains<5
+actions+=/variable,name=rampED_done,value=0,op=setif,value_else=1,condition=talent.elysian_decree.enabled&cooldown.elysian_decree.remains<5
+actions+=/variable,name=rampSC_done,value=0,op=setif,value_else=1,condition=talent.soul_carver.enabled&cooldown.soul_carver.remains<5&!talent.fiery_demise.enabled
+actions+=/variable,name=FD_done,value=0,op=setif,value_else=1,condition=talent.fiery_demise.enabled&cooldown.soul_carver.up&cooldown.fiery_brand.up&cooldown.immolation_aura.up&cooldown.fel_devastation.remains<10|dot.fiery_brand.ticking&talent.fiery_demise
+actions+=/infernal_strike
+actions+=/demon_spikes,if=!buff.demon_spikes.up&!cooldown.pause_action.remains
+actions+=/fiery_brand,if=!talent.fiery_demise.enabled&!dot.fiery_brand.ticking
+actions+=/bulk_extraction
+actions+=/potion
+actions+=/use_item,slot=trinket1
+actions+=/use_item,slot=trinket2
+actions+=/run_action_list,name=rampH,if=variable.rampH_done=0&!dot.fiery_brand.ticking
+actions+=/run_action_list,name=rampED,if=variable.rampED_done=0&!dot.fiery_brand.ticking
+actions+=/run_action_list,name=rampSC,if=variable.rampSC_done=0&!dot.fiery_brand.ticking
+actions+=/run_action_list,name=FD,if=variable.FD_done=0
+actions+=/metamorphosis,if=!buff.metamorphosis.up&!dot.fiery_brand.ticking
+actions+=/fel_devastation,if=(!talent.down_in_flames.enabled)
+actions+=/spirit_bomb,if=((buff.metamorphosis.up&talent.fracture.enabled&soul_fragments>=3)|soul_fragments>=4&active_enemies>1)
+actions+=/soul_cleave,if=(talent.spirit_bomb.enabled&soul_fragments=0&target>1)|(active_enemies<2&((talent.fracture.enabled&fury>=55)|(!talent.fracture.enabled&fury>=70)|(buff.metamorphosis.up&((talent.fracture.enabled&fury>=35)|(!talent.fracture.enabled&fury>=50)))))|(!talent.spirit_bomb.enabled)&((talent.fracture.enabled&fury>=55)|(!talent.fracture.enabled&fury>=70)|(buff.metamorphosis.up&((talent.fracture.enabled&fury>=35)|(!talent.fracture.enabled&fury>=50))))
+actions+=/immolation_aura,if=(talent.fiery_demise.enabled&fury.deficit>=10&(cooldown.soul_carver.remains>15))|(!talent.fiery_demise.enabled&fury.deficit>=10)
+actions+=/felblade,if=fury.deficit>=40
+actions+=/fracture,if=(talent.spirit_bomb.enabled&(soul_fragments<=3&target>1|target<2&fury.deficit>=30))|(!talent.spirit_bomb.enabled&((buff.metamorphosis.up&fury.deficit>=45)|(buff.metamorphosis.down&fury.deficit>=30)))
+actions+=/sigil_of_flame,if=fury.deficit>=30
+actions+=/shear
+actions+=/throw_glaive
+
+actions.FD=fracture,if=fury.deficit>=30&!dot.fiery_brand.ticking
+actions.FD+=/fiery_brand,if=!dot.fiery_brand.ticking&fury>=30
+actions.FD+=/fel_devastation,if=dot.fiery_brand.remains<=3
+actions.FD+=/immolation_aura,if=dot.fiery_brand.ticking
+actions.FD+=/spirit_bomb,if=soul_fragments>=4&dot.fiery_brand.remains>=4
+actions.FD+=/soul_carver,if=soul_fragments<=3
+actions.FD+=/fracture,if=soul_fragments<=3&dot.fiery_brand.remains>=5|dot.fiery_brand.remains<=5&fury<50
+actions.FD+=/sigil_of_flame,if=dot.fiery_brand.remains<=3&fury<50
+actions.FD+=/throw_glaive
+actions.FD+=/variable,name=FD_done,op=setif,value=1,value_else=0,condition=(talent.fiery_demise.enabled&cooldown.soul_carver.remains&cooldown.fiery_brand.remains&cooldown.immolation_aura.remains&cooldown.fel_devastation.remains)
+
+actions.rampED=fracture,if=fury.deficit>=30
+actions.rampED+=/sigil_of_flame,if=fury.deficit>=30
+actions.rampED+=/shear,if=fury.deficit<=90&debuff.frailty.stack>=0
+actions.rampED+=/spirit_bomb,if=soul_fragments>=4&active_enemies>1
+actions.rampED+=/soul_cleave,if=(soul_fragments=0&active_enemies>1)|(active_enemies<2)|debuff.frailty.stack>=0
+actions.rampED+=/elysian_decree
+actions.rampED+=/variable,name=rampED_done,op=setif,value=1,value_else=0,condition=talent.elysian_decree.enabled&cooldown.elysian_decree.remains
+
+actions.rampH=fracture,if=fury.deficit>=30&debuff.frailty.stack<=5
+actions.rampH+=/sigil_of_flame,if=fury.deficit>=30
+actions.rampH+=/shear,if=fury.deficit<=90
+actions.rampH+=/spirit_bomb,if=soul_fragments>=4&active_enemies>1
+actions.rampH+=/soul_cleave,if=(soul_fragments=0&active_enemies>1)|(active_enemies<2)|debuff.frailty.stack>=0
+actions.rampH+=/the_hunt
+actions.rampH+=/variable,name=rampH_done,op=setif,value=1,value_else=0,condition=talent.the_hunt.enabled&cooldown.the_hunt.remains
+
+actions.rampSC=fracture,if=fury.deficit>=30
+actions.rampSC+=/sigil_of_flame,if=fury.deficit>=30
+actions.rampSC+=/shear,if=fury.deficit<=90&debuff.frailty.stack>=0
+actions.rampSC+=/spirit_bomb,if=soul_fragments>=4&active_enemies>1
+actions.rampSC+=/soul_cleave,if=(soul_fragments=0&active_enemies>1)|(active_enemies<2)|debuff.frailty.stack>=0
+actions.rampSC+=/soul_carver
+actions.rampSC+=/variable,name=rampSC_done,op=setif,value=1,value_else=0,condition=talent.soul_carver.enabled&cooldown.soul_carver.remains&!talent.fiery_demise.enabled
+
+head=windborne_hatsuburi,id=195492,bonus_id=4800/4786/1498/7187/6935,gem_id=192945
+neck=elemental_lariat,id=193001,bonus_id=8836/8840/8902/8960/8783/8782/8802/8790,gem_id=192945/192945/192945
+shoulders=skybound_avengers_ailerons,id=200347,bonus_id=4800/4786/1498
+back=decorated_commanders_cindercloak,id=195482,bonus_id=4800/4786/1498
+chest=skybound_avengers_harness,id=200342,bonus_id=4800/4786/1498,enchant_id=6625
+wrists=skybound_avengers_wristbands,id=200349,bonus_id=4800/4786/1498,gem_id=192945
+hands=skybound_avengers_grips,id=200344,bonus_id=4800/4786/1498
+waist=skybound_avengers_waistwrap,id=200348,bonus_id=4800/4786/1498,gem_id=192985
+legs=skybound_avengers_legguards,id=200346,bonus_id=4800/4786/1498,enchant_id=6496
+feet=iceclimbers_cleats,id=195509,bonus_id=4800/4786/1498
+finger1=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498,gem_id=192952,enchant_id=6556
+finger2=jeweled_signet_of_melandrus,id=134542,bonus_id=1795/6808/4786/3300,gem_id=192952,enchant_id=6556
+trinket1=manic_grieftorch,id=194308,bonus_id=4800/4786/1498
+trinket2=whispering_incarnate_icon,id=194301,bonus_id=4800/4786/1498
+main_hand=infused_stormglaives,id=195491,bonus_id=4800/4786/1498/6808,enchant_id=6649
+off_hand=infused_stormglaives,id=195491,bonus_id=4800/4786/1498/6808,enchant_id=6649
+
+# Gear Summary
+# gear_ilvl=417.69
+# gear_agility=5321
+# gear_stamina=12529
+# gear_crit_rating=3816
+# gear_haste_rating=5137
+# gear_mastery_rating=394
+# gear_versatility_rating=1823
+# gear_armor=3278
+# gear_bonus_armor=141
+# set_bonus=tier29_2pc=1
+# set_bonus=tier29_4pc=1
