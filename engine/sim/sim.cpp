@@ -1513,7 +1513,7 @@ sim_t::sim_t() :
   report_precision(2), report_pets_separately( 0 ), report_targets( 1 ), report_details( 1 ), report_raw_abilities( 1 ),
   report_rng( 0 ), hosted_html( 0 ),
   save_raid_summary( 0 ), save_gear_comments( 0 ), statistics_level( 1 ), separate_stats_by_actions( 0 ), report_raid_summary( 0 ),
-  buff_uptime_timeline( 0 ), buff_stack_uptime_timeline( 0 ),
+  buff_uptime_timeline( 1 ), buff_stack_uptime_timeline( 1 ),
   json_full_states( 0 ),
   decorated_tooltips( -1 ),
   allow_potions( true ),
