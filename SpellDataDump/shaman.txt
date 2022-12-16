@@ -1,4 +1,4 @@
-SimulationCraft 1002-01 for World of Warcraft 10.0.2.47067 Live (hotfix 2022-12-15/47067)
+SimulationCraft 1002-01 for World of Warcraft 10.0.2.47120 Live (hotfix 2022-12-16/47120)
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -17299,14 +17299,12 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Lava Burst (51505), Lava Lash (60103), Ascendance (114050), Ascendance (114051), Ascendance (114052), Elemental Blast (117014), Crash Lightning (187874), Lightning Bolt (188196), Chain Lightning (188443), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Lightning Bolt Overload (214816), Lava Burst (285452), Lightning Lasso (305483), Lightning Lasso (305485), Fire Nova (333974), Fire Nova (333977), Lashing Flames (334046), Hailstorm (334195), Hailstorm (334196), Ice Strike (342240), Stormflurry (344357), Ascendance (344548)
                    Family Flags: 0, 1, 27, 31, 44, 66, 75, 82, 85, 98, 102, 122
-Hotfixed         : Affects Spells
 #2 (id=1034577)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=1045352)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Lava Burst (51505), Lava Lash (60103), Elemental Blast (117014), Crash Lightning (187874), Lightning Bolt (188196), Chain Lightning (188443), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Lightning Bolt Overload (214816), Lava Burst (285452), Lightning Lasso (305483), Lightning Lasso (305485), Fire Nova (333974), Fire Nova (333977), Lashing Flames (334046), Hailstorm (334195), Hailstorm (334196), Ice Strike (342240), Stormflurry (344357)
                    Family Flags: 0, 1, 27, 31, 44, 66, 75, 82, 85, 98, 122
-Hotfixed         : NEW EFFECT
 Description      : $@spelldesc393691
 Tooltip          : Fire, Frost, and Nature ability damage increased by $w1% and generates $w2 additional stack of Maelstrom Weapon.
 

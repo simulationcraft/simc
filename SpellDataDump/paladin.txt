@@ -1,4 +1,4 @@
-SimulationCraft 1002-01 for World of Warcraft 10.0.2.47067 Live (hotfix 2022-12-15/47067)
+SimulationCraft 1002-01 for World of Warcraft 10.0.2.47120 Live (hotfix 2022-12-16/47120)
 Name             : Frostbolt of Ages (id=11) 
 Class            : Paladin
 School           : Frost
@@ -11505,7 +11505,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 
 Name             : Aegis of Light (id=353367) [Spell Family (10), Passive] 
-Hotfixed         : Description
 Class            : Protection Paladin
 School           : Physical
 Spell Type       : None
@@ -11734,7 +11733,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Aegis of Light (353367)
                    Family Flags: 53
-Hotfixed         : Base Value (-10 -> 0)
 Description      : Additionally reduces damage taken by $s1%.
 
 Name             : Dawn Will Come (id=363674) [Spell Family (10), Passive, Hidden] 
@@ -12275,7 +12273,6 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
 Effects          :
 #1 (id=1006803)  : Apply Aura (6) | Periodic Heal (8): every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.21000 | PvP Coefficient: 0.60000 | Target: Friend (21)
-Hotfixed         : PvP Coefficient (1 -> 0.6)
 Description      : $@spelldesc378405
 Tooltip          : Healing for $w1 every $t1 sec.
 

@@ -1,4 +1,4 @@
-SimulationCraft 1002-01 for World of Warcraft 10.0.2.47067 Live (hotfix 2022-12-15/47067)
+SimulationCraft 1002-01 for World of Warcraft 10.0.2.47120 Live (hotfix 2022-12-16/47120)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -13108,7 +13108,6 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Heart Strike (206930), Heart Strike (228645)
                    Family Flags: 24
-Hotfixed         : Base Value (60 -> 30)
 #2 (id=890321)   : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Heart Strike deals $s1% increased damage, but also costs $s2% of your max health.
@@ -14005,7 +14004,6 @@ Effects          :
 Description      : Heart Strike damage increased by $s1%.
 
 Name             : Blood Fortification (id=374721) [Passive] 
-Hotfixed         : Description
 Class            : Blood Death Knight
 School           : Physical
 Spell Type       : None
@@ -14025,7 +14023,6 @@ Effects          :
 #2 (id=1000723)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
-Hotfixed         : Base Value (-10 -> 0)
 Description      : Stamina increased by $s1%.
 
 Name             : Reinforced Bones (id=374737) [Spell Family (15), Passive] 
@@ -15183,7 +15180,6 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1005595)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.06600 | PvP Coefficient: 0.75000 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
-Hotfixed         : PvP Coefficient (1 -> 0.75)
 Description      : $@spelldesc377640
 
 Name             : Heartrend (id=377655) [Spell Family (15), Passive] 

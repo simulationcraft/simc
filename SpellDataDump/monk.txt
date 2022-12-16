@@ -1,4 +1,4 @@
-SimulationCraft 1002-01 for World of Warcraft 10.0.2.47067 Live (hotfix 2022-12-15/47067)
+SimulationCraft 1002-01 for World of Warcraft 10.0.2.47120 Live (hotfix 2022-12-16/47120)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -6521,7 +6521,6 @@ Description      : $@spelldesc242580
 Tooltip          : Breath of Fire's cooldown has been reset.
 
 Name             : Brewmaster's Balance (id=245013) [Spell Family (53), Passive] 
-Hotfixed         : Description
 Class            : Brewmaster Monk
 School           : Physical
 Spell Type       : None
@@ -6541,7 +6540,6 @@ Effects          :
 #2 (id=884935)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
-Hotfixed         : Base Value (-10 -> 0)
 #3 (id=892663)   : Apply Aura (6) | Dummy (4)
                    Base Value: 45 | Scaled Value: 45 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Your Armor is increased by $s1% and Stamina increased by $s3%.
