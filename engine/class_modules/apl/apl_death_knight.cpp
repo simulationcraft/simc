@@ -158,7 +158,7 @@ void blood( player_t* p )
   standard->add_action( "blood_boil,if=charges_fractional>=1.1" );
   standard->add_action( "heart_strike,if=(rune>1&(rune.time_to_3<gcd|buff.bone_shield.stack>7))" );
 
-  trinkets->add_action( "use_item,slot=trinket1,if=!variable.trinket_1_buffs", "Prioritize damange dealing on use trinkets over trinkets that give buffs" );
+  trinkets->add_action( "use_item,slot=trinket1,if=!variable.trinket_1_buffs", "Prioritize damage dealing on use trinkets over trinkets that give buffs" );
   trinkets->add_action( "use_item,slot=trinket2,if=!variable.trinket_2_buffs" );
   trinkets->add_action( "use_item,slot=trinket1,if=variable.trinket_1_buffs&(buff.dancing_rune_weapon.up|!talent.dancing_rune_weapon|cooldown.dancing_rune_weapon.remains>20)&(trinket.2.cooldown.remains|variable.trinket_2_buffs)" );
   trinkets->add_action( "use_item,slot=trinket2,if=variable.trinket_2_buffs&(buff.dancing_rune_weapon.up|!talent.dancing_rune_weapon|cooldown.dancing_rune_weapon.remains>20)&(trinket.1.cooldown.remains|variable.trinket_1_buffs)" );
