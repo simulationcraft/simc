@@ -1,5 +1,5 @@
-// Talent tree specialization abilities, wow build 10.0.2.46801
-static const std::array<specialization_spell_entry_t, 351> __ptr_specialization_spell_data { {
+// Talent tree specialization abilities, wow build 10.0.5.47118
+static const std::array<specialization_spell_entry_t, 352> __ptr_specialization_spell_data { {
   {  0,  535, 264656,      0, "Pathfinding"                       , 0 },
   {  0,  535, 264662,      0, "Endurance Training"                , 0 },
   {  0,  535, 264663,      0, "Predator's Thirst"                 , 0 },
@@ -15,6 +15,7 @@ static const std::array<specialization_spell_entry_t, 351> __ptr_specialization_
   {  1,   71,  86101,      0, "Plate Specialization"              , 0 },
   {  1,   71, 137049,      0, "Arms Warrior"                      , 0 },
   {  1,   71, 162698,      0, "Stat Negation Aura - Strength DPS" , 0 },
+  {  1,   71, 260708,      0, "Sweeping Strikes"                  , 0 },
   {  1,   71, 262111,      0, "Mastery: Deep Wounds"              , 0 },
   {  1,   71, 279423,      0, "Seasoned Soldier"                  , 0 },
   {  1,   72,   5308, 163201, "Execute"                           , 0 },
@@ -192,6 +193,7 @@ static const std::array<specialization_spell_entry_t, 351> __ptr_specialization_
   {  8,   63,  44448,      0, "Pyroblast Clearcasting Driver"     , 0 },
   {  8,   63, 137019,      0, "Fire Mage"                         , 0 },
   {  8,   63, 162699,      0, "Stat Negation Aura - Intellect DPS", 0 },
+  {  8,   63, 195283,      0, "Hot Streak"                        , 0 },
   {  8,   64,  76613,      0, "Mastery: Icicles"                  , 0 },
   {  8,   64, 137020,      0, "Frost Mage"                        , 0 },
   {  8,   64, 162699,      0, "Stat Negation Aura - Intellect DPS", 0 },
@@ -291,6 +293,7 @@ static const std::array<specialization_spell_entry_t, 351> __ptr_specialization_
   { 11,  104, 231052,      0, "Improved Prowl"                    , 0 },
   { 11,  104, 231065,      0, "Lightning Reflexes"                , 0 },
   { 11,  104, 270100,      0, "Bear Form"                         , "Rank 2" },
+  { 11,  104, 300346,      0, "Ursine Adept"                      , 0 },
   { 11,  105,  77495,      0, "Mastery: Harmony"                  , 0 },
   { 11,  105,  86093,      0, "Leather Specialization"            , 0 },
   { 11,  105,  88423,      0, "Nature's Cure"                     , 0 },
@@ -332,8 +335,6 @@ static const std::array<specialization_spell_entry_t, 351> __ptr_specialization_
   { 12,  581, 228477, 344862, "Soul Cleave"                       , 0 },
   { 12,  581, 320378,      0, "Immolation Aura"                   , 0 },
   { 12,  581, 320380,      0, "Thick Skin"                        , 0 },
-  { 12,  581, 320381,      0, "Demonic Wards"                     , "Rank 2" },
-  { 12,  581, 320382,      0, "Demonic Wards"                     , "Rank 3" },
   { 12,  581, 320639,      0, "Fel Devastation"                   , "Rank 2" },
   { 12,  581, 320794,      0, "Sigil of Flame"                    , 0 },
   { 12,  581, 320962,      0, "Fiery Brand"                       , "Rank 2" },
