@@ -109,7 +109,7 @@ public:
 
 struct player_t : public actor_t
 {
-  static const int default_level = 60;
+  static const int default_level = 70;
 
   // static values
   player_e type;
