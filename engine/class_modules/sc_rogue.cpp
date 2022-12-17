@@ -5644,14 +5644,21 @@ struct echoing_reprimand_t : public rogue_attack_t
       for ( buff_t* b : p()->buffs.echoing_reprimand )
         b->expire();
 
+      unsigned buff_idx = static_cast<int>( rng().range( random_min, random_max ) );
       if ( p()->talent.rogue.resounding_clarity->ok() )
       {
-        for ( buff_t* b : p()->buffs.echoing_reprimand )
-          b->trigger();
+        // 2022-12-16 -- Resounding Clarity now animacharges 2 instead of 3 additional buffs
+        // This effectively leaves one buff randomly unselected, so basically the inverse of normal
+        for ( int i = 0; i < p()->buffs.echoing_reprimand.size(); i++ )
+        {
+          if ( !p()->is_ptr() || i != buff_idx )
+          {
+            p()->buffs.echoing_reprimand[ i ]->trigger();
+          }
+        }
       }
       else
       {
-        unsigned buff_idx = static_cast<int>( rng().range( random_min, random_max ) );
         p()->buffs.echoing_reprimand[ buff_idx ]->trigger();
       }
     }
@@ -8161,6 +8168,7 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
     buffs::roll_the_bones_t* primary = static_cast<buffs::roll_the_bones_t*>( buffs.roll_the_bones );
     if ( split.size() == 1 || ( split.size() == 2 && util::str_compare_ci( split[ 1 ], "total" ) ) )
     {
+      // Return the total amount of RtB buffs regardless of duration
       return make_fn_expr( name_str, [ this, primary ]() {
         double n_buffs = 0;
         for ( auto buff : primary->buffs )
@@ -8170,6 +8178,7 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
     }
     else if ( split.size() == 2 && util::str_compare_ci( split[ 1 ], "longer" ) )
     {
+      // Return the total amount of proc RtB buffs that are of longer duration than the primary buff
       return make_fn_expr( name_str, [ this, primary ]() {
         double n_buffs = 0;
         for ( auto buff : primary->buffs )
@@ -8179,6 +8188,7 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
     }
     else if ( split.size() == 2 && util::str_compare_ci( split[ 1 ], "shorter" ) )
     {
+      // Return the total amount of proc RtB buffs that are of shorter duration than the primary buff
       return make_fn_expr( name_str, [ this, primary ]() {
         double n_buffs = 0;
         for ( auto buff : primary->buffs )
@@ -8188,6 +8198,7 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
     }
     else if ( split.size() == 2 && util::str_compare_ci( split[ 1 ], "normal" ) )
     {
+      // Return the total amount of base RtB buffs associated with the primary buff
       return make_fn_expr( name_str, [ this, primary ]() {
         double n_buffs = 0;
         for ( auto buff : primary->buffs )
@@ -8195,28 +8206,43 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
         return n_buffs;
       } );
     }
-    else if ( split.size() == 3 && ( util::str_compare_ci( split[ 1 ], "will_lose" ) ||
-                                     util::str_compare_ci( split[ 1 ], "will_retain" ) ) )
+    else if ( ( util::str_compare_ci( split[ 1 ], "will_lose" ) ||
+                util::str_compare_ci( split[ 1 ], "will_retain" ) ) )
     {
-      util::string_view buff_name = split[ 2 ];
-      auto it = range::find_if( primary->buffs, [buff_name]( const buff_t* buff ) { 
-        return util::str_compare_ci( buff->name_str, buff_name ); } );
-
-      if ( it == primary->buffs.end() )
+      if ( split.size() == 3 )
       {
-        throw std::invalid_argument( fmt::format( "Invalid rtb_buffs.{} buff name given '{}'.", split[ 1 ], buff_name ) );
+        // Return if we will lose or retain a specific buff
+        util::string_view buff_name = split[ 2 ];
+        auto it = range::find_if( primary->buffs, [ buff_name ]( const buff_t* buff ) {
+          return util::str_compare_ci( buff->name_str, buff_name ); } );
+
+        if ( it == primary->buffs.end() )
+        {
+          throw std::invalid_argument( fmt::format( "Invalid rtb_buffs.{} buff name given '{}'.", split[ 1 ], buff_name ) );
+        }
+        else
+        {
+          const buff_t* rtb_buff = ( *it );
+          if ( util::str_compare_ci( split[ 1 ], "will_lose" ) )
+            return make_fn_expr( name_str, [ this, primary, rtb_buff ]() {
+              return rtb_buff->check() && !rtb_buff->remains_gt( primary->remains() );
+          } );
+          else
+            return make_fn_expr( name_str, [ this, primary, rtb_buff ]() {
+              return rtb_buff->check() && rtb_buff->remains_gt( primary->remains() );
+          } );
+        }
       }
       else
       {
-        const buff_t* rtb_buff = ( *it );
-        if( util::str_compare_ci( split[ 1 ], "will_lose" ) )
-          return make_fn_expr( name_str, [ this, primary, rtb_buff ]() {
-            return rtb_buff->check() && !rtb_buff->remains_gt( primary->remains() );
-          } );
-        else
-          return make_fn_expr( name_str, [ this, primary, rtb_buff ]() {
-            return rtb_buff->check() && rtb_buff->remains_gt( primary->remains() );
-          } );
+        // Return the total count of buffs we will lose or retain if no buff is specified
+        bool will_retain = util::str_compare_ci( split[ 1 ], "will_retain" );
+        return make_fn_expr( name_str, [ this, primary, will_retain ]() {
+          double n_buffs = 0;
+          for ( auto buff : primary->buffs )
+            n_buffs += ( buff->check() && ( will_retain == buff->remains_gt( primary->remains() ) ) );
+          return n_buffs;
+        } );
       }
     }
   }

@@ -1887,8 +1887,7 @@ void karnalex_the_first_light( special_effect_t& effect )
         player->schedule_ready( rng().gauss( sim->channel_lag, sim->channel_lag_stddev ) );
       }
     }
-    // TODO: As of 30/10/22 this does not scale with mastery at all despite saying it should. TODO: Recheck this.
-    /*
+
     double composite_target_multiplier( player_t* t ) const override
     {
       double tm = generic_proc_t::composite_target_multiplier( t );
@@ -1902,7 +1901,7 @@ void karnalex_the_first_light( special_effect_t& effect )
       }
 
       return tm;
-    }*/
+    }
   };
 
   effect.execute_action = unique_gear::create_proc_action<light_of_creation_t>( "light_of_creation", effect );

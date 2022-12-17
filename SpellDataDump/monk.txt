@@ -1,4 +1,4 @@
-SimulationCraft 1002-01 for World of Warcraft 10.0.2.46924 Live (hotfix 2022-12-11/46924)
+SimulationCraft 1002-01 for World of Warcraft 10.0.2.47120 Live (hotfix 2022-12-17/47120)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -3900,10 +3900,8 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 116 | Target: Self (1)
 #11 (id=260842)   : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 45 | Scaled Value: 45 | PvP Coefficient: 1.00000 | Misc Value 2: 0x4 | Target: Self (1)
-Hotfixed         : Base Value (30 -> 45)
 #12 (id=260843)   : Apply Aura (6) | Threat (10)
                    Base Value: 650 | Scaled Value: 650 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
-Hotfixed         : Base Value (550 -> 650)
 #13 (id=260844)   : Apply Aura (6) | Modify Attacker Melee Crit Chance (187)
                    Base Value: -6 | Scaled Value: -6 | PvP Coefficient: 1.00000 | Target: Self (1)
 #14 (id=260845)   : Apply Aura (6) | Add Flat Modifier (107): Spell Global Cooldown (21)
@@ -6540,14 +6538,11 @@ Effects          :
 #1 (id=372570)   : Apply Aura (6) | Modify Base Resistance (142)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
 #2 (id=884935)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
 #3 (id=892663)   : Apply Aura (6) | Dummy (4)
                    Base Value: 45 | Scaled Value: 45 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (30 -> 45)
-Description      : All damage taken is reduced by $s2% and your Armor is increased by $s1%.
-
-Stamina increased by $s3%.
+Description      : Your Armor is increased by $s1% and Stamina increased by $s3%.
 
 Name             : Vindicaar Matrix Crystal (id=251463) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
@@ -14620,7 +14615,6 @@ Effects          :
 Description      : Gust of Mists has a $s2% chance to do $s1% more healing.
 
 Name             : Ancient Teachings (id=388023) [Spell Family (53), Passive] 
-Hotfixed         : Variables
 Talent Entry     : Mistweaver [tree=spec, row=8, col=2, max_rank=1, req_points=20, select_idx=100]
 Class            : Monk
 School           : Physical
@@ -14661,11 +14655,9 @@ Attributes       : ........ ........ .......x x..x....   .....x.. ........ .....
 Effects          :
 #1 (id=1023473)  : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 2.50000 | Radius: 0 - 30 yards | Target: At Caster (22) -> AOE friendly (30)
-Hotfixed         : PvP Coefficient (1.6 -> 2.5)
 Description      : $@spelldesc388023
 
 Name             : Ancient Teachings (id=388026) [Spell Family (53)] 
-Hotfixed         : Variables
 Class            : Monk
 School           : Nature
 Spell Type       : None
@@ -14729,7 +14721,6 @@ Attributes       : ......x. ........ ........ .......x   ........ ........ .....
 Effects          :
 #1 (id=1023496)  : Apply Aura (6) | Proc Trigger Spell (42): Yu'lon's Whisper
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Trigger Spell: 388040 | Target: Self (1)
-Hotfixed         : Base Value (6 -> 5)
 Description      : Activating Thunder Focus Tea causes you to exhale the breath of Yu'lon, healing up to $s1 allies within $388044a1 yards for ${$388044s1*($388040d/$388040t1+1)} over $388040d.
 
 Name             : Yu'lon's Whisper (id=388040) [Spell Family (53), Hidden] 
@@ -14772,7 +14763,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1023503)  : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.49162 | PvP Coefficient: 1.00000 | Radius: 15 yards | Target: Unknown(136)
-Hotfixed         : SP Coefficient (0.4275 -> 0.491625)
 Description      : $@spelldesc388038
 
 Name             : Clouded Focus (id=388047) [Spell Family (53), Passive] 
@@ -15677,7 +15667,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1024677)  : Apply Aura (6) | Dummy (4)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (50 -> 60)
 #2 (id=1024678)  : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000
 #3 (id=1024679)  : Apply Aura (6) | Dummy (4)

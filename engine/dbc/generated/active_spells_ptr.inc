@@ -1,5 +1,5 @@
-// Active class spells, wow build 10.0.2.46801
-static const std::array<active_class_spell_t, 264> __ptr_active_spells_data { {
+// Active class spells, wow build 10.0.5.47186
+static const std::array<active_class_spell_t, 266> __ptr_active_spells_data { {
   {  1,    0,    100,      0, "Charge"                             },
   {  1,    0,    355,      0, "Taunt"                              },
   {  1,    0,   1464,      0, "Slam"                               },
@@ -13,6 +13,7 @@ static const std::array<active_class_spell_t, 264> __ptr_active_spells_data { {
   {  1,    0,  57755,      0, "Heroic Throw"                       },
   {  1,    0,  88163,      0, "Attack"                             },
   {  1,    0, 163201,      0, "Execute"                            },
+  {  1,   71, 260708,      0, "Sweeping Strikes"                   },
   {  1,   72,   5308, 163201, "Execute"                            },
   {  1,   72, 190411,   1680, "Whirlwind"                          },
   {  1,   73,  20243,      0, "Devastate"                          },
@@ -227,6 +228,7 @@ static const std::array<active_class_spell_t, 264> __ptr_active_spells_data { {
   { 11,    0,  22812,      0, "Barkskin"                           },
   { 11,    0,  33917,      0, "Mangle"                             },
   { 11,    0,  50769,      0, "Revive"                             },
+  { 11,    0, 213764,      0, "Swipe"                              },
   { 11,  102, 190984,   5176, "Wrath"                              },
   { 11,  105,  88423,      0, "Nature's Cure"                      },
   { 11,  105, 212040,      0, "Revitalize"                         },
@@ -266,8 +268,8 @@ static const std::array<active_class_spell_t, 264> __ptr_active_spells_data { {
   { 13, 1468, 361178,      0, "Mass Return"                        },
 } };
 
-// Pet active spells, wow build 10.0.2.46801
-static const std::array<active_pet_spell_t, 134> __ptr_active_pet_spells_data { {
+// Pet active spells, wow build 10.0.5.47186
+static const std::array<active_pet_spell_t, 133> __ptr_active_pet_spells_data { {
   {  3,   2649, "Growl"                              },
   {  3,  16827, "Claw"                               },
   {  3,  17253, "Bite"                               },
@@ -352,7 +354,6 @@ static const std::array<active_pet_spell_t, 134> __ptr_active_pet_spells_data { 
   {  7,  57984, "Fire Blast"                         },
   {  7, 117588, "Meteor"                             },
   {  7, 118297, "Immolate"                           },
-  {  7, 118337, "Harden Skin"                        },
   {  7, 118345, "Pulverize"                          },
   {  7, 157331, "Wind Gust"                          },
   {  7, 157348, "Call Lightning"                     },

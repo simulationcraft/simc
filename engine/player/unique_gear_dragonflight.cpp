@@ -384,15 +384,10 @@ void shocking_disclosure( special_effect_t& effect )
 
 namespace enchants
 {
-custom_cb_t writ_enchant( stat_e stat, bool cr )
+custom_cb_t writ_enchant( stat_e stat )
 {
-  return [ stat, cr ]( special_effect_t& effect ) {
+  return [ stat ]( special_effect_t& effect ) {
     auto amount = effect.driver()->effectN( 1 ).average( effect.player );
-    if ( cr )
-    {
-      amount = item_database::apply_combat_rating_multiplier( effect.player, CR_MULTIPLIER_WEAPON,
-                                                              effect.player->level(), amount );
-    }
 
     auto new_driver = effect.trigger();
     auto new_trigger = new_driver->effectN( 1 ).trigger();
@@ -448,12 +443,7 @@ void wafting_devotion( special_effect_t& effect )
   auto new_trigger = new_driver->effectN( 1 ).trigger();
 
   auto haste = effect.driver()->effectN( 1 ).average( effect.player );
-  haste = item_database::apply_combat_rating_multiplier( effect.player, CR_MULTIPLIER_WEAPON,
-                                                         effect.player->level(), haste );
-
   auto speed = effect.driver()->effectN( 2 ).average( effect.player );
-  speed = item_database::apply_combat_rating_multiplier( effect.player, CR_MULTIPLIER_WEAPON,
-                                                         effect.player->level(), speed );
 
   std::string buff_name = new_trigger->name_cstr();
   util::tokenize( buff_name );
@@ -493,25 +483,19 @@ void completely_safe_rockets( special_effect_t& effect )
 
 void high_intensity_thermal_scanner( special_effect_t& effect )
 {
+  double value = effect.driver()->effectN( 1 ).average( effect.player );
+
   auto crit_buff = create_buff<stat_buff_t>( effect.player, "high_intensity_thermal_scanner_crit", effect.trigger() );
-  double crit = effect.driver() -> effectN( 1 ).average( effect.player );
-  crit = item_database::apply_combat_rating_multiplier( effect.player, CR_MULTIPLIER_WEAPON, effect.player -> level(), crit );
-  crit_buff->add_stat( STAT_CRIT_RATING, crit );
+  crit_buff->add_stat( STAT_CRIT_RATING, value );
 
   auto vers_buff = create_buff<stat_buff_t>( effect.player, "high_intensity_thermal_scanner_vers", effect.trigger() );
-  double vers = effect.driver() -> effectN( 1 ).average( effect.player );
-  vers = item_database::apply_combat_rating_multiplier( effect.player, CR_MULTIPLIER_WEAPON, effect.player -> level(), vers );
-  vers_buff->add_stat( STAT_VERSATILITY_RATING, vers );
+  vers_buff->add_stat( STAT_VERSATILITY_RATING, value );
 
   auto haste_buff = create_buff<stat_buff_t>( effect.player, "high_intensity_thermal_scanner_haste", effect.trigger() );
-  double haste = effect.driver() -> effectN( 1 ).average( effect.player );
-  haste = item_database::apply_combat_rating_multiplier( effect.player, CR_MULTIPLIER_WEAPON, effect.player -> level(), haste );
-  haste_buff->add_stat( STAT_HASTE_RATING, haste );
+  haste_buff->add_stat( STAT_HASTE_RATING, value );
 
   auto mastery_buff = create_buff<stat_buff_t>( effect.player, "high_intensity_thermal_scanner_mastery", effect.trigger() );
-  double mastery = effect.driver() -> effectN( 1 ).average( effect.player );
-  mastery = item_database::apply_combat_rating_multiplier( effect.player, CR_MULTIPLIER_WEAPON, effect.player -> level(), mastery );
-  mastery_buff->add_stat( STAT_MASTERY_RATING, mastery );
+  mastery_buff->add_stat( STAT_MASTERY_RATING, value );
 
   struct buff_cb_t : public dbc_proc_callback_t
   {
@@ -572,7 +556,6 @@ void gyroscopic_kaleidoscope( special_effect_t& effect )
 
   auto buff_data = effect.player -> find_spell( buff_id );
   double stat = buff_data -> effectN( 1 ).average( effect.player );
-  stat = item_database::apply_combat_rating_multiplier( effect.player, CR_MULTIPLIER_WEAPON, effect.player -> level(), stat );
 
   auto buff = create_buff<stat_buff_t>( effect.player, "gyroscopic_kaleidoscope", buff_data );
   buff -> add_stat( util::parse_stat_type( effect.player -> dragonflight_opts.gyroscopic_kaleidoscope_stat ), stat );
@@ -586,26 +569,19 @@ void gyroscopic_kaleidoscope( special_effect_t& effect )
 void projectile_propulsion_pinion( special_effect_t& effect )
 {
   auto buff_data = effect.player -> find_spell( 385942 );
+  double value = effect.driver()->effectN( 1 ).average( effect.player ) / 2;
 
   auto crit_buff = create_buff<stat_buff_t>( effect.player, "projectile_propulsion_pinion_crit", buff_data );
-  double crit = effect.driver() -> effectN( 1 ).average( effect.player ) / 2;
-  crit = item_database::apply_combat_rating_multiplier( effect.player, CR_MULTIPLIER_WEAPON, effect.player -> level(), crit );
-  crit_buff->add_stat( STAT_CRIT_RATING, crit );
+  crit_buff->add_stat( STAT_CRIT_RATING, value );
 
   auto vers_buff = create_buff<stat_buff_t>( effect.player, "projectile_propulsion_pinion_vers", buff_data );
-  double vers = effect.driver() -> effectN( 1 ).average( effect.player ) / 2;
-  vers = item_database::apply_combat_rating_multiplier( effect.player, CR_MULTIPLIER_WEAPON, effect.player -> level(), vers );
-  vers_buff->add_stat( STAT_VERSATILITY_RATING, vers );
+  vers_buff->add_stat( STAT_VERSATILITY_RATING, value );
 
   auto haste_buff = create_buff<stat_buff_t>( effect.player, "projectile_propulsion_pinion_haste", buff_data );
-  double haste = effect.driver() -> effectN( 1 ).average( effect.player ) / 2;
-  haste = item_database::apply_combat_rating_multiplier( effect.player, CR_MULTIPLIER_WEAPON, effect.player -> level(), haste );
-  haste_buff->add_stat( STAT_HASTE_RATING, haste );
+  haste_buff->add_stat( STAT_HASTE_RATING, value );
 
   auto mastery_buff = create_buff<stat_buff_t>( effect.player, "projectile_propulsion_pinion_mastery", buff_data );
-  double mastery = effect.driver() -> effectN( 1 ).average( effect.player ) / 2;
-  mastery = item_database::apply_combat_rating_multiplier( effect.player, CR_MULTIPLIER_WEAPON, effect.player -> level(), mastery );
-  mastery_buff->add_stat( STAT_MASTERY_RATING, mastery );
+  mastery_buff->add_stat( STAT_MASTERY_RATING, value );
 
   std::map<stat_e, stat_buff_t*> buffs = {
     { STAT_CRIT_RATING, crit_buff },
@@ -1319,8 +1295,8 @@ void shikaari_huntress_arrowhead( special_effect_t& effect )
 {
   // against elite enemies, gives 10% more stats (default)
   // against normal enemies, gives 10% less stats (NYI)
-  effect.custom_buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 384193 ) )
-    ->set_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect.item ) * 1.1 );
+  effect.stat = util::translate_rating_mod( effect.trigger()->effectN( 1 ).misc_value1() );
+  effect.stat_amount = effect.trigger()->effectN( 1 ).average( effect.item ) * 1.1;
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -1901,54 +1877,58 @@ void decoration_of_flame( special_effect_t& effect )
 
   struct decoration_of_flame_damage_t : public proc_spell_t
   {
-    buff_t* shield;
-    double value;
+     buff_t* shield;
+     double value;
+     unsigned cap;
 
-    decoration_of_flame_damage_t( const special_effect_t& e )
-      : proc_spell_t( "decoration_of_flame", e.player, e.player->find_spell( 377449 ), e.item ),
-        shield( nullptr ),
-        value( e.player->find_spell( 394393 )->effectN( 2 ).average( e.item ) )
-    {
+     decoration_of_flame_damage_t( const special_effect_t& e )
+       : proc_spell_t( "decoration_of_flame", e.player, e.player->find_spell( 377449 ), e.item ),
+         shield( nullptr ),
+         value( e.player->find_spell( 394393 )->effectN( 2 ).average( e.item ) ),
+         cap( as<int>( e.driver()->effectN( 3 ).base_value() ) )
+     {
        background = true;
        split_aoe_damage = true;
        base_dd_min = base_dd_max = e.player->find_spell( 394393 )->effectN( 1 ).average( e.item );
-       aoe = as<int>( e.driver()->effectN( 3 ).base_value() );
+       aoe = -1;
        radius = 10;
        shield = make_buff<absorb_buff_t>( e.player, "decoration_of_flame_shield", e.player->find_spell( 382058 ) );
-    }
+     }
 
-    double composite_da_multiplier( const action_state_t* s ) const override
+    std::vector<player_t*>& target_list() const override
     {
-      double m = proc_spell_t::composite_da_multiplier( s );
+      target_cache.is_valid = false;
 
-     // Damage increases by 10% per target based on in game testing
-      m *= 1.0 + ( n_targets() - 1 ) * 0.1;
+      auto& tl = proc_spell_t::target_list();
 
-      return m;
+      tl.erase( std::remove_if( tl.begin(), tl.end(), [ this ]( player_t* ) {
+        return rng().roll( sim->dragonflight_opts.decoration_of_flame_miss_chance );
+      } ), tl.end() );
+
+      return tl;
     }
 
-    int n_targets() const override
-    { 
-      double chance = player -> sim -> dragonflight_opts.decoration_of_flame_miss_chance;
-      if ( rng().roll( chance ) )
-      {
-        return aoe - as<int>( rng().range( 0, aoe ) );
-      }
-      return aoe; 
-    }
+     double composite_da_multiplier( const action_state_t* s ) const override
+     {
+       double m = proc_spell_t::composite_da_multiplier( s );
 
-    void execute() override
-    {
-      proc_spell_t::execute();
+       // Damage increases by 10% per target based on in game testing
+       m *= 1.0 + ( std::min( cap, s->n_targets ) - 1 ) * 0.1;
 
-      shield->trigger( -1, value * ( 1.0 + ( num_targets_hit - 1 ) * 0.05 ) );
-    }
+       return m;
+     }
+
+     void execute() override
+     {
+       proc_spell_t::execute();
+
+       shield->trigger( -1, value * ( 1.0 + ( num_targets_hit - 1 ) * 0.05 ) );
+     }
   };
 
   action_t* action = create_proc_action<decoration_of_flame_damage_t>( "decoration_of_flame", effect );
-  buff->set_stack_change_callback( [ action ](buff_t*, int, int ) 
-  {
-    action -> execute();
+  buff->set_stack_change_callback( [ action ]( buff_t*, int, int ) {
+    action->execute();
   } );
 }
 
@@ -2652,7 +2632,7 @@ void primal_ritual_shell( special_effect_t& effect )
       effect.stat_amount = effect.driver()->effectN( 5 ).average( effect.item );
       effect.spell_id = 390899;
       effect.stat = STAT_MASTERY_RATING;
-      effect.name_str = effect.trigger()->name_cstr();
+      effect.name_str = util::tokenize_fn( effect.trigger()->name_cstr() );
     }
     else if ( util::str_compare_ci( blessing, "stone" ) )
     {
@@ -2664,7 +2644,7 @@ void primal_ritual_shell( special_effect_t& effect )
       // Flame Turtle's Blessing - Fire Damage Proc [390835]
       effect.discharge_amount = effect.driver()->effectN( 3 ).average( effect.item );
       effect.spell_id = 390835;
-      effect.name_str = effect.trigger()->name_cstr();
+      effect.name_str = util::tokenize_fn( effect.trigger()->name_cstr() );
     }
     else if ( util::str_compare_ci( blessing, "sea" ) )
     {
@@ -2826,6 +2806,23 @@ void seasoned_hunters_trophy( special_effect_t& effect )
   }
 
   new seasoned_hunters_trophy_cb_t( effect, mastery, haste, crit );
+}
+
+// Gral's Discarded Tooth
+// 374233 Driver
+// 374249 Damage Driver
+// 374250 Damage
+void grals_discarded_tooth( special_effect_t& effect )
+{
+  auto missile = effect.trigger();
+  auto trigger = missile -> effectN( 1 ).trigger();
+
+  auto damage = create_proc_action<generic_aoe_proc_t>( "chill_of_the_depths", effect, "chill_of_the_depths", trigger -> id(), true);
+  damage -> base_dd_min = damage -> base_dd_max = effect.driver()->effectN(1).average(effect.item);
+  damage -> travel_speed = missile -> missile_speed();
+
+  effect.execute_action = damage;
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 // Weapons
@@ -3161,10 +3158,7 @@ void elemental_lariat( special_effect_t& effect )
 void flaring_cowl( special_effect_t& effect )
 {
   auto damage = create_proc_action<generic_aoe_proc_t>( "flaring_cowl", effect, "flaring_cowl", 377079, true );
-  // damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
-  // TODO: currently bugged and only doing damage as if the item was at the base ilevel of 350
-  damage->base_dd_min = damage->base_dd_max =
-      effect.player->dbc->random_property( 350 ).damage_replace_stat * effect.driver()->effectN( 1 ).m_coefficient();
+  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
 
   auto period = effect.trigger()->effectN( 1 ).period();
   effect.player->register_combat_begin( [ period, damage ]( player_t* p ) {
@@ -3300,7 +3294,7 @@ void allied_wristguards_of_companionship( special_effect_t& effect )
   timespan_t period = effect.driver()->effectN( 1 ).period();
 
   effect.player->register_combat_begin( [ buff, period ]( player_t* p ) {
-    int allies = 1 + p->sim->dragonflight_opts.allied_wristguards_allies;
+    int allies = p->sim->dragonflight_opts.allied_wristguards_allies;
 
     buff->trigger( p->sim->rng().range( 1, allies ) );
 
@@ -3542,11 +3536,11 @@ void register_special_effects()
   register_special_effect( { 390243, 390244, 390246 }, enchants::writ_enchant() );  // frozen writ
   register_special_effect( { 390248, 390249, 390251 }, enchants::writ_enchant() );  // wafting writ
   register_special_effect( { 390215, 390217, 390219 },
-                           enchants::writ_enchant( STAT_STR_AGI_INT, false ) );     // sophic writ
+                           enchants::writ_enchant( STAT_STR_AGI_INT ) );     // sophic writ
   register_special_effect( { 390346, 390347, 390348 },
                            enchants::writ_enchant( STAT_BONUS_ARMOR ) );            // earthen devotion
   register_special_effect( { 390222, 390227, 390229 },
-                           enchants::writ_enchant( STAT_STR_AGI_INT, false ) );     // sophic devotion
+                           enchants::writ_enchant( STAT_STR_AGI_INT ) );     // sophic devotion
   register_special_effect( { 390351, 390352, 390353 }, enchants::frozen_devotion );
   register_special_effect( { 390358, 390359, 390360 }, enchants::wafting_devotion );
 
@@ -3603,6 +3597,7 @@ void register_special_effects()
   register_special_effect( 392359, items::integrated_primal_fire );
   register_special_effect( 383817, items::bushwhackers_compass );
   register_special_effect( 392237, items::seasoned_hunters_trophy );
+  register_special_effect( 374233, items::grals_discarded_tooth );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );  // bronzed grip wrappings embellishment
@@ -3659,11 +3654,6 @@ void register_target_data_initializers( sim_t& sim )
 
 void register_hotfixes()
 {
-  hotfix::register_effect( "Gear", "2022-12-12", "Temporarily apply elemental lariat hotfix coming with 2022-12-13 reset", 1001676 )
-    .field( "coefficient" )
-    .operation( hotfix::HOTFIX_MUL )
-    .modifier( 0.95 )
-    .verification_value( 0.4582 );
 }
 
 // check and return multiplier for toxified armor patch

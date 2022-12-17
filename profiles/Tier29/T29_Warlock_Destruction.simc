@@ -1,0 +1,174 @@
+warlock="T29_Warlock_Destruction"
+source=default
+spec=destruction
+level=70
+race=orc
+role=spell
+position=ranged_back
+talents=BsQAAAAAAAAAAAAAAAAAAAAAAgcASSkIBSTLCSLJJkWgDkokkIQSrgEAAAAAAAAAAAAhkUSC
+
+# Default consumables
+potion=elemental_potion_of_ultimate_power_3
+flask=phial_of_static_empowerment_3
+food=fated_fortune_cookie
+augmentation=draconic_augment_rune
+temporary_enchant=main_hand:howling_rune_3
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/food
+actions.precombat+=/augmentation
+actions.precombat+=/summon_pet
+actions.precombat+=/variable,name=cleave_apl,default=0,op=reset
+actions.precombat+=/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled
+actions.precombat+=/snapshot_stats
+actions.precombat+=/inquisitors_gaze
+actions.precombat+=/soul_fire
+actions.precombat+=/cataclysm
+actions.precombat+=/incinerate
+
+# Executed every time the actor is available.
+actions=call_action_list,name=cleave,if=active_enemies!=1&active_enemies<=2+(!talent.inferno&talent.madness_of_the_azjaqir&talent.ashen_remains)|variable.cleave_apl
+actions+=/call_action_list,name=aoe,if=active_enemies>=3
+actions+=/call_action_list,name=items
+actions+=/call_action_list,name=ogcd
+actions+=/conflagrate,if=(talent.roaring_blaze&debuff.conflagrate.remains<1.5)|charges=max_charges
+actions+=/dimensional_rift,if=soul_shard<4.7&(charges>2|time_to_die<cooldown.dimensional_rift.duration)
+actions+=/cataclysm
+actions+=/channel_demonfire,if=talent.raging_demonfire
+actions+=/soul_fire,if=soul_shard<=4
+actions+=/immolate,if=((dot.immolate.refreshable&talent.internal_combustion)|dot.immolate.remains<3)&(!talent.cataclysm|cooldown.cataclysm.remains>dot.immolate.remains)&(!talent.soul_fire|cooldown.soul_fire.remains>dot.immolate.remains)
+actions+=/havoc,if=talent.cry_havoc&(buff.ritual_of_ruin.up|pet.infernal.active)
+actions+=/chaos_bolt,if=pet.infernal.active|pet.blasphemy.active|soul_shard>=4
+actions+=/summon_infernal
+actions+=/channel_demonfire,if=talent.ruin.rank>1&!(talent.diabolic_embers&talent.avatar_of_destruction&(talent.burn_to_ashes|talent.chaos_incarnate))&dot.immolate.remains>cast_time
+actions+=/conflagrate,if=buff.backdraft.down&soul_shard>=1.5&!talent.roaring_blaze
+actions+=/incinerate,if=buff.burn_to_ashes.up&cast_time+action.chaos_bolt.cast_time<buff.madness_cb.remains
+actions+=/chaos_bolt,if=buff.rain_of_chaos.remains>cast_time
+actions+=/chaos_bolt,if=buff.backdraft.up&!talent.eradication&!talent.madness_of_the_azjaqir
+actions+=/chaos_bolt,if=buff.madness_cb.up
+actions+=/channel_demonfire,if=!(talent.diabolic_embers&talent.avatar_of_destruction&(talent.burn_to_ashes|talent.chaos_incarnate))&dot.immolate.remains>cast_time
+actions+=/dimensional_rift
+actions+=/chaos_bolt,if=soul_shard>3.5
+actions+=/chaos_bolt,if=talent.soul_conduit&!talent.madness_of_the_azjaqir|!talent.backdraft
+actions+=/chaos_bolt,if=time_to_die<5&time_to_die>cast_time+travel_time
+actions+=/conflagrate,if=charges>(max_charges-1)|time_to_die<gcd*charges
+actions+=/incinerate
+
+actions.aoe=call_action_list,name=ogcd
+actions.aoe+=/call_action_list,name=items
+actions.aoe+=/call_action_list,name=havoc,if=havoc_active&havoc_remains>gcd&active_enemies<5+(talent.cry_havoc&!talent.inferno)
+actions.aoe+=/rain_of_fire,if=pet.infernal.active
+actions.aoe+=/rain_of_fire,if=talent.avatar_of_destruction
+actions.aoe+=/rain_of_fire,if=soul_shard=5
+actions.aoe+=/chaos_bolt,if=soul_shard>3.5-(0.1*active_enemies)&!talent.rain_of_fire
+actions.aoe+=/cataclysm
+actions.aoe+=/channel_demonfire,if=dot.immolate.remains>cast_time&talent.raging_demonfire
+actions.aoe+=/immolate,cycle_targets=1,if=dot.immolate.remains<5&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>dot.immolate.remains)&(!talent.raging_demonfire|cooldown.channel_demonfire.remains>remains)&active_dot.immolate<=6
+actions.aoe+=/havoc,cycle_targets=1,if=!(self.target=target)&!talent.rain_of_fire
+actions.aoe+=/summon_soulkeeper,if=buff.tormented_soul.stack=10
+actions.aoe+=/call_action_list,name=ogcd
+actions.aoe+=/summon_infernal
+actions.aoe+=/rain_of_fire
+actions.aoe+=/havoc,cycle_targets=1,if=!(self.target=target)
+actions.aoe+=/channel_demonfire,if=dot.immolate.remains>cast_time
+actions.aoe+=/immolate,cycle_targets=1,if=dot.immolate.remains<5&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>dot.immolate.remains)
+actions.aoe+=/soul_fire,if=buff.backdraft.up
+actions.aoe+=/incinerate,if=talent.fire_and_brimstone.enabled&buff.backdraft.up
+actions.aoe+=/conflagrate,if=buff.backdraft.down|!talent.backdraft
+actions.aoe+=/dimensional_rift
+actions.aoe+=/immolate,if=dot.immolate.refreshable
+actions.aoe+=/incinerate
+
+actions.cleave=call_action_list,name=items
+actions.cleave+=/call_action_list,name=ogcd
+actions.cleave+=/call_action_list,name=havoc,if=havoc_active&havoc_remains>gcd
+actions.cleave+=/variable,name=pool_soul_shards,value=cooldown.havoc.remains<=10|talent.mayhem
+actions.cleave+=/conflagrate,if=(talent.roaring_blaze.enabled&debuff.conflagrate.remains<1.5)|charges=max_charges
+actions.cleave+=/dimensional_rift,if=soul_shard<4.7&(charges>2|time_to_die<cooldown.dimensional_rift.duration)
+actions.cleave+=/cataclysm
+actions.cleave+=/channel_demonfire,if=talent.raging_demonfire
+actions.cleave+=/soul_fire,if=soul_shard<=4&!variable.pool_soul_shards
+actions.cleave+=/immolate,cycle_targets=1,if=((talent.internal_combustion&dot.immolate.refreshable)|dot.immolate.remains<3)&(!talent.cataclysm|cooldown.cataclysm.remains>remains)&(!talent.soul_fire|cooldown.soul_fire.remains>remains)
+actions.cleave+=/havoc,cycle_targets=1,if=!(target=self.target)&(!cooldown.summon_infernal.up|!talent.summon_infernal)
+actions.cleave+=/chaos_bolt,if=pet.infernal.active|pet.blasphemy.active|soul_shard>=4
+actions.cleave+=/summon_infernal
+actions.cleave+=/channel_demonfire,if=talent.ruin.rank>1&!(talent.diabolic_embers&talent.avatar_of_destruction&(talent.burn_to_ashes|talent.chaos_incarnate))
+actions.cleave+=/conflagrate,if=buff.backdraft.down&soul_shard>=1.5&!variable.pool_soul_shards
+actions.cleave+=/incinerate,if=buff.burn_to_ashes.up&cast_time+action.chaos_bolt.cast_time<buff.madness_cb.remains
+actions.cleave+=/chaos_bolt,if=buff.rain_of_chaos.remains>cast_time
+actions.cleave+=/chaos_bolt,if=buff.backdraft.up&!variable.pool_soul_shards
+actions.cleave+=/chaos_bolt,if=talent.eradication&!variable.pool_soul_shards&debuff.eradication.remains<cast_time&!action.chaos_bolt.in_flight
+actions.cleave+=/chaos_bolt,if=buff.madness_cb.up
+actions.cleave+=/soul_fire,if=soul_shard<=4&talent.mayhem
+actions.cleave+=/channel_demonfire,if=!(talent.diabolic_embers&talent.avatar_of_destruction&(talent.burn_to_ashes|talent.chaos_incarnate))
+actions.cleave+=/dimensional_rift
+actions.cleave+=/chaos_bolt,if=soul_shard>3.5
+actions.cleave+=/chaos_bolt,if=!variable.pool_soul_shards&(talent.soul_conduit&!talent.madness_of_the_azjaqir|!talent.backdraft)
+actions.cleave+=/chaos_bolt,if=time_to_die<5&time_to_die>cast_time+travel_time
+actions.cleave+=/conflagrate,if=charges>(max_charges-1)|time_to_die<gcd*charges
+actions.cleave+=/incinerate
+
+actions.havoc=conflagrate,if=talent.backdraft&buff.backdraft.down&soul_shard>=1&soul_shard<=4
+actions.havoc+=/soul_fire,if=cast_time<havoc_remains&soul_shard<3
+actions.havoc+=/channel_demonfire,if=soul_shard<4.5&talent.raging_demonfire.rank=2&active_enemies>2
+actions.havoc+=/immolate,cycle_targets=1,if=dot.immolate.refreshable&dot.immolate.remains<havoc_remains&soul_shard<4.5&(debuff.havoc.down|!dot.immolate.ticking)
+actions.havoc+=/chaos_bolt,if=talent.cry_havoc&!talent.inferno&cast_time<havoc_remains
+actions.havoc+=/chaos_bolt,if=cast_time<havoc_remains&(active_enemies<4-talent.inferno+talent.madness_of_the_azjaqir-(talent.inferno&(talent.rain_of_chaos|talent.avatar_of_destruction)&buff.rain_of_chaos.up))
+actions.havoc+=/rain_of_fire,if=(active_enemies>=4-talent.inferno+talent.madness_of_the_azjaqir)
+actions.havoc+=/rain_of_fire,if=active_enemies>1&(talent.avatar_of_destruction|(talent.rain_of_chaos&buff.rain_of_chaos.up))&talent.inferno.enabled
+actions.havoc+=/conflagrate,if=!talent.backdraft
+actions.havoc+=/incinerate,if=cast_time<havoc_remains
+
+actions.items=use_item,slot=trinket1,if=pet.infernal.active|!talent.summon_infernal|time_to_die<21|trinket.1.cooldown.duration<cooldown.summon_infernal.remains
+actions.items+=/use_item,slot=trinket2,if=pet.infernal.active|!talent.summon_infernal|time_to_die<21|trinket.2.cooldown.duration<cooldown.summon_infernal.remains
+# We might use trinket outside of infernal to not lose a use if we don't have RoC
+actions.items+=/use_item,slot=trinket1,if=(!talent.rain_of_chaos&time_to_die<cooldown.summon_infernal.remains+trinket.1.cooldown.duration&time_to_die>trinket.1.cooldown.duration)|time_to_die<cooldown.summon_infernal.remains|(trinket.2.cooldown.remains>0&trinket.2.cooldown.remains<cooldown.summon_infernal.remains)
+actions.items+=/use_item,slot=trinket2,if=(!talent.rain_of_chaos&time_to_die<cooldown.summon_infernal.remains+trinket.2.cooldown.duration&time_to_die>trinket.2.cooldown.duration)|time_to_die<cooldown.summon_infernal.remains|(trinket.1.cooldown.remains>0&trinket.1.cooldown.remains<cooldown.summon_infernal.remains)
+actions.items+=/use_item,name=erupting_spear_fragment,if=(!talent.rain_of_chaos&time_to_die<cooldown.summon_infernal.remains+trinket.erupting_spear_fragment.cooldown.duration&time_to_die>trinket.erupting_spear_fragment.cooldown.duration)|time_to_die<cooldown.summon_infernal.remains|trinket.erupting_spear_fragment.cooldown.duration<cooldown.summon_infernal.remains+5
+actions.items+=/use_item,name=desperate_invokers_codex
+actions.items+=/use_item,name=iceblood_deathsnare
+actions.items+=/use_item,name=conjured_chillglobe
+
+actions.ogcd=potion,if=pet.infernal.active|!talent.summon_infernal
+actions.ogcd+=/berserking,if=pet.infernal.active|!talent.summon_infernal|(time_to_die<(cooldown.summon_infernal.remains+cooldown.berserking.duration)&(time_to_die>cooldown.berserking.duration))|time_to_die<cooldown.summon_infernal.remains
+actions.ogcd+=/blood_fury,if=pet.infernal.active|!talent.summon_infernal|(time_to_die<cooldown.summon_infernal.remains+10+cooldown.blood_fury.duration&time_to_die>cooldown.blood_fury.duration)|time_to_die<cooldown.summon_infernal.remains
+actions.ogcd+=/fireblood,if=pet.infernal.active|!talent.summon_infernal|(time_to_die<cooldown.summon_infernal.remains+10+cooldown.fireblood.duration&time_to_die>cooldown.fireblood.duration)|time_to_die<cooldown.summon_infernal.remains
+
+head=scalesworn_cultists_scorn,id=200336,bonus_id=6514,ilevel=424,gem_id=192985
+neck=elemental_lariat,id=193001,bonus_id=1540/8793/6652/7936/7979/8767/8782,ilevel=418,gem_id=192948/192948/192948
+shoulders=amice_of_the_blue,id=193526,bonus_id=8960/8840/8836/8902/1508
+back=fireproof_drape,id=193763,ilevel=421,enchant_id=6604
+chest=scalesworn_cultists_frock,id=200333,ilevel=421,enchant_id=6625
+wrists=manawracker_bindings,id=134310,bonus_id=6514,ilevel=421,gem_id=192948,enchant_id=6580
+hands=scalesworn_cultists_gloves,id=200335,ilevel=421
+waist=magathas_spiritual_sash,id=195515,bonus_id=6514,ilevel=421,gem_id=192948
+legs=scalesworn_cultists_culottes,id=200337,ilevel=421,enchant_id=6541
+feet=sandals_of_the_wild_sovereign,id=195532,ilevel=424,enchant_id=6607
+finger1=seal_of_filial_duty,id=195526,bonus_id=6514,ilevel=430,gem_id=192948,enchant_id=6556
+finger2=seal_of_diurnas_chosen,id=195480,bonus_id=6652/8783/8784/7936/7937/4800/4786/1498,gem_id=192945,enchant_id=6556
+trinket1=whispering_incarnate_icon,id=194301,ilevel=421
+trinket2=furious_ragefeather,id=193677,bonus_id=6808/4786/1643
+main_hand=stormlashs_last_resort,id=195529,ilevel=424,enchant_id=6643
+off_hand=scripture_of_primal_devotion,id=195513,ilevel=421
+
+# Gear Summary
+# gear_ilvl=421.75
+# gear_stamina=13323
+# gear_intellect=7166
+# gear_crit_rating=1685
+# gear_haste_rating=4361
+# gear_mastery_rating=3986
+# gear_versatility_rating=1219
+# gear_leech_rating=200
+# gear_speed_rating=375
+# gear_armor=2040
+# set_bonus=tier29_2pc=1
+# set_bonus=tier29_4pc=1
+default_pet=imp

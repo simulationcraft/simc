@@ -1,4 +1,4 @@
-SimulationCraft 1002-01 for World of Warcraft 10.0.2.46924 Live (hotfix 2022-12-11/46924)
+SimulationCraft 1002-01 for World of Warcraft 10.0.2.47120 Live (hotfix 2022-12-17/47120)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -758,7 +758,6 @@ Effects          :
 #1 (id=40863)    : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.75000 | Misc Value: 0x7e | Target: Self (1)
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
-Hotfixed         : PvP Coefficient (1 -> 0.75)
 #2 (id=40864)    : Apply Aura (6) | Unknown(267)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 126 | Target: Self (1)
 #3 (id=306615)   : Apply Aura (6) | Modify Damage Taken% (87)
@@ -3509,7 +3508,6 @@ Effects          :
                    Base Value: -6 | Scaled Value: -6 | PvP Coefficient: 1.00000 | Target: Self (1)
 #9 (id=260810)   : Apply Aura (6) | Threat (10)
                    Base Value: 650 | Scaled Value: 650 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
-Hotfixed         : Base Value (550 -> 650)
 #10 (id=260811)   : Apply Aura (6) | Modify Expertise% (240)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
 #11 (id=260812)   : Apply Aura (6) | Modify Recharge Time (Category) (453)
@@ -5167,7 +5165,6 @@ Effects          :
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.50000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Anti-Magic Shell (48707)
                    Family Flags: 17
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 #3 (id=726131)   : Apply Aura (6) | Dummy (4)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Reduces the cooldown of Anti-Magic Shell by ${$s1/-1000} sec and increases its duration and amount absorbed by $s2%.
@@ -5297,7 +5294,6 @@ Effects          :
                    Affected School(s): All
 #2 (id=306101)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.50000 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 #3 (id=306102)   : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Damage taken below $s3% Health is reduced by $s2%.
@@ -7917,7 +7913,6 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Death Strike (49998), Death Strike Off-Hand (66188)
                    Family Flags: 4
-Hotfixed         : Base Value (37.5 -> 15)
 Description      : Death Strike's healing is increased by $s2% and grants you $274009s1% Leech for $274009d.
 
 Name             : Voracious (id=274009) [Spell Family (15)] 
@@ -13110,7 +13105,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Do Not Log on Learn (355)
 Effects          :
 #1 (id=890320)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Heart Strike (206930), Heart Strike (228645)
                    Family Flags: 24
 #2 (id=890321)   : Apply Aura (6) | Dummy (4)
@@ -13767,12 +13762,10 @@ Effects          :
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 0.50000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Death Strike (49998), Death Strike Off-Hand (66188)
                    Family Flags: 4
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=1000061)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 3 (23)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 0.50000 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Death Strike (49998), Death Strike Off-Hand (66188)
                    Family Flags: 4
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 #3 (id=1000062)  : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost (14)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Death Strike (49998), Death Strike Off-Hand (66188)
@@ -14028,10 +14021,9 @@ Effects          :
 #1 (id=1000722)  : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 2 | Misc Value 2: 0x4 | Target: Self (1)
 #2 (id=1000723)  : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
-Description      : Stamina increased by $s1%.
-Damage taken reduced by $s2%.
+Description      : Stamina increased by $s1%.
 
 Name             : Reinforced Bones (id=374737) [Spell Family (15), Passive] 
 Talent Entry     : Blood [tree=spec, row=7, col=3, max_rank=1, req_points=8]
@@ -15187,7 +15179,7 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : Is Ability (4), Do Not Display Range (126), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1005595)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.06600 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.06600 | PvP Coefficient: 0.75000 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
 Description      : $@spelldesc377640
 
 Name             : Heartrend (id=377655) [Spell Family (15), Passive] 

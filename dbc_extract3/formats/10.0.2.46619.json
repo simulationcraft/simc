@@ -250,6 +250,16 @@
       { "data_type": "i", "field": "id_item", "ref": "ItemSparse" }
     ]
   },
+  "CraftingReagentQuality": {
+    "parent": "ModifiedCraftingCategory",
+    "fields": [
+      { "data_type": "i", "field": "id" },
+      { "data_type": "i", "field": "order" },
+      { "data_type": "i", "field": "id_item" },
+      { "data_type": "f", "field": "unk_1", "formats": { "cpp": "%9.3f" } },
+      { "data_type": "f", "field": "unk_2", "formats": { "cpp": "%9.3f" } }
+    ]
+  },
   "CraftingQuality": {
     "fields": [
       { "data_type": "i", "field": "tier" }
@@ -878,10 +888,56 @@
       { "data_type": "i", "field": "id_content_tuning" }
     ]
   },
+  "MCRSlotXMCRCategory": {
+    "parent": "ModifiedCraftingReagentSlot",
+    "fields": [
+      { "data_type": "i", "field": "id_modified_crafting_category", "ref": "ModifiedCraftingCategory" },
+      { "data_type": "i", "field": "order" }
+    ]
+  },
   "MinorTalent": {
     "fields": [
       { "data_type": "i", "field": "id_spell", "ref": "SpellName" },
       { "data_type": "i", "field": "index" }
+    ]
+  },
+  "ModifiedCraftingCategory": {
+    "fields": [
+      { "data_type": "S", "field": "name" },
+      { "data_type": "S", "field": "description" },
+      { "data_type": "i", "field": "unk_1" },
+      { "data_type": "f", "field": "mat_quality_weight" },
+      { "data_type": "i", "field": "unk_2" }
+    ]
+  },
+  "ModifiedCraftingReagentItem": {
+    "fields": [
+      { "data_type": "S", "field": "description" },
+      { "data_type": "i", "field": "id_modified_crafting_category" },
+      { "data_type": "i", "field": "id_tree" },
+      { "data_type": "i", "field": "flags" },
+      { "data_type": "i", "field": "unk_1" },
+      { "data_type": "i", "field": "item_context_offset" }
+    ]
+  },
+  "ModifiedCraftingReagentSlot": {
+    "fields": [
+      { "data_type": "S", "field": "name" },
+      { "data_type": "i", "field": "id" },
+      { "data_type": "i", "field": "unk_1" },
+      { "data_type": "i", "field": "id_player_condition" },
+      { "data_type": "i", "field": "reagent_type" },
+      { "data_type": "b", "field": "unk_2" }
+    ]
+  },
+  "ModifiedCraftingSpellSlot": {
+    "fields": [
+      { "data_type": "i", "field": "id_spell", "ref": "SpellName" },
+      { "data_type": "i", "field": "slot" },
+      { "data_type": "i", "field": "id_modified_crafting_reagent_slot", "ref": "ModifiedCraftingReagentSlot" },
+      { "data_type": "i", "field": "unk_1" },
+      { "data_type": "i", "field": "reagent_count" },
+      { "data_type": "i", "field": "reagent_recraft_count" }
     ]
   },
   "PlayerCondition": {

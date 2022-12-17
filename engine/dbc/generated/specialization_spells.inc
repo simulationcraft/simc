@@ -1,5 +1,5 @@
-// Talent tree specialization abilities, wow build 10.0.2.46924
-static const std::array<specialization_spell_entry_t, 352> __specialization_spell_data { {
+// Talent tree specialization abilities, wow build 10.0.2.47120
+static const std::array<specialization_spell_entry_t, 350> __specialization_spell_data { {
   {  0,  535, 264656,      0, "Pathfinding"                       , 0 },
   {  0,  535, 264662,      0, "Endurance Training"                , 0 },
   {  0,  535, 264663,      0, "Predator's Thirst"                 , 0 },
@@ -333,8 +333,6 @@ static const std::array<specialization_spell_entry_t, 352> __specialization_spel
   { 12,  581, 228477, 344862, "Soul Cleave"                       , 0 },
   { 12,  581, 320378,      0, "Immolation Aura"                   , 0 },
   { 12,  581, 320380,      0, "Thick Skin"                        , 0 },
-  { 12,  581, 320381,      0, "Demonic Wards"                     , "Rank 2" },
-  { 12,  581, 320382,      0, "Demonic Wards"                     , "Rank 3" },
   { 12,  581, 320639,      0, "Fel Devastation"                   , "Rank 2" },
   { 12,  581, 320794,      0, "Sigil of Flame"                    , 0 },
   { 12,  581, 320962,      0, "Fiery Brand"                       , "Rank 2" },

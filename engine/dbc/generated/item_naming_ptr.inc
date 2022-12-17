@@ -1,5 +1,5 @@
-// Item name descriptions, wow build 10.0.2.46801
-static const std::array<item_name_description_t, 727> __ptr_item_name_description_data { {
+// Item name descriptions, wow build 10.0.5.47186
+static const std::array<item_name_description_t, 731> __ptr_item_name_description_data { {
   {     2, "Now with extra description"                  },
   {    20, "Season 10"                                   },
   {   226, "Season 10 Elite"                             },
@@ -707,6 +707,7 @@ static const std::array<item_name_description_t, 727> __ptr_item_name_descriptio
   { 13970, "Iskaaran Fishing Gear Material"              },
   { 13971, "Dragon Isles Supplies"                       },
   { 13976, "Primal Infused"                              },
+  { 13978, "Trading Post"                                },
   { 13979, "Primal Storms"                               },
   { 13980, "War Mode"                                    },
   { 13981, "Obsidian"                                    },
@@ -725,7 +726,10 @@ static const std::array<item_name_description_t, 727> __ptr_item_name_descriptio
   { 13994, "Tinker Module"                               },
   { 13995, "Shadowlands Season 3 & 4"                    },
   { 13996, "Shadowlands Season 1"                        },
+  { 13997, "Elemental Reagent"                           },
   { 13998, "Mystic"                                      },
   { 13999, "Dragonflight Season 1"                       },
+  { 14000, "Impressive"                                  },
+  { 14001, "Remarkable"                                  },
 } };
 

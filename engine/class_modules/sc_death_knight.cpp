@@ -10545,16 +10545,68 @@ struct death_knight_module_t : public module_t {
     unique_gear::register_special_effect( 326982, runeforge::unending_thirst );
   }
 
-  /*
   void register_hotfixes() const override
   {
-      hotfix::register_effect( "Death Knight", "2022-09-15", "Icecap's CDR per Crit reduced to 2s per Crit in notes, not represented in game", 306334 )
+      hotfix::register_spell( "Death Knight", "2022-12-16", "Apocalypse Duration increased to 20 seconds.", 221180 )
+      .field( "duration" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 20000 )
+      .verification_value( 15000 );
+
+      hotfix::register_spell( "Death Knight", "2022-12-16", "Icy Talons Duration increased to 10 seconds", 194879 )
+      .field( "duration" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 10000 )
+      .verification_value( 6000 );
+
+      hotfix::register_spell( "Death Knight", "2022-12-16", "Plaguebringer Duration increased to 10 seconds.", 332688 )
+      .field( "duration" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 10000 )
+      .verification_value( 5000 );
+
+      hotfix::register_effect( "Death Knight", "2022-12-16", "Soul Reaper initial buffed by 10%", 844983 )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0.374 )
+      .verification_value( 0.34 );
+
+      hotfix::register_effect( "Death Knight", "2022-12-16", "Soul Reaper execute buffed by 10%", 844986 )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 1.716 )
+      .verification_value( 1.56 );
+
+      hotfix::register_effect( "Death Knight", "2022-12-16", "Death Coil buffed by 10%", 39872 )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0.470305 )
+      .verification_value( 0.42755 );
+
+      hotfix::register_effect( "Death Knight", "2022-12-16", "Clawing Shadows buffed by 6%", 324719 )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0.59214144 )
+      .verification_value( 0.558624 );
+
+      hotfix::register_effect( "Death Knight", "2022-12-16", "Scourge Strike physical buffed by 6%", 48019 )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0.4037328 )
+      .verification_value( 0.38088 );
+
+      hotfix::register_effect( "Death Knight", "2022-12-16", "Scourge Strike shadow buffed by 6%", 214692 )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0.222388 )
+      .verification_value( 0.20980 );
+
+      hotfix::register_effect( "Death Knight", "2022-12-16", "Reaping damage increased from 20% to 25%", 1005394 )
       .field( "base_value" )
       .operation( hotfix::HOTFIX_SET )
-      .modifier( 20 )
-      .verification_value( 40 );
+      .modifier( 25 )
+      .verification_value( 20 );
   }
-  */
 
   void init( player_t* ) const override {}
   bool valid() const override { return true; }
