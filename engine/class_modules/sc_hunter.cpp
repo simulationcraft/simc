@@ -4835,9 +4835,9 @@ struct fury_of_the_eagle_t: public hunter_melee_attack_t
       health_threshold = p -> talents.fury_of_the_eagle -> effectN( 4 ).base_value() + p -> talents.ruthless_marauder -> effectN( 1 ).base_value();
       crit_chance_bonus = p -> talents.fury_of_the_eagle -> effectN( 3 ).percent();
 
-      // TODO 25-10-22 Ruthless Marauder says nothing about increasing damage but is adding the cdr value data to the tick dmg as well.
+      // TODO 2-12-22 Ruthless Marauder also adds to crit rate.
       if ( p -> bugs )
-        base_dd_adder += p -> talents.ruthless_marauder -> effectN( 3 ).base_value();
+        crit_chance_bonus += p -> talents.ruthless_marauder -> effectN( 1 ).percent();
 
       if ( p -> talents.ruthless_marauder )
         ruthless_marauder_adjust = p -> talents.ruthless_marauder -> effectN( 3 ).time_value();
@@ -4848,13 +4848,7 @@ struct fury_of_the_eagle_t: public hunter_melee_attack_t
       double c = hunter_melee_attack_t::composite_target_crit_chance( target );
 
       if ( target -> health_percentage() < health_threshold )
-      {
         c += crit_chance_bonus;
-
-        // TODO 2-12-22 Ruthless Marauder also adds to crit rate.
-        if ( p() -> bugs )
-          c += p() -> talents.ruthless_marauder -> effectN( 1 ).percent();
-      }
 
       return c;
     }
@@ -7257,7 +7251,9 @@ double hunter_t::composite_player_critical_damage_multiplier( const action_state
 
   m *= 1.0 + talents.sharpshooter -> effectN( 1 ).percent();
   m *= 1.0 + talents.sharp_edges -> effectN( 1 ).percent();
-  m *= 1.0 + buffs.unerring_vision -> stack() * buffs.unerring_vision -> data().effectN( 2 ).percent();
+
+  if ( !bugs )
+    m *= 1.0 + buffs.unerring_vision -> stack() * buffs.unerring_vision -> data().effectN( 2 ).percent();
 
   return m;
 }
