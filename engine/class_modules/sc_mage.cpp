@@ -4,7 +4,6 @@
 // ==========================================================================
 
 #include "simulationcraft.hpp"
-#include "player/covenant.hpp"
 #include "util/util.hpp"
 #include "class_modules/apl/mage.hpp"
 #include "report/charts.hpp"
@@ -4242,8 +4241,11 @@ struct ice_lance_t final : public frost_mage_spell_t
     {
       aoe = 1 + as<int>( p->talents.splitting_ice->effectN( 1 ).base_value() );
       base_multiplier *= 1.0 + p->talents.splitting_ice->effectN( 3 ).percent();
-      // Hardcoded in the talent description.
-      base_aoe_multiplier *= p->talents.splitting_ice->effectN( 2 ).percent() - 0.15;
+      // TODO: remove after 2022-12-20 frost hotfixes are applied
+      double si_mult = p->talents.splitting_ice->effectN( 2 ).percent();
+      if ( dbc::hotfix_date_str( p->dbc->ptr ) < "2022-12-20" )
+        si_mult -= 0.15;
+      base_aoe_multiplier *= si_mult;
     }
 
     if ( p->talents.hailstones.ok() )
