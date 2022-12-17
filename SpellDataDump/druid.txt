@@ -1,4 +1,4 @@
-SimulationCraft 1002-01 for World of Warcraft 10.0.2.47120 Live (hotfix 2022-12-16/47120)
+SimulationCraft 1002-01 for World of Warcraft 10.0.2.47120 Live (hotfix 2022-12-17/47120)
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=8, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
@@ -1976,6 +1976,7 @@ Description      : $@spelldesc79577
 Tooltip          : Arcane spells deal $w1% additional damage$?<$w5>0>[, area effect damage increased $w5%,][] and Starfire's critical strike chance is increased by $w2%.
 
 Name             : Cat Form (id=48629) [Spell Family (7), Hidden] 
+Hotfixed         : Attributes
 Class            : Druid
 School           : Nature
 Spell Type       : None
@@ -1983,13 +1984,13 @@ Duration         : Aura (infinite)
 Stance Mask      : 0x00000001
 Attributes       : ....x..x ........ ........ .....x.x   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ......x. ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Is Ability (4), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Immunities (29), No Aura Cancel (31), No Threat (42), Aura Points On Client (268), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
+                 : Is Ability (4), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Immunities (29), No Aura Cancel (31), No Threat (42), Allow Entering Arena (149), Aura Points On Client (268), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=40795)    : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 106785 | Scaled Value: 106785 | PvP Coefficient: 1.00000 | Misc Value 2: 0x3 | Target: Self (1)
@@ -3963,6 +3964,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 343216 | Target: Self (1)
 #2 (id=1028544)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
+#3 (id=1046005)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : NEW EFFECT
 Description      : Go Berserk for $d. While Berserk:
 
 Finishing moves have a $343223s1% chance per combo point spent to refund $343216s1 combo $lpoint:points;.
