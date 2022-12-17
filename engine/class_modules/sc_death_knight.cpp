@@ -10586,7 +10586,7 @@ struct death_knight_module_t : public module_t {
       hotfix::register_effect( "Death Knight", "2022-12-16", "Clawing Shadows buffed by 6%", 324719 )
       .field( "ap_coefficient" )
       .operation( hotfix::HOTFIX_SET )
-      .modifier( 0.5921372 )
+      .modifier( 0.59214144 )
       .verification_value( 0.558624 );
 
       hotfix::register_effect( "Death Knight", "2022-12-16", "Scourge Strike physical buffed by 6%", 48019 )
