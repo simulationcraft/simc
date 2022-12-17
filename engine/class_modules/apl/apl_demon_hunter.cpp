@@ -151,10 +151,10 @@ void vengeance( player_t* p )
   default_->add_action( "metamorphosis,if=!buff.metamorphosis.up&!dot.fiery_brand.ticking" );
   default_->add_action( "fel_devastation,if=(!talent.down_in_flames.enabled)" );
   default_->add_action( "spirit_bomb,if=((buff.metamorphosis.up&talent.fracture.enabled&soul_fragments>=3)|soul_fragments>=4&active_enemies>1)" );
-  default_->add_action( "soul_cleave,if=(talent.spirit_bomb.enabled&soul_fragments=0&target>1)|(active_enemies<2&((talent.fracture.enabled&fury>=55)|(!talent.fracture.enabled&fury>=70)|(buff.metamorphosis.up&((talent.fracture.enabled&fury>=35)|(!talent.fracture.enabled&fury>=50)))))|(!talent.spirit_bomb.enabled)&((talent.fracture.enabled&fury>=55)|(!talent.fracture.enabled&fury>=70)|(buff.metamorphosis.up&((talent.fracture.enabled&fury>=35)|(!talent.fracture.enabled&fury>=50))))" );
+  default_->add_action( "soul_cleave,if=(talent.spirit_bomb.enabled&soul_fragments=0&spell_targets>1)|(active_enemies<2&((talent.fracture.enabled&fury>=55)|(!talent.fracture.enabled&fury>=70)|(buff.metamorphosis.up&((talent.fracture.enabled&fury>=35)|(!talent.fracture.enabled&fury>=50)))))|(!talent.spirit_bomb.enabled)&((talent.fracture.enabled&fury>=55)|(!talent.fracture.enabled&fury>=70)|(buff.metamorphosis.up&((talent.fracture.enabled&fury>=35)|(!talent.fracture.enabled&fury>=50))))" );
   default_->add_action( "immolation_aura,if=(talent.fiery_demise.enabled&fury.deficit>=10&(cooldown.soul_carver.remains>15))|(!talent.fiery_demise.enabled&fury.deficit>=10)" );
   default_->add_action( "felblade,if=fury.deficit>=40" );
-  default_->add_action( "fracture,if=(talent.spirit_bomb.enabled&(soul_fragments<=3&target>1|target<2&fury.deficit>=30))|(!talent.spirit_bomb.enabled&((buff.metamorphosis.up&fury.deficit>=45)|(buff.metamorphosis.down&fury.deficit>=30)))" );
+  default_->add_action( "fracture,if=(talent.spirit_bomb.enabled&(soul_fragments<=3&spell_targets>1|spell_targets<2&fury.deficit>=30))|(!talent.spirit_bomb.enabled&((buff.metamorphosis.up&fury.deficit>=45)|(buff.metamorphosis.down&fury.deficit>=30)))" );
   default_->add_action( "sigil_of_flame,if=fury.deficit>=30" );
   default_->add_action( "shear" );
   default_->add_action( "throw_glaive" );
