@@ -3158,10 +3158,7 @@ void elemental_lariat( special_effect_t& effect )
 void flaring_cowl( special_effect_t& effect )
 {
   auto damage = create_proc_action<generic_aoe_proc_t>( "flaring_cowl", effect, "flaring_cowl", 377079, true );
-  // damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
-  // TODO: currently bugged and only doing damage as if the item was at the base ilevel of 350
-  damage->base_dd_min = damage->base_dd_max =
-      effect.player->dbc->random_property( 350 ).damage_replace_stat * effect.driver()->effectN( 1 ).m_coefficient();
+  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
 
   auto period = effect.trigger()->effectN( 1 ).period();
   effect.player->register_combat_begin( [ period, damage ]( player_t* p ) {
