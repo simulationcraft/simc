@@ -105,7 +105,9 @@ struct evoker_t : public player_t
   // Options
   struct options_t
   {
+    // Should every Disintegrate in Dragonrage be clipped after the 3rd tick
     bool use_clipping       = true;
+    // Should chained Disintegrates( those with 5 ticks ) be chained after the 3rd tick in Dragonrage
     bool use_early_chaining = true;
   } option;
 
