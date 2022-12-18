@@ -1,55 +1,58 @@
-# warrior="T29_Warrior_Arms"
-# level=70
-# race=orc
-# spec=arms
-# role=attack
-# position=back
-# talents=2133222
+warrior="T29 Arms Warrior"
+spec=arms
+level=70
+race=human
+role=attack
+position=back
+professions=blacksmithing=100/engineering=65
+talents=BcEAAAAAAAAAAAAAAAAAAAAAAAAkIJJRSSo0SSAAAAABRkoQAEJQiQSoJRIAhECAAAAAAAASCSSCIA
 
-# head=gaze_of_the_infinite_infantry,id=188942,bonus_id=7187/1498
-# neck=worldkiller_iris,id=189859,bonus_id=7187/1524
-# shoulders=pauldrons_of_the_infinite_infantry,id=188941,bonus_id=1505/7187
-# back=shroud_of_the_sires_chosen,id=189847,bonus_id=7187/1524
-# chest=breastplate_of_the_infinite_infantry,id=188938,bonus_id=1505/7187,enchant=eternal_stats
-# wrists=shadowghast_armguards,id=171419,bonus_id=6648/6649/7451/8130/1588,gem_id=173127
-# hands=grasps_of_the_infinite_infantry,id=188937,bonus_id=7187/1498,enchant=eternal_strength
-# waist=shadowghast_waistguard,id=171418,bonus_id=6648/6649/7451/6962/1588,gem_id=173127
-# legs=legguards_of_the_ultimate_threat,id=189858,bonus_id=7187/1524
-# feet=greatboots_of_the_roaming_goliath,id=189832,bonus_id=7187/1524
-# finger1=loquacious_keepers_peridot,id=189802,bonus_id=7187/1524,enchant=tenet_of_critical_strike
-# finger2=rygelons_heraldric_ring,id=189854,bonus_id=7187/1524,enchant=tenet_of_critical_strike
-# trinket1=scars_of_fraternal_strife,id=188253,bonus_id=7187/1524
-# trinket2=old_warriors_soul,id=186438,bonus_id=7187/1498
-# main_hand=gavel_of_the_first_arbiter,id=189862,bonus_id=7187/1524,enchant=sinful_revelation
+head=casque_of_the_walking_mountain,id=200426,bonus_id=4800/4786/1498/7935,ilevel=424,gem_id=192985
+neck=elemental_lariat,id=193001,bonus_id=8782/8960,crafted_stats=32/36,ilevel=418,gem_id=192919/192919/192919
+shoulder=peaks_of_the_walking_mountain,id=200428,bonus_id=4800/4786/1498
+back=decorated_commanders_cindercloak,id=195482,bonus_id=4800/4786/1498
+chest=datheas_cyclonic_cage,id=195494,bonus_id=4800/4786/1498,enchant_id=6625
+wrist=allied_wristguard_of_companionship,id=190526,bonus_id=7935/8960,ilevel=418,gem_id=192919
+hands=gauntlets_of_the_walking_mountain,id=200425,bonus_id=4800/4786/1498
+waist=matriarchs_opulent_girdle,id=195524,bonus_id=4800/4786/1498/7935,gem_id=192919
+legs=poleyns_of_the_walking_mountain,id=200427,bonus_id=4800/4786/1498,enchant_id=6496
+feet=kurogs_thunderhooves,id=195517,bonus_id=4800/4786/1498
+finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=6652/8811/8812/6808/4786/1808/3300,gem_id=192919,enchant_id=6556
+finger2=emissarys_flamewrought_seal,id=201992,bonus_id=4800/4786/1498/7935,gem_id=192919,enchant_id=6556
+trinket1=whispering_incarnate_icon,id=194301,bonus_id=4800/4786/1498
+trinket2=manic_grieftorch,id=194308,bonus_id=4800/4786/1498
+main_hand=incarnate_skysplitter,id=195528,bonus_id=4800/4786/1498,enchant_id=6649
 
-# save=T29_Warrior_Arms.simc
+save=T29_Warrior_Arms.simc
 
-# warrior="T29_Warrior_Fury"
-# level=70
-# race=mechagnome
-# spec=fury
-# role=attack
-# position=back
-# talents=2122322
 
-# head=gaze_of_the_infinite_infantry,id=188942,bonus_id=7187/1498
-# neck=worldkiller_iris,id=189859,bonus_id=7187/1524
-# shoulders=pauldrons_of_the_infinite_infantry,id=188941,bonus_id=1505/7187
-# back=grimveiled_cape,id=173242,bonus_id=6648/6649/6964/7451/1588
-# chest=breastplate_of_the_infinite_infantry,id=188938,bonus_id=1505/7187,enchant=eternal_stats
-# wrists=veiled_auctioneers_vambraces,id=189825,bonus_id=7187/1524
-# hands=handguards_of_hidden_realms,id=189850,bonus_id=7187/1524,enchant=eternal_strength
-# waist=shadowghast_waistguard,id=171418,bonus_id=6648/6649/7451/8130/1588,gem_id=173128
-# legs=legplates_of_the_infinite_infantry,id=188940,bonus_id=7187/1498
-# feet=greatboots_of_the_roaming_goliath,id=189832,bonus_id=7187/1524
-# finger1=loquacious_keepers_peridot,id=189802,bonus_id=7187/1524,enchant=tenet_of_haste
-# finger2=rygelons_heraldric_ring,id=189854,bonus_id=7187/1524,enchant=tenet_of_haste
-# trinket1=scars_of_fraternal_strife,id=188253,bonus_id=7187/1524
-# trinket2=old_warriors_soul,id=186438,bonus_id=7187/1498
-# main_hand=gavel_of_the_first_arbiter,id=189862,bonus_id=7187/1524,enchant=sinful_revelation
-# off_hand=riftscarred_solcrusher,id=189817,bonus_id=7187/1524,enchant=celestial_guidance
+warrior="T29 Fury Warrior"
+spec=fury
+level=70
+race=human
+role=attack
+position=back
+professions=blacksmithing=100/engineering=65
+talents=BgEAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAIAJNKBQEEiARjIhkARSIJpFJSkgQSSSkWKBIRSAAAAB
 
-# save=T29_Warrior_Fury.simc
+head=casque_of_the_walking_mountain,id=200426,bonus_id=4800/4786/1498/7935,ilevel=424,gem_id=192988
+neck=elemental_lariat,id=193001,bonus_id=8782/8960,crafted_stats=32/49,ilevel=418,gem_id=192961/192961/192961
+shoulders=peaks_of_the_walking_mountain,id=200428,bonus_id=4800/4786/1498
+back=acidproof_webbing,id=195511,bonus_id=4800/4786/1498
+chest=datheas_cyclonic_cage,id=195494,bonus_id=4800/4786/1498,enchant_id=6625
+wrists=allied_wristguard_of_companionship,id=190526,bonus_id=7935/8960,ilevel=418,gem_id=192961
+hands=gauntlets_of_the_walking_mountain,id=200425,bonus_id=4800/4786/1498
+waist=matriarchs_opulent_girdle,id=195524,bonus_id=4800/4786/1498/7935,gem_id=192961
+legs=poleyns_of_the_walking_mountain,id=200427,bonus_id=4800/4786/1498,enchant_id=6496
+feet=kurogs_thunderhooves,id=195517,bonus_id=4800/4786/1498
+finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=6652/8811/8812/6808/4786/1808/3300,gem_id=192961,enchant_id=6562
+finger2=seal_of_filial_duty,id=195526,bonus_id=4800/4786/1498/7935,gem_id=192961,enchant_id=6562
+trinket1=whispering_incarnate_icon,id=194301,bonus_id=4800/4786/1498
+trinket2=manic_grieftorch,id=194308,bonus_id=4800/4786/1498
+main_hand=incarnate_skysplitter,id=195528,bonus_id=4800/4786/1498,enchant_id=6649
+off_hand=incarnate_skysplitter,id=195528,bonus_id=4800/4786/1498,enchant_id=6649
+
+save=T29_Warrior_Fury.simc
 
 warrior="T29_Warrior_Protection"
 source=default
