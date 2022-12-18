@@ -1684,8 +1684,11 @@ void whispering_incarnate_icon( special_effect_t& effect )
   if ( proc_buff_id )
   {
     auto proc_buff_data = effect.player->find_spell( proc_buff_id );
-    auto proc_buff = create_buff<stat_buff_t>( effect.player, proc_buff_data );
-    proc_buff->set_stat_from_effect( 1, effect.driver()->effectN( 2 ).average( effect.item ) );
+    auto proc_buff      = create_buff<stat_buff_t>( effect.player, proc_buff_data );
+    double amount       = effect.driver()->effectN( 2 ).average( effect.item );
+
+    for ( auto& s : proc_buff->stats )
+      s.amount = amount;
 
     effect.spell_id = buff_id;
     effect.custom_buff = proc_buff;
