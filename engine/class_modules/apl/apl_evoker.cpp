@@ -60,6 +60,7 @@ void devastation( player_t* p )
   default_->add_action( "potion,if=buff.dragonrage.up|fight_remains<35" );
   default_->add_action( "variable,name=next_dragonrage,value=cooldown.dragonrage.remains<?(cooldown.eternity_surge.remains-2*gcd.max)<?(cooldown.fire_breath.remains-gcd.max)", "Variable that evaluates when next dragonrage is by working out the maximum between the dragonrage cd and your empowers, ignoring CDR effect estimates." );
   default_->add_action( "variable,name=r1_cast_time,value=1.3*spell_haste", "Rank 1 empower spell cast time TODO: multiplier should be 1.0 but 1.3 results in more dps for EBF builds" );
+  default_->add_action( "invoke_external_buff,name=power_infusion,if=buff.dragonrage.up&!buff.power_infusion.up", "Invoke External Power Infusions if they're available during dragonrage" );
   default_->add_action( "call_action_list,name=trinkets" );
   default_->add_action( "run_action_list,name=aoe,if=spell_targets.pyre>=3" );
   default_->add_action( "run_action_list,name=st" );
