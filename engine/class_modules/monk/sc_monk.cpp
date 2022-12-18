@@ -8027,45 +8027,51 @@ void monk_t::bonedust_brew_assessor(action_state_t* s)
     switch (s->action->id)
     {
 
-        // Whitelisted spells
-        // verified with logs on 08/03/2022 ( Game Version: 9.2.5 )
+      // Whitelist
 
-    case 0: // auto attack
-    case 123996: // crackling_tiger_lightning_tick
-    case 185099: // rising_sun_kick_dmg
-    case 117418: // fists_of_fury_tick
-    case 158221: // whirling_dragon_punch_tick
-    case 100780: // tiger_palm
-    case 100784: // blackout_kick
-    case 101545: // flying_serpent_kick
-    case 115129: // expel_harm_damage
-    case 322109: // touch_of_death
-    case 122470: // touch_of_karma
-    case 107270: // spinning_crane_kick_tick
-    case 261947: // fist_of_the_white_tiger_offhand
-    case 261977: // fist_of_the_white_tiger_mainhand
-    case 132467: // chi_wave_damage
-    case 148187: // rushing_jade_wind_tick
-    case 148135: // chi_burst_damage
-    case 117952: // crackling_jade_lightning
-    case 196608: // eye_of_the_tiger_damage
-        break;
+      case 0: // auto attack
+      case 1: // melee_off_hand
+      case 123996: // crackling_tiger_lightning_tick
+      case 185099: // rising_sun_kick_dmg
+      case 117418: // fists_of_fury_tick
+      case 158221: // whirling_dragon_punch_tick
+      case 100780: // tiger_palm
+      case 100784: // blackout_kick
+      case 101545: // flying_serpent_kick
+      case 115129: // expel_harm_damage
+      case 322109: // touch_of_death
+      case 122470: // touch_of_karma
+      case 107270: // spinning_crane_kick_tick
+      case 261947: // fist_of_the_white_tiger_offhand
+      case 261977: // fist_of_the_white_tiger_mainhand
+      case 132467: // chi_wave_damage
+      case 148187: // rushing_jade_wind_tick
+      case 148135: // chi_burst_damage
+      case 117952: // crackling_jade_lightnin
+      case 196608: // eye_of_the_tiger_damage
+      case 337342: // chi_explosion
+      case 395519: // strike_of_the_windlord_mainhand
+      case 395521: // strike_of_the_windlord_offhand
+      case 391400: // resonant_fists
+      case 389541: // claw_of_the_white_tiger
+      case 228649: // blackout_kick_totm_proc
+      case 392959: // glory_of_the_dawn
+      case 345727: // faeline_stomp_dmg
+      case 327264: // faeling_stomp_ww_dmg
+          break;
 
-        // Known blacklist
-        // we don't need to log these
+      // Known blacklist
+      // we don't need to log these
 
-    case 325217: // bonedust_brew_dmg
-    case 325218: // bonedust_brew_heal
-    case 335913: // empowered_tiger_lightning
-    case 360829: // empowered_tiger_lightning_call_to_arms
-    case 337342: // chi_explosion
-        return;
+      case 325217: // bonedust_brew_dmg
+      case 325218: // bonedust_brew_heal
+      case 335913: // empowered_tiger_lightning
+      case 242390: // thunderfist
+          return;
 
-    default:
-
-        sim->print_debug( "Bad spell passed to BDB Assessor: {}, id: {}", s->action->name(), s->action->id);
-        //return;
-        break; // Until whitelist is populated for 10.0 let spells that aren't blacklisted pass through
+      default:
+          sim->print_debug( "Unknown spell passed to BDB Assessor: {}, id: {}", s->action->name(), s->action->id);
+          return;
     }
 
     if ( shared.bonedust_brew->ok() )
