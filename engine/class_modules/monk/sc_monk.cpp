@@ -8058,6 +8058,16 @@ void monk_t::bonedust_brew_assessor(action_state_t* s)
       case 392959: // glory_of_the_dawn
       case 345727: // faeline_stomp_dmg
       case 327264: // faeling_stomp_ww_dmg
+      // Brewmaster
+      case 205523: // blackout_kick_brm
+      case 123725: // breath_of_fire_dot
+      case 121253: // keg_smash
+      case 196733: // special_delivery
+      case 387621: // dragonfire_brew
+      case 325153: // exploding_keg
+      case 388867: // exploding_keg_proc
+      case 227291: // Niuzao's Stomp
+      case 393786: // chi_surge
           break;
 
       // Known blacklist
@@ -8067,15 +8077,16 @@ void monk_t::bonedust_brew_assessor(action_state_t* s)
       case 325218: // bonedust_brew_heal
       case 335913: // empowered_tiger_lightning
       case 242390: // thunderfist
+      case 386959: // charred_passions_dmg
           return;
 
       default:
           sim->print_debug( "Unknown spell passed to BDB Assessor: {}, id: {}", s->action->name(), s->action->id);
 
-          if ( specialization() == MONK_WINDWALKER )
+          if ( specialization() == MONK_WINDWALKER || specialization() == MONK_BREWMASTER)
             return;
           else
-            break; // TODO: Update with Brew / MW spells
+            break; // TODO: Update with MW spells
     }
 
     if ( shared.bonedust_brew->ok() )
