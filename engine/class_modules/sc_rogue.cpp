@@ -5659,7 +5659,7 @@ struct echoing_reprimand_t : public rogue_attack_t
 
   echoing_reprimand_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
     rogue_attack_t( name, p, p->spell.echoing_reprimand, options_str ),
-    random_min( 0 ), random_max( 3 ) // Randomizes between 2CP and 4CP buffs
+    random_min( 0 ), random_max( p->talent.rogue.resounding_clarity->ok() ? 4 : 3 ) // Randomizes between 2CP and 4CP buffs
   {
   }
 
