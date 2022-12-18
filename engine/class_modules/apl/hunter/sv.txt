@@ -5,6 +5,7 @@ actions.precombat+=/food
 actions.precombat+=/variable,name=mb_rs_cost,op=setif,value=action.mongoose_bite.cost,value_else=action.raptor_strike.cost,condition=talent.mongoose_bite
 actions.precombat+=/summon_pet
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
 actions.precombat+=/use_item,name=algethar_puzzle_box
 actions.precombat+=/steel_trap,precast_time=2
 
