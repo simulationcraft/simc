@@ -241,7 +241,8 @@ void survival( player_t* p )
   precombat->add_action( "variable,name=mb_rs_cost,op=setif,value=action.mongoose_bite.cost,value_else=action.raptor_strike.cost,condition=talent.mongoose_bite" );
   precombat->add_action( "summon_pet" );
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
-  precombat->add_action( "steel_trap,precast_time=20" );
+  precombat->add_action( "use_item,name=algethar_puzzle_box" );
+  precombat->add_action( "steel_trap,precast_time=2" );
 
   default_->add_action( "auto_attack" );
   default_->add_action( "call_action_list,name=cds" );
