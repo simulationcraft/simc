@@ -2608,6 +2608,8 @@ void blazebinders_hoof(special_effect_t& effect)
   effect.player->special_effects.push_back( bound_by_fire_and_blaze );
   effect.proc_chance_ = 1.01;
   effect.custom_buff = buff;
+  // since the on-use effect doesn't use the rppm, set to 0 so trinket expressions correctly determine it has a cooldown
+  effect.ppm_ = 0;
 
   auto cb = new dbc_proc_callback_t( effect.player, *bound_by_fire_and_blaze );
   cb -> deactivate();
