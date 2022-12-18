@@ -8071,7 +8071,11 @@ void monk_t::bonedust_brew_assessor(action_state_t* s)
 
       default:
           sim->print_debug( "Unknown spell passed to BDB Assessor: {}, id: {}", s->action->name(), s->action->id);
-          return;
+
+          if ( specialization() == MONK_WINDWALKER )
+            return;
+          else
+            break; // TODO: Update with Brew / MW spells
     }
 
     if ( shared.bonedust_brew->ok() )
