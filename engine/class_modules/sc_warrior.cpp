@@ -10435,6 +10435,14 @@ void warrior_t::invalidate_cache( cache_e c )
   {
     player_t::invalidate_cache( CACHE_BONUS_ARMOR );
   }
+  if ( c == CACHE_ARMOR && talents.warrior.armored_to_the_teeth->ok() && spec.vanguard->ok() )
+  {
+    player_t::invalidate_cache( CACHE_STRENGTH );
+  }
+  if ( c == CACHE_BONUS_ARMOR && talents.warrior.armored_to_the_teeth->ok() && spec.vanguard->ok() )
+  {
+    player_t::invalidate_cache( CACHE_STRENGTH );
+  }
 }
 
 // warrior_t::primary_role() ================================================
