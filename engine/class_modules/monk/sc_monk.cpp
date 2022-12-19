@@ -748,7 +748,6 @@ public:
          s->action->id == 123725 || // Breath of Fire dot
          s->action->id == 196608 || // Eye of the Tiger
          s->action->id == 196733 || // Special Delivery
-         s->action->id == 325217 || // Bonedust Brew
          s->action->id == 338141 || // Charred Passion
          s->action->id == 387621 || // Dragonfire Brew
          s->action->id == 393786    // Chi Surge
