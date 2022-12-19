@@ -174,7 +174,7 @@ void vengeance( player_t* p )
 
   elysian_decree_ramp->add_action( "variable,name=elysian_decree_ramp_in_progress,value=1,if=!variable.elysian_decree_ramp_in_progress" );
   elysian_decree_ramp->add_action( "variable,name=elysian_decree_ramp_in_progress,value=0,if=cooldown.elysian_decree.remains" );
-  elysian_decree_ramp->add_action( "fracture,if=fury.deficit>=30" );
+  elysian_decree_ramp->add_action( "fracture,if=fury.deficit>=30&debuff.frailty.stack<=5" );
   elysian_decree_ramp->add_action( "sigil_of_flame,if=fury.deficit>=30" );
   elysian_decree_ramp->add_action( "shear,if=fury.deficit<=90&debuff.frailty.stack>=0" );
   elysian_decree_ramp->add_action( "spirit_bomb,if=soul_fragments>=4&spell_targets>1" );
@@ -183,7 +183,7 @@ void vengeance( player_t* p )
 
   soul_carver_without_fiery_demise_ramp->add_action( "variable,name=soul_carver_ramp_in_progress,value=1,if=!variable.soul_carver_ramp_in_progress" );
   soul_carver_without_fiery_demise_ramp->add_action( "variable,name=soul_carver_ramp_in_progress,value=0,if=cooldown.soul_carver.remains" );
-  soul_carver_without_fiery_demise_ramp->add_action( "fracture,if=fury.deficit>=30" );
+  soul_carver_without_fiery_demise_ramp->add_action( "fracture,if=fury.deficit>=30&debuff.frailty.stack<=5" );
   soul_carver_without_fiery_demise_ramp->add_action( "sigil_of_flame,if=fury.deficit>=30" );
   soul_carver_without_fiery_demise_ramp->add_action( "shear,if=fury.deficit<=90&debuff.frailty.stack>=0" );
   soul_carver_without_fiery_demise_ramp->add_action( "spirit_bomb,if=soul_fragments>=4&spell_targets>1" );

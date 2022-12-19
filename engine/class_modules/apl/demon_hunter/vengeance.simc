@@ -50,7 +50,7 @@ actions.the_hunt_ramp+=/the_hunt
 
 actions.elysian_decree_ramp=/variable,name=elysian_decree_ramp_in_progress,value=1,if=!variable.elysian_decree_ramp_in_progress
 actions.elysian_decree_ramp+=/variable,name=elysian_decree_ramp_in_progress,value=0,if=cooldown.elysian_decree.remains
-actions.elysian_decree_ramp+=/fracture,if=fury.deficit>=30
+actions.elysian_decree_ramp+=/fracture,if=fury.deficit>=30&debuff.frailty.stack<=5
 actions.elysian_decree_ramp+=/sigil_of_flame,if=fury.deficit>=30
 actions.elysian_decree_ramp+=/shear,if=fury.deficit<=90&debuff.frailty.stack>=0
 actions.elysian_decree_ramp+=/spirit_bomb,if=soul_fragments>=4&spell_targets>1
@@ -59,7 +59,7 @@ actions.elysian_decree_ramp+=/elysian_decree
 
 actions.soul_carver_without_fiery_demise_ramp=/variable,name=soul_carver_ramp_in_progress,value=1,if=!variable.soul_carver_ramp_in_progress
 actions.soul_carver_without_fiery_demise_ramp+=/variable,name=soul_carver_ramp_in_progress,value=0,if=cooldown.soul_carver.remains
-actions.soul_carver_without_fiery_demise_ramp+=/fracture,if=fury.deficit>=30
+actions.soul_carver_without_fiery_demise_ramp+=/fracture,if=fury.deficit>=30&debuff.frailty.stack<=5
 actions.soul_carver_without_fiery_demise_ramp+=/sigil_of_flame,if=fury.deficit>=30
 actions.soul_carver_without_fiery_demise_ramp+=/shear,if=fury.deficit<=90&debuff.frailty.stack>=0
 actions.soul_carver_without_fiery_demise_ramp+=/spirit_bomb,if=soul_fragments>=4&spell_targets>1
