@@ -558,6 +558,14 @@
       { "data_type": "B", "field": "index",   "formats": { "cpp": "%2u" } }
     ]
   },
+  "ItemBonusListGroup": {
+    "fields": [
+      { "data_type": "i", "field": "id_spell_sequence", "ref": "SpellSequence" },
+      { "data_type": "i", "field": "id_player_condition", "ref": "PlayerCondition" },
+      { "data_type": "i", "field": "id_item_extended_cost", "ref": "ItemExtendedCost" },
+      { "data_type": "i", "field": "id_item_logical_cost_group", "ref": "ItemLogicalCostGroup" }
+    ]
+  },
   "ItemBonusListGroupEntry": {
     "fields": [
       { "data_type": "i", "field": "id_item_bonus_list_group"  },
@@ -731,6 +739,14 @@
   "ItemCurrencyCost": {
     "fields": [
       { "data_type": "i", "field": "id_item", "ref": "ItemSparse" }
+    ]
+  },
+  "ItemLogicalCost": {
+    "parent": "ItemLogicalCostGroup",
+    "fields": [
+      { "data_type": "i", "field": "mask_inv_type" },
+      { "data_type": "B", "field": "flags" },
+      { "data_type": "i", "field": "id_item_extended_cost" }
     ]
   },
   "ItemXBonusTree": {
