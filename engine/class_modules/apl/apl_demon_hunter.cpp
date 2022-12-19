@@ -147,10 +147,10 @@ void vengeance( player_t* p )
   default_->add_action( "metamorphosis,if=!buff.metamorphosis.up&!dot.fiery_brand.ticking" );
   default_->add_action( "fel_devastation,if=(!talent.down_in_flames.enabled)" );
   default_->add_action( "spirit_bomb,if=((buff.metamorphosis.up&talent.fracture.enabled&soul_fragments>=3)|soul_fragments>=4&active_enemies>1)" );
-  default_->add_action( "soul_cleave,if=(talent.spirit_bomb.enabled&soul_fragments=0&target>1)|(active_enemies<2&((talent.fracture.enabled&fury>=55)|(!talent.fracture.enabled&fury>=70)|(buff.metamorphosis.up&((talent.fracture.enabled&fury>=35)|(!talent.fracture.enabled&fury>=50)))))|(!talent.spirit_bomb.enabled)&((talent.fracture.enabled&fury>=55)|(!talent.fracture.enabled&fury>=70)|(buff.metamorphosis.up&((talent.fracture.enabled&fury>=35)|(!talent.fracture.enabled&fury>=50))))" );
+  default_->add_action( "soul_cleave,if=(talent.spirit_bomb.enabled&soul_fragments<=1&spell_targets>1)|(active_enemies<2&((talent.fracture.enabled&fury>=55)|(!talent.fracture.enabled&fury>=70)|(buff.metamorphosis.up&((talent.fracture.enabled&fury>=35)|(!talent.fracture.enabled&fury>=50)))))|(!talent.spirit_bomb.enabled)&((talent.fracture.enabled&fury>=55)|(!talent.fracture.enabled&fury>=70)|(buff.metamorphosis.up&((talent.fracture.enabled&fury>=35)|(!talent.fracture.enabled&fury>=50))))" );
   default_->add_action( "immolation_aura,if=(talent.fiery_demise.enabled&fury.deficit>=10&(cooldown.soul_carver.remains>15))|(!talent.fiery_demise.enabled&fury.deficit>=10)" );
   default_->add_action( "felblade,if=fury.deficit>=40" );
-  default_->add_action( "fracture,if=(talent.spirit_bomb.enabled&(soul_fragments<=3&target>1|target<2&fury.deficit>=30))|(!talent.spirit_bomb.enabled&((buff.metamorphosis.up&fury.deficit>=45)|(buff.metamorphosis.down&fury.deficit>=30)))" );
+  default_->add_action( "fracture,if=(talent.spirit_bomb.enabled&(soul_fragments<=3&spell_targets>1|spell_targets<2&fury.deficit>=30))|(!talent.spirit_bomb.enabled&((buff.metamorphosis.up&fury.deficit>=45)|(buff.metamorphosis.down&fury.deficit>=30)))" );
   default_->add_action( "sigil_of_flame,if=fury.deficit>=30" );
   default_->add_action( "shear" );
   default_->add_action( "throw_glaive" );
@@ -159,21 +159,21 @@ void vengeance( player_t* p )
   rampH->add_action( "sigil_of_flame,if=fury.deficit>=30" );
   rampH->add_action( "shear,if=fury.deficit<=90" );
   rampH->add_action( "spirit_bomb,if=soul_fragments>=4&active_enemies>1" );
-  rampH->add_action( "soul_cleave,if=(soul_fragments=0&active_enemies>1)|(active_enemies<2)|debuff.frailty.stack>=0" );
+  rampH->add_action( "soul_cleave,if=(soul_fragments<=1&active_enemies>1)|(active_enemies<2)|debuff.frailty.stack>=0" );
   rampH->add_action( "the_hunt" );
 
   rampED->add_action( "fracture,if=fury.deficit>=30" );
   rampED->add_action( "sigil_of_flame,if=fury.deficit>=30" );
   rampED->add_action( "shear,if=fury.deficit<=90&debuff.frailty.stack>=0" );
   rampED->add_action( "spirit_bomb,if=soul_fragments>=4&active_enemies>1" );
-  rampED->add_action( "soul_cleave,if=(soul_fragments=0&active_enemies>1)|(active_enemies<2)|debuff.frailty.stack>=0" );
+  rampED->add_action( "soul_cleave,if=(soul_fragments<=1&active_enemies>1)|(active_enemies<2)|debuff.frailty.stack>=0" );
   rampED->add_action( "elysian_decree" );
 
   rampSC->add_action( "fracture,if=fury.deficit>=30" );
   rampSC->add_action( "sigil_of_flame,if=fury.deficit>=30" );
   rampSC->add_action( "shear,if=fury.deficit<=90&debuff.frailty.stack>=0" );
   rampSC->add_action( "spirit_bomb,if=soul_fragments>=4&active_enemies>1" );
-  rampSC->add_action( "soul_cleave,if=(soul_fragments=0&active_enemies>1)|(active_enemies<2)|debuff.frailty.stack>=0" );
+  rampSC->add_action( "soul_cleave,if=(soul_fragments<=1&active_enemies>1)|(active_enemies<2)|debuff.frailty.stack>=0" );
   rampSC->add_action( "soul_carver" );
 
   FD->add_action( "variable,name=darkglare_boon_high_roll,op=setif,value=1,value_else=0,condition=darkglare_boon_cdr_roll>=18,if=prev_gcd.1.fel_devastation", "A 'high-roll' from Darkglare boon is any roll that gives us an 18+s reduction on Fel Dev's cooldown." );
