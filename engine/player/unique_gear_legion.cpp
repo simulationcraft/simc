@@ -2992,7 +2992,7 @@ void item::windscar_whetstone( special_effect_t& effect )
       create_proc_action<generic_aoe_proc_t>( "slicing_maelstrom", effect, "slicing_maelstrom", effect.trigger(), true );
   maelstrom->cooldown->duration = 0_ms;  // damage spell has erroneous cooldown
 
-  effect.custom_buff = make_buff( effect.player, "slicing_maelstrom", effect.driver(), effect.item )
+  effect.custom_buff = create_buff<buff_t>( effect.player, "slicing_maelstrom", effect.driver(), effect.item )
     ->set_tick_zero( true )
     ->set_tick_callback( [ maelstrom ]( buff_t*, int, timespan_t ) {
       maelstrom -> schedule_execute();
