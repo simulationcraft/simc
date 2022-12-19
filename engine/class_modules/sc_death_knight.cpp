@@ -10547,13 +10547,13 @@ struct death_knight_module_t : public module_t {
 
   void register_hotfixes() const override
   {
-      hotfix::register_spell( "Death Knight", "2022-12-16", "Apocalypse Duration increased to 20 seconds.", 221180 )
+      hotfix::register_spell( "Death Knight", "2022-12-16", "Apocalypse Duration increased to 20 seconds.", 221180, hotfix::HOTFIX_FLAG_LIVE )
       .field( "duration" )
       .operation( hotfix::HOTFIX_SET )
       .modifier( 20000 )
       .verification_value( 15000 );
 
-      hotfix::register_spell( "Death Knight", "2022-12-16", "Icy Talons Duration increased to 10 seconds", 194879 )
+      hotfix::register_spell( "Death Knight", "2022-12-16", "Icy Talons Duration increased to 10 seconds", 194879, hotfix::HOTFIX_FLAG_LIVE )
       .field( "duration" )
       .operation( hotfix::HOTFIX_SET )
       .modifier( 10000 )
@@ -10565,43 +10565,43 @@ struct death_knight_module_t : public module_t {
       .modifier( 10000 )
       .verification_value( 5000 );
 
-      hotfix::register_effect( "Death Knight", "2022-12-16", "Soul Reaper initial buffed by 10%", 844983 )
+      hotfix::register_effect( "Death Knight", "2022-12-16", "Soul Reaper initial buffed by 10%", 844983, hotfix::HOTFIX_FLAG_LIVE )
       .field( "ap_coefficient" )
       .operation( hotfix::HOTFIX_SET )
       .modifier( 0.374 )
       .verification_value( 0.34 );
 
-      hotfix::register_effect( "Death Knight", "2022-12-16", "Soul Reaper execute buffed by 10%", 844986 )
+      hotfix::register_effect( "Death Knight", "2022-12-16", "Soul Reaper execute buffed by 10%", 844986, hotfix::HOTFIX_FLAG_LIVE )
       .field( "ap_coefficient" )
       .operation( hotfix::HOTFIX_SET )
       .modifier( 1.716 )
       .verification_value( 1.56 );
 
-      hotfix::register_effect( "Death Knight", "2022-12-16", "Death Coil buffed by 10%", 39872 )
+      hotfix::register_effect( "Death Knight", "2022-12-16", "Death Coil buffed by 10%", 39872, hotfix::HOTFIX_FLAG_LIVE )
       .field( "ap_coefficient" )
       .operation( hotfix::HOTFIX_SET )
       .modifier( 0.470305 )
       .verification_value( 0.42755 );
 
-      hotfix::register_effect( "Death Knight", "2022-12-16", "Clawing Shadows buffed by 6%", 324719 )
+      hotfix::register_effect( "Death Knight", "2022-12-16", "Clawing Shadows buffed by 6%", 324719, hotfix::HOTFIX_FLAG_LIVE )
       .field( "ap_coefficient" )
       .operation( hotfix::HOTFIX_SET )
       .modifier( 0.59214144 )
       .verification_value( 0.558624 );
 
-      hotfix::register_effect( "Death Knight", "2022-12-16", "Scourge Strike physical buffed by 6%", 48019 )
+      hotfix::register_effect( "Death Knight", "2022-12-16", "Scourge Strike physical buffed by 6%", 48019, hotfix::HOTFIX_FLAG_LIVE )
       .field( "ap_coefficient" )
       .operation( hotfix::HOTFIX_SET )
       .modifier( 0.4037328 )
       .verification_value( 0.38088 );
 
-      hotfix::register_effect( "Death Knight", "2022-12-16", "Scourge Strike shadow buffed by 6%", 214692 )
+      hotfix::register_effect( "Death Knight", "2022-12-16", "Scourge Strike shadow buffed by 6%", 214692, hotfix::HOTFIX_FLAG_LIVE )
       .field( "ap_coefficient" )
       .operation( hotfix::HOTFIX_SET )
       .modifier( 0.222388 )
       .verification_value( 0.20980 );
 
-      hotfix::register_effect( "Death Knight", "2022-12-16", "Reaping damage increased from 20% to 25%", 1005394 )
+      hotfix::register_effect( "Death Knight", "2022-12-16", "Reaping damage increased from 20% to 25%", 1005394, hotfix::HOTFIX_FLAG_LIVE )
       .field( "base_value" )
       .operation( hotfix::HOTFIX_SET )
       .modifier( 25 )
