@@ -1,4 +1,4 @@
-SimulationCraft 1002-01 for World of Warcraft 10.0.2.47120 Live (hotfix 2022-12-17/47120)
+SimulationCraft 1002-01 for World of Warcraft 10.0.2.47187 Live (hotfix 2022-12-19/47187)
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -400,7 +400,6 @@ Description      : Subjugates the target demon up to level $s1, forcing it to do
 Tooltip          : $@auracaster's subject.
 
 Name             : Summon Infernal (desc=Guardian) (id=1122) [Spell Family (5)] 
-Hotfixed         : School (32 -> 4)
 Talent Entry     : Destruction [tree=spec, row=8, col=1, max_rank=1, req_points=20]
 Class            : Warlock
 School           : Fire
@@ -2914,7 +2913,6 @@ Description      : Corruption damage has a chance to cause your next Shadow Bolt
 Shadow Bolt is instant cast and Drain Soul channels $264571s3% faster when affected.
 
 Name             : Burning Rush (id=111400) [Spell Family (5)] 
-Hotfixed         : School (1 -> 4)
 Talent Entry     : Generic [tree=class, row=1, col=3, max_rank=1, req_points=0]
 Class            : Warlock
 School           : Fire
@@ -6183,7 +6181,6 @@ Effects          :
 Description      : Your Agony, Corruption, Siphon Life, and Unstable Affliction deal damage $s1% faster.
 
 Name             : Soul Strike (id=264057) [Spell Family (5)] 
-Hotfixed         : School (1 -> 32)
 Talent Entry     : Demonology [tree=spec, row=3, col=2, max_rank=1, req_points=0, select_idx=200]
 Class            : Warlock
 School           : Shadow
@@ -10440,7 +10437,6 @@ Tooltip          : Next Curse of Tongues, Curse of Exhaustion or Curse of Weakne
 Variables        : $cast=${$m1/-1}
 
 Name             : Fel Domination (id=333889) [Spell Family (5)] 
-Hotfixed         : School (33 -> 32)
 Talent Entry     : Generic [tree=class, row=1, col=1, max_rank=1, req_points=0]
 Class            : Warlock
 School           : Shadow
@@ -12673,7 +12669,6 @@ Description      : $@spelldesc386244
 Tooltip          : $@spelldesc386244
 
 Name             : Summon Soulkeeper (id=386256) [Spell Family (5)] 
-Hotfixed         : School (36 -> 124)
 Class            : Warlock
 School           : Chromatic
 Spell Type       : None
@@ -12746,7 +12741,6 @@ Description      : $@spelldesc386244
 Tooltip          : Grants $@auracaster a Tormented Soul upon death.
 
 Name             : Inquisitor's Gaze (id=386344) [Spell Family (5)] 
-Hotfixed         : School (32 -> 36)
 Talent Entry     : Generic [tree=class, row=10, col=2, max_rank=1, req_points=20, select_idx=200]
 Class            : Warlock
 School           : Shadowflame
@@ -13207,7 +13201,6 @@ Description      : $@spelldesc386759
 Tooltip          : Deals $w1 Shadow damage.
 
 Name             : Guillotine (id=386833) [Spell Family (5)] 
-Hotfixed         : School (1 -> 36)
 Talent Entry     : Demonology [tree=spec, row=10, col=3, max_rank=1, req_points=20]
 Class            : Warlock
 School           : Shadowflame
@@ -13632,7 +13625,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1021623)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (8 -> 5)
 Description      : Sacrifice $s1% of your Soul Leech to gain a Soul Shard.
 
 
@@ -15743,7 +15735,6 @@ Effects          :
 Description      : Reduces the cooldown of Amplify Curse by ${$s1/-1000} sec.
 
 Name             : Dimensional Rift (id=387976) 
-Hotfixed         : School (127 -> 124)
 Talent Entry     : Destruction [tree=spec, row=10, col=2, max_rank=1, req_points=20, select_idx=200]
 Class            : Warlock
 School           : Chromatic

@@ -1,4 +1,4 @@
-SimulationCraft 1002-01 for World of Warcraft 10.0.2.47120 Live (hotfix 2022-12-17/47120)
+SimulationCraft 1002-01 for World of Warcraft 10.0.2.47187 Live (hotfix 2022-12-19/47187)
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -4805,7 +4805,6 @@ Effects          :
 Description      : You heal $s1% of your maximum health every $158188t2 sec while Stealth or Shadow Dance is active.
 
 Name             : Exsanguinate (id=200806) [Spell Family (8)] 
-Hotfixed         : Attributes
 Talent Entry     : Assassination [tree=spec, row=5, col=5, max_rank=1, req_points=8]
 Class            : Rogue
 School           : Physical

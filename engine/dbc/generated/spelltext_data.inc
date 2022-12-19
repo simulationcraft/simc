@@ -1,4 +1,4 @@
-// Spell text, wow build 10.0.2.47120
+// Spell text, wow build 10.0.2.47187
 static const std::array<spelltext_data_t, 19194> __spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
@@ -19196,12 +19196,11 @@ static const std::array<spelltext_data_t, 19194> __spelltext_data { {
   { 400698, "+$s1 Sparkle.", "+$w1 Sparkle.", 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.0.2.47120
-static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelltext_hotfix_data { {
-  {  384598,  1, "Strength increased by $w1. Armor increased by $w2.", "$pri increased by $w1. Armor increased by $w2." },
+// spelltext hotfix entries, wow build 10.0.2.47187
+static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 10.0.2.47120
+// Spell description variables, wow build 10.0.2.47187
 static const std::array<spelldesc_vars_data_t, 365> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$pvp=$?a134735[${1.1}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<pvp>*$<weal>}\r\n" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -19570,7 +19569,7 @@ static const std::array<spelldesc_vars_data_t, 365> __spelldesc_vars_data { {
   {  394354, "$damage=${($AP*1.0)*(1+$@versadmg)}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.0.2.47120
+// spelldesc_vars hotfix entries, wow build 10.0.2.47187
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 
