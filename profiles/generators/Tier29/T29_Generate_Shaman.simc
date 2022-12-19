@@ -45,7 +45,7 @@ hands=gauntlets_of_infused_earth,id=200398,bonus_id=4800/4786/1501
 waist=morningscale_waistguard,id=109843,bonus_id=4238/4786/6808/3306,gem_id=192961
 legs=tassets_of_the_tarasek_legion,id=195522,bonus_id=4800/4786/1498,enchant=frosted_armor_kit_3
 feet=lightningcharged_striders,id=193685,bonus_id=6808/4786/1643
-finger1=seal_of_filial_duty,id=195526,bonus_id=4800/4786/1498,gem_id=192961,enchant=devotion_of_mastery_3
+finger1=seal_of_filial_duty,id=195526,bonus_id=4800/4786/1497,gem_id=192961,enchant=devotion_of_mastery_3
 finger2=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498,gem_id=192961,enchant=devotion_of_mastery_3
 trinket1=manic_grieftorch,id=194308,bonus_id=4800/4786/1498
 trinket2=whispering_incarnate_icon,id=194301,bonus_id=4800/4786/1498
