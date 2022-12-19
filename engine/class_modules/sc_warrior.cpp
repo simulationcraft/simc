@@ -10023,7 +10023,9 @@ double warrior_t::composite_attribute( attribute_e attr ) const
 
   if ( attr == ATTR_STRENGTH )
   {
-    // Arma 2022 Nov 13 disable Attt for prot as it ends up looping here.  As Str and armor are both looping in the stat cache
+    // Arma 2022 Nov 13 Note that unless we handle str manually in the armor calcs Attt for prot ends up looping here.  
+    // As Str and armor are both looping in the stat cache
+    // As we have it implemented properly in the armor calcs, this can be globally enabled.
     // get_attribute -> composite_attribute -> bonus_armor -> composite_bonus_armor -> strength -> get_attribute
     //if ( specialization() != WARRIOR_PROTECTION )
     p += ( talents.warrior.armored_to_the_teeth->effectN( 2 ).percent() * cache.armor() );
