@@ -133,10 +133,6 @@ void vengeance( player_t* p )
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
   default_->add_action( "auto_attack" );
-  default_->add_action( "variable,name=rampH_done,value=0,op=setif,value_else=1,condition=talent.the_hunt.enabled&cooldown.the_hunt.remains<5" );
-  default_->add_action( "variable,name=rampED_done,value=0,op=setif,value_else=1,condition=talent.elysian_decree.enabled&cooldown.elysian_decree.remains<5" );
-  default_->add_action( "variable,name=rampSC_done,value=0,op=setif,value_else=1,condition=talent.soul_carver.enabled&cooldown.soul_carver.remains<5&!talent.fiery_demise.enabled" );
-  default_->add_action( "variable,name=FD_done,value=0,op=setif,value_else=1,condition=talent.fiery_demise.enabled&cooldown.soul_carver.up&cooldown.fiery_brand.up&cooldown.immolation_aura.up&cooldown.fel_devastation.remains<10|dot.fiery_brand.ticking&talent.fiery_demise" );
   default_->add_action( "infernal_strike" );
   default_->add_action( "demon_spikes,if=!buff.demon_spikes.up&!cooldown.pause_action.remains" );
   default_->add_action( "fiery_brand,if=!talent.fiery_demise.enabled&!dot.fiery_brand.ticking" );
@@ -144,10 +140,10 @@ void vengeance( player_t* p )
   default_->add_action( "potion" );
   default_->add_action( "use_item,slot=trinket1" );
   default_->add_action( "use_item,slot=trinket2" );
-  default_->add_action( "run_action_list,name=rampH,if=variable.rampH_done=0&!dot.fiery_brand.ticking" );
-  default_->add_action( "run_action_list,name=rampED,if=variable.rampED_done=0&!dot.fiery_brand.ticking" );
-  default_->add_action( "run_action_list,name=rampSC,if=variable.rampSC_done=0&!dot.fiery_brand.ticking" );
-  default_->add_action( "run_action_list,name=FD,if=variable.FD_done=0" );
+  default_->add_action( "run_action_list,name=rampH,if=talent.the_hunt.enabled&cooldown.the_hunt.remains<5&!dot.fiery_brand.ticking" );
+  default_->add_action( "run_action_list,name=rampED,if=talent.elysian_decree.enabled&cooldown.elysian_decree.remains<5&!dot.fiery_brand.ticking" );
+  default_->add_action( "run_action_list,name=rampSC,if=talent.soul_carver.enabled&cooldown.soul_carver.remains<5&!talent.fiery_demise.enabled&!dot.fiery_brand.ticking" );
+  default_->add_action( "run_action_list,name=FD,if=talent.fiery_demise.enabled&cooldown.soul_carver.up&cooldown.fiery_brand.up&cooldown.immolation_aura.up&cooldown.fel_devastation.remains<10|dot.fiery_brand.ticking&talent.fiery_demise" );
   default_->add_action( "metamorphosis,if=!buff.metamorphosis.up&!dot.fiery_brand.ticking" );
   default_->add_action( "fel_devastation,if=(!talent.down_in_flames.enabled)" );
   default_->add_action( "spirit_bomb,if=((buff.metamorphosis.up&talent.fracture.enabled&soul_fragments>=3)|soul_fragments>=4&active_enemies>1)" );
@@ -165,7 +161,6 @@ void vengeance( player_t* p )
   rampH->add_action( "spirit_bomb,if=soul_fragments>=4&active_enemies>1" );
   rampH->add_action( "soul_cleave,if=(soul_fragments=0&active_enemies>1)|(active_enemies<2)|debuff.frailty.stack>=0" );
   rampH->add_action( "the_hunt" );
-  rampH->add_action( "variable,name=rampH_done,op=setif,value=1,value_else=0,condition=talent.the_hunt.enabled&cooldown.the_hunt.remains" );
 
   rampED->add_action( "fracture,if=fury.deficit>=30" );
   rampED->add_action( "sigil_of_flame,if=fury.deficit>=30" );
@@ -173,7 +168,6 @@ void vengeance( player_t* p )
   rampED->add_action( "spirit_bomb,if=soul_fragments>=4&active_enemies>1" );
   rampED->add_action( "soul_cleave,if=(soul_fragments=0&active_enemies>1)|(active_enemies<2)|debuff.frailty.stack>=0" );
   rampED->add_action( "elysian_decree" );
-  rampED->add_action( "variable,name=rampED_done,op=setif,value=1,value_else=0,condition=talent.elysian_decree.enabled&cooldown.elysian_decree.remains" );
 
   rampSC->add_action( "fracture,if=fury.deficit>=30" );
   rampSC->add_action( "sigil_of_flame,if=fury.deficit>=30" );
@@ -181,8 +175,8 @@ void vengeance( player_t* p )
   rampSC->add_action( "spirit_bomb,if=soul_fragments>=4&active_enemies>1" );
   rampSC->add_action( "soul_cleave,if=(soul_fragments=0&active_enemies>1)|(active_enemies<2)|debuff.frailty.stack>=0" );
   rampSC->add_action( "soul_carver" );
-  rampSC->add_action( "variable,name=rampSC_done,op=setif,value=1,value_else=0,condition=talent.soul_carver.enabled&cooldown.soul_carver.remains&!talent.fiery_demise.enabled" );
 
+  FD->add_action( "variable,name=darkglare_boon_high_roll,op=setif,value=1,value_else=0,condition=darkglare_boon_cdr_roll>=18,if=prev_gcd.1.fel_devastation", "A 'high-roll' from Darkglare boon is any roll that gives us an 18+s reduction on Fel Dev's cooldown." );
   FD->add_action( "fracture,if=fury.deficit>=30&!dot.fiery_brand.ticking" );
   FD->add_action( "fiery_brand,if=!dot.fiery_brand.ticking&fury>=30" );
   FD->add_action( "fel_devastation,if=dot.fiery_brand.remains<=3" );
