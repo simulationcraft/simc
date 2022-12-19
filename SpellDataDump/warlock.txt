@@ -1,4 +1,4 @@
-SimulationCraft 1002-01 for World of Warcraft 10.0.2.47067 Live (hotfix 2022-12-14/47067)
+SimulationCraft 1002-01 for World of Warcraft 10.0.2.47120 Live (hotfix 2022-12-17/47120)
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -400,9 +400,10 @@ Description      : Subjugates the target demon up to level $s1, forcing it to do
 Tooltip          : $@auracaster's subject.
 
 Name             : Summon Infernal (desc=Guardian) (id=1122) [Spell Family (5)] 
+Hotfixed         : School (32 -> 4)
 Talent Entry     : Destruction [tree=spec, row=8, col=1, max_rank=1, req_points=20]
 Class            : Warlock
-School           : Shadow
+School           : Fire
 Spell Type       : Magic
 Resource         : 2% Base Mana (0) (id=118)
 Range            : 30 yards
@@ -2727,7 +2728,6 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Radius: 100 yards | Target: Self (1)
 #2 (id=326363)   : Apply Player/Pet Aura (202) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Radius: 100 yards | Target: Self (1)
-Hotfixed         : Base Value (10 -> 5)
 Description      : All single-target damage done by you and your minions grants you and your pet shadowy shields that absorb $s1% of the damage dealt$?s219272[][ for $108366d], up to $?s219272[$219272s2][$s2]% of maximum health.
 
 Name             : Mortal Coil (desc=Talent) (id=108396) [Spell Family (5)] 
@@ -2828,7 +2828,6 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Value Multiplier: 1 | PvP Coefficient: 1.00000 | Misc Value: 127 | Radius: 100 yards | Target: Self (1)
 #2 (id=119569)   : Apply Owner Area Aura (143) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | Value Multiplier: 1 | PvP Coefficient: 1.00000 | Misc Value: 127 | Radius: 100 yards | Target: Self (1)
-Hotfixed         : Base Value (25 -> 15)
 #3 (id=311358)   : Apply Owner Area Aura (143) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Value Multiplier: 1 | PvP Coefficient: 1.00000 | Misc Value: 127 | Radius: 100 yards | Target: Self (1)
 #4 (id=1041014)  : None (0)
@@ -2915,9 +2914,10 @@ Description      : Corruption damage has a chance to cause your next Shadow Bolt
 Shadow Bolt is instant cast and Drain Soul channels $264571s3% faster when affected.
 
 Name             : Burning Rush (id=111400) [Spell Family (5)] 
+Hotfixed         : School (1 -> 4)
 Talent Entry     : Generic [tree=class, row=1, col=3, max_rank=1, req_points=0]
 Class            : Warlock
-School           : Physical
+School           : Fire
 Spell Type       : None
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
@@ -5378,7 +5378,6 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=326664)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (15 -> 10)
 #3 (id=326678)   : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: -15001 | Scaled Value: -15001 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Soul Leech (108366)
@@ -6184,9 +6183,10 @@ Effects          :
 Description      : Your Agony, Corruption, Siphon Life, and Unstable Affliction deal damage $s1% faster.
 
 Name             : Soul Strike (id=264057) [Spell Family (5)] 
+Hotfixed         : School (1 -> 32)
 Talent Entry     : Demonology [tree=spec, row=3, col=2, max_rank=1, req_points=0, select_idx=200]
 Class            : Warlock
-School           : Physical
+School           : Shadow
 Spell Type       : None
 Spell Level      : 1
 Range            : 50 yards
@@ -10440,9 +10440,10 @@ Tooltip          : Next Curse of Tongues, Curse of Exhaustion or Curse of Weakne
 Variables        : $cast=${$m1/-1}
 
 Name             : Fel Domination (id=333889) [Spell Family (5)] 
+Hotfixed         : School (33 -> 32)
 Talent Entry     : Generic [tree=class, row=1, col=1, max_rank=1, req_points=0]
 Class            : Warlock
-School           : Shadowstrike
+School           : Shadow
 Spell Type       : Magic
 Duration         : 15 seconds
 Cooldown         : 180 seconds
@@ -12672,8 +12673,9 @@ Description      : $@spelldesc386244
 Tooltip          : $@spelldesc386244
 
 Name             : Summon Soulkeeper (id=386256) [Spell Family (5)] 
+Hotfixed         : School (36 -> 124)
 Class            : Warlock
-School           : Shadowflame
+School           : Chromatic
 Spell Type       : None
 Range            : 40 yards
 Cast Time        : 1 seconds
@@ -12744,9 +12746,10 @@ Description      : $@spelldesc386244
 Tooltip          : Grants $@auracaster a Tormented Soul upon death.
 
 Name             : Inquisitor's Gaze (id=386344) [Spell Family (5)] 
+Hotfixed         : School (32 -> 36)
 Talent Entry     : Generic [tree=class, row=10, col=2, max_rank=1, req_points=20, select_idx=200]
 Class            : Warlock
-School           : Shadow
+School           : Shadowflame
 Spell Type       : None
 GCD              : 1.5 seconds
 Duration         : 3600 seconds
@@ -13204,9 +13207,10 @@ Description      : $@spelldesc386759
 Tooltip          : Deals $w1 Shadow damage.
 
 Name             : Guillotine (id=386833) [Spell Family (5)] 
+Hotfixed         : School (1 -> 36)
 Talent Entry     : Demonology [tree=spec, row=10, col=3, max_rank=1, req_points=20]
 Class            : Warlock
-School           : Physical
+School           : Shadowflame
 Spell Type       : None
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -13627,7 +13631,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=1021623)  : Dummy (3)
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (8 -> 5)
 Description      : Sacrifice $s1% of your Soul Leech to gain a Soul Shard.
 
 
@@ -15738,9 +15743,10 @@ Effects          :
 Description      : Reduces the cooldown of Amplify Curse by ${$s1/-1000} sec.
 
 Name             : Dimensional Rift (id=387976) 
+Hotfixed         : School (127 -> 124)
 Talent Entry     : Destruction [tree=spec, row=10, col=2, max_rank=1, req_points=20, select_idx=200]
 Class            : Warlock
-School           : Chaos
+School           : Chromatic
 Spell Type       : Magic
 Range            : 40 yards
 GCD              : 1.5 seconds

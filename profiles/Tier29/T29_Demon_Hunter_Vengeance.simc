@@ -1,0 +1,142 @@
+demonhunter="T29_Demon_Hunter_Vengeance"
+source=default
+spec=vengeance
+level=70
+race=blood_elf
+role=tank
+position=front
+talents=BUkAAAAAAAAAAAAAAAAAAAAAAAAQJCSSQS0QSiAJlEQ0CJSkESSJJIJJhSQAAAAA
+
+# Default consumables
+potion=elemental_potion_of_ultimate_power_3
+flask=phial_of_elemental_chaos_3
+food=fated_fortune_cookie
+augmentation=draconic
+temporary_enchant=main_hand:howling_rune_3/off_hand:howling_rune_3
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/augmentation
+actions.precombat+=/food
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/variable,name=the_hunt_ramp_in_progress,value=0
+actions.precombat+=/variable,name=elysian_decree_ramp_in_progress,value=0
+actions.precombat+=/variable,name=soul_carver_ramp_in_progress,value=0
+actions.precombat+=/variable,name=fiery_demise_with_soul_carver_in_progress,value=0
+actions.precombat+=/variable,name=fiery_demise_without_soul_carver_available,value=0
+# A 'high-roll' from Darkglare boon is any roll that gives us an 18+s reduction on Fel Dev's cooldown.
+actions.precombat+=/variable,name=darkglare_boon_high_roll,value=0
+
+# Executed every time the actor is available.
+actions=auto_attack
+actions+=/infernal_strike
+actions+=/demon_spikes,if=!buff.demon_spikes.up&!cooldown.pause_action.remains
+actions+=/fiery_brand,if=!talent.fiery_demise.enabled&!dot.fiery_brand.ticking
+actions+=/bulk_extraction
+actions+=/potion
+actions+=/use_item,slot=trinket1
+actions+=/use_item,slot=trinket2
+actions+=/run_action_list,name=the_hunt_ramp,if=variable.the_hunt_ramp_in_progress|talent.the_hunt.enabled&cooldown.the_hunt.remains<5&!dot.fiery_brand.ticking
+actions+=/run_action_list,name=elysian_decree_ramp,if=variable.elysian_decree_ramp_in_progress|talent.elysian_decree.enabled&cooldown.elysian_decree.remains<5&!dot.fiery_brand.ticking
+actions+=/run_action_list,name=soul_carver_without_fiery_demise_ramp,if=variable.soul_carver_ramp_in_progress|talent.soul_carver.enabled&cooldown.soul_carver.remains<5&!talent.fiery_demise.enabled&!dot.fiery_brand.ticking
+actions+=/run_action_list,name=fiery_demise_window_with_soul_carver,if=variable.fiery_demise_with_soul_carver_in_progress|talent.fiery_demise.enabled&talent.soul_carver.enabled&cooldown.soul_carver.up&cooldown.fiery_brand.up&cooldown.immolation_aura.up&cooldown.fel_devastation.remains<10
+actions+=/run_action_list,name=fiery_demise_window_without_soul_carver,if=variable.fiery_demise_without_soul_carver_in_progress|talent.fiery_demise.enabled&((talent.soul_carver.enabled&!cooldown.soul_carver.up)|!talent.soul_carver.enabled)&cooldown.fiery_brand.up&cooldown.immolation_aura.up&cooldown.fel_devastation.remains<10&((talent.darkglare_boon.enabled&variable.darkglare_boon_high_roll)|!talent.darkglare_boon.enabled)
+actions+=/metamorphosis,if=!buff.metamorphosis.up&!dot.fiery_brand.ticking
+actions+=/fel_devastation,if=!talent.down_in_flames.enabled
+actions+=/spirit_bomb,if=((buff.metamorphosis.up&talent.fracture.enabled&soul_fragments>=3)|soul_fragments>=4&spell_targets>1)
+actions+=/soul_cleave,if=(talent.spirit_bomb.enabled&soul_fragments<=1&spell_targets>1)|(spell_targets<2&((talent.fracture.enabled&fury>=55)|(!talent.fracture.enabled&fury>=70)|(buff.metamorphosis.up&((talent.fracture.enabled&fury>=35)|(!talent.fracture.enabled&fury>=50)))))|(!talent.spirit_bomb.enabled)&((talent.fracture.enabled&fury>=55)|(!talent.fracture.enabled&fury>=70)|(buff.metamorphosis.up&((talent.fracture.enabled&fury>=35)|(!talent.fracture.enabled&fury>=50))))
+actions+=/immolation_aura,if=(talent.fiery_demise.enabled&fury.deficit>=10&(cooldown.soul_carver.remains>15))|(!talent.fiery_demise.enabled&fury.deficit>=10)
+actions+=/felblade,if=fury.deficit>=40
+actions+=/fracture,if=(talent.spirit_bomb.enabled&(soul_fragments<=3&spell_targets>1|spell_targets<2&fury.deficit>=30))|(!talent.spirit_bomb.enabled&((buff.metamorphosis.up&fury.deficit>=45)|(buff.metamorphosis.down&fury.deficit>=30)))
+actions+=/sigil_of_flame,if=fury.deficit>=30
+actions+=/shear
+actions+=/throw_glaive
+
+actions.elysian_decree_ramp=variable,name=elysian_decree_ramp_in_progress,value=1,if=!variable.elysian_decree_ramp_in_progress
+actions.elysian_decree_ramp+=/variable,name=elysian_decree_ramp_in_progress,value=0,if=cooldown.elysian_decree.remains
+actions.elysian_decree_ramp+=/fracture,if=fury.deficit>=30
+actions.elysian_decree_ramp+=/sigil_of_flame,if=fury.deficit>=30
+actions.elysian_decree_ramp+=/shear,if=fury.deficit<=90&debuff.frailty.stack>=0
+actions.elysian_decree_ramp+=/spirit_bomb,if=soul_fragments>=4&spell_targets>1
+actions.elysian_decree_ramp+=/soul_cleave,if=(soul_fragments<=1&spell_targets>1)|(spell_targets<2)|debuff.frailty.stack>=0
+actions.elysian_decree_ramp+=/elysian_decree
+
+actions.fiery_demise_window_with_soul_carver=variable,name=fiery_demise_with_soul_carver_in_progress,value=1,if=!variable.fiery_demise_with_soul_carver_in_progress
+actions.fiery_demise_window_with_soul_carver+=/variable,name=fiery_demise_with_soul_carver_in_progress,value=0,if=cooldown.soul_carver.remains&cooldown.fiery_brand.remains&cooldown.immolation_aura.remains&cooldown.fel_devastation.remains
+# A 'high-roll' from Darkglare boon is any roll that gives us an 18+s reduction on Fel Dev's cooldown.
+actions.fiery_demise_window_with_soul_carver+=/variable,name=darkglare_boon_high_roll,op=setif,value=1,value_else=0,condition=darkglare_boon_cdr_roll>=18,if=prev_gcd.1.fel_devastation
+actions.fiery_demise_window_with_soul_carver+=/fracture,if=fury.deficit>=30&!dot.fiery_brand.ticking
+actions.fiery_demise_window_with_soul_carver+=/fiery_brand,if=!dot.fiery_brand.ticking&fury>=30
+actions.fiery_demise_window_with_soul_carver+=/fel_devastation,if=dot.fiery_brand.remains<=3
+actions.fiery_demise_window_with_soul_carver+=/immolation_aura,if=dot.fiery_brand.ticking
+actions.fiery_demise_window_with_soul_carver+=/spirit_bomb,if=soul_fragments>=4&dot.fiery_brand.remains>=4
+actions.fiery_demise_window_with_soul_carver+=/soul_carver,if=soul_fragments<=3
+actions.fiery_demise_window_with_soul_carver+=/fracture,if=soul_fragments<=3&dot.fiery_brand.remains>=5|dot.fiery_brand.remains<=5&fury<50
+actions.fiery_demise_window_with_soul_carver+=/sigil_of_flame,if=dot.fiery_brand.remains<=3&fury<50
+actions.fiery_demise_window_with_soul_carver+=/throw_glaive
+
+actions.fiery_demise_window_without_soul_carver=variable,name=fiery_demise_without_soul_carver_in_progress,value=1,if=!variable.fiery_demise_without_soul_carver_in_progress
+actions.fiery_demise_window_without_soul_carver+=/variable,name=fiery_demise_without_soul_carver_in_progress,value=0,if=cooldown.fiery_brand.remains&cooldown.immolation_aura.remains&cooldown.fel_devastation.remains
+actions.fiery_demise_window_without_soul_carver+=/variable,name=darkglare_boon_high_roll,op=setif,value=1,value_else=0,condition=darkglare_boon_cdr_roll>=18,if=prev_gcd.1.fel_devastation
+actions.fiery_demise_window_without_soul_carver+=/fracture,if=fury.deficit>=30&!dot.fiery_brand.ticking
+actions.fiery_demise_window_without_soul_carver+=/fiery_brand,if=!dot.fiery_brand.ticking&fury>=30
+actions.fiery_demise_window_without_soul_carver+=/immolation_aura,if=dot.fiery_brand.ticking
+actions.fiery_demise_window_without_soul_carver+=/spirit_bomb,if=soul_fragments>=4&dot.fiery_brand.remains>=4
+actions.fiery_demise_window_without_soul_carver+=/fracture,if=soul_fragments<=3&dot.fiery_brand.remains>=5|dot.fiery_brand.remains<=5&fury<50
+actions.fiery_demise_window_without_soul_carver+=/fel_devastation,if=dot.fiery_brand.remains<=3
+actions.fiery_demise_window_without_soul_carver+=/sigil_of_flame,if=dot.fiery_brand.remains<=3&fury<50
+
+actions.soul_carver_without_fiery_demise_ramp=variable,name=soul_carver_ramp_in_progress,value=1,if=!variable.soul_carver_ramp_in_progress
+actions.soul_carver_without_fiery_demise_ramp+=/variable,name=soul_carver_ramp_in_progress,value=0,if=cooldown.soul_carver.remains
+actions.soul_carver_without_fiery_demise_ramp+=/fracture,if=fury.deficit>=30
+actions.soul_carver_without_fiery_demise_ramp+=/sigil_of_flame,if=fury.deficit>=30
+actions.soul_carver_without_fiery_demise_ramp+=/shear,if=fury.deficit<=90&debuff.frailty.stack>=0
+actions.soul_carver_without_fiery_demise_ramp+=/spirit_bomb,if=soul_fragments>=4&spell_targets>1
+actions.soul_carver_without_fiery_demise_ramp+=/soul_cleave,if=(soul_fragments<=1&spell_targets>1)|(spell_targets<2)|debuff.frailty.stack>=0
+actions.soul_carver_without_fiery_demise_ramp+=/soul_carver
+
+actions.the_hunt_ramp=variable,name=the_hunt_ramp_in_progress,value=1,if=!variable.the_hunt_ramp_in_progress
+actions.the_hunt_ramp+=/variable,name=the_hunt_ramp_in_progress,value=0,if=cooldown.the_hunt.remains
+actions.the_hunt_ramp+=/fracture,if=fury.deficit>=30&debuff.frailty.stack<=5
+actions.the_hunt_ramp+=/sigil_of_flame,if=fury.deficit>=30
+actions.the_hunt_ramp+=/shear,if=fury.deficit<=90
+actions.the_hunt_ramp+=/spirit_bomb,if=soul_fragments>=4&spell_targets>1
+actions.the_hunt_ramp+=/soul_cleave,if=(soul_fragments<=1&spell_targets>1)|(spell_targets<2)|debuff.frailty.stack>=0
+actions.the_hunt_ramp+=/the_hunt
+
+head=windborne_hatsuburi,id=195492,bonus_id=4800/4786/1498/7187/6935,gem_id=192945
+neck=elemental_lariat,id=193001,bonus_id=8836/8840/8902/8960/8783/8782/8802/8790,gem_id=192945/192945/192945
+shoulders=skybound_avengers_ailerons,id=200347,bonus_id=4800/4786/1498
+back=decorated_commanders_cindercloak,id=195482,bonus_id=4800/4786/1498
+chest=skybound_avengers_harness,id=200342,bonus_id=4800/4786/1498,enchant_id=6625
+wrists=skybound_avengers_wristbands,id=200349,bonus_id=4800/4786/1498,gem_id=192945
+hands=skybound_avengers_grips,id=200344,bonus_id=4800/4786/1498
+waist=skybound_avengers_waistwrap,id=200348,bonus_id=4800/4786/1498,gem_id=192985
+legs=skybound_avengers_legguards,id=200346,bonus_id=4800/4786/1498,enchant_id=6496
+feet=iceclimbers_cleats,id=195509,bonus_id=4800/4786/1498
+finger1=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498,gem_id=192952,enchant_id=6556
+finger2=jeweled_signet_of_melandrus,id=134542,bonus_id=1795/6808/4786/3300,gem_id=192952,enchant_id=6556
+trinket1=manic_grieftorch,id=194308,bonus_id=4800/4786/1498
+trinket2=whispering_incarnate_icon,id=194301,bonus_id=4800/4786/1498
+main_hand=infused_stormglaives,id=195491,bonus_id=4800/4786/1498/6808,enchant_id=6649
+off_hand=infused_stormglaives,id=195491,bonus_id=4800/4786/1498/6808,enchant_id=6649
+
+# Gear Summary
+# gear_ilvl=417.69
+# gear_agility=5321
+# gear_stamina=12529
+# gear_crit_rating=3816
+# gear_haste_rating=5137
+# gear_mastery_rating=394
+# gear_versatility_rating=1823
+# gear_armor=3278
+# gear_bonus_armor=141
+# set_bonus=tier29_2pc=1
+# set_bonus=tier29_4pc=1

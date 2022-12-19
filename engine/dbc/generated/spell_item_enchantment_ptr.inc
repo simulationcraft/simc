@@ -1,5 +1,5 @@
-// Item enchantment data, wow build 10.0.2.46801
-static const std::array<item_enchantment_data_t, 4579> __ptr_spell_item_ench_data { {
+// Item enchantment data, wow build 10.0.5.47186
+static const std::array<item_enchantment_data_t, 4580> __ptr_spell_item_ench_data { {
   {   13,      0, -1,   0,   1, 2, 50,   0,   0, {   2,   0,   0 }, {    1,    0,    0 }, {      0,      0,      0 }, {  1.0000,  0.0000,  0.0000 },      0, "Sharpened II"                      },
   {   14,      0, -1,   0,   7, 8, 50,   0,   0, {   2,   0,   0 }, {    2,    0,    0 }, {      0,      0,      0 }, {  0.3637,  0.0000,  0.0000 },      0, "Sharpened III"                     },
   {   15,      0, -1,   0,  25, 0, 50,   0,   0, {   4,   0,   0 }, {    8,    0,    0 }, {      0,      0,      0 }, {  0.0720,  0.0000,  0.0000 },   2831, "Reinforced (+$k1 Armor)"           },
@@ -4381,7 +4381,7 @@ static const std::array<item_enchantment_data_t, 4579> __ptr_spell_item_ench_dat
   { 6495,      0, -7,  61,  70, 200, 0,   0,   0, {   4,   5,   0 }, {    0,    0,    0 }, {      0,     72,      0 }, {  0.2647,  0.3331,  0.0000 }, 376845, "Frosted Armor Kit |A:Professions-Icon-Quality-Tier2-Small:20:20|a" },
   { 6496,      0, -7,  61,  70, 200, 0,   0,   0, {   4,   5,   0 }, {    0,    0,    0 }, {      0,     72,      0 }, {  0.3110,  0.3904,  0.0000 }, 376847, "Frosted Armor Kit |A:Professions-Icon-Quality-Tier3-Small:20:20|a" },
   { 6498,      0,  0,   0,   0, 0, 0,   0,   0, {   3,   0,   0 }, {  100,    0,    0 }, { 382022,      0,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Earthliving"                       },
-  { 6499, 198391,  0,   0,  60, 0, 0,   0,   0, {   3,   7,   0 }, {    0,    0,    0 }, { 382958, 382957,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "$spell@spelldesc382957"            },
+  { 6499,      0,  0,   0,  60, 0, 0,   0,   0, {   3,   7,   0 }, {    0,    0,    0 }, { 382958, 382957,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "$spell@spelldesc382957"            },
   { 6500,      0, -3,  50,  62, 0, 0,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {     36,      0,      0 }, {  1.0000,  0.0000,  0.0000 },      0, "+$k1 Haste"                        },
   { 6502,      0,  0,   0,  60, 0, 0,   0,   0, {   7,   0,   0 }, {    0,    0,    0 }, { 384044,      0,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "$spell@spelldesc384044"            },
   { 6504,      0,  0,   0,  60, 0, 0,   0,   0, {   7,   0,   0 }, {    0,    0,    0 }, { 384081,      0,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "$spell@spelldesc384081"            },
@@ -4579,5 +4579,6 @@ static const std::array<item_enchantment_data_t, 4579> __ptr_spell_item_ench_dat
   { 6696,      0, -7,  61,  70, 26, 0,   0,   0, {   5,   0,   0 }, {   12,    0,    0 }, {     38,      0,      0 }, {  0.2096,  0.0000,  0.0000 },      0, "Weighted: +$k1 Attack Power |A:Professions-Icon-Quality-Tier1-Small:20:20|a" },
   { 6697,      0, -7,  61,  70, 26, 0,   0,   0, {   5,   0,   0 }, {   12,    0,    0 }, {     38,      0,      0 }, {  0.2537,  0.0000,  0.0000 },      0, "Weighted: +$k1 Attack Power |A:Professions-Icon-Quality-Tier2-Small:20:20|a" },
   { 6698,      0, -7,  61,  70, 26, 0,   0,   0, {   5,   0,   0 }, {   12,    0,    0 }, {     38,      0,      0 }, {  0.2978,  0.0000,  0.0000 },      0, "Weighted: +$k1 Attack Power |A:Professions-Icon-Quality-Tier3-Small:20:20|a" },
+  { 6721,      0,  0,   0,   0, 0, 0,   0,   0, {   0,   0,   0 }, {    0,    0,    0 }, {      0,      0,      0 }, {  0.0000,  0.0000,  0.0000 }, 400122, "10.0.5 - Generic - Storm - Weapon Enchant - High - SK" },
 } };
 

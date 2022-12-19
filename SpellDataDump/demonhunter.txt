@@ -1,4 +1,4 @@
-SimulationCraft 1002-01 for World of Warcraft 10.0.2.47067 Live (hotfix 2022-12-14/47067)
+SimulationCraft 1002-01 for World of Warcraft 10.0.2.47120 Live (hotfix 2022-12-17/47120)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -2693,7 +2693,6 @@ Effects          :
                    Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 0.50000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Sigil of Silence (204490), Sigil of Flame (204598), Sigil of Chains (204843), Sigil of Misery (207685), Elysian Decree (307046), Elysian Decree (339893), Elysian Decree (339894), Blind Faith (355894), Elysian Decree (389860)
                    Family Flags: 33
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 #6 (id=819508)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 327839 | Scaled Value: 327839 | PvP Coefficient: 1.00000 | Misc Value: 306830 | Misc Value 2: 0x2 | Target: Self (1)
 #7 (id=1034501)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
@@ -3651,7 +3650,6 @@ Attributes       : ......x. ........ ........ .......x   ........ ........ .....
 Effects          :
 #1 (id=315975)   : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
-Hotfixed         : Base Value (5 -> 3)
 Description      : You heal for $s1% of all Fire damage you deal.
 
 Name             : Charred Warblades (id=213011) [Spell Family (107)] 
@@ -3679,7 +3677,7 @@ Spell Type       : Melee
 Spell Level      : 50
 Range            : 15 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Demon Soul (163073 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2, #7), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effect#1), Burning Blood (390213 effects: #1, #2), Seething Chaos (394934 effects: #1, #2)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2, #7), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #2, #3), Burning Blood (390213 effects: #1, #2), Seething Chaos (394934 effects: #1, #2)
 Family Flags     : 16, 30, 42, 70, 72
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -4229,7 +4227,7 @@ Range            : 15 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 15 seconds
-Affecting spells : Havoc Demon Hunter (212612 effects: #3, #4), Vengeance Demon Hunter (212613 effects: #3, #4, #7)
+Affecting spells : Havoc Demon Hunter (212612 effects: #3, #4), Vengeance Demon Hunter (212613 effects: #3, #4, #7), Any Means Necessary (388114 effects: #2, #3)
 Family Flags     : 30, 32, 85
 Attributes       : ....x... ........ x.x..... .....x..   ........ .x...... ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ ........ ........ 
@@ -4666,7 +4664,6 @@ Attributes       : ....x... ........ x....... ........   ........ .x...... .....
 Effects          :
 #1 (id=483076)   : School Damage (2): chromatic
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.50000 | PvP Coefficient: 0.80000 | Radius: 10 yards | Target: Cone Front (104)
-Hotfixed         : AP Coefficient (2.7216 -> 2.5), PvP Coefficient (1 -> 0.8)
 #2 (id=1028999)  : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000
 Description      : Slash all enemies in front of you for $s1 Chaos damage, and increase the damage your Chaos Strike and Blade Dance deal to them by $320338s1% for $320338d. Deals reduced damage beyond $s2 targets.
@@ -10035,7 +10032,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.92500 | PvP Coefficient: 1.00000 | Radius: 10 yards | Target: AOE enemy (instant) (16)
 #2 (id=880360)   : Direct Heal% (136)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.60000 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.6)
 #3 (id=880382)   : Trigger Spell (64): Fodder to the Flame
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 350644 | Target: Self (1)
 Description      : Your damaging abilities have a chance to call forth a demon from the Theater of Pain for $329554d. Throw Glaive deals lethal damage to the demon, which explodes on death, dealing $s1 $@spelldesc395041 damage to nearby enemies and healing you for $s2% of your maximum health. The explosion deals reduced damage beyond 5 targets.
@@ -10610,10 +10606,8 @@ Attributes       : .......x ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=982584)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 22058 | Target: Self (1)
-Hotfixed         : Base Value (25 -> 10)
 #2 (id=982585)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 22058 | Target: Self (1)
-Hotfixed         : Base Value (50 -> 20)
 Description      : $@spelldesc370965
 
 Name             : The Hunt (id=370969) [Spell Family (107)] 
@@ -10871,12 +10865,14 @@ Effects          :
                    Family Flags: 11, 24, 33, 44, 49, 61, 72, 81, 82, 83, 86, 87, 92
 #2 (id=1031483)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.80000 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Soul Fragment (203795), Demon Blades (203796), Sigil of Silence (204490), Sigil of Flame (204598), Sigil of Chains (204843), Sigil of Misery (207685), Fel Devastation (212105), Immolation Aura (258921), Immolation Aura (258922), Elysian Decree (307046), Sinful Brand (317009), The Hunt (323639), Fodder to the Flame (329554), Fel Devastation (333110), Elysian Decree (339893), Elysian Decree (339894), The Hunt (345335), The Hunt (345396), The Hunt (345422), Fel Devastation (346503), Fodder to the Flame (350631), Blind Faith (355894), The Hunt (370965), The Hunt (370966), The Hunt (370967), The Hunt (370968), The Hunt (370969), Elysian Decree (389860), Fodder to the Flame (391430), Fel Devastation (393834)
-                   Family Flags: 33, 44, 49, 61, 67, 81, 82, 83, 87
+                   Affected Spells: Soul Fragment (203795), Demon Blades (203796), Sigil of Silence (204490), Sigil of Flame (204598), Sigil of Chains (204843), Sigil of Misery (207685), Fel Devastation (212105), Felblade (213243), Felblade (232893), Immolation Aura (258921), Immolation Aura (258922), Elysian Decree (307046), Sinful Brand (317009), The Hunt (323639), Fodder to the Flame (329554), Fel Devastation (333110), Elysian Decree (339893), Elysian Decree (339894), The Hunt (345335), The Hunt (345396), The Hunt (345422), Fel Devastation (346503), Fodder to the Flame (350631), Blind Faith (355894), The Hunt (370965), The Hunt (370966), The Hunt (370967), The Hunt (370968), The Hunt (370969), Elysian Decree (389860), Fodder to the Flame (391430), Fel Devastation (393834)
+                   Family Flags: 30, 33, 44, 49, 61, 67, 81, 82, 83, 87
+Hotfixed         : Affects Spells
 #3 (id=1031484)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.80000 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Soul Fragment (203795), Demon Blades (203796), Sigil of Silence (204490), Sigil of Flame (204598), Sigil of Chains (204843), Sigil of Misery (207685), Fel Devastation (212105), Immolation Aura (258921), Immolation Aura (258922), Elysian Decree (307046), Sinful Brand (317009), The Hunt (323639), Fodder to the Flame (329554), Fel Devastation (333110), Elysian Decree (339893), Elysian Decree (339894), The Hunt (345335), The Hunt (345396), The Hunt (345422), Fel Devastation (346503), Fodder to the Flame (350631), Blind Faith (355894), The Hunt (370965), The Hunt (370966), The Hunt (370967), The Hunt (370968), The Hunt (370969), Elysian Decree (389860), Fodder to the Flame (391430), Fel Devastation (393834)
-                   Family Flags: 33, 44, 49, 61, 67, 81, 82, 83, 87
+                   Affected Spells: Soul Fragment (203795), Demon Blades (203796), Sigil of Silence (204490), Sigil of Flame (204598), Sigil of Chains (204843), Sigil of Misery (207685), Fel Devastation (212105), Felblade (213243), Felblade (232893), Immolation Aura (258921), Immolation Aura (258922), Elysian Decree (307046), Sinful Brand (317009), The Hunt (323639), Fodder to the Flame (329554), Fel Devastation (333110), Elysian Decree (339893), Elysian Decree (339894), The Hunt (345335), The Hunt (345396), The Hunt (345422), Fel Devastation (346503), Fodder to the Flame (350631), Blind Faith (355894), The Hunt (370965), The Hunt (370966), The Hunt (370967), The Hunt (370968), The Hunt (370969), Elysian Decree (389860), Fodder to the Flame (391430), Fel Devastation (393834)
+                   Family Flags: 30, 33, 44, 49, 61, 67, 81, 82, 83, 87
+Hotfixed         : Affects Spells
 #4 (id=1034378)  : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 394486 | Target: Self (1)
 Description      : Mastery: Demonic Presence now also causes your Arcane, Fire, Frost, Nature, and Shadow damage to be dealt as Chaos instead, and increases that damage by ${$s2*((100+$394486s1)/100)}.1%.
@@ -11078,7 +11074,6 @@ Effects          :
 Description      : Reduces magic damage taken by $s1%.
 
 Name             : Extended Sigils (id=389697) [Spell Family (107), Passive] 
-Hotfixed         : Description
 Talent Entry     : Generic [tree=class, row=9, col=5, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(1000, 2000)]
 Class            : Demon Hunter
@@ -11098,7 +11093,6 @@ Effects          :
                    Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 0.50000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Sigil of Silence (204490), Sigil of Flame (204598), Sigil of Chains (204843), Sigil of Misery (207685), Elysian Decree (307046), Elysian Decree (339893), Elysian Decree (339894), Blind Faith (355894), Elysian Decree (389860)
                    Family Flags: 33
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : Increases the duration of Sigil effects by ${$s1/1000}.1 sec.
 
 Name             : Fel Flame Fortification (id=389705) [Spell Family (107), Passive] 
@@ -11430,7 +11424,6 @@ Effects          :
                    Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 0.50000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Sigil of Silence (204490), Sigil of Flame (204598), Sigil of Chains (204843), Sigil of Misery (207685), Elysian Decree (307046), Elysian Decree (339893), Elysian Decree (339894), Blind Faith (355894), Elysian Decree (389860)
                    Family Flags: 33
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 #6 (id=1033914)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 394985 | Scaled Value: 394985 | PvP Coefficient: 1.00000 | Misc Value: 306830 | Misc Value 2: 0x2 | Target: Self (1)
 #7 (id=1034461)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)

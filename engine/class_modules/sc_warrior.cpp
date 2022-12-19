@@ -8517,6 +8517,7 @@ void warrior_t::default_apl_dps_precombat()
     precombat->add_action( "battle_stance,toggle=on" );
   }
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
+  precombat->add_action( "use_item,name=algethar_puzzle_box" );
 
 }
 
@@ -8548,39 +8549,22 @@ void warrior_t::apl_fury()
 
   default_list->add_action( this, covenant.conquerors_banner, "conquerors_banner" );
 
-  default_list->add_action( "ravager,if=cooldown.avatar.remains<3" );
-
   for ( const auto& item : items )
   {
-    if ( item.name_str == "inscrutable_quantum_device" )
+    if ( item.name_str == "algethar_puzzle_box" )
     {
       default_list->add_action( "use_item,name=" + item.name_str +
-                                ",if=cooldown.recklessness.remains>10&(buff.recklessness.up|target.time_to_die<21|target.time_to_die>190|buff.bloodlust.up)" );
+                                ",if=cooldown.recklessness.remains<3|(talent.anger_management&cooldown.avatar.remains<3)" );
     }
-    else if ( item.name_str == "wakeners_frond" )
+    else if ( item.name_str == "irideus_fragment" )
     {
       default_list->add_action( "use_item,name=" + item.name_str +
-                                ",if=cooldown.recklessness.remains>10&(buff.recklessness.up|target.time_to_die<13|target.time_to_die>130)" );
+                                ",if=buff.recklessness.up" );
     }
-    else if ( item.name_str == "macabre_sheet_music" )
+    else if ( item.name_str == "manic_grieftorch" )
     {
       default_list->add_action( "use_item,name=" + item.name_str +
-                                ",if=cooldown.recklessness.remains>10&(buff.recklessness.up|target.time_to_die<25|target.time_to_die>110)" );
-    }
-    else if ( item.name_str == "overwhelming_power_crystal" )
-    {
-      default_list->add_action( "use_item,name=" + item.name_str +
-                                ",if=cooldown.recklessness.remains>10&(buff.recklessness.up|target.time_to_die<16|target.time_to_die>100)" );
-    }
-    else if ( item.name_str == "instructors_divine_bell" )
-    {
-      default_list->add_action( "use_item,name=" + item.name_str +
-                                ",if=cooldown.recklessness.remains>10&(buff.recklessness.up|target.time_to_die<10|target.time_to_die>95)" );
-    }
-    else if ( item.name_str == "flame_of_battle" )
-    {
-      default_list->add_action( "use_item,name=" + item.name_str +
-                                ",if=cooldown.recklessness.remains>10&(buff.recklessness.up|target.time_to_die<11|target.time_to_die>100)" );
+                                ",if=buff.recklessness.down&buff.avatar.down" );
     }
     else if ( item.name_str == "gladiators_badge" )
     {
@@ -8593,6 +8577,7 @@ void warrior_t::apl_fury()
         default_list->add_action( "use_item,name=" + item.name_str );
     }
   }
+  default_list->add_action( "ravager,if=cooldown.avatar.remains<3" );
 
   for ( const auto& racial_action : racial_actions )
   {
@@ -8604,11 +8589,11 @@ void warrior_t::apl_fury()
     }
     else if ( racial_action == "lights_judgment" )
     {
-      default_list->add_action( racial_action + ",if=buff.recklessness.down&debuff.siegebreaker.down" );
+      default_list->add_action( racial_action + ",if=buff.recklessness.down" );
     }
     else if ( racial_action == "bag_of_tricks" )
     {
-      default_list->add_action( racial_action + ",if=buff.recklessness.down&debuff.siegebreaker.down&buff.enrage.up" );
+      default_list->add_action( racial_action + ",if=buff.recklessness.down&buff.enrage.up" );
     }
     else if ( racial_action == "berserking" )
     {
@@ -8666,9 +8651,9 @@ void warrior_t::apl_fury()
   single_target->add_action( "whirlwind,if=spell_targets.whirlwind>1&talent.improved_whirlwind&!buff.meat_cleaver.up|raid_event.adds.in<2&talent.improved_whirlwind&!buff.meat_cleaver.up" );
   single_target->add_action( "execute,if=buff.ashen_juggernaut.up&buff.ashen_juggernaut.remains<gcd" );
   single_target->add_action( "thunderous_roar,if=buff.enrage.up&(spell_targets.whirlwind>1|raid_event.adds.in>15)" );
-  single_target->add_action( this, spec.crushing_blow, "crushing_blow,if=talent.wrath_and_fury&buff.enrage.up" );
-  single_target->add_action( "execute,if=buff.enrage.up" );
   single_target->add_action( "odyns_fury,if=buff.enrage.up&(spell_targets.whirlwind>1|raid_event.adds.in>15)&(talent.dancing_blades&buff.dancing_blades.remains<5|!talent.dancing_blades)" );
+  single_target->add_action( "execute,if=buff.enrage.up" );
+  single_target->add_action( this, spec.crushing_blow, "crushing_blow,if=talent.wrath_and_fury&buff.enrage.up" );
   single_target->add_action( "rampage,if=buff.recklessness.up|buff.enrage.remains<gcd|(rage>110&talent.overwhelming_rage)|(rage>80&!talent.overwhelming_rage)" );
   single_target->add_action( "execute" );
   single_target->add_action( this, spec.bloodbath, "bloodbath,if=buff.enrage.up&talent.reckless_abandon&!talent.wrath_and_fury" );
@@ -8714,6 +8699,35 @@ void warrior_t::apl_arms()
 
   default_list->add_action( "pummel,if=target.debuff.casting.react" );
 
+  for ( const auto& item : items )
+  {
+    if ( item.name_str == "algethar_puzzle_box" )
+    {
+      default_list->add_action( "use_item,name=" + item.name_str +
+                                ",if=cooldown.avatar.remains<3" );
+    }
+    else if ( item.name_str == "irideus_fragment" )
+    {
+      default_list->add_action( "use_item,name=" + item.name_str +
+                                ",if=buff.avatar.up" );
+    }
+    else if ( item.name_str == "manic_grieftorch" )
+    {
+      default_list->add_action( "use_item,name=" + item.name_str +
+                                ",if=!buff.avatar.up&!debuff.colossus_smash.up" );
+    }
+    else if ( item.name_str == "gladiators_badge" )
+    {
+      default_list->add_action( "use_item,name=" + item.name_str +
+                                ",if=gcd.remains=0&debuff.colossus_smash.remains>8|target.time_to_die<25" );
+    }
+    else if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
+    {
+      if ( item.slot != SLOT_WAIST )
+        default_list->add_action( "use_item,name=" + item.name_str );
+    }
+  }
+
   for ( const auto& racial_action : racial_actions )
   {
     if ( racial_action == "arcane_torrent" )
@@ -8750,9 +8764,8 @@ void warrior_t::apl_arms()
 
   //default_list->add_action( "sweeping_strikes,if=spell_targets.whirlwind>1&(cooldown.bladestorm.remains>15)" );
 
-  default_list->add_action( "call_action_list,name=execute,target_if=max:target.health.pct,if=target.health.pct>80&covenant.venthyr" );
-  default_list->add_action( "call_action_list,name=execute,target_if=min:target.health.pct,if=(talent.massacre.enabled&target.health.pct<35)|target.health.pct<20" );
   default_list->add_action( "run_action_list,name=hac,if=raid_event.adds.exists|active_enemies>2" );
+  default_list->add_action( "call_action_list,name=execute,target_if=min:target.health.pct,if=(talent.massacre.enabled&target.health.pct<35)|target.health.pct<20" );
   default_list->add_action( "run_action_list,name=single_target,if=!raid_event.adds.exists" );
 
 
@@ -8783,7 +8796,7 @@ void warrior_t::apl_arms()
   hac->add_action( "spear_of_bastion,if=(buff.test_of_might.up|!talent.test_of_might&debuff.colossus_smash.up)&raid_event.adds.in>15" );
   hac->add_action( "bladestorm,if=talent.unhinged&(buff.test_of_might.up|!talent.test_of_might&debuff.colossus_smash.up)" );
   hac->add_action( "bladestorm,if=active_enemies>1&(buff.test_of_might.up|!talent.test_of_might&debuff.colossus_smash.up)&raid_event.adds.in>30|active_enemies>1&dot.deep_wounds.remains" );
-  hac->add_action( "execute,if=active_enemies<=2&buff.hurricane.up" );
+  //hac->add_action( "execute,if=active_enemies<=2&buff.hurricane.up" );
   hac->add_action( "cleave,if=active_enemies>2|buff.merciless_bonegrinder.up&cooldown.mortal_strike.remains>gcd" );
   hac->add_action( "whirlwind,if=active_enemies>2|talent.storm_of_swords&(buff.merciless_bonegrinder.up|buff.hurricane.up)" );
   hac->add_action( "skullsplitter,if=rage<40|talent.tide_of_blood&dot.rend.remains&(buff.sweeping_strikes.up&active_enemies>=2|debuff.colossus_smash.up|buff.test_of_might.up)" );
@@ -8799,7 +8812,7 @@ void warrior_t::apl_arms()
   hac->add_action( "rend,if=active_enemies=1&dot.rend.remains<duration*0.3" );
   hac->add_action( "whirlwind,if=talent.storm_of_swords|talent.fervor_of_battle&active_enemies>1" );
   hac->add_action( "cleave,if=!talent.crushing_force" );
-  hac->add_action( "slam,if=talent.crushing_force&rage>30&(talent.fervor_of_battle&active_enemies=1|!talent.fervor_of_battle)" );
+  hac->add_action( "slam,if=talent.crushing_force&rage>30&!talent.fervor_of_battle" );
   hac->add_action( "shockwave,if=talent.sonic_boom" );
   hac->add_action( "bladestorm,if=raid_event.adds.in>30" );
   hac->add_action( "wrecking_throw" );
@@ -8819,11 +8832,11 @@ void warrior_t::apl_arms()
   single_target->add_action( "overpower,if=charges=2&(debuff.colossus_smash.down|rage.pct<25)" );
   single_target->add_action( "mortal_strike" );
   single_target->add_action( "rend,if=remains<duration*0.3" );
-  single_target->add_action( "whirlwind,if=talent.storm_of_swords" );
+  single_target->add_action( "whirlwind,if=talent.storm_of_swords|talent.fervor_of_battle&active_enemies>1" );
   single_target->add_action( "overpower,if=debuff.colossus_smash.down&rage.pct<50|rage.pct<25" );
   single_target->add_action( "whirlwind,if=buff.merciless_bonegrinder.up" );
   single_target->add_action( "cleave,if=set_bonus.tier29_2pc&!talent.crushing_force" );
-  single_target->add_action( "slam,if=rage>30" );
+  single_target->add_action( "slam,if=rage>30&!talent.fervor_of_battle" );
   single_target->add_action( "wrecking_throw" );
 }
 

@@ -91,7 +91,7 @@ actions.standard+=/heart_strike,if=rune.time_to_4<gcd
 actions.standard+=/blood_boil,if=charges_fractional>=1.1
 actions.standard+=/heart_strike,if=(rune>1&(rune.time_to_3<gcd|buff.bone_shield.stack>7))
 
-# Prioritize damange dealing on use trinkets over trinkets that give buffs
+# Prioritize damage dealing on use trinkets over trinkets that give buffs
 actions.trinkets=use_item,slot=trinket1,if=!variable.trinket_1_buffs
 actions.trinkets+=/use_item,slot=trinket2,if=!variable.trinket_2_buffs
 actions.trinkets+=/use_item,slot=trinket1,if=variable.trinket_1_buffs&(buff.dancing_rune_weapon.up|!talent.dancing_rune_weapon|cooldown.dancing_rune_weapon.remains>20)&(trinket.2.cooldown.remains|variable.trinket_2_buffs)

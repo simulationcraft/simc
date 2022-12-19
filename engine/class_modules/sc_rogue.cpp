@@ -1595,6 +1595,11 @@ public:
       animacharged_cp_proc = p()->get_proc( "Echoing Reprimand " + ab::name_str );
     }
 
+    if ( p()->buffs.cold_blood->is_affecting( &ab::data() ) )
+    {
+      cold_blood_consumed_proc = p()->get_proc( "Cold Blood " + ab::name_str );
+    }
+
     auto register_damage_buff = [ this ]( damage_buff_t* buff ) {
       if ( buff->is_affecting_direct( ab::s_data ) )
         direct_damage_buffs.push_back( buff );
@@ -1665,7 +1670,8 @@ public:
     register_consume_buff( p()->buffs.audacity, affected_by.audacity );
     register_consume_buff( p()->buffs.blindside, affected_by.blindside );
     register_consume_buff( p()->buffs.cold_blood,
-                           p()->buffs.cold_blood->is_affecting( &ab::data() ), cold_blood_consumed_proc );
+                           p()->buffs.cold_blood->is_affecting( &ab::data() ) && ab::data().id() != p()->talent.subtlety.secret_technique->id(),
+                           cold_blood_consumed_proc );
     register_consume_buff( p()->buffs.t29_outlaw_2pc, p()->buffs.t29_outlaw_2pc->is_affecting( &ab::data() ) );
     register_consume_buff( p()->buffs.t29_outlaw_4pc, p()->buffs.t29_outlaw_4pc->is_affecting( &ab::data() ) );
     register_consume_buff( p()->buffs.t29_subtlety_2pc, p()->buffs.t29_subtlety_2pc->is_affecting( &ab::data() ) );
@@ -2201,9 +2207,12 @@ public:
     {
       if ( !ab::background || consume_buff.on_background )
       {
-        consume_buff.buff->expire( consume_buff.delay );
-        if ( consume_buff.proc )
-          consume_buff.proc->occur();
+        if ( consume_buff.buff->check() )
+        {
+          consume_buff.buff->expire( consume_buff.delay );
+          if ( consume_buff.proc )
+            consume_buff.proc->occur();
+        }
       }
     }
 
@@ -4689,8 +4698,10 @@ struct secret_technique_t : public rogue_attack_t
 
     player_attack = p->get_secondary_trigger_action<secret_technique_attack_t>(
       secondary_trigger::SECRET_TECHNIQUE, "secret_technique_player", p->spec.secret_technique_attack );
+    player_attack->update_flags &= ~STATE_CRIT; // Hotfixed to snapshot in Cold Blood on delayed attacks
     clone_attack = p->get_secondary_trigger_action<secret_technique_attack_t>(
       secondary_trigger::SECRET_TECHNIQUE, "secret_technique_clones", p->spec.secret_technique_clone_attack );
+    clone_attack->update_flags &= ~STATE_CRIT; // Hotfixed to snapshot in Cold Blood on delayed clone attacks
 
     add_child( player_attack );
     add_child( clone_attack );
@@ -4702,14 +4713,32 @@ struct secret_technique_t : public rogue_attack_t
 
     int cp = cast_state( execute_state )->get_combo_points();
 
-    // Hit of the main char happens right on cast.
-    player_attack->trigger_secondary_action( execute_state->target, cp );
+    // All attacks need to snapshot the state here due to the delayed attacks snapshotting Cold Blood
+    // Hit of the main char happens right after the primary cast.
+    auto player_state = player_attack->get_state();
+    player_state->target = execute_state->target;
+    player_attack->cast_state( player_state )->set_combo_points( cp, cp );
+    player_attack->snapshot_internal( player_state, player_attack->snapshot_flags, player_attack->amount_type( player_state ) );
+    player_attack->trigger_secondary_action( player_state );
 
     // The clones seem to hit 1s and 1.3s later (no time reference in spell data though)
-    // Trigger tracking buff until first clone's damage
+    // Trigger tracking buff for APL conditions until final clone's damage
+    auto clone_state = clone_attack->get_state();
+    clone_state->target = execute_state->target;
+    clone_attack->cast_state( clone_state )->set_combo_points( cp, cp );
+    clone_attack->snapshot_internal( clone_state, clone_attack->snapshot_flags, clone_attack->amount_type( clone_state ) );
+    auto clone_state_2 = clone_attack->get_state( clone_state );
+
     p()->buffs.secret_technique->trigger( 1.3_s );
-    clone_attack->trigger_secondary_action( execute_state->target, cp, 1_s );
-    clone_attack->trigger_secondary_action( execute_state->target, cp, 1.3_s );
+    clone_attack->trigger_secondary_action( clone_state, 1_s );
+    clone_attack->trigger_secondary_action( clone_state_2, 1.3_s );
+
+    // Manually expire Cold Blood due to special handling above
+    if ( p()->buffs.cold_blood->check() )
+    {
+      p()->buffs.cold_blood->expire();
+      cold_blood_consumed_proc->occur();
+    }
   }
 };
 
@@ -5630,7 +5659,7 @@ struct echoing_reprimand_t : public rogue_attack_t
 
   echoing_reprimand_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
     rogue_attack_t( name, p, p->spell.echoing_reprimand, options_str ),
-    random_min( 0 ), random_max( 3 ) // Randomizes between 2CP and 4CP buffs
+    random_min( 0 ), random_max( p->talent.rogue.resounding_clarity->ok() ? 4 : 3 ) // Randomizes between 2CP and 4CP buffs
   {
   }
 
@@ -5644,14 +5673,21 @@ struct echoing_reprimand_t : public rogue_attack_t
       for ( buff_t* b : p()->buffs.echoing_reprimand )
         b->expire();
 
+      unsigned buff_idx = static_cast<int>( rng().range( random_min, random_max ) );
       if ( p()->talent.rogue.resounding_clarity->ok() )
       {
-        for ( buff_t* b : p()->buffs.echoing_reprimand )
-          b->trigger();
+        // 2022-12-16 -- Resounding Clarity now animacharges 2 instead of 3 additional buffs
+        // This effectively leaves one buff randomly unselected, so basically the inverse of normal
+        for ( int i = 0; i < p()->buffs.echoing_reprimand.size(); i++ )
+        {
+          if ( !p()->is_ptr() || i != buff_idx )
+          {
+            p()->buffs.echoing_reprimand[ i ]->trigger();
+          }
+        }
       }
       else
       {
-        unsigned buff_idx = static_cast<int>( rng().range( random_min, random_max ) );
         p()->buffs.echoing_reprimand[ buff_idx ]->trigger();
       }
     }
@@ -8161,6 +8197,7 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
     buffs::roll_the_bones_t* primary = static_cast<buffs::roll_the_bones_t*>( buffs.roll_the_bones );
     if ( split.size() == 1 || ( split.size() == 2 && util::str_compare_ci( split[ 1 ], "total" ) ) )
     {
+      // Return the total amount of RtB buffs regardless of duration
       return make_fn_expr( name_str, [ this, primary ]() {
         double n_buffs = 0;
         for ( auto buff : primary->buffs )
@@ -8170,6 +8207,7 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
     }
     else if ( split.size() == 2 && util::str_compare_ci( split[ 1 ], "longer" ) )
     {
+      // Return the total amount of proc RtB buffs that are of longer duration than the primary buff
       return make_fn_expr( name_str, [ this, primary ]() {
         double n_buffs = 0;
         for ( auto buff : primary->buffs )
@@ -8179,6 +8217,7 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
     }
     else if ( split.size() == 2 && util::str_compare_ci( split[ 1 ], "shorter" ) )
     {
+      // Return the total amount of proc RtB buffs that are of shorter duration than the primary buff
       return make_fn_expr( name_str, [ this, primary ]() {
         double n_buffs = 0;
         for ( auto buff : primary->buffs )
@@ -8188,6 +8227,7 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
     }
     else if ( split.size() == 2 && util::str_compare_ci( split[ 1 ], "normal" ) )
     {
+      // Return the total amount of base RtB buffs associated with the primary buff
       return make_fn_expr( name_str, [ this, primary ]() {
         double n_buffs = 0;
         for ( auto buff : primary->buffs )
@@ -8195,28 +8235,43 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
         return n_buffs;
       } );
     }
-    else if ( split.size() == 3 && ( util::str_compare_ci( split[ 1 ], "will_lose" ) ||
-                                     util::str_compare_ci( split[ 1 ], "will_retain" ) ) )
+    else if ( ( util::str_compare_ci( split[ 1 ], "will_lose" ) ||
+                util::str_compare_ci( split[ 1 ], "will_retain" ) ) )
     {
-      util::string_view buff_name = split[ 2 ];
-      auto it = range::find_if( primary->buffs, [buff_name]( const buff_t* buff ) { 
-        return util::str_compare_ci( buff->name_str, buff_name ); } );
-
-      if ( it == primary->buffs.end() )
+      if ( split.size() == 3 )
       {
-        throw std::invalid_argument( fmt::format( "Invalid rtb_buffs.{} buff name given '{}'.", split[ 1 ], buff_name ) );
+        // Return if we will lose or retain a specific buff
+        util::string_view buff_name = split[ 2 ];
+        auto it = range::find_if( primary->buffs, [ buff_name ]( const buff_t* buff ) {
+          return util::str_compare_ci( buff->name_str, buff_name ); } );
+
+        if ( it == primary->buffs.end() )
+        {
+          throw std::invalid_argument( fmt::format( "Invalid rtb_buffs.{} buff name given '{}'.", split[ 1 ], buff_name ) );
+        }
+        else
+        {
+          const buff_t* rtb_buff = ( *it );
+          if ( util::str_compare_ci( split[ 1 ], "will_lose" ) )
+            return make_fn_expr( name_str, [ this, primary, rtb_buff ]() {
+              return rtb_buff->check() && !rtb_buff->remains_gt( primary->remains() );
+          } );
+          else
+            return make_fn_expr( name_str, [ this, primary, rtb_buff ]() {
+              return rtb_buff->check() && rtb_buff->remains_gt( primary->remains() );
+          } );
+        }
       }
       else
       {
-        const buff_t* rtb_buff = ( *it );
-        if( util::str_compare_ci( split[ 1 ], "will_lose" ) )
-          return make_fn_expr( name_str, [ this, primary, rtb_buff ]() {
-            return rtb_buff->check() && !rtb_buff->remains_gt( primary->remains() );
-          } );
-        else
-          return make_fn_expr( name_str, [ this, primary, rtb_buff ]() {
-            return rtb_buff->check() && rtb_buff->remains_gt( primary->remains() );
-          } );
+        // Return the total count of buffs we will lose or retain if no buff is specified
+        bool will_retain = util::str_compare_ci( split[ 1 ], "will_retain" );
+        return make_fn_expr( name_str, [ this, primary, will_retain ]() {
+          double n_buffs = 0;
+          for ( auto buff : primary->buffs )
+            n_buffs += ( buff->check() && ( will_retain == buff->remains_gt( primary->remains() ) ) );
+          return n_buffs;
+        } );
       }
     }
   }

@@ -1,5 +1,5 @@
-// Spell text, wow build 10.0.2.47067
-static const std::array<spelltext_data_t, 19193> __spelltext_data { {
+// Spell text, wow build 10.0.2.47120
+static const std::array<spelltext_data_t, 19194> __spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -17413,7 +17413,7 @@ static const std::array<spelltext_data_t, 19193> __spelltext_data { {
   { 384584, "$@spelldesc383611", "Suffering ${$w1*($d/$t1)} Nature damage over $d.", 0 },
   { 384590, "While active, you automatically assume your Visage when you leave combat or after Soaring.\r\n\r\nActivate to disable this effect.", 0, "Racial" },
   { 384594, "Taking damage has a chance to increase your primary stat by $384598s1 and grant $384598s2 armor to yourself and $384605i closest allies for $384598d.", 0, 0 },
-  { 384598, "$@spelldesc384594", "Strength increased by $w1. Armor increased by $w2.", 0 },
+  { 384598, "$@spelldesc384594", "$pri increased by $w1. Armor increased by $w2.", 0 },
   { 384605, "$@spelldesc384594", "Armor increased by $w1.", 0 },
   { 384607, "Throw at a location, attaching itself to the surface or a nearby enemy. Detonates after $s1 sec, swapping your position with itself and any attached enemy.\r\n\r\nItem quality affects the distance this can be thrown. Only usable outdoors.", 0, 0 },
   { 384608, "Throw at a location, attaching itself to the surface or a nearby enemy. Detonates after $s1 sec, swapping your position with itself and any attached enemy.\r\n\r\nItem quality affects the distance this can be thrown. Only usable outdoors.", 0, 0 },
@@ -19193,24 +19193,15 @@ static const std::array<spelltext_data_t, 19193> __spelltext_data { {
   { 398396, "$@spelldesc386578", 0, 0 },
   { 399370, "$@spelldesc370867", "Your next Blue spell deals $s1% more damage.", 0 },
   { 400006, "Living Flame restores $s1% of its mana cost when striking an enemy.", 0, 0 },
+  { 400698, "+$s1 Sparkle.", "+$w1 Sparkle.", 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.0.2.47067
-static constexpr std::array<hotfix::client_hotfix_entry_t, 11> __spelltext_hotfix_data { {
-  {      71,  0, "Hardened by battle, all damage taken is reduced by $s3%, your Stamina is increased by $s2% and your Armor is increased by $s1% of your Strength.", "Hardened by battle, your Stamina is increased by $s2% and your Armor is increased by $s1% of your Strength." },
-  {  245013,  0, "All damage taken is reduced by $s2% and your Armor is increased by $s1%.\r\n\r\nStamina increased by $s3%.", "Your Armor is increased by $s1% and Stamina increased by $s3%." },
-  {  300346,  0, "Moonfire, Soothe, Remove Corruption, and Rebirth are usable in Bear Form. Multiple uses of Ironfur may overlap.\r\n\r\nAll damage taken in Bear Form reduced by $s2%.", "Moonfire, Soothe, Remove Corruption, and Rebirth are usable in Bear Form. Multiple uses of Ironfur may overlap." },
-  {  353367,  0, "Stamina increased by $s1%.\r\n\r\nArmor increased by $s2%.$?a358934[\r\n\r\nAll damage taken reduced by $s3%.][]", "Stamina increased by $s1%.\r\n\r\nArmor increased by $s2%." },
-  {  374721,  0, "Stamina increased by $s1%.\r\nDamage taken reduced by $s2%.", "Stamina increased by $s1%." },
-  {  377462,  0, "Designate another player to bond with, becoming their Guardian for $382281d.\r\n\r\nWhile bonded, you and your ally gain $382280s1 Versatility and restore $382280s2 health per second. If you are within 15 yards of one another, these bonuses are increased. $?(a137012|a137024|a137031|a137032|a137029|a137039|a356810)[][\r\n\r\n|CFF808080Valid only for healer specializations.|R]\r\n", "Designate another player to bond with, becoming their Guardian for $394457d.\r\n\r\nWhile bonded, you and your ally gain $382280s1 Versatility and restore $382280s2 health per second. If you are within 15 yards of one another, these bonuses are increased. $?(a137012|a137024|a137031|a137032|a137029|a137039|a356810)[][\r\n\r\n|CFF808080Valid only for healer specializations.|R]\r\n" },
-  {  389697,  0, "Increases the duration of Sigil effects by ${$s1/1000} sec.", "Increases the duration of Sigil effects by ${$s1/1000}.1 sec." },
-  {  390655,  1, "Taking damage as well as dealing harmful and helpful abilities have a chance to shield you for $390764w1 for $390785d.", "Taking damage as well as dealing harmful and helpful abilities have a chance to shield you for $w1 for $390785d." },
-  {  390835,  1, "Your harmful spells and abilities have a chance to deal an extra $390764w3 fire damage.", "Your harmful spells and abilities have a chance to deal an extra $w1 fire damage." },
-  {  390869,  1, "Your helpful and harmful abilities have a chance to heal you or an ally near your target for $390764w4.", "Your helpful and harmful abilities have a chance to heal you or an ally near your target for $w1." },
-  {  390899,  1, "Your harmful spells and abilities have a chance to grant you $390764w5 mastery for $390936d.", "Your harmful spells and abilities have a chance to grant you $w1 mastery for $390936d." },
+// spelltext hotfix entries, wow build 10.0.2.47120
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelltext_hotfix_data { {
+  {  384598,  1, "Strength increased by $w1. Armor increased by $w2.", "$pri increased by $w1. Armor increased by $w2." },
 } };
 
-// Spell description variables, wow build 10.0.2.47067
+// Spell description variables, wow build 10.0.2.47120
 static const std::array<spelldesc_vars_data_t, 365> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$pvp=$?a134735[${1.1}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<pvp>*$<weal>}\r\n" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -19579,7 +19570,7 @@ static const std::array<spelldesc_vars_data_t, 365> __spelldesc_vars_data { {
   {  394354, "$damage=${($AP*1.0)*(1+$@versadmg)}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.0.2.47067
+// spelldesc_vars hotfix entries, wow build 10.0.2.47120
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 

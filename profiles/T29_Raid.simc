@@ -8,7 +8,7 @@ T29_Death_Knight_Frost_DW.simc
 T29_Death_Knight_Unholy.simc
 
 T29_Demon_Hunter_Havoc.simc
-# T29_Demon_Hunter_Vengeance.simc
+T29_Demon_Hunter_Vengeance.simc
 
 T29_Druid_Balance.simc
 T29_Druid_Feral.simc
@@ -47,6 +47,6 @@ T29_Warlock_Affliction.simc
 T29_Warlock_Demonology.simc
 T29_Warlock_Destruction.simc
 
-# T29_Warrior_Arms.simc
-# T29_Warrior_Fury.simc
+T29_Warrior_Arms.simc
+T29_Warrior_Fury.simc
 T29_Warrior_Protection.simc

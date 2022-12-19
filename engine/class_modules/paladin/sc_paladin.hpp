@@ -812,11 +812,11 @@ struct execution_sentence_debuff_t : public buff_t
   {
     buff_t::expire_override( stacks, duration );
 
-    accumulated_damage = 0.0;
-    extended_count = 0;
-
     paladin_t* paladin = debug_cast<paladin_t*>( source );
     paladin -> trigger_es_explosion( player );
+
+    accumulated_damage = 0.0;
+    extended_count = 0;
   }
 
   void accumulate_damage( const action_state_t* s )
@@ -1166,7 +1166,6 @@ public:
   virtual void assess_damage( result_amount_type typ, action_state_t* s ) override
   {
     ab::assess_damage( typ, s );
-
     paladin_td_t* td = this -> td( s -> target );
     if ( td -> debuff.execution_sentence -> check() )
     {

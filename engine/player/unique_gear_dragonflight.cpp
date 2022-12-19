@@ -1684,8 +1684,11 @@ void whispering_incarnate_icon( special_effect_t& effect )
   if ( proc_buff_id )
   {
     auto proc_buff_data = effect.player->find_spell( proc_buff_id );
-    auto proc_buff = create_buff<stat_buff_t>( effect.player, proc_buff_data );
-    proc_buff->set_stat_from_effect( 1, effect.driver()->effectN( 2 ).average( effect.item ) );
+    auto proc_buff      = create_buff<stat_buff_t>( effect.player, proc_buff_data );
+    double amount       = effect.driver()->effectN( 2 ).average( effect.item );
+
+    for ( auto& s : proc_buff->stats )
+      s.amount = amount;
 
     effect.spell_id = buff_id;
     effect.custom_buff = proc_buff;
@@ -1877,54 +1880,58 @@ void decoration_of_flame( special_effect_t& effect )
 
   struct decoration_of_flame_damage_t : public proc_spell_t
   {
-    buff_t* shield;
-    double value;
+     buff_t* shield;
+     double value;
+     unsigned cap;
 
-    decoration_of_flame_damage_t( const special_effect_t& e )
-      : proc_spell_t( "decoration_of_flame", e.player, e.player->find_spell( 377449 ), e.item ),
-        shield( nullptr ),
-        value( e.player->find_spell( 394393 )->effectN( 2 ).average( e.item ) )
-    {
+     decoration_of_flame_damage_t( const special_effect_t& e )
+       : proc_spell_t( "decoration_of_flame", e.player, e.player->find_spell( 377449 ), e.item ),
+         shield( nullptr ),
+         value( e.player->find_spell( 394393 )->effectN( 2 ).average( e.item ) ),
+         cap( as<int>( e.driver()->effectN( 3 ).base_value() ) )
+     {
        background = true;
        split_aoe_damage = true;
        base_dd_min = base_dd_max = e.player->find_spell( 394393 )->effectN( 1 ).average( e.item );
-       aoe = as<int>( e.driver()->effectN( 3 ).base_value() );
+       aoe = -1;
        radius = 10;
        shield = make_buff<absorb_buff_t>( e.player, "decoration_of_flame_shield", e.player->find_spell( 382058 ) );
-    }
+     }
 
-    double composite_da_multiplier( const action_state_t* s ) const override
+    std::vector<player_t*>& target_list() const override
     {
-      double m = proc_spell_t::composite_da_multiplier( s );
+      target_cache.is_valid = false;
 
-     // Damage increases by 10% per target based on in game testing
-      m *= 1.0 + ( n_targets() - 1 ) * 0.1;
+      auto& tl = proc_spell_t::target_list();
 
-      return m;
+      tl.erase( std::remove_if( tl.begin(), tl.end(), [ this ]( player_t* ) {
+        return rng().roll( sim->dragonflight_opts.decoration_of_flame_miss_chance );
+      } ), tl.end() );
+
+      return tl;
     }
 
-    int n_targets() const override
-    { 
-      double chance = player -> sim -> dragonflight_opts.decoration_of_flame_miss_chance;
-      if ( rng().roll( chance ) )
-      {
-        return aoe - as<int>( rng().range( 0, aoe ) );
-      }
-      return aoe; 
-    }
+     double composite_da_multiplier( const action_state_t* s ) const override
+     {
+       double m = proc_spell_t::composite_da_multiplier( s );
 
-    void execute() override
-    {
-      proc_spell_t::execute();
+       // Damage increases by 10% per target based on in game testing
+       m *= 1.0 + ( std::min( cap, s->n_targets ) - 1 ) * 0.1;
 
-      shield->trigger( -1, value * ( 1.0 + ( num_targets_hit - 1 ) * 0.05 ) );
-    }
+       return m;
+     }
+
+     void execute() override
+     {
+       proc_spell_t::execute();
+
+       shield->trigger( -1, value * ( 1.0 + ( num_targets_hit - 1 ) * 0.05 ) );
+     }
   };
 
   action_t* action = create_proc_action<decoration_of_flame_damage_t>( "decoration_of_flame", effect );
-  buff->set_stack_change_callback( [ action ](buff_t*, int, int ) 
-  {
-    action -> execute();
+  buff->set_stack_change_callback( [ action ]( buff_t*, int, int ) {
+    action->execute();
   } );
 }
 
@@ -2601,6 +2608,8 @@ void blazebinders_hoof(special_effect_t& effect)
   effect.player->special_effects.push_back( bound_by_fire_and_blaze );
   effect.proc_chance_ = 1.01;
   effect.custom_buff = buff;
+  // since the on-use effect doesn't use the rppm, set to 0 so trinket expressions correctly determine it has a cooldown
+  effect.ppm_ = 0;
 
   auto cb = new dbc_proc_callback_t( effect.player, *bound_by_fire_and_blaze );
   cb -> deactivate();
@@ -3154,10 +3163,7 @@ void elemental_lariat( special_effect_t& effect )
 void flaring_cowl( special_effect_t& effect )
 {
   auto damage = create_proc_action<generic_aoe_proc_t>( "flaring_cowl", effect, "flaring_cowl", 377079, true );
-  // damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
-  // TODO: currently bugged and only doing damage as if the item was at the base ilevel of 350
-  damage->base_dd_min = damage->base_dd_max =
-      effect.player->dbc->random_property( 350 ).damage_replace_stat * effect.driver()->effectN( 1 ).m_coefficient();
+  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
 
   auto period = effect.trigger()->effectN( 1 ).period();
   effect.player->register_combat_begin( [ period, damage ]( player_t* p ) {
@@ -3293,7 +3299,7 @@ void allied_wristguards_of_companionship( special_effect_t& effect )
   timespan_t period = effect.driver()->effectN( 1 ).period();
 
   effect.player->register_combat_begin( [ buff, period ]( player_t* p ) {
-    int allies = 1 + p->sim->dragonflight_opts.allied_wristguards_allies;
+    int allies = p->sim->dragonflight_opts.allied_wristguards_allies;
 
     buff->trigger( p->sim->rng().range( 1, allies ) );
 

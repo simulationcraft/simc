@@ -3008,22 +3008,20 @@ stat_buff_t* stat_buff_t::set_stat( stat_e s, double a, const stat_check_fn& c )
 
 stat_buff_t* stat_buff_t::add_stat_from_effect( size_t i, double a, const stat_check_fn& c )
 {
-  auto do_error = [ this, i ]( std::string_view msg ) {
+  auto do_error = [ this, i ]( std::string_view msg ) -> stat_buff_t* {
     sim->error( "{} cannot add stat from effect#{}: {}", name(), i, msg );
+    return this;
   };
 
   if ( i > data().effect_count() )
-  {
-    do_error( "index out of bounds" );
-    return this;
-  }
+    return do_error( "index out of bounds" );
 
   auto eff = data().effectN( i );
-  stat_e stat = STAT_NONE;
 
   if ( eff.subtype() == A_MOD_STAT )
   {
     auto misc = eff.misc_value1();
+    stat_e stat = STAT_NONE;
 
     if ( misc >= 0 )
       stat = static_cast<stat_e>( misc + 1 );
@@ -3031,19 +3029,23 @@ stat_buff_t* stat_buff_t::add_stat_from_effect( size_t i, double a, const stat_c
       stat = STAT_ALL;
     else if ( misc == -2 )
       stat = player->convert_hybrid_stat( STAT_STR_AGI_INT );
+
+    if ( stat != STAT_NONE )
+      return add_stat( stat, a, c );
   }
   else if ( eff.subtype() == A_MOD_RATING )
   {
-    stat = util::translate_rating_mod( data().effectN( i ).misc_value1() );
+    auto mods = util::translate_all_rating_mod( data().effectN( i ).misc_value1() );
+    if ( !mods.empty() )
+    {
+      for ( const auto& s : mods )
+        add_stat( s, a, c );
+
+      return this;
+    }
   }
 
-  if ( stat == STAT_NONE )
-  {
-    do_error( "STAT_NONE" );
-    return this;
-  }
-
-  return add_stat( stat, a, c );
+  return do_error( "STAT_NONE" );
 }
 
 stat_buff_t* stat_buff_t::set_stat_from_effect( size_t i, double a, const stat_check_fn& c )

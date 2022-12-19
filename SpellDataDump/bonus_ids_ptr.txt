@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.46741 Live (hotfix 2022-11-27/46741)
+SimulationCraft 1002-01 for World of Warcraft 10.0.2.47120 Live (hotfix 2022-12-17/47120)
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
 bonus_id={ 3 }, suffix={ of Power }, socket={ 2 }, stats={ 100% StrAgiInt [0.5263] }
@@ -4126,11 +4126,11 @@ bonus_id={ 7171 }, ilevel={ 6 @plvl 1 - 61 @plvl 70 }
 bonus_id={ 7172 }, quality={ epic }, ilevel={ 10 @plvl 1 - 61 @plvl 70 }
 bonus_id={ 7173 }, quality={ epic }, ilevel={ 27 @plvl 1 - 200 @plvl 70 }
 bonus_id={ 7174 }, ilevel={ 168 @plvl 0 - 168 @plvl 0 }
-bonus_id={ 7175 }, ilevel={ 19 @plvl 0 - 19 @plvl 1 }
-bonus_id={ 7176 }, ilevel={ 28 @plvl 0 - 28 @plvl 1 }
-bonus_id={ 7177 }, ilevel={ 39 @plvl 0 - 39 @plvl 1 }
-bonus_id={ 7178 }, ilevel={ 48 @plvl 0 - 48 @plvl 1 }
-bonus_id={ 7179 }, ilevel={ 54 @plvl 0 - 54 @plvl 1 }
+bonus_id={ 7175 }, ilevel={ 29 @plvl 0 - 29 @plvl 1 }
+bonus_id={ 7176 }, ilevel={ 65 @plvl 0 - 65 @plvl 1 }
+bonus_id={ 7177 }, ilevel={ 94 @plvl 0 - 94 @plvl 1 }
+bonus_id={ 7178 }, ilevel={ 127 @plvl 0 - 127 @plvl 1 }
+bonus_id={ 7179 }, ilevel={ 163 @plvl 0 - 163 @plvl 1 }
 bonus_id={ 7180 }, ilevel={ 117 @plvl 0 - 117 @plvl 0 }
 bonus_id={ 7181 }, ilevel={ 129 @plvl 0 - 129 @plvl 0 }
 bonus_id={ 7182 }, ilevel={ 151 @plvl 0 - 151 @plvl 0 }
@@ -4654,3 +4654,6 @@ bonus_id={ 9136 }, quality={ epic }
 bonus_id={ 9156 }, ilevel={ 206 @plvl 45 - 327 @plvl 80 }
 bonus_id={ 9232 }, ilevel={ 249 @plvl 60 - 340 @plvl 72 }
 bonus_id={ 9233 }, quality={ rare }, ilevel={ 21 @plvl 1 - 236 @plvl 70 }
+bonus_id={ 9234 }, base_ilevel={ 424 }
+bonus_id={ 9236 }, quality={ rare }, ilevel={ 252 @plvl 60 - 353 @plvl 72 }
+bonus_id={ 9237 }, effects={ Griftah's All-Purpose Embellishing Powder (id=400698, index=0, type=equip) }

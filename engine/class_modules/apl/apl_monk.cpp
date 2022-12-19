@@ -210,10 +210,11 @@ namespace monk_apl
     // ---------------------------------
     // Blackout Combo
     pre->add_action( "variable,name=boc_count,op=set,value=0", "Blackout Combo" );
-    pre->add_action( "variable,op=set,name=rotation_selection,value=0", "Rotation Selection" );
-    pre->add_action( "variable,op=set,name=rotation_selection,value=1,if=(talent.charred_passions.enabled|talent.dragonfire_brew.enabled)&talent.salsalabims_strength.enabled" );
-    pre->add_action( "variable,op=set,name=rotation_selection,value=2,if=talent.charred_passions.enabled&talent.salsalabims_strength.enabled&talent.blackout_combo.enabled" );
-    pre->add_action( "variable,op=set,name=rotation_selection,value=3-variable.rotation_selection" );
+    // To account for some strange behaviour, these are in combat, and not strictly pre-combat.
+    def->add_action( "variable,op=set,name=rotation_selection,value=0", "Rotation Selection" );
+    def->add_action( "variable,op=set,name=rotation_selection,value=1,if=(talent.charred_passions.enabled|talent.dragonfire_brew.enabled)&talent.salsalabims_strength.enabled" );
+    def->add_action( "variable,op=set,name=rotation_selection,value=2,if=(talent.charred_passions.enabled|talent.dragonfire_brew.enabled)&talent.salsalabims_strength.enabled&talent.blackout_combo.enabled" );
+    def->add_action( "variable,op=set,name=rotation_selection,value=3-variable.rotation_selection" );
 
     // ---------------------------------
     // BEGIN ACTIONS
@@ -323,17 +324,15 @@ namespace monk_apl
     // Name: Blackout Combo Salsalabim's Strength Charred Passions [Shadowboxing Treads or high haste Fluidity of Motion]
     // Basic Sequence: Blackout Kick Breath of Fire x x Blackout Kick Keg Smash x x
     // Fluidity of Motion Sequence: Blackout Kick Breath of Fire x Blackout Kick Keg Smash x
-    rotation_boc->add_action( "variable,name=boc_count,op=add,value=1,if=prev.blackout_kick",
+    rotation_boc->add_action( "blackout_kick",
       "Name: Blackout Combo Salsalabim's Strength Charred Passions [Shadowboxing Treads or high haste Fluidity of Motion]" );
-    rotation_boc->add_action( "variable,name=time_to_scheduled_ks,op=set,value=cooldown.blackout_kick.duration_expected*(1-(variable.boc_count)%%2)+cooldown.blackout_kick.remains+1" );
-    rotation_boc->add_action( "blackout_kick" );
     rotation_boc->add_action( "rising_sun_kick,if=talent.rising_sun_kick.enabled" );
-    rotation_boc->add_action( "keg_smash,if=buff.blackout_combo.up&variable.boc_count%%2=0" );
-    rotation_boc->add_action( "breath_of_fire,if=buff.blackout_combo.up&variable.boc_count%%2=1" );
+    rotation_boc->add_action( "breath_of_fire,if=buff.blackout_combo.up" );
+    rotation_boc->add_action( "keg_smash,if=buff.blackout_combo.up" );
     rotation_boc->add_action( "exploding_keg,if=talent.exploding_keg.enabled" );
     rotation_boc->add_action( "rushing_jade_wind,if=buff.rushing_jade_wind.down&talent.rushing_jade_wind.enabled" );
     rotation_boc->add_action( "black_ox_brew,if=energy+energy.regen*(variable.time_to_scheduled_ks+execute_time)>=65&talent.black_ox_brew.enabled" );
-    rotation_boc->add_action( "keg_smash,if=cooldown.keg_smash.charges_fractional>1&cooldown.keg_smash.full_recharge_time<=variable.time_to_scheduled_ks&energy+energy.regen*(variable.time_to_scheduled_ks+execute_time)>=80" );
+    rotation_boc->add_action( "keg_smash,if=cooldown.keg_smash.charges_fractional>1.5" );
     rotation_boc->add_action( "spinning_crane_kick,if=energy+energy.regen*(variable.time_to_scheduled_ks+execute_time)>=65&active_enemies>1" );
     rotation_boc->add_action( "tiger_palm,if=energy+energy.regen*(variable.time_to_scheduled_ks+execute_time)>=65&active_enemies=1&!buff.blackout_combo.up" );
     rotation_boc->add_action( "celestial_brew,if=talent.celestial_brew.enabled&!buff.blackout_combo.up" );
@@ -365,10 +364,10 @@ namespace monk_apl
     // Basic Sequence: Keg Smash Breath of Fire x x x x x
     rotation_chp_dfb->add_action( "breath_of_fire,if=talent.charred_passions.enabled&buff.charred_passions.remains<1.5|talent.dragonfire_brew.enabled",
       "Name: Salsalabim's Strength Charred Passions / Dragonfire Brew" );
+    rotation_chp_dfb->add_action( "rushing_jade_wind,if=buff.rushing_jade_wind.down&talent.rushing_jade_wind.enabled" );
     rotation_chp_dfb->add_action( "blackout_kick" );
     rotation_chp_dfb->add_action( "keg_smash" );
     rotation_chp_dfb->add_action( "exploding_keg,if=talent.exploding_keg.enabled" );
-    rotation_chp_dfb->add_action( "rushing_jade_wind,if=buff.rushing_jade_wind.down&talent.rushing_jade_wind.enabled" );
     rotation_chp_dfb->add_action( "black_ox_brew,if=energy+energy.regen*(variable.time_to_scheduled_ks+execute_time)>=65&talent.black_ox_brew.enabled" );
     rotation_chp_dfb->add_action( "rising_sun_kick" );
     rotation_chp_dfb->add_action( "spinning_crane_kick,if=energy+energy.regen*(cooldown.keg_smash.remains+execute_time)>=65&active_enemies>1" );

@@ -60,6 +60,7 @@ void devastation( player_t* p )
   default_->add_action( "potion,if=buff.dragonrage.up|fight_remains<35" );
   default_->add_action( "variable,name=next_dragonrage,value=cooldown.dragonrage.remains<?(cooldown.eternity_surge.remains-2*gcd.max)<?(cooldown.fire_breath.remains-gcd.max)", "Variable that evaluates when next dragonrage is by working out the maximum between the dragonrage cd and your empowers, ignoring CDR effect estimates." );
   default_->add_action( "variable,name=r1_cast_time,value=1.3*spell_haste", "Rank 1 empower spell cast time TODO: multiplier should be 1.0 but 1.3 results in more dps for EBF builds" );
+  default_->add_action( "invoke_external_buff,name=power_infusion,if=buff.dragonrage.up&!buff.power_infusion.up", "Invoke External Power Infusions if they're available during dragonrage" );
   default_->add_action( "call_action_list,name=trinkets" );
   default_->add_action( "run_action_list,name=aoe,if=spell_targets.pyre>=3" );
   default_->add_action( "run_action_list,name=st" );
@@ -77,7 +78,7 @@ void devastation( player_t* p )
   st->add_action( "firestorm,if=!buff.dragonrage.up&debuff.shattering_star_debuff.down|buff.snapfire.up", "Hard cast only outside of SS and DR windows, always spend snapfire procs" );
   st->add_action( "living_flame,if=buff.burnout.up&buff.essence_burst.stack<buff.essence_burst.max_stack&essence<essence.max-1", "Spend burnout procs without overcapping resources" );
   st->add_action( "azure_strike,if=buff.dragonrage.up&(essence<3&!buff.essence_burst.up|(talent.shattering_star&cooldown.shattering_star.remains<=(buff.essence_burst.max_stack-buff.essence_burst.stack)*gcd.max))", "Ensure we clip Disintegrate inside DR even with our fillers, Pool 1-2 GCDs before SS is up inside DR" );
-  st->add_action( "disintegrate,chain=1,early_chain_if=buff.dragonrage.up&ticks>=2,interrupt_if=buff.dragonrage.up&ticks>=2,if=buff.dragonrage.up|(!talent.shattering_star|cooldown.shattering_star.remains>6|essence>essence.max-1|buff.essence_burst.stack==buff.essence_burst.max_stack)", "In DR chain/clip after the 3rd damage tick, Outside of DR pool 6 seconds before SS unless it would result in overcapping resources TODO: revisit pooling conditions" );
+  st->add_action( "disintegrate,chain=1,early_chain_if=evoker.use_early_chaining&buff.dragonrage.up&ticks>=2,interrupt_if=buff.dragonrage.up&ticks>=2&(evoker.use_clipping|cooldown.fire_breath.up|cooldown.eternity_surge.up),if=buff.dragonrage.up|(!talent.shattering_star|cooldown.shattering_star.remains>6|essence>essence.max-1|buff.essence_burst.stack==buff.essence_burst.max_stack)", "In DR chain/clip after the 3rd damage tick, Outside of DR pool 6 seconds before SS unless it would result in overcapping resources TODO: revisit pooling conditions" );
   st->add_action( "deep_breath,if=!buff.dragonrage.up&spell_targets.deep_breath>1" );
   st->add_action( "living_flame" );
 
