@@ -1,4 +1,4 @@
-SimulationCraft 1002-01 for World of Warcraft 10.0.2.47213 Live (hotfix 2022-12-20/47213, git build dragonflight 4009687ece)
+SimulationCraft 1002-01 for World of Warcraft 10.0.2.47213 Live (hotfix 2022-12-20/47213, git build  , no-networking)
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -12285,7 +12285,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1012584)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (3 -> 2)
 Description      : Echoing Reprimand Animacharges $m1 additional combo $Lpoint:points;.
 
 Name             : Thistle Tea (id=381623) [Spell Family (8)] 
@@ -14441,13 +14442,15 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1030552)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Numbing Poison (5760), Wound Poison (8679), Wound Poison (8680), Deadly Poison (113780), Crippling Poison (115196), Instant Poison (315584), Instant Poison (315585), Slaughter Poison (323660), Amplifying Poison (381664), Amplifying Poison (383414), Deadly Poison (394324), Deadly Poison (394325), Instant Poison (394326), Wound Poison (394327), Amplifying Poison (394328)
                    Family Flags: 16, 28, 68, 83
+Hotfixed         : Base Value (15 -> 10)
 #2 (id=1030553)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Deadly Poison (113780), Instant Poison (315584), Instant Poison (315585), Slaughter Poison (323660), Deadly Poison (394324), Deadly Poison (394325), Instant Poison (394326)
                    Family Flags: 16
+Hotfixed         : Base Value (15 -> 10)
 Description      : Increases the damage of your weapon poisons by $s1%.
 
 Name             : Atrophic Poison (id=392388) [Spell Family (8)] 
