@@ -272,6 +272,7 @@ void fire( player_t* p )
   combustion_cooldowns->add_action( "berserking,if=buff.combustion.up" );
   combustion_cooldowns->add_action( "fireblood" );
   combustion_cooldowns->add_action( "ancestral_call" );
+  combustion_cooldowns->add_action( "invoke_external_buff,name=power_infusion,if=!buff.power_infusion.up" );
   combustion_cooldowns->add_action( "time_warp,if=talent.temporal_warp&buff.exhaustion.up" );
   combustion_cooldowns->add_action( "use_item,effect_name=gladiators_badge" );
   combustion_cooldowns->add_action( "use_item,name=irideus_fragment" );
