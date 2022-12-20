@@ -3358,6 +3358,9 @@ struct blade_rush_t : public rogue_attack_t
 
       return m;
     }
+
+    bool procs_main_gauche() const override
+    { return true; }
   };
 
   blade_rush_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
@@ -3366,9 +3369,6 @@ struct blade_rush_t : public rogue_attack_t
     execute_action = p->get_background_action<blade_rush_attack_t>( "blade_rush_attack" );
     execute_action->stats = stats;
   }
-
-  bool procs_main_gauche() const override
-  { return true; }
 };
 
 // Cold Blood ===============================================================
@@ -5659,7 +5659,7 @@ struct echoing_reprimand_t : public rogue_attack_t
 
   echoing_reprimand_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
     rogue_attack_t( name, p, p->spell.echoing_reprimand, options_str ),
-    random_min( 0 ), random_max( p->talent.rogue.resounding_clarity->ok() ? 4 : 3 ) // Randomizes between 2CP and 4CP buffs
+    random_min( 0 ), random_max( 3 ) // Randomizes between 2CP and 4CP buffs
   {
   }
 
@@ -5673,21 +5673,18 @@ struct echoing_reprimand_t : public rogue_attack_t
       for ( buff_t* b : p()->buffs.echoing_reprimand )
         b->expire();
 
-      unsigned buff_idx = static_cast<int>( rng().range( random_min, random_max ) );
       if ( p()->talent.rogue.resounding_clarity->ok() )
       {
         // 2022-12-16 -- Resounding Clarity now animacharges 2 instead of 3 additional buffs
-        // This effectively leaves one buff randomly unselected, so basically the inverse of normal
-        for ( int i = 0; i < p()->buffs.echoing_reprimand.size(); i++ )
+        // This was accomplished by simply removing the chance to generate a 5 CP buff
+        for ( int i = random_min; i < random_max; i++ )
         {
-          if ( !p()->is_ptr() || i != buff_idx )
-          {
-            p()->buffs.echoing_reprimand[ i ]->trigger();
-          }
+          p()->buffs.echoing_reprimand[ i ]->trigger();
         }
       }
       else
       {
+        unsigned buff_idx = static_cast<int>( rng().range( random_min, random_max ) );
         p()->buffs.echoing_reprimand[ buff_idx ]->trigger();
       }
     }
@@ -7384,6 +7381,7 @@ void actions::rogue_action_t<Base>::trigger_find_weakness( const action_state_t*
   if ( !ab::result_is_hit( state->result ) )
     return;
 
+  // Subtlety duration-triggered Find Weakness applications do not require the talent
   if ( !( p()->talent.rogue.find_weakness->ok() || duration > timespan_t::zero() ) )
     return;
 
