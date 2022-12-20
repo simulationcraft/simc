@@ -645,6 +645,7 @@ void subtlety_df( player_t* p )
 
   cds->add_action( "shadow_dance,use_off_gcd=1,if=!buff.shadow_dance.up&buff.shuriken_tornado.up&buff.shuriken_tornado.remains<=3.5", "Cooldowns  Use Dance off-gcd before the first Shuriken Storm from Tornado comes in." );
   cds->add_action( "symbols_of_death,use_off_gcd=1,if=buff.shuriken_tornado.up&buff.shuriken_tornado.remains<=3.5", "(Unless already up because we took Shadow Focus) use Symbols off-gcd before the first Shuriken Storm from Tornado comes in." );
+  cds->add_action( "vanish,if=buff.danse_macabre.stack>3&combo_points<=2", "Vanish for Shadowstrike with Danse Macabre at adaquate stacks" );
   cds->add_action( "cold_blood,if=!talent.secret_technique&combo_points>=5", "Cold Blood on 5 combo points when not playing Secret Technique" );
   cds->add_action( "flagellation,target_if=max:target.time_to_die,if=variable.snd_condition&combo_points>=5&target.time_to_die>10" );
   cds->add_action( "pool_resource,for_next=1,if=talent.shuriken_tornado.enabled&!talent.shadow_focus.enabled", "Pool for Tornado pre-SoD with ShD ready when not running SF." );
