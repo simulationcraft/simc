@@ -18638,7 +18638,7 @@ static const std::array<spelltext_data_t, 19194> __spelltext_data { {
   { 392301, "You may Lifebloom two targets at once, but Lifebloom's healing is reduced by $s1%.", 0, 0 },
   { 392302, "Wild Growth has a $h% chance to cause your next Rejuvenation or Regrowth to apply to $s1 additional $Lally:allies; within $189877s1 yards of the target.", 0, 0 },
   { 392303, "$@spelldesc392302", "Your next Rejuvenation or Regrowth will apply to $392302s1 additional $Lally:allies; within $w1 yards of the target.", 0 },
-  { 392315, "Rejuvenation healing has a $s1% chance to create a new Rejuvenation on a nearby target.", 0, 0 },
+  { 392315, "Rejuvenation healing has a ${$s1}.1% chance to create a new Rejuvenation on a nearby target.", 0, 0 },
   { 392325, "When Lifebloom blooms, up to $s1 targets within your Efflorescence are healed for $392329s1.", 0, 0 },
   { 392329, "$@spelldesc392325", 0, 0 },
   { 392343, "Drink a weak alcoholic beverage from the horn. As is tradition.", "Buzzed.", 0 },
@@ -19197,7 +19197,8 @@ static const std::array<spelltext_data_t, 19194> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 10.0.2.47187
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelltext_hotfix_data { {
+  {  392315,  0, "Rejuvenation healing has a $s1% chance to create a new Rejuvenation on a nearby target.", "Rejuvenation healing has a ${$s1}.1% chance to create a new Rejuvenation on a nearby target." },
 } };
 
 // Spell description variables, wow build 10.0.2.47187
