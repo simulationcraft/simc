@@ -2670,7 +2670,7 @@ void primal_ritual_shell( special_effect_t& effect )
 // Double damage bonus from behind, not in spell data anywhere
 void spinerippers_fang( special_effect_t& effect )
 {
-  auto action = create_proc_action<generic_proc_t>( "Cataclysmic Punch", effect, "rip_spine",
+  auto action = create_proc_action<generic_proc_t>( "rip_spine", effect, "rip_spine",
                                                     effect.driver()->effectN( 1 ).trigger() );
   
   double damage = effect.driver()->effectN( 1 ).average( effect.item );
