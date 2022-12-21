@@ -2839,7 +2839,7 @@ void static_charged_scale(special_effect_t& effect)
 {
   auto buff_spell = effect.player -> find_spell( 392128 );
   auto buff = create_buff<stat_buff_t>( effect.player, buff_spell );
-  buff -> add_stat( STAT_HASTE_RATING, effect.driver()->effectN( 1 ).average( effect.item ) );
+  buff -> set_stat( STAT_HASTE_RATING, effect.driver()->effectN( 1 ).average( effect.item ) );
 
   effect.custom_buff = buff;
   new dbc_proc_callback_t( effect.player, effect );
