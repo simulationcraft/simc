@@ -2830,6 +2830,21 @@ void grals_discarded_tooth( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Static Charged Scale
+// 391612 Driver
+// 392127 Damage
+// 392128 Buff
+// Todo: Implement self damage?
+void static_charged_scale(special_effect_t& effect)
+{
+  auto buff_spell = effect.player -> find_spell( 392128 );
+  auto buff = create_buff<stat_buff_t>( effect.player, buff_spell );
+  buff -> add_stat( STAT_HASTE_RATING, effect.driver()->effectN( 1 ).average( effect.item ) );
+
+  effect.custom_buff = buff;
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -3603,6 +3618,7 @@ void register_special_effects()
   register_special_effect( 383817, items::bushwhackers_compass );
   register_special_effect( 392237, items::seasoned_hunters_trophy );
   register_special_effect( 374233, items::grals_discarded_tooth );
+  register_special_effect( 391612, items::static_charged_scale );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );  // bronzed grip wrappings embellishment
