@@ -104,6 +104,6 @@ finger1=seal_of_diurnas_chosen,id=195480,bonus_id=6652/8783/8784/7936/7937/4800/
 finger2=jeweled_signet_of_melandrus,id=134542,bonus_id=1594/657/3178/7981,gem_id=192958,enchant=devotion_of_critical_strike_3
 trinket1=windscar_whetstone,id=137486,bonus_id=1594/657/3178/7981
 trinket2=manic_grieftorch,id=194308,bonus_id=7977/8807
-main_hand=crux_of_blind_faith,id=201995,bonus_id=6652/8783/8784/7936/7937/6808/4786/1643,enchant_id=sophic_devotion_3
+main_hand=crux_of_blind_faith,id=201995,bonus_id=6652/8783/8784/7936/7937/6808/4786/1643,enchant=sophic_devotion_3
 
 save=T29_Druid_Guardian.simc
