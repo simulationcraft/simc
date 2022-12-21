@@ -2710,7 +2710,8 @@ void paladin_t::create_buffs()
 
   buffs.aspiration_of_divinity = make_buff<stat_buff_t>( this, "aspiration_of_divinity", find_spell( 385417 ) )
     ->set_pct_buff_type( specialization() == PALADIN_HOLY ? STAT_PCT_BUFF_INTELLECT : STAT_PCT_BUFF_STRENGTH )
-    ->modify_default_value( talents.aspiration_of_divinity->effectN( 1 ).percent() );
+    ->modify_default_value( talents.aspiration_of_divinity->effectN( 1 ).percent() )
+    ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
 
   // Covenants
   buffs.vanquishers_hammer = make_buff( this, "vanquishers_hammer", covenant.necrolord )->set_cooldown( 0_ms )
