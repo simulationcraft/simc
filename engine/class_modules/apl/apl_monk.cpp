@@ -210,10 +210,11 @@ namespace monk_apl
     // ---------------------------------
     // Blackout Combo
     pre->add_action( "variable,name=boc_count,op=set,value=0", "Blackout Combo" );
-    pre->add_action( "variable,op=set,name=rotation_selection,value=0", "Rotation Selection" );
-    pre->add_action( "variable,op=set,name=rotation_selection,value=1,if=(talent.charred_passions.enabled|talent.dragonfire_brew.enabled)&talent.salsalabims_strength.enabled" );
-    pre->add_action( "variable,op=set,name=rotation_selection,value=2,if=talent.charred_passions.enabled&talent.salsalabims_strength.enabled&talent.blackout_combo.enabled" );
-    pre->add_action( "variable,op=set,name=rotation_selection,value=3-variable.rotation_selection" );
+    // To account for some strange behaviour, these are in combat, and not strictly pre-combat.
+    def->add_action( "variable,op=set,name=rotation_selection,value=0", "Rotation Selection" );
+    def->add_action( "variable,op=set,name=rotation_selection,value=1,if=(talent.charred_passions.enabled|talent.dragonfire_brew.enabled)&talent.salsalabims_strength.enabled" );
+    def->add_action( "variable,op=set,name=rotation_selection,value=2,if=(talent.charred_passions.enabled|talent.dragonfire_brew.enabled)&talent.salsalabims_strength.enabled&talent.blackout_combo.enabled" );
+    def->add_action( "variable,op=set,name=rotation_selection,value=3-variable.rotation_selection" );
 
     // ---------------------------------
     // BEGIN ACTIONS
@@ -273,6 +274,7 @@ namespace monk_apl
     // Name: Niuzao + Weapons of Order / Niuzao + Call to Arms
     cooldowns_niuzao_woo->add_action( "weapons_of_order,if=talent.weapons_of_order.enabled",
       "Name: Niuzao + Weapons of Order / Niuzao + Call to Arms" );
+    cooldowns_niuzao_woo->add_action( "invoke_external_buff,name=power_infusion,if=buff.weapons_of_order.remains<=20" );
     cooldowns_niuzao_woo->add_action( "invoke_niuzao_the_black_ox,if=talent.invoke_niuzao_the_black_ox.enabled&buff.weapons_of_order.remains<=16&talent.weapons_of_order.enabled" );
     cooldowns_niuzao_woo->add_action( "invoke_niuzao_the_black_ox,if=talent.invoke_niuzao_the_black_ox.enabled&!talent.weapons_of_order.enabled" );
     cooldowns_niuzao_woo->add_action( "purifying_brew,if=talent.purifying_brew.enabled&stagger.amounttototalpct>=0.7&!buff.blackout_combo.up" );
@@ -298,6 +300,7 @@ namespace monk_apl
     cooldowns_improved_niuzao_woo->add_action( "purifying_brew,if=talent.purifying_brew.enabled&(time-action.purifying_brew.last_used>=20+4*0.05-time+action.invoke_niuzao_the_black_ox.last_used%variable.pb_in_window&time-action.invoke_niuzao_the_black_ox.last_used<=20+4*0.05)" );
     cooldowns_improved_niuzao_woo->add_action( "purifying_brew,use_off_gcd=1,if=talent.purifying_brew.enabled&(variable.pb_in_window=0&20+4*0.05-time+action.invoke_niuzao_the_black_ox.last_used<1&20+4*0.05-time+action.invoke_niuzao_the_black_ox.last_used>0)" );
     cooldowns_improved_niuzao_woo->add_action( "weapons_of_order,if=talent.weapons_of_order.enabled" );
+    cooldowns_improved_niuzao_woo->add_action( "invoke_external_buff,name=power_infusion,if=buff.weapons_of_order.remains<=20" );
     cooldowns_improved_niuzao_woo->add_action( "purifying_brew,if=talent.purifying_brew.enabled&cooldown.invoke_niuzao_the_black_ox.remains<=3.5&time-action.purifying_brew.last_used>=3.5+cooldown.invoke_niuzao_the_black_ox.remains" );
     cooldowns_improved_niuzao_woo->add_action( "invoke_niuzao_the_black_ox,if=talent.invoke_niuzao_the_black_ox.enabled&time-action.purifying_brew.last_used<=5" );
     cooldowns_improved_niuzao_woo->add_action( "purifying_brew,if=talent.purifying_brew.enabled&cooldown.purifying_brew.full_recharge_time*2<=cooldown.invoke_niuzao_the_black_ox.remains-3.5" );
@@ -312,6 +315,7 @@ namespace monk_apl
     cooldowns_improved_niuzao_cta->add_action( "purifying_brew,use_off_gcd=1,if=talent.purifying_brew.enabled&(variable.pb_in_window=0&20+4*0.05-time+action.invoke_niuzao_the_black_ox.last_used<1&20+4*0.05-time+action.invoke_niuzao_the_black_ox.last_used>0)" );
     cooldowns_improved_niuzao_cta->add_action( "purifying_brew,if=talent.purifying_brew.enabled&cooldown.weapons_of_order.remains<=3.5&time-action.purifying_brew.last_used>=3.5+cooldown.weapons_of_order.remains" );
     cooldowns_improved_niuzao_cta->add_action( "weapons_of_order,if=talent.weapons_of_order.enabled&time-action.purifying_brew.last_used<=5" );
+    cooldowns_improved_niuzao_cta->add_action( "invoke_external_buff,name=power_infusion,if=buff.weapons_of_order.remains<=20" );
     cooldowns_improved_niuzao_cta->add_action( "purifying_brew,if=talent.purifying_brew.enabled&cooldown.invoke_niuzao_the_black_ox.remains<=3.5&time-action.purifying_brew.last_used>=3.5+cooldown.invoke_niuzao_the_black_ox.remains&buff.weapons_of_order.remains<=30-17" );
     cooldowns_improved_niuzao_cta->add_action( "invoke_niuzao_the_black_ox,if=talent.invoke_niuzao_the_black_ox.enabled&buff.weapons_of_order.remains<=30-17&action.purifying_brew.last_used>action.weapons_of_order.last_used+10+2*0.05" );
     cooldowns_improved_niuzao_cta->add_action( "purifying_brew,if=talent.purifying_brew.enabled&cooldown.purifying_brew.full_recharge_time*2<=cooldown.weapons_of_order.remains-3.5&cooldown.purifying_brew.full_recharge_time*2<=cooldown.invoke_niuzao_the_black_ox.remains-3.5" );
@@ -323,17 +327,15 @@ namespace monk_apl
     // Name: Blackout Combo Salsalabim's Strength Charred Passions [Shadowboxing Treads or high haste Fluidity of Motion]
     // Basic Sequence: Blackout Kick Breath of Fire x x Blackout Kick Keg Smash x x
     // Fluidity of Motion Sequence: Blackout Kick Breath of Fire x Blackout Kick Keg Smash x
-    rotation_boc->add_action( "variable,name=boc_count,op=add,value=1,if=prev.blackout_kick",
+    rotation_boc->add_action( "blackout_kick",
       "Name: Blackout Combo Salsalabim's Strength Charred Passions [Shadowboxing Treads or high haste Fluidity of Motion]" );
-    rotation_boc->add_action( "variable,name=time_to_scheduled_ks,op=set,value=cooldown.blackout_kick.duration_expected*(1-(variable.boc_count)%%2)+cooldown.blackout_kick.remains+1" );
-    rotation_boc->add_action( "blackout_kick" );
     rotation_boc->add_action( "rising_sun_kick,if=talent.rising_sun_kick.enabled" );
-    rotation_boc->add_action( "keg_smash,if=buff.blackout_combo.up&variable.boc_count%%2=0" );
-    rotation_boc->add_action( "breath_of_fire,if=buff.blackout_combo.up&variable.boc_count%%2=1" );
+    rotation_boc->add_action( "breath_of_fire,if=buff.blackout_combo.up" );
+    rotation_boc->add_action( "keg_smash,if=buff.blackout_combo.up" );
     rotation_boc->add_action( "exploding_keg,if=talent.exploding_keg.enabled" );
     rotation_boc->add_action( "rushing_jade_wind,if=buff.rushing_jade_wind.down&talent.rushing_jade_wind.enabled" );
     rotation_boc->add_action( "black_ox_brew,if=energy+energy.regen*(variable.time_to_scheduled_ks+execute_time)>=65&talent.black_ox_brew.enabled" );
-    rotation_boc->add_action( "keg_smash,if=cooldown.keg_smash.charges_fractional>1&cooldown.keg_smash.full_recharge_time<=variable.time_to_scheduled_ks&energy+energy.regen*(variable.time_to_scheduled_ks+execute_time)>=80" );
+    rotation_boc->add_action( "keg_smash,if=cooldown.keg_smash.charges_fractional>1.5" );
     rotation_boc->add_action( "spinning_crane_kick,if=energy+energy.regen*(variable.time_to_scheduled_ks+execute_time)>=65&active_enemies>1" );
     rotation_boc->add_action( "tiger_palm,if=energy+energy.regen*(variable.time_to_scheduled_ks+execute_time)>=65&active_enemies=1&!buff.blackout_combo.up" );
     rotation_boc->add_action( "celestial_brew,if=talent.celestial_brew.enabled&!buff.blackout_combo.up" );
@@ -365,10 +367,10 @@ namespace monk_apl
     // Basic Sequence: Keg Smash Breath of Fire x x x x x
     rotation_chp_dfb->add_action( "breath_of_fire,if=talent.charred_passions.enabled&buff.charred_passions.remains<1.5|talent.dragonfire_brew.enabled",
       "Name: Salsalabim's Strength Charred Passions / Dragonfire Brew" );
+    rotation_chp_dfb->add_action( "rushing_jade_wind,if=buff.rushing_jade_wind.down&talent.rushing_jade_wind.enabled" );
     rotation_chp_dfb->add_action( "blackout_kick" );
     rotation_chp_dfb->add_action( "keg_smash" );
     rotation_chp_dfb->add_action( "exploding_keg,if=talent.exploding_keg.enabled" );
-    rotation_chp_dfb->add_action( "rushing_jade_wind,if=buff.rushing_jade_wind.down&talent.rushing_jade_wind.enabled" );
     rotation_chp_dfb->add_action( "black_ox_brew,if=energy+energy.regen*(variable.time_to_scheduled_ks+execute_time)>=65&talent.black_ox_brew.enabled" );
     rotation_chp_dfb->add_action( "rising_sun_kick" );
     rotation_chp_dfb->add_action( "spinning_crane_kick,if=energy+energy.regen*(cooldown.keg_smash.remains+execute_time)>=65&active_enemies>1" );
@@ -607,6 +609,7 @@ namespace monk_apl
 
     // Storm, Earth and Fire Cooldowns
     cd_sef->add_action( "summon_white_tiger_statue,if=pet.xuen_the_white_tiger.active", "Storm, Earth and Fire Cooldowns" );
+    cd_sef->add_action( "invoke_external_buff,name=power_infusion,if=pet.xuen_the_white_tiger.active" );
     cd_sef->add_action( "invoke_xuen_the_white_tiger,if=!variable.hold_xuen&talent.bonedust_brew&cooldown.bonedust_brew.remains<=5&(active_enemies<3&chi>=3|active_enemies>=3&chi>=2)|fight_remains<25" );
     cd_sef->add_action( "invoke_xuen_the_white_tiger,if=!variable.hold_xuen&!talent.bonedust_brew&(cooldown.rising_sun_kick.remains<2)&chi>=3" );
     cd_sef->add_action( "storm_earth_and_fire,if=talent.bonedust_brew&(fight_remains<30&cooldown.bonedust_brew.remains<4&chi>=4|buff.bonedust_brew.up|!spinning_crane_kick.max&active_enemies>=3&cooldown.bonedust_brew.remains<=2&chi>=2)&(pet.xuen_the_white_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>cooldown.storm_earth_and_fire.full_recharge_time)" );
@@ -663,6 +666,7 @@ namespace monk_apl
 
     // Serenity Cooldowns
     cd_serenity->add_action( "summon_white_tiger_statue,if=pet.xuen_the_white_tiger.active", "Serenity Cooldowns" );
+    cd_serenity->add_action( "invoke_external_buff,name=power_infusion,if=pet.xuen_the_white_tiger.active" );
     cd_serenity->add_action( "invoke_xuen_the_white_tiger,if=!variable.hold_xuen&talent.bonedust_brew&cooldown.bonedust_brew.remains<=5|fight_remains<25" );
     cd_serenity->add_action( "invoke_xuen_the_white_tiger,if=!variable.hold_xuen&!talent.bonedust_brew&(cooldown.rising_sun_kick.remains<2)|fight_remains<25" );
 

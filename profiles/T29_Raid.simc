@@ -30,7 +30,7 @@ T29_Monk_Windwalker.simc
 T29_Monk_Windwalker_SEF.simc
 
 T29_Paladin_Protection.simc
-# T29_Paladin_Retribution.simc
+T29_Paladin_Retribution.simc
 
 T29_Priest_Shadow.simc
 
@@ -47,6 +47,6 @@ T29_Warlock_Affliction.simc
 T29_Warlock_Demonology.simc
 T29_Warlock_Destruction.simc
 
-# T29_Warrior_Arms.simc
-# T29_Warrior_Fury.simc
+T29_Warrior_Arms.simc
+T29_Warrior_Fury.simc
 T29_Warrior_Protection.simc

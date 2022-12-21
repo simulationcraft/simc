@@ -2667,7 +2667,8 @@ void paladin_t::create_buffs()
 
   buffs.aspiration_of_divinity = make_buff<stat_buff_t>( this, "aspiration_of_divinity", find_spell( 385417 ) )
     ->set_pct_buff_type( specialization() == PALADIN_HOLY ? STAT_PCT_BUFF_INTELLECT : STAT_PCT_BUFF_STRENGTH )
-    ->modify_default_value( talents.aspiration_of_divinity->effectN( 1 ).percent() );
+    ->modify_default_value( talents.aspiration_of_divinity->effectN( 1 ).percent() )
+    ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
 
   // Covenants
   buffs.vanquishers_hammer = make_buff( this, "vanquishers_hammer", covenant.necrolord )->set_cooldown( 0_ms )
@@ -2678,7 +2679,7 @@ void paladin_t::create_buffs()
 
 std::string paladin_t::default_potion() const
 {
-  std::string retribution_pot = ( true_level > 50 ) ? "spectral_strength" : "disabled";
+  std::string retribution_pot = ( true_level > 60 ) ? "elemental_potion_of_ultimate_power_3" : "disabled";
 
   std::string protection_pot = ( true_level > 50 ) ? "spectral_strength" : "disabled";
 
@@ -2701,7 +2702,7 @@ std::string paladin_t::default_potion() const
 
 std::string paladin_t::default_food() const
 {
-  std::string retribution_food = ( true_level > 50 ) ? "feast_of_gluttonous_hedonism" : "disabled";
+  std::string retribution_food = ( true_level > 50 ) ? "fated_fortune_cookie" : "disabled";
 
   std::string protection_food = ( true_level > 50 ) ? "feast_of_gluttonous_hedonism" : "disabled";
 
@@ -2724,7 +2725,7 @@ std::string paladin_t::default_food() const
 
 std::string paladin_t::default_flask() const
 {
-  std::string retribution_flask = ( true_level > 50 ) ? "spectral_flask_of_power" : "disabled";
+  std::string retribution_flask = ( true_level > 60 ) ? "phial_of_tepid_versatility_3" : "disabled";
 
   std::string protection_flask = ( true_level > 50 ) ? "spectral_flask_of_power" : "disabled";
 
@@ -2747,7 +2748,7 @@ std::string paladin_t::default_flask() const
 
 std::string paladin_t::default_rune() const
 {
-  return ( true_level > 50 ) ? "veiled" : "disabled";
+  return ( true_level > 50 ) ? "draconic_augment_rune" : "disabled";
 }
 
 // paladin_t::default_temporary_enchant ================================
@@ -2759,10 +2760,10 @@ std::string paladin_t::default_temporary_enchant() const
     case PALADIN_PROTECTION:
       return "main_hand:shaded_sharpening_stone";
     case PALADIN_RETRIBUTION:
-      return "main_hand:shaded_sharpening_stone";
+      return "main_hand:howling_rune_3";
 
     default:
-      return "main_hand:shadowcore_oil";
+      return "main_hand:howling_rune_3";
   }
 }
 

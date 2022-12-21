@@ -1,4 +1,4 @@
-SimulationCraft 1002-01 for World of Warcraft 10.0.2.47120 Live (hotfix 2022-12-17/47120)
+SimulationCraft 1002-01 for World of Warcraft 10.0.2.47213 Live (hotfix 2022-12-20/47213, git build  , no-networking)
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -1277,7 +1277,8 @@ Attributes       : ........ ........ ........ ...x....   ........ ..x..... ...x.
                  : Allow While Sitting (27), No Threat (42), Exclude Caster (51), Ignore Line of Sight (66), Not an Action (92), Treat As Periodic (121), Do Not Display Range (126), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Charmed (261), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=44468)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.47000 | PvP Coefficient: 1.20000 | Radius: 0 - 40 yards | Target: Custom (18) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.47000 | PvP Coefficient: 1.38000 | Radius: 0 - 40 yards | Target: Custom (18) -> AOE friendly (31)
+Hotfixed         : PvP Coefficient (1.2 -> 1.38)
 Description      : Heals an injured nearby raid or party member.
 
 Name             : Water Shield (id=52127) [Spell Family (11)] 
@@ -1723,9 +1724,11 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Include In Advanced Combat Log (72), DoT Stacking Rule (103), Aura Never Bounces (148), Spell Haste Affects Periodic (173), Vehicle Immunity Category (218), Periodic Can Crit (265), Aura Points On Client (268), Heal Prediction (280), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=55127)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.70000 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.70000 | PvP Coefficient: 1.15000 | Target: Friend (21)
+Hotfixed         : PvP Coefficient (1 -> 1.15)
 #2 (id=55128)    : Apply Aura (6) | Periodic Heal (8): every 3 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.22000 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.22000 | PvP Coefficient: 1.15000 | Target: Friend (21)
+Hotfixed         : PvP Coefficient (1 -> 1.15)
 Description      : Restorative waters wash over a friendly target, healing them for $s1 and an additional $o2 over $d.
 Tooltip          : Heals $w2 every $t2 seconds.
 
@@ -3112,7 +3115,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Doesn't Reset Swing Timer if Instant (217), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=132332)   : School Damage (2): elemental
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.75000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.75000 | PvP Coefficient: 0.85000 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1 -> 0.85)
 Description      : Harnesses the raw power of the elements, dealing $s1 Elemental damage and increasing your Critical Strike or Haste by $118522s1% or Mastery by ${$173184s1*$168534bc1}% for $118522d.$?s137041[
 
 If Lava Burst is known, Elemental Blast replaces Lava Burst and gains $394152s2 additional $Lcharge:charges;.][]
@@ -3283,7 +3287,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=140233)   : School Damage (2): elemental
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.75000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.75000 | PvP Coefficient: 0.85000 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1 -> 0.85)
 Description      : $@spelldesc117014
 
 Name             : Block (id=123831) [Passive, Hidden] 
@@ -3523,15 +3528,18 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179725)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 16 | Scaled Value: 16 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 12.5 | Scaled Value: 12.5 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Shield (192109), Liquid Magma (192231), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Icefury (210714), Feral Lunge (215802), Icefury Overload (219271), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst Overload (285466), Earthquake Overload (298765), Echoing Shock (320125), Chain Harvest (320752), Fae Transfusion (328928), Fire Nova (333974), Fire Nova (333977), Lashing Flames (334046), Hailstorm (334195), Hailstorm (334196), Ice Strike (342240), Stormflurry (344357), Ascendance (344548), Earth Shock Overload (381725), Magma Eruption (383061), Doom Winds (384352), Magma Eruption (395349)
                    Family Flags: 39
+Hotfixed         : Base Value (16 -> 12.5)
 #2 (id=191038)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 16 | Scaled Value: 16 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 12.5 | Scaled Value: 12.5 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Shield (192109), Liquid Magma (192231), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Icefury (210714), Feral Lunge (215802), Icefury Overload (219271), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst Overload (285466), Earthquake Overload (298765), Echoing Shock (320125), Chain Harvest (320752), Fae Transfusion (328928), Fire Nova (333974), Fire Nova (333977), Lashing Flames (334046), Hailstorm (334195), Hailstorm (334196), Ice Strike (342240), Stormflurry (344357), Ascendance (344548), Earth Shock Overload (381725), Magma Eruption (383061), Doom Winds (384352), Magma Eruption (395349)
                    Family Flags: 39
+Hotfixed         : Base Value (16 -> 12.5)
 #3 (id=191039)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 16 | Scaled Value: 16 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 12.5 | Scaled Value: 12.5 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (16 -> 12.5)
 #4 (id=191040)   : Apply Aura (6) | Override Spell Power per Attack Power% (366)
                    Base Value: 101 | Scaled Value: 101 | PvP Coefficient: 1.00000 | Target: Self (1)
 #5 (id=191041)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -3565,7 +3573,8 @@ Effects          :
                    Affected Spells: Elemental Blast (117014)
                    Family Flags: 98
 #13 (id=1032431)  : Apply Aura (6) | Unknown(531)
-                   Base Value: 16 | Scaled Value: 16 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 12.5 | Scaled Value: 12.5 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (16 -> 12.5)
 #14 (id=1039898)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -17 | Scaled Value: -17 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Flame Shock (188389), Frost Shock (196840)
@@ -13448,7 +13457,8 @@ Effects          :
 #3 (id=1002732)  : Dummy (3)
                    Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 1.00000 | Target: Unknown(25)
 #4 (id=1002733)  : Dummy (3)
-                   Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000 | Target: Unknown(25)
+                   Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 0.50000 | Target: Unknown(25)
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #5 (id=1033574)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Unknown(25)
 Description      : Blast your target with a Primordial Wave, dealing $375984s1 Shadow damage and apply Flame Shock to an enemy, or $?a137039[heal an ally for $375985s1 and apply Riptide to them][heal an ally for $375985s1].

@@ -1,4 +1,4 @@
-SimulationCraft 1002-01 for World of Warcraft 10.0.2.47120 Live (hotfix 2022-12-17/47120)
+SimulationCraft 1002-01 for World of Warcraft 10.0.2.47213 Live (hotfix 2022-12-20/47213, git build  , no-networking)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -10549,7 +10549,8 @@ Attributes       : ....x... ........ ..x..... ........   ........ ........ .....
                  : Is Ability (4), Do Not Sheath (18), Not In Spellbook Until Learned (269), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=982578)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 3.68550 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 3.68550 | PvP Coefficient: 0.80000 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1 -> 0.8)
 #2 (id=982579)   : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=982580)   : Trigger Spell (64): The Hunt
@@ -10631,7 +10632,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Extra Initial Period (169), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Not In Spellbook Until Learned (269), Bypass Visibility Check (320), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=982586)   : Apply Aura (6) | Periodic Damage (3): nature every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.61480 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.61480 | PvP Coefficient: 0.80000 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1 -> 0.8)
 Description      : $@spelldesc370965
 Tooltip          : Suffering $w1 $@spelldesc395042 damage every $t1 sec.
 
@@ -10867,12 +10869,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.80000 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Soul Fragment (203795), Demon Blades (203796), Sigil of Silence (204490), Sigil of Flame (204598), Sigil of Chains (204843), Sigil of Misery (207685), Fel Devastation (212105), Felblade (213243), Felblade (232893), Immolation Aura (258921), Immolation Aura (258922), Elysian Decree (307046), Sinful Brand (317009), The Hunt (323639), Fodder to the Flame (329554), Fel Devastation (333110), Elysian Decree (339893), Elysian Decree (339894), The Hunt (345335), The Hunt (345396), The Hunt (345422), Fel Devastation (346503), Fodder to the Flame (350631), Blind Faith (355894), The Hunt (370965), The Hunt (370966), The Hunt (370967), The Hunt (370968), The Hunt (370969), Elysian Decree (389860), Fodder to the Flame (391430), Fel Devastation (393834)
                    Family Flags: 30, 33, 44, 49, 61, 67, 81, 82, 83, 87
-Hotfixed         : Affects Spells
 #3 (id=1031484)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.80000 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Soul Fragment (203795), Demon Blades (203796), Sigil of Silence (204490), Sigil of Flame (204598), Sigil of Chains (204843), Sigil of Misery (207685), Fel Devastation (212105), Felblade (213243), Felblade (232893), Immolation Aura (258921), Immolation Aura (258922), Elysian Decree (307046), Sinful Brand (317009), The Hunt (323639), Fodder to the Flame (329554), Fel Devastation (333110), Elysian Decree (339893), Elysian Decree (339894), The Hunt (345335), The Hunt (345396), The Hunt (345422), Fel Devastation (346503), Fodder to the Flame (350631), Blind Faith (355894), The Hunt (370965), The Hunt (370966), The Hunt (370967), The Hunt (370968), The Hunt (370969), Elysian Decree (389860), Fodder to the Flame (391430), Fel Devastation (393834)
                    Family Flags: 30, 33, 44, 49, 61, 67, 81, 82, 83, 87
-Hotfixed         : Affects Spells
 #4 (id=1034378)  : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 394486 | Target: Self (1)
 Description      : Mastery: Demonic Presence now also causes your Arcane, Fire, Frost, Nature, and Shadow damage to be dealt as Chaos instead, and increases that damage by ${$s2*((100+$394486s1)/100)}.1%.
@@ -12568,8 +12568,9 @@ Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ .....
                  : Allow While Mounted (24), Allow While Sitting (27), No Redirection (35), Allow While Stealthed (37), No Reflection (39), Ignore Line of Sight (66), Allow While Invisible (78), Not an Action (92), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Taps immediately (215), Allow While Charmed (261), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=1028838)  : Apply Aura (6) | Modify Damage Taken% from Caster (270)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Enemy (6)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.50000 | Misc Value: 0x7f | Target: Enemy (6)
                    Affected School(s): All
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : $@spelldesc388110
 Tooltip          : Damage taken from $@auracaster increased by $s1%.
 

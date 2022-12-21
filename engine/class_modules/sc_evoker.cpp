@@ -105,6 +105,10 @@ struct evoker_t : public player_t
   // Options
   struct options_t
   {
+    // Should every Disintegrate in Dragonrage be clipped after the 3rd tick
+    bool use_clipping       = true;
+    // Should chained Disintegrates( those with 5 ticks ) be chained after the 3rd tick in Dragonrage
+    bool use_early_chaining = true;
   } option;
 
   // Action pointers
@@ -2186,6 +2190,9 @@ void evoker_t::create_buffs()
 void evoker_t::create_options()
 {
   player_t::create_options();
+
+  add_option( opt_bool( "evoker.use_clipping", option.use_clipping ) );
+  add_option( opt_bool( "evoker.use_early_chaining", option.use_early_chaining ) );
 }
 
 void evoker_t::analyze( sim_t& sim )
@@ -2360,6 +2367,18 @@ std::unique_ptr<expr_t> evoker_t::create_expression( std::string_view expr_str )
 
   if ( util::str_compare_ci( expr_str, "essense" ) || util::str_compare_ci( expr_str, "essences" ) )
     return make_ref_expr( expr_str, resources.current[ RESOURCE_ESSENCE ] );
+
+  if ( splits.size() >= 2 )
+  {
+    if ( util::str_compare_ci( splits[ 0 ], "evoker" ) )
+    {
+      if ( util::str_compare_ci( splits[ 1 ], "use_clipping" ) )
+        return expr_t::create_constant( "use_clipping", option.use_clipping );
+      if ( util::str_compare_ci( splits[ 1 ], "use_early_chaining" ) )
+        return expr_t::create_constant( "use_early_chaining", option.use_early_chaining );
+      throw std::invalid_argument( fmt::format( "Unsupported evoker expression '{}'.", splits[ 1 ] ) );
+    }
+  }
 
   return player_t::create_expression( expr_str );
 }

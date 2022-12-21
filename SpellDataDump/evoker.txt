@@ -1,4 +1,4 @@
-SimulationCraft 1002-01 for World of Warcraft 10.0.2.47120 Live (hotfix 2022-12-17/47120)
+SimulationCraft 1002-01 for World of Warcraft 10.0.2.47213 Live (hotfix 2022-12-20/47213, git build  , no-networking)
 Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Orc (0x2)
@@ -106,7 +106,7 @@ Description      : $@spelldesc115008
 Tooltip          : Movement speed increased by $w1%.
 
 Name             : Battle Fatigue (id=134732) [Passive, Hidden] 
-Class            : Paladin, Priest, Mage, Monk, Evoker
+Class            : Paladin, Rogue, Priest, Mage, Monk, Evoker
 School           : Physical
 Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -124,7 +124,7 @@ Effects          :
 Description      : Dealing damage to another player in battle causes them to receive $134735m1% less healing from critical heals.
 
 Name             : PvP Rules Enabled (HARDCODED) (id=134735) [Hidden] 
-Class            : Paladin, Priest, Mage, Monk, Evoker
+Class            : Paladin, Rogue, Priest, Mage, Monk, Evoker
 School           : Physical
 Spell Type       : None
 Duration         : 20 seconds
@@ -852,7 +852,8 @@ Attributes       : ........ ........ x....... ........   ..x..... ......x. .....
                  : Not Shapeshifted (16), Is Channelled (34), Track Target in Channel (46), Name in Channel Bar (61), Extra Initial Period (169), Spell Haste Affects Periodic (173), No Caster Aura Icon (187), Periodic Can Crit (265), Aura Points On Client (268), Haste Affects Duration (273)
 Effects          :
 #1 (id=891202)   : Apply Aura (6) | Periodic Damage (3): spellfrost every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.76000 | PvP Coefficient: 1.15000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.87400 | PvP Coefficient: 1.15000 | Target: Enemy (6)
+Hotfixed         : SP Coefficient (0.76 -> 0.874)
 Description      : Tear into an enemy with a blast of blue magic, inflicting $o1 Spellfrost damage over $d, and slowing their movement speed by $370898s1% for $370898d.
 Tooltip          : Suffering $w1 Spellfrost damage every $t1 sec.
 

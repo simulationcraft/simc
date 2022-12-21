@@ -45,6 +45,8 @@ actions=potion,if=buff.dragonrage.up|fight_remains<35
 actions+=/variable,name=next_dragonrage,value=cooldown.dragonrage.remains<?(cooldown.eternity_surge.remains-2*gcd.max)<?(cooldown.fire_breath.remains-gcd.max)
 # Rank 1 empower spell cast time TODO: multiplier should be 1.0 but 1.3 results in more dps for EBF builds
 actions+=/variable,name=r1_cast_time,value=1.3*spell_haste
+# Invoke External Power Infusions if they're available during dragonrage
+actions+=/invoke_external_buff,name=power_infusion,if=buff.dragonrage.up&!buff.power_infusion.up
 actions+=/call_action_list,name=trinkets
 actions+=/run_action_list,name=aoe,if=spell_targets.pyre>=3
 actions+=/run_action_list,name=st
@@ -84,7 +86,8 @@ actions.fb+=/fire_breath,empower_to=3,if=(8+2*talent.blast_furnace.rank)+dot.fir
 actions.fb+=/fire_breath,empower_to=4
 
 # ST Action List, it's a mess
-actions.st=dragonrage,if=cooldown.fire_breath.remains<gcd.max&cooldown.eternity_surge.remains<2*gcd.max|fight_remains<30
+actions.st=use_item,name=kharnalex_the_first_light,if=!buff.dragonrage.up&debuff.shattering_star_debuff.down
+actions.st+=/dragonrage,if=cooldown.fire_breath.remains<gcd.max&cooldown.eternity_surge.remains<2*gcd.max|fight_remains<30
 # Use to extend DR when an empower cast won't fit inside the DR window anymore. When running FTF use on ES at the start of DR to maximize uses
 actions.st+=/tip_the_scales,if=buff.dragonrage.up&(buff.dragonrage.remains<variable.r1_cast_time&(buff.dragonrage.remains>cooldown.fire_breath.remains|buff.dragonrage.remains>cooldown.eternity_surge.remains)|talent.feed_the_flames&!cooldown.fire_breath.up)
 actions.st+=/call_action_list,name=fb,if=!talent.dragonrage|variable.next_dragonrage>15|!talent.animosity
@@ -104,9 +107,8 @@ actions.st+=/living_flame,if=buff.burnout.up&buff.essence_burst.stack<buff.essen
 # Ensure we clip Disintegrate inside DR even with our fillers, Pool 1-2 GCDs before SS is up inside DR
 actions.st+=/azure_strike,if=buff.dragonrage.up&(essence<3&!buff.essence_burst.up|(talent.shattering_star&cooldown.shattering_star.remains<=(buff.essence_burst.max_stack-buff.essence_burst.stack)*gcd.max))
 # In DR chain/clip after the 3rd damage tick, Outside of DR pool 6 seconds before SS unless it would result in overcapping resources TODO: revisit pooling conditions
-actions.st+=/disintegrate,chain=1,early_chain_if=buff.dragonrage.up&ticks>=2,interrupt_if=buff.dragonrage.up&ticks>=2,if=buff.dragonrage.up|(!talent.shattering_star|cooldown.shattering_star.remains>6|essence>essence.max-1|buff.essence_burst.stack==buff.essence_burst.max_stack)
+actions.st+=/disintegrate,chain=1,early_chain_if=evoker.use_early_chaining&buff.dragonrage.up&ticks>=2,interrupt_if=buff.dragonrage.up&ticks>=2&(evoker.use_clipping|cooldown.fire_breath.up|cooldown.eternity_surge.up),if=buff.dragonrage.up|(!talent.shattering_star|cooldown.shattering_star.remains>6|essence>essence.max-1|buff.essence_burst.stack==buff.essence_burst.max_stack)
 actions.st+=/deep_breath,if=!buff.dragonrage.up&spell_targets.deep_breath>1
-actions.st+=/use_item,name=kharnalex_the_first_light,if=!buff.dragonrage.up&debuff.shattering_star_debuff.down
 actions.st+=/living_flame
 
 # Try and get spoils to prvide haste or mastery stats, but if dragonrage gets too short just use it anyway.

@@ -83,6 +83,7 @@ actions.aoe_rotation+=/arcane_explosion
 actions.aoe_spark_phase=cancel_buff,name=presence_of_mind,if=prev_gcd.1.arcane_blast&cooldown.arcane_surge.remains>75
 actions.aoe_spark_phase+=/rune_of_power,if=cooldown.arcane_surge.remains<75&cooldown.arcane_surge.remains>30
 actions.aoe_spark_phase+=/radiant_spark
+actions.aoe_spark_phase+=/use_item,name=timebreaching_talon,if=cooldown.arcane_surge.remains<=(gcd.max*2)
 actions.aoe_spark_phase+=/arcane_explosion,if=buff.arcane_charge.stack>=3&prev_gcd.1.radiant_spark
 actions.aoe_spark_phase+=/arcane_orb,if=buff.arcane_charge.stack<3,line_cd=15
 actions.aoe_spark_phase+=/nether_tempest,if=talent.arcane_echo,line_cd=15
@@ -136,6 +137,7 @@ actions.rotation+=/arcane_barrage
 actions.spark_phase=arcane_missiles,if=talent.arcane_harmony&buff.arcane_harmony.stack<15&(buff.bloodlust.up|buff.clearcasting.react&cooldown.radiant_spark.remains<5)&cooldown.arcane_surge.remains<30&(buff.rune_of_power.up|!talent.rune_of_power),chain=1
 actions.spark_phase+=/rune_of_power
 actions.spark_phase+=/radiant_spark
+actions.spark_phase+=/use_item,name=timebreaching_talon,if=cooldown.arcane_surge.remains<=(gcd.max*3)
 actions.spark_phase+=/arcane_surge,if=prev_gcd.4.radiant_spark
 actions.spark_phase+=/nether_tempest,if=prev_gcd.5.radiant_spark
 actions.spark_phase+=/meteor,if=(talent.nether_tempest&prev_gcd.6.radiant_spark)|(!talent.nether_tempest&prev_gcd.5.radiant_spark)

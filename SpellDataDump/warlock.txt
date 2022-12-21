@@ -1,4 +1,4 @@
-SimulationCraft 1002-01 for World of Warcraft 10.0.2.47120 Live (hotfix 2022-12-17/47120)
+SimulationCraft 1002-01 for World of Warcraft 10.0.2.47213 Live (hotfix 2022-12-20/47213, git build  , no-networking)
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -125,7 +125,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
-Affecting spells : Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2, #4), Destruction Warlock (137046 effects: #1, #2), Demonic Synergy (171982 effects: #2, #3), Shadowy Inspiration (196606 effect#1), Nightfall (264571 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Decimating Bolt (325299 effect#1), Relic of Demonic Synergy (337060 effects: #2, #3), Malefic Wrath (337125 effects: #1, #2), Wrath of Consumption (337130 effect#1), Shard of Annihilation (356342 effects: #1, #2), Wrath of Consumption (387066 effect#1), Stolen Power (387604 effect#1), Drain Soul (388667 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1)
+Affecting spells : Affliction Warlock (137043 effects: #1, #2, #14), Demonology Warlock (137044 effects: #1, #2, #4), Destruction Warlock (137046 effects: #1, #2), Demonic Synergy (171982 effects: #2, #3), Shadowy Inspiration (196606 effect#1), Nightfall (264571 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Decimating Bolt (325299 effect#1), Relic of Demonic Synergy (337060 effects: #2, #3), Malefic Wrath (337125 effects: #1, #2), Wrath of Consumption (337130 effect#1), Shard of Annihilation (356342 effects: #1, #2), Wrath of Consumption (387066 effect#1), Stolen Power (387604 effect#1), Drain Soul (388667 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1)
 Family Flags     : 0, 49
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -400,7 +400,6 @@ Description      : Subjugates the target demon up to level $s1, forcing it to do
 Tooltip          : $@auracaster's subject.
 
 Name             : Summon Infernal (desc=Guardian) (id=1122) [Spell Family (5)] 
-Hotfixed         : School (32 -> 4)
 Talent Entry     : Destruction [tree=spec, row=8, col=1, max_rank=1, req_points=20]
 Class            : Warlock
 School           : Fire
@@ -1014,7 +1013,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=9474)     : School Damage (2): shadowflame
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.80000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.80000 | PvP Coefficient: 1.30000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1 -> 1.3)
 #2 (id=9475)     : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=831656)   : Dummy (3)
@@ -1422,7 +1422,8 @@ Effects          :
 #1 (id=19297)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=288276)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.30841 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.30841 | PvP Coefficient: 1.30000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+Hotfixed         : PvP Coefficient (1 -> 1.3)
 #3 (id=371982)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Draws fire toward the enemy, dealing $s2 Fire damage.
@@ -2914,7 +2915,6 @@ Description      : Corruption damage has a chance to cause your next Shadow Bolt
 Shadow Bolt is instant cast and Drain Soul channels $264571s3% faster when affected.
 
 Name             : Burning Rush (id=111400) [Spell Family (5)] 
-Hotfixed         : School (1 -> 4)
 Talent Entry     : Generic [tree=class, row=1, col=3, max_rank=1, req_points=0]
 Class            : Warlock
 School           : Fire
@@ -3290,7 +3290,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Discount Power On Miss (59), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=132079)   : School Damage (2): chromatic
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.52880 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.60524 | PvP Coefficient: 1.15000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+Hotfixed         : SP Coefficient (1.5288 -> 1.60524), PvP Coefficient (1 -> 1.15)
 #2 (id=177448)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=283496)   : Energize Power% (137)
@@ -3512,6 +3513,11 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #13 (id=261084)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+#14 (id=1045984)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Shadow Bolt (686)
+                   Family Flags: 0
+Hotfixed         : NEW EFFECT
 
 Name             : Demonology Warlock (id=137044) [Spell Family (5), Passive, Hidden] 
 Class            : Demonology Warlock
@@ -4671,7 +4677,8 @@ Attributes       : ........ ........ x....... ........   ..x..... ......x. .....
                  : Not Shapeshifted (16), Is Channelled (34), Track Target in Channel (46), Require All Targets (58), Name in Channel Bar (61), Spell Haste Affects Periodic (173), No Caster Aura Icon (187), Taps immediately (215), Reflection Only Defends (253), Periodic Can Crit (265), Aura Points On Client (268), Haste Affects Duration (273), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=291909)   : Apply Aura (6) | Periodic Damage (3): shadow every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 2.5 | SP Coefficient: 0.35156 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 2.5 | SP Coefficient: 0.42188 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : SP Coefficient (0.351563 -> 0.421876)
 #2 (id=355424)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000
 #3 (id=734824)   : Dummy (3)
@@ -6183,7 +6190,6 @@ Effects          :
 Description      : Your Agony, Corruption, Siphon Life, and Unstable Affliction deal damage $s1% faster.
 
 Name             : Soul Strike (id=264057) [Spell Family (5)] 
-Hotfixed         : School (1 -> 32)
 Talent Entry     : Demonology [tree=spec, row=3, col=2, max_rank=1, req_points=0, select_idx=200]
 Class            : Warlock
 School           : Shadow
@@ -9738,7 +9744,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=752810)   : Apply Aura (6) | Modify Total Stat% (137)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 2.00000 | Misc Value: 2 | Misc Value 2: 0x4 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 2 | Misc Value 2: 0x4 | Target: Self (1)
+Hotfixed         : PvP Coefficient (2 -> 1)
 Description      : Stamina increased by $s1%.
 
 Name             : Treacherous Covenant (id=288953) [Passive] 
@@ -10176,7 +10183,8 @@ Attributes       : ........ ........ x....... .....x..   ...x...x ..x..... .....
                  : Not Shapeshifted (16), No Immunities (29), No Redirection (35), No Reflection (39), No Threat (42), Suppress Target Procs (113), Always Hit (114), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=814173)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.27500 | PvP Coefficient: 1.00000 | Radius: 0 - 100 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.31625 | PvP Coefficient: 1.00000 | Radius: 0 - 100 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+Hotfixed         : SP Coefficient (0.275 -> 0.31625)
 Description      : Your damaging periodic effects erupt on all targets, causing $<damage> Shadow damage per effect.
 Variables        : $affMastery=$?s77215[${1+0.01*$77215m1}][${1}]
 $damage=${$bc1*($SP)*$<affMastery>*(1+$@versadmg)}
@@ -10440,7 +10448,6 @@ Tooltip          : Next Curse of Tongues, Curse of Exhaustion or Curse of Weakne
 Variables        : $cast=${$m1/-1}
 
 Name             : Fel Domination (id=333889) [Spell Family (5)] 
-Hotfixed         : School (33 -> 32)
 Talent Entry     : Generic [tree=class, row=1, col=1, max_rank=1, req_points=0]
 Class            : Warlock
 School           : Shadow
@@ -12673,7 +12680,6 @@ Description      : $@spelldesc386244
 Tooltip          : $@spelldesc386244
 
 Name             : Summon Soulkeeper (id=386256) [Spell Family (5)] 
-Hotfixed         : School (36 -> 124)
 Class            : Warlock
 School           : Chromatic
 Spell Type       : None
@@ -12746,7 +12752,6 @@ Description      : $@spelldesc386244
 Tooltip          : Grants $@auracaster a Tormented Soul upon death.
 
 Name             : Inquisitor's Gaze (id=386344) [Spell Family (5)] 
-Hotfixed         : School (32 -> 36)
 Talent Entry     : Generic [tree=class, row=10, col=2, max_rank=1, req_points=20, select_idx=200]
 Class            : Warlock
 School           : Shadowflame
@@ -13202,12 +13207,12 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Ignore Line of Sight (66), Do Not Display Range (126), Not In Spellbook (143), Always AOE Line of Sight (186), Aura Points On Client (268)
 Effects          :
 #1 (id=1021053)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.04000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.20000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : SP Coefficient (0.04 -> 0.2)
 Description      : $@spelldesc386759
 Tooltip          : Deals $w1 Shadow damage.
 
 Name             : Guillotine (id=386833) [Spell Family (5)] 
-Hotfixed         : School (1 -> 36)
 Talent Entry     : Demonology [tree=spec, row=10, col=3, max_rank=1, req_points=20]
 Class            : Warlock
 School           : Shadowflame
@@ -13632,7 +13637,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1021623)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (8 -> 5)
 Description      : Sacrifice $s1% of your Soul Leech to gain a Soul Shard.
 
 
@@ -15579,9 +15583,10 @@ Effects          :
 #1 (id=1022531)  : Apply Aura (6) | Dummy (4)
                    Base Value: 140 | Scaled Value: 140 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1022608)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.66700 | Target: Self (1)
                    Affected Spells: Healthstone (6262)
                    Family Flags: 16
+Hotfixed         : PvP Coefficient (1 -> 0.667)
 #3 (id=1022617)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Demonic Gateway (111771)
@@ -15590,13 +15595,14 @@ Description      : $@spelldesc385899
 Tooltip          : $@spelldesc385899
 
 Name             : Soulburn: Drain Life (id=387630) [Spell Family (5), Hidden] 
+Hotfixed         : Proc Flags (2446336 -> 327680)
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
 Duration         : 30 seconds
 Proc Chance      : 101%
-Proc Flags       : ........ ..x.x.x. x.x..x.. ........ 
-                 : Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Trap Triggered
+Proc Flags       : ........ ........ x.x..... ........ 
+                 : Magic Hostile Spell, Periodic
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -15615,7 +15621,7 @@ Name             : Soulburn: Demonic Circle (id=387633) [Spell Family (5)]
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
-Duration         : 8 seconds
+Duration         : 6 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -15743,7 +15749,6 @@ Effects          :
 Description      : Reduces the cooldown of Amplify Curse by ${$s1/-1000} sec.
 
 Name             : Dimensional Rift (id=387976) 
-Hotfixed         : School (127 -> 124)
 Talent Entry     : Destruction [tree=spec, row=10, col=2, max_rank=1, req_points=20, select_idx=200]
 Class            : Warlock
 School           : Chromatic

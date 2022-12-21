@@ -748,7 +748,6 @@ public:
          s->action->id == 123725 || // Breath of Fire dot
          s->action->id == 196608 || // Eye of the Tiger
          s->action->id == 196733 || // Special Delivery
-         s->action->id == 325217 || // Bonedust Brew
          s->action->id == 338141 || // Charred Passion
          s->action->id == 387621 || // Dragonfire Brew
          s->action->id == 393786    // Chi Surge
@@ -3731,7 +3730,7 @@ struct breath_of_fire_t : public monk_spell_t
 
     if ( blackout_combo )
     {
-      am *= 1 + p()->talent.brewmaster.blackout_combo->effectN( 5 ).percent();
+      am *= 1 + p()->buff.blackout_combo->data().effectN( 5 ).percent();
     }
 
     if ( p()->talent.brewmaster.dragonfire_brew->ok() )
@@ -8027,45 +8026,67 @@ void monk_t::bonedust_brew_assessor(action_state_t* s)
     switch (s->action->id)
     {
 
-        // Whitelisted spells
-        // verified with logs on 08/03/2022 ( Game Version: 9.2.5 )
-
-    case 0: // auto attack
-    case 123996: // crackling_tiger_lightning_tick
-    case 185099: // rising_sun_kick_dmg
-    case 117418: // fists_of_fury_tick
-    case 158221: // whirling_dragon_punch_tick
-    case 100780: // tiger_palm
-    case 100784: // blackout_kick
-    case 101545: // flying_serpent_kick
-    case 115129: // expel_harm_damage
-    case 322109: // touch_of_death
-    case 122470: // touch_of_karma
-    case 107270: // spinning_crane_kick_tick
-    case 261947: // fist_of_the_white_tiger_offhand
-    case 261977: // fist_of_the_white_tiger_mainhand
-    case 132467: // chi_wave_damage
-    case 148187: // rushing_jade_wind_tick
-    case 148135: // chi_burst_damage
-    case 117952: // crackling_jade_lightning
-    case 196608: // eye_of_the_tiger_damage
-        break;
+        // Whitelist
+        // General
+        case 0:  // auto attack
+        case 1:  // melee_off_hand
+        case 185099:  // rising_sun_kick_dmg
+        case 100780:  // tiger_palm
+        case 115129:  // expel_harm_damage
+        case 322109:  // touch_of_death
+        case 107270:  // spinning_crane_kick_tick
+        case 132467:  // chi_wave_damage
+        case 148187:  // rushing_jade_wind_tick
+        case 148135:  // chi_burst_damage
+        case 117952:  // crackling_jade_lightnin
+        case 196608:  // eye_of_the_tiger_damage
+        case 391400:  // resonant_fists
+        case 389541:  // claw_of_the_white_tiger
+        // Windwalker
+        case 123996: // crackling_tiger_lightning_tick
+        case 117418: // fists_of_fury_tick
+        case 158221: // whirling_dragon_punch_tick
+        case 100784: // blackout_kick
+        case 101545: // flying_serpent_kick
+        case 122470: // touch_of_karma
+        case 261947: // fist_of_the_white_tiger_offhand
+        case 261977: // fist_of_the_white_tiger_mainhand
+        case 337342: // chi_explosion
+        case 395519: // strike_of_the_windlord_mainhand
+        case 395521: // strike_of_the_windlord_offhand
+        case 228649: // blackout_kick_totm_proc
+        case 392959: // glory_of_the_dawn
+        case 345727: // faeline_stomp_dmg
+        case 327264: // faeling_stomp_ww_dmg
+        // Brewmaster
+        case 205523: // blackout_kick_brm
+        case 123725: // breath_of_fire_dot
+        case 121253: // keg_smash
+        case 196733: // special_delivery
+        case 387621: // dragonfire_brew
+        case 325153: // exploding_keg
+        case 388867: // exploding_keg_proc
+        case 227291: // Niuzao's Stomp
+        case 393786: // chi_surge
+            break;
 
         // Known blacklist
         // we don't need to log these
 
-    case 325217: // bonedust_brew_dmg
-    case 325218: // bonedust_brew_heal
-    case 335913: // empowered_tiger_lightning
-    case 360829: // empowered_tiger_lightning_call_to_arms
-    case 337342: // chi_explosion
-        return;
+        case 325217: // bonedust_brew_dmg
+        case 325218: // bonedust_brew_heal
+        case 335913: // empowered_tiger_lightning
+        case 242390: // thunderfist
+        case 386959: // charred_passions_dmg
+            return;
 
-    default:
+      default:
+          sim->print_debug( "Unknown spell passed to BDB Assessor: {}, id: {}", s->action->name(), s->action->id);
 
-        sim->print_debug( "Bad spell passed to BDB Assessor: {}, id: {}", s->action->name(), s->action->id);
-        //return;
-        break; // Until whitelist is populated for 10.0 let spells that aren't blacklisted pass through
+          if ( specialization() == MONK_WINDWALKER || specialization() == MONK_BREWMASTER)
+            return;
+          else
+            break; // TODO: Update with MW spells
     }
 
     if ( shared.bonedust_brew->ok() )

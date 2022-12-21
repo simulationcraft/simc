@@ -101,6 +101,7 @@ actions.combustion_cooldowns+=/blood_fury
 actions.combustion_cooldowns+=/berserking,if=buff.combustion.up
 actions.combustion_cooldowns+=/fireblood
 actions.combustion_cooldowns+=/ancestral_call
+actions.combustion_cooldowns+=/invoke_external_buff,name=power_infusion,if=!buff.power_infusion.up
 actions.combustion_cooldowns+=/time_warp,if=talent.temporal_warp&buff.exhaustion.up
 actions.combustion_cooldowns+=/use_item,effect_name=gladiators_badge
 actions.combustion_cooldowns+=/use_item,name=irideus_fragment

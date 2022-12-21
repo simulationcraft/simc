@@ -1595,6 +1595,11 @@ public:
       animacharged_cp_proc = p()->get_proc( "Echoing Reprimand " + ab::name_str );
     }
 
+    if ( p()->buffs.cold_blood->is_affecting( &ab::data() ) )
+    {
+      cold_blood_consumed_proc = p()->get_proc( "Cold Blood " + ab::name_str );
+    }
+
     auto register_damage_buff = [ this ]( damage_buff_t* buff ) {
       if ( buff->is_affecting_direct( ab::s_data ) )
         direct_damage_buffs.push_back( buff );
@@ -1665,7 +1670,8 @@ public:
     register_consume_buff( p()->buffs.audacity, affected_by.audacity );
     register_consume_buff( p()->buffs.blindside, affected_by.blindside );
     register_consume_buff( p()->buffs.cold_blood,
-                           p()->buffs.cold_blood->is_affecting( &ab::data() ), cold_blood_consumed_proc );
+                           p()->buffs.cold_blood->is_affecting( &ab::data() ) && ab::data().id() != p()->talent.subtlety.secret_technique->id(),
+                           cold_blood_consumed_proc );
     register_consume_buff( p()->buffs.t29_outlaw_2pc, p()->buffs.t29_outlaw_2pc->is_affecting( &ab::data() ) );
     register_consume_buff( p()->buffs.t29_outlaw_4pc, p()->buffs.t29_outlaw_4pc->is_affecting( &ab::data() ) );
     register_consume_buff( p()->buffs.t29_subtlety_2pc, p()->buffs.t29_subtlety_2pc->is_affecting( &ab::data() ) );
@@ -2201,9 +2207,12 @@ public:
     {
       if ( !ab::background || consume_buff.on_background )
       {
-        consume_buff.buff->expire( consume_buff.delay );
-        if ( consume_buff.proc )
-          consume_buff.proc->occur();
+        if ( consume_buff.buff->check() )
+        {
+          consume_buff.buff->expire( consume_buff.delay );
+          if ( consume_buff.proc )
+            consume_buff.proc->occur();
+        }
       }
     }
 
@@ -3349,6 +3358,9 @@ struct blade_rush_t : public rogue_attack_t
 
       return m;
     }
+
+    bool procs_main_gauche() const override
+    { return true; }
   };
 
   blade_rush_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
@@ -3357,9 +3369,6 @@ struct blade_rush_t : public rogue_attack_t
     execute_action = p->get_background_action<blade_rush_attack_t>( "blade_rush_attack" );
     execute_action->stats = stats;
   }
-
-  bool procs_main_gauche() const override
-  { return true; }
 };
 
 // Cold Blood ===============================================================
@@ -4689,8 +4698,10 @@ struct secret_technique_t : public rogue_attack_t
 
     player_attack = p->get_secondary_trigger_action<secret_technique_attack_t>(
       secondary_trigger::SECRET_TECHNIQUE, "secret_technique_player", p->spec.secret_technique_attack );
+    player_attack->update_flags &= ~STATE_CRIT; // Hotfixed to snapshot in Cold Blood on delayed attacks
     clone_attack = p->get_secondary_trigger_action<secret_technique_attack_t>(
       secondary_trigger::SECRET_TECHNIQUE, "secret_technique_clones", p->spec.secret_technique_clone_attack );
+    clone_attack->update_flags &= ~STATE_CRIT; // Hotfixed to snapshot in Cold Blood on delayed clone attacks
 
     add_child( player_attack );
     add_child( clone_attack );
@@ -4702,14 +4713,32 @@ struct secret_technique_t : public rogue_attack_t
 
     int cp = cast_state( execute_state )->get_combo_points();
 
-    // Hit of the main char happens right on cast.
-    player_attack->trigger_secondary_action( execute_state->target, cp );
+    // All attacks need to snapshot the state here due to the delayed attacks snapshotting Cold Blood
+    // Hit of the main char happens right after the primary cast.
+    auto player_state = player_attack->get_state();
+    player_state->target = execute_state->target;
+    player_attack->cast_state( player_state )->set_combo_points( cp, cp );
+    player_attack->snapshot_internal( player_state, player_attack->snapshot_flags, player_attack->amount_type( player_state ) );
+    player_attack->trigger_secondary_action( player_state );
 
     // The clones seem to hit 1s and 1.3s later (no time reference in spell data though)
-    // Trigger tracking buff until first clone's damage
+    // Trigger tracking buff for APL conditions until final clone's damage
+    auto clone_state = clone_attack->get_state();
+    clone_state->target = execute_state->target;
+    clone_attack->cast_state( clone_state )->set_combo_points( cp, cp );
+    clone_attack->snapshot_internal( clone_state, clone_attack->snapshot_flags, clone_attack->amount_type( clone_state ) );
+    auto clone_state_2 = clone_attack->get_state( clone_state );
+
     p()->buffs.secret_technique->trigger( 1.3_s );
-    clone_attack->trigger_secondary_action( execute_state->target, cp, 1_s );
-    clone_attack->trigger_secondary_action( execute_state->target, cp, 1.3_s );
+    clone_attack->trigger_secondary_action( clone_state, 1_s );
+    clone_attack->trigger_secondary_action( clone_state_2, 1.3_s );
+
+    // Manually expire Cold Blood due to special handling above
+    if ( p()->buffs.cold_blood->check() )
+    {
+      p()->buffs.cold_blood->expire();
+      cold_blood_consumed_proc->occur();
+    }
   }
 };
 
@@ -5644,21 +5673,18 @@ struct echoing_reprimand_t : public rogue_attack_t
       for ( buff_t* b : p()->buffs.echoing_reprimand )
         b->expire();
 
-      unsigned buff_idx = static_cast<int>( rng().range( random_min, random_max ) );
       if ( p()->talent.rogue.resounding_clarity->ok() )
       {
         // 2022-12-16 -- Resounding Clarity now animacharges 2 instead of 3 additional buffs
-        // This effectively leaves one buff randomly unselected, so basically the inverse of normal
-        for ( int i = 0; i < p()->buffs.echoing_reprimand.size(); i++ )
+        // This was accomplished by simply removing the chance to generate a 5 CP buff
+        for ( int i = random_min; i < random_max; i++ )
         {
-          if ( !p()->is_ptr() || i != buff_idx )
-          {
-            p()->buffs.echoing_reprimand[ i ]->trigger();
-          }
+          p()->buffs.echoing_reprimand[ i ]->trigger();
         }
       }
       else
       {
+        unsigned buff_idx = static_cast<int>( rng().range( random_min, random_max ) );
         p()->buffs.echoing_reprimand[ buff_idx ]->trigger();
       }
     }
@@ -7355,6 +7381,7 @@ void actions::rogue_action_t<Base>::trigger_find_weakness( const action_state_t*
   if ( !ab::result_is_hit( state->result ) )
     return;
 
+  // Subtlety duration-triggered Find Weakness applications do not require the talent
   if ( !( p()->talent.rogue.find_weakness->ok() || duration > timespan_t::zero() ) )
     return;
 

@@ -1,4 +1,4 @@
-SimulationCraft 1002-01 for World of Warcraft 10.0.2.47120 Live (hotfix 2022-12-17/47120)
+SimulationCraft 1002-01 for World of Warcraft 10.0.2.47213 Live (hotfix 2022-12-20/47213, git build  , no-networking)
 Name             : Frostbolt of Ages (id=11) 
 Class            : Paladin
 School           : Frost
@@ -2693,7 +2693,7 @@ Description      : $@spelldesc53600
 Tooltip          : Armor increased by $?c1[${$W1*$INT/100}][${$W1*$STR/100}].
 
 Name             : Battle Fatigue (id=134732) [Passive, Hidden] 
-Class            : Paladin, Priest, Mage, Monk, Evoker
+Class            : Paladin, Rogue, Priest, Mage, Monk, Evoker
 School           : Physical
 Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -2711,7 +2711,7 @@ Effects          :
 Description      : Dealing damage to another player in battle causes them to receive $134735m1% less healing from critical heals.
 
 Name             : PvP Rules Enabled (HARDCODED) (id=134735) [Hidden] 
-Class            : Paladin, Priest, Mage, Monk, Evoker
+Class            : Paladin, Rogue, Priest, Mage, Monk, Evoker
 School           : Physical
 Spell Type       : None
 Duration         : 20 seconds
@@ -9392,6 +9392,7 @@ Description      : $@spelldesc203776
 Tooltip          : Absorbing $w1 damage.
 
 Name             : Shining Light (id=327510) [Spell Family (10)] 
+Hotfixed         : Attributes
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -9404,8 +9405,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   
+                 : Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=819014)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
