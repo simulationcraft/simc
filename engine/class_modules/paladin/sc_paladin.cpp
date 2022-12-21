@@ -2681,7 +2681,7 @@ std::string paladin_t::default_potion() const
 {
   std::string retribution_pot = ( true_level > 60 ) ? "elemental_potion_of_ultimate_power_3" : "disabled";
 
-  std::string protection_pot = ( true_level > 50 ) ? "spectral_strength" : "disabled";
+  std::string protection_pot = ( true_level > 60 ) ? "elemental_potion_of_ultimate_power_3" : "disabled";
 
   std::string holy_dps_pot = ( true_level > 50 ) ? "spectral_intellect" : "disabled";
 
@@ -2704,7 +2704,7 @@ std::string paladin_t::default_food() const
 {
   std::string retribution_food = ( true_level > 50 ) ? "fated_fortune_cookie" : "disabled";
 
-  std::string protection_food = ( true_level > 50 ) ? "feast_of_gluttonous_hedonism" : "disabled";
+  std::string protection_food = ( true_level > 50 ) ? "fated_fortune_cookie" : "disabled";
 
   std::string holy_dps_food = ( true_level > 50 ) ? "feast_of_gluttonous_hedonism" : "disabled";
 
@@ -2727,7 +2727,7 @@ std::string paladin_t::default_flask() const
 {
   std::string retribution_flask = ( true_level > 60 ) ? "phial_of_tepid_versatility_3" : "disabled";
 
-  std::string protection_flask = ( true_level > 50 ) ? "spectral_flask_of_power" : "disabled";
+  std::string protection_flask = ( true_level > 50 ) ? "phial_of_static_empowerment_3" : "disabled";
 
   std::string holy_dps_flask = ( true_level > 50 ) ? "spectral_flask_of_power" : "disabled";
 
@@ -2758,7 +2758,7 @@ std::string paladin_t::default_temporary_enchant() const
   switch ( specialization() )
   {
     case PALADIN_PROTECTION:
-      return "main_hand:shaded_sharpening_stone";
+      return "main_hand:howling_rune_3";
     case PALADIN_RETRIBUTION:
       return "main_hand:howling_rune_3";
 
