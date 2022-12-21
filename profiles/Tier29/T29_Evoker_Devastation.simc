@@ -45,6 +45,8 @@ actions=potion,if=buff.dragonrage.up|fight_remains<35
 actions+=/variable,name=next_dragonrage,value=cooldown.dragonrage.remains<?(cooldown.eternity_surge.remains-2*gcd.max)<?(cooldown.fire_breath.remains-gcd.max)
 # Rank 1 empower spell cast time TODO: multiplier should be 1.0 but 1.3 results in more dps for EBF builds
 actions+=/variable,name=r1_cast_time,value=1.3*spell_haste
+# Invoke External Power Infusions if they're available during dragonrage
+actions+=/invoke_external_buff,name=power_infusion,if=buff.dragonrage.up&!buff.power_infusion.up
 actions+=/call_action_list,name=trinkets
 actions+=/run_action_list,name=aoe,if=spell_targets.pyre>=3
 actions+=/run_action_list,name=st
