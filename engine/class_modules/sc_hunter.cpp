@@ -7251,9 +7251,7 @@ double hunter_t::composite_player_critical_damage_multiplier( const action_state
 
   m *= 1.0 + talents.sharpshooter -> effectN( 1 ).percent();
   m *= 1.0 + talents.sharp_edges -> effectN( 1 ).percent();
-
-  if ( !bugs )
-    m *= 1.0 + buffs.unerring_vision -> stack() * buffs.unerring_vision -> data().effectN( 2 ).percent();
+  m *= 1.0 + buffs.unerring_vision -> stack() * buffs.unerring_vision -> data().effectN( 2 ).percent();
 
   return m;
 }
