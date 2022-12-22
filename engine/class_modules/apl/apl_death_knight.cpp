@@ -343,7 +343,6 @@ void unholy( player_t* p )
   precombat->add_action( "augmentation" );
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "raise_dead" );
-  precombat->add_action( "fleshcraft" );
   precombat->add_action( "army_of_the_dead,precombat_time=2" );
   precombat->add_action( "variable,name=trinket_1_sync,op=setif,value=1,value_else=0.5,condition=trinket.1.has_use_buff&(trinket.1.cooldown.duration%%45=0)" );
   precombat->add_action( "variable,name=trinket_2_sync,op=setif,value=1,value_else=0.5,condition=trinket.2.has_use_buff&(trinket.2.cooldown.duration%%45=0)" );
