@@ -7,6 +7,7 @@ actions.precombat+=/snapshot_stats
 actions.precombat+=/variable,name=trinket_sync_slot,value=1,if=trinket.1.has_stat.any_dps&(!trinket.2.has_stat.any_dps|trinket.1.cooldown.duration>=trinket.2.cooldown.duration)
 actions.precombat+=/variable,name=trinket_sync_slot,value=2,if=trinket.2.has_stat.any_dps&(!trinket.1.has_stat.any_dps|trinket.2.cooldown.duration>trinket.1.cooldown.duration)
 actions.precombat+=/arcane_torrent
+actions.precombat+=/use_item,name=algethar_puzzle_box
 
 # Executed every time the actor is available.
 actions=auto_attack
