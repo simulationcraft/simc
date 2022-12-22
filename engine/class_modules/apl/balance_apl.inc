@@ -60,7 +60,7 @@ aoe->add_action( "sunfire,target_if=refreshable&(target.time_to_die-remains)>8&a
 aoe->add_action( "moonfire,target_if=refreshable&(target.time_to_die-remains)>8&astral_power.deficit>variable.passive_asp+3" );
 aoe->add_action( "variable,name=cd_condition_aoe,value=cooldown.ca_inc.remains<5&!buff.ca_inc.up&(target.1.time_to_die>10-5*talent.orbital_strike|fight_remains<25+10*talent.incarnation_chosen_of_elune)" );
 aoe->add_action( "wrath,if=variable.cd_condition_aoe&set_bonus.tier29_4pc&eclipse.any_next" );
-aoe->add_action( "starfall,if=variable.cd_condition_aoe&talent.orbital_strike&astral_power.deficit<variable.passive_asp+8*spell_targets|astral_power.deficit<(variable.passive_asp+8+12*(buff.eclipse_lunar.remains<4|buff.eclipse_solar.remains<4))" );
+aoe->add_action( "starfall,if=variable.cd_condition_aoe&(talent.orbital_strike&astral_power.deficit<variable.passive_asp+8*spell_targets|buff.touch_the_cosmos.up)|astral_power.deficit<(variable.passive_asp+8+12*(buff.eclipse_lunar.remains<4|buff.eclipse_solar.remains<4))" );
 aoe->add_action( "celestial_alignment,if=variable.cd_condition_aoe" );
 aoe->add_action( "incarnation,if=variable.cd_condition_aoe" );
 aoe->add_action( "warrior_of_elune" );
