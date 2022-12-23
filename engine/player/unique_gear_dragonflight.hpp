@@ -83,6 +83,7 @@ void thriving_thorns( special_effect_t& );
 namespace sets
 {
 void playful_spirits_fur( special_effect_t& );
+void raging_tempests( special_effect_t& );
 }
 
 void register_special_effects();

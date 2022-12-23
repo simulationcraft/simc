@@ -3581,6 +3581,66 @@ void woven_chronocloth( special_effect_t& effect )
   }
 }
 
+void raging_tempests( special_effect_t& effect )
+{
+  auto check_set = [ effect ]( set_bonus_e b ) {
+    return effect.player->sets->has_set_bonus( effect.player->specialization(), T29_RAGING_TEMPESTS, b ) &&
+           effect.player->sets->set( effect.player->specialization(), T29_RAGING_TEMPESTS, b )->id() ==
+               effect.driver()->id();
+  };
+
+  if ( check_set( B2 ) )
+  {
+    static constexpr std::array<stat_e, 4> ratings =
+        { STAT_VERSATILITY_RATING, STAT_MASTERY_RATING, STAT_HASTE_RATING, STAT_CRIT_RATING };
+
+    auto buff = create_buff<stat_buff_t>( effect.player, effect.driver() );
+    buff->set_constant_behavior( buff_constant_behavior::ALWAYS_CONSTANT );
+
+    auto val = effect.driver()->effectN( 1 ).average( effect.player );
+
+    // the amount is set when you eqiup the item and does not dynamically update. To account for any shenanigans with
+    // temporary buffs during equip, instead of implementing as a passive stat bonus we create a buff to trigger on
+    // combat start, accounting for anything in the precombat apl.
+    effect.player->register_combat_begin( [ buff, effect, val ]( player_t* p ) {
+      buff->set_stat( util::highest_stat( p, ratings ), val );
+      buff->trigger();
+    } );
+  }
+  else if ( check_set( B4 ) )
+  {
+    auto counter = create_buff<buff_t>( effect.player, effect.player->find_spell( 390529 ) )
+      ->set_expire_at_max_stack( true );
+
+    auto driver = new special_effect_t( effect.player );
+    driver->type = SPECIAL_EFFECT_EQUIP;
+    driver->source = SPECIAL_EFFECT_SOURCE_ITEM;
+    driver->spell_id = 390579;
+    driver->duration_ = 0_ms;
+    driver->execute_action =
+        create_proc_action<generic_proc_t>( "spark_of_the_primals", *driver, "spark_of_the_primals", 392038 );
+    effect.player->special_effects.push_back( driver );
+
+    auto cb = new dbc_proc_callback_t( effect.player, *driver );
+    cb->initialize();
+    cb->deactivate();
+
+    counter->set_stack_change_callback( [ cb ]( buff_t*, int, int new_ ) {
+      if ( !new_ )
+        cb->activate();
+    } );
+
+    effect.player->callbacks.register_callback_execute_function(
+        driver->spell_id, [ cb ]( const dbc_proc_callback_t*, action_t* a, action_state_t* ) {
+          cb->proc_action->execute_on_target( a->target );
+          cb->deactivate();
+        } );
+
+    effect.player->register_on_kill_callback( [ counter ]( player_t* ) {
+      counter->trigger();
+    } );
+  }
+}
 }  // namespace sets
 
 void register_special_effects()
@@ -3701,6 +3761,7 @@ void register_special_effects()
   register_special_effect( { 393983, 393762 }, sets::horizon_striders_garments );
   register_special_effect( { 393987, 393768 }, sets::azureweave_vestments );
   register_special_effect( { 393993, 393818 }, sets::woven_chronocloth );
+  register_special_effect( { 389987, 389498, 391117 }, sets::raging_tempests );
 
   // Disabled
   register_special_effect( 382108, DISABLED_EFFECT );  // burgeoning seed

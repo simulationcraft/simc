@@ -1,4 +1,4 @@
-SimulationCraft 1002-01 for World of Warcraft 10.0.2.47213 Live (hotfix 2022-12-22/47213, no-networking)
+SimulationCraft 1002-01 for World of Warcraft 10.0.2.47213 Live (hotfix 2022-12-23/47213)
 Name             : Frostbolt of Ages (id=11) 
 Class            : Paladin
 School           : Frost
@@ -2320,7 +2320,7 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=127297)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cooldown (11)
                    Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
-                   Affected Spells: Divine Protection (498), Lay on Hands (633), Divine Shield (642), Ardent Defender (31850), Ardent Defender (66235), Shield of Vengeance (184662)
+                   Affected Spells: Divine Protection (498), Lay on Hands (633), Divine Shield (642), Ardent Defender (31850), Ardent Defender (66235), Shield of Vengeance (184662), Protection of the Fallen Dragons (392255)
                    Family Flags: 15, 22, 72, 87, 118
 Description      : Reduces the cooldown of your Divine Shield, $?s184662[Shield of Vengeance]?s31850[Ardent Defender][Divine Protection], and Lay on Hands by $s1%.
 
@@ -12296,7 +12296,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1006821)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cooldown (11)
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
-                   Affected Spells: Lay on Hands (633), Divine Shield (642)
+                   Affected Spells: Lay on Hands (633), Divine Shield (642), Protection of the Fallen Dragons (392255)
                    Family Flags: 15, 22
 #2 (id=1012224)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 1392 | Target: Self (1)

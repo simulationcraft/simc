@@ -1383,6 +1383,7 @@ class SpellDataGenerator(DataGenerator):
          396369, # Season 1 Thundering M+ Affix
          392271, 392275, # Seasoned Hunter's Trophy stat buffs
          393987, # Azureweave Vestments set bonus driver
+         390529, 390579, 392038, # Raging Tempest set 4pc
          389820, 383813, 383812, 389816, 389839, 383814, 390234, # Ruby Whelp Shell
         ),
 
@@ -3622,6 +3623,11 @@ class SetBonusListGenerator(DataGenerator):
         {
             'name'   : 'woven_chronocloth',
             'bonuses': [ 1515 ],
+            'tier'   : 29
+        },
+        {
+            'name'   : 'raging_tempests',
+            'bonuses': [ 1521, 1523, 1524, 1525 ],
             'tier'   : 29
         }
     ]
