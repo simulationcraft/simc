@@ -715,7 +715,6 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
 
       if ( !s.portion_aps.simple && p.sim->scaling->has_scale_factors() && s.scaling )
       {
-        int colspan = 0;
         os << "<table class=\"details\">\n";
         os << "<tr>\n"
            << "<th class=\"help\" data-help=\"#help-scale-factors\">?</th>\n";
@@ -723,12 +722,10 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
           if ( p.scaling->scales_with[ i ] )
           {
             os.printf( "<th>%s</th>\n", util::stat_type_abbrev( i ) );
-            colspan++;
           }
         if ( p.sim->scaling->scale_lag )
         {
           os << "<th>ms Lag</th>\n";
-          colspan++;
         }
         os << "</tr>\n";
         os << "<tr>\n"

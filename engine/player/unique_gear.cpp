@@ -4050,14 +4050,15 @@ struct item_cast_time_expr_t : public item_effect_expr_t
     {
       if ( e -> execute_action )
       {
-        if ( e -> execute_action -> channeled )
+        if ( e->execute_action->channeled )
         {
-          v = e -> execute_action -> dot_duration.total_seconds();
-          break;
+          v = e->execute_action->dot_duration.total_seconds();
         }
         else
-          v = e -> execute_action -> execute_time().total_seconds();
-          break;
+        {
+          v = e->execute_action->execute_time().total_seconds();
+        }
+        break;
       }
     }
   }

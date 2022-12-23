@@ -4834,7 +4834,7 @@ struct soul_cleave_t : public demon_hunter_attack_t
     }
 
     // Soul fragments consumed are capped for Soul Cleave
-    unsigned consumed = p()->consume_soul_fragments( soul_fragment::ANY, true, (unsigned)data().effectN( 3 ).base_value() );
+    p()->consume_soul_fragments( soul_fragment::ANY, true, (unsigned)data().effectN( 3 ).base_value() );
   }
 };
 

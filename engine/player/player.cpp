@@ -9789,10 +9789,10 @@ struct invoke_external_buff_t : public action_t
   invoke_external_buff_t( player_t* player, util::string_view options_str )
     : action_t( ACTION_OTHER, "invoke_external_buff", player ),
       buff_str(),
-      buff( nullptr ),
       buff_duration( timespan_t::min() ),
       buff_stacks( -1 ),
       use_pool( true ),
+      buff( nullptr ),
       invoke_cds( nullptr )
   {
     add_option( opt_string( "name", buff_str ) );

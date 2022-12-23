@@ -2482,13 +2482,6 @@ struct trick_shots_t : public buff_t
 {
   using buff_t::buff_t;
 
-  void execute( int stacks, double value, timespan_t duration ) override
-  {
-    buff_t::execute( stacks, value, duration );
-
-    hunter_t* p = debug_cast<hunter_t*>( player );
-  }
-
   void expire_override( int remaining_stacks, timespan_t remaining_duration ) override
   {
     buff_t::expire_override( remaining_stacks, remaining_duration );
@@ -7550,7 +7543,7 @@ struct hunter_module_t: public module_t
   {
   }
 
-  void init( player_t* p ) const override
+  void init( player_t* ) const override
   {
   }
 

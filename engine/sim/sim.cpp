@@ -2717,15 +2717,12 @@ void sim_t::init()
   }
 
   {
-    // Determine whether we have healers or tanks.
+    // Determine whether we have healers.
     unsigned int healers = 0;
-    unsigned int tanks = 0;
     for ( const auto* p : player_no_pet_list )
     {
       if ( p->primary_role() == ROLE_HEAL )
         ++healers;
-      else if ( p->primary_role() == ROLE_TANK )
-        ++tanks;
     }
     if ( healers > 0 || healing > 0 )
       heal_target = module_t::heal_enemy() -> create_player( this, "Healing_Target", RACE_NONE );

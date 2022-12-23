@@ -6580,7 +6580,7 @@ struct roll_the_bones_t : public buff_t
 
   void expire_secondary_buffs()
   {
-    for ( int i = 0; i < buffs.size(); i++ )
+    for ( std::size_t i = 0; i < buffs.size(); i++ )
     {
       if ( buffs[ i ]->check() )
       {
@@ -7638,7 +7638,7 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   // Sepsis Cooldown Reduction
   if ( source->talent.shared.sepsis->ok() )
   {
-    target->register_on_demise_callback( source, [ this, source ]( player_t* target ) {
+    target->register_on_demise_callback( source, [ this, source ]( player_t* /*target*/ ) {
       if ( dots.sepsis->is_ticking() )
       {
         source->cooldowns.sepsis->adjust( -timespan_t::from_seconds( source->talent.shared.sepsis->effectN( 3 ).base_value() ) );
@@ -8196,7 +8196,7 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
     if ( split.size() == 1 || ( split.size() == 2 && util::str_compare_ci( split[ 1 ], "total" ) ) )
     {
       // Return the total amount of RtB buffs regardless of duration
-      return make_fn_expr( name_str, [ this, primary ]() {
+      return make_fn_expr( name_str, [ primary ]() {
         double n_buffs = 0;
         for ( auto buff : primary->buffs )
           n_buffs += buff->check();
@@ -8206,7 +8206,7 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
     else if ( split.size() == 2 && util::str_compare_ci( split[ 1 ], "longer" ) )
     {
       // Return the total amount of proc RtB buffs that are of longer duration than the primary buff
-      return make_fn_expr( name_str, [ this, primary ]() {
+      return make_fn_expr( name_str, [ primary ]() {
         double n_buffs = 0;
         for ( auto buff : primary->buffs )
           n_buffs += ( buff->check() && buff->remains_gt( primary->remains() ) );
@@ -8216,7 +8216,7 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
     else if ( split.size() == 2 && util::str_compare_ci( split[ 1 ], "shorter" ) )
     {
       // Return the total amount of proc RtB buffs that are of shorter duration than the primary buff
-      return make_fn_expr( name_str, [ this, primary ]() {
+      return make_fn_expr( name_str, [ primary ]() {
         double n_buffs = 0;
         for ( auto buff : primary->buffs )
           n_buffs += ( buff->check() && buff->remains_lt( primary->remains() ) );
@@ -8226,7 +8226,7 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
     else if ( split.size() == 2 && util::str_compare_ci( split[ 1 ], "normal" ) )
     {
       // Return the total amount of base RtB buffs associated with the primary buff
-      return make_fn_expr( name_str, [ this, primary ]() {
+      return make_fn_expr( name_str, [ primary ]() {
         double n_buffs = 0;
         for ( auto buff : primary->buffs )
           n_buffs += ( buff->check() && buff->remains() == primary->remains() );
@@ -8251,11 +8251,11 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
         {
           const buff_t* rtb_buff = ( *it );
           if ( util::str_compare_ci( split[ 1 ], "will_lose" ) )
-            return make_fn_expr( name_str, [ this, primary, rtb_buff ]() {
+            return make_fn_expr( name_str, [ primary, rtb_buff ]() {
               return rtb_buff->check() && !rtb_buff->remains_gt( primary->remains() );
           } );
           else
-            return make_fn_expr( name_str, [ this, primary, rtb_buff ]() {
+            return make_fn_expr( name_str, [ primary, rtb_buff ]() {
               return rtb_buff->check() && rtb_buff->remains_gt( primary->remains() );
           } );
         }
@@ -8264,7 +8264,7 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
       {
         // Return the total count of buffs we will lose or retain if no buff is specified
         bool will_retain = util::str_compare_ci( split[ 1 ], "will_retain" );
-        return make_fn_expr( name_str, [ this, primary, will_retain ]() {
+        return make_fn_expr( name_str, [ primary, will_retain ]() {
           double n_buffs = 0;
           for ( auto buff : primary->buffs )
             n_buffs += ( buff->check() && ( will_retain == buff->remains_gt( primary->remains() ) ) );

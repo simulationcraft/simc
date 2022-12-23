@@ -2876,7 +2876,7 @@ void ruby_whelp_shell(special_effect_t& effect)
       crit -> set_stat( STAT_CRIT_RATING, e.driver() -> effectN( 5 ).average( e.item ) );
     }
 
-    void execute( action_t* a, action_state_t* s ) override
+    void execute( action_t*, action_state_t* s ) override
     {
       int choice = rng().range(0, 6);
       if ( choice == 0 )
@@ -3569,7 +3569,7 @@ void woven_chronocloth( special_effect_t& effect )
     {
       buff = create_buff<buff_t>( effect.player, effect.player->find_spell( 387141 ) )
                  ->set_expire_at_max_stack( true )
-                 ->set_stack_change_callback( [ haste_buff ]( buff_t* b, int, int new_ ) {
+                 ->set_stack_change_callback( [ haste_buff ]( buff_t* b, int, int /*new_*/ ) {
                    if ( b->at_max_stacks() )
                    {
                      haste_buff->trigger();

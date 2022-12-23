@@ -451,7 +451,6 @@ bool report_helper::check_gear( player_t& p, sim_t& sim )
     for ( size_t jj = 0; jj < item.parsed.gem_id.size(); ++jj )
     {
       const auto& gem                     = item.player->dbc->item( item.parsed.gem_id[ jj ] );
-      const gem_property_data_t& gem_prop = item.player->dbc->gem_property( gem.gem_properties );
       if ( gem.id > 0 )
       {
         gem_count++;

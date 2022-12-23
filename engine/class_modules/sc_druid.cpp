@@ -9494,7 +9494,7 @@ void druid_t::create_buffs()
   auto nb_eff = query_aura_effect( &buff.natures_balance->data(), A_PERIODIC_ENERGIZE, RESOURCE_ASTRAL_POWER );
   buff.natures_balance
     ->set_default_value( nb_eff->resource( RESOURCE_ASTRAL_POWER ) / nb_eff->period().total_seconds() )
-    ->set_tick_callback( [ nb_eff, this ]( buff_t* b, int, timespan_t ) {
+    ->set_tick_callback( [ nb_eff, this ]( buff_t*, int, timespan_t ) {
       auto tick_gain = nb_eff->resource( RESOURCE_ASTRAL_POWER );
       if ( sim->target_non_sleeping_list.empty() )
       {

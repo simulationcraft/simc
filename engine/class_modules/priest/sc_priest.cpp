@@ -742,7 +742,7 @@ struct summon_mindbender_t final : public summon_pet_t
 {
   timespan_t default_duration;
 
-  summon_mindbender_t( priest_t& p, util::string_view options_str, int version )
+  summon_mindbender_t( priest_t& p, util::string_view options_str )
     : summon_pet_t( "mindbender", p, p.talents.shadow.mindbender )
   {
     parse_options( options_str );
@@ -1764,14 +1764,7 @@ action_t* priest_t::create_action( util::string_view name, util::string_view opt
   {
     if ( talents.shadow.mindbender.enabled() )
     {
-      if ( specialization() == PRIEST_SHADOW )
-      {
-        return new summon_mindbender_t( *this, options_str, 2 );
-      }
-      else
-      {
-        return new summon_mindbender_t( *this, options_str, 3 );
-      }
+      return new summon_mindbender_t( *this, options_str );
     }
     else
     {

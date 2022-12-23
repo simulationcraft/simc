@@ -652,7 +652,6 @@ struct chaos_bolt_t : public destruction_spell_t
 
   void execute() override
   {
-    int shards_used = as<int>( cost() );
     destruction_spell_t::execute();
 
     // 2022-10-15: Backdraft is not consumed for Ritual of Ruin empowered casts, but IS hasted by it
@@ -808,7 +807,6 @@ struct rain_of_fire_t : public destruction_spell_t
 
   void execute() override
   {
-    int shards_used = as<int>( cost() );
     destruction_spell_t::execute();
 
     // 2022-10-16: Madness of the Azj'Aqir buffs all active ticks of Rain of Fire when Rain of Fire is cast during the buff

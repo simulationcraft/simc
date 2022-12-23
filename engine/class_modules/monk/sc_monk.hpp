@@ -205,7 +205,7 @@ public:
     double distance_moved;
 
     monk_movement_t( monk_t* player, util::string_view n, const spell_data_t* s = spell_data_t::not_found() )
-      : buff_t( player, n ), p( player ), data( s ), base_movement( find( player, "movement" ) )
+      : buff_t( player, n ), p( player ), base_movement( find( player, "movement" ) ), data( s )
     {
       set_chance( 1 );
       set_max_stack( 1 );
@@ -226,7 +226,8 @@ public:
       distance_moved = distance;
     }
 
-    bool trigger( int s = 1, double v = -std::numeric_limits<double>::min(), double c = -1.0, timespan_t d = timespan_t::min() ) override
+    bool trigger( int stacks = 1, double value = -std::numeric_limits<double>::min(), double chance = -1.0,
+                  timespan_t /*duration*/ = timespan_t::min() ) override
     {
       if ( distance_moved > 0 )
       {
@@ -248,7 +249,7 @@ public:
           p->current.movement_direction = movement_direction_type::AWAY;
         }
 
-        return base_movement->trigger( s, v, c, this->buff_duration() );
+        return base_movement->trigger( stacks, value, chance, this->buff_duration() );
       }
 
       return false;

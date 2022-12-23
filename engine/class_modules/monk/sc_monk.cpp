@@ -7910,7 +7910,7 @@ void monk_t::init_special_effects()
 
 // monk_t::init_special_effect ============================================
 
-void monk_t::init_special_effect( special_effect_t& effect )
+void monk_t::init_special_effect( special_effect_t& /*effect*/ )
 {
   // Monk module has custom triggering logic (defined above) so override the initial
   // proc flags so we get wider trigger attempts than the core implementation. The
