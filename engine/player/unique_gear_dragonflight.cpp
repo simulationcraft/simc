@@ -2845,6 +2845,55 @@ void static_charged_scale(special_effect_t& effect)
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Ruby Whelp Shell
+// 383812 driver
+// 389839 st damage
+// 390234 aoe damage
+// 389820 haste buff
+// 383813 crit buff
+// TODO what does the use effect actually do in game?
+void ruby_whelp_shell(special_effect_t& effect)
+{
+  struct ruby_whelp_assist_cb_t : public dbc_proc_callback_t
+  {
+    action_t* shot;
+    action_t* nova;
+    stat_buff_t* haste;
+    stat_buff_t* crit;
+
+    ruby_whelp_assist_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e )
+    {
+      shot = create_proc_action<generic_proc_t>( "fire_shot", e, "fire_shot", 389839 );
+      shot -> base_dd_min = shot -> base_dd_max = e.driver() -> effectN( 1 ).average( e.item );
+
+      nova = create_proc_action<generic_aoe_proc_t>( "lobbing_fire_nova", e, "lobbing_fire_nova", 390234, true );
+      nova -> base_dd_min = nova -> base_dd_max = e.driver() -> effectN( 2 ).average( e.item );
+
+      haste = create_buff<stat_buff_t>( e.player, e.player -> find_spell( 389820 ) );
+      haste -> set_stat( STAT_HASTE_RATING, e.driver() -> effectN( 6 ).average( e.item ) );
+
+      crit = create_buff<stat_buff_t>( e.player, e.player -> find_spell( 383813 ) );
+      crit -> set_stat( STAT_CRIT_RATING, e.driver() -> effectN( 5 ).average( e.item ) );
+    }
+
+    void execute( action_t* a, action_state_t* s ) override
+    {
+      int choice = rng().range(0, 6);
+      if ( choice == 0 )
+        shot -> execute_on_target( s -> target );
+      else if ( choice == 1 )
+        nova -> execute_on_target( s -> target );
+      else if ( choice == 2 )
+        haste -> trigger();
+      else if ( choice == 3 )
+        crit -> trigger();
+      // skip 2 heal possibilities
+    }
+  };
+
+  new ruby_whelp_assist_cb_t( effect );
+}
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -3619,6 +3668,8 @@ void register_special_effects()
   register_special_effect( 392237, items::seasoned_hunters_trophy );
   register_special_effect( 374233, items::grals_discarded_tooth );
   register_special_effect( 391612, items::static_charged_scale );
+  register_special_effect( 383812, items::ruby_whelp_shell );
+  
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );  // bronzed grip wrappings embellishment
@@ -3663,6 +3714,7 @@ void register_special_effects()
   register_special_effect( 371700, DISABLED_EFFECT );  // potion absorption inhibitor embellishment
   register_special_effect( 381766, DISABLED_EFFECT );  // spoils of neltharius shuffler
   register_special_effect( 383931, DISABLED_EFFECT );  // globe of jagged ice counter
+  register_special_effect( 389843, DISABLED_EFFECT );  // ruby whelp shell (on-use)
 }
 
 void register_target_data_initializers( sim_t& sim )

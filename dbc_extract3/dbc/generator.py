@@ -1383,6 +1383,7 @@ class SpellDataGenerator(DataGenerator):
          396369, # Season 1 Thundering M+ Affix
          392271, 392275, # Seasoned Hunter's Trophy stat buffs
          393987, # Azureweave Vestments set bonus driver
+         389820, 383813, 383812, 389816, 389839, 383814, 390234, # Ruby Whelp Shell
         ),
 
         # Warrior:
