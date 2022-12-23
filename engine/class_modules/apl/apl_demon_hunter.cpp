@@ -90,7 +90,7 @@ void havoc( player_t* p )
   default_->add_action( "fel_barrage,if=active_enemies>desired_targets|raid_event.adds.in>30" );
   default_->add_action( "glaive_tempest,if=active_enemies>desired_targets|raid_event.adds.in>10" );
   default_->add_action( "eye_beam,if=active_enemies>desired_targets|raid_event.adds.in>(40-talent.cycle_of_hatred*15)&!debuff.essence_break.up" );
-  default_->add_action( "blade_dance,if=variable.blade_dance&!cooldown.metamorphosis.ready&(cooldown.eye_beam.remains>5|!talent.demonic|(raid_event.adds.in>cooldown&raid_event.adds.in<25))" );
+  default_->add_action( "blade_dance,if=variable.blade_dance&(cooldown.eye_beam.remains>5|!talent.demonic|(raid_event.adds.in>cooldown&raid_event.adds.in<25))" );
   default_->add_action( "throw_glaive,if=talent.soulrend&(active_enemies>desired_targets|raid_event.adds.in>full_recharge_time+9)&spell_targets>=(2-talent.furious_throws)&!debuff.essence_break.up" );
   default_->add_action( "annihilation,if=!variable.pooling_for_blade_dance" );
   default_->add_action( "throw_glaive,if=talent.serrated_glaive&cooldown.eye_beam.remains<4&!debuff.serrated_glaive.up&!debuff.essence_break.up" );
