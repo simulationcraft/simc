@@ -2202,6 +2202,17 @@ bool action_t::usable_moving() const
   return true;
 }
 
+bool action_t::usable_precombat() const
+{
+  if ( !harmful )
+    return true;
+
+  if ( this->travel_time() > timespan_t::zero() || this->base_execute_time > timespan_t::zero() )
+    return true;
+
+  return false;
+}
+
 bool action_t::target_ready( player_t* candidate_target )
 {
   // Ensure target is valid to execute on
@@ -2578,19 +2589,14 @@ void action_t::init()
 
   if ( !( background || sequence ) && ( action_list && action_list->name_str == "precombat" ) )
   {
-    if ( harmful )
+    if ( usable_precombat() )
     {
-      if ( this->travel_time() > timespan_t::zero() || this->base_execute_time > timespan_t::zero() )
-      {
-        player->precombat_action_list.push_back( this );
-      }
-      else
-      {
-        throw std::runtime_error("Can only add harmful action with travel or cast-time to precombat action list.");
-      }
+      player->precombat_action_list.push_back( this );
     }
     else
-      player->precombat_action_list.push_back( this );
+    {
+      throw std::runtime_error( "Can only add harmful action with travel or cast-time to precombat action list." );
+    }
   }
   else if ( action_list && action_list->name_str != "precombat" )
   {

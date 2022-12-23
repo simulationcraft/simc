@@ -768,6 +768,8 @@ public:
 
   virtual bool usable_moving() const;
 
+  virtual bool usable_precombat() const;
+
   virtual timespan_t composite_dot_duration( const action_state_t* ) const;
 
   virtual double attack_direct_power_coefficient( const action_state_t* ) const
