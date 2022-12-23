@@ -2894,6 +2894,53 @@ void ruby_whelp_shell(special_effect_t& effect)
   new ruby_whelp_assist_cb_t( effect );
 }
 
+// Desperate Invoker's Codex
+// 377465 procs the buff 382419 with every cast which reduces the proc action cd by 1s per stack
+void desperate_invokers_codex( special_effect_t& effect )
+{
+  auto hatred =
+      create_buff<buff_t>( effect.player, effect.player->find_spell( 382419 ) )->set_default_value_from_effect( 1, 1 );
+
+  auto desperate_invocation          = find_special_effect( effect.player, 377465 );
+  desperate_invocation->proc_flags_  = PF_ALL_DAMAGE;
+  desperate_invocation->proc_flags2_ = PF2_CAST_DAMAGE;
+  desperate_invocation->custom_buff  = hatred;
+  auto cb                            = new dbc_proc_callback_t( effect.player, *desperate_invocation );
+  cb->initialize();
+
+  struct desperate_invocation_t : public generic_proc_t
+  {
+    const buff_t* buff;
+    cooldown_t* item_cd;
+    cooldown_t* spell_cd;
+
+    desperate_invocation_t( const special_effect_t& e, buff_t* b )
+      : generic_proc_t( e, "desperate_invocation", e.driver() ),
+        buff( b ),
+        item_cd( e.player->get_cooldown( e.cooldown_name() ) ),
+        spell_cd( e.player->get_cooldown( e.name() ) )
+    {
+      base_dd_min = base_dd_max = e.player->find_spell( 377465 )->effectN( 2 ).average( e.item );
+    }
+
+    void execute() override
+    {
+      generic_proc_t::execute();
+      make_event( *sim, [ this ]() { item_cd->adjust( -timespan_t::from_seconds( buff->check_stack_value() ) ); } );
+      spell_cd->adjust( -timespan_t::from_seconds( buff->check_stack_value() ) );
+    }
+  };
+
+  effect.execute_action = create_proc_action<desperate_invocation_t>( "Desperate Invocation", effect, hatred );
+  hatred->set_stack_change_callback( [ effect ]( buff_t* b, int, int ) {
+    if ( !b->at_max_stacks() )
+    {
+      effect.player->get_cooldown( effect.cooldown_name() )->adjust( -timespan_t::from_seconds( b->check_value() ) );
+      effect.player->get_cooldown( effect.name() )->adjust( -timespan_t::from_seconds( b->check_value() ) );
+    }
+  } );
+}
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -3729,6 +3776,7 @@ void register_special_effects()
   register_special_effect( 374233, items::grals_discarded_tooth );
   register_special_effect( 391612, items::static_charged_scale );
   register_special_effect( 383812, items::ruby_whelp_shell );
+  register_special_effect( 377464, items::desperate_invokers_codex );
   
 
   // Weapons
@@ -3776,6 +3824,7 @@ void register_special_effects()
   register_special_effect( 381766, DISABLED_EFFECT );  // spoils of neltharius shuffler
   register_special_effect( 383931, DISABLED_EFFECT );  // globe of jagged ice counter
   register_special_effect( 389843, DISABLED_EFFECT );  // ruby whelp shell (on-use)
+  register_special_effect( 377465, DISABLED_EFFECT );  // Desperate Invocation (cdr proc)
 }
 
 void register_target_data_initializers( sim_t& sim )
