@@ -183,6 +183,46 @@ struct blessing_of_protection_t : public paladin_spell_t
   }
 };
 
+// Avenging Wrath ===========================================================
+// Most of this can be found in buffs::avenging_wrath_buff_t, this spell just triggers the buff
+
+avenging_wrath_t::avenging_wrath_t( paladin_t* p, util::string_view options_str )
+  : paladin_spell_t( "avenging_wrath", p, p->find_spell( 31884 ) )
+{
+  parse_options( options_str );
+  if ( !p->talents.avenging_wrath->ok() )
+    background = true;
+  if ( p->talents.crusade->ok() )
+    background = true;
+  if ( p->talents.avenging_crusader->ok() )
+    background = true;
+  if ( p->talents.sentinel->ok() )
+    background = true;
+  harmful = false;
+
+  // link needed for Righteous Protector / SotR cooldown reduction
+  cooldown = p->cooldowns.avenging_wrath;
+
+  // if ( p->talents.avenging_wrath_2->ok() )
+  //   cooldown->duration += timespan_t::from_millis( p->talents.avenging_wrath_2->effectN( 1 ).base_value() );
+
+  cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( p->azerite_essence.vision_of_perfection );
+}
+
+void avenging_wrath_t::execute()
+{
+  paladin_spell_t::execute();
+
+  p()->buffs.avenging_wrath->trigger();
+
+  if ( p()->azerite.avengers_might.ok() )
+    p()->buffs.avengers_might->trigger( 1, p()->buffs.avengers_might->default_value, -1.0,
+                                        p()->buffs.avenging_wrath->buff_duration() );
+
+  // Trigger avenging wrath: might, this can be cast on its own as well so we can't just edit the buff.
+  // if ( p()->talents.avenging_wrath_might->ok() )
+  //   p()->buffs.avenging_wrath_might->trigger();
+}
 
 // Holy Avenger
 struct holy_avenger_t : public paladin_spell_t
