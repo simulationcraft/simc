@@ -591,7 +591,8 @@ struct shadow_word_pain_t final : public priest_spell_t
     }
   }
 
-  timespan_t tick_time( const action_state_t* state ) const override
+  // TODO: Check if this is still bugged, as of 23/12/2022 screams is confirmed broken again.
+  /* timespan_t tick_time( const action_state_t* state ) const override
   {
     timespan_t t = priest_spell_t::tick_time( state );
 
@@ -601,7 +602,7 @@ struct shadow_word_pain_t final : public priest_spell_t
     }
 
     return t;
-  }
+  }*/
 
   void tick( dot_t* d ) override
   {
