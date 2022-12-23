@@ -2657,6 +2657,17 @@ struct sigil_of_flame_t : public demon_hunter_spell_t
     // Add damage modifiers in sigil_of_flame_damage_t, not here.
   }
 
+  void init_finished() override
+  {
+    demon_hunter_spell_t::init_finished();
+    harmful = !is_precombat; // Do not count towards the precombat hostile action limit
+  }
+
+  bool usable_precombat() const override
+  {
+    return true; // Has virtual travel time due to Sigil activation delay
+  }
+
   void execute() override
   {
     demon_hunter_spell_t::execute();
@@ -2898,6 +2909,11 @@ struct immolation_aura_t : public demon_hunter_spell_t
     }
 
     // Add damage modifiers in immolation_aura_damage_t, not here.
+  }
+
+  bool usable_precombat() const override
+  {
+    return true; // Disables initial hit if used at time 0 
   }
 
   void execute() override
@@ -5115,7 +5131,7 @@ struct immolation_aura_buff_t : public demon_hunter_buff_t<buff_t>
       p()->ragefire_crit_accumulator = 0;
     }
 
-    if ( p()->active.immolation_aura_initial )
+    if ( p()->active.immolation_aura_initial && p()->sim->current_time() > 0_s )
     {
       p()->active.immolation_aura_initial->set_target( p()->target );
       p()->active.immolation_aura_initial->execute();

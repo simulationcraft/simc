@@ -8,12 +8,12 @@ actions.precombat+=/variable,name=trinket_sync_slot,value=1,if=trinket.1.has_sta
 actions.precombat+=/variable,name=trinket_sync_slot,value=2,if=trinket.2.has_stat.any_dps&(!trinket.1.has_stat.any_dps|trinket.2.cooldown.duration>trinket.1.cooldown.duration)
 actions.precombat+=/arcane_torrent
 actions.precombat+=/use_item,name=algethar_puzzle_box
+actions.precombat+=/sigil_of_flame
+actions.precombat+=/immolation_aura
 
 # Executed every time the actor is available.
 actions=auto_attack
 actions+=/retarget_auto_attack,line_cd=1,target_if=min:debuff.burning_wound.remains,if=talent.burning_wound&talent.demon_blades&active_dot.burning_wound<(spell_targets>?3)
-# Precombat Immolation Aura
-actions+=/immolation_aura,if=time=0
 # Blade Dance with First Blood, Trail of Ruin, or at 2+ targets
 actions+=/variable,name=blade_dance,value=talent.first_blood|talent.trail_of_ruin|talent.chaos_theory&buff.chaos_theory.down|spell_targets.blade_dance1>1
 actions+=/variable,name=pooling_for_blade_dance,value=variable.blade_dance&fury<(75-talent.demon_blades*20)&cooldown.blade_dance.remains<gcd.max
