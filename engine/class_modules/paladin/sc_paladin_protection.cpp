@@ -1119,6 +1119,13 @@ action_t* paladin_t::create_action_protection( util::string_view name, util::str
   if ( name == "moment_of_glory"           ) return new moment_of_glory_t          ( this, options_str );
   if ( name == "bastion_of_light"          ) return new bastion_of_light_t         ( this, options_str );
   if ( name == "eye_of_tyr"                ) return new eye_of_tyr_t               ( this, options_str );
+  if ( name == "avenging_wrath" )
+  {
+    if ( talents.sentinel->ok() )
+      return new sentinel_t( this, options_str );
+    else
+      return new avenging_wrath_t( this, options_str );
+  }
 
 
   if ( specialization() == PALADIN_PROTECTION )

@@ -77,6 +77,7 @@ public:
     action_t* lights_decree;
     action_t* sanctified_wrath;
     action_t* virtuous_command;
+    action_t* create_aw_expression;
 
     // Required for seraphim
     action_t* sotr;
@@ -699,6 +700,7 @@ public:
 
   std::unique_ptr<expr_t> create_consecration_expression( util::string_view expr_str );
   std::unique_ptr<expr_t> create_ashen_hallow_expression( util::string_view expr_str );
+  std::unique_ptr<expr_t> create_aw_expression( util::string_view expr_str );
 
   ground_aoe_event_t* active_consecration;
   std::set<ground_aoe_event_t*> all_active_consecrations;
@@ -1599,6 +1601,12 @@ struct holy_power_consumer_t : public Base
       ab::p() -> trigger_memory_of_lucid_dreams( ab::last_resource_cost );
     }
   }
+};
+
+struct avenging_wrath_t : public paladin_spell_t
+{
+  avenging_wrath_t( paladin_t* p, util::string_view options_str );
+  void execute() override;
 };
 
 struct judgment_t : public paladin_melee_attack_t

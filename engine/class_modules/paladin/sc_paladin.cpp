@@ -186,46 +186,43 @@ struct blessing_of_protection_t : public paladin_spell_t
 // Avenging Wrath ===========================================================
 // Most of this can be found in buffs::avenging_wrath_buff_t, this spell just triggers the buff
 
-struct avenging_wrath_t : public paladin_spell_t
+avenging_wrath_t::avenging_wrath_t( paladin_t* p, util::string_view options_str )
+  : paladin_spell_t( "avenging_wrath", p, p->find_spell( 31884 ) )
 {
-  avenging_wrath_t( paladin_t* p, util::string_view options_str )
-    : paladin_spell_t( "avenging_wrath", p, p->find_spell( 31884) )
-  {
-    parse_options( options_str );
-    if ( !p->talents.avenging_wrath->ok() )
-      background = true;
-    if ( p->talents.crusade->ok() )
-      background = true;
-    if ( p->talents.avenging_crusader->ok() )
-      background = true;
-    if ( p->talents.sentinel->ok() )
-      background = true;
-    harmful = false;
+  parse_options( options_str );
+  if ( !p->talents.avenging_wrath->ok() )
+    background = true;
+  if ( p->talents.crusade->ok() )
+    background = true;
+  if ( p->talents.avenging_crusader->ok() )
+    background = true;
+  if ( p->talents.sentinel->ok() )
+    background = true;
+  harmful = false;
 
-    // link needed for Righteous Protector / SotR cooldown reduction
-    cooldown = p->cooldowns.avenging_wrath;
+  // link needed for Righteous Protector / SotR cooldown reduction
+  cooldown = p->cooldowns.avenging_wrath;
 
-    //if ( p->talents.avenging_wrath_2->ok() )
-    //  cooldown->duration += timespan_t::from_millis( p->talents.avenging_wrath_2->effectN( 1 ).base_value() );
+  // if ( p->talents.avenging_wrath_2->ok() )
+  //   cooldown->duration += timespan_t::from_millis( p->talents.avenging_wrath_2->effectN( 1 ).base_value() );
 
-    cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( p->azerite_essence.vision_of_perfection );
-  }
+  cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( p->azerite_essence.vision_of_perfection );
+}
 
-  void execute() override
-  {
-    paladin_spell_t::execute();
+void avenging_wrath_t::execute()
+{
+  paladin_spell_t::execute();
 
-    p()->buffs.avenging_wrath->trigger();
+  p()->buffs.avenging_wrath->trigger();
 
-    if ( p()->azerite.avengers_might.ok() )
-      p()->buffs.avengers_might->trigger( 1, p()->buffs.avengers_might->default_value, -1.0,
-                                          p()->buffs.avenging_wrath->buff_duration() );
+  if ( p()->azerite.avengers_might.ok() )
+    p()->buffs.avengers_might->trigger( 1, p()->buffs.avengers_might->default_value, -1.0,
+                                        p()->buffs.avenging_wrath->buff_duration() );
 
-    //Trigger avenging wrath: might, this can be cast on its own as well so we can't just edit the buff.
-   // if ( p()->talents.avenging_wrath_might->ok() )
-   //   p()->buffs.avenging_wrath_might->trigger();
-  }
-};
+  // Trigger avenging wrath: might, this can be cast on its own as well so we can't just edit the buff.
+  // if ( p()->talents.avenging_wrath_might->ok() )
+  //   p()->buffs.avenging_wrath_might->trigger();
+}
 
 // Holy Avenger
 struct holy_avenger_t : public paladin_spell_t
@@ -2724,7 +2721,7 @@ std::string paladin_t::default_potion() const
 {
   std::string retribution_pot = ( true_level > 60 ) ? "elemental_potion_of_ultimate_power_3" : "disabled";
 
-  std::string protection_pot = ( true_level > 50 ) ? "spectral_strength" : "disabled";
+  std::string protection_pot = ( true_level > 60 ) ? "elemental_potion_of_ultimate_power_3" : "disabled";
 
   std::string holy_dps_pot = ( true_level > 50 ) ? "spectral_intellect" : "disabled";
 
@@ -2747,7 +2744,7 @@ std::string paladin_t::default_food() const
 {
   std::string retribution_food = ( true_level > 50 ) ? "fated_fortune_cookie" : "disabled";
 
-  std::string protection_food = ( true_level > 50 ) ? "feast_of_gluttonous_hedonism" : "disabled";
+  std::string protection_food = ( true_level > 50 ) ? "fated_fortune_cookie" : "disabled";
 
   std::string holy_dps_food = ( true_level > 50 ) ? "feast_of_gluttonous_hedonism" : "disabled";
 
@@ -2770,7 +2767,7 @@ std::string paladin_t::default_flask() const
 {
   std::string retribution_flask = ( true_level > 60 ) ? "phial_of_tepid_versatility_3" : "disabled";
 
-  std::string protection_flask = ( true_level > 50 ) ? "spectral_flask_of_power" : "disabled";
+  std::string protection_flask = ( true_level > 50 ) ? "phial_of_static_empowerment_3" : "disabled";
 
   std::string holy_dps_flask = ( true_level > 50 ) ? "spectral_flask_of_power" : "disabled";
 
@@ -2801,7 +2798,7 @@ std::string paladin_t::default_temporary_enchant() const
   switch ( specialization() )
   {
     case PALADIN_PROTECTION:
-      return "main_hand:shaded_sharpening_stone";
+      return "main_hand:howling_rune_3";
     case PALADIN_RETRIBUTION:
       return "main_hand:howling_rune_3";
 
@@ -3927,6 +3924,31 @@ std::unique_ptr<expr_t> paladin_t::create_ashen_hallow_expression( util::string_
   return nullptr;
 }
 
+std::unique_ptr<expr_t> paladin_t::create_aw_expression( util::string_view name_str )
+{
+  auto expr = util::string_split<util::string_view>( name_str, "." );
+  if ( expr.size() < 2 )
+  {
+    return nullptr;
+  }
+
+  if ( !util::str_compare_ci( expr[ 1 ], "avenging_wrath" ) )
+  {
+    return nullptr;
+  }
+
+  // Convert [talent/buff/cooldown].avenging_wrath to sentinel if taken
+  if ( expr.size() >= 2 && util::str_compare_ci( expr[ 1 ], "avenging_wrath" ) &&
+       ( util::str_compare_ci( expr[ 0 ], "buff" ) || util::str_compare_ci( expr[ 0 ], "talent" ) ||
+         util::str_compare_ci( expr[ 0 ], "cooldown" ) ) )
+  {
+    if ( talents.sentinel->ok() )
+      expr[ 1 ] = "sentinel";
+    else
+      expr[ 1 ] = "avenging_wrath";
+  }
+  return player_t::create_expression( util::string_join( expr, "." ) );
+}
 std::unique_ptr<expr_t> paladin_t::create_expression( util::string_view name_str )
 {
   struct paladin_expr_t : public expr_t
@@ -4037,13 +4059,30 @@ std::unique_ptr<expr_t> paladin_t::create_expression( util::string_view name_str
   }
 
   auto cons_expr = create_consecration_expression( name_str );
-  auto ah_expr = create_ashen_hallow_expression( name_str );
+  auto ah_expr   = create_ashen_hallow_expression( name_str );
+  auto aw_expr   = create_aw_expression( name_str );
   if ( cons_expr )
   {
     return cons_expr;
   }
   if ( ah_expr )
-    return ah_expr;
+  {
+     return ah_expr;
+  }
+  if ( aw_expr )
+  {
+    return aw_expr;
+  }
+
+  return player_t::create_expression( name_str );
+
+
+ if ( specialization() == PALADIN_PROTECTION && (  splits.size() >= 2 && util::str_compare_ci( splits[ 1 ], "avenging_wrath" ) ) )
+  {
+  splits[ 1 ] = talents.sentinel->ok()? "sentinel" : "avenging_wrath";
+ 
+    return paladin_t::create_expression( util::string_join( splits, "." ) );
+  }
 
   return player_t::create_expression( name_str );
 }
