@@ -9,7 +9,8 @@ specList = ['blood', 'frost', 'unholy',  # Death Knight
             'arcane', 'fire', # Mage (frost is ignored because of duplicate name)
             'marksmanship', 'beast_mastery', 'survival', # Hunter
             'affliction', 'demonology', 'destruction', # Warlock
-            'devastation', #Evoker
+            'devastation', # Evoker
+            'shadow', # Priest
             'retribution', 'protection', # Paladin
             'assassination', 'outlaw', 'subtlety', 'assassination_df', 'outlaw_df', 'subtlety_df', # Rogue
             'havoc', 'vengeance', # Demon Hunter
