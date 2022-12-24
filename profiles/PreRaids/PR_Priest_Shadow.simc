@@ -5,8 +5,7 @@ level=70
 race=orc
 role=spell
 position=ranged_back
-class_talents=dispel_magic:1/improved_flash_heal:1/protective_light:1/angelic_feather:1/phantasm:1/death_and_madness:1/leap_of_faith:1/dominate_mind:1/mass_dispel:1/power_infusion:1/vampiric_embrace:1/tithe_evasion:1/improved_mass_dispel:1/body_and_soul:1/twins_of_the_sun_priestess:1/sanlayn:1/twist_of_fate:2/throes_of_pain:2/halo:1/translucent_image:1/mindgames:1/lights_inspiration:2/improved_fade:2/manipulation:2/angelic_bulwark:1/shattered_perceptions:1
-spec_talents=devouring_plague:1/dispersion:1/shadowy_apparitions:1/silence:1/mental_fortitude:1/misery:1/coalescing_shadows:1/mind_spike:1/puppet_master:1/mental_decay:1/dark_ascension:1/surge_of_darkness:1/harnessed_shadows:1/shadowy_insight:1/ancient_madness:2/shadow_crash:1/dark_evangelism:2/auspicious_spirits:1/mindbender:1/mind_flay_insanity:1/encroaching_shadows:1/inescapable_torment:2/screams_of_the_void:2/mind_devourer:1/idol_of_yshaarj:1/idol_of_cthun:1
+talents=BIQAAAAAAAAAAAAAAAAAAAAAAIk0CBAAAAAAAAAAAAQikkSkmU0iEJlESEkGJJJSIIBh0kWIJAA
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
@@ -103,13 +102,10 @@ actions.main+=/shadow_word_death
 # Use Shadow Word: Pain while moving as a low-priority action
 actions.main+=/shadow_word_pain
 
-actions.trinkets=use_item,name=scars_of_fraternal_strife,if=(!buff.scars_of_fraternal_strife_4.up&time>1)|(buff.voidform.up|buff.power_infusion.up|buff.dark_ascension.up|cooldown.void_eruption.remains>10)
-actions.trinkets+=/use_item,name=macabre_sheet_music,if=cooldown.void_eruption.remains>10|cooldown.dark_ascension.remains>10
-actions.trinkets+=/use_item,name=soulletting_ruby,if=buff.voidform.up|buff.power_infusion.up|buff.dark_ascension.up|cooldown.void_eruption.remains>10,target_if=min:target.health.pct
-# Use this on CD for max CDR
-actions.trinkets+=/use_item,name=architects_ingenuity_core
 # Default fallback for usable items: Use on cooldown in order by trinket slot.
-actions.trinkets+=/use_items,if=buff.voidform.up|buff.power_infusion.up|buff.dark_ascension.up|cooldown.void_eruption.remains>10
+actions.trinkets=use_items,if=buff.voidform.up|buff.power_infusion.up|buff.dark_ascension.up|cooldown.void_eruption.remains>10
+# Sync with cooldowns for Ancient Madness or use when the fight will end soon or at full stacks.
+actions.trinkets+=/use_item,name=desperate_invokers_codex,if=fight_remains<20|buff.hatred.stack=180|!talent.ancient_madness|(cooldown.dark_ascension.remains>10&talent.dark_ascension)|(cooldown.void_eruption.remains>10&talent.void_eruption)|(!talent.void_eruption&!talent.dark_ascension)
 
 head=organized_pontificators_mask,id=193703,ilevel=372
 neck=ukhel_ancestry_beads,id=193676,ilevel=372
