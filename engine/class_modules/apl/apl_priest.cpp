@@ -97,7 +97,7 @@ void shadow( player_t* p )
 
   // Trinkets
   trinkets->add_action(
-      "use_items,if=buff.voidform.up|buff.power_infusion.up|buff.dark_ascension.up|cooldown.void_eruption.remains>10",
+      "use_items,if=buff.voidform.up|buff.power_infusion.up|buff.dark_ascension.up|cooldown.void_eruption.remains>10|fight_remains<20",
       "Default fallback for usable items: Use on cooldown in order by trinket slot." );
   trinkets->add_action( "use_item,name=desperate_invokers_codex,if=fight_remains<20|buff.hatred.stack=180"
                         "|!talent.ancient_madness|(cooldown.dark_ascension.remains>10&talent.dark_ascension)"

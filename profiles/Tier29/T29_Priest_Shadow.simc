@@ -103,7 +103,7 @@ actions.main+=/shadow_word_death
 actions.main+=/shadow_word_pain
 
 # Default fallback for usable items: Use on cooldown in order by trinket slot.
-actions.trinkets=use_items,if=buff.voidform.up|buff.power_infusion.up|buff.dark_ascension.up|cooldown.void_eruption.remains>10
+actions.trinkets=use_items,if=buff.voidform.up|buff.power_infusion.up|buff.dark_ascension.up|cooldown.void_eruption.remains>10|fight_remains<20
 # Sync with cooldowns for Ancient Madness or use when the fight will end soon or at full stacks.
 actions.trinkets+=/use_item,name=desperate_invokers_codex,if=fight_remains<20|buff.hatred.stack=180|!talent.ancient_madness|(cooldown.dark_ascension.remains>10&talent.dark_ascension)|(cooldown.void_eruption.remains>10&talent.void_eruption)|(!talent.void_eruption&!talent.dark_ascension)
 
