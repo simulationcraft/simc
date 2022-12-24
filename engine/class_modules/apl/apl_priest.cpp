@@ -97,18 +97,13 @@ void shadow( player_t* p )
 
   // Trinkets
   trinkets->add_action(
-      "use_item,name=scars_of_fraternal_strife,if=(!buff.scars_of_fraternal_strife_4.up&time>1)|(buff.voidform.up|buff."
-      "power_infusion.up|buff.dark_ascension.up|cooldown.void_eruption.remains>10)" );
-  trinkets->add_action(
-      "use_item,name=macabre_sheet_music,if=cooldown.void_eruption.remains>10|cooldown.dark_ascension.remains>10" );
-  trinkets->add_action(
-      "use_item,name=soulletting_ruby,if=buff.voidform.up|buff.power_infusion.up|buff.dark_ascension.up|cooldown.void_"
-      "eruption.remains>10,target_if=min:target.health.pct" );
-  trinkets->add_action( "use_item,name=architects_ingenuity_core", "Use this on CD for max CDR" );
-  trinkets->add_action(
       "use_items,if=buff.voidform.up|buff.power_infusion.up|buff.dark_ascension.up|cooldown.void_eruption.remains>10",
       "Default fallback for usable items: Use on cooldown in order by trinket slot." );
-
+  trinkets->add_action( "use_item,name=desperate_invokers_codex,if=fight_remains<20|buff.hatred.stack=180"
+                        "|!talent.ancient_madness|(cooldown.dark_ascension.remains>10&talent.dark_ascension)"
+                        "|(cooldown.void_eruption.remains>10&talent.void_eruption)"
+                        "|(!talent.void_eruption&!talent.dark_ascension)", "Sync with cooldowns for Ancient Madness or "
+                        "use when the fight will end soon or at full stacks." );
   // CDs
   cds->add_action( "power_infusion,if=(buff.voidform.up|buff.dark_ascension.up)" );
   cds->add_action(
