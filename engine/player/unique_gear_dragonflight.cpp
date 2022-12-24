@@ -2898,6 +2898,9 @@ void ruby_whelp_shell(special_effect_t& effect)
 // 377465 procs the buff 382419 with every cast which reduces the proc action cd by 1s per stack
 void desperate_invokers_codex( special_effect_t& effect )
 {
+  if ( unique_gear::create_fallback_buffs( effect, { "hatred" } ) )
+    return;
+  
   auto hatred =
       create_buff<buff_t>( effect.player, effect.player->find_spell( 382419 ) )->set_default_value_from_effect( 1, 1 );
 
@@ -3776,7 +3779,7 @@ void register_special_effects()
   register_special_effect( 374233, items::grals_discarded_tooth );
   register_special_effect( 391612, items::static_charged_scale );
   register_special_effect( 383812, items::ruby_whelp_shell );
-  register_special_effect( 377464, items::desperate_invokers_codex );
+  register_special_effect( 377464, items::desperate_invokers_codex, true );
   
 
   // Weapons
