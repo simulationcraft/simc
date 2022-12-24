@@ -3355,7 +3355,7 @@ void potent_venom( special_effect_t& effect )
 {
   double mult = toxified_mul(effect.player);
   double gain = effect.driver()->effectN(3).average(effect.item) * mult;
-  double loss = abs(effect.driver()->effectN(2).average(effect.item)) * mult;
+  double loss = std::abs(effect.driver()->effectN(2).average(effect.item)) * mult;
 
   struct potent_venom_t : public buff_t
   {

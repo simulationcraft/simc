@@ -9357,11 +9357,9 @@ struct use_items_t : public action_t
     // Check all use_item actions, if at least one of them is ready, this use_items action is ready
     for ( const auto action : use_actions )
     {
-      if (action->ready()) {
-        if ( action->ready() && action->cooldown->up() )
-        {
-          return true;
-        }
+      if ( action->ready() && action->cooldown->up() )
+      {
+        return true;
       }
     }
 
