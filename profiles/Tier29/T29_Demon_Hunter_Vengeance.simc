@@ -26,13 +26,13 @@ actions.precombat+=/augmentation
 actions.precombat+=/food
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
+actions.precombat+=/sigil_of_flame
+actions.precombat+=/immolation_aura
 actions.precombat+=/variable,name=the_hunt_ramp_in_progress,value=0
 actions.precombat+=/variable,name=elysian_decree_ramp_in_progress,value=0
 actions.precombat+=/variable,name=soul_carver_ramp_in_progress,value=0
 actions.precombat+=/variable,name=fiery_demise_with_soul_carver_in_progress,value=0
 actions.precombat+=/variable,name=fiery_demise_without_soul_carver_available,value=0
-# A 'high-roll' from Darkglare boon is any roll that gives us an 18+s reduction on Fel Dev's cooldown.
-actions.precombat+=/variable,name=darkglare_boon_high_roll,value=0
 
 # Executed every time the actor is available.
 actions=auto_attack
@@ -47,7 +47,7 @@ actions+=/run_action_list,name=the_hunt_ramp,if=variable.the_hunt_ramp_in_progre
 actions+=/run_action_list,name=elysian_decree_ramp,if=variable.elysian_decree_ramp_in_progress|talent.elysian_decree.enabled&cooldown.elysian_decree.remains<5&!dot.fiery_brand.ticking
 actions+=/run_action_list,name=soul_carver_without_fiery_demise_ramp,if=variable.soul_carver_ramp_in_progress|talent.soul_carver.enabled&cooldown.soul_carver.remains<5&!talent.fiery_demise.enabled&!dot.fiery_brand.ticking
 actions+=/run_action_list,name=fiery_demise_window_with_soul_carver,if=variable.fiery_demise_with_soul_carver_in_progress|talent.fiery_demise.enabled&talent.soul_carver.enabled&cooldown.soul_carver.up&cooldown.fiery_brand.up&cooldown.immolation_aura.up&cooldown.fel_devastation.remains<10
-actions+=/run_action_list,name=fiery_demise_window_without_soul_carver,if=variable.fiery_demise_without_soul_carver_in_progress|talent.fiery_demise.enabled&((talent.soul_carver.enabled&!cooldown.soul_carver.up)|!talent.soul_carver.enabled)&cooldown.fiery_brand.up&cooldown.immolation_aura.up&cooldown.fel_devastation.remains<10&((talent.darkglare_boon.enabled&variable.darkglare_boon_high_roll)|!talent.darkglare_boon.enabled)
+actions+=/run_action_list,name=fiery_demise_window_without_soul_carver,if=variable.fiery_demise_without_soul_carver_in_progress|talent.fiery_demise.enabled&((talent.soul_carver.enabled&!cooldown.soul_carver.up)|!talent.soul_carver.enabled)&cooldown.fiery_brand.up&cooldown.immolation_aura.up&cooldown.fel_devastation.remains<10&((talent.darkglare_boon.enabled&darkglare_boon_cdr_high_roll)|!talent.darkglare_boon.enabled)
 actions+=/metamorphosis,if=!buff.metamorphosis.up&!dot.fiery_brand.ticking
 actions+=/fel_devastation,if=!talent.down_in_flames.enabled
 actions+=/spirit_bomb,if=((buff.metamorphosis.up&talent.fracture.enabled&soul_fragments>=3&spell_targets>1)|soul_fragments>=4&spell_targets>1)
@@ -70,8 +70,6 @@ actions.elysian_decree_ramp+=/elysian_decree
 
 actions.fiery_demise_window_with_soul_carver=variable,name=fiery_demise_with_soul_carver_in_progress,value=1,if=!variable.fiery_demise_with_soul_carver_in_progress
 actions.fiery_demise_window_with_soul_carver+=/variable,name=fiery_demise_with_soul_carver_in_progress,value=0,if=cooldown.soul_carver.remains&cooldown.fiery_brand.remains&cooldown.immolation_aura.remains&cooldown.fel_devastation.remains
-# A 'high-roll' from Darkglare boon is any roll that gives us an 18+s reduction on Fel Dev's cooldown.
-actions.fiery_demise_window_with_soul_carver+=/variable,name=darkglare_boon_high_roll,op=setif,value=1,value_else=0,condition=darkglare_boon_cdr_roll>=18,if=prev_gcd.1.fel_devastation
 actions.fiery_demise_window_with_soul_carver+=/fracture,if=fury.deficit>=30&!dot.fiery_brand.ticking
 actions.fiery_demise_window_with_soul_carver+=/fiery_brand,if=!dot.fiery_brand.ticking&fury>=30
 actions.fiery_demise_window_with_soul_carver+=/fel_devastation,if=dot.fiery_brand.remains<=3
@@ -84,7 +82,6 @@ actions.fiery_demise_window_with_soul_carver+=/throw_glaive
 
 actions.fiery_demise_window_without_soul_carver=variable,name=fiery_demise_without_soul_carver_in_progress,value=1,if=!variable.fiery_demise_without_soul_carver_in_progress
 actions.fiery_demise_window_without_soul_carver+=/variable,name=fiery_demise_without_soul_carver_in_progress,value=0,if=cooldown.fiery_brand.remains&cooldown.immolation_aura.remains&cooldown.fel_devastation.remains
-actions.fiery_demise_window_without_soul_carver+=/variable,name=darkglare_boon_high_roll,op=setif,value=1,value_else=0,condition=darkglare_boon_cdr_roll>=18,if=prev_gcd.1.fel_devastation
 actions.fiery_demise_window_without_soul_carver+=/fracture,if=fury.deficit>=30&!dot.fiery_brand.ticking
 actions.fiery_demise_window_without_soul_carver+=/fiery_brand,if=!dot.fiery_brand.ticking&fury>=30
 actions.fiery_demise_window_without_soul_carver+=/immolation_aura,if=dot.fiery_brand.ticking

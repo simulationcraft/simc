@@ -134,12 +134,13 @@ void vengeance( player_t* p )
   precombat->add_action( "augmentation" );
   precombat->add_action( "food" );
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
+  precombat->add_action( "sigil_of_flame" );
+  precombat->add_action( "immolation_aura" );
   precombat->add_action( "variable,name=the_hunt_ramp_in_progress,value=0" );
   precombat->add_action( "variable,name=elysian_decree_ramp_in_progress,value=0" );
   precombat->add_action( "variable,name=soul_carver_ramp_in_progress,value=0" );
   precombat->add_action( "variable,name=fiery_demise_with_soul_carver_in_progress,value=0" );
   precombat->add_action( "variable,name=fiery_demise_without_soul_carver_available,value=0" );
-  precombat->add_action( "variable,name=darkglare_boon_high_roll,value=0", "A 'high-roll' from Darkglare boon is any roll that gives us an 18+s reduction on Fel Dev's cooldown." );
 
   default_->add_action( "auto_attack" );
   default_->add_action( "infernal_strike" );
@@ -153,7 +154,7 @@ void vengeance( player_t* p )
   default_->add_action( "run_action_list,name=elysian_decree_ramp,if=variable.elysian_decree_ramp_in_progress|talent.elysian_decree.enabled&cooldown.elysian_decree.remains<5&!dot.fiery_brand.ticking" );
   default_->add_action( "run_action_list,name=soul_carver_without_fiery_demise_ramp,if=variable.soul_carver_ramp_in_progress|talent.soul_carver.enabled&cooldown.soul_carver.remains<5&!talent.fiery_demise.enabled&!dot.fiery_brand.ticking" );
   default_->add_action( "run_action_list,name=fiery_demise_window_with_soul_carver,if=variable.fiery_demise_with_soul_carver_in_progress|talent.fiery_demise.enabled&talent.soul_carver.enabled&cooldown.soul_carver.up&cooldown.fiery_brand.up&cooldown.immolation_aura.up&cooldown.fel_devastation.remains<10" );
-  default_->add_action( "run_action_list,name=fiery_demise_window_without_soul_carver,if=variable.fiery_demise_without_soul_carver_in_progress|talent.fiery_demise.enabled&((talent.soul_carver.enabled&!cooldown.soul_carver.up)|!talent.soul_carver.enabled)&cooldown.fiery_brand.up&cooldown.immolation_aura.up&cooldown.fel_devastation.remains<10&((talent.darkglare_boon.enabled&variable.darkglare_boon_high_roll)|!talent.darkglare_boon.enabled)" );
+  default_->add_action( "run_action_list,name=fiery_demise_window_without_soul_carver,if=variable.fiery_demise_without_soul_carver_in_progress|talent.fiery_demise.enabled&((talent.soul_carver.enabled&!cooldown.soul_carver.up)|!talent.soul_carver.enabled)&cooldown.fiery_brand.up&cooldown.immolation_aura.up&cooldown.fel_devastation.remains<10&((talent.darkglare_boon.enabled&darkglare_boon_cdr_high_roll)|!talent.darkglare_boon.enabled)" );
   default_->add_action( "metamorphosis,if=!buff.metamorphosis.up&!dot.fiery_brand.ticking" );
   default_->add_action( "fel_devastation,if=!talent.down_in_flames.enabled" );
   default_->add_action( "spirit_bomb,if=((buff.metamorphosis.up&talent.fracture.enabled&soul_fragments>=3&spell_targets>1)|soul_fragments>=4&spell_targets>1)" );
@@ -194,7 +195,6 @@ void vengeance( player_t* p )
 
   fiery_demise_window_with_soul_carver->add_action( "variable,name=fiery_demise_with_soul_carver_in_progress,value=1,if=!variable.fiery_demise_with_soul_carver_in_progress" );
   fiery_demise_window_with_soul_carver->add_action( "variable,name=fiery_demise_with_soul_carver_in_progress,value=0,if=cooldown.soul_carver.remains&cooldown.fiery_brand.remains&cooldown.immolation_aura.remains&cooldown.fel_devastation.remains" );
-  fiery_demise_window_with_soul_carver->add_action( "variable,name=darkglare_boon_high_roll,op=setif,value=1,value_else=0,condition=darkglare_boon_cdr_roll>=18,if=prev_gcd.1.fel_devastation", "A 'high-roll' from Darkglare boon is any roll that gives us an 18+s reduction on Fel Dev's cooldown." );
   fiery_demise_window_with_soul_carver->add_action( "fracture,if=fury.deficit>=30&!dot.fiery_brand.ticking" );
   fiery_demise_window_with_soul_carver->add_action( "fiery_brand,if=!dot.fiery_brand.ticking&fury>=30" );
   fiery_demise_window_with_soul_carver->add_action( "fel_devastation,if=dot.fiery_brand.remains<=3" );
@@ -207,7 +207,6 @@ void vengeance( player_t* p )
 
   fiery_demise_window_without_soul_carver->add_action( "variable,name=fiery_demise_without_soul_carver_in_progress,value=1,if=!variable.fiery_demise_without_soul_carver_in_progress" );
   fiery_demise_window_without_soul_carver->add_action( "variable,name=fiery_demise_without_soul_carver_in_progress,value=0,if=cooldown.fiery_brand.remains&cooldown.immolation_aura.remains&cooldown.fel_devastation.remains" );
-  fiery_demise_window_without_soul_carver->add_action( "variable,name=darkglare_boon_high_roll,op=setif,value=1,value_else=0,condition=darkglare_boon_cdr_roll>=18,if=prev_gcd.1.fel_devastation" );
   fiery_demise_window_without_soul_carver->add_action( "fracture,if=fury.deficit>=30&!dot.fiery_brand.ticking" );
   fiery_demise_window_without_soul_carver->add_action( "fiery_brand,if=!dot.fiery_brand.ticking&fury>=30" );
   fiery_demise_window_without_soul_carver->add_action( "immolation_aura,if=dot.fiery_brand.ticking" );
