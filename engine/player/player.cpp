@@ -9329,7 +9329,7 @@ struct use_items_t : public action_t
 
     for ( const auto action : use_actions )
     {
-      if ( action->action->use_off_gcd )
+      if ( action->use_off_gcd )
       {
         use_off_gcd = true;
         break;
