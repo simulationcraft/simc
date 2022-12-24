@@ -9187,7 +9187,7 @@ struct use_item_t : public action_t
       return false;
     }
 
-    if ( player->gcd_ready > sim->current_time() && !action->use_off_gcd )
+    if ( action && player->gcd_ready > sim->current_time() && !action->use_off_gcd )
     {
       return false;
     }
