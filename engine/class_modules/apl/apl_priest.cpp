@@ -76,6 +76,7 @@ void shadow( player_t* p )
   default_->add_action( "run_action_list,name=main" );
 
   cds->add_action( "power_infusion,if=(buff.voidform.up|buff.dark_ascension.up)" );
+  cds->add_action( "invoke_external_buff,name=power_infusion,if=(buff.voidform.up|buff.dark_ascension.up)&!buff.power_infusion.up" );
   cds->add_action( "void_eruption,if=!cooldown.fiend.up&(pet.fiend.active|!talent.mindbender)&(cooldown.mind_blast.charges=0|time>15|buff.shadowy_insight.up&cooldown.mind_blast.charges=buff.shadowy_insight.stack)" );
   cds->add_action( "dark_ascension,if=pet.fiend.active&cooldown.mind_blast.charges<2|!talent.mindbender&!cooldown.fiend.up&cooldown.fiend.remains>=15" );
   cds->add_action( "call_action_list,name=trinkets" );
