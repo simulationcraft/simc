@@ -256,6 +256,8 @@ struct seraphim_t : public holy_power_consumer_t<paladin_spell_t>
 
     if ( p->talents.quickened_invocations->ok() )
       cooldown->duration += timespan_t::from_millis( p->talents.quickened_invocations->effectN( 2 ).base_value() );
+
+    doesnt_consume_dp = p->bugs;
   }
 
   void execute() override
@@ -883,6 +885,11 @@ struct melee_t : public paladin_melee_attack_t
 
           if ( p()->talents.ashes_to_ashes->ok() )
           {
+            if ( p()->bugs && p()->buffs.fires_of_justice->up() )
+            {
+              p()->buffs.fires_of_justice->expire();
+            }
+
             p()->buffs.seraphim->extend_duration_or_trigger(
               timespan_t::from_seconds( p()->talents.ashes_to_ashes->effectN( 1 ).base_value() ),
               player
@@ -2638,10 +2645,13 @@ void paladin_t::create_buffs()
                               if ( b->player != this ) return;
                               if ( cooldowns.ret_aura_icd->up() && rng().roll( options.proc_chance_ret_aura_sera ) )
                               {
-                                buffs.seraphim->extend_duration_or_trigger(
-                                  timespan_t::from_seconds( b->data().effectN( 4 ).base_value() ),
-                                  this
-                                );
+                                if ( !bugs || !buffs.seraphim->up() )
+                                {
+                                  buffs.seraphim->extend_duration_or_trigger(
+                                    timespan_t::from_seconds( b->data().effectN( 4 ).base_value() ),
+                                    this
+                                  );
+                                }
                                 cooldowns.ret_aura_icd->start();
                               }
                             });
@@ -3228,7 +3238,16 @@ double paladin_t::composite_mastery_value() const
   double m = player_t::composite_mastery_value();
 
   if ( talents.seal_of_might->ok() && ( buffs.avenging_wrath->up() || buffs.crusade->up() || buffs.sentinel->up() ) )
-    m += talents.seal_of_might->effectN( 1 ).percent();
+  {
+    if ( bugs )
+    {
+      m += talents.seal_of_might->effectN( 2 ).percent();
+    }
+    else
+    {
+      m += talents.seal_of_might->effectN( 1 ).percent();
+    }
+  }
 
   return m;
 }
@@ -4080,7 +4099,7 @@ std::unique_ptr<expr_t> paladin_t::create_expression( util::string_view name_str
  if ( specialization() == PALADIN_PROTECTION && (  splits.size() >= 2 && util::str_compare_ci( splits[ 1 ], "avenging_wrath" ) ) )
   {
   splits[ 1 ] = talents.sentinel->ok()? "sentinel" : "avenging_wrath";
- 
+
     return paladin_t::create_expression( util::string_join( splits, "." ) );
   }
 

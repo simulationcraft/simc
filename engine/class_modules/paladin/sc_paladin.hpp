@@ -1111,7 +1111,11 @@ public:
     }
     if ( affected_by.blessing_of_dawn && p() -> buffs.blessing_of_dawn -> up() )
     {
-      am *= 1.0 + p() -> talents.of_dusk_and_dawn -> effectN ( 1 ).trigger() -> effectN ( 1 ).percent();
+      double bod_mult = 1.0 + p()->talents.of_dusk_and_dawn->effectN( 1 ).trigger()->effectN( 1 ).percent();
+      if ( p()->bugs && p()->talents.seal_of_order->ok() )
+      {
+        bod_mult += p()->talents.seal_of_order->effectN( 4 ).percent();
+      }
     }
 
     if ( affected_by.divine_purpose && p()->buffs.blessing_of_dawn->up() && p()->talents.seal_of_order->ok() )
@@ -1335,11 +1339,13 @@ struct holy_power_consumer_t : public Base
   bool is_divine_storm;
   bool is_wog;
   bool is_sotr;
+  bool doesnt_consume_dp;
   holy_power_consumer_t( util::string_view n, paladin_t* player, const spell_data_t* s ) :
     ab( n, player, s ),
     is_divine_storm ( false ),
     is_wog( false ),
-    is_sotr( false )
+    is_sotr( false ),
+    doesnt_consume_dp( false )
   { }
 
   double cost() const override
@@ -1424,8 +1430,8 @@ struct holy_power_consumer_t : public Base
       p -> buffs.crusade -> trigger( num_hopo_spent );
     }
 
-    if ( p -> talents.righteous_protector -> ok() 
-      && !ab::background 
+    if ( p -> talents.righteous_protector -> ok()
+      && !ab::background
       && p->cooldowns.righteous_protector_icd->up())
     {
         timespan_t reduction = timespan_t::from_seconds(
@@ -1532,7 +1538,7 @@ struct holy_power_consumer_t : public Base
     // Divine Purpose isn't consumed on DS if EP was consumed
     if ( should_continue )
     {
-      if ( p -> buffs.divine_purpose -> up() )
+      if ( p -> buffs.divine_purpose -> up() && !doesnt_consume_dp )
       {
         p -> buffs.divine_purpose -> expire();
       }
