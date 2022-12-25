@@ -1116,6 +1116,7 @@ public:
       {
         bod_mult += p()->talents.seal_of_order->effectN( 4 ).percent();
       }
+      am *= bod_mult;
     }
 
     if ( affected_by.divine_purpose && p()->buffs.blessing_of_dawn->up() && p()->talents.seal_of_order->ok() )
