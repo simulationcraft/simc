@@ -391,6 +391,7 @@ void unholy( player_t* p )
 
   cooldowns->add_action( "potion,if=(30>=pet.gargoyle.remains&pet.gargoyle.active)|(!talent.summon_gargoyle|cooldown.summon_gargoyle.remains>60|cooldown.summon_gargoyle.ready)&(buff.dark_transformation.up&30>=buff.dark_transformation.remains|pet.army_ghoul.active&pet.army_ghoul.remains<=30|pet.apoc_ghoul.active&pet.apoc_ghoul.remains<=30)|fight_remains<=30", "Potion" );
   cooldowns->add_action( "vile_contagion,target_if=max:debuff.festering_wound.stack,if=active_enemies>=2&debuff.festering_wound.stack>=4&cooldown.any_dnd.remains<3", "Cooldowns" );
+  cooldowns->add_action( "summon_gargoyle,if=active_enemies>=3" );
   cooldowns->add_action( "unholy_blight,if=variable.adds_remain|fight_remains<21" );
   cooldowns->add_action( "abomination_limb,if=rune<2&variable.adds_remain" );
   cooldowns->add_action( "raise_dead,if=!pet.ghoul.active" );
