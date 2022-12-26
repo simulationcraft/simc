@@ -481,6 +481,8 @@ namespace monk_apl
       const static std::unordered_map<std::string, std::string> serenity_trinkets {
         // name_str -> APL
         { "horn_of_valor",",if=pet.xuen_the_white_tiger.active|!talent.invoke_xuen_the_white_tiger&buff.serenity.up|fight_remains<30" },
+        { "manic_grieftorch","if=(pet.xuen_the_white_tiger.active|!talent.invoke_xuen_the_white_tiger)&!buff.serenity.up|fight_remains<5" },
+        { "algethar_puzzle_box","if=(pet.xuen_the_white_tiger.active|!talent.invoke_xuen_the_white_tiger)&!buff.serenity.up|fight_remains<25" },
 
         // Defaults:
         { "ITEM_STAT_BUFF", ",if=buff.serenity.remains>10" },
@@ -493,6 +495,8 @@ namespace monk_apl
       const static std::unordered_map<std::string, std::string> sef_trinkets {
         // name_str -> APL
         { "horn_of_valor",",if=pet.xuen_the_white_tiger.active|!talent.invoke_xuen_the_white_tiger&buff.storm_earth_and_fire.up|fight_remains<30" },
+        { "manic_grieftorch","if=(pet.xuen_the_white_tiger.active|!talent.invoke_xuen_the_white_tiger)&!buff.storm_earth_and_fire.up|fight_remains<5" },
+        { "algethar_puzzle_box","if=(pet.xuen_the_white_tiger.active|!talent.invoke_xuen_the_white_tiger)&!buff.storm_earth_and_fire.up|fight_remains<25" },
 
         // Defaults:
         { "ITEM_STAT_BUFF", ",if=cooldown.invoke_xuen_the_white_tiger.remains>cooldown%%120|cooldown<=60&variable.hold_xuen|cooldown<=60&buff.storm_earth_and_fire.remains>10|!talent.invoke_xuen_the_white_tiger" },
