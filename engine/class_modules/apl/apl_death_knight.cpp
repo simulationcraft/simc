@@ -359,7 +359,7 @@ void unholy( player_t* p )
 
   default_->add_action( "auto_attack" );
   default_->add_action( "mind_freeze,if=target.debuff.casting.react" );
-  default_->add_action( "variable,name=garg_setup,op=setif,value=1,value_else=0,condition=active_enemies>=3|cooldown.summon_gargoyle.remains>1&cooldown.apocalypse.remains>1|!talent.apocalypse&cooldown.summon_gargoyle.remains>1", "Variables" );
+  default_->add_action( "variable,name=garg_setup,op=setif,value=1,value_else=0,condition=active_enemies>=3|cooldown.summon_gargoyle.remains>1&cooldown.apocalypse.remains>1|!talent.apocalypse&cooldown.summon_gargoyle.remains>1|!talent.summon_gargoyle", "Variables" );
   default_->add_action( "variable,name=apoc_timing,op=setif,value=10,value_else=2,condition=cooldown.apocalypse.remains<10&debuff.festering_wound.stack<=4" );
   default_->add_action( "variable,name=festermight_tracker,op=setif,value=debuff.festering_wound.stack>=1,value_else=debuff.festering_wound.stack>=(3-talent.infected_claws),condition=!pet.gargoyle.active&talent.festermight&buff.festermight.up&(buff.festermight.remains%(4*gcd))>=1" );
   default_->add_action( "variable,name=pop_wounds,value=(cooldown.apocalypse.remains>variable.apoc_timing|!talent.apocalypse)&(variable.festermight_tracker|debuff.festering_wound.stack>=1&!talent.apocalypse|debuff.festering_wound.stack>=1&cooldown.unholy_assault.remains<20&talent.unholy_assault&!talent.summon_gargoyle&variable.st_planning|debuff.festering_wound.stack>4)|fight_remains<10" );
