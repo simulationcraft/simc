@@ -3705,6 +3705,7 @@ struct breath_of_fire_t : public monk_spell_t
   breath_of_fire_t( monk_t& p, util::string_view options_str )
     : monk_spell_t( "breath_of_fire", &p, p.talent.brewmaster.breath_of_fire ),
       dragonfire( new dragonfire_brew_t( p ) ),
+      no_bof_hit( false ),
       blackout_combo( false )
   {
     add_option( opt_bool( "no_bof_hit", no_bof_hit ));
