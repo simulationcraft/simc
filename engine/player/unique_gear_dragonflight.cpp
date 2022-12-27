@@ -2337,7 +2337,7 @@ void algethar_puzzle_box( special_effect_t& effect )
 
   auto buff_spell = effect.player->find_spell( 383781 );
   buff_t* buff    = create_buff<stat_buff_t>( effect.player, buff_spell )
-             ->add_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect.item ) );
+    ->set_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect.item ) );
   buff->set_default_value( effect.driver()->effectN( 1 ).average( effect.item ) );
 
   auto action           = new solved_the_puzzle_t( effect, buff );
