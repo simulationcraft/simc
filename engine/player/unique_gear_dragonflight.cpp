@@ -671,7 +671,7 @@ custom_cb_t idol_of_the_aspects( std::string_view type )
         ->add_stat( STAT_VERSATILITY_RATING, val );
 
     auto buff = create_buff<stat_buff_t>( effect.player, effect.trigger() )
-      ->add_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect.item ) )
+      ->set_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect.item ) )
       ->set_max_stack( as<int>( effect.driver()->effectN( 2 ).base_value() ) )
       ->set_expire_at_max_stack( true )
       ->set_stack_change_callback( [ gift ]( buff_t*, int, int new_ ) {
