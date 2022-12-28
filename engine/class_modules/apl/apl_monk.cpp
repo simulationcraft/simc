@@ -510,13 +510,11 @@ namespace monk_apl
       try { concat = talent_map.at( item.name_str ); }
       catch ( ... )
       {
-
         int duration = 0;
 
         for ( auto e : item.parsed.special_effects )
         {
-
-          int duration = (int) floor( e->duration().total_seconds() );
+          duration = (int) floor( e->duration().total_seconds() );
 
           // Ignore items that have a 30 second or shorter cooldown (or no cooldown)
           // Unless defined in the map above these will be used on cooldown.
