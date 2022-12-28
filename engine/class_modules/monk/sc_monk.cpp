@@ -3062,7 +3062,7 @@ struct touch_of_death_t : public monk_melee_attack_t
     return 0;
   }
 
-  bool target_ready( player_t* ) override
+  bool target_ready( player_t* target ) override
   {
     // Deals damage equal to 35% of your maximum health against players and stronger creatures under 15% health
     if ( target->true_level > p()->true_level && p()->talent.general.improved_touch_of_death->ok() &&
