@@ -6930,10 +6930,10 @@ void monk_t::init_spells()
     return find_talent_spell( talent_tree::CLASS, name );
   };
 
-  auto _CTID = [this]( int id ) {
+/* auto _CTID = [ this ]( int id ) {
     return find_talent_spell( talent_tree::CLASS, id );
   };
-
+*/
   auto _ST = [ this ]( util::string_view name ) {
     return find_talent_spell( talent_tree::SPECIALIZATION, name );
   };
