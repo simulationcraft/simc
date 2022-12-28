@@ -1547,7 +1547,8 @@ struct hunter_main_pet_base_t : public hunter_pet_t
   {
     double m = hunter_pet_t::composite_player_critical_damage_multiplier( s );
 
-    m *= 1 + buffs.piercing_fangs -> check_value();
+    if ( buffs.piercing_fangs -> data().effectN( 1 ).has_common_school( s -> action -> school ) )
+      m *= 1 + buffs.piercing_fangs -> check_value();
 
     return m;
   }
@@ -7242,9 +7243,14 @@ double hunter_t::composite_player_critical_damage_multiplier( const action_state
 {
   double m = player_t::composite_player_critical_damage_multiplier( s );
 
-  m *= 1.0 + talents.sharpshooter -> effectN( 1 ).percent();
-  m *= 1.0 + talents.sharp_edges -> effectN( 1 ).percent();
-  m *= 1.0 + buffs.unerring_vision -> stack() * buffs.unerring_vision -> data().effectN( 2 ).percent();
+  if ( talents.sharpshooter -> effectN( 1 ).has_common_school( s -> action -> school ) )
+    m *= 1.0 + talents.sharpshooter -> effectN( 1 ).percent();
+
+  if ( talents.sharp_edges -> effectN( 1 ).has_common_school( s -> action -> school ) )
+    m *= 1.0 + talents.sharp_edges -> effectN( 1 ).percent();
+
+  if ( buffs.unerring_vision -> data().effectN( 2 ).has_common_school( s -> action -> school ) )
+    m *= 1.0 + buffs.unerring_vision -> stack() * buffs.unerring_vision -> data().effectN( 2 ).percent();
 
   return m;
 }
