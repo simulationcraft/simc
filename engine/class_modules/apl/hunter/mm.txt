@@ -1,7 +1,7 @@
 actions.precombat=flask
 actions.precombat+=/augmentation
 actions.precombat+=/food
-actions.precombat+=/summon_pet,if=talent.kill_command|talent.beast_master
+actions.precombat+=/summon_pet,if=!talent.lone_wolf
 actions.precombat+=/snapshot_stats
 actions.precombat+=/double_tap,precast_time=10
 actions.precombat+=/use_item,name=algethar_puzzle_box
@@ -28,7 +28,7 @@ actions.cds+=/potion,if=buff.trueshot.up&(buff.bloodlust.up|target.health.pct<20
 
 actions.st=/steady_shot,if=talent.steady_focus&(steady_focus_count&buff.steady_focus.remains<5|buff.steady_focus.down&!buff.trueshot.up)
 actions.st+=/kill_shot
-actions.st+=/steel_trap
+actions.st+=/steel_trap,if=buff.trueshot.down
 actions.st+=/serpent_sting,target_if=min:dot.serpent_sting.remains,if=refreshable&!talent.serpentstalkers_trickery&buff.trueshot.down
 actions.st+=/explosive_shot
 # Save Double Tap for Rapid Fire if at least Streamline is taken.
@@ -50,6 +50,7 @@ actions.st+=/aimed_shot,target_if=max:debuff.latent_poison.stack,if=(buff.precis
 actions.st+=/steady_shot,if=talent.steady_focus&buff.steady_focus.remains<execute_time*2
 actions.st+=/rapid_fire
 actions.st+=/wailing_arrow,if=buff.trueshot.down
+actions.st+=/kill_command,if=buff.trueshot.down
 actions.st+=/chimaera_shot,if=buff.precise_shots.up|focus>cost+action.aimed_shot.cost
 actions.st+=/arcane_shot,if=buff.precise_shots.up|focus>cost+action.aimed_shot.cost
 actions.st+=/bag_of_tricks,if=buff.trueshot.down
@@ -76,7 +77,7 @@ actions.trickshots+=/chimaera_shot,if=buff.trick_shots.up&buff.precise_shots.up&
 actions.trickshots+=/multishot,if=buff.trick_shots.down|(buff.precise_shots.up|buff.bulletstorm.stack=10)&focus>cost+action.aimed_shot.cost
 # Only use baseline Serpent Sting as a filler in cleave if it's the only source of applying Latent Poison.
 actions.trickshots+=/serpent_sting,target_if=min:dot.serpent_sting.remains,if=refreshable&talent.poison_injection&!talent.serpentstalkers_trickery
-actions.trickshots+=/steel_trap
+actions.trickshots+=/steel_trap,if=buff.trueshot.down
 actions.trickshots+=/kill_shot,if=focus>cost+action.aimed_shot.cost
 actions.trickshots+=/multishot,if=focus>cost+action.aimed_shot.cost
 actions.trickshots+=/bag_of_tricks,if=buff.trueshot.down

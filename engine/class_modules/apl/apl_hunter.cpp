@@ -146,7 +146,7 @@ void marksmanship( player_t* p )
   precombat->add_action( "flask" );
   precombat->add_action( "augmentation" );
   precombat->add_action( "food" );
-  precombat->add_action( "summon_pet,if=talent.kill_command|talent.beast_master" );
+  precombat->add_action( "summon_pet,if=!talent.lone_wolf" );
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "double_tap,precast_time=10" );
   precombat->add_action( "use_item,name=algethar_puzzle_box" );
@@ -170,7 +170,7 @@ void marksmanship( player_t* p )
 
   st->add_action( "steady_shot,if=talent.steady_focus&(steady_focus_count&buff.steady_focus.remains<5|buff.steady_focus.down&!buff.trueshot.up)" );
   st->add_action( "kill_shot" );
-  st->add_action( "steel_trap" );
+  st->add_action( "steel_trap,if=buff.trueshot.down" );
   st->add_action( "serpent_sting,target_if=min:dot.serpent_sting.remains,if=refreshable&!talent.serpentstalkers_trickery&buff.trueshot.down" );
   st->add_action( "explosive_shot" );
   st->add_action( "double_tap,if=(cooldown.rapid_fire.remains<gcd|!talent.streamline)&(!raid_event.adds.exists|raid_event.adds.up&(raid_event.adds.in<10&raid_event.adds.remains<3|raid_event.adds.in>cooldown|active_enemies>1)|!raid_event.adds.up&(raid_event.adds.count=1|raid_event.adds.in>cooldown))", "Save Double Tap for Rapid Fire if at least Streamline is taken." );
@@ -186,6 +186,7 @@ void marksmanship( player_t* p )
   st->add_action( "steady_shot,if=talent.steady_focus&buff.steady_focus.remains<execute_time*2", "Refresh Steady Focus if it would run out while refreshing it." );
   st->add_action( "rapid_fire" );
   st->add_action( "wailing_arrow,if=buff.trueshot.down" );
+  st->add_action( "kill_command,if=buff.trueshot.down" );
   st->add_action( "chimaera_shot,if=buff.precise_shots.up|focus>cost+action.aimed_shot.cost" );
   st->add_action( "arcane_shot,if=buff.precise_shots.up|focus>cost+action.aimed_shot.cost" );
   st->add_action( "bag_of_tricks,if=buff.trueshot.down" );
@@ -209,7 +210,7 @@ void marksmanship( player_t* p )
   trickshots->add_action( "chimaera_shot,if=buff.trick_shots.up&buff.precise_shots.up&focus>cost+action.aimed_shot.cost&active_enemies<4" );
   trickshots->add_action( "multishot,if=buff.trick_shots.down|(buff.precise_shots.up|buff.bulletstorm.stack=10)&focus>cost+action.aimed_shot.cost" );
   trickshots->add_action( "serpent_sting,target_if=min:dot.serpent_sting.remains,if=refreshable&talent.poison_injection&!talent.serpentstalkers_trickery", "Only use baseline Serpent Sting as a filler in cleave if it's the only source of applying Latent Poison." );
-  trickshots->add_action( "steel_trap" );
+  trickshots->add_action( "steel_trap,if=buff.trueshot.down" );
   trickshots->add_action( "kill_shot,if=focus>cost+action.aimed_shot.cost" );
   trickshots->add_action( "multishot,if=focus>cost+action.aimed_shot.cost" );
   trickshots->add_action( "bag_of_tricks,if=buff.trueshot.down" );
