@@ -495,7 +495,7 @@ namespace monk_apl
       const static std::unordered_map<std::string, std::string> sef_trinkets {
         // name_str -> APL
         { "horn_of_valor",",if=pet.xuen_the_white_tiger.active|!talent.invoke_xuen_the_white_tiger&buff.storm_earth_and_fire.up|fight_remains<30" },
-        { "manic_grieftorch","if=!pet.xuen_the_white_tiger.active&!buff.storm_earth_and_fire.up|fight_remains<5" },
+        { "manic_grieftorch",",if=!pet.xuen_the_white_tiger.active&!buff.storm_earth_and_fire.up|fight_remains<5" },
         { "algethar_puzzle_box",",if=(pet.xuen_the_white_tiger.active|!talent.invoke_xuen_the_white_tiger)&!buff.storm_earth_and_fire.up|fight_remains<25" },
 
         // Defaults:
