@@ -1481,7 +1481,7 @@ struct hunter_main_pet_base_t : public hunter_pet_t
 
     buffs.bestial_wrath =
       make_buff( this, "bestial_wrath", find_spell( 186254 ) )
-        -> set_default_value( find_spell( 186254 ) -> effectN( 1 ).percent() )
+        -> set_default_value_from_effect( 1 )
         -> set_cooldown( 0_ms )
         -> set_stack_change_callback( [ this ]( buff_t*, int old, int cur ) {
           if ( cur == 0 )
@@ -1522,7 +1522,9 @@ struct hunter_main_pet_base_t : public hunter_pet_t
     
     m *= 1 + o() -> talents.beast_master -> effectN( 1 ).percent();
 
-    m *= 1 + buffs.bestial_wrath -> check_value();
+    if ( buffs.bestial_wrath -> has_common_school( school ) )
+      m *= 1 + buffs.bestial_wrath -> check_value();
+
     m *= 1 + o() -> talents.animal_companion -> effectN( 2 ).percent();
     m *= 1 + o() -> talents.training_expert -> effectN( 1 ).percent();
     
@@ -1742,7 +1744,7 @@ double hunter_main_pet_base_t::composite_player_target_multiplier( player_t* tar
   if ( auto main_pet = o() -> pets.main ) // theoretically should always be there /shrug
   {
     const hunter_main_pet_td_t* td = main_pet -> find_target_data( target );
-    if ( td && td -> dots.bloodshed -> is_ticking() )
+    if ( td && td -> dots.bloodshed -> is_ticking() && spells.bloodshed -> effectN( 2 ).has_common_school( school ) )
       m *= 1 + spells.bloodshed -> effectN( 2 ).percent();
   }
 
