@@ -1503,6 +1503,57 @@ void timebreaching_talon( special_effect_t& effect )
   effect.custom_buff = buff;
 }
 
+void voidmenders_shadowgem( special_effect_t& effect )
+{
+  auto stacking_buff = create_buff<stat_buff_t>( effect.player, "voidmenders_shadowgem_stacks", effect.player->find_spell( 397399 ) );
+  stacking_buff->set_cooldown( 0_ms );
+  stacking_buff->set_chance( 1.0 );
+  stacking_buff->set_max_stack( 20 );
+  stacking_buff->set_stat( STAT_CRIT_RATING, effect.driver()->effectN( 2 ).average( effect.item ) );
+
+  auto stacking_driver                = new special_effect_t( effect.player );
+  stacking_driver->name_str           = "voidmenders_shadowgem_stacks";
+  stacking_driver->type               = SPECIAL_EFFECT_EQUIP;
+  stacking_driver->source             = SPECIAL_EFFECT_SOURCE_ITEM;
+  stacking_driver->proc_flags_        = effect.driver()->proc_flags();
+  stacking_driver->proc_flags2_       = PF2_CAST_HEAL;
+  stacking_driver->spell_id           = effect.driver()->id();
+  stacking_driver->cooldown_          = 0_ms;
+  stacking_driver->cooldown_category_ = 0;
+  stacking_driver->custom_buff        = stacking_buff;
+
+  // TODO: Check this. As of 28/12/22 every single spell on shadow procs this item for some reason.
+  if ( effect.player->specialization() == PRIEST_SHADOW )
+  {
+    stacking_driver->proc_flags_ |= PF_ALL_DAMAGE;
+    stacking_driver->proc_flags2_ |= PF2_CAST | PF2_CAST_DAMAGE;
+  }
+
+  effect.player->special_effects.push_back( stacking_driver );
+
+  auto stacking_cb = new dbc_proc_callback_t( effect.player, *stacking_driver );
+  stacking_cb->initialize();
+  stacking_cb->deactivate();
+
+  auto buff = create_buff<stat_buff_t>( effect.player, "voidmenders_shadowgem", effect.player->find_spell( 397399 ) );
+  buff->set_chance( 1.0 );
+  buff->set_stat( STAT_CRIT_RATING, effect.driver()->effectN( 1 ).average( effect.item ) )
+      ->set_stack_change_callback( [ stacking_cb, stacking_buff ]( buff_t*, int old_, int new_ ) {
+        if ( new_ )
+          stacking_cb->activate();
+        else
+        {
+          stacking_cb->deactivate();
+          stacking_buff->expire();
+        }
+      } );
+
+  effect.ppm_ = 0;
+  effect.proc_chance_ = 1.0;
+
+  effect.custom_buff = buff;
+}
+
 void umbrelskuls_fractured_heart( special_effect_t& effect )
 {
   auto dot = create_proc_action<generic_proc_t>( "crystal_sickness", effect, "crystal_sickness", effect.trigger() );
@@ -3751,6 +3802,7 @@ void register_special_effects()
   register_special_effect( 384191, items::shikaari_huntress_arrowhead );
   register_special_effect( 377466, items::spiteful_storm );
   register_special_effect( 381768, items::spoils_of_neltharus, true );
+  register_special_effect( 397399, items::voidmenders_shadowgem );
   register_special_effect( 375844, items::sustaining_alchemist_stone );
   register_special_effect( 385884, items::timebreaching_talon );
   register_special_effect( 385902, items::umbrelskuls_fractured_heart );
