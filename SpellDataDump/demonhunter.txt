@@ -1,4 +1,4 @@
-SimulationCraft 1002-01 for World of Warcraft 10.0.2.47213 Live (hotfix 2022-12-23/47213, no-networking)
+SimulationCraft 1002-01 for World of Warcraft 10.0.2.47213 Live (hotfix 2022-12-29/47213, no-networking)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -8479,6 +8479,29 @@ Effects          :
                    Base Value: 250 | Scaled Value: 250 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
 Description      : Immolation Aura damage increases the duration of your Fiery Brand by ${$s1/1000}.2 sec.
 
+Name             : Charred Flesh (id=336640) [Spell Family (107), Hidden] 
+Class            : Demon Hunter
+School           : Physical
+Spell Type       : None
+Duration         : 9 seconds
+Proc Chance      : 100%
+Proc Flags       : ........ ....x... ........ ........ 
+                 : Generic Hostile Spell
+Affecting spells : Spirit of the Darkness Flame (235543 effect#1), Revel in Pain (272985 effect#2), Spirit of the Darkness Flame (337542 effect#1), Fiery Brand (343010 effect#1)
+Family Flags     : 36
+Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122)
+Effects          :
+#1 (id=834158)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+
 Name             : Inner Demon (id=337313) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Fire
@@ -9374,7 +9397,7 @@ Attributes       : ......xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=844529)   : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
-                   Affected Spells: Fiery Brand (204021), Fiery Brand (207744), Fiery Brand (207771)
+                   Affected Spells: Fiery Brand (204021), Fiery Brand (207744), Fiery Brand (207771), Charred Flesh (336640)
                    Family Flags: 36
 Description      : The duration of Fiery Brand is increased by ${$s1/1000} sec.
 
