@@ -81,6 +81,7 @@ public:
 
     // Vengeance
     buff_t* frailty;
+    buff_t* charred_flesh;
 
     // Set Bonuses
     buff_t* t29_vengeance_4pc;
@@ -519,6 +520,7 @@ public:
     const spell_data_t* fiery_brand_debuff;
     const spell_data_t* fiery_brand_dot_damage;
     const spell_data_t* frailty_debuff;
+    const spell_data_t* charred_flesh_debuff;
     const spell_data_t* riposte;
     const spell_data_t* soul_cleave_2;
     const spell_data_t* thick_skin;
@@ -2542,6 +2544,11 @@ struct fiery_brand_t : public demon_hunter_spell_t
     if ( result_is_miss( s->result ) )
       return;
 
+    if ( p()->talent.vengeance.charred_flesh->ok() )
+    {
+      td( s->target )->debuffs.charred_flesh->trigger();
+    }
+
     // Technically 207744 is a variant of the DR debuff without the Rank 2 effect from the DoT
     if ( dot_action )
     {
@@ -2853,9 +2860,10 @@ struct immolation_aura_t : public demon_hunter_spell_t
         if ( p()->talent.vengeance.charred_flesh->ok() )
         {
           demon_hunter_td_t* target_data = td( s->target );
-          if ( target_data->dots.fiery_brand->is_ticking() )
+          if ( target_data->dots.fiery_brand->is_ticking() && target_data->debuffs.charred_flesh->up() )
           {
-            target_data->dots.fiery_brand->adjust_duration( p()->talent.vengeance.charred_flesh->effectN( 1 ).time_value() );
+            target_data->dots.fiery_brand->adjust_duration(
+                p()->talent.vengeance.charred_flesh->effectN( 1 ).time_value() );
           }
         }
 
@@ -5360,6 +5368,7 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
                           ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
                           ->set_period( 0_ms )
                           ->apply_affecting_aura( p.talent.vengeance.soulcrush );
+    debuffs.charred_flesh = make_buff( *this, "charred_flesh", p.spec.charred_flesh_debuff );
     debuffs.t29_vengeance_4pc =
         make_buff( *this, "decrepit_souls",
                    p.set_bonuses.t29_vengeance_4pc->ok() ? p.find_spell( 394958 ) : spell_data_t::not_found() )
@@ -6280,6 +6289,7 @@ void demon_hunter_t::init_spells()
   spec.fiery_brand_debuff = talent.vengeance.fiery_brand->ok() ? find_spell( 207744 ) : spell_data_t::not_found();
   spec.fiery_brand_dot_damage = talent.vengeance.fiery_brand->ok() ? find_spell( 207771 ) : spell_data_t::not_found();
   spec.frailty_debuff = talent.vengeance.frailty->ok() ? find_spell( 247456 ) : spell_data_t::not_found();
+  spec.charred_flesh_debuff = talent.vengeance.charred_flesh->ok() ? find_spell( 336640 ) : spell_data_t::not_found();
   spec.painbringer_buff = talent.vengeance.painbringer->ok() ? find_spell( 212988 ) : spell_data_t::not_found();
   spec.soul_furnace_damage_amp = talent.vengeance.soul_furnace->ok() ? find_spell( 391172 ): spell_data_t::not_found();
   spec.soul_furnace_stack = talent.vengeance.soul_furnace->ok() ? find_spell( 391166 ): spell_data_t::not_found();
