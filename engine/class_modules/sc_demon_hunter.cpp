@@ -403,12 +403,12 @@ public:
       player_talent_t focused_cleave;
       player_talent_t soulmonger;                 // NYI
       player_talent_t stoke_the_flames;
-      player_talent_t burning_alive;              // NYI
+      player_talent_t burning_alive;
       player_talent_t cycle_of_binding;           // NYI
 
       player_talent_t vulnerability;
       player_talent_t feed_the_demon;             // NYI
-      player_talent_t charred_flesh;              // NYI
+      player_talent_t charred_flesh;
 
       player_talent_t soulcrush;
       player_talent_t soul_carver;
@@ -2483,6 +2483,13 @@ struct fiery_brand_t : public demon_hunter_spell_t
       return td( t )->dots.fiery_brand;
     }
 
+    double last_tick_factor( const dot_t* d, timespan_t time_to_tick, timespan_t duration ) const override
+    {
+      // 2022-12-28 The last tick of Fiery Brand can happen on a 0.5s barrier due to how Charred Flesh and
+      // Agonizing Flames interact.
+      return 1.0;
+    }
+
     void tick( dot_t* d ) override
     {
       demon_hunter_spell_t::tick( d );
@@ -2529,7 +2536,7 @@ struct fiery_brand_t : public demon_hunter_spell_t
     use_off_gcd = true;
 
     dot_action = p->get_background_action<fiery_brand_dot_t>( "fiery_brand_dot" );
-    dot_action->stats = stats;
+    add_child(dot_action);
   }
 
   void impact( action_state_t* s ) override
@@ -2852,7 +2859,8 @@ struct immolation_aura_t : public demon_hunter_spell_t
           demon_hunter_td_t* target_data = td( s->target );
           if ( target_data->dots.fiery_brand->is_ticking() )
           {
-            target_data->dots.fiery_brand->adjust_duration( p()->talent.vengeance.charred_flesh->effectN( 1 ).time_value() );
+            target_data->dots.fiery_brand->adjust_duration(
+                p()->talent.vengeance.charred_flesh->effectN( 1 ).time_value(), 14.5_s );
           }
         }
 
