@@ -77,6 +77,7 @@ aoe->add_action( "new_moon,if=astral_power.deficit>variable.passive_asp+10" );
 aoe->add_action( "half_moon,if=astral_power.deficit>variable.passive_asp+20&(buff.eclipse_lunar.remains>execute_time|buff.eclipse_solar.remains>execute_time)" );
 aoe->add_action( "starsurge,if=buff.starweavers_weft.up" );
 aoe->add_action( "force_of_nature,if=astral_power.deficit>variable.passive_asp+20" );
+aoe->add_action( "wrath,if=buff.eclipse_solar.remains>execute_time&spell_targets.starfire<4" );
 aoe->add_action( "starfire" );
 aoe->add_action( "run_action_list,name=fallthru" );
 
