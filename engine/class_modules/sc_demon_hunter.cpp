@@ -695,7 +695,7 @@ public:
     double target_reach = -1.0;
     double initial_fury = 0;
     int fodder_to_the_flame_kill_seconds = 4;
-    double razelikhs_defilement_utility_pct = 0;
+    double darkglare_boon_cdr_high_roll_seconds = 18;
   } options;
 
   demon_hunter_t( sim_t* sim, util::string_view name, race_e r );
@@ -4819,7 +4819,6 @@ struct soul_cleave_t : public demon_hunter_attack_t
   };
 
   heals::soul_cleave_heal_t* heal;
-  std::vector<cooldown_t*> sigil_cooldowns;
 
   soul_cleave_t( demon_hunter_t* p, util::string_view options_str )
     : demon_hunter_attack_t( "soul_cleave", p, p->spec.soul_cleave, options_str ),
@@ -5755,6 +5754,12 @@ std::unique_ptr<expr_t> demon_hunter_t::create_expression( util::string_view nam
   {
     return make_mem_fn_expr(name_str, *this, &demon_hunter_t::darkglare_boon_cdr_roll);
   }
+  else if ( util::str_compare_ci( name_str, "darkglare_boon_cdr_high_roll" ) )
+  {
+    return make_fn_expr( name_str, [this] () {
+      return this->darkglare_boon_cdr_roll >= this->options.darkglare_boon_cdr_high_roll_seconds;
+    });
+  }
 
   return player_t::create_expression( name_str );
 }
@@ -5769,7 +5774,7 @@ void demon_hunter_t::create_options()
   add_option( opt_float( "target_reach", options.target_reach ) );
   add_option( opt_float( "initial_fury", options.initial_fury, 0.0, 120 ) );
   add_option( opt_int( "fodder_to_the_flame_kill_seconds", options.fodder_to_the_flame_kill_seconds, 0, 10 ) );
-  add_option( opt_float( "razelikhs_defilement_utility_pct", options.razelikhs_defilement_utility_pct, 0.0, 1.0 ) );
+  add_option( opt_float( "darkglare_boon_cdr_high_roll_seconds", options.darkglare_boon_cdr_high_roll_seconds, 6, 24 ) );
 }
 
 // demon_hunter_t::create_pet ===============================================
