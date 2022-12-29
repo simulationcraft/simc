@@ -535,7 +535,7 @@ struct pull_event_t final : raid_event_t
         return;
     }
 
-    if ( demised )
+    if ( demised || !spawned )
       return;
 
     demised = true;
