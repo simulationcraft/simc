@@ -3437,6 +3437,13 @@ struct fodder_to_the_flame_cb_t : public dbc_proc_callback_t
     void execute() override
     {
       demon_hunter_spell_t::execute();
+
+      // Simulate triggering initiative from hitting the demon
+      if ( p()->talent.havoc.initiative->ok() )
+      {
+        p()->buff.initiative->trigger();
+      }
+
       p()->spawn_soul_fragment( soul_fragment::EMPOWERED_DEMON );
     }
   };
