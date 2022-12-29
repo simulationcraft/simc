@@ -1,4 +1,4 @@
-SimulationCraft 1002-01 for World of Warcraft 10.0.2.47213 Live (hotfix 2022-12-23/47213)
+SimulationCraft 1002-01 for World of Warcraft 10.0.2.47213 Live (hotfix 2022-12-23/47213, no-networking)
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -1260,7 +1260,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=12247)    : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
-#2 (id=1038628)  : Apply Aura (6) | Unknown(531)
+#2 (id=1038628)  : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Damage dealt by pets increased by $s1%.
 
@@ -2134,7 +2134,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.45000 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Implosion (196277), Implosion (196278), Bilescourge Bombers (267213)
                    Family Flags: 46, 89
-#3 (id=1033047)  : Apply Aura (6) | Unknown(531)
+#3 (id=1033047)  : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.45000 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Increases the damage done by your demons by ${$s1}.1%.
 
@@ -3499,7 +3499,7 @@ Effects          :
                    Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 0.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Corruption (172), Corruption (146739), Deliberate Corruption (367831)
                    Family Flags: 1
-#7 (id=261078)   : Apply Aura (6) | Unknown(531)
+#7 (id=261078)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: 14 | Scaled Value: 14 | PvP Coefficient: 1.00000 | Target: Self (1)
 #8 (id=261079)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -3547,7 +3547,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Shadow Bolt (686)
                    Family Flags: 0
-#5 (id=191030)   : Apply Aura (6) | Unknown(531)
+#5 (id=191030)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: 18 | Scaled Value: 18 | PvP Coefficient: 1.00000 | Target: Self (1)
 #6 (id=261067)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -3598,7 +3598,7 @@ Effects          :
                    Family Flags: 49
 #3 (id=191024)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-#4 (id=191025)   : Apply Aura (6) | Unknown(531)
+#4 (id=191025)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 #5 (id=191026)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -6555,7 +6555,7 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 14 | Radius: 100 yards | Target: Unknown(120)
                    Affected Spells: Fel Firebolt (104318)
                    Family Flags: 12
-#5 (id=1037688)  : Apply Aura (6) | Unknown(531)
+#5 (id=1037688)  : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc265187
 Tooltip          : Damage dealt by your demons increased by $s2%.

@@ -915,7 +915,9 @@ static constexpr auto _effect_type_strings = util::make_static_map<unsigned, uti
   { 164, "Cancel Aura"              },
   { 174, "Apply Aura Pet"           },
   { 179, "Create Area Trigger"      },
+  { 188, "Summon Multiple Hunter Pets" },
   { 202, "Apply Player/Pet Aura"    },
+  { 260, "Summon Stabled Pet"       },
   { 290, "Reduce Remaining Cooldown"},
 } );
 
@@ -1126,7 +1128,9 @@ static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, 
   { 468, "Trigger Spell Based on Health%"               },
   { 471, "Modify Versatility%"                          },
   { 485, "Resist Forced Movement%"                      },
+  { 493, "Hunter Animal Companion"                      },
   { 501, "Modify Crit Damage Done% from Caster's Spells" },
+  { 531, "Modify Guardian Damage Done%"                 },
 } );
 
 static constexpr auto _mechanic_strings = util::make_static_map<unsigned, util::string_view>( {
