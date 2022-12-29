@@ -2144,6 +2144,7 @@ class SpellDataGenerator(DataGenerator):
           ( 207760, 2 ), # Burning Alive spread radius
           ( 333386, 2 ), ( 333389, 2 ), # Sigil of the Illidari Legendary fake Eye Beam spells
           ( 346504, 2 ), ( 346505, 2 ), # New Sigil of the Illidari Legendary fake Eye Beam spells
+          ( 336640, 2 ), # Charred Flesh
        ),
 
        # Evoker:
