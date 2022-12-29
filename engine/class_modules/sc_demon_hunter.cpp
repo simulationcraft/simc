@@ -695,6 +695,9 @@ public:
     double target_reach = -1.0;
     double initial_fury = 0;
     int fodder_to_the_flame_kill_seconds = 4;
+    // Chance to proc initiative off of the fodder demon (ie. not get damaged by it first)
+    // TODO: Determine a more realistic value 
+    double fodder_to_the_flame_initiative_chance = 1;
     double darkglare_boon_cdr_high_roll_seconds = 18;
   } options;
 
@@ -3439,7 +3442,7 @@ struct fodder_to_the_flame_cb_t : public dbc_proc_callback_t
       demon_hunter_spell_t::execute();
 
       // Simulate triggering initiative from hitting the demon
-      if ( p()->talent.havoc.initiative->ok() )
+      if ( p()->talent.havoc.initiative->ok() && p()->rng().roll( p()->options.fodder_to_the_flame_initiative_chance ) )
       {
         p()->buff.initiative->trigger();
       }
@@ -5781,6 +5784,7 @@ void demon_hunter_t::create_options()
   add_option( opt_float( "target_reach", options.target_reach ) );
   add_option( opt_float( "initial_fury", options.initial_fury, 0.0, 120 ) );
   add_option( opt_int( "fodder_to_the_flame_kill_seconds", options.fodder_to_the_flame_kill_seconds, 0, 10 ) );
+  add_option( opt_float( "fodder_to_the_flame_initiative_chance", options.fodder_to_the_flame_initiative_chance, 0, 1 ) );
   add_option( opt_float( "darkglare_boon_cdr_high_roll_seconds", options.darkglare_boon_cdr_high_roll_seconds, 6, 24 ) );
 }
 
