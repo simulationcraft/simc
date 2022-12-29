@@ -9,7 +9,7 @@ talents=BUkAAAAAAAAAAAAAAAAAAAAAAAAQJCSSQS0QSiAJlEQ0CJSkESSJJIJJhSQAAAAA
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
-flask=phial_of_elemental_chaos_3
+flask=phial_of_glacial_fury_3
 food=fated_fortune_cookie
 augmentation=draconic
 temporary_enchant=main_hand:howling_rune_3/off_hand:howling_rune_3
@@ -33,6 +33,8 @@ actions.precombat+=/variable,name=elysian_decree_ramp_in_progress,value=0
 actions.precombat+=/variable,name=soul_carver_ramp_in_progress,value=0
 actions.precombat+=/variable,name=fiery_demise_with_soul_carver_in_progress,value=0
 actions.precombat+=/variable,name=fiery_demise_without_soul_carver_available,value=0
+actions.precombat+=/variable,name=fracture_fury_gain_not_in_meta,op=setif,value=30,value_else=25,condition=set_bonus.tier29_2pc
+actions.precombat+=/variable,name=fracture_fury_gain_in_meta,op=setif,value=54,value_else=45,condition=set_bonus.tier29_2pc
 
 # Executed every time the actor is available.
 actions=auto_attack
@@ -43,6 +45,7 @@ actions+=/bulk_extraction
 actions+=/potion
 actions+=/use_item,slot=trinket1
 actions+=/use_item,slot=trinket2
+actions+=/variable,name=fracture_fury_gain,op=setif,value=variable.fracture_fury_gain_in_meta,value_else=variable.fracture_fury_gain_not_in_meta,condition=buff.metamorphosis.up
 actions+=/run_action_list,name=the_hunt_ramp,if=variable.the_hunt_ramp_in_progress|talent.the_hunt.enabled&cooldown.the_hunt.remains<5&!dot.fiery_brand.ticking
 actions+=/run_action_list,name=elysian_decree_ramp,if=variable.elysian_decree_ramp_in_progress|talent.elysian_decree.enabled&cooldown.elysian_decree.remains<5&!dot.fiery_brand.ticking
 actions+=/run_action_list,name=soul_carver_without_fiery_demise_ramp,if=variable.soul_carver_ramp_in_progress|talent.soul_carver.enabled&cooldown.soul_carver.remains<5&!talent.fiery_demise.enabled&!dot.fiery_brand.ticking
@@ -54,14 +57,14 @@ actions+=/spirit_bomb,if=((buff.metamorphosis.up&talent.fracture.enabled&soul_fr
 actions+=/soul_cleave,if=(talent.spirit_bomb.enabled&soul_fragments<=1&spell_targets>1)|(spell_targets<2&((talent.fracture.enabled&fury>=55)|(!talent.fracture.enabled&fury>=70)|(buff.metamorphosis.up&((talent.fracture.enabled&fury>=35)|(!talent.fracture.enabled&fury>=50)))))|(!talent.spirit_bomb.enabled)&((talent.fracture.enabled&fury>=55)|(!talent.fracture.enabled&fury>=70)|(buff.metamorphosis.up&((talent.fracture.enabled&fury>=35)|(!talent.fracture.enabled&fury>=50))))
 actions+=/immolation_aura,if=(talent.fiery_demise.enabled&fury.deficit>=10&(cooldown.soul_carver.remains>15))|(!talent.fiery_demise.enabled&fury.deficit>=10)
 actions+=/felblade,if=fury.deficit>=40
-actions+=/fracture,if=(talent.spirit_bomb.enabled&(soul_fragments<=3&spell_targets>1|spell_targets<2&fury.deficit>=30))|(!talent.spirit_bomb.enabled&((buff.metamorphosis.up&fury.deficit>=45)|(buff.metamorphosis.down&fury.deficit>=30)))
+actions+=/fracture,if=(talent.spirit_bomb.enabled&(soul_fragments<=3&spell_targets>1|spell_targets<2&fury.deficit>=variable.fracture_fury_gain))|(!talent.spirit_bomb.enabled&fury.deficit>=variable.fracture_fury_gain)
 actions+=/sigil_of_flame,if=fury.deficit>=30
 actions+=/shear
 actions+=/throw_glaive
 
 actions.elysian_decree_ramp=variable,name=elysian_decree_ramp_in_progress,value=1,if=!variable.elysian_decree_ramp_in_progress
 actions.elysian_decree_ramp+=/variable,name=elysian_decree_ramp_in_progress,value=0,if=cooldown.elysian_decree.remains
-actions.elysian_decree_ramp+=/fracture,if=fury.deficit>=30&debuff.frailty.stack<=5
+actions.elysian_decree_ramp+=/fracture,if=fury.deficit>=variable.fracture_fury_gain&debuff.frailty.stack<=5
 actions.elysian_decree_ramp+=/sigil_of_flame,if=fury.deficit>=30
 actions.elysian_decree_ramp+=/shear,if=fury.deficit<=90&debuff.frailty.stack>=0
 actions.elysian_decree_ramp+=/spirit_bomb,if=soul_fragments>=4&spell_targets>1
@@ -69,30 +72,32 @@ actions.elysian_decree_ramp+=/soul_cleave,if=(soul_fragments<=1&spell_targets>1)
 actions.elysian_decree_ramp+=/elysian_decree
 
 actions.fiery_demise_window_with_soul_carver=variable,name=fiery_demise_with_soul_carver_in_progress,value=1,if=!variable.fiery_demise_with_soul_carver_in_progress
-actions.fiery_demise_window_with_soul_carver+=/variable,name=fiery_demise_with_soul_carver_in_progress,value=0,if=cooldown.soul_carver.remains&cooldown.fiery_brand.remains&cooldown.immolation_aura.remains&cooldown.fel_devastation.remains
-actions.fiery_demise_window_with_soul_carver+=/fracture,if=fury.deficit>=30&!dot.fiery_brand.ticking
+actions.fiery_demise_window_with_soul_carver+=/variable,name=fiery_demise_with_soul_carver_in_progress,value=0,if=cooldown.soul_carver.remains&cooldown.fiery_brand.remains&cooldown.fel_devastation.remains
+actions.fiery_demise_window_with_soul_carver+=/fracture,if=fury.deficit>=variable.fracture_fury_gain&!dot.fiery_brand.ticking
 actions.fiery_demise_window_with_soul_carver+=/fiery_brand,if=!dot.fiery_brand.ticking&fury>=30
-actions.fiery_demise_window_with_soul_carver+=/fel_devastation,if=dot.fiery_brand.remains<=3
 actions.fiery_demise_window_with_soul_carver+=/immolation_aura,if=dot.fiery_brand.ticking
-actions.fiery_demise_window_with_soul_carver+=/spirit_bomb,if=soul_fragments>=4&dot.fiery_brand.remains>=4
-actions.fiery_demise_window_with_soul_carver+=/soul_carver,if=soul_fragments<=3
+actions.fiery_demise_window_with_soul_carver+=/fel_devastation,if=dot.fiery_brand.remains<=3
+actions.fiery_demise_window_with_soul_carver+=/spirit_bomb,if=((buff.metamorphosis.up&talent.fracture.enabled&soul_fragments>=3)|soul_fragments>=4)&dot.fiery_brand.remains>=4
+actions.fiery_demise_window_with_soul_carver+=/soul_cleave,if=(soul_fragments<=1&spell_targets>1)|(spell_targets<2)&dot.fiery_brand.remains>=4
+actions.fiery_demise_window_with_soul_carver+=/soul_carver,if=soul_fragments<=3&dot.fiery_brand.remains
 actions.fiery_demise_window_with_soul_carver+=/fracture,if=soul_fragments<=3&dot.fiery_brand.remains>=5|dot.fiery_brand.remains<=5&fury<50
 actions.fiery_demise_window_with_soul_carver+=/sigil_of_flame,if=dot.fiery_brand.remains<=3&fury<50
 actions.fiery_demise_window_with_soul_carver+=/throw_glaive
 
 actions.fiery_demise_window_without_soul_carver=variable,name=fiery_demise_without_soul_carver_in_progress,value=1,if=!variable.fiery_demise_without_soul_carver_in_progress
-actions.fiery_demise_window_without_soul_carver+=/variable,name=fiery_demise_without_soul_carver_in_progress,value=0,if=cooldown.fiery_brand.remains&cooldown.immolation_aura.remains&cooldown.fel_devastation.remains
-actions.fiery_demise_window_without_soul_carver+=/fracture,if=fury.deficit>=30&!dot.fiery_brand.ticking
+actions.fiery_demise_window_without_soul_carver+=/variable,name=fiery_demise_without_soul_carver_in_progress,value=0,if=cooldown.fiery_brand.remains&cooldown.fel_devastation.remains
+actions.fiery_demise_window_without_soul_carver+=/fracture,if=fury.deficit>=variable.fracture_fury_gain&!dot.fiery_brand.ticking
 actions.fiery_demise_window_without_soul_carver+=/fiery_brand,if=!dot.fiery_brand.ticking&fury>=30
 actions.fiery_demise_window_without_soul_carver+=/immolation_aura,if=dot.fiery_brand.ticking
-actions.fiery_demise_window_without_soul_carver+=/spirit_bomb,if=soul_fragments>=4&dot.fiery_brand.remains>=4
+actions.fiery_demise_window_without_soul_carver+=/spirit_bomb,if=((buff.metamorphosis.up&talent.fracture.enabled&soul_fragments>=3)|soul_fragments>=4)&dot.fiery_brand.remains>=4
+actions.fiery_demise_window_without_soul_carver+=/soul_cleave,if=(soul_fragments<=1&spell_targets>1)|(spell_targets<2)&dot.fiery_brand.remains>=4
 actions.fiery_demise_window_without_soul_carver+=/fracture,if=soul_fragments<=3&dot.fiery_brand.remains>=5|dot.fiery_brand.remains<=5&fury<50
 actions.fiery_demise_window_without_soul_carver+=/fel_devastation,if=dot.fiery_brand.remains<=3
 actions.fiery_demise_window_without_soul_carver+=/sigil_of_flame,if=dot.fiery_brand.remains<=3&fury<50
 
 actions.soul_carver_without_fiery_demise_ramp=variable,name=soul_carver_ramp_in_progress,value=1,if=!variable.soul_carver_ramp_in_progress
 actions.soul_carver_without_fiery_demise_ramp+=/variable,name=soul_carver_ramp_in_progress,value=0,if=cooldown.soul_carver.remains
-actions.soul_carver_without_fiery_demise_ramp+=/fracture,if=fury.deficit>=30&debuff.frailty.stack<=5
+actions.soul_carver_without_fiery_demise_ramp+=/fracture,if=fury.deficit>=variable.fracture_fury_gain&debuff.frailty.stack<=5
 actions.soul_carver_without_fiery_demise_ramp+=/sigil_of_flame,if=fury.deficit>=30
 actions.soul_carver_without_fiery_demise_ramp+=/shear,if=fury.deficit<=90&debuff.frailty.stack>=0
 actions.soul_carver_without_fiery_demise_ramp+=/spirit_bomb,if=soul_fragments>=4&spell_targets>1
@@ -101,11 +106,11 @@ actions.soul_carver_without_fiery_demise_ramp+=/soul_carver
 
 actions.the_hunt_ramp=variable,name=the_hunt_ramp_in_progress,value=1,if=!variable.the_hunt_ramp_in_progress
 actions.the_hunt_ramp+=/variable,name=the_hunt_ramp_in_progress,value=0,if=cooldown.the_hunt.remains
-actions.the_hunt_ramp+=/fracture,if=fury.deficit>=30&debuff.frailty.stack<=5
+actions.the_hunt_ramp+=/fracture,if=fury.deficit>=variable.fracture_fury_gain&debuff.frailty.stack<=5
 actions.the_hunt_ramp+=/sigil_of_flame,if=fury.deficit>=30
 actions.the_hunt_ramp+=/shear,if=fury.deficit<=90
 actions.the_hunt_ramp+=/spirit_bomb,if=soul_fragments>=4&spell_targets>1
-actions.the_hunt_ramp+=/soul_cleave,if=(soul_fragments<=1&spell_targets>1)|(spell_targets<2)|debuff.frailty.stack>=0
+actions.the_hunt_ramp+=/soul_cleave,if=soul_fragments<=1&spell_targets>1|spell_targets<2|debuff.frailty.stack>=0
 actions.the_hunt_ramp+=/the_hunt
 
 head=windborne_hatsuburi,id=195492,bonus_id=4800/4786/1498/7187/6935,gem_id=192945
