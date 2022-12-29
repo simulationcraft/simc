@@ -2022,17 +2022,6 @@ void player_t::create_special_effects()
     }
   }
 
-  if ( sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE )
-  {
-    special_effect_t effect( this );
-
-    unique_gear::initialize_special_effect( effect, 368240 );
-    if ( !effect.custom_init_object.empty() )
-    {
-      special_effects.push_back( new special_effect_t( effect ) );
-    }
-  }
-
   // Initialize generic azerite powers. Note that this occurs later in the process than the class
   // module spell initialization (init_spells()), which is where the core presumes that each class
   // module gets the state their azerite powers (through the invocation of find_azerite_spells).
