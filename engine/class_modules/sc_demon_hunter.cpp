@@ -2535,8 +2535,8 @@ struct fiery_brand_t : public demon_hunter_spell_t
   {
     use_off_gcd = true;
 
-    dot_action = p->get_background_action<fiery_brand_dot_t>( "fiery_brand_dot" );
-    add_child(dot_action);
+    dot_action        = p->get_background_action<fiery_brand_dot_t>( "fiery_brand_dot" );
+    dot_action->stats = stats;
   }
 
   void impact( action_state_t* s ) override
