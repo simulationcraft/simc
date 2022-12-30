@@ -11301,7 +11301,7 @@ void shaman_t::init_action_list_elemental()
         "lava_beam,if=buff.master_of_the_elements.up",
         "Consume Master of the Elements with Lava Beam." );
     aoe->add_action(
-        "lava_burst,target_if=dot.flame_shock.remains,if=enemies=3&talent.master_of_the_elements.enabled",
+        "lava_burst,target_if=dot.flame_shock.remains,if=enemies=3&talent.master_of_the_elements.enabled&!buff.master_of_the_elements.up",
         "Proc Master of the Elements against 3 targets." );
     aoe->add_action(
         "lava_burst,target_if=dot.flame_shock.remains,if=buff.lava_surge.up&talent.deeply_rooted_elements.enabled",
