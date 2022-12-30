@@ -70,6 +70,7 @@ actions.aoe+=/new_moon,if=astral_power.deficit>variable.passive_asp+10
 actions.aoe+=/half_moon,if=astral_power.deficit>variable.passive_asp+20&(buff.eclipse_lunar.remains>execute_time|buff.eclipse_solar.remains>execute_time)
 actions.aoe+=/starsurge,if=buff.starweavers_weft.up
 actions.aoe+=/force_of_nature,if=astral_power.deficit>variable.passive_asp+20
+actions.aoe+=/wrath,if=buff.eclipse_solar.remains>execute_time&spell_targets.starfire<4
 actions.aoe+=/starfire
 actions.aoe+=/run_action_list,name=fallthru
 
