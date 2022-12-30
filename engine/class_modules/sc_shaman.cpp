@@ -11284,12 +11284,12 @@ void shaman_t::init_action_list_elemental()
         "Use the talents you selected. Did you invest only 1 point in it? In this case this'll be a DPS decrease." );
     aoe->add_action( "lava_beam,if=buff.stormkeeper.up", "Stormkeeper is strong and should be used." );
     aoe->add_action( "chain_lightning,if=buff.stormkeeper.up", "Stormkeeper is strong and should be used." );
-    aoe->add_action( "lava_beam,if=buff.power_of_the_maelstrom.up",
+    aoe->add_action( "lava_beam,if=buff.power_of_the_maelstrom.up&buff.ascendance.remains>cast_time",
                      "Power of the Maelstrom is strong and should be used." );
     aoe->add_action( "chain_lightning,if=buff.power_of_the_maelstrom.up",
                      "Power of the Maelstrom is strong and should be used." );
     aoe->add_action(
-        "lava_beam,if=active_enemies>=6&buff.surge_of_power.up",
+        "lava_beam,if=active_enemies>=6&buff.surge_of_power.up&buff.ascendance.remains>cast_time",
         "Against 6 targets or more Surge of Power should be used with Lava Beam rather than Lava Burst." );
     aoe->add_action(
         "chain_lightning,if=active_enemies>=6&buff.surge_of_power.up",
@@ -11298,7 +11298,7 @@ void shaman_t::init_action_list_elemental()
         "lava_burst,target_if=dot.flame_shock.remains,if=buff.lava_surge.up&talent.deeply_rooted_elements.enabled&buff.windspeakers_lava_resurgence.up",
         "Proc Deeply Rooted Elements against 3 targets." );
     aoe->add_action(
-        "lava_beam,if=buff.master_of_the_elements.up",
+        "lava_beam,if=buff.master_of_the_elements.up&buff.ascendance.remains>cast_time",
         "Consume Master of the Elements with Lava Beam." );
     aoe->add_action(
         "lava_burst,target_if=dot.flame_shock.remains,if=enemies=3&talent.master_of_the_elements.enabled",
@@ -11308,7 +11308,7 @@ void shaman_t::init_action_list_elemental()
         "Gamble away for Deeply Rooted Elements procs whenever Lava Surge makes Lava Burst more efficient." );
     aoe->add_action( "icefury,if=talent.electrified_shocks.enabled&active_enemies<5", "Use Icefury if you can get the full benefit from Electrified Shocks. If more targets are present ignore it." );
     aoe->add_action( "frost_shock,if=buff.icefury.up&talent.electrified_shocks.enabled&!debuff.electrified_shocks.up&active_enemies<5", "Spread out your Frost Shock casts to empower as many Chain Lightnings as possible." );
-    aoe->add_action( "lava_beam", "" );
+    aoe->add_action( "lava_beam,if=buff.ascendance.remains>cast_time", "" );
     aoe->add_action( "chain_lightning" );
     aoe->add_action( "flame_shock,moving=1,target_if=refreshable" );
     aoe->add_action( "frost_shock,moving=1" );
@@ -11335,7 +11335,7 @@ void shaman_t::init_action_list_elemental()
     single_target->add_action( "icefury,if=talent.electrified_shocks.enabled" );
     single_target->add_action( "frost_shock,if=buff.icefury.up&talent.electrified_shocks.enabled&(!debuff.electrified_shocks.up|buff.icefury.remains<=gcd)" );
     single_target->add_action( "frost_shock,if=buff.icefury.up&talent.electrified_shocks.enabled&maelstrom>=50&debuff.electrified_shocks.remains<2*gcd&buff.stormkeeper.up" );
-    single_target->add_action( "lava_beam,if=active_enemies>1&(spell_targets.chain_lightning>1|spell_targets.lava_beam>1)&buff.power_of_the_maelstrom.up" );
+    single_target->add_action( "lava_beam,if=active_enemies>1&(spell_targets.chain_lightning>1|spell_targets.lava_beam>1)&buff.power_of_the_maelstrom.up&buff.ascendance.remains>cast_time" );
     single_target->add_action( "lava_burst,if=buff.windspeakers_lava_resurgence.up", "Windspeaker's Lava Resurgence is strong. Don't sit on it." );
     single_target->add_action( "lava_burst,if=cooldown_react&buff.lava_surge.up", "Lava Surge is neat. Utilize it." );
     single_target->add_action( "lava_burst,if=talent.master_of_the_elements.enabled&!buff.master_of_the_elements.up&maelstrom>=50&!talent.swelling_maelstrom.enabled&maelstrom<=80", "Buff your next Maelstrom Spender with MotE if it won't cap your maelstrom." );
