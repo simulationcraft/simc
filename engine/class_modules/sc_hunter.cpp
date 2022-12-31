@@ -689,6 +689,7 @@ public:
     timespan_t pet_attack_speed = 2_s;
     timespan_t pet_basic_attack_delay = 0.15_s;
     bool separate_wfi_stats = false;
+    int dire_pack_start = 0;
   } options;
 
   hunter_t( sim_t* sim, util::string_view name, race_e r = RACE_NONE ) :
@@ -7140,6 +7141,11 @@ void hunter_t::reset()
   // Active
   pets.main = nullptr;
   state = {};
+
+  if ( options.dire_pack_start > 0 )
+    state.dire_pack_counter = options.dire_pack_start;
+  else
+    state.dire_pack_counter = rng().range( as<int>( talents.dire_pack -> effectN( 1 ).base_value() ) );
 }
 
 // hunter_t::merge ==========================================================
@@ -7446,6 +7452,7 @@ void hunter_t::create_options()
   add_option( opt_timespan( "hunter.pet_basic_attack_delay", options.pet_basic_attack_delay,
                             0_ms, 0.6_s ) );
   add_option( opt_bool( "hunter.separate_wfi_stats", options.separate_wfi_stats ) );
+  add_option( opt_int( "hunter.dire_pack_start", options.dire_pack_start, 0, 4 ) );
 }
 
 // hunter_t::create_profile =================================================
@@ -7463,6 +7470,7 @@ std::string hunter_t::create_profile( save_e stype )
   print_option( &options_t::summon_pet_str, "summon_pet" );
   print_option( &options_t::pet_attack_speed, "hunter.pet_attack_speed" );
   print_option( &options_t::pet_basic_attack_delay, "hunter.pet_basic_attack_delay" );
+  print_option( &options_t::dire_pack_start, "hunter.dire_pack_start" );
 
   return profile_str;
 }
