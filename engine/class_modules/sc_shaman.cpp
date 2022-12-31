@@ -11301,11 +11301,11 @@ void shaman_t::init_action_list_elemental()
         "lava_beam,if=buff.master_of_the_elements.up",
         "Consume Master of the Elements with Lava Beam." );
     aoe->add_action(
-        "lava_burst,target_if=dot.flame_shock.remains,if=enemies=3&talent.master_of_the_elements.enabled&!buff.master_of_the_elements.up",
-        "Proc Master of the Elements against 3 targets." );
+        "lava_burst,target_if=dot.flame_shock.remains,if=cooldown_react&buff.lava)surge.up&(talent.master_of_the_elements.enabled&talent.deeply_rooted_elements.enabled)&!buff.master_of_the_elements.up&enemies>=6",
+        "Use Lava Surges to proc Master of the Elements if the buff is not up and 6 or more targets are active with Deeply Rooted Elements talented" );
     aoe->add_action(
-        "lava_burst,target_if=dot.flame_shock.remains,if=buff.lava_surge.up&talent.deeply_rooted_elements.enabled",
-        "Gamble away for Deeply Rooted Elements procs whenever Lava Surge makes Lava Burst more efficient." );
+        "lava_burst,target_if=dot.flame_shock.remains,if=(talent.master_of_the_elements.enabled&talent.deeply_rooted_elements.enabled)!buff.master_of_the_elements.up",
+        "Proc Master of the Elements with Deeply Rooted Elements talented." );
     aoe->add_action( "icefury,if=talent.electrified_shocks.enabled&active_enemies<5", "Use Icefury if you can get the full benefit from Electrified Shocks. If more targets are present ignore it." );
     aoe->add_action( "frost_shock,if=buff.icefury.up&talent.electrified_shocks.enabled&!debuff.electrified_shocks.up&active_enemies<5", "Spread out your Frost Shock casts to empower as many Chain Lightnings as possible." );
     aoe->add_action( "lava_beam", "" );
