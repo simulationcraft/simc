@@ -596,8 +596,7 @@ struct shadow_word_pain_t final : public priest_spell_t
   {
     timespan_t t = priest_spell_t::tick_time( state );
 
-    if ( ( !priest().talents.shadow.mental_decay.ok() || !priest().options.priest_screams_bug || !priest().bugs ) &&
-         priest().is_screams_of_the_void_up( state->target ) )
+    if ( priest().is_screams_of_the_void_up( state->target, id ) )
     {
       t /= ( 1 + priest().talents.shadow.screams_of_the_void->effectN( 1 ).percent() );
     }
@@ -860,7 +859,7 @@ struct vampiric_touch_t final : public priest_spell_t
   {
     timespan_t t = priest_spell_t::tick_time( state );
 
-    if ( priest().is_screams_of_the_void_up( state->target ) )
+    if ( priest().is_screams_of_the_void_up( state->target, id ) )
     {
       t /= ( 1 + priest().talents.shadow.screams_of_the_void->effectN( 1 ).percent() );
     }
@@ -2467,12 +2466,20 @@ void priest_t::trigger_shadow_weaving( action_state_t* s )
   background_actions.shadow_weaving->trigger( s->target, s->result_amount );
 }
 
-bool priest_t::is_screams_of_the_void_up( player_t* target ) const
+bool priest_t::is_screams_of_the_void_up( player_t* target, const unsigned int spell_id ) const
 {
   priest_td_t* td = get_target_data( target );
 
   if ( talents.shadow.screams_of_the_void.enabled() )
   {
+    // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/1038
+    if ( spell_id == dot_spells.shadow_word_pain->id() &&
+         ( td->dots.mind_flay->is_ticking() || td->dots.mind_flay_insanity->is_ticking() ) &&
+         talents.shadow.mental_decay.enabled() && options.priest_screams_bug && bugs )
+    {
+      return false;
+    }
+
     if ( td->dots.mind_flay->is_ticking() || td->dots.void_torrent->is_ticking() ||
          td->dots.mind_flay_insanity->is_ticking() ||
          ( talents.shadow.mind_sear.enabled() && channeling != nullptr &&

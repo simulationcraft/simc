@@ -590,7 +590,7 @@ public:
   void trigger_shadow_weaving( action_state_t* );
   void trigger_void_shield( double result_amount );
   void refresh_insidious_ire_buff( action_state_t* s );
-  bool is_screams_of_the_void_up( player_t* target ) const;
+  bool is_screams_of_the_void_up( player_t* target, const unsigned int spell_id ) const;
   void spawn_thing_from_beyond();
   void trigger_idol_of_nzoth( player_t* target, proc_t* proc );
   int shadow_weaving_active_dots( const player_t* target, const unsigned int spell_id ) const;
