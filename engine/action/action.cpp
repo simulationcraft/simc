@@ -3932,7 +3932,7 @@ double action_t::ppm_proc_chance( double PPM ) const
 timespan_t action_t::tick_time( const action_state_t* state ) const
 {
   timespan_t t = base_tick_time;
-  if ( channeled || hasted_ticks )
+  if ( hasted_ticks )
   {
     t *= state->haste;
   }
