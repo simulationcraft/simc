@@ -596,7 +596,8 @@ struct shadow_word_pain_t final : public priest_spell_t
   {
     timespan_t t = priest_spell_t::tick_time( state );
 
-    if ( !priest().talents.shadow.mental_decay.ok() && priest().is_screams_of_the_void_up( state->target ) )
+    if ( ( !priest().talents.shadow.mental_decay.ok() || !priest().options.priest_screams_bug || !priest().bugs ) &&
+         priest().is_screams_of_the_void_up( state->target ) )
     {
       t /= ( 1 + priest().talents.shadow.screams_of_the_void->effectN( 1 ).percent() );
     }

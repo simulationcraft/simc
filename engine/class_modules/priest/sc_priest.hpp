@@ -498,6 +498,9 @@ public:
     bool mindgames_damage_reversal  = true;
 
     bool power_infusion_fiend = false;
+
+    // Actives the screams bug with Mental Decay and Shadow Word: Pain
+    bool priest_screams_bug = true;
   } options;
 
   priest_t( sim_t* sim, util::string_view name, race_e r );
