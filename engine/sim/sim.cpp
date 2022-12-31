@@ -2271,11 +2271,13 @@ void sim_t::init_fight_style()
     
     case FIGHT_STYLE_DUNGEON_ROUTE:
       // To be used in conjunction with "pull" raid events for a simulated dungeon run.
+      range::for_each( target_list, []( player_t* t ) {
+        t -> base.sleeping = true;
+      });
       desired_targets = 1;
       fixed_time = false;
-      ignore_invulnerable_targets = true;
-      shadowlands_opts.enable_rune_words = false;
-      overrides.bloodlust = 0; // Bloodlust is handled by an option on each pull raid event
+      // Bloodlust is handled by an option on each pull raid event.
+      overrides.bloodlust = 0;
       break;
     
     case FIGHT_STYLE_CLEAVE_ADD:
