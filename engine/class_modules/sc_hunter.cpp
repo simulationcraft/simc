@@ -685,7 +685,7 @@ public:
   } state;
 
   struct options_t {
-    std::string summon_pet_str = "turtle";
+    std::string summon_pet_str = "duck";
     timespan_t pet_attack_speed = 2_s;
     timespan_t pet_basic_attack_delay = 0.15_s;
     bool separate_wfi_stats = false;

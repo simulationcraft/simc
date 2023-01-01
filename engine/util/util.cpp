@@ -714,6 +714,7 @@ const char* util::pet_type_string( pet_e type )
     case PET_TURTLE:              return "turtle";
     case PET_WARP_STALKER:        return "warp_stalker";
     case PET_WORM:                return "worm";
+    case PET_DUCK:                return "duck";
     //case PET_RIVERBEAST:          return "riverbeast";
     case PET_BAT:                 return "bat";
     case PET_BIRD_OF_PREY:        return "bird_of_prey";
