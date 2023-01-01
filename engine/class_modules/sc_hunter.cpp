@@ -5069,6 +5069,8 @@ struct summon_pet_t: public hunter_spell_t
     ignore_false_positive = true;
 
     opt_disabled = util::str_compare_ci( p -> options.summon_pet_str, "disabled" );
+
+    target = player;
   }
 
   void init_finished() override

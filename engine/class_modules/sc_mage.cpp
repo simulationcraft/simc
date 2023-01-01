@@ -5088,6 +5088,7 @@ struct summon_water_elemental_t final : public frost_mage_spell_t
     parse_options( options_str );
     harmful = track_cd_waste = false;
     ignore_false_positive = true;
+    target = player;
   }
 
   void execute() override
