@@ -8627,7 +8627,11 @@ void warrior_t::apl_fury()
         default_list->add_action( "use_item,name=" + item.name_str );
     }
   }
-  default_list->add_action( "ravager,if=cooldown.recklessness.remains<3|buff.recklessness.up" );
+  // Line ravager up with recklessness (which will be used in conjunction with avatar)
+  default_list->add_action( "ravager,if=!talent.anger_management&cooldown.recklessness.remains<3&(raid_event.adds.in>15|target.time_to_die<12" );
+  // If using anger management, line ravager up with avatar instead of recklessness
+  // Using the same triggers as avatar below, to ensure that we throw down ravager before popping avatar
+  default_list->add_action( "ravager,if=talent.anger_management&cooldown.avatar.remains<3&(talent.titans_torment&(raid_event.adds.in>15)|!talent.titans_torment&(buff.recklessness.up|raid_event.adds.in>15|target.time_to_die<20))" );
 
   for ( const auto& racial_action : racial_actions )
   {
@@ -8655,13 +8659,14 @@ void warrior_t::apl_fury()
     }
   }
 
-  default_list->add_action( "avatar,if=talent.titans_torment&buff.enrage.up&raid_event.adds.in>15|!talent.titans_torment&(buff.recklessness.up|target.time_to_die<20)" );
+  default_list->add_action( "avatar,if=!talent.titans_torment&(talent.anger_management&buff.recklessness.up|buff.recklessness.remains>5|raid_event.adds.in>15|target.time_to_die<20)" );
 
-  default_list->add_action( "recklessness,if=!raid_event.adds.exists&(talent.annihilator&cooldown.avatar.remains<1|cooldown.avatar.remains>40|!talent.avatar|target.time_to_die<12)" );
+  default_list->add_action( "recklessness,if=raid_event.adds.in>15|target.time_to_die<12" );
 
-  default_list->add_action( "recklessness,if=!raid_event.adds.exists&!talent.annihilator|target.time_to_die<12" );
-
-  default_list->add_action( "spear_of_bastion,if=buff.enrage.up&(buff.recklessness.up|buff.avatar.up|target.time_to_die<20|active_enemies>1)&raid_event.adds.in>15" );
+  // The OF from titans torment is too good aoe to use avatar before adds, so we don't do `target.time_to_die<20` here
+  default_list->add_action( "avatar,if=talent.titans_torment&(buff.enrage.up|talent.titanic_rage)&(raid_event.adds.in>15)" );
+  // Try to use spear when enraged+avatar+reck is up. If not up, only use if there's a while until they become available.
+  default_list->add_action( "spear_of_bastion,if=buff.enrage.up&raid_event.adds.in>15&(!talent.avatar|buff.avatar.up|cooldown.avatar.remains>15)&(buff.recklessness.up|cooldown.recklessness.remains>15)" );
 
   //default_list->add_action( "whirlwind,if=spell_targets.whirlwind>1&talent.improved_whirlwind&!buff.meat_cleaver.up|raid_event.adds.in<2&talent.improved_whirlwind&!buff.meat_cleaver.up" );
 
@@ -8671,7 +8676,6 @@ void warrior_t::apl_fury()
 
   //movement->add_action( this, "Heroic Leap" );
 
-  multi_target->add_action( "recklessness,if=raid_event.adds.in>15|active_enemies>1|target.time_to_die<12" );
   multi_target->add_action( "odyns_fury,if=active_enemies>1&talent.titanic_rage&(!buff.meat_cleaver.up|buff.avatar.up|buff.recklessness.up)" );
   multi_target->add_action( "whirlwind,if=spell_targets.whirlwind>1&talent.improved_whirlwind&!buff.meat_cleaver.up|raid_event.adds.in<2&talent.improved_whirlwind&!buff.meat_cleaver.up" );
   multi_target->add_action( "execute,if=buff.ashen_juggernaut.up&buff.ashen_juggernaut.remains<gcd" );
