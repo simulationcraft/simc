@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.2.47213
-static const std::array<spelltext_data_t, 19201> __spelltext_data { {
+static const std::array<spelltext_data_t, 19202> __spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -6757,6 +6757,7 @@ static const std::array<spelltext_data_t, 19201> __spelltext_data { {
   { 203965, "Reduces the cooldowns of Barkskin and Survival Instincts by $s1%.", 0, 0 },
   { 203974, "When you deal direct damage with Thrash, you gain a charge of Earthwarden, reducing the damage of the next auto attack you take by $s1%. Earthwarden may have up to $203975u charges.", 0, 0 },
   { 203975, "$@spelldesc203974", "Damage of the next autoattack you take will be reduced by $203974s1~%.", 0 },
+  { 203981, "Consuming a nearby Soul Fragment heals you.", "Soul Fragments are nearby.", 0 },
   { 204018, "Blesses a party or raid member, granting immunity to magical damage and harmful effects for $d.\r\n\r\nCannot be used on a target with Forbearance. Causes Forbearance for $25771d.\r\n\r\nShares a cooldown with Blessing of Protection.", "Immune to magical damage and harmful effects.", 0 },
   { 204019, "Throws a Blessed Hammer that spirals outward, dealing $204301s1 Holy damage to enemies and reducing the next damage they deal to you by $<shield>.\r\n\r\n|cFFFFFFFFGenerates $s2 Holy Power.", 0, 0 },
   { 204021, "Brand an enemy with a demonic symbol, instantly dealing $sw2 Fire damage$?s320962[ and ${$207771s3*$207744d} Fire damage over $207744d][]. The enemy's damage done to you is reduced by $s1% for $207744d.", "Dealing $s1% less damage to the branding Demon Hunter.", 0 },
