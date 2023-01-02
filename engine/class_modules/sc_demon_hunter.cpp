@@ -64,11 +64,11 @@ public:
     // Havoc
     dot_t* burning_wound;
     dot_t* trail_of_ruin;
-    
+
     // Vengeance
     dot_t* fiery_brand;
     dot_t* sigil_of_flame;
-    
+
   } dots;
 
   struct debuffs_t
@@ -5113,6 +5113,7 @@ struct immolation_aura_buff_t : public demon_hunter_buff_t<buff_t>
     apply_affecting_aura( p->spec.immolation_aura_3 );
     apply_affecting_aura( p->talent.havoc.felfire_heart );
     apply_affecting_aura( p->talent.vengeance.agonizing_flames );
+    set_partial_tick( true );
 
     set_tick_callback( [ p ]( buff_t*, int, timespan_t ) {
       if ( p->talent.havoc.ragefire->ok() )
