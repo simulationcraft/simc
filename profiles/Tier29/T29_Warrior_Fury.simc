@@ -40,9 +40,9 @@ actions+=/potion
 actions+=/pummel,if=target.debuff.casting.react
 actions+=/use_item,name=manic_grieftorch,if=buff.recklessness.down&buff.avatar.down
 actions+=/ravager,if=cooldown.recklessness.remains<3&(raid_event.adds.in>15+2|raid_event.adds.in<2|target.time_to_die<12+2)
-actions+=/ravager,if=cooldown.avatar.remains<3&!talent.titans_torment&(buff.recklessness.remains>4+2|raid_event.adds.in>15+2|raid_event.adds.in<2|target.time_to_die<20+2)
-actions+=/ravager,if=cooldown.avatar.remains<3&talent.titans_torment&(raid_event.adds.in>15+2|raid_event.adds.in<2)
-actions+=/ravager,if=cooldown.avatar.remains>15&cooldown.recklessness.remains>15&(raid_event.adds.in>15|raid_event.adds.in<2|target.time_to_die<12)
+actions+=/ravager,if=talent.avatar&cooldown.avatar.remains<3&!talent.titans_torment&(buff.recklessness.remains>4+2|raid_event.adds.in>15+2|raid_event.adds.in<2|target.time_to_die<20+2)
+actions+=/ravager,if=talent.avatar&cooldown.avatar.remains<3&talent.titans_torment&(raid_event.adds.in>15+2|raid_event.adds.in<2)
+actions+=/ravager,if=(!talent.avatar|cooldown.avatar.remains>15)&cooldown.recklessness.remains>15&(raid_event.adds.in>15|raid_event.adds.in<2|target.time_to_die<12)
 actions+=/blood_fury
 actions+=/berserking,if=buff.recklessness.up
 actions+=/lights_judgment,if=buff.recklessness.down

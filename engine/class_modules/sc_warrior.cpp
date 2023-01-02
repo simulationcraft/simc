@@ -8630,10 +8630,10 @@ void warrior_t::apl_fury()
   // Use same conditionals to line ravager up with recklessness 
   default_list->add_action( "ravager,if=cooldown.recklessness.remains<3&(raid_event.adds.in>15+2|raid_event.adds.in<2|target.time_to_die<12+2)" );
   // Line ravager up with avatar using conditions from below
-  default_list->add_action( "ravager,if=cooldown.avatar.remains<3&!talent.titans_torment&(buff.recklessness.remains>4+2|raid_event.adds.in>15+2|raid_event.adds.in<2|target.time_to_die<20+2)" );
-  default_list->add_action( "ravager,if=cooldown.avatar.remains<3&talent.titans_torment&(raid_event.adds.in>15+2|raid_event.adds.in<2)" );
+  default_list->add_action( "ravager,if=talent.avatar&cooldown.avatar.remains<3&!talent.titans_torment&(buff.recklessness.remains>4+2|raid_event.adds.in>15+2|raid_event.adds.in<2|target.time_to_die<20+2)" );
+  default_list->add_action( "ravager,if=talent.avatar&cooldown.avatar.remains<3&talent.titans_torment&(raid_event.adds.in>15+2|raid_event.adds.in<2)" );
   // Case to handle if neither avatar nor recklessness are coming up soon
-  default_list->add_action( "ravager,if=cooldown.avatar.remains>15&cooldown.recklessness.remains>15&(raid_event.adds.in>15|raid_event.adds.in<2|target.time_to_die<12)" );
+  default_list->add_action( "ravager,if=(!talent.avatar|cooldown.avatar.remains>15)&cooldown.recklessness.remains>15&(raid_event.adds.in>15|raid_event.adds.in<2|target.time_to_die<12)" );
 
   for ( const auto& racial_action : racial_actions )
   {
