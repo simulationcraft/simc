@@ -5784,6 +5784,46 @@ std::unique_ptr<expr_t> demon_hunter_t::create_expression( util::string_view nam
       return this->darkglare_boon_cdr_roll >= this->options.darkglare_boon_cdr_high_roll_seconds;
     });
   }
+  else if ( util::str_compare_ci( name_str, "fiery_brand_dot_primary_remains") )
+  {
+    return make_fn_expr( name_str, [this] () {
+      auto active_enemies = this->sim->target_non_sleeping_list;
+      auto primary_idx = std::find_if(active_enemies.begin(), active_enemies.end(), [this](player_t* target) {
+        auto td = this->get_target_data(target);
+        auto is_ticking = td->dots.fiery_brand->is_ticking();
+        if (!is_ticking) {
+          return false;
+        }
+        auto action_state = td->dots.fiery_brand->state;
+        return debug_cast<actions::spells::fiery_brand_t::fiery_brand_state_t*>(action_state)->primary;
+      });
+      if (primary_idx == active_enemies.end()) {
+        return 0_ms;
+      }
+
+      return this->get_target_data(*primary_idx)->dots.fiery_brand->remains();
+    });
+  }
+  else if ( util::str_compare_ci( name_str, "fiery_brand_dot_primary_ticking") )
+  {
+    return make_fn_expr( name_str, [this] () {
+      auto active_enemies = this->sim->target_non_sleeping_list;
+      auto primary_idx = std::find_if(active_enemies.begin(), active_enemies.end(), [this](player_t* target) {
+        auto td = this->get_target_data(target);
+        auto is_ticking = td->dots.fiery_brand->is_ticking();
+        if (!is_ticking) {
+          return false;
+        }
+        auto action_state = td->dots.fiery_brand->state;
+        return debug_cast<actions::spells::fiery_brand_t::fiery_brand_state_t*>(action_state)->primary;
+      });
+      if (primary_idx == active_enemies.end()) {
+        return false;
+      }
+
+      return this->get_target_data(*primary_idx)->dots.fiery_brand->is_ticking();
+    });
+  }
 
   return player_t::create_expression( name_str );
 }
