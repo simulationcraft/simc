@@ -49,7 +49,7 @@ actions+=/lights_judgment,if=buff.recklessness.down
 actions+=/fireblood
 actions+=/ancestral_call
 actions+=/bag_of_tricks
-actions+=/avatar,if=!talent.titans_torment&(talent.anger_management&buff.recklessness.up|buff.recklessness.remains>4|raid_event.adds.in>15|target.time_to_die<20)
+actions+=/avatar,if=!talent.titans_torment&(buff.recklessness.remains>4|raid_event.adds.in>15|target.time_to_die<20)
 actions+=/recklessness,if=raid_event.adds.in>15|target.time_to_die<12
 actions+=/avatar,if=talent.titans_torment&(buff.enrage.up|talent.titanic_rage)&(raid_event.adds.in>15)
 actions+=/spear_of_bastion,if=buff.enrage.up&raid_event.adds.in>15&(!talent.avatar|buff.avatar.up|cooldown.avatar.remains>15)&(buff.recklessness.up|cooldown.recklessness.remains>15)

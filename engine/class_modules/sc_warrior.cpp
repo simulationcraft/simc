@@ -8661,7 +8661,7 @@ void warrior_t::apl_fury()
     }
   }
 
-  default_list->add_action( "avatar,if=!talent.titans_torment&(talent.anger_management&buff.recklessness.up|buff.recklessness.remains>4|raid_event.adds.in>15|target.time_to_die<20)" );
+  default_list->add_action( "avatar,if=!talent.titans_torment&(buff.recklessness.remains>4|raid_event.adds.in>15|target.time_to_die<20)" );
 
   default_list->add_action( "recklessness,if=raid_event.adds.in>15|target.time_to_die<12" );
 
