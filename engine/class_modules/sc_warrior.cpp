@@ -8627,11 +8627,13 @@ void warrior_t::apl_fury()
         default_list->add_action( "use_item,name=" + item.name_str );
     }
   }
-  // Line ravager up with recklessness (which will be used in conjunction with avatar)
-  default_list->add_action( "ravager,if=!talent.anger_management&cooldown.recklessness.remains<3&(raid_event.adds.in>15|target.time_to_die<12" );
-  // If using anger management, line ravager up with avatar instead of recklessness
-  // Using the same triggers as avatar below, to ensure that we throw down ravager before popping avatar
-  default_list->add_action( "ravager,if=talent.anger_management&cooldown.avatar.remains<3&(talent.titans_torment&(raid_event.adds.in>15)|!talent.titans_torment&(buff.recklessness.up|raid_event.adds.in>15|target.time_to_die<20))" );
+  // Use same conditionals to line ravager up with recklessness 
+  default_list->add_action( "ravager,if=cooldown.recklessness.remains<3&(raid_event.adds.in>15+2|raid_event.adds.in<2|target.time_to_die<12+2)" );
+  // Line ravager up with avatar using conditions from below
+  default_list->add_action( "ravager,if=cooldown.avatar.remains<3&!talent.titans_torment&(buff.recklessness.remains>4+2|raid_event.adds.in>15+2|raid_event.adds.in<2|target.time_to_die<20+2)" );
+  default_list->add_action( "ravager,if=cooldown.avatar.remains<3&talent.titans_torment&(raid_event.adds.in>15+2|raid_event.adds.in<2)" );
+  // Case to handle if neither avatar nor recklessness are coming up soon
+  default_list->add_action( "ravager,if=cooldown.avatar.remains>15&cooldown.recklessness.remains>15&(raid_event.adds.in>15|raid_event.adds.in<2|target.time_to_die<12)" );
 
   for ( const auto& racial_action : racial_actions )
   {
@@ -8659,7 +8661,7 @@ void warrior_t::apl_fury()
     }
   }
 
-  default_list->add_action( "avatar,if=!talent.titans_torment&(talent.anger_management&buff.recklessness.up|buff.recklessness.remains>5|raid_event.adds.in>15|target.time_to_die<20)" );
+  default_list->add_action( "avatar,if=!talent.titans_torment&(talent.anger_management&buff.recklessness.up|buff.recklessness.remains>4|raid_event.adds.in>15|target.time_to_die<20)" );
 
   default_list->add_action( "recklessness,if=raid_event.adds.in>15|target.time_to_die<12" );
 
