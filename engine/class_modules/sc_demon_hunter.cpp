@@ -5633,7 +5633,8 @@ void demon_hunter_t::create_buffs()
   buff.soul_furnace_damage_amp = make_buff( this, "soul_furnace_damage_amp", spec.soul_furnace_damage_amp )->set_default_value_from_effect( 1 );
   buff.soul_furnace_stack = make_buff( this, "soul_furnace_stack", spec.soul_furnace_stack );
 
-  buff.soul_fragments = make_buff( this, "soul_fragments", spec.soul_fragments_buff )->set_max_stack( 10 );
+  buff.soul_fragments = make_buff( this, "soul_fragments", spec.soul_fragments_buff )
+    ->set_max_stack( 10 );
 
   buff.soul_barrier = make_buff<absorb_buff_t>( this, "soul_barrier", talent.vengeance.soul_barrier );
   buff.soul_barrier->set_absorb_source( get_stats( "soul_barrier" ) )
@@ -7289,7 +7290,7 @@ unsigned demon_hunter_t::get_total_soul_fragments( soul_fragment type_mask ) con
 
 void demon_hunter_t::activate_soul_fragment( soul_fragment_t* frag )
 {
-  buff.soul_fragments->increment();
+  buff.soul_fragments->trigger();
 
   // If we spawn a fragment with this flag, instantly consume it
   if ( frag->consume_on_activation )
