@@ -2254,9 +2254,11 @@ void sim_t::init_fight_style()
     
     case FIGHT_STYLE_DUNGEON_SLICE:
       //Based on the Hero Dungeon setup
+      desired_targets = 1;
       max_time = timespan_t::from_seconds( 360.0 );
       //Disables all raidbuffs, except those provided by the character itself.
       optimal_raid = 0;
+      use_optimal_buffs_and_debuffs( 0 );
       overrides.bloodlust = 1;
 
       shadowlands_opts.enable_rune_words = false;
