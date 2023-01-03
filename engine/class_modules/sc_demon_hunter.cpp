@@ -4583,7 +4583,7 @@ struct fracture_t : public demon_hunter_attack_t
 
     if ( p()->buff.metamorphosis->check() )
     {
-      ea += p()->spec.metamorphosis_buff->effectN( 9 ).resource( RESOURCE_FURY );
+      ea += p()->spec.metamorphosis_buff->effectN( 10 ).resource( RESOURCE_FURY );
     }
     if ( p()->set_bonuses.t29_vengeance_2pc->ok() )
     {
