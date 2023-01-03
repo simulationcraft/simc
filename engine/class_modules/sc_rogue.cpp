@@ -6245,6 +6245,7 @@ struct blade_flurry_t : public buff_t
   {
     set_cooldown( timespan_t::zero() );
     set_default_value_from_effect( 2 );
+    set_refresh_behavior( buff_refresh_behavior::DURATION );
     apply_affecting_aura( p->talent.outlaw.dancing_steel );
   }
 };
@@ -8193,6 +8194,15 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
       return expr_t::create_constant( name_str, 0 );
 
     buffs::roll_the_bones_t* primary = static_cast<buffs::roll_the_bones_t*>( buffs.roll_the_bones );
+    std::function<bool( buff_t*, buff_t* )> normal_pred =
+      []( buff_t* primary, buff_t* buff ) { return buff->check() && buff->remains() == primary->remains(); };
+    std::function<bool( buff_t*, buff_t* )> longer_pred =
+      []( buff_t* primary, buff_t* buff ) { return buff->check() && buff->remains_gt( primary->remains() ); };
+    std::function<bool( buff_t*, buff_t* )> shorter_pred =
+      []( buff_t* primary, buff_t* buff ) { return buff->check() && buff->remains_lt( primary->remains() ); };
+    std::function<bool( buff_t*, buff_t* )> will_lose_pred =
+      []( buff_t* primary, buff_t* buff ) { return buff->check() && !buff->remains_gt( primary->remains() ); };
+
     if ( split.size() == 1 || ( split.size() == 2 && util::str_compare_ci( split[ 1 ], "total" ) ) )
     {
       // Return the total amount of RtB buffs regardless of duration
@@ -8203,74 +8213,39 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
         return n_buffs;
       } );
     }
-    else if ( split.size() == 2 && util::str_compare_ci( split[ 1 ], "longer" ) )
-    {
-      // Return the total amount of proc RtB buffs that are of longer duration than the primary buff
-      return make_fn_expr( name_str, [ primary ]() {
-        double n_buffs = 0;
-        for ( auto buff : primary->buffs )
-          n_buffs += ( buff->check() && buff->remains_gt( primary->remains() ) );
-        return n_buffs;
-      } );
-    }
-    else if ( split.size() == 2 && util::str_compare_ci( split[ 1 ], "shorter" ) )
-    {
-      // Return the total amount of proc RtB buffs that are of shorter duration than the primary buff
-      return make_fn_expr( name_str, [ primary ]() {
-        double n_buffs = 0;
-        for ( auto buff : primary->buffs )
-          n_buffs += ( buff->check() && buff->remains_lt( primary->remains() ) );
-        return n_buffs;
-      } );
-    }
-    else if ( split.size() == 2 && util::str_compare_ci( split[ 1 ], "normal" ) )
-    {
-      // Return the total amount of base RtB buffs associated with the primary buff
-      return make_fn_expr( name_str, [ primary ]() {
-        double n_buffs = 0;
-        for ( auto buff : primary->buffs )
-          n_buffs += ( buff->check() && buff->remains() == primary->remains() );
-        return n_buffs;
-      } );
-    }
-    else if ( ( util::str_compare_ci( split[ 1 ], "will_lose" ) ||
+    else if ( ( util::str_compare_ci( split[ 1 ], "longer" ) ||
+                util::str_compare_ci( split[ 1 ], "shorter" ) ||
+                util::str_compare_ci( split[ 1 ], "normal" ) ||
+                util::str_compare_ci( split[ 1 ], "will_lose" ) ||
                 util::str_compare_ci( split[ 1 ], "will_retain" ) ) )
     {
+      buff_t* filter_buff = nullptr;
       if ( split.size() == 3 )
       {
-        // Return if we will lose or retain a specific buff
         util::string_view buff_name = split[ 2 ];
-        auto it = range::find_if( primary->buffs, [ buff_name ]( const buff_t* buff ) {
+        auto it = range::find_if( primary->buffs, [buff_name]( const buff_t* buff ) {
           return util::str_compare_ci( buff->name_str, buff_name ); } );
 
         if ( it == primary->buffs.end() )
-        {
           throw std::invalid_argument( fmt::format( "Invalid rtb_buffs.{} buff name given '{}'.", split[ 1 ], buff_name ) );
-        }
         else
-        {
-          const buff_t* rtb_buff = ( *it );
-          if ( util::str_compare_ci( split[ 1 ], "will_lose" ) )
-            return make_fn_expr( name_str, [ primary, rtb_buff ]() {
-              return rtb_buff->check() && !rtb_buff->remains_gt( primary->remains() );
-          } );
-          else
-            return make_fn_expr( name_str, [ primary, rtb_buff ]() {
-              return rtb_buff->check() && rtb_buff->remains_gt( primary->remains() );
-          } );
-        }
+          filter_buff = ( *it );
       }
-      else
-      {
-        // Return the total count of buffs we will lose or retain if no buff is specified
-        bool will_retain = util::str_compare_ci( split[ 1 ], "will_retain" );
-        return make_fn_expr( name_str, [ primary, will_retain ]() {
-          double n_buffs = 0;
-          for ( auto buff : primary->buffs )
-            n_buffs += ( buff->check() && ( will_retain == buff->remains_gt( primary->remains() ) ) );
-          return n_buffs;
-        } );
-      }
+
+      std::function<bool( buff_t*, buff_t* )> pred = normal_pred;
+      if ( util::str_compare_ci( split[ 1 ], "shorter" ) )
+        pred = shorter_pred;
+      else if ( util::str_compare_ci( split[ 1 ], "longer" ) || util::str_compare_ci( split[ 1 ], "will_retain" ) )
+        pred = longer_pred;
+      else if ( util::str_compare_ci( split[ 1 ], "will_lose" ) )
+        pred = will_lose_pred;
+
+      return make_fn_expr( name_str, [ primary, pred, filter_buff ]() {
+        double n_buffs = 0;
+        for ( auto buff : primary->buffs )
+          n_buffs += ( !filter_buff || filter_buff == buff ) && pred( primary, buff );
+        return n_buffs;
+      } );
     }
   }
   else if ( util::str_compare_ci(name_str, "priority_rotation") )
