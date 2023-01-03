@@ -708,6 +708,13 @@ bool parse_fight_style( sim_t*             sim,
     throw std::invalid_argument( fmt::format( "Invalid fight style {}", value ) );
   }
 
+  // Disable optimal raid setting for Dungeon-style sim types
+  if ( sim->fight_style == FIGHT_STYLE_DUNGEON_SLICE || sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE )
+  {
+    sim->optimal_raid = 0;
+    sim->use_optimal_buffs_and_debuffs( 0 );
+  }
+
   return true;
 }
 
@@ -2256,10 +2263,6 @@ void sim_t::init_fight_style()
       //Based on the Hero Dungeon setup
       desired_targets = 1;
       max_time = timespan_t::from_seconds( 360.0 );
-      //Disables all raidbuffs, except those provided by the character itself.
-      optimal_raid = 0;
-      use_optimal_buffs_and_debuffs( 0 );
-      overrides.bloodlust = 1;
 
       shadowlands_opts.enable_rune_words = false;
       ignore_invulnerable_targets = true;
@@ -3483,6 +3486,7 @@ void sim_t::create_options()
 
   // Raid buff overrides
   add_option( opt_func( "optimal_raid", parse_optimal_raid ) );
+  add_option( opt_func( "fight_style", parse_fight_style ) );
   add_option( opt_int( "override.arcane_intellect", overrides.arcane_intellect ) );
   add_option( opt_int( "override.battle_shout", overrides.battle_shout ) );
   add_option( opt_int( "override.mark_of_the_wild", overrides.mark_of_the_wild ) );
@@ -3561,7 +3565,6 @@ void sim_t::create_options()
   add_option( opt_string( "reference_player", reference_player_str ) );
   add_option( opt_string( "raid_events", raid_events_str ) );
   add_option( opt_append( "raid_events+", raid_events_str ) );
-  add_option( opt_func( "fight_style", parse_fight_style ) );
   add_option( opt_string( "main_target", main_target_str ) );
   add_option( opt_float( "enemy_death_pct", enemy_death_pct ) );
   add_option( opt_int( "target_level", target_level ) );
