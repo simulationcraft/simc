@@ -163,6 +163,19 @@ struct mind_sear_t final : public priest_spell_t
 
   void tick( dot_t* d ) override
   {
+    // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/966
+    if ( priest().bugs && priest().options.gathering_shadows_bug )
+    {
+      double insanity_before_tick = player->resources.current[ RESOURCE_INSANITY ] - cost_per_tick( RESOURCE_INSANITY );
+
+      // Determine if this is the last tick
+      if ( insanity_before_tick < ( cost_per_tick( RESOURCE_INSANITY ) ) )
+      {
+        // This is the last tick, cancel the buff before the damage goes out
+        priest().buffs.gathering_shadows->expire();
+      }
+    }
+
     priest_spell_t::tick( d );
 
     if ( priest().talents.shadow.shadowy_apparitions.enabled() )

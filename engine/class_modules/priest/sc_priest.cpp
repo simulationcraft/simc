@@ -2226,6 +2226,7 @@ void priest_t::create_options()
   add_option( opt_bool( "priest.self_power_infusion", options.self_power_infusion ) );
   add_option( opt_bool( "priest.power_infusion_fiend", options.power_infusion_fiend ) );
   add_option( opt_bool( "priest.screams_bug", options.priest_screams_bug ) );
+  add_option( opt_bool( "priest.gathering_shadows_bug", options.gathering_shadows_bug ) );
 }
 
 std::string priest_t::create_profile( save_e type )
