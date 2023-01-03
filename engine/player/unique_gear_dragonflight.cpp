@@ -1695,7 +1695,7 @@ void whispering_incarnate_icon( special_effect_t& effect )
     case PRIEST_HOLY:
     case SHAMAN_RESTORATION:
     case MONK_MISTWEAVER:
-    case DRUID_FERAL:
+    case DRUID_RESTORATION:
     case EVOKER_PRESERVATION:
       buff_id = 382080;  // mark of fire
 
