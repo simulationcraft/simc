@@ -2437,10 +2437,8 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
   {
     double m = monk_melee_attack_t::composite_target_multiplier( target );
 
-    // 2022-05-27 Patch 9.2.5 added an -11% effect that is to offset an increased to the single target damage
-    // while trying to keep AoE damage the same.
     if ( target != p()->target )
-      m *= ( p()->talent.windwalker.fists_of_fury->effectN( 6 ).percent() + p()->spec.windwalker_monk->effectN( 18 ).percent() );
+      m *= p()->talent.windwalker.fists_of_fury->effectN( 6 ).percent();
 
     return m;
   }
