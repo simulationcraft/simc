@@ -116,6 +116,9 @@ void shadow( player_t* p )
   main->add_action( "shadow_word_pain", "Use Shadow Word: Pain while moving as a low-priority action" );
 
   trinkets->add_action( "use_item,name=voidmenders_shadowgem,if=buff.power_infusion.up|fight_remains<20" );
+  trinkets->add_action( "use_item,name=darkmoon_deck_box_inferno" );
+  trinkets->add_action( "use_item,name=darkmoon_deck_box_rime" );
+  trinkets->add_action( "use_item,name=darkmoon_deck_box_dance" );
   trinkets->add_action( "use_items,if=buff.voidform.up|buff.power_infusion.up|buff.dark_ascension.up|(cooldown.void_eruption.remains>10&trinket.cooldown.duration<=60)|fight_remains<20" );
   trinkets->add_action( "use_item,name=desperate_invokers_codex,if=fight_remains<20|!talent.ancient_madness|(cooldown.dark_ascension.remains>10&talent.dark_ascension)|(cooldown.void_eruption.remains>10&talent.void_eruption)|(!talent.void_eruption&!talent.dark_ascension)", "Sync with cooldowns for Ancient Madness or use when the fight will end soon or at full stacks" );
 }
