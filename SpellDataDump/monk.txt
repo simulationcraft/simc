@@ -1,4 +1,4 @@
-SimulationCraft 1002-01 for World of Warcraft 10.0.2.47213 Live (hotfix 2022-12-29/47213, no-networking)
+SimulationCraft 1002-01 for World of Warcraft 10.0.2.47213 Live (hotfix 2023-01-05/47213)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
