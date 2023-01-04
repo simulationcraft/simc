@@ -478,7 +478,8 @@ struct shadowy_apparition_damage_t final : public priest_spell_t
   {
     priest_spell_t::impact( s );
 
-    if ( priest().talents.shadow.auspicious_spirits.enabled() )
+    if ( priest().talents.shadow.auspicious_spirits.enabled() &&
+         ( !priest().bugs || !priest().options.as_insanity_bug ) )
     {
       priest().generate_insanity( insanity_gain, priest().gains.insanity_auspicious_spirits, s->action );
     }
@@ -494,9 +495,11 @@ struct shadowy_apparition_damage_t final : public priest_spell_t
 struct shadowy_apparition_spell_t final : public priest_spell_t
 {
   bool gets_crit_mod = false;
+  double insanity_gain;
 
   shadowy_apparition_spell_t( priest_t& p )
-    : priest_spell_t( "shadowy_apparitions", p, p.talents.shadow.shadowy_apparitions )
+    : priest_spell_t( "shadowy_apparitions", p, p.talents.shadow.shadowy_apparitions ),
+      insanity_gain( priest().talents.shadow.auspicious_spirits->effectN( 2 ).percent() )
   {
     background   = true;
     proc         = false;
@@ -532,6 +535,12 @@ struct shadowy_apparition_spell_t final : public priest_spell_t
     proc->occur();
     set_target( target );
     execute();
+
+    // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/1081
+    if ( priest().talents.shadow.auspicious_spirits.enabled() && priest().bugs && priest().options.as_insanity_bug )
+    {
+      priest().generate_insanity( insanity_gain, priest().gains.insanity_auspicious_spirits, execute_state->action );
+    }
   }
 };
 

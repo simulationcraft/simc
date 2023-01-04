@@ -504,6 +504,9 @@ public:
 
     // Last tick of Mind Sear does not get buffed by Gathering Shadows
     bool gathering_shadows_bug = true;
+
+    // Auspicious Spirits generates insanity on execute not hit
+    bool as_insanity_bug = true;
   } options;
 
   priest_t( sim_t* sim, util::string_view name, race_e r );
