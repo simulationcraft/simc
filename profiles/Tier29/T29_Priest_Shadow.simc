@@ -105,6 +105,9 @@ actions.main+=/shadow_word_death
 actions.main+=/shadow_word_pain
 
 actions.trinkets=use_item,name=voidmenders_shadowgem,if=buff.power_infusion.up|fight_remains<20
+actions.trinkets+=/use_item,name=darkmoon_deck_box_inferno
+actions.trinkets+=/use_item,name=darkmoon_deck_box_rime
+actions.trinkets+=/use_item,name=darkmoon_deck_box_dance
 actions.trinkets+=/use_items,if=buff.voidform.up|buff.power_infusion.up|buff.dark_ascension.up|(cooldown.void_eruption.remains>10&trinket.cooldown.duration<=60)|fight_remains<20
 # Sync with cooldowns for Ancient Madness or use when the fight will end soon or at full stacks
 actions.trinkets+=/use_item,name=desperate_invokers_codex,if=fight_remains<20|!talent.ancient_madness|(cooldown.dark_ascension.remains>10&talent.dark_ascension)|(cooldown.void_eruption.remains>10&talent.void_eruption)|(!talent.void_eruption&!talent.dark_ascension)
