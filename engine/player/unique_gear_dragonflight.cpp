@@ -1359,6 +1359,7 @@ void spiteful_storm( special_effect_t& effect )
        ->set_expire_at_max_stack( true );
 
   effect.custom_buff = spite;
+  effect.proc_flags2_ = PF2_ALL_CAST;
   auto cb = new dbc_proc_callback_t( effect.player, effect );
 
   auto gathering = create_buff<buff_t>( effect.player, "gathering_storm_trinket" , effect.player->find_spell(394864));
