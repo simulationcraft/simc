@@ -44,7 +44,7 @@ struct effect_callbacks_t
 
   void reset();
 
-  void register_callback( unsigned proc_flags, unsigned proc_flags2, action_callback_t* cb );
+  void register_callback( uint64_t proc_flags, uint64_t proc_flags2, action_callback_t* cb );
   /// Register a driver-specific custom trigger callback
   void register_callback_trigger_function( unsigned driver_id, dbc_proc_callback_t::trigger_fn_type t, const dbc_proc_callback_t::trigger_fn_t& fn );
   /// Register a driver-specific custom execute callback

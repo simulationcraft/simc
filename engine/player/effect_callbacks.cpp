@@ -191,8 +191,8 @@ dbc_proc_callback_t::trigger_fn_type effect_callbacks_t::callback_trigger_functi
   return dbc_proc_callback_t::trigger_fn_type::NONE;
 }
 
-void effect_callbacks_t::register_callback(unsigned proc_flags,
-  unsigned proc_flags2,
+void effect_callbacks_t::register_callback(uint64_t proc_flags,
+  uint64_t proc_flags2,
   action_callback_t* cb)
 {
   // We cannot default the "what kind of abilities proc this callback" flags,

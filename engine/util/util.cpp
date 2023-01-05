@@ -1404,6 +1404,7 @@ const char* util::proc_type_string( proc_types type )
     case PROC1_ANY_DAMAGE_TAKEN:     return "AnyDamageTaken";
     case PROC1_PERIODIC_HEAL:        return "TickHeal";
     case PROC1_PERIODIC_HEAL_TAKEN:  return "TickHealTaken";
+    case PROC1_CAST_SUCCESSFUL:      return "CastSuccessful";
     default:                         return "Unknown";
   }
 }

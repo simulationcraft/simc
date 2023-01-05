@@ -66,7 +66,7 @@ bool has_proc( util::span<const util::string_view> opts, util::string_view proc 
   return false;
 }
 
-void parse_proc_flags( util::string_view flags, util::span<const proc_parse_opt_t> opts, uint64_t proc_flags )
+void parse_proc_flags( util::string_view flags, util::span<const proc_parse_opt_t> opts, uint64_t& proc_flags )
 {
   auto splits = util::string_split<util::string_view>( flags, "/" );
 
@@ -668,7 +668,7 @@ uint64_t special_effect_t::proc_flags() const
   return 0;
 }
 
-unsigned special_effect_t::proc_flags2() const
+uint64_t special_effect_t::proc_flags2() const
 {
   // These do not have a spell-data equivalent, so they are going to always be
   // set manually, or (most commonly) default to 0. The new proc callback
