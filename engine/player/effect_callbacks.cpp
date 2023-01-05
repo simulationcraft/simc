@@ -221,6 +221,12 @@ void effect_callbacks_t::register_callback(uint64_t proc_flags,
     add_proc_callback(t, proc_flags2, cb);
   }
 
+  // Cast Successful: Eventually, this can be part of the loop above.
+  if (proc_flags & PF_CAST_SUCCESSFUL)
+  {
+    add_proc_callback(PROC1_CAST_SUCCESSFUL, proc_flags2, cb);
+  }
+
   // Periodic X done
   if (proc_flags & PF_PERIODIC)
   {

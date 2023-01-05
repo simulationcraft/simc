@@ -101,6 +101,10 @@ enum proc_types
   // given proc flags.
   PROC1_PERIODIC_HEAL,
   PROC1_PERIODIC_HEAL_TAKEN,
+
+  // This is a Blizzard type, but define is separately here for now.
+  PROC1_CAST_SUCCESSFUL,
+
   PROC1_TYPE_MAX,
 
   // Helper types to loop around stuff
@@ -218,6 +222,7 @@ enum proc_flag2
   PF2_PERIODIC_HEAL           = 1 << PROC2_PERIODIC_HEAL,
   PF2_PERIODIC_DAMAGE         = 1 << PROC2_PERIODIC_DAMAGE,
   PF2_ALL_HIT                 = PF2_HIT | PF2_CRIT | PF2_GLANCE, // All damaging/healing "hit" results
+  PF2_ALL_CAST                = PF2_CAST | PF2_CAST_DAMAGE | PF2_CAST_HEAL, // All successful cast results
 };
 
 enum item_flag

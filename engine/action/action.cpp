@@ -1790,9 +1790,34 @@ void action_t::execute()
 
     // Proc generic abilities on execute.
     proc_types pt;
+    proc_types2 pt2;
     if ( execute_state && callbacks && ( pt = execute_state->proc_type() ) != PROC1_INVALID )
     {
-      proc_types2 pt2;
+      // "On spell cast", only performed for foreground actions
+      if ( ( pt2 = execute_state->cast_proc_type2() ) != PROC2_INVALID )
+      {
+        action_callback_t::trigger( player->callbacks.procs[ pt ][ pt2 ], this, execute_state );
+      }
+
+      // "On an execute result"
+      if ( ( pt2 = execute_state->execute_proc_type2() ) != PROC2_INVALID )
+      {
+        action_callback_t::trigger( player->callbacks.procs[ pt ][ pt2 ], this, execute_state );
+      }
+
+      // "On interrupt cast result"
+      if ( ( pt2 = execute_state->interrupt_proc_type2() ) != PROC2_INVALID )
+      {
+        if ( execute_state->target->debuffs.casting->check() )
+          action_callback_t::trigger( player->callbacks.procs[ pt ][ pt2 ], this, execute_state );
+      }
+    }
+
+    // Special handling for "Cast Successful" procs
+    // TODO: What happens when there is a PROC1 type handled above in addition to Cast Successful?
+    if ( execute_state && callbacks )
+    {
+      pt = PROC1_CAST_SUCCESSFUL;
 
       // "On spell cast", only performed for foreground actions
       if ( ( pt2 = execute_state->cast_proc_type2() ) != PROC2_INVALID )
