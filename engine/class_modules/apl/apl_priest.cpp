@@ -18,7 +18,7 @@ std::string potion( const player_t* p )
 
 std::string flask( const player_t* p )
 {
-  return ( p->true_level > 60 ) ? "phial_of_static_empowerment_3" : "greater_flask_of_endless_fathoms";
+  return ( p->true_level > 60 ) ? "phial_of_tepid_versatility_3" : "greater_flask_of_endless_fathoms";
 }
 
 std::string food( const player_t* p )
@@ -45,7 +45,7 @@ void shadow( player_t* p )
   action_priority_list_t* main = p->get_action_priority_list( "main" );
   action_priority_list_t* trinkets = p->get_action_priority_list( "trinkets" );
 
-  precombat->add_action( "flask", "Default consumables otion=elemental_potion_of_ultimate_power_ lask=phial_of_static_empowerment_ ood=fated_fortune_cooki ugmentation=draconic_augment_run emporary_enchant=main_hand:howling_rune_" );
+  precombat->add_action( "flask", "Default consumables potion=elemental_potion_of_ultimate_power flask=phial_of_tepid_versatility food=fated_fortune_cookie augmentation=draconic_augment_run temporary_enchant=main_hand:howling_rune" );
   precombat->add_action( "food" );
   precombat->add_action( "augmentation" );
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
