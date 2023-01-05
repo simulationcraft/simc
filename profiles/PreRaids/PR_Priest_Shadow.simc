@@ -21,7 +21,7 @@ temporary_enchant=main_hand:howling_rune_3
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
 # Executed before combat begins. Accepts non-harmful actions only.
-# Default consumables otion=elemental_potion_of_ultimate_power_ lask=phial_of_static_empowerment_ ood=fated_fortune_cooki ugmentation=draconic_augment_run emporary_enchant=main_hand:howling_rune_
+# Default consumables potion=elemental_potion_of_ultimate_power flask=phial_of_tepid_versatility food=fated_fortune_cookie augmentation=draconic_augment_run temporary_enchant=main_hand:howling_rune
 actions.precombat=flask
 actions.precombat+=/food
 actions.precombat+=/augmentation

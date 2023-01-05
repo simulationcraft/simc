@@ -6,6 +6,8 @@ role=spell
 position=ranged_back
 talents=BIQAAAAAAAAAAAAAAAAAAAAAAIk0CBAAAAAAAAAAAAQikkSkmU0iEJlESEkGJJJSIIBh0kWIJAA
 
+flask=phial_of_static_empowerment_3
+
 head=draconic_hierophants_archcowl,id=200327,bonus_id=4800/4786/1498,gem_id=192985
 neck=elemental_lariat,id=193001,bonus_id=1540/8793/6652/7936/7979/8767/8782,gem_id=192961/192961/192961
 shoulders=draconic_hierophants_wisdom,id=200329,bonus_id=4800/4786/1498

@@ -84,8 +84,8 @@ actions.st+=/moonfire,target_if=refreshable&remains<2
 actions.st+=/stellar_flare,target_if=refreshable&astral_power.deficit>variable.passive_asp+8&remains<2
 actions.st+=/variable,name=cd_condition_st,value=cooldown.ca_inc.remains<15&!buff.ca_inc.up&(target.1.time_to_die>15|fight_remains<25+10*talent.incarnation_chosen_of_elune)
 actions.st+=/wrath,if=variable.cd_condition_st&set_bonus.tier29_4pc&eclipse.any_next
+actions.st+=/starsurge,if=variable.cd_condition_st&buff.touch_the_cosmos.up|buff.primordial_arcanic_pulsar.value>=560&buff.starweavers_weft.up
 actions.st+=/starfall,if=buff.primordial_arcanic_pulsar.value>=550&!buff.ca_inc.up
-actions.st+=/starsurge,if=variable.cd_condition_st&buff.touch_the_cosmos.up
 actions.st+=/celestial_alignment,if=variable.cd_condition_st
 actions.st+=/incarnation,if=variable.cd_condition_st
 actions.st+=/warrior_of_elune
@@ -97,7 +97,7 @@ actions.st+=/convoke_the_spirits,if=variable.convoke_condition
 actions.st+=/astral_communion,if=astral_power.deficit>variable.passive_asp+55
 actions.st+=/force_of_nature,if=astral_power.deficit>variable.passive_asp+20
 actions.st+=/fury_of_elune,if=astral_power.deficit>variable.passive_asp+8
-actions.st+=/starfall,if=buff.starweavers_warp.up
+actions.st+=/starfall,if=buff.starweavers_warp.up&!buff.touch_the_cosmos.up
 actions.st+=/starsurge,if=talent.starlord&buff.starlord.stack<3|talent.rattle_the_stars&buff.rattled_stars.up&buff.rattled_stars.remains<gcd.max
 actions.st+=/sunfire,target_if=refreshable&astral_power.deficit>variable.passive_asp+3
 actions.st+=/moonfire,target_if=refreshable&astral_power.deficit>variable.passive_asp+3
