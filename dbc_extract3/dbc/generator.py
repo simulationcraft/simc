@@ -3116,10 +3116,12 @@ class SpellDataGenerator(DataGenerator):
             hotfix.add(duration_entry, ('duration_1', 19))
 
             aura_opt_entry = spell.child('SpellAuraOptions')
-            fields += aura_opt_entry.field('stack_amount', 'proc_chance', 'proc_charges', 'proc_flags_1', 'internal_cooldown')
+            fields += aura_opt_entry.field('stack_amount', 'proc_chance', 'proc_charges')
+            fields.append('%d' % (aura_opt_entry.proc_flags_1 | aura_opt_entry.proc_flags_2 << 32))
+            fields += aura_opt_entry.field('internal_cooldown')
             hotfix.add(aura_opt_entry,
                     ('stack_amount', 20), ('proc_chance', 21), ('proc_charges', 22),
-                    ('proc_flags_1', 23), ('internal_cooldown', 24))
+                    ('proc_flags_1', 23), ('proc_flags_2', 52), ('internal_cooldown', 24))
 
             ppm_entry = aura_opt_entry.ref('id_ppm')
             fields += ppm_entry.field('ppm')
