@@ -1,5 +1,5 @@
-// Spell text, wow build 10.0.5.47186
-static const std::array<spelltext_data_t, 19233> __ptr_spelltext_data { {
+// Spell text, wow build 10.0.5.47215
+static const std::array<spelltext_data_t, 19243> __ptr_spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -6759,6 +6759,7 @@ static const std::array<spelltext_data_t, 19233> __ptr_spelltext_data { {
   { 203965, "Reduces the cooldowns of Barkskin and Survival Instincts by $s1%.", 0, 0 },
   { 203974, "When you deal direct damage with Thrash, you gain a charge of Earthwarden, reducing the damage of the next auto attack you take by $s1%. Earthwarden may have up to $203975u charges.", 0, 0 },
   { 203975, "$@spelldesc203974", "Damage of the next autoattack you take will be reduced by $203974s1~%.", 0 },
+  { 203981, "Consuming a nearby Soul Fragment heals you.", "Soul Fragments are nearby.", 0 },
   { 204018, "Blesses a party or raid member, granting immunity to magical damage and harmful effects for $d.\r\n\r\nCannot be used on a target with Forbearance. Causes Forbearance for $25771d.\r\n\r\nShares a cooldown with Blessing of Protection.", "Immune to magical damage and harmful effects.", 0 },
   { 204019, "Throws a Blessed Hammer that spirals outward, dealing $204301s1 Holy damage to enemies and reducing the next damage they deal to you by $<shield>.\r\n\r\n|cFFFFFFFFGenerates $s2 Holy Power.", 0, 0 },
   { 204021, "Brand an enemy with a demonic symbol, instantly dealing $sw2 Fire damage$?s320962[ and ${$207771s3*$207744d} Fire damage over $207744d][]. The enemy's damage done to you is reduced by $s1% for $207744d.", "Dealing $s1% less damage to the branding Demon Hunter.", 0 },
@@ -16839,6 +16840,7 @@ static const std::array<spelltext_data_t, 19233> __ptr_spelltext_data { {
   { 381727, "$@spelldesc381705", "A mutated tentacle has emerged from your body, lashing out to enemies in front of you.", 0 },
   { 381732, "$@spelldesc364342", "Cooldown of Death's Advance reduced by $s1%.", "Bronze" },
   { 381734, "Taking damage has a chance to increase your Versatility by $381769s1 for $381769d.\r\n\r\nThis effect is increased for every ally within $381769s2 yds, up to $381769s3.", 0, 0 },
+  { 381736, "Get carried away by five dragon whelplings!", "Get carried away by five dragon whelplings!", 0 },
   { 381741, "$@spelldesc364342", "Cooldown of Fel Rush and Infernal Strike reduced by $s1%.", "Bronze" },
   { 381743, "Increases the chance for Earthquake to knock enemies down by ${$s1}.1%.\r\n", 0, 0 },
   { 381746, "$@spelldesc364342", "Cooldown of $?s252216[Tiger Dash][Dash] reduced by $s1%.", "Bronze" },
@@ -18154,6 +18156,7 @@ static const std::array<spelltext_data_t, 19233> __ptr_spelltext_data { {
   { 389479, "Permanently enchants boots to increase your Speed by $ec1. Cannot be applied to items lower than level $ecim.", 0, 0 },
   { 389480, "Permanently enchants boots to increase your mounted speed by $ec1s1%. Cannot be applied to items lower than level $ecim.", 0, 0 },
   { 389484, "Permanently enchants boots to increase your Stamina by $ec1. Cannot be applied to items lower than level $ecim.", 0, 0 },
+  { 389498, "When you kill an enemy that yields experience or honor, gain a Spark of the Primals. Once you reach 5 stacks, your next single target offensive ability will launch a devastating elemental attack.", 0, 0 },
   { 389508, "Permanently enchants a gathering tool to increase your Deftness by $ec1.", 0, 0 },
   { 389513, "Permanently enchants a gathering tool to increase your Finesse by $ec1.", 0, 0 },
   { 389519, "Permanently enchants a crafting tool to increase your Inspiration by $ec1.", 0, 0 },
@@ -18257,6 +18260,7 @@ static const std::array<spelltext_data_t, 19233> __ptr_spelltext_data { {
   { 389978, "The final slash of Blade Dance deals an additional $s1% damage.", 0, 0 },
   { 389984, "$@spelldesc389404", 0, 0 },
   { 389985, "Multiple applications of Frailty may overlap.\r\n\r\nSoul Cleave applies Frailty to your primary target for $s2 sec.", 0, 0 },
+  { 389987, "Increase your highest secondary stat by $s1. ", "$?e1[Critical Strike]?e2[Haste]?e3[Mastery]?e4[Versatility][Highest secondary stat] increased by $w1.", 0 },
   { 389992, "When Darkglare deals damage, it deals $s1% of that damage to all enemies affected by your damage over time effects.", 0, 0 },
   { 389995, "$@spelldesc389404", 0, 0 },
   { 389997, "Shear generates $s1 additional Fury.", 0, 0 },
@@ -18373,9 +18377,11 @@ static const std::array<spelltext_data_t, 19233> __ptr_spelltext_data { {
   { 390444, "Lounge around, Maruuk style!", 0, 0 },
   { 390453, "Rest like a khanam wherever you go!", 0, 0 },
   { 390458, "Channel torrents around you dealing ${$s1*($390459d/$390459t1)*(1+$@versadmg)} nature damage to nearby enemies over $390459d. Then unleash a powerful blast dealing $s2 nature damage split between all nearby enemies.", 0, 0 },
+  { 390529, 0, "Gathering Primal Sparks. At 5 stacks, they will coalesce into a single elemental attack.", 0 },
   { 390563, "While $?s137050[Ravager is active][Bladestorming], every $?c2[$390719t1][$390577t1] sec you gain $s2% movement speed and $s1% Strength, stacking up to $s3 times. Lasts $390581d.", 0, 0 },
   { 390567, "@spelldesc390563", 0, 0 },
   { 390577, "$@spelldesc390563", 0, 0 },
+  { 390579, 0, "Your next attack will unleash your Primal Sparks at the target, dealing $s3920381 damage.", 0 },
   { 390581, "$@spelldesc390563", "Strength increased by $w1%. Movement speed increased by $w2%.", 0 },
   { 390615, "Each time Shadow Word: Pain$?s137032[ or Purge the Wicked][] deals damage, the healing of your next Flash Heal is increased by $s1%, up to a maximum of ${$s1*$390617u}%.", 0, 0 },
   { 390617, "$@spelldesc390615", "The healing of your next Flash Heal is increased by $w1%.", 0 },
@@ -18468,6 +18474,7 @@ static const std::array<spelltext_data_t, 19233> __ptr_spelltext_data { {
   { 391104, "Slow applies to everything within 8 yards of your target.", "Movement speed reduced by $w1%.", 0 },
   { 391109, "Increases your non-periodic Shadow damage by $s1% for 20 sec.\r\n\r\n|cFFFFFFFFGenerates ${$m2/100} Insanity.|r", "Your non-periodic Shadow damage is increased by $w1%. $?s341240[Critical strike chance increased by ${$W4}.1%.][]", 0 },
   { 391112, "Mindgames lasts an additional ${$s3/1000} sec, deals an additional $s1% initial damage, and reverses an additional $s1% damage or healing.", 0, 0 },
+  { 391117, "Fatal damage causes primal energy to overload, granting immunity to all damage and harmful effects for $392255d. Can only be used outdoors in the Dragon Isles.", 0, 0 },
   { 391124, "After Spirit of Redemption expires, you will revive at up to $s1% health, based on your healing done during Spirit of Redemption. After reviving, you cannot benefit from Spirit of Redemption for $211319d.", 0, 0 },
   { 391137, "Your Mind Blast and Mind Spike critical strikes generate an additional ${$s2/100} Insanity.", 0, 0 },
   { 391138, "$@spelldesc391137", 0, 0 },
@@ -18607,6 +18614,7 @@ static const std::array<spelltext_data_t, 19233> __ptr_spelltext_data { {
   { 391978, "Rip, Rake, and Thrash last $s1% longer.", 0, 0 },
   { 391997, "Increases Stamina by $s1% and reduces the duration of movement impairing effects on you by ${$s4/10}.1%.", 0, 0 },
   { 392008, "Your harmful abilities and spells have a chance to summon Gruffy. When summoned, Gruffy will charge your target from a random direction dealing $s1 physical damage to any enemy he passes through, while knocking them back a short distance.", 0, 0 },
+  { 392038, "Unleash your Primal Sparks at your enemy, dealing $s1 damage to the target.\r\n\r\n", 0, 0 },
   { 392053, "While Bestial Wrath is active, your pet's critical damage dealt is increased by $392054s1%.", 0, 0 },
   { 392054, "$@spelldesc392053", "Critical damage dealt increased by $s1%.", 0 },
   { 392058, "$@spelldesc392060", 0, 0 },
@@ -18630,6 +18638,7 @@ static const std::array<spelltext_data_t, 19233> __ptr_spelltext_data { {
   { 392223, "$@spelldesc392221", 0, 0 },
   { 392237, "Your harmful spells and abilities have a chance to grant you $s1 Critical Strike, Mastery, or Haste for $392248d depending on how many pets you control.", 0, 0 },
   { 392248, "@spelldesc392237", "Critical strike increased by $w1.", 0 },
+  { 392255, "Immune to all attacks and harmful effects.", "Immune to all attacks and harmful effects.", 0 },
   { 392256, "Lifebloom counts for ${$s1+1} stacks of Mastery: Harmony.", 0, 0 },
   { 392271, "@spelldesc392237", "Mastery increased by $w1.", 0 },
   { 392275, "@spelldesc392237", "Haste increased by $w1.", 0 },
@@ -19223,6 +19232,7 @@ static const std::array<spelltext_data_t, 19233> __ptr_spelltext_data { {
   { 400254, "Strike with the might of Ursoc, dealing $s1 Physical damage to all enemies in front of you. Deals reduced damage beyond 5 targets.", 0, 0 },
   { 400278, "When you cast a single-target ability on an enemy afflicted by Moonfire, you cause them to burn for an additional $s1% Arcane damage.", "When you cast a single-target ability on an enemy afflicted by Moonfire, you cause them to burn for an additional $w1% Arcane damage.", 0 },
   { 400314, "Colossus Smash and Avatar's durations are increased by $s8% but their damage bonuses are reduced by $s7%.", 0, 0 },
+  { 400320, "Your damage over time effects deal their damage in $s1% less time, and your healing over time effects in $s2% less time.", 0, 0 },
   { 400321, "@spelldesc$260643", 0, 0 },
   { 400322, "@spelldesc$260643", 0, 0 },
   { 400370, "$@spelldesc372307", 0, 0 },
@@ -19235,11 +19245,11 @@ static const std::array<spelltext_data_t, 19233> __ptr_spelltext_data { {
   { 400698, "+$s1 Sparkle.", "+$w1 Sparkle.", 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.0.5.47186
+// spelltext hotfix entries, wow build 10.0.5.47215
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 10.0.5.47186
+// Spell description variables, wow build 10.0.5.47215
 static const std::array<spelldesc_vars_data_t, 370> __ptr_spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$pvp=$?a134735[${1}][${1}]\r\n$shadowinpvp=$?a134735&a137033[${0.8}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<pvp>*$<weal>*$<shadowinpvp>}\r\n" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -19613,7 +19623,7 @@ static const std::array<spelldesc_vars_data_t, 370> __ptr_spelldesc_vars_data { 
   {  400169, "$castigation=$?a193134[${1}][${0}]\r\n$harsh=$?a373183[${$373180s2}][${0}]\r\n$darkside=$?a198069[${1+($198069s1/100)}][${1}]\r\n$balanceofthings=$?a390707[${1+($390707s1/100)}][${1}]\r\n$shadowcov=$?a322105[${1+($322105s1/100)}][${1}]\r\n$penancedamage=${$373130s1*$<shadowcov>*$<darkside>*$<balanceofthings>*(3+$<castigation>+$<harsh>)}\r\n$penancehealing=${$400187s1*$<shadowcov>*$<darkside>*(3+$<castigation>+$<harsh>)}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.0.5.47186
+// spelldesc_vars hotfix entries, wow build 10.0.5.47215
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 
