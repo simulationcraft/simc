@@ -2964,7 +2964,7 @@ void desperate_invokers_codex( special_effect_t& effect )
 
   struct desperate_invocation_t : public generic_proc_t
   {
-    const buff_t* buff;
+    buff_t* buff;
     cooldown_t* item_cd;
     cooldown_t* spell_cd;
 
@@ -2982,6 +2982,17 @@ void desperate_invokers_codex( special_effect_t& effect )
       generic_proc_t::execute();
       make_event( *sim, [ this ]() { item_cd->adjust( -timespan_t::from_seconds( buff->check_stack_value() ) ); } );
       spell_cd->adjust( -timespan_t::from_seconds( buff->check_stack_value() ) );
+    }
+
+    void activate() override
+    {
+      generic_proc_t::activate();
+
+      // Cooldown reduction is removed when dropping combat in dungeon-style fight types
+      sim->target_non_sleeping_list.register_callback( [ this ]( player_t* ) {
+        if ( sim->target_non_sleeping_list.empty() )
+          buff->expire();
+      } );
     }
   };
 
