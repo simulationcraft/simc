@@ -4525,12 +4525,12 @@ struct mangle_t : public bear_attack_t
     if ( !result_is_hit( s->result ) )
       return;
 
-    if ( is_free_proc() )
-      return;
-
     if ( swiping && p()->buff.gore->check() && s->result_amount > 0 && s->chain_target == 0 &&
          !swiping->target_list().empty() )
     {
+      // 2pc expires gore even on free_procs
+      p()->buff.gore->expire();
+
       swiping->snapshot_and_execute( s, false, [ this, s ]( action_state_t* new_ ) {
         swiping->set_amount( new_, s->result_amount );
       } );
@@ -4540,8 +4540,8 @@ struct mangle_t : public bear_attack_t
   void execute() override
   {
     // this is proc'd before the cast and thus benefits the cast
-    if ( p()->buff.overpowering_aura->trigger() )
-      healing->execute();
+    if ( p()->buff.gore->check() )
+      p()->buff.overpowering_aura->trigger();
 
     bear_attack_t::execute();
 
@@ -4549,7 +4549,12 @@ struct mangle_t : public bear_attack_t
       return;
 
     if ( !is_free_proc() )
+    {
       p()->buff.gore->expire();
+
+      if ( healing )
+        healing->execute();
+    }
 
     p()->buff.gory_fur->trigger();
     p()->buff.guardian_of_elune->trigger();
@@ -9695,7 +9700,7 @@ void druid_t::create_buffs()
   buff.guardian_of_elune = make_buff( this, "guardian_of_elune", talent.guardian_of_elune->effectN( 1 ).trigger() );
 
   buff.overpowering_aura = make_buff( this, "overpowering_aura", find_spell( 395944 ) )
-    ->set_trigger_spell( sets->set( DRUID_GUARDIAN, T29, B4 ) )
+    ->set_trigger_spell( sets->set( DRUID_GUARDIAN, T29, B2 ) )
     ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN );
 
   buff.rage_of_the_sleeper = make_buff( this, "rage_of_the_sleeper", talent.rage_of_the_sleeper )
@@ -11453,8 +11458,7 @@ void druid_t::target_mitigation( school_e school, result_amount_type type, actio
 
   s->result_amount *= 1.0 + talent.thick_hide->effectN( 1 ).percent();
 
-  if ( sets->has_set_bonus( DRUID_GUARDIAN, T29, B2 ) )
-    s->result_amount *= 1.0 + buff.overpowering_aura->check_value();
+  s->result_amount *= 1.0 + buff.overpowering_aura->check_value();
 
   if ( talent.protective_growth.ok() )
     s->result_amount *= 1.0 + buff.protective_growth->value();
