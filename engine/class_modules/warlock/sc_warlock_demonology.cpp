@@ -260,9 +260,8 @@ struct demonbolt_t : public demonology_spell_t
 
     p()->buffs.stolen_power_final->expire();
 
-    // 2022-10-17 Percent chance for this effect is not in spell data!
-    // TOCHECK with further testing.
-    if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T29, B4 ) && rng().roll( 0.15 ) )
+    // 2023-01-05 Percent chance for this effect is still not in spell data! Update since beta appears to have adjusted it to 30%
+    if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T29, B4 ) && rng().roll( 0.30 ) )
     {
       p()->buffs.blazing_meteor->trigger();
       p()->procs.blazing_meteor->occur();
