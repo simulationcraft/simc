@@ -2161,9 +2161,6 @@ public:
 
     ab::execute();
 
-    if ( ab::harmful )
-      p()->restealth_allowed = false;
-
     if ( ab::hit_any_target )
     {
       trigger_auto_attack( ab::execute_state );
@@ -2663,6 +2660,7 @@ struct apply_poison_t : public action_t
 
     trigger_gcd = timespan_t::zero();
     harmful = false;
+    set_target( p );
 
     if ( p->main_hand_weapon.type != WEAPON_NONE || p->off_hand_weapon.type != WEAPON_NONE )
     {
@@ -2990,6 +2988,7 @@ struct adrenaline_rush_t : public rogue_spell_t
     parse_options( options_str );
 
     harmful = false;
+    set_target( p );
   }
 
   void execute() override
@@ -3302,6 +3301,7 @@ struct blade_flurry_t : public rogue_attack_t
     instant_attack( nullptr )
   {
     harmful = false;
+    set_target( p ); // Does not require a target to use
 
     if ( p->spec.blade_flurry_attack->ok() )
     {
@@ -3320,12 +3320,18 @@ struct blade_flurry_t : public rogue_attack_t
     rogue_attack_t::execute();
     p()->buffs.blade_flurry->trigger();
 
+    // Don't trigger the attack if there are no targets to avoid breaking Stealth
+    // Set target to invalidate the target cache prior to checking the list size
     if ( instant_attack )
     {
-      instant_attack->set_target( target );
-      instant_attack->execute();
+      instant_attack->set_target( player->target );
+      if ( !instant_attack->target_list().empty() )
+        instant_attack->execute();
     }
   }
+
+  bool breaks_stealth() const override
+  { return false; }
 };
 
 // Blade Rush ===============================================================
@@ -3385,6 +3391,7 @@ struct cold_blood_t : public rogue_spell_t
     parse_options( options_str );
 
     harmful = false;
+    set_target( p );
   }
 
   void execute() override
@@ -4032,6 +4039,7 @@ struct indiscriminate_carnage_t : public rogue_spell_t
     rogue_spell_t( name, p, p->talent.assassination.indiscriminate_carnage, options_str )
   {
     harmful = false;
+    set_target( p );
   }
 
   void execute() override
@@ -4464,6 +4472,7 @@ struct roll_the_bones_t : public rogue_spell_t
 
     harmful = false;
     dot_duration = timespan_t::zero();
+    set_target( p );
   }
 
   void execute() override
@@ -4773,6 +4782,7 @@ struct shadow_blades_t : public rogue_spell_t
 
     harmful = false;
     school = SCHOOL_SHADOW;
+    set_target( p );
 
     add_child( p->active.shadow_blades_attack );
   }
@@ -4801,6 +4811,7 @@ struct shadow_dance_t : public rogue_spell_t
   {
     harmful = false;
     dot_duration = timespan_t::zero(); // No need to have a tick here
+    set_target( p );
   }
 
   void execute() override
@@ -5294,6 +5305,7 @@ struct slice_and_dice_t : public rogue_spell_t
 
     harmful = false;
     dot_duration = timespan_t::zero();
+    set_target( p );
   }
 
   timespan_t get_triggered_duration( int cp )
@@ -5357,6 +5369,7 @@ struct sprint_t : public rogue_spell_t
   {
     harmful = callbacks = false;
     cooldown = p->cooldowns.sprint;
+    set_target( p );
   }
 
   void execute() override
@@ -5375,6 +5388,7 @@ struct symbols_of_death_t : public rogue_spell_t
   {
     harmful = callbacks = false;
     dot_duration = timespan_t::zero();
+    set_target( p );
   }
 
   void execute() override
@@ -5420,6 +5434,7 @@ struct vanish_t : public rogue_spell_t
     rogue_spell_t( name, p, p->spell.vanish, options_str )
   {
     harmful = false;
+    set_target( p );
   }
 
   void execute() override
@@ -5447,6 +5462,7 @@ struct stealth_t : public rogue_spell_t
     rogue_spell_t( name, p, p->spell.stealth, options_str )
   {
     harmful = false;
+    set_target( p );
   }
 
   void execute() override
@@ -5458,10 +5474,10 @@ struct stealth_t : public rogue_spell_t
 
   bool ready() override
   {
-    if ( p() -> stealthed( STEALTH_BASIC | STEALTH_ROGUE ) )
+    if ( p()->stealthed( STEALTH_BASIC | STEALTH_ROGUE ) )
       return false;
 
-    if ( ! p() -> in_combat )
+    if ( !p()->in_combat )
       return true;
 
     // HAX: Allow restealth for DungeonSlice against non-"boss" targets because Shadowmeld drops combat against trash.
@@ -5613,6 +5629,7 @@ struct thistle_tea_t : public rogue_spell_t
 
     harmful = false;
     energize_type = action_energize::ON_CAST;
+    set_target( p );
   }
 
   void execute() override
@@ -5636,6 +5653,7 @@ struct keep_it_rolling_t : public rogue_spell_t
     rogue_spell_t( name, p, p->talent.outlaw.keep_it_rolling, options_str )
   {
     harmful = false;
+    set_target( p );
   }
 
   void execute() override
@@ -5908,6 +5926,8 @@ struct weapon_swap_t : public action_t
     rogue( rogue_ )
   {
     may_miss = may_crit = may_dodge = may_parry = may_glance = callbacks = harmful = false;
+    
+    set_target( rogue );
 
     add_option( opt_string( "slot", slot_str ) );
     add_option( opt_string( "swap_to", swap_to_str ) );
@@ -9936,6 +9956,8 @@ void rogue_t::activate()
 
 void rogue_t::break_stealth()
 {
+  restealth_allowed = false;
+
   // Trigger Subterfuge
   if ( talent.rogue.subterfuge->ok() && !buffs.subterfuge->check() && stealthed( STEALTH_BASIC ) )
   {
